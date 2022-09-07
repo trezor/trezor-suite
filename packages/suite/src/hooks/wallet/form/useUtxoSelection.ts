@@ -24,8 +24,13 @@ export const useUtxoSelection = ({
         register({ name: 'selectedUtxos', type: 'custom' });
     }, [register]);
 
+    // has coin control been enabled manually?
     const isCoinControlEnabled = watch('isCoinControlEnabled');
+
+    // manually selected UTXOs
     const selectedUtxos: AccountUtxo[] = watch('selectedUtxos') || [];
+
+    // fee level
     const selectedFee = watch('selectedFee');
 
     // split all UTXOs into two arrays based on their value to separate UTXOs that do not excceed the dust limit
@@ -43,17 +48,18 @@ export const useUtxoSelection = ({
     const allUtxosSelected =
         !!selectedUtxos.length && selectedUtxos.length === spendableUtxos.length;
 
-    // transaction composed by Suite for the fee level chosen by the user
+    // transaction composed for the fee level chosen by the user
     const composedLevel = composedLevels?.[selectedFee || 'normal'];
 
-    // inputs selected automatically by Suite
+    // inputs to be used in the transactions
     const composedInputs = useMemo(
         () =>
             composedLevel && 'transaction' in composedLevel ? composedLevel.transaction.inputs : [],
         [composedLevel],
     ) as PROTO.TxInputType[];
 
-    // UTXOs corresponding to the inputs selected automatically
+    // UTXOs corresponding to the inputs
+    // it is a different object type, but some properties are shared between the two
     const preselectedUtxos = useMemo(
         () =>
             account.utxo?.filter(utxo =>
@@ -86,15 +92,17 @@ export const useUtxoSelection = ({
     const toggleUtxoSelection = (utxo: AccountUtxo) => {
         const isSameUtxo = (u: AccountUtxo) => u.txid === utxo.txid && u.vout === utxo.vout;
 
-        const isSelected = selectedUtxos.find(isSameUtxo);
-        if (isSelected) {
+        const alreadySelectedUtxo = selectedUtxos.find(isSameUtxo);
+        if (alreadySelectedUtxo) {
             // uncheck the UTXO if already selected
-            setValue('selectedUtxos', selectedUtxos.filter(u => u !== isSelected) || []);
+            setValue(
+                'selectedUtxos',
+                selectedUtxos.filter(u => u !== alreadySelectedUtxo),
+            );
         } else {
-            const selectedUtxosOld = !isCoinControlEnabled ? preselectedUtxos : selectedUtxos;
-
             // check the UTXO
             // however, in case the coin control has not been enabled and the UTXO has been preselected, do not check it
+            const selectedUtxosOld = !isCoinControlEnabled ? preselectedUtxos : selectedUtxos;
             const selectedUtxosNew = preselectedUtxos.find(isSameUtxo)
                 ? preselectedUtxos
                 : [...selectedUtxosOld, utxo];
