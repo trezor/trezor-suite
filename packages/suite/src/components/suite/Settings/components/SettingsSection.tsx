@@ -51,14 +51,7 @@ export const SettingsSection = ({
                 {!title && customHeader}
                 {title && !customHeader && (
                     <Title>
-                        {icon && (
-                            <StyledIcon
-                                icon={icon}
-                                size={16}
-                                color={theme.TYPE_LIGHT_GREY}
-                                isHollow
-                            />
-                        )}
+                        {icon && <StyledIcon icon={icon} size={16} color={theme.TYPE_LIGHT_GREY} />}
                         {title}
                     </Title>
                 )}
