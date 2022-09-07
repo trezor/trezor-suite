@@ -1,8 +1,3 @@
-import pkg from '../package.json';
-
-// trim major version with dot "0.""
-export const VERSION = pkg.version.replace(/0./, '');
-
 export enum AppUpdateEventStatus {
     Available = 'available',
     Download = 'download',

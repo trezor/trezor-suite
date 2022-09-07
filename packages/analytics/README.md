@@ -20,13 +20,13 @@ List of available configured endpoints:
 
 Example URI:
 
-`https://data.trezor.io/suite/log/web/stable.log?c_v=1.8&c_type=transport-type&c_commit=4d09d88476dab2e6b2fbfb833b749e9ac62251c2&c_instance_id=qlT0xL2XKV&c_session_id=FZjilOYQic&c_timestamp=1624893047903&type=bridge&version=2.0.30`
+`https://data.trezor.io/suite/log/web/stable.log?c_v=1.8&c_type=transport-type&c_commit=4d09d88476dab2e6b2fbfb833b749e9ac62251c2&c_instance_id=qlT0xL2XKV&c_session_id=FZjilOYQic&c_timestamp=1624893047903&type=bridge&version=22.10.1`
 
 Which tracks:
 
 ```
 {
-  c_v: '1.18',
+  c_v: '22.10.1',
   c_type: 'transport-type',
   c_commit: '4d09d88476dab2e6b2fbfb833b749e9ac62251c2',
   c_instance_id: 'qlT0xL2XKV',

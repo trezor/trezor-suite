@@ -2,6 +2,10 @@
 
 This changelog lists changes in suite events.
 
+### 22.9.0
+
+-   use suite version for analytics versioning
+
 ### 1.23
 
 Added:
