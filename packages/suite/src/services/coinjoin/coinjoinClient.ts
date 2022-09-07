@@ -2,8 +2,8 @@ import { createIpcProxy } from '@trezor/ipc-proxy';
 import { CoinjoinClient } from '@trezor/coinjoin';
 import { isDesktop } from '@suite-utils/env';
 
-// const REGTEST_URL = 'https://coinjoin-dev.sldev.cz/'; // 'https://coinjoin.corp.sldev.cz/'; // 'http://localhost:8081/';
-const REGTEST_URL = 'https://coinjoin-dev.sldev.cz/'; // 'http://localhost:8081/';
+// const REGTEST_URL = 'https://dev-coinjoin.trezor.io/'; // 'https://coinjoin.corp.sldev.cz/'; // 'http://localhost:8081/';
+const REGTEST_URL = 'https://dev-coinjoin.trezor.io/'; // 'http://localhost:8081/';
 const COINJOIN_NETWORKS: Record<string, any> = {
     regtest: {
         network: 'regtest',
