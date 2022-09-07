@@ -4899,7 +4899,7 @@ export default defineMessages({
     },
     AMOUNT_SEND_MAX: {
         id: 'AMOUNT_SEND_MAX',
-        defaultMessage: 'Send Max',
+        defaultMessage: 'Send max',
     },
     AMOUNT_IS_NOT_ENOUGH: {
         defaultMessage: 'Not enough funds',
@@ -5225,7 +5225,7 @@ export default defineMessages({
     },
     TR_MISSING_TO_INPUT: {
         id: 'TR_MISSING_TO_INPUT',
-        defaultMessage: '{amount} missing to your input (excluding fee)',
+        defaultMessage: '{amount} missing from your input (excluding fee)',
         description: 'Info in Coin control section',
     },
     TR_MISSING_TO_FEE: {
@@ -5245,7 +5245,7 @@ export default defineMessages({
     },
     TR_DUST: {
         id: 'TR_DUST',
-        defaultMessage: 'Unspendable outpusts (dust)',
+        defaultMessage: 'Unspendable outputs (dust)',
         description: 'Heading in Coin control section',
     },
     TR_DUST_DESCRIPTION: {
