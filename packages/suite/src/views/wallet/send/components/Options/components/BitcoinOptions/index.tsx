@@ -150,29 +150,29 @@ export const BitcoinOptions = () => {
                         </StyledButton>
                     </Tooltip>
                     {!utxoSelectionEnabled && (
-                        // <Tooltip
-                        //     guideAnchor={instance => (
-                        //         <OpenGuideFromTooltip
-                        //             id="/suite-basics/send/coin-selection.md"
-                        //             instance={instance}
-                        //         />
-                        //     )}
-                        //     content={<span>Coin selection tooltip...</span>}
-                        //     cursor="pointer"
-                        // >
-                        <StyledButton
-                            variant="tertiary"
-                            icon="COIN_CONTROL"
-                            onClick={() => {
-                                // open additional form
-                                toggleOption('utxoSelection');
-                                composeTransaction();
-                            }}
+                        <Tooltip
+                            guideAnchor={instance => (
+                                <OpenGuideFromTooltip
+                                    id="/suite-basics/coin-control.md"
+                                    instance={instance}
+                                />
+                            )}
+                            content={<Translation id="TR_COIN_CONTROL_TOOLTIP" />}
+                            cursor="pointer"
                         >
-                            <Translation id="TR_COIN_CONTROL" />
-                            {isCoinControlEnabled && <OnOffSwitcher isOn />}
-                        </StyledButton>
-                        // </Tooltip>
+                            <StyledButton
+                                variant="tertiary"
+                                icon="COIN_CONTROL"
+                                onClick={() => {
+                                    // open additional form
+                                    toggleOption('utxoSelection');
+                                    composeTransaction();
+                                }}
+                            >
+                                <Translation id="TR_COIN_CONTROL" />
+                                {isCoinControlEnabled && <OnOffSwitcher isOn />}
+                            </StyledButton>
+                        </Tooltip>
                     )}
                 </Left>
                 <Right>

@@ -5207,6 +5207,12 @@ export default defineMessages({
         id: 'TR_COIN_CONTROL',
         defaultMessage: 'Coin control',
     },
+    TR_COIN_CONTROL_TOOLTIP: {
+        id: 'TR_COIN_CONTROL_TOOLTIP',
+        defaultMessage:
+            'Coin control enables manual selection of UTXOs to be used as inputs for a transaction.',
+        description: 'Tooltip on coin control button in send form.',
+    },
     TR_SELECTED: {
         id: 'TR_SELECTED',
         defaultMessage: '{amount} selected',
