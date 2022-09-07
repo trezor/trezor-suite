@@ -1,4 +1,17 @@
-export default [
+import type { DeepPartial } from '@trezor/type-utils';
+import type { AccountInfo, AccountInfoParams } from '../../../src/types';
+import type { AccountInfo as BlockbookAccountInfo } from '../../../src/types/blockbook';
+
+const fixtures: {
+    description: string;
+    params: AccountInfoParams;
+    serverFixtures: {
+        method: string;
+        response: { data: DeepPartial<BlockbookAccountInfo> | { error: any } };
+    }[];
+    response?: DeepPartial<AccountInfo>;
+    error?: string;
+}[] = [
     {
         description: 'With server error',
         params: {
@@ -128,6 +141,7 @@ export default [
                             'xpub6CVKsQYXc9b2MiuW1HisiJKCEyB8vSqEafi6CP6Qu96YABCKScWtm1gUko1yDRSdmPjYQ8eFUbc9qrvNxBTUq2Z19aenEmCFcUcFUJL1Wpu',
                         tokens: [
                             {
+                                // @ts-expect-error
                                 type: 'not-XPUBAddress',
                                 path: "m/44'/0'/100'/1/0",
                                 name: '1J8tVQD9KZZeLhnkMRHHDawsYmwjWAnC5d',
@@ -229,6 +243,7 @@ export default [
                                 {
                                     addresses: ['1J8tVQD9KZZeLhnkMRHHDawsYmwjWAnC5d'],
                                     value: '1',
+                                    isAccountOwned: true,
                                 },
                             ],
                             size: 4,
@@ -345,6 +360,7 @@ export default [
                                     addresses: ['1J8tVQD9KZZeLhnkMRHHDawsYmwjWAnC5d'],
                                     sequence: 4294967293,
                                     value: '100',
+                                    isAccountOwned: true,
                                 },
                             ],
                             vout: [
@@ -357,6 +373,7 @@ export default [
                                     addresses: ['1RXiBGixLSBRAAXtZMsCx75EuFqqJnmXZ'],
                                     value: '40',
                                     n: 0,
+                                    isAccountOwned: true,
                                 },
                             ],
                             size: 0,
@@ -512,6 +529,7 @@ export default [
                         address: '0x1e6E3708a059aEa1241a81c7aAe84b6CDbC54d59',
                         tokens: [
                             {
+                                // @ts-expect-error
                                 type: 'not-ERC20',
                                 path: "m/44'/0'/100'/1/0",
                                 name: '1J8tVQD9KZZeLhnkMRHHDawsYmwjWAnC5d',
@@ -576,6 +594,7 @@ export default [
                     data: {
                         address: '0xFc6B5d6af8A13258f7CbD0D39E11b35e01a32F93',
                         erc20Contract: {
+                            // @ts-expect-error
                             type: 'not-ERC20',
                         },
                     },
@@ -590,3 +609,5 @@ export default [
         },
     },
 ];
+
+export default fixtures;

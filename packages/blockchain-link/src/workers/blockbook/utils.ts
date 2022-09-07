@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { Addresses, filterTargets, sumVinVout, transformTarget } from '../utils';
+import { Addresses, filterTargets, enhanceVinVout, sumVinVout, transformTarget } from '../utils';
 import type {
     Utxo,
     Transaction,
@@ -88,7 +88,7 @@ export const transformTransaction = (
 ): Transaction => {
     // combine all addresses into array
     const myAddresses = addresses
-        ? addresses.change.concat(addresses.used, addresses.unused)
+        ? addresses.change.concat(addresses.used, addresses.unused).map(a => a.address)
         : [descriptor];
 
     const inputs = Array.isArray(tx.vin) ? tx.vin : [];
@@ -187,8 +187,8 @@ export const transformTransaction = (
         rbf,
         ethereumSpecific: tx.ethereumSpecific,
         details: {
-            vin: tx.vin,
-            vout: tx.vout,
+            vin: inputs.map(enhanceVinVout(myAddresses)),
+            vout: outputs.map(enhanceVinVout(myAddresses)),
             size: typeof tx.hex === 'string' ? tx.hex.length / 2 : 0,
             totalInput: totalInput.toString(),
             totalOutput: totalOutput.toString(),

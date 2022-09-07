@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { filterTargets, sumVinVout, transformTarget } from '../utils';
+import { enhanceVinVout, filterTargets, sumVinVout, transformTarget } from '../utils';
 import type {
     BlockfrostUtxos,
     BlockfrostTransaction,
@@ -177,7 +177,9 @@ export const transformTransaction = (
     blockfrostTxData: BlockfrostTransaction,
 ): Transaction => {
     const myAddresses = accountAddress
-        ? accountAddress.change.concat(accountAddress.used, accountAddress.unused)
+        ? accountAddress.change
+              .concat(accountAddress.used, accountAddress.unused)
+              .map(a => a.address)
         : [descriptor];
 
     let type: Transaction['type'];
@@ -272,8 +274,8 @@ export const transformTransaction = (
             deposit,
         },
         details: {
-            vin: inputs,
-            vout: outputs,
+            vin: inputs.map(enhanceVinVout(myAddresses)),
+            vout: outputs.map(enhanceVinVout(myAddresses)),
             size: blockfrostTxData.txData.size,
             totalInput: totalInput.toString(),
             totalOutput: totalOutput.toString(),
