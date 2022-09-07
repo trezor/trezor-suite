@@ -25,7 +25,6 @@ export const allowedDomains = [
     'trezor-cardano-mainnet.blockfrost.io',
     'trezor-cardano-testnet.blockfrost.io',
     'blockfrost.dev',
-    'coinjoin-dev.sldev.cz',
 ];
 
 export const cspRules = [
