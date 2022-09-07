@@ -5874,7 +5874,7 @@ export default defineMessages({
     },
     TR_SUITE_WEB_LANDING_WINDOWS_LABEL: {
         id: 'TR_SUITE_WEB_LANDING_WINDOWS_LABEL',
-        defaultMessage: 'Windows 10',
+        defaultMessage: 'Windows',
     },
     TR_SUITE_WEB_LANDING_MACOS_ARM64_LABEL: {
         id: 'TR_SUITE_WEB_LANDING_MACOS_ARM64_LABEL',
