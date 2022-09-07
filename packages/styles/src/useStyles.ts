@@ -7,6 +7,7 @@ import { Theme, NativeTheme } from '@trezor/theme';
 
 import { breakpointMediaQueries } from './breakpoints';
 import {
+    ColorTransformFunction,
     NativeStyle,
     NativeStyleObject,
     NativeStyleOrStylesParam,
@@ -21,13 +22,13 @@ import { mediaQueries } from './mediaQueries';
 import { useDirection } from './useDirection';
 
 const sharedUtils = {
-    darken,
+    darken: darken as ColorTransformFunction,
     getValueAndUnit,
-    lighten,
+    lighten: lighten as ColorTransformFunction,
     multiply,
     sum,
     negative,
-    transparentize,
+    transparentize: transparentize as ColorTransformFunction,
 };
 
 export const useStyles = () => {

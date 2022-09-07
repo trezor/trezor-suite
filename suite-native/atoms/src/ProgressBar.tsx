@@ -1,12 +1,13 @@
 import React from 'react';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { CSSColor } from '@trezor/theme';
 
 import { Box } from './Box';
 
 type ProgressBarProps = {
     value: number; // Percentage value
-    color: string;
+    color: CSSColor;
 };
 
 const PROGRESS_BAR_WIDTH = 82;
@@ -16,7 +17,7 @@ const progressBarStyle = prepareNativeStyle(utils => ({
     backgroundColor: utils.colors.gray200,
 }));
 
-const progressFillStyle = prepareNativeStyle<{ width: number; color: string }>(
+const progressFillStyle = prepareNativeStyle<{ width: number; color: CSSColor }>(
     (_, { width, color }) => ({
         width: (width / 100) * PROGRESS_BAR_WIDTH,
         height: 3,

@@ -2,6 +2,7 @@ import React from 'react';
 
 import { CryptoIcon, CryptoIconName } from '@trezor/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { CSSColor } from '@trezor/theme';
 
 import { Box } from './Box';
 import { Text } from './Text';
@@ -17,7 +18,7 @@ type AssetItemProps = {
 };
 
 // TODO this config should be in some shared package for constants etc
-export const assetColorConfig: Record<string, string> = {
+export const assetColorConfig: Record<string, CSSColor> = {
     BTC: '#F29937',
     ETH: '#454A75',
 };

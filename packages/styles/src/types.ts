@@ -1,12 +1,11 @@
 import type * as RN from 'react-native';
 
 import type * as CSS from 'csstype';
-import type { darken, lighten, transparentize } from 'polished';
 
 // TODO: In the future, we might want to move the `theme` to a standalone module and instead
 // use an ambient module declaration instead of importing it here, just like Emotion does.
 // https://emotion.sh/docs/typescript#define-a-theme
-import type { Theme, NativeTheme } from '@trezor/theme';
+import type { Theme, NativeTheme, CSSColor } from '@trezor/theme';
 
 import type { multiply, getValueAndUnit, sum, negative } from './utils';
 import type { mediaQueries } from './mediaQueries';
@@ -27,24 +26,24 @@ export interface DirectionUtils {
     isRtl: boolean;
 }
 
-export interface StyleUtils extends Theme, DirectionUtils {
-    breakpoints: BreakpointMediaQueries;
-    darken: typeof darken;
+export type ColorTransformFunction = (amount: string | number, color: CSSColor) => CSSColor;
+
+export interface UniversalStyleUtils extends DirectionUtils {
     getValueAndUnit: typeof getValueAndUnit;
-    lighten: typeof lighten;
-    media: typeof mediaQueries;
     multiply: typeof multiply;
     sum: typeof sum;
     negative: typeof negative;
-    transparentize: typeof transparentize;
+    darken: ColorTransformFunction;
+    lighten: ColorTransformFunction;
+    transparentize: ColorTransformFunction;
 }
 
-export interface NativeStyleUtils extends NativeTheme, DirectionUtils {
-    darken: typeof darken;
-    lighten: typeof lighten;
-    transparentize: typeof transparentize;
-    negative: typeof negative;
+export interface StyleUtils extends Theme, UniversalStyleUtils {
+    breakpoints: BreakpointMediaQueries;
+    media: typeof mediaQueries;
 }
+
+export interface NativeStyleUtils extends NativeTheme, UniversalStyleUtils {}
 
 export type PlainStyleObject = CSS.Properties<string | number>;
 
@@ -86,6 +85,15 @@ export type NativeStyleObject = RN.TextStyle &
     RN.ViewStyle &
     RN.ImageStyle & {
         extend?: ConditionalExtend<NativeStyleObject> | Array<ConditionalExtend<NativeStyleObject>>;
+    } & {
+        // More strict color type than default one, feel free to add more valid properties, only most used are here
+        backgroundColor?: CSSColor;
+        borderColor?: CSSColor;
+        borderBottomColor?: CSSColor;
+        borderLeftColor?: CSSColor;
+        borderRightColor?: CSSColor;
+        borderTopColor?: CSSColor;
+        color?: CSSColor;
     };
 
 export type Style<TProps extends object = object> = (

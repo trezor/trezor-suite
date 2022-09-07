@@ -1,10 +1,10 @@
 import React from 'react';
-import { ColorValue, TouchableOpacity, useColorScheme } from 'react-native';
+import { TouchableOpacity, useColorScheme } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { Box, Text } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { colorVariants, ThemeColorVariant } from '@trezor/theme';
+import { colorVariants, CSSColor, ThemeColorVariant } from '@trezor/theme';
 
 import { selectIsColorSchemeActive, setColorScheme, AppColorScheme } from '../slice';
 
@@ -25,7 +25,7 @@ const pickerItemWrapperStyle = prepareNativeStyle<{ isColorSchemeActive: boolean
 );
 
 type PickerItemDotStyleProps = {
-    backgroundColor: ColorValue;
+    backgroundColor: CSSColor;
     isFirstItem: boolean;
 };
 const pickerItemDotStyle = prepareNativeStyle<PickerItemDotStyleProps>(

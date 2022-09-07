@@ -1,3 +1,5 @@
+import { CSSColor } from './types';
+
 export const boxShadows = {
     small: '0px 2px 4px rgba(0, 0, 0, 0.04)',
     // TODO: next shadows needs to be defined
@@ -10,7 +12,7 @@ export type BoxShadows = typeof boxShadows;
 
 interface NativeBoxShadowDefinition {
     elevation: number;
-    shadowColor: string;
+    shadowColor: CSSColor;
     shadowOffset: {
         height: number;
         width: number;
@@ -22,7 +24,7 @@ interface NativeBoxShadowDefinition {
 export const nativeBoxShadows: Record<string, NativeBoxShadowDefinition> = {
     small: {
         elevation: 4,
-        shadowColor: '#rgba(0, 0, 0, 0.04)',
+        shadowColor: 'rgba(0, 0, 0, 0.04)',
         shadowOffset: {
             height: 0,
             width: 0,
@@ -33,7 +35,7 @@ export const nativeBoxShadows: Record<string, NativeBoxShadowDefinition> = {
     // TODO: next shadows needs to be defined
     medium: {
         elevation: 4,
-        shadowColor: '#rgba(0, 0, 0, 0.04)',
+        shadowColor: 'rgba(0, 0, 0, 0.04)',
         shadowOffset: {
             height: 0,
             width: 0,
@@ -43,7 +45,7 @@ export const nativeBoxShadows: Record<string, NativeBoxShadowDefinition> = {
     },
     big: {
         elevation: 4,
-        shadowColor: '#rgba(0, 0, 0, 0.04)',
+        shadowColor: 'rgba(0, 0, 0, 0.04)',
         shadowOffset: {
             height: 0,
             width: 0,
