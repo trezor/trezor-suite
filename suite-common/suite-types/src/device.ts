@@ -62,4 +62,13 @@ export type UnknownDevice = UnknownDeviceBase & ExtendedDevice;
 
 export type UnreadableDevice = UnreadableDeviceBase & ExtendedDevice;
 
-export type TrezorDevice = AcquiredDevice | UnknownDevice | UnreadableDevice;
+export type ImportedDevice = {
+    type: 'imported';
+    id: string | null;
+    label: string;
+    status: 'available';
+    mode: 'normal';
+    state?: string;
+} & Pick<ExtendedDevice, 'remember' | 'connected'>;
+
+export type TrezorDevice = AcquiredDevice | UnknownDevice | UnreadableDevice | ImportedDevice;

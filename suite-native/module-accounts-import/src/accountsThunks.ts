@@ -33,6 +33,8 @@ export const importAccountThunk = createThunk(
                     mode: 'normal',
                     state: deviceState,
                     label: deviceTitle,
+                    remember: true,
+                    connected: false,
                 }),
             );
         }

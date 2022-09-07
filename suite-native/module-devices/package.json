@@ -13,6 +13,7 @@
     },
     "dependencies": {
         "@reduxjs/toolkit": "^1.8.3",
+        "@suite-common/suite-types": "*",
         "react": "^17.0.2",
         "react-native": "0.68.2"
     },

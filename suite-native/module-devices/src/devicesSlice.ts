@@ -1,18 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
+import { TrezorDevice } from '@suite-common/suite-types';
+
 export const actionPrefix = '@devices';
 
-// FIXME: fix in a follow up task with regular imported type from TrezorDevice
-type DummyImportedDevice = {
-    type: 'imported';
-    id: string | null;
-    label: string;
-    status: 'available';
-    mode: 'normal';
-    state?: string;
-};
-
-export type DevicesState = DummyImportedDevice[];
+export type DevicesState = TrezorDevice[];
 
 const initialState: DevicesState = [];
 
@@ -24,7 +16,7 @@ const devicesSlice = createSlice({
     name: actionPrefix,
     initialState,
     reducers: {
-        createDevice: (state, action: PayloadAction<DummyImportedDevice>) => {
+        createDevice: (state, action: PayloadAction<TrezorDevice>) => {
             state.push(action.payload);
         },
     },
