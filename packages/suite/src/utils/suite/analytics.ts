@@ -38,7 +38,9 @@ export const hasUserAllowedTracking = (
 export const getSuiteReadyPayload = (state: AppState) => ({
     language: state.suite.settings.language,
     enabledNetworks: state.wallet.settings.enabledNetworks,
-    customBackends: getCustomBackends(state.wallet.blockchain).map(({ coin }) => coin),
+    customBackends: getCustomBackends(state.wallet.blockchain)
+        .map(({ coin }) => coin)
+        .filter(coin => state.wallet.settings.enabledNetworks.includes(coin)),
     localCurrency: state.wallet.settings.localCurrency,
     bitcoinUnit: UNIT_ABBREVIATIONS[state.wallet.settings.bitcoinAmountUnit],
     discreetMode: state.wallet.settings.discreetMode,
