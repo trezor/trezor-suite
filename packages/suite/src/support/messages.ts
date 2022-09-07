@@ -4899,7 +4899,7 @@ export default defineMessages({
     },
     AMOUNT_SEND_MAX: {
         id: 'AMOUNT_SEND_MAX',
-        defaultMessage: 'Send max',
+        defaultMessage: 'Send Max',
     },
     AMOUNT_IS_NOT_ENOUGH: {
         defaultMessage: 'Not enough funds',
@@ -6864,7 +6864,7 @@ export default defineMessages({
     },
     TR_FIRMWARE_CHECK_AUTHENTICITY_SUCCESS: {
         id: 'TR_FIRMWARE_CHECK_AUTHENTICITY_SUCCESS',
-        defaultMessage: 'Firmware authenthic',
+        defaultMessage: 'Firmware authentic',
     },
     TR_FEE_ROUNDING_WARNING: {
         id: 'TR_FEE_ROUNDING_WARNING',
