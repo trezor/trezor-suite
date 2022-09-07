@@ -27,6 +27,11 @@ const Wrapper = styled.div`
     .recharts-wrapper .recharts-cartesian-grid-horizontal line:last-child {
         stroke-opacity: 0;
     }
+
+    /* hides circle dot in case only one month is displayed */
+    .recharts-dot.recharts-line-dot {
+        display: none;
+    }
 `;
 
 const Toolbar = styled.div`
