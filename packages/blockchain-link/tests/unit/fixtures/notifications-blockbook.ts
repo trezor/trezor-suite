@@ -147,7 +147,7 @@ const notifyAddresses = [
                 type: 'sent',
                 targets: [{ addresses: ['B'], n: 0 }],
                 details: {
-                    vin: [{ addresses: ['A'] }],
+                    vin: [{ addresses: ['A'], isAccountOwned: true }],
                     vout: [{ addresses: ['B'] }],
                     size: 0,
                     totalInput: '0',
@@ -181,7 +181,7 @@ const notifyAddresses = [
                 targets: [{ addresses: ['A'], amount: '50', isAccountTarget: true, n: 1 }],
                 details: {
                     vin: [{ addresses: ['B'], value: '100' }],
-                    vout: [{ addresses: ['A'], value: '50', n: 1 }],
+                    vout: [{ addresses: ['A'], value: '50', n: 1, isAccountOwned: true }],
                     size: 0,
                     totalInput: '100',
                     totalOutput: '50',
@@ -212,8 +212,8 @@ const notifyAddresses = [
                 type: 'self',
                 targets: [{ addresses: ['A'], isAccountTarget: true, n: 0 }],
                 details: {
-                    vin: [{ addresses: ['A'] }],
-                    vout: [{ addresses: ['A'] }],
+                    vin: [{ addresses: ['A'], isAccountOwned: true }],
+                    vout: [{ addresses: ['A'], isAccountOwned: true }],
                     size: 0,
                     totalInput: '0',
                     totalOutput: '0',
@@ -257,10 +257,10 @@ const notifyAddresses = [
                 type: 'sent',
                 targets: [{ addresses: ['A'], amount: '40', n: 0 }],
                 details: {
-                    vin: [{ addresses: ['B'], value: '100' }],
+                    vin: [{ addresses: ['B'], value: '100', isAccountOwned: true }],
                     vout: [
                         { addresses: ['A'], value: '40' },
-                        { addresses: ['B-change'], value: '40' },
+                        { addresses: ['B-change'], value: '40', isAccountOwned: true },
                     ],
                     size: 0,
                     totalInput: '100',
@@ -299,7 +299,7 @@ const notifyAddresses = [
                 targets: [{ addresses: ['B'], amount: '50', isAccountTarget: true, n: 0 }],
                 details: {
                     vin: [{ addresses: ['A'], value: '100' }],
-                    vout: [{ addresses: ['B'], value: '50' }],
+                    vout: [{ addresses: ['B'], value: '50', isAccountOwned: true }],
                     size: 0,
                     totalInput: '100',
                     totalOutput: '50',
@@ -331,7 +331,7 @@ const notifyAddresses = [
                 amount: '0',
                 targets: [{ addresses: ['0x1'], n: 0 }],
                 details: {
-                    vin: [{ addresses: ['0x0'] }],
+                    vin: [{ addresses: ['0x0'], isAccountOwned: true }],
                     vout: [{ addresses: ['0x1'] }],
                     size: 0,
                     totalInput: '0',
@@ -392,8 +392,11 @@ const notifyAddresses = [
                 type: 'self',
                 targets: [{ addresses: ['D'], isAccountTarget: true, n: 0 }],
                 details: {
-                    vin: [{ addresses: ['B'] }, { addresses: ['C'] }],
-                    vout: [{ addresses: ['D'] }],
+                    vin: [
+                        { addresses: ['B'], isAccountOwned: true },
+                        { addresses: ['C'], isAccountOwned: true },
+                    ],
+                    vout: [{ addresses: ['D'], isAccountOwned: true }],
                     size: 0,
                     totalInput: '0',
                     totalOutput: '0',
@@ -423,6 +426,8 @@ const notifyAddresses = [
                     size: 0,
                     totalInput: '0',
                     totalOutput: '0',
+                    vin: [],
+                    vout: [],
                 },
             },
         },

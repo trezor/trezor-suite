@@ -449,6 +449,7 @@ export default {
                                         ],
                                         isAddress: true,
                                         value: '25179197',
+                                        isAccountOwned: true,
                                     },
                                 ],
                                 vout: [
@@ -459,6 +460,7 @@ export default {
                                         ],
                                         isAddress: true,
                                         value: '25737997',
+                                        isAccountOwned: true,
                                     },
                                 ],
                                 size: 357,

@@ -1,3 +1,7 @@
+import type { DeepPartial } from '@trezor/type-utils';
+import type { AccountAddresses, Transaction } from '../../../src/types';
+import type { Transaction as BlockbookTransaction } from '../../../src/types/blockbook';
+
 const token = {
     address: undefined,
     amount: undefined,
@@ -245,13 +249,19 @@ export const filterTokenTransfers = [
     },
 ];
 
-export const transformTransaction = [
+export const transformTransaction: {
+    description: string;
+    descriptor: string;
+    addresses?: DeepPartial<AccountAddresses>;
+    tx: DeepPartial<BlockbookTransaction>;
+    parsed: DeepPartial<Transaction>;
+}[] = [
     {
         description: 'BTC: recv from one input to unused address',
         descriptor: 'xpub',
         addresses: {
             used: [],
-            unused: ['A'],
+            unused: [{ address: 'A' }],
             change: [],
         },
         tx: {
@@ -287,7 +297,7 @@ export const transformTransaction = [
         description: 'BTC: recv from one input to used address',
         descriptor: 'xpub',
         addresses: {
-            used: ['A'],
+            used: [{ address: 'A' }],
             unused: [],
             change: [],
         },
@@ -326,7 +336,7 @@ export const transformTransaction = [
         addresses: {
             used: [],
             unused: [],
-            change: ['A'],
+            change: [{ address: 'A' }],
         },
         tx: {
             vin: [
@@ -361,8 +371,8 @@ export const transformTransaction = [
         description: 'BTC: recv from 2 inputs to multiple addresses',
         descriptor: 'xpub',
         addresses: {
-            used: ['A', 'B'],
-            unused: ['C', 'D'],
+            used: [{ address: 'A' }, { address: 'B' }],
+            unused: [{ address: 'C' }, { address: 'D' }],
             change: [],
         },
         tx: {
@@ -444,9 +454,9 @@ export const transformTransaction = [
         description: 'recv coinbase with multiple addresses',
         descriptor: 'xpub',
         addresses: {
-            used: ['utxo'],
-            unused: ['A', 'D', 'E'],
-            change: ['change'],
+            used: [{ address: 'utxo' }],
+            unused: [{ address: 'A' }, { address: 'D' }, { address: 'E' }],
+            change: [{ address: 'change' }],
         },
         tx: {
             vin: [
@@ -548,6 +558,7 @@ export const transformTransaction = [
         description: 'recv with no input (vin is invalid type)',
         descriptor: 'A',
         tx: {
+            // @ts-expect-error
             vin: 1,
             vout: [
                 {
@@ -568,6 +579,7 @@ export const transformTransaction = [
         description: 'recv with no input (vin item is invalid type)',
         descriptor: 'A',
         tx: {
+            // @ts-expect-error
             vin: [1],
             vout: [
                 {
@@ -588,9 +600,9 @@ export const transformTransaction = [
         description: 'BTC: sent to one address with change',
         descriptor: 'xpub',
         addresses: {
-            used: ['A'],
+            used: [{ address: 'A' }],
             unused: [],
-            change: ['A-change'],
+            change: [{ address: 'A-change' }],
         },
         tx: {
             vin: [
@@ -625,9 +637,9 @@ export const transformTransaction = [
         description: 'BTC: sent to multiple addresses with change',
         descriptor: 'xpub',
         addresses: {
-            used: ['A'],
-            unused: ['A2'],
-            change: ['A-change'],
+            used: [{ address: 'A' }],
+            unused: [{ address: 'A2' }],
+            change: [{ address: 'A-change' }],
         },
         tx: {
             vin: [
@@ -669,9 +681,9 @@ export const transformTransaction = [
         description: 'BTC: sent to myself (1 input, 1 change output)',
         descriptor: 'xpub',
         addresses: {
-            used: ['utxo'],
+            used: [{ address: 'utxo' }],
             unused: [],
-            change: ['change'],
+            change: [{ address: 'change' }],
         },
         tx: {
             vin: [
@@ -713,7 +725,7 @@ export const transformTransaction = [
                 status: 1,
                 gasLimit: 21000,
                 gasUsed: 21000,
-                gasPrice: 3,
+                gasPrice: '3',
             },
             ...FEES,
         },
@@ -764,9 +776,9 @@ export const transformTransaction = [
         description: 'sent OP_RETURN with change',
         descriptor: 'A',
         addresses: {
-            used: ['utxo'],
+            used: [{ address: 'utxo' }],
             unused: [],
-            change: ['change'],
+            change: [{ address: 'change' }],
         },
         tx: {
             vin: [
@@ -800,9 +812,9 @@ export const transformTransaction = [
         description: 'sent without output',
         descriptor: 'utxo',
         addresses: {
-            used: ['utxo'],
+            used: [{ address: 'utxo' }],
             unused: [],
-            change: ['change'],
+            change: [{ address: 'change' }],
         },
         tx: {
             vin: [
