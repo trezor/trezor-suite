@@ -9,6 +9,7 @@ import {
     GuideCategory,
     MessageSystem,
     Action,
+    ImportedDevice,
 } from '@suite-common/suite-types';
 import {
     Account,
@@ -186,7 +187,19 @@ const getConnectDevice = (dev?: Partial<Device>, feat?: Partial<Features>): Devi
  * @returns {TrezorDevice}
  */
 const getSuiteDevice = (dev?: Partial<TrezorDevice>, feat?: Partial<Features>): TrezorDevice => {
-    const device = getConnectDevice(dev, feat);
+    if (dev && typeof dev.type === 'string' && dev.type === 'imported') {
+        return {
+            id: 'importedDeviceId',
+            path: '1',
+            label: 'Imported Device',
+            status: 'available',
+            mode: 'normal',
+            remember: true,
+            connected: false,
+            ...dev,
+        } as ImportedDevice;
+    }
+    const device = getConnectDevice(dev as Device, feat);
     if (device.type === 'acquired') {
         return {
             useEmptyPassphrase: true,

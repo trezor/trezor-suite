@@ -65,6 +65,8 @@ export type UnreadableDevice = UnreadableDeviceBase & ExtendedDevice;
 export type ImportedDevice = {
     type: 'imported';
     id: string | null;
+    path: '1';
+    features?: typeof undefined;
     label: string;
     status: 'available';
     mode: 'normal';
