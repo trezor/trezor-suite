@@ -163,7 +163,6 @@
   "TR_UPDATE_MODAL_AVAILABLE_HEADING": "التحديث متوفر",
   "TR_UPDATE_MODAL_DOWNLOADING_UPDATE": "جاري تحميل التحديث..",
   "TR_UPDATE_MODAL_INSTALL_AND_RESTART": "إعادة التشغيل والتحديث",
-  "TR_UPDATE_MODAL_INSTALL_LATER": "تحديث عند الإطلاق التالي",
   "TR_UPDATE_MODAL_INSTALL_NOW_OR_LATER": "هل ترغب في تثبيت التحديث الآن؟",
   "TR_UPDATE_MODAL_RESTART_NEEDED": "هذا يتطلب إعادة تشغيل البرنامج.",
   "TR_UPDATE_MODAL_START_DOWNLOAD": "ابدا في التحديث",

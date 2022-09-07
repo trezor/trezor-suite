@@ -790,7 +790,6 @@
   "TR_UPDATE_MODAL_AVAILABLE_HEADING": "K dispozícii je aktualizácia",
   "TR_UPDATE_MODAL_DOWNLOADING_UPDATE": "Sťahuje sa aktualizácia...",
   "TR_UPDATE_MODAL_INSTALL_AND_RESTART": "Reštartovať a aktualizovať",
-  "TR_UPDATE_MODAL_INSTALL_LATER": "Aktualizovať pri ďalšom spustení",
   "TR_UPDATE_MODAL_INSTALL_NOW_OR_LATER": "Chcete si teraz nainštalovať aktualizáciu?",
   "TR_UPDATE_MODAL_NOT_NOW": "Teraz nie",
   "TR_UPDATE_MODAL_RESTART_NEEDED": "To si vyžaduje reštartovanie súpravy Suite.",

@@ -1422,7 +1422,6 @@
   "TR_UPDATE_MODAL_AVAILABLE_HEADING": "Atualização disponível",
   "TR_UPDATE_MODAL_DOWNLOADING_UPDATE": "Download de atualização",
   "TR_UPDATE_MODAL_INSTALL_AND_RESTART": "Reinicie",
-  "TR_UPDATE_MODAL_INSTALL_LATER": "Atualização no próximo lançamento",
   "TR_UPDATE_MODAL_INSTALL_NOW_OR_LATER": "Gostaria de instalar a atualização agora?",
   "TR_UPDATE_MODAL_NOT_NOW": "Agora não.",
   "TR_UPDATE_MODAL_RESTART_NEEDED": "Isto requer reiniciar a Suite.",

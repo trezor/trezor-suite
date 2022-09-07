@@ -1073,7 +1073,6 @@
   "TR_UPDATE_MODAL_AVAILABLE_HEADING": "Mise à jour disponible",
   "TR_UPDATE_MODAL_DOWNLOADING_UPDATE": "Téléchargement de la mise à jour",
   "TR_UPDATE_MODAL_INSTALL_AND_RESTART": "Redémarrer et mettre à jour",
-  "TR_UPDATE_MODAL_INSTALL_LATER": "Mise à jour au prochain lancement",
   "TR_UPDATE_MODAL_INSTALL_NOW_OR_LATER": "Voulez-vous installer la mise à jour maintenant?",
   "TR_UPDATE_MODAL_RESTART_NEEDED": "Cela nécessite un redémarrage de Suite.",
   "TR_UPDATE_MODAL_START_DOWNLOAD": "Lancer la mise à jour",

@@ -1448,7 +1448,6 @@
   "TR_UPDATE_MODAL_AVAILABLE_HEADING": "Frissítés érhető el",
   "TR_UPDATE_MODAL_DOWNLOADING_UPDATE": "Frissítés letöltése",
   "TR_UPDATE_MODAL_INSTALL_AND_RESTART": "Újraindítás és frissítés",
-  "TR_UPDATE_MODAL_INSTALL_LATER": "Frissítés a következő indításkor",
   "TR_UPDATE_MODAL_INSTALL_NOW_OR_LATER": "Szeretnéd a frissítést most telepíteni?",
   "TR_UPDATE_MODAL_NOT_NOW": "Később",
   "TR_UPDATE_MODAL_RESTART_NEEDED": "Ehhez újra kell indítanod a Suite-et.",
