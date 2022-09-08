@@ -195,7 +195,6 @@ export const getApplicationInfo = (state: AppState, hideSensitiveInfo: boolean) 
     sessionId: hideSensitiveInfo ? REDACTED_REPLACEMENT : state.analytics.sessionId,
     transport: state.suite.transport?.type,
     transportVersion: state.suite.transport?.version,
-    wallets: state.devices.length,
     rememberedStandardWallets: state.devices.filter(d => d.remember && d.useEmptyPassphrase).length,
     rememberedHiddenWallets: state.devices.filter(d => d.remember && !d.useEmptyPassphrase).length,
     enabledNetworks: state.wallet.settings.enabledNetworks,
@@ -209,11 +208,31 @@ export const getApplicationInfo = (state: AppState, hideSensitiveInfo: boolean) 
             id: hideSensitiveInfo ? REDACTED_REPLACEMENT : device.id,
             label: hideSensitiveInfo ? REDACTED_REPLACEMENT : device.label,
             mode: device.mode,
+            connected: device.connected,
+            passphraseProtection: device.features?.passphrase_protection,
             model: getDeviceModel(device),
             firmware: device.features ? getFwVersion(device) : '',
             firmwareRevision: device.features ? getFwRevision(device) : '',
             firmwareType: device.features ? getFwType(device) : '',
             bootloader: device.features ? getBootloaderVersion(device) : '',
             bootloaderHash: device.features ? getBootloaderHash(device) : '',
+            numberOfWallets:
+                device.mode !== 'bootloader'
+                    ? state.devices.filter(d => d.id === device.id).length
+                    : 1,
         })),
+    wallets: state.devices.map(device => ({
+        deviceId: hideSensitiveInfo ? REDACTED_REPLACEMENT : device.id,
+        deviceLabel: hideSensitiveInfo ? REDACTED_REPLACEMENT : device.label,
+        label:
+            // eslint-disable-next-line no-nested-ternary
+            device.metadata.status === 'enabled'
+                ? hideSensitiveInfo
+                    ? REDACTED_REPLACEMENT
+                    : device.metadata.walletLabel
+                : '',
+        connected: device.connected,
+        remember: device.remember,
+        useEmptyPassphrase: hideSensitiveInfo ? REDACTED_REPLACEMENT : device.useEmptyPassphrase,
+    })),
 });
