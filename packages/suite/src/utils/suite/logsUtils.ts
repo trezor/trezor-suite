@@ -19,7 +19,6 @@ import {
 import { getIsTorEnabled } from '@suite-utils/tor';
 import { DeepPartial } from '@trezor/type-utils';
 import { accountsActions } from '@suite-common/wallet-core';
-import { isAnyOf } from '@reduxjs/toolkit';
 import {
     getBootloaderHash,
     getBootloaderVersion,
@@ -101,20 +100,19 @@ export const redactDevice = (device: DeepPartial<Device> | undefined) => {
 export const redactAction = (action: LogEntry) => {
     let payload;
 
-    if (isAnyOf(accountsActions.createAccount, accountsActions.updateAccount)(action)) {
-        payload = redactAccount(action.payload);
-    }
-
-    if (accountsActions.updateSelectedAccount.match(action)) {
-        payload = {
-            ...action.payload,
-            account: redactAccount(action.payload?.account),
-            network: undefined,
-            discovery: undefined,
-        };
-    }
-
     switch (action.type) {
+        case accountsActions.updateSelectedAccount.type:
+            payload = {
+                ...action.payload,
+                account: redactAccount(action.payload?.account),
+                network: undefined,
+                discovery: undefined,
+            };
+            break;
+        case accountsActions.createAccount.type:
+        case accountsActions.updateAccount.type:
+            payload = redactAccount(action.payload);
+            break;
         case SUITE.AUTH_DEVICE:
             payload = {
                 state: REDACTED_REPLACEMENT,
