@@ -1,3 +1,10 @@
+// if custom build is used, we ignore firmware version numbers
+const customFirmwareBuild =
+    process.env.TESTS_CUSTOM_FIRMWARE_BUILD ||
+    process.env.TESTS_FIRMWARE?.includes('master') ||
+    // integration tests in trezor-firmware repo use 2.99.99 version
+    process.env.TESTS_FIRMWARE === '2.99.99';
+
 export default {
     method: 'checkFirmwareAuthenticity',
     setup: {
@@ -15,7 +22,7 @@ export default {
             },
             legacyResults: [
                 {
-                    rules: ['<2.5.1'],
+                    rules: [customFirmwareBuild ? '<2.99.99' : '<2.5.1'],
                     success: false,
                 },
             ],
