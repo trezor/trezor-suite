@@ -103,7 +103,13 @@ const log =
             case DISCOVERY.COMPLETE:
             case SUITE.UPDATE_SELECTED_DEVICE:
             case SUITE.REMEMBER_DEVICE:
-                api.dispatch(logActions.addAction(action, { ...action.payload }));
+                api.dispatch(
+                    logActions.addAction(action, {
+                        ...action.payload,
+                        firmwareRelease: undefined,
+                        unavailableCapabilities: undefined,
+                    }),
+                );
                 break;
             case METADATA.SET_PROVIDER:
                 api.dispatch(
