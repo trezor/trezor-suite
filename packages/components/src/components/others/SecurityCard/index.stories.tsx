@@ -34,7 +34,7 @@ storiesOf('Others', module).add('Security Card', () => (
             description="PIN Set strong PIN number against unauthorized access. PIN Set strong PIN number against unauthorized access"
             variant="primary"
             heading="PIN"
-            icon="MEDIUM"
+            icon="LIGHTBULB"
             cta={{ label: 'set pin' }}
         />
         <StyledSecurityCard
@@ -47,7 +47,7 @@ storiesOf('Others', module).add('Security Card', () => (
             description="PIN Set strong PIN number against unauthorized access"
             variant="primary"
             heading="PIN code created succesfully!"
-            icon="EXCHANGE"
+            icon="PIN"
             cta={{ label: 'view something' }}
         />
     </Wrapper>
