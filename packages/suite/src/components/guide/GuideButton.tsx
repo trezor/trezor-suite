@@ -1,8 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { variables } from '@trezor/components';
-import { resolveStaticPath } from '@trezor/utils';
+import { Icon, variables } from '@trezor/components';
 import { useGuide } from '@guide-hooks';
 import { FreeFocusInside } from 'react-focus-lock';
 
@@ -40,12 +39,7 @@ export const GuideButton = () => {
     return (
         <FreeFocusInside>
             <Wrapper data-test="@guide/button-open" onClick={openGuide} $isGuideOpen={isGuideOpen}>
-                <img
-                    src={resolveStaticPath('/images/suite/lightbulb.svg')}
-                    width="18"
-                    height="18"
-                    alt=""
-                />
+                <Icon size={18} icon="LIGHTBULB" />
             </Wrapper>
         </FreeFocusInside>
     );
