@@ -28,10 +28,19 @@ export const useUtxoSelection = ({
     const isCoinControlEnabled = watch('isCoinControlEnabled');
 
     // manually selected UTXOs
-    const selectedUtxos: AccountUtxo[] = watch('selectedUtxos') || [];
+    const selectedUtxos: AccountUtxo[] = useMemo(() => watch('selectedUtxos') || [], [watch]);
 
     // fee level
     const selectedFee = watch('selectedFee');
+
+    // is the UTXO manually selected?
+    const isSelected = useCallback(
+        (utxo: AccountUtxo) =>
+            selectedUtxos.some(
+                selected => selected.txid === utxo.txid && selected.vout === utxo.vout,
+            ),
+        [selectedUtxos],
+    );
 
     // split all UTXOs into two arrays based on their value to separate UTXOs that do not excceed the dust limit
     const [spendableUtxos, dustUtxos]: [AccountUtxo[], AccountUtxo[]] = account.utxo
@@ -45,9 +54,7 @@ export const useUtxoSelection = ({
         : [[], []];
 
     // are all available UTXOs selected in the form?
-    const allUtxosSelected =
-        !!selectedUtxos.length && selectedUtxos.length === spendableUtxos.length;
-
+    const allUtxosSelected = !!selectedUtxos.length && spendableUtxos.every(isSelected);
     // transaction composed for the fee level chosen by the user
     const composedLevel = composedLevels?.[selectedFee || 'normal'];
 
@@ -70,16 +77,16 @@ export const useUtxoSelection = ({
         [account.utxo, composedInputs],
     );
 
-    // uncheck all UTXOs or check all and enable coin control
+    // uncheck all UTXOs or check all spendable UTXOs and enable coin control
     const toggleCheckAllUtxos = useCallback(() => {
         if (allUtxosSelected) {
             setValue('selectedUtxos', []);
         } else {
-            setValue('selectedUtxos', spendableUtxos);
+            setValue('selectedUtxos', [...dustUtxos.filter(isSelected), ...spendableUtxos]);
             setValue('isCoinControlEnabled', true);
         }
         composeRequest();
-    }, [allUtxosSelected, spendableUtxos, setValue, composeRequest]);
+    }, [allUtxosSelected, dustUtxos, isSelected, spendableUtxos, setValue, composeRequest]);
 
     // enable coin control or disable it and reset selected UTXOs
     const toggleCoinControl = () => {
@@ -103,7 +110,7 @@ export const useUtxoSelection = ({
             // check the UTXO
             // however, in case the coin control has not been enabled and the UTXO has been preselected, do not check it
             const selectedUtxosOld = !isCoinControlEnabled ? preselectedUtxos : selectedUtxos;
-            const selectedUtxosNew = preselectedUtxos.find(isSameUtxo)
+            const selectedUtxosNew = preselectedUtxos.some(isSameUtxo)
                 ? preselectedUtxos
                 : [...selectedUtxosOld, utxo];
 
