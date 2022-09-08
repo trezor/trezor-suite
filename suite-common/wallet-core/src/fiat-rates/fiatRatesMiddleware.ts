@@ -1,4 +1,5 @@
 import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
+import { BLOCKCHAIN as TREZOR_CONNECT_BLOCKCHAIN_ACTIONS } from '@trezor/connect';
 
 import { transactionsActions } from '../transactions/transactionsActions';
 import { accountsActions } from '../accounts/accountsActions';
@@ -9,6 +10,7 @@ import {
     initFiatRatesThunk,
     updateLastWeekFiatRatesThunk,
     updateTxsFiatRatesThunk,
+    onUpdateFiatRateThunk,
 } from './fiatRatesThunks';
 import { blockchainActions } from '../blockchain/blockchainActions';
 
@@ -89,6 +91,10 @@ export const prepareFiatRatesMiddleware = createMiddlewareWithExtraDeps(
 
         if (blockchainActions.connected.match(action)) {
             dispatch(initFiatRatesThunk(action.payload));
+        }
+
+        if (action.type === TREZOR_CONNECT_BLOCKCHAIN_ACTIONS.FIAT_RATES_UPDATE) {
+            dispatch(onUpdateFiatRateThunk(action.payload));
         }
 
         return next(action);
