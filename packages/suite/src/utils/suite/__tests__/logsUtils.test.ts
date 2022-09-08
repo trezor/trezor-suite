@@ -46,6 +46,7 @@ describe('logsUtils', () => {
                 label: REDACTED_REPLACEMENT,
                 firmwareRelease: REDACTED_REPLACEMENT,
                 state: REDACTED_REPLACEMENT,
+                metadata: REDACTED_REPLACEMENT,
                 features: {
                     ...device.features,
                     device_id: REDACTED_REPLACEMENT,
