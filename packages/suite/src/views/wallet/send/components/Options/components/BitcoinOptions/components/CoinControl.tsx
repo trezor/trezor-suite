@@ -110,14 +110,16 @@ export const CoinControl = ({ close }: Props) => {
     const formattedTotal = getFormattedAmount(totalInputs);
     const formattedMissing = getFormattedAmount(missingToInput);
     const isMissingToAmount = missingToInput > 0;
+    const missingAmountTooBig = missingToInput > Number.MAX_SAFE_INTEGER;
+    const notEnougFundsSelected = !!errors.outputs?.some(
+        error =>
+            ((error?.amount as TypedFieldError)?.message as ExtendedMessageDescriptor)?.id ===
+            'TR_NOT_ENOUGH_SELECTED',
+    );
     const isMissingVisible =
         isCoinControlEnabled &&
-        (isMissingToAmount ||
-            !!errors.outputs?.some(
-                error =>
-                    ((error?.amount as TypedFieldError)?.message as ExtendedMessageDescriptor)
-                        ?.id === 'TR_NOT_ENOUGH_SELECTED',
-            ));
+        !missingAmountTooBig &&
+        (isMissingToAmount || notEnougFundsSelected);
     const missingToInputId = isMissingToAmount ? 'TR_MISSING_TO_INPUT' : 'TR_MISSING_TO_FEE';
 
     // pagination
