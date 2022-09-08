@@ -6,7 +6,7 @@ import {
     fetchLastWeekFiatRates,
     getFiatRatesForTimestamps,
 } from '@suite-common/fiat-services';
-import TrezorConnect, { AccountTransaction } from '@trezor/connect';
+import TrezorConnect, { AccountTransaction, BlockchainFiatRatesUpdate } from '@trezor/connect';
 import { createThunk } from '@suite-common/redux-utils';
 import { NetworkSymbol, networksCompatibility as NETWORKS } from '@suite-common/wallet-config';
 import { Account, CoinFiatRates, TickerId } from '@suite-common/wallet-types';
@@ -217,6 +217,26 @@ export const updateStaleFiatRatesThunk = createThunk(
             // dispatch({ type: '@rate/error', payload: error.message });
             console.error(error);
         }
+    },
+);
+
+export const onUpdateFiatRateThunk = createThunk(
+    `${actionPrefix}/onUpdateFiatRate`,
+    (res: BlockchainFiatRatesUpdate, { dispatch }) => {
+        if (!res?.rates) return;
+        const symbol = res.coin.shortcut.toLowerCase();
+        dispatch(
+            fiatRatesActions.updateFiatRate({
+                ticker: {
+                    symbol,
+                },
+                payload: {
+                    ts: getUnixTime(new Date()) * 1000,
+                    rates: res.rates,
+                    symbol,
+                },
+            }),
+        );
     },
 );
 
