@@ -1,7 +1,7 @@
 import { Account, Discovery } from '@wallet-types';
 import { DISCOVERY } from '@wallet-actions/constants';
 import { SUITE } from '@suite-actions/constants';
-import { DEVICE, Device } from '@trezor/connect';
+import { DEVICE } from '@trezor/connect';
 import { LogEntry } from '@suite-reducers/logsReducer';
 import { AppState, TrezorDevice } from '@suite-types';
 import { getCustomBackends } from '@suite-common/wallet-utils';
@@ -79,7 +79,7 @@ export const redactDiscovery = (discovery: DeepPartial<Discovery> | undefined) =
     };
 };
 
-export const redactDevice = (device: DeepPartial<Device> | undefined) => {
+export const redactDevice = (device: DeepPartial<TrezorDevice> | undefined) => {
     if (!device) return undefined;
     return {
         ...device,
@@ -94,6 +94,7 @@ export const redactDevice = (device: DeepPartial<Device> | undefined) => {
                   label: device.features.label ? REDACTED_REPLACEMENT : undefined,
               }
             : undefined,
+        metadata: device.metadata ? REDACTED_REPLACEMENT : undefined,
     };
 };
 
