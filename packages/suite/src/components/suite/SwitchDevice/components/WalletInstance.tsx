@@ -5,8 +5,8 @@ import { analytics, EventType } from '@trezor/suite-analytics';
 import { Switch, Box, Icon, useTheme, variables } from '@trezor/components';
 import { getAllAccounts, getTotalFiatBalance } from '@suite-common/wallet-utils';
 import * as suiteActions from '@suite-actions/suiteActions';
-import * as discoveryActions from '@wallet-actions/discoveryActions';
 import { useFormatters } from '@suite-common/formatters';
+import { selectDiscovery } from '@wallet-reducers/discoveryReducer';
 import {
     WalletLabeling,
     Translation,
@@ -101,10 +101,9 @@ export const WalletInstance = ({
     index,
     ...rest
 }: WalletInstanceProps) => {
-    const { toggleRememberDevice, forgetDevice, getDiscovery } = useActions({
+    const { toggleRememberDevice, forgetDevice } = useActions({
         toggleRememberDevice: suiteActions.toggleRememberDevice,
         forgetDevice: suiteActions.forgetDevice,
-        getDiscovery: discoveryActions.getDiscovery,
     });
     const { accounts, fiat, localCurrency, editing } = useSelector(state => ({
         accounts: state.wallet.accounts,
@@ -116,7 +115,8 @@ export const WalletInstance = ({
     const { FiatAmountFormatter } = useFormatters();
     const theme = useTheme();
 
-    const discoveryProcess = instance.state ? getDiscovery(instance.state) : null;
+    const discoveryProcess = useSelector(state => selectDiscovery(state, instance.state));
+
     const deviceAccounts = getAllAccounts(instance.state, accounts);
     const accountsCount = deviceAccounts.length;
     const instanceBalance = getTotalFiatBalance(deviceAccounts, localCurrency, fiat.coins);

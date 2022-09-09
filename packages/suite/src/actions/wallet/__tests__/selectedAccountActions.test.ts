@@ -2,7 +2,7 @@ import { configureStore } from '@suite/support/tests/configureStore';
 
 import selectedAccountReducer from '@wallet-reducers/selectedAccountReducer';
 
-import { getStateForAction } from '../selectedAccountActions';
+import { syncSelectedAccount } from '../selectedAccountActions';
 import fixtures from '../__fixtures__/selectedAccountActions';
 
 export const getInitialState = (_settings?: any) => ({
@@ -32,7 +32,7 @@ describe('selectedAccount Actions', () => {
         it(f.description, () => {
             const state = getInitialState(f.initialState);
             const store = initStore(state);
-            const selectedAccountState = store.dispatch(getStateForAction(f.action as any));
+            const selectedAccountState = store.dispatch(syncSelectedAccount(f.action as any));
             if (f.result) {
                 expect(selectedAccountState).toMatchObject(f.result as any);
             } else {

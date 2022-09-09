@@ -3,8 +3,8 @@ import styled from 'styled-components';
 import { H1, variables } from '@trezor/components';
 import { Translation } from '@suite-components/Translation';
 import { DeviceConfirmImage } from '@suite-components/images/DeviceConfirmImage';
-import { useActions } from '@suite-hooks';
-import * as discoveryActions from '@wallet-actions/discoveryActions';
+import { useSelector } from '@suite-hooks';
+import { selectIsDiscoveryAuthConfirmationRequired } from '@wallet-reducers/discoveryReducer';
 import type { TrezorDevice } from '@suite-types';
 import { DevicePromptModal } from '@suite-components/Modal/DevicePromptModal';
 
@@ -26,11 +26,8 @@ interface PassphraseSourceProps {
  * @param {PassphraseSourceProps}
  */
 export const PassphraseSource = ({ device }: PassphraseSourceProps) => {
-    const { getDiscoveryAuthConfirmationStatus } = useActions({
-        getDiscoveryAuthConfirmationStatus: discoveryActions.getDiscoveryAuthConfirmationStatus,
-    });
-
-    const authConfirmation = getDiscoveryAuthConfirmationStatus() || device.authConfirm;
+    const authConfirmation =
+        useSelector(selectIsDiscoveryAuthConfirmationRequired) || device.authConfirm;
 
     return (
         <StyledDevicePromptModal

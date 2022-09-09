@@ -2,8 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import { H1, variables } from '@trezor/components';
 import { Translation } from '@suite-components/Translation';
-import { useActions } from '@suite-hooks';
-import * as discoveryActions from '@wallet-actions/discoveryActions';
+import { useSelector } from '@suite-hooks';
+import { selectIsDiscoveryAuthConfirmationRequired } from '@wallet-reducers/discoveryReducer';
 import { DeviceConfirmImage } from '@suite-components/images/DeviceConfirmImage';
 import type { TrezorDevice } from '@suite-types';
 import { DevicePromptModal } from '@suite-components/Modal/DevicePromptModal';
@@ -36,11 +36,8 @@ interface PassphraseOnDeviceProps {
  * @param {PassphraseOnDeviceProps}
  */
 export const PassphraseOnDevice = ({ device }: PassphraseOnDeviceProps) => {
-    const { getDiscoveryAuthConfirmationStatus } = useActions({
-        getDiscoveryAuthConfirmationStatus: discoveryActions.getDiscoveryAuthConfirmationStatus,
-    });
-
-    const authConfirmation = getDiscoveryAuthConfirmationStatus() || device.authConfirm;
+    const authConfirmation =
+        useSelector(selectIsDiscoveryAuthConfirmationRequired) || device.authConfirm;
 
     return (
         <StyledDevicePromptModal isAbortable={false} data-test="@modal/enter-passphrase-on-device">

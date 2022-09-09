@@ -5,6 +5,7 @@ import { DISCOVERY } from '@wallet-actions/constants';
 import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
 import * as suiteActions from '@suite-actions/suiteActions';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
+import { selectDiscoveryForDevice } from '@wallet-reducers/discoveryReducer';
 import { accountsActions, disableAccountsThunk } from '@suite-common/wallet-core';
 import { getApp } from '@suite-utils/router';
 import { AppState, Action, Dispatch } from '@suite-types';
@@ -14,7 +15,7 @@ const discoveryMiddleware =
     (next: Dispatch) =>
     async (action: Action): Promise<Action> => {
         const prevState = api.getState();
-        const prevDiscovery = api.dispatch(discoveryActions.getDiscoveryForDevice());
+        const prevDiscovery = selectDiscoveryForDevice(prevState);
         const discoveryIsRunning =
             prevDiscovery &&
             prevDiscovery.status > DISCOVERY.STATUS.IDLE &&
@@ -144,7 +145,7 @@ const discoveryMiddleware =
             walletSettingsActions.changeNetworks.match(action) ||
             accountsActions.changeAccountVisibility.match(action)
         ) {
-            const discovery = api.dispatch(discoveryActions.getDiscoveryForDevice());
+            const discovery = selectDiscoveryForDevice(api.getState());
             if (
                 device &&
                 device.connected &&

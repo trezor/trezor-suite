@@ -8,7 +8,7 @@ import * as storageActions from '@suite-actions/storageActions';
 import * as accountUtils from '@suite-common/wallet-utils';
 import { SUITE, ANALYTICS, METADATA, MESSAGE_SYSTEM, STORAGE } from '@suite-actions/constants';
 import { FIRMWARE } from '@firmware-actions/constants';
-import { getDiscovery } from '@wallet-actions/discoveryActions';
+import { selectDiscovery } from '@wallet-reducers/discoveryReducer';
 import * as metadataActions from '@suite-actions/metadataActions';
 import { isDeviceRemembered } from '@suite-utils/device';
 import { serializeDiscovery } from '@suite-utils/storage';
@@ -134,7 +134,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                     const device = api.getState().devices.find(d => d.state === deviceState);
                     // update discovery for remembered device
                     if (isDeviceRemembered(device)) {
-                        const discovery = api.dispatch(getDiscovery(deviceState));
+                        const discovery = selectDiscovery(api.getState(), deviceState);
                         if (discovery) {
                             storageActions.saveDiscovery([serializeDiscovery(discovery)]);
                         }

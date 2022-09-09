@@ -1,5 +1,10 @@
 import { versionUtils } from '@trezor/utils';
-import { Discovery, PartialDiscovery } from '@wallet-reducers/discoveryReducer';
+import {
+    Discovery,
+    PartialDiscovery,
+    selectDiscovery,
+    selectDiscoveryForDevice,
+} from '@wallet-reducers/discoveryReducer';
 import TrezorConnect, { BundleProgress, AccountInfo, UI } from '@trezor/connect';
 import { addToast } from '@suite-actions/notificationActions';
 import { SUITE } from '@suite-actions/constants';
@@ -32,40 +37,6 @@ type UpdateActionType =
 type ProgressEvent = BundleProgress<AccountInfo | null>['payload'];
 
 const LIMIT = 10;
-
-// Get discovery process for deviceState.
-export const getDiscovery =
-    (deviceState: string) =>
-    (_dispatch: Dispatch, getState: GetState): Discovery | undefined => {
-        const { discovery } = getState().wallet;
-        return discovery.find(d => d.deviceState === deviceState);
-    };
-
-export const getDiscoveryForDevice =
-    () =>
-    (dispatch: Dispatch, getState: GetState): Discovery | undefined => {
-        const { device } = getState().suite;
-        if (!device || !device.state) return;
-        return dispatch(getDiscovery(device.state));
-    };
-
-/**
- * Helper action called from components
- * return `true` if discovery process is running/completed and `authConfirm` is required
- */
-export const getDiscoveryAuthConfirmationStatus =
-    () =>
-    (dispatch: Dispatch, getState: GetState): boolean | undefined => {
-        const { device } = getState().suite;
-        if (!device || !device.state) return;
-        const discovery = dispatch(getDiscovery(device.state));
-        if (!discovery) return;
-        return (
-            discovery.authConfirm &&
-            (discovery.status < DISCOVERY.STATUS.STOPPING ||
-                discovery.status === DISCOVERY.STATUS.COMPLETED)
-        );
-    };
 
 export const update = (
     payload: PartialDiscovery,
@@ -107,9 +78,9 @@ const calculateProgress =
 
 const handleProgress =
     (event: ProgressEvent, deviceState: string, item: DiscoveryItem, metadataEnabled: boolean) =>
-    (dispatch: Dispatch) => {
+    (dispatch: Dispatch, getState: GetState) => {
         // get fresh discovery data
-        const discovery = dispatch(getDiscovery(deviceState));
+        const discovery = selectDiscovery(getState(), deviceState);
         // ignore progress event when:
         // 1. discovery is not running (interrupted/stopped/complete)
         if (!discovery || discovery.status >= DISCOVERY.STATUS.STOPPING) return;
@@ -380,7 +351,7 @@ export const start =
         const { device } = getState().suite;
         const { metadata } = getState();
 
-        const discovery = dispatch(getDiscoveryForDevice());
+        const discovery = selectDiscoveryForDevice(getState());
         if (!device) {
             dispatch(addToast({ type: 'discovery-error', error: 'Device not found' }));
             return;
@@ -505,7 +476,7 @@ export const start =
         // process response
         if (result.success) {
             // fetch fresh data from reducer
-            const currentDiscovery = dispatch(getDiscovery(deviceState));
+            const currentDiscovery = selectDiscovery(getState(), deviceState);
             if (!currentDiscovery) return;
             // discovery process is still in authConfirm mode (not changed by handleProgress function)
             // and there is at least one used account in response
@@ -615,8 +586,8 @@ export const start =
         }
     };
 
-export const stop = () => (dispatch: Dispatch) => {
-    const discovery = dispatch(getDiscoveryForDevice());
+export const stop = () => (dispatch: Dispatch, getState: GetState) => {
+    const discovery = selectDiscoveryForDevice(getState());
     if (discovery && discovery.running) {
         dispatch(
             update(
@@ -630,8 +601,8 @@ export const stop = () => (dispatch: Dispatch) => {
     }
 };
 
-export const restart = () => async (dispatch: Dispatch) => {
-    const discovery = dispatch(getDiscoveryForDevice());
+export const restart = () => async (dispatch: Dispatch, getState: GetState) => {
+    const discovery = selectDiscoveryForDevice(getState());
     if (!discovery) return;
     const progress = dispatch(
         calculateProgress({

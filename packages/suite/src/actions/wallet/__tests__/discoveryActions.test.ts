@@ -5,7 +5,9 @@
 
 import { configureStore } from '@suite/support/tests/configureStore';
 
-import discoveryReducer from '@wallet-reducers/discoveryReducer';
+import discoveryReducer, {
+    selectIsDiscoveryAuthConfirmationRequired,
+} from '@wallet-reducers/discoveryReducer';
 import walletSettingsReducer from '@wallet-reducers/settingsReducer';
 import { NOTIFICATION } from '@suite-actions/constants';
 import { DISCOVERY } from '@wallet-actions/constants';
@@ -620,7 +622,7 @@ describe('Discovery Actions', () => {
         expect(result.total).toEqual(0);
     });
 
-    it('getDiscoveryAuthConfirmationStatus', async () => {
+    it('selectIsDiscoveryAuthConfirmationRequired', async () => {
         require('@trezor/connect').setTestFixtures({
             connect: { success: true },
         });
@@ -631,18 +633,21 @@ describe('Discovery Actions', () => {
             useEmptyPassphrase: false, // mandatory
         });
         const store = initStore(state);
-        const fn = discoveryActions.getDiscoveryAuthConfirmationStatus;
+
+        // Necessary workaround, as redux-mock-store, as we use it, doesn't have immutable state.
+        // TODO: We should use configureMockStore from @suite-common/test-utils here
+        const fn = (state: any) => selectIsDiscoveryAuthConfirmationRequired({ ...state });
 
         store.dispatch(discoveryActions.create('device-state', state.suite.device));
         await store.dispatch(discoveryActions.start());
-        expect(store.dispatch(fn())).toEqual(true);
+        expect(fn(store.getState())).toEqual(true);
 
         // remove discovery
         store.dispatch(discoveryActions.remove('device-state'));
-        expect(store.dispatch(fn())).toEqual(undefined);
+        expect(fn(store.getState())).toEqual(undefined);
 
         // @ts-expect-error remove device from state
         store.getState().suite.device = undefined;
-        expect(store.dispatch(fn())).toEqual(undefined);
+        expect(fn(store.getState())).toEqual(undefined);
     });
 });
