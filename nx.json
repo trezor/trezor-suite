@@ -28,7 +28,7 @@
             "outputs": ["./lib", "./build"]
         },
         "type-check": {
-            "dependsOn": ["^build:lib"],
+            "dependsOn": ["^build:lib", "^type-check"],
             "inputs": [
                 "default",
                 "^prod",
