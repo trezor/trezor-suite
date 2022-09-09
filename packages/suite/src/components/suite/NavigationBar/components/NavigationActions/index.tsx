@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import styled from 'styled-components';
 
-import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
+import { setDiscreetMode } from '@suite-common/wallet-core';
 import * as routerActions from '@suite-actions/routerActions';
 import { Translation } from '@suite-components';
 import { findRouteByName } from '@suite-utils/router';
@@ -20,6 +20,7 @@ import { getIsTorEnabled, getIsTorLoading } from '@suite-utils/tor';
 import { SettingsAnchor } from '@suite-constants/anchors';
 
 import type { Route } from '@suite-types';
+import { useDispatch } from 'react-redux';
 
 const Wrapper = styled.div`
     display: flex;
@@ -65,6 +66,7 @@ export const NavigationActions: React.FC<NavigationActionsProps> = ({
     closeMainNavigation,
     isMobileLayout,
 }) => {
+    const dispatch = useDispatch();
     const { activeApp, notifications, discreetMode, torStatus, allowPrerelease, enabledNetworks } =
         useSelector(state => ({
             activeApp: state.router.app,
@@ -76,9 +78,8 @@ export const NavigationActions: React.FC<NavigationActionsProps> = ({
             enabledNetworks: state.wallet.settings.enabledNetworks,
         }));
 
-    const { goto, setDiscreetMode } = useActions({
+    const { goto } = useActions({
         goto: routerActions.goto,
-        setDiscreetMode: walletSettingsActions.setDiscreetMode,
     });
 
     const { openGuide } = useGuide();
@@ -112,7 +113,7 @@ export const NavigationActions: React.FC<NavigationActionsProps> = ({
     return (
         <WrapperComponent>
             <ActionItem
-                onClick={() => setDiscreetMode(!discreetMode)}
+                onClick={() => dispatch(setDiscreetMode(!discreetMode))}
                 isActive={discreetMode}
                 label={<Translation id="TR_DISCREET" />}
                 icon={discreetMode ? 'HIDE' : 'SHOW'}

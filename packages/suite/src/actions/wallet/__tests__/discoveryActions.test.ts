@@ -6,12 +6,13 @@
 import { configureStore } from '@suite/support/tests/configureStore';
 
 import discoveryReducer from '@wallet-reducers/discoveryReducer';
-import walletSettingsReducer from '@wallet-reducers/settingsReducer';
 import { NOTIFICATION } from '@suite-actions/constants';
 import { DISCOVERY } from '@wallet-actions/constants';
-import { accountsActions } from '@suite-common/wallet-core';
-import { accountsReducer } from '@wallet-reducers';
-import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
+import {
+    accountsActions,
+    settingsActions as walletSettingsActions,
+} from '@suite-common/wallet-core';
+import { accountsReducer, settingsReducer as walletSettingsReducer } from '@wallet-reducers';
 import { ArrayElement } from '@trezor/type-utils';
 import * as discoveryActions from '../discoveryActions';
 import {

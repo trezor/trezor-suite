@@ -1,10 +1,14 @@
-import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
+import {
+    settingsActions as walletSettingsActions,
+    changeCoinVisibility,
+    setDiscreetMode,
+} from '@suite-common/wallet-core';
 
 export default [
     {
         description: 'Btc should be visible as a default if no initial state provided',
         initialState: undefined,
-        action: () => walletSettingsActions.changeCoinVisibility('ltc', true),
+        action: () => changeCoinVisibility({ symbol: 'ltc', shouldBeVisible: true }),
         result: {
             enabledNetworks: ['btc', 'ltc'],
         },
@@ -12,7 +16,7 @@ export default [
     {
         description: 'Enable already enabled network',
         initialState: { enabledNetworks: ['btc', 'ltc'] },
-        action: () => walletSettingsActions.changeCoinVisibility('ltc', true),
+        action: () => changeCoinVisibility({ symbol: 'ltc', shouldBeVisible: true }),
         result: {
             enabledNetworks: ['btc', 'ltc'],
         },
@@ -20,7 +24,7 @@ export default [
     {
         description: 'Disable already enabled network',
         initialState: { enabledNetworks: ['btc', 'ltc'] },
-        action: () => walletSettingsActions.changeCoinVisibility('ltc', false),
+        action: () => changeCoinVisibility({ symbol: 'ltc', shouldBeVisible: false }),
         result: {
             enabledNetworks: ['btc'],
         },
@@ -28,7 +32,7 @@ export default [
     {
         description: 'Set hide balance true',
         initialState: { discreetMode: false },
-        action: () => walletSettingsActions.setDiscreetMode(true),
+        action: () => setDiscreetMode(true),
         result: {
             discreetMode: true,
         },
@@ -36,7 +40,7 @@ export default [
     {
         description: 'Set hide balance false',
         initialState: { discreetMode: true },
-        action: () => walletSettingsActions.setDiscreetMode(false),
+        action: () => setDiscreetMode(false),
         result: {
             discreetMode: false,
         },

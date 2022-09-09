@@ -1,7 +1,8 @@
 import { NETWORKS } from '@wallet-config';
 import { useSelector, useActions } from '@suite-hooks';
-import { changeCoinVisibility } from '@settings-actions/walletSettingsActions';
+import { changeCoinVisibility } from '@suite-common/wallet-core';
 import type { Network } from '@wallet-types';
+import { useDispatch } from 'react-redux';
 
 type EnabledNetworks = {
     mainnets: Network[];
@@ -11,6 +12,7 @@ type EnabledNetworks = {
 };
 
 export const useEnabledNetworks = (): EnabledNetworks => {
+    const dispatch = useDispatch();
     const { enabledNetworks, debug } = useSelector(state => ({
         enabledNetworks: state.wallet.settings.enabledNetworks,
         debug: state.suite.settings.debug.showDebugMenu,

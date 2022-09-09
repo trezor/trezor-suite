@@ -305,9 +305,12 @@ export const syncAccountsWithBlockchainThunk = createThunk(
 export const onBlockchainConnectThunk = createThunk(
     `${actionsPrefix}/onBlockchainConnectThunk`,
     async (symbol: string, { dispatch, getState }) => {
+        console.log('JOOOOOO JSEM TU!!!!!!');
         const network = getNetwork(symbol.toLowerCase());
+        console.log('JOOOOOO JSEM TU!!!!!!', network);
         if (!network) return;
         const blockchainInfo = selectNetworkBlockchainInfo(network.symbol)(getState());
+        console.log('JOOOOOO JSEM TU blockchainInfo!!!!!!', JSON.stringify(blockchainInfo));
         // reset previous timeout
         tryClearTimeout(blockchainInfo.reconnection?.id);
         await dispatch(subscribeBlockchainThunk({ symbol: network.symbol, fiatRates: true }));

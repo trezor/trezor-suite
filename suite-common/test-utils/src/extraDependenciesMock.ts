@@ -71,6 +71,7 @@ export const extraDependenciesMock: ExtraDependencies = {
         storageLoadAccounts: mockReducer('storageLoadAccounts'),
         storageLoadTransactions: mockReducer('storageLoadTransactions'),
         storageLoadFiatRates: mockReducer('storageLoadAccounts'),
+        storageLoadWalletSettings: mockReducer('storageLoadWalletSettings'),
     },
     utils: {
         saveAs: (data, fileName) =>

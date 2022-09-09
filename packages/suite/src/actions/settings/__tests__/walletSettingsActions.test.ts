@@ -1,5 +1,5 @@
 import { configureStore } from '@suite/support/tests/configureStore';
-import settingsReducer from '@wallet-reducers/settingsReducer';
+import { settingsReducer } from '@wallet-reducers';
 import suiteReducer from '@suite-reducers/suiteReducer';
 import fixtures from '../__fixtures__/walletSettings';
 

@@ -1,8 +1,11 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import { configureStore } from '@suite/support/tests/configureStore';
 
-import { accountsReducer, blockchainReducer } from '@wallet-reducers';
-import walletSettingsReducer from '@wallet-reducers/settingsReducer';
+import {
+    accountsReducer,
+    blockchainReducer,
+    settingsReducer as walletSettingsReducer,
+} from '@wallet-reducers';
 import walletMiddleware from '@wallet-middlewares/walletMiddleware';
 import { prepareBlockchainMiddleware } from '@suite-common/wallet-core';
 import * as fixtures from '../__fixtures__/walletMiddleware';

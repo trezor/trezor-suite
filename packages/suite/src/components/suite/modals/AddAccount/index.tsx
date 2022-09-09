@@ -6,8 +6,7 @@ import { NETWORKS } from '@wallet-config';
 import { Account, Network } from '@wallet-types';
 import { TrezorDevice } from '@suite-types';
 import { useSelector, useActions } from '@suite-hooks';
-import { accountsActions } from '@suite-common/wallet-core';
-import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
+import { accountsActions, changeCoinVisibility } from '@suite-common/wallet-core';
 import * as routerActions from '@suite-actions/routerActions';
 import { arrayPartition } from '@trezor/utils';
 
@@ -35,8 +34,7 @@ interface Props {
 
 export const AddAccount = ({ device, onCancel, symbol, noRedirect }: Props) => {
     const dispatch = useDispatch();
-    const { changeCoinVisibility, goto } = useActions({
-        changeCoinVisibility: walletSettingsActions.changeCoinVisibility,
+    const { goto } = useActions({
         goto: routerActions.goto,
     });
     const {
@@ -96,7 +94,9 @@ export const AddAccount = ({ device, onCancel, symbol, noRedirect }: Props) => {
     const onEnableNetwork = () => {
         onCancel();
         if (selectedNetwork) {
-            changeCoinVisibility(selectedNetwork.symbol, true);
+            dispatch(
+                changeCoinVisibility({ symbol: selectedNetwork.symbol, shouldBeVisible: true }),
+            );
             if (app === 'wallet' && !noRedirect) {
                 // redirect to account only if added from "wallet" app
                 goto('wallet-index', {

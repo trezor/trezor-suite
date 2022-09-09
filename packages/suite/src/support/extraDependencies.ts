@@ -1,6 +1,6 @@
 import { ExtraDependencies } from '@suite-common/redux-utils';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { TransactionsState, BlockchainState } from '@suite-common/wallet-core';
+import { TransactionsState, BlockchainState, WalletSettingsState } from '@suite-common/wallet-core';
 import { saveAs } from 'file-saver';
 
 import { STORAGE } from '../actions/suite/constants';
@@ -78,6 +78,8 @@ export const extraDependencies: ExtraDependencies = {
         storageLoadFiatRates: (state: FiatRatesState, { payload }: StorageLoadAction) => {
             state.coins = payload.fiatRates;
         },
+        storageLoadWalletSettings: (state: WalletSettingsState, { payload }: StorageLoadAction) =>
+            payload.walletSettings || state,
     },
     utils: {
         saveAs: (data, fileName) => saveAs(data, fileName),

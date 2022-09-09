@@ -195,6 +195,7 @@ export const updateStaleFiatRatesThunk = createThunk(
     `${actionPrefix}/updateStaleRates`,
     async (_, { dispatch }) => {
         try {
+            console.log('-------------------- 0');
             const staleTickers = await dispatch(
                 getFiatStaleTickersThunk({
                     timestampFunc: ticker =>
@@ -203,6 +204,7 @@ export const updateStaleFiatRatesThunk = createThunk(
                     includeTokens: true,
                 }),
             ).unwrap();
+            console.log('-------------------- 1: ', staleTickers);
             const promises = staleTickers.map(t =>
                 dispatch(
                     updateCurrentFiatRatesThunk({
@@ -212,7 +214,9 @@ export const updateStaleFiatRatesThunk = createThunk(
                 ),
             );
             await Promise.all(promises);
+            console.log('-------------------- 2', promises.length);
         } catch (error) {
+            console.log('-------------------- 3');
             // todo: dispatch some error;
             // dispatch({ type: '@rate/error', payload: error.message });
             console.error(error);

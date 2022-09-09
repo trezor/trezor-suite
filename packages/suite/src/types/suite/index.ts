@@ -14,7 +14,6 @@ import type { MetadataAction } from '@suite-actions/metadataActions';
 import type { ProtocolAction } from '@suite-actions/protocolActions';
 import type { DesktopUpdateAction } from '@suite-actions/desktopUpdateActions';
 import type { OnboardingAction } from '@onboarding-actions/onboardingActions';
-import type { WalletSettingsAction } from '@settings-actions/walletSettingsActions';
 import type { FirmwareAction } from '@firmware-actions/firmwareActions';
 import type { WalletAction } from '@wallet-types';
 import type { BackupAction } from '@backup-actions/backupActions';
@@ -25,7 +24,7 @@ import type { MessageSystemAction } from '@suite-actions/messageSystemActions';
 import type { GuideAction } from '@suite-actions/guideActions';
 import type { EnvironmentType } from '@suite-common/suite-types';
 import type { Route } from '@suite-constants/routes';
-import { transactionsActions } from '@suite-common/wallet-core';
+import { transactionsActions, settingsActions } from '@suite-common/wallet-core';
 
 // reexport
 export type { ExtendedMessageDescriptor } from '@suite-components/Translation/components/BaseTranslation';
@@ -47,6 +46,7 @@ type TrezorConnectEvents = TransportEvent | UiEvent | DeviceEvent | BlockchainEv
 export type TransactionAction = ReturnType<
     typeof transactionsActions[keyof typeof transactionsActions]
 >;
+type WalletSettingsAction = ReturnType<typeof settingsActions[keyof typeof settingsActions]>;
 
 // all actions from all apps used to properly type Dispatch.
 export type Action =

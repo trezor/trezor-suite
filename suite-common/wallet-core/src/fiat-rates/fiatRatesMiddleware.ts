@@ -88,6 +88,7 @@ export const prepareFiatRatesMiddleware = createMiddlewareWithExtraDeps(
         }
 
         if (blockchainActions.connected.match(action)) {
+            console.log('COOOOOO????????????????????: ', action.payload);
             dispatch(initFiatRatesThunk(action.payload));
         }
 

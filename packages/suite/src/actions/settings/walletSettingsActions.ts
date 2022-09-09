@@ -7,23 +7,6 @@ import { WALLET_SETTINGS } from './constants';
 import { UNIT_ABBREVIATIONS } from '@wallet-hooks/useBitcoinAmountUnit';
 
 import type { Network } from '@wallet-types';
-import { createAction } from '@reduxjs/toolkit';
-
-export const setLocalCurrency = createAction(
-    WALLET_SETTINGS.SET_LOCAL_CURRENCY,
-    (localCurrency: string) => ({
-        payload: {
-            localCurrency: localCurrency.toLowerCase(),
-        },
-    }),
-);
-
-export const changeNetworks = createAction(
-    WALLET_SETTINGS.CHANGE_NETWORKS,
-    (payload: Network['symbol'][]) => ({
-        payload,
-    }),
-);
 
 export type WalletSettingsAction =
     | ReturnType<typeof changeNetworks>
@@ -56,44 +39,6 @@ export const setDiscreetMode = (toggled: boolean) => (dispatch: Dispatch, getSta
     });
 };
 
-export const changeCoinVisibility =
-    (symbol: Network['symbol'], shouldBeVisible: boolean) =>
-    (dispatch: Dispatch, getState: GetState) => {
-        let { enabledNetworks } = getState().wallet.settings;
-        const isAlreadyHidden = enabledNetworks.find(coin => coin === symbol);
-        if (!shouldBeVisible) {
-            enabledNetworks = enabledNetworks.filter(coin => coin !== symbol);
-        } else if (!isAlreadyHidden) {
-            enabledNetworks = [...enabledNetworks, symbol];
-        }
-        dispatch(changeNetworks(enabledNetworks));
-
-        analytics.report({
-            type: EventType.SettingsCoins,
-            payload: {
-                symbol,
-                value: shouldBeVisible,
-            },
-        });
-    };
-
-export const setLastUsedFeeLevel =
-    (feeLevel?: FeeLevel) => (dispatch: Dispatch, getState: GetState) => {
-        const { selectedAccount } = getState().wallet;
-        if (selectedAccount.status !== 'loaded') return;
-        dispatch({
-            type: WALLET_SETTINGS.SET_LAST_USED_FEE_LEVEL,
-            symbol: selectedAccount.account.symbol,
-            feeLevel,
-        });
-    };
-
-export const getLastUsedFeeLevel = () => (_: Dispatch, getState: GetState) => {
-    const { selectedAccount, settings } = getState().wallet;
-    if (selectedAccount.status !== 'loaded') return;
-    return settings.lastUsedFeeLevel[selectedAccount.account.symbol];
-};
-
 export const setBitcoinAmountUnits = (units: PROTO.AmountUnit): WalletSettingsAction => {
     analytics.report({
         type: EventType.SettingsGeneralChangeBitcoinUnit,
@@ -105,15 +50,4 @@ export const setBitcoinAmountUnits = (units: PROTO.AmountUnit): WalletSettingsAc
         type: WALLET_SETTINGS.SET_BITCOIN_AMOUNT_UNITS,
         payload: units,
     };
-};
-
-export const toggleBitcoinAmountUnits = () => (dispatch: Dispatch, getState: GetState) => {
-    const currentUnits = getState().wallet.settings.bitcoinAmountUnit;
-
-    const nextUnits =
-        currentUnits === PROTO.AmountUnit.BITCOIN
-            ? PROTO.AmountUnit.SATOSHI
-            : PROTO.AmountUnit.BITCOIN;
-
-    dispatch(setBitcoinAmountUnits(nextUnits));
 };

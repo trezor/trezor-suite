@@ -3,9 +3,12 @@ import { configureStore } from '@suite/support/tests/configureStore';
 import { Middleware } from 'redux';
 import * as storageActions from '../storageActions';
 import * as suiteActions from '../suiteActions';
-import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
+import {
+    settingsActions as walletSettingsActions,
+    disableAccountsThunk,
+    transactionsActions,
+} from '@suite-common/wallet-core';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
-import { disableAccountsThunk, transactionsActions } from '@suite-common/wallet-core';
 import * as SUITE from '@suite-actions/constants/suiteConstants';
 
 import { accountsReducer, fiatRatesReducer, transactionsReducer } from '@wallet-reducers';

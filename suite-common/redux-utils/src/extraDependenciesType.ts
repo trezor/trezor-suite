@@ -62,6 +62,7 @@ export type ExtraDependencies = {
         storageLoadAccounts: StorageLoadReducer;
         storageLoadTransactions: StorageLoadTransactionsReducer;
         storageLoadFiatRates: StorageLoadReducer;
+        storageLoadWalletSettings: StorageLoadReducer;
     };
     utils: {
         saveAs: (data: Blob, fileName: string) => void;
