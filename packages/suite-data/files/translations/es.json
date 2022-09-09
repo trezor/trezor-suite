@@ -1368,7 +1368,7 @@
   "TR_SUITE_WEB_LANDING_SUB_SOON": "Próximamente",
   "TR_SUITE_WEB_LANDING_SUITE_ON_WEB": "Trezor Suite para web",
   "TR_SUITE_WEB_LANDING_VERSION": "Versión: {version}",
-  "TR_SUITE_WEB_LANDING_WINDOWS_LABEL": "Windows 10",
+  "TR_SUITE_WEB_LANDING_WINDOWS_LABEL": "Windows",
   "TR_SWIPE_YOUR_FINGERS": "Desliza el dedo a través de la pantalla táctil mientras conectas el cable.",
   "TR_SWITCH_DEVICE": "Cambiar dispositivo",
   "TR_TAKES_N_MINUTES": "Tardará ~{n} minutos",
