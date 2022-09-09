@@ -14,11 +14,14 @@ import { useCoinmarketNavigation } from '@wallet-hooks/useCoinmarketNavigation';
 import { InvityAPIReloadQuotesAfterSeconds } from '@wallet-constants/coinmarket/metadata';
 import { getUnusedAddressFromAccount } from '@suite/utils/wallet/coinmarket/coinmarketUtils';
 import type { TradeSell } from '@suite/types/wallet/coinmarketCommonTypes';
+import { useBitcoinAmountUnit } from '@wallet-hooks/useBitcoinAmountUnit';
+import { amountToSatoshi } from '@suite-common/wallet-utils';
 
 export const useOffers = ({ selectedAccount }: UseOffersProps) => {
     const timer = useTimer();
 
-    const { account } = selectedAccount;
+    const { account, network } = selectedAccount;
+    const { areSatsUsed } = useBitcoinAmountUnit(account.symbol);
     const [callInProgress, setCallInProgress] = useState<boolean>(false);
     const [selectedQuote, setSelectedQuote] = useState<SellFiatTrade>();
 
@@ -252,10 +255,13 @@ export const useOffers = ({ selectedAccount }: UseOffersProps) => {
             destinationAddress &&
             selectedQuote.cryptoStringAmount
         ) {
+            const cryptoStringAmount = areSatsUsed
+                ? amountToSatoshi(selectedQuote.cryptoStringAmount, network.decimals)
+                : selectedQuote.cryptoStringAmount;
             const result = await recomposeAndSign(
                 selectedAccount,
                 destinationAddress,
-                selectedQuote.cryptoStringAmount,
+                cryptoStringAmount,
             );
             if (result?.success) {
                 // send txid to the server as confirmation
