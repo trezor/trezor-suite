@@ -1384,7 +1384,7 @@
   "TR_SUITE_WEB_LANDING_SUB_SOON": "很快",
   "TR_SUITE_WEB_LANDING_SUITE_ON_WEB": "网页版Trezor Suite",
   "TR_SUITE_WEB_LANDING_VERSION": "版本: {version}",
-  "TR_SUITE_WEB_LANDING_WINDOWS_LABEL": "Windows 10",
+  "TR_SUITE_WEB_LANDING_WINDOWS_LABEL": "Windows",
   "TR_SWIPE_YOUR_FINGERS": "在连接电缆时，用手指在触摸屏上滑动。",
   "TR_SWITCH_DEVICE": "切换设备",
   "TR_SWITCH_FIRMWARE_TYPE_DESCRIPTION": "纯比特币固件是为只对比特币感兴趣的用户提供的一个轻量级选项。通用固件可以启用所有支持的硬币和功能。您希望切换固件类型吗？",
