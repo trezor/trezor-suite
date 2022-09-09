@@ -17,6 +17,8 @@ import { getUnusedAddressFromAccount } from '@wallet-utils/coinmarket/coinmarket
 import { useCoinmarketRecomposeAndSign } from './useCoinmarketRecomposeAndSign ';
 import { useCoinmarketNavigation } from '@wallet-hooks/useCoinmarketNavigation';
 import { InvityAPIReloadQuotesAfterSeconds } from '@wallet-constants/coinmarket/metadata';
+import { useBitcoinAmountUnit } from '@wallet-hooks/useBitcoinAmountUnit';
+import { amountToSatoshi } from '@suite-common/wallet-utils';
 
 const getReceiveAccountSymbol = (
     symbol?: string,
@@ -37,7 +39,8 @@ const getReceiveAccountSymbol = (
 export const useOffers = ({ selectedAccount }: UseCoinmarketExchangeFormProps) => {
     const timer = useTimer();
     const { isLocked } = useDevice();
-    const { account } = selectedAccount;
+    const { account, network } = selectedAccount;
+    const { areSatsUsed } = useBitcoinAmountUnit(account.symbol);
     const [callInProgress, setCallInProgress] = useState<boolean>(isLocked() || false);
     const [selectedQuote, setSelectedQuote] = useState<ExchangeTrade>();
     const [receiveAccount, setReceiveAccount] = useState<Account | undefined>();
@@ -299,10 +302,13 @@ export const useOffers = ({ selectedAccount }: UseCoinmarketExchangeFormProps) =
             selectedQuote.sendAddress &&
             selectedQuote.sendStringAmount
         ) {
+            const sendStringAmount = areSatsUsed
+                ? amountToSatoshi(selectedQuote.sendStringAmount, network.decimals)
+                : selectedQuote.sendStringAmount;
             const result = await recomposeAndSign(
                 selectedAccount,
                 selectedQuote.sendAddress,
-                selectedQuote.sendStringAmount,
+                sendStringAmount,
                 selectedQuote.partnerPaymentExtraId,
             );
             // in case of not success, recomposeAndSign shows notification
