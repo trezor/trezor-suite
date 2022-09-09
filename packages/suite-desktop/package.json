@@ -193,6 +193,7 @@
     },
     "dependencies": {
         "@sentry/electron": "3.0.0",
+        "@suite-common/formatters": "*",
         "@suite-common/suite-types": "*",
         "@suite-common/suite-utils": "*",
         "@trezor/connect": "9.0.2",

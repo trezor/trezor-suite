@@ -13,6 +13,7 @@
     },
     "dependencies": {
         "@sentry/browser": "6.17.2",
+        "@suite-common/formatters": "*",
         "@trezor/suite": "*",
         "react-helmet": "^6.1.0",
         "react-redux": "7.2.2",

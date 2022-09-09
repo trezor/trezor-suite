@@ -5989,6 +5989,19 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-common/formatters@*, @suite-common/formatters@workspace:suite-common/formatters":
+  version: 0.0.0-use.local
+  resolution: "@suite-common/formatters@workspace:suite-common/formatters"
+  dependencies:
+    "@suite-common/wallet-config": "*"
+    "@suite-common/wallet-utils": "*"
+    jest: ^26.6.3
+    react: 17.0.2
+    react-intl: ^6.0.5
+    typescript: 4.7.4
+  languageName: unknown
+  linkType: soft
+
 "@suite-common/intl-types@*, @suite-common/intl-types@workspace:suite-common/intl-types":
   version: 0.0.0-use.local
   resolution: "@suite-common/intl-types@workspace:suite-common/intl-types"
@@ -7139,6 +7152,7 @@ __metadata:
   dependencies:
     "@playwright/test": ^1.22.2
     "@sentry/electron": 3.0.0
+    "@suite-common/formatters": "*"
     "@suite-common/suite-types": "*"
     "@suite-common/suite-utils": "*"
     "@trezor/connect": 9.0.2
@@ -7190,6 +7204,7 @@ __metadata:
     "@reduxjs/toolkit": ^1.8.3
     "@shopify/react-native-skia": 0.1.146
     "@suite-common/connect-init": "*"
+    "@suite-common/formatters": "*"
     "@suite-common/wallet-core": "*"
     "@suite-native/atoms": "*"
     "@suite-native/module-accounts": "*"
@@ -7274,6 +7289,7 @@ __metadata:
   resolution: "@trezor/suite-web@workspace:packages/suite-web"
   dependencies:
     "@sentry/browser": 6.17.2
+    "@suite-common/formatters": "*"
     "@trezor/suite": "*"
     "@types/react": ^17.0.48
     "@types/react-dom": ^17.0.17
@@ -7310,6 +7326,7 @@ __metadata:
     "@sentry/types": 6.17.2
     "@suite-common/connect-init": "*"
     "@suite-common/fiat-services": "*"
+    "@suite-common/formatters": "*"
     "@suite-common/intl-types": "*"
     "@suite-common/metadata-types": "*"
     "@suite-common/notifications": "*"

@@ -18,6 +18,9 @@
             "path": "../../suite-common/fiat-services"
         },
         {
+            "path": "../../suite-common/formatters"
+        },
+        {
             "path": "../../suite-common/intl-types"
         },
         {

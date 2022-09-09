@@ -9,6 +9,7 @@ import { connectInitThunk } from '@suite-common/connect-init';
 import { store, storePersistor } from '@suite-native/state';
 import { initBlockchainThunk, reconnectBlockchainThunk } from '@suite-common/wallet-core';
 import { StorageProvider } from '@suite-native/storage';
+import { FormatterProvider } from '@suite-common/formatters';
 
 import { RootStackNavigator } from './navigation/RootStackNavigator';
 import { StylesProvider } from './StylesProvider';
@@ -21,7 +22,9 @@ const AppComponent = () => {
         const initActions = async () => {
             await dispatch(connectInitThunk()).unwrap();
             await dispatch(initBlockchainThunk()).unwrap();
-            // reconnect blockchain (it emits BLOCKCHAIN.CONNECT) - we need to have fiat rates when the app is loaded.
+            /* Invoke reconnect manually here because we need to have fiat rates initialized
+             immediately after the app is loaded.
+             */
             await dispatch(reconnectBlockchainThunk('btc')).unwrap();
         };
         initActions().catch(console.error);
@@ -40,7 +43,14 @@ export const App = () => {
                     <StorageProvider persistor={storePersistor}>
                         <SafeAreaProvider>
                             <StylesProvider>
-                                <AppComponent />
+                                <FormatterProvider
+                                    config={{
+                                        locale: 'en',
+                                        areSatsDisplayed: true,
+                                    }}
+                                >
+                                    <AppComponent />
+                                </FormatterProvider>
                             </StylesProvider>
                         </SafeAreaProvider>
                     </StorageProvider>

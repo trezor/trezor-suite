@@ -21,15 +21,18 @@ import ErrorBoundary from '@suite-support/ErrorBoundary';
 import RouterHandler from '@suite-support/Router';
 import { ConnectedThemeProvider } from '@suite-support/ConnectedThemeProvider';
 import { LoadingScreen } from '@suite-support/screens/LoadingScreen';
+import { useFormatterConfig } from '@suite-hooks';
 import history from '@suite/support/history';
 import { ModalContextProvider } from '@suite-support/ModalContext';
 
 import AppRouter from './support/Router';
 import { useCypress } from './support/useCypress';
+import { FormatterProvider } from '@suite-common/formatters';
 
 const Main = () => {
     useCypress();
     useTor();
+    const formatterConfig = useFormatterConfig();
 
     return (
         <ConnectedThemeProvider>
@@ -42,11 +45,13 @@ const Main = () => {
                         <OnlineStatus />
                         <RouterHandler />
                         <IntlProvider>
-                            <Metadata />
-                            <ToastContainer />
-                            <Preloader>
-                                <AppRouter />
-                            </Preloader>
+                            <FormatterProvider config={formatterConfig}>
+                                <Metadata />
+                                <ToastContainer />
+                                <Preloader>
+                                    <AppRouter />
+                                </Preloader>
+                            </FormatterProvider>
                         </IntlProvider>
                     </ErrorBoundary>
                 </ModalContextProvider>

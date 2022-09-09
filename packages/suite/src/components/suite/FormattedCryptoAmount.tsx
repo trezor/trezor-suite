@@ -12,6 +12,7 @@ import { useBitcoinAmountUnit } from '@wallet-hooks/useBitcoinAmountUnit';
 import { NETWORKS } from '@wallet-config';
 import { NetworkSymbol } from '@wallet-types';
 import { useSelector } from '@suite-hooks/useSelector';
+import { useFormatters } from '@suite-common/formatters';
 
 const Container = styled.span`
     max-width: 100%;
@@ -48,6 +49,7 @@ export const FormattedCryptoAmount = ({
     'data-test': dataTest,
     className,
 }: FormattedCryptoAmountProps) => {
+    const { cryptoAmountFormatter } = useFormatters();
     const locale = useSelector(state => state.suite.settings.language);
 
     const { areSatsDisplayed } = useBitcoinAmountUnit();

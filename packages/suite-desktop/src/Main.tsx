@@ -23,6 +23,7 @@ import { ConnectedThemeProvider } from '@suite-support/ConnectedThemeProvider';
 import { LoadingScreen } from '@suite-support/screens/LoadingScreen';
 import { ErrorScreen } from '@suite-support/screens/ErrorScreen';
 import { TorLoadingScreen } from './support/screens/TorLoadingScreen';
+import { useFormatterConfig } from '@suite-hooks';
 import history from '@suite/support/history';
 import AppRouter from './support/Router';
 import DesktopUpdater from './support/DesktopUpdater';
@@ -32,6 +33,7 @@ import { desktopHandshake } from '@suite-actions/suiteActions';
 
 const Main = () => {
     useTor();
+    const formatterConfig = useFormatterConfig();
 
     return (
         <ConnectedThemeProvider>
@@ -44,13 +46,15 @@ const Main = () => {
                         <OnlineStatus />
                         <RouterHandler />
                         <IntlProvider>
-                            <DesktopUpdater>
-                                <Metadata />
-                                <ToastContainer />
-                                <Preloader>
-                                    <AppRouter />
-                                </Preloader>
-                            </DesktopUpdater>
+                            <FormatterProvider config={formatterConfig}>
+                                <DesktopUpdater>
+                                    <Metadata />
+                                    <ToastContainer />
+                                    <Preloader>
+                                        <AppRouter />
+                                    </Preloader>
+                                </DesktopUpdater>
+                            </FormatterProvider>
                         </IntlProvider>
                     </ErrorBoundary>
                 </ModalContextProvider>

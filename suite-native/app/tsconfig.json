@@ -6,6 +6,9 @@
             "path": "../../suite-common/connect-init"
         },
         {
+            "path": "../../suite-common/formatters"
+        },
+        {
             "path": "../../suite-common/wallet-core"
         },
         { "path": "../atoms" },

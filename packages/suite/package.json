@@ -28,6 +28,7 @@
         "@sentry/minimal": "6.17.2",
         "@suite-common/connect-init": "*",
         "@suite-common/fiat-services": "*",
+        "@suite-common/formatters": "*",
         "@suite-common/intl-types": "*",
         "@suite-common/metadata-types": "*",
         "@suite-common/notifications": "*",
