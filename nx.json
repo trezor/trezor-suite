@@ -13,7 +13,7 @@
                     "build:lib"
                 ],
                 "accessToken": "NmE2NmFlYTUtN2JhZi00ZmQ3LWEyYzMtYWRkNzc3MTg0YmUyfHJlYWQ=",
-                "parallel": 5
+                "parallel": 3
             }
         }
     },
