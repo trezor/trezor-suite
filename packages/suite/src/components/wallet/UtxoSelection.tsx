@@ -5,7 +5,7 @@ import * as modalActions from '@suite-actions/modalActions';
 import { FiatValue, FormattedCryptoAmount, MetadataLabeling, Translation } from '@suite-components';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { useActions, useSelector } from '@suite-hooks';
-import { useTheme, Checkbox, FluidSpinner, variables } from '@trezor/components';
+import { useTheme, Checkbox, FluidSpinner, Icon, Tooltip, variables } from '@trezor/components';
 import type { AccountUtxo } from '@trezor/connect';
 import { TransactionTimestamp } from '@wallet-components';
 import { useSendFormContext } from '@wallet-hooks';
@@ -81,13 +81,6 @@ const Address = styled.div`
     text-overflow: ellipsis;
 `;
 
-const ChangeAddress = styled.span`
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
-    font-size: ${variables.FONT_SIZE.SMALL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    white-space: nowrap;
-`;
-
 const StyledCryptoAmount = styled(FormattedCryptoAmount)`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     margin-left: auto;
@@ -159,15 +152,16 @@ export const UtxoSelection = ({ isChecked, transaction, utxo }: UtxoSelectionPro
             />
             <Body>
                 <Row>
-                    <Address>{utxo.address}</Address>
                     {isChangeAddress && (
-                        <>
-                            <Dot />
-                            <ChangeAddress>
-                                <Translation id="TR_CHANGE_ADDRESS" />
-                            </ChangeAddress>
-                        </>
+                        <Tooltip
+                            interactive={false}
+                            cursor="pointer"
+                            content={<Translation id="TR_CHANGE_ADDRESS_TOOLTIP" />}
+                        >
+                            <Icon icon="CHANGE_ADDRESS" color={theme.TYPE_DARK_GREY} size={16} />
+                        </Tooltip>
                     )}
+                    <Address>{utxo.address}</Address>
                     <StyledCryptoAmount
                         value={formatNetworkAmount(utxo.amount, account.symbol)}
                         symbol={account.symbol}

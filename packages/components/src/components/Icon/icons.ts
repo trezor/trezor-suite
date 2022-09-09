@@ -15,6 +15,7 @@ export const ICONS = {
     BACKUP: require('../../images/icons/backup.svg'),
     BINARY: require('../../images/icons/binary.svg'),
     BROADCAST: require('../../images/icons/broadcast.svg'),
+    CHANGE_ADDRESS: require('../../images/icons/change_address.svg'),
     CALENDAR: require('../../images/icons/calendar.svg'),
     CANCEL: require('../../images/icons/cancel.svg'),
     CHECK: require('../../images/icons/check.svg'),

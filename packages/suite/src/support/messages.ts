@@ -5238,10 +5238,10 @@ export default defineMessages({
         defaultMessage: 'There are no spendable UTXOs in your account.',
         description: 'Message showing in Coin control section',
     },
-    TR_CHANGE_ADDRESS: {
-        id: 'TR_CHANGE_ADDRESS',
-        defaultMessage: 'change address',
-        description: 'Address type showing in Coin control section',
+    TR_CHANGE_ADDRESS_TOOLTIP: {
+        id: 'TR_CHANGE_ADDRESS_TOOLTIP',
+        defaultMessage: 'This is a change address created from a previous send.',
+        description: 'Tooltip over a change address icon in Coin control section',
     },
     TR_DUST: {
         id: 'TR_DUST',
