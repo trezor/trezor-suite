@@ -10,6 +10,7 @@ export const ICONS = {
     ARTICLE: require('../../images/icons/article.svg'),
     ATTACHMENT: require('../../images/icons/attachment.svg'),
     BROADCAST: require('../../images/icons/broadcast.svg'),
+    CHANGE_ADDRESS: require('../../images/icons/change_address.svg'),
     CHECK: require('../../images/icons/check.svg'),
     CHECK_ACTIVE: require('../../images/icons/check_active.svg'),
     COIN: require('../../images/icons/coin.svg'),
