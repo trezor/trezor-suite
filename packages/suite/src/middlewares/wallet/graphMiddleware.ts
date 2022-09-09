@@ -1,7 +1,7 @@
 import { MiddlewareAPI } from 'redux';
 import { DISCOVERY } from '@wallet-actions/constants';
 import * as graphActions from '@wallet-actions/graphActions';
-import { getDiscoveryForDevice } from '@wallet-actions/discoveryActions';
+import { selectDiscoveryForDevice } from '@wallet-reducers/discoveryReducer';
 import { AppState, Action, Dispatch } from '@suite-types';
 import { accountsActions, transactionsActions } from '@suite-common/wallet-core';
 
@@ -28,7 +28,7 @@ const graphMiddleware =
             const { account, transactions } = action.payload;
 
             // don't run during discovery and on unconfirmed txs
-            const discovery = api.dispatch(getDiscoveryForDevice());
+            const discovery = selectDiscoveryForDevice(api.getState());
             if (
                 discovery?.status === DISCOVERY.STATUS.COMPLETED &&
                 transactions.some(t => (t.blockHeight ?? 0) > 0)

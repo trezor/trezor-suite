@@ -115,7 +115,7 @@ const walletMiddleware =
             api.dispatch(coinmarketCommonActions.convertDrafts());
         }
 
-        api.dispatch(selectedAccountActions.getStateForAction(action));
+        api.dispatch(selectedAccountActions.syncSelectedAccount(action));
 
         return action;
     };

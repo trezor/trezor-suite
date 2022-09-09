@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { variables, PassphraseTypeCard } from '@trezor/components';
 import { useSelector, useActions } from '@suite-hooks';
 import * as modalActions from '@suite-actions/modalActions';
-import * as discoveryActions from '@wallet-actions/discoveryActions';
+import { selectIsDiscoveryAuthConfirmationRequired } from '@wallet-reducers/discoveryReducer';
 import * as deviceUtils from '@suite-utils/device';
 import { Translation, Modal } from '@suite-components';
 import type { TrezorDevice } from '@suite-types';
@@ -48,10 +48,10 @@ export const Passphrase = ({ device }: Props) => {
     const [submitted, setSubmitted] = useState(false);
     const devices = useSelector(state => state.devices);
     const actions = useActions({
-        getDiscoveryAuthConfirmationStatus: discoveryActions.getDiscoveryAuthConfirmationStatus,
         onPassphraseSubmit: modalActions.onPassphraseSubmit,
     });
-    const authConfirmation = actions.getDiscoveryAuthConfirmationStatus() || device.authConfirm;
+    const authConfirmation =
+        useSelector(selectIsDiscoveryAuthConfirmationRequired) || device.authConfirm;
     const stateConfirmation = !!device.state;
     const hasEmptyPassphraseWallet = deviceUtils
         .getDeviceInstances(device, devices)

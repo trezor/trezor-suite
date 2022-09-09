@@ -1,10 +1,11 @@
 import produce from 'immer';
+import { createSelector } from '@reduxjs/toolkit';
 import { DISCOVERY } from '@wallet-actions/constants';
 import { STORAGE } from '@suite-actions/constants';
 import { createDeferred } from '@trezor/utils';
-import { Action as SuiteAction } from '@suite-types';
-import { WalletAction } from '@wallet-types';
-import { Discovery as CommonDiscovery } from '@suite-common/wallet-types';
+import type { AppState, Action as SuiteAction } from '@suite-types';
+import type { WalletAction } from '@wallet-types';
+import type { Discovery as CommonDiscovery } from '@suite-common/wallet-types';
 
 export type Discovery = CommonDiscovery;
 
@@ -81,3 +82,25 @@ const discoveryReducer = (state: State = initialState, action: WalletAction | Su
     });
 
 export default discoveryReducer;
+
+type RootState = Pick<AppState, 'wallet' | 'suite'>;
+
+// Get discovery process for deviceState.
+export const selectDiscovery = (state: RootState, deviceState: string | undefined) =>
+    deviceState ? state.wallet.discovery.find(d => d.deviceState === deviceState) : undefined;
+
+export const selectDiscoveryForDevice = (state: RootState) =>
+    selectDiscovery(state, state.suite.device?.state);
+
+/**
+ * Helper selector called from components
+ * return `true` if discovery process is running/completed and `authConfirm` is required
+ */
+export const selectIsDiscoveryAuthConfirmationRequired = createSelector(
+    selectDiscoveryForDevice,
+    discovery =>
+        discovery &&
+        discovery.authConfirm &&
+        (discovery.status < DISCOVERY.STATUS.STOPPING ||
+            discovery.status === DISCOVERY.STATUS.COMPLETED),
+);
