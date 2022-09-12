@@ -261,7 +261,7 @@ export const CustomFee = ({
                 </Col>
             </Wrapper>
 
-            {isComposedFeeRateDifferent && (
+            {isComposedFeeRateDifferent && networkType === 'bitcoin' && (
                 <FeeRateWarning>
                     <Icon icon="INFO" size={12} color={theme.TYPE_LIGHTER_GREY} />
                     <Translation id="TR_FEE_ROUNDING_WARNING" />

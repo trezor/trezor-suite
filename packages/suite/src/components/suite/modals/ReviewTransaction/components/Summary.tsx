@@ -287,7 +287,7 @@ const Summary = ({
                     </ReviewRbfLeftDetailsLineRight>
                 </LeftDetailsRow>
 
-                {isComposedFeeRateDifferent && (
+                {isComposedFeeRateDifferent && network.networkType === 'bitcoin' && (
                     <LeftDetailsRow>
                         <RateInfo>
                             <Translation id="TR_FEE_RATE_CHANGED" />
