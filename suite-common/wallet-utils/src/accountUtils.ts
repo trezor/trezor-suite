@@ -358,6 +358,16 @@ export const enhanceUtxo = (
     return enhancedUtxos;
 };
 
+export const enhanceHistory = ({
+    total,
+    unconfirmed,
+    tokens,
+}: AccountInfo['history']): Account['history'] => ({
+    total,
+    unconfirmed,
+    tokens,
+});
+
 export const getAccountFiatBalance = (
     account: Account,
     localCurrency: string,
