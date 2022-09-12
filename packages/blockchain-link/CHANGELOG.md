@@ -1,6 +1,9 @@
-# 2.1.4 (not released)
+# 2.1.4
 
 -   add missing ADA types
+-   added `joint` transaction type to Transaction interface.
+-   added `isAccountOwned` field to `tx.details.vin`/`tx.details.vout`
+-   removed `totalSpent` field from Transaction interface
 
 # 2.1.3
 
