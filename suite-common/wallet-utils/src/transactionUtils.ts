@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js';
 import { fromWei } from 'web3-utils';
+import { A } from '@mobily/ts-belt';
 
 import {
     Account,
@@ -43,8 +44,8 @@ export const groupTransactionsByDate = (
     transactions: WalletAccountTransaction[],
 ): { [key: string]: WalletAccountTransaction[] } => {
     const r: { [key: string]: WalletAccountTransaction[] } = {};
-    const sortedTxs = transactions.sort((a, b) => sortByBlockHeight(a, b));
-    sortedTxs.sort(sortByBlockHeight).forEach(item => {
+    const sortedTxs = A.sort(transactions, (a, b) => sortByBlockHeight(a, b));
+    A.sort(sortedTxs, sortByBlockHeight).forEach(item => {
         let key = 'pending';
         if (item.blockHeight && item.blockHeight > 0 && item.blockTime && item.blockTime > 0) {
             const t = item.blockTime * 1000;
@@ -168,7 +169,7 @@ export const sumTransactionsFiat = (
  *
  * @param {string} key
  */
-export const parseKey = (key: string) => {
+export const parseDateKey = (key: string) => {
     const parts = key.split('-');
     const d = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
     return d;

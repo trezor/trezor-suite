@@ -12,12 +12,12 @@ import {
     getAccountTransactions,
     getRbfParams,
     groupTransactionsByDate,
-    parseKey,
+    parseDateKey,
 } from '../transactionUtils';
 
 describe('transaction utils', () => {
     it('parseKey', () => {
-        expect(parseKey('2019-10-05')).toEqual(new Date(2019, 9, 5));
+        expect(parseDateKey('2019-10-05')).toEqual(new Date(2019, 9, 5));
     });
 
     it('groupTransactionsByDate', () => {

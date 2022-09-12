@@ -6,7 +6,7 @@ export enum RootStackRoutes {
 
 export enum AppTabsRoutes {
     HomeStack = 'HomeStack',
-    Accounts = 'Accounts',
+    AccountsStack = 'AccountsStack',
     Action = 'Action',
     Prices = 'Prices',
     SettingsStack = 'SettingsStack',
@@ -23,6 +23,12 @@ export enum AccountsImportStackRoutes {
 
 export enum HomeStackRoutes {
     Home = 'Home',
+    AccountDetail = 'AccountDetail',
+}
+
+export enum AccountsStackRoutes {
+    Accounts = 'Accounts',
+    AccountDetail = 'AccountDetail',
 }
 
 export enum SettingsStackRoutes {

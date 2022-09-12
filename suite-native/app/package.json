@@ -23,6 +23,7 @@
         "@suite-common/connect-init": "*",
         "@suite-common/wallet-core": "*",
         "@suite-native/atoms": "*",
+        "@suite-native/module-accounts": "*",
         "@suite-native/module-accounts-import": "*",
         "@suite-native/module-home": "*",
         "@suite-native/module-onboarding": "*",

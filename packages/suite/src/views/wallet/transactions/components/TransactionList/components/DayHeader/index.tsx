@@ -9,7 +9,7 @@ import {
     FormattedCryptoAmount,
     FormattedFiatAmount,
 } from '@suite-components';
-import { parseKey, isTestnet } from '@suite-common/wallet-utils';
+import { parseDateKey, isTestnet } from '@suite-common/wallet-utils';
 import { Network } from '@wallet-types';
 import { SECONDARY_PANEL_HEIGHT } from '@suite-components/AppNavigation';
 
@@ -72,7 +72,7 @@ const DayHeader = ({
     txsCount,
     isHovered,
 }: Props) => {
-    const parsedDate = parseKey(dateKey);
+    const parsedDate = parseDateKey(dateKey);
     const showFiatValue = !isTestnet(symbol);
     return (
         <Wrapper>
