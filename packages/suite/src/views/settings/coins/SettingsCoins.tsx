@@ -30,9 +30,9 @@ export const SettingsCoins = () => {
     const { device } = useDevice();
 
     const bitcoinOnlyFirmware = device?.firmwareType === 'bitcoin-only';
-    const onlyBitcoinEnabled = enabledNetworks.every(coin =>
-        ['btc', 'regtest', 'test'].includes(coin),
-    );
+    const onlyBitcoinEnabled =
+        !!enabledNetworks.length &&
+        enabledNetworks.every(coin => ['btc', 'regtest', 'test'].includes(coin));
     const showDeviceBanner = device?.connected === false; // device is remembered and disconnected
     const showFirmwareTypeBanner =
         !firmwareTypeBannerClosed &&
