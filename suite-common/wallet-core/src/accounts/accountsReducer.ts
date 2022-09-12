@@ -1,6 +1,7 @@
 import { createSelector, isAnyOf } from '@reduxjs/toolkit';
 
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
+import { enhanceHistory } from '@suite-common/wallet-utils';
 import { Account } from '@suite-common/wallet-types';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
@@ -23,7 +24,11 @@ const update = (state: AccountsState, account: Account) => {
     const accountIndex = state.findIndex(accountEqualTo(account));
 
     if (accountIndex !== -1) {
-        state[accountIndex] = account;
+        state[accountIndex] = {
+            ...account,
+            // remove "transactions" field, they are stored in "transactionReducer"
+            history: enhanceHistory(account.history),
+        };
 
         if (!account.marker) {
             // immer.js doesn't update fields that are set to undefined, so instead we delete the field
@@ -58,11 +63,11 @@ export const prepareAccountsReducer = createReducerWithExtraDeps(
             })
             .addCase(accountsActions.createAccount, (state, action) => {
                 // TODO: check if account already exist, for example 2 device instances with same passphrase
-                // remove "transactions" field, they are stored in "transactionReducer"
-                const account = action.payload;
-                if (account.history) {
-                    delete account.history.transactions;
-                }
+                const account = {
+                    ...action.payload,
+                    // remove "transactions" field, they are stored in "transactionReducer"
+                    history: enhanceHistory(action.payload.history),
+                };
                 state.push(account);
             })
             .addCase(accountsActions.updateAccount, (state, action) => {

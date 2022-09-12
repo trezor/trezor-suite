@@ -26,6 +26,7 @@ const initStore = ({ extra = {}, preloadedState }: InitStoreArgs = {}) => {
 const getAccount = (a?: Partial<Account>) => ({
     descriptor: 'xpubDeFauLT1',
     symbol: 'btc',
+    history: {},
     ...a,
 });
 
