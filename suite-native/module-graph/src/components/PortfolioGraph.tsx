@@ -4,6 +4,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Box, Text } from '@suite-native/atoms';
 import { Icon } from '@trezor/icons';
 
+import { dummyData } from '../constants';
 import { Graph } from './Graph';
 
 const arrowStyle = prepareNativeStyle(() => ({
@@ -28,7 +29,7 @@ export const PortfolioGraph = () => {
                     1.3%
                 </Text>
             </Box>
-            <Graph />
+            <Graph points={dummyData} />
         </Box>
     );
 };

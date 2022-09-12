@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { TouchableOpacity } from 'react-native';
 
 import { Text } from '@suite-native/atoms';
@@ -9,6 +9,8 @@ import { TimeFrameValues } from '../types';
 type TimeSwitchItemProps = {
     value: TimeFrameValues;
     shortcut: string;
+    selectedTimeFrame: TimeFrameValues;
+    onSelectTimeFrame: (timeFrame: TimeFrameValues) => void;
 };
 
 type TextStyleProps = {
@@ -26,17 +28,17 @@ const switchItemStyle = prepareNativeStyle(utils => ({
     paddingVertical: utils.spacings.small,
 }));
 
-export const TimeSwitchItem = ({ value, shortcut }: TimeSwitchItemProps) => {
+export const TimeSwitchItem = ({
+    value,
+    shortcut,
+    onSelectTimeFrame,
+    selectedTimeFrame,
+}: TimeSwitchItemProps) => {
     const { applyStyle } = useNativeStyles();
-    const [selectedTimeFrame, setSelectedTimeFrame] = useState<TimeFrameValues>('day');
-
-    const handleSelectTimeFrame = (timeFrame: TimeFrameValues) => {
-        setSelectedTimeFrame(timeFrame);
-    };
 
     return (
         <TouchableOpacity
-            onPress={() => handleSelectTimeFrame(value)}
+            onPress={() => onSelectTimeFrame(value)}
             testID={`TimeSwitchItem_${value}`}
             style={applyStyle(switchItemStyle)}
         >

@@ -1,11 +1,17 @@
 import React from 'react';
-import { LineGraph } from 'react-native-graph';
+import { LineGraph, GraphPoint } from 'react-native-graph';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Box } from '@suite-native/atoms';
 
 import { TimeSwitch } from './TimeSwitch';
-import { dummyData } from '../constants';
+import { TimeFrameValues } from '../types';
+
+type GraphProps = {
+    points: GraphPoint[];
+    defaultTimeFrame?: TimeFrameValues;
+    hasTimeSwitch?: boolean;
+};
 
 const graphWrapperStyle = prepareNativeStyle(() => ({
     width: '100%',
@@ -17,7 +23,7 @@ const graphStyle = prepareNativeStyle(() => ({
     marginVertical: 40,
 }));
 
-export const Graph = () => {
+export const Graph = ({ points, defaultTimeFrame, hasTimeSwitch = true }: GraphProps) => {
     const { applyStyle } = useNativeStyles();
 
     return (
@@ -25,13 +31,13 @@ export const Graph = () => {
             <LineGraph
                 style={applyStyle(graphStyle)}
                 animated
-                points={dummyData}
+                points={points}
                 color="#00854D"
                 enablePanGesture
                 enableFadeInMask
                 onGestureStart={() => {}}
             />
-            <TimeSwitch />
+            {hasTimeSwitch && <TimeSwitch defaultTimeFrame={defaultTimeFrame} />}
         </Box>
     );
 };
