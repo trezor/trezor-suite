@@ -15,7 +15,7 @@
         "@suite-common/suite-types": "*",
         "@suite-common/wallet-config": "*",
         "@suite-common/wallet-types": "*",
-        "@trezor/connect": "9.0.0",
+        "@trezor/connect": "9.0.1",
         "@trezor/utils": "*",
         "dropbox": "^10.32.0",
         "fake-indexeddb": "^3.1.7",
