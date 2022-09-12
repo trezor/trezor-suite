@@ -11,6 +11,8 @@
         "type-check": "tsc --build"
     },
     "dependencies": {
+        "@suite-common/suite-types": "*",
+        "@suite-common/suite-utils": "*",
         "@suite-common/wallet-config": "*",
         "@suite-common/wallet-utils": "*",
         "react": "17.0.2",

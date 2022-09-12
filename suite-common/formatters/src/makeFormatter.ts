@@ -1,15 +1,6 @@
-type PrimitiveSuggestion = 'primitive' | 'comparable';
+type PrimitiveSuggestion = 'primitive' | 'comparable' | 'structured';
 
-type Suggestion =
-    | PrimitiveSuggestion
-    | 'abbreviated'
-    | 'as-icon'
-    /**
-     * @deprecated Since v0.6.3. Use `"as-icon"` or `"with-icon"` instead.
-     */
-    | 'icon'
-    | 'verbose'
-    | 'with-icon';
+type Suggestion = PrimitiveSuggestion | 'abbreviated' | 'as-icon' | 'verbose' | 'with-icon';
 
 const ensureFormatSuggestionIntegrity = (suggestions: Suggestion[]): Suggestion[] =>
     suggestions.includes('primitive') || !suggestions.includes('comparable')
@@ -18,6 +9,9 @@ const ensureFormatSuggestionIntegrity = (suggestions: Suggestion[]): Suggestion[
 
 const ensureFormatAsPrimitiveSuggestionIntegrity = (suggestions: Suggestion[]): Suggestion[] =>
     suggestions.includes('primitive') ? suggestions : ['primitive', ...suggestions];
+
+const ensureFormatAsStructuredSuggestionIntegrity = (suggestions: Suggestion[]): Suggestion[] =>
+    suggestions.includes('structured') ? suggestions : ['structured', ...suggestions];
 
 type DataContext = Record<string, any>;
 
@@ -57,6 +51,17 @@ interface FormatAsPrimitiveMethod<TInput, TPrimitiveOutput, TDataContext extends
         /** Additional data context the formatter might find useful. */
         dataContext?: Partial<TDataContext>,
     ): TPrimitiveOutput;
+}
+
+interface FormatAsStructuredMethod<TInput, TOutput, TDataContext extends DataContext> {
+    (
+        /** Value to format. */
+        value: TInput,
+        /** Suggestions the formatter should take note of in addition to `structured`. */
+        suggestions?: Suggestion[],
+        /** Additional data context the formatter might find useful. */
+        dataContext?: Partial<TDataContext>,
+    ): TOutput;
 }
 
 interface FormatChainDefinition<
@@ -104,6 +109,8 @@ export interface Formatter<
     format: FormatMethod<TInput, TOutput, TPrimitiveOutput, TDataContext>;
     /** Formats a value with the `primitive` suggestion. */
     formatAsPrimitive: FormatAsPrimitiveMethod<TInput, TPrimitiveOutput, TDataContext>;
+    /** Formats a value as a structured object. */
+    formatAsStructure: FormatAsStructuredMethod<TInput, TOutput, TDataContext>;
     /** The callee of the `wrap` method used to produce this formatter. */
     innerFormatter?: Formatter<any, any, any, any>;
     /**
@@ -171,6 +178,13 @@ export const makeFormatter = <
             ensureFormatAsPrimitiveSuggestionIntegrity(suggestions),
             dataContext,
         ) as TPrimitiveOutput;
+
+    formatter.formatAsStructure = (value, suggestions = [], dataContext = {}) =>
+        format(
+            value,
+            ensureFormatAsStructuredSuggestionIntegrity(suggestions),
+            dataContext,
+        ) as TOutput;
 
     formatter.wrap = <
         TNextInput,

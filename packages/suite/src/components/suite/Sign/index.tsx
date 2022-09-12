@@ -1,31 +1,14 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useTheme } from '@trezor/components';
-import BigNumber from 'bignumber.js';
+import { SignValue } from '@suite-common/suite-types';
+import { isSignValuePositive } from '@suite-common/suite-utils';
 
 const StyledSign = styled.span<{ color: string }>`
     color: ${({ color }) => color};
     width: 1ch;
     margin-right: 0.3ch;
 `;
-
-export const isValuePositive = (value: SignValue) => {
-    if (!value) {
-        return;
-    }
-
-    if (value === 'pos') {
-        return true;
-    }
-
-    if (value === 'neg') {
-        return false;
-    }
-
-    return new BigNumber(value).gte(0);
-};
-
-export type SignValue = string | BigNumber | number | 'pos' | 'neg' | null;
 
 interface SignProps {
     value: SignValue;
@@ -49,7 +32,7 @@ export const Sign = ({
         return null;
     }
 
-    const isValuePos = isValuePositive(value);
+    const isValuePos = isSignValuePositive(value);
 
     if (placeholderOnly) {
         return <StyledSign color="transparent">+</StyledSign>;

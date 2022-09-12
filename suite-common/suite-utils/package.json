@@ -13,7 +13,9 @@
     },
     "dependencies": {
         "@suite-common/suite-config": "*",
+        "@suite-common/suite-types": "*",
         "@suite-common/wallet-config": "*",
+        "bignumber.js": "^9.1.0",
         "date-fns": "^2.29.1"
     },
     "devDependencies": {

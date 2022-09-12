@@ -4,6 +4,7 @@ export * from './account';
 export * from './device';
 export * from './environment';
 export * from './guide';
+export * from './sign';
 export * from './messageSystem';
 
 export type Selector<TReturnValue> = (state: any) => TReturnValue;

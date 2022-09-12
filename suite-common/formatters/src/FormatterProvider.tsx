@@ -1,7 +1,7 @@
 import React, { createContext, useMemo } from 'react';
 import { useIntl } from 'react-intl';
 
-import { FormatterConfig } from './types';
+import { FormatterConfig, Formatters } from './types';
 import { prepareCryptoAmountFormatter } from './generators';
 
 type FormatterProviderProps = {
@@ -9,7 +9,7 @@ type FormatterProviderProps = {
     config: FormatterConfig;
 };
 
-export const FormatterProviderContext = createContext({});
+export const FormatterProviderContext = createContext<Formatters>({} as Formatters);
 
 export const FormatterProvider = ({ config, children }: FormatterProviderProps) => {
     const intl = useIntl();
