@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 import { fetchTransactionsThunk } from '@suite-common/wallet-core';
-import { formatNetworkAmount } from '@suite-common/wallet-utils';
+import { amountToSatoshi, formatNetworkAmount } from '@suite-common/wallet-utils';
 import { FormattedCryptoAmount, Translation } from '@suite-components';
 import { SETTINGS } from '@suite-config';
 import { useActions } from '@suite-hooks';
@@ -22,7 +22,7 @@ const Row = styled.div`
 
 const SecondRow = styled(Row)`
     font-size: ${variables.FONT_SIZE.SMALL};
-    margin-top: 12px;
+    margin-top: 20px;
 `;
 
 const DustRow = styled.div`
@@ -50,6 +50,7 @@ const AmountWrapper = styled.div`
 `;
 
 const MissingToInput = styled.div<{ isVisible: boolean }>`
+    /* using visibility rather than display to prevent line height */
     visibility: ${({ isVisible }) => !isVisible && 'hidden'};
 `;
 
@@ -64,11 +65,11 @@ const Line = styled.div`
     margin: 12px 0 16px 0;
 `;
 
-interface Props {
+interface CoinControlProps {
     close: () => void;
 }
 
-export const CoinControl = ({ close }: Props) => {
+export const CoinControl = ({ close }: CoinControlProps) => {
     const [currentPage, setSelectedPage] = useState(1);
 
     const { fetchTransactions } = useActions({
@@ -105,10 +106,10 @@ export const CoinControl = ({ close }: Props) => {
     const totalOutputs = getTotal(
         outputs.map((_, i) => Number(getDefaultValue(`outputs[${i}].amount`, ''))),
     );
-    const totalOutputsInSats = areSatsUsed ? totalOutputs : totalOutputs * 10 ** network.decimals;
+    const totalOutputsInSats = areSatsUsed
+        ? totalOutputs
+        : Number(amountToSatoshi(totalOutputs.toString(), network.decimals));
     const missingToInput = totalOutputsInSats - totalInputs;
-    const formattedTotal = getFormattedAmount(totalInputs);
-    const formattedMissing = getFormattedAmount(missingToInput);
     const isMissingToAmount = missingToInput > 0; // relevant when the amount field is not validated, e.g. there is an error in the address
     const missingAmountTooBig = missingToInput > Number.MAX_SAFE_INTEGER;
     const amountHasError = errors.outputs?.some(error => error?.amount); // relevant when input is a number, but there is an error, e.g. decimals in sats
@@ -123,6 +124,8 @@ export const CoinControl = ({ close }: Props) => {
         !(amountHasError && !notEnougFundsSelectedError) &&
         (isMissingToAmount || notEnougFundsSelectedError);
     const missingToInputId = isMissingToAmount ? 'TR_MISSING_TO_INPUT' : 'TR_MISSING_TO_FEE';
+    const formattedTotal = getFormattedAmount(totalInputs);
+    const formattedMissing = isMissingVisible ? getFormattedAmount(missingToInput) : ''; // set to empty string when hidden to avoid affecting the layout
 
     // pagination
     const totalItems = account.utxo?.length || 0;
