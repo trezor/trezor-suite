@@ -35,7 +35,6 @@ export const Graph = ({ points, defaultTimeFrame, hasTimeSwitch = true }: GraphP
                 color="#00854D"
                 enablePanGesture
                 enableFadeInMask
-                onGestureStart={() => {}}
             />
             {hasTimeSwitch && <TimeSwitch defaultTimeFrame={defaultTimeFrame} />}
         </Box>

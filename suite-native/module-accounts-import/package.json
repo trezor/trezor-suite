@@ -31,7 +31,7 @@
         "@trezor/styles": "*",
         "react": "^17.0.2",
         "react-native": "0.68.2",
-        "react-native-reanimated": "^2.8.0",
+        "react-native-reanimated": "^2.10.0",
         "react-native-vision-camera": "^2.14.0",
         "react-redux": "7.2.2",
         "vision-camera-code-scanner": "^0.2.0"
