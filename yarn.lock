@@ -6406,9 +6406,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-native/transactions@*, @suite-native/transactions@workspace:suite-native/module-transactions":
+"@suite-native/transactions@*, @suite-native/transactions@workspace:suite-native/transactions":
   version: 0.0.0-use.local
-  resolution: "@suite-native/transactions@workspace:suite-native/module-transactions"
+  resolution: "@suite-native/transactions@workspace:suite-native/transactions"
   dependencies:
     "@mobily/ts-belt": ^3.11.0
     "@suite-common/wallet-core": "*"
