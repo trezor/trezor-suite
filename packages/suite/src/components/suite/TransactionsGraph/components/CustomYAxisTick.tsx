@@ -1,7 +1,6 @@
 import React, { useRef, useLayoutEffect } from 'react';
 import { useTheme } from '@trezor/components';
 import { FormattedFiatAmount, FormattedCryptoAmount } from '@suite-components';
-import BigNumber from 'bignumber.js';
 import { NetworkSymbol } from '@wallet-types';
 
 interface CommonProps {
@@ -31,9 +30,6 @@ export const CustomYAxisTick = ({
         }
     }, [ref, setWidth]);
 
-    const bValue = new BigNumber(payload.value);
-    const cryptoValue = bValue.toFixed();
-
     return (
         <g ref={ref} transform={`translate(${x},${y})`}>
             <text
@@ -46,15 +42,14 @@ export const CustomYAxisTick = ({
             >
                 {localCurrency && (
                     <FormattedFiatAmount
-                        currency={localCurrency}
                         value={payload.value}
-                        minimumFractionDigits={bValue.lt(1) ? 2 : 0}
-                        maximumFractionDigits={bValue.lt(1) ? 2 : 0}
+                        currency={localCurrency}
+                        minimumFractionDigits={0}
                     />
                 )}
 
                 {symbol && (
-                    <FormattedCryptoAmount value={cryptoValue} symbol={symbol} isRawString />
+                    <FormattedCryptoAmount value={payload.value} symbol={symbol} isRawString />
                 )}
             </text>
         </g>
