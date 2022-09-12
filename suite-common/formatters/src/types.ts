@@ -8,8 +8,8 @@ export type FormatterConfig = {
 };
 
 export type CryptoAmountFormatterInputType = {
-    amount: string | number | undefined;
-    symbol: string | undefined;
+    amount?: string | number;
+    symbol?: string;
     isBalance?: boolean;
     signValue?: SignValue;
 };

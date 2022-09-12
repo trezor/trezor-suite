@@ -46,15 +46,16 @@ export const FormattedCryptoAmount = ({
         return null;
     }
 
+    const formatterInput = { amount: value, symbol, isBalance, signValue };
+
     // output as a string, mostly for compatability with graphs
     if (isRawString) {
-        return <>{cryptoAmountFormatter.format({ amount: value, symbol, isBalance, signValue })}</>;
+        return <>{cryptoAmountFormatter.format(formatterInput)}</>;
     }
 
-    const cryptoAmountStructure = cryptoAmountFormatter.formatAsStructure({
-        amount: value,
-        symbol,
-    }) as CryptoAmountStructuredOutput;
+    const cryptoAmountStructure = cryptoAmountFormatter.formatAsStructure(
+        formatterInput,
+    ) as CryptoAmountStructuredOutput;
     const { formattedSignValue, formattedValue, formattedSymbol } = cryptoAmountStructure;
 
     const content = (

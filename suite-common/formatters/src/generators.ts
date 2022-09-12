@@ -15,7 +15,7 @@ import {
 } from './types';
 
 export const prepareCryptoAmountFormatter = (config: FormatterConfig) =>
-    makeFormatter<CryptoAmountFormatterInputType, CryptoAmountFormatterOutputType>(
+    makeFormatter<CryptoAmountFormatterInputType, CryptoAmountFormatterOutputType, string>(
         (value, suggestions) => {
             const { amount, symbol, isBalance, signValue } = value;
             const { locale, areSatsDisplayed } = config;
