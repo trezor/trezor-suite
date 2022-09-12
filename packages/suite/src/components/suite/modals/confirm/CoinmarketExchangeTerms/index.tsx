@@ -59,7 +59,7 @@ export const CoinmarketExchangeTerms = ({ decision, onCancel, provider }: Props)
             onCancel={onCancel}
             heading={
                 <Header>
-                    <StyledIcon size={16} icon="LOCK_TITLE" />
+                    <StyledIcon size={16} icon="LOCK_ACTIVE" />
                     <H3>
                         <Translation id="TR_EXCHANGE_FOR_YOUR_SAFETY" />
                     </H3>

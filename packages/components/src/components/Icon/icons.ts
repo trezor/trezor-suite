@@ -52,7 +52,6 @@ export const ICONS = {
     LIGHTBULB: require('../../images/icons/lightbulb.svg'),
     LOCK: require('../../images/icons/lock.svg'),
     LOCK_ACTIVE: require('../../images/icons/lock_active.svg'),
-    LOCK_TITLE: require('../../images/icons/lock_title.svg'),
     LOG: require('../../images/icons/log.svg'),
     MENU: require('../../images/icons/menu.svg'),
     MORE: require('../../images/icons/more.svg'),
