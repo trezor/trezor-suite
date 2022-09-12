@@ -14,7 +14,7 @@
         "@react-navigation/native": "^6.0.11",
         "@react-navigation/stack": "^6.2.2",
         "@suite-native/atoms": "*",
-        "@suite-native/home-graph": "*",
+        "@suite-native/module-graph": "*",
         "@suite-native/navigation": "*",
         "@trezor/icons": "*",
         "@trezor/styles": "*",

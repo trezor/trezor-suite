@@ -14,7 +14,6 @@
         "@suite-common/redux-utils": "*",
         "@suite-common/test-utils": "*",
         "@suite-common/wallet-core": "*",
-        "@suite-native/home-graph": "*",
         "@suite-native/module-devices": "*",
         "@suite-native/module-settings": "*",
         "@trezor/connect": "9.0.0",

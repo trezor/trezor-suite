@@ -1,5 +1,5 @@
 {
-    "name": "@suite-native/home-graph",
+    "name": "@suite-native/module-graph",
     "version": "1.0.0",
     "private": true,
     "license": "See LICENSE.md in repo root",

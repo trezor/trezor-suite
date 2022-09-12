@@ -1,11 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { TouchableOpacity } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
 
 import { Text } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { getSelectedTimeFrame, setSelectedTimeFrame } from '../slice';
 import { TimeFrameValues } from '../types';
 
 type TimeSwitchItemProps = {
@@ -29,12 +27,11 @@ const switchItemStyle = prepareNativeStyle(utils => ({
 }));
 
 export const TimeSwitchItem = ({ value, shortcut }: TimeSwitchItemProps) => {
-    const dispatch = useDispatch();
     const { applyStyle } = useNativeStyles();
-    const selectedTimeFrame = useSelector(getSelectedTimeFrame);
+    const [selectedTimeFrame, setSelectedTimeFrame] = useState<TimeFrameValues>('day');
 
     const handleSelectTimeFrame = (timeFrame: TimeFrameValues) => {
-        dispatch(setSelectedTimeFrame(timeFrame));
+        setSelectedTimeFrame(timeFrame);
     };
 
     return (

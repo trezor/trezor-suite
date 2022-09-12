@@ -3,7 +3,6 @@ import createDebugger from 'redux-flipper';
 
 import { devicesReducer } from '@suite-native/module-devices';
 import { appSettingsReducer } from '@suite-native/module-settings';
-import { appGraphReducer } from '@suite-native/home-graph';
 import {
     prepareAccountsReducer,
     prepareFiatRatesReducer,
@@ -40,7 +39,6 @@ const walletReducers = combineReducers({
 export const store: Store = configureStore({
     reducer: {
         appSettings: appSettingsReducer,
-        appGraph: appGraphReducer,
         devices: devicesReducer,
         wallet: walletReducers,
     },

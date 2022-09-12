@@ -11,8 +11,8 @@
         {
             "path": "../../suite-common/wallet-core"
         },
-        { "path": "../home-graph" },
         { "path": "../module-devices" },
+        { "path": "../module-graph" },
         { "path": "../module-settings" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/styles" },
