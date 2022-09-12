@@ -59,7 +59,7 @@ export const CoinmarketSellTerms = ({ decision, onCancel, provider }: Props) => 
             onCancel={onCancel}
             heading={
                 <Header>
-                    <StyledIcon size={16} icon="LOCK_TITLE" />
+                    <StyledIcon size={16} icon="LOCK_ACTIVE" />
                     <H3>
                         <Translation id="TR_SELL_FOR_YOUR_SAFETY" />
                     </H3>
