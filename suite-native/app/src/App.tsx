@@ -7,7 +7,7 @@ import { NavigationContainer } from '@react-navigation/native';
 
 import { connectInitThunk } from '@suite-common/connect-init';
 import { store } from '@suite-native/state';
-import { initBlockchainThunk } from '@suite-common/wallet-core';
+import { initBlockchainThunk, reconnectBlockchainThunk } from '@suite-common/wallet-core';
 
 import { RootStackNavigator } from './navigation/RootStackNavigator';
 import { StylesProvider } from './StylesProvider';
@@ -20,6 +20,8 @@ const AppComponent = () => {
         const initActions = async () => {
             await dispatch(connectInitThunk()).unwrap();
             await dispatch(initBlockchainThunk()).unwrap();
+            // reconnect blockchain (it emits BLOCKCHAIN.CONNECT) - we need to have fiat rates when the app is loaded.
+            await dispatch(reconnectBlockchainThunk('btc')).unwrap();
         };
         initActions().catch(console.error);
     }, [dispatch]);
