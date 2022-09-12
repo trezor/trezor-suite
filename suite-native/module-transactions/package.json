@@ -1,0 +1,25 @@
+{
+    "name": "@suite-native/transactions",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "test:unit": "jest -c ../../jest.config.base.js --passWithNoTests",
+        "type-check": "tsc --build"
+    },
+    "dependencies": {
+        "@mobily/ts-belt": "^3.11.0",
+        "@suite-common/wallet-core": "*",
+        "@suite-common/wallet-types": "*",
+        "@suite-common/wallet-utils": "*",
+        "@suite-native/atoms": "*",
+        "@trezor/icons": "*",
+        "@trezor/styles": "*",
+        "react": "^17.0.2",
+        "react-native": "0.68.2",
+        "react-redux": "7.2.2"
+    }
+}

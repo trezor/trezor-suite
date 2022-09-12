@@ -10,6 +10,7 @@ import {
     OnboardingStackRoutes,
     RootStackRoutes,
     SettingsStackRoutes,
+    AccountsStackRoutes,
 } from './routes';
 
 export type HomeStackParamList = {
@@ -27,13 +28,18 @@ export type SettingsStackParamList = {
     [SettingsStackRoutes.Demo]: undefined;
 };
 
+export type AccountsStackParamList = {
+    [AccountsStackRoutes.Accounts]: undefined;
+    [AccountsStackRoutes.AccountDetail]: { accountKey: string };
+};
+
 export type OnboardingStackParamList = {
     [OnboardingStackRoutes.Onboarding]: undefined;
 };
 
 export type AppTabsParamList = {
     [AppTabsRoutes.HomeStack]: NavigatorScreenParams<HomeStackParamList>;
-    [AppTabsRoutes.Accounts]: undefined;
+    [AppTabsRoutes.AccountsStack]: NavigatorScreenParams<AccountsStackParamList>;
     [AppTabsRoutes.Action]: undefined;
     [AppTabsRoutes.Prices]: undefined;
     [AppTabsRoutes.SettingsStack]: NavigatorScreenParams<SettingsStackParamList>;

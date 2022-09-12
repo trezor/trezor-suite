@@ -5,7 +5,7 @@ export const rootTabsOptions: TabsOptions = {
         iconName: 'home',
         label: 'Home',
     },
-    [AppTabsRoutes.Accounts]: {
+    [AppTabsRoutes.AccountsStack]: {
         iconName: 'standardWallet',
         label: 'Accounts',
     },

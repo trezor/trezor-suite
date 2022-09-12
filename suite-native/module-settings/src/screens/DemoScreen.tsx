@@ -26,7 +26,7 @@ import {
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Screen, ScreenHeader } from '@suite-native/navigation';
 import { TypographyStyle } from '@trezor/theme';
-import { CryptoIcon, Icon } from '@trezor/icons';
+import { CryptoIcon, Icon, IconName, icons } from '@trezor/icons';
 
 const inputStackStyle = prepareNativeStyle(utils => ({
     backgroundColor: utils.colors.gray100,
@@ -266,6 +266,22 @@ export const DemoScreen = () => {
                             value="firstSelectable"
                             isChecked={radioChecked === 'firstSelectable'}
                         />
+                    </Box>
+                    <Box marginTop="medium">
+                        <Text variant="titleMedium">Icons</Text>
+                        <Box flexWrap="wrap" flexDirection="row">
+                            {Object.keys(icons).map((icon: string) => (
+                                <Box
+                                    marginRight="large"
+                                    marginBottom="large"
+                                    justifyContent="center"
+                                    alignItems="center"
+                                >
+                                    <Icon name={icon as IconName} />
+                                    <Text>{icon}</Text>
+                                </Box>
+                            ))}
+                        </Box>
                     </Box>
                 </Box>
             </Box>

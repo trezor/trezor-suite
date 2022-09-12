@@ -1,4 +1,4 @@
-import { isAnyOf } from '@reduxjs/toolkit';
+import { createSelector, isAnyOf } from '@reduxjs/toolkit';
 
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import { Account } from '@suite-common/wallet-types';
@@ -85,3 +85,16 @@ export const prepareAccountsReducer = createReducerWithExtraDeps(
 );
 
 export const selectAccounts = (state: AccountsRootState) => state.wallet.accounts;
+
+export const selectAccount = (state: AccountsRootState, accountKey: string) =>
+    state.wallet.accounts.find(account => account.key === accountKey);
+
+// So far, mobile app doesn't persis data between app runs so until this is resolved
+// account names are just "Bitcon #<ACCOUNT_INDEX>"
+export const selectAccountName = createSelector(
+    [selectAccount, selectAccounts],
+    (account, accounts) => {
+        const accountIndex = accounts.findIndex(acc => acc.descriptor === account?.descriptor);
+        return `Bitcoin #${accountIndex + 1}`;
+    },
+);

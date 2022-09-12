@@ -50,6 +50,12 @@ export const OnboardingIntroScreen = ({
 }: StackProps<RootStackParamList, RootStackRoutes.Onboarding>) => {
     const { applyStyle } = useNativeStyles();
 
+    const handleNavigateToAccountsImport = () => {
+        navigation.navigate(RootStackRoutes.AccountsImport, {
+            screen: AccountsImportStackRoutes.XpubScan,
+        });
+    };
+
     return (
         <Screen backgroundColor="gray1000" customHorizontalPadding={0}>
             <View style={applyStyle(introStyle)}>
@@ -70,14 +76,7 @@ export const OnboardingIntroScreen = ({
                     </Text>
                 </View>
                 <View style={applyStyle(introButtonStyle)}>
-                    <Button
-                        onPress={() => {
-                            navigation.navigate(RootStackRoutes.AccountsImport, {
-                                screen: AccountsImportStackRoutes.XpubScan,
-                            });
-                        }}
-                        size="large"
-                    >
+                    <Button onPress={handleNavigateToAccountsImport} size="large">
                         Got em
                     </Button>
                 </View>

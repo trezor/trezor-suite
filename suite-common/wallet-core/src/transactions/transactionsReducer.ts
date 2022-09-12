@@ -21,7 +21,7 @@ export const transactionsInitialState: TransactionsState = {
     transactions: {},
 };
 
-interface TransactionsRootState {
+export interface TransactionsRootState {
     wallet: {
         transactions: TransactionsState;
     };
@@ -141,7 +141,10 @@ export const prepareTransactionsReducer = createReducerWithExtraDeps(
 
 export const selectIsLoadingTransactions = (state: TransactionsRootState) =>
     state.wallet.transactions.isLoading;
-export const selectTransactionsError = (state: TransactionsRootState) =>
-    state.wallet.transactions.error;
 export const selectTransactions = (state: TransactionsRootState) =>
     state.wallet.transactions.transactions;
+
+export const selectAccountTransactions = (
+    state: TransactionsRootState,
+    accountKey: string | null,
+) => state.wallet.transactions.transactions[accountKey ?? ''] ?? [];
