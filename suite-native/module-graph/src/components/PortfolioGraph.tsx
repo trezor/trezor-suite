@@ -5,10 +5,14 @@ import { Box, Text } from '@suite-native/atoms';
 import { Icon } from '@trezor/icons';
 
 import { Graph } from './Graph';
+import { generateRandomGraphData } from '../dummyData';
 
 const arrowStyle = prepareNativeStyle(() => ({
     marginRight: 4,
 }));
+
+const POINT_COUNT = 70;
+const POINTS = generateRandomGraphData(POINT_COUNT);
 
 export const PortfolioGraph = () => {
     const { applyStyle } = useNativeStyles();
@@ -28,7 +32,7 @@ export const PortfolioGraph = () => {
                     1.3%
                 </Text>
             </Box>
-            <Graph />
+            <Graph points={POINTS} />
         </Box>
     );
 };

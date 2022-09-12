@@ -1,16 +1,16 @@
 import React from 'react';
 import { TouchableOpacity } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
 
 import { Text } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { getSelectedTimeFrame, setSelectedTimeFrame } from '../slice';
 import { TimeFrameValues } from '../types';
 
 type TimeSwitchItemProps = {
     value: TimeFrameValues;
     shortcut: string;
+    selectedTimeFrame: TimeFrameValues;
+    onSelectTimeFrame: (timeFrame: TimeFrameValues) => void;
 };
 
 type TextStyleProps = {
@@ -28,18 +28,17 @@ const switchItemStyle = prepareNativeStyle(utils => ({
     paddingVertical: utils.spacings.small,
 }));
 
-export const TimeSwitchItem = ({ value, shortcut }: TimeSwitchItemProps) => {
-    const dispatch = useDispatch();
+export const TimeSwitchItem = ({
+    value,
+    shortcut,
+    onSelectTimeFrame,
+    selectedTimeFrame,
+}: TimeSwitchItemProps) => {
     const { applyStyle } = useNativeStyles();
-    const selectedTimeFrame = useSelector(getSelectedTimeFrame);
-
-    const handleSelectTimeFrame = (timeFrame: TimeFrameValues) => {
-        dispatch(setSelectedTimeFrame(timeFrame));
-    };
 
     return (
         <TouchableOpacity
-            onPress={() => handleSelectTimeFrame(value)}
+            onPress={() => onSelectTimeFrame(value)}
             testID={`TimeSwitchItem_${value}`}
             style={applyStyle(switchItemStyle)}
         >
