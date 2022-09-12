@@ -31,7 +31,6 @@ export const AccountListItem = ({ account }: AccountListItemProps) => {
         useNavigation<StackNavigationProps<AccountsStackParamList, AccountsStackRoutes.Accounts>>();
     const { applyStyle } = useNativeStyles();
     const accountName = useSelector((state: AccountsRootState) =>
-        // eslint-disable-next-line no-restricted-syntax
         selectAccountName(state, account.key),
     );
 
