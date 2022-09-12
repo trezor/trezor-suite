@@ -2,9 +2,11 @@ import React, { useEffect } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Provider, useDispatch } from 'react-redux';
+import { IntlProvider } from 'react-intl';
 
 import { NavigationContainer } from '@react-navigation/native';
 
+import enMessages from '@trezor/suite-data/files/translations/en.json';
 import { connectInitThunk } from '@suite-common/connect-init';
 import { store, storePersistor } from '@suite-native/state';
 import { initBlockchainThunk, reconnectBlockchainThunk } from '@suite-common/wallet-core';
@@ -38,24 +40,26 @@ export const App = () => {
 
     return (
         <GestureHandlerRootView style={{ flex: 1 }}>
-            <NavigationContainer>
-                <Provider store={store}>
-                    <StorageProvider persistor={storePersistor}>
-                        <SafeAreaProvider>
-                            <StylesProvider>
-                                <FormatterProvider
-                                    config={{
-                                        locale: 'en',
-                                        areSatsDisplayed: true,
-                                    }}
-                                >
-                                    <AppComponent />
-                                </FormatterProvider>
-                            </StylesProvider>
-                        </SafeAreaProvider>
-                    </StorageProvider>
-                </Provider>
-            </NavigationContainer>
+            <IntlProvider locale="en" defaultLocale="en" messages={enMessages}>
+                <NavigationContainer>
+                    <Provider store={store}>
+                        <StorageProvider persistor={storePersistor}>
+                            <SafeAreaProvider>
+                                <StylesProvider>
+                                    <FormatterProvider
+                                        config={{
+                                            locale: 'en',
+                                            areSatsDisplayed: true,
+                                        }}
+                                    >
+                                        <AppComponent />
+                                    </FormatterProvider>
+                                </StylesProvider>
+                            </SafeAreaProvider>
+                        </StorageProvider>
+                    </Provider>
+                </NavigationContainer>
+            </IntlProvider>
         </GestureHandlerRootView>
     );
 };

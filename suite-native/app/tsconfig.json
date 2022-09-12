@@ -25,6 +25,7 @@
         { "path": "../../packages/connect" },
         { "path": "../../packages/icons" },
         { "path": "../../packages/styles" },
+        { "path": "../../packages/suite-data" },
         { "path": "../../packages/theme" },
         {
             "path": "../../packages/transport-native"

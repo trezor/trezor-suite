@@ -11,6 +11,7 @@
     },
     "dependencies": {
         "@mobily/ts-belt": "^3.11.0",
+        "@suite-common/formatters": "*",
         "@trezor/icons": "*",
         "@trezor/styles": "*",
         "@trezor/theme": "*",

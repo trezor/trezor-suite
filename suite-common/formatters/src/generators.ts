@@ -45,7 +45,7 @@ export const prepareCryptoAmountFormatter = (config: FormatterConfig) =>
             if (isBalance) {
                 formattedValue = formatCoinBalance(String(formattedValue), locale);
             } else {
-                formattedValue = localizeNumber(Number(formattedValue), locale);
+                formattedValue = localizeNumber(formattedValue, locale);
             }
 
             if (suggestions.includes('primitive')) {

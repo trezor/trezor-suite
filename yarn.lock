@@ -2367,6 +2367,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@formatjs/ecma402-abstract@npm:1.12.0":
+  version: 1.12.0
+  resolution: "@formatjs/ecma402-abstract@npm:1.12.0"
+  dependencies:
+    "@formatjs/intl-localematcher": 0.2.31
+    tslib: 2.4.0
+  checksum: 29dc157d669f4fe267b850d06ae2c5a9b666a2b859ba1c99a8228bb10e9b2d7cbc19fdf0e247efed6f5100fd33333cecfb0e86315b52fad639cb137aef44b367
+  languageName: node
+  linkType: hard
+
 "@formatjs/ecma402-abstract@npm:1.6.3":
   version: 1.6.3
   resolution: "@formatjs/ecma402-abstract@npm:1.6.3"
@@ -2406,6 +2416,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@formatjs/intl-datetimeformat@npm:^6.2.0":
+  version: 6.2.0
+  resolution: "@formatjs/intl-datetimeformat@npm:6.2.0"
+  dependencies:
+    "@formatjs/ecma402-abstract": 1.12.0
+    "@formatjs/intl-localematcher": 0.2.31
+    tslib: 2.4.0
+  checksum: 5e13336e954a367aba9761b7477be8c8274dcc001e139a190aebcdc0efdf6d52688e687661d3fc6005a656ae2bc8cc36314b81512b7270b6ba3faeb2a2a80e96
+  languageName: node
+  linkType: hard
+
 "@formatjs/intl-displaynames@npm:6.0.3":
   version: 6.0.3
   resolution: "@formatjs/intl-displaynames@npm:6.0.3"
@@ -2414,6 +2435,15 @@ __metadata:
     "@formatjs/intl-localematcher": 0.2.28
     tslib: 2.4.0
   checksum: 25951bfbb6f01ae61f96905dc23b20f2d0abec05158e705a18e0c74e5482fd6c8d17afe41259a454c819c01bff417a32d1ea2c56eb3ab43abc848b9905463c7f
+  languageName: node
+  linkType: hard
+
+"@formatjs/intl-getcanonicallocales@npm:2.0.4, @formatjs/intl-getcanonicallocales@npm:^2.0.4":
+  version: 2.0.4
+  resolution: "@formatjs/intl-getcanonicallocales@npm:2.0.4"
+  dependencies:
+    tslib: 2.4.0
+  checksum: 222c98dfb37c322bca3a583e2993475ac68c8fa831bc25aa98c9fad8d0455744df1652e60888409e27ea282189e04b386bc55f97706ae76b1c474c0e946d6ab8
   languageName: node
   linkType: hard
 
@@ -2428,12 +2458,65 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@formatjs/intl-locale@npm:^3.0.6":
+  version: 3.0.6
+  resolution: "@formatjs/intl-locale@npm:3.0.6"
+  dependencies:
+    "@formatjs/ecma402-abstract": 1.12.0
+    "@formatjs/intl-getcanonicallocales": 2.0.4
+    tslib: 2.4.0
+  checksum: fc77f69724443bebcd721e5996b813f41987b83dc9f87df8f4298ae2a500af5bd7f310305ff0849675928c5f956ba5475212b8422dd63802da34f9e74e0df7be
+  languageName: node
+  linkType: hard
+
 "@formatjs/intl-localematcher@npm:0.2.28":
   version: 0.2.28
   resolution: "@formatjs/intl-localematcher@npm:0.2.28"
   dependencies:
     tslib: 2.4.0
   checksum: 5906c3ff997f57b9e8c968b9d3c4cbd94352b9cda58b338f436855091845cf1f364bd261815cccd67f22faa530834d6cb05a0677a1ee6f457e68847cbab928f4
+  languageName: node
+  linkType: hard
+
+"@formatjs/intl-localematcher@npm:0.2.31":
+  version: 0.2.31
+  resolution: "@formatjs/intl-localematcher@npm:0.2.31"
+  dependencies:
+    tslib: 2.4.0
+  checksum: c05bf5854f04ad0cc5ad78436023805c9542d97cdf000c685793e2053b84b585be3603b370e27921a617bbb87ef021239d773bc5326ab99850786c73d46a5156
+  languageName: node
+  linkType: hard
+
+"@formatjs/intl-numberformat@npm:^8.1.3":
+  version: 8.1.3
+  resolution: "@formatjs/intl-numberformat@npm:8.1.3"
+  dependencies:
+    "@formatjs/ecma402-abstract": 1.12.0
+    "@formatjs/intl-localematcher": 0.2.31
+    tslib: 2.4.0
+  checksum: 078cd3d670305041c680b42a3b3cb841a68500b2f63bf70079db596a192c7907a68590b9d6d683033c7314f2397e840e193abd85d507a287fb0c712df9f1685c
+  languageName: node
+  linkType: hard
+
+"@formatjs/intl-pluralrules@npm:^5.1.3":
+  version: 5.1.3
+  resolution: "@formatjs/intl-pluralrules@npm:5.1.3"
+  dependencies:
+    "@formatjs/ecma402-abstract": 1.12.0
+    "@formatjs/intl-localematcher": 0.2.31
+    tslib: 2.4.0
+  checksum: da83f58c50ef67ebf261b1af78f5be1772df31ee4d2d7974b7ddd58f803c46bba0f16d2455625bc4aa556bceeda3e263a432c66b40e51c651736deac3aa05600
+  languageName: node
+  linkType: hard
+
+"@formatjs/intl-relativetimeformat@npm:^11.1.3":
+  version: 11.1.3
+  resolution: "@formatjs/intl-relativetimeformat@npm:11.1.3"
+  dependencies:
+    "@formatjs/ecma402-abstract": 1.12.0
+    "@formatjs/intl-localematcher": 0.2.31
+    tslib: 2.4.0
+  checksum: bc781cfb1056ccfebfbdaae147cec70a3c6907949f94690ff566923829be4cb5134a864d7aa9a34fcaaf35e140a887d1b9faf13c666b6f32d43c75b35745b797
   languageName: node
   linkType: hard
 
@@ -6216,6 +6299,7 @@ __metadata:
   resolution: "@suite-native/atoms@workspace:suite-native/atoms"
   dependencies:
     "@mobily/ts-belt": ^3.11.0
+    "@suite-common/formatters": "*"
     "@trezor/icons": "*"
     "@trezor/styles": "*"
     "@trezor/theme": "*"
@@ -6367,6 +6451,7 @@ __metadata:
   dependencies:
     "@react-navigation/native": ^6.0.11
     "@react-navigation/stack": ^6.2.2
+    "@suite-common/formatters": "*"
     "@suite-common/wallet-config": "*"
     "@suite-common/wallet-core": "*"
     "@suite-native/atoms": "*"
@@ -7203,6 +7288,12 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/suite-native@workspace:suite-native/app"
   dependencies:
+    "@formatjs/intl-datetimeformat": ^6.2.0
+    "@formatjs/intl-getcanonicallocales": ^2.0.4
+    "@formatjs/intl-locale": ^3.0.6
+    "@formatjs/intl-numberformat": ^8.1.3
+    "@formatjs/intl-pluralrules": ^5.1.3
+    "@formatjs/intl-relativetimeformat": ^11.1.3
     "@react-navigation/bottom-tabs": ^6.3.1
     "@react-navigation/native": ^6.0.11
     "@react-navigation/stack": ^6.2.2
@@ -7225,13 +7316,16 @@ __metadata:
     "@trezor/connect": 9.0.2
     "@trezor/icons": "*"
     "@trezor/styles": "*"
+    "@trezor/suite-data": "*"
     "@trezor/theme": "*"
     "@trezor/transport-native": "*"
     babel-jest: ^26.6.3
+    big-integer: 1.6.51
     jest: ^26.6.3
     metro-react-native-babel-preset: ^0.67.0
     node-libs-browser: ^2.2.1
     react: 17.0.2
+    react-intl: ^6.0.5
     react-native: 0.68.2
     react-native-config: ^1.4.6
     react-native-flipper: 0.162.0
@@ -11080,7 +11174,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"big-integer@npm:1.6.x, big-integer@npm:^1.6.48, big-integer@npm:^1.6.7":
+"big-integer@npm:1.6.51, big-integer@npm:1.6.x, big-integer@npm:^1.6.48, big-integer@npm:^1.6.7":
   version: 1.6.51
   resolution: "big-integer@npm:1.6.51"
   checksum: 3d444173d1b2e20747e2c175568bedeebd8315b0637ea95d75fd27830d3b8e8ba36c6af40374f36bdaea7b5de376dcada1b07587cb2a79a928fccdb6e6e3c518

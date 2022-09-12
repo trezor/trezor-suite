@@ -4,6 +4,7 @@ import { TouchableOpacity } from 'react-native';
 import { CryptoIcon, CryptoIconName } from '@trezor/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { CSSColor } from '@trezor/theme';
+import { useFormatters } from '@suite-common/formatters';
 
 import { Box } from './Box';
 import { Text } from './Text';
@@ -48,6 +49,7 @@ export const AssetItem = ({
     onPress,
 }: AssetItemProps) => {
     const { applyStyle } = useNativeStyles();
+    const { cryptoAmountFormatter } = useFormatters();
 
     return (
         <TouchableOpacity disabled={!onPress} onPress={onPress}>
@@ -76,7 +78,10 @@ export const AssetItem = ({
                             color={assetColorConfig[cryptoCurrencySymbol]}
                         />
                         <Text variant="hint" color="gray600">
-                            {cryptoCurrencyValue} {cryptoCurrencySymbol}
+                            {cryptoAmountFormatter.format({
+                                amount: cryptoCurrencyValue,
+                                symbol: cryptoCurrencySymbol,
+                            })}
                         </Text>
                     </Box>
                 </Box>
