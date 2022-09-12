@@ -36,13 +36,16 @@ export const AccountDetailScreen = ({
 
     useEffect(() => {
         if (!account) return;
-        dispatch(
+        const promise = dispatch(
             fetchTransactionsThunk({
                 account,
                 page: 1,
                 perPage: 100, // TODO add support for pagination.
             }),
         );
+        return () => {
+            promise.abort();
+        };
     }, [account, dispatch]);
 
     if (!account) return null;
