@@ -3,6 +3,7 @@ import React from 'react';
 import { UI } from '@trezor/connect';
 
 // views
+import { Passphrase, PassphraseProps } from './views/Passphrase';
 // support
 import { ThemeWrapper } from './support/ThemeWrapper';
 import { IntlWrapper } from './support/IntlWrapper';
@@ -17,6 +18,8 @@ export type ConnectUIProps =
 export const ConnectUI = (props: ConnectUIProps) => {
     const getComponent = () => {
         switch (props.type) {
+            case UI.REQUEST_PASSPHRASE:
+                return <Passphrase {...props} />;
             default:
                 // @ts-expect-error
                 throw new Error(`no such view exists: ${props.type}`);
