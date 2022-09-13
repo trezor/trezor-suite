@@ -3313,23 +3313,9 @@
                     >Create a backup in 3 minutes.</a
                 >
             </div>
-
-            <!-- Iframe not loading failure -->
-            <div class="iframe-failure">
-                <h3>Could not communicate with the source website</h3>
-                <p>
-                    The source website was not able to communicate with Trezor Connect. This can be
-                    caused by pop-up or ad blockers. Please ensure all
-                    <a
-                        href="<%= htmlWebpackPlugin.options.urls.TREZOR_URL %>"
-                        target="_blank"
-                        rel="noreferrer noopener"
-                        >trezor.io</a
-                    >
-                    domains are allowed.
-                </p>
-                <button class="cancel" onclick="window.closeWindow();">Close</button>
-            </div>
+            <!-- Iframe not loading failure start-->
+            <!-- moved into @trezor/connect-ui -->
+            <!-- Iframe not loading failure end -->
         </div>
 
         <script type="text/javascript" async="false">
