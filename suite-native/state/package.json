@@ -19,7 +19,9 @@
         "@trezor/connect": "9.0.1",
         "@trezor/styles": "*",
         "@trezor/utils": "*",
-        "redux-flipper": "2.0.2"
+        "react-native-mmkv": "^2.4.3",
+        "redux-flipper": "2.0.2",
+        "redux-persist": "6.0.0"
     },
     "devDependencies": {
         "jest": "^26.6.3",

@@ -5961,7 +5961,6 @@ __metadata:
     "@suite-common/redux-utils": "*"
     "@suite-common/suite-types": "*"
     "@suite-common/test-utils": "*"
-    "@suite-native/state": "*"
     "@trezor/connect": 9.0.1
     "@trezor/utils": "*"
     jest: ^26.6.3
@@ -6313,6 +6312,7 @@ __metadata:
     "@suite-native/atoms": "*"
     "@suite-native/module-graph": "*"
     "@suite-native/navigation": "*"
+    "@suite-native/state": "*"
     "@trezor/icons": "*"
     "@trezor/styles": "*"
     "@trezor/theme": "*"
@@ -6397,7 +6397,9 @@ __metadata:
     "@trezor/styles": "*"
     "@trezor/utils": "*"
     jest: ^26.6.3
+    react-native-mmkv: ^2.4.3
     redux-flipper: 2.0.2
+    redux-persist: 6.0.0
     typescript: 4.7.4
   languageName: unknown
   linkType: soft
@@ -7109,6 +7111,7 @@ __metadata:
     react-native-config: ^1.4.6
     react-native-flipper: 0.162.0
     react-native-gesture-handler: ^2.5.0
+    react-native-mmkv: ^2.4.3
     react-native-reanimated: ^2.10.0
     react-native-safe-area-context: ^4.3.1
     react-native-screens: ^3.13.1
@@ -7116,6 +7119,7 @@ __metadata:
     react-native-vision-camera: ^2.14.0
     react-redux: 7.2.2
     react-test-renderer: 17.0.2
+    redux-persist: 6.0.0
     simple-plist: 1.3.1
     typescript: 4.7.4
     vision-camera-code-scanner: ^0.2.0
@@ -27585,6 +27589,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-native-mmkv@npm:^2.4.3":
+  version: 2.4.3
+  resolution: "react-native-mmkv@npm:2.4.3"
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+  checksum: d01cda411babfaabd6389c26d0ea403b36b5203d82b8a4fe4800317d4192aaa805fcafedd5945692c7893c6c95b01e1d57e8871a76dcd92ab594ed9c84c5faa3
+  languageName: node
+  linkType: hard
+
 "react-native-reanimated@npm:^2.10.0":
   version: 2.10.0
   resolution: "react-native-reanimated@npm:2.10.0"
@@ -28355,6 +28369,15 @@ __metadata:
   dependencies:
     lodash.isplainobject: ^4.0.6
   checksum: 571eab2cca3e46321969025af865ddd780804c811be9db277fddf772d86e3ea67b4ef1b19ea3866417d41eb1b73605103020321f68cf68f379a52679a6823d12
+  languageName: node
+  linkType: hard
+
+"redux-persist@npm:6.0.0":
+  version: 6.0.0
+  resolution: "redux-persist@npm:6.0.0"
+  peerDependencies:
+    redux: ">4.0.0"
+  checksum: edaf10dbf17351ce8058d0802357adae8665b3a1ff39371834e37838ddbe1a79cccbc717b8ba54acb5307651ccf51d0f7dc1cbc8dbae0726ff952d11ef61c6b8
   languageName: node
   linkType: hard
 

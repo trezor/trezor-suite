@@ -16,6 +16,7 @@
         "@suite-native/atoms": "*",
         "@suite-native/module-graph": "*",
         "@suite-native/navigation": "*",
+        "@suite-native/state": "*",
         "@trezor/icons": "*",
         "@trezor/styles": "*",
         "@trezor/theme": "*",

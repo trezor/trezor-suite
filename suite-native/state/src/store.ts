@@ -1,18 +1,12 @@
-import { combineReducers, configureStore, Store, Middleware } from '@reduxjs/toolkit';
+import { configureStore, Store, Middleware } from '@reduxjs/toolkit';
 import createDebugger from 'redux-flipper';
+import { persistReducer, persistStore } from 'redux-persist';
 
-import { devicesReducer } from '@suite-native/module-devices';
-import { appSettingsReducer } from '@suite-native/module-settings';
-import {
-    prepareAccountsReducer,
-    prepareFiatRatesReducer,
-    prepareTransactionsReducer,
-    prepareBlockchainReducer,
-    prepareFiatRatesMiddleware,
-    prepareBlockchainMiddleware,
-} from '@suite-common/wallet-core';
+import { prepareFiatRatesMiddleware, prepareBlockchainMiddleware } from '@suite-common/wallet-core';
 
 import { extraDependencies } from './extraDependencies';
+import { reduxStorage } from './storage';
+import { rootReducers } from './reducers';
 
 const middlewares: Middleware[] = [
     prepareBlockchainMiddleware(extraDependencies),
@@ -24,24 +18,16 @@ if (__DEV__) {
     middlewares.push(reduxFlipperDebugger);
 }
 
-export const transactionsReducer = prepareTransactionsReducer(extraDependencies);
-export const accountsReducer = prepareAccountsReducer(extraDependencies);
-export const fiatRatesReducer = prepareFiatRatesReducer(extraDependencies);
-export const blockchainReducer = prepareBlockchainReducer(extraDependencies);
+const rootPersistConfig = {
+    key: 'root',
+    storage: reduxStorage,
+    whitelist: ['appSettings', 'wallet'],
+};
 
-const walletReducers = combineReducers({
-    accounts: accountsReducer,
-    blockchain: blockchainReducer,
-    fiat: fiatRatesReducer,
-    transactions: transactionsReducer,
-});
+const persistedReducer = persistReducer(rootPersistConfig, rootReducers);
 
 export const store: Store = configureStore({
-    reducer: {
-        appSettings: appSettingsReducer,
-        devices: devicesReducer,
-        wallet: walletReducers,
-    },
+    reducer: persistedReducer,
     middleware: getDefaultMiddleware =>
         getDefaultMiddleware({
             thunk: {
@@ -51,3 +37,5 @@ export const store: Store = configureStore({
 });
 
 export type RootState = ReturnType<typeof store.getState>;
+
+export const persistor = persistStore(store);

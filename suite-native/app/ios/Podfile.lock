@@ -124,6 +124,9 @@ PODS:
     - MLImage (= 1.0.0-beta3)
     - MLKitCommon (~> 7.0)
     - Protobuf (~> 3.12)
+  - MMKV (1.2.14):
+    - MMKVCore (~> 1.2.14)
+  - MMKVCore (1.2.14)
   - nanopb (2.30909.0):
     - nanopb/decode (= 2.30909.0)
     - nanopb/encode (= 2.30909.0)
@@ -362,6 +365,9 @@ PODS:
     - React-Core
   - react-native-flipper (0.162.0):
     - React-Core
+  - react-native-mmkv (2.4.3):
+    - MMKV (>= 1.2.13)
+    - React-Core
   - react-native-safe-area-context (4.3.1):
     - RCT-Folly
     - RCTRequired
@@ -558,6 +564,7 @@ DEPENDENCIES:
   - React-logger (from `../../../node_modules/react-native/ReactCommon/logger`)
   - react-native-config (from `../../../node_modules/react-native-config`)
   - react-native-flipper (from `../../../node_modules/react-native-flipper`)
+  - react-native-mmkv (from `../../../node_modules/react-native-mmkv`)
   - react-native-safe-area-context (from `../../../node_modules/react-native-safe-area-context`)
   - "react-native-skia (from `../../../node_modules/@shopify/react-native-skia`)"
   - react-native-splash-screen (from `../../../node_modules/react-native-splash-screen`)
@@ -606,6 +613,8 @@ SPEC REPOS:
     - MLKitBarcodeScanning
     - MLKitCommon
     - MLKitVision
+    - MMKV
+    - MMKVCore
     - nanopb
     - OpenSSL-Universal
     - PromisesObjC
@@ -656,6 +665,8 @@ EXTERNAL SOURCES:
     :path: "../../../node_modules/react-native-config"
   react-native-flipper:
     :path: "../../../node_modules/react-native-flipper"
+  react-native-mmkv:
+    :path: "../../../node_modules/react-native-mmkv"
   react-native-safe-area-context:
     :path: "../../../node_modules/react-native-safe-area-context"
   react-native-skia:
@@ -730,6 +741,8 @@ SPEC CHECKSUMS:
   MLKitBarcodeScanning: 74f43c38f3f85b3f3f332006b20a1a22f404256c
   MLKitCommon: 20f4aca0ec2bb37cef2b9c211b50586817bac5d3
   MLKitVision: 639a171d937241f3fcf92bc1b3ef8f179f49916c
+  MMKV: 9c4663aa7ca255d478ff10f2f5cb7d17c1651ccd
+  MMKVCore: 89f5c8a66bba2dcd551779dea4d412eeec8ff5bb
   nanopb: b552cce312b6c8484180ef47159bc0f65a1f0431
   OpenSSL-Universal: ebc357f1e6bc71fa463ccb2fe676756aff50e88c
   PromisesObjC: ab77feca74fa2823e7af4249b8326368e61014cb
@@ -750,6 +763,7 @@ SPEC CHECKSUMS:
   React-logger: a0833912d93b36b791b7a521672d8ee89107aff1
   react-native-config: 7cd105e71d903104e8919261480858940a6b9c0e
   react-native-flipper: 7eeb9b59b667dd0619372c7349cf7c78032d1de2
+  react-native-mmkv: 1265a348a4711097ba29c8bcefd5971f48220f2b
   react-native-safe-area-context: 6c12e3859b6f27b25de4fee8201cfb858432d8de
   react-native-skia: 424150f35cf310927ebc81739971491d87bf4c7b
   react-native-splash-screen: 4312f786b13a81b5169ef346d76d33bc0c6dc457

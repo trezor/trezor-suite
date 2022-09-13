@@ -5,7 +5,6 @@
         { "path": "../redux-utils" },
         { "path": "../suite-types" },
         { "path": "../test-utils" },
-        { "path": "../../suite-native/state" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/utils" }
     ]
