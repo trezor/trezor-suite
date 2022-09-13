@@ -6799,18 +6799,19 @@ __metadata:
     "@trezor/crypto-utils": "*"
     "@trezor/trezor-user-env-link": "*"
     "@trezor/urls": "*"
-    "@types/react": ^17.0.0
+    "@types/react": ^17.0.48
     "@types/styled-components": ^5.1.25
     jest: ^26.6.3
     playwright: ^1.22.2
-    react: 17.0.2
     rimraf: ^3.0.2
-    styled-components: ^5.3.5
     typescript: 4.7.4
     webpack: ^5.73.0
     webpack-cli: ^4.10.0
     webpack-dev-server: ^4.7.4
     xvfb-maybe: ^0.2.1
+  peerDependencies:
+    react: 17.0.2
+    styled-components: ^5.3.5
   languageName: unknown
   linkType: soft
 
@@ -6819,13 +6820,18 @@ __metadata:
   resolution: "@trezor/connect-ui@workspace:packages/connect-ui"
   dependencies:
     "@trezor/components": "*"
+    "@trezor/connect": 9.0.1
+    "@trezor/env-utils": "*"
     "@trezor/urls": "*"
     "@types/react": ^17.0.0
     "@types/styled-components": ^5.1.25
     jest: ^26.6.3
     react: 17.0.2
-    styled-components: ^5.3.5
+    react-intl: ^6.0.5
     typescript: 4.7.4
+  peerDependencies:
+    react: 17.0.2
+    styled-components: ^5.3.5
   languageName: unknown
   linkType: soft
 

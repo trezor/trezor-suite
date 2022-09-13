@@ -1,5 +1,4 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/popup/popup.js/
-import React from 'react';
 import {
     POPUP,
     UI_REQUEST,
@@ -10,7 +9,6 @@ import {
     PopupInit,
     PopupHandshake,
 } from '@trezor/connect';
-import { Transport } from '@trezor/connect-ui';
 
 import * as view from './view';
 import {
@@ -19,6 +17,7 @@ import {
     setOperation,
     initMessageChannel,
     postMessageToParent,
+    renderConnectUI,
 } from './view/common';
 import {
     showFirmwareUpdateNotification,
@@ -82,7 +81,7 @@ const handleMessage = (event: MessageEvent<PopupEvent | UiEvent>) => {
             }
             break;
         case UI_REQUEST.TRANSPORT:
-            showView(<Transport />);
+            renderConnectUI(message);
             break;
         case UI_REQUEST.SELECT_DEVICE:
             view.selectDevice(message.payload);
