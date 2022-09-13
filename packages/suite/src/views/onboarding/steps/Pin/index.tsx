@@ -68,8 +68,8 @@ const SetPinStep = () => {
         // Used only on T1, TT shows pins mismatch error on its display
         return (
             <PinStepBox
+                key="pin-mismatch" // to properly rerender in translation mode
                 heading={<Translation id="TR_PIN_MISMATCH_HEADING" />}
-                description={<Translation id="TR_PIN_MISMATCH_TEXT" />}
                 data-test="@pin-mismatch"
                 innerActions={
                     <OnboardingButtonCta
@@ -87,6 +87,7 @@ const SetPinStep = () => {
         // Pin successfully set up
         return (
             <PinStepBox
+                key={status} // to properly rerender in translation mode
                 heading={<Translation id="TR_PIN_HEADING_SUCCESS" />}
                 description={<Translation id="TR_PIN_SET_SUCCESS" />}
                 outerActions={
@@ -108,6 +109,7 @@ const SetPinStep = () => {
                 <SkipStepConfirmation onCancel={() => setShowSkipConfirmation(false)} />
             )}
             <PinStepBox
+                key={status} // to properly rerender in translation mode
                 heading={
                     <>
                         {status === 'initial' && <Translation id="TR_PIN_HEADING_INITIAL" />}
