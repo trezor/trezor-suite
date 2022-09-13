@@ -41,3 +41,6 @@ module.exports.patchBinaries = async () => {
     }
     await copyFile(torPathFrom, `${torPathTo}/tor`);
 };
+
+module.exports.waitForDataTestSelector = (window, selector, options) =>
+    window.waitForSelector(`[data-test="${selector}"]`, options);
