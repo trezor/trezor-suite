@@ -12,8 +12,6 @@ export const StyleSheetWrapper = ({ children }: StyleSheetWrapperProps) => {
         console.error('could not find shadow-root to mount react application');
     }
 
-    return (
-        // @ts-expect-error. typings don't like using shadowRoot as target but it works
-        <StyleSheetManager target={styleSlot.shadowRoot!}>{children}</StyleSheetManager>
-    );
+    // @ts-expect-error. typings don't like using shadowRoot as target but it works
+    return <StyleSheetManager target={styleSlot.shadowRoot!}>{children}</StyleSheetManager>;
 };

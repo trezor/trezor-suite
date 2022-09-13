@@ -3,6 +3,8 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../components" },
+        { "path": "../connect" },
+        { "path": "../env-utils" },
         { "path": "../urls" }
     ]
 }

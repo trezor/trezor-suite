@@ -4,7 +4,7 @@ import { POPUP, ERRORS, PopupInit, CoreMessage, ConnectSettings } from '@trezor/
 import React from 'react';
 import * as ReactDOM from 'react-dom';
 
-import { ThemeWrapper } from '@trezor/connect-ui';
+import { ConnectUI, ConnectUIProps } from '@trezor/connect-ui';
 import { StyleSheetWrapper } from './react/StylesSheetWrapper';
 
 export const header: HTMLElement = document.getElementsByTagName('header')[0];
@@ -66,11 +66,14 @@ export const clearView = () => {
 
 let reactRenderIn;
 
-// todo: type
-const renderReactView = (component: any) => {
+// todo: ConnectUIProps
+export const renderConnectUI = (props: ConnectUIProps) => {
+    clearView();
+
     const reactSlot = document.getElementById('react');
 
     reactSlot!.style.display = 'flex';
+    reactSlot!.style.flex = '1';
 
     if (!reactSlot!.shadowRoot) {
         reactSlot!.attachShadow({ mode: 'open' });
@@ -87,7 +90,7 @@ const renderReactView = (component: any) => {
 
     const Component = (
         <StyleSheetWrapper>
-            <ThemeWrapper>{component}</ThemeWrapper>
+            <ConnectUI {...props} />
         </StyleSheetWrapper>
     );
 
@@ -113,16 +116,9 @@ const renderLegacyView = (className: string) => {
     return container;
 };
 
-export const showView = (component: string | React.ReactElement) => {
+export const showView = (component: string) => {
     clearView();
-
-    // is view available in react?
-    if (typeof component !== 'string') {
-        renderReactView(component);
-    } else {
-        // else continue in the old way
-        return renderLegacyView(component);
-    }
+    return renderLegacyView(component);
 };
 
 export const getIframeElement = () => {
