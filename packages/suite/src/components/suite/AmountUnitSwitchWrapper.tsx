@@ -4,7 +4,6 @@ import { Tooltip, variables } from '@trezor/components';
 import { useBitcoinAmountUnit } from '@wallet-hooks/useBitcoinAmountUnit';
 import { NetworkSymbol } from '@wallet-types';
 import { Translation } from './Translation';
-import { useSelector } from '@suite-hooks/useSelector';
 
 const Container = styled.div`
     position: relative;
@@ -30,15 +29,10 @@ interface AmountUnitSwitchWrapperProps {
 }
 
 export const AmountUnitSwitchWrapper = ({ symbol, children }: AmountUnitSwitchWrapperProps) => {
-    const { isInDebugMode } = useSelector(state => ({
-        isInDebugMode: state.suite.settings.debug.showDebugMenu,
-    }));
-
     const { areSatsDisplayed, toggleBitcoinAmountUnits, areUnitsSupportedByNetwork } =
         useBitcoinAmountUnit(symbol);
 
-    // TEMPORARY SOLUTION!
-    if (!areUnitsSupportedByNetwork || !isInDebugMode) {
+    if (!areUnitsSupportedByNetwork) {
         return <>{children}</>;
     }
 
