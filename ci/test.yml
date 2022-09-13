@@ -133,6 +133,7 @@ suite web 2-master manual:
     - yarn workspace @trezor/suite-desktop build:linux
     - docker-compose pull
     - docker-compose up -d trezor-user-env-unix
+    - docker-compose up -d electrum-regtest
     - docker-compose run test-run
   after_script:
     - docker-compose down
