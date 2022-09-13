@@ -41,6 +41,7 @@ export const RecoveryStep = () => {
             // Model 1
             return (
                 <RecoveryStepBox
+                    key={status} // to properly rerender in translation mode
                     heading={<Translation id="TR_RECOVER_YOUR_WALLET_FROM" />}
                     description={<Translation id="TR_RECOVER_SUBHEADING" />}
                 >
@@ -57,6 +58,7 @@ export const RecoveryStep = () => {
         // Model T
         return (
             <RecoveryStepBox
+                key={status} // to properly rerender in translation mode
                 heading={<Translation id="TR_RECOVER_YOUR_WALLET_FROM" />}
                 description={<Translation id="TR_RECOVER_SUBHEADING_MODEL_T" />}
                 innerActions={
@@ -75,6 +77,7 @@ export const RecoveryStep = () => {
         // 2. step: Standard recovery (user enters recovery seed word by word on host) or Advanced recovery (user types words on a device)
         return (
             <RecoveryStepBox
+                key={status} // to properly rerender in translation mode
                 heading={<Translation id="TR_SELECT_RECOVERY_METHOD" />}
                 description={<Translation id="TR_RECOVERY_TYPES_DESCRIPTION" />}
             >
@@ -93,6 +96,7 @@ export const RecoveryStep = () => {
         // On model 1 we show confirm bubble only while we wait for confirmation that users wants to start the process
         return (
             <RecoveryStepBox
+                key={status} // to properly rerender in translation mode
                 heading={<Translation id="TR_RECOVER_YOUR_WALLET_FROM" />}
                 description={
                     model === 1 ? undefined : <Translation id="TR_RECOVER_SUBHEADING_MODEL_T" />
@@ -120,6 +124,7 @@ export const RecoveryStep = () => {
 
         return (
             <RecoveryStepBox
+                key={status} // to properly rerender in translation mode
                 heading={<Translation id="TR_RECOVER_YOUR_WALLET_FROM" />}
                 confirmOnDevice={model}
                 innerActions={
@@ -148,6 +153,7 @@ export const RecoveryStep = () => {
         // Ready to continue to the next step
         return (
             <RecoveryStepBox
+                key={status} // to properly rerender in translation mode
                 heading={<Translation id="TR_WALLET_RECOVERED_FROM_SEED" />}
                 innerActions={
                     <OnboardingButtonCta
@@ -164,6 +170,7 @@ export const RecoveryStep = () => {
         // Recovery finished with error, user is recommended to wipe the device and start over
         return (
             <RecoveryStepBox
+                key={status} // to properly rerender in translation mode
                 heading={<Translation id="TR_RECOVERY_FAILED" />}
                 description={<Translation id="TR_RECOVERY_ERROR" values={{ error }} />}
                 innerActions={
