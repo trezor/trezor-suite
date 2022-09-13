@@ -30,11 +30,21 @@ target 'TrezorSuite' do
   # you should disable the next line.
   use_flipper!({ 'Flipper' => '0.152.0' })
 
+  ENVFILES = {
+    'Debug' => '$(PODS_ROOT)/../../.env.debug',
+    'Develop' => '$(PODS_ROOT)/../../.env.develop',
+    'Staging' => '$(PODS_ROOT)/../../.env.staging',
+    'Release' => '$(PODS_ROOT)/../../.env.production',
+  }
+  
   post_install do |installer|
     react_native_post_install(installer)
     installer.pods_project.targets.each do |target|
       target.build_configurations.each do |config|
         config.build_settings['EXCLUDED_ARCHS[sdk=iphonesimulator*]'] = "arm64"
+        if target.name == 'react-native-config'
+          config.build_settings['ENVFILE'] = ENVFILES[config.name]
+        end
       end
     end
   end

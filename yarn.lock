@@ -6207,6 +6207,16 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-native/config@*, @suite-native/config@workspace:suite-native/config":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/config@workspace:suite-native/config"
+  dependencies:
+    jest: ^26.6.3
+    react-native-config: ^1.4.6
+    typescript: 4.7.4
+  languageName: unknown
+  linkType: soft
+
 "@suite-native/module-accounts-import@*, @suite-native/module-accounts-import@workspace:suite-native/module-accounts-import":
   version: 0.0.0-use.local
   resolution: "@suite-native/module-accounts-import@workspace:suite-native/module-accounts-import"
@@ -6222,6 +6232,7 @@ __metadata:
     "@suite-common/wallet-types": "*"
     "@suite-common/wallet-utils": "*"
     "@suite-native/atoms": "*"
+    "@suite-native/config": "*"
     "@suite-native/module-devices": "*"
     "@suite-native/module-settings": "*"
     "@suite-native/navigation": "*"
@@ -6231,6 +6242,7 @@ __metadata:
     jest: ^26.6.3
     react: ^17.0.2
     react-native: 0.68.2
+    react-native-config: ^1.4.6
     react-native-reanimated: ^2.10.0
     react-native-vision-camera: ^2.14.0
     react-redux: 7.2.2
@@ -7094,6 +7106,7 @@ __metadata:
     node-libs-browser: ^2.2.1
     react: 17.0.2
     react-native: 0.68.2
+    react-native-config: ^1.4.6
     react-native-flipper: 0.162.0
     react-native-gesture-handler: ^2.5.0
     react-native-reanimated: ^2.10.0
@@ -27511,6 +27524,18 @@ __metadata:
     jscodeshift: ^0.13.1
     nullthrows: ^1.1.1
   checksum: 32ac7e77851df32fdafa6721c01e3bbfe4e42ca4b8e6d6e7e64b96200060629b3c0475bd7007de6db96b4c5edef1f6dd625fb7b77efa8f7fd1869c0777b064cc
+  languageName: node
+  linkType: hard
+
+"react-native-config@npm:^1.4.6":
+  version: 1.4.6
+  resolution: "react-native-config@npm:1.4.6"
+  peerDependencies:
+    react-native-windows: ">=0.61"
+  peerDependenciesMeta:
+    react-native-windows:
+      optional: true
+  checksum: 138da474c67fa1ea45819f6935e8d2c2f4cfea0abc1cc8ca7b3f337ca8c46af630254458cef0d4fb8e21f002d0d58959f3257dca8186ddb5af061a21f740591a
   languageName: node
   linkType: hard
 
