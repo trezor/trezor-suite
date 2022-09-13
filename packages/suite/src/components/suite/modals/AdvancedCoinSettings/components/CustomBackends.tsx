@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Input, Button, H3 } from '@trezor/components';
-import { Translation, TooltipSymbol, CollapsibleBox } from '@suite-components';
+import { Input, Button, H3, CollapsibleBox } from '@trezor/components';
+import { Translation, TooltipSymbol } from '@suite-components';
 import InputError from '@wallet-components/InputError';
 import { useSelector, useActions } from '@suite-hooks';
 import { toggleTor as toggleTorAction } from '@suite-actions/suiteActions';

@@ -2,8 +2,8 @@ import React, { useCallback, useEffect } from 'react';
 import styled, { css } from 'styled-components';
 import { analytics, EventType } from '@trezor/suite-analytics';
 
-import { CharacterCount, CollapsibleBox, Translation } from '@suite-components';
-import { Textarea, Select, variables, Button } from '@trezor/components';
+import { CharacterCount, Translation } from '@suite-components';
+import { Textarea, Select, variables, Button, CollapsibleBox } from '@trezor/components';
 import { useActions, useDevice, useSelector } from '@suite-hooks';
 import * as guideActions from '@suite-actions/guideActions';
 import { ViewWrapper, Header, Content } from '@guide-components';

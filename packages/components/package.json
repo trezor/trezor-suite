@@ -26,7 +26,8 @@
         "react-date-range": "^1.4.0",
         "react-select": "^5.4.0",
         "react-svg": "^15.1.6",
-        "react-truncate": "^2.4.0"
+        "react-truncate": "^2.4.0",
+        "react-use": "^17.4.0"
     },
     "devDependencies": {
         "@storybook/addon-actions": "^6.5.10",

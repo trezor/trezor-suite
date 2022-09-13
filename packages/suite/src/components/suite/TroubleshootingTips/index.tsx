@@ -1,8 +1,7 @@
 import React, { useMemo } from 'react';
 import styled from 'styled-components';
 import { Translation, TrezorLink } from '@suite-components';
-import { CollapsibleBox } from '@suite-components/CollapsibleBox'; // build fails due if imported from suite-components
-import { variables, Button } from '@trezor/components';
+import { variables, Button, CollapsibleBox } from '@trezor/components';
 import { TREZOR_SUPPORT_URL } from '@trezor/urls';
 import TrezorConnect from '@trezor/connect';
 import { isAndroid } from '@trezor/env-utils';

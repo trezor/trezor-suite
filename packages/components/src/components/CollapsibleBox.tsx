@@ -2,7 +2,9 @@ import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import styled, { css } from 'styled-components';
 import { motion, Variants } from 'framer-motion';
 import useMeasure from 'react-use/lib/useMeasure';
-import { Icon, variables, motionEasing } from '@trezor/components';
+import { Icon } from './Icon';
+import { motionEasing } from '../config/motion';
+import * as variables from '../config/variables';
 
 const Wrapper = styled.div<Pick<CollapsibleBoxProps, 'variant'>>`
     display: flex;
@@ -26,7 +28,6 @@ const Wrapper = styled.div<Pick<CollapsibleBoxProps, 'variant'>>`
 
 const Header = styled.div<Pick<CollapsibleBoxProps, 'variant' | 'headerJustifyContent'>>`
     display: flex;
-    width: 100%;
     justify-content: ${({ headerJustifyContent }) => headerJustifyContent};
     align-items: center;
     cursor: pointer;
