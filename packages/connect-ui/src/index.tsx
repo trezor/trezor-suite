@@ -3,6 +3,7 @@ import React from 'react';
 import { UI } from '@trezor/connect';
 
 // views
+import { Transport, TransportProps } from './views/Transport';
 import { Passphrase, PassphraseProps } from './views/Passphrase';
 // support
 import { ThemeWrapper } from './support/ThemeWrapper';
@@ -18,6 +19,8 @@ export type ConnectUIProps =
 export const ConnectUI = (props: ConnectUIProps) => {
     const getComponent = () => {
         switch (props.type) {
+            case UI.TRANSPORT:
+                return <Transport {...props} />;
             case UI.REQUEST_PASSPHRASE:
                 return <Passphrase {...props} />;
             default:
