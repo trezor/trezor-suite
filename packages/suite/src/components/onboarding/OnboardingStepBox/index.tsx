@@ -22,7 +22,6 @@ const OuterActions = styled.div<{ smallMargin?: boolean }>`
     margin-top: ${({ smallMargin }) => (smallMargin ? '0px' : '20px')};
     width: 100%;
     justify-content: center;
-    height: 62px;
     z-index: ${variables.Z_INDEX.BASE};
 `;
 
