@@ -5,7 +5,7 @@ const rmdir = promisify(require('fs').rmdir);
 const fetch = require('node-fetch');
 const { test, expect } = require('@playwright/test');
 
-const { Controller } = require('../../../websocket-client');
+const { Controller } = require('@trezor/trezor-user-env-link');
 const controllerManager = require('../../../controllerManager');
 const { patchBinaries, launchSuite, waitForDataTestSelector } = require('../support/common');
 
