@@ -3,18 +3,14 @@ const fs = require('fs');
 const path = require('path');
 const fetch = require('node-fetch');
 const { test, expect } = require('@playwright/test');
-const { patchBinaries, launchSuite } = require('../support/common');
 
-const getTestElement = async (window, dataTest) => {
-    const selector = `[data-test="${dataTest}"]`;
-    const el = await window.locator(selector);
-    if (!el) {
-        // todo: normally I would retry here. Is there built in retryability in playwright?
-        throw new Error(`element: ${selector} does not exist`);
-    }
-    await expect(el).toBeVisible();
-    return el;
-};
+const { patchBinaries, launchSuite, waitForDataTestSelector } = require('../support/common');
+const { Controller } = require('@trezor/trezor-user-env-link');
+const controllerManager = require('../../../controllerManager');
+
+const controller = new Controller();
+const firmwares = {};
+const manager = controllerManager(controller, firmwares);
 
 test.describe.serial('Bridge', () => {
     test.beforeAll(async () => {
@@ -22,15 +18,30 @@ test.describe.serial('Bridge', () => {
         // binaries somewhere where they are not, so I copy them to that place. Maybe I find a
         // better solution later
         await patchBinaries();
+        // We make sure that bridge from trezor-user-env is stopped.
+        // So we properly test the electron app spawning bridge binary.
+        await manager.trezorUserEnvConnect();
+        await manager.stopBridge();
+    });
+
+    test.afterAll(async () => {
+        // When finish we make bridge from trezor-user-env to run so it is ready for the rest of the tests.
+        await manager.startBridge();
     });
 
     test('App spawns bundled bridge and stops it after app quit', async ({ request }) => {
         const suite = await launchSuite();
-        await suite.electronApp.firstWindow();
         const title = await suite.window.title();
         expect(title).toBe('Trezor Suite');
 
-        const titleEl = await getTestElement(suite.window, '@welcome/title');
+        // We wait for `@welcome/title` or `@dashboard/graph` since
+        // one or the other will be display depending on the state of the app
+        // due to previously run tests. And both means the same for the porpoise of this test.
+        // Bridge should be ready to check `/status` endpoint.
+        await Promise.race([
+            waitForDataTestSelector(suite.window, '@welcome/title'),
+            waitForDataTestSelector(suite.window, '@dashboard/graph'),
+        ]);
 
         // bridge is running
         const bridgeRes1 = await request.get('http://127.0.0.1:21325/status/');
