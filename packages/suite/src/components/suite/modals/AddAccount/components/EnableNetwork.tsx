@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
-import { P, motionAnimation } from '@trezor/components';
+import { P, CollapsibleBox, motionAnimation } from '@trezor/components';
 
-import { CoinsList, Translation, CollapsibleBox, TooltipSymbol } from '@suite-components';
+import { CoinsList, Translation, TooltipSymbol } from '@suite-components';
 import { Network } from '@wallet-types';
 
 import { MoreCoins } from './MoreCoins';

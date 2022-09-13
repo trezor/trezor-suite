@@ -2,7 +2,6 @@ import colors, { THEME } from './config/colors';
 
 export * as variables from './config/variables';
 export { motionAnimation, motionEasing } from './config/motion';
-
 export * as types from './support/types';
 export * from './support/ThemeProvider';
 export * from './support/types';
@@ -45,6 +44,7 @@ export * from './components/form/SelectBar';
 export * from './components/HoverAnimation';
 export * from './components/Fade';
 export * from './components/Image/Image';
+export * from './components/CollapsibleBox';
 
 export * from './constants/keyboardEvents';
 

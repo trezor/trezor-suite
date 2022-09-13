@@ -1,7 +1,6 @@
 import React from 'react';
-import { Icon, colors, variables, Button, H1, H2 } from '@trezor/components';
+import { Icon, colors, variables, Button, H1, H2, CollapsibleBox } from '@trezor/components';
 import styled from 'styled-components';
-import { CollapsibleBox } from '@suite-components/CollapsibleBox';
 import Translation from '../Translation';
 
 const FromMytrezorBanner = styled.div`

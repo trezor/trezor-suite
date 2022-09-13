@@ -2,9 +2,8 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { analytics } from '@trezor/suite-analytics';
 import { DOCS_ANALYTICS_URL, DATA_TOS_URL } from '@trezor/urls';
-import { H1, Switch, variables } from '@trezor/components';
+import { H1, Switch, CollapsibleBox, variables } from '@trezor/components';
 import { useOnboarding, useSelector } from '@suite-hooks';
-import { CollapsibleBox } from '@suite-components';
 import { Translation } from '@suite-components/Translation';
 import TrezorLink from '@suite-components/TrezorLink'; // Separate import because of circular dep problem. Error: Cannot create styled-component for component: undefined
 import { Box, OnboardingButtonCta } from '@onboarding-components';

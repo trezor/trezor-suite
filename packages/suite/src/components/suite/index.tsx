@@ -36,7 +36,6 @@ import Notifications from './Notifications';
 import FormattedDate, { FormattedDateWithBullet } from './FormattedDate';
 import Metadata from './Metadata';
 import HomescreenGallery from './HomescreenGallery';
-import { CollapsibleBox } from './CollapsibleBox';
 import DeviceMatrixExplanation from './DeviceMatrixExplanation';
 import AccountFormCloseButton from './AccountFormCloseButton';
 import { TroubleshootingTips } from './TroubleshootingTips';
@@ -95,7 +94,6 @@ export {
     FormattedDateWithBullet,
     Metadata,
     HomescreenGallery,
-    CollapsibleBox,
     DeviceMatrixExplanation,
     AccountFormCloseButton,
     TroubleshootingTips,
