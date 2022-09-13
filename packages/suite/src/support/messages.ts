@@ -3211,10 +3211,6 @@ export default defineMessages({
         id: 'TR_PIN_MISMATCH_HEADING',
         defaultMessage: 'PIN mismatch!',
     },
-    TR_PIN_MISMATCH_TEXT: {
-        id: 'TR_PIN_MISMATCH_TEXT',
-        defaultMessage: 'PIN mismatch!',
-    },
     TR_DEBUG_SETTINGS: {
         id: 'TR_DEBUG_SETTINGS',
         defaultMessage: 'Debug',
