@@ -6,7 +6,7 @@
     "scripts": {
         "android": "react-native run-android --no-packager --variant=devDebug --appIdSuffix=debug",
         "android:clean": "cd android && ./gradlew clean",
-        "ios": "react-native run-ios --no-packager",
+        "ios": "react-native run-ios --no-packager --scheme \"Debug\"",
         "start": "react-native start --reset-cache",
         "test": "jest",
         "lint:js": "yarn g:eslint .",
