@@ -1,5 +1,15 @@
 apply plugin: "com.android.application"
 
+// requiring lowercase
+project.ext.envConfigFiles = [
+    dev: ".env.debug",
+    firebasedevelop: ".env.develop",
+    firebasestaging: ".env.staging",
+    prod: ".env.production",
+]
+
+apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
+
 if (getGradle().getStartParameter().getTaskRequests().toString().contains("firebaseDevelop")){
     apply plugin: 'com.google.gms.google-services'
 }
@@ -151,6 +161,8 @@ android {
         versionCode 1
         versionName "1.0.0"
         buildConfigField "boolean", "IS_NEW_ARCHITECTURE_ENABLED", isNewArchitectureEnabled().toString()
+        // we use applicationIdSuffix that is different from the package name indicated in AndroidManifest.xml
+        resValue "string", "build_config_package", "io.trezor.suite"
 
         if (isNewArchitectureEnabled()) {
             // We configure the NDK build only if you decide to opt-in for the New Architecture.
