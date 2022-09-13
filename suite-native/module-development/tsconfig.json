@@ -4,9 +4,8 @@
     "references": [
         { "path": "../atoms" },
         { "path": "../config" },
-        { "path": "../module-development" },
-        { "path": "../module-graph" },
         { "path": "../navigation" },
+        { "path": "../state" },
         { "path": "../../packages/icons" },
         { "path": "../../packages/styles" },
         { "path": "../../packages/theme" }

@@ -15,6 +15,7 @@ import {
 
 export type HomeStackParamList = {
     [HomeStackRoutes.Home]: undefined;
+    [HomeStackRoutes.Demo]: undefined;
 };
 
 export type SettingsStackParamList = {
@@ -25,7 +26,6 @@ export type SettingsStackParamList = {
     [SettingsStackRoutes.SettingsCustomization]: undefined;
     [SettingsStackRoutes.SettingsSecurity]: undefined;
     [SettingsStackRoutes.SettingsDangerArea]: undefined;
-    [SettingsStackRoutes.Demo]: undefined;
 };
 
 export type AccountsStackParamList = {

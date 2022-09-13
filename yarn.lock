@@ -6272,6 +6272,25 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-native/module-development@*, @suite-native/module-development@workspace:suite-native/module-development":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/module-development@workspace:suite-native/module-development"
+  dependencies:
+    "@react-navigation/core": ^6.2.2
+    "@suite-native/atoms": "*"
+    "@suite-native/config": "*"
+    "@suite-native/navigation": "*"
+    "@suite-native/state": "*"
+    "@trezor/icons": "*"
+    "@trezor/styles": "*"
+    "@trezor/theme": "*"
+    jest: ^26.6.3
+    react: ^17.0.2
+    react-native: 0.68.2
+    typescript: 4.7.4
+  languageName: unknown
+  linkType: soft
+
 "@suite-native/module-devices@*, @suite-native/module-devices@workspace:suite-native/module-devices":
   version: 0.0.0-use.local
   resolution: "@suite-native/module-devices@workspace:suite-native/module-devices"
@@ -6310,9 +6329,10 @@ __metadata:
     "@react-navigation/native": ^6.0.11
     "@react-navigation/stack": ^6.2.2
     "@suite-native/atoms": "*"
+    "@suite-native/config": "*"
+    "@suite-native/module-development": "*"
     "@suite-native/module-graph": "*"
     "@suite-native/navigation": "*"
-    "@suite-native/state": "*"
     "@trezor/icons": "*"
     "@trezor/styles": "*"
     "@trezor/theme": "*"

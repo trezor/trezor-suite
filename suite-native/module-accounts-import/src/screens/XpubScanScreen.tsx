@@ -3,7 +3,7 @@ import { Pressable, View } from 'react-native';
 
 import { useFocusEffect } from '@react-navigation/native';
 
-import { isProduction } from '@suite-native/config';
+import { isDevelopment } from '@suite-native/config';
 import {
     AccountsImportStackParamList,
     AccountsImportStackRoutes,
@@ -129,7 +129,7 @@ export const XpubScanScreen = ({
                         onSubmitEditing={handleXpubResult}
                         label="Enter x-pub..."
                     />
-                    {!isProduction() && (
+                    {isDevelopment() && (
                         <Button
                             style={applyStyle(devXpubButtonStyle)}
                             onPress={() => handleXpubResult(BTC_HARD_CODED_XPUB)}

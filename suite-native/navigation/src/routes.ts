@@ -23,7 +23,7 @@ export enum AccountsImportStackRoutes {
 
 export enum HomeStackRoutes {
     Home = 'Home',
-    AccountDetail = 'AccountDetail',
+    Demo = 'Demo',
 }
 
 export enum AccountsStackRoutes {
@@ -39,5 +39,4 @@ export enum SettingsStackRoutes {
     SettingsCustomization = 'SettingsCustomization',
     SettingsSecurity = 'SettingsSecurity',
     SettingsDangerArea = 'SettingsDangerArea',
-    Demo = 'Demo',
 }

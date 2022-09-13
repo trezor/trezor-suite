@@ -1,34 +1,32 @@
-import React from 'react';
-import { NativeModules } from 'react-native';
+import React, { useState } from 'react';
 
-import { Button, VStack } from '@suite-native/atoms';
+import { VStack } from '@suite-native/atoms';
 import { Screen } from '@suite-native/navigation';
 import { PortfolioGraph } from '@suite-native/module-graph';
-import { persistor } from '@suite-native/state';
+import { DevContent } from '@suite-native/module-development';
 
 import { Assets } from '../components/Assets';
 import { Transactions } from '../components/Transactions';
 import { DashboardHeader } from '../components/DashboardHeader';
 
 export const HomeScreen = () => {
-    const handleResetStorage = async () => {
-        await persistor.purge();
-        NativeModules.DevSettings.reload();
+    const [devButtonsVisible, setDevButtonsVisible] = useState(false);
+
+    const handleDevButtonsChangeVisibility = (visible: boolean) => {
+        setDevButtonsVisible(visible);
     };
 
     return (
         <Screen>
+            {devButtonsVisible && <DevContent />}
             <VStack spacing={40}>
-                <DashboardHeader />
+                <DashboardHeader
+                    devButtonsVisible={devButtonsVisible}
+                    onDevButtonsChangeVisibility={handleDevButtonsChangeVisibility}
+                />
                 <PortfolioGraph />
                 <Assets />
                 <Transactions />
-                {/* TODO replace with config when this PR is merged https://github.com/trezor/trezor-suite/pull/6266 */}
-                {__DEV__ && (
-                    <Button colorScheme="primary" onPress={handleResetStorage}>
-                        Reset storage
-                    </Button>
-                )}
             </VStack>
         </Screen>
     );
