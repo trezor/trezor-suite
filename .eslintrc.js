@@ -209,7 +209,7 @@ module.exports = {
                 message:
                     'Please don\'t use "state" directly because it\'s typed as "any". Always use it only as parameter for strongly typed selector function.',
                 selector:
-                    "CallExpression[callee.name='useSelector'] MemberExpression[object.type='Identifier']:matches([property.type='Identifier'])",
+                    "CallExpression[callee.name='useSelector'] MemberExpression[object.name='state']:matches([property.type='Identifier'])",
             },
         ],
     },

@@ -10,7 +10,7 @@
         },
         { "path": "../atoms" },
         { "path": "../navigation" },
-        { "path": "../module-transactions" },
+        { "path": "../transactions" },
         { "path": "../../packages/icons" },
         { "path": "../../packages/styles" },
         { "path": "../../packages/theme" }
