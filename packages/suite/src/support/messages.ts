@@ -4635,7 +4635,7 @@ export default defineMessages({
     },
     LOG_INCLUDE_BALANCE_TITLE: {
         id: 'LOG_INCLUDE_BALANCE_TITLE',
-        defaultMessage: 'Include additional information',
+        defaultMessage: 'Include sensitive information',
     },
     LOG_INCLUDE_BALANCE_DESCRIPTION: {
         id: 'LOG_INCLUDE_BALANCE_DESCRIPTION',
@@ -6774,7 +6774,7 @@ export default defineMessages({
     TR_SENT_SYMBOL: {
         id: 'TR_SENT_SYMBOL',
         defaultMessage:
-            'Sent {multiple, select, true {multiple tokens} false {{symbol}} other {{smbol}}}',
+            'Sent {multiple, select, true {multiple tokens} false {{symbol}} other {{symbol}}}',
     },
     TR_SENDING_SYMBOL_TO_SELF: {
         id: 'TR_SENDING_SYMBOL_TO_SELF',
