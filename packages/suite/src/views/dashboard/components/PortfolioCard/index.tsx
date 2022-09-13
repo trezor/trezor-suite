@@ -28,6 +28,17 @@ const Body = styled.div`
     flex: 1;
 `;
 
+const SkeletonTransactionsGraphWrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    padding: 20px 0px;
+    height: 320px;
+`;
+
+const Wrapper = styled.div`
+    display: flex;
+`;
+
 const PortfolioCard = React.memo(() => {
     const { fiat, localCurrency } = useFiatValue();
     const { discovery, getDiscoveryStatus, isDiscoveryRunning } = useDiscovery();
@@ -55,7 +66,11 @@ const PortfolioCard = React.memo(() => {
         body = <Exception exception={discoveryStatus} discovery={discovery} />;
     } else if (discoveryStatus && discoveryStatus.status === 'loading') {
         body = dashboardGraphHidden ? null : (
-            <SkeletonTransactionsGraph data-test="@dashboard/loading" />
+            <SkeletonTransactionsGraphWrapper>
+                <Wrapper>
+                    <SkeletonTransactionsGraph data-test="@dashboard/loading" />
+                </Wrapper>
+            </SkeletonTransactionsGraphWrapper>
         );
     } else if (isDeviceEmpty) {
         body = <EmptyWallet />;
