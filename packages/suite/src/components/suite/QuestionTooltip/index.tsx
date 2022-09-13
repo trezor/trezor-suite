@@ -14,13 +14,18 @@ const Label = styled(H3)`
     color: ${props => props.theme.TYPE_DARK_GREY};
 `;
 
-interface Props {
+// Label container to avoid jumping when tooltip appears
+const FakeTooltipContainer = styled.div`
+    border-bottom: 1.5px solid transparent;
+`;
+
+interface QuestionTooltipProps {
     label?: JSX.Element | ExtendedMessageDescriptor['id'];
     tooltip?: JSX.Element | ExtendedMessageDescriptor['id'];
     className?: string;
 }
 
-export const QuestionTooltip = ({ label, tooltip, className }: Props) => (
+export const QuestionTooltip = ({ label, tooltip, className }: QuestionTooltipProps) => (
     <Wrapper className={className}>
         {label &&
             (tooltip ? (
@@ -31,7 +36,9 @@ export const QuestionTooltip = ({ label, tooltip, className }: Props) => (
                     <Label>{typeof label === 'string' ? <Translation id={label} /> : label}</Label>
                 </Tooltip>
             ) : (
-                <Label>{typeof label === 'string' ? <Translation id={label} /> : label}</Label>
+                <FakeTooltipContainer>
+                    <Label>{typeof label === 'string' ? <Translation id={label} /> : label}</Label>
+                </FakeTooltipContainer>
             ))}
     </Wrapper>
 );

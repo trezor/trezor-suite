@@ -83,13 +83,7 @@ const TransactionsGraph = React.memo((props: Props) => {
             {!props.hideToolbar && (
                 <Toolbar>
                     <RangeSelector align="right" />
-                    {props.onRefresh && (
-                        <Icon
-                            size={14}
-                            icon="REFRESH"
-                            onClick={() => (props.onRefresh ? props.onRefresh() : undefined)}
-                        />
-                    )}
+                    {props.onRefresh && <Icon size={14} icon="REFRESH" onClick={props.onRefresh} />}
                 </Toolbar>
             )}
             <Description>
