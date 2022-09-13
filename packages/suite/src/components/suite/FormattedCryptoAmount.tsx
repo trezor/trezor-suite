@@ -78,7 +78,7 @@ export const FormattedCryptoAmount = ({
     if (isBalance) {
         formattedValue = formatCoinBalance(String(formattedValue), locale);
     } else {
-        formattedValue = localizeNumber(Number(formattedValue), locale);
+        formattedValue = localizeNumber(formattedValue, locale);
     }
 
     // output as a string, mostly for compatability with graphs

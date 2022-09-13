@@ -1,28 +1,38 @@
+import BigNumber from 'bignumber.js';
+
 export const localizeNumber = (
-    amount: number,
+    value: number | string | BigNumber,
     locale = 'en',
     minDecimals = 0,
     maxDecimals = 20,
 ): string => {
-    if (
-        typeof amount !== 'number' ||
-        Number.isNaN(amount) ||
-        !Number.isFinite(amount) ||
-        amount > Number.MAX_SAFE_INTEGER ||
-        amount < Number.MIN_SAFE_INTEGER
-    ) {
-        return '';
-    }
-
     if (maxDecimals < minDecimals) {
         throw Error(
             `maxDecimals (${maxDecimals}) cannot be lower than minDecimals (${minDecimals})`,
         );
     }
 
-    return Intl.NumberFormat(locale, {
-        style: 'decimal',
+    const amount = new BigNumber(value);
+
+    if (amount.isNaN() || !amount.isFinite()) {
+        return '';
+    }
+
+    const amountRoundedDown = amount.toFixed(0, BigNumber.ROUND_DOWN);
+
+    const wholeNumber = BigInt(amountRoundedDown);
+    const formattedWholeNumber = Intl.NumberFormat(locale).format(wholeNumber);
+
+    const decimalNumber = amount.minus(amountRoundedDown).toNumber();
+    const formattedDecimalNumber = Intl.NumberFormat(locale, {
         maximumFractionDigits: maxDecimals,
         minimumFractionDigits: minDecimals,
-    }).format(amount);
+    })
+        .format(decimalNumber)
+        .slice(1); // remove leading zero
+
+    const isDecimalNumber =
+        minDecimals > 0 || new BigNumber(formattedDecimalNumber).decimalPlaces() !== 0;
+
+    return formattedWholeNumber + (isDecimalNumber ? formattedDecimalNumber : '');
 };

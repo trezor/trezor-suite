@@ -24,13 +24,13 @@ export const formatCoinBalance = (value: string, locale = 'en') => {
         // indicate the dust
         const noDecimalsLeft = fixedBalanceBig.modulo(2).toFixed() === '0';
         if (noDecimalsLeft) {
-            return localizeNumber(fixedBalanceBig.toNumber(), locale, 2);
+            return localizeNumber(fixedBalanceBig, locale, 2);
         }
 
-        const localizedBalance = localizeNumber(fixedBalanceBig.toNumber(), locale);
+        const localizedBalance = localizeNumber(fixedBalanceBig, locale);
 
         return isTruncated ? `${localizedBalance}…` : localizedBalance;
     }
 
-    return localizeNumber(balanceBig.toNumber(), locale);
+    return localizeNumber(balanceBig, locale);
 };
