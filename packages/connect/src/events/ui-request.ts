@@ -52,17 +52,35 @@ export const UI_REQUEST = {
     IFRAME_FAILURE: 'ui-iframe_failure',
 } as const;
 
-export interface UiRequestWithoutPayload {
-    type:
-        | typeof UI_REQUEST.LOADING
-        | typeof UI_REQUEST.REQUEST_UI_WINDOW
-        | typeof UI_REQUEST.IFRAME_FAILURE
-        | typeof UI_REQUEST.TRANSPORT
-        | typeof UI_REQUEST.INSUFFICIENT_FUNDS
-        | typeof UI_REQUEST.CLOSE_UI_WINDOW
-        | typeof UI_REQUEST.LOGIN_CHALLENGE_REQUEST;
-    payload?: typeof undefined;
-}
+export type UiRequestWithoutPayload =
+    | {
+          type: typeof UI_REQUEST.LOADING;
+          payload?: typeof undefined;
+      }
+    | {
+          type: typeof UI_REQUEST.REQUEST_UI_WINDOW;
+          payload?: typeof undefined;
+      }
+    | {
+          type: typeof UI_REQUEST.IFRAME_FAILURE;
+          payload?: typeof undefined;
+      }
+    | {
+          type: typeof UI_REQUEST.TRANSPORT;
+          payload?: typeof undefined;
+      }
+    | {
+          type: typeof UI_REQUEST.INSUFFICIENT_FUNDS;
+          payload?: typeof undefined;
+      }
+    | {
+          type: typeof UI_REQUEST.CLOSE_UI_WINDOW;
+          payload?: typeof undefined;
+      }
+    | {
+          type: typeof UI_REQUEST.LOGIN_CHALLENGE_REQUEST;
+          payload?: typeof undefined;
+      };
 
 export type UiRequestDeviceAction =
     | {
@@ -80,11 +98,28 @@ export type UiRequestDeviceAction =
           };
       }
     | {
-          type:
-              | typeof UI_REQUEST.INVALID_PIN
-              | typeof UI_REQUEST.REQUEST_PASSPHRASE_ON_DEVICE
-              | typeof UI_REQUEST.REQUEST_PASSPHRASE
-              | typeof UI_REQUEST.INVALID_PASSPHRASE;
+          type: typeof UI_REQUEST.INVALID_PIN;
+          payload: {
+              device: Device;
+              type?: typeof undefined;
+          };
+      }
+    | {
+          type: typeof UI_REQUEST.REQUEST_PASSPHRASE_ON_DEVICE;
+          payload: {
+              device: Device;
+              type?: typeof undefined;
+          };
+      }
+    | {
+          type: typeof UI_REQUEST.REQUEST_PASSPHRASE;
+          payload: {
+              device: Device;
+              type?: typeof undefined;
+          };
+      }
+    | {
+          type: typeof UI_REQUEST.INVALID_PASSPHRASE;
           payload: {
               device: Device;
               type?: typeof undefined;
