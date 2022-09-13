@@ -7218,6 +7218,8 @@ __metadata:
     "@suite-common/suite-config": "*"
     "@suite-common/suite-utils": "*"
     "@trezor/components": "*"
+    "@trezor/dom-utils": "*"
+    "@trezor/env-utils": "*"
     "@trezor/react-utils": "*"
     "@trezor/suite": "*"
     "@trezor/urls": "*"

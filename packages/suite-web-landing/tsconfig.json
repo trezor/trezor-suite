@@ -18,6 +18,8 @@
             "path": "../../suite-common/suite-utils"
         },
         { "path": "../components" },
+        { "path": "../dom-utils" },
+        { "path": "../env-utils" },
         { "path": "../react-utils" },
         { "path": "../suite" },
         { "path": "../urls" },
