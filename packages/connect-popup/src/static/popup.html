@@ -311,62 +311,7 @@
             <!-- Word: END -->
 
             <!-- Passphrase -->
-            <div class="passphrase">
-                <div class="inputs">
-                    <div class="title">
-                        <h3>Enter<span class="device-name"></span> passphrase</h3>
-                        <p>Note: Passphrase is case-sensitive.</p>
-                    </div>
-                    <div class="row">
-                        <label>Passphrase</label>
-                        <div>
-                            <input
-                                class="pass"
-                                type="password"
-                                autocomplete="new-password"
-                                autocorrect="off"
-                                autocapitalize="off"
-                                spellcheck="false"
-                                data-lpignore="true"
-                                tabindex="1"
-                                maxlength="50"
-                            />
-                        </div>
-                    </div>
-                    <div class="row">
-                        <label>Confirm passphrase</label>
-                        <div>
-                            <input
-                                class="pass-check"
-                                type="password"
-                                autocomplete="new-password"
-                                autocorrect="off"
-                                autocapitalize="off"
-                                spellcheck="false"
-                                data-lpignore="true"
-                                tabindex="2"
-                                maxlength="50"
-                            />
-                        </div>
-                    </div>
-                    <div class="row">
-                        <label class="custom-checkbox">
-                            <input class="show-passphrase" type="checkbox" tabindex="3" />
-                            <span class="indicator"></span>Show passphrase</label
-                        >
-                    </div>
-                </div>
-                <div>
-                    <button class="confirm submit" tabindex="4">Enter</button>
-                    <button class="cancel passphraseOnDevice" tabindex="5" style="display: none">
-                        Enter passphrase on device
-                    </button>
-                    <div class="error-container">
-                        <p class="error">Passphrases do not match!</p>
-                    </div>
-                    <p>Leave passphrase blank to access your default wallet</p>
-                </div>
-            </div>
+            <!-- moved to @trezor/connect-ui -->
             <!-- Passphrase: END -->
 
             <!-- invalid passphrase -->
