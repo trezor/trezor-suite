@@ -1,20 +1,19 @@
 import TrezorConnect from '@trezor/connect';
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { variables } from '@trezor/components';
+import { variables, PassphraseTypeCard } from '@trezor/components';
 import { useSelector, useActions } from '@suite-hooks';
 import * as modalActions from '@suite-actions/modalActions';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
 import * as deviceUtils from '@suite-utils/device';
 import { Translation, Modal } from '@suite-components';
-import PassphraseTypeCard from './components/PassphraseTypeCard';
 import type { TrezorDevice } from '@suite-types';
+import { OpenGuideFromTooltip } from '@guide-components';
 
 const Wrapper = styled.div<{ authConfirmation?: boolean }>`
     display: flex;
     flex-direction: column;
     align-items: center;
-    /* width: ${props => (props.authConfirmation ? 'auto' : '660px')}; */
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
         width: 100%;
@@ -105,6 +104,13 @@ export const Passphrase = ({ device }: Props) => {
                     offerPassphraseOnDevice={onDeviceOffer}
                     onSubmit={onSubmit}
                     singleColModal
+                    learnMoreTooltipOnClick={instance => (
+                        <OpenGuideFromTooltip
+                            dataTest="@tooltip/guideAnchor"
+                            id="/security/passphrase.md"
+                            instance={instance}
+                        />
+                    )}
                 />
             </TinyModal>
         );
@@ -125,6 +131,13 @@ export const Passphrase = ({ device }: Props) => {
                     singleColModal
                     offerPassphraseOnDevice={onDeviceOffer}
                     onSubmit={onSubmit}
+                    learnMoreTooltipOnClick={instance => (
+                        <OpenGuideFromTooltip
+                            dataTest="@tooltip/guideAnchor"
+                            id="/security/passphrase.md"
+                            instance={instance}
+                        />
+                    )}
                 />
             </TinyModal>
         );
@@ -150,6 +163,13 @@ export const Passphrase = ({ device }: Props) => {
                         type="hidden"
                         offerPassphraseOnDevice={onDeviceOffer}
                         onSubmit={onSubmit}
+                        learnMoreTooltipOnClick={instance => (
+                            <OpenGuideFromTooltip
+                                dataTest="@tooltip/guideAnchor"
+                                id="/security/passphrase.md"
+                                instance={instance}
+                            />
+                        )}
                     />
                 </WalletsWrapper>
             </Wrapper>

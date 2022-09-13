@@ -9,5 +9,8 @@
         "noUnusedParameters": false
     },
     "include": ["."],
-    "references": [{ "path": "../react-utils" }]
+    "references": [
+        { "path": "../dom-utils" },
+        { "path": "../react-utils" }
+    ]
 }

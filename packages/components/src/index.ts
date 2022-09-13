@@ -45,6 +45,7 @@ export * from './components/HoverAnimation';
 export * from './components/Fade';
 export * from './components/Image/Image';
 export * from './components/CollapsibleBox';
+export * from './components/Passphrase/PassphraseTypeCard';
 
 export * from './constants/keyboardEvents';
 

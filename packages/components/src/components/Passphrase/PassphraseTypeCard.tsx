@@ -1,5 +1,8 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
+import { FormattedMessage, useIntl } from 'react-intl';
+
 import { AnimatePresence, motion } from 'framer-motion';
+
 import { useKeyPress } from '@trezor/react-utils';
 import { setCaretPosition } from '@trezor/dom-utils';
 import styled, { css } from 'styled-components';
@@ -9,19 +12,19 @@ import {
     variables,
     Input,
     Tooltip,
+    TooltipProps,
     Checkbox,
     Icon,
     motionAnimation,
 } from '@trezor/components';
-import { Translation } from '@suite-components/Translation';
-import { MAX_LENGTH } from '@suite-constants/inputs';
 import { countBytesInString } from '@trezor/utils';
-import { OpenGuideFromTooltip } from '@guide-components';
-import PasswordStrengthIndicator from '@suite-components/PasswordStrengthIndicator';
-import { useTranslation } from '@suite-hooks';
 import { isAndroid } from '@trezor/env-utils';
 
-const Wrapper = styled.div<Pick<Props, 'type' | 'singleColModal'>>`
+import PasswordStrengthIndicator from './PasswordStrengthIndicator';
+
+const MAX_LENGTH = 50;
+
+const Wrapper = styled.div<Pick<PassphraseTypeCardProps, 'type' | 'singleColModal'>>`
     display: flex;
     flex: 1;
     /* align-items: center; */
@@ -48,7 +51,7 @@ const Wrapper = styled.div<Pick<Props, 'type' | 'singleColModal'>>`
         `}
 `;
 
-const IconWrapper = styled.div<Pick<Props, 'type'>>`
+const IconWrapper = styled.div<Pick<PassphraseTypeCardProps, 'type'>>`
     width: 38px;
     height: 38px;
     background: ${props =>
@@ -83,7 +86,7 @@ const WalletTitle = styled.div<{ withMargin: boolean }>`
     ${props => props.withMargin && `margin-bottom: 5px;`}
 `;
 
-const Description = styled.div<Pick<Props, 'authConfirmation'>>`
+const Description = styled.div<Pick<PassphraseTypeCardProps, 'authConfirmation'>>`
     display: flex;
     color: ${props => props.theme.TYPE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.TINY};
@@ -159,7 +162,7 @@ const RetryButton = styled(Button)`
     margin-top: 16px;
 `;
 
-type Props = {
+type PassphraseTypeCardProps = {
     title?: React.ReactNode;
     description?: React.ReactNode;
     submitLabel: React.ReactNode;
@@ -169,13 +172,17 @@ type Props = {
     authConfirmation?: boolean;
     onSubmit: (value: string, passphraseOnDevice?: boolean) => void;
     recreateWallet?: () => void;
+    learnMoreTooltipOnClick?: TooltipProps['guideAnchor'];
+    learnMoreTooltipAppendTo?: TooltipProps['appendTo'];
 };
 
 const DOT = '●';
 
-const PassphraseTypeCard = (props: Props) => {
+export const PassphraseTypeCard = (props: PassphraseTypeCardProps) => {
+    console.log('PassphraseTypeCard', props);
+
     const theme = useTheme();
-    const { translationString } = useTranslation();
+    const intl = useIntl();
     const [value, setValue] = useState('');
     const [enabled, setEnabled] = useState(!props.authConfirmation);
     const [showPassword, setShowPassword] = useState(false);
@@ -187,7 +194,7 @@ const PassphraseTypeCard = (props: Props) => {
     const ref = useRef<HTMLInputElement>(null);
     const caretRef = useRef<number>(0);
 
-    const isTooLong = countBytesInString(value) > MAX_LENGTH.PASSPHRASE;
+    const isTooLong = countBytesInString(value) > MAX_LENGTH;
 
     const { onSubmit } = props;
     const submit = useCallback(
@@ -292,15 +299,20 @@ const PassphraseTypeCard = (props: Props) => {
                             >
                                 {props.type === 'hidden' ? (
                                     <Tooltip
-                                        title={<Translation id="TR_WHAT_IS_PASSPHRASE" />}
-                                        guideAnchor={instance => (
-                                            <OpenGuideFromTooltip
-                                                dataTest="@tooltip/guideAnchor"
-                                                id="/security/passphrase.md"
-                                                instance={instance}
+                                        appendTo={props.learnMoreTooltipAppendTo}
+                                        title={
+                                            <FormattedMessage
+                                                id="TR_WHAT_IS_PASSPHRASE"
+                                                defaultMessage="Learn more about the difference"
                                             />
-                                        )}
-                                        content={<Translation id="TR_HIDDEN_WALLET_TOOLTIP" />}
+                                        }
+                                        guideAnchor={props.learnMoreTooltipOnClick}
+                                        content={
+                                            <FormattedMessage
+                                                id="TR_HIDDEN_WALLET_TOOLTIP"
+                                                defaultMessage="Passphrases add a custom phrase (e.g. a word, sentence, or string of characters) to your recovery seed. This creates a hidden wallet; each hidden wallet can use its own passphrase. Your standard wallet will still be accessible without a passphrase."
+                                            />
+                                        }
                                         dashed
                                     >
                                         <>{props.title}</>
@@ -327,12 +339,21 @@ const PassphraseTypeCard = (props: Props) => {
                         <InputWrapper authConfirmation={props.authConfirmation}>
                             <PassphraseInput
                                 data-test="@passphrase/input"
-                                placeholder={translationString('TR_ENTER_PASSPHRASE')}
+                                placeholder={intl.formatMessage({
+                                    defaultMessage: 'Enter passphrase',
+                                    id: 'TR_ENTER_PASSPHRASE',
+                                })}
                                 onChange={onPassphraseChange}
                                 value={displayValue}
                                 innerRef={ref}
                                 bottomText={
-                                    isTooLong ? <Translation id="TR_PASSPHRASE_TOO_LONG" /> : null
+                                    isTooLong ? (
+                                        // todo: resolve messages sharing https://github.com/trezor/trezor-suite/issues/5325
+                                        <FormattedMessage
+                                            id="TR_PASSPHRASE_TOO_LONG"
+                                            defaultMessage="Passphrase length has exceed the allowed limit."
+                                        />
+                                    ) : null
                                 }
                                 inputState={isTooLong ? 'error' : undefined}
                                 noTopLabel
@@ -366,7 +387,10 @@ const PassphraseTypeCard = (props: Props) => {
                         onClick={() => setEnabled(!enabled)}
                         isChecked={enabled}
                     >
-                        <Translation id="TR_I_UNDERSTAND_PASSPHRASE" />
+                        <FormattedMessage
+                            id="TR_I_UNDERSTAND_PASSPHRASE"
+                            defaultMessage="I understand, passphrases cannot be retrieved unlike everyday passwords"
+                        />
                     </Checkbox>
                 </Content>
             )}
@@ -390,7 +414,6 @@ const PassphraseTypeCard = (props: Props) => {
                                 </ActionButton>
                             </motion.div>
                         )}
-
                         {/* Offer entering passphrase on a device */}
                         {props.offerPassphraseOnDevice && (
                             <OnDeviceActionButton
@@ -399,10 +422,12 @@ const PassphraseTypeCard = (props: Props) => {
                                 onClick={() => submit(value, true)}
                                 fullWidth
                             >
-                                <Translation id="TR_ENTER_PASSPHRASE_ON_DEVICE" />
+                                <FormattedMessage
+                                    id="TR_ENTER_PASSPHRASE_ON_DEVICE"
+                                    defaultMessage="Enter passphrase on Trezor"
+                                />
                             </OnDeviceActionButton>
                         )}
-
                         {/* Try again button shows while confirming a passphrase */}
                         {props.recreateWallet && (
                             <RetryButton
@@ -411,7 +436,7 @@ const PassphraseTypeCard = (props: Props) => {
                                 color={theme.TYPE_LIGHT_GREY}
                                 onClick={props.recreateWallet}
                             >
-                                <Translation id="TR_TRY_AGAIN" />
+                                <FormattedMessage id="TR_TRY_AGAIN" defaultMessage="Try again" />
                             </RetryButton>
                         )}
                     </Actions>
@@ -420,5 +445,3 @@ const PassphraseTypeCard = (props: Props) => {
         </Wrapper>
     );
 };
-
-export default PassphraseTypeCard;
