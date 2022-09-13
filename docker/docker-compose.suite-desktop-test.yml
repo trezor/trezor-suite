@@ -20,3 +20,9 @@ services:
     volumes:
       - ../:/trezor-suite
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
+
+  electrum-regtest:
+    image: ghcr.io/trezor/electrs:latest
+    volumes:
+      - ../:/trezor-suite
+    network_mode: service:trezor-user-env-unix
