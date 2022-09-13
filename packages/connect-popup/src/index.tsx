@@ -8,6 +8,8 @@ import {
     PopupEvent,
     PopupInit,
     PopupHandshake,
+    UI,
+    createUiResponse,
 } from '@trezor/connect';
 
 import * as view from './view';
@@ -17,6 +19,7 @@ import {
     setOperation,
     initMessageChannel,
     postMessageToParent,
+    postMessage,
     renderConnectUI,
 } from './view/common';
 import {
@@ -24,6 +27,8 @@ import {
     showBridgeUpdateNotification,
     showBackupNotification,
 } from './view/notification';
+
+let handshakeTimeout: ReturnType<typeof setTimeout>;
 
 // browser built-in functionality to quickly and safely escape the string
 const escapeHtml = (payload: any) => {
@@ -50,7 +55,10 @@ const handleMessage = (event: MessageEvent<PopupEvent | UiEvent>) => {
 
     // This is message from the window.opener
     if (data.type === UI_REQUEST.IFRAME_FAILURE) {
-        showView('iframe-failure');
+        renderConnectUI({
+            type: 'error',
+            detail: 'iframe-failure',
+        });
         return;
     }
 
@@ -148,7 +156,19 @@ const handleMessage = (event: MessageEvent<PopupEvent | UiEvent>) => {
             break;
         // comes first
         case UI_REQUEST.REQUEST_PASSPHRASE:
-            view.initPassphraseView(message.payload);
+            renderConnectUI({
+                ...message,
+                onPassphraseSubmit: (value: string, passphraseOnDevice?: boolean) => {
+                    postMessage(
+                        createUiResponse(UI.RECEIVE_PASSPHRASE, {
+                            value,
+                            passphraseOnDevice,
+                            // todo: what is this param?
+                            save: true,
+                        }),
+                    );
+                },
+            });
             break;
         // comes when user clicks "enter on device"
         case UI_REQUEST.REQUEST_PASSPHRASE_ON_DEVICE:
@@ -184,6 +204,8 @@ const handshake = (payload: PopupHandshake['payload']) => {
     if (payload.transport && payload.transport.outdated) {
         showBridgeUpdateNotification();
     }
+
+    clearTimeout(handshakeTimeout);
 };
 
 const onLoad = () => {
@@ -195,6 +217,15 @@ const onLoad = () => {
     }
 
     postMessageToParent(createPopupMessage(POPUP.LOADED));
+
+    handshakeTimeout = setTimeout(() => {
+        renderConnectUI({
+            type: 'error',
+            detail: 'handshake-timeout',
+        });
+
+        // todo: increase timeout, now set low for testing
+    }, 30 * 1000);
 };
 
 window.addEventListener('load', onLoad, false);
