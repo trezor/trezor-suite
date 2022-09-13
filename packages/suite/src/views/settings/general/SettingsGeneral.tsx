@@ -24,11 +24,10 @@ import { BitcoinAmountUnit } from './BitcoinAmountUnit';
 import { NETWORKS } from '@wallet-config';
 
 export const SettingsGeneral = () => {
-    const { desktopUpdate, isTorEnabled, enabledNetworks, isInDebugMode } = useSelector(state => ({
+    const { desktopUpdate, isTorEnabled, enabledNetworks } = useSelector(state => ({
         desktopUpdate: state.desktopUpdate,
         isTorEnabled: getIsTorEnabled(state.suite.torStatus),
         enabledNetworks: state.wallet.settings.enabledNetworks,
-        isInDebugMode: state.suite.settings.debug.showDebugMenu,
     }));
 
     const hasBitcoinNetworks = NETWORKS.some(
@@ -36,15 +35,12 @@ export const SettingsGeneral = () => {
             enabledNetworks.includes(symbol) && features?.includes('amount-unit'),
     );
 
-    // TEMPORARY SOLUTION!
-    const isUnitSectionShown = hasBitcoinNetworks && isInDebugMode;
-
     return (
         <SettingsLayout data-test="@settings/index">
             <SettingsSection title={<Translation id="TR_LOCALIZATION" />} icon="FLAG">
                 <Language />
                 <Fiat />
-                {isUnitSectionShown && <BitcoinAmountUnit />}
+                {hasBitcoinNetworks && <BitcoinAmountUnit />}
             </SettingsSection>
 
             <SettingsSection title={<Translation id="TR_LABELING" />} icon="TAG_MINIMAL">
