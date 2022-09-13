@@ -5,6 +5,7 @@ services:
     environment:
       - SDL_VIDEODRIVER=dummy
       - XDG_RUNTIME_DIR=/var/tmp
+
   test-run:
     image: registry.gitlab.com/satoshilabs/trezor/trezor-suite/base:latest
     container_name: desktop-test-runner
@@ -14,3 +15,9 @@ services:
     command: bash -c "yarn workspace @trezor/integration-tests test:desktop"
     volumes:
       - ../:/trezor-suite
+
+  electrum-regtest:
+    image: ghcr.io/trezor/electrs:latest
+    volumes:
+      - ../:/trezor-suite
+    network_mode: service:trezor-user-env-unix
