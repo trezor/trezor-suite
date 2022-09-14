@@ -105,7 +105,7 @@ export const AccountsImportScreen = ({
                 }),
             );
             dispatch(setOnboardingFinished(true));
-            navigation.navigate(RootStackRoutes.App, {
+            navigation.navigate(RootStackRoutes.AppTabs, {
                 screen: AppTabsRoutes.HomeStack,
                 params: {
                     screen: HomeStackRoutes.Home,

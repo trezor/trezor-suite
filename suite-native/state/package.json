@@ -16,10 +16,10 @@
         "@suite-common/wallet-core": "*",
         "@suite-native/module-devices": "*",
         "@suite-native/module-settings": "*",
+        "@suite-native/storage": "*",
         "@trezor/connect": "9.0.1",
         "@trezor/styles": "*",
         "@trezor/utils": "*",
-        "react-native-mmkv": "^2.4.3",
         "redux-flipper": "2.0.2",
         "redux-persist": "6.0.0"
     },

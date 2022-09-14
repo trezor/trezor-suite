@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { isDevelopment } from '@suite-native/config';
+import { isDevelopOrDebugEnv } from '@suite-native/config';
 import { Box, Button } from '@suite-native/atoms';
 
 type DevButtonProps = {
@@ -9,7 +9,7 @@ type DevButtonProps = {
 };
 
 export const DevButton = ({ devButtonsVisible, onDevButtonsChangeVisibility }: DevButtonProps) => {
-    if (isDevelopment()) {
+    if (isDevelopOrDebugEnv()) {
         return (
             <Box marginLeft="medium">
                 <Button onPress={() => onDevButtonsChangeVisibility(!devButtonsVisible)}>

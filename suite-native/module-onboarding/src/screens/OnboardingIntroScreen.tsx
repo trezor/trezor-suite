@@ -47,7 +47,7 @@ const introButtonStyle = prepareNativeStyle(_ => ({
 
 export const OnboardingIntroScreen = ({
     navigation,
-}: StackProps<RootStackParamList, RootStackRoutes.Onboarding>) => {
+}: StackProps<RootStackParamList, RootStackRoutes.OnboardingStack>) => {
     const { applyStyle } = useNativeStyles();
 
     const handleNavigateToAccountsImport = () => {

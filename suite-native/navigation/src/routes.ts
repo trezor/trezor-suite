@@ -1,7 +1,8 @@
 export enum RootStackRoutes {
-    Onboarding = 'Onboarding',
-    App = 'App',
+    OnboardingStack = 'OnboardingStack',
+    AppTabs = 'AppTabs',
     AccountsImport = 'AccountsImport',
+    DevUtilsStack = 'DevUtilsStack',
 }
 
 export enum AppTabsRoutes {
@@ -21,9 +22,13 @@ export enum AccountsImportStackRoutes {
     AccountImport = 'AccountImport',
 }
 
+export enum DevUtilsStackRoutes {
+    DevUtils = 'DevUtils',
+    Demo = 'Demo',
+}
+
 export enum HomeStackRoutes {
     Home = 'Home',
-    Demo = 'Demo',
 }
 
 export enum AccountsStackRoutes {

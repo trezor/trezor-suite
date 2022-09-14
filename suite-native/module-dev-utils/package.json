@@ -1,5 +1,5 @@
 {
-    "name": "@suite-native/module-development",
+    "name": "@suite-native/module-dev-utils",
     "version": "1.0.0",
     "private": true,
     "license": "See LICENSE.md in repo root",
@@ -12,10 +12,11 @@
     },
     "dependencies": {
         "@react-navigation/core": "^6.2.2",
+        "@react-navigation/stack": "^6.2.2",
         "@suite-native/atoms": "*",
         "@suite-native/config": "*",
         "@suite-native/navigation": "*",
-        "@suite-native/state": "*",
+        "@suite-native/storage": "*",
         "@trezor/icons": "*",
         "@trezor/styles": "*",
         "@trezor/theme": "*",

@@ -16,6 +16,7 @@
         "@react-navigation/stack": "^6.2.2",
         "@reduxjs/toolkit": "^1.8.3",
         "@suite-native/atoms": "*",
+        "@suite-native/config": "*",
         "@suite-native/navigation": "*",
         "@trezor/icons": "*",
         "@trezor/styles": "*",

@@ -3,16 +3,16 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Provider, useDispatch } from 'react-redux';
 
-import { PersistGate } from 'redux-persist/integration/react';
 import { NavigationContainer } from '@react-navigation/native';
 
 import { connectInitThunk } from '@suite-common/connect-init';
-import { store, persistor } from '@suite-native/state';
+import { store, storePersistor } from '@suite-native/state';
 import { initBlockchainThunk, reconnectBlockchainThunk } from '@suite-common/wallet-core';
 
 import { RootStackNavigator } from './navigation/RootStackNavigator';
 import { StylesProvider } from './StylesProvider';
 import { useSplashScreen } from './hooks/useSplashScreen';
+import { StorageProvider } from './StorageProvider';
 
 const AppComponent = () => {
     const dispatch = useDispatch();
@@ -37,13 +37,13 @@ export const App = () => {
         <GestureHandlerRootView style={{ flex: 1 }}>
             <NavigationContainer>
                 <Provider store={store}>
-                    <PersistGate loading={null} persistor={persistor}>
+                    <StorageProvider persistor={storePersistor}>
                         <SafeAreaProvider>
                             <StylesProvider>
                                 <AppComponent />
                             </StylesProvider>
                         </SafeAreaProvider>
-                    </PersistGate>
+                    </StorageProvider>
                 </Provider>
             </NavigationContainer>
         </GestureHandlerRootView>

@@ -4,23 +4,40 @@ import { useNavigation } from '@react-navigation/core';
 
 import {
     SettingsStackRoutes,
-    StackNavigationProps,
     SettingsStackParamList,
+    StackToStackCompositeNavigationProps,
+    RootStackParamList,
+    RootStackRoutes,
 } from '@suite-native/navigation';
+import { isDevelopOrDebugEnv } from '@suite-native/config';
 
 import { SettingsSection } from './SettingsSection';
 import { SettingsSectionItem } from './SettingsSectionItem';
 
 export const ApplicationSettings = () => {
     const navigation =
-        useNavigation<StackNavigationProps<SettingsStackParamList, SettingsStackRoutes.Settings>>();
+        useNavigation<
+            StackToStackCompositeNavigationProps<
+                SettingsStackParamList,
+                SettingsStackRoutes.Settings,
+                RootStackParamList
+            >
+        >();
 
-    const handleNavigation = (routeName: SettingsStackRoutes): void => {
+    const handleNavigation = (routeName: SettingsStackRoutes | RootStackRoutes): void => {
         navigation.navigate(routeName);
     };
 
     return (
-        <SettingsSection title="Aplication">
+        <SettingsSection title="Application">
+            {isDevelopOrDebugEnv() && (
+                <SettingsSectionItem
+                    iconName="placeholder"
+                    title="DEV utils"
+                    subtitle="Only for devs and internal testers."
+                    onPress={() => handleNavigation(RootStackRoutes.DevUtilsStack)}
+                />
+            )}
             <SettingsSectionItem
                 iconName="flag"
                 title="Localisation"

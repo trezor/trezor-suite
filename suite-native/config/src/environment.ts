@@ -1,6 +1,6 @@
 import Config from 'react-native-config';
 
-export const isDevelopment = () =>
+export const isDevelopOrDebugEnv = () =>
     Config.ENVIRONMENT === 'debug' || Config.ENVIRONMENT === 'develop';
 
-export const getEnvironment = () => Config.ENVIRONMENT;
+export const getEnv = () => Config.ENVIRONMENT;
