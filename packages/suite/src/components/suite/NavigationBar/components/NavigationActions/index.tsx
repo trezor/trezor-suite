@@ -151,7 +151,7 @@ export const NavigationActions: React.FC<NavigationActionsProps> = ({
                     <ActionItem
                         onClick={() => action('settings-index')}
                         label={<Translation id="TR_EARLY_ACCESS_MENU" />}
-                        icon="EXPERIMENTAL_FEATURES"
+                        icon="EXPERIMENTAL"
                         isMobileLayout
                     />
                 ) : (
