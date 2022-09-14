@@ -3,8 +3,7 @@ import { CoinLogo, variables } from '@trezor/components';
 import styled from 'styled-components';
 import { getTitleForNetwork } from '@suite-common/wallet-utils';
 import { Translation, FiatValue } from '@suite-components';
-import { SkeletonCircle, SkeletonRectangle, Stack } from '@suite-components/Skeleton';
-import { useLoadingSkeleton, useActions } from '@suite-hooks';
+import { useActions } from '@suite-hooks';
 import { CoinBalance } from '@wallet-components';
 import { Account } from '@wallet-types';
 import * as routerActions from '@suite-actions/routerActions';
@@ -46,11 +45,12 @@ const Wrapper = styled.div.attrs((props: WrapperProps) => ({
     }
 `;
 
-const Left = styled.div`
+export const Left = styled.div`
     display: flex;
     padding-top: 3px;
 `;
-const Right = styled.div`
+
+export const Right = styled.div`
     display: flex;
     flex-direction: column;
     padding-left: 8px;
@@ -92,21 +92,21 @@ const FiatValueWrapper = styled.div`
     line-height: 1.57;
 `;
 
-const AccountHeader = styled.div`
+export const AccountHeader = styled.div`
     display: flex;
     padding: 10px 16px;
     border-radius: 4px;
     cursor: pointer;
 `;
 
-interface Props {
+interface AccountItemProps {
     account: Account;
     selected: boolean;
     closeMenu: () => void;
 }
 
 // Using `React.forwardRef` to be able to pass `ref` (item) TO parent (Menu/index)
-const AccountItem = forwardRef((props: Props, ref: React.Ref<HTMLDivElement>) => {
+export const AccountItem = forwardRef((props: AccountItemProps, ref: React.Ref<HTMLDivElement>) => {
     const { goto } = useActions({
         goto: routerActions.goto,
     });
@@ -192,26 +192,3 @@ const AccountItem = forwardRef((props: Props, ref: React.Ref<HTMLDivElement>) =>
         </Wrapper>
     );
 });
-
-export const SkeletonAccountItem = (props: { animate?: boolean }) => {
-    const { shouldAnimate } = useLoadingSkeleton();
-    const animate = props.animate ?? shouldAnimate;
-    return (
-        <AccountHeader>
-            <Left>
-                <SkeletonCircle size="18px" />
-            </Left>
-            <Right>
-                <Stack col childMargin="0px 0px 8px 0px">
-                    <SkeletonRectangle width="180px" height="20px" animate={animate} />
-
-                    <SkeletonRectangle width="100px" height="16px" animate={animate} />
-
-                    <SkeletonRectangle width="100px" height="16px" animate={animate} />
-                </Stack>
-            </Right>
-        </AccountHeader>
-    );
-};
-
-export default AccountItem;

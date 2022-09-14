@@ -7,9 +7,10 @@ import { Translation, AddAccountButton } from '@suite-components';
 import { sortByCoin, getFailedAccounts, accountSearchFn } from '@suite-common/wallet-utils';
 import { Account } from '@wallet-types';
 
-import AccountSearchBox from './components/AccountSearchBox';
-import AccountGroup from './components/AccountGroup';
-import AccountItem, { SkeletonAccountItem } from './components/AccountItem';
+import { AccountSearchBox } from './AccountSearchBox';
+import { AccountGroup } from './AccountGroup';
+import { AccountItem } from './AccountItem';
+import { AccountItemSkeleton } from './AccountItemSkeleton';
 
 const Wrapper = styled.div<{ isInline?: boolean }>`
     display: flex;
@@ -124,7 +125,7 @@ type AccountsMenuProps = {
     isMenuInline?: boolean;
 };
 
-const AccountsMenu = ({ isMenuInline }: AccountsMenuProps) => {
+export const AccountsMenu = ({ isMenuInline }: AccountsMenuProps) => {
     const theme = useTheme();
     const { discovery, getDiscoveryStatus, isDiscoveryRunning } = useDiscovery();
     const { device, accounts, selectedAccount } = useSelector(state => ({
@@ -155,7 +156,7 @@ const AccountsMenu = ({ isMenuInline }: AccountsMenuProps) => {
                         </Heading>
                         {!isMenuInline && <AccountSearchBox isMobile={isMenuInline} />}
                     </MenuHeader>
-                    {!isMenuInline && <SkeletonAccountItem />}
+                    {!isMenuInline && <AccountItemSkeleton />}
                 </Scroll>
             </Wrapper>
         );
@@ -205,7 +206,7 @@ const AccountsMenu = ({ isMenuInline }: AccountsMenuProps) => {
 
         if (!accounts.length) {
             // show skeleton in 'normal' group while we wait for a discovery of first account
-            return <>{discoveryInProgress && type === 'normal' && <SkeletonAccountItem />}</>;
+            return <>{discoveryInProgress && type === 'normal' && <AccountItemSkeleton />}</>;
         }
 
         return (
@@ -228,7 +229,7 @@ const AccountsMenu = ({ isMenuInline }: AccountsMenuProps) => {
                         />
                     );
                 })}
-                {discoveryInProgress && <SkeletonAccountItem />}
+                {discoveryInProgress && <AccountItemSkeleton />}
             </AccountGroup>
         );
     };
@@ -330,5 +331,3 @@ const AccountsMenu = ({ isMenuInline }: AccountsMenuProps) => {
         </Wrapper>
     );
 };
-
-export default AccountsMenu;

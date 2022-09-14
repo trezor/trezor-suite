@@ -1,4 +1,4 @@
-import AccountsMenu from './AccountsMenu';
+import { AccountsMenu } from './AccountsMenu';
 import Title from './Title';
 import { WalletLayout } from './WalletLayout';
 import { WalletLayoutHeader } from './WalletLayout/components/WalletLayoutHeader';
@@ -70,4 +70,5 @@ export {
     Pagination,
     TransactionTimestamp,
 };
+
 export type { WithCoinmarketProps, WithSelectedAccountLoadedProps };

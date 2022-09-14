@@ -66,11 +66,11 @@ const StyledCoinLogo = styled(CoinLogo)<{
 
 const SearchIconWrapper = styled.div``;
 
-interface Props {
+interface AccountSearchBoxProps {
     isMobile?: boolean;
 }
 
-const AccountSearchBox = (props: Props) => {
+export const AccountSearchBox = (props: AccountSearchBoxProps) => {
     const theme = useTheme();
     const { translationString } = useTranslation();
     const { coinFilter, setCoinFilter, searchString, setSearchString } = useAccountSearch();
@@ -142,5 +142,3 @@ const AccountSearchBox = (props: Props) => {
         </Wrapper>
     );
 };
-
-export default AccountSearchBox;

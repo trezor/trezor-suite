@@ -13,12 +13,12 @@ const ButtonBadge = styled(Button)`
     color: ${props => props.theme.TYPE_LIGHT_GREY};
 `;
 
-interface Props {
+interface TokensCountProps {
     count: number;
     onClick: React.MouseEventHandler<HTMLButtonElement>;
 }
 
-export const TokensCount: React.FC<Props> = ({ count, onClick }) => {
+export const TokensCount: React.FC<TokensCountProps> = ({ count, onClick }) => {
     const theme = useTheme();
     return (
         <ButtonBadge
