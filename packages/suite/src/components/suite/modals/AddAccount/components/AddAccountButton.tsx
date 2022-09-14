@@ -1,10 +1,10 @@
 import React, { useCallback } from 'react';
 import { analytics, EventType } from '@trezor/suite-analytics';
-import { Button, Tooltip } from '@trezor/components';
 import { Account, Network } from '@wallet-types';
 import { Translation } from '@suite-components';
-import { useAccountSearch } from '@suite-hooks';
 import { AddCoinJoinAccountButton } from './AddCoinJoinAccountButton';
+import { AddButton } from './AddButton';
+import { useAccountSearch } from '@suite-hooks';
 
 const verifyAvailability = ({
     emptyAccounts,
@@ -26,13 +26,20 @@ const verifyAvailability = ({
     }
 };
 
-interface ButtonProps {
-    account: Account;
-    isDisabled: boolean;
+interface AddAccountButtonProps {
+    network: Network;
+    emptyAccounts: Account[];
     onEnableAccount: (account: Account) => void;
 }
 
-const AddButton = ({ account, isDisabled, onEnableAccount }: ButtonProps) => {
+const AddDefaultAccountButton = ({
+    emptyAccounts,
+    onEnableAccount,
+}: Omit<AddAccountButtonProps, 'network'>) => {
+    const account = emptyAccounts[emptyAccounts.length - 1];
+
+    const disabledMessage = verifyAvailability({ emptyAccounts, account });
+
     const { setCoinFilter, setSearchString, coinFilter } = useAccountSearch();
 
     const handleClick = useCallback(() => {
@@ -55,43 +62,25 @@ const AddButton = ({ account, isDisabled, onEnableAccount }: ButtonProps) => {
         });
     }, [account, onEnableAccount, setSearchString, setCoinFilter, coinFilter]);
 
-    return (
-        <Button
-            data-test="@add-account"
-            icon="PLUS"
-            variant="primary"
-            isDisabled={isDisabled}
-            onClick={handleClick}
-        >
-            <Translation id="TR_ADD_ACCOUNT" />
-        </Button>
-    );
-};
+    if (emptyAccounts.length === 0) return null;
 
-interface AddAccountButtonProps {
-    network: Network;
-    emptyAccounts: Account[];
-    onEnableAccount: (account: Account) => void;
-}
+    return <AddButton disabledMessage={disabledMessage} handleClick={handleClick} />;
+};
 
 export const AddAccountButton = ({
     network,
     emptyAccounts,
     onEnableAccount,
 }: AddAccountButtonProps) => {
-    if (network.accountType === 'coinjoin') return <AddCoinJoinAccountButton network={network} />;
-    if (emptyAccounts.length === 0) return null;
-    const account = emptyAccounts[emptyAccounts.length - 1];
-
-    const disabledMessage = verifyAvailability({ emptyAccounts, account });
-
-    return (
-        <Tooltip maxWidth={285} content={disabledMessage}>
-            <AddButton
-                account={account}
-                isDisabled={!!disabledMessage}
-                onEnableAccount={onEnableAccount}
-            />
-        </Tooltip>
-    );
+    switch (network.accountType) {
+        case 'coinjoin':
+            return <AddCoinJoinAccountButton network={network} />;
+        default:
+            return (
+                <AddDefaultAccountButton
+                    emptyAccounts={emptyAccounts}
+                    onEnableAccount={onEnableAccount}
+                />
+            );
+    }
 };

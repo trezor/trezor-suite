@@ -1,9 +1,9 @@
 import React from 'react';
-import { Button, Tooltip } from '@trezor/components';
 import { Translation } from '@suite-components';
 import { useSelector, useActions } from '@suite-hooks';
 import { createCoinjoinAccount } from '@wallet-actions/coinjoinAccountActions';
 import type { Network } from '@wallet-types';
+import { AddButton } from './AddButton';
 
 interface AddCoinJoinAccountProps {
     network: Network;
@@ -28,18 +28,11 @@ export const AddCoinJoinAccountButton = ({ network }: AddCoinJoinAccountProps) =
 
     const isDisabled = coinjoinAccounts.length > 0;
     return (
-        <Tooltip
-            maxWidth={285}
-            content={isDisabled ? <Translation id="MODAL_ADD_ACCOUNT_LIMIT_EXCEEDED" /> : null}
-        >
-            <Button
-                icon="PLUS"
-                variant="primary"
-                isDisabled={isDisabled}
-                onClick={() => action.createCoinjoinAccount(network)}
-            >
-                <Translation id="TR_ADD_ACCOUNT" />
-            </Button>
-        </Tooltip>
+        <AddButton
+            disabledMessage={
+                isDisabled ? <Translation id="MODAL_ADD_ACCOUNT_LIMIT_EXCEEDED" /> : null
+            }
+            handleClick={() => action.createCoinjoinAccount(network)}
+        />
     );
 };
