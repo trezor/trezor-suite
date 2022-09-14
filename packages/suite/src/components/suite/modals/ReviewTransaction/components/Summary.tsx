@@ -213,7 +213,8 @@ const Summary = ({
         : formatAmount(tx.totalSpent, tx.token.decimals);
 
     const formFeeRate = drafts[currentAccountKey]?.feePerUnit;
-    const isComposedFeeRateDifferent = formFeeRate !== feePerByte;
+    const isFeeCustom = drafts[currentAccountKey]?.selectedFee === 'custom';
+    const isComposedFeeRateDifferent = isFeeCustom && formFeeRate !== feePerByte;
 
     const accountLabel = account.metadata.accountLabel ? (
         <span style={{ textOverflow: 'ellipsis', overflow: 'hidden' }}>
