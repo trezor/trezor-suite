@@ -26,7 +26,7 @@ export const NavEarlyAccess = (props: NavEarlyAccessProps) => {
         <Wrapper {...props}>
             <ActionItem
                 label={<Translation id="TR_EARLY_ACCESS_MENU" />}
-                icon="EXPERIMENTAL_FEATURES"
+                icon="EXPERIMENTAL"
                 onClick={() => goto('settings-index', { anchor: SettingsAnchor.EarlyAccess })}
             />
         </Wrapper>
