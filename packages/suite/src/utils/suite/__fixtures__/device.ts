@@ -746,6 +746,22 @@ const parseFirmwareChangelog = [
     },
 ];
 
+const getPhysicalDeviceCount = [
+    {
+        description: 'getPhysicalDeviceCount',
+        devices: [d({ id: '1' }), d({ path: '2' }), d({ id: '2' })],
+        result: 2,
+    },
+];
+
+const getPhysicalDeviceUniqueIds = [
+    {
+        description: 'getPhysicalDeviceUniqueIds',
+        devices: [d({ id: '1' }), d({ path: '2' }), d({ id: '2' })],
+        result: ['1', '2'],
+    },
+];
+
 export default {
     getStatus,
     isDeviceAccessible,
@@ -761,4 +777,6 @@ export default {
     getDeviceInstances,
     isDeviceRemembered,
     parseFirmwareChangelog,
+    getPhysicalDeviceCount,
+    getPhysicalDeviceUniqueIds,
 };

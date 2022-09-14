@@ -128,3 +128,19 @@ describe('parseFirmwareChangelog', () => {
         });
     });
 });
+
+describe('getPhysicalDeviceCount', () => {
+    fixtures.getPhysicalDeviceCount.forEach(f => {
+        it(f.description, () => {
+            expect(utils.getPhysicalDeviceCount(f.devices as any)).toEqual(f.result);
+        });
+    });
+});
+
+describe('getPhysicalDeviceUniqueIds', () => {
+    fixtures.getPhysicalDeviceUniqueIds.forEach(f => {
+        it(f.description, () => {
+            expect(utils.getPhysicalDeviceUniqueIds(f.devices as any)).toEqual(f.result);
+        });
+    });
+});
