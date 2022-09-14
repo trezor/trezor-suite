@@ -90,7 +90,10 @@ export const FirmwareInitial = ({
     const { goToNextStep, updateAnalytics } = useOnboarding();
     const theme = useTheme();
     const devices = useSelector(state => state.devices);
-    const multipleDevicesConnected = devices.filter(device => device.connected).length > 1;
+
+    // todo: move to utils device.ts
+    const devicesConnected = devices.filter(device => device?.connected);
+    const multipleDevicesConnected = [...new Set(devicesConnected.map(d => d.path))].length > 1;
 
     useEffect(() => {
         // When the user choses to install a new firmware update we will ask him/her to reconnect a device in bootloader mode.
