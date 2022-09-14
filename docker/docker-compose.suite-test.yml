@@ -30,8 +30,11 @@ services:
       - CYPRESS_SNAPSHOT=$CYPRESS_SNAPSHOT
       - CYPRESS_updateSnapshots=$CYPRESS_updateSnapshots
       - CYPRESS_baseUrl=http://localhost:8000
-      - CYPRESS_defaultCommandTimeout=60000 # on dev server, due to on-demand compilation nature of next.js, we need much longer timeout
-      - CYPRESS_USE_TREZOR_USER_ENV_BRIDGE=0
+      # on dev server, due to on-demand compilation nature of next.js, we need much longer timeout
+      - CYPRESS_defaultCommandTimeout=60000
+      # typical test should be using bridge from trezor-user-env. some special test cases (firmware update related) have mocked bridge
+      # todo: set this option dynamically based on test case
+      - CYPRESS_USE_TREZOR_USER_ENV_BRIDGE=1
       - DISPLAY=$DISPLAY
       - QT_X11_NO_MITSHM=1
       - LOCAL_USER_ID=$LOCAL_USER_ID
