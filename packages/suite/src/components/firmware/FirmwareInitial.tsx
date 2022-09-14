@@ -11,7 +11,7 @@ import { Translation } from '@suite-components';
 import { useDevice, useFirmware, useOnboarding, useSelector } from '@suite-hooks';
 import { ReconnectDevicePrompt, InstallButton, FirmwareOffer } from '@firmware-components';
 import { FirmwareType, TrezorDevice } from '@suite-types';
-import { getFwVersion, getFwUpdateVersion, getPhysicalDeviceCount } from '@suite-utils/device';
+import { getFwVersion, getFwUpdateVersion } from '@suite-utils/device';
 
 const InfoRow = styled.div`
     align-items: center;
@@ -90,7 +90,7 @@ export const FirmwareInitial = ({
     const { goToNextStep, updateAnalytics } = useOnboarding();
     const theme = useTheme();
     const devices = useSelector(state => state.devices);
-    const physicalDeviceCount = getPhysicalDeviceCount(devices);
+    const multipleDevicesConnected = devices.filter(device => device.connected).length > 1;
 
     useEffect(() => {
         // When the user choses to install a new firmware update we will ask him/her to reconnect a device in bootloader mode.
@@ -162,14 +162,14 @@ export const FirmwareInitial = ({
                     <InstallButton
                         variant="secondary"
                         onClick={() => installFirmware(FirmwareType.Universal)}
-                        multipleDevicesConnected={physicalDeviceCount > 1}
+                        multipleDevicesConnected={multipleDevicesConnected}
                     >
                         <Translation id="TR_INSTALL_UNIVERSAL" />
                     </InstallButton>
 
                     <InstallButton
                         onClick={() => installFirmware(FirmwareType.BitcoinOnly)}
-                        multipleDevicesConnected={physicalDeviceCount > 1}
+                        multipleDevicesConnected={multipleDevicesConnected}
                     >
                         <Translation id="TR_INSTALL_BITCOIN_ONLY" />
                     </InstallButton>
@@ -204,7 +204,7 @@ export const FirmwareInitial = ({
             innerActions: (
                 <InstallButton
                     onClick={() => installFirmware(FirmwareType.Universal)}
-                    multipleDevicesConnected={physicalDeviceCount > 1}
+                    multipleDevicesConnected={multipleDevicesConnected}
                 />
             ),
         };
@@ -251,7 +251,7 @@ export const FirmwareInitial = ({
                         updateAnalytics({ firmware: 'update' });
                     }}
                     data-test="@firmware/get-ready-button"
-                    multipleDevicesConnected={physicalDeviceCount > 1}
+                    multipleDevicesConnected={multipleDevicesConnected}
                 />
             ),
             outerActions:
