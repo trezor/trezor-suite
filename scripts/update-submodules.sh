@@ -11,3 +11,4 @@ git pull origin master
 cd ../
 git add .
 git commit -m "chore: update trezor-common ($commit)"
+git submodule update --init --recursive
