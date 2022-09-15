@@ -1,4 +1,5 @@
 import type { PROTO } from '../../../constants';
+import type { GetPublicKey, PublicKey } from '../../params';
 
 // cardanoGetAddress
 
@@ -60,16 +61,11 @@ export interface CardanoNativeScriptHash {
 
 // cardanoGetPublicKey
 
-export interface CardanoGetPublicKey {
-    path: string | number[];
-    showOnTrezor?: boolean;
+export interface CardanoGetPublicKey extends GetPublicKey {
     derivationType?: PROTO.CardanoDerivationType;
 }
 
-export interface CardanoPublicKey {
-    path: number[];
-    serializedPath: string;
-    publicKey: string;
+export interface CardanoPublicKey extends PublicKey {
     node: PROTO.HDNodeType;
 }
 
