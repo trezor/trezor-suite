@@ -4,12 +4,13 @@
 const { test } = require('@playwright/test');
 const fs = require('fs');
 
-const { Controller } = require('../../../websocket-client');
+// @ts-expect-error
+const { Controller } = require('../../../integration-tests/websocket-client');
 const fixtures = require('./__fixtures__/methods');
 const buildOverview = require('../support/buildOverview');
 
 const url = process.env.URL || 'http://localhost:8088/';
-const SCREENSHOTS_DIR = './projects/connect-popup/screenshots';
+const SCREENSHOTS_DIR = './screenshots';
 const controller = new Controller();
 const emuScreenshots = {};
 

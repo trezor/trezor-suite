@@ -1,5 +1,6 @@
 const { test, expect } = require('@playwright/test');
-const { Controller } = require('../../../websocket-client');
+// @ts-expect-error
+const { Controller } = require('../../../integration-tests/websocket-client');
 const { createDeferred } = require('@trezor/utils');
 
 const url = process.env.URL || 'http://localhost:8088/';
@@ -10,7 +11,7 @@ const WAIT_AFTER_TEST = 3000; // how long test should wait for more potential tr
 // requests to bridge
 let requests = [];
 // responses from bridge
-let responses = [];
+let responses =git  [];
 
 let releasePromise;
 // popup window reference
