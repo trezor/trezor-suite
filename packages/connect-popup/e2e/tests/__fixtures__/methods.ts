@@ -690,7 +690,7 @@ const cipherKeyValue = [
     },
 ];
 
-const fixtures = [
+export const fixtures = [
     ...getPublicKey,
     ...getAddress,
     ...getAccountInfo,
@@ -737,5 +737,3 @@ const fixtures = [
     // firmwareUpdate
     // backupDevice
 ];
-
-module.exports = fixtures;

@@ -1,16 +1,16 @@
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
 
 const SCREENSHOTS_DIR = './projects/connect-popup/screenshots';
 
 const CI_JOB_URL = process.env.CI_JOB_URL || '.';
 
-const buildOverview = ({ emuScreenshots }) => {
+export const buildOverview = ({ emuScreenshots }: { emuScreenshots: Record<string, string> }) => {
     if (fs.existsSync('connect-popup-overview.html')) {
         fs.rmSync('connect-popup-overview.html');
     }
 
-    const renderEmuScreenshot = screenshotPath => {
+    const renderEmuScreenshot = (screenshotPath: string) => {
         if (emuScreenshots[screenshotPath]) {
             return `<img src="data:image/png;base64, ${emuScreenshots[screenshotPath]}" />`;
         }
@@ -69,5 +69,3 @@ const buildOverview = ({ emuScreenshots }) => {
     `,
     );
 };
-
-module.exports = buildOverview;
