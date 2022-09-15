@@ -120,28 +120,26 @@ export class DeviceCommands {
         return this.disposed;
     }
 
-    async getPublicKey(
-        address_n: number[],
-        coin_name = 'Bitcoin',
-        script_type?: Messages.InputScriptType,
-        show_display?: boolean,
-    ) {
+    async getPublicKey(params: Messages.GetPublicKey) {
         const response = await this.typedCall('GetPublicKey', 'PublicKey', {
-            address_n,
-            coin_name,
-            script_type,
-            show_display,
+            address_n: params.address_n,
+            coin_name: params.coin_name || 'Bitcoin',
+            script_type: params.script_type,
+            show_display: params.show_display,
+            ignore_xpub_magic: params.ignore_xpub_magic,
+            ecdsa_curve_name: params.ecdsa_curve_name,
         });
         return response.message;
     }
 
     // Validation of xpub
     async getHDNode(
-        path: number[],
-        coinInfo?: BitcoinNetworkInfo,
-        validation = true,
-        showOnTrezor = false,
+        params: Messages.GetPublicKey,
+        options: { coinInfo?: BitcoinNetworkInfo; validation?: boolean } = {},
     ) {
+        const path = params.address_n;
+        const { coinInfo } = options;
+        const validation = typeof options.validation === 'boolean' ? options.validation : true;
         if (!this.device.atLeast(['1.7.2', '2.0.10']) || !coinInfo) {
             return this.getBitcoinHDNode(path, coinInfo);
         }
@@ -155,22 +153,30 @@ export class DeviceCommands {
             network = getBech32Network(coinInfo);
         }
 
-        let scriptType: Messages.InternalInputScriptType | undefined = getScriptType(path);
+        if (!params.script_type && network) {
+            // to prevent compatibility issues
+            // add script_type automatically only(!) if Network is detected, otherwise leave empty (protobuf fallbacks to SPENDADDRESS by default)
+            params.script_type = getScriptType(path);
+        }
+
         if (!network) {
+            // use default Network
             network = coinInfo.network;
-            if (scriptType !== 'SPENDADDRESS') {
-                scriptType = undefined;
-            }
+        }
+
+        if (!params.coin_name) {
+            // use default name
+            params.coin_name = coinInfo.name;
         }
 
         let publicKey: Messages.PublicKey;
-        if (showOnTrezor || !validation) {
-            publicKey = await this.getPublicKey(path, coinInfo.name, scriptType, showOnTrezor);
+        if (params.show_display || !validation) {
+            publicKey = await this.getPublicKey(params);
         } else {
             const suffix = 0;
             const childPath = path.concat([suffix]);
-            const resKey = await this.getPublicKey(path, coinInfo.name, scriptType);
-            const childKey = await this.getPublicKey(childPath, coinInfo.name, scriptType);
+            const resKey = await this.getPublicKey(params);
+            const childKey = await this.getPublicKey({ ...params, address_n: childPath });
             publicKey = hdnodeUtils.xpubDerive(resKey, childKey, suffix, network, coinInfo.network);
         }
 
@@ -207,13 +213,13 @@ export class DeviceCommands {
     async getBitcoinHDNode(path: number[], coinInfo?: BitcoinNetworkInfo, validation = true) {
         let publicKey: Messages.PublicKey;
         if (!validation) {
-            publicKey = await this.getPublicKey(path);
+            publicKey = await this.getPublicKey({ address_n: path });
         } else {
             const suffix = 0;
             const childPath = path.concat([suffix]);
 
-            const resKey = await this.getPublicKey(path);
-            const childKey = await this.getPublicKey(childPath);
+            const resKey = await this.getPublicKey({ address_n: path });
+            const childKey = await this.getPublicKey({ address_n: childPath });
             publicKey = hdnodeUtils.xpubDerive(resKey, childKey, suffix);
         }
 
@@ -294,7 +300,7 @@ export class DeviceCommands {
         show_display,
     }: Messages.EthereumGetPublicKey): Promise<HDNodeResponse> {
         if (!this.device.atLeast(['1.8.1', '2.1.0'])) {
-            return this.getHDNode(address_n);
+            return this.getHDNode({ address_n });
         }
 
         const suffix = 0;
@@ -608,7 +614,7 @@ export class DeviceCommands {
             : getAccountAddressN(coinInfo, indexOrPath);
 
         if (coinInfo.type === 'bitcoin') {
-            const resp = await this.getHDNode(address_n, coinInfo, false);
+            const resp = await this.getHDNode({ address_n }, { coinInfo, validation: false });
             return {
                 descriptor: resp.xpubSegwit || resp.xpub,
                 legacyXpub: resp.xpub,

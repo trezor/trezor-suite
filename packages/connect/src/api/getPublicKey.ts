@@ -37,6 +37,9 @@ export default class GetPublicKey extends AbstractMethod<'getPublicKey', Params[
                 { name: 'coin', type: 'string' },
                 { name: 'crossChain', type: 'boolean' },
                 { name: 'showOnTrezor', type: 'boolean' },
+                { name: 'scriptType', type: ['string', 'number'] },
+                { name: 'ignoreXpubMagic', type: 'boolean' },
+                { name: 'ecdsaCurveName', type: 'boolean' },
             ]);
 
             let coinInfo: BitcoinNetworkInfo | undefined;
@@ -44,11 +47,11 @@ export default class GetPublicKey extends AbstractMethod<'getPublicKey', Params[
                 coinInfo = getBitcoinNetwork(batch.coin);
             }
 
-            const path = validatePath(batch.path, coinInfo ? 3 : 0);
+            const address_n = validatePath(batch.path, coinInfo ? 3 : 0);
             if (coinInfo && !batch.crossChain) {
-                validateCoinPath(path, coinInfo);
+                validateCoinPath(address_n, coinInfo);
             } else if (!coinInfo) {
-                coinInfo = getBitcoinNetwork(path);
+                coinInfo = getBitcoinNetwork(address_n);
             }
 
             // set required firmware from coinInfo support
@@ -57,9 +60,13 @@ export default class GetPublicKey extends AbstractMethod<'getPublicKey', Params[
             }
 
             return {
-                address_n: path,
+                address_n,
+                coin_name: coinInfo?.name,
+                show_display: batch.showOnTrezor,
+                script_type: batch.scriptType,
+                ignore_xpub_magic: batch.ignoreXpubMagic,
+                ecdsa_curve_name: batch.ecdsaCurveName,
                 coinInfo,
-                show_display: typeof batch.showOnTrezor === 'boolean' ? batch.showOnTrezor : false,
             };
         });
     }
@@ -96,13 +103,8 @@ export default class GetPublicKey extends AbstractMethod<'getPublicKey', Params[
         const responses: MethodReturnType<typeof this.name> = [];
         const cmd = this.device.getCommands();
         for (let i = 0; i < this.params.length; i++) {
-            const batch = this.params[i];
-            const response = await cmd.getHDNode(
-                batch.address_n,
-                batch.coinInfo,
-                true,
-                batch.show_display,
-            );
+            const { coinInfo, ...batch } = this.params[i];
+            const response = await cmd.getHDNode(batch, { coinInfo });
             responses.push(response);
 
             if (this.hasBundle) {
