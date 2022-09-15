@@ -10,10 +10,10 @@ type InterceptorOptions = {
     getIsTorEnabled: () => boolean;
 };
 
-const getIdentityName = (userAgent: string): string | undefined => {
-    const identity = userAgent[0];
-    if (Array.isArray(userAgent)) {
-        const identityName = identity.match(/identity:(.*)/);
+const getIdentityName = (proxyAuthorization: string): string | undefined => {
+    if (Array.isArray(proxyAuthorization)) {
+        const identity = proxyAuthorization[0];
+        const identityName = identity.match(/Basic (.*)/);
         // Only return identity name if it is explicitly defined.
         return identityName ? identityName[1] : undefined;
     }
@@ -79,17 +79,18 @@ const interceptHttp = (interceptorOptions: InterceptorOptions) => {
             const overloadedCallback = options;
 
             const overloadedOptionsUrl = new URL(overloadedOptions.href);
-            const userAgent = overloadedOptions.headers['User-Agent'];
+            // Use Proxy-Authorization header to define proxy identity
+            // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Proxy-Authorization
+            const proxyAuthorization = overloadedOptions.headers['Proxy-Authorization'];
+            if (proxyAuthorization) {
+                // In the case that `Proxy-Authorization` was used for identity information we remove it.
+                delete overloadedOptions.headers['Proxy-Authorization'];
+            }
+
             // Requests to localhost should not use the proxy.
             const shouldIntercept = overloadedOptionsUrl.hostname !== '127.0.0.1';
-            const identityName = getIdentityName(userAgent);
+            const identityName = getIdentityName(proxyAuthorization);
             const agent = isTorEnabled && shouldIntercept ? getAgent(identityName) : undefined;
-            if (agent) {
-                // In the case that `User-Agent` was used for identity information we send empty string.
-                // TODO: this could be changed to use a common `User-Agent` instead of empty string,
-                // but consider the common `User-Agent` will be changing over time.
-                overloadedOptions.headers['User-Agent'] = '';
-            }
 
             interceptorOptions.handler({ method: 'http.request', details: overloadedOptions.href });
             return originalHttpRequest.call(
@@ -121,17 +122,17 @@ const interceptHttps = (interceptorOptions: InterceptorOptions) => {
             const overloadedCallback = options;
 
             const overloadedOptionsUrl = new URL(overloadedOptions.href);
-            const userAgent = overloadedOptions.headers['User-Agent'];
+            // Use Proxy-Authorization header to define proxy identity
+            // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Proxy-Authorization
+            const userAgent = overloadedOptions.headers['Proxy-Authorization'];
+            // In the case that `Proxy-Authorization` was used for identity information we remove it.
+            if (userAgent) {
+                delete overloadedOptions.headers['Proxy-Authorization'];
+            }
             // Requests to localhost should not use the proxy.
             const shouldIntercept = overloadedOptionsUrl.hostname !== '127.0.0.1';
             const identityName = getIdentityName(userAgent);
             const agent = isTorEnabled && shouldIntercept ? getAgent(identityName) : undefined;
-            if (agent) {
-                // In the case that `User-Agent` was used for identity information we send empty string.
-                // TODO: this could be changed to use a common `User-Agent` instead of empty string,
-                // but consider the common `User-Agent` will be changing over time.
-                overloadedOptions.headers['User-Agent'] = '';
-            }
 
             interceptorOptions.handler({
                 method: 'https.request',
