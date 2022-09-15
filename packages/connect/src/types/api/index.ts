@@ -69,6 +69,7 @@ import { tezosGetAddress } from './tezosGetAddress';
 import { tezosGetPublicKey } from './tezosGetPublicKey';
 import { tezosSignTransaction } from './tezosSignTransaction';
 import { uiResponse } from './uiResponse';
+import { unlockPath } from './unlockPath';
 import { verifyMessage } from './verifyMessage';
 import { wipeDevice } from './wipeDevice';
 import { checkFirmwareAuthenticity } from './checkFirmwareAuthenticity';
@@ -286,6 +287,9 @@ export interface TrezorConnect {
 
     // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/uiResponse.md
     uiResponse: typeof uiResponse;
+
+    // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/unlockPath.md
+    unlockPath: typeof unlockPath;
 
     // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/verifyMessage.md
     verifyMessage: typeof verifyMessage;

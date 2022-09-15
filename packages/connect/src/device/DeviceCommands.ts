@@ -119,6 +119,10 @@ export class DeviceCommands {
         return this.disposed;
     }
 
+    unlockPath(params?: Messages.UnlockPath) {
+        return this.typedCall('UnlockPath', 'UnlockedPathRequest', params);
+    }
+
     async getPublicKey(params: Messages.GetPublicKey) {
         const response = await this.typedCall('GetPublicKey', 'PublicKey', {
             address_n: params.address_n,

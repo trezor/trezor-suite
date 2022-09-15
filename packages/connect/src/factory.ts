@@ -185,6 +185,8 @@ export const factory = ({
 
         tezosSignTransaction: params => call({ ...params, method: 'tezosSignTransaction' }),
 
+        unlockPath: params => call({ ...params, method: 'unlockPath' }),
+
         eosGetPublicKey: params => call({ ...params, method: 'eosGetPublicKey' }),
 
         eosSignTransaction: params => call({ ...params, method: 'eosSignTransaction' }),
