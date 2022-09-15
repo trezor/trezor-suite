@@ -12,6 +12,7 @@ interface GetAddress extends GetAddressShared {
     crossChain?: boolean;
     multisig?: PROTO.MultisigRedeemScriptType;
     scriptType?: PROTO.InternalInputScriptType;
+    unlockPath?: PROTO.UnlockPath;
 }
 
 type Address = AddressShared & PROTO.Address;
