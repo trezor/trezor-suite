@@ -151,8 +151,9 @@ suite desktop:
 
 suite desktop manual:
   extends: .e2e desktop
-  only:
+  except:
     <<: *run_everything_rules
+  when: manual
 
 # @trezor/transport
 .e2e transport:
