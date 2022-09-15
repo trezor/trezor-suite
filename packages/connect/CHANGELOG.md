@@ -1,3 +1,9 @@
+# 9.0.3 (not released)
+
+-   added `unlockPath` method
+-   added `SLIP 25` support
+-   fixed bitcoin extended descriptor (xpubSegwit) for taproot accounts
+
 # 9.0.2
 
 -   improved passphrase dialog in popup window
