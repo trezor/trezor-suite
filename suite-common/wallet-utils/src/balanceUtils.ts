@@ -2,6 +2,12 @@ import BigNumber from 'bignumber.js';
 
 import { localizeNumber } from './localizeNumber';
 
+export const isZero = (value: string) => {
+    const valueBig = new BigNumber(value);
+
+    return valueBig.isZero();
+};
+
 export const formatCoinBalance = (value: string, locale = 'en') => {
     const MAX_NUMBERS = 9;
     const balanceBig = new BigNumber(value);
