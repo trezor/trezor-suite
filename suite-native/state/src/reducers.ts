@@ -8,7 +8,6 @@ import {
 } from '@suite-common/wallet-core';
 import { devicesReducer } from '@suite-native/module-devices';
 import { appSettingsReducer, appSettingsPersistWhitelist } from '@suite-native/module-settings';
-import { accountsImportReducer } from '@suite-native/module-accounts-import';
 import { typedPersistReducer } from '@suite-native/storage';
 
 import { extraDependencies } from './extraDependencies';
@@ -26,7 +25,6 @@ const appSettingsPersistedReducer = typedPersistReducer({
 
 export const walletReducers = combineReducers({
     accounts: accountsReducer,
-    accountsImport: accountsImportReducer,
     blockchain: blockchainReducer,
     fiat: fiatRatesReducer,
     transactions: transactionsReducer,
@@ -34,7 +32,7 @@ export const walletReducers = combineReducers({
 
 const walletPersistedReducer = typedPersistReducer({
     reducer: walletReducers,
-    persistedKeys: ['accounts', 'accountsImport', 'transactions'],
+    persistedKeys: ['accounts', 'transactions'],
     key: 'wallet',
 });
 

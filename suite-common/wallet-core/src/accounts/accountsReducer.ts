@@ -87,21 +87,36 @@ export const prepareAccountsReducer = createReducerWithExtraDeps(
 
 export const selectAccounts = (state: AccountsRootState) => state.wallet.accounts;
 
-export const selectAccount = (state: AccountsRootState, accountKey: string) =>
-    state.wallet.accounts.find(account => account.key === accountKey);
+export const selectAccount = createSelector(
+    selectAccounts,
+    (_state, accountKey: string) => accountKey,
+    (accounts, accountKey) => accounts.find(account => account.key === accountKey),
+);
 
-export const selectDeviceNetworkAccounts =
-    (deviceState: string, networkSymbol: NetworkSymbol) => (state: AccountsRootState) =>
-        state.wallet.accounts.filter(
-            account => account.deviceState === deviceState && account.symbol === networkSymbol,
-        );
+export const selectDeviceNetworkAccounts = createSelector(
+    selectAccounts,
+    (_state, deviceState: string, networkSymbol: NetworkSymbol) => ({
+        deviceState,
+        networkSymbol,
+    }),
+    (accounts, params) =>
+        accounts.filter(
+            account =>
+                account.deviceState === params.deviceState &&
+                account.symbol === params.networkSymbol,
+        ),
+);
 
-// So far, mobile app doesn't persis data between app runs so until this is resolved
-// account names are just "Bitcon #<ACCOUNT_INDEX>"
 export const selectAccountName = createSelector(
     [selectAccount, selectAccounts],
     (account, accounts) => {
-        const accountIndex = accounts.findIndex(acc => acc.descriptor === account?.descriptor);
-        return `Bitcoin #${accountIndex + 1}`;
+        const accountData = accounts.find(acc => acc.descriptor === account?.descriptor);
+        if (accountData) {
+            const {
+                metadata: { accountLabel },
+            } = accountData;
+            return accountLabel;
+        }
+        return '';
     },
 );

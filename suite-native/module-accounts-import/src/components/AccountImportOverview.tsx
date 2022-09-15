@@ -10,14 +10,14 @@ type AssetsOverviewProps = {
     accountInfo: AccountInfo;
     assetName: string;
     currencySymbol: NetworkSymbol;
-    onAssetNameChange: (value: string) => void;
+    onChangeAccountName: (accountName: string) => void;
 };
 
 export const AccountImportOverview = ({
     accountInfo,
     assetName,
     currencySymbol,
-    onAssetNameChange,
+    onChangeAccountName,
 }: AssetsOverviewProps) => (
     <Card>
         <Box marginTop="large" marginBottom="medium">
@@ -35,7 +35,7 @@ export const AccountImportOverview = ({
             </Box>
             <Box marginBottom="large">
                 <InputWrapper>
-                    <Input value={assetName} onChange={onAssetNameChange} label="" />
+                    <Input value={assetName} onChange={onChangeAccountName} label="" />
                 </InputWrapper>
             </Box>
         </Box>

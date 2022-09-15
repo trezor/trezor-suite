@@ -16,7 +16,7 @@ import {
 import { Button } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { setOnboardingFinished } from '@suite-native/module-settings';
-import { selectDeviceNetworkAccounts } from '@suite-common/wallet-core';
+import { AccountsRootState, selectDeviceNetworkAccounts } from '@suite-common/wallet-core';
 
 import { AccountImportLoader } from '../components/AccountImportLoader';
 import { AccountImportHeader } from '../components/AccountImportHeader';
@@ -51,11 +51,11 @@ export const AccountsImportScreen = ({
 >) => {
     const { xpubAddress, currencySymbol } = route.params;
     const dispatch = useDispatch();
-    const deviceNetworkAccounts = useSelector(
-        selectDeviceNetworkAccounts(getMockedDeviceState(HIDDEN_DEVICE_ID), currencySymbol),
+    const deviceNetworkAccounts = useSelector((state: AccountsRootState) =>
+        selectDeviceNetworkAccounts(state, getMockedDeviceState(HIDDEN_DEVICE_ID), currencySymbol),
     );
     const [accountInfo, setAccountInfo] = useState<AccountInfo | null>(null);
-    const [accountName, setAccountName] = useState<string>(
+    const [accountLabel, setAccountLabel] = useState<string>(
         `${currencySymbol} #${deviceNetworkAccounts.length + 1}`,
     );
 
@@ -108,7 +108,7 @@ export const AccountsImportScreen = ({
                     deviceId: HIDDEN_DEVICE_ID,
                     deviceTitle: 'Hidden Device',
                     accountInfo,
-                    accountName,
+                    accountLabel,
                     coin: currencySymbol,
                 }),
             );
@@ -132,9 +132,9 @@ export const AccountsImportScreen = ({
                         <AccountImportHeader />
                         <AccountImportOverview
                             accountInfo={accountInfo}
-                            assetName={accountName}
+                            assetName={accountLabel}
                             currencySymbol={currencySymbol}
-                            onAssetNameChange={setAccountName}
+                            onChangeAccountName={setAccountLabel}
                         />
                     </View>
                     <View style={applyStyle(importAnotherWrapperStyle)}>

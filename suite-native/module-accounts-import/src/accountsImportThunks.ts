@@ -4,13 +4,13 @@ import { AccountInfo } from '@trezor/connect';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { createDevice, selectDeviceById } from '@suite-native/module-devices';
 
-import { setAccountName, actionPrefix } from './accountsImportSlice';
+const actionPrefix = '@accountsImport';
 
 type ImportAssetThunkPayload = {
     deviceId: string;
     deviceTitle: string;
     accountInfo: AccountInfo;
-    accountName: string;
+    accountLabel: string;
     coin: NetworkSymbol;
 };
 
@@ -22,7 +22,7 @@ export const getMockedDeviceState = (deviceId: string) => `state@${deviceId}:1`;
 export const importAccountThunk = createThunk(
     `${actionPrefix}/importAccountThunk`,
     (
-        { deviceId, deviceTitle, accountInfo, accountName, coin }: ImportAssetThunkPayload,
+        { deviceId, deviceTitle, accountInfo, accountLabel, coin }: ImportAssetThunkPayload,
         { dispatch, getState },
     ) => {
         const device = selectDeviceById(deviceId)(getState());
@@ -41,7 +41,7 @@ export const importAccountThunk = createThunk(
             );
         }
 
-        const deviceNetworkAccounts = selectDeviceNetworkAccounts(deviceState, coin)(getState());
+        const deviceNetworkAccounts = selectDeviceNetworkAccounts(getState(), deviceState, coin);
         const existingAccount = deviceNetworkAccounts.find(
             account => account.descriptor === accountInfo.descriptor,
         );
@@ -60,15 +60,9 @@ export const importAccountThunk = createThunk(
                         coin,
                     },
                     accountInfo,
+                    accountLabel,
                 ),
             );
         }
-
-        dispatch(
-            setAccountName({
-                descriptor: accountInfo.descriptor,
-                name: accountName,
-            }),
-        );
     },
 );
