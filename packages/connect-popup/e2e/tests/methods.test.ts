@@ -1,20 +1,19 @@
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-restricted-syntax */
 
-const { test } = require('@playwright/test');
-const fs = require('fs');
+import { test } from '@playwright/test';
+import fs from 'fs';
 
-// @ts-expect-error
-const { Controller } = require('../../../integration-tests/websocket-client');
-const fixtures = require('./__fixtures__/methods');
-const buildOverview = require('../support/buildOverview');
+import { Controller } from '../../../integration-tests/websocket-client';
+import { fixtures } from './__fixtures__/methods';
+import { buildOverview } from '../support/buildOverview';
 
 const url = process.env.URL || 'http://localhost:8088/';
-const SCREENSHOTS_DIR = './screenshots';
+const SCREENSHOTS_DIR = './e2e/screenshots';
 const controller = new Controller();
-const emuScreenshots = {};
+const emuScreenshots: Record<string, string> = {};
 
-const log = (...val) => {
+const log = (...val: string[]) => {
     console.log(`[===]`, ...val);
 };
 
@@ -28,7 +27,7 @@ const ensureScreenshotsDir = () => {
     }
 };
 
-const screenshotEmu = async path => {
+const screenshotEmu = async (path: string) => {
     const { response } = await controller.send({
         type: 'emulator-get-screenshot',
     });
