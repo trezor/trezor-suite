@@ -421,6 +421,7 @@ export const PassphraseTypeCard = (props: PassphraseTypeCardProps) => {
                                 variant="tertiary"
                                 onClick={() => submit(value, true)}
                                 fullWidth
+                                data-test="@passphrase/enter-on-device-button"
                             >
                                 <FormattedMessage
                                     id="TR_ENTER_PASSPHRASE_ON_DEVICE"
