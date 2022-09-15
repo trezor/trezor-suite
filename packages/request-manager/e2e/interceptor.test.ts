@@ -60,7 +60,7 @@ describe('Interceptor', () => {
     describe('GET method', () => {
         it('HTTP - When no identity is provided, default identity is used', async () => {
             const identityDefault = await fetch(testGetUrlHttp, {
-                headers: { 'User-Agent': 'identity:default' },
+                headers: { 'Proxy-Authorization': 'Basic default' },
             });
             const identityDefault2 = await fetch(testGetUrlHttp);
             const iPIdentitieA = ((await identityDefault.text()) as any).match(ipRegex)[0];
@@ -70,7 +70,7 @@ describe('Interceptor', () => {
 
         it('HTTPS - When no identity is provided, default identity is used', async () => {
             const identityDefault = await fetch(testGetUrlHttps, {
-                headers: { 'User-Agent': 'identity:default' },
+                headers: { 'Proxy-Authorization': 'Basic default' },
             });
             const identityDefault2 = await fetch(testGetUrlHttps);
             const iPIdentitieA = ((await identityDefault.text()) as any).match(ipRegex)[0];
@@ -80,13 +80,13 @@ describe('Interceptor', () => {
 
         it('HTTPS - Each identity has different ip address', async () => {
             const identityA = await fetch(testGetUrlHttps, {
-                headers: { 'User-Agent': 'identity:default' },
+                headers: { 'Proxy-Authorization': 'Basic default' },
             });
             const identityB = await fetch(testGetUrlHttps, {
-                headers: { 'User-Agent': 'identity:user' },
+                headers: { 'Proxy-Authorization': 'Basic user' },
             });
             const identityA2 = await fetch(testGetUrlHttps, {
-                headers: { 'User-Agent': 'identity:default' },
+                headers: { 'Proxy-Authorization': 'Basic default' },
             });
             // Parsing IP address from html provided by check.torproject.org.
             const iPIdentitieA = ((await identityA.text()) as any).match(ipRegex)[0];
@@ -104,17 +104,17 @@ describe('Interceptor', () => {
             const identityA = await fetch(testPostUrlHttps, {
                 method: 'POST',
                 body: JSON.stringify({ test: 'test' }),
-                headers: { 'User-Agent': 'identity:default' },
+                headers: { 'Proxy-Authorization': 'Basic default' },
             });
             const identityB = await fetch(testPostUrlHttps, {
                 method: 'POST',
                 body: JSON.stringify({ test: 'test' }),
-                headers: { 'User-Agent': 'identity:user' },
+                headers: { 'Proxy-Authorization': 'Basic user' },
             });
             const identityA2 = await fetch(testPostUrlHttps, {
                 method: 'POST',
                 body: JSON.stringify({ test: 'test' }),
-                headers: { 'User-Agent': 'identity:default' },
+                headers: { 'Proxy-Authorization': 'Basic default' },
             });
 
             const iPIdentitieA = ((await identityA.json()) as any).origin;
