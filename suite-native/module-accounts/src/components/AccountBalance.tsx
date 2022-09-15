@@ -7,7 +7,7 @@ import { Account } from '@suite-common/wallet-types';
 
 type AccountBalanceProps = {
     account: Account;
-    accountName: string;
+    accountName?: string;
 };
 
 const accountNameStyle = prepareNativeStyle(utils => ({

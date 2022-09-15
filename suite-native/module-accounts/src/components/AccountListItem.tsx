@@ -4,7 +4,7 @@ import { TouchableOpacity } from 'react-native';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { AccountsRootState, selectAccountName } from '@suite-common/wallet-core';
+import { AccountsRootState, selectAccountLabel } from '@suite-common/wallet-core';
 import { Box, Text } from '@suite-native/atoms';
 import {
     AccountsStackParamList,
@@ -31,7 +31,7 @@ export const AccountListItem = ({ account }: AccountListItemProps) => {
         useNavigation<StackNavigationProps<AccountsStackParamList, AccountsStackRoutes.Accounts>>();
     const { applyStyle } = useNativeStyles();
     const accountName = useSelector((state: AccountsRootState) =>
-        selectAccountName(state, account.key),
+        selectAccountLabel(state, account.key),
     );
 
     const handleSelectAccount = (key: string) => {
