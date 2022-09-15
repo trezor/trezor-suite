@@ -102,7 +102,11 @@ const Body = styled.div`
     height: 100%;
     margin-bottom: 32px;
     padding: 32px 32px 0;
-    overflow: scroll;
+    overflow-y: auto;
+
+    ::-webkit-scrollbar {
+        display: none;
+    }
 
     @media (max-width: ${variables.SCREEN_SIZE.SM}) {
         padding: 16px 16px 0;
