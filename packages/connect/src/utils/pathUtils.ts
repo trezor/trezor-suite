@@ -45,7 +45,7 @@ export const isBech32Path = (path: number[] | undefined) =>
     Array.isArray(path) && path[0] === toHardened(84);
 
 export const isTaprootPath = (path: number[] | undefined) =>
-    Array.isArray(path) && path[0] === toHardened(86);
+    Array.isArray(path) && (path[0] === toHardened(86) || path[0] === toHardened(10025));
 
 export const getAccountType = (path: number[] | undefined) => {
     if (isTaprootPath(path)) return 'p2tr';
@@ -88,7 +88,9 @@ export const getScriptType = (
             return 'SPENDP2SHWITNESS';
         case 84:
             return 'SPENDWITNESS';
+        // 10025 - SLIP-25 https://github.com/satoshilabs/slips/blob/master/slip-0025.md#public-key-derivation
         case 86:
+        case 10025:
             return 'SPENDTAPROOT';
         default:
             return undefined;
@@ -129,7 +131,9 @@ export const getOutputScriptType = (path?: number[]): PROTO.ChangeOutputScriptTy
             return 'PAYTOP2SHWITNESS';
         case 84:
             return 'PAYTOWITNESS';
+        // 10025 - SLIP-25 https://github.com/satoshilabs/slips/blob/master/slip-0025.md#public-key-derivation
         case 86:
+        case 10025:
             return 'PAYTOTAPROOT';
         default:
             return undefined;
