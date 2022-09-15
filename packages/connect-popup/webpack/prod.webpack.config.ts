@@ -81,10 +81,19 @@ export default {
                 },
             ],
         }),
+        // legacy fonts, should be removed once refactoring into React is finished
         new CopyPlugin({
             patterns: [
                 {
                     from: `${STATIC_SRC}/fonts`,
+                    to: `${DIST}/fonts`,
+                },
+            ],
+        }),
+        new CopyPlugin({
+            patterns: [
+                {
+                    from: `${path.join(__dirname, '../../suite-data/files/fonts')}`,
                     to: `${DIST}/fonts`,
                 },
             ],

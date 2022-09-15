@@ -11,6 +11,7 @@ import { ErrorView, ErrorViewProps } from './views/Error';
 import { ThemeWrapper } from './support/ThemeWrapper';
 import { IntlWrapper } from './support/IntlWrapper';
 import { ErrorBoundary } from './support/ErrorBoundary';
+import { GlobalStyle } from './support/GlobalStyle';
 
 export type ConnectUIProps = TransportProps | PassphraseProps | ErrorViewProps;
 
@@ -31,6 +32,7 @@ export const ConnectUI = (props: ConnectUIProps) => {
 
     return (
         <ErrorBoundary>
+            <GlobalStyle />
             <ThemeWrapper>
                 {/* todo: load translations from somewhere and pass them to intl */}
                 <IntlWrapper>{getComponent()}</IntlWrapper>
