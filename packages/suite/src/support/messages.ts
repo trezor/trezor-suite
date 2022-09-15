@@ -6880,4 +6880,32 @@ export default defineMessages({
         id: 'TR_FEE_RATE_CHANGED',
         defaultMessage: 'Fee rate has changed to complete transaction.',
     },
+    TR_MY_COINS: {
+        id: 'TR_MY_COINS',
+        defaultMessage: 'My coins',
+    },
+    TR_ANONYMIZING: {
+        id: 'TR_ANONYMIZING',
+        defaultMessage: 'Anonimyzing',
+    },
+    TR_ANONYMIZE: {
+        id: 'TR_ANONYMIZE',
+        defaultMessage: 'Anonimyze',
+    },
+    TR_COINS_ANONYMITY: {
+        id: 'TR_COINS_ANONYMITY',
+        defaultMessage: 'Anonymity of my coins',
+    },
+    TR_COINS_ANONYMITY_TOOLTIP: {
+        id: 'TR_COINS_ANONYMITY_TOOLTIP',
+        defaultMessage: 'very big anonimity',
+    },
+    TR_NOT_PRIVATE: {
+        id: 'TR_NOT_PRIVATE',
+        defaultMessage: 'Not Private',
+    },
+    TR_PRIVATE: {
+        id: 'TR_PRIVATE',
+        defaultMessage: 'Private',
+    },
 });

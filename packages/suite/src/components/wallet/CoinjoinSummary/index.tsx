@@ -7,7 +7,6 @@ import { CoinjoinSessionStatus } from './CoinjoinSessionStatus';
 
 const Wrapper = styled.div`
     display: flex;
-    flex-direction: row;
     width: 100%;
     margin-bottom: 24px;
 `;
