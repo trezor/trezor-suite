@@ -17,15 +17,19 @@ const derivePubKeyHash = async (
     address_n: number[],
     getHDNode: GetHDNode,
     coinInfo: BitcoinNetworkInfo,
+    unlockPath?: PROTO.UnlockPath,
 ) => {
     // regular bip44 output
     if (address_n.length === 5) {
-        const response = await getHDNode({ address_n: address_n.slice(0, 4) }, { coinInfo });
+        const response = await getHDNode(
+            { address_n: address_n.slice(0, 4) },
+            { coinInfo, unlockPath },
+        );
         const node = bip32.fromBase58(response.xpub, coinInfo.network);
         return node.derive(address_n[address_n.length - 1]);
     }
     // custom address_n
-    const response = await getHDNode({ address_n }, { coinInfo });
+    const response = await getHDNode({ address_n }, { coinInfo, unlockPath });
     return bip32.fromBase58(response.xpub, coinInfo.network);
 };
 
@@ -33,6 +37,7 @@ const deriveOutputScript = async (
     getHDNode: GetHDNode,
     output: PROTO.TxOutputType,
     coinInfo: BitcoinNetworkInfo,
+    unlockPath?: PROTO.UnlockPath,
 ) => {
     // skip multisig output check, not implemented yet
     // TODO: implement it
@@ -54,7 +59,7 @@ const deriveOutputScript = async (
         );
     }
 
-    const node = await derivePubKeyHash(output.address_n, getHDNode, coinInfo);
+    const node = await derivePubKeyHash(output.address_n, getHDNode, coinInfo, unlockPath);
     const payment = { hash: node.identifier, network: coinInfo.network };
 
     if (output.script_type === 'PAYTOADDRESS') {
@@ -102,6 +107,7 @@ export const verifyTx = async (
     outputs: PROTO.TxOutputType[],
     serializedTx: string,
     coinInfo: BitcoinNetworkInfo,
+    unlockPath?: PROTO.UnlockPath,
 ) => {
     // deserialize signed transaction
     const bitcoinTx = BitcoinJsTransaction.fromHex(serializedTx, { network: coinInfo.network });
@@ -129,7 +135,7 @@ export const verifyTx = async (
             }
         }
 
-        const scriptA = await deriveOutputScript(getHDNode, outputs[i], coinInfo);
+        const scriptA = await deriveOutputScript(getHDNode, outputs[i], coinInfo, unlockPath);
         if (scriptA && scriptA.compare(scriptB) !== 0) {
             throw ERRORS.TypedError('Runtime', `verifyTx: Output ${i} scripts differ`);
         }

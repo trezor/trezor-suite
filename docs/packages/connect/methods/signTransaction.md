@@ -35,6 +35,7 @@ const result = await TrezorConnect.signTransaction(params);
 -   `push` - _optional_ `boolean` Broadcast signed transaction to blockchain. Default is set to false
 -   `amountUnit` — _optional_ `PROTO.AmountUnit`
     > show amounts in BTC, mBTC, uBTC, sat
+-   `unlockPath` - _optional_ [PROTO.UnlockPath](https://github.com/trezor/trezor-suite/blob/develop/packages/transport/src/types/messages.ts), the result of [TrezorConnect.unlockPath](./unlockPath.md) method.
 
 ### Example
 

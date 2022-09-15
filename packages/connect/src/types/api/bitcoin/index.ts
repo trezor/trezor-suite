@@ -77,6 +77,7 @@ export interface SignTransaction {
     push?: boolean;
     preauthorized?: boolean;
     amountUnit?: PROTO.AmountUnit;
+    unlockPath?: PROTO.UnlockPath;
 }
 
 export type SignedTransaction = {
