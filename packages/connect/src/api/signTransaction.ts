@@ -36,6 +36,7 @@ type Params = {
     coinInfo: BitcoinNetworkInfo;
     push: boolean;
     preauthorized?: boolean;
+    unlockPath?: PROTO.UnlockPath;
 };
 
 export default class SignTransaction extends AbstractMethod<'signTransaction', Params> {
@@ -64,7 +65,15 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
             { name: 'push', type: 'boolean' },
             { name: 'preauthorized', type: 'boolean' },
             { name: 'amountUnit', type: ['number', 'string'] },
+            { name: 'unlockPath', type: 'object' },
         ]);
+
+        if (payload.unlockPath) {
+            validateParams(payload.unlockPath, [
+                { name: 'address_n', required: true, type: 'array' },
+                { name: 'mac', required: true, type: 'string' },
+            ]);
+        }
 
         const coinInfo = getBitcoinNetwork(payload.coin);
         if (!coinInfo) {
@@ -116,6 +125,7 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
             coinInfo,
             push: typeof payload.push === 'boolean' ? payload.push : false,
             preauthorized: payload.preauthorized,
+            unlockPath: payload.unlockPath,
         };
 
         this.params.options = enhanceSignTx(this.params.options, coinInfo);
@@ -177,6 +187,8 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
 
         if (params.preauthorized) {
             await device.getCommands().typedCall('DoPreauthorized', 'PreauthorizedRequest', {});
+        } else if (params.unlockPath) {
+            await device.getCommands().unlockPath(params.unlockPath);
         }
 
         const signTxMethod = !useLegacySignProcess ? signTx : signTxLegacy;
@@ -201,6 +213,7 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
                 params.outputs,
                 response.serializedTx,
                 params.coinInfo,
+                params.unlockPath,
             );
 
             if (bitcoinTx.hasWitnesses()) {
