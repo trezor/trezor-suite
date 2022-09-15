@@ -1,7 +1,7 @@
 version: "3.9"
 services:
   electrum-regtest:
-    image: ghcr.io/vdovhanych/electrs:latest
+    image: ghcr.io/trezor/electrs:latest
     ports:
       - "50001:50001"
     volumes:
