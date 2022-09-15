@@ -19,6 +19,7 @@ const result = await TrezorConnect.getAddress(params);
 -   `crossChain` — _optional_ `boolean` Advanced feature. Use it only if you are know what you are doing. Allows to generate address between chains. For example Bitcoin path on Litecoin network will display cross chain address in Litecoin format.
 -   `multisig` - _optional_ [MultisigRedeemScriptType](https://github.com/trezor/trezor-suite/blob/develop/packages/transport/src/types/messages.ts), redeem script information (multisig addresses only)
 -   `scriptType` - _optional_ [InputScriptType](https://github.com/trezor/trezor-suite/blob/develop/packages/transport/src/types/messages.ts), address script type
+-   `unlockPath` - _optional_ [PROTO.UnlockPath](https://github.com/trezor/trezor-suite/blob/develop/packages/transport/src/types/messages.ts), the result of [TrezorConnect.unlockPath](./unlockPath.md) method.
 
 #### Exporting bundle of addresses
 

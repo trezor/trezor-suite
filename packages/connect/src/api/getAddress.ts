@@ -11,6 +11,7 @@ import type { BitcoinNetworkInfo } from '../types';
 type Params = PROTO.GetAddress & {
     address?: string;
     coinInfo: BitcoinNetworkInfo;
+    unlockPath?: PROTO.UnlockPath;
 };
 
 export default class GetAddress extends AbstractMethod<'getAddress', Params[]> {
@@ -42,7 +43,15 @@ export default class GetAddress extends AbstractMethod<'getAddress', Params[]> {
                 { name: 'showOnTrezor', type: 'boolean' },
                 { name: 'multisig', type: 'object' },
                 { name: 'scriptType', type: 'string' },
+                { name: 'unlockPath', type: 'object' },
             ]);
+
+            if (batch.unlockPath) {
+                validateParams(batch.unlockPath, [
+                    { name: 'address_n', required: true, type: 'array' },
+                    { name: 'mac', required: true, type: 'string' },
+                ]);
+            }
 
             const path = validatePath(batch.path, 1);
             let coinInfo: BitcoinNetworkInfo | undefined;
@@ -73,6 +82,7 @@ export default class GetAddress extends AbstractMethod<'getAddress', Params[]> {
                 multisig: batch.multisig,
                 script_type: batch.scriptType,
                 coinInfo,
+                unlockPath: batch.unlockPath,
             };
         });
 
@@ -148,8 +158,11 @@ export default class GetAddress extends AbstractMethod<'getAddress', Params[]> {
         return uiResp.payload;
     }
 
-    _call({ address_n, show_display, multisig, script_type, coinInfo }: Params) {
+    async _call({ address_n, show_display, multisig, script_type, coinInfo, unlockPath }: Params) {
         const cmd = this.device.getCommands();
+        if (unlockPath) {
+            await cmd.unlockPath(unlockPath);
+        }
         return cmd.getAddress(
             {
                 address_n,
