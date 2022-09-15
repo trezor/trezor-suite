@@ -188,7 +188,7 @@ transport manual:
   variables:
     COMPOSE_PROJECT_NAME: $CI_JOB_ID
     COMPOSE_FILE: ./docker/docker-compose.connect-popup-ci.yml
-    URL: ${DEV_SERVER_URL}/connect-explorer/${CI_BUILD_REF_NAME}/
+    URL: ${DEV_SERVER_URL}/connect/${CI_BUILD_REF_NAME}/
   script:
     - yarn install --immutable
     - docker-compose pull
@@ -201,9 +201,9 @@ transport manual:
     expire_in: 7 days
     when: always
     paths:
-      - ./packages/integration-tests/projects/connect-popup/screenshots
-      - ./packages/integration-tests/connect-popup-overview.html
-      - ./packages/integration-tests/test-results
+      - ./packages/connect-popup/e2e/screenshots
+      - ./packages/connect-popup/connect-popup-overview.html
+      - ./packages/connect-popup/test-results
   interruptible: true
 
 connect-popup:
