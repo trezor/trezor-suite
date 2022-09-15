@@ -3,11 +3,6 @@ import { PROTO } from '../../../constants';
 
 // eosGetPublicKey
 
-export interface EosGetPublicKey {
-    path: string | number[];
-    showOnTrezor?: boolean;
-}
-
 export interface EosPublicKey {
     wifPublicKey: string;
     rawPublicKey: string;
