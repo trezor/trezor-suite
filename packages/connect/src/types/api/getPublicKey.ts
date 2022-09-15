@@ -12,6 +12,7 @@ export interface GetPublicKey extends GetPublicKeyShared {
     scriptType?: PROTO.InternalInputScriptType;
     ignoreXpubMagic?: boolean;
     ecdsaCurveName?: string;
+    unlockPath?: PROTO.UnlockPath;
 }
 
 // PROTO.HDNodeType with camelcase fields + path

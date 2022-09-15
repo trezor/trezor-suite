@@ -11,6 +11,7 @@ import type { PROTO } from '../constants';
 
 type Params = PROTO.GetPublicKey & {
     coinInfo?: BitcoinNetworkInfo;
+    unlockPath?: PROTO.UnlockPath;
 };
 
 export default class GetPublicKey extends AbstractMethod<'getPublicKey', Params[]> {
@@ -40,7 +41,15 @@ export default class GetPublicKey extends AbstractMethod<'getPublicKey', Params[
                 { name: 'scriptType', type: ['string', 'number'] },
                 { name: 'ignoreXpubMagic', type: 'boolean' },
                 { name: 'ecdsaCurveName', type: 'boolean' },
+                { name: 'unlockPath', type: 'object' },
             ]);
+
+            if (batch.unlockPath) {
+                validateParams(batch.unlockPath, [
+                    { name: 'address_n', required: true, type: 'array' },
+                    { name: 'mac', required: true, type: 'string' },
+                ]);
+            }
 
             let coinInfo: BitcoinNetworkInfo | undefined;
             if (batch.coin) {
@@ -67,6 +76,7 @@ export default class GetPublicKey extends AbstractMethod<'getPublicKey', Params[
                 ignore_xpub_magic: batch.ignoreXpubMagic,
                 ecdsa_curve_name: batch.ecdsaCurveName,
                 coinInfo,
+                unlockPath: batch.unlockPath,
             };
         });
     }
@@ -103,8 +113,8 @@ export default class GetPublicKey extends AbstractMethod<'getPublicKey', Params[
         const responses: MethodReturnType<typeof this.name> = [];
         const cmd = this.device.getCommands();
         for (let i = 0; i < this.params.length; i++) {
-            const { coinInfo, ...batch } = this.params[i];
-            const response = await cmd.getHDNode(batch, { coinInfo });
+            const { coinInfo, unlockPath, ...batch } = this.params[i];
+            const response = await cmd.getHDNode(batch, { coinInfo, unlockPath });
             responses.push(response);
 
             if (this.hasBundle) {
