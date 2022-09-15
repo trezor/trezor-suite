@@ -1,7 +1,8 @@
 /* eslint no-await-in-loop: 0 */
 
 const { test, expect } = require('@playwright/test');
-const { Controller } = require('../../../websocket-client');
+// @ts-expect-error
+const { Controller } = require('../../../integration-tests/websocket-client');
 const { createDeferred } = require('@trezor/utils');
 
 const connectUrl = process.env.URL
