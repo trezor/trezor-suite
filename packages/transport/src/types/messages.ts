@@ -1470,10 +1470,16 @@ export type Features = {
     auto_lock_delay_ms: number | null;
     display_rotation: number | null;
     experimental_features: boolean | null;
+    busy?: boolean;
 };
 
 // LockDevice
 export type LockDevice = {};
+
+// SetBusy
+export type SetBusy = {
+    expiry_ms?: number;
+};
 
 // EndSession
 export type EndSession = {};
@@ -1546,17 +1552,6 @@ export type GetFirmwareHash = {
 export type FirmwareHash = {
     hash: string;
 };
-
-// GetFirmware
-export type GetFirmware = {};
-
-// FirmwareChunk
-export type FirmwareChunk = {
-    chunk: string;
-};
-
-// FirmwareChunkAck
-export type FirmwareChunkAck = {};
 
 // WipeDevice
 export type WipeDevice = {};
@@ -1652,6 +1647,17 @@ export type GetNonce = {};
 // Nonce
 export type Nonce = {
     nonce: string;
+};
+
+// UnlockPath
+export type UnlockPath = {
+    address_n: number[];
+    mac?: string;
+};
+
+// UnlockedPathRequest
+export type UnlockedPathRequest = {
+    mac?: string;
 };
 
 export enum MoneroNetworkType {
@@ -2307,6 +2313,7 @@ export type MessageType = {
     GetFeatures: GetFeatures;
     Features: Features;
     LockDevice: LockDevice;
+    SetBusy: SetBusy;
     EndSession: EndSession;
     ApplySettings: ApplySettings;
     ApplyFlags: ApplyFlags;
@@ -2319,9 +2326,6 @@ export type MessageType = {
     Entropy: Entropy;
     GetFirmwareHash: GetFirmwareHash;
     FirmwareHash: FirmwareHash;
-    GetFirmware: GetFirmware;
-    FirmwareChunk: FirmwareChunk;
-    FirmwareChunkAck: FirmwareChunkAck;
     WipeDevice: WipeDevice;
     ResetDevice: ResetDevice;
     BackupDevice: BackupDevice;
@@ -2339,6 +2343,8 @@ export type MessageType = {
     RebootToBootloader: RebootToBootloader;
     GetNonce: GetNonce;
     Nonce: Nonce;
+    UnlockPath: UnlockPath;
+    UnlockedPathRequest: UnlockedPathRequest;
     NEMGetAddress: NEMGetAddress;
     NEMAddress: NEMAddress;
     NEMTransactionCommon: NEMTransactionCommon;
