@@ -16,10 +16,12 @@
         "@suite-common/wallet-core": "*",
         "@suite-native/module-devices": "*",
         "@suite-native/module-settings": "*",
+        "@suite-native/storage": "*",
         "@trezor/connect": "9.0.1",
         "@trezor/styles": "*",
         "@trezor/utils": "*",
-        "redux-flipper": "2.0.2"
+        "redux-flipper": "2.0.2",
+        "redux-persist": "6.0.0"
     },
     "devDependencies": {
         "jest": "^26.6.3",

@@ -29,6 +29,12 @@ export type StackToTabCompositeScreenProps<
     L extends ParamListBase,
 > = CompositeScreenProps<StackProps<T, K>, BottomTabScreenProps<L>>;
 
+export type StackToStackCompositeNavigationProps<
+    T extends ParamListBase,
+    K extends string,
+    L extends ParamListBase,
+> = CompositeNavigationProp<StackNavigationProp<T, K>, StackNavigationProp<L>>;
+
 export type RouteProps<T extends ParamListBase, K extends keyof T> = RouteProp<T, K>;
 
 export interface TabsOptions {

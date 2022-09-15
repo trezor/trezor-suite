@@ -5,6 +5,7 @@
         { "path": "../atoms" },
         { "path": "../config" },
         { "path": "../navigation" },
+        { "path": "../storage" },
         { "path": "../../packages/icons" },
         { "path": "../../packages/styles" },
         { "path": "../../packages/theme" }

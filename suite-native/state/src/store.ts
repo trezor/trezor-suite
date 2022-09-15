@@ -1,18 +1,11 @@
-import { combineReducers, configureStore, Store, Middleware } from '@reduxjs/toolkit';
+import { configureStore, Store, Middleware } from '@reduxjs/toolkit';
 import createDebugger from 'redux-flipper';
+import { persistStore, FLUSH, PAUSE, PERSIST, PURGE, REGISTER, REHYDRATE } from 'redux-persist';
 
-import { devicesReducer } from '@suite-native/module-devices';
-import { appSettingsReducer } from '@suite-native/module-settings';
-import {
-    prepareAccountsReducer,
-    prepareFiatRatesReducer,
-    prepareTransactionsReducer,
-    prepareBlockchainReducer,
-    prepareFiatRatesMiddleware,
-    prepareBlockchainMiddleware,
-} from '@suite-common/wallet-core';
+import { prepareFiatRatesMiddleware, prepareBlockchainMiddleware } from '@suite-common/wallet-core';
 
 import { extraDependencies } from './extraDependencies';
+import { rootReducers } from './reducers';
 
 const middlewares: Middleware[] = [
     prepareBlockchainMiddleware(extraDependencies),
@@ -24,30 +17,20 @@ if (__DEV__) {
     middlewares.push(reduxFlipperDebugger);
 }
 
-export const transactionsReducer = prepareTransactionsReducer(extraDependencies);
-export const accountsReducer = prepareAccountsReducer(extraDependencies);
-export const fiatRatesReducer = prepareFiatRatesReducer(extraDependencies);
-export const blockchainReducer = prepareBlockchainReducer(extraDependencies);
-
-const walletReducers = combineReducers({
-    accounts: accountsReducer,
-    blockchain: blockchainReducer,
-    fiat: fiatRatesReducer,
-    transactions: transactionsReducer,
-});
-
 export const store: Store = configureStore({
-    reducer: {
-        appSettings: appSettingsReducer,
-        devices: devicesReducer,
-        wallet: walletReducers,
-    },
+    reducer: rootReducers,
     middleware: getDefaultMiddleware =>
         getDefaultMiddleware({
             thunk: {
                 extraArgument: extraDependencies,
             },
+            serializableCheck: {
+                // ignore all action types which redux-persist dispatches
+                ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+            },
         }).concat(middlewares),
 });
 
 export type RootState = ReturnType<typeof store.getState>;
+
+export const storePersistor = persistStore(store);

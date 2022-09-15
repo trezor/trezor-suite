@@ -11,10 +11,16 @@ import {
     RootStackRoutes,
     SettingsStackRoutes,
     AccountsStackRoutes,
+    DevUtilsStackRoutes,
 } from './routes';
 
 export type HomeStackParamList = {
     [HomeStackRoutes.Home]: undefined;
+};
+
+export type DevUtilsStackParamList = {
+    [DevUtilsStackRoutes.DevUtils]: undefined;
+    [DevUtilsStackRoutes.Demo]: undefined;
 };
 
 export type SettingsStackParamList = {
@@ -25,7 +31,6 @@ export type SettingsStackParamList = {
     [SettingsStackRoutes.SettingsCustomization]: undefined;
     [SettingsStackRoutes.SettingsSecurity]: undefined;
     [SettingsStackRoutes.SettingsDangerArea]: undefined;
-    [SettingsStackRoutes.Demo]: undefined;
 };
 
 export type AccountsStackParamList = {
@@ -54,7 +59,8 @@ export type AccountsImportStackParamList = {
 };
 
 export type RootStackParamList = {
-    [RootStackRoutes.Onboarding]: NavigatorScreenParams<OnboardingStackParamList>;
-    [RootStackRoutes.App]: NavigatorScreenParams<AppTabsParamList>;
+    [RootStackRoutes.OnboardingStack]: NavigatorScreenParams<OnboardingStackParamList>;
+    [RootStackRoutes.AppTabs]: NavigatorScreenParams<AppTabsParamList>;
     [RootStackRoutes.AccountsImport]: NavigatorScreenParams<AccountsImportStackParamList>;
+    [RootStackRoutes.DevUtilsStack]: undefined;
 };

@@ -1,26 +1,20 @@
 {
-    "name": "@suite-native/module-home",
+    "name": "@suite-native/storage",
     "version": "1.0.0",
     "private": true,
     "license": "See LICENSE.md in repo root",
     "sideEffects": false,
-    "type": "module",
     "main": "src/index",
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "test:unit": "jest --passWithNoTests",
         "type-check": "tsc --build"
     },
     "dependencies": {
-        "@react-navigation/native": "^6.0.11",
-        "@react-navigation/stack": "^6.2.2",
-        "@suite-native/atoms": "*",
-        "@suite-native/module-graph": "*",
-        "@suite-native/navigation": "*",
-        "@trezor/icons": "*",
-        "@trezor/styles": "*",
-        "@trezor/theme": "*",
+        "@reduxjs/toolkit": "^1.8.3",
         "react": "^17.0.2",
-        "react-native": "0.68.2"
+        "react-native-mmkv": "^2.4.3",
+        "redux-persist": "6.0.0"
     },
     "devDependencies": {
         "jest": "^26.6.3",

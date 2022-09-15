@@ -18,6 +18,11 @@ const initialState: AppSettingsState = {
     isOnboardingFinished: false,
 };
 
+export const appSettingsPersistWhitelist: Array<keyof AppSettingsState> = [
+    'colorScheme',
+    'isOnboardingFinished',
+];
+
 export const appSettingsSlice = createSlice({
     name: 'appSettings',
     initialState,

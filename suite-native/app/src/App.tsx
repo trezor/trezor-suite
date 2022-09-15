@@ -6,8 +6,9 @@ import { Provider, useDispatch } from 'react-redux';
 import { NavigationContainer } from '@react-navigation/native';
 
 import { connectInitThunk } from '@suite-common/connect-init';
-import { store } from '@suite-native/state';
+import { store, storePersistor } from '@suite-native/state';
 import { initBlockchainThunk, reconnectBlockchainThunk } from '@suite-common/wallet-core';
+import { StorageProvider } from '@suite-native/storage';
 
 import { RootStackNavigator } from './navigation/RootStackNavigator';
 import { StylesProvider } from './StylesProvider';
@@ -36,11 +37,13 @@ export const App = () => {
         <GestureHandlerRootView style={{ flex: 1 }}>
             <NavigationContainer>
                 <Provider store={store}>
-                    <SafeAreaProvider>
-                        <StylesProvider>
-                            <AppComponent />
-                        </StylesProvider>
-                    </SafeAreaProvider>
+                    <StorageProvider persistor={storePersistor}>
+                        <SafeAreaProvider>
+                            <StylesProvider>
+                                <AppComponent />
+                            </StylesProvider>
+                        </SafeAreaProvider>
+                    </StorageProvider>
                 </Provider>
             </NavigationContainer>
         </GestureHandlerRootView>

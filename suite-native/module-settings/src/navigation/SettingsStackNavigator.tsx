@@ -15,7 +15,6 @@ import { SettingsAdvancedScreen } from '../screens/SettingsAdvancedScreen';
 import { SettingsCustomizationScreen } from '../screens/SettingsCustomizationScreen';
 import { SettingsSecurityScreen } from '../screens/SettingsSecurityScreen';
 import { SettingsDangerAreaScreen } from '../screens/SettingsDangerAreaScreen';
-import { DemoScreen } from '../screens/DemoScreen';
 
 export const SettingsStack = createStackNavigator<SettingsStackParamList>();
 
@@ -58,11 +57,6 @@ export const SettingsStackNavigator = () => (
             options={{ title: SettingsStackRoutes.SettingsDangerArea }}
             name={SettingsStackRoutes.SettingsDangerArea}
             component={SettingsDangerAreaScreen}
-        />
-        <SettingsStack.Screen
-            options={{ title: SettingsStackRoutes.Demo }}
-            name={SettingsStackRoutes.Demo}
-            component={DemoScreen}
         />
     </SettingsStack.Navigator>
 );
