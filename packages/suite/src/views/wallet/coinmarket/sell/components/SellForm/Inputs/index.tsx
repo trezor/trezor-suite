@@ -7,7 +7,7 @@ import { CRYPTO_INPUT, FIAT_INPUT, OUTPUT_AMOUNT } from '@suite/types/wallet/coi
 import CryptoInput from './CryptoInput';
 import { useLayoutSize } from '@suite/hooks/suite';
 import FractionButtons from '@suite/components/wallet/CoinMarketFractionButtons';
-import { amountToSatoshi } from '@suite-common/wallet-utils';
+import { amountToSatoshi, isZero } from '@suite-common/wallet-utils';
 import { Wrapper, Left, Middle, Right, StyledIcon } from '@wallet-views/coinmarket';
 import { useBitcoinAmountUnit } from '@wallet-hooks/useBitcoinAmountUnit';
 
@@ -89,8 +89,8 @@ const Inputs = () => {
     }, [clearErrors, composeRequest, setActiveInput, setValue]);
 
     const isBalanceZero = tokenData
-        ? new BigNumber(tokenData.balance || '0').isZero()
-        : new BigNumber(account.formattedBalance).isZero();
+        ? isZero(tokenData.balance || '0')
+        : isZero(account.formattedBalance);
 
     return (
         <Wrapper responsiveSize="LG">

@@ -3,6 +3,7 @@ import React, { useCallback, useEffect } from 'react';
 import { DeepMap, FieldError } from 'react-hook-form';
 import styled from 'styled-components';
 import BigNumber from 'bignumber.js';
+import { isZero, amountToSatoshi } from '@suite-common/wallet-utils';
 import { useCoinmarketExchangeFormContext } from '@wallet-hooks/useCoinmarketExchangeForm';
 import SendCryptoInput from './SendCryptoInput';
 import FiatInput from './FiatInput';
@@ -11,7 +12,6 @@ import FractionButtons from '@wallet-components/CoinMarketFractionButtons';
 import { CRYPTO_INPUT, ExchangeFormState, FIAT_INPUT } from '@wallet-types/coinmarketExchangeForm';
 import { useLayoutSize } from '@suite/hooks/suite';
 import { Wrapper, Left, Middle, Right, StyledIcon } from '@wallet-views/coinmarket';
-import { amountToSatoshi } from '@suite-common/wallet-utils';
 import { useBitcoinAmountUnit } from '@wallet-hooks/useBitcoinAmountUnit';
 
 const StyledLeft = styled(Left)`
@@ -119,8 +119,8 @@ const Inputs = () => {
     }, [clearErrors, composeRequest, setValue]);
 
     const isBalanceZero = tokenData
-        ? new BigNumber(tokenData.balance || '0').isZero()
-        : new BigNumber(account.formattedBalance).isZero();
+        ? isZero(tokenData.balance || '0')
+        : isZero(account.formattedBalance);
 
     return (
         <Wrapper responsiveSize="XL">
