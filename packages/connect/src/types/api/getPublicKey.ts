@@ -1,3 +1,4 @@
+import type { PROTO } from '../../constants';
 import type {
     GetPublicKey as GetPublicKeyShared,
     Params,
@@ -8,6 +9,9 @@ import type {
 export interface GetPublicKey extends GetPublicKeyShared {
     coin?: string;
     crossChain?: boolean;
+    scriptType?: PROTO.InternalInputScriptType;
+    ignoreXpubMagic?: boolean;
+    ecdsaCurveName?: string;
 }
 
 // PROTO.HDNodeType with camelcase fields + path

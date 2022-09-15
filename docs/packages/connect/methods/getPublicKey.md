@@ -15,6 +15,9 @@ const result = await TrezorConnect.getPublicKey(params);
 
 -   `path` — _required_ `string | Array<number>` minimum length is `1`. [read more](../path.md)
 -   `coin` - _optional_ `string` determines network definition specified in [coins.json](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-common/files/coins.json) file. Coin `shortcut`, `name` or `label` can be used. If `coin` is not set API will try to get network definition from `path`.
+-   `scriptType` — _optional_ `string` used to distinguish between various address formats (non-segwit, segwit, etc.).
+-   `ignoreXpubMagic` — _optional_ `boolean` ignore SLIP-0132 XPUB magic, use xpub/tpub prefix for all account types.
+-   `ecdsaCurveName` — _optional_ `string` ECDSA curve name to use
 -   `crossChain` — _optional_ `boolean` Advanced feature. Use it only if you are know what you are doing. Allows to generate address between chains. For example Bitcoin path on Litecoin network will display cross chain address in Litecoin format.
 
 #### Exporting bundle of public keys

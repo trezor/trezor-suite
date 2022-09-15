@@ -10,13 +10,9 @@ import { PROTO, ERRORS } from '../../constants';
 import { getOutputScriptType } from '../../utils/pathUtils';
 
 import type { BitcoinNetworkInfo } from '../../types';
-import type { HDNodeResponse } from '../../types/api/getPublicKey';
+import type { DeviceCommands } from '../../device/DeviceCommands';
 
-type GetHDNode = (
-    path: number[],
-    coinInfo?: BitcoinNetworkInfo,
-    validation?: boolean,
-) => Promise<HDNodeResponse>;
+type GetHDNode = DeviceCommands['getHDNode'];
 
 const derivePubKeyHash = async (
     address_n: number[],
@@ -25,12 +21,12 @@ const derivePubKeyHash = async (
 ) => {
     // regular bip44 output
     if (address_n.length === 5) {
-        const response = await getHDNode(address_n.slice(0, 4), coinInfo);
+        const response = await getHDNode({ address_n: address_n.slice(0, 4) }, { coinInfo });
         const node = bip32.fromBase58(response.xpub, coinInfo.network);
         return node.derive(address_n[address_n.length - 1]);
     }
     // custom address_n
-    const response = await getHDNode(address_n, coinInfo);
+    const response = await getHDNode({ address_n }, { coinInfo });
     return bip32.fromBase58(response.xpub, coinInfo.network);
 };
 

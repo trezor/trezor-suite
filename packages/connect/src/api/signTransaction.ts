@@ -153,9 +153,10 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
                         if (!accountPath || !accountPath.address_n) {
                             throw ERRORS.TypedError('Runtime', 'Account not found');
                         }
+                        const address_n = accountPath.address_n.slice(0, 3);
                         const node = await device
                             .getCommands()
-                            .getHDNode(accountPath.address_n.slice(0, 3), params.coinInfo);
+                            .getHDNode({ address_n }, { coinInfo: params.coinInfo });
                         const account = await blockchain.getAccountInfo({
                             descriptor: node.xpubSegwit || node.xpub,
                             details: 'tokens',
