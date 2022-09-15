@@ -6,6 +6,7 @@ const Container = styled.div<{ isChecked: boolean; isDisabled?: boolean; isSmall
     align-items: center;
     height: ${({ isSmall }) => (isSmall ? '18px' : '24px')};
     width: ${({ isSmall }) => (isSmall ? '32px' : '42px')};
+    flex-shrink: 0;
     margin: 0px;
     padding: 3px;
     position: relative;

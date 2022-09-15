@@ -119,7 +119,7 @@ export const DeviceStatus = ({
                     onRefreshClick();
                 }}
                 icon="REFRESH"
-                size={16}
+                size={12}
                 color={getStatusColor(status, theme)}
             />
         );

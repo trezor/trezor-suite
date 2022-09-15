@@ -76,6 +76,6 @@ export const RadioButton = ({ isChecked, children, onClick, ...rest }: RadioButt
         {...rest}
     >
         <RadioIcon isChecked={isChecked} />
-        <Label>{children}</Label>
+        {children && <Label>{children}</Label>}
     </Wrapper>
 );

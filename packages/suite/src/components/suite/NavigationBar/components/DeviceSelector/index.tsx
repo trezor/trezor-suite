@@ -53,6 +53,7 @@ const Wrapper = styled.div<{ isAnimationTriggered?: boolean }>`
 `;
 
 const DeviceLabel = styled.div`
+    align-items: center;
     display: flex;
     min-width: 0;
     font-size: ${variables.FONT_SIZE.SMALL};
