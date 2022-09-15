@@ -12,7 +12,6 @@ import {
     isTaprootPath,
     getSerializedPath,
     getScriptType,
-    fromHardened,
     toHardened,
 } from '../utils/pathUtils';
 import { getAccountAddressN } from '../utils/accountUtils';
@@ -193,9 +192,9 @@ export class DeviceCommands {
 
         if (isTaprootPath(path)) {
             // wrap regular xpub into bitcoind native descriptor
-            response.xpubSegwit = `tr([5c9e228d/86'/${fromHardened(path[1])}'/${fromHardened(
-                path[2],
-            )}']${response.xpub}/<0;1>/*)`;
+            const fingerprint = Number(publicKey.root_fingerprint || 0).toString(16);
+            const descriptorPath = `${fingerprint}${response.serializedPath.substring(1)}`;
+            response.xpubSegwit = `tr([${descriptorPath}]${response.xpub}/<0;1>/*)`;
         }
 
         return response;
