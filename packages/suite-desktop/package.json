@@ -53,6 +53,8 @@
             "!**/node_modules/**/*.js.flow",
             "!**/node_modules/**/*.ts",
             "!**/node_modules/**/.*",
+            "!**/node_modules/tiny-secp256k1/**/build",
+            "!**/node_modules/blake-hash/**/build",
             "!**/jest*",
             "!**/babel*",
             "!**/bower*",
