@@ -1,4 +1,4 @@
-const { Controller } = require('../../websocket-client');
+const { Controller } = require('../../../trezor-user-env-link');
 
 const wait = ms =>
     new Promise(resolve => {

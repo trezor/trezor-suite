@@ -25,7 +25,7 @@ const confirmExportAddressScreen = {
     next: 'button.confirm >> visible=true',
 };
 
-const getConfirmAddressOnDeviceScreen = address => ({
+const getConfirmAddressOnDeviceScreen = (address: string) => ({
     selector: `text=${address}`,
     screenshot: {
         name: 'confirm-on-device',
@@ -303,24 +303,24 @@ const wipeDevice = [
     },
 ];
 
-const resetDevice = [
-    {
-        url: 'resetDevice',
-        device: {
-            wiped: true,
-        },
-        views: [
-            {
-                selector: '.device-management >> visible=true',
-                screenshot: {
-                    name: 'reset-device',
-                },
-                next: 'button.confirm >> visible=true',
-            },
-            followDevice,
-        ],
-    },
-];
+// const resetDevice = [
+//     {
+//         url: 'resetDevice',
+//         device: {
+//             wiped: true,
+//         },
+//         views: [
+//             {
+//                 selector: '.device-management >> visible=true',
+//                 screenshot: {
+//                     name: 'reset-device',
+//                 },
+//                 next: 'button.confirm >> visible=true',
+//             },
+//             followDevice,
+//         ],
+//     },
+// ];
 
 const recoverDevice = [
     {
@@ -602,13 +602,14 @@ const stellarGetAddress = [
     },
 ];
 
-const stellarSignTransaction = [
-    {
-        device: initializedDevice,
-        url: 'stellarSignTransaction',
-        views: [followDevice, followDevice],
-    },
-];
+// todo: start using this fixture
+// const stellarSignTransaction = [
+//     {
+//         device: initializedDevice,
+//         url: 'stellarSignTransaction',
+//         views: [followDevice, followDevice],
+//     },
+// ];
 
 const rippleGetAddress = [
     {

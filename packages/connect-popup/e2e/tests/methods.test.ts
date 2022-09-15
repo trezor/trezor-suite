@@ -4,7 +4,7 @@
 import { test } from '@playwright/test';
 import fs from 'fs';
 
-import { Controller } from '../../../integration-tests/websocket-client';
+import { Controller } from '@trezor/trezor-user-env-link';
 import { fixtures } from './__fixtures__/methods';
 import { buildOverview } from '../support/buildOverview';
 
@@ -46,6 +46,7 @@ test.afterAll(() => {
 let device = {};
 
 fixtures.forEach(f => {
+    // @ts-expect-error
     test(f.title || f.url, async ({ page }, { retry }) => {
         log(f.url, 'start');
 
@@ -65,6 +66,7 @@ fixtures.forEach(f => {
                 wipe: true,
                 save_screenshots: true,
             });
+            // @ts-expect-error
             if (!f.device.wiped) {
                 await controller.send({
                     type: 'emulator-setup',

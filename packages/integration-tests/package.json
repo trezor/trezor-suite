@@ -24,6 +24,7 @@
         "@suite-common/test-utils": "*",
         "@trezor/suite-analytics": "*",
         "@trezor/transport": "*",
+        "@trezor/trezor-user-env-link": "*",
         "@trezor/utils": "*",
         "chrome-remote-interface": "^0.31.2",
         "cypress-file-upload": "^5.0.8",

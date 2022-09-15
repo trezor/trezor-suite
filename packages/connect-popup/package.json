@@ -20,6 +20,7 @@
     },
     "devDependencies": {
         "@playwright/test": "^1.22.2",
+        "@trezor/trezor-user-env-link": "*",
         "@types/react": "^17.0.0",
         "@types/styled-components": "^5.1.25",
         "jest": "^26.6.3",

@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 
-const SCREENSHOTS_DIR = './projects/connect-popup/screenshots';
+const SCREENSHOTS_DIR = './e2e/screenshots';
 
 const CI_JOB_URL = process.env.CI_JOB_URL || '.';
 
