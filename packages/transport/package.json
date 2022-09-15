@@ -30,7 +30,7 @@
         "publish:lib": "./scripts/publish-lib.sh",
         "test:unit": "jest",
         "example:bridge": "jest --verbose -c jest.config.e2e.js --testPathPattern bridge.integration",
-        "update:protobuf": "./scripts/protobuf-build.sh"
+        "update:protobuf": "./scripts/protobuf-build.sh && yarn prettier --write \"{messages.json,src/types/messages.ts}\""
     },
     "devDependencies": {
         "@types/bytebuffer": "^5.0.43",
@@ -44,6 +44,7 @@
         "bytebuffer": "^5.0.1",
         "json-stable-stringify": "^1.0.1",
         "long": "^4.0.0",
+        "prettier": "^2.7.1",
         "protobufjs": "^6.11.3"
     }
 }

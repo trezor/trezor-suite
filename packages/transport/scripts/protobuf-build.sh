@@ -52,6 +52,3 @@ echo "generating type definitions for: $LANG"
 cd "$PARENT_PATH"
 
 node ./protobuf-types.js "$LANG"
-
-yarn prettier --write messages.json
-yarn prettier --write -- **/messages.ts
