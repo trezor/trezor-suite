@@ -5,6 +5,8 @@ import type { ButtonProps } from '@trezor/components';
 import { darken } from 'polished';
 
 const StyledButton = styled(Button)`
+    width: 32px;
+    height: 32px;
     background: ${({ theme }) => theme.STROKE_GREY};
 
     &:hover,
