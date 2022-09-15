@@ -1,7 +1,7 @@
 /* eslint no-await-in-loop: 0 */
 
 import { test, expect, Page } from '@playwright/test';
-import { Controller } from '../../../integration-tests/websocket-client';
+import { Controller } from '@trezor/trezor-user-env-link';
 
 const connectUrl = process.env.URL
     ? process.env.URL.replace('connect-explorer', 'connect')

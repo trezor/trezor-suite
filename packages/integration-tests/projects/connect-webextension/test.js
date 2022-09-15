@@ -2,7 +2,7 @@
 
 const { chromium } = require('playwright');
 
-const { Controller } = require('../../websocket-client');
+const { Controller } = require('../../../trezor-user-env-link');
 
 const controller = new Controller();
 

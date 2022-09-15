@@ -8,7 +8,8 @@
         { "path": "../components" },
         { "path": "../connect" },
         { "path": "../connect-ui" },
-        { "path": "../urls" }
+        { "path": "../urls" },
+        { "path": "../trezor-user-env-link" }
     ],
     "ts-node": {
         "compilerOptions": {

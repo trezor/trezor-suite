@@ -1,7 +1,7 @@
-const WebSocket = require('ws');
-const { EventEmitter } = require('events');
+import WebSocket from 'ws';
+import { EventEmitter } from 'events';
 
-const { createDeferred } = require('@trezor/utils');
+import { createDeferred, Deferred } from '@trezor/utils';
 
 const NOT_INITIALIZED = new Error('websocket_not_initialized');
 
@@ -11,12 +11,25 @@ const NOT_INITIALIZED = new Error('websocket_not_initialized');
 const DEFAULT_TIMEOUT = 5 * 60 * 1000;
 const DEFAULT_PING_TIMEOUT = 50 * 1000;
 
-class Controller extends EventEmitter {
-    constructor(options = {}) {
+interface Options {
+    pingTimeout?: number;
+    url?: string;
+    timeout?: number;
+}
+
+export class TrezorUserEnvLink extends EventEmitter {
+    messageID: number;
+    options: Options;
+    messages: Deferred<any>[];
+
+    ws?: WebSocket;
+    connectionTimeout?: NodeJS.Timeout;
+    pingTimeout?: NodeJS.Timeout;
+
+    constructor(options: Options = {}) {
         super();
         this.messageID = 0;
         this.messages = [];
-        this.subscriptions = [];
         this.setMaxListeners(Infinity);
         this.options = {
             ...options,
@@ -65,17 +78,13 @@ class Controller extends EventEmitter {
         }
     }
 
-    async onPing() {
+    onPing() {
         // make sure that connection is alive if there are subscriptions
         if (this.ws && this.isConnected()) {
-            if (this.subscriptions.length > 0 || this.options.keepAlive) {
-                await this.getBlockHash(0);
-            } else {
-                try {
-                    this.ws.close();
-                } catch (error) {
-                    // empty
-                }
+            try {
+                this.ws.close();
+            } catch (error) {
+                // empty
             }
         }
     }
@@ -84,7 +93,8 @@ class Controller extends EventEmitter {
         this.dispose();
     }
 
-    send(params) {
+    // todo: typesafe interface
+    send(params: any) {
         const { ws } = this;
         if (!ws) throw NOT_INITIALIZED;
         const id = this.messageID;
@@ -102,10 +112,12 @@ class Controller extends EventEmitter {
         this.setPingTimeout();
 
         ws.send(JSON.stringify(req));
-        return dfd.promise;
+        // todo: proper return type
+        return dfd.promise as Promise<{ response: any }>;
     }
 
-    onmessage(message) {
+    // todo: typesafe messages
+    onmessage(message: any) {
         try {
             const resp = JSON.parse(message);
             const { id, success } = resp;
@@ -165,6 +177,7 @@ class Controller extends EventEmitter {
         const ws = new WebSocket(url);
         ws.once('error', error => {
             this.dispose();
+            // @ts-expect-error todo:
             firmwaresEventPromise.reject(new Error('websocket_runtime_error: ', error.message));
         });
         ws.on('open', () => {
@@ -230,6 +243,5 @@ class Controller extends EventEmitter {
     }
 }
 
-module.exports = {
-    Controller,
-};
+// todo: alias for compatibility. remove later
+export const Controller = TrezorUserEnvLink;

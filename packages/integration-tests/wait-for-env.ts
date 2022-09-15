@@ -1,7 +1,7 @@
 /* eslint-disable no-await-in-loop,no-async-promise-executor */
 
 import fetch from 'cross-fetch';
-import { Controller } from './websocket-client';
+import { TrezorUserEnvLink as Controller } from '@trezor/trezor-user-env-link';
 
 const controller = new Controller();
 
@@ -67,7 +67,7 @@ const wait = async () => {
 
         process.stderr.write('\ntrezor-user-env: ready');
 
-        const res = await controller.connect();
+        const res: any = await controller.connect();
         const firmware = filterFirmwares(res);
         // translate 'n-latest' into specific fw number
         if (process.env.TESTS_FIRMWARE !== firmware) {
