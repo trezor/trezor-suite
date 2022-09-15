@@ -31,7 +31,7 @@ export const DevUtilsScreen = ({
                         marginBottom="large"
                     >
                         <Box>
-                            <Text variant="titleMedium">DEV Buttons</Text>
+                            <Text variant="titleMedium">DEV utils</Text>
                             <Text color="gray600" variant="hint">
                                 This section is shown only in local and develop builds! (Not in
                                 staging and production environments)

@@ -27,12 +27,10 @@ export const RootStackNavigator = () => {
             }
             screenOptions={stackNavigationOptionsConfig}
         >
-            {!isOnboardingFinished && (
-                <RootStack.Screen
-                    name={RootStackRoutes.OnboardingStack}
-                    component={OnboardingStackNavigator}
-                />
-            )}
+            <RootStack.Screen
+                name={RootStackRoutes.OnboardingStack}
+                component={OnboardingStackNavigator}
+            />
             <RootStack.Screen name={RootStackRoutes.AppTabs} component={AppTabNavigator} />
             <RootStack.Screen
                 name={RootStackRoutes.AccountsImport}

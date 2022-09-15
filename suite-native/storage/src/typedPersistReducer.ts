@@ -3,7 +3,7 @@ import { Reducer } from '@reduxjs/toolkit';
 
 import { mmkvStorage } from './storage';
 
-export const preparePersistReducer = <TReducerInitialState>({
+export const typedPersistReducer = <TReducerInitialState>({
     reducer,
     persistedKeys,
     key,

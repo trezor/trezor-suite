@@ -3,7 +3,7 @@ import React from 'react';
 import { Persistor } from 'redux-persist/es/types';
 import { PersistGate } from 'redux-persist/integration/react';
 
-import { StorageContext } from '@suite-native/storage';
+import { StorageContext } from './contexts';
 
 type StorageProviderProps = {
     persistor: Persistor;

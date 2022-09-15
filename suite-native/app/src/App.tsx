@@ -8,11 +8,11 @@ import { NavigationContainer } from '@react-navigation/native';
 import { connectInitThunk } from '@suite-common/connect-init';
 import { store, storePersistor } from '@suite-native/state';
 import { initBlockchainThunk, reconnectBlockchainThunk } from '@suite-common/wallet-core';
+import { StorageProvider } from '@suite-native/storage';
 
 import { RootStackNavigator } from './navigation/RootStackNavigator';
 import { StylesProvider } from './StylesProvider';
 import { useSplashScreen } from './hooks/useSplashScreen';
-import { StorageProvider } from './StorageProvider';
 
 const AppComponent = () => {
     const dispatch = useDispatch();

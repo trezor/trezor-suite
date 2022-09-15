@@ -18,7 +18,7 @@ const initialState: AppSettingsState = {
     isOnboardingFinished: false,
 };
 
-export const appSettingsPersistWhitelist: (keyof AppSettingsState)[] = [
+export const appSettingsPersistWhitelist: Array<keyof AppSettingsState> = [
     'colorScheme',
     'isOnboardingFinished',
 ];
