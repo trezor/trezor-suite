@@ -2,6 +2,7 @@ import { createSelector, isAnyOf } from '@reduxjs/toolkit';
 
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import { Account } from '@suite-common/wallet-types';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 
 import { accountsActions } from './accountsActions';
 
@@ -88,6 +89,12 @@ export const selectAccounts = (state: AccountsRootState) => state.wallet.account
 
 export const selectAccount = (state: AccountsRootState, accountKey: string) =>
     state.wallet.accounts.find(account => account.key === accountKey);
+
+export const selectDeviceNetworkAccounts =
+    (deviceState: string, networkSymbol: NetworkSymbol) => (state: AccountsRootState) =>
+        state.wallet.accounts.filter(
+            account => account.deviceState === deviceState && account.symbol === networkSymbol,
+        );
 
 // So far, mobile app doesn't persis data between app runs so until this is resolved
 // account names are just "Bitcon #<ACCOUNT_INDEX>"
