@@ -1,15 +1,24 @@
-import React, { memo } from 'react';
+import React from 'react';
+import { TouchableOpacity } from 'react-native';
+
+import { useNavigation } from '@react-navigation/native';
 
 import { Box, Text } from '@suite-native/atoms';
-import { WalletAccountTransaction } from '@suite-common/wallet-types';
+import { TransactionType, WalletAccountTransaction } from '@suite-common/wallet-types';
 import { Icon, IconName } from '@trezor/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import {
+    AccountsStackRoutes,
+    RootStackParamList,
+    RootStackRoutes,
+    StackNavigationProps,
+} from '@suite-native/navigation';
+import { formatNetworkAmount } from '@suite-common/wallet-utils';
 
 type AccountTransactionListItemProps = {
     transaction: WalletAccountTransaction;
 };
 
-type TransactionType = Pick<WalletAccountTransaction, 'type'>['type'];
 const transactionIconMap: Partial<Record<TransactionType, IconName>> = {
     recv: 'receive',
     sent: 'send',
@@ -29,8 +38,13 @@ const transactionListItemStyle = prepareNativeStyle(utils => ({
     padding: utils.spacings.medium,
 }));
 
-export const TransactionListItem = memo(({ transaction }: AccountTransactionListItemProps) => {
+export const TransactionListItem = ({ transaction }: AccountTransactionListItemProps) => {
     const { applyStyle } = useNativeStyles();
+    const navigation =
+        useNavigation<
+            StackNavigationProps<RootStackParamList, AccountsStackRoutes.AccountDetail>
+        >();
+    const transactionAmount = formatNetworkAmount(transaction.amount, transaction.symbol, true);
 
     const getTransactionTimestamp = () => {
         const { blockHeight, blockTime } = transaction;
@@ -39,8 +53,17 @@ export const TransactionListItem = memo(({ transaction }: AccountTransactionList
         return new Date(blockTime * 1000);
     };
 
+    const handleNavigateToTransactionDetail = () => {
+        navigation.navigate(RootStackRoutes.TransactionDetail, {
+            txid: transaction.txid,
+        });
+    };
+
     return (
-        <Box style={applyStyle(transactionListItemStyle)}>
+        <TouchableOpacity
+            onPress={() => handleNavigateToTransactionDetail()}
+            style={applyStyle(transactionListItemStyle)}
+        >
             <Box flexDirection="row" alignItems="center">
                 <Box style={applyStyle(iconStyle)}>
                     <Icon name={transactionIconMap[transaction.type] ?? 'placeholder'} />
@@ -50,9 +73,7 @@ export const TransactionListItem = memo(({ transaction }: AccountTransactionList
                     <Text>{getTransactionTimestamp()?.toLocaleTimeString()}</Text>
                 </Box>
             </Box>
-            <Text>
-                {transaction.amount} {transaction.symbol}
-            </Text>
-        </Box>
+            <Text>{transactionAmount}</Text>
+        </TouchableOpacity>
     );
-});
+};

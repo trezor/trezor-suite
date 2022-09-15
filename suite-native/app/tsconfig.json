@@ -18,6 +18,7 @@
         { "path": "../navigation" },
         { "path": "../state" },
         { "path": "../storage" },
+        { "path": "../transactions" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/styles" },
         { "path": "../../packages/theme" },

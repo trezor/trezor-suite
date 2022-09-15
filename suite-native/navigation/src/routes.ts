@@ -3,6 +3,7 @@ export enum RootStackRoutes {
     AppTabs = 'AppTabs',
     AccountsImport = 'AccountsImport',
     DevUtilsStack = 'DevUtilsStack',
+    TransactionDetail = 'TransactionDetail',
 }
 
 export enum AppTabsRoutes {

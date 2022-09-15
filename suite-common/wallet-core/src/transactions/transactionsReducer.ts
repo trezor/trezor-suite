@@ -1,3 +1,5 @@
+import { createSelector } from '@reduxjs/toolkit';
+
 import { Account, WalletAccountTransaction } from '@suite-common/wallet-types';
 import { findTransaction } from '@suite-common/wallet-utils';
 import { settingsCommonConfig } from '@suite-common/suite-config';
@@ -148,3 +150,15 @@ export const selectAccountTransactions = (
     state: TransactionsRootState,
     accountKey: string | null,
 ) => state.wallet.transactions.transactions[accountKey ?? ''] ?? [];
+
+export const selectAllTransactions = createSelector(
+    selectTransactions,
+    (transactions): WalletAccountTransaction[] => Object.values(transactions).flat(),
+);
+
+export const selectTransactionByTxid = (txid: string) =>
+    createSelector(
+        [selectAllTransactions],
+        (transactions): WalletAccountTransaction | null =>
+            transactions.find(tx => tx.txid === txid) ?? null,
+    );
