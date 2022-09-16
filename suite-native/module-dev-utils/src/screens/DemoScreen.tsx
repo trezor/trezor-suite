@@ -4,7 +4,6 @@ import { TextInput } from 'react-native';
 import {
     Text,
     Box,
-    Button,
     NumPadButton,
     Hint,
     SearchInput,
@@ -13,19 +12,14 @@ import {
     Switch,
     ListItem,
     SelectableListItem,
-    BottomSheet,
     TipToast,
     IconButton,
-    Select,
-    SelectItemType,
-    SelectValue,
     InputWrapper,
     Input,
     VStack,
 } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Screen, ScreenHeader } from '@suite-native/navigation';
-import { TypographyStyle } from '@trezor/theme';
 import { CryptoIcon, Icon, IconName, icons } from '@trezor/icons';
 
 const inputStackStyle = prepareNativeStyle(utils => ({
@@ -33,22 +27,6 @@ const inputStackStyle = prepareNativeStyle(utils => ({
     borderRadius: utils.borders.radii.medium,
     padding: utils.spacings.small,
 }));
-
-const typographyItems: TypographyStyle[] = [
-    'titleLarge',
-    'titleMedium',
-    'titleSmall',
-    'highlight',
-    'body',
-    'callout',
-    'hint',
-    'label',
-];
-const selectItems: SelectItemType[] = [
-    { label: 'Czech Republic', value: 'cz', iconName: 'cz' },
-    { label: 'Slovak Republic', value: 'sk', iconName: 'btc' },
-    { label: 'Armenian Republic of Kongo', value: 'arm', iconName: 'cz' },
-];
 
 export const DemoScreen = () => {
     const { applyStyle } = useNativeStyles();
@@ -61,9 +39,7 @@ export const DemoScreen = () => {
     const [isCheckBox4Checked, setIsCheckBox4Checked] = useState(true);
     const [isSwitchActive, setIsSwitchActive] = useState<boolean>(true);
     const [isSwitch2Active, setIsSwitch2Active] = useState<boolean>(false);
-    const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
     const [isTipToastVisible, setIsTipToastVisible] = useState<boolean>(true);
-    const [selectedItem, setSelectedItem] = useState<SelectValue>(null);
     const [inputText, setInputText] = useState<string>('');
     const demoInputRef = useRef<TextInput | null>(null);
 
@@ -89,14 +65,6 @@ export const DemoScreen = () => {
                         />
                         <IconButton iconName="check" isRounded onPress={() => {}} />
                         <IconButton size="large" iconName="check" isRounded onPress={() => {}} />
-                    </Box>
-                    <Box marginTop="medium">
-                        <Select
-                            items={selectItems}
-                            value={selectedItem}
-                            onSelectItem={setSelectedItem}
-                            selectLabel="Typography"
-                        />
                     </Box>
                     <Box marginVertical="medium">
                         <VStack style={applyStyle(inputStackStyle)} spacing="small">
@@ -158,19 +126,6 @@ export const DemoScreen = () => {
                         onChange={() => setIsSwitch2Active(!isSwitch2Active)}
                         isDisabled
                     />
-                    <Button onPress={() => setIsModalVisible(true)}>Show Typograhy</Button>
-                    <BottomSheet
-                        isVisible={isModalVisible}
-                        onVisibilityChange={setIsModalVisible}
-                        title="Typography Demo"
-                        onBackArrowClick={() => setIsModalVisible(!isModalVisible)}
-                    >
-                        {typographyItems.map(item => (
-                            <Box marginTop="small" key={item}>
-                                <Text variant={item}>{item}</Text>
-                            </Box>
-                        ))}
-                    </BottomSheet>
                     <Box marginVertical="medium">
                         <Text>Icon:</Text>
                         <Icon name="warningCircle" size="large" color="gray1000" />

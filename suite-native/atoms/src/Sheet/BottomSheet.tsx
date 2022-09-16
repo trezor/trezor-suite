@@ -1,16 +1,14 @@
-import React, { ReactNode, useEffect } from 'react';
-import { TouchableOpacity } from 'react-native';
+import React, { ReactNode, useEffect, useRef, useState } from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Animated from 'react-native-reanimated';
-import { PanGestureHandler } from 'react-native-gesture-handler';
+import { ScrollView, PanGestureHandler } from 'react-native-gesture-handler';
 
-import { Icon } from '@trezor/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { Box } from '../Box';
-import { Text } from '../Text';
 import { BottomSheetContainer } from './BottomSheetContainer';
 import { useBottomSheetAnimation } from './useBottomSheetAnimation';
+import { BottomSheetHeader } from './BottomSheetHeader';
 
 type BottomSheetProps = {
     isVisible: boolean;
@@ -23,31 +21,12 @@ type BottomSheetProps = {
 type WrapperStyleProps = {
     insetBottom: number;
 };
-
 const sheetWrapperStyle = prepareNativeStyle<WrapperStyleProps>((utils, { insetBottom }) => ({
     backgroundColor: utils.colors.gray100,
     borderTopLeftRadius: utils.borders.radii.large,
     borderTopRightRadius: utils.borders.radii.large,
     paddingBottom: Math.max(insetBottom, utils.spacings.medium),
-}));
-
-const CLOSE_BUTTON_SIZE = 40;
-
-const closeButtonStyle = prepareNativeStyle(utils => ({
-    backgroundColor: utils.colors.gray100,
-    borderRadius: utils.borders.radii.round,
-    height: CLOSE_BUTTON_SIZE,
-    width: CLOSE_BUTTON_SIZE,
-    justifyContent: 'center',
-    alignItems: 'center',
-}));
-
-const sheetHeaderStyle = prepareNativeStyle(utils => ({
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: utils.spacings.medium,
-    paddingVertical: utils.spacings.medium,
+    height: 600,
 }));
 
 const sheetWithOverlayStyle = prepareNativeStyle(_ => ({
@@ -59,24 +38,34 @@ export const BottomSheet = ({
     isVisible,
     onVisibilityChange,
     title,
-    onBackArrowClick,
     children,
 }: BottomSheetProps) => {
     const { applyStyle } = useNativeStyles();
     const insets = useSafeAreaInsets();
+    const [isCloseScrollEnabled, setIsCloseScrollEnabled] = useState(true);
     const {
         animatedSheetWithOverlayStyle,
         animatedSheetWrapperStyle,
         closeSheetAnimated,
-        resetSheetAnimated,
+        openSheetAnimated,
         panGestureEvent,
-    } = useBottomSheetAnimation({ onVisibilityChange, isVisible });
+        scrollEvent,
+    } = useBottomSheetAnimation({
+        onVisibilityChange,
+        isVisible,
+        isCloseScrollEnabled,
+        setIsCloseScrollEnabled: (isCloseScrollEnabled: boolean) => {
+            setIsCloseScrollEnabled(isCloseScrollEnabled);
+        },
+    });
+    const panGestureRef = useRef();
+    const scrollViewRef = useRef();
 
     useEffect(() => {
         if (isVisible) {
-            resetSheetAnimated();
+            openSheetAnimated();
         }
-    }, [isVisible, resetSheetAnimated]);
+    }, [isVisible, openSheetAnimated]);
 
     const handleCloseSheet = () => {
         closeSheetAnimated();
@@ -87,32 +76,35 @@ export const BottomSheet = ({
             <Animated.View
                 style={[animatedSheetWithOverlayStyle, applyStyle(sheetWithOverlayStyle)]}
             >
-                <PanGestureHandler onGestureEvent={panGestureEvent}>
-                    <Animated.View
-                        style={[
-                            animatedSheetWrapperStyle,
-                            applyStyle(sheetWrapperStyle, {
-                                insetBottom: insets.bottom,
-                            }),
-                        ]}
+                <Animated.View
+                    style={[
+                        animatedSheetWrapperStyle,
+                        applyStyle(sheetWrapperStyle, {
+                            insetBottom: insets.bottom,
+                        }),
+                    ]}
+                >
+                    <BottomSheetHeader title={title} onCloseSheet={closeSheetAnimated} />
+                    <ScrollView
+                        ref={scrollViewRef.current}
+                        waitFor={
+                            isCloseScrollEnabled ? panGestureRef.current : scrollViewRef.current
+                        }
+                        onScroll={scrollEvent}
                     >
-                        <Box style={applyStyle(sheetHeaderStyle)}>
-                            {onBackArrowClick && (
-                                <TouchableOpacity onPress={onBackArrowClick}>
-                                    <Icon name="chevronLeft" />
-                                </TouchableOpacity>
-                            )}
-                            <Text variant="titleSmall">{title}</Text>
-                            <TouchableOpacity
-                                onPress={handleCloseSheet}
-                                style={applyStyle(closeButtonStyle)}
-                            >
-                                <Icon name="close" />
-                            </TouchableOpacity>
-                        </Box>
-                        <Box paddingHorizontal="medium">{children}</Box>
-                    </Animated.View>
-                </PanGestureHandler>
+                        <PanGestureHandler
+                            enabled={isCloseScrollEnabled}
+                            ref={panGestureRef.current}
+                            activeOffsetY={5}
+                            failOffsetY={-5}
+                            onGestureEvent={panGestureEvent}
+                        >
+                            <Animated.View>
+                                <Box paddingHorizontal="medium">{children}</Box>
+                            </Animated.View>
+                        </PanGestureHandler>
+                    </ScrollView>
+                </Animated.View>
             </Animated.View>
         </BottomSheetContainer>
     );

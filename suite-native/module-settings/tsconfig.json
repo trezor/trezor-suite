@@ -2,7 +2,11 @@
     "extends": "../../tsconfig.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        {
+            "path": "../../suite-common/suite-config"
+        },
         { "path": "../atoms" },
+        { "path": "../test-utils" },
         { "path": "../config" },
         { "path": "../navigation" },
         { "path": "../../packages/icons" },

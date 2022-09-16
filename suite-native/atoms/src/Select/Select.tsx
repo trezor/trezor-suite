@@ -10,29 +10,39 @@ import {
 } from '@trezor/icons';
 
 import { BottomSheet } from '../Sheet/BottomSheet';
-import { SelectItem, SelectValue } from './SelectItem';
+import { SelectItemValue, SelectItem } from './SelectItem';
 import { SelectTrigger } from './SelectTrigger';
 
-export type SelectItemType = {
+export type SelectItemType<TItemValue extends SelectItemValue> = {
+    value: TItemValue;
     label: string;
-    value: SelectValue;
-    iconName?: FlagIconName | CryptoIconName;
 };
 
-type SelectProps = {
-    items: SelectItemType[];
+export type SelectItemExtendedType<TItemValue extends SelectItemValue> =
+    SelectItemType<TItemValue> & {
+        iconName?: FlagIconName | CryptoIconName;
+    };
+
+type SelectProps<TItemValue extends SelectItemValue> = {
+    items: SelectItemExtendedType<TItemValue>[];
+    value: SelectItemValue;
+    onSelectItem: (value: TItemValue) => void;
+    valueLabel?: string;
     selectLabel: string;
-    value: SelectValue;
-    onSelectItem: (value: SelectValue) => void;
 };
 
-export const Select = ({ items, selectLabel, value, onSelectItem }: SelectProps) => {
+export const Select = <TItemValue extends SelectItemValue>({
+    items,
+    selectLabel,
+    value,
+    valueLabel,
+    onSelectItem,
+}: SelectProps<TItemValue>) => {
     const [isOpen, setIsOpen] = useState<boolean>(false);
-    const selectedItem = useMemo(() => items.find(item => item.value === value), [value, items]);
 
-    const handleSelectItem = (selectedValue: SelectValue) => {
-        onSelectItem(selectedValue);
-        setIsOpen(false);
+    const selectedItem = useMemo(() => items.find(item => item.value === value), [value, items]);
+    const handleSelectItem = (value: TItemValue) => {
+        onSelectItem(value);
     };
 
     const getIcon = (iconName?: CryptoIconName | FlagIconName, isSelectItem = false): ReactNode => {
@@ -48,17 +58,12 @@ export const Select = ({ items, selectLabel, value, onSelectItem }: SelectProps)
     return (
         <>
             {isOpen && (
-                <BottomSheet
-                    isVisible={isOpen}
-                    onVisibilityChange={setIsOpen}
-                    title={selectLabel}
-                    onBackArrowClick={() => setIsOpen(false)}
-                >
-                    {items.map(({ value: itemValue, label, iconName }, index) => (
+                <BottomSheet isVisible={isOpen} onVisibilityChange={setIsOpen} title={selectLabel}>
+                    {items.map(({ value, label, iconName }, index) => (
                         <SelectItem
-                            key={itemValue}
+                            key={value}
                             label={label}
-                            value={itemValue}
+                            value={value}
                             icon={getIcon(iconName, true)}
                             isSelected={value === selectedItem?.value}
                             isLastChild={index === items.length - 1}
@@ -71,6 +76,7 @@ export const Select = ({ items, selectLabel, value, onSelectItem }: SelectProps)
                 icon={getIcon(selectedItem?.iconName)}
                 value={selectedItem?.label ?? null}
                 label={selectLabel}
+                valueLabel={valueLabel}
                 handlePress={() => setIsOpen(true)}
             />
         </>

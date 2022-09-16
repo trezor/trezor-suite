@@ -10,7 +10,7 @@ import {
 } from 'react-native-reanimated';
 import { useCallback, useEffect } from 'react';
 import { PanGestureHandlerGestureEvent } from 'react-native-gesture-handler';
-import { Dimensions } from 'react-native';
+import { Dimensions, NativeScrollEvent } from 'react-native';
 
 import { useNativeStyles } from '@trezor/styles';
 
@@ -23,9 +23,13 @@ const SCREEN_HEIGHT = Dimensions.get('screen').height;
 export const useBottomSheetAnimation = ({
     onVisibilityChange,
     isVisible,
+    isCloseScrollEnabled,
+    setIsCloseScrollEnabled,
 }: {
     onVisibilityChange: (isVisible: boolean) => void;
     isVisible: boolean;
+    isCloseScrollEnabled: boolean;
+    setIsCloseScrollEnabled: (isCloseScrollEnabled: boolean) => void;
 }) => {
     const { utils } = useNativeStyles();
     const transparency = isVisible ? 1 : 0;
@@ -70,11 +74,12 @@ export const useBottomSheetAnimation = ({
             },
             () => {
                 runOnJS(onVisibilityChange)(false);
+                runOnJS(setIsCloseScrollEnabled)(true);
             },
         );
-    }, [translatePanY, animatedTransparency, onVisibilityChange]);
+    }, [translatePanY, animatedTransparency, onVisibilityChange, setIsCloseScrollEnabled]);
 
-    const resetSheetAnimated = useCallback(() => {
+    const openSheetAnimated = useCallback(() => {
         'worklet';
 
         translatePanY.value = withTiming(0, {
@@ -82,6 +87,15 @@ export const useBottomSheetAnimation = ({
             easing: Easing.out(Easing.cubic),
         });
     }, [translatePanY]);
+
+    const scrollEvent = ({ nativeEvent }: { nativeEvent: NativeScrollEvent }) => {
+        if (nativeEvent.contentOffset.y <= 0 && !isCloseScrollEnabled) {
+            setIsCloseScrollEnabled(true);
+        }
+        if (nativeEvent.contentOffset.y > 0 && isCloseScrollEnabled) {
+            setIsCloseScrollEnabled(false);
+        }
+    };
 
     const panGestureEvent = useAnimatedGestureHandler<
         PanGestureHandlerGestureEvent,
@@ -99,7 +113,7 @@ export const useBottomSheetAnimation = ({
             if (translationY > 50 && velocityY > 2) {
                 closeSheetAnimated();
             } else {
-                resetSheetAnimated();
+                openSheetAnimated();
             }
         },
     });
@@ -108,7 +122,8 @@ export const useBottomSheetAnimation = ({
         animatedSheetWithOverlayStyle,
         animatedSheetWrapperStyle,
         closeSheetAnimated,
-        resetSheetAnimated,
+        openSheetAnimated,
         panGestureEvent,
+        scrollEvent,
     };
 };

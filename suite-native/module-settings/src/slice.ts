@@ -1,20 +1,22 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import { ThemeColorVariant } from '@trezor/theme';
+import { fiatCurrencies, FiatCurrency, FiatCurrencyCode } from '@suite-common/suite-config';
 
-export type AppColorScheme = ThemeColorVariant | 'system';
+import { AppColorScheme } from './types';
 
 export interface AppSettingsState {
     colorScheme: AppColorScheme;
     isOnboardingFinished: boolean;
+    fiatCurrency: FiatCurrency;
 }
 
-type SliceState = {
+type SettingsSliceRootState = {
     appSettings: AppSettingsState;
 };
 
-const initialState: AppSettingsState = {
+export const appSettingsInitialState: AppSettingsState = {
     colorScheme: 'system',
+    fiatCurrency: fiatCurrencies.usd,
     isOnboardingFinished: false,
 };
 
@@ -25,10 +27,13 @@ export const appSettingsPersistWhitelist: Array<keyof AppSettingsState> = [
 
 export const appSettingsSlice = createSlice({
     name: 'appSettings',
-    initialState,
+    initialState: appSettingsInitialState,
     reducers: {
         setColorScheme: (state, action: PayloadAction<AppColorScheme>) => {
             state.colorScheme = action.payload;
+        },
+        setFiatCurrency: (state, { payload }: PayloadAction<FiatCurrencyCode>) => {
+            state.fiatCurrency = fiatCurrencies[payload];
         },
         setOnboardingFinished: (state, action: PayloadAction<boolean>) => {
             state.isOnboardingFinished = action.payload;
@@ -36,11 +41,14 @@ export const appSettingsSlice = createSlice({
     },
 });
 
-export const selectColorScheme = (state: SliceState) => state.appSettings.colorScheme;
-export const selectIsColorSchemeActive = (colorScheme: AppColorScheme) => (state: SliceState) =>
-    state.appSettings.colorScheme === colorScheme;
-export const selectIsOnboardingFinished = (state: SliceState) =>
-    state.appSettings.isOnboardingFinished;
 
-export const { setColorScheme, setOnboardingFinished } = appSettingsSlice.actions;
+
+export const selectColorScheme = (state: SettingsSliceRootState) => state.appSettings.colorScheme;
+export const selectIsColorSchemeActive = (colorScheme: AppColorScheme) => (state: SettingsSliceRootState) =>
+  state.appSettings.colorScheme === colorScheme;
+export const selectFiatCurrency = (state: SettingsSliceRootState) => state.appSettings.fiatCurrency;
+export const selectIsOnboardingFinished = (state: SettingsSliceRootState) =>
+  state.appSettings.isOnboardingFinished;
+
+export const { setColorScheme, setOnboardingFinished, setFiatCurrency } = appSettingsSlice.actions;
 export const appSettingsReducer = appSettingsSlice.reducer;

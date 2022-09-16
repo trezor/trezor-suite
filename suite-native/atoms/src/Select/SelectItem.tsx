@@ -7,10 +7,10 @@ import { Box } from '../Box';
 import { Radio } from '../Radio';
 import { Text } from '../Text';
 
-export type SelectValue = string | number | null;
+export type SelectItemValue = string | number;
 export type SelectItemProps = {
     label: string;
-    value: SelectValue;
+    value: SelectItemValue;
     onSelect: () => void;
     isSelected: boolean;
     isLastChild?: boolean;
