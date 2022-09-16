@@ -3,10 +3,10 @@ import { FixedSizeList as List } from 'react-window';
 import { MenuListProps, createFilter } from 'react-select';
 import styled, { keyframes } from 'styled-components';
 import { Select, variables } from '@trezor/components';
-import { BIP_39 } from '@suite-constants';
+import { bip39 } from '@trezor/crypto-utils';
 import { useTranslation } from '@suite-hooks/useTranslation';
 
-const options = BIP_39.map(item => ({ label: item, value: item }));
+const options = bip39.map(item => ({ label: item, value: item }));
 
 const shake = keyframes`
     10%, 90% {

@@ -4,7 +4,7 @@
 
 import { UI, createUiResponse, UiRequestDeviceAction } from '@trezor/connect';
 import { container, showView, postMessage } from './common';
-import bipWords from '@trezor/connect/src/utils/bip39';
+import { bip39 } from '@trezor/crypto-utils';
 
 const initWordPlainView = (payload: UiRequestDeviceAction['payload']) => {
     showView('word-plain');
@@ -37,7 +37,7 @@ const initWordPlainView = (payload: UiRequestDeviceAction['payload']) => {
         }
     };
 
-    bipWords.forEach(word => {
+    bip39.forEach(word => {
         const item = document.createElement('option');
         item.value = word;
         datalist.appendChild(item);

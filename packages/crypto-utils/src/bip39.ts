@@ -1,4 +1,4 @@
-export default [
+export const bip39 = [
     'abandon',
     'ability',
     'able',

@@ -58,6 +58,7 @@
         },
         { "path": "../components" },
         { "path": "../connect" },
+        { "path": "../crypto-utils" },
         { "path": "../dom-utils" },
         { "path": "../env-utils" },
         { "path": "../react-utils" },
