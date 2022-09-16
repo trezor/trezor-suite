@@ -1,60 +1,63 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Card, variables } from '@trezor/components';
-import { CoinBalance } from '@wallet-components';
-import { Account, CoinjoinSessionParameters } from '@suite-common/wallet-types';
 
-const Wrapper = styled(Card)`
-    border: 1px solid ${props => props.theme.STROKE_GREY};
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
-    font-size: ${variables.FONT_SIZE.SMALL};
-`;
+import { Translation } from '@suite-components';
+import { DetailRow } from './components/DetailRow';
 
-const Cell = styled(Card)`
-    flex: 1;
-    background: ${props => props.theme.BG_LIGHT_GREY};
-`;
-
-const Row = styled.div`
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-`;
-
-const Divider = styled.div`
-    width: 100%;
+const Separator = styled.hr`
+    border: none;
+    background: ${({ theme }) => theme.STROKE_GREY};
     height: 1px;
-    background: ${props => props.theme.STROKE_GREY};
-    margin: 24px 0px;
+    margin: 16px 0;
 `;
 
-interface CoinjoinSessionDetailProps extends CoinjoinSessionParameters {
-    account: Account;
+interface CoinjoinSessionDetailProps {
+    hours: [number, number];
+    maxFee: number;
+    maxRounds: number;
+    skipRounds: [number, number] | null;
 }
 
 export const CoinjoinSessionDetail = ({
-    account,
-    anonymityLevel,
+    hours,
     maxRounds,
-    maxFeePerKvbyte,
-    maxCoordinatorFeeRate,
+    maxFee,
+    skipRounds,
 }: CoinjoinSessionDetailProps) => (
-    <Wrapper>
-        <Row>
-            <Cell>
-                Amount: <CoinBalance value={account.formattedBalance} symbol={account.symbol} />
-            </Cell>
-            <Cell>Anonymity level: {anonymityLevel}</Cell>
-        </Row>
-        <Row>
-            Max rounds: <span>{maxRounds}</span>
-        </Row>
-        <Row>
-            Max mining fee: <span>{Math.round(maxFeePerKvbyte / 1000)} sat/vbyte</span>
-        </Row>
-        <Divider />
-        <Row>
-            Coordinator fee: <span>{maxCoordinatorFeeRate / 10 ** 10} %</span>
-        </Row>
-    </Wrapper>
+    <dl>
+        <DetailRow
+            term={<Translation id="TR_ESTIMATED_TIME" />}
+            value={
+                <Translation
+                    id="TR_ESTIMATED_TIME_VALUE"
+                    values={{ max: hours[1], min: hours[0] }}
+                />
+            }
+        />
+        <DetailRow
+            term={<Translation id="TR_ROUNDS" />}
+            value={<Translation id="TR_ROUNDS_VALUE" values={{ rounds: maxRounds }} />}
+            tooltip="Copy needed..."
+        />
+        <DetailRow
+            term={<Translation id="TR_SKIP_ROUNDS" />}
+            value={
+                skipRounds ? (
+                    <Translation
+                        id="TR_SKIP_ROUNDS_VALUE"
+                        values={{ part: skipRounds[0], total: skipRounds[1] }}
+                    />
+                ) : (
+                    <Translation id="TR_NONE" />
+                )
+            }
+            tooltip="Copy needed..."
+        />
+        <Separator />
+        <DetailRow
+            term={<Translation id="TR_MAX_MINING_FEE" />}
+            value={`${maxFee} sat/vB`}
+            tooltip="Copy needed..."
+        />
+    </dl>
 );

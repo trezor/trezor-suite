@@ -5,7 +5,6 @@ import { CoinBalance } from '@wallet-components';
 import { stopCoinjoinSession } from '@wallet-actions/coinjoinAccountActions';
 import { useActions } from '@suite-hooks';
 import { CoinjoinSessionCounter } from './CoinjoinSessionCounter';
-import { CoinjoinSessionDetail } from './CoinjoinSessionDetail';
 import { Account, CoinjoinSession } from '@suite-common/wallet-types';
 
 const Wrapper = styled(Card)`
@@ -54,7 +53,6 @@ export const CoinjoinSessionStatus = ({ account, session }: CoinjoinSessionStatu
                     </Button>
                 </Row>
             </Left>
-            <CoinjoinSessionDetail account={account} {...session} />
         </Wrapper>
     );
 };
