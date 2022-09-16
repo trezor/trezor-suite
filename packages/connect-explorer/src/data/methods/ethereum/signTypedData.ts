@@ -3,31 +3,11 @@ const docs = 'methods/ethereumSignTypedData.md';
 
 const eip712Data = {
     types: {
-        EIP712Domain: [
-            {
-                name: 'name',
-                type: 'string',
-            },
-        ],
-        Message: [
-            {
-                name: 'Best Wallet',
-                type: 'string',
-            },
-            {
-                name: 'Number',
-                type: 'uint64',
-            },
-        ],
+        EIP712Domain: [],
     },
-    domain: {
-        name: 'example.trezor.io',
-    },
-    message: {
-        'Best Wallet': 'Trezor Model T',
-        Number: 123,
-    },
-    primaryType: 'Message',
+    domain: {},
+    message: {},
+    primaryType: 'EIP712Domain',
 };
 
 export default [
@@ -52,6 +32,11 @@ export default [
                 name: 'data',
                 type: 'json',
                 value: JSON.stringify(eip712Data),
+            },
+            {
+                name: 'domain_separator_hash',
+                type: 'input',
+                value: '0x6192106f129ce05c9075d319c1fa6ea9b3ae37cbd0c1ef92e2be7137bb07baa1',
             },
         ],
     },
