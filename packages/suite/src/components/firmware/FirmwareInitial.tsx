@@ -255,7 +255,6 @@ export const FirmwareInitial = ({
                         setStatus(standaloneFwUpdate ? 'check-seed' : 'waiting-for-bootloader');
                         updateAnalytics({ firmware: 'update' });
                     }}
-                    data-test="@firmware/get-ready-button"
                     multipleDevicesConnected={multipleDevicesConnected}
                 />
             ),
