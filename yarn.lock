@@ -6793,6 +6793,7 @@ __metadata:
     "@trezor/components": "*"
     "@trezor/connect": 9.0.1
     "@trezor/connect-ui": "*"
+    "@trezor/crypto-utils": "*"
     "@trezor/trezor-user-env-link": "*"
     "@trezor/urls": "*"
     "@types/react": ^17.0.0
@@ -6866,6 +6867,12 @@ __metadata:
     tslib: ^2.3.1
     tsx: ^3.8.2
     typescript: 4.7.4
+  languageName: unknown
+  linkType: soft
+
+"@trezor/crypto-utils@*, @trezor/crypto-utils@workspace:packages/crypto-utils":
+  version: 0.0.0-use.local
+  resolution: "@trezor/crypto-utils@workspace:packages/crypto-utils"
   languageName: unknown
   linkType: soft
 
@@ -7276,6 +7283,7 @@ __metadata:
     "@testing-library/user-event": 12.8.3
     "@trezor/components": "*"
     "@trezor/connect": 9.0.1
+    "@trezor/crypto-utils": "*"
     "@trezor/dom-utils": "*"
     "@trezor/env-utils": "*"
     "@trezor/react-utils": "*"
