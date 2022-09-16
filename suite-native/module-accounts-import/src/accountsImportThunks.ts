@@ -1,28 +1,31 @@
 import { createThunk } from '@suite-common/redux-utils';
-import { accountsActions, selectAccounts } from '@suite-common/wallet-core';
+import { accountsActions, selectAccountsByNetworkAndDevice } from '@suite-common/wallet-core';
 import { AccountInfo } from '@trezor/connect';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { createDevice, selectDeviceById } from '@suite-native/module-devices';
 
-const actionPrefix = '@accountImport';
+const actionPrefix = '@accountsImport';
 
 type ImportAssetThunkPayload = {
     deviceId: string;
     deviceTitle: string;
     accountInfo: AccountInfo;
+    accountLabel: string;
     coin: NetworkSymbol;
 };
 
-const getMockedDeviceState = (deviceId: string) => `state@${deviceId}:1`;
+// This is temporary solution for MVP purposes. We have one hidden device and all imported accounts belongs to it.
+export const HIDDEN_DEVICE_ID = 'hiddenDeviceWithImportedAccounts';
+export const HIDDEN_DEVICE_STATE = `state@${HIDDEN_DEVICE_ID}:1`;
 
 export const importAccountThunk = createThunk(
     `${actionPrefix}/importAccountThunk`,
     (
-        { deviceId, deviceTitle, accountInfo, coin }: ImportAssetThunkPayload,
+        { deviceId, deviceTitle, accountInfo, accountLabel, coin }: ImportAssetThunkPayload,
         { dispatch, getState },
     ) => {
         const device = selectDeviceById(deviceId)(getState());
-        const deviceState = getMockedDeviceState(deviceId);
+        const deviceState = HIDDEN_DEVICE_STATE;
 
         if (!device) {
             dispatch(
@@ -37,10 +40,10 @@ export const importAccountThunk = createThunk(
             );
         }
 
-        const allAccounts = selectAccounts(getState());
-
-        const deviceNetworkAccounts = allAccounts.filter(
-            account => account.deviceState === deviceState && account.symbol === coin,
+        const deviceNetworkAccounts = selectAccountsByNetworkAndDevice(
+            getState(),
+            deviceState,
+            coin,
         );
         const existingAccount = deviceNetworkAccounts.find(
             account => account.descriptor === accountInfo.descriptor,
@@ -57,9 +60,10 @@ export const importAccountThunk = createThunk(
                         path: accountInfo?.path ?? '',
                         accountType: 'imported',
                         networkType: 'bitcoin',
-                        coin: 'btc',
+                        coin,
                     },
                     accountInfo,
+                    accountLabel,
                 ),
             );
         }

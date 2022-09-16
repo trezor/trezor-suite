@@ -2,7 +2,7 @@ import { Account, WalletAccountTransaction } from '@suite-common/wallet-types';
 import { findTransaction } from '@suite-common/wallet-utils';
 import { settingsCommonConfig } from '@suite-common/suite-config';
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
-import { AccountHash } from '@suite-common/suite-types';
+import { AccountKey } from '@suite-common/suite-types';
 
 import { fiatRatesActions } from '../fiat-rates/fiatRatesActions';
 import { accountsActions } from '../accounts/accountsActions';
@@ -11,8 +11,8 @@ import { transactionsActions } from './transactionsActions';
 export interface TransactionsState {
     isLoading: boolean;
     error: string | null;
-    // Key is accountHash and value is sparse array of fetched txs
-    transactions: { [key: AccountHash]: WalletAccountTransaction[] };
+    // Key is accountKey and value is sparse array of fetched txs
+    transactions: { [key: AccountKey]: WalletAccountTransaction[] };
 }
 
 export const transactionsInitialState: TransactionsState = {
@@ -27,12 +27,12 @@ export interface TransactionsRootState {
     };
 }
 
-const initializeAccount = (state: TransactionsState, accountHash: AccountHash) => {
-    // initialize an empty array at 'accountHash' index if not yet initialized
-    if (!state.transactions[accountHash]) {
-        state.transactions[accountHash] = [];
+const initializeAccount = (state: TransactionsState, accountKey: AccountKey) => {
+    // initialize an empty array at 'accountKey' index if not yet initialized
+    if (!state.transactions[accountKey]) {
+        state.transactions[accountKey] = [];
     }
-    return state.transactions[accountHash];
+    return state.transactions[accountKey];
 };
 
 export const updateTransaction = (

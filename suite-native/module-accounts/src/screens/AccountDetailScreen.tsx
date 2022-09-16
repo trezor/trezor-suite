@@ -11,8 +11,8 @@ import {
 import {
     AccountsRootState,
     fetchTransactionsThunk,
-    selectAccountName,
-    selectAccount,
+    selectAccountLabel,
+    selectAccountByKey,
     TransactionsRootState,
     selectAccountTransactions,
 } from '@suite-common/wallet-core';
@@ -25,9 +25,11 @@ export const AccountDetailScreen = ({
     route,
 }: StackProps<AccountsStackParamList, AccountsStackRoutes.AccountDetail>) => {
     const { accountKey } = route.params;
-    const account = useSelector((state: AccountsRootState) => selectAccount(state, accountKey));
+    const account = useSelector((state: AccountsRootState) =>
+        selectAccountByKey(state, accountKey),
+    );
     const accountName = useSelector((state: AccountsRootState) =>
-        selectAccountName(state, accountKey),
+        selectAccountLabel(state, accountKey),
     );
     const accountTransactions = useSelector((state: TransactionsRootState) =>
         selectAccountTransactions(state, accountKey),

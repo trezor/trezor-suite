@@ -2,6 +2,7 @@ import { createSelector, isAnyOf } from '@reduxjs/toolkit';
 
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import { Account } from '@suite-common/wallet-types';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 
 import { accountsActions } from './accountsActions';
 
@@ -86,15 +87,35 @@ export const prepareAccountsReducer = createReducerWithExtraDeps(
 
 export const selectAccounts = (state: AccountsRootState) => state.wallet.accounts;
 
-export const selectAccount = (state: AccountsRootState, accountKey: string) =>
-    state.wallet.accounts.find(account => account.key === accountKey);
+export const selectAccountByKey = createSelector(
+    selectAccounts,
+    (_state: AccountsRootState, accountKey: string) => accountKey,
+    (accounts, accountKey) => accounts.find(account => account.key === accountKey),
+);
 
-// So far, mobile app doesn't persis data between app runs so until this is resolved
-// account names are just "Bitcon #<ACCOUNT_INDEX>"
-export const selectAccountName = createSelector(
-    [selectAccount, selectAccounts],
+export const selectAccountsByNetworkAndDevice = createSelector(
+    selectAccounts,
+    (_state: AccountsRootState, deviceState: string, networkSymbol: NetworkSymbol) => ({
+        deviceState,
+        networkSymbol,
+    }),
+    (accounts, params) =>
+        accounts.filter(
+            account =>
+                account.deviceState === params.deviceState &&
+                account.symbol === params.networkSymbol,
+        ),
+);
+
+export const selectAccountLabel = createSelector(
+    [selectAccountByKey, selectAccounts],
     (account, accounts) => {
-        const accountIndex = accounts.findIndex(acc => acc.descriptor === account?.descriptor);
-        return `Bitcoin #${accountIndex + 1}`;
+        const accountData = accounts.find(acc => acc.descriptor === account?.descriptor);
+        if (accountData) {
+            const {
+                metadata: { accountLabel },
+            } = accountData;
+            return accountLabel;
+        }
     },
 );

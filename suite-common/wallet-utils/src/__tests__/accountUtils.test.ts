@@ -116,7 +116,7 @@ describe('account utils', () => {
         expect(getNetwork('doesntexist')).toBeNull();
     });
 
-    it('getAccountHash', () => {
+    it('getAccountKey', () => {
         expect(getAccountKey('descriptor', 'symbol', 'deviceState')).toEqual(
             'descriptor-symbol-deviceState',
         );

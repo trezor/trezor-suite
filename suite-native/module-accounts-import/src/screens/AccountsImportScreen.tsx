@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Alert, View } from 'react-native';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import TrezorConnect, { AccountInfo } from '@trezor/connect';
 import {
@@ -16,11 +16,12 @@ import {
 import { Button } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { setOnboardingFinished } from '@suite-native/module-settings';
+import { AccountsRootState, selectAccountsByNetworkAndDevice } from '@suite-common/wallet-core';
 
 import { AccountImportLoader } from '../components/AccountImportLoader';
 import { AccountImportHeader } from '../components/AccountImportHeader';
-import { AccountImportOverview, DummyDevice } from '../components/AccountImportOverview';
-import { importAccountThunk } from '../accountsThunks';
+import { AccountImportOverview } from '../components/AccountImportOverview';
+import { HIDDEN_DEVICE_ID, HIDDEN_DEVICE_STATE, importAccountThunk } from '../accountsImportThunks';
 
 const assetsStyle = prepareNativeStyle(_ => ({
     flex: 1,
@@ -44,14 +45,17 @@ export const AccountsImportScreen = ({
     AccountsImportStackRoutes.AccountImport,
     RootStackParamList
 >) => {
+    const { xpubAddress, currencySymbol } = route.params;
     const dispatch = useDispatch();
+    const deviceNetworkAccounts = useSelector((state: AccountsRootState) =>
+        selectAccountsByNetworkAndDevice(state, HIDDEN_DEVICE_STATE, currencySymbol),
+    );
     const [accountInfo, setAccountInfo] = useState<AccountInfo | null>(null);
-    const [selectedDevice, setSelectedDevice] = useState<DummyDevice>();
-    const [assetName, setAssetName] = useState<string>('bitcoines #1');
+    const [accountLabel, setAccountLabel] = useState<string>(
+        `${currencySymbol} #${deviceNetworkAccounts.length + 1}`,
+    );
 
     const { applyStyle } = useNativeStyles();
-
-    const { xpubAddress, currencySymbol } = route.params;
 
     useEffect(() => {
         let ignore = false;
@@ -94,13 +98,13 @@ export const AccountsImportScreen = ({
     }, [xpubAddress, currencySymbol, navigation]);
 
     const handleConfirmAssets = () => {
-        if (accountInfo && selectedDevice) {
-            const { title, value } = selectedDevice;
+        if (accountInfo) {
             dispatch(
                 importAccountThunk({
-                    deviceId: value,
-                    deviceTitle: title,
+                    deviceId: HIDDEN_DEVICE_ID,
+                    deviceTitle: 'Hidden Device',
                     accountInfo,
+                    accountLabel,
                     coin: currencySymbol,
                 }),
             );
@@ -114,10 +118,6 @@ export const AccountsImportScreen = ({
         }
     };
 
-    const handleSelectDevice = (device: DummyDevice) => {
-        setSelectedDevice(device);
-    };
-
     return (
         <Screen>
             {!accountInfo ? (
@@ -128,10 +128,9 @@ export const AccountsImportScreen = ({
                         <AccountImportHeader />
                         <AccountImportOverview
                             accountInfo={accountInfo}
-                            selectedDevice={selectedDevice}
-                            assetName={assetName}
-                            onSelectDevice={handleSelectDevice}
-                            onAssetNameChange={setAssetName}
+                            assetName={accountLabel}
+                            currencySymbol={currencySymbol}
+                            onChangeAccountName={setAccountLabel}
                         />
                     </View>
                     <View style={applyStyle(importAnotherWrapperStyle)}>

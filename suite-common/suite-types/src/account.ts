@@ -1,1 +1,1 @@
-export type AccountHash = string;
+export type AccountKey = string;
