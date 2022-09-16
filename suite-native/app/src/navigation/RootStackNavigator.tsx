@@ -12,6 +12,7 @@ import {
 } from '@suite-native/navigation';
 import { selectIsOnboardingFinished } from '@suite-native/module-settings';
 import { DevUtilsStackNavigator } from '@suite-native/module-dev-utils';
+import { TransactionDetailScreen } from '@suite-native/transactions';
 
 import { AppTabNavigator } from './AppTabNavigator';
 
@@ -35,6 +36,11 @@ export const RootStackNavigator = () => {
             <RootStack.Screen
                 name={RootStackRoutes.AccountsImport}
                 component={AccountsImportStackNavigator}
+            />
+            <RootStack.Screen
+                options={{ title: RootStackRoutes.TransactionDetail }}
+                name={RootStackRoutes.TransactionDetail}
+                component={TransactionDetailScreen}
             />
             <RootStack.Screen
                 name={RootStackRoutes.DevUtilsStack}

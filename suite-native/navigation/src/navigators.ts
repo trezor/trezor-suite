@@ -62,5 +62,6 @@ export type RootStackParamList = {
     [RootStackRoutes.OnboardingStack]: NavigatorScreenParams<OnboardingStackParamList>;
     [RootStackRoutes.AppTabs]: NavigatorScreenParams<AppTabsParamList>;
     [RootStackRoutes.AccountsImport]: NavigatorScreenParams<AccountsImportStackParamList>;
+    [RootStackRoutes.TransactionDetail]: { txid: string };
     [RootStackRoutes.DevUtilsStack]: undefined;
 };

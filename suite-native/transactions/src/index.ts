@@ -1,1 +1,2 @@
-export * from './components/TransactionList';
+export * from './components/TransactionsList/TransactionList';
+export * from './screens/TransactionDetailScreen';

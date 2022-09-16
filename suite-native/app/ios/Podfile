@@ -28,7 +28,7 @@ target 'TrezorSuite' do
   #
   # Note that if you have use_frameworks! enabled, Flipper will not work and
   # you should disable the next line.
-  use_flipper!({ 'Flipper' => '0.152.0' })
+  use_flipper!({ 'Flipper' => '0.162.0' })
 
   ENVFILES = {
     'Debug' => '$(PODS_ROOT)/../../.env.debug',

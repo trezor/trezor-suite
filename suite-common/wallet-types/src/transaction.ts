@@ -229,3 +229,5 @@ export type TransactionFiatRateUpdatePayload = {
     updateObject: Partial<WalletAccountTransaction>;
     ts: number;
 };
+
+export type TransactionType = Pick<WalletAccountTransaction, 'type'>['type'];
