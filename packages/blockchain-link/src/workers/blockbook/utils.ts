@@ -81,9 +81,16 @@ export const filterTokenTransfers = (
         });
 };
 
+// Lighter version of AccountAddresses for tx classification
+type TransformAddresses = {
+    used: { address: string }[];
+    unused: { address: string }[];
+    change: { address: string }[];
+};
+
 export const transformTransaction = (
     descriptor: string,
-    addresses: AccountAddresses | undefined,
+    addresses: TransformAddresses | undefined,
     tx: BlockbookTransaction,
 ): Transaction => {
     // combine all addresses into array

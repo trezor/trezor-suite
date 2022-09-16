@@ -1,9 +1,9 @@
 import BigNumber from 'bignumber.js';
 import { isNotUndefined, parseHostname } from '@trezor/utils';
-import type { Address, EnhancedVinVout } from '../types';
+import type { EnhancedVinVout } from '../types';
 import type { VinVout } from '../types/blockbook';
 
-export type Addresses = (Address | string)[] | string;
+export type Addresses = ({ address: string } | string)[] | string;
 
 export const isAccountOwned = (addresses: string[]) => (vinVout: VinVout) =>
     Array.isArray(vinVout?.addresses) && vinVout.addresses.some(a => addresses.includes(a));
