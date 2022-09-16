@@ -20,6 +20,7 @@
         { "path": "../storage" },
         { "path": "../transactions" },
         { "path": "../../packages/connect" },
+        { "path": "../../packages/icons" },
         { "path": "../../packages/styles" },
         { "path": "../../packages/theme" },
         {

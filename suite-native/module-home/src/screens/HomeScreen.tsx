@@ -5,7 +5,6 @@ import { Screen } from '@suite-native/navigation';
 import { PortfolioGraph } from '@suite-native/module-graph';
 
 import { Assets } from '../components/Assets';
-import { Transactions } from '../components/Transactions';
 import { DashboardHeader } from '../components/DashboardHeader';
 
 export const HomeScreen = () => (
@@ -14,7 +13,6 @@ export const HomeScreen = () => (
             <DashboardHeader />
             <PortfolioGraph />
             <Assets />
-            <Transactions />
         </VStack>
     </Screen>
 );

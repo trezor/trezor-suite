@@ -12,7 +12,9 @@ import {
     RootStackParamList,
     RootStackRoutes,
     TabToStackCompositeNavigationProp,
+    AccountsStackRoutes,
 } from '@suite-native/navigation';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 
 import { DashboardSection } from './DashboardSection';
 
@@ -36,6 +38,18 @@ export const Assets = () => {
         });
     };
 
+    const handleShowAllAccountsForAsset = (currencySymbol: NetworkSymbol) => {
+        navigation.navigate(RootStackRoutes.AppTabs, {
+            screen: AppTabsRoutes.AccountsStack,
+            params: {
+                screen: AccountsStackRoutes.Accounts,
+                params: {
+                    currencySymbol,
+                },
+            },
+        });
+    };
+
     return (
         <DashboardSection title="Assets">
             <Card>
@@ -47,14 +61,16 @@ export const Assets = () => {
                         cryptoCurrencyValue={0.00005122}
                         portfolioPercentage={70}
                         fiatCurrencyValue={3123}
+                        onPress={() => handleShowAllAccountsForAsset('btc')}
                     />
                     <AssetItem
-                        iconName="eth"
-                        cryptoCurrencyName="Ethereum"
-                        cryptoCurrencySymbol="ETH"
+                        iconName="test"
+                        cryptoCurrencyName="Testnet"
+                        cryptoCurrencySymbol="TBTC"
                         cryptoCurrencyValue={0.00005122}
                         portfolioPercentage={30}
                         fiatCurrencyValue={3123}
+                        onPress={() => handleShowAllAccountsForAsset('test')}
                     />
                 </VStack>
             </Card>

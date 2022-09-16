@@ -6,7 +6,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { ButtonColorScheme, ButtonSize } from './Button';
 
-type Props = {
+type IconButtonProps = {
     iconName: IconName;
     onPress: () => void;
     isRounded?: boolean;
@@ -65,7 +65,7 @@ export const IconButton = ({
     colorScheme = 'primary',
     size = 'medium',
     isRounded = false,
-}: Props) => {
+}: IconButtonProps) => {
     const { applyStyle } = useNativeStyles();
 
     return (

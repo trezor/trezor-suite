@@ -37,6 +37,12 @@ export type StackToStackCompositeNavigationProps<
 
 export type RouteProps<T extends ParamListBase, K extends keyof T> = RouteProp<T, K>;
 
-export interface TabsOptions {
-    [tabName: string]: { iconName: IconName; label?: string; isActionTabItem?: boolean };
-}
+export type TabsOptions = {
+    [routeName: string]: {
+        routeName: string;
+        iconName: IconName;
+        label?: string;
+        isActionTabItem?: boolean;
+        params?: Record<string, unknown>;
+    };
+};

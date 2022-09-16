@@ -4,12 +4,27 @@ import { useSelector } from 'react-redux';
 import { A } from '@mobily/ts-belt';
 
 import { Box, Text } from '@suite-native/atoms';
-import { selectAccounts } from '@suite-common/wallet-core';
+import {
+    AccountsRootState,
+    selectAccounts,
+    selectAccountsByNetworkSymbols,
+} from '@suite-common/wallet-core';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 
 import { AccountListItem } from './AccountListItem';
 
-export const AccountsList = () => {
-    const accounts = useSelector(selectAccounts);
+type AccountsListProps = {
+    assets: NetworkSymbol[];
+};
+
+export const AccountsList = ({ assets }: AccountsListProps) => {
+    /*
+    TODO improvement: add an array somewhere of all enabled networks for mobile app
+     and pass it to selectAccountsByNetworkSymbols as default which will select everything.
+     */
+    const accounts = useSelector((state: AccountsRootState) =>
+        A.isEmpty(assets) ? selectAccounts(state) : selectAccountsByNetworkSymbols(state, assets),
+    );
 
     if (A.isEmpty(accounts)) return <Text>No accounts found.</Text>;
 
