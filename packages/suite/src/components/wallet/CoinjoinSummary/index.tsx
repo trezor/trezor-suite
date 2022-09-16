@@ -6,8 +6,6 @@ import { CoinjoinSetup } from './CoinjoinSetup';
 import { CoinjoinSessionStatus } from './CoinjoinSessionStatus';
 
 const Wrapper = styled.div`
-    display: flex;
-    width: 100%;
     margin-bottom: 24px;
 `;
 
