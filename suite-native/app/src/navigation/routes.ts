@@ -1,23 +1,46 @@
-import { AppTabsRoutes, TabsOptions } from '@suite-native/navigation';
+import { AccountsStackRoutes, AppTabsRoutes } from '@suite-native/navigation';
 
-export const rootTabsOptions: TabsOptions = {
-    [AppTabsRoutes.HomeStack]: {
-        iconName: 'home',
-        label: 'Home',
+import { typedTabOption } from './typedTabOption';
+
+const homeStack = typedTabOption({
+    routeName: AppTabsRoutes.HomeStack,
+    iconName: 'home',
+    label: 'Home',
+});
+
+const accountsStack = typedTabOption({
+    routeName: AppTabsRoutes.AccountsStack,
+    iconName: 'discover',
+    label: 'My Assets',
+    params: {
+        screen: AccountsStackRoutes.Accounts,
+        params: {
+            currencySymbol: undefined,
+        },
     },
-    [AppTabsRoutes.AccountsStack]: {
-        iconName: 'discover',
-        label: 'My Assets',
-    },
-    [AppTabsRoutes.Action]: {
-        iconName: 'action',
-    },
-    [AppTabsRoutes.Prices]: {
-        iconName: 'prices',
-        label: 'Discover',
-    },
-    [AppTabsRoutes.SettingsStack]: {
-        iconName: 'trezorT',
-        label: 'Trezor',
-    },
+});
+
+const actionStack = typedTabOption({
+    routeName: AppTabsRoutes.Action,
+    iconName: 'action',
+});
+
+const pricesStack = typedTabOption({
+    routeName: AppTabsRoutes.Prices,
+    iconName: 'prices',
+    label: 'Discover',
+});
+
+const settingsStack = typedTabOption({
+    routeName: AppTabsRoutes.SettingsStack,
+    iconName: 'trezorT',
+    label: 'Trezor',
+});
+
+export const rootTabsOptions = {
+    ...homeStack,
+    ...accountsStack,
+    ...actionStack,
+    ...pricesStack,
+    ...settingsStack,
 };

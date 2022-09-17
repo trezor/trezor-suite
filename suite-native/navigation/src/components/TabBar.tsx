@@ -7,8 +7,8 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Box } from '@suite-native/atoms';
 
 import { TabBarItem } from './TabBarItem';
-import { TabsOptions } from '../types';
 import { ActionTabItem } from './ActionTabBarItem';
+import { TabsOptions } from '../types';
 
 interface TabBarProps extends BottomTabBarProps {
     tabItemOptions: TabsOptions;
@@ -37,7 +37,8 @@ export const TabBar = ({ state, navigation, tabItemOptions }: TabBarProps) => {
         <Box style={applyStyle(tabBarStyle, { insetLeft: insets.left, insetRight: insets.right })}>
             {state.routes.map((route, index) => {
                 const isFocused = state.index === index;
-                const { iconName, label, isActionTabItem } = tabItemOptions[route.name];
+                const { routeName, iconName, label, isActionTabItem, params } =
+                    tabItemOptions[route.name];
 
                 if (isActionTabItem) return <ActionTabItem key={route.key} />;
 
@@ -49,8 +50,7 @@ export const TabBar = ({ state, navigation, tabItemOptions }: TabBarProps) => {
                     });
 
                     if (!isFocused && !event.defaultPrevented) {
-                        // The `merge: true` option makes sure that the params inside the tab screen are preserved
-                        navigation.navigate(route.name, { merge: true });
+                        navigation.navigate(routeName, { ...params });
                     }
                 };
 

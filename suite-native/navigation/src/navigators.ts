@@ -34,7 +34,9 @@ export type SettingsStackParamList = {
 };
 
 export type AccountsStackParamList = {
-    [AccountsStackRoutes.Accounts]: undefined;
+    [AccountsStackRoutes.Accounts]: {
+        currencySymbol?: NetworkSymbol;
+    };
     [AccountsStackRoutes.AccountDetail]: { accountKey: string };
 };
 

@@ -6265,6 +6265,7 @@ __metadata:
     "@react-navigation/native": ^6.0.11
     "@react-navigation/stack": ^6.2.2
     "@reduxjs/toolkit": ^1.8.3
+    "@suite-common/wallet-config": "*"
     "@suite-common/wallet-core": "*"
     "@suite-common/wallet-types": "*"
     "@suite-native/atoms": "*"
@@ -6336,6 +6337,8 @@ __metadata:
   dependencies:
     "@react-navigation/native": ^6.0.11
     "@react-navigation/stack": ^6.2.2
+    "@suite-common/wallet-config": "*"
+    "@suite-common/wallet-core": "*"
     "@suite-native/atoms": "*"
     "@suite-native/module-graph": "*"
     "@suite-native/navigation": "*"
@@ -6345,6 +6348,7 @@ __metadata:
     jest: ^26.6.3
     react: ^17.0.2
     react-native: 0.68.2
+    react-redux: 7.2.2
     typescript: 4.7.4
   languageName: unknown
   linkType: soft
@@ -7149,6 +7153,7 @@ __metadata:
     "@suite-native/storage": "*"
     "@suite-native/transactions": "*"
     "@trezor/connect": 9.0.1
+    "@trezor/icons": "*"
     "@trezor/styles": "*"
     "@trezor/theme": "*"
     "@trezor/transport-native": "*"

@@ -13,6 +13,8 @@
     "dependencies": {
         "@react-navigation/native": "^6.0.11",
         "@react-navigation/stack": "^6.2.2",
+        "@suite-common/wallet-config": "*",
+        "@suite-common/wallet-core": "*",
         "@suite-native/atoms": "*",
         "@suite-native/module-graph": "*",
         "@suite-native/navigation": "*",
@@ -20,7 +22,8 @@
         "@trezor/styles": "*",
         "@trezor/theme": "*",
         "react": "^17.0.2",
-        "react-native": "0.68.2"
+        "react-native": "0.68.2",
+        "react-redux": "7.2.2"
     },
     "devDependencies": {
         "jest": "^26.6.3",
