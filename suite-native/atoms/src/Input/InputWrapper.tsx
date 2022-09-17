@@ -6,7 +6,7 @@ import { Box } from '../Box';
 import { Text } from '../Text';
 import { Hint } from '../Hint';
 
-type InputWrapperProps = {
+export type InputWrapperProps = {
     children: ReactNode;
     label?: string;
     hint?: string;

@@ -6223,6 +6223,17 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-native/forms@workspace:suite-native/forms":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/forms@workspace:suite-native/forms"
+  dependencies:
+    "@suite-native/atoms": "*"
+    react: ^17.0.2
+    react-hook-form: 6.15.7
+    yup: ^0.32.11
+  languageName: unknown
+  linkType: soft
+
 "@suite-native/module-accounts-import@*, @suite-native/module-accounts-import@workspace:suite-native/module-accounts-import":
   version: 0.0.0-use.local
   resolution: "@suite-native/module-accounts-import@workspace:suite-native/module-accounts-import"
