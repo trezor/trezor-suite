@@ -1,10 +1,11 @@
-const fetch = require('node-fetch').default;
+import fetch from 'node-fetch';
 
 // testing build. yarn workspace @trezor/transport build:lib is a required step therefore
-const TrezorLink = require('../../../../transport/lib').default;
-const messages = require('../../../../transport/messages.json');
+import TrezorLink from '../../lib';
+import messages from '../../messages.json';
 
-const { Controller } = global.Trezor;
+// import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
+import { Controller } from '@trezor/trezor-user-env-link';
 
 const { BridgeV2 } = TrezorLink;
 
@@ -37,9 +38,9 @@ describe('bridge', () => {
     // but they are not available from trezor-user-env, see https://github.com/trezor/trezor-user-env/tree/master/src/binaries/trezord-go/bin
     ['2.0.26', '2.0.27', undefined].forEach(bridgeVersion => {
         describe(bridgeVersion || 'latest', () => {
-            let bridge;
-            let devices;
-            let session;
+            let bridge: any;
+            let devices: any[];
+            let session: any;
             beforeEach(async () => {
                 await controller.send({ type: 'bridge-stop' });
                 await controller.send({ type: 'emulator-start', ...emulatorStartOpts });
@@ -48,7 +49,7 @@ describe('bridge', () => {
 
                 BridgeV2.setFetch(fetch, true);
 
-                bridge = new BridgeV2(null, null);
+                bridge = new BridgeV2(undefined, undefined);
 
                 // this is how @trezor/connect is using it at the moment
                 // bridge.setBridgeLatestVersion(bridgeVersion);

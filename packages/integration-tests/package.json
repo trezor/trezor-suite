@@ -5,7 +5,6 @@
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "wait-for-env": "tsx ./wait-for-env.ts",
-        "test:transport": "tsx ./wait-for-env.ts && yarn jest --verbose -c ./projects/transport/jest.config.js --runInBand",
         "test:desktop": "tsx ./wait-for-env.ts && DEBUG=pw:browser yarn xvfb-maybe playwright test --config=./projects/suite-desktop/playwright.config.ts",
         "test:connect:node": "TESTS_FIRMWARE=$(tsx ./wait-for-env.ts) yarn jest --runInBand --verbose -c projects/connect/jest.config.js",
         "test:connect:web": "TESTS_FIRMWARE=$(tsx ./wait-for-env.ts) yarn karma start projects/connect/karma.config.js",

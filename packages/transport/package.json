@@ -29,10 +29,12 @@
         "build:lib": "rimraf -rf lib && yarn tsc --build ./tsconfig.lib.json",
         "publish:lib": "./scripts/publish-lib.sh",
         "test:unit": "jest",
+        "test:e2e": "yarn workspace @trezor/integration-tests wait-for-env && yarn jest --verbose --testPathPattern e2e/ --runInBand -c ../../jest.config.base.js",
         "example:bridge": "jest --verbose -c jest.config.e2e.js --testPathPattern bridge.integration",
         "update:protobuf": "./scripts/protobuf-build.sh && yarn prettier --write \"{messages.json,src/types/messages.ts}\""
     },
     "devDependencies": {
+        "@trezor/trezor-user-env-link": "*",
         "@types/bytebuffer": "^5.0.43",
         "@types/w3c-web-usb": "^1.0.6",
         "jest": "^26.6.3",

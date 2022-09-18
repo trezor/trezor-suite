@@ -41,7 +41,9 @@ const writeOut = (data: string) => {
 const wait = async () => {
     try {
         await new Promise<void>(async resolve => {
-            const limit = 90;
+            // unfortunately, it can take incredibly long for trezor-user-env to start, we should
+            // do something about it
+            const limit = 300;
             let error = '';
             process.stderr.write('waiting for trezor-user-env');
 
