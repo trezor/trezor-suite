@@ -222,7 +222,6 @@ connect-popup manual:
   needs:
     - install
     - connect-web build
-    - connect-explorer deploy dev manual
   except:
     <<: *run_everything_rules
   when: manual

@@ -44,8 +44,8 @@ export const buildOverview = ({ emuScreenshots }: { emuScreenshots: Record<strin
                 <div>
                     <div>${methodName}/${screenshot}</div>
                     <img src="${screenshotPath.replace(
-                        '/projects/connect-popup',
-                        '/artifacts/raw/packages/integration-tests/projects/connect-popup',
+                        '/e2e/screenshots',
+                        '/artifacts/raw/packages/connect-popup/e2e/screenshots',
                     )}" />
                     ${renderEmuScreenshot(`./${urlPath}/${screenshot}`)}
                 </div>
