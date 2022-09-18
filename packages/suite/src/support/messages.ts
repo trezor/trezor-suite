@@ -5379,10 +5379,6 @@ export default defineMessages({
         id: 'TR_CUSTOM_FIRMWARE_TITLE_DOWNLOAD',
         defaultMessage: 'Select compatible firmware',
     },
-    TR_CUSTOM_FIRMWARE_TITLE_INSTALL: {
-        id: 'TR_CUSTOM_FIRMWARE_TITLE_INSTALL',
-        defaultMessage: 'Install firmware',
-    },
     TR_CUSTOM_FIRMWARE_TITLE_UPLOAD: {
         id: 'TR_CUSTOM_FIRMWARE_TITLE_UPLOAD',
         defaultMessage: 'Upload firmware',
@@ -6869,7 +6865,7 @@ export default defineMessages({
         defaultMessage: 'Disabling Tor',
     },
     TR_CUSTOM_FIRMWARE_GITHUB: {
-        id: 'TR_BTC_UNITS',
+        id: 'TR_CUSTOM_FIRMWARE_GITHUB',
         defaultMessage: 'You can find all official releases on',
     },
     TR_FIRMWARE_CHECK_AUTHENTICITY_SUCCESS: {
