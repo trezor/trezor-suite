@@ -2,8 +2,8 @@
 
 const legacyResults = [
     {
-        // getOwnershipId not supported on T1 and TT below 2.4.4
-        rules: ['1', '<2.4.4'],
+        // getOwnershipId not supported on T1 and TT below 2.5.3
+        rules: ['1', '<2.5.3'],
         success: false,
     },
 ];

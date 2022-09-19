@@ -10,7 +10,7 @@ const result = await TrezorConnect.authorizeCoinJoin(params);
 
 > :warning: **This feature is experimental! Do not use it in production!**
 
-> :note: **Supported only by Trezor T with Firmware 2.4.4 or higher!**
+> :note: **Supported only by Trezor T with Firmware 2.5.3 or higher!**
 
 ### Params
 
