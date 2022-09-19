@@ -6223,7 +6223,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-native/forms@workspace:suite-native/forms":
+"@suite-native/forms@*, @suite-native/forms@workspace:suite-native/forms":
   version: 0.0.0-use.local
   resolution: "@suite-native/forms@workspace:suite-native/forms"
   dependencies:
@@ -6250,12 +6250,14 @@ __metadata:
     "@suite-common/wallet-utils": "*"
     "@suite-native/atoms": "*"
     "@suite-native/config": "*"
+    "@suite-native/forms": "*"
     "@suite-native/module-devices": "*"
     "@suite-native/module-settings": "*"
     "@suite-native/navigation": "*"
     "@trezor/connect": 9.0.2
     "@trezor/icons": "*"
     "@trezor/styles": "*"
+    "@trezor/validation": "*"
     jest: ^26.6.3
     react: ^17.0.2
     react-native: 0.68.2
