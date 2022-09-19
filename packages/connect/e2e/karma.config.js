@@ -8,7 +8,7 @@ const getTestPattern = () => {
     const root = path.resolve(__dirname, './tests');
     const basename = __filename.split('/').reverse()[0];
     // yarn test:karma:production ...pattern => argv: [node, karma, start, config-file, ...pattern]
-    const pos = process.argv.indexOf(`projects/connect/${basename}`);
+    const pos = process.argv.indexOf(`e2e/${basename}`);
     // is there some argument (test file name) after the test command?
     if (process.argv[pos + 1]) {
         // if yes add full path
@@ -20,7 +20,7 @@ const getTestPattern = () => {
 
 module.exports = config => {
     config.set({
-        basePath: path.resolve(__dirname, '../../..'), // NOTE: "[monorepo-root]/packages", to have access to other packages
+        basePath: path.resolve(__dirname, '../..'), // NOTE: "[monorepo-root]/packages", to have access to other packages
         hostname: 'localhost',
         port: 8099,
         autoWatch: false,
@@ -115,7 +115,7 @@ module.exports = config => {
                 // replace TrezorConnect module used in ./tests/common.setup.js
                 new webpack.NormalModuleReplacementPlugin(
                     /^@trezor\/connect$/,
-                    path.join(__dirname, '../../../connect-web/build/trezor-connect.js'),
+                    path.join(__dirname, '../../connect-web/build/trezor-connect.js'),
                 ),
                 // replace ws module used in ./tests/websocket-client.js
                 new webpack.NormalModuleReplacementPlugin(

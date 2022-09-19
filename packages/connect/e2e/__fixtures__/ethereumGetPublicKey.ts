@@ -1,4 +1,4 @@
-import commonFixtures from '../../../../../submodules/trezor-common/tests/fixtures/ethereum/getpublickey.json';
+import commonFixtures from '../../../../submodules/trezor-common/tests/fixtures/ethereum/getpublickey.json';
 
 export default {
     method: 'ethereumGetPublicKey',

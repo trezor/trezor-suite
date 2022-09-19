@@ -1,4 +1,4 @@
-import commonFixtures from '../../../../../submodules/trezor-common/tests/fixtures/ethereum/sign_tx_eip1559.json';
+import commonFixtures from '../../../../submodules/trezor-common/tests/fixtures/ethereum/sign_tx_eip1559.json';
 
 const legacyResults = [
     {

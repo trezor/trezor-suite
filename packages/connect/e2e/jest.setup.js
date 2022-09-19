@@ -5,8 +5,8 @@ jest.setTimeout(20000);
 // Always mock blockchain-link worker unless it's explicitly required not to.
 if (process.env.TESTS_USE_WS_CACHE === 'true') {
     // TODO HERE!
-    jest.mock('../../../connect-common/files/coins.json', () => {
-        const json = jest.requireActual('../../../connect-common/files/coins.json');
+    jest.mock('../../connect-common/files/coins.json', () => {
+        const json = jest.requireActual('../../connect-common/files/coins.json');
         const { transformCoinsJson } = jest.requireActual('./__wscache__');
         return transformCoinsJson(json);
     });

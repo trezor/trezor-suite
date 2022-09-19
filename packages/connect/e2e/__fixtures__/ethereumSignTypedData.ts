@@ -1,4 +1,4 @@
-import commonFixtures from '../../../../../submodules/trezor-common/tests/fixtures/ethereum/sign_typed_data.json';
+import commonFixtures from '../../../../submodules/trezor-common/tests/fixtures/ethereum/sign_typed_data.json';
 
 const fixtures = commonFixtures.tests
     .filter(

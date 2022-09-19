@@ -1,4 +1,4 @@
-import commonFixtures from '../../../../../submodules/trezor-common/tests/fixtures/ethereum/verifymessage.json';
+import commonFixtures from '../../../../submodules/trezor-common/tests/fixtures/ethereum/verifymessage.json';
 
 export default {
     method: 'ethereumVerifyMessage',

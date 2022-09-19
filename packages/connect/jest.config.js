@@ -4,4 +4,5 @@ module.exports = {
     testEnvironment: 'jsdom',
     collectCoverage: true,
     setupFiles: ['<rootDir>/setupJest.ts'],
+    testPathIgnorePatterns: ['e2e'],
 };

@@ -1,5 +1,3 @@
-/* eslint-disable no-bitwise */
-
 const BitcoinJs = require('@trezor/utxo-lib');
 
 // Referenced transaction generator script.

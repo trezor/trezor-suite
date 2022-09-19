@@ -1,5 +1,3 @@
-/* eslint-disable no-underscore-dangle */
-
 import TrezorConnect from '@trezor/connect';
 
 // error thrown by .init()

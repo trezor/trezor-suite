@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/prefer-ts-expect-error */
+
 // origin: https://github.com/trezor/connect/blob/develop/src/js/data/ConnectSettings.js
 
 import type { Manifest, ConnectSettings } from '../types';
@@ -110,8 +112,10 @@ export const parseConnectSettings = (input: Partial<ConnectSettings> = {}) => {
     // For debugging purposes `connectSrc` could be defined in `global.__TREZOR_CONNECT_SRC` variable
     let globalSrc: string | undefined;
     if (typeof window !== 'undefined') {
+        // @ts-ignore
         globalSrc = window.__TREZOR_CONNECT_SRC;
     } else if (typeof global !== 'undefined') {
+        // @ts-ignore
         globalSrc = global.__TREZOR_CONNECT_SRC;
     }
     if (typeof globalSrc === 'string') {
