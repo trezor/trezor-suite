@@ -1,11 +1,28 @@
 import React, { createContext, useMemo } from 'react';
 
-import { FormatterConfig, Formatters } from './types';
-import { prepareCryptoAmountFormatter } from './generators';
+import {
+    prepareCryptoAmountFormatter,
+    CryptoAmountFormatterDataContext,
+    CryptoAmountFormatterInputValue,
+    CryptoAmountStructuredOutput,
+    CryptoAmountFormatterOutputType,
+} from './kinds/prepareCryptoAmountFormatter';
+import { Formatter } from './makeFormatter';
+import { FormatterConfig } from './types';
 
 type FormatterProviderProps = {
     children: React.ReactNode;
     config: FormatterConfig;
+};
+
+export type Formatters = {
+    cryptoAmountFormatter: Formatter<
+        CryptoAmountFormatterInputValue,
+        CryptoAmountFormatterOutputType,
+        string,
+        CryptoAmountStructuredOutput,
+        CryptoAmountFormatterDataContext
+    >;
 };
 
 export const FormatterProviderContext = createContext<Formatters>({} as Formatters);

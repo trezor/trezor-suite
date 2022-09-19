@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import { HiddenPlaceholder, Sign } from '@suite-components';
 import { SignValue } from '@suite-common/suite-types';
-import { CryptoAmountStructuredOutput, useFormatters } from '@suite-common/formatters';
+import { useFormatters } from '@suite-common/formatters';
 
 const Container = styled.span`
     max-width: 100%;
@@ -46,16 +46,16 @@ export const FormattedCryptoAmount = ({
         return null;
     }
 
-    const formatterInput = { amount: value, symbol, isBalance, signValue };
-
     // output as a string, mostly for compatability with graphs
     if (isRawString) {
-        return <>{cryptoAmountFormatter.format(formatterInput)}</>;
+        return <>{cryptoAmountFormatter.format(value, { symbol, isBalance, signValue })}</>;
     }
 
-    const cryptoAmountStructure = cryptoAmountFormatter.formatAsStructure(
-        formatterInput,
-    ) as CryptoAmountStructuredOutput;
+    const cryptoAmountStructure = cryptoAmountFormatter.formatAsStructure(value, {
+        symbol,
+        isBalance,
+        signValue,
+    });
     const { formattedSignValue, formattedValue, formattedSymbol } = cryptoAmountStructure;
 
     const content = (
