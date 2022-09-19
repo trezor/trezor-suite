@@ -7,20 +7,18 @@ import { NetworkSymbol } from '@suite-common/wallet-config';
 
 import { accountsActions } from './accountsActions';
 
-export type AccountsState = Account[];
-
-export const accountsInitialState: AccountsState = [];
+export const accountsInitialState: Account[] = [];
 
 export type AccountsRootState = {
     wallet: {
-        accounts: AccountsState;
+        accounts: Account[];
     };
 };
 
 const accountEqualTo = (b: Account) => (a: Account) =>
     a.deviceState === b.deviceState && a.descriptor === b.descriptor && a.symbol === b.symbol;
 
-const update = (state: AccountsState, account: Account) => {
+const update = (state: Account[], account: Account) => {
     const accountIndex = state.findIndex(accountEqualTo(account));
 
     if (accountIndex !== -1) {
@@ -41,14 +39,14 @@ const update = (state: AccountsState, account: Account) => {
     }
 };
 
-const remove = (state: AccountsState, accounts: Account[]) => {
+const remove = (state: Account[], accounts: Account[]) => {
     accounts.forEach(a => {
         const index = state.findIndex(accountEqualTo(a));
         state.splice(index, 1);
     });
 };
 
-const setMetadata = (state: AccountsState, account: Account) => {
+const setMetadata = (state: Account[], account: Account) => {
     const index = state.findIndex(a => a.key === account.key);
     if (!state[index]) return;
     state[index].metadata = account.metadata;
