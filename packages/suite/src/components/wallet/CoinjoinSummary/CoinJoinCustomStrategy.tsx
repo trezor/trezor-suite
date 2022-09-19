@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
 import { Translation } from '@suite-components';
-import { Button, P, Switch, variables } from '@trezor/components';
+import { Button, P, Range, Switch, variables } from '@trezor/components';
 import { CoinjoinSessionDetail } from './CoinjoinSessionDetail';
 
 const Row = styled.div`
@@ -77,55 +77,6 @@ const MiningFee = styled.section`
     flex-grow: 1;
 `;
 
-const sliderTrack = css`
-    background: linear-gradient(
-        270deg,
-        #bf6767 0%,
-        #c8b882 18.73%,
-        #c8b883 36.25%,
-        #95cda5 43.99%,
-        #2a9649 100%
-    );
-    cursor: pointer;
-    height: 3px;
-`;
-const sliderThumb = css`
-    appearance: none;
-    background: ${({ theme }) => theme.BG_WHITE};
-    border: 1px solid ${({ theme }) => theme.STROKE_GREY};
-    border-radius: 50%;
-    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
-    cursor: grab;
-    height: 26px;
-    margin-top: -12px;
-    width: 26px;
-
-    :active {
-        box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.2);
-        cursor: grabbing;
-    }
-`;
-
-const Range = styled.input`
-    appearance: none;
-    margin: 30px 0 12px 0;
-    vertical-align: top; /* prevent extra bottom space in Firefox */
-    width: 100%;
-
-    ::-webkit-slider-runnable-track {
-        ${sliderTrack}
-    }
-    ::-webkit-slider-thumb {
-        ${sliderThumb}
-    }
-    ::-moz-range-track {
-        ${sliderTrack}
-    }
-    ::-moz-range-thumb {
-        ${sliderThumb}
-    }
-`;
-
 const DetailWrapper = styled.section`
     background: ${({ theme }) => theme.BG_GREY};
     border-radius: 4px;
@@ -152,6 +103,11 @@ export const CoinjoinCustomStrategy = ({ reset }: CoinjoinCustomStrategyProps) =
     const [maxFee, setMaxFee] = useState(3);
     const [skipRounds, setSkipRounds] = useState(true);
 
+    const trackStyle = {
+        background:
+            'linear-gradient(270deg, #bf6767 0%, #c8b882 18.73%, #c8b883 36.25%, #95cda5 43.99%,#2a9649 100%)',
+    };
+
     const handleSliderChange: React.ChangeEventHandler<HTMLInputElement> = e =>
         setMaxFee(Number(e.target.value));
     const toggleSkipRounds = () => setSkipRounds(!skipRounds);
@@ -177,8 +133,12 @@ export const CoinjoinCustomStrategy = ({ reset }: CoinjoinCustomStrategyProps) =
                     <MiningFeeText>
                         <Translation id="TR_MINING_FEE_NOTE" />
                     </MiningFeeText>
-                    {/* TODO: separate Range component */}
-                    <Range type="range" min={1} value={maxFee} onChange={handleSliderChange} />
+                    <Range
+                        min={1}
+                        value={maxFee}
+                        onChange={handleSliderChange}
+                        trackStyle={trackStyle}
+                    />
                     <Row>
                         <LeftMark>1 sat/vB</LeftMark>
                         <MiddleMark>50 sat/vB</MiddleMark>
