@@ -17,7 +17,7 @@
         "@suite-native/module-devices": "*",
         "@suite-native/module-settings": "*",
         "@suite-native/storage": "*",
-        "@trezor/connect": "9.0.1",
+        "@trezor/connect": "9.0.2",
         "@trezor/styles": "*",
         "@trezor/utils": "*",
         "redux-flipper": "2.0.2",

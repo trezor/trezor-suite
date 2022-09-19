@@ -27,7 +27,7 @@
         "@suite-native/module-devices": "*",
         "@suite-native/module-settings": "*",
         "@suite-native/navigation": "*",
-        "@trezor/connect": "9.0.1",
+        "@trezor/connect": "9.0.2",
         "@trezor/icons": "*",
         "@trezor/styles": "*",
         "react": "^17.0.2",

@@ -16,7 +16,7 @@
         "@suite-common/redux-utils": "*",
         "@suite-common/suite-types": "*",
         "@suite-common/test-utils": "*",
-        "@trezor/connect": "9.0.1",
+        "@trezor/connect": "9.0.2",
         "@trezor/utils": "*"
     },
     "devDependencies": {
