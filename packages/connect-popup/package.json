@@ -12,7 +12,7 @@
     },
     "dependencies": {
         "@trezor/components": "*",
-        "@trezor/connect": "9.0.1",
+        "@trezor/connect": "9.0.2",
         "@trezor/connect-ui": "*",
         "@trezor/crypto-utils": "*",
         "@trezor/urls": "*",

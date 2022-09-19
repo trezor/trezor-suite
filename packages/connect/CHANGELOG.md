@@ -1,3 +1,12 @@
+# 9.0.2
+
+-   improved passphrase dialog in popup window
+-   if popup window does not load in a predefined period of time, error screen with troubleshooting tips is shown
+
+# 9.0.1
+
+-   @trezor/blockchain-link 2.1.4
+
 # 9.0.0
 
 ## Breaking changes:
