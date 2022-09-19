@@ -592,27 +592,27 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
             cursor.update({ order, tx: unenhancedTx });
             // eslint-disable-next-line no-await-in-loop
             cursor = await cursor.continue();
-
-            const devicesStore = transaction.objectStore('devices');
-            devicesStore.openCursor().then(function update(cursor): Promise<void> | undefined {
-                if (!cursor) {
-                    return;
-                }
-                const device = cursor.value;
-
-                const { features } = device;
-
-                device.firmwareType =
-                    features &&
-                    features.capabilities &&
-                    !features.capabilities.includes('Capability_Bitcoin_like')
-                        ? 'bitcoin-only'
-                        : 'regular';
-
-                cursor.update(device);
-
-                return cursor.continue().then(update);
-            });
         }
+
+        const devicesStore = transaction.objectStore('devices');
+        devicesStore.openCursor().then(function update(cursor): Promise<void> | undefined {
+            if (!cursor) {
+                return;
+            }
+            const device = cursor.value;
+
+            const { features } = device;
+
+            device.firmwareType =
+                features &&
+                features.capabilities &&
+                !features.capabilities.includes('Capability_Bitcoin_like')
+                    ? 'bitcoin-only'
+                    : 'regular';
+
+            cursor.update(device);
+
+            return cursor.continue().then(update);
+        });
     }
 };
