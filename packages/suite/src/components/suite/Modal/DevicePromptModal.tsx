@@ -167,7 +167,9 @@ const DevicePromptModalRenderer = ({
                     )
                 }
                 headerComponents={
-                    isActionAbortable ? [<AbortButton onAbort={onAbort} />] : undefined
+                    isActionAbortable
+                        ? [<AbortButton key="abort-button" onAbort={onAbort} />]
+                        : undefined
                 }
                 {...rest}
             />
