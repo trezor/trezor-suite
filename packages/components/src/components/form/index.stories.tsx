@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { Input, Textarea, Select, Checkbox, RadioButton, Switch, Button } from '../../index';
+import { Input, Textarea, Select, Checkbox, RadioButton, Switch, Button, Range } from '../../index';
 import { StoryColumn } from '../../support/Story';
 
 const Heading = styled.h2``;
@@ -272,6 +272,10 @@ export const Basic = ({ ...args }) => (
                     'data-test': 'select-disabled',
                 }}
             />
+        </StoryColumn>
+        <StoryColumn>
+            <Heading>Range</Heading>
+            <Range value={21} onChange={() => {}} />
         </StoryColumn>
     </>
 );
