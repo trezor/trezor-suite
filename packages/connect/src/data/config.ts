@@ -189,7 +189,7 @@ export const config = {
         {
             capabilities: ['coinjoin'],
             methods: ['authorizeCoinJoin', 'getOwnershipId', 'getOwnershipProof'],
-            min: ['0', '2.4.4'],
+            min: ['0', '2.5.3'],
         },
     ],
 };
