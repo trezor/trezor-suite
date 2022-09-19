@@ -97,9 +97,9 @@ export DOCKER_PATH
 
 if [[ $ENVIRONMENT == "node" ]];
   then
-    SCRIPT="yarn workspace @trezor/integration-tests test:connect:node"
+    SCRIPT="yarn workspace @trezor/connect test:e2e:node"
   else
-    SCRIPT="yarn workspace @trezor/integration-tests test:connect:web"
+    SCRIPT="yarn workspace @trezor/connect test:e2e:web"
 fi
 
 # export essential process.env variables

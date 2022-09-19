@@ -1,4 +1,4 @@
-import commonFixtures from '../../../../../submodules/trezor-common/tests/fixtures/ethereum/getaddress.json';
+import commonFixtures from '../../../../submodules/trezor-common/tests/fixtures/ethereum/getaddress.json';
 
 export default {
     method: 'ethereumGetAddress',

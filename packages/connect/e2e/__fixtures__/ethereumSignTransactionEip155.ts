@@ -1,4 +1,4 @@
-import commonFixtures from '../../../../../submodules/trezor-common/tests/fixtures/ethereum/sign_tx_eip155.json';
+import commonFixtures from '../../../../submodules/trezor-common/tests/fixtures/ethereum/sign_tx_eip155.json';
 
 const legacyResults = {
     Palm: [

@@ -1,4 +1,4 @@
-import commonFixtures from '../../../../../submodules/trezor-common/tests/fixtures/ethereum/signmessage.json';
+import commonFixtures from '../../../../submodules/trezor-common/tests/fixtures/ethereum/signmessage.json';
 
 export default {
     method: 'ethereumSignMessage',
