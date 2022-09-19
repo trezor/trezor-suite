@@ -50,6 +50,8 @@ import { AmountUnitSwitchWrapper } from './AmountUnitSwitchWrapper';
 import { renderToast } from './ToastNotification';
 import { SuiteLayout } from './SuiteLayout';
 import { TorLoader } from './TorLoader';
+import { CoinjoinStatusBar } from './CoinjoinStatusBar';
+import { CountdownTimer } from './CountdownTimer';
 
 export {
     DeviceIcon,
@@ -107,5 +109,7 @@ export {
     AmountUnitSwitchWrapper,
     renderToast,
     TorLoader,
+    CoinjoinStatusBar,
+    CountdownTimer,
 };
 export type { ModalProps };

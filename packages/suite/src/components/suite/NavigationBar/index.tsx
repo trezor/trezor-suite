@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import styled from 'styled-components';
 
-import { useLayoutSize } from '@suite-hooks';
+import { useLayoutSize, useSelector } from '@suite-hooks';
 import { Icon, useTheme, variables } from '@trezor/components';
 import { DeviceSelector } from './components/DeviceSelector';
 import { MainNavigation } from './components/MainNavigation';
 import { NavigationActions } from './components/NavigationActions';
+import { CoinjoinStatusBar } from '../CoinjoinStatusBar';
 
 const Wrapper = styled.div`
     display: flex;
@@ -18,7 +19,7 @@ const Wrapper = styled.div`
     background: ${({ theme }) => theme.BG_WHITE};
     border-bottom: 1px solid ${({ theme }) => theme.STROKE_GREY};
 
-    @media screen and (min-width: ${variables.SCREEN_SIZE.LG}) {
+    ${variables.SCREEN_QUERY.ABOVE_LAPTOP} {
         padding: 10px 16px;
     }
 `;
@@ -46,6 +47,7 @@ const ExpandedMobileNavigation = styled.div`
 `;
 
 export const NavigationBar: React.FC = () => {
+    const coinjoinAccounts = useSelector(state => state.wallet.coinjoin.accounts);
     const [opened, setOpened] = useState(false);
 
     const { isMobileLayout } = useLayoutSize();
@@ -54,6 +56,32 @@ export const NavigationBar: React.FC = () => {
     const closeMainNavigation = () => {
         setOpened(false);
     };
+
+    let sessionCount = 0;
+    coinjoinAccounts.forEach(({ session }) => {
+        if (session) {
+            sessionCount++;
+        }
+    });
+
+    const coinjoinStatusBars = useMemo(
+        () =>
+            coinjoinAccounts?.map(({ key, session }) => {
+                if (!session) {
+                    return;
+                }
+
+                return (
+                    <CoinjoinStatusBar
+                        accountKey={key}
+                        session={session}
+                        isSingle={sessionCount === 1}
+                        key={key}
+                    />
+                );
+            }),
+        [coinjoinAccounts, sessionCount],
+    );
 
     if (isMobileLayout) {
         return (
@@ -89,10 +117,14 @@ export const NavigationBar: React.FC = () => {
     }
 
     return (
-        <Wrapper>
-            <DeviceSelector />
-            <MainNavigation />
-            <NavigationActions />
-        </Wrapper>
+        <>
+            {coinjoinStatusBars}
+
+            <Wrapper>
+                <DeviceSelector />
+                <MainNavigation />
+                <NavigationActions />
+            </Wrapper>
+        </>
     );
 };

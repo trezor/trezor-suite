@@ -7153,7 +7153,19 @@ export default defineMessages({
     },
     TR_FEE_RATE_CHANGED: {
         id: 'TR_FEE_RATE_CHANGED',
-        defaultMessage: 'Fee rate has changed to complete transaction.',
+        defaultMessage: 'Fee rate has changed to complete transaction',
+    },
+    TR_COINJOIN_COUNTDOWN: {
+        id: 'TR_COINJOIN_COUNTDOWN',
+        defaultMessage: '{rounds} rounds left',
+    },
+    TR_COINJOIN_ROUND_COUNTDOWN: {
+        id: 'TR_FEE_RATE_CHANGED',
+        defaultMessage: 'Next transaction signing starts in {time}',
+    },
+    TR_VIEW: {
+        id: 'TR_VIEW',
+        defaultMessage: 'View',
     },
     TR_MY_COINS: {
         id: 'TR_MY_COINS',
@@ -7327,5 +7339,17 @@ export default defineMessages({
         id: 'TR_RESET_TO_DEFAULT',
         description: 'Button in coin join settings',
         defaultMessage: 'Reset to default',
+    },
+    TR_COINJOIN_PHASE_0_MESSAGE: {
+        id: 'TR_COINJOIN_PHASE_1_MESSAGE',
+        defaultMessage: 'Collecting inputs',
+    },
+    TR_COINJOIN_PHASE_1_MESSAGE: {
+        id: 'TR_COINJOIN_PHASE_2_MESSAGE',
+        defaultMessage: 'Joining coins',
+    },
+    TR_COINJOIN_PHASE_2_MESSAGE: {
+        id: 'TR_COINJOIN_PHASE_3_MESSAGE',
+        defaultMessage: 'U poor now',
     },
 });
