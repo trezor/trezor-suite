@@ -78,26 +78,24 @@ const getXpubInfo = (xpub: string, network: Network) => {
     const purpose = BIP32_PURPOSES[paymentType];
     const node = getBip32Node(xpub, version, network);
     const account = `${(node.index << 1) >>> 1}'`; // Unsigned to signed conversion
+    const levels = [purpose, coinType, account];
     return {
-        purpose,
-        coinType,
-        account,
+        levels,
         paymentType,
         node,
     };
 };
 
 const getDescriptorInfo = (paymentType: PaymentType, descriptor: string, network: Network) => {
-    const [_match, _script, _fingerprint, purpose, coinType, account, xpub] =
+    const [_match, _script, path, xpub] =
         descriptor.match(
-            /^([a-z]+\()+\[([a-z0-9]{8})\/([0-9]{2}'?)\/([01]'?)\/([0-9]+'?)\]([xyztuv]pub[a-zA-Z0-9]*)\/<0;1>\/\*\)+$/,
+            /^([a-z]+\()+\[([a-z0-9]{8}(?:\/[0-9]+'?){3,})\]([xyztuv]pub[a-zA-Z0-9]*)\/<0;1>\/\*\)+$/,
         ) || throwError(`Descriptor cannot be parsed: ${descriptor}`);
+    const [_fingerprint, ...levels] = path.split('/');
     const version = getVersion(xpub);
     const node = getBip32Node(xpub, version, network);
     return {
-        purpose,
-        coinType,
-        account,
+        levels,
         paymentType,
         node,
     };
@@ -129,10 +127,7 @@ export const deriveAddresses = (
     address: string;
     path: string;
 }[] => {
-    const { purpose, coinType, account, node, paymentType } = getXpubOrDescriptorInfo(
-        descriptor,
-        network,
-    );
+    const { levels, node, paymentType } = getXpubOrDescriptorInfo(descriptor, network);
     const getAddress = getPubkeyToPayment(paymentType, network);
     const change = type === 'receive' ? 0 : 1;
     const changeNode = node.derive(change);
@@ -141,6 +136,6 @@ export const deriveAddresses = (
         .map(a => getAddress(a).address || throwError('Cannot convert pubkey to address'))
         .map((address, i) => ({
             address,
-            path: `m/${purpose}/${coinType}/${account}/${change}/${from + i}`,
+            path: `m/${levels.join('/')}/${change}/${from + i}`,
         }));
 };

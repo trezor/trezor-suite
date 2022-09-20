@@ -196,5 +196,27 @@ export default {
                 'tb1ptx2kjrw4lc0h0j5eu6uz38ue82vla5s93xmz6atak50367532prsx45a7t',
             ],
         },
+        {
+            description: 'SLIP25 tpub',
+            xpubs: [
+                "tr([95d8f670/10025'/1'/0'/1']tpubDF46axmUhwLL1BUQ1Z3TPusAFsdpy3rLUGvje3pFvDVzmjRT7vjRDCB7C1TcQBwPDbCZSB5PDCjYb8gNcQcjDMhjNUFsN1fF77ZiZfJgbBL/<0;1>/*)",
+            ],
+            symbol: 'regtest',
+            pathPrefix: "m/10025'/1'/0'/1'",
+            receive: [
+                'bcrt1pkw382r3plt8vx6e22mtkejnqrxl4z7jugh3w4rjmfmgezzg0xqpsqyygjc',
+                'bcrt1pm3td8xq6tjsu8g3hm3m23jrwjcluxz3q4jz7fdn08mcsdquyf8pqprugax',
+                'bcrt1pj6n49jszr4ya00lj9pas50a86vr9nler0kvvhqc7qpgx4aetuxtswj9x5f',
+                'bcrt1pspkxgsmzwmcphjaqp86f50snj875h6ja7urxz9yjjsyy8gzg78vq5a3czc',
+                'bcrt1pst8n3cvnnl5fm5u3du0uathnzrdeqeue34jdasf7utelag6udg7qs57w8a',
+            ],
+            change: [
+                'bcrt1pupzczx9cpgyqgtvycncr2mvxscl790luqd8g88qkdt2w3kn7ymhsw5klfs',
+                'bcrt1pvt7lzserh8xd5m6mq0zu9s5wxkpe5wgf5ts56v44jhrr6578hz8sslk8pp',
+                'bcrt1pn0rgdjlnzekk3ua8l4h72fnet609lckf0lhmd0f9s4cqnzmrt8tqeetzhe',
+                'bcrt1pnxevjvqzpqdkxymu9529dwzy7df5juq85fgpqcxm2h7laufqtnzqjj9pk8',
+                'bcrt1pmqaq03uudz5j9dlrrlvf80nrrywnw009yzn76x0crlagfvrzmtqsqrjjzr',
+            ],
+        },
     ],
 };
