@@ -5,12 +5,10 @@ const fetch = require('node-fetch');
 const { test, expect } = require('@playwright/test');
 
 const { patchBinaries, launchSuite, waitForDataTestSelector } = require('../support/common');
-const { Controller } = require('@trezor/trezor-user-env-link');
-const controllerManager = require('../../../controllerManager');
+const { Controller, controllerManager } = require('@trezor/trezor-user-env-link');
 
 const controller = new Controller();
-const firmwares = {};
-const manager = controllerManager(controller, firmwares);
+const manager = controllerManager(controller);
 
 test.describe.serial('Bridge', () => {
     test.beforeAll(async () => {

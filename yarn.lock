@@ -6963,7 +6963,6 @@ __metadata:
     typescript: 4.7.4
     webpack: ^5.73.0
     ws: ^7.5.5
-    xvfb-maybe: ^0.2.1
   languageName: unknown
   linkType: soft
 
@@ -7123,6 +7122,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/suite-desktop@workspace:packages/suite-desktop"
   dependencies:
+    "@playwright/test": ^1.22.2
     "@sentry/electron": 3.0.0
     "@suite-common/suite-types": "*"
     "@suite-common/suite-utils": "*"
@@ -7131,6 +7131,7 @@ __metadata:
     "@trezor/request-manager": "*"
     "@trezor/suite-analytics": "*"
     "@trezor/suite-desktop-api": "*"
+    "@trezor/trezor-user-env-link": "*"
     "@trezor/urls": "*"
     "@trezor/utils": "*"
     "@types/electron-localshortcut": ^3.1.0
@@ -7150,6 +7151,7 @@ __metadata:
     jest: ^26.6.3
     node-fetch: ^2.6.7
     openpgp: ^5.5.0
+    playwright: ^1.22.2
     react: 17.0.2
     react-dom: 17.0.2
     react-markdown: ^8.0.3
@@ -7159,6 +7161,7 @@ __metadata:
     styled-components: ^5.3.5
     systeminformation: ^5.12.6
     typescript: 4.7.4
+    xvfb-maybe: ^0.2.1
   languageName: unknown
   linkType: soft
 
