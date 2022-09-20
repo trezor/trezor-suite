@@ -12,7 +12,7 @@ services:
     ipc: host
     network_mode: service:trezor-user-env-unix
     working_dir: /trezor-suite
-    command: bash -c "yarn workspace @trezor/integration-tests test:desktop"
+    command: bash -c "yarn workspace @trezor/suite-desktop test:e2e"
     volumes:
       - ../:/trezor-suite
 
