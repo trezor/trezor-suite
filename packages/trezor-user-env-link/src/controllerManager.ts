@@ -1,11 +1,11 @@
-module.exports = (controller, firmwares) => ({
+export const controllerManager = (controller: any) => ({
     /**
      * @version
      * version of firmware in emulator, only few are supported
      * @wipe
      * shall be emulator wiped before start? defaults to true
      */
-    setupEmu: async options => {
+    setupEmu: async (options: any) => {
         const defaults = {
             // some random empty seed. most of the test don't need any account history so it is better not to slow them down with all all seed
             mnemonic:
@@ -28,30 +28,29 @@ module.exports = (controller, firmwares) => ({
         await controller.send({ type: 'bridge-start' });
         return null;
     },
-    sendToAddressAndMineBlock: async options => {
+    sendToAddressAndMineBlock: async (options: any) => {
         await controller.send({
             type: 'regtest-send-to-address',
             ...options,
         });
         return null;
     },
-    mineBlocks: async options => {
+    mineBlocks: async (options: any) => {
         await controller.send({
             type: 'regtest-mine-blocks',
             ...options,
         });
         return null;
     },
-    startBridge: async version => {
-        console.log('startBridge');
+    startBridge: async (version: number) => {
         await controller.send({ type: 'bridge-start', version });
         return null;
     },
     stopBridge: async () => {
-        const response = await controller.send({ type: 'bridge-stop' });
+        await controller.send({ type: 'bridge-stop' });
         return null;
     },
-    startEmu: async arg => {
+    startEmu: async (arg: any) => {
         const params = {
             type: 'emulator-start',
             version: process.env.FIRMWARE || '2-latest',
@@ -76,19 +75,19 @@ module.exports = (controller, firmwares) => ({
         await controller.send({ type: 'emulator-press-no' });
         return null;
     },
-    swipeEmu: async direction => {
+    swipeEmu: async (direction: string) => {
         await controller.send({ type: 'emulator-swipe', direction });
         return null;
     },
-    inputEmu: async value => {
+    inputEmu: async (value: any) => {
         await controller.send({ type: 'emulator-input', value });
         return null;
     },
-    clickEmu: async options => {
+    clickEmu: async (options: any) => {
         await controller.send({ type: 'emulator-click', ...options });
         return null;
     },
-    resetDevice: async options => {
+    resetDevice: async (options: any) => {
         await controller.send({ type: 'emulator-reset-device', ...options });
         return null;
     },
@@ -96,34 +95,30 @@ module.exports = (controller, firmwares) => ({
         await controller.send({ type: 'emulator-read-and-confirm-mnemonic' });
         return null;
     },
-    readAndConfirmShamirMnemonicEmu: async options => {
+    readAndConfirmShamirMnemonicEmu: async (options: any) => {
         await controller.send({
             type: 'emulator-read-and-confirm-shamir-mnemonic',
             ...options,
         });
         return null;
     },
-    applySettings: async options => {
+    applySettings: async (options: any) => {
         await controller.send({
             type: 'emulator-apply-settings',
             ...options,
         });
         return null;
     },
-    selectNumOfWordsEmu: async num => {
+    selectNumOfWordsEmu: async (num: number) => {
         await controller.send({ type: 'emulator-select-num-of-words', num });
         return null;
     },
-    logTestDetails: async text => {
+    logTestDetails: async (text: string) => {
         await controller.send({ type: 'log', text });
         return null;
     },
     trezorUserEnvConnect: async () => {
         await controller.connect();
-
-        controller.on('firmwares', data => {
-            firmwares = data;
-        });
 
         return null;
     },
