@@ -12,6 +12,7 @@ const IsSameDevice = () => {
             description={
                 <>
                     <Translation id="ONBOARDING_UNEXPECTED_DEVICE_DIFFERENT_P1" />
+                    &nbsp;
                     <Translation id="ONBOARDING_UNEXPECTED_DEVICE_DIFFERENT_P2" />
                 </>
             }

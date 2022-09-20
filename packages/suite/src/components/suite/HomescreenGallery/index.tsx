@@ -78,7 +78,7 @@ const HomescreenGallery = ({ device, onConfirm }: Props) => {
                                     },
                                 });
                             }}
-                            src={resolveStaticPath(`images/png/homescreens/t1/${image}.png`)}
+                            src={resolveStaticPath(`images/homescreens/t1/${image}.png`)}
                         />
                     ))}
                 </BackgroundGalleryWrapper>
@@ -100,7 +100,7 @@ const HomescreenGallery = ({ device, onConfirm }: Props) => {
                                     },
                                 });
                             }}
-                            src={resolveStaticPath(`images/png/homescreens/t2/${image}.png`)}
+                            src={resolveStaticPath(`images/homescreens/t2/${image}.png`)}
                         />
                     ))}
                 </BackgroundGalleryWrapper>

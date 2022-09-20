@@ -6,7 +6,7 @@ const config = {
     'suite-desktop': ['bin', 'fonts', 'images', 'message-system', 'videos'],
     'suite-native': ['fonts', 'images', 'message-system', 'videos'],
     'suite-web': ['browser-detection', 'fonts', 'images', 'message-system', 'oauth', 'videos'],
-    'suite-web-landing': ['fonts', 'images/icons/favicon', 'images/suite-web-landing'],
+    'suite-web-landing': ['fonts', 'images/favicons', 'images/suite-web-landing'],
 };
 
 Object.entries(config).forEach(([project, paths]) => {

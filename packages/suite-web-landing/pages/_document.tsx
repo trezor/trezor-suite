@@ -53,10 +53,10 @@ export default class MyDocument extends Document {
                         rel="stylesheet"
                         href={resolveStaticPath('fonts/fonts.css')}
                     />
-                    <link rel="icon" href={resolveStaticPath('images/icons/favicon/favicon.png')} />
+                    <link rel="icon" href={resolveStaticPath('images/favicons/favicon.png')} />
                     <link
                         rel="apple-touch-icon"
-                        href={resolveStaticPath('images/icons/favicon/favicon.png')}
+                        href={resolveStaticPath('images/favicons/favicon.png')}
                     />
                 </Head>
                 <body style={{ height: '100%' }}>

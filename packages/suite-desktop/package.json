@@ -66,8 +66,8 @@
         ],
         "extraResources": [
             {
-                "from": "build/static/images/icons/512x512.png",
-                "to": "images/icons/512x512.png"
+                "from": "build/static/images/desktop/512x512.png",
+                "to": "images/desktop/512x512.png"
             },
             {
                 "from": "build/static/bin/firmware",
@@ -109,7 +109,7 @@
                     "type": "file"
                 }
             ],
-            "background": "build/static/images/icons/background.tiff"
+            "background": "build/static/images/desktop/background.tiff"
         },
         "nsis": {
             "oneClick": false
@@ -135,7 +135,7 @@
                 "ja",
                 "ru"
             ],
-            "icon": "build/static/images/icons/512x512.icns",
+            "icon": "build/static/images/desktop/512x512.icns",
             "artifactName": "Trezor-Suite-${version}-mac-${arch}.${ext}",
             "hardenedRuntime": true,
             "gatekeeperAssess": false,
@@ -158,7 +158,7 @@
                     "to": "bin/tor"
                 }
             ],
-            "icon": "build/static/images/icons/512x512.png",
+            "icon": "build/static/images/desktop/512x512.png",
             "artifactName": "Trezor-Suite-${version}-win-${arch}.${ext}",
             "target": [
                 "nsis"
@@ -180,7 +180,7 @@
                     "to": "bin/udev"
                 }
             ],
-            "icon": "build/static/images/icons/512x512.png",
+            "icon": "build/static/images/desktop/512x512.png",
             "artifactName": "Trezor-Suite-${version}-linux-${arch}.${ext}",
             "executableName": "trezor-suite",
             "category": "Utility",
