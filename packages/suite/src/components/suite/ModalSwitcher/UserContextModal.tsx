@@ -28,6 +28,8 @@ import {
     AddToken,
     SafetyChecks,
     DisableTor,
+    RequestEnableTor,
+    TorLoading,
 } from '@suite-components/modals';
 
 import type { AcquiredDevice } from '@suite-types';
@@ -144,6 +146,10 @@ export const UserContextModal = ({
             return <SafetyChecks onCancel={onCancel} />;
         case 'disable-tor':
             return <DisableTor decision={payload.decision} onCancel={onCancel} />;
+        case 'request-enable-tor':
+            return <RequestEnableTor decision={payload.decision} onCancel={onCancel} />;
+        case 'tor-loading':
+            return <TorLoading decision={payload.decision} onCancel={onCancel} />;
         default:
             return null;
     }

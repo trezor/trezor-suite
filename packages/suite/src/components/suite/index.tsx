@@ -49,6 +49,7 @@ import StatusLight from './StatusLight';
 import { AmountUnitSwitchWrapper } from './AmountUnitSwitchWrapper';
 import { renderToast } from './ToastNotification';
 import { SuiteLayout } from './SuiteLayout';
+import { TorLoader } from './TorLoader';
 
 export {
     DeviceIcon,
@@ -105,5 +106,6 @@ export {
     StatusLight,
     AmountUnitSwitchWrapper,
     renderToast,
+    TorLoader,
 };
 export type { ModalProps };
