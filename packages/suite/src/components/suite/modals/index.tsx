@@ -33,3 +33,5 @@ export { AdvancedCoinSettings } from './AdvancedCoinSettings';
 export { AddToken } from './AddToken';
 export { SafetyChecks } from './SafetyChecks';
 export { DisableTor } from './DisableTor';
+export { RequestEnableTor } from './RequestEnableTor';
+export { TorLoading } from './TorLoading';

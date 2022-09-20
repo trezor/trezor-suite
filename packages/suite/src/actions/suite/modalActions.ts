@@ -128,6 +128,14 @@ export type UserContextPayload =
     | {
           type: 'disable-tor';
           decision: Deferred<boolean>;
+      }
+    | {
+          type: 'request-enable-tor';
+          decision: Deferred<boolean>;
+      }
+    | {
+          type: 'tor-loading';
+          decision: Deferred<boolean>;
       };
 
 export type ModalAction =
@@ -210,6 +218,8 @@ type DeferredModals = Extract<
         type:
             | 'qr-reader'
             | 'disable-tor'
+            | 'request-enable-tor'
+            | 'tor-loading'
             | 'review-transaction'
             | 'import-transaction'
             | 'coinmarket-buy-terms'
