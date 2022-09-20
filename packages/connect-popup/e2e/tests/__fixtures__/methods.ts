@@ -71,11 +71,11 @@ const getAddress = [
         views: [
             confirmExportAddressScreen,
             {
-                selector: 'input.pass >> visible=true',
+                selector: '[data-test="@passphrase/enter-on-device-button"]',
                 screenshot: {
                     name: 'passhprase-screen',
                 },
-                next: 'button.cancel.passphraseOnDevice >> visible=true',
+                next: '[data-test="@passphrase/enter-on-device-button"]',
             },
             {
                 selector: '.passphrase-on-device >> visible=true',
