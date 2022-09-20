@@ -11,7 +11,7 @@ export const CoinjoinSetup = ({ account }: CoinjoinSetupProps) => {
     const [setupStep, setSetupStep] = useState(0);
 
     if (setupStep === 0) {
-        return <AccountSummarySection onAnonimize={() => setSetupStep(1)} />;
+        return <AccountSummarySection onAnonymize={() => setSetupStep(1)} />;
     }
 
     return <CoinjoinSetupStrategies account={account} />;

@@ -6886,7 +6886,7 @@ export default defineMessages({
     },
     TR_ANONYMIZING: {
         id: 'TR_ANONYMIZING',
-        defaultMessage: 'Anonimyzing',
+        defaultMessage: 'Anonymizing',
     },
 
     TR_COINS_ANONYMITY: {
@@ -6895,7 +6895,7 @@ export default defineMessages({
     },
     TR_COINS_ANONYMITY_TOOLTIP: {
         id: 'TR_COINS_ANONYMITY_TOOLTIP',
-        defaultMessage: 'very big anonimity',
+        defaultMessage: 'very big anonymity',
     },
     TR_NOT_PRIVATE: {
         id: 'TR_NOT_PRIVATE',
