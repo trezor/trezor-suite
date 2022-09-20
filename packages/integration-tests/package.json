@@ -5,7 +5,6 @@
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "wait-for-env": "tsx ./wait-for-env.ts",
-        "test:desktop": "tsx ./wait-for-env.ts && DEBUG=pw:browser yarn xvfb-maybe playwright test --config=./projects/suite-desktop/playwright.config.ts",
         "test:connect:node": "TESTS_FIRMWARE=$(tsx ./wait-for-env.ts) yarn jest --runInBand --verbose -c projects/connect/jest.config.js",
         "test:connect:web": "TESTS_FIRMWARE=$(tsx ./wait-for-env.ts) yarn karma start projects/connect/karma.config.js",
         "test:connect:webextension": "node ./projects/connect-webextension/test.js"
@@ -40,7 +39,6 @@
         "playwright": "^1.22.2",
         "tsx": "^3.8.2",
         "typescript": "4.7.4",
-        "ws": "^7.5.5",
-        "xvfb-maybe": "^0.2.1"
+        "ws": "^7.5.5"
     }
 }

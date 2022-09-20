@@ -16,10 +16,10 @@ module.exports.launchSuite = async () => {
 };
 
 module.exports.patchBinaries = async () => {
-    const binResourcesPathFrom = path.join(__dirname, '../../../..', 'suite-data/files/bin');
+    const binResourcesPathFrom = path.join(__dirname, '../../..', 'suite-data/files/bin');
     const binResourcesPathTo = path.join(
         __dirname,
-        '../../../../..',
+        '../../../..',
         '/node_modules/electron/dist/resources/bin',
     );
 

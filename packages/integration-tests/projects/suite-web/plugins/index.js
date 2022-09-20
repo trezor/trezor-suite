@@ -5,8 +5,7 @@ import CDP from 'chrome-remote-interface';
 import fs from 'fs';
 import path from 'path';
 import { addMatchImageSnapshotPlugin } from 'cypress-image-snapshot/plugin';
-import { Controller } from '@trezor/trezor-user-env-link';
-import controllerManager from '../../../controllerManager';
+import { Controller, controllerManager } from '@trezor/trezor-user-env-link';
 import googleMock from './google';
 import dropboxMock from './dropbox';
 import bridgeMock from './bridge';
@@ -34,9 +33,8 @@ let port = 0;
 let client = null;
 
 const controller = new Controller();
-const firmwares = {};
 
-const manager = controllerManager(controller, firmwares);
+const manager = controllerManager(controller);
 
 module.exports = on => {
     // make ts possible start

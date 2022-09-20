@@ -5,13 +5,11 @@ const rmdir = promisify(require('fs').rmdir);
 const fetch = require('node-fetch');
 const { test, expect } = require('@playwright/test');
 
-const { Controller } = require('@trezor/trezor-user-env-link');
-const controllerManager = require('../../../controllerManager');
+const { Controller, controllerManager } = require('@trezor/trezor-user-env-link');
 const { patchBinaries, launchSuite, waitForDataTestSelector } = require('../support/common');
 
 const controller = new Controller();
-const firmwares = {};
-const manager = controllerManager(controller, firmwares);
+const manager = controllerManager(controller);
 
 const clickDataTest = (window, selector) => window.click(`[data-test="${selector}"]`);
 
