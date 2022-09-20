@@ -110,6 +110,9 @@ connect v9 rollback production:
       - release/connect-v9
   when: manual
   before_script: []
+  needs:
+    - connect-web build
+    - connect-explorer build
   script:
     - source ${CONNECT_DEPLOY_KEYFILE}
     - aws s3 sync s3://connect.trezor.io s3://rollback-connect.trezor.io
@@ -124,6 +127,9 @@ connect v9 deploy production:
       - release/connect-v9
   when: manual
   dependencies:
+    - connect-web build
+    - connect-explorer build
+  needs:
     - connect-web build
     - connect-explorer build
   before_script: []
