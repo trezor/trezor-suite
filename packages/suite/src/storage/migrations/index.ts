@@ -569,7 +569,7 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
                           deposit: unformatIfDefined(origTx.cardanoSpecific.deposit),
                       }
                     : undefined,
-                details: {
+                details: origTx.details && {
                     ...origTx.details,
                     vin: origTx.details.vin.map(v => ({
                         ...v,
