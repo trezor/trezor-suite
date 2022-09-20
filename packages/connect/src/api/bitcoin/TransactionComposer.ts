@@ -58,12 +58,13 @@ export class TransactionComposer {
             // exclude amounts lower than dust limit if they are NOT required
             if (!u.required && new BigNumber(u.amount).lte(this.coinInfo.dustLimit)) return [];
             const addressPath = getHDPath(u.path);
+            const [chain, index] = addressPath.slice(addressPath.length - 2);
 
             return {
                 index: u.vout,
                 transactionHash: u.txid,
                 value: u.amount,
-                addressPath: [addressPath[3], addressPath[4]],
+                addressPath: [chain, index],
                 height: u.blockHeight,
                 tsize: 0, // doesn't matter
                 vsize: 0, // doesn't matter
