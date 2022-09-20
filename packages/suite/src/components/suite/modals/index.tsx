@@ -13,6 +13,7 @@ export { CoinmarketSavingsTerms } from './confirm/CoinmarketSavingsTerms';
 export { CoinmarketExchangeTerms } from './confirm/CoinmarketExchangeTerms';
 export { CoinmarketExchangeDexTerms } from './confirm/CoinmarketExchangeDexTerms';
 export { CoinmarketLeaveSpend } from './confirm/CoinmarketLeaveSpend';
+export { CoinmarketP2pTerms } from './confirm/CoinmarketP2pTerms';
 export { Word } from './Word';
 export { WordAdvanced } from './WordAdvanced';
 export { ConfirmAddress } from './confirm/Address';

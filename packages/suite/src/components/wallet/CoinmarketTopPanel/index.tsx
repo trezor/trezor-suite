@@ -95,3 +95,5 @@ export const CoinmarketExchangeTopPanel = () => (
 export const CoinmarketSellTopPanel = () => (
     <CoinmarketTopPanel backRoute="wallet-coinmarket-sell" />
 );
+
+export const CoinmarketP2pTopPanel = () => <CoinmarketTopPanel backRoute="wallet-coinmarket-p2p" />;

@@ -16,6 +16,7 @@ import {
     CoinmarketBuyTopPanel,
     CoinmarketExchangeTopPanel,
     CoinmarketSellTopPanel,
+    CoinmarketP2pTopPanel,
 } from './CoinmarketTopPanel';
 import CoinmarketProvidedByInvity from './CoinmarketProvidedByInvity';
 import CoinmarketPaymentType from './CoinmarketPaymentType';
@@ -48,6 +49,7 @@ export {
     CoinmarketBuyTopPanel,
     CoinmarketSellTopPanel,
     CoinmarketExchangeTopPanel,
+    CoinmarketP2pTopPanel,
     CoinmarketFooter,
     CoinmarketProviderInfo,
     CoinmarketBuyOfferInfo,

@@ -58,6 +58,7 @@ export const getEnvironment = (): EnvironmentType => {
 export const submitRequestForm = async (
     formMethod: 'GET' | 'POST' | 'IFRAME',
     formAction: string,
+    formTarget: '_blank' | '_self',
     fields: {
         [key: string]: string;
     },
@@ -66,7 +67,7 @@ export const submitRequestForm = async (
     if (formMethod === 'IFRAME') return;
 
     if (formMethod === 'GET' && formAction) {
-        window.open(formAction, isDesktop() ? '_blank' : '_self');
+        window.open(formAction, isDesktop() ? '_blank' : formTarget);
         return;
     }
 

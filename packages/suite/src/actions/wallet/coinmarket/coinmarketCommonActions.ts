@@ -174,6 +174,7 @@ export const submitRequestForm =
     (form?: {
         formMethod: 'GET' | 'POST' | 'IFRAME';
         formAction: string;
+        formTarget?: '_blank' | '_self';
         fields: {
             [key: string]: string;
         };
@@ -184,7 +185,12 @@ export const submitRequestForm =
             dispatch(suiteActions.toggleRememberDevice(device, true));
         }
         if (form) {
-            envSubmitRequestForm(form.formMethod, form.formAction, form.fields);
+            envSubmitRequestForm(
+                form.formMethod,
+                form.formAction,
+                form.formTarget || '_self',
+                form.fields,
+            );
         }
     };
 

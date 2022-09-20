@@ -7,6 +7,7 @@ import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketC
 import * as coinmarketBuyActions from '@wallet-actions/coinmarketBuyActions';
 import * as coinmarketExchangeActions from '@wallet-actions/coinmarketExchangeActions';
 import * as coinmarketSellActions from '@wallet-actions/coinmarketSellActions';
+import * as coinmarketP2pActions from '@wallet-actions/coinmarketP2pActions';
 import * as coinmarketSavingsActions from '@wallet-actions/coinmarketSavingsActions';
 
 const coinmarketMiddleware =
@@ -19,6 +20,7 @@ const coinmarketMiddleware =
             const { buyInfo } = api.getState().wallet.coinmarket.buy;
             const { exchangeCoinInfo, exchangeInfo } = api.getState().wallet.coinmarket.exchange;
             const { sellInfo } = api.getState().wallet.coinmarket.sell;
+            const { p2pInfo } = api.getState().wallet.coinmarket.p2p;
             const { savingsInfo } = api.getState().wallet.coinmarket.savings;
 
             const currentAccountDescriptor = invityAPI.getCurrentAccountDescriptor();
@@ -71,6 +73,14 @@ const coinmarketMiddleware =
                     loadPromises.push(
                         coinmarketSellActions.loadSellInfo().then(sellInfo => {
                             api.dispatch(coinmarketSellActions.saveSellInfo(sellInfo));
+                        }),
+                    );
+                }
+
+                if (isDifferentAccount || !p2pInfo) {
+                    loadPromises.push(
+                        coinmarketP2pActions.loadP2pInfo().then(p2pInfo => {
+                            api.dispatch(coinmarketP2pActions.saveP2pInfo(p2pInfo));
                         }),
                     );
                 }

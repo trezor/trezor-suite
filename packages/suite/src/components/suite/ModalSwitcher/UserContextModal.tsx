@@ -11,6 +11,7 @@ import {
     CoinmarketExchangeTerms,
     CoinmarketExchangeDexTerms,
     CoinmarketLeaveSpend,
+    CoinmarketP2pTerms,
     ConfirmAddress,
     ConfirmXpub,
     ReviewTransaction,
@@ -106,6 +107,14 @@ export const UserContextModal = ({
         case 'coinmarket-exchange-dex-terms':
             return (
                 <CoinmarketExchangeDexTerms
+                    provider={payload.provider}
+                    onCancel={onCancel}
+                    decision={payload.decision}
+                />
+            );
+        case 'coinmarket-p2p-terms':
+            return (
+                <CoinmarketP2pTerms
                     provider={payload.provider}
                     onCancel={onCancel}
                     decision={payload.decision}
