@@ -67,7 +67,7 @@ export const SettingsGeneral = () => {
             {desktopUpdate.enabled && (
                 <SettingsSection
                     title={<Translation id="TR_EXPERIMENTAL_FEATURES" />}
-                    icon="SPARKLE"
+                    icon="EXPERIMENTAL"
                 >
                     <EarlyAccess />
                 </SettingsSection>

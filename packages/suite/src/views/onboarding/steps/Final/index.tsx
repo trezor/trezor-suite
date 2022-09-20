@@ -169,7 +169,7 @@ export const FinalStep = () => {
                         <SetupActions>
                             <Option onClick={() => setState('rename')}>
                                 <OptionIconWrapper>
-                                    <Icon size={16} icon="SIGN" />
+                                    <Icon size={16} icon="PENCIL" />
                                 </OptionIconWrapper>
                                 <OptionText>
                                     <Translation id="TR_DEVICE_SETTINGS_DEVICE_EDIT_LABEL" />

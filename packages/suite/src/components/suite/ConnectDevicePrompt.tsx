@@ -113,9 +113,7 @@ export const ConnectDevicePrompt = ({
                         <Icon icon="CHECK_ACTIVE" size={24} color={theme.TYPE_GREEN} />
                     )}
 
-                    {showWarning && (
-                        <Icon icon="WARNING_ACTIVE" size={24} color={theme.TYPE_ORANGE} />
-                    )}
+                    {showWarning && <Icon icon="WARNING" size={24} color={theme.TYPE_ORANGE} />}
                 </Checkmark>
             </ImageWrapper>
 

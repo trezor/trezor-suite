@@ -113,7 +113,7 @@ const WordInputAdvanced = (props: Props) => {
                                 <Translation id="TR_LEARN_ADVANCED_RECOVERY" />
                             </TrezorLink>
                         ),
-                        icon: 'INFO_ACTIVE',
+                        icon: 'INFO',
                     },
                 ]}
             />

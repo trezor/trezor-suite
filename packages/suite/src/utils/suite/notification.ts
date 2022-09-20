@@ -13,11 +13,11 @@ export const findTransactionEvents = (descriptor: string, notifications: Notific
 export const getNotificationIcon = (variant: ToastNotificationVariant) => {
     switch (variant) {
         case 'info':
-            return 'INFO_ACTIVE';
+            return 'INFO';
         case 'warning':
-            return 'WARNING_ACTIVE';
+            return 'WARNING';
         case 'error':
-            return 'WARNING_ACTIVE';
+            return 'WARNING';
         case 'success':
             return 'CHECK';
         // no default
