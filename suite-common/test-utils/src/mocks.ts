@@ -367,6 +367,12 @@ const getTrezorConnect = <M>(methods?: M) => {
                 ...getFixture(),
                 _params,
             })),
+            unlockPath: jest.fn(async _params => ({
+                success: true,
+                payload: { address_n: [2147493673], mac: '0MaC' },
+                ...getFixture(),
+                _params,
+            })),
             changePin: () => ({
                 success: true,
                 payload: {

@@ -33,6 +33,7 @@ export interface Discovery {
 export interface DiscoveryItem {
     // @trezor/connect
     path: string;
+    unlockPath?: Account['unlockPath'];
     coin: Account['symbol'];
     details?: 'basic' | 'tokens' | 'tokenBalances' | 'txids' | 'txs';
     pageSize?: number;

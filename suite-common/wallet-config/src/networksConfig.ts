@@ -266,7 +266,7 @@ export const networks = {
         accountTypes: {
             coinjoin: {
                 name: 'Bitcoin Regtest (PEA)',
-                bip43Path: "m/10025'/1'/i'",
+                bip43Path: "m/10025'/1'/i'/1'", // https://github.com/satoshilabs/slips/blob/master/slip-0025.md#public-key-derivation
                 backendType: 'coinjoin', // use non-standard backend
                 features: [], // no rbf, no sign-verify
             },

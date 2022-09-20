@@ -91,6 +91,7 @@ export const showAddress =
         const params = {
             device,
             path,
+            unlockPath: account.unlockPath,
             useEmptyPassphrase: device.useEmptyPassphrase,
             coin: account.symbol,
         };
