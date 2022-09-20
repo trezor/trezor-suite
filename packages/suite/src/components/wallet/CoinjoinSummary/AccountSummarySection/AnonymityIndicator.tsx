@@ -16,12 +16,6 @@ const Container = styled.div`
     text-align: right;
 `;
 
-const UsersIcon = styled(Icon)`
-    path {
-        fill: none;
-    }
-`;
-
 const AnonymityStatus = styled.p`
     color: ${({ theme }) => theme.TYPE_GREEN};
     font-size: ${variables.FONT_SIZE.TINY};
@@ -37,7 +31,7 @@ export const AnonymityIndicator = () => {
 
     return (
         <Container>
-            <UsersIcon icon="USERS" />
+            <Icon icon="USERS" />
 
             <div>
                 <p>{`1 in ${anomymityLevel}`}</p>

@@ -9,14 +9,14 @@ const Container = styled.div`
 `;
 
 interface AccountSummaryProps {
-    onAnonimize: () => void;
+    onAnonymize: () => void;
 }
 
-export const AccountSummarySection = ({ onAnonimize }: AccountSummaryProps) => (
+export const AccountSummarySection = ({ onAnonymize }: AccountSummaryProps) => (
     <Container>
         <AccountSummaryHeader />
 
-        <BalanceSection onAnonimize={onAnonimize} />
+        <BalanceSection onAnonymize={onAnonymize} />
 
         <AnonymityChart />
     </Container>

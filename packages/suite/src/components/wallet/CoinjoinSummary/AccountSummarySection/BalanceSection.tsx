@@ -20,10 +20,10 @@ const AnonymizeButton = styled(Button)`
 `;
 
 interface BalanceSectionProps {
-    onAnonimize: () => void; // TEMPORARY
+    onAnonymize: () => void; // TEMPORARY
 }
 
-export const BalanceSection = ({ onAnonimize }: BalanceSectionProps) => {
+export const BalanceSection = ({ onAnonymize }: BalanceSectionProps) => {
     const isSessionActive = false;
 
     return (
@@ -33,7 +33,7 @@ export const BalanceSection = ({ onAnonimize }: BalanceSectionProps) => {
             {isSessionActive ? (
                 <Translation id="TR_ANONYMIZING" />
             ) : (
-                <AnonymizeButton onClick={onAnonimize} icon="ARROW_RIGHT_LONG" alignIcon="right">
+                <AnonymizeButton onClick={onAnonymize} icon="ARROW_RIGHT_LONG" alignIcon="right">
                     <Translation id="TR_ANONYMIZE" />
                 </AnonymizeButton>
             )}
