@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Translation } from '@suite-components';
-import { resolveStaticPath } from '@trezor/utils';
 import { SavingsKYCCard } from '@wallet-views/coinmarket';
+import { Image } from '@trezor/components';
 
 const StyledCard = styled(SavingsKYCCard)`
     background: rgba(239, 65, 65, 0.1);
@@ -29,7 +29,7 @@ interface Props {
 const KYCFailed = ({ providerName }: Props) => (
     <StyledCard>
         <Icon>
-            <img src={resolveStaticPath('images/svg/warning.svg')} alt="" />
+            <Image image="WARNING" />
         </Icon>
         <Text>
             <Header>

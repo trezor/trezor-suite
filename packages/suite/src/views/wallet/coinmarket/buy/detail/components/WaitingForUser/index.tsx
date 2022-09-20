@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { resolveStaticPath } from '@trezor/utils';
-import { Button, variables } from '@trezor/components';
+import { Button, variables, Image } from '@trezor/components';
 import { Translation } from '@suite-components/Translation';
 import { BuyTrade, BuyTradeStatus } from 'invity-api';
 import { Account } from '@wallet-types';
@@ -17,8 +16,6 @@ const Wrapper = styled.div`
     padding: 60px 20px 60px 20px;
     flex-direction: column;
 `;
-
-const Image = styled.img``;
 
 const Title = styled.div`
     margin-top: 25px;
@@ -85,7 +82,7 @@ const WaitingForUser = ({ trade, account, providerName }: Props) => {
 
     return (
         <Wrapper>
-            <Image src={resolveStaticPath('/images/svg/coinmarket-waiting.svg')} />
+            <Image image="COINMARKET_WAITING" />
             <Title>
                 <Translation id={translations.titleTranslationId} />
             </Title>

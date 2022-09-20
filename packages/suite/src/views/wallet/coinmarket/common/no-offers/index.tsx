@@ -53,7 +53,7 @@ const NoOffers = ({
 }: Props) => (
     <NoOffersWrapper>
         <NoOffersImage>
-            <Image image="NO_TRANSACTION" />
+            <Image image="CLOUDY" />
         </NoOffersImage>
         <NoOffersHeader>
             <Translation id="TR_COINMARKET_NO_OFFERS_HEADER" />

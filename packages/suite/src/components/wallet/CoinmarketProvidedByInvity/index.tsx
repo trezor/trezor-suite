@@ -2,18 +2,13 @@ import React from 'react';
 import styled from 'styled-components';
 import { Translation } from '@suite-components';
 import { INVITY_URL } from '@trezor/urls';
-import { resolveStaticPath } from '@trezor/utils';
-import { variables, Link } from '@trezor/components';
+import { variables, Link, Image } from '@trezor/components';
 
 const Wrapper = styled.div`
     display: flex;
     align-items: center;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     color: ${props => props.theme.TYPE_LIGHT_GREY};
-`;
-
-const Image = styled.img`
-    width: 70px;
 `;
 
 const StyledLink = styled(Link)`
@@ -27,7 +22,7 @@ const CoinmarketProvidedByInvity = () => (
     <Wrapper>
         <Translation id="TR_BUY_PROVIDED_BY_INVITY" />
         <StyledLink href={INVITY_URL} target="_blank">
-            <Image src={resolveStaticPath('/images/svg/invity-logo.svg')} />
+            <Image width={70} image="INVITY_LOGO" />
         </StyledLink>
     </Wrapper>
 );
