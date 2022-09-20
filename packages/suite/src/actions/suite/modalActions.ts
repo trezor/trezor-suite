@@ -95,6 +95,11 @@ export type UserContextPayload =
           decision: Deferred<boolean>;
       }
     | {
+          type: 'coinmarket-p2p-terms';
+          provider?: string;
+          decision: Deferred<boolean>;
+      }
+    | {
           type: 'application-log';
       }
     | {
@@ -211,6 +216,7 @@ type DeferredModals = Extract<
             | 'coinmarket-sell-terms'
             | 'coinmarket-exchange-dex-terms'
             | 'coinmarket-exchange-terms'
+            | 'coinmarket-p2p-terms'
             | 'coinmarket-savings-terms';
     }
 >;

@@ -14,6 +14,7 @@ export const SVG_IMAGES = {
     EARLY_ACCESS: 'early-access.svg',
     EARLY_ACCESS_DISABLE: 'early-access-disable.svg',
     INVITY_LOGO: 'invity-logo.svg',
+    COINMARKET_AVATAR: 'coinmarket-avatar.svg',
     COINMARKET_SUCCESS: 'coinmarket-success.svg',
     COINMARKET_WAITING: 'coinmarket-waiting.svg',
     WARNING: 'warning.svg',

@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import { variables } from '@trezor/components';
 import * as routerActions from '@suite-actions/routerActions';
 import { useSelector, useActions } from '@suite-hooks';
 import { WalletLayoutNavigation, WalletLayoutNavLink } from '@wallet-components';
@@ -10,9 +9,7 @@ import { Translation } from '@suite-components';
 const SavingsWalletLayoutNavLinkWrapper = styled.div`
     display: flex;
     margin-left: auto;
-    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
-        margin-left: 30px;
-    }
+    padding-left: 42px;
 `;
 
 const Navigation = () => {
@@ -23,15 +20,17 @@ const Navigation = () => {
         { route: 'wallet-coinmarket-spend', title: 'TR_NAV_SPEND' },
     ] as const;
 
-    const { routeName, account, savingsProviders } = useSelector(state => ({
+    const { routeName, account, p2pSupportedCoins, savingsProviders } = useSelector(state => ({
         routeName: state.router.route?.name,
         account: state.wallet.selectedAccount?.account,
+        p2pSupportedCoins: state.wallet.coinmarket.p2p.p2pInfo?.supportedCoins,
         savingsProviders: state.wallet.coinmarket.savings.savingsInfo?.savingsList?.providers,
     }));
     const { goto } = useActions({
         goto: routerActions.goto,
     });
 
+    const showP2pTab = account && p2pSupportedCoins && p2pSupportedCoins.has(account.symbol);
     const showSavingsTab =
         account &&
         savingsProviders &&
@@ -40,6 +39,8 @@ const Navigation = () => {
                 savingsProvider.isActive &&
                 savingsProvider.tradedCoins.includes(account.symbol.toUpperCase()),
         );
+
+    const p2pRoute = 'wallet-coinmarket-p2p';
 
     return (
         <WalletLayoutNavigation>
@@ -52,6 +53,14 @@ const Navigation = () => {
                         onClick={() => goto(route, { preserveParams: true })}
                     />
                 ))}
+                {showP2pTab && (
+                    <WalletLayoutNavLink
+                        key={p2pRoute}
+                        title="TR_NAV_P2P"
+                        active={routeName === p2pRoute}
+                        onClick={() => goto(p2pRoute, { preserveParams: true })}
+                    />
+                )}
                 {showSavingsTab && (
                     <SavingsWalletLayoutNavLinkWrapper>
                         <WalletLayoutNavLink

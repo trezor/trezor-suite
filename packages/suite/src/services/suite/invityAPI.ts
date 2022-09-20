@@ -27,6 +27,11 @@ import {
     SellFiatTradeRequest,
     SellFiatTradeResponse,
     WatchSellTradeResponse,
+    P2pListResponse,
+    P2pQuotesRequest,
+    P2pQuotesResponse,
+    P2pTradeRequest,
+    P2pTradeResponse,
     InitSavingsTradeRequest,
     SavingsListResponse,
     SavingsKYCStatus,
@@ -92,6 +97,10 @@ class InvityAPI {
     private SELL_FIAT_DO_TRADE = '/api/sell/fiat/trade';
     private SELL_FIAT_CONFIRM = '/api/sell/fiat/confirm';
     private SELL_FIAT_WATCH_TRADE = '/api/sell/fiat/watch/{{counter}}';
+
+    private P2P_LIST = '/api/p2p/list';
+    private P2P_QUOTES = '/api/p2p/quotes';
+    private P2P_TRADE = '/api/p2p/trade';
 
     private SAVINGS_LIST = '/api/savings/list';
     private SAVINGS_INIT = '/api/savings/trezor/init';
@@ -442,6 +451,30 @@ class InvityAPI {
         } catch (error) {
             console.log('[watchSellFiatTrade]', error);
             return { error: error.toString() };
+        }
+    };
+
+    getP2pList = async (): Promise<P2pListResponse | undefined> => {
+        try {
+            return await this.request(this.P2P_LIST, {}, 'GET');
+        } catch (error) {
+            console.log('[getP2pList]', error);
+        }
+    };
+
+    getP2pQuotes = async (request: P2pQuotesRequest): Promise<P2pQuotesResponse | undefined> => {
+        try {
+            return await this.request(this.P2P_QUOTES, request, 'POST');
+        } catch (error) {
+            console.log('[getP2pQuotes]', error);
+        }
+    };
+
+    doP2pTrade = async (request: P2pTradeRequest): Promise<P2pTradeResponse | undefined> => {
+        try {
+            return await this.request(this.P2P_TRADE, request, 'POST');
+        } catch (error) {
+            console.log('[doP2pTrade]', error);
         }
     };
 

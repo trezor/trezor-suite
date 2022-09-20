@@ -19,7 +19,6 @@ const Bg = styled.div`
 const IconWrapper = styled.div`
     display: flex;
     align-items: center;
-    padding-right: 7px;
 `;
 
 const Icon = styled.img`

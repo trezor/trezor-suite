@@ -890,6 +890,248 @@ export default defineMessages({
         defaultMessage: 'Pending',
         id: 'TR_BUY_STATUS_PENDING',
     },
+    TR_P2P_VALIDATION_ERROR_EMPTY: {
+        defaultMessage: 'Required',
+        id: 'TR_P2P_VALIDATION_ERROR_EMPTY',
+    },
+    TR_P2P_WORTH_OF: {
+        defaultMessage: 'worth of',
+        id: 'TR_P2P_WORTH_OF',
+    },
+    TR_P2P_INFO: {
+        defaultMessage:
+            'With {peerToPeer} (P2P) technology, there is no KYC verification involved neither on the side of the buyer nor the seller. All parties are protected against fraud by secure {multisigEscrow}.',
+        id: 'TR_P2P_INFO',
+    },
+    TR_P2P_INFO_PEER_TO_PEER: {
+        defaultMessage: 'Peer-to-Peer',
+        id: 'TR_P2P_INFO_PEER_TO_PEER',
+    },
+    TR_P2P_INFO_PEER_TO_PEER_TOOLTIP: {
+        defaultMessage:
+            'You conduct business directly with a specific person instead of a centralized institution. The P2P platform helps you find sellers and provides security.',
+        id: 'TR_P2P_INFO_PEER_TO_PEER_TOOLTIP',
+    },
+    TR_P2P_INFO_MULTISIG_ESCROW: {
+        defaultMessage: 'multisig escrow',
+        id: 'TR_P2P_INFO_MULTISIG_ESCROW',
+    },
+    TR_P2P_INFO_MULTISIG_ESCROW_TOOLTIP: {
+        defaultMessage:
+            'This is a unique generated address where the bitcoins are kept safe during the trade. To release it, a “signature” is needed from at least two out of three parties (buyer, seller, platform provider) to validate a successful transaction.',
+        id: 'TR_P2P_INFO_MULTISIG_ESCROW_TOOLTIP',
+    },
+    TR_P2P_OFFERS_FOR: {
+        defaultMessage: 'Offers for',
+        id: 'TR_P2P_OFFERS_FOR',
+    },
+    TR_P2P_SHOW_OFFERS: {
+        defaultMessage: 'Show offers',
+        id: 'TR_P2P_SHOW_OFFERS',
+    },
+    TR_P2P_OFFERS_REFRESH: {
+        defaultMessage: 'Offers refresh in',
+        id: 'TR_P2P_OFFERS_REFRESH',
+    },
+    TR_P2P_NO_OFFERS: {
+        defaultMessage:
+            'Sorry, there are no offers for your selection. You can choose from other deals below.',
+        id: 'TR_P2P_NO_OFFERS',
+    },
+    TR_P2P_MORE_OFFERS_AVAILABLE: {
+        defaultMessage: 'Check out more offers in different currencies.',
+        id: 'TR_P2P_MORE_OFFERS_AVAILABLE',
+    },
+    TR_P2P_ALTERNATIVE_OFFERS: {
+        defaultMessage: 'Alternative offers',
+        id: 'TR_P2P_ALTERNATIVE_OFFERS',
+    },
+    TR_P2P_PRICE: {
+        defaultMessage: 'Price for 1 {symbol}',
+        id: 'TR_P2P_PRICE',
+    },
+    TR_P2P_PRICE_TOOLTIP: {
+        defaultMessage: '{symbol} price offered by this user.',
+        id: 'TR_P2P_PRICE_TOOLTIP',
+    },
+    TR_P2P_AMOUNT: {
+        defaultMessage: 'Amount',
+        id: 'TR_P2P_AMOUNT',
+    },
+    TR_P2P_AMOUNT_RANGE: {
+        defaultMessage: 'Amount range',
+        id: 'TR_P2P_AMOUNT_RANGE',
+    },
+    TR_P2P_AMOUNT_RANGE_TOOLTIP: {
+        defaultMessage:
+            'The minimum and maximum amount for which this user is willing to sell {symbol}.',
+        id: 'TR_P2P_AMOUNT_RANGE_TOOLTIP',
+    },
+    TR_P2P_GET_THIS_OFFER: {
+        defaultMessage: 'Get this deal',
+        id: 'TR_P2P_GET_THIS_OFFER',
+    },
+    TR_P2P_PROVIDER: {
+        defaultMessage: 'Provider',
+        id: 'TR_P2P_PROVIDER',
+    },
+    TR_P2P_USER: {
+        defaultMessage: 'User',
+        id: 'TR_P2P_USER',
+    },
+    TR_P2P_USER_TOOLTIP: {
+        defaultMessage:
+            'The user offering this deal. Note their rating and number of performed trades.',
+        id: 'TR_P2P_USER_TOOLTIP',
+    },
+    TR_P2P_USER_REPUTATION: {
+        defaultMessage: '({rating}, {numberOfTrades})',
+        id: 'TR_P2P_USER_REPUTATION',
+    },
+    TR_P2P_UNKNOWN_RATING: {
+        defaultMessage: '?',
+        id: 'TR_P2P_UNKNOWN_RATING',
+    },
+    TR_P2P_TITLE: {
+        defaultMessage: 'Title',
+        id: 'TR_P2P_TITLE',
+    },
+    TR_P2P_TITLE_NOT_AVAILABLE: {
+        defaultMessage: 'Hey there, I’m using {providerName}!',
+        id: 'TR_P2P_TITLE_NOT_AVAILABLE',
+    },
+    TR_P2P_LOCATION: {
+        defaultMessage: 'Location',
+        id: 'TR_P2P_LOCATION',
+    },
+    TR_P2P_PAYMENT_METHODS: {
+        defaultMessage: 'Payment methods',
+        id: 'TR_P2P_PAYMENT_METHODS',
+    },
+    TR_P2P_PAYMENT_METHODS_TOOLTIP: {
+        defaultMessage: 'All the payment methods accepted by this user.',
+        id: 'TR_P2P_PAYMENT_METHODS_TOOLTIP',
+    },
+    TR_P2P_PAYMENT_WINDOW: {
+        defaultMessage: 'Payment window',
+        id: 'TR_P2P_PAYMENT_WINDOW',
+    },
+    TR_P2P_PAYMENT_WINDOW_TOOLTIP: {
+        defaultMessage:
+            'The transaction needs to be completed within this time limit, counting from creating a contract on the {providerName} site.',
+        id: 'TR_P2P_PAYMENT_WINDOW_TOOLTIP',
+    },
+    TR_P2P_PAYMENT_WINDOW_MINUTES: {
+        defaultMessage: 'min',
+        id: 'TR_P2P_PAYMENT_WINDOW_MINUTES',
+    },
+    TR_P2P_CONFIRMATIONS: {
+        defaultMessage: 'Confirmations',
+        id: 'TR_P2P_CONFIRMATIONS',
+    },
+    TR_P2P_WARNING_AMOUNT_RANGE_MINIMUM: {
+        defaultMessage:
+            'The chosen amount of {amount} is lower than the accepted minimum of {minimum}.',
+        id: 'TR_P2P_WARNING_AMOUNT_RANGE_MINIMUM',
+    },
+    TR_P2P_WARNING_AMOUNT_RANGE_MAXIMUM: {
+        defaultMessage:
+            'The chosen amount of {amount} is higher than the accepted maximum of {maximum}.',
+        id: 'TR_P2P_WARNING_AMOUNT_RANGE_MAXIMUM',
+    },
+    TR_P2P_FOR_YOUR_SAFETY: {
+        defaultMessage: 'Keep your security in mind',
+        id: 'TR_P2P_FOR_YOUR_SAFETY',
+    },
+    TR_P2P_TERMS_1: {
+        defaultMessage:
+            'I’m buying cryptocurrency from a specific user of my choosing using Peer-to-Peer (P2P) technology with no KYC verification required.',
+        id: 'TR_P2P_TERMS_1',
+    },
+    TR_P2P_TERMS_2: {
+        defaultMessage:
+            'The transaction is completely private and won’t appear in my transaction history. Maximum security is ensured by multisig escrow.',
+        id: 'TR_P2P_TERMS_2',
+    },
+    TR_P2P_TERMS_3: {
+        defaultMessage:
+            'I’m using Invity to purchase funds that will be sent to an account under my direct personal control. I’m not using Invity for gambling or any other violation of Invity’s Terms of service.',
+        id: 'TR_P2P_TERMS_3',
+    },
+    TR_P2P_TERMS_4: {
+        defaultMessage:
+            'I understand that cryptocurrencies are an emerging financial tool and that regulations may be limited in some areas. This may put me at a higher risk of fraud, theft, or market instability.',
+        id: 'TR_P2P_TERMS_4',
+    },
+    TR_P2P_TERMS_5: {
+        defaultMessage:
+            'I understand that cryptocurrency transactions are irreversible and I won’t be able to receive a refund for my purchase.',
+        id: 'TR_P2P_TERMS_5',
+    },
+    TR_P2P_I_UNDERSTAND: {
+        defaultMessage: 'I understand and agree to all of the above',
+        id: 'TR_P2P_I_UNDERSTAND',
+    },
+    TR_P2P_CONFIRM: {
+        defaultMessage: 'Confirm',
+        id: 'TR_P2P_CONFIRM',
+    },
+    TR_P2P_GET_STARTED_STEP: {
+        defaultMessage: 'Get started',
+        id: 'TR_P2P_GET_STARTED_STEP',
+    },
+    TR_P2P_RECEIVING_ADDRESS_STEP: {
+        defaultMessage: 'Receiving address',
+        id: 'TR_P2P_CONFIRM_SEND_STEP',
+    },
+    TR_P2P_GET_STARTED_INTRO: {
+        defaultMessage:
+            'You need to initiate the transaction on {providerName} – make sure to follow the steps below carefully.',
+        id: 'TR_P2P_GET_STARTED_INTRO',
+    },
+    TR_P2P_GET_STARTED_ITEM_1: {
+        defaultMessage: 'Select “Go to {providerName}” to be redirected to our partner’s website.',
+        id: 'TR_P2P_GET_STARTED_ITEM_1',
+    },
+    TR_P2P_GET_STARTED_ITEM_2: {
+        defaultMessage: 'Sign in or create an account on the platform and follow its instructions.',
+        id: 'TR_P2P_GET_STARTED_ITEM_2',
+    },
+    TR_P2P_GET_STARTED_ITEM_3: {
+        defaultMessage:
+            'Once {providerName} asks you for a release address, return here and continue.',
+        id: 'TR_P2P_GET_STARTED_ITEM_3',
+    },
+    TR_P2P_GET_STARTED_ATTENTION: {
+        defaultMessage:
+            'Attention: Do NOT close Trezor Suite at any time during the process or you will have to start over.',
+        id: 'TR_P2P_GET_STARTED_ATTENTION',
+    },
+    TR_P2P_GO_TO_PROVIDER: {
+        defaultMessage: 'Go to {providerName}',
+        id: 'TR_P2P_GO_TO_PROVIDER',
+    },
+    TR_P2P_GO_TO_RECEIVING_ADDRESS: {
+        defaultMessage: 'Go to receiving address',
+        id: 'TR_P2P_GO_TO_RECEIVING_ADDRESS',
+    },
+    TR_P2P_RECEIVING_ADDRESS: {
+        defaultMessage: 'Receiving address',
+        id: 'TR_P2P_RECEIVING_ADDRESS',
+    },
+    TR_P2P_RECEIVING_ADDRESS_ALMOST_THERE: {
+        defaultMessage:
+            'Almost there! Reveal and copy your address, paste it into the “Release address” field back on {providerName}, and finalize the transaction.',
+        id: 'TR_P2P_GET_STARTED_ITEM_4',
+    },
+    TR_P2P_REVEAL_ADDRESS: {
+        defaultMessage: 'Reveal address',
+        id: 'TR_P2P_REVEAL_ADDRESS',
+    },
+    TR_P2P_BACK_TO_ACCOUNT: {
+        defaultMessage: 'Done! Back to my account',
+        id: 'TR_P2P_BACK_TO_ACCOUNT',
+    },
     TR_SAVINGS_KYC_SUCCESS_NOTIFICATION: {
         defaultMessage: 'KYC verification was successful.',
         id: 'TR_SAVINGS_KYC_SUCCESS_NOTIFICATION',
@@ -1406,6 +1648,10 @@ export default defineMessages({
     TR_BUY_DETAIL_WAITING_FOR_USER_GATE: {
         defaultMessage: "Go to provider's site",
         id: 'TR_BUY_DETAIL_WAITING_FOR_USER_GATE',
+    },
+    TR_COINMARKET_UNKNOWN_PROVIDER: {
+        defaultMessage: 'unknown provider',
+        id: 'TR_COINMARKET_UNKNOWN_PROVIDER',
     },
     TR_COINMARKET_NO_OFFERS_AUTORELOADING_IN: {
         defaultMessage: 'Autoreloading in',
@@ -4772,6 +5018,10 @@ export default defineMessages({
     TR_NAV_SELL: {
         id: 'TR_NAV_SELL',
         defaultMessage: 'Sell',
+    },
+    TR_NAV_P2P: {
+        id: 'TR_NAV_P2P',
+        defaultMessage: 'Buy P2P',
     },
     TR_NAV_SAVINGS: {
         id: 'TR_NAV_SAVINGS',
