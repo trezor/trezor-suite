@@ -79,6 +79,7 @@ export class TorController extends EventEmitter {
     waitUntilAlive(): Promise<void> {
         const errorMessages: string[] = [];
         this.torIsDisabledWhileStarting = false;
+        this.isCircuitEstablished = false;
         const waitUntilResponse = async (triesCount: number): Promise<void> => {
             if (this.torIsDisabledWhileStarting) {
                 // If TOR is starting and we want to cancel it.
@@ -98,7 +99,7 @@ export class TorController extends EventEmitter {
                 }
             } catch (error) {
                 // Some error here is expected when waiting but
-                // we do not want to throw untill maxTriesWaiting is reach.
+                // we do not want to throw until maxTriesWaiting is reach.
                 // Instead we want to log it to know what causes the error.
                 if (error && error.message) {
                     console.warn('request-manager:', error.message);
