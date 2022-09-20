@@ -40,27 +40,27 @@ export const FormattedCryptoAmount = ({
     'data-test': dataTest,
     className,
 }: FormattedCryptoAmountProps) => {
-    const { cryptoAmountFormatter } = useFormatters();
+    const { cryptoAmountFormatter, signValueFormatter, currencySymbolFormatter } = useFormatters();
 
     if (!value) {
         return null;
     }
 
+    const formattedSymbol = symbol ? currencySymbolFormatter.format(symbol) : '';
+    const formattedValue = cryptoAmountFormatter.format(value, {
+        isBalance,
+        symbol,
+    });
+
     // output as a string, mostly for compatability with graphs
     if (isRawString) {
-        return <>{cryptoAmountFormatter.format(value, { symbol, isBalance, signValue })}</>;
+        const displayedSignValue = signValueFormatter.format(signValue);
+        return <>{`${displayedSignValue} ${formattedValue} ${formattedSymbol}`}</>;
     }
-
-    const cryptoAmountStructure = cryptoAmountFormatter.formatAsStructure(value, {
-        symbol,
-        isBalance,
-        signValue,
-    });
-    const { formattedSignValue, formattedValue, formattedSymbol } = cryptoAmountStructure;
 
     const content = (
         <Container className={className}>
-            {formattedSignValue && <Sign value={formattedSignValue} />}
+            {signValue && <Sign value={signValue} />}
 
             <Value data-test={dataTest}>{formattedValue}</Value>
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { TooltipProps } from 'recharts';
-import { FormattedFiatAmount } from '@suite-components';
+import { FormattedFiatAmount } from '@suite-common/formatters';
 import { FormattedCryptoAmount } from '@suite-components/FormattedCryptoAmount';
 import { NetworkSymbol } from '@wallet-types';
 import { CommonAggregatedHistory } from '@wallet-types/graph';

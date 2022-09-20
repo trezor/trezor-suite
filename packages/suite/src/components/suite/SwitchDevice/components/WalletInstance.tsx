@@ -6,8 +6,8 @@ import { Switch, Box, Icon, useTheme, variables } from '@trezor/components';
 import { getAllAccounts, getTotalFiatBalance } from '@suite-common/wallet-utils';
 import * as suiteActions from '@suite-actions/suiteActions';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
+import { FormattedFiatAmount } from '@suite-common/formatters';
 import {
-    FormattedFiatAmount,
     WalletLabeling,
     Translation,
     MetadataLabeling,

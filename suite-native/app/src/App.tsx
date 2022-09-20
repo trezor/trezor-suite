@@ -6,6 +6,7 @@ import { IntlProvider } from 'react-intl';
 
 import { NavigationContainer } from '@react-navigation/native';
 
+import { PROTO } from '@trezor/connect';
 import enMessages from '@trezor/suite-data/files/translations/en.json';
 import { connectInitThunk } from '@suite-common/connect-init';
 import { store, storePersistor } from '@suite-native/state';
@@ -49,7 +50,7 @@ export const App = () => {
                                     <FormatterProvider
                                         config={{
                                             locale: 'en',
-                                            areSatsDisplayed: true,
+                                            bitcoinAmountUnit: PROTO.AmountUnit.BITCOIN,
                                         }}
                                     >
                                         <AppComponent />

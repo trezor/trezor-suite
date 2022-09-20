@@ -1,4 +1,6 @@
+import { PROTO } from '@trezor/connect';
+
 export type FormatterConfig = {
     locale: string;
-    areSatsDisplayed: boolean;
+    bitcoinAmountUnit: PROTO.AmountUnit;
 };

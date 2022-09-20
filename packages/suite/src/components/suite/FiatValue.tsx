@@ -5,7 +5,7 @@ import { useSelector } from '@suite-hooks';
 import { Network } from '@wallet-types';
 import { TimestampedRates } from '@wallet-types/fiatRates';
 import { toFiatCurrency } from '@suite-common/wallet-utils';
-import { FormattedFiatAmount } from './FormattedFiatAmount';
+import { FormattedFiatAmount } from '@suite-common/formatters';
 
 const StyledHiddenPlaceholder = styled(props => <HiddenPlaceholder {...props} />)`
     font-variant-numeric: tabular-nums;

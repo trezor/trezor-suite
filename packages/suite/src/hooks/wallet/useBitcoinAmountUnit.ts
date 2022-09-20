@@ -6,22 +6,6 @@ import * as walletSettingsActions from '@settings-actions/walletSettingsActions'
 import { NETWORKS } from '@wallet-config';
 import { NetworkSymbol } from '@wallet-types';
 
-export const UNIT_ABBREVIATIONS = {
-    [PROTO.AmountUnit.BITCOIN]: 'BTC',
-    [PROTO.AmountUnit.MICROBITCOIN]: 'μBTC',
-    [PROTO.AmountUnit.MILLIBITCOIN]: 'mBTC',
-    [PROTO.AmountUnit.SATOSHI]: 'sat',
-};
-const UNIT_LABELS = {
-    [PROTO.AmountUnit.BITCOIN]: 'Bitcoin',
-    [PROTO.AmountUnit.SATOSHI]: 'Satoshis',
-};
-
-const UNIT_OPTIONS = [
-    { label: UNIT_LABELS[PROTO.AmountUnit.BITCOIN], value: PROTO.AmountUnit.BITCOIN },
-    { label: UNIT_LABELS[PROTO.AmountUnit.SATOSHI], value: PROTO.AmountUnit.SATOSHI },
-];
-
 export const useBitcoinAmountUnit = (symbol?: NetworkSymbol) => {
     const bitcoinAmountUnit = useSelector(state => state.wallet.settings.bitcoinAmountUnit);
     const unavailableCapabilities = useSelector(
@@ -50,7 +34,5 @@ export const useBitcoinAmountUnit = (symbol?: NetworkSymbol) => {
         toggleBitcoinAmountUnits,
         setBitcoinAmountUnits,
         areUnitsSupportedByNetwork,
-        UNIT_LABELS,
-        UNIT_OPTIONS,
     };
 };

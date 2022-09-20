@@ -1,6 +1,7 @@
 import React, { useRef, useLayoutEffect } from 'react';
 import { useTheme } from '@trezor/components';
-import { FormattedFiatAmount, FormattedCryptoAmount } from '@suite-components';
+import { FormattedCryptoAmount } from '@suite-components';
+import { FormattedFiatAmount } from '@suite-common/formatters';
 import { NetworkSymbol } from '@wallet-types';
 
 interface CommonProps {

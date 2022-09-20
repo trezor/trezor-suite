@@ -4,7 +4,7 @@ import { FeeLevel, PROTO } from '@trezor/connect';
 import * as suiteActions from '@suite-actions/suiteActions';
 import { Dispatch, GetState } from '@suite-types';
 import { WALLET_SETTINGS } from './constants';
-import { UNIT_ABBREVIATIONS } from '@wallet-hooks/useBitcoinAmountUnit';
+import { UNIT_ABBREVIATIONS } from '@suite-common/suite-constants';
 
 import type { Network } from '@wallet-types';
 import { createAction } from '@reduxjs/toolkit';

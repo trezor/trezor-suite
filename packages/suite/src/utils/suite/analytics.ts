@@ -15,7 +15,7 @@ import {
 import { getCustomBackends } from '@suite-common/wallet-utils';
 import { AccountTransactionBaseAnchor } from '@suite-constants/anchors';
 import { getIsTorEnabled } from './tor';
-import { UNIT_ABBREVIATIONS } from '@wallet-hooks/useBitcoinAmountUnit';
+import { UNIT_ABBREVIATIONS } from '@suite-common/suite-constants';
 
 import type { AnalyticsState } from '@suite-reducers/analyticsReducer';
 import type { UpdateInfo } from '@trezor/suite-desktop-api';

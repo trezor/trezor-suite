@@ -1,12 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Button, variables, Icon, useTheme, H2 } from '@trezor/components';
-import {
-    FormattedCryptoAmount,
-    FormattedFiatAmount,
-    QuestionTooltip,
-    Translation,
-} from '@suite-components';
+import { FormattedCryptoAmount, QuestionTooltip, Translation } from '@suite-components';
+import { FormattedFiatAmount } from '@suite-common/formatters';
 import { ExchangeTrade } from 'invity-api';
 import { getTagAndInfoNote } from '@wallet-utils/coinmarket/coinmarketUtils';
 import { isQuoteError } from '@wallet-utils/coinmarket/exchangeUtils';

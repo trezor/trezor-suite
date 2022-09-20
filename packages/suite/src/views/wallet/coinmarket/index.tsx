@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Icon, variables, SelectBar } from '@trezor/components';
-import { FormattedFiatAmount } from '@suite-components';
+import { FormattedFiatAmount } from '@suite-common/formatters';
 import { CardWithHeader } from '@suite-components/CardWithHeader';
 
 interface ResponsiveSize {

@@ -11,10 +11,12 @@
         "type-check": "tsc --build"
     },
     "dependencies": {
+        "@suite-common/suite-constants": "*",
         "@suite-common/suite-types": "*",
         "@suite-common/suite-utils": "*",
         "@suite-common/wallet-config": "*",
         "@suite-common/wallet-utils": "*",
+        "@trezor/connect": "9.0.2",
         "bignumber.js": "^9.1.0",
         "react": "17.0.2",
         "react-intl": "^6.0.5"

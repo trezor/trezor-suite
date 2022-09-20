@@ -6,8 +6,7 @@ import {
     networkAmountToSatoshi,
     formatCoinBalance,
 } from '@suite-common/wallet-utils';
-import { isSignValuePositive } from '@suite-common/suite-utils';
-import { SignValue } from '@suite-common/suite-types/libDev/src';
+import { PROTO } from '@trezor/connect';
 
 import { makeFormatter } from '../makeFormatter';
 import { FormatterConfig } from '../types';
@@ -15,80 +14,45 @@ import { FormatterConfig } from '../types';
 export type CryptoAmountFormatterInputValue = string | number | BigNumber;
 
 export type CryptoAmountFormatterDataContext = {
-    symbol?: string;
     isBalance?: boolean;
-    signValue?: SignValue;
+    symbol?: string;
 };
-
-export type CryptoAmountStructuredOutput = {
-    formattedSignValue?: SignValue;
-    formattedValue: string;
-    formattedSymbol: string;
-};
-
-export type CryptoAmountFormatterOutputType =
-    | string
-    | CryptoAmountStructuredOutput
-    | CryptoAmountFormatterInputValue;
 
 export const prepareCryptoAmountFormatter = (config: FormatterConfig) =>
-    makeFormatter<
-        CryptoAmountFormatterInputValue,
-        CryptoAmountFormatterOutputType,
-        string,
-        CryptoAmountStructuredOutput,
-        CryptoAmountFormatterDataContext
-    >((value, dataContext, outputFormat) => {
-        const { symbol, isBalance, signValue } = dataContext;
-        const { locale, areSatsDisplayed } = config;
+    makeFormatter<CryptoAmountFormatterInputValue, string, never, CryptoAmountFormatterDataContext>(
+        (value, dataContext) => {
+            const { symbol, isBalance } = dataContext;
+            const { locale, bitcoinAmountUnit } = config;
 
-        const lowerCaseSymbol = symbol?.toLowerCase();
-        const { features: networkFeatures, testnet: isTestnet } =
-            NETWORKS.find(network => network.symbol === lowerCaseSymbol) ?? {};
+            const lowerCaseSymbol = symbol?.toLowerCase();
+            const { features: networkFeatures } =
+                NETWORKS.find(network => network.symbol === lowerCaseSymbol) ?? {};
 
-        const areSatsSupported = !!networkFeatures?.includes('amount-unit');
+            const areAmountUnitsSupported = !!networkFeatures?.includes('amount-unit');
 
-        let formattedValue = value;
-        let formattedSymbol = symbol?.toUpperCase();
+            let formattedValue = value;
 
-        const isSatoshis = areSatsSupported && areSatsDisplayed;
-
-        // convert to satoshis if needed
-        if (isSatoshis) {
-            formattedValue = networkAmountToSatoshi(
-                String(value),
-                lowerCaseSymbol as NetworkSymbol,
-            );
-
-            formattedSymbol = isTestnet ? `sat ${symbol?.toUpperCase()}` : 'sat';
-        }
-
-        // format truncation + locale (used for balances) or just locale
-        if (isBalance) {
-            formattedValue = formatCoinBalance(String(formattedValue), locale);
-        } else {
-            formattedValue = localizeNumber(formattedValue, locale);
-        }
-
-        switch (outputFormat) {
-            case 'primitive':
-                return formattedValue as string;
-            case 'structured': {
-                return {
-                    formattedSignValue: signValue,
-                    formattedValue,
-                    formattedSymbol,
-                } as CryptoAmountStructuredOutput;
+            // convert to different units if needed
+            if (areAmountUnitsSupported) {
+                switch (bitcoinAmountUnit) {
+                    case PROTO.AmountUnit.SATOSHI: {
+                        formattedValue = networkAmountToSatoshi(
+                            String(value),
+                            lowerCaseSymbol as NetworkSymbol,
+                        );
+                        break;
+                    }
+                    default:
+                }
             }
-            case 'default': {
-                const displayedSignValue = signValue
-                    ? `${isSignValuePositive(signValue) ? '+' : '-'}`
-                    : '';
 
-                return `${displayedSignValue} ${formattedValue} ${formattedSymbol}`;
+            // format truncation + locale (used for balances) or just locale
+            if (isBalance) {
+                formattedValue = formatCoinBalance(String(formattedValue), locale);
+            } else {
+                formattedValue = localizeNumber(formattedValue, locale);
             }
-            default:
-        }
 
-        return value;
-    });
+            return formattedValue;
+        },
+    );

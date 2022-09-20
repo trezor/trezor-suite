@@ -8,7 +8,8 @@ import {
 } from '@wallet-components';
 import styled from 'styled-components';
 import { Icon } from '@trezor/components';
-import { FormattedCryptoAmount, FormattedFiatAmount, Translation } from '@suite-components';
+import { FormattedCryptoAmount, Translation } from '@suite-components';
+import { FormattedFiatAmount } from '@suite-common/formatters';
 import { PaymentDetail } from './components/PaymentDetail';
 import {
     SavingsOverviewContext,

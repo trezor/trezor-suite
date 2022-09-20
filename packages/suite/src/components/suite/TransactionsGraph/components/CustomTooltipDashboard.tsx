@@ -1,5 +1,5 @@
 import React from 'react';
-import { FormattedFiatAmount } from '@suite-components';
+import { FormattedFiatAmount } from '@suite-common/formatters';
 import { TooltipProps } from 'recharts';
 import { CommonAggregatedHistory } from '@wallet-types/graph';
 import { Props as GraphProps, FiatGraphProps } from '../definitions';

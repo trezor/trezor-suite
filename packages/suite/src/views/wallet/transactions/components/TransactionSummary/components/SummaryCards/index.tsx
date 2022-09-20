@@ -2,12 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import BigNumber from 'bignumber.js';
 import { variables } from '@trezor/components';
-import {
-    Translation,
-    HiddenPlaceholder,
-    FormattedFiatAmount,
-    FormattedDate,
-} from '@suite-components';
+import { Translation, HiddenPlaceholder, FormattedDate } from '@suite-components';
+import { FormattedFiatAmount } from '@suite-common/formatters';
 import { sumFiatValueMap } from '@wallet-utils/graphUtils';
 import { Account } from '@wallet-types';
 import { GraphRange, AggregatedAccountHistory } from '@wallet-types/graph';
