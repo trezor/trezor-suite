@@ -1,5 +1,6 @@
 export const TRANSLATION_PSEUDOLANGUAGE = 'lol' as const;
 
+// After marking a language complete, add this language also to suite-desktop/package.json -> electronLanguages array
 const LANGUAGES = {
     en: { name: 'English', en: 'English', complete: true },
     es: { name: 'Español', en: 'Spanish', complete: true },
