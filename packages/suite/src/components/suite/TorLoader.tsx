@@ -7,6 +7,8 @@ import { Translation } from '@suite-components/Translation';
 
 const StyledImage = styled(Image)`
     margin-bottom: 28px;
+    width: auto;
+    height: 110px;
 `;
 
 const Text = styled.h2`
@@ -90,7 +92,7 @@ export const TorLoader = ({ torStatus, progress, disableTor }: TorLoaderProps) =
     return (
         <>
             <MessageWrapper>
-                <StyledImage width={130} height={130} image="TOR_ENABLING" />
+                <StyledImage image="TOR_ENABLING" />
                 <Text>
                     <Translation id={message} />
                 </Text>

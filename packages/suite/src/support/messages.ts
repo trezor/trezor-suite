@@ -3813,6 +3813,18 @@ export default defineMessages({
         id: 'TR_TOR_BRIDGE',
         defaultMessage: 'Bridge not working in Tor Browser?',
     },
+    TR_TOR_REQUEST_ENABLE_FOR_COIN_JOIN_TITLE: {
+        id: 'TR_TOR_REQUEST_ENABLE_FOR_COIN_JOIN_TITLE',
+        defaultMessage: '<b>Tor</b> must be enable to remain anonymous when running CoinJoin.',
+    },
+    TR_TOR_REQUEST_ENABLE_FOR_COIN_JOIN_SUBTITLE: {
+        id: 'TR_TOR_REQUEST_ENABLE_FOR_COIN_JOIN_SUBTITLE',
+        defaultMessage: "Please select 'Enable Tor' to continue o 'Leave' to quit the process.",
+    },
+    TR_TOR_REQUEST_ENABLE_FOR_COIN_JOIN_LEAVE: {
+        id: 'TR_TOR_REQUEST_ENABLE_FOR_COIN_JOIN_LEAVE',
+        defaultMessage: 'Leave',
+    },
     TR_TRANSACTIONS: {
         id: 'TR_TRANSACTIONS',
         defaultMessage: 'Transactions',
