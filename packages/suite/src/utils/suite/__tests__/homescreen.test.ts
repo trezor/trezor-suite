@@ -3,7 +3,7 @@ import crypto from 'crypto';
 
 import * as homescreen from '../homescreen';
 
-const homescreensPath = '../suite-data/files/images/png/homescreens';
+const homescreensPath = '../suite-data/files/images/homescreens';
 
 // to simplify assertions of hex return values
 const getHash = (str: string) => crypto.createHash('md5').update(str).digest('hex');

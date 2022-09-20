@@ -6,14 +6,11 @@ export const switchFavicon = () => {
     const appleIcon = document.querySelector('link[rel=apple-touch-icon]');
     const switchIcons = (isDarkMode: boolean) => {
         if (isDarkMode) {
-            icon?.setAttribute('href', resolveStaticPath('/images/icons/favicon/favicon_dm.png'));
-            appleIcon?.setAttribute(
-                'href',
-                resolveStaticPath('/images/icons/favicon/favicon_dm.png'),
-            );
+            icon?.setAttribute('href', resolveStaticPath('/images/favicons/favicon_dm.png'));
+            appleIcon?.setAttribute('href', resolveStaticPath('/images/favicons/favicon_dm.png'));
         } else {
-            icon?.setAttribute('href', resolveStaticPath('/images/icons/favicon/favicon.png'));
-            appleIcon?.setAttribute('href', resolveStaticPath('/images/icons/favicon/favicon.png'));
+            icon?.setAttribute('href', resolveStaticPath('/images/favicons/favicon.png'));
+            appleIcon?.setAttribute('href', resolveStaticPath('/images/favicons/favicon.png'));
         }
     };
     const matchMedia = window.matchMedia('(prefers-color-scheme: dark)');

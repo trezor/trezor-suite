@@ -7,11 +7,8 @@
         <meta charset="utf-8" />
 
         <link media="all" rel="stylesheet" href="<%= assetPrefix %>/static/fonts/fonts.css" />
-        <link rel="icon" href="<%= assetPrefix %>/static/images/icons/favicon/favicon.png" />
-        <link
-            rel="apple-touch-icon"
-            href="<%= assetPrefix %>/static/images/icons/favicon/favicon.png"
-        />
+        <link rel="icon" href="<%= assetPrefix %>/static/images/favicons/favicon.png" />
+        <link rel="apple-touch-icon" href="<%= assetPrefix %>/static/images/favicons/favicon.png" />
         <% if(isOnionLocation) { %>
         <meta
             http-equiv="onion-location"
@@ -44,20 +41,17 @@
                 if (isDM) {
                     i.setAttribute(
                         'href',
-                        '<%= assetPrefix %>/static/images/icons/favicon/favicon_dm.png',
+                        '<%= assetPrefix %>/static/images/favicons/favicon_dm.png',
                     );
                     ai.setAttribute(
                         'href',
-                        '<%= assetPrefix %>/static/images/icons/favicon/favicon_dm.png',
+                        '<%= assetPrefix %>/static/images/favicons/favicon_dm.png',
                     );
                 } else {
-                    i.setAttribute(
-                        'href',
-                        '<%= assetPrefix %>/static/images/icons/favicon/favicon.png',
-                    );
+                    i.setAttribute('href', '<%= assetPrefix %>/static/images/favicons/favicon.png');
                     ai.setAttribute(
                         'href',
-                        '<%= assetPrefix %>/static/images/icons/favicon/favicon.png',
+                        '<%= assetPrefix %>/static/images/favicons/favicon.png',
                     );
                 }
             }
