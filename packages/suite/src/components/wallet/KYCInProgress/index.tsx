@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Translation } from '@suite-components';
-import { resolveStaticPath } from '@trezor/utils';
 import { SavingsKYCCard } from '@wallet-views/coinmarket';
+import { Image } from '@trezor/components';
 
 const StyledCard = styled(SavingsKYCCard)`
     background: rgba(239, 201, 65, 0.1);
@@ -26,7 +26,7 @@ const Description = styled.div`
 const KYCInProgress = () => (
     <StyledCard>
         <Icon>
-            <img src={resolveStaticPath('images/svg/user-focus.svg')} alt="" />
+            <Image image="USER_FOCUS" />
         </Icon>
         <Text>
             <Header>

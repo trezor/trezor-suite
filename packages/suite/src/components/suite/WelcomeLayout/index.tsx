@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { AnimatePresence, motion } from 'framer-motion';
 
-import { H1, TrezorLogo, Button, variables } from '@trezor/components';
+import { H1, TrezorLogo, Button, variables, SVG_IMAGES } from '@trezor/components';
 import { useOnce } from '@trezor/react-utils';
 import { Translation } from '@suite-components';
 import { useMessageSystem } from '@suite-hooks/useMessageSystem';
@@ -72,7 +72,7 @@ const Content = styled.div`
     flex: 3;
     padding: 20px;
     background-color: ${props => props.theme.BG_GREY};
-    background-image: url(${resolveStaticPath('images/svg/onboarding-welcome-bg.svg')});
+    background-image: url(${resolveStaticPath(`images/svg/${SVG_IMAGES.ONBOARDING_WELCOME_BG}`)});
     background-repeat: no-repeat;
     background-position: center;
     background-attachment: local;

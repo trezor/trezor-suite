@@ -1,8 +1,7 @@
 import * as routerActions from '@suite-actions/routerActions';
 import React from 'react';
 import styled from 'styled-components';
-import { resolveStaticPath } from '@trezor/utils';
-import { Button, variables } from '@trezor/components';
+import { Button, variables, Image } from '@trezor/components';
 import { Translation } from '@suite-components';
 import { useActions } from '@suite-hooks';
 import { Account } from '@wallet-types';
@@ -14,8 +13,6 @@ const Wrapper = styled.div`
     padding: 60px 20px 60px 20px;
     flex-direction: column;
 `;
-
-const Image = styled.img``;
 
 const Title = styled.div`
     margin-top: 25px;
@@ -43,7 +40,7 @@ const PaymentSuccessful = ({ account }: Props) => {
     });
     return (
         <Wrapper>
-            <Image src={resolveStaticPath('/images/svg/coinmarket-success.svg')} />
+            <Image image="COINMARKET_SUCCESS" />
             <Title>
                 <Translation id="TR_BUY_DETAIL_SUCCESS_TITLE" />
             </Title>

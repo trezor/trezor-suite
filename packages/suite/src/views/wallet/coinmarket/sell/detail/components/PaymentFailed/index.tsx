@@ -1,8 +1,7 @@
 import * as routerActions from '@suite-actions/routerActions';
 import React from 'react';
 import styled from 'styled-components';
-import { resolveStaticPath } from '@trezor/utils';
-import { Button, variables, Link } from '@trezor/components';
+import { Button, variables, Link, Image } from '@trezor/components';
 import { CoinmarketTransactionId } from '@wallet-components';
 import { useActions } from '@suite-hooks/useActions';
 import { Account } from '@wallet-types';
@@ -15,8 +14,6 @@ const Wrapper = styled.div`
     padding: 60px 20px 60px 20px;
     flex-direction: column;
 `;
-
-const Image = styled.img``;
 
 const Title = styled.div`
     margin-top: 25px;
@@ -51,7 +48,7 @@ const PaymentFailed = ({ transactionId, supportUrl, account }: Props) => {
     });
     return (
         <Wrapper>
-            <Image src={resolveStaticPath('/images/svg/uni-error.svg')} />
+            <Image image="UNI_ERROR" />
             <Title>
                 <Translation id="TR_SELL_DETAIL_ERROR_TITLE" />
             </Title>

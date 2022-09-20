@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
-import { ReactSVG } from 'react-svg';
 import parseISO from 'date-fns/parseISO';
 import format from 'date-fns/format';
 import styled from 'styled-components';
-import { Button, Icon } from '@trezor/components';
-import { resolveStaticPath } from '@trezor/utils';
+import { Button, Icon, Image } from '@trezor/components';
 import { Translation } from '@suite-components';
 import type { SavingsTradePlannedPayment } from '@suite-services/invityAPI';
 import type { ExtendedMessageDescriptor } from '@suite/types/suite';
@@ -67,7 +65,7 @@ const PaymentItemStatusIcon = styled.div`
     margin-right: 3px;
     display: flex;
 `;
-const PaymentItemStatusIconReactSVG = styled(ReactSVG)<{ isNextUp: boolean }>`
+const PaymentItemStatusIconReactSVG = styled(Image)<{ isNextUp: boolean }>`
     & div {
         display: flex;
     }
@@ -150,7 +148,7 @@ export const PaymentDetail = ({
                                 <PaymentItemStatusIcon>
                                     <PaymentItemStatusIconReactSVG
                                         isNextUp={isNextUp}
-                                        src={resolveStaticPath('images/svg/hourglass.svg')}
+                                        image="HOURGLASS"
                                     />
                                 </PaymentItemStatusIcon>
                                 <Translation id="TR_SAVINGS_OVERVIEW_PAYMENT_DETAIL_CURRENT_PAYMENT_STATUS" />
@@ -160,7 +158,7 @@ export const PaymentDetail = ({
                                 <PaymentItemStatusIcon>
                                     <PaymentItemStatusIconReactSVG
                                         isNextUp={isNextUp}
-                                        src={resolveStaticPath('images/svg/watch.svg')}
+                                        image="WATCH"
                                     />
                                 </PaymentItemStatusIcon>
                                 <Translation id="TR_SAVINGS_OVERVIEW_PAYMENT_DETAIL_NEXT_PAYMENT_STATUS" />
