@@ -44,7 +44,7 @@ const getIcon = (variant: Props['variant'], theme: SuiteThemeColors) => {
         case 'loader':
             return <Loader size={22} />;
         default:
-            return <Icon icon="WARNING_ACTIVE" size={22} color={getMainColor(variant, theme)} />;
+            return <Icon icon="WARNING" size={22} color={getMainColor(variant, theme)} />;
     }
 };
 

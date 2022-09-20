@@ -72,7 +72,7 @@ export const PinMatrix = ({ device, hideExplanation, invalid }: Props) => {
                             ? {
                                   key: 'invalid',
                                   title: <Translation id="TR_WRONG_PIN_ENTERED" />,
-                                  icon: 'WARNING_ACTIVE',
+                                  icon: 'WARNING',
                                   iconSize: 40,
                                   iconColor: theme.TYPE_RED,
                               }

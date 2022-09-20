@@ -31,7 +31,7 @@ const WarnHeader = (props: Props) => {
     return (
         <Header>
             <IconWrapper>
-                <Icon size={16} icon="WARNING_ACTIVE" color={theme.TYPE_ORANGE} />
+                <Icon size={16} icon="WARNING" color={theme.TYPE_ORANGE} />
             </IconWrapper>
             <Body>{props.children}</Body>
             {props.action && props.action}

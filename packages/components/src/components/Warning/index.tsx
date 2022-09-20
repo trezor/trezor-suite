@@ -21,7 +21,7 @@ const ChildrenWrapper = styled.div`
 const Warning = ({ children }: React.HTMLAttributes<HTMLDivElement>) => (
     <Wrapper>
         <IconWrapper>
-            <Icon size={16} icon="WARNING_ACTIVE" />
+            <Icon size={16} icon="WARNING" />
         </IconWrapper>
         <ChildrenWrapper>{children}</ChildrenWrapper>
     </Wrapper>

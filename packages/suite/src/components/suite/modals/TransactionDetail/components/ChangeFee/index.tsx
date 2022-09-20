@@ -150,7 +150,7 @@ const ChangeFee: React.FC<Props & { showChained: () => void }> = props => {
                 </Box>
                 {props.finalize && (
                     <FinalizeWarning>
-                        <InfoIcon icon="INFO_ACTIVE" size={16} />
+                        <InfoIcon icon="INFO" size={16} />
                         <Translation
                             id="TR_FINALIZE_TS_RBF_OFF_WARN"
                             values={{ strong: chunks => <Red>{chunks}</Red> }}
