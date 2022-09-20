@@ -46,6 +46,7 @@ const createAccount = createAction(
             deviceState,
             index: discoveryItem.index,
             path: discoveryItem.path,
+            unlockPath: discoveryItem.unlockPath,
             descriptor: accountInfo.descriptor,
             key: getAccountKey(accountInfo.descriptor, discoveryItem.coin, deviceState),
             accountType: discoveryItem.accountType,

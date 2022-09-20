@@ -24,9 +24,12 @@ export const createCoinjoinAccount = [
         },
     },
     {
-        description: 'experimental features not enabled',
+        description: 'path not unlocked',
         connect: {
             success: false,
+            payload: {
+                error: 'Cancelled',
+            },
         },
         params: {
             symbol: 'btc',
@@ -45,16 +48,20 @@ export const createCoinjoinAccount = [
         description: 'public key not given',
         connect: [
             {
-                success: true, // applySettings
+                success: true, // unlockPath
             },
             {
                 success: false, // getPublicKey
+                payload: {
+                    error: 'Forbidden key path',
+                },
             },
         ],
         params: {
             symbol: 'btc',
             networkType: 'bitcoin',
             accountType: 'coinjoin',
+            bip43Path: "m/10025'/1'/i'/1'",
         },
         result: {
             actions: ['@notification/toast'],
@@ -64,7 +71,7 @@ export const createCoinjoinAccount = [
         description: 'success',
         connect: [
             {
-                success: true, // applySettings
+                success: true, // unlockPath
             },
             {
                 success: true, // getPublicKey
@@ -85,6 +92,7 @@ export const createCoinjoinAccount = [
             symbol: 'btc',
             networkType: 'bitcoin',
             accountType: 'coinjoin',
+            bip43Path: "m/10025'/1'/i'/1'",
         },
         result: {
             actions: [

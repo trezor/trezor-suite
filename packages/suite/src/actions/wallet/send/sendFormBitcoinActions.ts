@@ -231,6 +231,10 @@ export const signTransaction =
             signEnhancement.amountUnit = bitcoinAmountUnit;
         }
 
+        if (account.unlockPath) {
+            signEnhancement.unlockPath = account.unlockPath;
+        }
+
         const signPayload: Params<SignTransaction> = {
             device: {
                 path: device.path,

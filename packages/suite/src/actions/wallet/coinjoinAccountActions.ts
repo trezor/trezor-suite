@@ -141,34 +141,38 @@ export const createCoinjoinAccount =
         }
 
         const { device } = getState().suite;
-
-        // TODO: Disable safety_checks until Trezor FW will implement slip-0025
-        // const safety =
-        //     device?.features?.safety_checks !== 'PromptTemporarily'
-        //         ? 'PromptTemporarily'
-        //         : undefined;
-        const experimentalFeatures = await TrezorConnect.applySettings({
+        const unlockPath = await TrezorConnect.unlockPath({
+            path: "m/10025'",
             device,
-            experimental_features: true,
-            // safety_checks: safety,
+            useEmptyPassphrase: device?.useEmptyPassphrase,
         });
-        if (!experimentalFeatures.success) {
-            dispatch(addToast({ type: 'error', error: 'Experimental features not enabled' }));
+        if (!unlockPath.success) {
+            dispatch(
+                addToast({
+                    type: 'error',
+                    error: unlockPath.payload.error,
+                }),
+            );
             return;
         }
 
-        // temporary hardcoded until Trezor FW will implement slip-0025
-        const PATH = `m/86'/1'/25'`; // `m/10025'/1'/0'`  network.bip43Path
+        const path = network.bip43Path.replace('i', '0');
 
         // get coinjoin account xpub
         const publicKey = await TrezorConnect.getPublicKey({
+            path,
+            unlockPath: unlockPath.payload,
             device,
             useEmptyPassphrase: device?.useEmptyPassphrase,
-            path: PATH,
             coin: network.symbol,
         });
         if (!publicKey.success) {
-            dispatch(addToast({ type: 'error', error: 'Public key not given' }));
+            dispatch(
+                addToast({
+                    type: 'error',
+                    error: publicKey.payload.error,
+                }),
+            );
             return;
         }
 
@@ -178,7 +182,8 @@ export const createCoinjoinAccount =
                 device!.state!,
                 {
                     index: 0,
-                    path: PATH,
+                    path,
+                    unlockPath: unlockPath.payload,
                     accountType: network.accountType,
                     networkType: network.networkType,
                     backendType: 'coinjoin',

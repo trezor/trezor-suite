@@ -1,5 +1,5 @@
 import { Network, BackendType, NetworkSymbol, AccountType } from '@suite-common/wallet-config';
-import { AccountInfo } from '@trezor/connect';
+import { AccountInfo, PROTO } from '@trezor/connect';
 
 export type MetadataItem = string;
 export type XpubAddress = string;
@@ -58,6 +58,7 @@ export type Account = {
     key: string;
     index: number;
     path: string;
+    unlockPath?: PROTO.UnlockPath; // parameter used to unlock SLIP-25/coinjoin keychain
     descriptor: string;
     accountType: NonNullable<Network['accountType']>;
     symbol: NetworkSymbol;
