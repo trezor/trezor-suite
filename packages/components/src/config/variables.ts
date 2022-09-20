@@ -89,5 +89,5 @@ export const FONT_FAMILY = {
     TTHOVES: 'TT Hoves',
 } as const;
 
-export const COINS = Object.keys(CoinsObject) as CoinType[];
-export const ICONS = Object.keys(IconsObject) as IconType[];
+export const COINS = Object.keys(CoinsObject).sort() as CoinType[];
+export const ICONS = Object.keys(IconsObject).sort() as IconType[];

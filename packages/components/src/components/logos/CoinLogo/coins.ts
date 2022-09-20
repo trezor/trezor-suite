@@ -13,10 +13,10 @@ export const COINS = {
     eth: require('../../../images/coins/eth.svg'),
     ltc: require('../../../images/coins/ltc.svg'),
     nmc: require('../../../images/coins/nmc.svg'),
+    tada: require('../../../images/coins/tada.svg'),
     trop: require('../../../images/coins/trop.svg'),
     txrp: require('../../../images/coins/txrp.svg'),
     vtc: require('../../../images/coins/vtc.svg'),
     xrp: require('../../../images/coins/xrp.svg'),
     zec: require('../../../images/coins/zec.svg'),
-    tada: require('../../../images/coins/tada.svg'),
 };
