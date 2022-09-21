@@ -1,7 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Button } from '@trezor/components';
+
+import * as routerActions from '@suite-actions/routerActions';
+import { Account } from '@suite-common/wallet-types';
 import { Card, Translation } from '@suite-components';
+import { useActions, useSelector } from '@suite-hooks';
+import { Button } from '@trezor/components';
+import { CoinjoinSessionStatus } from '../CoinjoinSessionStatus';
 import { FundsPrivacyBreakdown } from './FundsPrivacyBreakdown';
 
 const Container = styled(Card)`
@@ -20,23 +25,43 @@ const AnonymizeButton = styled(Button)`
 `;
 
 interface BalanceSectionProps {
-    onAnonymize: () => void; // TEMPORARY
+    account: Account;
 }
 
-export const BalanceSection = ({ onAnonymize }: BalanceSectionProps) => {
-    const isSessionActive = false;
+export const BalanceSection = ({ account }: BalanceSectionProps) => {
+    const { goto } = useActions({
+        goto: routerActions.goto,
+    });
+    const { coinjoin } = useSelector(state => state.wallet);
+
+    const session = coinjoin.accounts.find(a => a.key === account.key)?.session;
+
+    const goToSetup = () => goto('wallet-anonymize', { preserveParams: true });
 
     return (
-        <Container>
-            <FundsPrivacyBreakdown />
-
-            {isSessionActive ? (
-                <Translation id="TR_ANONYMIZING" />
-            ) : (
-                <AnonymizeButton onClick={onAnonymize} icon="ARROW_RIGHT_LONG" alignIcon="right">
-                    <Translation id="TR_ANONYMIZE" />
-                </AnonymizeButton>
+        <>
+            {/* temporary - content will be reworked and moved into the container below */}
+            {session && (
+                <Container>
+                    <CoinjoinSessionStatus account={account} session={session} />
+                </Container>
             )}
-        </Container>
+
+            <Container>
+                <FundsPrivacyBreakdown />
+                {session ? (
+                    <Translation id="TR_ANONYMIZING" />
+                ) : (
+                    <AnonymizeButton
+                        onClick={goToSetup}
+                        icon="ARROW_RIGHT_LONG"
+                        alignIcon="right"
+                        size={16}
+                    >
+                        <Translation id="TR_ANONYMIZE" />
+                    </AnonymizeButton>
+                )}
+            </Container>
+        </>
     );
 };
