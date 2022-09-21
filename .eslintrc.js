@@ -59,8 +59,6 @@ module.exports = {
             },
         ],
         'react/jsx-indent': [2, 4],
-        // I believe shadowing is a nice language feature.
-        'no-shadow': 'off',
         'import/order': [
             1,
             {
@@ -171,8 +169,12 @@ module.exports = {
         // These rules have to do with variable declarations.
         'no-catch-shadow': 'warn', // disallow the catch clause parameter name being the same as a variable in the outer scope (off by default in the node environment)
         'no-label-var': 'error', // disallow labels that share a name with a variable
-        // '@typescript-eslint/no-shadow': ['error'], // disallow declaration of variables already declared in the outer scope
-        // 'no-shadow-restricted-names': 'error', // disallow shadowing of names such as arguments
+        'no-shadow': 'off',
+        '@typescript-eslint/no-shadow': [
+            'error',
+            { builtinGlobals: true, allow: ['_', 'error', 'resolve', 'reject', 'fetch'] },
+        ], // disallow declaration of variables already declared in the outer scope
+        'no-shadow-restricted-names': 'error', // disallow shadowing of names such as arguments
         'no-undefined': 'off', // disallow use of undefined variable (off by default)
         'no-undef-init': 'error', // disallow use of undefined when initializing variables
         'no-unused-vars': 'off',

@@ -4,8 +4,9 @@ import { render } from '@testing-library/react-native';
 
 import { Provider } from './Provider';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-type Parameters<T> = T extends (...args: infer T) => any ? T : never;
+type Parameters<TParams> = TParams extends (...args: infer TParamsInferred) => any
+    ? TParamsInferred
+    : never;
 const nextRender = (
     element: ReactElement,
     options?: Parameters<typeof render>[1],

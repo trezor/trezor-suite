@@ -81,18 +81,18 @@ export const AccountsImportScreen = ({
         // TODO: show loader when account info is running, because otherwise it can finish after user already submitted
         // the form, the account is imported and user is somewhere in the app
         async function getAccountInfo() {
-            const accountInfo = await TrezorConnect.getAccountInfo({
+            const fetchedAccountInfo = await TrezorConnect.getAccountInfo({
                 coin: currencySymbol,
                 descriptor: xpubAddress,
                 details: 'txs',
             });
             if (!ignore) {
-                if (accountInfo?.success) {
-                    setAccountInfo(accountInfo.payload);
+                if (fetchedAccountInfo?.success) {
+                    setAccountInfo(fetchedAccountInfo.payload);
                 } else {
                     showAccountInfoAlert({
                         title: 'Account info failed',
-                        message: accountInfo.payload?.error ?? '',
+                        message: fetchedAccountInfo.payload?.error ?? '',
                     });
                 }
             }

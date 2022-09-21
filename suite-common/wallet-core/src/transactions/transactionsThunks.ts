@@ -241,13 +241,13 @@ export const fetchTransactionsThunk = createThunk(
             // TODO why is this only accepting account now?
             const updateAction = accountsActions.updateAccount(account, result.payload);
             const updatedAccount = updateAction.payload as Account;
-            const transactions = result.payload.history.transactions || [];
+            const updatedTransactions = result.payload.history.transactions || [];
             const totalPages = result.payload.page?.total || 0;
 
             dispatch(transactionsActions.fetchSuccess);
             dispatch(
                 transactionsActions.addTransaction({
-                    transactions,
+                    transactions: updatedTransactions,
                     account: updatedAccount,
                     page,
                 }),
