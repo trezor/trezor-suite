@@ -2375,6 +2375,11 @@ export default defineMessages({
         description: 'Title of the navigation tab that contains tx history.',
         id: 'TR_NAV_TRANSACTIONS',
     },
+    TR_NAV_ANONYMIZE: {
+        defaultMessage: 'Anonymize Coins',
+        description: 'Title of the coinjoin setup page.',
+        id: 'TR_NAV_ANONYMIZE',
+    },
     TR_NETWORK_BITCOIN: {
         defaultMessage: 'Bitcoin',
         id: 'TR_NETWORK_BITCOIN',

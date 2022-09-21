@@ -265,6 +265,12 @@ const routes = [
         params: walletParams,
     },
     {
+        name: 'wallet-anonymize',
+        pattern: '/accounts/anonymize',
+        app: 'wallet',
+        params: walletParams,
+    },
+    {
         name: 'passwords-index',
         pattern: '/passwords',
         app: 'passwords',

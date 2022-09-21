@@ -1,31 +1,43 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useSelector } from '@suite-hooks';
-import { Account } from '@suite-common/wallet-types';
-import { CoinjoinSetup } from './CoinjoinSetup';
-import { CoinjoinSessionStatus } from './CoinjoinSessionStatus';
 
-const Wrapper = styled.div`
-    margin-bottom: 24px;
+import { H3 } from '@trezor/components';
+import { Account } from '@suite-common/wallet-types';
+import { Translation } from '@suite-components/Translation';
+import { AnonymityChart } from './AccountSummarySection/AnonymityChart';
+import { AnonymityIndicator } from './AccountSummarySection/AnonymityIndicator';
+import { BalanceSection } from './AccountSummarySection/BalanceSection';
+
+const Container = styled.div`
+    width: 100%;
+`;
+
+const Row = styled.div`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 28px;
+`;
+
+const StyledAnonymityIndicator = styled(AnonymityIndicator)`
+    margin-left: auto;
 `;
 
 interface CoinjoinSummaryProps {
     account: Account;
 }
 
-export const CoinjoinSummary = ({ account }: CoinjoinSummaryProps) => {
-    const { coinjoin } = useSelector(state => ({
-        coinjoin: state.wallet.coinjoin,
-    }));
-    const session = coinjoin.accounts.find(a => a.key === account.key)?.session;
+export const CoinjoinSummary = ({ account }: CoinjoinSummaryProps) => (
+    <Container>
+        <Row>
+            <H3>
+                <Translation id="TR_MY_COINS" />
+            </H3>
+            <StyledAnonymityIndicator />
+        </Row>
 
-    return (
-        <Wrapper>
-            {session ? (
-                <CoinjoinSessionStatus account={account} session={session} />
-            ) : (
-                <CoinjoinSetup account={account} />
-            )}
-        </Wrapper>
-    );
-};
+        <BalanceSection account={account} />
+
+        <AnonymityChart />
+    </Container>
+);

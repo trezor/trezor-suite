@@ -26,11 +26,15 @@ enum AnomymityStatus {
     Great = 'GREAT',
 }
 
-export const AnonymityIndicator = () => {
+interface AnonymityIndicatorProps {
+    className?: string;
+}
+
+export const AnonymityIndicator = ({ className }: AnonymityIndicatorProps) => {
     const anomymityLevel = 10;
 
     return (
-        <Container>
+        <Container className={className}>
             <Icon icon="USERS" />
 
             <div>
