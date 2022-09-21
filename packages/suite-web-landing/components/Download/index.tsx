@@ -5,7 +5,7 @@ import { Button, Dropdown, Icon, colors, variables, Link } from '@trezor/compone
 import { IconType } from '@trezor/components/src/support/types';
 import Translation from '../Translation';
 import { Platform, getPlatform } from '../../utils/navigator';
-import { normalizeVersion } from '@suite-utils/build';
+import { versionUtils } from '@trezor/utils';
 
 const StyledDropdown = styled(Dropdown)`
     height: 100%;
@@ -146,7 +146,9 @@ const getInstallerSignatureURI = (props: GetURIProps) => {
 };
 
 const Index = ({ pathToApp }: { pathToApp: string }) => {
-    const version: string = process.env.VERSION ? normalizeVersion(process.env.VERSION) : '';
+    const version: string = process.env.VERSION
+        ? versionUtils.normalizeVersion(process.env.VERSION)
+        : '';
     const [platform, setPlatform] = useState<Platform | null>(null);
     const dropdownItems = [
         {
