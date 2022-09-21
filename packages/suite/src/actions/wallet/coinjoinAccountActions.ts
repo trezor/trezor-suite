@@ -58,24 +58,29 @@ export const fetchAndUpdateAccount =
             progress: 0,
         };
 
+        const onProgress = (progressState: any) => {
+            dispatch(
+                accountsActions.updateAccount({
+                    ...account,
+                    lastKnownState: {
+                        ...progressState,
+                        time: Date.now(),
+                    },
+                }),
+            );
+        };
+
+        const api = CoinjoinBackendService.getInstance(account.symbol);
+        if (!api) throw new Error('CoinjoinBackendService api not found');
+
         try {
-            const api = CoinjoinBackendService.getInstance(account.symbol);
-            const accountInfo = await api.getAccountInfo({
+            api.on('progress', onProgress);
+            // @ts-expect-error, method is...
+            const accountInfo: any = await api.getAccountInfo({
                 descriptor: account.descriptor,
                 lastKnownState: {
                     balance: account.balance,
                     blockHash: lastKnownState.blockHash,
-                },
-                onProgress: (progressState: any) => {
-                    dispatch(
-                        accountsActions.updateAccount({
-                            ...account,
-                            lastKnownState: {
-                                ...progressState,
-                                time: Date.now(),
-                            },
-                        }),
-                    );
                 },
                 symbol: account.symbol,
             });
@@ -113,6 +118,8 @@ export const fetchAndUpdateAccount =
         } catch (error) {
             // TODO
             console.warn('fetchAndUpdateAccount', error);
+        } finally {
+            api.off('progress', onProgress);
         }
     };
 
@@ -120,6 +127,11 @@ export const createCoinjoinAccount =
     (network: Network) => async (dispatch: Dispatch, getState: GetState) => {
         if (network.accountType !== 'coinjoin') {
             throw new Error('createCoinjoinAccount: invalid account type');
+        }
+
+        // initialize @trezor/coinjoin backend
+        if (!CoinjoinBackendService.getInstance(network.symbol)) {
+            await CoinjoinBackendService.createInstance(network.symbol);
         }
 
         // initialize @trezor/coinjoin client

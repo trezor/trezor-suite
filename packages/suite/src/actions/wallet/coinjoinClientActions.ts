@@ -1,6 +1,7 @@
+import { CoinjoinStatus } from '@trezor/coinjoin';
 import * as COINJOIN from './constants/coinjoinConstants';
 import { addToast } from '../suite/notificationActions';
-import { CoinjoinClientService, CoinjoinStatus } from '@suite/services/coinjoin/coinjoinClient';
+import { CoinjoinClientService } from '@suite/services/coinjoin/coinjoinClient';
 import { Dispatch } from '@suite-types';
 import { Account } from '@suite-common/wallet-types';
 
@@ -35,7 +36,7 @@ export const initCoinjoinClient = (symbol: Account['symbol']) => async (dispatch
     // or start new instance
     dispatch(clientEnable(symbol));
 
-    const client = CoinjoinClientService.createInstance(symbol);
+    const client = await CoinjoinClientService.createInstance(symbol);
     try {
         const status = await client.enable();
         dispatch(clientEnableSuccess(symbol, status));
