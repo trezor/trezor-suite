@@ -130,9 +130,11 @@ export const AccountSearchBox = (props: AccountSearchBoxProps) => {
                             }}
                         >
                             <StyledCoinLogo
+                                data-test={`@account-menu/filter/${n}`}
                                 symbol={n}
                                 size={props.isMobile ? 24 : 16}
                                 filterActivated={!!coinFilter}
+                                data-test-activated={coinFilter === n}
                                 isSelected={coinFilter === n}
                             />
                         </OuterCircle>
