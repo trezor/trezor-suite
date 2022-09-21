@@ -8,7 +8,7 @@ API version 9.0.2
 
 Trezor Connect is a platform for easy integration of Trezor into 3rd party services, as well as into Trezor Suite. It provides an API with functionality to access public keys, sign transactions and authenticate users.
 
-This package is intended to be used in node.js environment. If you wan't to build a web application please refer to [@trezor/connect-web package](../connect-web/README.md).
+This package is intended to be used in node.js environment. If you wan't to build a web application please refer to [@trezor/connect-web package](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-web/README.md).
 
 ## Installation
 
@@ -32,7 +32,7 @@ ES6
 import TrezorConnect from '@trezor/connect';
 ```
 
-For more instructions [refer to this document](../../docs/packages/connect/index.md)
+For more instructions [refer to this document](https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/index.md)
 
 ## Version 9 (stable)
 
@@ -61,11 +61,11 @@ For deployment process of trezor-connect v8 refer to [trezor/connect repository]
 
 Interactive API explorer is available on https://connect.trezor.io/9/#/
 
-Documentation is available [docs/packages/connect](../../docs/packages/connect/index.md)
+Documentation is available [docs/packages/connect](https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/index.md)
 
 ## Examples
 
-A collection of examples on how to implement @trezor/connect in various environments is available in [packages/connect-examples](../connect-examples/README.md)
+A collection of examples on how to implement @trezor/connect in various environments is available in [packages/connect-examples](https://github.com/trezor/trezor-suite/tree/develop/packages/connect-examples)
 
 ## Tests
 
