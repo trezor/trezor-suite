@@ -164,7 +164,7 @@ export const Input = React.forwardRef<TextInput, InputProps>(
         ref,
     ) => {
         const [isFocused, setIsFocused] = useState<boolean>(false);
-        const isLabelMinimized = isFocused || Boolean(value);
+        const isLabelMinimized = isFocused || !!value?.length;
 
         const { applyStyle } = useNativeStyles();
         const { animatedInputLabelStyle } = useAnimationStyles({
