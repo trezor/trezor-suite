@@ -4,7 +4,7 @@
 [![NPM](https://img.shields.io/npm/v/@trezor/connect-web.svg)](https://www.npmjs.org/package/@trezor/connect-web)
 [![Known Vulnerabilities](https://snyk.io/test/github/trezor/connect-web/badge.svg?targetFile=package.json)](https://snyk.io/test/github/trezor/trezor-suite?targetFile=packages/connect-web/package.json)
 
-This package is bundled into web implementations. User interface is presented in a secure popup window served from `connect.trezor.io/<version>/popup.html`. To try it out, use [@trezor/connect-explorer](../connect-explorer) hosted [here](https://trezor.github.io/trezor-suite/connect-explorer).
+This package is bundled into web implementations. User interface is presented in a secure popup window served from `connect.trezor.io/<version>/popup.html`. To try it out, use [@trezor/connect-explorer](https://github.com/trezor/trezor-suite/tree/develop/packages/connect-explorer) hosted [here](https://trezor.github.io/trezor-suite/connect-explorer).
 
 Contains minimum of code required to:
 
@@ -46,7 +46,7 @@ Inline
 var TrezorConnect = window.TrezorConnect;
 ```
 
-For more instructions [refer to this document](../../docs/packages/connect/index.md)
+For more instructions [refer to this document](https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/index.md)
 
 ## Development
 
