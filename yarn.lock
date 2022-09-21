@@ -6223,6 +6223,17 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-native/forms@*, @suite-native/forms@workspace:suite-native/forms":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/forms@workspace:suite-native/forms"
+  dependencies:
+    "@suite-native/atoms": "*"
+    react: ^17.0.2
+    react-hook-form: 6.15.7
+    yup: ^0.32.11
+  languageName: unknown
+  linkType: soft
+
 "@suite-native/module-accounts-import@*, @suite-native/module-accounts-import@workspace:suite-native/module-accounts-import":
   version: 0.0.0-use.local
   resolution: "@suite-native/module-accounts-import@workspace:suite-native/module-accounts-import"
@@ -6239,12 +6250,14 @@ __metadata:
     "@suite-common/wallet-utils": "*"
     "@suite-native/atoms": "*"
     "@suite-native/config": "*"
+    "@suite-native/forms": "*"
     "@suite-native/module-devices": "*"
     "@suite-native/module-settings": "*"
     "@suite-native/navigation": "*"
     "@trezor/connect": 9.0.2
     "@trezor/icons": "*"
     "@trezor/styles": "*"
+    "@trezor/validation": "*"
     jest: ^26.6.3
     react: ^17.0.2
     react-native: 0.68.2

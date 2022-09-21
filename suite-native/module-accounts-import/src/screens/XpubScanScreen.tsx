@@ -3,17 +3,19 @@ import { Pressable, View } from 'react-native';
 
 import { useFocusEffect } from '@react-navigation/native';
 
+import { NetworkSymbol } from '@suite-common/wallet-config';
+import { Box, Button, Chip, Text, VStack } from '@suite-native/atoms';
 import { isDevelopOrDebugEnv } from '@suite-native/config';
+import { Form, TextInputField, useForm } from '@suite-native/forms';
 import {
     AccountsImportStackParamList,
     AccountsImportStackRoutes,
     Screen,
     StackProps,
 } from '@suite-native/navigation';
-import { Box, Button, Chip, Input, InputWrapper, Text } from '@suite-native/atoms';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { CryptoIcon } from '@trezor/icons';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { yup } from '@trezor/validation';
 
 import { Camera, CAMERA_HEIGHT } from '../components/Camera';
 
@@ -40,28 +42,34 @@ const chipStyle = prepareNativeStyle(utils => ({
 }));
 
 const devXpubButtonStyle = prepareNativeStyle(utils => ({
-    marginTop: utils.spacings.small,
+    marginTop: utils.spacings.large,
     borderRadius: utils.borders.radii.round,
 }));
 
-const DEFAULT_XPUB_INPUT_TEXT = '';
 const DEFAULT_CURRENCY_SYMBOL = 'btc';
 // Slip 0014 - https://github.com/satoshilabs/slips/blob/master/slip-0014.md#bitcoin-segwit--p2wpkh--bip84
 const BTC_HARD_CODED_XPUB =
     'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT';
+
+const xpubFormValidationSchema = yup.object({
+    xpubAddress: yup.string().required(),
+});
+type XpubFormValues = yup.InferType<typeof xpubFormValidationSchema>;
 
 export const XpubScanScreen = ({
     navigation,
 }: StackProps<AccountsImportStackParamList, AccountsImportStackRoutes.XpubScan>) => {
     const [selectedCurrencySymbol, setSelectedCurrencySymbol] =
         useState<NetworkSymbol>(DEFAULT_CURRENCY_SYMBOL);
-    const [inputText, setInputText] = useState<string>(DEFAULT_XPUB_INPUT_TEXT);
     const [cameraRequested, setCameraRequested] = useState<boolean>(false);
     const { applyStyle } = useNativeStyles();
 
+    const form = useForm<XpubFormValues>({
+        validation: xpubFormValidationSchema,
+    });
+    const { handleSubmit, setValue } = form;
+
     const resetToDefaultValues = useCallback(() => {
-        setSelectedCurrencySymbol(DEFAULT_CURRENCY_SYMBOL);
-        setInputText(DEFAULT_XPUB_INPUT_TEXT);
         setCameraRequested(false);
     }, []);
 
@@ -75,12 +83,19 @@ export const XpubScanScreen = ({
         setCameraRequested(true);
     };
 
-    const handleXpubResult = (value?: string) => {
-        if (value) {
-            navigation.navigate(AccountsImportStackRoutes.AccountImport, {
-                xpubAddress: value,
-                currencySymbol: selectedCurrencySymbol,
-            });
+    const goToAccountImportScreen = ({ xpubAddress }: XpubFormValues) => {
+        navigation.navigate(AccountsImportStackRoutes.AccountImport, {
+            xpubAddress,
+            currencySymbol: selectedCurrencySymbol,
+        });
+    };
+
+    const onXpubFormSubmit = handleSubmit(goToAccountImportScreen);
+
+    const handleXpubResult = (xpubAddress?: string) => {
+        if (xpubAddress) {
+            setValue('xpubAddress', xpubAddress);
+            onXpubFormSubmit();
         }
     };
 
@@ -122,23 +137,31 @@ export const XpubScanScreen = ({
                         or
                     </Text>
                 </Box>
-                <InputWrapper>
-                    <Input
-                        value={inputText}
-                        onChange={setInputText}
-                        onSubmitEditing={handleXpubResult}
-                        label="Enter x-pub..."
-                    />
-                    {isDevelopOrDebugEnv() && (
+
+                <Form form={form}>
+                    <VStack>
+                        <TextInputField name="xpubAddress" label="Enter x-pub..." />
                         <Button
-                            style={applyStyle(devXpubButtonStyle)}
-                            onPress={() => handleXpubResult(BTC_HARD_CODED_XPUB)}
-                            colorScheme="gray"
+                            onPress={() => {
+                                onXpubFormSubmit();
+                            }}
                         >
-                            Use dev xPub
+                            Submit
                         </Button>
-                    )}
-                </InputWrapper>
+                    </VStack>
+                </Form>
+
+                {isDevelopOrDebugEnv() && (
+                    <Button
+                        style={applyStyle(devXpubButtonStyle)}
+                        onPress={() =>
+                            goToAccountImportScreen({ xpubAddress: BTC_HARD_CODED_XPUB })
+                        }
+                        colorScheme="gray"
+                    >
+                        Use dev xPub
+                    </Button>
+                )}
             </Box>
         </Screen>
     );

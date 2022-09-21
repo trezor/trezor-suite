@@ -1,24 +1,18 @@
 import React from 'react';
 
-import { CryptoIcon } from '@trezor/icons';
-import { Box, Card, Input, InputWrapper, Text } from '@suite-native/atoms';
-import { AccountInfo } from '@trezor/connect';
-import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { NetworkSymbol } from '@suite-common/wallet-config';
+import { formatNetworkAmount } from '@suite-common/wallet-utils';
+import { Box, Card, Text } from '@suite-native/atoms';
+import { TextInputField } from '@suite-native/forms';
+import { AccountInfo } from '@trezor/connect';
+import { CryptoIcon } from '@trezor/icons';
 
 type AssetsOverviewProps = {
     accountInfo: AccountInfo;
-    assetName: string;
     currencySymbol: NetworkSymbol;
-    onChangeAccountName: (accountName: string) => void;
 };
 
-export const AccountImportOverview = ({
-    accountInfo,
-    assetName,
-    currencySymbol,
-    onChangeAccountName,
-}: AssetsOverviewProps) => (
+export const AccountImportOverview = ({ accountInfo, currencySymbol }: AssetsOverviewProps) => (
     <Card>
         <Box marginTop="large" marginBottom="medium">
             <Box alignItems="center" justifyContent="center" marginBottom="medium">
@@ -34,9 +28,7 @@ export const AccountImportOverview = ({
                 </Text>
             </Box>
             <Box marginBottom="large">
-                <InputWrapper>
-                    <Input value={assetName} onChange={onChangeAccountName} label="" />
-                </InputWrapper>
+                <TextInputField name="accountLabel" label="Account label" />
             </Box>
         </Box>
     </Card>

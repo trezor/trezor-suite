@@ -17,6 +17,8 @@ import { Button } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { setOnboardingFinished } from '@suite-native/module-settings';
 import { AccountsRootState, selectAccountsByNetworkAndDevice } from '@suite-common/wallet-core';
+import { Form, useForm } from '@suite-native/forms';
+import { yup } from '@trezor/validation';
 
 import { AccountImportLoader } from '../components/AccountImportLoader';
 import { AccountImportHeader } from '../components/AccountImportHeader';
@@ -37,6 +39,11 @@ const importAnotherButtonStyle = prepareNativeStyle(utils => ({
     width: 165,
 }));
 
+const accountImportFormValidationSchema = yup.object({
+    accountLabel: yup.string().required().max(30),
+});
+type AccountImportFormValues = yup.InferType<typeof accountImportFormValidationSchema>;
+
 export const AccountsImportScreen = ({
     navigation,
     route,
@@ -51,9 +58,14 @@ export const AccountsImportScreen = ({
         selectAccountsByNetworkAndDevice(state, HIDDEN_DEVICE_STATE, currencySymbol),
     );
     const [accountInfo, setAccountInfo] = useState<AccountInfo | null>(null);
-    const [accountLabel, setAccountLabel] = useState<string>(
-        `${currencySymbol} #${deviceNetworkAccounts.length + 1}`,
-    );
+    const defaultAccountLabel = `${currencySymbol} #${deviceNetworkAccounts.length + 1}`;
+    const form = useForm<AccountImportFormValues>({
+        validation: accountImportFormValidationSchema,
+        defaultValues: {
+            accountLabel: defaultAccountLabel,
+        },
+    });
+    const { handleSubmit } = form;
 
     const { applyStyle } = useNativeStyles();
 
@@ -66,6 +78,8 @@ export const AccountsImportScreen = ({
             ]);
         };
 
+        // TODO: show loader when account info is running, because otherwise it can finish after user already submitted
+        // the form, the account is imported and user is somewhere in the app
         async function getAccountInfo() {
             const accountInfo = await TrezorConnect.getAccountInfo({
                 coin: currencySymbol,
@@ -86,10 +100,12 @@ export const AccountsImportScreen = ({
         try {
             getAccountInfo();
         } catch (error) {
-            showAccountInfoAlert({
-                title: 'Account info failed',
-                message: error?.message ?? '',
-            });
+            if (!ignore) {
+                showAccountInfoAlert({
+                    title: 'Account info failed',
+                    message: error?.message ?? '',
+                });
+            }
         }
 
         return () => {
@@ -97,7 +113,7 @@ export const AccountsImportScreen = ({
         };
     }, [xpubAddress, currencySymbol, navigation]);
 
-    const handleConfirmAssets = () => {
+    const handleImportAccount = ({ accountLabel }: AccountImportFormValues) => {
         if (accountInfo) {
             dispatch(
                 importAccountThunk({
@@ -118,33 +134,35 @@ export const AccountsImportScreen = ({
         }
     };
 
+    const handleImportAccountSubmit = handleSubmit(handleImportAccount);
+
     return (
         <Screen>
             {!accountInfo ? (
                 <AccountImportLoader />
             ) : (
                 <View style={[applyStyle(assetsStyle)]}>
-                    <View>
-                        <AccountImportHeader />
-                        <AccountImportOverview
-                            accountInfo={accountInfo}
-                            assetName={accountLabel}
-                            currencySymbol={currencySymbol}
-                            onChangeAccountName={setAccountLabel}
-                        />
-                    </View>
-                    <View style={applyStyle(importAnotherWrapperStyle)}>
-                        <Button
-                            style={applyStyle(importAnotherButtonStyle)}
-                            onPress={() => navigation.goBack()}
-                            colorScheme="gray"
-                        >
-                            Import another
+                    <Form form={form}>
+                        <View>
+                            <AccountImportHeader />
+                            <AccountImportOverview
+                                accountInfo={accountInfo}
+                                currencySymbol={currencySymbol}
+                            />
+                        </View>
+                        <View style={applyStyle(importAnotherWrapperStyle)}>
+                            <Button
+                                style={applyStyle(importAnotherButtonStyle)}
+                                onPress={() => navigation.goBack()}
+                                colorScheme="gray"
+                            >
+                                Import another
+                            </Button>
+                        </View>
+                        <Button onPress={handleImportAccountSubmit} size="large">
+                            Confirm
                         </Button>
-                    </View>
-                    <Button onPress={handleConfirmAssets} size="large">
-                        Confirm
-                    </Button>
+                    </Form>
                 </View>
             )}
         </Screen>
