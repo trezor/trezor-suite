@@ -6655,7 +6655,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/coinjoin@workspace:packages/coinjoin":
+"@trezor/coinjoin@*, @trezor/coinjoin@workspace:packages/coinjoin":
   version: 0.0.0-use.local
   resolution: "@trezor/coinjoin@workspace:packages/coinjoin"
   dependencies:
@@ -7325,6 +7325,7 @@ __metadata:
     "@suite-common/wallet-utils": "*"
     "@testing-library/react": 12.1.5
     "@testing-library/user-event": 12.8.3
+    "@trezor/coinjoin": "*"
     "@trezor/components": "*"
     "@trezor/connect": 9.0.2
     "@trezor/crypto-utils": "*"

@@ -1,62 +1,24 @@
-/* eslint-disable max-classes-per-file */
+import { CoinjoinClient } from '@trezor/coinjoin';
+import { COINJOIN_NETWORKS } from './config';
 
-// NOTE: class below will be replaced by @trezor/coinjoin implementation
-
-type Settings = {
-    network: string;
-    coordinatorName: string;
-    coordinatorUrl: string;
-    middlewareUrl: string;
-};
-
-export type Round = {
-    id: string;
-};
-
-export type CoinjoinStatus = {
-    rounds: Round[];
-};
-
-export class CoinjoinClient {
-    settings: Settings;
-    constructor(settings: Settings) {
-        this.settings = Object.freeze({
-            ...settings,
-        });
-    }
-
-    registerAccount(_account: any) {}
-
-    unregisterAccount(_accountKey: string) {}
-
-    enable(): Promise<CoinjoinStatus> {
-        return Promise.resolve({ rounds: [{ id: '00' }] });
-    }
-}
-
-const REGTEST_URL = 'http://localhost:8081/'; // 'https://coinjoin.corp.sldev.cz/'
-const COINJOIN_NETWORKS: Record<string, Settings> = {
-    regtest: {
-        network: 'regtest',
-        coordinatorName: 'CoinJoinCoordinatorIdentifier',
-        coordinatorUrl: `${REGTEST_URL}WabiSabi/`,
-        middlewareUrl: `${REGTEST_URL}Cryptography/`,
-    },
+const loadInstance = (network: string) => {
+    const settings = COINJOIN_NETWORKS[network];
+    return import(/* webpackChunkName: "coinjoin" */ '@trezor/coinjoin').then(
+        pkg => new pkg.CoinjoinClient(settings),
+    );
 };
 
 export class CoinjoinClientService {
     private static instances: Record<string, CoinjoinClient> = {};
 
-    static createInstance(network: string) {
-        const client = new CoinjoinClient(COINJOIN_NETWORKS[network]);
-        this.instances[network] = client;
-        return client;
+    static async createInstance(network: string) {
+        if (this.instances[network]) return this.instances[network];
+        const instance = await loadInstance(network);
+        this.instances[network] = instance;
+        return instance;
     }
 
-    static getInstance(network: string) {
-        if (!this.instances[network]) {
-            return undefined;
-        }
+    static getInstance(network: string): CoinjoinClient | undefined {
         return this.instances[network];
     }
 

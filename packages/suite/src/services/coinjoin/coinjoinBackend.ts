@@ -1,4 +1,64 @@
-import TrezorConnect from '@trezor/connect';
+import { CoinjoinBackend } from '@trezor/coinjoin';
+import TrezorConnect, { AccountInfo } from '@trezor/connect';
+import { COINJOIN_NETWORKS } from './config';
+
+const loadInstance = (network: string) => {
+    const settings = COINJOIN_NETWORKS[network];
+    return import(/* webpackChunkName: "coinjoin" */ '@trezor/coinjoin').then(
+        pkg => new pkg.CoinjoinBackend(settings),
+    );
+};
+
+// NOTE: blockbook does not understand 4th hardended field in path (slip25 script type) and returns error: "Invalid address, decoded address is of unknown format"
+// temporary replace SLIP-25 path with taproot path
+const slip25Path = "/10025'/1'/0'/1'";
+const taprootPath = "/86'/1'/0'";
+
+const blockbookPatchResponse = (accountInfo: AccountInfo) => {
+    const { addresses } = accountInfo;
+    if (!addresses) return accountInfo;
+
+    const patchAddresses: AccountInfo['addresses'] = {
+        used: [],
+        unused: [],
+        change: [],
+    };
+    const replace = (path: string) => {
+        if (!path.includes('unknown')) return { isChange: false, path };
+        const pathParts = path.split('/');
+        return {
+            path: path.replace('unknown', "m/10025'/1'/0'"),
+            isChange: pathParts[pathParts.length - 2] === '1',
+        };
+    };
+
+    addresses.used.forEach(a => {
+        const { path, isChange } = replace(a.path);
+        if (isChange) {
+            patchAddresses.change.push({ ...a, path });
+        } else {
+            patchAddresses.used.push({ ...a, path });
+        }
+    });
+    addresses.unused.forEach(a => {
+        const { path, isChange } = replace(a.path);
+        if (isChange) {
+            patchAddresses.change.push({ ...a, path });
+        } else {
+            patchAddresses.unused.push({ ...a, path });
+        }
+    });
+    accountInfo.utxo = accountInfo.utxo?.map(utxo => {
+        const { path } = replace(utxo.path);
+        return { ...utxo, path };
+    });
+
+    return {
+        ...accountInfo,
+        descriptor: accountInfo.descriptor.replace(taprootPath, slip25Path),
+        addresses: patchAddresses,
+    };
+};
 
 // NOTE: function below will be replaced by @trezor/coinjoin implementation
 type GetAccountInfoParams = {
@@ -12,11 +72,12 @@ type GetAccountInfoParams = {
 };
 
 const getCoinjoinAccountInfo = async (
-    { descriptor, symbol, onProgress, lastKnownState }: GetAccountInfoParams,
+    { descriptor, symbol, lastKnownState }: GetAccountInfoParams,
+    onProgress: (...args: any[]) => any,
     abortSignal: AbortSignal,
 ) => {
     const accountInfo = await TrezorConnect.getAccountInfo({
-        descriptor,
+        descriptor: descriptor.replace(slip25Path, taprootPath),
         coin: symbol,
         details: 'txs',
     });
@@ -27,11 +88,11 @@ const getCoinjoinAccountInfo = async (
     }
 
     if (lastKnownState?.blockHash === '11') {
-        return accountInfo.payload;
+        return blockbookPatchResponse(accountInfo.payload);
     }
 
     return new Promise<typeof accountInfo.payload>(resolve => {
-        // Temporary simulate account discovery by block filters
+        // simulate account discovery by block filters
         let i = !lastKnownState?.blockHash ? 0 : 70;
         let timeout: ReturnType<typeof setTimeout>;
         const tick = () => {
@@ -49,7 +110,7 @@ const getCoinjoinAccountInfo = async (
                 onProgress({
                     blockHash: '11',
                 });
-                resolve(accountInfo.payload);
+                resolve(blockbookPatchResponse(accountInfo.payload));
             }
         };
         tick();
@@ -62,32 +123,28 @@ const getCoinjoinAccountInfo = async (
 };
 
 export class CoinjoinBackendService {
-    private static instances: Record<string, CoinjoinBackendService> = {};
-    settings: Readonly<{
-        network: string;
-    }>;
-    private abortController: AbortController | undefined;
+    private static instances: Record<string, CoinjoinBackend> = {};
 
-    constructor(network: string) {
-        this.settings = Object.freeze({
-            network,
-        });
+    static async createInstance(network: string) {
+        if (this.instances[network]) return this.instances[network];
+        const instance = await loadInstance(network);
+        // NOTE: temporary use blockbook implementation
+        // @ts-expect-error
+        instance.getAccountInfo = (params: GetAccountInfoParams) => {
+            const abortController = new AbortController();
+            return getCoinjoinAccountInfo(
+                params,
+                (progress: any) => {
+                    instance.emit('progress', progress);
+                },
+                abortController.signal,
+            );
+        };
+        this.instances[network] = instance;
+        return instance;
     }
 
-    getAccountInfo(params: GetAccountInfoParams) {
-        this.abortController = new AbortController();
-        return getCoinjoinAccountInfo(params, this.abortController.signal);
-    }
-
-    cancel() {
-        this.abortController?.abort();
-        this.abortController = undefined;
-    }
-
-    static getInstance(network: string) {
-        if (!this.instances[network]) {
-            this.instances[network] = new CoinjoinBackendService(network);
-        }
+    static getInstance(network: string): CoinjoinBackend | undefined {
         return this.instances[network];
     }
 
