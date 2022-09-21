@@ -21,7 +21,7 @@ const ChevronIcon = styled(Icon)`
     transition: background 0.2s;
 `;
 
-const Header = styled.header<{ isOpened: boolean; onClick?: () => void }>`
+const Header = styled.header<{ isOpen: boolean; onClick?: () => void }>`
     display: flex;
     padding: 16px;
     cursor: ${props => (props.onClick ? 'pointer' : 'default')};
@@ -44,13 +44,14 @@ const Header = styled.header<{ isOpened: boolean; onClick?: () => void }>`
 
 interface AccountGroupProps {
     type: Account['accountType'];
-    keepOpened: boolean;
+    keepOpen: boolean;
     hasBalance: boolean;
     children?: React.ReactNode;
     onUpdate?: () => void;
 }
 
 const getGroupLabel = (type: AccountGroupProps['type']) => {
+    if (type === 'normal') return 'TR_NORMAL_ACCOUNTS';
     if (type === 'coinjoin') return 'TR_COINJOIN_ACCOUNTS';
     if (type === 'taproot') return 'TR_TAPROOT_ACCOUNTS';
     if (type === 'legacy') return 'TR_LEGACY_ACCOUNTS';
@@ -61,51 +62,45 @@ const getGroupLabel = (type: AccountGroupProps['type']) => {
 export const AccountGroup = forwardRef(
     (props: AccountGroupProps, _ref: React.Ref<HTMLDivElement>) => {
         const theme = useTheme();
-        const hasHeader = props.type !== 'normal';
         const wrapperRef = useRef<HTMLDivElement>(null);
-        const [expanded, setExpanded] = useState(
-            props.hasBalance || props.keepOpened || !hasHeader,
-        );
-        const isOpened = expanded || props.keepOpened || !hasHeader;
+        const [isOpen, setIsOpen] = useState(props.hasBalance || props.keepOpen);
+        const [previouslyOpen, setPreviouslyOpen] = useState(isOpen);
         const [animatedIcon, setAnimatedIcon] = useState(false);
 
-        React.useEffect(() => {
-            // follow props change (example: add new coin/account which has balance but group is closed)
-            if (props.keepOpened || props.hasBalance) {
-                setExpanded(true);
-            }
-        }, [props.keepOpened, props.hasBalance]);
+        // follow props change (example: add new coin/account which has balance but group is closed)
+        if ((props.keepOpen || props.hasBalance) && !previouslyOpen) {
+            setPreviouslyOpen(true);
+            setIsOpen(true);
+        }
 
         const onClick = () => {
-            setExpanded(!expanded);
+            setIsOpen(previous => !previous);
             setAnimatedIcon(true);
         };
 
         // Group needs to be wrapped into container (div)
         return (
             <Wrapper ref={wrapperRef}>
-                {hasHeader && (
-                    <HeaderWrapper>
-                        <Header
-                            isOpened={isOpened}
-                            onClick={!props.keepOpened ? onClick : undefined}
-                            data-test={`@account-menu/${props.type}`}
-                        >
-                            <Translation id={getGroupLabel(props.type)} />
-                            {!props.keepOpened && (
-                                <ChevronIcon
-                                    data-test="@account-menu/arrow"
-                                    canAnimate={animatedIcon}
-                                    isActive={isOpened}
-                                    size={16}
-                                    color={theme.TYPE_LIGHT_GREY}
-                                    icon="ARROW_DOWN"
-                                />
-                            )}
-                        </Header>
-                    </HeaderWrapper>
-                )}
-                <AnimationWrapper opened={isOpened} onUpdate={props.onUpdate}>
+                <HeaderWrapper>
+                    <Header
+                        isOpen={isOpen}
+                        onClick={!props.keepOpen ? onClick : undefined}
+                        data-test={`@account-menu/${props.type}`}
+                    >
+                        <Translation id={getGroupLabel(props.type)} />
+                        {!props.keepOpen && (
+                            <ChevronIcon
+                                data-test="@account-menu/arrow"
+                                canAnimate={animatedIcon}
+                                isActive={isOpen}
+                                size={16}
+                                color={theme.TYPE_LIGHT_GREY}
+                                icon="ARROW_DOWN"
+                            />
+                        )}
+                    </Header>
+                </HeaderWrapper>
+                <AnimationWrapper opened={isOpen} onUpdate={props.onUpdate}>
                     {props.children}
                 </AnimationWrapper>
             </Wrapper>

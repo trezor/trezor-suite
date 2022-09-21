@@ -2294,8 +2294,12 @@ export default defineMessages({
         description: 'Link to Trezor wiki.',
         id: 'TR_LEARN_MORE',
     },
+    TR_NORMAL_ACCOUNTS: {
+        defaultMessage: 'Default accounts',
+        id: 'TR_NORMAL_ACCOUNTS',
+    },
     TR_COINJOIN_ACCOUNTS: {
-        defaultMessage: 'Privacy enhanced accounts',
+        defaultMessage: 'CoinJoin accounts',
         id: 'TR_COINJOIN_ACCOUNTS',
     },
     TR_TAPROOT_ACCOUNTS: {
@@ -3300,7 +3304,7 @@ export default defineMessages({
     },
     TR_ACCOUNT_TYPE_SLIP25_NAME: {
         id: 'TR_ACCOUNT_TYPE_SLIP25_NAME',
-        defaultMessage: 'Privacy enhanced account',
+        defaultMessage: 'CoinJoin account',
     },
     TR_ACCOUNT_TYPE_SLIP25_TECH: {
         id: 'TR_ACCOUNT_TYPE_SLIP25_TECH',
@@ -3308,7 +3312,7 @@ export default defineMessages({
     },
     TR_ACCOUNT_TYPE_SLIP25_DESC: {
         id: 'TR_ACCOUNT_TYPE_SLIP25_DESC',
-        defaultMessage: 'What is a privacy enhanced account?',
+        defaultMessage: 'What is a CoinJoin account?',
     },
     TOAST_QR_INCORRECT_ADDRESS: {
         id: 'TOAST_QR_INCORRECT_ADDRESS',
