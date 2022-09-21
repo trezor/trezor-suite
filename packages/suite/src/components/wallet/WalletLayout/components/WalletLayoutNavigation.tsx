@@ -33,22 +33,46 @@ const NavLink = styled.div<{ active?: boolean }>`
 
 const NavLinkText = styled.div`
     position: relative;
+    z-index: 1;
+`;
+
+const Badge = styled.span`
+    position: absolute;
+    top: -14px;
+    right: -27px;
+    padding: 2px 4px 0 4px;
+    border-radius: 4px;
+    background: ${({ theme }) => theme.BG_LIGHT_GREEN};
+    color: ${({ theme }) => theme.TYPE_GREEN};
+    font-size: ${variables.FONT_SIZE.TINY};
+    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
+    text-transform: uppercase;
+    letter-spacing: 0.2px;
+    cursor: default;
+    pointer-events: none;
+    z-index: -1;
 `;
 
 type WalletLayoutNavLinkProps = {
     active: boolean;
     title: ExtendedMessageDescriptor['id'];
     values?: ExtendedMessageDescriptor['values'];
+    badge?: ExtendedMessageDescriptor['id'];
     onClick: () => void;
     'data-test'?: string;
 };
 
 export const WalletLayoutNavLink = (props: WalletLayoutNavLinkProps) => {
-    const { active, title, onClick, values } = props;
+    const { active, title, onClick, values, badge } = props;
     return (
         <NavLink active={active} onClick={onClick} data-test={props['data-test']}>
             <NavLinkText>
                 <Translation id={title} values={values} />
+                {badge && (
+                    <Badge>
+                        <Translation id={badge} />
+                    </Badge>
+                )}
             </NavLinkText>
         </NavLink>
     );

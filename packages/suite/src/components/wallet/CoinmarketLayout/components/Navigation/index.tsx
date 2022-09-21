@@ -62,6 +62,7 @@ const Navigation = () => {
                                     <Translation id={getTitleForNetwork(account.symbol)} />
                                 ),
                             }}
+                            badge="TR_NAV_SAVINGS_BADGE"
                             active={!!routeName?.startsWith('wallet-coinmarket-savings')}
                             onClick={() =>
                                 goto('wallet-coinmarket-savings-setup', { preserveParams: true })

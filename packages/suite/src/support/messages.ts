@@ -4768,6 +4768,10 @@ export default defineMessages({
         id: 'TR_NAV_SAVINGS',
         defaultMessage: 'Save {cryptoCurrencyName}',
     },
+    TR_NAV_SAVINGS_BADGE: {
+        id: 'TR_NAV_SAVINGS_BADGE',
+        defaultMessage: 'New',
+    },
     TR_NAV_INVITY: {
         id: 'TR_NAV_INVITY',
         defaultMessage: 'Invity',
