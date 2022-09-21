@@ -10,7 +10,7 @@ import { Button } from '@trezor/components';
 import React from 'react';
 import styled from 'styled-components';
 import { Translation } from '@suite-components';
-import { FormattedFiatAmount } from '@suite-common/formatters';
+import { useFormatters } from '@suite-common/formatters';
 
 const Header = styled.div`
     font-size: 24px;
@@ -75,6 +75,7 @@ const CopyButton = styled(Button)`
 `;
 
 const PaymentInfo = (props: WithCoinmarketProps) => {
+    const { FiatAmountFormatter } = useFormatters();
     const {
         handleEditButtonClick,
         handleSubmit,
@@ -108,7 +109,7 @@ const PaymentInfo = (props: WithCoinmarketProps) => {
             <Setup>
                 <Values>
                     {savingsTrade.paymentFrequency},{' '}
-                    <FormattedFiatAmount
+                    <FiatAmountFormatter
                         value={savingsTrade?.fiatStringAmount || 0}
                         currency={savingsTrade?.fiatCurrency}
                         minimumFractionDigits={0}

@@ -5,7 +5,7 @@ import { useSelector } from '@suite-hooks';
 import { Network } from '@wallet-types';
 import { TimestampedRates } from '@wallet-types/fiatRates';
 import { toFiatCurrency } from '@suite-common/wallet-utils';
-import { FormattedFiatAmount } from '@suite-common/formatters';
+import { useFormatters } from '@suite-common/formatters';
 
 const StyledHiddenPlaceholder = styled(props => <HiddenPlaceholder {...props} />)`
     font-variant-numeric: tabular-nums;
@@ -67,6 +67,7 @@ export const FiatValue = ({
     showApproximationIndicator,
     disableHiddenPlaceholder,
 }: FiatValueProps) => {
+    const { FiatAmountFormatter } = useFormatters();
     const { fiat, settings } = useSelector(state => ({
         fiat: state.wallet.fiat,
         settings: state.wallet.settings,
@@ -86,14 +87,14 @@ export const FiatValue = ({
         const fiatValueComponent = (
             <WrapperComponent className={className}>
                 {showApproximationIndicator && <>≈ </>}
-                <FormattedFiatAmount currency={targetCurrency} value={fiatAmount} />
+                <FiatAmountFormatter currency={targetCurrency} value={fiatAmount} />
             </WrapperComponent>
         );
 
         const fiatRateValue = ratesSource?.[targetCurrency] ?? null;
         const fiatRateComponent = fiatRateValue ? (
             <SameWidthNums>
-                <FormattedFiatAmount currency={targetCurrency} value={fiatRateValue} />
+                <FiatAmountFormatter currency={targetCurrency} value={fiatRateValue} />
             </SameWidthNums>
         ) : null;
         if (!children) return fiatValueComponent;

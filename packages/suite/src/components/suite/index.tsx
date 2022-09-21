@@ -1,7 +1,6 @@
 import DeviceIcon from './images/DeviceIcon';
 import CheckItem from './CheckItem';
 import { PrerequisitesGuide } from './PrerequisitesGuide';
-import { FormattedFiatAmount } from '@suite-common/formatters';
 import WelcomeLayout from './WelcomeLayout';
 
 import { CardWithHeader } from './CardWithHeader';
@@ -56,7 +55,6 @@ export {
     CheckItem,
     DeviceInvalidModeLayout,
     PrerequisitesGuide,
-    FormattedFiatAmount,
     WelcomeLayout,
     SuiteLayout,
     CardWithHeader as Card,

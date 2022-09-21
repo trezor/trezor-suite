@@ -40,21 +40,21 @@ export const FormattedCryptoAmount = ({
     'data-test': dataTest,
     className,
 }: FormattedCryptoAmountProps) => {
-    const { cryptoAmountFormatter, signValueFormatter, currencySymbolFormatter } = useFormatters();
+    const { CryptoAmountFormatter, SignValueFormatter, CurrencySymbolFormatter } = useFormatters();
 
     if (!value) {
         return null;
     }
 
-    const formattedSymbol = symbol ? currencySymbolFormatter.format(symbol) : '';
-    const formattedValue = cryptoAmountFormatter.format(value, {
+    const formattedSymbol = symbol ? CurrencySymbolFormatter.format(symbol) : '';
+    const formattedValue = CryptoAmountFormatter.format(value, {
         isBalance,
         symbol,
     });
 
     // output as a string, mostly for compatability with graphs
     if (isRawString) {
-        const displayedSignValue = signValueFormatter.format(signValue);
+        const displayedSignValue = SignValueFormatter.format(signValue);
         return <>{`${displayedSignValue} ${formattedValue} ${formattedSymbol}`}</>;
     }
 

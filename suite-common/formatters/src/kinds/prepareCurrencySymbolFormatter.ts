@@ -5,8 +5,7 @@ import { FormatterConfig } from '../types';
 import { makeFormatter } from '../makeFormatter';
 
 export const prepareCurrencySymbolFormatter = (config: FormatterConfig) =>
-    makeFormatter<string, string>(value => {
-        const symbol = value;
+    makeFormatter<string, string>(symbol => {
         const { bitcoinAmountUnit } = config;
 
         const lowerCaseSymbol = symbol.toLowerCase();

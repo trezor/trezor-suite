@@ -1,7 +1,7 @@
 import React, { useRef, useLayoutEffect } from 'react';
 import { useTheme } from '@trezor/components';
 import { FormattedCryptoAmount } from '@suite-components';
-import { FormattedFiatAmount } from '@suite-common/formatters';
+import { useFormatters } from '@suite-common/formatters';
 import { NetworkSymbol } from '@wallet-types';
 
 interface CommonProps {
@@ -21,6 +21,8 @@ export const CustomYAxisTick = ({
     localCurrency,
     symbol,
 }: CustomYAxisTickProps) => {
+    const { FiatAmountFormatter } = useFormatters();
+
     const theme = useTheme();
     const ref = useRef<SVGGElement>(null);
 
@@ -42,7 +44,7 @@ export const CustomYAxisTick = ({
                 style={{ fontVariantNumeric: 'tabular-nums' }}
             >
                 {localCurrency && (
-                    <FormattedFiatAmount
+                    <FiatAmountFormatter
                         value={payload.value}
                         currency={localCurrency}
                         minimumFractionDigits={0}

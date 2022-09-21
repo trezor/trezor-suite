@@ -4,7 +4,7 @@ import { TouchableOpacity } from 'react-native';
 import { CryptoIcon, CryptoIconName } from '@trezor/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { CSSColor } from '@trezor/theme';
-import { FormattedFiatAmount, useFormatters } from '@suite-common/formatters';
+import { useFormatters } from '@suite-common/formatters';
 
 import { Box } from './Box';
 import { Text } from './Text';
@@ -49,7 +49,7 @@ export const AssetItem = ({
     onPress,
 }: AssetItemProps) => {
     const { applyStyle } = useNativeStyles();
-    const { cryptoAmountFormatter, currencySymbolFormatter } = useFormatters();
+    const { CryptoAmountFormatter, CurrencySymbolFormatter, FiatAmountFormatter } = useFormatters();
 
     return (
         <TouchableOpacity disabled={!onPress} onPress={onPress}>
@@ -64,10 +64,9 @@ export const AssetItem = ({
                     >
                         <Text>{cryptoCurrencyName}</Text>
                         <Text>
-                            <FormattedFiatAmount
-                                currency={FIAT_CURRENCY_VALUE}
-                                value={fiatCurrencyValue}
-                            />
+                            {FiatAmountFormatter.format(fiatCurrencyValue, {
+                                currency: FIAT_CURRENCY_VALUE,
+                            })}
                         </Text>
                     </Box>
                     <Box
@@ -81,9 +80,9 @@ export const AssetItem = ({
                             color={assetColorConfig[cryptoCurrencySymbol]}
                         />
                         <Text variant="hint" color="gray600">
-                            <>{`${cryptoAmountFormatter.format(cryptoCurrencyValue, {
+                            <>{`${CryptoAmountFormatter.format(cryptoCurrencyValue, {
                                 symbol: cryptoCurrencySymbol,
-                            })} ${currencySymbolFormatter.format(cryptoCurrencySymbol)}`}</>
+                            })} ${CurrencySymbolFormatter.format(cryptoCurrencySymbol)}`}</>
                         </Text>
                     </Box>
                 </Box>

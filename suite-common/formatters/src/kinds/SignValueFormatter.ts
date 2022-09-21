@@ -3,6 +3,6 @@ import { isSignValuePositive } from '@suite-common/suite-utils';
 
 import { makeFormatter } from '../makeFormatter';
 
-export const signValueFormatter = makeFormatter<SignValue | undefined, string>(value =>
+export const SignValueFormatter = makeFormatter<SignValue | undefined, string>(value =>
     value ? `${isSignValuePositive(value) ? '+' : '-'}` : '',
 );

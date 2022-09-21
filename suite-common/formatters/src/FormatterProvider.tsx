@@ -1,5 +1,7 @@
 import React, { createContext, useMemo } from 'react';
 
+import { FormatNumberOptions } from '@formatjs/intl';
+
 import { SignValue } from '@suite-common/suite-types';
 
 import {
@@ -8,9 +10,13 @@ import {
     CryptoAmountFormatterInputValue,
 } from './kinds/prepareCryptoAmountFormatter';
 import { prepareCoinBalanceFormatter } from './kinds/prepareCoinBalanceFormatter';
+import {
+    prepareFiatAmountFormatter,
+    FiatAmountFormatterDataContext,
+} from './kinds/prepareFiatAmountFormatter';
 import { Formatter } from './makeFormatter';
 import { FormatterConfig } from './types';
-import { signValueFormatter } from './kinds/signValueFormatter';
+import { SignValueFormatter } from './kinds/SignValueFormatter';
 import { prepareCurrencySymbolFormatter } from './kinds/prepareCurrencySymbolFormatter';
 
 type FormatterProviderProps = {
@@ -19,15 +25,19 @@ type FormatterProviderProps = {
 };
 
 export type Formatters = {
-    cryptoAmountFormatter: Formatter<
+    CryptoAmountFormatter: Formatter<
         CryptoAmountFormatterInputValue,
         string,
-        never,
         CryptoAmountFormatterDataContext
     >;
-    coinBalanceFormatter: Formatter<string, string>;
-    currencySymbolFormatter: Formatter<string, string>;
-    signValueFormatter: Formatter<SignValue | undefined, string>;
+    CoinBalanceFormatter: Formatter<string, string>;
+    CurrencySymbolFormatter: Formatter<string, string>;
+    SignValueFormatter: Formatter<SignValue | undefined, string>;
+    FiatAmountFormatter: Formatter<
+        string | number,
+        string | null,
+        FiatAmountFormatterDataContext<FormatNumberOptions>
+    >;
 };
 
 export const FormatterProviderContext = createContext<Formatters>({} as Formatters);
@@ -35,10 +45,11 @@ export const FormatterProviderContext = createContext<Formatters>({} as Formatte
 export const FormatterProvider = ({ config, children }: FormatterProviderProps) => {
     const contextValue = useMemo(
         () => ({
-            cryptoAmountFormatter: prepareCryptoAmountFormatter(config),
-            coinBalanceFormatter: prepareCoinBalanceFormatter(config),
-            currencySymbolFormatter: prepareCurrencySymbolFormatter(config),
-            signValueFormatter,
+            CryptoAmountFormatter: prepareCryptoAmountFormatter(config),
+            CoinBalanceFormatter: prepareCoinBalanceFormatter(config),
+            CurrencySymbolFormatter: prepareCurrencySymbolFormatter(config),
+            FiatAmountFormatter: prepareFiatAmountFormatter(config),
+            SignValueFormatter,
         }),
         [config],
     );

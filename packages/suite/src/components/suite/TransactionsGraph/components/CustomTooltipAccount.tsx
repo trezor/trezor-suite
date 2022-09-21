@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { TooltipProps } from 'recharts';
-import { FormattedFiatAmount } from '@suite-common/formatters';
+import { useFormatters } from '@suite-common/formatters';
 import { FormattedCryptoAmount } from '@suite-components/FormattedCryptoAmount';
 import { NetworkSymbol } from '@wallet-types';
 import { CommonAggregatedHistory } from '@wallet-types/graph';
@@ -11,32 +11,6 @@ import { CustomTooltipBase } from './CustomTooltipBase';
 const StyledCryptoAmount = styled(FormattedCryptoAmount)`
     margin-right: 2px;
 `;
-
-const formatAmount = (
-    amount: string | undefined,
-    symbol: NetworkSymbol,
-    fiatAmount: string | undefined,
-    localCurrency: string | undefined,
-    sign: 'pos' | 'neg',
-) => (
-    <>
-        {amount && (
-            <StyledCryptoAmount
-                value={amount}
-                symbol={symbol}
-                signValue={sign}
-                disableHiddenPlaceholder
-            />
-        )}
-
-        {fiatAmount && localCurrency && (
-            <>
-                (
-                <FormattedFiatAmount currency={localCurrency} value={fiatAmount} />)
-            </>
-        )}
-    </>
-);
 
 interface CustomTooltipAccountProps extends TooltipProps<number, any> {
     selectedRange: GraphProps['selectedRange'];
@@ -59,6 +33,8 @@ export const CustomTooltipAccount = ({
     symbol,
     ...props
 }: CustomTooltipAccountProps) => {
+    const { FiatAmountFormatter } = useFormatters();
+
     if (!active || !payload) {
         return null;
     }
@@ -70,6 +46,32 @@ export const CustomTooltipAccount = ({
     const receivedFiat: string | undefined =
         payload[0].payload.receivedFiat[localCurrency] ?? undefined;
     const sentFiat: string | undefined = payload[0].payload.sentFiat[localCurrency] ?? undefined;
+
+    const formatAmount = (
+        amount: string | undefined,
+        symbol: NetworkSymbol,
+        fiatAmount: string | undefined,
+        localCurrency: string | undefined,
+        sign: 'pos' | 'neg',
+    ) => (
+        <>
+            {amount && (
+                <StyledCryptoAmount
+                    value={amount}
+                    symbol={symbol}
+                    signValue={sign}
+                    disableHiddenPlaceholder
+                />
+            )}
+
+            {fiatAmount && localCurrency && (
+                <>
+                    (
+                    <FiatAmountFormatter currency={localCurrency} value={fiatAmount} />)
+                </>
+            )}
+        </>
+    );
 
     return (
         <CustomTooltipBase

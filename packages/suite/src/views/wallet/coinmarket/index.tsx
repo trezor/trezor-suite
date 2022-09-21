@@ -1,7 +1,5 @@
-import React from 'react';
 import styled from 'styled-components';
 import { Icon, variables, SelectBar } from '@trezor/components';
-import { FormattedFiatAmount } from '@suite-common/formatters';
 import { CardWithHeader } from '@suite-components/CardWithHeader';
 
 interface ResponsiveSize {
@@ -89,18 +87,3 @@ export const SavingsKYCCard = styled(CardWithHeader)`
     height: 104px;
     width: 100%;
 `;
-
-export const getFiatAmountOptions = (amounts: string[], fiatCurrency?: string) =>
-    amounts.map(amount => ({
-        label: !Number.isNaN(Number(amount)) ? (
-            <FormattedFiatAmount
-                value={amount}
-                currency={fiatCurrency}
-                minimumFractionDigits={0}
-                maximumFractionDigits={0}
-            />
-        ) : (
-            amount
-        ),
-        value: amount,
-    }));

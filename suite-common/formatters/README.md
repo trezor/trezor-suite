@@ -15,24 +15,25 @@ upperCaseFormatter.format('foo'); // "FOO"
 export const FormatterProvider = ({ config, children }: FormatterProviderProps) => {
     const contextValue = useMemo(
         () => ({
-            cryptoAmountFormatter: prepareCryptoAmountFormatter(config),
+            CryptoAmountFormatter: prepareCryptoAmountFormatter(config),
             ....another formatters
         }),
         [config],
 
-        return (
-            <FormatterProviderContext.Provider value={contextValue}>
-                ...
-);
+    return (
+        <FormatterProviderContext.Provider value = { contextValue } >
+...
+)
+    ;
 ```
 
--   formatters are objects with a format method. Formatters should be created solely using the `makeFormatter` factory.
+-   formatters are objects with a `format` method. Formatters should be created solely using the `makeFormatter` factory.
 
 ```typescript
 // src/kinds/prepareCryptoAmountFormatter.ts
 
 export const prepareCryptoAmountFormatter = (config: FormatterConfig) =>
-    makeFormatter<CryptoAmountFormatterInputValue, string, never, CryptoAmountFormatterDataContext>(
+    makeFormatter<CryptoAmountFormatterInputValue, string, CryptoAmountFormatterDataContext>(
         (value, dataContext) => {
             const { symbol, isBalance } = dataContext;
             const { locale, bitcoinAmountUnit } = config;
@@ -47,21 +48,21 @@ export const prepareCryptoAmountFormatter = (config: FormatterConfig) =>
 -   all formatters can be accessed with hook `useFormatters()`
 
 ```typescript
-const { cryptoAmountFormatter, signValueFormatter, currencySymbolFormatter } = useFormatters();
+const { CryptoAmountFormatter, SignValueFormatter, CurrencySymbolFormatter } = useFormatters();
 ```
 
-and used in components:
+and used in components with `.format()` method:
 
 ```typescript
-const formattedSymbol = symbol ? currencySymbolFormatter.format(symbol) : '';
-const formattedValue = cryptoAmountFormatter.format(value, {
+const formattedSymbol = symbol ? CurrencySymbolFormatter.format(symbol) : '';
+const formattedValue = CryptoAmountFormatter.format(value, {
     isBalance,
     symbol,
 });
 
 // output as a string, mostly for compatability with graphs
 if (isRawString) {
-    const displayedSignValue = signValueFormatter.format(signValue);
+    const displayedSignValue = SignValueFormatter.format(signValue);
     return <>{`${displayedSignValue} ${formattedValue} ${formattedSymbol}`}</>;
 }
 
@@ -75,4 +76,20 @@ return (
         {symbol && <Symbol>&nbsp;{formattedSymbol}</Symbol>}
     </Container>
 );
+```
+
+It can even be used as components:
+
+- **value** - the value to be formatted
+- other props - dataContext
+
+```typescript
+    const { FiatAmountFormatter } = useFormatters();
+
+    <FiatAmountFormatter
+        value={savingsTrade?.fiatStringAmount || 0}
+        currency={savingsTrade?.fiatCurrency}
+        minimumFractionDigits={0}
+        maximumFractionDigits={2}
+    />
 ```

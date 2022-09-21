@@ -6,7 +6,6 @@ import { IntlProvider } from 'react-intl';
 
 import { NavigationContainer } from '@react-navigation/native';
 
-import { PROTO } from '@trezor/connect';
 import enMessages from '@trezor/suite-data/files/translations/en.json';
 import { connectInitThunk } from '@suite-common/connect-init';
 import { store, storePersistor } from '@suite-native/state';
@@ -17,9 +16,11 @@ import { FormatterProvider } from '@suite-common/formatters';
 import { RootStackNavigator } from './navigation/RootStackNavigator';
 import { StylesProvider } from './StylesProvider';
 import { useSplashScreen } from './hooks/useSplashScreen';
+import { useFormattersConfig } from './hooks/useFormattersConfig';
 
 const AppComponent = () => {
     const dispatch = useDispatch();
+    const formattersConfig = useFormattersConfig();
 
     useEffect(() => {
         const initActions = async () => {
@@ -33,7 +34,11 @@ const AppComponent = () => {
         initActions().catch(console.error);
     }, [dispatch]);
 
-    return <RootStackNavigator />;
+    return (
+        <FormatterProvider config={formattersConfig}>
+            <RootStackNavigator />
+        </FormatterProvider>
+    );
 };
 
 export const App = () => {
@@ -47,14 +52,7 @@ export const App = () => {
                         <StorageProvider persistor={storePersistor}>
                             <SafeAreaProvider>
                                 <StylesProvider>
-                                    <FormatterProvider
-                                        config={{
-                                            locale: 'en',
-                                            bitcoinAmountUnit: PROTO.AmountUnit.BITCOIN,
-                                        }}
-                                    >
-                                        <AppComponent />
-                                    </FormatterProvider>
+                                    <AppComponent />
                                 </StylesProvider>
                             </SafeAreaProvider>
                         </StorageProvider>

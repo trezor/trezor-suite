@@ -6076,6 +6076,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/formatters@workspace:suite-common/formatters"
   dependencies:
+    "@formatjs/intl": 2.3.1
     "@suite-common/suite-constants": "*"
     "@suite-common/suite-types": "*"
     "@suite-common/suite-utils": "*"

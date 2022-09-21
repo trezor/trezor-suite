@@ -19,7 +19,7 @@ export type CryptoAmountFormatterDataContext = {
 };
 
 export const prepareCryptoAmountFormatter = (config: FormatterConfig) =>
-    makeFormatter<CryptoAmountFormatterInputValue, string, never, CryptoAmountFormatterDataContext>(
+    makeFormatter<CryptoAmountFormatterInputValue, string, CryptoAmountFormatterDataContext>(
         (value, dataContext) => {
             const { symbol, isBalance } = dataContext;
             const { locale, bitcoinAmountUnit } = config;

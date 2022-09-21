@@ -11,6 +11,7 @@
         "type-check": "tsc --build"
     },
     "dependencies": {
+        "@formatjs/intl": "2.3.1",
         "@suite-common/suite-constants": "*",
         "@suite-common/suite-types": "*",
         "@suite-common/suite-utils": "*",

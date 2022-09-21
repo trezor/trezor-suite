@@ -32,7 +32,7 @@ import { FormatterProvider } from '@suite-common/formatters';
 const Main = () => {
     useCypress();
     useTor();
-    const formatterConfig = useFormattersConfig();
+    const formattersConfig = useFormattersConfig();
 
     return (
         <ConnectedThemeProvider>
@@ -44,15 +44,13 @@ const Main = () => {
                         <Protocol />
                         <OnlineStatus />
                         <RouterHandler />
-                        <IntlProvider>
-                            <FormatterProvider config={formatterConfig}>
-                                <Metadata />
-                                <ToastContainer />
-                                <Preloader>
-                                    <AppRouter />
-                                </Preloader>
-                            </FormatterProvider>
-                        </IntlProvider>
+                        <FormatterProvider config={formattersConfig}>
+                            <Metadata />
+                            <ToastContainer />
+                            <Preloader>
+                                <AppRouter />
+                            </Preloader>
+                        </FormatterProvider>
                     </ErrorBoundary>
                 </ModalContextProvider>
             </RouterProvider>
@@ -73,7 +71,9 @@ export const init = async (root: HTMLElement) => {
 
     render(
         <ReduxProvider store={store}>
-            <Main />
+            <IntlProvider>
+                <Main />
+            </IntlProvider>
         </ReduxProvider>,
         root,
     );
