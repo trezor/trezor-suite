@@ -50,7 +50,9 @@ Before you start make sure you have downloaded and installed [NVM](https://githu
 -   `yarn`
 -   `yarn build:libs && yarn workspace @trezor/suite-data msg-system-sign-config`
 
-_To set up your dev environment for a native platform (iOS/Android) follow [these additional steps](https://github.com/trezor/trezor-suite/tree/develop/suite-native/app#development)._
+> It's recommended to enable `git config --global submodule.recurse true` so you don't need to run `git submodule update --init --recursive` every time when submodules are updated.
+
+> To set up your dev environment for a native platform (iOS/Android) follow [these additional steps](https://github.com/trezor/trezor-suite/tree/develop/suite-native/app#development).
 
 Run a dev build:
 
