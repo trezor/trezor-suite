@@ -6,6 +6,7 @@ import { IntlProvider } from 'react-intl';
 
 import { NavigationContainer } from '@react-navigation/native';
 
+// FIXME this is only temporary until Intl refactor will be finished
 import enMessages from '@trezor/suite-data/files/translations/en.json';
 import { connectInitThunk } from '@suite-common/connect-init';
 import { store, storePersistor } from '@suite-native/state';

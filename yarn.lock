@@ -6079,7 +6079,6 @@ __metadata:
     "@formatjs/intl": 2.3.1
     "@suite-common/suite-constants": "*"
     "@suite-common/suite-types": "*"
-    "@suite-common/suite-utils": "*"
     "@suite-common/wallet-config": "*"
     "@suite-common/wallet-utils": "*"
     "@trezor/connect": 9.0.2
@@ -6180,9 +6179,7 @@ __metadata:
   resolution: "@suite-common/suite-utils@workspace:suite-common/suite-utils"
   dependencies:
     "@suite-common/suite-config": "*"
-    "@suite-common/suite-types": "*"
     "@suite-common/wallet-config": "*"
-    bignumber.js: ^9.1.0
     date-fns: ^2.29.1
     jest: ^26.6.3
     typescript: 4.7.4
@@ -6305,6 +6302,7 @@ __metadata:
   dependencies:
     "@mobily/ts-belt": ^3.11.0
     "@suite-common/formatters": "*"
+    "@suite-common/wallet-config": "*"
     "@trezor/icons": "*"
     "@trezor/styles": "*"
     "@trezor/theme": "*"

@@ -29,7 +29,7 @@ export const prepareFiatAmountFormatter = (config: FormatterConfig) =>
         return intl.formatNumber(bn.toNumber(), {
             ...dataContext,
             style: style || 'currency',
-            minimumFractionDigits: minimumFractionDigits || 2,
-            maximumFractionDigits: maximumFractionDigits || 2,
+            minimumFractionDigits: minimumFractionDigits ?? 2,
+            maximumFractionDigits: maximumFractionDigits ?? 2,
         });
     });

@@ -44,13 +44,15 @@ const Main = () => {
                         <Protocol />
                         <OnlineStatus />
                         <RouterHandler />
-                        <FormatterProvider config={formattersConfig}>
-                            <Metadata />
-                            <ToastContainer />
-                            <Preloader>
-                                <AppRouter />
-                            </Preloader>
-                        </FormatterProvider>
+                        <IntlProvider>
+                            <FormatterProvider config={formattersConfig}>
+                                <Metadata />
+                                <ToastContainer />
+                                <Preloader>
+                                    <AppRouter />
+                                </Preloader>
+                            </FormatterProvider>
+                        </IntlProvider>
                     </ErrorBoundary>
                 </ModalContextProvider>
             </RouterProvider>
@@ -71,9 +73,7 @@ export const init = async (root: HTMLElement) => {
 
     render(
         <ReduxProvider store={store}>
-            <IntlProvider>
-                <Main />
-            </IntlProvider>
+            <Main />
         </ReduxProvider>,
         root,
     );

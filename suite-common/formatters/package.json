@@ -14,7 +14,6 @@
         "@formatjs/intl": "2.3.1",
         "@suite-common/suite-constants": "*",
         "@suite-common/suite-types": "*",
-        "@suite-common/suite-utils": "*",
         "@suite-common/wallet-config": "*",
         "@suite-common/wallet-utils": "*",
         "@trezor/connect": "9.0.2",

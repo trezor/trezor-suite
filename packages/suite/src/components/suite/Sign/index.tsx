@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { useTheme } from '@trezor/components';
 import { SignValue } from '@suite-common/suite-types';
-import { isSignValuePositive } from '@suite-common/suite-utils';
+import { isSignValuePositive } from '@suite-common/formatters';
 
 const StyledSign = styled.span<{ color: string }>`
     color: ${({ color }) => color};

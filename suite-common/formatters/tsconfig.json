@@ -4,7 +4,6 @@
     "references": [
         { "path": "../suite-constants" },
         { "path": "../suite-types" },
-        { "path": "../suite-utils" },
         { "path": "../wallet-config" },
         { "path": "../wallet-utils" },
         { "path": "../../packages/connect" }

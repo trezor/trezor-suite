@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { TooltipProps } from 'recharts';
-import { useFormatters } from '@suite-common/formatters';
+import { Formatters, useFormatters } from '@suite-common/formatters';
 import { FormattedCryptoAmount } from '@suite-components/FormattedCryptoAmount';
 import { NetworkSymbol } from '@wallet-types';
 import { CommonAggregatedHistory } from '@wallet-types/graph';
@@ -11,6 +11,37 @@ import { CustomTooltipBase } from './CustomTooltipBase';
 const StyledCryptoAmount = styled(FormattedCryptoAmount)`
     margin-right: 2px;
 `;
+
+const formatAmount = (
+    amount: string | undefined,
+    symbol: NetworkSymbol,
+    fiatAmount: string | undefined,
+    localCurrency: string | undefined,
+    sign: 'pos' | 'neg',
+    formatters: Formatters,
+) => {
+    const { FiatAmountFormatter } = formatters;
+
+    return (
+        <>
+            {amount && (
+                <StyledCryptoAmount
+                    value={amount}
+                    symbol={symbol}
+                    signValue={sign}
+                    disableHiddenPlaceholder
+                />
+            )}
+
+            {fiatAmount && localCurrency && (
+                <>
+                    (
+                    <FiatAmountFormatter currency={localCurrency} value={fiatAmount} />)
+                </>
+            )}
+        </>
+    );
+};
 
 interface CustomTooltipAccountProps extends TooltipProps<number, any> {
     selectedRange: GraphProps['selectedRange'];
@@ -33,8 +64,7 @@ export const CustomTooltipAccount = ({
     symbol,
     ...props
 }: CustomTooltipAccountProps) => {
-    const { FiatAmountFormatter } = useFormatters();
-
+    const formatters = useFormatters();
     if (!active || !payload) {
         return null;
     }
@@ -47,44 +77,26 @@ export const CustomTooltipAccount = ({
         payload[0].payload.receivedFiat[localCurrency] ?? undefined;
     const sentFiat: string | undefined = payload[0].payload.sentFiat[localCurrency] ?? undefined;
 
-    const formatAmount = (
-        amount: string | undefined,
-        symbol: NetworkSymbol,
-        fiatAmount: string | undefined,
-        localCurrency: string | undefined,
-        sign: 'pos' | 'neg',
-    ) => (
-        <>
-            {amount && (
-                <StyledCryptoAmount
-                    value={amount}
-                    symbol={symbol}
-                    signValue={sign}
-                    disableHiddenPlaceholder
-                />
-            )}
-
-            {fiatAmount && localCurrency && (
-                <>
-                    (
-                    <FiatAmountFormatter currency={localCurrency} value={fiatAmount} />)
-                </>
-            )}
-        </>
-    );
-
     return (
         <CustomTooltipBase
             {...props}
             active={active}
             payload={payload}
-            sentAmount={formatAmount(sentAmountString, symbol, sentFiat, localCurrency, 'neg')}
+            sentAmount={formatAmount(
+                sentAmountString,
+                symbol,
+                sentFiat,
+                localCurrency,
+                'neg',
+                formatters,
+            )}
             receivedAmount={formatAmount(
                 receivedAmountString,
                 symbol,
                 receivedFiat,
                 localCurrency,
                 'pos',
+                formatters,
             )}
             balance={
                 <FormattedCryptoAmount

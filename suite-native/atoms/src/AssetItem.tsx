@@ -5,13 +5,14 @@ import { CryptoIcon, CryptoIconName } from '@trezor/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { CSSColor } from '@trezor/theme';
 import { useFormatters } from '@suite-common/formatters';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 
 import { Box } from './Box';
 import { Text } from './Text';
 import { ProgressBar } from './ProgressBar';
 
 type AssetItemProps = {
-    cryptoCurrencySymbol: string;
+    cryptoCurrencySymbol: NetworkSymbol;
     cryptoCurrencyName: string;
     cryptoCurrencyValue: number;
     portfolioPercentage: number;

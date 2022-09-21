@@ -2,14 +2,54 @@
 
 This package provides utility functions to set the standardized way to format values in our React components with a definition of custom _formatters_.
 
+### Usage
+
+-   all formatters should be accessed with hook `useFormatters()`
+
+```typescript
+const { CryptoAmountFormatter, SignValueFormatter, CurrencySymbolFormatter } = useFormatters();
+```
+
+and used in components with `.format()` method:
+
+```typescript
+const formattedSymbol = symbol ? CurrencySymbolFormatter.format(symbol) : '';
+const formattedValue = CryptoAmountFormatter.format(value, {
+    isBalance,
+    symbol,
+});
+
+// output as a string, mostly for compatability with graphs
+if (isRawString) {
+    const displayedSignValue = SignValueFormatter.format(signValue);
+    return <>{`${displayedSignValue} ${formattedValue} ${formattedSymbol}`}</>;
+}
+```
+
+It can even be used as components:
+
+-   **value** - the value to be formatted
+-   other props - dataContext
+
+```typescript
+const { FiatAmountFormatter } = useFormatters();
+
+<FiatAmountFormatter
+    value={savingsTrade?.fiatStringAmount || 0}
+    currency={savingsTrade?.fiatCurrency}
+    minimumFractionDigits={0}
+    maximumFractionDigits={2}
+/>;
+```
+
 The simplest formatter looks like:
 
 ```typescript
-const upperCaseFormatter = makeFormatter(value => value.toUpperCase());
+const upperCaseFormatter = makeFormatter<string, string>(value => value.toUpperCase());
 upperCaseFormatter.format('foo'); // "FOO"
 ```
 
--   formatters are defined in `FormatterProvider.tsx` which accepts the configuration object (for example some settings stuff like locale etc.) for all kinds of formatters which are then being prepared with values from the config and passed to the context like:
+Formatters are initialized in `FormatterProvider.tsx` which accepts the configuration object (for example some settings stuff like locale etc.). This is necessary because we want formatters to be independent as much as possible to make them work in all our apps (contexts).
 
 ```typescript
 export const FormatterProvider = ({ config, children }: FormatterProviderProps) => {
@@ -41,55 +81,4 @@ export const prepareCryptoAmountFormatter = (config: FormatterConfig) =>
             // the rest functionality of your formatter...
             ...
             return formattedValue;
-```
-
-### Usage
-
--   all formatters can be accessed with hook `useFormatters()`
-
-```typescript
-const { CryptoAmountFormatter, SignValueFormatter, CurrencySymbolFormatter } = useFormatters();
-```
-
-and used in components with `.format()` method:
-
-```typescript
-const formattedSymbol = symbol ? CurrencySymbolFormatter.format(symbol) : '';
-const formattedValue = CryptoAmountFormatter.format(value, {
-    isBalance,
-    symbol,
-});
-
-// output as a string, mostly for compatability with graphs
-if (isRawString) {
-    const displayedSignValue = SignValueFormatter.format(signValue);
-    return <>{`${displayedSignValue} ${formattedValue} ${formattedSymbol}`}</>;
-}
-
-// component - data obtained as the object with a type of your choice...
-return (
-    <Container className={className}>
-        {signValue && <Sign value={signValue} />}
-
-        <Value data-test={dataTest}>{formattedValue}</Value>
-
-        {symbol && <Symbol>&nbsp;{formattedSymbol}</Symbol>}
-    </Container>
-);
-```
-
-It can even be used as components:
-
-- **value** - the value to be formatted
-- other props - dataContext
-
-```typescript
-    const { FiatAmountFormatter } = useFormatters();
-
-    <FiatAmountFormatter
-        value={savingsTrade?.fiatStringAmount || 0}
-        currency={savingsTrade?.fiatCurrency}
-        minimumFractionDigits={0}
-        maximumFractionDigits={2}
-    />
 ```

@@ -57,7 +57,7 @@ export const Assets = () => {
                     <AssetItem
                         iconName="btc"
                         cryptoCurrencyName="Bitcoin"
-                        cryptoCurrencySymbol="BTC"
+                        cryptoCurrencySymbol="btc"
                         cryptoCurrencyValue={0.00005122}
                         portfolioPercentage={70}
                         fiatCurrencyValue={3123}
@@ -66,7 +66,7 @@ export const Assets = () => {
                     <AssetItem
                         iconName="test"
                         cryptoCurrencyName="Testnet"
-                        cryptoCurrencySymbol="TBTC"
+                        cryptoCurrencySymbol="test"
                         cryptoCurrencyValue={0.00005122}
                         portfolioPercentage={30}
                         fiatCurrencyValue={3123}

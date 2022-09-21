@@ -34,7 +34,7 @@ import { FormatterProvider } from '@suite-common/formatters';
 
 const Main = () => {
     useTor();
-    const formatterConfig = useFormattersConfig();
+    const formattersConfig = useFormattersConfig();
 
     return (
         <ConnectedThemeProvider>
@@ -46,15 +46,17 @@ const Main = () => {
                         <Protocol />
                         <OnlineStatus />
                         <RouterHandler />
-                        <FormatterProvider config={formatterConfig}>
-                            <DesktopUpdater>
-                                <Metadata />
-                                <ToastContainer />
-                                <Preloader>
-                                    <AppRouter />
-                                </Preloader>
-                            </DesktopUpdater>
-                        </FormatterProvider>
+                        <IntlProvider>
+                            <FormatterProvider config={formattersConfig}>
+                                <DesktopUpdater>
+                                    <Metadata />
+                                    <ToastContainer />
+                                    <Preloader>
+                                        <AppRouter />
+                                    </Preloader>
+                                </DesktopUpdater>
+                            </FormatterProvider>
+                        </IntlProvider>
                     </ErrorBoundary>
                 </ModalContextProvider>
             </RouterProvider>
@@ -104,9 +106,7 @@ export const init = async (root: HTMLElement) => {
     // finally render whole app
     render(
         <ReduxProvider store={store}>
-            <IntlProvider>
-                <Main />
-            </IntlProvider>
+            <Main />
         </ReduxProvider>,
         root,
     );

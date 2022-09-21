@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { HiddenPlaceholder, Sign } from '@suite-components';
 import { SignValue } from '@suite-common/suite-types';
 import { useFormatters } from '@suite-common/formatters';
+import { NetworkSymbol } from '@wallet-types';
 
 const Container = styled.span`
     max-width: 100%;
@@ -46,10 +47,11 @@ export const FormattedCryptoAmount = ({
         return null;
     }
 
-    const formattedSymbol = symbol ? CurrencySymbolFormatter.format(symbol) : '';
+    const networkSymbol = symbol?.toLowerCase() as NetworkSymbol;
+    const formattedSymbol = networkSymbol ? CurrencySymbolFormatter.format(networkSymbol) : '';
     const formattedValue = CryptoAmountFormatter.format(value, {
         isBalance,
-        symbol,
+        symbol: networkSymbol,
     });
 
     // output as a string, mostly for compatability with graphs

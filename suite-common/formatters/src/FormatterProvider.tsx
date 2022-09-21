@@ -3,21 +3,22 @@ import React, { createContext, useMemo } from 'react';
 import { FormatNumberOptions } from '@formatjs/intl';
 
 import { SignValue } from '@suite-common/suite-types';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 
 import {
     prepareCryptoAmountFormatter,
     CryptoAmountFormatterDataContext,
     CryptoAmountFormatterInputValue,
-} from './kinds/prepareCryptoAmountFormatter';
-import { prepareCoinBalanceFormatter } from './kinds/prepareCoinBalanceFormatter';
+} from './formatters/prepareCryptoAmountFormatter';
+import { prepareCoinBalanceFormatter } from './formatters/prepareCoinBalanceFormatter';
 import {
     prepareFiatAmountFormatter,
     FiatAmountFormatterDataContext,
-} from './kinds/prepareFiatAmountFormatter';
+} from './formatters/prepareFiatAmountFormatter';
 import { Formatter } from './makeFormatter';
 import { FormatterConfig } from './types';
-import { SignValueFormatter } from './kinds/SignValueFormatter';
-import { prepareCurrencySymbolFormatter } from './kinds/prepareCurrencySymbolFormatter';
+import { SignValueFormatter } from './formatters/SignValueFormatter';
+import { prepareCurrencySymbolFormatter } from './formatters/prepareCurrencySymbolFormatter';
 
 type FormatterProviderProps = {
     children: React.ReactNode;
@@ -31,7 +32,7 @@ export type Formatters = {
         CryptoAmountFormatterDataContext
     >;
     CoinBalanceFormatter: Formatter<string, string>;
-    CurrencySymbolFormatter: Formatter<string, string>;
+    CurrencySymbolFormatter: Formatter<NetworkSymbol, string>;
     SignValueFormatter: Formatter<SignValue | undefined, string>;
     FiatAmountFormatter: Formatter<
         string | number,
@@ -42,17 +43,27 @@ export type Formatters = {
 
 export const FormatterProviderContext = createContext<Formatters>({} as Formatters);
 
+export const getFormatters = (config: FormatterConfig): Formatters => {
+    const CryptoAmountFormatter = prepareCryptoAmountFormatter(config);
+    const CoinBalanceFormatter = prepareCoinBalanceFormatter(config);
+    const CurrencySymbolFormatter = prepareCurrencySymbolFormatter(config);
+    const FiatAmountFormatter = prepareFiatAmountFormatter(config);
+
+    return {
+        CryptoAmountFormatter,
+        CoinBalanceFormatter,
+        CurrencySymbolFormatter,
+        FiatAmountFormatter,
+        SignValueFormatter,
+    };
+};
+
 export const FormatterProvider = ({ config, children }: FormatterProviderProps) => {
-    const contextValue = useMemo(
-        () => ({
-            CryptoAmountFormatter: prepareCryptoAmountFormatter(config),
-            CoinBalanceFormatter: prepareCoinBalanceFormatter(config),
-            CurrencySymbolFormatter: prepareCurrencySymbolFormatter(config),
-            FiatAmountFormatter: prepareFiatAmountFormatter(config),
-            SignValueFormatter,
-        }),
-        [config],
-    );
+    const contextValue = useMemo(() => {
+        const formatters = getFormatters(config);
+
+        return formatters;
+    }, [config]);
 
     return (
         <FormatterProviderContext.Provider value={contextValue}>

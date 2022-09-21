@@ -12,6 +12,7 @@
     "dependencies": {
         "@mobily/ts-belt": "^3.11.0",
         "@suite-common/formatters": "*",
+        "@suite-common/wallet-config": "*",
         "@trezor/icons": "*",
         "@trezor/styles": "*",
         "@trezor/theme": "*",

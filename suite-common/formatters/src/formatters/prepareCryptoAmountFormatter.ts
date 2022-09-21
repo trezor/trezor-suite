@@ -15,7 +15,7 @@ export type CryptoAmountFormatterInputValue = string | number | BigNumber;
 
 export type CryptoAmountFormatterDataContext = {
     isBalance?: boolean;
-    symbol?: string;
+    symbol?: NetworkSymbol;
 };
 
 export const prepareCryptoAmountFormatter = (config: FormatterConfig) =>
@@ -24,22 +24,18 @@ export const prepareCryptoAmountFormatter = (config: FormatterConfig) =>
             const { symbol, isBalance } = dataContext;
             const { locale, bitcoinAmountUnit } = config;
 
-            const lowerCaseSymbol = symbol?.toLowerCase();
             const { features: networkFeatures } =
-                NETWORKS.find(network => network.symbol === lowerCaseSymbol) ?? {};
+                NETWORKS.find(network => network.symbol === symbol) ?? {};
 
             const areAmountUnitsSupported = !!networkFeatures?.includes('amount-unit');
 
             let formattedValue = value;
 
             // convert to different units if needed
-            if (areAmountUnitsSupported) {
+            if (symbol && areAmountUnitsSupported) {
                 switch (bitcoinAmountUnit) {
                     case PROTO.AmountUnit.SATOSHI: {
-                        formattedValue = networkAmountToSatoshi(
-                            String(value),
-                            lowerCaseSymbol as NetworkSymbol,
-                        );
+                        formattedValue = networkAmountToSatoshi(String(value), symbol);
                         break;
                     }
                     default:

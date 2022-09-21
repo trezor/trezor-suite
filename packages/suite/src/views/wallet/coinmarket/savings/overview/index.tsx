@@ -9,7 +9,7 @@ import {
 import styled from 'styled-components';
 import { Icon } from '@trezor/components';
 import { FormattedCryptoAmount, Translation } from '@suite-components';
-import { useFormatters } from '@suite-common/formatters';
+import { Formatters, useFormatters } from '@suite-common/formatters';
 import { PaymentDetail } from './components/PaymentDetail';
 import {
     SavingsOverviewContext,
@@ -116,9 +116,49 @@ const getPeriodTranslationId = (
 ): SavingsOverviewPeriodTranslationId =>
     `TR_SAVINGS_OVERVIEW_PERIOD_${paymentFrequency.toUpperCase() as Uppercase<PaymentFrequency>}`;
 
-const Overview = (props: WithCoinmarketProps) => {
-    const { FiatAmountFormatter } = useFormatters();
+function renderSavingsStatus(
+    isWatchingKYCStatus: boolean,
+    formatters: Formatters,
+    savingsTradeItemCompletedExists: boolean,
+    savingsFiatSum: string,
+    savingsCryptoSum: string,
+    savingsTrade?: SavingsTrade,
+    kycFinalStatus?: SavingsKYCStatus,
+    selectedProviderCompanyName?: string,
+) {
+    const { FiatAmountFormatter } = formatters;
+    switch (true) {
+        case isWatchingKYCStatus:
+            return <KYCInProgress />;
+        case kycFinalStatus === 'Error':
+            return <KYCError />;
+        case kycFinalStatus === 'Failed':
+            return <KYCFailed providerName={selectedProviderCompanyName} />;
+        case !savingsTradeItemCompletedExists:
+            return <WaitingForFirstPayment />;
+        default:
+            return (
+                <SoFarSaved>
+                    <Fiat>
+                        ≈&nbsp;
+                        <FiatAmountFormatter
+                            currency={savingsTrade?.fiatCurrency}
+                            value={savingsFiatSum}
+                        />
+                    </Fiat>
+                    <Crypto>
+                        <FormattedCryptoAmount
+                            value={savingsCryptoSum}
+                            symbol={savingsTrade?.cryptoCurrency as NetworkSymbol}
+                        />
+                    </Crypto>
+                </SoFarSaved>
+            );
+    }
+}
 
+const Overview = (props: WithCoinmarketProps) => {
+    const formatters = useFormatters();
     const contextValues = useSavingsOverview(props);
     const {
         savingsTrade,
@@ -132,45 +172,7 @@ const Overview = (props: WithCoinmarketProps) => {
         kycFinalStatus,
         selectedProviderCompanyName,
     } = contextValues;
-
-    const renderSavingsStatus = (
-        isWatchingKYCStatus: boolean,
-        savingsTradeItemCompletedExists: boolean,
-        savingsFiatSum: string,
-        savingsCryptoSum: string,
-        savingsTrade?: SavingsTrade,
-        kycFinalStatus?: SavingsKYCStatus,
-        selectedProviderCompanyName?: string,
-    ) => {
-        switch (true) {
-            case isWatchingKYCStatus:
-                return <KYCInProgress />;
-            case kycFinalStatus === 'Error':
-                return <KYCError />;
-            case kycFinalStatus === 'Failed':
-                return <KYCFailed providerName={selectedProviderCompanyName} />;
-            case !savingsTradeItemCompletedExists:
-                return <WaitingForFirstPayment />;
-            default:
-                return (
-                    <SoFarSaved>
-                        <Fiat>
-                            ≈&nbsp;
-                            <FiatAmountFormatter
-                                currency={savingsTrade?.fiatCurrency}
-                                value={savingsFiatSum}
-                            />
-                        </Fiat>
-                        <Crypto>
-                            <FormattedCryptoAmount
-                                value={savingsCryptoSum}
-                                symbol={savingsTrade?.cryptoCurrency as NetworkSymbol}
-                            />
-                        </Crypto>
-                    </SoFarSaved>
-                );
-        }
-    };
+    const { FiatAmountFormatter } = formatters;
 
     if (isSavingsTradeLoading || !savingsTrade) {
         return <Translation id="TR_LOADING" />;
@@ -215,6 +217,7 @@ const Overview = (props: WithCoinmarketProps) => {
                     <Right>
                         {renderSavingsStatus(
                             isWatchingKYCStatus,
+                            formatters,
                             savingsTradeItemCompletedExists,
                             savingsFiatSum,
                             savingsCryptoSum,
