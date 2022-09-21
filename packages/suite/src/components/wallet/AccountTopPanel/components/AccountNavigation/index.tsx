@@ -105,7 +105,7 @@ export const AccountNavigation = ({
             },
             title: <Translation id="TR_NAV_TRADE" />,
             position: 'secondary',
-            isHidden: false,
+            isHidden: account?.accountType === 'coinjoin',
         },
         {
             id: 'wallet-add-token',
