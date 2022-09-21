@@ -15,7 +15,7 @@ const split = (version: string) => {
     return arr as unknown as VersionArray;
 };
 
-const toString = (arr: VersionArray) => `${arr[0]}.${arr[1]}.${arr[2]}`;
+const versionToString = (arr: VersionArray) => `${arr[0]}.${arr[1]}.${arr[2]}`;
 
 export const isVersionArray = (arr: number[]): arr is VersionArray => arr.length === 3;
 
@@ -49,8 +49,8 @@ export const isNewer = (versionX: VersionInput, versionY: VersionInput) => {
  * - array:  [1, 0, 0]
  */
 export const isEqual = (versionX: VersionInput, versionY: VersionInput) => {
-    const strX = typeof versionX === 'string' ? versionX : toString(versionX);
-    const strY = typeof versionY === 'string' ? versionY : toString(versionY);
+    const strX = typeof versionX === 'string' ? versionX : versionToString(versionX);
+    const strY = typeof versionY === 'string' ? versionY : versionToString(versionY);
     return strX === strY;
 };
 

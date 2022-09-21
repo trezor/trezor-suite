@@ -64,7 +64,7 @@ const optimizeSvgAssets = assetsDirname => {
         }));
 };
 
-const getOptimizedAssetTypes = assetTypesConfig =>
+const getOptimizedAssetTypes = () =>
     assetTypesConfig.map(config => ({
         ...config,
         assets: optimizeSvgAssets(config.dirname),

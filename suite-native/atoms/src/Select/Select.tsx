@@ -30,8 +30,8 @@ export const Select = ({ items, selectLabel, value, onSelectItem }: SelectProps)
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const selectedItem = useMemo(() => items.find(item => item.value === value), [value, items]);
 
-    const handleSelectItem = (value: SelectValue) => {
-        onSelectItem(value);
+    const handleSelectItem = (selectedValue: SelectValue) => {
+        onSelectItem(selectedValue);
         setIsOpen(false);
     };
 
@@ -54,11 +54,11 @@ export const Select = ({ items, selectLabel, value, onSelectItem }: SelectProps)
                     title={selectLabel}
                     onBackArrowClick={() => setIsOpen(false)}
                 >
-                    {items.map(({ value, label, iconName }, index) => (
+                    {items.map(({ value: itemValue, label, iconName }, index) => (
                         <SelectItem
-                            key={value}
+                            key={itemValue}
                             label={label}
-                            value={value}
+                            value={itemValue}
                             icon={getIcon(iconName, true)}
                             isSelected={value === selectedItem?.value}
                             isLastChild={index === items.length - 1}
