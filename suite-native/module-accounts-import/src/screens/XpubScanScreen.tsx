@@ -66,18 +66,12 @@ export const XpubScanScreen = ({
 
     const form = useForm<XpubFormValues>({
         validation: xpubFormValidationSchema,
-        defaultValues: {
-            // @TODO fix before merge, defaultValues not works...
-            xpubAddress: 'BlahBlah',
-        },
     });
-    const { setValue, handleSubmit } = form;
+    const { handleSubmit, setValue } = form;
 
     const resetToDefaultValues = useCallback(() => {
-        setSelectedCurrencySymbol(DEFAULT_CURRENCY_SYMBOL);
-        setValue('xpubAddress', '');
         setCameraRequested(false);
-    }, [setValue]);
+    }, []);
 
     useFocusEffect(resetToDefaultValues);
 
@@ -89,16 +83,19 @@ export const XpubScanScreen = ({
         setCameraRequested(true);
     };
 
-    const handleXpubSubmit = ({ xpubAddress }: XpubFormValues) => {
+    const goToAccountImportScreen = ({ xpubAddress }: XpubFormValues) => {
         navigation.navigate(AccountsImportStackRoutes.AccountImport, {
             xpubAddress,
             currencySymbol: selectedCurrencySymbol,
         });
     };
 
+    const onXpubFormSubmit = handleSubmit(goToAccountImportScreen);
+
     const handleXpubResult = (xpubAddress?: string) => {
         if (xpubAddress) {
-            handleXpubSubmit({ xpubAddress });
+            setValue('xpubAddress', xpubAddress);
+            onXpubFormSubmit();
         }
     };
 
@@ -144,14 +141,22 @@ export const XpubScanScreen = ({
                 <Form form={form}>
                     <VStack>
                         <TextInputField name="xpubAddress" label="Enter x-pub..." />
-                        <Button onPress={handleSubmit(handleXpubSubmit)}>Submit</Button>
+                        <Button
+                            onPress={() => {
+                                onXpubFormSubmit();
+                            }}
+                        >
+                            Submit
+                        </Button>
                     </VStack>
                 </Form>
 
                 {isDevelopOrDebugEnv() && (
                     <Button
                         style={applyStyle(devXpubButtonStyle)}
-                        onPress={() => handleXpubSubmit({ xpubAddress: BTC_HARD_CODED_XPUB })}
+                        onPress={() =>
+                            goToAccountImportScreen({ xpubAddress: BTC_HARD_CODED_XPUB })
+                        }
                         colorScheme="gray"
                     >
                         Use dev xPub

@@ -22,11 +22,13 @@
         },
         { "path": "../atoms" },
         { "path": "../config" },
+        { "path": "../forms" },
         { "path": "../module-devices" },
         { "path": "../module-settings" },
         { "path": "../navigation" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/icons" },
-        { "path": "../../packages/styles" }
+        { "path": "../../packages/styles" },
+        { "path": "../../packages/validation" }
     ]
 }

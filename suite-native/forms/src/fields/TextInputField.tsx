@@ -5,13 +5,25 @@ import { Input, InputWrapper, InputProps, InputWrapperProps } from '@suite-nativ
 import { useField } from '../hooks/useField';
 import { FieldName } from '../types';
 
-export interface FieldProps extends Partial<InputProps>, Pick<InputWrapperProps, 'hint'> {
+type AllowedTextInputFieldProps = Omit<
+    Partial<InputProps>,
+    keyof ReturnType<typeof useField> | 'defaultValue'
+>;
+type AllowedInputWrapperProps = Pick<InputWrapperProps, 'hint'>;
+export interface FieldProps extends AllowedTextInputFieldProps, AllowedInputWrapperProps {
     name: FieldName;
     label: string;
+    defaultValue?: string;
 }
 
-export const TextInputField = ({ name, label, hint, ...otherProps }: FieldProps) => {
-    const field = useField({ name, label });
+export const TextInputField = ({
+    name,
+    label,
+    hint,
+    defaultValue = '',
+    ...otherProps
+}: FieldProps) => {
+    const field = useField({ name, label, defaultValue });
     const { errorMessage, onBlur, onChange, value, hasError } = field;
 
     return (

@@ -7,9 +7,10 @@ import { FormContext } from '../Form';
 interface UseFieldArgs {
     name: FieldName;
     label: string;
+    defaultValue?: unknown;
 }
 
-export const useField = ({ name, label }: UseFieldArgs) => {
+export const useField = ({ name, label, defaultValue }: UseFieldArgs) => {
     // TODO: once react-hook-form is updated to 7+ we can use the `errors` from `fieldState` on useController
     const { control, errors } = useContext(FormContext);
 
@@ -26,6 +27,7 @@ export const useField = ({ name, label }: UseFieldArgs) => {
     } = useController({
         name,
         control,
+        defaultValue,
     });
 
     return {
