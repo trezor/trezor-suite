@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import { Translation } from '@suite-components';
 import { Button, P, variables } from '@trezor/components';
-import { RadioFrame } from './components/RadioFrame';
+import { RadioFrame } from './RadioFrame';
 import { CoinjoinSessionDetail } from './CoinjoinSessionDetail';
 
 const Row = styled.div`
