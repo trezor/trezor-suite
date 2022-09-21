@@ -30,7 +30,6 @@ const MenuHeader = styled.div<{ isInline?: boolean }>`
     flex-direction: column;
     /* justify-content: center; */
     background: ${props => props.theme.BG_WHITE};
-    border-bottom: 1px solid ${props => props.theme.STROKE_GREY};
 
     ${props =>
         props.isInline &&
@@ -42,7 +41,6 @@ const MenuHeader = styled.div<{ isInline?: boolean }>`
         !props.isInline &&
         css`
             padding: 20px 16px 8px 16px;
-            margin-bottom: 8px;
         `}
 `;
 
@@ -65,8 +63,6 @@ const Search = styled.div`
     padding: 8px 0px;
 
     background: ${props => props.theme.BG_WHITE};
-    border-bottom: 1px solid ${props => props.theme.STROKE_GREY};
-    margin-bottom: 8px;
 `;
 
 const Heading = styled(H2)<{ isInline?: boolean }>`
@@ -162,8 +158,7 @@ export const AccountsMenu = ({ isMenuInline }: AccountsMenuProps) => {
         );
     }
 
-    const isOpened = (group: Account['accountType']) =>
-        params ? params.accountType === group : false;
+    const keepOpen = (group: Account['accountType']) => params?.accountType === group;
 
     const isSelected = (account: Account) =>
         params &&
@@ -202,7 +197,7 @@ export const AccountsMenu = ({ isMenuInline }: AccountsMenuProps) => {
     // const uniqueNetworks = [...new Set(filteredAccounts.map(item => item.symbol))];
 
     const buildGroup = (type: Account['accountType'], accounts: Account[]) => {
-        const groupHasBalance = accounts.find(a => a.availableBalance !== '0');
+        const groupHasBalance = accounts.some(account => account.availableBalance !== '0');
 
         if (!accounts.length) {
             // show skeleton in 'normal' group while we wait for a discovery of first account
@@ -213,8 +208,8 @@ export const AccountsMenu = ({ isMenuInline }: AccountsMenuProps) => {
             <AccountGroup
                 key={type}
                 type={type}
-                hasBalance={!!groupHasBalance}
-                keepOpened={isOpened(type) || (!!searchString && searchString.length > 0)}
+                hasBalance={groupHasBalance}
+                keepOpen={keepOpen(type) || (!!searchString && searchString.length > 0)}
             >
                 {accounts.map(account => {
                     const selected = !!isSelected(account);
@@ -236,6 +231,7 @@ export const AccountsMenu = ({ isMenuInline }: AccountsMenuProps) => {
 
     const listedAccountsLength =
         normalAccounts.length +
+        coinjoinAccounts.length +
         segwitAccounts.length +
         legacyAccounts.length +
         ledgerAccounts.length;
@@ -243,8 +239,8 @@ export const AccountsMenu = ({ isMenuInline }: AccountsMenuProps) => {
     const accountsComponent =
         listedAccountsLength > 0 || !searchString ? (
             <>
-                {buildGroup('normal', normalAccounts)}
                 {buildGroup('coinjoin', coinjoinAccounts)}
+                {buildGroup('normal', normalAccounts)}
                 {buildGroup('taproot', taprootAccounts)}
                 {buildGroup('segwit', segwitAccounts)}
                 {buildGroup('legacy', legacyAccounts)}
