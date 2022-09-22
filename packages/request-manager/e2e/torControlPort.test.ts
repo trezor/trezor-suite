@@ -11,19 +11,19 @@ const existsDirectory = util.promisify(fs.exists);
 const mkdir = util.promisify(fs.mkdir);
 const unlinkFile = util.promisify(fs.unlink);
 
-const authFilePath = path.join(__dirname, 'tmp');
+const torDataDir = path.join(__dirname, 'tmp');
 // Because control_auth_cookie is shared by other tests, this test should not run in parallel
 // using `--runInBand` option with jest.
-const controlAuthCookiePath = `${authFilePath}/control_auth_cookie`;
+const controlAuthCookiePath = `${torDataDir}/control_auth_cookie`;
 const host = 'localhost';
 const port = 9998;
 const controlPort = 9999;
 
 describe('TorControlPort', () => {
     beforeAll(async () => {
-        if (!(await existsDirectory(authFilePath))) {
-            // Make sure there is `authFilePath` directory.
-            mkdir(authFilePath);
+        if (!(await existsDirectory(torDataDir))) {
+            // Make sure there is `torDataDir` directory.
+            mkdir(torDataDir);
         }
         await writeFile(controlAuthCookiePath, 'test');
     });
@@ -38,7 +38,7 @@ describe('TorControlPort', () => {
                 host,
                 port,
                 controlPort,
-                authFilePath,
+                torDataDir,
             };
             const fakeListener = () => {};
             const torControlPort = new TorControlPort(options, fakeListener);
@@ -52,7 +52,7 @@ describe('TorControlPort', () => {
             let isProperlyAuthenticated = false;
             const serverHash = '1A6C3485BD58CAF688C5AF98B878E713A6EF0EAC0240D7E3453341689BA7FC60';
             const serverNonce = '88601906AB5EB92B8CB86E012C0074855E23AA1C79F843BEA5FDE674936E9AB1';
-            const cookieString = await getCookieString(authFilePath);
+            const cookieString = await getCookieString(torDataDir);
             const authenticationKey = 'Tor safe cookie authentication controller-to-server hash';
 
             let clientNonce = '';
@@ -102,7 +102,7 @@ describe('TorControlPort', () => {
                 host,
                 port,
                 controlPort,
-                authFilePath,
+                torDataDir,
             };
             const fakeListener = () => {};
             const torControlPort = new TorControlPort(options, fakeListener);

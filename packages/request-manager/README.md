@@ -15,13 +15,13 @@ const controlPort = 9031;
 // cookie" file named "control_auth_cookie" into its data directory (or
 // to another file specified in the 'CookieAuthFile' option).
 // https://gitweb.torproject.org/torspec.git/tree/control-spec.txt
-const authFilePath = '/path/to/control_auth_cookie/';
+const torDataDir = '/path/to/control_auth_cookie/';
 
 const torController = new TorController({
     host: torHost,
     port: port,
     controlPort: controlPort,
-    authFilePath: authFilePath,
+    torDataDir: torDataDir,
 });
 
 try {

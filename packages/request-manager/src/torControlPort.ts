@@ -8,8 +8,8 @@ import { TorConnectionOptions } from './types';
 const readFile = util.promisify(fs.readFile);
 const randomBytes = util.promisify(crypto.randomBytes);
 
-export const getCookieString = async (authFilePath: string) => {
-    const controlAuthCookiePath = path.join(authFilePath, 'control_auth_cookie');
+export const getCookieString = async (torDataDir: string) => {
+    const controlAuthCookiePath = path.join(torDataDir, 'control_auth_cookie');
     return (await readFile(controlAuthCookiePath)).toString('hex');
 };
 
@@ -63,7 +63,7 @@ export class TorControlPort {
                 if (authchallengeResponse) {
                     let cookieString;
                     try {
-                        cookieString = await getCookieString(this.options.authFilePath);
+                        cookieString = await getCookieString(this.options.torDataDir);
                     } catch (error) {
                         reject(new Error('TOR control port control_auth_cookie cannot be read'));
                     }

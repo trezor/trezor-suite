@@ -15,7 +15,7 @@ jest.setTimeout(60000);
 
 // Because tmp/control_auth_cookie is shared by other tests, this test should not run in parallel
 // using `--runInBand` option with jest.
-const authFilePath = path.join(__dirname, 'tmp');
+const torDataDir = path.join(__dirname, 'tmp');
 const ipRegex = /\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/;
 
 const testGetUrlHttp = 'http://check.torproject.org/';
@@ -37,7 +37,7 @@ describe('Interceptor', () => {
             host,
             port,
             controlPort,
-            authFilePath,
+            torDataDir,
         });
         const torParams = torController.getTorConfiguration(processId);
         // Starting Tor process from binary.
