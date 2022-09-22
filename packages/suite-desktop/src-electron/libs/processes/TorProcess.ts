@@ -6,7 +6,7 @@ interface TorConnectionOptions {
     host: string;
     port: number;
     controlPort: number;
-    authFilePath: string;
+    torDataDir: string;
 }
 
 class TorProcess extends BaseProcess {
@@ -14,7 +14,7 @@ class TorProcess extends BaseProcess {
     port: number;
     controlPort: number;
     torHost: string;
-    authFilePath: string;
+    torDataDir: string;
 
     constructor(options: TorConnectionOptions) {
         super('tor', 'tor');
@@ -22,13 +22,13 @@ class TorProcess extends BaseProcess {
         this.port = options.port;
         this.controlPort = options.controlPort;
         this.torHost = options.host;
-        this.authFilePath = options.authFilePath;
+        this.torDataDir = options.torDataDir;
 
         this.torController = new TorController({
             host: this.torHost,
             port: this.port,
             controlPort: this.controlPort,
-            authFilePath: this.authFilePath,
+            torDataDir: this.torDataDir,
         });
     }
 
