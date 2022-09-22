@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import { useSelector } from '@suite-hooks';
 import { WalletLayoutHeader } from '@wallet-components';
-import { AnonymityIndicator } from '@wallet-components/CoinjoinSummary/AccountSummarySection/AnonymityIndicator';
+import { AnonymityIndicator } from '@wallet-components/PrivacyAccount/AnonymityIndicator';
 import { CoinjoinSetupStrategies } from '@wallet-views/anonymize/components/CoinjoinSetupStrategies';
 import { WalletLayout } from '@wallet-components/WalletLayout';
 

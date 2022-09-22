@@ -5,7 +5,7 @@ import { isZero } from '@suite-common/wallet-utils';
 import { SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { Translation } from '@suite-components/Translation';
 import { useSelector } from '@suite-hooks';
-import { CryptoAmountWithHeader } from '../CryptoAmountWithHeader';
+import { CryptoAmountWithHeader } from '@wallet-components/PrivacyAccount/CryptoAmountWithHeader';
 
 const Container = styled.div<{ isSessionRunning: boolean }>`
     display: flex;

@@ -4,9 +4,9 @@ import styled from 'styled-components';
 import { H3 } from '@trezor/components';
 import { Account } from '@suite-common/wallet-types';
 import { Translation } from '@suite-components/Translation';
-import { AnonymityChart } from './AccountSummarySection/AnonymityChart';
-import { AnonymityIndicator } from './AccountSummarySection/AnonymityIndicator';
-import { BalanceSection } from './AccountSummarySection/BalanceSection';
+import { AnonymityIndicator } from '@wallet-components/PrivacyAccount/AnonymityIndicator';
+import { AnonymityChart } from './AnonymityChart';
+import { BalanceSection } from './BalanceSection';
 
 const Container = styled.div`
     width: 100%;

@@ -6,13 +6,13 @@ import { startCoinjoinSession } from '@wallet-actions/coinjoinAccountActions';
 import { Translation } from '@suite-components';
 import { useActions } from '@suite-hooks';
 import { Account } from '@suite-common/wallet-types';
-import { CoinjoinCustomStrategy } from './CoinJoinCustomStrategy';
+import { CryptoAmountWithHeader } from '@wallet-components/PrivacyAccount/CryptoAmountWithHeader';
+import { CoinjoinCustomStrategy } from './CoinjoinCustomStrategy';
 import {
     CoinjoinDefaultStrategy,
     COINJOIN_STRATEGIES,
     CoinJoinStrategy,
-} from './CoinJoinDefaultStrategy';
-import { CryptoAmountWithHeader } from './CryptoAmountWithHeader';
+} from './CoinjoinDefaultStrategy';
 
 const StyledCard = styled(Card)`
     margin-bottom: 8px;

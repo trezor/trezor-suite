@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { Translation } from '@suite-components';
-import { DetailRow } from './components/DetailRow';
+import { DetailRow } from './DetailRow';
 
 const Separator = styled.hr`
     border: none;
