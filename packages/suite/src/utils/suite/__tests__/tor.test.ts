@@ -1,4 +1,4 @@
-import { TOR_URLS } from '@suite-constants';
+import { TOR_URLS } from '@trezor/urls';
 import { getTorUrlIfAvailable, getIsTorDomain, isOnionUrl, toTorUrl } from '@suite-utils/tor';
 
 describe('tor', () => {
