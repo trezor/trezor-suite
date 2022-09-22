@@ -6,7 +6,7 @@ import { Account } from '@suite-common/wallet-types';
 import { Card, Translation } from '@suite-components';
 import { useActions, useSelector } from '@suite-hooks';
 import { Button } from '@trezor/components';
-import { CoinjoinSessionStatus } from '../CoinjoinSessionStatus';
+import { CoinjoinSessionStatus } from './CoinjoinSessionStatus';
 import { FundsPrivacyBreakdown } from './FundsPrivacyBreakdown';
 
 const Container = styled(Card)`

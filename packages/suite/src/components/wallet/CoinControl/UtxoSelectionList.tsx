@@ -3,7 +3,7 @@ import * as React from 'react';
 import { getAccountTransactions } from '@suite-common/wallet-utils';
 import { useSelector } from '@suite-hooks';
 import type { AccountUtxo } from '@trezor/connect';
-import { UtxoSelection } from '@wallet-components/UtxoSelection';
+import { UtxoSelection } from '@wallet-components/CoinControl/UtxoSelection';
 import { useSendFormContext } from '@wallet-hooks';
 
 interface Props {
