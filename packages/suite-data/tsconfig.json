@@ -7,6 +7,9 @@
     },
     "include": ["./src"],
     "references": [
+        {
+            "path": "../../suite-common/suite-types"
+        },
         { "path": "../urls" },
         { "path": "../utils" }
     ]

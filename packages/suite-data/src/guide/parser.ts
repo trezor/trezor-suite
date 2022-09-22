@@ -2,38 +2,7 @@ import { join } from 'path';
 import * as fs from 'fs-extra';
 
 import { GITBOOK_ASSETS_DIR_PREFIX } from './constants';
-
-/**
- * A group of Guide content.
- * Can contain other Pages or Categories.
- * Cannot contain content on its own except the title.
- */
-export interface GuideCategory {
-    type: 'category';
-    /** Serves both as unique identifier and relative path to the directory. */
-    id: string;
-    /** List of locales this Category is available in. */
-    locales: string[];
-    /** Titles keyed by locales. */
-    title: {
-        [key: string]: string;
-    };
-    image?: string;
-    /** Sub-categories and sub-pages. */
-    children: Node[];
-}
-
-/** A single unit of Guide content. */
-export interface Page {
-    type: 'page';
-    id: string;
-    locales: string[];
-    title: {
-        [key: string]: string;
-    };
-}
-
-export type Node = GuideCategory | Page;
+import type { Node, GuideCategory } from '@suite-common/suite-types';
 
 /** @returns true if given path is a directory. */
 const isDirectory = (path: string): boolean => fs.lstatSync(path).isDirectory();
