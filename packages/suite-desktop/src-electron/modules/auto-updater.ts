@@ -13,7 +13,7 @@ import { app, ipcMain } from '../typed-electron';
 import { b2t } from '../libs/utils';
 import { verifySignature } from '../libs/update-checker';
 import { Module } from './index';
-import { getReleaseNotes } from '@suite/services/github';
+import { getReleaseNotes } from '../libs/github';
 
 // Runtime flags
 const enableUpdater = app.commandLine.hasSwitch('enable-updater');

@@ -7,6 +7,9 @@
     "include": [".", "**/*.json"],
     "references": [
         {
+            "path": "../../suite-common/suite-types"
+        },
+        {
             "path": "../../suite-common/suite-utils"
         },
         {

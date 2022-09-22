@@ -49,15 +49,6 @@ export const WIKI_ADVANCED_RECOVERY_URL =
 export const WIKI_XPUB_URL =
     'https://wiki.trezor.io/Suite_manual:Displaying_account_public_key_(XPUB)';
 
-export const GITHUB_ROADMAP_URL = 'https://github.com/orgs/trezor/projects/28?fullscreen=true';
-export const GITHUB_FW_COMMIT_URL = 'https://github.com/trezor/trezor-firmware/commit/';
-export const GITHUB_FW_CHANGELOG_URL =
-    'https://github.com/trezor/trezor-firmware/blob/master/core/CHANGELOG.md';
-export const GITHUB_FW_BINARIES_URL =
-    'https://github.com/trezor/webwallet-data/tree/master/firmware';
-export const GITHUB_BRIDGE_CHANGELOG_URL =
-    'https://github.com/trezor/trezord-go/blob/master/CHANGELOG.md';
-
 export const SOCIAL_TWITTER_URL = 'https://twitter.com/trezor';
 export const SOCIAL_FACEBOOK_URL = 'https://www.facebook.com/trezor.io';
 
