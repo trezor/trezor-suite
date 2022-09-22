@@ -1,46 +1,56 @@
 import React from 'react';
-import { Account } from '@wallet-types';
+import { Account, WalletParams } from '@wallet-types';
 import { AppNavigation, AppNavigationItem } from '@suite-components/AppNavigation';
 import { Translation } from '@suite-components/Translation';
 import { useActions, useSelector } from '@suite-hooks';
+import { getNetwork, getNetworkFeatures } from '@suite-common/wallet-utils';
 import * as routerActions from '@suite-actions/routerActions';
 import * as modalActions from '@suite-actions/modalActions';
-import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 import { Dot } from './components/Dot';
 
 interface AccountNavigationProps {
-    account?: Account;
     filterPosition?: 'primary' | 'secondary';
     dataTestSuffix?: string;
     primaryContent?: React.ReactNode;
     inView?: boolean;
 }
 
+const useStackingStatus = (account?: Account) => {
+    const trezorPools = useSelector(state => state.wallet.cardanoStaking.trezorPools);
+    const isFetchLoading = useSelector(state => state.wallet.cardanoStaking.isFetchLoading);
+    if (!account?.misc || !('staking' in account?.misc)) return false;
+
+    const { poolId } = account.misc.staking;
+    const currentPool =
+        poolId && trezorPools ? trezorPools?.pools.find(p => p.bech32 === poolId) : null;
+    const isStakingOnTrezorPool = !isFetchLoading ? !!currentPool : true;
+
+    return !account.misc.staking.isActive || !isStakingOnTrezorPool;
+};
+
 export const AccountNavigation = ({
-    account,
     filterPosition,
     dataTestSuffix,
     primaryContent,
     inView,
 }: AccountNavigationProps) => {
-    let showStakingStatus;
     const { goto, openModal } = useActions({
         goto: routerActions.goto,
         openModal: modalActions.openModal,
     });
-    const { trezorPools, isFetchLoading } = useSelector(state => ({
-        trezorPools: state.wallet.cardanoStaking.trezorPools,
-        isFetchLoading: state.wallet.cardanoStaking.isFetchLoading,
-    }));
 
-    if (account && account.networkType === 'cardano') {
-        const { poolId } = account.misc.staking;
-        const currentPool =
-            poolId && trezorPools ? trezorPools?.pools.find(p => p.bech32 === poolId) : null;
-        const isStakingOnTrezorPool = !isFetchLoading ? !!currentPool : true;
+    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
+    const { account } = selectedAccount;
 
-        showStakingStatus = !account.misc.staking.isActive || !isStakingOnTrezorPool;
-    }
+    const showStakingStatus = useStackingStatus(account);
+
+    const routerParams = useSelector(state => state.router.params) as WalletParams;
+    const network = getNetwork(routerParams?.symbol || '');
+
+    const networkType = account?.networkType || network?.networkType || 'bitcoin';
+    const accountType = account?.accountType || routerParams?.accountType || 'normal';
+    const symbol = account?.symbol || routerParams?.symbol || 'btc';
+    const networkFeatures = getNetworkFeatures({ networkType, symbol, accountType });
 
     const ITEMS: AppNavigationItem[] = [
         {
@@ -59,7 +69,7 @@ export const AccountNavigation = ({
             },
             title: <Translation id="TR_NAV_DETAILS" />,
             position: 'primary',
-            isHidden: !account ? false : !['cardano', 'bitcoin'].includes(account.networkType),
+            isHidden: !['cardano', 'bitcoin'].includes(networkType),
         },
         {
             id: 'wallet-tokens',
@@ -68,7 +78,7 @@ export const AccountNavigation = ({
             },
             title: <Translation id="TR_NAV_TOKENS" />,
             position: 'primary',
-            isHidden: !account ? false : !['cardano', 'ethereum'].includes(account.networkType),
+            isHidden: !['cardano', 'ethereum'].includes(networkType),
         },
         {
             id: 'wallet-staking',
@@ -77,7 +87,7 @@ export const AccountNavigation = ({
             },
             title: <Translation id="TR_NAV_STAKING" />,
             position: 'primary',
-            isHidden: !account ? false : !['cardano'].includes(account.networkType),
+            isHidden: !['cardano'].includes(networkType),
             rightContent: showStakingStatus ? <Dot /> : undefined,
         },
         {
@@ -105,7 +115,7 @@ export const AccountNavigation = ({
             },
             title: <Translation id="TR_NAV_TRADE" />,
             position: 'secondary',
-            isHidden: account?.accountType === 'coinjoin',
+            isHidden: ['coinjoin'].includes(accountType),
         },
         {
             id: 'wallet-add-token',
@@ -115,7 +125,7 @@ export const AccountNavigation = ({
             title: <Translation id="TR_TOKENS_ADD" />,
             position: 'secondary',
             extra: true,
-            isHidden: account?.networkType !== 'ethereum',
+            isHidden: !['ethereum'].includes(networkType),
         },
         {
             id: 'wallet-sign-verify',
@@ -126,7 +136,7 @@ export const AccountNavigation = ({
             icon: 'SIGNATURE',
             position: 'secondary',
             extra: true,
-            isHidden: !account || !hasNetworkFeatures(account, 'sign-verify'),
+            isHidden: !networkFeatures?.includes('sign-verify'),
         },
     ];
 
