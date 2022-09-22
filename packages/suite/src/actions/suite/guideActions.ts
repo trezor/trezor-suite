@@ -9,7 +9,7 @@ import type {
     Feedback,
     FeedbackType,
     GuideCategory,
-    Node,
+    GuideNode,
 } from '@suite-common/suite-types';
 
 export type GuideAction =
@@ -18,7 +18,7 @@ export type GuideAction =
     | { type: typeof GUIDE.SET_INDEX_NODE; payload: GuideCategory }
     | { type: typeof GUIDE.SET_VIEW; payload: ActiveView }
     | { type: typeof GUIDE.UNSET_NODE }
-    | { type: typeof GUIDE.OPEN_NODE; payload: Node };
+    | { type: typeof GUIDE.OPEN_NODE; payload: GuideNode };
 
 export const open = (): GuideAction => {
     analytics.report({
@@ -51,7 +51,7 @@ export const setView = (payload: ActiveView) => (dispatch: Dispatch) => {
     dispatch({ type: GUIDE.SET_VIEW, payload });
 };
 
-export const openNode = (payload: Node) => (dispatch: Dispatch) => {
+export const openNode = (payload: GuideNode) => (dispatch: Dispatch) => {
     if (payload.type === 'page') {
         dispatch(setView('GUIDE_PAGE'));
     } else {

@@ -4,8 +4,8 @@
 import { Device, Features } from '@trezor/connect';
 import {
     TrezorDevice,
-    Node,
-    Page,
+    GuideNode,
+    GuidePage,
     GuideCategory,
     MessageSystem,
     Action,
@@ -552,8 +552,8 @@ const getMessageSystemConfig = (
     ...root,
 });
 
-const getGuideNode = (type: string, id?: string): Node => {
-    let result: Node;
+const getGuideNode = (type: string, id?: string): GuideNode => {
+    let result: GuideNode;
     if (type === 'page' && id === '/') {
         result = {
             type: 'page',
@@ -562,7 +562,7 @@ const getGuideNode = (type: string, id?: string): Node => {
             title: {
                 en: 'Locktime',
             },
-        } as Page;
+        } as GuidePage;
     } else if (type === 'page' && id !== '/') {
         result = {
             type: 'page',
@@ -571,7 +571,7 @@ const getGuideNode = (type: string, id?: string): Node => {
             title: {
                 en: 'Locktime',
             },
-        } as Page;
+        } as GuidePage;
     } else {
         result = {
             type: 'category',

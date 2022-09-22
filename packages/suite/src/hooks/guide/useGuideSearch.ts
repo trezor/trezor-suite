@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { GuideCategory, Page } from '@suite-common/suite-types';
+import { GuideCategory, GuidePage } from '@suite-common/suite-types';
 import { loadPageMarkdownFile } from '@guide-hooks/useGuideLoadPage';
 
 const SEARCH_DELAY = 300;
@@ -7,11 +7,11 @@ const MIN_QUERY_LENGTH = 3;
 const MAX_RESULTS = 5;
 
 type PageMap = {
-    [url: string]: Page;
+    [url: string]: GuidePage;
 };
 
 export type SearchResult = {
-    page: Page;
+    page: GuidePage;
     score: number;
     preview?: {
         content: string;
@@ -72,7 +72,7 @@ const search = async (query: string, pageMap: PageMap): Promise<SearchResult[]> 
 
 export const useGuideSearch = (query: string, pageRoot: GuideCategory | null) => {
     const pageMap = useMemo(() => {
-        const reduceNode = (node: GuideCategory | Page): PageMap =>
+        const reduceNode = (node: GuideCategory | GuidePage): PageMap =>
             node.type === 'page'
                 ? { [node.id]: node }
                 : node.children.reduce(

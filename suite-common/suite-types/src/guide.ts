@@ -17,11 +17,11 @@ export interface GuideCategory {
     };
     image?: string;
     /** Sub-categories and sub-pages. */
-    children: Node[];
+    children: GuideNode[];
 }
 
 /** A single unit of Guide content. */
-export interface Page {
+export interface GuidePage {
     type: 'page';
     id: string;
     locales: string[];
@@ -30,7 +30,7 @@ export interface Page {
     };
 }
 
-export type Node = GuideCategory | Page;
+export type GuideNode = GuideCategory | GuidePage;
 
 export type GuideView = 'GUIDE_DEFAULT' | 'GUIDE_CATEGORY' | 'GUIDE_PAGE';
 

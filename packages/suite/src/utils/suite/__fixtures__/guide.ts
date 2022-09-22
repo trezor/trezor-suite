@@ -1,8 +1,8 @@
-import { Page, GuideCategory } from '@suite-common/suite-types';
+import { GuidePage, GuideCategory } from '@suite-common/suite-types';
 
 const { getGuideNode } = global.JestMocks;
 
-const GUIDE_PAGE_NODE = getGuideNode('page') as Page;
+const GUIDE_PAGE_NODE = getGuideNode('page') as GuidePage;
 const GUIDE_CATEGORY_NODE = getGuideNode('category') as GuideCategory;
 const GUIDE_CATEGORY_NODE_CHILD = GUIDE_CATEGORY_NODE.children.find(
     x => x.id === '/security',
@@ -31,10 +31,10 @@ export const getNodeById = [
     {
         description: 'root node: Page',
         input: {
-            node: getGuideNode('page', '/') as Page,
+            node: getGuideNode('page', '/') as GuidePage,
             id: '/',
         },
-        result: getGuideNode('page', '/') as Page,
+        result: getGuideNode('page', '/') as GuidePage,
     },
     {
         description: 'root node: Category',

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import type { Node } from '@suite-common/suite-types';
+import type { GuideNode } from '@suite-common/suite-types';
 import type { Locale } from '@suite-config/languages';
 
 export const loadPageMarkdownFile = async (id: string, language = 'en'): Promise<string> => {
@@ -8,7 +8,7 @@ export const loadPageMarkdownFile = async (id: string, language = 'en'): Promise
     return md;
 };
 
-export const useGuideLoadPage = (currentNode: Node | null, language: Locale = 'en') => {
+export const useGuideLoadPage = (currentNode: GuideNode | null, language: Locale = 'en') => {
     const [markdown, setMarkdown] = useState<string>();
     const [hasError, setHasError] = useState<boolean>(false);
 

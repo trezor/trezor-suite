@@ -1,10 +1,10 @@
-import { GuideCategory, Node } from '@suite-common/suite-types';
+import { GuideCategory, GuideNode } from '@suite-common/suite-types';
 
 /** @returns title in given language or in english if not available. */
-export const getNodeTitle = (node: Node, language: string): string =>
+export const getNodeTitle = (node: GuideNode, language: string): string =>
     node.title[language] || node.title.en;
 
-export const getNodeById = (id: string, root: Node): Node | undefined => {
+export const getNodeById = (id: string, root: GuideNode): GuideNode | undefined => {
     if (id === root.id) {
         return root;
     }
@@ -33,7 +33,7 @@ export const getAncestorIds = (id: string): string[] =>
         }, []);
 
 /** @returns ancestors nodes for node. */
-export const findAncestorNodes = (node: Node, root: GuideCategory): Node[] => {
+export const findAncestorNodes = (node: GuideNode, root: GuideCategory): GuideNode[] => {
     const ancestorIds = getAncestorIds(node.id);
 
     return (
@@ -42,7 +42,7 @@ export const findAncestorNodes = (node: Node, root: GuideCategory): Node[] => {
             .filter(id => id !== '/')
             .map(id => getNodeById(id, root))
             // omit not-existing nodes
-            .filter((ancestorNode): ancestorNode is Node => {
+            .filter((ancestorNode): ancestorNode is GuideNode => {
                 if (ancestorNode === undefined) {
                     throw Error(`Ancestor node of '${node.id}' node was not found!`);
                 }

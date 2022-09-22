@@ -2,13 +2,13 @@ import { join } from 'path';
 import * as fs from 'fs-extra';
 
 import { GITBOOK_ASSETS_DIR_PREFIX } from './constants';
-import type { Node, GuideCategory } from '@suite-common/suite-types';
+import type { GuideNode, GuideCategory } from '@suite-common/suite-types';
 
 /** @returns true if given path is a directory. */
 const isDirectory = (path: string): boolean => fs.lstatSync(path).isDirectory();
 
 /** @returns true if left and right are variants of the same content. */
-const match = (left: Node, right: Node): boolean =>
+const match = (left: GuideNode, right: GuideNode): boolean =>
     left.type === right.type && left.id === right.id;
 
 export class Parser {
@@ -102,7 +102,7 @@ export class Parser {
      * @param locale locale of the given tree.
      * @returns object representation of the given tree.
      */
-    private parseTree(path: string, locale: string): Node {
+    private parseTree(path: string, locale: string): GuideNode {
         if (isDirectory(path)) {
             const children = fs
                 .readdirSync(path)
@@ -140,7 +140,7 @@ export class Parser {
      *
      * Nodes in the right that are not in the left are discarded.
      */
-    private zip(left: Node, right: Node): Node {
+    private zip(left: GuideNode, right: GuideNode): GuideNode {
         if (!match(left, right)) {
             return left;
         }
@@ -191,7 +191,7 @@ export class Parser {
      * Parses the GitBook content including all locales
      * and returns its object representation for subsequent processing.
      */
-    parse(): Node {
+    parse(): GuideNode {
         const locales = this.parseLocales();
         console.log(`Detected ${locales.length} locales: ${locales}`);
 
