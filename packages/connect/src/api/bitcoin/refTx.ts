@@ -153,6 +153,7 @@ export const transformOrigTransactions = (
                 ? {
                       address_n,
                       amount,
+                      // todo:
                       script_type: getOutputScriptType(address_n),
                   }
                 : {

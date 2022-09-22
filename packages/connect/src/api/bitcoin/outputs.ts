@@ -27,6 +27,9 @@ export const validateTrezorOutputs = (
             { name: 'amount', type: 'uint' },
             { name: 'op_return_data', type: 'string' },
             { name: 'multisig', type: 'object' },
+            { name: 'orig_hash', type: 'string' },
+            { name: 'orig_index', type: 'number' },
+            { name: 'payment_req_index', type: 'number' },
         ]);
 
         if (
@@ -39,13 +42,11 @@ export const validateTrezorOutputs = (
             );
         }
 
-        if (output.address_n) {
-            const scriptType = getOutputScriptType(output.address_n);
-            if (output.script_type !== scriptType)
-                throw ERRORS.TypedError(
-                    'Method_InvalidParameter',
-                    `Output change script_type should be set to ${scriptType}`,
-                );
+        // discuss: does it make sense to recreate the same validation client side if it is done on device anyway?
+        // discuss: does it make sense to provide fallback here?
+        if (output.address_n && !output.script_type) {
+            // @ts-expect-error
+            output.script_type = getOutputScriptType(output.address_n);
         }
 
         if (
@@ -153,6 +154,7 @@ export const outputToTrezor = (
         return {
             address_n: output.path,
             amount: output.value,
+            // todo
             script_type: getOutputScriptType(output.path),
         };
     }

@@ -75,6 +75,15 @@ export const getScriptType = (path: number[] | undefined): PROTO.InternalInputSc
     }
 };
 
+/**
+ * TODO: getOutputScriptType is not correct.
+ * see: https://github.com/trezor/trezor-suite/issues/6343
+ * at the moment, we use it only in connection with @trezor/utxo-lib which does
+ * not support the other types of transaction that would fail with the current
+ * implementation of getOutputScriptType
+ * see related implementation in firmware:
+ * https://github.com/trezor/trezor-firmware/blob/master/legacy/firmware/crypto.c#L488
+ */
 export const getOutputScriptType = (path?: number[]): PROTO.ChangeOutputScriptType => {
     if (!Array.isArray(path) || path.length < 1) return 'PAYTOADDRESS';
 

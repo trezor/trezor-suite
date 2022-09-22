@@ -138,6 +138,7 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
                 isBackendSupported(params.coinInfo);
                 const blockchain = await initBlockchain(params.coinInfo, this.postMessage);
                 const rawTxs = await blockchain.getTransactions(refTxsIds);
+                console.log('----refTxIds', rawTxs);
                 enhanceTrezorInputs(this.params.inputs, rawTxs);
                 refTxs = transformReferencedTransactions(rawTxs, params.coinInfo);
 

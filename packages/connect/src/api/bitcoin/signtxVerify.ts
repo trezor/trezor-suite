@@ -7,7 +7,6 @@ import {
     Transaction as BitcoinJsTransaction,
 } from '@trezor/utxo-lib';
 import { PROTO, ERRORS } from '../../constants';
-import { getOutputScriptType } from '../../utils/pathUtils';
 
 import type { BitcoinNetworkInfo } from '../../types';
 import type { DeviceCommands } from '../../device/DeviceCommands';
@@ -55,36 +54,46 @@ const deriveOutputScript = async (
         );
     }
 
-    const scriptType = getOutputScriptType(output.address_n);
     const node = await derivePubKeyHash(output.address_n, getHDNode, coinInfo);
     const payment = { hash: node.identifier, network: coinInfo.network };
 
-    if (scriptType === 'PAYTOADDRESS') {
+    if (output.script_type === 'PAYTOADDRESS') {
         return BitcoinJsPayments.p2pkh(payment).output;
     }
 
-    if (scriptType === 'PAYTOSCRIPTHASH') {
+    if (output.script_type === 'PAYTOSCRIPTHASH') {
         return BitcoinJsPayments.p2sh(payment).output;
     }
 
-    if (scriptType === 'PAYTOP2SHWITNESS') {
+    if (output.script_type === 'PAYTOP2SHWITNESS') {
         return BitcoinJsPayments.p2sh({
             redeem: BitcoinJsPayments.p2wpkh(payment),
         }).output;
     }
 
-    if (scriptType === 'PAYTOWITNESS') {
+    if (output.script_type === 'PAYTOWITNESS') {
         return BitcoinJsPayments.p2wpkh(payment).output;
     }
 
-    if (scriptType === 'PAYTOTAPROOT') {
+    if (output.script_type === 'PAYTOTAPROOT') {
         return BitcoinJsPayments.p2tr({
             pubkey: node.publicKey,
             network: coinInfo.network,
         }).output;
     }
 
-    throw ERRORS.TypedError('Runtime', `deriveOutputScript: Unknown script type ${scriptType}`);
+    // ts. this should never happen since there is check for multisig property before this line
+    if (output.script_type === 'PAYTOMULTISIG') {
+        throw ERRORS.TypedError(
+            'Runtime',
+            `deriveOutputScript: script_type PAYTOMULTISIG not expected without multisig defined`,
+        );
+    }
+
+    throw ERRORS.TypedError(
+        'Runtime',
+        `deriveOutputScript: Unknown script type ${output.script_type}`,
+    );
 };
 
 export const verifyTx = async (
