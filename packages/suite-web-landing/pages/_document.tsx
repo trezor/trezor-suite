@@ -4,7 +4,7 @@ import { resolveStaticPath } from '@trezor/utils/lib/resolveStaticPath';
 import { ServerStyleSheet } from 'styled-components';
 import globalStyles from '../support/styles';
 import { isFeatureFlagEnabled } from '@suite-common/suite-utils';
-import { TOR_URLS } from '@suite-constants/tor';
+import { TOR_URLS } from '@trezor/urls';
 
 const isOnionLocation = isFeatureFlagEnabled('ONION_LOCATION_META');
 

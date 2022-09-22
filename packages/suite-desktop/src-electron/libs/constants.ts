@@ -1,6 +1,6 @@
 import url from 'url';
 import { isDev } from '@suite-utils/build';
-import { TOR_URLS } from '@suite-constants/tor';
+import { TOR_URLS } from '@trezor/urls';
 
 export const APP_NAME = 'Trezor Suite';
 

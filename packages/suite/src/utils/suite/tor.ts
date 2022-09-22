@@ -1,5 +1,5 @@
 import { parseHostname } from '@trezor/utils';
-import { TOR_URLS } from '@suite-constants/tor';
+import { TOR_URLS } from '@trezor/urls';
 import { TorStatus } from '@suite-types';
 
 /**

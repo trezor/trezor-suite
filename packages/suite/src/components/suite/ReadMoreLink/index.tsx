@@ -3,15 +3,15 @@ import * as URLS from '@trezor/urls';
 import { Translation, TrezorLink } from '@suite-components';
 import { ExtendedMessageDescriptor } from '@suite-types';
 
-interface Props {
-    url: keyof typeof URLS;
+interface ReadMoreLinkProps {
+    url: keyof Omit<typeof URLS, 'TOR_URLS'>;
     linkLabel?: ExtendedMessageDescriptor['id'];
     message?: ExtendedMessageDescriptor['id'];
 }
 
 // common component used in various places
 // displays Translation with TR_LEARN_MORE value (Link) or standalone Link
-export const ReadMoreLink = ({ url, message, linkLabel }: Props) =>
+export const ReadMoreLink = ({ url, message, linkLabel }: ReadMoreLinkProps) =>
     message ? (
         <Translation
             id={message}
