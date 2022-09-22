@@ -1,36 +1,14 @@
 import { getFwType, getFwVersion, getDeviceModel } from '@suite-utils/device';
 import { isDesktop } from '@suite-utils/env';
 import { getUserAgent, getScreenWidth, getScreenHeight } from '@trezor/env-utils';
-import type { ReleaseInfo } from '@suite-types/github';
 import type { TrezorDevice } from '@suite-types';
 import type { TransportInfo } from '@trezor/connect';
-
-const REPO_INFO = {
-    owner: 'trezor',
-    repo: 'trezor-suite',
-};
-
-const RELEASE_URL = `https://github.com/${REPO_INFO.owner}/${REPO_INFO.repo}`;
+import { GITHUB_REPO_URL } from '@trezor/urls';
 
 type DebugInfo = {
     device?: TrezorDevice;
     transport?: Partial<TransportInfo>;
 };
-
-export const getReleaseNotes = async (version?: string) => {
-    if (!version) {
-        return;
-    }
-
-    const url = `https://api.github.com/repos/${REPO_INFO.owner}/${REPO_INFO.repo}/releases/tags/v${version}`;
-    const response = await fetch(url);
-    const release = await response.json();
-
-    return release as ReleaseInfo;
-};
-
-export const getSignatureFileURL = (filename: string, version?: string) =>
-    `${RELEASE_URL}/releases/download/v${version}/${filename}.asc`;
 
 const getDeviceInfo = (device?: TrezorDevice) => {
     if (!device?.features) {
@@ -52,7 +30,7 @@ const getTransportInfo = (transport?: Partial<TransportInfo>) => {
 };
 
 export const openGithubIssue = ({ device, transport }: DebugInfo) => {
-    const url = new URL(`${RELEASE_URL}/issues/new`);
+    const url = new URL(`${GITHUB_REPO_URL}/issues/new`);
 
     const body = `
 **Describe the bug**
@@ -89,4 +67,4 @@ Add any other context about the problem here.
     window.open(url.toString());
 };
 
-export const getReleaseUrl = (version: string) => `${RELEASE_URL}/releases/tag/v${version}`;
+export const getReleaseUrl = (version: string) => `${GITHUB_REPO_URL}/releases/tag/v${version}`;

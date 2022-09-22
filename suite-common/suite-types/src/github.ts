@@ -4,13 +4,13 @@
  * Types for responses from:
  * https://docs.github.com/en/rest/reference/repos#releases
  */
-export type ReleaseInfo = {
+export type GithubReleaseInfo = {
     url: string;
     assets_url: string;
     upload_url: string;
     html_url: string;
     id: number;
-    author: ReleaseUser;
+    author: GithubReleaseUser;
     node_id: string;
     tag_name: string;
     target_commitish: string;
@@ -19,19 +19,19 @@ export type ReleaseInfo = {
     prerelease: boolean;
     created_at: string;
     published_at: string;
-    assets: ReleaseAsset[];
+    assets: GithubReleaseAsset[];
     tarball_url: string;
     zipball_url: string;
     body: string;
 };
 
-export type ReleaseAsset = {
+type GithubReleaseAsset = {
     url: string;
     id: number;
     node_id: string;
     name: string;
     label: string | null;
-    uploader: ReleaseUser;
+    uploader: GithubReleaseUser;
     content_type: string;
     state: string;
     size: number;
@@ -41,7 +41,7 @@ export type ReleaseAsset = {
     browser_download_url: string;
 };
 
-export type ReleaseUser = {
+type GithubReleaseUser = {
     login: string;
     id: number;
     node_id: string;
