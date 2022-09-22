@@ -1,6 +1,36 @@
-import { Page, GuideCategory, Node } from '@trezor/suite-data/src/guide/parser';
-
 import type { EnvironmentType } from './environment';
+
+/**
+ * A group of Guide content.
+ * Can contain other Pages or Categories.
+ * Cannot contain content on its own except the title.
+ */
+export interface GuideCategory {
+    type: 'category';
+    /** Serves both as unique identifier and relative path to the directory. */
+    id: string;
+    /** List of locales this Category is available in. */
+    locales: string[];
+    /** Titles keyed by locales. */
+    title: {
+        [key: string]: string;
+    };
+    image?: string;
+    /** Sub-categories and sub-pages. */
+    children: Node[];
+}
+
+/** A single unit of Guide content. */
+export interface Page {
+    type: 'page';
+    id: string;
+    locales: string[];
+    title: {
+        [key: string]: string;
+    };
+}
+
+export type Node = GuideCategory | Page;
 
 export type GuideView = 'GUIDE_DEFAULT' | 'GUIDE_CATEGORY' | 'GUIDE_PAGE';
 
@@ -55,5 +85,3 @@ export type FeedbackSuggestion = {
 };
 
 export type Feedback = FeedbackBug | FeedbackSuggestion;
-
-export type { Page, GuideCategory, Node };

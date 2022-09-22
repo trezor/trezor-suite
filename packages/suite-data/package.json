@@ -20,6 +20,7 @@
         "type-check": "tsc --build tsconfig.json"
     },
     "dependencies": {
+        "@suite-common/suite-types": "*",
         "@trezor/urls": "*",
         "@trezor/utils": "*",
         "ua-parser-js": "^1.0.2"

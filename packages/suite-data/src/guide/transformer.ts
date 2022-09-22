@@ -2,7 +2,7 @@ import { join } from 'path';
 import * as fs from 'fs-extra';
 
 import { resolveStaticPath } from '@trezor/utils';
-import { Node } from './parser';
+import { Node } from '@suite-common/suite-types';
 
 /** Removes the front-matter from beginning of a string. */
 const clean = (md: string): string => md.replace(/^---\n.*?\n---\n/s, '');
