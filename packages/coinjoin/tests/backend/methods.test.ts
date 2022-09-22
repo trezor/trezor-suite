@@ -5,7 +5,7 @@ import { DISCOVERY_LOOKOUT } from '../../src/constants';
 import { scanAccount } from '../../src/backend/scanAccount';
 import { scanAddress } from '../../src/backend/scanAddress';
 import { getAccountInfo } from '../../src/backend/getAccountInfo';
-import { CoinjoinFilterController } from '../../src/backend/CoinjoinFilterController';
+import { CoinjoinFilterController } from '../../src/backend/CoinjoinFilterController.browser';
 import { CoinjoinMempoolController } from '../../src/backend/CoinjoinMempoolController';
 import * as FIXTURES from '../fixtures/methods.fixture';
 import { MockBackendClient } from '../mocks/MockBackendClient';

@@ -1,4 +1,5 @@
-import { CoinjoinFilterController } from '../../src/backend/CoinjoinFilterController';
+import { CoinjoinFilterController as NodeController } from '../../src/backend/CoinjoinFilterController';
+import { CoinjoinFilterController as BrowserController } from '../../src/backend/CoinjoinFilterController.browser';
 import { BlockFilter, FilterClient } from '../../src/backend/types';
 import { mockFilterSequence } from '../fixtures/filters.fixture';
 import { COINJOIN_BACKEND_SETTINGS } from '../fixtures/config.fixture';
@@ -48,10 +49,26 @@ describe('CoinjoinFilterController', () => {
         client = new MockFilterClient(FILTERS);
     });
 
-    describe('Filter controller', () => {
+    describe('Node controller', () => {
         FIXTURES.forEach(({ description, params, expected }) => {
             it(description, async () => {
-                const controller = new CoinjoinFilterController(client, COINJOIN_BACKEND_SETTINGS);
+                const controller = new NodeController(client, COINJOIN_BACKEND_SETTINGS);
+                const iterator = controller.getFilterIterator(params);
+                const received = [];
+                // eslint-disable-next-line no-restricted-syntax
+                for await (const b of iterator) {
+                    expect(controller.bestBlockHeight).toBe(BEST_HEIGHT);
+                    received.push(b);
+                }
+                expect(received).toEqual(expected);
+            });
+        });
+    });
+
+    describe('Browser controller', () => {
+        FIXTURES.forEach(({ description, params, expected }) => {
+            it(description, async () => {
+                const controller = new BrowserController(client, COINJOIN_BACKEND_SETTINGS);
                 const iterator = controller.getFilterIterator(params);
                 const received = [];
                 // eslint-disable-next-line no-restricted-syntax
