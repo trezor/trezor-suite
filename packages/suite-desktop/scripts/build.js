@@ -55,16 +55,18 @@ console.log(`[Electron Build] Mode: ${isDev ? 'development' : 'production'}`);
 console.log(`[Electron Build] Using mocks: ${useMocks}`);
 
 // All local packages that doesn't have "build:libs" and used in packages/suite-desktop/src-electron
-// must be builded and not included in electron node_modules, because they are in TS.
+// must be built and not included in electron node_modules, because they are in TS.
 // Normal src/ folder is fine, because it's builded by webpack.
+const builtTrezorDependencies = ['@trezor/urls', '@trezor/utils'];
+
 const dependencies = Object.keys(pkg.dependencies).filter(
-    name => !(name.startsWith('@suite-common/') || name === '@trezor/utils'),
+    name => !(name.startsWith('@suite-common/') || builtTrezorDependencies.includes(name)),
 );
 const devDependencies = Object.keys(pkg.devDependencies);
 
 const electronExternalDependencies = [...dependencies, ...devDependencies];
 
-// TODO: maybe desktop-api could be build too?
+// TODO: maybe desktop-api could be built too?
 
 build({
     entryPoints: ['app.ts', 'preload.ts', ...modules].map(f => path.join(electronSource, f)),
