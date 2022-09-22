@@ -17,7 +17,8 @@ const load = async ({ mainWindow, store, interceptor }: Dependencies) => {
     const port = await getFreePort();
     const address = `${host}:${port}`;
     const controlPort = await getFreePort();
-    const authFilePath = app.getPath('userData');
+    const userData = app.getPath('userData');
+    const torDataDir = `${userData}/tor`;
 
     /**
      * Merges given TorSettings with settings already present in the store,
@@ -30,7 +31,7 @@ const load = async ({ mainWindow, store, interceptor }: Dependencies) => {
     };
 
     persistSettings({ address });
-    const tor = new TorProcess({ host, port, controlPort, authFilePath });
+    const tor = new TorProcess({ host, port, controlPort, torDataDir });
 
     const setProxy = (rule: string) => {
         logger.info('tor', `Setting proxy rules to "${rule}"`);
