@@ -27,10 +27,14 @@ const FiatBalanceWrapper = styled(H3)`
     margin-left: 1ch;
 `;
 
-const AccountTopPanelSkeleton = (props: { animate?: boolean }) => (
+interface AccountTopPanelSkeletonProps {
+    animate?: boolean;
+}
+
+const AccountTopPanelSkeleton = ({ animate }: AccountTopPanelSkeletonProps) => (
     <AppNavigationPanel
         maxWidth="small"
-        title={<SkeletonRectangle width="260px" height="26px" animate={props.animate} />}
+        title={<SkeletonRectangle width="260px" height="26px" animate={animate} />}
         navigation={<AccountNavigation />}
     >
         <Stack margin="6px 0px 0px 0px" childMargin="0px 0px 8px 0px">
@@ -67,7 +71,7 @@ export const AccountTopPanel = () => {
                     }}
                 />
             }
-            navigation={<AccountNavigation account={account} />}
+            navigation={<AccountNavigation />}
             titleContent={() =>
                 !isTestnet(symbol) ? <Ticker symbol={symbol} tooltipPos="bottom" /> : undefined
             }
