@@ -1,7 +1,7 @@
 import path from 'path';
 import { spawn, ChildProcess } from 'child_process';
 
-import { isDev } from '@suite-utils/build';
+import { isDevEnv } from '@suite-common/suite-utils';
 import { b2t } from '../utils';
 
 export type Status = {
@@ -113,7 +113,7 @@ abstract class BaseProcess {
             global.resourcesPath,
             'bin',
             this.resourceName,
-            isDev ? system : '',
+            isDevEnv ? system : '',
         );
         const processPath = path.join(processDir, `${this.processName}${ext}`);
         const processEnv = { ...process.env };

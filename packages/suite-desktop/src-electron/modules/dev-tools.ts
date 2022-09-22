@@ -3,14 +3,14 @@
  */
 import { app } from 'electron';
 
-import { isDev } from '@suite-utils/build';
+import { isDevEnv } from '@suite-common/suite-utils';
 
 import type { Module } from './index';
 
 const openDevToolsFlag = app.commandLine.hasSwitch('open-devtools');
 
 const init: Module = ({ mainWindow }) => {
-    if (isDev || openDevToolsFlag) {
+    if (isDevEnv || openDevToolsFlag) {
         mainWindow.webContents.openDevTools();
     }
 };

@@ -8,7 +8,7 @@ import { Translation } from '@suite-components';
 import * as guideActions from '@suite-actions/guideActions';
 import { useActions, useSelector } from '@suite-hooks';
 import { Icon, Link, variables } from '@trezor/components';
-import { isDev } from '@suite-utils/build';
+import { isDevEnv } from '@suite-common/suite-utils';
 import { resolveStaticPath } from '@trezor/utils';
 import { getFwVersion } from '@suite-utils/device';
 import { ViewWrapper, Header, Content } from '@guide-components';
@@ -220,7 +220,7 @@ export const SupportFeedbackSelection = () => {
                     <DetailItem data-test="@guide/support/version">
                         <Translation id="TR_APP" />
                         :&nbsp;
-                        {!isDev && appUpToDate ? (
+                        {!isDevEnv && appUpToDate ? (
                             <>
                                 <StyledIcon icon="CHECK" size={10} />
                                 <Translation id="TR_UP_TO_DATE" />
@@ -228,7 +228,7 @@ export const SupportFeedbackSelection = () => {
                         ) : (
                             <>
                                 {process.env.VERSION}
-                                {isDev && '-dev'}
+                                {isDevEnv && '-dev'}
                             </>
                         )}
                     </DetailItem>

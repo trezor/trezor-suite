@@ -8,7 +8,7 @@ import { ipcMain } from './typed-electron';
 // eslint-disable-next-line @typescript-eslint/prefer-ts-expect-error
 // @ts-ignore
 import { SENTRY_CONFIG } from '@suite-config';
-import { isDev } from '@suite-utils/build';
+import { isDevEnv } from '@suite-common/suite-utils';
 import { APP_NAME } from './libs/constants';
 import * as store from './libs/store';
 import { MIN_HEIGHT, MIN_WIDTH } from './libs/screen';
@@ -23,14 +23,14 @@ import { createLogger } from './logger';
 import type { HandshakeClient } from '@trezor/suite-desktop-api';
 
 // @ts-expect-error using internal electron API to set suite version in dev mode correctly
-if (isDev) app.setVersion(process.env.VERSION);
+if (isDevEnv) app.setVersion(process.env.VERSION);
 
 // Logger
 const logger = createLogger();
 
 // Globals
 global.logger = logger;
-global.resourcesPath = isDev
+global.resourcesPath = isDevEnv
     ? path.join(__dirname, '..', 'build', 'static')
     : process.resourcesPath;
 
@@ -49,8 +49,8 @@ const createMainWindow = (winBounds: WinBounds) => {
         minWidth: MIN_WIDTH,
         minHeight: MIN_HEIGHT,
         webPreferences: {
-            webSecurity: !isDev,
-            allowRunningInsecureContent: isDev,
+            webSecurity: !isDevEnv,
+            allowRunningInsecureContent: isDevEnv,
             preload: path.join(__dirname, 'preload.js'),
         },
         icon: path.join(global.resourcesPath, 'images', 'icons', '512x512.png'),
