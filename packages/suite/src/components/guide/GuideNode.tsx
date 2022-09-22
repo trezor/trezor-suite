@@ -7,7 +7,7 @@ import { resolveStaticPath } from '@trezor/utils';
 import { Icon, variables, useTheme } from '@trezor/components';
 import { useActions, useSelector } from '@suite-hooks';
 import * as guideActions from '@suite-actions/guideActions';
-import { Node } from '@suite-common/suite-types';
+import { GuideNode as GuideNodeType } from '@suite-common/suite-types';
 import { getNodeTitle } from '@suite-utils/guide';
 
 const NodeButton = styled.button`
@@ -66,7 +66,7 @@ const Image = styled.img`
 `;
 
 type GuideNodeProps = {
-    node: Node;
+    node: GuideNodeType;
     description?: React.ReactNode;
 };
 

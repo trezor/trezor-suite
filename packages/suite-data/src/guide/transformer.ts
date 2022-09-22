@@ -2,7 +2,7 @@ import { join } from 'path';
 import * as fs from 'fs-extra';
 
 import { resolveStaticPath } from '@trezor/utils';
-import { Node } from '@suite-common/suite-types';
+import { GuideNode } from '@suite-common/suite-types';
 
 /** Removes the front-matter from beginning of a string. */
 const clean = (md: string): string => md.replace(/^---\n.*?\n---\n/s, '');
@@ -25,7 +25,7 @@ const transformImagesPath = (md: string): string =>
  * @param source Path to directory with the markdown files.
  * @param destination Path to directory where the cleaned markdown will be dumped.
  */
-export const transform = (node: Node, source: string, destination: string) => {
+export const transform = (node: GuideNode, source: string, destination: string) => {
     if (node.type === 'category') {
         node.locales.forEach(locale => {
             fs.mkdirpSync(join(destination, locale, node.id));
