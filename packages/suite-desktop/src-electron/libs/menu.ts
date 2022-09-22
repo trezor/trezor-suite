@@ -1,6 +1,6 @@
 import { app, shell, Menu, MenuItemConstructorOptions } from 'electron';
 
-import { isDev } from '@suite-utils/build';
+import { isDevEnv } from '@suite-common/suite-utils';
 import { restartApp } from './app-utils';
 
 const isMac = process.platform === 'darwin';
@@ -68,7 +68,7 @@ const mainMenuTemplate: MenuItem[] = [
     },
 ];
 
-if (!isDev) {
+if (!isDevEnv) {
     // remove toggleDevTools from "View"
     mainMenuTemplate[2].submenu.splice(2, 1);
 }

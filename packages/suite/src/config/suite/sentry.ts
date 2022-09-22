@@ -1,5 +1,5 @@
 import { CaptureConsole, Dedupe } from '@sentry/integrations';
-import { isDev } from '@suite-utils/build';
+import { isDevEnv } from '@suite-common/suite-utils';
 import { redactUserPathFromString } from '@trezor/utils';
 
 import type { Options, Event } from '@sentry/types';
@@ -79,7 +79,7 @@ const config: Options = {
         new Dedupe(),
     ],
     beforeSend,
-    enabled: !isDev,
+    enabled: !isDevEnv,
     release: process.env.SENTRY_RELEASE,
     environment: process.env.SUITE_TYPE,
     normalizeDepth: 4,

@@ -1,12 +1,12 @@
 import url from 'url';
-import { isDev } from '@suite-utils/build';
 import { TOR_URLS } from '@trezor/urls';
+import { isDevEnv } from '@suite-common/suite-utils';
 
 export const APP_NAME = 'Trezor Suite';
 
 export const FILE_PROTOCOL = 'file';
 
-export const APP_SRC = isDev
+export const APP_SRC = isDevEnv
     ? 'http://localhost:8000/'
     : url.format({
           pathname: 'index.html',

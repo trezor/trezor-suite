@@ -1,6 +1,6 @@
 import { app } from 'electron';
 
-import { isDev } from '@suite-utils/build';
+import { isDevEnv } from '@suite-common/suite-utils';
 import { Module } from '../index';
 
 const logUI = app.commandLine.hasSwitch('log-ui');
@@ -49,7 +49,7 @@ const init: Module = ({ mainWindow }) => {
 
     mainWindow.webContents.on('console-message', (_, level, message, line, sourceId) => {
         // Don't log console log when in dev because dev tools are already open
-        if (isDev) return;
+        if (isDevEnv) return;
 
         if (!logUI) return;
 

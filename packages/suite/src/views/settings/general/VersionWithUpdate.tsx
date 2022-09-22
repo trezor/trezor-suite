@@ -8,7 +8,7 @@ import { Translation } from '@suite-components';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@suite-components/Settings';
 import { useSelector, useActions } from '@suite-hooks';
 import { UpdateState } from '@suite-reducers/desktopUpdateReducer';
-import { isDev } from '@suite-utils/build';
+import { isDevEnv } from '@suite-common/suite-utils';
 import { useAnchor } from '@suite-hooks/useAnchor';
 import { SettingsAnchor } from '@suite-constants/anchors';
 
@@ -61,7 +61,7 @@ export const VersionWithUpdate = () => {
                                 version: (
                                     <VersionWithGithubTooltip
                                         appVersion={process.env.VERSION || ''}
-                                        isDev={isDev}
+                                        isDev={isDevEnv}
                                     />
                                 ),
                             }}

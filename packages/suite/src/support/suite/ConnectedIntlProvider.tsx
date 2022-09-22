@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { IntlProvider } from 'react-intl';
 import enMessages from '@trezor/suite-data/files/translations/en.json';
 import { useSelector } from '@suite-hooks/useSelector';
-import { isDev } from '@suite-utils/build';
+import { isDevEnv } from '@suite-common/suite-utils';
 import type { Locale } from '@suite-config/languages';
 
 const useFetchMessages = (locale: Locale) => {
@@ -37,7 +37,7 @@ const ConnectedIntlProvider: React.FC = ({ children }) => {
             locale={locale}
             messages={messages}
             onError={err => {
-                if (isDev) {
+                if (isDevEnv) {
                     // ignore, this expected
                     if (err.message.includes('MISSING_TRANSLATION')) {
                         return;

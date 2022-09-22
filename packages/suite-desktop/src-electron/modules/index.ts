@@ -2,7 +2,7 @@
 /* eslint-disable global-require */
 import path from 'path';
 import { isNotUndefined } from '@trezor/utils';
-import { isDev } from '@suite-utils/build';
+import { isDevEnv } from '@suite-common/suite-utils';
 import { StrictBrowserWindow } from '../typed-electron';
 import type { HandshakeClient } from '@trezor/suite-desktop-api';
 
@@ -32,7 +32,7 @@ const MODULES = [
     'dev-tools',
     'request-interceptor',
     // Modules used only in dev/prod mode
-    ...(isDev ? [] : ['csp', 'file-protocol']),
+    ...(isDevEnv ? [] : ['csp', 'file-protocol']),
 ];
 
 export type Dependencies = {

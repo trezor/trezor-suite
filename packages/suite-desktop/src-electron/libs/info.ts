@@ -2,7 +2,7 @@ import { app } from 'electron';
 import si from 'systeminformation';
 import { bytesToHumanReadable } from '@trezor/utils';
 
-import { isDev } from '@suite-utils/build';
+import { isDevEnv } from '@suite-common/suite-utils';
 import { b2t } from './utils';
 
 export const getBuildInfo = () => [
@@ -10,7 +10,7 @@ export const getBuildInfo = () => [
     `- Version: ${app.getVersion()}`,
     `- Electron: ${process.versions.electron}`,
     `- Commit: ${process.env.COMMITHASH}`,
-    `- Dev: ${b2t(isDev)}`,
+    `- Dev: ${b2t(isDevEnv)}`,
     `- Args: ${process.argv.slice(1).join(' ')}`,
     `- CWD: ${process.cwd()}`,
 ];
