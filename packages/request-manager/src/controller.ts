@@ -23,7 +23,7 @@ export class TorController extends EventEmitter {
     }
 
     getTorConfiguration(processId: number): string[] {
-        const controlAuthCookiePath = path.join(this.options.authFilePath, 'control_auth_cookie');
+        const controlAuthCookiePath = path.join(this.options.torDataDir, 'control_auth_cookie');
         return [
             // Try to write to disk less frequently than we would otherwise.
             '--AvoidDiskWrites',
@@ -59,6 +59,11 @@ export class TorController extends EventEmitter {
             // the PID specified in the __OwningControllerProcess option.
             '__OwningControllerProcess',
             `${processId}`,
+            // Store working data in DIR. It has to be different that default one especially for macOS otherwise the
+            // custom Tor process cannot run when there is already a Tor process running.
+            // On Windows, the default is your ApplicationData folder.
+            '--DataDirectory',
+            this.options.torDataDir,
         ];
     }
 
