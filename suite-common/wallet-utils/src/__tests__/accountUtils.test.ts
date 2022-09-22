@@ -12,6 +12,7 @@ import {
     getNetwork,
     getTitleForNetwork,
     getUtxoFromSignedTransaction,
+    getNetworkFeatures,
     hasNetworkFeatures,
     isTestnet,
     networkAmountToSatoshi,
@@ -191,6 +192,32 @@ describe('account utils', () => {
                 'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
             ),
         ).toBe(true);
+    });
+
+    it('getNetworkFeatures', () => {
+        const btcAcc = testMocks.getWalletAccount({
+            networkType: 'bitcoin',
+            symbol: 'btc',
+        });
+
+        const btcTaprootAcc = testMocks.getWalletAccount({
+            networkType: 'bitcoin',
+            symbol: 'btc',
+            accountType: 'taproot',
+        });
+
+        const ethAcc = testMocks.getWalletAccount();
+
+        const coinJoinAcc = testMocks.getWalletAccount({
+            networkType: 'bitcoin',
+            symbol: 'regtest',
+            accountType: 'coinjoin',
+        });
+
+        expect(getNetworkFeatures(btcAcc)).toEqual(['rbf', 'sign-verify', 'amount-unit']);
+        expect(getNetworkFeatures(btcTaprootAcc)).toEqual(['rbf', 'amount-unit']);
+        expect(getNetworkFeatures(ethAcc)).toEqual(['sign-verify', 'tokens']);
+        expect(getNetworkFeatures(coinJoinAcc)).toEqual([]);
     });
 
     it('hasNetworkFeatures', () => {
