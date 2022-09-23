@@ -1,36 +1,118 @@
-suite codesign deploy staging-suite:
-  stage: deploy to staging
-  needs:
-    - suite-web build stable codesign
-    - suite-desktop build mac codesign
-    - suite-desktop build linux codesign
-    - suite-desktop build windows codesign
-    - suite-web-landing build stable
-  environment:
-    name: ${CI_BUILD_REF_NAME}-staging-suite
-    url: ${STAGING_SUITE_SERVER_URL}
-  before_script: []
-  only:
-    refs:
-      - codesign
-  when: manual
-  script:
-    - source ${STAGING_SUITE_DEPLOY_KEYFILE}
-    - mkdir -p packages/suite-web/build/static/desktop
-    - 'rsync --delete -va "${DESKTOP_APP_NAME}"-*.AppImage ./packages/suite-web/build/static/desktop || :'
-    - 'rsync --delete -va "${DESKTOP_APP_NAME}"-*.AppImage.asc ./packages/suite-web/build/static/desktop || :'
-    - 'rsync --delete -va "${DESKTOP_APP_NAME}"-*.dmg ./packages/suite-web/build/static/desktop || :'
-    - 'rsync --delete -va "${DESKTOP_APP_NAME}"-*.dmg.asc ./packages/suite-web/build/static/desktop || :'
-    - 'rsync --delete -va "${DESKTOP_APP_NAME}"-*.exe ./packages/suite-web/build/static/desktop || :'
-    - 'rsync --delete -va "${DESKTOP_APP_NAME}"-*.exe.asc ./packages/suite-web/build/static/desktop || :'
-    - cd packages/suite-web
-    - ./scripts/s3sync.sh staging-suite
-    - cd -
-    - cd packages/suite-web-landing
-    - ./scripts/s3sync.sh staging-suite
-  tags:
-    - deploy
+on:
+  push:
+    branches:
+      - "release/**"
 
+# Specifies if the apps should be signed.
+env:
+  IS_CODESIGN_BUILD: "true"
+
+jobs:
+  build-suite-desktop:
+    strategy:
+      matrix:
+        include:
+          - os: macos-latest
+            platform: mac
+          - os: ubuntu-latest
+            platform: linux
+          - os: windows-latest
+            platform: win
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          lfs: true
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: ".nvmrc"
+      - name: Build suite-desktop develop
+        run: |
+          yarn install --immutable
+          yarn build:libs
+          yarn workspace @trezor/suite-data copy-static-files
+          yarn workspace @trezor/suite-desktop build:${platform}
+          bash packages/suite-desktop/scripts/gnupg-sign.sh
+          ls -la packages/suite-desktop/build-electron
+          mv packages/suite-desktop/build-electron/* .
+          more latest*.yml | cat
+      - name: Upload suite-desktop ${platform}
+        uses: actions/upload-artifact@v3
+        with:
+          name: suite-desktop-${platform}
+          path: |
+            ${artifact}
+            latest*.yml
+
+  build-web:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: ".nvmrc"
+      - name: "Build suite-web"
+        run: |
+          yarn install --immutable
+          yarn workspace @trezor/suite-web build
+      - name: Archive code coverage results
+        uses: actions/upload-artifact@v3
+        with:
+          name: suite-web-build
+          path: packages/suite-web/build
+
+  build-landing:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: ".nvmrc"
+      - name: "Build suite-web landing"
+        run: |
+          yarn install --immutable
+          yarn workspace @trezor/suite-web-landing build
+      - name: Archive suite-web build results
+        uses: actions/upload-artifact@v3
+        with:
+          name: suite-web-landing-build
+          path: packages/suite-web-landing/build
+
+  deploy-suite-web-production:
+    needs: [build-web, build-landing]
+    runs-on: ubuntu-latest
+    env:
+      BUCKET_NAME: "suite-dev.trezor.io"
+      AWS_REGION: "eu-central-1"
+    steps:
+      - name: Configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: arn:aws:iam::538326561891:role/github-actions-trezor-suite #TODO! add role arn to secret for develop
+          aws-region: ${{ env.AWS_REGION }}
+      - name: Download suite production artifacts
+        uses: actions/download-artifact@v3
+      - name: Upload suite-web and suite-web-landing
+        run: |
+          - mkdir -p packages/suite-web/build/static/desktop
+          - 'rsync --delete -va "${DESKTOP_APP_NAME}"-*.AppImage ./packages/suite-web/build/static/desktop || :'
+          - 'rsync --delete -va "${DESKTOP_APP_NAME}"-*.AppImage.asc ./packages/suite-web/build/static/desktop || :'
+          - 'rsync --delete -va "${DESKTOP_APP_NAME}"-*.dmg ./packages/suite-web/build/static/desktop || :'
+          - 'rsync --delete -va "${DESKTOP_APP_NAME}"-*.dmg.asc ./packages/suite-web/build/static/desktop || :'
+          - 'rsync --delete -va "${DESKTOP_APP_NAME}"-*.exe ./packages/suite-web/build/static/desktop || :'
+          - 'rsync --delete -va "${DESKTOP_APP_NAME}"-*.exe.asc ./packages/suite-web/build/static/desktop || :'
+          - cd packages/suite-web
+          - ./scripts/s3sync.sh staging-suite
+          - cd -
+          - cd packages/suite-web-landing
+          - ./scripts/s3sync.sh staging-suite
+# TODO!: create release to github releases
 suite-desktop github release:
   stage: deploy to production
   needs:
