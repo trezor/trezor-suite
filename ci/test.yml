@@ -300,3 +300,17 @@ connect manual:
     refs:
       - schedules
   when: manual
+
+.e2e connect-web:
+  stage: integration testing
+  variables:
+    URL: ${DEV_SERVER_URL}/connect/${CI_BUILD_REF_NAME}/
+  script:
+    - yarn install --immutable
+    - yarn workspace @trezor/connect-web test:e2e
+  interruptible: true
+
+connect-web:
+  extends: .e2e connect-web
+  only:
+    <<: *run_everything_rules
