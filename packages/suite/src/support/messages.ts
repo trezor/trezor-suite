@@ -4202,14 +4202,6 @@ export default defineMessages({
         id: 'TR_EXCHANGE',
         defaultMessage: 'Exchange',
     },
-    TR_PASSWORDS: {
-        id: 'TR_PASSWORDS',
-        defaultMessage: 'Passwords',
-    },
-    TR_PORTFOLIO: {
-        id: 'TR_PORTFOLIO',
-        defaultMessage: 'Portfolio',
-    },
     TR_NOTIFICATIONS: {
         id: 'TR_NOTIFICATIONS',
         defaultMessage: 'Activity',
