@@ -47,7 +47,7 @@ jobs:
         with:
           name: suite-web-landing-build
           path: packages/suite-web-landing/build
-
+  # TODO: deploy to do nginx web server
   deploy-builds:
     needs: [build-web, build-landing]
     runs-on: ubuntu-latest
@@ -60,7 +60,7 @@ jobs:
         with:
           role-to-assume: arn:aws:iam::538326561891:role/github-actions-trezor-suite #TODO! add role arn to secret for develop
           aws-region: ${{ env.AWS_REGION }}
-      - name: Archive code coverage results
+      - name: Download suite-web build results
         uses: actions/download-artifact@v3
       - name: Upload suite-web and suite-web-landing
         run: |
