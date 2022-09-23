@@ -26,6 +26,7 @@ const Left = styled.div`
 
 const Right = styled.div`
     display: flex;
+    align-items: center;
     flex: 1;
     position: relative;
     font-size: ${variables.FONT_SIZE.SMALL};
@@ -34,7 +35,7 @@ const Right = styled.div`
 
 const FooterBox = styled.div`
     position: absolute;
-    border-radius: 4px;
+    border-radius: 8px;
     padding: 10px;
     flex: 1;
     min-width: 345px;
