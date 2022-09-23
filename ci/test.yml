@@ -8,7 +8,6 @@
 # @trezor/suite-web
 .e2e web:
   stage: integration testing
-  allow_failure: false
   dependencies:
     - install
   variables:
@@ -210,7 +209,6 @@ transport manual:
 connect-popup:
   extends: .e2e connect-popup
   # temporary so that it does not block connect beta releases
-  allow_failure: false
   dependencies:
     - install
     - connect-web build
