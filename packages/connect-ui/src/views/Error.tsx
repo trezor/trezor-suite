@@ -67,7 +67,7 @@ const getTroubleshootingTips = (props: ErrorViewProps) => {
                             <Black>Custom</Black> tab
                         </Step>,
                         <Step>
-                            uncheck<Green>Cookies</Green>
+                            uncheck <Green>Cookies</Green>
                         </Step>,
                     ],
                 },
