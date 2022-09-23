@@ -38,13 +38,13 @@ const NavLinkText = styled.div`
 
 const Badge = styled.span`
     position: absolute;
-    top: -14px;
-    right: -27px;
+    top: -12px;
+    right: -24px;
     padding: 2px 4px 0 4px;
     border-radius: 4px;
     background: ${({ theme }) => theme.BG_LIGHT_GREEN};
     color: ${({ theme }) => theme.TYPE_GREEN};
-    font-size: ${variables.FONT_SIZE.TINY};
+    font-size: 10px;
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     text-transform: uppercase;
     letter-spacing: 0.2px;
