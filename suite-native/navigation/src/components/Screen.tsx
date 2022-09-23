@@ -1,14 +1,17 @@
 import React, { ReactNode } from 'react';
-import { SafeAreaView, ScrollView, StatusBar, View } from 'react-native';
+import { SafeAreaView, StatusBar, View } from 'react-native';
 import { useSafeAreaInsets, EdgeInsets } from 'react-native-safe-area-context';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Color, nativeSpacings } from '@trezor/theme';
 
+import { ScreenContent } from './ScreenContent';
+
 type ScreenProps = {
     children: ReactNode;
     header?: ReactNode;
     hasStatusBar?: boolean;
+    isScrollable?: boolean;
     backgroundColor?: Color;
     customVerticalPadding?: number;
     customHorizontalPadding?: number;
@@ -34,24 +37,10 @@ const screenHeaderStyle = prepareNativeStyle<{
     };
 });
 
-const screenContentStyle = prepareNativeStyle<{
-    insets: EdgeInsets;
-    customHorizontalPadding: number;
-    customVerticalPadding: number;
-}>((_, { insets, customHorizontalPadding, customVerticalPadding }) => {
-    const { top, right, bottom, left } = insets;
-    return {
-        flexGrow: 1,
-        paddingTop: Math.max(top, customVerticalPadding),
-        paddingBottom: Math.max(bottom, customVerticalPadding),
-        paddingLeft: Math.max(left, customHorizontalPadding),
-        paddingRight: Math.max(right, customHorizontalPadding),
-    };
-});
-
 export const Screen = ({
     children,
     header,
+    isScrollable = true,
     hasStatusBar = true,
     backgroundColor = 'gray100',
     customVerticalPadding = nativeSpacings.medium,
@@ -87,16 +76,13 @@ export const Screen = ({
                     {header}
                 </View>
             )}
-            <ScrollView
-                contentInsetAdjustmentBehavior="automatic"
-                contentContainerStyle={applyStyle(screenContentStyle, {
-                    insets,
-                    customHorizontalPadding,
-                    customVerticalPadding,
-                })}
+            <ScreenContent
+                isScrollable={isScrollable}
+                customVerticalPadding={customVerticalPadding}
+                customHorizontalPadding={customHorizontalPadding}
             >
                 {children}
-            </ScrollView>
+            </ScreenContent>
         </SafeAreaView>
     );
 };

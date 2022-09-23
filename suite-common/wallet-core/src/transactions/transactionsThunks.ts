@@ -172,7 +172,7 @@ export const exportTransactionsThunk = createThunk(
 );
 
 export const fetchTransactionsThunk = createThunk(
-    `${modulePrefix}/addFakePendingTransaction`,
+    `${modulePrefix}/fetchTransactionsThunk`,
     async (
         {
             account,
@@ -250,6 +250,7 @@ export const fetchTransactionsThunk = createThunk(
                     transactions: updatedTransactions,
                     account: updatedAccount,
                     page,
+                    perPage,
                 }),
             );
             // updates the marker/page object for the account

@@ -128,3 +128,8 @@ export const selectAccountLabel = createSelector(
         }
     },
 );
+
+export const selectAccountsTransactionsCount = createSelector(
+    [selectAccountByKey],
+    account => account?.history.total,
+);

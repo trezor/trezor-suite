@@ -6186,10 +6186,23 @@ __metadata:
     ethereumjs-util: ^7.1.5
     jest: ^26.6.3
     pdfmake: ^0.2.5
+    react: ^17.0.2
     react-hook-form: 6.15.7
     trezor-address-validator: ^0.4.3
     typescript: 4.7.4
     web3-utils: ^1.7.3
+  languageName: unknown
+  linkType: soft
+
+"@suite-native/accounts@*, @suite-native/accounts@workspace:suite-native/accounts":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/accounts@workspace:suite-native/accounts"
+  dependencies:
+    "@suite-common/wallet-types": "*"
+    "@suite-native/atoms": "*"
+    "@trezor/icons": "*"
+    "@trezor/styles": "*"
+    react: ^17.0.2
   languageName: unknown
   linkType: soft
 
@@ -6280,6 +6293,7 @@ __metadata:
     "@suite-common/wallet-config": "*"
     "@suite-common/wallet-core": "*"
     "@suite-common/wallet-types": "*"
+    "@suite-common/wallet-utils": "*"
     "@suite-native/atoms": "*"
     "@suite-native/navigation": "*"
     "@suite-native/transactions": "*"
@@ -6485,6 +6499,7 @@ __metadata:
     "@suite-common/wallet-core": "*"
     "@suite-common/wallet-types": "*"
     "@suite-common/wallet-utils": "*"
+    "@suite-native/accounts": "*"
     "@suite-native/atoms": "*"
     "@suite-native/navigation": "*"
     "@trezor/icons": "*"

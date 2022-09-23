@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import {
@@ -16,10 +16,10 @@ import {
     TransactionsRootState,
     selectAccountTransactions,
 } from '@suite-common/wallet-core';
-import { Box, Text } from '@suite-native/atoms';
 import { TransactionList } from '@suite-native/transactions';
+import { useMount } from '@suite-common/wallet-utils';
 
-import { AccountBalance } from '../components/AccountBalance';
+const TX_PER_PAGE = 25;
 
 export const AccountDetailScreen = ({
     route,
@@ -34,33 +34,37 @@ export const AccountDetailScreen = ({
     const accountTransactions = useSelector((state: TransactionsRootState) =>
         selectAccountTransactions(state, accountKey),
     );
+    const [page, setPage] = useState(1);
     const dispatch = useDispatch();
 
-    useEffect(() => {
+    const fetchMoreTransactions = () => {
         if (!account) return;
-        const promise = dispatch(
+        dispatch(
             fetchTransactionsThunk({
                 account,
-                page: 1,
-                perPage: 100, // TODO add support for pagination.
+                page,
+                perPage: TX_PER_PAGE,
             }),
         );
-        return () => {
-            promise.abort();
-        };
-    }, [account, dispatch]);
+        setPage(page + 1);
+    };
+
+    useMount(() => {
+        fetchMoreTransactions();
+    });
+
+    const paginatedTransactions = accountTransactions.slice(1, TX_PER_PAGE * page);
 
     if (!account) return null;
 
     return (
-        <Screen header={<ScreenHeader />}>
-            <AccountBalance accountName={accountName} account={account} />
-            <Box>
-                <Box marginBottom="large">
-                    <Text variant="titleSmall">Transactions</Text>
-                </Box>
-                <TransactionList transactions={accountTransactions} />
-            </Box>
+        <Screen header={<ScreenHeader />} isScrollable={false}>
+            <TransactionList
+                account={account}
+                accountName={accountName}
+                transactions={paginatedTransactions}
+                fetchMoreTransactions={fetchMoreTransactions}
+            />
         </Screen>
     );
 };
