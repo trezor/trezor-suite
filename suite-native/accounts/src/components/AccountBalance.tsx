@@ -1,12 +1,13 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Box, Text } from '@suite-native/atoms';
 import { CryptoIcon } from '@trezor/icons';
-import { Account } from '@suite-common/wallet-types';
+import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 
 type AccountBalanceProps = {
-    account: Account;
+    accountKey: string;
     accountName?: string;
 };
 
@@ -19,8 +20,13 @@ const cryptoIconStyle = prepareNativeStyle(_ => ({
     marginRight: 12,
 }));
 
-export const AccountBalance = ({ account, accountName }: AccountBalanceProps) => {
+export const AccountBalance = ({ accountKey, accountName }: AccountBalanceProps) => {
     const { applyStyle } = useNativeStyles();
+    const account = useSelector((state: AccountsRootState) =>
+        selectAccountByKey(state, accountKey),
+    );
+
+    if (!account) return null;
 
     return (
         <Box marginBottom="extraLarge">

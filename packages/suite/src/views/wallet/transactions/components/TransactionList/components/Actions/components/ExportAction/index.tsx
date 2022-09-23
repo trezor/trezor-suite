@@ -41,7 +41,7 @@ const ExportAction = ({ account }: ExportActionProps) => {
             setIsExportRunning(true);
             try {
                 await fetchTransactions({
-                    account,
+                    accountKey: account.key,
                     page: 2,
                     perPage: SETTINGS.TXS_PER_PAGE,
                     noLoading: true,

@@ -1,6 +1,6 @@
 import { configureStore, Store, Middleware } from '@reduxjs/toolkit';
 import createDebugger from 'redux-flipper';
-import { persistStore, FLUSH, PAUSE, PERSIST, PURGE, REGISTER, REHYDRATE } from 'redux-persist';
+import { persistStore } from 'redux-persist';
 
 import { prepareFiatRatesMiddleware, prepareBlockchainMiddleware } from '@suite-common/wallet-core';
 
@@ -24,10 +24,8 @@ export const store: Store = configureStore({
             thunk: {
                 extraArgument: extraDependencies,
             },
-            serializableCheck: {
-                // ignore all action types which redux-persist dispatches
-                ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
-            },
+            serializableCheck: false,
+            immutableCheck: false,
         }).concat(middlewares),
 });
 

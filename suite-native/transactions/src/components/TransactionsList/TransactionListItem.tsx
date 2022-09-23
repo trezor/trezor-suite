@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { TouchableOpacity } from 'react-native';
 
 import { useNavigation } from '@react-navigation/native';
@@ -38,7 +38,7 @@ const transactionListItemStyle = prepareNativeStyle(utils => ({
     padding: utils.spacings.medium,
 }));
 
-export const TransactionListItem = ({ transaction }: AccountTransactionListItemProps) => {
+export const TransactionListItem = memo(({ transaction }: AccountTransactionListItemProps) => {
     const { applyStyle } = useNativeStyles();
     const navigation =
         useNavigation<
@@ -76,4 +76,4 @@ export const TransactionListItem = ({ transaction }: AccountTransactionListItemP
             <Text>{transactionAmount}</Text>
         </TouchableOpacity>
     );
-};
+});

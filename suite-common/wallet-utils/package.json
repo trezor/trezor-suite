@@ -31,6 +31,7 @@
         "date-fns": "^2.29.1",
         "ethereumjs-util": "^7.1.5",
         "pdfmake": "^0.2.5",
+        "react": "^17.0.2",
         "react-hook-form": "6.15.7",
         "trezor-address-validator": "^0.4.3",
         "web3-utils": "^1.7.3"

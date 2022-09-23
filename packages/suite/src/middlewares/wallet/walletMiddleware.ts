@@ -19,6 +19,7 @@ import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketC
 import * as coinmarketBuyActions from '@wallet-actions/coinmarketBuyActions';
 import type { AppState, Action, Dispatch } from '@suite-types';
 import { isAnyOf } from '@reduxjs/toolkit';
+import { settingsCommonConfig } from '@suite-common/suite-config';
 
 const walletMiddleware =
     (api: MiddlewareAPI<Dispatch, AppState>) =>
@@ -42,6 +43,7 @@ const walletMiddleware =
                     transactions: account.history.transactions || [],
                     account,
                     page: 1,
+                    perPage: settingsCommonConfig.TXS_PER_PAGE,
                 }),
             );
         }

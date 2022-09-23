@@ -34,17 +34,25 @@ const addTransaction = createAction(
         transactions,
         account,
         page,
+        perPage,
     }: {
         transactions: AccountTransaction[];
         account: Account;
         page?: number;
+        perPage?: number;
     }): {
-        payload: { transactions: WalletAccountTransaction[]; account: Account; page?: number };
+        payload: {
+            transactions: WalletAccountTransaction[];
+            account: Account;
+            page?: number;
+            perPage?: number;
+        };
     } => ({
         payload: {
             transactions: transactions.map(t => enhanceTransaction(t, account)),
             account,
             page,
+            perPage,
         },
     }),
 );

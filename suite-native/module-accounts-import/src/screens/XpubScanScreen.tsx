@@ -49,7 +49,7 @@ const devXpubButtonStyle = prepareNativeStyle(utils => ({
 const DEFAULT_CURRENCY_SYMBOL = 'btc';
 // Slip 0014 - https://github.com/satoshilabs/slips/blob/master/slip-0014.md#bitcoin-segwit--p2wpkh--bip84
 const BTC_HARD_CODED_XPUB =
-    'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT';
+    'xpub6BiVtCpG9fQPxnPmHXG8PhtzQdWC2Su4qWu6XW9tpWFYhxydCLJGrWBJZ5H6qTAHdPQ7pQhtpjiYZVZARo14qHiay2fvrX996oEP42u8wZy';
 
 const xpubFormValidationSchema = yup.object({
     xpubAddress: yup.string().required(),

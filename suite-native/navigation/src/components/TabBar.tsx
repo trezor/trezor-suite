@@ -14,9 +14,10 @@ interface TabBarProps extends BottomTabBarProps {
     tabItemOptions: TabsOptions;
 }
 
+export const TAB_BAR_HEIGHT = 86;
 const tabBarStyle = prepareNativeStyle<{ insetLeft: number; insetRight: number }>(
     (utils, { insetLeft, insetRight }) => ({
-        height: 86,
+        height: TAB_BAR_HEIGHT,
         width: '100%',
         backgroundColor: utils.colors.gray100,
         borderTopColor: utils.colors.gray300,

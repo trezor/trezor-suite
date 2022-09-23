@@ -1,5 +1,5 @@
 {
-    "name": "@suite-native/module-accounts",
+    "name": "@suite-native/accounts",
     "version": "1.0.0",
     "private": true,
     "license": "See LICENSE.md in repo root",
@@ -11,24 +11,12 @@
         "type-check": "tsc --build"
     },
     "dependencies": {
-        "@mobily/ts-belt": "^3.11.0",
-        "@react-navigation/native": "^6.0.11",
-        "@react-navigation/stack": "^6.2.2",
-        "@reduxjs/toolkit": "^1.8.3",
-        "@suite-common/suite-types": "*",
-        "@suite-common/wallet-config": "*",
         "@suite-common/wallet-core": "*",
         "@suite-common/wallet-types": "*",
-        "@suite-common/wallet-utils": "*",
-        "@suite-native/accounts": "*",
         "@suite-native/atoms": "*",
-        "@suite-native/navigation": "*",
-        "@suite-native/transactions": "*",
         "@trezor/icons": "*",
         "@trezor/styles": "*",
-        "@trezor/theme": "*",
         "react": "^17.0.2",
-        "react-native": "0.68.2",
         "react-redux": "7.2.2"
     }
 }
