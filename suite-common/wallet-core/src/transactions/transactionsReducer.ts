@@ -114,7 +114,8 @@ export const prepareTransactionsReducer = createReducerWithExtraDeps(
                         );
 
                         if (
-                            (!existingTx.blockHeight && transaction.blockHeight) ||
+                            ((existingTx.blockHeight ?? 0) <= 0 &&
+                                (transaction.blockHeight ?? 0) > 0) ||
                             (!existingTx.blockTime && transaction.blockTime)
                         ) {
                             // pending tx got confirmed (blockHeight changed from undefined/0 to a number > 0)
