@@ -179,8 +179,6 @@ type PassphraseTypeCardProps = {
 const DOT = '●';
 
 export const PassphraseTypeCard = (props: PassphraseTypeCardProps) => {
-    console.log('PassphraseTypeCard', props);
-
     const theme = useTheme();
     const intl = useIntl();
     const [value, setValue] = useState('');
