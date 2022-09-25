@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import {
@@ -17,9 +17,6 @@ import {
     selectAccountTransactions,
 } from '@suite-common/wallet-core';
 import { TransactionList } from '@suite-native/transactions';
-import { useMount } from '@suite-common/wallet-utils';
-
-const TX_PER_PAGE = 25;
 
 export const AccountDetailScreen = ({
     route,
@@ -34,26 +31,19 @@ export const AccountDetailScreen = ({
     const accountTransactions = useSelector((state: TransactionsRootState) =>
         selectAccountTransactions(state, accountKey),
     );
-    const [page, setPage] = useState(1);
     const dispatch = useDispatch();
 
-    const fetchMoreTransactions = () => {
-        if (!account) return;
-        dispatch(
-            fetchTransactionsThunk({
-                account,
-                page,
-                perPage: TX_PER_PAGE,
-            }),
-        );
-        setPage(page + 1);
-    };
-
-    useMount(() => {
-        fetchMoreTransactions();
-    });
-
-    const paginatedTransactions = accountTransactions.slice(1, TX_PER_PAGE * page);
+    const fetchMoreTransactions = useCallback(
+        (pageToFetch: number, perPage: number) =>
+            dispatch(
+                fetchTransactionsThunk({
+                    accountKey,
+                    page: pageToFetch,
+                    perPage,
+                }),
+            ).unwrap(),
+        [accountKey, dispatch],
+    );
 
     if (!account) return null;
 
@@ -62,7 +52,7 @@ export const AccountDetailScreen = ({
             <TransactionList
                 account={account}
                 accountName={accountName}
-                transactions={paginatedTransactions}
+                transactions={accountTransactions}
                 fetchMoreTransactions={fetchMoreTransactions}
             />
         </Screen>
