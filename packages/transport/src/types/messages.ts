@@ -421,7 +421,6 @@ export type TxAckPaymentRequest = {
 };
 
 // TxAck
-
 // TxAck replacement
 // TxAck needs more exact types
 // PrevInput and TxInputType requires exact responses in TxAckResponse

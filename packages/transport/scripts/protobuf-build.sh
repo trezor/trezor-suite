@@ -8,27 +8,18 @@ PARENT_PATH=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
 
 SRC="../../submodules/trezor-common/protob"
 DIST="."
-LANG="typescript"
 
-if [[ $# -ne 0 && $# -ne 3 ]]
+if [[ $# -ne 0 && $# -ne 2 ]]
     then
-        echo "must provide either 3 or 0 arguments. $# provided"
+        echo "must provide either 2 or 0 arguments. $# provided"
         exit 1
 fi
 
-if [[ $# -eq 3 ]]
+if [[ $# -eq 2 ]]
     then
         SRC=$1
         DIST=$2
-        LANG=$3
 fi
-
-if [[ "$LANG" != "typescript" && "$LANG" != "flow" ]];
-    then
-        echo "either typescript or flow must be specified as the third argument"
-        exit 1
-fi
-
 
 # BUILD combined messages.proto file from protobuf files
 # this code was copied from ./submodules/trezor-common/protob Makekile
@@ -47,8 +38,6 @@ grep -hv -e '^import ' -e '^syntax' -e '^package' -e 'option java_' "$SRC"/messa
 node_modules/.bin/pbjs -t json -p "$DIST" -o "$DIST"/messages.json --keep-case messages.proto
 rm "$DIST"/messages.proto
 
-echo "generating type definitions for: $LANG"
-
 cd "$PARENT_PATH"
 
-node ./protobuf-types.js "$LANG"
+node ./protobuf-types.js typescript

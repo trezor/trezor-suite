@@ -1,20 +1,11 @@
-// @flow
 // TxOutputType replacement
 // TxOutputType needs more exact types
 // differences: external output (no address_n), opreturn output (no address_n, no address)
 
-// @overhead-start
-// will be removed during compilation
-type UintType = any;
-type MultisigRedeemScriptType = any;
-type ChangeOutputScriptType = any;
-// @overhead-end
-
-// @typescript-variant: export type ChangeOutputScriptType = Exclude<OutputScriptType, 'PAYTOOPRETURN'>;
-// @flowtype-variant: export type ChangeOutputScriptType = $Keys<$Diff<typeof Enum_OutputScriptType, { PAYTOOPRETURN: * }>>;
+export type ChangeOutputScriptType = Exclude<OutputScriptType, 'PAYTOOPRETURN'>;
 
 export type TxOutputType =
-    | {|
+    | {
           address: string,
           address_n?: typeof undefined,
           script_type: 'PAYTOADDRESS',
@@ -23,8 +14,8 @@ export type TxOutputType =
           orig_hash?: string,
           orig_index?: number,
           payment_req_index?: number,
-      |}
-    | {|
+      }
+    | {
           address?: typeof undefined,
           address_n: number[],
           script_type: ChangeOutputScriptType,
@@ -33,8 +24,8 @@ export type TxOutputType =
           orig_hash?: string,
           orig_index?: number,
           payment_req_index?: number,
-      |}
-    | {|
+      }
+    | {
           address?: typeof undefined,
           address_n?: typeof undefined,
           amount: '0',
@@ -43,7 +34,7 @@ export type TxOutputType =
           orig_hash?: string,
           orig_index?: number,
           payment_req_index?: number,
-      |};
+      };
 
 export type TxOutput = TxOutputType;
 

@@ -37,7 +37,7 @@ const ENUM_KEYS = [
     'WordRequestType',
 ];
 
-const parseEnumTypescript = (itemName, item) => {
+const parseEnum = (itemName, item) => {
     const value = [];
     const IS_KEY = ENUM_KEYS.includes(itemName);
     // declare enum
@@ -67,50 +67,6 @@ const parseEnumTypescript = (itemName, item) => {
     });
 };
 
-const parseEnum = (itemName, item) => {
-    if (isTypescript) return parseEnumTypescript(itemName, item);
-    const value = [];
-    // declare enum
-    value.push(`export const Enum_${itemName} = Object.freeze({`);
-    // declare fields
-    Object.entries(item.values).forEach(([name, id]) => {
-        value.push(`    ${name}: ${id},`);
-    });
-    // close enum declaration
-    value.push('});');
-    // declare enum type using Keys or Values
-    const KEY = ENUM_KEYS.includes(itemName) ? 'Keys' : 'Values';
-    value.push(`export type ${itemName} = $${KEY}<typeof Enum_${itemName}>;`);
-    // empty line
-    value.push('');
-
-    types.push({
-        type: 'enum',
-        name: itemName,
-        value: value.join('\n'),
-    });
-};
-
-const useDefinition = def => {
-    // remove flow overhead
-    const clean = def
-        .replace(/\/\/ @flow/, '')
-        .replace(/\/\/ @overhead-start(.*)@overhead-end/s, '');
-
-    if (isTypescript) {
-        // use typescript variant
-        // replace flowtype $Exact declaration: {| foo: 1 |} => { foo: 1 }
-        // replace flowtype spread with typescript union: { ...T, foo: 1 } => T & { foo: 1 }, see TxInputType patch
-        return clean
-            .replace(/\/\/ @typescript-variant:/, '')
-            .replace(/\/\/ @flowtype-variant(.*)/, '')
-            .replace(/{\|/gi, '{')
-            .replace(/\|}/gi, '}')
-            .replace(/\{\n.*.\.{3}(.*?),/g, '$1 & {');
-    }
-    return clean.replace(/\/\/ @typescript-variant(.*)/, '').replace(/\/\/ @flowtype-variant:/, '');
-};
-
 const parseMessage = (messageName, message, depth = 0) => {
     if (messageName === 'google') return;
     const value = [];
@@ -137,7 +93,7 @@ const parseMessage = (messageName, message, depth = 0) => {
         const definition = DEFINITION_PATCH[messageName];
         if (definition) {
             // replace whole declaration
-            value.push(useDefinition(definition));
+            value.push(definition);
         } else {
             // declare type
             value.push(`export type ${messageName} = {`);
@@ -210,7 +166,7 @@ SKIP.forEach(key => {
 const content = types.flatMap(t => (t ? [t.value] : [])).join('\n');
 
 const lines = []; // string[]
-if (!isTypescript) lines.push('// @flow');
+
 lines.push('// This file is auto generated from data/messages/message.json');
 lines.push('');
 lines.push('// custom type uint32/64 may be represented as string');
@@ -219,48 +175,18 @@ lines.push('');
 lines.push(content);
 
 // create custom definition
-if (!isTypescript) {
-    lines.push('// custom connect definitions');
-    lines.push('export type MessageType = {');
-    types
-        .flatMap(t => (t && t.type === 'message' ? [t] : []))
-        .forEach(t => {
-            if (t.exact) {
-                lines.push(`    ${t.name}: $Exact<${t.name}>;`);
-            } else {
-                lines.push(`    ${t.name}: ${t.name};`);
-            }
-            // lines.push('    ' + t.name + ': $Exact<' + t.name + '>;');
-        });
-    lines.push('};');
 
-    // additional types utilities
-    lines.push(`
-export type MessageKey = $Keys<MessageType>;
+lines.push('// custom connect definitions');
+lines.push('export type MessageType = {');
+types
+    .flatMap(t => (t && t.type === 'message' ? [t] : []))
+    .forEach(t => {
+        lines.push(`    ${t.name}: ${t.name};`);
+    });
+lines.push('};');
 
-export type MessageResponse<T: MessageKey> = {
-    type: T;
-    message: $ElementType<MessageType, T>;
-};
-
-export type TypedCall = <T: MessageKey, R: MessageKey>(
-    type: T,
-    resType: R,
-    message?: $ElementType<MessageType, T>
-) => Promise<MessageResponse<R>>;
-`);
-} else {
-    lines.push('// custom connect definitions');
-    lines.push('export type MessageType = {');
-    types
-        .flatMap(t => (t && t.type === 'message' ? [t] : []))
-        .forEach(t => {
-            lines.push(`    ${t.name}: ${t.name};`);
-        });
-    lines.push('};');
-
-    // additional types utilities
-    lines.push(`
+// additional types utilities
+lines.push(`
 export type MessageKey = keyof MessageType;
 
 export type MessageResponse<T extends MessageKey> = {
@@ -274,12 +200,10 @@ export type TypedCall = <T extends MessageKey, R extends MessageKey>(
     message?: MessageType[T],
 ) => Promise<MessageResponse<R>>;
 `);
-}
 
 // save to file
-const filePath = isTypescript
-    ? path.join(__dirname, '../src/types/messages.ts')
-    : path.join(__dirname, '../protobuf.js');
+const filePath = path.join(__dirname, '../src/types/messages.ts');
+
 fs.writeFile(filePath, lines.join('\n'), err => {
     if (err) return console.log(err);
 });
