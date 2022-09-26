@@ -141,7 +141,6 @@ describe('Blockchain Actions', () => {
             // TrezorConnect.setTestFixtures(f.connect);
             const store = initStore(getInitialState(f.initialState as Args));
             await store.dispatch(onBlockchainNotificationThunk(f.params as any));
-            console.log(filterThunkActionTypes(store.getActions()));
             expect(filterThunkActionTypes(store.getActions())).toMatchObject(f.actions);
             expect(TrezorConnect.getAccountInfo).toBeCalledTimes(f.getAccountInfo);
         });
@@ -161,8 +160,6 @@ describe('Blockchain Actions', () => {
             const store = initStore(getInitialState(f.state as any));
             await store.dispatch(onBlockMinedThunk(f.block as any));
             const { result } = f;
-            console.log('before filter', store.getActions());
-            console.log('after filter', filterThunkActionTypes(store.getActions()));
 
             if (!result) {
                 expect(filterThunkActionTypes(store.getActions()).length).toEqual(0);
