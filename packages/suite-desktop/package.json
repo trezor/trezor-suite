@@ -214,6 +214,7 @@
         "@suite-common/sentry": "*",
         "@suite-common/suite-types": "*",
         "@suite-common/suite-utils": "*",
+        "@trezor/coinjoin": "*",
         "@trezor/connect": "9.0.3",
         "@trezor/connect-common": "*",
         "@trezor/ipc-proxy": "*",
