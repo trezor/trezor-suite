@@ -1,8 +1,13 @@
 import { CoinjoinClient } from '@trezor/coinjoin';
+import { createIpcProxy } from '@trezor/ipc-proxy';
+import { isDesktop } from '@suite-utils/env';
 import { COINJOIN_NETWORKS } from './config';
 
 const loadInstance = (network: string) => {
     const settings = COINJOIN_NETWORKS[network];
+    if (isDesktop()) {
+        return createIpcProxy<CoinjoinClient>('CoinjoinClient', { target: { settings } }, settings);
+    }
     return import(/* webpackChunkName: "coinjoin" */ '@trezor/coinjoin').then(
         pkg => new pkg.CoinjoinClient(settings),
     );

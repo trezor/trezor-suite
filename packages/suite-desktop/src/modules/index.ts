@@ -31,6 +31,7 @@ const MODULES = [
     'trezor-connect',
     'dev-tools',
     'request-interceptor',
+    'coinjoin',
     // Modules used only in dev/prod mode
     ...(isDevEnv ? [] : ['csp', 'file-protocol']),
 ];
