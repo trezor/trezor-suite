@@ -39,13 +39,8 @@ export const validateTrezorOutputs = (
             );
         }
 
-        if (output.address_n) {
-            const scriptType = getOutputScriptType(output.address_n);
-            if (output.script_type !== scriptType)
-                throw ERRORS.TypedError(
-                    'Method_InvalidParameter',
-                    `Output change script_type should be set to ${scriptType}`,
-                );
+        if (output.address_n && !output.script_type) {
+            output.script_type = getOutputScriptType(output.address_n);
         }
 
         if (
