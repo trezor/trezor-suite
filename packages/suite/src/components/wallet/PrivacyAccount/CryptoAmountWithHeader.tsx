@@ -17,12 +17,11 @@ const Container = styled.div`
 const Header = styled.div`
     display: flex;
     align-items: center;
-    font-size: ${variables.FONT_SIZE.TINY};
     line-height: 1;
 `;
 
 const HeaderIcon = styled(Icon)`
-    margin-right: 4px;
+    margin-right: 6px;
     padding-bottom: 2px;
 `;
 
@@ -58,7 +57,7 @@ export const CryptoAmountWithHeader = ({
 }: CryptoAmountWithHeaderProps) => (
     <Container className={className}>
         <Header>
-            {headerIcon && <HeaderIcon icon={headerIcon} size={12} />} {header}
+            {headerIcon && <HeaderIcon icon={headerIcon} size={14} />} {header}
         </Header>
 
         <CryptoAmount value={value} symbol={symbol} color={color} />
