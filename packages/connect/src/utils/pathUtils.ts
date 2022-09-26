@@ -57,13 +57,36 @@ export const getAccountType = (path: number[] | undefined) => {
     return 'p2pkh';
 };
 
-export const getScriptType = (path: number[] | undefined): PROTO.InternalInputScriptType => {
-    if (!Array.isArray(path) || path.length < 1) return 'SPENDADDRESS';
+/**
+ * Guess script type by path. If not successful, return undefined and PAYTOADDRESS will be used (see default in protobuf)
+ */
+export const getScriptType = (
+    path: number[] | undefined,
+): PROTO.InternalInputScriptType | undefined => {
+    if (!Array.isArray(path) || path.length < 1) return undefined;
 
     const p1 = fromHardened(path[0]);
     switch (p1) {
-        case 48:
-            return 'SPENDMULTISIG';
+        case 44:
+            return 'SPENDADDRESS';
+
+        // https://github.com/bitcoin/bips/blob/master/bip-0048.mediawiki#script
+        case 48: {
+            if (path.length < 4) return undefined;
+
+            const p3 = fromHardened(path[3]);
+
+            switch (p3) {
+                case 0:
+                    return 'SPENDMULTISIG';
+                case 1:
+                    return 'SPENDP2SHWITNESS';
+                case 2:
+                    return 'SPENDWITNESS';
+                default:
+                    return undefined;
+            }
+        }
         case 49:
             return 'SPENDP2SHWITNESS';
         case 84:
@@ -71,22 +94,40 @@ export const getScriptType = (path: number[] | undefined): PROTO.InternalInputSc
         case 86:
             return 'SPENDTAPROOT';
         default:
-            return 'SPENDADDRESS';
+            return undefined;
     }
 };
 
-export const getOutputScriptType = (path?: number[]): PROTO.ChangeOutputScriptType => {
-    if (!Array.isArray(path) || path.length < 1) return 'PAYTOADDRESS';
-
-    // compatibility for Casa - allow an unhardened 49 path to use PAYTOP2SHWITNESS
-    if (path[0] === 49) {
-        return 'PAYTOP2SHWITNESS';
-    }
+/**
+ * Guess output script type by path. If not successful return undefined and PAYTOADDRESS will be used (see default in protobuf),
+ */
+export const getOutputScriptType = (path?: number[]): PROTO.ChangeOutputScriptType | undefined => {
+    if (!Array.isArray(path) || path.length < 1) return undefined;
 
     const p = fromHardened(path[0]);
+
     switch (p) {
-        case 48:
-            return 'PAYTOMULTISIG';
+        case 44:
+            return 'PAYTOADDRESS';
+
+        // https://github.com/bitcoin/bips/blob/master/bip-0048.mediawiki#script
+        case 48: {
+            if (path.length < 4) return undefined;
+
+            const p3 = fromHardened(path[3]);
+            switch (p3) {
+                case 0:
+                    return 'PAYTOMULTISIG';
+                case 1:
+                    return 'PAYTOP2SHWITNESS';
+                case 2:
+                    return 'PAYTOWITNESS';
+
+                default:
+                    return undefined;
+            }
+        }
+
         case 49:
             return 'PAYTOP2SHWITNESS';
         case 84:
@@ -94,7 +135,7 @@ export const getOutputScriptType = (path?: number[]): PROTO.ChangeOutputScriptTy
         case 86:
             return 'PAYTOTAPROOT';
         default:
-            return 'PAYTOADDRESS';
+            return undefined;
     }
 };
 
