@@ -9,6 +9,9 @@
         {
             "path": "../../suite-common/suite-utils"
         },
+        {
+            "path": "../../suite-common/formatters"
+        },
         { "path": "../suite" },
         { "path": "../suite-analytics" },
         { "path": "../suite-desktop-api" },

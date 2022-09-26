@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { TooltipProps } from 'recharts';
-import { FormattedFiatAmount } from '@suite-components';
+import { Formatters, useFormatters } from '@suite-common/formatters';
 import { FormattedCryptoAmount } from '@suite-components/FormattedCryptoAmount';
 import { NetworkSymbol } from '@wallet-types';
 import { CommonAggregatedHistory } from '@wallet-types/graph';
@@ -18,25 +18,30 @@ const formatAmount = (
     fiatAmount: string | undefined,
     localCurrency: string | undefined,
     sign: 'pos' | 'neg',
-) => (
-    <>
-        {amount && (
-            <StyledCryptoAmount
-                value={amount}
-                symbol={symbol}
-                signValue={sign}
-                disableHiddenPlaceholder
-            />
-        )}
+    formatters: Formatters,
+) => {
+    const { FiatAmountFormatter } = formatters;
 
-        {fiatAmount && localCurrency && (
-            <>
-                (
-                <FormattedFiatAmount currency={localCurrency} value={fiatAmount} />)
-            </>
-        )}
-    </>
-);
+    return (
+        <>
+            {amount && (
+                <StyledCryptoAmount
+                    value={amount}
+                    symbol={symbol}
+                    signValue={sign}
+                    disableHiddenPlaceholder
+                />
+            )}
+
+            {fiatAmount && localCurrency && (
+                <>
+                    (
+                    <FiatAmountFormatter currency={localCurrency} value={fiatAmount} />)
+                </>
+            )}
+        </>
+    );
+};
 
 interface CustomTooltipAccountProps extends TooltipProps<number, any> {
     selectedRange: GraphProps['selectedRange'];
@@ -59,6 +64,7 @@ export const CustomTooltipAccount = ({
     symbol,
     ...props
 }: CustomTooltipAccountProps) => {
+    const formatters = useFormatters();
     if (!active || !payload) {
         return null;
     }
@@ -76,13 +82,21 @@ export const CustomTooltipAccount = ({
             {...props}
             active={active}
             payload={payload}
-            sentAmount={formatAmount(sentAmountString, symbol, sentFiat, localCurrency, 'neg')}
+            sentAmount={formatAmount(
+                sentAmountString,
+                symbol,
+                sentFiat,
+                localCurrency,
+                'neg',
+                formatters,
+            )}
             receivedAmount={formatAmount(
                 receivedAmountString,
                 symbol,
                 receivedFiat,
                 localCurrency,
                 'pos',
+                formatters,
             )}
             balance={
                 <FormattedCryptoAmount

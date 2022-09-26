@@ -1,7 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { variables } from '@trezor/components';
-import { FormattedCryptoAmount, FormattedFiatAmount, Translation } from '@suite-components';
+import { FormattedCryptoAmount, Translation } from '@suite-components';
+import { useFormatters } from '@suite-common/formatters';
 import { NetworkSymbol } from '@wallet-types';
 
 const SummaryWrapper = styled.div`
@@ -54,21 +55,28 @@ const Summary = ({
     annualSavingsCryptoAmount,
     annualSavingsFiatAmount,
     fiatCurrency,
-}: Props) => (
-    <SummaryWrapper>
-        <Left>
-            <Translation id="TR_SAVINGS_SETUP_SUMMARY_LABEL" />
-        </Left>
-        <Right>
-            <Fiat>
-                <FormattedFiatAmount currency={fiatCurrency} value={annualSavingsFiatAmount} />
-            </Fiat>
-            <Crypto>
-                ≈&nbsp;
-                <FormattedCryptoAmount value={annualSavingsCryptoAmount} symbol={accountSymbol} />
-            </Crypto>
-        </Right>
-    </SummaryWrapper>
-);
+}: Props) => {
+    const { FiatAmountFormatter } = useFormatters();
+
+    return (
+        <SummaryWrapper>
+            <Left>
+                <Translation id="TR_SAVINGS_SETUP_SUMMARY_LABEL" />
+            </Left>
+            <Right>
+                <Fiat>
+                    <FiatAmountFormatter currency={fiatCurrency} value={annualSavingsFiatAmount} />
+                </Fiat>
+                <Crypto>
+                    ≈&nbsp;
+                    <FormattedCryptoAmount
+                        value={annualSavingsCryptoAmount}
+                        symbol={accountSymbol}
+                    />
+                </Crypto>
+            </Right>
+        </SummaryWrapper>
+    );
+};
 
 export default Summary;

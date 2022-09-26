@@ -6,8 +6,8 @@ import { Switch, Box, Icon, useTheme, variables } from '@trezor/components';
 import { getAllAccounts, getTotalFiatBalance } from '@suite-common/wallet-utils';
 import * as suiteActions from '@suite-actions/suiteActions';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
+import { useFormatters } from '@suite-common/formatters';
 import {
-    FormattedFiatAmount,
     WalletLabeling,
     Translation,
     MetadataLabeling,
@@ -113,6 +113,7 @@ export const WalletInstance = ({
         editing: state.metadata.editing,
     }));
 
+    const { FiatAmountFormatter } = useFormatters();
     const theme = useTheme();
 
     const discoveryProcess = instance.state ? getDiscovery(instance.state) : null;
@@ -174,7 +175,7 @@ export const WalletInstance = ({
                             accountsCount,
                             fiatValue: (
                                 <HiddenPlaceholder>
-                                    <FormattedFiatAmount
+                                    <FiatAmountFormatter
                                         value={instanceBalance.toString()}
                                         currency={localCurrency}
                                     />

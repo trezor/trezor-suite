@@ -2,12 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import BigNumber from 'bignumber.js';
 import { variables } from '@trezor/components';
-import {
-    Translation,
-    HiddenPlaceholder,
-    FormattedFiatAmount,
-    FormattedDate,
-} from '@suite-components';
+import { Translation, HiddenPlaceholder, FormattedDate } from '@suite-components';
+import { useFormatters } from '@suite-common/formatters';
 import { sumFiatValueMap } from '@wallet-utils/graphUtils';
 import { Account } from '@wallet-types';
 import { GraphRange, AggregatedAccountHistory } from '@wallet-types/graph';
@@ -65,6 +61,7 @@ const SummaryCards = ({
     isLoading,
     className,
 }: Props) => {
+    const { FiatAmountFormatter } = useFormatters();
     const [fromTimestamp, toTimestamp] = dataInterval;
     // aggregate values from shown graph data
     const numOfTransactions = data.reduce((acc, d) => (acc += d.txs), 0);
@@ -107,9 +104,9 @@ const SummaryCards = ({
                 value={totalReceivedAmount.toFixed()}
                 secondaryValue={
                     totalReceivedFiatMap[localCurrency] ? (
-                        <FormattedFiatAmount
-                            value={totalReceivedFiatMap[localCurrency]!}
+                        <FiatAmountFormatter
                             currency={localCurrency}
+                            value={totalReceivedFiatMap[localCurrency]!}
                         />
                     ) : undefined
                 }
@@ -122,9 +119,9 @@ const SummaryCards = ({
                 value={totalSentAmount.negated().toFixed()}
                 secondaryValue={
                     totalSentFiatMap[localCurrency] ? (
-                        <FormattedFiatAmount
-                            value={totalSentFiatMap[localCurrency]!}
+                        <FiatAmountFormatter
                             currency={localCurrency}
+                            value={totalSentFiatMap[localCurrency]!}
                         />
                     ) : undefined
                 }

@@ -1,7 +1,8 @@
 import React, { useCallback } from 'react';
 import styled, { css } from 'styled-components';
 import { H2, Button, LoadingContent } from '@trezor/components';
-import { Translation, FormattedFiatAmount, HiddenPlaceholder } from '@suite-components';
+import { Translation, HiddenPlaceholder } from '@suite-components';
+import { useFormatters } from '@suite-common/formatters';
 import { RangeSelector } from '@suite-components/TransactionsGraph/components/RangeSelector';
 import { updateGraphData } from '@wallet-actions/graphActions';
 import { useFastAccounts } from '@wallet-hooks';
@@ -58,6 +59,7 @@ export interface HeaderProps {
 }
 
 export const Header = (props: HeaderProps) => {
+    const { FiatAmountFormatter } = useFormatters();
     const accounts = useFastAccounts();
 
     const onSelectedRange = useCallback(
@@ -91,7 +93,7 @@ export const Header = (props: HeaderProps) => {
                     <ValueWrapper>
                         <HiddenPlaceholder intensity={7}>
                             <span>
-                                <FormattedFiatAmount
+                                <FiatAmountFormatter
                                     value={props.portfolioValue}
                                     currency={props.localCurrency}
                                 />

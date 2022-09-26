@@ -3,12 +3,8 @@ import { FormattedDate } from 'react-intl';
 import styled from 'styled-components';
 import BigNumber from 'bignumber.js';
 import { variables } from '@trezor/components';
-import {
-    Translation,
-    HiddenPlaceholder,
-    FormattedCryptoAmount,
-    FormattedFiatAmount,
-} from '@suite-components';
+import { Translation, HiddenPlaceholder, FormattedCryptoAmount } from '@suite-components';
+import { useFormatters } from '@suite-common/formatters';
 import { parseDateKey, isTestnet } from '@suite-common/wallet-utils';
 import { Network } from '@wallet-types';
 import { SECONDARY_PANEL_HEIGHT } from '@suite-components/AppNavigation';
@@ -74,6 +70,8 @@ const DayHeader = ({
     txsCount,
     isHovered,
 }: Props) => {
+    const { FiatAmountFormatter } = useFormatters();
+
     const parsedDate = parseDateKey(dateKey);
     const showFiatValue = !isTestnet(symbol);
     return (
@@ -102,7 +100,7 @@ const DayHeader = ({
                             <HiddenPlaceholder>
                                 {/* {<>≈ </>} */}
                                 {totalFiatAmountPerDay.gte(0) && <span>+</span>}
-                                <FormattedFiatAmount
+                                <FiatAmountFormatter
                                     currency={localCurrency}
                                     value={totalFiatAmountPerDay.toFixed()}
                                 />

@@ -4,13 +4,16 @@ import { IntlProvider } from 'react-intl';
 import { act, render, screen, waitFor, waitForElementToBeRemoved } from '@testing-library/react';
 import { ConnectedThemeProvider } from '@suite-support/ConnectedThemeProvider';
 import userEvent from '@testing-library/user-event';
+import { MockedFormatterProvider } from '@suite-common/formatters';
 
 // used in hooks tests
 export const renderWithProviders = (store: any, children: React.ReactNode) => {
     const renderMethods = render(
         <Provider store={store}>
             <ConnectedThemeProvider>
-                <IntlProvider locale="en">{children}</IntlProvider>
+                <IntlProvider locale="en">
+                    <MockedFormatterProvider>{children}</MockedFormatterProvider>
+                </IntlProvider>
             </ConnectedThemeProvider>
         </Provider>,
     );

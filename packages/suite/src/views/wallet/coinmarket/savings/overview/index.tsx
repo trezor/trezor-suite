@@ -8,7 +8,8 @@ import {
 } from '@wallet-components';
 import styled from 'styled-components';
 import { Icon } from '@trezor/components';
-import { FormattedCryptoAmount, FormattedFiatAmount, Translation } from '@suite-components';
+import { FormattedCryptoAmount, Translation } from '@suite-components';
+import { Formatters, useFormatters } from '@suite-common/formatters';
 import { PaymentDetail } from './components/PaymentDetail';
 import {
     SavingsOverviewContext,
@@ -117,6 +118,7 @@ const getPeriodTranslationId = (
 
 function renderSavingsStatus(
     isWatchingKYCStatus: boolean,
+    formatters: Formatters,
     savingsTradeItemCompletedExists: boolean,
     savingsFiatSum: string,
     savingsCryptoSum: string,
@@ -124,6 +126,7 @@ function renderSavingsStatus(
     kycFinalStatus?: SavingsKYCStatus,
     selectedProviderCompanyName?: string,
 ) {
+    const { FiatAmountFormatter } = formatters;
     switch (true) {
         case isWatchingKYCStatus:
             return <KYCInProgress />;
@@ -138,7 +141,7 @@ function renderSavingsStatus(
                 <SoFarSaved>
                     <Fiat>
                         ≈&nbsp;
-                        <FormattedFiatAmount
+                        <FiatAmountFormatter
                             currency={savingsTrade?.fiatCurrency}
                             value={savingsFiatSum}
                         />
@@ -155,6 +158,7 @@ function renderSavingsStatus(
 }
 
 const Overview = (props: WithCoinmarketProps) => {
+    const formatters = useFormatters();
     const contextValues = useSavingsOverview(props);
     const {
         savingsTrade,
@@ -168,6 +172,7 @@ const Overview = (props: WithCoinmarketProps) => {
         kycFinalStatus,
         selectedProviderCompanyName,
     } = contextValues;
+    const { FiatAmountFormatter } = formatters;
 
     if (isSavingsTradeLoading || !savingsTrade) {
         return <Translation id="TR_LOADING" />;
@@ -185,7 +190,7 @@ const Overview = (props: WithCoinmarketProps) => {
                         <Setup>
                             <SetupValues>
                                 <FiatPayment>
-                                    <FormattedFiatAmount
+                                    <FiatAmountFormatter
                                         value={savingsTrade?.fiatStringAmount || 0}
                                         currency={savingsTrade?.fiatCurrency}
                                         maximumFractionDigits={2}
@@ -212,6 +217,7 @@ const Overview = (props: WithCoinmarketProps) => {
                     <Right>
                         {renderSavingsStatus(
                             isWatchingKYCStatus,
+                            formatters,
                             savingsTradeItemCompletedExists,
                             savingsFiatSum,
                             savingsCryptoSum,

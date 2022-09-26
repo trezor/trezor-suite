@@ -2,6 +2,12 @@
     "extends": "../../tsconfig.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        {
+            "path": "../../suite-common/formatters"
+        },
+        {
+            "path": "../../suite-common/wallet-config"
+        },
         { "path": "../../packages/icons" },
         { "path": "../../packages/styles" },
         { "path": "../../packages/theme" },

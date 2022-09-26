@@ -2,5 +2,10 @@
     "extends": "../../tsconfig.aliases.json",
     "compilerOptions": { "outDir": "./libDev" },
     "include": ["."],
-    "references": [{ "path": "../suite" }]
+    "references": [
+        {
+            "path": "../../suite-common/formatters"
+        },
+        { "path": "../suite" }
+    ]
 }

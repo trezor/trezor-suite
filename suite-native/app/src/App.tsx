@@ -2,32 +2,44 @@ import React, { useEffect } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Provider, useDispatch } from 'react-redux';
+import { IntlProvider } from 'react-intl';
 
 import { NavigationContainer } from '@react-navigation/native';
 
+// FIXME this is only temporary until Intl refactor will be finished
+import enMessages from '@trezor/suite-data/files/translations/en.json';
 import { connectInitThunk } from '@suite-common/connect-init';
 import { store, storePersistor } from '@suite-native/state';
 import { initBlockchainThunk, reconnectBlockchainThunk } from '@suite-common/wallet-core';
 import { StorageProvider } from '@suite-native/storage';
+import { FormatterProvider } from '@suite-common/formatters';
 
 import { RootStackNavigator } from './navigation/RootStackNavigator';
 import { StylesProvider } from './StylesProvider';
 import { useSplashScreen } from './hooks/useSplashScreen';
+import { useFormattersConfig } from './hooks/useFormattersConfig';
 
 const AppComponent = () => {
     const dispatch = useDispatch();
+    const formattersConfig = useFormattersConfig();
 
     useEffect(() => {
         const initActions = async () => {
             await dispatch(connectInitThunk()).unwrap();
             await dispatch(initBlockchainThunk()).unwrap();
-            // reconnect blockchain (it emits BLOCKCHAIN.CONNECT) - we need to have fiat rates when the app is loaded.
+            /* Invoke reconnect manually here because we need to have fiat rates initialized
+             immediately after the app is loaded.
+             */
             await dispatch(reconnectBlockchainThunk('btc')).unwrap();
         };
         initActions().catch(console.error);
     }, [dispatch]);
 
-    return <RootStackNavigator />;
+    return (
+        <FormatterProvider config={formattersConfig}>
+            <RootStackNavigator />
+        </FormatterProvider>
+    );
 };
 
 export const App = () => {
@@ -35,17 +47,19 @@ export const App = () => {
 
     return (
         <GestureHandlerRootView style={{ flex: 1 }}>
-            <NavigationContainer>
-                <Provider store={store}>
-                    <StorageProvider persistor={storePersistor}>
-                        <SafeAreaProvider>
-                            <StylesProvider>
-                                <AppComponent />
-                            </StylesProvider>
-                        </SafeAreaProvider>
-                    </StorageProvider>
-                </Provider>
-            </NavigationContainer>
+            <IntlProvider locale="en" defaultLocale="en" messages={enMessages}>
+                <NavigationContainer>
+                    <Provider store={store}>
+                        <StorageProvider persistor={storePersistor}>
+                            <SafeAreaProvider>
+                                <StylesProvider>
+                                    <AppComponent />
+                                </StylesProvider>
+                            </SafeAreaProvider>
+                        </StorageProvider>
+                    </Provider>
+                </NavigationContainer>
+            </IntlProvider>
         </GestureHandlerRootView>
     );
 };

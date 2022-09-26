@@ -2,16 +2,9 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { HiddenPlaceholder, Sign } from '@suite-components';
-import {
-    localizeNumber,
-    networkAmountToSatoshi,
-    formatCoinBalance,
-} from '@suite-common/wallet-utils';
-import { isValuePositive, SignValue } from '@suite-components/Sign';
-import { useBitcoinAmountUnit } from '@wallet-hooks/useBitcoinAmountUnit';
-import { NETWORKS } from '@wallet-config';
+import { SignValue } from '@suite-common/suite-types';
+import { useFormatters } from '@suite-common/formatters';
 import { NetworkSymbol } from '@wallet-types';
-import { useSelector } from '@suite-hooks/useSelector';
 
 const Container = styled.span`
     max-width: 100%;
@@ -48,43 +41,22 @@ export const FormattedCryptoAmount = ({
     'data-test': dataTest,
     className,
 }: FormattedCryptoAmountProps) => {
-    const locale = useSelector(state => state.suite.settings.language);
-
-    const { areSatsDisplayed } = useBitcoinAmountUnit();
+    const { CryptoAmountFormatter, SignValueFormatter, CurrencySymbolFormatter } = useFormatters();
 
     if (!value) {
         return null;
     }
 
-    const lowerCaseSymbol = symbol?.toLowerCase();
-    const { features: networkFeatures, testnet: isTestnet } =
-        NETWORKS.find(network => network.symbol === lowerCaseSymbol) ?? {};
-
-    const areSatsSupported = !!networkFeatures?.includes('amount-unit');
-
-    let formattedValue = value;
-    let formattedSymbol = symbol?.toUpperCase();
-
-    const isSatoshis = areSatsSupported && areSatsDisplayed;
-
-    // convert to satoshis if needed
-    if (isSatoshis) {
-        formattedValue = networkAmountToSatoshi(String(value), lowerCaseSymbol as NetworkSymbol);
-
-        formattedSymbol = isTestnet ? `sat ${symbol?.toUpperCase()}` : 'sat';
-    }
-
-    // format truncation + locale (used for balances) or just locale
-    if (isBalance) {
-        formattedValue = formatCoinBalance(String(formattedValue), locale);
-    } else {
-        formattedValue = localizeNumber(formattedValue, locale);
-    }
+    const networkSymbol = symbol?.toLowerCase() as NetworkSymbol;
+    const formattedSymbol = networkSymbol ? CurrencySymbolFormatter.format(networkSymbol) : '';
+    const formattedValue = CryptoAmountFormatter.format(value, {
+        isBalance,
+        symbol: networkSymbol,
+    });
 
     // output as a string, mostly for compatability with graphs
     if (isRawString) {
-        const displayedSignValue = signValue ? `${isValuePositive(signValue) ? '+' : '-'}` : '';
-
+        const displayedSignValue = SignValueFormatter.format(signValue);
         return <>{`${displayedSignValue} ${formattedValue} ${formattedSymbol}`}</>;
     }
 

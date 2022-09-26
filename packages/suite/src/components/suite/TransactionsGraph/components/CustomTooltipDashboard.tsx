@@ -1,5 +1,5 @@
 import React from 'react';
-import { FormattedFiatAmount } from '@suite-components';
+import { useFormatters } from '@suite-common/formatters';
 import { TooltipProps } from 'recharts';
 import { CommonAggregatedHistory } from '@wallet-types/graph';
 import { Props as GraphProps, FiatGraphProps } from '../definitions';
@@ -16,6 +16,8 @@ interface CustomTooltipDashboardProps extends TooltipProps<number, any> {
 }
 
 export const CustomTooltipDashboard = (props: CustomTooltipDashboardProps) => {
+    const { FiatAmountFormatter } = useFormatters();
+
     if (!props.active || !props.payload) {
         return null;
     }
@@ -24,11 +26,11 @@ export const CustomTooltipDashboard = (props: CustomTooltipDashboardProps) => {
     const sentAmountString = props.sentValueFn(props.payload[0].payload);
 
     const receivedAmount = (
-        <FormattedFiatAmount currency={props.localCurrency} value={receivedAmountString ?? '0'} />
+        <FiatAmountFormatter currency={props.localCurrency} value={receivedAmountString ?? '0'} />
     );
 
     const sentAmount = (
-        <FormattedFiatAmount currency={props.localCurrency} value={sentAmountString ?? '0'} />
+        <FiatAmountFormatter currency={props.localCurrency} value={sentAmountString ?? '0'} />
     );
 
     return (

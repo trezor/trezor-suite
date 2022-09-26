@@ -23,15 +23,18 @@ import { ConnectedThemeProvider } from '@suite-support/ConnectedThemeProvider';
 import { LoadingScreen } from '@suite-support/screens/LoadingScreen';
 import { ErrorScreen } from '@suite-support/screens/ErrorScreen';
 import { TorLoadingScreen } from './support/screens/TorLoadingScreen';
+import { useFormattersConfig } from '@suite-hooks';
 import history from '@suite/support/history';
 import AppRouter from './support/Router';
 import DesktopUpdater from './support/DesktopUpdater';
 import { SENTRY_CONFIG } from '@suite/config/suite';
 import { ModalContextProvider } from '@suite-support/ModalContext';
 import { desktopHandshake } from '@suite-actions/suiteActions';
+import { FormatterProvider } from '@suite-common/formatters';
 
 const Main = () => {
     useTor();
+    const formattersConfig = useFormattersConfig();
 
     return (
         <ConnectedThemeProvider>
@@ -44,13 +47,15 @@ const Main = () => {
                         <OnlineStatus />
                         <RouterHandler />
                         <IntlProvider>
-                            <DesktopUpdater>
-                                <Metadata />
-                                <ToastContainer />
-                                <Preloader>
-                                    <AppRouter />
-                                </Preloader>
-                            </DesktopUpdater>
+                            <FormatterProvider config={formattersConfig}>
+                                <DesktopUpdater>
+                                    <Metadata />
+                                    <ToastContainer />
+                                    <Preloader>
+                                        <AppRouter />
+                                    </Preloader>
+                                </DesktopUpdater>
+                            </FormatterProvider>
                         </IntlProvider>
                     </ErrorBoundary>
                 </ModalContextProvider>

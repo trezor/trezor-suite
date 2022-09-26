@@ -6,6 +6,9 @@
             "path": "../../suite-common/connect-init"
         },
         {
+            "path": "../../suite-common/formatters"
+        },
+        {
             "path": "../../suite-common/wallet-core"
         },
         { "path": "../atoms" },
@@ -22,6 +25,7 @@
         { "path": "../../packages/connect" },
         { "path": "../../packages/icons" },
         { "path": "../../packages/styles" },
+        { "path": "../../packages/suite-data" },
         { "path": "../../packages/theme" },
         {
             "path": "../../packages/transport-native"
