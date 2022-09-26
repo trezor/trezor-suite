@@ -30,13 +30,6 @@ const Header = styled.div<HeaderProps>`
         isBottomBorderShown ? `1px solid ${theme.STROKE_GREY}` : 'none'};
 `;
 
-const BackIcon = styled(Icon)`
-    svg {
-        width: 27px;
-        height: 27px;
-    }
-`;
-
 interface HeadingContainerProps {
     isHeadingCentered?: boolean;
     isWithBackButton?: boolean;
@@ -160,6 +153,13 @@ const ModalWindow = styled.div`
 const CloseIcon = styled(Icon)`
     width: 26px;
     height: 26px;
+`;
+
+const BackIcon = styled(Icon)`
+    width: 40px;
+    height: 27px;
+    padding-right: 20px;
+    margin-left: auto;
 `;
 
 interface ModalProps {
