@@ -1,4 +1,5 @@
 skip_docs
+xcversion(version: "~> 14.0")
 
 # iOS Specific Constants
 IOS_PROJECT = File.join(IOS_PATH, "TrezorSuite.xcodeproj").freeze
