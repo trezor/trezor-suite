@@ -2,12 +2,12 @@ import React from 'react';
 import styled from 'styled-components';
 
 import * as routerActions from '@suite-actions/routerActions';
-import { Account } from '@suite-common/wallet-types';
+import { Account, CoinjoinSession } from '@suite-common/wallet-types';
 import { Card, Translation } from '@suite-components';
 import { useActions, useSelector } from '@suite-hooks';
 import { Button } from '@trezor/components';
-import { CoinjoinSessionStatus } from './CoinjoinSessionStatus';
 import { FundsPrivacyBreakdown } from './FundsPrivacyBreakdown';
+import { CoinjoinStatus } from './CoinjoinStatus';
 
 const Container = styled(Card)`
     flex-direction: row;
@@ -24,6 +24,18 @@ const AnonymizeButton = styled(Button)`
     padding: 9px 18px;
 `;
 
+// temporary for easy testing
+// @ts-expect-error
+const mockSession: CoinjoinSession = {
+    maxRounds: 10,
+    signedRounds: ['1', '1', '1'],
+    timeCreated: 1203040234,
+    deadline: 1234712054,
+    anonymityLevel: 1,
+    maxFeePerKvbyte: 2,
+    maxCoordinatorFeeRate: 3,
+};
+
 interface BalanceSectionProps {
     account: Account;
 }
@@ -39,29 +51,21 @@ export const BalanceSection = ({ account }: BalanceSectionProps) => {
     const goToSetup = () => goto('wallet-anonymize', { preserveParams: true });
 
     return (
-        <>
-            {/* temporary - content will be reworked and moved into the container below */}
-            {session && (
-                <Container>
-                    <CoinjoinSessionStatus account={account} session={session} />
-                </Container>
-            )}
+        <Container>
+            <FundsPrivacyBreakdown />
 
-            <Container>
-                <FundsPrivacyBreakdown />
-                {session ? (
-                    <Translation id="TR_ANONYMIZING" />
-                ) : (
-                    <AnonymizeButton
-                        onClick={goToSetup}
-                        icon="ARROW_RIGHT_LONG"
-                        alignIcon="right"
-                        size={16}
-                    >
-                        <Translation id="TR_ANONYMIZE" />
-                    </AnonymizeButton>
-                )}
-            </Container>
-        </>
+            {session ? (
+                <CoinjoinStatus session={session} />
+            ) : (
+                <AnonymizeButton
+                    onClick={goToSetup}
+                    icon="ARROW_RIGHT_LONG"
+                    alignIcon="right"
+                    size={16}
+                >
+                    <Translation id="TR_ANONYMIZE" />
+                </AnonymizeButton>
+            )}
+        </Container>
     );
 };

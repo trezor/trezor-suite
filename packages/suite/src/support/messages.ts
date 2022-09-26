@@ -7352,4 +7352,49 @@ export default defineMessages({
         id: 'TR_COINJOIN_PHASE_3_MESSAGE',
         defaultMessage: 'U poor now',
     },
+    TR_LEFT: {
+        id: 'TR_LEFT',
+        description: 'As in "{time} Left"',
+        defaultMessage: 'left',
+    },
+    TR_PAUSE: {
+        id: 'TR_PAUSE',
+        defaultMessage: 'Pause',
+    },
+    TR_CANCEL_COINJOIN: {
+        id: 'TR_CANCEL_COINJOIN',
+        defaultMessage: 'Cancel CoinJoin',
+    },
+    TR_CANCEL_COINJOIN_QUESTION: {
+        id: 'TR_CANCEL_COINJOIN_QUESTION',
+        defaultMessage: 'Do you really want to cancel this CoinJoin?',
+    },
+    TR_CANCEL_COINJOIN_NO: {
+        id: 'TR_CANCEL_COINJOIN_NO',
+        defaultMessage: 'No, continue',
+    },
+    TR_CANCEL_COINJOIN_YES: {
+        id: 'TR_CANCEL_COINJOIN_YES',
+        defaultMessage: 'Yes, cancel it',
+    },
+    TR_PAUSED: {
+        id: 'TR_PAUSED',
+        defaultMessage: 'Paused',
+    },
+    TR_RESUME: {
+        id: 'TR_RESUME',
+        defaultMessage: 'Resume',
+    },
+    TR_COINJOIN_PAUSED: {
+        id: 'TR_COINJOIN_PAUSED',
+        defaultMessage: 'Coinjoin paused',
+    },
+    TR_RESUMING: {
+        id: 'TR_RESUMING',
+        defaultMessage: 'Resuming',
+    },
+    TR_PAUSING: {
+        id: 'TR_PAUSING',
+        defaultMessage: 'Pausing',
+    },
 });

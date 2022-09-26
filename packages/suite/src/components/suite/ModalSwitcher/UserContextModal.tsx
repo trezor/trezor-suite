@@ -30,6 +30,7 @@ import {
     DisableTor,
     RequestEnableTor,
     TorLoading,
+    CancelCoinjoin,
 } from '@suite-components/modals';
 
 import type { AcquiredDevice } from '@suite-types';
@@ -150,6 +151,8 @@ export const UserContextModal = ({
             return <RequestEnableTor decision={payload.decision} onCancel={onCancel} />;
         case 'tor-loading':
             return <TorLoading decision={payload.decision} onCancel={onCancel} />;
+        case 'cancel-coinjoin':
+            return <CancelCoinjoin onClose={onCancel} />;
         default:
             return null;
     }

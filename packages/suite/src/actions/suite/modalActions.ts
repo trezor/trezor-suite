@@ -136,6 +136,9 @@ export type UserContextPayload =
     | {
           type: 'tor-loading';
           decision: Deferred<boolean>;
+      }
+    | {
+          type: 'cancel-coinjoin';
       };
 
 export type ModalAction =

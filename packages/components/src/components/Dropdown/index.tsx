@@ -220,7 +220,7 @@ interface DropdownMenuItem {
     'data-test'?: string;
 }
 
-interface GroupedMenuItems {
+export interface GroupedMenuItems {
     key: string;
     options: DropdownMenuItem[];
     label?: React.ReactNode;
