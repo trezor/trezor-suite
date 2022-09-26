@@ -11135,15 +11135,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bcrypto@npm:~5.0.0":
-  version: 5.0.4
-  resolution: "bcrypto@npm:5.0.4"
+"bcrypto@npm:5.4.0":
+  version: 5.4.0
+  resolution: "bcrypto@npm:5.4.0"
   dependencies:
-    bufio: ~1.0.6
-    loady: ~0.0.1
-    nan: ^2.14.0
+    bufio: ~1.0.7
+    loady: ~0.0.5
     node-gyp: latest
-  checksum: 21b54d15ae03ebb43f5276a60b99da9316ad045504e4ec026787d47aa88d0a9ac1a1cb414b6ce7bb4f58582a86d8efd07e8349a88f0aa63380c62715b29b2335
+  checksum: 0618353afadd524ec3a9907dcbb2059ac37a953ae108fb524e80ded490373db567aebfaefd742351f86fd5099f09ea514950fb4853f8c81bae2802be0facbd1c
   languageName: node
   linkType: hard
 
@@ -11815,7 +11814,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bufio@npm:~1.0.6":
+"bufio@npm:~1.0.6, bufio@npm:~1.0.7":
   version: 1.0.7
   resolution: "bufio@npm:1.0.7"
   checksum: 4871b8060a8d3bc04de8722f5cc5575b77f4cb18af389eab62d51bf42b08f43fe75159126ef11f15fe4045dc8c20e0e344406ca8388cb1371e558b986e971a57
@@ -22391,7 +22390,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"loady@npm:~0.0.1":
+"loady@npm:~0.0.5":
   version: 0.0.5
   resolution: "loady@npm:0.0.5"
   checksum: 3cba2ffa8cef8a082b3d23f22c1269a339e9f268105c30229bb3fed9123bb79830c0c7f3fa79f52286e1de9303b87e4eb3236952a6ee3fcffa83e7c576f7a8f5
@@ -24486,15 +24485,6 @@ __metadata:
   dependencies:
     node-gyp: latest
   checksum: 33e1bb4dfca447fe37d4bb5889be55de154828632c8d38646db67293a21afd61ed9909cdf1b886214a64707d935926c4e60e2b09de9edfc2ad58de31d6ce8f39
-  languageName: node
-  linkType: hard
-
-"nan@npm:^2.14.0":
-  version: 2.16.0
-  resolution: "nan@npm:2.16.0"
-  dependencies:
-    node-gyp: latest
-  checksum: cb16937273ea55b01ea47df244094c12297ce6b29b36e845d349f1f7c268b8d7c5abd126a102c5678a1e1afd0d36bba35ea0cc959e364928ce60561c9306064a
   languageName: node
   linkType: hard
 
