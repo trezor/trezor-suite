@@ -1,4 +1,5 @@
 import React, { createContext, useMemo } from 'react';
+import { useIntl } from 'react-intl';
 
 import { FormatNumberOptions } from '@formatjs/intl';
 
@@ -16,13 +17,13 @@ import {
     FiatAmountFormatterDataContext,
 } from './formatters/prepareFiatAmountFormatter';
 import { Formatter } from './makeFormatter';
-import { FormatterConfig } from './types';
+import { FormatterConfig, FormatterProviderConfig } from './types';
 import { SignValueFormatter } from './formatters/SignValueFormatter';
 import { prepareCurrencySymbolFormatter } from './formatters/prepareCurrencySymbolFormatter';
 
 type FormatterProviderProps = {
     children: React.ReactNode;
-    config: FormatterConfig;
+    config: FormatterProviderConfig;
 };
 
 export type Formatters = {
@@ -59,11 +60,17 @@ export const getFormatters = (config: FormatterConfig): Formatters => {
 };
 
 export const FormatterProvider = ({ config, children }: FormatterProviderProps) => {
+    const intl = useIntl();
+
     const contextValue = useMemo(() => {
-        const formatters = getFormatters(config);
+        const extendedConfig = {
+            ...config,
+            intl,
+        };
+        const formatters = getFormatters(extendedConfig);
 
         return formatters;
-    }, [config]);
+    }, [config, intl]);
 
     return (
         <FormatterProviderContext.Provider value={contextValue}>

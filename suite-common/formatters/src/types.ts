@@ -2,8 +2,11 @@ import { IntlShape } from 'react-intl';
 
 import { PROTO } from '@trezor/connect';
 
-export type FormatterConfig = {
+export type FormatterProviderConfig = {
     locale: string;
     bitcoinAmountUnit: PROTO.AmountUnit;
-    intl: IntlShape;
 };
+
+export interface FormatterConfig extends FormatterProviderConfig {
+    intl: IntlShape;
+}
