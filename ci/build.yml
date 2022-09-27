@@ -197,12 +197,14 @@ suite-desktop build mac codesign:
 ## Suite desktop Linux app
 suite-desktop build linux:
   <<: *config_sign_dev
-  only:
-    <<: *run_everything_rules
+  # only:
+  #   <<: *run_everything_rules
   variables:
     artifact: ${DESKTOP_APP_NAME}*
     platform: linux
   <<: *build
+  after_script:
+    - yarn tsx ci/scripts/bundle-size.ts
 
 suite-desktop build linux manual:
   <<: *config_sign_dev
