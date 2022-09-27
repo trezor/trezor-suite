@@ -62,7 +62,7 @@ jobs:
           bundle exec fastlane android develop
 
   ios_develop:
-    runs-on: macos-latest
+    runs-on: macos-12
     environment: develop
     timeout-minutes: 60
     steps:
