@@ -6,7 +6,6 @@ import { ERRORS, NETWORK } from '../constants';
 import { DEVICE } from '../events';
 import * as hdnodeUtils from '../utils/hdnodeUtils';
 import {
-    isMultisigPath,
     isSegwitPath,
     isBech32Path,
     isTaprootPath,
@@ -144,23 +143,19 @@ export class DeviceCommands {
             return this.getBitcoinHDNode(path, coinInfo);
         }
 
-        let network: Network | undefined | null;
-        if (isMultisigPath(path)) {
-            network = coinInfo.network;
-        } else if (isSegwitPath(path)) {
-            network = getSegwitNetwork(coinInfo);
-        } else if (isBech32Path(path)) {
-            network = getBech32Network(coinInfo);
-        }
+        let network: Network | null = null;
 
-        if (!params.script_type && network) {
-            // to prevent compatibility issues
-            // add script_type automatically only(!) if Network is detected, otherwise leave empty (protobuf fallbacks to SPENDADDRESS by default)
+        if (!params.script_type) {
             params.script_type = getScriptType(path);
         }
 
+        if (params.script_type === 'SPENDP2SHWITNESS') {
+            network = getSegwitNetwork(coinInfo);
+        } else if (params.script_type === 'SPENDWITNESS') {
+            network = getBech32Network(coinInfo);
+        }
+
         if (!network) {
-            // use default Network
             network = coinInfo.network;
         }
 
@@ -177,6 +172,7 @@ export class DeviceCommands {
             const childPath = path.concat([suffix]);
             const resKey = await this.getPublicKey(params);
             const childKey = await this.getPublicKey({ ...params, address_n: childPath });
+
             publicKey = hdnodeUtils.xpubDerive(resKey, childKey, suffix, network, coinInfo.network);
         }
 

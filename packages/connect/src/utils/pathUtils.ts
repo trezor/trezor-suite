@@ -38,9 +38,6 @@ export const getHDPath = (path: string): number[] => {
         });
 };
 
-export const isMultisigPath = (path: number[] | undefined) =>
-    Array.isArray(path) && path[0] === toHardened(48);
-
 export const isSegwitPath = (path: number[] | undefined) =>
     Array.isArray(path) && path[0] === toHardened(49);
 
