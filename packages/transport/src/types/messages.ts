@@ -627,6 +627,11 @@ export enum CardanoTxAuxiliaryDataSupplementType {
     CATALYST_REGISTRATION_SIGNATURE = 1,
 }
 
+export enum CardanoCatalystRegistrationFormat {
+    CIP15 = 0,
+    CIP36 = 1,
+}
+
 export enum CardanoTxSigningMode {
     ORDINARY_TRANSACTION = 0,
     POOL_REGISTRATION_AS_OWNER = 1,
@@ -826,12 +831,21 @@ export type CardanoTxWithdrawal = {
     key_hash?: string;
 };
 
+// CardanoCatalystRegistrationDelegation
+export type CardanoCatalystRegistrationDelegation = {
+    voting_public_key: string;
+    weight: UintType;
+};
+
 // CardanoCatalystRegistrationParametersType
 export type CardanoCatalystRegistrationParametersType = {
-    voting_public_key: string;
+    voting_public_key?: string;
     staking_path: number[];
     reward_address_parameters: CardanoAddressParametersType;
     nonce: UintType;
+    format?: CardanoCatalystRegistrationFormat;
+    delegations?: CardanoCatalystRegistrationDelegation[];
+    voting_purpose?: UintType;
 };
 
 // CardanoTxAuxiliaryData
@@ -2241,6 +2255,7 @@ export type MessageType = {
     CardanoPoolParametersType: CardanoPoolParametersType;
     CardanoTxCertificate: CardanoTxCertificate;
     CardanoTxWithdrawal: CardanoTxWithdrawal;
+    CardanoCatalystRegistrationDelegation: CardanoCatalystRegistrationDelegation;
     CardanoCatalystRegistrationParametersType: CardanoCatalystRegistrationParametersType;
     CardanoTxAuxiliaryData: CardanoTxAuxiliaryData;
     CardanoTxMint: CardanoTxMint;

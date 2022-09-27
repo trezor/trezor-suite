@@ -2,6 +2,7 @@ import { TrezorConnect, PROTO } from '../../..';
 
 const {
     CardanoAddressType,
+    CardanoCatalystRegistrationFormat,
     CardanoCertificateType,
     CardanoNativeScriptHashDisplayFormat,
     CardanoNativeScriptType,
@@ -336,6 +337,14 @@ export const cardanoSignTransaction = async (api: TrezorConnect) => {
                     },
                 },
                 nonce: '0',
+                format: CardanoCatalystRegistrationFormat.CIP36,
+                delegations: [
+                    {
+                        votingPublicKey: 'aaff00..',
+                        weight: 1,
+                    },
+                ],
+                votingPurpose: 0,
             },
         },
         additionalWitnessRequests: ['m/44'],

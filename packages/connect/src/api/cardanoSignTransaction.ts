@@ -44,6 +44,7 @@ const CardanoSignTransactionFeatures = Object.freeze({
     Plutus: ['0', '2.4.4'],
     KeyHashStakeCredential: ['0', '2.4.4'],
     Babbage: ['0', '2.5.2'],
+    CatalystRegistrationCIP36: ['0', '2.5.3'],
 });
 
 export type CardanoSignTransactionParams = {
@@ -308,6 +309,18 @@ export default class CardanoSignTransaction extends AbstractMethod<
             params.referenceInputs.length > 0
         ) {
             this._ensureFeatureIsSupported('Babbage');
+        }
+
+        if (params.auxiliaryData?.catalyst_registration_parameters) {
+            const { format, delegations, voting_purpose } =
+                params.auxiliaryData.catalyst_registration_parameters;
+            if (
+                format === PROTO.CardanoCatalystRegistrationFormat.CIP36 ||
+                delegations?.length ||
+                voting_purpose != null
+            ) {
+                this._ensureFeatureIsSupported('CatalystRegistrationCIP36');
+            }
         }
     }
 

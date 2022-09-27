@@ -1637,6 +1637,12 @@
                 "CATALYST_REGISTRATION_SIGNATURE": 1
             }
         },
+        "CardanoCatalystRegistrationFormat": {
+            "values": {
+                "CIP15": 0,
+                "CIP36": 1
+            }
+        },
         "CardanoTxSigningMode": {
             "values": {
                 "ORDINARY_TRANSACTION": 0,
@@ -2239,10 +2245,23 @@
                 }
             }
         },
-        "CardanoCatalystRegistrationParametersType": {
+        "CardanoCatalystRegistrationDelegation": {
             "fields": {
                 "voting_public_key": {
                     "rule": "required",
+                    "type": "bytes",
+                    "id": 1
+                },
+                "weight": {
+                    "rule": "required",
+                    "type": "uint32",
+                    "id": 2
+                }
+            }
+        },
+        "CardanoCatalystRegistrationParametersType": {
+            "fields": {
+                "voting_public_key": {
                     "type": "bytes",
                     "id": 1
                 },
@@ -2263,6 +2282,22 @@
                     "rule": "required",
                     "type": "uint64",
                     "id": 4
+                },
+                "format": {
+                    "type": "CardanoCatalystRegistrationFormat",
+                    "id": 5,
+                    "options": {
+                        "default": "CIP15"
+                    }
+                },
+                "delegations": {
+                    "rule": "repeated",
+                    "type": "CardanoCatalystRegistrationDelegation",
+                    "id": 6
+                },
+                "voting_purpose": {
+                    "type": "uint64",
+                    "id": 7
                 }
             }
         },

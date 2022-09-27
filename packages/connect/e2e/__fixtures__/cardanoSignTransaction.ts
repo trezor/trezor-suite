@@ -1,6 +1,7 @@
 import { NETWORK_IDS, PROTOCOL_MAGICS } from '@trezor/connect/lib/constants/cardano';
 import {
     CardanoAddressType,
+    CardanoCatalystRegistrationFormat,
     CardanoCertificateType,
     CardanoTxOutputSerializationFormat,
     CardanoTxSigningMode,
@@ -413,6 +414,11 @@ const legacyResults = {
         // older FW doesn't support babbage-related features (inlineDatum, referenceScript, collateralReturn,
         // totalCollateral, referenceInputs)
         rules: ['<2.5.2', '1'],
+        payload: false,
+    },
+    beforeCatalystRegistrationCIP36: {
+        // older FW doesn't support CIP36 Catalyst registration format
+        rules: ['<2.5.3', '1'],
         payload: false,
     },
 };
@@ -916,6 +922,116 @@ export default {
                 },
             },
             legacyResults: [legacyResults.beforeTransactionStreaming],
+        },
+
+        {
+            description: 'signTransactionWithCIP36CatalystRegistrationAndVotingPurposeNotSpecified',
+            params: {
+                inputs: [SAMPLE_INPUTS.shelley_input],
+                outputs: [SAMPLE_OUTPUTS.simple_shelley_output],
+                fee: FEE,
+                ttl: TTL,
+                auxiliaryData: {
+                    catalystRegistrationParameters: {
+                        stakingPath: "m/1852'/1815'/0'/2/0",
+                        rewardAddressParameters: {
+                            addressType: CardanoAddressType.BASE,
+                            path: "m/1852'/1815'/0'/0/0",
+                            stakingPath: "m/1852'/1815'/0'/2/0",
+                        },
+                        nonce: '22634813',
+                        format: CardanoCatalystRegistrationFormat.CIP36,
+                        delegations: [
+                            {
+                                votingPublicKey:
+                                    '1af8fa0b754ff99253d983894e63a2b09cbb56c833ba18c3384210163f63dcfc',
+                                weight: 1,
+                            },
+                            {
+                                votingPublicKey:
+                                    '2af8fa0b754ff99253d983894e63a2b09cbb56c833ba18c3384210163f63dcfc',
+                                weight: 2,
+                            },
+                        ],
+                    },
+                },
+                protocolMagic: PROTOCOL_MAGICS.mainnet,
+                networkId: NETWORK_IDS.mainnet,
+                signingMode: CardanoTxSigningMode.ORDINARY_TRANSACTION,
+            },
+            result: {
+                hash: '15e4e382d913a743776b93d730fee3ca39bfa3ee203801205333bc9aad249612',
+                witnesses: [
+                    {
+                        type: 1,
+                        pubKey: '5d010cf16fdeff40955633d6c565f3844a288a24967cf6b76acbeb271b4f13c1',
+                        signature:
+                            'c984c65a5d6ee16c9cdd9fd332a5f64907f25438ef2d1e6d625bdd5c76d15acdf3e5700338b6b5c0ca30d25dd604e1b33ab5ee3459ff8ce3ca5a11e774a18605',
+                        chainCode: null,
+                    },
+                ],
+                auxiliaryDataSupplement: {
+                    type: 1,
+                    auxiliaryDataHash:
+                        '9d4c00f5b5b67760931fd7ed9850ff8e14dcdf957685191ab4bc755c52f0ed56',
+                    catalystSignature:
+                        '2671b8e668ffce235647ac89deda6cc222e7b31a3d44606c2723fcf711b29f9af1e30b0c6b4f87ba37ddf9f6adf0226c39c09e655255890644a3dc4e64c3a001',
+                },
+            },
+            legacyResults: [legacyResults.beforeCatalystRegistrationCIP36],
+        },
+
+        {
+            description: 'signTransactionWithCIP36CatalystRegistrationAndOtherVotingPurpose',
+            params: {
+                inputs: [SAMPLE_INPUTS.shelley_input],
+                outputs: [SAMPLE_OUTPUTS.simple_shelley_output],
+                fee: FEE,
+                ttl: TTL,
+                auxiliaryData: {
+                    catalystRegistrationParameters: {
+                        stakingPath: "m/1852'/1815'/0'/2/0",
+                        rewardAddressParameters: {
+                            addressType: CardanoAddressType.BASE,
+                            path: "m/1852'/1815'/0'/0/0",
+                            stakingPath: "m/1852'/1815'/0'/2/0",
+                        },
+                        nonce: '22634813',
+                        format: CardanoCatalystRegistrationFormat.CIP36,
+                        delegations: [
+                            {
+                                votingPublicKey:
+                                    '1af8fa0b754ff99253d983894e63a2b09cbb56c833ba18c3384210163f63dcfc',
+                                weight: 1,
+                            },
+                        ],
+                        votingPurpose: 1,
+                    },
+                },
+                protocolMagic: PROTOCOL_MAGICS.mainnet,
+                networkId: NETWORK_IDS.mainnet,
+                signingMode: CardanoTxSigningMode.ORDINARY_TRANSACTION,
+            },
+            result: {
+                hash: '98357cec961c4c2bfef747bb204a06945ab55077166ec4367b644882136b8b39',
+                witnesses: [
+                    {
+                        type: 1,
+                        pubKey: '5d010cf16fdeff40955633d6c565f3844a288a24967cf6b76acbeb271b4f13c1',
+                        signature:
+                            '9ac45a56c7002a8bca2121b9f0bae52a7201336b7528495c22d49b845b514d93a70ca1571e8a4dd418fbf4c260018c264843e54fbd2a8c6486e8f00f93cd5103',
+                        chainCode: null,
+                    },
+                ],
+                auxiliaryDataSupplement: {
+                    type: 1,
+                    auxiliaryDataHash:
+                        '28b7ffa6800833bdfe5421739eaa21d4a49cde1d84e762b147001169f7c0a385',
+                    catalystSignature:
+                        'ebc00c615f988c6fc2e132d4419a719f04bbec56fe2569a00746a9e9b0d6e5bdd0809515cb2522c773c991c5ae39834403654d36b37e70b14897c0e98c8c0a0c',
+                },
+            },
+            legacyResults: [legacyResults.beforeCatalystRegistrationCIP36],
         },
 
         {
@@ -1603,8 +1719,6 @@ export default {
                 withdrawals: [SAMPLE_WITHDRAWALS.basic],
                 auxiliaryData: {
                     catalystRegistrationParameters: {
-                        votingPublicKey:
-                            '1af8fa0b754ff99253d983894e63a2b09cbb56c833ba18c3384210163f63dcfc',
                         stakingPath: "m/1852'/1815'/0'/2/0",
                         rewardAddressParameters: {
                             addressType: CardanoAddressType.BASE,
@@ -1612,6 +1726,15 @@ export default {
                             stakingPath: "m/1852'/1815'/0'/2/0",
                         },
                         nonce: '22634813',
+                        format: CardanoCatalystRegistrationFormat.CIP36,
+                        delegations: [
+                            {
+                                votingPublicKey:
+                                    '1af8fa0b754ff99253d983894e63a2b09cbb56c833ba18c3384210163f63dcfc',
+                                weight: 1,
+                            },
+                        ],
+                        votingPurpose: 0,
                     },
                 },
                 protocolMagic: PROTOCOL_MAGICS.mainnet,
@@ -1619,46 +1742,46 @@ export default {
                 signingMode: CardanoTxSigningMode.ORDINARY_TRANSACTION,
             },
             result: {
-                hash: 'ee0dfef8b97857ebe7aa8935af50e9f8f608ff4054c0c034600750d722d90631',
+                hash: 'f98e1b5edfd376356eb211103bfae679380929bf7fbc40b3355a68e98111d091',
                 witnesses: [
                     {
                         type: 1,
                         pubKey: '5d010cf16fdeff40955633d6c565f3844a288a24967cf6b76acbeb271b4f13c1',
                         signature:
-                            '7d17407e4e8f8b89f8794c022408a84e6f7ef163957d9d7e8ebee4cf9b5c87750c7c559f3a2663441535eec88ebce8540e7d7ea30897de984b1053b818374007',
+                            '448d2e063f1dbc8662a9f6dea887549cbee7d8e4254124dd1aed08330f4ce165531a846b4ebc42e9944d85b99e878b4255860b960c5f4bd94d4feeb42295d402',
                         chainCode: null,
                     },
                     {
                         type: 1,
                         pubKey: '36a8ef21d5b98fdf23a27325cf643deaac35e912c835e35037f23d1061ae5b16',
                         signature:
-                            'df62ec013a32d137c86931cec726d104cbc3193776026ec36d10450d9cbd289abc4c2d44311878b3aba035a8aec2c076522183027f9da046b586b5de5c460504',
+                            '5ba01fe1a043d3851236395a22982bfdf9d58d80ee963c042e2aa3bc0f8b35b99be18319710ade92edcf49b7185b5e8d91710f3acaa8d9e0f41bad1e3271a801',
                         chainCode: null,
                     },
                     {
                         type: 1,
                         pubKey: 'e90d7b0a6cf831b0042d37961dd528842860e77914e715bcece676c75353b812',
                         signature:
-                            'e249396d227f1d0540e58b64610bdb990eb1f1db9b3bae4a3d4a8088679af4a3bab464a5c912f7041a5fabc37e3009b3e1f4d76e2406429a0ebed85b880ecd0c',
+                            '5595ab117629c0a3743e7081b315d937451d546525db43b7253a76662a24100d23baeaf232dc2cccfbdd624ec3439a20a3ca0914b71df0a766ba08f444d1a60d',
                         chainCode: null,
                     },
                     {
                         type: 1,
                         pubKey: 'bc65be1b0b9d7531778a1317c2aa6de936963c3f9ac7d5ee9e9eda25e0c97c5e',
                         signature:
-                            '0dfd139ce3e255664a77de7d199ce5e4f1a1238ec17a6acec4aaae79be2ccd9b1d21127164c059c8aea2c4b91292aaf352c824550db7594b59e4eca6455d3f03',
+                            'a130822ccf92dee7a9c357432c7e4b4c6f21fc6efac9c548d00162569bc748b19384ccdf6c132d68b04526658c3766e40cef7b45f73f5398b0db946469343005',
                         chainCode: null,
                     },
                 ],
                 auxiliaryDataSupplement: {
                     type: 1,
                     auxiliaryDataHash:
-                        'a943e9166f1bb6d767b175384d3bd7d23645170df36fc1861fbf344135d8e120',
+                        '544c9ae849c82e31224865ff936decc6160047409eee4a6b4178b729fe3d286c',
                     catalystSignature:
-                        '74f27d877bbb4a5fc4f7c56869905c11f70bad0af3de24b23afaa1d024e750930f434ecc4b73e5d1723c2cb8548e8bf6098ac876487b3a6ed0891cb76994d409',
+                        '3064949c9f186138f95e228075d0119dd5cb50e1b7e75d24d569fa547e018a597615da7c79a39ca8e394ee1ba8acb83e70be80f37e69aef3b86e7c4a6bd44903',
                 },
             },
-            legacyResults: [legacyResults.beforeTransactionStreaming],
+            legacyResults: [legacyResults.beforeCatalystRegistrationCIP36],
         },
 
         {
