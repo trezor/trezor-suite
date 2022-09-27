@@ -1,5 +1,4 @@
 skip_docs
-xcversion(version: "~> 14.0")
 
 # iOS Specific Constants
 IOS_PROJECT = File.join(IOS_PATH, "TrezorSuite.xcodeproj").freeze
@@ -8,7 +7,7 @@ IOS_PROJECT_WORKSPACE = File.join(IOS_PATH, "TrezorSuite.xcworkspace").freeze
 platform :ios do
 
   before_all do |lane|
-    xcversion(version: "~> 14.0")
+    xcversion(version: "14.0")
     puts "Running lane #{lane}..."
 
     # creates temporary keychain
