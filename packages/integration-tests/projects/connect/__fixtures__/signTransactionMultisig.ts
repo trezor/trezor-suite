@@ -192,5 +192,84 @@ export default {
             },
             result: false,
         },
+        {
+            description: 'https://github.com/trezor/trezor-suite/issues/6234',
+            setup: {
+                mnemonic:
+                    'solar segment strike patrol broccoli witness praise tennis fat elegant yellow menu favorite upgrade grace pulp subject tribe impact head west museum pulse term',
+            },
+            params: {
+                coin: 'testnet',
+                inputs: [
+                    {
+                        address_n: [2147483696, 2147483649, 2147483648, 2147483650, 0, 13],
+                        prev_index: 0,
+                        prev_hash:
+                            'a48aa3de3a0d5e82625d004ac316c8dbbe7a0b2380dd632f974e0513b0a181ef',
+                        script_type: 'SPENDWITNESS',
+                        multisig: {
+                            pubkeys: [
+                                {
+                                    node: 'tpubDEAEqUEydwjFkvZrk63u5qnhyQkMct2h7mmhUvue2GYACSygeyiDCXV5g59bs5Nursa3nAEWy1UamZaLL37tBqwVVLdhr9LzpkA7hdK2K3j',
+                                    address_n: [0, 13],
+                                },
+                                {
+                                    node: 'tpubDEFGNNrhcGZYq8i21XtJBfQqoktvRs3vmGT8nvS31QFgDMzPtLDyowdLLBMNf7fMQ7EBXCovagQctkFoXJqmUGeN4RzP3U7LKxzVp8R5YMu',
+                                    address_n: [0, 13],
+                                },
+                                {
+                                    node: 'tpubDEkumAckjusYPWdDBUm1HPg7tcJHAMRFfChXyBRu4Cyae6EteY3wekSh4rMmEVwPqiqY3CtZovtnR2X9dS7nbZ56C9hvpPiqtitDdvKCYFv',
+                                    address_n: [0, 13],
+                                },
+                            ],
+                            signatures: [],
+                            m: 2,
+                        },
+                        amount: '600000',
+                    },
+                ],
+                outputs: [
+                    {
+                        address_n: [2147483696, 2147483649, 2147483648, 2147483650, 1, 1],
+                        script_type: 'PAYTOWITNESS',
+                        amount: '199811',
+                        multisig: {
+                            pubkeys: [
+                                {
+                                    node: 'tpubDEAEqUEydwjFkvZrk63u5qnhyQkMct2h7mmhUvue2GYACSygeyiDCXV5g59bs5Nursa3nAEWy1UamZaLL37tBqwVVLdhr9LzpkA7hdK2K3j',
+                                    address_n: [1, 1],
+                                },
+                                {
+                                    node: 'tpubDEFGNNrhcGZYq8i21XtJBfQqoktvRs3vmGT8nvS31QFgDMzPtLDyowdLLBMNf7fMQ7EBXCovagQctkFoXJqmUGeN4RzP3U7LKxzVp8R5YMu',
+                                    address_n: [1, 1],
+                                },
+                                {
+                                    node: 'tpubDEkumAckjusYPWdDBUm1HPg7tcJHAMRFfChXyBRu4Cyae6EteY3wekSh4rMmEVwPqiqY3CtZovtnR2X9dS7nbZ56C9hvpPiqtitDdvKCYFv',
+                                    address_n: [1, 1],
+                                },
+                            ],
+                            signatures: [],
+                            m: 2,
+                        },
+                    },
+                    {
+                        script_type: 'PAYTOADDRESS',
+                        amount: '400000',
+                        address: 'tb1q0egy6cmrhzz69l3xn7tpndjt2dtqkk7a9mlruh',
+                    },
+                ],
+                refTxs: TX_CACHE(['a48aa3']),
+            },
+            result: {
+                signatures: [
+                    '3045022100fe3c723cdb1ebbbf4b3f889ec3c4449412a4f64231a3f48dba74ce037945d658022025424ca47d221ef02e3ba08ef9a104e506a10f4aecb36ea3d2013c6495b262fe',
+                ],
+                serializedTx:
+                    '01000000000101ef81a1b013054e972f63dd80230b7abedbc816c34a005d62825e0d3adea38aa40000000000ffffffff02830c030000000000220020ab4e9fef404206b0112ce540e01286e6a07a18ca9005fee27908659a2169ae05801a0600000000001600147e504d6363b885a2fe269f9619b64b53560b5bdd0300483045022100fe3c723cdb1ebbbf4b3f889ec3c4449412a4f64231a3f48dba74ce037945d658022025424ca47d221ef02e3ba08ef9a104e506a10f4aecb36ea3d2013c6495b262fe01695221028ea1d4d06cef29e8bf919995ffb9e55cea91eef5b85ca036e1f9ebe1ab6e5f5521035d4060d36c60a512837ffb316c03bd68e7e448c72c66e462fe528813042e340b2103da108bf1722968df8c228bd6e3981388127169884482664c21f859d3b8d7f1a853ae00000000',
+                witnesses: [
+                    '0300483045022100fe3c723cdb1ebbbf4b3f889ec3c4449412a4f64231a3f48dba74ce037945d658022025424ca47d221ef02e3ba08ef9a104e506a10f4aecb36ea3d2013c6495b262fe01695221028ea1d4d06cef29e8bf919995ffb9e55cea91eef5b85ca036e1f9ebe1ab6e5f5521035d4060d36c60a512837ffb316c03bd68e7e448c72c66e462fe528813042e340b2103da108bf1722968df8c228bd6e3981388127169884482664c21f859d3b8d7f1a853ae',
+                ],
+            },
+        },
     ],
 };
