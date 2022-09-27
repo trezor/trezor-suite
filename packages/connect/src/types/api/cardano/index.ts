@@ -173,11 +173,19 @@ export interface CardanoReferenceInput {
     prev_index: number;
 }
 
-export interface CardanoCatalystRegistrationParameters {
+export interface CardanoCatalystRegistrationDelegation {
     votingPublicKey: string;
+    weight: number;
+}
+
+export interface CardanoCatalystRegistrationParameters {
+    votingPublicKey?: string;
     stakingPath: string | number[];
     rewardAddressParameters: CardanoAddressParameters;
     nonce: string;
+    format?: PROTO.CardanoCatalystRegistrationFormat;
+    delegations?: CardanoCatalystRegistrationDelegation[];
+    votingPurpose?: number;
 }
 
 export interface CardanoAuxiliaryData {
