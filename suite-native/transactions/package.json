@@ -19,6 +19,7 @@
         "@suite-common/wallet-utils": "*",
         "@suite-native/atoms": "*",
         "@suite-native/navigation": "*",
+        "@suite-common/suite-types": "*",
         "@trezor/icons": "*",
         "@trezor/styles": "*",
         "react": "^17.0.2",

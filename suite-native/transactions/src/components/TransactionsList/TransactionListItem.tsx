@@ -14,9 +14,11 @@ import {
     StackNavigationProps,
 } from '@suite-native/navigation';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
+import { AccountKey } from '@suite-common/suite-types';
 
 type AccountTransactionListItemProps = {
     transaction: WalletAccountTransaction;
+    accountKey: AccountKey;
 };
 
 const transactionIconMap: Partial<Record<TransactionType, IconName>> = {
@@ -38,42 +40,45 @@ const transactionListItemStyle = prepareNativeStyle(utils => ({
     padding: utils.spacings.medium,
 }));
 
-export const TransactionListItem = memo(({ transaction }: AccountTransactionListItemProps) => {
-    const { applyStyle } = useNativeStyles();
-    const navigation =
-        useNavigation<
-            StackNavigationProps<RootStackParamList, AccountsStackRoutes.AccountDetail>
-        >();
-    const transactionAmount = formatNetworkAmount(transaction.amount, transaction.symbol, true);
+export const TransactionListItem = memo(
+    ({ transaction, accountKey }: AccountTransactionListItemProps) => {
+        const { applyStyle } = useNativeStyles();
+        const navigation =
+            useNavigation<
+                StackNavigationProps<RootStackParamList, AccountsStackRoutes.AccountDetail>
+            >();
+        const transactionAmount = formatNetworkAmount(transaction.amount, transaction.symbol, true);
 
-    const getTransactionTimestamp = () => {
-        const { blockHeight, blockTime } = transaction;
-        if (!blockTime || blockHeight === 0) return null;
-        // TODO this is just MVP and should be properly formatted in next PR
-        return new Date(blockTime * 1000);
-    };
+        const getTransactionTimestamp = () => {
+            const { blockHeight, blockTime } = transaction;
+            if (!blockTime || blockHeight === 0) return null;
+            // TODO this is just MVP and should be properly formatted in next PR
+            return new Date(blockTime * 1000);
+        };
 
-    const handleNavigateToTransactionDetail = () => {
-        navigation.navigate(RootStackRoutes.TransactionDetail, {
-            txid: transaction.txid,
-        });
-    };
+        const handleNavigateToTransactionDetail = () => {
+            navigation.navigate(RootStackRoutes.TransactionDetail, {
+                txid: transaction.txid,
+                accountKey,
+            });
+        };
 
-    return (
-        <TouchableOpacity
-            onPress={() => handleNavigateToTransactionDetail()}
-            style={applyStyle(transactionListItemStyle)}
-        >
-            <Box flexDirection="row" alignItems="center">
-                <Box style={applyStyle(iconStyle)}>
-                    <Icon name={transactionIconMap[transaction.type] ?? 'placeholder'} />
+        return (
+            <TouchableOpacity
+                onPress={() => handleNavigateToTransactionDetail()}
+                style={applyStyle(transactionListItemStyle)}
+            >
+                <Box flexDirection="row" alignItems="center">
+                    <Box style={applyStyle(iconStyle)}>
+                        <Icon name={transactionIconMap[transaction.type] ?? 'placeholder'} />
+                    </Box>
+                    <Box>
+                        <Text>{transaction.type}</Text>
+                        <Text>{getTransactionTimestamp()?.toLocaleTimeString()}</Text>
+                    </Box>
                 </Box>
-                <Box>
-                    <Text>{transaction.type}</Text>
-                    <Text>{getTransactionTimestamp()?.toLocaleTimeString()}</Text>
-                </Box>
-            </Box>
-            <Text>{transactionAmount}</Text>
-        </TouchableOpacity>
-    );
-});
+                <Text>{transactionAmount}</Text>
+            </TouchableOpacity>
+        );
+    },
+);

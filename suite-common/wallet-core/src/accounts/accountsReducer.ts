@@ -93,6 +93,13 @@ export const selectAccountByKey = createSelector(
     (accounts, accountKey) => accounts.find(account => account.key === accountKey),
 );
 
+export const selectAccountByDescriptor = createSelector(
+    selectAccounts,
+    (_state: AccountsRootState, accountDescriptor: string) => accountDescriptor,
+    (accounts, accountDescriptor) =>
+        accounts.find(account => account.descriptor === accountDescriptor),
+);
+
 export const selectAccountsByNetworkSymbols = createSelector(
     [
         selectAccounts,

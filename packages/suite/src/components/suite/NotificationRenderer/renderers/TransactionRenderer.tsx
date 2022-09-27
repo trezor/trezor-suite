@@ -1,18 +1,15 @@
-import React from 'react';
-import styled from 'styled-components';
-import { AccountLabeling, HiddenPlaceholder } from '@suite-components';
-import * as suiteActions from '@suite-actions/suiteActions';
 import * as routerActions from '@suite-actions/routerActions';
+import * as suiteActions from '@suite-actions/suiteActions';
 import {
-    findAccountsByNetwork,
-    findAccountsByDescriptor,
-    findAccountDevice,
-    getAccountTransactions,
-    findTransaction,
-    getConfirmations,
-} from '@suite-common/wallet-utils';
+    selectAccountByDescriptor,
+    selectTransactionByTxidAndAccount,
+} from '@suite-common/wallet-core';
+import { findAccountDevice, getConfirmations } from '@suite-common/wallet-utils';
+import { AccountLabeling, HiddenPlaceholder } from '@suite-components';
 import { useActions, useSelector } from '@suite-hooks';
 import { getTxAnchor } from '@suite-utils/anchor';
+import React from 'react';
+import styled from 'styled-components';
 
 import type { NotificationRendererProps, NotificationViewProps } from '../types';
 
@@ -24,38 +21,38 @@ type TransactionRendererProps = NotificationViewProps &
     NotificationRendererProps<'tx-sent' | 'tx-received' | 'tx-confirmed'>;
 
 const TransactionRenderer = ({ render: View, ...props }: TransactionRendererProps) => {
-    const { symbol, descriptor, txid, formattedAmount, device } = props.notification;
+    const { descriptor, txid, formattedAmount, device } = props.notification;
 
     const { selectDevice, goto } = useActions({
         selectDevice: suiteActions.selectDevice,
         goto: routerActions.goto,
     });
 
-    const { accounts, transactions, devices, blockchain, currentDevice } = useSelector(state => ({
+    const { devices, blockchain, currentDevice } = useSelector(state => ({
         devices: state.devices,
         currentDevice: state.suite.device,
         accounts: state.wallet.accounts,
-        transactions: state.wallet.transactions.transactions,
         blockchain: state.wallet.blockchain,
     }));
+    const transaction = useSelector(state =>
+        selectTransactionByTxidAndAccount(state, txid, descriptor),
+    );
+    const account = useSelector(state => selectAccountByDescriptor(state, descriptor));
 
-    const networkAccounts = findAccountsByNetwork(symbol, accounts);
-    const found = findAccountsByDescriptor(descriptor, networkAccounts);
     // fallback: account not found, it should never happen tho
-    if (!found.length) return <View {...props} />;
+    if (!account || !transaction) return <View {...props} />;
 
-    const account = found[0];
-    const accountTxs = getAccountTransactions(account.key, transactions);
-    const tx = findTransaction(txid, accountTxs);
     const accountDevice = findAccountDevice(account, devices);
-    const confirmations = tx ? getConfirmations(tx, blockchain[account.symbol].blockHeight) : 0;
+    const confirmations = transaction
+        ? getConfirmations(transaction, blockchain[account.symbol].blockHeight)
+        : 0;
 
     return (
         <View
             {...props}
             messageValues={{
                 amount: <StyledHiddenPlaceholder>{formattedAmount}</StyledHiddenPlaceholder>,
-                account: <AccountLabeling account={found} />,
+                account: <AccountLabeling account={account} />,
                 confirmations,
             }}
             action={{
@@ -64,7 +61,7 @@ const TransactionRenderer = ({ render: View, ...props }: TransactionRendererProp
                     if (deviceToSelect?.id !== currentDevice?.id) {
                         selectDevice(deviceToSelect);
                     }
-                    const txAnchor = getTxAnchor(tx?.txid);
+                    const txAnchor = getTxAnchor(transaction?.txid);
                     goto('wallet-index', {
                         params: {
                             accountIndex: account.index,

@@ -16,6 +16,9 @@
         },
         { "path": "../atoms" },
         { "path": "../navigation" },
+        {
+            "path": "../../suite-common/suite-types"
+        },
         { "path": "../../packages/icons" },
         { "path": "../../packages/styles" }
     ]
