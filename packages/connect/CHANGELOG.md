@@ -1,5 +1,7 @@
-# 9.0.3 (not released)
+# 9.0.3
 
+-   typescript: removed `EosGetPublicKey` type, use `GetPublicKey` type instead
+-   fix default bip48 script types. [#6393](https://github.com/trezor/trezor-suite/pull/6393) and [#6407](https://github.com/trezor/trezor-suite/pull/6407)
 -   added `unlockPath` method
 -   added `SLIP 25` support
 -   fixed bitcoin extended descriptor (xpubSegwit) for taproot accounts
