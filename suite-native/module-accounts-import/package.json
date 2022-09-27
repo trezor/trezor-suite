@@ -33,7 +33,7 @@
         "@trezor/styles": "*",
         "@trezor/validation": "*",
         "react": "^18.2.0",
-        "react-native": "0.68.2",
+        "react-native": "0.70.1",
         "react-native-config": "^1.4.6",
         "react-native-reanimated": "^2.10.0",
         "react-native-vision-camera": "^2.14.1",

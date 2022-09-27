@@ -24,7 +24,7 @@ export const ApplicationSettings = () => {
             >
         >();
 
-    const handleNavigation = (routeName: SettingsStackRoutes | RootStackRoutes): void => {
+    const handleNavigation = (routeName: SettingsStackRoutes): void => {
         navigation.navigate(routeName);
     };
 
@@ -35,7 +35,7 @@ export const ApplicationSettings = () => {
                     iconName="placeholder"
                     title="DEV utils"
                     subtitle="Only for devs and internal testers."
-                    onPress={() => handleNavigation(RootStackRoutes.DevUtilsStack)}
+                    onPress={() => navigation.navigate(RootStackRoutes.DevUtilsStack)}
                 />
             )}
             <SettingsSectionItem

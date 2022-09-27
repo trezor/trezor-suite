@@ -13,7 +13,6 @@ import '@formatjs/intl-datetimeformat/add-all-tz';
 
 global.Buffer = require('buffer').Buffer;
 global.process = require('process');
-global.BigInt = require('big-integer');
 
 // global.IntlLocales = require('intl/locale-data/jsonp/en');
 
