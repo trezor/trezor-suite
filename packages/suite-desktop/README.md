@@ -21,7 +21,6 @@ Prerequisites:
 ```
 yarn && yarn build:libs
 yarn workspace @trezor/message-system sign-config
-yarn workspace @trezor/suite-data copy-static-files
 ```
 
 ### Linux

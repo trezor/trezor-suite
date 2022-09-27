@@ -12,7 +12,6 @@
     "scripts": {
         "build:lib": "yarn browser-detection && yarn guide-pull-content",
         "browser-detection": "webpack --config ./browser-detection.webpack.ts",
-        "copy-static-files": "tsx ./index.ts",
         "guide-pull-content": "tsx ./src/guide/index.ts",
         "type-check": "tsc --build tsconfig.json"
     },
