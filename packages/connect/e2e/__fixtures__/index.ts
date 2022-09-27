@@ -28,6 +28,7 @@ import getFirmwareHash from './getFirmwareHash';
 import getOwnershipId from './getOwnershipId';
 import getOwnershipProof from './getOwnershipProof';
 import getPublicKey from './getPublicKey';
+import getPublicKeyBip48 from './getPublicKeyBip48';
 import nemGetAddress from './nemGetAddress';
 import nemSignTransactionMosaic from './nemSignTransactionMosaic';
 import nemSignTransactionMultisig from './nemSignTransactionMultisig';
@@ -126,6 +127,7 @@ let fixtures = [
     getOwnershipId,
     getOwnershipProof,
     getPublicKey,
+    getPublicKeyBip48,
     nemGetAddress,
     nemSignTransactionMosaic,
     nemSignTransactionMultisig,
