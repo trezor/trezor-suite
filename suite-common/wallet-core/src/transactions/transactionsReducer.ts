@@ -2,7 +2,6 @@ import { createSelector } from '@reduxjs/toolkit';
 
 import { Account, WalletAccountTransaction } from '@suite-common/wallet-types';
 import { findTransaction } from '@suite-common/wallet-utils';
-import { settingsCommonConfig } from '@suite-common/suite-config';
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import { AccountKey } from '@suite-common/suite-types';
 
@@ -88,21 +87,21 @@ export const prepareTransactionsReducer = createReducerWithExtraDeps(
                 });
             })
             .addCase(transactionsActions.addTransaction, (state, { payload }) => {
-                const { transactions, account, page } = payload;
+                const { transactions, account, page, perPage } = payload;
                 if (transactions.length < 1) return;
                 initializeAccount(state, account.key);
                 const accountTxs = state.transactions[account.key];
 
                 if (!accountTxs) return;
-
                 transactions.forEach((transaction, i) => {
                     // first we need to make sure that transaction is not undefined, then check if transactionid matches
                     const existingTx = findTransaction(transaction.txid, accountTxs);
                     if (!existingTx) {
                         // add a new transaction
-                        if (page) {
+                        if (page && perPage) {
                             // insert a tx object at correct index
-                            const txIndex = (page - 1) * settingsCommonConfig.TXS_PER_PAGE + i;
+                            // TODO settingsCommonConfig.TXS_PER_PAGE musi chodit z payloadu, jinak failuje (chodi do thunku, sem ne)
+                            const txIndex = (page - 1) * perPage + i; // Needs to be same as TX_PER_PAGE
                             accountTxs[txIndex] = transaction;
                         } else {
                             // no page arg, insert the tx at the beginning of the array

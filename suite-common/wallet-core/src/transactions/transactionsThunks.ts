@@ -13,10 +13,12 @@ import {
 } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
 import { createThunk } from '@suite-common/redux-utils';
+import { AccountKey } from '@suite-common/suite-types';
 
 import { accountsActions } from '../accounts/accountsActions';
 import { selectTransactions } from './transactionsReducer';
 import { transactionsActions, modulePrefix } from './transactionsActions';
+import { selectAccountByKey } from '../accounts/accountsReducer';
 
 /**
  * Replace existing transaction in the reducer.
@@ -172,16 +174,16 @@ export const exportTransactionsThunk = createThunk(
 );
 
 export const fetchTransactionsThunk = createThunk(
-    `${modulePrefix}/addFakePendingTransaction`,
+    `${modulePrefix}/fetchTransactionsThunk`,
     async (
         {
-            account,
+            accountKey,
             page,
             perPage,
             noLoading = false,
             recursive = false,
         }: {
-            account: Account;
+            accountKey: AccountKey;
             page: number;
             perPage: number;
             noLoading?: boolean;
@@ -189,6 +191,8 @@ export const fetchTransactionsThunk = createThunk(
         },
         { dispatch, getState, signal },
     ) => {
+        const account = selectAccountByKey(getState(), accountKey);
+        if (!account) return;
         if (!isTrezorConnectBackendType(account.backendType)) return; // skip unsupported backend type
         const transactions = selectTransactions(getState());
         const reducerTxs = getAccountTransactions(account.key, transactions);
@@ -205,7 +209,7 @@ export const fetchTransactionsThunk = createThunk(
             if (recursive && !signal.aborted) {
                 const promise = dispatch(
                     fetchTransactionsThunk({
-                        account,
+                        accountKey,
                         page: page + 1,
                         perPage,
                         noLoading,
@@ -250,6 +254,7 @@ export const fetchTransactionsThunk = createThunk(
                     transactions: updatedTransactions,
                     account: updatedAccount,
                     page,
+                    perPage,
                 }),
             );
             // updates the marker/page object for the account
@@ -263,7 +268,7 @@ export const fetchTransactionsThunk = createThunk(
             ) {
                 const promise = dispatch(
                     fetchTransactionsThunk({
-                        account: updatedAccount,
+                        accountKey: updatedAccount.key,
                         page: page + 1,
                         perPage,
                         noLoading,

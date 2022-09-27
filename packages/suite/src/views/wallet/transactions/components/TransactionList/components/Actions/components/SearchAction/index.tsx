@@ -87,7 +87,7 @@ const SearchAction = ({ account, search, setSearch, setSelectedPage }: Props) =>
 
                 try {
                     await fetchTransactions({
-                        account,
+                        accountKey: account.key,
                         page: 2,
                         perPage: SETTINGS.TXS_PER_PAGE,
                         noLoading: true,

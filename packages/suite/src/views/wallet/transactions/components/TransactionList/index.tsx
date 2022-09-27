@@ -69,7 +69,7 @@ const TransactionList = ({ transactions, isLoading, account, ...props }: Transac
     useEffect(() => {
         if (anchor && !hasFetchedAll) {
             fetchTransactions({
-                account,
+                accountKey: account.key,
                 page: 2,
                 perPage: SETTINGS.TXS_PER_PAGE,
                 noLoading: true,
@@ -95,7 +95,7 @@ const TransactionList = ({ transactions, isLoading, account, ...props }: Transac
         setSelectedPage(page);
 
         if (!isSearching) {
-            fetchTransactions({ account, page, perPage });
+            fetchTransactions({ accountKey: account.key, page, perPage });
         }
 
         if (ref.current) {

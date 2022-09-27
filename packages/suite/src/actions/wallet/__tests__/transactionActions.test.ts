@@ -6,6 +6,7 @@ import {
     TransactionsState,
 } from '@suite-common/wallet-core';
 import { configureStore } from '@reduxjs/toolkit';
+import { settingsCommonConfig } from '@suite-common/suite-config';
 
 const { getWalletTransaction } = global.JestMocks;
 
@@ -29,6 +30,7 @@ describe('Transaction Actions', () => {
                 transactions: [getWalletTransaction()],
                 account,
                 page: 1,
+                perPage: settingsCommonConfig.TXS_PER_PAGE,
             }),
         );
         expect(
