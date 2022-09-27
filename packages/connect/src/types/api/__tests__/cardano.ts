@@ -2,7 +2,7 @@ import { TrezorConnect, PROTO } from '../../..';
 
 const {
     CardanoAddressType,
-    CardanoCatalystRegistrationFormat,
+    CardanoGovernanceRegistrationFormat,
     CardanoCertificateType,
     CardanoNativeScriptHashDisplayFormat,
     CardanoNativeScriptType,
@@ -322,7 +322,7 @@ export const cardanoSignTransaction = async (api: TrezorConnect) => {
         ],
         auxiliaryData: {
             hash: 'aaff00..',
-            catalystRegistrationParameters: {
+            governanceRegistrationParameters: {
                 votingPublicKey: 'aaff00..',
                 stakingPath: 'm/44',
                 rewardAddressParameters: {
@@ -337,7 +337,7 @@ export const cardanoSignTransaction = async (api: TrezorConnect) => {
                     },
                 },
                 nonce: '0',
-                format: CardanoCatalystRegistrationFormat.CIP36,
+                format: CardanoGovernanceRegistrationFormat.CIP36,
                 delegations: [
                     {
                         votingPublicKey: 'aaff00..',
@@ -413,10 +413,10 @@ export const cardanoSignTransaction = async (api: TrezorConnect) => {
         });
         const { auxiliaryDataSupplement } = payload;
         if (auxiliaryDataSupplement) {
-            const { type, auxiliaryDataHash, catalystSignature } = auxiliaryDataSupplement;
+            const { type, auxiliaryDataHash, governanceSignature } = auxiliaryDataSupplement;
             type.toFixed();
             auxiliaryDataHash.toLowerCase();
-            catalystSignature?.toLowerCase();
+            governanceSignature?.toLowerCase();
         }
     }
 };
