@@ -194,6 +194,7 @@
     "dependencies": {
         "@sentry/electron": "3.0.0",
         "@suite-common/formatters": "*",
+        "@suite-common/sentry": "*",
         "@suite-common/suite-types": "*",
         "@suite-common/suite-utils": "*",
         "@trezor/connect": "9.0.2",
@@ -235,10 +236,5 @@
         "styled-components": "^5.3.5",
         "typescript": "4.7.4",
         "xvfb-maybe": "^0.2.1"
-    },
-    "nx": {
-        "implicitDependencies": [
-            "@trezor/suite"
-        ]
     }
 }

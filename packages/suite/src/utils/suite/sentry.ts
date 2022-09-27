@@ -1,7 +1,7 @@
 import * as Sentry from '@sentry/minimal';
 
 import { Dispatch, GetState } from '@suite-types';
-import { allowReportTag } from '@suite-config/sentry';
+import { allowReportTag } from '@suite-common/sentry';
 import { redactDevice, redactDiscovery, getApplicationLog } from '@suite-utils/logsUtils';
 
 export const setSentryContext = Sentry.setContext;

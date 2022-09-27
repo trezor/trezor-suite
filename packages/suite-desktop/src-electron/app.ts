@@ -5,9 +5,7 @@ import { app, BrowserWindow, session } from 'electron';
 import { init as initSentry, ElectronOptions, IPCMode } from '@sentry/electron';
 import { ipcMain } from './typed-electron';
 
-// eslint-disable-next-line @typescript-eslint/prefer-ts-expect-error
-// @ts-ignore
-import { SENTRY_CONFIG } from '@suite-config';
+import { SENTRY_CONFIG } from '@suite-common/sentry';
 import { isDevEnv } from '@suite-common/suite-utils';
 import { APP_NAME } from './libs/constants';
 import * as store from './libs/store';
