@@ -35,7 +35,7 @@ jobs:
       - name: verify TS project references
         run: yarn verify-project-references
       - name: msg-system config validation
-        run: yarn workspace @trezor/suite-data msg-system-validate-config
+        run: yarn workspace @trezor/message-system validate-config
       - run: git status
       - name: build libs
         run: yarn nx:build:libs

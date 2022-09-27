@@ -49,7 +49,7 @@
         "verify-project-references": "yarn update-project-references --test",
         "generate-package": "yarn tsx ./scripts/generatePackage.js",
         "deps": "rimraf 'node_modules' '*/**/node_modules' && yarn",
-        "msg-system-sign-config": "yarn workspace @trezor/suite-data msg-system-sign-config",
+        "msg-system-sign-config": "yarn workspace @trezor/message-system sign-config",
         "format": "yarn prettier --write \"**/*.{js,ts,tsx,mdx,md,html,json}\"",
         "format:verify": "yarn prettier --check \"**/*.{js,ts,tsx,mdx,md,html,json}\"",
         "update-submodules": "./scripts/update-submodules.sh",

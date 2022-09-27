@@ -21,6 +21,7 @@
 | [@trezor/connect-popup](./packages/connect-popup)                     | UI for 3rd party implementations             |
 | [@trezor/connect-web](./packages/connect-web)                         | 3rd party interface entrypoint for browser   |
 | [@trezor/integration-tests](./packages/integration-tests)             | cross-packages e2e tests                     |
+| [@trezor/message-system](./packages/message-system)                   | message system config and sign logic         |
 | [@trezor/request-manager](./packages/request-manager)                 | improved communication with Tor              |
 | [@trezor/styles](./packages/styles)                                   | custom styling library for native app        |
 | [@trezor/suite-analytics](./packages/suite-analytics)                 | analytics for Suite                          |
@@ -48,7 +49,7 @@ Before you start make sure you have downloaded and installed [NVM](https://githu
 -   `git lfs pull`
 -   `nvm install`
 -   `yarn`
--   `yarn build:libs && yarn workspace @trezor/suite-data msg-system-sign-config`
+-   `yarn build:libs && yarn workspace @trezor/message-system sign-config`
 
 > It's recommended to enable `git config --global submodule.recurse true` so you don't need to run `git submodule update --init --recursive` every time when submodules are updated.
 

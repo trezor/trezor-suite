@@ -14,10 +14,9 @@ export const JWS_CONFIG_FILENAME = `config.v${VERSION}.jws`;
 export const SUITE_TYPES_FILENAME = 'messageSystem.ts';
 export const SUITE_CONFIG_FILENAME = 'config.json';
 
-export const PROJECT_ROOT = resolve(__dirname, '..'); // suite-data/src/message-system
-export const PACKAGE_ROOT = resolve(PROJECT_ROOT, '../..'); // suite-data
-export const PACKAGES_ROOT = resolve(PROJECT_ROOT, '../../..');
-export const MONOREPO_ROOT = resolve(PROJECT_ROOT, '../../../..');
+export const PACKAGE_ROOT = resolve(__dirname, '../..'); // packages/message-system
+export const PACKAGES_ROOT = resolve(PACKAGE_ROOT, '..');
+export const MONOREPO_ROOT = resolve(PACKAGE_ROOT, '../..');
 
-export const SCHEMA_PATH = join(PROJECT_ROOT, 'schema', SCHEMA_FILENAME);
-export const CONFIG_PATH = join(PROJECT_ROOT, 'config', CONFIG_FILENAME);
+export const SCHEMA_PATH = join(PACKAGE_ROOT, 'src/schema', SCHEMA_FILENAME);
+export const CONFIG_PATH = join(PACKAGE_ROOT, 'src/config', CONFIG_FILENAME);

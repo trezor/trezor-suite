@@ -10,12 +10,9 @@
     "license": "SEE LICENSE IN LICENSE.md",
     "description": "Trezor data",
     "scripts": {
-        "build:lib": "yarn browser-detection && yarn msg-system-types && yarn guide-pull-content",
+        "build:lib": "yarn browser-detection && yarn guide-pull-content",
         "browser-detection": "webpack --config ./browser-detection.webpack.ts",
         "copy-static-files": "tsx ./index.ts",
-        "msg-system-types": "tsx ./src/message-system/scripts/generate-types.ts",
-        "msg-system-validate-config": "tsx ./src/message-system/scripts/validate-config.ts",
-        "msg-system-sign-config": "tsx ./src/message-system/scripts/sign-config.ts",
         "guide-pull-content": "tsx ./src/guide/index.ts",
         "type-check": "tsc --build tsconfig.json"
     },
@@ -28,14 +25,11 @@
     "devDependencies": {
         "@types/fs-extra": "^9.0.13",
         "@types/ua-parser-js": "^0.7.36",
-        "ajv": "^8.11.0",
         "autoprefixer": "^10.4.8",
         "babel-loader": "^8.2.5",
         "css-loader": "^6.7.1",
         "fs-extra": "^10.1.0",
         "jest": "^26.6.3",
-        "json-schema-to-typescript": "^11.0.2",
-        "jws": "^4.0.0",
         "postcss-loader": "^7.0.1",
         "simple-git": "^3.12.0",
         "style-loader": "^3.3.1",

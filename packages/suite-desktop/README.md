@@ -20,7 +20,7 @@ Prerequisites:
 
 ```
 yarn && yarn build:libs
-yarn workspace @trezor/suite-data msg-system-sign-config
+yarn workspace @trezor/message-system sign-config
 yarn workspace @trezor/suite-data copy-static-files
 ```
 

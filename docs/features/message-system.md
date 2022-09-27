@@ -27,7 +27,7 @@ There are four ways of displaying message to a user.
 
 The system of messages is based on a configuration file in which messages with specific conditions ​are described. If specific conditions are satisfied, the message is shown to a user.
 
-Current configuration file is located in `packages/suite-data/src/message-system/config` [folder](https://github.com/trezor/trezor-suite/tree/145a43d21ee94461d3f013c1dc23241dd27b0224/packages/suite-data/src/message-system/config). Its name is `config.vX.json`. The `X` express current version messaging system.
+Current configuration file is located in `packages/message-system/src/config` folder. Its name is `config.vX.json`. The `X` express current version messaging system.
 
 The config is fetched at launch of the application and then every 6 hours. It remembers the previously fetched config to inform the user even if he is offline. For this reason, the latest available config during build time is bundled with the application.
 
@@ -35,7 +35,7 @@ If fetching of a new config fails, the fetching process is repeated every 1 hour
 
 ### Schema
 
-The configuration structure is specified in JSON file using JSON schema. The file can be found in `packages/suite-data/src/message-system/schema` [folder](https://github.com/trezor/trezor-suite/tree/145a43d21ee94461d3f013c1dc23241dd27b0224/packages/suite-data/src/message-system/schema). Its name is `config.schema.vX.json`.
+The configuration structure is specified in JSON file using JSON schema. The file can be found in `packages/message-system/src/schema` folder. Its name is `config.schema.vX.json`.
 
 We use JSON schema for 2 reasons:
 
@@ -44,7 +44,7 @@ We use JSON schema for 2 reasons:
 
 ### Types
 
-Types are generated from JSON-schema during the `build:libs` process or can be generated manually by `yarn workspace @trezor/suite-data msg-system-types`. A `messageSystem.ts` file is created in `packages/suite/src/types/suite` [folder](https://github.com/trezor/trezor-suite/tree/145a43d21ee94461d3f013c1dc23241dd27b0224/packages/suite/src/types/suite).
+Types are generated from JSON-schema during the `build:libs` process or can be generated manually by `yarn workspace @trezor/message-system msg-system-types`. A `messageSystem.ts` file is created in `suite-common/suite-types/src` folder.
 
 -   This file should never be changed manually.
 -   This file is committed into the repository.
@@ -58,19 +58,19 @@ To ensure the authenticity of a configuration file, JSON Web Signatures are used
 #### Validation
 
 -   Validation of configuration file is performed in CI job in `validation` phase. It is used to detect possible structure and semantic errors.
--   It can be run locally by `yarn workspace @trezor/suite-data msg-system-validate-config` script in suite-data.
+-   It can be run locally by `yarn workspace @trezor/message-system validate-config` script.
 
 #### Signing
 
 -   Signing of the configuration file is performed in CI job in `prebuild` phase.
--   The result is saved into `suite-data/files/message-system` to be bundled with application and automatically uploaded to `https://data.trezor.io/config/$environment/config.vX.json`. For example, on localhost, the config is available at `http://localhost:8000/static/message-system/config.vX.jws`.
--   It can be run manually by `yarn workspace @trezor/suite-data msg-system-sign-config` script in suite-data. The resulting JWS is stored in `packages/suite-data/files/message-system/` [folder](https://github.com/trezor/trezor-suite/tree/145a43d21ee94461d3f013c1dc23241dd27b0224/packages/suite-data/files) in `config.vX.jws` file.
+-   The result is saved into `packages/message-system/files` to be bundled with application and automatically uploaded to `https://data.trezor.io/config/$environment/config.vX.json`. For example, on localhost, the config is available at `http://localhost:8000/static/message-system/config.vX.jws`.
+-   It can be run manually by `yarn workspace @trezor/message-system sign-config` script. The resulting JWS is stored in `packages/message-system/files` folder as `config.vX.jws` file.
 -   Development public and private keys are baked into project structure. For production environment, these keys are replaced by CI job by production keys. This production CI job is activated on `codesign` branches.
--   Development private key can be found in `suite-data/src/message-system/scripts/sign-config.ts` [file](https://github.com/trezor/trezor-suite/blob/145a43d21ee94461d3f013c1dc23241dd27b0224/packages/suite-data/src/message-system/scripts/sign-config.ts), the public key can be found in `suite-build` in `codesign.ts` ([file](https://github.com/trezor/trezor-suite/blob/0042e719d7d9fa2dff2ed743b0866e64f4ae0216/packages/suite-build/utils/codesign.ts).
+-   Development private key can be found in `packages/message-system/src/scripts/sign-config.ts` file, the public key can be found in `suite-build` in `codesign.ts` file.
 
 ### Versioning of implementation
 
-If changes made to the message system are incompatible with the previous version, the version number should be bumped in `messageSystemConstants.ts` [file](https://github.com/trezor/trezor-suite/blob/145a43d21ee94461d3f013c1dc23241dd27b0224/packages/suite/src/actions/suite/constants/messageSystemConstants.ts) in `suite` package as well as in suite-data package in `message-system/constants` [file](https://github.com/trezor/trezor-suite/blob/145a43d21ee94461d3f013c1dc23241dd27b0224/packages/suite-data/src/message-system/constants/index.ts). Also in `ci/packages/suite-data.yml` [file](https://github.com/trezor/trezor-suite/blob/145a43d21ee94461d3f013c1dc23241dd27b0224/ci/packages/suite-data.yml).
+If changes made to the message system are incompatible with the previous version, the version number should be bumped in `messageSystemConstants.ts` file in `suite` package as well as in suite-data package in `message-system/constants`. Also in `ci/packages/suite-data.yml`.
 
 ### Config Structure
 
