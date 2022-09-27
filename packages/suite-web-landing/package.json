@@ -21,13 +21,13 @@
         "@trezor/urls": "*",
         "@trezor/utils": "*",
         "next": "^12.2.5",
-        "react": "17.0.2",
-        "react-dom": "17.0.2",
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0",
         "react-intl": "^6.0.5"
     },
     "devDependencies": {
-        "@types/react": "^17.0.48",
-        "@types/react-dom": "^17.0.17",
+        "@types/react": "^18.0.21",
+        "@types/react-dom": "^18.0.6",
         "copy-webpack-plugin": "^11.0.0",
         "jest": "^26.6.3",
         "next-optimized-images": "^2.6.2",

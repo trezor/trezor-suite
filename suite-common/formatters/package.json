@@ -19,7 +19,7 @@
         "@suite-common/wallet-utils": "*",
         "@trezor/connect": "9.0.3",
         "bignumber.js": "^9.1.0",
-        "react": "17.0.2",
+        "react": "^18.2.0",
         "react-intl": "^6.0.5"
     },
     "devDependencies": {

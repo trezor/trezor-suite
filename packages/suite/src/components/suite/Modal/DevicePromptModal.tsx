@@ -1,5 +1,5 @@
 import React, { ComponentType } from 'react';
-import ReactDOM from 'react-dom';
+import { createPortal } from 'react-dom';
 import styled, { css } from 'styled-components';
 import TrezorConnect from '@trezor/connect';
 import {
@@ -176,7 +176,7 @@ const DevicePromptModalRenderer = ({
         </ModalEnvironment>
     );
 
-    return ReactDOM.createPortal(modalComponent, modalTarget);
+    return createPortal(modalComponent, modalTarget);
 };
 
 export const DevicePromptModal = (props: DevicePromptModalProps) => (

@@ -1,5 +1,5 @@
 import React from 'react';
-import { render } from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { Provider as ReduxProvider } from 'react-redux';
 import { Router as RouterProvider } from 'react-router-dom';
 
@@ -67,11 +67,12 @@ const Main = () => {
     );
 };
 
-export const init = async (root: HTMLElement) => {
+export const init = async (container: HTMLElement) => {
     initSentry(SENTRY_CONFIG);
 
     // render simple loader with theme provider without redux, wait for indexedDB
-    render(<LoadingScreen />, root);
+    const root = createRoot(container);
+    root.render(<LoadingScreen />);
 
     const preloadAction = await preloadStore();
     const store = initStore(preloadAction);

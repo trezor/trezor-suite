@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import ReactDOM from 'react-dom';
+import { createPortal } from 'react-dom';
 import { Modal, ModalProps, Icon, colors } from '@trezor/components';
 import { useGuide } from '@guide-hooks';
 import { useLayoutSize } from '@suite-hooks/useLayoutSize';
@@ -42,5 +42,5 @@ export const DefaultRenderer = ({
         </ModalEnvironment>
     );
 
-    return ReactDOM.createPortal(modal, modalTarget);
+    return createPortal(modal, modalTarget);
 };

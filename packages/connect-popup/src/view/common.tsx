@@ -2,7 +2,7 @@
 
 import { POPUP, ERRORS, PopupInit, CoreMessage, ConnectSettings } from '@trezor/connect';
 import React from 'react';
-import * as ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 
 import { ConnectUI, ConnectUIProps } from '@trezor/connect-ui';
 import { StyleSheetWrapper } from './react/StylesSheetWrapper';
@@ -88,13 +88,14 @@ export const renderConnectUI = (props: ConnectUIProps) => {
     // append the renderIn element inside the styleSlot
     reactSlot!.shadowRoot!.appendChild(reactRenderIn);
 
+    const root = createRoot(reactRenderIn);
     const Component = (
         <StyleSheetWrapper>
             <ConnectUI {...props} />
         </StyleSheetWrapper>
     );
 
-    ReactDOM.render(Component, reactRenderIn);
+    root.render(Component);
 };
 
 const renderLegacyView = (className: string) => {
