@@ -21,7 +21,7 @@ export const localizeNumber = (
     const amountRoundedDown = amount.toFixed(0, BigNumber.ROUND_DOWN);
 
     const wholeNumber = BigInt(amountRoundedDown);
-    const formattedWholeNumber = Intl.NumberFormat(locale).format(wholeNumber);
+    const formattedWholeNumber = Intl.NumberFormat(locale).format(Number(wholeNumber));
 
     const decimalNumber = amount.minus(amountRoundedDown).toNumber();
     const formattedDecimalNumber = Intl.NumberFormat(locale, {
