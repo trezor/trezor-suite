@@ -1,8 +1,4 @@
-import type {
-    PaymentFrequency,
-    SavingsProviderInfo,
-    SavingsTradeItemStatus,
-} from '@suite-services/invityAPI';
+import type { PaymentFrequency, SavingsProviderInfo, SavingsTradeItemStatus } from 'invity-api';
 import {
     CustomPaymentAmountKey,
     PaymentFrequencyAnnualCoefficient,

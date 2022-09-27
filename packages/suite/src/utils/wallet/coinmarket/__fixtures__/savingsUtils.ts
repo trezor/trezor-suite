@@ -1,4 +1,4 @@
-import type { SavingsProviderInfo } from '@suite-services/invityAPI';
+import type { SavingsProviderInfo } from 'invity-api';
 import { CurrentFiatRates } from '@wallet-types/fiatRates';
 
 export const FIAT_RATES: CurrentFiatRates = {
@@ -47,6 +47,7 @@ export const SELECTED_PROVIDER: SavingsProviderInfo = {
         },
         paymentInfo: {
             isEnabled: false,
+            isAutomaticPaymentPlanningEnabled: false,
         },
         phoneVerification: {
             isEnabled: false,

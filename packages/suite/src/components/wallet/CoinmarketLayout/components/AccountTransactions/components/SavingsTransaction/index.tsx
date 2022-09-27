@@ -9,7 +9,7 @@ import {
 } from '@suite-components';
 import type { TradeSavings } from '@wallet-types/coinmarketCommonTypes';
 import Status from '../Status';
-import type { SavingsProviderInfo } from '@suite-services/invityAPI';
+import type { SavingsProviderInfo } from 'invity-api';
 import { CoinmarketProviderInfo, CoinmarketPaymentType } from '@wallet-components';
 import { useWatchSavingsTrade } from '@wallet-hooks/useCoinmarket';
 import type { Account } from '@wallet-types';

@@ -1,9 +1,14 @@
 import { useEffect, useState } from 'react';
-import { BuyTradeStatus, ExchangeTradeStatus, SellTradeStatus } from 'invity-api';
+import {
+    BuyTradeStatus,
+    ExchangeTradeStatus,
+    SellTradeStatus,
+    SavingsTradeItemStatus,
+} from 'invity-api';
 import useUnmount from 'react-use/lib/useUnmount';
 import useTimeoutFn from 'react-use/lib/useTimeoutFn';
 import { useActions } from '@suite-hooks';
-import invityAPI, { SavingsTradeItemStatus } from '@suite-services/invityAPI';
+import invityAPI from '@suite-services/invityAPI';
 import * as coinmarketBuyActions from '@wallet-actions/coinmarketBuyActions';
 import * as coinmarketExchangeActions from '@wallet-actions/coinmarketExchangeActions';
 import * as coinmarketSellActions from '@wallet-actions/coinmarketSellActions';

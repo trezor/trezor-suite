@@ -15,11 +15,7 @@ import {
     SavingsOverviewContext,
     useSavingsOverview,
 } from '@wallet-hooks/useCoinmarketSavingsOverview';
-import type {
-    PaymentFrequency,
-    SavingsKYCStatus,
-    SavingsTrade,
-} from '@suite/services/suite/invityAPI';
+import type { PaymentFrequency, SavingsKYCStatus, SavingsTrade } from 'invity-api';
 import WaitingForFirstPayment from './components/WaitingForFirstPayment';
 import { darken } from 'polished';
 import { NetworkSymbol } from '@wallet-types';

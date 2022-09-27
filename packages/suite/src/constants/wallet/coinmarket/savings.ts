@@ -1,4 +1,4 @@
-import type { PaymentFrequency } from '@suite-services/invityAPI';
+import type { PaymentFrequency } from 'invity-api';
 
 export const CustomPaymentAmountKey = 'Custom';
 export const KYCStatusPollingIntervalMilliseconds = 15_000;

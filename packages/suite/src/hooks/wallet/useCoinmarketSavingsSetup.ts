@@ -5,7 +5,8 @@ import type {
     UseSavingsSetupProps,
 } from '@wallet-types/coinmarketSavingsSetup';
 import { useForm, useWatch } from 'react-hook-form';
-import invityAPI, { InitSavingsTradeRequest } from '@suite-services/invityAPI';
+import { InitSavingsTradeRequest } from 'invity-api';
+import invityAPI from '@suite-services/invityAPI';
 import { useActions, useSelector } from '@suite-hooks';
 import type { CountryOption } from '@wallet-types/coinmarketCommonTypes';
 import {

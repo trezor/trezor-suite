@@ -1,10 +1,11 @@
-import invityAPI, {
+import {
     SavingsTradeItem,
     SavingsKYCStatus,
     SavingsListResponse,
     SavingsProviderInfo,
     SavingsTradeResponse,
-} from '@suite-services/invityAPI';
+} from 'invity-api';
+import invityAPI from '@suite-services/invityAPI';
 import { COINMARKET_COMMON, COINMARKET_SAVINGS } from './constants';
 import { verifyAddress as verifySavingsAddress } from '@wallet-actions/coinmarket/coinmarketCommonActions';
 import type { Account } from '@wallet-types';

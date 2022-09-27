@@ -4,7 +4,7 @@ import format from 'date-fns/format';
 import styled from 'styled-components';
 import { Button, Icon, Image } from '@trezor/components';
 import { Translation } from '@suite-components';
-import type { SavingsTradePlannedPayment } from '@suite-services/invityAPI';
+import type { SavingsTradePlannedPayment } from 'invity-api';
 import type { ExtendedMessageDescriptor } from '@suite/types/suite';
 import { useCoinmarketSavingsPaymentInfoCopy } from '@wallet-hooks/useCoinmarketSavingsPaymentInfoCopy';
 

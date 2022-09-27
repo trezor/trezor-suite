@@ -5,7 +5,8 @@ import selectedAccountReducer from '@wallet-reducers/selectedAccountReducer';
 import coinmarketSavingsMiddleware from '@wallet-middlewares/coinmarketSavingsMiddleware';
 import { Action } from '@suite-types';
 import { COINMARKET_SAVINGS } from '@wallet-actions/constants';
-import invityAPI, { SavingsTradeResponse } from '@suite-services/invityAPI';
+import { SavingsTradeResponse } from 'invity-api';
+import invityAPI from '@suite-services/invityAPI';
 import suiteReducer from '@suite-reducers/suiteReducer';
 import { SAVINGS_TRADE_RESPONSE } from '../__fixtures__/coinmarketSavingsMiddleware';
 

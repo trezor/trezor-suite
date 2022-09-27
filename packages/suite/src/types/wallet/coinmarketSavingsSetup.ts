@@ -1,4 +1,4 @@
-import type { PaymentFrequency } from '@suite-services/invityAPI';
+import type { PaymentFrequency } from 'invity-api';
 import type { WithSelectedAccountLoadedProps } from '@wallet-components';
 import type { TypedValidationRules } from '@wallet-types/form';
 import type { UseFormMethods } from 'react-hook-form';

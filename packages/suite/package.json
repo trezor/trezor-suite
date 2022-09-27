@@ -100,7 +100,7 @@
         "@testing-library/react": "12.1.5",
         "@testing-library/user-event": "12.8.3",
         "@types/file-saver": "^2.0.5",
-        "@types/invity-api": "^1.0.6",
+        "@types/invity-api": "^1.0.8",
         "@types/jws": "^3.2.4",
         "@types/pako": "^1.0.1",
         "@types/pdfmake": "^0.1.1",

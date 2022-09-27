@@ -1,4 +1,4 @@
-import type { SavingsPaymentInfo } from '@suite-services/invityAPI';
+import type { SavingsPaymentInfo } from 'invity-api';
 import { copyToClipboard } from '@trezor/dom-utils';
 import { useActions } from '@suite-hooks';
 import * as notificationActions from '@suite-actions/notificationActions';

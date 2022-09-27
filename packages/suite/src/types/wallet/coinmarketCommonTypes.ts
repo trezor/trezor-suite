@@ -5,9 +5,9 @@ import type {
     SellFiatTrade,
     ExchangeTrade,
     SellVoucherTrade as SpendTrade,
+    SavingsTradeItem,
 } from 'invity-api';
 import type { FlagProps } from '@trezor/components';
-import type { SavingsTradeItem } from '@suite/services/suite/invityAPI';
 
 type CommonTrade = {
     date: string;

@@ -10,6 +10,10 @@ import type {
     ExchangeCoinInfo,
     SellFiatTrade,
     SellFiatTradeQuoteRequest,
+    SavingsKYCStatus,
+    SavingsProviderInfo,
+    SavingsTrade,
+    SavingsTradePlannedPayment,
 } from 'invity-api';
 import type { BuyInfo } from '@wallet-actions/coinmarketBuyActions';
 import type { ExchangeInfo } from '@wallet-actions/coinmarketExchangeActions';
@@ -26,12 +30,6 @@ import type { SellInfo } from '@wallet-actions/coinmarketSellActions';
 import type { SavingsInfo } from '@wallet-actions/coinmarketSavingsActions';
 import type { FeeLevel } from '@trezor/connect';
 import type { Trade } from '@wallet-types/coinmarketCommonTypes';
-import type {
-    SavingsKYCStatus,
-    SavingsProviderInfo,
-    SavingsTrade,
-    SavingsTradePlannedPayment,
-} from '@suite-services/invityAPI';
 
 export interface ComposedTransactionInfo {
     composed?: Pick<
