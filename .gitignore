@@ -84,6 +84,7 @@ build/
 local.properties
 *.iml
 *.hprof
+.cxx/
 
 # BUCK
 buck-out/
@@ -101,12 +102,15 @@ buck-out/
 **/android/fastlane/report.xml
 **/android/fastlane/Preview.html
 **/android/fastlane/screenshots
+**/android/fastlane/test_output
 **/ios/fastlane/report.xml
 **/ios/fastlane/Preview.html
 **/ios/fastlane/screenshots
+**/ios/fastlane/test_output
 **/fastlane/report.xml
 **/fastlane/Preview.html
 **/fastlane/screenshots
+**/fastlane/test_output
 
 *.cer
 *.certSigningRequest
@@ -124,6 +128,7 @@ buck-out/
 # ios
 **/ios/*.xcarchive
 **/ios/builds/*
+**/ios/.xcode.env.local
 # Ruby / CocoaPods
 **/ios/Pods/
 **/vendor/bundle/

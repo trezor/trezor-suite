@@ -3,10 +3,12 @@ import { View } from 'react-native';
 
 import {
     AccountsImportStackRoutes,
+    OnboardingStackParamList,
+    OnboardingStackRoutes,
     RootStackParamList,
     RootStackRoutes,
     Screen,
-    StackProps,
+    StackToStackCompositeScreenProps,
 } from '@suite-native/navigation';
 import { Button, Text } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -47,7 +49,11 @@ const introButtonStyle = prepareNativeStyle(_ => ({
 
 export const OnboardingIntroScreen = ({
     navigation,
-}: StackProps<RootStackParamList, RootStackRoutes.OnboardingStack>) => {
+}: StackToStackCompositeScreenProps<
+    OnboardingStackParamList,
+    OnboardingStackRoutes.Onboarding,
+    RootStackParamList
+>) => {
     const { applyStyle } = useNativeStyles();
 
     const handleNavigateToAccountsImport = () => {
