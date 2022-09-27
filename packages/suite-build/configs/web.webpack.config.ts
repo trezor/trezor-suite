@@ -19,19 +19,17 @@ const config: webpack.Configuration = {
     },
     plugins: [
         new CopyPlugin({
-            patterns: [
-                'browser-detection',
-                'fonts',
-                'images',
-                'message-system',
-                'oauth',
-                'videos',
-                'guide/assets',
-            ]
+            patterns: ['browser-detection', 'fonts', 'images', 'oauth', 'videos', 'guide/assets']
                 .map(dir => ({
                     from: path.join(__dirname, '..', '..', 'suite-data', 'files', dir),
                     to: path.join(baseDir, 'build', 'static', dir),
                 }))
+                .concat([
+                    {
+                        from: path.join(__dirname, '..', '..', 'message-system', 'files'),
+                        to: path.join(baseDir, 'build', 'static', 'message-system'),
+                    },
+                ])
                 .concat([
                     {
                         from: path.join(__dirname, '..', '..', 'connect-iframe', 'build'),

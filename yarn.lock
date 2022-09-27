@@ -7105,6 +7105,21 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@trezor/message-system@workspace:packages/message-system":
+  version: 0.0.0-use.local
+  resolution: "@trezor/message-system@workspace:packages/message-system"
+  dependencies:
+    "@types/fs-extra": ^9.0.13
+    ajv: ^8.11.0
+    fs-extra: ^10.1.0
+    jest: ^26.6.3
+    json-schema-to-typescript: ^11.0.2
+    jws: ^4.0.0
+    tsx: ^3.8.2
+    typescript: 4.7.4
+  languageName: unknown
+  linkType: soft
+
 "@trezor/react-utils@*, @trezor/react-utils@workspace:packages/react-utils":
   version: 0.0.0-use.local
   resolution: "@trezor/react-utils@workspace:packages/react-utils"
@@ -7228,14 +7243,11 @@ __metadata:
     "@trezor/utils": "*"
     "@types/fs-extra": ^9.0.13
     "@types/ua-parser-js": ^0.7.36
-    ajv: ^8.11.0
     autoprefixer: ^10.4.8
     babel-loader: ^8.2.5
     css-loader: ^6.7.1
     fs-extra: ^10.1.0
     jest: ^26.6.3
-    json-schema-to-typescript: ^11.0.2
-    jws: ^4.0.0
     postcss-loader: ^7.0.1
     simple-git: ^3.12.0
     style-loader: ^3.3.1

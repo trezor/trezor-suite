@@ -1,5 +1,3 @@
-const path = require('path');
-const fs = require('fs');
 const webpack = require('webpack');
 const withOptimizedImages = require('next-optimized-images');
 // Get Suite App version from the Suite package.json
