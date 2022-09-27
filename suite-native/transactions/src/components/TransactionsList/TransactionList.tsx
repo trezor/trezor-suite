@@ -6,6 +6,7 @@ import { A } from '@mobily/ts-belt';
 import { useNativeStyles } from '@trezor/styles';
 import { WalletAccountTransaction } from '@suite-common/wallet-types';
 import { groupTransactionsByDate } from '@suite-common/wallet-utils';
+import { AccountKey } from '@suite-common/suite-types';
 
 import { TransactionListGroupTitle } from './TransactionListGroupTitle';
 import { TransactionListItem } from './TransactionListItem';
@@ -14,6 +15,7 @@ type AccountTransactionProps = {
     transactions: WalletAccountTransaction[];
     fetchMoreTransactions: (pageToFetch: number, perPage: number) => void;
     listHeaderComponent: JSX.Element;
+    accountKey: AccountKey;
 };
 
 export const TX_PER_PAGE = 25;
@@ -22,6 +24,7 @@ export const TransactionList = ({
     transactions,
     listHeaderComponent,
     fetchMoreTransactions,
+    accountKey,
 }: AccountTransactionProps) => {
     const { utils } = useNativeStyles();
     const accountTransactionsByDate = useMemo(
@@ -60,8 +63,10 @@ export const TransactionList = ({
     );
 
     const renderItem = useCallback(
-        ({ item }) => <TransactionListItem key={item.txid} transaction={item} />,
-        [],
+        ({ item }) => (
+            <TransactionListItem key={item.txid} transaction={item} accountKey={accountKey} />
+        ),
+        [accountKey],
     );
 
     const renderSectionHeader = useCallback(

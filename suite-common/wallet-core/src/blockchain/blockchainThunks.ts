@@ -86,7 +86,7 @@ export const updateFeeInfoThunk = createThunk(
         } = extra;
         const network = getNetwork(symbol.toLowerCase());
         if (!network) return;
-        const blockchainInfo = selectNetworkBlockchainInfo(network.symbol)(getState());
+        const blockchainInfo = selectNetworkBlockchainInfo(getState(), network.symbol);
         const feeInfo = selectFeeInfo(network.symbol)(getState());
 
         if (feeInfo.blockHeight > 0 && blockchainInfo.blockHeight - feeInfo.blockHeight < 10)
@@ -290,7 +290,7 @@ export const syncAccountsWithBlockchainThunk = createThunk(
             ),
         );
 
-        const blockchainInfo = selectNetworkBlockchainInfo(symbol)(getState());
+        const blockchainInfo = selectNetworkBlockchainInfo(getState(), symbol);
         // Second clear, just to be sure that no other sync was planned while executing this one
         tryClearTimeout(blockchainInfo.syncTimeout);
         const timeout = setTimeout(
@@ -307,7 +307,7 @@ export const onBlockchainConnectThunk = createThunk(
     async (symbol: string, { dispatch, getState }) => {
         const network = getNetwork(symbol.toLowerCase());
         if (!network) return;
-        const blockchainInfo = selectNetworkBlockchainInfo(network.symbol)(getState());
+        const blockchainInfo = selectNetworkBlockchainInfo(getState(), network.symbol);
         // reset previous timeout
         tryClearTimeout(blockchainInfo.reconnection?.id);
         await dispatch(subscribeBlockchainThunk({ symbol: network.symbol, fiatRates: true }));

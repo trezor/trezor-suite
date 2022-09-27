@@ -4,6 +4,7 @@ import { Account, WalletAccountTransaction } from '@suite-common/wallet-types';
 import { findTransaction } from '@suite-common/wallet-utils';
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import { AccountKey } from '@suite-common/suite-types';
+import { AccountTransaction } from '@trezor/connect';
 
 import { fiatRatesActions } from '../fiat-rates/fiatRatesActions';
 import { accountsActions } from '../accounts/accountsActions';
@@ -145,19 +146,31 @@ export const selectIsLoadingTransactions = (state: TransactionsRootState) =>
 export const selectTransactions = (state: TransactionsRootState) =>
     state.wallet.transactions.transactions;
 
-export const selectAccountTransactions = (
-    state: TransactionsRootState,
-    accountKey: string | null,
-) => state.wallet.transactions.transactions[accountKey ?? ''] ?? [];
-
-export const selectAllTransactions = createSelector(
+export const selectAccountTransactions = createSelector(
     selectTransactions,
-    (transactions): WalletAccountTransaction[] => Object.values(transactions).flat(),
+    (_: any, accountKey: AccountKey) => accountKey,
+    (transactions, accountKey): WalletAccountTransaction[] => transactions[accountKey] ?? [],
 );
 
-export const selectTransactionByTxid = (txid: string) =>
+// Use with caution because it returns all transactions for all accounts some
+export const selectAllTransactions = createSelector(
+    selectTransactions,
+    (transactions): AccountTransaction[] => Object.values(transactions).flat(),
+);
+
+export const selectTransactionByTxid = () =>
     createSelector(
-        [selectAllTransactions],
-        (transactions): WalletAccountTransaction | null =>
+        [selectAllTransactions, (_: any, txid: string) => txid],
+        (transactions, txid): AccountTransaction | null =>
             transactions.find(tx => tx.txid === txid) ?? null,
     );
+
+export const selectTransactionByTxidAndAccount = createSelector(
+    [
+        (_state: any, txid: string) => txid,
+        (state, _txid: string, accountKey: AccountKey) =>
+            selectAccountTransactions(state, accountKey),
+    ],
+
+    (txid, accountTransactions) => accountTransactions.find(tx => tx.txid === txid) ?? null,
+);
