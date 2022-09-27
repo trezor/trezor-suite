@@ -66,6 +66,11 @@ jobs:
     environment: develop
     timeout-minutes: 60
     steps:
+      - name: Setup xcode
+        uses: maxim-lobanov/setup-xcode@4aa4176a819ae7c019451acfda0bba67bffc6704
+        with:
+          xcode-version: "14.0"
+
       - name: Checkout code
         uses: actions/checkout@v3
 
