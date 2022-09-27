@@ -1,8 +1,8 @@
 import { CaptureConsole, Dedupe } from '@sentry/integrations';
+import type { Options, Event as SentryEvent } from '@sentry/types';
+
 import { isDevEnv } from '@suite-common/suite-utils';
 import { redactUserPathFromString } from '@trezor/utils';
-
-import type { Options, Event } from '@sentry/types';
 
 export const allowReportTag = 'allowReport';
 
@@ -15,7 +15,8 @@ export const allowReportTag = 'allowReport';
  * In case of any issue during parsing, original error is reported just with extra redactUserPathFailed tag
  * to be able to see in Sentry if there are any issues in this approach.
  */
-const redactUserPath = (event: Event) => {
+
+const redactUserPath = (event: SentryEvent) => {
     try {
         const eventAsString = JSON.stringify(event);
         const redactedString = redactUserPathFromString(eventAsString);
@@ -30,7 +31,7 @@ const redactUserPath = (event: Event) => {
     }
 };
 
-export const beforeSend: Options['beforeSend'] = event => {
+const beforeSend: Options['beforeSend'] = event => {
     // sentry events are skipped until user confirm analytics reporting
     const allowReport = event.tags?.[allowReportTag];
     if (allowReport === false) {
@@ -44,7 +45,7 @@ export const beforeSend: Options['beforeSend'] = event => {
     return redactUserPath(event);
 };
 
-export const beforeBreadcrumb: Options['beforeBreadcrumb'] = breadcrumb => {
+const beforeBreadcrumb: Options['beforeBreadcrumb'] = breadcrumb => {
     // filter out analytics requests and image fetches
     const isAnalytics =
         breadcrumb.category === 'fetch' &&
@@ -69,7 +70,7 @@ const ignoreErrors = [
     'device disconnected during action',
 ];
 
-const config: Options = {
+export const SENTRY_CONFIG: Options = {
     dsn: 'https://6d91ca6e6a5d4de7b47989455858b5f6@o117836.ingest.sentry.io/5193825',
     autoSessionTracking: false, // do not send analytical data to Sentry
     integrations: [
@@ -92,5 +93,3 @@ const config: Options = {
         },
     },
 };
-
-export default config;

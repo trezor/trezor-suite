@@ -27,7 +27,7 @@ import { useFormattersConfig } from '@suite-hooks';
 import history from '@suite/support/history';
 import AppRouter from './support/Router';
 import DesktopUpdater from './support/DesktopUpdater';
-import { SENTRY_CONFIG } from '@suite/config/suite';
+import { SENTRY_CONFIG } from '@suite-common/sentry';
 import { ModalContextProvider } from '@suite-support/ModalContext';
 import { desktopHandshake } from '@suite-actions/suiteActions';
 import { FormatterProvider } from '@suite-common/formatters';

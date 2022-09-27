@@ -6,7 +6,7 @@ import { init as initSentry } from '@sentry/browser';
 
 import { initStore } from '@suite/reducers/store';
 import { preloadStore } from '@suite-support/preloadStore';
-import { SENTRY_CONFIG } from '@suite-config';
+import { SENTRY_CONFIG } from '@suite-common/sentry';
 
 import Metadata from '@suite-components/Metadata';
 import Preloader from '@suite-components/Preloader';
