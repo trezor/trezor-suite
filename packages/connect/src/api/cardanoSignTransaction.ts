@@ -44,7 +44,7 @@ const CardanoSignTransactionFeatures = Object.freeze({
     Plutus: ['0', '2.4.4'],
     KeyHashStakeCredential: ['0', '2.4.4'],
     Babbage: ['0', '2.5.2'],
-    CatalystRegistrationCIP36: ['0', '2.5.3'],
+    GovernanceRegistrationCIP36: ['0', '2.5.3'],
 });
 
 export type CardanoSignTransactionParams = {
@@ -311,15 +311,15 @@ export default class CardanoSignTransaction extends AbstractMethod<
             this._ensureFeatureIsSupported('Babbage');
         }
 
-        if (params.auxiliaryData?.catalyst_registration_parameters) {
+        if (params.auxiliaryData?.governance_registration_parameters) {
             const { format, delegations, voting_purpose } =
-                params.auxiliaryData.catalyst_registration_parameters;
+                params.auxiliaryData.governance_registration_parameters;
             if (
-                format === PROTO.CardanoCatalystRegistrationFormat.CIP36 ||
+                format === PROTO.CardanoGovernanceRegistrationFormat.CIP36 ||
                 delegations?.length ||
                 voting_purpose != null
             ) {
-                this._ensureFeatureIsSupported('CatalystRegistrationCIP36');
+                this._ensureFeatureIsSupported('GovernanceRegistrationCIP36');
             }
         }
     }
@@ -381,8 +381,8 @@ export default class CardanoSignTransaction extends AbstractMethod<
         // auxiliary data
         let auxiliaryDataSupplement: CardanoAuxiliaryDataSupplement | undefined;
         if (this.params.auxiliaryData) {
-            const { catalyst_registration_parameters } = this.params.auxiliaryData;
-            if (catalyst_registration_parameters) {
+            const { governance_registration_parameters } = this.params.auxiliaryData;
+            if (governance_registration_parameters) {
                 this.params.auxiliaryData = modifyAuxiliaryDataForBackwardsCompatibility(
                     this.device,
                     this.params.auxiliaryData,
@@ -401,7 +401,7 @@ export default class CardanoSignTransaction extends AbstractMethod<
                 auxiliaryDataSupplement = {
                     type: auxiliaryDataType,
                     auxiliaryDataHash: message.auxiliary_data_hash!,
-                    catalystSignature: message.catalyst_signature,
+                    governanceSignature: message.governance_signature,
                 };
             }
             await typedCall('CardanoTxHostAck', 'CardanoTxItemAck');

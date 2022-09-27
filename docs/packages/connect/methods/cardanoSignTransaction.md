@@ -275,7 +275,7 @@ TrezorConnect.cardanoSignTransaction({
 });
 ```
 
-#### Catalyst voting key registration
+#### Governance voting key registration
 
 ```javascript
 TrezorConnect.cardanoSignTransaction({
@@ -297,7 +297,7 @@ TrezorConnect.cardanoSignTransaction({
     fee: '42',
     ttl: '10',
     auxiliaryData: {
-        catalystRegistrationParameters: {
+        governanceRegistrationParameters: {
             votingPublicKey: '1af8fa0b754ff99253d983894e63a2b09cbb56c833ba18c3384210163f63dcfc',
             stakingPath: "m/1852'/1815'/0'/2/0",
             rewardAddressParameters: {
@@ -568,7 +568,7 @@ Example:
             type: 1,
             auxiliaryDataHash:
                 'a943e9166f1bb6d767b175384d3bd7d23645170df36fc1861fbf344135d8e120',
-            catalystSignature:
+            governanceSignature:
                 '74f27d877bbb4a5fc4f7c56869905c11f70bad0af3de24b23afaa1d024e750930f434ecc4b73e5d1723c2cb8548e8bf6098ac876487b3a6ed0891cb76994d409',
         },
     }

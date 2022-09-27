@@ -1634,10 +1634,10 @@
         "CardanoTxAuxiliaryDataSupplementType": {
             "values": {
                 "NONE": 0,
-                "CATALYST_REGISTRATION_SIGNATURE": 1
+                "GOVERNANCE_REGISTRATION_SIGNATURE": 1
             }
         },
-        "CardanoCatalystRegistrationFormat": {
+        "CardanoGovernanceRegistrationFormat": {
             "values": {
                 "CIP15": 0,
                 "CIP36": 1
@@ -2245,7 +2245,7 @@
                 }
             }
         },
-        "CardanoCatalystRegistrationDelegation": {
+        "CardanoGovernanceRegistrationDelegation": {
             "fields": {
                 "voting_public_key": {
                     "rule": "required",
@@ -2259,7 +2259,7 @@
                 }
             }
         },
-        "CardanoCatalystRegistrationParametersType": {
+        "CardanoGovernanceRegistrationParametersType": {
             "fields": {
                 "voting_public_key": {
                     "type": "bytes",
@@ -2284,7 +2284,7 @@
                     "id": 4
                 },
                 "format": {
-                    "type": "CardanoCatalystRegistrationFormat",
+                    "type": "CardanoGovernanceRegistrationFormat",
                     "id": 5,
                     "options": {
                         "default": "CIP15"
@@ -2292,7 +2292,7 @@
                 },
                 "delegations": {
                     "rule": "repeated",
-                    "type": "CardanoCatalystRegistrationDelegation",
+                    "type": "CardanoGovernanceRegistrationDelegation",
                     "id": 6
                 },
                 "voting_purpose": {
@@ -2303,8 +2303,8 @@
         },
         "CardanoTxAuxiliaryData": {
             "fields": {
-                "catalyst_registration_parameters": {
-                    "type": "CardanoCatalystRegistrationParametersType",
+                "governance_registration_parameters": {
+                    "type": "CardanoGovernanceRegistrationParametersType",
                     "id": 1
                 },
                 "hash": {
@@ -2380,7 +2380,7 @@
                     "type": "bytes",
                     "id": 2
                 },
-                "catalyst_signature": {
+                "governance_signature": {
                     "type": "bytes",
                     "id": 3
                 }

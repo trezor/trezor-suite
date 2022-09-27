@@ -20,7 +20,7 @@ const RULE_PATCH = {
     'CardanoNativeScript.scripts': 'optional',
     'CardanoNativeScript.key_path': 'optional',
     'CardanoTxRequiredSigner.key_path': 'optional',
-    'CardanoCatalystRegistrationParametersType.delegations': 'optional',
+    'CardanoGovernanceRegistrationParametersType.delegations': 'optional',
     'Success.message': 'required', // didn't find use case where it's not sent
     'SignedIdentity.address': 'required',
     'EosAuthorizationKey.key': 'required', // its valid to be undefined according to implementation/tests
@@ -112,9 +112,9 @@ const TYPE_PATCH = {
     'Features.experimental_features': 'boolean | null',
     'HDNodePathType.node': 'HDNodeType | string',
     'FirmwareUpload.payload': 'Buffer | ArrayBuffer',
-    'CardanoCatalystRegistrationDelegation.weight': UINT_TYPE,
-    'CardanoCatalystRegistrationParametersType.nonce': UINT_TYPE,
-    'CardanoCatalystRegistrationParametersType.voting_purpose': UINT_TYPE,
+    'CardanoGovernanceRegistrationDelegation.weight': UINT_TYPE,
+    'CardanoGovernanceRegistrationParametersType.nonce': UINT_TYPE,
+    'CardanoGovernanceRegistrationParametersType.voting_purpose': UINT_TYPE,
     'CardanoPoolParametersType.pledge': UINT_TYPE,
     'CardanoPoolParametersType.cost': UINT_TYPE,
     'CardanoPoolParametersType.margin_numerator': UINT_TYPE,
