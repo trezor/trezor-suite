@@ -125,7 +125,6 @@ suite-web-landing build stable:
   stage: build
   script:
     - yarn install --immutable
-    - yarn workspace @trezor/suite-data copy-static-files
     - yarn workspace @trezor/suite-desktop build:${platform}
     - ls -la packages/suite-desktop/build-electron
     - mv packages/suite-desktop/build-electron/* .
@@ -142,7 +141,6 @@ suite-web-landing build stable:
     - nix-shell --option system x86_64-darwin --run "git lfs pull"
     - nix-shell --option system x86_64-darwin --run "yarn install --immutable"
     - nix-shell --option system x86_64-darwin --run "yarn build:libs"
-    - nix-shell --option system x86_64-darwin --run "yarn workspace @trezor/suite-data copy-static-files"
     - nix-shell --option system x86_64-darwin --run "yarn workspace @trezor/suite-desktop build:${platform}"
     - nix-shell --option system x86_64-darwin --run "bash packages/suite-desktop/scripts/gnupg-sign.sh"
     - ls -la packages/suite-desktop/build-electron
@@ -281,7 +279,6 @@ suite-native build android:
   interruptible: true
   script:
     - yarn install --immutable
-    - yarn workspace @trezor/suite-data copy-static-files
     - yarn workspace @trezor/suite-native build:android
     - mv suite-native/app/android/app/build/outputs/apk/dev/debug/app-dev-debug.apk .
   artifacts:

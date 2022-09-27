@@ -1,5 +1,8 @@
+const CopyPlugin = require('copy-webpack-plugin');
+const path = require('path');
 const webpack = require('webpack');
 const withOptimizedImages = require('next-optimized-images');
+
 // Get Suite App version from the Suite package.json
 const { suiteVersion } = require('../suite/package.json');
 
@@ -12,6 +15,7 @@ const localPackages = Object.keys(dependencies).filter(packageName =>
 
 const withTranspileModules = require('next-transpile-modules')([...localPackages]);
 
+const baseDir = path.join(__dirname, '..', 'suite-web-landing');
 module.exports = withTranspileModules(
     withOptimizedImages({
         // Currently, no optimization package is used because of NixOS glibc error,
@@ -41,6 +45,18 @@ module.exports = withTranspileModules(
                 new webpack.DefinePlugin({
                     'process.env.VERSION': JSON.stringify(suiteVersion),
                     'process.env.ASSET_PREFIX': JSON.stringify(process.env.ASSET_PREFIX),
+                }),
+            );
+
+            config.plugins.push(
+                new CopyPlugin({
+                    patterns: ['fonts', 'images/favicons', 'images/suite-web-landing'].map(dir => ({
+                        from: path.join(__dirname, '..', 'suite-data', 'files', dir),
+                        to: path.join(baseDir, 'public', 'static', dir),
+                    })),
+                    options: {
+                        concurrency: 100,
+                    },
                 }),
             );
 
