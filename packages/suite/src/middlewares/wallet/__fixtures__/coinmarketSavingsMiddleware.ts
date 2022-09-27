@@ -1,4 +1,4 @@
-import type { SavingsTradeResponse } from '@suite-services/invityAPI';
+import type { SavingsTradeResponse } from 'invity-api';
 
 export const SAVINGS_TRADE_RESPONSE = {
     trade: {

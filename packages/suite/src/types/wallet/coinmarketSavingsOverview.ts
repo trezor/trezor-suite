@@ -1,4 +1,4 @@
-import type { SavingsKYCStatus } from '@suite-services/invityAPI';
+import type { SavingsKYCStatus } from 'invity-api';
 import type { WithSelectedAccountLoadedProps } from '@wallet-components';
 import type { SavingsContextValues } from './coinmarketSavings';
 

@@ -15,7 +15,8 @@ import {
     getFiatAmountEffective,
     getPaymentFrequencyOptions,
 } from '@wallet-utils/coinmarket/savingsUtils';
-import invityAPI, { SavingsTrade } from '@suite-services/invityAPI';
+import { SavingsTrade } from 'invity-api';
+import invityAPI from '@suite-services/invityAPI';
 import { useCoinmarketNavigation } from '@wallet-hooks/useCoinmarketNavigation';
 import { useFormDraft } from '@wallet-hooks/useFormDraft';
 

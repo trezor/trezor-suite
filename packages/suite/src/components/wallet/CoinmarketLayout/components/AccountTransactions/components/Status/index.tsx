@@ -7,8 +7,12 @@ import { getStatusMessage as getSellStatusMessage } from '@wallet-utils/coinmark
 import { getStatusMessage as getSavingsStatusMessage } from '@wallet-utils/coinmarket/savingsUtils';
 import { variables, Icon, useTheme, SuiteThemeColors } from '@trezor/components';
 import { Trade } from '@wallet-types/coinmarketCommonTypes';
-import { BuyTradeStatus, ExchangeTradeStatus, SellTradeStatus } from 'invity-api';
-import type { SavingsTradeItemStatus } from '@suite-services/invityAPI';
+import {
+    BuyTradeStatus,
+    ExchangeTradeStatus,
+    SellTradeStatus,
+    SavingsTradeItemStatus,
+} from 'invity-api';
 
 interface Props {
     trade: Trade['data'];
