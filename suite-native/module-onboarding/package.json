@@ -18,7 +18,7 @@
         "@suite-native/atoms": "*",
         "@suite-native/navigation": "*",
         "@trezor/styles": "*",
-        "react": "^17.0.2",
+        "react": "^18.2.0",
         "react-native": "0.68.2"
     },
     "devDependencies": {

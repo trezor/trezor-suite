@@ -44,13 +44,13 @@
         "@storybook/core": "^6.5.10",
         "@storybook/manager-webpack5": "^6.5.10",
         "@storybook/react": "^6.5.10",
-        "@types/react": "^17.0.48",
+        "@types/react": "^18.0.21",
         "@types/react-date-range": "^1.4.4",
         "@types/react-truncate": "^2.3.4",
         "@types/styled-components": "^5.1.26",
         "jest": "^26.6.3",
-        "react": "17.0.2",
-        "react-dom": "17.0.2",
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0",
         "styled-components": "^5.3.5",
         "stylelint": "^14.10.0",
         "stylelint-config-recommended": "^9.0.0",
@@ -62,7 +62,7 @@
         "typescript-styled-plugin": "^0.18.2"
     },
     "peerDependencies": {
-        "react": "17.0.2",
+        "react": "^18.2.0",
         "styled-components": "^5.3.5"
     }
 }

@@ -17,7 +17,7 @@
         "@trezor/connect": "9.0.3",
         "@trezor/type-utils": "*",
         "@trezor/utils": "*",
-        "react": "17.0.2",
+        "react": "^18.2.0",
         "react-hook-form": "6.15.7"
     },
     "devDependencies": {

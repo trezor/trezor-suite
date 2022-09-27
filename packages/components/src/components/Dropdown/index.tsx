@@ -6,7 +6,7 @@ import React, {
     useImperativeHandle,
     useCallback,
 } from 'react';
-import ReactDOM from 'react-dom';
+import { createPortal } from 'react-dom';
 import styled, { css } from 'styled-components';
 import { useOnClickOutside } from '@trezor/react-utils';
 import { FONT_WEIGHT, Z_INDEX, FONT_SIZE } from '../../config/variables';
@@ -474,8 +474,7 @@ const Dropdown = forwardRef(
             </MenuComponent>
         );
 
-        const portalMenu =
-            absolutePosition && appendTo ? ReactDOM.createPortal(menu, appendTo) : menu;
+        const portalMenu = absolutePosition && appendTo ? createPortal(menu, appendTo) : menu;
 
         return (
             <Wrapper className={className} absolutePosition={!!absolutePosition}>

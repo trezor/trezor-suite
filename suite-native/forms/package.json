@@ -12,7 +12,7 @@
     },
     "dependencies": {
         "@suite-native/atoms": "*",
-        "react": "^17.0.2",
+        "react": "^18.2.0",
         "react-hook-form": "6.15.7",
         "yup": "^0.32.11"
     }
