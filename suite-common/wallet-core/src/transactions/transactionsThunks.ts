@@ -1,3 +1,6 @@
+import { createThunk } from '@suite-common/redux-utils';
+import { AccountKey } from '@suite-common/suite-types';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 import {
     Account,
     PrecomposedTransactionFinal,
@@ -7,18 +10,19 @@ import {
 import {
     findTransactions,
     formatData,
-    getAccountTransactions,
     getExportedFileName,
     isTrezorConnectBackendType,
 } from '@suite-common/wallet-utils';
-import TrezorConnect from '@trezor/connect';
-import { createThunk } from '@suite-common/redux-utils';
-import { AccountKey } from '@suite-common/suite-types';
+import TrezorConnect, { AccountTransaction } from '@trezor/connect';
 
 import { accountsActions } from '../accounts/accountsActions';
-import { selectTransactions } from './transactionsReducer';
-import { transactionsActions, modulePrefix } from './transactionsActions';
 import { selectAccountByKey } from '../accounts/accountsReducer';
+import { transactionsActions, modulePrefix } from './transactionsActions';
+import {
+    selectAccountTransactions,
+    selectAccountTransactionsForPage,
+    selectTransactionsPerCoin,
+} from './transactionsSelectors';
 
 /**
  * Replace existing transaction in the reducer.
@@ -37,9 +41,12 @@ export const replaceTransactionThunk = createThunk(
         },
         { getState, dispatch },
     ) => {
+        // @TODO: this thunk should be removed and all this should happen in reducer
+
         if (!tx.prevTxid) return; // ignore if it's not replacement tx
 
-        const walletTransactions = selectTransactions(getState());
+        // TODO
+        const walletTransactions = selectTransactionsPerCoin(getState()).cardano;
 
         // find all transactions to replace, they may be related to another account
         const transactions = findTransactions(tx.prevTxid, walletTransactions);
@@ -123,7 +130,13 @@ export const addFakePendingTxThunk = createThunk(
                 totalOutput: '0',
             },
         };
-        dispatch(transactionsActions.addTransaction({ transactions: [fakeTx], account }));
+        dispatch(
+            transactionsActions.addTransaction({
+                transactions: [fakeTx],
+                accountKey: account.key,
+                networkSymbol: account.symbol,
+            }),
+        );
     },
 );
 
@@ -143,13 +156,9 @@ export const exportTransactionsThunk = createThunk(
     ) => {
         const { utils, selectors } = extra;
         // Get state of transactions
-        const allTransactions = selectTransactions(getState());
+        const accountTransactions = selectAccountTransactions(getState(), account.key);
         const localCurrency = selectors.selectLocalCurrency(getState());
-        const transactions = getAccountTransactions(
-            account.key,
-            allTransactions,
-            // add metadata directly to transactions
-        ).map(transaction => ({
+        const transactions = accountTransactions.map(transaction => ({
             ...transaction,
             targets: transaction.targets.map(target => ({
                 ...target,
@@ -173,60 +182,55 @@ export const exportTransactionsThunk = createThunk(
     },
 );
 
+// It's better than previous shifting and offseting but per page must be hardcoded because there changing it during runtime will break state in redux
+// it will break also persisted state in redux, TODO find better solution
+export const TRANSACTIONS_PER_PAGE = 25;
+
 export const fetchTransactionsThunk = createThunk(
     `${modulePrefix}/fetchTransactionsThunk`,
     async (
         {
             accountKey,
             page,
-            perPage,
             noLoading = false,
             recursive = false,
         }: {
             accountKey: AccountKey;
             page: number;
-            perPage: number;
             noLoading?: boolean;
             recursive?: boolean;
         },
         { dispatch, getState, signal },
-    ) => {
+    ): Promise<{
+        networkSymbol: NetworkSymbol;
+        transactions: AccountTransaction[];
+        accountKey: AccountKey;
+        page: number;
+    } | null> => {
         const account = selectAccountByKey(getState(), accountKey);
-        if (!account) return;
-        if (!isTrezorConnectBackendType(account.backendType)) return; // skip unsupported backend type
-        const transactions = selectTransactions(getState());
-        const reducerTxs = getAccountTransactions(account.key, transactions);
+        if (!account) return null;
+        if (!isTrezorConnectBackendType(account.backendType)) return null; // skip unsupported backend type
 
-        const startIndex = (page - 1) * perPage;
-        const stopIndex = startIndex + perPage;
-        const txsForPage = reducerTxs.slice(startIndex, stopIndex).filter(tx => !!tx.txid); // filter out "empty" values
+        const txsForPage = selectAccountTransactionsForPage(getState(), accountKey, page);
 
+        // TOOD this pagination conditions probably could be simplified even more
         // we already got txs for the page in reducer
         if (
-            (page > 1 && txsForPage.length === perPage) ||
+            (page > 1 && txsForPage.length === TRANSACTIONS_PER_PAGE) ||
             txsForPage.length === account.history.total
         ) {
             if (recursive && !signal.aborted) {
-                const promise = dispatch(
+                await dispatch(
                     fetchTransactionsThunk({
                         accountKey,
                         page: page + 1,
-                        perPage,
                         noLoading,
                         recursive: true,
                     }),
                 );
-                signal.addEventListener('abort', () => {
-                    promise.abort();
-                });
-                await promise;
             }
 
-            return;
-        }
-
-        if (!noLoading && !signal.aborted) {
-            dispatch(transactionsActions.fetchInit);
+            return null;
         }
 
         const { marker } = account;
@@ -235,42 +239,25 @@ export const fetchTransactionsThunk = createThunk(
             descriptor: account.descriptor,
             details: 'txs',
             page, // useful for every network except ripple
-            pageSize: perPage,
+            pageSize: TRANSACTIONS_PER_PAGE,
             ...(marker ? { marker } : {}), // set marker only if it is not undefined (ripple), otherwise it fails on marker validation
         });
 
-        if (signal.aborted) return;
+        if (signal.aborted) return null;
 
         if (result && result.success) {
             // TODO why is this only accepting account now?
-            const updateAction = accountsActions.updateAccount(account, result.payload);
-            const updatedAccount = updateAction.payload as Account;
+            const updateAccountAction = accountsActions.updateAccount(account, result.payload);
+            const updatedAccount = updateAccountAction.payload;
             const updatedTransactions = result.payload.history.transactions || [];
             const totalPages = result.payload.page?.total || 0;
 
-            dispatch(transactionsActions.fetchSuccess);
-            dispatch(
-                transactionsActions.addTransaction({
-                    transactions: updatedTransactions,
-                    account: updatedAccount,
-                    page,
-                    perPage,
-                }),
-            );
-            // updates the marker/page object for the account
-            dispatch(updateAction);
-
             // totalPages (blockbook + blockfrost), marker (ripple) if is undefined, no more pages are available
-            if (
-                recursive &&
-                (page < totalPages || (marker && updatedAccount.marker)) &&
-                !signal.aborted
-            ) {
+            if (recursive && (page < totalPages || (marker && updatedAccount.marker))) {
                 const promise = dispatch(
                     fetchTransactionsThunk({
-                        accountKey: updatedAccount.key,
+                        accountKey,
                         page: page + 1,
-                        perPage,
                         noLoading,
                         recursive: true,
                     }),
@@ -280,12 +267,17 @@ export const fetchTransactionsThunk = createThunk(
                 });
                 await promise;
             }
-        } else {
-            dispatch(
-                transactionsActions.fetchError({
-                    error: result ? result.payload.error : 'unknown error',
-                }),
-            );
+
+            // updates the marker/page object for the account
+            dispatch(updateAccountAction);
+
+            return {
+                transactions: updatedTransactions,
+                networkSymbol: updatedAccount.symbol,
+                accountKey,
+                page,
+            };
         }
+        throw new Error(result ? result.payload.error : 'unknown error');
     },
 );

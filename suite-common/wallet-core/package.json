@@ -11,6 +11,7 @@
         "type-check": "tsc --build"
     },
     "dependencies": {
+        "@mobily/ts-belt": "^3.11.0",
         "@reduxjs/toolkit": "^1.8.3",
         "@suite-common/fiat-services": "*",
         "@suite-common/redux-utils": "*",

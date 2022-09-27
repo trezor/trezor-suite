@@ -1,27 +1,31 @@
-import { createSelector } from '@reduxjs/toolkit';
+import { A, F, pipe } from '@mobily/ts-belt';
+import { isAnyOf, isFulfilled } from '@reduxjs/toolkit';
 
-import { Account, WalletAccountTransaction } from '@suite-common/wallet-types';
-import { findTransaction } from '@suite-common/wallet-utils';
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import { AccountKey } from '@suite-common/suite-types';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 import { AccountTransaction } from '@trezor/connect';
 
-import { fiatRatesActions } from '../fiat-rates/fiatRatesActions';
-import { accountsActions } from '../accounts/accountsActions';
 import { transactionsActions } from './transactionsActions';
+import { fetchTransactionsThunk } from './transactionsThunks';
+
+// probably move to wallet-types
+export type Txid = string;
+
+interface AccountTransactionMeta {
+    allTxids: Txid[];
+    pages: Partial<{
+        [page: number]: Txid[];
+    }>;
+}
 
 export interface TransactionsState {
     isLoading: boolean;
     error: string | null;
-    // Key is accountKey and value is sparse array of fetched txs
-    transactions: { [key: AccountKey]: WalletAccountTransaction[] };
+    // consider using object with key txid instead of AccountTransaction[] should be faster
+    transactions: Partial<Record<NetworkSymbol, AccountTransaction[]>>;
+    accountsTransactions: Record<AccountKey, AccountTransactionMeta>;
 }
-
-export const transactionsInitialState: TransactionsState = {
-    isLoading: false,
-    error: null,
-    transactions: {},
-};
 
 export interface TransactionsRootState {
     wallet: {
@@ -29,148 +33,89 @@ export interface TransactionsRootState {
     };
 }
 
-const initializeAccount = (state: TransactionsState, accountKey: AccountKey) => {
-    // initialize an empty array at 'accountKey' index if not yet initialized
-    if (!state.transactions[accountKey]) {
-        state.transactions[accountKey] = [];
-    }
-    return state.transactions[accountKey];
+const transactionsInitialState: TransactionsState = {
+    transactions: {},
+    error: null,
+    isLoading: false,
+    accountsTransactions: {},
 };
 
-export const updateTransaction = (
-    state: TransactionsState,
-    account: Account,
-    txid: string,
-    updateObject: Partial<WalletAccountTransaction>,
-) => {
-    initializeAccount(state, account.key);
-    const accountTxs = state.transactions[account.key];
-    if (!accountTxs) return;
-
-    const index = accountTxs.findIndex(t => t && t.txid === txid);
-    accountTxs[index] = {
-        ...accountTxs[index],
-        ...updateObject,
-    };
-};
+const uniqTransactions = (transactions: AccountTransaction[]) =>
+    pipe(
+        transactions,
+        A.uniqBy(t => t.txid),
+        F.toMutable,
+    );
 
 export const prepareTransactionsReducer = createReducerWithExtraDeps(
     transactionsInitialState,
-    (builder, extra) => {
+    builder => {
         builder
-            .addCase(transactionsActions.fetchError, (state, { payload }) => {
-                const { error } = payload;
-                state.error = error;
-                state.isLoading = false;
-            })
-            .addCase(transactionsActions.fetchInit, state => {
+            .addCase(fetchTransactionsThunk.pending, state => {
                 state.isLoading = true;
             })
-            .addCase(transactionsActions.fetchSuccess, state => {
+            .addCase(fetchTransactionsThunk.rejected, (state, { payload }) => {
+                state.error = (payload as Error).message;
                 state.isLoading = false;
             })
-            .addCase(transactionsActions.resetTransaction, (state, { payload }) => {
-                const { account } = payload;
-                delete state.transactions[account.key];
-            })
             .addCase(transactionsActions.replaceTransaction, (state, { payload }) => {
-                const { key, txid, tx } = payload;
-                const accountTxs = initializeAccount(state, key);
-                const index = accountTxs.findIndex(t => t && t.txid === txid);
-                if (accountTxs[index]) accountTxs[index] = tx;
+                // TODO should be easy
             })
             .addCase(transactionsActions.removeTransaction, (state, { payload }) => {
-                const { account, txs } = payload;
-                const transactions = state.transactions[account.key] || [];
-                txs.forEach(tx => {
-                    const index = transactions.findIndex(t => t.txid === tx.txid);
-                    transactions.splice(index, 1);
-                });
+                // TODO
+                // we can easily remove txid reference from `accountsTransactions` but then we need to check also other accounts
+                // if there is no other reference to the txid we can remove it from `transactions`
             })
-            .addCase(transactionsActions.addTransaction, (state, { payload }) => {
-                const { transactions, account, page, perPage } = payload;
-                if (transactions.length < 1) return;
-                initializeAccount(state, account.key);
-                const accountTxs = state.transactions[account.key];
-
-                if (!accountTxs) return;
-                transactions.forEach((transaction, i) => {
-                    // first we need to make sure that transaction is not undefined, then check if transactionid matches
-                    const existingTx = findTransaction(transaction.txid, accountTxs);
-                    if (!existingTx) {
-                        // add a new transaction
-                        if (page && perPage) {
-                            // insert a tx object at correct index
-                            // TODO settingsCommonConfig.TXS_PER_PAGE musi chodit z payloadu, jinak failuje (chodi do thunku, sem ne)
-                            const txIndex = (page - 1) * perPage + i; // Needs to be same as TX_PER_PAGE
-                            accountTxs[txIndex] = transaction;
-                        } else {
-                            // no page arg, insert the tx at the beginning of the array
-                            accountTxs.unshift(transaction);
-                        }
-                    } else {
-                        // update the transaction if conditions are met
-                        const existingTxIndex = accountTxs.findIndex(
-                            t => t && t.txid === existingTx.txid,
-                        );
-
-                        if (
-                            (!existingTx.blockHeight && transaction.blockHeight) ||
-                            (!existingTx.blockTime && transaction.blockTime)
-                        ) {
-                            // pending tx got confirmed (blockHeight changed from undefined/0 to a number > 0)
-                            accountTxs[existingTxIndex] = { ...transaction };
-                        }
-                    }
-                });
-            })
-            .addCase(accountsActions.removeAccount, (state, { payload }) => {
-                payload.forEach(a => {
-                    delete state.transactions[a.key];
-                });
-            })
-            .addCase(fiatRatesActions.updateTransactionFiatRate, (state, { payload }) => {
-                payload.forEach(u => {
-                    updateTransaction(state, u.account, u.txid, u.updateObject);
-                });
+            .addCase(transactionsActions.resetTransaction, (state, { payload }) => {
+                // TODO
+                // we can easily remove whole account from `accountTransactions` but then we need to check also other accounts
+                // if there is no other reference to the txid we can remove it from `transactions`
             })
             .addMatcher(
-                action => action.type === extra.actionTypes.storageLoad,
-                extra.reducers.storageLoadTransactions,
+                isAnyOf(
+                    isFulfilled(fetchTransactionsThunk),
+                    transactionsActions.addTransaction.match,
+                ),
+                (state, { payload }) => {
+                    if (!payload) return;
+
+                    const { networkSymbol, transactions, accountKey, page } = payload;
+                    const existingTransactions = state.transactions[networkSymbol];
+                    if (!existingTransactions) {
+                        state.transactions[networkSymbol] = transactions;
+                    } else {
+                        state.transactions[networkSymbol] = uniqTransactions([
+                            ...existingTransactions,
+                            ...transactions,
+                        ]);
+                    }
+
+                    const existingAccountTransactionsMeta = state.accountsTransactions[accountKey];
+
+                    const addedTxids = transactions.map(t => t.txid);
+
+                    if (!existingAccountTransactionsMeta) {
+                        state.accountsTransactions[accountKey].allTxids = addedTxids;
+                        if (page) {
+                            state.accountsTransactions[accountKey].pages[page] = addedTxids;
+                        }
+                    } else {
+                        const allTxids = A.uniq([
+                            ...existingAccountTransactionsMeta.allTxids,
+                            addedTxids,
+                        ]) as Txid[];
+                        state.accountsTransactions[accountKey].allTxids = allTxids;
+
+                        if (page) {
+                            state.accountsTransactions[accountKey].pages = {
+                                ...existingAccountTransactionsMeta.pages,
+                                [page]: addedTxids,
+                            };
+                        }
+                    }
+
+                    state.isLoading = false;
+                },
             );
     },
-);
-
-export const selectIsLoadingTransactions = (state: TransactionsRootState) =>
-    state.wallet.transactions.isLoading;
-export const selectTransactions = (state: TransactionsRootState) =>
-    state.wallet.transactions.transactions;
-
-export const selectAccountTransactions = createSelector(
-    selectTransactions,
-    (_: any, accountKey: AccountKey) => accountKey,
-    (transactions, accountKey): WalletAccountTransaction[] => transactions[accountKey] ?? [],
-);
-
-// Use with caution because it returns all transactions for all accounts some
-export const selectAllTransactions = createSelector(
-    selectTransactions,
-    (transactions): AccountTransaction[] => Object.values(transactions).flat(),
-);
-
-export const selectTransactionByTxid = () =>
-    createSelector(
-        [selectAllTransactions, (_: any, txid: string) => txid],
-        (transactions, txid): AccountTransaction | null =>
-            transactions.find(tx => tx.txid === txid) ?? null,
-    );
-
-export const selectTransactionByTxidAndAccount = createSelector(
-    [
-        (_state: any, txid: string) => txid,
-        (state, _txid: string, accountKey: AccountKey) =>
-            selectAccountTransactions(state, accountKey),
-    ],
-
-    (txid, accountTransactions) => accountTransactions.find(tx => tx.txid === txid) ?? null,
 );

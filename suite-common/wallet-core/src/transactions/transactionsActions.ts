@@ -1,17 +1,11 @@
 import { createAction } from '@reduxjs/toolkit';
 
-import { Account, WalletAccountTransaction } from '@suite-common/wallet-types';
+import { AccountKey } from '@suite-common/suite-types';
+import { NetworkSymbol } from '@suite-common/wallet-config';
+import { Account } from '@suite-common/wallet-types';
 import { AccountTransaction } from '@trezor/connect';
-import { enhanceTransaction } from '@suite-common/wallet-utils';
 
 export const modulePrefix = '@common/wallet-core/transactions';
-
-const fetchError = createAction(
-    `${modulePrefix}/fetchError`,
-    (payload: { error: string | null }) => ({ payload }),
-);
-const fetchSuccess = createAction(`${modulePrefix}/fetchSuccess`);
-const fetchInit = createAction(`${modulePrefix}/fetchInit`);
 
 const resetTransaction = createAction(
     `${modulePrefix}/resetTransaction`,
@@ -20,7 +14,7 @@ const resetTransaction = createAction(
 
 const replaceTransaction = createAction(
     `${modulePrefix}/replaceTransaction`,
-    (payload: { key: string; txid: string; tx: WalletAccountTransaction }) => ({ payload }),
+    (payload: { key: string; txid: string; tx: AccountTransaction }) => ({ payload }),
 );
 
 const removeTransaction = createAction(
@@ -32,25 +26,29 @@ const addTransaction = createAction(
     `${modulePrefix}/addTransaction`,
     ({
         transactions,
-        account,
+        accountKey,
+        networkSymbol,
         page,
         perPage,
     }: {
         transactions: AccountTransaction[];
-        account: Account;
+        accountKey: AccountKey;
+        networkSymbol: NetworkSymbol;
         page?: number;
         perPage?: number;
     }): {
         payload: {
-            transactions: WalletAccountTransaction[];
-            account: Account;
+            transactions: AccountTransaction[];
+            accountKey: AccountKey;
+            networkSymbol: NetworkSymbol;
             page?: number;
             perPage?: number;
         };
     } => ({
         payload: {
-            transactions: transactions.map(t => enhanceTransaction(t, account)),
-            account,
+            transactions,
+            accountKey,
+            networkSymbol,
             page,
             perPage,
         },
@@ -59,9 +57,6 @@ const addTransaction = createAction(
 
 export const transactionsActions = {
     addTransaction,
-    fetchError,
-    fetchInit,
-    fetchSuccess,
     replaceTransaction,
     removeTransaction,
     resetTransaction,
