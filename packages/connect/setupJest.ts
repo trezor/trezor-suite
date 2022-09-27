@@ -79,11 +79,11 @@ declare global {
         getReleasesT2: typeof getReleasesT2;
     };
 
-    interface ProcessEnv {
-        RELEASES_T1: string;
-        RELEASES_T2: string;
-        BASE_FW_URL: string;
-    }
+    type TestFixtures<TestedMethod extends (...args: any) => any> = {
+        description: string;
+        input: Parameters<TestedMethod>;
+        output: ReturnType<TestedMethod>;
+    }[];
 }
 
 global.JestMocks = {
