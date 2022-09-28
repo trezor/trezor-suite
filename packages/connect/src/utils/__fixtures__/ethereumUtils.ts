@@ -2,9 +2,9 @@ import coinsJSON from '@trezor/connect-common/files/coins.json';
 
 import { getNetworkLabel } from '../ethereumUtils';
 
-import { parseCoinsJson, getEthereumNetwork } from '../../data/coinInfo';
+import { parseCoinsJSON, getEthereumNetwork } from '../../data/coinInfo';
 
-parseCoinsJson(coinsJSON);
+parseCoinsJSON(coinsJSON);
 
 export const getNetworkLabelFixtures: TestFixtures<typeof getNetworkLabel> = [
     {

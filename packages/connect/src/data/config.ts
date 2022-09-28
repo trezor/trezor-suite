@@ -1,5 +1,7 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/data/config.json
 
+import messages from '@trezor/transport/messages.json';
+
 export const config = {
     webusb: [
         // TREZOR v1
@@ -48,25 +50,7 @@ export const config = {
     onionDomains: {
         'trezor.io': 'trezoriovpjcahpzkrewelclulmszwbqpzmzgub37gbcjlvluxtruqad.onion',
     },
-    assets: [
-        {
-            name: 'coins',
-            url: './data/coins.json',
-        },
-        {
-            name: 'bridge',
-            url: './data/bridge/releases.json',
-        },
-        {
-            name: 'firmware-t1',
-            url: './data/firmware/1/releases.json',
-        },
-        {
-            name: 'firmware-t2',
-            url: './data/firmware/2/releases.json',
-        },
-    ],
-    messages: './data/messages/messages.json',
+    messages,
     supportedBrowsers: {
         chrome: {
             version: 59,

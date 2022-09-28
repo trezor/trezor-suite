@@ -27,9 +27,9 @@ const settings = {
 };
 
 describe('data/DataManager', () => {
-    beforeEach(async () => {
+    beforeEach(() => {
         try {
-            await DataManager.load(settings, false);
+            DataManager.load(settings);
         } catch (err) {
             expect(err).toBe(undefined);
         }

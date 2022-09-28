@@ -1,9 +1,9 @@
-import { getReleases, parseFirmware, getFirmwareStatus } from '../firmwareInfo';
+import { getReleases, parseFirmwareJSON, getFirmwareStatus } from '../firmwareInfo';
 import * as releases2 from '@trezor/connect-common/files/firmware/2/releases.json';
 
 describe('data/firmwareInfo', () => {
     beforeEach(() => {
-        parseFirmware(releases2, 2);
+        parseFirmwareJSON(releases2, 2);
     });
 
     test('getReleases', () => {

@@ -1,12 +1,12 @@
 import coinsJSON from '@trezor/connect-common/files/coins.json';
-import { parseCoinsJson, getBitcoinNetwork } from '../../data/coinInfo';
+import { parseCoinsJSON, getBitcoinNetwork } from '../../data/coinInfo';
 import * as utils from '../addressUtils';
 import * as fixtures from '../__fixtures__/addressUtils';
 
 describe('utils/addressUtils', () => {
     beforeAll(() => {
         // load coin definitions
-        parseCoinsJson(coinsJSON);
+        parseCoinsJSON(coinsJSON);
     });
 
     describe('isValidAddress', () => {

@@ -14,7 +14,7 @@ const releases: { [key: number]: FirmwareRelease[] } = {};
 releases[1] = [];
 releases[2] = [];
 
-export const parseFirmware = (json: any, model: number) => {
+export const parseFirmwareJSON = (json: any, model: number) => {
     Object.keys(json).forEach(key => {
         const release = json[key];
         releases[model].push({

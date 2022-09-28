@@ -3,16 +3,11 @@
 import fetch from 'cross-fetch';
 import { promises as fs } from 'fs';
 import { httpRequest as browserHttpRequest } from './assets-browser';
-import { getAssetByUrl } from './assetUtils';
 
 if (global && typeof global.fetch !== 'function') {
     global.fetch = fetch;
 }
 
 export const httpRequest = (url: string, type: string): any => {
-    const asset = getAssetByUrl(url);
-    if (!asset) {
-        return /^https?/.test(url) ? browserHttpRequest(url, type) : fs.readFile(url);
-    }
-    return asset;
+    return /^https?/.test(url) ? browserHttpRequest(url, type) : fs.readFile(url);
 };
