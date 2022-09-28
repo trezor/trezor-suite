@@ -101,7 +101,16 @@ Trezor supports signing of stake pool registration certificates as a pool owner.
 1. The transaction inputs must all be external, i.e. path must be either undefined or null
 1. Exactly one owner should be passed as a staking path and the rest of owners should be passed as bech32-encoded reward addresses
 
-### Example
+### Governance registration (Catalyst and other)
+
+Trezor supports signing transactions with auxiliary data containing a governance registration. Governance registrations used to follow [CIP-15](https://cips.cardano.org/cips/cip15/), which has been superseded by [CIP-36](https://cips.cardano.org/cips/cip36/). Currently, Trezor supports both CIP-15 and CIP-36 formats, the intended standard can be specified in the `format` field (with CIP-15 being the default). They differ in the following:
+
+-   CIP-36 allows delegating the voting power to several voting public keys with different voting power ([CardanoGovernanceRegistrationDelegation](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/cardano/index.ts)) as an alternative to providing only a single voting public key. Note that Trezor Firmware supports at most 32 delegations in a single governance registration.
+-   CIP-36 registrations contain the [votingPurpose](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/cardano/index.ts) field. The value 0 is intended for Catalyst voting and the value 1 is intended for other purposes. If no value is provided, Trezor serializes 0 by default (if the CIP-36 format is used).
+
+Trezor does not support the 1694 derivation paths at the moment.
+
+### Transaction examples
 
 #### Ordinary transaction
 
