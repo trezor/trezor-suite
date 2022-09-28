@@ -317,7 +317,7 @@ const parseMiscNetworksJSON = (json: any, type?: 'misc' | 'nem') => {
     });
 };
 
-export const parseCoinsJson = (json: any) => {
+export const parseCoinsJSON = (json: any) => {
     Object.keys(json).forEach(key => {
         switch (key) {
             case 'bitcoin':

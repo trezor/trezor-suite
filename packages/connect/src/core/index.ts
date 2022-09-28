@@ -1002,9 +1002,9 @@ export const initCore = () => {
  * @returns {Promise<Core>}
  * @memberof Core
  */
-export const init = async (settings: ConnectSettings) => {
+export const init = (settings: ConnectSettings) => {
     try {
-        await DataManager.load(settings);
+        DataManager.load(settings);
         enableLog(DataManager.getSettings('debug'));
         initCore();
 

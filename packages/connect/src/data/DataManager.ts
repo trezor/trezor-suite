@@ -1,26 +1,25 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/data/DataManager.js
 
 import parseUri from 'parse-uri';
-import { httpRequest } from '../utils/assets';
 import { DEFAULT_PRIORITY } from './connectSettings';
-import { parseCoinsJson } from './coinInfo';
-import { parseFirmware } from './firmwareInfo';
-import { parseBridgeJSON } from './transportInfo';
 import { config } from './config';
 
 import type { ConnectSettings } from '../types';
+import { parseCoinsJSON } from './coinInfo';
+import { parseBridgeJSON } from './transportInfo';
+import { parseFirmwareJSON } from './firmwareInfo';
 
-type AssetCollection = { [key: string]: JSON };
+import coinsJSON from '@trezor/connect-common/files/coins.json';
+import bridgeJSON from '@trezor/connect-common/files/bridge/releases.json';
+import firmwareT1 from '@trezor/connect-common/files/firmware/1/releases.json';
+import firmwareT2 from '@trezor/connect-common/files/firmware/2/releases.json';
 
 export class DataManager {
-    static assets: AssetCollection = {};
-
     static settings: ConnectSettings;
 
-    private static messages: JSON;
+    private static messages = config.messages;
 
-    static async load(settings: ConnectSettings, withAssets = true) {
-        const ts = settings.env === 'web' ? `?r=${settings.timestamp}` : '';
+    static load(settings: ConnectSettings) {
         this.settings = settings;
 
         // check if origin is localhost or trusted
@@ -53,25 +52,10 @@ export class DataManager {
             this.settings.webusb = false;
         }
 
-        if (!withAssets) return;
-
-        const assetPromises = config.assets.map(async asset => {
-            const json = await httpRequest(`${asset.url}${ts}`, 'json');
-            this.assets[asset.name] = json;
-        });
-        await Promise.all(assetPromises);
-
-        this.messages = await httpRequest(`${config.messages}${ts}`, 'json');
-
-        // parse bridge JSON
-        parseBridgeJSON(this.assets.bridge);
-
-        // parse coins definitions
-        parseCoinsJson(this.assets.coins);
-
-        // parse firmware definitions
-        parseFirmware(this.assets['firmware-t1'], 1);
-        parseFirmware(this.assets['firmware-t2'], 2);
+        parseFirmwareJSON(firmwareT1, 1);
+        parseFirmwareJSON(firmwareT2, 2);
+        parseBridgeJSON(bridgeJSON);
+        parseCoinsJSON(coinsJSON);
     }
 
     static getProtobufMessages() {

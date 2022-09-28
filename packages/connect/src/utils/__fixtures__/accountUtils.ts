@@ -3,13 +3,13 @@ import coinsJSON from '@trezor/connect-common/files/coins.json';
 import { getAccountLabel, isUtxoBased } from '../accountUtils';
 
 import {
-    parseCoinsJson,
+    parseCoinsJSON,
     getBitcoinNetwork,
     getEthereumNetwork,
     getMiscNetwork,
 } from '../../data/coinInfo';
 
-parseCoinsJson(coinsJSON);
+parseCoinsJSON(coinsJSON);
 
 export const getAccountLabelFixtures: TestFixtures<typeof getAccountLabel> = [
     {

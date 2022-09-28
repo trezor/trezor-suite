@@ -1,5 +1,5 @@
 import coinsJSON from '@trezor/connect-common/files/coins.json';
-import { parseCoinsJson, getAllNetworks } from '../../data/coinInfo';
+import { parseCoinsJSON, getAllNetworks } from '../../data/coinInfo';
 
 import {
     getUnavailableCapabilities,
@@ -12,7 +12,7 @@ describe('utils/deviceFeaturesUtils', () => {
         jest.clearAllMocks();
     });
     beforeAll(() => {
-        parseCoinsJson(coinsJSON);
+        parseCoinsJSON(coinsJSON);
     });
 
     it('parseCapabilities', () => {

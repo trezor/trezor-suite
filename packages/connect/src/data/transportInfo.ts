@@ -9,7 +9,6 @@ const info: BridgeInfo = {
     changelog: '',
 };
 
-// Parse JSON loaded from config.assets.bridge
 export const parseBridgeJSON = (json: any) => {
     const latest = json[0];
     const version = latest.version.join('.');
