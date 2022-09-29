@@ -1,5 +1,5 @@
+import TrezorConnect, { AccountInfo } from '@trezor/connect';
 import { CoinjoinStatusEvent, CoinjoinRoundEvent, SerializedCoinjoinRound } from '@trezor/coinjoin';
-import { AccountInfo } from '@trezor/connect';
 import { arrayDistinct } from '@trezor/utils';
 import * as COINJOIN from './constants/coinjoinConstants';
 import { addToast } from '../suite/notificationActions';
@@ -75,7 +75,52 @@ export type CoinjoinClientAction =
     | ReturnType<typeof clientSessionRoundChanged>
     | ReturnType<typeof clientSessionCompleted>;
 
-const onCoinjoinRoundChanged =
+/**
+ * Show "do not disconnect" screen on Trezor.
+ * Multiple possible setups:
+ * - 1 account on 1 device
+ * - N accounts on 1 devices (like two passphrases)
+ * - N accounts on X devices (like two physical device)
+ */
+export const setBusyScreen =
+    (accountKeys: string[], expiry?: number) => (_dispatch: Dispatch, getState: GetState) => {
+        const {
+            devices,
+            wallet: { accounts },
+        } = getState();
+
+        // collect unique deviceStates from accounts (passphrase)
+        const uniqueDeviceStates = accountKeys.flatMap(key => {
+            const account = accounts.find(a => a.key === key);
+            return account?.deviceState || [];
+        });
+
+        // collect unique physical devices (by device.id)
+        const uniquePhysicalDevices = uniqueDeviceStates.reduce((result, state) => {
+            const device = devices.find(d => d.state === state);
+            if (device && !result.find(d => d.id === device.id)) {
+                return result.concat(device);
+            }
+            return result;
+        }, [] as typeof devices);
+
+        // TODO: check if device is connected, unlocked, and features.busy
+        // async actions on each physical device in sequence
+        return uniquePhysicalDevices.reduce(
+            (p, device) =>
+                p.then(() => {
+                    TrezorConnect.setBusy({
+                        device: {
+                            path: device?.path,
+                        },
+                        expiry_ms: expiry,
+                    });
+                }),
+            Promise.resolve(),
+        );
+    };
+
+export const onCoinjoinRoundChanged =
     ({ round }: CoinjoinRoundEvent) =>
     (dispatch: Dispatch, getState: GetState) => {
         const { accounts } = getState().wallet.coinjoin;
@@ -103,10 +148,12 @@ const onCoinjoinRoundChanged =
         if (phaseChanged) {
             if (round.phase === RoundPhase.ConnectionConfirmation) {
                 // TODO: open critical phase modal
+                dispatch(setBusyScreen(accountKeys, round.roundDeadline - Date.now()));
             }
 
             if (round.phase === RoundPhase.Ended) {
                 // TODO: close critical phase modal
+                dispatch(setBusyScreen(accountKeys));
             }
         }
     };
