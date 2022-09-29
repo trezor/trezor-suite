@@ -1,10 +1,11 @@
-import { CoinjoinStatusEvent } from '@trezor/coinjoin';
+import { CoinjoinStatusEvent, CoinjoinRoundEvent, SerializedCoinjoinRound } from '@trezor/coinjoin';
 import { AccountInfo } from '@trezor/connect';
+import { arrayDistinct } from '@trezor/utils';
 import * as COINJOIN from './constants/coinjoinConstants';
 import { addToast } from '../suite/notificationActions';
 import { CoinjoinClientService } from '@suite/services/coinjoin/coinjoinClient';
 import { Dispatch, GetState } from '@suite-types';
-import { Account, CoinjoinServerEnvironment } from '@suite-common/wallet-types';
+import { Account, CoinjoinServerEnvironment, RoundPhase } from '@suite-common/wallet-types';
 
 const clientEnable = (symbol: Account['symbol']) =>
     ({
@@ -48,12 +49,67 @@ const clientOnStatusEvent = (symbol: Account['symbol'], status: CoinjoinStatusEv
         },
     } as const);
 
+const clientSessionRoundChanged = (accountKey: string, round: SerializedCoinjoinRound) =>
+    ({
+        type: COINJOIN.SESSION_ROUND_CHANGED,
+        payload: {
+            accountKey,
+            round,
+        },
+    } as const);
+
+const clientSessionCompleted = (accountKey: string) =>
+    ({
+        type: COINJOIN.SESSION_COMPLETED,
+        payload: {
+            accountKey,
+        },
+    } as const);
+
 export type CoinjoinClientAction =
     | ReturnType<typeof clientEnable>
     | ReturnType<typeof clientDisable>
     | ReturnType<typeof clientEnableSuccess>
     | ReturnType<typeof clientEnableFailed>
-    | ReturnType<typeof clientOnStatusEvent>;
+    | ReturnType<typeof clientOnStatusEvent>
+    | ReturnType<typeof clientSessionRoundChanged>
+    | ReturnType<typeof clientSessionCompleted>;
+
+const onCoinjoinRoundChanged =
+    ({ round }: CoinjoinRoundEvent) =>
+    (dispatch: Dispatch, getState: GetState) => {
+        const { accounts } = getState().wallet.coinjoin;
+        // collect all account.keys from the round including failed one
+        const accountKeys = round.inputs
+            .concat(round.failed)
+            .map(input => input.accountKey)
+            .filter(arrayDistinct);
+
+        const coinjoinAccountsWithSession = accountKeys.flatMap(
+            accountKey => accounts.find(r => r.key === accountKey && r.session) || [],
+        );
+
+        let phaseChanged = false;
+        coinjoinAccountsWithSession.forEach(account => {
+            if (account.session?.phase !== round.phase) {
+                phaseChanged = true;
+            }
+            // notify reducers
+            dispatch(clientSessionRoundChanged(account.key, round));
+        });
+
+        // round event is triggered multiple times. like at the beginning and at the end of round process
+        // critical actions should be triggered only once
+        if (phaseChanged) {
+            if (round.phase === RoundPhase.ConnectionConfirmation) {
+                // TODO: open critical phase modal
+            }
+
+            if (round.phase === RoundPhase.Ended) {
+                // TODO: close critical phase modal
+            }
+        }
+    };
 
 export const initCoinjoinClient =
     (symbol: Account['symbol'], environment?: CoinjoinServerEnvironment) =>
@@ -73,7 +129,10 @@ export const initCoinjoinClient =
             if (!status) {
                 throw new Error('status is missing');
             }
+            // handle status change
             client.on('status', status => dispatch(clientOnStatusEvent(symbol, status)));
+            // handle active round change
+            client.on('round', event => dispatch(onCoinjoinRoundChanged(event)));
             dispatch(clientEnableSuccess(symbol, status));
             return client;
         } catch (error) {

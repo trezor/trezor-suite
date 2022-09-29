@@ -79,6 +79,39 @@ const createSession = (
     };
 };
 
+const updateSession = (
+    draft: CoinjoinState,
+    { accountKey, round }: ExtractActionPayload<typeof COINJOIN.SESSION_ROUND_CHANGED>,
+) => {
+    const account = draft.accounts.find(a => a.key === accountKey);
+    if (!account || !account.session) return;
+
+    account.session = {
+        ...account.session,
+        phase: round.phase,
+        deadline: round.phaseDeadline,
+    };
+
+    if (round.phase === RoundPhase.Ended) {
+        delete account.session.phase;
+    }
+};
+
+const completeSession = (
+    draft: CoinjoinState,
+    payload: ExtractActionPayload<typeof COINJOIN.SESSION_COMPLETED>,
+) => {
+    const account = draft.accounts.find(a => a.key === payload.accountKey);
+    if (!account) return;
+    if (account.session) {
+        account.previousSessions.push({
+            ...account.session,
+            timeEnded: Date.now(),
+        });
+        delete account.session;
+    }
+};
+
 const stopSession = (
     draft: CoinjoinState,
     payload: ExtractActionPayload<typeof COINJOIN.ACCOUNT_UNREGISTER>,
@@ -190,6 +223,12 @@ export const coinjoinReducer = (
                 break;
             case COINJOIN.SESSION_RESTORE:
                 restoreSession(draft, action.payload);
+                break;
+            case COINJOIN.SESSION_ROUND_CHANGED:
+                updateSession(draft, action.payload);
+                break;
+            case COINJOIN.SESSION_COMPLETED:
+                completeSession(draft, action.payload);
                 break;
 
             // no default
