@@ -147,6 +147,5 @@ buck-out/
 
 # @trezor/suite-data
 packages/suite-data/files/browser-detection
-packages/message-system/files
 packages/suite-data/files/guide
 packages/suite-data/files/translations/master.json

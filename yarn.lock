@@ -6208,6 +6208,7 @@ __metadata:
     "@suite-common/wallet-config": "*"
     "@suite-common/wallet-types": "*"
     "@trezor/connect": 9.0.2
+    "@trezor/message-system": "*"
     "@trezor/utils": "*"
     dropbox: ^10.32.0
     fake-indexeddb: ^3.1.7
@@ -7117,7 +7118,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/message-system@workspace:packages/message-system":
+"@trezor/message-system@*, @trezor/message-system@workspace:packages/message-system":
   version: 0.0.0-use.local
   resolution: "@trezor/message-system@workspace:packages/message-system"
   dependencies:
@@ -7494,6 +7495,7 @@ __metadata:
     "@trezor/crypto-utils": "*"
     "@trezor/dom-utils": "*"
     "@trezor/env-utils": "*"
+    "@trezor/message-system": "*"
     "@trezor/react-utils": "*"
     "@trezor/suite-analytics": "*"
     "@trezor/suite-data": "*"

@@ -20,3 +20,4 @@ export const MONOREPO_ROOT = resolve(PACKAGE_ROOT, '../..');
 
 export const SCHEMA_PATH = join(PACKAGE_ROOT, 'src/schema', SCHEMA_FILENAME);
 export const CONFIG_PATH = join(PACKAGE_ROOT, 'src/config', CONFIG_FILENAME);
+export const TYPES_PATH = join(PACKAGE_ROOT, 'src/types', SUITE_TYPES_FILENAME);

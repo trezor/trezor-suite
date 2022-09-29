@@ -1,16 +1,7 @@
 import * as fs from 'fs';
-import { join } from 'path';
 import * as json2ts from 'json-schema-to-typescript';
 
-import { SCHEMA_PATH, SUITE_TYPES_FILENAME, MONOREPO_ROOT } from '../constants';
-
-const suiteTypesPath = join(
-    MONOREPO_ROOT,
-    'suite-common',
-    'suite-types',
-    'src',
-    SUITE_TYPES_FILENAME,
-);
+import { SCHEMA_PATH, TYPES_PATH } from '../constants';
 
 const options = {
     style: { singleQuote: true, tabWidth: 4 },
@@ -22,5 +13,5 @@ const options = {
 };
 
 json2ts.compileFromFile(SCHEMA_PATH, options).then(types => {
-    fs.writeFileSync(suiteTypesPath, types);
+    fs.writeFileSync(TYPES_PATH, types);
 });

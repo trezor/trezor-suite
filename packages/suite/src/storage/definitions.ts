@@ -9,7 +9,7 @@ import type { AcquiredDevice } from '@suite-types';
 import type { MetadataState } from '@suite-types/metadata';
 import type { GraphData } from '@wallet-types/graph';
 import type { Trade } from '@wallet-types/coinmarketCommonTypes';
-import type { MessageSystem } from '@suite-common/suite-types';
+import type { MessageSystem } from '@trezor/message-system';
 import type { MessageState } from '@suite/reducers/suite/messageSystemReducer';
 import type { FormDraft } from '@wallet-types/form';
 import type {

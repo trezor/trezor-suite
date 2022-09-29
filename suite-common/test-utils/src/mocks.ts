@@ -2,14 +2,8 @@
 /* eslint-disable require-await */
 
 import { Device, Features } from '@trezor/connect';
-import {
-    TrezorDevice,
-    GuideNode,
-    GuidePage,
-    GuideCategory,
-    MessageSystem,
-    Action,
-} from '@suite-common/suite-types';
+import { TrezorDevice, GuideNode, GuidePage, GuideCategory } from '@suite-common/suite-types';
+import { MessageSystem, Action } from '@trezor/message-system';
 import {
     Account,
     FeeInfo,
