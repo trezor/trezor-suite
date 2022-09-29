@@ -16,3 +16,4 @@ export interface CoinjoinClientSettings extends BaseSettings {
 }
 
 export * from './client';
+export * from './coordinator';
