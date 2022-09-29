@@ -11,3 +11,7 @@ export const CLIENT_ENABLE_SUCCESS = '@coinjoin/client-enable-success';
 export const CLIENT_ENABLE_FAILED = '@coinjoin/client-enable-failed';
 
 export const CLIENT_STATUS = '@coinjoin/client-status';
+
+export const ROUND_PHASE_CHANGED = '@coinjoin/round-phase-changed';
+export const ROUND_COMPLETED = '@coinjoin/round-completed';
+export const SESSION_COMPLETED = '@coinjoin/session-completed';
