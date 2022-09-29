@@ -2,9 +2,11 @@ import { EventEmitter } from 'events';
 
 import { Status } from './Status';
 import { Account } from './Account';
+import { CoinjoinPrison } from './CoinjoinPrison';
 import { CoinjoinRound } from './CoinjoinRound';
 import { getNetwork } from '../utils/settingsUtils';
 import { analyzeTransactions } from './analyzeTransactions';
+import { selectRound } from './phase';
 import type {
     CoinjoinClientSettings,
     RegisterAccountParams,
@@ -19,6 +21,7 @@ interface Events {
     round: CoinjoinRoundEvent;
     request: CoinjoinRequestEvent[];
     exception: string;
+    log: any[];
 }
 
 export declare interface CoinjoinClient {
@@ -35,13 +38,13 @@ export class CoinjoinClient extends EventEmitter {
     private status: Status;
     private accounts: Account[] = []; // list of registered accounts
     private rounds: CoinjoinRound[] = []; // list of active rounds
+    private prison: CoinjoinPrison; // list of active rounds
 
     constructor(settings: CoinjoinClientSettings) {
         super();
         this.settings = Object.freeze(settings);
         this.network = getNetwork(settings.network);
         this.abortController = new AbortController();
-
         this.status = new Status(settings);
         this.status.on('update', event => {
             this.onStatusUpdate(event);
@@ -50,6 +53,7 @@ export class CoinjoinClient extends EventEmitter {
             }
         });
         this.status.on('exception', event => this.emit('exception', event));
+        this.prison = new CoinjoinPrison();
     }
 
     enable() {
@@ -140,10 +144,19 @@ export class CoinjoinClient extends EventEmitter {
         this.onStatusUpdate({ rounds, changed });
     }
 
+    private log(...args: any[]) {
+        if (this.listenerCount('log') > 0) {
+            this.emit('log', ...args);
+        }
+    }
+
     private async onStatusUpdate({
         changed,
         rounds,
     }: Pick<CoinjoinStatusEvent, 'changed' | 'rounds'>) {
+        // try to finish/interrupt current running process on changed round (if any)
+        this.prison.tryRelease();
+
         // find all CoinjoinRounds changed by Status
         const roundsToProcess = await Promise.all(
             changed.flatMap(round => {
@@ -159,12 +172,12 @@ export class CoinjoinClient extends EventEmitter {
 
         // there are no CoinjoinRounds to process? try to create new one
         if (roundsToProcess.length === 0) {
-            const newRound = await CoinjoinRound.create(this.accounts, rounds, this.rounds, {
+            const newRound = await selectRound(this.accounts, rounds, this.rounds, this.prison, {
                 signal: this.abortController.signal,
                 coordinatorName: this.settings.coordinatorName,
                 coordinatorUrl: this.settings.coordinatorUrl,
                 middlewareUrl: this.settings.middlewareUrl,
-                log: (..._args: any[]) => {}, // TODO: log
+                log: (...args: any[]) => this.log(...args),
             });
             if (newRound) {
                 roundsToProcess.push(newRound);
@@ -198,7 +211,7 @@ export class CoinjoinClient extends EventEmitter {
                 this.status.setMode('registered');
 
                 // wait for the result
-                return round.process(this.accounts);
+                return round.process(this.accounts, this.prison);
             }),
         );
 
