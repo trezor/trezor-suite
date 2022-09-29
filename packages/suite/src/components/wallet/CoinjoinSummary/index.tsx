@@ -7,6 +7,7 @@ import { Translation } from '@suite-components/Translation';
 import { AnonymityIndicator } from '@wallet-components/PrivacyAccount/AnonymityIndicator';
 import { AnonymityChart } from './AnonymityChart';
 import { BalanceSection } from './BalanceSection';
+import { CoinjoinLog } from './CoinjoinLog';
 
 const Container = styled.div`
     width: 100%;
@@ -39,5 +40,7 @@ export const CoinjoinSummary = ({ account }: CoinjoinSummaryProps) => (
         <BalanceSection account={account} />
 
         <AnonymityChart />
+
+        <CoinjoinLog />
     </Container>
 );
