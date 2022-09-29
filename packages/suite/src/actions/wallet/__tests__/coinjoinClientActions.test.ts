@@ -3,7 +3,11 @@ import { configureMockStore, testMocks } from '@suite-common/test-utils';
 
 import { accountsReducer } from '@wallet-reducers';
 import { coinjoinReducer } from '@wallet-reducers/coinjoinReducer';
-import { onCoinjoinRoundChanged } from '../coinjoinClientActions';
+import {
+    onCoinjoinRoundChanged,
+    onCoinjoinClientRequest,
+    signCoinjoinTx,
+} from '../coinjoinClientActions';
 import * as fixtures from '../__fixtures__/coinjoinClientActions';
 
 jest.mock('@trezor/connect', () => global.JestMocks.getTrezorConnect({}));
@@ -91,6 +95,42 @@ describe('coinjoinClientActions', () => {
                     expect.objectContaining(f.result.trezorConnectCallsWith),
                 );
             }
+        });
+    });
+
+    fixtures.onCoinjoinClientRequest.forEach(f => {
+        it(`onCoinjoinClientRequest: ${f.description}`, async () => {
+            const store = initStore(f.state as Wallet);
+            TrezorConnect.setTestFixtures(f.connect);
+
+            const response = await store.dispatch(onCoinjoinClientRequest(f.params as any));
+
+            expect(response).toMatchObject(f.result.response);
+
+            expect(TrezorConnect.getOwnershipProof).toBeCalledTimes(
+                f.result.trezorConnectCalledTimes,
+            );
+        });
+    });
+
+    fixtures.signCoinjoinTx.forEach(f => {
+        it(`signCoinjoinTx: ${f.description}`, async () => {
+            const store = initStore(f.state as any);
+            TrezorConnect.setTestFixtures(f.connect);
+
+            const response = await store.dispatch(
+                signCoinjoinTx(f.params as any), // params are incomplete
+            );
+
+            expect(TrezorConnect.signTransaction).toBeCalledTimes(
+                f.result.trezorConnectCalledTimes,
+            );
+
+            f.result.trezorConnectCalledWith.forEach((params, index) => {
+                expect(TrezorConnect.signTransaction.mock.calls[index][0]).toMatchObject(params);
+            });
+
+            expect(response).toMatchObject(f.result.response);
         });
     });
 });
