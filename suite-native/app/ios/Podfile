@@ -28,7 +28,7 @@ target 'TrezorSuite' do
   #
   # Note that if you have use_frameworks! enabled, Flipper will not work and
   # you should disable the next line.
-  use_flipper!({ 'Flipper' => '0.162.0' })
+  use_flipper!({ 'Flipper' => '0.166.0' })
 
   ENVFILES = {
     'Debug' => '$(PODS_ROOT)/../../.env.debug',
@@ -43,6 +43,11 @@ target 'TrezorSuite' do
       target.build_configurations.each do |config|
         if target.name == 'react-native-config'
           config.build_settings['ENVFILE'] = ENVFILES[config.name]
+        end
+        if target.respond_to?(:product_type) and target.product_type == "com.apple.product-type.bundle"
+          target.build_configurations.each do |config|
+              config.build_settings['CODE_SIGNING_ALLOWED'] = 'NO'
+          end
         end
         config.build_settings['EXCLUDED_ARCHS[sdk=iphonesimulator*]'] = "arm64"
       end
