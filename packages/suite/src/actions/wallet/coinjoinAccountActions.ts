@@ -80,6 +80,7 @@ export const fetchAndUpdateAccount =
         dispatch(accountsActions.updateCoinjoinAccountStatus(account, 'syncing'));
 
         const onProgress = (progress: ScanAccountProgress) => {
+            console.warn('PROG', progress);
             if (progress.transactions.length) {
                 dispatch(
                     transactionsActions.addTransaction({
@@ -109,7 +110,11 @@ export const fetchAndUpdateAccount =
                 getState().wallet.transactions.transactions,
             );
 
-            const accountInfo = api.getAccountInfo(account.descriptor, transactions, checkpoint);
+            const accountInfo = await api.getAccountInfo(
+                account.descriptor,
+                transactions,
+                checkpoint,
+            );
             // TODO accountInfo.utxo don't have proper utxo.confirmations field, only 0/1
 
             // TODO add isPending check?
