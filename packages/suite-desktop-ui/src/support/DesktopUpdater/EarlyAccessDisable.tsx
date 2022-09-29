@@ -1,10 +1,13 @@
 import React, { useCallback, useState } from 'react';
+
+import { Translation, Modal, TrezorLink } from '@suite-components';
+import styled from 'styled-components';
+
 import { SUITE_URL } from '@trezor/urls';
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { Button, Image } from '@trezor/components';
-import { Translation, Modal, TrezorLink } from '@suite-components';
-import styled from 'styled-components';
+
 import { ImageWrapper, Description, Title } from './styles';
 
 export const Link = styled(TrezorLink)`
@@ -23,11 +26,11 @@ const LinkButton = styled(Button)`
     width: 100%;
 `;
 
-interface Props {
+interface EarlyAccessDisableProps {
     hideWindow: () => void;
 }
 
-const EarlyAccessDisable = ({ hideWindow }: Props) => {
+export const EarlyAccessDisable = ({ hideWindow }: EarlyAccessDisableProps) => {
     const [enabled, setEnabled] = useState(true);
 
     const allowPrerelease = useCallback(() => {
@@ -91,5 +94,3 @@ const EarlyAccessDisable = ({ hideWindow }: Props) => {
         </StyledModal>
     );
 };
-
-export default EarlyAccessDisable;

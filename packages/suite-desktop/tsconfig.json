@@ -6,20 +6,19 @@
     },
     "include": [".", "**/*.json"],
     "references": [
+        { "path": "../../suite-common/sentry" },
         {
             "path": "../../suite-common/suite-types"
         },
         {
             "path": "../../suite-common/suite-utils"
         },
-        {
-            "path": "../../suite-common/formatters"
-        },
-        { "path": "../suite" },
-        { "path": "../suite-analytics" },
+        { "path": "../connect" },
+        { "path": "../connect-common" },
+        { "path": "../request-manager" },
         { "path": "../suite-desktop-api" },
         { "path": "../urls" },
         { "path": "../utils" },
-        { "path": "../request-manager" }
+        { "path": "../trezor-user-env-link" }
     ]
 }

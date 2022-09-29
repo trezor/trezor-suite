@@ -12,10 +12,12 @@ import ShellSpawnPlugin from '../plugins/shell-spawn-plugin';
 const electronArgsIndex = process.argv.indexOf('./webpack.config.ts') + 1;
 const electronArgs = process.argv.slice(electronArgsIndex);
 
+const baseDirUI = getPathForProject('desktop-ui');
 const baseDir = getPathForProject('desktop');
+
 const config: webpack.Configuration = {
     target: 'browserslist:Chrome > 99', // Electron 18
-    entry: [path.join(baseDir, 'src', 'index.tsx')],
+    entry: [path.join(baseDirUI, 'src', 'index.tsx')],
     output: {
         path: path.join(baseDir, 'build'),
     },
@@ -23,7 +25,7 @@ const config: webpack.Configuration = {
         // wrap @trezor/connect index
         new webpack.NormalModuleReplacementPlugin(
             /@trezor\/connect$/,
-            path.join(baseDir, 'src/support/trezor-connect-ipc-wrapper'),
+            path.join(baseDirUI, 'src/support/trezor-connect-ipc-wrapper'),
         ),
 
         new CopyPlugin({
@@ -51,7 +53,7 @@ const config: webpack.Configuration = {
         }),
         new HtmlWebpackPlugin({
             minify: !isDev,
-            template: path.join(baseDir, 'src', 'static', 'index.html'),
+            template: path.join(baseDirUI, 'src', 'static', 'index.html'),
             templateParameters: {
                 assetPrefix,
                 isOnionLocation: FLAGS.ONION_LOCATION_META,

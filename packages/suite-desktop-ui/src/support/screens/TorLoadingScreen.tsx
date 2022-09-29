@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
 
-import { desktopApi, BootstrapTorEvent } from '@trezor/suite-desktop-api';
-import { Button, Progress, Image, variables, Modal } from '@trezor/components';
+import styled from 'styled-components';
 import { ThemeProvider } from '@suite-support/ThemeProvider';
 import { TorStatus } from '@suite-types';
 import { Translation } from '@suite-components/Translation';
+
+import { Button, Progress, Image, variables, Modal } from '@trezor/components';
+import { desktopApi, BootstrapTorEvent } from '@trezor/suite-desktop-api';
 
 const Wrapper = styled.div`
     height: 100%;

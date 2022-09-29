@@ -45,7 +45,7 @@
         "nx:lint:styles": "yarn nx affected --target=lint:styles",
         "_______ Commands _______": "Useful commands and scripts.",
         "patch": "yarn patch-package",
-        "update-project-references": "yarn tsx ./scripts/updateProjectReferences.js --ignore packages/suite-desktop",
+        "update-project-references": "yarn tsx ./scripts/updateProjectReferences.js",
         "verify-project-references": "yarn update-project-references --test",
         "generate-package": "yarn tsx ./scripts/generatePackage.js",
         "deps": "rimraf 'node_modules' '*/**/node_modules' && yarn",

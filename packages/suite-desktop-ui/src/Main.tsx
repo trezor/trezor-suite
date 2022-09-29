@@ -2,12 +2,10 @@ import React from 'react';
 import { render } from 'react-dom';
 import { Provider as ReduxProvider } from 'react-redux';
 import { Router as RouterProvider } from 'react-router-dom';
-import { init as initSentry } from '@sentry/electron/renderer';
-import { desktopApi } from '@trezor/suite-desktop-api';
 
+import { init as initSentry } from '@sentry/electron/renderer';
 import { initStore } from '@suite/reducers/store';
 import { preloadStore } from '@suite-support/preloadStore';
-
 import Metadata from '@suite-components/Metadata';
 import Preloader from '@suite-components/Preloader';
 import { ToastContainer } from '@suite-components/ToastContainer';
@@ -22,15 +20,18 @@ import RouterHandler from '@suite-support/Router';
 import { ConnectedThemeProvider } from '@suite-support/ConnectedThemeProvider';
 import { LoadingScreen } from '@suite-support/screens/LoadingScreen';
 import { ErrorScreen } from '@suite-support/screens/ErrorScreen';
-import { TorLoadingScreen } from './support/screens/TorLoadingScreen';
 import { useFormattersConfig } from '@suite-hooks';
 import history from '@suite/support/history';
-import AppRouter from './support/Router';
-import DesktopUpdater from './support/DesktopUpdater';
-import { SENTRY_CONFIG } from '@suite-common/sentry';
 import { ModalContextProvider } from '@suite-support/ModalContext';
 import { desktopHandshake } from '@suite-actions/suiteActions';
+
+import { SENTRY_CONFIG } from '@suite-common/sentry';
+import { desktopApi } from '@trezor/suite-desktop-api';
 import { FormatterProvider } from '@suite-common/formatters';
+
+import { DesktopUpdater } from './support/DesktopUpdater';
+import { AppRouter } from './support/Router';
+import { TorLoadingScreen } from './support/screens/TorLoadingScreen';
 
 const Main = () => {
     useTor();

@@ -7283,30 +7283,53 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@trezor/suite-desktop-ui@workspace:packages/suite-desktop-ui":
+  version: 0.0.0-use.local
+  resolution: "@trezor/suite-desktop-ui@workspace:packages/suite-desktop-ui"
+  dependencies:
+    "@sentry/electron": 3.0.0
+    "@suite-common/formatters": "*"
+    "@suite-common/sentry": "*"
+    "@trezor/components": "*"
+    "@trezor/connect": 9.0.2
+    "@trezor/suite": "*"
+    "@trezor/suite-analytics": "*"
+    "@trezor/suite-desktop-api": "*"
+    "@trezor/urls": "*"
+    "@trezor/utils": "*"
+    "@types/react": ^17.0.48
+    "@types/react-dom": ^17.0.17
+    "@types/react-redux": ^7.1.24
+    "@types/styled-components": ^5.1.26
+    jest: ^26.6.3
+    react: 17.0.2
+    react-dom: 17.0.2
+    react-markdown: ^8.0.3
+    react-redux: 7.2.2
+    react-router-dom: ^5.2.0
+    styled-components: ^5.3.5
+    typescript: 4.7.4
+  languageName: unknown
+  linkType: soft
+
 "@trezor/suite-desktop@workspace:packages/suite-desktop":
   version: 0.0.0-use.local
   resolution: "@trezor/suite-desktop@workspace:packages/suite-desktop"
   dependencies:
     "@playwright/test": ^1.22.2
     "@sentry/electron": 3.0.0
-    "@suite-common/formatters": "*"
     "@suite-common/sentry": "*"
     "@suite-common/suite-types": "*"
     "@suite-common/suite-utils": "*"
     "@trezor/connect": 9.0.2
     "@trezor/connect-common": "*"
     "@trezor/request-manager": "*"
-    "@trezor/suite-analytics": "*"
     "@trezor/suite-desktop-api": "*"
     "@trezor/trezor-user-env-link": "*"
     "@trezor/urls": "*"
     "@trezor/utils": "*"
     "@types/electron-localshortcut": ^3.1.0
     "@types/node-fetch": ^2.6.2
-    "@types/react": ^17.0.48
-    "@types/react-dom": ^17.0.17
-    "@types/react-redux": ^7.1.24
-    "@types/styled-components": ^5.1.26
     chalk: ^4.1.2
     electron: 18.3.5
     electron-builder: 23.3.3
@@ -7319,13 +7342,7 @@ __metadata:
     node-fetch: ^2.6.7
     openpgp: ^5.5.0
     playwright: ^1.22.2
-    react: 17.0.2
-    react-dom: 17.0.2
-    react-markdown: ^8.0.3
-    react-redux: 7.2.2
-    react-router-dom: ^5.2.0
     rimraf: ^3.0.2
-    styled-components: ^5.3.5
     systeminformation: ^5.12.6
     typescript: 4.7.4
     xvfb-maybe: ^0.2.1
