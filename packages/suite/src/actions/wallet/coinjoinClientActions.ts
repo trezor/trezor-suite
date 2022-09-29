@@ -1,3 +1,4 @@
+import TrezorConnect from '@trezor/connect';
 import { CoinjoinStatus, CoinjoinClientEvent, ActiveRound } from '@trezor/coinjoin';
 import * as COINJOIN from './constants/coinjoinConstants';
 import { addToast } from '../suite/notificationActions';
@@ -49,6 +50,32 @@ export type CoinjoinClientAction =
     | ReturnType<typeof clientActiveRoundCompleted>
     | ReturnType<typeof clientSessionCompleted>;
 
+const doPreauthorized = (round: ActiveRound) => (_dispatch: Dispatch, getState: GetState) => {
+    const {
+        devices,
+        wallet: { accounts },
+    } = getState();
+    const params = Object.keys(round.accounts).flatMap(key => {
+        const realAccount = accounts.find(a => a.key === key);
+        if (!realAccount) return []; // TODO not registered?
+        const device = devices.find(d => d.state === realAccount.deviceState);
+        return { device };
+    });
+    // async actions in sequence
+    return params.reduce(
+        (p, { device }) =>
+            p.then(() => {
+                TrezorConnect.setBusy({
+                    device: {
+                        path: device?.path,
+                    },
+                    expiry_ms: 10000,
+                });
+            }),
+        Promise.resolve(),
+    );
+};
+
 const onCoinjoinClientEvent =
     (_network: Account['symbol'], event: CoinjoinClientEvent) =>
     (dispatch: Dispatch, getState: GetState) => {
@@ -65,6 +92,10 @@ const onCoinjoinClientEvent =
             coinjoinAccounts.forEach(account => {
                 if (account.session?.phase !== round.phase) {
                     dispatch(clientActiveRoundChanged(account.key, round));
+
+                    if (round.phase === 1) {
+                        dispatch(doPreauthorized(round));
+                    }
 
                     if (round.phase === 4) {
                         if (account.session?.signedRounds.length === account.session?.maxRounds) {
