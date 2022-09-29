@@ -73,18 +73,19 @@ const inputStyle = prepareNativeStyle(utils => ({
     ...utils.typography.body,
     alignItems: 'center',
     justifyContent: 'center',
-    height: INPUT_TEXT_HEIGHT + INPUT_WRAPPER_PADDING_VERTICAL,
+    height: INPUT_TEXT_HEIGHT,
     color: utils.colors.gray700,
-    lineHeight: 0,
     borderWidth: 0,
     flex: 1,
-    paddingTop: INPUT_WRAPPER_PADDING_VERTICAL,
+    // Make the text input uniform on both platforms (https://stackoverflow.com/a/68458803/1281305)
+    paddingTop: 0,
+    paddingBottom: 0,
 }));
 
 const inputHitSlop = {
     left: INPUT_WRAPPER_PADDING_HORIZONTAL,
     right: INPUT_WRAPPER_PADDING_HORIZONTAL,
-    top: INPUT_WRAPPER_PADDING_VERTICAL_MINIMIZED,
+    top: INPUT_WRAPPER_PADDING_VERTICAL,
     bottom: INPUT_WRAPPER_PADDING_VERTICAL,
 };
 
