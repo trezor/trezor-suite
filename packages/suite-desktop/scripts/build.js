@@ -4,12 +4,13 @@ const childProcess = require('child_process');
 const glob = require('glob');
 const { build } = require('esbuild');
 const pkg = require('../package.json');
+// @ts-expect-error
 const { suiteVersion } = require('../../suite/package.json');
 
 const { NODE_ENV, USE_MOCKS, IS_CODESIGN_BUILD } = process.env;
 const PROJECT = 'desktop';
 
-const electronSource = path.join(__dirname, '..', 'src-electron');
+const source = path.join(__dirname, '..', 'src');
 const isDev = NODE_ENV !== 'production';
 const useMocks = USE_MOCKS === 'true' || (isDev && USE_MOCKS !== 'false');
 
@@ -26,11 +27,11 @@ const sentryRelease = `${suiteVersion}.${PROJECT}${
 }.${gitRevision}`;
 
 // Get all modules (used as entry points)
-const modulePath = path.join(electronSource, 'modules');
+const modulePath = path.join(source, 'modules');
 const modules = glob.sync(`${modulePath}/**/*.ts`).map(m => `modules${m.replace(modulePath, '')}`);
 
 // Prepare mock plugin with files from the mocks folder
-const mockPath = path.join(electronSource, 'mocks');
+const mockPath = path.join(source, 'mocks');
 const mocks = glob
     .sync(`${mockPath}/**/*.ts`)
     .map(m => m.replace(`${mockPath}/`, '').replace('.ts', ''));
@@ -54,7 +55,7 @@ console.log('[Electron Build] Starting...');
 console.log(`[Electron Build] Mode: ${isDev ? 'development' : 'production'}`);
 console.log(`[Electron Build] Using mocks: ${useMocks}`);
 
-// All local packages that doesn't have "build:libs" and used in packages/suite-desktop/src-electron
+// All local packages that doesn't have "build:libs" and used in packages/suite-desktop/src
 // must be built and not included in electron node_modules, because they are in TS.
 // Normal src/ folder is fine, because it's builded by webpack.
 const builtTrezorDependencies = ['@trezor/urls', '@trezor/utils'];
@@ -69,12 +70,12 @@ const electronExternalDependencies = [...dependencies, ...devDependencies];
 // TODO: maybe desktop-api could be built too?
 
 build({
-    entryPoints: ['app.ts', 'preload.ts', ...modules].map(f => path.join(electronSource, f)),
+    entryPoints: ['app.ts', 'preload.ts', ...modules].map(f => path.join(source, f)),
     platform: 'node',
     bundle: true,
     target: 'node16.13.2', // Electron 18
     external: electronExternalDependencies,
-    tsconfig: path.join(electronSource, 'tsconfig.json'),
+    tsconfig: path.join(source, 'tsconfig.json'),
     sourcemap: isDev,
     minify: !isDev,
     outdir: path.join(__dirname, '..', 'dist'),

@@ -55,7 +55,7 @@ const init = () => {
         if (method === 'off') {
             return removeIpcListener(args[0], args[1]);
         }
-        // why not to use ipcRenderer.invoke? see description in ./src-electron/modules/trezor-connect-ipc
+        // why not to use ipcRenderer.invoke? see description in ./src/modules/trezor-connect-ipc
         // return ipcRenderer.invoke('trezor-connect-call', [method, ...args]);
         return new Promise(resolve => {
             id++;
