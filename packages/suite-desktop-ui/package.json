@@ -1,0 +1,40 @@
+{
+    "name": "@trezor/suite-desktop-ui",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "type-check": "tsc --build tsconfig.json",
+        "type-check:watch": "yarn type-check -- --watch",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "test:unit": "jest -c ../../jest.config.base.js --passWithNoTests"
+    },
+    "dependencies": {
+        "@sentry/electron": "3.0.0",
+        "@suite-common/formatters": "*",
+        "@suite-common/sentry": "*",
+        "@trezor/components": "*",
+        "@trezor/connect": "9.0.2",
+        "@trezor/suite": "*",
+        "@trezor/suite-analytics": "*",
+        "@trezor/suite-desktop-api": "*",
+        "@trezor/urls": "*",
+        "@trezor/utils": "*",
+        "react": "17.0.2",
+        "react-dom": "17.0.2",
+        "react-markdown": "^8.0.3",
+        "react-redux": "7.2.2",
+        "react-router-dom": "^5.2.0",
+        "styled-components": "^5.3.5"
+    },
+    "devDependencies": {
+        "@types/react": "^17.0.48",
+        "@types/react-dom": "^17.0.17",
+        "@types/react-redux": "^7.1.24",
+        "@types/styled-components": "^5.1.26",
+        "jest": "^26.6.3",
+        "typescript": "4.7.4"
+    }
+}

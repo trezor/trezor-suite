@@ -1,10 +1,11 @@
 import React from 'react';
-import styled from 'styled-components';
 
-import { Button, H2, variables } from '@trezor/components';
+import styled from 'styled-components';
 import { Translation, Modal } from '@suite-components';
 import { useActions } from '@suite-hooks';
 import * as desktopUpdateActions from '@suite-actions/desktopUpdateActions';
+
+import { Button, H2, variables } from '@trezor/components';
 
 const Description = styled.span`
     font-size: ${variables.FONT_SIZE.SMALL};
@@ -24,7 +25,7 @@ interface ReadyProps {
     hideWindow: () => void;
 }
 
-const Ready = ({ hideWindow }: ReadyProps) => {
+export const Ready = ({ hideWindow }: ReadyProps) => {
     const { installUpdate } = useActions({
         installUpdate: desktopUpdateActions.installUpdate,
     });
@@ -59,5 +60,3 @@ const Ready = ({ hideWindow }: ReadyProps) => {
         </StyledModal>
     );
 };
-
-export default Ready;

@@ -1,0 +1,18 @@
+{
+    "extends": "../../tsconfig.aliases.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "include": ["."],
+    "references": [
+        {
+            "path": "../../suite-common/formatters"
+        },
+        { "path": "../../suite-common/sentry" },
+        { "path": "../components" },
+        { "path": "../connect" },
+        { "path": "../suite" },
+        { "path": "../suite-analytics" },
+        { "path": "../suite-desktop-api" },
+        { "path": "../urls" },
+        { "path": "../utils" }
+    ]
+}

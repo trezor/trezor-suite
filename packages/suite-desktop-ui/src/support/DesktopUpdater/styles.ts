@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+
 import { H2, P, variables } from '@trezor/components';
 
 export const Row = styled.div`

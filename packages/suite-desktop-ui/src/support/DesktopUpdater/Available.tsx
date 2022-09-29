@@ -1,13 +1,14 @@
 import React, { useCallback } from 'react';
-import styled from 'styled-components';
 import ReactMarkdown from 'react-markdown';
 
-import { desktopApi, UpdateInfo } from '@trezor/suite-desktop-api';
-import { Button, H2, variables, Link } from '@trezor/components';
+import styled from 'styled-components';
 import { Translation, Modal } from '@suite-components';
 import { useActions } from '@suite-hooks';
 import { getReleaseUrl } from '@suite/services/github';
 import * as desktopUpdateActions from '@suite-actions/desktopUpdateActions';
+
+import { Button, H2, variables, Link } from '@trezor/components';
+import { desktopApi, UpdateInfo } from '@trezor/suite-desktop-api';
 
 const GreenH2 = styled(H2)`
     text-align: left;
@@ -102,7 +103,7 @@ interface AvailableProps {
     latest?: UpdateInfo;
 }
 
-const Available = ({ hideWindow, latest }: AvailableProps) => {
+export const Available = ({ hideWindow, latest }: AvailableProps) => {
     const { download } = useActions({
         download: desktopUpdateActions.download,
     });
@@ -155,5 +156,3 @@ const Available = ({ hideWindow, latest }: AvailableProps) => {
         </StyledModal>
     );
 };
-
-export default Available;

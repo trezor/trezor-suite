@@ -2,10 +2,8 @@ import React, { memo } from 'react';
 import { Switch, Route } from 'react-router-dom';
 
 import routes from '@suite-constants/routes';
-
 import Index from '@suite/views/dashboard';
 import Notification from '@suite-views/notifications';
-
 import Wallet from '@wallet-views/transactions';
 import WalletReceive from '@wallet-views/receive';
 import WalletDetails from '@wallet-views/details';
@@ -14,7 +12,6 @@ import WalletSend from '@wallet-views/send';
 import WalletStaking from '@wallet-views/staking';
 import WalletSignVerify from '@wallet-views/sign-verify';
 import WalletAnonymize from '@wallet-views/anonymize';
-
 import WalletCoinmarketBuy from '@wallet-views/coinmarket/buy';
 import WalletCoinmarketBuyDetail from '@wallet-views/coinmarket/buy/detail';
 import WalletCoinmarketBuyOffers from '@wallet-views/coinmarket/buy/offers';
@@ -31,7 +28,6 @@ import WalletCoinmarketSavingsSetupWaiting from '@wallet-views/coinmarket/saving
 import WalletCoinmarketSavingsPaymentInfo from '@wallet-views/coinmarket/savings/payment-info';
 import WalletCoinmarketSavingsOverview from '@wallet-views/coinmarket/savings/overview';
 import WalletCoinmarketRedirect from '@wallet-views/coinmarket/redirect';
-
 import { SettingsGeneral } from '@settings-views/general/SettingsGeneral';
 import { SettingsCoins } from '@settings-views/coins/SettingsCoins';
 import { SettingsDebug } from '@settings-views/debug/SettingsDebug';
@@ -73,7 +69,7 @@ const components: { [key: string]: React.ComponentType<any> } = {
     'settings-device': SettingsDevice,
 };
 
-const AppRouter = () => (
+export const AppRouter = memo(() => (
     <Switch>
         {routes.map(route => (
             <Route
@@ -84,6 +80,4 @@ const AppRouter = () => (
             />
         ))}
     </Switch>
-);
-
-export default memo(AppRouter);
+));

@@ -1,23 +1,25 @@
 import React, { useCallback, useEffect, useMemo } from 'react';
-import { analytics, AppUpdateEventStatus, EventType } from '@trezor/suite-analytics';
 
-import { desktopApi } from '@trezor/suite-desktop-api';
 import { useActions, useSelector } from '@suite-hooks';
 import * as desktopUpdateActions from '@suite-actions/desktopUpdateActions';
 import { UpdateState } from '@suite-reducers/desktopUpdateReducer';
 import { ModalContextProvider } from '@suite-support/ModalContext';
-import Available from './DesktopUpdater/Available';
-import Downloading from './DesktopUpdater/Downloading';
-import Ready from './DesktopUpdater/Ready';
-import EarlyAccessEnable from './DesktopUpdater/EarlyAccessEnable';
-import EarlyAccessDisable from './DesktopUpdater/EarlyAccessDisable';
 import { getAppUpdatePayload } from '@suite-utils/analytics';
+
+import { analytics, AppUpdateEventStatus, EventType } from '@trezor/suite-analytics';
+import { desktopApi } from '@trezor/suite-desktop-api';
+
+import { Available } from './DesktopUpdater/Available';
+import { Downloading } from './DesktopUpdater/Downloading';
+import { Ready } from './DesktopUpdater/Ready';
+import { EarlyAccessEnable } from './DesktopUpdater/EarlyAccessEnable';
+import { EarlyAccessDisable } from './DesktopUpdater/EarlyAccessDisable';
 
 interface DesktopUpdaterProps {
     children: React.ReactNode;
 }
 
-const DesktopUpdater = ({ children }: DesktopUpdaterProps) => {
+export const DesktopUpdater = ({ children }: DesktopUpdaterProps) => {
     const {
         checking,
         available,
@@ -37,7 +39,7 @@ const DesktopUpdater = ({ children }: DesktopUpdaterProps) => {
         setUpdateWindow: desktopUpdateActions.setUpdateWindow,
         allowPrerelease: desktopUpdateActions.allowPrerelease,
     });
-    const desktopUpdate = useSelector(state => state.desktopUpdate);
+    const { desktopUpdate } = useSelector(state => state);
 
     useEffect(() => {
         desktopApi.on('update/allow-prerelease', allowPrerelease);
@@ -133,5 +135,3 @@ const DesktopUpdater = ({ children }: DesktopUpdaterProps) => {
         </>
     );
 };
-
-export default DesktopUpdater;

@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
+
 import styled from 'styled-components';
+import { Translation, Modal } from '@suite-components';
+
 import { UpdateProgress } from '@trezor/suite-desktop-api';
 import { bytesToHumanReadable } from '@trezor/utils';
-
 import { H2, variables } from '@trezor/components';
-import { Translation, Modal } from '@suite-components';
+
 import { Row } from './styles';
 
 const ModalHeadingWrapper = styled.div`
@@ -36,14 +38,14 @@ const Text = styled(H2)`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
-interface Props {
+interface DownloadingProps {
     hideWindow: () => void;
     progress?: UpdateProgress;
 }
 
 const ellipsisArray = new Array(3).fill('.');
 
-const Downloading = ({ hideWindow, progress }: Props) => {
+export const Downloading = ({ hideWindow, progress }: DownloadingProps) => {
     const [step, setStep] = useState(0);
     useEffect(() => {
         const timer = setTimeout(() => setStep(step > 2 ? 0 : step + 1), 300);
@@ -85,5 +87,3 @@ const Downloading = ({ hideWindow, progress }: Props) => {
         </Modal>
     );
 };
-
-export default Downloading;
