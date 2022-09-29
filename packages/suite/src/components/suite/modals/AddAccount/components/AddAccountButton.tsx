@@ -13,6 +13,13 @@ const verifyAvailability = ({
     emptyAccounts: Account[];
     account: Account;
 }) => {
+    if (!account) {
+        // discovery failed?
+        return <Translation id="MODAL_ADD_ACCOUNT_NO_ACCOUNT" />;
+    }
+    if (emptyAccounts.length === 0) {
+        return <Translation id="MODAL_ADD_ACCOUNT_NO_EMPTY_ACCOUNT" />;
+    }
     if (emptyAccounts.length > 1) {
         // prev account is empty, do not add another
         return <Translation id="MODAL_ADD_ACCOUNT_PREVIOUS_EMPTY" />;
@@ -61,8 +68,6 @@ const AddDefaultAccountButton = ({
             },
         });
     }, [account, onEnableAccount, setSearchString, setCoinFilter, coinFilter]);
-
-    if (emptyAccounts.length === 0) return null;
 
     return <AddButton disabledMessage={disabledMessage} handleClick={handleClick} />;
 };

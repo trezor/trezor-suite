@@ -3775,6 +3775,14 @@ export default defineMessages({
         id: 'MODAL_ADD_ACCOUNT_TITLE',
         defaultMessage: 'New account',
     },
+    MODAL_ADD_ACCOUNT_NO_ACCOUNT: {
+        id: 'MODAL_ADD_ACCOUNT_NO_ACCOUNT',
+        defaultMessage: 'Account discovery error',
+    },
+    MODAL_ADD_ACCOUNT_NO_EMPTY_ACCOUNT: {
+        id: 'MODAL_ADD_ACCOUNT_NO_EMPTY_ACCOUNT',
+        defaultMessage: 'There is no empty account available.',
+    },
     MODAL_ADD_ACCOUNT_PREVIOUS_EMPTY: {
         id: 'MODAL_ADD_ACCOUNT_PREVIOUS_EMPTY',
         defaultMessage: 'Previous account is empty',
