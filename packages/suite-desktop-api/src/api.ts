@@ -13,7 +13,7 @@ import {
 
 // Event messages from renderer to main process
 // Sent by DesktopApi.[method] via ipcRenderer.send (see ./main)
-// Handled by ipcMain.on (see packages/suite-desktop/src-electron/modules/*)
+// Handled by ipcMain.on (see packages/suite-desktop/src/modules/*)
 export interface MainChannels {
     'app/restart': void;
     'app/focus': void;
@@ -28,7 +28,7 @@ export interface MainChannels {
 }
 
 // Event messages from main to renderer process
-// Sent by mainWindow.webContents.send (see packages/suite-desktop/src-electron/modules/*)
+// Sent by mainWindow.webContents.send (see packages/suite-desktop/src/modules/*)
 // Handled by DesktopApi.on/once (see ./main)
 export interface RendererChannels {
     // oauth
@@ -57,7 +57,7 @@ export interface RendererChannels {
 
 // Invocation from renderer process
 // Sent by DesktopApi.[method] via ipcRenderer.invoke (./main)
-// Handled by ipcMain.handle (see packages/suite-desktop/src-electron/modules/*)
+// Handled by ipcMain.handle (see packages/suite-desktop/src/modules/*)
 export interface InvokeChannels {
     'handshake/client': () => void;
     'handshake/load-modules': (payload: HandshakeClient) => InvokeResult<HandshakeElectron>;

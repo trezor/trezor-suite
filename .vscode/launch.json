@@ -5,7 +5,7 @@
             "name": "Suite-Desktop: App",
             "type": "node",
             "request": "launch",
-            "program": "${workspaceRoot}/packages/suite-desktop/src-electron/app.ts",
+            "program": "${workspaceRoot}/packages/suite-desktop/src/app.ts",
             "stopOnEntry": false,
             "args": [],
             "cwd": "${workspaceRoot}/packages/suite-desktop/dist",

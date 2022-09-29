@@ -63,7 +63,7 @@ const init: Module = ({ mainWindow, store }) => {
         const channel: any = 'trezor-connect-event';
 
         // propagate all events using trezor-connect-event channel
-        // listeners references are managed by desktopApi (see ./src-electron/modules/trezor-connect-preload)
+        // listeners references are managed by desktopApi (see ./src/modules/trezor-connect-preload)
         TrezorConnect.on(DEVICE_EVENT, event => {
             logger.debug(SERVICE_NAME, `DEVICE_EVENT ${event.type}`);
             mainWindow.webContents.send(channel, event);

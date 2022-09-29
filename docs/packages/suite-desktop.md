@@ -20,7 +20,7 @@
 
     On the renderer side `@trezor/connect`, imports from `@trezor/suite` are replaced to custom module `packages/suite-desktop/src/support/trezor-connect-ipc-wrapper` (future @trezor/connect-electron package) see [webpack config](https://github.com/trezor/trezor-suite/blob/develop/packages/suite-build/configs/desktop.webpack.config.ts)
 
-    `Electron.IpcRenderer.send/Electron.IpcRenderer.on` interface is used as communication channel between suite (electron renderer) and connect API (electron main). see @trezor/suite-desktop/src-electron/trezor-connect-preload.ts
+    `Electron.IpcRenderer.send/Electron.IpcRenderer.on` interface is used as communication channel between suite (electron renderer) and connect API (electron main). see @trezor/suite-desktop/src/trezor-connect-preload.ts
 
 ### Firmware binaries
 
@@ -91,8 +91,8 @@ Some libraries are difficult to test in development environments, such as the au
 ### How to make a new mock?
 
 1. Open the suite-desktop build script located at `/packages/suite-desktop/scripts/build.js`.
-1. Add a new entry to the `mocks` object. The key should be the name of the package, exactly as written when imported. The value should be the path to the mock file to point to (located in `/packages/suite-desktop/src-electron/mocks`).
-1. Create the file in `/packages/suite-desktop/src-electron/mocks` and export mocked properties that you have imported across the project.
+1. Add a new entry to the `mocks` object. The key should be the name of the package, exactly as written when imported. The value should be the path to the mock file to point to (located in `/packages/suite-desktop/src/mocks`).
+1. Create the file in `/packages/suite-desktop/src/mocks` and export mocked properties that you have imported across the project.
 
 ### Mocked libraries
 

@@ -28,6 +28,7 @@
 | [@trezor/suite-build](./packages/suite-build)                         | build utilities                              |
 | [@trezor/suite-data](./packages/suite-data)                           | suite static data                            |
 | [@trezor/suite-desktop-api](./packages/suite-desktop-api)             | API for suite - suite-desktop communication  |
+| [@trezor/suite-desktop-ui](./packages/suite-desktop-ui)               | Trezor Suite desktop specific UI             |
 | [@trezor/suite-desktop](./packages/suite-desktop)                     | suite build target for Mac, Win, Linux       |
 | [@trezor/suite-native](./suite-native/app)                            | suite build target for react-native          |
 | [@trezor/suite-storage](./packages/suite-storage)                     | abstract database definition for suite       |

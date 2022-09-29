@@ -32,6 +32,8 @@
 
 /packages/integration-tests @mroz22 @ondracja
 
+/packages/message-system @tomasklim @matejkriz
+
 /packages/suite @tomasklim @matejkriz
 
 /packages/suite-analytics @tomasklim
@@ -41,6 +43,8 @@
 /packages/suite-data @tomasklim @matejkriz
 
 /packages/suite-desktop @tomasklim @marekrjpolak
+
+/packages/suite-desktop-ui @tomasklim @matejkriz
 
 /packages/suite-desktop-api @szymonlesisz @marekrjpolak
 

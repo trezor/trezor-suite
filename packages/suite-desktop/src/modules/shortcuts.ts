@@ -1,6 +1,6 @@
 import electronLocalshortcut from 'electron-localshortcut';
 
-import { restartApp } from '@desktop-electron/libs/app-utils';
+import { restartApp } from '../libs/app-utils';
 
 import type { Module } from './index';
 
