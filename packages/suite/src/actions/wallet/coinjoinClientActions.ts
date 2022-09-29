@@ -26,6 +26,14 @@ export type CoinjoinClientAction =
     | ReturnType<typeof clientEnableSuccess>
     | ReturnType<typeof clientEnableFailed>;
 
+// const handleActiveRoundChange = (network: Account['symbol'], request: Extract<RequestEvent, { type: 'witness' }>) => (dispatch: Dispatch) => {
+//     console.log('Coinjoin on active round', event)
+// }
+
+// const handleStatusChange = (network: Account['symbol'], request: OnS) => (dispatch: Dispatch) => {
+//     console.log('Coinjoin on active round', event)
+// }
+
 export const initCoinjoinClient = (symbol: Account['symbol']) => async (dispatch: Dispatch) => {
     // find already running instance of @trezor/coinjoin client
     const knownClient = CoinjoinClientService.getInstance(symbol);
@@ -39,6 +47,8 @@ export const initCoinjoinClient = (symbol: Account['symbol']) => async (dispatch
     const client = await CoinjoinClientService.createInstance(symbol);
     try {
         const status = await client.enable();
+        // handle status change
+        client.on('status', event => console.log('Coinjoin on status', event));
         dispatch(clientEnableSuccess(symbol, status));
         return client;
     } catch (error) {
