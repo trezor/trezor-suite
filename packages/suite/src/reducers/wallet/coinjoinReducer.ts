@@ -77,6 +77,15 @@ const updateSession = (draft: CoinjoinState, accountKey: string, round: ActiveRo
     };
 };
 
+const signSession = (draft: CoinjoinState, accountKey: string, roundId: string) => {
+    const account = draft.accounts.find(a => a.key === accountKey);
+    if (!account || !account.session) return;
+    account.session = {
+        ...account.session,
+        signedRounds: account.session.signedRounds.concat(roundId),
+    };
+};
+
 const completeSession = (
     draft: CoinjoinState,
     action: Extract<Action, { type: typeof COINJOIN.SESSION_COMPLETED }>,
@@ -169,6 +178,10 @@ export const coinjoinReducer = (
 
             case COINJOIN.ROUND_PHASE_CHANGED:
                 updateSession(draft, action.accountKey, action.round);
+                break;
+
+            case COINJOIN.ROUND_TX_SIGNED:
+                signSession(draft, action.accountKey, action.roundId);
                 break;
 
             case COINJOIN.SESSION_COMPLETED:

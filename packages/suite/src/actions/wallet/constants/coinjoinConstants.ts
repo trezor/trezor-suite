@@ -13,5 +13,7 @@ export const CLIENT_ENABLE_FAILED = '@coinjoin/client-enable-failed';
 export const CLIENT_STATUS = '@coinjoin/client-status';
 
 export const ROUND_PHASE_CHANGED = '@coinjoin/round-phase-changed';
+export const ROUND_OWNERSHIP = '@coinjoin/round-ownership';
+export const ROUND_TX_SIGNED = '@coinjoin/round-tx-signed';
 export const ROUND_COMPLETED = '@coinjoin/round-completed';
 export const SESSION_COMPLETED = '@coinjoin/session-completed';

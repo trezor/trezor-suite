@@ -1,5 +1,5 @@
 import TrezorConnect from '@trezor/connect';
-import { CoinjoinStatus, CoinjoinClientEvent, ActiveRound } from '@trezor/coinjoin';
+import { CoinjoinStatus, CoinjoinClientEvent, RequestEvent, ActiveRound } from '@trezor/coinjoin';
 import * as COINJOIN from './constants/coinjoinConstants';
 import { addToast } from '../suite/notificationActions';
 import { CoinjoinClientService } from '@suite/services/coinjoin/coinjoinClient';
@@ -29,6 +29,20 @@ const clientActiveRoundChanged = (accountKey: string, round: ActiveRound) =>
         round,
     } as const);
 
+const clientActiveRoundOwnership = (accountKey: string, roundId: string) =>
+    ({
+        type: COINJOIN.ROUND_TX_SIGNED,
+        accountKey,
+        roundId,
+    } as const);
+
+const clientActiveRoundSign = (accountKey: string, roundId: string) =>
+    ({
+        type: COINJOIN.ROUND_TX_SIGNED,
+        accountKey,
+        roundId,
+    } as const);
+
 const clientActiveRoundCompleted = (accountKey: string, round: ActiveRound) =>
     ({
         type: COINJOIN.ROUND_COMPLETED,
@@ -47,6 +61,8 @@ export type CoinjoinClientAction =
     | ReturnType<typeof clientEnableSuccess>
     | ReturnType<typeof clientEnableFailed>
     | ReturnType<typeof clientActiveRoundChanged>
+    | ReturnType<typeof clientActiveRoundOwnership>
+    | ReturnType<typeof clientActiveRoundSign>
     | ReturnType<typeof clientActiveRoundCompleted>
     | ReturnType<typeof clientSessionCompleted>;
 
@@ -127,6 +143,243 @@ const onCoinjoinClientEvent =
         }
     };
 
+const getOwnershipProof =
+    (network: Account['symbol'], request: Extract<RequestEvent, { type: 'ownership' }>) =>
+    async (dispatch: Dispatch, getState: GetState) => {
+        const {
+            devices,
+            wallet: { coinjoin, accounts },
+        } = getState();
+
+        console.warn('getOwnershipProof');
+
+        const params = Object.keys(request.accounts).flatMap(key => {
+            const registredAccount = coinjoin.accounts.find(r => r.key === key && r.session);
+            const realAccount = accounts.find(a => a.key === key);
+            if (!registredAccount || !realAccount) return []; // TODO not registered?
+            const device = devices.find(d => d.state === realAccount.deviceState);
+            const bundle = request.accounts[key].utxos.map(utxo => ({
+                path: utxo.path,
+                coin: network,
+                commitmentData: request.commitmentData,
+                userConfirmation: true,
+                preauthorized: true,
+            }));
+            return { key, device, bundle };
+        });
+
+        if (params.length < 1) {
+            Object.keys(request.accounts).forEach(key => {
+                const { utxos } = request.accounts[key];
+                request.accounts[key].utxos = utxos.map(utxo => ({
+                    ...utxo,
+                    error: 'no registered account to get proof', // TODO handle in lib
+                }));
+            });
+        }
+
+        // async actions in sequence
+        await params.reduce(
+            (p, { key, device, bundle }) =>
+                p.then(async () => {
+                    const proof = await TrezorConnect.getOwnershipProof({
+                        device,
+                        bundle,
+                    });
+                    const { utxos } = request.accounts[key];
+                    if (proof.success) {
+                        request.accounts[key].utxos = utxos.map((utxo, index) => ({
+                            ...utxo,
+                            ownershipProof: proof.payload[index].ownership_proof,
+                        }));
+                    } else {
+                        request.accounts[key].utxos = utxos.map(utxo => ({
+                            ...utxo,
+                            error: 'no proof', // TODO handle in lib
+                        }));
+                        dispatch(
+                            addToast({
+                                type: 'error',
+                                error: `Coinjoin sign getOwnershipProof: ${proof.payload.error}`,
+                            }),
+                        );
+                    }
+                }),
+            Promise.resolve(),
+        );
+
+        return request;
+    };
+
+const signCoinjoinTx =
+    (network: Account['symbol'], request: Extract<RequestEvent, { type: 'witness' }>) =>
+    async (dispatch: Dispatch, getState: GetState) => {
+        const {
+            devices,
+            wallet: { coinjoin, accounts },
+        } = getState();
+
+        const { transaction } = request;
+
+        console.warn('signCoinjoinTx');
+
+        const params = Object.keys(request.accounts).flatMap(key => {
+            const coinjoinAccount = coinjoin.accounts.find(r => r.key === key && r.session);
+            const realAccount = accounts.find(a => a.key === key);
+            if (!coinjoinAccount || !realAccount) return []; // TODO not registered?
+            const device = devices.find(d => d.state === realAccount.deviceState);
+            const inputScriptType =
+                realAccount.accountType === 'normal' ? 'SPENDWITNESS' : 'SPENDTAPROOT';
+            const outputScriptType =
+                realAccount.accountType === 'normal' ? 'PAYTOWITNESS' : 'PAYTOTAPROOT';
+            // construct protobuf transaction for each participating account
+            const tx = {
+                inputs: transaction.inputs.map(input => {
+                    if (input.path) {
+                        return {
+                            script_type: inputScriptType,
+                            address_n: input.path!,
+                            prev_hash: input.hash,
+                            prev_index: input.index,
+                            amount: input.amount,
+                        };
+                    }
+
+                    return {
+                        address_n: undefined,
+                        script_type: 'EXTERNAL' as const,
+                        prev_hash: input.hash,
+                        prev_index: input.index,
+                        amount: input.amount,
+                        script_pubkey: input.scriptPubKey,
+                        ownership_proof: input.ownershipProof,
+                        commitment_data: input.commitmentData,
+                    };
+                }),
+                outputs: transaction.outputs.map(output => {
+                    if (output.path) {
+                        return {
+                            address_n: output.path! as any,
+                            amount: output.amount,
+                            script_type: outputScriptType,
+                            payment_req_index: 0,
+                        };
+                    }
+                    return {
+                        address: output.address,
+                        amount: output.amount,
+                        script_type: 'PAYTOADDRESS' as const,
+                        payment_req_index: 0,
+                    };
+                }),
+            };
+            const paymentRequest = {
+                ...transaction.paymentRequest,
+                amount: tx.outputs.reduce(
+                    (sum, output) =>
+                        typeof output.address === 'string' ? sum + output.amount : sum,
+                    0,
+                ),
+            };
+            return {
+                key,
+                roundId: request.round,
+                device,
+                tx,
+                paymentRequest,
+                unlockPath: realAccount.unlockPath,
+            };
+        });
+
+        if (params.length < 1) {
+            Object.keys(request.accounts).forEach(key => {
+                const { utxos } = request.accounts[key];
+                request.accounts[key].utxos = utxos.map(utxo => ({
+                    ...utxo,
+                    error: 'no registered account to get witness', // TODO handle in lib
+                }));
+            });
+        }
+
+        // async actions in sequence
+        await params.reduce(
+            (p, { device, tx, paymentRequest, roundId, key, unlockPath }) =>
+                p.then(async () => {
+                    console.warn('SIGN PARAMS', tx);
+                    // @ts-expect-error TODO: tx.inputs/outputs path is a string
+                    const signTx = await TrezorConnect.signTransaction({
+                        device,
+                        useEmptyPassphrase: device?.useEmptyPassphrase,
+                        paymentRequests: [paymentRequest],
+                        coin: network,
+                        preauthorized: true,
+                        unlockPath,
+                        ...tx,
+                    });
+                    const { utxos } = request.accounts[key];
+                    if (signTx.success) {
+                        console.warn('WITTNESSES!', signTx.payload.witnesses);
+                        let utxoIndex = 0;
+                        tx.inputs.forEach((input, index) => {
+                            if (input.script_type !== 'EXTERNAL') {
+                                request.accounts[key].utxos[utxoIndex].witness =
+                                    signTx.payload.witnesses![index];
+                                request.accounts[key].utxos[utxoIndex].witnessIndex = index;
+                                utxoIndex++;
+                            }
+                        });
+                        // request.accounts[key].utxos = utxos.map((utxo, index) => ({
+                        //     ...utxo,
+                        //     witness: signTx.payload.witnesses![index],
+                        //     witnessIndex: index,
+                        // }));
+
+                        dispatch(clientActiveRoundSign(key, roundId));
+
+                        // const pendingAccount = getPendingAccount(account, precomposedTx, 'txid');
+                        // if (pendingAccount) {
+                        //     // update account
+                        //     dispatch(accountActions.updateAccount(pendingAccount));
+                        //     if (account.networkType === 'cardano') {
+                        //         // manually add fake pending tx as we don't have the data about mempool txs
+                        //         dispatch(transactionActions.addFakePendingTx(precomposedTx, txid, pendingAccount));
+                        //     }
+                        // }
+                    } else {
+                        request.accounts[key].utxos = utxos.map(utxo => ({
+                            ...utxo,
+                            error: 'no witness', // TODO handle in lib
+                        }));
+                        dispatch(
+                            addToast({
+                                type: 'error',
+                                error: `Coinjoin signTransaction: ${signTx.payload.error}`,
+                            }),
+                        );
+                    }
+                }),
+            Promise.resolve(),
+        );
+
+        return request;
+    };
+
+const onCoinjoinClientRequest =
+    (network: Account['symbol'], data: RequestEvent[]) => (dispatch: Dispatch) => {
+        console.log('Coinjoin on request', network, data);
+        return Promise.all(
+            data.map(request => {
+                if (request.type === 'ownership') {
+                    return dispatch(getOwnershipProof(network, request));
+                }
+                if (request.type === 'witness') {
+                    return dispatch(signCoinjoinTx(network, request));
+                }
+                return request;
+            }),
+        );
+    };
+
 // const handleActiveRoundChange = (network: Account['symbol'], request: Extract<RequestEvent, { type: 'witness' }>) => (dispatch: Dispatch) => {
 //     console.log('Coinjoin on active round', event)
 // }
@@ -153,6 +406,11 @@ export const initCoinjoinClient = (symbol: Account['symbol']) => async (dispatch
         // handle active round change
         client.on('event', event => {
             dispatch(onCoinjoinClientEvent(symbol, event));
+        });
+        // handle requests (ownership proof, sign transaction)
+        client.on('request', async data => {
+            const response = await dispatch(onCoinjoinClientRequest(symbol, data));
+            client.resolveRequest(response);
         });
         dispatch(clientEnableSuccess(symbol, status as any)); // TODO
         return client;
