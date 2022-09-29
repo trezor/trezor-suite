@@ -127,7 +127,7 @@ describe('selectRound', () => {
         expect(result).toBeUndefined();
     });
 
-    it('middleware/select-utxo-for-round throws error', async () => {
+    it.skip('middleware/select-utxo-for-round throws error', async () => {
         // mock server response
         server?.addListener('test-request', ({ url }, req, res) => {
             if (url.endsWith('/select-utxo-for-round')) {
@@ -183,7 +183,7 @@ describe('selectRound', () => {
     //     expect(result).toBeUndefined();
     // });
 
-    it('success, new round created', async () => {
+    it.skip('success, new round created', async () => {
         // mock server response
         server?.addListener('test-request', ({ url, data }, req, _res) => {
             let response: any;

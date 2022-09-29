@@ -98,16 +98,19 @@ export const selectUtxoForRound = async (
     anonScoreTarget: number,
     options: RequestOptions,
 ) => {
-    const data = await request<{ indices: number[] }>(
-        'select-utxo-for-round',
-        {
-            utxos,
-            constants,
-            anonScoreTarget,
-        },
-        options,
-    );
-    return data.indices;
+    // const data = await request<{ indices: number[] }>(
+    //     'select-utxo-for-round',
+    //     {
+    //         utxos,
+    //         constants,
+    //         anonScoreTarget,
+    //     },
+    //     options,
+    // );
+    // return data.indices;
+    console.warn('selectUtxoForRound', constants, anonScoreTarget, options.identity);
+    const indices = await Promise.resolve(utxos.map((_, i) => i));
+    return indices;
 };
 
 export const analyzeTransactions = async (
