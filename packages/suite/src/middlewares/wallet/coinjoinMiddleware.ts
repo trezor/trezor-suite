@@ -1,6 +1,7 @@
 import type { MiddlewareAPI } from 'redux';
 import { ROUTER } from '@suite-actions/constants';
 import { DISCOVERY } from '@wallet-actions/constants';
+import * as COINJOIN from '@wallet-actions/constants/coinjoinConstants';
 import * as coinjoinAccountActions from '@wallet-actions/coinjoinAccountActions';
 import { CoinjoinBackendService } from '@suite/services/coinjoin/coinjoinBackend';
 import type { AppState, Action, Dispatch } from '@suite-types';
@@ -43,6 +44,22 @@ export const coinjoinMiddleware =
                 );
             }
         }
+
+        if (action.type === COINJOIN.ROUND_COMPLETED) {
+            const account = api.getState().wallet.accounts.find(a => a.key === action.accountKey);
+            if (account) {
+                setTimeout(() => {
+                    api.dispatch(coinjoinAccountActions.fetchAndUpdateAccount(account));
+                }, 5000);
+            }
+        }
+
+        // TODO:
+        // - device connection (restore coinjoin)
+        // - device disconnection
+        // - wallet/account remove
+        // - offline/online (stop/start coinjoin)
+        // - analitics, what should be measured? (NOTE using tor?)
 
         return action;
     };
