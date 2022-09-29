@@ -3,7 +3,7 @@ import produce from 'immer';
 import { Action } from '@suite-types';
 import { MESSAGE_SYSTEM, STORAGE } from '@suite-actions/constants';
 
-import type { MessageSystem } from '@suite-common/suite-types';
+import type { MessageSystem } from '@trezor/message-system';
 
 export type MessageState = {
     banner: boolean;

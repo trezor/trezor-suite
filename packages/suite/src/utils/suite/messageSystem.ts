@@ -17,7 +17,7 @@ import type {
     Transport,
     Device,
     Environment,
-} from '@suite-common/suite-types';
+} from '@trezor/message-system';
 
 type CurrentSettings = {
     tor: boolean;

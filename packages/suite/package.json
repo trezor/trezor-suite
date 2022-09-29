@@ -47,6 +47,7 @@
         "@trezor/crypto-utils": "*",
         "@trezor/dom-utils": "*",
         "@trezor/env-utils": "*",
+        "@trezor/message-system": "*",
         "@trezor/react-utils": "*",
         "@trezor/suite-analytics": "*",
         "@trezor/suite-data": "*",

@@ -65,6 +65,7 @@
         { "path": "../crypto-utils" },
         { "path": "../dom-utils" },
         { "path": "../env-utils" },
+        { "path": "../message-system" },
         { "path": "../react-utils" },
         { "path": "../suite-analytics" },
         { "path": "../suite-data" },
