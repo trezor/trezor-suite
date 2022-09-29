@@ -77,6 +77,20 @@ const updateSession = (draft: CoinjoinState, accountKey: string, round: ActiveRo
     };
 };
 
+const updateRegisteredUtxos = (
+    draft: CoinjoinState,
+    accountKey: string,
+    registeredUtxos: string[],
+) => {
+    const account = draft.accounts.find(a => a.key === accountKey);
+    if (!account || !account.session) return;
+
+    account.session = {
+        ...account.session,
+        registeredUtxos,
+    };
+};
+
 const signSession = (draft: CoinjoinState, accountKey: string, roundId: string) => {
     const account = draft.accounts.find(a => a.key === accountKey);
     if (!account || !account.session) return;
@@ -161,6 +175,9 @@ export const coinjoinReducer = (
                 break;
             case COINJOIN.ACCOUNT_UPDATE_TARGET_ANONYMITY:
                 updateTargetAnonymity(draft, action);
+                break;
+            case COINJOIN.ACCOUNT_UPDATE_REGISTERED_UTXOS:
+                updateRegisteredUtxos(draft, action.key, action.utxos);
                 break;
             case COINJOIN.ACCOUNT_AUTHORIZE_SUCCESS:
                 createSession(draft, action);
