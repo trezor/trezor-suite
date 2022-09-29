@@ -1,7 +1,14 @@
 import TrezorConnect, { AccountInfo } from '@trezor/connect';
-import { CoinjoinStatusEvent, CoinjoinRoundEvent, SerializedCoinjoinRound } from '@trezor/coinjoin';
+import {
+    CoinjoinStatusEvent,
+    CoinjoinRoundEvent,
+    SerializedCoinjoinRound,
+    CoinjoinRequestEvent,
+    CoinjoinResponseEvent,
+} from '@trezor/coinjoin';
 import { arrayDistinct } from '@trezor/utils';
 import * as COINJOIN from './constants/coinjoinConstants';
+import { prepareCoinjoinTransaction } from '@wallet-utils/coinjoinUtils';
 import { addToast } from '../suite/notificationActions';
 import { CoinjoinClientService } from '@suite/services/coinjoin/coinjoinClient';
 import { Dispatch, GetState } from '@suite-types';
@@ -66,6 +73,24 @@ const clientSessionCompleted = (accountKey: string) =>
         },
     } as const);
 
+const clientSessionOwnership = (accountKey: string, roundId: string) =>
+    ({
+        type: COINJOIN.SESSION_OWNERSHIP,
+        payload: {
+            accountKey,
+            roundId,
+        },
+    } as const);
+
+const clientSessionSignTransaction = (accountKey: string, roundId: string) =>
+    ({
+        type: COINJOIN.SESSION_TX_SIGNED,
+        payload: {
+            accountKey,
+            roundId,
+        },
+    } as const);
+
 export type CoinjoinClientAction =
     | ReturnType<typeof clientEnable>
     | ReturnType<typeof clientDisable>
@@ -73,7 +98,9 @@ export type CoinjoinClientAction =
     | ReturnType<typeof clientEnableFailed>
     | ReturnType<typeof clientOnStatusEvent>
     | ReturnType<typeof clientSessionRoundChanged>
-    | ReturnType<typeof clientSessionCompleted>;
+    | ReturnType<typeof clientSessionCompleted>
+    | ReturnType<typeof clientSessionOwnership>
+    | ReturnType<typeof clientSessionSignTransaction>;
 
 /**
  * Show "do not disconnect" screen on Trezor.
@@ -158,6 +185,228 @@ export const onCoinjoinRoundChanged =
         }
     };
 
+const getOwnershipProof =
+    (_network: Account['symbol'], request: Extract<CoinjoinRequestEvent, { type: 'ownership' }>) =>
+    async (_dispatch: Dispatch, getState: GetState) => {
+        const {
+            devices,
+            wallet: { coinjoin, accounts },
+        } = getState();
+
+        // prepare empty response object
+        const response: CoinjoinResponseEvent = {
+            type: request.type,
+            roundId: request.roundId,
+            inputs: [],
+        };
+
+        // group utxos by account
+        const groupUtxosByAccount = request.inputs.reduce((result, utxo) => {
+            if (!result[utxo.accountKey]) {
+                result[utxo.accountKey] = [];
+            }
+            result[utxo.accountKey].push(utxo);
+            return result;
+        }, {} as Record<string, typeof request.inputs>);
+
+        // prepare array of parameters for TrezorConnect, grouped by TrezorDevice
+        const groupParamsByDevice = Object.keys(groupUtxosByAccount).flatMap(key => {
+            const coinjoinAccount = coinjoin.accounts.find(r => r.key === key);
+            const realAccount = accounts.find(a => a.key === key);
+            const utxos = groupUtxosByAccount[key];
+            if (!coinjoinAccount || !realAccount) {
+                response.inputs.push(
+                    ...utxos.map(u => ({ outpoint: u.outpoint, error: 'Account not found' })),
+                );
+                return []; // TODO not registered?
+            }
+            const device = devices.find(d => d.state === realAccount.deviceState);
+            if (!device) {
+                response.inputs.push(
+                    ...utxos.map(u => ({ outpoint: u.outpoint, error: 'Device not found' })),
+                );
+                return []; // TODO disconnected
+            }
+
+            const bundle = groupUtxosByAccount[key].map(utxo => ({
+                path: utxo.path,
+                coin: realAccount.symbol,
+                commitmentData: request.commitmentData,
+                userConfirmation: true,
+                preauthorized: true,
+            }));
+            return { key, device, bundle, utxos };
+        });
+
+        // process single TrezorDevice bundle, fill the response object
+        const getOwnershipBundle = async ({
+            device,
+            bundle,
+            utxos,
+        }: typeof groupParamsByDevice[number]) => {
+            const proof = await TrezorConnect.getOwnershipProof({
+                device,
+                bundle,
+            });
+            if (proof.success) {
+                proof.payload.forEach((p, i) => {
+                    response.inputs.push({
+                        outpoint: utxos[i].outpoint,
+                        ownershipProof: p.ownership_proof,
+                    });
+                });
+                return;
+            }
+            utxos.forEach(u => {
+                response.inputs.push({ outpoint: u.outpoint, error: proof.payload.error });
+            });
+        };
+
+        // process all bundles in sequence, one device by one
+        await groupParamsByDevice.reduce(
+            (promise, params) => promise.then(() => getOwnershipBundle(params)),
+            Promise.resolve(),
+        );
+
+        // finally walk thru all requested utxos and find not resolved
+        request.inputs.forEach(utxo => {
+            if (!response.inputs.find(u => u.outpoint === utxo.outpoint)) {
+                response.inputs.push({ outpoint: utxo.outpoint, error: 'Request unresolved' });
+            }
+        });
+
+        return response;
+    };
+
+const signCoinjoinTx =
+    (network: Account['symbol'], request: Extract<CoinjoinRequestEvent, { type: 'witness' }>) =>
+    async (dispatch: Dispatch, getState: GetState) => {
+        const {
+            devices,
+            wallet: { coinjoin, accounts },
+        } = getState();
+
+        // prepare empty response object
+        const response: CoinjoinResponseEvent = {
+            type: request.type,
+            roundId: request.roundId,
+            inputs: [],
+        };
+
+        console.warn('signCoinjoinTx');
+
+        // group utxos by account
+        const groupUtxosByAccount = request.inputs.reduce((result, utxo) => {
+            if (!result[utxo.accountKey]) {
+                result[utxo.accountKey] = [];
+            }
+            result[utxo.accountKey].push(utxo);
+            return result;
+        }, {} as Record<string, typeof request.inputs>);
+
+        const groupParamsByDevice = Object.keys(groupUtxosByAccount).flatMap(key => {
+            const coinjoinAccount = coinjoin.accounts.find(r => r.key === key && r.session);
+            const realAccount = accounts.find(a => a.key === key);
+            if (!coinjoinAccount || !realAccount) return []; // TODO not registered?
+            const device = devices.find(d => d.state === realAccount.deviceState);
+
+            const tx = prepareCoinjoinTransaction(realAccount, request.transaction);
+            return {
+                key,
+                roundId: request.roundId,
+                utxos: groupUtxosByAccount[key],
+                device,
+                tx,
+                unlockPath: realAccount.unlockPath,
+            };
+        });
+
+        const signTx = async ({
+            device,
+            tx,
+            utxos,
+            roundId,
+            key,
+            unlockPath,
+        }: typeof groupParamsByDevice[number]) => {
+            console.warn('SIGN PARAMS', tx);
+
+            const signTx = await TrezorConnect.signTransaction({
+                device,
+                useEmptyPassphrase: device?.useEmptyPassphrase,
+                // @ts-expect-error TODO: tx.inputs/outputs path is a string
+                inputs: tx.inputs,
+                // @ts-expect-error TODO: tx.inputs/outputs path is a string
+                outputs: tx.outputs,
+                paymentRequests: [tx.paymentRequest],
+                coin: network,
+                preauthorized: true,
+                unlockPath,
+            });
+
+            if (signTx.success) {
+                console.warn('WITTNESSES!', signTx.payload.witnesses);
+                let utxoIndex = 0;
+                tx.inputs.forEach((input, index) => {
+                    if (input.script_type !== 'EXTERNAL') {
+                        response.inputs.push({
+                            outpoint: utxos[utxoIndex].outpoint,
+                            // @ts-expect-error TODO: witness undefined
+                            witness: signTx.payload.witnesses![index],
+                            witnessIndex: index,
+                        });
+                        utxoIndex++;
+                    }
+                });
+
+                dispatch(clientSessionSignTransaction(key, roundId));
+                return;
+            }
+
+            utxos.forEach(u => {
+                response.inputs.push({ outpoint: u.outpoint, error: signTx.payload.error });
+            });
+
+            dispatch(
+                addToast({
+                    type: 'error',
+                    error: `Coinjoin signTransaction: ${signTx.payload.error}`,
+                }),
+            );
+        };
+
+        // async actions in sequence
+        await groupParamsByDevice.reduce(
+            (promise, params) => promise.then(() => signTx(params)),
+            Promise.resolve(),
+        );
+
+        // finally walk thru all requested utxos and find not resolved
+        request.inputs.forEach(utxo => {
+            if (!response.inputs.find(u => u.outpoint === utxo.outpoint)) {
+                response.inputs.push({ outpoint: utxo.outpoint, error: 'Request unresolved' });
+            }
+        });
+
+        return response;
+    };
+
+const onCoinjoinClientRequest =
+    (network: Account['symbol'], data: CoinjoinRequestEvent[]) => (dispatch: Dispatch) => {
+        console.log('Coinjoin on request', network, data);
+        return Promise.all(
+            data.map(request => {
+                if (request.type === 'ownership') {
+                    return dispatch(getOwnershipProof(network, request));
+                }
+                if (request.type === 'witness') {
+                    return dispatch(signCoinjoinTx(network, request));
+                }
+                return request;
+            }),
+        );
+    };
+
 export const initCoinjoinClient =
     (symbol: Account['symbol'], environment?: CoinjoinServerEnvironment) =>
     async (dispatch: Dispatch) => {
@@ -180,6 +429,11 @@ export const initCoinjoinClient =
             client.on('status', status => dispatch(clientOnStatusEvent(symbol, status)));
             // handle active round change
             client.on('round', event => dispatch(onCoinjoinRoundChanged(event)));
+            // handle requests (ownership proof, sign transaction)
+            client.on('request', async data => {
+                const response = await dispatch(onCoinjoinClientRequest(symbol, data));
+                client.resolveRequest(response);
+            });
             dispatch(clientEnableSuccess(symbol, status));
             return client;
         } catch (error) {

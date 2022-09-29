@@ -1,5 +1,9 @@
 import BigNumber from 'bignumber.js';
-import { CoinjoinStatusEvent, RegisterAccountParams } from '@trezor/coinjoin';
+import {
+    CoinjoinStatusEvent,
+    RegisterAccountParams,
+    CoinjoinTransactionData,
+} from '@trezor/coinjoin';
 import { getUtxoOutpoint, getBip43Type } from '@suite-common/wallet-utils';
 import { Account, CoinjoinSessionParameters } from '@suite-common/wallet-types';
 
@@ -128,3 +132,72 @@ export const getRegisterAccountParams = (
     utxos: getCoinjoinAccountUtxos(account.utxo, account.addresses?.anonymitySet),
     changeAddresses: getCoinjoinAccountAddresses(account.addresses),
 });
+
+/**
+ * Transform @trezor/coinjoin CoinjoinRequestEvent.CoinjoinTransactionData to @trezor/connect signTransaction params
+ * Params are profiled byt account since multiple account can participate in one CoinjoinRound
+ */
+export const prepareCoinjoinTransaction = (
+    account: Account,
+    transaction: CoinjoinTransactionData,
+) => {
+    const inputScriptType = account.accountType === 'normal' ? 'SPENDWITNESS' : 'SPENDTAPROOT';
+    const outputScriptType = account.accountType === 'normal' ? 'PAYTOWITNESS' : 'PAYTOTAPROOT';
+    const isInternalInput = (input: CoinjoinTransactionData['inputs'][0]) =>
+        input.path && account.utxo?.find(u => getUtxoOutpoint(u) === input.outpoint);
+    const isInternalOutput = (output: CoinjoinTransactionData['outputs'][0]) =>
+        output.path && account.addresses?.change.find(a => a.address === output.address);
+
+    const tx = {
+        inputs: transaction.inputs.map(input => {
+            if (isInternalInput(input)) {
+                return {
+                    script_type: inputScriptType,
+                    address_n: input.path!,
+                    prev_hash: input.hash,
+                    prev_index: input.index,
+                    amount: input.amount,
+                };
+            }
+
+            return {
+                address_n: undefined,
+                script_type: 'EXTERNAL' as const,
+                prev_hash: input.hash,
+                prev_index: input.index,
+                amount: input.amount,
+                script_pubkey: input.scriptPubKey,
+                ownership_proof: input.ownershipProof,
+                commitment_data: input.commitmentData,
+            };
+        }),
+        outputs: transaction.outputs.map(output => {
+            if (isInternalOutput(output)) {
+                return {
+                    address_n: output.path! as any,
+                    amount: output.amount,
+                    script_type: outputScriptType,
+                    payment_req_index: 0,
+                };
+            }
+            return {
+                address: output.address,
+                amount: output.amount,
+                script_type: 'PAYTOADDRESS' as const,
+                payment_req_index: 0,
+            };
+        }),
+    };
+    const paymentRequest = {
+        ...transaction.paymentRequest,
+        amount: tx.outputs.reduce(
+            (sum, output) => (typeof output.address === 'string' ? sum + output.amount : sum),
+            0,
+        ),
+    };
+
+    return {
+        ...tx,
+        paymentRequest,
+    };
+};
