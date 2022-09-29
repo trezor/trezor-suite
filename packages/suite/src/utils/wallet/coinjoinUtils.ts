@@ -1,6 +1,9 @@
 import BigNumber from 'bignumber.js';
-
-import { CoinjoinStatusEvent, RegisterAccountParams } from '@trezor/coinjoin';
+import {
+    CoinjoinStatusEvent,
+    RegisterAccountParams,
+    CoinjoinTransactionData,
+} from '@trezor/coinjoin';
 import { getUtxoOutpoint, getBip43Type } from '@suite-common/wallet-utils';
 import { Account, CoinjoinSessionParameters } from '@suite-common/wallet-types';
 import {
@@ -149,3 +152,74 @@ export const getEstimatedTimePerRound = (skipRounds: boolean) =>
     skipRounds
         ? ESTIMATED_HOURS_PER_ROUND_WITH_SKIPPING_ROUNDS
         : ESTIMATED_HOURS_PER_ROUND_WITHOUT_SKIPPING_ROUNDS;
+
+/**
+ * Transform @trezor/coinjoin CoinjoinRequestEvent.CoinjoinTransactionData to @trezor/connect signTransaction params
+ * Params are profiled byt account since multiple account can participate in one CoinjoinRound
+ */
+export const prepareCoinjoinTransaction = (
+    account: Account,
+    transaction: CoinjoinTransactionData,
+) => {
+    const inputScriptType = account.accountType === 'normal' ? 'SPENDWITNESS' : 'SPENDTAPROOT';
+    const outputScriptType = account.accountType === 'normal' ? 'PAYTOWITNESS' : 'PAYTOTAPROOT';
+    const isInternalInput = (input: CoinjoinTransactionData['inputs'][0]) =>
+        input.path && account.utxo?.find(u => getUtxoOutpoint(u) === input.outpoint);
+    const isInternalOutput = (output: CoinjoinTransactionData['outputs'][0]) =>
+        output.path && account.addresses?.change.find(a => a.address === output.address);
+
+    const { affiliateRequest } = transaction;
+
+    const tx = {
+        inputs: transaction.inputs.map((input, index) => {
+            const flags = affiliateRequest.coinjoin_flags_array[index];
+            if (isInternalInput(input)) {
+                return {
+                    script_type: inputScriptType,
+                    address_n: input.path!,
+                    prev_hash: input.hash,
+                    prev_index: input.index,
+                    amount: input.amount,
+                    coinjoin_flags: flags,
+                };
+            }
+
+            return {
+                address_n: undefined,
+                script_type: 'EXTERNAL' as const,
+                prev_hash: input.hash,
+                prev_index: input.index,
+                amount: input.amount,
+                script_pubkey: input.scriptPubKey,
+                ownership_proof: input.ownershipProof,
+                commitment_data: input.commitmentData,
+                coinjoin_flags: flags,
+            };
+        }),
+        outputs: transaction.outputs.map(output => {
+            if (isInternalOutput(output)) {
+                return {
+                    address_n: output.path! as any,
+                    amount: output.amount,
+                    script_type: outputScriptType,
+                };
+            }
+            return {
+                address: output.address,
+                amount: output.amount,
+                script_type: 'PAYTOADDRESS' as const,
+            };
+        }),
+    };
+
+    return {
+        ...tx,
+        coinjoinRequest: {
+            fee_rate: affiliateRequest.fee_rate * 10 ** 8,
+            no_fee_threshold: affiliateRequest.no_fee_threshold,
+            min_registrable_amount: affiliateRequest.min_registrable_amount,
+            mask_public_key: affiliateRequest.mask_public_key,
+            signature: affiliateRequest.signature,
+        },
+    };
+};
