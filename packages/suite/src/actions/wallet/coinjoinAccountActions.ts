@@ -49,6 +49,15 @@ export const coinjoinAccountUpdateAnonymity = (accountKey: string, targetAnonymi
         },
     } as const);
 
+const coinjoinAccountUpdateRegisteredUtxos = (accountKey: string, utxos: string[]) =>
+    ({
+        type: COINJOIN.ACCOUNT_UPDATE_REGISTERED_UTXOS,
+        payload: {
+            accountKey,
+            utxos,
+        },
+    } as const);
+
 const coinjoinAccountAuthorize = (accountKey: string) =>
     ({
         type: COINJOIN.ACCOUNT_AUTHORIZE,
@@ -112,6 +121,7 @@ export type CoinjoinAccountAction =
     | ReturnType<typeof coinjoinAccountCreate>
     | ReturnType<typeof coinjoinAccountRemove>
     | ReturnType<typeof coinjoinAccountUpdateAnonymity>
+    | ReturnType<typeof coinjoinAccountUpdateRegisteredUtxos>
     | ReturnType<typeof coinjoinAccountAuthorize>
     | ReturnType<typeof coinjoinAccountAuthorizeSuccess>
     | ReturnType<typeof coinjoinAccountAuthorizeFailed>

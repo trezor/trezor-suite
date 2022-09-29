@@ -97,6 +97,19 @@ const updateSession = (
     }
 };
 
+const updateRegisteredUtxos = (
+    draft: CoinjoinState,
+    payload: ExtractActionPayload<typeof COINJOIN.ACCOUNT_UPDATE_REGISTERED_UTXOS>,
+) => {
+    const account = draft.accounts.find(a => a.key === payload.accountKey);
+    if (!account || !account.session) return;
+
+    account.session = {
+        ...account.session,
+        registeredUtxos: payload.utxos,
+    };
+};
+
 const signSession = (
     draft: CoinjoinState,
     payload: ExtractActionPayload<typeof COINJOIN.SESSION_TX_SIGNED>,
@@ -209,6 +222,9 @@ export const coinjoinReducer = (
                 break;
             case COINJOIN.ACCOUNT_UPDATE_TARGET_ANONYMITY:
                 updateTargetAnonymity(draft, action.payload);
+                break;
+            case COINJOIN.ACCOUNT_UPDATE_REGISTERED_UTXOS:
+                updateRegisteredUtxos(draft, action.payload);
                 break;
             case COINJOIN.ACCOUNT_AUTHORIZE_SUCCESS:
                 createSession(draft, action.payload);
