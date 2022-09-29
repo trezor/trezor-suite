@@ -88,9 +88,9 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
         db.createObjectStore('metadata');
 
         const accountsStore = transaction.objectStore('accounts');
-        accountsStore
+        await accountsStore
             .openCursor()
-            .then(function addMetadataKeys(cursor): Promise<void> | undefined {
+            .then(async function addMetadataKeys(cursor): Promise<void> {
                 if (!cursor) {
                     return;
                 }
@@ -104,13 +104,13 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
                     addressLabels: {},
                 };
                 account.key = `${account.descriptor}-${account.symbol}-${account.deviceState}`;
-                cursor.update(account);
+                await cursor.update(account);
 
                 return cursor.continue().then(addMetadataKeys);
             });
 
         const devicesStore = transaction.objectStore('devices');
-        devicesStore.openCursor().then(function addMetadataKeys(cursor): Promise<void> | undefined {
+        await devicesStore.openCursor().then(async function addMetadataKeys(cursor): Promise<void> {
             if (!cursor) {
                 return;
             }
@@ -119,7 +119,7 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
             device.metadata = {
                 status: 'disabled',
             };
-            cursor.update(device);
+            await cursor.update(device);
 
             return cursor.continue().then(addMetadataKeys);
         });
@@ -138,14 +138,14 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
 
     if (oldVersion < 18) {
         const devicesStore = transaction.objectStore('devices');
-        devicesStore.openCursor().then(function addWalletNumber(cursor): Promise<void> | undefined {
+        await devicesStore.openCursor().then(async function addWalletNumber(cursor): Promise<void> {
             if (!cursor) {
                 return;
             }
             const device = cursor.value;
 
             device.walletNumber = device.instance;
-            cursor.update(device);
+            await cursor.update(device);
 
             return cursor.continue().then(addWalletNumber);
         });
@@ -178,7 +178,8 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
                 };
             }
 
-            cursor.update(tx);
+            // eslint-disable-next-line no-await-in-loop
+            await cursor.update(tx);
             // eslint-disable-next-line no-await-in-loop
             cursor = await cursor.continue();
         }
@@ -218,7 +219,8 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
                     // self, recv txs
                     tx.tx.totalSpent = tx.tx.amount;
                 }
-                cursor.update(tx);
+                // eslint-disable-next-line no-await-in-loop
+                await cursor.update(tx);
             }
             // eslint-disable-next-line no-await-in-loop
             cursor = await cursor.continue();
@@ -232,7 +234,8 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
             if (account.symbol === 'ltc' && account.accountType === 'normal') {
                 // change account type from normal to segwit
                 account.accountType = 'segwit';
-                cursor.update(account);
+                // eslint-disable-next-line no-await-in-loop
+                await cursor.update(account);
             }
             // eslint-disable-next-line no-await-in-loop
             cursor = await cursor.continue();
@@ -245,7 +248,8 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
             if (d.networks.includes('ltc')) {
                 d.index = 0;
                 d.loaded = 0;
-                discovery.update(d);
+                // eslint-disable-next-line no-await-in-loop
+                await discovery.update(d);
             }
             // eslint-disable-next-line no-await-in-loop
             discovery = await discovery.continue();
@@ -281,7 +285,8 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
                     {},
                 );
                 delete settings.blockbookUrls;
-                cursor.update(settings);
+                // eslint-disable-next-line no-await-in-loop
+                await cursor.update(settings);
             }
 
             // eslint-disable-next-line no-await-in-loop
@@ -296,7 +301,8 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
             if (account.symbol === 'vtc' && account.accountType === 'normal') {
                 // change account type from normal to segwit
                 account.accountType = 'segwit';
-                cursor.update(account);
+                // eslint-disable-next-line no-await-in-loop
+                await cursor.update(account);
             }
             // eslint-disable-next-line no-await-in-loop
             cursor = await cursor.continue();
@@ -309,7 +315,8 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
             if (d.networks.includes('vtc')) {
                 d.index = 0;
                 d.loaded = 0;
-                discovery.update(d);
+                // eslint-disable-next-line no-await-in-loop
+                await discovery.update(d);
             }
             // eslint-disable-next-line no-await-in-loop
             discovery = await discovery.continue();
@@ -332,7 +339,8 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
                 backendSettings.add(settings, coin as Network['symbol']);
             });
 
-            cursor.update(rest);
+            // eslint-disable-next-line no-await-in-loop
+            await cursor.update(rest);
             // eslint-disable-next-line no-await-in-loop
             cursor = await cursor.continue();
         }
@@ -340,7 +348,7 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
 
     if (oldVersion < 28) {
         const devicesStore = transaction.objectStore('devices');
-        devicesStore.openCursor().then(function update(cursor): Promise<void> | undefined {
+        await devicesStore.openCursor().then(async function update(cursor): Promise<void> {
             if (!cursor) {
                 return;
             }
@@ -348,7 +356,7 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
 
             if (device.state?.includes('undefined')) {
                 device.state = device.state.replace('undefined', '0');
-                cursor.update(device);
+                await cursor.update(device);
             }
 
             return cursor.continue().then(update);
@@ -356,7 +364,7 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
 
         const accounts: Account[] = [];
         const accountsStore = transaction.objectStore('accounts');
-        accountsStore
+        await accountsStore
             .openCursor()
             .then(function read(cursor): Promise<void> | undefined {
                 if (!cursor) {
@@ -387,7 +395,7 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
 
         const txs: DBWalletAccountTransaction[] = [];
         const txsStore = transaction.objectStore('txs');
-        txsStore
+        await txsStore
             .openCursor()
             .then(function read(cursor): Promise<void> | undefined {
                 if (!cursor) {
@@ -427,7 +435,7 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
         // graph
         const graphs: GraphData[] = [];
         const graphStore = transaction.objectStore('graph');
-        graphStore
+        await graphStore
             .openCursor()
             .then(function read(cursor): Promise<void> | undefined {
                 if (!cursor) {
@@ -465,7 +473,7 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
         // discovery
         const discoveries: Discovery[] = [];
         const discoveryStore = transaction.objectStore('discovery');
-        discoveryStore
+        await discoveryStore
             .openCursor()
             .then(function read(cursor): Promise<void> | undefined {
                 if (!cursor) {
@@ -494,7 +502,7 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
         db.createObjectStore('firmware');
 
         const providerStore = await transaction.objectStore('metadata');
-        providerStore.openCursor().then(function update(cursor): Promise<void> | undefined {
+        await providerStore.openCursor().then(async function update(cursor): Promise<void> {
             if (!cursor) {
                 return;
             }
@@ -510,7 +518,7 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
                 }
                 // @ts-expect-error
                 delete state.provider.token;
-                cursor.update(state);
+                await cursor.update(state);
             }
             return cursor.continue().then(update);
         });
@@ -519,9 +527,9 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
     if (oldVersion < 30) {
         const walletSettingsStore = transaction.objectStore('walletSettings');
 
-        walletSettingsStore
+        await walletSettingsStore
             .openCursor()
-            .then(function addAmountUnits(cursor): Promise<void> | undefined {
+            .then(async function addAmountUnits(cursor): Promise<void> {
                 if (!cursor) {
                     return;
                 }
@@ -533,7 +541,7 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
                 }
 
                 walletSettings.bitcoinAmountUnit = 0;
-                cursor.update(walletSettings);
+                await cursor.update(walletSettings);
 
                 return cursor.continue().then(addAmountUnits);
             });
@@ -589,13 +597,14 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
                 },
             };
 
-            cursor.update({ order, tx: unenhancedTx });
+            // eslint-disable-next-line no-await-in-loop
+            await cursor.update({ order, tx: unenhancedTx });
             // eslint-disable-next-line no-await-in-loop
             cursor = await cursor.continue();
         }
 
         const devicesStore = transaction.objectStore('devices');
-        devicesStore.openCursor().then(function update(cursor): Promise<void> | undefined {
+        await devicesStore.openCursor().then(async function update(cursor): Promise<void> {
             if (!cursor) {
                 return;
             }
@@ -610,7 +619,7 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
                     ? 'bitcoin-only'
                     : 'regular';
 
-            cursor.update(device);
+            await cursor.update(device);
 
             return cursor.continue().then(update);
         });
