@@ -630,7 +630,7 @@
 				PRODUCT_NAME = "Staging-TrezorSuite";
 				PROVISIONING_PROFILE_SPECIFIER = "AppStore io.trezor.suite.staging";
 				SWIFT_OBJC_BRIDGING_HEADER = "TrezorSuite-Bridging-Header.h";
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 5.2;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Staging;
@@ -761,7 +761,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "AppStore io.trezor.suite.develop";
 				SWIFT_OBJC_BRIDGING_HEADER = "TrezorSuite-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 5.2;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Develop;
@@ -822,7 +822,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "TrezorSuite-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 5.2;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -854,7 +854,7 @@
 				PRODUCT_NAME = TrezorSuite;
 				PROVISIONING_PROFILE_SPECIFIER = "AppStore io.trezor.suite";
 				SWIFT_OBJC_BRIDGING_HEADER = "TrezorSuite-Bridging-Header.h";
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 5.2;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
