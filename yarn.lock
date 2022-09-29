@@ -4956,12 +4956,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@shopify/react-native-skia@npm:0.1.146":
-  version: 0.1.146
-  resolution: "@shopify/react-native-skia@npm:0.1.146"
+"@shopify/react-native-skia@npm:0.1.152":
+  version: 0.1.152
+  resolution: "@shopify/react-native-skia@npm:0.1.152"
   dependencies:
-    canvaskit-wasm: ^0.36.0
-    react-reconciler: ^0.26.2
+    canvaskit-wasm: 0.36.1
+    react-reconciler: 0.26.2
   peerDependencies:
     react: ">=16.8.1"
     react-native: ">=0.63.0-rc.0 <1.0.x"
@@ -4971,7 +4971,7 @@ __metadata:
       optional: true
   bin:
     setup-skia-web: scripts/setup-canvaskit.js
-  checksum: 6b58ff144a17e9a783d6d8d08d3970ae97ebed9bbfd3db1e62eafd4ac70ed9e56591de79d31adda21a1b6a9eecdc895057a6814ce2071cd488a40a400754ee57
+  checksum: e54b4395b6190574afd612b1add62a89792428352c827839d22b9a21362a3e9684dd346077e94d860921f5733feace654c03548b8e95cb2d61456add8378b551
   languageName: node
   linkType: hard
 
@@ -7078,7 +7078,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/icons@workspace:packages/icons"
   dependencies:
-    "@shopify/react-native-skia": 0.1.146
+    "@shopify/react-native-skia": 0.1.152
     "@trezor/styles": "*"
     "@trezor/theme": "*"
     jest: ^26.6.3
@@ -7345,7 +7345,7 @@ __metadata:
     "@react-navigation/native": ^6.0.11
     "@react-navigation/stack": ^6.2.2
     "@reduxjs/toolkit": ^1.8.3
-    "@shopify/react-native-skia": 0.1.146
+    "@shopify/react-native-skia": 0.1.152
     "@suite-common/connect-init": "*"
     "@suite-common/formatters": "*"
     "@suite-common/wallet-core": "*"
@@ -12262,7 +12262,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"canvaskit-wasm@npm:^0.36.0":
+"canvaskit-wasm@npm:0.36.1":
   version: 0.36.1
   resolution: "canvaskit-wasm@npm:0.36.1"
   checksum: 7a90d1a641d9d9fc5a10fcc0ec64a73714247dfb5c41182644f5886b6e601f6e018282d2ac545acce66cd478b598640abdd58d8ae6db282d252d14d1d16eeb47
@@ -28268,7 +28268,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-reconciler@npm:^0.26.2":
+"react-reconciler@npm:0.26.2":
   version: 0.26.2
   resolution: "react-reconciler@npm:0.26.2"
   dependencies:
