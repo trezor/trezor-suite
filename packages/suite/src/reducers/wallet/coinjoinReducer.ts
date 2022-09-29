@@ -96,6 +96,18 @@ const updateSession = (
     }
 };
 
+const signSession = (
+    draft: CoinjoinState,
+    payload: ExtractActionPayload<typeof COINJOIN.SESSION_TX_SIGNED>,
+) => {
+    const account = draft.accounts.find(a => a.key === payload.accountKey);
+    if (!account || !account.session) return;
+    account.session = {
+        ...account.session,
+        signedRounds: account.session.signedRounds.concat(payload.roundId),
+    };
+};
+
 const completeSession = (
     draft: CoinjoinState,
     payload: ExtractActionPayload<typeof COINJOIN.SESSION_COMPLETED>,
@@ -228,6 +240,10 @@ export const coinjoinReducer = (
                 break;
             case COINJOIN.SESSION_COMPLETED:
                 completeSession(draft, action.payload);
+                break;
+
+            case COINJOIN.SESSION_TX_SIGNED:
+                signSession(draft, action.payload);
                 break;
 
             // no default

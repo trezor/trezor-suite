@@ -336,6 +336,11 @@ const getTrezorConnect = <M>(methods?: M) => {
                 ...getFixture(),
                 _params,
             })),
+            getOwnershipProof: jest.fn(async _params => ({
+                success: false,
+                ...getFixture(),
+                _params,
+            })),
             composeTransaction: jest.fn(async _params => {
                 const fixture = getFixture();
                 if (fixture && typeof fixture.delay === 'number') {

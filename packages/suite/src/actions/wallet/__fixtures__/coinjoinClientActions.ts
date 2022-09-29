@@ -197,3 +197,305 @@ export const onCoinjoinRoundChanged = [
         },
     },
 ];
+
+export const onCoinjoinClientRequest = [
+    {
+        description: 'getOwnershipProof success with 3 accounts, 2 passphrases, 2 physical devices',
+        connect: [
+            {
+                success: true,
+                payload: [
+                    { ownership_proof: 'AA0011' },
+                    { ownership_proof: 'AB0011' },
+                    { ownership_proof: 'AC0011' }, // this was not requested, will be ignored
+                ],
+            },
+            {
+                success: true,
+                payload: [{ ownership_proof: 'BA0011' }, { ownership_proof: 'BB0011' }],
+            },
+            {
+                success: true,
+                payload: [{ ownership_proof: 'CA0011' }, { ownership_proof: 'CB0011' }],
+            },
+        ],
+        state: {
+            devices: [
+                DEVICE,
+                { ...DEVICE, state: 'device-state-2' },
+                { ...DEVICE, state: 'device-2-state', id: '2' },
+            ],
+            accounts: [
+                { key: 'account-A', deviceState: 'device-state', utxo: [{}, {}] },
+                { key: 'account-B', deviceState: 'device-state-2', utxo: [{}, {}] },
+                { key: 'account-C', deviceState: 'device-2-state', utxo: [{}, {}] },
+            ],
+            coinjoin: {
+                accounts: [
+                    { key: 'account-A', session: {} },
+                    { key: 'account-B', session: {} },
+                    { key: 'account-C', session: {} },
+                ],
+            },
+        },
+        params: [
+            {
+                type: 'ownership',
+                roundId: '11',
+                inputs: [
+                    { accountKey: 'account-A', path: 'm/10025', outpoint: 'AA' },
+                    { accountKey: 'account-A', path: 'm/10025', outpoint: 'AB' },
+                    { accountKey: 'account-B', path: 'm/10025', outpoint: 'BA' },
+                    { accountKey: 'account-B', path: 'm/10025', outpoint: 'BB' },
+                    { accountKey: 'account-C', path: 'm/10025', outpoint: 'CA' },
+                    { accountKey: 'account-C', path: 'm/10025', outpoint: 'CB' },
+                ],
+                commitmentDate: '0011',
+            },
+        ],
+        result: {
+            trezorConnectCalledTimes: 3,
+            response: [
+                {
+                    type: 'ownership',
+                    inputs: [
+                        { outpoint: 'AA', ownershipProof: 'AA0011' },
+                        { outpoint: 'AB', ownershipProof: 'AB0011' },
+                        { outpoint: 'BA', ownershipProof: 'BA0011' },
+                        { outpoint: 'BB', ownershipProof: 'BB0011' },
+                        { outpoint: 'CA', ownershipProof: 'CA0011' },
+                        { outpoint: 'CB', ownershipProof: 'CB0011' },
+                    ],
+                },
+            ],
+        },
+    },
+];
+
+export const signCoinjoinTx = [
+    {
+        description: 'signCoinjoinTx success with 3 accounts, 2 passphrases, 2 physical devices',
+        connect: [
+            // connect responses order, first physical device id: 2, device-2-state
+            {
+                success: true,
+                payload: {
+                    signatures: ['', '', '05'], // account-A
+                },
+            },
+            // then physical device id: 1, device-state
+            {
+                success: true,
+                payload: {
+                    signatures: ['01', '', ''], // account-B
+                },
+            },
+            // then physical device id: 1, device-state-2
+            {
+                success: true,
+                payload: {
+                    signatures: ['', '02', ''], // account-C
+                },
+            },
+        ],
+        state: {
+            devices: [
+                DEVICE,
+                { ...DEVICE, state: 'device-state-2' },
+                { ...DEVICE, state: 'device-2-state', id: '2' },
+            ],
+            accounts: [
+                {
+                    key: 'account-A',
+                    deviceState: 'device-state',
+                    utxo: [
+                        {
+                            txid: '123400000000000000000000000000000000000000000000000000000000dbca',
+                            vout: 5,
+                        },
+                    ],
+                    addresses: {
+                        change: [{ address: 'A1' }, { address: 'A2' }],
+                    },
+                },
+                {
+                    key: 'account-B',
+                    deviceState: 'device-state-2',
+                    utxo: [
+                        {
+                            txid: '123400000000000000000000000000000000000000000000000000000000dbca',
+                            vout: 1,
+                        },
+                    ],
+                    addresses: {
+                        change: [{ address: 'B1' }, { address: 'B2' }],
+                    },
+                },
+                {
+                    key: 'account-C',
+                    deviceState: 'device-2-state',
+                    utxo: [
+                        {
+                            txid: '123400000000000000000000000000000000000000000000000000000000dbca',
+                            vout: 2,
+                        },
+                    ],
+                    addresses: {
+                        change: [{ address: 'C1' }, { address: 'C2' }],
+                    },
+                },
+            ],
+            coinjoin: {
+                clients: {},
+                accounts: [
+                    { key: 'account-A', session: { signedRounds: [] }, unlockPath: {} },
+                    { key: 'account-B', session: { signedRounds: [] }, unlockPath: {} },
+                    { key: 'account-C', session: { signedRounds: [] }, unlockPath: {} },
+                ],
+            },
+        },
+        params: {
+            type: 'signature',
+            roundId: '1',
+            inputs: [
+                {
+                    accountKey: 'account-A',
+                    outpoint:
+                        'cadb00000000000000000000000000000000000000000000000000000000341205000000',
+                    path: 'm/10025',
+                },
+                {
+                    accountKey: 'account-B',
+                    outpoint:
+                        'cadb00000000000000000000000000000000000000000000000000000000341201000000',
+                    path: 'm/10025',
+                },
+                {
+                    accountKey: 'account-C',
+                    outpoint:
+                        'cadb00000000000000000000000000000000000000000000000000000000341202000000',
+                    path: 'm/10025',
+                },
+            ],
+            transaction: {
+                inputs: [
+                    // NOTE: inputs/outputs order may be sorted differently than signing order, they are sorted by coordinator rules
+                    // while signing be done by param.inputs order
+                    {
+                        outpoint:
+                            'cadb00000000000000000000000000000000000000000000000000000000341201000000', // account-C
+                        path: 'm/10025',
+                        amount: 1000000,
+                        commitmentData: '',
+                        scriptPubKey: '',
+                    },
+                    {
+                        outpoint:
+                            'cadb00000000000000000000000000000000000000000000000000000000341202000000', // account-A
+                        path: 'm/10025',
+                        amount: 1000000,
+                        commitmentData: '',
+                        scriptPubKey: '',
+                    },
+                    {
+                        outpoint:
+                            'cadb00000000000000000000000000000000000000000000000000000000341205000000', // account-B
+                        path: 'm/10025',
+                        amount: 1000000,
+                        commitmentData: '',
+                        scriptPubKey: '',
+                    },
+                ],
+                outputs: [
+                    { address: 'A1', path: 'm/10025', amount: 500000 }, // account-A
+                    { address: 'B2', path: 'm/10025', amount: 499500 }, // account-B
+                    { address: 'A2', path: 'm/10025', amount: 499500 }, // account-A
+                    { address: 'C1', path: 'm/10025', amount: 500000 }, // accounCt-C
+                    { address: 'B1', path: 'm/10025', amount: 500000 }, // account-B
+                    { address: 'C2', path: 'm/10025', amount: 499500 }, // account-C
+                ],
+                affiliateRequest: {
+                    coinjoin_flags_array: [],
+                },
+            },
+        },
+        result: {
+            actions: [],
+            trezorConnectCalledTimes: 3,
+            trezorConnectCalledWith: [
+                {
+                    inputs: [
+                        { script_type: 'EXTERNAL' },
+                        { script_type: 'EXTERNAL' },
+                        { script_type: 'SPENDTAPROOT' }, // account-A
+                    ],
+                    outputs: [
+                        { script_type: 'PAYTOTAPROOT' }, // account-A
+                        { script_type: 'PAYTOADDRESS' },
+                        { script_type: 'PAYTOTAPROOT' }, // account-A
+                        { script_type: 'PAYTOADDRESS' },
+                        { script_type: 'PAYTOADDRESS' },
+                        { script_type: 'PAYTOADDRESS' },
+                    ],
+                },
+                // account-B
+                {
+                    inputs: [
+                        { script_type: 'SPENDTAPROOT' }, // account-B
+                        { script_type: 'EXTERNAL' },
+                        { script_type: 'EXTERNAL' },
+                    ],
+                    outputs: [
+                        { script_type: 'PAYTOADDRESS' },
+                        { script_type: 'PAYTOTAPROOT' }, // account-B
+                        { script_type: 'PAYTOADDRESS' },
+                        { script_type: 'PAYTOADDRESS' },
+                        { script_type: 'PAYTOTAPROOT' }, // account-B
+                        { script_type: 'PAYTOADDRESS' },
+                    ],
+                },
+                // account-C
+                {
+                    inputs: [
+                        { script_type: 'EXTERNAL' },
+                        { script_type: 'SPENDTAPROOT' }, // account-C
+                        { script_type: 'EXTERNAL' },
+                    ],
+                    outputs: [
+                        { script_type: 'PAYTOADDRESS' },
+                        { script_type: 'PAYTOADDRESS' },
+                        { script_type: 'PAYTOADDRESS' },
+                        { script_type: 'PAYTOTAPROOT' }, // account-C
+                        { script_type: 'PAYTOADDRESS' },
+                        { script_type: 'PAYTOTAPROOT' }, // account-C
+                    ],
+                },
+            ],
+            // this will be sent back to @trezor/coinjoin
+            response: {
+                type: 'signature',
+                roundId: '1',
+                inputs: [
+                    {
+                        outpoint:
+                            'cadb00000000000000000000000000000000000000000000000000000000341205000000',
+                        signature: '05',
+                        index: 2,
+                    },
+                    {
+                        outpoint:
+                            'cadb00000000000000000000000000000000000000000000000000000000341201000000',
+                        signature: '01',
+                        index: 0,
+                    },
+                    {
+                        outpoint:
+                            'cadb00000000000000000000000000000000000000000000000000000000341202000000',
+                        signature: '02',
+                        index: 1,
+                    },
+                ],
+            },
+        },
+    },
+];
