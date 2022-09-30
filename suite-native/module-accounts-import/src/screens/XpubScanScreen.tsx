@@ -67,7 +67,8 @@ export const XpubScanScreen = ({
     const form = useForm<XpubFormValues>({
         validation: xpubFormValidationSchema,
     });
-    const { handleSubmit, setValue } = form;
+    const { handleSubmit, setValue, watch, reset } = form;
+    const watchXpubAddress = watch('xpubAddress');
 
     const resetToDefaultValues = useCallback(() => {
         setCameraRequested(false);
@@ -80,6 +81,9 @@ export const XpubScanScreen = ({
     };
 
     const handleRequestCamera = () => {
+        reset({
+            xpubAddress: '',
+        });
         setCameraRequested(true);
     };
 
@@ -92,12 +96,15 @@ export const XpubScanScreen = ({
 
     const onXpubFormSubmit = handleSubmit(goToAccountImportScreen);
 
-    const handleXpubResult = (xpubAddress?: string) => {
-        if (xpubAddress) {
-            setValue('xpubAddress', xpubAddress);
-            onXpubFormSubmit();
-        }
-    };
+    const handleXpubResult = useCallback(
+        (xpubAddress?: string) => {
+            if (xpubAddress && xpubAddress !== watchXpubAddress) {
+                setValue('xpubAddress', xpubAddress);
+                onXpubFormSubmit();
+            }
+        },
+        [watchXpubAddress, onXpubFormSubmit, setValue],
+    );
 
     return (
         <Screen backgroundColor="gray1000">
