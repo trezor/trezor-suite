@@ -121,7 +121,11 @@ const progressBarSteps = [
     },
 ];
 
-export const OnboardingLayout: React.FC = ({ children }) => {
+interface OnboardingLayoutProps {
+    children: React.ReactNode;
+}
+
+export const OnboardingLayout = ({ children }: OnboardingLayoutProps) => {
     const { banner } = useMessageSystem();
     const { activeStepId } = useOnboarding();
 

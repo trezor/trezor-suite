@@ -7,6 +7,7 @@ import { SETTINGS } from '@suite-config';
 import { useTranslation } from '@suite-hooks/useTranslation';
 import * as notificationActions from '@suite-actions/notificationActions';
 import { exportTransactionsThunk, fetchTransactionsThunk } from '@suite-common/wallet-core';
+import { ExportFileType } from '@suite-common/wallet-types';
 import { Account } from '@wallet-types';
 import { isFeatureFlagEnabled } from '@suite-common/suite-utils';
 import { getTitleForNetwork } from '@suite-common/wallet-utils';
@@ -15,7 +16,7 @@ export interface ExportActionProps {
     account: Account;
 }
 
-const ExportAction = ({ account }: ExportActionProps) => {
+export const ExportAction = ({ account }: ExportActionProps) => {
     const { translationString } = useTranslation();
     const { addToast, fetchTransactions, exportTransactions } = useActions({
         addToast: notificationActions.addToast,
@@ -25,7 +26,7 @@ const ExportAction = ({ account }: ExportActionProps) => {
 
     const [isExportRunning, setIsExportRunning] = useState(false);
     const runExport = useCallback(
-        async type => {
+        async (type: ExportFileType) => {
             if (isExportRunning) {
                 return;
             }
@@ -115,5 +116,3 @@ const ExportAction = ({ account }: ExportActionProps) => {
         />
     );
 };
-
-export default ExportAction;

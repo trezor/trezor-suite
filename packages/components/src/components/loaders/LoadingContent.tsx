@@ -1,8 +1,8 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 import { useTheme } from '@trezor/components';
-import { Icon } from '../../Icon';
-import { Loader } from '../Loader';
+import { Icon } from '../Icon';
+import { Loader } from './Loader';
 
 const LoadingWrapper = styled.div`
     display: flex;
@@ -24,17 +24,18 @@ const LoaderCell = styled.div<Required<Omit<LoadingContentProps, 'isSuccessful'>
 `;
 
 export type LoadingContentProps = {
+    children: React.ReactNode;
     isLoading?: boolean;
     size?: number;
     isSuccessful?: boolean;
 };
 
-export const LoadingContent: React.FC<LoadingContentProps> = ({
+export const LoadingContent = ({
     children,
     isLoading = false,
     size = 20,
     isSuccessful = true,
-}) => {
+}: LoadingContentProps) => {
     const theme = useTheme();
 
     return (

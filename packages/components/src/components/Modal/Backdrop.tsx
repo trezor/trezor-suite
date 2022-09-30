@@ -32,10 +32,11 @@ const Wrapper = styled.div`
 
 export type BackdropProps = {
     onClick?: () => void;
+    children?: React.ReactNode;
     className?: string;
 };
 
-export const Backdrop: React.FC<BackdropProps> = ({ onClick, children, className }) => (
+export const Backdrop = ({ onClick, children, className }: BackdropProps) => (
     <Wrapper onClick={onClick} className={className}>
         {children}
     </Wrapper>

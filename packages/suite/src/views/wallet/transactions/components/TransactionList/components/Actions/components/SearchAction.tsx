@@ -34,14 +34,14 @@ const StyledInput = styled(Input)<{ expanded: boolean }>`
             padding: 0 16px;
         `}
 `;
-export interface Props {
+export interface SearchProps {
     account: Account;
     search: string;
     setSearch: React.Dispatch<React.SetStateAction<string>>;
     setSelectedPage: React.Dispatch<React.SetStateAction<number>>;
 }
 
-const SearchAction = ({ account, search, setSearch, setSelectedPage }: Props) => {
+export const SearchAction = ({ account, search, setSearch, setSelectedPage }: SearchProps) => {
     const theme = useTheme();
     const wrapperRef = useRef<HTMLDivElement | null>(null);
     const inputRef = useRef<HTMLInputElement | null>(null);
@@ -78,7 +78,7 @@ const SearchAction = ({ account, search, setSearch, setSelectedPage }: Props) =>
     );
 
     const onSearch = useCallback(
-        async ({ target }) => {
+        async ({ target }: React.ChangeEvent<HTMLInputElement>) => {
             setSelectedPage(1);
             setSearch(target.value);
 
@@ -177,5 +177,3 @@ const SearchAction = ({ account, search, setSearch, setSelectedPage }: Props) =>
         </Wrapper>
     );
 };
-
-export default SearchAction;

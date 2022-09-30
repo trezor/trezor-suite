@@ -12,7 +12,7 @@ import type { TranslationKey as SuiteTranslationKey } from '../../../packages/su
 export type TranslationKey = SuiteTranslationKey;
 
 // Add MessageDescriptor type to values entry
-type FormatXMLElementFn = (...args: any[]) => string | object;
+export type FormatXMLElementFn = (...args: any[]) => string | object;
 export interface ExtendedMessageDescriptor extends MessageDescriptor {
     id: TranslationKey;
     values?: {

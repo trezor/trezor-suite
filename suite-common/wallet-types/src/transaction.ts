@@ -231,3 +231,5 @@ export type TransactionFiatRateUpdatePayload = {
 };
 
 export type TransactionType = Pick<WalletAccountTransaction, 'type'>['type'];
+
+export type ExportFileType = 'csv' | 'pdf' | 'json';

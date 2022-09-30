@@ -2,7 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import { THEME, Icon } from '@trezor/components';
 
-interface Props {
+interface BatchWrapperProps {
+    children: React.ReactNode;
     onRemove: () => void;
 }
 
@@ -17,11 +18,9 @@ const Fields = styled.div`
     flex: 1;
 `;
 
-const BatchWrapper: React.FC<Props> = props => (
+export const BatchWrapper = ({ children, onRemove }: BatchWrapperProps) => (
     <Wrapper>
-        <Fields>{props.children}</Fields>
-        <Icon icon="CROSS" onClick={() => props.onRemove()} />
+        <Fields>{children}</Fields>
+        <Icon icon="CROSS" onClick={() => onRemove()} />
     </Wrapper>
 );
-
-export default BatchWrapper;

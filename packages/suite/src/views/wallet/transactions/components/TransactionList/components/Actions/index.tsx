@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import SearchAction, { Props as SearchProps } from './components/SearchAction';
-import ExportAction, { ExportActionProps } from './components/ExportAction';
+import { SearchAction, SearchProps } from './components/SearchAction';
+import { ExportAction, ExportActionProps } from './components/ExportAction';
 
 const Wrapper = styled.div`
     display: flex;

@@ -1,7 +1,7 @@
 import DeviceIcon from './images/DeviceIcon';
 import CheckItem from './CheckItem';
 import { PrerequisitesGuide } from './PrerequisitesGuide';
-import WelcomeLayout from './WelcomeLayout';
+import { WelcomeLayout } from './WelcomeLayout';
 
 import { CardWithHeader } from './CardWithHeader';
 import NotificationCard from './NotificationCard';

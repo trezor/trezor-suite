@@ -20,12 +20,17 @@ const Wrapper = styled.span<WrapperProps>`
         `}
 `;
 
-interface Props {
+interface HiddenPlaceholderProps {
     intensity?: number;
+    children: React.ReactNode;
     className?: string;
 }
 
-export const HiddenPlaceholder: React.FC<Props> = ({ children, intensity = 5, className }) => {
+export const HiddenPlaceholder = ({
+    children,
+    intensity = 5,
+    className,
+}: HiddenPlaceholderProps) => {
     const discreetMode = useSelector(state => state.wallet.settings.discreetMode);
     return (
         <Wrapper discreetMode={discreetMode} intensity={intensity} className={className}>

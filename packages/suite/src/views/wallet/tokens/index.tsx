@@ -9,10 +9,11 @@ import TokenList from './components/TokenList';
 import AccountEmpty from '../transactions/components/AccountEmpty';
 
 interface ContentProps {
+    children?: React.ReactNode;
     selectedAccount: AppState['wallet']['selectedAccount'];
 }
 
-const Content: React.FC<ContentProps> = ({ selectedAccount, children }) => {
+const Content = ({ selectedAccount, children }: ContentProps) => {
     if (selectedAccount.status !== 'loaded') return null;
     const { account, network } = selectedAccount;
     const explorerUrl =

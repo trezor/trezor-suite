@@ -1,5 +1,5 @@
 import React from 'react';
-import { Loader } from '../../../index';
+import { Loader } from './Loader';
 
 export default {
     title: 'Loaders/Loader',

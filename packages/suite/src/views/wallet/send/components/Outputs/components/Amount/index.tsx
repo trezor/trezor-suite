@@ -17,8 +17,8 @@ import {
 import { useSendFormContext } from '@wallet-hooks';
 import { Output } from '@wallet-types/sendForm';
 import { MAX_LENGTH } from '@suite-constants/inputs';
-import TokenSelect from './components/TokenSelect';
-import Fiat from './components/Fiat';
+import { TokenSelect } from './components/TokenSelect';
+import { Fiat } from './components/Fiat';
 import { useBitcoinAmountUnit } from '@wallet-hooks/useBitcoinAmountUnit';
 
 const Wrapper = styled.div`
@@ -101,7 +101,7 @@ interface Props {
     output: Partial<Output>;
     outputId: number;
 }
-const Amount = ({ output, outputId }: Props) => {
+export const Amount = ({ output, outputId }: Props) => {
     const {
         account,
         network,
@@ -151,7 +151,7 @@ const Amount = ({ output, outputId }: Props) => {
     const symbolToUse = souldSendInSats ? 'sat' : symbol.toUpperCase();
 
     const handleInputChange = useCallback(
-        event => {
+        (event: React.ChangeEvent<HTMLInputElement>) => {
             if (isSetMaxActive) {
                 setValue('setMaxOutputId', undefined);
             }
@@ -332,5 +332,3 @@ const Amount = ({ output, outputId }: Props) => {
         </Wrapper>
     );
 };
-
-export default Amount;

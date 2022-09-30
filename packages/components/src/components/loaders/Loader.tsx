@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { SPIN } from '../../../config/animations';
+import { SPIN } from '../../config/animations';
 
 const Wrapper = styled.div<LoaderProps>`
     position: relative;

@@ -16,7 +16,11 @@ const MainComponent = styled.main`
     flex-direction: row;
 `;
 
-const Main: React.FC = ({ children }) => (
+interface MainProps {
+    children: React.ReactNode;
+}
+
+export const Main = ({ children }: MainProps) => (
     <ThemeProvider theme={THEME.light}>
         <MainComponent>
             <Menu />
@@ -24,5 +28,3 @@ const Main: React.FC = ({ children }) => (
         </MainComponent>
     </ThemeProvider>
 );
-
-export default Main;

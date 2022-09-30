@@ -61,13 +61,25 @@ export const TransactionList = ({
         [accountTransactionsByDate, transactionDateKeys],
     );
 
+    interface RenderItemParams {
+        item: WalletAccountTransaction;
+    }
+
     const renderItem = useCallback(
-        ({ item }) => <TransactionListItem key={item.txid} transaction={item} />,
+        ({ item }: RenderItemParams) => <TransactionListItem key={item.txid} transaction={item} />,
         [],
     );
 
+    interface RenderSectionHeaderParams {
+        section: {
+            dateKey: string;
+        };
+    }
+
     const renderSectionHeader = useCallback(
-        ({ section: { dateKey } }) => <TransactionListGroupTitle dateKey={dateKey} key={dateKey} />,
+        ({ section: { dateKey } }: RenderSectionHeaderParams) => (
+            <TransactionListGroupTitle dateKey={dateKey} key={dateKey} />
+        ),
         [],
     );
 

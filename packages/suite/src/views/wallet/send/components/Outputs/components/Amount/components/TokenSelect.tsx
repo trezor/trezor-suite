@@ -103,7 +103,7 @@ const CardanoSingleValue = ({ tokenInputName, ...optionProps }: any) => (
     </components.SingleValue>
 );
 
-const TokenSelect = ({ output, outputId }: Props) => {
+export const TokenSelect = ({ output, outputId }: Props) => {
     const {
         account,
         clearErrors,
@@ -178,5 +178,3 @@ const TokenSelect = ({ output, outputId }: Props) => {
         />
     );
 };
-
-export default TokenSelect;

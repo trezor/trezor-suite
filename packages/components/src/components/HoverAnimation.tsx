@@ -45,14 +45,15 @@ const Wrapper = styled.div<{ size?: string; isHoverable?: boolean }>`
 
 interface HoverAnimationProps {
     isHoverable?: boolean;
+    children: React.ReactNode;
     className?: string;
 }
 
-export const HoverAnimation: React.FC<HoverAnimationProps> = ({
+export const HoverAnimation = ({
     isHoverable = true,
     className,
     children,
-}) => (
+}: HoverAnimationProps) => (
     <Wrapper isHoverable={isHoverable} className={className}>
         {children}
     </Wrapper>

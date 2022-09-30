@@ -4,7 +4,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useSendFormContext } from '@wallet-hooks';
 import { variables, motionAnimation } from '@trezor/components';
 import { Address } from './components/Address';
-import Amount from './components/Amount';
+import { Amount } from './components/Amount';
 import OpReturn from './components/OpReturn';
 
 const Wrapper = styled.div``;

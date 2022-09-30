@@ -94,9 +94,13 @@ const SettingsWrapper = styled.div`
     align-self: flex-end;
 `;
 
+interface WelcomeLayoutProps {
+    children: React.ReactNode;
+}
+
 // WelcomeLayout is a top-level wrapper similar to @suite-components/SuiteLayout
 // used in Preloader and Onboarding
-const WelcomeLayout: React.FC = ({ children }) => {
+export const WelcomeLayout = ({ children }: WelcomeLayoutProps) => {
     const { banner } = useMessageSystem();
     const { isGuideOpen, isGuideOnTop } = useGuide();
 
@@ -175,5 +179,3 @@ const WelcomeLayout: React.FC = ({ children }) => {
         </Wrapper>
     );
 };
-
-export default WelcomeLayout;

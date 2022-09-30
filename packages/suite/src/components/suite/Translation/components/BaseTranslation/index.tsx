@@ -3,7 +3,10 @@ import { FormattedMessage } from 'react-intl';
 // We cannot use aliases here because this file is directly imported by the @suite-common/intl-types
 // It's little hacky by this will be solved when PR for refactor intl will be merged.
 import messages from '../../../../../support/messages';
-import { ExtendedMessageDescriptor as CommonExtendedMessageDescriptor } from '@suite-common/intl-types';
+import {
+    ExtendedMessageDescriptor as CommonExtendedMessageDescriptor,
+    FormatXMLElementFn,
+} from '@suite-common/intl-types';
 
 export type TranslationKey = keyof typeof messages;
 interface TooltipProps {
@@ -18,17 +21,17 @@ type OwnProps = {
     translationTooltip: React.ComponentType<TooltipProps>;
 };
 
-type PrimitiveType = string | number | boolean | Date | null | undefined;
-
 export type ExtendedMessageDescriptor = CommonExtendedMessageDescriptor;
 type MsgType = OwnProps & ExtendedMessageDescriptor;
 
-export const isMsgType = (props: MsgType | React.ReactNode): props is MsgType =>
+export const isMsgType = (
+    props: MsgType | React.ReactNode | ExtendedMessageDescriptor | Date | FormatXMLElementFn,
+): props is MsgType =>
     typeof props === 'object' && props !== null && (props as MsgType).id !== undefined;
 
 const BaseTranslation = (props: MsgType) => {
     const TooltipComponent = props.translationTooltip;
-    const values: Record<string, PrimitiveType | React.ReactNode | ExtendedMessageDescriptor> = {};
+    const values: Record<string, any> = {};
     // message passed via props (id, defaultMessage, values)
     Object.keys(props.values || []).forEach(key => {
         // Iterates through all values. The entry may also contain a MessageDescriptor.

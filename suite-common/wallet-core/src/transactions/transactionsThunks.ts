@@ -1,5 +1,6 @@
 import {
     Account,
+    ExportFileType,
     PrecomposedTransactionFinal,
     TxFinalCardano,
     WalletAccountTransaction,
@@ -137,7 +138,7 @@ export const exportTransactionsThunk = createThunk(
         }: {
             account: Account;
             accountName: string;
-            type: 'csv' | 'pdf' | 'json';
+            type: ExportFileType;
         },
         { getState, extra },
     ) => {

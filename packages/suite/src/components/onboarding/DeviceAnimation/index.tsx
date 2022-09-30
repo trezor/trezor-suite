@@ -117,69 +117,71 @@ export const DeviceAnimation = ({
 
     return (
         <Wrapper size={size} shape={shape} {...props}>
-            {connectAnimationData && animationType === 'CONNECT' && (
-                <StyledLottie animationData={connectAnimationData} loop={loop} />
-            )}
-            {animationType === 'BOOTLOADER' && (
-                <StyledVideo loop={loop} autoPlay muted width={size} height={size}>
-                    <source
-                        src={resolveStaticPath(
-                            `videos/onboarding/t${deviceModel}_${animationFileName}_${THEME}.webm`,
-                        )}
-                        type="video/webm"
-                    />
-                </StyledVideo>
-            )}
-            {animationType === 'BOOTLOADER_TWO_BUTTONS' && (
-                <StyledVideo loop={loop} autoPlay muted width={size} height={size}>
-                    <source
-                        src={resolveStaticPath(
-                            `videos/onboarding/t1_${animationFileName}_${THEME}.webm`,
-                        )}
-                        type="video/webm"
-                    />
-                </StyledVideo>
-            )}
-            {animationType === 'NORMAL' && (
-                <StyledVideo loop={loop} autoPlay muted width={size} height={size}>
-                    <source
-                        src={resolveStaticPath(
-                            `videos/onboarding/t1_${animationFileName}_${THEME}.webm`,
-                        )}
-                        type="video/webm"
-                    />
-                </StyledVideo>
-            )}
-            {animationType === 'HOLOGRAM' && (
-                <StyledVideo
-                    loop={loop}
-                    autoPlay
-                    muted
-                    ref={hologramRef}
-                    onMouseOver={() => {
-                        // If the video is placed in tooltip it stops playing after tooltip minimizes and won't start again
-                        // As a quick workaround user can hover a mouse to play it again
-                        hologramRef.current?.play();
-                    }}
-                >
-                    <source
-                        src={resolveStaticPath(
-                            `videos/onboarding/t${deviceModel}_${animationFileName}.webm`,
-                        )}
-                        type="video/webm"
-                    />
-                </StyledVideo>
-            )}
-            {animationType === 'SUCCESS' && (
-                <StyledVideo loop={loop} autoPlay muted width={size} height={size}>
-                    <source
-                        src={resolveStaticPath(
-                            `videos/onboarding/t${deviceModel}_${animationFileName}_${THEME}.webm`,
-                        )}
-                        type="video/webm"
-                    />
-                </StyledVideo>
-            )}
+            <>
+                {connectAnimationData && animationType === 'CONNECT' && (
+                    <StyledLottie animationData={connectAnimationData} loop={loop} />
+                )}
+                {animationType === 'BOOTLOADER' && (
+                    <StyledVideo loop={loop} autoPlay muted width={size} height={size}>
+                        <source
+                            src={resolveStaticPath(
+                                `videos/onboarding/t${deviceModel}_${animationFileName}_${THEME}.webm`,
+                            )}
+                            type="video/webm"
+                        />
+                    </StyledVideo>
+                )}
+                {animationType === 'BOOTLOADER_TWO_BUTTONS' && (
+                    <StyledVideo loop={loop} autoPlay muted width={size} height={size}>
+                        <source
+                            src={resolveStaticPath(
+                                `videos/onboarding/t1_${animationFileName}_${THEME}.webm`,
+                            )}
+                            type="video/webm"
+                        />
+                    </StyledVideo>
+                )}
+                {animationType === 'NORMAL' && (
+                    <StyledVideo loop={loop} autoPlay muted width={size} height={size}>
+                        <source
+                            src={resolveStaticPath(
+                                `videos/onboarding/t1_${animationFileName}_${THEME}.webm`,
+                            )}
+                            type="video/webm"
+                        />
+                    </StyledVideo>
+                )}
+                {animationType === 'HOLOGRAM' && (
+                    <StyledVideo
+                        loop={loop}
+                        autoPlay
+                        muted
+                        ref={hologramRef}
+                        onMouseOver={() => {
+                            // If the video is placed in tooltip it stops playing after tooltip minimizes and won't start again
+                            // As a quick workaround user can hover a mouse to play it again
+                            hologramRef.current?.play();
+                        }}
+                    >
+                        <source
+                            src={resolveStaticPath(
+                                `videos/onboarding/t${deviceModel}_${animationFileName}.webm`,
+                            )}
+                            type="video/webm"
+                        />
+                    </StyledVideo>
+                )}
+                {animationType === 'SUCCESS' && (
+                    <StyledVideo loop={loop} autoPlay muted width={size} height={size}>
+                        <source
+                            src={resolveStaticPath(
+                                `videos/onboarding/t${deviceModel}_${animationFileName}_${THEME}.webm`,
+                            )}
+                            type="video/webm"
+                        />
+                    </StyledVideo>
+                )}
+            </>
         </Wrapper>
     );
 };

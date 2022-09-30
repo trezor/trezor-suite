@@ -34,10 +34,11 @@ const StyledTitle = styled(H2)`
 `;
 
 type WalletLayoutHeaderProps = {
+    children?: React.ReactNode;
     title: ExtendedMessageDescriptor['id'];
 };
 
-export const WalletLayoutHeader: React.FC<WalletLayoutHeaderProps> = ({ title, children }) => (
+export const WalletLayoutHeader = ({ title, children }: WalletLayoutHeaderProps) => (
     <HeaderWrapper>
         <HeaderLeft>
             <StyledTitle>
