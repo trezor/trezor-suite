@@ -43,6 +43,17 @@ export default [
                 defaultValue: false,
                 value: false,
             },
+            {
+                name: 'strength',
+                placeholder: 'Select strength',
+                type: 'select',
+                optional: true,
+                data: [
+                    { value: 128, label: '128bit (12 words)' },
+                    { value: 192, label: '192bit (18 words)' },
+                    { value: 256, label: '256bit (24 words)' },
+                ],
+            },
         ],
     },
 ];
