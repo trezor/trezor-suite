@@ -6520,6 +6520,28 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-native/graph@*, @suite-native/graph@workspace:suite-native/graph":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/graph@workspace:suite-native/graph"
+  dependencies:
+    "@suite-common/formatters": "*"
+    "@suite-native/atoms": "*"
+    "@suite-native/module-settings": "*"
+    "@suite-native/test-utils": "*"
+    "@trezor/icons": "*"
+    "@trezor/styles": "*"
+    "@trezor/theme": "*"
+    jest: ^26.6.3
+    react: ^17.0.2
+    react-native: 0.68.2
+    react-native-gesture-handler: ^2.7.0
+    react-native-graph: ^0.3.0
+    react-native-reanimated: ^2.10.0
+    react-redux: 7.2.2
+    typescript: 4.7.4
+  languageName: unknown
+  linkType: soft
+
 "@suite-native/module-accounts-import@*, @suite-native/module-accounts-import@workspace:suite-native/module-accounts-import":
   version: 0.0.0-use.local
   resolution: "@suite-native/module-accounts-import@workspace:suite-native/module-accounts-import"
@@ -6570,6 +6592,7 @@ __metadata:
     "@suite-common/wallet-utils": "*"
     "@suite-native/accounts": "*"
     "@suite-native/atoms": "*"
+    "@suite-native/graph": "*"
     "@suite-native/navigation": "*"
     "@suite-native/transactions": "*"
     "@trezor/icons": "*"
@@ -6613,43 +6636,25 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-native/module-graph@*, @suite-native/module-graph@workspace:suite-native/module-graph":
-  version: 0.0.0-use.local
-  resolution: "@suite-native/module-graph@workspace:suite-native/module-graph"
-  dependencies:
-    "@suite-common/formatters": "*"
-    "@suite-native/atoms": "*"
-    "@suite-native/test-utils": "*"
-    "@trezor/icons": "*"
-    "@trezor/styles": "*"
-    "@trezor/theme": "*"
-    jest: ^26.6.3
-    react: 18.2.0
-    react-native: 0.70.2
-    react-native-gesture-handler: ^2.7.0
-    react-native-graph: ^0.3.0
-    react-native-reanimated: ^2.10.0
-    react-redux: 7.2.2
-    typescript: 4.7.4
-  languageName: unknown
-  linkType: soft
-
 "@suite-native/module-home@*, @suite-native/module-home@workspace:suite-native/module-home":
   version: 0.0.0-use.local
   resolution: "@suite-native/module-home@workspace:suite-native/module-home"
   dependencies:
     "@react-navigation/native": ^6.0.11
     "@react-navigation/stack": ^6.2.2
+    "@suite-common/fiat-services": "*"
     "@suite-common/formatters": "*"
     "@suite-common/wallet-config": "*"
     "@suite-common/wallet-core": "*"
     "@suite-native/atoms": "*"
-    "@suite-native/module-graph": "*"
+    "@suite-native/graph": "*"
     "@suite-native/module-settings": "*"
     "@suite-native/navigation": "*"
+    "@trezor/connect": 9.0.3
     "@trezor/icons": "*"
     "@trezor/styles": "*"
     "@trezor/theme": "*"
+    date-fns: ^2.29.1
     jest: ^26.6.3
     react: 18.2.0
     react-native: 0.70.2

@@ -1,6 +1,17 @@
-import TrezorConnect from '@trezor/connect';
 import { isWithinInterval, fromUnixTime } from 'date-fns';
 import { Dispatch, GetState } from '@suite-types';
+import { Account } from '@wallet-types';
+import { GraphRange, GraphScale, GraphData } from '@wallet-types/graph';
+import {
+    ensureHistoryRates,
+    accountGraphDataFilterFn,
+    deviceGraphDataFilterFn,
+    enhanceBlockchainAccountHistory,
+} from '@wallet-utils/graphUtils';
+
+import TrezorConnect from '@trezor/connect';
+import { isTrezorConnectBackendType } from '@suite-common/wallet-utils';
+
 import {
     ACCOUNT_GRAPH_SUCCESS,
     ACCOUNT_GRAPH_FAIL,
@@ -10,15 +21,6 @@ import {
     SET_SELECTED_RANGE,
     SET_SELECTED_VIEW,
 } from './constants/graphConstants';
-import { Account } from '@wallet-types';
-import { GraphRange, GraphScale, GraphData } from '@wallet-types/graph';
-import {
-    ensureHistoryRates,
-    accountGraphDataFilterFn,
-    deviceGraphDataFilterFn,
-    enhanceBlockchainAccountHistory,
-} from '@wallet-utils/graphUtils';
-import { isTrezorConnectBackendType } from '@suite-common/wallet-utils';
 
 export type GraphAction =
     | {

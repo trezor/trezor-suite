@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Box } from '@suite-native/atoms';
@@ -7,7 +7,8 @@ import { TimeFrameItems, TimeFrameValues } from '../types';
 import { TimeSwitchItem } from './TimeSwitchItem';
 
 type TimeSwitchProps = {
-    defaultTimeFrame?: TimeFrameValues;
+    selectedTimeFrame: TimeFrameValues;
+    onSelectTimeFrame: (timeFrame: TimeFrameValues) => void;
 };
 
 export const timeSwitchItems: TimeFrameItems = {
@@ -42,13 +43,8 @@ const timeSwitchStyle = prepareNativeStyle(() => ({
     justifyContent: 'space-around',
 }));
 
-export const TimeSwitch = ({ defaultTimeFrame = 'day' }: TimeSwitchProps) => {
+export const TimeSwitch = ({ selectedTimeFrame = 'day', onSelectTimeFrame }: TimeSwitchProps) => {
     const { applyStyle } = useNativeStyles();
-    const [selectedTimeFrame, setSelectedTimeFrame] = useState<TimeFrameValues>(defaultTimeFrame);
-
-    const handleSelectTimeFrame = (timeFrame: TimeFrameValues) => {
-        setSelectedTimeFrame(timeFrame);
-    };
 
     return (
         <Box style={applyStyle(timeSwitchStyle)}>
@@ -57,7 +53,7 @@ export const TimeSwitch = ({ defaultTimeFrame = 'day' }: TimeSwitchProps) => {
                     key={item.value}
                     shortcut={item.shortcut}
                     value={item.value}
-                    onSelectTimeFrame={handleSelectTimeFrame}
+                    onSelectTimeFrame={onSelectTimeFrame}
                     selectedTimeFrame={selectedTimeFrame}
                 />
             ))}

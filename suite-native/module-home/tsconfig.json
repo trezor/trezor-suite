@@ -3,6 +3,9 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
+            "path": "../../suite-common/fiat-services"
+        },
+        {
             "path": "../../suite-common/formatters"
         },
         {
@@ -12,9 +15,10 @@
             "path": "../../suite-common/wallet-core"
         },
         { "path": "../atoms" },
-        { "path": "../module-graph" },
+        { "path": "../graph" },
         { "path": "../module-settings" },
         { "path": "../navigation" },
+        { "path": "../../packages/connect" },
         { "path": "../../packages/icons" },
         { "path": "../../packages/styles" },
         { "path": "../../packages/theme" }

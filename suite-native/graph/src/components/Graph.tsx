@@ -6,11 +6,12 @@ import { Box } from '@suite-native/atoms';
 
 import { TimeSwitch } from './TimeSwitch';
 import { TimeFrameValues } from '../types';
+import { generateRandomGraphData } from '../dummyData';
 
 type GraphProps = {
-    points: GraphPoint[];
-    defaultTimeFrame?: TimeFrameValues;
-    hasTimeSwitch?: boolean;
+    points?: GraphPoint[];
+    selectedTimeFrame?: TimeFrameValues;
+    onSelectTimeFrame?: (timeFrame: TimeFrameValues) => void;
 };
 
 const graphWrapperStyle = prepareNativeStyle(() => ({
@@ -23,7 +24,14 @@ const graphStyle = prepareNativeStyle(() => ({
     marginVertical: 40,
 }));
 
-export const Graph = ({ points, defaultTimeFrame, hasTimeSwitch = true }: GraphProps) => {
+const POINT_COUNT = 70;
+const POINTS = generateRandomGraphData(POINT_COUNT);
+
+export const Graph = ({
+    points = POINTS,
+    selectedTimeFrame = 'day',
+    onSelectTimeFrame,
+}: GraphProps) => {
     const { applyStyle } = useNativeStyles();
 
     return (
@@ -34,9 +42,14 @@ export const Graph = ({ points, defaultTimeFrame, hasTimeSwitch = true }: GraphP
                 points={points}
                 color="#00854D"
                 enablePanGesture
-                enableFadeInMask
+                enableFadeInMask={false}
             />
-            {hasTimeSwitch && <TimeSwitch defaultTimeFrame={defaultTimeFrame} />}
+            {onSelectTimeFrame && (
+                <TimeSwitch
+                    selectedTimeFrame={selectedTimeFrame}
+                    onSelectTimeFrame={onSelectTimeFrame}
+                />
+            )}
         </Box>
     );
 };
