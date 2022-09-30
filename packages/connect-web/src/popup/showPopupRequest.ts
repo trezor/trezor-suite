@@ -22,7 +22,7 @@ const HTML = `
             </div>
             <div class="trezorconnect-body">
                 <h3>Popup was blocked</h3>
-                <p>Please click to “Continue” to open popup manually</p>
+                <p>Please click to "Continue" to open popup manually</p>
                 <button class="trezorconnect-open">Continue</button>
             </div>
         </div>
