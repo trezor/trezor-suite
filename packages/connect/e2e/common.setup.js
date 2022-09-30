@@ -20,9 +20,7 @@ const wait = ms =>
     });
 
 const getController = name => {
-    const controller = new Controller({
-        name: name || 'unnamed controller',
-    });
+    const controller = Controller;
     controller.on('error', error => {
         console.error('Controller WS error', error);
     });

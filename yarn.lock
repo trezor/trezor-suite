@@ -7100,7 +7100,6 @@ __metadata:
     "@playwright/test": ^1.22.2
     "@suite-common/test-utils": "*"
     "@trezor/suite-analytics": "*"
-    "@trezor/transport": "*"
     "@trezor/trezor-user-env-link": "*"
     "@trezor/utils": "*"
     chrome-remote-interface: ^0.31.2
@@ -7108,14 +7107,11 @@ __metadata:
     cypress-file-upload: ^5.0.8
     cypress-image-snapshot: ^4.0.1
     cypress-wait-until: ^1.7.2
-    express: ^4.17.3
-    jest: ^26.6.3
     playwright: ^1.22.2
     ts-loader: ^9.3.1
     tsx: ^3.8.2
     typescript: 4.7.4
     webpack: ^5.73.0
-    ws: ^7.5.5
   languageName: unknown
   linkType: soft
 
@@ -7622,7 +7618,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/transport@*, @trezor/transport@^1.1.4, @trezor/transport@workspace:packages/transport":
+"@trezor/transport@^1.1.4, @trezor/transport@workspace:packages/transport":
   version: 0.0.0-use.local
   resolution: "@trezor/transport@workspace:packages/transport"
   dependencies:
@@ -8235,7 +8231,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jest@npm:^26.0.20":
+"@types/jest@npm:^26.0.24":
   version: 26.0.24
   resolution: "@types/jest@npm:26.0.24"
   dependencies:
@@ -16911,7 +16907,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"express@npm:^4.17.1, express@npm:^4.17.3, express@npm:^4.18.1":
+"express@npm:^4.17.1, express@npm:^4.18.1":
   version: 4.18.1
   resolution: "express@npm:4.18.1"
   dependencies:
@@ -32460,7 +32456,7 @@ __metadata:
     "@babel/runtime": ^7.18.9
     "@nrwl/nx-cloud": 14.5.1
     "@suite-common/wallet-types": "*"
-    "@types/jest": ^26.0.20
+    "@types/jest": ^26.0.24
     "@types/node": ^16.11.49
     "@types/prettier": ^2.7.0
     "@typescript-eslint/eslint-plugin": ^5.33.1
@@ -34830,7 +34826,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ws@npm:^7, ws@npm:^7.2.0, ws@npm:^7.3.1, ws@npm:^7.4.6, ws@npm:^7.5.1, ws@npm:^7.5.3, ws@npm:^7.5.5":
+"ws@npm:^7, ws@npm:^7.2.0, ws@npm:^7.3.1, ws@npm:^7.4.6, ws@npm:^7.5.1, ws@npm:^7.5.3":
   version: 7.5.7
   resolution: "ws@npm:7.5.7"
   peerDependencies:

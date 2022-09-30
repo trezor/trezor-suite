@@ -91,7 +91,7 @@
         "@babel/runtime": "^7.18.9",
         "@nrwl/nx-cloud": "14.5.1",
         "@suite-common/wallet-types": "*",
-        "@types/jest": "^26.0.20",
+        "@types/jest": "^26.0.24",
         "@types/node": "^16.11.49",
         "@types/prettier": "^2.7.0",
         "@typescript-eslint/eslint-plugin": "^5.33.1",

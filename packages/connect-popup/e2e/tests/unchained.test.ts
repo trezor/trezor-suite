@@ -1,17 +1,16 @@
 /* eslint no-await-in-loop: 0 */
 
 import { test, expect, Page } from '@playwright/test';
-import { Controller } from '@trezor/trezor-user-env-link';
+import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 const connectUrl = process.env.URL
     ? process.env.URL.replace('connect-explorer', 'connect')
     : 'https://connect.trezor.io/9/';
 
 const url = `https://unchained-capital.github.io/caravan?trezor-connect-src=${connectUrl}#/test`;
-const controller = new Controller();
 
 test.beforeAll(async () => {
-    await controller.connect();
+    await TrezorUserEnvLink.connect();
 });
 
 /**
@@ -82,25 +81,19 @@ const signTransaction = async (page: Page, iteration: number) => {
         state: 'visible',
         timeout: 40000,
     });
-    await controller.send({ type: 'emulator-press-yes' });
-    await controller.send({ type: 'emulator-press-yes' });
-    await controller.send({ type: 'emulator-press-yes' });
+    await TrezorUserEnvLink.send({ type: 'emulator-press-yes' });
+    await TrezorUserEnvLink.send({ type: 'emulator-press-yes' });
+    await TrezorUserEnvLink.send({ type: 'emulator-press-yes' });
     await assertSuccess(page);
 };
 
 test.beforeEach(async () => {
-    await controller.send({
-        type: 'bridge-stop',
-    });
-    await controller.send({
-        type: 'emulator-stop',
-    });
-    await controller.send({
-        type: 'emulator-start',
+    await TrezorUserEnvLink.api.stopBridge();
+    await TrezorUserEnvLink.api.stopEmu();
+    await TrezorUserEnvLink.api.startEmu({
         wipe: true,
     });
-    await controller.send({
-        type: 'emulator-setup',
+    await TrezorUserEnvLink.api.setupEmu({
         mnemonic:
             'merge alley lucky axis penalty manage latin gasp virus captain wheel deal chase fragile chapter boss zero dirt stadium tooth physical valve kid plunge',
         pin: '',
@@ -108,9 +101,7 @@ test.beforeEach(async () => {
         label: 'My Trevor',
         needs_backup: false,
     });
-    await controller.send({
-        type: 'bridge-start',
-    });
+    await TrezorUserEnvLink.api.startBridge();
 });
 
 /**

@@ -11,6 +11,7 @@ import yargs from 'yargs/yargs';
 import fetch from 'node-fetch';
 import path from 'path';
 import fs from 'fs';
+import { Controller } from '@trezor/trezor-user-env-link';
 
 const TEST_DIR = './packages/integration-tests/projects';
 
@@ -67,6 +68,8 @@ const getTestFiles = (): string[] => {
 };
 
 const runTests = async () => {
+    await Controller.connect();
+
     const {
         BROWSER = 'chrome',
         CYPRESS_baseUrl,

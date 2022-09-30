@@ -25,8 +25,7 @@
         "publish:win": "yarn build:win && yarn build:app:electron --publish always --win",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "type-check": "tsc --build tsconfig.json",
-        "test:unit": "jest",
-        "test:e2e": "yarn workspace @trezor/integration-tests wait-for-env && yarn xvfb-maybe -- playwright test --config=./e2e/playwright.config.ts"
+        "test:unit": "jest"
     },
     "build": {
         "appId": "io.trezor.TrezorSuite",

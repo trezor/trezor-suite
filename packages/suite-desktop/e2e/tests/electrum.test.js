@@ -5,11 +5,10 @@ const rmdir = promisify(require('fs').rmdir);
 const fetch = require('node-fetch');
 const { test, expect } = require('@playwright/test');
 
-const { Controller, controllerManager } = require('@trezor/trezor-user-env-link');
+const { Controller } = require('@trezor/trezor-user-env-link');
 const { patchBinaries, launchSuite, waitForDataTestSelector } = require('../support/common');
 
 const controller = new Controller();
-const manager = controllerManager(controller);
 
 const clickDataTest = (window, selector) => window.click(`[data-test="${selector}"]`);
 
@@ -27,9 +26,9 @@ test.describe.serial('Suite works with Electrum server', () => {
         // binaries somewhere where they are not, so I copy them to that place. Maybe I find a
         // better solution later
         await patchBinaries();
-        await manager.trezorUserEnvConnect();
-        await manager.startEmu({ wipe: true });
-        await manager.setupEmu({
+        await Controller.api.trezorUserEnvConnect();
+        await Controller.api.startEmu({ wipe: true });
+        await Controller.api.setupEmu({
             needs_backup: true,
             mnemonic: 'all all all all all all all all all all all all',
         });

@@ -9,8 +9,6 @@ import { Controller } from '@trezor/trezor-user-env-link';
 
 const { BridgeV2 } = TrezorLink;
 
-const controller = new Controller();
-
 jest.setTimeout(30000);
 
 const mnemonicAll = 'all all all all all all all all all all all all';
@@ -27,11 +25,11 @@ const emulatorStartOpts = { version: '2-master', wipe: true };
 
 describe('bridge', () => {
     beforeAll(async () => {
-        await controller.connect();
+        await Controller.connect();
     });
 
     afterAll(() => {
-        controller.disconnect();
+        Controller.disconnect();
     });
 
     // there might be more versions of bridge out there, see https://github.com/trezor/webwallet-data/tree/master/bridge
@@ -42,10 +40,10 @@ describe('bridge', () => {
             let devices: any[];
             let session: any;
             beforeEach(async () => {
-                await controller.send({ type: 'bridge-stop' });
-                await controller.send({ type: 'emulator-start', ...emulatorStartOpts });
-                await controller.send({ type: 'emulator-setup', ...emulatorSetupOpts });
-                await controller.send({ type: 'bridge-start', version: bridgeVersion });
+                await Controller.send({ type: 'bridge-stop' });
+                await Controller.send({ type: 'emulator-start', ...emulatorStartOpts });
+                await Controller.send({ type: 'emulator-setup', ...emulatorSetupOpts });
+                await Controller.send({ type: 'bridge-start', version: bridgeVersion });
 
                 BridgeV2.setFetch(fetch, true);
 

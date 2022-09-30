@@ -3,6 +3,7 @@ import { EventEmitter } from 'events';
 import fetch from 'cross-fetch';
 
 import { createDeferred, Deferred } from '@trezor/utils';
+
 import { api } from './api';
 
 const NOT_INITIALIZED = new Error('websocket_not_initialized');
@@ -256,11 +257,11 @@ class TrezorUserEnvLinkClass extends EventEmitter {
             // do something about it
             const limit = 300;
             let error = '';
-            console.log('waiting for trezor-user-env');
+            process.stdout.write('waiting for trezor-user-env');
 
             for (let i = 0; i < limit; i++) {
                 if (i === limit - 1) {
-                    console.log(`cant connect to trezor-user-env: ${error}\n`);
+                    process.stdout.write(`cant connect to trezor-user-env: ${error}\n`);
                 }
                 await delay(1000);
 
