@@ -59,16 +59,16 @@ export const useDropZone = ({ accept, onSelect, className }: Props) => {
         }
     }, [inputRef]);
 
-    const prevent = useCallback(event => {
+    const prevent = useCallback((event: React.MouseEvent) => {
         event.preventDefault();
     }, []);
 
-    const onDragEnter = useCallback(event => {
+    const onDragEnter = useCallback((event: React.MouseEvent) => {
         event.preventDefault();
         event.currentTarget?.classList?.add('dragging');
     }, []);
 
-    const onDragLeave = useCallback(event => {
+    const onDragLeave = useCallback((event: React.MouseEvent) => {
         event.preventDefault();
         event.currentTarget?.classList?.remove('dragging');
     }, []);
@@ -98,7 +98,7 @@ export const useDropZone = ({ accept, onSelect, className }: Props) => {
         [readFileContent],
     );
 
-    const onInputClick = useCallback(event => {
+    const onInputClick = useCallback((event: React.MouseEvent) => {
         event.stopPropagation();
     }, []);
 

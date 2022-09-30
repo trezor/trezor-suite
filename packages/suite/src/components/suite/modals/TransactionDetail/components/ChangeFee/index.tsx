@@ -100,8 +100,12 @@ const Red = styled.span`
 `;
 
 /* children are only for test purposes, this prop is not available in regular build */
+interface ChangeFeeProps extends Props {
+    children?: React.ReactNode;
+    showChained: () => void;
+}
 
-const ChangeFee: React.FC<Props & { showChained: () => void }> = props => {
+export const ChangeFee = (props: ChangeFeeProps) => {
     const contextValues = useRbf(props);
     if (!contextValues.account) return null; // context without account, should never happen
     const { tx } = props;
@@ -164,5 +168,3 @@ const ChangeFee: React.FC<Props & { showChained: () => void }> = props => {
         </RbfContext.Provider>
     );
 };
-
-export default ChangeFee;

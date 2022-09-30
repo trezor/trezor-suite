@@ -9,7 +9,7 @@ import { preloadStore } from '@suite-support/preloadStore';
 import Metadata from '@suite-components/Metadata';
 import Preloader from '@suite-components/Preloader';
 import { ToastContainer } from '@suite-components/ToastContainer';
-import IntlProvider from '@suite-support/ConnectedIntlProvider';
+import { ConnectedIntlProvider } from '@suite-support/ConnectedIntlProvider';
 import Resize from '@suite-support/Resize';
 import Autodetect from '@suite-support/Autodetect';
 import Protocol from '@suite-support/Protocol';
@@ -49,7 +49,7 @@ const Main = () => {
                         <Protocol />
                         <OnlineStatus />
                         <RouterHandler />
-                        <IntlProvider>
+                        <ConnectedIntlProvider>
                             <FormatterProvider config={formattersConfig}>
                                 <DesktopUpdater>
                                     <Metadata />
@@ -59,7 +59,7 @@ const Main = () => {
                                     </Preloader>
                                 </DesktopUpdater>
                             </FormatterProvider>
-                        </IntlProvider>
+                        </ConnectedIntlProvider>
                     </ErrorBoundary>
                 </ModalContextProvider>
             </RouterProvider>
@@ -86,13 +86,12 @@ export const init = async (container: HTMLElement) => {
     // when it runs because of renderer (e.g. Ctrl+R) it will always be false.
     if (shouldRunTor) {
         await new Promise(resolve => {
-            render(
+            root.render(
                 <ReduxProvider store={store}>
-                    <IntlProvider>
+                    <ConnectedIntlProvider>
                         <TorLoadingScreen callback={resolve} />
-                    </IntlProvider>
+                    </ConnectedIntlProvider>
                 </ReduxProvider>,
-                root,
             );
             desktopApi.toggleTor(true);
         });
@@ -101,7 +100,7 @@ export const init = async (container: HTMLElement) => {
     const loadModules = await desktopApi.loadModules(null);
     if (!loadModules.success) {
         // loading failed, render error with theme provider without redux and do not continue
-        render(<ErrorScreen error={loadModules.error} />, root);
+        root.render(<ErrorScreen error={loadModules.error} />);
         return;
     }
 
@@ -116,10 +115,9 @@ export const init = async (container: HTMLElement) => {
     });
 
     // finally render whole app
-    render(
+    root.render(
         <ReduxProvider store={store}>
             <Main />
         </ReduxProvider>,
-        root,
     );
 };

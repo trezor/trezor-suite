@@ -20,10 +20,14 @@ const StyledCard = styled(Card)`
     padding: 0;
 `;
 
+interface SendLoadedProps extends UseSendFormProps {
+    children?: React.ReactNode;
+}
+
 // inner component for selectedAccount.status = "loaded"
 // separated to call `useSendForm` hook at top level
 // children are only for test purposes, this prop is not available in regular build
-const SendLoaded: React.FC<UseSendFormProps> = ({ children, ...props }) => {
+const SendLoaded = ({ children, ...props }: SendLoadedProps) => {
     const sendContextValues = useSendForm(props);
 
     return (
@@ -48,7 +52,11 @@ const SendLoaded: React.FC<UseSendFormProps> = ({ children, ...props }) => {
     );
 };
 
-const Send: React.FC = ({ children }) => {
+interface SendProps {
+    children: React.ReactNode;
+}
+
+const Send = ({ children }: SendProps) => {
     const props = useSelector(state => ({
         selectedAccount: state.wallet.selectedAccount,
         coinjoinAccounts: state.wallet.coinjoin.accounts,

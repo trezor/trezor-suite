@@ -4,8 +4,9 @@ interface StateProps {
     error: Error | null | undefined;
 }
 
-// eslint-disable-next-line
-interface Props {}
+interface Props {
+    children: React.ReactNode;
+}
 
 export class ErrorBoundary extends React.Component<Props, StateProps> {
     constructor(props: Props) {

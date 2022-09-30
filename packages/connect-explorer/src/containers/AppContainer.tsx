@@ -2,12 +2,16 @@ import React, { useEffect } from 'react';
 import { useLocation } from 'react-router';
 
 import Header from '../components/Header';
-import Main from '../components/Main';
+import { Main } from '../components/Main';
 import Devices from '../components/Devices';
 import * as routerActions from '../actions/routerActions';
 import { useActions } from '../hooks';
 
-const AppContainer: React.FC = ({ children }) => {
+interface AppContainerProps {
+    children: React.ReactNode;
+}
+
+const AppContainer = ({ children }: AppContainerProps) => {
     const actions = useActions({
         ...routerActions,
     });

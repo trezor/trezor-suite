@@ -6,7 +6,7 @@ import BigNumber from 'bignumber.js';
 import { trezorLogo } from '@suite-common/suite-constants';
 import { TransactionTarget } from '@trezor/connect';
 import { Network } from '@suite-common/wallet-config';
-import { WalletAccountTransaction } from '@suite-common/wallet-types';
+import { ExportFileType, WalletAccountTransaction } from '@suite-common/wallet-types';
 
 import { formatNetworkAmount, formatAmount } from './accountUtils';
 import { localizeNumber } from './localizeNumber';
@@ -15,12 +15,10 @@ type AccountTransactionForExports = Omit<WalletAccountTransaction, 'targets'> & 
     targets: (TransactionTarget & { metadataLabel?: string })[];
 };
 
-type FileType = 'csv' | 'pdf' | 'json';
-
 type Data = {
     coin: Network['symbol'];
     accountName: string;
-    type: FileType;
+    type: ExportFileType;
     transactions: AccountTransactionForExports[];
     localCurrency: string;
 };
@@ -363,7 +361,7 @@ export const formatData = async (data: Data) => {
     }
 };
 
-export const getExportedFileName = (accountName: string, type: FileType) => {
+export const getExportedFileName = (accountName: string, type: ExportFileType) => {
     const accountNameSanitized = accountName
         .slice(0, 240) // limit the file name length
         .replace(/[^a-z0-9]/gi, '_') // replace any special character by _ symbol

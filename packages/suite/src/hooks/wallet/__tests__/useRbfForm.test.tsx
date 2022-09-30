@@ -10,7 +10,7 @@ import {
     waitForLoader,
     actionSequence,
 } from '@suite/support/tests/hooksHelper';
-import ChangeFee from '@suite-components/modals/TransactionDetail/components/ChangeFee';
+import { ChangeFee } from '@suite-components/modals/TransactionDetail/components/ChangeFee';
 import { useRbfContext } from '../useRbfForm';
 
 jest.mock('@suite-actions/routerActions', () => ({

@@ -33,7 +33,7 @@ interface Props {
     outputId: number;
 }
 
-const Fiat = ({ output, outputId }: Props) => {
+export const Fiat = ({ output, outputId }: Props) => {
     const {
         account,
         network,
@@ -135,8 +135,13 @@ const Fiat = ({ output, outputId }: Props) => {
         ],
     );
 
+    interface CallbackParams {
+        onChange: (value: CurrencyOption) => void;
+        value: any;
+    }
+
     const renderCurrencySelect = useCallback(
-        ({ onChange, value }) => (
+        ({ onChange, value }: CallbackParams) => (
             <Select
                 options={buildCurrencyOptions(value)}
                 value={value}
@@ -231,5 +236,3 @@ const Fiat = ({ output, outputId }: Props) => {
         </Wrapper>
     );
 };
-
-export default Fiat;

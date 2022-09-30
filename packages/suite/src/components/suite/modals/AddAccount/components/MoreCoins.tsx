@@ -82,7 +82,13 @@ const HeaderWrapper = styled.div`
     display: flex;
 `;
 
-const PlusIconWrapper: React.FC = props => <motion.div {...triggerAnimation} {...props} />;
+interface Props {
+    children: React.ReactNode;
+}
+
+const PlusIconWrapper = ({ children }: Props) => (
+    <motion.div {...triggerAnimation}>{children}</motion.div>
+);
 
 const StyledIcon = styled(Icon)`
     padding-right: 15px;
@@ -146,7 +152,7 @@ const Header = ({
     );
 };
 
-const Content: React.FC = ({ children }) => (
+const Content = ({ children }: Props) => (
     <motion.div {...contentAnimation}>
         <ContentWrapper>{children}</ContentWrapper>
     </motion.div>

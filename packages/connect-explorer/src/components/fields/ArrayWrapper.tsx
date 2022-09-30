@@ -16,8 +16,7 @@ const AddBatchButton = styled.div`
     align-items: center;
 `;
 
-const AddButton: React.FC<AddButtonProps> = props => {
-    const { field, onAdd, label } = props;
+const AddButton = ({ field, onAdd, label }: AddButtonProps) => {
     if (field.batch.length > 1) {
         return null;
     }
@@ -28,7 +27,8 @@ const AddButton: React.FC<AddButtonProps> = props => {
     );
 };
 
-interface Props {
+interface ArrayWrapperProps {
+    children: React.ReactNode;
     field: FieldWithBundle<any>;
     onAdd: () => void;
 }
@@ -38,11 +38,9 @@ const Array = styled.div`
     flex-direction: column;
 `;
 
-const ArrayWrapper: React.FC<Props> = props => (
+export const ArrayWrapper = ({ children, field, onAdd }: ArrayWrapperProps) => (
     <Array>
-        <AddButton field={props.field} onAdd={props.onAdd} label={props.field.name} />
-        <div>{props.children}</div>
+        <AddButton field={field} onAdd={onAdd} label={field.name} />
+        <div>{children}</div>
     </Array>
 );
-
-export default ArrayWrapper;

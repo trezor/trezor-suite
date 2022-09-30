@@ -177,11 +177,14 @@ const ReconnectLabel = ({
     );
 };
 
-const ReconnectStep: React.FC<{
+interface ReconnectStepProps {
     order?: number;
     active: boolean;
+    children: React.ReactNode;
     dataTest: string;
-}> = ({ order, active, dataTest, children }) => (
+}
+
+const ReconnectStep = ({ order, active, dataTest, children }: ReconnectStepProps) => (
     <BulletPointWrapper>
         {order && <BulletPointNumber active={active}>{order}</BulletPointNumber>}
 

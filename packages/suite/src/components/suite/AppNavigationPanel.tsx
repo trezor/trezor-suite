@@ -60,18 +60,19 @@ interface AppNavigationPanelProps {
     title: React.ReactNode;
     titleContent?: (isAppNavigationPanelInView: boolean) => React.ReactNode | undefined;
     maxWidth: 'small' | 'default';
-    navigation?: React.ReactNode;
+    navigation?: React.ReactElement<{ inView: boolean }>;
+    children?: React.ReactNode;
     className?: string;
 }
 
-export const AppNavigationPanel: React.FC<AppNavigationPanelProps> = ({
+export const AppNavigationPanel = ({
     title,
     titleContent,
     maxWidth,
     navigation,
     className,
     children,
-}) => {
+}: AppNavigationPanelProps) => {
     const ref = useRef<HTMLDivElement | null>(null);
     const [inView, setInView] = useState(false);
 

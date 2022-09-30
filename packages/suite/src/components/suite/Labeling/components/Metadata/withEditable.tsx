@@ -58,7 +58,7 @@ interface WithEditableProps {
  * and control buttons (submit, cancel).
  */
 export const withEditable =
-    (WrappedComponent: React.FC) =>
+    (WrappedComponent: React.FunctionComponent<React.PropsWithChildren>) =>
     ({ onSubmit, onBlur, ...props }: WithEditableProps) => {
         const [touched, setTouched] = useState(false);
         // value is used to mirror divRef.current.textContent so that its changes force react to render
@@ -68,9 +68,13 @@ export const withEditable =
         const divRef = useRef<HTMLDivElement>(null);
 
         const submit = useCallback(
-            value => {
+            (value?: string | null) => {
                 if (props.originalValue && value === props.originalValue) {
                     return onBlur();
+                }
+
+                if (!value) {
+                    value = '';
                 }
 
                 onSubmit(value);

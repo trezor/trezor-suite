@@ -13,16 +13,17 @@ const FadingDiv = styled.div<{ duration: number }>`
 
 export type FadeProps = {
     threshold?: number;
+    children: React.ReactNode;
     duration?: number;
     direction?: 'IN' | 'OUT' | 'IN-OUT';
 };
 
-export const Fade: React.FC<FadeProps> = ({
+export const Fade = ({
     children,
     threshold = 0.5,
     duration = 1,
     direction = 'IN-OUT',
-}) => {
+}: FadeProps) => {
     const [div, setDiv] = useState<HTMLDivElement | null>(null);
 
     useEffect(() => {

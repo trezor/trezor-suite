@@ -5,7 +5,7 @@ import { variables, Button } from '@trezor/components';
 import { WalletAccountTransaction } from '@wallet-types';
 import { BasicDetails } from './components/BasicDetails';
 import { AdvancedDetails, TabID } from './components/AdvancedDetails';
-import ChangeFee from './components/ChangeFee';
+import { ChangeFee } from './components/ChangeFee';
 import {
     getNetwork,
     getConfirmations,

@@ -29,7 +29,11 @@ const useFetchMessages = (locale: Locale) => {
     return messages;
 };
 
-const ConnectedIntlProvider: React.FC = ({ children }) => {
+interface ConnectedIntlProviderProps {
+    children: React.ReactNode;
+}
+
+export const ConnectedIntlProvider = ({ children }: ConnectedIntlProviderProps) => {
     const locale = useSelector(state => state.suite.settings.language);
     const messages = useFetchMessages(locale);
     return (
@@ -50,5 +54,3 @@ const ConnectedIntlProvider: React.FC = ({ children }) => {
         </IntlProvider>
     );
 };
-
-export default ConnectedIntlProvider;
