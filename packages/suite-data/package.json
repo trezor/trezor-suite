@@ -42,7 +42,6 @@
             "build:lib": {
                 "outputs": [
                     "./tmp",
-                    "../../suite-common/suite-types/src/messageSystem.ts",
                     "./files/browser-detection",
                     "./files/guide"
                 ]
