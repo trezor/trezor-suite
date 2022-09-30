@@ -1,6 +1,7 @@
 import SuiteDB, { OnUpgradeFunc } from '@trezor/suite-storage';
 import { desktopApi } from '@trezor/suite-desktop-api';
-import { migrate } from './migrations';
+
+import * as migrations from './migrations';
 
 import type { SuiteDBSchema } from './definitions';
 
@@ -21,8 +22,12 @@ const onUpgrade: OnUpgradeFunc<SuiteDBSchema> = async (db, oldVersion, newVersio
         }
     }
 
-    // migrate functions
-    await migrate(db, oldVersion, newVersion, transaction);
+    // TODO is import order safe?
+    // eslint-disable-next-line no-restricted-syntax
+    for (const migrate of Object.values(migrations)) {
+        // eslint-disable-next-line no-await-in-loop
+        await migrate({ db, oldVersion, newVersion, transaction });
+    }
 };
 
 const onDowngrade = () => {
