@@ -67,8 +67,7 @@ export const XpubScanScreen = ({
     const form = useForm<XpubFormValues>({
         validation: xpubFormValidationSchema,
     });
-    const { handleSubmit, setValue, watch, reset } = form;
-    const watchXpubAddress = watch('xpubAddress');
+    const { handleSubmit, setValue, reset } = form;
 
     const resetToDefaultValues = useCallback(() => {
         setCameraRequested(false);
@@ -97,13 +96,11 @@ export const XpubScanScreen = ({
     const onXpubFormSubmit = handleSubmit(goToAccountImportScreen);
 
     const handleXpubResult = useCallback(
-        (xpubAddress?: string) => {
-            if (xpubAddress && xpubAddress !== watchXpubAddress) {
-                setValue('xpubAddress', xpubAddress);
-                onXpubFormSubmit();
-            }
+        (qrCodeValue: string) => {
+            setValue('xpubAddress', qrCodeValue);
+            onXpubFormSubmit();
         },
-        [watchXpubAddress, onXpubFormSubmit, setValue],
+        [onXpubFormSubmit, setValue],
     );
 
     return (

@@ -5,11 +5,10 @@ import { Linking, View } from 'react-native';
 import { BarcodeFormat, useScanBarcodes } from 'vision-camera-code-scanner';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { XpubAddress } from '@suite-common/wallet-types';
 import { Text } from '@suite-native/atoms';
 
 export interface CameraProps {
-    onResult: (xpubAddress?: XpubAddress) => void;
+    onResult: (qrCodeValue: string) => void;
 }
 
 export const CAMERA_HEIGHT = 329;
@@ -69,12 +68,13 @@ export const Camera = ({ onResult }: CameraProps) => {
         checkInverted: true,
     });
 
+    const barcode = barcodes?.[0]?.displayValue;
+
     useEffect(() => {
-        if (barcodes && barcodes.length) {
-            const [barcode] = barcodes;
-            onResult(barcode.displayValue);
+        if (barcode) {
+            onResult(barcode);
         }
-    }, [barcodes, onResult]);
+    }, [barcode, onResult]);
 
     const isCameraAllowed = hasCameraPermission && !!device;
 
