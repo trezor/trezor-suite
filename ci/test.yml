@@ -234,7 +234,7 @@ connect-popup manual:
     TESTS_INCLUDED_METHODS: $TESTS_INCLUDED_METHODS
     TESTS_EXCLUDED_METHODS: $TESTS_EXCLUDED_METHODS
     TESTS_PATTERN: $TESTS_PATTERN
-    TESTS_SCRIPT: yarn workspace @trezor/integration-tests test:connect:${TESTS_ENVIRONMENT}
+    TESTS_SCRIPT: yarn workspace @trezor/connect test:e2e:${TESTS_ENVIRONMENT}
     TESTS_FIRMWARE: $TESTS_FIRMWARE
     TESTS_USE_TX_CACHE: $TESTS_MOCK_BACKENDS
     TESTS_USE_WS_CACHE: $TESTS_MOCK_BACKENDS
@@ -273,7 +273,7 @@ connect-popup manual:
         # TESTS_NODE_VERSION: ["12", "14", "16"]
         TESTS_INCLUDED_METHODS:
           [
-            "applySettings,applyFlags,getFeatures,getFirmwareHash,checkFirmwareAuthenticity",
+            "applySettings,applyFlags,getFeatures,getFirmwareHash",
             "signTransaction",
             "getAccountInfo,getAddress,getPublicKey,signMessage,verifyMessage,composeTransaction,getOwnershipId,getOwnershipProof",
             "stellarGetAddress,stellarSignTransaction",
@@ -290,6 +290,7 @@ connect-popup manual:
 
 connect:
   extends: .connect
+  retry: 1
   only:
     refs:
       - schedules # only nightly jobs, this is too heavy for develop branches at the moment
