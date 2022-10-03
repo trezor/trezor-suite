@@ -76,8 +76,10 @@ module.exports = {
         'import/no-extraneous-dependencies': [
             'error',
             {
-                // add scripts/ folder
-                devDependencies: ['**/*.test.{tsx,ts,js}'],
+                devDependencies: [
+                    '**/*.test.{tsx,ts,js}',
+                    '**/suite-desktop/e2e/**',
+                ],
             },
         ],
         // Does not work with TypeScript export type.

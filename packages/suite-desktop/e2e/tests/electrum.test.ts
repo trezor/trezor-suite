@@ -1,16 +1,12 @@
-const { _electron: electron } = require('playwright');
-const path = require('path');
-const { promisify } = require('util');
-const rmdir = promisify(require('fs').rmdir);
-const fetch = require('node-fetch');
-const { test, expect } = require('@playwright/test');
+import { Page, test as testPlaywright } from '@playwright/test';
 
-const { TrezorUserEnvLink } = require('@trezor/trezor-user-env-link');
-const { patchBinaries, launchSuite, waitForDataTestSelector } = require('../support/common');
+import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
-const clickDataTest = (window, selector) => window.click(`[data-test="${selector}"]`);
+import { patchBinaries, launchSuite, waitForDataTestSelector } from '../support/common';
 
-const toggleDebugModeInSettings = async window => {
+const clickDataTest = (window: Page, selector: string) => window.click(`[data-test="${selector}"]`);
+
+const toggleDebugModeInSettings = async (window: Page) => {
     const timesClickToSetDebugMode = 5;
     for (let i = 0; i < timesClickToSetDebugMode; i++) {
         // eslint-disable-next-line no-await-in-loop
@@ -18,8 +14,8 @@ const toggleDebugModeInSettings = async window => {
     }
 };
 
-test.describe.serial('Suite works with Electrum server', () => {
-    test.beforeAll(async () => {
+testPlaywright.describe.serial('Suite works with Electrum server', () => {
+    testPlaywright.beforeAll(async () => {
         // todo: some problems with path in dev and production and tests. tldr tests are expecting
         // binaries somewhere where they are not, so I copy them to that place. Maybe I find a
         // better solution later
@@ -32,8 +28,8 @@ test.describe.serial('Suite works with Electrum server', () => {
         });
     });
 
-    test('Electrum completes discovery successfully', async () => {
-        suite = await launchSuite();
+    testPlaywright('Electrum completes discovery successfully', async () => {
+        const suite = await launchSuite();
 
         await waitForDataTestSelector(suite.window, '@welcome/title');
 

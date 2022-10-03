@@ -1,7 +1,9 @@
-const { exec } = require('child_process');
+import { exec } from 'child_process';
 
-class NetworkAnalyzer {
-    interval;
+export class NetworkAnalyzer {
+    interval?: string | number | NodeJS.Timer;
+    tcp: string[];
+
     constructor() {
         this.tcp = [];
     }
@@ -11,8 +13,8 @@ class NetworkAnalyzer {
             try {
                 // When running in Tests the electron process has name `electron`,
                 // but when running without the tests is is `trezor-su`.
-                exec('lsof -i TCP | grep electron', (error, stdout, stderr) => {
-                    const outputGroupParser = message =>
+                exec('lsof -i TCP | grep electron', (_, stdout) => {
+                    const outputGroupParser = (message: string) =>
                         message && message.trim().match(/electron .*/gm);
                     const group = outputGroupParser(stdout);
                     if (group) {
@@ -35,7 +37,7 @@ class NetworkAnalyzer {
 
     start() {
         this.interval = setInterval(async () => {
-            const requests = await this.checkTCP();
+            const requests = (await this.checkTCP()) as string[];
             this.tcp.push(...requests);
         }, 1000);
     }
@@ -48,7 +50,3 @@ class NetworkAnalyzer {
         return this.tcp;
     }
 }
-
-module.exports = {
-    NetworkAnalyzer,
-};

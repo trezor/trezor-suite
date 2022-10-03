@@ -1,14 +1,11 @@
-const { _electron: electron } = require('playwright');
-const fs = require('fs');
-const path = require('path');
-const fetch = require('node-fetch');
-const { test, expect } = require('@playwright/test');
+import { test as testPlaywright, expect as expectPlaywright } from '@playwright/test';
 
-const { patchBinaries, launchSuite, waitForDataTestSelector } = require('../support/common');
-const { TrezorUserEnvLink } = require('@trezor/trezor-user-env-link');
+import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
-test.describe.serial('Bridge', () => {
-    test.beforeAll(async () => {
+import { patchBinaries, launchSuite, waitForDataTestSelector } from '../support/common';
+
+testPlaywright.describe.serial('Bridge', () => {
+    testPlaywright.beforeAll(async () => {
         // todo: some problems with path in dev and production and tests. tldr tests are expecting
         // binaries somewhere where they are not, so I copy them to that place. Maybe I find a
         // better solution later
@@ -19,15 +16,15 @@ test.describe.serial('Bridge', () => {
         await TrezorUserEnvLink.api.stopBridge();
     });
 
-    test.afterAll(async () => {
+    testPlaywright.afterAll(async () => {
         // When finish we make bridge from trezor-user-env to run so it is ready for the rest of the tests.
         await TrezorUserEnvLink.api.startBridge();
     });
 
-    test('App spawns bundled bridge and stops it after app quit', async ({ request }) => {
+    testPlaywright('App spawns bundled bridge and stops it after app quit', async ({ request }) => {
         const suite = await launchSuite();
         const title = await suite.window.title();
-        expect(title).toBe('Trezor Suite');
+        expectPlaywright(title).toBe('Trezor Suite');
 
         // We wait for `@welcome/title` or `@dashboard/graph` since
         // one or the other will be display depending on the state of the app
@@ -40,7 +37,7 @@ test.describe.serial('Bridge', () => {
 
         // bridge is running
         const bridgeRes1 = await request.get('http://127.0.0.1:21325/status/');
-        await expect(bridgeRes1).toBeOK();
+        await expectPlaywright(bridgeRes1).toBeOK();
 
         await suite.electronApp.close();
 
