@@ -23,7 +23,7 @@ const gitRevision = getRevision();
 
 /**
  * Assemble release name for Sentry
- * Same definition is in packages/suite-desktop/scripts/build.js
+ * Same definition is in packages/suite-desktop/scripts/build.ts
  */
 const sentryRelease = `${suiteVersion}.${project}${
     isCodesignBuild ? '.codesign' : ''

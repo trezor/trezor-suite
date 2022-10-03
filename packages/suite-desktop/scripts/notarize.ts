@@ -1,7 +1,12 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable no-console */
+
 const { notarize } = require('electron-notarize');
+
 const pkg = require('../package.json');
 
-exports.default = function notarizing(context) {
+// @ts-expect-error cannot import AfterPackContext as type using require
+exports.default = context => {
     const { electronPlatformName, appOutDir } = context;
 
     if (electronPlatformName !== 'darwin') {

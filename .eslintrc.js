@@ -78,6 +78,7 @@ module.exports = {
             {
                 devDependencies: [
                     '**/*.test.{tsx,ts,js}',
+                    '**/suite-desktop/scripts/**',
                     '**/suite-desktop/e2e/**',
                 ],
             },

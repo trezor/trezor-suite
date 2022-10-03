@@ -1,11 +1,16 @@
-const fs = require('fs');
-const path = require('path');
-const childProcess = require('child_process');
-const glob = require('glob');
-const { build } = require('esbuild');
-const pkg = require('../package.json');
-// @ts-expect-error
-const { suiteVersion } = require('../../suite/package.json');
+/* eslint-disable no-console */
+import fs from 'fs';
+import path from 'path';
+import childProcess from 'child_process';
+import glob from 'glob';
+import { build, PluginBuild } from 'esbuild';
+
+// eslint-disable-next-line
+// @ts-ignore
+import pkg from '../package.json';
+// eslint-disable-next-line
+// @ts-ignore
+import { suiteVersion } from '../../suite/package.json';
 
 const { NODE_ENV, USE_MOCKS, IS_CODESIGN_BUILD } = process.env;
 const PROJECT = 'desktop';
@@ -38,8 +43,8 @@ const mocks = glob
 const mockFilter = new RegExp(`^${mocks.join('|')}$`);
 const mockPlugin = {
     name: 'mock-plugin',
-    setup: build => {
-        build.onResolve({ filter: mockFilter }, args => ({
+    setup: (setup: PluginBuild) => {
+        setup.onResolve({ filter: mockFilter }, args => ({
             path: path.join(mockPath, `${args.path}.ts`),
         }));
     },
@@ -89,7 +94,7 @@ build({
         'process.env.SENTRY_RELEASE': JSON.stringify(sentryRelease),
         'process.env.SUITE_TYPE': JSON.stringify(PROJECT),
     },
-    inject: [path.join(__dirname, 'build-inject.js')],
+    inject: [path.join(__dirname, 'build-inject.ts')],
     plugins: useMocks ? [mockPlugin] : [],
 })
     .then(() => {
