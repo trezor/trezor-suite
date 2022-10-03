@@ -27,7 +27,7 @@
         "fela-sort-media-query-mobile-first": "^12.1.1",
         "fela-utils": "^12.1.1",
         "polished": "^4.2.2",
-        "react": "^18.2.0",
+        "react": "18.2.0",
         "react-fela": "^12.1.1"
     },
     "devDependencies": {

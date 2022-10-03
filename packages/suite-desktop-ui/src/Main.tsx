@@ -40,30 +40,30 @@ const Main = () => {
     const formattersConfig = useFormattersConfig();
 
     return (
-        <ConnectedThemeProvider>
-            <RouterProvider history={history}>
-                <ModalContextProvider>
-                    <ErrorBoundary>
-                        <Autodetect />
-                        <Resize />
-                        <Protocol />
-                        <OnlineStatus />
-                        <RouterHandler />
-                        <ConnectedIntlProvider>
-                            <FormatterProvider config={formattersConfig}>
-                                <DesktopUpdater>
-                                    <Metadata />
-                                    <ToastContainer />
-                                    <Preloader>
-                                        <AppRouter />
-                                    </Preloader>
-                                </DesktopUpdater>
-                            </FormatterProvider>
-                        </ConnectedIntlProvider>
-                    </ErrorBoundary>
-                </ModalContextProvider>
-            </RouterProvider>
-        </ConnectedThemeProvider>
+        // <ConnectedThemeProvider>
+        //     <RouterProvider history={history}>
+        //         <ModalContextProvider>
+        //             <ErrorBoundary>
+        //                 <Autodetect />
+        //                 <Resize />
+        //                 <Protocol />
+        //                 <OnlineStatus />
+        //                 <RouterHandler />
+        //                 <ConnectedIntlProvider>
+        //                     <FormatterProvider config={formattersConfig}>
+        //                         <DesktopUpdater>
+        //                             <Metadata />
+        //                             <ToastContainer />
+        //                             <Preloader>
+        //                                 <AppRouter />
+        //                             </Preloader>
+        //                         </DesktopUpdater>
+        //                     </FormatterProvider>
+        //                 </ConnectedIntlProvider>
+        //             </ErrorBoundary>
+        //         </ModalContextProvider>
+        //     </RouterProvider>
+        // </ConnectedThemeProvider>
     );
 };
 
