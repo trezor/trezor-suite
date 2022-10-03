@@ -6244,7 +6244,7 @@ __metadata:
     "@trezor/connect": 9.0.2
     bignumber.js: ^9.1.0
     jest: ^26.6.3
-    react: ^18.2.0
+    react: 18.2.0
     react-intl: ^6.0.5
     typescript: 4.7.4
   languageName: unknown
@@ -6256,7 +6256,7 @@ __metadata:
   dependencies:
     "@trezor/type-utils": "*"
     jest: ^26.6.3
-    react: ^18.2.0
+    react: 18.2.0
     react-intl: ^6.0.5
     typescript: 4.7.4
   languageName: unknown
@@ -6294,7 +6294,7 @@ __metadata:
     "@suite-common/wallet-types": "*"
     "@trezor/connect": 9.0.2
     jest: ^26.6.3
-    react: ^18.2.0
+    react: 18.2.0
     react-redux: 7.2.2
     redux: ^4.2.0
     typescript: 4.7.4
@@ -6431,7 +6431,7 @@ __metadata:
     "@trezor/type-utils": "*"
     "@trezor/utils": "*"
     jest: ^26.6.3
-    react: ^18.2.0
+    react: 18.2.0
     react-hook-form: 6.15.7
     typescript: 4.7.4
   languageName: unknown
@@ -6500,11 +6500,15 @@ __metadata:
     "@trezor/theme": "*"
     "@trezor/utils": "*"
     jest: ^26.6.3
+<<<<<<< HEAD
     react: ^18.2.0
 <<<<<<< HEAD
     react-native: 0.68.2
     react-native-gesture-handler: ^2.7.0
 =======
+=======
+    react: 18.2.0
+>>>>>>> a3084afbf (chore: require exact version of react and react-dom)
     react-native: 0.70.1
     react-native-gesture-handler: ^2.5.0
 >>>>>>> 3f6cba64b (chore(suite-native): RN upgrade to 0.70.1)
@@ -6529,7 +6533,7 @@ __metadata:
   resolution: "@suite-native/forms@workspace:suite-native/forms"
   dependencies:
     "@suite-native/atoms": "*"
-    react: ^18.2.0
+    react: 18.2.0
     react-hook-form: 6.15.7
     yup: ^0.32.11
   languageName: unknown
@@ -6560,7 +6564,7 @@ __metadata:
     "@trezor/styles": "*"
     "@trezor/validation": "*"
     jest: ^26.6.3
-    react: ^18.2.0
+    react: 18.2.0
     react-native: 0.70.1
     react-native-config: ^1.4.6
     react-native-reanimated: ^2.10.0
@@ -6590,7 +6594,7 @@ __metadata:
     "@trezor/icons": "*"
     "@trezor/styles": "*"
     "@trezor/theme": "*"
-    react: ^18.2.0
+    react: 18.2.0
     react-native: 0.70.1
     react-redux: 7.2.2
   languageName: unknown
@@ -6610,7 +6614,7 @@ __metadata:
     "@trezor/styles": "*"
     "@trezor/theme": "*"
     jest: ^26.6.3
-    react: ^18.2.0
+    react: 18.2.0
     react-native: 0.70.1
     typescript: 4.7.4
   languageName: unknown
@@ -6622,7 +6626,7 @@ __metadata:
   dependencies:
     "@reduxjs/toolkit": ^1.8.3
     jest: ^26.6.3
-    react: ^18.2.0
+    react: 18.2.0
     react-native: 0.70.1
     typescript: 4.7.4
   languageName: unknown
@@ -6639,11 +6643,15 @@ __metadata:
     "@trezor/styles": "*"
     "@trezor/theme": "*"
     jest: ^26.6.3
+<<<<<<< HEAD
     react: ^18.2.0
 <<<<<<< HEAD
     react-native: 0.68.2
     react-native-gesture-handler: ^2.7.0
 =======
+=======
+    react: 18.2.0
+>>>>>>> a3084afbf (chore: require exact version of react and react-dom)
     react-native: 0.70.1
     react-native-gesture-handler: ^2.5.0
 >>>>>>> 3f6cba64b (chore(suite-native): RN upgrade to 0.70.1)
@@ -6671,7 +6679,7 @@ __metadata:
     "@trezor/styles": "*"
     "@trezor/theme": "*"
     jest: ^26.6.3
-    react: ^18.2.0
+    react: 18.2.0
     react-native: 0.70.1
     react-redux: 7.2.2
     typescript: 4.7.4
@@ -6689,7 +6697,7 @@ __metadata:
     "@suite-native/navigation": "*"
     "@trezor/styles": "*"
     jest: ^26.6.3
-    react: ^18.2.0
+    react: 18.2.0
     react-native: 0.70.1
     typescript: 4.7.4
   languageName: unknown
@@ -6734,7 +6742,7 @@ __metadata:
     "@trezor/styles": "*"
     "@trezor/theme": "*"
     jest: ^26.6.3
-    react: ^18.2.0
+    react: 18.2.0
     react-native: 0.70.1
     react-redux: 7.2.2
     typescript: 4.7.4
@@ -6755,7 +6763,7 @@ __metadata:
     "@trezor/styles": "*"
     "@trezor/theme": "*"
     jest: ^26.6.3
-    react: ^18.2.0
+    react: 18.2.0
     react-native: 0.70.1
     react-native-safe-area-context: ^4.3.1
     typescript: 4.7.4
@@ -6789,7 +6797,7 @@ __metadata:
   dependencies:
     "@reduxjs/toolkit": ^1.8.3
     jest: ^26.6.3
-    react: ^18.2.0
+    react: 18.2.0
     react-native-mmkv: ^2.4.3
     redux-persist: 6.0.0
     typescript: 4.7.4
@@ -6804,8 +6812,13 @@ __metadata:
     "@trezor/styles": "*"
     "@trezor/theme": "*"
     jest: ^26.6.3
+<<<<<<< HEAD
     react: ^18.2.0
     react-native-gesture-handler: ^2.7.0
+=======
+    react: 18.2.0
+    react-native-gesture-handler: ^2.5.0
+>>>>>>> a3084afbf (chore: require exact version of react and react-dom)
     react-native-reanimated: ^2.10.0
     react-native-safe-area-context: ^4.3.1
     react-redux: 7.2.2
@@ -6827,7 +6840,7 @@ __metadata:
     "@suite-native/navigation": "*"
     "@trezor/icons": "*"
     "@trezor/styles": "*"
-    react: ^18.2.0
+    react: 18.2.0
     react-native: 0.70.1
     react-redux: 7.2.2
   languageName: unknown
@@ -7030,7 +7043,7 @@ __metadata:
     "@tippyjs/react": ^4.2.6
     "@trezor/dom-utils": "*"
     "@trezor/react-utils": "*"
-    "@types/react": ^18.0.21
+    "@types/react": 18.0.21
     "@types/react-date-range": ^1.4.4
     "@types/react-truncate": ^2.3.4
     "@types/styled-components": ^5.1.26
@@ -7039,9 +7052,9 @@ __metadata:
     jest: ^26.6.3
     lottie-react: ^2.3.1
     polished: ^4.2.2
-    react: ^18.2.0
+    react: 18.2.0
     react-date-range: ^1.4.0
-    react-dom: ^18.2.0
+    react-dom: 18.2.0
     react-intl: ^6.0.5
     react-select: ^5.4.0
     react-svg: ^15.1.6
@@ -7058,7 +7071,7 @@ __metadata:
     typescript-styled-plugin: ^0.18.2
     zxcvbn: ^4.4.2
   peerDependencies:
-    react: ^18.2.0
+    react: 18.2.0
     styled-components: ^5.3.5
   languageName: unknown
   linkType: soft
@@ -7090,8 +7103,8 @@ __metadata:
     markdown-it: ^12.3.2
     markdown-it-link-attributes: ^4.0.0
     markdown-it-replace-link: ^1.0.1
-    react: ^18.2.0
-    react-dom: ^18.2.0
+    react: 18.2.0
+    react-dom: 18.2.0
     react-infinity-menu: ^4.0.0
     react-inspector: ^2.3.1
     react-json-tree: ^0.11.0
@@ -7168,7 +7181,7 @@ __metadata:
     "@trezor/crypto-utils": "*"
     "@trezor/trezor-user-env-link": "*"
     "@trezor/urls": "*"
-    "@types/react": ^18.0.21
+    "@types/react": 18.0.21
     "@types/styled-components": ^5.1.25
     jest: ^26.6.3
     playwright: ^1.22.2
@@ -7179,7 +7192,7 @@ __metadata:
     webpack-dev-server: ^4.7.4
     xvfb-maybe: ^0.2.1
   peerDependencies:
-    react: ^18.2.0
+    react: 18.2.0
     styled-components: ^5.3.5
   languageName: unknown
   linkType: soft
@@ -7192,14 +7205,13 @@ __metadata:
     "@trezor/connect": 9.0.2
     "@trezor/env-utils": "*"
     "@trezor/urls": "*"
-    "@types/react": ^18.0.21
+    "@types/react": 18.0.21
     "@types/styled-components": ^5.1.25
     jest: ^26.6.3
-    react: ^18.2.0
     react-intl: ^6.0.5
     typescript: 4.7.4
   peerDependencies:
-    react: ^18.2.0
+    react: 18.2.0
     styled-components: ^5.3.5
   languageName: unknown
   linkType: soft
@@ -7289,7 +7301,7 @@ __metadata:
     "@trezor/styles": "*"
     "@trezor/theme": "*"
     jest: ^26.6.3
-    react: ^18.2.0
+    react: 18.2.0
     react-native: 0.70.1
     svgo: 2.8.0
     tsx: ^3.8.2
@@ -7350,7 +7362,7 @@ __metadata:
     "@trezor/type-utils": "*"
     "@trezor/utils": "*"
     jest: ^26.6.3
-    react: ^18.2.0
+    react: 18.2.0
     typescript: 4.7.4
   languageName: unknown
   linkType: soft
@@ -7406,7 +7418,7 @@ __metadata:
     fela-utils: ^12.1.1
     jest: ^26.6.3
     polished: ^4.2.2
-    react: ^18.2.0
+    react: 18.2.0
     react-fela: ^12.1.1
     typescript: 4.7.4
   languageName: unknown
@@ -7501,21 +7513,19 @@ __metadata:
     "@suite-common/sentry": "*"
     "@trezor/components": "*"
     "@trezor/connect": 9.0.3
-    "@trezor/ipc-proxy": "*"
     "@trezor/suite": "*"
     "@trezor/suite-analytics": "*"
     "@trezor/suite-desktop-api": "*"
     "@trezor/urls": "*"
     "@trezor/utils": "*"
-    "@types/react": ^17.0.48
-    "@types/react-dom": ^17.0.17
-    "@types/react-redux": ^7.1.24
+    "@types/react": 18.0.21
+    "@types/react-dom": 18.0.6
     "@types/styled-components": ^5.1.26
     jest: ^26.6.3
-    react: 17.0.2
-    react-dom: 17.0.2
+    react: 18.2.0
+    react-dom: 18.2.0
     react-markdown: ^8.0.3
-    react-redux: 7.2.2
+    react-redux: 8.0.4
     react-router-dom: ^5.2.0
     styled-components: ^5.3.5
     typescript: 4.7.4
@@ -7545,7 +7555,7 @@ __metadata:
     "@types/electron-localshortcut": ^3.1.0
     "@types/node-fetch": ^2.6.2
     "@types/react": ^18.0.21
-    "@types/react-dom": ^18.0.6
+    "@types/react-dom": 18.0.6
     "@types/react-redux": ^7.1.24
     "@types/styled-components": ^5.1.26
     chalk: ^4.1.2
@@ -7561,8 +7571,8 @@ __metadata:
     node-fetch: ^2.6.7
     openpgp: ^5.5.0
     playwright: ^1.22.2
-    react: ^18.2.0
-    react-dom: ^18.2.0
+    react: 18.2.0
+    react-dom: 18.2.0
     react-markdown: ^8.0.3
     react-redux: 7.2.2
     react-router-dom: ^5.2.0
@@ -7664,15 +7674,15 @@ __metadata:
     "@trezor/suite": "*"
     "@trezor/urls": "*"
     "@trezor/utils": "*"
-    "@types/react": ^18.0.21
-    "@types/react-dom": ^18.0.6
+    "@types/react": 18.0.21
+    "@types/react-dom": 18.0.6
     copy-webpack-plugin: ^11.0.0
     jest: ^26.6.3
     next: ^12.2.5
     next-optimized-images: ^2.6.2
     next-transpile-modules: ^9.0.0
-    react: ^18.2.0
-    react-dom: ^18.2.0
+    react: 18.2.0
+    react-dom: 18.2.0
     react-intl: ^6.0.5
     typescript: 4.7.4
   languageName: unknown
@@ -7686,8 +7696,8 @@ __metadata:
     "@suite-common/formatters": "*"
     "@suite-common/sentry": "*"
     "@trezor/suite": "*"
-    "@types/react": ^18.0.21
-    "@types/react-dom": ^18.0.6
+    "@types/react": 18.0.21
+    "@types/react-dom": 18.0.6
     "@types/react-helmet": ^6.1.5
     "@types/react-redux": ^7.1.24
     "@types/react-router": ^5.1.18
@@ -7758,8 +7768,8 @@ __metadata:
     "@types/pako": ^1.0.1
     "@types/pdfmake": ^0.1.1
     "@types/qrcode.react": ^1.0.2
-    "@types/react": ^18.0.21
-    "@types/react-dom": ^18.0.6
+    "@types/react": 18.0.21
+    "@types/react-dom": 18.0.6
     "@types/react-qr-reader": ^2.1.4
     "@types/react-redux": ^7.1.24
     "@types/react-test-renderer": ^18.0.0
@@ -7789,8 +7799,8 @@ __metadata:
     polished: ^4.2.2
     prettier: ^2.7.1
     qrcode.react: ^3.1.0
-    react: ^18.2.0
-    react-dom: ^18.2.0
+    react: 18.2.0
+    react-dom: 18.2.0
     react-focus-lock: ^2.9.1
     react-hook-form: 6.15.7
     react-intl: ^6.0.5
@@ -7838,11 +7848,11 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/transport-native@workspace:packages/transport-native"
   dependencies:
-    "@types/react": ^18.0.21
+    "@types/react": 18.0.21
     "@types/react-native": 0.70.3
     jest: ^26.6.3
     pod-install: ^0.1.31
-    react: ^18.2.0
+    react: 18.2.0
     react-native: 0.70.1
     typescript: 4.7.4
   peerDependencies:
@@ -8923,21 +8933,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/react-dom@npm:18.0.6":
+  version: 18.0.6
+  resolution: "@types/react-dom@npm:18.0.6"
+  dependencies:
+    "@types/react": "*"
+  checksum: db571047af1a567631758700b9f7d143e566df939cfe5fbf7535347cc0c726a1cdbb5e3f8566d076e54cf708b6c1166689de194a9ba09ee35efc9e1d45911685
+  languageName: node
+  linkType: hard
+
 "@types/react-dom@npm:<18.0.0":
   version: 17.0.17
   resolution: "@types/react-dom@npm:17.0.17"
   dependencies:
     "@types/react": ^17
   checksum: 23caf98aa03e968811560f92a2c8f451694253ebe16b670929b24eaf0e7fa62ba549abe9db0ac028a9d8a9086acd6ab9c6c773f163fa21224845edbc00ba6232
-  languageName: node
-  linkType: hard
-
-"@types/react-dom@npm:^18.0.6":
-  version: 18.0.6
-  resolution: "@types/react-dom@npm:18.0.6"
-  dependencies:
-    "@types/react": "*"
-  checksum: db571047af1a567631758700b9f7d143e566df939cfe5fbf7535347cc0c726a1cdbb5e3f8566d076e54cf708b6c1166689de194a9ba09ee35efc9e1d45911685
   languageName: node
   linkType: hard
 
@@ -9037,7 +9047,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:*, @types/react@npm:16 || 17 || 18, @types/react@npm:^18.0.21":
+"@types/react@npm:*, @types/react@npm:16 || 17 || 18, @types/react@npm:18.0.21":
   version: 18.0.21
   resolution: "@types/react@npm:18.0.21"
   dependencies:
@@ -27914,7 +27924,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-dom@npm:^18.2.0":
+"react-dom@npm:18.2.0":
   version: 18.2.0
   resolution: "react-dom@npm:18.2.0"
   dependencies:
