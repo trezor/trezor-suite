@@ -2,7 +2,6 @@
 .config_sign_stable: &config_sign_stable
   interruptible: true
   dependencies:
-    - install
     - msg-system config sign stable
 
 .config_sign_dev: &config_sign_dev
