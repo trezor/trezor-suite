@@ -246,7 +246,6 @@ module.exports = {
                 'packages/suite/**/*',
                 'packages/suite-build/**/*',
                 'packages/suite-data/**/*',
-                'packages/suite-desktop/**/*',
                 'packages/suite-desktop-api/**/*',
                 'packages/suite-storage/**/*',
                 'packages/suite-web-landing/**/*',
