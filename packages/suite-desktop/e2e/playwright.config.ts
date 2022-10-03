@@ -1,4 +1,4 @@
-import { PlaywrightTestConfig } from '@playwright/test';
+import type { PlaywrightTestConfig } from '@playwright/test';
 
 const config: PlaywrightTestConfig = {
     testDir: 'tests',
@@ -8,4 +8,6 @@ const config: PlaywrightTestConfig = {
         headless: true,
     },
 };
+
+// eslint-disable-next-line import/no-default-export
 export default config;

@@ -1,12 +1,13 @@
-const { _electron: electron } = require('playwright');
-const path = require('path');
-const { promisify } = require('util');
+import { promisify } from 'util';
+import path from 'path';
+import fs from 'fs';
+import { Page, _electron as electron } from 'playwright';
 
-const mkdir = promisify(require('fs').mkdir);
-const fileExists = promisify(require('fs').exists);
-const copyFile = promisify(require('fs').copyFile);
+const mkdir = promisify(fs.mkdir);
+const fileExists = promisify(fs.exists);
+const copyFile = promisify(fs.copyFile);
 
-module.exports.launchSuite = async () => {
+export const launchSuite = async () => {
     const electronApp = await electron.launch({
         cwd: '../suite-desktop',
         args: ['./dist/app.js', '--log-level=debug', '--bridge-test'],
@@ -15,7 +16,7 @@ module.exports.launchSuite = async () => {
     return { electronApp, window };
 };
 
-module.exports.patchBinaries = async () => {
+export const patchBinaries = async () => {
     const binResourcesPathFrom = path.join(__dirname, '../../..', 'suite-data/files/bin');
     const binResourcesPathTo = path.join(
         __dirname,
@@ -42,5 +43,5 @@ module.exports.patchBinaries = async () => {
     await copyFile(torPathFrom, `${torPathTo}/tor`);
 };
 
-module.exports.waitForDataTestSelector = (window, selector, options) =>
+export const waitForDataTestSelector = (window: Page, selector: string, options = {}) =>
     window.waitForSelector(`[data-test="${selector}"]`, options);
