@@ -38,7 +38,22 @@ export const AddCoinJoinAccountButton = ({ network }: AddCoinJoinAccountProps) =
     // TODO: more disabled button states
     // no-capability, device connected etc
 
+    const goBackToAddAccount = () =>
+        dispatch(
+            modalActions.openModal({
+                type: 'add-account',
+                device,
+            }),
+        );
+
     const onCreateCoinjoinAccountClick = async () => {
+        const accessCoinjoinAccount = await dispatch(
+            modalActions.openDeferredModal({ type: 'access-coinjoin-account' }),
+        );
+        if (!accessCoinjoinAccount) {
+            return goBackToAddAccount();
+        }
+
         // Checking if Tor is enable and if not open modal to force the user to enable it to use coinjoin.
         // TODO: if the current network is regtest or testnet we could ignore this to make faster developer experience.
         // const isDevNetwork = ['regtest', 'test'].includes(network.symbol);
@@ -48,15 +63,7 @@ export const AddCoinJoinAccountButton = ({ network }: AddCoinJoinAccountProps) =
                 modalActions.openDeferredModal({ type: 'request-enable-tor' }),
             );
             if (!continueWithTor) {
-                // Going back to the previous screen.
-                dispatch(
-                    modalActions.openModal({
-                        type: 'add-account',
-                        device,
-                    }),
-                );
-
-                return;
+                return goBackToAddAccount();
             }
 
             // Triggering Tor process and displaying Tor loading to give user feedback of Tor progress.
