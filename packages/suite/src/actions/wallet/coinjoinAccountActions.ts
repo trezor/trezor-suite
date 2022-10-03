@@ -283,9 +283,11 @@ export const startCoinjoinSession =
             }),
         );
 
-        // register authorized account
         if (authResult) {
+            // register authorized account
             client.registerAccount(account);
+            // switch to account
+            dispatch(goto('wallet-index', { preserveParams: true }));
         }
     };
 
