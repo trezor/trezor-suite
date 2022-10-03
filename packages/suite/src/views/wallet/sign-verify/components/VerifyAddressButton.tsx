@@ -43,9 +43,7 @@ interface VerifyAddressButtonProps {
     item: { label: string; value: string };
 }
 
-export const VerifyAddressButton: React.FC<VerifyAddressButtonProps> = ({
-    item: { label, value },
-}) => {
+export const VerifyAddressButton = ({ item: { label, value } }: VerifyAddressButtonProps) => {
     const { showAddress } = useActions({
         showAddress: showAddressAction,
     });

@@ -56,13 +56,13 @@ type SignAddressInputProps = {
     revealedAddresses: RevealedAddresses;
 } & Omit<SelectProps, 'useKeyPressScroll'>;
 
-export const SignAddressInput: React.FC<SignAddressInputProps> = ({
+export const SignAddressInput = ({
     account,
     revealedAddresses,
     value,
     onChange,
     ...selectProps
-}) => {
+}: SignAddressInputProps) => {
     const { getValue, groupedOptions } = useSignAddressOptions(account, revealedAddresses);
 
     const handleChange = (addr: AddressItem | null) => onChange?.(optionToAddress(addr));

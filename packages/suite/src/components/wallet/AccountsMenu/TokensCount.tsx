@@ -18,7 +18,7 @@ interface TokensCountProps {
     onClick: React.MouseEventHandler<HTMLButtonElement>;
 }
 
-export const TokensCount: React.FC<TokensCountProps> = ({ count, onClick }) => {
+export const TokensCount = ({ count, onClick }: TokensCountProps) => {
     const theme = useTheme();
     return (
         <ButtonBadge

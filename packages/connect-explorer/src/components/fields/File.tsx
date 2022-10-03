@@ -4,26 +4,26 @@ import { Button } from '@trezor/components';
 import { Row } from './Row';
 import type { Field } from '../../types';
 
-interface Props {
+interface FileProps {
     field: Field<any>;
     disabled?: boolean;
     onChange: (field: Field<any>, value: any) => any;
 }
 
-const File: React.FC<Props> = props => {
+const File = ({ disabled, field, onChange }: FileProps) => {
     const onFilesAdded = evt => {
-        if (props.disabled) return;
+        if (disabled) return;
         const files = evt?.target.files;
         const file = files[0];
         const reader = new FileReader();
         reader.onload = event => {
-            props.onChange(props.field, event?.target?.result);
+            onChange(field, event?.target?.result);
         };
         reader.readAsArrayBuffer(file);
     };
 
     return (
-        <Row style={{ cursor: props.disabled ? 'default' : 'pointer' }}>
+        <Row style={{ cursor: disabled ? 'default' : 'pointer' }}>
             <Button onClick={() => document!.getElementById('files')?.click()}>Chose File</Button>
 
             <input

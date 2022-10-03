@@ -35,10 +35,7 @@ const GithubWrapper = styled.div`
 
 type VersionWithGithubTooltipProps = { appVersion: string; isDev?: boolean };
 
-export const VersionWithGithubTooltip: React.FC<VersionWithGithubTooltipProps> = ({
-    appVersion,
-    isDev,
-}) => (
+export const VersionWithGithubTooltip = ({ appVersion, isDev }: VersionWithGithubTooltipProps) => (
     <VersionTooltip
         cursor="pointer"
         content={

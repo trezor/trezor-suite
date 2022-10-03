@@ -46,7 +46,7 @@ const ExpandedMobileNavigation = styled.div`
     height: 100%;
 `;
 
-export const NavigationBar: React.FC = () => {
+export const NavigationBar = () => {
     const coinjoinAccounts = useSelector(state => state.wallet.coinjoin.accounts);
     const [opened, setOpened] = useState(false);
 

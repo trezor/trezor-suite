@@ -8,7 +8,7 @@ interface NavigationProps {
     setPage: (page: NavPages) => void;
 }
 
-export const Navigation: React.FC<NavigationProps> = ({ page, setPage }) => (
+export const Navigation = ({ page, setPage }: NavigationProps) => (
     <WalletLayoutNavigation>
         <WalletLayoutNavLink
             title="TR_SIGN_MESSAGE"

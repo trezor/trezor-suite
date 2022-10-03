@@ -9,17 +9,17 @@ const Row = styled.div`
     padding-bottom: 10px;
 `;
 
-interface Props {
+interface TextareaProps {
     field: Field<string>;
     onChange: (field: Field<string>, value: string) => any;
 }
 
-const Textarea: React.FC<Props> = props => (
+const Textarea = ({ field, onChange }: TextareaProps) => (
     <Row>
         <TextareaComponent
-            label={props.field.name}
-            value={props.field.value}
-            onChange={event => props.onChange(props.field, event.target.value)}
+            label={field.name}
+            value={field.value}
+            onChange={event => onChange(field, event.target.value)}
         />
     </Row>
 );

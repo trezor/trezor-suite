@@ -146,7 +146,7 @@ const DocStyles = createGlobalStyle`
     }
 }
 `;
-interface Props {
+interface ResponseProps {
     tab: AppState['method']['tab'];
     response: AppState['method']['response'];
     code: AppState['method']['javascriptCode'];
@@ -154,7 +154,7 @@ interface Props {
     docs?: string;
 }
 
-const Response: React.FC<Props> = props => {
+const Response = ({ code, docs, hasDocumentation, response, tab }: ResponseProps) => {
     const actions = useActions({
         onTabChange: methodActions.onTabChange,
     });
@@ -162,7 +162,7 @@ const Response: React.FC<Props> = props => {
     const { onTabChange } = actions;
 
     return (
-        <MethodResult tab={props.tab}>
+        <MethodResult tab={tab}>
             <div>
                 <MethodResultMenuItem data-tab="response" onClick={() => onTabChange('response')}>
                     Response
@@ -170,21 +170,21 @@ const Response: React.FC<Props> = props => {
                 <MethodResultMenuItem data-tab="code" onClick={() => onTabChange('code')}>
                     Javascript code
                 </MethodResultMenuItem>
-                {props.hasDocumentation && (
+                {hasDocumentation && (
                     <MethodResultMenuItem data-tab="docs" onClick={() => onTabChange('docs')}>
                         Documentation
                     </MethodResultMenuItem>
                 )}
             </div>
             {(() => {
-                switch (props.tab) {
+                switch (tab) {
                     case 'response': {
-                        const json = props.response ? (
-                            <Inspector data={props.response} expandLevel={10} />
+                        const json = response ? (
+                            <Inspector data={response} expandLevel={10} />
                         ) : null;
                         return (
                             <Container data-test="@response">
-                                <CopyToClipboard data={stringifyObject(props.response)} />
+                                <CopyToClipboard data={stringifyObject(response)} />
                                 {json}
                             </Container>
                         );
@@ -193,8 +193,8 @@ const Response: React.FC<Props> = props => {
                     case 'code':
                         return (
                             <CodeContainer data-test="@code">
-                                <CopyToClipboard data={props.code} />
-                                {props.code}
+                                <CopyToClipboard data={code} />
+                                {code}
                             </CodeContainer>
                         );
 
@@ -204,7 +204,7 @@ const Response: React.FC<Props> = props => {
                                 <DocStyles />
                                 <Container
                                     className="docs-container"
-                                    dangerouslySetInnerHTML={{ __html: props.docs! }}
+                                    dangerouslySetInnerHTML={{ __html: docs! }}
                                 />
                                 ;
                             </div>

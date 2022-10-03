@@ -88,7 +88,7 @@ const Copybutton = styled(Button)`
     top: -2px;
 `;
 
-const SignVerify: React.FC = () => {
+const SignVerify = () => {
     const { selectedAccount, revealedAddresses } = useSelector(state => ({
         selectedAccount: state.wallet.selectedAccount,
         revealedAddresses: state.wallet.receive,

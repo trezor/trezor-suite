@@ -78,12 +78,12 @@ interface NodeProps {
     };
 }
 
-const Node: React.FC<NodeProps> = props => {
-    const css = props.data.currentUrl === props.data.url ? 'selected' : '';
-    const href = props.data.url;
+const Node = ({ data, name }: NodeProps) => {
+    const css = data.currentUrl === data.url ? 'selected' : '';
+    const href = data.url;
     return (
-        <a key={props.data.keyPath} className={css} href={`#${href}`}>
-            {props.name}
+        <a key={data.keyPath} className={css} href={`#${href}`}>
+            {name}
         </a>
     );
 };
@@ -93,11 +93,11 @@ interface LeafProps extends NodeProps {
     isOpen: boolean;
 }
 
-const Leaf: React.FC<LeafProps> = props => {
-    const css = props.isOpen ? 'leaf selected' : 'leaf';
-    const href = `#${props.data.url}`;
+const Leaf = ({ data, isOpen, name, onClick }: LeafProps) => {
+    const css = isOpen ? 'leaf selected' : 'leaf';
+    const href = `#${data.url}`;
     return (
-        <div key={props.data.keyPath} className={css} onClick={props.onClick}>
+        <div key={data.keyPath} className={css} onClick={onClick}>
             <div className="leaf-arrow">
                 <svg
                     fill="currentColor"
@@ -111,7 +111,7 @@ const Leaf: React.FC<LeafProps> = props => {
                     </g>
                 </svg>
             </div>
-            {props.name}
+            {name}
         </div>
     );
 };

@@ -102,13 +102,13 @@ interface VerifyButtonProps {
     name: string;
 }
 
-const VerifyButton: React.FC<VerifyButtonProps> = props => {
+const VerifyButton = ({ name, onClick }: VerifyButtonProps) => {
     const signMethods = ['signMessage', 'ethereumSignMessage'];
     const verifyUrls = ['/method/verifyMessage', '/method/ethereumVerifyMessage'];
-    const index = signMethods.indexOf(props.name);
+    const index = signMethods.indexOf(name);
     if (index < 0) return null;
 
-    return <Button onClick={() => props.onClick(verifyUrls[index])}>Verify response</Button>;
+    return <Button onClick={() => onClick(verifyUrls[index])}>Verify response</Button>;
 };
 
 const Method = () => {

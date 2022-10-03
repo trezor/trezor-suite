@@ -18,7 +18,7 @@ const Wrapper = styled.div`
 
 type RowProps = React.HTMLAttributes<HTMLDivElement>;
 
-export const Row: React.FC<RowProps> = ({ children, ...rest }) => (
+export const Row = ({ children, ...rest }: RowProps) => (
     <Wrapper>
         <Content {...rest}>{children}</Content>
     </Wrapper>
