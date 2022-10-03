@@ -15,8 +15,7 @@
         "@trezor/connect": "9.0.3",
         "@trezor/connect-ui": "*",
         "@trezor/crypto-utils": "*",
-        "@trezor/urls": "*",
-        "react": "^18.2.0"
+        "@trezor/urls": "*"
     },
     "devDependencies": {
         "@playwright/test": "^1.22.2",
