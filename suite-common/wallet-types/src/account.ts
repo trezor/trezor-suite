@@ -46,6 +46,10 @@ type AccountNetworkSpecific =
           page: AccountInfo['page'];
       };
 
+export interface AddressesWithAnonymity extends NonNullable<AccountInfo['addresses']> {
+    anonymitySet?: Record<string, number | undefined>; // key -> address, value -> anonymity
+}
+
 export interface AccountLastKnownState {
     time: number;
     blockHash: string;
@@ -70,7 +74,7 @@ export type Account = {
     availableBalance: string;
     formattedBalance: string;
     tokens: AccountInfo['tokens'];
-    addresses: AccountInfo['addresses'];
+    addresses?: AddressesWithAnonymity;
     utxo: AccountInfo['utxo'];
     history: AccountInfo['history'];
     metadata: AccountMetadata;
