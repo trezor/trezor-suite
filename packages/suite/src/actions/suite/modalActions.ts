@@ -138,6 +138,10 @@ export type UserContextPayload =
           decision: Deferred<boolean>;
       }
     | {
+          type: 'access-coinjoin-account';
+          decision: Deferred<boolean>;
+      }
+    | {
           type: 'cancel-coinjoin';
       };
 
@@ -223,6 +227,7 @@ type DeferredModals = Extract<
             | 'disable-tor'
             | 'request-enable-tor'
             | 'tor-loading'
+            | 'access-coinjoin-account'
             | 'review-transaction'
             | 'import-transaction'
             | 'coinmarket-buy-terms'
