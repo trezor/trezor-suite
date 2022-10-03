@@ -60,6 +60,7 @@ export { default as requestLogin } from './requestLogin';
 export { default as resetDevice } from './resetDevice';
 export { default as rippleGetAddress } from './rippleGetAddress';
 export { default as rippleSignTransaction } from './rippleSignTransaction';
+export { default as setBusy } from './setBusy';
 export { default as setProxy } from './setProxy';
 export { default as signMessage } from './signMessage';
 export { default as signTransaction } from './signTransaction';

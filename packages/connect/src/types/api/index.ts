@@ -60,6 +60,7 @@ import { requestLogin } from './requestLogin';
 import { resetDevice } from './resetDevice';
 import { rippleGetAddress } from './rippleGetAddress';
 import { rippleSignTransaction } from './rippleSignTransaction';
+import { setBusy } from './setBusy';
 import { setProxy } from './setProxy';
 import { signMessage } from './signMessage';
 import { signTransaction } from './signTransaction';
@@ -260,6 +261,9 @@ export interface TrezorConnect {
 
     // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/rippleSignTransaction.md
     rippleSignTransaction: typeof rippleSignTransaction;
+
+    // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/setBusy.md
+    setBusy: typeof setBusy;
 
     // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/setProxy.md
     setProxy: typeof setProxy;

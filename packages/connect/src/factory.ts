@@ -229,6 +229,8 @@ export const factory = ({
 
         rebootToBootloader: params => call({ ...params, method: 'rebootToBootloader' }),
 
+        setBusy: params => call({ ...params, method: 'setBusy' }),
+
         setProxy: params => call({ ...params, method: 'setProxy' }),
 
         dispose,
