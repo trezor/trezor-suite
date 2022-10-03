@@ -38,9 +38,7 @@ export const VersionWithUpdate = () => {
     });
     const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.VersionWithUpdate);
 
-    const { desktopUpdate } = useSelector(state => ({
-        desktopUpdate: state.desktopUpdate,
-    }));
+    const desktopUpdate = useSelector(state => state.desktopUpdate);
 
     const checkForUpdates = useCallback(() => desktopApi.checkForUpdates(true), []);
     const maximizeUpdater = useCallback(() => setUpdateWindow('maximized'), [setUpdateWindow]);

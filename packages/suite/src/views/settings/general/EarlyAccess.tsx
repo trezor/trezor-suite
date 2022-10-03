@@ -19,9 +19,7 @@ const Version = styled.div`
 export const EarlyAccess = () => {
     const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.EarlyAccess);
 
-    const { desktopUpdate } = useSelector(state => ({
-        desktopUpdate: state.desktopUpdate,
-    }));
+    const desktopUpdate = useSelector(state => state.desktopUpdate);
 
     const { openEarlyAccessSetup } = useActions({
         openEarlyAccessSetup: desktopUpdateActions.openEarlyAccessSetup,
