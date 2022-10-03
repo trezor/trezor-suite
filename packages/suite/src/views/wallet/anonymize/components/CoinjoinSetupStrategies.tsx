@@ -143,9 +143,9 @@ export const CoinjoinSetupStrategies = ({ account }: CoinjoinSetupStrategiesProp
             </StyledCard>
 
             <Tooltip
-                content={<Translation id="TR_ANONYMISATION_BUTTON_DISABLED" />}
+                content={!allChecked && <Translation id="TR_ANONYMISATION_BUTTON_DISABLED" />}
                 interactive={false}
-                disabled={!allChecked}
+                cursor="pointer"
             >
                 <StyledButton isDisabled={!allChecked} onClick={anonymize}>
                     <Translation id="TR_ANONYMIZE" />

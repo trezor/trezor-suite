@@ -115,7 +115,7 @@ export type TooltipProps = Omit<TippyProps, 'offset'> & {
     title?: React.ReactElement;
 };
 
-const Tooltip = ({
+export const Tooltip = ({
     placement = 'top',
     interactive = true,
     children,
@@ -227,5 +227,3 @@ const Tooltip = ({
         <>{children}</>
     );
 };
-
-export { Tooltip };
