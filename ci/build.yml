@@ -44,26 +44,6 @@ suite-web build dev:
     paths:
       - packages/suite-web/build
 
-suite-web build stable:
-  stage: build
-  <<: *config_sign_dev
-  only:
-    refs:
-      - develop
-      - releases
-      - schedules
-      - /^release\//
-  variables:
-    ASSET_PREFIX: /web
-  script:
-    - yarn install --immutable
-    - yarn workspace @trezor/suite-web build
-  artifacts:
-    expire_in: 7 days
-    paths:
-      - packages/suite-web/scripts/s3sync.sh
-      - packages/suite-web/build
-
 suite-web build stable codesign:
   stage: build
   <<: *config_sign_stable
