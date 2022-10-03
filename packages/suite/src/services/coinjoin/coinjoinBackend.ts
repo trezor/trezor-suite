@@ -1,6 +1,7 @@
 import { CoinjoinBackend } from '@trezor/coinjoin';
 import TrezorConnect, { AccountInfo } from '@trezor/connect';
 import { COINJOIN_NETWORKS } from './config';
+import { Account } from '@suite-common/wallet-types';
 
 const loadInstance = (network: string) => {
     const settings = COINJOIN_NETWORKS[network];
@@ -14,14 +15,15 @@ const loadInstance = (network: string) => {
 const slip25Path = "/10025'/1'/0'/1'";
 const taprootPath = "/86'/1'/0'";
 
-const blockbookPatchResponse = (accountInfo: AccountInfo) => {
+const blockbookPatchResponse = (accountInfo: AccountInfo, anonymitySet: any) => {
     const { addresses } = accountInfo;
     if (!addresses) return accountInfo;
 
-    const patchAddresses: AccountInfo['addresses'] = {
+    const patchAddresses: Account['addresses'] = {
         used: [],
         unused: [],
         change: [],
+        anonymitySet,
     };
     const replace = (path: string) => {
         if (!path.includes('unknown')) return { isChange: false, path };
@@ -87,8 +89,17 @@ const getCoinjoinAccountInfo = async (
         return;
     }
 
+    // getCoinjoinAccountInfo is only a "mock"
+    // anonymitySet is also temporary mocked
+    const anonymitySet: Record<string, number> = {};
+    accountInfo.payload.utxo?.forEach(utxo => {
+        anonymitySet[utxo.address] = 1;
+    });
+
+    const info = blockbookPatchResponse(accountInfo.payload, anonymitySet);
+
     if (lastKnownState?.blockHash === '11') {
-        return blockbookPatchResponse(accountInfo.payload);
+        return info;
     }
 
     return new Promise<typeof accountInfo.payload>(resolve => {
@@ -110,7 +121,7 @@ const getCoinjoinAccountInfo = async (
                 onProgress({
                     blockHash: '11',
                 });
-                resolve(blockbookPatchResponse(accountInfo.payload));
+                resolve(info);
             }
         };
         tick();
