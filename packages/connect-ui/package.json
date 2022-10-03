@@ -15,7 +15,6 @@
         "@trezor/connect": "9.0.3",
         "@trezor/env-utils": "*",
         "@trezor/urls": "*",
-        "react": "^18.2.0",
         "react-intl": "^6.0.5"
     },
     "devDependencies": {
