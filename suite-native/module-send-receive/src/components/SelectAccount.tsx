@@ -1,13 +1,18 @@
 import React, { useState } from 'react';
 
-import { Box, SearchInput, Text, VStack } from '@suite-native/atoms';
+import { Box, Button, SearchInput, Text, VStack } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { sendReceiveContentType, SendReceiveContentType } from '../contentType';
 
 const buttonsWrapperStyle = prepareNativeStyle(utils => ({
     marginBottom: utils.spacings.extraLarge,
 }));
 
-export const SelectAccount = () => {
+type SelectAccountProps = {
+    onChangeContent: (type: SendReceiveContentType) => void;
+};
+
+export const SelectAccount = ({ onChangeContent }: SelectAccountProps) => {
     const [inputText, setInputText] = useState<string>('');
     const { applyStyle } = useNativeStyles();
 
@@ -20,6 +25,13 @@ export const SelectAccount = () => {
                     onChange={setInputText}
                     placeholder='Search "Bitcoin"'
                 />
+                <Button
+                    onPress={() =>
+                        onChangeContent(sendReceiveContentType.createNewAddressToReceive)
+                    }
+                >
+                    Simulate account withdrawal
+                </Button>
             </VStack>
         </Box>
     );
