@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import * as routerActions from '@suite-actions/routerActions';
+import { goto } from '@suite-actions/routerActions';
 import { Account, CoinjoinSession } from '@suite-common/wallet-types';
 import { Card, Translation } from '@suite-components';
 import { useActions, useSelector } from '@suite-hooks';
@@ -41,14 +41,14 @@ interface BalanceSectionProps {
 }
 
 export const BalanceSection = ({ account }: BalanceSectionProps) => {
-    const { goto } = useActions({
-        goto: routerActions.goto,
+    const actions = useActions({
+        goto,
     });
     const { coinjoin } = useSelector(state => state.wallet);
 
     const session = coinjoin.accounts.find(a => a.key === account.key)?.session;
 
-    const goToSetup = () => goto('wallet-anonymize', { preserveParams: true });
+    const goToSetup = () => actions.goto('wallet-anonymize', { preserveParams: true });
 
     return (
         <Container>
