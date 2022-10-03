@@ -3825,6 +3825,35 @@ export default defineMessages({
         id: 'TR_TOR_REQUEST_ENABLE_FOR_COIN_JOIN_LEAVE',
         defaultMessage: 'Leave',
     },
+    TR_COINJOIN_ACCESS_ACCOUNT_TITLE: {
+        id: 'TR_COINJOIN_ACCESS_ACCOUNT_TITLE',
+        defaultMessage: 'Access Coinjoin Account',
+    },
+    TR_COINJOIN_ACCESS_ACCOUNT_SUBTITLE: {
+        id: 'TR_COINJOIN_ACCESS_ACCOUNT_SUBTITLE',
+        defaultMessage: 'Privacy enhanced Bitcoin account',
+    },
+    TR_COINJOIN_ACCESS_ACCOUNT_STEP_INITIAL_TITLE: {
+        id: 'TR_COINJOIN_ACCESS_ACCOUNT_STEP_INITIAL_TITLE',
+        defaultMessage: 'Anonymize your funds',
+    },
+    TR_COINJOIN_ACCESS_ACCOUNT_STEP_INITIAL_DESCRIPTION: {
+        id: 'TR_COINJOIN_ACCESS_ACCOUNT_STEP_INITIAL_DESCRIPTION',
+        defaultMessage:
+            'Inputs from multiple senders are combined into a single transaction, making it difficult for external parties to analyze your connection to an old address.',
+    },
+    TR_COINJOIN_ACCESS_ACCOUNT_STEP_INITIAL_FEE_MESSAGE: {
+        id: 'TR_COINJOIN_ACCESS_ACCOUNT_STEP_INITIAL_DESCRIPTION',
+        defaultMessage: 'A fee of {fee}% of the used amount is applied',
+    },
+    TR_COINJOIN_ACCESS_ACCOUNT_STEP_ANONYMITY_LEVEL_TITLE: {
+        id: 'TR_COINJOIN_ACCESS_ACCOUNT_STEP_ANONYMITY_LEVEL_TITLE',
+        defaultMessage: 'Anonymity level',
+    },
+    TR_COINJOIN_ACCESS_ACCOUNT_STEP_ANONYMITY_LEVEL_DESCRIPTION: {
+        id: 'TR_COINJOIN_ACCESS_ACCOUNT_STEP_ANONYMITY_LEVEL_DESCRIPTION',
+        defaultMessage: 'Shows the number of people with whom your resources are indistinguishable',
+    },
     TR_TRANSACTIONS: {
         id: 'TR_TRANSACTIONS',
         defaultMessage: 'Transactions',
