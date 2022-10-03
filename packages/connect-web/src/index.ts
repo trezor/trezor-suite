@@ -158,8 +158,8 @@ const init = async (settings: Partial<ConnectSettings> = {}): Promise<void> => {
 
     _log.enabled = !!_settings.debug;
 
-    window.addEventListener('message', handleMessage);
-    window.addEventListener('unload', dispose);
+    addEventListener('message', handleMessage);
+    addEventListener('unload', dispose);
 
     await iframe.init(_settings);
 };
@@ -271,7 +271,7 @@ const requestLogin = async (params: any) => {
             }
         };
 
-        window.addEventListener('message', loginChallengeListener, false);
+        addEventListener('message', loginChallengeListener, false);
 
         const response = await call({
             method: 'requestLogin',
@@ -279,7 +279,7 @@ const requestLogin = async (params: any) => {
             asyncChallenge: true,
             callback: null,
         });
-        window.removeEventListener('message', loginChallengeListener);
+        removeEventListener('message', loginChallengeListener);
         return response;
     }
     return call({ method: 'requestLogin', ...params });

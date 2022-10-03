@@ -1,0 +1,32 @@
+{
+    "name": "TrezorConnectExample",
+    "version": "1",
+    "manifest_version": 3,
+    "icons": {
+        "48": "icons/48.png"
+    },
+    "action": {
+        "browser_style": true,
+        "default_icon": "icons/48.png",
+        "default_title": "Get address",
+        "default_popup": "ui.html"
+    },
+    "permissions": ["tabs", "notifications", "scripting", "activeTab"],
+    "host_permissions": ["*://connect.trezor.io/9/*", "*://*/"],
+    "background": {
+        "service_worker": "trezor-connect-webworker.js"
+    },
+    "content_scripts": [
+        {
+            "all_frames": true,
+            "matches": ["<all_urls>"],
+            "js": ["trezor-content-script.js"]
+        }
+    ],
+    "web_accessible_resources": [
+        {
+            "resources": [".js"],
+            "matches": ["<all_urls>"]
+        }
+    ]
+}

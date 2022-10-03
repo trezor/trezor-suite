@@ -1,9 +1,0 @@
-{
-    "name": "connect-example-webextension",
-    "version": "1.0.0",
-    "private": true,
-    "scripts": {},
-    "dependencies": {
-        "@trezor/connect-web": "9.0.0-beta.1"
-    }
-}

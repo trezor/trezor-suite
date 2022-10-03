@@ -5,5 +5,11 @@
         "target": "es2019",
         "importHelpers": true
     },
+    // "compilerOptions": {
+    //     "module": "AMD",
+    //     "lib": ["es5", "es6", "dom"],
+    //     "rootDir": "./src/",
+    //     "outFile": "./build/build.js",
+    // },
     "include": ["./src"]
 }

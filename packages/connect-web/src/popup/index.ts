@@ -7,8 +7,8 @@ import { getOrigin } from '@trezor/connect/lib/utils/urlUtils';
 import { showPopupRequest } from './showPopupRequest';
 
 // const POPUP_REQUEST_TIMEOUT = 602;
-const POPUP_REQUEST_TIMEOUT = 850;
-const POPUP_CLOSE_INTERVAL = 500;
+// const POPUP_REQUEST_TIMEOUT = 850;
+// const POPUP_CLOSE_INTERVAL = 500;
 const POPUP_OPEN_TIMEOUT = 3000;
 
 export class PopupManager extends EventEmitter {
@@ -47,14 +47,16 @@ export class PopupManager extends EventEmitter {
         this.handleMessage = this.handleMessage.bind(this);
         this.iframeHandshake = createDeferred(IFRAME.LOADED);
 
+        console.log('this.settings', this.settings);
+
         if (this.settings.env === 'webextension') {
             this.handleExtensionConnect = this.handleExtensionConnect.bind(this);
             this.handleExtensionMessage = this.handleExtensionMessage.bind(this);
 
             chrome.runtime.onConnect.addListener(this.handleExtensionConnect);
+        } else {
+            window.addEventListener('message', this.handleMessage, false);
         }
-
-        window.addEventListener('message', this.handleMessage, false);
     }
 
     request(lazyLoad = false) {
@@ -78,12 +80,12 @@ export class PopupManager extends EventEmitter {
         if (!this.settings.supportedBrowser) {
             openFn();
         } else {
-            const timeout =
-                lazyLoad || this.settings.env === 'webextension' ? 1 : POPUP_REQUEST_TIMEOUT;
-            this.requestTimeout = window.setTimeout(() => {
-                this.requestTimeout = 0;
-                openFn(lazyLoad);
-            }, timeout);
+            // const timeout =
+            // lazyLoad || this.settings.env === 'webextension' ? 1 : POPUP_REQUEST_TIMEOUT;
+            // this.requestTimeout = window.setTimeout(() => {
+            // this.requestTimeout = 0;
+            openFn(lazyLoad);
+            // }, timeout);
         }
     }
 
@@ -105,20 +107,20 @@ export class PopupManager extends EventEmitter {
         this.popupPromise = createDeferred(POPUP.LOADED);
         this.openWrapper(lazyLoad ? `${src}#loading` : src);
 
-        this.closeInterval = window.setInterval(() => {
-            if (!this._window) return;
-            if (this.settings.env === 'webextension') {
-                chrome.tabs.get(this._window.id, tab => {
-                    if (!tab) {
-                        this.close();
-                        this.emit(POPUP.CLOSED);
-                    }
-                });
-            } else if (this._window.closed) {
-                this.close();
-                this.emit(POPUP.CLOSED);
-            }
-        }, POPUP_CLOSE_INTERVAL);
+        // this.closeInterval = window.setInterval(() => {
+        //     if (!this._window) return;
+        //     if (this.settings.env === 'webextension') {
+        //         chrome.tabs.get(this._window.id, tab => {
+        //             if (!tab) {
+        //                 this.close();
+        //                 this.emit(POPUP.CLOSED);
+        //             }
+        //         });
+        //     } else if (this._window.closed) {
+        //         this.close();
+        //         this.emit(POPUP.CLOSED);
+        //     }
+        // }, POPUP_CLOSE_INTERVAL);
 
         // open timeout will be cancelled by POPUP.BOOTSTRAP message
         this.openTimeout = setTimeout(() => {
@@ -292,7 +294,7 @@ export class PopupManager extends EventEmitter {
         this.locked = false;
         this.popupPromise = undefined;
 
-        if (this.requestTimeout) {
+        if (this.requestTimeout && window) {
             window.clearTimeout(this.requestTimeout);
             this.requestTimeout = 0;
         }
@@ -301,7 +303,7 @@ export class PopupManager extends EventEmitter {
             clearTimeout(this.openTimeout);
             this.openTimeout = undefined;
         }
-        if (this.closeInterval) {
+        if (this.closeInterval && window) {
             window.clearInterval(this.closeInterval);
             this.closeInterval = 0;
         }

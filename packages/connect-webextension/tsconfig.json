@@ -1,0 +1,22 @@
+{
+    "extends": "../../tsconfig.json",
+    "compilerOptions": {
+        "outDir": "libDev",
+        "types": [
+            "chrome",
+            "web",
+            "w3c-web-usb",
+            "jest"
+        ],
+        "rootDir": ".."
+    },
+    "include": [
+        "./connect-web",
+        "../connect-iframe/webpack/prod.webpack.config.ts",
+        "../connect-popup/webpack/prod.webpack.config.ts"
+    ],
+    "references": [
+        { "path": "../connect" },
+        { "path": "../utils" }
+    ]
+}

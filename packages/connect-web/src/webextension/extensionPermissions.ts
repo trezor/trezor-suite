@@ -36,12 +36,12 @@ const init = (label: string) => {
 
 const handleMessage = ({ data, origin }: any) => {
     if (data && data.type === 'usb-permissions-init') {
-        window.removeEventListener('message', handleMessage, false);
+        removeEventListener('message', handleMessage, false);
         const knownHost = config.knownHosts.find(host => host.origin === data.extension);
         const label = knownHost && knownHost.label ? knownHost.label : origin;
         init(label);
     }
 };
 
-window.addEventListener('load', onLoad, false);
-window.addEventListener('message', handleMessage, false);
+addEventListener('load', onLoad, false);
+addEventListener('message', handleMessage, false);

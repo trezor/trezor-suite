@@ -38,6 +38,7 @@
         "test:unit": "jest",
         "type-check": "tsc --build",
         "build:lib": "rimraf ./lib && yarn tsc --build tsconfig.lib.json",
+        "build:webworker": "TS_NODE_PROJECT=\"tsconfig.lib.json\" webpack --config ./webpack/webworker.webpack.config.ts",
         "version:beta": "tsx scripts/bump-version.ts prerelease",
         "version:patch": "tsx scripts/bump-version.ts patch",
         "version:minor": "tsx scripts/bump-version.ts minor",
@@ -74,6 +75,8 @@
         "karma-webpack": "^5.0.0",
         "rimraf": "^3.0.2",
         "tsx": "^3.8.2",
-        "typescript": "4.7.4"
+        "typescript": "4.7.4",
+        "webpack": "^5.73.0",
+        "webpack-cli": "^4.10.0"
     }
 }

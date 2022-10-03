@@ -60,7 +60,7 @@ export type Account = {
     path: string;
     unlockPath?: PROTO.UnlockPath; // parameter used to unlock SLIP-25/coinjoin keychain
     descriptor: string;
-    accountType: NonNullable<Network['accountType']>;
+    accountType: NonNullable<Network['accountType']> | 'imported';
     symbol: NetworkSymbol;
     empty: boolean;
     visible: boolean;

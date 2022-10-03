@@ -27,4 +27,4 @@ const onload = () => {
     }
 };
 
-window.addEventListener('load', onload);
+addEventListener('load', onload);

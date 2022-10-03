@@ -30,7 +30,8 @@ export const dispose = () => {
 };
 
 const handleIframeBlocked = () => {
-    window.clearTimeout(timeout);
+    // @ts-expect-error
+    clearTimeout(timeout);
 
     error = ERRORS.TypedError('Init_IframeBlocked');
     dispose();
@@ -93,7 +94,8 @@ export const init = async (settings: ConnectSettings) => {
     }
 
     origin = getOrigin(instance.src);
-    timeout = window.setTimeout(() => {
+    // @ts-expect-error
+    timeout = setTimeout(() => {
         initPromise.reject(ERRORS.TypedError('Init_IframeTimeout'));
     }, 10000);
 
@@ -163,7 +165,8 @@ export const init = async (settings: ConnectSettings) => {
         }
         throw e;
     } finally {
-        window.clearTimeout(timeout);
+        // @ts-expect-error
+        clearTimeout(timeout);
         timeout = 0;
     }
 };
@@ -187,5 +190,6 @@ export const postMessage = (message: any, usePromise = true) => {
 };
 
 export const clearTimeout = () => {
-    window.clearTimeout(timeout);
+    // @ts-expect-error
+    clearTimeout(timeout);
 };
