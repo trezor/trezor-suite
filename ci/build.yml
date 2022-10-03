@@ -86,9 +86,6 @@ suite-web-landing build stable:
   stage: build
   only:
     refs:
-      - develop
-      - releases
-      - schedules
       - /^release\//
       - codesign
   script:
