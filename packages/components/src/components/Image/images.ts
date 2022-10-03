@@ -59,4 +59,5 @@ export const PNG_IMAGES = {
     WALLET_2x: 'Wallet@2x.png',
     TOR_ENABLING: 'TorEnabling.png',
     TOR_ENABLING_2x: 'TorEnabling@2x.png',
+    COINJOIN_MESS: 'CoinjoinMess.png',
 } as const;
