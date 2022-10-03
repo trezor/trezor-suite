@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Box } from '@suite-native/atoms';
+import { SendReceiveBottomSheet } from '@suite-native/module-send-receive';
 
 import { TabBarItem } from './TabBarItem';
 import { ActionTabItem } from './ActionTabBarItem';
@@ -31,17 +32,33 @@ const tabBarStyle = prepareNativeStyle<{ insetLeft: number; insetRight: number }
 );
 
 export const TabBar = ({ state, navigation, tabItemOptions }: TabBarProps) => {
+    const [sendReceiveActionsVisible, setSendReceiveActionsVisible] = useState(false);
     const { applyStyle } = useNativeStyles();
     const insets = useSafeAreaInsets();
 
+    const handleSendReceiveActionsVisibility = (visible: boolean) => {
+        setSendReceiveActionsVisible(visible);
+    };
+
     return (
         <Box style={applyStyle(tabBarStyle, { insetLeft: insets.left, insetRight: insets.right })}>
+            <SendReceiveBottomSheet
+                isVisible={sendReceiveActionsVisible}
+                onVisibilityChange={handleSendReceiveActionsVisibility}
+            />
             {state.routes.map((route, index) => {
                 const isFocused = state.index === index;
                 const { routeName, iconName, label, isActionTabItem, params } =
                     tabItemOptions[route.name];
 
-                if (isActionTabItem) return <ActionTabItem key={route.key} />;
+                if (isActionTabItem)
+                    return (
+                        <ActionTabItem
+                            key={route.key}
+                            isFocused={isFocused}
+                            onPress={() => handleSendReceiveActionsVisibility(true)}
+                        />
+                    );
 
                 const handleTabBarItemPress = () => {
                     const event = navigation.emit({

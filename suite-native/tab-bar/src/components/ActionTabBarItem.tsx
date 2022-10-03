@@ -3,6 +3,9 @@ import { TouchableOpacity } from 'react-native';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Icon } from '@trezor/icons';
+import { TabBarItemProps } from './TabBarItem';
+
+type ActionTabBarItemProps = Pick<TabBarItemProps, 'isFocused' | 'onPress'>;
 
 const actionTabItemStyle = prepareNativeStyle(utils => ({
     marginTop: -24, // Top padding value of tab bar + 13px (from figma)
@@ -15,11 +18,16 @@ const actionTabItemStyle = prepareNativeStyle(utils => ({
     backgroundColor: utils.colors.forest,
 }));
 
-export const ActionTabItem = () => {
+export const ActionTabItem = ({ isFocused, onPress }: ActionTabBarItemProps) => {
     const { applyStyle } = useNativeStyles();
 
     return (
-        <TouchableOpacity style={applyStyle(actionTabItemStyle)} onPress={() => {}}>
+        <TouchableOpacity
+            accessibilityRole="button"
+            accessibilityState={isFocused ? { selected: true } : {}}
+            style={applyStyle(actionTabItemStyle)}
+            onPress={onPress}
+        >
             <Icon name="actionHorizontal" color="gray0" />
         </TouchableOpacity>
     );

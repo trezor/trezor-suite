@@ -21,6 +21,7 @@
         { "path": "../navigation" },
         { "path": "../state" },
         { "path": "../storage" },
+        { "path": "../tab-bar" },
         { "path": "../transactions" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/icons" },

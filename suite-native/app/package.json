@@ -39,6 +39,7 @@
         "@suite-native/navigation": "*",
         "@suite-native/state": "*",
         "@suite-native/storage": "*",
+        "@suite-native/tab-bar": "*",
         "@suite-native/transactions": "*",
         "@trezor/connect": "9.0.3",
         "@trezor/icons": "*",

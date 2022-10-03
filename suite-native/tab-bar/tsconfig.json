@@ -1,0 +1,10 @@
+{
+    "extends": "../../tsconfig.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        { "path": "../atoms" },
+        { "path": "../module-send-receive" },
+        { "path": "../../packages/icons" },
+        { "path": "../../packages/styles" }
+    ]
+}

@@ -6519,6 +6519,18 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-native/module-send-receive@*, @suite-native/module-send-receive@workspace:suite-native/module-send-receive":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/module-send-receive@workspace:suite-native/module-send-receive"
+  dependencies:
+    "@suite-native/atoms": "*"
+    "@trezor/styles": "*"
+    jest: ^26.6.3
+    react: ^17.0.2
+    typescript: 4.7.4
+  languageName: unknown
+  linkType: soft
+
 "@suite-native/module-settings@*, @suite-native/module-settings@workspace:suite-native/module-settings":
   version: 0.0.0-use.local
   resolution: "@suite-native/module-settings@workspace:suite-native/module-settings"
@@ -6592,6 +6604,25 @@ __metadata:
     react: ^17.0.2
     react-native-mmkv: ^2.4.3
     redux-persist: 6.0.0
+    typescript: 4.7.4
+  languageName: unknown
+  linkType: soft
+
+"@suite-native/tab-bar@*, @suite-native/tab-bar@workspace:suite-native/tab-bar":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/tab-bar@workspace:suite-native/tab-bar"
+  dependencies:
+    "@react-navigation/bottom-tabs": ^6.3.1
+    "@react-navigation/native": ^6.0.11
+    "@react-navigation/stack": ^6.2.2
+    "@suite-native/atoms": "*"
+    "@suite-native/module-send-receive": "*"
+    "@trezor/icons": "*"
+    "@trezor/styles": "*"
+    jest: ^26.6.3
+    react: ^17.0.2
+    react-native: 0.68.2
+    react-native-safe-area-context: ^4.3.1
     typescript: 4.7.4
   languageName: unknown
   linkType: soft
@@ -7388,6 +7419,7 @@ __metadata:
     "@suite-native/navigation": "*"
     "@suite-native/state": "*"
     "@suite-native/storage": "*"
+    "@suite-native/tab-bar": "*"
     "@suite-native/transactions": "*"
     "@trezor/connect": 9.0.3
     "@trezor/icons": "*"

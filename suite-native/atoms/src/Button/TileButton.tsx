@@ -12,9 +12,14 @@ type TileButtonProps = {
     title: string;
     onPress: () => void;
     style?: NativeStyleObject;
+    isDisabled?: boolean;
 };
 
-const tileButtonStyle = prepareNativeStyle(utils => ({
+type TileButtonStyleProps = {
+    isDisabled: boolean;
+};
+
+const tileButtonStyle = prepareNativeStyle<TileButtonStyleProps>(utils => ({
     height: 79,
     justifyContent: 'center',
     alignItems: 'center',
@@ -31,10 +36,20 @@ const textStyle = prepareNativeStyle(() => ({
     textTransform: 'uppercase',
 }));
 
-export const TileButton = ({ iconName, title, onPress, style }: TileButtonProps) => {
+export const TileButton = ({
+    iconName,
+    title,
+    onPress,
+    style,
+    isDisabled = false,
+}: TileButtonProps) => {
     const { applyStyle } = useNativeStyles();
     return (
-        <TouchableOpacity style={[applyStyle(tileButtonStyle), style]} onPress={onPress}>
+        <TouchableOpacity
+            disabled={isDisabled}
+            style={[applyStyle(tileButtonStyle, { isDisabled }), style]}
+            onPress={onPress}
+        >
             <Box justifyContent="center" alignItems="center">
                 <Box style={applyStyle(iconWrapperStyle)}>
                     <Icon name={iconName} />

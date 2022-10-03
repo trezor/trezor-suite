@@ -5,7 +5,7 @@ import { Icon, IconName } from '@trezor/icons';
 import { Text } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-type TabBarItemProps = {
+export type TabBarItemProps = {
     isFocused: boolean;
     onPress: () => void;
     iconName: IconName;
