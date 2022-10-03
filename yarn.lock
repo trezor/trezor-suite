@@ -6051,7 +6051,7 @@ __metadata:
     "@suite-common/redux-utils": "*"
     "@suite-common/suite-types": "*"
     "@suite-common/test-utils": "*"
-    "@trezor/connect": 9.0.2
+    "@trezor/connect": 9.0.3
     "@trezor/utils": "*"
     jest: ^26.6.3
     redux-mock-store: ^1.5.4
@@ -6081,7 +6081,7 @@ __metadata:
     "@suite-common/suite-types": "*"
     "@suite-common/wallet-config": "*"
     "@suite-common/wallet-utils": "*"
-    "@trezor/connect": 9.0.2
+    "@trezor/connect": 9.0.3
     bignumber.js: ^9.1.0
     jest: ^26.6.3
     react: 17.0.2
@@ -6117,7 +6117,7 @@ __metadata:
   dependencies:
     "@suite-common/suite-types": "*"
     "@suite-common/wallet-config": "*"
-    "@trezor/connect": 9.0.2
+    "@trezor/connect": 9.0.3
     jest: ^26.6.3
     typescript: 4.7.4
   languageName: unknown
@@ -6132,7 +6132,7 @@ __metadata:
     "@suite-common/suite-types": "*"
     "@suite-common/wallet-config": "*"
     "@suite-common/wallet-types": "*"
-    "@trezor/connect": 9.0.2
+    "@trezor/connect": 9.0.3
     jest: ^26.6.3
     react: 17.0.2
     react-redux: 7.2.2
@@ -6166,7 +6166,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/suite-constants@workspace:suite-common/suite-constants"
   dependencies:
-    "@trezor/connect": 9.0.2
+    "@trezor/connect": 9.0.3
     jest: ^26.6.3
     typescript: 4.7.4
   languageName: unknown
@@ -6179,7 +6179,7 @@ __metadata:
     "@reduxjs/toolkit": ^1.8.3
     "@suite-common/metadata-types": "*"
     "@suite-common/wallet-config": "*"
-    "@trezor/connect": 9.0.2
+    "@trezor/connect": 9.0.3
     bignumber.js: ^9.1.0
     jest: ^26.6.3
     typescript: 4.7.4
@@ -6207,7 +6207,7 @@ __metadata:
     "@suite-common/suite-types": "*"
     "@suite-common/wallet-config": "*"
     "@suite-common/wallet-types": "*"
-    "@trezor/connect": 9.0.2
+    "@trezor/connect": 9.0.3
     "@trezor/message-system": "*"
     "@trezor/utils": "*"
     dropbox: ^10.32.0
@@ -6251,7 +6251,7 @@ __metadata:
     "@suite-common/wallet-config": "*"
     "@suite-common/wallet-types": "*"
     "@suite-common/wallet-utils": "*"
-    "@trezor/connect": 9.0.2
+    "@trezor/connect": 9.0.3
     "@trezor/utils": "*"
     date-fns: ^2.29.1
     jest: ^26.6.3
@@ -6267,7 +6267,7 @@ __metadata:
     "@suite-common/suite-utils": "*"
     "@suite-common/wallet-config": "*"
     "@suite-common/wallet-constants": "*"
-    "@trezor/connect": 9.0.2
+    "@trezor/connect": 9.0.3
     "@trezor/type-utils": "*"
     "@trezor/utils": "*"
     jest: ^26.6.3
@@ -6293,7 +6293,7 @@ __metadata:
     "@suite-common/wallet-config": "*"
     "@suite-common/wallet-constants": "*"
     "@suite-common/wallet-types": "*"
-    "@trezor/connect": 9.0.2
+    "@trezor/connect": 9.0.3
     "@trezor/urls": "*"
     "@trezor/utils": "*"
     "@types/pdfmake": ^0.1.21
@@ -6386,7 +6386,7 @@ __metadata:
     "@suite-native/module-devices": "*"
     "@suite-native/module-settings": "*"
     "@suite-native/navigation": "*"
-    "@trezor/connect": 9.0.2
+    "@trezor/connect": 9.0.3
     "@trezor/icons": "*"
     "@trezor/styles": "*"
     "@trezor/validation": "*"
@@ -6573,7 +6573,7 @@ __metadata:
     "@suite-native/module-devices": "*"
     "@suite-native/module-settings": "*"
     "@suite-native/storage": "*"
-    "@trezor/connect": 9.0.2
+    "@trezor/connect": 9.0.3
     "@trezor/styles": "*"
     "@trezor/utils": "*"
     jest: ^26.6.3
@@ -6873,7 +6873,7 @@ __metadata:
   resolution: "@trezor/connect-explorer@workspace:packages/connect-explorer"
   dependencies:
     "@trezor/components": "*"
-    "@trezor/connect-web": 9.0.2
+    "@trezor/connect-web": 9.0.3
     "@types/markdown-it": 12.2.3
     "@types/markdown-it-link-attributes": 3.0.1
     "@types/react-router": ^5.1.11
@@ -6911,7 +6911,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/connect-iframe@workspace:packages/connect-iframe"
   dependencies:
-    "@trezor/connect": 9.0.2
+    "@trezor/connect": 9.0.3
     copy-webpack-plugin: ^11.0.0
     html-webpack-plugin: ^5.5.0
     jest: ^26.6.3
@@ -6958,7 +6958,7 @@ __metadata:
   dependencies:
     "@playwright/test": ^1.22.2
     "@trezor/components": "*"
-    "@trezor/connect": 9.0.2
+    "@trezor/connect": 9.0.3
     "@trezor/connect-ui": "*"
     "@trezor/crypto-utils": "*"
     "@trezor/trezor-user-env-link": "*"
@@ -6985,7 +6985,7 @@ __metadata:
   resolution: "@trezor/connect-ui@workspace:packages/connect-ui"
   dependencies:
     "@trezor/components": "*"
-    "@trezor/connect": 9.0.2
+    "@trezor/connect": 9.0.3
     "@trezor/env-utils": "*"
     "@trezor/urls": "*"
     "@types/react": ^17.0.0
@@ -7000,11 +7000,11 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/connect-web@9.0.2, @trezor/connect-web@workspace:packages/connect-web":
+"@trezor/connect-web@9.0.3, @trezor/connect-web@workspace:packages/connect-web":
   version: 0.0.0-use.local
   resolution: "@trezor/connect-web@workspace:packages/connect-web"
   dependencies:
-    "@trezor/connect": 9.0.2
+    "@trezor/connect": 9.0.3
     "@trezor/utils": ^9.0.2
     "@types/chrome": 0.0.181
     "@types/w3c-web-usb": ^1.0.5
@@ -7018,7 +7018,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/connect@9.0.2, @trezor/connect@workspace:packages/connect":
+"@trezor/connect@9.0.3, @trezor/connect@workspace:packages/connect":
   version: 0.0.0-use.local
   resolution: "@trezor/connect@workspace:packages/connect"
   dependencies:
@@ -7291,7 +7291,7 @@ __metadata:
     "@suite-common/formatters": "*"
     "@suite-common/sentry": "*"
     "@trezor/components": "*"
-    "@trezor/connect": 9.0.2
+    "@trezor/connect": 9.0.3
     "@trezor/suite": "*"
     "@trezor/suite-analytics": "*"
     "@trezor/suite-desktop-api": "*"
@@ -7321,7 +7321,7 @@ __metadata:
     "@suite-common/sentry": "*"
     "@suite-common/suite-types": "*"
     "@suite-common/suite-utils": "*"
-    "@trezor/connect": 9.0.2
+    "@trezor/connect": 9.0.3
     "@trezor/connect-common": "*"
     "@trezor/request-manager": "*"
     "@trezor/suite-desktop-api": "*"
@@ -7378,7 +7378,7 @@ __metadata:
     "@suite-native/state": "*"
     "@suite-native/storage": "*"
     "@suite-native/transactions": "*"
-    "@trezor/connect": 9.0.2
+    "@trezor/connect": 9.0.3
     "@trezor/icons": "*"
     "@trezor/styles": "*"
     "@trezor/suite-data": "*"
@@ -7509,7 +7509,7 @@ __metadata:
     "@testing-library/user-event": 12.8.3
     "@trezor/coinjoin": "*"
     "@trezor/components": "*"
-    "@trezor/connect": 9.0.2
+    "@trezor/connect": 9.0.3
     "@trezor/crypto-utils": "*"
     "@trezor/dom-utils": "*"
     "@trezor/env-utils": "*"

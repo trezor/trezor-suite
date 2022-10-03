@@ -214,7 +214,7 @@
         "@suite-common/sentry": "*",
         "@suite-common/suite-types": "*",
         "@suite-common/suite-utils": "*",
-        "@trezor/connect": "9.0.2",
+        "@trezor/connect": "9.0.3",
         "@trezor/connect-common": "*",
         "@trezor/request-manager": "*",
         "@trezor/suite-desktop-api": "*",
