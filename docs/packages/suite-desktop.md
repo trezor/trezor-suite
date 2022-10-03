@@ -88,7 +88,7 @@ Some libraries are difficult to test in development environments, such as the au
 
 ### How to make a new mock?
 
-1. Open the suite-desktop build script located at `/packages/suite-desktop/scripts/build.js`.
+1. Open the suite-desktop build script located at `/packages/suite-desktop/scripts/build.ts`.
 1. Add a new entry to the `mocks` object. The key should be the name of the package, exactly as written when imported. The value should be the path to the mock file to point to (located in `/packages/suite-desktop/src/mocks`).
 1. Create the file in `/packages/suite-desktop/src/mocks` and export mocked properties that you have imported across the project.
 

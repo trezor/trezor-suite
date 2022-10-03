@@ -7382,12 +7382,14 @@ __metadata:
     electron-store: ^8.1.0
     electron-updater: 5.2.1
     esbuild: ^0.15.7
+    glob: ^8.0.3
     jest: ^26.6.3
     node-fetch: ^2.6.7
     openpgp: ^5.5.0
     playwright: ^1.22.2
     rimraf: ^3.0.2
     systeminformation: ^5.12.6
+    tsx: ^3.8.2
     typescript: 4.7.4
     xvfb-maybe: ^0.2.1
   languageName: unknown
@@ -18594,7 +18596,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"glob@npm:^8.0.1":
+"glob@npm:^8.0.1, glob@npm:^8.0.3":
   version: 8.0.3
   resolution: "glob@npm:8.0.3"
   dependencies:
