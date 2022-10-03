@@ -11,18 +11,6 @@ import { useSelector } from '@suite-hooks';
 
 import { WebUsbButton } from '../WebUsbButton';
 
-const HeadingActions = styled.div`
-    display: flex;
-    align-items: center;
-    flex: 1;
-    justify-content: flex-end;
-`;
-
-const CheckForDevicesWrapper = styled.div`
-    display: flex;
-    justify-content: center;
-`;
-
 const DeviceItemsWrapper = styled.div`
     display: flex;
     flex-direction: column;
@@ -57,17 +45,9 @@ export const SwitchDevice = ({ cancelable, onCancel }: ForegroundAppProps) => {
         <Modal
             isCancelable={cancelable}
             onCancel={onCancel}
-            heading={
-                <>
-                    <Translation id="TR_CHOOSE_WALLET" />
-                    <HeadingActions>
-                        {isWebUsbTransport && (
-                            <CheckForDevicesWrapper>
-                                <WebUsbButton icon="SEARCH" variant="tertiary" />
-                            </CheckForDevicesWrapper>
-                        )}
-                    </HeadingActions>
-                </>
+            heading={<Translation id="TR_CHOOSE_WALLET" />}
+            headerComponents={
+                isWebUsbTransport ? [<WebUsbButton icon="SEARCH" variant="tertiary" />] : undefined
             }
         >
             <DeviceItemsWrapper>
