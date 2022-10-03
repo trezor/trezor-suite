@@ -1,8 +1,9 @@
 import * as userData from '../libs/user-data';
 import { ipcMain } from '../typed-electron';
+
 import type { Module } from './index';
 
-const init: Module = () => {
+export const init: Module = () => {
     const { logger } = global;
 
     ipcMain.handle('user-data/clear', () => {
@@ -12,5 +13,3 @@ const init: Module = () => {
 
     return () => userData.getInfo();
 };
-
-export default init;

@@ -1,8 +1,6 @@
-import fetch from 'node-fetch';
+import { BaseProcess, Status } from './BaseProcess';
 
-import BaseProcess, { Status } from './BaseProcess';
-
-class BridgeProcess extends BaseProcess {
+export class BridgeProcess extends BaseProcess {
     constructor() {
         super('bridge', 'trezord', {
             startupCooldown: 3,
@@ -47,5 +45,3 @@ class BridgeProcess extends BaseProcess {
         await this.start(['-e', '21324', '-u=false']);
     }
 }
-
-export default BridgeProcess;

@@ -2,10 +2,12 @@
  * Request Filter feature (blocks non-allowed requests)
  */
 import { captureMessage, Severity } from '@sentry/electron';
+
 import { allowedDomains } from '../config';
+
 import { Module } from './index';
 
-const init: Module = ({ interceptor }) => {
+export const init: Module = ({ interceptor }) => {
     const { logger } = global;
 
     const resourceTypeFilter = ['xhr']; // What resource types we want to filter
@@ -36,5 +38,3 @@ const init: Module = ({ interceptor }) => {
         return { cancel: true };
     });
 };
-
-export default init;

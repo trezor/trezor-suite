@@ -1,11 +1,12 @@
 import { app } from 'electron';
 
 import { isDevEnv } from '@suite-common/suite-utils';
+
 import { Module } from '../index';
 
 const logUI = app.commandLine.hasSwitch('log-ui');
 
-const init: Module = ({ mainWindow }) => {
+export const init: Module = ({ mainWindow }) => {
     const { logger } = global;
 
     mainWindow.webContents.on('did-fail-load', (_, errorCode, errorDescription, validatedUrl) => {
@@ -71,5 +72,3 @@ const init: Module = ({ mainWindow }) => {
         }
     });
 };
-
-export default init;

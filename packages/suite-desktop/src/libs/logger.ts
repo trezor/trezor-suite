@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import fs from 'fs';
 import path from 'path';
 import chalk from 'chalk';
@@ -24,7 +25,7 @@ export const defaultOptions: Options = {
     logFormat: '%dt - %lvl(%top): %msg',
 } as const;
 
-class Logger implements ILogger {
+export class Logger implements ILogger {
     static instance: Logger;
     private stream: fs.WriteStream | undefined;
     private options: Options;
@@ -150,5 +151,3 @@ class Logger implements ILogger {
         return logLevels[this.logLevel];
     }
 }
-
-export default Logger;

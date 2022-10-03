@@ -3,13 +3,16 @@
  */
 import { captureException } from '@sentry/electron';
 import { session } from 'electron';
-import TorProcess from '../libs/processes/TorProcess';
+import { HandshakeTorModule } from 'packages/suite-desktop-api/lib/messages';
+
+import TrezorConnect from '@trezor/connect';
+
+import { TorProcess } from '../libs/processes/TorProcess';
 import { onionDomain } from '../config';
 import { app, ipcMain } from '../typed-electron';
 import { getFreePort } from '../libs/getFreePort';
-import TrezorConnect from '@trezor/connect';
+
 import type { Dependencies } from './index';
-import { HandshakeTorModule } from 'packages/suite-desktop-api/lib/messages';
 
 const load = async ({ mainWindow, store, interceptor }: Dependencies) => {
     const { logger } = global;
@@ -191,7 +194,7 @@ const load = async ({ mainWindow, store, interceptor }: Dependencies) => {
 
 type TorModule = (dependencies: Dependencies) => () => Promise<HandshakeTorModule>;
 
-const init: TorModule = dependencies => {
+export const init: TorModule = dependencies => {
     let loaded = false;
     return async () => {
         if (loaded) return { shouldRunTor: false };
@@ -204,5 +207,3 @@ const init: TorModule = dependencies => {
         };
     };
 };
-
-export default init;

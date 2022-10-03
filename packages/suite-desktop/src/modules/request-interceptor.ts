@@ -8,9 +8,10 @@
  * whereas request-filter logs and filters allowed requests from electron renderer process.
  */
 import { createInterceptor, InterceptedEvent } from '@trezor/request-manager';
+
 import { Module } from './index';
 
-const init: Module = ({ store }) => {
+export const init: Module = ({ store }) => {
     const { logger } = global;
 
     const options = {
@@ -24,5 +25,3 @@ const init: Module = ({ store }) => {
 
     createInterceptor(options);
 };
-
-export default init;

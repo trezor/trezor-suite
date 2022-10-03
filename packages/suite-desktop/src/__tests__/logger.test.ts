@@ -1,6 +1,8 @@
+/* eslint-disable no-console */
 import fs from 'fs';
 import path from 'path';
-import Logger, { Options } from '../libs/logger';
+
+import { Logger, Options } from '../libs/logger';
 
 const testOptions: Options = {
     colors: false,

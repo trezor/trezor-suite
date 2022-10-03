@@ -4,7 +4,7 @@ import { restartApp } from '../libs/app-utils';
 
 import type { Module } from './index';
 
-const init: Module = ({ mainWindow }) => {
+export const init: Module = ({ mainWindow }) => {
     const { logger } = global;
 
     const openDevToolsShortcuts = ['F12', 'CommandOrControl+Shift+I', 'CommandOrControl+Alt+I'];
@@ -44,5 +44,3 @@ const init: Module = ({ mainWindow }) => {
         });
     });
 };
-
-export default init;

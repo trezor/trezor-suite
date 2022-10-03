@@ -2,8 +2,10 @@
  * Bridge runner
  */
 import { app } from 'electron';
-import BridgeProcess from '../libs/processes/BridgeProcess';
+
+import { BridgeProcess } from '../libs/processes/BridgeProcess';
 import { b2t } from '../libs/utils';
+
 import type { Module } from './index';
 
 const bridgeDev = app.commandLine.hasSwitch('bridge-dev');
@@ -32,7 +34,7 @@ const load = async () => {
     }
 };
 
-const init: Module = () => {
+export const init: Module = () => {
     let loaded = false;
     return () => {
         if (loaded) return;
@@ -41,5 +43,3 @@ const init: Module = () => {
         load();
     };
 };
-
-export default init;

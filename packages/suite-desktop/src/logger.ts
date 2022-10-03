@@ -1,6 +1,8 @@
 import { app } from 'electron';
-import Logger, { LogLevel, defaultOptions as loggerDefaults } from './libs/logger';
+
 import { isDevEnv } from '@suite-common/suite-utils';
+
+import { Logger, LogLevel, defaultOptions as loggerDefaults } from './libs/logger';
 
 export const createLogger = () => {
     const log = {

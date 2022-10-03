@@ -1,11 +1,13 @@
 import { app, ipcMain } from 'electron';
+
 import TrezorConnect from '@trezor/connect';
 import { createIpcProxyHandler, IpcProxyHandlerOptions } from '@trezor/ipc-proxy';
+
 import type { Module } from './index';
 
 const SERVICE_NAME = '@trezor/connect';
 
-const init: Module = ({ store }) => {
+export const init: Module = ({ store }) => {
     const { logger } = global;
     logger.info(SERVICE_NAME, `Starting service`);
 
@@ -56,5 +58,3 @@ const init: Module = ({ store }) => {
         TrezorConnect.dispose();
     };
 };
-
-export default init;

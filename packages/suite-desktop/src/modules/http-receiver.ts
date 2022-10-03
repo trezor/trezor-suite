@@ -3,9 +3,10 @@
  */
 import { app, ipcMain } from '../typed-electron';
 import { HttpReceiver } from '../libs/http-receiver';
+
 import { Module } from './index';
 
-const init: Module = ({ mainWindow }) => {
+export const init: Module = ({ mainWindow }) => {
     const { logger } = global;
     let httpReceiver: HttpReceiver | null = null;
     return async () => {
@@ -59,5 +60,3 @@ const init: Module = ({ mainWindow }) => {
         return receiver.getInfo();
     };
 };
-
-export default init;

@@ -6,13 +6,16 @@ import {
     UpdateDownloadedEvent,
     ProgressInfo,
 } from 'electron-updater';
+
 import { bytesToHumanReadable } from '@trezor/utils';
 import { isFeatureFlagEnabled, isDevEnv } from '@suite-common/suite-utils';
+
 import { app, ipcMain } from '../typed-electron';
 import { b2t } from '../libs/utils';
 import { verifySignature } from '../libs/update-checker';
-import { Module } from './index';
 import { getReleaseNotes } from '../libs/github';
+
+import { Module } from './index';
 
 // Runtime flags
 const enableUpdater = app.commandLine.hasSwitch('enable-updater');
@@ -20,7 +23,7 @@ const disableUpdater = app.commandLine.hasSwitch('disable-updater');
 const preReleaseFlag = app.commandLine.hasSwitch('pre-release');
 const feedURL = app.commandLine.getSwitchValue('updater-url');
 
-const init: Module = ({ mainWindow, store }) => {
+export const init: Module = ({ mainWindow, store }) => {
     const { logger } = global;
     if (!isFeatureFlagEnabled('DESKTOP_AUTO_UPDATER') && !enableUpdater) {
         logger.info('auto-updater', 'Disabled via feature flag');
@@ -237,8 +240,8 @@ const init: Module = ({ mainWindow, store }) => {
     ipcMain.on('update/allow-prerelease', (_, value = true) => {
         logger.info('auto-updater', `${value ? 'allow' : 'disable'} prerelease!`);
         mainWindow.webContents.send('update/allow-prerelease', value);
-        const updateSettings = store.getUpdateSettings();
-        store.setUpdateSettings({ ...updateSettings, allowPrerelease: value });
+        const settings = store.getUpdateSettings();
+        store.setUpdateSettings({ ...settings, allowPrerelease: value });
 
         autoUpdater.allowPrerelease = value;
     });
@@ -248,8 +251,8 @@ const init: Module = ({ mainWindow, store }) => {
         // if there is savedCurrentVersion in store (it doesn't have to be there as it was added in later versions)
         // and if it does not match current application version it means that application got updated and the new version
         // is run for the first time.
-        const updateSettings = store.getUpdateSettings();
-        const { savedCurrentVersion } = updateSettings;
+        const settings = store.getUpdateSettings();
+        const { savedCurrentVersion } = settings;
         const currentVersion = app.getVersion();
         logger.debug(
             'auto-updater',
@@ -271,5 +274,3 @@ const init: Module = ({ mainWindow, store }) => {
         };
     };
 };
-
-export default init;

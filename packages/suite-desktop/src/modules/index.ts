@@ -1,10 +1,12 @@
 /* eslint-disable import/no-dynamic-require */
 /* eslint-disable global-require */
 import path from 'path';
+
 import { isNotUndefined } from '@trezor/utils';
 import { isDevEnv } from '@suite-common/suite-utils';
-import { StrictBrowserWindow } from '../typed-electron';
 import type { HandshakeClient } from '@trezor/suite-desktop-api';
+
+import { StrictBrowserWindow } from '../typed-electron';
 
 // General modules (both dev & prod)
 const MODULES = [
@@ -54,17 +56,17 @@ export const initModules = async (dependencies: Dependencies) => {
     logger.info('modules', `Initializing ${MODULES.length} modules`);
 
     const modules = await Promise.all(
-        MODULES.map(async module => {
-            logger.debug('modules', `Initializing ${module}`);
+        MODULES.map(async moduleToInit => {
+            logger.debug('modules', `Initializing ${moduleToInit}`);
             try {
-                const m = await require(`./modules/${module}`);
-                const initModule: Module = m.default;
+                const m = await require(`./modules/${moduleToInit}`);
+                const initModule: Module = m.init;
                 const loadModule = initModule(dependencies);
                 if (loadModule) {
-                    return [module, loadModule] as const;
+                    return [moduleToInit, loadModule] as const;
                 }
             } catch (err) {
-                logger.error('modules', `Couldn't initialize ${module} (${err.toString()})`);
+                logger.error('modules', `Couldn't initialize ${moduleToInit} (${err.toString()})`);
             }
         }),
     );
@@ -75,25 +77,25 @@ export const initModules = async (dependencies: Dependencies) => {
     return (handshake: HandshakeClient) => {
         let loaded = 0;
         return Promise.all(
-            modulesToLoad.map(async ([module, loadModule]) => {
-                logger.debug('modules', `Loading ${module}`);
+            modulesToLoad.map(async ([moduleToLoad, loadModule]) => {
+                logger.debug('modules', `Loading ${moduleToLoad}`);
                 try {
                     const payload = await loadModule(handshake);
-                    logger.debug('modules', `Loaded ${module}`);
+                    logger.debug('modules', `Loaded ${moduleToLoad}`);
                     dependencies.mainWindow.webContents.send('handshake/event', {
                         type: 'progress',
-                        message: `${module} loaded`,
+                        message: `${moduleToLoad} loaded`,
                         progress: {
                             current: ++loaded,
                             total: modulesToLoad.length,
                         },
                     });
-                    return [module, payload] as const;
+                    return [moduleToLoad, payload] as const;
                 } catch (err) {
-                    logger.error('modules', `Couldn't load ${module} (${err.toString()})`);
+                    logger.error('modules', `Couldn't load ${moduleToLoad} (${err.toString()})`);
                     dependencies.mainWindow.webContents.send('handshake/event', {
                         type: 'error',
-                        message: `${module} error`,
+                        message: `${moduleToLoad} error`,
                     });
                     throw err;
                 }

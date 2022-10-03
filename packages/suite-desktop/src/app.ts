@@ -1,24 +1,23 @@
 import path from 'path';
 import fs from 'fs';
-
 import { app, BrowserWindow, session } from 'electron';
 import { init as initSentry, ElectronOptions, IPCMode } from '@sentry/electron';
-import { ipcMain } from './typed-electron';
 
 import { SENTRY_CONFIG } from '@suite-common/sentry';
 import { isDevEnv } from '@suite-common/suite-utils';
+import type { HandshakeClient } from '@trezor/suite-desktop-api';
+
+import { ipcMain } from './typed-electron';
 import { APP_NAME } from './libs/constants';
 import * as store from './libs/store';
 import { MIN_HEIGHT, MIN_WIDTH } from './libs/screen';
 import { getBuildInfo, getComputerInfo } from './libs/info';
 import { restartApp } from './libs/app-utils';
 import { initModules } from './modules';
-import initTorModule from './modules/tor';
-
+import { init as initTorModule } from './modules/tor';
 import { createInterceptor } from './libs/request-interceptor';
 import { hangDetect } from './hang-detect';
 import { createLogger } from './logger';
-import type { HandshakeClient } from '@trezor/suite-desktop-api';
 
 // @ts-expect-error using internal electron API to set suite version in dev mode correctly
 if (isDevEnv) app.setVersion(process.env.VERSION);
