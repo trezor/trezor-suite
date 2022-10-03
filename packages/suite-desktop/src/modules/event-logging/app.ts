@@ -1,7 +1,8 @@
 import { app } from 'electron';
+
 import type { Module } from '../index';
 
-const init: Module = () => {
+export const init: Module = () => {
     const { logger } = global;
 
     app.on('ready', () => {
@@ -20,5 +21,3 @@ const init: Module = () => {
         logger.error('app', `Child process (${type}) gone (reason: ${reason})`);
     });
 };
-
-export default init;

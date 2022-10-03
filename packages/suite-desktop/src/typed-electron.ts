@@ -1,4 +1,5 @@
 import * as electron from 'electron';
+
 import * as desktopApi from '@trezor/suite-desktop-api';
 
 export type StrictIpcMain = desktopApi.StrictIpcMain<

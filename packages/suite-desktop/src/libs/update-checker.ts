@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { createMessage, readKey, readSignature, verify } from 'openpgp';
+
 import { getSignatureFileURL } from './github';
 
 const signingKey = process.env.APP_PUBKEY;

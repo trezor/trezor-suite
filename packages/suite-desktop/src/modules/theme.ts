@@ -1,7 +1,10 @@
 import { nativeTheme } from 'electron';
+
 import { SuiteThemeVariant } from '@trezor/suite-desktop-api';
+
 import { getThemeSettings, setThemeSettings } from '../libs/store';
 import { ipcMain } from '../typed-electron';
+
 import type { Module } from './index';
 
 const setThemeManually = (theme: SuiteThemeVariant) => {
@@ -13,7 +16,7 @@ const setThemeManually = (theme: SuiteThemeVariant) => {
     setThemeSettings(theme);
 };
 
-const init: Module = () => {
+export const init: Module = () => {
     const { logger } = global;
 
     const theme = getThemeSettings();
@@ -22,7 +25,5 @@ const init: Module = () => {
         nativeTheme.themeSource = theme;
     }
 
-    ipcMain.on('theme/change', (_, theme) => setThemeManually(theme));
+    ipcMain.on('theme/change', (_, newTheme) => setThemeManually(newTheme));
 };
-
-export default init;

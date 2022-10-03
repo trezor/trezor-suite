@@ -5,9 +5,10 @@
 import { session } from 'electron';
 
 import * as config from '../config';
+
 import { Module } from './index';
 
-const init: Module = () => {
+export const init: Module = () => {
     const { logger } = global;
 
     session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
@@ -20,5 +21,3 @@ const init: Module = () => {
         });
     });
 };
-
-export default init;

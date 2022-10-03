@@ -1,6 +1,6 @@
-import BaseProcess, { Status } from './BaseProcess';
-
 import { TorController, TorIdentities } from '@trezor/request-manager';
+
+import { BaseProcess, Status } from './BaseProcess';
 
 interface TorConnectionOptions {
     host: string;
@@ -9,7 +9,7 @@ interface TorConnectionOptions {
     torDataDir: string;
 }
 
-class TorProcess extends BaseProcess {
+export class TorProcess extends BaseProcess {
     torController: TorController;
     port: number;
     controlPort: number;
@@ -64,5 +64,3 @@ class TorProcess extends BaseProcess {
         return this.torController.waitUntilAlive();
     }
 }
-
-export default TorProcess;

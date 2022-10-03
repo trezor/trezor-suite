@@ -3,6 +3,7 @@
  */
 import { ipcMain } from '../typed-electron';
 import { save, read } from '../libs/user-data';
+
 import type { Module } from './index';
 
 const DATA_DIR = '/metadata';
@@ -22,5 +23,3 @@ export const init: Module = () => {
         return resp;
     });
 };
-
-export default init;

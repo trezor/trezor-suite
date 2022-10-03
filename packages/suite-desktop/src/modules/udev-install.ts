@@ -1,14 +1,16 @@
 import fs from 'fs';
 import path from 'path';
 import { spawn } from 'child_process';
+
 import { app, ipcMain } from '../typed-electron';
+
 import type { Module } from './index';
 
 const FILE_NAME = '51-trezor.rules';
 
-const fileExists = async (path: string) => {
+const fileExists = async (filePath: string) => {
     try {
-        await fs.promises.stat(path);
+        await fs.promises.stat(filePath);
         return true;
     } catch (error) {
         // file is not present
@@ -16,7 +18,7 @@ const fileExists = async (path: string) => {
     return false;
 };
 
-const init: Module = () => {
+export const init: Module = () => {
     ipcMain.handle('udev/install', async () => {
         const { logger, resourcesPath } = global;
         const resourceRules = path.join(resourcesPath, `bin/udev/${FILE_NAME}`);
@@ -51,14 +53,14 @@ const init: Module = () => {
             logger.info('udev', `Copy rules from ${userRules} to ${distRules}`);
             // request superuser permissions and copy from user data files to /etc/udev
             // NOTE: https://github.blog/2021-06-10-privilege-escalation-polkit-root-on-linux-with-bug/
-            const process = spawn('pkexec', ['cp', userRules, distRules]);
+            const pkexec = spawn('pkexec', ['cp', userRules, distRules]);
 
-            process.on('error', error => {
+            pkexec.on('error', error => {
                 logger.error('udev', `pkexec error ${error}`);
                 resolve({ success: false, error: `pkexec error ${error.message}` });
             });
 
-            process.on('exit', code => {
+            pkexec.on('exit', code => {
                 logger.debug('udev', `pkexec exit with code ${code}`);
                 if (code === 0) {
                     resolve({ success: true });
@@ -71,5 +73,3 @@ const init: Module = () => {
         });
     });
 };
-
-export default init;

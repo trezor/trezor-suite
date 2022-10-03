@@ -1,5 +1,6 @@
 import fs from 'fs';
 import { app } from 'electron';
+
 import { InvokeResult } from '@trezor/suite-desktop-api';
 
 export const save = async (

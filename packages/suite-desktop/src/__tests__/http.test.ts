@@ -1,7 +1,8 @@
 import fetch from 'node-fetch';
+
 import { HttpReceiver } from '../libs/http-receiver';
-import fixtures from '../__fixtures__/http';
-import Logger from '../libs/logger';
+import { fixtures } from '../__fixtures__/http';
+import { Logger } from '../libs/logger';
 
 global.logger = new Logger('mute');
 

@@ -1,4 +1,5 @@
 import { BrowserWindow, dialog } from 'electron';
+
 import { ipcMain } from './typed-electron';
 import { APP_SRC } from './libs/constants';
 

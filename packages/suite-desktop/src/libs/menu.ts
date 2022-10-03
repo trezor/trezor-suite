@@ -1,6 +1,7 @@
 import { app, shell, Menu, MenuItemConstructorOptions } from 'electron';
 
 import { isDevEnv } from '@suite-common/suite-utils';
+
 import { restartApp } from './app-utils';
 
 const isMac = process.platform === 'darwin';

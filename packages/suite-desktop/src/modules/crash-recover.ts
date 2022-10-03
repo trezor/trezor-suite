@@ -1,6 +1,8 @@
 import { app, dialog } from 'electron';
-import { Module } from './index';
+
 import { restartApp } from '../libs/app-utils';
+
+import { Module } from './index';
 
 // Reasons for prompting a restart
 const unexpectedReasons = [
@@ -9,7 +11,7 @@ const unexpectedReasons = [
     'launch-failure', // Process couldn't launch
 ];
 
-const init: Module = ({ mainWindow }) => {
+export const init: Module = ({ mainWindow }) => {
     // Check if the renderer process got unexpectedly terminated
     mainWindow.webContents.on('render-process-gone', (_, { reason }) => {
         if (unexpectedReasons.includes(reason)) {
@@ -29,5 +31,3 @@ const init: Module = ({ mainWindow }) => {
         }
     });
 };
-
-export default init;

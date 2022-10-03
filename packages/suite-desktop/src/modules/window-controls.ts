@@ -2,9 +2,10 @@
  * Window events handler
  */
 import { app, ipcMain } from '../typed-electron';
+
 import { Module } from './index';
 
-const init: Module = ({ mainWindow }) => {
+export const init: Module = ({ mainWindow }) => {
     const { logger } = global;
 
     if (process.platform === 'darwin') {
@@ -82,5 +83,3 @@ const init: Module = ({ mainWindow }) => {
         app.focus({ steal: true });
     });
 };
-
-export default init;

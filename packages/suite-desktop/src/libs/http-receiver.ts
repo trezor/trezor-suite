@@ -1,11 +1,11 @@
 import * as http from 'http';
 import * as net from 'net';
 import * as url from 'url';
-import { URL } from 'url';
-
 import { EventEmitter } from 'events';
-import { HTTP_ORIGINS_DEFAULT } from './constants';
+
 import { xssFilters } from '@trezor/utils';
+
+import { HTTP_ORIGINS_DEFAULT } from './constants';
 
 export type RequiredKey<M, K extends keyof M> = Omit<M, K> & Required<Pick<M, K>>;
 

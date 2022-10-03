@@ -1,4 +1,5 @@
 import url from 'url';
+
 import { TOR_URLS } from '@trezor/urls';
 import { isDevEnv } from '@suite-common/suite-utils';
 

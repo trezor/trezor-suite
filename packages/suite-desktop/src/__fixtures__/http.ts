@@ -1,4 +1,4 @@
-export default [
+export const fixtures = [
     {
         method: 'GET',
         path: '/oauth?code=meow',

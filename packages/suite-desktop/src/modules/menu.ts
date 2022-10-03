@@ -2,9 +2,10 @@ import { Menu } from 'electron';
 
 import { buildMainMenu, inputMenu, selectionMenu } from '../libs/menu';
 import { b2t } from '../libs/utils';
+
 import { Module } from './index';
 
-const init: Module = ({ mainWindow }) => {
+export const init: Module = ({ mainWindow }) => {
     const { logger } = global;
 
     Menu.setApplicationMenu(buildMainMenu());
@@ -27,5 +28,3 @@ const init: Module = ({ mainWindow }) => {
         }
     });
 };
-
-export default init;

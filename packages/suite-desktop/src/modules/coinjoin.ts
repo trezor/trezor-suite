@@ -3,13 +3,15 @@
  */
 
 import { app, ipcMain } from 'electron';
+
 import { createIpcProxyHandler, IpcProxyHandlerOptions } from '@trezor/ipc-proxy';
 import { CoinjoinBackend, CoinjoinClient } from '@trezor/coinjoin';
+
 import type { Module } from './index';
 
 const SERVICE_NAME = '@trezor/coinjoin';
 
-const init: Module = ({ mainWindow }) => {
+export const init: Module = ({ mainWindow }) => {
     const { logger } = global;
 
     const backends: CoinjoinBackend[] = [];
@@ -94,5 +96,3 @@ const init: Module = ({ mainWindow }) => {
         });
     };
 };
-
-export default init;

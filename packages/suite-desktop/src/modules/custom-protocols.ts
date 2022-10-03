@@ -2,10 +2,12 @@
  * Support custom protocols (for example: `bitcoin:`)
  */
 import { app } from 'electron';
+
 import { isValidProtocol } from '../libs/protocol';
+
 import type { Module } from './index';
 
-const init: Module = ({ mainWindow }) => {
+export const init: Module = ({ mainWindow }) => {
     const { logger } = global;
 
     const protocols = process.env.PROTOCOLS as unknown as string[];
@@ -88,5 +90,3 @@ const init: Module = ({ mainWindow }) => {
         }
     }
 };
-
-export default init;

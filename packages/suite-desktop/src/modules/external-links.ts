@@ -5,9 +5,10 @@ import { shell, dialog } from 'electron';
 import { HandlerDetails } from 'electron/main';
 
 import * as config from '../config';
+
 import { Module } from './index';
 
-const init: Module = ({ mainWindow, store }) => {
+export const init: Module = ({ mainWindow, store }) => {
     const { logger } = global;
 
     mainWindow.webContents.setWindowOpenHandler((details: HandlerDetails) => {
@@ -59,5 +60,3 @@ const init: Module = ({ mainWindow, store }) => {
         return { action: 'deny' };
     });
 };
-
-export default init;

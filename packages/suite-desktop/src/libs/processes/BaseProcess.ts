@@ -2,6 +2,7 @@ import path from 'path';
 import { spawn, ChildProcess } from 'child_process';
 
 import { isDevEnv } from '@suite-common/suite-utils';
+
 import { b2t } from '../utils';
 
 export type Status = {
@@ -26,7 +27,7 @@ const defaultOptions: Options = {
     autoRestart: 2,
 } as const;
 
-abstract class BaseProcess {
+export abstract class BaseProcess {
     process: ChildProcess | null;
     resourceName: string;
     processName: string;
@@ -236,5 +237,3 @@ abstract class BaseProcess {
         }
     }
 }
-
-export default BaseProcess;

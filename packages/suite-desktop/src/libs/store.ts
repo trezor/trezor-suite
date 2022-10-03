@@ -1,5 +1,7 @@
 import Store from 'electron-store';
+
 import { SuiteThemeVariant } from '@trezor/suite-desktop-api';
+
 import { getInitialWindowSize } from './screen';
 
 // creates config.json inside appData folder https://electronjs.org/docs/api/app#appgetpathname
