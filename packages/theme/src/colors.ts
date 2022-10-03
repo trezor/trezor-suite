@@ -1,6 +1,6 @@
 import { CSSColor } from './types';
 
-const defaultColorVariant = {
+export const defaultColorVariant = {
     green: '#00854D',
     forest: '#0F6148',
 

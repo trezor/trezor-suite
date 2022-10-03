@@ -5,11 +5,10 @@ import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Box } from '@suite-native/atoms';
-import { SendReceiveBottomSheet } from '@suite-native/module-send-receive';
 
 import { TabBarItem } from './TabBarItem';
-import { ActionTabItem } from './ActionTabBarItem';
 import { TabsOptions } from '../types';
+import { SendReceiveBottomSheet } from '@suite-native/module-send-receive';
 
 interface TabBarProps extends BottomTabBarProps {
     tabItemOptions: TabsOptions;
@@ -51,15 +50,6 @@ export const TabBar = ({ state, navigation, tabItemOptions }: TabBarProps) => {
                 const { routeName, iconName, label, isActionTabItem, params } =
                     tabItemOptions[route.name];
 
-                if (isActionTabItem)
-                    return (
-                        <ActionTabItem
-                            key={route.key}
-                            isFocused={isFocused}
-                            onPress={() => handleSendReceiveActionsVisibility(true)}
-                        />
-                    );
-
                 const handleTabBarItemPress = () => {
                     const event = navigation.emit({
                         type: 'tabPress',
@@ -67,7 +57,9 @@ export const TabBar = ({ state, navigation, tabItemOptions }: TabBarProps) => {
                         canPreventDefault: true,
                     });
 
-                    if (!isFocused && !event.defaultPrevented) {
+                    if (!isFocused && isActionTabItem) {
+                        handleSendReceiveActionsVisibility(true);
+                    } else if (!isFocused && !event.defaultPrevented) {
                         navigation.navigate(routeName, { ...params });
                     }
                 };
@@ -76,6 +68,7 @@ export const TabBar = ({ state, navigation, tabItemOptions }: TabBarProps) => {
                     <TabBarItem
                         key={route.key}
                         isFocused={isFocused}
+                        isActionTabItem={isActionTabItem}
                         iconName={iconName}
                         title={label}
                         onPress={handleTabBarItemPress}

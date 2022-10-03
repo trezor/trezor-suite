@@ -1,11 +1,11 @@
 import { BottomSheet } from '@suite-native/atoms';
-import { ChooseActionButtons } from './ChooseActionButtons';
-import { SelectAccount } from './SelectAccount';
+import { ActionButtons } from './ActionButtons';
+import { AccountsList } from './AccountsList';
 import React, { useState } from 'react';
 import { sendReceiveContentType, SendReceiveContentType } from '../contentType';
-import { CreateAddress } from './CreateAddress';
-import { ConfirmAddress } from './ConfirmAddress';
-import { GeneratedAddress } from './GeneratedAddress';
+import { AddressGeneration } from './AddressGeneration';
+import { AddressConfirmation } from './AddressConfirmation';
+import { FreshAddress } from './FreshAddress';
 
 type SendReceiveBottomSheetProps = {
     isVisible: boolean;
@@ -47,19 +47,19 @@ export const SendReceiveBottomSheet = ({
     const getSendReceiveContentComponent = () => {
         switch (contentType) {
             case sendReceiveContentType.chooseAction: {
-                return <ChooseActionButtons onChangeContent={handleChangeContentType} />;
+                return <ActionButtons onChangeContent={handleChangeContentType} />;
             }
             case sendReceiveContentType.selectAccountToReceive: {
-                return <SelectAccount onChangeContent={handleChangeContentType} />;
+                return <AccountsList onChangeContent={handleChangeContentType} />;
             }
             case sendReceiveContentType.createNewAddressToReceive: {
-                return <CreateAddress onChangeContent={handleChangeContentType} />;
+                return <AddressGeneration onChangeContent={handleChangeContentType} />;
             }
             case sendReceiveContentType.confirmNewAddressToReceive: {
-                return <ConfirmAddress onChangeContent={handleChangeContentType} />;
+                return <AddressConfirmation onChangeContent={handleChangeContentType} />;
             }
             case sendReceiveContentType.generatedAddressToReceive: {
-                return <GeneratedAddress onClose={handleClose} />;
+                return <FreshAddress address="TODO" onClose={handleClose} />;
             }
             default:
         }

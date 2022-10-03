@@ -4,12 +4,6 @@ import { Box, TileButton } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { sendReceiveContentType, SendReceiveContentType } from '../contentType';
 
-const buttonsWrapperStyle = prepareNativeStyle(utils => ({
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: utils.spacings.extraLarge,
-}));
-
 const leftButtonStyle = prepareNativeStyle(() => ({
     marginRight: 3,
 }));
@@ -22,11 +16,11 @@ type ChooseActionButtonsProps = {
     onChangeContent: (type: SendReceiveContentType) => void;
 };
 
-export const ChooseActionButtons = ({ onChangeContent }: ChooseActionButtonsProps) => {
+export const ActionButtons = ({ onChangeContent }: ChooseActionButtonsProps) => {
     const { applyStyle } = useNativeStyles();
 
     return (
-        <Box flexDirection="row" style={applyStyle(buttonsWrapperStyle)}>
+        <Box flexDirection="row">
             <TileButton
                 iconName="send"
                 title="Send"

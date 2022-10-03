@@ -10,22 +10,49 @@ export type TabBarItemProps = {
     onPress: () => void;
     iconName: IconName;
     title?: string;
+    isActionTabItem?: boolean;
 };
 
-const tabBarItemStyle = prepareNativeStyle(_ => ({
+type TabBarItemStyleProps = { isActionTabItem: boolean };
+
+const tabBarItemStyle = prepareNativeStyle<TabBarItemStyleProps>(_ => ({
     flex: 1,
+    marginTop: 11,
+    alignItems: 'center',
+    justifyContent: 'center',
 }));
 
-const tabBarItemContainerStyle = prepareNativeStyle(utils => ({
-    justifyContent: 'center',
-    alignItems: 'center',
-    color: utils.colors.forest,
-    paddingTop: 11,
-}));
+const tabBarItemContainerStyle = prepareNativeStyle<TabBarItemStyleProps>(
+    (utils, { isActionTabItem }) => ({
+        justifyContent: 'center',
+        alignItems: 'center',
+        color: utils.colors.forest,
+        extend: [
+            {
+                condition: isActionTabItem,
+                style: {
+                    color: utils.colors.gray0,
+                    width: 40,
+                    height: 40,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    borderRadius: utils.borders.radii.round,
+                    backgroundColor: utils.colors.forest,
+                },
+            },
+        ],
+    }),
+);
 
 const TAB_BAR_ITEM_HORIZONTAL_HIT_SLOP = 15;
 
-export const TabBarItem = ({ isFocused, onPress, iconName, title }: TabBarItemProps) => {
+export const TabBarItem = ({
+    isFocused,
+    onPress,
+    iconName,
+    title,
+    isActionTabItem = false,
+}: TabBarItemProps) => {
     const { applyStyle } = useNativeStyles();
 
     return (
@@ -43,9 +70,9 @@ export const TabBarItem = ({ isFocused, onPress, iconName, title }: TabBarItemPr
                 top: TAB_BAR_ITEM_HORIZONTAL_HIT_SLOP,
                 bottom: TAB_BAR_ITEM_HORIZONTAL_HIT_SLOP,
             }}
-            style={applyStyle(tabBarItemStyle)}
+            style={applyStyle(tabBarItemStyle, { isActionTabItem })}
         >
-            <View style={applyStyle(tabBarItemContainerStyle)}>
+            <View style={applyStyle(tabBarItemContainerStyle, { isActionTabItem })}>
                 <Icon name={iconName} size="large" color={isFocused ? 'forest' : 'gray500'} />
                 {title && (
                     <Text variant="label" color={isFocused ? 'forest' : 'gray500'}>

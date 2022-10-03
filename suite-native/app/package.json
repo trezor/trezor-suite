@@ -61,7 +61,9 @@
         "react-native-safe-area-context": "^4.3.1",
         "react-native-screens": "^3.13.1",
         "react-native-splash-screen": "^3.3.0",
+        "react-native-svg": "^12.4.4",
         "react-native-vision-camera": "^2.14.1",
+        "react-qr-code": "^2.0.8",
         "react-redux": "7.2.2",
         "redux-persist": "6.0.0",
         "vision-camera-code-scanner": "^0.2.0"

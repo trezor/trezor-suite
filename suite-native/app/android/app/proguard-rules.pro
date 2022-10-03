@@ -11,6 +11,7 @@
 
 -keep class com.facebook.hermes.unicode.** { *; }
 -keep class com.facebook.jni.** { *; }
+-keep public class com.horcrux.svg.** {*;}
 
 # https://www.npmjs.com/package/react-native-config
 -keep class io.trezor.suite.BuildConfig { *; }
