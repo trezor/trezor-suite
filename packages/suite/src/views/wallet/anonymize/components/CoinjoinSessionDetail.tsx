@@ -37,7 +37,7 @@ export const CoinjoinSessionDetail = ({
         <DetailRow
             term={<Translation id="TR_ROUNDS" />}
             value={<Translation id="TR_ROUNDS_VALUE" values={{ rounds: maxRounds }} />}
-            tooltip="Copy needed..."
+            tooltip={<Translation id="TR_ROUNDS_TOOLTIP" />}
         />
         <DetailRow
             term={<Translation id="TR_SKIP_ROUNDS" />}
@@ -51,13 +51,13 @@ export const CoinjoinSessionDetail = ({
                     <Translation id="TR_NONE" />
                 )
             }
-            tooltip="Copy needed..."
+            tooltip={<Translation id="TR_SKIP_ROUNDS_TOOLTIP" />}
         />
         <Separator />
         <DetailRow
             term={<Translation id="TR_MAX_MINING_FEE" />}
             value={`${maxFee} sat/vB`}
-            tooltip="Copy needed..."
+            tooltip={<Translation id="TR_MAX_MINING_FEE_TOOLTIP" />}
         />
     </dl>
 );

@@ -7240,53 +7240,71 @@ export default defineMessages({
     },
     TR_SERVICE_FEE_NOTE: {
         id: 'TR_SERVICE_FEE_NOTE',
-        description: 'Note in coin join strategy settings',
+        description: 'Note in coinjoin strategy settings',
         defaultMessage: 'Note: You’re also paying a mining fee',
     },
     TR_MINING_FEE_NOTE: {
         id: 'TR_MINING_FEE_NOTE',
-        description: 'Note in coin join strategy settings',
+        description: 'Note in coinjoin strategy settings',
         defaultMessage: 'Mining fee might be lower. Selected fee is the max value.',
     },
     TR_RECOMMENDED: {
         id: 'TR_RECOMMENDED',
-        description: 'Coin join strategy',
+        description: 'Coinjoin strategy',
         defaultMessage: 'Recommended',
     },
     TR_FAST: {
         id: 'TR_FAST',
-        description: 'Coin join strategy',
+        description: 'Coinjoin strategy',
         defaultMessage: 'Fast',
     },
     TR_RECOMMENDED_SUBHEADING: {
         id: 'TR_RECOMMENDED_SUBHEADING',
-        description: 'Coin join strategy description',
+        description: 'Coinjoin strategy description',
         defaultMessage: 'Secure, but takes time',
     },
     TR_FAST_SUBHEADING: {
         id: 'TR_FAST_SUBHEADING',
-        description: 'Coin join strategy description',
+        description: 'Coinjoin strategy description',
         defaultMessage: 'Faster, more expensive',
     },
     TR_ESTIMATED_TIME: {
         id: 'TR_ESTIMATED_TIME',
-        description: 'Coin join strategy item - time to complete coin join',
+        description: 'Coinjoin strategy item - time to complete coin join',
         defaultMessage: 'Est. time',
     },
     TR_ROUNDS: {
         id: 'TR_ROUNDS',
-        description: 'Coin join strategy item - max number of coin join rounds',
+        description: 'Coinjoin strategy item - max number of coin join rounds',
         defaultMessage: 'Rounds',
     },
     TR_SKIP_ROUNDS: {
         id: 'TR_SKIP_ROUNDS',
-        description: 'Coin join strategy item - average ratio of skipped coin join rounds',
+        description: 'Coinjoin strategy item - average ratio of skipped coin join rounds',
         defaultMessage: 'Skip rounds',
     },
     TR_MAX_MINING_FEE: {
         id: 'TR_MAX_MINING_FEE',
-        description: 'Coin join strategy item - fee amount',
+        description: 'Coinjoin strategy item - fee amount',
         defaultMessage: 'Max mining fee',
+    },
+    TR_ROUNDS_TOOLTIP: {
+        id: 'TR_ROUNDS_TOOLTIP',
+        description: 'Coinjoin strategy item tooltip',
+        defaultMessage:
+            'The required anonymity is usually not achieved in a single transaction. The number represents how many CoinJoin rounds you allow your Trezor to participate in.',
+    },
+    TR_SKIP_ROUNDS_TOOLTIP: {
+        id: 'TR_SKIP_ROUNDS_TOOLTIP',
+        description: 'Coinjoin strategy item tooltip',
+        defaultMessage:
+            'Skipped rounds make it even more difficult to prove any relation between your inputs. This means you can further obfuscate the origin of the funds.',
+    },
+    TR_MAX_MINING_FEE_TOOLTIP: {
+        id: 'TR_MAX_MINING_FEE_TOOLTIP',
+        description: 'Coinjoin strategy item tooltip',
+        defaultMessage:
+            'The realised mining fee is likely to be smaller. This value represents the price cap for your participation in each round.',
     },
     TR_ESTIMATED_TIME_VALUE: {
         id: 'TR_ESTIMATED_TIME_VALUE',
@@ -7295,48 +7313,48 @@ export default defineMessages({
     },
     TR_ROUNDS_VALUE: {
         id: 'TR_ROUNDS_VALUE',
-        description: 'Max number of coin join rounds',
+        description: 'Max number of coinjoin rounds',
         defaultMessage: 'max {rounds}',
     },
     TR_SKIP_ROUNDS_VALUE: {
         id: 'TR_SKIP_ROUNDS_VALUE',
-        description: 'Average ratio of skipped coin join rounds',
+        description: 'Average ratio of skipped coinjoin rounds',
         defaultMessage: 'avg. {part} out of {total}',
     },
     TR_NONE: {
         id: 'TR_NONE',
-        description: 'Skipped coin join rounds',
+        description: 'Skipped coinjoin rounds',
         defaultMessage: 'none',
     },
     TR_DEVICE_CONNECTED_CONFIRMATION: {
         id: 'TR_DEVICE_CONNECTED_CONFIRMATION',
-        description: 'Checkbox in coin join settings',
+        description: 'Checkbox in coinjoin settings',
         defaultMessage: "I'm not going to disconnect Trezor before finishing CoinJoin",
     },
     TR_TERMS_AND_PRIVACY_CONFIRMATION: {
         id: 'TR_TERMS_AND_PRIVACY_CONFIRMATION',
-        description: 'Checkbox in coin join settings',
+        description: 'Checkbox in coinjoin settings',
         defaultMessage:
             'I agree to the <terms>Terms & Conditions</terms> and <privacy>Privacy statement</privacy>',
     },
     TR_ANONYMIZE: {
         id: 'TR_ANONYMIZE',
-        description: 'Button initializing coin join',
+        description: 'Button initializing coinjoin',
         defaultMessage: 'Anonymize',
     },
     TR_ANONYMISATION_BUTTON_DISABLED: {
         id: 'TR_ANONYMISATION_BUTTON_DISABLED',
-        description: 'Tooltip content for disabled button in coin join section',
+        description: 'Tooltip content for disabled button in coinjoin section',
         defaultMessage: 'Confirm the conditions before you proceed.',
     },
     TR_CUSTOM_SETUP: {
         id: 'TR_CUSTOM_SETUP',
-        description: 'Heading and button in coin join settings',
+        description: 'Heading and button in coinjoin settings',
         defaultMessage: 'Custom setup',
     },
     TR_RESET_TO_DEFAULT: {
         id: 'TR_RESET_TO_DEFAULT',
-        description: 'Button in coin join settings',
+        description: 'Button in coinjoin settings',
         defaultMessage: 'Reset to default',
     },
     TR_COINJOIN_PHASE_0_MESSAGE: {
