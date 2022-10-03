@@ -4,17 +4,17 @@ import { Input as InputComponent } from '@trezor/components';
 import { Field } from '../../types';
 import { Row } from './Row';
 
-interface Props {
+interface InputProps {
     onChange: (field: Field<any>, value: string) => void;
     field: Field<any>;
 }
 
-const Input: React.FC<Props> = props => (
+const Input = ({ field, onChange }: InputProps) => (
     <Row>
         <InputComponent
-            label={props.field.name}
-            value={props.field.value}
-            onChange={event => props.onChange(props.field, event.target.value)}
+            label={field.name}
+            value={field.value}
+            onChange={event => onChange(field, event.target.value)}
         />
     </Row>
 );

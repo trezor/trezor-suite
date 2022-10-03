@@ -45,14 +45,14 @@ interface ButtonRowProps {
     closeScreen: (withCopy?: boolean) => void;
 }
 
-export const ButtonRow: React.FC<ButtonRowProps> = ({
+export const ButtonRow = ({
     isCompleted,
     isSubmitting,
     isSignPage,
     isTrezorLocked,
     resetForm,
     closeScreen,
-}) => {
+}: ButtonRowProps) => {
     const { isMobileLayout } = useLayoutSize();
     const [isCompleteHovered, setIsCompleteHovered] = useState(isMobileLayout);
 

@@ -101,6 +101,6 @@ type WalletLayoutNavigationProps = {
         | React.ReactElement<WalletLayoutNavLinkProps>[];
 };
 
-export const WalletLayoutNavigation: React.FC<WalletLayoutNavigationProps> = ({ children }) => (
+export const WalletLayoutNavigation = ({ children }: WalletLayoutNavigationProps) => (
     <Navigation>{children}</Navigation>
 );

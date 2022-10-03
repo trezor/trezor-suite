@@ -193,7 +193,7 @@ type ModalSubcomponents = {
     BottomBar: typeof BottomBar;
 };
 
-const Modal: React.FC<ModalProps> & ModalSubcomponents = ({
+const Modal = ({
     children,
     heading,
     subheading,
@@ -211,7 +211,7 @@ const Modal: React.FC<ModalProps> & ModalSubcomponents = ({
     headerComponents,
     className,
     'data-test': dataTest = '@modal',
-}) => {
+}: ModalProps) => {
     const [componentsWidth, setComponentsWidth] = useState<number>();
     const escPressed = useKeyPress('Escape');
     const theme = useTheme();

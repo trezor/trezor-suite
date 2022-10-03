@@ -61,10 +61,10 @@ interface NavigationActionsProps {
     isMobileLayout?: boolean;
 }
 
-export const NavigationActions: React.FC<NavigationActionsProps> = ({
+export const NavigationActions = ({
     closeMainNavigation,
     isMobileLayout,
-}) => {
+}: NavigationActionsProps) => {
     const { activeApp, notifications, discreetMode, torStatus, allowPrerelease, enabledNetworks } =
         useSelector(state => ({
             activeApp: state.router.app,

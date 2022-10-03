@@ -48,7 +48,7 @@ interface HiddenAddressRowProps {
     className?: string;
 }
 
-export const HiddenAddressRow: React.FC<HiddenAddressRowProps> = ({ item, variant, className }) => (
+export const HiddenAddressRow = ({ item, variant, className }: HiddenAddressRowProps) => (
     <Wrapper className={className}>
         <DerivationPathColumn>/{item.value.split('/').pop()}</DerivationPathColumn>
 

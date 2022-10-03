@@ -42,7 +42,7 @@ interface DashboardGraphProps {
 }
 
 // DashboardGraph.whyDidYouRender = true;
-export const DashboardGraph: React.FC<DashboardGraphProps> = memo(({ accounts }) => {
+export const DashboardGraph = memo(({ accounts }: DashboardGraphProps) => {
     const { updateGraphData, getGraphDataForInterval } = useActions({
         updateGraphData: graphActions.updateGraphData,
         getGraphDataForInterval: graphActions.getGraphDataForInterval,

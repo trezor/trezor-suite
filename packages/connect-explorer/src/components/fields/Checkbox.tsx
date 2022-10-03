@@ -1,24 +1,20 @@
 import React from 'react';
 
 import { Checkbox as CheckboxComponent } from '@trezor/components';
-import type { CheckboxProps } from '@trezor/components';
 
 import type { Field } from '../../types';
 import { onFieldChange } from '../../actions/methodActions';
 import { Row } from './Row';
 
-interface Props {
+interface CheckboxProps {
     field: Field<boolean>;
     onChange: typeof onFieldChange;
 }
 
-const Checkbox: React.FC<Props> = props => (
+const Checkbox = ({ field, onChange }: CheckboxProps) => (
     <Row>
-        <CheckboxComponent
-            onClick={e => props.onChange(props.field, !props.field.value)}
-            isChecked={props.field.value}
-        >
-            {props.field.name}
+        <CheckboxComponent onClick={e => onChange(field, !field.value)} isChecked={field.value}>
+            {field.name}
         </CheckboxComponent>
     </Row>
 );
