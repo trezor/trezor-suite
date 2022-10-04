@@ -24,14 +24,19 @@ type RequestEnableTorProps = Omit<
     onCancel: () => void;
 };
 
-export const RequestEnableTor = ({ onCancel, decision }: RequestEnableTorProps) => {
+export const RequestEnableTor = ({ onCancel, decision, isTorRequired }: RequestEnableTorProps) => {
     const onEnableTor = () => {
-        decision.resolve(true);
+        decision.resolve('enable');
         onCancel();
     };
 
     const onBackClick = () => {
-        decision.resolve(false);
+        decision.resolve('cancel');
+        onCancel();
+    };
+
+    const onSkipClick = () => {
+        decision.resolve('skip');
         onCancel();
     };
 
@@ -48,6 +53,12 @@ export const RequestEnableTor = ({ onCancel, decision }: RequestEnableTorProps) 
                         <Button variant="secondary" onClick={onCancel}>
                             <Translation id="TR_TOR_REQUEST_ENABLE_FOR_COIN_JOIN_LEAVE" />
                         </Button>
+
+                        {!isTorRequired && (
+                            <Button variant="secondary" onClick={onSkipClick}>
+                                Develop mode. Skip.
+                            </Button>
+                        )}
 
                         <Button variant="primary" onClick={onEnableTor}>
                             <Translation id="TR_TOR_ENABLE" />

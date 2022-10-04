@@ -131,11 +131,12 @@ export type UserContextPayload =
       }
     | {
           type: 'request-enable-tor';
-          decision: Deferred<boolean>;
+          isTorRequired?: boolean;
+          decision: Deferred<'enable' | 'cancel' | 'skip'>;
       }
     | {
           type: 'tor-loading';
-          decision: Deferred<boolean>;
+          decision: Deferred<'enable' | 'cancel' | 'skip'>;
       }
     | {
           type: 'cancel-coinjoin';
