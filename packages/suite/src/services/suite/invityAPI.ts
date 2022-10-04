@@ -56,6 +56,7 @@ type BodyType =
     | SellVoucherTradeQuoteRequest
     | SellVoucherTradeRequest
     | SellFiatTradeRequest
+    | P2pTradeRequest
     | SavingsTradeRequest;
 
 class InvityAPI {

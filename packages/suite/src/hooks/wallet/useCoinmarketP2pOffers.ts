@@ -71,13 +71,13 @@ export const useOffers = ({ selectedAccount }: UseOffersProps): ContextValues =>
     };
 
     const goToProvider = async () => {
-        if (!selectedQuote) {
+        if (!quotesRequest || !selectedQuote) {
             return;
         }
 
         const response = await invityAPI.doP2pTrade({
-            provider: selectedQuote.provider,
-            id: selectedQuote.id,
+            quotesRequest,
+            selectedQuote,
         });
 
         if (response && response.tradeForm) {
