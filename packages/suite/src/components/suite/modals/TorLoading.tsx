@@ -38,7 +38,7 @@ export const TorLoading = ({ onCancel, decision }: RequestEnableTorProps) => {
 
                 if (bootstrapEvent.progress.current === bootstrapEvent.progress.total) {
                     setTorStatus(TorStatus.Enabled);
-                    decision.resolve(true);
+                    decision.resolve('enable');
                 } else {
                     setTorStatus(TorStatus.Enabling);
                 }
@@ -80,7 +80,7 @@ export const TorLoading = ({ onCancel, decision }: RequestEnableTorProps) => {
             }, 300);
         });
 
-        decision.resolve(false);
+        decision.resolve('cancel');
         onCancel();
     };
 
