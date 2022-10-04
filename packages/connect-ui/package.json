@@ -13,6 +13,8 @@
     "dependencies": {
         "@trezor/components": "*",
         "@trezor/connect": "9.0.4",
+        "@trezor/connect-analytics": "*",
+        "@trezor/connect-common": "*",
         "@trezor/env-utils": "*",
         "@trezor/urls": "*",
         "react-intl": "^6.0.5"

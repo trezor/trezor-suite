@@ -67,7 +67,7 @@ const getTroubleshootingTips = (props: ErrorViewProps) => {
                             <Black>Custom</Black> tab
                         </Step>,
                         <Step>
-                            uncheck <Green>Cookies</Green>
+                            Uncheck <Green>Cookies</Green>
                         </Step>,
                     ],
                 },
@@ -94,7 +94,7 @@ const getTroubleshootingTips = (props: ErrorViewProps) => {
                 },
             });
 
-            // hopefully chomium based
+            // hopefully chromium based
         } else {
             tips.push({
                 icon: 'COOKIE',
@@ -222,8 +222,9 @@ export const ErrorView = (props: ErrorViewProps) => (
                         noContentPadding
                     >
                         <StepsOrderedList>
-                            {tip.detail.steps.map(step => (
-                                <li>{step}</li>
+                            {tip.detail.steps.map((step, index) => (
+                                // eslint-disable-next-line react/no-array-index-key
+                                <li key={index}>{step}</li>
                             ))}
                         </StepsOrderedList>
                     </WhiteCollapsibleBox>
