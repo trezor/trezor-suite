@@ -4,6 +4,8 @@ import {
     sortTxsFromLatest,
 } from '@trezor/blockchain-link/lib/workers/electrum/methods/getAccountInfo';
 
+// import { getAddressScript } from './filters';
+// import { analyzeTransactions } from '../client/middleware';
 import { isTxConfirmed, doesTxContainAddress } from './utils';
 import type { Transaction, AccountInfo, ScanAccountCheckpoint, Address } from './types';
 import { getAccountUtxo } from './getAccountUtxo';
@@ -53,7 +55,11 @@ const deriveTxAddresses = (
         };
     });
 
-export const getAccountInfo = ({
+export interface AddressesWithAnonymity extends NonNullable<AccountInfo['addresses']> {
+    anonymitySet: Record<string, number | undefined>; // key -> address, value -> anonymity
+}
+
+export const getAccountInfo = async ({
     descriptor,
     transactions,
     checkpoint,
@@ -63,7 +69,7 @@ export const getAccountInfo = ({
     transactions: Transaction[];
     checkpoint?: ScanAccountCheckpoint;
     network: Network;
-}): AccountInfo => {
+}): Promise<AccountInfo> => {
     const txCountTotal = transactions.length;
     const balanceTotal = transactions.reduce(sumBalance, 0);
 
@@ -71,7 +77,7 @@ export const getAccountInfo = ({
     const txCountConfirmed = txsConfirmed.length;
     const balanceConfirmed = txsConfirmed.reduce(sumBalance, 0);
 
-    let addresses;
+    let addresses: AddressesWithAnonymity | undefined;
     if (checkpoint) {
         const receive = deriveTxAddresses(
             descriptor,
@@ -91,8 +97,77 @@ export const getAccountInfo = ({
             change,
             unused: receive.filter(({ transfers }) => !transfers),
             used: receive.filter(({ transfers }) => transfers),
+            anonymitySet: {},
         };
     }
+
+    // store map of [addressScript]: address
+    // const addressesMap: Record<string, string | undefined> = {};
+    // const analyzeAnonymityParams = transactions.map(tx => {
+    //     const internalInputs: any[] = [];
+    //     const externalInputs: any[] = [];
+    //     tx.details.vin.forEach(vin => {
+    //         const address = vin.addresses!.join('');
+    //         const publicKey = getAddressScript(address, network).toString('hex');
+    //         const value = Number(vin.value);
+    //         addressesMap[publicKey] = address;
+    //         const input = {
+    //             publicKey,
+    //             value,
+    //         };
+    //         if (vin.isAccountOwned) internalInputs.push(input);
+    //         else externalInputs.push(input);
+    //     });
+
+    //     const internalOutputs: any[] = [];
+    //     const externalOutputs: any[] = [];
+    //     tx.details.vout.forEach(vout => {
+    //         const address = vout.addresses!.join('');
+    //         const publicKey = getAddressScript(address, network).toString('hex');
+    //         const value = Number(vout.value);
+    //         addressesMap[publicKey] = address;
+    //         const output = {
+    //             publicKey,
+    //             scriptPubKey: publicKey,
+    //             value,
+    //         };
+    //         if (vout.isAccountOwned) internalOutputs.push(output);
+    //         else externalOutputs.push(output);
+    //     });
+
+    //     return {
+    //         internalInputs,
+    //         internalOutputs,
+    //         externalInputs,
+    //         externalOutputs,
+    //     };
+    // });
+
+    // console.warn('CALC ANON', analyzeAnonymityParams);
+
+    // // call middleware
+    // const anonymity: any[] = [];
+    // try {
+    //     const result = await analyzeTransactions(analyzeAnonymityParams, {
+    //         baseUrl: 'http://localhost:8081/Cryptography/',
+    //     });
+
+    //     result.forEach(r => anonymity.push(r));
+    // } catch (error) {
+    //     console.warn('ANON err', error);
+    // }
+
+    // if (addresses) {
+    //     addresses.anonymitySet = anonymity.reduce((obj, a) => {
+    //         const address = addressesMap[a.pubKey];
+    //         if (address) {
+    //             obj[address] = a.anonymitySet;
+    //         } else {
+    //             obj[a.pubKey] = a.anonymitySet;
+    //         }
+    //         return obj;
+    //     }, {} as Record<string, number>);
+    // }
 
     const txsFromLatest = transactions.slice().sort(sortTxsFromLatest);
     const txsFromOldest = txsFromLatest.slice().reverse();
