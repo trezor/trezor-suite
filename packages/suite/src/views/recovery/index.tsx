@@ -26,7 +26,10 @@ const StepsContainer = styled.div`
 
 const StyledP = styled(P)`
     font-size: ${variables.FONT_SIZE.SMALL};
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+`;
+
+const LeftAlignedP = styled(StyledP)`
     text-align: left;
 `;
 
@@ -140,9 +143,9 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
             case 'initial':
                 return (
                     <>
-                        <StyledP>
+                        <LeftAlignedP>
                             {model && <Translation id={`TR_CHECK_RECOVERY_SEED_DESC_T${model}`} />}
-                        </StyledP>
+                        </LeftAlignedP>
 
                         <StepsContainer>
                             <InstructionStep
@@ -207,9 +210,9 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
                 return modal.context !== '@modal/context-none' ? (
                     <>
                         {model === 2 && (
-                            <StyledP>
+                            <LeftAlignedP>
                                 <Translation id="TR_ALL_THE_WORDS" />
-                            </StyledP>
+                            </LeftAlignedP>
                         )}
                         <ReduxModal {...modal} renderer={InstructionModal} />
                     </>
