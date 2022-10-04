@@ -1,4 +1,6 @@
+import BigNumber from 'bignumber.js';
 import { discovery } from '@trezor/utxo-lib';
+import { sumVinVout } from '../../utils';
 import { Api, tryGetScripthash, getTransactions, discoverAddress, AddressHistory } from '../utils';
 import { transformTransaction } from '../../blockbook/utils';
 import type { GetAccountBalanceHistory as Req } from '../../../types/messages';
@@ -26,7 +28,7 @@ const aggregateTransactions = (txs: (Transaction & { blockTime: number })[], gro
                 type,
                 amount,
                 fee,
-                details: { totalInput, totalOutput },
+                details: { vin, vout, totalInput, totalOutput },
             } = txs[j];
             if (type === 'recv') received += Number.parseInt(amount, 10);
             else if (type === 'sent')
@@ -35,6 +37,16 @@ const aggregateTransactions = (txs: (Transaction & { blockTime: number })[], gro
                 sentToSelf += Number.parseInt(totalOutput, 10);
                 sent += Number.parseInt(totalInput, 10);
                 received += Number.parseInt(totalOutput, 10);
+            } else if (type === 'joint') {
+                const myTotalInput = new BigNumber(
+                    vin.filter(vin => vin.isAccountOwned).reduce(sumVinVout, 0),
+                ).toNumber();
+                const myTotalOutput = new BigNumber(
+                    vout.filter(vout => vout.isAccountOwned).reduce(sumVinVout, 0),
+                ).toNumber();
+                sent += myTotalInput;
+                received += myTotalOutput;
+                sentToSelf += Math.min(myTotalInput, myTotalOutput);
             }
             j++;
         }
