@@ -67,7 +67,7 @@ export const AddCoinJoinAccountButton = ({ network }: AddCoinJoinAccountProps) =
             // When Tor was not loaded it means there was an error or user canceled it, stop the coinjoin account activation.
             if (!isTorLoaded) return;
         }
-        action.createCoinjoinAccount(network);
+        action.createCoinjoinAccount(network, 80);
     };
 
     const isDisabled = coinjoinAccounts.length > 0;

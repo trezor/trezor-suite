@@ -19,13 +19,29 @@ const initialState: CoinjoinState = {
     clients: {},
 };
 
-const createAccount = (draft: CoinjoinState, account: Account) => {
+const createAccount = (
+    draft: CoinjoinState,
+    { account, targetAnonymity }: Extract<Action, { type: typeof COINJOIN.ACCOUNT_CREATE }>,
+) => {
     const exists = draft.accounts.find(a => a.key === account.key);
     if (exists) return;
     draft.accounts.push({
         key: account.key,
+        targetAnonymity,
         previousSessions: [],
     });
+};
+
+const updateTargetAnonymity = (
+    draft: CoinjoinState,
+    {
+        key,
+        targetAnonymity,
+    }: Extract<Action, { type: typeof COINJOIN.ACCOUNT_UPDATE_TARGET_ANONYMITY }>,
+) => {
+    const account = draft.accounts.find(a => a.key === key);
+    if (!account) return;
+    account.targetAnonymity = targetAnonymity;
 };
 
 const createSession = (
@@ -81,12 +97,19 @@ export const coinjoinReducer = (
                 // restore accounts with coinjoin accountType
                 action.payload.accounts.forEach(account => {
                     if (account.accountType === 'coinjoin') {
-                        createAccount(draft, account);
+                        draft.accounts.push({
+                            key: account.key,
+                            targetAnonymity: 0,
+                            previousSessions: [],
+                        });
                     }
                 });
                 break;
             case COINJOIN.ACCOUNT_CREATE:
-                createAccount(draft, action.account);
+                createAccount(draft, action);
+                break;
+            case COINJOIN.ACCOUNT_UPDATE_TARGET_ANONYMITY:
+                updateTargetAnonymity(draft, action);
                 break;
             case COINJOIN.ACCOUNT_AUTHORIZE_SUCCESS:
                 createSession(draft, action);

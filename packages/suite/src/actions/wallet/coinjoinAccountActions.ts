@@ -9,10 +9,18 @@ import { Network } from '@suite-common/wallet-config';
 import { Account, CoinjoinSessionParameters } from '@suite-common/wallet-types';
 import { accountsActions, transactionsActions } from '@suite-common/wallet-core';
 
-const coinjoinAccountCreate = (account: Account) =>
+const coinjoinAccountCreate = (account: Account, targetAnonymity: number) =>
     ({
         type: COINJOIN.ACCOUNT_CREATE,
         account,
+        targetAnonymity,
+    } as const);
+
+const coinjoinAccountUpdateAnonymity = (key: string, targetAnonymity: number) =>
+    ({
+        type: COINJOIN.ACCOUNT_UPDATE_TARGET_ANONYMITY,
+        key,
+        targetAnonymity,
     } as const);
 
 const coinjoinAccountAuthorize = (account: Account) =>
@@ -43,6 +51,7 @@ const coinjoinAccountUnregister = (account: Account) =>
 
 export type CoinjoinAccountAction =
     | ReturnType<typeof coinjoinAccountCreate>
+    | ReturnType<typeof coinjoinAccountUpdateAnonymity>
     | ReturnType<typeof coinjoinAccountAuthorize>
     | ReturnType<typeof coinjoinAccountAuthorizeSuccess>
     | ReturnType<typeof coinjoinAccountAuthorizeFailed>
@@ -124,7 +133,8 @@ export const fetchAndUpdateAccount =
     };
 
 export const createCoinjoinAccount =
-    (network: Network) => async (dispatch: Dispatch, getState: GetState) => {
+    (network: Network, targetAnonymity: number) =>
+    async (dispatch: Dispatch, getState: GetState) => {
         if (network.accountType !== 'coinjoin') {
             throw new Error('createCoinjoinAccount: invalid account type');
         }
@@ -208,7 +218,7 @@ export const createCoinjoinAccount =
                 },
             ),
         );
-        dispatch(coinjoinAccountCreate(account.payload));
+        dispatch(coinjoinAccountCreate(account.payload, targetAnonymity));
 
         // switch to account
         dispatch(
