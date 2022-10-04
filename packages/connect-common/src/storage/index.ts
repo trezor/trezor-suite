@@ -21,14 +21,6 @@ export function save(storageKey: Key, value: any, temporary = false) {
     }
     try {
         window.localStorage[storageKey] = JSON.stringify(value);
-        return;
-    } catch (ignore) {
-        // empty
-    }
-
-    // Fallback cookie
-    try {
-        window.document.cookie = `${encodeURIComponent(storageKey)}=${JSON.stringify(value)};`;
     } catch (ignore) {
         // empty
     }
@@ -46,23 +38,6 @@ export function load(storageKey: Key, temporary = false): any {
             value = window.localStorage[storageKey];
         } catch (ignore) {
             // empty
-        }
-
-        // Fallback cookie if local storage gives us nothing
-        if (typeof value === 'undefined') {
-            try {
-                const { cookie } = window.document;
-                const prefix = `${encodeURIComponent(storageKey)}=`;
-                const location = cookie.indexOf(prefix);
-                if (location !== -1) {
-                    const matches = /^([^;]+)/.exec(cookie.slice(location));
-                    if (matches) {
-                        value = matches[0].replace(prefix, '');
-                    }
-                }
-            } catch (ignore) {
-                // empty
-            }
         }
     }
 
