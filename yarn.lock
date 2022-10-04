@@ -1837,7 +1837,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@electron/get@npm:^1.13.0, @electron/get@npm:^1.14.1":
+"@electron/get@npm:^1.13.0":
   version: 1.14.1
   resolution: "@electron/get@npm:1.14.1"
   dependencies:
@@ -15527,19 +15527,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"electron@npm:*":
-  version: 21.0.1
-  resolution: "electron@npm:21.0.1"
-  dependencies:
-    "@electron/get": ^1.14.1
-    "@types/node": ^16.11.26
-    extract-zip: ^2.0.1
-  bin:
-    electron: cli.js
-  checksum: 1362c1a820187c7061cb3de84d91f0b8839fdfa9428c12d59d4e9966d691b747dcaf34ca55649216b5724296ddf53b303222b6f52c1982717cdaa4078ce99a71
-  languageName: node
-  linkType: hard
-
 "electron@npm:18.3.5":
   version: 18.3.5
   resolution: "electron@npm:18.3.5"
@@ -17107,7 +17094,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"extract-zip@npm:2.0.1, extract-zip@npm:^2.0.1":
+"extract-zip@npm:2.0.1":
   version: 2.0.1
   resolution: "extract-zip@npm:2.0.1"
   dependencies:
