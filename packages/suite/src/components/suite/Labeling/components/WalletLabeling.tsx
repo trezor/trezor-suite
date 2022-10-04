@@ -23,5 +23,5 @@ export const WalletLabeling = ({ device, shouldUseDeviceLabel }: WalletLabelling
         return <>{`${device.label} ${label}`}</>;
     }
 
-    return <>{label}</>;
+    return <span>{label}</span>;
 };
