@@ -1,11 +1,13 @@
+import React, { ReactNode, useState } from 'react';
+
 import { BottomSheet } from '@suite-native/atoms';
-import { ActionButtons } from './ActionButtons';
-import { AccountsList } from './AccountsList';
-import React, { useState } from 'react';
+
+import { AccountActionStep } from './AccountActionStep';
+import { AccountSelectionStep } from './AccountSelectionStep';
 import { sendReceiveContentType, SendReceiveContentType } from '../contentType';
-import { AddressGeneration } from './AddressGeneration';
-import { AddressConfirmation } from './AddressConfirmation';
-import { FreshAddress } from './FreshAddress';
+import { AddressGenerationStep } from './AddressGenerationStep';
+import { AddressConfirmationStep } from './AddressConfirmationStep';
+import { FreshAddressStep } from './FreshAddressStep';
 
 type SendReceiveBottomSheetProps = {
     isVisible: boolean;
@@ -18,60 +20,70 @@ export const SendReceiveBottomSheet = ({
     isVisible,
     onVisibilityChange,
 }: SendReceiveBottomSheetProps) => {
+    const [selectedAccountKey, setSelectedAccountKey] = useState<string>('');
     const [contentType, setContentType] = useState<SendReceiveContentType>(DEFAULT_CONTENT_TYPE);
 
     const handleChangeContentType = (type: SendReceiveContentType) => {
         setContentType(type);
     };
 
+    const handleSelectAccount = (accountKey: string) => {
+        setSelectedAccountKey(accountKey);
+    };
+
     const handleClose = () => {
         onVisibilityChange(false);
+        setSelectedAccountKey('');
         setContentType(DEFAULT_CONTENT_TYPE);
     };
 
-    const getSendReceiveContentTitle = () => {
-        switch (contentType) {
-            case sendReceiveContentType.selectAccountToReceive:
-            case sendReceiveContentType.createNewAddressToReceive:
-            case sendReceiveContentType.confirmNewAddressToReceive:
-            case sendReceiveContentType.generatedAddressToReceive: {
-                return 'Receive';
-            }
-            case sendReceiveContentType.selectAccountToSend: {
-                return 'Send';
-            }
-            default:
-        }
-    };
-
-    const getSendReceiveContentComponent = () => {
-        switch (contentType) {
-            case sendReceiveContentType.chooseAction: {
-                return <ActionButtons onChangeContent={handleChangeContentType} />;
-            }
-            case sendReceiveContentType.selectAccountToReceive: {
-                return <AccountsList onChangeContent={handleChangeContentType} />;
-            }
-            case sendReceiveContentType.createNewAddressToReceive: {
-                return <AddressGeneration onChangeContent={handleChangeContentType} />;
-            }
-            case sendReceiveContentType.confirmNewAddressToReceive: {
-                return <AddressConfirmation onChangeContent={handleChangeContentType} />;
-            }
-            case sendReceiveContentType.generatedAddressToReceive: {
-                return <FreshAddress address="TODO" onClose={handleClose} />;
-            }
-            default:
-        }
+    const sendReceiveContent: Record<
+        SendReceiveContentType,
+        { title?: string; component: ReactNode }
+    > = {
+        [sendReceiveContentType.chooseAction]: {
+            component: <AccountActionStep onChangeContentType={handleChangeContentType} />,
+        },
+        [sendReceiveContentType.selectAccountToReceive]: {
+            title: 'Receive',
+            component: (
+                <AccountSelectionStep
+                    onChangeContentType={handleChangeContentType}
+                    onSelectAccount={handleSelectAccount}
+                />
+            ),
+        },
+        [sendReceiveContentType.createNewAddressToReceive]: {
+            title: 'Receive',
+            component: (
+                <AddressGenerationStep
+                    accountKey={selectedAccountKey}
+                    onChangeContentType={handleChangeContentType}
+                />
+            ),
+        },
+        [sendReceiveContentType.confirmNewAddressToReceive]: {
+            title: 'Receive',
+            component: (
+                <AddressConfirmationStep
+                    accountKey={selectedAccountKey}
+                    onChangeContentType={handleChangeContentType}
+                />
+            ),
+        },
+        [sendReceiveContentType.generatedAddressToReceive]: {
+            title: 'Receive',
+            component: <FreshAddressStep accountKey={selectedAccountKey} onClose={handleClose} />,
+        },
     };
 
     return (
         <BottomSheet
             isVisible={isVisible}
             onVisibilityChange={handleClose}
-            title={getSendReceiveContentTitle()}
+            title={sendReceiveContent[contentType].title}
         >
-            {getSendReceiveContentComponent()}
+            {sendReceiveContent[contentType].component}
         </BottomSheet>
     );
 };

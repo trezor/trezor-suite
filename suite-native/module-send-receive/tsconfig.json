@@ -2,7 +2,18 @@
     "extends": "../../tsconfig.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        {
+            "path": "../../suite-common/wallet-core"
+        },
+        {
+            "path": "../../suite-common/wallet-types"
+        },
+        {
+            "path": "../../suite-common/wallet-utils"
+        },
+        { "path": "../accounts" },
         { "path": "../atoms" },
+        { "path": "../../packages/connect" },
         { "path": "../../packages/styles" },
         { "path": "../../packages/theme" }
     ]

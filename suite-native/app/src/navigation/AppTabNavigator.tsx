@@ -5,8 +5,8 @@ import { BottomTabBarProps, createBottomTabNavigator } from '@react-navigation/b
 import { HomeStackNavigator } from '@suite-native/module-home';
 import { AccountsStackNavigator } from '@suite-native/module-accounts';
 import { SettingsStackNavigator } from '@suite-native/module-settings';
-import { AppTabsParamList, AppTabsRoutes } from '@suite-native/navigation';
-import { TabBar } from '@suite-native/tab-bar';
+import { AppTabsParamList, AppTabsRoutes, TabBar } from '@suite-native/navigation';
+import { SendReceiveBottomSheet } from '@suite-native/module-send-receive';
 
 import { ActionScreen } from './dummyScreens/ActionScreen';
 import { PricesScreen } from './dummyScreens/PricesScreen';
@@ -23,7 +23,11 @@ export const AppTabNavigator = () => (
                 unmountOnBlur: false,
             }}
             tabBar={(props: BottomTabBarProps) => (
-                <TabBar tabItemOptions={rootTabsOptions} {...props} />
+                <TabBar
+                    SendReceiveComponent={SendReceiveBottomSheet}
+                    tabItemOptions={rootTabsOptions}
+                    {...props}
+                />
             )}
         >
             <Tab.Screen name={AppTabsRoutes.HomeStack} component={HomeStackNavigator} />

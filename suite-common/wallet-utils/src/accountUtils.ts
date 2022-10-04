@@ -13,6 +13,7 @@ import {
     Discovery,
     PrecomposedTransactionFinal,
     PrecomposedTransactionFinalCardano,
+    ReceiveInfo,
     TxFinalCardano,
 } from '@suite-common/wallet-types';
 import { TrezorDevice } from '@suite-common/suite-types';
@@ -23,6 +24,34 @@ import { toFiatCurrency } from './fiatConverterUtils';
 
 export const isUtxoBased = (account: Account) =>
     account.networkType === 'bitcoin' || account.networkType === 'cardano';
+
+export const getFirstFreshAddress = (
+    account: Account,
+    receiveAddresses: ReceiveInfo[],
+    pendingAddresses: string[],
+    utxoBasedAccount: boolean,
+) => {
+    const unused = account.addresses
+        ? account.addresses.unused
+        : [
+              {
+                  path: account.path,
+                  address: account.descriptor,
+                  transfers: account.history.total,
+              },
+          ];
+
+    const unrevealed = unused.filter(
+        a =>
+            !receiveAddresses.find(r => r.path === a.path) &&
+            !pendingAddresses.find(p => p === a.address),
+    );
+
+    // const addressLabel = utxoBasedAccount ? 'RECEIVE_ADDRESS_FRESH' : 'RECEIVE_ADDRESS';
+    // NOTE: unrevealed[0] can be undefined (limit exceeded)
+    const firstFreshAddress = utxoBasedAccount ? unrevealed[0] : unused[0];
+    return firstFreshAddress;
+};
 
 export const parseBIP44Path = (path: string) => {
     const regEx = /m\/(\d+'?)\/(\d+'?)\/(\d+'?)\/([0,1])\/(\d+)/;

@@ -9,6 +9,7 @@ import {
     getAccountKey,
     getBip43Type,
     getFiatValue,
+    getFirstFreshAddress,
     getNetwork,
     getTitleForNetwork,
     getUtxoFromSignedTransaction,
@@ -22,6 +23,20 @@ import {
 import * as fixtures from '../__fixtures__/accountUtils';
 
 describe('account utils', () => {
+    fixtures.getFirstFreshAddress.forEach(f => {
+        it(`getFirstFreshAddress: ${f.description}`, () => {
+            const { account, receive, pendingAddresses, utxoBasedAccount } = f.params;
+            const freshAddress = getFirstFreshAddress(
+                // @ts-expect-error params are partial
+                account,
+                receive,
+                pendingAddresses,
+                utxoBasedAccount,
+            );
+            expect(freshAddress).toMatchObject(f.result);
+        });
+    });
+
     fixtures.getUtxoFromSignedTransaction.forEach(f => {
         it(`getUtxoFromSignedTransaction: ${f.description}`, () => {
             // @ts-expect-error params are partial

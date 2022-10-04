@@ -6324,12 +6324,15 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/accounts@workspace:suite-native/accounts"
   dependencies:
+    "@mobily/ts-belt": ^3.11.0
+    "@suite-common/wallet-config": "*"
     "@suite-common/wallet-core": "*"
     "@suite-common/wallet-types": "*"
     "@suite-native/atoms": "*"
     "@trezor/icons": "*"
     "@trezor/styles": "*"
     react: ^17.0.2
+    react-native: 0.68.2
     react-redux: 7.2.2
   languageName: unknown
   linkType: soft
@@ -6416,7 +6419,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/module-accounts@workspace:suite-native/module-accounts"
   dependencies:
-    "@mobily/ts-belt": ^3.11.0
     "@react-navigation/native": ^6.0.11
     "@react-navigation/stack": ^6.2.2
     "@reduxjs/toolkit": ^1.8.3
@@ -6534,13 +6536,19 @@ __metadata:
   resolution: "@suite-native/module-send-receive@workspace:suite-native/module-send-receive"
   dependencies:
     "@react-native-clipboard/clipboard": ^1.11.1
+    "@suite-common/wallet-core": "*"
+    "@suite-common/wallet-types": "*"
+    "@suite-common/wallet-utils": "*"
+    "@suite-native/accounts": "*"
     "@suite-native/atoms": "*"
+    "@trezor/connect": 9.0.3
     "@trezor/styles": "*"
     "@trezor/theme": "*"
     jest: ^26.6.3
     react: ^17.0.2
     react-native: 0.68.2
-    react-qr-code: ^2.0.8
+    react-qr-code: 2.0.8
+    react-redux: 7.2.2
     typescript: 4.7.4
   languageName: unknown
   linkType: soft
@@ -6618,25 +6626,6 @@ __metadata:
     react: ^17.0.2
     react-native-mmkv: ^2.4.3
     redux-persist: 6.0.0
-    typescript: 4.7.4
-  languageName: unknown
-  linkType: soft
-
-"@suite-native/tab-bar@*, @suite-native/tab-bar@workspace:suite-native/tab-bar":
-  version: 0.0.0-use.local
-  resolution: "@suite-native/tab-bar@workspace:suite-native/tab-bar"
-  dependencies:
-    "@react-navigation/bottom-tabs": ^6.3.1
-    "@react-navigation/native": ^6.0.11
-    "@react-navigation/stack": ^6.2.2
-    "@suite-native/atoms": "*"
-    "@suite-native/module-send-receive": "*"
-    "@trezor/icons": "*"
-    "@trezor/styles": "*"
-    jest: ^26.6.3
-    react: ^17.0.2
-    react-native: 0.68.2
-    react-native-safe-area-context: ^4.3.1
     typescript: 4.7.4
   languageName: unknown
   linkType: soft
@@ -7430,11 +7419,11 @@ __metadata:
     "@suite-native/module-dev-utils": "*"
     "@suite-native/module-home": "*"
     "@suite-native/module-onboarding": "*"
+    "@suite-native/module-send-receive": "*"
     "@suite-native/module-settings": "*"
     "@suite-native/navigation": "*"
     "@suite-native/state": "*"
     "@suite-native/storage": "*"
-    "@suite-native/tab-bar": "*"
     "@suite-native/transactions": "*"
     "@trezor/connect": 9.0.3
     "@trezor/icons": "*"
@@ -7460,7 +7449,7 @@ __metadata:
     react-native-splash-screen: ^3.3.0
     react-native-svg: ^12.4.4
     react-native-vision-camera: ^2.14.1
-    react-qr-code: ^2.0.8
+    react-qr-code: 2.0.8
     react-redux: 7.2.2
     react-test-renderer: 17.0.2
     redux-persist: 6.0.0
@@ -28418,7 +28407,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-qr-code@npm:^2.0.8":
+"react-qr-code@npm:2.0.8":
   version: 2.0.8
   resolution: "react-qr-code@npm:2.0.8"
   dependencies:

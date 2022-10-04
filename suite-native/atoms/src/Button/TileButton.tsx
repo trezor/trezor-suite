@@ -1,5 +1,5 @@
 import React from 'react';
-import { TouchableOpacity } from 'react-native';
+import { TouchableOpacity, View } from 'react-native';
 
 import { Icon, IconName } from '@trezor/icons';
 import { NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -15,17 +15,26 @@ type TileButtonProps = {
     isDisabled?: boolean;
 };
 
-type TileButtonStyleProps = {
-    isDisabled: boolean;
-};
-
-const tileButtonStyle = prepareNativeStyle<TileButtonStyleProps>(utils => ({
+const tileButtonContainerStyle = prepareNativeStyle(utils => ({
     height: 79,
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: utils.borders.radii.small,
     backgroundColor: utils.colors.gray300,
     flex: 1,
+}));
+
+const tileButtonStyle = prepareNativeStyle<{ isDisabled: boolean }>((_, { isDisabled }) => ({
+    justifyContent: 'center',
+    alignItems: 'center',
+    extend: [
+        {
+            condition: isDisabled,
+            style: {
+                opacity: 0.2,
+            },
+        },
+    ],
 }));
 
 const iconWrapperStyle = prepareNativeStyle(() => ({
@@ -47,17 +56,17 @@ export const TileButton = ({
     return (
         <TouchableOpacity
             disabled={isDisabled}
-            style={[applyStyle(tileButtonStyle, { isDisabled }), style]}
+            style={[applyStyle(tileButtonContainerStyle), style]}
             onPress={onPress}
         >
-            <Box justifyContent="center" alignItems="center">
+            <View style={applyStyle(tileButtonStyle, { isDisabled })}>
                 <Box style={applyStyle(iconWrapperStyle)}>
                     <Icon name={iconName} />
                 </Box>
                 <Text variant="label" style={applyStyle(textStyle)}>
                     {title}
                 </Text>
-            </Box>
+            </View>
         </TouchableOpacity>
     );
 };

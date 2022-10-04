@@ -8,10 +8,10 @@ import { Box } from '@suite-native/atoms';
 
 import { TabBarItem } from './TabBarItem';
 import { TabsOptions } from '../types';
-import { SendReceiveBottomSheet } from '@suite-native/module-send-receive';
 
 interface TabBarProps extends BottomTabBarProps {
     tabItemOptions: TabsOptions;
+    SendReceiveComponent: React.ElementType;
 }
 
 export const TAB_BAR_HEIGHT = 86;
@@ -30,7 +30,12 @@ const tabBarStyle = prepareNativeStyle<{ insetLeft: number; insetRight: number }
     }),
 );
 
-export const TabBar = ({ state, navigation, tabItemOptions }: TabBarProps) => {
+export const TabBar = ({
+    state,
+    navigation,
+    tabItemOptions,
+    SendReceiveComponent,
+}: TabBarProps) => {
     const [sendReceiveActionsVisible, setSendReceiveActionsVisible] = useState(false);
     const { applyStyle } = useNativeStyles();
     const insets = useSafeAreaInsets();
@@ -41,7 +46,7 @@ export const TabBar = ({ state, navigation, tabItemOptions }: TabBarProps) => {
 
     return (
         <Box style={applyStyle(tabBarStyle, { insetLeft: insets.left, insetRight: insets.right })}>
-            <SendReceiveBottomSheet
+            <SendReceiveComponent
                 isVisible={sendReceiveActionsVisible}
                 onVisibilityChange={handleSendReceiveActionsVisibility}
             />

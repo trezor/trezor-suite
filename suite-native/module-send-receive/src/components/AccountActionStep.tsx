@@ -2,6 +2,7 @@ import React from 'react';
 
 import { Box, TileButton } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+
 import { sendReceiveContentType, SendReceiveContentType } from '../contentType';
 
 const leftButtonStyle = prepareNativeStyle(() => ({
@@ -12,11 +13,11 @@ const rightButtonStyle = prepareNativeStyle(() => ({
     marginLeft: 3,
 }));
 
-type ChooseActionButtonsProps = {
-    onChangeContent: (type: SendReceiveContentType) => void;
+type AccountActionStepProps = {
+    onChangeContentType: (type: SendReceiveContentType) => void;
 };
 
-export const ActionButtons = ({ onChangeContent }: ChooseActionButtonsProps) => {
+export const AccountActionStep = ({ onChangeContentType }: AccountActionStepProps) => {
     const { applyStyle } = useNativeStyles();
 
     return (
@@ -31,7 +32,7 @@ export const ActionButtons = ({ onChangeContent }: ChooseActionButtonsProps) => 
             <TileButton
                 iconName="receive"
                 title="Receive"
-                onPress={() => onChangeContent(sendReceiveContentType.selectAccountToReceive)}
+                onPress={() => onChangeContentType(sendReceiveContentType.selectAccountToReceive)}
                 style={applyStyle(rightButtonStyle)}
             />
         </Box>

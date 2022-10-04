@@ -34,6 +34,9 @@ export const getAccountTransactions = (
     transactions: Record<string, WalletAccountTransaction[]>,
 ) => transactions[accountKey] || [];
 
+export const isPending = (tx: WalletAccountTransaction | AccountTransaction) =>
+    !!tx && (!tx.blockHeight || tx.blockHeight < 0);
+
 /**
  * Returns object with transactions grouped by a date. Key is a string in YYYY-MM-DD format.
  * Pending txs are assigned to key 'pending'.
@@ -174,9 +177,6 @@ export const parseDateKey = (key: string) => {
     const d = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
     return d;
 };
-
-export const isPending = (tx: WalletAccountTransaction | AccountTransaction) =>
-    !!tx && (!tx.blockHeight || tx.blockHeight < 0);
 
 export const findTransaction = (txid: string, transactions: WalletAccountTransaction[]) =>
     transactions.find(t => t && t.txid === txid);

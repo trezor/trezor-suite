@@ -1,10 +1,14 @@
-import React from 'react';
+import React, { useMemo } from 'react';
+import { useSelector } from 'react-redux';
+
 import styled from 'styled-components';
-import { AccountAddress } from '@trezor/connect';
-import { Button, Card, variables, H2 } from '@trezor/components';
 import { Translation, QuestionTooltip, ReadMoreLink } from '@suite-components';
 import { AppState } from '@suite-types';
-import { isUtxoBased } from '@suite-common/wallet-utils';
+
+import { AccountAddress } from '@trezor/connect';
+import { Button, Card, variables, H2 } from '@trezor/components';
+import { getFirstFreshAddress } from '@suite-common/wallet-utils';
+import { AccountsRootState, selectIsAccountUtxoBased } from '@suite-common/wallet-core';
 
 const StyledCard = styled(Card)`
     width: 100%;
@@ -123,27 +127,17 @@ export const FreshAddress = ({
     pendingAddresses,
     locked,
 }: FreshAddressProps) => {
-    if (!account) return null; // Needed?
-
-    const unused = account.addresses
-        ? account.addresses.unused
-        : [
-              {
-                  path: account.path,
-                  address: account.descriptor,
-                  transfers: account.history.total,
-              },
-          ];
-
-    const unrevealed = unused.filter(
-        a =>
-            !addresses.find(r => r.path === a.path) && !pendingAddresses.find(p => p === a.address),
+    const isAccountUtxoBased = useSelector((state: AccountsRootState) =>
+        selectIsAccountUtxoBased(state, account?.key ?? ''),
     );
 
-    const utxoBasedAccount = isUtxoBased(account);
-    // const addressLabel = utxoBasedAccount ? 'RECEIVE_ADDRESS_FRESH' : 'RECEIVE_ADDRESS';
-    // NOTE: unrevealed[0] can be undefined (limit exceeded)
-    const firstFreshAddress = utxoBasedAccount ? unrevealed[0] : unused[0];
+    const firstFreshAddress = useMemo(() => {
+        if (account) {
+            return getFirstFreshAddress(account, addresses, pendingAddresses, isAccountUtxoBased);
+        }
+    }, [account, addresses, pendingAddresses, isAccountUtxoBased]);
+
+    if (!account || !firstFreshAddress) return null;
 
     const getAddressValue = (address?: AccountAddress) => {
         if (!address) {
@@ -159,7 +153,7 @@ export const FreshAddress = ({
         <StyledCard>
             <AddressContainer>
                 <TooltipLabel
-                    multipleAddresses={utxoBasedAccount}
+                    multipleAddresses={isAccountUtxoBased}
                     symbol={account.symbol}
                     accountType={account.accountType}
                 />
