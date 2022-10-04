@@ -34,20 +34,14 @@ const synced = createAction(
     }),
 );
 
-export type SetBackendPayload = CustomBackend | { coin: NetworkSymbol; type: 'default' };
+export type SetBackendPayload =
+    | CustomBackend
+    | { coin: NetworkSymbol; type: 'default'; urls?: unknown };
 const setBackend = createAction(`${actionsPrefix}/setBackend`, (payload: SetBackendPayload) => ({
     payload,
 }));
 
-const resetBackend = createAction(`${actionsPrefix}/resetBackend`, (coin: NetworkSymbol) => ({
-    payload: {
-        coin,
-        type: 'default',
-    },
-}));
-
 export const blockchainActions = {
-    resetBackend,
     setBackend,
     connected,
     reconnectTimeoutStart,

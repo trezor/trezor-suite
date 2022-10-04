@@ -97,7 +97,6 @@ export const useBackendsForm = (coin: Network['symbol']) => {
     const [currentValues, setCurrentValues] = useState(initial);
     const actions = useActions({
         setBackend: blockchainActions.setBackend,
-        resetBackend: blockchainActions.resetBackend,
     });
 
     const changeType = (type: BackendOption) => {
@@ -133,11 +132,7 @@ export const useBackendsForm = (coin: Network['symbol']) => {
     const save = () => {
         const { type } = currentValues;
         const urls = type === 'default' ? [] : getUrls();
-        if (type === 'default') {
-            actions.resetBackend(coin);
-        } else {
-            actions.setBackend({ coin, type, urls });
-        }
+        actions.setBackend({ coin, type, urls });
         const totalOnion = urls.filter(isOnionUrl).length;
 
         analytics.report({
