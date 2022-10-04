@@ -43,7 +43,7 @@
   "TR_ACCOUNT_IMPORTED_ANNOUNCEMENT": "A watch-only account is a public address you’ve imported into your wallet, allowing the wallet to watch for outputs but not spend them.",
   "TR_ACCOUNT_TYPE_SHELLEY": "Shelley",
   "TR_ACCOUNT_TYPE_SHELLEY_DESC": "Shelley era addresses have introduced a new type of wallet that can support stake delegation and earning rewards.",
-  "TR_ACCOUNT_TYPE_SLIP25_DESC": "What is a CoinJoin account?",
+  "TR_ACCOUNT_TYPE_SLIP25_DESC": "What is CoinJoin account?",
   "TR_ACCOUNT_TYPE_SLIP25_NAME": "CoinJoin account",
   "TR_ACCOUNT_TYPE_SLIP25_TECH": "SLIP25, P2TR, Bech32m",
   "TR_ADD_HIDDEN_WALLET": "Add hidden wallet",
