@@ -1,11 +1,16 @@
 import path from 'path';
+import { DefinePlugin } from 'webpack';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import TerserPlugin from 'terser-webpack-plugin';
 import CopyPlugin from 'copy-webpack-plugin';
 import * as URLS from '@trezor/urls';
+import { version } from '../package.json';
+import { execSync } from 'child_process';
 
 const STATIC_SRC = path.join(__dirname, '../src/static');
 const DIST = path.resolve(__dirname, '../build');
+
+const commitHash = execSync('git rev-parse HEAD').toString().trim();
 
 export default {
     target: 'web',
@@ -65,6 +70,14 @@ export default {
         mainFields: ['browser', 'module', 'main'],
     },
     plugins: [
+        new DefinePlugin({
+            process: {
+                env: {
+                    VERSION: JSON.stringify(version),
+                    COMMIT_HASH: JSON.stringify(commitHash),
+                },
+            },
+        }),
         new HtmlWebpackPlugin({
             chunks: ['popup'],
             template: `${STATIC_SRC}/popup.html`,

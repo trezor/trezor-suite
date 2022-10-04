@@ -4,6 +4,7 @@
         "outDir": "./libDev",
         "types": ["web"]
     },
+    "include": [".", "**/*.json"],
     "references": [
         { "path": "../components" },
         { "path": "../connect" },

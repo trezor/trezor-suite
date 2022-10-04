@@ -13,7 +13,8 @@
     "include": [
         "./connect-web",
         "../connect-iframe/webpack/prod.webpack.config.ts",
-        "../connect-popup/webpack/prod.webpack.config.ts"
+        "../connect-popup/webpack/prod.webpack.config.ts",
+        "../connect-popup/package.json"
     ],
     "references": [
         { "path": "../connect" },

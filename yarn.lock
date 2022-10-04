@@ -7033,6 +7033,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@trezor/connect-analytics@*, @trezor/connect-analytics@workspace:packages/connect-analytics":
+  version: 0.0.0-use.local
+  resolution: "@trezor/connect-analytics@workspace:packages/connect-analytics"
+  dependencies:
+    "@trezor/analytics": "*"
+    typescript: 4.7.4
+  languageName: unknown
+  linkType: soft
+
 "@trezor/connect-common@*, @trezor/connect-common@0.0.10, @trezor/connect-common@workspace:packages/connect-common":
   version: 0.0.0-use.local
   resolution: "@trezor/connect-common@workspace:packages/connect-common"
@@ -7134,6 +7143,7 @@ __metadata:
     "@playwright/test": ^1.22.2
     "@trezor/components": "*"
     "@trezor/connect": 9.0.4
+    "@trezor/connect-analytics": "*"
     "@trezor/connect-ui": "*"
     "@trezor/crypto-utils": "*"
     "@trezor/trezor-user-env-link": "*"
@@ -7160,6 +7170,8 @@ __metadata:
   dependencies:
     "@trezor/components": "*"
     "@trezor/connect": 9.0.4
+    "@trezor/connect-analytics": "*"
+    "@trezor/connect-common": "*"
     "@trezor/env-utils": "*"
     "@trezor/urls": "*"
     "@types/react": 18.0.21
@@ -7198,7 +7210,9 @@ __metadata:
   resolution: "@trezor/connect@workspace:packages/connect"
   dependencies:
     "@trezor/blockchain-link": ^2.1.5
+    "@trezor/connect-analytics": "*"
     "@trezor/connect-common": 0.0.10
+    "@trezor/device-utils": "*"
     "@trezor/transport": ^1.1.5
     "@trezor/trezor-user-env-link": "*"
     "@trezor/utils": ^9.0.3
