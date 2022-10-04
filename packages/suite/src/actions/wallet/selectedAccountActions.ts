@@ -207,7 +207,6 @@ const actions = [
     blockchainActions.synced.type,
     blockchainActions.connected.type,
     blockchainActions.reconnectTimeoutStart.type,
-    blockchainActions.resetBackend.type,
     blockchainActions.updateFee.type,
     ...Object.values(DISCOVERY).filter(v => typeof v === 'string'),
 ];
