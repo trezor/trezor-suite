@@ -44,7 +44,7 @@
         "@storybook/core": "^6.5.10",
         "@storybook/manager-webpack5": "^6.5.10",
         "@storybook/react": "^6.5.10",
-        "@types/react": "^18.0.21",
+        "@types/react": "18.0.21",
         "@types/react-date-range": "^1.4.4",
         "@types/react-truncate": "^2.3.4",
         "@types/styled-components": "^5.1.26",

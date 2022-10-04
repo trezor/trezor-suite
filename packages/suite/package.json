@@ -106,7 +106,7 @@
         "@types/pako": "^1.0.1",
         "@types/pdfmake": "^0.1.1",
         "@types/qrcode.react": "^1.0.2",
-        "@types/react": "^18.0.21",
+        "@types/react": "18.0.21",
         "@types/react-dom": "18.0.6",
         "@types/react-qr-reader": "^2.1.4",
         "@types/react-redux": "^7.1.24",

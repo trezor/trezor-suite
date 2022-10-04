@@ -78,7 +78,8 @@
         "prettier": "2.7.1",
         "type-fest": "2.12.2",
         "bcrypto": "5.4.0",
-        "react": "18.2.0"
+        "react": "18.2.0",
+        "electron": "18.3.5"
     },
     "devDependencies": {
         "@babel/cli": "^7.18.10",
