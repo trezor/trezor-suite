@@ -130,7 +130,9 @@ const interceptHttps = (interceptorOptions: InterceptorOptions) => {
                 delete overloadedOptions.headers['Proxy-Authorization'];
             }
             // Requests to localhost should not use the proxy.
-            const shouldIntercept = overloadedOptionsUrl.hostname !== '127.0.0.1';
+            const shouldIntercept =
+                overloadedOptionsUrl.hostname !== '127.0.0.1' &&
+                !url.pathname.includes('/Cryptography/');
             const identityName = getIdentityName(userAgent);
             const agent = isTorEnabled && shouldIntercept ? getAgent(identityName) : undefined;
 
