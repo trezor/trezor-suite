@@ -60,6 +60,8 @@ const RightBottom = styled.div`
 `;
 
 const StyledButton = styled(Button)`
+    display: flex;
+    flex: 1;
     margin: 0 10px 0 0;
 
     ${variables.SCREEN_QUERY.MOBILE} {
