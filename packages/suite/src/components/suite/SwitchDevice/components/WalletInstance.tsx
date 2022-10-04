@@ -139,11 +139,7 @@ export const WalletInstance = ({
                         )}
                         {instance.state ? (
                             <MetadataLabeling
-                                defaultVisibleValue={
-                                    <span>
-                                        <WalletLabeling device={instance} />
-                                    </span>
-                                }
+                                defaultVisibleValue={<WalletLabeling device={instance} />}
                                 payload={{
                                     type: 'walletLabel',
                                     deviceState: instance.state,
@@ -155,9 +151,7 @@ export const WalletInstance = ({
                                 }}
                             />
                         ) : (
-                            <span>
-                                <WalletLabeling device={instance} />
-                            </span>
+                            <WalletLabeling device={instance} />
                         )}
                     </InstanceType>
                 )}
