@@ -9,7 +9,7 @@ import OnboardingButtonSkip from './Buttons/ButtonSkip';
 import { Box, BoxProps } from './Box';
 import { ConnectDevicePromptManager } from './ConnectDevicePromptManager';
 import { OnboardingLayout } from './Layouts/OnboardingLayout';
-import Hologram from './Hologram';
+import { Hologram } from './Hologram';
 import { DeviceAnimation, type DeviceAnimationType } from './DeviceAnimation';
 import { OnboardingStepBox, type OnboardingStepBoxProps } from './OnboardingStepBox';
 import SkipStepConfirmation from './SkipStepConfirmation';

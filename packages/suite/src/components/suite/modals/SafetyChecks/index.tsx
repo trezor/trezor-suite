@@ -24,8 +24,8 @@ const RadioButtonInner = styled.div`
     align-items: flex-start;
 `;
 
-const WarningWrapper = styled.div`
-    margin: 18px 0;
+const StyledWarning = styled(Warning)`
+    margin: 12px 0;
 `;
 
 /**
@@ -82,11 +82,9 @@ export const SafetyChecks = ({ onCancel }: ModalProps) => {
                         <H3>
                             <Translation id="TR_SAFETY_CHECKS_PROMPT_LEVEL" />
                         </H3>
-                        <WarningWrapper>
-                            <Warning>
-                                <Translation id="TR_SAFETY_CHECKS_PROMPT_LEVEL_WARNING" />
-                            </Warning>
-                        </WarningWrapper>
+                        <StyledWarning withIcon>
+                            <Translation id="TR_SAFETY_CHECKS_PROMPT_LEVEL_WARNING" />
+                        </StyledWarning>
                         <P size="small">
                             <Translation id="TR_SAFETY_CHECKS_PROMPT_LEVEL_DESC" />
                         </P>

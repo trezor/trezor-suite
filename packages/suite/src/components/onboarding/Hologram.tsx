@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { variables } from '@trezor/components';
+import { Warning, variables } from '@trezor/components';
 import { WIKI_PACKAGING_URL, TREZOR_RESELLERS_URL, TREZOR_SUPPORT_URL } from '@trezor/urls';
 
 import { DeviceAnimation } from '@onboarding-components';
@@ -32,20 +32,15 @@ const AnimationWrapper = styled.div`
     margin: 8px 0px;
 `;
 
-const Warning = styled.div`
-    color: ${props => props.theme.TYPE_ORANGE};
+const StyledWarning = styled(Warning)`
     font-size: ${variables.FONT_SIZE.SMALL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    padding: 12px 18px;
-    border-radius: 4px;
-    background: ${props => props.theme.BG_LIGHT_GREY};
 `;
 
 interface HologramProps {
     device?: TrezorDevice;
 }
 
-const Hologram = ({ device }: HologramProps) => (
+export const Hologram = ({ device }: HologramProps) => (
     <Wrapper>
         <HologramHeading>
             <Translation id="TR_HOLOGRAM_STEP_HEADING" />
@@ -59,7 +54,7 @@ const Hologram = ({ device }: HologramProps) => (
             <DeviceAnimation type="HOLOGRAM" shape="ROUNDED-SMALL" loop device={device} />
         </AnimationWrapper>
 
-        <Warning>
+        <StyledWarning>
             <Translation
                 id="TR_DID_YOU_PURCHASE"
                 values={{
@@ -80,8 +75,6 @@ const Hologram = ({ device }: HologramProps) => (
                     ),
                 }}
             />
-        </Warning>
+        </StyledWarning>
     </Wrapper>
 );
-
-export default Hologram;
