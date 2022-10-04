@@ -1,6 +1,7 @@
 import colors, { THEME } from './config/colors';
 
 export * as variables from './config/variables';
+export * as animations from './config/animations';
 export { motionAnimation, motionEasing } from './config/motion';
 export * as types from './support/types';
 export * from './support/ThemeProvider';
