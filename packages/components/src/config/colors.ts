@@ -27,6 +27,7 @@ export const THEME = {
         TYPE_GREEN: '#00854D',
         TYPE_ORANGE: '#c19009',
         TYPE_LIGHT_ORANGE: '#FDFBF5',
+        TYPE_DARK_ORANGE: '#B47229', // used in Warning, provides better contrast than TYPE_ORANGE, comes from Suite 2.0 design
         TYPE_BLUE: '#1d88c5',
         TYPE_RED: '#cd4949',
         TYPE_DARK_GREY: '#1F1F1F',
@@ -85,6 +86,7 @@ export const THEME = {
         TYPE_GREEN: '#00854D',
         TYPE_ORANGE: '#9b813b',
         TYPE_LIGHT_ORANGE: '#272714',
+        TYPE_DARK_ORANGE: '#F7BF2F', // used in Warning, provides better contrast than TYPE_ORANGE, comnes from Suite 2.0 design
         TYPE_BLUE: '#197eaa',
         TYPE_RED: '#c65353',
         TYPE_DARK_GREY: '#eaebed',
@@ -145,6 +147,7 @@ export const THEME = {
         TYPE_GREEN: '#6fa95c',
         TYPE_ORANGE: '#9b813b',
         TYPE_LIGHT_ORANGE: '#272714',
+        TYPE_DARK_ORANGE: '#F7BF2F', // used in Warning, provides better contrast than TYPE_ORANGE, comnes from Suite 2.0 design
         TYPE_BLUE: '#197eaa',
         TYPE_RED: '#c65353',
         TYPE_DARK_GREY: '#fafafa',

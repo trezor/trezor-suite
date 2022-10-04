@@ -25,7 +25,7 @@ export * from './components/Icon';
 export * from './components/typography/Heading';
 export * from './components/typography/Paragraph';
 export * from './components/typography/Link';
-export * from './components/Warning';
+export * from './components/Warning/Warning';
 export * from './components/others/Box';
 export * from './components/others/Card';
 export * from './components/others/SecurityCard';
