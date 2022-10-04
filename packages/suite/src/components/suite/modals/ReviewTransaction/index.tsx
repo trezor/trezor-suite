@@ -15,6 +15,7 @@ import { CardanoOutput } from '@trezor/connect';
 const StyledModal = styled(Modal)`
     ${Modal.Body} {
         padding: 10px;
+        margin-bottom: 0;
     }
     ${Modal.Content} {
         @media (min-width: ${variables.SCREEN_SIZE.SM}) {
