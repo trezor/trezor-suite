@@ -110,7 +110,7 @@ export const sumTransactions = (transactions: WalletAccountTransaction[]) => {
             totalAmount = totalAmount.minus(amount);
             totalAmount = totalAmount.minus(fee);
         }
-        if (tx.type === 'recv') {
+        if (tx.type === 'recv' || tx.type === 'joint') {
             totalAmount = totalAmount.plus(amount);
         }
         if (tx.type === 'failed') {
@@ -154,7 +154,7 @@ export const sumTransactionsFiat = (
             );
             totalAmount = totalAmount.minus(toFiatCurrency(fee, fiatCurrency, tx.rates, -1) ?? 0);
         }
-        if (tx.type === 'recv') {
+        if (tx.type === 'recv' || tx.type === 'joint') {
             totalAmount = totalAmount.plus(toFiatCurrency(amount, fiatCurrency, tx.rates, -1) ?? 0);
         }
         if (tx.type === 'failed') {
