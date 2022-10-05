@@ -259,6 +259,10 @@ connect-popup manual:
   after_script:
     - docker-compose down
     - docker network prune -f
+  interruptible: true
+
+.connect matrix:
+  extends: .connect
   parallel:
     matrix:
       - TESTS_ENVIRONMENT: ["node", "web"]
@@ -286,21 +290,78 @@ connect-popup manual:
             "binanceGetAddress,binanceGetPublicKey,binanceSignTransaction",
           ]
         TESTS_MOCK_BACKENDS: "false"
-  interruptible: true
 
 connect:
-  extends: .connect
+  extends: .connect matrix
   retry: 1
   only:
     refs:
       - schedules # only nightly jobs, this is too heavy for develop branches at the moment
 
 connect manual:
-  extends: .connect
+  extends: .connect matrix
   except:
     refs:
       - schedules
   when: manual
+
+connect model R:
+  extends: .connect
+  allow_failure: true
+  only:
+    refs:
+      - schedules
+  parallel:
+    matrix:
+      - TESTS_ENVIRONMENT: ["node"]
+        TESTS_PATTERN: "methods"
+        TESTS_FIRMWARE: ["2-latest"]
+        TESTS_FIRMWARE_MODEL: "R"
+        # todo: would be nice to create a scheduled job in firmware-repo in order to have artifact from this branch always available
+        TESTS_FIRMWARE_URL: "https://gitlab.com/satoshilabs/trezor/trezor-firmware/-/jobs/3104755066/artifacts/raw/core/build/unix/trezor-emu-core"
+        # one method per job for easier debugging
+        TESTS_INCLUDED_METHODS: [
+            "applySettings",
+            "applyFlags",
+            "getFeatures",
+            "getFirmwareHash",
+            "signTransaction",
+            "getAccountInfo",
+            "getAddress",
+            "getPublicKey",
+            "signMessage",
+            "verifyMessage",
+            "composeTransaction",
+            "stellarGetAddress",
+            "stellarSignTransaction",
+            "cardanoGetAddress",
+            "cardanoGetNativeScriptHash",
+            "cardanoGetPublicKey",
+            "cardanoSignTransaction",
+            "eosGetPublicKey",
+            "eosSignTransaction",
+            "ethereumGetAddress",
+            "ethereumGetPublicKey",
+            "ethereumSignMessage",
+            "ethereumSignTransaction",
+            "ethereumVerifyMessage",
+            "nemGetAddress",
+            "nemSignTransaction",
+            "rippleGetAddress",
+            "rippleSignTransaction",
+            "tezosGetAddress",
+            "tezosGetPublicKey",
+            "tezosSignTransaction",
+            "binanceGetAddress",
+            "binanceGetPublicKey",
+            "binanceSignTransaction",
+            # Failing, firmware probably not rebased, newly added functionality
+            "getOwnershipId",
+            "getOwnershipProof",
+            # Fails on structs_arrays_v4, weird error "Transport stopped."
+            "ethereumSignTypedData",
+          ]
+        TESTS_MOCK_BACKENDS: "false"
 
 .e2e connect-web:
   stage: integration testing
