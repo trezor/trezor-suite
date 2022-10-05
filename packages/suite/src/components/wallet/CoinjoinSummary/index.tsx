@@ -8,6 +8,7 @@ import { AnonymityIndicator } from '@wallet-components/PrivacyAccount/AnonymityI
 import { AnonymityChart } from './AnonymityChart';
 import { BalanceSection } from './BalanceSection';
 import { CoinjoinLog } from './CoinjoinLog';
+import { CoinjoinSessionCounter } from './CoinjoinSessionCounter';
 
 const Container = styled.div`
     width: 100%;
@@ -41,6 +42,7 @@ export const CoinjoinSummary = ({ account }: CoinjoinSummaryProps) => (
 
         <AnonymityChart />
 
+        <CoinjoinSessionCounter />
         <CoinjoinLog />
     </Container>
 );

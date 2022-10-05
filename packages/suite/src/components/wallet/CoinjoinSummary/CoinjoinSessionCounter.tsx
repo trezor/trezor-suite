@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { FormattedDate } from 'react-intl';
 import { P, Loader, Icon, colors } from '@trezor/components';
-import { CoinjoinSession } from '@suite-common/wallet-types';
+import { useSelector } from '@suite-hooks';
 
 const Wrapper = styled.div`
     width: 100%;
@@ -31,7 +31,14 @@ const Counter = ({ deadline }: { deadline: string | number }) => {
     return <FormattedDate minute="numeric" second="numeric" hourCycle="h23" value={left} />;
 };
 
-export const CoinjoinSessionCounter = ({ session }: { session: CoinjoinSession }) => {
+export const CoinjoinSessionCounter = () => {
+    const { accounts, selectedAccount } = useSelector(state => ({
+        accounts: state.wallet.coinjoin.accounts,
+        selectedAccount: state.wallet.selectedAccount,
+    }));
+    const session = accounts.find(a => a.key === selectedAccount.account!.key)?.session;
+    if (!session) return null;
+
     switch (session.phase) {
         case 0:
             return (
