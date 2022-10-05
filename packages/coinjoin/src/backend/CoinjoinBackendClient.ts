@@ -26,7 +26,7 @@ export class CoinjoinBackendClient extends EventEmitter {
     }
 
     private fetchAndParseBlock(height: number, options?: RequestOptions): Promise<BlockbookBlock> {
-        return this.blockbook(options)
+        return this.blockbook({ ...options, identity: 'blockbook' })
             .get(`block/${height}`)
             .then(this.handleBlockbookResponse.bind(this));
     }
@@ -43,7 +43,7 @@ export class CoinjoinBackendClient extends EventEmitter {
     }
 
     fetchTransaction(txid: string, options?: RequestOptions): Promise<BlockbookTransaction> {
-        return this.blockbook(options)
+        return this.blockbook({ ...options, identity: 'blockbook' })
             .get(`tx/${txid}`)
             .then(this.handleBlockbookResponse.bind(this));
     }
@@ -53,10 +53,13 @@ export class CoinjoinBackendClient extends EventEmitter {
         count: number,
         options?: RequestOptions,
     ): Promise<BlockFilterResponse> {
-        const response = await this.wabisabi(options).get('Blockchain/filters', {
-            bestKnownBlockHash,
-            count,
-        });
+        const response = await this.wabisabi({ ...options, identity: 'filter' }).get(
+            'Blockchain/filters',
+            {
+                bestKnownBlockHash,
+                count,
+            },
+        );
 
         if (response.status === 204) {
             // Provided hash is a tip
@@ -90,7 +93,9 @@ export class CoinjoinBackendClient extends EventEmitter {
     }
 
     async fetchMempoolTxids(options?: RequestOptions): Promise<string[]> {
-        const response = await this.wabisabi(options).get('Blockchain/mempool-hashes');
+        const response = await this.wabisabi({ ...options, identity: 'mempool' }).get(
+            'Blockchain/mempool-hashes',
+        );
         if (response.status === 200) {
             return response.json();
         }
@@ -100,7 +105,7 @@ export class CoinjoinBackendClient extends EventEmitter {
 
     // TODO
     async fetchServerInfo(options?: RequestOptions) {
-        const res = await this.wabisabi(options).get('Batch/synchronize', {
+        const res = await this.wabisabi({ ...options, identity: 'info' }).get('Batch/synchronize', {
             bestKnownBlockHash: '0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206',
             maxNumberOfFilters: 0,
             estimateSmartFeeMode: 'Conservative',
