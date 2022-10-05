@@ -7160,7 +7160,7 @@ export default defineMessages({
         defaultMessage: '{rounds} rounds left',
     },
     TR_COINJOIN_ROUND_COUNTDOWN: {
-        id: 'TR_FEE_RATE_CHANGED',
+        id: 'TR_COINJOIN_ROUND_COUNTDOWN',
         defaultMessage: 'Next transaction signing starts in {time}',
     },
     TR_VIEW: {
