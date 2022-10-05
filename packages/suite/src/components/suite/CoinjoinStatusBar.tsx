@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Button, variables } from '@trezor/components';
 import { Translation } from './Translation';
-import { CoinjoinSession, WalletParams } from '@suite-common/wallet-types';
+import { CoinjoinSession, RoundPhase, WalletParams } from '@suite-common/wallet-types';
 import { CountdownTimer } from './CountdownTimer';
 import { useActions } from '@suite-hooks/useActions';
 import * as routerActions from '@suite-actions/routerActions';
@@ -51,16 +51,12 @@ const ViewButton = styled(Button)`
     margin-left: auto;
 `;
 
-enum MockCoinjoinPhase {
-    Starting,
-    Ongoing,
-    Error,
-}
-
-const PHASE_MESSAGES: Record<MockCoinjoinPhase, TranslationKey> = {
-    [MockCoinjoinPhase.Starting]: 'TR_COINJOIN_PHASE_0_MESSAGE',
-    [MockCoinjoinPhase.Ongoing]: 'TR_COINJOIN_PHASE_1_MESSAGE',
-    [MockCoinjoinPhase.Error]: 'TR_COINJOIN_PHASE_2_MESSAGE',
+const PHASE_MESSAGES: Record<number, TranslationKey> = {
+    [RoundPhase.InputRegistration]: 'TR_COINJOIN_PHASE_0_MESSAGE',
+    [RoundPhase.ConnectionConfirmation]: 'TR_COINJOIN_PHASE_1_MESSAGE',
+    [RoundPhase.OutputRegistration]: 'TR_COINJOIN_PHASE_2_MESSAGE',
+    [RoundPhase.TransactionSigning]: 'TR_COINJOIN_PHASE_2_MESSAGE',
+    [RoundPhase.Ended]: 'TR_COINJOIN_PHASE_2_MESSAGE',
 };
 
 interface CoinjoinStatusBarProps {
@@ -110,9 +106,7 @@ export const CoinjoinStatusBar = ({ accountKey, session, isSingle }: CoinjoinSta
         });
     };
 
-    const { signedRounds, maxRounds, deadline } = session;
-
-    const phase = MockCoinjoinPhase.Ongoing; // TEMPORARY
+    const { phase, signedRounds, maxRounds, deadline } = session;
     const progress = signedRounds.length / (maxRounds / 100);
 
     const {
@@ -137,7 +131,7 @@ export const CoinjoinStatusBar = ({ accountKey, session, isSingle }: CoinjoinSta
             <ProgressPie progress={progress} />
 
             <StatusText>
-                <Translation id={PHASE_MESSAGES[phase]} />
+                <Translation id={PHASE_MESSAGES[phase || 0]} />
 
                 <Separator>•</Separator>
 
