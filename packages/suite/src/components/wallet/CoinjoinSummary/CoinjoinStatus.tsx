@@ -254,7 +254,7 @@ export const CoinjoinStatus = ({ session }: CoinjoinStatusProps) => {
                     <>
                         <p>{PHASE_TEXT[phase]}</p>
                         <p>
-                            <CountdownTimer deadline={Number(session?.deadline)} />
+                            <CountdownTimer deadline={session?.deadline} />
                         </p>
                     </>
                 ))}

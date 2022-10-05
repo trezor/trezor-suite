@@ -154,7 +154,7 @@ export const CoinjoinStatusBar = ({ accountKey, session, isSingle }: CoinjoinSta
                     <Translation
                         id="TR_COINJOIN_ROUND_COUNTDOWN"
                         values={{
-                            time: <CountdownTimer deadline={Number(deadline)} />,
+                            time: <CountdownTimer deadline={deadline} />,
                         }}
                     />
                 </Note>
