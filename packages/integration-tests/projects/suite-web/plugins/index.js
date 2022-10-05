@@ -5,7 +5,7 @@ import CDP from 'chrome-remote-interface';
 import fs from 'fs';
 import path from 'path';
 import { addMatchImageSnapshotPlugin } from 'cypress-image-snapshot/plugin';
-import { Controller, controllerManager } from '@trezor/trezor-user-env-link';
+import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 import googleMock from './google';
 import dropboxMock from './dropbox';
 import bridgeMock from './bridge';
@@ -31,10 +31,6 @@ const ensureRdpPort = args => {
 
 let port = 0;
 let client = null;
-
-const controller = new Controller();
-
-const manager = controllerManager(controller);
 
 module.exports = on => {
     // make ts possible start
@@ -194,7 +190,7 @@ module.exports = on => {
             }
             return result;
         },
-        // Here `manager` adds all the required helper for websocket controller.
-        ...manager,
+        // expose `Controller.api` to cypress.task
+        ...TrezorUserEnvLink.api,
     });
 };

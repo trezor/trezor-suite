@@ -8,7 +8,7 @@
         "type-check": "tsc --build",
         "dev": "rimraf build && TS_NODE_PROJECT=\"tsconfig.json\" yarn webpack --config ./webpack/dev.webpack.config.ts",
         "build": "rimraf build && TS_NODE_PROJECT=\"tsconfig.json\" yarn webpack --config ./webpack/prod.webpack.config.ts",
-        "test:e2e": "yarn workspace @trezor/integration-tests wait-for-env && yarn xvfb-maybe -- playwright test --config=./e2e/playwright.config.ts"
+        "test:e2e": "yarn xvfb-maybe -- playwright test --config=./e2e/playwright.config.ts"
     },
     "dependencies": {
         "@trezor/components": "*",

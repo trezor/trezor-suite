@@ -5,10 +5,7 @@ const fetch = require('node-fetch');
 const { test, expect } = require('@playwright/test');
 
 const { patchBinaries, launchSuite, waitForDataTestSelector } = require('../support/common');
-const { Controller, controllerManager } = require('@trezor/trezor-user-env-link');
-
-const controller = new Controller();
-const manager = controllerManager(controller);
+const { TrezorUserEnvLink } = require('@trezor/trezor-user-env-link');
 
 test.describe.serial('Bridge', () => {
     test.beforeAll(async () => {
@@ -18,13 +15,13 @@ test.describe.serial('Bridge', () => {
         await patchBinaries();
         // We make sure that bridge from trezor-user-env is stopped.
         // So we properly test the electron app spawning bridge binary.
-        await manager.trezorUserEnvConnect();
-        await manager.stopBridge();
+        await TrezorUserEnvLink.api.trezorUserEnvConnect();
+        await TrezorUserEnvLink.api.stopBridge();
     });
 
     test.afterAll(async () => {
         // When finish we make bridge from trezor-user-env to run so it is ready for the rest of the tests.
-        await manager.startBridge();
+        await TrezorUserEnvLink.api.startBridge();
     });
 
     test('App spawns bundled bridge and stops it after app quit', async ({ request }) => {

@@ -1,11 +1,42 @@
-export const controllerManager = (controller: any) => ({
-    /**
-     * @version
-     * version of firmware in emulator, only few are supported
-     * @wipe
-     * shall be emulator wiped before start? defaults to true
-     */
-    setupEmu: async (options: any) => {
+interface SetupEmu {
+    mnemonic?: string;
+    pin?: string;
+    passphrase_protection?: boolean;
+    label?: string;
+    needs_backup?: boolean;
+}
+
+interface StartEmu {
+    version?: string;
+    wipe?: boolean;
+    save_screenshots?: boolean;
+}
+
+interface ClickEmu {
+    x: number;
+    y: number;
+}
+
+interface SendToAddressAndMineBlock {
+    address: string;
+    btc_amount: number;
+}
+
+interface MineBlocks {
+    block_amount: number;
+}
+
+interface ApplySettings {
+    passphrase_always_on_device?: boolean;
+}
+
+interface ReadAndConfirmShamirMnemonicEmu {
+    shares: number;
+    threshold: number;
+}
+
+export const api = (controller: any) => ({
+    setupEmu: async (options: SetupEmu) => {
         const defaults = {
             // some random empty seed. most of the test don't need any account history so it is better not to slow them down with all all seed
             mnemonic:
@@ -28,21 +59,21 @@ export const controllerManager = (controller: any) => ({
         await controller.send({ type: 'bridge-start' });
         return null;
     },
-    sendToAddressAndMineBlock: async (options: any) => {
+    sendToAddressAndMineBlock: async (options: SendToAddressAndMineBlock) => {
         await controller.send({
             type: 'regtest-send-to-address',
             ...options,
         });
         return null;
     },
-    mineBlocks: async (options: any) => {
+    mineBlocks: async (options: MineBlocks) => {
         await controller.send({
             type: 'regtest-mine-blocks',
             ...options,
         });
         return null;
     },
-    startBridge: async (version: number) => {
+    startBridge: async (version?: string) => {
         await controller.send({ type: 'bridge-start', version });
         return null;
     },
@@ -50,14 +81,13 @@ export const controllerManager = (controller: any) => ({
         await controller.send({ type: 'bridge-stop' });
         return null;
     },
-    startEmu: async (arg: any) => {
+    startEmu: (arg?: StartEmu) => {
         const params = {
             type: 'emulator-start',
-            version: process.env.FIRMWARE || '2-latest',
+            version: '2-latest',
             ...arg,
         };
-        await controller.send(params);
-        return params;
+        return controller.send(params);
     },
     stopEmu: async () => {
         await controller.send({ type: 'emulator-stop' });
@@ -75,15 +105,15 @@ export const controllerManager = (controller: any) => ({
         await controller.send({ type: 'emulator-press-no' });
         return null;
     },
-    swipeEmu: async (direction: string) => {
+    swipeEmu: async (direction: 'up' | 'down' | 'left' | 'right') => {
         await controller.send({ type: 'emulator-swipe', direction });
         return null;
     },
-    inputEmu: async (value: any) => {
+    inputEmu: async (value: string) => {
         await controller.send({ type: 'emulator-input', value });
         return null;
     },
-    clickEmu: async (options: any) => {
+    clickEmu: async (options: ClickEmu) => {
         await controller.send({ type: 'emulator-click', ...options });
         return null;
     },
@@ -95,14 +125,14 @@ export const controllerManager = (controller: any) => ({
         await controller.send({ type: 'emulator-read-and-confirm-mnemonic' });
         return null;
     },
-    readAndConfirmShamirMnemonicEmu: async (options: any) => {
+    readAndConfirmShamirMnemonicEmu: async (options: ReadAndConfirmShamirMnemonicEmu) => {
         await controller.send({
             type: 'emulator-read-and-confirm-shamir-mnemonic',
             ...options,
         });
         return null;
     },
-    applySettings: async (options: any) => {
+    applySettings: async (options: ApplySettings) => {
         await controller.send({
             type: 'emulator-apply-settings',
             ...options,
@@ -119,7 +149,6 @@ export const controllerManager = (controller: any) => ({
     },
     trezorUserEnvConnect: async () => {
         await controller.connect();
-
         return null;
     },
     trezorUserEnvDisconnect: async () => {

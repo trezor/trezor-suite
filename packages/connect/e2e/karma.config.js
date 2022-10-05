@@ -7,9 +7,7 @@ const webpack = require('webpack');
 const getTestPattern = () => {
     const root = path.resolve(__dirname, './tests');
     const basename = __filename.split('/').reverse()[0];
-    // yarn test:karma:production ...pattern => argv: [node, karma, start, config-file, ...pattern]
     const pos = process.argv.indexOf(`e2e/${basename}`);
-    // is there some argument (test file name) after the test command?
     if (process.argv[pos + 1]) {
         // if yes add full path
         return process.argv.slice(pos + 1).map(f => `${root}/**/${f}.test.ts`);
@@ -66,7 +64,7 @@ module.exports = config => {
             '**/common.setup.js': 'webpack',
             '**/__txcache__/index.js': 'TxCachePreprocessor', // use custom preprocessor from karma.plugin
             '**/data/coins.json': 'WsCachePreprocessor', // use custom preprocessor from karma.plugin
-            '**/*.test.ts': 'webpack',
+            'connect/e2e/**/*.test.ts': 'webpack',
         },
         files: [
             { pattern: path.resolve(__dirname, './karma.setup.js'), watched: false },

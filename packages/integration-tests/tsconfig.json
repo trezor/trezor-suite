@@ -15,7 +15,6 @@
             "path": "../../suite-common/test-utils"
         },
         { "path": "../suite-analytics" },
-        { "path": "../transport" },
         { "path": "../trezor-user-env-link" },
         { "path": "../utils" }
     ]

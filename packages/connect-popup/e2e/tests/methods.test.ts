@@ -4,13 +4,12 @@
 import { test } from '@playwright/test';
 import fs from 'fs';
 
-import { Controller } from '@trezor/trezor-user-env-link';
+import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 import { fixtures } from './__fixtures__/methods';
 import { buildOverview } from '../support/buildOverview';
 
 const url = process.env.URL || 'http://localhost:8088/';
 const SCREENSHOTS_DIR = './e2e/screenshots';
-const controller = new Controller();
 const emuScreenshots: Record<string, string> = {};
 
 const log = (...val: string[]) => {
@@ -28,14 +27,14 @@ const ensureScreenshotsDir = () => {
 };
 
 const screenshotEmu = async (path: string) => {
-    const { response } = await controller.send({
+    const { response } = await TrezorUserEnvLink.send({
         type: 'emulator-get-screenshot',
     });
     emuScreenshots[path] = response;
 };
 
 test.beforeAll(async () => {
-    await controller.connect();
+    await TrezorUserEnvLink.connect();
     ensureScreenshotsDir();
 });
 
@@ -55,28 +54,21 @@ fixtures.forEach(f => {
         // - fixture is retried
         if (JSON.stringify(device) !== JSON.stringify(f.device) || retry) {
             device = f.device;
-            await controller.send({
-                type: 'bridge-stop',
-            });
-            await controller.send({
-                type: 'emulator-stop',
-            });
-            await controller.send({
-                type: 'emulator-start',
+            await TrezorUserEnvLink.api.stopBridge();
+            await TrezorUserEnvLink.api.stopEmu();
+            await TrezorUserEnvLink.api.startEmu({
                 wipe: true,
                 save_screenshots: true,
             });
             // @ts-expect-error
             if (!f.device.wiped) {
-                await controller.send({
-                    type: 'emulator-setup',
+                // @ts-expect-error
+                await TrezorUserEnvLink.api.setupEmu({
                     ...f.device,
                 });
-                await controller.send({ type: 'emulator-allow-unsafe-paths' });
+                await TrezorUserEnvLink.send({ type: 'emulator-allow-unsafe-paths' });
             }
-            await controller.send({
-                type: 'bridge-start',
-            });
+            await TrezorUserEnvLink.api.startBridge();
         }
 
         const screenshotsPath = `${SCREENSHOTS_DIR}/${f.url}`;
@@ -151,7 +143,7 @@ fixtures.forEach(f => {
             if (v.nextEmu) {
                 // useful for debugging tests
                 // await popup.pause();
-                await controller.send(v.nextEmu);
+                await TrezorUserEnvLink.send(v.nextEmu);
             }
         }
 

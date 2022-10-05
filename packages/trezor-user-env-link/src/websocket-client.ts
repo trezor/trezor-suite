@@ -1,7 +1,12 @@
+/* eslint-disable no-console */
+
 import WebSocket from 'ws';
 import { EventEmitter } from 'events';
+import fetch from 'cross-fetch';
 
 import { createDeferred, Deferred } from '@trezor/utils';
+
+import { api } from './api';
 
 const NOT_INITIALIZED = new Error('websocket_not_initialized');
 
@@ -17,7 +22,17 @@ interface Options {
     timeout?: number;
 }
 
-export class TrezorUserEnvLink extends EventEmitter {
+export interface Firmwares {
+    '1': string[];
+    '2': string[];
+    R: string[];
+}
+
+/* eslint-disable no-await-in-loop,no-async-promise-executor */
+
+const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+class TrezorUserEnvLinkClass extends EventEmitter {
     messageID: number;
     options: Options;
     messages: Deferred<any>[];
@@ -25,6 +40,9 @@ export class TrezorUserEnvLink extends EventEmitter {
     ws?: WebSocket;
     connectionTimeout?: NodeJS.Timeout;
     pingTimeout?: NodeJS.Timeout;
+
+    firmwares?: Firmwares;
+    api: ReturnType<typeof api>;
 
     constructor(options: Options = {}) {
         super();
@@ -35,6 +53,8 @@ export class TrezorUserEnvLink extends EventEmitter {
             ...options,
             url: options.url || 'ws://localhost:9001/',
         };
+
+        this.api = api(this);
     }
 
     setConnectionTimeout() {
@@ -125,10 +145,7 @@ export class TrezorUserEnvLink extends EventEmitter {
 
             if (resp.type === 'client') {
                 const { firmwares } = resp;
-                if (!firmwares['1'] || !firmwares['2'] || !firmwares.R) {
-                    throw new Error('unexpected response in firmwares event');
-                }
-
+                this.firmwares = firmwares;
                 this.emit('firmwares', firmwares);
             }
 
@@ -152,45 +169,51 @@ export class TrezorUserEnvLink extends EventEmitter {
         this.setPingTimeout();
     }
 
-    connect() {
+    async connect() {
         if (this.isConnected()) return Promise.resolve();
-        // url validation
-        let { url } = this.options;
-        if (typeof url !== 'string') {
-            throw new Error('websocket_no_url');
+
+        // workaround for karma... proper fix: set allow origin headers in trezor-user-env server. but we are going
+        // to get rid of karma anyway, so this does not matter
+        if (typeof window === 'undefined') {
+            await this.waitForTrezorUserEnv();
         }
 
-        if (url.startsWith('https')) {
-            url = url.replace('https', 'wss');
-        }
-        if (url.startsWith('http')) {
-            url = url.replace('http', 'ws');
-        }
+        return new Promise(resolve => {
+            // url validation
+            let { url } = this.options;
+            if (typeof url !== 'string') {
+                throw new Error('websocket_no_url');
+            }
 
-        // set connection timeout before WebSocket initialization
-        // it will be be cancelled by this.init or this.dispose after the error
-        this.setConnectionTimeout();
+            if (url.startsWith('https')) {
+                url = url.replace('https', 'wss');
+            }
+            if (url.startsWith('http')) {
+                url = url.replace('http', 'ws');
+            }
 
-        const firmwaresEventPromise = createDeferred();
+            // set connection timeout before WebSocket initialization
+            // it will be be cancelled by this.init or this.dispose after the error
+            this.setConnectionTimeout();
 
-        // initialize connection
-        const ws = new WebSocket(url);
-        ws.once('error', error => {
-            this.dispose();
-            // @ts-expect-error todo:
-            firmwaresEventPromise.reject(new Error('websocket_runtime_error: ', error.message));
+            // initialize connection
+            const ws = new WebSocket(url);
+
+            ws.once('error', _error => {
+                this.dispose();
+            });
+
+            this.on('firmwares', firmwares => {
+                this.firmwares = firmwares;
+                resolve(this);
+            });
+
+            this.ws = ws;
+
+            ws.on('open', () => {
+                this.init();
+            });
         });
-        ws.on('open', () => {
-            this.init();
-        });
-        this.on('firmwares', firmwares => {
-            firmwaresEventPromise.resolve(firmwares);
-        });
-
-        this.ws = ws;
-
-        // wait for onopen event
-        return firmwaresEventPromise.promise;
     }
 
     init() {
@@ -241,7 +264,43 @@ export class TrezorUserEnvLink extends EventEmitter {
 
         this.removeAllListeners();
     }
+
+    waitForTrezorUserEnv() {
+        return new Promise<void>(async (resolve, reject) => {
+            // unfortunately, it can take incredibly long for trezor-user-env to start, we should
+            // do something about it
+            const limit = 300;
+            let error = '';
+
+            console.log('waiting for trezor-user-env');
+
+            for (let i = 0; i < limit; i++) {
+                if (i === limit - 1) {
+                    console.log(`cant connect to trezor-user-env: ${error}\n`);
+                }
+                await delay(1000);
+
+                try {
+                    const res = await fetch('http://localhost:9002');
+                    if (res.status === 200) {
+                        console.log('trezor-user-env is online');
+                        return resolve();
+                    }
+                } catch (err) {
+                    error = err.message;
+                    // using process.stdout.write instead of console.log since the latter always prints also newline
+                    // but in karma, this code runs in browser and process is not available.
+                    if (typeof process !== 'undefined') {
+                        process.stdout.write('.');
+                    } else {
+                        console.log('.');
+                    }
+                }
+            }
+
+            reject(error);
+        });
+    }
 }
 
-// todo: alias for compatibility. remove later
-export const Controller = TrezorUserEnvLink;
+export const TrezorUserEnvLink = new TrezorUserEnvLinkClass();

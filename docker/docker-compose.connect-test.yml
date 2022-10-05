@@ -11,9 +11,11 @@ services:
     image: registry.gitlab.com/satoshilabs/trezor/trezor-suite/base:latest
     environment:
       - TESTS_FIRMWARE=$TESTS_FIRMWARE
+      - TESTS_FIRMWARE_MODEL=$TESTS_FIRMWARE_MODEL
       - TESTS_FIRMWARE_URL=$TESTS_FIRMWARE_URL
       - TESTS_INCLUDED_METHODS=$TESTS_INCLUDED_METHODS
       - TESTS_EXCLUDED_METHODS=$TESTS_EXCLUDED_METHODS
+      - TESTS_PATTERN=$TESTS_PATTERN
       - TESTS_USE_TX_CACHE=false
       - TESTS_USE_WS_CACHE=false
     depends_on:

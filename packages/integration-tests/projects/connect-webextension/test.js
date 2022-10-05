@@ -2,23 +2,21 @@
 
 const { chromium } = require('playwright');
 
-const { Controller } = require('../../../trezor-user-env-link');
-
-const controller = new Controller();
+const { TrezorUserEnvLink } = require('../../../trezor-user-env-link');
 
 (async () => {
-    await controller.connect();
-    await controller.send({
+    await TrezorUserEnvLink.connect();
+    await TrezorUserEnvLink.send({
         type: 'bridge-stop',
     });
-    await controller.send({
+    await TrezorUserEnvLink.send({
         type: 'emulator-stop',
     });
-    await controller.send({
+    await TrezorUserEnvLink.send({
         type: 'emulator-start',
         wipe: true,
     });
-    await controller.send({
+    await TrezorUserEnvLink.send({
         type: 'emulator-setup',
         mnemonic: 'alcohol woman abuse must during monitor noble actual mixed trade anger aisle',
         pin: '',
@@ -26,7 +24,7 @@ const controller = new Controller();
         label: 'My Trevor',
         needs_backup: false,
     });
-    await controller.send({
+    await TrezorUserEnvLink.send({
         type: 'bridge-start',
     });
 
@@ -74,7 +72,7 @@ const controller = new Controller();
 
     await Promise.all([
         popup.waitForEvent('close'),
-        controller.send({ type: 'emulator-press-yes' }),
+        TrezorUserEnvLink.send({ type: 'emulator-press-yes' }),
     ]);
 
     await browserContext.close();
