@@ -83,6 +83,8 @@ export const init: Module = ({ mainWindow }) => {
         );
 
         const dispose = () => {
+            backends.forEach(b => b.cancel());
+            clients.forEach(c => c.disable());
             unregisterBackendProxy();
             unregisterClientProxy();
         };
