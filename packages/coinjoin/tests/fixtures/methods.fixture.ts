@@ -79,6 +79,8 @@ export const BLOCKS = [
                         addresses: ['bcrt1qkvwu9g3k2pdxewfqr7syz89r3gj557l374sg5v'],
                         isAddress: true,
                         value: '1000000000',
+                        txid: 'txid_1',
+                        vout: 1,
                     },
                 ],
                 vout: [
@@ -167,6 +169,7 @@ export const BLOCKS = [
                         addresses: ['bcrt1qldlynaqp0hy4zc2aag3pkenzvxy65saej0huey'],
                         isAddress: true,
                         value: '999999890',
+                        txid: 'txid_2',
                     },
                 ],
                 vout: [
@@ -206,12 +209,15 @@ export const BLOCKS = [
                         addresses: ['bcrt1qkvwu9g3k2pdxewfqr7syz89r3gj557l374sg5v'],
                         isAddress: true,
                         value: '547',
+                        txid: 'txid_4',
                     },
                     {
                         n: 1,
                         addresses: ['bcrt1qejqxwzfld7zr6mf7ygqy5s5se5xq7vmt8ntmj0'],
                         isAddress: true,
                         value: '999999202',
+                        txid: 'txid_4',
+                        vout: 1,
                     },
                 ],
                 vout: [
@@ -787,6 +793,35 @@ export const SEGWIT_XPUB_RESULT = {
         ],
     },
     page: { index: 1, size: 25, total: 1 },
+    utxo: [
+        {
+            address: 'bcrt1qkvwu9g3k2pdxewfqr7syz89r3gj557l374sg5v',
+            path: "m/84'/1'/0'/0/0",
+            txid: 'txid_3',
+            vout: 0,
+            blockHeight: 4,
+            amount: '547',
+            confirmations: 1,
+        },
+        {
+            address: 'bcrt1qkvwu9g3k2pdxewfqr7syz89r3gj557l374sg5v',
+            path: "m/84'/1'/0'/0/0",
+            txid: 'txid_5',
+            vout: 0,
+            blockHeight: 7,
+            amount: '999999571',
+            confirmations: 1,
+        },
+        {
+            address: 'bcrt1qkvwu9g3k2pdxewfqr7syz89r3gj557l374sg5v',
+            path: "m/84'/1'/0'/0/0",
+            txid: 'txid_6',
+            vout: 0,
+            blockHeight: 8,
+            amount: '999999212',
+            confirmations: 1,
+        },
+    ],
 };
 
 const {
@@ -798,6 +833,7 @@ const {
     history: {
         transactions: [, , pending, ...transactions],
     },
+    utxo: [utxo],
     ...rest
 } = SEGWIT_XPUB_RESULT;
 
@@ -824,6 +860,27 @@ export const SEGWIT_XPUB_RESULT_HALF = {
         unconfirmed: 1,
         transactions: [{ ...pending, blockHeight: -1, blockTime: undefined }, ...transactions],
     },
+    utxo: [
+        utxo,
+        {
+            txid: 'txid_4',
+            vout: 0,
+            address: 'bcrt1qkvwu9g3k2pdxewfqr7syz89r3gj557l374sg5v',
+            path: "m/84'/1'/0'/0/0",
+            blockHeight: -1,
+            confirmations: 0,
+            amount: '547',
+        },
+        {
+            txid: 'txid_4',
+            vout: 1,
+            address: 'bcrt1qejqxwzfld7zr6mf7ygqy5s5se5xq7vmt8ntmj0',
+            path: "m/84'/1'/0'/1/0",
+            blockHeight: -1,
+            confirmations: 0,
+            amount: '999999202',
+        },
+    ],
 };
 
 const {
@@ -842,6 +899,11 @@ const {
         ],
         ...xpubHistory
     },
+    utxo: [
+        { address: addr1, path: p1, ...utxo1 },
+        { address: addr2, path: p2, ...utxo2 },
+        { address: addr3, path: p3, ...utxo3 },
+    ],
     ...xpubRest
 } = SEGWIT_XPUB_RESULT;
 
@@ -866,4 +928,5 @@ export const SEGWIT_RECEIVE_RESULT = {
             tx1,
         ],
     },
+    utxo: [utxo1, utxo2, utxo3],
 };

@@ -101,6 +101,7 @@ export const fetchAndUpdateAccount =
             );
 
             const accountInfo = api.getAccountInfo(account.descriptor, transactions, checkpoint);
+            // TODO accountInfo.utxo don't have proper utxo.confirmations field, only 0/1
 
             // TODO add isPending check?
             if (isAccountOutdated(account, accountInfo) || isInitialUpdate) {
