@@ -1,12 +1,21 @@
 import type { Network } from '@trezor/utxo-lib';
-import type { AccountInfo, Address, Transaction } from '@trezor/blockchain-link/lib/types';
-import type { Transaction as BlockbookTransaction } from '@trezor/blockchain-link/lib/types/blockbook';
+import type {
+    Address,
+    Utxo,
+    Transaction,
+    AccountAddresses,
+    AccountInfo as AccountInfoBase,
+} from '@trezor/blockchain-link/lib/types';
+import type {
+    Transaction as BlockbookTransaction,
+    VinVout,
+} from '@trezor/blockchain-link/lib/types/blockbook';
 
 import type { CoinjoinBackendClient } from '../backend/CoinjoinBackendClient';
 import type { MempoolController } from '../backend/CoinjoinMempoolController';
 
-export type { BlockbookTransaction };
-export type { AccountInfo, Address, Transaction };
+export type { BlockbookTransaction, VinVout };
+export type { Address, Utxo, Transaction, AccountAddresses };
 
 export type BlockbookBlock = {
     height: number;
@@ -111,4 +120,8 @@ export type MempoolClient = Pick<CoinjoinBackendClient, 'fetchMempoolTxids' | 'f
 export type AccountAddress = {
     address: string;
     script: Buffer;
+};
+
+export type AccountInfo = AccountInfoBase & {
+    utxo: Utxo[];
 };

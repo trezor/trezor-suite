@@ -2,11 +2,16 @@ import { CoinjoinBackendClient } from '../../src/backend/CoinjoinBackendClient';
 
 type MockEndpoint = ReturnType<InstanceType<typeof CoinjoinBackendClient>['request']>;
 
+type TransactionFixture = {
+    txid: string;
+};
+
 type BlockFixture = {
     height: number;
     hash: string;
     previousBlockHash: string;
     filter: string;
+    txs: TransactionFixture[];
 };
 
 export class MockBackendClient extends CoinjoinBackendClient {
@@ -14,14 +19,17 @@ export class MockBackendClient extends CoinjoinBackendClient {
         super({ blockbookUrls: ['foo'], coordinatorUrl: 'bar' });
         this.blocks = [];
         this.mempool = [];
+        this.transactions = [];
     }
 
     private blocks: BlockFixture[];
-    private mempool: { txid: string }[];
+    private mempool: TransactionFixture[];
+    private transactions: TransactionFixture[];
 
     setFixture(blocks: BlockFixture[], mempool: { txid: string }[] = []) {
         this.blocks = blocks;
         this.mempool = mempool;
+        this.transactions = blocks.flatMap(block => block.txs).concat(mempool);
     }
 
     private mockResponse(status: number, content?: any) {
@@ -77,7 +85,7 @@ export class MockBackendClient extends CoinjoinBackendClient {
             const [what, which] = path.split('/');
             switch (what) {
                 case 'tx': {
-                    const tx = this.mempool.find(t => t.txid === which);
+                    const tx = this.transactions.find(t => t.txid === which);
                     return tx ? this.mockResponse(200, tx) : this.mockResponse(404);
                 }
                 case 'block': {
