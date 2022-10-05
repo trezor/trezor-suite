@@ -206,7 +206,7 @@ export const AccountsMenu = ({ isMenuInline }: AccountsMenuProps) => {
 
         return (
             <AccountGroup
-                key={type}
+                key={`${device.state}-${type}`}
                 type={type}
                 hasBalance={groupHasBalance}
                 keepOpen={keepOpen(type) || (!!searchString && searchString.length > 0)}

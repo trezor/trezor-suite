@@ -64,7 +64,7 @@ export const AccountGroup = forwardRef(
         const theme = useTheme();
         const wrapperRef = useRef<HTMLDivElement>(null);
         const [isOpen, setIsOpen] = useState(props.hasBalance || props.keepOpen);
-        const [previouslyOpen, setPreviouslyOpen] = useState(isOpen);
+        const [previouslyOpen, setPreviouslyOpen] = useState(isOpen); // used to follow props changes without unnecessary rerenders
         const [animatedIcon, setAnimatedIcon] = useState(false);
 
         // follow props change (example: add new coin/account which has balance but group is closed)
@@ -74,7 +74,8 @@ export const AccountGroup = forwardRef(
         }
 
         const onClick = () => {
-            setIsOpen(previous => !previous);
+            setIsOpen(!isOpen);
+            setPreviouslyOpen(!isOpen);
             setAnimatedIcon(true);
         };
 
