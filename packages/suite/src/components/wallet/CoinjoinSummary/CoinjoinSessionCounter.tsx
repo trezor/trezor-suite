@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { FormattedDate } from 'react-intl';
 import { P, Loader, Icon, colors } from '@trezor/components';
-import { CoinjoinSession } from '@suite-common/wallet-types';
+import { useSelector } from '@suite-hooks';
 
 const Wrapper = styled.div`
     width: 100%;
@@ -13,6 +13,10 @@ const Wrapper = styled.div`
 
 const StyledP = styled(P)`
     margin-left: 12px;
+`;
+
+const CounterWrapper = styled.span`
+    padding-left: 10px;
 `;
 
 const Counter = ({ deadline }: { deadline: string | number }) => {
@@ -28,17 +32,28 @@ const Counter = ({ deadline }: { deadline: string | number }) => {
             clearInterval(interval);
         };
     }, [deadline]);
-    return <FormattedDate minute="numeric" second="numeric" hourCycle="h23" value={left} />;
+    return (
+        <CounterWrapper>
+            <FormattedDate minute="numeric" second="numeric" hourCycle="h23" value={left} />
+        </CounterWrapper>
+    );
 };
 
-export const CoinjoinSessionCounter = ({ session }: { session: CoinjoinSession }) => {
+export const CoinjoinSessionCounter = () => {
+    const { accounts, selectedAccount } = useSelector(state => ({
+        accounts: state.wallet.coinjoin.accounts,
+        selectedAccount: state.wallet.selectedAccount,
+    }));
+    const session = accounts.find(a => a.key === selectedAccount.account!.key)?.session;
+    if (!session) return null;
+
     switch (session.phase) {
         case 0:
             return (
                 <Wrapper>
                     <Loader size={12} />
                     <StyledP>
-                        Waiting for other participants <Counter deadline={session.deadline} />
+                        Collecting inputs <Counter deadline={session.deadline} />
                     </StyledP>
                 </Wrapper>
             );
@@ -47,6 +62,7 @@ export const CoinjoinSessionCounter = ({ session }: { session: CoinjoinSession }
                 <Wrapper>
                     <Icon icon="WARNING" size={14} color={colors.TYPE_ORANGE} />
                     <StyledP>Confirming participation</StyledP>
+                    <Counter deadline={session.deadline} />
                 </Wrapper>
             );
         case 2:
@@ -54,6 +70,7 @@ export const CoinjoinSessionCounter = ({ session }: { session: CoinjoinSession }
                 <Wrapper>
                     <Icon icon="WARNING" size={14} color={colors.TYPE_ORANGE} />
                     <StyledP>Registering outputs</StyledP>
+                    <Counter deadline={session.deadline} />
                 </Wrapper>
             );
         case 3:
@@ -61,6 +78,7 @@ export const CoinjoinSessionCounter = ({ session }: { session: CoinjoinSession }
                 <Wrapper>
                     <Icon icon="WARNING" size={14} color={colors.TYPE_ORANGE} />
                     <StyledP>Signing transaction</StyledP>
+                    <Counter deadline={session.deadline} />
                 </Wrapper>
             );
 
@@ -68,9 +86,7 @@ export const CoinjoinSessionCounter = ({ session }: { session: CoinjoinSession }
             return (
                 <Wrapper>
                     <Loader size={12} />
-                    <StyledP>
-                        Looking for round <Counter deadline={session.deadline} />
-                    </StyledP>
+                    <StyledP>Looking for rounds...</StyledP>
                 </Wrapper>
             );
     }
