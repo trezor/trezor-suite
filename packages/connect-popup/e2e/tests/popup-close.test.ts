@@ -1,9 +1,8 @@
 import { test, expect, Page } from '@playwright/test';
-import { Controller } from '@trezor/trezor-user-env-link';
+import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 import { createDeferred, Deferred } from '@trezor/utils';
 
 const url = process.env.URL || 'http://localhost:8088/';
-const controller = new Controller();
 
 const WAIT_AFTER_TEST = 3000; // how long test should wait for more potential trezord requests
 
@@ -23,7 +22,7 @@ let popup: Page;
 let popupClosedPromise: Promise<undefined> | undefined;
 
 test.beforeAll(async () => {
-    await controller.connect();
+    await TrezorUserEnvLink.connect();
 });
 
 // todo: 2.0.27 version don't have localhost nor sldev whitelisted. So this can't be tested in CI. Possible workarounds:
@@ -35,18 +34,12 @@ test.beforeAll(async () => {
         responses = [];
         releasePromise = createDeferred();
 
-        await controller.send({
-            type: 'bridge-stop',
-        });
-        await controller.send({
-            type: 'emulator-stop',
-        });
-        await controller.send({
-            type: 'emulator-start',
+        await TrezorUserEnvLink.api.stopBridge();
+        await TrezorUserEnvLink.api.stopEmu();
+        await TrezorUserEnvLink.api.startEmu({
             wipe: true,
         });
-        await controller.send({
-            type: 'emulator-setup',
+        await TrezorUserEnvLink.api.setupEmu({
             mnemonic:
                 'alcohol woman abuse must during monitor noble actual mixed trade anger aisle',
             pin: '',
@@ -54,10 +47,7 @@ test.beforeAll(async () => {
             label: 'My Trevor',
             needs_backup: false,
         });
-        await controller.send({
-            type: 'bridge-start',
-            version: bridgeVersion,
-        });
+        await TrezorUserEnvLink.api.startBridge(bridgeVersion);
 
         await page.goto(`${url}#/method/verifyMessage`);
         await page.waitForSelector("button[data-test='@submit-button']", { state: 'visible' });
@@ -119,9 +109,9 @@ test.beforeAll(async () => {
         await popup.waitForSelector('button.confirm', { state: 'visible', timeout: 40000 });
         await popup.click('button.confirm');
         await popup.waitForSelector('.follow-device >> visible=true');
-        await controller.send({ type: 'emulator-press-yes' });
-        await controller.send({ type: 'emulator-press-yes' });
-        await controller.send({ type: 'emulator-press-yes' });
+        await TrezorUserEnvLink.send({ type: 'emulator-press-yes' });
+        await TrezorUserEnvLink.send({ type: 'emulator-press-yes' });
+        await TrezorUserEnvLink.send({ type: 'emulator-press-yes' });
         await page.waitForSelector('text=Message verified');
     });
 
@@ -141,7 +131,7 @@ test.beforeAll(async () => {
         page,
     }) => {
         // user canceled dialog on device
-        await controller.send({ type: 'emulator-press-no' });
+        await TrezorUserEnvLink.send({ type: 'emulator-press-no' });
         await releasePromise!.promise;
         await popupClosedPromise;
         await page.waitForTimeout(WAIT_AFTER_TEST);
@@ -159,7 +149,7 @@ test.beforeAll(async () => {
         page,
     }) => {
         // user canceled interaction on device
-        await controller.send({ type: 'emulator-stop' });
+        await TrezorUserEnvLink.api.stopEmu();
         await releasePromise!.promise;
         await popupClosedPromise;
         await page.waitForTimeout(WAIT_AFTER_TEST);
@@ -176,32 +166,24 @@ test.beforeAll(async () => {
 
         await page.waitForSelector('text=device disconnected during action');
 
-        await controller.send({
-            type: 'emulator-start',
-        });
+        await TrezorUserEnvLink.api.startEmu();
     });
 
     // todo: this one is somewhat flaky. tends to produce "RuntimeError - Emulator proces died" error
     test.skip(`trezor bridge ${bridgeVersion} was killed during action`, async ({ page }) => {
         // user canceled interaction on device
-        await controller.send({ type: 'bridge-stop' });
+        await TrezorUserEnvLink.send({ type: 'bridge-stop' });
         await popupClosedPromise;
 
         await page.waitForSelector('text=Aborted');
 
         // todo: emulator stop should not be needed. this indicate some kind of bug
-        await controller.send({
-            type: 'emulator-stop',
-        });
+        await TrezorUserEnvLink.api.stopEmu();
 
-        await controller.send({
-            type: 'bridge-start',
-        });
+        await TrezorUserEnvLink.api.startBridge();
 
         // todo: see previous comment, emulator should be already running
-        await controller.send({
-            type: 'emulator-start',
-        });
+        await TrezorUserEnvLink.api.startEmu();
     });
 
     // reloading page might end with "closed device" error from here:

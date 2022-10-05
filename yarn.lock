@@ -7064,6 +7064,7 @@ __metadata:
     "@trezor/trezor-user-env-link": "*"
     "@trezor/utils": ^9.0.2
     "@trezor/utxo-lib": ^1.0.0
+    "@types/karma": ^6.3.3
     "@types/parse-uri": ^1.0.0
     "@types/randombytes": ^2.0.0
     bignumber.js: ^9.1.0
@@ -7082,6 +7083,7 @@ __metadata:
     parse-uri: 1.0.7
     randombytes: 2.1.0
     rimraf: ^3.0.2
+    ts-node: ^10.9.1
     tslib: ^2.3.1
     tsx: ^3.8.2
     typescript: 4.7.4
@@ -7136,7 +7138,6 @@ __metadata:
     "@playwright/test": ^1.22.2
     "@suite-common/test-utils": "*"
     "@trezor/suite-analytics": "*"
-    "@trezor/transport": "*"
     "@trezor/trezor-user-env-link": "*"
     "@trezor/utils": "*"
     chrome-remote-interface: ^0.31.2
@@ -7145,13 +7146,11 @@ __metadata:
     cypress-image-snapshot: ^4.0.1
     cypress-wait-until: ^1.7.2
     express: ^4.17.3
-    jest: ^26.6.3
     playwright: ^1.22.2
     ts-loader: ^9.3.1
     tsx: ^3.8.2
     typescript: 4.7.4
     webpack: ^5.73.0
-    ws: ^7.5.5
   languageName: unknown
   linkType: soft
 
@@ -7671,7 +7670,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/transport@*, @trezor/transport@^1.1.4, @trezor/transport@workspace:packages/transport":
+"@trezor/transport@^1.1.4, @trezor/transport@workspace:packages/transport":
   version: 0.0.0-use.local
   resolution: "@trezor/transport@workspace:packages/transport"
   dependencies:
@@ -8284,7 +8283,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jest@npm:^26.0.20":
+"@types/jest@npm:^26.0.24":
   version: 26.0.24
   resolution: "@types/jest@npm:26.0.24"
   dependencies:
@@ -8328,6 +8327,16 @@ __metadata:
   dependencies:
     "@types/node": "*"
   checksum: 43427a5b00ef0c5e60df6bc8e59c4153220c757fdbde2b79a1852e86083bdc76b660b3c0d89ae9e5902dab00bf6ae9f25a551a375ca233b6e02fa1e4e3fff6c4
+  languageName: node
+  linkType: hard
+
+"@types/karma@npm:^6.3.3":
+  version: 6.3.3
+  resolution: "@types/karma@npm:6.3.3"
+  dependencies:
+    "@types/node": "*"
+    log4js: ^6.4.1
+  checksum: 623d6c0575c26d9f0513ccadbfec1c563dd7826e1a2cd4e5b2f6fea26aac366627ac25336e26256efa726f57cc65c607715ae123a3cc903913309c9b8919dcad
   languageName: node
   linkType: hard
 
@@ -32610,7 +32619,7 @@ __metadata:
     "@babel/runtime": ^7.18.9
     "@nrwl/nx-cloud": 14.5.1
     "@suite-common/wallet-types": "*"
-    "@types/jest": ^26.0.20
+    "@types/jest": ^26.0.24
     "@types/node": ^16.11.49
     "@types/prettier": ^2.7.0
     "@typescript-eslint/eslint-plugin": ^5.33.1
@@ -34980,7 +34989,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ws@npm:^7, ws@npm:^7.2.0, ws@npm:^7.3.1, ws@npm:^7.4.6, ws@npm:^7.5.1, ws@npm:^7.5.3, ws@npm:^7.5.5":
+"ws@npm:^7, ws@npm:^7.2.0, ws@npm:^7.3.1, ws@npm:^7.4.6, ws@npm:^7.5.1, ws@npm:^7.5.3":
   version: 7.5.7
   resolution: "ws@npm:7.5.7"
   peerDependencies:

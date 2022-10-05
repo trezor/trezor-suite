@@ -2,7 +2,7 @@ import TrezorConnect from '@trezor/connect';
 import * as versionUtils from '@trezor/utils/src/versionUtils'; // NOTE: only this module is required
 import { UI } from '@trezor/connect/src/events'; // NOTE: import UI constants directly from source
 import { toHardened, getHDPath } from '@trezor/connect/src/utils/pathUtils'; // NOTE: import utils directly from source
-import { Controller } from '@trezor/trezor-user-env-link';
+import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 const MNEMONICS = {
     mnemonic_all: 'all all all all all all all all all all all all',
@@ -11,75 +11,50 @@ const MNEMONICS = {
         'abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about',
 };
 
-const firmwareUrl = process.env.TESTS_FIRMWARE_URL;
-const firmware = process.env.TESTS_FIRMWARE;
-
-const wait = ms =>
-    new Promise(resolve => {
-        setTimeout(resolve, ms);
-    });
+const emulatorStartOpts = process.env.emulatorStartOpts || global.emulatorStartOpts;
+const firmware = emulatorStartOpts.version;
 
 const getController = name => {
-    const controller = new Controller({
-        name: name || 'unnamed controller',
+    TrezorUserEnvLink.on('error', error => {
+        console.error('TrezorUserEnvLink WS error', error);
     });
-    controller.on('error', error => {
-        console.error('Controller WS error', error);
-    });
-    controller.on('disconnect', () => {
-        console.error('Controller WS disconnected');
+    TrezorUserEnvLink.on('disconnect', () => {
+        console.error('TrezorUserEnvLink WS disconnected');
     });
 
-    controller.state = {};
-    return controller;
+    TrezorUserEnvLink.state = {};
+    return TrezorUserEnvLink;
 };
 
-const setup = async (controller, options) => {
-    const { state } = controller;
+const setup = async (TrezorUserEnvLink, options) => {
+    const { state } = TrezorUserEnvLink;
+
     if (
         state.mnemonic === options.mnemonic &&
         JSON.stringify(state.settings) === JSON.stringify(options.settings)
-    )
+    ) {
         return true;
+    }
 
     if (!options.mnemonic) return true; // skip setup if test is not using the device (composeTransaction)
 
-    await controller.connect();
-    if (!firmware && !firmwareUrl) {
-        throw new Error('no firmware set');
-    }
+    await TrezorUserEnvLink.connect();
+    await TrezorUserEnvLink.api.stopEmu();
 
     // after bridge is stopped, trezor-user-env automatically resolves to use udp transport.
     // this is actually good as we avoid possible race conditions when setting up emulator for
     // the test using the same transport
-    await controller.send({ type: 'bridge-stop' });
+    await TrezorUserEnvLink.api.stopBridge();
 
-    let emulatorStartOpts = { type: 'emulator-start', wipe: true };
-    if (firmware) {
-        Object.assign(emulatorStartOpts, { version: firmware });
-    }
-    if (options.firmware) {
-        Object.assign(emulatorStartOpts, { version: options.firmware });
-    }
-
-    if (firmwareUrl) {
-        emulatorStartOpts = {
-            type: 'emulator-start-from-url',
-            url: firmwareUrl,
-            // only model 2 is now supported to be run from url
-            model: '2',
-            wipe: true,
-        };
-    }
-
-    await controller.send(emulatorStartOpts);
+    console.log('start emu!!!', emulatorStartOpts);
+    await TrezorUserEnvLink.api.startEmu(emulatorStartOpts);
 
     const mnemonic =
         typeof options.mnemonic === 'string' && options.mnemonic.indexOf(' ') > 0
             ? options.mnemonic
             : MNEMONICS[options.mnemonic];
-    await controller.send({
-        type: 'emulator-setup',
+
+    await TrezorUserEnvLink.api.setupEmu({
         mnemonic,
         pin: options.pin || '',
         passphrase_protection: !!options.passphrase_protection,
@@ -91,27 +66,28 @@ const setup = async (controller, options) => {
     if (options.settings) {
         // allow apply-settings to fail, older FW may not know some flags yet
         try {
-            await controller.send({ type: 'emulator-apply-settings', ...options.settings });
+            await TrezorUserEnvLink.send({ type: 'emulator-apply-settings', ...options.settings });
         } catch (e) {
             console.warn('Setup apply settings failed', options.settings, e.message);
         }
     }
 
-    controller.state = options;
+    TrezorUserEnvLink.state = options;
 
     // after all is done, start bridge again
-    await controller.send({ type: 'bridge-start' });
+    await TrezorUserEnvLink.api.startBridge();
 };
 
-const initTrezorConnect = async (controller, options) => {
+const initTrezorConnect = async (TrezorUserEnvLink, options) => {
     TrezorConnect.removeAllListeners();
 
     TrezorConnect.on('device-connect', device => {
-        const { major_version, minor_version, patch_version, revision } = device.features;
+        const { major_version, minor_version, patch_version, model, revision } = device.features;
         console.log('Device connected: ', {
             major_version,
             minor_version,
             patch_version,
+            model,
             revision,
         });
     });
@@ -124,7 +100,7 @@ const initTrezorConnect = async (controller, options) => {
     });
 
     TrezorConnect.on(UI.REQUEST_BUTTON, () => {
-        setTimeout(() => controller.send({ type: 'emulator-press-yes' }), 1);
+        setTimeout(() => TrezorUserEnvLink.send({ type: 'emulator-press-yes' }), 1);
     });
 
     await TrezorConnect.init({
@@ -204,7 +180,6 @@ const conditionalTest = (rules, ...args) => {
 };
 
 global.Trezor = {
-    firmware,
     getController,
     setup,
     skipTest,

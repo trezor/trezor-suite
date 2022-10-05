@@ -1,4 +1,4 @@
-module.exports = {
+export default {
     rootDir: './',
     moduleFileExtensions: ['ts', 'js'],
     modulePathIgnorePatterns: ['node_modules'],
@@ -19,4 +19,5 @@ module.exports = {
     verbose: true,
     bail: true,
     testEnvironment: 'node',
+    globals: {},
 };

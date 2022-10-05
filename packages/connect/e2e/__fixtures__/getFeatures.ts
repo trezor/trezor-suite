@@ -1,10 +1,19 @@
-const { firmware } = global.Trezor;
 // firmware should be always set. This tests actually tests the fact that
-// we are indeed testing with the firmware version we believe we do.
-const [major, minor, patch] = firmware.split('.');
+
+const emulatorStartOpts = process.env.emulatorStartOpts || global.emulatorStartOpts;
+const firmware = emulatorStartOpts.version;
+
+let major;
+let minor;
+let patch;
+
+if (firmware) {
+    [major, minor, patch] = firmware.split('.');
+}
 
 // if custom build is used, we ignore firmware version numbers
 const customFirmwareBuild =
+    !firmware ||
     process.env.TESTS_CUSTOM_FIRMWARE_BUILD ||
     process.env.TESTS_FIRMWARE?.includes('master') ||
     // integration tests in trezor-firmware repo use 2.99.99 version
@@ -17,15 +26,15 @@ export default {
     },
     tests: [
         {
-            description: 'TT features',
+            description: 'TT/TR features',
             skip: ['1'],
             params: {},
             result: {
                 device_id: expect.any(String),
                 vendor: 'trezor.io',
-                major_version: customFirmwareBuild ? expect.any(Number) : Number(major),
-                minor_version: customFirmwareBuild ? expect.any(Number) : Number(minor),
-                patch_version: customFirmwareBuild ? expect.any(Number) : Number(patch),
+                major_version: expect.any(Number),
+                minor_version: expect.any(Number),
+                patch_version: expect.any(Number),
                 bootloader_mode: null,
                 pin_protection: expect.any(Boolean),
                 passphrase_protection: expect.any(Boolean),
@@ -39,7 +48,7 @@ export default {
                 firmware_present: null,
                 needs_backup: expect.any(Boolean),
                 // flags: expect.any(Number), // flags may be changed by applyFlags test
-                model: 'T',
+                model: expect.any(String), // "T" | "R"
                 fw_major: null,
                 fw_minor: null,
                 fw_patch: null,
@@ -66,7 +75,7 @@ export default {
                     'Capability_PassphraseEntry',
                 ],
                 backup_type: 'Bip39',
-                sd_card_present: true,
+                sd_card_present: expect.any(Boolean), // model T true, model R false
                 sd_protection: false,
                 wipe_code_protection: false,
                 session_id: expect.any(String),
