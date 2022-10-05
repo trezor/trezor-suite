@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Tooltip } from '@trezor/components';
+import { TooltipButton } from '@trezor/components';
 import { Translation } from '@suite-components';
 
 interface ButtonProps {
@@ -8,15 +8,12 @@ interface ButtonProps {
 }
 
 export const AddButton = ({ disabledMessage, handleClick }: ButtonProps) => (
-    <Tooltip maxWidth={285} content={disabledMessage}>
-        <Button
-            data-test="@add-account"
-            icon="PLUS"
-            variant="primary"
-            isDisabled={!!disabledMessage}
-            onClick={handleClick}
-        >
-            <Translation id="TR_ADD_ACCOUNT" />
-        </Button>
-    </Tooltip>
+    <TooltipButton
+        tooltipContent={disabledMessage}
+        isDisabled={!!disabledMessage}
+        onClick={handleClick}
+        data-test="@add-account"
+    >
+        <Translation id="TR_ADD_ACCOUNT" />
+    </TooltipButton>
 );
