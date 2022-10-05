@@ -6,6 +6,7 @@ import {
 
 import { isTxConfirmed, doesTxContainAddress } from './backendUtils';
 import type { Transaction, AccountInfo, ScanAccountCheckpoint, Address } from '../types/backend';
+import { getAccountUtxo } from './getAccountUtxo';
 
 const PAGE_SIZE_DEFAULT = 25;
 
@@ -93,6 +94,9 @@ export const getAccountInfo = ({
         };
     }
 
+    const txsFromLatest = transactions.slice().sort(sortTxsFromLatest);
+    const txsFromOldest = txsFromLatest.slice().reverse();
+
     return {
         descriptor,
         balance: balanceConfirmed.toString(),
@@ -101,9 +105,13 @@ export const getAccountInfo = ({
         history: {
             total: txCountConfirmed,
             unconfirmed: txCountTotal - txCountConfirmed,
-            transactions: transactions.slice().sort(sortTxsFromLatest),
+            transactions: txsFromLatest,
         },
         addresses,
         page: getPagination(transactions.length),
+        utxo: getAccountUtxo({
+            transactions: txsFromOldest,
+            addresses,
+        }),
     };
 };
