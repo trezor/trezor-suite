@@ -43,11 +43,11 @@ const HeadingContainer = styled.div<HeadingContainerProps>`
     text-align: left;
 
     ${({ isHeadingCentered, componentsWidth, isWithBackButton }) =>
-        isHeadingCentered &&
+        (isHeadingCentered || isWithBackButton) &&
         css`
             flex-grow: 1;
             margin-right: -${componentsWidth}px;
-            margin-left: ${isWithBackButton && '-24px'};
+            margin-left: ${isWithBackButton && '-40px'};
             padding: 0 28px;
             align-items: center;
             text-align: center;
@@ -156,6 +156,7 @@ const CloseIcon = styled(Icon)`
 `;
 
 const BackIcon = styled(Icon)`
+    position: relative;
     width: 40px;
     height: 27px;
     padding-right: 20px;
@@ -256,8 +257,8 @@ const Modal: React.FC<ModalProps> & ModalSubcomponents = ({
                             <BackIcon
                                 icon="ARROW_LEFT"
                                 size={24}
-                                color={theme.TYPE_DARK_GREY}
-                                hoverColor={theme.TYPE_LIGHT_GREY}
+                                color={theme.TYPE_LIGHT_GREY}
+                                hoverColor={theme.TYPE_LIGHTER_GREY}
                                 onClick={onBackClick}
                             />
                         )}

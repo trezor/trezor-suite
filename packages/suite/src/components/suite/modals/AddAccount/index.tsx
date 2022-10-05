@@ -149,6 +149,9 @@ export const AddAccount = ({ device, onCancel, symbol, noRedirect }: Props) => {
         <StyledModal
             isCancelable
             onCancel={onCancel}
+            onBackClick={
+                selectedNetwork && !networkPinned ? () => selectNetwork(undefined) : undefined
+            }
             heading={<Translation id="MODAL_ADD_ACCOUNT_TITLE" />}
             bottomBar={
                 selectedNetwork &&
