@@ -1,17 +1,36 @@
 import formatDuration from 'date-fns/formatDuration';
 import intervalToDuration from 'date-fns/intervalToDuration';
+import isDate from 'date-fns/isDate';
 
 export const formatTimeLeft = (
     deadline: Date,
     locale?: Locale,
     format: Array<keyof Duration> = ['hours', 'minutes'],
 ) => {
-    const duration = intervalToDuration({
-        start: Date.now(),
-        end: deadline,
-    });
+    try {
+        if (!deadline || !isDate(deadline)) {
+            return '';
+        }
 
-    const formattedTimeLeft = formatDuration(duration, { locale, format });
+        const currentTime = Date.now();
 
-    return formattedTimeLeft;
+        const isPastTheDeadline = deadline.getTime() < currentTime;
+
+        if (isPastTheDeadline) {
+            return formatDuration({ minutes: 0 }, { locale, format: ['minutes'], zero: true });
+        }
+
+        const duration = intervalToDuration({
+            start: currentTime,
+            end: deadline,
+        });
+
+        const formattedTimeLeft = formatDuration(duration, { locale, format });
+
+        return formattedTimeLeft;
+    } catch (error) {
+        console.error(error);
+
+        return '';
+    }
 };

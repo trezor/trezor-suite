@@ -18,5 +18,16 @@ describe('formatTimeLeft', () => {
         ).toEqual('1 day 1 hour 1 minute');
     });
 
+    it('does not fail with incorrect data', () => {
+        expect(
+            // @ts-expect-error
+            formatTimeLeft('2022-02-23T23:23:22Z', enLocale),
+        ).toEqual('');
+    });
+
+    it('returns negative falue post deadline', () => {
+        expect(formatTimeLeft(new Date('2022-02-22T22:21:22Z'), enLocale)).toEqual('0 minutes');
+    });
+
     global.Date.now = Date.now;
 });

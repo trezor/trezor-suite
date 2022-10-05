@@ -3,7 +3,7 @@ import { useLocales } from '@suite-hooks/useLocales';
 import { formatTimeLeft } from '@suite-utils/formatTimeLeft';
 
 interface TimerProps {
-    deadline: number;
+    deadline: number | string;
     className?: string;
 }
 
