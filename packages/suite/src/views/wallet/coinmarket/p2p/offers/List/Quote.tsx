@@ -8,6 +8,7 @@ import { Button, H3, Icon, Tooltip, useTheme, variables } from '@trezor/componen
 import regional from '@wallet-constants/coinmarket/regional';
 import { useCoinmarketP2pOffersContext } from '@wallet-hooks/useCoinmarketP2pOffers';
 import { CoinmarketProviderInfo } from '@wallet-components';
+import { CoinmarketFiatAmount } from '@wallet-views/coinmarket/common/CoinmarketFiatAmount';
 import { P2pQuote, P2pQuotesRequest } from 'invity-api';
 import { Avatar } from '../Avatar';
 
@@ -160,8 +161,6 @@ const IconWrapper = styled.div`
 const ErrorText = styled.div``;
 
 export const QuoteError = (quote: P2pQuote, quotesRequest: P2pQuotesRequest) => {
-    const { FiatAmountFormatter } = useFormatters();
-
     if (quote.currency !== quotesRequest.currency) {
         return;
     }
@@ -174,9 +173,9 @@ export const QuoteError = (quote: P2pQuote, quotesRequest: P2pQuotesRequest) => 
             <Translation
                 id="TR_P2P_WARNING_AMOUNT_RANGE_MINIMUM"
                 values={{
-                    amount: <FiatAmountFormatter value={amount} currency={currency} />,
+                    amount: <CoinmarketFiatAmount amount={amount} currency={currency} />,
                     minimum: (
-                        <FiatAmountFormatter value={amountRange.minimum} currency={currency} />
+                        <CoinmarketFiatAmount amount={amountRange.minimum} currency={currency} />
                     ),
                 }}
             />
@@ -188,9 +187,9 @@ export const QuoteError = (quote: P2pQuote, quotesRequest: P2pQuotesRequest) => 
             <Translation
                 id="TR_P2P_WARNING_AMOUNT_RANGE_MAXIMUM"
                 values={{
-                    amount: <FiatAmountFormatter value={amount} currency={currency} />,
+                    amount: <CoinmarketFiatAmount amount={amount} currency={currency} />,
                     maximum: (
-                        <FiatAmountFormatter value={amountRange.maximum} currency={currency} />
+                        <CoinmarketFiatAmount amount={amountRange.maximum} currency={currency} />
                     ),
                 }}
             />

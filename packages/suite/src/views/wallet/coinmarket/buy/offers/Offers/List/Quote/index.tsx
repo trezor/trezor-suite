@@ -2,10 +2,12 @@ import React from 'react';
 import styled from 'styled-components';
 import { useTheme, Button, variables, Icon, H2 } from '@trezor/components';
 import { CoinmarketPaymentType, CoinmarketProviderInfo, CoinmarketTag } from '@wallet-components';
-import { FormattedCryptoAmount, QuestionTooltip, Translation } from '@suite-components';
+import { QuestionTooltip, Translation } from '@suite-components';
 import { BuyTrade } from 'invity-api';
 import { useCoinmarketBuyOffersContext } from '@wallet-hooks/useCoinmarketBuyOffers';
 import { getTagAndInfoNote } from '@wallet-utils/coinmarket/coinmarketUtils';
+import { CoinmarketCryptoAmount } from '@wallet-views/coinmarket/common/CoinmarketCryptoAmount';
+import { CoinmarketFiatAmount } from '@wallet-views/coinmarket/common/CoinmarketFiatAmount';
 
 interface Props {
     className?: string;
@@ -147,8 +149,12 @@ export function getQuoteError(quote: BuyTrade, wantCrypto: boolean) {
                     <Translation
                         id="TR_OFFER_ERROR_MINIMUM_CRYPTO"
                         values={{
-                            amount: <FormattedCryptoAmount value={cryptoAmount} symbol={symbol} />,
-                            min: <FormattedCryptoAmount value={quote.minCrypto} symbol={symbol} />,
+                            amount: (
+                                <CoinmarketCryptoAmount amount={cryptoAmount} symbol={symbol} />
+                            ),
+                            min: (
+                                <CoinmarketCryptoAmount amount={quote.minCrypto} symbol={symbol} />
+                            ),
                         }}
                     />
                 );
@@ -158,33 +164,56 @@ export function getQuoteError(quote: BuyTrade, wantCrypto: boolean) {
                     <Translation
                         id="TR_OFFER_ERROR_MAXIMUM_CRYPTO"
                         values={{
-                            amount: <FormattedCryptoAmount value={cryptoAmount} symbol={symbol} />,
-                            max: <FormattedCryptoAmount value={quote.maxCrypto} symbol={symbol} />,
+                            amount: (
+                                <CoinmarketCryptoAmount amount={cryptoAmount} symbol={symbol} />
+                            ),
+                            max: (
+                                <CoinmarketCryptoAmount amount={quote.maxCrypto} symbol={symbol} />
+                            ),
                         }}
                     />
                 );
             }
         } else {
-            if (quote.minFiat && Number(quote.fiatStringAmount) < quote.minFiat) {
+            const fiatAmount = Number(quote.fiatStringAmount);
+            if (quote.minFiat && fiatAmount < quote.minFiat) {
                 return (
                     <Translation
                         id="TR_OFFER_ERROR_MINIMUM_FIAT"
                         values={{
-                            amount: quote.fiatStringAmount,
-                            min: quote.minFiat,
-                            currency: quote.fiatCurrency,
+                            amount: (
+                                <CoinmarketFiatAmount
+                                    amount={fiatAmount}
+                                    currency={quote.fiatCurrency}
+                                />
+                            ),
+                            min: (
+                                <CoinmarketFiatAmount
+                                    amount={quote.minFiat}
+                                    currency={quote.fiatCurrency}
+                                />
+                            ),
                         }}
                     />
                 );
             }
-            if (quote.maxFiat && Number(quote.fiatStringAmount) > quote.maxFiat) {
+            if (quote.maxFiat && fiatAmount > quote.maxFiat) {
                 return (
                     <Translation
                         id="TR_OFFER_ERROR_MAXIMUM_FIAT"
                         values={{
-                            amount: quote.fiatStringAmount,
-                            max: quote.maxFiat,
-                            currency: quote.fiatCurrency,
+                            amount: (
+                                <CoinmarketFiatAmount
+                                    amount={fiatAmount}
+                                    currency={quote.fiatCurrency}
+                                />
+                            ),
+                            max: (
+                                <CoinmarketFiatAmount
+                                    amount={quote.minFiat}
+                                    currency={quote.fiatCurrency}
+                                />
+                            ),
                         }}
                     />
                 );
@@ -208,10 +237,13 @@ const Quote = ({ className, quote, wantCrypto }: Props) => {
                 {!error && (
                     <Left>
                         {wantCrypto ? (
-                            `${quote.fiatStringAmount} ${quote.fiatCurrency}`
+                            <CoinmarketFiatAmount
+                                amount={quote.fiatStringAmount}
+                                currency={quote.fiatCurrency}
+                            />
                         ) : (
-                            <FormattedCryptoAmount
-                                value={quote.receiveStringAmount}
+                            <CoinmarketCryptoAmount
+                                amount={quote.receiveStringAmount}
                                 symbol={quote.receiveCurrency}
                             />
                         )}

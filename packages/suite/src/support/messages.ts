@@ -1502,12 +1502,12 @@ export default defineMessages({
     },
     TR_OFFER_ERROR_MINIMUM_FIAT: {
         defaultMessage:
-            'The chosen amount of {currency} {amount} is lower than the accepted minimum of {currency} {min}.',
+            'The chosen amount of {amount} is lower than the accepted minimum of {min}.',
         id: 'TR_OFFER_ERROR_MINIMUM_FIAT',
     },
     TR_OFFER_ERROR_MAXIMUM_FIAT: {
         defaultMessage:
-            'The chosen amount of {currency} {amount} is higher than the accepted maximum of {currency} {max}.',
+            'The chosen amount of {amount} is higher than the accepted maximum of {max}.',
         id: 'TR_OFFER_ERROR_MAXIMUM_FIAT',
     },
     TR_TERMS_OF_USE_INVITY: {

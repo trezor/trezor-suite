@@ -4,12 +4,13 @@ import { Button, variables, Icon, useTheme, H2 } from '@trezor/components';
 import { FormattedCryptoAmount, QuestionTooltip, Translation } from '@suite-components';
 import { useFormatters } from '@suite-common/formatters';
 import { ExchangeTrade } from 'invity-api';
+import { useSelector, useTranslation } from '@suite-hooks';
+import { toFiatCurrency } from '@suite-common/wallet-utils';
 import { getTagAndInfoNote } from '@wallet-utils/coinmarket/coinmarketUtils';
 import { isQuoteError } from '@wallet-utils/coinmarket/exchangeUtils';
 import { useCoinmarketExchangeOffersContext } from '@wallet-hooks/useCoinmarketExchangeOffers';
 import { CoinmarketProviderInfo, CoinmarketTag } from '@wallet-components';
-import { useSelector, useTranslation } from '@suite-hooks';
-import { toFiatCurrency } from '@suite-common/wallet-utils';
+import { CoinmarketCryptoAmount } from '@wallet-views/coinmarket/common/CoinmarketCryptoAmount';
 import BigNumber from 'bignumber.js';
 
 const Wrapper = styled.div`
@@ -163,8 +164,8 @@ function getQuoteError(quote: ExchangeTrade) {
             <Translation
                 id="TR_OFFER_ERROR_MINIMUM_CRYPTO"
                 values={{
-                    amount: <FormattedCryptoAmount value={cryptoAmount} symbol={symbol} />,
-                    min: <FormattedCryptoAmount value={quote.min} symbol={symbol} />,
+                    amount: <CoinmarketCryptoAmount amount={cryptoAmount} symbol={symbol} />,
+                    min: <CoinmarketCryptoAmount amount={quote.min} symbol={symbol} />,
                 }}
             />
         );
@@ -174,8 +175,8 @@ function getQuoteError(quote: ExchangeTrade) {
             <Translation
                 id="TR_OFFER_ERROR_MAXIMUM_CRYPTO"
                 values={{
-                    amount: <FormattedCryptoAmount value={cryptoAmount} symbol={symbol} />,
-                    max: <FormattedCryptoAmount value={quote.max} symbol={symbol} />,
+                    amount: <CoinmarketCryptoAmount amount={cryptoAmount} symbol={symbol} />,
+                    max: <CoinmarketCryptoAmount amount={quote.max} symbol={symbol} />,
                 }}
             />
         );
