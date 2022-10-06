@@ -38,7 +38,19 @@ const isNotCoinbase = (item: TxIn | TxCoinbase): item is TxIn => (item as any).t
 const formatTransaction =
     (getVout: GetVout, getSpent: GetSpent, currentHeight: number) =>
     (tx: TransactionVerbose): BlockbookTransaction => {
-        const { txid, version, vin, vout, hex, blockhash, confirmations, blocktime, locktime } = tx;
+        const {
+            txid,
+            version,
+            vin,
+            vout,
+            hex,
+            blockhash,
+            confirmations,
+            blocktime,
+            locktime,
+            vsize,
+            size,
+        } = tx;
         const vinRegular = vin.filter(isNotCoinbase);
         const value = vout.map(({ value }) => value).reduce((a, b) => a + b, 0);
         const valueIn = vinRegular
@@ -56,6 +68,8 @@ const formatTransaction =
             value: btcToSat(value),
             valueIn: btcToSat(valueIn),
             fees: btcToSat(valueIn - value),
+            vsize,
+            size,
             vin: vinRegular.map(({ txid, vout, sequence, n }, index) => ({
                 txid,
                 vout,

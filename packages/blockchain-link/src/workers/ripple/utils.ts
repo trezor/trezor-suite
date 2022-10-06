@@ -47,6 +47,7 @@ export const transformTransaction = (descriptor: string, tx: any): Transaction =
             blockHash: tx.hash,
             targets: [],
             tokens: [],
+            feeRate: undefined,
             details: {
                 vin: [],
                 vout: [],
@@ -80,6 +81,7 @@ export const transformTransaction = (descriptor: string, tx: any): Transaction =
             },
         ],
         tokens: [],
+        feeRate: undefined,
         details: {
             vin: [],
             vout: [],

@@ -177,6 +177,14 @@ export const transformTransaction = (
                   .toString()
             : tx.fees;
 
+    // some instances of bb don't send vsize yet
+    const feeRate = tx.vsize
+        ? new BigNumber(fee).div(tx.vsize).decimalPlaces(2).toString()
+        : undefined;
+
+    // some instances of bb don't send size yet
+    const size = tx.size || typeof tx.hex === 'string' ? tx.hex.length / 2 : 0;
+
     return {
         type,
 
@@ -188,6 +196,8 @@ export const transformTransaction = (
 
         amount,
         fee,
+        vsize: tx.vsize, // some instances of bb don't send vsize yet
+        feeRate,
 
         targets: targets.filter(t => typeof t === 'object').map(t => transformTarget(t, myOutputs)),
         tokens: myTokens,
@@ -196,7 +206,7 @@ export const transformTransaction = (
         details: {
             vin: inputs.map(enhanceVinVout(myAddresses)),
             vout: outputs.map(enhanceVinVout(myAddresses)),
-            size: typeof tx.hex === 'string' ? tx.hex.length / 2 : 0,
+            size,
             totalInput: totalInput.toString(),
             totalOutput: totalOutput.toString(),
         },
