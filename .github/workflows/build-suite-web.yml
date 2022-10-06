@@ -42,27 +42,25 @@ jobs:
           echo $ASSET_PREFIX
           yarn install --immutable
           yarn workspace @trezor/suite-web-landing build
-      - name: Archive suite-web build results
+      - name: Upload suite-web build results
         uses: actions/upload-artifact@v3
         with:
           name: suite-web-landing-build
           path: packages/suite-web-landing/build
-  # TODO: deploy to do nginx web server
+
   deploy-builds:
     needs: [build-web, build-landing]
     runs-on: ubuntu-latest
     env:
-      BUCKET_NAME: "suite-dev.trezor.io"
-      AWS_REGION: "eu-central-1"
+      SUITE_DEPLOY_DIRECTORY: "suite@dev-suite.trezor.io:/trezor-suite/${{github.head_ref}}/"
     steps:
-      - name: Configure aws credentials
-        uses: aws-actions/configure-aws-credentials@v1
+      - name: Configure ssh credentials
+        uses: webfactory/ssh-agent@v0.5.4
         with:
-          role-to-assume: arn:aws:iam::538326561891:role/github-actions-trezor-suite #TODO! add role arn to secret for develop
-          aws-region: ${{ env.AWS_REGION }}
+          ssh-private-key: ${{ secrets.DEV_SSH_SUITE_WEB }}
       - name: Download suite-web build results
         uses: actions/download-artifact@v3
       - name: Upload suite-web and suite-web-landing
         run: |
-          aws s3 cp -r packages/suite-web-landing/build s3://${{ env.BUCKET_NAME }}/${{github.head_ref}}
-          aws s3 cp -r packages/suite-web/build s3://${{ env.BUCKET_NAME }}/${{github.head_ref}}/web
+          rsync --delete -va packages/suite-web-landing/build/ "${SUITE_DEPLOY_DIRECTORY}/"
+          rsync --delete -va packages/suite-web/build/ "${SUITE_DEPLOY_DIRECTORY}/web/"
