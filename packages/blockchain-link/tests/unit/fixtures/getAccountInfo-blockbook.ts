@@ -608,6 +608,95 @@ const fixtures: {
             misc: undefined,
         },
     },
+    {
+        description: 'BTC account with vsize and feeRate',
+        params: {
+            descriptor:
+                'vpub5YX1yJFY8E236pH3iNvCpThsXLxoQoC4nwraaS5h4TZwaSp1Gg9SQoxCsrumxjh7nZRQQkNfH29TEDeMvAZVmD3rpmsDnFc5Sj4JgJG6m4b',
+        },
+
+        serverFixtures: [
+            {
+                method: 'getAccountInfo',
+                response: {
+                    data: {
+                        page: 1,
+                        totalPages: 1,
+                        itemsOnPage: 25,
+                        address:
+                            'vpub5YX1yJFY8E236pH3iNvCpThsXLxoQoC4nwraaS5h4TZwaSp1Gg9SQoxCsrumxjh7nZRQQkNfH29TEDeMvAZVmD3rpmsDnFc5Sj4JgJG6m4b',
+                        balance: '41159',
+                        totalReceived: '773325477',
+                        totalSent: '773284318',
+                        unconfirmedBalance: '0',
+                        unconfirmedTxs: 0,
+                        txs: 1,
+                        transactions: [
+                            {
+                                txid: '7f42f8e47f8af81a333ec622bf5688499f00e1f9b2d5f89865609e1663ad4a89',
+                                version: 1,
+                                vin: [],
+                                vout: [],
+                                blockHash:
+                                    '00000000000ec214f1cc387e3d6f781118378afca5c4b0a325f8f97353f1365d',
+                                blockHeight: 2349586,
+                                confirmations: 4,
+                                blockTime: 1665050739,
+                                size: 222,
+                                vsize: 141,
+                                value: '40577',
+                                valueIn: '40859',
+                                fees: '282',
+                                hex: '01000000000101a5818c7911116e6dd1e1f2017701071f3165aeff48d296cfb439ed9f266aefc30100000000fdffffff02d007000000000000160014f8e00fa515aea7693cf042c1e18d9ab345185cecb196000000000000160014fcf1910a28fba7613b92ee64aa6615e1a31a17330247304402202b4671022b7ce8d40775565b8c90cdd63e58188475f2a9658a89e2765fbf92d902203b29a451839e5c6983dec5139cb376e015cf8c54cb51deb8d21b53d6ba0773b401210355b9248c4643574b56c8beae840d0f341da456855f7f0a88527d66282fd6fb4900000000',
+                            },
+                        ],
+                        tokens: [],
+                    },
+                },
+            },
+        ],
+
+        response: {
+            descriptor:
+                'vpub5YX1yJFY8E236pH3iNvCpThsXLxoQoC4nwraaS5h4TZwaSp1Gg9SQoxCsrumxjh7nZRQQkNfH29TEDeMvAZVmD3rpmsDnFc5Sj4JgJG6m4b',
+            empty: false,
+            balance: '41159',
+            availableBalance: '41159',
+            history: {
+                total: 1,
+                unconfirmed: 0,
+                transactions: [
+                    {
+                        type: 'unknown',
+                        txid: '7f42f8e47f8af81a333ec622bf5688499f00e1f9b2d5f89865609e1663ad4a89',
+                        blockTime: 1665050739,
+                        blockHeight: 2349586,
+                        blockHash:
+                            '00000000000ec214f1cc387e3d6f781118378afca5c4b0a325f8f97353f1365d',
+                        amount: '40577',
+                        fee: '282',
+                        vsize: 141,
+                        feeRate: '2',
+                        targets: [],
+                        tokens: [],
+                        details: {
+                            vin: [],
+                            vout: [],
+                            size: 222,
+                            totalInput: '0',
+                            totalOutput: '0',
+                        },
+                    },
+                ],
+            },
+
+            page: {
+                index: 1,
+                size: 25,
+                total: 1,
+            },
+        },
+    },
 ];
 
 export default fixtures;
