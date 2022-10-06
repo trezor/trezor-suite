@@ -9,8 +9,8 @@ import * as routerActions from '@suite-actions/routerActions';
 import * as suiteActions from '@suite-actions/suiteActions';
 import { useSelector } from '@suite-hooks/useSelector';
 import { STATUS as DiscoveryStatus } from '@wallet-actions/constants/discoveryConstants';
-import { TranslationKey } from '@suite-common/intl-types';
 import { WalletLabeling } from './Labeling';
+import { COINJOIN_PHASE_MESSAGES } from '@suite-constants/coinjoin';
 
 const SPACING = 6;
 
@@ -50,14 +50,6 @@ const ViewButton = styled(Button)`
     height: 20px;
     margin-left: auto;
 `;
-
-const PHASE_MESSAGES: Record<number, TranslationKey> = {
-    [RoundPhase.InputRegistration]: 'TR_COINJOIN_PHASE_0_MESSAGE',
-    [RoundPhase.ConnectionConfirmation]: 'TR_COINJOIN_PHASE_1_MESSAGE',
-    [RoundPhase.OutputRegistration]: 'TR_COINJOIN_PHASE_2_MESSAGE',
-    [RoundPhase.TransactionSigning]: 'TR_COINJOIN_PHASE_2_MESSAGE',
-    [RoundPhase.Ended]: 'TR_COINJOIN_PHASE_2_MESSAGE',
-};
 
 interface CoinjoinStatusBarProps {
     accountKey: string;
@@ -131,7 +123,7 @@ export const CoinjoinStatusBar = ({ accountKey, session, isSingle }: CoinjoinSta
             <ProgressPie progress={progress} />
 
             <StatusText>
-                <Translation id={PHASE_MESSAGES[phase || 0]} />
+                <Translation id={COINJOIN_PHASE_MESSAGES[phase || RoundPhase.InputRegistration]} />
 
                 <Separator>•</Separator>
 

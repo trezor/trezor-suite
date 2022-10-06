@@ -7358,16 +7358,24 @@ export default defineMessages({
         defaultMessage: 'Reset to default',
     },
     TR_COINJOIN_PHASE_0_MESSAGE: {
-        id: 'TR_COINJOIN_PHASE_1_MESSAGE',
+        id: 'TR_COINJOIN_PHASE_0_MESSAGE',
         defaultMessage: 'Collecting inputs',
     },
     TR_COINJOIN_PHASE_1_MESSAGE: {
-        id: 'TR_COINJOIN_PHASE_2_MESSAGE',
-        defaultMessage: 'Joining coins',
+        id: 'TR_COINJOIN_PHASE_1_MESSAGE',
+        defaultMessage: 'Establishing connection',
     },
     TR_COINJOIN_PHASE_2_MESSAGE: {
+        id: 'TR_COINJOIN_PHASE_2_MESSAGE',
+        defaultMessage: 'Registering outputs',
+    },
+    TR_COINJOIN_PHASE_3_MESSAGE: {
         id: 'TR_COINJOIN_PHASE_3_MESSAGE',
-        defaultMessage: 'U poor now',
+        defaultMessage: 'Signing transactions',
+    },
+    TR_COINJOIN_PHASE_4_MESSAGE: {
+        id: 'TR_COINJOIN_PHASE_4_MESSAGE',
+        defaultMessage: 'Ending the round',
     },
     TR_LEFT: {
         id: 'TR_LEFT',
