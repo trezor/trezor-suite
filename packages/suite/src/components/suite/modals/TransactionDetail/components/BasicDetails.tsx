@@ -9,11 +9,11 @@ import {
 } from '@suite-components';
 import { WalletAccountTransaction, Network } from '@wallet-types';
 import {
-    getFeeRate,
     isTxFinal,
     getTxIcon,
     isPending,
     getFeeUnits,
+    getFeeRate,
 } from '@suite-common/wallet-utils';
 import { TransactionHeader } from '@suite/components/wallet/TransactionItem/components/TransactionHeader';
 import { fromWei } from 'web3-utils';
@@ -277,7 +277,14 @@ export const BasicDetails = ({ tx, confirmations, network, explorerUrl }: BasicD
                             <Translation id="TR_FEE_RATE" />
                         </Title>
 
-                        <Value>{`${getFeeRate(tx)} ${getFeeUnits('bitcoin')}`}</Value>
+                        <Value>
+                            {/* tx.feeRate was added in @trezor/blockchain-link 2.1.5 meaning that users 
+                            might have locally saved old transactions without this field. since we 
+                            cant reliably migrate this data, we are keeping old way of displaying feeRate in place */}
+                            {`${tx?.feeRate ? tx.feeRate : getFeeRate(tx)} ${getFeeUnits(
+                                'bitcoin',
+                            )}`}
+                        </Value>
 
                         {/* RBF Status */}
                         <Title>
