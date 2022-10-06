@@ -3,37 +3,12 @@ name: "[Build] @trezor/connect"
 on:
   workflow_call:
 
-#TODO!
-
 jobs:
-  build-web:
-    name: Build suite-web
+  build-connect:
+    name: Build connect
     runs-on: ubuntu-latest
     env:
-      ASSET_PREFIX: "/suite-web/${{github.head_ref}}/web"
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Setup node
-        uses: actions/setup-node@v3
-        with:
-          node-version-file: ".nvmrc"
-      - name: "Build suite-web"
-        run: |
-          echo $ASSET_PREFIX
-          yarn install --immutable
-          yarn workspace @trezor/suite-web build
-      - name: Archive code coverage results
-        uses: actions/upload-artifact@v3
-        with:
-          name: suite-web-build
-          path: packages/suite-web/build
-
-  build-landing:
-    name: Build suite-web-landing
-    runs-on: ubuntu-latest
-    env:
-      ASSET_PREFIX: "/suite-web/${{github.head_ref}}/"
+      ASSET_PREFIX: "/connect/${{github.head_ref}}/"
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -50,31 +25,30 @@ jobs:
           yarn workspace @trezor/connect-iframe build
           yarn workspace @trezor/connect-popup build
 
-      - name: Archive code coverage results
+      - name: Upload connect-build results
         uses: actions/upload-artifact@v3
         with:
-          name: suite-web-landing-build
+          name: connect-build
           path: |
             packages/connect-iframe/build
             packages/connect-web/build
             packages/connect-popup/build
 
   deploy-builds:
-    name: Deploy suite-web and suite-web-landing
-    needs: [build-web, build-landing]
+    needs: [build-connect]
     runs-on: ubuntu-latest
     env:
-      BUCKET_NAME: "suite-dev.trezor.io"
-      AWS_REGION: "eu-central-1"
+      CONNECT_DEPLOY_DIRECTORY: "suite@dev-suite.trezor.io:/trezor-suite/connect/${{github.head_ref}}"
     steps:
-      - name: Configure aws credentials
-        uses: aws-actions/configure-aws-credentials@v1
+      - name: Configure ssh credentials
+        uses: webfactory/ssh-agent@v0.5.4
         with:
-          role-to-assume: arn:aws:iam::538326561891:role/github-actions-trezor-suite
-          aws-region: ${{ env.AWS_REGION }}
-      - name: Archive code coverage results
+          ssh-private-key: ${{ secrets.DEV_SSH_SUITE_WEB }}
+      - name: Download suite-web build results
         uses: actions/download-artifact@v3
-      - name: Upload suite-web and suite-web-landing
+      - name: Upload connect dev build
         run: |
-          aws s3 sync --delete packages/suite-web-landing/build s3://${{ env.BUCKET_NAME }}/${{github.head_ref}}
-          aws s3 sync --delete packages/suite-web/build s3://${{ env.BUCKET_NAME }}/${{github.head_ref}}/web
+          mv packages/connect-iframe/build ./connect-build
+          mv packages/packages/connect-web/build ./connect-build
+          mv packages/packages/connect-popup/build ./connect-build
+          rsync --delete -va connect-build/ "${CONNECT_DEPLOY_DIRECTORY}/"
