@@ -1,11 +1,12 @@
 import React, { useMemo, useRef, useState } from 'react';
 import styled, { css } from 'styled-components';
 import { Dropdown, GroupedMenuItems, Icon, Loader, useTheme, variables } from '@trezor/components';
-import { CoinjoinSession } from '@suite-common/wallet-types';
+import { CoinjoinSession, RoundPhase } from '@suite-common/wallet-types';
 import { Translation } from '@suite-components/Translation';
 import { useActions } from '@suite-hooks/useActions';
 import * as modalActions from '@suite-actions/modalActions';
 import { CountdownTimer } from '@suite-components';
+import { COINJOIN_PHASE_MESSAGES } from '@suite-constants/coinjoin';
 
 const Container = styled.div`
     position: relative;
@@ -105,17 +106,6 @@ const PauseText = styled.p`
     height: 30px;
 `;
 
-enum MockCoinjoinPhase {
-    Starting,
-    Ongoing,
-    Error,
-}
-
-const PHASE_TEXT = {
-    [MockCoinjoinPhase.Starting]: 'Transaction signing starts in ',
-    [MockCoinjoinPhase.Ongoing]: 'Next phase in ',
-};
-
 interface CoinjoinStatusProps {
     session: CoinjoinSession;
 }
@@ -134,7 +124,6 @@ export const CoinjoinStatus = ({ session }: CoinjoinStatusProps) => {
 
     const timeLeft = `${(session.maxRounds - session.signedRounds.length) * 2.5}h`; // approximately 2.5h per round
     const progress = session.signedRounds.length / (session.maxRounds / 100);
-    const phase = MockCoinjoinPhase.Starting;
 
     const togglePause = () => {
         setIsLoading(true);
@@ -252,7 +241,9 @@ export const CoinjoinStatus = ({ session }: CoinjoinStatusProps) => {
                     </PauseText>
                 ) : (
                     <>
-                        <p>{PHASE_TEXT[phase]}</p>
+                        <p>
+                            {COINJOIN_PHASE_MESSAGES[session.phase || RoundPhase.InputRegistration]}
+                        </p>
                         <p>
                             <CountdownTimer deadline={Number(session?.deadline)} />
                         </p>
