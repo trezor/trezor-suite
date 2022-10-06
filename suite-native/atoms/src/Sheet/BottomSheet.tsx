@@ -16,7 +16,7 @@ type BottomSheetProps = {
     isVisible: boolean;
     onVisibilityChange: (isVisible: boolean) => void;
     children: ReactNode;
-    title: string;
+    title?: string;
     onBackArrowClick?: () => void;
 };
 

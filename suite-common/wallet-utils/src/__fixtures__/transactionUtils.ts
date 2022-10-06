@@ -1,4 +1,6 @@
 import { testMocks } from '@suite-common/test-utils';
+import { WalletAccountTransaction } from '@suite-common/wallet-types/libDev/src';
+import { AccountTransaction } from '@trezor/connect';
 
 import { TXS } from './transactions';
 
@@ -1376,3 +1378,118 @@ export const getAccountTransactions = [
         result: [],
     },
 ];
+
+export const isPending: Record<string, WalletAccountTransaction | AccountTransaction> = {
+    'Sent and confirmed transaction': {
+        amount: '123',
+        blockHash: '00000000000000000017277948d61a631dae6cce1d7fb501301b825599189f51',
+        blockHeight: 590093,
+        blockTime: 1565797979,
+        descriptor:
+            'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
+        deviceState: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
+        fee: '0.00002929',
+        symbol: 'btc',
+        targets: [],
+        tokens: [
+            {
+                address: '0x0f5d2fb29fb7d3cfee444a200298f468908cc942',
+                amount: '10',
+                decimals: 18,
+                from: '0x75e68d3b6acd23e79e395fa627ae5cae605c03d3',
+                name: 'Decentraland MANA',
+                symbol: 'MANA',
+                to: '0x73d0385f4d8e00c5e6504c6030f47bf6212736a8',
+                type: 'recv',
+            },
+        ],
+        txid: '7e58757f43015242c0efa29447bea4583336f2358fdff587b52bbe040ad8982a',
+        type: 'sent',
+        details: {
+            vin: [
+                {
+                    addresses: ['tb1q4nytpy37cuz8yndtfqpau4nzsva0jh787ny3yg'],
+                    isAddress: true,
+                    n: 0,
+                    sequence: 4294967294,
+                    txid: 'c894b064beb2f9be4b0d64cffcd89da2e8dc6decac399f5617323a303e07e4e1',
+                    value: '80720012',
+                },
+            ],
+            vout: [
+                {
+                    addresses: ['tb1q4s560ew83wcd6lcjg7uku9qlx4p6gwh74q4jap'],
+                    hex: '0014ac29a7e5c78bb0dd7f1247b96e141f3543a43afe',
+                    isAddress: true,
+                    n: 0,
+                    value: '80718868',
+                },
+                {
+                    addresses: ['mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q'],
+                    hex: '76a914a579388225827d9f2fe9014add644487808c695d88ac',
+                    isAddress: true,
+                    n: 1,
+                    value: '1000',
+                },
+            ],
+            size: 225,
+            totalInput: '80720012',
+            totalOutput: '80719868',
+        },
+    },
+    'Received and pending transaction': {
+        descriptor:
+            'vpub5YoEd2jJofNDXriAXpt4fyX23uRhrViFG3721C1wRRKUvDS4P6St7tqFfDP4JZsRARVhaVcGvW5jerdWBVc1c3fgqZeAYt29QSTiafKdwck',
+        deviceState: 'mvAmt1x3QTsSmJrR4tbPtMpYnLbi3gDEBu@912734FCB107274D3CC465EC:1',
+        symbol: 'test',
+        type: 'recv',
+        txid: '70ad253c25aa8a76ebcdb7fded56f2f57ec9b40967b7e79937b4f44445968c93',
+        blockTime: 1665050077,
+        blockHeight: -1,
+        lockTime: 2349585,
+        amount: '68000',
+        fee: '141',
+        targets: [
+            {
+                n: 1,
+                addresses: ['tb1qdu4etzzpr3hqqkrqntpq32e8xjkeupajtarefl'],
+                isAddress: true,
+                amount: '68000',
+                isAccountTarget: true,
+            },
+        ],
+        tokens: [],
+        details: {
+            vin: [
+                {
+                    txid: '8706ebd38ba68854681be404d2d65c151ba5f9b4367c7de93883edc311592102',
+                    sequence: 4294967294,
+                    n: 0,
+                    addresses: ['tb1qej4prrnz7tw0f8g0duml87zks87dzl6q5rkthj'],
+                    isAddress: true,
+                    value: '34670643640',
+                },
+            ],
+            vout: [
+                {
+                    value: '34670575499',
+                    n: 0,
+                    hex: '0014702701c3bd74fbea593686ea1eae555a1a20cd28',
+                    addresses: ['tb1qwqnsrsaawna75kfksm4patj4tgdzpnfgmm8hnc'],
+                    isAddress: true,
+                },
+                {
+                    value: '68000',
+                    n: 1,
+                    hex: '00146f2b9588411c6e0058609ac208ab2734ad9e07b2',
+                    addresses: ['tb1qdu4etzzpr3hqqkrqntpq32e8xjkeupajtarefl'],
+                    isAddress: true,
+                    isAccountOwned: true,
+                },
+            ],
+            size: 222,
+            totalInput: '34670643640',
+            totalOutput: '34670643499',
+        },
+    },
+};

@@ -12,12 +12,21 @@ import {
     getAccountTransactions,
     getRbfParams,
     groupTransactionsByDate,
+    isPending,
     parseDateKey,
 } from '../transactionUtils';
 
 describe('transaction utils', () => {
     it('parseKey', () => {
         expect(parseDateKey('2019-10-05')).toEqual(new Date(2019, 9, 5));
+    });
+
+    Object.keys(fixtures.isPending).forEach(f => {
+        it(`isPending: ${f}`, () => {
+            const transaction = fixtures.isPending[f];
+            const { blockHeight } = transaction;
+            expect(isPending(transaction)).toEqual(!blockHeight || blockHeight < 0);
+        });
     });
 
     it('groupTransactionsByDate', () => {

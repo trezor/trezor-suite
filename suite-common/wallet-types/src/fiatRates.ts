@@ -25,3 +25,9 @@ export interface CoinFiatRates extends TickerId {
     current?: CurrentFiatRates;
     lastWeek?: LastWeekRates;
 }
+
+export interface ReceiveInfo {
+    path: string;
+    address: string;
+    isVerified: boolean;
+}

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
@@ -7,11 +7,11 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Box } from '@suite-native/atoms';
 
 import { TabBarItem } from './TabBarItem';
-import { ActionTabItem } from './ActionTabBarItem';
 import { TabsOptions } from '../types';
 
 interface TabBarProps extends BottomTabBarProps {
     tabItemOptions: TabsOptions;
+    SendReceiveComponent: React.ElementType;
 }
 
 export const TAB_BAR_HEIGHT = 86;
@@ -30,18 +30,30 @@ const tabBarStyle = prepareNativeStyle<{ insetLeft: number; insetRight: number }
     }),
 );
 
-export const TabBar = ({ state, navigation, tabItemOptions }: TabBarProps) => {
+export const TabBar = ({
+    state,
+    navigation,
+    tabItemOptions,
+    SendReceiveComponent,
+}: TabBarProps) => {
+    const [sendReceiveActionsVisible, setSendReceiveActionsVisible] = useState(false);
     const { applyStyle } = useNativeStyles();
     const insets = useSafeAreaInsets();
 
+    const handleSendReceiveActionsVisibility = (visible: boolean) => {
+        setSendReceiveActionsVisible(visible);
+    };
+
     return (
         <Box style={applyStyle(tabBarStyle, { insetLeft: insets.left, insetRight: insets.right })}>
+            <SendReceiveComponent
+                isVisible={sendReceiveActionsVisible}
+                onVisibilityChange={handleSendReceiveActionsVisibility}
+            />
             {state.routes.map((route, index) => {
                 const isFocused = state.index === index;
                 const { routeName, iconName, label, isActionTabItem, params } =
                     tabItemOptions[route.name];
-
-                if (isActionTabItem) return <ActionTabItem key={route.key} />;
 
                 const handleTabBarItemPress = () => {
                     const event = navigation.emit({
@@ -50,7 +62,9 @@ export const TabBar = ({ state, navigation, tabItemOptions }: TabBarProps) => {
                         canPreventDefault: true,
                     });
 
-                    if (!isFocused && !event.defaultPrevented) {
+                    if (!isFocused && isActionTabItem) {
+                        handleSendReceiveActionsVisibility(true);
+                    } else if (!isFocused && !event.defaultPrevented) {
                         navigation.navigate(routeName, { ...params });
                     }
                 };
@@ -59,6 +73,7 @@ export const TabBar = ({ state, navigation, tabItemOptions }: TabBarProps) => {
                     <TabBarItem
                         key={route.key}
                         isFocused={isFocused}
+                        isActionTabItem={isActionTabItem}
                         iconName={iconName}
                         title={label}
                         onPress={handleTabBarItemPress}

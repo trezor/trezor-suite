@@ -1,7 +1,7 @@
 import { createSelector, isAnyOf } from '@reduxjs/toolkit';
 
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
-import { enhanceHistory } from '@suite-common/wallet-utils';
+import { enhanceHistory, isUtxoBased } from '@suite-common/wallet-utils';
 import { Account } from '@suite-common/wallet-types';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
@@ -130,4 +130,8 @@ export const selectAccountLabel = createSelector(
             return accountLabel;
         }
     },
+);
+
+export const selectIsAccountUtxoBased = createSelector([selectAccountByKey], account =>
+    account ? isUtxoBased(account) : false,
 );

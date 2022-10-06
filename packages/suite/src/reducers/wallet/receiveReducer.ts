@@ -2,11 +2,7 @@ import produce from 'immer';
 import { RECEIVE } from '@wallet-actions/constants';
 import { Action as SuiteAction } from '@suite-types';
 
-export interface ReceiveInfo {
-    path: string;
-    address: string;
-    isVerified: boolean;
-}
+import { ReceiveInfo } from '@suite-common/wallet-types';
 
 export type State = ReceiveInfo[];
 

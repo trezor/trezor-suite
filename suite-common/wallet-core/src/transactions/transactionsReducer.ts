@@ -1,7 +1,7 @@
 import { createSelector } from '@reduxjs/toolkit';
 
 import { Account, WalletAccountTransaction } from '@suite-common/wallet-types';
-import { findTransaction } from '@suite-common/wallet-utils';
+import { findTransaction, isPending } from '@suite-common/wallet-utils';
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import { AccountKey } from '@suite-common/suite-types';
 
@@ -146,6 +146,11 @@ export const selectIsLoadingTransactions = (state: TransactionsRootState) =>
 export const selectTransactions = (state: TransactionsRootState) =>
     state.wallet.transactions.transactions;
 
+/**
+ * Returns transactions for the account specified by accountKey param.
+ * The list is not sorted here because it may contain null values as placeholders
+ * for transactions that have not been fetched yet. (This affects pagination.)
+ */
 export const selectAccountTransactions = (
     state: TransactionsRootState,
     accountKey: string | null,
@@ -154,6 +159,20 @@ export const selectAccountTransactions = (
 export const selectAllTransactions = createSelector(
     selectTransactions,
     (transactions): WalletAccountTransaction[] => Object.values(transactions).flat(),
+);
+
+export const selectPendingAccountAddresses = createSelector(
+    [selectAccountTransactions],
+    accountTransactions => {
+        const pendingAddresses: string[] = [];
+        const pendingTxs = accountTransactions.filter(isPending);
+        pendingTxs.forEach(t =>
+            t.targets.forEach(target =>
+                target.addresses?.forEach(a => pendingAddresses.unshift(a)),
+            ),
+        );
+        return pendingAddresses;
+    },
 );
 
 export const selectTransactionByTxid = (txid: string) =>

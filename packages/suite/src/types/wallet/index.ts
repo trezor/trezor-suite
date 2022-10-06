@@ -17,6 +17,7 @@ import { PollingAction } from '@wallet-actions/pollingActions';
 import { CoinjoinAccountAction } from '@wallet-actions/coinjoinAccountActions';
 import { CoinjoinClientAction } from '@wallet-actions/coinjoinClientActions';
 import { NETWORKS } from '@wallet-config';
+
 import { ArrayElement } from '@trezor/type-utils';
 import { accountsActions, fiatRatesActions, blockchainActions } from '@suite-common/wallet-core';
 
@@ -45,9 +46,9 @@ export type {
     Account,
     WalletAccountTransaction,
     RbfTransactionParams,
+    ReceiveInfo,
 } from '@suite-common/wallet-types';
 export type { WalletParams } from '@suite-utils/router';
-export type { ReceiveInfo } from '@wallet-reducers/receiveReducer';
 
 /*
 this action union types are bad, we need it only for legacy reason.

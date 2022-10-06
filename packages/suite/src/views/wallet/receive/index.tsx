@@ -1,37 +1,39 @@
 import React from 'react';
+
 import { WalletLayout, WalletLayoutHeader } from '@wallet-components';
 import { useDevice, useSelector, useActions } from '@suite-hooks';
 import * as receiveActions from '@wallet-actions/receiveActions';
+
+import { selectPendingAccountAddresses } from '@suite-common/wallet-core';
+
 import { FreshAddress } from './components/FreshAddress';
 import { UsedAddresses } from './components/UsedAddresses';
-import { isPending, getAccountTransactions } from '@suite-common/wallet-utils';
 
 const Receive = () => {
-    const { selectedAccount, receive, device, transactions } = useSelector(state => ({
+    const { selectedAccount, receive, device } = useSelector(state => ({
         selectedAccount: state.wallet.selectedAccount,
         receive: state.wallet.receive,
         device: state.suite.device,
-        transactions: state.wallet.transactions.transactions,
     }));
     const { showAddress } = useActions({
         showAddress: receiveActions.showAddress,
     });
 
+    const { account } = selectedAccount;
+
+    const pendingAddresses = useSelector(state =>
+        selectPendingAccountAddresses(state, account?.key ?? null),
+    );
+
     const { isLocked } = useDevice();
+
     const isDeviceLocked = isLocked(true);
 
     if (!device || selectedAccount.status !== 'loaded') {
         return <WalletLayout title="TR_NAV_RECEIVE" account={selectedAccount} />;
     }
 
-    const { account } = selectedAccount;
     const disabled = !!device.authConfirm;
-
-    const pendingTxs = getAccountTransactions(account.key, transactions).filter(isPending);
-    const pendingAddresses: string[] = [];
-    pendingTxs.forEach(t =>
-        t.targets.forEach(target => target.addresses?.forEach(a => pendingAddresses.unshift(a))),
-    );
 
     return (
         <WalletLayout title="TR_NAV_RECEIVE" account={selectedAccount}>

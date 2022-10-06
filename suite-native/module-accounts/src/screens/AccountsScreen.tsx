@@ -1,20 +1,20 @@
 import React, { useCallback, useState } from 'react';
 import { View } from 'react-native';
 
-import { useFocusEffect } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 
 import {
     AccountsStackParamList,
     AccountsStackRoutes,
     Screen,
+    StackNavigationProps,
     StackProps,
 } from '@suite-native/navigation';
 import { Box, Button, Chip } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { CryptoIcon } from '@trezor/icons';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-
-import { AccountsList } from '../components/AccountsList';
+import { AccountsList } from '@suite-native/accounts';
 
 const assetsFilterStyle = prepareNativeStyle(utils => ({
     flexDirection: 'row',
@@ -35,6 +35,8 @@ export const AccountsScreen = ({
 }: StackProps<AccountsStackParamList, AccountsStackRoutes.Accounts>) => {
     const { applyStyle } = useNativeStyles();
     const [selectedAssets, setSelectedAssets] = useState<NetworkSymbol[]>([]);
+    const navigation =
+        useNavigation<StackNavigationProps<AccountsStackParamList, AccountsStackRoutes.Accounts>>();
 
     const handleScreenFocus = useCallback(() => {
         const { currencySymbol } = route.params;
@@ -59,6 +61,12 @@ export const AccountsScreen = ({
         });
     };
 
+    const handleSelectAccount = (key: string) => {
+        navigation.navigate(AccountsStackRoutes.AccountDetail, {
+            accountKey: key,
+        });
+    };
+
     return (
         <Screen>
             <View style={[applyStyle(assetsFilterStyle)]}>
@@ -77,7 +85,7 @@ export const AccountsScreen = ({
                     style={applyStyle(assetsFilterItemStyle)}
                 />
             </View>
-            <AccountsList assets={selectedAssets} />
+            <AccountsList assets={selectedAssets} onSelectAccount={handleSelectAccount} />
             <Box flex={1} justifyContent="flex-end">
                 <Button
                     style={applyStyle(discoverAssetsButtonStyle)}

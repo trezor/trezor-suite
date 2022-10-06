@@ -1,5 +1,5 @@
 import React from 'react';
-import { TouchableOpacity } from 'react-native';
+import { TouchableOpacity, View } from 'react-native';
 
 import { Icon, IconName } from '@trezor/icons';
 import { NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -12,15 +12,29 @@ type TileButtonProps = {
     title: string;
     onPress: () => void;
     style?: NativeStyleObject;
+    isDisabled?: boolean;
 };
 
-const tileButtonStyle = prepareNativeStyle(utils => ({
+const tileButtonContainerStyle = prepareNativeStyle(utils => ({
     height: 79,
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: utils.borders.radii.small,
     backgroundColor: utils.colors.gray300,
     flex: 1,
+}));
+
+const tileButtonStyle = prepareNativeStyle<{ isDisabled: boolean }>((_, { isDisabled }) => ({
+    justifyContent: 'center',
+    alignItems: 'center',
+    extend: [
+        {
+            condition: isDisabled,
+            style: {
+                opacity: 0.2,
+            },
+        },
+    ],
 }));
 
 const iconWrapperStyle = prepareNativeStyle(() => ({
@@ -31,18 +45,28 @@ const textStyle = prepareNativeStyle(() => ({
     textTransform: 'uppercase',
 }));
 
-export const TileButton = ({ iconName, title, onPress, style }: TileButtonProps) => {
+export const TileButton = ({
+    iconName,
+    title,
+    onPress,
+    style,
+    isDisabled = false,
+}: TileButtonProps) => {
     const { applyStyle } = useNativeStyles();
     return (
-        <TouchableOpacity style={[applyStyle(tileButtonStyle), style]} onPress={onPress}>
-            <Box justifyContent="center" alignItems="center">
+        <TouchableOpacity
+            disabled={isDisabled}
+            style={[applyStyle(tileButtonContainerStyle), style]}
+            onPress={onPress}
+        >
+            <View style={applyStyle(tileButtonStyle, { isDisabled })}>
                 <Box style={applyStyle(iconWrapperStyle)}>
                     <Icon name={iconName} />
                 </Box>
                 <Text variant="label" style={applyStyle(textStyle)}>
                     {title}
                 </Text>
-            </Box>
+            </View>
         </TouchableOpacity>
     );
 };
