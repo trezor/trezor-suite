@@ -273,6 +273,7 @@ export const transformTransaction = (
             withdrawal,
             deposit,
         },
+        feeRate: undefined,
         details: {
             vin: inputs.map(enhanceVinVout(myAddresses)),
             vout: outputs.map(enhanceVinVout(myAddresses)),

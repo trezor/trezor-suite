@@ -116,6 +116,8 @@ export interface Transaction {
         deposit?: string;
     };
     details: TransactionDetail;
+    vsize?: number;
+    feeRate?: string;
 }
 
 /* Account */

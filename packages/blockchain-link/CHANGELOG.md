@@ -1,3 +1,8 @@
+# 2.1.5
+
+-   added Transaction.feeRate
+-   use Transaction.size provided by Blockbook instead of computing it from hex if available
+
 # 2.1.4
 
 -   add missing ADA types
