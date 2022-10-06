@@ -4,9 +4,11 @@ import { CoinLogo, variables, Icon, H2 } from '@trezor/components';
 import { SellFiatTrade } from 'invity-api';
 import { useCoinmarketSellOffersContext } from '@wallet-hooks/useCoinmarketSellOffers';
 import Quote from './Quote';
-import { FormattedCryptoAmount, Translation } from '@suite-components';
+import { Translation } from '@suite-components';
 import { CoinmarketRefreshTime } from '@wallet-components';
 import { InvityAPIReloadQuotesAfterSeconds } from '@wallet-constants/coinmarket/metadata';
+import { CoinmarketCryptoAmount } from '@wallet-views/coinmarket/common/CoinmarketCryptoAmount';
+import { CoinmarketFiatAmount } from '@wallet-views/coinmarket/common/CoinmarketFiatAmount';
 
 interface Props {
     isAlternative?: boolean;
@@ -43,9 +45,10 @@ const Right = styled.div`
     }
 `;
 
-const SummaryRow = styled.div`
+const SummaryRow = styled(H2)`
     display: flex;
     align-items: center;
+    font-weight: ${variables.FONT_WEIGHT.REGULAR};
 `;
 
 const OrigAmount = styled.div`
@@ -58,28 +61,17 @@ const StyledIcon = styled(Icon)`
     margin: 0 20px;
 `;
 
-const Text = styled(H2)`
-    display: flex;
+const Send = styled(H2)`
     padding-top: 3px;
-    align-items: center;
+    padding-left: 10px;
     font-weight: ${variables.FONT_WEIGHT.REGULAR};
 `;
 
-const Crypto = styled(Text)`
-    padding-left: 10px;
-    text-transform: uppercase;
-`;
-
-const Receive = styled(Text)`
+const Receive = styled(H2)`
+    padding-top: 3px;
     padding-right: 10px;
-    text-transform: uppercase;
+    font-weight: ${variables.FONT_WEIGHT.REGULAR};
 `;
-
-const Send = styled(Text)`
-    padding-left: 10px;
-`;
-
-const StyledCoinLogo = styled(CoinLogo)``;
 
 const NoQuotes = styled.div`
     display: flex;
@@ -99,29 +91,31 @@ const List = ({ isAlternative, quotes }: Props) => {
         <Wrapper>
             <Header>
                 <Left>
-                    <>
-                        <SummaryRow>
-                            <StyledCoinLogo size={21} symbol={account.symbol} />
-                            {amountInCrypto ? (
-                                <Send>
-                                    <FormattedCryptoAmount
-                                        value={quotes[0].cryptoStringAmount}
-                                        symbol={account.symbol}
-                                    />
-                                </Send>
-                            ) : (
-                                <Crypto>{quotes[0].cryptoCurrency}</Crypto>
-                            )}
-                            <StyledIcon icon="ARROW_RIGHT_LONG" />
-                            {!amountInCrypto && <Receive>{quotes[0].fiatStringAmount}</Receive>}
-                            <Text>{quotes[0].fiatCurrency}</Text>
-                        </SummaryRow>
-                        {isAlternative && !amountInCrypto && (
-                            <OrigAmount>
-                                ≈ {fiatStringAmount} {fiatCurrency}
-                            </OrigAmount>
-                        )}
-                    </>
+                    <SummaryRow>
+                        <CoinLogo size={21} symbol={account.symbol} />
+                        <Send>
+                            <CoinmarketCryptoAmount
+                                amount={amountInCrypto ? quotes[0].cryptoStringAmount : ''}
+                                symbol={account.symbol}
+                            />
+                        </Send>
+                        <StyledIcon icon="ARROW_RIGHT_LONG" />
+                        <Receive>
+                            <CoinmarketFiatAmount
+                                amount={!amountInCrypto ? quotes[0].fiatStringAmount : ''}
+                                currency={quotes[0].fiatCurrency}
+                            />
+                        </Receive>
+                    </SummaryRow>
+                    {isAlternative && !amountInCrypto && (
+                        <OrigAmount>
+                            ≈{' '}
+                            <CoinmarketFiatAmount
+                                amount={fiatStringAmount}
+                                currency={fiatCurrency}
+                            />
+                        </OrigAmount>
+                    )}
                 </Left>
                 {!isAlternative && !timer.isStopped && (
                     <Right>

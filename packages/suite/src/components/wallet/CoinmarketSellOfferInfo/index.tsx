@@ -8,7 +8,9 @@ import {
     CoinmarketTransactionId,
 } from '@wallet-components';
 import { Account } from '@wallet-types';
-import { Translation, AccountLabeling, FormattedCryptoAmount } from '@suite-components';
+import { Translation, AccountLabeling } from '@suite-components';
+import { CoinmarketCryptoAmount } from '@wallet-views/coinmarket/common/CoinmarketCryptoAmount';
+import { CoinmarketFiatAmount } from '@wallet-views/coinmarket/common/CoinmarketFiatAmount';
 
 interface Props {
     selectedQuote: SellFiatTrade;
@@ -124,8 +126,8 @@ const CoinmarketSellOfferInfo = ({ selectedQuote, transactionId, providers, acco
                     </LeftColumn>
                     <RightColumn>
                         <Dark>
-                            <FormattedCryptoAmount
-                                value={cryptoStringAmount}
+                            <CoinmarketCryptoAmount
+                                amount={cryptoStringAmount}
                                 symbol={cryptoCurrency}
                             />
                         </Dark>
@@ -137,7 +139,10 @@ const CoinmarketSellOfferInfo = ({ selectedQuote, transactionId, providers, acco
                     </LeftColumn>
                     <RightColumn>
                         <Dark>
-                            {fiatStringAmount} {fiatCurrency}
+                            <CoinmarketFiatAmount
+                                amount={fiatStringAmount}
+                                currency={fiatCurrency}
+                            />
                         </Dark>
                     </RightColumn>
                 </RowWithBorder>

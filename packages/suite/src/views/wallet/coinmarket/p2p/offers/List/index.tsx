@@ -1,11 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useFormatters } from '@suite-common/formatters';
 import { Translation } from '@suite-components';
 import { CoinLogo, H2, Icon, variables } from '@trezor/components';
 import { useCoinmarketP2pOffersContext } from '@wallet-hooks/useCoinmarketP2pOffers';
 import { CoinmarketRefreshTime } from '@wallet-components';
 import { InvityAPIReloadQuotesAfterSeconds } from '@wallet-constants/coinmarket/metadata';
+import { CoinmarketFiatAmount } from '@wallet-views/coinmarket/common/CoinmarketFiatAmount';
 import { P2pQuote } from 'invity-api';
 import { Quote } from './Quote';
 
@@ -44,12 +44,9 @@ const SummaryRow = styled.div`
     align-items: center;
 `;
 
-const Text = styled(H2).attrs({
-    fontWeight: 400,
-})`
-    display: flex;
+const Text = styled(H2)`
     padding-top: 3px;
-    align-items: center;
+    font-weight: ${variables.FONT_WEIGHT.REGULAR};
 `;
 
 const StyledIcon = styled(Icon)`
@@ -57,8 +54,10 @@ const StyledIcon = styled(Icon)`
     margin: 0 20px;
 `;
 
-const Crypto = styled(Text)`
+const Crypto = styled(H2)`
+    padding-top: 3px;
     padding-left: 10px;
+    font-weight: ${variables.FONT_WEIGHT.REGULAR};
 `;
 
 const NoQuotes = styled.div`
@@ -104,7 +103,6 @@ const DividerMiddle = styled.div`
 const DividerRight = styled(DividerLine)``;
 
 export const List = ({ quotes }: ListProps) => {
-    const { FiatAmountFormatter } = useFormatters();
     const { account, timer, quotesRequest } = useCoinmarketP2pOffersContext();
 
     if (!quotesRequest) {
@@ -121,8 +119,8 @@ export const List = ({ quotes }: ListProps) => {
                 <Left>
                     <SummaryRow>
                         <Text>
-                            <FiatAmountFormatter
-                                value={quotesRequest.amount}
+                            <CoinmarketFiatAmount
+                                amount={quotesRequest.amount}
                                 currency={quotesRequest.currency}
                             />
                         </Text>

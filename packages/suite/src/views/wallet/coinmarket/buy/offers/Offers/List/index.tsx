@@ -4,9 +4,11 @@ import { CoinLogo, variables, Icon, H2 } from '@trezor/components';
 import { BuyTrade } from 'invity-api';
 import { useCoinmarketBuyOffersContext } from '@wallet-hooks/useCoinmarketBuyOffers';
 import Quote from './Quote';
-import { FormattedCryptoAmount, Translation } from '@suite-components';
+import { Translation } from '@suite-components';
 import { CoinmarketRefreshTime } from '@wallet-components';
 import { InvityAPIReloadQuotesAfterSeconds } from '@wallet-constants/coinmarket/metadata';
+import { CoinmarketCryptoAmount } from '@wallet-views/coinmarket/common/CoinmarketCryptoAmount';
+import { CoinmarketFiatAmount } from '@wallet-views/coinmarket/common/CoinmarketFiatAmount';
 
 interface Props {
     isAlternative?: boolean;
@@ -58,23 +60,16 @@ const StyledIcon = styled(Icon)`
     margin: 0 20px;
 `;
 
-const Text = styled(H2).attrs({
-    fontWeight: 400,
-})`
-    display: flex;
+const Send = styled(H2)`
     padding-top: 3px;
-    align-items: center;
+    font-weight: ${variables.FONT_WEIGHT.REGULAR};
 `;
 
-const Crypto = styled(Text)`
+const Receive = styled(H2)`
+    padding-top: 3px;
     padding-left: 10px;
+    font-weight: ${variables.FONT_WEIGHT.REGULAR};
 `;
-
-const Receive = styled(Text)`
-    padding-left: 10px;
-`;
-
-const StyledCoinLogo = styled(CoinLogo)``;
 
 const NoQuotes = styled.div`
     display: flex;
@@ -88,58 +83,36 @@ const List = ({ isAlternative, quotes }: Props) => {
     const { account, quotesRequest, timer } = useCoinmarketBuyOffersContext();
 
     if (!quotesRequest) return null;
-    const { fiatStringAmount, fiatCurrency, cryptoStringAmount, wantCrypto, receiveCurrency } =
-        quotesRequest;
+    const { fiatStringAmount, fiatCurrency, wantCrypto } = quotesRequest;
 
     return (
         <Wrapper data-test="@coinmarket/buy/offers-list">
             <Header>
                 <Left>
-                    {isAlternative ? (
-                        <>
-                            <SummaryRow>
-                                <Text>
-                                    {wantCrypto ? '' : `${quotes[0].fiatStringAmount} `}
-                                    {quotes[0].fiatCurrency}
-                                </Text>
-                                <StyledIcon icon="ARROW_RIGHT_LONG" />
-                                <StyledCoinLogo size={21} symbol={account.symbol} />
-                                {wantCrypto ? (
-                                    <Receive>
-                                        <FormattedCryptoAmount
-                                            value={quotes[0].receiveStringAmount}
-                                            symbol={account.symbol}
-                                        />
-                                    </Receive>
-                                ) : (
-                                    <Crypto>{quotes[0].receiveCurrency}</Crypto>
-                                )}
-                            </SummaryRow>
-                            {!wantCrypto && (
-                                <OrigAmount>
-                                    ≈ {fiatStringAmount} {fiatCurrency}
-                                </OrigAmount>
-                            )}
-                        </>
-                    ) : (
-                        <SummaryRow>
-                            <Text>
-                                {wantCrypto ? '' : `${fiatStringAmount} `}
-                                {fiatCurrency}
-                            </Text>
-                            <StyledIcon icon="ARROW_RIGHT_LONG" />
-                            <StyledCoinLogo size={21} symbol={account.symbol} />
-                            {wantCrypto ? (
-                                <Receive>
-                                    <FormattedCryptoAmount
-                                        value={cryptoStringAmount}
-                                        symbol={account.symbol}
-                                    />
-                                </Receive>
-                            ) : (
-                                <Crypto>{receiveCurrency}</Crypto>
-                            )}
-                        </SummaryRow>
+                    <SummaryRow>
+                        <Send>
+                            <CoinmarketFiatAmount
+                                amount={!wantCrypto ? quotes[0].fiatStringAmount : ''}
+                                currency={quotes[0].fiatCurrency}
+                            />
+                        </Send>
+                        <StyledIcon icon="ARROW_RIGHT_LONG" />
+                        <CoinLogo size={21} symbol={account.symbol} />
+                        <Receive>
+                            <CoinmarketCryptoAmount
+                                amount={wantCrypto ? quotes[0].receiveStringAmount : ''}
+                                symbol={account.symbol}
+                            />
+                        </Receive>
+                    </SummaryRow>
+                    {isAlternative && !wantCrypto && (
+                        <OrigAmount>
+                            ≈{' '}
+                            <CoinmarketFiatAmount
+                                amount={fiatStringAmount}
+                                currency={fiatCurrency}
+                            />
+                        </OrigAmount>
                     )}
                 </Left>
                 {!isAlternative && !timer.isStopped && (
