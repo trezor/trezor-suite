@@ -522,16 +522,16 @@ const getBitcoinRbfParams = (
 
     if (!utxo.length || !outputs.length || outputs.length !== vout.length) return;
 
-    // calculate fee rate, TODO: add this to blockchain-link tx details
-    const feeRate = getFeeRate(tx);
-
     // TODO: get other params, like locktime etc.
     return {
         txid: tx.txid,
         utxo,
         outputs,
         changeAddress,
-        feeRate,
+        // fee rate is calculated in blockchain-link but only for newer versions of blockbook. users
+        // that have old transactions saved in their database might not have this data so legacy way
+        // of displaying fee rate is kept here
+        feeRate: tx.feeRate || getFeeRate(tx),
         baseFee: parseInt(tx.fee, 10),
     };
 };
