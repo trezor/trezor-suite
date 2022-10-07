@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useActions } from '@suite-hooks';
+import { useActions, useDevice } from '@suite-hooks';
 import { Translation } from '@suite-components';
 import * as routerActions from '@suite-actions/routerActions';
 import { Button, variables } from '@trezor/components';
@@ -77,6 +77,7 @@ const StyledButton = styled(Button)`
 `;
 
 export const ReceivingAddressStep = () => {
+    const { isLocked } = useDevice();
     const { providers, account, selectedQuote, callInProgress, goToProvider, providerVisited } =
         useCoinmarketP2pOffersContext();
     const { address: unusedAddress, path } = getUnusedAddressFromAccount(account);
@@ -107,8 +108,8 @@ export const ReceivingAddressStep = () => {
                         <StyledButton
                             variant="tertiary"
                             icon="TREZOR_LOGO"
-                            isLoading={callInProgress}
-                            isDisabled={callInProgress}
+                            isDisabled={isLocked()}
+                            isLoading={isLocked()}
                             onClick={() => showAddress(path, unusedAddress)}
                         >
                             <Translation id="TR_P2P_REVEAL_ADDRESS" />
@@ -125,6 +126,8 @@ export const ReceivingAddressStep = () => {
             <ButtonWrapper>
                 <StyledButton
                     variant={!providerVisited ? 'primary' : 'secondary'}
+                    isDisabled={callInProgress}
+                    isLoading={callInProgress}
                     onClick={e => {
                         goToProvider();
                         e.currentTarget.blur(); // ensures button background color is correct
