@@ -22,7 +22,7 @@ export type ContextValues = {
     selectedQuote?: P2pQuote;
     p2pStep: P2pStep;
     goToProvider: () => void;
+    callInProgress: boolean;
     providerVisited: boolean;
     goToReceivingAddress: () => void;
-    callInProgress: boolean;
 };
