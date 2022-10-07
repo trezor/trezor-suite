@@ -1009,7 +1009,7 @@ export default defineMessages({
         id: 'TR_P2P_PAYMENT_METHODS',
     },
     TR_P2P_PAYMENT_METHODS_TOOLTIP: {
-        defaultMessage: 'All the payment methods accepted by this user.',
+        defaultMessage: 'All payment methods accepted by this user.',
         id: 'TR_P2P_PAYMENT_METHODS_TOOLTIP',
     },
     TR_P2P_PAYMENT_WINDOW: {
@@ -3815,11 +3815,11 @@ export default defineMessages({
     },
     TR_TOR_REQUEST_ENABLE_FOR_COIN_JOIN_TITLE: {
         id: 'TR_TOR_REQUEST_ENABLE_FOR_COIN_JOIN_TITLE',
-        defaultMessage: '<b>Tor</b> must be enable to remain anonymous when running CoinJoin.',
+        defaultMessage: '<b>Tor</b> must be enabled to remain anonymous when running CoinJoin.',
     },
     TR_TOR_REQUEST_ENABLE_FOR_COIN_JOIN_SUBTITLE: {
         id: 'TR_TOR_REQUEST_ENABLE_FOR_COIN_JOIN_SUBTITLE',
-        defaultMessage: "Please select 'Enable Tor' to continue o 'Leave' to quit the process.",
+        defaultMessage: "Please select 'Enable Tor' to continue or 'Leave' to quit the process.",
     },
     TR_TOR_REQUEST_ENABLE_FOR_COIN_JOIN_LEAVE: {
         id: 'TR_TOR_REQUEST_ENABLE_FOR_COIN_JOIN_LEAVE',
@@ -7153,7 +7153,7 @@ export default defineMessages({
     },
     TR_FEE_RATE_CHANGED: {
         id: 'TR_FEE_RATE_CHANGED',
-        defaultMessage: 'Fee rate has changed to complete transaction',
+        defaultMessage: 'Fee rate has changed to complete transaction.',
     },
     TR_COINJOIN_COUNTDOWN: {
         id: 'TR_COINJOIN_COUNTDOWN',
@@ -7181,7 +7181,7 @@ export default defineMessages({
     },
     TR_COINS_ANONYMITY_TOOLTIP: {
         id: 'TR_COINS_ANONYMITY_TOOLTIP',
-        defaultMessage: 'very big anonymity',
+        defaultMessage: 'very high anonymity',
     },
     TR_NOT_PRIVATE: {
         id: 'TR_NOT_PRIVATE',
@@ -7194,7 +7194,7 @@ export default defineMessages({
     TR_START_ANONYMISATION: {
         id: 'TR_START_ANONYMISATION',
         description: 'Heading in coin join settings',
-        defaultMessage: 'Start Anonymisation',
+        defaultMessage: 'Start Anonymization',
     },
     TR_AMOUNT: {
         id: 'TR_AMOUNT',
