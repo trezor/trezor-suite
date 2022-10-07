@@ -8,6 +8,7 @@ import type { Network } from '@wallet-types';
 import { AddButton } from './AddButton';
 import { getIsTorEnabled } from '@suite-utils/tor';
 import { isDesktop } from '@suite-utils/env';
+import { isDevEnv } from '@suite-common/suite-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
 interface AddCoinJoinAccountProps {
@@ -54,11 +55,11 @@ export const AddCoinJoinAccountButton = ({ network }: AddCoinJoinAccountProps) =
             return goBackToAddAccount();
         }
 
+        // When developing we do not need Tor, so we skip it to make it faster.
+        const isTorRequired = !isDevEnv && !['regtest', 'test'].includes(network.symbol);
         // Checking if Tor is enable and if not open modal to force the user to enable it to use coinjoin.
-        // TODO: if the current network is regtest or testnet we could ignore this to make faster developer experience.
-        // const isDevNetwork = ['regtest', 'test'].includes(network.symbol);
         // Tor only works in desktop so checking we are running desktop.
-        if (!isTorEnabled && isDesktop()) {
+        if (isTorRequired && !isTorEnabled && isDesktop()) {
             const continueWithTor = await dispatch(
                 modalActions.openDeferredModal({ type: 'request-enable-tor' }),
             );
