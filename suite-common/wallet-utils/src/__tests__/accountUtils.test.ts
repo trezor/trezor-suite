@@ -19,6 +19,8 @@ import {
     networkAmountToSatoshi,
     parseBIP44Path,
     sortByCoin,
+    getUtxoOutpoint,
+    readUtxoOutpoint,
 } from '../accountUtils';
 import * as fixtures from '../__fixtures__/accountUtils';
 
@@ -248,5 +250,22 @@ describe('account utils', () => {
         expect(hasNetworkFeatures(ethAcc, 'tokens')).toEqual(true);
         expect(hasNetworkFeatures(ethAcc, 'amount-unit')).toEqual(false);
         expect(hasNetworkFeatures(ethAcc, ['amount-unit', 'sign-verify'])).toEqual(false);
+    });
+
+    it('getUtxoOutpoint/readUtxoOutpoint', () => {
+        expect(
+            getUtxoOutpoint({
+                txid: '0dac366fd8a67b2a89fbb0d31086e7acded7a5bbf9ef9daa935bc873229ef5b5',
+                vout: 1,
+            }),
+        ).toEqual('b5f59e2273c85b93aa9deff9bba5d7deace78610d3b0fb892a7ba6d86f36ac0d01000000');
+        expect(
+            readUtxoOutpoint(
+                'b5f59e2273c85b93aa9deff9bba5d7deace78610d3b0fb892a7ba6d86f36ac0d01000000',
+            ),
+        ).toEqual({
+            txid: '0dac366fd8a67b2a89fbb0d31086e7acded7a5bbf9ef9daa935bc873229ef5b5',
+            vout: 1,
+        });
     });
 });
