@@ -4,7 +4,7 @@ import {
     payments as BitcoinJsPayments,
     Transaction as BitcoinJsTransaction,
 } from '@trezor/utxo-lib';
-import { reverseBuffer } from '../../utils/bufferUtils';
+import { bufferUtils } from '@trezor/utils';
 import { getHDPath, getScriptType, getOutputScriptType } from '../../utils/pathUtils';
 import { validateParams } from '../common/paramsValidator';
 import { TypedError } from '../../constants/errors';
@@ -104,7 +104,7 @@ export const transformOrigTransactions = (
 
             return {
                 address_n,
-                prev_hash: reverseBuffer(input.hash).toString('hex'),
+                prev_hash: bufferUtils.reverseBuffer(input.hash).toString('hex'),
                 prev_index: input.index,
                 script_sig: input.script.toString('hex'),
                 sequence: input.sequence,
@@ -189,7 +189,7 @@ export const transformReferencedTransactions = (
         const inputsMap = (input: BitcoinJsInput) => ({
             prev_index: input.index,
             sequence: input.sequence,
-            prev_hash: reverseBuffer(input.hash).toString('hex'),
+            prev_hash: bufferUtils.reverseBuffer(input.hash).toString('hex'),
             script_sig: input.script.toString('hex'),
         });
 

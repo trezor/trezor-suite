@@ -11,6 +11,7 @@ import * as pushdata from 'pushdata-bitcoin';
 import * as varuint from 'varuint-bitcoin';
 import { Int64LE } from 'int64-buffer';
 import * as typeforce from 'typeforce';
+import { bufferUtils } from '@trezor/utils';
 import * as types from './types';
 
 export function verifuint(value: number, max: number) {
@@ -92,18 +93,6 @@ export function writeVarInt(buffer: Buffer, number: number, offset: number) {
     return varuint.encode.bytes;
 }
 
-export function reverseBuffer(src: Buffer): Buffer {
-    if (src.length < 1) return src;
-    const buffer = Buffer.alloc(src.length);
-    let j = buffer.length - 1;
-    for (let i = 0; i < buffer.length / 2; i++) {
-        buffer[i] = src[j];
-        buffer[j] = src[i];
-        j--;
-    }
-    return buffer;
-}
-
 export function cloneBuffer(buffer: Buffer): Buffer {
     const clone = Buffer.allocUnsafe(buffer.length);
     buffer.copy(clone);
@@ -135,6 +124,7 @@ export const readPushDataInt: ReadPushDataInt = pushdata.decode;
 // export const varIntBuffer = varuint.encode; // TODO: not-used
 export const varIntSize = varuint.encodingLength;
 export const writePushDataInt: WritePushDataInt = pushdata.encode;
+export const { reverseBuffer } = bufferUtils;
 
 /**
  * Helper class for serialization of bitcoin data types into a pre-allocated buffer.

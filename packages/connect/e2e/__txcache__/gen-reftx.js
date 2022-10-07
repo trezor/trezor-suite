@@ -1,4 +1,5 @@
 const BitcoinJs = require('@trezor/utxo-lib');
+const { bufferUtils } = require('@trezor/utils');
 
 // Referenced transaction generator script.
 // Transform bitcoin-like transaction data in to format required by tests of signTransaction method.
@@ -12,17 +13,10 @@ if (!hex) throw new Error('tx hex not provided');
 // Step 2. set network
 const tx = BitcoinJs.Transaction.fromHex(hex, { network: BitcoinJs.networks.testnet });
 
-const reverseBuffer = buf => {
-    const copy = Buffer.alloc(buf.length);
-    buf.copy(copy);
-    [].reverse.call(copy);
-    return copy;
-};
-
 const inputsMap = input => ({
     prev_index: input.index,
     sequence: input.sequence,
-    prev_hash: reverseBuffer(input.hash).toString('hex'),
+    prev_hash: bufferUtils.reverseBuffer(input.hash).toString('hex'),
     script_sig: input.script.toString('hex'),
 });
 
