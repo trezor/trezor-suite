@@ -1,8 +1,8 @@
 import React from 'react';
-import { createRoot } from 'react-dom/client';
 import { Provider as ReduxProvider } from 'react-redux';
 import { Router as RouterProvider } from 'react-router-dom';
 
+import { createRoot } from 'react-dom/client';
 import { init as initSentry } from '@sentry/electron/renderer';
 import { initStore } from '@suite/reducers/store';
 import { preloadStore } from '@suite-support/preloadStore';
@@ -40,30 +40,30 @@ const Main = () => {
     const formattersConfig = useFormattersConfig();
 
     return (
-        // <ConnectedThemeProvider>
-        //     <RouterProvider history={history}>
-        //         <ModalContextProvider>
-        //             <ErrorBoundary>
-        //                 <Autodetect />
-        //                 <Resize />
-        //                 <Protocol />
-        //                 <OnlineStatus />
-        //                 <RouterHandler />
-        //                 <ConnectedIntlProvider>
-        //                     <FormatterProvider config={formattersConfig}>
-        //                         <DesktopUpdater>
-        //                             <Metadata />
-        //                             <ToastContainer />
-        //                             <Preloader>
-        //                                 <AppRouter />
-        //                             </Preloader>
-        //                         </DesktopUpdater>
-        //                     </FormatterProvider>
-        //                 </ConnectedIntlProvider>
-        //             </ErrorBoundary>
-        //         </ModalContextProvider>
-        //     </RouterProvider>
-        // </ConnectedThemeProvider>
+        <ConnectedThemeProvider>
+            <RouterProvider history={history}>
+                <ModalContextProvider>
+                    <ErrorBoundary>
+                        <Autodetect />
+                        <Resize />
+                        <Protocol />
+                        <OnlineStatus />
+                        <RouterHandler />
+                        <ConnectedIntlProvider>
+                            <FormatterProvider config={formattersConfig}>
+                                <DesktopUpdater>
+                                    <Metadata />
+                                    <ToastContainer />
+                                    <Preloader>
+                                        <AppRouter />
+                                    </Preloader>
+                                </DesktopUpdater>
+                            </FormatterProvider>
+                        </ConnectedIntlProvider>
+                    </ErrorBoundary>
+                </ModalContextProvider>
+            </RouterProvider>
+        </ConnectedThemeProvider>
     );
 };
 
