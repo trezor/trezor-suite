@@ -2,6 +2,7 @@ export * from './createDeferred';
 export * from './arrayDistinct';
 export * from './arrayPartition';
 export * from './arrayToDictionary';
+export * as bufferUtils from './bufferUtils';
 export * from './bytesToHumanReadable';
 export * from './mergeObject';
 export * from './getWeakRandomId';
