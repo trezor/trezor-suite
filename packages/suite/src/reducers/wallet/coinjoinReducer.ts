@@ -55,6 +55,7 @@ const createSession = (
         timeCreated: Date.now(),
         // phase: 0,
         deadline: Date.now(),
+        registeredUtxos: [],
         signedRounds: [],
     };
 };
