@@ -35,10 +35,17 @@ interface Args {
     send?: Partial<SendState>;
     fees?: any;
     selectedAccount?: any;
+    coinjoin?: any;
     bitcoinAmountUnit?: PROTO.AmountUnit;
 }
 
-export const getInitialState = ({ send, fees, selectedAccount, bitcoinAmountUnit }: Args = {}) => ({
+export const getInitialState = ({
+    send,
+    fees,
+    selectedAccount,
+    coinjoin,
+    bitcoinAmountUnit,
+}: Args = {}) => ({
     ...fixtures.DEFAULT_STORE,
     wallet: {
         ...fixtures.DEFAULT_STORE.wallet,
@@ -51,6 +58,10 @@ export const getInitialState = ({ send, fees, selectedAccount, bitcoinAmountUnit
             ...fees,
         },
         selectedAccount: selectedAccount ?? fixtures.DEFAULT_STORE.wallet.selectedAccount,
+        coinjoin: {
+            ...fixtures.DEFAULT_STORE.wallet.coinjoin,
+            ...coinjoin,
+        },
         settings: {
             ...fixtures.DEFAULT_STORE.wallet.settings,
             bitcoinAmountUnit:
@@ -125,9 +136,19 @@ const actionCallback = (
 
     // validate '@trezor/connect' params
     if (result.composeTransactionParams) {
-        expect(TrezorConnect.composeTransaction).toHaveBeenLastCalledWith(
-            expect.objectContaining(result.composeTransactionParams),
-        );
+        if (result.composeTransactionParams.account) {
+            expect(TrezorConnect.composeTransaction).toHaveBeenLastCalledWith(
+                expect.objectContaining({
+                    account: expect.objectContaining({
+                        utxo: expect.arrayContaining(result.composeTransactionParams.account.utxo),
+                    }),
+                }),
+            );
+        } else {
+            expect(TrezorConnect.composeTransaction).toHaveBeenLastCalledWith(
+                expect.objectContaining(result.composeTransactionParams),
+            );
+        }
     }
     if (result.estimateFeeParams) {
         expect(TrezorConnect.blockchainEstimateFee).toHaveBeenLastCalledWith(

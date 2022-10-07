@@ -28,12 +28,12 @@ export const BTC_ACCOUNT = {
         availableBalance: '100000000000',
         formattedBalance: '1000 BTC',
         utxo: [
-            { amount: '0', txid: 'should-never-be-used' },
-            { amount: '50000000000', txid: 'utxoA' },
-            { amount: '25000000000', txid: 'utxoB' },
-            { amount: '12500000000', txid: 'utxoC' },
-            { amount: '6250000000', txid: 'utxoD' },
-            { amount: '6250000000', txid: 'utxoE' },
+            { amount: '0', address: '00', txid: 'should-never-be-used', vout: 0 },
+            { amount: '50000000000', address: 'AA', txid: 'utxoA', vout: 0 },
+            { amount: '25000000000', address: 'BB', txid: 'utxoB', vout: 0 },
+            { amount: '12500000000', address: 'CC', txid: 'utxoC', vout: 0 },
+            { amount: '6250000000', address: 'DD', txid: 'utxoD', vout: 0 },
+            { amount: '6250000000', address: 'EE', txid: 'utxoE', vout: 0 },
         ],
         history: {},
     },
@@ -87,6 +87,9 @@ export const DEFAULT_STORE = {
     wallet: {
         accounts: [BTC_ACCOUNT.account, ETH_ACCOUNT.account, XRP_ACCOUNT.account],
         selectedAccount: BTC_ACCOUNT,
+        coinjoin: {
+            accounts: [],
+        },
         discovery: [],
         settings: {
             localCurrency: 'usd',
@@ -518,6 +521,89 @@ export const composeDebouncedTransaction = [
 ];
 
 export const setMax = [
+    {
+        description: 'setMax: utxos are excluded because of insufficient anonymity',
+        store: {
+            selectedAccount: {
+                ...BTC_ACCOUNT,
+                account: {
+                    ...BTC_ACCOUNT.account,
+                    accountType: 'coinjoin',
+                    addresses: {
+                        ...BTC_ACCOUNT.account.addresses,
+                        anonymitySet: {
+                            AA: 0,
+                            BB: 50,
+                            DD: 50,
+                        },
+                    },
+                },
+            },
+            coinjoin: {
+                accounts: [
+                    {
+                        targetAnonymity: 50,
+                        key: 'xpub-btc-deviceState',
+                    },
+                ],
+            },
+        },
+        actions: [
+            {
+                type: 'hover',
+                element: 'outputs[0].amount',
+            },
+            {
+                type: 'click',
+                element: 'outputs[0].setMax',
+                result: {
+                    composeTransactionCalls: 1,
+                    composeTransactionParams: {
+                        outputs: [{ type: 'send-max-noaddress' }],
+                    },
+                    formValues: {
+                        setMaxOutputId: 0,
+                        outputs: [{ address: '', amount: '312.499995', fiat: '312.50' }],
+                    },
+                    composedLevels: {
+                        normal: { type: 'nonfinal' },
+                    },
+                },
+            },
+        ],
+        connect: {
+            success: true,
+            payload: [
+                {
+                    type: 'nonfinal',
+                    max: '31249999500',
+                },
+            ],
+        },
+        finalResult: {
+            composeTransactionCalls: 1,
+            composeTransactionParams: {
+                account: {
+                    // only utxos with enough anonymity are used in TrezorConnect.composeTransaction
+                    // see sendFormBitcoinActions
+                    utxo: [
+                        {
+                            address: 'BB',
+                            amount: '25000000000',
+                            txid: 'utxoB',
+                            vout: 0,
+                        },
+                        {
+                            address: 'DD',
+                            amount: '6250000000',
+                            txid: 'utxoD',
+                            vout: 0,
+                        },
+                    ],
+                },
+            },
+        },
+    },
     {
         description:
             'setMax: compose from draft (one input), Amount not affected, but Fiat gets recalculated',
@@ -1049,7 +1135,7 @@ const getComposeResponse = (resp?: any) => ({
             totalSpent: '2500000000',
             fee: '100',
             transaction: {
-                inputs: [{ amount: '12500000000', prev_hash: 'utxoC' }],
+                inputs: [{ amount: '12500000000', prev_hash: 'utxoC', prev_index: 0 }],
                 outputs: [
                     { address_n: [44, 0, 0, 1, 1], amount: '10000000000' },
                     { address: 'A-external', amount: '2499999900' },
@@ -1230,8 +1316,8 @@ export const signAndPush = [
                         fee: '100',
                         transaction: {
                             inputs: [
-                                { amount: '0', prev_hash: 'should not be used' },
-                                { amount: '12500000000', prev_hash: 'utxoC' },
+                                { amount: '0', prev_hash: 'should not be used', prev_index: 0 },
+                                { amount: '12500000000', prev_hash: 'utxoC', prev_index: 0 },
                             ],
                             outputs: [
                                 { address_n: [44, 0, 0, 1, 1], amount: '10000000000' },
@@ -1307,11 +1393,11 @@ export const signAndPush = [
                                 path: "m/44'/0'/0'/1/1",
                             },
                             // old utxo without used "utxoC"
-                            { txid: 'should-never-be-used', amount: '0' },
-                            { txid: 'utxoA', amount: '50000000000' },
-                            { txid: 'utxoB', amount: '25000000000' },
-                            { txid: 'utxoD', amount: '6250000000' },
-                            { txid: 'utxoE', amount: '6250000000' },
+                            { txid: 'should-never-be-used', amount: '0', vout: 0 },
+                            { txid: 'utxoA', amount: '50000000000', vout: 0 },
+                            { txid: 'utxoB', amount: '25000000000', vout: 0 },
+                            { txid: 'utxoD', amount: '6250000000', vout: 0 },
+                            { txid: 'utxoE', amount: '6250000000', vout: 0 },
                         ],
                     },
                 },

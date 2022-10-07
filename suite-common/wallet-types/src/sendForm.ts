@@ -47,6 +47,7 @@ export type FormState = {
 // local state of @wallet-hooks/useSendForm
 export type UseSendFormState = {
     account: Account;
+    excludedUtxos: Record<string, 'mixing' | 'low-anonymity' | 'dust' | 'unconfirmed' | undefined>;
     network: Network;
     coinFees: FeeInfo;
     feeInfo: FeeInfo;

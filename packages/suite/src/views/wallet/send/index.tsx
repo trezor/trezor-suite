@@ -51,6 +51,7 @@ const SendLoaded: React.FC<UseSendFormProps> = ({ children, ...props }) => {
 const Send: React.FC = ({ children }) => {
     const props = useSelector(state => ({
         selectedAccount: state.wallet.selectedAccount,
+        coinjoinAccounts: state.wallet.coinjoin.accounts,
         fiat: state.wallet.fiat,
         localCurrency: state.wallet.settings.localCurrency,
         fees: state.wallet.fees,
@@ -59,15 +60,21 @@ const Send: React.FC = ({ children }) => {
         metadataEnabled: state.metadata.enabled && !!state.metadata.provider,
     }));
 
-    const { selectedAccount } = props;
+    const { selectedAccount, coinjoinAccounts } = props;
 
     if (selectedAccount.status !== 'loaded') {
         return <WalletLayout title="TR_NAV_SEND" account={selectedAccount} />;
     }
 
+    // find coinjoin account related to current account
+    const coinjoinAccount =
+        selectedAccount.account.accountType === 'coinjoin'
+            ? coinjoinAccounts.find(a => a.key === selectedAccount.account.key)
+            : undefined;
+
     /* children are only for test purposes, this prop is not available in regular build */
     return (
-        <SendLoaded {...props} selectedAccount={selectedAccount}>
+        <SendLoaded {...props} selectedAccount={selectedAccount} coinjoinAccount={coinjoinAccount}>
             {children}
         </SendLoaded>
     );
