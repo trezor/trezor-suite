@@ -2,7 +2,7 @@
 
 import type { ComposedTxInput } from '@trezor/utxo-lib';
 import type { TypedRawTransaction } from '@trezor/blockchain-link';
-import { reverseBuffer } from '../../utils/bufferUtils';
+import { bufferUtils } from '@trezor/utils';
 import { validatePath, isSegwitPath, getScriptType, fixPath } from '../../utils/pathUtils';
 import { convertMultisigPubKey } from '../../utils/hdnodeUtils';
 import { validateParams } from '../common/paramsValidator';
@@ -69,7 +69,7 @@ export const inputToTrezor = (input: ComposedTxInput, sequence: number): PROTO.T
     return {
         address_n,
         prev_index: input.index,
-        prev_hash: reverseBuffer(input.hash).toString('hex'),
+        prev_hash: bufferUtils.reverseBuffer(input.hash).toString('hex'),
         script_type: getScriptType(address_n),
         amount: input.amount,
         sequence,
