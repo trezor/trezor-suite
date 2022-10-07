@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js';
 
 import { AccountInfo, AccountAddresses, AccountAddress } from '@trezor/connect';
+import { bufferUtils } from '@trezor/utils';
 import {
     networksCompatibility as NETWORKS,
     Network,
@@ -783,4 +784,21 @@ export const hasNetworkFeatures = (
         .every(feature => networkFeatures.includes(feature));
 
     return areFeaturesPresent;
+};
+
+// https://developer.bitcoin.org/reference/transactions.html#outpoint-the-specific-part-of-a-specific-output
+export const getUtxoOutpoint = (utxo: { txid: string; vout: number }) => {
+    const hash = bufferUtils.reverseBuffer(Buffer.from(utxo.txid, 'hex'));
+    const buffer = Buffer.allocUnsafe(36);
+    hash.copy(buffer);
+    buffer.writeUInt32LE(utxo.vout, hash.length);
+    return buffer.toString('hex');
+};
+
+// https://developer.bitcoin.org/reference/transactions.html#outpoint-the-specific-part-of-a-specific-output
+export const readUtxoOutpoint = (outpoint: string) => {
+    const buffer = Buffer.from(outpoint, 'hex');
+    const txid = bufferUtils.reverseBuffer(buffer.slice(0, 32));
+    const vout = buffer.readUInt32LE(txid.length);
+    return { txid: txid.toString('hex'), vout };
 };
