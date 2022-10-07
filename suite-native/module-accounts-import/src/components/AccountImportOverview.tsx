@@ -16,7 +16,7 @@ export const AccountImportOverview = ({ accountInfo, currencySymbol }: AssetsOve
     <Card>
         <Box marginTop="large" marginBottom="medium">
             <Box alignItems="center" justifyContent="center" marginBottom="medium">
-                <CryptoIcon name="btc" size="large" />
+                <CryptoIcon name={currencySymbol} size="large" />
                 <Box marginTop="large" marginBottom="small">
                     <Text variant="titleSmall" color="gray1000">
                         {/* FIXME load currency from settings and convert with fiat rates */}
