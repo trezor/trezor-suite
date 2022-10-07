@@ -45,8 +45,14 @@ const StyledButton = styled(Button)`
 `;
 
 export const GetStartedStep = () => {
-    const { providers, selectedQuote, goToProvider, providerVisited, goToReceivingAddress } =
-        useCoinmarketP2pOffersContext();
+    const {
+        providers,
+        selectedQuote,
+        goToProvider,
+        callInProgress,
+        providerVisited,
+        goToReceivingAddress,
+    } = useCoinmarketP2pOffersContext();
 
     if (!providers || !selectedQuote) {
         return null;
@@ -78,6 +84,8 @@ export const GetStartedStep = () => {
             <ButtonWrapper>
                 <StyledButton
                     variant={!providerVisited ? 'primary' : 'secondary'}
+                    isDisabled={callInProgress}
+                    isLoading={callInProgress}
                     onClick={e => {
                         goToProvider();
                         e.currentTarget.blur(); // ensures button background color is correct

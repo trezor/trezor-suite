@@ -1,6 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import { ContextValues, P2pStep, UseOffersProps } from '@wallet-types/coinmarketP2pOffers';
-import { useActions, useDevice, useSelector } from '@suite-hooks';
+import { useActions, useSelector } from '@suite-hooks';
 import { useTimer } from '@trezor/react-utils';
 import { InvityAPIReloadQuotesAfterSeconds } from '@wallet-constants/coinmarket/metadata';
 import * as coinmarketP2pActions from '@wallet-actions/coinmarketP2pActions';
@@ -13,7 +13,6 @@ export const useOffers = ({ selectedAccount }: UseOffersProps): ContextValues =>
     const timer = useTimer();
 
     const { account } = selectedAccount;
-    const { isLocked } = useDevice();
     const [selectedQuote, setSelectedQuote] = useState<P2pQuote>();
     const { navigateToP2pForm } = useCoinmarketNavigation(account);
     const { openCoinmarketP2pConfirmModal, submitRequestForm } = useActions({
@@ -27,6 +26,7 @@ export const useOffers = ({ selectedAccount }: UseOffersProps): ContextValues =>
         quotes: state.wallet.coinmarket.p2p.quotes,
     }));
     const [innerQuotes, setInnerQuotes] = useState(quotes);
+    const [callInProgress, setCallInProgress] = useState(false);
     const [providerVisited, setProviderVisited] = useState(false);
     const [p2pStep, setP2pStep] = useState(P2pStep.GET_STARTED);
 
@@ -75,10 +75,14 @@ export const useOffers = ({ selectedAccount }: UseOffersProps): ContextValues =>
             return;
         }
 
+        setCallInProgress(true);
+
         const response = await invityAPI.doP2pTrade({
             quotesRequest,
             selectedQuote,
         });
+
+        setCallInProgress(false);
 
         if (response && response.tradeForm) {
             submitRequestForm(response.tradeForm.form);
@@ -102,9 +106,9 @@ export const useOffers = ({ selectedAccount }: UseOffersProps): ContextValues =>
         selectedQuote,
         p2pStep,
         goToProvider,
+        callInProgress,
         providerVisited,
         goToReceivingAddress,
-        callInProgress: isLocked(),
     };
 };
 
