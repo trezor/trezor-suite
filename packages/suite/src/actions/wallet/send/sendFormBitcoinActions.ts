@@ -6,6 +6,7 @@ import {
     getBitcoinComposeOutputs,
     hasNetworkFeatures,
     restoreOrigOutputsOrder,
+    getUtxoOutpoint,
 } from '@suite-common/wallet-utils';
 import { BTC_RBF_SEQUENCE, BTC_LOCKTIME_SEQUENCE } from '@suite-common/wallet-constants';
 import {
@@ -70,12 +71,28 @@ export const composeTransaction =
         }
 
         const baseFee = formValues.rbfParams ? formValues.rbfParams.baseFee : 0;
+
+        // exclude unspendable utxos if coin control is not enabled
+        // unspendable utxos are defined in `useSendForm` hook
+        let availableUtxo = account.utxo;
+        const { excludedUtxos } = formState;
+        if (
+            !formValues.isCoinControlEnabled &&
+            excludedUtxos &&
+            Object.keys(excludedUtxos).length > 0
+        ) {
+            availableUtxo = account.utxo.filter(u => {
+                const outpoint = getUtxoOutpoint(u);
+                return !excludedUtxos[outpoint];
+            });
+        }
+
         const selectedUtxos = formValues.selectedUtxos?.map(u => ({ ...u, required: true }));
         const params = {
             account: {
                 path: account.path,
                 addresses: account.addresses,
-                utxo: formValues.isCoinControlEnabled ? selectedUtxos : account.utxo,
+                utxo: formValues.isCoinControlEnabled ? selectedUtxos : availableUtxo,
             },
             feeLevels: predefinedLevels,
             baseFee,
