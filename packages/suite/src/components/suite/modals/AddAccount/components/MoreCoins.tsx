@@ -113,6 +113,7 @@ const Header = ({
     return (
         <HeaderWrapper>
             <OpenIconWrapper
+                data-test="@modal/account/activate_more_coins"
                 isExpanded={isExpanded}
                 onClick={() => {
                     setExpanded(true);
