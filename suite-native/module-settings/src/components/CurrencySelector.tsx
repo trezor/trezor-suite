@@ -25,7 +25,7 @@ export const CurrencySelector = () => {
         <Select<FiatCurrencyCode>
             items={fiatCurrencyItems}
             selectLabel="Currency"
-            value={selectedFiatCurrency.label}
+            selectValue={selectedFiatCurrency.label}
             valueLabel={selectedFiatCurrency.label.toUpperCase()}
             onSelectItem={handleSelectCurrency}
         />

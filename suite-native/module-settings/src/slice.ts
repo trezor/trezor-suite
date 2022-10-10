@@ -41,14 +41,13 @@ export const appSettingsSlice = createSlice({
     },
 });
 
-
-
 export const selectColorScheme = (state: SettingsSliceRootState) => state.appSettings.colorScheme;
-export const selectIsColorSchemeActive = (colorScheme: AppColorScheme) => (state: SettingsSliceRootState) =>
-  state.appSettings.colorScheme === colorScheme;
+export const selectIsColorSchemeActive =
+    (colorScheme: AppColorScheme) => (state: SettingsSliceRootState) =>
+        state.appSettings.colorScheme === colorScheme;
 export const selectFiatCurrency = (state: SettingsSliceRootState) => state.appSettings.fiatCurrency;
 export const selectIsOnboardingFinished = (state: SettingsSliceRootState) =>
-  state.appSettings.isOnboardingFinished;
+    state.appSettings.isOnboardingFinished;
 
 export const { setColorScheme, setOnboardingFinished, setFiatCurrency } = appSettingsSlice.actions;
 export const appSettingsReducer = appSettingsSlice.reducer;

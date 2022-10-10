@@ -15,7 +15,6 @@ type BottomSheetProps = {
     onVisibilityChange: (isVisible: boolean) => void;
     children: ReactNode;
     title?: string;
-    onBackArrowClick?: () => void;
 };
 
 type WrapperStyleProps = {
@@ -54,8 +53,8 @@ export const BottomSheet = ({
         onVisibilityChange,
         isVisible,
         isCloseScrollEnabled,
-        setIsCloseScrollEnabled: (isCloseScrollEnabled: boolean) => {
-            setIsCloseScrollEnabled(isCloseScrollEnabled);
+        setIsCloseScrollEnabled: (isScrollEnabled: boolean) => {
+            setIsCloseScrollEnabled(isScrollEnabled);
         },
     });
     const panGestureRef = useRef();

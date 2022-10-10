@@ -7,7 +7,7 @@ import { Icon } from '@trezor/icons';
 import { Text } from '../Text';
 
 type BottomSheetHeaderProps = {
-    title: string;
+    title?: string;
     onCloseSheet: () => void;
 };
 

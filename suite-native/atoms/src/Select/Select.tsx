@@ -25,7 +25,7 @@ export type SelectItemExtendedType<TItemValue extends SelectItemValue> =
 
 type SelectProps<TItemValue extends SelectItemValue> = {
     items: SelectItemExtendedType<TItemValue>[];
-    value: SelectItemValue;
+    selectValue: SelectItemValue;
     onSelectItem: (value: TItemValue) => void;
     valueLabel?: string;
     selectLabel: string;
@@ -34,15 +34,18 @@ type SelectProps<TItemValue extends SelectItemValue> = {
 export const Select = <TItemValue extends SelectItemValue>({
     items,
     selectLabel,
-    value,
+    selectValue,
     valueLabel,
     onSelectItem,
 }: SelectProps<TItemValue>) => {
     const [isOpen, setIsOpen] = useState<boolean>(false);
 
-    const selectedItem = useMemo(() => items.find(item => item.value === value), [value, items]);
-    const handleSelectItem = (value: TItemValue) => {
-        onSelectItem(value);
+    const selectedItem = useMemo(
+        () => items.find(item => item.value === selectValue),
+        [selectValue, items],
+    );
+    const handleSelectItem = (itemValue: TItemValue) => {
+        onSelectItem(itemValue);
     };
 
     const getIcon = (iconName?: CryptoIconName | FlagIconName, isSelectItem = false): ReactNode => {
