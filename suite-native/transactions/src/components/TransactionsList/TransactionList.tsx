@@ -1,11 +1,12 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, SectionList } from 'react-native';
-
-import { A } from '@mobily/ts-belt';
+import { useSelector } from 'react-redux';
 
 import { useNativeStyles } from '@trezor/styles';
 import { WalletAccountTransaction } from '@suite-common/wallet-types';
 import { groupTransactionsByDate } from '@suite-common/wallet-utils';
+import { selectIsLoadingTransactions } from '@suite-common/wallet-core';
+import { Text } from '@suite-native/atoms';
 
 import { TransactionListGroupTitle } from './TransactionListGroupTitle';
 import { TransactionListItem } from './TransactionListItem';
@@ -24,6 +25,7 @@ export const TransactionList = ({
     fetchMoreTransactions,
 }: AccountTransactionProps) => {
     const { utils } = useNativeStyles();
+    const isLoadingTransactions = useSelector(selectIsLoadingTransactions);
     const accountTransactionsByDate = useMemo(
         () => groupTransactionsByDate(transactions),
         [transactions],
@@ -69,7 +71,7 @@ export const TransactionList = ({
         [],
     );
 
-    if (A.isEmpty(transactionDateKeys))
+    if (isLoadingTransactions)
         // TODO Temporary loading state just so it's visible that transactions are loading
         return <ActivityIndicator size="large" color={utils.colors.forest} />;
 
@@ -79,6 +81,7 @@ export const TransactionList = ({
             renderSectionHeader={renderSectionHeader}
             renderItem={renderItem}
             ListHeaderComponent={listHeaderComponent}
+            ListEmptyComponent={<Text>No transactions.</Text>}
             onEndReached={handleOnEndReached}
         />
     );
