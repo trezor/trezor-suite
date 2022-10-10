@@ -6,7 +6,7 @@ import { Account, CoinjoinSession } from '@suite-common/wallet-types';
 import { Card, Translation } from '@suite-components';
 import { useActions, useSelector } from '@suite-hooks';
 import { Button } from '@trezor/components';
-import { FundsPrivacyBreakdown } from './FundsPrivacyBreakdown';
+import { BalancePrivacyBreakdown } from './BalancePrivacyBreakdown';
 import { CoinjoinStatus } from './CoinjoinStatus';
 
 const Container = styled(Card)`
@@ -52,7 +52,7 @@ export const BalanceSection = ({ account }: BalanceSectionProps) => {
 
     return (
         <Container>
-            <FundsPrivacyBreakdown />
+            <BalancePrivacyBreakdown />
 
             {session ? (
                 <CoinjoinStatus session={session} />

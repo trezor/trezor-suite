@@ -4,6 +4,12 @@ import type { SelectedAccountStatus } from '@suite-common/wallet-types';
 
 export type State = SelectedAccountStatus;
 
+export type SelectedAccountRootState = {
+    wallet: {
+        selectedAccount: SelectedAccountStatus;
+    };
+};
+
 export const initialState: State = {
     status: 'none',
 };
@@ -13,5 +19,8 @@ const selectedAccountReducer = (state: State = initialState, action: Action): St
     if (accountsActions.disposeAccount.match(action)) return initialState;
     return state;
 };
+
+export const selectSelectedAccount = (state: SelectedAccountRootState) =>
+    state.wallet.selectedAccount.account;
 
 export default selectedAccountReducer;

@@ -4,6 +4,7 @@ import { Icon, IconType, variables } from '@trezor/components';
 import { FiatValue } from '@suite-components/FiatValue';
 import { FormattedCryptoAmount } from '@suite-components/FormattedCryptoAmount';
 import { NetworkSymbol } from '@wallet-types';
+import { formatNetworkAmount } from '@suite-common/wallet-utils';
 
 const Container = styled.div`
     display: flex;
@@ -60,7 +61,7 @@ export const CryptoAmountWithHeader = ({
             {headerIcon && <HeaderIcon icon={headerIcon} size={14} />} {header}
         </Header>
 
-        <CryptoAmount value={value} symbol={symbol} color={color} />
+        <CryptoAmount value={formatNetworkAmount(value, symbol)} symbol={symbol} color={color} />
         <FiatValue amount={value} symbol={symbol} showApproximationIndicator />
 
         {note && <Note>{note}</Note>}
