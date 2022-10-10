@@ -50,6 +50,9 @@ export const fiatCurrencies = {
 export type FiatCurrencyCode = keyof typeof fiatCurrencies;
 export type FiatCurrency = typeof fiatCurrencies[FiatCurrencyCode];
 
+/**
+ * @deprecated Please use fiatCurrencies object instead
+ */
 export const FIAT = {
     tickers: [
         { symbol: 'eth', coingeckoId: 'ethereum' },

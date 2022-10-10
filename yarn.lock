@@ -6565,6 +6565,7 @@ __metadata:
     "@suite-native/atoms": "*"
     "@suite-native/config": "*"
     "@suite-native/navigation": "*"
+    "@suite-native/test-utils": "*"
     "@trezor/icons": "*"
     "@trezor/styles": "*"
     "@trezor/theme": "*"
