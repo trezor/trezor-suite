@@ -36,44 +36,40 @@ export const getAccountTransactions = (
 export const isPending = (tx: WalletAccountTransaction | AccountTransaction) =>
     !!tx && (!tx.blockHeight || tx.blockHeight < 0);
 
+/* Convert date to string in YYYY-MM-DD format */
+export const getDateKey = (d: Date) => `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+
+/** Parse Date object from a string in YYYY-MM-DD format */
+export const parseDateKey = (key: string) => {
+    const parts = key.split('-');
+    const d = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
+    return d;
+};
+
 /**
  * Returns object with transactions grouped by a date. Key is a string in YYYY-MM-DD format.
  * Pending txs are assigned to key 'pending'.
  *
  * @param {WalletAccountTransaction[]} transactions
  */
-export const groupTransactionsByDate = (
-    transactions: WalletAccountTransaction[],
-): { [key: string]: WalletAccountTransaction[] } => {
-    const r: { [key: string]: WalletAccountTransaction[] } = {};
+export const groupTransactionsByDate = (transactions: WalletAccountTransaction[]) =>
     // Note: We should use ts-belt for sorting this array but currently, there can be undefined inside
     // Built-in sort doesn't include undefined elements but ts-belt does so there will be some refactoring involved.
     // Spread ([...arr]) is not used, because it maintains undefined in the array while .slice() removes them so it's needed to do it like this for sorting.
     transactions
         .slice()
         .sort(sortByBlockHeight)
-        .forEach(item => {
-            let key = 'pending';
-            if (item.blockHeight && item.blockHeight > 0 && item.blockTime && item.blockTime > 0) {
-                const t = item.blockTime * 1000;
-                const d = new Date(t);
-                if (d) {
-                    // YYYY-MM-DD format
-                    key = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
-                } else {
-                    // eslint-disable-next-line no-console
-                    console.log(
-                        `Error during grouping transaction by date. Failed timestamp conversion (${t})`,
-                    );
-                }
-            }
-            if (!r[key]) {
-                r[key] = [];
-            }
-            r[key].push(item);
-        });
-    return r;
-};
+        .reduce<{ [key: string]: WalletAccountTransaction[] }>((r, item) => {
+            const key =
+                item.blockHeight && item.blockHeight > 0 && item.blockTime && item.blockTime > 0
+                    ? getDateKey(new Date(item.blockTime * 1000))
+                    : 'pending';
+            const prev = r[key] ?? [];
+            return {
+                ...r,
+                [key]: [...prev, item],
+            };
+        }, {});
 
 export const formatCardanoWithdrawal = (tx: WalletAccountTransaction) =>
     tx.cardanoSpecific?.withdrawal
@@ -169,17 +165,6 @@ export const sumTransactionsFiat = (
         }
     });
     return totalAmount;
-};
-
-/**
- * Parse Date object from a string in YYYY-MM-DD format.
- *
- * @param {string} key
- */
-export const parseDateKey = (key: string) => {
-    const parts = key.split('-');
-    const d = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
-    return d;
 };
 
 export const findTransaction = (txid: string, transactions: WalletAccountTransaction[]) =>
