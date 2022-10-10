@@ -147,13 +147,6 @@
                     "to": "bin/tor"
                 }
             ],
-            "electronLanguages": [
-                "en",
-                "es",
-                "cs",
-                "ja",
-                "ru"
-            ],
             "icon": "build/static/images/desktop/512x512.icns",
             "artifactName": "Trezor-Suite-${version}-mac-${arch}.${ext}",
             "hardenedRuntime": true,
