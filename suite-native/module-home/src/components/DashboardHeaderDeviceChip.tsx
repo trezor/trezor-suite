@@ -37,7 +37,6 @@ export const DashboardHeaderDeviceChip = () => {
                 isVisible={isDeviceModalVisible}
                 onVisibilityChange={setIsDeviceModalVisible}
                 title=""
-                onBackArrowClick={() => setIsDeviceModalVisible(!isDeviceModalVisible)}
             >
                 <Text variant="body">TODO: list of all my watch only wallets</Text>
             </BottomSheet>
