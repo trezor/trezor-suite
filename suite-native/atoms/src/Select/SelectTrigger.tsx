@@ -12,6 +12,7 @@ type SelectTriggerProps = {
     label: string;
     icon: ReactNode;
     handlePress: () => void;
+    valueLabel?: string;
 };
 
 const selectStyle = prepareNativeStyle(utils => ({
@@ -30,7 +31,13 @@ const selectStyle = prepareNativeStyle(utils => ({
 
 const iconWrapperStyle = prepareNativeStyle(() => ({ marginRight: 1 }));
 
-export const SelectTrigger = ({ value, label, icon, handlePress }: SelectTriggerProps) => {
+export const SelectTrigger = ({
+    value,
+    label,
+    icon,
+    valueLabel,
+    handlePress,
+}: SelectTriggerProps) => {
     const { applyStyle } = useNativeStyles();
 
     return (
@@ -42,7 +49,12 @@ export const SelectTrigger = ({ value, label, icon, handlePress }: SelectTrigger
                     </Text>
                 )}
                 <Box flexDirection="row" alignItems="center">
-                    {!!value && <Box style={applyStyle(iconWrapperStyle)}>{icon}</Box>}
+                    {!!value && (
+                        <>
+                            <Box style={applyStyle(iconWrapperStyle)}>{icon}</Box>
+                            <Text color="gray700">{valueLabel} · </Text>
+                        </>
+                    )}
                     <Text color="gray700" numberOfLines={1}>
                         {value ?? label}
                     </Text>

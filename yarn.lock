@@ -6561,9 +6561,11 @@ __metadata:
     "@react-navigation/native": ^6.0.11
     "@react-navigation/stack": ^6.2.2
     "@reduxjs/toolkit": ^1.8.3
+    "@suite-common/suite-config": "*"
     "@suite-native/atoms": "*"
     "@suite-native/config": "*"
     "@suite-native/navigation": "*"
+    "@suite-native/test-utils": "*"
     "@trezor/icons": "*"
     "@trezor/styles": "*"
     "@trezor/theme": "*"
@@ -6641,6 +6643,7 @@ __metadata:
     react: ^17.0.2
     react-native-gesture-handler: ^2.7.0
     react-native-reanimated: ^2.10.0
+    react-native-safe-area-context: ^4.3.1
     react-redux: 7.2.2
     typescript: 4.7.4
   languageName: unknown
