@@ -1,6 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Icon, variables } from '@trezor/components';
+import { useSelector } from '@suite-hooks/useSelector';
+import { selectCurrentTargetAnonymity } from '@wallet-reducers/coinjoinReducer';
 
 const Container = styled.div`
     display: flex;
@@ -31,14 +33,14 @@ interface AnonymityIndicatorProps {
 }
 
 export const AnonymityIndicator = ({ className }: AnonymityIndicatorProps) => {
-    const anomymityLevel = 10;
+    const targetAnonymity = useSelector(selectCurrentTargetAnonymity);
 
     return (
         <Container className={className}>
             <Icon icon="USERS" />
 
             <div>
-                <p>{`1 in ${anomymityLevel}`}</p>
+                <p>{`1 in ${targetAnonymity}`}</p>
                 <AnonymityStatus>{AnomymityStatus.Good}</AnonymityStatus>
             </div>
         </Container>

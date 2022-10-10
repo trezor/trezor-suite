@@ -1,9 +1,12 @@
 import produce from 'immer';
 import { STORAGE } from '@suite-actions/constants';
+import { createSelector } from '@reduxjs/toolkit';
 import * as COINJOIN from '@wallet-actions/constants/coinjoinConstants';
 import { Account, CoinjoinAccount } from '@suite-common/wallet-types';
 import { Action } from '@suite-types';
 import { PartialRecord } from '@trezor/type-utils';
+import { breakdownCoinjoinBalance } from '@wallet-utils/coinjoinUtils';
+import { selectSelectedAccount } from './selectedAccountReducer';
 
 type Client = {
     status: any[]; // TODO: Rounds from @trezor/coinjoin
@@ -12,6 +15,12 @@ type Client = {
 type CoinjoinState = {
     accounts: CoinjoinAccount[];
     clients: PartialRecord<Account['symbol'], Client>;
+};
+
+export type CoinjoinRootState = {
+    wallet: {
+        coinjoin: CoinjoinState;
+    };
 };
 
 const initialState: CoinjoinState = {
@@ -126,3 +135,57 @@ export const coinjoinReducer = (
             // no default
         }
     });
+
+export const selectCoinjoinAccounts = (state: CoinjoinRootState) => state.wallet.coinjoin.accounts;
+
+export const selectCoinjoinAccountByKey = createSelector(
+    [selectCoinjoinAccounts, (_state: CoinjoinRootState, accountKey: string) => accountKey],
+    (accounts, accountKey) => accounts.find(account => account.key === accountKey),
+);
+
+export const selectCurrentCoinjoinBalanceBreakdown = createSelector(
+    [selectSelectedAccount, selectCoinjoinAccounts],
+    (selectedAccount, coinjoinAccounts) => {
+        const currentCoinjoinAccount = coinjoinAccounts.find(
+            account => account.key === selectedAccount?.key,
+        );
+
+        const { targetAnonymity, session: currentSession } = currentCoinjoinAccount || {};
+        const { addresses, utxo: utxos } = selectedAccount || {};
+
+        const balanceBreakdown = breakdownCoinjoinBalance({
+            targetAnonymity,
+            anonymitySet: addresses?.anonymitySet,
+            utxos,
+            registeredUtxos: currentSession?.registeredUtxos,
+        });
+
+        return balanceBreakdown;
+    },
+);
+
+export const selectCurrentCoinjoinSession = createSelector(
+    [selectSelectedAccount, selectCoinjoinAccounts],
+    (selectedAccount, coinjoinAccounts) => {
+        const currentCoinjoinAccount = coinjoinAccounts.find(
+            account => account.key === selectedAccount?.key,
+        );
+
+        const { session } = currentCoinjoinAccount || {};
+
+        return session;
+    },
+);
+
+export const selectCurrentTargetAnonymity = createSelector(
+    [selectSelectedAccount, selectCoinjoinAccounts],
+    (selectedAccount, coinjoinAccounts) => {
+        const currentCoinjoinAccount = coinjoinAccounts.find(
+            account => account.key === selectedAccount?.key,
+        );
+
+        const { targetAnonymity } = currentCoinjoinAccount || {};
+
+        return targetAnonymity;
+    },
+);

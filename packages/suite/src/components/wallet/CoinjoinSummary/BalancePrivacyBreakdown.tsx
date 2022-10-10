@@ -2,10 +2,14 @@ import React from 'react';
 import styled from 'styled-components';
 import { useTheme } from '@trezor/components';
 import { isZero } from '@suite-common/wallet-utils';
-import { SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { Translation } from '@suite-components/Translation';
 import { useSelector } from '@suite-hooks';
 import { CryptoAmountWithHeader } from '@wallet-components/PrivacyAccount/CryptoAmountWithHeader';
+import {
+    selectCurrentCoinjoinBalanceBreakdown,
+    selectCurrentCoinjoinSession,
+} from '@wallet-reducers/coinjoinReducer';
+import { selectSelectedAccount } from '@wallet-reducers/selectedAccountReducer';
 
 const Container = styled.div<{ isSessionRunning: boolean }>`
     display: flex;
@@ -14,26 +18,29 @@ const Container = styled.div<{ isSessionRunning: boolean }>`
     max-width: ${({ isSessionRunning }) => (isSessionRunning ? '480px' : '400px')};
 `;
 
-export const FundsPrivacyBreakdown = () => {
-    const currentAccount = useSelector(
-        state => state.wallet.selectedAccount,
-    ) as SelectedAccountLoaded;
+export const BalancePrivacyBreakdown = () => {
+    const currentAccount = useSelector(selectSelectedAccount);
+    const balanceBreakdown = useSelector(selectCurrentCoinjoinBalanceBreakdown);
+    const currentSession = useSelector(selectCurrentCoinjoinSession);
 
     const theme = useTheme();
 
-    const notPrivateAmount = '0.00055';
-    const anonymizingAmount = '0.0001';
-    const privateAmount = '0.00003';
+    const notPrivateAmount = balanceBreakdown.notAnonymized;
+    const privateAmount = balanceBreakdown.anonymized;
 
-    const isSessionRunning = true;
+    const isSessionRunning = !!currentSession;
+
+    if (!currentAccount) {
+        return null;
+    }
 
     return (
         <Container isSessionRunning={isSessionRunning}>
             <CryptoAmountWithHeader
                 header={<Translation id="TR_NOT_PRIVATE" />}
                 headerIcon="CROSS"
-                value={privateAmount}
-                symbol={currentAccount?.account.symbol}
+                value={notPrivateAmount}
+                symbol={currentAccount?.symbol}
                 color={!isZero(notPrivateAmount || '0') ? undefined : theme.TYPE_LIGHT_GREY}
             />
 
@@ -41,8 +48,8 @@ export const FundsPrivacyBreakdown = () => {
                 <CryptoAmountWithHeader
                     header={<Translation id="TR_ANONYMIZING" />}
                     headerIcon="SHUFFLE"
-                    value={anonymizingAmount}
-                    symbol={currentAccount?.account.symbol}
+                    value={balanceBreakdown.anonymizing}
+                    symbol={currentAccount?.symbol}
                 />
             )}
 
@@ -50,7 +57,7 @@ export const FundsPrivacyBreakdown = () => {
                 header={<Translation id="TR_PRIVATE" />}
                 headerIcon="EYE_CLOSED"
                 value={privateAmount}
-                symbol={currentAccount?.account.symbol}
+                symbol={currentAccount?.symbol}
                 color={!isZero(privateAmount || '0') ? theme.TYPE_GREEN : theme.TYPE_LIGHT_GREY}
             />
         </Container>
