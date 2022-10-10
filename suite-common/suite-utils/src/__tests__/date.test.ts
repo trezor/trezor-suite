@@ -1,10 +1,6 @@
 import { formatDuration, formatDurationStrict } from '../date';
 
 describe('Date utils', () => {
-    test('timezone should always be UTC', () => {
-        expect(new Date().getTimezoneOffset()).toBe(0);
-    });
-
     test('format duration', () => {
         expect(formatDuration(1)).toBe('less than 5 seconds');
         expect(formatDuration(3600)).toBe('about 1 hour');
