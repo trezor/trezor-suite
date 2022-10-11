@@ -51,6 +51,7 @@ const Component = ({ callback }: { callback: Callback }) => {
     return null;
 };
 
+// TODO: fix this test so that it is compatible with react-redux 7.2.3 and higher
 test('useDiscovery', () => {
     const store = initStore(getInitialState());
 
