@@ -18,6 +18,7 @@
         "@suite-common/wallet-core": "*",
         "@suite-native/atoms": "*",
         "@suite-native/module-graph": "*",
+        "@suite-native/module-settings": "*",
         "@suite-native/navigation": "*",
         "@trezor/icons": "*",
         "@trezor/styles": "*",
