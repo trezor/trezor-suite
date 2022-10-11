@@ -140,6 +140,7 @@ export type UserContextPayload =
     | {
           type: 'access-coinjoin-account';
           decision: Deferred<boolean>;
+          network: string;
       }
     | {
           type: 'cancel-coinjoin';

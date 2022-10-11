@@ -11,5 +11,6 @@ export const COINJOIN_NETWORKS: Record<string, any> = {
         baseBlockHash: '0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206',
         // client settings
         middlewareUrl: `${REGTEST_URL}Cryptography/`,
+        percentageFee: '0.03',
     },
 };

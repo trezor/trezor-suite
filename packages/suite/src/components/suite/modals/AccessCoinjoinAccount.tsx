@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { UserContextPayload } from '@suite-actions/modalActions';
 import { Button, P, Image, variables, H2, H3, Warning } from '@trezor/components';
 import { Modal, Translation } from '@suite-components';
+import { COINJOIN_NETWORKS } from '@suite/services/coinjoin/config';
 
 const SmallModal = styled(Modal)`
     width: 560px;
@@ -115,7 +116,7 @@ export const AccessCoinjoinAccount = ({
                         <StyledWarning>
                             <Translation
                                 id="TR_COINJOIN_ACCESS_ACCOUNT_STEP_INITIAL_FEE_MESSAGE"
-                                values={{ fee: '0.03' }}
+                                values={{ fee: percentageFee }}
                             />
                         </StyledWarning>
                     </>
