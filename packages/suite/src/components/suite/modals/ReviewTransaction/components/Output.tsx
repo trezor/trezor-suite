@@ -52,9 +52,6 @@ const Output = (props: Props) => {
     if (type === 'opreturn') {
         outputLabel = <Translation id="OP_RETURN" />;
     }
-    if (type === 'data') {
-        outputLabel = <Translation id="DATA_ETH" />;
-    }
     if (type === 'locktime') {
         const isTimestamp = new BigNumber(value).gte(BTC_LOCKTIME_VALUE);
         outputLabel = (
@@ -82,7 +79,7 @@ const Output = (props: Props) => {
 
     let outputLines: OutputElementLine[];
 
-    if (props.type === 'fee-replace') {
+    if (type === 'fee-replace') {
         outputLines = [
             {
                 id: 'increase-fee-by',
@@ -97,7 +94,7 @@ const Output = (props: Props) => {
         ];
         outputSymbol = symbol;
         fiatVisible = !isTestnet(symbol);
-    } else if (props.type === 'reduce-output') {
+    } else if (type === 'reduce-output') {
         outputLines = [
             {
                 id: 'decrease-address',
@@ -118,11 +115,20 @@ const Output = (props: Props) => {
         ];
         outputSymbol = symbol;
         fiatVisible = !isTestnet(symbol);
-    } else if (props.type === 'txid') {
+    } else if (type === 'txid') {
         outputLines = [
             {
                 id: 'txid',
                 label: <Translation id="TR_TXID" />,
+                value: outputValue,
+                plainValue: true,
+            },
+        ];
+    } else if (type === 'data') {
+        outputLines = [
+            {
+                id: 'default',
+                label: <Translation id="DATA_ETH" />,
                 value: outputValue,
                 plainValue: true,
             },
