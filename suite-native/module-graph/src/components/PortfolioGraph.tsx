@@ -1,8 +1,11 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Box, Text } from '@suite-native/atoms';
 import { Icon } from '@trezor/icons';
+import { selectFiatCurrency } from '@suite-native/module-settings';
+import { useFormatters } from '@suite-common/formatters';
 
 import { Graph } from './Graph';
 import { generateRandomGraphData } from '../dummyData';
@@ -16,9 +19,17 @@ const POINTS = generateRandomGraphData(POINT_COUNT);
 
 export const PortfolioGraph = () => {
     const { applyStyle } = useNativeStyles();
+    const fiatCurrency = useSelector(selectFiatCurrency);
+    const { FiatAmountFormatter } = useFormatters();
+
     return (
         <Box>
-            <Text variant="titleLarge">$3,720</Text>
+            <Text variant="titleLarge">
+                {/* TODO calculate this from assets  */}
+                {FiatAmountFormatter.format(0, {
+                    currency: fiatCurrency.label,
+                })}
+            </Text>
             <Box flexDirection="row" alignItems="center">
                 <Box marginRight="small">
                     <Text variant="hint" color="gray600">

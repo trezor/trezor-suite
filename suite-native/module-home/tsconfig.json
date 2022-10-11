@@ -13,6 +13,7 @@
         },
         { "path": "../atoms" },
         { "path": "../module-graph" },
+        { "path": "../module-settings" },
         { "path": "../navigation" },
         { "path": "../../packages/icons" },
         { "path": "../../packages/styles" },

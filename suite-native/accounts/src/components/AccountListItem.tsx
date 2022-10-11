@@ -6,6 +6,8 @@ import { Box, Text } from '@suite-native/atoms';
 import { Account } from '@suite-common/wallet-types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { CryptoIcon } from '@trezor/icons';
+import { useFormatters } from '@suite-common/formatters';
+import { selectFiatCurrency } from '@suite-native/module-settings';
 
 export type AccountListItemProps = {
     account: Account;
@@ -23,6 +25,8 @@ export const AccountListItem = ({ account }: AccountListItemProps) => {
     const accountLabel = useSelector((state: AccountsRootState) =>
         selectAccountLabel(state, account.key),
     );
+    const fiatCurrency = useSelector(selectFiatCurrency);
+    const { FiatAmountFormatter } = useFormatters();
 
     return (
         <Box
@@ -39,7 +43,9 @@ export const AccountListItem = ({ account }: AccountListItemProps) => {
             </Box>
             <Box alignItems="flex-end">
                 <Text color="gray800" variant="hint">
-                    $ {account.formattedBalance}
+                    {FiatAmountFormatter.format(account.formattedBalance, {
+                        currency: fiatCurrency.label,
+                    })}
                 </Text>
                 <Text variant="hint" color="gray600">
                     {account.balance} BTC

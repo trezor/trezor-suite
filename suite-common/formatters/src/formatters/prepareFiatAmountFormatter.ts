@@ -16,17 +16,17 @@ export const prepareFiatAmountFormatter = (config: FormatterConfig) =>
     >((value, dataContext) => {
         const { intl } = config;
         const { style, currency, minimumFractionDigits, maximumFractionDigits } = dataContext;
-        const bn = new BigNumber(value);
+        const fiatValue = new BigNumber(value);
 
-        if (bn.isNaN()) {
+        if (fiatValue.isNaN()) {
             return null;
         }
 
-        if (bn.gt(Number.MAX_SAFE_INTEGER)) {
+        if (fiatValue.gt(Number.MAX_SAFE_INTEGER)) {
             return `${value} ${currency}`;
         }
 
-        return intl.formatNumber(bn.toNumber(), {
+        return intl.formatNumber(fiatValue.toNumber(), {
             ...dataContext,
             style: style || 'currency',
             minimumFractionDigits: minimumFractionDigits ?? 2,

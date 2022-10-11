@@ -17,6 +17,7 @@ type AssetItemProps = {
     cryptoCurrencyValue: number;
     portfolioPercentage: number;
     fiatCurrencyValue: number;
+    fiatCurrency: string;
     iconName: CryptoIconName;
     onPress?: () => void;
 };
@@ -38,8 +39,6 @@ const assetContentStyle = prepareNativeStyle(() => ({
     marginLeft: 10,
 }));
 
-const FIAT_CURRENCY_VALUE = 'usd'; // NOTE: Temporary. Will be used from selector and wallet settings
-
 export const AssetItem = ({
     cryptoCurrencySymbol,
     cryptoCurrencyValue,
@@ -47,6 +46,7 @@ export const AssetItem = ({
     fiatCurrencyValue,
     cryptoCurrencyName,
     iconName,
+    fiatCurrency,
     onPress,
 }: AssetItemProps) => {
     const { applyStyle } = useNativeStyles();
@@ -66,7 +66,7 @@ export const AssetItem = ({
                         <Text>{cryptoCurrencyName}</Text>
                         <Text>
                             {FiatAmountFormatter.format(fiatCurrencyValue, {
-                                currency: FIAT_CURRENCY_VALUE,
+                                currency: fiatCurrency,
                             })}
                         </Text>
                     </Box>

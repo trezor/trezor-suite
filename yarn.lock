@@ -6325,10 +6325,12 @@ __metadata:
   resolution: "@suite-native/accounts@workspace:suite-native/accounts"
   dependencies:
     "@mobily/ts-belt": ^3.11.0
+    "@suite-common/formatters": "*"
     "@suite-common/wallet-config": "*"
     "@suite-common/wallet-core": "*"
     "@suite-common/wallet-types": "*"
     "@suite-native/atoms": "*"
+    "@suite-native/module-settings": "*"
     "@trezor/icons": "*"
     "@trezor/styles": "*"
     react: ^17.0.2
@@ -6476,7 +6478,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/module-graph@workspace:suite-native/module-graph"
   dependencies:
+    "@suite-common/formatters": "*"
     "@suite-native/atoms": "*"
+    "@suite-native/module-settings": "*"
     "@suite-native/test-utils": "*"
     "@trezor/icons": "*"
     "@trezor/styles": "*"
@@ -6487,6 +6491,7 @@ __metadata:
     react-native-gesture-handler: ^2.7.0
     react-native-graph: ^0.3.0
     react-native-reanimated: ^2.10.0
+    react-redux: 7.2.2
     typescript: 4.7.4
   languageName: unknown
   linkType: soft
@@ -6502,6 +6507,7 @@ __metadata:
     "@suite-common/wallet-core": "*"
     "@suite-native/atoms": "*"
     "@suite-native/module-graph": "*"
+    "@suite-native/module-settings": "*"
     "@suite-native/navigation": "*"
     "@trezor/icons": "*"
     "@trezor/styles": "*"
