@@ -49,7 +49,10 @@ export const AddCoinJoinAccountButton = ({ network }: AddCoinJoinAccountProps) =
 
     const onCreateCoinjoinAccountClick = async () => {
         const accessCoinjoinAccount = await dispatch(
-            modalActions.openDeferredModal({ type: 'access-coinjoin-account' }),
+            modalActions.openDeferredModal({
+                type: 'access-coinjoin-account',
+                network: network.symbol,
+            }),
         );
         if (!accessCoinjoinAccount) {
             return goBackToAddAccount();
