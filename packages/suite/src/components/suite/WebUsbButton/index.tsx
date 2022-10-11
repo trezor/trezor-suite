@@ -12,7 +12,7 @@ export const WebUsbButton = (props: ButtonProps) => (
             try {
                 await navigator.usb.requestDevice({ filters: config.webusb });
             } catch (error) {
-                // empty
+                console.error(error);
             }
         }}
     >
