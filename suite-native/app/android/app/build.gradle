@@ -288,6 +288,17 @@ android {
 
         }
     }
+
+    /*
+    * Fix 2 files found with path 'lib/arm64-v8a/libfolly_runtime.so' (issue with react-native-vision-camera)
+    * https://github.com/software-mansion/react-native-reanimated/issues/3342#issuecomment-1171660650
+    */
+    packagingOptions {
+        pickFirst '**/armeabi-v7a/libfolly_runtime.so'
+        pickFirst '**/x86/libfolly_runtime.so'
+        pickFirst '**/arm64-v8a/libfolly_runtime.so'
+        pickFirst '**/x86_64/libfolly_runtime.so'
+    }
 }
 
 dependencies {
