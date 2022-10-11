@@ -56,7 +56,7 @@ export const FirmwareInstallation = ({
                 // Once in bootloader mode and once in normal mode. Without 2nd pairing step would get stuck at waiting for
                 // a reboot in case of fresh device which is, from the start, in bootloader mode (thus first time paired as a bootloader device).
                 // Suite won't detect such a restarted device, which will be now in normal mode, till it is paired again.
-                return isWebUSB && <WebUsbButton icon="SEARCH" />;
+                return isWebUSB && <WebUsbButton />;
 
             case 'done':
             case 'partially-done':
