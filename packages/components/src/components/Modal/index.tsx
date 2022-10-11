@@ -24,7 +24,8 @@ const Header = styled.div<HeaderProps>`
     align-items: center;
     justify-content: center;
     word-break: break-word;
-    padding: 24px 32px;
+    height: 80px;
+    padding: 0 32px;
     padding-bottom: ${({ hasBottomPadding }) => !hasBottomPadding && 0};
     border-bottom: ${({ isBottomBorderShown, theme }) =>
         isBottomBorderShown ? `1px solid ${theme.STROKE_GREY}` : 'none'};
@@ -92,6 +93,7 @@ const HeaderComponentsContainer = styled.div`
 const Body = styled.div`
     display: flex;
     flex-direction: column;
+    flex: 1;
     height: 100%;
     margin-bottom: 32px;
     padding: 32px 32px 0;
