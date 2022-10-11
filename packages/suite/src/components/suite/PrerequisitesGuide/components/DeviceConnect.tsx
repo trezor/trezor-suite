@@ -34,7 +34,7 @@ export const DeviceConnect = ({ isWebUsbTransport }: DeviceConnectProps) => {
             label={<Translation id="TR_STILL_DONT_SEE_YOUR_TREZOR" />}
             items={items}
             offerWebUsb={isWebUsbTransport}
-            cta={isWebUsbTransport ? <WebUsbButton icon="SEARCH" /> : undefined}
+            cta={isWebUsbTransport ? <WebUsbButton /> : undefined}
         />
     );
 };
