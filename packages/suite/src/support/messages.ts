@@ -7329,13 +7329,13 @@ export default defineMessages({
     TR_DEVICE_CONNECTED_CONFIRMATION: {
         id: 'TR_DEVICE_CONNECTED_CONFIRMATION',
         description: 'Checkbox in coinjoin settings',
-        defaultMessage: "I'm not going to disconnect Trezor before finishing CoinJoin",
+        defaultMessage: "I'm not going to disconnect the Trezor before finishing CoinJoin",
     },
     TR_TERMS_AND_PRIVACY_CONFIRMATION: {
         id: 'TR_TERMS_AND_PRIVACY_CONFIRMATION',
         description: 'Checkbox in coinjoin settings',
         defaultMessage:
-            'I agree to the <terms>Terms & Conditions</terms> and <privacy>Privacy statement</privacy>',
+            'I agree to the <trezor>Trezor Suite Terms</trezor> and <coordinator>zkSNACKs Coordinator Terms</coordinator>',
     },
     TR_ANONYMIZE: {
         id: 'TR_ANONYMIZE',
@@ -7363,15 +7363,15 @@ export default defineMessages({
     },
     TR_COINJOIN_PHASE_1_MESSAGE: {
         id: 'TR_COINJOIN_PHASE_1_MESSAGE',
-        defaultMessage: 'Establishing connection',
+        defaultMessage: 'Collecting inputs',
     },
     TR_COINJOIN_PHASE_2_MESSAGE: {
         id: 'TR_COINJOIN_PHASE_2_MESSAGE',
-        defaultMessage: 'Registering outputs',
+        defaultMessage: 'Joining coins',
     },
     TR_COINJOIN_PHASE_3_MESSAGE: {
         id: 'TR_COINJOIN_PHASE_3_MESSAGE',
-        defaultMessage: 'Signing transactions',
+        defaultMessage: 'U poor now',
     },
     TR_COINJOIN_PHASE_4_MESSAGE: {
         id: 'TR_COINJOIN_PHASE_4_MESSAGE',
