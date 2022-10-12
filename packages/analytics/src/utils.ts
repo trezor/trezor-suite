@@ -30,6 +30,7 @@ export const encodeDataToQueryString = <T extends Event>(
         c_instance_id: instanceId,
         c_session_id: sessionId,
         c_timestamp: Date.now().toString(),
+        c_message_id: getRandomId(),
     });
 
     if (event.payload) {
