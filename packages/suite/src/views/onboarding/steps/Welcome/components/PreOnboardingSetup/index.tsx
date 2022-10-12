@@ -1,13 +1,41 @@
 import React from 'react';
+import { analytics } from '@trezor/suite-analytics';
+import { DOCS_ANALYTICS_URL, DATA_TOS_URL } from '@trezor/urls';
+import { DataAnalytics } from '@trezor/components';
+
 import { useOnboarding, useSelector } from '@suite-hooks';
-import { DataAnalytics } from './DataAnalytics';
 import SecurityCheck from './SecurityCheck';
+import TrezorLink from '@suite-components/TrezorLink';
+import styled from 'styled-components';
+
+const StyledTrezorLink = styled(TrezorLink)`
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
+`;
 
 const PreOnboardingSetup = () => {
     const { activeSubStep } = useOnboarding();
     const { confirmed } = useSelector(state => ({
         confirmed: state.analytics.confirmed,
     }));
+
+    const { goToSubStep, rerun } = useOnboarding();
+    const { recovery } = useSelector(state => ({
+        recovery: state.recovery,
+    }));
+
+    const onConfirm = (trackingEnabled: boolean) => {
+        if (trackingEnabled) {
+            analytics.enable();
+        } else {
+            analytics.disable();
+        }
+        if (recovery.status === 'in-progress') {
+            // TT remember the recovery state and should continue with recovery
+            rerun();
+        } else {
+            goToSubStep('security-check');
+        }
+    };
 
     if (activeSubStep === 'security-check' || confirmed) {
         // If user already confirmed his choice about data collection
@@ -17,7 +45,21 @@ const PreOnboardingSetup = () => {
     }
 
     // 1st substep
-    return <DataAnalytics />;
+    return (
+        <DataAnalytics
+            onConfirm={onConfirm}
+            analyticsLink={(chunks: React.ReactNode[]) => (
+                <StyledTrezorLink variant="underline" href={DOCS_ANALYTICS_URL}>
+                    {chunks}
+                </StyledTrezorLink>
+            )}
+            tosLink={(chunks: React.ReactNode[]) => (
+                <StyledTrezorLink variant="underline" href={DATA_TOS_URL}>
+                    {chunks}
+                </StyledTrezorLink>
+            )}
+        />
+    );
 };
 
 export default PreOnboardingSetup;
