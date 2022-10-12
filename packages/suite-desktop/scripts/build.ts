@@ -63,7 +63,12 @@ console.log(`[Electron Build] Using mocks: ${useMocks}`);
 // All local packages that doesn't have "build:libs" and used in packages/suite-desktop/src
 // must be built and not included in electron node_modules, because they are in TS.
 // Normal src/ folder is fine, because it's builded by webpack.
-const builtTrezorDependencies = ['@trezor/ipc-proxy', '@trezor/urls', '@trezor/utils'];
+const builtTrezorDependencies = [
+    '@trezor/ipc-proxy',
+    '@trezor/urls',
+    '@trezor/utils',
+    '@trezor/coinjoin', // build it so we can set process.env.NODE_BACKEND in build time and fix issue with bcrypto dependency
+];
 
 const dependencies = Object.keys(pkg.dependencies).filter(
     name => !(name.startsWith('@suite-common/') || builtTrezorDependencies.includes(name)),
@@ -93,6 +98,7 @@ build({
         'process.env.VERSION': JSON.stringify(suiteVersion),
         'process.env.SENTRY_RELEASE': JSON.stringify(sentryRelease),
         'process.env.SUITE_TYPE': JSON.stringify(PROJECT),
+        'process.env.NODE_BACKEND': JSON.stringify('js'), // fix bcrypto - use JS implementaion to prevent using binaries for wrong architecture
     },
     inject: [path.join(__dirname, 'build-inject.ts')],
     plugins: useMocks ? [mockPlugin] : [],
