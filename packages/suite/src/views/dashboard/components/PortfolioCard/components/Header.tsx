@@ -54,8 +54,8 @@ export interface HeaderProps {
     isDiscoveryRunning?: boolean;
     showGraphControls: boolean;
     hideBorder: boolean;
-    // buyClickHandler: () => void;
     receiveClickHandler: () => void;
+    buyClickHandler: () => void;
 }
 
 export const Header = (props: HeaderProps) => {
@@ -73,13 +73,22 @@ export const Header = (props: HeaderProps) => {
     if (!props.isWalletLoading && !props.isWalletError) {
         if (props.isWalletEmpty) {
             actions = (
-                <ActionButton
-                    variant="primary"
-                    onClick={props.receiveClickHandler}
-                    data-test="@dashboard/receive-button"
-                >
-                    <Translation id="TR_RECEIVE" />
-                </ActionButton>
+                <>
+                    <ActionButton
+                        variant="secondary"
+                        onClick={props.receiveClickHandler}
+                        data-test="@dashboard/receive-button"
+                    >
+                        <Translation id="TR_RECEIVE" />
+                    </ActionButton>
+                    <ActionButton
+                        variant="primary"
+                        onClick={props.buyClickHandler}
+                        data-test="@dashboard/buy-button"
+                    >
+                        <Translation id="TR_BUY" />
+                    </ActionButton>
+                </>
             );
         } else if (props.showGraphControls) {
             actions = <RangeSelector onSelectedRange={onSelectedRange} align="right" />;

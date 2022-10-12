@@ -142,6 +142,7 @@ const PortfolioCard = React.memo(() => {
                     isWalletError={isWalletError}
                     isDiscoveryRunning={isDiscoveryRunning}
                     receiveClickHandler={() => goto('wallet-receive')}
+                    buyClickHandler={() => goto('wallet-coinmarket-buy')}
                 />
 
                 {body && <Body>{body}</Body>}
