@@ -52,7 +52,9 @@ export const InvityApi = () => {
                         invityAPI.setInvityServersEnvironment(item.value);
                         // reload the Suite to reinitialize everything
                         if (typeof window !== 'undefined') {
-                            window.location.reload();
+                            window.setTimeout(() => {
+                                window.location.reload();
+                            }, 100);
                         }
                     }}
                     value={selectedInvityApiServer}
