@@ -1,7 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { Icon, Tooltip, variables } from '@trezor/components';
+import { ExtendedMessageDescriptor } from '@suite-types';
+import { variables } from '@trezor/components';
+import { TooltipIcon } from './TooltipIcon';
 
 const Row = styled.div`
     display: flex;
@@ -21,25 +23,17 @@ const Value = styled.dd`
     font-size: ${variables.FONT_SIZE.SMALL};
 `;
 
-const StyledIcon = styled(Icon)`
-    margin-left: 6px;
-`;
-
 interface DetailRowProps {
     term: React.ReactNode;
-    tooltip?: React.ReactNode;
+    tooltipMessage?: ExtendedMessageDescriptor['id'];
     value: React.ReactNode;
 }
 
-export const DetailRow = ({ term, tooltip, value }: DetailRowProps) => (
+export const DetailRow = ({ term, tooltipMessage, value }: DetailRowProps) => (
     <Row>
         <Key>
             {term}
-            {!!tooltip && (
-                <Tooltip interactive={false} content={tooltip}>
-                    <StyledIcon icon="INFO" size={14} />
-                </Tooltip>
-            )}
+            {!!tooltipMessage && <TooltipIcon message={tooltipMessage} />}
         </Key>
         <Value>{value}</Value>
     </Row>
