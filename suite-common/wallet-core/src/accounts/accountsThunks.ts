@@ -138,7 +138,7 @@ export const fetchAndUpdateAccountThunk = createThunk(
                 const token = tx.tokens && tx.tokens.length ? tx.tokens[0] : undefined;
 
                 const bitcoinAmountUnit = selectBitcoinAmountUnit(getState());
-                const areSatoshisUsed = getAreSatoshisUsed(bitcoinAmountUnit);
+                const areSatoshisUsed = getAreSatoshisUsed(bitcoinAmountUnit, account);
 
                 const formattedAmount = token
                     ? `${formatAmount(token.amount, token.decimals)} ${token.symbol.toUpperCase()}`

@@ -355,7 +355,10 @@ export const onBlockchainNotificationThunk = createThunk(
             const accountDevice = findAccountDevice(account, selectDevices(getState()));
 
             const token = tx.tokens && tx.tokens.length ? tx.tokens[0] : undefined;
-            const areSatoshisUsed = getAreSatoshisUsed(selectBitcoinAmountUnit(getState()));
+            const areSatoshisUsed = getAreSatoshisUsed(
+                selectBitcoinAmountUnit(getState()),
+                account,
+            );
 
             const formattedAmount = token
                 ? `${formatAmount(token.amount, token.decimals)} ${token.symbol.toUpperCase()}`
