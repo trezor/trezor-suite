@@ -1853,7 +1853,7 @@ export default defineMessages({
         id: 'TR_BCH_ADDRESS_INFO',
     },
     TR_BUY: {
-        defaultMessage: ' Buy',
+        defaultMessage: 'Buy',
         id: 'TR_BUY',
     },
     TR_CAMERA_NOT_RECOGNIZED: {
