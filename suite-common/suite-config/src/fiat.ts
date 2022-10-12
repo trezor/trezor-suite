@@ -1,4 +1,5 @@
 export const fiatCurrencies = {
+    btc: { label: 'btc', value: 'Bitcoin' },
     usd: { label: 'usd', value: 'United States Dollar' },
     eur: { label: 'eur', value: 'Euro' },
     gbp: { label: 'gbp', value: 'Pound Sterling' },
