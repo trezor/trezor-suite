@@ -50,9 +50,11 @@ export const InvityApi = () => {
                             invityServerEnvironment: item.value,
                         });
                         invityAPI.setInvityServersEnvironment(item.value);
-                        // reload the Suite to reinitialize everything
+                        // reload the Suite to reinitialize everything, with a slight delay to let the browser save the settings
                         if (typeof window !== 'undefined') {
-                            window.location.reload();
+                            window.setTimeout(() => {
+                                window.location.reload();
+                            }, 100);
                         }
                     }}
                     value={selectedInvityApiServer}
