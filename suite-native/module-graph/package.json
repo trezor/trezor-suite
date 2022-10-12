@@ -12,7 +12,6 @@
     "dependencies": {
         "@suite-common/formatters": "*",
         "@suite-native/atoms": "*",
-        "@suite-native/module-settings": "*",
         "@suite-native/test-utils": "*",
         "@trezor/icons": "*",
         "@trezor/styles": "*",

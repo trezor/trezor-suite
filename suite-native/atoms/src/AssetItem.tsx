@@ -64,11 +64,7 @@ export const AssetItem = ({
                         alignItems="center"
                     >
                         <Text>{cryptoCurrencyName}</Text>
-                        <Text>
-                            {FiatAmountFormatter.format(fiatCurrencyValue, {
-                                currency: fiatCurrency,
-                            })}
-                        </Text>
+                        <Text>{FiatAmountFormatter.format(fiatCurrencyValue)}</Text>
                     </Box>
                     <Box
                         flexDirection="row"

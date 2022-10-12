@@ -6087,6 +6087,7 @@ __metadata:
   resolution: "@suite-common/formatters@workspace:suite-common/formatters"
   dependencies:
     "@formatjs/intl": 2.3.1
+    "@suite-common/suite-config": "*"
     "@suite-common/suite-constants": "*"
     "@suite-common/suite-types": "*"
     "@suite-common/wallet-config": "*"
@@ -6480,7 +6481,6 @@ __metadata:
   dependencies:
     "@suite-common/formatters": "*"
     "@suite-native/atoms": "*"
-    "@suite-native/module-settings": "*"
     "@suite-native/test-utils": "*"
     "@trezor/icons": "*"
     "@trezor/styles": "*"
@@ -6613,7 +6613,6 @@ __metadata:
     "@suite-common/test-utils": "*"
     "@suite-common/wallet-core": "*"
     "@suite-native/module-devices": "*"
-    "@suite-native/module-settings": "*"
     "@suite-native/storage": "*"
     "@trezor/connect": 9.0.3
     "@trezor/styles": "*"

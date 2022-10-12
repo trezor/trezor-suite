@@ -5,7 +5,6 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Box, Text } from '@suite-native/atoms';
 import { CryptoIcon } from '@trezor/icons';
 import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
-import { selectFiatCurrency } from '@suite-native/module-settings';
 import { useFormatters } from '@suite-common/formatters';
 
 type AccountBalanceProps = {
@@ -27,7 +26,6 @@ export const AccountBalance = ({ accountKey, accountName }: AccountBalanceProps)
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
-    const fiatCurrency = useSelector(selectFiatCurrency);
     const { FiatAmountFormatter } = useFormatters();
 
     if (!account) return null;
@@ -41,9 +39,7 @@ export const AccountBalance = ({ accountKey, accountName }: AccountBalanceProps)
                 </Box>
                 <Box>
                     <Text color="gray800">
-                        {FiatAmountFormatter.format(account.formattedBalance, {
-                            currency: fiatCurrency.label,
-                        })}
+                        {FiatAmountFormatter.format(account.formattedBalance)}
                     </Text>
                     <Text color="gray600" variant="hint">
                         {account.balance} {account.symbol}
