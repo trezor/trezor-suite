@@ -2,7 +2,16 @@ import fixtures from './fixtures/encodeDataToQueryString';
 import { encodeDataToQueryString, getRandomId } from '../utils';
 import { Analytics } from '../analytics';
 
+jest.mock('@trezor/utils', () => ({
+    __esModule: true,
+    getWeakRandomId: () => 'random',
+}));
+
 describe('analytics', () => {
+    afterAll(() => {
+        jest.clearAllMocks();
+    });
+
     it('should report if enabled and do not report when disabled', () => {
         const mockFetchPromise = Promise.resolve({
             json: () => Promise.resolve({}),
@@ -13,6 +22,7 @@ describe('analytics', () => {
 
         const timestamp = new Date().getTime();
         jest.spyOn(Date, 'now').mockImplementation(() => timestamp);
+        jest.spyOn(console, 'error').mockImplementation(() => {});
 
         const app = 'suite';
         const environment = 'desktop';
@@ -31,7 +41,7 @@ describe('analytics', () => {
 
         expect(global.fetch).toHaveBeenNthCalledWith(
             1,
-            `https://data.trezor.io/${app}/log/${environment}/develop.log?c_v=1.18&c_type=${actionType}&c_commit=${commitId}&c_instance_id=${instanceId}&c_session_id=${sessionId}&c_timestamp=${timestamp}`,
+            `https://data.trezor.io/${app}/log/${environment}/develop.log?c_v=1.18&c_type=${actionType}&c_commit=${commitId}&c_instance_id=${instanceId}&c_session_id=${sessionId}&c_timestamp=${timestamp}&c_message_id=random`,
             { method: 'GET' },
         );
         expect(global.fetch).toHaveBeenCalledTimes(1);
