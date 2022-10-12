@@ -28,6 +28,7 @@
         "date-fns": "^2.29.1",
         "react": "18.2.0",
         "react-native": "0.70.2",
+        "react-native-graph": "^0.3.0",
         "react-redux": "7.2.2"
     },
     "devDependencies": {

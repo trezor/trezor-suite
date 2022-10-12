@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
+import { GraphPoint } from 'react-native-graph';
 
 import { eachMinuteOfInterval, getUnixTime, subDays, subHours } from 'date-fns';
 
-import { Graph } from '@suite-native/graph';
+import { Graph, TimeFrameValues } from '@suite-native/graph';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Box, Text } from '@suite-native/atoms';
 import { Icon } from '@trezor/icons';
 import { useFormatters } from '@suite-common/formatters';
-import { TimeFrameValues } from '@suite-native/graph/libDev/src/types';
 import { getFiatRatesForTimestamps } from '@suite-common/fiat-services';
 
 const arrowStyle = prepareNativeStyle(() => ({
@@ -17,6 +17,7 @@ const arrowStyle = prepareNativeStyle(() => ({
 export const PortfolioGraph = () => {
     const { applyStyle } = useNativeStyles();
     const { FiatAmountFormatter } = useFormatters();
+    const [graphPoints, setGraphPoints] = useState<GraphPoint[]>([]);
     const [selectedTimeFrame, setSelectedTimeFrame] = useState<TimeFrameValues>('day');
 
     const getDatesInSelectedTimeFrame = (timeFrame: TimeFrameValues) => {
@@ -57,12 +58,23 @@ export const PortfolioGraph = () => {
             const ratesForDatesInRange = await getFiatRatesForTimestamps(
                 { symbol: 'btc' },
                 datesInRangeInUnixTime,
-            );
+            )
+                .then(res => (res?.tickers || []).map(({ ts, rates }) => [ts, rates]))
+                .then(res => Object.fromEntries(res));
             console.log('**************\n');
             console.log('**************\n');
             console.log('ratesForDatesInRangeratesForDatesInRange: ', ratesForDatesInRange);
             console.log('**************\n');
             console.log('**************\n');
+
+            const mappedDatesInRange = Object.keys(ratesForDatesInRange).map(timestamp => {
+                const fiatRates = ratesForDatesInRange[timestamp];
+                return {
+                    date: new Date(Number(timestamp) * 1000),
+                    value: Math.floor(fiatRates.usd),
+                };
+            });
+            setGraphPoints(mappedDatesInRange);
         };
 
         console.log('renderuju se: ', selectedTimeFrame);
@@ -74,6 +86,8 @@ export const PortfolioGraph = () => {
     const handleSelectTimeFrame = (timeFrame: TimeFrameValues) => {
         setSelectedTimeFrame(timeFrame);
     };
+
+    console.log('graphPoints: ', graphPoints);
 
     return (
         <Box>
@@ -95,6 +109,7 @@ export const PortfolioGraph = () => {
                 </Text>
             </Box>
             <Graph
+                points={graphPoints}
                 selectedTimeFrame={selectedTimeFrame}
                 onSelectTimeFrame={handleSelectTimeFrame}
             />

@@ -34,22 +34,27 @@ export const Graph = ({
 }: GraphProps) => {
     const { applyStyle } = useNativeStyles();
 
-    return (
-        <Box style={applyStyle(graphWrapperStyle)}>
-            <LineGraph
-                style={applyStyle(graphStyle)}
-                animated
-                points={points}
-                color="#00854D"
-                enablePanGesture
-                enableFadeInMask={false}
-            />
-            {onSelectTimeFrame && (
-                <TimeSwitch
-                    selectedTimeFrame={selectedTimeFrame}
-                    onSelectTimeFrame={onSelectTimeFrame}
+    console.log('LALA: ', points.length);
+
+    if (points.length) {
+        return (
+            <Box style={applyStyle(graphWrapperStyle)}>
+                <LineGraph
+                    style={applyStyle(graphStyle)}
+                    animated={false}
+                    points={points}
+                    color="#00854D"
+                    // enablePanGesture
+                    enableFadeInMask={false}
                 />
-            )}
-        </Box>
-    );
+                {onSelectTimeFrame && (
+                    <TimeSwitch
+                        selectedTimeFrame={selectedTimeFrame}
+                        onSelectTimeFrame={onSelectTimeFrame}
+                    />
+                )}
+            </Box>
+        );
+    }
+    return null;
 };

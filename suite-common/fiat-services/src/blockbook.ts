@@ -1,6 +1,7 @@
 import type { LastWeekRates, TimestampedRates, TickerId } from '@suite-common/wallet-types';
 
 import { RateLimiter } from './limiter';
+import { requestInit } from './request';
 
 const ENDPOINTS = {
     btc: ['btc1', 'btc2', 'btc3', 'btc4', 'btc5'],
@@ -23,11 +24,11 @@ const limiter = new RateLimiter(500);
 
 const request = <T>(url: string): Promise<T | null> =>
     limiter
-        .limit(() => fetch(url))
+        .limit(() => fetch(url, requestInit))
         .then(res =>
             res.ok
                 ? res.json()
-                : Promise.reject(new Error(`Fiat rates failed to fetch: ${res.status}`)),
+                : Promise.reject(new Error(`Blockbook: Fiat rates failed to fetch: ${res.status}`)),
         )
         .catch(err => {
             console.warn(err);
