@@ -46,6 +46,7 @@ export const Select = <TItemValue extends SelectItemValue>({
     );
     const handleSelectItem = (itemValue: TItemValue) => {
         onSelectItem(itemValue);
+        setIsOpen(false);
     };
 
     const getIcon = (iconName?: CryptoIconName | FlagIconName, isSelectItem = false): ReactNode => {
@@ -60,21 +61,19 @@ export const Select = <TItemValue extends SelectItemValue>({
 
     return (
         <>
-            {isOpen && (
-                <BottomSheet isVisible={isOpen} onVisibilityChange={setIsOpen} title={selectLabel}>
-                    {items.map(({ value, label, iconName }, index) => (
-                        <SelectItem
-                            key={value}
-                            label={label}
-                            value={value}
-                            icon={getIcon(iconName, true)}
-                            isSelected={value === selectedItem?.value}
-                            isLastChild={index === items.length - 1}
-                            onSelect={() => handleSelectItem(value)}
-                        />
-                    ))}
-                </BottomSheet>
-            )}
+            <BottomSheet isVisible={isOpen} onVisibilityChange={setIsOpen} title={selectLabel}>
+                {items.map(({ value, label, iconName }, index) => (
+                    <SelectItem
+                        key={value}
+                        label={label}
+                        value={value}
+                        icon={getIcon(iconName, true)}
+                        isSelected={value === selectedItem?.value}
+                        isLastChild={index === items.length - 1}
+                        onSelect={() => handleSelectItem(value)}
+                    />
+                ))}
+            </BottomSheet>
             <SelectTrigger
                 icon={getIcon(selectedItem?.iconName)}
                 value={selectedItem?.label ?? null}
