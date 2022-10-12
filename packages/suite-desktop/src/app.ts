@@ -31,9 +31,6 @@ global.resourcesPath = isDevEnv
     ? path.join(__dirname, '..', 'build', 'static')
     : process.resourcesPath;
 
-// fix bcrypto - use JS implementaion instead of native binaries
-process.env.NODE_BACKEND = 'js';
-
 const clearAppCache = () =>
     new Promise<void>((resolve, reject) => {
         const appFolder = process.env.PKGNAME!.replace('/', path.sep);
