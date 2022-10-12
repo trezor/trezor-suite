@@ -12,6 +12,7 @@
     },
     "dependencies": {
         "@formatjs/intl": "2.3.1",
+        "@suite-common/suite-config": "*",
         "@suite-common/suite-constants": "*",
         "@suite-common/suite-types": "*",
         "@suite-common/wallet-config": "*",

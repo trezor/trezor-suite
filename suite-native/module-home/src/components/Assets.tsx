@@ -1,6 +1,5 @@
 import React from 'react';
 import { View } from 'react-native';
-import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
@@ -16,7 +15,6 @@ import {
     AccountsStackRoutes,
 } from '@suite-native/navigation';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { selectFiatCurrency } from '@suite-native/module-settings';
 
 import { DashboardSection } from './DashboardSection';
 
@@ -33,7 +31,6 @@ type HomeAssetsNavigationProp = TabToStackCompositeNavigationProp<
 export const Assets = () => {
     const navigation = useNavigation<HomeAssetsNavigationProp>();
     const { applyStyle } = useNativeStyles();
-    const fiatCurrency = useSelector(selectFiatCurrency);
 
     const handleImportAssets = () => {
         navigation.navigate(RootStackRoutes.AccountsImport, {
@@ -64,7 +61,6 @@ export const Assets = () => {
                         cryptoCurrencyValue={0.00005122}
                         portfolioPercentage={70}
                         fiatCurrencyValue={3123}
-                        fiatCurrency={fiatCurrency.label}
                         onPress={() => handleShowAllAccountsForAsset('btc')}
                     />
                     <AssetItem
@@ -74,7 +70,6 @@ export const Assets = () => {
                         cryptoCurrencyValue={0.00005122}
                         portfolioPercentage={30}
                         fiatCurrencyValue={3123}
-                        fiatCurrency={fiatCurrency.label}
                         onPress={() => handleShowAllAccountsForAsset('test')}
                     />
                 </VStack>

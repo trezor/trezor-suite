@@ -23,6 +23,7 @@ export const appSettingsInitialState: AppSettingsState = {
 export const appSettingsPersistWhitelist: Array<keyof AppSettingsState> = [
     'colorScheme',
     'isOnboardingFinished',
+    'fiatCurrency',
 ];
 
 export const appSettingsSlice = createSlice({

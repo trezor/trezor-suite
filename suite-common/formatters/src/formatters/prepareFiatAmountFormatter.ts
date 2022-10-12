@@ -14,7 +14,7 @@ export const prepareFiatAmountFormatter = (config: FormatterConfig) =>
         string | null,
         FiatAmountFormatterDataContext<FormatNumberOptions>
     >((value, dataContext) => {
-        const { intl } = config;
+        const { intl, fiatCurrency } = config;
         const { style, currency, minimumFractionDigits, maximumFractionDigits } = dataContext;
         const fiatValue = new BigNumber(value);
 
@@ -23,12 +23,13 @@ export const prepareFiatAmountFormatter = (config: FormatterConfig) =>
         }
 
         if (fiatValue.gt(Number.MAX_SAFE_INTEGER)) {
-            return `${value} ${currency}`;
+            return `${value} ${currency ?? fiatCurrency}`;
         }
 
         return intl.formatNumber(fiatValue.toNumber(), {
             ...dataContext,
             style: style || 'currency',
+            currency: currency ?? fiatCurrency,
             minimumFractionDigits: minimumFractionDigits ?? 2,
             maximumFractionDigits: maximumFractionDigits ?? 2,
         });

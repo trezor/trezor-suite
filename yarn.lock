@@ -6087,6 +6087,7 @@ __metadata:
   resolution: "@suite-common/formatters@workspace:suite-common/formatters"
   dependencies:
     "@formatjs/intl": 2.3.1
+    "@suite-common/suite-config": "*"
     "@suite-common/suite-constants": "*"
     "@suite-common/suite-types": "*"
     "@suite-common/wallet-config": "*"
@@ -6330,7 +6331,6 @@ __metadata:
     "@suite-common/wallet-core": "*"
     "@suite-common/wallet-types": "*"
     "@suite-native/atoms": "*"
-    "@suite-native/module-settings": "*"
     "@trezor/icons": "*"
     "@trezor/styles": "*"
     react: ^17.0.2
@@ -6480,7 +6480,6 @@ __metadata:
   dependencies:
     "@suite-common/formatters": "*"
     "@suite-native/atoms": "*"
-    "@suite-native/module-settings": "*"
     "@suite-native/test-utils": "*"
     "@trezor/icons": "*"
     "@trezor/styles": "*"

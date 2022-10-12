@@ -17,7 +17,6 @@ type AssetItemProps = {
     cryptoCurrencyValue: number;
     portfolioPercentage: number;
     fiatCurrencyValue: number;
-    fiatCurrency: string;
     iconName: CryptoIconName;
     onPress?: () => void;
 };
@@ -46,7 +45,6 @@ export const AssetItem = ({
     fiatCurrencyValue,
     cryptoCurrencyName,
     iconName,
-    fiatCurrency,
     onPress,
 }: AssetItemProps) => {
     const { applyStyle } = useNativeStyles();
@@ -64,11 +62,7 @@ export const AssetItem = ({
                         alignItems="center"
                     >
                         <Text>{cryptoCurrencyName}</Text>
-                        <Text>
-                            {FiatAmountFormatter.format(fiatCurrencyValue, {
-                                currency: fiatCurrency,
-                            })}
-                        </Text>
+                        <Text>{FiatAmountFormatter.format(fiatCurrencyValue)}</Text>
                     </Box>
                     <Box
                         flexDirection="row"
