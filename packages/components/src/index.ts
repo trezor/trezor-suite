@@ -48,6 +48,7 @@ export * from './components/Fade';
 export * from './components/Image/Image';
 export * from './components/Image/images';
 export * from './components/CollapsibleBox';
+export * from './components/CollapsibleCard';
 export * from './components/Passphrase/PassphraseTypeCard';
 
 export * from './constants/keyboardEvents';

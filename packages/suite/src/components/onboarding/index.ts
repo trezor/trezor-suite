@@ -1,12 +1,10 @@
 import Option, { OptionsWrapper, OptionWrapper, OptionsDivider } from './Option';
-import Text from './Text';
 
 import OnboardingButtonAlt from './Buttons/ButtonAlt';
 import OnboardingButtonCta from './Buttons/ButtonCta';
 import OnboardingButtonBack from './Buttons/ButtonBack';
 import OnboardingButtonSkip from './Buttons/ButtonSkip';
 
-import { Box, BoxProps } from './Box';
 import { ConnectDevicePromptManager } from './ConnectDevicePromptManager';
 import { OnboardingLayout } from './Layouts/OnboardingLayout';
 import { Hologram } from './Hologram';
@@ -20,12 +18,10 @@ export {
     OnboardingButtonCta,
     OnboardingButtonBack,
     OnboardingButtonSkip,
-    Text,
     Option,
     OptionsWrapper,
     OptionWrapper,
     OptionsDivider,
-    Box,
     ConnectDevicePromptManager,
     OnboardingLayout,
     Hologram,
@@ -35,4 +31,4 @@ export {
     ProgressBar,
 };
 
-export type { BoxProps, DeviceAnimationType, OnboardingStepBoxProps };
+export type { DeviceAnimationType, OnboardingStepBoxProps };

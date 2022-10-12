@@ -12,7 +12,7 @@ describe('Onboarding - packaging security', () => {
         cy.connectDevice({ mode: 'initialize', firmware: 'none' });
         cy.getTestElement('@onboarding/continue-button').click();
         cy.getTestElement('@onboarding/exit-app-button').should('be.visible');
-        cy.getTestElement('@onboarding/box-animated').should('have.css', 'opacity', '1');
+        cy.getTestElement('@components/collapsible-box').should('have.css', 'opacity', '1');
         cy.getTestElement('@welcome-layout/body').matchImageSnapshot('security-check');
     });
 });

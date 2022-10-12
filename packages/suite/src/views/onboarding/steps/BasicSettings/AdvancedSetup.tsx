@@ -1,8 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import styled from 'styled-components';
 import { Translation } from '@suite-components';
-import { Box } from '@onboarding-components';
-import { Icon, useTheme } from '@trezor/components';
+import { Icon, useTheme, CollapsibleCard } from '@trezor/components';
 import { useSelector } from '@suite-hooks';
 import { isDesktop, isWeb } from '@suite-utils/env';
 import { TorSection } from './TorSection';
@@ -55,7 +54,7 @@ export const AdvancedSetup = ({ children }: AdvancedSetupProps) => {
         <AdvancedSetupWrapper>
             <Boxes>
                 {(isDesktop() || (isWeb() && isTorEnabled)) && (
-                    <Box
+                    <CollapsibleCard
                         heading={<Translation id="TR_TOR" />}
                         description={
                             <Translation
@@ -67,6 +66,7 @@ export const AdvancedSetup = ({ children }: AdvancedSetupProps) => {
                         }
                         expandable
                         expanded={torOpen}
+                        tag={<Translation id="TR_ONBOARDING_ADVANCED" />}
                         expandableIcon={
                             <IconWrapper>
                                 {isTorEnabled ? (
@@ -79,7 +79,7 @@ export const AdvancedSetup = ({ children }: AdvancedSetupProps) => {
                         onToggle={toggleTor}
                     >
                         <TorSection torStatus={torStatus} />
-                    </Box>
+                    </CollapsibleCard>
                 )}
             </Boxes>
             <Buttons>{children}</Buttons>

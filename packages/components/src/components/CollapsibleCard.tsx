@@ -1,29 +1,18 @@
 import React, { useMemo } from 'react';
 import styled, { css } from 'styled-components';
 import { motion, Variants } from 'framer-motion';
-import Text from '@onboarding-components/Text';
-import { Translation } from '@suite-components';
-import {
-    H1,
-    variables,
-    Button,
-    Image,
-    useTheme,
-    ImageType,
-    motionEasing,
-} from '@trezor/components';
 import useMeasure from 'react-use/lib/useMeasure';
-import { useLayoutSize } from '@suite-hooks/useLayoutSize';
+import { H1, variables, Image, ImageType, motionEasing, Icon } from '@trezor/components';
 
-const BoxWrapper = styled(
+const CardWrapper = styled(
     ({ variant, withImage, disablePadding, expanded, expandable, nested, ...rest }) => (
         <motion.div {...rest} />
     ),
 )<{
-    variant?: BoxProps['variant'];
+    variant?: CollapsibleCardProps['variant'];
     withImage?: boolean;
-    expanded?: BoxProps['expanded'];
-    expandable?: BoxProps['expandable'];
+    expanded?: CollapsibleCardProps['expanded'];
+    expandable?: CollapsibleCardProps['expandable'];
 }>`
     position: relative;
     padding: ${({ variant }) => (variant === 'large' ? '40px 80px' : '20px 30px')};
@@ -33,16 +22,42 @@ const BoxWrapper = styled(
     z-index: ${variables.Z_INDEX.BASE};
     cursor: ${({ expanded }) => !expanded && 'pointer'};
 
-    ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
-        padding-left: ${({ variant }) => (variant === 'large' ? '40px' : '30px')};
-        padding-right: ${({ variant }) => (variant === 'large' ? '40px' : '30px')};
-        padding-bottom: ${({ variant }) => (variant === 'large' ? '40px' : '20px')};
-    }
+    ${({ expandable, variant }) =>
+        !expandable &&
+        css`
+            ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
+                padding-left: ${variant === 'large' ? '40px' : '30px'};
+                padding-right: ${variant === 'large' ? '40px' : '30px'};
+                padding-bottom: ${variant === 'large' ? '40px' : '20px'};
+            }
 
-    ${variables.SCREEN_QUERY.MOBILE} {
-        padding-left: 20px;
-        padding-right: 20px;
-    }
+            ${variables.SCREEN_QUERY.MOBILE} {
+                padding-left: 20px;
+                padding-right: 20px;
+            }
+        `}
+
+    ${({ expanded, expandable, theme }) =>
+        expandable &&
+        !expanded &&
+        css`
+            background: ${theme.BG_GREY};
+            box-shadow: rgba(0, 0, 0, 0) 0px 2px 5px 0px;
+            border-radius: 10px;
+            padding-top: 16px;
+            padding-left: 26px;
+            padding-right: 26px;
+            padding-bottom: 16px;
+        `}
+
+    ${({ expanded, expandable, theme, variant }) =>
+        expandable &&
+        expanded &&
+        css`
+            background: ${theme.BG_WHITE};
+            border-radius: 16px;
+            padding: ${variant === 'large' ? '40px' : '20px 30px'};
+        `}
 
     ${({ nested, theme }) =>
         !nested &&
@@ -64,11 +79,17 @@ const BoxWrapper = styled(
         `}
 `;
 
-const BoxWrapperInner = styled.div<{ expandable: boolean }>`
+const CardWrapperInner = styled.div<{ expandable: boolean }>`
     overflow: ${({ expandable }) => expandable && 'hidden'};
 `;
 
-const BoxImageWrapper = styled.div`
+const Text = styled.span`
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    font-size: ${variables.FONT_SIZE.SMALL};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+`;
+
+const CardImageWrapper = styled.div`
     width: 100px;
     height: 100px;
     position: absolute;
@@ -101,7 +122,7 @@ const Description = styled.div<{ hasChildren?: boolean }>`
     }
 `;
 
-const ExpandableBox = styled(motion.div)`
+const CollapsibleCardInner = styled(motion.div)`
     text-align: left;
     display: flex;
     align-items: center;
@@ -123,13 +144,14 @@ const Tag = styled.div`
     letter-spacing: 0.2px;
 `;
 
-const CloseButton = styled(Button)`
+const CloseIcon = styled(Icon)`
     position: absolute;
-    top: 16px;
-    right: 16px;
+    top: 24px;
+    right: 24px;
+    background: transparent;
 `;
 
-export interface BoxProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface CollapsibleCardProps extends React.HTMLAttributes<HTMLDivElement> {
     image?: ImageType;
     variant?: 'small' | 'large';
     expandable?: boolean;
@@ -140,9 +162,10 @@ export interface BoxProps extends React.HTMLAttributes<HTMLDivElement> {
     heading?: React.ReactNode;
     description?: React.ReactNode;
     children?: React.ReactNode;
+    tag?: React.ReactNode;
 }
 
-export const Box = ({
+export const CollapsibleCard = ({
     heading,
     description,
     image,
@@ -153,40 +176,12 @@ export const Box = ({
     expandable = false,
     expandableIcon,
     nested,
+    tag,
+    onCanPlayThroughCapture,
     onToggle = () => undefined,
     ...rest
-}: BoxProps) => {
-    const theme = useTheme();
+}: CollapsibleCardProps) => {
     const [heightRef, { height }] = useMeasure<HTMLDivElement>();
-    const { isMobileLayout, layoutSize } = useLayoutSize();
-
-    const wrapperVariants = useMemo<Variants>(() => {
-        let padding;
-
-        if (variant === 'large' && !isMobileLayout) {
-            if (layoutSize === 'NORMAL') {
-                padding = '40px 40px 40px 40px';
-            } else {
-                padding = '40px 80px 40px 80px';
-            }
-        } else {
-            padding = '20px 30px 20px 30px';
-        }
-
-        return {
-            closed: {
-                background: theme.BG_GREY,
-                boxShadow: 'rgba(0, 0, 0, 0) 0px 2px 5px 0px',
-                borderRadius: 10,
-                padding: '16px 26px 16px 26px',
-            },
-            expanded: {
-                background: theme.BG_WHITE,
-                borderRadius: 16,
-                padding,
-            },
-        };
-    }, [theme, variant, isMobileLayout, layoutSize]);
 
     const headerVariants = useMemo<Variants>(
         () => ({
@@ -215,23 +210,22 @@ export const Box = ({
     );
 
     return (
-        <BoxWrapper
+        <CardWrapper
             expanded={expanded}
             expandable={expandable}
             variant={variant}
             withImage={!!image}
             className={className}
             nested={nested}
-            variants={expandable ? wrapperVariants : undefined}
             animate={expanded ? 'expanded' : 'closed'}
             transition={{ duration: 0.4, ease: motionEasing.transition }}
             onClick={expandable && !expanded ? onToggle : undefined}
-            data-test="@onboarding/box-animated"
+            data-test="@components/collapsible-box"
             {...rest}
         >
-            <BoxWrapperInner expandable={expandable}>
+            <CardWrapperInner expandable={expandable}>
                 {expandable && (
-                    <ExpandableBox
+                    <CollapsibleCardInner
                         variants={headerVariants}
                         animate={expanded ? 'expanded' : 'closed'}
                         transition={{ duration: 0.2, ease: 'linear' }}
@@ -240,10 +234,8 @@ export const Box = ({
 
                         <HeadingExpandable>{heading}</HeadingExpandable>
 
-                        <Tag>
-                            <Translation id="TR_ONBOARDING_ADVANCED" />
-                        </Tag>
-                    </ExpandableBox>
+                        {tag && <Tag>{tag}</Tag>}
+                    </CollapsibleCardInner>
                 )}
 
                 <motion.div
@@ -253,9 +245,7 @@ export const Box = ({
                 >
                     <div ref={heightRef}>
                         {expandable && expanded && (
-                            <CloseButton variant="tertiary" onClick={() => onToggle()}>
-                                <Translation id="TR_CLOSE" />
-                            </CloseButton>
+                            <CloseIcon icon="CROSS" size={22} onClick={() => onToggle()} />
                         )}
 
                         {heading && <Heading withDescription={!!description}>{heading}</Heading>}
@@ -267,15 +257,15 @@ export const Box = ({
                         )}
 
                         {image && (
-                            <BoxImageWrapper>
+                            <CardImageWrapper>
                                 <Image width={100} height={100} image={image} />
-                            </BoxImageWrapper>
+                            </CardImageWrapper>
                         )}
 
                         <ChildrenWrapper>{children}</ChildrenWrapper>
                     </div>
                 </motion.div>
-            </BoxWrapperInner>
-        </BoxWrapper>
+            </CardWrapperInner>
+        </CardWrapper>
     );
 };

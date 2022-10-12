@@ -1,7 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
-import { ConfirmOnDevice, Backdrop, variables } from '@trezor/components';
-import { Box, BoxProps } from '@onboarding-components';
+import {
+    ConfirmOnDevice,
+    Backdrop,
+    variables,
+    CollapsibleCard,
+    CollapsibleCardProps,
+} from '@trezor/components';
 import { Translation } from '@suite-components';
 
 const ConfirmWrapper = styled.div`
@@ -32,7 +37,7 @@ const StyledBackdrop = styled(Backdrop)<{ show: boolean }>`
     z-index: auto;
 `;
 
-export interface OnboardingStepBoxProps extends BoxProps {
+export interface OnboardingStepBoxProps extends CollapsibleCardProps {
     innerActions?: React.ReactNode;
     outerActions?: React.ReactNode;
     confirmOnDevice?: number;
@@ -66,14 +71,20 @@ export const OnboardingStepBox = ({
             </ConfirmWrapper>
         )}
 
-        <Box image={image} heading={heading} description={description} nested={nested} {...rest}>
+        <CollapsibleCard
+            image={image}
+            heading={heading}
+            description={description}
+            nested={nested}
+            {...rest}
+        >
             {(children || innerActions) && (
                 <>
                     {children}
                     {innerActions && <InnerActions>{innerActions}</InnerActions>}
                 </>
             )}
-        </Box>
+        </CollapsibleCard>
 
         {outerActions && <OuterActions smallMargin={nested}>{outerActions}</OuterActions>}
     </>
