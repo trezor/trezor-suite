@@ -9,7 +9,7 @@ import { getApplicationInfo, getApplicationLog, prettifyLog } from '@suite-utils
 
 const LogWrapper = styled.pre`
     padding: 20px;
-    height: 400px;
+    height: 380px;
     width: 100%;
     overflow: auto;
     background-color: ${props => props.theme.BG_LIGHT_GREY};
@@ -17,9 +17,16 @@ const LogWrapper = styled.pre`
     font-size: ${variables.FONT_SIZE.TINY};
     text-align: left;
     word-break: break-all;
-    margin-bottom: 12px;
     box-shadow: inset 0 0 6px -2px ${({ theme }) => theme.BG_GREY};
     border-radius: 6px;
+
+    ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
+        height: 365px;
+    }
+
+    ${variables.SCREEN_QUERY.BELOW_TABLET} {
+        height: 330px;
+    }
 `;
 
 const BalanceInfoSection = styled(SectionItem)`
