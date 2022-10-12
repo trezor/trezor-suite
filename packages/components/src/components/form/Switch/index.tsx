@@ -14,6 +14,7 @@ const Container = styled.div<{ isChecked: boolean; isDisabled?: boolean; isSmall
     border-radius: 12px;
     transition: background 0.25s ease 0s;
     cursor: pointer;
+    box-sizing: border-box;
 
     :hover,
     :focus-within {

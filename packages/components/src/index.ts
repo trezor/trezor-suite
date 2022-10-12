@@ -50,6 +50,7 @@ export * from './components/Image/images';
 export * from './components/CollapsibleBox';
 export * from './components/CollapsibleCard';
 export * from './components/Passphrase/PassphraseTypeCard';
+export * from './components/DataAnalytics';
 
 export * from './constants/keyboardEvents';
 
