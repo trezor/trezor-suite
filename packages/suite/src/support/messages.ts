@@ -7358,13 +7358,19 @@ export default defineMessages({
     TR_DEVICE_CONNECTED_CONFIRMATION: {
         id: 'TR_DEVICE_CONNECTED_CONFIRMATION',
         description: 'Checkbox in coinjoin settings',
-        defaultMessage: "I'm not going to disconnect Trezor before finishing CoinJoin",
+        defaultMessage: "I'm not going to disconnect the Trezor before finishing CoinJoin",
+    },
+    TR_DEVICE_CONNECTED_TOOLTIP: {
+        id: 'TR_DEVICE_CONNECTED_TOOLTIP',
+        description: 'Tooltip in coinjoin settings',
+        defaultMessage:
+            "Most of the time you can safely disconnect Trezor and the CoinJoin will be paused. However, disconnecting during a critical signing phase can disrupt the CoinJoin round for all participants. You won't lose any money, but you may be banned from some upcoming CoinJoin rounds. All of your funds remain spendable.",
     },
     TR_TERMS_AND_PRIVACY_CONFIRMATION: {
         id: 'TR_TERMS_AND_PRIVACY_CONFIRMATION',
         description: 'Checkbox in coinjoin settings',
         defaultMessage:
-            'I agree to the <terms>Terms & Conditions</terms> and <privacy>Privacy statement</privacy>',
+            'I agree to the <trezor>Trezor Suite Terms</trezor> and <coordinator>zkSNACKs Coordinator Terms</coordinator>',
     },
     TR_ANONYMIZE: {
         id: 'TR_ANONYMIZE',

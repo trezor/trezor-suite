@@ -13,6 +13,7 @@ import {
     COINJOIN_STRATEGIES,
     CoinJoinStrategy,
 } from './CoinjoinDefaultStrategy';
+import { TooltipIcon } from './TooltipIcon';
 
 const StyledCard = styled(Card)`
     margin-bottom: 8px;
@@ -126,15 +127,18 @@ export const CoinjoinSetupStrategies = ({ account }: CoinjoinSetupStrategiesProp
                 </ConfirmationsHeading>
                 <StyledCheckbox isChecked={connectedConfirmed} onClick={toggleConnectConfirmation}>
                     <Translation id="TR_DEVICE_CONNECTED_CONFIRMATION" />
+                    <TooltipIcon message="TR_DEVICE_CONNECTED_TOOLTIP" />
                 </StyledCheckbox>
                 <StyledCheckbox isChecked={termsConfirmed} onClick={toggleTermsConfirmation}>
                     <Translation
                         id="TR_TERMS_AND_PRIVACY_CONFIRMATION"
                         values={{
-                            privacy: chunks => (
-                                <StyledLink href="https://trezor.io">{chunks}</StyledLink>
-                            ), // TODO: replace URL
-                            terms: chunks => (
+                            coordinator: chunks => (
+                                <StyledLink href="https://github.com/zkSNACKs/WalletWasabi/tree/master/WalletWasabi/Legal/Assets">
+                                    {chunks}
+                                </StyledLink>
+                            ),
+                            trezor: chunks => (
                                 <StyledLink href="https://trezor.io">{chunks}</StyledLink>
                             ), // TODO: replace URL
                         }}
