@@ -64,8 +64,8 @@ class InvityAPI {
 
     servers = {
         production: 'https://exchange.trezor.io',
-        staging1: 'https://staging-exchange1.sldev.cz',
-        staging2: 'https://staging-exchange2.sldev.cz',
+        staging: 'https://staging-exchange.invity.io',
+        dev: 'https://dev-exchange.invity.io',
         localhost: 'http://localhost:3330',
     } as InvityServers;
 

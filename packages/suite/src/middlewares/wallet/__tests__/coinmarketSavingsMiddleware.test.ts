@@ -53,7 +53,7 @@ export const getInitialState = ({ coinmarket, selectedAccount }: Args = {}) => (
         {
             settings: {
                 debug: {
-                    invityServerEnvironment: 'development',
+                    invityServerEnvironment: 'dev',
                 },
             },
         } as any,
