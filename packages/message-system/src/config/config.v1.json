@@ -264,6 +264,40 @@
                     }
                 }
             }
+        },
+        {
+            "conditions": [
+                {
+                    "os": {
+                        "macos": "!",
+                        "linux": "!",
+                        "windows": "!",
+                        "android": "*",
+                        "ios": "!",
+                        "chromeos": "!"
+                    },
+                    "browser": {
+                        "firefox": "!",
+                        "chrome": ">105",
+                        "chromium": ">105"
+                    }
+                }
+            ],
+            "message": {
+                "id": "b6c6dbeb-dca2-4481-b421-0381d2bd4927",
+                "priority": 91,
+                "dismissible": true,
+                "variant": "warning",
+                "category": "banner",
+                "content": {
+                    "en-GB": "USB connections are currently unavailable for Chrome on Android. Please use the desktop app instead.",
+                    "en": "USB connections are currently unavailable for Chrome on Android. Please use the desktop app instead.",
+                    "es": "Las conexiones con USB no están disponibles para Chrome en Android. Por favor usa la aplicación de escritorio.",
+                    "cs": "V prohlížeči Chrome na Androidu je momentálně nedostupné USB připojení. Použijte prosím počítačovou verzi aplikace.",
+                    "ru": "В настоящее время USB-подключение не работает в Chrome на Android. Пожалуйста, воспользуйтесь программой для настольных компьютеров.",
+                    "ja": "現在、AndroidのChromeでは、USB接続がうまくいきません。デスクトップ用ソフトをご利用ください。"
+                }
+            }
         }
     ]
 }
