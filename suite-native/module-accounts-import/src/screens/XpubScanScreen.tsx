@@ -19,8 +19,10 @@ import { yup } from '@trezor/validation';
 
 import { Camera, CAMERA_HEIGHT } from '../components/Camera';
 
-const coinStyle = prepareNativeStyle(_ => ({
+const coinStyle = prepareNativeStyle(utils => ({
     flexDirection: 'row',
+    borderRadius: utils.borders.radii.large,
+    backgroundColor: 'rgba(255, 255, 255, 0.22)',
 }));
 
 const cameraStyle = prepareNativeStyle(_ => ({
@@ -36,14 +38,28 @@ const cameraPlaceholderStyle = prepareNativeStyle(utils => ({
     backgroundColor: utils.colors.gray800,
 }));
 
-const chipStyle = prepareNativeStyle(utils => ({
+const chipStyle = prepareNativeStyle<{ isSelected: boolean }>((utils, { isSelected }) => ({
+    ...utils.typography.label,
     flex: 1,
-    borderRadius: utils.borders.radii.small,
+    backgroundColor: 'transparent',
+    borderColor: 'transparent',
+    borderRadius: utils.borders.radii.large,
+    extend: {
+        condition: isSelected,
+        style: {
+            backgroundColor: utils.colors.gray0,
+        },
+    },
 }));
 
 const devXpubButtonStyle = prepareNativeStyle(utils => ({
     marginTop: utils.spacings.large,
     borderRadius: utils.borders.radii.round,
+}));
+
+const submitButtonStyle = prepareNativeStyle(utils => ({
+    borderRadius: utils.borders.radii.round,
+    backgroundColor: utils.colors.forest,
 }));
 
 const DEFAULT_CURRENCY_SYMBOL = 'btc';
@@ -62,7 +78,7 @@ export const XpubScanScreen = ({
     const [selectedCurrencySymbol, setSelectedCurrencySymbol] =
         useState<NetworkSymbol>(DEFAULT_CURRENCY_SYMBOL);
     const [cameraRequested, setCameraRequested] = useState<boolean>(false);
-    const { applyStyle } = useNativeStyles();
+    const { applyStyle, utils } = useNativeStyles();
 
     const form = useForm<XpubFormValues>({
         validation: xpubFormValidationSchema,
@@ -113,15 +129,21 @@ export const XpubScanScreen = ({
                     <Chip
                         icon={<CryptoIcon name="btc" />}
                         title="Bitcoin"
+                        titleColor={utils.colors.gray200}
                         onSelect={() => handleSelectCurrency('btc')}
-                        style={applyStyle(chipStyle)}
+                        style={applyStyle(chipStyle, {
+                            isSelected: selectedCurrencySymbol === 'btc',
+                        })}
                         isSelected={selectedCurrencySymbol === 'btc'}
                     />
                     <Chip
                         icon={<CryptoIcon name="test" />}
                         title="Testnet"
+                        titleColor={utils.colors.gray200}
                         onSelect={() => handleSelectCurrency('test')}
-                        style={applyStyle(chipStyle)}
+                        style={applyStyle(chipStyle, {
+                            isSelected: selectedCurrencySymbol === 'test',
+                        })}
                         isSelected={selectedCurrencySymbol === 'test'}
                     />
                 </View>
@@ -146,13 +168,9 @@ export const XpubScanScreen = ({
                 </Box>
 
                 <Form form={form}>
-                    <VStack>
+                    <VStack spacing="medium">
                         <TextInputField name="xpubAddress" label="Enter x-pub..." />
-                        <Button
-                            onPress={() => {
-                                onXpubFormSubmit();
-                            }}
-                        >
+                        <Button style={applyStyle(submitButtonStyle)} onPress={onXpubFormSubmit}>
                             Submit
                         </Button>
                     </VStack>

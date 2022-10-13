@@ -2,6 +2,7 @@ import React, { ReactNode } from 'react';
 import { TouchableOpacity } from 'react-native';
 
 import { NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { CSSColor } from '@trezor/theme/libDev/src';
 
 import { Box } from './Box';
 import { Text } from './Text';
@@ -13,10 +14,12 @@ type ChipProps = {
     icon: ReactNode;
     isSelected?: boolean;
     style?: NativeStyleObject;
+    titleColor?: CSSColor;
 };
 
 type ChipStyleProps = {
     isSelected: boolean;
+    titleColor?: CSSColor;
 };
 const chipStyle = prepareNativeStyle<ChipStyleProps>((utils, { isSelected }) => ({
     flexDirection: 'row',
@@ -38,9 +41,9 @@ const chipStyle = prepareNativeStyle<ChipStyleProps>((utils, { isSelected }) => 
     },
 }));
 
-const chipTitleStyle = prepareNativeStyle<ChipStyleProps>((utils, { isSelected }) => ({
+const chipTitleStyle = prepareNativeStyle<ChipStyleProps>((utils, { isSelected, titleColor }) => ({
     ...utils.typography.hint,
-    color: utils.colors.gray800,
+    color: titleColor || utils.colors.gray800,
     extend: {
         condition: isSelected,
         style: {
@@ -65,6 +68,7 @@ export const Chip = ({
     onSelect,
     description,
     icon,
+    titleColor,
     isSelected = false,
     style,
 }: ChipProps) => {
@@ -74,7 +78,7 @@ export const Chip = ({
         <TouchableOpacity onPress={onSelect} style={[applyStyle(chipStyle, { isSelected }), style]}>
             <Box>{icon}</Box>
             <Box style={applyStyle(textWrapperStyle)}>
-                <Text style={applyStyle(chipTitleStyle, { isSelected })}>{title}</Text>
+                <Text style={applyStyle(chipTitleStyle, { isSelected, titleColor })}>{title}</Text>
                 {description && <Text style={applyStyle(chipDescriptionStyle)}>{description}</Text>}
             </Box>
         </TouchableOpacity>
