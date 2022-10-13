@@ -65,7 +65,6 @@ export interface InvokeChannels {
     'metadata/read': (options: { file: string }) => InvokeResult<string>;
     'metadata/write': (options: { file: string; content: string }) => InvokeResult;
     'server/request-address': (route: string) => string | undefined;
-    'tor/get-address': () => string;
     'tor/toggle': (shouldEnableTor: boolean) => InvokeResult;
     'user-data/clear': () => InvokeResult;
     'udev/install': () => InvokeResult;

@@ -157,11 +157,6 @@ const load = async ({ mainWindow, store, interceptor }: Dependencies) => {
         mainWindow.webContents.send('tor/status', store.getTorSettings().running);
     });
 
-    ipcMain.handle('tor/get-address', () => {
-        logger.debug('tor', `Getting address (${store.getTorSettings().address})`);
-        return store.getTorSettings().address;
-    });
-
     interceptor.onBeforeRequest(details => {
         const { hostname, protocol } = new URL(details.url);
 
