@@ -40,7 +40,7 @@ export const useOffers = ({ selectedAccount }: UseCoinmarketExchangeFormProps) =
     const timer = useTimer();
     const { isLocked } = useDevice();
     const { account, network } = selectedAccount;
-    const { areSatsUsed } = useBitcoinAmountUnit(account.symbol);
+    const { souldSendInSats } = useBitcoinAmountUnit(account.symbol);
     const [callInProgress, setCallInProgress] = useState<boolean>(isLocked() || false);
     const [selectedQuote, setSelectedQuote] = useState<ExchangeTrade>();
     const [receiveAccount, setReceiveAccount] = useState<Account | undefined>();
@@ -302,7 +302,7 @@ export const useOffers = ({ selectedAccount }: UseCoinmarketExchangeFormProps) =
             selectedQuote.sendAddress &&
             selectedQuote.sendStringAmount
         ) {
-            const sendStringAmount = areSatsUsed
+            const sendStringAmount = souldSendInSats
                 ? amountToSatoshi(selectedQuote.sendStringAmount, network.decimals)
                 : selectedQuote.sendStringAmount;
             const result = await recomposeAndSign(

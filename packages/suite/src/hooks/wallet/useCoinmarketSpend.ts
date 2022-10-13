@@ -67,7 +67,7 @@ export const useCoinmarketSpend = ({
     const { translationString } = useTranslation();
 
     const { account, network } = selectedAccount;
-    const { areSatsUsed } = useBitcoinAmountUnit(account.symbol);
+    const { souldSendInSats } = useBitcoinAmountUnit(account.symbol);
     const { sellInfo, language, fees } = useSelector(state => ({
         sellInfo: state.wallet.coinmarket.sell.sellInfo,
         language: state.suite.settings.language,
@@ -222,7 +222,7 @@ export const useCoinmarketSpend = ({
                                                 ...DEFAULT_PAYMENT,
                                                 address: trade.destinationAddress || '',
                                                 amount:
-                                                    trade.cryptoAmount && areSatsUsed
+                                                    trade.cryptoAmount && souldSendInSats
                                                         ? amountToSatoshi(
                                                               trade.cryptoAmount.toString(),
                                                               network.decimals,
@@ -261,7 +261,7 @@ export const useCoinmarketSpend = ({
         provider,
         addNotification,
         composeRequest,
-        areSatsUsed,
+        souldSendInSats,
         network.decimals,
     ]);
 

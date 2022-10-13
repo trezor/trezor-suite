@@ -21,7 +21,7 @@ export const useOffers = ({ selectedAccount }: UseOffersProps) => {
     const timer = useTimer();
 
     const { account, network } = selectedAccount;
-    const { areSatsUsed } = useBitcoinAmountUnit(account.symbol);
+    const { souldSendInSats } = useBitcoinAmountUnit(account.symbol);
     const [callInProgress, setCallInProgress] = useState<boolean>(false);
     const [selectedQuote, setSelectedQuote] = useState<SellFiatTrade>();
 
@@ -255,7 +255,7 @@ export const useOffers = ({ selectedAccount }: UseOffersProps) => {
             destinationAddress &&
             selectedQuote.cryptoStringAmount
         ) {
-            const cryptoStringAmount = areSatsUsed
+            const cryptoStringAmount = souldSendInSats
                 ? amountToSatoshi(selectedQuote.cryptoStringAmount, network.decimals)
                 : selectedQuote.cryptoStringAmount;
             const result = await recomposeAndSign(

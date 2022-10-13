@@ -62,7 +62,7 @@ const CryptoInput = ({ activeInput, setActiveInput }: Props) => {
         setAmountLimits,
         composeRequest,
     } = useCoinmarketSellFormContext();
-    const { areSatsUsed } = useBitcoinAmountUnit(account.symbol);
+    const { souldSendInSats } = useBitcoinAmountUnit(account.symbol);
 
     const uppercaseSymbol = account.symbol.toUpperCase();
     const cryptoOption = {
@@ -89,7 +89,7 @@ const CryptoInput = ({ activeInput, setActiveInput }: Props) => {
                     return <Translation id="AMOUNT_IS_NOT_NUMBER" />;
                 }
 
-                if (areSatsUsed && !isInteger(value)) {
+                if (souldSendInSats && !isInteger(value)) {
                     return 'AMOUNT_IS_NOT_INTEGER';
                 }
 
@@ -111,7 +111,7 @@ const CryptoInput = ({ activeInput, setActiveInput }: Props) => {
 
                     let minCrypto = 0;
                     if (amountLimits.minCrypto) {
-                        minCrypto = areSatsUsed
+                        minCrypto = souldSendInSats
                             ? Number(
                                   amountToSatoshi(
                                       amountLimits.minCrypto.toString(),
@@ -138,7 +138,7 @@ const CryptoInput = ({ activeInput, setActiveInput }: Props) => {
 
                     let maxCrypto = 0;
                     if (amountLimits.maxCrypto) {
-                        maxCrypto = areSatsUsed
+                        maxCrypto = souldSendInSats
                             ? Number(
                                   amountToSatoshi(
                                       amountLimits.maxCrypto.toString(),
@@ -232,7 +232,7 @@ const CryptoInput = ({ activeInput, setActiveInput }: Props) => {
                                             }.svg`}
                                         />
                                     )}
-                                    <Label>{areSatsUsed ? 'sat' : option.label}</Label>
+                                    <Label>{souldSendInSats ? 'sat' : option.label}</Label>
                                 </Option>
                             )}
                         />

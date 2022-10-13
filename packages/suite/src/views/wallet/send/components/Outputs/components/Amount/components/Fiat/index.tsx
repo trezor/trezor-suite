@@ -48,7 +48,7 @@ const Fiat = ({ output, outputId }: Props) => {
         composeTransaction,
     } = useSendFormContext();
 
-    const { areSatsUsed } = useBitcoinAmountUnit(account.symbol);
+    const { souldSendInSats } = useBitcoinAmountUnit(account.symbol);
 
     const inputName = `outputs[${outputId}].fiat`;
     const currencyInputName = `outputs[${outputId}].currency`;
@@ -105,7 +105,9 @@ const Fiat = ({ output, outputId }: Props) => {
                       )
                     : null;
 
-            const formattedAmount = areSatsUsed ? amountToSatoshi(amount || '0', decimals) : amount;
+            const formattedAmount = souldSendInSats
+                ? amountToSatoshi(amount || '0', decimals)
+                : amount;
 
             if (formattedAmount) {
                 // set Amount value and validate if
@@ -129,7 +131,7 @@ const Fiat = ({ output, outputId }: Props) => {
             network.decimals,
             setValue,
             token,
-            areSatsUsed,
+            souldSendInSats,
         ],
     );
 
@@ -152,7 +154,7 @@ const Fiat = ({ output, outputId }: Props) => {
                     const amountValue = getDefaultValue(amountInputName, '');
 
                     const formattedAmount = new BigNumber(
-                        areSatsUsed ? formatAmount(amountValue, network.decimals) : amountValue,
+                        souldSendInSats ? formatAmount(amountValue, network.decimals) : amountValue,
                     );
 
                     if (
@@ -180,7 +182,7 @@ const Fiat = ({ output, outputId }: Props) => {
             getDefaultValue,
             inputName,
             setValue,
-            areSatsUsed,
+            souldSendInSats,
             network.decimals,
         ],
     );

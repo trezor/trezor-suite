@@ -30,7 +30,7 @@ const Inputs = () => {
         setActiveInput,
         getValues,
     } = useCoinmarketSellFormContext();
-    const { areSatsUsed } = useBitcoinAmountUnit(account.symbol);
+    const { souldSendInSats } = useBitcoinAmountUnit(account.symbol);
 
     // if FIAT_INPUT has a valid value, set it as the activeInput
     if (watch(FIAT_INPUT) && !errors[FIAT_INPUT] && activeInput === CRYPTO_INPUT) {
@@ -59,7 +59,7 @@ const Inputs = () => {
                       .dividedBy(divisor)
                       .decimalPlaces(network.decimals)
                       .toString();
-            const cryptoInputValue = areSatsUsed
+            const cryptoInputValue = souldSendInSats
                 ? amountToSatoshi(amount, network.decimals)
                 : amount;
             setValue(CRYPTO_INPUT, cryptoInputValue, { shouldDirty: true });
@@ -69,7 +69,7 @@ const Inputs = () => {
         },
         [
             account.formattedBalance,
-            areSatsUsed,
+            souldSendInSats,
             clearErrors,
             network.decimals,
             onCryptoAmountChange,

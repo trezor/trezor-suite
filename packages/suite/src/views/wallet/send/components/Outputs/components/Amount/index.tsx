@@ -119,7 +119,7 @@ const Amount = ({ output, outputId }: Props) => {
     const { symbol, tokens, availableBalance, balance } = account;
 
     const theme = useTheme();
-    const { areSatsUsed } = useBitcoinAmountUnit(symbol);
+    const { souldSendInSats } = useBitcoinAmountUnit(symbol);
 
     const inputName = `outputs[${outputId}].amount`;
     const tokenInputName = `outputs[${outputId}].token`;
@@ -141,14 +141,14 @@ const Amount = ({ output, outputId }: Props) => {
     let decimals: number;
     if (token) {
         decimals = token.decimals;
-    } else if (areSatsUsed) {
+    } else if (souldSendInSats) {
         decimals = 0;
     } else {
         decimals = network.decimals;
     }
 
     const withTokens = hasNetworkFeatures(account, 'tokens');
-    const symbolToUse = areSatsUsed ? 'sat' : symbol.toUpperCase();
+    const symbolToUse = souldSendInSats ? 'sat' : symbol.toUpperCase();
 
     const handleInputChange = useCallback(
         event => {
@@ -202,10 +202,11 @@ const Amount = ({ output, outputId }: Props) => {
             const rawDust = feeInfo?.dustLimit?.toString();
 
             // amounts below dust are not allowed
-            let dust = rawDust && (areSatsUsed ? rawDust : formatNetworkAmount(rawDust, symbol));
+            let dust =
+                rawDust && (souldSendInSats ? rawDust : formatNetworkAmount(rawDust, symbol));
 
             if (dust && amountBig.lte(dust)) {
-                if (areSatsUsed) {
+                if (souldSendInSats) {
                     dust = amountToSatoshi(dust, decimals);
                 }
 
@@ -213,7 +214,9 @@ const Amount = ({ output, outputId }: Props) => {
                     <Translation
                         key="AMOUNT_IS_BELOW_DUST"
                         id="AMOUNT_IS_BELOW_DUST"
-                        values={{ dust: `${dust} ${areSatsUsed ? 'sat' : symbol.toUpperCase()}` }}
+                        values={{
+                            dust: `${dust} ${souldSendInSats ? 'sat' : symbol.toUpperCase()}`,
+                        }}
                     />
                 );
             }
@@ -223,7 +226,7 @@ const Amount = ({ output, outputId }: Props) => {
             if (token) {
                 formattedAvailableBalance = token.balance || '0';
             } else {
-                formattedAvailableBalance = areSatsUsed
+                formattedAvailableBalance = souldSendInSats
                     ? availableBalance
                     : formatNetworkAmount(availableBalance, symbol);
             }
