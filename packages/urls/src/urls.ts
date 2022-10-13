@@ -73,3 +73,5 @@ export const FIREFOX_UPDATE_URL =
 export const CHROMIUM_URL = 'https://www.chromium.org/';
 export const ELECTRON_URL = 'https://www.electronjs.org/';
 export const TOR_PROJECT_URL = 'https://www.torproject.org/';
+export const ZKSNACKS_TERMS_URL =
+    'https://github.com/zkSNACKs/WalletWasabi/blob/master/WalletWasabi/Legal/Assets/LegalDocumentsWw2.txt';
