@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 
+import { TooltipSymbol, Translation } from '@suite-components';
 import { ExtendedMessageDescriptor } from '@suite-types';
 import { variables } from '@trezor/components';
-import { TooltipIcon } from './TooltipIcon';
 
 const Row = styled.div`
     display: flex;
@@ -33,7 +33,7 @@ export const DetailRow = ({ term, tooltipMessage, value }: DetailRowProps) => (
     <Row>
         <Key>
             {term}
-            {!!tooltipMessage && <TooltipIcon message={tooltipMessage} />}
+            {!!tooltipMessage && <TooltipSymbol content={<Translation id={tooltipMessage} />} />}
         </Key>
         <Value>{value}</Value>
     </Row>

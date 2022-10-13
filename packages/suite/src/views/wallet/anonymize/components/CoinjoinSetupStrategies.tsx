@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 
-import { Button, Card, Checkbox, Link, Tooltip, variables } from '@trezor/components';
+import { Card, Checkbox, Link, TooltipButton, variables } from '@trezor/components';
+import { ZKSNACKS_TERMS_URL } from '@trezor/urls';
 import { startCoinjoinSession } from '@wallet-actions/coinjoinAccountActions';
-import { Translation } from '@suite-components';
+import { TooltipSymbol, Translation } from '@suite-components';
 import { useActions } from '@suite-hooks';
 import { Account } from '@suite-common/wallet-types';
 import { CryptoAmountWithHeader } from '@wallet-components/PrivacyAccount/CryptoAmountWithHeader';
@@ -13,7 +14,6 @@ import {
     COINJOIN_STRATEGIES,
     CoinJoinStrategy,
 } from './CoinjoinDefaultStrategy';
-import { TooltipIcon } from './TooltipIcon';
 
 const StyledCard = styled(Card)`
     margin-bottom: 8px;
@@ -44,8 +44,13 @@ const AmountHeading = styled.div`
     color: ${({ theme }) => theme.TYPE_GREEN};
 `;
 
+const CheckboxWrapper = styled.div`
+    align-items: center;
+    display: flex;
+    margin: 16px 0;
+`;
+
 const StyledCheckbox = styled(Checkbox)`
-    margin-top: 16px;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
@@ -53,7 +58,7 @@ const StyledLink = styled(Link)`
     text-decoration: underline;
 `;
 
-const StyledButton = styled(Button)`
+const StyledTooltipButton = styled(TooltipButton)`
     margin: 24px auto 0 auto;
 
     :disabled {
@@ -125,18 +130,21 @@ export const CoinjoinSetupStrategies = ({ account }: CoinjoinSetupStrategiesProp
                 <ConfirmationsHeading>
                     <Translation id="TR_CONFIRMATIONS" />
                 </ConfirmationsHeading>
-                <StyledCheckbox isChecked={connectedConfirmed} onClick={toggleConnectConfirmation}>
-                    <Translation id="TR_DEVICE_CONNECTED_CONFIRMATION" />
-                    <TooltipIcon message="TR_DEVICE_CONNECTED_TOOLTIP" />
-                </StyledCheckbox>
+                <CheckboxWrapper>
+                    <StyledCheckbox
+                        isChecked={connectedConfirmed}
+                        onClick={toggleConnectConfirmation}
+                    >
+                        <Translation id="TR_DEVICE_CONNECTED_CONFIRMATION" />
+                    </StyledCheckbox>
+                    <TooltipSymbol content={<Translation id="TR_DEVICE_CONNECTED_TOOLTIP" />} />
+                </CheckboxWrapper>
                 <StyledCheckbox isChecked={termsConfirmed} onClick={toggleTermsConfirmation}>
                     <Translation
                         id="TR_TERMS_AND_PRIVACY_CONFIRMATION"
                         values={{
                             coordinator: chunks => (
-                                <StyledLink href="https://github.com/zkSNACKs/WalletWasabi/tree/master/WalletWasabi/Legal/Assets">
-                                    {chunks}
-                                </StyledLink>
+                                <StyledLink href={ZKSNACKS_TERMS_URL}>{chunks}</StyledLink>
                             ),
                             trezor: chunks => (
                                 <StyledLink href="https://trezor.io">{chunks}</StyledLink>
@@ -146,15 +154,15 @@ export const CoinjoinSetupStrategies = ({ account }: CoinjoinSetupStrategiesProp
                 </StyledCheckbox>
             </StyledCard>
 
-            <Tooltip
-                content={!allChecked && <Translation id="TR_ANONYMISATION_BUTTON_DISABLED" />}
-                interactive={false}
-                cursor="pointer"
+            <StyledTooltipButton
+                onClick={anonymize}
+                isDisabled={!allChecked}
+                tooltipContent={
+                    !allChecked && <Translation id="TR_ANONYMISATION_BUTTON_DISABLED" />
+                }
             >
-                <StyledButton isDisabled={!allChecked} onClick={anonymize}>
-                    <Translation id="TR_ANONYMIZE" />
-                </StyledButton>
-            </Tooltip>
+                <Translation id="TR_ANONYMIZE" />
+            </StyledTooltipButton>
         </>
     );
 };
