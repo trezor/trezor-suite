@@ -1,7 +1,7 @@
 // @group:passphrase
 // @retry=2
 
-describe('Passphrase - legacy flow', () => {
+describe.skip('Passphrase - legacy flow', () => {
     beforeEach(() => {
         cy.task('startEmu', { wipe: true, version: '2.2.0' });
         cy.task('setupEmu', { mnemonic: 'all all all all all all all all all all all all' });

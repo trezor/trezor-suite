@@ -1,7 +1,7 @@
 // @group:passphrase
 // @retry=2
 
-describe('Passphrase', () => {
+describe.skip('Passphrase', () => {
     beforeEach(() => {
         cy.task('startEmu', { wipe: true });
         cy.task('setupEmu', { passphrase_protection: true });

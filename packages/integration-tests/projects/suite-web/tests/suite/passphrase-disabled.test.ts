@@ -4,7 +4,7 @@
 const DEFAULT_STANDARD_WALLET_LABEL = 'Standard wallet';
 const DEFAULT_HIDDEN_WALLET_LABEL = 'Hidden wallet #';
 
-describe('Suite switch wallet modal', () => {
+describe.skip('Suite switch wallet modal', () => {
     beforeEach(() => {
         cy.viewport(1080, 1440).resetDb();
         cy.task('startBridge');
