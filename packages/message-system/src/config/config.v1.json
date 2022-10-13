@@ -1,20 +1,20 @@
 {
     "version": 1,
-    "timestamp": "2022-06-07T00:00:00+00:00",
-    "sequence": 15,
+    "timestamp": "2022-10-13T00:00:00+00:00",
+    "sequence": 16,
     "actions": [
         {
             "conditions": [
                 {
                     "environment": {
-                        "desktop": "<22.3.2",
+                        "desktop": "<22.8.2",
                         "mobile": "!",
                         "web": "!"
                     }
                 }
             ],
             "message": {
-                "id": "a99d0ad4-3bab-4630-9352-fd17a518153d",
+                "id": "a99d0ad4-3bab-4630-9352-fd17a518153e",
                 "priority": 91,
                 "dismissible": true,
                 "variant": "warning",
