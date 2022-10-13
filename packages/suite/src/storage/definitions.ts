@@ -16,7 +16,7 @@ import type {
 } from '@wallet-types';
 
 import type { MessageSystem } from '@trezor/message-system';
-import type { BackendSettings, WalletSettings } from '@suite-common/wallet-types';
+import type { BackendSettings, WalletSettings, CoinjoinAccount } from '@suite-common/wallet-types';
 import type { GraphData } from '@suite-common/wallet-graph';
 import type { StorageUpdateMessage } from '@trezor/suite-storage';
 
@@ -66,6 +66,10 @@ export interface SuiteDBSchema extends DBSchema {
         indexes: {
             deviceState: string;
         };
+    };
+    coinjoinAccounts: {
+        key: string; // accountKey
+        value: CoinjoinAccount;
     };
     discovery: {
         key: string;

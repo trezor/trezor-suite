@@ -1,5 +1,9 @@
 # Storage changelog
 
+## 32
+
+-   added `coinjoinAccounts`
+
 ## 31
 
 -   txs are now stored unconverted (mostly `sat` units instead of `BTC`), therefore migration was needed
