@@ -13,3 +13,8 @@ packages/connect-common/files/firmware/1/*.bin filter=lfs diff=lfs merge=lfs -te
 packages/connect-common/files/firmware/2/*.bin filter=lfs diff=lfs merge=lfs -text
 # Changelog to be merged via union always.
 CHANGELOG.md merge=union
+packages/suite-data/files/bin/coinjoin/linux-arm64/WalletWasabi.WabiSabiClientLibrary filter=lfs diff=lfs merge=lfs -text
+packages/suite-data/files/bin/coinjoin/linux-x64/WalletWasabi.WabiSabiClientLibrary filter=lfs diff=lfs merge=lfs -text
+packages/suite-data/files/bin/coinjoin/osx-arm64/WalletWasabi.WabiSabiClientLibrary filter=lfs diff=lfs merge=lfs -text
+packages/suite-data/files/bin/coinjoin/osx-x64/WalletWasabi.WabiSabiClientLibrary filter=lfs diff=lfs merge=lfs -text
+packages/suite-data/files/bin/coinjoin/win-x64/WalletWasabi.WabiSabiClientLibrary.exe filter=lfs diff=lfs merge=lfs -text
