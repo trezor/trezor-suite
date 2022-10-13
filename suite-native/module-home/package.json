@@ -15,6 +15,7 @@
         "@react-navigation/stack": "^6.2.2",
         "@suite-common/fiat-services": "*",
         "@suite-common/formatters": "*",
+        "@suite-common/suite-utils": "*",
         "@suite-common/wallet-config": "*",
         "@suite-common/wallet-core": "*",
         "@suite-native/atoms": "*",

@@ -3,39 +3,13 @@ import React from 'react';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Box } from '@suite-native/atoms';
 
-import { TimeFrameItems, TimeFrameValues } from '../types';
+import { TimeFrameValues } from '../types';
 import { TimeSwitchItem } from './TimeSwitchItem';
+import { timeSwitchItems } from '../config';
 
 type TimeSwitchProps = {
     selectedTimeFrame: TimeFrameValues;
     onSelectTimeFrame: (timeFrame: TimeFrameValues) => void;
-};
-
-export const timeSwitchItems: TimeFrameItems = {
-    hour: {
-        shortcut: '1h',
-        value: 'hour',
-    },
-    day: {
-        shortcut: '1d',
-        value: 'day',
-    },
-    week: {
-        shortcut: '1w',
-        value: 'week',
-    },
-    month: {
-        shortcut: '1m',
-        value: 'month',
-    },
-    year: {
-        shortcut: '1y',
-        value: 'year',
-    },
-    all: {
-        shortcut: 'all',
-        value: 'all',
-    },
 };
 
 const timeSwitchStyle = prepareNativeStyle(() => ({

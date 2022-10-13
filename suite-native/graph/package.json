@@ -10,6 +10,7 @@
         "type-check": "tsc --build"
     },
     "dependencies": {
+        "@shopify/react-native-skia": "0.1.152",
         "@suite-common/formatters": "*",
         "@suite-native/atoms": "*",
         "@suite-native/test-utils": "*",

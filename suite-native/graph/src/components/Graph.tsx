@@ -6,7 +6,6 @@ import { Box } from '@suite-native/atoms';
 
 import { TimeSwitch } from './TimeSwitch';
 import { TimeFrameValues } from '../types';
-import { generateRandomGraphData } from '../dummyData';
 
 type GraphProps = {
     points?: GraphPoint[];
@@ -15,7 +14,9 @@ type GraphProps = {
 };
 
 const graphWrapperStyle = prepareNativeStyle(() => ({
+    alignSelf: 'center',
     width: '100%',
+    aspectRatio: 1.4,
 }));
 
 const graphStyle = prepareNativeStyle(() => ({
@@ -24,37 +25,31 @@ const graphStyle = prepareNativeStyle(() => ({
     marginVertical: 40,
 }));
 
-const POINT_COUNT = 70;
-const POINTS = generateRandomGraphData(POINT_COUNT);
-
 export const Graph = ({
-    points = POINTS,
+    points = [],
     selectedTimeFrame = 'day',
     onSelectTimeFrame,
 }: GraphProps) => {
     const { applyStyle } = useNativeStyles();
 
-    console.log('LALA: ', points.length);
+    const validGraphPoints = points?.filter(point => !Number.isNaN(point.value));
 
-    if (points.length) {
-        return (
-            <Box style={applyStyle(graphWrapperStyle)}>
+    return (
+        <Box style={applyStyle(graphWrapperStyle)}>
+            {validGraphPoints.length ? (
                 <LineGraph
                     style={applyStyle(graphStyle)}
                     animated={false}
-                    points={points}
+                    points={validGraphPoints}
                     color="#00854D"
-                    // enablePanGesture
-                    enableFadeInMask={false}
                 />
-                {onSelectTimeFrame && (
-                    <TimeSwitch
-                        selectedTimeFrame={selectedTimeFrame}
-                        onSelectTimeFrame={onSelectTimeFrame}
-                    />
-                )}
-            </Box>
-        );
-    }
-    return null;
+            ) : null}
+            {onSelectTimeFrame && (
+                <TimeSwitch
+                    selectedTimeFrame={selectedTimeFrame}
+                    onSelectTimeFrame={onSelectTimeFrame}
+                />
+            )}
+        </Box>
+    );
 };

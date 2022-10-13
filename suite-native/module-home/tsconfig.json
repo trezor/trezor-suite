@@ -9,6 +9,9 @@
             "path": "../../suite-common/formatters"
         },
         {
+            "path": "../../suite-common/suite-utils"
+        },
+        {
             "path": "../../suite-common/wallet-config"
         },
         {

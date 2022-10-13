@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { GraphPoint } from 'react-native-graph';
 
-import { eachMinuteOfInterval, getUnixTime, subDays, subHours } from 'date-fns';
+import { eachMinuteOfInterval, getUnixTime, subMinutes } from 'date-fns';
 
-import { Graph, TimeFrameValues } from '@suite-native/graph';
+import { Graph, TimeFrameValues, timeSwitchItems } from '@suite-native/graph';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Box, Text } from '@suite-native/atoms';
 import { Icon } from '@trezor/icons';
 import { useFormatters } from '@suite-common/formatters';
 import { getFiatRatesForTimestamps } from '@suite-common/fiat-services';
+import { getBlockbookSafeTime } from '@suite-common/suite-utils';
+import TrezorConnect from '@trezor/connect';
 
 const arrowStyle = prepareNativeStyle(() => ({
     marginRight: 4,
@@ -20,52 +22,41 @@ export const PortfolioGraph = () => {
     const [graphPoints, setGraphPoints] = useState<GraphPoint[]>([]);
     const [selectedTimeFrame, setSelectedTimeFrame] = useState<TimeFrameValues>('day');
 
-    const getDatesInSelectedTimeFrame = (timeFrame: TimeFrameValues) => {
-        const endOfRangeDate = new Date();
-
-        switch (timeFrame) {
-            case 'day': {
-                const startOfRangeDate = subDays(endOfRangeDate, 1);
-                return eachMinuteOfInterval(
-                    {
-                        start: startOfRangeDate.getTime(),
-                        end: endOfRangeDate.getTime(),
-                    },
-                    {
-                        step: 30,
-                    },
-                );
-            }
-            case 'hour': {
-                const startOfRangeDate = subHours(endOfRangeDate, 1);
-                return eachMinuteOfInterval(
-                    {
-                        start: startOfRangeDate.getTime(),
-                        end: endOfRangeDate.getTime(),
-                    },
-                    {
-                        step: 5,
-                    },
-                );
-            }
-            default:
-        }
-        return [];
-    };
-
     useEffect(() => {
-        const getFiatRates = async (datesInRangeInUnixTime: number[]) => {
+        const fetchFiatRates = async (startOfRangeDate: Date, endOfRangeDate: Date) => {
+            const datesInRange = eachMinuteOfInterval(
+                {
+                    start: startOfRangeDate.getTime(),
+                    end: endOfRangeDate.getTime(),
+                },
+                {
+                    step: timeSwitchItems[selectedTimeFrame].stepInMinutes,
+                },
+            );
+
+            const datesInRangeInUnixTime = datesInRange.map(date =>
+                getBlockbookSafeTime(getUnixTime(date)),
+            );
+
+            const stepInMinutes = timeSwitchItems[selectedTimeFrame].stepInMinutes ?? 3600 * 24; // fallback to day
+
+            const accountBalanceHistory = await TrezorConnect.blockchainGetAccountBalanceHistory({
+                coin: 'btc',
+                descriptor:
+                    'xpub6BiVtCpG9fQPxnPmHXG8PhtzQdWC2Su4qWu6XW9tpWFYhxydCLJGrWBJZ5H6qTAHdPQ7pQhtpjiYZVZARo14qHiay2fvrX996oEP42u8wZy',
+                from: getBlockbookSafeTime(getUnixTime(startOfRangeDate)),
+                to: getBlockbookSafeTime(getUnixTime(endOfRangeDate)),
+                groupBy: stepInMinutes * 60,
+            });
+
+            console.log('accountBalanceHistory: ', accountBalanceHistory);
+
             const ratesForDatesInRange = await getFiatRatesForTimestamps(
                 { symbol: 'btc' },
                 datesInRangeInUnixTime,
             )
                 .then(res => (res?.tickers || []).map(({ ts, rates }) => [ts, rates]))
                 .then(res => Object.fromEntries(res));
-            console.log('**************\n');
-            console.log('**************\n');
-            console.log('ratesForDatesInRangeratesForDatesInRange: ', ratesForDatesInRange);
-            console.log('**************\n');
-            console.log('**************\n');
 
             const mappedDatesInRange = Object.keys(ratesForDatesInRange).map(timestamp => {
                 const fiatRates = ratesForDatesInRange[timestamp];
@@ -77,10 +68,15 @@ export const PortfolioGraph = () => {
             setGraphPoints(mappedDatesInRange);
         };
 
-        console.log('renderuju se: ', selectedTimeFrame);
-        const datesInRange = getDatesInSelectedTimeFrame(selectedTimeFrame);
-        const datesInRangeInUnixTime = datesInRange.map(date => getUnixTime(date));
-        getFiatRates(datesInRangeInUnixTime);
+        const endOfRangeDate = new Date();
+
+        const subNumberOfMinutes = timeSwitchItems[selectedTimeFrame].valueBackInMinutes;
+
+        // TODO do time frame 'all' later in follow up
+        if (subNumberOfMinutes) {
+            const startOfRangeDate = subMinutes(endOfRangeDate, subNumberOfMinutes);
+            fetchFiatRates(startOfRangeDate, endOfRangeDate);
+        }
     }, [selectedTimeFrame]);
 
     const handleSelectTimeFrame = (timeFrame: TimeFrameValues) => {

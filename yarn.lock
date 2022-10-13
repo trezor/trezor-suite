@@ -6524,6 +6524,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/graph@workspace:suite-native/graph"
   dependencies:
+    "@shopify/react-native-skia": 0.1.152
     "@suite-common/formatters": "*"
     "@suite-native/atoms": "*"
     "@suite-native/test-utils": "*"
@@ -6643,6 +6644,7 @@ __metadata:
     "@react-navigation/stack": ^6.2.2
     "@suite-common/fiat-services": "*"
     "@suite-common/formatters": "*"
+    "@suite-common/suite-utils": "*"
     "@suite-common/wallet-config": "*"
     "@suite-common/wallet-core": "*"
     "@suite-native/atoms": "*"
