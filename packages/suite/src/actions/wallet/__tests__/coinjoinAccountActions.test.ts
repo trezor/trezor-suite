@@ -19,7 +19,15 @@ jest.mock('@suite/services/coinjoin/coinjoinClient', () => {
                 if (symbol === 'btc') {
                     client = {
                         settings: { coordinatorName: '' },
-                        enable: jest.fn(() => Promise.resolve({ rounds: [{ id: '00' }] })),
+                        on: jest.fn(),
+                        off: jest.fn(),
+                        enable: jest.fn(() =>
+                            Promise.resolve({
+                                rounds: [{ id: '00', phase: 0 }],
+                                feeRatesMedians: [],
+                                coordinatorFeeRate: 0.003,
+                            }),
+                        ),
                         registerAccount: jest.fn(),
                         unregisterAccount: jest.fn(),
                     };

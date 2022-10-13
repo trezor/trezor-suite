@@ -1,4 +1,4 @@
-import { CoinjoinStatus } from '@trezor/coinjoin';
+import { CoinjoinStatusEvent } from '@trezor/coinjoin';
 import { AccountInfo } from '@trezor/connect';
 import * as COINJOIN from './constants/coinjoinConstants';
 import { addToast } from '../suite/notificationActions';
@@ -22,7 +22,7 @@ export const clientDisable = (symbol: Account['symbol']) =>
         },
     } as const);
 
-const clientEnableSuccess = (symbol: Account['symbol'], status: CoinjoinStatus) =>
+const clientEnableSuccess = (symbol: Account['symbol'], status: CoinjoinStatusEvent) =>
     ({
         type: COINJOIN.CLIENT_ENABLE_SUCCESS,
         payload: {
@@ -39,11 +39,21 @@ const clientEnableFailed = (symbol: Account['symbol']) =>
         },
     } as const);
 
+const clientOnStatusEvent = (symbol: Account['symbol'], status: CoinjoinStatusEvent) =>
+    ({
+        type: COINJOIN.CLIENT_STATUS,
+        payload: {
+            symbol,
+            status,
+        },
+    } as const);
+
 export type CoinjoinClientAction =
     | ReturnType<typeof clientEnable>
     | ReturnType<typeof clientDisable>
     | ReturnType<typeof clientEnableSuccess>
-    | ReturnType<typeof clientEnableFailed>;
+    | ReturnType<typeof clientEnableFailed>
+    | ReturnType<typeof clientOnStatusEvent>;
 
 export const initCoinjoinClient =
     (symbol: Account['symbol'], environment?: CoinjoinServerEnvironment) =>
@@ -60,6 +70,10 @@ export const initCoinjoinClient =
         const client = await CoinjoinClientService.createInstance(symbol, environment);
         try {
             const status = await client.enable();
+            if (!status) {
+                throw new Error('status is missing');
+            }
+            client.on('status', status => dispatch(clientOnStatusEvent(symbol, status)));
             dispatch(clientEnableSuccess(symbol, status));
             return client;
         } catch (error) {

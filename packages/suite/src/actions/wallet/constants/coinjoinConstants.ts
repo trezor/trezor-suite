@@ -11,3 +11,4 @@ export const CLIENT_ENABLE = '@coinjoin/client-enable';
 export const CLIENT_DISABLE = '@coinjoin/client-disable';
 export const CLIENT_ENABLE_SUCCESS = '@coinjoin/client-enable-success';
 export const CLIENT_ENABLE_FAILED = '@coinjoin/client-enable-failed';
+export const CLIENT_STATUS = '@coinjoin/client-status';
