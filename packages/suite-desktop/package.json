@@ -147,6 +147,10 @@
                 {
                     "from": "build/static/bin/tor/mac-${arch}",
                     "to": "bin/tor"
+                },
+                {
+                    "from": "build/static/bin/coinjoin/mac-${arch}",
+                    "to": "bin/coinjoin"
                 }
             ],
             "icon": "build/static/images/desktop/512x512.icns",
@@ -170,6 +174,10 @@
                 {
                     "from": "build/static/bin/tor/win-${arch}",
                     "to": "bin/tor"
+                },
+                {
+                    "from": "build/static/bin/coinjoin/win-${arch}",
+                    "to": "bin/coinjoin"
                 }
             ],
             "icon": "build/static/images/desktop/512x512.png",
@@ -192,6 +200,10 @@
                 {
                     "from": "build/static/bin/udev",
                     "to": "bin/udev"
+                },
+                {
+                    "from": "build/static/bin/coinjoin/linux-${arch}",
+                    "to": "bin/coinjoin"
                 }
             ],
             "icon": "build/static/images/desktop/512x512.png",
