@@ -2,8 +2,8 @@
 import React, { useState } from 'react';
 import styled, { css } from 'styled-components';
 import { AnimatePresence } from 'framer-motion';
-import { variables, Button } from '@trezor/components';
-import { Translation, HiddenPlaceholder } from '@suite-components';
+import { variables, Button, Card } from '@trezor/components';
+import { Translation } from '@suite-components';
 import { useActions } from '@suite-hooks';
 import * as modalActions from '@suite-actions/modalActions';
 import { formatNetworkAmount, isTestnet, isTxUnknown } from '@suite-common/wallet-utils';
@@ -11,7 +11,6 @@ import { AccountMetadata } from '@suite-types/metadata';
 import { WalletAccountTransaction } from '@wallet-types';
 import { TransactionTypeIcon } from './components/TransactionTypeIcon';
 import { TransactionHeading } from './components/TransactionHeading';
-import { MIN_ROW_HEIGHT } from './components/BaseTargetLayout';
 import {
     Target,
     TokenTransfer,
@@ -20,40 +19,27 @@ import {
     DepositRow,
     CoinjoinRow,
 } from './components/Target';
+import {
+    Content,
+    Description,
+    NextRow,
+    TargetsWrapper,
+    TimestampWrapper,
+    TxTypeIconWrapper,
+} from './components/CommonComponents';
 import { useAnchor } from '@suite-hooks/useAnchor';
 import { AccountTransactionBaseAnchor } from '@suite-constants/anchors';
 import { SECONDARY_PANEL_HEIGHT } from '@suite-components/AppNavigation';
 import { anchorOutlineStyles } from '@suite-utils/anchor';
 import { TransactionTimestamp } from '@wallet-components/TransactionTimestamp';
 
-const Wrapper = styled.div<{
-    chainedTxMode?: boolean;
+const Wrapper = styled(Card)<{
     isPending?: boolean;
     shouldHighlight?: boolean;
 }>`
     display: flex;
     flex-direction: row;
     padding: 0 24px;
-    background: ${props => props.theme.BG_WHITE};
-
-    ${props =>
-        props.chainedTxMode
-            ? css`
-                  width: 100%;
-                  padding: 0px 40px;
-                  cursor: pointer;
-                  &:hover {
-                      border-radius: 8px;
-                      background: ${props => props.theme.BG_GREY};
-                  }
-              `
-            : css`
-                  &:not(:first-child) {
-                      > * {
-                          border-top: 1px solid ${props => props.theme.STROKE_GREY};
-                      }
-                  }
-              `}
 
     @media (max-width: ${variables.SCREEN_SIZE.SM}) {
         padding: 0px 16px;
@@ -70,18 +56,6 @@ const Wrapper = styled.div<{
             }
         `}
 
-    &:first-of-type {
-        padding-top: 12px;
-        border-top-left-radius: 12px;
-        border-top-right-radius: 12px;
-    }
-
-    &:last-of-type {
-        padding-bottom: 12px;
-        border-bottom-left-radius: 12px;
-        border-bottom-right-radius: 12px;
-    }
-
     /* height of secondary panel and a gap between transactions and graph */
     scroll-margin-top: calc(${SECONDARY_PANEL_HEIGHT} + 115px);
 
@@ -92,65 +66,6 @@ const Body = styled.div`
     display: flex;
     width: 100%;
     padding: 12px 0;
-`;
-
-const TxTypeIconWrapper = styled.div`
-    padding-right: 24px;
-    margin-top: 8px;
-    cursor: pointer;
-
-    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
-        display: none;
-    }
-`;
-
-const TimestampWrapper = styled.div`
-    cursor: pointer;
-    display: flex;
-    height: ${MIN_ROW_HEIGHT};
-    align-items: center;
-`;
-
-const Content = styled.div`
-    display: flex;
-    flex: 1;
-    overflow: hidden;
-    flex-direction: column;
-    font-variant-numeric: tabular-nums;
-    /* workarounds for nice blur effect without cutoffs even inside parent with overflow: hidden */
-    padding-left: 10px;
-    margin-left: -10px;
-    padding-right: 10px;
-    margin-right: -10px;
-    margin-top: -10px;
-    padding-top: 10px;
-`;
-
-const Description = styled(props => <HiddenPlaceholder {...props} />)`
-    color: ${props => props.theme.TYPE_DARK_GREY};
-    font-size: ${variables.FONT_SIZE.NORMAL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    line-height: 1.5;
-    display: flex;
-    justify-content: space-between;
-    overflow: hidden;
-    white-space: nowrap;
-`;
-
-const NextRow = styled.div`
-    display: flex;
-    flex: 1;
-    align-items: flex-start;
-    margin-bottom: 6px;
-`;
-
-const TargetsWrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    overflow: hidden;
-    padding-right: 10px;
-    margin-right: -10px;
 `;
 
 const ExpandButton = styled(Button)`
@@ -170,6 +85,7 @@ interface TransactionItemProps {
     isActionDisabled?: boolean; // Used in "chained transactions" transaction detail modal
     accountMetadata?: AccountMetadata;
     accountKey: string;
+    className?: string;
 }
 
 const TransactionItem = React.memo(
@@ -179,6 +95,7 @@ const TransactionItem = React.memo(
         accountMetadata,
         isActionDisabled,
         isPending,
+        className,
     }: TransactionItemProps) => {
         const { type, targets, tokens } = transaction;
         const [limit, setLimit] = useState(0);
@@ -237,10 +154,10 @@ const TransactionItem = React.memo(
             <Wrapper
                 onMouseEnter={() => setTxItemIsHovered(true)}
                 onMouseLeave={() => setTxItemIsHovered(false)}
-                chainedTxMode={isActionDisabled}
                 isPending={isPending}
                 ref={anchorRef}
                 shouldHighlight={shouldHighlight}
+                className={className}
             >
                 <Body>
                     <TxTypeIconWrapper

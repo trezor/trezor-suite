@@ -3,11 +3,14 @@ import styled from 'styled-components';
 import useDebounce from 'react-use/lib/useDebounce';
 
 import { Stack } from '@suite-components/Skeleton';
-import { Card } from '@trezor/components';
 import { Translation } from '@suite-components';
 import { Section } from '@dashboard-components';
 import { useSelector, useActions } from '@suite-hooks';
-import { groupTransactionsByDate, advancedSearchTransactions } from '@suite-common/wallet-utils';
+import {
+    groupTransactionsByDate,
+    advancedSearchTransactions,
+    groupJointTransactions,
+} from '@suite-common/wallet-utils';
 import { SETTINGS } from '@suite-config';
 import { WalletAccountTransaction, Account } from '@wallet-types';
 import Actions from './components/Actions';
@@ -18,13 +21,7 @@ import SkeletonTransactionItem from './components/SkeletonTransactionItem';
 import NoSearchResults from './components/NoSearchResults';
 import { findAnchorTransactionPage } from '@suite-utils/anchor';
 import { fetchTransactionsThunk } from '@suite-common/wallet-core';
-
-const StyledCard = styled(Card)<{ isPending: boolean }>`
-    flex-direction: column;
-    padding: 0;
-    border-radius: 0;
-    background: none;
-`;
+import { CoinjoinBatchItem } from '@wallet-components/TransactionItem/CoinjoinBatchItem';
 
 const StyledSection = styled(Section)`
     margin-bottom: 20px;
@@ -150,27 +147,32 @@ const TransactionList = ({ transactions, isLoading, account, ...props }: Transac
                     ) : (
                         Object.keys(transactionsByDate).map(dateKey => {
                             const isPending = dateKey === 'pending';
+                            const transactions = transactionsByDate[dateKey];
                             return (
                                 <TransactionsGroup
                                     key={dateKey}
                                     dateKey={dateKey}
                                     symbol={props.symbol}
-                                    transactions={transactionsByDate[dateKey]}
+                                    transactions={transactions}
                                     localCurrency={localCurrency}
                                 >
-                                    <StyledCard isPending={isPending}>
-                                        {transactionsByDate[dateKey].map(
-                                            (tx: WalletAccountTransaction) => (
-                                                <TransactionItem
-                                                    key={tx.txid}
-                                                    transaction={tx}
-                                                    isPending={isPending}
-                                                    accountMetadata={account.metadata}
-                                                    accountKey={account.key}
-                                                />
-                                            ),
-                                        )}
-                                    </StyledCard>
+                                    {groupJointTransactions(transactions).map(item =>
+                                        item.type === 'joint-batch' ? (
+                                            <CoinjoinBatchItem
+                                                key={item.rounds[0].txid}
+                                                transactions={item.rounds}
+                                                localCurrency={localCurrency}
+                                            />
+                                        ) : (
+                                            <TransactionItem
+                                                key={item.tx.txid}
+                                                transaction={item.tx}
+                                                isPending={isPending}
+                                                accountMetadata={account.metadata}
+                                                accountKey={account.key}
+                                            />
+                                        ),
+                                    )}
                                 </TransactionsGroup>
                             );
                         })

@@ -22,7 +22,7 @@ import { copyToClipboard } from '@trezor/dom-utils';
 import { AccountMetadata } from '@suite-types/metadata';
 import { ExtendedMessageDescriptor } from '@suite-types';
 
-const StyledCryptoAmount = styled(FormattedCryptoAmount)`
+export const StyledCryptoAmount = styled(FormattedCryptoAmount)`
     width: 100%;
     color: ${({ theme }) => theme.TYPE_DARK_GREY};
     font-size: ${variables.FONT_SIZE.NORMAL};
