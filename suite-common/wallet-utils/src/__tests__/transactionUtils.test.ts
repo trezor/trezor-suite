@@ -12,6 +12,7 @@ import {
     getAccountTransactions,
     getRbfParams,
     groupTransactionsByDate,
+    groupJointTransactions,
     isPending,
     parseDateKey,
 } from '../transactionUtils';
@@ -54,6 +55,35 @@ describe('transaction utils', () => {
                 testMocks.getWalletTransaction({ blockTime: 1565792379, blockHeight: 4 }),
             ],
         });
+    });
+
+    it('groupJointTransactions', () => {
+        const [j1, r2, j3, j4, s5, s6, j7, f8, j9, j10, j11] = (
+            [
+                'joint',
+                'recv',
+                'joint',
+                'joint',
+                'sent',
+                'sent',
+                'joint',
+                'failed',
+                'joint',
+                'joint',
+                'joint',
+            ] as const
+        ).map((type, blockHeight) => testMocks.getWalletTransaction({ type, blockHeight }));
+        const groupedTxs = groupJointTransactions([j1, r2, j3, j4, s5, s6, j7, f8, j9, j10, j11]);
+        expect(groupedTxs).toEqual([
+            { type: 'single-tx', tx: j1 },
+            { type: 'single-tx', tx: r2 },
+            { type: 'joint-batch', rounds: [j3, j4] },
+            { type: 'single-tx', tx: s5 },
+            { type: 'single-tx', tx: s6 },
+            { type: 'single-tx', tx: j7 },
+            { type: 'single-tx', tx: f8 },
+            { type: 'joint-batch', rounds: [j9, j10, j11] },
+        ]);
     });
 
     fixtures.analyzeTransactions.forEach(f => {

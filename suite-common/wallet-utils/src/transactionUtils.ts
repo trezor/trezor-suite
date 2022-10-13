@@ -71,6 +71,21 @@ export const groupTransactionsByDate = (transactions: WalletAccountTransaction[]
             };
         }, {});
 
+export const groupJointTransactions = (transactions: WalletAccountTransaction[]) =>
+    transactions
+        .reduce<WalletAccountTransaction[][]>((prev, tx) => {
+            const last = prev.pop();
+            if (!last) return [[tx]];
+            return tx.type === 'joint' && last[0].type === 'joint'
+                ? [...prev, [...last, tx]]
+                : [...prev, last, [tx]];
+        }, [])
+        .map(txs =>
+            txs.length > 1
+                ? ({ type: 'joint-batch', rounds: txs } as const)
+                : ({ type: 'single-tx', tx: txs[0] } as const),
+        );
+
 export const formatCardanoWithdrawal = (tx: WalletAccountTransaction) =>
     tx.cardanoSpecific?.withdrawal
         ? formatNetworkAmount(tx.cardanoSpecific.withdrawal, tx.symbol)
