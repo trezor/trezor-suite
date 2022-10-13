@@ -151,7 +151,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
         name: 'outputs',
     });
 
-    const { areSatsUsed } = useBitcoinAmountUnit(props.selectedAccount.account.symbol);
+    const { souldSendInSats } = useBitcoinAmountUnit(props.selectedAccount.account.symbol);
 
     // enhance DEFAULT_VALUES with last remembered FeeLevel and localCurrencyOption
     // used in "loadDraft" useEffect and "importTransaction" callback
@@ -313,7 +313,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
             if (protocol.sendForm.amount) {
                 const protocolAmount = protocol.sendForm.amount.toString();
 
-                const formattedAmount = areSatsUsed
+                const formattedAmount = souldSendInSats
                     ? amountToSatoshi(protocolAmount, state.network.decimals)
                     : protocolAmount;
 
@@ -337,7 +337,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
         updateContext,
         sendFormUtils,
         composeRequest,
-        areSatsUsed,
+        souldSendInSats,
         state.network.decimals,
     ]);
 
@@ -377,7 +377,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
     useDidUpdate(() => {
         const { outputs } = getValues();
 
-        const conversionToUse = areSatsUsed ? amountToSatoshi : formatAmount;
+        const conversionToUse = souldSendInSats ? amountToSatoshi : formatAmount;
 
         outputs.forEach((output, index) => {
             if (!output.amount) {
@@ -388,7 +388,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
         });
 
         composeRequest();
-    }, [areSatsUsed]);
+    }, [souldSendInSats]);
 
     return {
         ...state,

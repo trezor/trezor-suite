@@ -54,7 +54,7 @@ const Inputs = () => {
         getValues,
         exchangeCoinInfo,
     } = useCoinmarketBuyFormContext();
-    const { areSatsUsed } = useBitcoinAmountUnit(account.symbol);
+    const { souldSendInSats } = useBitcoinAmountUnit(account.symbol);
 
     const { symbol } = account;
     const uppercaseSymbol = symbol.toUpperCase();
@@ -148,7 +148,7 @@ const Inputs = () => {
                     return <Translation id="AMOUNT_IS_NOT_NUMBER" />;
                 }
 
-                if (areSatsUsed && !isInteger(value)) {
+                if (souldSendInSats && !isInteger(value)) {
                     return 'AMOUNT_IS_NOT_INTEGER';
                 }
 
@@ -170,7 +170,7 @@ const Inputs = () => {
 
                     let minCrypto = 0;
                     if (amountLimits.minCrypto) {
-                        minCrypto = areSatsUsed
+                        minCrypto = souldSendInSats
                             ? Number(
                                   amountToSatoshi(
                                       amountLimits.minCrypto.toString(),
@@ -197,7 +197,7 @@ const Inputs = () => {
 
                     let maxCrypto = 0;
                     if (amountLimits.maxCrypto) {
-                        maxCrypto = areSatsUsed
+                        maxCrypto = souldSendInSats
                             ? Number(
                                   amountToSatoshi(
                                       amountLimits.maxCrypto.toString(),
@@ -322,7 +322,7 @@ const Inputs = () => {
                                                     }.svg`}
                                                 />
                                             )}
-                                            <Label>{areSatsUsed ? 'sat' : option.label}</Label>
+                                            <Label>{souldSendInSats ? 'sat' : option.label}</Label>
                                         </Option>
                                     )}
                                     isClean

@@ -108,7 +108,7 @@ export const useCoinmarketSellForm = ({
     const { account, network } = selectedAccount;
     const { navigateToSellOffers } = useCoinmarketNavigation(account);
     const { symbol, networkType } = account;
-    const { areSatsUsed } = useBitcoinAmountUnit(symbol);
+    const { souldSendInSats } = useBitcoinAmountUnit(symbol);
 
     const coinFees = fees[symbol];
     const levels = getFeeLevels(networkType, coinFees);
@@ -255,7 +255,7 @@ export const useCoinmarketSellForm = ({
                 network.decimals,
             );
             const cryptoInputValue =
-                cryptoValue && areSatsUsed
+                cryptoValue && souldSendInSats
                     ? amountToSatoshi(cryptoValue, network.decimals)
                     : cryptoValue;
             setValue(OUTPUT_AMOUNT, cryptoInputValue || '', { shouldDirty: true });
@@ -266,7 +266,7 @@ export const useCoinmarketSellForm = ({
             clearErrors,
             getValues,
             fiatRates,
-            areSatsUsed,
+            souldSendInSats,
             network.decimals,
             composeRequest,
         ],
@@ -311,18 +311,18 @@ export const useCoinmarketSellForm = ({
         if (!cryptoInputValue) {
             return;
         }
-        const conversion = areSatsUsed ? amountToSatoshi : formatAmount;
+        const conversion = souldSendInSats ? amountToSatoshi : formatAmount;
         setValue(CRYPTO_INPUT, conversion(cryptoInputValue, network.decimals), {
             shouldValidate: true,
             shouldDirty: true,
         });
-    }, [areSatsUsed]);
+    }, [souldSendInSats]);
 
     const onSubmit = async () => {
         const formValues = getValues();
         const fiatStringAmount = formValues.fiatInput;
         const cryptoStringAmount =
-            formValues.cryptoInput && areSatsUsed
+            formValues.cryptoInput && souldSendInSats
                 ? formatAmount(formValues.cryptoInput, network.decimals)
                 : formValues.cryptoInput;
         const amountInCrypto = !fiatStringAmount;

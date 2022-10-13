@@ -92,7 +92,7 @@ export const CoinControl = ({ close }: CoinControlProps) => {
         toggleCoinControl,
     } = useSendFormContext();
 
-    const { areSatsUsed } = useBitcoinAmountUnit(account.symbol);
+    const { souldSendInSats } = useBitcoinAmountUnit(account.symbol);
 
     const inputs = isCoinControlEnabled ? selectedUtxos : composedInputs;
 
@@ -106,7 +106,7 @@ export const CoinControl = ({ close }: CoinControlProps) => {
     const totalOutputs = getTotal(
         outputs.map((_, i) => Number(getDefaultValue(`outputs[${i}].amount`, ''))),
     );
-    const totalOutputsInSats = areSatsUsed
+    const totalOutputsInSats = souldSendInSats
         ? totalOutputs
         : Number(amountToSatoshi(totalOutputs.toString(), network.decimals));
     const missingToInput = totalOutputsInSats - totalInputs;
