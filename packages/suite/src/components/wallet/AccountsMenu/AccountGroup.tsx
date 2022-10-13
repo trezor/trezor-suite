@@ -75,7 +75,6 @@ export const AccountGroup = forwardRef(
 
         const onClick = () => {
             setIsOpen(!isOpen);
-            setPreviouslyOpen(!isOpen);
             setAnimatedIcon(true);
         };
 
