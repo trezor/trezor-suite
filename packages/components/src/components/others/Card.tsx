@@ -23,7 +23,7 @@ const getPaddingSize = (
     return '20px';
 };
 
-export interface CardProps {
+export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
     children?: React.ReactNode;
     largePadding?: boolean;
     noPadding?: boolean;
@@ -31,18 +31,16 @@ export interface CardProps {
     customPadding?: string;
 }
 
-export const Card = ({
-    children,
-    largePadding,
-    noPadding,
-    noVerticalPadding,
-    customPadding,
-    ...rest
-}: CardProps) => (
-    <Wrapper
-        paddingSize={customPadding || getPaddingSize(largePadding, noPadding, noVerticalPadding)}
-        {...rest}
-    >
-        {children}
-    </Wrapper>
+export const Card = React.forwardRef<HTMLDivElement, CardProps>(
+    ({ children, largePadding, noPadding, noVerticalPadding, customPadding, ...rest }, ref) => (
+        <Wrapper
+            ref={ref}
+            paddingSize={
+                customPadding || getPaddingSize(largePadding, noPadding, noVerticalPadding)
+            }
+            {...rest}
+        >
+            {children}
+        </Wrapper>
+    ),
 );
