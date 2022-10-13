@@ -7,6 +7,11 @@
             "path": "../../suite-common/formatters"
         },
         { "path": "../../suite-common/sentry" },
-        { "path": "../suite" }
+        { "path": "../suite" },
+        {
+            "path": "../../suite-common/test-utils"
+        },
+        { "path": "../trezor-user-env-link" },
+        { "path": "../utils" }
     ]
 }

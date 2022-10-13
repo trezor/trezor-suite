@@ -7,7 +7,7 @@ services:
       - XDG_RUNTIME_DIR=/var/tmp
     network_mode: bridge # this makes docker reuse existing networks
   test-run:
-    image: $CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX/cypress/included:9.5.4
+    image: $CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX/cypress/included:10.10.0
     entrypoint: []
     environment:
       - CYPRESS_SNAPSHOT=$CYPRESS_SNAPSHOT
@@ -28,7 +28,7 @@ services:
       - FIRMWARE=$FIRMWARE
     network_mode: service:trezor-user-env-unix
     working_dir: /trezor-suite
-    command: bash -c "yarn tsx ./packages/integration-tests/projects/suite-web/run_tests.ts --project /trezor-suite/packages/integration-tests/projects/suite-web --group=$TEST_GROUP"
+    command: bash -c "yarn tsx ./packages/suite-web/e2e/run_tests.ts --group=$TEST_GROUP"
     volumes:
       - ../:/trezor-suite
   bitcoin-regtest:
