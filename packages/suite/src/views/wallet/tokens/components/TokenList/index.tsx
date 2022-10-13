@@ -8,101 +8,66 @@ const Wrapper = styled(Card)<{ isTestnet?: boolean }>`
     display: grid;
     padding: 12px 16px;
     grid-template-columns: ${props => (props.isTestnet ? 'auto auto 44px' : 'auto auto auto 44px')};
-    overflow: auto;
+    word-break: break-all;
 `;
 
-interface ColProps {
-    justify?: 'left' | 'right';
-    paddingHorizontal?: boolean;
-    isTestnet?: boolean;
-}
-
-const TokenSymbol = styled.div`
+const TokenSymbol = styled.span`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.FONT_SIZE.NORMAL};
     text-transform: uppercase;
     padding-right: 2px;
 `;
 
-const Col = styled.div<ColProps>`
-    display: flex;
-    align-items: center;
-    padding: 10px 12px 10px 0px;
-    color: ${props => props.theme.TYPE_DARK_GREY};
-    font-size: ${variables.FONT_SIZE.SMALL};
-    border-top: 1px solid ${props => props.theme.STROKE_GREY};
+interface ColProps {
+    justify?: 'left' | 'right';
+    isTestnet?: boolean;
+}
 
-    &:nth-child(${props => (props.isTestnet ? '-n + 3' : '-n + 4')}) {
+const Col = styled.div<ColProps>`
+    padding: 10px 12px 10px 0px;
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
+    font-size: ${variables.FONT_SIZE.SMALL};
+    border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
+
+    &:nth-child(${({ isTestnet }) => (isTestnet ? '-n + 3' : '-n + 4')}) {
         /* first row */
         border-top: none;
     }
 
-    ${props =>
-        props.justify &&
+    ${({ justify }) =>
+        justify &&
         css`
-            justify-content: ${(props: ColProps) =>
-                props.justify === 'right' ? 'flex-end' : 'flex-start'};
-            text-align: ${(props: ColProps) => (props.justify === 'right' ? 'right' : 'left')};
+            justify-content: ${justify === 'right' ? 'flex-end' : 'flex-start'};
+            text-align: ${justify === 'right' ? 'right' : 'left'};
         `}
-
-    ${props =>
-        props.paddingHorizontal &&
-        css`
-            padding-left: 14px;
-            padding-right: 14px;
-        `}
-`;
-
-const ColWithoutOverflow = styled(Col)`
-    overflow: hidden;
-`;
-
-const TokenNameWrapper = styled.div`
-    display: flex;
-    flex: 1;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    align-items: center;
 `;
 
 const TokenName = styled.span`
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-
     @media only screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
         display: none;
     }
 `;
 
-const TokenValue = styled.div`
-    display: flex;
-    font-size: ${variables.FONT_SIZE.NORMAL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${props => props.theme.TYPE_DARK_GREY};
-    white-space: nowrap;
-`;
-
 const FiatWrapper = styled.div`
-    display: flex;
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
 
 const CryptoAmount = styled(FormattedCryptoAmount)`
-    display: flex;
-    overflow: hidden;
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
+    font-size: ${variables.FONT_SIZE.NORMAL};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
-interface Props {
+interface TokenListProps {
     tokens: Account['tokens'];
     networkType: Account['networkType'];
     explorerUrl: string;
     isTestnet?: boolean;
 }
 
-const TokenList = ({ tokens, explorerUrl, isTestnet, networkType }: Props) => {
+const TokenList = ({ tokens, explorerUrl, isTestnet, networkType }: TokenListProps) => {
     const theme = useTheme();
     if (!tokens || tokens.length === 0) return null;
 
@@ -113,22 +78,20 @@ const TokenList = ({ tokens, explorerUrl, isTestnet, networkType }: Props) => {
 
                 return (
                     <Fragment key={t.address}>
-                        <ColWithoutOverflow isTestnet={isTestnet}>
-                            <TokenNameWrapper>
-                                {!noName && <TokenSymbol>{t.symbol}</TokenSymbol>}
+                        <Col isTestnet={isTestnet}>
+                            {!noName && <TokenSymbol>{t.symbol}</TokenSymbol>}
+                            <TokenName>
                                 {!noName && ` - `}
-                                <TokenName>{t.name}</TokenName>
-                            </TokenNameWrapper>
-                        </ColWithoutOverflow>
+                                {t.name}
+                            </TokenName>
+                        </Col>
                         <Col isTestnet={isTestnet} justify="right">
-                            <TokenValue>
-                                {t.balance && (
-                                    <CryptoAmount
-                                        value={t.balance}
-                                        symbol={networkType === 'cardano' ? undefined : t.symbol}
-                                    />
-                                )}
-                            </TokenValue>
+                            {t.balance && (
+                                <CryptoAmount
+                                    value={t.balance}
+                                    symbol={networkType === 'cardano' ? undefined : t.symbol}
+                                />
+                            )}
                         </Col>
                         {!isTestnet && (
                             <Col isTestnet={isTestnet} justify="right">
