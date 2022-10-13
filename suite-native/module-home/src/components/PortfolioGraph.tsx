@@ -1,85 +1,48 @@
 import React, { useEffect, useState } from 'react';
-import { GraphPoint } from 'react-native-graph';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { eachMinuteOfInterval, getUnixTime, subMinutes } from 'date-fns';
+import { subMinutes } from 'date-fns';
 
-import { Graph, TimeFrameValues, timeSwitchItems } from '@suite-native/graph';
+import { Graph, timeSwitchItems } from '@suite-native/graph';
+import { LineGraphTimeFrameValues } from '@suite-common/wallet-types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Box, Text } from '@suite-native/atoms';
 import { Icon } from '@trezor/icons';
 import { useFormatters } from '@suite-common/formatters';
-import { getFiatRatesForTimestamps } from '@suite-common/fiat-services';
-import { getBlockbookSafeTime } from '@suite-common/suite-utils';
-import TrezorConnect from '@trezor/connect';
+import { getGraphDataForAccounts, selectDashboardGraphPoints } from '@suite-native/wallet-graph';
 
 const arrowStyle = prepareNativeStyle(() => ({
     marginRight: 4,
 }));
 
 export const PortfolioGraph = () => {
+    const dispatch = useDispatch();
     const { applyStyle } = useNativeStyles();
     const { FiatAmountFormatter } = useFormatters();
-    const [graphPoints, setGraphPoints] = useState<GraphPoint[]>([]);
-    const [selectedTimeFrame, setSelectedTimeFrame] = useState<TimeFrameValues>('day');
+    const graphPoints = useSelector(selectDashboardGraphPoints);
+    const [selectedTimeFrame, setSelectedTimeFrame] = useState<LineGraphTimeFrameValues>('day');
 
     useEffect(() => {
-        const fetchFiatRates = async (startOfRangeDate: Date, endOfRangeDate: Date) => {
-            const datesInRange = eachMinuteOfInterval(
-                {
-                    start: startOfRangeDate.getTime(),
-                    end: endOfRangeDate.getTime(),
-                },
-                {
-                    step: timeSwitchItems[selectedTimeFrame].stepInMinutes,
-                },
-            );
-
-            const datesInRangeInUnixTime = datesInRange.map(date =>
-                getBlockbookSafeTime(getUnixTime(date)),
-            );
-
-            const stepInMinutes = timeSwitchItems[selectedTimeFrame].stepInMinutes ?? 3600 * 24; // fallback to day
-
-            const accountBalanceHistory = await TrezorConnect.blockchainGetAccountBalanceHistory({
-                coin: 'btc',
-                descriptor:
-                    'xpub6BiVtCpG9fQPxnPmHXG8PhtzQdWC2Su4qWu6XW9tpWFYhxydCLJGrWBJZ5H6qTAHdPQ7pQhtpjiYZVZARo14qHiay2fvrX996oEP42u8wZy',
-                from: getBlockbookSafeTime(getUnixTime(startOfRangeDate)),
-                to: getBlockbookSafeTime(getUnixTime(endOfRangeDate)),
-                groupBy: stepInMinutes * 60,
-            });
-
-            console.log('accountBalanceHistory: ', accountBalanceHistory);
-
-            const ratesForDatesInRange = await getFiatRatesForTimestamps(
-                { symbol: 'btc' },
-                datesInRangeInUnixTime,
-            )
-                .then(res => (res?.tickers || []).map(({ ts, rates }) => [ts, rates]))
-                .then(res => Object.fromEntries(res));
-
-            const mappedDatesInRange = Object.keys(ratesForDatesInRange).map(timestamp => {
-                const fiatRates = ratesForDatesInRange[timestamp];
-                return {
-                    date: new Date(Number(timestamp) * 1000),
-                    value: Math.floor(fiatRates.usd),
-                };
-            });
-            setGraphPoints(mappedDatesInRange);
-        };
-
         const endOfRangeDate = new Date();
-
         const subNumberOfMinutes = timeSwitchItems[selectedTimeFrame].valueBackInMinutes;
 
-        // TODO do time frame 'all' later in follow up
+        // TODO do time frame 'all' later
         if (subNumberOfMinutes) {
             const startOfRangeDate = subMinutes(endOfRangeDate, subNumberOfMinutes);
-            fetchFiatRates(startOfRangeDate, endOfRangeDate);
+            const stepInMinutes = timeSwitchItems[selectedTimeFrame].stepInMinutes ?? 3600 * 24; // fallback to day
+            dispatch(
+                getGraphDataForAccounts({
+                    section: 'dashboard',
+                    stepInMinutes,
+                    startOfRangeDate,
+                    endOfRangeDate,
+                    accounts: [], // TODO
+                }),
+            );
         }
-    }, [selectedTimeFrame]);
+    }, [selectedTimeFrame, dispatch]);
 
-    const handleSelectTimeFrame = (timeFrame: TimeFrameValues) => {
+    const handleSelectTimeFrame = (timeFrame: LineGraphTimeFrameValues) => {
         setSelectedTimeFrame(timeFrame);
     };
 

@@ -3,6 +3,7 @@
     "compilerOptions": { "outDir": "libDev" },
     "include": [".", "**/*.json"],
     "references": [
+        { "path": "../fiat-services" },
         { "path": "../metadata-types" },
         { "path": "../suite-config" },
         { "path": "../suite-constants" },

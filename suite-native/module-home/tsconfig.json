@@ -17,10 +17,14 @@
         {
             "path": "../../suite-common/wallet-core"
         },
+        {
+            "path": "../../suite-common/wallet-types"
+        },
         { "path": "../atoms" },
         { "path": "../graph" },
         { "path": "../module-settings" },
         { "path": "../navigation" },
+        { "path": "../wallet-graph" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/icons" },
         { "path": "../../packages/styles" },

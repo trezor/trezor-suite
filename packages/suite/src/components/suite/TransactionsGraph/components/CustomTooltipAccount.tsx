@@ -1,10 +1,13 @@
 import React from 'react';
+
 import styled from 'styled-components';
 import { TooltipProps } from 'recharts';
-import { Formatters, useFormatters } from '@suite-common/formatters';
 import { FormattedCryptoAmount } from '@suite-components/FormattedCryptoAmount';
 import { NetworkSymbol } from '@wallet-types';
-import { CommonAggregatedHistory } from '@wallet-types/graph';
+
+import { Formatters, useFormatters } from '@suite-common/formatters';
+import { CommonAggregatedHistory } from '@suite-common/wallet-types';
+
 import { Props as GraphProps, CryptoGraphProps } from '../definitions';
 import { CustomTooltipBase } from './CustomTooltipBase';
 

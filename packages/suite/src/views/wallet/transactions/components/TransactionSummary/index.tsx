@@ -1,14 +1,17 @@
 import React, { useState } from 'react';
+
 import styled from 'styled-components';
 import { getUnixTime } from 'date-fns';
 import { Account } from '@wallet-types';
-import { variables, Button, Card } from '@trezor/components';
 import { TransactionsGraph, Translation, HiddenPlaceholder } from '@suite-components';
-import { calcTicks, calcTicksFromData } from '@suite-common/suite-utils';
-import { aggregateBalanceHistory, getMinMaxValueFromData } from '@wallet-utils/graphUtils';
 import { useSelector, useActions } from '@suite-hooks';
 import * as graphActions from '@wallet-actions/graphActions';
 import { RangeSelector } from '@suite-components/TransactionsGraph/components/RangeSelector';
+
+import { aggregateBalanceHistory, getMinMaxValueFromData } from '@suite-common/wallet-utils';
+import { calcTicks, calcTicksFromData } from '@suite-common/suite-utils';
+import { variables, Button, Card } from '@trezor/components';
+
 import TransactionSummaryDropdown from './components/TransactionSummaryDropdown';
 import SummaryCards from './components/SummaryCards';
 

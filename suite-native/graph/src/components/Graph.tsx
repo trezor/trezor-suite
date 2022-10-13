@@ -3,14 +3,14 @@ import { LineGraph, GraphPoint } from 'react-native-graph';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Box } from '@suite-native/atoms';
+import { LineGraphTimeFrameValues } from '@suite-common/wallet-types';
 
 import { TimeSwitch } from './TimeSwitch';
-import { TimeFrameValues } from '../types';
 
 type GraphProps = {
     points?: GraphPoint[];
-    selectedTimeFrame?: TimeFrameValues;
-    onSelectTimeFrame?: (timeFrame: TimeFrameValues) => void;
+    selectedTimeFrame?: LineGraphTimeFrameValues;
+    onSelectTimeFrame?: (timeFrame: LineGraphTimeFrameValues) => void;
 };
 
 const graphWrapperStyle = prepareNativeStyle(() => ({

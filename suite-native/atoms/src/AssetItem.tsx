@@ -74,13 +74,11 @@ export const AssetItem = ({
                             value={portfolioPercentage}
                             color={assetColorConfig[cryptoCurrencySymbol]}
                         />
-                        {/*
                         <Text variant="hint" color="gray600">
                             <>{`${CryptoAmountFormatter.format(cryptoCurrencyValue, {
                                 symbol: cryptoCurrencySymbol,
                             })} ${CurrencySymbolFormatter.format(cryptoCurrencySymbol)}`}</>
                         </Text>
-                             */}
                     </Box>
                 </Box>
             </Box>

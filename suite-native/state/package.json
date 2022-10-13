@@ -17,6 +17,7 @@
         "@suite-native/module-devices": "*",
         "@suite-native/module-settings": "*",
         "@suite-native/storage": "*",
+        "@suite-native/wallet-graph": "*",
         "@trezor/connect": "9.0.3",
         "@trezor/styles": "*",
         "@trezor/utils": "*",

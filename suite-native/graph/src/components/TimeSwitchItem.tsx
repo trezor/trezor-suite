@@ -3,14 +3,13 @@ import { TouchableOpacity } from 'react-native';
 
 import { Text } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-
-import { TimeFrameValues } from '../types';
+import { LineGraphTimeFrameValues } from '@suite-common/wallet-types';
 
 type TimeSwitchItemProps = {
-    value: TimeFrameValues;
+    value: LineGraphTimeFrameValues;
     shortcut: string;
-    selectedTimeFrame: TimeFrameValues;
-    onSelectTimeFrame: (timeFrame: TimeFrameValues) => void;
+    selectedTimeFrame: LineGraphTimeFrameValues;
+    onSelectTimeFrame: (timeFrame: LineGraphTimeFrameValues) => void;
 };
 
 type TextStyleProps = {

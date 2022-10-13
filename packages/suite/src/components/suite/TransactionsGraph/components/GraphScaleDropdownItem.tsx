@@ -1,8 +1,10 @@
 import React from 'react';
-import { SelectBar, SelectBarProps } from '@trezor/components';
+
 import { useGraph } from '@suite-hooks';
-import { GraphScale } from '@wallet-types/graph';
 import { Translation } from '@suite-components';
+
+import { SelectBar, SelectBarProps } from '@trezor/components';
+import { GraphScale } from '@suite-common/wallet-types';
 
 const GraphScaleDropdownItem = (props: Omit<SelectBarProps<GraphScale>, 'options'>) => {
     const { selectedView, setSelectedView } = useGraph();

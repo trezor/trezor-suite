@@ -1,19 +1,22 @@
 import BigNumber from 'bignumber.js';
 import { startOfMonth, getUnixTime, fromUnixTime, differenceInMonths } from 'date-fns';
-import { CoinFiatRates, Account } from '@wallet-types';
+
 import {
+    CoinFiatRates,
+    Account,
     AggregatedDashboardHistory,
     AggregatedAccountHistory,
     GraphRange,
     GraphData,
     CommonAggregatedHistory,
     GraphScale,
-} from '@wallet-types/graph';
-
-import { toFiatCurrency, formatNetworkAmount } from '@suite-common/wallet-utils';
+} from '@suite-common/wallet-types';
 import type { BlockchainAccountBalanceHistory } from '@trezor/connect';
 import { resetTime } from '@suite-common/suite-utils';
 import { getFiatRatesForTimestamps, getTickerConfig } from '@suite-common/fiat-services';
+
+import { toFiatCurrency } from './fiatConverterUtils';
+import { formatNetworkAmount } from './accountUtils';
 
 type FiatRates = NonNullable<CoinFiatRates['current']>['rates'];
 

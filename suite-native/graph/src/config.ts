@@ -1,6 +1,6 @@
-import { TimeFrameItems } from './types';
+import { LineGraphTimeFrameItems } from '@suite-common/wallet-types';
 
-export const timeSwitchItems: TimeFrameItems = {
+export const timeSwitchItems: LineGraphTimeFrameItems = {
     hour: {
         shortcut: '1h',
         value: 'hour',

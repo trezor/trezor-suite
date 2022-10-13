@@ -1,19 +1,20 @@
 import BigNumber from 'bignumber.js';
 import { toWei } from 'web3-utils';
 import { isDesktop } from '@suite-utils/env';
-import type { OnUpgradeFunc } from '@trezor/suite-storage';
-import type { SuiteDBSchema } from '../definitions';
 import type { State } from '@wallet-reducers/settingsReducer';
-import type { BackendSettings } from '@suite-common/wallet-types';
 import type { CustomBackend, BlockbookUrl } from '@wallet-types/backend';
 import type { Network, Account, Discovery } from '@wallet-types';
+
+import type { BackendSettings, GraphData } from '@suite-common/wallet-types';
+import type { OnUpgradeFunc } from '@trezor/suite-storage';
 import type { DBWalletAccountTransaction } from '@trezor/suite/src/storage/definitions';
-import type { GraphData } from '@wallet-types/graph';
 import {
     formatNetworkAmount,
     networkAmountToSatoshi,
     amountToSatoshi,
 } from '@suite-common/wallet-utils';
+
+import type { SuiteDBSchema } from '../definitions';
 
 type WalletWithBackends = {
     backends?: Partial<{

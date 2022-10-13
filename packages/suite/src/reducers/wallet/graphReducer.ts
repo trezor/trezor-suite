@@ -2,9 +2,10 @@ import produce from 'immer';
 import { GRAPH } from '@wallet-actions/constants';
 import { STORAGE } from '@suite-actions/constants';
 import { WalletAction, Account } from '@wallet-types';
-import { GraphRange, GraphScale, AccountIdentifier, GraphData } from '@wallet-types/graph';
 import { Action as SuiteAction } from '@suite-types';
 import { SETTINGS } from '@suite-config';
+
+import { GraphRange, GraphScale, AccountIdentifier, GraphData } from '@suite-common/wallet-types';
 import { accountsActions } from '@suite-common/wallet-core';
 
 export interface State {

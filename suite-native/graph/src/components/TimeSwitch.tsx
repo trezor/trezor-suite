@@ -2,14 +2,14 @@ import React from 'react';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Box } from '@suite-native/atoms';
+import { LineGraphTimeFrameValues } from '@suite-common/wallet-types';
 
-import { TimeFrameValues } from '../types';
 import { TimeSwitchItem } from './TimeSwitchItem';
 import { timeSwitchItems } from '../config';
 
 type TimeSwitchProps = {
-    selectedTimeFrame: TimeFrameValues;
-    onSelectTimeFrame: (timeFrame: TimeFrameValues) => void;
+    selectedTimeFrame: LineGraphTimeFrameValues;
+    onSelectTimeFrame: (timeFrame: LineGraphTimeFrameValues) => void;
 };
 
 const timeSwitchStyle = prepareNativeStyle(() => ({

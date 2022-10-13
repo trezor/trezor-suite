@@ -1,9 +1,15 @@
 import React, { useState } from 'react';
+
 import styled from 'styled-components';
 import { ComposedChart, Tooltip, Bar, YAxis, XAxis, Line, CartesianGrid, Cell } from 'recharts';
-import { variables, Icon, useTheme } from '@trezor/components';
 import { useGraph } from '@suite-hooks';
-import { calcYDomain, calcXDomain, calcFakeGraphDataForTimestamps } from '@wallet-utils/graphUtils';
+
+import { variables, Icon, useTheme } from '@trezor/components';
+import {
+    calcYDomain,
+    calcXDomain,
+    calcFakeGraphDataForTimestamps,
+} from '@suite-common/wallet-utils';
 
 import { Props } from './definitions';
 import { RangeSelector } from './components/RangeSelector';
