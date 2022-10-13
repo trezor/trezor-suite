@@ -11,11 +11,6 @@
     },
     "include": ["**/*.ts", "**/*.js"],
     "references": [
-        {
-            "path": "../../suite-common/test-utils"
-        },
-        { "path": "../suite-analytics" },
-        { "path": "../trezor-user-env-link" },
-        { "path": "../utils" }
+        { "path": "../trezor-user-env-link" }
     ]
 }

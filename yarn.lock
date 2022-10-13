@@ -1782,26 +1782,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@cypress/webpack-preprocessor@npm:^5.11.1":
-  version: 5.14.0
-  resolution: "@cypress/webpack-preprocessor@npm:5.14.0"
-  dependencies:
-    bluebird: 3.7.1
-    debug: ^4.3.2
-    fs-extra: ^10.1.0
-    loader-utils: ^2.0.0
-    lodash: ^4.17.20
-    md5: 2.3.0
-    webpack-virtual-modules: ^0.4.4
-  peerDependencies:
-    "@babel/core": ^7.0.1
-    "@babel/preset-env": ^7.0.0
-    babel-loader: ^8.0.2
-    webpack: ^4 || ^5
-  checksum: 5e3fce0cf5e57eb1ae181062fbe3ae385996f49c934e47beed1a81d62bea5a6e951d3212df0e0e61f24579676b6a6ce250c14ae6ecef175daa0be495f02e23e2
-  languageName: node
-  linkType: hard
-
 "@cypress/xvfb@npm:^1.2.4":
   version: 1.2.4
   resolution: "@cypress/xvfb@npm:1.2.4"
@@ -7341,24 +7321,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/integration-tests@workspace:packages/integration-tests"
   dependencies:
-    "@cypress/skip-test": ^2.6.1
-    "@cypress/webpack-preprocessor": ^5.11.1
     "@playwright/test": ^1.22.2
-    "@suite-common/test-utils": "*"
-    "@trezor/suite-analytics": "*"
     "@trezor/trezor-user-env-link": "*"
-    "@trezor/utils": "*"
-    chrome-remote-interface: ^0.31.2
-    cypress: 9.5.4
-    cypress-file-upload: ^5.0.8
-    cypress-image-snapshot: ^4.0.1
-    cypress-wait-until: ^1.7.2
-    express: ^4.17.3
     playwright: ^1.22.2
-    ts-loader: ^9.3.1
-    tsx: ^3.8.2
-    typescript: 4.7.4
-    webpack: ^5.73.0
   languageName: unknown
   linkType: soft
 
@@ -7710,10 +7675,16 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/suite-web@workspace:packages/suite-web"
   dependencies:
+    "@cypress/skip-test": ^2.6.1
     "@sentry/browser": 6.17.2
     "@suite-common/formatters": "*"
     "@suite-common/sentry": "*"
+    "@suite-common/test-utils": "*"
     "@trezor/suite": "*"
+    "@trezor/trezor-user-env-link": "*"
+    "@trezor/utils": "*"
+    "@types/chrome-remote-interface": ^0.31.4
+    "@types/cypress-image-snapshot": ^3.1.6
     "@types/react": 18.0.21
     "@types/react-dom": 18.0.6
     "@types/react-helmet": ^6.1.5
@@ -7721,6 +7692,11 @@ __metadata:
     "@types/react-router": ^5.1.18
     "@types/react-router-dom": ^5.1.7
     "@types/styled-components": ^5.1.26
+    chrome-remote-interface: ^0.31.2
+    cypress: ^10.10.0
+    cypress-file-upload: ^5.0.8
+    cypress-image-snapshot: ^4.0.1
+    cypress-wait-until: ^1.7.2
     jest: ^26.6.3
     react-helmet: ^6.1.0
     react-redux: 7.2.2
@@ -7728,7 +7704,9 @@ __metadata:
     react-router-dom: ^5.2.0
     rimraf: ^3.0.2
     styled-components: ^5.3.5
+    tsx: ^3.8.2
     typescript: 4.7.4
+    webpack: ^5.73.0
     worker-loader: ^3.0.8
   languageName: unknown
   linkType: soft
@@ -8148,6 +8126,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/chrome-remote-interface@npm:^0.31.4":
+  version: 0.31.4
+  resolution: "@types/chrome-remote-interface@npm:0.31.4"
+  dependencies:
+    devtools-protocol: 0.0.927104
+  checksum: 91c6cf9c749adedc08458b772db12f4142172f36fe885dc741921d259bdb7ec47d64b9e294d793a6c36f0435c6855d6470754fd143711e0b2ff204878dd4f721
+  languageName: node
+  linkType: hard
+
 "@types/chrome@npm:0.0.181":
   version: 0.0.181
   resolution: "@types/chrome@npm:0.0.181"
@@ -8234,6 +8221,13 @@ __metadata:
   dependencies:
     "@types/node": "*"
   checksum: 82a99d6202bf79d62ad8ad9974b6a047500dd7429b90ae4e83993023ab953ca03956d1fb248939fd6efc8caa1d1192f76cd19750c540440ca174733a342b45fd
+  languageName: node
+  linkType: hard
+
+"@types/cypress-image-snapshot@npm:^3.1.6":
+  version: 3.1.6
+  resolution: "@types/cypress-image-snapshot@npm:3.1.6"
+  checksum: cd0128d330233702095dac1d2b4524c8bab9f9bc4070e27942e3e26e7701ec2f1d90faa7901bf335523160e4b9689eff9f6c192f30c0e90b9b846b8dde310ebc
   languageName: node
   linkType: hard
 
@@ -11681,13 +11675,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bluebird@npm:3.7.1":
-  version: 3.7.1
-  resolution: "bluebird@npm:3.7.1"
-  checksum: 58c295399e109925149977ebcb40e42fd109d3e458899e71441bc7e5e0867bbd796fdd20278b425fa29f13377fe335fbfc2a6e68e5ca1da03b1c3afdc439d097
-  languageName: node
-  linkType: hard
-
 "bluebird@npm:^3.5.0, bluebird@npm:^3.5.1, bluebird@npm:^3.5.3, bluebird@npm:^3.5.5, bluebird@npm:^3.7.2":
   version: 3.7.2
   resolution: "bluebird@npm:3.7.2"
@@ -12727,13 +12714,6 @@ __metadata:
   version: 0.7.0
   resolution: "chardet@npm:0.7.0"
   checksum: 6fd5da1f5d18ff5712c1e0aed41da200d7c51c28f11b36ee3c7b483f3696dabc08927fc6b227735eb8f0e1215c9a8abd8154637f3eff8cada5959df7f58b024d
-  languageName: node
-  linkType: hard
-
-"charenc@npm:0.0.2":
-  version: 0.0.2
-  resolution: "charenc@npm:0.0.2"
-  checksum: 81dcadbe57e861d527faf6dd3855dc857395a1c4d6781f4847288ab23cffb7b3ee80d57c15bba7252ffe3e5e8019db767757ee7975663ad2ca0939bb8fcaf2e5
   languageName: node
   linkType: hard
 
@@ -13940,13 +13920,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"crypt@npm:0.0.2":
-  version: 0.0.2
-  resolution: "crypt@npm:0.0.2"
-  checksum: baf4c7bbe05df656ec230018af8cf7dbe8c14b36b98726939cef008d473f6fe7a4fad906cfea4062c93af516f1550a3f43ceb4d6615329612c6511378ed9fe34
-  languageName: node
-  linkType: hard
-
 "crypto-browserify@npm:^3.11.0, crypto-browserify@npm:^3.12.0":
   version: 3.12.0
   resolution: "crypto-browserify@npm:3.12.0"
@@ -14351,9 +14324,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cypress@npm:9.5.4":
-  version: 9.5.4
-  resolution: "cypress@npm:9.5.4"
+"cypress@npm:^10.10.0":
+  version: 10.10.0
+  resolution: "cypress@npm:10.10.0"
   dependencies:
     "@cypress/request": ^2.88.10
     "@cypress/xvfb": ^1.2.4
@@ -14374,7 +14347,7 @@ __metadata:
     dayjs: ^1.10.4
     debug: ^4.3.2
     enquirer: ^2.3.6
-    eventemitter2: ^6.4.3
+    eventemitter2: 6.4.7
     execa: 4.1.0
     executable: ^4.1.1
     extract-zip: 2.0.1
@@ -14399,7 +14372,7 @@ __metadata:
     yauzl: ^2.10.0
   bin:
     cypress: bin/cypress
-  checksum: 55c61f33db5658da8e5af5c6de64f40a85aeb7cba1219f2772675406f6431b7aa7512e13173d0f475af026fffe9878289229b4f5c74d307eac22d8f51fc29f77
+  checksum: 668a32534a527dba79754abbf98af176b80c539a12ec00058932ba2a19c794c7888323e59e738c30f726ad740c5451c31d02548a0cb7c1b1c8ad01c55a984ca2
   languageName: node
   linkType: hard
 
@@ -14965,6 +14938,13 @@ __metadata:
     detect: bin/detect-port.js
     detect-port: bin/detect-port.js
   checksum: b48da9340481742547263d5d985e65d078592557863402ecf538511735e83575867e94f91fe74405ea19b61351feb99efccae7e55de9a151d5654e3417cea05b
+  languageName: node
+  linkType: hard
+
+"devtools-protocol@npm:0.0.927104":
+  version: 0.0.927104
+  resolution: "devtools-protocol@npm:0.0.927104"
+  checksum: 13617e735f326b9822e64480060e59068434e937a6141ffe18353d0c7626be890e94d3118e7c262e6fd17eea3a4a2a18c221d0ff1eb31768ebcf0a0b95475d32
   languageName: node
   linkType: hard
 
@@ -16875,10 +16855,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eventemitter2@npm:^6.4.3":
-  version: 6.4.9
-  resolution: "eventemitter2@npm:6.4.9"
-  checksum: be59577c1e1c35509c7ba0e2624335c35bbcfd9485b8a977384c6cc6759341ea1a98d3cb9dbaa5cea4fff9b687e504504e3f9c2cc1674cf3bd8a43a7c74ea3eb
+"eventemitter2@npm:6.4.7":
+  version: 6.4.7
+  resolution: "eventemitter2@npm:6.4.7"
+  checksum: 1b36a77e139d6965ebf3a36c01fa00c089ae6b80faa1911e52888f40b3a7057b36a2cc45dcd1ad87cda3798fe7b97a0aabcbb8175a8b96092a23bb7d0f039e66
   languageName: node
   linkType: hard
 
@@ -20146,7 +20126,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"is-buffer@npm:^1.1.5, is-buffer@npm:~1.1.6":
+"is-buffer@npm:^1.1.5":
   version: 1.1.6
   resolution: "is-buffer@npm:1.1.6"
   checksum: 4a186d995d8bbf9153b4bd9ff9fd04ae75068fe695d29025d25e592d9488911eeece84eefbd8fa41b8ddcc0711058a71d4c466dcf6f1f6e1d83830052d8ca707
@@ -23213,17 +23193,6 @@ __metadata:
     inherits: ^2.0.1
     safe-buffer: ^5.1.2
   checksum: 098494d885684bcc4f92294b18ba61b7bd353c23147fbc4688c75b45cb8590f5a95fd4584d742415dcc52487f7a1ef6ea611cfa1543b0dc4492fe026357f3f0c
-  languageName: node
-  linkType: hard
-
-"md5@npm:2.3.0":
-  version: 2.3.0
-  resolution: "md5@npm:2.3.0"
-  dependencies:
-    charenc: 0.0.2
-    crypt: 0.0.2
-    is-buffer: ~1.1.6
-  checksum: a63cacf4018dc9dee08c36e6f924a64ced735b37826116c905717c41cebeb41a522f7a526ba6ad578f9c80f02cb365033ccd67fe186ffbcc1a1faeb75daa9b6e
   languageName: node
   linkType: hard
 
@@ -34371,7 +34340,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"webpack-virtual-modules@npm:^0.4.1, webpack-virtual-modules@npm:^0.4.4":
+"webpack-virtual-modules@npm:^0.4.1":
   version: 0.4.5
   resolution: "webpack-virtual-modules@npm:0.4.5"
   checksum: 0ae9a8b50d0cb1e43da5ff8acaa7b99c34a42f0d6cc83a82908fb6e131e574a949d19948df4fdd3de0dbfdbadb2b93ceb4a740c55727a4236eb3b2bbc8f785a6

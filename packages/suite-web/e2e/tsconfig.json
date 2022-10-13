@@ -1,0 +1,9 @@
+{
+    // "extends": "../tsconfig.json",
+    "compilerOptions": {
+        "types": ["cypress", "node"],
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+        "target": "ES3"
+    }
+}
