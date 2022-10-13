@@ -1,5 +1,6 @@
 import { configureStore } from '@suite/support/tests/configureStore';
 
+import { accountsReducer } from '@wallet-reducers';
 import { coinjoinReducer } from '@wallet-reducers/coinjoinReducer';
 import * as coinjoinAccountActions from '../coinjoinAccountActions';
 import * as fixtures from '../__fixtures__/coinjoinAccountActions';
@@ -33,6 +34,19 @@ jest.mock('@suite/services/coinjoin/coinjoinClient', () => {
     };
 });
 
+jest.mock('@suite/services/coinjoin/coinjoinBackend', () =>
+    // for test purposes enable only btc network
+    ({
+        CoinjoinBackendService: {
+            getInstance: () => ({
+                on: jest.fn(),
+                off: jest.fn(),
+                scanAccount: jest.fn(() => Promise.reject(new Error('TODO'))),
+            }),
+        },
+    }),
+);
+
 const DEVICE = global.JestMocks.getSuiteDevice({ state: 'device-state', connected: true });
 export const getInitialState = () => ({
     suite: {
@@ -42,6 +56,7 @@ export const getInitialState = () => ({
     devices: [DEVICE],
     wallet: {
         coinjoin: coinjoinReducer(undefined, { type: 'foo' } as any),
+        accounts: accountsReducer(undefined, { type: 'foo' } as any),
     },
     modal: {},
 });
@@ -53,9 +68,10 @@ const initStore = (state: State) => {
     const store = mockStore(state);
     store.subscribe(() => {
         const action = store.getActions().pop();
-        const { coinjoin } = store.getState().wallet;
+        const { coinjoin, accounts } = store.getState().wallet;
         store.getState().wallet = {
             coinjoin: coinjoinReducer(coinjoin, action),
+            accounts: accountsReducer(accounts, action),
         };
         store.getActions().push(action);
     });
@@ -72,7 +88,6 @@ describe('coinjoinAccountActions', () => {
             await store.dispatch(coinjoinAccountActions.createCoinjoinAccount(f.params as any, 80)); // params are incomplete
 
             const actions = store.getActions();
-            expect(actions.length).toBe(f.result.actions.length);
             expect(actions.map(a => a.type)).toEqual(f.result.actions);
         });
     });
@@ -86,7 +101,6 @@ describe('coinjoinAccountActions', () => {
             await store.dispatch(coinjoinAccountActions.startCoinjoinSession(f.params, {}));
 
             const actions = store.getActions();
-            expect(actions.length).toBe(f.result.actions.length);
             expect(actions.map(a => a.type)).toEqual(f.result.actions);
         });
     });
@@ -99,7 +113,6 @@ describe('coinjoinAccountActions', () => {
             await store.dispatch(coinjoinAccountActions.stopCoinjoinSession(f.params as any));
 
             const actions = store.getActions();
-            expect(actions.length).toBe(f.result.actions.length);
             expect(actions.map(a => a.type)).toEqual(f.result.actions);
         });
     });

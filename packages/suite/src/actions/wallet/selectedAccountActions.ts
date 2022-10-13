@@ -138,13 +138,25 @@ const getAccountState = (state: AppState): SelectedAccountStatus => {
 
     // account does exist
     if (account && account.visible) {
-        if (typeof account?.lastKnownState?.progress === 'number') {
-            return {
-                status: 'loading',
-                loader: 'account-loading',
-                account,
-            };
+        if (account.backendType === 'coinjoin') {
+            if (account.discoveryStatus === 'initial') {
+                return {
+                    status: 'loading',
+                    loader: 'account-loading',
+                    account,
+                };
+            }
+            if (account.discoveryStatus === 'error') {
+                return {
+                    status: 'exception',
+                    loader: 'account-not-loaded',
+                    network,
+                    discovery,
+                    params,
+                };
+            }
         }
+
         // Success!
         const loadedState = {
             status: 'loaded',
@@ -237,7 +249,8 @@ export const syncSelectedAccount = (action: Action) => (dispatch: Dispatch, getS
             'addresses',
             'visible',
             'utxo',
-            'lastKnownState',
+            'discoveryStatus',
+            'discoveryCheckpoint',
         ],
         discovery: [
             'status',

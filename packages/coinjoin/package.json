@@ -20,16 +20,25 @@
         "!**/*.map"
     ],
     "types": "lib/index.d.ts",
+    "browser": {
+        "./lib/backend/CoinjoinFilterController": "./lib/backend/CoinjoinFilterController.browser",
+        "./lib/backend/CoinjoinStorage": false,
+        "better-sqlite3": false
+    },
     "scripts": {
         "lint": "eslint '**/*.{ts,js}'",
         "test:unit": "jest",
         "type-check": "tsc --build",
         "build:lib": "rimraf lib && tsc --build ./tsconfig.lib.json"
     },
+    "devDependencies": {
+        "@types/better-sqlite3": "^7.5.0"
+    },
     "dependencies": {
         "@trezor/blockchain-link": "*",
         "@trezor/utils": "*",
         "@trezor/utxo-lib": "*",
+        "better-sqlite3": "^7.6.2",
         "bignumber.js": "^9.0.2",
         "cross-fetch": "^3.1.5",
         "events": "^3.3.0",

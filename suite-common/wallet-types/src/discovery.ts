@@ -3,7 +3,7 @@ import { STATUS as discoveryStatus } from '@suite-common/wallet-constants';
 import { Network } from '@suite-common/wallet-config';
 import { Deferred } from '@trezor/utils';
 
-import { Account } from './account';
+import { Account, AccountBackendSpecific } from './account';
 
 export interface Discovery {
     deviceState: string;
@@ -30,7 +30,7 @@ export interface Discovery {
     availableCardanoDerivations?: ('normal' | 'legacy' | 'ledger')[];
 }
 
-export interface DiscoveryItem {
+export type DiscoveryItem = {
     // @trezor/connect
     path: string;
     unlockPath?: Account['unlockPath'];
@@ -41,7 +41,5 @@ export interface DiscoveryItem {
     index: number;
     accountType: Account['accountType'];
     networkType: Account['networkType'];
-    backendType?: Account['backendType'];
     derivationType?: 0 | 1 | 2;
-    lastKnownState?: Account['lastKnownState'];
-}
+} & AccountBackendSpecific;
