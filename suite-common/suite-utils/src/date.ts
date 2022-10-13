@@ -131,7 +131,7 @@ export const resetUTCTime = (ts: number, resetDay?: boolean) => {
     return sanitizedUnixTimestamp;
 };
 
-export const getDatesInMinuteSpacedInterval = (
+export const getDatesInRangeInMinuteSpacedInterval = (
     startOfRangeDate: Date,
     endOfRangeDate: Date,
     stepInMinutes: number,

@@ -1,29 +1,112 @@
-import { getUnixTime } from 'date-fns';
+import { differenceInMinutes, getUnixTime, subMinutes } from 'date-fns';
 
 import { createThunk } from '@suite-common/redux-utils';
-import { getBlockbookSafeTime, getDatesInMinuteSpacedInterval } from '@suite-common/suite-utils';
+import {
+    getBlockbookSafeTime,
+    getDatesInRangeInMinuteSpacedInterval,
+} from '@suite-common/suite-utils';
 import TrezorConnect from '@trezor/connect';
-import { Account } from '@suite-common/wallet-types';
+import { Account, LineGraphTimeFrameValues } from '@suite-common/wallet-types';
 import { getFiatRatesForTimestamps } from '@suite-common/fiat-services';
+import { selectAccountsByNetworkSymbols } from '@suite-common/wallet-core';
+import { getLineGraphAllTimeStepInMinutes } from '@suite-common/wallet-utils';
 
+import { timeSwitchItems } from './config';
 import { actionPrefix, graphActions } from './graphActions';
 
-export interface GraphDataRequest {
-    section: 'dashboard' | 'account';
-    stepInMinutes: number;
-    startOfRangeDate: Date;
-    endOfRangeDate: Date;
-    accounts: Account[];
-}
+const getOldestAccountBalanceMovementTimestamp = async (accounts: Account[]) => {
+    const promises = accounts.map(async account => {
+        const response = await TrezorConnect.blockchainGetAccountBalanceHistory({
+            coin: account.symbol,
+            descriptor: account.descriptor,
+            groupBy: 3600 * 24, // day
+        });
+        try {
+            if (response?.success) {
+                const { payload } = response;
+                return payload.map(balanceGroup => balanceGroup.time);
+            }
+        } catch (error) {
+            // eslint-disable-next-line no-console
+            console.log(error);
+        }
+        return [];
+    });
+    const accountBalanceTimestamps = await Promise.all(promises);
+    return Math.min(...accountBalanceTimestamps.flat());
+};
 
-export const getGraphDataForAccounts = createThunk(
-    `${actionPrefix}/getGraphData`,
-    async (requestData: GraphDataRequest, { dispatch }) => {
-        const { section, accounts, startOfRangeDate, endOfRangeDate, stepInMinutes } = requestData;
+const getValueBackInMinutes = async (
+    accounts: Account[],
+    timeFrame: LineGraphTimeFrameValues,
+): Promise<number> => {
+    const { valueBackInMinutes } = timeSwitchItems[timeFrame];
+    if (valueBackInMinutes) {
+        return valueBackInMinutes;
+    }
+    const oldestAccountBalanceChangeUnixTime = await getOldestAccountBalanceMovementTimestamp(
+        accounts,
+    );
+    return differenceInMinutes(new Date(), new Date(oldestAccountBalanceChangeUnixTime * 1000));
+};
 
-        const bitcoinAccounts = accounts.filter(account => account.symbol === 'btc');
+const fetchAccountsGraphData = async (
+    accounts: Account[],
+    { from, to, groupBy }: { from: number; to: number; groupBy: number },
+) => {
+    const promises = accounts.map(async account => {
+        const response = await TrezorConnect.blockchainGetAccountBalanceHistory({
+            coin: account.symbol,
+            descriptor: account.descriptor,
+            from,
+            to,
+            groupBy,
+        });
+        try {
+            if (response?.success) {
+                // TODO
+            }
+        } catch (error) {
+            // eslint-disable-next-line no-console
+            console.log(error);
+        }
+    });
+    const groupedAccountBalance = await Promise.all(promises);
+    // TODO recalculate historic rates etc.
+    return groupedAccountBalance;
+};
 
-        const datesInRange = getDatesInMinuteSpacedInterval(
+export const getGraphPointsForAccounts = createThunk(
+    `${actionPrefix}/getGraphPointsForAccounts`,
+    async (
+        {
+            section,
+            timeFrame,
+        }: {
+            section: 'dashboard' | 'account';
+            timeFrame: LineGraphTimeFrameValues;
+        },
+        { dispatch, getState },
+    ) => {
+        const endOfRangeDate = new Date();
+
+        // FIXME mobile app currently supports only btc so it is hardcoded for now
+        const accounts = selectAccountsByNetworkSymbols(getState(), ['btc']);
+
+        const valueBackInMinutes = await getValueBackInMinutes(accounts, timeFrame);
+        const stepInMinutes =
+            timeSwitchItems[timeFrame]?.stepInMinutes ??
+            getLineGraphAllTimeStepInMinutes(endOfRangeDate, valueBackInMinutes);
+
+        const timeFrameItem = {
+            ...timeSwitchItems[timeFrame],
+            valueBackInMinutes,
+            stepInMinutes,
+        };
+
+        const startOfRangeDate = subMinutes(endOfRangeDate, timeFrameItem.valueBackInMinutes);
+
+        const datesInRange = getDatesInRangeInMinuteSpacedInterval(
             startOfRangeDate,
             endOfRangeDate,
             stepInMinutes,
@@ -32,7 +115,8 @@ export const getGraphDataForAccounts = createThunk(
             getBlockbookSafeTime(getUnixTime(date)),
         );
 
-        const ratesForDatesInRange = await getFiatRatesForTimestamps(
+        // FIXME mobile app currently supports only btc so it is hardcoded for now
+        const fiatRatesForDatesInRange = await getFiatRatesForTimestamps(
             { symbol: 'btc' },
             datesInRangeUnixTime,
         )
@@ -40,50 +124,27 @@ export const getGraphDataForAccounts = createThunk(
             .then(res => Object.fromEntries(res));
 
         // TODO these are graph points
-        const mappedDatesInRange = Object.keys(ratesForDatesInRange).map(timestamp => {
-            const fiatRates = ratesForDatesInRange[timestamp];
+        const mappedDatesInRange = Object.keys(fiatRatesForDatesInRange).map(timestamp => {
+            const fiatRates = fiatRatesForDatesInRange[timestamp];
             return {
                 date: new Date(Number(timestamp) * 1000),
-                value: Math.floor(fiatRates.usd),
+                value: Math.floor(fiatRates.usd), // FIXME add selected currency
             };
         });
 
-        const promises = bitcoinAccounts.map(async account => {
-            const response = await TrezorConnect.blockchainGetAccountBalanceHistory({
-                coin: 'btc',
-                descriptor: account.descriptor,
-                // from: getBlockbookSafeTime(getUnixTime(startOfRangeDate)), // TODO
-                to: getBlockbookSafeTime(getUnixTime(endOfRangeDate)),
-                groupBy: stepInMinutes * 60,
-            });
-            try {
-                if (response?.success) {
-                    /*
-                    const { payload } = response;
-
-                    "payload":[
-                    {
-                    "time":1421195400,
-                    "txs":2,
-                    "received":"100000",
-                    "sent":"100000",
-                    "sentToSelf":"0",
-                    "rates":{
-                    */
-
-                    // TODO merge all together
-                    dispatch(
-                        graphActions.updateGraphPoints({
-                            section,
-                            points: mappedDatesInRange,
-                        }),
-                    );
-                }
-            } catch (error) {
-                // eslint-disable-next-line no-console
-                console.log(error);
-            }
+        // TODO process these account data and merge all data together
+        await fetchAccountsGraphData(accounts, {
+            from: getBlockbookSafeTime(getUnixTime(startOfRangeDate)),
+            to: getBlockbookSafeTime(getUnixTime(endOfRangeDate)),
+            groupBy: stepInMinutes * 60,
         });
-        await Promise.all(promises);
+
+        // TODO merge all together
+        dispatch(
+            graphActions.updateGraphPoints({
+                section,
+                points: mappedDatesInRange,
+            }),
+        );
     },
 );

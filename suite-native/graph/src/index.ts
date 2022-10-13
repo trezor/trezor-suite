@@ -1,2 +1,2 @@
 export * from './components/Graph';
-export * from './config';
+export * from './components/TimeSwitch';

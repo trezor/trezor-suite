@@ -3,9 +3,9 @@ import React from 'react';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Box } from '@suite-native/atoms';
 import { LineGraphTimeFrameValues } from '@suite-common/wallet-types';
+import { timeSwitchItems } from '@suite-native/wallet-graph';
 
 import { TimeSwitchItem } from './TimeSwitchItem';
-import { timeSwitchItems } from '../config';
 
 type TimeSwitchProps = {
     selectedTimeFrame: LineGraphTimeFrameValues;

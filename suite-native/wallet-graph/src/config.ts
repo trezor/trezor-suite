@@ -1,34 +1,35 @@
 import { LineGraphTimeFrameItems } from '@suite-common/wallet-types';
+import { lineGraphStepInMinutes } from '@suite-common/wallet-constants';
 
 export const timeSwitchItems: LineGraphTimeFrameItems = {
     hour: {
         shortcut: '1h',
         value: 'hour',
-        stepInMinutes: 5,
+        stepInMinutes: lineGraphStepInMinutes.hour,
         valueBackInMinutes: 60,
     },
     day: {
         shortcut: '1d',
         value: 'day',
-        stepInMinutes: 30, // every half hour
+        stepInMinutes: lineGraphStepInMinutes.day,
         valueBackInMinutes: 1440,
     },
     week: {
         shortcut: '1w',
         value: 'week',
-        stepInMinutes: 120, // every 2 hours
+        stepInMinutes: lineGraphStepInMinutes.week,
         valueBackInMinutes: 10080,
     },
     month: {
         shortcut: '1m',
         value: 'month',
-        stepInMinutes: 360, // every 6 hours
+        stepInMinutes: lineGraphStepInMinutes.month,
         valueBackInMinutes: 43200,
     },
     year: {
         shortcut: '1y',
         value: 'year',
-        stepInMinutes: 4320, // every 3 days
+        stepInMinutes: lineGraphStepInMinutes.year,
         valueBackInMinutes: 525600,
     },
     all: {

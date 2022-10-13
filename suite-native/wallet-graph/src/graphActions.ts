@@ -1,6 +1,6 @@
 import { createAction } from '@reduxjs/toolkit';
 
-import { LineGraphPoint } from '@suite-common/wallet-types/libDev/src';
+import { LineGraphPoint } from '@suite-common/wallet-types';
 
 export const actionPrefix = '@common/suite-native/wallet-graph';
 

@@ -11,7 +11,7 @@
         "generate-icons": "yarn tsx generateIcons.js"
     },
     "dependencies": {
-        "@shopify/react-native-skia": "0.1.153",
+        "@shopify/react-native-skia": "0.1.155",
         "@trezor/styles": "*",
         "@trezor/theme": "*",
         "react": "18.2.0",

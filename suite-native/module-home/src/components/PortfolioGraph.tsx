@@ -1,15 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { subMinutes } from 'date-fns';
-
-import { Graph, timeSwitchItems } from '@suite-native/graph';
+import { Graph, TimeSwitch } from '@suite-native/graph';
 import { LineGraphTimeFrameValues } from '@suite-common/wallet-types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Box, Text } from '@suite-native/atoms';
 import { Icon } from '@trezor/icons';
 import { useFormatters } from '@suite-common/formatters';
-import { getGraphDataForAccounts, selectDashboardGraphPoints } from '@suite-native/wallet-graph';
+import { getGraphPointsForAccounts, selectDashboardGraphPoints } from '@suite-native/wallet-graph';
 
 const arrowStyle = prepareNativeStyle(() => ({
     marginRight: 4,
@@ -23,30 +21,34 @@ export const PortfolioGraph = () => {
     const [selectedTimeFrame, setSelectedTimeFrame] = useState<LineGraphTimeFrameValues>('day');
 
     useEffect(() => {
-        const endOfRangeDate = new Date();
-        const subNumberOfMinutes = timeSwitchItems[selectedTimeFrame].valueBackInMinutes;
-
-        // TODO do time frame 'all' later
-        if (subNumberOfMinutes) {
-            const startOfRangeDate = subMinutes(endOfRangeDate, subNumberOfMinutes);
-            const stepInMinutes = timeSwitchItems[selectedTimeFrame].stepInMinutes ?? 3600 * 24; // fallback to day
-            dispatch(
-                getGraphDataForAccounts({
-                    section: 'dashboard',
-                    stepInMinutes,
-                    startOfRangeDate,
-                    endOfRangeDate,
-                    accounts: [], // TODO
-                }),
-            );
-        }
+        dispatch(
+            getGraphPointsForAccounts({
+                section: 'dashboard',
+                timeFrame: selectedTimeFrame,
+            }),
+        );
     }, [selectedTimeFrame, dispatch]);
+
+    /**
+     * react-native-graph library has problems with rendering path when there are some invalid values.
+     * Also graph is not showing (with props animated=true) when dates are not one by one.
+     */
+    const validGraphPoints = useMemo(
+        () =>
+            graphPoints
+                ?.filter(point => !Number.isNaN(point.value))
+                .map((point, index) => ({
+                    ...point,
+                    date: new Date(index),
+                })),
+        [graphPoints],
+    );
 
     const handleSelectTimeFrame = (timeFrame: LineGraphTimeFrameValues) => {
         setSelectedTimeFrame(timeFrame);
     };
 
-    console.log('graphPoints: ', graphPoints);
+    // FIXME - I think it is necessary to have the same number of items in arrays we are switching between - for graphs to be animated when switching time frames...
 
     return (
         <Box>
@@ -68,7 +70,18 @@ export const PortfolioGraph = () => {
                 </Text>
             </Box>
             <Graph
-                points={graphPoints}
+                points={
+                    validGraphPoints.length
+                        ? validGraphPoints
+                        : [
+                              {
+                                  date: new Date(0),
+                                  value: 0,
+                              },
+                          ]
+                }
+            />
+            <TimeSwitch
                 selectedTimeFrame={selectedTimeFrame}
                 onSelectTimeFrame={handleSelectTimeFrame}
             />

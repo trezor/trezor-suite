@@ -5105,9 +5105,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@shopify/react-native-skia@npm:0.1.153":
-  version: 0.1.153
-  resolution: "@shopify/react-native-skia@npm:0.1.153"
+"@shopify/react-native-skia@npm:0.1.155":
+  version: 0.1.155
+  resolution: "@shopify/react-native-skia@npm:0.1.155"
   dependencies:
     canvaskit-wasm: 0.36.1
     react-reconciler: 0.26.2
@@ -5120,7 +5120,7 @@ __metadata:
       optional: true
   bin:
     setup-skia-web: scripts/setup-canvaskit.js
-  checksum: 77677f35a2c90679185b16ed2c2fa862980bc19fe6e60d25b25814c207edf2a32478504c8231dcb7b00e1b751547cbc701c1c1afdc7ebb4796908507921d7c22
+  checksum: 1363b270e8e2126e3f4768903337bb283cc356b82520bf7b6a1fc1c5f0e1ea365a9844e71a71be63be98677e851145859ac8d5f73b9e5e4acf6c1288d453c84a
   languageName: node
   linkType: hard
 
@@ -6525,17 +6525,18 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/graph@workspace:suite-native/graph"
   dependencies:
-    "@shopify/react-native-skia": 0.1.152
+    "@shopify/react-native-skia": 0.1.155
     "@suite-common/formatters": "*"
     "@suite-common/wallet-types": "*"
     "@suite-native/atoms": "*"
     "@suite-native/test-utils": "*"
+    "@suite-native/wallet-graph": "*"
     "@trezor/icons": "*"
     "@trezor/styles": "*"
     "@trezor/theme": "*"
     jest: ^26.6.3
-    react: ^17.0.2
-    react-native: 0.68.2
+    react: 18.2.0
+    react-native: 0.70.2
     react-native-gesture-handler: ^2.7.0
     react-native-graph: ^0.3.0
     react-native-reanimated: ^2.10.0
@@ -6663,6 +6664,7 @@ __metadata:
     jest: ^26.6.3
     react: 18.2.0
     react-native: 0.70.2
+    react-native-graph: ^0.3.0
     react-redux: 7.2.2
     typescript: 4.7.4
   languageName: unknown
@@ -6832,7 +6834,10 @@ __metadata:
     "@suite-common/fiat-services": "*"
     "@suite-common/redux-utils": "*"
     "@suite-common/suite-utils": "*"
+    "@suite-common/wallet-constants": "*"
+    "@suite-common/wallet-core": "*"
     "@suite-common/wallet-types": "*"
+    "@suite-common/wallet-utils": "*"
     "@trezor/connect": 9.0.3
     date-fns: ^2.29.1
   languageName: unknown
@@ -7291,7 +7296,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/icons@workspace:packages/icons"
   dependencies:
-    "@shopify/react-native-skia": 0.1.153
+    "@shopify/react-native-skia": 0.1.155
     "@trezor/styles": "*"
     "@trezor/theme": "*"
     jest: ^26.6.3
@@ -7584,7 +7589,7 @@ __metadata:
     "@react-navigation/native": ^6.0.11
     "@react-navigation/stack": ^6.2.2
     "@reduxjs/toolkit": ^1.8.3
-    "@shopify/react-native-skia": 0.1.153
+    "@shopify/react-native-skia": 0.1.155
     "@suite-common/connect-init": "*"
     "@suite-common/formatters": "*"
     "@suite-common/wallet-core": "*"

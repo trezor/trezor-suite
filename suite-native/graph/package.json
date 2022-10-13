@@ -10,11 +10,12 @@
         "type-check": "tsc --build"
     },
     "dependencies": {
-        "@shopify/react-native-skia": "0.1.152",
+        "@shopify/react-native-skia": "0.1.155",
         "@suite-common/formatters": "*",
         "@suite-common/wallet-types": "*",
         "@suite-native/atoms": "*",
         "@suite-native/test-utils": "*",
+        "@suite-native/wallet-graph": "*",
         "@trezor/icons": "*",
         "@trezor/styles": "*",
         "@trezor/theme": "*",
