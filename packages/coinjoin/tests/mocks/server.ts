@@ -92,7 +92,15 @@ export const createServer = async () => {
                 data += chunk;
             });
             req.on('end', () => {
-                server.emit('test-request', JSON.parse(data), req, res);
+                server.emit(
+                    'test-request',
+                    {
+                        url: req.url || '',
+                        data: JSON.parse(data),
+                    },
+                    req,
+                    res,
+                );
             });
             // notify test and wait for the response
             req.on('test-response', (responseData: any) => {
