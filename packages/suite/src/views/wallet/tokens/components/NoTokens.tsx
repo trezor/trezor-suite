@@ -5,7 +5,7 @@ import { Translation } from '@suite-components';
 import * as modalActions from '@suite-actions/modalActions';
 import { useActions, useSelector } from '@suite-hooks';
 
-const NoTokens = () => {
+export const NoTokens = () => {
     const { selectedAccount } = useSelector(state => ({
         selectedAccount: state.wallet.selectedAccount,
     }));
@@ -36,5 +36,3 @@ const NoTokens = () => {
         />
     );
 };
-
-export default NoTokens;

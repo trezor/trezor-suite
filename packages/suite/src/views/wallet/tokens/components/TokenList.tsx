@@ -67,7 +67,7 @@ interface TokenListProps {
     isTestnet?: boolean;
 }
 
-const TokenList = ({ tokens, explorerUrl, isTestnet, networkType }: TokenListProps) => {
+export const TokenList = ({ tokens, explorerUrl, isTestnet, networkType }: TokenListProps) => {
     const theme = useTheme();
     if (!tokens || tokens.length === 0) return null;
 
@@ -121,5 +121,3 @@ const TokenList = ({ tokens, explorerUrl, isTestnet, networkType }: TokenListPro
         </Wrapper>
     );
 };
-
-export default TokenList;
