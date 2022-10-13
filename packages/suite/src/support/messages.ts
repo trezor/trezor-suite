@@ -3843,7 +3843,7 @@ export default defineMessages({
             'Inputs from multiple senders are combined into a single transaction, making it difficult for external parties to analyze your connection to an old address.',
     },
     TR_COINJOIN_ACCESS_ACCOUNT_STEP_INITIAL_FEE_MESSAGE: {
-        id: 'TR_COINJOIN_ACCESS_ACCOUNT_STEP_INITIAL_DESCRIPTION',
+        id: 'TR_COINJOIN_ACCESS_ACCOUNT_STEP_INITIAL_FEE_MESSAGE',
         defaultMessage: 'A fee of {fee}% of the used amount is applied',
     },
     TR_COINJOIN_ACCESS_ACCOUNT_STEP_ANONYMITY_LEVEL_TITLE: {
