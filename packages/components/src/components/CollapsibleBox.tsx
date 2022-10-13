@@ -1,9 +1,7 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import styled, { css } from 'styled-components';
-import { motion, Variants } from 'framer-motion';
 import useMeasure from 'react-use/lib/useMeasure';
 import { Icon } from './Icon';
-import { motionEasing } from '../config/motion';
 import * as variables from '../config/variables';
 
 const Wrapper = styled.div<Pick<CollapsibleBoxProps, 'variant'>>`
@@ -58,6 +56,7 @@ const Header = styled.div<Pick<CollapsibleBoxProps, 'variant' | 'headerJustifyCo
 const IconWrapper = styled.div<Pick<CollapsibleBoxProps, 'headerJustifyContent'>>`
     display: flex;
     align-items: center;
+    overflow: hidden;
     margin-left: 24px;
     padding-left: ${({ headerJustifyContent }) => headerJustifyContent === 'center' && '2px'};
 `;
@@ -120,6 +119,17 @@ const Content = styled.div<{
         `}
 `;
 
+type CollapserProps = { $maxHeight?: number };
+
+const Collapser = styled.div.attrs<CollapserProps>(({ $maxHeight }) => ({
+    style: {
+        maxHeight: $maxHeight ?? 'initial',
+    },
+}))<CollapserProps>`
+    overflow: hidden;
+    transition: max-height 0.35s ease-in-out;
+`;
+
 interface CollapsibleBoxProps extends React.HtmlHTMLAttributes<HTMLDivElement> {
     heading: React.ReactNode;
     variant: 'tiny' | 'small' | 'large';
@@ -137,7 +147,14 @@ interface CollapsibleBoxProps extends React.HtmlHTMLAttributes<HTMLDivElement> {
     }) => React.ReactNode;
 }
 
-export const CollapsibleBox = ({
+type CollapsibleBoxSubcomponents = {
+    Header: typeof Header;
+    Heading: typeof Heading;
+    Content: typeof Content;
+    IconWrapper: typeof IconWrapper;
+};
+
+const CollapsibleBox: React.FC<CollapsibleBoxProps> & CollapsibleBoxSubcomponents = ({
     heading,
     iconLabel,
     children,
@@ -161,17 +178,6 @@ export const CollapsibleBox = ({
         setCollapsed(!collapsed);
         setAnimatedIcon(true);
     }, [collapsed]);
-
-    const animationVariants = useMemo<Variants>(
-        () => ({
-            closed: { opacity: 0, height: 0 },
-            opened: {
-                opacity: 1,
-                height,
-            },
-        }),
-        [height],
-    );
 
     return (
         <Wrapper variant={variant} {...rest}>
@@ -197,12 +203,8 @@ export const CollapsibleBox = ({
                 )}
             </Header>
 
-            <motion.div
-                animate={collapsed ? 'closed' : 'opened'}
-                initial="closed"
-                variants={animationVariants}
-                transition={{ duration: 0.35, ease: motionEasing.transition }}
-                style={{ overflow: 'hidden' }}
+            <Collapser
+                $maxHeight={collapsed ? 0 : height || undefined}
                 data-test="@collapsible-box/body"
             >
                 {/* This div is here because of the ref, ref on styled-component (Content) will result with unnecessary re-render */}
@@ -211,7 +213,14 @@ export const CollapsibleBox = ({
                         {children}
                     </Content>
                 </div>
-            </motion.div>
+            </Collapser>
         </Wrapper>
     );
 };
+
+CollapsibleBox.Header = Header;
+CollapsibleBox.Heading = Heading;
+CollapsibleBox.Content = Content;
+CollapsibleBox.IconWrapper = IconWrapper;
+
+export { CollapsibleBox };
