@@ -626,4 +626,8 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
             return cursor.continue().then(update);
         });
     }
+
+    if (oldVersion < 32) {
+        db.createObjectStore('coinjoinAccounts');
+    }
 };
