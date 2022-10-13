@@ -11,6 +11,10 @@ const TransactionsGroupWrapper = styled.div`
     & + & {
         margin-top: 36px;
     }
+
+    > * + * {
+        margin-top: 8px;
+    }
 `;
 
 interface Props {

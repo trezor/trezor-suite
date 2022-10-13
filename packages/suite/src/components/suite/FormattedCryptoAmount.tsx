@@ -20,7 +20,7 @@ const Symbol = styled.span`
     word-break: initial;
 `;
 
-interface FormattedCryptoAmountProps {
+export interface FormattedCryptoAmountProps {
     value: string | number | undefined;
     symbol: string | undefined;
     isBalance?: boolean;

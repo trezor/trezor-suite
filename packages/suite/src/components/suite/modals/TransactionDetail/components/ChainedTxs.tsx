@@ -13,6 +13,15 @@ const StyledTrezorLink = styled(TrezorLink)`
     width: 100%;
 `;
 
+const ChainedTransactionItem = styled(TransactionItem)`
+    width: 100%;
+    padding: 0px 40px;
+    cursor: pointer;
+    &:hover {
+        background: ${props => props.theme.BG_GREY};
+    }
+`;
+
 interface ChainedTxsProps {
     txs: WalletAccountTransaction[];
     explorerUrl: string;
@@ -21,8 +30,8 @@ interface ChainedTxsProps {
 export const ChainedTxs = ({ txs, explorerUrl }: ChainedTxsProps) => (
     <Wrapper>
         {txs.map(tx => (
-            <StyledTrezorLink href={`${explorerUrl}${tx.txid}`} variant="nostyle">
-                <TransactionItem
+            <StyledTrezorLink key={tx.txid} href={`${explorerUrl}${tx.txid}`} variant="nostyle">
+                <ChainedTransactionItem
                     key={tx.txid}
                     transaction={tx}
                     isPending
