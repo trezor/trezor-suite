@@ -17,14 +17,17 @@ describe('Passphrase', () => {
         cy.passThroughInitialRun();
     });
 
-    it('just test passphrase input', () => {
+    // TODO: there is a problem with clearing our password input element -> cypress deletes only last char with {selectAll}{backspace} and totally ignores .clear() command
+    it.skip('just test passphrase input', () => {
         cy.getTestElement('@menu/switch-device').click();
         cy.getTestElement('@switch-device/add-hidden-wallet-button').click();
         cy.task('pressYes');
 
         // select whole text and delete it
         cy.getTestElement('@passphrase/input').type('123456');
-        cy.getTestElement('@passphrase/input').type('{selectall}{backspace}');
+        cy.getTestElement('@passphrase/input').type('{selectall}');
+        cy.getTestElement('@passphrase/input').type('1');
+        cy.getTestElement('@passphrase/input').type('{backspace}');
         cy.getTestElement('@passphrase/input').should('have.value', '');
 
         // leftarrow sets caret to correct position
@@ -37,7 +40,10 @@ describe('Passphrase', () => {
         cy.getTestElement('@passphrase/input').should('have.value', 'ab12ef');
 
         // toggle hidden/visible keeps caret position
-        cy.getTestElement('@passphrase/input').clear();
+        // cy.getTestElement('@passphrase/input').clear();
+        cy.getTestElement('@passphrase/input').type('{selectall}');
+        cy.getTestElement('@passphrase/input').type('1');
+        cy.getTestElement('@passphrase/input').type('{backspace}');
         cy.getTestElement('@passphrase/input').type('123{leftarrow}');
         cy.getTestElement('@passphrase/show-toggle').click();
         cy.getTestElement('@passphrase/input').type('abc');
