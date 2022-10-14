@@ -1,3 +1,5 @@
+import { NetworkSymbol } from '@suite-common/wallet-config';
+
 export interface CoinjoinSessionParameters {
     anonymityLevel: number;
     maxRounds: number;
@@ -27,6 +29,7 @@ export interface CoinjoinSession extends CoinjoinSessionParameters {
 
 export interface CoinjoinAccount {
     key: string; // reference to wallet Account.key
+    symbol: NetworkSymbol;
     targetAnonymity: number; // anonymity set by the user
     session?: CoinjoinSession; // current/active authorized session
     previousSessions: CoinjoinSession[]; // history
