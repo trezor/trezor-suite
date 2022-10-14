@@ -3,11 +3,11 @@ import styled from 'styled-components';
 
 import { useSelector } from '@suite-hooks';
 import { WalletLayoutHeader } from '@wallet-components';
-import { AnonymityLevelIndicator } from '@wallet-components/PrivacyAccount/AnonymityLevelIndicator';
+import { AnonymityLevelSetup } from '@wallet-components/PrivacyAccount/AnonymityLevelSetup';
 import { CoinjoinSetupStrategies } from '@wallet-views/anonymize/components/CoinjoinSetupStrategies';
 import { WalletLayout } from '@wallet-components/WalletLayout';
 
-const StyledAnonymityLevelSetup = styled(AnonymityLevelIndicator)`
+const StyledAnonymityLevelSetup = styled(AnonymityLevelSetup)`
     margin-right: 12px;
 `;
 
