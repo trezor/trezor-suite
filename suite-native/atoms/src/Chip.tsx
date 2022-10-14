@@ -43,7 +43,7 @@ const chipStyle = prepareNativeStyle<ChipStyleProps>((utils, { isSelected }) => 
 
 const chipTitleStyle = prepareNativeStyle<ChipStyleProps>((utils, { isSelected, titleColor }) => ({
     ...utils.typography.hint,
-    color: utils.colors[titleColor || 'gray800'],
+    color: utils.colors[titleColor],
     extend: {
         condition: isSelected,
         style: {
@@ -68,7 +68,7 @@ export const Chip = ({
     onSelect,
     description,
     icon,
-    titleColor,
+    titleColor = 'gray800',
     isSelected = false,
     style,
 }: ChipProps) => {
