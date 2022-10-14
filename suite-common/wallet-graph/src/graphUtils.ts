@@ -9,23 +9,21 @@ import {
     differenceInYears,
 } from 'date-fns';
 
+import { CoinFiatRates, Account } from '@suite-common/wallet-types';
+import type { BlockchainAccountBalanceHistory } from '@trezor/connect';
+import { resetTime } from '@suite-common/suite-utils';
+import { getFiatRatesForTimestamps, getTickerConfig } from '@suite-common/fiat-services';
+import { toFiatCurrency, formatNetworkAmount } from '@suite-common/wallet-utils';
+
+import { lineGraphStepInMinutes } from './config';
 import {
-    CoinFiatRates,
-    Account,
     AggregatedDashboardHistory,
     AggregatedAccountHistory,
     GraphRange,
     GraphData,
     CommonAggregatedHistory,
     GraphScale,
-} from '@suite-common/wallet-types';
-import type { BlockchainAccountBalanceHistory } from '@trezor/connect';
-import { resetTime } from '@suite-common/suite-utils';
-import { getFiatRatesForTimestamps, getTickerConfig } from '@suite-common/fiat-services';
-import { lineGraphStepInMinutes } from '@suite-common/wallet-constants';
-
-import { toFiatCurrency } from './fiatConverterUtils';
-import { formatNetworkAmount } from './accountUtils';
+} from './types';
 
 type FiatRates = NonNullable<CoinFiatRates['current']>['rates'];
 

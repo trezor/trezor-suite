@@ -10,8 +10,9 @@ import type { Trade } from '@wallet-types/coinmarketCommonTypes';
 import type { FormDraft, FormDraftKeyPrefix } from '@wallet-types/form';
 import type { PreloadStoreAction } from '@suite-support/preloadStore';
 
-import { deviceGraphDataFilterFn, getFormDraftKey } from '@suite-common/wallet-utils';
-import type { GraphData } from '@suite-common/wallet-types';
+import { getFormDraftKey } from '@suite-common/wallet-utils';
+import { deviceGraphDataFilterFn } from '@suite-common/wallet-graph';
+import type { GraphData } from '@suite-common/wallet-graph';
 import { FormDraftPrefixKeyValues } from '@suite-common/wallet-constants';
 
 import { STORAGE } from './constants';

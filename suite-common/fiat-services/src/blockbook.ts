@@ -24,7 +24,7 @@ const limiter = new RateLimiter(500);
 
 const request = <T>(url: string): Promise<T | null> =>
     limiter
-        .limit(fetchUrl(url))
+        .limit(() => fetchUrl(url))
         .then(res =>
             res.ok
                 ? res.json()

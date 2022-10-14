@@ -3,7 +3,7 @@ import { TouchableOpacity } from 'react-native';
 
 import { Text } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { LineGraphTimeFrameValues } from '@suite-common/wallet-types';
+import { LineGraphTimeFrameValues } from '@suite-common/wallet-graph';
 
 type TimeSwitchItemProps = {
     value: LineGraphTimeFrameValues;

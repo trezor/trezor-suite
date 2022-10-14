@@ -9,10 +9,9 @@ import * as graphActions from '@wallet-actions/graphActions';
 import { useActions, useSelector } from '@suite-hooks';
 import { Account } from '@wallet-types';
 
-import { getMinMaxValueFromData } from '@suite-common/wallet-utils';
+import { getMinMaxValueFromData, AggregatedDashboardHistory } from '@suite-common/wallet-graph';
 import { variables, Button } from '@trezor/components';
 import { calcTicks, calcTicksFromData } from '@suite-common/suite-utils';
-import { AggregatedDashboardHistory } from '@suite-common/wallet-types';
 
 const Wrapper = styled.div`
     display: flex;

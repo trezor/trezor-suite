@@ -6409,6 +6409,26 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-common/wallet-graph@*, @suite-common/wallet-graph@workspace:suite-common/wallet-graph":
+  version: 0.0.0-use.local
+  resolution: "@suite-common/wallet-graph@workspace:suite-common/wallet-graph"
+  dependencies:
+    "@reduxjs/toolkit": ^1.8.3
+    "@suite-common/fiat-services": "*"
+    "@suite-common/redux-utils": "*"
+    "@suite-common/suite-utils": "*"
+    "@suite-common/test-utils": "*"
+    "@suite-common/wallet-config": "*"
+    "@suite-common/wallet-constants": "*"
+    "@suite-common/wallet-core": "*"
+    "@suite-common/wallet-types": "*"
+    "@suite-common/wallet-utils": "*"
+    "@trezor/connect": 9.0.3
+    bignumber.js: ^9.1.0
+    date-fns: ^2.29.1
+  languageName: unknown
+  linkType: soft
+
 "@suite-common/wallet-types@*, @suite-common/wallet-types@workspace:suite-common/wallet-types":
   version: 0.0.0-use.local
   resolution: "@suite-common/wallet-types@workspace:suite-common/wallet-types"
@@ -6527,10 +6547,10 @@ __metadata:
   dependencies:
     "@shopify/react-native-skia": 0.1.155
     "@suite-common/formatters": "*"
+    "@suite-common/wallet-graph": "*"
     "@suite-common/wallet-types": "*"
     "@suite-native/atoms": "*"
     "@suite-native/test-utils": "*"
-    "@suite-native/wallet-graph": "*"
     "@trezor/icons": "*"
     "@trezor/styles": "*"
     "@trezor/theme": "*"
@@ -6650,12 +6670,12 @@ __metadata:
     "@suite-common/suite-utils": "*"
     "@suite-common/wallet-config": "*"
     "@suite-common/wallet-core": "*"
+    "@suite-common/wallet-graph": "*"
     "@suite-common/wallet-types": "*"
     "@suite-native/atoms": "*"
     "@suite-native/graph": "*"
     "@suite-native/module-settings": "*"
     "@suite-native/navigation": "*"
-    "@suite-native/wallet-graph": "*"
     "@trezor/connect": 9.0.3
     "@trezor/icons": "*"
     "@trezor/styles": "*"
@@ -6762,10 +6782,10 @@ __metadata:
     "@suite-common/redux-utils": "*"
     "@suite-common/test-utils": "*"
     "@suite-common/wallet-core": "*"
+    "@suite-common/wallet-graph": "*"
     "@suite-native/module-devices": "*"
     "@suite-native/module-settings": "*"
     "@suite-native/storage": "*"
-    "@suite-native/wallet-graph": "*"
     "@trezor/connect": 9.0.3
     "@trezor/styles": "*"
     "@trezor/utils": "*"
@@ -6823,23 +6843,6 @@ __metadata:
     react: 18.2.0
     react-native: 0.70.2
     react-redux: 7.2.2
-  languageName: unknown
-  linkType: soft
-
-"@suite-native/wallet-graph@*, @suite-native/wallet-graph@workspace:suite-native/wallet-graph":
-  version: 0.0.0-use.local
-  resolution: "@suite-native/wallet-graph@workspace:suite-native/wallet-graph"
-  dependencies:
-    "@reduxjs/toolkit": ^1.8.3
-    "@suite-common/fiat-services": "*"
-    "@suite-common/redux-utils": "*"
-    "@suite-common/suite-utils": "*"
-    "@suite-common/wallet-constants": "*"
-    "@suite-common/wallet-core": "*"
-    "@suite-common/wallet-types": "*"
-    "@suite-common/wallet-utils": "*"
-    "@trezor/connect": 9.0.3
-    date-fns: ^2.29.1
   languageName: unknown
   linkType: soft
 
@@ -7731,6 +7734,7 @@ __metadata:
     "@suite-common/wallet-config": "*"
     "@suite-common/wallet-constants": "*"
     "@suite-common/wallet-core": "*"
+    "@suite-common/wallet-graph": "*"
     "@suite-common/wallet-types": "*"
     "@suite-common/wallet-utils": "*"
     "@testing-library/react": 12.1.5

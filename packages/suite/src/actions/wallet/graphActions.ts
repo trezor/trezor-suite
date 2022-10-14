@@ -2,14 +2,16 @@ import { isWithinInterval, fromUnixTime } from 'date-fns';
 import { Dispatch, GetState } from '@suite-types';
 import { Account } from '@wallet-types';
 
+import { isTrezorConnectBackendType } from '@suite-common/wallet-utils';
 import {
     ensureHistoryRates,
     accountGraphDataFilterFn,
     deviceGraphDataFilterFn,
     enhanceBlockchainAccountHistory,
-    isTrezorConnectBackendType,
-} from '@suite-common/wallet-utils';
-import { GraphRange, GraphScale, GraphData } from '@suite-common/wallet-types';
+    GraphRange,
+    GraphScale,
+    GraphData,
+} from '@suite-common/wallet-graph';
 import TrezorConnect from '@trezor/connect';
 
 import {

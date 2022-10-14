@@ -12,7 +12,6 @@ import {
     eachDayOfInterval,
     differenceInMinutes,
     Locale,
-    eachMinuteOfInterval,
 } from 'date-fns';
 
 export const formatDuration = (seconds: number) =>
@@ -130,18 +129,3 @@ export const resetUTCTime = (ts: number, resetDay?: boolean) => {
     const sanitizedUnixTimestamp = getUnixTime(sanitizedTimestamp);
     return sanitizedUnixTimestamp;
 };
-
-export const getDatesInRangeInMinuteSpacedInterval = (
-    startOfRangeDate: Date,
-    endOfRangeDate: Date,
-    stepInMinutes: number,
-) =>
-    eachMinuteOfInterval(
-        {
-            start: startOfRangeDate.getTime(),
-            end: endOfRangeDate.getTime(),
-        },
-        {
-            step: stepInMinutes,
-        },
-    );

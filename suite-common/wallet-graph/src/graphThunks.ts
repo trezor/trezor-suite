@@ -1,18 +1,16 @@
-import { differenceInMinutes, getUnixTime, subMinutes } from 'date-fns';
+import { differenceInMinutes, eachMinuteOfInterval, getUnixTime, subMinutes } from 'date-fns';
 
 import { createThunk } from '@suite-common/redux-utils';
-import {
-    getBlockbookSafeTime,
-    getDatesInRangeInMinuteSpacedInterval,
-} from '@suite-common/suite-utils';
+import { getBlockbookSafeTime } from '@suite-common/suite-utils';
 import TrezorConnect from '@trezor/connect';
-import { Account, LineGraphTimeFrameValues } from '@suite-common/wallet-types';
+import { Account } from '@suite-common/wallet-types';
 import { getFiatRatesForTimestamps } from '@suite-common/fiat-services';
 import { selectAccountsByNetworkSymbols } from '@suite-common/wallet-core';
-import { getLineGraphAllTimeStepInMinutes } from '@suite-common/wallet-utils';
 
+import { LineGraphTimeFrameValues } from './types';
+import { getLineGraphAllTimeStepInMinutes } from './graphUtils';
 import { timeSwitchItems } from './config';
-import { actionPrefix, graphActions } from './graphActions';
+import { actionPrefix } from './graphActions';
 
 const getOldestAccountBalanceMovementTimestamp = async (accounts: Account[]) => {
     const promises = accounts.map(async account => {
@@ -76,8 +74,8 @@ const fetchAccountsGraphData = async (
     return groupedAccountBalance;
 };
 
-export const getGraphPointsForAccounts = createThunk(
-    `${actionPrefix}/getGraphPointsForAccounts`,
+export const getGraphPointsForAccountsThunk = createThunk(
+    `${actionPrefix}/getGraphPointsForAccountsThunk`,
     async (
         {
             section,
@@ -86,7 +84,7 @@ export const getGraphPointsForAccounts = createThunk(
             section: 'dashboard' | 'account';
             timeFrame: LineGraphTimeFrameValues;
         },
-        { dispatch, getState },
+        { getState },
     ) => {
         const endOfRangeDate = new Date();
 
@@ -106,10 +104,14 @@ export const getGraphPointsForAccounts = createThunk(
 
         const startOfRangeDate = subMinutes(endOfRangeDate, timeFrameItem.valueBackInMinutes);
 
-        const datesInRange = getDatesInRangeInMinuteSpacedInterval(
-            startOfRangeDate,
-            endOfRangeDate,
-            stepInMinutes,
+        const datesInRange = eachMinuteOfInterval(
+            {
+                start: startOfRangeDate.getTime(),
+                end: endOfRangeDate.getTime(),
+            },
+            {
+                step: stepInMinutes,
+            },
         );
         const datesInRangeUnixTime = datesInRange.map(date =>
             getBlockbookSafeTime(getUnixTime(date)),
@@ -139,12 +141,10 @@ export const getGraphPointsForAccounts = createThunk(
             groupBy: stepInMinutes * 60,
         });
 
-        // TODO merge all together
-        dispatch(
-            graphActions.updateGraphPoints({
-                section,
-                points: mappedDatesInRange,
-            }),
-        );
+        // TODO merge all points together
+        return {
+            section,
+            points: mappedDatesInRange,
+        };
     },
 );

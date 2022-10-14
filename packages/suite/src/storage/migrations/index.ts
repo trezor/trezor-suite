@@ -5,7 +5,8 @@ import type { State } from '@wallet-reducers/settingsReducer';
 import type { CustomBackend, BlockbookUrl } from '@wallet-types/backend';
 import type { Network, Account, Discovery } from '@wallet-types';
 
-import type { BackendSettings, GraphData } from '@suite-common/wallet-types';
+import type { BackendSettings } from '@suite-common/wallet-types';
+import type { GraphData } from '@suite-common/wallet-graph';
 import type { OnUpgradeFunc } from '@trezor/suite-storage';
 import type { DBWalletAccountTransaction } from '@trezor/suite/src/storage/definitions';
 import {

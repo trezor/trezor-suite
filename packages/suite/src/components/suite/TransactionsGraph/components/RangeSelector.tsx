@@ -13,7 +13,7 @@ import {
     differenceInMonths,
 } from 'date-fns';
 
-import { GraphRange } from '@suite-common/wallet-types';
+import { GraphRange } from '@suite-common/wallet-graph';
 import { colors, variables, Dropdown, DropdownRef, Timerange } from '@trezor/components';
 
 const Wrapper = styled.div`

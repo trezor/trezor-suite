@@ -6,11 +6,13 @@
             "path": "../../suite-common/formatters"
         },
         {
+            "path": "../../suite-common/wallet-graph"
+        },
+        {
             "path": "../../suite-common/wallet-types"
         },
         { "path": "../atoms" },
         { "path": "../test-utils" },
-        { "path": "../wallet-graph" },
         { "path": "../../packages/icons" },
         { "path": "../../packages/styles" },
         { "path": "../../packages/theme" }

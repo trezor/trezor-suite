@@ -731,9 +731,9 @@ EXTERNAL SOURCES:
     :path: "../../../node_modules/react-native/ReactCommon/yoga"
 
 SPEC CHECKSUMS:
-  boost: a7c83b31436843459a1961bfd74b96033dc77234
+  boost: 33822b9202be3240e51605d20431570aa3a6c58e
   CocoaAsyncSocket: 065fd1e645c7abab64f7a6a2007a48038fdc6a99
-  DoubleConversion: 5189b271737e1565bdce30deb4a08d647e3f5f54
+  DoubleConversion: 9456fd505d3f9f70d786fcbe504b31de765010d9
   FBLazyVector: 0507edc21c06f1650c591f0981c846445469373b
   FBReactNativeSpec: 70a3dfc80110f4b8e0ecc3fefd840c94b6c288c4
   Flipper: 26fc4b7382499f1281eb8cb921e5c3ad6de91fe0
@@ -746,14 +746,14 @@ SPEC CHECKSUMS:
   Flipper-RSocket: d9d9ade67cbecf6ac10730304bf5607266dd2541
   FlipperKit: cbdee19bdd4e7f05472a66ce290f1b729ba3cb86
   fmt: ff9d55029c625d3757ed641535fd4a75fedc7ce9
-  glog: 04b94705f318337d7ead9e6d17c019bd9b1f6b1b
+  glog: 7b03cc6e801af48ac1863ffbc894e61500505f52
   GoogleDataTransport: 1c8145da7117bd68bbbed00cf304edb6a24de00f
   GoogleMLKit: 0017a6a8372e1a182139b9def4d89be5d87ca5a7
   GoogleToolboxForMac: 8bef7c7c5cf7291c687cf5354f39f9db6399ad34
   GoogleUtilities: 1d20a6ad97ef46f67bbdec158ce00563a671ebb7
   GoogleUtilitiesComponents: 679b2c881db3b615a2777504623df6122dd20afe
   GTMSessionFetcher: 5595ec75acf5be50814f81e9189490412bad82ba
-  hermes-engine: f9312a2ea8036d03b63568ebf392314f4fa8b474
+  hermes-engine: f8b6dbeca39e301f5fb1c3ad0b52666750fa08b5
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
   MLImage: 489dfec109f21da8621b28d476401aaf7a0d4ff4
   MLKitBarcodeScanning: d92fe1911001ec36870162c5a0eb206f612b7169
@@ -765,7 +765,7 @@ SPEC CHECKSUMS:
   OpenSSL-Universal: ebc357f1e6bc71fa463ccb2fe676756aff50e88c
   PromisesObjC: ab77feca74fa2823e7af4249b8326368e61014cb
   Protobuf: f4128517d7a42302e106cc3afe614ee3a7513e94
-  RCT-Folly: 0080d0a6ebf2577475bda044aa59e2ca1f909cda
+  RCT-Folly: 158339bb8a6ef9d2cab2fcccaac4455da5196d85
   RCTRequired: d4033a367d0bfd1f23f67b501f8cdabf9afe617e
   RCTTypeSafety: b112b2ccc59309a65284280c0a53baf1ce4b5860
   React: 04474547a4729eef1fb378ca42f302f4b3219eb8

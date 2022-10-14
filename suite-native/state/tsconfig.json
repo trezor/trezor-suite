@@ -11,10 +11,12 @@
         {
             "path": "../../suite-common/wallet-core"
         },
+        {
+            "path": "../../suite-common/wallet-graph"
+        },
         { "path": "../module-devices" },
         { "path": "../module-settings" },
         { "path": "../storage" },
-        { "path": "../wallet-graph" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/styles" },
         { "path": "../../packages/utils" }

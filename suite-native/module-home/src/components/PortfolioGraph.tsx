@@ -1,13 +1,16 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { Graph, TimeSwitch } from '@suite-native/graph';
-import { LineGraphTimeFrameValues } from '@suite-common/wallet-types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Box, Text } from '@suite-native/atoms';
 import { Icon } from '@trezor/icons';
 import { useFormatters } from '@suite-common/formatters';
-import { getGraphPointsForAccounts, selectDashboardGraphPoints } from '@suite-native/wallet-graph';
+import {
+    getGraphPointsForAccountsThunk,
+    selectDashboardGraphPoints,
+    LineGraphTimeFrameValues,
+} from '@suite-common/wallet-graph';
 
 const arrowStyle = prepareNativeStyle(() => ({
     marginRight: 4,
@@ -22,27 +25,12 @@ export const PortfolioGraph = () => {
 
     useEffect(() => {
         dispatch(
-            getGraphPointsForAccounts({
+            getGraphPointsForAccountsThunk({
                 section: 'dashboard',
                 timeFrame: selectedTimeFrame,
             }),
         );
     }, [selectedTimeFrame, dispatch]);
-
-    /**
-     * react-native-graph library has problems with rendering path when there are some invalid values.
-     * Also graph is not showing (with props animated=true) when dates are not one by one.
-     */
-    const validGraphPoints = useMemo(
-        () =>
-            graphPoints
-                ?.filter(point => !Number.isNaN(point.value))
-                .map((point, index) => ({
-                    ...point,
-                    date: new Date(index),
-                })),
-        [graphPoints],
-    );
 
     const handleSelectTimeFrame = (timeFrame: LineGraphTimeFrameValues) => {
         setSelectedTimeFrame(timeFrame);
@@ -69,18 +57,7 @@ export const PortfolioGraph = () => {
                     1.3%
                 </Text>
             </Box>
-            <Graph
-                points={
-                    validGraphPoints.length
-                        ? validGraphPoints
-                        : [
-                              {
-                                  date: new Date(0),
-                                  value: 0,
-                              },
-                          ]
-                }
-            />
+            <Graph points={graphPoints} />
             <TimeSwitch
                 selectedTimeFrame={selectedTimeFrame}
                 onSelectTimeFrame={handleSelectTimeFrame}

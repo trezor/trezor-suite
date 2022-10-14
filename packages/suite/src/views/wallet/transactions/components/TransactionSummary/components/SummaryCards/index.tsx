@@ -5,10 +5,9 @@ import BigNumber from 'bignumber.js';
 import { Translation, HiddenPlaceholder, FormattedDate } from '@suite-components';
 import { Account } from '@wallet-types';
 
-import { sumFiatValueMap } from '@suite-common/wallet-utils';
+import { sumFiatValueMap, GraphRange, AggregatedAccountHistory } from '@suite-common/wallet-graph';
 import { useFormatters } from '@suite-common/formatters';
 import { variables } from '@trezor/components';
-import { GraphRange, AggregatedAccountHistory } from '@suite-common/wallet-types';
 
 import { InfoCard } from './components/InfoCard';
 

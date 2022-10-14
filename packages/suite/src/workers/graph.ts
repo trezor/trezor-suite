@@ -1,5 +1,5 @@
 /* eslint-disable no-restricted-globals */
-import { aggregateBalanceHistory } from '@suite-common/wallet-utils';
+import { aggregateBalanceHistory } from '@suite-common/wallet-graph';
 
 const ctx: Worker = self as any;
 

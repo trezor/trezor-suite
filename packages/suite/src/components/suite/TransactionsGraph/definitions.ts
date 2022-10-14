@@ -4,7 +4,7 @@ import {
     GraphRange,
     AggregatedAccountHistory,
     AggregatedDashboardHistory,
-} from '@suite-common/wallet-types';
+} from '@suite-common/wallet-graph';
 
 interface CommonProps {
     isLoading?: boolean;

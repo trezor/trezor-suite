@@ -6,7 +6,7 @@ import { FormattedCryptoAmount } from '@suite-components/FormattedCryptoAmount';
 import { NetworkSymbol } from '@wallet-types';
 
 import { Formatters, useFormatters } from '@suite-common/formatters';
-import { CommonAggregatedHistory } from '@suite-common/wallet-types';
+import { CommonAggregatedHistory } from '@suite-common/wallet-graph';
 
 import { Props as GraphProps, CryptoGraphProps } from '../definitions';
 import { CustomTooltipBase } from './CustomTooltipBase';

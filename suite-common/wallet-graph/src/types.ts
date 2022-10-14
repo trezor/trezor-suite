@@ -67,7 +67,7 @@ export interface LineGraphPoint {
 
 export type LineGraphTimeFrameValues = 'hour' | 'day' | 'week' | 'month' | 'year' | 'all';
 
-export type LineGraphTimeFrameItem = {
+type LineGraphTimeFrameItem = {
     shortcut: string;
     value: LineGraphTimeFrameValues;
     stepInMinutes?: number;

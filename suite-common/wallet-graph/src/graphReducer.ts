@@ -1,7 +1,7 @@
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
-import { LineGraphPoint } from '@suite-common/wallet-types';
 
-import { graphActions } from './graphActions';
+import { LineGraphPoint } from './types';
+import { getGraphPointsForAccountsThunk } from './graphThunks';
 
 export interface GraphState {
     dashboard: {
@@ -35,11 +35,21 @@ const updateSectionPoints = (
     },
 ) => {
     const { section, points } = payload;
-    state[section].points = points;
+    /**
+     * react-native-graph library has problems with rendering path when there are some invalid values.
+     * Also graph is not showing (with props animated=true) when dates do not follow each other by milliseconds.
+     */
+    const validGraphPoints = points
+        .filter(point => !Number.isNaN(point.value))
+        .map((point, index) => ({
+            ...point,
+            date: new Date(index),
+        }));
+    state[section].points = validGraphPoints;
 };
 
 export const prepareGraphReducer = createReducerWithExtraDeps(graphInitialState, builder => {
-    builder.addCase(graphActions.updateGraphPoints, (state, action) => {
+    builder.addCase(getGraphPointsForAccountsThunk.fulfilled, (state, action) => {
         updateSectionPoints(state, action.payload);
     });
 });

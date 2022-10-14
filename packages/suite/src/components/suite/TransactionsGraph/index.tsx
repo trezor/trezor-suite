@@ -9,7 +9,7 @@ import {
     calcYDomain,
     calcXDomain,
     calcFakeGraphDataForTimestamps,
-} from '@suite-common/wallet-utils';
+} from '@suite-common/wallet-graph';
 
 import { Props } from './definitions';
 import { RangeSelector } from './components/RangeSelector';

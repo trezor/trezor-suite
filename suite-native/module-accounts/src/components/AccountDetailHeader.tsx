@@ -13,7 +13,7 @@ type AccountDetailHeaderProps = {
 export const AccountDetailHeader = memo(({ accountKey, accountName }: AccountDetailHeaderProps) => (
     <>
         <AccountBalance accountKey={accountKey} accountName={accountName} />
-        <Graph />
+        <Graph points={[]} />
         <Box marginBottom="large">
             <Text variant="titleSmall">Transactions</Text>
         </Box>

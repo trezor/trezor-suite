@@ -7,7 +7,7 @@ import {
     prepareTransactionsReducer,
 } from '@suite-common/wallet-core';
 import { devicesReducer } from '@suite-native/module-devices';
-import { prepareGraphReducer } from '@suite-native/wallet-graph';
+import { prepareGraphReducer } from '@suite-common/wallet-graph';
 import { appSettingsReducer, appSettingsPersistWhitelist } from '@suite-native/module-settings';
 import { typedPersistReducer } from '@suite-native/storage';
 

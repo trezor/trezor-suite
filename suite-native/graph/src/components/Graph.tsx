@@ -5,7 +5,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Box } from '@suite-native/atoms';
 
 type GraphProps = {
-    points?: GraphPoint[];
+    points: GraphPoint[];
 };
 
 const graphWrapperStyle = prepareNativeStyle(_ => ({
@@ -22,11 +22,20 @@ const graphStyle = prepareNativeStyle(_ => ({
 export const Graph = ({ points = [] }: GraphProps) => {
     const { applyStyle } = useNativeStyles();
 
+    const graphPoints = points.length
+        ? points
+        : [
+              {
+                  date: new Date(0),
+                  value: 0,
+              },
+          ];
+
     return (
         <Box style={applyStyle(graphWrapperStyle)}>
             <LineGraph
                 style={applyStyle(graphStyle)}
-                points={points}
+                points={graphPoints}
                 color="#00854D"
                 animated
                 enablePanGesture

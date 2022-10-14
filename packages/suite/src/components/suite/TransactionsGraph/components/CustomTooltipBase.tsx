@@ -5,7 +5,7 @@ import { Translation, FormattedDate } from '@suite-components';
 import { TooltipProps } from 'recharts';
 
 import { variables } from '@trezor/components';
-import { CommonAggregatedHistory } from '@suite-common/wallet-types';
+import { CommonAggregatedHistory } from '@suite-common/wallet-graph';
 
 import { Props as GraphProps } from '../definitions';
 
