@@ -171,4 +171,11 @@ export class CoinjoinBackendService {
     static getInstances() {
         return Object.keys(this.instances).map(key => this.instances[key]);
     }
+
+    static removeInstance(network: string) {
+        if (this.instances[network]) {
+            this.instances[network].cancel();
+            delete this.instances[network];
+        }
+    }
 }

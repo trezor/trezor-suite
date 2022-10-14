@@ -13,6 +13,14 @@ const clientEnable = (symbol: Account['symbol']) =>
         },
     } as const);
 
+export const clientDisable = (symbol: Account['symbol']) =>
+    ({
+        type: COINJOIN.CLIENT_DISABLE,
+        payload: {
+            symbol,
+        },
+    } as const);
+
 const clientEnableSuccess = (symbol: Account['symbol'], status: CoinjoinStatus) =>
     ({
         type: COINJOIN.CLIENT_ENABLE_SUCCESS,
