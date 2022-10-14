@@ -1,6 +1,6 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
-import { Icon, useTheme, variables } from '@trezor/components';
+import { Icon, useTheme, variables, CollapsibleBox } from '@trezor/components';
 import { WalletAccountTransaction } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { FormattedCryptoAmount, HiddenPlaceholder, Translation } from '@suite-components';
@@ -137,12 +137,84 @@ const IOSection = ({ tx, inputs, outputs }: IOSectionProps) => {
     );
 };
 
+const StyledCollapsibleBox = styled(CollapsibleBox)`
+    background: none;
+    box-shadow: none;
+    border-radius: 0;
+    margin-bottom: 0;
+    padding: 16px 0;
+    text-align: left;
+    overflow: auto;
+    ${blurFix}
+
+    & + & {
+        border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
+    }
+
+    ${CollapsibleBox.Header} {
+        padding: 16px 0;
+        border-radius: 12px;
+        ${blurFix}
+
+        :hover {
+            background-color: ${({ theme }) => theme.BG_GREY};
+        }
+    }
+
+    ${CollapsibleBox.Heading} {
+        color: ${({ theme }) => theme.TYPE_DARK_GREY};
+        font-size: ${variables.NEUE_FONT_SIZE.NORMAL};
+    }
+
+    ${CollapsibleBox.Content} {
+        padding: 8px 0 0 0;
+        border: none;
+    }
+`;
+
+type CollapsibleIOSectionProps = IOSectionProps & {
+    heading?: React.ReactNode;
+    opened?: boolean;
+};
+
+const CollapsibleIOSection = ({
+    tx,
+    inputs,
+    outputs,
+    heading,
+    opened,
+}: CollapsibleIOSectionProps) =>
+    inputs?.length || outputs?.length ? (
+        <StyledCollapsibleBox heading={heading} opened={opened} variant="large">
+            <IOSection tx={tx} inputs={inputs} outputs={outputs} />
+        </StyledCollapsibleBox>
+    ) : null;
+
+const shouldSeparateOwned = (tx: WalletAccountTransaction) => tx.type === 'joint';
+
 interface IODetailsProps {
     tx: WalletAccountTransaction;
 }
 
-export const IODetails = ({ tx }: IODetailsProps) => (
-    <Wrapper>
-        <IOSection tx={tx} inputs={tx.details.vin} outputs={tx.details.vout} />
-    </Wrapper>
-);
+export const IODetails = ({ tx }: IODetailsProps) =>
+    shouldSeparateOwned(tx) ? (
+        <>
+            <CollapsibleIOSection
+                heading={<Translation id="TR_MY_INPUTS_AND_OUTPUTS" />}
+                opened
+                tx={tx}
+                inputs={tx.details.vin?.filter(vin => vin.isAccountOwned)}
+                outputs={tx.details.vout?.filter(vout => vout.isAccountOwned)}
+            />
+            <CollapsibleIOSection
+                heading={<Translation id="TR_OTHER_INPUTS_AND_OUTPUTS" />}
+                tx={tx}
+                inputs={tx.details.vin?.filter(vin => !vin.isAccountOwned)}
+                outputs={tx.details.vout?.filter(vout => !vout.isAccountOwned)}
+            />
+        </>
+    ) : (
+        <Wrapper>
+            <IOSection tx={tx} inputs={tx.details.vin} outputs={tx.details.vout} />
+        </Wrapper>
+    );
