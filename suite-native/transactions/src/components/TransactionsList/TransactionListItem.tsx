@@ -48,8 +48,9 @@ export const TransactionListItem = memo(({ transaction }: AccountTransactionList
         useNavigation<
             StackNavigationProps<RootStackParamList, AccountsStackRoutes.AccountDetail>
         >();
-    const { FiatAmountFormatter } = useFormatters();
-    const transactionAmount = formatNetworkAmount(transaction.amount, transaction.symbol, true);
+    const { FiatAmountFormatter, CryptoAmountFormatter, CurrencySymbolFormatter } = useFormatters();
+    const transactionAmount = formatNetworkAmount(transaction.amount, transaction.symbol);
+    const fiatAmount = toFiatCurrency(transactionAmount, fiatCurrency.label, transaction.rates);
 
     const getTransactionTimestamp = () => {
         const { blockHeight, blockTime } = transaction;
@@ -64,9 +65,6 @@ export const TransactionListItem = memo(({ transaction }: AccountTransactionList
         });
     };
 
-    const fiatAmount = toFiatCurrency(transactionAmount, fiatCurrency.label, transaction.rates);
-
-    console.log(fiatAmount, 'fiat amount');
     return (
         <TouchableOpacity
             onPress={() => handleNavigateToTransactionDetail()}
@@ -81,9 +79,13 @@ export const TransactionListItem = memo(({ transaction }: AccountTransactionList
                     <Text>{getTransactionTimestamp()?.toLocaleTimeString()}</Text>
                 </Box>
             </Box>
-            <Box>
+            <Box alignItems="flex-end">
                 <Text>{FiatAmountFormatter.format(fiatAmount ?? 0)}</Text>
-                <Text>{transactionAmount}</Text>
+                <Text>
+                    <>{`${CryptoAmountFormatter.format(transactionAmount, {
+                        symbol: transaction.symbol,
+                    })} ${CurrencySymbolFormatter.format(transaction.symbol)}`}</>
+                </Text>
             </Box>
         </TouchableOpacity>
     );

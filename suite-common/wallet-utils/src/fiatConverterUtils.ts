@@ -11,29 +11,22 @@ export const toFiatCurrency = (
     decimals = 2,
 ) => {
     // calculate amount in local currency
-    console.log(amount, fiatCurrency, networkRates, 'to fiat currency');
     const rate = networkRates?.[fiatCurrency];
     if (!rate) {
-        console.log('no rates');
         return null;
     }
 
-    let formattedAmount = amount;
-    if (typeof amount === 'string') {
-        formattedAmount = amount.replace(',', '.');
-    }
-
-    const localAmount = new BigNumber(formattedAmount).times(rate);
-    if (localAmount.isNaN()) {
-        console.log('not a number');
+    console.log(amount, 'amount');
+    const formattedAmount = amount.replace(',', '.');
+    const fiatAmount = new BigNumber(formattedAmount).times(rate);
+    if (fiatAmount.isNaN()) {
         return null;
     }
-    console.log(localAmount, 'local amount');
-    return decimals === -1 ? localAmount.toFixed() : localAmount.toFixed(decimals);
+    return decimals === -1 ? fiatAmount.toFixed() : fiatAmount.toFixed(decimals);
 };
 
 export const fromFiatCurrency = (
-    localAmount: string,
+    fiatAmount: string,
     fiatCurrency: string,
     networkRates: FiatRates | undefined,
     decimals: number,
@@ -43,10 +36,7 @@ export const fromFiatCurrency = (
         return null;
     }
 
-    let formattedLocalAmount = localAmount;
-    if (typeof localAmount === 'string') {
-        formattedLocalAmount = localAmount.replace(',', '.');
-    }
+    const formattedLocalAmount = fiatAmount.replace(',', '.');
 
     const amount = new BigNumber(formattedLocalAmount).div(rate);
     const amountStr = amount.isNaN() ? null : amount.toFixed(decimals);
