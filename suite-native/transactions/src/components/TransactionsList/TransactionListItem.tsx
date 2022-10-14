@@ -1,5 +1,6 @@
 import React, { memo } from 'react';
 import { TouchableOpacity } from 'react-native';
+import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
@@ -7,13 +8,15 @@ import { Box, Text } from '@suite-native/atoms';
 import { TransactionType, WalletAccountTransaction } from '@suite-common/wallet-types';
 import { Icon, IconName } from '@trezor/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { toFiatCurrency, formatNetworkAmount } from '@suite-common/wallet-utils';
 import {
     AccountsStackRoutes,
     RootStackParamList,
     RootStackRoutes,
     StackNavigationProps,
 } from '@suite-native/navigation';
-import { formatNetworkAmount } from '@suite-common/wallet-utils';
+import { selectFiatCurrency } from '@suite-native/module-settings';
+import { useFormatters } from '@suite-common/formatters';
 
 type AccountTransactionListItemProps = {
     transaction: WalletAccountTransaction;
@@ -40,10 +43,12 @@ const transactionListItemStyle = prepareNativeStyle(utils => ({
 
 export const TransactionListItem = memo(({ transaction }: AccountTransactionListItemProps) => {
     const { applyStyle } = useNativeStyles();
+    const fiatCurrency = useSelector(selectFiatCurrency);
     const navigation =
         useNavigation<
             StackNavigationProps<RootStackParamList, AccountsStackRoutes.AccountDetail>
         >();
+    const { FiatAmountFormatter } = useFormatters();
     const transactionAmount = formatNetworkAmount(transaction.amount, transaction.symbol, true);
 
     const getTransactionTimestamp = () => {
@@ -59,6 +64,9 @@ export const TransactionListItem = memo(({ transaction }: AccountTransactionList
         });
     };
 
+    const fiatAmount = toFiatCurrency(transactionAmount, fiatCurrency.label, transaction.rates);
+
+    console.log(fiatAmount, 'fiat amount');
     return (
         <TouchableOpacity
             onPress={() => handleNavigateToTransactionDetail()}
@@ -73,7 +81,10 @@ export const TransactionListItem = memo(({ transaction }: AccountTransactionList
                     <Text>{getTransactionTimestamp()?.toLocaleTimeString()}</Text>
                 </Box>
             </Box>
-            <Text>{transactionAmount}</Text>
+            <Box>
+                <Text>{FiatAmountFormatter.format(fiatAmount ?? 0)}</Text>
+                <Text>{transactionAmount}</Text>
+            </Box>
         </TouchableOpacity>
     );
 });

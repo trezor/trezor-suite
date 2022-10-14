@@ -11,9 +11,10 @@ export const toFiatCurrency = (
     decimals = 2,
 ) => {
     // calculate amount in local currency
-
+    console.log(amount, fiatCurrency, networkRates, 'to fiat currency');
     const rate = networkRates?.[fiatCurrency];
     if (!rate) {
+        console.log('no rates');
         return null;
     }
 
@@ -24,9 +25,10 @@ export const toFiatCurrency = (
 
     const localAmount = new BigNumber(formattedAmount).times(rate);
     if (localAmount.isNaN()) {
+        console.log('not a number');
         return null;
     }
-
+    console.log(localAmount, 'local amount');
     return decimals === -1 ? localAmount.toFixed() : localAmount.toFixed(decimals);
 };
 
