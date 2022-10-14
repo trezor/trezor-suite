@@ -5909,6 +5909,14 @@ export default defineMessages({
         id: 'TR_INPUTS_OUTPUTS',
         defaultMessage: 'Inputs, Outputs',
     },
+    TR_MY_INPUTS_AND_OUTPUTS: {
+        id: 'TR_MY_INPUTS_AND_OUTPUTS',
+        defaultMessage: 'My inputs and outputs',
+    },
+    TR_OTHER_INPUTS_AND_OUTPUTS: {
+        id: 'TR_OTHER_INPUTS_AND_OUTPUTS',
+        defaultMessage: 'Other input and outputs',
+    },
     TR_CHAINED_TXS: {
         id: 'TR_CHAINED_TXS',
         defaultMessage: 'Chained transactions',
