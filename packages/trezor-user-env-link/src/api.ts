@@ -89,6 +89,13 @@ export const api = (controller: any) => ({
         };
         return controller.send(params);
     },
+    startEmuFromUrl: ({ url, model, wipe }: { url: string; model: string; wipe?: boolean }) =>
+        controller.send({
+            type: 'emulator-start-from-url',
+            url,
+            model,
+            wipe,
+        }),
     stopEmu: async () => {
         await controller.send({ type: 'emulator-stop' });
         return null;
