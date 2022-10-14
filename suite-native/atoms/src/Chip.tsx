@@ -19,7 +19,7 @@ type ChipProps = {
 
 type ChipStyleProps = {
     isSelected: boolean;
-    titleColor?: Color;
+    titleColor: Color;
 };
 const chipStyle = prepareNativeStyle<ChipStyleProps>((utils, { isSelected }) => ({
     flexDirection: 'row',
@@ -75,7 +75,10 @@ export const Chip = ({
     const { applyStyle } = useNativeStyles();
 
     return (
-        <TouchableOpacity onPress={onSelect} style={[applyStyle(chipStyle, { isSelected }), style]}>
+        <TouchableOpacity
+            onPress={onSelect}
+            style={[applyStyle(chipStyle, { isSelected, titleColor }), style]}
+        >
             <Box>{icon}</Box>
             <Box style={applyStyle(textWrapperStyle)}>
                 <Text style={applyStyle(chipTitleStyle, { isSelected, titleColor })}>{title}</Text>
