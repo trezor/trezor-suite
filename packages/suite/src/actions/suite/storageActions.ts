@@ -45,6 +45,20 @@ export const removeAccountDraft = async (account: Account) => {
     return db.removeItemByPK('sendFormDrafts', account.key);
 };
 
+export const saveCoinjoinAccount =
+    (accountKey: string) => async (_: Dispatch, getState: GetState) => {
+        const state = getState();
+        const { device } = state.suite;
+        const account = state.wallet.coinjoin.accounts.find(a => a.key === accountKey);
+        if (!device?.remember || !account || !(await db.isAccessible())) return;
+        return db.addItem('coinjoinAccounts', account, accountKey, true);
+    };
+
+export const removeCoinjoinAccount = async (accountKey: string) => {
+    if (!(await db.isAccessible())) return;
+    return db.removeItemByPK('coinjoinAccounts', accountKey);
+};
+
 // send form drafts end
 
 export const saveFormDraft = async (key: string, draft: FormDraft) => {
@@ -183,6 +197,7 @@ export const rememberDevice =
                     [
                         dispatch(saveAccountTransactions(account)),
                         dispatch(saveAccountDraft(account)),
+                        dispatch(saveCoinjoinAccount(account.key)),
                     ],
                     FormDraftPrefixKeyValues.map(prefix =>
                         dispatch(saveAccountFormDraft(prefix, account.key)),
