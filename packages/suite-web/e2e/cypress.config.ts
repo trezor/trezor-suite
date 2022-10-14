@@ -58,11 +58,6 @@ export default defineConfig({
         trashAssetsBeforeRuns: true,
         chromeWebSecurity: false,
         experimentalFetchPolyfill: true,
-        env: {
-            emuVersionT1: '1-master',
-            emuVersionT2: '2-master',
-        },
-
         setupNodeEvents(on, config) {
             on('before:browser:launch', (_browser, launchOptions) => {
                 const args = Array.isArray(launchOptions) ? launchOptions : launchOptions.args;
