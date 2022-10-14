@@ -2,7 +2,7 @@ import React, { ReactNode } from 'react';
 import { TouchableOpacity } from 'react-native';
 
 import { NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { CSSColor } from '@trezor/theme';
+import { Color } from '@trezor/theme';
 
 import { Box } from './Box';
 import { Text } from './Text';
@@ -14,12 +14,12 @@ type ChipProps = {
     icon: ReactNode;
     isSelected?: boolean;
     style?: NativeStyleObject;
-    titleColor?: CSSColor;
+    titleColor?: Color;
 };
 
 type ChipStyleProps = {
     isSelected: boolean;
-    titleColor?: CSSColor;
+    titleColor?: Color;
 };
 const chipStyle = prepareNativeStyle<ChipStyleProps>((utils, { isSelected }) => ({
     flexDirection: 'row',
@@ -43,7 +43,7 @@ const chipStyle = prepareNativeStyle<ChipStyleProps>((utils, { isSelected }) => 
 
 const chipTitleStyle = prepareNativeStyle<ChipStyleProps>((utils, { isSelected, titleColor }) => ({
     ...utils.typography.hint,
-    color: titleColor || utils.colors.gray800,
+    color: utils.colors[titleColor || 'gray800'],
     extend: {
         condition: isSelected,
         style: {

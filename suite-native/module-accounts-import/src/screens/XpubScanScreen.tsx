@@ -78,7 +78,7 @@ export const XpubScanScreen = ({
     const [selectedCurrencySymbol, setSelectedCurrencySymbol] =
         useState<NetworkSymbol>(DEFAULT_CURRENCY_SYMBOL);
     const [cameraRequested, setCameraRequested] = useState<boolean>(false);
-    const { applyStyle, utils } = useNativeStyles();
+    const { applyStyle } = useNativeStyles();
 
     const form = useForm<XpubFormValues>({
         validation: xpubFormValidationSchema,
@@ -129,7 +129,7 @@ export const XpubScanScreen = ({
                     <Chip
                         icon={<CryptoIcon name="btc" />}
                         title="Bitcoin"
-                        titleColor={utils.colors.gray200}
+                        titleColor="gray200"
                         onSelect={() => handleSelectCurrency('btc')}
                         style={applyStyle(chipStyle, {
                             isSelected: selectedCurrencySymbol === 'btc',
@@ -139,7 +139,7 @@ export const XpubScanScreen = ({
                     <Chip
                         icon={<CryptoIcon name="test" />}
                         title="Testnet"
-                        titleColor={utils.colors.gray200}
+                        titleColor="gray200"
                         onSelect={() => handleSelectCurrency('test')}
                         style={applyStyle(chipStyle, {
                             isSelected: selectedCurrencySymbol === 'test',
