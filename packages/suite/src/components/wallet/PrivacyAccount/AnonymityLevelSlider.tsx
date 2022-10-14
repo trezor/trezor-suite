@@ -1,9 +1,10 @@
 import React, { useCallback, useState, ChangeEventHandler } from 'react';
 import styled from 'styled-components';
-import { Range, P, variables, useTheme } from '@trezor/components';
-import { useSelector, useActions } from '@suite-hooks';
+import { Range, P, Warning, variables, useTheme } from '@trezor/components';
+import { Translation } from '@suite-components';
+import { useSelector, useActions, useAnonymityStatus } from '@suite-hooks';
+import { AnonymityStatus } from '@suite-constants/coinjoin';
 import { selectSelectedAccount } from '@wallet-reducers/selectedAccountReducer';
-import { selectCurrentTargetAnonymity } from '@wallet-reducers/coinjoinReducer';
 import * as coinjoinActions from '@wallet-actions/coinjoinAccountActions';
 
 const Container = styled.div`
@@ -36,6 +37,11 @@ const Label = styled(P)`
     opacity: 0.5;
 `;
 
+const WarningWrapper = styled.div`
+    margin-top: 24px;
+    margin-bottom: -14px;
+`;
+
 const minPosition = 0;
 const maxPosition = 100;
 
@@ -54,7 +60,7 @@ interface AnonymityLevelSliderProps {
 
 export const AnonymityLevelSlider = ({ className }: AnonymityLevelSliderProps) => {
     const currentAccount = useSelector(selectSelectedAccount);
-    const targetAnonymity = useSelector(selectCurrentTargetAnonymity);
+    const { anonymityStatus, targetAnonymity } = useAnonymityStatus();
 
     const [sliderPosition, setSliderPosition] = useState(getPosition(targetAnonymity || 1));
 
@@ -105,6 +111,13 @@ export const AnonymityLevelSlider = ({ className }: AnonymityLevelSliderProps) =
                 <Label>30</Label>
                 <Label>100</Label>
             </LabelsWrapper>
+            {anonymityStatus === AnonymityStatus.Bad && (
+                <WarningWrapper>
+                    <Warning critical withIcon>
+                        <Translation id="TR_ANONYMITY_LEVEL_BAD_WARNING" />
+                    </Warning>
+                </WarningWrapper>
+            )}
         </Container>
     );
 };

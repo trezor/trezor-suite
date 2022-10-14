@@ -1,9 +1,10 @@
 import React, { forwardRef } from 'react';
-import styled from 'styled-components';
-import { Icon, variables } from '@trezor/components';
-import { useSelector } from '@suite-hooks/useSelector';
-import { selectCurrentTargetAnonymity } from '@wallet-reducers/coinjoinReducer';
+import styled, { DefaultTheme } from 'styled-components';
+import { Icon, variables, useTheme } from '@trezor/components';
+import { Translation } from '@suite-components';
+import { useAnonymityStatus } from '@suite-hooks';
 import { darken } from 'polished';
+import { AnonymityStatus } from '@suite-constants/coinjoin';
 
 const Container = styled.div`
     display: flex;
@@ -35,15 +36,45 @@ const AnonymityLevel = styled.p`
     font-variant-numeric: tabular-nums;
 `;
 
-const AnonymityStatus = styled.p`
-    color: ${({ theme }) => theme.TYPE_GREEN};
+interface GetAnonymityStatusColorProps {
+    theme: DefaultTheme;
+    anonymityStatus: AnonymityStatus;
+}
+
+const getAnonymityStatusColor = ({ theme, anonymityStatus }: GetAnonymityStatusColorProps) => {
+    switch (anonymityStatus) {
+        case AnonymityStatus.Bad:
+            return theme.TYPE_RED;
+        case AnonymityStatus.Medium:
+            return theme.TYPE_DARK_ORANGE;
+        default:
+            return theme.TYPE_GREEN;
+    }
+};
+
+const AnonymityStatusLabel = styled.p<{ color: string }>`
+    color: ${({ color }) => color};
     font-size: ${variables.FONT_SIZE.TINY};
 `;
 
-enum AnomymityStatus {
-    Good = 'GOOD',
-    Great = 'GREAT',
+interface AnonymityStatusLabelValueProps {
+    anonymityStatus: AnonymityStatus;
 }
+
+const AnonymityStatusLabelValue = ({ anonymityStatus }: AnonymityStatusLabelValueProps) => {
+    switch (anonymityStatus) {
+        case AnonymityStatus.Bad:
+            return <Translation id="TR_ANONYMITY_LEVEL_BAD" />;
+        case AnonymityStatus.Medium:
+            return <Translation id="TR_ANONYMITY_LEVEL_MEDIUM" />;
+        case AnonymityStatus.Good:
+            return <Translation id="TR_ANONYMITY_LEVEL_GOOD" />;
+        case AnonymityStatus.Great:
+            return <Translation id="TR_ANONYMITY_LEVEL_GREAT" />;
+        default:
+            return null;
+    }
+};
 
 interface AnonymityLevelIndicatorProps {
     className?: string;
@@ -52,9 +83,8 @@ interface AnonymityLevelIndicatorProps {
 
 export const AnonymityLevelIndicator = forwardRef<HTMLDivElement, AnonymityLevelIndicatorProps>(
     ({ className, onClick }, ref) => {
-        const targetAnonymity = useSelector(selectCurrentTargetAnonymity) || 1;
-
-        const anonymityStatus = getAnonymityStatus(targetAnonymity);
+        const { anonymityStatus, targetAnonymity } = useAnonymityStatus();
+        const theme = useTheme();
 
         return (
             <Container className={className} onClick={onClick} ref={ref}>
@@ -67,9 +97,11 @@ export const AnonymityLevelIndicator = forwardRef<HTMLDivElement, AnonymityLevel
                             values={{ targetAnonymity }}
                         />
                     </AnonymityLevel>
-                    <AnonymityStatus color={anonymityStatus.color}>
-                        {anonymityStatus.label}
-                    </AnonymityStatus>
+                    <AnonymityStatusLabel
+                        color={getAnonymityStatusColor({ theme, anonymityStatus })}
+                    >
+                        <AnonymityStatusLabelValue anonymityStatus={anonymityStatus} />
+                    </AnonymityStatusLabel>
                 </Values>
             </Container>
         );
