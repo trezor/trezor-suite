@@ -17,6 +17,11 @@
                 "ignoreProperties": ["composes", "font-smoothing", "font-smooth"]
             }
         ],
+		"selector-type-no-unknown": [
+            true, {
+                "ignoreTypes": ["/-styled-mixin/"]
+            }
+        ],
         "at-rule-no-unknown": [ true, {
             "ignoreAtRules": ["each"]
         }]
