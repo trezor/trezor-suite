@@ -39,6 +39,7 @@ export const preloadStore = async () => {
     const sendFormDrafts = await db.getItemsWithKeys('sendFormDrafts');
     const formDrafts = await db.getItemsWithKeys('formDrafts');
     const firmware = await db.getItemByPK('firmware', 'firmware');
+    const coinjoinAccounts = await db.getItemsExtended('coinjoinAccounts');
 
     return {
         type: STORAGE.LOAD,
@@ -59,6 +60,7 @@ export const preloadStore = async () => {
             messageSystem,
             backendSettings,
             firmware,
+            coinjoinAccounts,
         },
     } as const;
 };

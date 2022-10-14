@@ -4,6 +4,7 @@ import { db } from '@suite/storage';
 import { WALLET_SETTINGS } from '@settings-actions/constants';
 import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
 import { DISCOVERY, GRAPH, SEND, COINMARKET_COMMON, FORM_DRAFT } from '@wallet-actions/constants';
+import * as COINJOIN from '@wallet-actions/constants/coinjoinConstants';
 import * as storageActions from '@suite-actions/storageActions';
 import * as accountUtils from '@suite-common/wallet-utils';
 import { SUITE, ANALYTICS, METADATA, MESSAGE_SYSTEM, STORAGE } from '@suite-actions/constants';
@@ -220,6 +221,18 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                     break;
                 case FIRMWARE.SET_HASH_INVALID:
                     api.dispatch(storageActions.saveFirmware());
+                    break;
+
+                case COINJOIN.ACCOUNT_CREATE:
+                    api.dispatch(storageActions.saveCoinjoinAccount(action.payload.account.key));
+                    break;
+                case COINJOIN.ACCOUNT_AUTHORIZE_SUCCESS:
+                case COINJOIN.ACCOUNT_UNREGISTER:
+                case COINJOIN.ACCOUNT_UPDATE_TARGET_ANONYMITY:
+                    api.dispatch(storageActions.saveCoinjoinAccount(action.payload.accountKey));
+                    break;
+                case COINJOIN.ACCOUNT_REMOVE:
+                    storageActions.removeCoinjoinAccount(action.payload.accountKey);
                     break;
 
                 default:

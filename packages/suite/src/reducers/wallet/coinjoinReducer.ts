@@ -104,18 +104,7 @@ export const coinjoinReducer = (
     produce(state, draft => {
         switch (action.type) {
             case STORAGE.LOAD:
-                // Temporary code
-                // coinjoin reducer is not stored in DB yet
-                // restore accounts with coinjoin accountType
-                action.payload.accounts.forEach(account => {
-                    if (account.accountType === 'coinjoin') {
-                        draft.accounts.push({
-                            key: account.key,
-                            targetAnonymity: 0,
-                            previousSessions: [],
-                        });
-                    }
-                });
+                draft.accounts = action.payload.coinjoinAccounts;
                 break;
 
             case COINJOIN.ACCOUNT_CREATE:
