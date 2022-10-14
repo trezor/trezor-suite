@@ -4,3 +4,5 @@ export const requestInit: RequestInit = {
         'User-Agent': 'Trezor Suite',
     },
 };
+
+export const fetchUrl = (url: string) => () => fetch(url, requestInit);

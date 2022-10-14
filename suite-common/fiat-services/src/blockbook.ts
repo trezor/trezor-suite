@@ -1,7 +1,7 @@
 import type { LastWeekRates, TimestampedRates, TickerId } from '@suite-common/wallet-types';
 
 import { RateLimiter } from './limiter';
-import { requestInit } from './request';
+import { fetchUrl } from './fetch';
 
 const ENDPOINTS = {
     btc: ['btc1', 'btc2', 'btc3', 'btc4', 'btc5'],
@@ -24,7 +24,7 @@ const limiter = new RateLimiter(500);
 
 const request = <T>(url: string): Promise<T | null> =>
     limiter
-        .limit(() => fetch(url, requestInit))
+        .limit(fetchUrl(url))
         .then(res =>
             res.ok
                 ? res.json()

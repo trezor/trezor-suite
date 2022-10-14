@@ -2,7 +2,7 @@ import { LastWeekRates, TickerId } from '@suite-common/wallet-types';
 import { FIAT as FIAT_CONFIG } from '@suite-common/suite-config';
 
 import { RateLimiter } from './limiter';
-import { requestInit } from './request';
+import { fetchUrl } from './fetch';
 
 // a proxy for https://api.coingecko.com/api/v3
 const COINGECKO_API_BASE_URL = 'https://cdn.trezor.io/dynamic/coingecko/api/v3';
@@ -15,7 +15,7 @@ const rateLimiter = new RateLimiter(1000);
 
 const fetchCoinGecko = async (url: string) => {
     try {
-        const res = await rateLimiter.limit(() => fetch(url, requestInit));
+        const res = await rateLimiter.limit(fetchUrl(url));
         if (!res.ok) {
             console.warn(`Coingecko: Fiat rates failed to fetch: ${res.status}`);
             return;
