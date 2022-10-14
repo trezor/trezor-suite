@@ -8,3 +8,13 @@ export const COINJOIN_PHASE_MESSAGES: Record<RoundPhase, TranslationKey> = {
     [RoundPhase.TransactionSigning]: 'TR_COINJOIN_PHASE_3_MESSAGE',
     [RoundPhase.Ended]: 'TR_COINJOIN_PHASE_4_MESSAGE',
 };
+
+/**
+ * Values are upper limits of anonymity level for each status.
+ */
+export enum AnonymityStatus {
+    Bad = 5,
+    Medium = 10,
+    Good = 20,
+    Great = 100,
+}
