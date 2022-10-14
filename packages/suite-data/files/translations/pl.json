@@ -196,6 +196,8 @@
   "TR_ANONYMISATION_BUTTON_DISABLED": "Potwierdź warunki przed kontynuacją.",
   "TR_ANONYMIZE": "Zanonimizuj",
   "TR_ANONYMIZING": "Anonimizowanie",
+  "TR_BACKUP": "Kopia zapasowa portfela",
+  "TR_BACKUP_CHECKBOX_2_TITLE": "Nigdy nie rób zdjęcia i nie wykonuj zrzutu cyfrowego kopii zapasowej.",
   "TR_COINMARKET_UNKNOWN_PROVIDER": "nieznany dostawca",
   "TR_COINS_ANONYMITY": "Anonimowość moich monet",
   "TR_COINS_ANONYMITY_TOOLTIP": "bardzo duża anonimowość",
