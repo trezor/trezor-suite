@@ -35,7 +35,7 @@ const coinjoinAccountRemove = (accountKey: string) =>
         },
     } as const);
 
-const coinjoinAccountUpdateAnonymity = (accountKey: string, targetAnonymity: number) =>
+export const coinjoinAccountUpdateAnonymity = (accountKey: string, targetAnonymity: number) =>
     ({
         type: COINJOIN.ACCOUNT_UPDATE_TARGET_ANONYMITY,
         payload: {

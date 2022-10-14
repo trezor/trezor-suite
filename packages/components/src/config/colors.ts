@@ -50,6 +50,12 @@ export const THEME = {
         GRADIENT_RED_START: '#d15b5b',
         GRADIENT_RED_END: '#e75f5f',
 
+        GRADIENT_SLIDER_GREEN_START: '#2A9649',
+        GRADIENT_SLIDER_GREEN_END: '#95CDA5',
+        GRADIENT_SLIDER_YELLOW_START: '#C8B883',
+        GRADIENT_SLIDER_YELLOW_END: '#C8B882',
+        GRADIENT_SLIDER_RED_END: '#BF6767',
+
         BOX_SHADOW_BLACK_5: 'rgba(0, 0, 0, 0.05)',
         BOX_SHADOW_BLACK_15: 'rgba(0, 0, 0, 0.15)',
         BOX_SHADOW_BLACK_20: 'rgba(0, 0, 0, 0.2)',
@@ -108,6 +114,12 @@ export const THEME = {
         GRADIENT_GREEN_END: '#5fa548',
         GRADIENT_RED_START: '#d15b5b', // same as in light theme
         GRADIENT_RED_END: '#e75f5f', // same as in light theme
+
+        GRADIENT_SLIDER_GREEN_START: '#2A9649',
+        GRADIENT_SLIDER_GREEN_END: '#95CDA5',
+        GRADIENT_SLIDER_YELLOW_START: '#C8B883',
+        GRADIENT_SLIDER_YELLOW_END: '#C8B882',
+        GRADIENT_SLIDER_RED_END: '#BF6767',
 
         BOX_SHADOW_BLACK_5: 'rgba(255, 255, 255, 0.05)',
         BOX_SHADOW_BLACK_15: 'rgba(0, 0, 0, 0.2)',
@@ -168,6 +180,12 @@ export const THEME = {
         GRADIENT_GREEN_END: '#5fa548',
         GRADIENT_RED_START: '#d15b5b', // same as in light theme
         GRADIENT_RED_END: '#e75f5f', // same as in light theme
+
+        GRADIENT_SLIDER_GREEN_START: '#2A9649',
+        GRADIENT_SLIDER_GREEN_END: '#95CDA5',
+        GRADIENT_SLIDER_YELLOW_START: '#C8B883',
+        GRADIENT_SLIDER_YELLOW_END: '#C8B882',
+        GRADIENT_SLIDER_RED_END: '#BF6767',
 
         BOX_SHADOW_BLACK_5: 'rgba(255, 255, 255, 0.05)',
         BOX_SHADOW_BLACK_15: 'rgba(0, 0, 0, 0.2)',

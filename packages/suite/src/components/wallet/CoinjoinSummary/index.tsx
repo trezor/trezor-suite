@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { H3 } from '@trezor/components';
 import { Account } from '@suite-common/wallet-types';
 import { Translation } from '@suite-components/Translation';
-import { AnonymityLevelIndicator } from '@wallet-components/PrivacyAccount/AnonymityLevelIndicator';
+import { AnonymityLevelSetup } from '@wallet-components/PrivacyAccount/AnonymityLevelSetup';
 import { AnonymityChart } from './AnonymityChart';
 import { BalanceSection } from './BalanceSection';
 
@@ -29,7 +29,7 @@ export const CoinjoinSummary = ({ account }: CoinjoinSummaryProps) => (
             <H3>
                 <Translation id="TR_MY_COINS" />
             </H3>
-            <AnonymityLevelIndicator />
+            <AnonymityLevelSetup />
         </Row>
 
         <BalanceSection account={account} />
