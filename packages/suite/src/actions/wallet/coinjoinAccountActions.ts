@@ -4,6 +4,7 @@ import { goto } from '../suite/routerActions';
 import { addToast } from '../suite/notificationActions';
 import { initCoinjoinClient, getCoinjoinClient } from './coinjoinClientActions';
 import { CoinjoinBackendService } from '@suite/services/coinjoin/coinjoinBackend';
+import { CoinjoinClientService } from '@suite/services/coinjoin/coinjoinClient';
 import { Dispatch, GetState } from '@suite-types';
 import { Network } from '@suite-common/wallet-config';
 import { Account, CoinjoinSessionParameters } from '@suite-common/wallet-types';
@@ -12,41 +13,53 @@ import { accountsActions, transactionsActions } from '@suite-common/wallet-core'
 const coinjoinAccountCreate = (account: Account, targetAnonymity: number) =>
     ({
         type: COINJOIN.ACCOUNT_CREATE,
-        account,
-        targetAnonymity,
+        payload: {
+            account,
+            targetAnonymity,
+        },
     } as const);
 
-const coinjoinAccountUpdateAnonymity = (key: string, targetAnonymity: number) =>
+const coinjoinAccountUpdateAnonymity = (accountKey: string, targetAnonymity: number) =>
     ({
         type: COINJOIN.ACCOUNT_UPDATE_TARGET_ANONYMITY,
-        key,
-        targetAnonymity,
+        payload: {
+            accountKey,
+            targetAnonymity,
+        },
     } as const);
 
-const coinjoinAccountAuthorize = (account: Account) =>
+const coinjoinAccountAuthorize = (accountKey: string) =>
     ({
         type: COINJOIN.ACCOUNT_AUTHORIZE,
-        account,
+        payload: {
+            accountKey,
+        },
     } as const);
 
-const coinjoinAccountAuthorizeSuccess = (account: Account, params: CoinjoinSessionParameters) =>
+const coinjoinAccountAuthorizeSuccess = (accountKey: string, params: CoinjoinSessionParameters) =>
     ({
         type: COINJOIN.ACCOUNT_AUTHORIZE_SUCCESS,
-        account,
-        params,
+        payload: {
+            accountKey,
+            params,
+        },
     } as const);
 
-const coinjoinAccountAuthorizeFailed = (account: Account, error: string) =>
+const coinjoinAccountAuthorizeFailed = (accountKey: string, error: string) =>
     ({
         type: COINJOIN.ACCOUNT_AUTHORIZE_FAILED,
-        account,
-        error,
+        payload: {
+            accountKey,
+            error,
+        },
     } as const);
 
-const coinjoinAccountUnregister = (account: Account) =>
+const coinjoinAccountUnregister = (accountKey: string) =>
     ({
         type: COINJOIN.ACCOUNT_UNREGISTER,
-        account,
+        payload: {
+            accountKey,
+        },
     } as const);
 
 export type CoinjoinAccountAction =
@@ -247,7 +260,7 @@ const authorizeCoinjoin =
         const { device } = getState().suite;
 
         // authorize coinjoin session on Trezor
-        dispatch(coinjoinAccountAuthorize(account));
+        dispatch(coinjoinAccountAuthorize(account.key));
 
         const auth = await TrezorConnect.authorizeCoinJoin({
             device,
@@ -258,11 +271,11 @@ const authorizeCoinjoin =
         });
 
         if (auth.success) {
-            dispatch(coinjoinAccountAuthorizeSuccess(account, params));
+            dispatch(coinjoinAccountAuthorizeSuccess(account.key, params));
             return true;
         }
 
-        dispatch(coinjoinAccountAuthorizeFailed(account, auth.payload.error));
+        dispatch(coinjoinAccountAuthorizeFailed(account.key, auth.payload.error));
 
         dispatch(
             addToast({
@@ -313,5 +326,5 @@ export const stopCoinjoinSession = (account: Account) => (dispatch: Dispatch) =>
     client.unregisterAccount(account.key);
 
     // dispatch data to reducer
-    dispatch(coinjoinAccountUnregister(account));
+    dispatch(coinjoinAccountUnregister(account.key));
 };

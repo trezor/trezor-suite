@@ -6,23 +6,33 @@ import { Dispatch } from '@suite-types';
 import { Account } from '@suite-common/wallet-types';
 
 const clientEnable = (symbol: Account['symbol']) =>
-    ({ type: COINJOIN.CLIENT_ENABLE, symbol } as const);
+    ({
+        type: COINJOIN.CLIENT_ENABLE,
+        payload: {
+            symbol,
+        },
+    } as const);
 
 const clientEnableSuccess = (symbol: Account['symbol'], status: CoinjoinStatus) =>
     ({
         type: COINJOIN.CLIENT_ENABLE_SUCCESS,
-        symbol,
-        status,
+        payload: {
+            symbol,
+            status,
+        },
     } as const);
 
 const clientEnableFailed = (symbol: Account['symbol']) =>
     ({
         type: COINJOIN.CLIENT_ENABLE_FAILED,
-        symbol,
+        payload: {
+            symbol,
+        },
     } as const);
 
 export type CoinjoinClientAction =
     | ReturnType<typeof clientEnable>
+    | ReturnType<typeof clientDisable>
     | ReturnType<typeof clientEnableSuccess>
     | ReturnType<typeof clientEnableFailed>;
 
