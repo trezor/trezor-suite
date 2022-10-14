@@ -30,4 +30,11 @@ export class CoinjoinClientService {
     static getInstances() {
         return Object.keys(this.instances).map(key => this.instances[key]);
     }
+
+    static removeInstance(network: string) {
+        if (this.instances[network]) {
+            this.instances[network].disable();
+            delete this.instances[network];
+        }
+    }
 }

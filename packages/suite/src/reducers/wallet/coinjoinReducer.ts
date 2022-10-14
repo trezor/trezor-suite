@@ -121,6 +121,9 @@ export const coinjoinReducer = (
             case COINJOIN.ACCOUNT_CREATE:
                 createAccount(draft, action.payload);
                 break;
+            case COINJOIN.ACCOUNT_REMOVE:
+                draft.accounts = draft.accounts.filter(a => a.key !== action.payload.accountKey);
+                break;
             case COINJOIN.ACCOUNT_UPDATE_TARGET_ANONYMITY:
                 updateTargetAnonymity(draft, action.payload);
                 break;
@@ -133,6 +136,9 @@ export const coinjoinReducer = (
 
             case COINJOIN.CLIENT_ENABLE_SUCCESS:
                 createClient(draft, action.payload);
+                break;
+            case COINJOIN.CLIENT_DISABLE:
+                delete draft.clients[action.payload.symbol];
                 break;
 
             // no default

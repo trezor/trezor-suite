@@ -2,7 +2,7 @@ import TrezorConnect from '@trezor/connect';
 import * as COINJOIN from './constants/coinjoinConstants';
 import { goto } from '../suite/routerActions';
 import { addToast } from '../suite/notificationActions';
-import { initCoinjoinClient, getCoinjoinClient } from './coinjoinClientActions';
+import { initCoinjoinClient, getCoinjoinClient, clientDisable } from './coinjoinClientActions';
 import { CoinjoinBackendService } from '@suite/services/coinjoin/coinjoinBackend';
 import { CoinjoinClientService } from '@suite/services/coinjoin/coinjoinClient';
 import { Dispatch, GetState } from '@suite-types';
@@ -16,6 +16,14 @@ const coinjoinAccountCreate = (account: Account, targetAnonymity: number) =>
         payload: {
             account,
             targetAnonymity,
+        },
+    } as const);
+
+const coinjoinAccountRemove = (accountKey: string) =>
+    ({
+        type: COINJOIN.ACCOUNT_REMOVE,
+        payload: {
+            accountKey,
         },
     } as const);
 
@@ -64,6 +72,7 @@ const coinjoinAccountUnregister = (accountKey: string) =>
 
 export type CoinjoinAccountAction =
     | ReturnType<typeof coinjoinAccountCreate>
+    | ReturnType<typeof coinjoinAccountRemove>
     | ReturnType<typeof coinjoinAccountUpdateAnonymity>
     | ReturnType<typeof coinjoinAccountAuthorize>
     | ReturnType<typeof coinjoinAccountAuthorizeSuccess>
@@ -328,3 +337,34 @@ export const stopCoinjoinSession = (account: Account) => (dispatch: Dispatch) =>
     // dispatch data to reducer
     dispatch(coinjoinAccountUnregister(account.key));
 };
+
+export const forgetCoinjoinAccounts =
+    (accounts: Account[]) => (dispatch: Dispatch, getState: GetState) => {
+        const { coinjoin } = getState().wallet;
+        // find all accounts to unregister
+        const coinjoinNetworks = coinjoin.accounts.reduce((res, cjAccount) => {
+            const account = accounts.find(a => a.key === cjAccount.key);
+            if (account) {
+                if (cjAccount.session) {
+                    dispatch(stopCoinjoinSession(account));
+                }
+                dispatch(coinjoinAccountRemove(cjAccount.key));
+                if (!res.includes(cjAccount.symbol)) {
+                    return res.concat(cjAccount.symbol);
+                }
+            }
+            return res;
+        }, [] as Account['symbol'][]);
+
+        // get new state
+        const otherCjAccounts = getState().wallet.coinjoin.accounts;
+        coinjoinNetworks.forEach(network => {
+            const other = otherCjAccounts.find(a => a.symbol === network);
+            // clear CoinjoinClientInstance if there are no related accounts left
+            if (!other) {
+                dispatch(clientDisable(network));
+                CoinjoinBackendService.removeInstance(network);
+                CoinjoinClientService.removeInstance(network);
+            }
+        });
+    };
