@@ -28,9 +28,13 @@ const initialState: CoinjoinState = {
     clients: {},
 };
 
+type ExtractActionPayload<A> = Extract<Action, { type: A }> extends { type: A; payload: infer P }
+    ? P
+    : never;
+
 const createAccount = (
     draft: CoinjoinState,
-    { account, targetAnonymity }: Extract<Action, { type: typeof COINJOIN.ACCOUNT_CREATE }>,
+    { account, targetAnonymity }: ExtractActionPayload<typeof COINJOIN.ACCOUNT_CREATE>,
 ) => {
     const exists = draft.accounts.find(a => a.key === account.key);
     if (exists) return;
@@ -43,24 +47,21 @@ const createAccount = (
 
 const updateTargetAnonymity = (
     draft: CoinjoinState,
-    {
-        key,
-        targetAnonymity,
-    }: Extract<Action, { type: typeof COINJOIN.ACCOUNT_UPDATE_TARGET_ANONYMITY }>,
+    payload: ExtractActionPayload<typeof COINJOIN.ACCOUNT_UPDATE_TARGET_ANONYMITY>,
 ) => {
-    const account = draft.accounts.find(a => a.key === key);
+    const account = draft.accounts.find(a => a.key === payload.accountKey);
     if (!account) return;
-    account.targetAnonymity = targetAnonymity;
+    account.targetAnonymity = payload.targetAnonymity;
 };
 
 const createSession = (
     draft: CoinjoinState,
-    action: Extract<Action, { type: typeof COINJOIN.ACCOUNT_AUTHORIZE_SUCCESS }>,
+    payload: ExtractActionPayload<typeof COINJOIN.ACCOUNT_AUTHORIZE_SUCCESS>,
 ) => {
-    const account = draft.accounts.find(a => a.key === action.account.key);
+    const account = draft.accounts.find(a => a.key === payload.accountKey);
     if (!account) return;
     account.session = {
-        ...action.params,
+        ...payload.params,
         timeCreated: Date.now(),
         // phase: 0,
         deadline: Date.now(),
@@ -71,9 +72,9 @@ const createSession = (
 
 const stopSession = (
     draft: CoinjoinState,
-    action: Extract<Action, { type: typeof COINJOIN.ACCOUNT_UNREGISTER }>,
+    payload: ExtractActionPayload<typeof COINJOIN.ACCOUNT_UNREGISTER>,
 ) => {
-    const account = draft.accounts.find(a => a.key === action.account.key);
+    const account = draft.accounts.find(a => a.key === payload.accountKey);
     if (!account) return;
     if (account.session) {
         account.previousSessions.push({
@@ -86,7 +87,7 @@ const stopSession = (
 
 const createClient = (
     draft: CoinjoinState,
-    action: Extract<Action, { type: typeof COINJOIN.CLIENT_ENABLE_SUCCESS }>,
+    action: ExtractActionPayload<typeof COINJOIN.CLIENT_ENABLE_SUCCESS>,
 ) => {
     const exists = draft.clients[action.symbol];
     if (exists) return;
@@ -115,21 +116,22 @@ export const coinjoinReducer = (
                     }
                 });
                 break;
+
             case COINJOIN.ACCOUNT_CREATE:
-                createAccount(draft, action);
+                createAccount(draft, action.payload);
                 break;
             case COINJOIN.ACCOUNT_UPDATE_TARGET_ANONYMITY:
-                updateTargetAnonymity(draft, action);
+                updateTargetAnonymity(draft, action.payload);
                 break;
             case COINJOIN.ACCOUNT_AUTHORIZE_SUCCESS:
-                createSession(draft, action);
+                createSession(draft, action.payload);
                 break;
             case COINJOIN.ACCOUNT_UNREGISTER:
-                stopSession(draft, action);
+                stopSession(draft, action.payload);
                 break;
 
             case COINJOIN.CLIENT_ENABLE_SUCCESS:
-                createClient(draft, action);
+                createClient(draft, action.payload);
                 break;
 
             // no default
