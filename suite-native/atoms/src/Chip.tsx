@@ -2,7 +2,7 @@ import React, { ReactNode } from 'react';
 import { TouchableOpacity } from 'react-native';
 
 import { NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { CSSColor } from '@trezor/theme/libDev/src';
+import { CSSColor } from '@trezor/theme';
 
 import { Box } from './Box';
 import { Text } from './Text';

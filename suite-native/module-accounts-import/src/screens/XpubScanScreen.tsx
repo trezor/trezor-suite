@@ -22,7 +22,7 @@ import { Camera, CAMERA_HEIGHT } from '../components/Camera';
 const coinStyle = prepareNativeStyle(utils => ({
     flexDirection: 'row',
     borderRadius: utils.borders.radii.large,
-    backgroundColor: 'rgba(255, 255, 255, 0.22)',
+    backgroundColor: utils.transparentize(0.8, utils.colors.gray0),
 }));
 
 const cameraStyle = prepareNativeStyle(_ => ({
