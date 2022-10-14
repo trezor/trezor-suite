@@ -368,3 +368,37 @@ export const forgetCoinjoinAccounts =
             }
         });
     };
+
+export const restoreCoinjoin = () => (dispatch: Dispatch, getState: GetState) => {
+    const { accounts, coinjoin } = getState().wallet;
+
+    // find all networks to restore
+    const coinjoinNetworks = coinjoin.accounts.reduce((res, cjAccount) => {
+        const account = accounts.find(a => a.key === cjAccount.key);
+        if (account) {
+            // currently it is not possible to full restore session while using passphrase.
+            // related to @trezor/connect and inner-outer state
+            if (cjAccount.session) {
+                dispatch(coinjoinAccountUnregister(account.key));
+            }
+
+            if (!res.includes(account.symbol)) {
+                return res.concat(account.symbol);
+            }
+        }
+        return res;
+    }, [] as Account['symbol'][]);
+
+    // async actions in sequence
+    // TODO: handle client init error and do not proceed after first failure
+    return coinjoinNetworks.reduce(
+        (p, symbol) =>
+            p.then(async () => {
+                // initialize @trezor/coinjoin backend
+                await CoinjoinBackendService.createInstance(symbol);
+                // initialize @trezor/coinjoin client
+                await dispatch(initCoinjoinClient(symbol));
+            }),
+        Promise.resolve(),
+    );
+};

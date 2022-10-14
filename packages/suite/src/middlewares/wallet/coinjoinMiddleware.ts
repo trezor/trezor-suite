@@ -1,5 +1,5 @@
 import type { MiddlewareAPI } from 'redux';
-import { ROUTER } from '@suite-actions/constants';
+import { SUITE, ROUTER } from '@suite-actions/constants';
 import { DISCOVERY } from '@wallet-actions/constants';
 import * as coinjoinAccountActions from '@wallet-actions/coinjoinAccountActions';
 import { CoinjoinBackendService } from '@suite/services/coinjoin/coinjoinBackend';
@@ -17,6 +17,10 @@ export const coinjoinMiddleware =
 
         // propagate action to reducers
         next(action);
+
+        if (action.type === SUITE.READY) {
+            api.dispatch(coinjoinAccountActions.restoreCoinjoin());
+        }
 
         if (accountsActions.removeAccount.match(action)) {
             api.dispatch(coinjoinAccountActions.forgetCoinjoinAccounts(action.payload));
