@@ -40,6 +40,7 @@ const createAccount = (
     if (exists) return;
     draft.accounts.push({
         key: account.key,
+        symbol: account.symbol,
         targetAnonymity,
         previousSessions: [],
     });
