@@ -179,15 +179,15 @@ export const createCoinjoinAccount =
             throw new Error('createCoinjoinAccount: invalid account type');
         }
 
-        // initialize @trezor/coinjoin backend
-        if (!CoinjoinBackendService.getInstance(network.symbol)) {
-            await CoinjoinBackendService.createInstance(network.symbol);
-        }
-
         // initialize @trezor/coinjoin client
         const client = await dispatch(initCoinjoinClient(network.symbol));
         if (!client) {
             return;
+        }
+
+        // initialize @trezor/coinjoin backend
+        if (!CoinjoinBackendService.getInstance(network.symbol)) {
+            await CoinjoinBackendService.createInstance(network.symbol);
         }
 
         const { device } = getState().suite;
