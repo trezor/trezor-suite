@@ -12,10 +12,12 @@ import { ensureLocale } from '@suite-utils/l10n';
 import { getNumberFromPixelString } from '@trezor/utils';
 import type { OAuthServerEnvironment } from '@suite-types/metadata';
 import type { InvityServerEnvironment } from '@wallet-types/invity';
+import type { CoinjoinServerEnvironment } from '@suite-common/wallet-types';
 
 export interface DebugModeOptions {
     invityServerEnvironment?: InvityServerEnvironment;
     oauthServerEnvironment?: OAuthServerEnvironment;
+    coinjoinRegtestServerEnvironment?: CoinjoinServerEnvironment;
     showDebugMenu: boolean;
     checkFirmwareAuthenticity: boolean;
 }

@@ -1,10 +1,13 @@
 import { CoinjoinBackend } from '@trezor/coinjoin';
 import { createIpcProxy } from '@trezor/ipc-proxy';
 import { isDesktop } from '@suite-utils/env';
-import { COINJOIN_NETWORKS } from './config';
+import { CoinjoinServerEnvironment } from '@suite-common/wallet-types';
+import { NetworkSymbol } from '@wallet-types';
+import { getCoinjoinConfig } from './config';
 
-const loadInstance = (network: string) => {
-    const settings = COINJOIN_NETWORKS[network];
+const loadInstance = (network: NetworkSymbol, environment?: CoinjoinServerEnvironment) => {
+    const settings = getCoinjoinConfig(network, environment);
+
     if (isDesktop()) {
         return createIpcProxy<CoinjoinBackend>(
             'CoinjoinBackend',
@@ -20,14 +23,14 @@ const loadInstance = (network: string) => {
 export class CoinjoinBackendService {
     private static instances: Record<string, CoinjoinBackend> = {};
 
-    static async createInstance(network: string) {
+    static async createInstance(network: NetworkSymbol, environment?: CoinjoinServerEnvironment) {
         if (this.instances[network]) return this.instances[network];
-        const instance = await loadInstance(network);
+        const instance = await loadInstance(network, environment);
         this.instances[network] = instance;
         return instance;
     }
 
-    static getInstance(network: string): CoinjoinBackend | undefined {
+    static getInstance(network: NetworkSymbol): CoinjoinBackend | undefined {
         return this.instances[network];
     }
 
@@ -35,7 +38,7 @@ export class CoinjoinBackendService {
         return Object.keys(this.instances).map(key => this.instances[key]);
     }
 
-    static removeInstance(network: string) {
+    static removeInstance(network: NetworkSymbol) {
         if (this.instances[network]) {
             this.instances[network].cancel();
             delete this.instances[network];
