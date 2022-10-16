@@ -9,6 +9,7 @@ import { GithubIssue } from './GithubIssue';
 import { WipeData } from './WipeData';
 import { ThrowTestingError } from './ThrowTestingError';
 import { InvityApi } from './InvityApi';
+import { CoinjoinApi } from './CoinjoinApi';
 import { OAuthApi } from './OAuthApi';
 import { CheckFirmwareAuthenticity } from './CheckFirmwareAuthenticity';
 
@@ -28,6 +29,9 @@ export const SettingsDebug = () => (
         </SettingsSection>
         <SettingsSection title="OAuth">
             <OAuthApi />
+        </SettingsSection>
+        <SettingsSection title="Coinjoin">
+            <CoinjoinApi />
         </SettingsSection>
         <SettingsSection title="Firmware">
             <CheckFirmwareAuthenticity />

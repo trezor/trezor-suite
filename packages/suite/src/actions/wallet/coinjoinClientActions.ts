@@ -3,8 +3,8 @@ import { AccountInfo } from '@trezor/connect';
 import * as COINJOIN from './constants/coinjoinConstants';
 import { addToast } from '../suite/notificationActions';
 import { CoinjoinClientService } from '@suite/services/coinjoin/coinjoinClient';
-import { Dispatch } from '@suite-types';
-import { Account } from '@suite-common/wallet-types';
+import { Dispatch, GetState } from '@suite-types';
+import { Account, CoinjoinServerEnvironment } from '@suite-common/wallet-types';
 
 const clientEnable = (symbol: Account['symbol']) =>
     ({
@@ -45,32 +45,34 @@ export type CoinjoinClientAction =
     | ReturnType<typeof clientEnableSuccess>
     | ReturnType<typeof clientEnableFailed>;
 
-export const initCoinjoinClient = (symbol: Account['symbol']) => async (dispatch: Dispatch) => {
-    // find already running instance of @trezor/coinjoin client
-    const knownClient = CoinjoinClientService.getInstance(symbol);
-    if (knownClient) {
-        return knownClient;
-    }
+export const initCoinjoinClient =
+    (symbol: Account['symbol'], environment?: CoinjoinServerEnvironment) =>
+    async (dispatch: Dispatch) => {
+        // find already running instance of @trezor/coinjoin client
+        const knownClient = CoinjoinClientService.getInstance(symbol);
+        if (knownClient) {
+            return knownClient;
+        }
 
-    // or start new instance
-    dispatch(clientEnable(symbol));
+        // or start new instance
+        dispatch(clientEnable(symbol));
 
-    const client = await CoinjoinClientService.createInstance(symbol);
-    try {
-        const status = await client.enable();
-        dispatch(clientEnableSuccess(symbol, status));
-        return client;
-    } catch (error) {
-        CoinjoinClientService.removeInstance(symbol);
-        dispatch(clientEnableFailed(symbol));
-        dispatch(
-            addToast({
-                type: 'error',
-                error: `Coinjoin client not enabled: ${error.message}`,
-            }),
-        );
-    }
-};
+        const client = await CoinjoinClientService.createInstance(symbol, environment);
+        try {
+            const status = await client.enable();
+            dispatch(clientEnableSuccess(symbol, status));
+            return client;
+        } catch (error) {
+            CoinjoinClientService.removeInstance(symbol);
+            dispatch(clientEnableFailed(symbol));
+            dispatch(
+                addToast({
+                    type: 'error',
+                    error: `Coinjoin client not enabled: ${error.message}`,
+                }),
+            );
+        }
+    };
 
 // return only active instances
 export const getCoinjoinClient = (symbol: Account['symbol']) => () =>
@@ -100,3 +102,11 @@ export const analyzeTransactions = (accountInfo: AccountInfo) => async () => {
 
     return accountInfoWithAnonymitySet;
 };
+
+export const getCoinjoinServerEnvironment =
+    (symbol: Account['symbol']) => (_: Dispatch, getState: GetState) => {
+        const { debug } = getState().suite.settings;
+        if (symbol === 'regtest') {
+            return debug.coinjoinRegtestServerEnvironment;
+        }
+    };

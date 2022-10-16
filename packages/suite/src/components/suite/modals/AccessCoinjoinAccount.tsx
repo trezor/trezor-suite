@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { UserContextPayload } from '@suite-actions/modalActions';
 import { Button, P, Image, variables, H2, H3, Warning } from '@trezor/components';
 import { Modal, Translation } from '@suite-components';
-import { COINJOIN_NETWORKS } from '@suite/services/coinjoin/config';
+import { getCoinjoinConfig } from '@suite/services/coinjoin/config';
 
 const SmallModal = styled(Modal)`
     width: 560px;
@@ -75,7 +75,7 @@ export const AccessCoinjoinAccount = ({
     decision,
     network,
 }: AccessCoinjoinAccountProps) => {
-    const { percentageFee } = COINJOIN_NETWORKS[network];
+    const { percentageFee } = getCoinjoinConfig(network);
     const [step, setStep] = useState(Steps.INITIAL);
 
     const onContinue = () => {
