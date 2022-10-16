@@ -211,6 +211,26 @@ export const fetchAndUpdateAccount =
 
             // TODO add isPending check?
             if (isAccountOutdated(account, accountInfo) || isInitialUpdate) {
+                /*
+                const cli = dispatch(getCoinjoinClient(account.symbol));
+                // console.warn('Ana', cli, Object.keys(cli), cli?.enable);
+                const anonymitySet = await cli?.analyzeTransactions(transactions);
+                console.warn('Ana', anonymitySet);
+                const updatedAccount = dispatch(
+                    accountsActions.updateAccount(
+                        {
+                            ...account,
+                        },
+                        {
+                            ...accountInfo,
+                            addresses: {
+                                ...accountInfo.addresses!,
+                                anonymitySet,
+                            },
+                        },
+                    ),
+                );
+                */
                 // calculate account anonymity set in CoinjoinClient
                 const accountInfoWithAnonymitySet = await dispatch(
                     analyzeTransactions(accountInfo, account.symbol),
