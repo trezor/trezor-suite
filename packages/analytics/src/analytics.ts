@@ -26,7 +26,7 @@ export class Analytics<T extends Event> {
         this.instanceId = options.instanceId || getRandomId();
         this.sessionId = options.sessionId || getRandomId();
         this.commitId = options.commitId;
-        this.url = getUrl(this.app, options.environment, options.isDev);
+        this.url = getUrl(this.app, options.isDev, options.environment);
         this.callbacks = options.callbacks;
     };
 

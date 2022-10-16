@@ -4,8 +4,12 @@ import type { App, Environment, Event } from './types';
 
 export const getRandomId = () => getWeakRandomId(10);
 
-export const getUrl = (app: App, environment: Environment, isDev: boolean) => {
-    const base = `https://data.trezor.io/${app}/log/${environment}`;
+export const getUrl = (app: App, isDev: boolean, environment?: Environment) => {
+    let base = `https://data.trezor.io/${app}/log`;
+
+    if (environment) {
+        base = `${base}/${environment}`;
+    }
 
     if (isDev) {
         return `${base}/develop.log`;
