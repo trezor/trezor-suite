@@ -133,13 +133,39 @@ export abstract class BaseProcess {
             `- Params: ${params}`,
             `- CWD: ${processDir}`,
         ]);
-        this.process = spawn(processPath, params, {
-            cwd: processDir,
-            env: processEnv,
-            stdio: ['ignore', 'ignore', 'ignore'],
+
+        return new Promise<void>((resolve, reject) => {
+            this.process = spawn(processPath, params, {
+                cwd: processDir,
+                env: processEnv,
+                stdio: ['ignore', 'ignore', 'ignore'],
+            });
+            this.process.on('error', err => this.onError(err));
+            this.process.on('exit', code => this.onExit(code));
+
+            let resolveTimeout: ReturnType<typeof setTimeout> | undefined;
+            const spawnErrorHandler = (message: any) => {
+                // This error handler will be triggered if there is an error during spawn of the process,
+                // it will reject with an error so the user can be notified that something went wrong.
+                this.process = null;
+                clearTimeout(resolveTimeout);
+                reject(new Error(`Process ${this.processName} not started. ${message}`));
+            };
+
+            this.process.once('error', spawnErrorHandler);
+            this.process.once('exit', spawnErrorHandler);
+
+            resolveTimeout = setInterval(async () => {
+                const currentStatus = await this.status();
+                // We make sure that the service is available and then stop listening for initial error.
+                if (currentStatus.service && this.process) {
+                    clearTimeout(resolveTimeout);
+                    this.process.removeListener('exit', spawnErrorHandler);
+                    this.process.removeListener('error', spawnErrorHandler);
+                    resolve();
+                }
+            }, 200);
         });
-        this.process.on('error', err => this.onError(err));
-        this.process.on('exit', code => this.onExit(code));
     }
 
     /**
