@@ -1,0 +1,9 @@
+version: "3.9"
+services:
+  coinjoin-backend:
+    image: ghcr.io/trezor/coinjoin-backend:latest
+    ports:
+      - "8081:8081"
+      - "19121:19121"
+    volumes:
+      - ../:/coinjoin-backend
