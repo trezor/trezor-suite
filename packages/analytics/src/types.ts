@@ -1,11 +1,11 @@
-export type App = 'suite' | 'connect-popup';
+export type App = 'suite' | 'connect';
 
 export type Environment = 'desktop' | 'web' | 'mobile' | '';
 
 export type InitOptions = {
     sessionId?: string;
     instanceId?: string;
-    environment: Environment;
+    environment?: Environment;
     isDev: boolean;
     commitId: string;
     callbacks?: {
