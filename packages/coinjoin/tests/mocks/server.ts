@@ -6,7 +6,7 @@ import * as http from 'http';
 const DEFAULT = {
     // middleware
     'analyze-transaction': {
-        results: {},
+        results: [],
     },
     'select-utxo-for-round': {
         indices: [],

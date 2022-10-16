@@ -4,6 +4,7 @@ import { Status } from './Status';
 import { Account } from './Account';
 import { CoinjoinRound } from './CoinjoinRound';
 import { getNetwork } from '../utils/settingsUtils';
+import { analyzeTransactions } from './analyzeTransactions';
 import type {
     CoinjoinClientSettings,
     RegisterAccountParams,
@@ -62,6 +63,18 @@ export class CoinjoinClient extends EventEmitter {
         this.removeAllListeners();
         this.abortController.abort();
         this.status.stop();
+    }
+
+    /**
+     * Get transactions from CoinjoinBackend.getAccountInfo and calculate anonymity in middleware.
+     * Returns { key => value } where `key` is an address and `value` is an anonymity level of that address
+     */
+    analyzeTransactions(txs: Parameters<typeof analyzeTransactions>[0]) {
+        return analyzeTransactions(txs, {
+            network: this.network,
+            middlewareUrl: this.settings.middlewareUrl,
+            signal: this.abortController.signal,
+        });
     }
 
     registerAccount(account: RegisterAccountParams) {
