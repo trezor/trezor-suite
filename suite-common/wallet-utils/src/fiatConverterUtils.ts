@@ -16,7 +16,6 @@ export const toFiatCurrency = (
         return null;
     }
 
-    console.log(amount, 'amount');
     const formattedAmount = amount.replace(',', '.');
     const fiatAmount = new BigNumber(formattedAmount).times(rate);
     if (fiatAmount.isNaN()) {

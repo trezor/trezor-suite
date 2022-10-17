@@ -44,7 +44,7 @@ export const TransactionDetailHeader = ({
                 <Text style={applyStyle(transactionTypeStyle)}>{transactionTypeTextMap[type]}</Text>
             </Box>
             <Text variant="titleMedium">{amount}</Text>
-            <Text variant={'label'} color={'gray700'}>
+            <Text variant="label" color="gray700">
                 ≈ {fiatAmount}
             </Text>
         </>

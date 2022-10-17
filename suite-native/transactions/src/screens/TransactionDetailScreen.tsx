@@ -11,13 +11,13 @@ import {
 } from '@suite-native/navigation';
 import { selectBlockchainState, selectTransactionByTxid } from '@suite-common/wallet-core';
 import { formatNetworkAmount, getConfirmations, toFiatCurrency } from '@suite-common/wallet-utils';
+import { selectFiatCurrency } from '@suite-native/module-settings';
+import { useFormatters } from '@suite-common/formatters';
 
 import { TransactionDetailHeader } from '../components/TransactionDetail/TransactionDetailHeader';
 import { TransactionDetailData } from '../components/TransactionDetail/TransactionDetailData';
 import { TransactionDetailConfirmations } from '../components/TransactionDetail/TransactionDetailConfirmations';
 import { TransactionDetailAmount } from '../components/TransactionDetail/TransactionDetailAmount';
-import { selectFiatCurrency } from '@suite-native/module-settings';
-import { useFormatters } from '@suite-common/formatters';
 
 export const TransactionDetailScreen = ({
     route,
