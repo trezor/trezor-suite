@@ -7469,4 +7469,12 @@ export default defineMessages({
         id: 'TR_PAUSING',
         defaultMessage: 'Pausing',
     },
+    TR_COINJOIN_RUNNING: {
+        id: 'TR_COINJOIN_RUNNING',
+        defaultMessage: 'Coinjoin running',
+    },
+    TR_DO_NOT_DISCONNECT_DEVICE: {
+        id: 'TR_DO_NOT_DISCONNECT_DEVICE',
+        defaultMessage: "Don't disconnect your device",
+    },
 });

@@ -60,4 +60,6 @@ export const PNG_IMAGES = {
     TOR_ENABLING: 'TorEnabling.png',
     TOR_ENABLING_2x: 'TorEnabling@2x.png',
     COINJOIN_MESS: 'CoinjoinMess.png',
+    DONT_DISCONNECT: 'DontDisconnect.png',
+    DONT_DISCONNECT_2x: 'DontDisconnect@2x.png',
 } as const;
