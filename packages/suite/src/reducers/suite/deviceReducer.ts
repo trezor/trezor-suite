@@ -3,10 +3,14 @@ import { Device, DEVICE, Features } from '@trezor/connect';
 import { SUITE, STORAGE, METADATA } from '@suite-actions/constants';
 import * as deviceUtils from '@suite-utils/device';
 import type { TrezorDevice, AcquiredDevice, Action, ButtonRequest } from '@suite-types';
-import { AppState } from '@suite-types';
+import { createSelector } from '@reduxjs/toolkit';
 
 type State = TrezorDevice[];
 const initialState: State = [];
+
+export type CoinjoinRootState = {
+    devices: TrezorDevice[];
+};
 
 // Use the negated form as it better fits the call sites.
 // Export to be testeable.
@@ -456,6 +460,13 @@ const deviceReducer = (state: State = initialState, action: Action): State =>
         }
     });
 
-export const selectIsPendingTransportEvent = (state: AppState) => state.devices.length < 1;
+export const selectIsPendingTransportEvent = (state: CoinjoinRootState) => state.devices.length < 1;
+
+export const selectDevices = (state: CoinjoinRootState) => state.devices;
+
+export const selectDeviceByState = createSelector(
+    [selectDevices, (_state: CoinjoinRootState, deviceState: string) => deviceState],
+    (devices, deviceState) => devices.find(({ state }) => state === deviceState),
+);
 
 export default deviceReducer;

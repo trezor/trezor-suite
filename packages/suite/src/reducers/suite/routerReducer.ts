@@ -13,6 +13,10 @@ export type RouterState = {
     anchor?: AnchorType;
 } & RouterAppWithParams;
 
+export type RouterRootState = {
+    router: RouterState;
+};
+
 const initialState: RouterState = {
     loaded: false,
     url: '/',
@@ -44,5 +48,7 @@ const routerReducer = (state: RouterState = initialState, action: Action): Route
             return state;
     }
 };
+
+export const selectRouterParams = (state: RouterRootState) => state.router.params;
 
 export default routerReducer;
