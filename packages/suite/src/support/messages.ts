@@ -7488,6 +7488,7 @@ export default defineMessages({
     TR_COINJOIN_COMPLETED: {
         id: 'TR_COINJOIN_COMPLETED',
         defaultMessage: 'Coinjoin successfully completed!',
+    },
     TR_COINJOIN_ANONYMITY_LEVEL_SETUP_TITLE: {
         id: 'TR_COINJOIN_ANONYMITY_LEVEL_SETUP_TITLE',
         defaultMessage: 'Desired anonymity level',

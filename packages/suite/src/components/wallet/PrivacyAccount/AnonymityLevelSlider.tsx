@@ -31,7 +31,9 @@ const LabelsWrapper = styled.div`
     margin-left: 10px;
 `;
 
-const Label = styled(P)`
+const Label = styled(P)<{ $offset?: number }>`
+    position: relative;
+    left: ${({ $offset }) => $offset ?? 0}px;
     font-size: ${variables.FONT_SIZE.TINY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     opacity: 0.5;
@@ -107,7 +109,7 @@ export const AnonymityLevelSlider = ({ className }: AnonymityLevelSliderProps) =
             <LabelsWrapper>
                 <Label>1</Label>
                 <Label>3</Label>
-                <Label>10</Label>
+                <Label $offset={7}>10</Label>
                 <Label>30</Label>
                 <Label>100</Label>
             </LabelsWrapper>
