@@ -7477,4 +7477,16 @@ export default defineMessages({
         id: 'TR_DO_NOT_DISCONNECT_DEVICE',
         defaultMessage: "Don't disconnect your device",
     },
+    TR_DISMISS: {
+        id: 'TR_DISMISS',
+        defaultMessage: 'Dismiss',
+    },
+    TR_VIEW_ACCOUNT: {
+        id: 'TR_VIEW_ACCOUNT',
+        defaultMessage: 'View account',
+    },
+    TR_COINJOIN_COMPLETED: {
+        id: 'TR_COINJOIN_COMPLETED',
+        defaultMessage: 'Coinjoin successfully completed!',
+    },
 });
