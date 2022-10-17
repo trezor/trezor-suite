@@ -8,6 +8,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 type TransactionDetailHeaderProps = {
     type: TransactionType;
     amount: string;
+    fiatAmount: string | null;
 };
 
 const transactionTypeTextMap: Partial<Record<TransactionType, string>> = {
@@ -26,7 +27,11 @@ const transactionTypeStyle = prepareNativeStyle(utils => ({
     color: utils.colors.forest,
 }));
 
-export const TransactionDetailHeader = ({ type, amount }: TransactionDetailHeaderProps) => {
+export const TransactionDetailHeader = ({
+    type,
+    amount,
+    fiatAmount,
+}: TransactionDetailHeaderProps) => {
     const { applyStyle } = useNativeStyles();
     return (
         <>
@@ -39,6 +44,9 @@ export const TransactionDetailHeader = ({ type, amount }: TransactionDetailHeade
                 <Text style={applyStyle(transactionTypeStyle)}>{transactionTypeTextMap[type]}</Text>
             </Box>
             <Text variant="titleMedium">{amount}</Text>
+            <Text variant={'label'} color={'gray700'}>
+                ≈ {fiatAmount}
+            </Text>
         </>
     );
 };
