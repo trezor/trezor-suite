@@ -1,16 +1,17 @@
 import React, { memo, useState, useEffect, useCallback } from 'react';
-import { AggregatedDashboardHistory } from '@wallet-types/graph';
+
 import { TransactionsGraph, Translation, HiddenPlaceholder } from '@suite-components';
 import { getUnixTime } from 'date-fns';
 import styled from 'styled-components';
-import { calcTicks, calcTicksFromData } from '@suite-common/suite-utils';
-import { variables, Button } from '@trezor/components';
 import { CARD_PADDING_SIZE } from '@suite-constants/layout';
 import GraphWorker from '@suite-workers/graph';
-import { getMinMaxValueFromData } from '@suite/utils/wallet/graphUtils';
 import * as graphActions from '@wallet-actions/graphActions';
 import { useActions, useSelector } from '@suite-hooks';
 import { Account } from '@wallet-types';
+
+import { getMinMaxValueFromData, AggregatedDashboardHistory } from '@suite-common/wallet-graph';
+import { variables, Button } from '@trezor/components';
+import { calcTicks, calcTicksFromData } from '@suite-common/suite-utils';
 
 const Wrapper = styled.div`
     display: flex;

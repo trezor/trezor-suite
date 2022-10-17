@@ -1,15 +1,10 @@
 import type { DBSchema } from 'idb';
-
-import type { StorageUpdateMessage } from '@trezor/suite-storage';
-import type { BackendSettings, WalletSettings } from '@suite-common/wallet-types';
 import type { SuiteState } from '@suite-reducers/suiteReducer';
 import type { AnalyticsState } from '@suite-reducers/analyticsReducer';
 import type { FormState } from '@wallet-types/sendForm';
 import type { AcquiredDevice } from '@suite-types';
 import type { MetadataState } from '@suite-types/metadata';
-import type { GraphData } from '@wallet-types/graph';
 import type { Trade } from '@wallet-types/coinmarketCommonTypes';
-import type { MessageSystem } from '@trezor/message-system';
 import type { MessageState } from '@suite/reducers/suite/messageSystemReducer';
 import type { FormDraft } from '@wallet-types/form';
 import type {
@@ -19,6 +14,11 @@ import type {
     CoinFiatRates,
     WalletAccountTransaction,
 } from '@wallet-types';
+
+import type { MessageSystem } from '@trezor/message-system';
+import type { BackendSettings, WalletSettings } from '@suite-common/wallet-types';
+import type { GraphData } from '@suite-common/wallet-graph';
+import type { StorageUpdateMessage } from '@trezor/suite-storage';
 
 export interface DBWalletAccountTransaction {
     tx: WalletAccountTransaction;

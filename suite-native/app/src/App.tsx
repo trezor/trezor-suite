@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { Alert } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Provider, useDispatch } from 'react-redux';
@@ -22,18 +23,29 @@ import { useFormattersConfig } from './hooks/useFormattersConfig';
 const AppComponent = () => {
     const dispatch = useDispatch();
     const formattersConfig = useFormattersConfig();
+    const [isConnectInitialized, setIsConnectInitialized] = useState(false);
 
     useEffect(() => {
         const initActions = async () => {
-            await dispatch(connectInitThunk()).unwrap();
-            await dispatch(initBlockchainThunk()).unwrap();
-            /* Invoke reconnect manually here because we need to have fiat rates initialized
-             immediately after the app is loaded.
-             */
-            await dispatch(reconnectBlockchainThunk('btc')).unwrap();
+            try {
+                await dispatch(connectInitThunk()).unwrap();
+                setIsConnectInitialized(true);
+                await dispatch(initBlockchainThunk()).unwrap();
+                /* Invoke reconnect manually here because we need to have fiat rates initialized
+                 * immediately after the app is loaded.
+                 */
+                await dispatch(reconnectBlockchainThunk('btc')).unwrap();
+            } catch (error) {
+                Alert.alert('Error', error?.message ?? 'Unknown error');
+                console.error(error.message);
+            }
         };
-        initActions().catch(console.error);
+        initActions();
     }, [dispatch]);
+
+    if (!isConnectInitialized) {
+        return null;
+    }
 
     return (
         <FormatterProvider config={formattersConfig}>

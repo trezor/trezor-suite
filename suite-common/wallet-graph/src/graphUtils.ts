@@ -1,8 +1,21 @@
 import BigNumber from 'bignumber.js';
+import {
+    startOfMonth,
+    getUnixTime,
+    fromUnixTime,
+    differenceInMonths,
+    subMinutes,
+    differenceInDays,
+    differenceInYears,
+} from 'date-fns';
+
+import { CoinFiatRates, Account } from '@suite-common/wallet-types';
 import type { BlockchainAccountBalanceHistory } from '@trezor/connect';
-import { startOfMonth, getUnixTime, fromUnixTime, differenceInMonths } from 'date-fns';
+import { resetTime } from '@suite-common/suite-utils';
+import { getFiatRatesForTimestamps, getTickerConfig } from '@suite-common/fiat-services';
 import { toFiatCurrency, formatNetworkAmount } from '@suite-common/wallet-utils';
-import { CoinFiatRates, Account } from '@wallet-types';
+
+import { lineGraphStepInMinutes } from './config';
 import {
     AggregatedDashboardHistory,
     AggregatedAccountHistory,
@@ -10,9 +23,7 @@ import {
     GraphData,
     CommonAggregatedHistory,
     GraphScale,
-} from '@wallet-types/graph';
-import { resetTime } from '@suite-common/suite-utils';
-import { getFiatRatesForTimestamps, getTickerConfig } from '@suite-common/fiat-services';
+} from './types';
 
 type FiatRates = NonNullable<CoinFiatRates['current']>['rates'];
 
@@ -473,4 +484,33 @@ export const enhanceBlockchainAccountHistory = (
         };
     });
     return enhancedResponse;
+};
+
+export const getLineGraphAllTimeStepInMinutes = (
+    endOfRangeDate: Date,
+    valueBackInMinutes: number,
+): number => {
+    const startOfRangeDate = subMinutes(endOfRangeDate, valueBackInMinutes);
+    const differenceDays = differenceInDays(endOfRangeDate, startOfRangeDate);
+
+    if (differenceDays === 0) {
+        return lineGraphStepInMinutes.hour;
+    }
+    if (differenceDays === 1) {
+        return lineGraphStepInMinutes.day;
+    }
+    if (differenceDays > 1 && differenceDays <= 30) {
+        return lineGraphStepInMinutes.week;
+    }
+    if (differenceDays > 30 && differenceDays < 120) {
+        return lineGraphStepInMinutes.month;
+    }
+
+    if (differenceDays <= 365) {
+        return lineGraphStepInMinutes.year;
+    }
+
+    const differenceYears = differenceInYears(endOfRangeDate, startOfRangeDate);
+    // to prevent max URL length error, HTTP status 414, from Blockbook (timestamps are sent to Blockbook with HTTP GET)
+    return lineGraphStepInMinutes.year * differenceYears;
 };

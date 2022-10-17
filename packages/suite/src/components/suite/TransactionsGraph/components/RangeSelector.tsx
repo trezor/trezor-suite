@@ -1,9 +1,8 @@
 import React, { useState, useRef } from 'react';
+
 import styled, { css } from 'styled-components';
-import { colors, variables, Dropdown, DropdownRef, Timerange } from '@trezor/components';
 import { Translation } from '@suite-components';
 import { useGraph, useLocales } from '@suite-hooks';
-import { GraphRange } from '@wallet-types/graph';
 import {
     startOfDay,
     startOfToday,
@@ -13,6 +12,9 @@ import {
     subYears,
     differenceInMonths,
 } from 'date-fns';
+
+import { GraphRange } from '@suite-common/wallet-graph';
+import { colors, variables, Dropdown, DropdownRef, Timerange } from '@trezor/components';
 
 const Wrapper = styled.div`
     display: flex;

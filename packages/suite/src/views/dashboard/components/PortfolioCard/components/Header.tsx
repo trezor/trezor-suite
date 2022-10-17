@@ -1,12 +1,14 @@
 import React, { useCallback } from 'react';
+
 import styled, { css } from 'styled-components';
-import { H2, Button, LoadingContent } from '@trezor/components';
 import { Translation, HiddenPlaceholder } from '@suite-components';
-import { useFormatters } from '@suite-common/formatters';
 import { RangeSelector } from '@suite-components/TransactionsGraph/components/RangeSelector';
 import { updateGraphData } from '@wallet-actions/graphActions';
 import { useFastAccounts } from '@wallet-hooks';
-import { GraphRange } from '@wallet-types/graph';
+
+import { useFormatters } from '@suite-common/formatters';
+import { H2, Button, LoadingContent } from '@trezor/components';
+import { GraphRange } from '@suite-common/wallet-graph';
 
 const Wrapper = styled.div<{ hideBorder: boolean }>`
     display: flex;

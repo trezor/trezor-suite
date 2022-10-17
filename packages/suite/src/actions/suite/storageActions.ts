@@ -2,18 +2,19 @@ import { db } from '@suite/storage';
 import * as notificationActions from '@suite-actions/notificationActions';
 import * as suiteActions from '@suite-actions/suiteActions';
 import { serializeDiscovery, serializeDevice } from '@suite-utils/storage';
-import { deviceGraphDataFilterFn } from '@wallet-utils/graphUtils';
-import { getFormDraftKey } from '@suite-common/wallet-utils';
-import { FormDraftPrefixKeyValues } from '@suite-common/wallet-constants';
-
 import type { Dispatch, GetState, TrezorDevice } from '@suite-types';
 import type { Account, Network } from '@wallet-types';
-import type { GraphData } from '@wallet-types/graph';
 import type { Discovery } from '@wallet-reducers/discoveryReducer';
 import type { FormState } from '@wallet-types/sendForm';
 import type { Trade } from '@wallet-types/coinmarketCommonTypes';
 import type { FormDraft, FormDraftKeyPrefix } from '@wallet-types/form';
 import type { PreloadStoreAction } from '@suite-support/preloadStore';
+
+import { getFormDraftKey } from '@suite-common/wallet-utils';
+import { deviceGraphDataFilterFn } from '@suite-common/wallet-graph';
+import type { GraphData } from '@suite-common/wallet-graph';
+import { FormDraftPrefixKeyValues } from '@suite-common/wallet-constants';
+
 import { STORAGE } from './constants';
 
 export type StorageAction = NonNullable<PreloadStoreAction>;

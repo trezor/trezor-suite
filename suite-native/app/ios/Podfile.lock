@@ -377,32 +377,32 @@ PODS:
     - RCTTypeSafety
     - React-Core
     - ReactCommon/turbomodule/core
-  - react-native-skia (0.1.153):
+  - react-native-skia (0.1.155):
     - React
     - React-callinvoker
     - React-Core
-    - react-native-skia/Api (= 0.1.153)
-    - react-native-skia/Jsi (= 0.1.153)
-    - react-native-skia/RNSkia (= 0.1.153)
-    - react-native-skia/SkiaHeaders (= 0.1.153)
-    - react-native-skia/Utils (= 0.1.153)
-  - react-native-skia/Api (0.1.153):
+    - react-native-skia/Api (= 0.1.155)
+    - react-native-skia/Jsi (= 0.1.155)
+    - react-native-skia/RNSkia (= 0.1.155)
+    - react-native-skia/SkiaHeaders (= 0.1.155)
+    - react-native-skia/Utils (= 0.1.155)
+  - react-native-skia/Api (0.1.155):
     - React
     - React-callinvoker
     - React-Core
-  - react-native-skia/Jsi (0.1.153):
+  - react-native-skia/Jsi (0.1.155):
     - React
     - React-callinvoker
     - React-Core
-  - react-native-skia/RNSkia (0.1.153):
+  - react-native-skia/RNSkia (0.1.155):
     - React
     - React-callinvoker
     - React-Core
-  - react-native-skia/SkiaHeaders (0.1.153):
+  - react-native-skia/SkiaHeaders (0.1.155):
     - React
     - React-callinvoker
     - React-Core
-  - react-native-skia/Utils (0.1.153):
+  - react-native-skia/Utils (0.1.155):
     - React
     - React-callinvoker
     - React-Core
@@ -753,7 +753,7 @@ SPEC CHECKSUMS:
   GoogleUtilities: 1d20a6ad97ef46f67bbdec158ce00563a671ebb7
   GoogleUtilitiesComponents: 679b2c881db3b615a2777504623df6122dd20afe
   GTMSessionFetcher: 5595ec75acf5be50814f81e9189490412bad82ba
-  hermes-engine: f9312a2ea8036d03b63568ebf392314f4fa8b474
+  hermes-engine: f8b6dbeca39e301f5fb1c3ad0b52666750fa08b5
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
   MLImage: 489dfec109f21da8621b28d476401aaf7a0d4ff4
   MLKitBarcodeScanning: d92fe1911001ec36870162c5a0eb206f612b7169
@@ -765,7 +765,7 @@ SPEC CHECKSUMS:
   OpenSSL-Universal: ebc357f1e6bc71fa463ccb2fe676756aff50e88c
   PromisesObjC: ab77feca74fa2823e7af4249b8326368e61014cb
   Protobuf: f4128517d7a42302e106cc3afe614ee3a7513e94
-  RCT-Folly: 0080d0a6ebf2577475bda044aa59e2ca1f909cda
+  RCT-Folly: 158339bb8a6ef9d2cab2fcccaac4455da5196d85
   RCTRequired: d4033a367d0bfd1f23f67b501f8cdabf9afe617e
   RCTTypeSafety: b112b2ccc59309a65284280c0a53baf1ce4b5860
   React: 04474547a4729eef1fb378ca42f302f4b3219eb8
@@ -784,7 +784,7 @@ SPEC CHECKSUMS:
   react-native-flipper: c33a4995958ef12a2b2f8290d63bed7adeed7634
   react-native-mmkv: 1265a348a4711097ba29c8bcefd5971f48220f2b
   react-native-safe-area-context: 99b24a0c5acd0d5dcac2b1a7f18c49ea317be99a
-  react-native-skia: 7e0c4708449d4c07b5b5cc82390b2ffc54051747
+  react-native-skia: 5a4253c77afcf0535b387d6025fc7c57af05cd3c
   react-native-splash-screen: 4312f786b13a81b5169ef346d76d33bc0c6dc457
   React-perflogger: 6009895616a455781293950bbd63d53cfc7ffbc5
   React-RCTActionSheet: 5e90aa5712af18bfc86c2c6d97d4dbe0e5451c1d

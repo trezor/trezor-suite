@@ -3,7 +3,13 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
+            "path": "../../suite-common/fiat-services"
+        },
+        {
             "path": "../../suite-common/formatters"
+        },
+        {
+            "path": "../../suite-common/suite-utils"
         },
         {
             "path": "../../suite-common/wallet-config"
@@ -11,10 +17,17 @@
         {
             "path": "../../suite-common/wallet-core"
         },
+        {
+            "path": "../../suite-common/wallet-graph"
+        },
+        {
+            "path": "../../suite-common/wallet-types"
+        },
         { "path": "../atoms" },
-        { "path": "../module-graph" },
+        { "path": "../graph" },
         { "path": "../module-settings" },
         { "path": "../navigation" },
+        { "path": "../../packages/connect" },
         { "path": "../../packages/icons" },
         { "path": "../../packages/styles" },
         { "path": "../../packages/theme" }

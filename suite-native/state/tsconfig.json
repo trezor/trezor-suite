@@ -11,6 +11,9 @@
         {
             "path": "../../suite-common/wallet-core"
         },
+        {
+            "path": "../../suite-common/wallet-graph"
+        },
         { "path": "../module-devices" },
         { "path": "../module-settings" },
         { "path": "../storage" },

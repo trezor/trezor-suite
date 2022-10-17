@@ -1,7 +1,10 @@
 import React from 'react';
-import { useFormatters } from '@suite-common/formatters';
+
 import { TooltipProps } from 'recharts';
-import { CommonAggregatedHistory } from '@wallet-types/graph';
+
+import { useFormatters } from '@suite-common/formatters';
+import { CommonAggregatedHistory } from '@suite-common/wallet-graph';
+
 import { Props as GraphProps, FiatGraphProps } from '../definitions';
 import { CustomTooltipBase } from './CustomTooltipBase';
 

@@ -1,20 +1,16 @@
 {
     "extends": "../../tsconfig.json",
     "compilerOptions": { "outDir": "libDev" },
-    "include": [".", "**/*.json"],
     "references": [
         { "path": "../fiat-services" },
-        { "path": "../metadata-types" },
-        { "path": "../suite-config" },
-        { "path": "../suite-constants" },
-        { "path": "../suite-types" },
+        { "path": "../redux-utils" },
         { "path": "../suite-utils" },
         { "path": "../test-utils" },
         { "path": "../wallet-config" },
         { "path": "../wallet-constants" },
+        { "path": "../wallet-core" },
         { "path": "../wallet-types" },
-        { "path": "../../packages/connect" },
-        { "path": "../../packages/urls" },
-        { "path": "../../packages/utils" }
+        { "path": "../wallet-utils" },
+        { "path": "../../packages/connect" }
     ]
 }

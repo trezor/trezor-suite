@@ -15,6 +15,7 @@
         "@ethereumjs/common": "^2.6.4",
         "@ethereumjs/tx": "^3.5.2",
         "@mobily/ts-belt": "^3.11.0",
+        "@suite-common/fiat-services": "*",
         "@suite-common/metadata-types": "*",
         "@suite-common/suite-config": "*",
         "@suite-common/suite-constants": "*",
