@@ -368,7 +368,7 @@ export const enhanceAddresses = (
     const unused = addresses.unused.map(replaceAccountIndex);
     const change = addresses.change.map(replaceAccountIndex);
 
-    return { used, unused, change };
+    return { used, unused, change, anonymitySet: addresses.anonymitySet };
 };
 
 export const enhanceUtxo = (
