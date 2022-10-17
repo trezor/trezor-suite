@@ -77,9 +77,12 @@ export const TransactionList = ({
     }
 
     const renderSectionHeader = useCallback(
-        ({ section: { dateKey } }: RenderSectionHeaderParams) => (
-            <TransactionListGroupTitle dateKey={dateKey} key={dateKey} />
-        ),
+        ({ section: { dateKey } }: RenderSectionHeaderParams) => {
+            const isPending = dateKey === 'pending';
+            return (
+                <TransactionListGroupTitle key={dateKey} isPending={isPending} dateKey={dateKey} />
+            );
+        },
         [],
     );
 
