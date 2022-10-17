@@ -30,6 +30,7 @@ jest.mock('@suite/services/coinjoin/coinjoinClient', () => {
                     enable: jest.fn(() => Promise.reject(new Error('Client not supported'))),
                 };
             },
+            removeInstance: jest.fn(),
         },
     };
 });
@@ -43,6 +44,7 @@ jest.mock('@suite/services/coinjoin/coinjoinBackend', () =>
                 off: jest.fn(),
                 scanAccount: jest.fn(() => Promise.reject(new Error('TODO'))),
             }),
+            removeInstance: jest.fn(),
         },
     }),
 );

@@ -46,10 +46,6 @@ type AccountNetworkSpecific =
           page: AccountInfo['page'];
       };
 
-export interface AddressesWithAnonymity extends NonNullable<AccountInfo['addresses']> {
-    anonymitySet?: Record<string, number | undefined>; // key -> address, value -> anonymity
-}
-
 // decides if account is using TrezorConnect/blockchain-link or other non-standard api
 export type AccountBackendSpecific =
     | {
@@ -78,7 +74,7 @@ export type Account = {
     availableBalance: string;
     formattedBalance: string;
     tokens: AccountInfo['tokens'];
-    addresses?: AddressesWithAnonymity;
+    addresses?: AccountInfo['addresses'];
     utxo: AccountInfo['utxo'];
     history: AccountInfo['history'];
     metadata: AccountMetadata;

@@ -1,4 +1,5 @@
 import { CoinjoinStatus } from '@trezor/coinjoin';
+import { AccountInfo } from '@trezor/connect';
 import * as COINJOIN from './constants/coinjoinConstants';
 import { addToast } from '../suite/notificationActions';
 import { CoinjoinClientService } from '@suite/services/coinjoin/coinjoinClient';
@@ -73,3 +74,28 @@ export const initCoinjoinClient = (symbol: Account['symbol']) => async (dispatch
 // return only active instances
 export const getCoinjoinClient = (symbol: Account['symbol']) => () =>
     CoinjoinClientService.getInstance(symbol);
+
+// NOTE: this function will be extended in upcoming PR
+export const analyzeTransactions = (accountInfo: AccountInfo) => async () => {
+    if (!accountInfo.utxo || !accountInfo.addresses) return accountInfo;
+
+    // TODO: async call on CoinjoinClient.analyzeTransactions
+    const { utxo } = accountInfo;
+    const anonymitySet: Record<string, number> = await new Promise(resolve => {
+        const aSet = utxo.reduce((res, utxo) => {
+            res[utxo.address] = 1;
+            return res;
+        }, {} as typeof anonymitySet);
+        resolve(aSet);
+    });
+
+    const accountInfoWithAnonymitySet = {
+        ...accountInfo,
+        addresses: {
+            ...accountInfo.addresses,
+            anonymitySet,
+        },
+    };
+
+    return accountInfoWithAnonymitySet;
+};

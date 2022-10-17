@@ -3,7 +3,12 @@ import type { ScanAccountProgress } from '@trezor/coinjoin/lib/types/backend';
 import * as COINJOIN from './constants/coinjoinConstants';
 import { goto } from '../suite/routerActions';
 import { addToast } from '../suite/notificationActions';
-import { initCoinjoinClient, getCoinjoinClient, clientDisable } from './coinjoinClientActions';
+import {
+    initCoinjoinClient,
+    getCoinjoinClient,
+    clientDisable,
+    analyzeTransactions,
+} from './coinjoinClientActions';
 import { CoinjoinBackendService } from '@suite/services/coinjoin/coinjoinBackend';
 import { CoinjoinClientService } from '@suite/services/coinjoin/coinjoinClient';
 import { Dispatch, GetState } from '@suite-types';
@@ -142,7 +147,12 @@ export const fetchAndUpdateAccount =
 
             // TODO add isPending check?
             if (isAccountOutdated(account, accountInfo) || isInitialUpdate) {
-                dispatch(accountsActions.updateAccount(account, accountInfo));
+                // calculate account anonymity set in CoinjoinClient
+                const accountInfoWithAnonymitySet = await dispatch(
+                    analyzeTransactions(accountInfo),
+                );
+
+                dispatch(accountsActions.updateAccount(account, accountInfoWithAnonymitySet));
             }
 
             // TODO remove invalid transactions
