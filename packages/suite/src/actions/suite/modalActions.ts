@@ -144,6 +144,10 @@ export type UserContextPayload =
       }
     | {
           type: 'cancel-coinjoin';
+      }
+    | {
+          type: 'critical-coinjoin-phase';
+          relatedAccountKey: string;
       };
 
 export type ModalAction =
