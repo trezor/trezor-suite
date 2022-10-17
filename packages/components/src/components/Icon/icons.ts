@@ -25,6 +25,7 @@ export const ICONS = {
     COIN_CONTROL: require('../../images/icons/coin_control.svg'),
     COIN: require('../../images/icons/coin.svg'),
     COINS: require('../../images/icons/coins.svg'),
+    CONFETTI_SUCCESS: require('../../images/icons/confetti.svg'),
     COOKIE: require('../../images/icons/cookie.svg'),
     COPY: require('../../images/icons/copy.svg'),
     CROSS: require('../../images/icons/cross.svg'),

@@ -148,6 +148,10 @@ export type UserContextPayload =
     | {
           type: 'critical-coinjoin-phase';
           relatedAccountKey: string;
+      }
+    | {
+          type: 'coinjoin-success';
+          relatedAccountKey: string;
       };
 
 export type ModalAction =
