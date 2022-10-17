@@ -1,6 +1,5 @@
 import BigNumber from 'bignumber.js';
 import { fromWei } from 'web3-utils';
-import { A } from '@mobily/ts-belt';
 
 import {
     Account,
@@ -44,8 +43,7 @@ export const groupTransactionsByDate = (
     transactions: WalletAccountTransaction[],
 ): { [key: string]: WalletAccountTransaction[] } => {
     const r: { [key: string]: WalletAccountTransaction[] } = {};
-    const sortedTxs = A.sort(transactions, (a, b) => sortByBlockHeight(a, b));
-    A.sort(sortedTxs, sortByBlockHeight).forEach(item => {
+    transactions.sort(sortByBlockHeight).forEach(item => {
         let key = 'pending';
         if (item.blockHeight && item.blockHeight > 0 && item.blockTime && item.blockTime > 0) {
             const t = item.blockTime * 1000;
