@@ -6,19 +6,16 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 type TransactionListGroupProps = {
     dateKey: string;
-    isPending?: boolean;
 };
 
 const dateTextStyle = prepareNativeStyle(_ => ({
     marginBottom: 12,
 }));
 
-export const TransactionListGroupTitle = ({
-    dateKey,
-    isPending = false,
-}: TransactionListGroupProps) => {
+export const TransactionListGroupTitle = ({ dateKey }: TransactionListGroupProps) => {
     const { applyStyle } = useNativeStyles();
-    const sectionTitle = isPending ? 'Pending' : parseDateKey(dateKey).toLocaleDateString();
+    const sectionTitle =
+        dateKey === 'pending' ? 'Pending' : parseDateKey(dateKey).toLocaleDateString();
 
     return (
         <Text color="gray600" variant="hint" style={applyStyle(dateTextStyle)}>
