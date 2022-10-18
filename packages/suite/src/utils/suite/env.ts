@@ -1,45 +1,5 @@
 import { desktopApi, SuiteThemeVariant } from '@trezor/suite-desktop-api';
-import { getPlatform, isAndroid, isChromeOs } from '@trezor/env-utils';
 import type { EnvironmentType } from '@suite-types';
-
-/* For usage in Electron */
-export const getProcessPlatform = () => process.platform;
-export const isMacOs = () => {
-    if (getProcessPlatform() === 'darwin') return true;
-    if (typeof window === 'undefined') return;
-
-    return getPlatform().startsWith('Mac');
-};
-
-export const isWindows = () => {
-    if (getProcessPlatform() === 'win32') return true;
-    if (typeof window === 'undefined') return;
-
-    return getPlatform().startsWith('Win');
-};
-
-export const isIOs = () => ['iPhone', 'iPad', 'iPod'].includes(getPlatform());
-
-export const isLinux = () => {
-    if (getProcessPlatform() === 'linux') return true;
-    if (typeof window === 'undefined') return;
-
-    // exclude Android and Chrome OS as window.navigator.platform of those OS is Linux
-    if (isAndroid() || isChromeOs()) return false;
-
-    return getPlatform().startsWith('Linux');
-};
-
-export const getOsName = () => {
-    if (isWindows()) return 'windows';
-    if (isMacOs()) return 'macos';
-    if (isAndroid()) return 'android';
-    if (isChromeOs()) return 'chromeos';
-    if (isLinux()) return 'linux';
-    if (isIOs()) return 'ios';
-
-    return '';
-};
 
 export const isWeb = () => process.env.SUITE_TYPE === 'web';
 

@@ -1,7 +1,7 @@
 import * as semver from 'semver';
 
-import { getEnvironment, getOsName } from '@suite-utils/env';
-import { getBrowserName, getBrowserVersion, getOsVersion } from '@trezor/env-utils';
+import { getEnvironment } from '@suite-utils/env';
+import { getBrowserName, getBrowserVersion, getOsName, getOsVersion } from '@trezor/env-utils';
 import { getBootloaderVersion, getDeviceModel, getFwRevision, getFwVersion } from './device';
 
 import type { TransportInfo } from '@trezor/connect';

@@ -1,12 +1,12 @@
 import { AppUpdateEvent } from '@trezor/suite-analytics';
 
 import { AppState } from '@suite-types';
-import { getOsName } from '@suite-utils/env';
 import {
     getScreenWidth,
     getScreenHeight,
     getBrowserName,
     getBrowserVersion,
+    getOsName,
     getOsVersion,
     getWindowWidth,
     getWindowHeight,
