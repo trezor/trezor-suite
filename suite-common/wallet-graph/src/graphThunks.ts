@@ -14,7 +14,11 @@ import { getFiatRatesForTimestamps } from '@suite-common/fiat-services';
 import { selectAccountsByNetworkSymbols } from '@suite-common/wallet-core';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 
-import { EnhancedAccountBalanceHistory, FiatRatesForTime, LineGraphTimeFrameValues } from './types';
+import {
+    EnhancedAccountBalanceHistory,
+    FiatRatesForTimeFrame,
+    LineGraphTimeFrameValues,
+} from './types';
 import {
     enhanceBlockchainAccountHistory,
     ensureHistoryRates,
@@ -32,7 +36,7 @@ const sortAccountBalanceHistoryByTimeAsc = (accountBalanceMovements: AccountBala
 };
 
 const getSuccessAccountBalanceMovements = (
-    accountBalanceMovements: Array<EnhancedAccountBalanceHistory | undefined>,
+    accountBalanceMovements: Array<AccountBalanceHistory | undefined>,
 ) => {
     const successAccountMovement = [];
     for (let movement of accountBalanceMovements) {
@@ -57,10 +61,8 @@ const fetchAccountsBalanceHistory = async (
         });
         try {
             if (response?.success) {
-                const responseWithRates = await ensureHistoryRates(
-                    account.symbol,
-                    response.payload,
-                );
+                const sortedPayload = sortAccountBalanceHistoryByTimeAsc(response.payload);
+                const responseWithRates = await ensureHistoryRates(account.symbol, sortedPayload);
                 const enhancedResponse = enhanceBlockchainAccountHistory(
                     responseWithRates,
                     account.symbol,
@@ -76,7 +78,7 @@ const fetchAccountsBalanceHistory = async (
     const successAccountBalanceMovements = getSuccessAccountBalanceMovements(
         accountBalanceMovements.flat(),
     );
-    return sortAccountBalanceHistoryByTimeAsc(successAccountBalanceMovements);
+    return successAccountBalanceMovements as EnhancedAccountBalanceHistory[];
 };
 
 const getOldestAccountBalanceMovement = async (account: Account) => {
@@ -123,8 +125,10 @@ const getAccountBalanceAtStartOfRange = async (
             groupBy: 3600, // day
         });
         return accountBalanceHistoryToStartOfRange.length
-            ? accountBalanceHistoryToStartOfRange[accountBalanceHistoryToStartOfRange.length - 1]
-            : oldestAccountBalanceMovement;
+            ? (accountBalanceHistoryToStartOfRange[
+                  accountBalanceHistoryToStartOfRange.length - 1
+              ] as EnhancedAccountBalanceHistory)
+            : (oldestAccountBalanceMovement as EnhancedAccountBalanceHistory);
     }
 };
 
@@ -188,7 +192,59 @@ const getFiatRatesForTimeFrame = async (
             };
         }),
     );
-    return fiatRatesForDatesInRange as FiatRatesForTime;
+    return fiatRatesForDatesInRange as FiatRatesForTimeFrame;
+};
+
+const prepareAllTimeFrameRatesForGraphPoints = (
+    accountBalanceRatesAtStartOfRange: EnhancedAccountBalanceHistory,
+    fiatRatesForTimesInRange: FiatRatesForTimeFrame,
+    accountsBalanceHistoryInRange: EnhancedAccountBalanceHistory[],
+    fiatCurrency: FiatCurrencyCode,
+) => {
+    const fiatRatesInTime = [
+        ...accountsBalanceHistoryInRange.map(balanceHistoryInRange => {
+            return {
+                time: balanceHistoryInRange.time,
+                balance: balanceHistoryInRange.balance,
+                fiatCurrencyRate: balanceHistoryInRange.rates[fiatCurrency],
+            };
+        }),
+        ...fiatRatesForTimesInRange.map(timeInRange => {
+            return {
+                time: timeInRange.time,
+                balance: null,
+                fiatCurrencyRate: timeInRange.rates[fiatCurrency],
+            };
+        }),
+    ];
+
+    const fiatRatesSortedByTimeAsc = fiatRatesInTime.sort((a, b) => {
+        return a.time - b.time;
+    });
+    // account balance at the beginning of time frame has to be the first array item
+    const newArrayWithAllBalancesFilled = [
+        {
+            time: accountBalanceRatesAtStartOfRange.time,
+            balance: accountBalanceRatesAtStartOfRange.balance,
+            fiatCurrencyRate: accountBalanceRatesAtStartOfRange.rates[fiatCurrency],
+        },
+    ];
+
+    for (let rate of fiatRatesSortedByTimeAsc) {
+        const { balance } = rate;
+        if (!balance) {
+            const previousTimeFrameItemBalance =
+                newArrayWithAllBalancesFilled[newArrayWithAllBalancesFilled.length - 1].balance;
+            newArrayWithAllBalancesFilled.push({
+                ...rate,
+                balance: previousTimeFrameItemBalance,
+            });
+        } else {
+            newArrayWithAllBalancesFilled.push(rate);
+        }
+    }
+
+    return newArrayWithAllBalancesFilled;
 };
 
 export const getGraphPointsForSingleAccountThunk = createThunk(
@@ -223,20 +279,12 @@ export const getGraphPointsForAccountsThunk = createThunk(
             startOfRangeDate,
         );
 
-        console.log(
-            'accountBalanceRatesAtStartOfRange******: ',
-            JSON.stringify(accountBalanceRatesAtStartOfRange),
-        );
-
         const fiatRatesForTimesInRange = await getFiatRatesForTimeFrame(
             timeFrameItem,
             startOfRangeDate,
             endOfRangeDate,
         );
 
-        console.log('fiatRatesForDatesInRange******: ', JSON.stringify(fiatRatesForTimesInRange));
-
-        // TODO process these account data and merge all data together
         // FIXME do not hardcode first account
         const accountsBalanceHistoryInRange = await fetchAccountsBalanceHistory([accounts[0]], {
             from: getBlockbookSafeTime(getUnixTime(startOfRangeDate)),
@@ -244,24 +292,32 @@ export const getGraphPointsForAccountsThunk = createThunk(
             groupBy: timeFrameItem.stepInMinutes * 60,
         });
 
-        console.log(
-            'accountsBalanceHistory******: ',
-            JSON.stringify(accountsBalanceHistoryInRange),
-        );
+        if (accountBalanceRatesAtStartOfRange) {
+            const timeFrameItemsWithAllBalances = prepareAllTimeFrameRatesForGraphPoints(
+                accountBalanceRatesAtStartOfRange,
+                fiatRatesForTimesInRange,
+                accountsBalanceHistoryInRange,
+                fiatCurrency,
+            );
 
-        // TODO these are temporary graph points
-        const mappedDatesInRange = fiatRatesForTimesInRange.map(timestamp => {
-            const fiatRates = timestamp.rates;
+            console.log('timeFrameItemsWithAllBalances********: ', timeFrameItemsWithAllBalances);
+
+            const points = timeFrameItemsWithAllBalances.map(timestamp => {
+                const value = Number(timestamp.balance) * Number(timestamp.fiatCurrencyRate);
+                return {
+                    date: new Date(timestamp.time * 1000),
+                    value: value,
+                };
+            });
+
+            console.log('points********: ', points);
+
             return {
-                date: new Date(timestamp.time * 1000),
-                value: Math.floor(fiatRates[fiatCurrency]),
+                section,
+                points,
             };
-        });
-
-        // TODO merge all points together
-        return {
-            section,
-            points: mappedDatesInRange,
-        };
+        } else {
+            // TODO handle graph error with thunk lifecycle error?
+        }
     },
 );

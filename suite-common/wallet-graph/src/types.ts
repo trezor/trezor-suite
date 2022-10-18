@@ -79,7 +79,10 @@ type LineGraphTimeFrameItem = {
 export type LineGraphTimeFrameItems = Record<LineGraphTimeFrameValues, LineGraphTimeFrameItem>;
 
 export interface EnhancedAccountBalanceHistory extends AccountBalanceHistory {
-    balance?: string;
+    balance: string;
 }
 
-export type FiatRatesForTime = Array<{ time: number; rates: Record<FiatCurrencyCode, number> }>;
+export type FiatRatesForTimeFrame = Array<{
+    time: number;
+    rates: Record<FiatCurrencyCode, number>;
+}>;
