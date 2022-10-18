@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Button } from '@trezor/components';
 import { desktopApi } from '@trezor/suite-desktop-api';
-import { isLinux, isDesktop } from '@suite-utils/env';
+import { isDesktop } from '@suite-utils/env';
 import { Translation, TroubleshootingTips } from '@suite-components';
 import UdevDownload from '@suite-components/UdevDownload';
 import {
@@ -14,6 +14,7 @@ import {
 import { useActions } from '@suite-hooks';
 import * as notificationActions from '@suite-actions/notificationActions';
 import type { TrezorDevice } from '@suite-types';
+import { isLinux } from '@trezor/env-utils';
 
 // linux web
 const UdevWeb = () => (

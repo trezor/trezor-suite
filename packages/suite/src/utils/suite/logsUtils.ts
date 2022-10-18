@@ -5,10 +5,11 @@ import { DEVICE } from '@trezor/connect';
 import { LogEntry } from '@suite-reducers/logsReducer';
 import { AppState, TrezorDevice } from '@suite-types';
 import { getCustomBackends } from '@suite-common/wallet-utils';
-import { getEnvironment, getOsName } from '@suite-utils/env';
+import { getEnvironment } from '@suite-utils/env';
 import {
     getBrowserName,
     getBrowserVersion,
+    getOsName,
     getOsVersion,
     getPlatformLanguages,
     getScreenHeight,

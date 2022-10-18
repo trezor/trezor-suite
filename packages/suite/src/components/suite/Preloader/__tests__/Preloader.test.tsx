@@ -1,7 +1,8 @@
 import React from 'react';
 import { configureStore } from '@suite/support/tests/configureStore';
 import { renderWithProviders, findByTestId } from '@suite/support/tests/hooksHelper';
-import * as env from '@suite-utils/env';
+import * as envUtils from '@trezor/env-utils/src/envUtils';
+
 import Preloader from '..';
 
 // react-svg will not work
@@ -209,7 +210,7 @@ describe('Preloader component', () => {
     });
 
     it('Unreadable device: missing udev on Linux', () => {
-        jest.spyOn(env, 'isLinux').mockImplementation(() => true);
+        jest.spyOn(envUtils, 'isLinux').mockImplementation(() => true);
 
         const store = initStore(
             getInitialState({
@@ -228,7 +229,7 @@ describe('Preloader component', () => {
     });
 
     it('Unreadable device: missing udev on non-Linux os (should never happen)', () => {
-        jest.spyOn(env, 'isLinux').mockImplementation(() => false);
+        jest.spyOn(envUtils, 'isLinux').mockImplementation(() => false);
 
         const store = initStore(
             getInitialState({

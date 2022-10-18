@@ -8,8 +8,8 @@ import { useActions, useDevice, useSelector } from '@suite-hooks';
 import * as guideActions from '@suite-actions/guideActions';
 import { ViewWrapper, Header, Content } from '@guide-components';
 import { Rating, FeedbackCategory, FeedbackType, UserData } from '@suite-common/suite-types';
-import { getEnvironment, getOsName } from '@suite-utils/env';
-import { getUserAgent, getWindowHeight, getWindowWidth } from '@trezor/env-utils';
+import { getEnvironment } from '@suite-utils/env';
+import { getUserAgent, getWindowHeight, getWindowWidth, getOsName } from '@trezor/env-utils';
 
 import { getFwType, getFwVersion } from '@suite-utils/device';
 
