@@ -11,7 +11,6 @@ export const toFiatCurrency = (
     decimals = 2,
 ) => {
     // calculate amount in local currency
-
     const rate = networkRates?.[fiatCurrency];
     if (!rate) {
         return null;

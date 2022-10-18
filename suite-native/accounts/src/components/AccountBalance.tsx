@@ -35,7 +35,7 @@ export const AccountBalance = ({ accountKey, accountName }: AccountBalanceProps)
             <Text style={applyStyle(accountNameStyle)}>{accountName}</Text>
             <Box flexDirection="row" alignItems="center">
                 <Box style={applyStyle(cryptoIconStyle)}>
-                    <CryptoIcon size="large" name="btc" />
+                    <CryptoIcon size="large" name={account.symbol} />
                 </Box>
                 <Box>
                     <Text color="gray800">
