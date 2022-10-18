@@ -1,6 +1,8 @@
 import React, { ReactNode } from 'react';
 
-import { Box, Text, VStack } from '@suite-native/atoms';
+import { VStack } from './VStack';
+import { Text } from './Text';
+import { Box } from './Box';
 
 type DashboardSectionProps = {
     children: ReactNode;

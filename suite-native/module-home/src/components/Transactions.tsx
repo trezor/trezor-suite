@@ -1,8 +1,6 @@
 import React from 'react';
 
-import { Box, Card, SearchInput, TransactionItem } from '@suite-native/atoms';
-
-import { DashboardSection } from './DashboardSection';
+import { Box, Card, DashboardSection, SearchInput, TransactionItem } from '@suite-native/atoms';
 
 export const Transactions = () => (
     <DashboardSection title="Transactions">

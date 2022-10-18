@@ -3,28 +3,17 @@ import { TouchableOpacity } from 'react-native';
 
 import { CryptoIcon, CryptoIconName } from '@trezor/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { CSSColor } from '@trezor/theme';
 import { useFormatters } from '@suite-common/formatters';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-
-import { Box } from './Box';
-import { Text } from './Text';
-import { ProgressBar } from './ProgressBar';
+import { Box, Text } from '@suite-native/atoms';
 
 type AssetItemProps = {
     cryptoCurrencySymbol: NetworkSymbol;
     cryptoCurrencyName: string;
-    cryptoCurrencyValue: number;
-    portfolioPercentage: number;
-    fiatCurrencyValue: number;
+    cryptoCurrencyValue: string;
     iconName: CryptoIconName;
     onPress?: () => void;
-};
-
-// TODO this config should be in some shared package for constants etc
-export const assetColorConfig: Record<string, CSSColor> = {
-    BTC: '#F29937',
-    ETH: '#454A75',
+    fiatBalance: string;
 };
 
 const assetItemWrapperStyle = prepareNativeStyle(() => ({
@@ -33,6 +22,8 @@ const assetItemWrapperStyle = prepareNativeStyle(() => ({
 }));
 
 const assetContentStyle = prepareNativeStyle(() => ({
+    flexDirection: 'row',
+    alignItems: 'center',
     justifyContent: 'space-between',
     flex: 1,
     marginLeft: 10,
@@ -41,10 +32,9 @@ const assetContentStyle = prepareNativeStyle(() => ({
 export const AssetItem = ({
     cryptoCurrencySymbol,
     cryptoCurrencyValue,
-    portfolioPercentage,
-    fiatCurrencyValue,
     cryptoCurrencyName,
     iconName,
+    fiatBalance,
     onPress,
 }: AssetItemProps) => {
     const { applyStyle } = useNativeStyles();
@@ -62,18 +52,9 @@ export const AssetItem = ({
                         alignItems="center"
                     >
                         <Text>{cryptoCurrencyName}</Text>
-                        <Text>{FiatAmountFormatter.format(fiatCurrencyValue)}</Text>
                     </Box>
-                    <Box
-                        flexDirection="row"
-                        flex={1}
-                        justifyContent="space-between"
-                        alignItems="center"
-                    >
-                        <ProgressBar
-                            value={portfolioPercentage}
-                            color={assetColorConfig[cryptoCurrencySymbol]}
-                        />
+                    <Box alignItems="flex-end">
+                        <Text>{FiatAmountFormatter.format(fiatBalance)}</Text>
                         <Text variant="hint" color="gray600">
                             <>{`${CryptoAmountFormatter.format(cryptoCurrencyValue, {
                                 symbol: cryptoCurrencySymbol,

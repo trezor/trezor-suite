@@ -22,6 +22,6 @@ export * from './VStack';
 export * from './HStack';
 export * from './Divider';
 export * from './TransactionItem';
-export * from './AssetItem';
 export * from './ProgressBar';
 export * from './Card';
+export * from './DashboardSection';
