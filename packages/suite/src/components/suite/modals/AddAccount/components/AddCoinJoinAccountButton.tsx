@@ -51,7 +51,7 @@ export const AddCoinJoinAccountButton = ({ network }: AddCoinJoinAccountProps) =
         const accessCoinjoinAccount = await dispatch(
             modalActions.openDeferredModal({
                 type: 'access-coinjoin-account',
-                network: network.symbol,
+                networkSymbol: network.symbol,
             }),
         );
         if (!accessCoinjoinAccount) {
