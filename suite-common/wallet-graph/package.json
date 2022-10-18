@@ -11,9 +11,11 @@
         "type-check": "tsc --build"
     },
     "dependencies": {
+        "@mobily/ts-belt": "^3.11.0",
         "@reduxjs/toolkit": "^1.8.3",
         "@suite-common/fiat-services": "*",
         "@suite-common/redux-utils": "*",
+        "@suite-common/suite-config": "*",
         "@suite-common/suite-utils": "*",
         "@suite-common/test-utils": "*",
         "@suite-common/wallet-config": "*",
@@ -21,6 +23,7 @@
         "@suite-common/wallet-core": "*",
         "@suite-common/wallet-types": "*",
         "@suite-common/wallet-utils": "*",
+        "@trezor/blockchain-link": "*",
         "@trezor/connect": "9.0.3",
         "bignumber.js": "^9.1.0",
         "date-fns": "^2.29.1"

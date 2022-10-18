@@ -31,7 +31,7 @@ export const AccountBalance = ({ accountKey, accountName }: AccountBalanceProps)
     if (!account) return null;
 
     return (
-        <Box marginBottom="extraLarge">
+        <Box marginBottom="small">
             <Text style={applyStyle(accountNameStyle)}>{accountName}</Text>
             <Box flexDirection="row" alignItems="center">
                 <Box style={applyStyle(cryptoIconStyle)}>

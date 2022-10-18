@@ -23,6 +23,7 @@
         "@suite-common/wallet-utils": "*",
         "@suite-native/assets": "*",
         "@suite-native/atoms": "*",
+        "@suite-native/config": "*",
         "@suite-native/graph": "*",
         "@suite-native/module-settings": "*",
         "@suite-native/navigation": "*",

@@ -135,7 +135,7 @@ PODS:
   - nanopb/encode (2.30909.0)
   - OpenSSL-Universal (1.1.1100)
   - PromisesObjC (2.1.1)
-  - Protobuf (3.21.7)
+  - Protobuf (3.21.8)
   - RCT-Folly (2021.07.22.00):
     - boost
     - DoubleConversion
@@ -733,7 +733,7 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   boost: 33822b9202be3240e51605d20431570aa3a6c58e
   CocoaAsyncSocket: 065fd1e645c7abab64f7a6a2007a48038fdc6a99
-  DoubleConversion: 5c2288575b9bd33de61ab847e51d0dca167323e7
+  DoubleConversion: 9456fd505d3f9f70d786fcbe504b31de765010d9
   FBLazyVector: 3b313c3fb52b597f7a9b430798e6367d2b9f07e5
   FBReactNativeSpec: a71d01c494ec61ed2de2eaf50d8a37f8b0b76d67
   Flipper: 26fc4b7382499f1281eb8cb921e5c3ad6de91fe0
@@ -746,14 +746,14 @@ SPEC CHECKSUMS:
   Flipper-RSocket: d9d9ade67cbecf6ac10730304bf5607266dd2541
   FlipperKit: cbdee19bdd4e7f05472a66ce290f1b729ba3cb86
   fmt: ff9d55029c625d3757ed641535fd4a75fedc7ce9
-  glog: 46667b3bfd7b7368ebbef149ba7e1d17a61a1b94
+  glog: 7b03cc6e801af48ac1863ffbc894e61500505f52
   GoogleDataTransport: 1c8145da7117bd68bbbed00cf304edb6a24de00f
   GoogleMLKit: 0017a6a8372e1a182139b9def4d89be5d87ca5a7
   GoogleToolboxForMac: 8bef7c7c5cf7291c687cf5354f39f9db6399ad34
   GoogleUtilities: 1d20a6ad97ef46f67bbdec158ce00563a671ebb7
   GoogleUtilitiesComponents: 679b2c881db3b615a2777504623df6122dd20afe
   GTMSessionFetcher: 5595ec75acf5be50814f81e9189490412bad82ba
-  hermes-engine: bb344d89a0d14c2c91ad357480a79698bb80e186
+  hermes-engine: 30305726d34346ce7bedb7ed41b0abb9016307f7
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
   MLImage: 489dfec109f21da8621b28d476401aaf7a0d4ff4
   MLKitBarcodeScanning: d92fe1911001ec36870162c5a0eb206f612b7169
@@ -764,8 +764,8 @@ SPEC CHECKSUMS:
   nanopb: b552cce312b6c8484180ef47159bc0f65a1f0431
   OpenSSL-Universal: ebc357f1e6bc71fa463ccb2fe676756aff50e88c
   PromisesObjC: ab77feca74fa2823e7af4249b8326368e61014cb
-  Protobuf: f4128517d7a42302e106cc3afe614ee3a7513e94
-  RCT-Folly: 0080d0a6ebf2577475bda044aa59e2ca1f909cda
+  Protobuf: 0a11f3000cd10ffa17611bf96e66a66b25c956e4
+  RCT-Folly: 158339bb8a6ef9d2cab2fcccaac4455da5196d85
   RCTRequired: 5cf7e7d2f12699724b59f90350257a422eaa9492
   RCTTypeSafety: 3f3ead9673d1ab8bb1aea85b0894ab3220f8f06e
   React: 30a333798d1fcf595e8a4108bbaa0f125a655f4a

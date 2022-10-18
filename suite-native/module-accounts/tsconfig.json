@@ -12,6 +12,9 @@
             "path": "../../suite-common/wallet-core"
         },
         {
+            "path": "../../suite-common/wallet-graph"
+        },
+        {
             "path": "../../suite-common/wallet-types"
         },
         {
@@ -19,6 +22,8 @@
         },
         { "path": "../accounts" },
         { "path": "../atoms" },
+        { "path": "../graph" },
+        { "path": "../module-settings" },
         { "path": "../navigation" },
         { "path": "../transactions" },
         { "path": "../../packages/icons" },

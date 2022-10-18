@@ -1,14 +1,20 @@
-import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
+import { createReducer } from '@reduxjs/toolkit';
 
-import { LineGraphPoint } from './types';
-import { getGraphPointsForAccountsThunk } from './graphThunks';
+import { GraphDataSource, LineGraphPoint } from './types';
+import { getAllAccountsGraphPointsThunk, getSingleAccountGraphPointsThunk } from './graphThunks';
+import { getValidGraphPoints } from './graphUtils';
+import { accountNotFoundError, networkAccountsNotFoundError } from './constants';
 
 export interface GraphState {
     dashboard: {
         points: LineGraphPoint[];
+        error?: string | null;
+        loading?: boolean;
     };
     account: {
         points: LineGraphPoint[];
+        error?: string | null;
+        loading?: boolean;
     };
 }
 
@@ -27,32 +33,54 @@ export type GraphRootState = {
     };
 };
 
-const updateSectionPoints = (
+const updateGraphPoints = (
     state: GraphState,
     payload: {
-        section: 'dashboard' | 'account';
-        points: LineGraphPoint[];
+        graphDataSource: GraphDataSource;
+        graphPoints: LineGraphPoint[];
     },
 ) => {
-    const { section, points } = payload;
-    /**
-     * react-native-graph library has problems with rendering path when there are some invalid values.
-     * Also graph is not showing (with props animated=true) when dates do not follow each other by milliseconds.
-     */
-    const validGraphPoints = points
-        .filter(point => !Number.isNaN(point.value))
-        .map((point, index) => ({
-            ...point,
-            date: new Date(index),
-        }));
-    state[section].points = validGraphPoints;
+    const { graphDataSource, graphPoints } = payload;
+    state[graphDataSource].error = null;
+    state[graphDataSource].points = getValidGraphPoints(graphPoints);
 };
 
-export const prepareGraphReducer = createReducerWithExtraDeps(graphInitialState, builder => {
-    builder.addCase(getGraphPointsForAccountsThunk.fulfilled, (state, action) => {
-        updateSectionPoints(state, action.payload);
-    });
+export const graphReducer = createReducer(graphInitialState, builder => {
+    builder
+        .addCase(getAllAccountsGraphPointsThunk.fulfilled, (state, action) => {
+            updateGraphPoints(state, {
+                graphDataSource: 'dashboard',
+                graphPoints: action.payload,
+            });
+            state.dashboard.loading = false;
+        })
+        .addCase(getAllAccountsGraphPointsThunk.rejected, (state, action) => {
+            if (action.error.message === networkAccountsNotFoundError) {
+                state.dashboard.error = action.error.message;
+            }
+            state.dashboard.loading = false;
+        })
+        .addCase(getAllAccountsGraphPointsThunk.pending, state => {
+            state.dashboard.loading = true;
+        })
+        .addCase(getSingleAccountGraphPointsThunk.fulfilled, (state, action) => {
+            updateGraphPoints(state, {
+                graphDataSource: 'account',
+                graphPoints: action.payload,
+            });
+            state.account.loading = false;
+        })
+        .addCase(getSingleAccountGraphPointsThunk.rejected, (state, action) => {
+            if (action.error.message === accountNotFoundError) {
+                state.account.error = action.error.message;
+            }
+            state.account.loading = false;
+        })
+        .addCase(getSingleAccountGraphPointsThunk.pending, state => {
+            state.account.loading = true;
+        });
 });
 
-export const selectDashboardGraphPoints = (state: GraphRootState) =>
-    state.wallet.graph.dashboard.points;
+export const selectDashboardGraph = (state: GraphRootState) => state.wallet.graph.dashboard;
+
+export const selectAccountGraph = (state: GraphRootState) => state.wallet.graph.account;

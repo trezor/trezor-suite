@@ -4,11 +4,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Graph, TimeSwitch } from '@suite-native/graph';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Box, Text } from '@suite-native/atoms';
+import { enabledNetworks } from '@suite-native/config';
 import { Icon } from '@trezor/icons';
+import { selectFiatCurrency } from '@suite-native/module-settings';
 import { useFormatters } from '@suite-common/formatters';
 import {
-    getGraphPointsForAccountsThunk,
-    selectDashboardGraphPoints,
+    getAllAccountsGraphPointsThunk,
+    selectDashboardGraph,
     LineGraphTimeFrameValues,
 } from '@suite-common/wallet-graph';
 
@@ -20,17 +22,19 @@ export const PortfolioGraph = () => {
     const dispatch = useDispatch();
     const { applyStyle } = useNativeStyles();
     const { FiatAmountFormatter } = useFormatters();
-    const graphPoints = useSelector(selectDashboardGraphPoints);
+    const fiatCurrency = useSelector(selectFiatCurrency);
+    const { points, error, loading } = useSelector(selectDashboardGraph);
     const [selectedTimeFrame, setSelectedTimeFrame] = useState<LineGraphTimeFrameValues>('day');
 
     useEffect(() => {
         dispatch(
-            getGraphPointsForAccountsThunk({
-                section: 'dashboard',
+            getAllAccountsGraphPointsThunk({
+                fiatCurrency: fiatCurrency.label,
                 timeFrame: selectedTimeFrame,
+                networkSymbols: enabledNetworks,
             }),
         );
-    }, [selectedTimeFrame, dispatch]);
+    }, [selectedTimeFrame, fiatCurrency, dispatch]);
 
     const handleSelectTimeFrame = (timeFrame: LineGraphTimeFrameValues) => {
         setSelectedTimeFrame(timeFrame);
@@ -39,7 +43,7 @@ export const PortfolioGraph = () => {
     // FIXME - I think it is necessary to have the same number of items in arrays we are switching between - for graphs to be animated when switching time frames...
 
     return (
-        <Box>
+        <>
             <Text variant="titleLarge">
                 {/* TODO calculate this from assets  */}
                 {FiatAmountFormatter.format(0)}
@@ -57,11 +61,19 @@ export const PortfolioGraph = () => {
                     1.3%
                 </Text>
             </Box>
-            <Graph points={graphPoints} />
-            <TimeSwitch
-                selectedTimeFrame={selectedTimeFrame}
-                onSelectTimeFrame={handleSelectTimeFrame}
-            />
-        </Box>
+            {error ? (
+                <Text variant="label" color="gray600">
+                    {error}
+                </Text>
+            ) : (
+                <>
+                    <Graph points={points} loading={loading} />
+                    <TimeSwitch
+                        selectedTimeFrame={selectedTimeFrame}
+                        onSelectTimeFrame={handleSelectTimeFrame}
+                    />
+                </>
+            )}
+        </>
     );
 };
