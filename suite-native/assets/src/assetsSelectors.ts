@@ -16,7 +16,7 @@ interface AssetType {
     fiatBalance: string;
 }
 
-const formatBalance = (balances: string[]): BigNumber =>
+const sumBalance = (balances: string[]): BigNumber =>
     balances.reduce((prev, balance) => prev.plus(balance), new BigNumber(0));
 
 export const selectBalancesPerNetwork = createSelector(
@@ -34,7 +34,7 @@ export const selectBalancesPerNetwork = createSelector(
         const assetKeys = Object.keys(assets) as NetworkSymbol[];
         assetKeys.forEach((asset: NetworkSymbol) => {
             const balances = assets[asset] ?? [];
-            formattedNetworkAssets[asset] = formatBalance(balances);
+            formattedNetworkAssets[asset] = sumBalance(balances);
         });
 
         return formattedNetworkAssets;
