@@ -46,6 +46,8 @@ export const groupTransactionsByDate = (
     transactions: WalletAccountTransaction[],
 ): { [key: string]: WalletAccountTransaction[] } => {
     const r: { [key: string]: WalletAccountTransaction[] } = {};
+    // Note: We should use ts-belt for sorting this array but currently, there can be undefined inside
+    // Built-in sort doesn't include undefined elements but ts-belt does so there will be some refactoring involved.
     [...transactions].sort(sortByBlockHeight).forEach(item => {
         let key = 'pending';
         if (item.blockHeight && item.blockHeight > 0 && item.blockTime && item.blockTime > 0) {
