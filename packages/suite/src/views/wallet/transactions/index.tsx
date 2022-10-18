@@ -3,13 +3,13 @@ import { WalletLayout } from '@wallet-components';
 import { getAccountTransactions } from '@suite-common/wallet-utils';
 import { useSelector } from '@suite-hooks';
 import { AppState } from '@suite-types';
-
-import NoTransactions from './components/NoTransactions';
-import AccountEmpty from './components/AccountEmpty';
-import TransactionList from './components/TransactionList';
-import TransactionSummary from './components/TransactionSummary';
 import { CoinjoinSummary } from '@wallet-components/CoinjoinSummary';
 import { selectIsLoadingTransactions } from '@suite-common/wallet-core';
+
+import { NoTransactions } from './components/NoTransactions';
+import { AccountEmpty } from './components/AccountEmpty';
+import { TransactionList } from './components/TransactionList';
+import { TransactionSummary } from './components/TransactionSummary';
 
 interface ContentProps {
     selectedAccount: AppState['wallet']['selectedAccount'];
@@ -25,6 +25,7 @@ const Content = ({
     children,
 }: ContentProps) => {
     if (selectedAccount.status !== 'loaded') return null;
+
     const { account } = selectedAccount;
 
     return (
@@ -39,6 +40,7 @@ const Content = ({
             {showSummary && account.accountType === 'coinjoin' && (
                 <CoinjoinSummary account={account} />
             )}
+
             {children}
         </WalletLayout>
     );

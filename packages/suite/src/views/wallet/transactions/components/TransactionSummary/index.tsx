@@ -60,11 +60,11 @@ const Divider = styled.div`
     margin: 24px 0px;
 `;
 
-interface Props {
+interface TransactionSummaryProps {
     account: Account;
 }
 
-const TransactionSummary = ({ account }: Props) => {
+export const TransactionSummary = ({ account }: TransactionSummaryProps) => {
     const { graph, localCurrency } = useSelector(state => ({
         graph: state.wallet.graph,
         localCurrency: state.wallet.settings.localCurrency,
@@ -176,5 +176,3 @@ const TransactionSummary = ({ account }: Props) => {
         </Wrapper>
     );
 };
-
-export default TransactionSummary;
