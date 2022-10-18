@@ -26,7 +26,7 @@ export const TransactionDetailScreen = ({
     const transaction = useSelector(selectTransactionByTxid(txid));
     const blockchain = useSelector(selectBlockchainState);
     const fiatCurrency = useSelector(selectFiatCurrency);
-    const { FiatAmountFormatter, CryptoAmountFormatter, CurrencySymbolFormatter } = useFormatters();
+    const { CryptoAmountFormatter, CurrencySymbolFormatter } = useFormatters();
 
     // TODO please add empty state when design is ready
     if (!transaction) return null;
@@ -44,7 +44,7 @@ export const TransactionDetailScreen = ({
             <TransactionDetailHeader
                 type={transaction.type}
                 amount={cryptoAmountFormatted}
-                fiatAmount={FiatAmountFormatter.format(fiatAmount ?? 0)}
+                fiatAmount={fiatAmount}
             />
             <Box marginVertical="large">
                 <Divider />
