@@ -4,6 +4,7 @@
     "references": [
         { "path": "../fiat-services" },
         { "path": "../redux-utils" },
+        { "path": "../suite-config" },
         { "path": "../suite-utils" },
         { "path": "../test-utils" },
         { "path": "../wallet-config" },

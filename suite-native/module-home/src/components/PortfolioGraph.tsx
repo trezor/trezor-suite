@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-
 import { Graph, TimeSwitch } from '@suite-native/graph';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Box, Text } from '@suite-native/atoms';
 import { Icon } from '@trezor/icons';
+import { selectFiatCurrency } from '@suite-native/module-settings';
 import { useFormatters } from '@suite-common/formatters';
 import {
     getGraphPointsForAccountsThunk,
@@ -20,6 +20,7 @@ export const PortfolioGraph = () => {
     const dispatch = useDispatch();
     const { applyStyle } = useNativeStyles();
     const { FiatAmountFormatter } = useFormatters();
+    const fiatCurrency = useSelector(selectFiatCurrency);
     const graphPoints = useSelector(selectDashboardGraphPoints);
     const [selectedTimeFrame, setSelectedTimeFrame] = useState<LineGraphTimeFrameValues>('day');
 
@@ -27,10 +28,11 @@ export const PortfolioGraph = () => {
         dispatch(
             getGraphPointsForAccountsThunk({
                 section: 'dashboard',
+                fiatCurrency: fiatCurrency.label,
                 timeFrame: selectedTimeFrame,
             }),
         );
-    }, [selectedTimeFrame, dispatch]);
+    }, [selectedTimeFrame, fiatCurrency, dispatch]);
 
     const handleSelectTimeFrame = (timeFrame: LineGraphTimeFrameValues) => {
         setSelectedTimeFrame(timeFrame);

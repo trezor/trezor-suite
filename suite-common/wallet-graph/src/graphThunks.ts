@@ -1,4 +1,10 @@
-import { differenceInMinutes, eachMinuteOfInterval, getUnixTime, subMinutes } from 'date-fns';
+import {
+    differenceInMinutes,
+    eachMinuteOfInterval,
+    getUnixTime,
+    startOfDay,
+    subMinutes,
+} from 'date-fns';
 
 import { createThunk } from '@suite-common/redux-utils';
 import { getBlockbookSafeTime } from '@suite-common/suite-utils';
@@ -6,8 +12,9 @@ import TrezorConnect from '@trezor/connect';
 import { Account } from '@suite-common/wallet-types';
 import { getFiatRatesForTimestamps } from '@suite-common/fiat-services';
 import { selectAccountsByNetworkSymbols } from '@suite-common/wallet-core';
+import { FiatCurrencyCode } from '@suite-common/suite-config';
 
-import { EnhancedAccountBalanceHistory, LineGraphTimeFrameValues } from './types';
+import { EnhancedAccountBalanceHistory, FiatRatesForTime, LineGraphTimeFrameValues } from './types';
 import {
     enhanceBlockchainAccountHistory,
     ensureHistoryRates,
@@ -16,6 +23,7 @@ import {
 import { timeSwitchItems } from './config';
 import { actionPrefix } from './graphActions';
 import { AccountBalanceHistory } from '@trezor/blockchain-link';
+import { LineGraphTimeFrameItem } from '@suite-common/wallet-types/libDev/src/graph';
 
 const sortAccountBalanceHistoryByTimeAsc = (accountBalanceMovements: AccountBalanceHistory[]) => {
     return accountBalanceMovements.sort((a, b) => {
@@ -26,13 +34,13 @@ const sortAccountBalanceHistoryByTimeAsc = (accountBalanceMovements: AccountBala
 const getSuccessAccountBalanceMovements = (
     accountBalanceMovements: Array<EnhancedAccountBalanceHistory | undefined>,
 ) => {
-    const successOldestAccountMovementTime = [];
-    for (let oldestAccountMovement of accountBalanceMovements) {
-        if (oldestAccountMovement?.time) {
-            successOldestAccountMovementTime.push(oldestAccountMovement);
+    const successAccountMovement = [];
+    for (let movement of accountBalanceMovements) {
+        if (movement?.time) {
+            successAccountMovement.push(movement);
         }
     }
-    return successOldestAccountMovementTime;
+    return successAccountMovement;
 };
 
 const fetchAccountsBalanceHistory = async (
@@ -65,13 +73,10 @@ const fetchAccountsBalanceHistory = async (
         }
     });
     const accountBalanceMovements = await Promise.all(promises);
-    const successOldestAccountMovementTime = getSuccessAccountBalanceMovements(
+    const successAccountBalanceMovements = getSuccessAccountBalanceMovements(
         accountBalanceMovements.flat(),
     );
-    const sortedAccountBalanceMovements = sortAccountBalanceHistoryByTimeAsc(
-        successOldestAccountMovementTime,
-    );
-    return sortedAccountBalanceMovements;
+    return sortAccountBalanceHistoryByTimeAsc(successAccountBalanceMovements);
 };
 
 const getOldestAccountBalanceMovement = async (account: Account) => {
@@ -97,16 +102,29 @@ const getOldestAccountBalanceMovementTimestampFromAllAccounts = async (accounts:
     return Math.min(...successOldestAccountMovementTime.map(movement => movement.time));
 };
 
-const getAccountBalanceAtStartOfRange = async (account: Account, startOfRangeDate: Date) => {
+/**
+ * We need to know what is the balance in the beginning of selected graph time frame.
+ * @param account
+ * @param startOfRangeDate
+ */
+const getAccountBalanceAtStartOfRange = async (
+    account: Account,
+    startOfRangeDate: Date,
+): Promise<EnhancedAccountBalanceHistory | undefined> => {
     const oldestAccountBalanceMovement = await getOldestAccountBalanceMovement(account);
     if (oldestAccountBalanceMovement?.time) {
         const oldestAccountBalanceMovementTimestamp = oldestAccountBalanceMovement.time;
+        const oldestAccountBalanceMovementStartOfDay = startOfDay(
+            new Date(oldestAccountBalanceMovementTimestamp * 1000),
+        );
         const accountBalanceHistoryToStartOfRange = await fetchAccountsBalanceHistory([account], {
-            from: getBlockbookSafeTime(getUnixTime(oldestAccountBalanceMovementTimestamp)),
+            from: getBlockbookSafeTime(getUnixTime(oldestAccountBalanceMovementStartOfDay)),
             to: getBlockbookSafeTime(getUnixTime(startOfRangeDate)),
-            groupBy: 3600 * 24, // day
+            groupBy: 3600, // day
         });
-        return accountBalanceHistoryToStartOfRange[accountBalanceHistoryToStartOfRange.length - 1];
+        return accountBalanceHistoryToStartOfRange.length
+            ? accountBalanceHistoryToStartOfRange[accountBalanceHistoryToStartOfRange.length - 1]
+            : oldestAccountBalanceMovement;
     }
 };
 
@@ -123,6 +141,56 @@ const getValueBackInMinutes = async (
     return differenceInMinutes(new Date(), new Date(oldestAccountBalanceChangeUnixTime * 1000));
 };
 
+const getTimeFrameItem = async (
+    timeFrame: LineGraphTimeFrameValues,
+    endOfRangeDate: Date,
+    accounts: Account[],
+) => {
+    const valueBackInMinutes = await getValueBackInMinutes(accounts, timeFrame);
+    const stepInMinutes =
+        timeSwitchItems[timeFrame]?.stepInMinutes ??
+        getLineGraphAllTimeStepInMinutes(endOfRangeDate, valueBackInMinutes);
+
+    return {
+        ...timeSwitchItems[timeFrame],
+        valueBackInMinutes,
+        stepInMinutes,
+    };
+};
+
+const getFiatRatesForTimeFrame = async (
+    timeFrameItem: Required<LineGraphTimeFrameItem>,
+    startOfRangeDate: Date,
+    endOfRangeDate: Date,
+) => {
+    const { stepInMinutes } = timeFrameItem;
+
+    const datesInRange = eachMinuteOfInterval(
+        {
+            start: startOfRangeDate.getTime(),
+            end: endOfRangeDate.getTime(),
+        },
+        {
+            step: stepInMinutes,
+        },
+    );
+    const datesInRangeUnixTime = datesInRange.map(date => getBlockbookSafeTime(getUnixTime(date)));
+
+    // FIXME mobile app currently supports only btc so it is hardcoded for now
+    const fiatRatesForDatesInRange = await getFiatRatesForTimestamps(
+        { symbol: 'btc' },
+        datesInRangeUnixTime,
+    ).then(res =>
+        (res?.tickers || []).map(({ ts, rates }) => {
+            return {
+                time: ts,
+                rates,
+            };
+        }),
+    );
+    return fiatRatesForDatesInRange as FiatRatesForTime;
+};
+
 export const getGraphPointsForSingleAccountThunk = createThunk(
     `${actionPrefix}/getGraphPointsForSingleAccountThunk`,
     async (timeFrame: LineGraphTimeFrameValues, { getState }) => {},
@@ -133,9 +201,11 @@ export const getGraphPointsForAccountsThunk = createThunk(
     async (
         {
             section,
+            fiatCurrency,
             timeFrame,
         }: {
             section: 'dashboard' | 'account';
+            fiatCurrency: FiatCurrencyCode;
             timeFrame: LineGraphTimeFrameValues;
         },
         { getState },
@@ -144,61 +214,48 @@ export const getGraphPointsForAccountsThunk = createThunk(
 
         // FIXME mobile app currently supports only btc so it is hardcoded for now
         const accounts = selectAccountsByNetworkSymbols(getState(), ['btc']);
-
-        const valueBackInMinutes = await getValueBackInMinutes(accounts, timeFrame);
-        const stepInMinutes =
-            timeSwitchItems[timeFrame]?.stepInMinutes ??
-            getLineGraphAllTimeStepInMinutes(endOfRangeDate, valueBackInMinutes);
-
-        const timeFrameItem = {
-            ...timeSwitchItems[timeFrame],
-            valueBackInMinutes,
-            stepInMinutes,
-        };
-
+        const timeFrameItem = await getTimeFrameItem(timeFrame, endOfRangeDate, accounts);
         const startOfRangeDate = subMinutes(endOfRangeDate, timeFrameItem.valueBackInMinutes);
 
-        const datesInRange = eachMinuteOfInterval(
-            {
-                start: startOfRangeDate.getTime(),
-                end: endOfRangeDate.getTime(),
-            },
-            {
-                step: stepInMinutes,
-            },
-        );
-        const datesInRangeUnixTime = datesInRange.map(date =>
-            getBlockbookSafeTime(getUnixTime(date)),
-        );
-
-        // FIXME mobile app currently supports only btc so it is hardcoded for now
-        const fiatRatesForDatesInRange = await getFiatRatesForTimestamps(
-            { symbol: 'btc' },
-            datesInRangeUnixTime,
-        )
-            .then(res => (res?.tickers || []).map(({ ts, rates }) => [ts, rates]))
-            .then(res => Object.fromEntries(res));
-
-        // TODO these are graph points
-        const mappedDatesInRange = Object.keys(fiatRatesForDatesInRange).map(timestamp => {
-            const fiatRates = fiatRatesForDatesInRange[timestamp];
-            return {
-                date: new Date(Number(timestamp) * 1000),
-                value: Math.floor(fiatRates.usd), // FIXME add selected currency
-            };
-        });
-
         // FIXME do not hardcode first account
-        const accountBalanceAtStartOfRange = await getAccountBalanceAtStartOfRange(
+        const accountBalanceRatesAtStartOfRange = await getAccountBalanceAtStartOfRange(
             accounts[0],
             startOfRangeDate,
         );
 
+        console.log(
+            'accountBalanceRatesAtStartOfRange******: ',
+            JSON.stringify(accountBalanceRatesAtStartOfRange),
+        );
+
+        const fiatRatesForTimesInRange = await getFiatRatesForTimeFrame(
+            timeFrameItem,
+            startOfRangeDate,
+            endOfRangeDate,
+        );
+
+        console.log('fiatRatesForDatesInRange******: ', JSON.stringify(fiatRatesForTimesInRange));
+
         // TODO process these account data and merge all data together
-        await fetchAccountsBalanceHistory(accounts, {
+        // FIXME do not hardcode first account
+        const accountsBalanceHistoryInRange = await fetchAccountsBalanceHistory([accounts[0]], {
             from: getBlockbookSafeTime(getUnixTime(startOfRangeDate)),
             to: getBlockbookSafeTime(getUnixTime(endOfRangeDate)),
-            groupBy: stepInMinutes * 60,
+            groupBy: timeFrameItem.stepInMinutes * 60,
+        });
+
+        console.log(
+            'accountsBalanceHistory******: ',
+            JSON.stringify(accountsBalanceHistoryInRange),
+        );
+
+        // TODO these are temporary graph points
+        const mappedDatesInRange = fiatRatesForTimesInRange.map(timestamp => {
+            const fiatRates = timestamp.rates;
+            return {
+                date: new Date(timestamp.time * 1000),
+                value: Math.floor(fiatRates[fiatCurrency]),
+            };
         });
 
         // TODO merge all points together

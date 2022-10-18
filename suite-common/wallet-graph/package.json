@@ -14,6 +14,7 @@
         "@reduxjs/toolkit": "^1.8.3",
         "@suite-common/fiat-services": "*",
         "@suite-common/redux-utils": "*",
+        "@suite-common/suite-config": "*",
         "@suite-common/suite-utils": "*",
         "@suite-common/test-utils": "*",
         "@suite-common/wallet-config": "*",
