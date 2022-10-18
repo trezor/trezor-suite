@@ -46,7 +46,7 @@ export const groupTransactionsByDate = (
     transactions: WalletAccountTransaction[],
 ): { [key: string]: WalletAccountTransaction[] } => {
     const r: { [key: string]: WalletAccountTransaction[] } = {};
-    transactions.sort(sortByBlockHeight).forEach(item => {
+    [...transactions].sort(sortByBlockHeight).forEach(item => {
         let key = 'pending';
         if (item.blockHeight && item.blockHeight > 0 && item.blockTime && item.blockTime > 0) {
             const t = item.blockTime * 1000;
