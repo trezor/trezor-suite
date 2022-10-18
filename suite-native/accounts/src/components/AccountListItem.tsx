@@ -35,7 +35,7 @@ export const AccountListItem = ({ account }: AccountListItemProps) => {
         >
             <Box flexDirection="row">
                 <Box marginRight="small">
-                    <CryptoIcon name="btc" />
+                    <CryptoIcon name={account.symbol} />
                 </Box>
                 <Text color="gray800">{accountLabel}</Text>
             </Box>

@@ -26,21 +26,25 @@ export const connectInitThunk = createThunk(
 
         // set event listeners and dispatch as
         TrezorConnect.on(DEVICE_EVENT, ({ event: _, ...action }) => {
+            console.log('TrezorConnectOn: device event', action);
             // dispatch event as action
             dispatch(action);
         });
 
         TrezorConnect.on(UI_EVENT, ({ event: _, ...action }) => {
+            console.log('TrezorConnectOn: ui event', action);
             // dispatch event as action
             dispatch(action);
         });
 
         TrezorConnect.on(TRANSPORT_EVENT, ({ event: _, ...action }) => {
+            console.log('TrezorConnectOn: transport event', action);
             // dispatch event as action
             dispatch(action);
         });
 
         TrezorConnect.on(BLOCKCHAIN_EVENT, ({ event: _, ...action }) => {
+            console.log('TrezorConnectOn: blockchain event', action);
             // dispatch event as action
             dispatch(action);
         });
