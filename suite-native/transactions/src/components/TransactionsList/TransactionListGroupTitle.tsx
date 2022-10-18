@@ -14,11 +14,12 @@ const dateTextStyle = prepareNativeStyle(_ => ({
 
 export const TransactionListGroupTitle = ({ dateKey }: TransactionListGroupProps) => {
     const { applyStyle } = useNativeStyles();
-    const parsedDate = parseDateKey(dateKey).toLocaleDateString();
+    const sectionTitle =
+        dateKey === 'pending' ? 'Pending' : parseDateKey(dateKey).toLocaleDateString();
 
     return (
         <Text color="gray600" variant="hint" style={applyStyle(dateTextStyle)}>
-            {parsedDate}
+            {sectionTitle}
         </Text>
     );
 };

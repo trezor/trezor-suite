@@ -78,7 +78,7 @@ export const TransactionList = ({
 
     const renderSectionHeader = useCallback(
         ({ section: { dateKey } }: RenderSectionHeaderParams) => (
-            <TransactionListGroupTitle dateKey={dateKey} key={dateKey} />
+            <TransactionListGroupTitle key={dateKey} dateKey={dateKey} />
         ),
         [],
     );
