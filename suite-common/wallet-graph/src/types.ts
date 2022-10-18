@@ -1,5 +1,6 @@
 import { BlockchainAccountBalanceHistory } from '@trezor/connect';
 import { NetworkSymbol } from '@suite-common/wallet-config';
+import { AccountBalanceHistory } from '@trezor/blockchain-link/libDev/src';
 
 export interface AccountHistoryWithBalance extends BlockchainAccountBalanceHistory {
     balance: string;
@@ -75,3 +76,7 @@ type LineGraphTimeFrameItem = {
 };
 
 export type LineGraphTimeFrameItems = Record<LineGraphTimeFrameValues, LineGraphTimeFrameItem>;
+
+export interface EnhancedAccountBalanceHistory extends AccountBalanceHistory {
+    balance?: string;
+}

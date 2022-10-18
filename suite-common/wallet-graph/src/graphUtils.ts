@@ -23,6 +23,7 @@ import {
     GraphData,
     CommonAggregatedHistory,
     GraphScale,
+    EnhancedAccountBalanceHistory,
 } from './types';
 
 type FiatRates = NonNullable<CoinFiatRates['current']>['rates'];
@@ -460,7 +461,7 @@ export const ensureHistoryRates = async (
 export const enhanceBlockchainAccountHistory = (
     data: BlockchainAccountBalanceHistory[],
     symbol: Account['symbol'],
-) => {
+): EnhancedAccountBalanceHistory[] => {
     let balance = '0';
     const enhancedResponse = data.map(dataPoint => {
         // subtract sentToSelf field as we don't want to include amounts received/sent to the same account
