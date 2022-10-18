@@ -33,10 +33,10 @@ const Description = styled.span`
     font-size: ${variables.FONT_SIZE.NORMAL};
     font-weight: 500;
     text-align: center;
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
 
-const StyledImage = styled(props => <Image {...props} />)`
+const StyledImage = styled(Image)`
     width: 85px;
     height: 80px;
     margin-top: 60px;
@@ -61,79 +61,85 @@ const ActionButton = styled(Button)`
 const Divider = styled.div`
     width: 100%;
     height: 1px;
-    background: ${props => props.theme.STROKE_GREY};
+    background: ${({ theme }) => theme.STROKE_GREY};
     margin: 30px 0px 36px 0px;
 `;
 
-interface Props {
+interface AccountEmptyProps {
     account: Account;
 }
 
-const AccountEmpty = (props: Props) => {
+export const AccountEmpty = (props: AccountEmptyProps) => {
     const { bech32BannerClosed, taprootBannerClosed } = useSelector(state => state.suite.flags);
+
     const { goto, setFlag } = useActions({
         goto: routerActions.goto,
         setFlag: suiteActions.setFlag,
     });
+
     const bip43 = getBip43Type(props.account.path);
     const networkSymbol = props.account.symbol.toUpperCase();
+
+    const handleNavigateToReceivePage = () => {
+        goto('wallet-receive', { preserveParams: true });
+        analytics.report({
+            type: EventType.AccountsEmptyAccountReceive,
+            payload: {
+                symbol: networkSymbol.toLowerCase(),
+            },
+        });
+    };
+
+    const handleNavigateToBuyPage = () => {
+        goto('wallet-coinmarket-buy', { preserveParams: true });
+
+        analytics.report({
+            type: EventType.AccountsEmptyAccountBuy,
+            payload: {
+                symbol: networkSymbol.toLowerCase(),
+            },
+        });
+    };
 
     return (
         <Wrapper>
             {bip43 === 'bip84' && !bech32BannerClosed && (
-                <Bech32Banner
-                    onClose={() => {
-                        setFlag('bech32BannerClosed', true);
-                    }}
-                />
+                <Bech32Banner onClose={() => setFlag('bech32BannerClosed', true)} />
             )}
+
             {bip43 === 'bip86' && !taprootBannerClosed && (
-                <TaprootBanner
-                    onClose={() => {
-                        setFlag('taprootBannerClosed', true);
-                    }}
-                />
+                <TaprootBanner onClose={() => setFlag('taprootBannerClosed', true)} />
             )}
+
             <StyledCard>
                 <StyledImage image="CLOUDY" />
+
                 <Title>
                     <Translation id="TR_ACCOUNT_IS_EMPTY_TITLE" />
                 </Title>
+
                 <Description>
                     <Translation
                         id="TR_ACCOUNT_IS_EMPTY_DESCRIPTION"
                         values={{ network: networkSymbol }}
                     />
                 </Description>
+
                 <Divider />
+
                 <Actions>
                     <ActionButton
                         data-test="@accounts/empty-account/receive"
                         variant="secondary"
-                        onClick={() => {
-                            goto('wallet-receive', { preserveParams: true });
-                            analytics.report({
-                                type: EventType.AccountsEmptyAccountReceive,
-                                payload: {
-                                    symbol: networkSymbol.toLowerCase(),
-                                },
-                            });
-                        }}
+                        onClick={handleNavigateToReceivePage}
                     >
                         <Translation id="TR_RECEIVE_NETWORK" values={{ network: networkSymbol }} />
                     </ActionButton>
+
                     <ActionButton
                         data-test="@accounts/empty-account/buy"
                         variant="primary"
-                        onClick={() => {
-                            goto('wallet-coinmarket-buy', { preserveParams: true });
-                            analytics.report({
-                                type: EventType.AccountsEmptyAccountBuy,
-                                payload: {
-                                    symbol: networkSymbol.toLowerCase(),
-                                },
-                            });
-                        }}
+                        onClick={handleNavigateToBuyPage}
                     >
                         <Translation id="TR_BUY_NETWORK" values={{ network: networkSymbol }} />
                     </ActionButton>
@@ -142,5 +148,3 @@ const AccountEmpty = (props: Props) => {
         </Wrapper>
     );
 };
-
-export default AccountEmpty;

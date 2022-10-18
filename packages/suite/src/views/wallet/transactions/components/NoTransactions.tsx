@@ -5,13 +5,14 @@ import { Translation, TrezorLink } from '@suite-components';
 import { Account } from '@wallet-types';
 import { getNetwork } from '@suite-common/wallet-utils';
 
-interface Props {
+interface NoTransactionsProps {
     account: Account;
 }
 
-const NoTransactions = ({ account }: Props) => {
+export const NoTransactions = ({ account }: NoTransactionsProps) => {
     const network = getNetwork(account.symbol)!;
     const explorerUrl = `${network.explorer.account}${account.descriptor}`;
+
     return (
         <AccountExceptionLayout
             title={<Translation id="TR_TRANSACTIONS_NOT_AVAILABLE" />}
@@ -26,5 +27,3 @@ const NoTransactions = ({ account }: Props) => {
         />
     );
 };
-
-export default NoTransactions;
