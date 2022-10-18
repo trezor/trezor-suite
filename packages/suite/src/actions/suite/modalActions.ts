@@ -2,7 +2,7 @@ import TrezorConnect, { UI } from '@trezor/connect';
 import { createDeferred, Deferred, DeferredResponse } from '@trezor/utils';
 import { MODAL, SUITE } from '@suite-actions/constants';
 import { Route, Dispatch, GetState, TrezorDevice } from '@suite-types';
-import { Account, WalletAccountTransaction } from '@wallet-types';
+import { Account, NetworkSymbol, WalletAccountTransaction } from '@wallet-types';
 
 export type UserContextPayload =
     | {
@@ -140,7 +140,7 @@ export type UserContextPayload =
     | {
           type: 'access-coinjoin-account';
           decision: Deferred<boolean>;
-          network: Account['symbol'];
+          networkSymbol: NetworkSymbol;
       }
     | {
           type: 'cancel-coinjoin';

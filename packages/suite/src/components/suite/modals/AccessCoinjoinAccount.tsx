@@ -73,9 +73,9 @@ type AccessCoinjoinAccountProps = Omit<
 export const AccessCoinjoinAccount = ({
     onCancel,
     decision,
-    network,
+    networkSymbol,
 }: AccessCoinjoinAccountProps) => {
-    const { percentageFee } = getCoinjoinConfig(network);
+    const { percentageFee } = getCoinjoinConfig(networkSymbol);
     const [step, setStep] = useState(Steps.INITIAL);
 
     const onContinue = () => {

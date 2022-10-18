@@ -5,28 +5,22 @@ import { useSelector } from '@suite-hooks';
 import { AppState } from '@suite-types';
 import { CoinjoinSummary } from '@wallet-components/CoinjoinSummary';
 import { selectIsLoadingTransactions } from '@suite-common/wallet-core';
+import { SummaryHeader as CoinjoinSummaryHeader } from '@wallet-components/CoinjoinSummary/SummaryHeader';
 
 import { NoTransactions } from './components/NoTransactions';
 import { AccountEmpty } from './components/AccountEmpty';
+import { CoinjoinAccountEmpty } from './components/CoinjoinAccountEmpty';
 import { TransactionList } from './components/TransactionList';
 import { TransactionSummary } from './components/TransactionSummary';
 
-interface ContentProps {
+interface LayoutProps {
     selectedAccount: AppState['wallet']['selectedAccount'];
     children?: React.ReactNode;
     showEmptyHeaderPlaceholder?: boolean;
-    showSummary?: boolean;
 }
 
-const Content = ({
-    selectedAccount,
-    showSummary,
-    showEmptyHeaderPlaceholder = false,
-    children,
-}: ContentProps) => {
+const Layout = ({ selectedAccount, showEmptyHeaderPlaceholder = false, children }: LayoutProps) => {
     if (selectedAccount.status !== 'loaded') return null;
-
-    const { account } = selectedAccount;
 
     return (
         <WalletLayout
@@ -34,13 +28,6 @@ const Content = ({
             account={selectedAccount}
             showEmptyHeaderPlaceholder={showEmptyHeaderPlaceholder}
         >
-            {showSummary &&
-                account.networkType !== 'ripple' &&
-                account.accountType !== 'coinjoin' && <TransactionSummary account={account} />}
-            {showSummary && account.accountType === 'coinjoin' && (
-                <CoinjoinSummary account={account} />
-            )}
-
             {children}
         </WalletLayout>
     );
@@ -60,32 +47,50 @@ const Transactions = () => {
     const { account } = selectedAccount;
 
     const accountTransactions = getAccountTransactions(account.key, transactions.transactions);
+    const isCoinjoinAccount = account.accountType === 'coinjoin';
 
     if (accountTransactions.length > 0 || transactionsIsLoading) {
         return (
-            <Content selectedAccount={selectedAccount} showSummary>
+            <Layout selectedAccount={selectedAccount}>
+                {account.networkType !== 'ripple' && account.accountType !== 'coinjoin' && (
+                    <TransactionSummary account={account} />
+                )}
+
+                {isCoinjoinAccount && <CoinjoinSummary account={account} />}
+
                 <TransactionList
                     account={account}
                     transactions={accountTransactions}
                     symbol={account.symbol}
                     isLoading={transactionsIsLoading}
                 />
-            </Content>
+            </Layout>
         );
     }
 
     if (account.empty) {
         return (
-            <Content selectedAccount={selectedAccount} showEmptyHeaderPlaceholder>
-                <AccountEmpty account={selectedAccount.account} />
-            </Content>
+            <Layout
+                selectedAccount={selectedAccount}
+                showEmptyHeaderPlaceholder={!isCoinjoinAccount}
+            >
+                {isCoinjoinAccount ? (
+                    <>
+                        <CoinjoinSummaryHeader />
+                        <CoinjoinAccountEmpty account={selectedAccount.account} />
+                    </>
+                ) : (
+                    <AccountEmpty account={selectedAccount.account} />
+                )}
+            </Layout>
         );
     }
 
     return (
-        <Content selectedAccount={selectedAccount} showEmptyHeaderPlaceholder>
+        <Layout selectedAccount={selectedAccount} showEmptyHeaderPlaceholder={!isCoinjoinAccount}>
+            {isCoinjoinAccount && <CoinjoinSummaryHeader />}
             <NoTransactions account={account} />
-        </Content>
+        </Layout>
     );
 };
 
