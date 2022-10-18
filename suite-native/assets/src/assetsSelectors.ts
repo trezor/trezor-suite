@@ -7,6 +7,7 @@ import { toFiatCurrency } from '@suite-common/wallet-utils';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 
 type Assets = Partial<Record<NetworkSymbol, string[]>>;
+type FormattedAssets = Partial<Record<NetworkSymbol, BigNumber>>;
 
 interface AssetType {
     symbol: NetworkSymbol;
@@ -15,21 +16,34 @@ interface AssetType {
     fiatBalance: string;
 }
 
-export const selectBalancesPerNetwork = createSelector(selectAccounts, (accounts): Assets => {
-    const assets: Assets = {};
-    accounts.forEach(account => {
-        if (!assets[account.symbol]) {
-            assets[account.symbol] = [];
-        }
-        assets[account.symbol]?.push(account.formattedBalance);
-    });
+const formatBalance = (balances: string[]): BigNumber =>
+    balances.reduce((prev, balance) => prev.plus(balance), new BigNumber(0));
 
-    return assets;
-});
+export const selectBalancesPerNetwork = createSelector(
+    selectAccounts,
+    (accounts): FormattedAssets => {
+        const assets: Assets = {};
+        accounts.forEach(account => {
+            if (!assets[account.symbol]) {
+                assets[account.symbol] = [];
+            }
+            assets[account.symbol]?.push(account.formattedBalance);
+        });
+
+        const formattedNetworkAssets: FormattedAssets = {};
+        const assetKeys = Object.keys(assets) as NetworkSymbol[];
+        assetKeys.forEach((asset: NetworkSymbol) => {
+            const balances = assets[asset] ?? [];
+            formattedNetworkAssets[asset] = formatBalance(balances);
+        });
+
+        return formattedNetworkAssets;
+    },
+);
 
 export const selectNetworksWithAssets = createSelector(
     selectBalancesPerNetwork,
-    (assets: Assets): NetworkSymbol[] => Object.keys(assets) as NetworkSymbol[],
+    (assets: FormattedAssets): NetworkSymbol[] => Object.keys(assets) as NetworkSymbol[],
 );
 
 export const selectAssetsWithBalances = createSelector(
@@ -39,11 +53,11 @@ export const selectAssetsWithBalances = createSelector(
         selectCoins,
         (_state, fiatCurrency: FiatCurrencyCode) => fiatCurrency,
     ],
-    (networks, assets, coins, fiatCurrency): AssetType[] =>
+    (networks, formattedAssets, coins, fiatCurrency): AssetType[] =>
         networks
-            .map((symbol: NetworkSymbol) => {
+            .map((networkSymbol: NetworkSymbol) => {
                 const network = networksCompatibility.find(
-                    n => n.symbol === symbol && !n.accountType,
+                    n => n.symbol === networkSymbol && !n.accountType,
                 );
                 if (!network) {
                     console.error('unknown network');
@@ -51,29 +65,23 @@ export const selectAssetsWithBalances = createSelector(
                 }
 
                 const currentFiatRates = coins.find(
-                    f => f.symbol.toLowerCase() === symbol.toLowerCase(),
+                    f => f.symbol.toLowerCase() === networkSymbol.toLowerCase(),
                 )?.current;
-
-                const assetBalance = assets[symbol]?.reduce(
-                    (prev, formattedBalance) => prev.plus(formattedBalance),
-                    new BigNumber(0),
-                );
 
                 // Note: This shouldn't be happening in a selector but rather in component itself.
                 // In future, we will probably have something like `CryptoAmountToFiatFormatter` in component just using value sent from this selector.
-                const fiatBalance = toFiatCurrency(
-                    assetBalance?.toString() ?? '0',
-                    fiatCurrency,
-                    currentFiatRates?.rates,
-                );
-
-                if (!assetBalance) return;
+                const fiatBalance =
+                    toFiatCurrency(
+                        formattedAssets[networkSymbol]?.toString() ?? '0',
+                        fiatCurrency,
+                        currentFiatRates?.rates,
+                    ) ?? '0';
 
                 const asset: AssetType = {
-                    symbol,
+                    symbol: networkSymbol,
                     network,
-                    assetBalance,
-                    fiatBalance: fiatBalance ?? '0',
+                    assetBalance: formattedAssets[networkSymbol] ?? new BigNumber(0),
+                    fiatBalance,
                 };
                 return asset;
             })
