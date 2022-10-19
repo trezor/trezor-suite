@@ -2,11 +2,12 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, SectionList } from 'react-native';
 import { useSelector } from 'react-redux';
 
-import { useNativeStyles } from '@trezor/styles';
+import { useNativeStyles, prepareNativeStyle } from '@trezor/styles';
 import { WalletAccountTransaction } from '@suite-common/wallet-types';
 import { groupTransactionsByDate } from '@suite-common/wallet-utils';
 import { selectIsLoadingTransactions } from '@suite-common/wallet-core';
-import { Text } from '@suite-native/atoms';
+import { Text, Box } from '@suite-native/atoms';
+import { TAB_BAR_HEIGHT } from '@suite-native/navigation';
 
 import { TransactionListGroupTitle } from './TransactionListGroupTitle';
 import { TransactionListItem } from './TransactionListItem';
@@ -19,12 +20,16 @@ type AccountTransactionProps = {
 
 export const TX_PER_PAGE = 25;
 
+const listWrapperStyle = prepareNativeStyle(_ => ({
+    paddingBottom: TAB_BAR_HEIGHT,
+}));
+
 export const TransactionList = ({
     transactions,
     listHeaderComponent,
     fetchMoreTransactions,
 }: AccountTransactionProps) => {
-    const { utils } = useNativeStyles();
+    const { applyStyle, utils } = useNativeStyles();
     const isLoadingTransactions = useSelector(selectIsLoadingTransactions);
     const accountTransactionsByDate = useMemo(
         () => groupTransactionsByDate(transactions),
@@ -87,14 +92,17 @@ export const TransactionList = ({
         // TODO Temporary loading state just so it's visible that transactions are loading
         return <ActivityIndicator size="large" color={utils.colors.forest} />;
 
+
     return (
-        <SectionList
-            sections={sectionsData}
-            renderSectionHeader={renderSectionHeader}
-            renderItem={renderItem}
-            ListHeaderComponent={listHeaderComponent}
-            ListEmptyComponent={<Text>No transactions.</Text>}
-            onEndReached={handleOnEndReached}
-        />
+        <Box style={applyStyle(listWrapperStyle)}>
+            <SectionList
+                sections={sectionsData}
+                renderSectionHeader={renderSectionHeader}
+                renderItem={renderItem}
+                ListHeaderComponent={listHeaderComponent}
+                ListEmptyComponent={<Text>No transactions.</Text>}
+                onEndReached={handleOnEndReached}
+            />
+        </Box>
     );
 };
