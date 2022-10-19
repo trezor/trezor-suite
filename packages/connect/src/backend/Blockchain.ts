@@ -38,8 +38,8 @@ export type BlockchainOptions = {
     proxy?: Proxy;
     onionDomains?: { [domain: string]: string };
     debug?: boolean;
-    onConnected?: (coinInfo: CoinInfo, url: string) => void;
-    onDisconnected?: (blockchain: Blockchain) => void;
+    onConnected?: (url: string) => void;
+    onDisconnected?: () => void;
 };
 
 export class Blockchain {
@@ -112,7 +112,7 @@ export class Blockchain {
                 code: error.code,
             }),
         );
-        this.onDisconnected?.(this);
+        this.onDisconnected?.();
     }
 
     async init() {
@@ -130,7 +130,7 @@ export class Blockchain {
             // find clean domain for current connection
             const cleanUrl = this.onionDomains[info.url];
 
-            this.onConnected?.(this.coinInfo, cleanUrl || info.url);
+            this.onConnected?.(cleanUrl || info.url);
 
             this.postMessage(
                 createBlockchainMessage(BLOCKCHAIN.CONNECT, {
