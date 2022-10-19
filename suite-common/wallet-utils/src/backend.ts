@@ -17,10 +17,11 @@ export const getBackendFromSettings = (
     settings?: BackendSettings,
 ): CustomBackend => {
     const type = settings?.selected ?? getDefaultBackendType(coin);
+    const urls = (settings?.selected && settings?.urls?.[type]) ?? [];
     return {
         coin,
         type,
-        urls: settings?.urls?.[type] ?? [],
+        urls,
     };
 };
 
