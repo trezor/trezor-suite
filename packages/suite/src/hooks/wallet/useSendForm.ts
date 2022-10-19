@@ -7,8 +7,8 @@ import * as sendFormActions from '@wallet-actions/sendFormActions';
 import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
 import * as routerActions from '@suite-actions/routerActions';
 import * as protocolActions from '@suite-actions/protocolActions';
-import { UseSendFormState, FormState, SendContextValues, Output } from '@wallet-types/sendForm';
 import { AppState } from '@suite-types';
+import { FormState, Output, SendContextValues, UseSendFormState } from '@wallet-types/sendForm';
 
 import {
     getFeeLevels,
@@ -68,9 +68,11 @@ const getStateFromProps = (props: UseSendFormProps) => {
         const coinjoinSession = props.coinjoinAccount?.session;
         const targetAnonymity = props.coinjoinAccount?.targetAnonymity || 1;
         const anonymitySet = account.addresses?.anonymitySet || {};
-        account.utxo?.forEach(utxo => {
+        account.utxo?.forEach((utxo, i) => {
             const outpoint = getUtxoOutpoint(utxo);
-            const anonymity = anonymitySet[utxo.address] || 1;
+            // uncomment to mock the first address having higher anonymity for testing purposes
+            const anonymity = i === 0 ? 80 : anonymitySet[utxo.address] || 1;
+            // const anonymity = anonymitySet[utxo.address] || 1;
             if (coinjoinSession && coinjoinSession.registeredUtxos.includes(outpoint)) {
                 // utxo is registered in coinjoin
                 excludedUtxos[outpoint] = 'mixing';
@@ -150,8 +152,6 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
         control,
         name: 'outputs',
     });
-
-    const { souldSendInSats } = useBitcoinAmountUnit(props.selectedAccount.account.symbol);
 
     // enhance DEFAULT_VALUES with last remembered FeeLevel and localCurrencyOption
     // used in "loadDraft" useEffect and "importTransaction" callback
@@ -236,9 +236,12 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
         account: state.account,
         composedLevels,
         composeRequest,
+        excludedUtxos: state.excludedUtxos,
         feeInfo: state.feeInfo,
         ...useFormMethods,
     });
+
+    const { shouldSendInSats } = useBitcoinAmountUnit(props.selectedAccount.account.symbol);
 
     const resetContext = useCallback(() => {
         setComposedLevels(undefined);
@@ -313,7 +316,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
             if (protocol.sendForm.amount) {
                 const protocolAmount = protocol.sendForm.amount.toString();
 
-                const formattedAmount = souldSendInSats
+                const formattedAmount = shouldSendInSats
                     ? amountToSatoshi(protocolAmount, state.network.decimals)
                     : protocolAmount;
 
@@ -337,7 +340,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
         updateContext,
         sendFormUtils,
         composeRequest,
-        souldSendInSats,
+        shouldSendInSats,
         state.network.decimals,
     ]);
 
@@ -377,7 +380,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
     useDidUpdate(() => {
         const { outputs } = getValues();
 
-        const conversionToUse = souldSendInSats ? amountToSatoshi : formatAmount;
+        const conversionToUse = shouldSendInSats ? amountToSatoshi : formatAmount;
 
         outputs.forEach((output, index) => {
             if (!output.amount) {
@@ -388,7 +391,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
         });
 
         composeRequest();
-    }, [souldSendInSats]);
+    }, [shouldSendInSats]);
 
     return {
         ...state,

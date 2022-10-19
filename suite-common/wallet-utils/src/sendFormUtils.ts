@@ -1,10 +1,11 @@
-import { FieldError, UseFormMethods } from 'react-hook-form';
+import { DeepMap, FieldError, UseFormMethods } from 'react-hook-form';
 
 import BigNumber from 'bignumber.js';
 import Common, { Chain, Hardfork } from '@ethereumjs/common';
 import { Transaction, TxData } from '@ethereumjs/tx';
 import { fromWei, padLeft, toHex, toWei } from 'web3-utils';
 
+import { TypedFieldError } from '@suite-common/wallet-types';
 import { FIAT } from '@suite-common/suite-config';
 import { isFeatureFlagEnabled } from '@suite-common/suite-utils';
 import { Network } from '@suite-common/wallet-config';
@@ -195,6 +196,18 @@ export const getInputState = (error?: FieldError, value?: string) => {
     if (value && value.length > 0 && !error) {
         return 'success';
     }
+};
+
+export const isLowAnonymityWarning = (
+    outputErrors?: DeepMap<Output, FieldError> | (DeepMap<Output, FieldError> | undefined)[],
+) => {
+    const isLowAnonymityMessage = (error?: DeepMap<Output, FieldError>) =>
+        ((error?.amount as TypedFieldError)?.message as { id: string })?.id === // TODO: type message as ExtendedMessageDescriptor after https://github.com/trezor/trezor-suite/pull/5647 is merged
+        'TR_NOT_ENOUGH_ANONYMIZED_FUNDS_WARNING';
+
+    return Array.isArray(outputErrors)
+        ? outputErrors?.some(isLowAnonymityMessage)
+        : isLowAnonymityMessage(outputErrors);
 };
 
 export const getFiatRate = (fiatRates: CoinFiatRates | undefined, currency: string) => {

@@ -1,11 +1,12 @@
-import { useEffect, useMemo, useCallback } from 'react';
+import { useEffect, useMemo } from 'react';
 import { UseFormMethods } from 'react-hook-form';
 
 import { UseSendFormState } from '@suite-common/wallet-types';
 import type { AccountUtxo, PROTO } from '@trezor/connect';
+import { getUtxoOutpoint } from '@suite-common/wallet-utils';
 
 type Props = UseFormMethods &
-    Pick<UseSendFormState, 'account' | 'composedLevels' | 'feeInfo'> & {
+    Pick<UseSendFormState, 'account' | 'composedLevels' | 'excludedUtxos' | 'feeInfo'> & {
         composeRequest: (field?: string) => void;
     };
 
@@ -13,6 +14,7 @@ export const useUtxoSelection = ({
     account,
     composedLevels,
     composeRequest,
+    excludedUtxos,
     feeInfo,
     register,
     setValue,
@@ -22,25 +24,21 @@ export const useUtxoSelection = ({
     useEffect(() => {
         register({ name: 'isCoinControlEnabled', type: 'custom' });
         register({ name: 'selectedUtxos', type: 'custom' });
+        register({ name: 'anonymityWarningChecked', type: 'custom' });
     }, [register]);
 
     // has coin control been enabled manually?
     const isCoinControlEnabled = watch('isCoinControlEnabled');
-
-    // manually selected UTXOs
-    const selectedUtxos: AccountUtxo[] = useMemo(() => watch('selectedUtxos') || [], [watch]);
-
     // fee level
     const selectedFee = watch('selectedFee');
+    // confirmation of spending low-anonymity UTXOs - only relevant for coinjoin account
+    const anonymityWarningChecked = watch('anonymityWarningChecked');
+    // manually selected UTXOs
+    const selectedUtxos: AccountUtxo[] = watch('selectedUtxos') || [];
 
     // is the UTXO manually selected?
-    const isSelected = useCallback(
-        (utxo: AccountUtxo) =>
-            selectedUtxos.some(
-                selected => selected.txid === utxo.txid && selected.vout === utxo.vout,
-            ),
-        [selectedUtxos],
-    );
+    const isSelected = (utxo: AccountUtxo) =>
+        selectedUtxos.some(selected => selected.txid === utxo.txid && selected.vout === utxo.vout);
 
     // split all UTXOs into two arrays based on their value to separate UTXOs that do not excceed the dust limit
     const [spendableUtxos, dustUtxos]: [AccountUtxo[], AccountUtxo[]] = account.utxo
@@ -77,8 +75,23 @@ export const useUtxoSelection = ({
         [account.utxo, composedInputs],
     );
 
+    // at least one of the selected UTXOs does not comply to targe anonymity
+    const isLowAnonymityUtxoSelected =
+        account.accountType === 'coinjoin' &&
+        selectedUtxos.some(
+            selectedUtxo => excludedUtxos[getUtxoOutpoint(selectedUtxo)] === 'low-anonymity',
+        );
+
+    // uncheck the confirmation checkbox whenever it is hidden
+    if (!isLowAnonymityUtxoSelected && anonymityWarningChecked) {
+        setValue('anonymityWarningChecked', false);
+    }
+
+    const toggleAnonymityWarning = () =>
+        setValue('anonymityWarningChecked', !anonymityWarningChecked);
+
     // uncheck all UTXOs or check all spendable UTXOs and enable coin control
-    const toggleCheckAllUtxos = useCallback(() => {
+    const toggleCheckAllUtxos = () => {
         if (allUtxosSelected) {
             setValue('selectedUtxos', []);
         } else {
@@ -86,7 +99,7 @@ export const useUtxoSelection = ({
             setValue('isCoinControlEnabled', true);
         }
         composeRequest();
-    }, [allUtxosSelected, dustUtxos, isSelected, spendableUtxos, setValue, composeRequest]);
+    };
 
     // enable coin control or disable it and reset selected UTXOs
     const toggleCoinControl = () => {
@@ -122,11 +135,14 @@ export const useUtxoSelection = ({
 
     return {
         allUtxosSelected,
+        anonymityWarningChecked,
         composedInputs,
         dustUtxos,
         isCoinControlEnabled,
+        isLowAnonymityUtxoSelected,
         selectedUtxos,
         spendableUtxos,
+        toggleAnonymityWarning,
         toggleCheckAllUtxos,
         toggleCoinControl,
         toggleUtxoSelection,

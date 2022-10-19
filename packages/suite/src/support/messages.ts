@@ -7553,4 +7553,45 @@ export default defineMessages({
         id: 'TR_ANONYMITY_LEVEL_BAD_WARNING',
         defaultMessage: 'We recommend a minimum "1 in 5" anonymity level',
     },
+    TR_NOT_ENOUGH_ANONYMIZED_FUNDS_WARNING: {
+        id: 'TR_NOT_ENOUGH_ANONYMIZED_FUNDS',
+        description: 'Warning in coinjoin send form',
+        defaultMessage:
+            'Not enough anonymized funds{br}Either anonymize more funds, or lower the anonymity level at your own risk',
+    },
+    TR_BREAKING_ANONYMITY_CHECKBOX: {
+        id: 'TR_BREAKING_ANONYMITY_CHECKBOX',
+        description: 'Checkbox in coinjoin send form',
+        defaultMessage: "I understand I'm breaking my anonymity",
+    },
+    TR_NOT_ENOUGH_ANONYMIZED_FUNDS_TOOLTIP: {
+        id: 'TR_NOT_ENOUGH_ANONYMIZED_FUNDS_TOOLTIP',
+        description: 'Tooltip in coinjoin send form',
+        defaultMessage: 'You can:',
+    },
+    TR_ANONYMIZATION_OPTION_1: {
+        id: 'TR_ANONYMIZATION_OPTION_1',
+        description: 'Tooltip in coinjoin send form',
+        defaultMessage: 'Anonymize more coins',
+    },
+    TR_ANONYMIZATION_OPTION_2: {
+        id: 'TR_ANONYMIZATION_OPTION_2',
+        description: 'Tooltip in coinjoin send form',
+        defaultMessage: 'Select UTXOs in <button>Coin Control</button>',
+    },
+    TR_ANONYMIZATION_OPTION_3: {
+        id: 'TR_ANONYMIZATION_OPTION_3',
+        description: 'Tooltip in coinjoin send form',
+        defaultMessage: 'Reduce anonymity level',
+    },
+    TR_NOT_ENOUGH_ANONYMIZED_FUNDS: {
+        id: 'TR_NOT_ENOUGH_ANONYMIZED_FUNDS',
+        description: 'Secondary button text in coinjoin sed form',
+        defaultMessage: 'Not enough anonymized funds',
+    },
+    TR_YOU_SHOULD_ANONYMIZE: {
+        id: 'TR_YOU_SHOULD_ANONYMIZE',
+        description: 'Secondary button text in coinjoin sed form',
+        defaultMessage: 'You should anonymize them',
+    },
 });

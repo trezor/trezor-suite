@@ -13,6 +13,7 @@ import {
     getInputState,
     getFiatRate,
     findToken,
+    isLowAnonymityWarning,
     amountToSatoshi,
     formatAmount,
     buildCurrencyOptions,
@@ -48,7 +49,7 @@ export const Fiat = ({ output, outputId }: Props) => {
         composeTransaction,
     } = useSendFormContext();
 
-    const { souldSendInSats } = useBitcoinAmountUnit(account.symbol);
+    const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
 
     const inputName = `outputs[${outputId}].fiat`;
     const currencyInputName = `outputs[${outputId}].currency`;
@@ -70,6 +71,10 @@ export const Fiat = ({ output, outputId }: Props) => {
     // or as a result on composeTransaction process
     const amountError = outputError ? outputError.amount : undefined;
     const errorToDisplay = !error && fiatValue && amountError ? amountError : error;
+
+    const isLowAnonymity = isLowAnonymityWarning(outputError);
+    const inputState = isLowAnonymity ? 'warning' : getInputState(errorToDisplay, fiatValue);
+    const bottomText = isLowAnonymity ? null : <InputError error={errorToDisplay} />;
 
     const handleChange = useCallback(
         (event: ChangeEvent<HTMLInputElement>) => {
@@ -105,7 +110,7 @@ export const Fiat = ({ output, outputId }: Props) => {
                       )
                     : null;
 
-            const formattedAmount = souldSendInSats
+            const formattedAmount = shouldSendInSats
                 ? amountToSatoshi(amount || '0', decimals)
                 : amount;
 
@@ -131,7 +136,7 @@ export const Fiat = ({ output, outputId }: Props) => {
             network.decimals,
             setValue,
             token,
-            souldSendInSats,
+            shouldSendInSats,
         ],
     );
 
@@ -159,7 +164,9 @@ export const Fiat = ({ output, outputId }: Props) => {
                     const amountValue = getDefaultValue(amountInputName, '');
 
                     const formattedAmount = new BigNumber(
-                        souldSendInSats ? formatAmount(amountValue, network.decimals) : amountValue,
+                        shouldSendInSats
+                            ? formatAmount(amountValue, network.decimals)
+                            : amountValue,
                     );
 
                     if (
@@ -187,7 +194,7 @@ export const Fiat = ({ output, outputId }: Props) => {
             getDefaultValue,
             inputName,
             setValue,
-            souldSendInSats,
+            shouldSendInSats,
             network.decimals,
         ],
     );
@@ -195,7 +202,7 @@ export const Fiat = ({ output, outputId }: Props) => {
     return (
         <Wrapper>
             <Input
-                inputState={getInputState(errorToDisplay, fiatValue)}
+                inputState={inputState}
                 isMonospace
                 onChange={handleChange}
                 name={inputName}
@@ -223,7 +230,7 @@ export const Fiat = ({ output, outputId }: Props) => {
                         }
                     },
                 })}
-                bottomText={<InputError error={errorToDisplay} />}
+                bottomText={bottomText}
                 innerAddon={
                     <Controller
                         control={control}

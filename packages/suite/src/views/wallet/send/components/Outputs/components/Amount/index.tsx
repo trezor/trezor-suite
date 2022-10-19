@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 import BigNumber from 'bignumber.js';
 import styled from 'styled-components';
 
-import { Input, Icon, Switch, variables, useTheme } from '@trezor/components';
+import { Input, Icon, Switch, Warning, variables, useTheme } from '@trezor/components';
 import { FiatValue, Translation } from '@suite-components';
 import { InputError } from '@wallet-components';
 import {
@@ -11,6 +11,7 @@ import {
     hasNetworkFeatures,
     isDecimalsValid,
     isInteger,
+    isLowAnonymityWarning,
     getInputState,
     findToken,
 } from '@suite-common/wallet-utils';
@@ -21,7 +22,7 @@ import { TokenSelect } from './components/TokenSelect';
 import { Fiat } from './components/Fiat';
 import { useBitcoinAmountUnit } from '@wallet-hooks/useBitcoinAmountUnit';
 
-const Wrapper = styled.div`
+const Row = styled.div`
     display: flex;
     flex: 1;
 
@@ -97,6 +98,11 @@ const Symbol = styled.span`
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
+
+const StyledWarning = styled(Warning)`
+    margin-bottom: 8px;
+`;
+
 interface Props {
     output: Partial<Output>;
     outputId: number;
@@ -115,11 +121,10 @@ export const Amount = ({ output, outputId }: Props) => {
         calculateFiat,
         composeTransaction,
     } = useSendFormContext();
-
     const { symbol, tokens, availableBalance, balance } = account;
 
     const theme = useTheme();
-    const { souldSendInSats } = useBitcoinAmountUnit(symbol);
+    const { shouldSendInSats } = useBitcoinAmountUnit(symbol);
 
     const inputName = `outputs[${outputId}].amount`;
     const tokenInputName = `outputs[${outputId}].token`;
@@ -141,14 +146,17 @@ export const Amount = ({ output, outputId }: Props) => {
     let decimals: number;
     if (token) {
         decimals = token.decimals;
-    } else if (souldSendInSats) {
+    } else if (shouldSendInSats) {
         decimals = 0;
     } else {
         decimals = network.decimals;
     }
 
     const withTokens = hasNetworkFeatures(account, 'tokens');
-    const symbolToUse = souldSendInSats ? 'sat' : symbol.toUpperCase();
+    const symbolToUse = shouldSendInSats ? 'sat' : symbol.toUpperCase();
+    const isLowAnonymity = isLowAnonymityWarning(outputError);
+    const inputState = isLowAnonymity ? 'warning' : getInputState(error, amountValue);
+    const bottomText = isLowAnonymity ? null : <InputError error={error} />;
 
     const handleInputChange = useCallback(
         (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -203,10 +211,10 @@ export const Amount = ({ output, outputId }: Props) => {
 
             // amounts below dust are not allowed
             let dust =
-                rawDust && (souldSendInSats ? rawDust : formatNetworkAmount(rawDust, symbol));
+                rawDust && (shouldSendInSats ? rawDust : formatNetworkAmount(rawDust, symbol));
 
             if (dust && amountBig.lte(dust)) {
-                if (souldSendInSats) {
+                if (shouldSendInSats) {
                     dust = amountToSatoshi(dust, decimals);
                 }
 
@@ -215,7 +223,7 @@ export const Amount = ({ output, outputId }: Props) => {
                         key="AMOUNT_IS_BELOW_DUST"
                         id="AMOUNT_IS_BELOW_DUST"
                         values={{
-                            dust: `${dust} ${souldSendInSats ? 'sat' : symbol.toUpperCase()}`,
+                            dust: `${dust} ${shouldSendInSats ? 'sat' : symbol.toUpperCase()}`,
                         }}
                     />
                 );
@@ -226,7 +234,7 @@ export const Amount = ({ output, outputId }: Props) => {
             if (token) {
                 formattedAvailableBalance = token.balance || '0';
             } else {
-                formattedAvailableBalance = souldSendInSats
+                formattedAvailableBalance = shouldSendInSats
                     ? availableBalance
                     : formatNetworkAmount(availableBalance, symbol);
             }
@@ -238,13 +246,7 @@ export const Amount = ({ output, outputId }: Props) => {
                         : undefined;
 
                 if (reserve && amountBig.lt(formatNetworkAmount(balance, symbol))) {
-                    return (
-                        <Translation
-                            key="AMOUNT_IS_MORE_THAN_RESERVE"
-                            id="AMOUNT_IS_MORE_THAN_RESERVE"
-                            values={{ reserve }}
-                        />
-                    );
+                    return <Translation id="AMOUNT_IS_MORE_THAN_RESERVE" values={{ reserve }} />;
                 }
                 return 'AMOUNT_IS_NOT_ENOUGH';
             }
@@ -252,83 +254,93 @@ export const Amount = ({ output, outputId }: Props) => {
     });
 
     return (
-        <Wrapper>
-            <Left>
-                <StyledInput
-                    inputState={getInputState(error, amountValue)}
-                    isMonospace
-                    labelAddonIsVisible={isSetMaxVisible}
-                    labelAddon={
-                        <SwitchWrapper>
-                            <Switch
-                                isSmall
-                                isChecked={isSetMaxActive}
-                                id={maxSwitchId}
-                                dataTest={maxSwitchId}
-                                onChange={() => {
-                                    setMax(outputId, isSetMaxActive);
-                                    composeTransaction(inputName);
-                                }}
-                            />
-                            <SwitchLabel htmlFor={maxSwitchId}>
-                                <Translation id="AMOUNT_SEND_MAX" />
-                            </SwitchLabel>
-                        </SwitchWrapper>
-                    }
-                    label={
-                        <Label>
-                            <Text>
-                                <Translation id="AMOUNT" />
-                            </Text>
-                            {tokenBalance && (
-                                <TokenBalance>
-                                    <Translation
-                                        id="TOKEN_BALANCE"
-                                        values={{ balance: tokenBalance }}
-                                    />
-                                </TokenBalance>
-                            )}
-                        </Label>
-                    }
-                    bottomText={<InputError error={error} />}
-                    onChange={handleInputChange}
-                    name={inputName}
-                    data-test={inputName}
-                    defaultValue={amountValue}
-                    maxLength={MAX_LENGTH.AMOUNT}
-                    innerRef={cryptoAmountRef}
-                    innerAddon={
-                        withTokens ? (
-                            <TokenSelect output={output} outputId={outputId} />
-                        ) : (
-                            <Symbol>{symbolToUse}</Symbol>
-                        )
-                    }
-                />
-            </Left>
+        <>
+            <Row>
+                <Left>
+                    <StyledInput
+                        inputState={inputState}
+                        isMonospace
+                        labelAddonIsVisible={isSetMaxVisible}
+                        labelAddon={
+                            <SwitchWrapper>
+                                <Switch
+                                    isSmall
+                                    isChecked={isSetMaxActive}
+                                    id={maxSwitchId}
+                                    dataTest={maxSwitchId}
+                                    onChange={() => {
+                                        setMax(outputId, isSetMaxActive);
+                                        composeTransaction(inputName);
+                                    }}
+                                />
+                                <SwitchLabel htmlFor={maxSwitchId}>
+                                    <Translation id="AMOUNT_SEND_MAX" />
+                                </SwitchLabel>
+                            </SwitchWrapper>
+                        }
+                        label={
+                            <Label>
+                                <Text>
+                                    <Translation id="AMOUNT" />
+                                </Text>
+                                {tokenBalance && (
+                                    <TokenBalance>
+                                        <Translation
+                                            id="TOKEN_BALANCE"
+                                            values={{ balance: tokenBalance }}
+                                        />
+                                    </TokenBalance>
+                                )}
+                            </Label>
+                        }
+                        bottomText={bottomText}
+                        onChange={handleInputChange}
+                        name={inputName}
+                        data-test={inputName}
+                        defaultValue={amountValue}
+                        maxLength={MAX_LENGTH.AMOUNT}
+                        innerRef={cryptoAmountRef}
+                        innerAddon={
+                            withTokens ? (
+                                <TokenSelect output={output} outputId={outputId} />
+                            ) : (
+                                <Symbol>{symbolToUse}</Symbol>
+                            )
+                        }
+                    />
+                </Left>
 
-            {/* TODO: token FIAT rates calculation */}
-            {!token && (
-                <FiatValue amount="1" symbol={symbol} fiatCurrency={localCurrencyOption.value}>
-                    {({ rate }) =>
-                        rate && (
-                            <>
-                                <TransferIconWrapper>
-                                    <StyledTransferIcon
-                                        icon="TRANSFER"
-                                        size={16}
-                                        color={theme.TYPE_LIGHT_GREY}
-                                    />
-                                </TransferIconWrapper>
+                {/* TODO: token FIAT rates calculation */}
+                {!token && (
+                    <FiatValue amount="1" symbol={symbol} fiatCurrency={localCurrencyOption.value}>
+                        {({ rate }) =>
+                            rate && (
+                                <>
+                                    <TransferIconWrapper>
+                                        <StyledTransferIcon
+                                            icon="TRANSFER"
+                                            size={16}
+                                            color={theme.TYPE_LIGHT_GREY}
+                                        />
+                                    </TransferIconWrapper>
 
-                                <Right>
-                                    <Fiat output={output} outputId={outputId} />
-                                </Right>
-                            </>
-                        )
-                    }
-                </FiatValue>
+                                    <Right>
+                                        <Fiat output={output} outputId={outputId} />
+                                    </Right>
+                                </>
+                            )
+                        }
+                    </FiatValue>
+                )}
+            </Row>
+            {isLowAnonymity && (
+                <StyledWarning withIcon>
+                    <Translation
+                        id="TR_NOT_ENOUGH_ANONYMIZED_FUNDS_WARNING"
+                        values={{ br: <br /> }}
+                    />
+                </StyledWarning>
             )}
-        </Wrapper>
+        </>
     );
 };

@@ -173,11 +173,21 @@ export const composeTransaction =
                     tx.max = isSatoshis ? tx.max : formatNetworkAmount(tx.max, account.symbol);
                 }
             } else if (tx.error === 'NOT-ENOUGH-FUNDS') {
-                tx.errorMessage = {
-                    id: formValues.isCoinControlEnabled
+                const getErrorMessage = () => {
+                    const isLowAnonymity =
+                        account.accountType === 'coinjoin' &&
+                        !!Object.values(excludedUtxos).filter(reason => reason === 'low-anonymity')
+                            .length;
+
+                    if (isLowAnonymity && !formValues.isCoinControlEnabled) {
+                        return 'TR_NOT_ENOUGH_ANONYMIZED_FUNDS_WARNING';
+                    }
+                    return formValues.isCoinControlEnabled
                         ? 'TR_NOT_ENOUGH_SELECTED'
-                        : 'AMOUNT_IS_NOT_ENOUGH',
+                        : 'AMOUNT_IS_NOT_ENOUGH';
                 };
+
+                tx.errorMessage = { id: getErrorMessage() };
             } else {
                 // catch unexpected error
                 dispatch(
