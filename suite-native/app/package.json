@@ -31,6 +31,7 @@
         "@suite-common/formatters": "*",
         "@suite-common/wallet-core": "*",
         "@suite-native/atoms": "*",
+        "@suite-native/config": "*",
         "@suite-native/module-accounts": "*",
         "@suite-native/module-accounts-import": "*",
         "@suite-native/module-dev-utils": "*",
