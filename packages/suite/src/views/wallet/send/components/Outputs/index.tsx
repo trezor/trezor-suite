@@ -33,8 +33,6 @@ const OutputWrapper = styled.div<{ index: number }>`
 `;
 
 const Row = styled.div`
-    display: flex;
-    flex-direction: ${(props: { isColumn?: boolean }) => (props.isColumn ? 'column' : 'row')};
     padding: 0 0 10px 0;
 
     &:last-child {

@@ -103,6 +103,9 @@ export type SendContextValues = Omit<UseFormMethods<FormState>, 'register'> &
         isCoinControlEnabled: boolean;
         selectedUtxos: AccountUtxo[];
         spendableUtxos: AccountUtxo[];
+        isLowAnonymityUtxoSelected: boolean;
+        anonymityWarningChecked: boolean;
+        toggleAnonymityWarning: () => void;
         toggleCheckAllUtxos: () => void;
         toggleCoinControl: () => void;
         toggleUtxoSelection: (utxo: AccountUtxo) => void;

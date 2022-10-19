@@ -92,7 +92,7 @@ export const CoinControl = ({ close }: CoinControlProps) => {
         toggleCoinControl,
     } = useSendFormContext();
 
-    const { souldSendInSats } = useBitcoinAmountUnit(account.symbol);
+    const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
 
     const inputs = isCoinControlEnabled ? selectedUtxos : composedInputs;
 
@@ -106,14 +106,14 @@ export const CoinControl = ({ close }: CoinControlProps) => {
     const totalOutputs = getTotal(
         outputs.map((_, i) => Number(getDefaultValue(`outputs[${i}].amount`, ''))),
     );
-    const totalOutputsInSats = souldSendInSats
+    const totalOutputsInSats = shouldSendInSats
         ? totalOutputs
         : Number(amountToSatoshi(totalOutputs.toString(), network.decimals));
     const missingToInput = totalOutputsInSats - totalInputs;
     const isMissingToAmount = missingToInput > 0; // relevant when the amount field is not validated, e.g. there is an error in the address
     const missingAmountTooBig = missingToInput > Number.MAX_SAFE_INTEGER;
     const amountHasError = errors.outputs?.some(error => error?.amount); // relevant when input is a number, but there is an error, e.g. decimals in sats
-    const notEnougFundsSelectedError = !!errors.outputs?.some(
+    const notEnoughFundsSelectedError = !!errors.outputs?.some(
         error =>
             ((error?.amount as TypedFieldError)?.message as ExtendedMessageDescriptor)?.id ===
             'TR_NOT_ENOUGH_SELECTED',
@@ -121,8 +121,8 @@ export const CoinControl = ({ close }: CoinControlProps) => {
     const isMissingVisible =
         isCoinControlEnabled &&
         !missingAmountTooBig &&
-        !(amountHasError && !notEnougFundsSelectedError) &&
-        (isMissingToAmount || notEnougFundsSelectedError);
+        !(amountHasError && !notEnoughFundsSelectedError) &&
+        (isMissingToAmount || notEnoughFundsSelectedError);
     const missingToInputId = isMissingToAmount ? 'TR_MISSING_TO_INPUT' : 'TR_MISSING_TO_FEE';
     const formattedTotal = getFormattedAmount(totalInputs);
     const formattedMissing = isMissingVisible ? getFormattedAmount(missingToInput) : ''; // set to empty string when hidden to avoid affecting the layout

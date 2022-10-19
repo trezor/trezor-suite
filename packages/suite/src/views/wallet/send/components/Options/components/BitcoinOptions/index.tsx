@@ -1,5 +1,7 @@
 import React from 'react';
+import { useWatch } from 'react-hook-form';
 import styled from 'styled-components';
+
 import { Translation } from '@suite-components';
 import { OnOffSwitcher } from '@wallet-components';
 import { Button, Tooltip } from '@trezor/components';
@@ -8,6 +10,7 @@ import { isFeatureFlagEnabled } from '@suite-common/suite-utils';
 import { OpenGuideFromTooltip } from '@guide-components';
 import { Locktime } from './components/Locktime';
 import { CoinControl } from './components/CoinControl';
+import { FormOptions } from '@wallet-types/sendForm';
 
 const Wrapper = styled.div`
     display: flex;
@@ -45,18 +48,26 @@ export const BitcoinOptions = () => {
     const {
         network,
         addOutput,
-        getDefaultValue,
+        control,
         isCoinControlEnabled,
+        getDefaultValue,
         toggleOption,
         composeTransaction,
         resetDefaultValue,
     } = useSendFormContext();
 
-    const options = getDefaultValue('options', []);
+    const options = useWatch<FormOptions[]>({
+        name: 'options',
+        defaultValue: getDefaultValue('options', []),
+        control,
+    });
+
     const locktimeEnabled = options.includes('bitcoinLockTime');
     const rbfEnabled = options.includes('bitcoinRBF');
     const utxoSelectionEnabled = options.includes('utxoSelection');
     const broadcastEnabled = options.includes('broadcast');
+
+    const toggleUtxoSelection = () => toggleOption('utxoSelection');
 
     return (
         <Wrapper>
@@ -72,15 +83,7 @@ export const BitcoinOptions = () => {
                     }}
                 />
             )}
-            {utxoSelectionEnabled && (
-                <CoinControl
-                    close={() => {
-                        resetDefaultValue('utxoSelection');
-                        toggleOption('utxoSelection');
-                        composeTransaction();
-                    }}
-                />
-            )}
+            {utxoSelectionEnabled && <CoinControl close={toggleUtxoSelection} />}
 
             <Row>
                 <Left>
@@ -163,11 +166,7 @@ export const BitcoinOptions = () => {
                             <StyledButton
                                 variant="tertiary"
                                 icon="COIN_CONTROL"
-                                onClick={() => {
-                                    // open additional form
-                                    toggleOption('utxoSelection');
-                                    composeTransaction();
-                                }}
+                                onClick={toggleUtxoSelection}
                             >
                                 <Translation id="TR_COIN_CONTROL" />
                                 {isCoinControlEnabled && <OnOffSwitcher isOn />}
