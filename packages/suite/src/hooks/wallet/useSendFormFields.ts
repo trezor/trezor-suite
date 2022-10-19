@@ -25,7 +25,7 @@ export const useSendFormFields = ({
     fiatRates,
     network,
 }: Props) => {
-    const { souldSendInSats } = useBitcoinAmountUnit(network.symbol);
+    const { shouldSendInSats } = useBitcoinAmountUnit(network.symbol);
 
     const calculateFiat = useCallback(
         (outputIndex: number, amount?: string) => {
@@ -45,7 +45,7 @@ export const useSendFormFields = ({
             // calculate Fiat value
             if (!fiatRates || !fiatRates.current) return;
 
-            const formattedAmount = souldSendInSats // toFiatCurrency always works with BTC, not satoshis
+            const formattedAmount = shouldSendInSats // toFiatCurrency always works with BTC, not satoshis
                 ? formatNetworkAmount(amount, network.symbol)
                 : amount;
 
@@ -58,7 +58,7 @@ export const useSendFormFields = ({
                 setValue(inputName, fiatValue, { shouldValidate: true });
             }
         },
-        [getValues, setValue, fiatRates, souldSendInSats, network.symbol],
+        [getValues, setValue, fiatRates, shouldSendInSats, network.symbol],
     );
 
     const setAmount = useCallback(

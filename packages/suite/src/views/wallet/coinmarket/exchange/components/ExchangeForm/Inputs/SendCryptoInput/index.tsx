@@ -41,13 +41,13 @@ const SendCryptoInput = () => {
         getValues,
         setValue,
     } = useCoinmarketExchangeFormContext();
-    const { souldSendInSats } = useBitcoinAmountUnit(account.symbol);
+    const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
     const { symbol, tokens } = account;
 
     const tokenAddress = getValues(CRYPTO_TOKEN);
     const tokenData = tokens?.find(t => t.address === tokenAddress);
 
-    const conversion = souldSendInSats ? amountToSatoshi : formatAmount;
+    const conversion = shouldSendInSats ? amountToSatoshi : formatAmount;
     const formattedAvailableBalance = tokenData
         ? tokenData.balance || '0'
         : conversion(account.availableBalance, network.decimals);
@@ -75,7 +75,7 @@ const SendCryptoInput = () => {
                     return 'AMOUNT_IS_NOT_NUMBER';
                 }
 
-                if (souldSendInSats && !isInteger(value)) {
+                if (shouldSendInSats && !isInteger(value)) {
                     return 'AMOUNT_IS_NOT_INTEGER';
                 }
 
@@ -88,7 +88,7 @@ const SendCryptoInput = () => {
 
                     let minCrypto = 0;
                     if (amountLimits.min) {
-                        minCrypto = souldSendInSats
+                        minCrypto = shouldSendInSats
                             ? Number(amountToSatoshi(amountLimits.min.toString(), network.decimals))
                             : amountLimits.min;
                     }
@@ -110,7 +110,7 @@ const SendCryptoInput = () => {
 
                     let maxCrypto = 0;
                     if (amountLimits.max) {
-                        maxCrypto = souldSendInSats
+                        maxCrypto = shouldSendInSats
                             ? Number(amountToSatoshi(amountLimits.max.toString(), network.decimals))
                             : amountLimits.max;
                     }

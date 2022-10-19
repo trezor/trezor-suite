@@ -62,7 +62,7 @@ const CryptoInput = ({ activeInput, setActiveInput }: Props) => {
         setAmountLimits,
         composeRequest,
     } = useCoinmarketSellFormContext();
-    const { souldSendInSats } = useBitcoinAmountUnit(account.symbol);
+    const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
 
     const uppercaseSymbol = account.symbol.toUpperCase();
     const cryptoOption = {
@@ -89,7 +89,7 @@ const CryptoInput = ({ activeInput, setActiveInput }: Props) => {
                     return <Translation id="AMOUNT_IS_NOT_NUMBER" />;
                 }
 
-                if (souldSendInSats && !isInteger(value)) {
+                if (shouldSendInSats && !isInteger(value)) {
                     return 'AMOUNT_IS_NOT_INTEGER';
                 }
 
@@ -111,7 +111,7 @@ const CryptoInput = ({ activeInput, setActiveInput }: Props) => {
 
                     let minCrypto = 0;
                     if (amountLimits.minCrypto) {
-                        minCrypto = souldSendInSats
+                        minCrypto = shouldSendInSats
                             ? Number(
                                   amountToSatoshi(
                                       amountLimits.minCrypto.toString(),
@@ -138,7 +138,7 @@ const CryptoInput = ({ activeInput, setActiveInput }: Props) => {
 
                     let maxCrypto = 0;
                     if (amountLimits.maxCrypto) {
-                        maxCrypto = souldSendInSats
+                        maxCrypto = shouldSendInSats
                             ? Number(
                                   amountToSatoshi(
                                       amountLimits.maxCrypto.toString(),
@@ -237,7 +237,7 @@ const CryptoInput = ({ activeInput, setActiveInput }: Props) => {
                                             }.svg`}
                                         />
                                     )}
-                                    <Label>{souldSendInSats ? 'sat' : option.label}</Label>
+                                    <Label>{shouldSendInSats ? 'sat' : option.label}</Label>
                                 </Option>
                             )}
                         />
