@@ -143,6 +143,7 @@ describe('account utils', () => {
     it('isTestnet', () => {
         expect(isTestnet('test')).toEqual(true);
         expect(isTestnet('trop')).toEqual(true);
+        expect(isTestnet('tgor')).toEqual(true);
         expect(isTestnet('txrp')).toEqual(true);
         expect(isTestnet('btc')).toEqual(false);
         expect(isTestnet('ltc')).toEqual(false);
