@@ -107,6 +107,8 @@ export const getTitleForNetwork = (symbol: NetworkSymbol) => {
             return 'TR_NETWORK_ETHEREUM';
         case 'trop':
             return 'TR_NETWORK_ETHEREUM_TESTNET';
+        case 'tgor':
+            return 'TR_NETWORK_ETHEREUM_GOERLI';
         case 'etc':
             return 'TR_NETWORK_ETHEREUM_CLASSIC';
         case 'xem':
