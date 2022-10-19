@@ -36,7 +36,7 @@ export default class BlockchainDisconnect extends AbstractMethod<'blockchainDisc
     }
 
     run() {
-        const backend = findBackend(this.params.coinInfo.name);
+        const backend = findBackend(this.params.coinInfo.shortcut);
         if (backend) {
             backend.disconnect();
         }

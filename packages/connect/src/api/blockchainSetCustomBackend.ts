@@ -42,7 +42,7 @@ export default class BlockchainSetCustomBackend extends AbstractMethod<
     }
 
     async run() {
-        const current = findBackend(this.params.coinInfo.name);
+        const current = findBackend(this.params.coinInfo.shortcut);
         if (current) {
             current.disconnect();
             await initBlockchain(this.params.coinInfo, this.postMessage);

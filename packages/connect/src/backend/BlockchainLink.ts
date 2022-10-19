@@ -296,9 +296,9 @@ const removeBackend = (backend: Blockchain) => {
     }
 };
 
-export const findBackend = (name: string) => {
+export const findBackend = (shortcut: string) => {
     for (let i = 0; i < instances.length; i++) {
-        if (instances[i].coinInfo.name === name) {
+        if (instances[i].coinInfo.shortcut === shortcut) {
             return instances[i];
         }
     }
