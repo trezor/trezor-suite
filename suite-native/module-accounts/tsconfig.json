@@ -19,7 +19,6 @@
         },
         { "path": "../accounts" },
         { "path": "../atoms" },
-        { "path": "../graph" },
         { "path": "../navigation" },
         { "path": "../transactions" },
         { "path": "../../packages/icons" },

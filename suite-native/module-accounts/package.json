@@ -21,7 +21,6 @@
         "@suite-common/wallet-utils": "*",
         "@suite-native/accounts": "*",
         "@suite-native/atoms": "*",
-        "@suite-native/graph": "*",
         "@suite-native/navigation": "*",
         "@suite-native/transactions": "*",
         "@trezor/icons": "*",

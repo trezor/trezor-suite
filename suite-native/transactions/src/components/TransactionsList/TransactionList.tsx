@@ -2,11 +2,12 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, SectionList } from 'react-native';
 import { useSelector } from 'react-redux';
 
-import { useNativeStyles } from '@trezor/styles';
+import { useNativeStyles, prepareNativeStyle } from '@trezor/styles';
 import { WalletAccountTransaction } from '@suite-common/wallet-types';
 import { groupTransactionsByDate } from '@suite-common/wallet-utils';
 import { selectIsLoadingTransactions } from '@suite-common/wallet-core';
-import { Text } from '@suite-native/atoms';
+import { Text, Box } from '@suite-native/atoms';
+import { TAB_BAR_HEIGHT } from '@suite-native/navigation';
 
 import { TransactionListGroupTitle } from './TransactionListGroupTitle';
 import { TransactionListItem } from './TransactionListItem';
@@ -19,12 +20,19 @@ type AccountTransactionProps = {
 
 export const TX_PER_PAGE = 25;
 
+// NOTE: This is due to Box wrapper that is set by isScrollable prop in suite-native/module-accounts/src/screens/AccountDetailScreen.tsx
+// The box doesn't seem to be stopped visually by tab bar and SectionList cmp cannot be inside ScrollView cmp
+// That's why we add padding bottom to avoid style clash.
+const listWrapperStyle = prepareNativeStyle(_ => ({
+    paddingBottom: TAB_BAR_HEIGHT,
+}));
+
 export const TransactionList = ({
     transactions,
     listHeaderComponent,
     fetchMoreTransactions,
 }: AccountTransactionProps) => {
-    const { utils } = useNativeStyles();
+    const { applyStyle, utils } = useNativeStyles();
     const isLoadingTransactions = useSelector(selectIsLoadingTransactions);
     const accountTransactionsByDate = useMemo(
         () => groupTransactionsByDate(transactions),
@@ -88,13 +96,15 @@ export const TransactionList = ({
         return <ActivityIndicator size="large" color={utils.colors.forest} />;
 
     return (
-        <SectionList
-            sections={sectionsData}
-            renderSectionHeader={renderSectionHeader}
-            renderItem={renderItem}
-            ListHeaderComponent={listHeaderComponent}
-            ListEmptyComponent={<Text>No transactions.</Text>}
-            onEndReached={handleOnEndReached}
-        />
+        <Box style={applyStyle(listWrapperStyle)}>
+            <SectionList
+                sections={sectionsData}
+                renderSectionHeader={renderSectionHeader}
+                renderItem={renderItem}
+                ListHeaderComponent={listHeaderComponent}
+                ListEmptyComponent={<Text>No transactions.</Text>}
+                onEndReached={handleOnEndReached}
+            />
+        </Box>
     );
 };
