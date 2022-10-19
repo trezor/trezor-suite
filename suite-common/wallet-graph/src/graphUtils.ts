@@ -15,7 +15,7 @@ import { resetTime } from '@suite-common/suite-utils';
 import { getFiatRatesForTimestamps, getTickerConfig } from '@suite-common/fiat-services';
 import { toFiatCurrency, formatNetworkAmount } from '@suite-common/wallet-utils';
 
-import { lineGraphStepInMinutes } from './config';
+import { lineGraphStepInMinutes, timeSwitchItems } from './config';
 import {
     AggregatedDashboardHistory,
     AggregatedAccountHistory,
@@ -24,6 +24,7 @@ import {
     CommonAggregatedHistory,
     GraphScale,
     LineGraphTimeFrameItemAccountBalance,
+    LineGraphTimeFrameValues,
 } from './types';
 
 type FiatRates = NonNullable<CoinFiatRates['current']>['rates'];
@@ -487,7 +488,7 @@ export const enhanceBlockchainAccountHistory = (
     return enhancedResponse;
 };
 
-export const getLineGraphAllTimeStepInMinutes = (
+const getLineGraphAllTimeStepInMinutes = (
     endOfRangeDate: Date,
     valueBackInMinutes: number,
 ): number => {
@@ -515,3 +516,27 @@ export const getLineGraphAllTimeStepInMinutes = (
     // to prevent max URL length error, HTTP status 414, from Blockbook (timestamps are sent to Blockbook with HTTP GET)
     return lineGraphStepInMinutes.year * differenceYears;
 };
+
+export const getTimeFrameConfiguration = (
+    timeFrame: LineGraphTimeFrameValues,
+    endOfRangeDate: Date,
+    minutesBackToStartOfRange: number,
+) => {
+    const stepInMinutes =
+        timeSwitchItems[timeFrame]?.stepInMinutes ??
+        getLineGraphAllTimeStepInMinutes(endOfRangeDate, minutesBackToStartOfRange);
+
+    return {
+        ...timeSwitchItems[timeFrame],
+        valueBackInMinutes: minutesBackToStartOfRange,
+        stepInMinutes,
+    };
+};
+
+export const sortTimeFrameItemsByTimeAsc = (
+    accountBalanceMovements: LineGraphTimeFrameItemAccountBalance[],
+) => accountBalanceMovements.sort((a, b) => a.time - b.time);
+
+export const getSuccessAccountBalanceMovements = (
+    accountBalanceMovements: Array<LineGraphTimeFrameItemAccountBalance>,
+) => (accountBalanceMovements ? accountBalanceMovements.filter(movement => !!movement?.time) : []);

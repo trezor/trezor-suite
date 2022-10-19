@@ -17,7 +17,9 @@ import {
 import {
     enhanceBlockchainAccountHistory,
     ensureHistoryRates,
-    getLineGraphAllTimeStepInMinutes,
+    getSuccessAccountBalanceMovements,
+    getTimeFrameConfiguration,
+    sortTimeFrameItemsByTimeAsc,
 } from './graphUtils';
 import { timeSwitchItems } from './config';
 import { actionPrefix } from './graphActions';
@@ -34,14 +36,6 @@ type GetGraphPointsForSingleAccountThunk = {
     timeFrame: LineGraphTimeFrameValues;
 };
 
-const sortAccountBalanceHistoryByTimeAsc = (
-    accountBalanceMovements: LineGraphTimeFrameItemAccountBalance[],
-) => accountBalanceMovements.sort((a, b) => a.time - b.time);
-
-const getSuccessAccountBalanceMovements = (
-    accountBalanceMovements: Array<LineGraphTimeFrameItemAccountBalance>,
-) => (accountBalanceMovements ? accountBalanceMovements.filter(movement => !!movement?.time) : []);
-
 const fetchAccountBalanceHistory = async (
     account: Account,
     { from, to, groupBy }: { from?: number; to?: number; groupBy: number },
@@ -56,7 +50,7 @@ const fetchAccountBalanceHistory = async (
     if (response?.success) {
         const responseWithRates = await ensureHistoryRates(account.symbol, response.payload);
         const enhancedResponse = enhanceBlockchainAccountHistory(responseWithRates, account.symbol);
-        const sortedAccountBalanceHistory = sortAccountBalanceHistoryByTimeAsc(enhancedResponse);
+        const sortedAccountBalanceHistory = sortTimeFrameItemsByTimeAsc(enhancedResponse);
         const successAccountBalanceMovements = getSuccessAccountBalanceMovements(
             sortedAccountBalanceHistory,
         );
@@ -101,6 +95,7 @@ const getAccountBalanceAtStartOfRange = async (
     if (accountBalanceHistoryToStartOfRange?.length) {
         return accountBalanceHistoryToStartOfRange[accountBalanceHistoryToStartOfRange.length - 1];
     }
+    // fallback to the oldest if nothing is found
     const oldestAccountBalanceMovement = await getOldestAccountBalanceMovement(account);
     return oldestAccountBalanceMovement;
 };
@@ -116,22 +111,6 @@ const getMinutesBackToStartOfRange = async (
     const oldestAccountBalanceChangeUnixTime =
         await getOldestAccountBalanceMovementTimestampFromAllAccounts(accounts);
     return differenceInMinutes(new Date(), new Date(oldestAccountBalanceChangeUnixTime * 1000));
-};
-
-const getTimeFrameConfiguration = (
-    timeFrame: LineGraphTimeFrameValues,
-    endOfRangeDate: Date,
-    minutesBackToStartOfRange: number,
-) => {
-    const stepInMinutes =
-        timeSwitchItems[timeFrame]?.stepInMinutes ??
-        getLineGraphAllTimeStepInMinutes(endOfRangeDate, minutesBackToStartOfRange);
-
-    return {
-        ...timeSwitchItems[timeFrame],
-        valueBackInMinutes: minutesBackToStartOfRange,
-        stepInMinutes,
-    };
 };
 
 const getFiatRatesForSelectedTimeFrame = async (
@@ -171,14 +150,14 @@ const prepareAllTimeFrameRatesForGraphPoints = (
     accountsBalanceHistoryInRange: LineGraphTimeFrameItemAccountBalance[],
     fiatCurrency: FiatCurrencyCode,
 ) => {
-    const fiatRatesInTime = [
+    const fiatRatesInTime: LineGraphTimeFrameItemAccountBalance[] = [
         ...accountsBalanceHistoryInRange.map(balanceHistoryInRange => ({
             ...balanceHistoryInRange,
             fiatCurrencyRate: balanceHistoryInRange.rates[fiatCurrency],
         })),
         ...fiatRatesForTimeFrame.map(timeInRange => ({
             ...timeInRange,
-            balance: null,
+            balance: undefined,
             fiatCurrencyRate: timeInRange.rates[fiatCurrency],
         })),
     ];
@@ -188,27 +167,44 @@ const prepareAllTimeFrameRatesForGraphPoints = (
         fiatCurrencyRate: accountBalanceAtStartOfRange.rates[fiatCurrency],
     });
 
-    const fiatRatesSortedByTimeAsc = fiatRatesInTime.sort((a, b) => a.time - b.time);
+    const fiatRatesSortedByTimeAsc = sortTimeFrameItemsByTimeAsc(fiatRatesInTime);
     // account balance at the beginning of time frame has to be the first array item
-    const newArrayWithAllBalancesFilled: LineGraphTimeFrameItemAccountBalance[] = [];
+    const timeFrameItemsWithAllBalances: LineGraphTimeFrameItemAccountBalance[] = [];
 
     // fill missing balances for time frame items (as graph points).
     fiatRatesSortedByTimeAsc.forEach(rate => {
         const { balance } = rate;
         if (!balance) {
             const previousTimeFrameItemBalance =
-                newArrayWithAllBalancesFilled[newArrayWithAllBalancesFilled.length - 1].balance;
-            newArrayWithAllBalancesFilled.push({
+                timeFrameItemsWithAllBalances[timeFrameItemsWithAllBalances.length - 1].balance;
+            timeFrameItemsWithAllBalances.push({
                 ...rate,
                 balance: previousTimeFrameItemBalance,
             });
         } else {
-            newArrayWithAllBalancesFilled.push(rate);
+            timeFrameItemsWithAllBalances.push(rate);
         }
     });
 
+    // merge balances for the same timestamps (when we want to show different accounts together)
+    const timeFrameItemsMap = new Map<number, LineGraphTimeFrameItemAccountBalance>();
+    timeFrameItemsWithAllBalances.forEach(timeFrameItemBalance => {
+        const { time, balance } = timeFrameItemBalance;
+        const existingTimeFrameItem = timeFrameItemsMap.get(time);
+        if (existingTimeFrameItem) {
+            timeFrameItemsMap.set(time, {
+                ...existingTimeFrameItem,
+                balance: existingTimeFrameItem.balance! + balance!, // balances are already set before
+            });
+        } else {
+            timeFrameItemsMap.set(time, timeFrameItemBalance);
+        }
+    });
+
+    const uniqueTimeFrameItemsWithAllBalances = Array.from(timeFrameItemsMap.values());
+
     // prepare graph points
-    return newArrayWithAllBalancesFilled.map(timestamp => {
+    return sortTimeFrameItemsByTimeAsc(uniqueTimeFrameItemsWithAllBalances).map(timestamp => {
         const value = Number(timestamp.balance) * Number(timestamp.fiatCurrencyRate);
         return {
             date: new Date(timestamp.time * 1000),
@@ -307,7 +303,7 @@ export const getAllAccountsGraphPointsThunk = createThunk(
                 allAccountsBalanceRatesAtStartOfRangePromises,
             );
             // get oldest from this array
-            const oldestAccountBalanceRatesAtStartOfRange = sortAccountBalanceHistoryByTimeAsc(
+            const oldestAccountBalanceRatesAtStartOfRange = sortTimeFrameItemsByTimeAsc(
                 allAccountsBalanceRatesAtStartOfRange,
             );
 
@@ -323,7 +319,6 @@ export const getAllAccountsGraphPointsThunk = createThunk(
             );
 
             if (oldestAccountBalanceRatesAtStartOfRange) {
-                // TODO merge the same timestamp balances for different accounts together (map..., timestamps as keys...?)
                 const graphPoints = prepareAllTimeFrameRatesForGraphPoints(
                     oldestAccountBalanceRatesAtStartOfRange[0],
                     fiatRatesForTimeFrame,
