@@ -20,7 +20,7 @@
         "@trezor/icons": "*",
         "@trezor/styles": "*",
         "react": "18.2.0",
-        "react-native": "0.70.2",
+        "react-native": "0.70.3",
         "react-redux": "7.2.2"
     }
 }

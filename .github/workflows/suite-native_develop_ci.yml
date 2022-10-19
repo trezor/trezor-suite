@@ -67,7 +67,7 @@ jobs:
     timeout-minutes: 60
     steps:
       - name: Setup xcode
-        uses: maxim-lobanov/setup-xcode@4aa4176a819ae7c019451acfda0bba67bffc6704
+        uses: maxim-lobanov/setup-xcode@df46f77a07b48da38239cd2fb8c0b5603c71e909
         with:
           xcode-version: "13.4.1"
 

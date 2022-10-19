@@ -6494,7 +6494,7 @@ __metadata:
     "@trezor/icons": "*"
     "@trezor/styles": "*"
     react: 18.2.0
-    react-native: 0.70.2
+    react-native: 0.70.3
     react-redux: 7.2.2
   languageName: unknown
   linkType: soft
@@ -6519,7 +6519,7 @@ __metadata:
     "@trezor/styles": "*"
     bignumber.js: ^9.1.0
     react: ^18.2.0
-    react-native: 0.70.2
+    react-native: 0.70.3
     react-redux: 7.2.2
   languageName: unknown
   linkType: soft
@@ -6537,7 +6537,7 @@ __metadata:
     "@trezor/utils": "*"
     jest: ^26.6.3
     react: 18.2.0
-    react-native: 0.70.2
+    react-native: 0.70.3
     react-native-gesture-handler: ^2.7.0
     react-native-reanimated: ^2.10.0
     react-native-safe-area-context: ^4.3.1
@@ -6581,7 +6581,7 @@ __metadata:
     "@trezor/theme": "*"
     jest: ^26.6.3
     react: 18.2.0
-    react-native: 0.70.2
+    react-native: 0.70.3
     react-native-gesture-handler: ^2.7.0
     react-native-graph: ^0.3.0
     react-native-reanimated: ^2.10.0
@@ -6616,7 +6616,7 @@ __metadata:
     "@trezor/validation": "*"
     jest: ^26.6.3
     react: 18.2.0
-    react-native: 0.70.2
+    react-native: 0.70.3
     react-native-config: ^1.4.6
     react-native-reanimated: ^2.10.0
     react-native-vision-camera: ^2.14.1
@@ -6646,7 +6646,7 @@ __metadata:
     "@trezor/styles": "*"
     "@trezor/theme": "*"
     react: 18.2.0
-    react-native: 0.70.2
+    react-native: 0.70.3
     react-redux: 7.2.2
   languageName: unknown
   linkType: soft
@@ -6666,7 +6666,7 @@ __metadata:
     "@trezor/theme": "*"
     jest: ^26.6.3
     react: 18.2.0
-    react-native: 0.70.2
+    react-native: 0.70.3
     typescript: 4.7.4
   languageName: unknown
   linkType: soft
@@ -6678,7 +6678,7 @@ __metadata:
     "@reduxjs/toolkit": ^1.8.3
     jest: ^26.6.3
     react: 18.2.0
-    react-native: 0.70.2
+    react-native: 0.70.3
     typescript: 4.7.4
   languageName: unknown
   linkType: soft
@@ -6709,7 +6709,7 @@ __metadata:
     date-fns: ^2.29.1
     jest: ^26.6.3
     react: 18.2.0
-    react-native: 0.70.2
+    react-native: 0.70.3
     react-native-graph: ^0.3.0
     react-redux: 7.2.2
     typescript: 4.7.4
@@ -6728,7 +6728,7 @@ __metadata:
     "@trezor/styles": "*"
     jest: ^26.6.3
     react: 18.2.0
-    react-native: 0.70.2
+    react-native: 0.70.3
     typescript: 4.7.4
   languageName: unknown
   linkType: soft
@@ -6748,7 +6748,7 @@ __metadata:
     "@trezor/theme": "*"
     jest: ^26.6.3
     react: 18.2.0
-    react-native: 0.70.2
+    react-native: 0.70.3
     react-qr-code: 2.0.8
     react-redux: 8.0.4
     typescript: 4.7.4
@@ -6773,7 +6773,7 @@ __metadata:
     "@trezor/theme": "*"
     jest: ^26.6.3
     react: 18.2.0
-    react-native: 0.70.2
+    react-native: 0.70.3
     react-redux: 7.2.2
     typescript: 4.7.4
   languageName: unknown
@@ -6794,7 +6794,7 @@ __metadata:
     "@trezor/theme": "*"
     jest: ^26.6.3
     react: 18.2.0
-    react-native: 0.70.2
+    react-native: 0.70.3
     react-native-safe-area-context: ^4.3.1
     typescript: 4.7.4
   languageName: unknown
@@ -6867,7 +6867,7 @@ __metadata:
     "@trezor/icons": "*"
     "@trezor/styles": "*"
     react: 18.2.0
-    react-native: 0.70.2
+    react-native: 0.70.3
     react-redux: 7.2.2
   languageName: unknown
   linkType: soft
@@ -7330,7 +7330,7 @@ __metadata:
     "@trezor/theme": "*"
     jest: ^26.6.3
     react: 18.2.0
-    react-native: 0.70.2
+    react-native: 0.70.3
     svgo: 2.8.0
     tsx: ^3.8.2
     typescript: 4.7.4
@@ -7646,7 +7646,7 @@ __metadata:
     node-libs-browser: ^2.2.1
     react: 18.2.0
     react-intl: ^6.0.5
-    react-native: 0.70.2
+    react-native: 0.70.3
     react-native-config: ^1.4.6
     react-native-flipper: 0.164.0
     react-native-gesture-handler: ^2.7.0
@@ -7872,7 +7872,7 @@ __metadata:
     jest: ^26.6.3
     pod-install: ^0.1.31
     react: 18.2.0
-    react-native: 0.70.2
+    react-native: 0.70.3
     typescript: 4.7.4
   peerDependencies:
     react: "*"
@@ -28224,9 +28224,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native@npm:0.70.2":
-  version: 0.70.2
-  resolution: "react-native@npm:0.70.2"
+"react-native@npm:0.70.3":
+  version: 0.70.3
+  resolution: "react-native@npm:0.70.3"
   dependencies:
     "@jest/create-cache-key-function": ^27.0.1
     "@react-native-community/cli": 9.1.3
@@ -28264,7 +28264,7 @@ __metadata:
     react: 18.1.0
   bin:
     react-native: cli.js
-  checksum: b6719b6a7bb7e985207f5c5f520b14cc55653d1f0762d5583fe25631802ff7891a2a4ae4d5441c1b564dcc2639aa4daf2a9d045798aa636c97c1ec9fee416187
+  checksum: 7e40da7c3cf78fc16d453fd961b213a236689a06cc88da41154b1f1935844a0d00bcf49b1d344154a5c6d6fa33a800642c5516e9d6070718444e784fbe99b2a2
   languageName: node
   linkType: hard
 
