@@ -301,6 +301,22 @@ export const networks = {
         customBackends: ['blockbook'],
         accountTypes: {},
     },
+    tgor: {
+        name: 'Ethereum Goerli',
+        networkType: 'ethereum',
+        bip43Path: "m/44'/1'/0'/0/i",
+        chainId: 5,
+        decimals: 18,
+        testnet: true,
+        label: 'TR_TESTNET_COINS_LABEL',
+        explorer: {
+            tx: 'https://goerli1.trezor.io/tx/',
+            account: 'https://goerli1.trezor.io/address/',
+        },
+        features: ['sign-verify', 'tokens'],
+        customBackends: ['blockbook'],
+        accountTypes: {},
+    },
     txrp: {
         name: 'XRP Testnet',
         networkType: 'ripple',
