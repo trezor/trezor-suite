@@ -43,12 +43,6 @@ export const TransactionList = ({
         fetchMoreTransactions(1, TX_PER_PAGE);
     }, [fetchMoreTransactions]);
 
-    useEffect(() => {
-        transactions.forEach(transaction => {
-            console.log(transaction.amount);
-        });
-    }, [transactions]);
-
     const handleOnEndReached = useCallback(async () => {
         try {
             await fetchMoreTransactions(page + 1, TX_PER_PAGE);

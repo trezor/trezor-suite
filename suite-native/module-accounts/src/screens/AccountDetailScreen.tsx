@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect } from 'react';
+import React, { memo, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import {
@@ -33,10 +33,6 @@ export const AccountDetailScreen = memo(
             selectAccountTransactions(state, accountKey),
         );
         const dispatch = useDispatch();
-
-        useEffect(() => {
-            console.log(accountTransactions.length, 'accountTransactionsLength');
-        }, [accountTransactions]);
 
         const fetchMoreTransactions = useCallback(
             (pageToFetch: number, perPage: number) => {
