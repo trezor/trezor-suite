@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+
 import { Graph, TimeSwitch } from '@suite-native/graph';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Box, Text } from '@suite-native/atoms';
@@ -7,7 +8,7 @@ import { Icon } from '@trezor/icons';
 import { selectFiatCurrency } from '@suite-native/module-settings';
 import { useFormatters } from '@suite-common/formatters';
 import {
-    getGraphPointsForAccountsThunk,
+    getAllAccountsGraphPointsThunk,
     selectDashboardGraphPoints,
     LineGraphTimeFrameValues,
 } from '@suite-common/wallet-graph';
@@ -26,7 +27,7 @@ export const PortfolioGraph = () => {
 
     useEffect(() => {
         dispatch(
-            getGraphPointsForAccountsThunk({
+            getAllAccountsGraphPointsThunk({
                 section: 'dashboard',
                 fiatCurrency: fiatCurrency.label,
                 timeFrame: selectedTimeFrame,

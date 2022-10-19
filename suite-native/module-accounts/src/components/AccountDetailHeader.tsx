@@ -6,7 +6,7 @@ import { AccountBalance } from '@suite-native/accounts';
 import { Box, Text } from '@suite-native/atoms';
 import { AccountKey } from '@suite-common/suite-types';
 import {
-    getGraphPointsForSingleAccountThunk,
+    getSingleAccountGraphPointsThunk,
     LineGraphTimeFrameValues,
     selectAccountGraphPoints,
 } from '@suite-common/wallet-graph';
@@ -25,7 +25,7 @@ export const AccountDetailHeader = memo(({ accountKey, accountName }: AccountDet
 
     useEffect(() => {
         dispatch(
-            getGraphPointsForSingleAccountThunk({
+            getSingleAccountGraphPointsThunk({
                 accountKey,
                 fiatCurrency: fiatCurrency.label,
                 timeFrame: selectedTimeFrame,

@@ -1,7 +1,6 @@
 import { BlockchainAccountBalanceHistory } from '@trezor/connect';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { AccountBalanceHistory } from '@trezor/blockchain-link/libDev/src';
-import { FiatCurrencyCode } from '@suite-common/suite-config/libDev/src';
+import { FiatRates } from '@trezor/blockchain-link';
 
 export interface AccountHistoryWithBalance extends BlockchainAccountBalanceHistory {
     balance: string;
@@ -81,13 +80,11 @@ export type LineGraphTimeFrameItems = Record<
     LineGraphTimeFrameConfiguration
 >;
 
-export interface EnhancedAccountBalanceHistory extends AccountBalanceHistory {
-    balance: string;
-}
-
-export type FiatRatesForTimeFrame = Array<{
+export interface LineGraphTimeFrameItemAccountBalance {
     time: number;
-    rates: Record<FiatCurrencyCode, number>;
-}>;
+    rates: FiatRates;
+    balance?: string;
+    fiatCurrencyRate?: number;
+}
 
 export type GraphSection = 'dashboard' | 'account';

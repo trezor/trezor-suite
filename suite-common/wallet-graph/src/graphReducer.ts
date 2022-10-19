@@ -1,7 +1,7 @@
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 
 import { GraphSection, LineGraphPoint } from './types';
-import { getGraphPointsForAccountsThunk, getGraphPointsForSingleAccountThunk } from './graphThunks';
+import { getAllAccountsGraphPointsThunk, getSingleAccountGraphPointsThunk } from './graphThunks';
 
 export interface GraphState {
     dashboard: {
@@ -50,16 +50,16 @@ const updateSectionPoints = (
 
 export const prepareGraphReducer = createReducerWithExtraDeps(graphInitialState, builder => {
     builder
-        .addCase(getGraphPointsForAccountsThunk.fulfilled, (state, action) => {
+        .addCase(getAllAccountsGraphPointsThunk.fulfilled, (state, action) => {
             if (action.payload) {
                 updateSectionPoints(state, action.payload);
             }
         })
-        .addCase(getGraphPointsForSingleAccountThunk.fulfilled, (state, action) => {
+        .addCase(getSingleAccountGraphPointsThunk.fulfilled, (state, action) => {
             if (action.payload) {
                 updateSectionPoints(state, {
                     section: 'account',
-                    points: action.payload,
+                    graphPoints: action.payload,
                 });
             }
         });
