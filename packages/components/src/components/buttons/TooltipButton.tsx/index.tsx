@@ -18,11 +18,13 @@ const InfoIcon = styled(Icon)`
 `;
 
 export interface TooltipButtonProps extends ButtonProps {
+    interactiveTooltip?: boolean;
     tooltipContent: React.ReactNode;
 }
 
 export const TooltipButton = ({
     tooltipContent,
+    interactiveTooltip = false,
     isDisabled,
     children,
     ...buttonProps
@@ -30,7 +32,7 @@ export const TooltipButton = ({
     const theme = useTheme();
 
     return (
-        <Tooltip maxWidth={285} content={tooltipContent} interactive={false}>
+        <Tooltip maxWidth={285} content={tooltipContent} interactive={interactiveTooltip}>
             <StyledButton isDisabled={isDisabled} {...buttonProps}>
                 {tooltipContent && (
                     <InfoIcon
