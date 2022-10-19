@@ -1,23 +1,20 @@
-import {
-    differenceInMinutes,
-    eachMinuteOfInterval,
-    getUnixTime,
-    startOfDay,
-    subMinutes,
-} from 'date-fns';
+import { differenceInMinutes, eachMinuteOfInterval, getUnixTime, subMinutes } from 'date-fns';
 
 import { createThunk } from '@suite-common/redux-utils';
 import { getBlockbookSafeTime } from '@suite-common/suite-utils';
 import TrezorConnect from '@trezor/connect';
 import { Account } from '@suite-common/wallet-types';
 import { getFiatRatesForTimestamps } from '@suite-common/fiat-services';
-import { selectAccountsByNetworkSymbols } from '@suite-common/wallet-core';
+import { selectAccountsByNetworkSymbols, selectAccountByKey } from '@suite-common/wallet-core';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
+import { AccountBalanceHistory } from '@trezor/blockchain-link';
 
 import {
     EnhancedAccountBalanceHistory,
     FiatRatesForTimeFrame,
     LineGraphTimeFrameValues,
+    LineGraphTimeFrameConfiguration,
+    GraphSection,
 } from './types';
 import {
     enhanceBlockchainAccountHistory,
@@ -26,86 +23,68 @@ import {
 } from './graphUtils';
 import { timeSwitchItems } from './config';
 import { actionPrefix } from './graphActions';
-import { AccountBalanceHistory } from '@trezor/blockchain-link';
-import { LineGraphTimeFrameItem } from '@suite-common/wallet-types/libDev/src/graph';
 
-const sortAccountBalanceHistoryByTimeAsc = (accountBalanceMovements: AccountBalanceHistory[]) => {
-    return accountBalanceMovements.sort((a, b) => {
-        return a.time - b.time;
-    });
+type GetGraphPointsForAccountsThunkPayload = {
+    section: GraphSection;
+    fiatCurrency: FiatCurrencyCode;
+    timeFrame: LineGraphTimeFrameValues;
 };
+
+type GetGraphPointsForSingleAccountThunk = {
+    accountKey: string;
+    fiatCurrency: FiatCurrencyCode;
+    timeFrame: LineGraphTimeFrameValues;
+};
+
+const sortAccountBalanceHistoryByTimeAsc = (accountBalanceMovements: AccountBalanceHistory[]) =>
+    accountBalanceMovements.sort((a, b) => a.time - b.time);
 
 const getSuccessAccountBalanceMovements = (
     accountBalanceMovements: Array<AccountBalanceHistory | undefined>,
-) => {
-    const successAccountMovement = [];
-    for (let movement of accountBalanceMovements) {
-        if (movement?.time) {
-            successAccountMovement.push(movement);
-        }
-    }
-    return successAccountMovement;
-};
+) => (accountBalanceMovements ? accountBalanceMovements.filter(movement => !!movement?.time) : []);
 
-const fetchAccountsBalanceHistory = async (
-    accounts: Account[],
-    { from, to, groupBy }: { from: number; to: number; groupBy: number },
+const fetchAccountBalanceHistory = async (
+    account: Account,
+    { from, to, groupBy }: { from?: number; to?: number; groupBy: number },
 ) => {
-    const promises = accounts.map(async account => {
-        const response = await TrezorConnect.blockchainGetAccountBalanceHistory({
-            coin: account.symbol,
-            descriptor: account.descriptor,
-            from,
-            to,
-            groupBy,
-        });
-        try {
-            if (response?.success) {
-                const sortedPayload = sortAccountBalanceHistoryByTimeAsc(response.payload);
-                const responseWithRates = await ensureHistoryRates(account.symbol, sortedPayload);
-                const enhancedResponse = enhanceBlockchainAccountHistory(
-                    responseWithRates,
-                    account.symbol,
-                );
-                return enhancedResponse;
-            }
-        } catch (error) {
-            // eslint-disable-next-line no-console
-            console.log(error);
-        }
-    });
-    const accountBalanceMovements = await Promise.all(promises);
-    const successAccountBalanceMovements = getSuccessAccountBalanceMovements(
-        accountBalanceMovements.flat(),
-    );
-    return successAccountBalanceMovements as EnhancedAccountBalanceHistory[];
-};
-
-const getOldestAccountBalanceMovement = async (account: Account) => {
     const response = await TrezorConnect.blockchainGetAccountBalanceHistory({
         coin: account.symbol,
         descriptor: account.descriptor,
-        groupBy: 3600 * 24, // day
+        from,
+        to,
+        groupBy,
     });
     if (response?.success) {
-        const { payload } = response;
-        const sortedAccountBalanceMovements = sortAccountBalanceHistoryByTimeAsc(payload);
-        return sortedAccountBalanceMovements[0];
+        const sortedPayload = sortAccountBalanceHistoryByTimeAsc(response.payload);
+        const responseWithRates = await ensureHistoryRates(account.symbol, sortedPayload);
+        const enhancedResponse = enhanceBlockchainAccountHistory(responseWithRates, account.symbol);
+        const successAccountBalanceMovements = getSuccessAccountBalanceMovements(enhancedResponse);
+        return successAccountBalanceMovements as EnhancedAccountBalanceHistory[];
     }
 };
 
-const getOldestAccountBalanceMovementTimestampFromAllAccounts = async (accounts: Account[]) => {
-    const promises = accounts.map(async account => {
-        return getOldestAccountBalanceMovement(account);
+const getOldestAccountBalanceMovement = async (account: Account) => {
+    const accountBalanceHistory = await fetchAccountBalanceHistory(account, {
+        groupBy: 3600 * 24, // day
     });
+    return accountBalanceHistory?.length ? accountBalanceHistory[0] : null;
+};
+
+const getOldestAccountBalanceMovementTimestampFromAllAccounts = async (accounts: Account[]) => {
+    const fallbackMovement = new Date(0).getTime(); // in case of fetching error erc.
+    const promises = accounts.map(account => getOldestAccountBalanceMovement(account));
     const accountBalanceMovements = await Promise.all(promises);
-    const successOldestAccountMovementTime =
-        getSuccessAccountBalanceMovements(accountBalanceMovements);
-    return Math.min(...successOldestAccountMovementTime.map(movement => movement.time));
+    const successOldestAccountMovementTime = accountBalanceMovements
+        ? getSuccessAccountBalanceMovements(accountBalanceMovements)
+        : [];
+    return successOldestAccountMovementTime.length
+        ? Math.min(...successOldestAccountMovementTime.map(movement => movement.time))
+        : fallbackMovement;
 };
 
 /**
- * We need to know what is the balance in the beginning of selected graph time frame.
+ * We need to know what is the account balance at the beginning of selected graph time frame
+ * to have balance history as a continuous line.
  * @param account
  * @param startOfRangeDate
  */
@@ -113,26 +92,20 @@ const getAccountBalanceAtStartOfRange = async (
     account: Account,
     startOfRangeDate: Date,
 ): Promise<EnhancedAccountBalanceHistory | undefined> => {
-    const oldestAccountBalanceMovement = await getOldestAccountBalanceMovement(account);
-    if (oldestAccountBalanceMovement?.time) {
-        const oldestAccountBalanceMovementTimestamp = oldestAccountBalanceMovement.time;
-        const oldestAccountBalanceMovementStartOfDay = startOfDay(
-            new Date(oldestAccountBalanceMovementTimestamp * 1000),
-        );
-        const accountBalanceHistoryToStartOfRange = await fetchAccountsBalanceHistory([account], {
-            from: getBlockbookSafeTime(getUnixTime(oldestAccountBalanceMovementStartOfDay)),
-            to: getBlockbookSafeTime(getUnixTime(startOfRangeDate)),
-            groupBy: 3600, // day
-        });
-        return accountBalanceHistoryToStartOfRange.length
-            ? (accountBalanceHistoryToStartOfRange[
-                  accountBalanceHistoryToStartOfRange.length - 1
-              ] as EnhancedAccountBalanceHistory)
-            : (oldestAccountBalanceMovement as EnhancedAccountBalanceHistory);
+    const accountBalanceHistoryToStartOfRange = await fetchAccountBalanceHistory(account, {
+        to: getBlockbookSafeTime(getUnixTime(startOfRangeDate)),
+        groupBy: 3600, // day
+    });
+    if (accountBalanceHistoryToStartOfRange?.length) {
+        return accountBalanceHistoryToStartOfRange[
+            accountBalanceHistoryToStartOfRange.length - 1
+        ] as EnhancedAccountBalanceHistory;
     }
+    const oldestAccountBalanceMovement = await getOldestAccountBalanceMovement(account);
+    return oldestAccountBalanceMovement as EnhancedAccountBalanceHistory;
 };
 
-const getValueBackInMinutes = async (
+const getMinutesBackToStartOfRange = async (
     accounts: Account[],
     timeFrame: LineGraphTimeFrameValues,
 ): Promise<number> => {
@@ -145,25 +118,24 @@ const getValueBackInMinutes = async (
     return differenceInMinutes(new Date(), new Date(oldestAccountBalanceChangeUnixTime * 1000));
 };
 
-const getTimeFrameItem = async (
+const getTimeFrameConfiguration = (
     timeFrame: LineGraphTimeFrameValues,
     endOfRangeDate: Date,
-    accounts: Account[],
+    minutesBackToStartOfRange: number,
 ) => {
-    const valueBackInMinutes = await getValueBackInMinutes(accounts, timeFrame);
     const stepInMinutes =
         timeSwitchItems[timeFrame]?.stepInMinutes ??
-        getLineGraphAllTimeStepInMinutes(endOfRangeDate, valueBackInMinutes);
+        getLineGraphAllTimeStepInMinutes(endOfRangeDate, minutesBackToStartOfRange);
 
     return {
         ...timeSwitchItems[timeFrame],
-        valueBackInMinutes,
+        valueBackInMinutes: minutesBackToStartOfRange,
         stepInMinutes,
     };
 };
 
-const getFiatRatesForTimeFrame = async (
-    timeFrameItem: Required<LineGraphTimeFrameItem>,
+const getFiatRatesForSelectedTimeFrame = async (
+    timeFrameItem: Required<LineGraphTimeFrameConfiguration>,
     startOfRangeDate: Date,
     endOfRangeDate: Date,
 ) => {
@@ -185,42 +157,34 @@ const getFiatRatesForTimeFrame = async (
         { symbol: 'btc' },
         datesInRangeUnixTime,
     ).then(res =>
-        (res?.tickers || []).map(({ ts, rates }) => {
-            return {
-                time: ts,
-                rates,
-            };
-        }),
+        (res?.tickers || []).map(({ ts, rates }) => ({
+            time: ts,
+            rates,
+        })),
     );
     return fiatRatesForDatesInRange as FiatRatesForTimeFrame;
 };
 
 const prepareAllTimeFrameRatesForGraphPoints = (
     accountBalanceRatesAtStartOfRange: EnhancedAccountBalanceHistory,
-    fiatRatesForTimesInRange: FiatRatesForTimeFrame,
+    fiatRatesForTimeFrame: FiatRatesForTimeFrame,
     accountsBalanceHistoryInRange: EnhancedAccountBalanceHistory[],
     fiatCurrency: FiatCurrencyCode,
 ) => {
     const fiatRatesInTime = [
-        ...accountsBalanceHistoryInRange.map(balanceHistoryInRange => {
-            return {
-                time: balanceHistoryInRange.time,
-                balance: balanceHistoryInRange.balance,
-                fiatCurrencyRate: balanceHistoryInRange.rates[fiatCurrency],
-            };
-        }),
-        ...fiatRatesForTimesInRange.map(timeInRange => {
-            return {
-                time: timeInRange.time,
-                balance: null,
-                fiatCurrencyRate: timeInRange.rates[fiatCurrency],
-            };
-        }),
+        ...accountsBalanceHistoryInRange.map(balanceHistoryInRange => ({
+            time: balanceHistoryInRange.time,
+            balance: balanceHistoryInRange.balance,
+            fiatCurrencyRate: balanceHistoryInRange.rates[fiatCurrency],
+        })),
+        ...fiatRatesForTimeFrame.map(timeInRange => ({
+            time: timeInRange.time,
+            balance: null,
+            fiatCurrencyRate: timeInRange.rates[fiatCurrency],
+        })),
     ];
 
-    const fiatRatesSortedByTimeAsc = fiatRatesInTime.sort((a, b) => {
-        return a.time - b.time;
-    });
+    const fiatRatesSortedByTimeAsc = fiatRatesInTime.sort((a, b) => a.time - b.time);
     // account balance at the beginning of time frame has to be the first array item
     const newArrayWithAllBalancesFilled = [
         {
@@ -230,7 +194,7 @@ const prepareAllTimeFrameRatesForGraphPoints = (
         },
     ];
 
-    for (let rate of fiatRatesSortedByTimeAsc) {
+    fiatRatesSortedByTimeAsc.forEach(rate => {
         const { balance } = rate;
         if (!balance) {
             const previousTimeFrameItemBalance =
@@ -242,82 +206,138 @@ const prepareAllTimeFrameRatesForGraphPoints = (
         } else {
             newArrayWithAllBalancesFilled.push(rate);
         }
-    }
+    });
 
-    return newArrayWithAllBalancesFilled;
+    // prepare graph points
+    return newArrayWithAllBalancesFilled.map(timestamp => {
+        const value = Number(timestamp.balance) * Number(timestamp.fiatCurrencyRate);
+        return {
+            date: new Date(timestamp.time * 1000),
+            value,
+        };
+    });
+};
+
+const getTimeFrameData = async (timeFrame: LineGraphTimeFrameValues, accounts: Account[]) => {
+    const endOfRangeDate = new Date();
+
+    const minutesBackToStartOfRange = await getMinutesBackToStartOfRange(accounts, timeFrame);
+    const timeFrameConfiguration = getTimeFrameConfiguration(
+        timeFrame,
+        endOfRangeDate,
+        minutesBackToStartOfRange,
+    );
+    const startOfRangeDate = subMinutes(endOfRangeDate, timeFrameConfiguration.valueBackInMinutes);
+
+    const fiatRatesForTimeFrame = await getFiatRatesForSelectedTimeFrame(
+        timeFrameConfiguration,
+        startOfRangeDate,
+        endOfRangeDate,
+    );
+
+    return {
+        startOfRangeDate,
+        endOfRangeDate,
+        timeFrameConfiguration,
+        fiatRatesForTimeFrame,
+    };
 };
 
 export const getGraphPointsForSingleAccountThunk = createThunk(
     `${actionPrefix}/getGraphPointsForSingleAccountThunk`,
-    async (timeFrame: LineGraphTimeFrameValues, { getState }) => {},
+    async (
+        { accountKey, fiatCurrency, timeFrame }: GetGraphPointsForSingleAccountThunk,
+        { getState },
+    ) => {
+        const account = selectAccountByKey(getState(), accountKey);
+
+        if (account) {
+            const {
+                startOfRangeDate,
+                endOfRangeDate,
+                timeFrameConfiguration,
+                fiatRatesForTimeFrame,
+            } = await getTimeFrameData(timeFrame, [account]);
+
+            const accountBalanceRatesAtStartOfRange = await getAccountBalanceAtStartOfRange(
+                account,
+                startOfRangeDate,
+            );
+
+            const accountsBalanceHistoryInRange = await fetchAccountBalanceHistory(account, {
+                from: getBlockbookSafeTime(getUnixTime(startOfRangeDate)),
+                to: getBlockbookSafeTime(getUnixTime(endOfRangeDate)),
+                groupBy: timeFrameConfiguration.stepInMinutes * 60,
+            });
+
+            const graphPoints = prepareAllTimeFrameRatesForGraphPoints(
+                accountBalanceRatesAtStartOfRange,
+                fiatRatesForTimeFrame,
+                accountsBalanceHistoryInRange,
+                fiatCurrency,
+            );
+
+            return graphPoints;
+        }
+
+        // TODO handle graph error with thunk lifecycle error?
+    },
 );
 
 export const getGraphPointsForAccountsThunk = createThunk(
     `${actionPrefix}/getGraphPointsForAccountsThunk`,
     async (
-        {
-            section,
-            fiatCurrency,
-            timeFrame,
-        }: {
-            section: 'dashboard' | 'account';
-            fiatCurrency: FiatCurrencyCode;
-            timeFrame: LineGraphTimeFrameValues;
-        },
+        { section, fiatCurrency, timeFrame }: GetGraphPointsForAccountsThunkPayload,
         { getState },
     ) => {
-        const endOfRangeDate = new Date();
-
         // FIXME mobile app currently supports only btc so it is hardcoded for now
         const accounts = selectAccountsByNetworkSymbols(getState(), ['btc']);
-        const timeFrameItem = await getTimeFrameItem(timeFrame, endOfRangeDate, accounts);
-        const startOfRangeDate = subMinutes(endOfRangeDate, timeFrameItem.valueBackInMinutes);
 
-        // FIXME do not hardcode first account
-        const accountBalanceRatesAtStartOfRange = await getAccountBalanceAtStartOfRange(
-            accounts[0],
-            startOfRangeDate,
-        );
+        if (accounts.length) {
+            const {
+                startOfRangeDate,
+                endOfRangeDate,
+                timeFrameConfiguration,
+                fiatRatesForTimeFrame,
+            } = await getTimeFrameData(timeFrame, accounts);
 
-        const fiatRatesForTimesInRange = await getFiatRatesForTimeFrame(
-            timeFrameItem,
-            startOfRangeDate,
-            endOfRangeDate,
-        );
-
-        // FIXME do not hardcode first account
-        const accountsBalanceHistoryInRange = await fetchAccountsBalanceHistory([accounts[0]], {
-            from: getBlockbookSafeTime(getUnixTime(startOfRangeDate)),
-            to: getBlockbookSafeTime(getUnixTime(endOfRangeDate)),
-            groupBy: timeFrameItem.stepInMinutes * 60,
-        });
-
-        if (accountBalanceRatesAtStartOfRange) {
-            const timeFrameItemsWithAllBalances = prepareAllTimeFrameRatesForGraphPoints(
-                accountBalanceRatesAtStartOfRange,
-                fiatRatesForTimesInRange,
-                accountsBalanceHistoryInRange,
-                fiatCurrency,
+            const allAccountsBalanceRatesAtStartOfRangePromises = accounts.map(account =>
+                getAccountBalanceAtStartOfRange(account, startOfRangeDate),
+            );
+            const allAccountsBalanceRatesAtStartOfRange = await Promise.all(
+                allAccountsBalanceRatesAtStartOfRangePromises,
+            );
+            // get oldest from this array
+            const oldestAccountBalanceRatesAtStartOfRange = sortAccountBalanceHistoryByTimeAsc(
+                allAccountsBalanceRatesAtStartOfRange,
             );
 
-            console.log('timeFrameItemsWithAllBalances********: ', timeFrameItemsWithAllBalances);
+            const accountsBalanceHistoryInRangePromises = accounts.map(account =>
+                fetchAccountBalanceHistory(account, {
+                    from: getBlockbookSafeTime(getUnixTime(startOfRangeDate)),
+                    to: getBlockbookSafeTime(getUnixTime(endOfRangeDate)),
+                    groupBy: timeFrameConfiguration.stepInMinutes * 60,
+                }),
+            );
+            const accountsBalanceHistoryInRange = await Promise.all(
+                accountsBalanceHistoryInRangePromises,
+            );
 
-            const points = timeFrameItemsWithAllBalances.map(timestamp => {
-                const value = Number(timestamp.balance) * Number(timestamp.fiatCurrencyRate);
+            if (oldestAccountBalanceRatesAtStartOfRange) {
+                // TODO merge the same timestamp balances for different accunts together
+                const graphPoints = prepareAllTimeFrameRatesForGraphPoints(
+                    oldestAccountBalanceRatesAtStartOfRange[0],
+                    fiatRatesForTimeFrame,
+                    accountsBalanceHistoryInRange.flat(),
+                    fiatCurrency,
+                );
+
                 return {
-                    date: new Date(timestamp.time * 1000),
-                    value: value,
+                    section,
+                    graphPoints,
                 };
-            });
-
-            console.log('points********: ', points);
-
-            return {
-                section,
-                points,
-            };
-        } else {
-            // TODO handle graph error with thunk lifecycle error?
+            }
         }
+        // TODO handle graph error with thunk lifecycle error?
     },
 );

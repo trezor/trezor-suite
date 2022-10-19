@@ -22,6 +22,7 @@
         "@suite-common/wallet-core": "*",
         "@suite-common/wallet-types": "*",
         "@suite-common/wallet-utils": "*",
+        "@trezor/blockchain-link": "*",
         "@trezor/connect": "9.0.3",
         "bignumber.js": "^9.1.0",
         "date-fns": "^2.29.1"

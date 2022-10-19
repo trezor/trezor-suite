@@ -69,14 +69,17 @@ export interface LineGraphPoint {
 
 export type LineGraphTimeFrameValues = 'hour' | 'day' | 'week' | 'month' | 'year' | 'all';
 
-type LineGraphTimeFrameItem = {
+export type LineGraphTimeFrameConfiguration = {
     shortcut: string;
     value: LineGraphTimeFrameValues;
     stepInMinutes?: number;
     valueBackInMinutes?: number;
 };
 
-export type LineGraphTimeFrameItems = Record<LineGraphTimeFrameValues, LineGraphTimeFrameItem>;
+export type LineGraphTimeFrameItems = Record<
+    LineGraphTimeFrameValues,
+    LineGraphTimeFrameConfiguration
+>;
 
 export interface EnhancedAccountBalanceHistory extends AccountBalanceHistory {
     balance: string;
@@ -86,3 +89,5 @@ export type FiatRatesForTimeFrame = Array<{
     time: number;
     rates: Record<FiatCurrencyCode, number>;
 }>;
+
+export type GraphSection = 'dashboard' | 'account';

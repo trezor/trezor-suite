@@ -1,7 +1,7 @@
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 
-import { LineGraphPoint } from './types';
-import { getGraphPointsForAccountsThunk } from './graphThunks';
+import { GraphSection, LineGraphPoint } from './types';
+import { getGraphPointsForAccountsThunk, getGraphPointsForSingleAccountThunk } from './graphThunks';
 
 export interface GraphState {
     dashboard: {
@@ -30,16 +30,16 @@ export type GraphRootState = {
 const updateSectionPoints = (
     state: GraphState,
     payload: {
-        section: 'dashboard' | 'account';
-        points: LineGraphPoint[];
+        section: GraphSection;
+        graphPoints: LineGraphPoint[];
     },
 ) => {
-    const { section, points } = payload;
+    const { section, graphPoints } = payload;
     /**
      * react-native-graph library has problems with rendering path when there are some invalid values.
      * Also graph is not showing (with props animated=true) when dates do not follow each other by milliseconds.
      */
-    const validGraphPoints = points
+    const validGraphPoints = graphPoints
         .filter(point => !Number.isNaN(point.value))
         .map((point, index) => ({
             ...point,
@@ -49,10 +49,24 @@ const updateSectionPoints = (
 };
 
 export const prepareGraphReducer = createReducerWithExtraDeps(graphInitialState, builder => {
-    builder.addCase(getGraphPointsForAccountsThunk.fulfilled, (state, action) => {
-        updateSectionPoints(state, action.payload);
-    });
+    builder
+        .addCase(getGraphPointsForAccountsThunk.fulfilled, (state, action) => {
+            if (action.payload) {
+                updateSectionPoints(state, action.payload);
+            }
+        })
+        .addCase(getGraphPointsForSingleAccountThunk.fulfilled, (state, action) => {
+            if (action.payload) {
+                updateSectionPoints(state, {
+                    section: 'account',
+                    points: action.payload,
+                });
+            }
+        });
 });
 
 export const selectDashboardGraphPoints = (state: GraphRootState) =>
     state.wallet.graph.dashboard.points;
+
+export const selectAccountGraphPoints = (state: GraphRootState) =>
+    state.wallet.graph.account.points;

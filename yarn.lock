@@ -6404,6 +6404,7 @@ __metadata:
     "@suite-common/wallet-core": "*"
     "@suite-common/wallet-types": "*"
     "@suite-common/wallet-utils": "*"
+    "@trezor/blockchain-link": "*"
     "@trezor/connect": 9.0.3
     bignumber.js: ^9.1.0
     date-fns: ^2.29.1
@@ -6618,10 +6619,13 @@ __metadata:
     "@suite-common/suite-types": "*"
     "@suite-common/wallet-config": "*"
     "@suite-common/wallet-core": "*"
+    "@suite-common/wallet-graph": "*"
     "@suite-common/wallet-types": "*"
     "@suite-common/wallet-utils": "*"
     "@suite-native/accounts": "*"
     "@suite-native/atoms": "*"
+    "@suite-native/graph": "*"
+    "@suite-native/module-settings": "*"
     "@suite-native/navigation": "*"
     "@suite-native/transactions": "*"
     "@trezor/icons": "*"
