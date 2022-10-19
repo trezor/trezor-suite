@@ -4,7 +4,7 @@ import { Account } from '@suite-common/wallet-types';
 
 const getNetworkType = (symbol: Account['symbol']) => {
     if (symbol === 'regtest') return symbol;
-    const testnets = ['test', 'txrp', 'trop', 'tada'];
+    const testnets = ['test', 'txrp', 'trop', 'tgor', 'tada'];
     return testnets.includes(symbol) ? 'testnet' : 'prod';
 };
 
@@ -18,6 +18,7 @@ const getCoinFromTestnet = (symbol: Account['symbol']) => {
         case 'tada':
             return 'ada';
         case 'trop':
+        case 'tgor':
             return 'eth';
         default:
             return symbol;
