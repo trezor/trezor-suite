@@ -1,9 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
-import { darken, transparentize } from 'polished';
+import { transparentize } from 'polished';
 
 import { Icon } from '../Icon';
 import { useTheme } from '../../utils';
+import { variables } from '../../config';
 
 const Wrapper = styled.div<Pick<WarningProps, 'critical' | 'withIcon'>>`
     align-items: center;
@@ -12,14 +13,15 @@ const Wrapper = styled.div<Pick<WarningProps, 'critical' | 'withIcon'>>`
     border-radius: 8px;
     color: ${({ critical, theme }) => (critical ? theme.TYPE_DARK_GREY : theme.TYPE_DARK_ORANGE)};
     display: flex;
-    font-weight: 500;
+    font-size: ${variables.FONT_SIZE.SMALL};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     justify-content: ${({ withIcon }) => !withIcon && 'center'};
-    padding: 10px 12px;
+    padding: 14px 20px;
     width: 100%;
 `;
 
 const StyledIcon = styled(Icon)`
-    margin-right: 8px;
+    margin-right: 14px;
 `;
 
 interface WarningProps {
@@ -36,7 +38,7 @@ export const Warning = ({ children, className, critical, withIcon }: WarningProp
 
     return (
         <Wrapper critical={critical} withIcon={withIcon} className={className}>
-            {withIcon && <StyledIcon size={18} icon="WARNING" color={iconColor} />}
+            {withIcon && <StyledIcon size={20} icon="WARNING" color={iconColor} />}
             {children}
         </Wrapper>
     );

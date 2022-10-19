@@ -1,6 +1,8 @@
 import React from 'react';
-import styled from 'styled-components';
-import { Button } from '@trezor/components';
+import { useWatch } from 'react-hook-form';
+import styled, { useTheme } from 'styled-components';
+
+import { Checkbox, TooltipButton, Warning, variables } from '@trezor/components';
 import { useDevice } from '@suite-hooks';
 import { useSendFormContext } from '@wallet-hooks';
 import { Translation } from '@suite-components/Translation';
@@ -38,6 +40,8 @@ export const ReviewButton = () => {
     const { online, isLoading, signTransaction, getValues, getDefaultValue, composedLevels } =
         useSendFormContext();
 
+    const theme = useTheme();
+
     const values = getValues();
     const broadcastEnabled = getDefaultValue('options', []).includes('broadcast');
     const composedTx = composedLevels ? composedLevels[values.selectedFee || 'normal'] : undefined;
@@ -49,20 +53,34 @@ export const ReviewButton = () => {
         !online;
 
     return (
-        <Wrapper>
-            <Row>
-                <ButtonReview
-                    data-test="@send/review-button"
-                    isDisabled={isDisabled || isLoading}
-                    onClick={signTransaction}
-                >
-                    {broadcastEnabled ? (
-                        <Translation id="REVIEW_AND_SEND_TRANSACTION" />
-                    ) : (
-                        <Translation id="SIGN_TRANSACTION" />
-                    )}
-                </ButtonReview>
-            </Row>
-        </Wrapper>
+        <>
+            {possibleToSubmit && isLowAnonymityUtxoSelected && (
+                <StyledWarning critical>
+                    <Checkbox
+                        color={theme.BG_RED}
+                        isChecked={anonymityWarningChecked}
+                        onClick={toggleAnonymityWarning}
+                    >
+                        <Translation id="TR_BREAKING_ANONYMITY_CHECKBOX" />
+                    </Checkbox>
+                </StyledWarning>
+            )}
+            <ButtonReview
+                interactiveTooltip={!coinControlOpen}
+                isRed={anonymityWarningChecked}
+                tooltipContent={tooltipContent}
+                data-test="@send/review-button"
+                isDisabled={isDisabled || isLoading}
+                onClick={signTransaction}
+            >
+                <Translation id={primaryText} />
+                {isOutputWarning ||
+                    (isLowAnonymityUtxoSelected && (
+                        <SecondLine>
+                            <Translation id={secondaryText} />
+                        </SecondLine>
+                    ))}
+            </ButtonReview>
+        </>
     );
 };
