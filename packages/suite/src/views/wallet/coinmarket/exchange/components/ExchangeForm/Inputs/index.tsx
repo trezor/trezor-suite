@@ -64,7 +64,7 @@ const Inputs = () => {
         updateFiatValue,
         clearErrors,
     } = useCoinmarketExchangeFormContext();
-    const { souldSendInSats } = useBitcoinAmountUnit(account.symbol);
+    const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
 
     const { outputs } = getValues();
     const tokenAddress = outputs?.[0]?.token;
@@ -91,7 +91,7 @@ const Inputs = () => {
                       .dividedBy(divisor)
                       .decimalPlaces(network.decimals)
                       .toString();
-            const cryptoInputValue = souldSendInSats
+            const cryptoInputValue = shouldSendInSats
                 ? amountToSatoshi(amount, network.decimals)
                 : amount;
             setValue(CRYPTO_INPUT, cryptoInputValue, { shouldDirty: true });
@@ -101,7 +101,7 @@ const Inputs = () => {
         },
         [
             account.formattedBalance,
-            souldSendInSats,
+            shouldSendInSats,
             clearErrors,
             composeRequest,
             network.decimals,

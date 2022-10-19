@@ -29,7 +29,7 @@ const TokenLogo = styled.img`
 const SendCryptoSelect = () => {
     const { control, setAmountLimits, account, setValue, exchangeInfo, composeRequest } =
         useCoinmarketExchangeFormContext();
-    const { souldSendInSats } = useBitcoinAmountUnit(account.symbol);
+    const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
 
     const { tokens } = account;
     const sendCryptoOptions = getSendCryptoOptions(account, exchangeInfo?.sellSymbols || new Set());
@@ -78,7 +78,7 @@ const SendCryptoSelect = () => {
                                     }.svg`}
                                 />
                             )}
-                            <Label>{souldSendInSats ? 'sat' : option.label}</Label>
+                            <Label>{shouldSendInSats ? 'sat' : option.label}</Label>
                         </Option>
                     )}
                     value={value}

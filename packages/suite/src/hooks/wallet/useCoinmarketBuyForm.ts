@@ -59,7 +59,7 @@ export const useCoinmarketBuyForm = (props: UseCoinmarketBuyFormProps): BuyFormC
         exchangeCoinInfo: state.wallet.coinmarket.exchange.exchangeCoinInfo,
     }));
 
-    const { souldSendInSats } = useBitcoinAmountUnit(account.symbol);
+    const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
     const { defaultValues, defaultCountry, defaultCurrency } = useCoinmarketBuyFormDefaultValues(
         account.symbol,
         buyInfo,
@@ -84,12 +84,12 @@ export const useCoinmarketBuyForm = (props: UseCoinmarketBuyFormProps): BuyFormC
         if (!cryptoInputValue) {
             return;
         }
-        const conversion = souldSendInSats ? amountToSatoshi : formatAmount;
+        const conversion = shouldSendInSats ? amountToSatoshi : formatAmount;
         setValue(CRYPTO_INPUT, conversion(cryptoInputValue, network.decimals), {
             shouldValidate: true,
             shouldDirty: true,
         });
-    }, [souldSendInSats]);
+    }, [shouldSendInSats]);
 
     const resetForm = useCallback(() => {
         reset({});
@@ -103,7 +103,7 @@ export const useCoinmarketBuyForm = (props: UseCoinmarketBuyFormProps): BuyFormC
             }
         },
         200,
-        [errors, saveDraft, account.key, values, souldSendInSats],
+        [errors, saveDraft, account.key, values, shouldSendInSats],
     );
     useEffect(() => {
         if (!isChanged(defaultValues, values)) {
@@ -115,7 +115,7 @@ export const useCoinmarketBuyForm = (props: UseCoinmarketBuyFormProps): BuyFormC
         const formValues = methods.getValues();
         const fiatStringAmount = formValues.fiatInput;
         const cryptoStringAmount =
-            formValues.cryptoInput && souldSendInSats
+            formValues.cryptoInput && shouldSendInSats
                 ? formatAmount(formValues.cryptoInput, network.decimals)
                 : formValues.cryptoInput;
         const wantCrypto = !fiatStringAmount;

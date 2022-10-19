@@ -107,7 +107,7 @@ export const useCoinmarketExchangeForm = ({
     const { account, network } = selectedAccount;
     const { navigateToExchangeOffers } = useCoinmarketNavigation(account);
     const { symbol, networkType } = account;
-    const { souldSendInSats } = useBitcoinAmountUnit(symbol);
+    const { shouldSendInSats } = useBitcoinAmountUnit(symbol);
 
     const coinFees = fees[symbol];
     const levels = getFeeLevels(networkType, coinFees);
@@ -207,18 +207,18 @@ export const useCoinmarketExchangeForm = ({
             const currency: { value: string; label: string } | undefined = getValues(FIAT_CURRENCY);
             if (!fiatRates || !fiatRates.current || !currency) return;
             const cryptoAmount =
-                amount && souldSendInSats ? formatAmount(amount, network.decimals) : amount;
+                amount && shouldSendInSats ? formatAmount(amount, network.decimals) : amount;
             const fiatValue = toFiatCurrency(cryptoAmount, currency.value, fiatRates.current.rates);
             setValue(FIAT_INPUT, fiatValue || '', { shouldValidate: true });
         },
-        [souldSendInSats, fiatRates, getValues, network.decimals, setValue],
+        [shouldSendInSats, fiatRates, getValues, network.decimals, setValue],
     );
 
     const updateFiatCurrency = (currency: { label: string; value: string }) => {
         if (!fiatRates || !fiatRates.current || !currency) return;
         const amount = getValues(CRYPTO_INPUT) as string;
         const cryptoAmount =
-            amount && souldSendInSats ? formatAmount(amount, network.decimals) : amount;
+            amount && shouldSendInSats ? formatAmount(amount, network.decimals) : amount;
         const fiatValue = toFiatCurrency(cryptoAmount, currency.value, fiatRates.current.rates);
         if (fiatValue) {
             setValue(FIAT_INPUT, fiatValue, { shouldValidate: true });
@@ -235,7 +235,7 @@ export const useCoinmarketExchangeForm = ({
             decimals,
         );
         const formattedCryptoValue =
-            cryptoValue && souldSendInSats
+            cryptoValue && shouldSendInSats
                 ? amountToSatoshi(cryptoValue, network.decimals)
                 : cryptoValue || '';
 
@@ -302,20 +302,20 @@ export const useCoinmarketExchangeForm = ({
         if (!cryptoInputValue) {
             return;
         }
-        const conversion = souldSendInSats ? amountToSatoshi : formatAmount;
+        const conversion = shouldSendInSats ? amountToSatoshi : formatAmount;
         const cryptoAmount = conversion(cryptoInputValue, network.decimals);
         setValue(CRYPTO_INPUT, cryptoAmount, {
             shouldValidate: true,
             shouldDirty: true,
         });
         updateFiatValue(cryptoAmount);
-    }, [souldSendInSats]);
+    }, [shouldSendInSats]);
 
     const onSubmit = async () => {
         const formValues = getValues();
         const unformattedOutputAmount = formValues.outputs[0].amount || '';
         const sendStringAmount =
-            unformattedOutputAmount && souldSendInSats
+            unformattedOutputAmount && shouldSendInSats
                 ? formatAmount(unformattedOutputAmount, network.decimals)
                 : unformattedOutputAmount;
         const send = formValues.sendCryptoSelect.value.toUpperCase();

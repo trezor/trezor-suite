@@ -108,7 +108,7 @@ export const useCoinmarketSellForm = ({
     const { account, network } = selectedAccount;
     const { navigateToSellOffers } = useCoinmarketNavigation(account);
     const { symbol, networkType } = account;
-    const { souldSendInSats } = useBitcoinAmountUnit(symbol);
+    const { shouldSendInSats } = useBitcoinAmountUnit(symbol);
 
     const coinFees = fees[symbol];
     const levels = getFeeLevels(networkType, coinFees);
@@ -255,7 +255,7 @@ export const useCoinmarketSellForm = ({
                 network.decimals,
             );
             const cryptoInputValue =
-                cryptoValue && souldSendInSats
+                cryptoValue && shouldSendInSats
                     ? amountToSatoshi(cryptoValue, network.decimals)
                     : cryptoValue;
             setValue(OUTPUT_AMOUNT, cryptoInputValue || '', { shouldDirty: true });
@@ -266,7 +266,7 @@ export const useCoinmarketSellForm = ({
             clearErrors,
             getValues,
             fiatRates,
-            souldSendInSats,
+            shouldSendInSats,
             network.decimals,
             composeRequest,
         ],
@@ -311,18 +311,18 @@ export const useCoinmarketSellForm = ({
         if (!cryptoInputValue) {
             return;
         }
-        const conversion = souldSendInSats ? amountToSatoshi : formatAmount;
+        const conversion = shouldSendInSats ? amountToSatoshi : formatAmount;
         setValue(CRYPTO_INPUT, conversion(cryptoInputValue, network.decimals), {
             shouldValidate: true,
             shouldDirty: true,
         });
-    }, [souldSendInSats]);
+    }, [shouldSendInSats]);
 
     const onSubmit = async () => {
         const formValues = getValues();
         const fiatStringAmount = formValues.fiatInput;
         const cryptoStringAmount =
-            formValues.cryptoInput && souldSendInSats
+            formValues.cryptoInput && shouldSendInSats
                 ? formatAmount(formValues.cryptoInput, network.decimals)
                 : formValues.cryptoInput;
         const amountInCrypto = !fiatStringAmount;
