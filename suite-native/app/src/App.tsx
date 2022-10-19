@@ -14,11 +14,14 @@ import { store, storePersistor } from '@suite-native/state';
 import { initBlockchainThunk, reconnectBlockchainThunk } from '@suite-common/wallet-core';
 import { StorageProvider } from '@suite-native/storage';
 import { FormatterProvider } from '@suite-common/formatters';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 
 import { RootStackNavigator } from './navigation/RootStackNavigator';
 import { StylesProvider } from './StylesProvider';
 import { useSplashScreen } from './hooks/useSplashScreen';
 import { useFormattersConfig } from './hooks/useFormattersConfig';
+
+const enabledNetworks: NetworkSymbol[] = ['btc', 'test'];
 
 const AppComponent = () => {
     const dispatch = useDispatch();
@@ -34,7 +37,10 @@ const AppComponent = () => {
                 /* Invoke reconnect manually here because we need to have fiat rates initialized
                  * immediately after the app is loaded.
                  */
-                await dispatch(reconnectBlockchainThunk('btc')).unwrap();
+                const promises = enabledNetworks.map(network =>
+                    dispatch(reconnectBlockchainThunk(network)),
+                );
+                await Promise.all(promises);
             } catch (error) {
                 Alert.alert('Error', error?.message ?? 'Unknown error');
                 console.error(error.message);
