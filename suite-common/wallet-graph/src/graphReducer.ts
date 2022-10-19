@@ -1,6 +1,6 @@
-import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
+import { createReducer } from '@reduxjs/toolkit';
 
-import { GraphSection, LineGraphPoint } from './types';
+import { GraphPlacement, LineGraphPoint } from './types';
 import { getAllAccountsGraphPointsThunk, getSingleAccountGraphPointsThunk } from './graphThunks';
 
 export interface GraphState {
@@ -27,17 +27,19 @@ export type GraphRootState = {
     };
 };
 
-const updateSectionPoints = (
+const updateGraphPoints = (
     state: GraphState,
     payload: {
-        section: GraphSection;
+        graphPlacement: GraphPlacement;
         graphPoints: LineGraphPoint[];
     },
 ) => {
-    const { section, graphPoints } = payload;
+    const { graphPlacement, graphPoints } = payload;
     /**
      * react-native-graph library has problems with rendering path when there are some invalid values.
-     * Also graph is not showing (with props animated=true) when dates do not follow each other by milliseconds.
+     * Also animated=true graph does not show when dates do not follow each other from the unix epoch
+     * (start on 00:00:00 UTC on 1 January 1970).
+     *
      */
     const validGraphPoints = graphPoints
         .filter(point => !Number.isNaN(point.value))
@@ -45,20 +47,20 @@ const updateSectionPoints = (
             ...point,
             date: new Date(index),
         }));
-    state[section].points = validGraphPoints;
+    state[graphPlacement].points = validGraphPoints;
 };
 
-export const prepareGraphReducer = createReducerWithExtraDeps(graphInitialState, builder => {
+export const graphReducer = createReducer(graphInitialState, builder => {
     builder
         .addCase(getAllAccountsGraphPointsThunk.fulfilled, (state, action) => {
             if (action.payload) {
-                updateSectionPoints(state, action.payload);
+                updateGraphPoints(state, action.payload);
             }
         })
         .addCase(getSingleAccountGraphPointsThunk.fulfilled, (state, action) => {
             if (action.payload) {
-                updateSectionPoints(state, {
-                    section: 'account',
+                updateGraphPoints(state, {
+                    graphPlacement: 'account',
                     graphPoints: action.payload,
                 });
             }

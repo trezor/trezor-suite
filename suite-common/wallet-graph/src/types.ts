@@ -87,4 +87,4 @@ export interface LineGraphTimeFrameItemAccountBalance {
     fiatCurrencyRate?: number;
 }
 
-export type GraphSection = 'dashboard' | 'account';
+export type GraphPlacement = 'dashboard' | 'account';

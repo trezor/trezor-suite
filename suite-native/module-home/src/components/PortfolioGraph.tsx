@@ -28,9 +28,11 @@ export const PortfolioGraph = () => {
     useEffect(() => {
         dispatch(
             getAllAccountsGraphPointsThunk({
-                section: 'dashboard',
+                graphPlacement: 'dashboard',
                 fiatCurrency: fiatCurrency.label,
                 timeFrame: selectedTimeFrame,
+                // FIXME mobile app currently supports only btc so it is hardcoded for now
+                networkSymbols: ['btc', 'test'],
             }),
         );
     }, [selectedTimeFrame, fiatCurrency, dispatch]);
@@ -42,7 +44,7 @@ export const PortfolioGraph = () => {
     // FIXME - I think it is necessary to have the same number of items in arrays we are switching between - for graphs to be animated when switching time frames...
 
     return (
-        <Box>
+        <>
             <Text variant="titleLarge">
                 {/* TODO calculate this from assets  */}
                 {FiatAmountFormatter.format(0)}
@@ -65,6 +67,6 @@ export const PortfolioGraph = () => {
                 selectedTimeFrame={selectedTimeFrame}
                 onSelectTimeFrame={handleSelectTimeFrame}
             />
-        </Box>
+        </>
     );
 };

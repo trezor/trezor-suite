@@ -7,12 +7,13 @@ import { Account } from '@suite-common/wallet-types';
 import { getFiatRatesForTimestamps } from '@suite-common/fiat-services';
 import { selectAccountsByNetworkSymbols, selectAccountByKey } from '@suite-common/wallet-core';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
+import { NetworkSymbol } from '@suite-common/wallet-config/libDev/src';
 
 import {
     LineGraphTimeFrameItemAccountBalance,
     LineGraphTimeFrameValues,
     LineGraphTimeFrameConfiguration,
-    GraphSection,
+    GraphPlacement,
 } from './types';
 import {
     enhanceBlockchainAccountHistory,
@@ -25,9 +26,10 @@ import { timeSwitchItems } from './config';
 import { actionPrefix } from './graphActions';
 
 type GetGraphPointsForAccountsThunkPayload = {
-    section: GraphSection;
+    graphPlacement: GraphPlacement;
     fiatCurrency: FiatCurrencyCode;
     timeFrame: LineGraphTimeFrameValues;
+    networkSymbols: NetworkSymbol[];
 };
 
 type GetGraphPointsForSingleAccountThunk = {
@@ -38,14 +40,14 @@ type GetGraphPointsForSingleAccountThunk = {
 
 const fetchAccountBalanceHistory = async (
     account: Account,
-    { from, to, groupBy }: { from?: number; to?: number; groupBy: number },
+    { from, to, groupByInSeconds }: { from?: number; to?: number; groupByInSeconds: number },
 ) => {
     const response = await TrezorConnect.blockchainGetAccountBalanceHistory({
         coin: account.symbol,
         descriptor: account.descriptor,
         from,
         to,
-        groupBy,
+        groupBy: groupByInSeconds,
     });
     if (response?.success) {
         const responseWithRates = await ensureHistoryRates(account.symbol, response.payload);
@@ -61,7 +63,7 @@ const fetchAccountBalanceHistory = async (
 
 const getOldestAccountBalanceMovement = async (account: Account) => {
     const accountBalanceHistory = await fetchAccountBalanceHistory(account, {
-        groupBy: 3600 * 24, // day
+        groupByInSeconds: 3600 * 24, // day
     });
     return accountBalanceHistory?.[0];
 };
@@ -90,7 +92,7 @@ const getAccountBalanceAtStartOfRange = async (
 ): Promise<LineGraphTimeFrameItemAccountBalance> => {
     const accountBalanceHistoryToStartOfRange = await fetchAccountBalanceHistory(account, {
         to: getBlockbookSafeTime(getUnixTime(startOfRangeDate)),
-        groupBy: 3600, // day
+        groupByInSeconds: 3600 * 24,
     });
     if (accountBalanceHistoryToStartOfRange?.length) {
         return accountBalanceHistoryToStartOfRange[accountBalanceHistoryToStartOfRange.length - 1];
@@ -113,6 +115,7 @@ const getMinutesBackToStartOfRange = async (
     return differenceInMinutes(new Date(), new Date(oldestAccountBalanceChangeUnixTime * 1000));
 };
 
+// FIXME should be parametrized to support more coins - see comment about hardcoded bitcoin below
 const getFiatRatesForSelectedTimeFrame = async (
     timeFrameItem: Required<LineGraphTimeFrameConfiguration>,
     startOfRangeDate: Date,
@@ -262,7 +265,7 @@ export const getSingleAccountGraphPointsThunk = createThunk(
             const accountsBalanceHistoryInRange = await fetchAccountBalanceHistory(account, {
                 from: getBlockbookSafeTime(getUnixTime(startOfRangeDate)),
                 to: getBlockbookSafeTime(getUnixTime(endOfRangeDate)),
-                groupBy: timeFrameConfiguration.stepInMinutes * 60,
+                groupByInSeconds: timeFrameConfiguration.stepInMinutes * 60,
             });
 
             const graphPoints = prepareAllTimeFrameRatesForGraphPoints(
@@ -282,11 +285,15 @@ export const getSingleAccountGraphPointsThunk = createThunk(
 export const getAllAccountsGraphPointsThunk = createThunk(
     `${actionPrefix}/getAllAccountsGraphPointsThunk`,
     async (
-        { section, fiatCurrency, timeFrame }: GetGraphPointsForAccountsThunkPayload,
+        {
+            graphPlacement,
+            fiatCurrency,
+            timeFrame,
+            networkSymbols,
+        }: GetGraphPointsForAccountsThunkPayload,
         { getState },
     ) => {
-        // FIXME mobile app currently supports only btc so it is hardcoded for now
-        const accounts = selectAccountsByNetworkSymbols(getState(), ['btc']);
+        const accounts = selectAccountsByNetworkSymbols(getState(), networkSymbols);
 
         if (accounts.length) {
             const {
@@ -311,7 +318,7 @@ export const getAllAccountsGraphPointsThunk = createThunk(
                 fetchAccountBalanceHistory(account, {
                     from: getBlockbookSafeTime(getUnixTime(startOfRangeDate)),
                     to: getBlockbookSafeTime(getUnixTime(endOfRangeDate)),
-                    groupBy: timeFrameConfiguration.stepInMinutes * 60,
+                    groupByInSeconds: timeFrameConfiguration.stepInMinutes * 60,
                 }),
             );
             const accountsBalanceHistoryInRange = await Promise.all(
@@ -327,7 +334,7 @@ export const getAllAccountsGraphPointsThunk = createThunk(
                 );
 
                 return {
-                    section,
+                    graphPlacement,
                     graphPoints,
                 };
             }

@@ -7,7 +7,7 @@ import {
     prepareTransactionsReducer,
 } from '@suite-common/wallet-core';
 import { devicesReducer } from '@suite-native/module-devices';
-import { prepareGraphReducer } from '@suite-common/wallet-graph';
+import { graphReducer } from '@suite-common/wallet-graph';
 import { appSettingsReducer, appSettingsPersistWhitelist } from '@suite-native/module-settings';
 import { typedPersistReducer } from '@suite-native/storage';
 
@@ -17,7 +17,6 @@ const transactionsReducer = prepareTransactionsReducer(extraDependencies);
 const accountsReducer = prepareAccountsReducer(extraDependencies);
 const fiatRatesReducer = prepareFiatRatesReducer(extraDependencies);
 const blockchainReducer = prepareBlockchainReducer(extraDependencies);
-const graphReducer = prepareGraphReducer(extraDependencies);
 
 const appSettingsPersistedReducer = typedPersistReducer({
     reducer: appSettingsReducer,

@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js';
+import { A } from '@mobily/ts-belt';
 import {
     startOfMonth,
     getUnixTime,
@@ -25,6 +26,7 @@ import {
     GraphScale,
     LineGraphTimeFrameItemAccountBalance,
     LineGraphTimeFrameValues,
+    LineGraphPoint,
 } from './types';
 
 type FiatRates = NonNullable<CoinFiatRates['current']>['rates'];
@@ -535,8 +537,13 @@ export const getTimeFrameConfiguration = (
 
 export const sortTimeFrameItemsByTimeAsc = (
     accountBalanceMovements: LineGraphTimeFrameItemAccountBalance[],
-) => accountBalanceMovements.sort((a, b) => a.time - b.time);
+) => A.sort(accountBalanceMovements, (a, b) => a.time - b.time);
 
 export const getSuccessAccountBalanceMovements = (
-    accountBalanceMovements: Array<LineGraphTimeFrameItemAccountBalance>,
+    accountBalanceMovements: readonly LineGraphTimeFrameItemAccountBalance[],
 ) => (accountBalanceMovements ? accountBalanceMovements.filter(movement => !!movement?.time) : []);
+
+export const sumLineGraphPoints = (points: LineGraphPoint[]) =>
+    points
+        .map(point => point.value)
+        .reduce((previousValue, currentValue) => previousValue + currentValue, 0);

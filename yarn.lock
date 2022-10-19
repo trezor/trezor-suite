@@ -6393,6 +6393,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/wallet-graph@workspace:suite-common/wallet-graph"
   dependencies:
+    "@mobily/ts-belt": ^3.11.0
     "@reduxjs/toolkit": ^1.8.3
     "@suite-common/fiat-services": "*"
     "@suite-common/redux-utils": "*"
