@@ -122,20 +122,21 @@ const components: { [key: string]: React.LazyExoticComponent<any> } = {
 const AppRouter = () => (
     // inititating strict mode higher would throw an error from react-helmet
     // TODO: replace react-helmet with a maintained alternative
-    <React.StrictMode>
-        <Suspense fallback={<BundleLoader />}>
-            <Switch>
-                {routes.map(route => (
-                    <Route
-                        key={route.name}
-                        path={process.env.ASSET_PREFIX + route.pattern}
-                        exact={route.exact}
-                        component={components[route.name]}
-                    />
-                ))}
-            </Switch>
-        </Suspense>
-    </React.StrictMode>
+    // strict mode is commented out because of its interplay with compose errors in send form
+    // <React.StrictMode>
+    <Suspense fallback={<BundleLoader />}>
+        <Switch>
+            {routes.map(route => (
+                <Route
+                    key={route.name}
+                    path={process.env.ASSET_PREFIX + route.pattern}
+                    exact={route.exact}
+                    component={components[route.name]}
+                />
+            ))}
+        </Switch>
+    </Suspense>
+    // </React.StrictMode>
 );
 
 export default memo(AppRouter);
