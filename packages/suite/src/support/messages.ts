@@ -2686,6 +2686,10 @@ export default defineMessages({
         defaultMessage: 'Ethereum Testnet',
         id: 'TR_NETWORK_ETHEREUM_TESTNET',
     },
+    TR_NETWORK_ETHEREUM_GOERLI: {
+        defaultMessage: 'Ethereum Goerli',
+        id: 'TR_NETWORK_ETHEREUM_GOERLI',
+    },
     TR_NETWORK_LITECOIN: {
         defaultMessage: 'Litecoin',
         id: 'TR_NETWORK_LITECOIN',
