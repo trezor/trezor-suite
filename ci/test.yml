@@ -42,9 +42,9 @@
     expire_in: 7 days
     when: always
     paths:
-      - ./packages/integration-tests/projects/suite-web/snapshots
-      - ./packages/integration-tests/projects/suite-web/screenshots
-      - ./packages/integration-tests/projects/suite-web/videos
+      - ./packages/suite-web/e2e/snapshots
+      - ./packages/suite-web/e2e/screenshots
+      - ./packages/suite-web/e2e/videos
       - download-snapshots.sh
       - trezor-user-env-debugging.log
       - tenv-emulator-bridge-debugging.log
