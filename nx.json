@@ -24,7 +24,13 @@
     "targetDefaults": {
         "build:lib": {
             "dependsOn": ["^build:lib"],
-            "inputs": ["default", "^prod"],
+            "inputs": [
+                "default",
+                "^prod",
+                "{workspaceRoot}/tsconfig.json",
+                "{workspaceRoot}/tsconfig.aliases.json",
+                "{workspaceRoot}/tsconfig.lib.json"
+            ],
             "outputs": ["./lib", "./build"]
         },
         "type-check": {
@@ -55,7 +61,9 @@
     },
     "implicitDependencies": {
         "package.json": "*",
-        "nx.json": "*"
+        "nx.json": "*",
+        ".yarnrc.yml": "*",
+        "patches/*.patch": "*"
     },
     "affected": {
         "defaultBase": "origin/develop"
