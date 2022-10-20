@@ -7,6 +7,7 @@ export interface RequestOptions {
     parseJson?: boolean;
     delay?: number;
     identity?: string;
+    userAgent?: string;
 }
 
 const parseResult = (text: string, json = true) => {
@@ -41,8 +42,14 @@ const createHeaders = (options: RequestOptions) => {
     };
     // add custom header to define TOR identity.
     // request is intercepted by @trezor/request-manager and requested identity is used to create TOR circuit
+    // header works only in nodejs environment (suite-desktop). browser throws: Refused to set unsafe header "proxy-authorization" error
     if (options.identity) {
         headers['Proxy-Authorization'] = `Basic ${options.identity}`;
+    }
+    // blockbook api requires 'User-Agent' to be set
+    // same as in @trezor/blockchain-link/src/workers/blockbook/websocket
+    if (typeof options.userAgent === 'string') {
+        headers['User-Agent'] = options.userAgent || 'Trezor Suite';
     }
     return headers;
 };
