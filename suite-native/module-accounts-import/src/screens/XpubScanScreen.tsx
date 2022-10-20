@@ -19,6 +19,12 @@ import { yup } from '@trezor/validation';
 
 import { Camera, CAMERA_HEIGHT } from '../components/Camera';
 
+// Note: Btc and testnet are required right now. Everything else is always optional and can be undefined.
+const devXpubs: Partial<Record<NetworkSymbol, string>> & Record<'btc' | 'test', string> = {
+    btc: 'zpub6rjNNddoAVvuYaD6WPdxiqFEToQHgrERjWMg7kM9gGGk6rhPMWNEmL5X745FGqBq8Wp136LfA3A7UjRGEYdJrf8dUfshzNrb5rvaryNfVJf',
+    test: 'vpub5ZjRPuuMiEQnbwEDi9jtH1FaJMajZW78uZ1t3RJXKhxyMoTnPraKwGxiDo9SguDYvSieqjoLJxW5n2t9156RR1oeqRnURuftNZTzejBc4pa',
+};
+
 const coinStyle = prepareNativeStyle(utils => ({
     flexDirection: 'row',
     borderRadius: utils.borders.radii.large,
@@ -63,9 +69,6 @@ const submitButtonStyle = prepareNativeStyle(utils => ({
 }));
 
 const DEFAULT_CURRENCY_SYMBOL = 'btc';
-// Slip 0014 - https://github.com/satoshilabs/slips/blob/master/slip-0014.md#bitcoin-segwit--p2wpkh--bip84
-const BTC_HARD_CODED_XPUB =
-    'xpub6BiVtCpG9fQPxnPmHXG8PhtzQdWC2Su4qWu6XW9tpWFYhxydCLJGrWBJZ5H6qTAHdPQ7pQhtpjiYZVZARo14qHiay2fvrX996oEP42u8wZy';
 
 const xpubFormValidationSchema = yup.object({
     xpubAddress: yup.string().required(),
@@ -180,7 +183,9 @@ export const XpubScanScreen = ({
                     <Button
                         style={applyStyle(devXpubButtonStyle)}
                         onPress={() =>
-                            goToAccountImportScreen({ xpubAddress: BTC_HARD_CODED_XPUB })
+                            goToAccountImportScreen({
+                                xpubAddress: devXpubs[selectedCurrencySymbol] ?? devXpubs.btc,
+                            })
                         }
                         colorScheme="gray"
                     >

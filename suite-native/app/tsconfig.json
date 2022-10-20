@@ -12,6 +12,7 @@
             "path": "../../suite-common/wallet-core"
         },
         { "path": "../atoms" },
+        { "path": "../config" },
         { "path": "../module-accounts" },
         { "path": "../module-accounts-import" },
         { "path": "../module-dev-utils" },
