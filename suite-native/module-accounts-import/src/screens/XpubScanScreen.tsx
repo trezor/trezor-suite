@@ -19,6 +19,12 @@ import { yup } from '@trezor/validation';
 
 import { Camera, CAMERA_HEIGHT } from '../components/Camera';
 
+// Note: Btc and testnet are required right now. Everything else is always optional and can be undefined.
+const devXpubs: Partial<Record<NetworkSymbol, string>> & Record<'btc' | 'test', string> = {
+    btc: 'zpub6rjNNddoAVvuYaD6WPdxiqFEToQHgrERjWMg7kM9gGGk6rhPMWNEmL5X745FGqBq8Wp136LfA3A7UjRGEYdJrf8dUfshzNrb5rvaryNfVJf',
+    test: 'vpub5ZjRPuuMiEQnbwEDi9jtH1FaJMajZW78uZ1t3RJXKhxyMoTnPraKwGxiDo9SguDYvSieqjoLJxW5n2t9156RR1oeqRnURuftNZTzejBc4pa',
+};
+
 const coinStyle = prepareNativeStyle(utils => ({
     flexDirection: 'row',
     borderRadius: utils.borders.radii.large,
@@ -63,12 +69,6 @@ const submitButtonStyle = prepareNativeStyle(utils => ({
 }));
 
 const DEFAULT_CURRENCY_SYMBOL = 'btc';
-// Slip 0014 - https://github.com/satoshilabs/slips/blob/master/slip-0014.md#bitcoin-segwit--p2wpkh--bip84
-const BTC_HARD_CODED_XPUB =
-    'zpub6rjNNddoAVvuYaD6WPdxiqFEToQHgrERjWMg7kM9gGGk6rhPMWNEmL5X745FGqBq8Wp136LfA3A7UjRGEYdJrf8dUfshzNrb5rvaryNfVJf';
-
-const TESTNET_HARD_CODED_XPUB =
-    'vpub5ZjRPuuMiEQnbwEDi9jtH1FaJMajZW78uZ1t3RJXKhxyMoTnPraKwGxiDo9SguDYvSieqjoLJxW5n2t9156RR1oeqRnURuftNZTzejBc4pa';
 
 const xpubFormValidationSchema = yup.object({
     xpubAddress: yup.string().required(),
@@ -184,10 +184,7 @@ export const XpubScanScreen = ({
                         style={applyStyle(devXpubButtonStyle)}
                         onPress={() =>
                             goToAccountImportScreen({
-                                xpubAddress:
-                                    selectedCurrencySymbol === 'btc'
-                                        ? BTC_HARD_CODED_XPUB
-                                        : TESTNET_HARD_CODED_XPUB,
+                                xpubAddress: devXpubs[selectedCurrencySymbol] ?? devXpubs.btc,
                             })
                         }
                         colorScheme="gray"
