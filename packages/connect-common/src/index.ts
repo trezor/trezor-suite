@@ -1,3 +1,3 @@
-// empty placeholder
+import * as storage from './storage';
 
-export const index = () => {};
+export { storage };

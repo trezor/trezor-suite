@@ -1,3 +1,10 @@
+# 0.0.11 - UNRELEASED
+
+-   refactor storage
+    -   `storage.load(key)` -> `storage.load().key`
+    -   `storage.save(key, value)` -> `storage.save(state => ({ ...state, key: value }))`
+-   versioning of storage
+
 # 0.0.10
 
 ### Added
