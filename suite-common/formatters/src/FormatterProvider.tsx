@@ -7,14 +7,14 @@ import { SignValue } from '@suite-common/suite-types';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
 import {
-    prepareCryptoAmountFormatter,
     CryptoAmountFormatterDataContext,
     CryptoAmountFormatterInputValue,
+    prepareCryptoAmountFormatter,
 } from './formatters/prepareCryptoAmountFormatter';
 import { prepareCoinBalanceFormatter } from './formatters/prepareCoinBalanceFormatter';
 import {
-    prepareFiatAmountFormatter,
     FiatAmountFormatterDataContext,
+    prepareFiatAmountFormatter,
 } from './formatters/prepareFiatAmountFormatter';
 import { Formatter } from './makeFormatter';
 import { FormatterConfig, FormatterProviderConfig } from './types';
@@ -67,9 +67,7 @@ export const FormatterProvider = ({ config, children }: FormatterProviderProps) 
             ...config,
             intl,
         };
-        const formatters = getFormatters(extendedConfig);
-
-        return formatters;
+        return getFormatters(extendedConfig);
     }, [config, intl]);
 
     return (
