@@ -8,13 +8,15 @@ For development and e2e purposes you can use local version of coinjoin backend (
 
 1. run `./docker/docker-coinjoin-backend.sh`
 
+    > If you are using `trezor-user-env` make sure that it's started with `-r` option (disabled regtest)
+    >
     > Pull and run docker image of https://github.com/trezor/coinjoin-backend
     >
-    > Backend control panel (faucet) should be accessible at `http://localhost:8081`
+    > Backend control panel (faucet) should be accessible at `http://localhost:8081/`
 
 1. Run suite, go to settings and enable `Debug mode` (click 5 times on the "Settings" header)
 
-1. go to Settings > Crypto tab and enable `Bitcoin Regtest` and set custom backend to `http://localhost:19215`
+1. go to Settings > Crypto tab and enable `Bitcoin Regtest` and set custom backend to `http://localhost:19121/`
 
     > Optionally disable other coins
     >

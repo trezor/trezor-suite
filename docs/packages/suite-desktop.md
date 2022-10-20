@@ -40,6 +40,28 @@ Using VS Code configuration files (inside `.vscode`), Suite Desktop can be built
 
 Known issue: The devtools might blank out at launch. If this happens, simply close and re-open the devtools (CTRL + SHIFT + I).
 
+## Debugging main process (Chrome dev tools)
+
+[Source](https://www.electronjs.org/docs/latest/tutorial/debugging-main-process)
+
+Open chrome and go to `chrome://inspect`
+
+In "Devices" tab make sure that "Discover network targets" is enabled and "localhost:5858" is added (use Configure button)
+
+### dev mode
+
+modify packages/suite-desktop/package.json
+
+```
+"dev:run": "electron ."
+// to
+"dev:run": "electron --inspect=5858 ."
+```
+
+### prod mode
+
+Run production build with `--inspect=5858` runtime flag
+
 ## Logging
 
 Logging can be enabled by running Suite with the command line flag `--log-level=LEVEL` (replace _LEVEL_ with _error_, _warn_, _info_ or _debug_ based on the logging you wish to display). Additional command line flags can be found [below](#runtime-flags).
