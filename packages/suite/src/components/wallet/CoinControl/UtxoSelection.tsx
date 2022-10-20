@@ -78,6 +78,7 @@ const Dot = styled.div`
 
 const Address = styled.div`
     overflow: hidden;
+    font-variant-numeric: tabular-nums slashed-zero;
     text-overflow: ellipsis;
 `;
 
