@@ -1,4 +1,4 @@
-import * as storage from '@trezor/connect-common/lib/storage';
+import { storage } from '@trezor/connect-common';
 import { DataManager } from '../data/DataManager';
 import { ERRORS, NETWORK } from '../constants';
 import {
@@ -173,7 +173,8 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
     }
 
     checkPermissions() {
-        const savedPermissions = storage.load(storage.PERMISSIONS_KEY);
+        const savedPermissions = storage.load()[storage.PERMISSIONS_KEY];
+
         let notPermitted = [...this.requiredPermissions];
         if (savedPermissions) {
             // find permissions for this origin
@@ -194,7 +195,7 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
     }
 
     savePermissions(temporary = false) {
-        const savedPermissions = storage.load(storage.PERMISSIONS_KEY, temporary) || [];
+        const savedPermissions = storage.load(temporary)[storage.PERMISSIONS_KEY] || [];
 
         let permissionsToSave = this.requiredPermissions.map(p => ({
             origin: DataManager.getSettings('origin'),
@@ -231,8 +232,10 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
         }
 
         storage.save(
-            storage.PERMISSIONS_KEY,
-            savedPermissions.concat(permissionsToSave),
+            state => ({
+                ...state,
+                [storage.PERMISSIONS_KEY]: savedPermissions.concat(permissionsToSave),
+            }),
             temporary,
         );
 

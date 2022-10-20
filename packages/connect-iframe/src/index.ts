@@ -29,7 +29,7 @@ import {
     suggestBridgeInstaller,
     suggestUdevInstaller,
 } from '@trezor/connect/src/utils/browserUtils';
-import * as storage from '@trezor/connect-common/src/storage';
+import { storage } from '@trezor/connect-common';
 
 let _core: Core | undefined;
 
@@ -186,7 +186,7 @@ const filterDeviceEvent = (message: DeviceEvent) => {
         'device' in message.payload ? message.payload.device.features : message.payload.features;
     if (features) {
         const savedPermissions =
-            storage.load(storage.PERMISSIONS_KEY) || storage.load(storage.PERMISSIONS_KEY, true);
+            storage.load()[storage.PERMISSIONS_KEY] || storage.load(true)[storage.PERMISSIONS_KEY];
         if (savedPermissions) {
             const devicePermissions = savedPermissions.filter(
                 p =>
