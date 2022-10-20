@@ -172,10 +172,10 @@ export default defineConfig({
                     dir: string;
                     force?: boolean;
                 }) => {
-                    const { dir, recursive } = opts;
+                    const { dir, recursive, force } = opts;
                     // just a security check so that we do accidentally wipe something we don't want
                     const restrictedPath = path.join(__dirname, '..', config.downloadsFolder);
-                    if (!dir.startsWith(restrictedPath)) {
+                    if (!dir.startsWith(restrictedPath) && !force) {
                         console.warn('trying to rmDir ', dir);
                         throw new Error(`'it is not allowed to rm outside ${restrictedPath}`);
                     }
