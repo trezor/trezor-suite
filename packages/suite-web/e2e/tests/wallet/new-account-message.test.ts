@@ -38,7 +38,7 @@ describe('New accounts', () => {
 
     const expectedAccountMessage = 'New to Trezor Suite: Bech32 accounts!';
 
-    it(`Goes to accounts and verifies that the "${expectedAccountMessage}" is displayed:`, () => {
+    it.skip(`Goes to accounts and verifies that the "${expectedAccountMessage}" is displayed:`, () => {
         const passphraseToType = 'we need regtest{enter}';
 
         loadHiddenWallet(passphraseToType);
