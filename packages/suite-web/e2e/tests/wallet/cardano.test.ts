@@ -17,7 +17,7 @@ describe('Cardano', () => {
         cy.passThroughInitialRun();
     });
 
-    it('Basic cardano walkthrough', () => {
+    it.skip('Basic cardano walkthrough', () => {
         // go to coin settings and enable cardano
         cy.getTestElement('@settings/wallet/network/tada').click();
 
