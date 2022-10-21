@@ -1,8 +1,10 @@
 import { EventEmitter } from 'events';
 
 import { Status } from './Status';
-import type { CoinjoinClientSettings } from '../types';
-import type { CoinjoinStatusEvent, RegisterAccountParams } from '../types/client';
+import { Account } from './Account';
+import { getNetwork } from '../utils/settingsUtils';
+import type { CoinjoinClientSettings, RegisterAccountParams } from '../types';
+import type { CoinjoinStatusEvent } from '../types/client';
 
 interface Events {
     status: CoinjoinStatusEvent;
@@ -18,12 +20,15 @@ export declare interface CoinjoinClient {
 
 export class CoinjoinClient extends EventEmitter {
     readonly settings: CoinjoinClientSettings;
+    private network;
     private abortController: AbortController; // used for interruption
     private status: Status;
+    private accounts: Account[] = [];
 
     constructor(settings: CoinjoinClientSettings) {
         super();
         this.settings = Object.freeze(settings);
+        this.network = getNetwork(settings.network);
         this.abortController = new AbortController();
 
         this.status = new Status(settings);
@@ -49,14 +54,39 @@ export class CoinjoinClient extends EventEmitter {
         this.status.stop();
     }
 
-    registerAccount(_account: RegisterAccountParams) {
-        this.status.setMode('enabled');
+    registerAccount(account: RegisterAccountParams) {
+        if (this.accounts.find(a => a.accountKey === account.accountKey)) {
+            throw new Error('Trying to register account that already exists');
+        }
+
+        // iterate Status more frequently
+        if (this.accounts.length === 0) {
+            this.status.setMode('enabled');
+        }
+
+        this.accounts.push(new Account(account, this.network));
+
+        // try to trigger registration immediately without waiting for Status change
+        this.onStatusUpdate({
+            rounds: this.status.rounds,
+            changed: [],
+        });
     }
 
-    updateAccount(_account: RegisterAccountParams) {}
+    updateAccount(account: RegisterAccountParams) {
+        const accountToUpdate = this.accounts.find(a => a.accountKey === account.accountKey);
+        if (accountToUpdate) {
+            accountToUpdate.update(account);
+        }
+    }
 
-    unregisterAccount(_descriptor: string) {
-        this.status.setMode('idle');
+    unregisterAccount(accountKey: string) {
+        this.accounts = this.accounts.filter(a => a.accountKey !== accountKey);
+
+        // iterate Status less frequently
+        if (this.accounts.length === 0) {
+            this.status.setMode('idle');
+        }
     }
 
     resolveRequest() {}

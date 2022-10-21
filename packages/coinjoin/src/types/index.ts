@@ -16,4 +16,5 @@ export interface CoinjoinClientSettings extends BaseSettings {
     middlewareUrl: string;
 }
 
+export * from './account';
 export * from './client';
