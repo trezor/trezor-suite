@@ -64,7 +64,7 @@ jobs:
   ios_develop:
     runs-on: macos-12
     environment: develop
-    timeout-minutes: 60
+    timeout-minutes: 75
     steps:
       - name: Setup xcode
         uses: maxim-lobanov/setup-xcode@df46f77a07b48da38239cd2fb8c0b5603c71e909
