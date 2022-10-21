@@ -17,6 +17,7 @@ const select = [
     { value: 'eth', label: 'Ethereum' },
     { value: 'etc', label: 'Ethereum Classic' },
     { value: 'trop', label: 'Ropsten' },
+    { value: 'tgor', label: 'Goerli' },
 ];
 
 const json = `[
