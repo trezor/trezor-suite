@@ -21,6 +21,7 @@ import {
     sortByCoin,
     getUtxoOutpoint,
     readUtxoOutpoint,
+    sortByBIP44AddressIndex,
 } from '../accountUtils';
 import * as fixtures from '../__fixtures__/accountUtils';
 
@@ -268,5 +269,17 @@ describe('account utils', () => {
             txid: '0dac366fd8a67b2a89fbb0d31086e7acded7a5bbf9ef9daa935bc873229ef5b5',
             vout: 1,
         });
+    });
+
+    it('sortByBIP44AddressIndex', () => {
+        const path = 'm/1234';
+        const [a, b, c, d, e, f] = ['a', 'b', 'c', 'd', 'e', 'f'].map((address, i) => ({
+            address,
+            path: `${path}/${i}`,
+        }));
+        expect(sortByBIP44AddressIndex(path, [a, b, c, d, e, f])).toEqual([a, b, c, d, e, f]);
+        expect(sortByBIP44AddressIndex(path, [f, e, d, c, b, a])).toEqual([a, b, c, d, e, f]);
+        expect(sortByBIP44AddressIndex(path, [e, c, b, a, f, d])).toEqual([a, b, c, d, e, f]);
+        expect(sortByBIP44AddressIndex(path, [b, c, a, f, d, e])).toEqual([a, b, c, d, e, f]);
     });
 });

@@ -54,6 +54,18 @@ export const getFirstFreshAddress = (
     return firstFreshAddress;
 };
 
+/** NOTE: input addresses' paths sequence must be uninterrupted and start with 0 */
+export const sortByBIP44AddressIndex = <T extends { path: string }>(
+    pathBase: string,
+    addresses: T[],
+) => {
+    const lookup = addresses.reduce<{ [path: string]: number }>((prev, _, i) => {
+        prev[`${pathBase}/${i}`] = i;
+        return prev;
+    }, {});
+    return addresses.slice().sort((a, b) => lookup[a.path] - lookup[b.path]);
+};
+
 export const parseBIP44Path = (path: string) => {
     const regEx = /m\/(\d+'?)\/(\d+'?)\/(\d+'?)\/([0,1])\/(\d+)/;
     const tokens = path.match(regEx);
