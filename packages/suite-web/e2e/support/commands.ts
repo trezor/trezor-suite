@@ -70,7 +70,8 @@ beforeEach(() => {
             res.send(mock);
         });
     });
-    cy.visit('/');
+
+    // cy.visit('/');
 });
 
 afterEach(() => {
