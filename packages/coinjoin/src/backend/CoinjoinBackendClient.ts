@@ -7,10 +7,9 @@ import type {
     BlockFilterResponse,
     BlockbookTransaction,
 } from '../types/backend';
+import type { CoinjoinBackendSettings } from '../types';
 
-type CoinjoinBackendClientSettings = {
-    coordinatorUrl: string;
-    blockbookUrls: readonly string[];
+type CoinjoinBackendClientSettings = CoinjoinBackendSettings & {
     timeout?: number;
 };
 
@@ -23,7 +22,7 @@ export class CoinjoinBackendClient extends EventEmitter {
 
     constructor(settings: CoinjoinBackendClientSettings) {
         super();
-        this.wabisabiUrl = `${settings.coordinatorUrl}api/v4/btc`;
+        this.wabisabiUrl = `${settings.wabisabiBackendUrl}api/v4/btc`;
         this.blockbookUrl =
             settings.blockbookUrls[Math.floor(Math.random() * settings.blockbookUrls.length)];
     }

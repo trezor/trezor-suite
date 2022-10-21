@@ -17,6 +17,7 @@ export const COINJOIN_NETWORKS: PartialRecord<NetworkSymbol, ServerEnvironment> 
             coordinatorName: 'CoinJoinCoordinatorIdentifier',
             coordinatorUrl: 'https://dev-coinjoin.trezor.io/WabiSabi/',
             // backend settings
+            wabisabiBackendUrl: 'https://dev-coinjoin.trezor.io/WabiSabi/',
             blockbookUrls: ['https://dev-coinjoin.trezor.io/blockbook/api/v2'],
             baseBlockHeight: 0,
             baseBlockHash: '0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206',
@@ -30,6 +31,7 @@ export const COINJOIN_NETWORKS: PartialRecord<NetworkSymbol, ServerEnvironment> 
             coordinatorName: 'CoinJoinCoordinatorIdentifier',
             coordinatorUrl: 'http://localhost:8081/WabiSabi/',
             // backend settings
+            wabisabiBackendUrl: 'http://localhost:8081/WabiSabi/',
             blockbookUrls: ['http://localhost:8081/blockbook/api/v2'],
             baseBlockHeight: 0,
             baseBlockHash: '0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206',

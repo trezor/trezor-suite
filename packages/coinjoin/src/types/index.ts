@@ -4,6 +4,7 @@ interface BaseSettings {
 }
 
 export interface CoinjoinBackendSettings extends BaseSettings {
+    wabisabiBackendUrl: string;
     blockbookUrls: readonly string[];
     baseBlockHeight: number;
     baseBlockHash: string;

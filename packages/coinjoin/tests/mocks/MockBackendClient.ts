@@ -1,4 +1,5 @@
 import { CoinjoinBackendClient } from '../../src/backend/CoinjoinBackendClient';
+import { COINJOIN_BACKEND_SETTINGS } from '../fixtures/config.fixture';
 
 type MockEndpoint = ReturnType<InstanceType<typeof CoinjoinBackendClient>['request']>;
 
@@ -16,7 +17,7 @@ type BlockFixture = {
 
 export class MockBackendClient extends CoinjoinBackendClient {
     constructor() {
-        super({ blockbookUrls: ['foo'], coordinatorUrl: 'bar' });
+        super(COINJOIN_BACKEND_SETTINGS);
         this.blocks = [];
         this.mempool = [];
         this.transactions = [];

@@ -8,6 +8,7 @@ import { getAccountInfo } from '../../src/backend/getAccountInfo';
 import { CoinjoinFilterController } from '../../src/backend/CoinjoinFilterController';
 import { CoinjoinMempoolController } from '../../src/backend/CoinjoinMempoolController';
 import * as FIXTURES from '../fixtures/methods.fixture';
+import { COINJOIN_BACKEND_SETTINGS } from '../fixtures/config.fixture';
 import { MockBackendClient } from '../mocks/MockBackendClient';
 import type { BlockFilterResponse, Transaction } from '../../src/types/backend';
 
@@ -45,11 +46,9 @@ describe(`CoinjoinBackend methods`, () => {
     const getContext = <T>(onProgress: (t: T) => void) => ({
         client,
         filters: new CoinjoinFilterController(client, {
+            ...COINJOIN_BACKEND_SETTINGS,
             baseBlockHash: FIXTURES.BASE_HASH,
             baseBlockHeight: FIXTURES.BASE_HEIGHT,
-            blockbookUrls: ['foo'],
-            coordinatorUrl: 'bar',
-            network: 'regtest',
         }),
         mempool: new CoinjoinMempoolController(client),
         network: networks.regtest,
