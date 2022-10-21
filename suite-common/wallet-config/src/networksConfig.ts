@@ -68,7 +68,11 @@ export const networks = {
         label: 'TR_NETWORK_ETHEREUM_LABEL',
         tooltip: 'TR_NETWORK_ETHEREUM_TOOLTIP',
         customBackends: ['blockbook'],
-        accountTypes: {},
+        accountTypes: {
+          ledger: {
+            bip43Path: "m/44'/60'/0'/i",
+          }
+        },
     },
     etc: {
         name: 'Ethereum Classic',
