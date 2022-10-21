@@ -8,6 +8,46 @@ type CoinjoinNetworksConfig = CoinjoinBackendSettings & CoinjoinClientSettings;
 type ServerEnvironment = PartialRecord<CoinjoinServerEnvironment, CoinjoinNetworksConfig>;
 
 export const COINJOIN_NETWORKS: PartialRecord<NetworkSymbol, ServerEnvironment> = {
+    /*
+     * btc: https://wasabiwallet.io/ (tor http://wasabiukrxmkdgve5kynjztuovbg43uxcbcxn6y2okcrsg7gb6jdmbad.onion/)
+     * available only in @suite-desktop
+     * browser throws: Access to XMLHttpRequest at 'https://wasabiwallet.co/WabiSabi/status' from origin 'http://localhost:8000'
+     * has been blocked by CORS policy: Response to preflight request doesn't pass access control check:
+     * No 'Access-Control-Allow-Origin' header is present on the requested resource.
+     */
+    test: {
+        public: {
+            network: 'test',
+            coordinatorName: 'CoinJoinCoordinatorIdentifier',
+            coordinatorUrl:
+                'http://dev-coinjoin-testnet.trezoriovpjcahpzkrewelclulmszwbqpzmzgub37gbcjlvluxtruqad.onion/WabiSabi/',
+            // backend settings
+            wabisabiBackendUrl:
+                'http://dev-coinjoin-testnet.trezoriovpjcahpzkrewelclulmszwbqpzmzgub37gbcjlvluxtruqad.onion/',
+            blockbookUrls: [
+                'http://tbtc1.trezoriovpjcahpzkrewelclulmszwbqpzmzgub37gbcjlvluxtruqad.onion/api/v2',
+                'http://tbtc2.trezoriovpjcahpzkrewelclulmszwbqpzmzgub37gbcjlvluxtruqad.onion/api/v2',
+            ],
+            /* wasabi production *
+            baseBlockHeight: 828575,
+            baseBlockHash: '00000000000f0d5edcaeba823db17f366be49a80d91d15b77747c2e017b8c20a',
+            /* */
+            /* 50 tys, ~1 btc year *
+            baseBlockHeight: 2367432,
+            baseBlockHash: '0000000000006f5a1958de7f2ddd3157fb2f12a392b4e034e09d30da8151195c',
+            /* */
+            /* all all 49'/1'/0' first tx *
+            baseBlockHeight: 1746250,
+            baseBlockHash: '000000001eec9e483ddc3a9f2eea25b2639887def9ee2816c748b77248335c08',
+            /*  */
+            /* October 1st, 2022  */
+            baseBlockHeight: 2349000,
+            baseBlockHash: '0000000000000014af3e6e1a3f0a24be7bc65998b9bc01e4a05b134a89d304bf',
+            /* */
+            // client settings
+            middlewareUrl: 'http://localhost:8081/Cryptography/',
+        },
+    },
     regtest: {
         public: {
             network: 'regtest',
