@@ -1,9 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
-import { RoundPhase } from '@suite-common/wallet-types';
+import { CoinjoinSession, RoundPhase } from '@suite-common/wallet-types';
 import { FluidSpinner, Icon, useTheme, variables } from '@trezor/components';
 import { COINJOIN_PHASE_MESSAGES } from '@suite-constants/coinjoin';
 import { Translation } from '@suite-components/Translation';
+import { CountdownTimer } from '@suite-components/CountdownTimer';
 
 const Container = styled.div`
     padding: 32px 38px 0;
@@ -40,6 +41,14 @@ const Separator = styled.div`
     background: ${({ theme }) => theme.STROKE_GREY};
 `;
 
+const TimerCointainer = styled.p`
+    margin-top: 4px;
+    font-size: ${variables.FONT_SIZE.SMALL};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    color: ${({ theme }) => theme.TYPE_LIGHTER_GREY};
+    opacity: 0.9;
+`;
+
 interface StepProps {
     phase: RoundPhase;
     currentPhase: RoundPhase;
@@ -66,11 +75,12 @@ const Step = ({ phase, currentPhase }: StepProps) => {
     );
 };
 
-interface PhaseProgress {
+interface PhaseProgressProps {
     currentPhase: RoundPhase;
+    phaseDeadline: CoinjoinSession['deadline'];
 }
 
-export const PhaseProgress = ({ currentPhase }: PhaseProgress) => (
+export const PhaseProgress = ({ currentPhase, phaseDeadline }: PhaseProgressProps) => (
     <Container>
         <Steps>
             <Step phase={RoundPhase.ConnectionConfirmation} currentPhase={currentPhase} />
@@ -84,5 +94,9 @@ export const PhaseProgress = ({ currentPhase }: PhaseProgress) => (
             <Translation id={COINJOIN_PHASE_MESSAGES[currentPhase]} />
             ...
         </Message>
+
+        <TimerCointainer>
+            ~<CountdownTimer deadline={phaseDeadline} format={['hours', 'minutes', 'seconds']} />
+        </TimerCointainer>
     </Container>
 );
