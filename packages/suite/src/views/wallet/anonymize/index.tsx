@@ -16,11 +16,13 @@ const Anonymize = () => {
 
     return (
         <WalletLayout title="TR_NAV_ANONYMIZE" account={selectedAccount}>
-            <WalletLayoutHeader title="TR_NAV_ANONYMIZE">
-                <StyledAnonymityLevelSetup />
-            </WalletLayoutHeader>
-            {selectedAccount.account && (
-                <CoinjoinSetupStrategies account={selectedAccount.account} />
+            {selectedAccount.status === 'loaded' && (
+                <>
+                    <WalletLayoutHeader title="TR_NAV_ANONYMIZE">
+                        <StyledAnonymityLevelSetup />
+                    </WalletLayoutHeader>
+                    <CoinjoinSetupStrategies selectedAccount={selectedAccount} />
+                </>
             )}
         </WalletLayout>
     );

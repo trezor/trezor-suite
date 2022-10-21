@@ -1,8 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
 
+import { COINJOIN_STRATEGIES } from '@suite/services/coinjoin/config';
 import { Translation } from '@suite-components';
 import { Button, P, variables } from '@trezor/components';
+import { CoinjoinClientFeeRatesMedians } from '@wallet-reducers/coinjoinReducer';
 import { RadioFrame } from './RadioFrame';
 import { CoinjoinSessionDetail } from './CoinjoinSessionDetail';
 
@@ -29,31 +31,16 @@ const Text = styled(P)`
     margin: 20px 0;
 `;
 
-// Parameters sent to TrezorConnect.authorizeCoinjoin method
-// TODO: replace with dynamic values
-export const COINJOIN_STRATEGIES = {
-    recommended: {
-        maxRounds: 10,
-        targetAnonymity: 80,
-        maxFeePerKvbyte: 129000,
-        maxCoordinatorFeeRate: 0.003 * 10 ** 10, // 0.003 from coordinator
-    },
-    fast: {
-        maxRounds: 3,
-        targetAnonymity: 40,
-        maxFeePerKvbyte: 129000,
-        maxCoordinatorFeeRate: 0.003 * 10 ** 10, // 0.003 from coordinator
-    },
-};
-
-export type CoinJoinStrategy = keyof typeof COINJOIN_STRATEGIES | 'custom';
+export type CoinJoinStrategy = keyof typeof COINJOIN_STRATEGIES;
 
 interface CoinjoinDefaultStrategyProps {
+    feeRatesMedians: CoinjoinClientFeeRatesMedians;
     setStrategy: React.Dispatch<React.SetStateAction<CoinJoinStrategy>>;
     strategy: CoinJoinStrategy;
 }
 
 export const CoinjoinDefaultStrategy = ({
+    feeRatesMedians,
     strategy,
     setStrategy,
 }: CoinjoinDefaultStrategyProps) => {
@@ -86,9 +73,9 @@ export const CoinjoinDefaultStrategy = ({
                 >
                     <CoinjoinSessionDetail
                         maxRounds={COINJOIN_STRATEGIES.recommended.maxRounds}
-                        maxFee={3}
-                        hours={[8, 16]}
-                        skipRounds={[4, 5]}
+                        maxFee={feeRatesMedians.recommended}
+                        hours={COINJOIN_STRATEGIES.recommended.estimatedTime}
+                        skipRounds={COINJOIN_STRATEGIES.recommended.skipRounds}
                     />
                 </RadioFrame>
                 <RadioFrame
@@ -99,9 +86,9 @@ export const CoinjoinDefaultStrategy = ({
                 >
                     <CoinjoinSessionDetail
                         maxRounds={COINJOIN_STRATEGIES.fast.maxRounds}
-                        maxFee={10}
-                        hours={[2, 14]}
-                        skipRounds={null}
+                        maxFee={feeRatesMedians.fast}
+                        hours={COINJOIN_STRATEGIES.fast.estimatedTime}
+                        skipRounds={COINJOIN_STRATEGIES.fast.skipRounds}
                     />
                 </RadioFrame>
             </ButtonRow>
