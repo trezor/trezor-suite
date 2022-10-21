@@ -14,6 +14,7 @@ import { Translation } from '@suite-components';
 import { AddressOptions } from '@wallet-views/coinmarket/common/AddressOptions';
 import FiatAmount from '../components/FiatAmount';
 import Summary from '../components/Summary';
+import { AllFeesIncluded } from '../components/AllFeesIncluded';
 
 const Header = styled.div`
     font-weight: 500;
@@ -122,6 +123,7 @@ const CoinmarketSavingsSetupContinue = (props: WithSelectedAccountLoadedProps) =
                 fiatAmount={fiatAmount}
                 fiatCurrency={fiatCurrency}
             />
+            <AllFeesIncluded />
             <Summary
                 accountSymbol={account.symbol}
                 annualSavingsCryptoAmount={annualSavingsCryptoAmount}

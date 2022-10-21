@@ -10,6 +10,7 @@ import { getUnusedAddressFromAccount } from '@wallet-utils/coinmarket/coinmarket
 import { CustomPaymentAmountKey } from '@wallet-constants/coinmarket/savings';
 import * as coinmarketSavingsActions from '@wallet-actions/coinmarketSavingsActions';
 import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketCommonActions';
+import * as pollingActions from '@wallet-actions/pollingActions';
 import {
     calculateAnnualSavings,
     getFiatAmountEffective,
@@ -42,9 +43,10 @@ export const useSavingsSetupContinue = ({
         kycFinalStatus: state.wallet.coinmarket.savings.kycFinalStatus,
     }));
 
-    const { loadInvityData, saveSavingsTradeResponse } = useActions({
+    const { loadInvityData, saveSavingsTradeResponse, isPolling } = useActions({
         loadInvityData: coinmarketCommonActions.loadInvityData,
         saveSavingsTradeResponse: coinmarketSavingsActions.saveSavingsTradeResponse,
+        isPolling: pollingActions.isPolling,
     });
 
     const { navigateToSavingsPaymentInfo, navigateToSavingsOverview } =
@@ -52,7 +54,9 @@ export const useSavingsSetupContinue = ({
 
     const { removeDraft } = useFormDraft('coinmarket-savings-setup-request');
 
-    const isSavingsTradeLoadingEffective = !providers || isSavingsTradeLoading;
+    const pollingKey = `coinmarket-savings-trade/${account.descriptor}` as const;
+    const isSavingsTradeLoadingEffective =
+        (!providers || isSavingsTradeLoading) && !isPolling(pollingKey);
 
     useEffect(() => {
         loadInvityData();
