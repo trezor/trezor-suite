@@ -1,4 +1,4 @@
-export const FILTERS_BATCH_SIZE = 100;
+export const FILTERS_BATCH_SIZE = 1000;
 
 export const DISCOVERY_LOOKOUT = 20;
 
