@@ -31,7 +31,7 @@ const mockSession: CoinjoinSession = {
     signedRounds: ['1', '1', '1'],
     timeCreated: 1203040234,
     deadline: 1234712054,
-    anonymityLevel: 1,
+    targetAnonymity: 1,
     maxFeePerKvbyte: 2,
     maxCoordinatorFeeRate: 3,
 };

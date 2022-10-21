@@ -89,7 +89,7 @@ export const initCoinjoinClient =
     };
 
 // return only active instances
-export const getCoinjoinClient = (symbol: Account['symbol']) => () =>
+export const getCoinjoinClient = (symbol: Account['symbol']) =>
     CoinjoinClientService.getInstance(symbol);
 
 // NOTE: this function will be extended in upcoming PR
