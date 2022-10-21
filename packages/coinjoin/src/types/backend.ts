@@ -125,3 +125,5 @@ export type AccountAddress = {
 export type AccountInfo = AccountInfoBase & {
     utxo: Utxo[];
 };
+
+export type PrederivedAddress = Pick<Address, 'address' | 'path'>;
