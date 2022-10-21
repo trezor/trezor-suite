@@ -1375,6 +1375,19 @@ export default defineMessages({
         defaultMessage: 'Go to Invity',
         id: 'TR_SAVINGS_SETUP_WAITING_BUTTON_LABEL',
     },
+    TR_SAVINGS_SETUP_ALL_FEES_INCLUDED: {
+        defaultMessage: 'All fees included',
+        id: 'TR_SAVINGS_SETUP_ALL_FEES_INCLUDED',
+    },
+    TR_SAVINGS_FEES_TOOLTIP: {
+        defaultMessage:
+            "What you see is what you'll get—the amount shown is the final amount you'll be charged. Here is detailed {feesOverviewLink}.",
+        id: 'TR_SAVINGS_FEES_TOOLTIP',
+    },
+    TR_SAVINGS_FEES_TOOLTIP_FEES_LINK: {
+        defaultMessage: 'schedule of fees',
+        id: 'TR_SAVINGS_FEES_TOOLTIP_FEES_LINK',
+    },
     TR_BUY_FOOTER_TEXT_1: {
         defaultMessage:
             'Invity is a comparison tool that connects you to the best exchange providers. They only use location in order to show the most relevant offers.',

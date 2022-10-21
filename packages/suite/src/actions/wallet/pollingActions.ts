@@ -39,6 +39,9 @@ export const request = (key: PollingKey, timeoutId?: number): PollingAction => (
     timeoutId,
 });
 
+export const isPolling = (key: PollingKey) => (_: Dispatch, getState: GetState) =>
+    !!getState().wallet.pollings[key];
+
 export const stopPolling = (key: PollingKey) => (dispatch: Dispatch, getState: GetState) => {
     const polling = getState().wallet.pollings[key];
     if (polling?.timeoutId) {

@@ -6,14 +6,10 @@ import type {
 } from '@wallet-types/coinmarketSavingsSetup';
 import { useForm, useWatch } from 'react-hook-form';
 import { InitSavingsTradeRequest } from 'invity-api';
-import invityAPI from '@suite-services/invityAPI';
+import invityAPI, { SavingsTradeKYCFinalStatuses } from '@suite-services/invityAPI';
 import { useActions, useSelector } from '@suite-hooks';
 import type { CountryOption } from '@wallet-types/coinmarketCommonTypes';
-import {
-    CustomPaymentAmountKey,
-    SavingsTradePollingIntervalMilliseconds,
-    SavingsTradePollingMaxCount,
-} from '@wallet-constants/coinmarket/savings';
+import { CustomPaymentAmountKey } from '@wallet-constants/coinmarket/savings';
 import * as coinmarketSavingsActions from '@wallet-actions/coinmarketSavingsActions';
 import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketCommonActions';
 import * as pollingActions from '@wallet-actions/pollingActions';
@@ -39,6 +35,7 @@ export const useSavingsSetup = ({
         userCountry,
         savingsTrade,
         isSavingsTradeLoading,
+        formDrafts,
     } = useSelector(state => ({
         fiat: state.wallet.fiat,
         selectedProvider: state.wallet.coinmarket.savings.selectedProvider,
@@ -47,28 +44,28 @@ export const useSavingsSetup = ({
         userCountry: state.wallet.coinmarket.savings.savingsInfo?.country?.toUpperCase(),
         savingsTrade: state.wallet.coinmarket.savings.savingsTrade,
         isSavingsTradeLoading: state.wallet.coinmarket.savings.isSavingsTradeLoading,
+        formDrafts: state.wallet.formDrafts,
     }));
 
-    const isSavingsTradeLoadingEffective = !providers || isSavingsTradeLoading;
     const noProviders = !providers || providers.length === 0;
 
     const {
         submitRequestForm,
         setSelectedProvider,
-        loadSavingsTrade,
         loadInvityData,
         openCoinmarketSavingsConfirmModal,
-        startPolling,
+        isPolling,
     } = useActions({
         submitRequestForm: coinmarketCommonActions.submitRequestForm,
         loadInvityData: coinmarketCommonActions.loadInvityData,
         setSelectedProvider: coinmarketSavingsActions.setSelectedProvider,
-        loadSavingsTrade: coinmarketSavingsActions.loadSavingsTrade,
         openCoinmarketSavingsConfirmModal:
             coinmarketSavingsActions.openCoinmarketSavingsConfirmModal,
-        startPolling: pollingActions.startPolling,
+        isPolling: pollingActions.isPolling,
     });
-
+    const pollingKey = `coinmarket-savings-trade/${account.descriptor}` as const;
+    const isSavingsTradeLoadingEffective =
+        (!providers || isSavingsTradeLoading) && !isPolling(pollingKey);
     const {
         navigateToSavingsSetupContinue,
         navigateToSavingsOverview,
@@ -85,7 +82,10 @@ export const useSavingsSetup = ({
             switch (savingsTrade.status) {
                 case 'KYC':
                 case 'AML':
-                    if (savingsTrade.kycStatus === 'Failed') {
+                    if (
+                        savingsTrade.kycStatus &&
+                        SavingsTradeKYCFinalStatuses.includes(savingsTrade.kycStatus)
+                    ) {
                         navigateToSavingsSetupContinue();
                     } else {
                         navigateToSavingsSetupWaiting();
@@ -132,7 +132,7 @@ export const useSavingsSetup = ({
         option => option.value === userCountry,
     ) as CountryOption;
 
-    const { isValid, isSubmitting } = formState;
+    const { isValid, isSubmitting, isSubmitted } = formState;
     const { fiatAmount, paymentFrequency, customFiatAmount, country } =
         useWatch<SavingsSetupFormState>({
             control,
@@ -145,12 +145,18 @@ export const useSavingsSetup = ({
             const provider = providers.find(provider =>
                 provider.supportedCountries.includes(countryEffective || ''),
             );
-            setSelectedProvider(provider);
-            if (provider) {
-                if (!fiatAmount) {
+            if (
+                provider &&
+                (!fiatAmount || !paymentFrequency || provider.name !== selectedProvider?.name)
+            ) {
+                setSelectedProvider(provider);
+                if (!fiatAmount || !provider.setupPaymentAmounts.includes(fiatAmount)) {
                     setValue('fiatAmount', provider.defaultPaymentAmount.toString());
                 }
-                if (!paymentFrequency) {
+                if (
+                    !paymentFrequency ||
+                    !provider.setupPaymentFrequencies.includes(paymentFrequency)
+                ) {
                     setValue('paymentFrequency', provider.defaultPaymentFrequency);
                 }
             }
@@ -166,7 +172,22 @@ export const useSavingsSetup = ({
         setValue,
     ]);
 
-    const { saveDraft } = useFormDraft('coinmarket-savings-setup-request');
+    const { getDraft, saveDraft } = useFormDraft('coinmarket-savings-setup-request');
+
+    useEffect(() => {
+        const requestForm = getDraft(account.descriptor) as Parameters<typeof submitRequestForm>[0];
+        if (isDesktop() && requestForm && isSubmitted) {
+            submitRequestForm(requestForm);
+            navigateToSavingsSetupWaiting();
+        }
+    }, [
+        account.descriptor,
+        submitRequestForm,
+        navigateToSavingsSetupWaiting,
+        formDrafts,
+        getDraft,
+        isSubmitted,
+    ]);
 
     const { annualSavingsCryptoAmount, annualSavingsFiatAmount } = calculateAnnualSavings(
         paymentFrequency,
@@ -200,21 +221,8 @@ export const useSavingsSetup = ({
                         // which leads to Invity web page again in case that user
                         // closed Invity web page before the savings flow was finished.
                         saveDraft(account.descriptor, formResponse.form);
-                        submitRequestForm(formResponse.form);
-
-                        if (isDesktop()) {
-                            // NOTE: Suite Desktop application might be still open -> start polling savings trade,
-                            // so the user sees refreshed UI after successful completion of savings flow on Invity.io page,
-                            // and show screen "Waiting for completion on Invity.io web page.".
-                            const pollingKey =
-                                `coinmarket-savings-trade/${account.descriptor}` as const;
-                            startPolling(
-                                pollingKey,
-                                () => loadSavingsTrade(),
-                                SavingsTradePollingIntervalMilliseconds,
-                                SavingsTradePollingMaxCount,
-                            );
-                            navigateToSavingsSetupWaiting();
+                        if (!isDesktop()) {
+                            submitRequestForm(formResponse?.form);
                         }
                     }
                 } else {
@@ -225,13 +233,10 @@ export const useSavingsSetup = ({
         [
             account.descriptor,
             account.symbol,
-            loadSavingsTrade,
-            navigateToSavingsSetupWaiting,
             openCoinmarketSavingsConfirmModal,
             reset,
             saveDraft,
             selectedProvider,
-            startPolling,
             submitRequestForm,
         ],
     );
@@ -240,6 +245,7 @@ export const useSavingsSetup = ({
     const typedRegister = useCallback(<T>(rules?: T) => register(rules), [register]);
 
     const canConfirmSetup =
+        !!countryEffective &&
         !!paymentFrequency &&
         !!fiatAmount &&
         (fiatAmount !== CustomPaymentAmountKey || !!customFiatAmount) &&

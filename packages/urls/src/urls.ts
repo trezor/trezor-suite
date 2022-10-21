@@ -56,6 +56,7 @@ export const SOCIAL_FACEBOOK_URL = 'https://www.facebook.com/trezor.io';
 
 export const SATOSHILABS_URL = 'https://satoshilabs.com';
 export const INVITY_URL = 'https://invity.io/';
+export const INVITY_SCHEDULE_OF_FEES = 'https://blog.invity.io/schedule-of-fees';
 export const HOMESCREEN_EDITOR_URL = 'https://trezor.github.io/homescreen-editor/';
 export const LTC_ADDRESS_INFO_URL =
     'https://blog.trezor.io/litecoins-new-p2sh-segwit-addresses-843633e3e707';
