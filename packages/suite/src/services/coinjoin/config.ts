@@ -24,7 +24,7 @@ export const COINJOIN_NETWORKS: PartialRecord<NetworkSymbol, ServerEnvironment> 
             // client settings
             middlewareUrl: 'https://dev-coinjoin.trezor.io/Cryptography/',
             // suite settings
-            percentageFee: '0.03',
+            percentageFee: '0.3',
         },
         localhost: {
             network: 'regtest',
@@ -38,8 +38,25 @@ export const COINJOIN_NETWORKS: PartialRecord<NetworkSymbol, ServerEnvironment> 
             // client settings
             middlewareUrl: 'http://localhost:8081/Cryptography/',
             // suite settings
-            percentageFee: '0.03',
+            percentageFee: '0.3',
         },
+    },
+};
+
+export const COINJOIN_STRATEGIES = {
+    recommended: {
+        estimatedTime: [8, 16] as [number, number],
+        maxRounds: 10,
+        skipRounds: [4, 5] as [number, number],
+    },
+    fast: {
+        estimatedTime: [2, 14] as [number, number],
+        maxRounds: 3,
+        skipRounds: null,
+    },
+    custom: {
+        estimatedTime: [2, 4] as [number, number],
+        maxRounds: 15,
     },
 };
 

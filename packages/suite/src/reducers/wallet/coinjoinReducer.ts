@@ -11,7 +11,6 @@ import { selectSelectedAccount } from './selectedAccountReducer';
 export interface CoinjoinClientFeeRatesMedians {
     fast: number;
     recommended: number;
-    slow: number;
 }
 
 export interface CoinjoinClientInstance {

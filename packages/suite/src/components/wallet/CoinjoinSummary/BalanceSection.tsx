@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { goto } from '@suite-actions/routerActions';
 import * as coinjoinActions from '@wallet-actions/coinjoinAccountActions';
 import * as modalActions from '@suite-actions/modalActions';
-import { Account, CoinjoinSession } from '@suite-common/wallet-types';
+import { Account } from '@suite-common/wallet-types';
 import { Card, Translation } from '@suite-components';
 import { useActions, useSelector } from '@suite-hooks';
 import { Button } from '@trezor/components';
@@ -25,18 +25,6 @@ const AnonymizeButton = styled(Button)`
     height: 46px;
     padding: 9px 18px;
 `;
-
-// temporary for easy testing
-// @ts-expect-error
-const mockSession: CoinjoinSession = {
-    maxRounds: 10,
-    signedRounds: ['1', '1', '1'],
-    timeCreated: 1203040234,
-    deadline: 1234712054,
-    targetAnonymity: 1,
-    maxFeePerKvbyte: 2,
-    maxCoordinatorFeeRate: 3,
-};
 
 interface BalanceSectionProps {
     account: Account;
