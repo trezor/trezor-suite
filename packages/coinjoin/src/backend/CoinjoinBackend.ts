@@ -15,6 +15,7 @@ import type {
     ScanAccountCheckpoint,
     ScanAccountProgress,
     Transaction,
+    AccountCache,
 } from '../types/backend';
 
 interface Events {
@@ -45,12 +46,12 @@ export class CoinjoinBackend extends EventEmitter {
         this.mempool = new CoinjoinMempoolController(this.client);
     }
 
-    scanAccount({ descriptor, checkpoint }: ScanAccountParams) {
+    scanAccount({ descriptor, checkpoint, cache }: ScanAccountParams) {
         this.abortController = new AbortController();
         const filters = new CoinjoinFilterController(this.client, this.settings);
 
         return scanAccount(
-            { descriptor, checkpoint: checkpoint ?? this.getInitialCheckpoint() },
+            { descriptor, checkpoint: checkpoint ?? this.getInitialCheckpoint(), cache },
             {
                 client: this.client,
                 network: this.network,
@@ -88,11 +89,13 @@ export class CoinjoinBackend extends EventEmitter {
         descriptor: string,
         transactions: Transaction[],
         checkpoint?: ScanAccountCheckpoint,
+        cache?: AccountCache,
     ) {
         const accountInfo = getAccountInfo({
             descriptor,
             transactions,
             checkpoint,
+            cache,
             network: this.network,
         });
         return Promise.resolve(accountInfo);

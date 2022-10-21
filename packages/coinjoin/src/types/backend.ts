@@ -79,6 +79,7 @@ export type ScanAccountProgress = ScanProgress<ScanAccountCheckpoint>;
 export type ScanAccountParams = {
     descriptor: string;
     checkpoint?: ScanAccountCheckpoint;
+    cache?: AccountCache;
 };
 
 export type ScanAddressParams = {
@@ -89,6 +90,7 @@ export type ScanAddressParams = {
 export type ScanAccountResult = {
     pending: Transaction[];
     checkpoint: ScanAccountCheckpoint;
+    cache?: AccountCache;
 };
 
 export type ScanAddressResult = {
@@ -117,13 +119,17 @@ export type FilterClient = Pick<CoinjoinBackendClient, 'fetchFilters'>;
 
 export type MempoolClient = Pick<CoinjoinBackendClient, 'fetchMempoolTxids' | 'fetchTransaction'>;
 
-export type AccountAddress = {
-    address: string;
-    script: Buffer;
-};
-
 export type AccountInfo = AccountInfoBase & {
     utxo: Utxo[];
 };
 
 export type PrederivedAddress = Pick<Address, 'address' | 'path'>;
+
+export type AccountAddress = PrederivedAddress & {
+    script: Buffer;
+};
+
+export type AccountCache = {
+    receivePrederived?: PrederivedAddress[];
+    changePrederived?: PrederivedAddress[];
+};
