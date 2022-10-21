@@ -11,7 +11,7 @@ describe.skip(`CoinjoinBackend`, () => {
 
     beforeAll(async () => {
         blockbook = new BlockbookAPI({
-            url: 'https://coinjoin.corp.sldev.cz/blockbook/',
+            url: 'http://localhost:8081/blockbook/',
         });
         await blockbook.connect();
     });

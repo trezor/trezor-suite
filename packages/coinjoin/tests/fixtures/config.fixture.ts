@@ -1,5 +1,6 @@
 export const COINJOIN_BACKEND_SETTINGS = {
     network: 'regtest',
+    wabisabiBackendUrl: 'http://localhost:8081/WabiSabi/',
     coordinatorUrl: 'http://localhost:8081/WabiSabi/',
     blockbookUrls: ['http://localhost:8081/blockbook/api/v2'],
     baseBlockHeight: 0,
