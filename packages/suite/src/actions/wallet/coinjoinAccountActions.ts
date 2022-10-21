@@ -17,7 +17,11 @@ import { Dispatch, GetState } from '@suite-types';
 import { Network } from '@suite-common/wallet-config';
 import { Account, CoinjoinSessionParameters } from '@suite-common/wallet-types';
 import { accountsActions, transactionsActions } from '@suite-common/wallet-core';
-import { isAccountOutdated, getAccountTransactions } from '@suite-common/wallet-utils';
+import {
+    isAccountOutdated,
+    getAccountTransactions,
+    sortByBIP44AddressIndex,
+} from '@suite-common/wallet-utils';
 
 const coinjoinAccountCreate = (account: Account, targetAnonymity: number) =>
     ({
@@ -103,6 +107,21 @@ const getCheckpoint = (
     getState: GetState,
 ) => getState().wallet.coinjoin.accounts.find(a => a.key === account.key)?.checkpoint;
 
+const getAccountCache = ({ addresses, path }: Extract<Account, { backendType: 'coinjoin' }>) => {
+    if (!addresses) return;
+    // used/unused can be alternating, but coinjoin cache needs all receive addrs sorted ascending from 0
+    const receiveSorted = sortByBIP44AddressIndex(
+        `${path}/0`,
+        addresses.used.concat(addresses.unused),
+    );
+    const receivePrederived = receiveSorted.map(({ address, path }) => ({ address, path }));
+    const changePrederived = addresses.change.map(({ address, path }) => ({ address, path }));
+    return {
+        receivePrederived,
+        changePrederived,
+    };
+};
+
 export const updateClientAccount = (account: Account) => (_: Dispatch, getState: GetState) => {
     const client = getCoinjoinClient(account.symbol);
     if (!client) return;
@@ -141,9 +160,10 @@ export const fetchAndUpdateAccount =
         try {
             api.on('progress', onProgress);
 
-            const { pending, checkpoint } = await api.scanAccount({
+            const { pending, checkpoint, cache } = await api.scanAccount({
                 descriptor: account.descriptor,
                 checkpoint: getCheckpoint(account, getState),
+                cache: getAccountCache(account),
             });
 
             onProgress({ checkpoint, transactions: pending });
@@ -157,6 +177,7 @@ export const fetchAndUpdateAccount =
                 account.descriptor,
                 transactions,
                 checkpoint,
+                cache,
             );
             // TODO accountInfo.utxo don't have proper utxo.confirmations field, only 0/1
 
