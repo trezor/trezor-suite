@@ -2,6 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { goto } from '@suite-actions/routerActions';
+import * as coinjoinActions from '@wallet-actions/coinjoinAccountActions';
+import * as modalActions from '@suite-actions/modalActions';
 import { Account, CoinjoinSession } from '@suite-common/wallet-types';
 import { Card, Translation } from '@suite-components';
 import { useActions, useSelector } from '@suite-hooks';
@@ -43,6 +45,9 @@ interface BalanceSectionProps {
 export const BalanceSection = ({ account }: BalanceSectionProps) => {
     const actions = useActions({
         goto,
+        pauseSession: coinjoinActions.pauseCoinjoinSession.bind(null, account),
+        restoreSession: coinjoinActions.restoreCoinjoinSession.bind(null, account),
+        stopSession: modalActions.openModal.bind(null, { type: 'cancel-coinjoin' }),
     });
     const { coinjoin } = useSelector(state => state.wallet);
 
@@ -55,7 +60,12 @@ export const BalanceSection = ({ account }: BalanceSectionProps) => {
             <BalancePrivacyBreakdown />
 
             {session ? (
-                <CoinjoinStatus session={session} />
+                <CoinjoinStatus
+                    session={session}
+                    pauseSession={actions.pauseSession}
+                    restoreSession={actions.restoreSession}
+                    stopSession={actions.stopSession}
+                />
             ) : (
                 <AnonymizeButton
                     onClick={goToSetup}

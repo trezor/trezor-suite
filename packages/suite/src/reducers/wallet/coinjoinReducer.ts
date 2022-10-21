@@ -94,6 +94,31 @@ const stopSession = (
     }
 };
 
+const pauseSession = (
+    draft: CoinjoinState,
+    payload: ExtractActionPayload<typeof COINJOIN.SESSION_PAUSE>,
+) => {
+    const account = draft.accounts.find(a => a.key === payload.accountKey);
+    if (!account || !account.session) return;
+
+    delete account.session.phase;
+    account.session.registeredUtxos = [];
+    account.session.paused = true;
+    account.session.timeEnded = Date.now();
+};
+
+const restoreSession = (
+    draft: CoinjoinState,
+    payload: ExtractActionPayload<typeof COINJOIN.SESSION_RESTORE>,
+) => {
+    const account = draft.accounts.find(a => a.key === payload.accountKey);
+    if (!account || !account.session) return;
+
+    delete account.session.paused;
+    delete account.session.timeEnded;
+    account.session.timeCreated = Date.now();
+};
+
 const saveCheckpoint = (
     draft: CoinjoinState,
     action: Extract<Action, { type: typeof COINJOIN.ACCOUNT_DISCOVERY_PROGRESS }>,
@@ -158,6 +183,13 @@ export const coinjoinReducer = (
                 break;
             case COINJOIN.CLIENT_STATUS:
                 updateClientStatus(draft, action.payload);
+                break;
+
+            case COINJOIN.SESSION_PAUSE:
+                pauseSession(draft, action.payload);
+                break;
+            case COINJOIN.SESSION_RESTORE:
+                restoreSession(draft, action.payload);
                 break;
 
             // no default
