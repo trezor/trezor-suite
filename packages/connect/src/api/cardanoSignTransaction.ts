@@ -311,6 +311,14 @@ export default class CardanoSignTransaction extends AbstractMethod<
             this._ensureFeatureIsSupported('Babbage');
         }
 
+        if (
+            params.requiredSigners.length > 0 &&
+            params.signingMode !== PROTO.CardanoTxSigningMode.PLUTUS_TRANSACTION
+        ) {
+            // Trezor Firmware allowed requiredSigners in non-Plutus txs with the Babbage update
+            this._ensureFeatureIsSupported('Babbage');
+        }
+
         if (params.auxiliaryData?.governance_registration_parameters) {
             const { format, delegations, voting_purpose } =
                 params.auxiliaryData.governance_registration_parameters;

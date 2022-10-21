@@ -46,7 +46,7 @@ The transaction
 
 -   _should_ have valid `path` property on all `inputs`
 -   _must not_ contain a pool registration certificate
--   _must not_ contain `collateralInputs` and `requiredSigners`
+-   _must not_ contain `collateralInputs`, `collateralReturn`, `totalCollateral` and `referenceInputs`
 -   _must_ contain paths as stake credentials in certificates and withdrawals (no key hashes or script hashes)
 -   _may_ contain only 1852 and 1855 paths
 -   _must not_ contain 1855 witness requests when transaction is not minting/burning tokens
@@ -62,7 +62,7 @@ The transaction
 -   _must_ have single owner given by path on that certificate
 -   _must not_ contain withdrawals
 -   _must not_ contain token minting
--   _must not_ contain `collateralInputs` and `requiredSigners`
+-   _must not_ contain `collateralInputs`, `requiredSigners`, `collateralReturn`, `totalCollateral` and `referenceInputs`
 -   _must_ contain only staking witness requests
 
 These restrictions are in place due to a possibility of maliciously signing _another_ part of the transaction with the pool owner path as we are not displaying device-owned paths on the device screen.
@@ -76,7 +76,7 @@ The transaction
 -   _must_ have `path` undefined on all `inputs`
 -   _must not_ contain output addresses given by parameters
 -   _must not_ contain a pool registration certificate
--   _must not_ contain `collateralInputs` and `requiredSigners`
+-   _must not_ contain `collateralInputs`, `collateralReturn`, `totalCollateral` and `referenceInputs`
 -   _must_ contain script hash stake credentials in certificates and withdrawals (no paths or key hashes)
 -   _may_ contain only 1854 and 1855 witness requests
 -   _must not_ contain 1855 witness requests when transaction is not minting/burning tokens
@@ -91,6 +91,8 @@ The transaction
 -   _must not_ contain a pool registration certificate
 -   _may_ contain only 1852, 1854 and 1855 required signers
 -   _may_ contain only 1852, 1854 and 1855 witness requests
+
+Note: `requiredSigners` are meant for Plutus transactions (from the blockchain point of view), but some applications utilize them for their own purposes, so we allow them in all signing modes (except for pool registration as owner).
 
 ### Stake pool registration certificate specifics
 
