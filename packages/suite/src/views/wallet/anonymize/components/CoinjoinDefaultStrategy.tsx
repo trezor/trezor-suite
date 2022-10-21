@@ -34,13 +34,13 @@ const Text = styled(P)`
 export const COINJOIN_STRATEGIES = {
     recommended: {
         maxRounds: 10,
-        anonymityLevel: 80,
+        targetAnonymity: 80,
         maxFeePerKvbyte: 129000,
         maxCoordinatorFeeRate: 0.003 * 10 ** 10, // 0.003 from coordinator
     },
     fast: {
         maxRounds: 3,
-        anonymityLevel: 40,
+        targetAnonymity: 40,
         maxFeePerKvbyte: 129000,
         maxCoordinatorFeeRate: 0.003 * 10 ** 10, // 0.003 from coordinator
     },

@@ -3,8 +3,9 @@ import { NetworkSymbol } from '@suite-common/wallet-config';
 export type CoinjoinServerEnvironment = 'localhost' | 'public';
 
 export interface CoinjoinSessionParameters {
-    anonymityLevel: number;
+    targetAnonymity: number;
     maxRounds: number;
+    skipRounds?: [number, number];
     maxFeePerKvbyte: number;
     maxCoordinatorFeeRate: number;
 }
