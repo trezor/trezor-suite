@@ -2,6 +2,7 @@ export const select = [
     { value: 'eth', label: 'Ethereum', affectedValue: `m/44'/60'/0'/0` },
     { value: 'etc', label: 'Ethereum Classic', affectedValue: `m/44'/60'/0'/0` },
     { value: 'tROP', label: 'Ethereum Testnet Ropsten', affectedValue: `m/44'/1'/0'/0` },
+    { value: 'tGOR', label: 'Ethereum Testnet Goerli', affectedValue: `m/44'/1'/0'/0` },
     { value: 'tRIN', label: 'Ethereum Testnet Rinkeby', affectedValue: `m/44'/1'/0'/0` },
     { value: 'tKOV', label: 'Ethereum Testnet Kovan', affectedValue: `m/44'/1'/0'/0` },
     { value: 'ubq', label: 'Ubiq', affectedValue: `m/44'/108'/0'/0` },

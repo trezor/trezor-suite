@@ -5,6 +5,7 @@ export const select = [
     { value: 'eth', label: 'Ethereum', affectedValue: `m/44'/60'/0'/0/0` },
     { value: 'etc', label: 'Ethereum Classic', affectedValue: `m/44'/61'/0'/0/0` },
     { value: 'trop', label: 'Ropsten', affectedValue: `m/44'/60'/0'/0/0` },
+    { value: 'tgor', label: 'Goerli', affectedValue: `m/44'/60'/0'/0/0` },
     { value: 'btc', label: 'Bitcoin', affectedValue: `m/84'/0'/0'` },
     { value: 'test', label: 'Bitcoin Testnet', affectedValue: `m/49'/1'/0'` },
 ];
