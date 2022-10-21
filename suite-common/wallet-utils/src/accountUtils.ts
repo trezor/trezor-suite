@@ -244,6 +244,19 @@ export const amountToSatoshi = (amount: string, decimals: number) => {
     }
 };
 
+export const satoshiAmountToBtc = (amount: string) => {
+    try {
+        const satsAmount = new BigNumber(amount);
+        if (satsAmount.isNaN()) {
+            throw new Error('Amount is not a number');
+        }
+        return satsAmount.times(10 ** -8).toString(10);
+    } catch (error) {
+        // TODO: return null, so we can decide how to handle missing value in caller component
+        return '-1';
+    }
+};
+
 export const networkAmountToSatoshi = (amount: string | null, symbol: NetworkSymbol) => {
     if (!amount) return '0';
 

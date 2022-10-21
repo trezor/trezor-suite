@@ -85,6 +85,8 @@ export interface LineGraphTimeFrameItemAccountBalance {
     rates: FiatRates;
     balance?: string;
     fiatCurrencyRate?: number;
+    source?: string;
+    descriptor: string;
 }
 
-export type GraphPlacement = 'dashboard' | 'account';
+export type GraphDataSource = 'dashboard' | 'account';

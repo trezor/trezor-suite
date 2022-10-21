@@ -1,16 +1,12 @@
 import React, { useMemo } from 'react';
 import { LineGraph, GraphPoint } from 'react-native-graph';
 
+import { defaultColorVariant } from '@trezor/theme';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Box, Text } from '@suite-native/atoms';
-import { sumLineGraphPoints } from '@suite-common/wallet-graph';
+import { getExtremaFromGraphPoints, sumLineGraphPoints } from '@suite-common/wallet-graph';
 
 import { AxisLabel } from './AxisLabel';
-import {
-    getAxisLabelPercentagePosition,
-    maxGraphPointArrayItemIndex,
-    minGraphPointArrayItemIndex,
-} from '../utils';
 
 type GraphProps = {
     points: GraphPoint[];
@@ -32,28 +28,7 @@ export const Graph = ({ points = [] }: GraphProps) => {
     const { applyStyle } = useNativeStyles();
 
     const nonZeroSumOfGraphPoints = useMemo(() => sumLineGraphPoints(points) > 0, [points]);
-
-    const extremaFromGraphPoints = useMemo(() => {
-        const numberOfPoints = points.length;
-        if (numberOfPoints > 0 && nonZeroSumOfGraphPoints) {
-            const maxGraphPointIndex = maxGraphPointArrayItemIndex(points);
-            const minGraphPointIndex = minGraphPointArrayItemIndex(points);
-
-            const { value: pointMaxima } = points[maxGraphPointIndex];
-            const { value: pointMinima } = points[minGraphPointIndex];
-
-            return {
-                max: {
-                    x: getAxisLabelPercentagePosition(maxGraphPointIndex, numberOfPoints),
-                    value: pointMaxima,
-                },
-                min: {
-                    x: getAxisLabelPercentagePosition(minGraphPointIndex, numberOfPoints),
-                    value: pointMinima,
-                },
-            };
-        }
-    }, [points, nonZeroSumOfGraphPoints]);
+    const extremaFromGraphPoints = useMemo(() => getExtremaFromGraphPoints(points), [points]);
 
     const axisLabels = useMemo(() => {
         if (extremaFromGraphPoints?.max && extremaFromGraphPoints?.min) {
@@ -89,7 +64,7 @@ export const Graph = ({ points = [] }: GraphProps) => {
                 <LineGraph
                     style={applyStyle(graphStyle)}
                     points={graphPoints}
-                    color="#00854D"
+                    color={defaultColorVariant.green}
                     animated
                     enablePanGesture
                     TopAxisLabel={axisLabels?.TopAxisLabel}

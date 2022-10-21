@@ -4,12 +4,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Graph, TimeSwitch } from '@suite-native/graph';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Box, Text } from '@suite-native/atoms';
+import { enabledNetworks } from '@suite-native/config';
 import { Icon } from '@trezor/icons';
 import { selectFiatCurrency } from '@suite-native/module-settings';
 import { useFormatters } from '@suite-common/formatters';
 import {
     getAllAccountsGraphPointsThunk,
-    selectDashboardGraphPoints,
+    selectDashboardGraph,
     LineGraphTimeFrameValues,
 } from '@suite-common/wallet-graph';
 
@@ -22,17 +23,15 @@ export const PortfolioGraph = () => {
     const { applyStyle } = useNativeStyles();
     const { FiatAmountFormatter } = useFormatters();
     const fiatCurrency = useSelector(selectFiatCurrency);
-    const graphPoints = useSelector(selectDashboardGraphPoints);
+    const { points, error } = useSelector(selectDashboardGraph);
     const [selectedTimeFrame, setSelectedTimeFrame] = useState<LineGraphTimeFrameValues>('day');
 
     useEffect(() => {
         dispatch(
             getAllAccountsGraphPointsThunk({
-                graphPlacement: 'dashboard',
                 fiatCurrency: fiatCurrency.label,
                 timeFrame: selectedTimeFrame,
-                // FIXME mobile app currently supports only btc so it is hardcoded for now
-                networkSymbols: ['btc', 'test'],
+                networkSymbols: enabledNetworks,
             }),
         );
     }, [selectedTimeFrame, fiatCurrency, dispatch]);
@@ -62,11 +61,19 @@ export const PortfolioGraph = () => {
                     1.3%
                 </Text>
             </Box>
-            <Graph points={graphPoints} />
-            <TimeSwitch
-                selectedTimeFrame={selectedTimeFrame}
-                onSelectTimeFrame={handleSelectTimeFrame}
-            />
+            {error ? (
+                <Text variant="label" color="gray600">
+                    {error}
+                </Text>
+            ) : (
+                <>
+                    <Graph points={points} />
+                    <TimeSwitch
+                        selectedTimeFrame={selectedTimeFrame}
+                        onSelectTimeFrame={handleSelectTimeFrame}
+                    />
+                </>
+            )}
         </>
     );
 };

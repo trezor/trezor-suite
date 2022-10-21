@@ -8,7 +8,7 @@ import { AccountKey } from '@suite-common/suite-types';
 import {
     getSingleAccountGraphPointsThunk,
     LineGraphTimeFrameValues,
-    selectAccountGraphPoints,
+    selectAccountGraph,
 } from '@suite-common/wallet-graph';
 import { selectFiatCurrency } from '@suite-native/module-settings';
 
@@ -20,7 +20,7 @@ type AccountDetailHeaderProps = {
 export const AccountDetailHeader = memo(({ accountKey, accountName }: AccountDetailHeaderProps) => {
     const dispatch = useDispatch();
     const fiatCurrency = useSelector(selectFiatCurrency);
-    const graphPoints = useSelector(selectAccountGraphPoints);
+    const { points, error } = useSelector(selectAccountGraph);
     const [selectedTimeFrame, setSelectedTimeFrame] = useState<LineGraphTimeFrameValues>('day');
 
     useEffect(() => {
@@ -40,11 +40,19 @@ export const AccountDetailHeader = memo(({ accountKey, accountName }: AccountDet
     return (
         <>
             <AccountBalance accountKey={accountKey} accountName={accountName} />
-            <Graph points={graphPoints} />
-            <TimeSwitch
-                selectedTimeFrame={selectedTimeFrame}
-                onSelectTimeFrame={handleSelectTimeFrame}
-            />
+            {error ? (
+                <Text variant="label" color="gray600">
+                    {error}
+                </Text>
+            ) : (
+                <>
+                    <Graph points={points} />
+                    <TimeSwitch
+                        selectedTimeFrame={selectedTimeFrame}
+                        onSelectTimeFrame={handleSelectTimeFrame}
+                    />
+                </>
+            )}
             <Box marginBottom="large">
                 <Text variant="titleSmall">Transactions</Text>
             </Box>

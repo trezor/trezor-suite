@@ -78,7 +78,7 @@ export const extraDependenciesMock: ExtraDependencies = {
                 `Save data: ${data} into file: ${fileName}. Implementation on phone not ready.`,
             ),
         connectInitSettings: {
-            debug: true,
+            debug: false,
             manifest: {
                 email: 'info@trezor.io',
                 appUrl: '@trezor/suite-native',

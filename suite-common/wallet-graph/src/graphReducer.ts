@@ -1,14 +1,18 @@
 import { createReducer } from '@reduxjs/toolkit';
 
-import { GraphPlacement, LineGraphPoint } from './types';
+import { GraphDataSource, LineGraphPoint } from './types';
 import { getAllAccountsGraphPointsThunk, getSingleAccountGraphPointsThunk } from './graphThunks';
+import { getValidGraphPoints } from './graphUtils';
+import { accountNotFoundError, networkAccountsNotFoundError } from './constants';
 
 export interface GraphState {
     dashboard: {
         points: LineGraphPoint[];
+        error?: string | null;
     };
     account: {
         points: LineGraphPoint[];
+        error?: string | null;
     };
 }
 
@@ -30,45 +34,43 @@ export type GraphRootState = {
 const updateGraphPoints = (
     state: GraphState,
     payload: {
-        graphPlacement: GraphPlacement;
+        graphDataSource: GraphDataSource;
         graphPoints: LineGraphPoint[];
     },
 ) => {
-    const { graphPlacement, graphPoints } = payload;
-    /**
-     * react-native-graph library has problems with rendering path when there are some invalid values.
-     * Also animated=true graph does not show when dates do not follow each other from the unix epoch
-     * (start on 00:00:00 UTC on 1 January 1970).
-     *
-     */
-    const validGraphPoints = graphPoints
-        .filter(point => !Number.isNaN(point.value))
-        .map((point, index) => ({
-            ...point,
-            date: new Date(index),
-        }));
-    state[graphPlacement].points = validGraphPoints;
+    const { graphDataSource, graphPoints } = payload;
+    state[graphDataSource].error = null;
+    state[graphDataSource].points = getValidGraphPoints(graphPoints);
 };
 
 export const graphReducer = createReducer(graphInitialState, builder => {
     builder
         .addCase(getAllAccountsGraphPointsThunk.fulfilled, (state, action) => {
-            if (action.payload) {
-                updateGraphPoints(state, action.payload);
+            updateGraphPoints(state, {
+                graphDataSource: 'dashboard',
+                graphPoints: action.payload,
+            });
+        })
+        .addCase(getAllAccountsGraphPointsThunk.rejected, (state, action) => {
+            if (action.error.message === networkAccountsNotFoundError) {
+                state.dashboard.error = action.error.message;
             }
         })
         .addCase(getSingleAccountGraphPointsThunk.fulfilled, (state, action) => {
             if (action.payload) {
                 updateGraphPoints(state, {
-                    graphPlacement: 'account',
+                    graphDataSource: 'account',
                     graphPoints: action.payload,
                 });
+            }
+        })
+        .addCase(getSingleAccountGraphPointsThunk.rejected, (state, action) => {
+            if (action.error.message === accountNotFoundError) {
+                state.dashboard.error = action.error.message;
             }
         });
 });
 
-export const selectDashboardGraphPoints = (state: GraphRootState) =>
-    state.wallet.graph.dashboard.points;
+export const selectDashboardGraph = (state: GraphRootState) => state.wallet.graph.dashboard;
 
-export const selectAccountGraphPoints = (state: GraphRootState) =>
-    state.wallet.graph.account.points;
+export const selectAccountGraph = (state: GraphRootState) => state.wallet.graph.account;
