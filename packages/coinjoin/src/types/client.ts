@@ -6,7 +6,3 @@ export interface CoinjoinStatusEvent {
     feeRatesMedians: FeeRateMedians[];
     coordinatorFeeRate: number;
 }
-
-export type RegisterAccountParams = {
-    descriptor: string;
-};
