@@ -55,7 +55,7 @@ export default defineConfig({
         screenshotsFolder: './screenshots',
         videosFolder: './videos',
         video: true,
-        trashAssetsBeforeRuns: true,
+        trashAssetsBeforeRuns: false,
         chromeWebSecurity: false,
         experimentalFetchPolyfill: true,
         setupNodeEvents(on, config) {

@@ -39,7 +39,8 @@ describe('Dashboard with regtest', () => {
             .text()
             .then(value => {
                 // todo: solve regtest resetting. at the moment this value increments with every tets run
-                expect(Number.parseFloat(value.text())).to.be.greaterThan(0);
+                // @ts-expect-error weird typing does not match runtime
+                expect(Number.parseFloat(value)).to.be.greaterThan(0);
             });
     });
 });
