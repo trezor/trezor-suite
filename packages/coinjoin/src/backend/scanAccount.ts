@@ -1,8 +1,7 @@
-import { deriveAddresses } from '@trezor/utxo-lib';
 import { transformTransaction } from '@trezor/blockchain-link/lib/workers/blockbook/utils';
 
 import { getAddressScript, getFilter } from './filters';
-import { doesTxContainAddress, fixTxInputs } from './backendUtils';
+import { doesTxContainAddress, deriveAddresses, fixTxInputs } from './backendUtils';
 import type {
     AccountAddress,
     BlockbookBlock,
@@ -11,6 +10,7 @@ import type {
     ScanAccountCheckpoint,
     ScanAccountContext,
     ScanAccountResult,
+    PrederivedAddress,
 } from '../types/backend';
 import { DISCOVERY_LOOKOUT } from '../constants';
 
@@ -52,17 +52,24 @@ export const scanAccount = async (
     { client, network, filters, mempool, abortSignal, onProgress }: ScanAccountContext,
 ): Promise<ScanAccountResult> => {
     const xpub = params.descriptor;
-    const deriveMore = (type: 'receive' | 'change') => (from: number, count: number) =>
-        deriveAddresses(xpub, type, from, count, network).map(({ address }) => ({
-            address,
-            script: getAddressScript(address, network),
-        }));
+    const deriveMore =
+        (type: 'receive' | 'change', prederived?: PrederivedAddress[]) =>
+        (from: number, count: number) =>
+            deriveAddresses(prederived, xpub, type, from, count, network).map(
+                ({ address, path }) => ({
+                    address,
+                    path,
+                    script: getAddressScript(address, network),
+                }),
+            );
 
-    let { checkpoint } = params;
-    let receive: AccountAddress[] = deriveMore('receive')(0, checkpoint.receiveCount);
-    let change: AccountAddress[] = deriveMore('change')(0, checkpoint.changeCount);
+    const { receiveCount, changeCount } = params.checkpoint;
+    const { receivePrederived, changePrederived } = params.cache ?? {};
+    let receive: AccountAddress[] = deriveMore('receive', receivePrederived)(0, receiveCount);
+    let change: AccountAddress[] = deriveMore('change', changePrederived)(0, changeCount);
 
     let firstBlockHeight = -1;
+    let { checkpoint } = params;
 
     const txs = new Set<BlockbookTransaction>();
 
@@ -80,8 +87,20 @@ export const scanAccount = async (
         const lazyBlock = async () =>
             block ?? (block = await client.fetchBlock(blockHeight, { signal: abortSignal }));
 
-        receive = await analyzeAddresses(receive, isMatch, lazyBlock, deriveMore('receive'), txs);
-        change = await analyzeAddresses(change, isMatch, lazyBlock, deriveMore('change'), txs);
+        receive = await analyzeAddresses(
+            receive,
+            isMatch,
+            lazyBlock,
+            deriveMore('receive', receivePrederived),
+            txs,
+        );
+        change = await analyzeAddresses(
+            change,
+            isMatch,
+            lazyBlock,
+            deriveMore('change', changePrederived),
+            txs,
+        );
 
         const transactions = Array.from(txs, transformTx(xpub, receive, change));
         const progress =
@@ -114,8 +133,14 @@ export const scanAccount = async (
 
     await fixTxInputs(pending, client);
 
+    const cache = {
+        receivePrederived: receive.map(({ address, path }) => ({ address, path })),
+        changePrederived: change.map(({ address, path }) => ({ address, path })),
+    };
+
     return {
         pending,
         checkpoint,
+        cache,
     };
 };

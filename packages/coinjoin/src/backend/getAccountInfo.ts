@@ -1,11 +1,18 @@
-import { Network, deriveAddresses } from '@trezor/utxo-lib';
+import type { Network } from '@trezor/utxo-lib';
 import {
     sumAddressValues,
     sortTxsFromLatest,
 } from '@trezor/blockchain-link/lib/workers/electrum/methods/getAccountInfo';
 
-import { isTxConfirmed, doesTxContainAddress } from './backendUtils';
-import type { Transaction, AccountInfo, ScanAccountCheckpoint, Address } from '../types/backend';
+import { isTxConfirmed, doesTxContainAddress, deriveAddresses } from './backendUtils';
+import type {
+    Transaction,
+    AccountInfo,
+    ScanAccountCheckpoint,
+    Address,
+    PrederivedAddress,
+    AccountCache,
+} from '../types/backend';
 import { getAccountUtxo } from './getAccountUtxo';
 
 const PAGE_SIZE_DEFAULT = 25;
@@ -36,10 +43,11 @@ const deriveTxAddresses = (
     descriptor: string,
     type: 'receive' | 'change',
     count: number,
+    prederived: PrederivedAddress[] | undefined,
     network: Network,
     transactions: Transaction[],
 ): Address[] =>
-    deriveAddresses(descriptor, type, 0, count, network).map(({ address, path }) => {
+    deriveAddresses(prederived, descriptor, type, 0, count, network).map(({ address, path }) => {
         const txs = transactions.filter(tx => doesTxContainAddress(address)(tx.details));
         const sent = sumAddressValues(txs, address, tx => tx.details.vin);
         const received = sumAddressValues(txs, address, tx => tx.details.vout);
@@ -57,11 +65,13 @@ export const getAccountInfo = ({
     descriptor,
     transactions,
     checkpoint,
+    cache,
     network,
 }: {
     descriptor: string;
     transactions: Transaction[];
     checkpoint?: ScanAccountCheckpoint;
+    cache?: AccountCache;
     network: Network;
 }): AccountInfo => {
     const txCountTotal = transactions.length;
@@ -77,6 +87,7 @@ export const getAccountInfo = ({
             descriptor,
             'receive',
             checkpoint.receiveCount,
+            cache?.receivePrederived,
             network,
             txsConfirmed,
         );
@@ -84,6 +95,7 @@ export const getAccountInfo = ({
             descriptor,
             'change',
             checkpoint.changeCount,
+            cache?.changePrederived,
             network,
             txsConfirmed,
         );
