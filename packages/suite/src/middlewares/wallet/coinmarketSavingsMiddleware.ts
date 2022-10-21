@@ -53,8 +53,6 @@ const coinmarketSavingsMiddleware =
                                     ),
                                 ),
                             );
-                        } else {
-                            api.dispatch(coinmarketSavingsActions.setSelectedProvider(undefined));
                         }
                     }
                 });
