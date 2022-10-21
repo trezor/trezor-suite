@@ -1,10 +1,8 @@
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useMemo, useRef, useState, useCallback } from 'react';
 import styled, { css } from 'styled-components';
 import { Dropdown, GroupedMenuItems, Icon, Loader, useTheme, variables } from '@trezor/components';
 import { CoinjoinSession, RoundPhase } from '@suite-common/wallet-types';
 import { Translation } from '@suite-components/Translation';
-import { useActions } from '@suite-hooks/useActions';
-import * as modalActions from '@suite-actions/modalActions';
 import { CountdownTimer } from '@suite-components';
 import { COINJOIN_PHASE_MESSAGES } from '@suite-constants/coinjoin';
 
@@ -108,16 +106,20 @@ const PauseText = styled.p`
 
 interface CoinjoinStatusProps {
     session: CoinjoinSession;
+    stopSession: () => void;
+    pauseSession: () => void;
+    restoreSession: () => Promise<void>;
 }
 
-export const CoinjoinStatus = ({ session }: CoinjoinStatusProps) => {
-    const [isPaused, setIsPaused] = useState(false); // temporary!
-    const [isLoading, setIsLoading] = useState(false); // temporary!
+export const CoinjoinStatus = ({
+    session,
+    pauseSession,
+    restoreSession,
+    stopSession,
+}: CoinjoinStatusProps) => {
+    const isPaused = !!session.paused;
+    const [isLoading, setIsLoading] = useState(false);
     const [isWheelHovered, setIsWheelHovered] = useState(false);
-
-    const { openModal } = useActions({
-        openModal: modalActions.openModal,
-    });
 
     const menuRef = useRef<HTMLUListElement & { close: () => void }>(null);
     const theme = useTheme();
@@ -125,15 +127,15 @@ export const CoinjoinStatus = ({ session }: CoinjoinStatusProps) => {
     const timeLeft = `${(session.maxRounds - session.signedRounds.length) * 2.5}h`; // approximately 2.5h per round
     const progress = session.signedRounds.length / (session.maxRounds / 100);
 
-    const togglePause = () => {
-        setIsLoading(true);
-
-        setTimeout(() => {
-            // TEMPORARY
-            setIsPaused(current => !current);
+    const togglePause = useCallback(async () => {
+        if (isPaused) {
+            setIsLoading(true);
+            await restoreSession();
             setIsLoading(false);
-        }, 1000);
-    };
+        } else {
+            pauseSession();
+        }
+    }, [isPaused, pauseSession, restoreSession]);
 
     const menuItems = useMemo<Array<GroupedMenuItems>>(
         () => [
@@ -148,7 +150,7 @@ export const CoinjoinStatus = ({ session }: CoinjoinStatusProps) => {
                                 <Translation id="TR_PAUSE" />
                             </MenuLabel>
                         ),
-                        callback: () => setIsPaused(current => !current),
+                        callback: togglePause,
                         'data-test': `@coinjoin/pause`,
                         isHidden: isPaused,
                     },
@@ -162,14 +164,14 @@ export const CoinjoinStatus = ({ session }: CoinjoinStatusProps) => {
                         ),
                         callback: () => {
                             menuRef.current?.close();
-                            openModal({ type: 'cancel-coinjoin' });
+                            stopSession();
                         },
                         'data-test': `@coinjoin/cancel`,
                     },
                 ],
             },
         ],
-        [openModal, isPaused],
+        [stopSession, isPaused, togglePause],
     );
 
     const iconConfig = {

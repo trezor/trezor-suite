@@ -83,6 +83,22 @@ const coinjoinAccountUnregister = (accountKey: string) =>
         },
     } as const);
 
+const coinjoinSessionPause = (accountKey: string) =>
+    ({
+        type: COINJOIN.SESSION_PAUSE,
+        payload: {
+            accountKey,
+        },
+    } as const);
+
+const coinjoinSessionRestore = (accountKey: string) =>
+    ({
+        type: COINJOIN.SESSION_RESTORE,
+        payload: {
+            accountKey,
+        },
+    } as const);
+
 const coinjoinAccountDiscoveryProgress = (account: Account, progress: ScanAccountProgress) =>
     ({
         type: COINJOIN.ACCOUNT_DISCOVERY_PROGRESS,
@@ -100,7 +116,9 @@ export type CoinjoinAccountAction =
     | ReturnType<typeof coinjoinAccountAuthorizeSuccess>
     | ReturnType<typeof coinjoinAccountAuthorizeFailed>
     | ReturnType<typeof coinjoinAccountUnregister>
-    | ReturnType<typeof coinjoinAccountDiscoveryProgress>;
+    | ReturnType<typeof coinjoinAccountDiscoveryProgress>
+    | ReturnType<typeof coinjoinSessionPause>
+    | ReturnType<typeof coinjoinSessionRestore>;
 
 const getCheckpoint = (
     account: Extract<Account, { backendType: 'coinjoin' }>,
@@ -139,6 +157,9 @@ export const fetchAndUpdateAccount =
     (account: Account) => async (dispatch: Dispatch, getState: GetState) => {
         if (account.backendType !== 'coinjoin' || account.syncing) return;
 
+        const api = CoinjoinBackendService.getInstance(account.symbol);
+        if (!api) return;
+
         const isInitialUpdate = account.status !== 'ready';
         dispatch(accountsActions.startCoinjoinAccountSync(account));
 
@@ -153,9 +174,6 @@ export const fetchAndUpdateAccount =
             }
             dispatch(coinjoinAccountDiscoveryProgress(account, progress));
         };
-
-        const api = CoinjoinBackendService.getInstance(account.symbol);
-        if (!api) throw new Error('CoinjoinBackendService api not found');
 
         try {
             api.on(`progress/${account.descriptor}`, onProgress);
@@ -379,6 +397,28 @@ export const startCoinjoinSession =
     };
 
 // called from coinjoin account UI or exceptions like device disconnection, forget wallet/account etc.
+export const pauseCoinjoinSession = (account: Account) => (dispatch: Dispatch) => {
+    // get @trezor/coinjoin client if available
+    const client = getCoinjoinClient(account.symbol);
+
+    // unregister account in @trezor/coinjoin
+    client?.unregisterAccount(account.key);
+
+    // dispatch data to reducer
+    dispatch(coinjoinSessionPause(account.key));
+};
+
+// called from coinjoin account UI or exceptions like device disconnection, forget wallet/account etc.
+export const restoreCoinjoinSession = (account: Account) => async (dispatch: Dispatch) => {
+    // TODO: check if device is connected, passphrase is authorized...
+
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
+    // dispatch data to reducer
+    dispatch(coinjoinSessionRestore(account.key));
+};
+
+// called from coinjoin account UI or exceptions like device disconnection, forget wallet/account etc.
 export const stopCoinjoinSession = (account: Account) => (dispatch: Dispatch) => {
     // get @trezor/coinjoin client if available
     const client = getCoinjoinClient(account.symbol);
@@ -434,7 +474,7 @@ export const restoreCoinjoin = () => (dispatch: Dispatch, getState: GetState) =>
             // currently it is not possible to full restore session while using passphrase.
             // related to @trezor/connect and inner-outer state
             if (cjAccount.session) {
-                dispatch(coinjoinAccountUnregister(account.key));
+                dispatch(pauseCoinjoinSession(account));
             }
 
             if (!res.includes(account.symbol)) {
