@@ -24,6 +24,8 @@ export interface CoinjoinRoundEvent {
 interface CoinjoinTxInputs {
     path?: string;
     outpoint: string;
+    index: number;
+    hash: string;
     amount: number;
     commitmentData: string;
     scriptPubKey: string;

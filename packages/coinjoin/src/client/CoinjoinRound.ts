@@ -16,7 +16,13 @@ import {
     CoinjoinResponseEvent,
 } from '../types/round';
 import { RoundPhase, Round, CoinjoinRoundParameters } from '../types/coordinator';
+import { inputRegistration } from './phase/inputRegistration';
+import { connectionConfirmation } from './phase/connectionConfirmation';
+import { outputRegistration } from './phase/outputRegistration';
+import { transactionSigning } from './phase/transactionSigning';
 import type { Account } from './Account';
+import type { Alice } from './Alice';
+import type { CoinjoinPrison } from './CoinjoinPrison';
 
 export interface CoinjoinRoundOptions {
     signal: AbortSignal;
@@ -60,14 +66,6 @@ const createRoundLock = (mainSignal: AbortSignal) => {
         promise,
     };
 };
-
-// Temporary. Alice will be added in next PR
-interface Alice {
-    path: string;
-    accountKey: string;
-    outpoint: string;
-    error?: Error;
-}
 
 export class CoinjoinRound extends EventEmitter implements SerializedCoinjoinRound {
     private lock?: ReturnType<typeof createRoundLock>;
@@ -123,32 +121,7 @@ export class CoinjoinRound extends EventEmitter implements SerializedCoinjoinRou
         const firstRound = statusRounds.find(r => r.phase === RoundPhase.InputRegistration);
         if (!firstRound) return;
         const round = new CoinjoinRound(firstRound, options);
-
-        round.startFakeRoundLifecycle(firstRound, accounts[0]);
         return Promise.resolve(round);
-    }
-
-    // temporary code to run Round lifecycle without actual coinjoining
-    startFakeRoundLifecycle(round: Round, account: Account) {
-        console.warn('Create fake round');
-        this.id = 'fakeroundid';
-        this.inputs = account.utxos.map(u => ({
-            outpoint: u.outpoint,
-            path: u.path,
-            accountKey: account.accountKey,
-        }));
-        let currentPhase = 0;
-        const timeoutFn = async () => {
-            await this.onPhaseChange({ ...round, phase: currentPhase });
-            await this.process([]);
-
-            currentPhase++;
-            if (this.failed.length === 0 && currentPhase <= RoundPhase.Ended) {
-                setTimeout(() => timeoutFn(), 10000);
-            }
-        };
-
-        timeoutFn();
     }
 
     async onPhaseChange(changed: Round) {
@@ -173,15 +146,20 @@ export class CoinjoinRound extends EventEmitter implements SerializedCoinjoinRou
         return this;
     }
 
-    async process(accounts: Account[]) {
+    async process(accounts: Account[], prison: CoinjoinPrison) {
         const { log } = this.options;
         if (this.inputs.length === 0) {
             log('Trying to process round without inputs');
             return this;
         }
-        await this.processPhase(accounts);
+        await this.processPhase(accounts, prison);
 
-        const [inputs, failed] = arrayPartition(this.inputs, input => !input.error);
+        const [inputs, failed] = arrayPartition(this.inputs, input => {
+            if (input.error) {
+                prison.ban(input.outpoint, { roundId: this.id, reason: input.error.message });
+            }
+            return !input.error;
+        });
         this.inputs = inputs;
         this.failed = this.failed.concat(...failed);
 
@@ -198,18 +176,104 @@ export class CoinjoinRound extends EventEmitter implements SerializedCoinjoinRou
         return this;
     }
 
-    private processPhase(_accounts: Account[]) {
+    private processPhase(accounts: Account[], prison: CoinjoinPrison) {
         this.lock = createRoundLock(this.options.signal);
+        const processOptions = { ...this.options, signal: this.lock.signal };
         // try to run process on CoinjoinRound
-        return new Promise(resolve => setTimeout(() => resolve(this), 2000));
+        if (this.phase === RoundPhase.InputRegistration) {
+            return inputRegistration(this, prison, processOptions);
+        }
+        if (this.phase === RoundPhase.ConnectionConfirmation) {
+            return connectionConfirmation(this, processOptions);
+        }
+        if (this.phase === RoundPhase.OutputRegistration) {
+            return outputRegistration(this, accounts, prison, processOptions);
+        }
+        if (this.phase === RoundPhase.TransactionSigning) {
+            return transactionSigning(this, processOptions);
+        }
+        if (this.phase === RoundPhase.Ended) {
+            return Promise.resolve(this);
+        }
+        return Promise.resolve(this);
+    }
+
+    postProcess(rounds: CoinjoinRound[]) {
+        const failed: CoinjoinRound['inputs'] = [];
+        const updateRounds = rounds.map(round => {
+            const failedInRound: CoinjoinRound['inputs'] = [];
+            const inputs = round.inputs.filter(input => {
+                if (input.error) {
+                    failedInRound.push(input);
+                    return false;
+                }
+                return true;
+            });
+            round.inputs = inputs;
+            round.failed = round.failed.concat(failedInRound);
+            failed.push(...failedInRound);
+            return round;
+        });
+
+        const requests = updateRounds.flatMap(round => round.getRequest() || []);
+
+        return {
+            rounds: updateRounds,
+            requests,
+            failed,
+        };
     }
 
     getRequest(): CoinjoinRequestEvent | void {
-        // TODO
+        if (this.phase === RoundPhase.InputRegistration) {
+            const inputs = this.inputs.filter(input => !input.ownershipProof && !input.requested);
+            if (inputs.length > 0) {
+                inputs.forEach(input => {
+                    this.options.log(`Requesting ownership for ${input.outpoint}`);
+                    input.setRequest('ownership');
+                });
+                return {
+                    type: 'ownership',
+                    roundId: this.id,
+                    inputs,
+                    commitmentData: this.commitmentData,
+                };
+            }
+        }
+        if (this.phase === RoundPhase.TransactionSigning) {
+            const inputs = this.inputs.filter(i => !i.witness && !i.requested);
+            if (inputs.length > 0 && this.transactionData) {
+                inputs.forEach(input => {
+                    this.options.log(`Requesting witness for ${input.outpoint}`);
+                    input.setRequest('witness');
+                });
+                return {
+                    type: 'witness',
+                    roundId: this.id,
+                    inputs,
+                    transaction: this.transactionData,
+                };
+            }
+        }
     }
 
-    resolveRequest(_: CoinjoinResponseEvent) {
-        // TODO
+    resolveRequest({ type, inputs }: CoinjoinResponseEvent) {
+        const { log } = this.options;
+        inputs.forEach(i => {
+            const input = this.inputs.find(a => a.outpoint === i.outpoint);
+            // reset request in input
+            input?.setRequest();
+            if ('error' in i) {
+                log(`Resolving ${type} request for ${i.outpoint} with error. ${i.error}`);
+                input?.setError(new Error(i.error));
+            } else if ('ownershipProof' in i) {
+                log(`Resolving ${type} request for ${i.outpoint}`);
+                input?.setOwnershipProof(i.ownershipProof);
+            } else if ('witness' in i) {
+                log(`Resolving ${type} request for ${i.outpoint}`);
+                input?.setWitness(i.witness, i.witnessIndex);
+            }
+        });
     }
 
     updateAccount(account: RegisterAccountParams) {
