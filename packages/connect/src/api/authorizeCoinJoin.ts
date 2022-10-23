@@ -36,6 +36,8 @@ export default class AuthorizeCoinJoin extends AbstractMethod<
             coin_name: coinInfo?.name,
             script_type,
             amount_unit: payload.amountUnit,
+            // @ts-expect-error
+            preauthorized: payload.preauthorized,
         };
     }
 
@@ -44,6 +46,15 @@ export default class AuthorizeCoinJoin extends AbstractMethod<
         if (!this.device.features.experimental_features) {
             // enable experimental features
             await cmd.typedCall('ApplySettings', 'Success', { experimental_features: true });
+        }
+        // @ts-expect-error
+        if (this.params.preauthorized) {
+            try {
+                const pre = await cmd.typedCall('DoPreauthorized', 'PreauthorizedRequest', {});
+                console.warn('preauthorzie result', pre);
+            } catch (error) {
+                console.warn('not preauthorized', error);
+            }
         }
 
         const response = await cmd.typedCall('AuthorizeCoinJoin', 'Success', this.params);

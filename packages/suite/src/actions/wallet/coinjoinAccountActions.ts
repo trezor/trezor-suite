@@ -439,14 +439,29 @@ export const pauseCoinjoinSession = (account: Account) => (dispatch: Dispatch) =
 };
 
 // called from coinjoin account UI or exceptions like device disconnection, forget wallet/account etc.
-export const restoreCoinjoinSession = (account: Account) => async (dispatch: Dispatch) => {
-    // TODO: check if device is connected, passphrase is authorized...
+export const restoreCoinjoinSession =
+    (account: Account) => async (dispatch: Dispatch, getState: GetState) => {
+        // TODO: check if device is connected, passphrase is authorized...
+        const { device } = getState().suite;
+        const { coinjoin } = getState().wallet;
+        // get fresh data from reducer
+        const params = coinjoin.accounts.find(a => a.key === account.key)?.session;
+        if (!params) return;
+        // await new Promise(resolve => setTimeout(resolve, 1000));
+        // @ts-expect-error
+        const auth = await TrezorConnect.authorizeCoinJoin({
+            device,
+            useEmptyPassphrase: device?.useEmptyPassphrase,
+            path: account.path,
+            coin: account.symbol,
+            ...params,
+        });
 
-    await new Promise(resolve => setTimeout(resolve, 1000));
-
-    // dispatch data to reducer
-    dispatch(coinjoinSessionRestore(account.key));
-};
+        if (auth.success) {
+            // dispatch data to reducer
+            dispatch(coinjoinSessionRestore(account.key));
+        }
+    };
 
 // called from coinjoin account UI or exceptions like device disconnection, forget wallet/account etc.
 export const stopCoinjoinSession = (account: Account) => (dispatch: Dispatch) => {
