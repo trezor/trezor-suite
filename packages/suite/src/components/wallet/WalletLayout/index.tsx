@@ -43,8 +43,7 @@ type ProgressInfo = {
 };
 
 const AccountLoadingProgress = ({ account: { account } }: Pick<WalletLayoutProps, 'account'>) => {
-    const network = account?.symbol;
-    const backendType = account?.backendType;
+    const { symbol: network, backendType, descriptor } = account || {};
     const [progress, setProgress] = useState<ProgressInfo>();
 
     useEffect(() => {
@@ -52,11 +51,11 @@ const AccountLoadingProgress = ({ account: { account } }: Pick<WalletLayoutProps
         const backend = CoinjoinBackendService.getInstance(network);
         if (!backend) return;
         const onProgress = ({ info }: { info?: ProgressInfo }) => setProgress(info);
-        backend.on('progress', onProgress);
+        backend.on(`progress/${descriptor}`, onProgress);
         return () => {
-            backend.off('progress', onProgress);
+            backend.off(`progress/${descriptor}`, onProgress);
         };
-    }, [network, backendType]);
+    }, [network, backendType, descriptor]);
 
     return progress ? (
         <>
