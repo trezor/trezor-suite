@@ -71,7 +71,7 @@ export const networks = {
         accountTypes: {
           ledger: {
             bip43Path: "m/44'/60'/0'/i",
-          }
+          },
         },
     },
     etc: {
