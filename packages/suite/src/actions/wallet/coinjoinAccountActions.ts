@@ -158,7 +158,7 @@ export const fetchAndUpdateAccount =
         if (!api) throw new Error('CoinjoinBackendService api not found');
 
         try {
-            api.on('progress', onProgress);
+            api.on(`progress/${account.descriptor}`, onProgress);
 
             const { pending, checkpoint, cache } = await api.scanAccount({
                 descriptor: account.descriptor,
@@ -207,7 +207,7 @@ export const fetchAndUpdateAccount =
                 ),
             );
         } finally {
-            api.off('progress', onProgress);
+            api.off(`progress/${account.descriptor}`, onProgress);
         }
     };
 

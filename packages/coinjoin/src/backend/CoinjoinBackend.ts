@@ -22,11 +22,22 @@ interface Events {
     progress: ScanAccountProgress;
 }
 
+type EventType<K extends keyof Events, D extends string> = `${K}/${D}`;
+
 export declare interface CoinjoinBackend {
-    on<K extends keyof Events>(type: K, listener: (event: Events[K]) => void): this;
-    off<K extends keyof Events>(type: K, listener: (event: Events[K]) => void): this;
-    emit<K extends keyof Events>(type: K, ...args: Events[K][]): boolean;
-    removeAllListeners<K extends keyof Events>(type?: K): this;
+    on<K extends keyof Events, D extends string>(
+        type: EventType<K, D>,
+        listener: (event: Events[K]) => void,
+    ): this;
+    off<K extends keyof Events, D extends string>(
+        type: EventType<K, D>,
+        listener: (event: Events[K]) => void,
+    ): this;
+    emit<K extends keyof Events, D extends string>(
+        type: EventType<K, D>,
+        ...args: Events[K][]
+    ): boolean;
+    removeAllListeners<K extends keyof Events, D extends string>(type?: EventType<K, D>): this;
 }
 
 export class CoinjoinBackend extends EventEmitter {
@@ -58,7 +69,7 @@ export class CoinjoinBackend extends EventEmitter {
                 abortSignal: this.abortController.signal,
                 filters,
                 mempool: this.mempool,
-                onProgress: progress => this.emit('progress', progress),
+                onProgress: progress => this.emit(`progress/${descriptor}`, progress),
             },
         );
     }
@@ -76,7 +87,7 @@ export class CoinjoinBackend extends EventEmitter {
                 filters,
                 mempool: this.mempool,
                 onProgress: progress =>
-                    this.emit('progress', {
+                    this.emit(`progress/${descriptor}`, {
                         ...progress,
                         // TODO resolve this correctly
                         checkpoint: { ...progress.checkpoint, receiveCount: -1, changeCount: -1 },
