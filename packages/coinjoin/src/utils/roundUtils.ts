@@ -1,4 +1,10 @@
-import { RoundPhase, Round, CoinjoinStateEvent } from '../types/coordinator';
+import { ROUND_REGISTRATION_END_OFFSET } from '../constants';
+import {
+    RoundPhase,
+    Round,
+    CoinjoinStateEvent,
+    CoinjoinRoundParameters,
+} from '../types/coordinator';
 
 export const getRoundEvents = <T extends CoinjoinStateEvent['Type']>(
     type: T,
@@ -11,6 +17,14 @@ export const getRoundParameters = (round: Round) => {
 
     const [{ roundParameters }] = events;
     return roundParameters;
+};
+
+// round commitmentData used in request for input ownershipProof
+export const getCommitmentData = (identifier: string, roundId: string) => {
+    const name = Buffer.from(identifier);
+    const len = Buffer.allocUnsafe(1);
+    len.writeUInt8(name.length, 0);
+    return Buffer.concat([len, name, Buffer.from(roundId, 'hex')]).toString('hex');
 };
 
 // transform '0d 0h 1m 0s' (WabiSabi TimeSpan) to milliseconds
@@ -40,39 +54,70 @@ export const readTimeSpan = (ts: string) => {
     return date.getTime() - now;
 };
 
-// NOTE: deadline is not accurate. phase may change earlier
-export const estimatePhaseDeadline = (round: Round) => {
-    const deadline = new Date(round.inputRegistrationEnd).getTime();
+// NOTE: deadlines are not accurate. phase may change earlier
+// accept CoinjoinRound or modified coordinator Round (see estimatePhaseDeadline below)
+type PartialCoinjoinRound = {
+    phase: RoundPhase;
+    inputRegistrationEnd: string;
+    roundParameters: CoinjoinRoundParameters;
+};
 
-    if (round.phase === RoundPhase.InputRegistration) {
-        return deadline;
+export const getCoinjoinRoundDeadlines = (round: PartialCoinjoinRound) => {
+    const now = Date.now();
+    switch (round.phase) {
+        case RoundPhase.InputRegistration: {
+            const deadline =
+                new Date(round.inputRegistrationEnd).getTime() + ROUND_REGISTRATION_END_OFFSET;
+            return {
+                phaseDeadline: deadline,
+                roundDeadline:
+                    deadline +
+                    readTimeSpan(round.roundParameters.connectionConfirmationTimeout) +
+                    readTimeSpan(round.roundParameters.outputRegistrationTimeout) +
+                    readTimeSpan(round.roundParameters.transactionSigningTimeout),
+            };
+        }
+        case RoundPhase.ConnectionConfirmation: {
+            const deadline =
+                now + readTimeSpan(round.roundParameters.connectionConfirmationTimeout);
+            return {
+                phaseDeadline: deadline,
+                roundDeadline:
+                    deadline +
+                    readTimeSpan(round.roundParameters.outputRegistrationTimeout) +
+                    readTimeSpan(round.roundParameters.transactionSigningTimeout),
+            };
+        }
+        case RoundPhase.OutputRegistration: {
+            const deadline = now + readTimeSpan(round.roundParameters.outputRegistrationTimeout);
+            return {
+                phaseDeadline: deadline,
+                roundDeadline:
+                    deadline + readTimeSpan(round.roundParameters.transactionSigningTimeout),
+            };
+        }
+        case RoundPhase.TransactionSigning: {
+            const deadline = now + readTimeSpan(round.roundParameters.transactionSigningTimeout);
+            return {
+                phaseDeadline: deadline,
+                roundDeadline: deadline,
+            };
+        }
+        default:
+            return {
+                phaseDeadline: now,
+                roundDeadline: now,
+            };
     }
+};
 
+export const estimatePhaseDeadline = (round: Round) => {
     const roundParameters = getRoundParameters(round);
     if (!roundParameters) return 0;
 
-    if (round.phase === RoundPhase.ConnectionConfirmation) {
-        return deadline + readTimeSpan(roundParameters.connectionConfirmationTimeout);
-    }
+    const { phaseDeadline } = getCoinjoinRoundDeadlines({ ...round, roundParameters });
 
-    if (round.phase === RoundPhase.OutputRegistration) {
-        return (
-            deadline +
-            readTimeSpan(roundParameters.connectionConfirmationTimeout) +
-            readTimeSpan(roundParameters.outputRegistrationTimeout)
-        );
-    }
-
-    if (round.phase === RoundPhase.TransactionSigning) {
-        return (
-            deadline +
-            readTimeSpan(roundParameters.connectionConfirmationTimeout) +
-            readTimeSpan(roundParameters.outputRegistrationTimeout) +
-            readTimeSpan(roundParameters.transactionSigningTimeout)
-        );
-    }
-
-    return 0;
+    return phaseDeadline;
 };
 
 export const findNearestDeadline = (rounds: Round[]) => {

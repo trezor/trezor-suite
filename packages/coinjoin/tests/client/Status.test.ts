@@ -1,4 +1,5 @@
 import { Status } from '../../src/client/Status';
+import { ROUND_REGISTRATION_END_OFFSET } from '../../src/constants';
 import { createServer, Server } from '../mocks/server';
 import { DEFAULT_ROUND } from '../fixtures/round.fixture';
 
@@ -161,7 +162,7 @@ describe('Status', () => {
         status.setMode('enabled');
         await status.start();
 
-        await waitForStatus(600); // wait 0.6 sec (inputRegistrationEnd)
+        await waitForStatus(ROUND_REGISTRATION_END_OFFSET + 600); // wait 0.6 sec + offset (inputRegistrationEnd)
 
         expect(requestListener).toHaveBeenCalledTimes(2); // status fetched twice, because Round.inputRegistrationEnd timeout < STATUS_TIMEOUT.enabled
         expect(onUpdateListener).toHaveBeenCalledTimes(1); // status changed only once
@@ -188,18 +189,17 @@ describe('Status', () => {
 
         expect(requestListener).toHaveBeenCalledTimes(3);
         expect(onUpdateListener).toHaveBeenCalledTimes(2);
-
-        await waitForStatus(2100); // wait 2 sec (connectionConfirmationTimeout 5 sec - 3 sec from previous tick)
+        await waitForStatus(3100); // wait 3 sec of STATUS_TIMEOUT.enabled  < connectionConfirmationTimeout 5 sec
 
         expect(requestListener).toHaveBeenCalledTimes(4);
         expect(onUpdateListener).toHaveBeenCalledTimes(3);
 
-        await waitForStatus(2100); // wait 2 sec (outputRegistrationTimeout)
+        await waitForStatus(2100); // wait 2 sec of outputRegistrationTimeout < STATUS_TIMEOUT.enabled 3 sec
 
         expect(requestListener).toHaveBeenCalledTimes(5);
         expect(onUpdateListener).toHaveBeenCalledTimes(4);
 
-        await waitForStatus(2500); // wait 2 sec (transactionSigningTimeout)
+        await waitForStatus(2100); // wait 2 sec of transactionSigningTimeout < STATUS_TIMEOUT.enabled 3 sec
 
         expect(requestListener).toHaveBeenCalledTimes(6);
         expect(onUpdateListener).toHaveBeenCalledTimes(5);

@@ -57,35 +57,37 @@ export interface CoordinatorFeeRate {
     plebsDontPayThreshold: number;
 }
 
+export interface CoinjoinRoundParameters {
+    network: string;
+    miningFeeRate: number;
+    coordinationFeeRate: {
+        rate: number;
+        plebsDontPayThreshold: number;
+    };
+    maxSuggestedAmount: number;
+    minInputCountByRound: number;
+    maxInputCountByRound: number;
+    allowedInputAmounts: AllowedRange;
+    allowedOutputAmounts: AllowedRange;
+    allowedInputScriptTypes: AllowedScriptTypes[];
+    allowedOutputScriptTypes: AllowedScriptTypes[];
+    standardInputRegistrationTimeout: string;
+    connectionConfirmationTimeout: string;
+    outputRegistrationTimeout: string;
+    transactionSigningTimeout: string;
+    blameInputRegistrationTimeout: string;
+    minAmountCredentialValue: number;
+    maxAmountCredentialValue: number;
+    initialInputVsizeAllocation: number;
+    maxVsizeCredentialValue: number;
+    maxVsizeAllocationPerAlice: number;
+    maxTransactionSize: number;
+    minRelayTxFee: number;
+}
+
 export interface CoinjoinRoundCreatedEvent {
     Type: 'RoundCreated';
-    roundParameters: {
-        network: string;
-        miningFeeRate: number;
-        coordinationFeeRate: {
-            rate: number;
-            plebsDontPayThreshold: number;
-        };
-        maxSuggestedAmount: number;
-        minInputCountByRound: number;
-        maxInputCountByRound: number;
-        allowedInputAmounts: AllowedRange;
-        allowedOutputAmounts: AllowedRange;
-        allowedInputScriptTypes: AllowedScriptTypes[];
-        allowedOutputScriptTypes: AllowedScriptTypes[];
-        standardInputRegistrationTimeout: string;
-        connectionConfirmationTimeout: string;
-        outputRegistrationTimeout: string;
-        transactionSigningTimeout: string;
-        blameInputRegistrationTimeout: string;
-        minAmountCredentialValue: number;
-        maxAmountCredentialValue: number;
-        initialInputVsizeAllocation: number;
-        maxVsizeCredentialValue: number;
-        maxVsizeAllocationPerAlice: number;
-        maxTransactionSize: number;
-        minRelayTxFee: number;
-    };
+    roundParameters: CoinjoinRoundParameters;
 }
 
 export interface CoinjoinInput {
