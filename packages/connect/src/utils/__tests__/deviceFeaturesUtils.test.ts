@@ -138,6 +138,7 @@ describe('utils/deviceFeaturesUtils', () => {
                 taproot: 'update-required',
                 coinjoin: 'no-support',
                 signMessageNoScriptType: 'update-required',
+                tgor: 'update-required',
             });
 
             // default Capabilities T2
@@ -151,6 +152,7 @@ describe('utils/deviceFeaturesUtils', () => {
                 taproot: 'update-required',
                 coinjoin: 'update-required',
                 signMessageNoScriptType: 'update-required',
+                tgor: 'update-required',
             });
         });
         it('getUnavailable 1', done => {
