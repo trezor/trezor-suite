@@ -66,11 +66,6 @@ jobs:
     environment: develop
     timeout-minutes: 75
     steps:
-      - name: Setup xcode
-        uses: maxim-lobanov/setup-xcode@df46f77a07b48da38239cd2fb8c0b5603c71e909
-        with:
-          xcode-version: "13.4.1"
-
       - name: Checkout code
         uses: actions/checkout@v3
 
@@ -78,6 +73,19 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version-file: ".nvmrc"
+
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
+
+      - name: Restore yarn cache
+        uses: actions/cache@v3
+        id: yarn-cache
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: yarn-cache-folder-${{ hashFiles('**/yarn.lock', '.yarnrc.yml') }}
+          restore-keys: |
+            yarn-cache-folder-
 
       - name: Decode files
         env:
