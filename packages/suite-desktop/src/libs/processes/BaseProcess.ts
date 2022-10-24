@@ -143,6 +143,14 @@ export abstract class BaseProcess {
             this.process.on('error', err => this.onError(err));
             this.process.on('exit', code => this.onExit(code));
 
+            if (this.options.autoRestart && this.options.autoRestart > 0) {
+                // When process runs with `autoRestart`, restarting the process is managed by BaseProcess.
+                return resolve();
+            }
+
+            // When running without `autoRestart` the responsibility of restarting it is in the module
+            // that started the process, so if it fails an error is thrown to let the module knows something
+            // went wrong.
             let resolveTimeout: ReturnType<typeof setTimeout> | undefined;
             const spawnErrorHandler = (message: any) => {
                 // This error handler will be triggered if there is an error during spawn of the process,
