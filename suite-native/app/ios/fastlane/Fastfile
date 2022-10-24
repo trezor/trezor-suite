@@ -4,6 +4,9 @@ skip_docs
 IOS_PROJECT = File.join(IOS_PATH, "TrezorSuite.xcodeproj").freeze
 IOS_PROJECT_WORKSPACE = File.join(IOS_PATH, "TrezorSuite.xcworkspace").freeze
 
+# https://github.com/fastlane/fastlane/issues/20741
+ENV['ITMSTRANSPORTER_FORCE_ITMS_PACKAGE_UPLOAD'] = "true"
+
 platform :ios do
 
   before_all do |lane|
