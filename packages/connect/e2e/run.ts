@@ -36,7 +36,10 @@ const getEmulatorOptions = (availableFirmwares: Firmwares) => {
     if (firmwareArg === '1-latest') {
         Object.assign(emulatorStartOpts, { version: latest1 });
     }
-
+    // no firmwareArg and not loading from url at the same time - provide fallback
+    if (!firmwareArg && !firmwareUrl) {
+        Object.assign(emulatorStartOpts, { version: latest2 });
+    }
     if (firmwareUrl) {
         Object.assign(emulatorStartOpts, {
             type: 'emulator-start-from-url',
