@@ -41,6 +41,7 @@ export const CoinjoinApi = () => {
                     onChange={handleChange}
                     value={selectedOption}
                     options={options}
+                    data-test="@settings/coinjoin-server-select"
                 />
             </ActionColumn>
         </SectionItem>
