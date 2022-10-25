@@ -11,6 +11,7 @@ import {
 } from '@wallet-types/sendForm';
 import { useAsyncDebounce } from '@trezor/react-utils';
 import { useActions } from '@suite-hooks';
+import { isChanged } from '@suite-utils/comparisonUtils';
 import * as sendFormActions from '@wallet-actions/sendFormActions';
 import { findComposeErrors } from '@suite-common/wallet-utils';
 
@@ -244,9 +245,18 @@ export const useSendFormCompose = ({
     // - update context state (state.account)
     // - compose transaction with new data
     useEffect(() => {
-        if (state.account === account) return; // account didn't change
+        if (
+            !isChanged(
+                { account: state.account },
+                { account },
+                { account: ['availableBalance', 'addresses', 'balance', 'misc', 'utxo'] }, // only check relevant properties, otherwise it might recompose the transaction unnecessarily
+            )
+        ) {
+            return; // account didn't change
+        }
         if (!state.isDirty) {
             // there was no interaction with the form, just update state.account
+            console.log('returning because no interaction');
             updateContext({ account });
             return;
         }
