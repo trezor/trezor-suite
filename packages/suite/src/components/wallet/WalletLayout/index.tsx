@@ -43,7 +43,7 @@ type ProgressInfo = {
 };
 
 const AccountLoadingProgress = ({ account: { account } }: Pick<WalletLayoutProps, 'account'>) => {
-    const [progress, setProgress] = useState<ProgressInfo>();
+    const [progress, setProgress] = useState<ProgressInfo>({});
 
     const { symbol: network, backendType, descriptor } = account || {};
 
@@ -53,23 +53,23 @@ const AccountLoadingProgress = ({ account: { account } }: Pick<WalletLayoutProps
         const backend = CoinjoinBackendService.getInstance(network);
         if (!backend) return;
 
-        const onProgress = ({ info }: { info?: ProgressInfo }) => setProgress(info);
+        const onProgress = ({ info }: { info?: ProgressInfo }) => info && setProgress(info);
         backend.on(`progress/${descriptor}`, onProgress);
         return () => {
             backend.off(`progress/${descriptor}`, onProgress);
         };
     }, [network, backendType, descriptor]);
 
-    const value = progress?.progress ?? 0;
+    const value = progress.progress ?? 0;
 
-    return progress ? (
+    return (
         <>
             <Progress max={1} value={value} />
             <p>
                 {Math.floor(100 * value)} % {progress.message}
             </p>
         </>
-    ) : null;
+    );
 };
 
 export const WalletLayout = ({
