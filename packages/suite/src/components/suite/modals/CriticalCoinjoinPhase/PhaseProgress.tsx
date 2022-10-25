@@ -18,6 +18,12 @@ const Steps = styled.div`
     margin-bottom: 26px;
 `;
 
+const Dot = styled.span`
+    color: ${({ theme }) => theme.STROKE_GREY};
+    font-size: 28px;
+    line-height: 1;
+`;
+
 const StepConiainer = styled.div<{ isCurrent: boolean; isComplete: boolean }>`
     display: flex;
     justify-content: center;
@@ -62,15 +68,13 @@ const Step = ({ phase, currentPhase }: StepProps) => {
 
     return (
         <StepConiainer isCurrent={isCurrent} isComplete={isComplete}>
-            {isCurrent ? (
+            {!isComplete && !isCurrent && <Dot>•</Dot>}
+
+            {isCurrent && (
                 <FluidSpinner size={16} strokeWidth={2} color={theme.TYPE_LIGHTER_GREY} />
-            ) : (
-                <Icon
-                    icon="CHECK"
-                    size={28}
-                    color={isComplete ? theme.TYPE_DARK_GREY : theme.TYPE_LIGHTER_GREY}
-                />
             )}
+
+            {isComplete && <Icon icon="CHECK" size={28} color={theme.TYPE_DARK_GREY} />}
         </StepConiainer>
     );
 };

@@ -6,6 +6,7 @@ import { addToast } from '../suite/notificationActions';
 import { CoinjoinClientService } from '@suite/services/coinjoin/coinjoinClient';
 import { Dispatch, GetState } from '@suite-types';
 import { Account, CoinjoinServerEnvironment, RoundPhase } from '@suite-common/wallet-types';
+import { onCancel as closeModal, openModal } from '@suite-actions/modalActions';
 
 const clientEnable = (symbol: Account['symbol']) =>
     ({
@@ -146,14 +147,35 @@ export const onCoinjoinRoundChanged =
         // round event is triggered multiple times. like at the beginning and at the end of round process
         // critical actions should be triggered only once
         if (phaseChanged) {
+            const relatedAccountKey = coinjoinAccountsWithSession[0].key; // since all accounts share the round, any key can be used
+
             if (round.phase === RoundPhase.ConnectionConfirmation) {
-                // TODO: open critical phase modal
                 dispatch(setBusyScreen(accountKeys, round.roundDeadline - Date.now()));
+
+                dispatch(
+                    openModal({
+                        type: 'critical-coinjoin-phase',
+                        relatedAccountKey,
+                    }),
+                );
             }
 
             if (round.phase === RoundPhase.Ended) {
-                // TODO: close critical phase modal
                 dispatch(setBusyScreen(accountKeys));
+                dispatch(closeModal());
+
+                const isSessionCompleted = coinjoinAccountsWithSession.some(
+                    ({ session }) => session?.signedRounds?.length === session?.maxRounds,
+                );
+
+                if (isSessionCompleted) {
+                    dispatch(
+                        openModal({
+                            type: 'coinjoin-success',
+                            relatedAccountKey,
+                        }),
+                    );
+                }
             }
         }
     };
