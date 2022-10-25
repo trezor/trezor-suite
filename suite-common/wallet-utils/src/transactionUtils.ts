@@ -359,7 +359,7 @@ export const getTxIcon = (txType: WalletAccountTransaction['type']) => {
         case 'failed':
             return 'CROSS';
         case 'joint':
-            return 'ARROWS_CIRCLE';
+            return 'SHUFFLE';
         default:
             return 'QUESTION';
     }
