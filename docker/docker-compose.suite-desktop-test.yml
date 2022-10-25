@@ -27,3 +27,11 @@ services:
     volumes:
       - ../:/trezor-suite
     network_mode: service:trezor-user-env-unix
+
+  coinjoin-backend:
+    image: ghcr.io/trezor/coinjoin-backend:latest
+    ports:
+      - "8081:8081"
+      - "19121:19121"
+    volumes:
+      - ../:/coinjoin-backend
