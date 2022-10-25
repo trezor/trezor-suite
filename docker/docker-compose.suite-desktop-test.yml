@@ -11,12 +11,13 @@ services:
     environment:
       - DISPLAY=$DISPLAY
       - LOCAL_USER_ID=$LOCAL_USER_ID
+      - TEST_FILE=$TEST_FILE
     image: registry.gitlab.com/satoshilabs/trezor/trezor-suite/base:latest
     container_name: desktop-test-runner
     ipc: host
     network_mode: service:trezor-user-env-unix
     working_dir: /trezor-suite
-    command: bash -c "yarn workspace @trezor/suite-desktop test:e2e"
+    command: bash -c "yarn workspace @trezor/suite-desktop test:e2e $TEST_FILE"
     volumes:
       - ../:/trezor-suite
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
