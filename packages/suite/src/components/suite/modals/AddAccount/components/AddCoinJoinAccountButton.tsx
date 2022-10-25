@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Translation } from '@suite-components';
 import { useSelector, useActions } from '@suite-hooks';
 import { useDispatch } from 'react-redux';
@@ -16,6 +16,8 @@ interface AddCoinJoinAccountProps {
 }
 
 export const AddCoinJoinAccountButton = ({ network }: AddCoinJoinAccountProps) => {
+    const [isLoading, setIsLoading] = useState(false);
+
     const isTorEnabled = useSelector(state => getIsTorEnabled(state.suite.torStatus));
 
     const action = useActions({ createCoinjoinAccount });
@@ -40,6 +42,7 @@ export const AddCoinJoinAccountButton = ({ network }: AddCoinJoinAccountProps) =
     // no-capability, device connected etc
 
     const onCreateCoinjoinAccountClick = async () => {
+        setIsLoading(true);
         // When developing we do not need Tor, so we skip it to make it faster.
         const isTorRequired = !isDevEnv && !['regtest', 'test'].includes(network.symbol);
         // Checking if Tor is enable and if not open modal to force the user to enable it to use coinjoin.
@@ -78,6 +81,7 @@ export const AddCoinJoinAccountButton = ({ network }: AddCoinJoinAccountProps) =
                 isDisabled ? <Translation id="MODAL_ADD_ACCOUNT_LIMIT_EXCEEDED" /> : null
             }
             handleClick={onCreateCoinjoinAccountClick}
+            isLoading={isLoading}
         />
     );
 };
