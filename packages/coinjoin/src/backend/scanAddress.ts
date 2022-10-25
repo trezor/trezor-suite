@@ -22,7 +22,7 @@ export const scanAddress = async (
         { abortSignal },
     );
     // eslint-disable-next-line no-restricted-syntax
-    for await (const { filter, blockHash, blockHeight } of everyFilter) {
+    for await (const { filter, blockHash, blockHeight, progress } of everyFilter) {
         checkpoint = { blockHash, blockHeight };
         const isMatch = getFilter(filter, blockHash);
         if (isMatch(script)) {
@@ -35,6 +35,7 @@ export const scanAddress = async (
             onProgress({
                 checkpoint,
                 transactions,
+                info: { progress },
             });
         }
     }

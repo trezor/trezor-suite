@@ -13,8 +13,6 @@ const FILTERS: BlockFilter[] = mockFilterSequence(
     COINJOIN_BACKEND_SETTINGS.baseBlockHash,
 );
 
-const BEST_HEIGHT = FILTER_COUNT + COINJOIN_BACKEND_SETTINGS.baseBlockHeight;
-
 const FIXTURES = [
     {
         description: 'From start',
@@ -55,8 +53,7 @@ describe('CoinjoinFilterController', () => {
                 const iterator = controller.getFilterIterator(params);
                 const received = [];
                 // eslint-disable-next-line no-restricted-syntax
-                for await (const b of iterator) {
-                    expect(controller.bestBlockHeight).toBe(BEST_HEIGHT);
+                for await (const { progress, ...b } of iterator) {
                     received.push(b);
                 }
                 expect(received).toEqual(expected);
