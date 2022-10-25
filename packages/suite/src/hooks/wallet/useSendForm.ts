@@ -68,11 +68,9 @@ const getStateFromProps = (props: UseSendFormProps) => {
         const coinjoinSession = props.coinjoinAccount?.session;
         const targetAnonymity = props.coinjoinAccount?.targetAnonymity || 1;
         const anonymitySet = account.addresses?.anonymitySet || {};
-        account.utxo?.forEach((utxo, i) => {
+        account.utxo?.forEach(utxo => {
             const outpoint = getUtxoOutpoint(utxo);
-            // uncomment to mock the first address having higher anonymity for testing purposes
-            const anonymity = i === 0 ? 80 : anonymitySet[utxo.address] || 1;
-            // const anonymity = anonymitySet[utxo.address] || 1;
+            const anonymity = anonymitySet[utxo.address] || 1;
             if (coinjoinSession && coinjoinSession.registeredUtxos.includes(outpoint)) {
                 // utxo is registered in coinjoin
                 excludedUtxos[outpoint] = 'mixing';
