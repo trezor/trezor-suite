@@ -21,7 +21,7 @@ const Anonymize = () => {
                     <WalletLayoutHeader title="TR_NAV_ANONYMIZE">
                         <StyledAnonymityLevelSetup />
                     </WalletLayoutHeader>
-                    <CoinjoinSetupStrategies selectedAccount={selectedAccount} />
+                    <CoinjoinSetupStrategies account={selectedAccount.account} />
                 </>
             )}
         </WalletLayout>

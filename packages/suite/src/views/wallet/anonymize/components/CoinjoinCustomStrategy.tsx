@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { COINJOIN_STRATEGIES } from '@suite/services/coinjoin/config';
+import { RECOMMENDED_SKIP_ROUNDS } from '@suite/services/coinjoin/config';
 import { Translation } from '@suite-components';
 import { Button, P, Range, Switch, variables } from '@trezor/components';
 import { CoinjoinSessionDetail } from './CoinjoinSessionDetail';
@@ -98,6 +98,7 @@ const StyledSwitch = styled(Switch)`
 
 interface CoinjoinCustomStrategyProps {
     maxFee: number;
+    maxRounds: number;
     reset: () => void;
     setMaxFee: React.Dispatch<React.SetStateAction<number>>;
     setSkipRounds: React.Dispatch<React.SetStateAction<boolean>>;
@@ -106,11 +107,13 @@ interface CoinjoinCustomStrategyProps {
 
 export const CoinjoinCustomStrategy = ({
     maxFee,
+    maxRounds,
     reset,
     setMaxFee,
     setSkipRounds,
     skipRounds,
 }: CoinjoinCustomStrategyProps) => {
+    const skipRoundsValue = skipRounds ? RECOMMENDED_SKIP_ROUNDS : null;
     const trackStyle = {
         background:
             'linear-gradient(270deg, #bf6767 0%, #c8b882 18.73%, #c8b883 36.25%, #95cda5 43.99%,#2a9649 100%)',
@@ -158,12 +161,9 @@ export const CoinjoinCustomStrategy = ({
                         <Translation id="TR_OVERVIEW" />
                     </DetailHeading>
                     <CoinjoinSessionDetail
-                        maxRounds={COINJOIN_STRATEGIES.custom.maxRounds}
+                        maxRounds={maxRounds}
                         maxFee={maxFee}
-                        hours={COINJOIN_STRATEGIES.custom.estimatedTime}
-                        skipRounds={
-                            COINJOIN_STRATEGIES[skipRounds ? 'recommended' : 'fast'].skipRounds
-                        }
+                        skipRounds={skipRoundsValue}
                     />
                 </DetailWrapper>
             </MiddleRow>

@@ -1,6 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 
+import { ESTIMATED_HOURS_BUFFER_MODIFIER } from '@suite/services/coinjoin/config';
+import { getEstimatedTimePerRound } from '@wallet-utils/coinjoinUtils';
 import { Translation } from '@suite-components';
 import { DetailRow } from './DetailRow';
 
@@ -12,52 +14,58 @@ const Separator = styled.hr`
 `;
 
 interface CoinjoinSessionDetailProps {
-    hours: [number, number];
     maxFee: number;
     maxRounds: number;
     skipRounds: [number, number] | null;
 }
 
 export const CoinjoinSessionDetail = ({
-    hours,
     maxRounds,
     maxFee,
     skipRounds,
-}: CoinjoinSessionDetailProps) => (
-    <dl>
-        <DetailRow
-            term={<Translation id="TR_ESTIMATED_TIME" />}
-            value={
-                <Translation
-                    id="TR_ESTIMATED_TIME_VALUE"
-                    values={{ max: hours[1], min: hours[0] }}
-                />
-            }
-        />
-        <DetailRow
-            term={<Translation id="TR_ROUNDS" />}
-            value={<Translation id="TR_ROUNDS_VALUE" values={{ rounds: maxRounds }} />}
-            tooltipMessage="TR_ROUNDS_TOOLTIP"
-        />
-        <DetailRow
-            term={<Translation id="TR_SKIP_ROUNDS" />}
-            value={
-                skipRounds ? (
+}: CoinjoinSessionDetailProps) => {
+    const estimatedTime = maxRounds * getEstimatedTimePerRound(!!skipRounds);
+    const timeBuffer = estimatedTime * ESTIMATED_HOURS_BUFFER_MODIFIER;
+    const maxEstimatedTime = Math.ceil(estimatedTime + timeBuffer);
+    const minEstimatedTime = Math.floor(estimatedTime - timeBuffer);
+    const maxMiningFeeValue = `${maxFee} sat/vB`;
+
+    return (
+        <dl>
+            <DetailRow
+                term={<Translation id="TR_ESTIMATED_TIME" />}
+                value={
                     <Translation
-                        id="TR_SKIP_ROUNDS_VALUE"
-                        values={{ part: skipRounds[0], total: skipRounds[1] }}
+                        id="TR_ESTIMATED_TIME_VALUE"
+                        values={{ max: maxEstimatedTime, min: minEstimatedTime }}
                     />
-                ) : (
-                    <Translation id="TR_NONE" />
-                )
-            }
-            tooltipMessage="TR_SKIP_ROUNDS_TOOLTIP"
-        />
-        <Separator />
-        <DetailRow
-            term={<Translation id="TR_MAX_MINING_FEE" />}
-            value={`${maxFee} sat/vB`}
-            tooltipMessage="TR_MAX_MINING_FEE_TOOLTIP"
-        />
-    </dl>
-);
+                }
+            />
+            <DetailRow
+                term={<Translation id="TR_ROUNDS" />}
+                value={<Translation id="TR_ROUNDS_VALUE" values={{ rounds: maxRounds }} />}
+                tooltipMessage="TR_ROUNDS_TOOLTIP"
+            />
+            <DetailRow
+                term={<Translation id="TR_SKIP_ROUNDS" />}
+                value={
+                    skipRounds ? (
+                        <Translation
+                            id="TR_SKIP_ROUNDS_VALUE"
+                            values={{ part: skipRounds[0], total: skipRounds[1] }}
+                        />
+                    ) : (
+                        <Translation id="TR_NONE" />
+                    )
+                }
+                tooltipMessage="TR_SKIP_ROUNDS_TOOLTIP"
+            />
+            <Separator />
+            <DetailRow
+                term={<Translation id="TR_MAX_MINING_FEE" />}
+                value={maxMiningFeeValue}
+                tooltipMessage="TR_MAX_MINING_FEE_TOOLTIP"
+            />
+        </dl>
+    );
+};

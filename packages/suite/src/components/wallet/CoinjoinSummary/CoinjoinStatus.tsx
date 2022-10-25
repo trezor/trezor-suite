@@ -12,6 +12,7 @@ import { CoinjoinSession, RoundPhase } from '@suite-common/wallet-types';
 import { Translation } from '@suite-components/Translation';
 import { CountdownTimer } from '@suite-components';
 import { COINJOIN_PHASE_MESSAGES } from '@suite-constants/coinjoin';
+import { getEstimatedTimePerRound } from '@wallet-utils/coinjoinUtils';
 
 const Container = styled.div`
     position: relative;
@@ -136,7 +137,10 @@ export const CoinjoinStatus = ({
     const menuRef = useRef<HTMLUListElement & { close: () => void }>(null);
     const theme = useTheme();
 
-    const timeLeft = `${(session.maxRounds - session.signedRounds.length) * 2.5}h`; // approximately 2.5h per round
+    const timeLeft = `${
+        (session.maxRounds - session.signedRounds.length) *
+        getEstimatedTimePerRound(!!session.skipRounds)
+    }h`;
     const progress = session.signedRounds.length / (session.maxRounds / 100);
 
     const togglePause = useCallback(async () => {

@@ -1,9 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useDispatch } from 'react-redux';
+
+import { useSelector } from '@suite-hooks';
 import { Account } from '@wallet-types';
 import { Button, Card, H2, Image, P, variables } from '@trezor/components';
-import { getCoinjoinConfig } from '@suite/services/coinjoin/config';
 import { Translation } from '@suite-components/Translation';
 import { goto } from '@suite-actions/routerActions';
 
@@ -33,7 +34,7 @@ interface CoinjoinAccountEmptyProps {
 }
 
 export const CoinjoinAccountEmpty = ({ account }: CoinjoinAccountEmptyProps) => {
-    const { percentageFee } = getCoinjoinConfig(account.symbol);
+    const coordinatorData = useSelector(state => state.wallet.coinjoin.clients[account.symbol]);
 
     const dispatch = useDispatch();
 
@@ -49,12 +50,14 @@ export const CoinjoinAccountEmpty = ({ account }: CoinjoinAccountEmptyProps) => 
                 <Translation id="TR_COINJOIN_ACCESS_ACCOUNT_STEP_INITIAL_DESCRIPTION" />
             </AccountDescription>
 
-            <FeeText>
-                <Translation
-                    id="TR_COINJOIN_ACCESS_ACCOUNT_STEP_INITIAL_FEE_MESSAGE"
-                    values={{ fee: percentageFee }}
-                />
-            </FeeText>
+            {coordinatorData && (
+                <FeeText>
+                    <Translation
+                        id="TR_COINJOIN_ACCESS_ACCOUNT_STEP_INITIAL_FEE_MESSAGE"
+                        values={{ fee: coordinatorData.coordinatorFeeRate * 100 }}
+                    />
+                </FeeText>
+            )}
 
             <Button onClick={() => dispatch(goto('wallet-receive', { preserveParams: true }))}>
                 <Translation

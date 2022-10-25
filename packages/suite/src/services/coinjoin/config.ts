@@ -43,22 +43,13 @@ export const COINJOIN_NETWORKS: PartialRecord<NetworkSymbol, ServerEnvironment> 
     },
 };
 
-export const COINJOIN_STRATEGIES = {
-    recommended: {
-        estimatedTime: [8, 16] as [number, number],
-        maxRounds: 10,
-        skipRounds: [4, 5] as [number, number],
-    },
-    fast: {
-        estimatedTime: [2, 14] as [number, number],
-        maxRounds: 3,
-        skipRounds: null,
-    },
-    custom: {
-        estimatedTime: [2, 4] as [number, number],
-        maxRounds: 15,
-    },
-};
+// coinjoin strategy constants
+export const ESTIMATED_ANONYMITY_GAINED_PER_ROUND = 10;
+export const ESTIMATED_HOURS_PER_ROUND_WITHOUT_SKIPPING_ROUNDS = 1;
+export const ESTIMATED_HOURS_PER_ROUND_WITH_SKIPPING_ROUNDS = 2.5;
+export const ESTIMATED_HOURS_BUFFER_MODIFIER = 0.25;
+export const RECOMMENDED_SKIP_ROUNDS = [4, 5] as [number, number];
+export const DEFAULT_MAX_MINING_FEE = 3;
 
 export const getCoinjoinConfig = (
     network: NetworkSymbol,
