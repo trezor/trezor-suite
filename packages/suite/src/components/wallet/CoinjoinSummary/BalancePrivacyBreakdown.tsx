@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useTheme } from '@trezor/components';
+import { useTheme, Icon } from '@trezor/components';
 import { isZero } from '@suite-common/wallet-utils';
 import { Translation } from '@suite-components/Translation';
 import { useSelector } from '@suite-hooks';
@@ -16,6 +16,16 @@ const Container = styled.div<{ isSessionRunning: boolean }>`
     justify-content: space-between;
     width: ${({ isSessionRunning }) => (isSessionRunning ? '100%' : '58%')};
     max-width: ${({ isSessionRunning }) => (isSessionRunning ? '480px' : '400px')};
+`;
+
+const PrivateBalanceHeading = styled.span`
+    color: ${({ theme }) => theme.TYPE_GREEN};
+`;
+
+// svg padding offset
+const CheckIcon = styled(Icon)`
+    width: 15px;
+    height: 15px;
 `;
 
 export const BalancePrivacyBreakdown = () => {
@@ -38,7 +48,7 @@ export const BalancePrivacyBreakdown = () => {
         <Container isSessionRunning={isSessionRunning}>
             <CryptoAmountWithHeader
                 header={<Translation id="TR_NOT_PRIVATE" />}
-                headerIcon="CROSS"
+                headerIcon={<Icon icon="CROSS" size={15} />}
                 value={notPrivateAmount}
                 symbol={currentAccount?.symbol}
                 color={!isZero(notPrivateAmount || '0') ? undefined : theme.TYPE_LIGHT_GREY}
@@ -47,15 +57,19 @@ export const BalancePrivacyBreakdown = () => {
             {isSessionRunning && (
                 <CryptoAmountWithHeader
                     header={<Translation id="TR_ANONYMIZING" />}
-                    headerIcon="SHUFFLE"
+                    headerIcon={<Icon icon="SHUFFLE" size={15} />}
                     value={balanceBreakdown.anonymizing}
                     symbol={currentAccount?.symbol}
                 />
             )}
 
             <CryptoAmountWithHeader
-                header={<Translation id="TR_PRIVATE" />}
-                headerIcon="EYE_CLOSED"
+                header={
+                    <PrivateBalanceHeading>
+                        <Translation id="TR_PRIVATE" />
+                    </PrivateBalanceHeading>
+                }
+                headerIcon={<CheckIcon icon="CHECK" size={19} color={theme.TYPE_GREEN} />}
                 value={privateAmount}
                 symbol={currentAccount?.symbol}
                 color={!isZero(privateAmount || '0') ? theme.TYPE_GREEN : theme.TYPE_LIGHT_GREY}

@@ -1,6 +1,13 @@
 import React, { useMemo, useRef, useState, useCallback } from 'react';
 import styled, { css } from 'styled-components';
-import { Dropdown, GroupedMenuItems, Icon, Loader, useTheme, variables } from '@trezor/components';
+import {
+    Dropdown,
+    FluidSpinner,
+    GroupedMenuItems,
+    Icon,
+    useTheme,
+    variables,
+} from '@trezor/components';
 import { CoinjoinSession, RoundPhase } from '@suite-common/wallet-types';
 import { Translation } from '@suite-components/Translation';
 import { CountdownTimer } from '@suite-components';
@@ -20,8 +27,8 @@ const Container = styled.div`
 
 const SessionControlsMenu = styled(Dropdown)`
     position: absolute;
-    top: -14px;
-    right: -14px;
+    bottom: calc(100% - 14px);
+    right: -8px;
 `;
 
 const MenuLabel = styled.div`
@@ -78,7 +85,7 @@ const ProgressContent = styled.div`
     transition: background 0.1s;
 `;
 
-const StyledLoader = styled(Loader)`
+const StyledLoader = styled(FluidSpinner)`
     opacity: 0.7;
 `;
 
@@ -98,6 +105,11 @@ const PlayIcon = styled(Icon)`
 
 const PauseIcon = styled(Icon)`
     ${iconBase};
+`;
+
+const CrossIcon = styled(Icon)`
+    width: 10px;
+    height: 10px;
 `;
 
 const PauseText = styled.p`
@@ -158,7 +170,7 @@ export const CoinjoinStatus = ({
                         key: 'cancel',
                         label: (
                             <MenuLabel>
-                                <Icon icon="CROSS" size={10} />
+                                <CrossIcon icon="CROSS" size={14} />
                                 <Translation id="TR_CANCEL" />
                             </MenuLabel>
                         ),
