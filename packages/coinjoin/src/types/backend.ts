@@ -108,12 +108,15 @@ export type FilterControllerContext = {
     abortSignal?: AbortSignal;
 };
 
+type IteratedBlockFilter = BlockFilter & {
+    progress?: number;
+};
+
 export interface FilterController {
-    get bestBlockHeight(): number;
     getFilterIterator(
         params?: FilterControllerParams,
         context?: FilterControllerContext,
-    ): AsyncGenerator<BlockFilter>;
+    ): AsyncGenerator<IteratedBlockFilter>;
 }
 
 export type FilterClient = Pick<CoinjoinBackendClient, 'fetchFilters'>;

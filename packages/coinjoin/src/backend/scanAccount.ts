@@ -68,7 +68,6 @@ export const scanAccount = async (
     let receive: AccountAddress[] = deriveMore('receive', receivePrederived)(0, receiveCount);
     let change: AccountAddress[] = deriveMore('change', changePrederived)(0, changeCount);
 
-    let firstBlockHeight = -1;
     let { checkpoint } = params;
 
     const txs = new Set<BlockbookTransaction>();
@@ -78,9 +77,7 @@ export const scanAccount = async (
         { abortSignal },
     );
     // eslint-disable-next-line no-restricted-syntax
-    for await (const { filter, blockHash, blockHeight } of everyFilter) {
-        if (firstBlockHeight < 0) firstBlockHeight = blockHeight;
-
+    for await (const { filter, blockHash, blockHeight, progress } of everyFilter) {
         const isMatch = getFilter(filter, blockHash);
 
         let block: BlockbookBlock | undefined;
@@ -103,8 +100,6 @@ export const scanAccount = async (
         );
 
         const transactions = Array.from(txs, transformTx(xpub, receive, change));
-        const progress =
-            (blockHeight - firstBlockHeight) / (filters.bestBlockHeight - firstBlockHeight);
         checkpoint = {
             blockHash,
             blockHeight,
@@ -116,13 +111,13 @@ export const scanAccount = async (
 
         await fixTxInputs(transactions, client);
 
-        onProgress({
-            checkpoint,
-            transactions,
-            info: {
-                progress,
-            },
-        });
+        if (transactions.length || progress) {
+            onProgress({
+                checkpoint,
+                transactions,
+                info: progress ? { progress } : undefined,
+            });
+        }
     }
 
     await mempool.update();
