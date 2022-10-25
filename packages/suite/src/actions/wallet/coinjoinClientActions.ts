@@ -198,30 +198,37 @@ export const initCoinjoinClient =
 export const getCoinjoinClient = (symbol: Account['symbol']) =>
     CoinjoinClientService.getInstance(symbol);
 
-// NOTE: this function will be extended in upcoming PR
-export const analyzeTransactions = (accountInfo: AccountInfo) => async () => {
-    if (!accountInfo.utxo || !accountInfo.addresses) return accountInfo;
+export const analyzeTransactions =
+    (accountInfo: AccountInfo, symbol: Account['symbol']) => async () => {
+        if (!accountInfo.utxo || !accountInfo.addresses) return accountInfo;
 
-    // TODO: async call on CoinjoinClient.analyzeTransactions
-    const { utxo } = accountInfo;
-    const anonymitySet: Record<string, number> = await new Promise(resolve => {
-        const aSet = utxo.reduce((res, utxo) => {
-            res[utxo.address] = 1;
-            return res;
-        }, {} as typeof anonymitySet);
-        resolve(aSet);
-    });
+        const { utxo, history } = accountInfo;
+        // Fallback with anonymity 1 on each utxo
+        let anonymitySet = utxo.reduce((aSet, utxo) => {
+            aSet[utxo.address] = 1;
+            return aSet;
+        }, {} as Record<string, number>);
 
-    const accountInfoWithAnonymitySet = {
-        ...accountInfo,
-        addresses: {
-            ...accountInfo.addresses,
-            anonymitySet,
-        },
+        const client = getCoinjoinClient(symbol);
+        try {
+            const realAnonymitySet = await client?.analyzeTransactions(history.transactions || []);
+            if (realAnonymitySet) {
+                anonymitySet = realAnonymitySet;
+            }
+        } catch (error) {
+            console.warn('analyzeTransactions error', error);
+        }
+
+        const accountInfoWithAnonymitySet = {
+            ...accountInfo,
+            addresses: {
+                ...accountInfo.addresses,
+                anonymitySet,
+            },
+        };
+
+        return accountInfoWithAnonymitySet;
     };
-
-    return accountInfoWithAnonymitySet;
-};
 
 export const getCoinjoinServerEnvironment =
     (symbol: Account['symbol']) => (_: Dispatch, getState: GetState) => {

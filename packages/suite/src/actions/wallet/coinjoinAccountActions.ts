@@ -203,7 +203,7 @@ export const fetchAndUpdateAccount =
             if (isAccountOutdated(account, accountInfo) || isInitialUpdate) {
                 // calculate account anonymity set in CoinjoinClient
                 const accountInfoWithAnonymitySet = await dispatch(
-                    analyzeTransactions(accountInfo),
+                    analyzeTransactions(accountInfo, account.symbol),
                 );
 
                 dispatch(accountsActions.updateAccount(account, accountInfoWithAnonymitySet));
