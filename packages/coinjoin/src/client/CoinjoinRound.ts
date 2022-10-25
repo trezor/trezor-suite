@@ -181,9 +181,9 @@ export class CoinjoinRound extends EventEmitter implements SerializedCoinjoinRou
         }
         await this.processPhase(accounts);
 
-        const [inputs, failed] = arrayPartition(this.inputs, input => !!input.error);
+        const [inputs, failed] = arrayPartition(this.inputs, input => !input.error);
         this.inputs = inputs;
-        this.failed = failed;
+        this.failed = this.failed.concat(...failed);
 
         this.emit('changed', { round: this.toSerialized() });
 
