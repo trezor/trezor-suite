@@ -16,7 +16,7 @@ const ModalPromptContainer = styled.div`
 
 export interface HeaderProps {
     isBottomBorderShown: boolean;
-    hasBottomPadding?: boolean;
+    hasText?: boolean;
 }
 
 const Header = styled.div<HeaderProps>`
@@ -24,9 +24,9 @@ const Header = styled.div<HeaderProps>`
     align-items: center;
     justify-content: center;
     word-break: break-word;
-    height: 80px;
+    height: ${({ hasText }) => hasText && '80px'};
     padding: 0 32px;
-    padding-bottom: ${({ hasBottomPadding }) => !hasBottomPadding && 0};
+    padding-bottom: ${({ hasText }) => !hasText && 0};
     border-bottom: ${({ isBottomBorderShown, theme }) =>
         isBottomBorderShown ? `1px solid ${theme.STROKE_GREY}` : 'none'};
 `;
@@ -251,10 +251,7 @@ const Modal = ({
                 }}
             >
                 {(!!onBackClick || !!heading || showHeaderActions) && (
-                    <Header
-                        isBottomBorderShown={!showProgressBar && !!heading}
-                        hasBottomPadding={!!heading}
-                    >
+                    <Header isBottomBorderShown={!showProgressBar && !!heading} hasText={!!heading}>
                         {onBackClick && (
                             <BackIcon
                                 icon="ARROW_LEFT"
