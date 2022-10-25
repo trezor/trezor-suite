@@ -33,7 +33,6 @@ import {
     CancelCoinjoin,
     CriticalCoinjoinPhase,
     CoinjoinSuccess,
-    AccessCoinjoinAccount,
 } from '@suite-components/modals';
 
 import type { AcquiredDevice } from '@suite-types';
@@ -154,14 +153,6 @@ export const UserContextModal = ({
             return <RequestEnableTor decision={payload.decision} onCancel={onCancel} />;
         case 'tor-loading':
             return <TorLoading decision={payload.decision} onCancel={onCancel} />;
-        case 'access-coinjoin-account':
-            return (
-                <AccessCoinjoinAccount
-                    networkSymbol={payload.networkSymbol}
-                    decision={payload.decision}
-                    onCancel={onCancel}
-                />
-            );
         case 'cancel-coinjoin':
             return <CancelCoinjoin onClose={onCancel} />;
         case 'critical-coinjoin-phase':
