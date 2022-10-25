@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { COINJOIN_STRATEGIES } from '@suite/services/coinjoin/config';
+import { RECOMMENDED_SKIP_ROUNDS } from '@suite/services/coinjoin/config';
 import { Translation } from '@suite-components';
 import { Button, P, variables } from '@trezor/components';
 import { CoinjoinClientFeeRatesMedians } from '@wallet-reducers/coinjoinReducer';
@@ -31,21 +31,22 @@ const Text = styled(P)`
     margin: 20px 0;
 `;
 
-export type CoinJoinStrategy = keyof typeof COINJOIN_STRATEGIES;
+export type CoinJoinStrategy = 'custom' | 'fast' | 'recommended';
 
 interface CoinjoinDefaultStrategyProps {
     feeRatesMedians: CoinjoinClientFeeRatesMedians;
+    maxRounds: number;
     setStrategy: React.Dispatch<React.SetStateAction<CoinJoinStrategy>>;
     strategy: CoinJoinStrategy;
 }
 
 export const CoinjoinDefaultStrategy = ({
     feeRatesMedians,
+    maxRounds,
     strategy,
     setStrategy,
 }: CoinjoinDefaultStrategyProps) => {
     const isRecommended = strategy === 'recommended';
-    const isFast = strategy === 'fast';
 
     const setCustom = () => setStrategy('custom');
     const setRecommended = () => setStrategy('recommended');
@@ -72,23 +73,21 @@ export const CoinjoinDefaultStrategy = ({
                     onClick={setRecommended}
                 >
                     <CoinjoinSessionDetail
-                        maxRounds={COINJOIN_STRATEGIES.recommended.maxRounds}
+                        maxRounds={maxRounds}
                         maxFee={feeRatesMedians.recommended}
-                        hours={COINJOIN_STRATEGIES.recommended.estimatedTime}
-                        skipRounds={COINJOIN_STRATEGIES.recommended.skipRounds}
+                        skipRounds={RECOMMENDED_SKIP_ROUNDS}
                     />
                 </RadioFrame>
                 <RadioFrame
                     heading="TR_FAST"
                     subheading="TR_FAST_SUBHEADING"
-                    isSelected={isFast}
+                    isSelected={!isRecommended}
                     onClick={setFast}
                 >
                     <CoinjoinSessionDetail
-                        maxRounds={COINJOIN_STRATEGIES.fast.maxRounds}
+                        maxRounds={maxRounds}
                         maxFee={feeRatesMedians.fast}
-                        hours={COINJOIN_STRATEGIES.fast.estimatedTime}
-                        skipRounds={COINJOIN_STRATEGIES.fast.skipRounds}
+                        skipRounds={null}
                     />
                 </RadioFrame>
             </ButtonRow>

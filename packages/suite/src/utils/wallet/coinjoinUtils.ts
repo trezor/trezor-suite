@@ -1,7 +1,13 @@
 import BigNumber from 'bignumber.js';
+
 import { CoinjoinStatusEvent, RegisterAccountParams } from '@trezor/coinjoin';
 import { getUtxoOutpoint, getBip43Type } from '@suite-common/wallet-utils';
 import { Account, CoinjoinSessionParameters } from '@suite-common/wallet-types';
+import {
+    ESTIMATED_ANONYMITY_GAINED_PER_ROUND,
+    ESTIMATED_HOURS_PER_ROUND_WITHOUT_SKIPPING_ROUNDS,
+    ESTIMATED_HOURS_PER_ROUND_WITH_SKIPPING_ROUNDS,
+} from '@suite/services/coinjoin/config';
 
 export type CoinjoinBalanceBreakdown = {
     notAnonymized: string;
@@ -128,3 +134,18 @@ export const getRegisterAccountParams = (
     utxos: getCoinjoinAccountUtxos(account.utxo, account.addresses?.anonymitySet),
     changeAddresses: getCoinjoinAccountAddresses(account.addresses),
 });
+
+// calculate max rounds from anonymity levels
+export const getMaxRounds = (
+    targetAnonymity: number,
+    anonymitySet: Record<string, number | undefined>,
+) => {
+    const lowestAnonymity = Math.min(...Object.values(anonymitySet).map(item => item ?? 1));
+    return Math.ceil((targetAnonymity - lowestAnonymity) / ESTIMATED_ANONYMITY_GAINED_PER_ROUND);
+};
+
+// get time estimate in hours per round
+export const getEstimatedTimePerRound = (skipRounds: boolean) =>
+    skipRounds
+        ? ESTIMATED_HOURS_PER_ROUND_WITH_SKIPPING_ROUNDS
+        : ESTIMATED_HOURS_PER_ROUND_WITHOUT_SKIPPING_ROUNDS;

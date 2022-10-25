@@ -2,9 +2,10 @@ import React, { useState } from 'react';
 import BigNumber from 'bignumber.js';
 import styled from 'styled-components';
 
-import { COINJOIN_STRATEGIES } from '@suite/services/coinjoin/config';
-import { SelectedAccountLoaded } from '@suite-common/wallet-types';
+import { DEFAULT_MAX_MINING_FEE, RECOMMENDED_SKIP_ROUNDS } from '@suite/services/coinjoin/config';
+import { Account } from '@suite-common/wallet-types';
 import { TooltipSymbol, Translation } from '@suite-components';
+import { Error } from '@suite-components/Error';
 import { useActions, useSelector } from '@suite-hooks';
 import { Card, Checkbox, Link, TooltipButton, variables } from '@trezor/components';
 import { ZKSNACKS_TERMS_URL } from '@trezor/urls';
@@ -14,6 +15,7 @@ import {
     selectCurrentCoinjoinBalanceBreakdown,
     selectCurrentTargetAnonymity,
 } from '@wallet-reducers/coinjoinReducer';
+import { getMaxRounds } from '@wallet-utils/coinjoinUtils';
 import { CoinjoinCustomStrategy } from './CoinjoinCustomStrategy';
 import { CoinjoinDefaultStrategy, CoinJoinStrategy } from './CoinjoinDefaultStrategy';
 
@@ -69,12 +71,12 @@ const StyledTooltipButton = styled(TooltipButton)`
 `;
 
 interface CoinjoinSetupStrategiesProps {
-    selectedAccount: SelectedAccountLoaded;
+    account: Account;
 }
 
-export const CoinjoinSetupStrategies = ({ selectedAccount }: CoinjoinSetupStrategiesProps) => {
+export const CoinjoinSetupStrategies = ({ account }: CoinjoinSetupStrategiesProps) => {
     const [strategy, setStrategy] = useState<CoinJoinStrategy>('recommended');
-    const [customMaxFee, setCustomMaxFee] = useState(3);
+    const [customMaxFee, setCustomMaxFee] = useState(DEFAULT_MAX_MINING_FEE);
     const [customSkipRounds, setCustomSkipRounds] = useState(true);
     const [connectedConfirmed, setConnectedConfirmed] = useState(false);
     const [termsConfirmed, setTermsConfirmed] = useState(false);
@@ -82,34 +84,42 @@ export const CoinjoinSetupStrategies = ({ selectedAccount }: CoinjoinSetupStrate
     const actions = useActions({
         startCoinjoinSession,
     });
-    const coordinatorData = useSelector(
-        state => state.wallet.coinjoin.clients[selectedAccount.network.symbol],
-    );
+    const coordinatorData = useSelector(state => state.wallet.coinjoin.clients[account.symbol]);
     const targetAnonymity = useSelector(selectCurrentTargetAnonymity);
     const { notAnonymized } = useSelector(selectCurrentCoinjoinBalanceBreakdown);
 
-    if (!coordinatorData || targetAnonymity == null) {
-        return null;
+    if (!coordinatorData || !targetAnonymity || !account.addresses?.anonymitySet) {
+        return (
+            <Error
+                error={`Suite could not ${
+                    coordinatorData ? 'determine setup values' : 'connect to coordinator'
+                }.`}
+            />
+        );
     }
 
+    const maxRounds = getMaxRounds(targetAnonymity, account.addresses.anonymitySet);
     const isCustom = strategy === 'custom';
     const allChecked = connectedConfirmed && termsConfirmed;
     const fee = new BigNumber(notAnonymized).times(coordinatorData.coordinatorFeeRate).toString();
 
-    const reset = () => setStrategy('recommended');
+    const reset = () => {
+        setStrategy('recommended');
+        setCustomMaxFee(DEFAULT_MAX_MINING_FEE);
+        setCustomSkipRounds(true);
+    };
     const toggleConnectConfirmation = () => setConnectedConfirmed(current => !current);
     const toggleTermsConfirmation = () => setTermsConfirmed(current => !current);
     const anonymize = () =>
-        actions.startCoinjoinSession(selectedAccount.account, {
-            maxCoordinatorFeeRate:
-                coordinatorData.coordinatorFeeRate * 100 * 10 ** selectedAccount.network.decimals, // fee rate to percent to satoshis
+        actions.startCoinjoinSession(account, {
+            maxCoordinatorFeeRate: coordinatorData.coordinatorFeeRate * 10 ** 10, // transform to a format firmware can work with
             maxFeePerKvbyte:
                 (isCustom ? customMaxFee : coordinatorData.feeRatesMedians[strategy]) * 1000, // transform to kvB
-            maxRounds: COINJOIN_STRATEGIES[strategy].maxRounds,
+            maxRounds,
             skipRounds:
-                COINJOIN_STRATEGIES[
-                    (isCustom && customSkipRounds) || strategy === 'fast' ? 'fast' : 'recommended'
-                ].skipRounds || undefined,
+                customSkipRounds || strategy === 'recommended'
+                    ? RECOMMENDED_SKIP_ROUNDS
+                    : undefined,
             targetAnonymity,
         });
 
@@ -127,7 +137,7 @@ export const CoinjoinSetupStrategies = ({ selectedAccount }: CoinjoinSetupStrate
                             </AmountHeading>
                         }
                         value={notAnonymized}
-                        symbol={selectedAccount.network.symbol}
+                        symbol={account.symbol}
                     />
                     <StyledCryptoAmountWithHeader
                         header={
@@ -136,12 +146,13 @@ export const CoinjoinSetupStrategies = ({ selectedAccount }: CoinjoinSetupStrate
                             </AmountHeading>
                         }
                         value={fee}
-                        symbol={selectedAccount.network.symbol}
+                        symbol={account.symbol}
                         note={<Translation id="TR_SERVICE_FEE_NOTE" />}
                     />
                 </Row>
                 {isCustom ? (
                     <CoinjoinCustomStrategy
+                        maxRounds={maxRounds}
                         maxFee={customMaxFee}
                         skipRounds={customSkipRounds}
                         setMaxFee={setCustomMaxFee}
@@ -150,6 +161,7 @@ export const CoinjoinSetupStrategies = ({ selectedAccount }: CoinjoinSetupStrate
                     />
                 ) : (
                     <CoinjoinDefaultStrategy
+                        maxRounds={maxRounds}
                         feeRatesMedians={coordinatorData.feeRatesMedians}
                         strategy={strategy}
                         setStrategy={setStrategy}
