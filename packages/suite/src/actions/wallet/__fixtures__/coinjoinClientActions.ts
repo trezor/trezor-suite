@@ -1,4 +1,5 @@
 import { testMocks } from '@suite-common/test-utils';
+import * as MODAL from '@suite-actions/constants/modalConstants';
 import * as COINJOIN from '@wallet-actions/constants/coinjoinConstants';
 
 const DEVICE = testMocks.getSuiteDevice({ state: 'device-state', connected: true });
@@ -22,6 +23,7 @@ export const onCoinjoinRoundChanged = [
         },
         result: {
             actions: [],
+            trezorConnectCalledTimes: 0,
         },
     },
     {
@@ -39,7 +41,7 @@ export const onCoinjoinRoundChanged = [
             failed: [],
         },
         result: {
-            actions: [COINJOIN.SESSION_ROUND_CHANGED],
+            actions: [COINJOIN.SESSION_ROUND_CHANGED, MODAL.OPEN_USER_CONTEXT],
             trezorConnectCalledTimes: 0,
         },
     },
@@ -74,7 +76,11 @@ export const onCoinjoinRoundChanged = [
             },
         ],
         result: {
-            actions: [COINJOIN.SESSION_ROUND_CHANGED, COINJOIN.SESSION_ROUND_CHANGED],
+            actions: [
+                COINJOIN.SESSION_ROUND_CHANGED,
+                MODAL.OPEN_USER_CONTEXT,
+                COINJOIN.SESSION_ROUND_CHANGED,
+            ],
             trezorConnectCalledTimes: 1,
             trezorConnectCallsWith: { expiry_ms: expect.any(Number) }, // ~1000
         },
@@ -104,7 +110,11 @@ export const onCoinjoinRoundChanged = [
             },
         ],
         result: {
-            actions: [COINJOIN.SESSION_ROUND_CHANGED, COINJOIN.SESSION_ROUND_CHANGED],
+            actions: [
+                COINJOIN.SESSION_ROUND_CHANGED,
+                COINJOIN.SESSION_ROUND_CHANGED,
+                MODAL.OPEN_USER_CONTEXT,
+            ],
             trezorConnectCalledTimes: 2,
             trezorConnectCallsWith: { expiry_ms: expect.any(Number) }, // ~1000
         },
@@ -125,7 +135,7 @@ export const onCoinjoinRoundChanged = [
             roundDeadline: Date.now() + 1000,
         },
         result: {
-            actions: [COINJOIN.SESSION_ROUND_CHANGED],
+            actions: [COINJOIN.SESSION_ROUND_CHANGED, MODAL.CLOSE, MODAL.OPEN_USER_CONTEXT],
             trezorConnectCalledTimes: 1,
             trezorConnectCallsWith: { expiry_ms: undefined },
         },
@@ -175,9 +185,12 @@ export const onCoinjoinRoundChanged = [
             actions: [
                 COINJOIN.SESSION_ROUND_CHANGED,
                 COINJOIN.SESSION_ROUND_CHANGED,
+                MODAL.OPEN_USER_CONTEXT,
                 COINJOIN.SESSION_ROUND_CHANGED,
                 COINJOIN.SESSION_ROUND_CHANGED,
                 COINJOIN.SESSION_ROUND_CHANGED,
+                MODAL.CLOSE,
+                MODAL.OPEN_USER_CONTEXT,
             ],
             trezorConnectCalledTimes: 2,
             trezorConnectCallsWith: { expiry_ms: undefined },
