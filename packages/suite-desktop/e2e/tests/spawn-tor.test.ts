@@ -3,7 +3,7 @@ import { Page, test as testPlaywright, expect as expectPlaywright } from '@playw
 import { patchBinaries, launchSuite } from '../support/common';
 import { NetworkAnalyzer } from '../support/networkAnalyzer';
 
-const timeout = 100 * 1000; // 100 seconds, because it takes a while to start tor.
+const timeout = 1000 * 60 * 5; // 5 minutes because it takes a while to start tor.
 
 const turnOnTorInSettings = async (window: Page, shouldEnableTor = true) => {
     await window.click('[data-test="@suite/menu/settings"]');
@@ -40,6 +40,8 @@ testPlaywright.describe('Tor loading screen', () => {
     });
 
     testPlaywright('Tor loading screen: happy path', async () => {
+        testPlaywright.setTimeout(timeout);
+
         let suite = await launchSuite();
 
         await turnOnTorInSettings(suite.window);
@@ -60,6 +62,8 @@ testPlaywright.describe('Tor loading screen', () => {
     testPlaywright(
         'Tor loading screen: making sure that all the request go throw Tor',
         async () => {
+            testPlaywright.setTimeout(timeout);
+
             const networkAnalyzer = new NetworkAnalyzer();
 
             let suite = await launchSuite();
@@ -88,6 +92,8 @@ testPlaywright.describe('Tor loading screen', () => {
     );
 
     testPlaywright('Tor loading screen: disable tor while loading', async () => {
+        testPlaywright.setTimeout(timeout);
+
         let suite = await launchSuite();
 
         await turnOnTorInSettings(suite.window);
