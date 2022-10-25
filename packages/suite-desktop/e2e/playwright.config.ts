@@ -6,6 +6,7 @@ const config: PlaywrightTestConfig = {
     workers: 1, // to disable parallelism between test files
     use: {
         headless: true,
+        trace: 'retain-on-failure',
     },
 };
 
