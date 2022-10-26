@@ -55,6 +55,7 @@ export interface TransactionOptions {
     branch_id?: number;
     decred_staking_ticket?: boolean;
     amount_unit?: PROTO.AmountUnit;
+    serialize?: boolean;
 }
 
 export interface SignTransaction {
@@ -78,6 +79,7 @@ export interface SignTransaction {
     preauthorized?: boolean;
     amountUnit?: PROTO.AmountUnit;
     unlockPath?: PROTO.UnlockPath;
+    serialize?: boolean;
 }
 
 export type SignedTransaction = {
