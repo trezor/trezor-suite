@@ -31,6 +31,7 @@ export const validateTrezorInputs = (
                 { name: 'script_type', type: 'string' },
                 { name: 'sequence', type: 'number' },
                 { name: 'multisig', type: 'object' },
+                { name: 'coinjoin_flags', type: 'number' },
             ]);
 
             if (input.script_type === 'EXTERNAL') {

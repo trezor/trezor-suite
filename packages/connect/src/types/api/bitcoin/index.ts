@@ -56,6 +56,7 @@ export interface TransactionOptions {
     decred_staking_ticket?: boolean;
     amount_unit?: PROTO.AmountUnit;
     serialize?: boolean;
+    coinjoin_request?: PROTO.CoinJoinRequest;
 }
 
 export interface SignTransaction {
@@ -80,6 +81,7 @@ export interface SignTransaction {
     amountUnit?: PROTO.AmountUnit;
     unlockPath?: PROTO.UnlockPath;
     serialize?: boolean;
+    coinjoinRequest?: PROTO.CoinJoinRequest;
 }
 
 export type SignedTransaction = {

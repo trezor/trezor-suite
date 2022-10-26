@@ -36,7 +36,7 @@ describe('TrezorConnect.authorizeCoinJoin', () => {
         const auth = await TrezorConnect.authorizeCoinJoin({
             coordinator: 'www.example.com',
             maxRounds: 2,
-            maxCoordinatorFeeRate: 50000000, // 0.5 %
+            maxCoordinatorFeeRate: 500000, // 5% => 0.005 * 10**8;
             maxFeePerKvbyte: 3500,
             path: ADDRESS_N("m/10025'/1'/0'/1'"),
             coin: 'Testnet',
@@ -64,6 +64,17 @@ describe('TrezorConnect.authorizeCoinJoin', () => {
 
         expect(proof.success).toBe(true);
 
+        // This is the response from coinjoin affiliate server
+        const { coinjoin_flags_array, ...coinjoinRequest } = {
+            coinjoin_flags_array: [1, 0], // this is not part of protobuf message, order is corresponding with the inputs indexes
+            fee_rate: 50000000,
+            no_fee_threshold: 1000000,
+            min_registrable_amount: 5000,
+            mask_public_key: '030fdf5e289b5aef536290953ae81ce60e841ff956f366ac123fa69db3c79f21b0',
+            signature:
+                'acd30aece582fd3e8153d00e53bd438a4dd83b09151163675fba2ceeffd8cfb33e296ba32838aeaea900a20f5fc1bf5d0989377c5becc90f0066b9dbd473444a',
+        };
+
         const params: Parameters<typeof TrezorConnect.signTransaction>[0] = {
             inputs: [
                 {
@@ -79,6 +90,7 @@ describe('TrezorConnect.authorizeCoinJoin', () => {
                     ownership_proof:
                         '534c001901019cf1b0ad730100bd7a69e987d55348bb798e2b2096a6a5713e9517655bd2021300014052d479f48d34f1ca6872d4571413660040c3e98841ab23a2c5c1f37399b71bfa6f56364b79717ee90552076a872da68129694e1b4fb0e0651373dcf56db123c5',
                     commitment_data: commitmentData,
+                    coinjoin_flags: coinjoin_flags_array[0],
                 },
                 // # NOTE: FAKE input tx
                 {
@@ -87,6 +99,7 @@ describe('TrezorConnect.authorizeCoinJoin', () => {
                     prev_index: 1,
                     amount: 7289000,
                     script_type: 'SPENDTAPROOT',
+                    coinjoin_flags: coinjoin_flags_array[1],
                 },
             ],
             outputs: [
@@ -95,7 +108,6 @@ describe('TrezorConnect.authorizeCoinJoin', () => {
                     address: 'tb1pupzczx9cpgyqgtvycncr2mvxscl790luqd8g88qkdt2w3kn7ymhsrdueu2',
                     amount: 50000,
                     script_type: 'PAYTOADDRESS',
-                    payment_req_index: 0,
                 },
                 // Our coinjoined output.
                 {
@@ -103,7 +115,6 @@ describe('TrezorConnect.authorizeCoinJoin', () => {
                     address_n: ADDRESS_N("m/10025'/1'/0'/1'/1/1"),
                     amount: 50000,
                     script_type: 'PAYTOTAPROOT',
-                    payment_req_index: 0,
                 },
                 // Our change output.
                 {
@@ -111,31 +122,21 @@ describe('TrezorConnect.authorizeCoinJoin', () => {
                     address_n: ADDRESS_N("m/10025'/1'/0'/1'/1/2"),
                     amount: 7289000 - 50000 - 36445 - 490,
                     script_type: 'PAYTOTAPROOT',
-                    payment_req_index: 0,
                 },
                 // Other's change output.
                 {
                     address: 'tb1pvt7lzserh8xd5m6mq0zu9s5wxkpe5wgf5ts56v44jhrr6578hz8saxup5m',
                     amount: 100000 - 50000 - 500 - 490,
                     script_type: 'PAYTOADDRESS',
-                    payment_req_index: 0,
                 },
                 // Coordinator's output.
                 {
                     address: 'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q',
                     amount: 36945,
                     script_type: 'PAYTOADDRESS',
-                    payment_req_index: 0,
                 },
             ],
-            paymentRequests: [
-                {
-                    recipient_name: 'www.example.com',
-                    amount: 135955,
-                    signature:
-                        '07a0b1e1b44d75832bc26ce2c105fe5db35e64d802462ec7b7fc6283214efa743500c60420ae4952d9d41f0be4185816d4dedfabbe699ea2ddc253f9a40ba83c',
-                },
-            ],
+            coinjoinRequest,
             coin: 'testnet',
             preauthorized: true,
             unlockPath: unlockPath.payload, // NOTE: unlock path is required for validation, it will be removed in future
@@ -197,7 +198,7 @@ describe('TrezorConnect.authorizeCoinJoin', () => {
         const params = {
             coordinator: 'www.example.com',
             maxRounds: 2,
-            maxCoordinatorFeeRate: 50000000, // 0.5 %
+            maxCoordinatorFeeRate: 500000, // 5% => 0.005 * 10**8;
             maxFeePerKvbyte: 3500,
             path: ADDRESS_N("m/10025'/1'/0'/1'"),
             coin: 'Testnet',

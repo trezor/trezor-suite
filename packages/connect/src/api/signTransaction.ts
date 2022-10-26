@@ -30,6 +30,7 @@ type Params = {
     inputs: PROTO.TxInputType[];
     outputs: PROTO.TxOutputType[];
     paymentRequests: PROTO.TxAckPaymentRequest[];
+    coinjoinRequest?: PROTO.CoinJoinRequest;
     refTxs?: RefTransaction[];
     addresses?: AccountAddresses;
     options: TransactionOptions;
@@ -52,6 +53,7 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
             { name: 'inputs', type: 'array', required: true },
             { name: 'outputs', type: 'array', required: true },
             { name: 'paymentRequests', type: 'array', allowEmpty: true },
+            { name: 'coinjoinRequest', type: 'object' },
             { name: 'refTxs', type: 'array', allowEmpty: true },
             { name: 'account', type: 'object' },
             { name: 'locktime', type: 'number' },
@@ -123,6 +125,7 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
                 decred_staking_ticket: payload.decredStakingTicket,
                 amount_unit: payload.amountUnit,
                 serialize: payload.serialize,
+                coinjoin_request: payload.coinjoinRequest,
             },
             coinInfo,
             push: typeof payload.push === 'boolean' ? payload.push : false,
