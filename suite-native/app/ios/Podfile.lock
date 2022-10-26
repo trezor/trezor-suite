@@ -134,7 +134,7 @@ PODS:
   - nanopb/encode (2.30909.0)
   - OpenSSL-Universal (1.1.1100)
   - PromisesObjC (2.1.1)
-  - Protobuf (3.21.7)
+  - Protobuf (3.21.8)
   - RCT-Folly (2021.07.22.00):
     - boost
     - DoubleConversion
@@ -365,7 +365,7 @@ PODS:
     - react-native-config/App (= 1.4.11)
   - react-native-config/App (1.4.11):
     - React-Core
-  - react-native-flipper (0.171.1):
+  - react-native-flipper (0.164.0):
     - React-Core
   - react-native-mmkv (2.4.3):
     - MMKV (>= 1.2.13)
@@ -763,7 +763,7 @@ SPEC CHECKSUMS:
   nanopb: b552cce312b6c8484180ef47159bc0f65a1f0431
   OpenSSL-Universal: ebc357f1e6bc71fa463ccb2fe676756aff50e88c
   PromisesObjC: ab77feca74fa2823e7af4249b8326368e61014cb
-  Protobuf: f4128517d7a42302e106cc3afe614ee3a7513e94
+  Protobuf: 0a11f3000cd10ffa17611bf96e66a66b25c956e4
   RCT-Folly: 0080d0a6ebf2577475bda044aa59e2ca1f909cda
   RCTRequired: 5cf7e7d2f12699724b59f90350257a422eaa9492
   RCTTypeSafety: 3f3ead9673d1ab8bb1aea85b0894ab3220f8f06e
@@ -780,7 +780,7 @@ SPEC CHECKSUMS:
   React-jsinspector: 0553c9fe7218e1f127be070bd5a4d2fc19fb8190
   React-logger: cffcc09e8aba8a3014be8d18da7f922802e9f19e
   react-native-config: bcafda5b4c51491ee1b0e1d0c4e3905bc7b56c1b
-  react-native-flipper: fccb8b9ca45d6392b22dff0e3555718c3b50b450
+  react-native-flipper: c33a4995958ef12a2b2f8290d63bed7adeed7634
   react-native-mmkv: 1265a348a4711097ba29c8bcefd5971f48220f2b
   react-native-safe-area-context: 99b24a0c5acd0d5dcac2b1a7f18c49ea317be99a
   react-native-skia: 5a4253c77afcf0535b387d6025fc7c57af05cd3c
@@ -809,6 +809,6 @@ SPEC CHECKSUMS:
   Yoga: 2ed968a4f060a92834227c036279f2736de0fce3
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: bc2a8f6168c265ba3ba4b8713c80db4a20cfdc54
+PODFILE CHECKSUM: 1052451987c399492f430500b16f506b0ebb7874
 
 COCOAPODS: 1.11.3
