@@ -49,6 +49,8 @@ export const WIKI_ADVANCED_RECOVERY_URL =
 export const WIKI_XPUB_URL =
     'https://wiki.trezor.io/Suite_manual:Displaying_account_public_key_(XPUB)';
 
+export const HELP_CENTER_COINJOIN = 'https://trezor.io/learn/a/what-is-coinjoin';
+
 export const SOCIAL_TWITTER_URL = 'https://twitter.com/trezor';
 export const SOCIAL_FACEBOOK_URL = 'https://www.facebook.com/trezor.io';
 
