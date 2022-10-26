@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
-import { ScrollView } from 'react-native';
 import { EdgeInsets, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Box } from '@suite-native/atoms';
@@ -45,8 +45,11 @@ export const ScreenContent = ({
     if (!isScrollable) return <Box style={screenStyle}>{children}</Box>;
 
     return (
-        <ScrollView contentInsetAdjustmentBehavior="automatic" contentContainerStyle={screenStyle}>
+        <KeyboardAwareScrollView
+            contentInsetAdjustmentBehavior="automatic"
+            contentContainerStyle={screenStyle}
+        >
             {children}
-        </ScrollView>
+        </KeyboardAwareScrollView>
     );
 };
