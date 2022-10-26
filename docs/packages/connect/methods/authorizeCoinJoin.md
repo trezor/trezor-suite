@@ -37,6 +37,8 @@ const result = await TrezorConnect.authorizeCoinJoin(params);
     > show amounts in
 -   `preauthorized` — _optional_
     > Check if device session is already preauthorized and take no further action if so
+-   `coinjoinRequest` — _optional_ `PROTO.CoinJoinRequest`
+    > Signing request for a CoinJoin transaction
 
 ### Example:
 
@@ -44,7 +46,7 @@ const result = await TrezorConnect.authorizeCoinJoin(params);
 TrezorConnect.authorizeCoinJoin({
     path: "m/10086'/0'/0'",
     maxRounds: 3,
-    maxCoordinatorFeeRate: 5000000, // 5% => 0.05 * 10**8;
+    maxCoordinatorFeeRate: 500000, // 0.5% => 0.005 * 10**8;
     maxFeePerKvbyte: 3500,
     scriptType: 'SPENDWITNESS',
 });
