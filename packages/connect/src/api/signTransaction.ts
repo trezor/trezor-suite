@@ -66,6 +66,7 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
             { name: 'preauthorized', type: 'boolean' },
             { name: 'amountUnit', type: ['number', 'string'] },
             { name: 'unlockPath', type: 'object' },
+            { name: 'serialize', type: 'boolean' },
         ]);
 
         if (payload.unlockPath) {
@@ -121,6 +122,7 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
                 branch_id: payload.branchId,
                 decred_staking_ticket: payload.decredStakingTicket,
                 amount_unit: payload.amountUnit,
+                serialize: payload.serialize,
             },
             coinInfo,
             push: typeof payload.push === 'boolean' ? payload.push : false,
@@ -197,6 +199,11 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
             refTxs,
             typedCall: device.getCommands().typedCall.bind(device.getCommands()),
         });
+
+        // return only signatures, using option `serialize: false`
+        if (!response.serializedTx) {
+            return response;
+        }
 
         if (params.options.decred_staking_ticket) {
             await verifyTicketTx(
