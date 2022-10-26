@@ -19,7 +19,13 @@ import {
 } from '@suite-common/wallet-types';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { ACCOUNT_TYPE } from '@suite-common/wallet-constants';
-import { WIKI_BIP84_URL, WIKI_BIP86_URL, WIKI_BIP49_URL, WIKI_BIP44_URL } from '@trezor/urls';
+import {
+    WIKI_BIP84_URL,
+    WIKI_BIP86_URL,
+    WIKI_BIP49_URL,
+    WIKI_BIP44_URL,
+    HELP_CENTER_COINJOIN,
+} from '@trezor/urls';
 
 import { toFiatCurrency } from './fiatConverterUtils';
 
@@ -200,7 +206,7 @@ export const getAccountTypeUrl = (path: string) => {
     if (bip43 === 'bip84') return WIKI_BIP84_URL;
     if (bip43 === 'bip49') return WIKI_BIP49_URL;
     if (bip43 === 'shelley') return undefined;
-    if (bip43 === 'slip25') return undefined;
+    if (bip43 === 'slip25') return HELP_CENTER_COINJOIN;
     return WIKI_BIP44_URL;
 };
 
