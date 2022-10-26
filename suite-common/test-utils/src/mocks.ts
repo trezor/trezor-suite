@@ -343,6 +343,11 @@ const getTrezorConnect = <M>(methods?: M) => {
                 }
                 return { success: false, payload: { error: 'error' }, ...fixture, _params };
             }),
+            setBusy: jest.fn(async _params => ({
+                success: true,
+                ...getFixture(),
+                _params,
+            })),
             signTransaction: jest.fn(async _params => ({
                 success: false,
                 payload: { error: 'error' },
