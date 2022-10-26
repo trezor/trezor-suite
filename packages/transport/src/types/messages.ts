@@ -240,6 +240,7 @@ export type SignTx = {
     branch_id?: number;
     amount_unit?: AmountUnit;
     decred_staking_ticket?: boolean;
+    serialize?: boolean;
 };
 
 export enum Enum_RequestType {
