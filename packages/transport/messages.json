@@ -609,6 +609,13 @@
                     "options": {
                         "default": false
                     }
+                },
+                "serialize": {
+                    "type": "bool",
+                    "id": 13,
+                    "options": {
+                        "default": true
+                    }
                 }
             }
         },
