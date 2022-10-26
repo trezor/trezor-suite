@@ -8,7 +8,7 @@ jest.mock('@trezor/utils', () => ({
 }));
 
 describe('analytics', () => {
-    afterAll(() => {
+    afterEach(() => {
         jest.clearAllMocks();
     });
 
@@ -33,9 +33,15 @@ describe('analytics', () => {
 
         const analytics = new Analytics('1.18', app);
 
-        analytics.init(true, { environment, isDev, instanceId, sessionId, commitId });
+        analytics.init(false, { environment, isDev, instanceId, sessionId, commitId });
 
         const actionType = 'very-important-action';
+
+        analytics.report({ type: actionType });
+
+        expect(global.fetch).toHaveBeenCalledTimes(0);
+
+        analytics.enable();
 
         analytics.report({ type: actionType });
 
@@ -123,6 +129,49 @@ describe('analytics', () => {
         analytics.disable();
         expect(analytics.isEnabled()).toBeFalsy();
         expect(console.log).toHaveBeenLastCalledWith('disabled');
+    });
+
+    it('reports queued events after enablement', () => {
+        const mockFetchPromise = Promise.resolve({
+            json: () => Promise.resolve({}),
+        });
+
+        jest.spyOn(console, 'log').mockImplementation(() => {});
+        global.fetch = jest.fn().mockImplementation(() => mockFetchPromise);
+
+        const app = 'suite';
+        const environment = 'desktop';
+        const isDev = true;
+        const instanceId = getRandomId();
+        const sessionId = getRandomId();
+        const commitId = 'abc';
+
+        const analytics = new Analytics('1.18', app);
+        analytics.init(false, {
+            environment,
+            isDev,
+            instanceId,
+            sessionId,
+            commitId,
+            callbacks: {
+                onDisable: () => console.log('disabled'),
+                onEnable: () => console.log('enabled'),
+            },
+            useQueue: true,
+        });
+
+        expect(analytics.isEnabled()).toBeFalsy();
+
+        const actionType = 'very-important-action';
+
+        analytics.report({ type: actionType });
+        analytics.report({ type: actionType });
+
+        expect(global.fetch).toHaveBeenCalledTimes(0);
+
+        analytics.enable();
+
+        expect(global.fetch).toHaveBeenCalledTimes(2);
     });
 
     fixtures.forEach(f => {

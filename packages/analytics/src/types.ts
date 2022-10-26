@@ -12,6 +12,8 @@ export type InitOptions = {
         onEnable?: () => void;
         onDisable?: () => void;
     };
+    /* after analytics is enabled, report events happened before enablement */
+    useQueue?: boolean;
 };
 
 export type Event = {

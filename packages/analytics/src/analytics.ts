@@ -5,6 +5,9 @@ import type { InitOptions, Event, App } from './types';
 export class Analytics<T extends Event> {
     private enabled = false;
 
+    private useQueue = false;
+    private queue = new Array<T>();
+
     private version: string;
     private app: App;
 
@@ -28,18 +31,32 @@ export class Analytics<T extends Event> {
         this.commitId = options.commitId;
         this.url = getUrl(this.app, options.isDev, options.environment);
         this.callbacks = options.callbacks;
+
+        // queue should not be used if analytics is enabled in initialization
+        this.useQueue = !enabled && !!options.useQueue;
     };
 
     public enable = () => {
         this.enabled = true;
 
         this.callbacks?.onEnable?.();
+
+        if (this.useQueue) {
+            this.queue.map(data => this.report(data));
+            this.useQueue = false;
+            this.queue = [];
+        }
     };
 
     public disable = () => {
         this.enabled = false;
 
         this.callbacks?.onDisable?.();
+
+        if (this.useQueue) {
+            this.useQueue = false;
+            this.queue = [];
+        }
     };
 
     public isEnabled = () => this.enabled;
@@ -48,6 +65,10 @@ export class Analytics<T extends Event> {
         if (!this.url || !this.instanceId || !this.sessionId || !this.commitId || !this.version) {
             console.error('Unable to report. Analytics is not initialized');
             return;
+        }
+
+        if (this.useQueue && !this.enabled && !force) {
+            this.queue.push(data);
         }
 
         if (!this.enabled && !force) {
