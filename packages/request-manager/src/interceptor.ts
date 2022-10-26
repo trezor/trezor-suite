@@ -23,6 +23,8 @@ const getIdentityName = (proxyAuthorization: string): string | undefined => {
 const getAgent = (identityName: string | undefined) =>
     TorIdentities.getIdentity(identityName || 'default');
 
+const isLocalhost = (hostname: string): boolean => ['127.0.0.1', 'localhost'].includes(hostname);
+
 const interceptNetSocketConnect = (interceptorOptions: InterceptorOptions) => {
     const originalSocketConnect = net.Socket.prototype.connect;
 
@@ -88,9 +90,9 @@ const interceptHttp = (interceptorOptions: InterceptorOptions) => {
             }
 
             // Requests to localhost should not use the proxy.
-            const shouldIntercept = overloadedOptionsUrl.hostname !== '127.0.0.1';
+            const isNotLocalhost = !isLocalhost(overloadedOptionsUrl.hostname);
             const identityName = getIdentityName(proxyAuthorization);
-            const agent = isTorEnabled && shouldIntercept ? getAgent(identityName) : undefined;
+            const agent = isTorEnabled && isNotLocalhost ? getAgent(identityName) : undefined;
 
             interceptorOptions.handler({ method: 'http.request', details: overloadedOptions.href });
             return originalHttpRequest.call(
@@ -130,9 +132,9 @@ const interceptHttps = (interceptorOptions: InterceptorOptions) => {
                 delete overloadedOptions.headers['Proxy-Authorization'];
             }
             // Requests to localhost should not use the proxy.
-            const shouldIntercept = overloadedOptionsUrl.hostname !== '127.0.0.1';
+            const isNotLocalhost = !isLocalhost(overloadedOptionsUrl.hostname);
             const identityName = getIdentityName(userAgent);
-            const agent = isTorEnabled && shouldIntercept ? getAgent(identityName) : undefined;
+            const agent = isTorEnabled && isNotLocalhost ? getAgent(identityName) : undefined;
 
             interceptorOptions.handler({
                 method: 'https.request',
