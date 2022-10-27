@@ -36,6 +36,10 @@ import { Pagination } from './Pagination';
 import { TransactionTimestamp } from './TransactionTimestamp';
 import { withCoinmarket, withSelectedAccountLoaded } from './hocs';
 import type { WithCoinmarketProps, WithSelectedAccountLoadedProps } from './hocs';
+import { AccountMode } from './AccountMode';
+import { AccountException } from './AccountException';
+import { AccountAnnouncement } from './AccountAnnouncement';
+import { AccountTopPanel } from './AccountTopPanel';
 
 export {
     Title,
@@ -71,6 +75,10 @@ export {
     KYCError,
     Pagination,
     TransactionTimestamp,
+    AccountMode,
+    AccountException,
+    AccountAnnouncement,
+    AccountTopPanel,
 };
 
 export type { WithCoinmarketProps, WithSelectedAccountLoadedProps };

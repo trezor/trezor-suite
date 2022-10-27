@@ -16,7 +16,7 @@ const AnnouncementsWrapper = styled.div`
     margin-bottom: 16px;
 `;
 
-const Announcement = (props: Props) => {
+export const AccountAnnouncement = (props: Props) => {
     const { account } = props.selectedAccount;
     const notifications = [];
 
@@ -36,5 +36,3 @@ const Announcement = (props: Props) => {
     if (notifications.length === 0) return null;
     return <AnnouncementsWrapper>{notifications}</AnnouncementsWrapper>;
 };
-
-export default Announcement;
