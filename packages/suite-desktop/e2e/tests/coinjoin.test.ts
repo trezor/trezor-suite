@@ -22,6 +22,7 @@ const enableCoinjoinInSettings = async (window: Page) => {
     await window.click('[data-test="@settings/coinjoin-server-select/input"]', { trial: true });
     await window.click('[data-test="@settings/coinjoin-server-select/input"]');
     await window.click('[data-test="@settings/coinjoin-server-select/option/localhost"]');
+    await window.click('[data-test="@settings/debug/coinjoin-allow-no-tor"] >> role=button');
 
     // go to coins menu
     await window.click('[data-test="@settings/menu/wallet"]');
@@ -33,8 +34,41 @@ const enableCoinjoinInSettings = async (window: Page) => {
     await window.click('[data-test="@settings/advance/button/save"]');
 };
 
+const startCoinjoin = async (window: Page) => {
+    await window.click('role=button[name="Anonymize"]');
+    await window.click('[data-test="@coinjoin/checkbox-2"] div >> nth=0');
+    await window.click('[data-test="@coinjoin/checkbox-1"]');
+    await window.click('role=button[name="Anonymize"]');
+    await window.waitForSelector('[data-test="@prompts/confirm-on-device"]');
+    await TrezorUserEnvLink.api.pressYes();
+    await window.waitForSelector('[data-test="@prompts/confirm-on-device"]');
+    await TrezorUserEnvLink.api.pressYes();
+    await window.waitForSelector('[data-test="@prompts/confirm-on-device"]');
+    await TrezorUserEnvLink.api.pressYes();
+};
+
+const addCoinjoinAccount = async (window: Page) => {
+    await window.click('[data-test="@suite/menu/wallet-index"]');
+    await window.click('[data-test="@account-menu/add-account"]');
+    await window.click('[data-test="@settings/wallet/network/regtest"]');
+    await window.click('[data-test="@add-account-type/select/input"]', { trial: true });
+    await window.click('[data-test="@add-account-type/select/input"]');
+    await window.click('[data-test="@add-account-type/select/option/Bitcoin Regtest (PEA)"]');
+    await window.click('[data-test="@add-account"]');
+
+    await window.click('[data-test="@request-enable-tor-modal/skip-button"]');
+
+    await window.waitForSelector('[data-test="@prompts/confirm-on-device"]', {
+        timeout: 60 * 1000,
+    });
+
+    await TrezorUserEnvLink.api.pressYes();
+};
+
 testPlaywright.describe('Coinjoin', () => {
     testPlaywright.beforeAll(async () => {
+        testPlaywright.setTimeout(1000 * 60);
+
         // todo: some problems with path in dev and production and tests. tldr tests are expecting
         // binaries somewhere where they are not, so I copy them to that place. Maybe I find a
         // better solution later
@@ -43,7 +77,7 @@ testPlaywright.describe('Coinjoin', () => {
         await TrezorUserEnvLink.api.trezorUserEnvConnect();
         await waitForCoinjoinBackend();
         await TrezorUserEnvLink.api.stopBridge();
-        await TrezorUserEnvLink.api.startEmu({ wipe: true });
+        await TrezorUserEnvLink.api.startEmu({ version: '2-master' });
         await TrezorUserEnvLink.api.setupEmu({
             needs_backup: false,
             mnemonic: 'all all all all all all all all all all all all',
@@ -51,10 +85,18 @@ testPlaywright.describe('Coinjoin', () => {
     });
 
     testPlaywright('Prepare prerequisites for coinjoining', async () => {
-        for (let i = 0; i < 10; i++) {
+        testPlaywright.setTimeout(1000 * 60 * 10);
+
+        for (let i = 0; i < 1; i++) {
+            // standart wallet
             await sendToAddress({
-                amount: '1',
-                address: 'bcrt1qkvwu9g3k2pdxewfqr7syz89r3gj557l374sg5v',
+                amount: '10',
+                address: 'bcrt1pl3y9gf7xk2ryvmav5ar66ra0d2hk7lhh9mmusx3qvn0n09kmaghq6gq9fy',
+            });
+            // passphrase 'a'
+            await sendToAddress({
+                amount: '10',
+                address: 'bcrt1p5jmepqf3mfakvlyxs07nc95qd0gd4uqtxy9hksd9s426xf202z5qpfz8dg',
             });
             await generateBlock();
         }
@@ -68,17 +110,40 @@ testPlaywright.describe('Coinjoin', () => {
 
         await enableCoinjoinInSettings(suite.window);
 
-        await suite.window.click('[data-test="@suite/menu/wallet-index"]');
+        // add coinjoin account
+        await addCoinjoinAccount(suite.window);
 
-        await suite.window.click('[data-test="@account-menu/add-account"]');
-        await suite.window.click('[data-test="@settings/wallet/network/regtest"]');
+        // start coinjoin
+        await startCoinjoin(suite.window);
 
-        await suite.window.click('[data-test="@add-account-type/select/input"]', { trial: true });
-        await suite.window.click('[data-test="@add-account-type/select/input"]');
-        await suite.window.click(
-            '[data-test="@add-account-type/select/option/Bitcoin Regtest (PEA)"]',
-        );
+        // todo: next passphrase
 
-        await suite.window.click('[data-test="@add-account"]');
+        // await suite.window.click('[data-test="@menu/switch-device"]');
+        // await suite.window.click('[data-test="@switch-device/add-hidden-wallet-button"]');
+        // await suite.window.waitForSelector('[data-test="@prompts/confirm-on-device"]');
+        // await TrezorUserEnvLink.api.pressYes();
+        // await suite.window.locator('[data-test="@passphrase/input"]').type('a');
+        // await suite.window.click('[data-test="@passphrase/hidden/submit-button"]');
+        // await suite.window.waitForSelector('[data-test="@prompts/confirm-on-device"]');
+        // await TrezorUserEnvLink.api.pressYes();
+        // await suite.window.waitForSelector('[data-test="@prompts/confirm-on-device"]');
+        // await TrezorUserEnvLink.api.pressYes();
+
+        // await suite.window.locator('[data-test="@passphrase/input"]').type('a');
+        // await suite.window.click('[data-test="@passphrase/confirm-checkbox"] div >> nth=0');
+        // await suite.window.click('[data-test="@passphrase/hidden/submit-button"]');
+        // await suite.window.waitForSelector('[data-test="@prompts/confirm-on-device"]');
+        // await TrezorUserEnvLink.api.pressYes();
+        // await suite.window.waitForSelector('[data-test="@prompts/confirm-on-device"]');
+        // await TrezorUserEnvLink.api.pressYes();
+
+        // // add coinjoin account
+        // await addCoinjoinAccount(suite.window);
+
+        // // start coinjoin
+        // await startCoinjoin(suite.window);
+
+        await suite.window.waitForSelector('[data-test="@modal"] >> text=Registering outputs');
+        await suite.window.waitForSelector('[data-test="@modal"] >> text=Signing transactions');
     });
 });
