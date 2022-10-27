@@ -226,6 +226,14 @@ export type VerifyMessage = {
     coin_name?: string;
 };
 
+export type CoinJoinRequest = {
+    fee_rate: number;
+    no_fee_threshold: number;
+    min_registrable_amount: number;
+    mask_public_key: string;
+    signature: string;
+};
+
 // SignTx
 export type SignTx = {
     outputs_count: number;
@@ -241,6 +249,7 @@ export type SignTx = {
     amount_unit?: AmountUnit;
     decred_staking_ticket?: boolean;
     serialize?: boolean;
+    coinjoin_request?: CoinJoinRequest;
 };
 
 export enum Enum_RequestType {
@@ -292,6 +301,7 @@ type CommonTxInputType = {
     orig_index?: number; // RBF
     decred_staking_spend?: DecredStakingSpendType;
     script_pubkey?: string; // required if script_type=EXTERNAL
+    coinjoin_flags?: number; // bit field of CoinJoin-specific flags
     script_sig?: string; // used by EXTERNAL, depending on script_pubkey
     witness?: string; // used by EXTERNAL, depending on script_pubkey
     ownership_proof?: string; // used by EXTERNAL, depending on script_pubkey
@@ -2174,6 +2184,7 @@ export type MessageType = {
     SignMessage: SignMessage;
     MessageSignature: MessageSignature;
     VerifyMessage: VerifyMessage;
+    CoinJoinRequest: CoinJoinRequest;
     SignTx: SignTx;
     TxRequestDetailsType: TxRequestDetailsType;
     TxRequestSerializedType: TxRequestSerializedType;
