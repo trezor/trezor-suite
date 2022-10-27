@@ -46,8 +46,6 @@ export const scanAddress = async (
         .getTransactions([address])
         .map(tx => transformTransaction(address, undefined, tx));
 
-    await fixTxInputs(pending, client);
-
     return {
         pending,
         checkpoint,
