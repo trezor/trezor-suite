@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Box, Text } from '@suite-native/atoms';
 import { CryptoIcon } from '@trezor/icons';
-import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
+import { AccountsRootState, selectAccountByKey, selectCoins } from '@suite-common/wallet-core';
 import { useFormatters } from '@suite-common/formatters';
+import { selectFiatCurrency } from '@suite-native/module-settings/libDev/src';
+import { formatNetworkAmount, toFiatCurrency } from '@suite-common/wallet-utils/libDev/src';
 
 type AccountBalanceProps = {
     accountKey: string;
@@ -26,9 +28,18 @@ export const AccountBalance = ({ accountKey, accountName }: AccountBalanceProps)
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
-    const { FiatAmountFormatter } = useFormatters();
+    const fiatCurrency = useSelector(selectFiatCurrency);
+    const coins = useSelector(selectCoins);
+    const fiatRates = useMemo(
+        () => coins.find(coin => coin.symbol === account?.symbol),
+        [account, coins],
+    );
+    const { FiatAmountFormatter, CryptoAmountFormatter } = useFormatters();
 
     if (!account) return null;
+
+    const cryptoAmount = formatNetworkAmount(account.availableBalance, account.symbol);
+    const fiatAmount = toFiatCurrency(cryptoAmount, fiatCurrency.label, fiatRates?.current?.rates);
 
     return (
         <Box marginBottom="small">

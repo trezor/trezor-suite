@@ -24,7 +24,7 @@ export const AccountListItem = ({ account }: AccountListItemProps) => {
     const accountLabel = useSelector((state: AccountsRootState) =>
         selectAccountLabel(state, account.key),
     );
-    const { FiatAmountFormatter } = useFormatters();
+    const { FiatAmountFormatter, CryptoAmountFormatter } = useFormatters();
 
     return (
         <Box
@@ -44,7 +44,9 @@ export const AccountListItem = ({ account }: AccountListItemProps) => {
                     {FiatAmountFormatter.format(account.formattedBalance)}
                 </Text>
                 <Text variant="hint" color="gray600">
-                    {account.balance} BTC
+                    {CryptoAmountFormatter.format(account.formattedBalance, {
+                        symbol: account.symbol,
+                    })}
                 </Text>
             </Box>
         </Box>

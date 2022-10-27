@@ -7,6 +7,7 @@ import { Box } from './Box';
 const dividerStyle = prepareNativeStyle(utils => ({
     borderBottomWidth: utils.borders.widths.small,
     borderBottomColor: utils.colors.gray300,
+    flex: 1,
 }));
 
 export const Divider = () => {

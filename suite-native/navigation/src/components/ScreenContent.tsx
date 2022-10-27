@@ -46,6 +46,7 @@ export const ScreenContent = ({
 
     return (
         <KeyboardAwareScrollView
+            keyboardShouldPersistTaps="always"
             contentInsetAdjustmentBehavior="automatic"
             contentContainerStyle={screenStyle}
         >

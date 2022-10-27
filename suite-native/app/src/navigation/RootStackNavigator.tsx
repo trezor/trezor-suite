@@ -24,7 +24,7 @@ export const RootStackNavigator = () => {
     return (
         <RootStack.Navigator
             initialRouteName={
-                isOnboardingFinished ? RootStackRoutes.AppTabs : RootStackRoutes.OnboardingStack
+                isOnboardingFinished ? RootStackRoutes.AppTabs : RootStackRoutes.AccountsImport
             }
             screenOptions={stackNavigationOptionsConfig}
         >

@@ -15,54 +15,62 @@ export interface ButtonProps extends Omit<TouchableOpacityProps, 'style'> {
     colorScheme?: ButtonColorScheme;
     size?: ButtonSize;
     style?: NativeStyleObject;
+    isDisabled?: boolean;
 }
 
 type ButtonStyleProps = {
     size: ButtonSize;
     colorScheme: ButtonColorScheme;
+    isDisabled: boolean;
 };
 
 const iconStyle = prepareNativeStyle(_ => ({ marginRight: 10.5 }));
 
-const buttonStyle = prepareNativeStyle<ButtonStyleProps>((utils, { size, colorScheme }) => {
-    const buttonSizeStyles: Record<ButtonSize, NativeStyleObject> = {
-        small: {
-            height: 36,
-            paddingVertical: utils.spacings.small,
-            paddingHorizontal: 12,
-            borderRadius: utils.borders.radii.small,
-        },
-        medium: {
-            height: 44,
-            paddingVertical: 10,
-            paddingHorizontal: utils.spacings.medium,
-            borderRadius: utils.borders.radii.small,
-        },
-        large: {
-            height: 58,
-            paddingVertical: 17,
-            paddingHorizontal: utils.spacings.medium,
-            borderRadius: utils.borders.radii.medium,
-        },
-    };
+const buttonStyle = prepareNativeStyle<ButtonStyleProps>(
+    (utils, { size, colorScheme, isDisabled }) => {
+        const buttonSizeStyles: Record<ButtonSize, NativeStyleObject> = {
+            small: {
+                height: 36,
+                paddingVertical: utils.spacings.small,
+                paddingHorizontal: 12,
+            },
+            medium: {
+                height: 44,
+                paddingVertical: 10,
+                paddingHorizontal: utils.spacings.medium,
+            },
+            large: {
+                height: 58,
+                paddingVertical: 17,
+                paddingHorizontal: utils.spacings.medium,
+            },
+        };
 
-    const buttonColorSchemeStyles: Record<ButtonColorScheme, NativeStyleObject> = {
-        primary: {
-            backgroundColor: utils.colors.green,
-        },
-        gray: {
-            backgroundColor: utils.colors.gray300,
-        },
-    };
+        const buttonColorSchemeStyles: Record<ButtonColorScheme, NativeStyleObject> = {
+            primary: {
+                backgroundColor: utils.colors.green,
+            },
+            gray: {
+                backgroundColor: utils.colors.gray300,
+            },
+        };
 
-    return {
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
-        ...buttonSizeStyles[size],
-        ...buttonColorSchemeStyles[colorScheme],
-    };
-});
+        return {
+            flexDirection: 'row',
+            justifyContent: 'center',
+            alignItems: 'center',
+            borderRadius: utils.borders.radii.round,
+            ...buttonSizeStyles[size],
+            ...buttonColorSchemeStyles[colorScheme],
+            extend: {
+                condition: isDisabled,
+                style: {
+                    backgroundColor: utils.colors.gray200,
+                },
+            },
+        };
+    },
+);
 
 const buttonColorSchemeFontColor: Record<ButtonColorScheme, Color> = {
     primary: 'gray0',
@@ -75,13 +83,15 @@ export const Button = ({
     children,
     colorScheme = 'primary',
     size = 'medium',
+    isDisabled = false,
     ...props
 }: ButtonProps) => {
     const { applyStyle } = useNativeStyles();
 
     return (
         <TouchableOpacity
-            style={[applyStyle(buttonStyle, { size, colorScheme }), style]}
+            style={[applyStyle(buttonStyle, { size, colorScheme, isDisabled }), style]}
+            disabled={isDisabled}
             {...props}
         >
             {iconName && (
@@ -93,7 +103,10 @@ export const Button = ({
                     />
                 </View>
             )}
-            <Text variant="highlight" color={buttonColorSchemeFontColor[colorScheme]}>
+            <Text
+                variant="highlight"
+                color={isDisabled ? 'gray500' : buttonColorSchemeFontColor[colorScheme]}
+            >
                 {children}
             </Text>
         </TouchableOpacity>

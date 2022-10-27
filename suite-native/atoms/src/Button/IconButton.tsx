@@ -2,7 +2,7 @@ import React from 'react';
 import { TouchableOpacity } from 'react-native';
 
 import { Icon, IconName } from '@trezor/icons';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { ButtonColorScheme, ButtonSize } from './Button';
 
@@ -12,6 +12,7 @@ type IconButtonProps = {
     isRounded?: boolean;
     colorScheme?: ButtonColorScheme;
     size?: ButtonSize;
+    style?: NativeStyleObject;
 };
 
 type StyleProps = {
@@ -62,6 +63,7 @@ const iconButtonStyle = prepareNativeStyle<StyleProps>(
 export const IconButton = ({
     iconName,
     onPress,
+    style,
     colorScheme = 'primary',
     size = 'medium',
     isRounded = false,
@@ -71,7 +73,7 @@ export const IconButton = ({
     return (
         <TouchableOpacity
             onPress={onPress}
-            style={applyStyle(iconButtonStyle, { isRounded, size, colorScheme })}
+            style={[applyStyle(iconButtonStyle, { isRounded, size, colorScheme }), style]}
         >
             <Icon
                 name={iconName}
