@@ -34,7 +34,7 @@ export const waitForCoinjoinBackend = () =>
             await new Promise(resolve => setTimeout(() => resolve(undefined), 1000));
 
             try {
-                const res = await fetch('http://localhost:8081');
+                const res = await fetch('http://localhost:19121/');
                 if (res.status === 200) {
                     console.log('coinjoin backend is online');
                     return resolve();

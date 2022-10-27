@@ -177,12 +177,17 @@ export const CoinjoinSetupStrategies = ({ account }: CoinjoinSetupStrategiesProp
                     <StyledCheckbox
                         isChecked={connectedConfirmed}
                         onClick={toggleConnectConfirmation}
+                        data-test="@coinjoin/checkbox-1"
                     >
                         <Translation id="TR_DEVICE_CONNECTED_CONFIRMATION" />
                     </StyledCheckbox>
                     <TooltipSymbol content={<Translation id="TR_DEVICE_CONNECTED_TOOLTIP" />} />
                 </CheckboxWrapper>
-                <StyledCheckbox isChecked={termsConfirmed} onClick={toggleTermsConfirmation}>
+                <StyledCheckbox
+                    isChecked={termsConfirmed}
+                    onClick={toggleTermsConfirmation}
+                    data-test="@coinjoin/checkbox-2"
+                >
                     <Translation
                         id="TR_TERMS_AND_PRIVACY_CONFIRMATION"
                         values={{

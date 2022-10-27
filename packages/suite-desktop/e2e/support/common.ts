@@ -40,7 +40,25 @@ export const patchBinaries = async () => {
             recursive: true,
         });
     }
+
     await copyFile(torPathFrom, `${torPathTo}/tor`);
+
+    const coinjoinMiddlewarePathFrom = path.join(
+        binResourcesPathFrom,
+        '/coinjoin/linux-x64/WalletWasabi.WabiSabiClientLibrary',
+    );
+    const coinjoinMiddlewarePathTo = path.join(binResourcesPathTo, 'coinjoin');
+
+    if (!(await fileExists(coinjoinMiddlewarePathTo))) {
+        await mkdir(coinjoinMiddlewarePathTo, {
+            recursive: true,
+        });
+    }
+
+    await copyFile(
+        coinjoinMiddlewarePathFrom,
+        `${coinjoinMiddlewarePathTo}/WalletWasabi.WabiSabiClientLibrary`,
+    );
 };
 
 export const waitForDataTestSelector = (window: Page, selector: string, options = {}) =>
