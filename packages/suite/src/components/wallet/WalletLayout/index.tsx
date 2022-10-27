@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Progress } from '@trezor/components';
 import styled from 'styled-components';
-import { AccountsMenu } from '@wallet-components';
-import Exception from '@wallet-components/AccountException';
-import AccountMode from '@wallet-components/AccountMode';
-import AccountAnnouncement from '@wallet-components/AccountAnnouncement';
-import { AccountTopPanel } from '@wallet-components/AccountTopPanel';
+import { Progress } from '@trezor/components';
+import {
+    AccountsMenu,
+    AccountMode,
+    AccountException,
+    AccountAnnouncement,
+    AccountTopPanel,
+} from '@wallet-components';
 import { MAX_WIDTH_WALLET_CONTENT } from '@suite-constants/layout';
 import { AppState, ExtendedMessageDescriptor } from '@suite-types';
 import { useTranslation, useLayout } from '@suite-hooks';
@@ -105,7 +107,7 @@ export const WalletLayout = ({
                 <AccountMode mode={account.mode} />
                 <AccountAnnouncement selectedAccount={account} />
                 <EmptyHeaderPlaceholder />
-                <Exception account={account} />
+                <AccountException account={account} />
             </Wrapper>
         );
     }

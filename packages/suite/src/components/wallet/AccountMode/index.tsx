@@ -1,18 +1,26 @@
 import React from 'react';
+import styled from 'styled-components';
 import { SelectedAccountWatchOnlyMode } from '@suite-common/wallet-types';
 
 import AuthConfirmFailed from './AuthConfirmFailed';
 import BackendDisconnected from './BackendDisconnected';
 import DeviceUnavailable from './DeviceUnavailable';
 
-interface Props {
+const Container = styled.div`
+    margin-bottom: 10px;
+`;
+
+interface AccountModeProps {
     mode: SelectedAccountWatchOnlyMode[] | undefined;
 }
 
-const AccountMode = (props: Props) => {
-    if (!props.mode) return null;
+export const AccountMode = (props: AccountModeProps) => {
+    if (!props.mode) {
+        return null;
+    }
+
     return (
-        <>
+        <Container>
             {props.mode.map(m => {
                 switch (m) {
                     case 'auth-confirm-failed':
@@ -22,12 +30,9 @@ const AccountMode = (props: Props) => {
                     case 'device-unavailable':
                         return <DeviceUnavailable key={m} />;
                     default:
-                        // return <>{m} not implemented</>;
                         return null;
                 }
             })}
-        </>
+        </Container>
     );
 };
-
-export default AccountMode;

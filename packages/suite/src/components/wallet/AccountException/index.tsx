@@ -46,7 +46,7 @@ const getExceptionPage = ({ account }: Props) => {
     }
 };
 
-const Exception = (props: Props) => {
+export const AccountException = (props: Props) => {
     const page = getExceptionPage(props);
     if (page) return <Wrapper>{page}</Wrapper>;
     return (
@@ -55,5 +55,3 @@ const Exception = (props: Props) => {
         </Wrapper>
     );
 };
-
-export default Exception;
