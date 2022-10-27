@@ -13,6 +13,7 @@ import { Translation } from '@suite-components/Translation';
 import { CountdownTimer } from '@suite-components';
 import { COINJOIN_PHASE_MESSAGES } from '@suite-constants/coinjoin';
 import { getEstimatedTimePerRound } from '@wallet-utils/coinjoinUtils';
+import { lighten } from 'polished';
 
 const Container = styled.div`
     position: relative;
@@ -68,7 +69,7 @@ const ProgressWheel = styled.div<{ progress: number; isPaused: boolean; isLoadin
 
             :active {
                 > :first-child {
-                    background: #fafafa;
+                    background: ${({ theme }) => lighten(0.02, theme.BG_GREY)};
                 }
             }
         `}
@@ -159,6 +160,29 @@ export const CoinjoinStatus = ({
                 key: 'coinjoin-actions',
                 options: [
                     {
+                        key: 'resume',
+                        label: (
+                            <MenuLabel>
+                                <Icon icon="PLAY" size={10} />
+                                <Translation id="TR_RESUME" />
+                            </MenuLabel>
+                        ),
+                        callback: togglePause,
+                        'data-test': `@coinjoin/resume`,
+                        isHidden: !isPaused || isLoading,
+                    },
+                    {
+                        key: 'resuming',
+                        label: (
+                            <MenuLabel>
+                                <FluidSpinner size={10} />
+                                <Translation id="TR_RESUMING" />
+                            </MenuLabel>
+                        ),
+                        isHidden: !isLoading,
+                        isDisabled: true,
+                    },
+                    {
                         key: 'pause',
                         label: (
                             <MenuLabel>
@@ -187,7 +211,7 @@ export const CoinjoinStatus = ({
                 ],
             },
         ],
-        [stopSession, isPaused, togglePause],
+        [stopSession, isPaused, togglePause, isLoading],
     );
 
     const iconConfig = {

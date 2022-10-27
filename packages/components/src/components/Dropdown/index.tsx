@@ -139,44 +139,36 @@ const Group = styled.li`
 `;
 
 const MenuItem = styled.li<MenuItemProps>`
+    position: relative;
     display: flex;
     align-items: center;
-    padding: ${props => (!props.item.noPadding ? '8px 16px' : '0px')};
-    white-space: nowrap;
-    cursor: ${props => (!props.item.isDisabled ? 'pointer' : 'default')};
-    color: ${props =>
-        !props.item.isDisabled ? props.theme.TYPE_DARK_GREY : props.theme.TYPE_LIGHT_GREY};
+    padding: ${({ item }) => (!item.noPadding ? '8px 16px' : '0px')};
+    border-radius: ${({ item }) => item.isRounded && ' 4px'};
+    color: ${({ item, theme }) =>
+        !item.isDisabled ? theme.TYPE_DARK_GREY : theme.TYPE_LIGHT_GREY};
     font-size: ${FONT_SIZE.SMALL};
     font-weight: ${FONT_WEIGHT.MEDIUM};
-    position: relative;
+    white-space: nowrap;
     transition: all 0.2s ease;
+    cursor: ${({ item }) => (!item.isDisabled && !item.noHover ? 'pointer' : 'default')};
 
-    ${props =>
-        props.item.separatorBefore &&
+    :hover {
+        background: ${({ item, theme }) =>
+            !item.isDisabled && !item.noHover && theme.BG_WHITE_ALT_HOVER};
+    }
+
+    ${({ item, theme }) =>
+        item.separatorBefore &&
         css`
             margin-top: 17px;
-            &:after {
+
+            :after {
                 position: absolute;
                 width: calc(100% - 32px);
                 top: -9px;
                 left: 16px;
                 content: '';
-                border-top: 1px solid ${props.theme.STROKE_GREY};
-            }
-        `}
-
-    ${props =>
-        props.item.isRounded &&
-        css`
-            border-radius: 4px;
-        `}
-
-    ${props =>
-        !props.item.isDisabled &&
-        !props.item.noHover &&
-        css`
-            &:hover {
-                background: ${props.theme.BG_WHITE_ALT_HOVER};
+                border-top: 1px solid ${theme.STROKE_GREY};
             }
         `}
 `;
