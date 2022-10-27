@@ -155,10 +155,10 @@ describe(`CoinjoinBackend methods`, () => {
         expect(halfBlocks).toEqual([1, 2, 4]);
         fetchBlockMock.mockClear();
 
-        // Should request only txid_4 transaction from mempool
-        // and txid_2 because it has account's inputs (TEMPORARY FIX)
+        // Should request only txid_4 transaction from mempool,
+        // but currently requests all the transactions (TEMPORARY FIX)
         const halfTxs = getRequestedTxs();
-        expect(halfTxs).toEqual(['txid_2', FIXTURES.TX_4_PENDING.txid]);
+        expect(halfTxs).toEqual(['txid_1', 'txid_2', 'txid_3', FIXTURES.TX_4_PENDING.txid]);
         fetchTxMock.mockClear();
 
         // All blocks are known
@@ -192,8 +192,8 @@ describe(`CoinjoinBackend methods`, () => {
         expect(restBlocks).toEqual([6, 7, 8]);
 
         // Shouldn't request any transaction from mempool
-        // and txid_4 and txid_5 because they have account's inputs (TEMPORARY FIX)
+        // but currently requests all the transactions (TEMPORARY FIX)
         const restTxs = getRequestedTxs();
-        expect(restTxs).toEqual(['txid_4', 'txid_5']);
+        expect(restTxs).toEqual(['txid_4', 'txid_5', 'txid_6']);
     });
 });
