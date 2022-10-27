@@ -1161,12 +1161,12 @@ export default defineMessages({
         id: 'TR_SAVINGS_SETUP_CUSTOM_FIAT_AMOUNT_MAXIMUM',
     },
     TR_SAVINGS_SETUP_HEADER: {
-        defaultMessage: 'Your savings account setup',
+        defaultMessage: 'Your savings plan setup',
         id: 'TR_SAVINGS_SETUP_HEADER',
     },
     TR_SAVINGS_SETUP_COUNTRY_LOCATION_DESCRIPTION: {
         defaultMessage:
-            '{cryptoCurrencyName} savings account is a location specific feature. We are only able to provide offers to users from the supported countries listed below.',
+            '{cryptoCurrencyName} savings plan is a location specific feature. We are only able to provide offers to users from the supported countries listed below.',
         id: 'TR_SAVINGS_SETUP_COUNTRY_LOCATION_DESCRIPTION',
     },
     TR_SAVINGS_SETUP_COUNTRY_MISMATCH_DESCRIPTION: {

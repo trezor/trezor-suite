@@ -42,6 +42,7 @@
   "EVENT_DEVICE_CONNECT_UNACQUIRED": "{label} connecté",
   "EVENT_WALLET_CREATED": "{walletLabel} créé",
   "FEE": "Frais",
+  "FEE_LEVEL_CUSTOM": "Personnalisés",
   "FIRMWARE_CONNECT_IN_NORMAL_MODEL_1": "Veuillez vous assurer que vous ne maintenez aucun bouton pressé lors de la connexion de votre appareil.",
   "FIRMWARE_CONNECT_IN_NORMAL_MODEL_2": "Veuillez vous assurer que vous ne maintenez aucun bouton pressé lors de la connexion de votre appareil.",
   "FIRMWARE_USER_HAS_SEED_CHECKBOX_DESC": "Oui!",

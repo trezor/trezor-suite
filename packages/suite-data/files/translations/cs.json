@@ -418,7 +418,7 @@
   "TR_CHECK_RECOVERY_SEED": "Zkontrolovat obnovovací seed",
   "TR_CHECK_RECOVERY_SEED_DESCRIPTION": "Proveďte simulované obnovení a zkontrolujte zálohu.",
   "TR_CHECK_RECOVERY_SEED_DESC_T1": "Zde zadejte slova ze svého seedu v pořadí zobrazeném na vašem zařízení. Můžete být požádáni, abyste jako další bezpečnostní opatření napsali některá slova, která nejsou součástí vašeho obnovovacího seedu.",
-  "TR_CHECK_RECOVERY_SEED_DESC_T2": "Záloha Vaší peněženky, obnovovací seed, je zadáván přímo na obrazovce Trezoru Model T. Tím se vyvarujete odesíláním citlivých informací potenciálně nezabezpečenému počítači, nebo webovému prohlížeči.",
+  "TR_CHECK_RECOVERY_SEED_DESC_T2": "Záloha Vaší peněženky, obnovovací seed, je zadáván přímo na obrazovce Trezoru Model T. Tím se vyvarujete odesílání citlivých informací potenciálně nezabezpečenému počítači, nebo webovému prohlížeči.",
   "TR_CHECK_SEED": "Zkontrolovat seed",
   "TR_CHECK_SEED_IN_SETTINGS": "Zkontrolujte seed v nastavení",
   "TR_CHECK_YOUR_DEVICE": "Zkontrolujte své zařízení",

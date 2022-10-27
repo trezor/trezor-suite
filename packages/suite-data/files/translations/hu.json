@@ -1626,6 +1626,7 @@
   "TR_VERIFY_MESSAGE": "Üzenet hitelesítése",
   "TR_VERSION": "{version} verzió",
   "TR_VERSION_HAS_BEEN_RELEASED": "Kiadták a(z) {version} verziót!",
+  "TR_VIEW": "Megtekintés",
   "TR_WAIT_FOR_REBOOT": "Trezor újraindítása",
   "TR_WAIT_FOR_REBOOT_WEBUSB_DESCRIPTION": "Kérlek, várd meg, hogy a Trezor újrainduljon, majd párosítsd újra.",
   "TR_WALLET": "Fiókok",
