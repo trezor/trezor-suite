@@ -4,13 +4,39 @@ import { useSelector, useActions } from '@suite-hooks';
 import { useDispatch } from 'react-redux';
 import { createCoinjoinAccount } from '@wallet-actions/coinjoinAccountActions';
 import * as modalActions from '@suite-actions/modalActions';
-import type { Network } from '@wallet-types';
+import { Account, Network } from '@wallet-types';
+import { UnavailableCapabilities } from '@trezor/connect';
 import { AddButton } from './AddButton';
 import { getIsTorEnabled } from '@suite-utils/tor';
 import { isDesktop } from '@suite-utils/env';
+import { isDevEnv } from '@suite-common/suite-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { Dispatch } from '@suite-types';
 import { RequestEnableTorResponse } from '@suite-components/modals/RequestEnableTor';
+
+interface VerifyAvailabilityProps {
+    coinjoinAccounts: Account[];
+    unavailableCapabilities?: UnavailableCapabilities;
+}
+
+const verifyAvailability = ({
+    coinjoinAccounts,
+    unavailableCapabilities,
+}: VerifyAvailabilityProps) => {
+    if (coinjoinAccounts.length > 0) {
+        return <Translation id="MODAL_ADD_ACCOUNT_COINJOIN_LIMIT_EXCEEDED" />;
+    }
+    const capability = unavailableCapabilities?.coinjoin;
+    if (capability === 'no-support') {
+        return <Translation id="MODAL_ADD_ACCOUNT_COINJOIN_NO_SUPPORT" />;
+    }
+    if (!isDesktop() && !isDevEnv) {
+        return <Translation id="MODAL_ADD_ACCOUNT_COINJOIN_DESKTOP_ONLY" />;
+    }
+    if (capability === 'update-required') {
+        return <Translation id="MODAL_ADD_ACCOUNT_COINJOIN_UPDATE_REQUIRED" />;
+    }
+};
 
 interface AddCoinJoinAccountProps {
     network: Network;
@@ -23,13 +49,11 @@ export const AddCoinJoinAccountButton = ({ network }: AddCoinJoinAccountProps) =
     const [isLoading, setIsLoading] = useState(false);
 
     const isTorEnabled = useSelector(state => getIsTorEnabled(state.suite.torStatus));
+    const device = useSelector(state => state.suite.device);
+    const accounts = useSelector(state => state.wallet.accounts);
 
     const action = useActions({ createCoinjoinAccount, requestEnableTorAction });
     const dispatch = useDispatch();
-    const { device, accounts } = useSelector(state => ({
-        device: state.suite.device,
-        accounts: state.wallet.accounts,
-    }));
 
     if (!device) {
         return null;
@@ -42,8 +66,10 @@ export const AddCoinJoinAccountButton = ({ network }: AddCoinJoinAccountProps) =
             a.accountType === network.accountType,
     );
 
-    // TODO: more disabled button states
-    // no-capability, device connected etc
+    const disabledMessage = verifyAvailability({
+        coinjoinAccounts,
+        unavailableCapabilities: device.unavailableCapabilities,
+    });
 
     const onCreateCoinjoinAccountClick = async () => {
         setIsLoading(true);
@@ -78,12 +104,9 @@ export const AddCoinJoinAccountButton = ({ network }: AddCoinJoinAccountProps) =
         action.createCoinjoinAccount(network, 80);
     };
 
-    const isDisabled = coinjoinAccounts.length > 0;
     return (
         <AddButton
-            disabledMessage={
-                isDisabled ? <Translation id="MODAL_ADD_ACCOUNT_LIMIT_EXCEEDED" /> : null
-            }
+            disabledMessage={disabledMessage}
             handleClick={onCreateCoinjoinAccountClick}
             isLoading={isLoading}
         />

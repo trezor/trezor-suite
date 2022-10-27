@@ -1,35 +1,54 @@
 import React, { useCallback } from 'react';
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { Account, Network } from '@wallet-types';
+import { UnavailableCapability } from '@trezor/connect';
 import { Translation } from '@suite-components';
 import { AddCoinJoinAccountButton } from './AddCoinJoinAccountButton';
 import { AddButton } from './AddButton';
-import { useAccountSearch } from '@suite-hooks';
+import { useAccountSearch, useSelector } from '@suite-hooks';
 
 const verifyAvailability = ({
     emptyAccounts,
     account,
+    unavailableCapability,
+    majorVersion,
 }: {
     emptyAccounts: Account[];
     account: Account;
+    unavailableCapability?: UnavailableCapability;
+    majorVersion?: number;
 }) => {
+    if (unavailableCapability === 'no-support') {
+        return majorVersion === 1
+            ? 'TR_ACCOUNT_TYPE_NO_SUPPORT_T1'
+            : 'TR_ACCOUNT_TYPE_NO_SUPPORT_T2';
+    }
+    if (unavailableCapability === 'update-required') {
+        return 'TR_ACCOUNT_TYPE_UPDATE_REQUIRED';
+    }
+    if (unavailableCapability === 'trezor-connect-outdated') {
+        return 'FW_CAPABILITY_CONNECT_OUTDATED';
+    }
+    if (unavailableCapability === 'no-capability') {
+        return 'TR_ACCOUNT_TYPE_NO_CAPABILITY';
+    }
     if (!account) {
         // discovery failed?
-        return <Translation id="MODAL_ADD_ACCOUNT_NO_ACCOUNT" />;
+        return 'MODAL_ADD_ACCOUNT_NO_ACCOUNT';
     }
     if (emptyAccounts.length === 0) {
-        return <Translation id="MODAL_ADD_ACCOUNT_NO_EMPTY_ACCOUNT" />;
+        return 'MODAL_ADD_ACCOUNT_NO_EMPTY_ACCOUNT';
     }
     if (emptyAccounts.length > 1) {
         // prev account is empty, do not add another
-        return <Translation id="MODAL_ADD_ACCOUNT_PREVIOUS_EMPTY" />;
+        return 'MODAL_ADD_ACCOUNT_PREVIOUS_EMPTY';
     }
     if (account.index === 0 && account.empty && account.accountType === 'normal') {
         // current (first normal) account is empty, do not add another
-        return <Translation id="MODAL_ADD_ACCOUNT_PREVIOUS_EMPTY" />;
+        return 'MODAL_ADD_ACCOUNT_PREVIOUS_EMPTY';
     }
     if (account.index >= 10) {
-        return <Translation id="MODAL_ADD_ACCOUNT_LIMIT_EXCEEDED" />;
+        return 'MODAL_ADD_ACCOUNT_LIMIT_EXCEEDED';
     }
 };
 
@@ -42,10 +61,10 @@ interface AddAccountButtonProps {
 const AddDefaultAccountButton = ({
     emptyAccounts,
     onEnableAccount,
-}: Omit<AddAccountButtonProps, 'network'>) => {
+    network,
+}: AddAccountButtonProps) => {
     const account = emptyAccounts[emptyAccounts.length - 1];
-
-    const disabledMessage = verifyAvailability({ emptyAccounts, account });
+    const device = useSelector(state => state.suite.device);
 
     const { setCoinFilter, setSearchString, coinFilter } = useAccountSearch();
 
@@ -69,7 +88,23 @@ const AddDefaultAccountButton = ({
         });
     }, [account, onEnableAccount, setSearchString, setCoinFilter, coinFilter]);
 
-    return <AddButton disabledMessage={disabledMessage} handleClick={handleClick} />;
+    const unavailableCapability = network.accountType
+        ? device?.unavailableCapabilities?.[network.accountType]
+        : undefined;
+
+    const disabledMessage = verifyAvailability({
+        emptyAccounts,
+        account,
+        unavailableCapability,
+        majorVersion: device?.features?.major_version,
+    });
+
+    return (
+        <AddButton
+            disabledMessage={disabledMessage && <Translation id={disabledMessage} />}
+            handleClick={handleClick}
+        />
+    );
 };
 
 export const AddAccountButton = ({
@@ -83,6 +118,7 @@ export const AddAccountButton = ({
         default:
             return (
                 <AddDefaultAccountButton
+                    network={network}
                     emptyAccounts={emptyAccounts}
                     onEnableAccount={onEnableAccount}
                 />
