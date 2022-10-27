@@ -1,3 +1,5 @@
+import BigNumber from 'bignumber.js';
+
 import { deriveAddresses as deriveNewAddresses } from '@trezor/utxo-lib';
 
 import type { CoinjoinBackendClient } from './CoinjoinBackendClient';
@@ -29,17 +31,23 @@ export const deriveAddresses = (
 };
 
 /** @deprecated Temporary workaround, should be removed before releasing */
-export const fixTxInputs = (transactions: Transaction[], client: CoinjoinBackendClient) =>
+export const fixTx = (transactions: Transaction[], client: CoinjoinBackendClient) =>
     Promise.all(
-        transactions
-            .filter(tx => tx.details.vin.some(vin => vin.isAccountOwned))
-            .map(async tx => {
-                const fetched = await client.fetchTransaction(tx.txid);
-                tx.details.vin.forEach(vin => {
-                    if (!vin.isAccountOwned) return;
-                    vin.txid = fetched.vin[vin.n].txid;
-                    vin.vout = fetched.vin[vin.n].vout;
-                    vin.coinbase = fetched.vin[vin.n].coinbase;
-                });
-            }),
+        transactions.map(async tx => {
+            const fetched = await client.fetchTransaction(tx.txid);
+            // tx.vsize missing in transactions from /block endpoint
+            tx.feeRate = fetched.vsize
+                ? new BigNumber(tx.fee).div(fetched.vsize).decimalPlaces(2).toString()
+                : undefined;
+            // tx.size and tx.hex missing in transactions from /block endpoint
+            tx.details.size =
+                fetched.size || typeof fetched.hex === 'string' ? fetched.hex.length / 2 : 0;
+            // vin.vout a vin.txid missing in transctions from /block endpoint
+            tx.details.vin.forEach(vin => {
+                if (!vin.isAccountOwned) return;
+                vin.txid = fetched.vin[vin.n].txid;
+                vin.vout = fetched.vin[vin.n].vout;
+                vin.coinbase = fetched.vin[vin.n].coinbase;
+            });
+        }),
     );

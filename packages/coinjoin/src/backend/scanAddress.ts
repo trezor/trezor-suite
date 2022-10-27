@@ -1,7 +1,7 @@
 import { transformTransaction } from '@trezor/blockchain-link/lib/workers/blockbook/utils';
 
 import { getAddressScript, getFilter } from './filters';
-import { doesTxContainAddress, fixTxInputs } from './backendUtils';
+import { doesTxContainAddress, fixTx } from './backendUtils';
 import type {
     ScanAddressParams,
     ScanAddressCheckpoint,
@@ -30,7 +30,7 @@ export const scanAddress = async (
             const blockTxs = block.txs.filter(doesTxContainAddress(address));
             const transactions = blockTxs.map(tx => transformTransaction(address, undefined, tx));
 
-            await fixTxInputs(transactions, client);
+            await fixTx(transactions, client);
 
             onProgress({
                 checkpoint,
