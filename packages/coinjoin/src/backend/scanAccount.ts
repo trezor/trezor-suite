@@ -126,8 +126,6 @@ export const scanAccount = async (
         .getTransactions(receive.concat(change).map(({ address }) => address))
         .map(transformTx(xpub, receive, change));
 
-    await fixTxInputs(pending, client);
-
     const cache = {
         receivePrederived: receive.map(({ address, path }) => ({ address, path })),
         changePrederived: change.map(({ address, path }) => ({ address, path })),
