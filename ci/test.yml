@@ -142,7 +142,7 @@ suite web 2-master manual:
     expire_in: 7 days
     when: always
     paths:
-      - ./packages/suite-desktop/e2e/screenshots
+      - "**/test-results/**"
   interruptible: true
   parallel:
     matrix:
@@ -150,8 +150,9 @@ suite web 2-master manual:
         CONTAINERS: "trezor-user-env-unix"
       - TEST_FILE: ["electrum"]
         CONTAINERS: "trezor-user-env-unix electrum-regtest"
-      - TEST_FILE: ["coinjoin"]
-        CONTAINERS: "trezor-user-env-unix coinjoin-backend"
+      # todo: still some troubles running in CI
+      # - TEST_FILE: ["coinjoin"]
+      #   CONTAINERS: "trezor-user-env-unix coinjoin-backend"
 
 suite desktop:
   extends: .e2e desktop
