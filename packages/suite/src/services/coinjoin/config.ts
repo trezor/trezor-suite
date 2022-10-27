@@ -3,10 +3,7 @@ import type { PartialRecord } from '@trezor/type-utils';
 import type { CoinjoinServerEnvironment } from '@suite-common/wallet-types';
 import type { NetworkSymbol } from '@wallet-types';
 
-type CoinjoinNetworksConfig = CoinjoinBackendSettings &
-    CoinjoinClientSettings & {
-        percentageFee: string;
-    };
+type CoinjoinNetworksConfig = CoinjoinBackendSettings & CoinjoinClientSettings;
 
 type ServerEnvironment = PartialRecord<CoinjoinServerEnvironment, CoinjoinNetworksConfig>;
 
@@ -23,8 +20,6 @@ export const COINJOIN_NETWORKS: PartialRecord<NetworkSymbol, ServerEnvironment> 
             baseBlockHash: '0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206',
             // client settings
             middlewareUrl: 'https://dev-coinjoin.trezor.io/Cryptography/',
-            // suite settings
-            percentageFee: '0.3',
         },
         localhost: {
             network: 'regtest',
@@ -37,8 +32,6 @@ export const COINJOIN_NETWORKS: PartialRecord<NetworkSymbol, ServerEnvironment> 
             baseBlockHash: '0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206',
             // client settings
             middlewareUrl: 'http://localhost:8081/Cryptography/',
-            // suite settings
-            percentageFee: '0.3',
         },
     },
 };
