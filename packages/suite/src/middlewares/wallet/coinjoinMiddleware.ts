@@ -1,10 +1,12 @@
 import type { MiddlewareAPI } from 'redux';
+import { UI } from '@trezor/connect';
 import { SUITE, ROUTER } from '@suite-actions/constants';
 import { DISCOVERY } from '@wallet-actions/constants';
 import * as coinjoinAccountActions from '@wallet-actions/coinjoinAccountActions';
 import { CoinjoinBackendService } from '@suite/services/coinjoin/coinjoinBackend';
 import type { AppState, Action, Dispatch } from '@suite-types';
 import { blockchainActions, accountsActions } from '@suite-common/wallet-core';
+import type { UserContextPayload } from '@suite-actions/modalActions';
 
 export const coinjoinMiddleware =
     (api: MiddlewareAPI<Dispatch, AppState>) =>
@@ -13,6 +15,17 @@ export const coinjoinMiddleware =
         // cancel discovery for each CoinjoinBackend
         if (action.type === ROUTER.LOCATION_CHANGE && action.payload.app !== 'wallet') {
             CoinjoinBackendService.getInstances().forEach(b => b.cancel());
+        }
+
+        // do not close success and critical phase modals when they are open, similar to discovery middleware
+        const { modal } = api.getState();
+        const allowedModals = ['coinjoin-success', 'critical-coinjoin-phase'];
+
+        if (
+            action.type === UI.CLOSE_UI_WINDOW &&
+            allowedModals.includes((modal as { payload: UserContextPayload }).payload?.type)
+        ) {
+            return action;
         }
 
         // propagate action to reducers
