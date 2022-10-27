@@ -9,6 +9,7 @@ services:
   test-run:
     environment:
       - TEST_FILE=$TEST_FILE
+      - HEADLESS=true
     image: registry.gitlab.com/satoshilabs/trezor/trezor-suite/base:latest
     container_name: desktop-test-runner
     ipc: host

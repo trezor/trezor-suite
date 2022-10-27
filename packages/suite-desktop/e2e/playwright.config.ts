@@ -4,9 +4,13 @@ const config: PlaywrightTestConfig = {
     testDir: 'tests',
     workers: 1, // to disable parallelism between test files
     use: {
-        headless: true,
-        trace: 'retain-on-failure',
+        headless: process.env.HEADLESS === 'true',
+        trace: 'on',
+        video: 'on',
+        screenshot: 'on',
     },
+    reportSlowTests: null,
+    reporter: 'list',
 };
 
 // eslint-disable-next-line import/no-default-export
