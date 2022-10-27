@@ -5,27 +5,38 @@ import { Network } from '@wallet-types';
 import { Translation, TrezorLink } from '@suite-components';
 import { getAccountTypeDesc, getAccountTypeUrl } from '@suite-common/wallet-utils';
 
-const Info = styled(P)`
+const Info = styled(P).attrs(() => ({
+    size: 'small',
+    textAlign: 'left',
+}))`
     color: ${props => props.theme.TYPE_LIGHT_GREY};
     margin: 20px 0;
 `;
 
-interface Props {
-    network: Network;
-    accountTypes?: Network[];
+interface AccountTypeDescriptionProps {
+    bip43Path: Network['bip43Path'];
+    hasMultipleAccountTypes: boolean;
 }
 
-export const AccountTypeDescription = ({ network, accountTypes }: Props) => {
-    if (!accountTypes || accountTypes.length <= 1) return null;
-    const accountTypeUrl = getAccountTypeUrl(network.bip43Path);
-    const accountTypeDesc = getAccountTypeDesc(network.bip43Path);
+export const AccountTypeDescription = ({
+    bip43Path,
+    hasMultipleAccountTypes,
+}: AccountTypeDescriptionProps) => {
+    if (!hasMultipleAccountTypes) return null;
+    const accountTypeUrl = getAccountTypeUrl(bip43Path);
+    const accountTypeDesc = getAccountTypeDesc(bip43Path);
 
     return (
-        <Info size="small" textAlign="left">
-            <Translation id={accountTypeDesc} />{' '}
-            <TrezorLink icon="EXTERNAL_LINK" href={accountTypeUrl} size="small">
-                <Translation id="TR_LEARN_MORE" />
-            </TrezorLink>
+        <Info>
+            <Translation id={accountTypeDesc} />
+            {accountTypeUrl && (
+                <>
+                    {' '}
+                    <TrezorLink icon="EXTERNAL_LINK" href={accountTypeUrl} size="small">
+                        <Translation id="TR_LEARN_MORE" />
+                    </TrezorLink>
+                </>
+            )}
         </Info>
     );
 };

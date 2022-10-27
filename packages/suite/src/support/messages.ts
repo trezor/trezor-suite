@@ -3532,10 +3532,21 @@ export default defineMessages({
         id: 'TR_ACCOUNT_DETAILS_XPUB_BUTTON',
         defaultMessage: 'Show public key',
     },
-    TR_ACCOUNT_TYPE_BIP86_NOT_SUPPORTED: {
-        id: 'TR_ACCOUNT_TYPE_BIP86_NOT_SUPPORTED',
-        defaultMessage:
-            'Current firmware does not support Taproot. Please update your Trezor firmware to enable this feature.',
+    TR_ACCOUNT_TYPE_NO_CAPABILITY: {
+        id: 'TR_ACCOUNT_TYPE_NO_CAPABILITY',
+        defaultMessage: 'Not supported.',
+    },
+    TR_ACCOUNT_TYPE_NO_SUPPORT_T1: {
+        id: 'TR_ACCOUNT_TYPE_NO_SUPPORT_T1',
+        defaultMessage: 'This Account Type is not supported on Trezor Model One.',
+    },
+    TR_ACCOUNT_TYPE_NO_SUPPORT_T2: {
+        id: 'TR_ACCOUNT_TYPE_NO_SUPPORT_T2',
+        defaultMessage: 'This Account Type is not supported on Trezor Model T.',
+    },
+    TR_ACCOUNT_TYPE_UPDATE_REQUIRED: {
+        id: 'TR_ACCOUNT_TYPE_UPDATE_REQUIRED',
+        defaultMessage: 'Please update device firmware to enable this Account Type.',
     },
     TR_ACCOUNT_TYPE_BIP86_NAME: {
         id: 'TR_ACCOUNT_TYPE_BIP86_NAME',
@@ -4090,6 +4101,22 @@ export default defineMessages({
     MODAL_ADD_ACCOUNT_LIMIT_EXCEEDED: {
         id: 'MODAL_ADD_ACCOUNT_LIMIT_EXCEEDED',
         defaultMessage: 'The maximum allowed number of accounts has been created. ',
+    },
+    MODAL_ADD_ACCOUNT_COINJOIN_LIMIT_EXCEEDED: {
+        id: 'MODAL_ADD_ACCOUNT_COINJOIN_LIMIT_EXCEEDED',
+        defaultMessage: 'You can have only one CoinJoin account per wallet.',
+    },
+    MODAL_ADD_ACCOUNT_COINJOIN_NO_SUPPORT: {
+        id: 'MODAL_ADD_ACCOUNT_COINJOIN_NO_SUPPORT',
+        defaultMessage: 'CoinJoin is supported only on Trezor Model T',
+    },
+    MODAL_ADD_ACCOUNT_COINJOIN_UPDATE_REQUIRED: {
+        id: 'MODAL_ADD_ACCOUNT_COINJOIN_UPDATE_REQUIRED',
+        defaultMessage: 'Please update your Firmware to enable the CoinJoin feature.',
+    },
+    MODAL_ADD_ACCOUNT_COINJOIN_DESKTOP_ONLY: {
+        id: 'MODAL_ADD_ACCOUNT_COINJOIN_DESKTOP_ONLY',
+        defaultMessage: 'CoinJoin account only available on Trezor Suite desktop app.',
     },
     TR_DEVICE_IN_RECOVERY_MODE: {
         id: 'TR_DEVICE_IN_RECOVERY_MODE',

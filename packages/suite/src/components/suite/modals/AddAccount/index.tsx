@@ -194,7 +194,6 @@ export const AddAccount = ({ device, onCancel, symbol, noRedirect }: Props) => {
                             network={selectedNetwork}
                             accountTypes={accountTypes}
                             onSelectAccountType={selectNetwork}
-                            unavailableCapabilities={device.unavailableCapabilities}
                         />
                     )}
 
