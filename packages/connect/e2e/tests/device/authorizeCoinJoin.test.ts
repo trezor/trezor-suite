@@ -13,6 +13,11 @@ describe('TrezorConnect.authorizeCoinJoin', () => {
                 experimental_features: true,
             },
         });
+    });
+
+    beforeEach(async () => {
+        // restart connect for each test (working with event listeners)
+        TrezorConnect.dispose();
         await initTrezorConnect(controller, { debug: false });
     });
 
@@ -160,5 +165,105 @@ describe('TrezorConnect.authorizeCoinJoin', () => {
         const round3 = await TrezorConnect.signTransaction(params);
         expect(round3.success).toBe(false);
         expect(round3.payload).toMatchObject({ error: 'Exceeded number of CoinJoin rounds.' });
+    });
+
+    conditionalTest(['1', '<2.5.3'], 'Authorize and re-authorize', async () => {
+        // setup two wallets, 1 with and 1 without passphrase
+        await TrezorConnect.applySettings({ use_passphrase: true });
+        const walletDefault = await TrezorConnect.getDeviceState({
+            device: {
+                instance: 0,
+                state: undefined, // reset state from previous tests on this instance
+            },
+            useEmptyPassphrase: true,
+        });
+
+        TrezorConnect.on('ui-request_passphrase', () => {
+            TrezorConnect.uiResponse({
+                type: 'ui-receive_passphrase',
+                payload: {
+                    passphraseOnDevice: false,
+                    value: 'a',
+                },
+            });
+        });
+        const walletA = await TrezorConnect.getDeviceState({
+            device: {
+                instance: 1,
+                state: undefined, // reset state from previous tests on this instance
+            },
+        });
+        if (!walletDefault.success || !walletA.success) {
+            throw new Error(`Wallet state exception`);
+        }
+
+        // use same params in each call
+        const params = {
+            coordinator: 'www.example.com',
+            maxRounds: 2,
+            maxCoordinatorFeeRate: 50000000, // 0.5 %
+            maxFeePerKvbyte: 3500,
+            path: ADDRESS_N("m/10025'/1'/0'/1'"),
+            coin: 'Testnet',
+            scriptType: 'SPENDTAPROOT',
+        } as const;
+
+        // watch for button requests
+        const spy = jest.fn();
+        TrezorConnect.on('button', spy);
+
+        // authorize no passphrase wallet
+        await TrezorConnect.authorizeCoinJoin({
+            ...params,
+            device: { instance: 0, state: walletDefault.payload.state },
+            useEmptyPassphrase: true,
+        });
+
+        expect(spy).toBeCalledTimes(2);
+
+        // re-authorize
+        await TrezorConnect.authorizeCoinJoin({
+            ...params,
+            device: { instance: 0, state: walletDefault.payload.state },
+            useEmptyPassphrase: true,
+            preauthorized: true,
+        });
+
+        expect(spy).toBeCalledTimes(2); // no more button requests
+
+        // authorize passphrase wallet
+        await TrezorConnect.authorizeCoinJoin({
+            ...params,
+            device: { instance: 1, state: walletA.payload.state },
+        });
+
+        expect(spy).toBeCalledTimes(4);
+
+        // re-authorize passphrase wallet
+        await TrezorConnect.authorizeCoinJoin({
+            ...params,
+            device: { instance: 1, state: walletA.payload.state },
+            preauthorized: true,
+        });
+
+        // re-authorize no passphrase wallet again
+        await TrezorConnect.authorizeCoinJoin({
+            ...params,
+            device: { instance: 0, state: walletDefault.payload.state },
+            useEmptyPassphrase: true,
+            preauthorized: true,
+        });
+
+        // re-authorize passphrase wallet again
+        await TrezorConnect.authorizeCoinJoin({
+            ...params,
+            device: { instance: 1, state: walletA.payload.state },
+            preauthorized: true,
+        });
+
+        expect(spy).toBeCalledTimes(4); // no more button requests
+
+        // disable passphrase for future tests
+        await TrezorConnect.applySettings({ use_passphrase: false });
     });
 });

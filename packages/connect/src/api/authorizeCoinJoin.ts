@@ -6,7 +6,7 @@ import { PROTO } from '../constants';
 
 export default class AuthorizeCoinJoin extends AbstractMethod<
     'authorizeCoinJoin',
-    PROTO.AuthorizeCoinJoin
+    PROTO.AuthorizeCoinJoin & { preauthorized?: boolean }
 > {
     init() {
         const { payload } = this;
@@ -20,6 +20,7 @@ export default class AuthorizeCoinJoin extends AbstractMethod<
             { name: 'coin', type: 'string' },
             { name: 'scriptType', type: 'string' },
             { name: 'amountUnit', type: 'uint' },
+            { name: 'preauthorized', type: 'boolean' },
         ]);
 
         const address_n = validatePath(payload.path, 3);
@@ -36,6 +37,7 @@ export default class AuthorizeCoinJoin extends AbstractMethod<
             coin_name: coinInfo?.name,
             script_type,
             amount_unit: payload.amountUnit,
+            preauthorized: payload.preauthorized,
         };
     }
 
@@ -44,6 +46,16 @@ export default class AuthorizeCoinJoin extends AbstractMethod<
         if (!this.device.features.experimental_features) {
             // enable experimental features
             await cmd.typedCall('ApplySettings', 'Success', { experimental_features: true });
+        }
+
+        if (this.params.preauthorized) {
+            try {
+                await cmd.typedCall('DoPreauthorized', 'PreauthorizedRequest', {});
+                // device is already preauthorized
+                return { message: 'Success' };
+            } catch (error) {
+                // just carry on and authorize again
+            }
         }
 
         const response = await cmd.typedCall('AuthorizeCoinJoin', 'Success', this.params);
