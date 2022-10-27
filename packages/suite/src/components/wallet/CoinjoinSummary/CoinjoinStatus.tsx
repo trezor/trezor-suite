@@ -284,7 +284,13 @@ export const CoinjoinStatus = ({
                 ) : (
                     <>
                         <p>
-                            {COINJOIN_PHASE_MESSAGES[session.phase || RoundPhase.InputRegistration]}
+                            <Translation
+                                id={
+                                    COINJOIN_PHASE_MESSAGES[
+                                        session.phase || RoundPhase.InputRegistration
+                                    ]
+                                }
+                            />
                         </p>
                         <p>
                             <CountdownTimer deadline={session?.deadline} />
