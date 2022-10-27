@@ -10,6 +10,7 @@ export interface AuthorizeCoinJoin {
     coin?: string;
     scriptType?: PROTO.InternalInputScriptType;
     amountUnit?: PROTO.AmountUnit;
+    preauthorized?: boolean;
 }
 
 export declare function authorizeCoinJoin(

@@ -35,6 +35,8 @@ const result = await TrezorConnect.authorizeCoinJoin(params);
     > used to distinguish between various address formats (non-segwit, segwit, etc.)
 -   `amountUnit` — _optional_ `PROTO.AmountUnit`
     > show amounts in
+-   `preauthorized` — _optional_
+    > Check if device session is already preauthorized and take no further action if so
 
 ### Example:
 
