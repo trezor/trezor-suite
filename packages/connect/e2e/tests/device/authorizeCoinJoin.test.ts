@@ -31,7 +31,7 @@ describe('TrezorConnect.authorizeCoinJoin', () => {
         const auth = await TrezorConnect.authorizeCoinJoin({
             coordinator: 'www.example.com',
             maxRounds: 2,
-            maxCoordinatorFeeRate: 50000000, // 0.5 %
+            maxCoordinatorFeeRate: 500000, // 0.5 %
             maxFeePerKvbyte: 3500,
             path: ADDRESS_N("m/10025'/1'/0'/1'"),
             coin: 'Testnet',

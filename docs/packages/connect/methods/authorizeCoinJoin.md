@@ -42,7 +42,7 @@ const result = await TrezorConnect.authorizeCoinJoin(params);
 TrezorConnect.authorizeCoinJoin({
     path: "m/10086'/0'/0'",
     maxRounds: 3,
-    maxCoordinatorFeeRate: 5000000, // 5% => 0.05 * 10**8;
+    maxCoordinatorFeeRate: 500000, // 0.5% => 0.005 * 10**8;
     maxFeePerKvbyte: 3500,
     scriptType: 'SPENDWITNESS',
 });
