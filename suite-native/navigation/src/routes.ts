@@ -40,9 +40,5 @@ export enum AccountsStackRoutes {
 export enum SettingsStackRoutes {
     Settings = 'Settings',
     SettingsLocalisation = 'SettingsLocalisation',
-    SettingsLabeling = 'SettingsLabeling',
-    SettingsAdvanced = 'SettingsAdvanced',
     SettingsCustomization = 'SettingsCustomization',
-    SettingsSecurity = 'SettingsSecurity',
-    SettingsDangerArea = 'SettingsDangerArea',
 }

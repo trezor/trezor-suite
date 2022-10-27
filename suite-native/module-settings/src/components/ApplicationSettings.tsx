@@ -44,18 +44,6 @@ export const ApplicationSettings = () => {
                 subtitle="Language, Currency"
                 onPress={() => handleNavigation(SettingsStackRoutes.SettingsLocalisation)}
             />
-            <SettingsSectionItem
-                iconName="label"
-                title="Labeling"
-                subtitle="Saved locally"
-                onPress={() => handleNavigation(SettingsStackRoutes.SettingsLabeling)}
-            />
-            <SettingsSectionItem
-                iconName="eyeglasses"
-                title="Advanced"
-                subtitle="Usage data, Logs"
-                onPress={() => handleNavigation(SettingsStackRoutes.SettingsAdvanced)}
-            />
         </SettingsSection>
     );
 };

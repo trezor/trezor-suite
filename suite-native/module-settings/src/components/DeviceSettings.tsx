@@ -23,18 +23,6 @@ export const DeviceSettings = () => {
                 subtitle="Name, Homescreen"
                 onPress={() => navigate(SettingsStackRoutes.SettingsCustomization)}
             />
-            <SettingsSectionItem
-                title="Security"
-                iconName="lock"
-                subtitle="PIN Active, Passphrase enabled"
-                onPress={() => navigate(SettingsStackRoutes.SettingsSecurity)}
-            />
-            <SettingsSectionItem
-                title="Danger Area"
-                iconName="lock"
-                subtitle="Factory reset, Custom firmware"
-                onPress={() => navigate(SettingsStackRoutes.SettingsDangerArea)}
-            />
         </SettingsSection>
     );
 };

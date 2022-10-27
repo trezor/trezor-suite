@@ -4,6 +4,7 @@
     "references": [
         { "path": "../atoms" },
         { "path": "../config" },
+        { "path": "../module-settings" },
         { "path": "../navigation" },
         { "path": "../storage" },
         { "path": "../../packages/icons" },

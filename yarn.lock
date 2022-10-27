@@ -6640,6 +6640,7 @@ __metadata:
     "@react-navigation/stack": ^6.2.2
     "@suite-native/atoms": "*"
     "@suite-native/config": "*"
+    "@suite-native/module-settings": "*"
     "@suite-native/navigation": "*"
     "@suite-native/storage": "*"
     "@trezor/icons": "*"

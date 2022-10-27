@@ -21,6 +21,7 @@ import {
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Screen, ScreenHeader } from '@suite-native/navigation';
 import { CryptoIcon, Icon, IconName, icons } from '@trezor/icons';
+import { CoinsSettings, DeviceActionButtons } from '@suite-native/module-settings';
 
 const inputStackStyle = prepareNativeStyle(utils => ({
     backgroundColor: utils.colors.gray100,
@@ -238,6 +239,8 @@ export const DemoScreen = () => {
                             ))}
                         </Box>
                     </Box>
+                    <CoinsSettings />
+                    <DeviceActionButtons />
                 </Box>
             </Box>
         </Screen>
