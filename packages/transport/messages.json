@@ -616,6 +616,41 @@
                     "options": {
                         "default": true
                     }
+                },
+                "coinjoin_request": {
+                    "type": "CoinJoinRequest",
+                    "id": 14
+                }
+            },
+            "nested": {
+                "CoinJoinRequest": {
+                    "fields": {
+                        "fee_rate": {
+                            "rule": "required",
+                            "type": "uint32",
+                            "id": 1
+                        },
+                        "no_fee_threshold": {
+                            "rule": "required",
+                            "type": "uint64",
+                            "id": 2
+                        },
+                        "min_registrable_amount": {
+                            "rule": "required",
+                            "type": "uint64",
+                            "id": 3
+                        },
+                        "mask_public_key": {
+                            "rule": "required",
+                            "type": "bytes",
+                            "id": 4
+                        },
+                        "signature": {
+                            "rule": "required",
+                            "type": "bytes",
+                            "id": 5
+                        }
+                    }
                 }
             }
         },
@@ -839,6 +874,13 @@
                                 "script_pubkey": {
                                     "type": "bytes",
                                     "id": 19
+                                },
+                                "coinjoin_flags": {
+                                    "type": "uint32",
+                                    "id": 20,
+                                    "options": {
+                                        "default": 0
+                                    }
                                 }
                             }
                         },
@@ -993,6 +1035,13 @@
                 "script_pubkey": {
                     "type": "bytes",
                     "id": 19
+                },
+                "coinjoin_flags": {
+                    "type": "uint32",
+                    "id": 20,
+                    "options": {
+                        "default": 0
+                    }
                 }
             }
         },

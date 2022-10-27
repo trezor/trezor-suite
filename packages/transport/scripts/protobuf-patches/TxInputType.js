@@ -15,6 +15,7 @@ type CommonTxInputType = {
     orig_index?: number, // RBF
     decred_staking_spend?: DecredStakingSpendType,
     script_pubkey?: string, // required if script_type=EXTERNAL
+    coinjoin_flags?: number, // bit field of CoinJoin-specific flags
     script_sig?: string, // used by EXTERNAL, depending on script_pubkey
     witness?: string, // used by EXTERNAL, depending on script_pubkey
     ownership_proof?: string, // used by EXTERNAL, depending on script_pubkey
