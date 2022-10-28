@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { Button, P } from '@trezor/components';
 import { Modal, Translation } from '@suite-components';
 import { UserContextPayload } from '@suite-actions/modalActions';
+import { isDevEnv } from '@suite-common/suite-utils';
 
 const SmallModal = styled(Modal)`
     width: 560px;
@@ -17,21 +18,30 @@ const ItalicDescription = styled(Description)`
     font-style: italic;
 `;
 
-type RequestEnableTorProps = Omit<
-    Extract<UserContextPayload, { type: 'request-enable-tor' }>,
-    'type'
-> & {
+type RequestEnableTorProps = {
+    decision: Extract<UserContextPayload, { type: 'request-enable-tor' }>['decision'];
     onCancel: () => void;
 };
 
+export enum RequestEnableTorResponse {
+    Continue = 'Continue',
+    Back = 'Back',
+    Skip = 'Skip',
+}
+
 export const RequestEnableTor = ({ onCancel, decision }: RequestEnableTorProps) => {
     const onEnableTor = () => {
-        decision.resolve(true);
+        decision.resolve(RequestEnableTorResponse.Continue);
         onCancel();
     };
 
     const onBackClick = () => {
-        decision.resolve(false);
+        decision.resolve(RequestEnableTorResponse.Back);
+        onCancel();
+    };
+
+    const onSkip = () => {
+        decision.resolve(RequestEnableTorResponse.Skip);
         onCancel();
     };
 
@@ -45,10 +55,14 @@ export const RequestEnableTor = ({ onCancel, decision }: RequestEnableTorProps) 
                 heading={<Translation id="TR_TOR_ENABLE" />}
                 bottomBar={
                     <>
+                        {isDevEnv && (
+                            <Button variant="secondary" onClick={onSkip}>
+                                <Translation id="TR_TOR_SKIP" />
+                            </Button>
+                        )}
                         <Button variant="secondary" onClick={onCancel}>
                             <Translation id="TR_TOR_REQUEST_ENABLE_FOR_COIN_JOIN_LEAVE" />
                         </Button>
-
                         <Button variant="primary" onClick={onEnableTor}>
                             <Translation id="TR_TOR_ENABLE" />
                         </Button>
