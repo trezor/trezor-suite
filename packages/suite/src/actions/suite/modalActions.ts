@@ -3,6 +3,7 @@ import { createDeferred, Deferred, DeferredResponse } from '@trezor/utils';
 import { MODAL, SUITE } from '@suite-actions/constants';
 import { Route, Dispatch, GetState, TrezorDevice } from '@suite-types';
 import { Account, WalletAccountTransaction } from '@wallet-types';
+import { RequestEnableTorResponse } from '@suite-components/modals/RequestEnableTor';
 
 export type UserContextPayload =
     | {
@@ -131,7 +132,7 @@ export type UserContextPayload =
       }
     | {
           type: 'request-enable-tor';
-          decision: Deferred<boolean>;
+          decision: Deferred<RequestEnableTorResponse>;
       }
     | {
           type: 'tor-loading';
