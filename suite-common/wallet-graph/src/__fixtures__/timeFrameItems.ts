@@ -12,6 +12,7 @@ export const timeFrameItemsWithBalanceAndUsdRates = [
         },
         balance: '0',
         fiatCurrencyRate: 284.4525,
+        descriptor: 'zpubxyz',
     },
     {
         txs: 2,
@@ -24,6 +25,7 @@ export const timeFrameItemsWithBalanceAndUsdRates = [
         },
         balance: '00',
         fiatCurrencyRate: 172.1479,
+        descriptor: 'zpubxyz',
     },
     {
         txs: 11,
@@ -36,6 +38,7 @@ export const timeFrameItemsWithBalanceAndUsdRates = [
         },
         balance: '0.00143698',
         fiatCurrencyRate: 232.5329422304941,
+        descriptor: 'zpubxyz',
     },
     {
         time: 1423004400,
@@ -44,6 +47,7 @@ export const timeFrameItemsWithBalanceAndUsdRates = [
         },
         balance: '0.00143698',
         fiatCurrencyRate: 225.3083,
+        descriptor: 'zpubxyz',
     },
     {
         time: 1424818800,
@@ -52,6 +56,7 @@ export const timeFrameItemsWithBalanceAndUsdRates = [
         },
         balance: '0.00143698',
         fiatCurrencyRate: 237.378,
+        descriptor: 'zpubxyz',
     },
     {
         time: 1426633200,
@@ -60,6 +65,7 @@ export const timeFrameItemsWithBalanceAndUsdRates = [
         },
         balance: '0.00143698',
         fiatCurrencyRate: 255.6062,
+        descriptor: 'zpubxyz',
     },
     {
         txs: 3,
@@ -72,6 +78,7 @@ export const timeFrameItemsWithBalanceAndUsdRates = [
         },
         balance: '0',
         fiatCurrencyRate: 252.341,
+        descriptor: 'zpubxyz',
     },
     {
         time: 1428447600,
@@ -80,6 +87,7 @@ export const timeFrameItemsWithBalanceAndUsdRates = [
         },
         balance: '0',
         fiatCurrencyRate: 244.2709,
+        descriptor: 'zpubxyz',
     },
     {
         time: 1430262000,
@@ -88,6 +96,7 @@ export const timeFrameItemsWithBalanceAndUsdRates = [
         },
         balance: '0',
         fiatCurrencyRate: 225.9978,
+        descriptor: 'zpubxyz',
     },
     {
         txs: 1,
@@ -100,6 +109,7 @@ export const timeFrameItemsWithBalanceAndUsdRates = [
         },
         balance: '0.00093698',
         fiatCurrencyRate: 236.704,
+        descriptor: 'zpubxyz',
     },
     {
         time: 1432076400,
@@ -108,6 +118,7 @@ export const timeFrameItemsWithBalanceAndUsdRates = [
         },
         balance: '0.00093698',
         fiatCurrencyRate: 234.048,
+        descriptor: 'zpubxyz',
     },
     {
         txs: 4,
@@ -120,6 +131,7 @@ export const timeFrameItemsWithBalanceAndUsdRates = [
         },
         balance: '0',
         fiatCurrencyRate: 224.1748,
+        descriptor: 'zpubxyz',
     },
     {
         time: 1433890800,
@@ -128,6 +140,7 @@ export const timeFrameItemsWithBalanceAndUsdRates = [
         },
         balance: '0',
         fiatCurrencyRate: 229.0022,
+        descriptor: 'zpubxyz',
     },
     {
         txs: 9,
@@ -140,6 +153,7 @@ export const timeFrameItemsWithBalanceAndUsdRates = [
         },
         balance: '0.0002',
         fiatCurrencyRate: 242.4769,
+        descriptor: 'zpubxyz',
     },
     {
         time: 1435705200,
@@ -148,6 +162,7 @@ export const timeFrameItemsWithBalanceAndUsdRates = [
         },
         balance: '0.0002',
         fiatCurrencyRate: 257.5058,
+        descriptor: 'zpubxyz',
     },
     {
         txs: 20,
@@ -160,6 +175,7 @@ export const timeFrameItemsWithBalanceAndUsdRates = [
         },
         balance: '0',
         fiatCurrencyRate: 276.6800999999999,
+        descriptor: 'zpubxyz',
     },
 ];
 

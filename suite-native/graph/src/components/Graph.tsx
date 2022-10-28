@@ -10,12 +10,14 @@ import { AxisLabel } from './AxisLabel';
 
 type GraphProps = {
     points: GraphPoint[];
+    loading?: boolean;
 };
 
 const graphWrapperStyle = prepareNativeStyle(_ => ({
     height: 250,
     justifyContent: 'center',
     alignItems: 'center',
+    marginVertical: 20,
 }));
 
 const graphStyle = prepareNativeStyle(_ => ({
@@ -24,7 +26,12 @@ const graphStyle = prepareNativeStyle(_ => ({
     width: '100%',
 }));
 
-export const Graph = ({ points = [] }: GraphProps) => {
+const axisLabelStyle = prepareNativeStyle(_ => ({
+    alignSelf: 'center',
+    width: '100%',
+}));
+
+export const Graph = ({ points = [], loading = false }: GraphProps) => {
     const { applyStyle } = useNativeStyles();
 
     const nonZeroSumOfGraphPoints = useMemo(() => sumLineGraphPoints(points) > 0, [points]);
@@ -58,21 +65,26 @@ export const Graph = ({ points = [] }: GraphProps) => {
               },
           ];
 
+    // FIXME animated=true graph shows only 196 values, let's go with static for now.
     return (
         <Box style={applyStyle(graphWrapperStyle)}>
-            {nonZeroSumOfGraphPoints ? (
-                <LineGraph
-                    style={applyStyle(graphStyle)}
-                    points={graphPoints}
-                    color={defaultColorVariant.green}
-                    animated
-                    enablePanGesture
-                    TopAxisLabel={axisLabels?.TopAxisLabel}
-                    BottomAxisLabel={axisLabels?.BottomAxisLabel}
-                />
+            {!loading && nonZeroSumOfGraphPoints ? (
+                <>
+                    <Box style={applyStyle(axisLabelStyle)}>{axisLabels?.TopAxisLabel()}</Box>
+                    <LineGraph
+                        style={applyStyle(graphStyle)}
+                        points={graphPoints}
+                        color={defaultColorVariant.green}
+                        animated={false}
+                        // enablePanGesture
+                        // TopAxisLabel={axisLabels?.TopAxisLabel}
+                        // BottomAxisLabel={axisLabels?.BottomAxisLabel}
+                    />
+                    <Box style={applyStyle(axisLabelStyle)}>{axisLabels?.BottomAxisLabel()}</Box>
+                </>
             ) : (
                 <Text variant="label" color="gray600">
-                    Zero balance in this range...
+                    {loading ? 'Loading graph data...' : 'Zero balance in this range...'}
                 </Text>
             )}
         </Box>

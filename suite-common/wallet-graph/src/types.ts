@@ -86,7 +86,12 @@ export interface LineGraphTimeFrameItemAccountBalance {
     balance?: string;
     fiatCurrencyRate?: number;
     source?: string;
-    descriptor: string;
+    descriptor?: string;
 }
+
+export type LineGraphTimeFrameIntervalPoint = Omit<
+    LineGraphTimeFrameItemAccountBalance,
+    'rates' | 'descriptor'
+>;
 
 export type GraphDataSource = 'dashboard' | 'account';

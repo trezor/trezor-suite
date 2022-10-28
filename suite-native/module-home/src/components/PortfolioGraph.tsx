@@ -23,7 +23,7 @@ export const PortfolioGraph = () => {
     const { applyStyle } = useNativeStyles();
     const { FiatAmountFormatter } = useFormatters();
     const fiatCurrency = useSelector(selectFiatCurrency);
-    const { points, error } = useSelector(selectDashboardGraph);
+    const { points, error, loading } = useSelector(selectDashboardGraph);
     const [selectedTimeFrame, setSelectedTimeFrame] = useState<LineGraphTimeFrameValues>('day');
 
     useEffect(() => {
@@ -67,7 +67,7 @@ export const PortfolioGraph = () => {
                 </Text>
             ) : (
                 <>
-                    <Graph points={points} />
+                    <Graph points={points} loading={loading} />
                     <TimeSwitch
                         selectedTimeFrame={selectedTimeFrame}
                         onSelectTimeFrame={handleSelectTimeFrame}

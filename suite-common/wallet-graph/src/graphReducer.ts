@@ -9,10 +9,12 @@ export interface GraphState {
     dashboard: {
         points: LineGraphPoint[];
         error?: string | null;
+        loading?: boolean;
     };
     account: {
         points: LineGraphPoint[];
         error?: string | null;
+        loading?: boolean;
     };
 }
 
@@ -50,24 +52,32 @@ export const graphReducer = createReducer(graphInitialState, builder => {
                 graphDataSource: 'dashboard',
                 graphPoints: action.payload,
             });
+            state.dashboard.loading = false;
         })
         .addCase(getAllAccountsGraphPointsThunk.rejected, (state, action) => {
             if (action.error.message === networkAccountsNotFoundError) {
                 state.dashboard.error = action.error.message;
             }
+            state.dashboard.loading = false;
+        })
+        .addCase(getAllAccountsGraphPointsThunk.pending, state => {
+            state.dashboard.loading = true;
         })
         .addCase(getSingleAccountGraphPointsThunk.fulfilled, (state, action) => {
-            if (action.payload) {
-                updateGraphPoints(state, {
-                    graphDataSource: 'account',
-                    graphPoints: action.payload,
-                });
-            }
+            updateGraphPoints(state, {
+                graphDataSource: 'account',
+                graphPoints: action.payload,
+            });
+            state.account.loading = false;
         })
         .addCase(getSingleAccountGraphPointsThunk.rejected, (state, action) => {
             if (action.error.message === accountNotFoundError) {
-                state.dashboard.error = action.error.message;
+                state.account.error = action.error.message;
             }
+            state.account.loading = false;
+        })
+        .addCase(getSingleAccountGraphPointsThunk.pending, state => {
+            state.account.loading = true;
         });
 });
 

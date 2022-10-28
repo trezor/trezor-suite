@@ -40,7 +40,7 @@ export const getTimeFrameDataForSingleAccount = (
     // get the first account balance movement
     const firstAccountBalanceMovementTimestamp = firstAccountBalanceMovement
         ? firstAccountBalanceMovement.time
-        : endOfTimeFrameDate.getTime(); // fallback in case of fetching error erc.
+        : endOfTimeFrameDate.getTime();
 
     const minutesBackToOldestAccountBalanceMovements = differenceInMinutes(
         endOfTimeFrameDate,
@@ -150,18 +150,19 @@ export const getAllAccountsGraphPointsThunk = createThunk(
         if (accounts.length) {
             const differentNetworkSymbolAccountsMap = getDifferentNetworkSymbolAccounts(accounts);
 
-            const promises: Array<Promise<LineGraphTimeFrameItemAccountBalance[]>> = [];
+            const accountTimeFrameItemsPromises: Array<
+                Promise<LineGraphTimeFrameItemAccountBalance[]>
+            > = [];
             Object.values(differentNetworkSymbolAccountsMap).forEach(networkSymbolAccounts => {
                 networkSymbolAccounts.forEach(account => {
-                    promises.push(getSingleAccountTimeFrameItems(account, fiatCurrency, timeFrame));
+                    accountTimeFrameItemsPromises.push(
+                        getSingleAccountTimeFrameItems(account, fiatCurrency, timeFrame),
+                    );
                 });
             });
 
-            const results = await Promise.all(promises);
-
-            const accountDescriptorBalancesPoints =
-                getTimeFrameIntervalsWithSummaryBalances(results);
-            return accountDescriptorBalancesPoints;
+            const accountTimeFrameItems = await Promise.all(accountTimeFrameItemsPromises);
+            return getTimeFrameIntervalsWithSummaryBalances(accountTimeFrameItems);
         }
         throw new Error(networkAccountsNotFoundError);
     },

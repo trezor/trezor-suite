@@ -20,7 +20,7 @@ type AccountDetailHeaderProps = {
 export const AccountDetailHeader = memo(({ accountKey, accountName }: AccountDetailHeaderProps) => {
     const dispatch = useDispatch();
     const fiatCurrency = useSelector(selectFiatCurrency);
-    const { points, error } = useSelector(selectAccountGraph);
+    const { points, error, loading } = useSelector(selectAccountGraph);
     const [selectedTimeFrame, setSelectedTimeFrame] = useState<LineGraphTimeFrameValues>('day');
 
     useEffect(() => {
@@ -46,7 +46,7 @@ export const AccountDetailHeader = memo(({ accountKey, accountName }: AccountDet
                 </Text>
             ) : (
                 <>
-                    <Graph points={points} />
+                    <Graph points={points} loading={loading} />
                     <TimeSwitch
                         selectedTimeFrame={selectedTimeFrame}
                         onSelectTimeFrame={handleSelectTimeFrame}

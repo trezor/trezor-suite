@@ -1,18 +1,6 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-/* eslint-disable global-require */
-
-import {
-    differenceInYears,
-    subMinutes,
-    isEqual,
-    isBefore,
-    getUnixTime,
-    subSeconds,
-} from 'date-fns';
+import { differenceInYears, subMinutes } from 'date-fns';
 
 import { testMocks } from '@suite-common/test-utils';
-import { getBlockbookSafeTime } from '@suite-common/suite-utils/libDev/src';
-import TrezorConnect from '@trezor/connect';
 
 import {
     calcFiatValueMap,
@@ -27,21 +15,11 @@ import {
     getExtremaFromGraphPoints,
     getSuccessAccountBalanceMovements,
     getLineGraphPoints,
-    fetchAccountBalanceHistory,
-    getTimestampsForFiatRatesInTimeFrame,
-    getStartItemOfTimeFrame,
-    mergeAndSortTimeFrameItems,
     minAndMaxGraphPointArrayItemIndex,
-    sumLineGraphPoints,
-    getFirstAccountBalanceMovement,
-    processBalanceHistoryWithBalanceBefore,
-    // getUniqueTimeFrameItemsWithSummaryBalance,
 } from '../graphUtils';
-import { getTimeFrameDataForSingleAccount } from '../graphThunks';
 import { timeSwitchItems, lineGraphStepInMinutes } from '../config';
 import {
     graphPointsWithInvalidValues,
-    graphPointsWithZeroValues,
     MAX_GRAPH_POINT_WITH_INVALID_VALUES_VALUE,
     MIN_GRAPH_POINT_WITH_INVALID_VALUES_VALUE,
 } from '../__fixtures__/graphPoints';
@@ -51,9 +29,6 @@ import {
     timeFrameItemsWithBalanceAndUsdRatesWithExpectedValueWithExpectedValue,
 } from '../__fixtures__/timeFrameItems';
 import { LineGraphTimeFrameItemAccountBalance } from '../types';
-import { accountNotEmptyFirstBalanceMovement } from '../__fixtures__/firstBalanceMovements';
-import { timeFramesFixtures } from '../__fixtures__/timeFramesFixtures';
-import { getMockedBlockBookRatesForTimestamps } from '../__fixtures__/blockbook';
 
 jest.mock('@trezor/connect', () => {
     let fixture: { success: boolean; payload: string };
@@ -298,10 +273,6 @@ describe('Graph utils', () => {
         expect(getAxisLabelPercentagePosition(part, total)).toBe(percentageOfTotal);
     });
 
-    test('sumLineGraphPoints', () => {
-        expect(sumLineGraphPoints(graphPointsWithZeroValues)).toBe(0);
-    });
-
     test('getExtremaFromGraphPoints', () => {
         const validGraphPoints = getValidGraphPoints(graphPointsWithInvalidValues);
         const extremaFromPoints = getExtremaFromGraphPoints(validGraphPoints);
@@ -357,111 +328,6 @@ describe('Graph utils', () => {
                 } else {
                     const previousDateTime = validGraphPoints[index - 1].date.getTime();
                     expect(point.date.getTime()).toEqual(previousDateTime + 1);
-                }
-            });
-        });
-    });
-
-    /*
-    describe('POKUSY BEFORE', () => {
-        test('should return expected graph points for the specified account in ALL time frame', async () => {
-            const endOfRangeDate = new Date('2022-10-24T23:59:59.000Z');
-            const allAccounts = [account1Dev1, account1Dev2];
-            const differentNetworkSymbolAccountsMap =
-                getDifferentNetworkSymbolAccountsMap(allAccounts);
-
-            const uniqueTimeFrameItemsForDifferentNetworkAccountsPromises =
-                getUniqueTimeFrameItemsForDifferentNetworkAccounts(
-                    differentNetworkSymbolAccountsMap,
-                    fiatCurrency,
-                    timeFrame,
-                );
-            const uniqueTimeFrameItemsForDifferentNetworkAccounts = await Promise.all(
-                uniqueTimeFrameItemsForDifferentNetworkAccountsPromises,
-            );
-        });
-    });
-     */
-
-    describe('Get graph points for single account - mocked account with movements in 2 weeks before now (endOfRangeDate)', () => {
-        Object.keys(timeFramesFixtures).forEach(fixtureTimeFrameItemKey => {
-            // @ts-expect-error
-            const fixture = timeFramesFixtures[fixtureTimeFrameItemKey];
-            const { shortcut, value, stepInMinutes, valueBackInMinutes, connectMocks, results } =
-                fixture;
-
-            it(`should return expected graph points for the specified account in ${shortcut} time frame`, async () => {
-                const endOfTimeFrameDate = new Date('2022-10-26T23:59:59.000Z');
-
-                require('@trezor/connect').setTestFixtures(accountNotEmptyFirstBalanceMovement);
-                const firstAccountBalanceMovement = await getFirstAccountBalanceMovement(
-                    account1Dev1,
-                );
-
-                expect(firstAccountBalanceMovement.time).toEqual(
-                    results.firstAccountBalanceMovement.time,
-                );
-                expect(firstAccountBalanceMovement.balance).toEqual(
-                    results.firstAccountBalanceMovement.balance,
-                );
-
-                const { startOfTimeFrameDate, timestampDatesInTimeFrame } =
-                    await getTimeFrameDataForSingleAccount(
-                        endOfTimeFrameDate,
-                        value,
-                        firstAccountBalanceMovement,
-                    );
-
-                const timeFrameRatesMocked =
-                    getMockedBlockBookRatesForTimestamps(timestampDatesInTimeFrame);
-
-                const firstRate = await getStartItemOfTimeFrame(account1Dev1, startOfTimeFrameDate);
-
-                require('@trezor/connect').setTestFixtures(
-                    connectMocks.balanceMovementsInTimeFrameRatesBefore,
-                );
-                const balanceMovementsInTimeFrameRatesBefore = await fetchAccountBalanceHistory(
-                    account1Dev1,
-                    {
-                        to: getBlockbookSafeTime(getUnixTime(subSeconds(startOfTimeFrameDate, 60))),
-                        groupByInSeconds: 86400, // one day
-                    },
-                );
-
-                require('@trezor/connect').setTestFixtures(
-                    connectMocks.balanceMovementsInTimeFrameRates,
-                );
-                const response = await TrezorConnect.blockchainGetAccountBalanceHistory({
-                    coin: account1Dev1.symbol,
-                    descriptor: account1Dev1.descriptor,
-                    from: getBlockbookSafeTime(getUnixTime(startOfTimeFrameDate)),
-                    to: getBlockbookSafeTime(getUnixTime(endOfTimeFrameDate)),
-                    groupBy: 60,
-                });
-
-                expect(response?.success).toBeTruthy();
-
-                if (response?.success) {
-                    const balanceMovementsInTimeFrameRates =
-                        await processBalanceHistoryWithBalanceBefore(
-                            balanceMovementsInTimeFrameRatesBefore,
-                            account1Dev1,
-                            response.payload,
-                        );
-
-                    const allTimeFrameRatesWithBalances = mergeAndSortTimeFrameItems(
-                        // 1. - The first point in chart - we need to know account balance at the beginning...
-                        firstRate,
-                        // 2. - We need to know about rates in selected time frame to have line based on current fiat rates - not to be static with one rate from the beginning
-                        timeFrameRatesMocked,
-                        // 3. movements in time frame
-                        balanceMovementsInTimeFrameRates,
-                        'usd',
-                    );
-
-                    const lineGraphPoints = getLineGraphPoints(allTimeFrameRatesWithBalances);
-
-                    console.log('LINE GRAPH POINTS: ', lineGraphPoints);
                 }
             });
         });

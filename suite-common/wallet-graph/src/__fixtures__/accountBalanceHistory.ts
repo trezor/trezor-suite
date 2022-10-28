@@ -9,6 +9,7 @@ export const accountBalanceHistoryUsdRates = [
             usd: 172.1479,
         },
         balance: '0',
+        descriptor: 'zpubabcd',
     },
     {
         txs: 1,
@@ -20,6 +21,7 @@ export const accountBalanceHistoryUsdRates = [
             usd: 232.5329422304941,
         },
         balance: '0.0155275',
+        descriptor: 'zpubabcd',
     },
     {
         txs: 1,
@@ -31,6 +33,7 @@ export const accountBalanceHistoryUsdRates = [
             usd: 240.0193,
         },
         balance: '0',
+        descriptor: 'zpubabcd',
     },
     {
         txs: 6,
@@ -42,6 +45,7 @@ export const accountBalanceHistoryUsdRates = [
             usd: 222.4872,
         },
         balance: '0',
+        descriptor: 'zpubabcd',
     },
     {
         txs: 1,
@@ -53,6 +57,7 @@ export const accountBalanceHistoryUsdRates = [
             usd: 220.6493,
         },
         balance: '0.00174998',
+        descriptor: 'zpubabcd',
     },
     {
         txs: 1,
@@ -64,6 +69,7 @@ export const accountBalanceHistoryUsdRates = [
             usd: 219.0956,
         },
         balance: '0.00163698',
+        descriptor: 'zpubabcd',
     },
     {
         txs: 1,
@@ -75,6 +81,7 @@ export const accountBalanceHistoryUsdRates = [
             usd: 234.6238,
         },
         balance: '0.00143698',
+        descriptor: 'zpubabcd',
     },
     {
         txs: 2,
@@ -86,6 +93,7 @@ export const accountBalanceHistoryUsdRates = [
             usd: 253.6226999999999,
         },
         balance: '0.00113698',
+        descriptor: 'zpubabcd',
     },
     {
         txs: 1,
@@ -97,6 +105,7 @@ export const accountBalanceHistoryUsdRates = [
             usd: 223.9464,
         },
         balance: '0',
+        descriptor: 'zpubabcd',
     },
     {
         txs: 1,
@@ -108,6 +117,7 @@ export const accountBalanceHistoryUsdRates = [
             usd: 229.6785,
         },
         balance: '0.00093698',
+        descriptor: 'zpubabcd',
     },
     {
         txs: 1,
@@ -119,6 +129,7 @@ export const accountBalanceHistoryUsdRates = [
             usd: 228.7013000000001,
         },
         balance: '0.00063698',
+        descriptor: 'zpubabcd',
     },
     {
         txs: 1,
@@ -130,6 +141,7 @@ export const accountBalanceHistoryUsdRates = [
             usd: 229.5263999999999,
         },
         balance: '0',
+        descriptor: 'zpubabcd',
     },
     {
         txs: 2,
@@ -141,6 +153,7 @@ export const accountBalanceHistoryUsdRates = [
             usd: 230.5181,
         },
         balance: '0',
+        descriptor: 'zpubabcd',
     },
     {
         txs: 9,
@@ -152,6 +165,7 @@ export const accountBalanceHistoryUsdRates = [
             usd: 268.8928000000001,
         },
         balance: '0.0002',
+        descriptor: 'zpubabcd',
     },
     {
         txs: 2,
@@ -163,6 +177,7 @@ export const accountBalanceHistoryUsdRates = [
             usd: 288.7194990885924,
         },
         balance: '0.0001',
+        descriptor: 'zpubabcd',
     },
     {
         txs: 2,
@@ -174,6 +189,7 @@ export const accountBalanceHistoryUsdRates = [
             usd: 281.7267,
         },
         balance: '0',
+        descriptor: 'zpubabcd',
     },
     {
         txs: 16,
@@ -185,6 +201,7 @@ export const accountBalanceHistoryUsdRates = [
             usd: 284.2393,
         },
         balance: '0',
+        descriptor: 'zpubabcd',
     },
     {
         txs: 2,
@@ -196,6 +213,7 @@ export const accountBalanceHistoryUsdRates = [
             usd: 233.9255,
         },
         balance: '0.0002',
+        descriptor: 'zpubabcd',
     },
     {
         txs: 1,
@@ -207,6 +225,7 @@ export const accountBalanceHistoryUsdRates = [
             usd: 237.2262,
         },
         balance: '0',
+        descriptor: 'zpubabcd',
     },
     {
         txs: 2,
@@ -218,6 +237,7 @@ export const accountBalanceHistoryUsdRates = [
             usd: 313.9073,
         },
         balance: '0',
+        descriptor: 'zpubabcd',
     },
     {
         txs: 5,
@@ -229,6 +249,7 @@ export const accountBalanceHistoryUsdRates = [
             usd: 576.08,
         },
         balance: '0',
+        descriptor: 'zpubabcd',
     },
     {
         txs: 2,
@@ -240,6 +261,7 @@ export const accountBalanceHistoryUsdRates = [
             usd: 610.6837999999999,
         },
         balance: '0.0383',
+        descriptor: 'zpubabcd',
     },
     {
         txs: 2,
@@ -251,6 +273,7 @@ export const accountBalanceHistoryUsdRates = [
             usd: 614.3264885962195,
         },
         balance: '0.00018',
+        descriptor: 'zpubabcd',
     },
     {
         txs: 1,
@@ -262,6 +285,7 @@ export const accountBalanceHistoryUsdRates = [
             usd: 623.0588000000001,
         },
         balance: '0',
+        descriptor: 'zpubabcd',
     },
     {
         txs: 6,
@@ -273,6 +297,7 @@ export const accountBalanceHistoryUsdRates = [
             usd: 687.5587999999999,
         },
         balance: '0',
+        descriptor: 'zpubabcd',
     },
     {
         txs: 3,
@@ -284,6 +309,7 @@ export const accountBalanceHistoryUsdRates = [
             usd: 715.4103243232163,
         },
         balance: '0',
+        descriptor: 'zpubabcd',
     },
     {
         txs: 2,
@@ -295,6 +321,7 @@ export const accountBalanceHistoryUsdRates = [
             usd: 729.2049999999999,
         },
         balance: '0',
+        descriptor: 'zpubabcd',
     },
     {
         txs: 1,
@@ -306,6 +333,7 @@ export const accountBalanceHistoryUsdRates = [
             usd: 1149.4036781698383,
         },
         balance: '0.00016708',
+        descriptor: 'zpubabcd',
     },
     {
         txs: 3,
@@ -317,6 +345,7 @@ export const accountBalanceHistoryUsdRates = [
             usd: 1180.6730000000002,
         },
         balance: '0',
+        descriptor: 'zpubabcd',
     },
     {
         txs: 4,
@@ -328,6 +357,7 @@ export const accountBalanceHistoryUsdRates = [
             usd: 1074.0938695062455,
         },
         balance: '0.00702825',
+        descriptor: 'zpubabcd',
     },
     {
         txs: 1,
@@ -339,6 +369,7 @@ export const accountBalanceHistoryUsdRates = [
             usd: 961.9620000000001,
         },
         balance: '0',
+        descriptor: 'zpubabcd',
     },
     {
         txs: 10,
@@ -350,6 +381,7 @@ export const accountBalanceHistoryUsdRates = [
             usd: 1287.32,
         },
         balance: '0',
+        descriptor: 'zpubabcd',
     },
     {
         txs: 2,
@@ -361,6 +393,7 @@ export const accountBalanceHistoryUsdRates = [
             usd: 4702.93816308458,
         },
         balance: '0',
+        descriptor: 'zpubabcd',
     },
     {
         txs: 2,
@@ -372,6 +405,7 @@ export const accountBalanceHistoryUsdRates = [
             usd: 5592.78222421231,
         },
         balance: '0',
+        descriptor: 'zpubabcd',
     },
     {
         txs: 5,
@@ -383,6 +417,7 @@ export const accountBalanceHistoryUsdRates = [
             usd: 8278.12843633886,
         },
         balance: '0',
+        descriptor: 'zpubabcd',
     },
     {
         txs: 2,
@@ -394,6 +429,7 @@ export const accountBalanceHistoryUsdRates = [
             usd: 11723.9135206658,
         },
         balance: '0',
+        descriptor: 'zpubabcd',
     },
     {
         txs: 2,
@@ -405,6 +441,7 @@ export const accountBalanceHistoryUsdRates = [
             usd: 50015,
         },
         balance: '0',
+        descriptor: 'zpubabcd',
     },
 ];
 
