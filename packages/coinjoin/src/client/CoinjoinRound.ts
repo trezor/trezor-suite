@@ -1,6 +1,7 @@
 import { EventEmitter } from 'events';
 
 import { arrayPartition } from '@trezor/utils';
+import { Network } from '@trezor/utxo-lib';
 
 import {
     getCommitmentData,
@@ -15,15 +16,28 @@ import {
     CoinjoinRequestEvent,
     CoinjoinResponseEvent,
 } from '../types/round';
-import { RoundPhase, Round, CoinjoinRoundParameters } from '../types/coordinator';
-import type { Account } from './Account';
+import {
+    RoundPhase,
+    Round,
+    CoinjoinRoundParameters,
+    WabiSabiProtocolErrorCode,
+} from '../types/coordinator';
+import { Account } from './Account';
+import { Alice } from './Alice';
+import { CoinjoinPrison } from './CoinjoinPrison';
+import { selectRound } from './round/selectRound';
+import { inputRegistration } from './round/inputRegistration';
+import { connectionConfirmation } from './round/connectionConfirmation';
+import { outputRegistration } from './round/outputRegistration';
+import { transactionSigning } from './round/transactionSigning';
 
 export interface CoinjoinRoundOptions {
+    network: Network;
     signal: AbortSignal;
     coordinatorName: string;
     coordinatorUrl: string;
     middlewareUrl: string;
-    log: (...args: any[]) => any;
+    log: (message: string) => void;
 }
 
 interface Events {
@@ -60,14 +74,6 @@ const createRoundLock = (mainSignal: AbortSignal) => {
         promise,
     };
 };
-
-// Temporary. Alice will be added in next PR
-interface Alice {
-    path: string;
-    accountKey: string;
-    outpoint: string;
-    error?: Error;
-}
 
 export class CoinjoinRound extends EventEmitter implements SerializedCoinjoinRound {
     private lock?: ReturnType<typeof createRoundLock>;
@@ -114,41 +120,18 @@ export class CoinjoinRound extends EventEmitter implements SerializedCoinjoinRou
         accounts: Account[],
         statusRounds: Round[],
         coinjoinRounds: CoinjoinRound[],
+        prison: CoinjoinPrison,
         options: CoinjoinRoundOptions,
     ) {
-        // TODO: this code will be removed with "selectRound" implementation
-        if (coinjoinRounds.find(r => r.id === 'fakeroundid') || accounts.length === 0) {
-            return;
-        }
-        const firstRound = statusRounds.find(r => r.phase === RoundPhase.InputRegistration);
-        if (!firstRound) return;
-        const round = new CoinjoinRound(firstRound, options);
-
-        round.startFakeRoundLifecycle(firstRound, accounts[0]);
-        return Promise.resolve(round);
-    }
-
-    // temporary code to run Round lifecycle without actual coinjoining
-    startFakeRoundLifecycle(round: Round, account: Account) {
-        console.warn('Create fake round');
-        this.id = 'fakeroundid';
-        this.inputs = account.utxos.map(u => ({
-            outpoint: u.outpoint,
-            path: u.path,
-            accountKey: account.accountKey,
-        }));
-        let currentPhase = 0;
-        const timeoutFn = async () => {
-            await this.onPhaseChange({ ...round, phase: currentPhase });
-            await this.process([]);
-
-            currentPhase++;
-            if (this.failed.length === 0 && currentPhase <= RoundPhase.Ended) {
-                setTimeout(() => timeoutFn(), 10000);
-            }
-        };
-
-        timeoutFn();
+        return selectRound(
+            (...args: ConstructorParameters<typeof CoinjoinRound>) => new CoinjoinRound(...args),
+            (...args: ConstructorParameters<typeof Alice>) => new Alice(...args),
+            accounts,
+            statusRounds,
+            coinjoinRounds,
+            prison,
+            options,
+        );
     }
 
     async onPhaseChange(changed: Round) {
@@ -173,15 +156,20 @@ export class CoinjoinRound extends EventEmitter implements SerializedCoinjoinRou
         return this;
     }
 
-    async process(accounts: Account[]) {
+    async process(accounts: Account[], prison: CoinjoinPrison) {
         const { log } = this.options;
         if (this.inputs.length === 0) {
             log('Trying to process round without inputs');
             return this;
         }
-        await this.processPhase(accounts);
+        await this.processPhase(accounts, prison);
 
-        const [inputs, failed] = arrayPartition(this.inputs, input => !input.error);
+        const [inputs, failed] = arrayPartition(this.inputs, input => {
+            if (input.error) {
+                prison.detain(input.outpoint, { roundId: this.id, reason: input.error.message });
+            }
+            return !input.error;
+        });
         this.inputs = inputs;
         this.failed = this.failed.concat(...failed);
 
@@ -198,10 +186,26 @@ export class CoinjoinRound extends EventEmitter implements SerializedCoinjoinRou
         return this;
     }
 
-    private processPhase(_accounts: Account[]) {
+    private processPhase(accounts: Account[], prison: CoinjoinPrison) {
         this.lock = createRoundLock(this.options.signal);
+        const processOptions = { ...this.options, signal: this.lock.signal };
         // try to run process on CoinjoinRound
-        return new Promise(resolve => setTimeout(() => resolve(this), 2000));
+        if (this.phase === RoundPhase.InputRegistration) {
+            return inputRegistration(this, prison, processOptions);
+        }
+        if (this.phase === RoundPhase.ConnectionConfirmation) {
+            return connectionConfirmation(this, processOptions);
+        }
+        if (this.phase === RoundPhase.OutputRegistration) {
+            return outputRegistration(this, accounts, prison, processOptions);
+        }
+        if (this.phase === RoundPhase.TransactionSigning) {
+            return transactionSigning(this, processOptions);
+        }
+        if (this.phase === RoundPhase.Ended) {
+            return Promise.resolve(this);
+        }
+        return Promise.resolve(this);
     }
 
     getRequest(): CoinjoinRequestEvent | void {
@@ -220,7 +224,9 @@ export class CoinjoinRound extends EventEmitter implements SerializedCoinjoinRou
             input => !account.utxos.find(u => u.outpoint === input.outpoint),
         );
         // set error on each input
-        spentInputs.forEach(input => (input.error = new Error('Spent')));
+        spentInputs.forEach(input =>
+            input.setError(new Error(WabiSabiProtocolErrorCode.InputSpent)),
+        ); // TODO: error same as wasabi coordinator?
 
         this.breakRound(spentInputs);
     }
@@ -229,7 +235,7 @@ export class CoinjoinRound extends EventEmitter implements SerializedCoinjoinRou
         // find registered inputs related to Account
         const affectedInputs = this.inputs.filter(input => input.accountKey === accountKey);
         // set error on each input
-        affectedInputs.forEach(input => (input.error = new Error('Unregistered')));
+        affectedInputs.forEach(input => input.setError(new Error('Unregistered account')));
 
         this.breakRound(affectedInputs);
     }
@@ -248,22 +254,26 @@ export class CoinjoinRound extends EventEmitter implements SerializedCoinjoinRou
         }
     }
 
+    // forced by CoinjoinClient.disable. stop processes if any
+    end() {
+        this.options.log(`Aborting round ${this.id}`);
+        this.lock?.abort();
+
+        this.phase = RoundPhase.Ended;
+        this.inputs = [];
+        this.failed = [];
+        this.addresses = [];
+        this.removeAllListeners();
+    }
+
     // serialize class
     // data emitted in "round" event
     toSerialized(): SerializedCoinjoinRound {
         return {
             id: this.id,
             phase: this.phase,
-            inputs: this.inputs.map(i => ({
-                outpoint: i.outpoint,
-                accountKey: i.accountKey,
-                path: i.path,
-            })),
-            failed: this.failed.map(i => ({
-                outpoint: i.outpoint,
-                accountKey: i.accountKey,
-                path: i.path,
-            })),
+            inputs: this.inputs.map(i => i.toSerialized()),
+            failed: this.failed.map(i => i.toSerialized()),
             addresses: this.addresses,
             phaseDeadline: this.phaseDeadline,
             roundDeadline: this.roundDeadline,

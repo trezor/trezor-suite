@@ -136,6 +136,9 @@ export const transactionSignature = (
         { ...options, parseJson: false },
     );
 
+// reexport all coordinator types
+export * from '../types/coordinator';
+
 /**
  * @deprecated This request will be done by coordinator
  */
