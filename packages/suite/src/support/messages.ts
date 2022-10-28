@@ -3825,6 +3825,10 @@ export default defineMessages({
         id: 'TR_TOR_ENABLE_TITLE',
         defaultMessage: 'Enable Tor',
     },
+    TR_TOR_SKIP: {
+        id: 'TR_TOR_SKIP',
+        defaultMessage: 'Skip',
+    },
     TR_ONION_LINKS_DESCRIPTION: {
         id: 'TR_ONION_LINKS_DESCRIPTION',
         defaultMessage:
