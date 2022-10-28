@@ -8,19 +8,23 @@ import type { Network } from '@wallet-types';
 import { AddButton } from './AddButton';
 import { getIsTorEnabled } from '@suite-utils/tor';
 import { isDesktop } from '@suite-utils/env';
-import { isDevEnv } from '@suite-common/suite-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
+import { Dispatch } from '@suite-types';
+import { RequestEnableTorResponse } from '@suite-components/modals/RequestEnableTor';
 
 interface AddCoinJoinAccountProps {
     network: Network;
 }
+
+const requestEnableTorAction = () => (dispatch: Dispatch) =>
+    dispatch(modalActions.openDeferredModal({ type: 'request-enable-tor' }));
 
 export const AddCoinJoinAccountButton = ({ network }: AddCoinJoinAccountProps) => {
     const [isLoading, setIsLoading] = useState(false);
 
     const isTorEnabled = useSelector(state => getIsTorEnabled(state.suite.torStatus));
 
-    const action = useActions({ createCoinjoinAccount });
+    const action = useActions({ createCoinjoinAccount, requestEnableTorAction });
     const dispatch = useDispatch();
     const { device, accounts } = useSelector(state => ({
         device: state.suite.device,
@@ -43,15 +47,11 @@ export const AddCoinJoinAccountButton = ({ network }: AddCoinJoinAccountProps) =
 
     const onCreateCoinjoinAccountClick = async () => {
         setIsLoading(true);
-        // When developing we do not need Tor, so we skip it to make it faster.
-        const isTorRequired = !isDevEnv && !['regtest', 'test'].includes(network.symbol);
         // Checking if Tor is enable and if not open modal to force the user to enable it to use coinjoin.
         // Tor only works in desktop so checking we are running desktop.
-        if (isTorRequired && !isTorEnabled && isDesktop()) {
-            const continueWithTor = await dispatch(
-                modalActions.openDeferredModal({ type: 'request-enable-tor' }),
-            );
-            if (!continueWithTor) {
+        if (!isTorEnabled && isDesktop()) {
+            const continueWithTor = await action.requestEnableTorAction();
+            if (continueWithTor === RequestEnableTorResponse.Back) {
                 // Going back to the previous screen.
                 dispatch(
                     modalActions.openModal({
@@ -60,6 +60,10 @@ export const AddCoinJoinAccountButton = ({ network }: AddCoinJoinAccountProps) =
                     }),
                 );
 
+                return;
+            }
+            if (continueWithTor === RequestEnableTorResponse.Skip) {
+                action.createCoinjoinAccount(network, 80);
                 return;
             }
 
