@@ -12,10 +12,7 @@ const SmallModal = styled(Modal)`
     width: 560px;
 `;
 
-type RequestEnableTorProps = Omit<
-    Extract<UserContextPayload, { type: 'request-enable-tor' }>,
-    'type'
-> & {
+type RequestEnableTorProps = Omit<Extract<UserContextPayload, { type: 'tor-loading' }>, 'type'> & {
     onCancel: () => void;
 };
 
