@@ -35,7 +35,6 @@ const modalHeaderStyle = prepareNativeStyle(utils => ({
     top: 20,
 }));
 
-// TODO add navigation types
 export const ScanQRCodeModalScreen = ({
     navigation,
 }: StackProps<AccountsImportStackParamList, AccountsImportStackRoutes.XpubScanModal>) => {

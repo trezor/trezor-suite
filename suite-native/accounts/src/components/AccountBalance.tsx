@@ -6,8 +6,8 @@ import { Box, Text } from '@suite-native/atoms';
 import { CryptoIcon } from '@trezor/icons';
 import { AccountsRootState, selectAccountByKey, selectCoins } from '@suite-common/wallet-core';
 import { useFormatters } from '@suite-common/formatters';
-import { selectFiatCurrency } from '@suite-native/module-settings/libDev/src';
-import { formatNetworkAmount, toFiatCurrency } from '@suite-common/wallet-utils/libDev/src';
+import { formatNetworkAmount, toFiatCurrency } from '@suite-common/wallet-utils';
+import { selectFiatCurrency } from '@suite-native/module-settings';
 
 type AccountBalanceProps = {
     accountKey: string;
@@ -30,14 +30,16 @@ export const AccountBalance = ({ accountKey, accountName }: AccountBalanceProps)
     );
     const fiatCurrency = useSelector(selectFiatCurrency);
     const coins = useSelector(selectCoins);
+    const { FiatAmountFormatter, CryptoAmountFormatter } = useFormatters();
+
     const fiatRates = useMemo(
         () => coins.find(coin => coin.symbol === account?.symbol),
         [account, coins],
     );
-    const { FiatAmountFormatter, CryptoAmountFormatter } = useFormatters();
 
     if (!account) return null;
 
+    // TODO this should be done with formatters once they're prepared
     const cryptoAmount = formatNetworkAmount(account.availableBalance, account.symbol);
     const fiatAmount = toFiatCurrency(cryptoAmount, fiatCurrency.label, fiatRates?.current?.rates);
 
@@ -49,11 +51,11 @@ export const AccountBalance = ({ accountKey, accountName }: AccountBalanceProps)
                     <CryptoIcon size="large" name={account.symbol} />
                 </Box>
                 <Box>
-                    <Text color="gray800">
-                        {FiatAmountFormatter.format(account.formattedBalance)}
-                    </Text>
+                    <Text color="gray800">{FiatAmountFormatter.format(fiatAmount ?? 0)}</Text>
                     <Text color="gray600" variant="hint">
-                        {account.balance} {account.symbol}
+                        {CryptoAmountFormatter.format(cryptoAmount, {
+                            symbol: account.symbol,
+                        })}
                     </Text>
                 </Box>
             </Box>

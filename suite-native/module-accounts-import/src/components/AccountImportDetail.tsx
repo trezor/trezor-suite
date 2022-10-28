@@ -11,7 +11,7 @@ import {
     HomeStackRoutes,
     RootStackParamList,
     RootStackRoutes,
-    StackToTabCompositeScreenProps,
+    StackToTabCompositeProps,
 } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Box, Button, Divider, Text } from '@suite-native/atoms';
@@ -44,7 +44,7 @@ const accountImportFormValidationSchema = yup.object({
 });
 type AccountImportFormValues = yup.InferType<typeof accountImportFormValidationSchema>;
 
-type NavigationProp = StackToTabCompositeScreenProps<
+type NavigationProp = StackToTabCompositeProps<
     AccountsImportStackParamList,
     AccountsImportStackRoutes.AccountImport,
     RootStackParamList

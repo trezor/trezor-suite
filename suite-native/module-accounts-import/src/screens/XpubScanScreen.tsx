@@ -66,23 +66,6 @@ export const XpubScanScreen = ({
 
     useFocusEffect(resetToDefaultValues);
 
-    useEffect(() => {
-        if (route?.params?.qrCode) {
-            handleXpubResult(route.params.qrCode);
-        }
-    }, [route.params, setValue]);
-
-    const handleSelectCurrency = (currencySymbol: NetworkSymbol) => {
-        setSelectedCurrencySymbol(currencySymbol);
-    };
-
-    const handleRequestCamera = () => {
-        reset({
-            xpubAddress: '',
-        });
-        navigation.navigate(AccountsImportStackRoutes.XpubScanModal);
-    };
-
     const goToAccountImportScreen = ({ xpubAddress }: XpubFormValues) => {
         navigation.navigate(AccountsImportStackRoutes.AccountImport, {
             xpubAddress,
@@ -101,6 +84,23 @@ export const XpubScanScreen = ({
         },
         [watchXpubAddress, onXpubFormSubmit, setValue],
     );
+
+    useEffect(() => {
+        if (route.params.qrCode) {
+            handleXpubResult(route.params.qrCode);
+        }
+    }, [handleXpubResult, route.params.qrCode]);
+
+    const handleSelectCurrency = (currencySymbol: NetworkSymbol) => {
+        setSelectedCurrencySymbol(currencySymbol);
+    };
+
+    const handleRequestCamera = () => {
+        reset({
+            xpubAddress: '',
+        });
+        navigation.navigate(AccountsImportStackRoutes.XpubScanModal);
+    };
 
     return (
         <Screen header={<AccountImportHeader activeStep={1} />}>

@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { networks, NetworkSymbol } from '@suite-common/wallet-config';
 import { formatNetworkAmount, toFiatCurrency } from '@suite-common/wallet-utils';
 import { useFormatters } from '@suite-common/formatters';
 import { Box, Card, Text } from '@suite-native/atoms';
@@ -42,7 +42,7 @@ export const AccountImportOverview = ({ accountInfo, currencySymbol }: AssetsOve
             <Box flexDirection="row" marginBottom="large">
                 <CryptoIcon name={currencySymbol} size="large" />
                 <Box marginLeft="medium">
-                    <Text>Bitcoin</Text>
+                    <Text>{networks[currencySymbol].name}</Text>
                     <Text variant="label" color="gray1000">
                         {CryptoAmountFormatter.format(cryptoAmount, {
                             symbol: currencySymbol,

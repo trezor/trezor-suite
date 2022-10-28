@@ -45,6 +45,7 @@ export const XpubScanHeader = ({
             <View style={applyStyle(chipsWrapperStyle)}>
                 {enabledNetworks.map(network => (
                     <Chip
+                        key={network}
                         icon={<CryptoIcon name={network} />}
                         title={networks[network].name}
                         titleColor="gray600"

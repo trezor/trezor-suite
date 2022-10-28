@@ -1,12 +1,14 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { AccountsRootState, selectAccountLabel } from '@suite-common/wallet-core';
+import { AccountsRootState, selectAccountLabel, selectCoins } from '@suite-common/wallet-core';
 import { Box, Text } from '@suite-native/atoms';
 import { Account } from '@suite-common/wallet-types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { CryptoIcon } from '@trezor/icons';
 import { useFormatters } from '@suite-common/formatters';
+import { formatNetworkAmount, toFiatCurrency } from '@suite-common/wallet-utils';
+import { selectFiatCurrency } from '@suite-native/module-settings';
 
 export type AccountListItemProps = {
     account: Account;
@@ -24,7 +26,17 @@ export const AccountListItem = ({ account }: AccountListItemProps) => {
     const accountLabel = useSelector((state: AccountsRootState) =>
         selectAccountLabel(state, account.key),
     );
+    const fiatCurrency = useSelector(selectFiatCurrency);
+    const coins = useSelector(selectCoins);
     const { FiatAmountFormatter, CryptoAmountFormatter } = useFormatters();
+
+    const fiatRates = useMemo(
+        () => coins.find(coin => coin.symbol === account.symbol),
+        [account, coins],
+    );
+    // TODO this should be done with formatters once they're prepared
+    const cryptoAmount = formatNetworkAmount(account.availableBalance, account.symbol);
+    const fiatAmount = toFiatCurrency(cryptoAmount, fiatCurrency.label, fiatRates?.current?.rates);
 
     return (
         <Box
@@ -41,7 +53,7 @@ export const AccountListItem = ({ account }: AccountListItemProps) => {
             </Box>
             <Box alignItems="flex-end">
                 <Text color="gray800" variant="hint">
-                    {FiatAmountFormatter.format(account.formattedBalance)}
+                    {FiatAmountFormatter.format(fiatAmount ?? 0)}
                 </Text>
                 <Text variant="hint" color="gray600">
                     {CryptoAmountFormatter.format(account.formattedBalance, {
