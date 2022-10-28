@@ -2,6 +2,7 @@ import { EventEmitter } from 'events';
 
 import { Status } from './Status';
 import { Account } from './Account';
+import { CoinjoinPrison } from './CoinjoinPrison';
 import { CoinjoinRound } from './CoinjoinRound';
 import { getNetwork } from '../utils/settingsUtils';
 import { analyzeTransactions } from './analyzeTransactions';
@@ -19,6 +20,7 @@ interface Events {
     round: CoinjoinRoundEvent;
     request: CoinjoinRequestEvent[];
     exception: string;
+    log: string;
 }
 
 export declare interface CoinjoinClient {
@@ -35,6 +37,7 @@ export class CoinjoinClient extends EventEmitter {
     private status: Status;
     private accounts: Account[] = []; // list of registered accounts
     private rounds: CoinjoinRound[] = []; // list of active rounds
+    private prison: CoinjoinPrison; // list of temporary blocked inputs/addresses
 
     constructor(settings: CoinjoinClientSettings) {
         super();
@@ -50,6 +53,8 @@ export class CoinjoinClient extends EventEmitter {
             }
         });
         this.status.on('exception', event => this.emit('exception', event));
+
+        this.prison = new CoinjoinPrison();
     }
 
     enable() {
@@ -61,6 +66,9 @@ export class CoinjoinClient extends EventEmitter {
 
     disable() {
         this.removeAllListeners();
+        this.rounds.forEach(r => r.end());
+        this.rounds = [];
+        this.accounts = [];
         this.abortController.abort();
         this.status.stop();
     }
@@ -140,10 +148,30 @@ export class CoinjoinClient extends EventEmitter {
         this.onStatusUpdate({ rounds, changed });
     }
 
+    // emit log events to wallet
+    private log(message: string) {
+        if (this.listenerCount('log') < 1) return;
+        // redact log messages, parts wrapped into <...> like accountKey, round id, outpoint etc
+        const redacted = message.replace(/(~~([^~~]+)~~)/g, match => {
+            if (match.length > 16) {
+                return `${match.substring(2, 10)}...${match.substring(
+                    match.length - 10,
+                    match.length - 2,
+                )}`;
+            }
+            return `[redacted]`;
+        });
+
+        this.emit('log', redacted);
+    }
+
     private async onStatusUpdate({
         changed,
         rounds,
     }: Pick<CoinjoinStatusEvent, 'changed' | 'rounds'>) {
+        // try to release inputs from prison
+        this.prison.release();
+
         // find all CoinjoinRounds changed by Status
         const roundsToProcess = await Promise.all(
             changed.flatMap(round => {
@@ -159,13 +187,21 @@ export class CoinjoinClient extends EventEmitter {
 
         // there are no CoinjoinRounds to process? try to create new one
         if (roundsToProcess.length === 0) {
-            const newRound = await CoinjoinRound.create(this.accounts, rounds, this.rounds, {
-                signal: this.abortController.signal,
-                coordinatorName: this.settings.coordinatorName,
-                coordinatorUrl: this.settings.coordinatorUrl,
-                middlewareUrl: this.settings.middlewareUrl,
-                log: (..._args: any[]) => {}, // TODO: log
-            });
+            const newRound = await CoinjoinRound.create(
+                this.accounts,
+                rounds,
+                this.rounds,
+                this.prison,
+                {
+                    network: this.network,
+                    signal: this.abortController.signal,
+                    coordinatorName: this.settings.coordinatorName,
+                    coordinatorUrl: this.settings.coordinatorUrl,
+                    middlewareUrl: this.settings.middlewareUrl,
+                    log: (message: string) => this.log(message),
+                },
+            );
+
             if (newRound) {
                 roundsToProcess.push(newRound);
                 if (!this.rounds.find(r => r.id === newRound.id)) {
@@ -198,7 +234,7 @@ export class CoinjoinClient extends EventEmitter {
                 this.status.setMode('registered');
 
                 // wait for the result
-                return round.process(this.accounts);
+                return round.process(this.accounts, this.prison);
             }),
         );
 

@@ -117,3 +117,6 @@ export const analyzeTransactions = async (
     const data = await request<AnalyzeResult>('analyze-transaction', { transactions }, options);
     return data.results;
 };
+
+// reexport all middleware types
+export * from '../types/middleware';
