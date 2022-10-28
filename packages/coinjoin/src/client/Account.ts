@@ -27,6 +27,7 @@ export class Account {
     maxCoordinatorFeeRate: number;
     maxRounds: number;
     skipRounds?: [number, number];
+    skipRoundCounter = 0;
     signedRounds: string[] = [];
 
     constructor(account: RegisterAccountParams, network: Network) {

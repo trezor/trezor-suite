@@ -18,3 +18,6 @@ export const STATUS_TIMEOUT = {
 // add 2 sec. offset to round.inputRegistrationEnd to prevent race conditions
 // we are expecting phase to change but server didn't propagate it yet
 export const ROUND_REGISTRATION_END_OFFSET = 2000;
+
+// do not register into Round if round.inputRegistrationEnd is below offset
+export const ROUND_SELECTION_REGISTRATION_OFFSET = 30000;
