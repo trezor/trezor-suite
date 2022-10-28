@@ -5,7 +5,11 @@ import * as COINJOIN from '@wallet-actions/constants/coinjoinConstants';
 import { Account, CoinjoinAccount, RoundPhase } from '@suite-common/wallet-types';
 import { Action } from '@suite-types';
 import { PartialRecord } from '@trezor/type-utils';
-import { breakdownCoinjoinBalance, transformCoinjoinStatus } from '@wallet-utils/coinjoinUtils';
+import {
+    breakdownCoinjoinBalance,
+    getEstimatedTimePerRound,
+    transformCoinjoinStatus,
+} from '@wallet-utils/coinjoinUtils';
 import { selectSelectedAccount } from './selectedAccountReducer';
 
 export interface CoinjoinClientFeeRatesMedians {
@@ -73,7 +77,7 @@ const createSession = (
         ...payload.params,
         timeCreated: Date.now(),
         // phase: 0,
-        deadline: Date.now(),
+        phaseDeadline: Date.now(),
         registeredUtxos: [],
         signedRounds: [],
     };
@@ -86,13 +90,25 @@ const updateSession = (
     const account = draft.accounts.find(a => a.key === accountKey);
     if (!account || !account.session) return;
 
+    const { signedRounds, maxRounds, skipRounds } = account.session;
+    const { phase, phaseDeadline, roundDeadline } = round;
+
+    const roundsLeft = maxRounds - signedRounds.length - (typeof phase === 'number' ? 1 : 0);
+    const timeLeftTillRoundEnd = roundDeadline - Date.now();
+
+    const timePerRoundInMilliseconds = getEstimatedTimePerRound(!!skipRounds) * 3600000;
+    const sessionDeadlineRaw = Date.now() + roundsLeft * timePerRoundInMilliseconds;
+
+    const sessionDeadline = sessionDeadlineRaw + timeLeftTillRoundEnd;
+
     account.session = {
         ...account.session,
-        phase: round.phase,
-        deadline: round.phaseDeadline,
+        phase,
+        phaseDeadline,
+        sessionDeadline,
     };
 
-    if (round.phase === RoundPhase.Ended) {
+    if (phase === RoundPhase.Ended) {
         delete account.session.phase;
     }
 };
@@ -147,6 +163,7 @@ const pauseSession = (
     if (!account || !account.session) return;
 
     delete account.session.phase;
+    delete account.session.sessionDeadline;
     account.session.registeredUtxos = [];
     account.session.paused = true;
     account.session.timeEnded = Date.now();

@@ -7659,4 +7659,8 @@ export default defineMessages({
         description: 'Secondary button text in coinjoin send form',
         defaultMessage: 'You should anonymize them',
     },
+    TR_LOOKING_FOR_COINJOIN_ROUND: {
+        id: 'TR_LOOKING_FOR_COINJOIN_ROUND',
+        defaultMessage: 'Looking for a round',
+    },
 });

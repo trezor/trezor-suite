@@ -3,12 +3,13 @@ import styled from 'styled-components';
 import { useDispatch } from 'react-redux';
 import { Button, variables } from '@trezor/components';
 import { selectAccountByKey } from '@suite-common/wallet-core';
-import { CoinjoinSession, RoundPhase, WalletParams } from '@suite-common/wallet-types';
+import { CoinjoinSession, WalletParams } from '@suite-common/wallet-types';
 import { COINJOIN_PHASE_MESSAGES } from '@suite-constants/coinjoin';
 import { selectDevice } from '@suite-actions/suiteActions';
 import { goto } from '@suite-actions/routerActions';
 import { useSelector } from '@suite-hooks/useSelector';
 import { STATUS as DiscoveryStatus } from '@wallet-actions/constants/discoveryConstants';
+import { calculateSessionProgress, getSessionDeadlineFormat } from '@wallet-utils/coinjoinUtils';
 import { selectRouterParams } from '@suite-reducers/routerReducer';
 import { CountdownTimer } from './CountdownTimer';
 import { WalletLabeling } from './Labeling';
@@ -93,8 +94,20 @@ export const CoinjoinStatusBar = ({ accountKey, session, isSingle }: CoinjoinSta
         );
     };
 
-    const { phase, signedRounds, maxRounds, deadline } = session;
-    const progress = signedRounds.length / (maxRounds / 100);
+    const { phase, signedRounds, maxRounds, phaseDeadline, sessionDeadline, paused } = session;
+    const progress = calculateSessionProgress(signedRounds, maxRounds);
+
+    const getSessionStatusMessage = () => {
+        if (paused) {
+            return <Translation id="TR_PAUSED" />;
+        }
+
+        if (phase === undefined) {
+            return <Translation id="TR_LOOKING_FOR_COINJOIN_ROUND" />;
+        }
+
+        return <Translation id={COINJOIN_PHASE_MESSAGES[phase]} />;
+    };
 
     const {
         symbol: symbolParam,
@@ -118,24 +131,30 @@ export const CoinjoinStatusBar = ({ accountKey, session, isSingle }: CoinjoinSta
             <StyledProgressPie progress={progress} />
 
             <StatusText>
-                <Translation id={COINJOIN_PHASE_MESSAGES[phase || RoundPhase.InputRegistration]} />
+                {getSessionStatusMessage()}
 
-                <Separator>•</Separator>
-
-                <Translation
-                    id="TR_COINJOIN_COUNTDOWN"
-                    values={{ rounds: maxRounds - signedRounds.length }}
-                />
+                {sessionDeadline && (
+                    <>
+                        <Separator>•</Separator>
+                        <span>
+                            <CountdownTimer
+                                deadline={sessionDeadline}
+                                format={getSessionDeadlineFormat(sessionDeadline)}
+                            />{' '}
+                            <Translation id="TR_LEFT" />
+                        </span>
+                    </>
+                )}
             </StatusText>
 
-            {session?.deadline && (
+            {phase !== undefined && !paused && (
                 <Note>
                     <Separator>•</Separator>
 
                     <Translation
                         id="TR_COINJOIN_ROUND_COUNTDOWN"
                         values={{
-                            time: <CountdownTimer deadline={deadline} />,
+                            time: <CountdownTimer deadline={phaseDeadline} />,
                         }}
                     />
                 </Note>

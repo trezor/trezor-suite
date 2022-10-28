@@ -5,7 +5,7 @@ import {
     CoinjoinTransactionData,
 } from '@trezor/coinjoin';
 import { getUtxoOutpoint, getBip43Type } from '@suite-common/wallet-utils';
-import { Account, CoinjoinSessionParameters } from '@suite-common/wallet-types';
+import { Account, CoinjoinSession, CoinjoinSessionParameters } from '@suite-common/wallet-types';
 import {
     ESTIMATED_ANONYMITY_GAINED_PER_ROUND,
     ESTIMATED_HOURS_PER_ROUND_WITHOUT_SKIPPING_ROUNDS,
@@ -226,3 +226,27 @@ export const prepareCoinjoinTransaction = (
         },
     };
 };
+
+export const getSessionDeadlineFormat = (deadline: CoinjoinSession['sessionDeadline']) => {
+    if (deadline === undefined || Number.isNaN(Number(deadline))) {
+        return;
+    }
+
+    let formatToUse: Array<keyof Duration>;
+    const millisecondsLeft = Number(deadline) - Date.now();
+
+    if (millisecondsLeft >= 3600000) {
+        formatToUse = ['hours'];
+    } else if (millisecondsLeft >= 60000) {
+        formatToUse = ['minutes'];
+    } else {
+        formatToUse = ['seconds'];
+    }
+
+    return formatToUse;
+};
+
+export const calculateSessionProgress = (
+    signedRounds: CoinjoinSession['signedRounds'],
+    maxRounds: CoinjoinSession['maxRounds'],
+) => signedRounds.length / (maxRounds / 100);

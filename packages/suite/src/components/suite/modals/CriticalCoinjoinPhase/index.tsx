@@ -67,7 +67,7 @@ export const CriticalCoinjoinPhase = ({ relatedAccountKey }: CriticalCoinjoinPha
                 </TextContainer>
             </Content>
 
-            <PhaseProgress currentPhase={session.phase} phaseDeadline={session.deadline} />
+            <PhaseProgress currentPhase={session.phase} phaseDeadline={session.phaseDeadline} />
         </StyledModal>
     );
 };

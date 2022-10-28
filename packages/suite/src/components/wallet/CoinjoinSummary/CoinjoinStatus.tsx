@@ -1,5 +1,6 @@
 import React, { useMemo, useRef, useState, useCallback } from 'react';
 import styled, { css } from 'styled-components';
+import { lighten } from 'polished';
 import {
     Dropdown,
     FluidSpinner,
@@ -12,8 +13,7 @@ import { CoinjoinSession, RoundPhase } from '@suite-common/wallet-types';
 import { Translation } from '@suite-components/Translation';
 import { CountdownTimer } from '@suite-components';
 import { COINJOIN_PHASE_MESSAGES } from '@suite-constants/coinjoin';
-import { getEstimatedTimePerRound } from '@wallet-utils/coinjoinUtils';
-import { lighten } from 'polished';
+import { calculateSessionProgress, getSessionDeadlineFormat } from '@wallet-utils/coinjoinUtils';
 
 const Container = styled.div`
     position: relative;
@@ -92,8 +92,10 @@ const StyledLoader = styled(FluidSpinner)`
 `;
 
 const TimeLeft = styled.p`
+    max-width: 80%;
     color: ${({ theme }) => theme.TYPE_DARK_GREY};
-    font-size: ${variables.FONT_SIZE.BIG};
+    font-size: ${variables.FONT_SIZE.NORMAL};
+    line-height: 1;
 `;
 
 const iconBase = css`
@@ -131,18 +133,16 @@ export const CoinjoinStatus = ({
     restoreSession,
     stopSession,
 }: CoinjoinStatusProps) => {
-    const isPaused = !!session.paused;
     const [isLoading, setIsLoading] = useState(false);
     const [isWheelHovered, setIsWheelHovered] = useState(false);
 
     const menuRef = useRef<HTMLUListElement & { close: () => void }>(null);
     const theme = useTheme();
 
-    const timeLeft = `${
-        (session.maxRounds - session.signedRounds.length) *
-        getEstimatedTimePerRound(!!session.skipRounds)
-    }h`;
-    const progress = session.signedRounds.length / (session.maxRounds / 100);
+    const { maxRounds, signedRounds, paused, sessionDeadline } = session;
+
+    const progress = calculateSessionProgress(signedRounds, maxRounds);
+    const isPaused = !!paused;
 
     const togglePause = useCallback(async () => {
         if (isPaused) {
@@ -259,7 +259,18 @@ export const CoinjoinStatus = ({
                                     </>
                                 ) : (
                                     <>
-                                        <TimeLeft>{timeLeft}</TimeLeft>
+                                        <TimeLeft>
+                                            {sessionDeadline ? (
+                                                <CountdownTimer
+                                                    deadline={sessionDeadline}
+                                                    format={getSessionDeadlineFormat(
+                                                        sessionDeadline,
+                                                    )}
+                                                />
+                                            ) : (
+                                                '...'
+                                            )}
+                                        </TimeLeft>
                                         <p>
                                             <Translation id="TR_LEFT" />
                                         </p>
@@ -293,7 +304,7 @@ export const CoinjoinStatus = ({
                             />
                         </p>
                         <p>
-                            <CountdownTimer deadline={session?.deadline} />
+                            <CountdownTimer deadline={session?.phaseDeadline} />
                         </p>
                     </>
                 ))}

@@ -27,7 +27,8 @@ export interface CoinjoinSession extends CoinjoinSessionParameters {
     timeEnded?: number; // timestamp when was finished
     paused?: boolean; // current state
     phase?: RoundPhase; // current phase enum
-    deadline: string | number; // estimated time for phase change
+    phaseDeadline: string | number; // estimated time for phase change
+    sessionDeadline?: string | number; // estimated time for a session's end
     signedRounds: string[]; // already signed rounds
 }
 

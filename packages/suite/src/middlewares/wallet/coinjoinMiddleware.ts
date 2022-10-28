@@ -6,7 +6,6 @@ import * as coinjoinAccountActions from '@wallet-actions/coinjoinAccountActions'
 import { CoinjoinBackendService } from '@suite/services/coinjoin/coinjoinBackend';
 import type { AppState, Action, Dispatch } from '@suite-types';
 import { blockchainActions, accountsActions } from '@suite-common/wallet-core';
-import type { UserContextPayload } from '@suite-actions/modalActions';
 
 export const coinjoinMiddleware =
     (api: MiddlewareAPI<Dispatch, AppState>) =>
@@ -23,7 +22,8 @@ export const coinjoinMiddleware =
 
         if (
             action.type === UI.CLOSE_UI_WINDOW &&
-            allowedModals.includes((modal as { payload: UserContextPayload }).payload?.type)
+            'payload' in modal &&
+            allowedModals.includes(modal.payload?.type)
         ) {
             return action;
         }
