@@ -12,7 +12,7 @@ import {
 } from './coinjoinClientActions';
 import { CoinjoinBackendService } from '@suite/services/coinjoin/coinjoinBackend';
 import { CoinjoinClientService } from '@suite/services/coinjoin/coinjoinClient';
-import { getRegisterAccountParams } from '@wallet-utils/coinjoinUtils';
+import { getRegisterAccountParams, getMaxRounds } from '@wallet-utils/coinjoinUtils';
 import { Dispatch, GetState } from '@suite-types';
 import { Network } from '@suite-common/wallet-config';
 import { Account, CoinjoinSessionParameters } from '@suite-common/wallet-types';
@@ -408,15 +408,69 @@ export const pauseCoinjoinSession = (account: Account) => (dispatch: Dispatch) =
     dispatch(coinjoinSessionPause(account.key));
 };
 
-// called from coinjoin account UI or exceptions like device disconnection, forget wallet/account etc.
-export const restoreCoinjoinSession = (account: Account) => async (dispatch: Dispatch) => {
-    // TODO: check if device is connected, passphrase is authorized...
+// called from coinjoin account UI
+// try to restore current paused CoinjoinSession
+// use same parameters as in startCoinjoinSession but recalculate maxRounds value
+// if Trezor is already preauthorized it will not ask for confirmation
+export const restoreCoinjoinSession =
+    (account: Account) => async (dispatch: Dispatch, getState: GetState) => {
+        // TODO: check if device is connected, passphrase is authorized...
+        const { device } = getState().suite;
+        const { coinjoin } = getState().wallet;
 
-    await new Promise(resolve => setTimeout(resolve, 1000));
+        // get @trezor/coinjoin client if available
+        const client = getCoinjoinClient(account.symbol);
+        // get fresh data from reducer
+        const coinjoinAccount = coinjoin.accounts.find(a => a.key === account.key);
+        if (!device || !coinjoinAccount || !coinjoinAccount.session || !client) {
+            dispatch(
+                addToast({
+                    type: 'error',
+                    error: `Coinjoin not authorized: missing data`,
+                }),
+            );
+            return;
+        }
 
-    // dispatch data to reducer
-    dispatch(coinjoinSessionRestore(account.key));
-};
+        const { session } = coinjoinAccount;
+
+        // recalculate maxRounds
+        const maxRounds = getMaxRounds(
+            coinjoinAccount.targetAnonymity,
+            account.addresses?.anonymitySet || {},
+        );
+
+        if (maxRounds !== session.maxRounds) {
+            // TODO: decision should Trezor ask for confirmation if it's already preauthorized but maxRounds changed? should it updated in CoinjoinSession?
+        }
+
+        const auth = await TrezorConnect.authorizeCoinJoin({
+            device,
+            useEmptyPassphrase: device?.useEmptyPassphrase,
+            path: account.path,
+            coin: account.symbol,
+            preauthorized: true, // this parameter will check if device is already authorized
+            // reuse session params
+            coordinator: client.settings.coordinatorName,
+            maxCoordinatorFeeRate: session.maxCoordinatorFeeRate,
+            maxFeePerKvbyte: session.maxFeePerKvbyte,
+            maxRounds,
+        });
+
+        if (auth.success) {
+            // dispatch data to reducer
+            dispatch(coinjoinSessionRestore(account.key)); // todo: pass new max rounds
+            // register authorized account
+            client.registerAccount(getRegisterAccountParams(account, session));
+        } else {
+            dispatch(
+                addToast({
+                    type: 'error',
+                    error: `Coinjoin not authorized: ${auth.payload.error}`,
+                }),
+            );
+        }
+    };
 
 // called from coinjoin account UI or exceptions like device disconnection, forget wallet/account etc.
 export const stopCoinjoinSession = (account: Account) => (dispatch: Dispatch) => {
