@@ -11,7 +11,7 @@ export const onCoinjoinRoundChanged = [
         state: {
             coinjoin: {
                 accounts: [
-                    { key: 'a', session: {} },
+                    { key: 'a', session: { signedRounds: [] } },
                     { key: 'b' }, // account b exists but without session
                 ],
             },
@@ -32,7 +32,7 @@ export const onCoinjoinRoundChanged = [
         state: {
             accounts: [{ key: 'a', deviceState: 'device-state-2' }],
             coinjoin: {
-                accounts: [{ key: 'a', session: {} }],
+                accounts: [{ key: 'a', session: { signedRounds: [] } }],
             },
         },
         params: {
@@ -56,8 +56,8 @@ export const onCoinjoinRoundChanged = [
             ],
             coinjoin: {
                 accounts: [
-                    { key: 'a', session: {} },
-                    { key: 'b', session: {} },
+                    { key: 'a', session: { signedRounds: [] } },
+                    { key: 'b', session: { signedRounds: [] } },
                 ],
             },
         },
@@ -96,8 +96,8 @@ export const onCoinjoinRoundChanged = [
             ],
             coinjoin: {
                 accounts: [
-                    { key: 'a', session: {} },
-                    { key: 'b', session: {} },
+                    { key: 'a', session: { signedRounds: [] } },
+                    { key: 'b', session: { signedRounds: [] } },
                 ],
             },
         },
@@ -125,7 +125,7 @@ export const onCoinjoinRoundChanged = [
         state: {
             accounts: [{ key: 'a', deviceState: 'device-state' }],
             coinjoin: {
-                accounts: [{ key: 'a', session: {} }],
+                accounts: [{ key: 'a', session: { signedRounds: ['1', '2'], maxRounds: 2 } }],
             },
         },
         params: {
@@ -146,7 +146,7 @@ export const onCoinjoinRoundChanged = [
         state: {
             accounts: [{ key: 'a', deviceState: 'device-state' }],
             coinjoin: {
-                accounts: [{ key: 'a', session: {} }],
+                accounts: [{ key: 'a', session: { signedRounds: ['1', '2'], maxRounds: 2 } }],
             },
         },
         params: [

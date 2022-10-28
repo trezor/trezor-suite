@@ -81,7 +81,7 @@ const Step = ({ phase, currentPhase }: StepProps) => {
 
 interface PhaseProgressProps {
     currentPhase: RoundPhase;
-    phaseDeadline: CoinjoinSession['deadline'];
+    phaseDeadline: CoinjoinSession['phaseDeadline'];
 }
 
 export const PhaseProgress = ({ currentPhase, phaseDeadline }: PhaseProgressProps) => (
