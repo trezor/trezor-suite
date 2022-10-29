@@ -32,6 +32,18 @@ export const getScriptPubKeyFromAddress = (
     throw new Error('Unsupported scriptType');
 };
 
+// check WabiSabi.scriptPubKey format by OP and return AllowedScriptType
+export const getScriptTypeFromScriptPubKey = (scriptPubKey: string) => {
+    if (scriptPubKey.startsWith('0 ')) {
+        return 'P2WPKH';
+    }
+    if (scriptPubKey.startsWith('1 ')) {
+        return 'Taproot';
+    }
+
+    throw new Error('Unsupported scriptType');
+};
+
 // return WabiSabi coordinator config constants
 export const getInputSize = (type: AllowedScriptTypes) => {
     if (type === 'Taproot') return 58;
@@ -44,4 +56,9 @@ export const getOutputSize = (type: AllowedScriptTypes) => {
     if (type === 'Taproot') return 43;
     if (type === 'P2WPKH') return 31;
     throw new Error('Unsupported scriptType');
+};
+
+export const getExternalOutputSize = (scriptPubKey: string) => {
+    const type = getScriptTypeFromScriptPubKey(scriptPubKey);
+    return getOutputSize(type);
 };
