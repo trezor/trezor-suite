@@ -139,7 +139,7 @@ const getAccountState = (state: AppState): SelectedAccountStatus => {
     // account does exist
     if (account && account.visible) {
         if (account.backendType === 'coinjoin') {
-            if (account.status === 'initial') {
+            if (account.status === 'initial' || (account.status === 'error' && account.syncing)) {
                 return {
                     status: 'loading',
                     loader: 'account-loading',
