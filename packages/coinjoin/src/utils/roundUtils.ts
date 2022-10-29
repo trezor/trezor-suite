@@ -5,6 +5,7 @@ import {
     CoinjoinStateEvent,
     CoinjoinRoundParameters,
 } from '../types/coordinator';
+import { Credentials } from '../types/middleware';
 
 export const getRoundEvents = <T extends CoinjoinStateEvent['Type']>(
     type: T,
@@ -141,3 +142,9 @@ export const getCoordinatorFeeRate = (rounds: Round[]) => {
 
     return Math.max(...rates);
 };
+
+export const compareOutpoint = (a: string, b: string) =>
+    Buffer.from(a, 'hex').compare(Buffer.from(b, 'hex')) === 0;
+
+// sum input Credentials
+export const sumCredentials = (c: Credentials[]) => c[0].value + c[1].value;
