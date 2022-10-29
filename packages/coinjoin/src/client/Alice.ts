@@ -49,6 +49,45 @@ export class Alice {
         return this;
     }
 
+    setRequest(type: AlicePendingRequest['type']): SerializedAlice;
+    setRequest(): undefined;
+    setRequest(type?: AlicePendingRequest['type']) {
+        if (type) {
+            this.requested = {
+                type,
+                timestamp: Date.now(),
+            };
+            return {
+                accountKey: this.accountKey,
+                path: this.path,
+                outpoint: this.outpoint,
+            };
+        }
+        this.requested = undefined;
+    }
+
+    setOwnershipProof(proof: string) {
+        this.ownershipProof = proof;
+    }
+
+    setRegistrationData(data: RegistrationData) {
+        this.registrationData = data;
+    }
+
+    setRealCredentials(amount: RealCredentials, vsize: RealCredentials) {
+        this.realAmountCredentials = amount;
+        this.realVsizeCredentials = vsize;
+    }
+
+    setConfirmationData(data: ConfirmationData) {
+        this.confirmationData = data;
+    }
+
+    setConfirmedCredentials(amount: Credentials[], vsize: Credentials[]) {
+        this.confirmedAmountCredentials = amount;
+        this.confirmedVsizeCredentials = vsize;
+    }
+
     // serialize class
     toSerialized(): SerializedAlice {
         return {

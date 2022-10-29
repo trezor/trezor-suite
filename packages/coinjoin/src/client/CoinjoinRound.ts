@@ -209,11 +209,37 @@ export class CoinjoinRound extends EventEmitter implements SerializedCoinjoinRou
     }
 
     getRequest(): CoinjoinRequestEvent | void {
-        // TODO
+        if (this.phase === RoundPhase.InputRegistration) {
+            const inputs = this.inputs.filter(input => !input.ownershipProof && !input.requested);
+            if (inputs.length > 0) {
+                inputs.forEach(input => {
+                    this.options.log(`Requesting ownership for <${input.outpoint}>`);
+                    input.setRequest('ownership');
+                });
+                return {
+                    type: 'ownership',
+                    roundId: this.id,
+                    inputs,
+                    commitmentData: this.commitmentData,
+                };
+            }
+        }
     }
 
-    resolveRequest(_: CoinjoinResponseEvent) {
-        // TODO
+    resolveRequest({ type, inputs }: CoinjoinResponseEvent) {
+        const { log } = this.options;
+        inputs.forEach(i => {
+            const input = this.inputs.find(a => a.outpoint === i.outpoint);
+            // reset request in input
+            input?.setRequest();
+            if ('error' in i) {
+                log(`Resolving ${type} request for <${i.outpoint}> with error. ${i.error}`);
+                input?.setError(new Error(i.error));
+            } else if ('ownershipProof' in i) {
+                log(`Resolving ${type} request for <${i.outpoint}>`);
+                input?.setOwnershipProof(i.ownershipProof);
+            }
+        });
     }
 
     updateAccount(account: RegisterAccountParams) {
