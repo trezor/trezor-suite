@@ -4,6 +4,7 @@
     "references": [
         { "path": "../fiat-services" },
         { "path": "../redux-utils" },
+        { "path": "../suite-config" },
         { "path": "../suite-utils" },
         { "path": "../test-utils" },
         { "path": "../wallet-config" },
@@ -11,6 +12,9 @@
         { "path": "../wallet-core" },
         { "path": "../wallet-types" },
         { "path": "../wallet-utils" },
+        {
+            "path": "../../packages/blockchain-link"
+        },
         { "path": "../../packages/connect" }
     ]
 }

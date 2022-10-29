@@ -1,3 +1,5 @@
+import { differenceInYears, subMinutes } from 'date-fns';
+
 import { testMocks } from '@suite-common/test-utils';
 
 import {
@@ -6,7 +8,45 @@ import {
     accountGraphDataFilterFn,
     deviceGraphDataFilterFn,
     aggregateBalanceHistory,
+    getValidGraphPoints,
+    getLineGraphStepInMinutes,
+    sortTimeFrameItemsByTimeAsc,
+    getAxisLabelPercentagePosition,
+    getExtremaFromGraphPoints,
+    getSuccessAccountBalanceMovements,
+    getLineGraphPoints,
+    minAndMaxGraphPointArrayItemIndex,
 } from '../graphUtils';
+import { timeSwitchItems, lineGraphStepInMinutes } from '../config';
+import {
+    graphPointsWithInvalidValues,
+    MAX_GRAPH_POINT_WITH_INVALID_VALUES_VALUE,
+    MIN_GRAPH_POINT_WITH_INVALID_VALUES_VALUE,
+} from '../__fixtures__/graphPoints';
+import { accountBalanceHistoryUsdRates } from '../__fixtures__/accountBalanceHistory';
+import {
+    timeFrameItemsWithBalanceAndUsdRates,
+    timeFrameItemsWithBalanceAndUsdRatesWithExpectedValueWithExpectedValue,
+} from '../__fixtures__/timeFrameItems';
+import { LineGraphTimeFrameItemAccountBalance } from '../types';
+
+jest.mock('@trezor/connect', () => {
+    let fixture: { success: boolean; payload: string };
+
+    return {
+        ...jest.requireActual('@trezor/connect'),
+        __esModule: true, // this property makes it work
+        default: {
+            blockchainGetAccountBalanceHistory: () =>
+                new Promise(resolve => {
+                    resolve(fixture);
+                }),
+        },
+        setTestFixtures: (f: typeof fixture) => {
+            fixture = f;
+        },
+    };
+});
 
 const { getWalletAccount } = testMocks;
 
@@ -113,6 +153,186 @@ const graphData3 = {
 };
 
 describe('Graph utils', () => {
+    describe('getLineGraphAllTimeStepInMinutes', () => {
+        const endOfRange = new Date();
+        // all time could be anything...minutes, hours, days...
+        test('should step 30 minutes back', () => {
+            expect(getLineGraphStepInMinutes(endOfRange, 30)).toEqual(lineGraphStepInMinutes.hour);
+        });
+        test('should step one hour back', () => {
+            expect(
+                getLineGraphStepInMinutes(endOfRange, timeSwitchItems.hour.valueBackInMinutes!),
+            ).toEqual(lineGraphStepInMinutes.hour);
+        });
+        test('should step 3 hours back', () => {
+            expect(
+                getLineGraphStepInMinutes(endOfRange, timeSwitchItems.hour.valueBackInMinutes! * 3),
+            ).toEqual(lineGraphStepInMinutes.hour);
+        });
+        test('should step one day back', () => {
+            expect(
+                getLineGraphStepInMinutes(endOfRange, timeSwitchItems.day.valueBackInMinutes!),
+            ).toEqual(lineGraphStepInMinutes.day);
+        });
+        test('should step one week back', () => {
+            expect(
+                getLineGraphStepInMinutes(endOfRange, timeSwitchItems.week.valueBackInMinutes!),
+            ).toEqual(lineGraphStepInMinutes.week);
+        });
+        test('should step one month back', () => {
+            expect(
+                getLineGraphStepInMinutes(endOfRange, timeSwitchItems.month.valueBackInMinutes!),
+            ).toEqual(lineGraphStepInMinutes.month);
+        });
+        test('should step circa 2 months back', () => {
+            expect(
+                getLineGraphStepInMinutes(
+                    endOfRange,
+                    timeSwitchItems.month.valueBackInMinutes! * 2,
+                ),
+            ).toEqual(lineGraphStepInMinutes.month);
+        });
+        test('should step circa 10 months back', () => {
+            expect(
+                getLineGraphStepInMinutes(
+                    endOfRange,
+                    timeSwitchItems.month.valueBackInMinutes! * 10,
+                ),
+            ).toEqual(lineGraphStepInMinutes.year);
+        });
+        test('should step circa one year back', () => {
+            expect(
+                getLineGraphStepInMinutes(endOfRange, timeSwitchItems.year.valueBackInMinutes!),
+            ).toEqual(lineGraphStepInMinutes.year);
+        });
+        test('should step circa 4 years back', () => {
+            const startOfRangeDate = subMinutes(
+                endOfRange,
+                timeSwitchItems.year.valueBackInMinutes! * 4,
+            );
+            const differenceYears = differenceInYears(endOfRange, startOfRangeDate);
+            expect(
+                getLineGraphStepInMinutes(endOfRange, timeSwitchItems.year.valueBackInMinutes! * 4),
+            ).toEqual(lineGraphStepInMinutes.year * differenceYears);
+        });
+    });
+
+    test('sortTimeFrameItemsByTimeAsc', () => {
+        const shuffledArray = accountBalanceHistoryUsdRates.sort(() => 0.5 - Math.random());
+        const sortedArray = sortTimeFrameItemsByTimeAsc(accountBalanceHistoryUsdRates);
+        sortedArray.forEach((balanceItem, index) => {
+            if (index > 0) {
+                expect(balanceItem.time).toBeGreaterThanOrEqual(shuffledArray[index - 1].time);
+            }
+        });
+    });
+
+    describe('getSuccessAccountBalanceMovements', () => {
+        test('Should return the same array as all movement items are valid', () => {
+            const allSuccessAccountBalanceHistoryUsdRatesLength =
+                accountBalanceHistoryUsdRates.length;
+            accountBalanceHistoryUsdRates.forEach(movement =>
+                expect(!Number.isNaN(movement?.time)).toBeTruthy(),
+            );
+            expect(getSuccessAccountBalanceMovements(accountBalanceHistoryUsdRates)).toHaveLength(
+                allSuccessAccountBalanceHistoryUsdRatesLength,
+            );
+        });
+
+        test('Should return empty array as all movement items are invalid', () => {
+            const allInvalidAccountBalanceHistoryUsdRates: LineGraphTimeFrameItemAccountBalance[] =
+                [];
+            allInvalidAccountBalanceHistoryUsdRates.forEach(movement => {
+                const time = movement?.time;
+                expect(Number.isNaN(time)).toBeTruthy();
+            });
+            expect(
+                getSuccessAccountBalanceMovements(allInvalidAccountBalanceHistoryUsdRates),
+            ).toHaveLength(0);
+        });
+    });
+
+    test('minAndMaxGraphPointArrayItemIndex', () => {
+        const validGraphPoints = getValidGraphPoints(graphPointsWithInvalidValues);
+        const maxValueInArrayIndex = validGraphPoints.findIndex(
+            item => item.value === MAX_GRAPH_POINT_WITH_INVALID_VALUES_VALUE,
+        );
+        const minValueInArrayIndex = validGraphPoints.findIndex(
+            item => item.value === MIN_GRAPH_POINT_WITH_INVALID_VALUES_VALUE,
+        );
+        const { maxIndex, minIndex } = minAndMaxGraphPointArrayItemIndex(validGraphPoints);
+        expect(maxIndex).toBe(maxValueInArrayIndex);
+        expect(minIndex).toBe(minValueInArrayIndex);
+    });
+
+    test('getAxisLabelPercentagePosition', () => {
+        // items in array are indexed from 0
+        const total = 299;
+        const part = 2;
+        const percentageOfTotal = 1; // 1 %
+        expect(getAxisLabelPercentagePosition(part, total)).toBe(percentageOfTotal);
+    });
+
+    test('getExtremaFromGraphPoints', () => {
+        const validGraphPoints = getValidGraphPoints(graphPointsWithInvalidValues);
+        const extremaFromPoints = getExtremaFromGraphPoints(validGraphPoints);
+        const minValueInArrayIndex = validGraphPoints.findIndex(
+            item => item.value === MIN_GRAPH_POINT_WITH_INVALID_VALUES_VALUE,
+        );
+        const maxValueInArrayIndex = validGraphPoints.findIndex(
+            item => item.value === MAX_GRAPH_POINT_WITH_INVALID_VALUES_VALUE,
+        );
+
+        expect(extremaFromPoints?.max).toEqual({
+            x: getAxisLabelPercentagePosition(maxValueInArrayIndex, validGraphPoints.length),
+            value: MAX_GRAPH_POINT_WITH_INVALID_VALUES_VALUE,
+        });
+        expect(extremaFromPoints?.min).toEqual({
+            x: getAxisLabelPercentagePosition(minValueInArrayIndex, validGraphPoints.length),
+            value: MIN_GRAPH_POINT_WITH_INVALID_VALUES_VALUE,
+        });
+    });
+
+    test('getUniqueTimeFrameItemsWithSummaryBalance', () => {});
+
+    test('getLineGraphPointsWithFiatBalances', () => {
+        const fixturesTimeFrameItemsWithExpectedValuesMappedToPoints =
+            timeFrameItemsWithBalanceAndUsdRatesWithExpectedValueWithExpectedValue.map(
+                timeFrameItem => ({
+                    date: new Date(timeFrameItem.time * 1000),
+                    value: timeFrameItem.expectedValue,
+                }),
+            );
+        expect(getLineGraphPoints(timeFrameItemsWithBalanceAndUsdRates)).toEqual(
+            fixturesTimeFrameItemsWithExpectedValuesMappedToPoints,
+        );
+    });
+
+    describe('getValidGraphPoints', () => {
+        test('should remove all invalid points', () => {
+            const graphPointsWithNumericValues = graphPointsWithInvalidValues.filter(
+                point => !Number.isNaN(point.value),
+            );
+            expect(getValidGraphPoints(graphPointsWithInvalidValues).length).toEqual(
+                graphPointsWithNumericValues.length,
+            );
+            getValidGraphPoints(graphPointsWithInvalidValues).forEach(point =>
+                expect(Number.isNaN(point.value)).toBeFalsy(),
+            );
+        });
+        test('should dates follow each other from the start of unix epoch', () => {
+            const validGraphPoints = getValidGraphPoints(graphPointsWithInvalidValues);
+            validGraphPoints.forEach((point, index) => {
+                if (index === 0) {
+                    expect(point.date.getTime()).toEqual(0);
+                } else {
+                    const previousDateTime = validGraphPoints[index - 1].date.getTime();
+                    expect(point.date.getTime()).toEqual(previousDateTime + 1);
+                }
+            });
+        });
+    });
+
     test('calcFiatValueMap', () => {
         expect(calcFiatValueMap('2', ratesETH.rates)).toStrictEqual({
             czk: '6014.22',

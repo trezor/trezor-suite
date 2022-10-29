@@ -1,5 +1,6 @@
 import { BlockchainAccountBalanceHistory } from '@trezor/connect';
 import { NetworkSymbol } from '@suite-common/wallet-config';
+import { FiatRates } from '@trezor/blockchain-link';
 
 export interface AccountHistoryWithBalance extends BlockchainAccountBalanceHistory {
     balance: string;
@@ -67,11 +68,30 @@ export interface LineGraphPoint {
 
 export type LineGraphTimeFrameValues = 'hour' | 'day' | 'week' | 'month' | 'year' | 'all';
 
-type LineGraphTimeFrameItem = {
+export type LineGraphTimeFrameConfiguration = {
     shortcut: string;
     value: LineGraphTimeFrameValues;
     stepInMinutes?: number;
     valueBackInMinutes?: number;
 };
 
-export type LineGraphTimeFrameItems = Record<LineGraphTimeFrameValues, LineGraphTimeFrameItem>;
+export type LineGraphTimeFrameItems = Record<
+    LineGraphTimeFrameValues,
+    LineGraphTimeFrameConfiguration
+>;
+
+export interface LineGraphTimeFrameItemAccountBalance {
+    time: number;
+    rates: FiatRates;
+    balance?: string;
+    fiatCurrencyRate?: number;
+    source?: string;
+    descriptor?: string;
+}
+
+export type LineGraphTimeFrameIntervalPoint = Omit<
+    LineGraphTimeFrameItemAccountBalance,
+    'rates' | 'descriptor'
+>;
+
+export type GraphDataSource = 'dashboard' | 'account';

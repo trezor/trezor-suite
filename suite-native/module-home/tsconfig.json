@@ -28,6 +28,7 @@
         },
         { "path": "../assets" },
         { "path": "../atoms" },
+        { "path": "../config" },
         { "path": "../graph" },
         { "path": "../module-settings" },
         { "path": "../navigation" },
