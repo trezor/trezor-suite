@@ -1,3 +1,4 @@
+import { CoinjoinRound } from '../../src/client/CoinjoinRound';
 import { Round } from '../../src/types/coordinator';
 import { ROUND_SELECTION_REGISTRATION_OFFSET } from '../../src/constants';
 
@@ -57,3 +58,41 @@ export const DEFAULT_ROUND = {
         Date.now() + ROUND_SELECTION_REGISTRATION_OFFSET * 2,
     ).toUTCString(),
 } as Round;
+
+type CJRoundOptions = ConstructorParameters<typeof CoinjoinRound>[1];
+interface CreateCoinjoinRoundOptions extends CJRoundOptions {
+    statusRound?: Partial<Round>;
+    round?: Partial<CoinjoinRound>;
+    roundParameters?: Partial<CoinjoinRound['roundParameters']>;
+}
+export const createCoinjoinRound = (
+    inputs: CoinjoinRound['inputs'],
+    { statusRound, round: roundOptions, roundParameters, ...options }: CreateCoinjoinRoundOptions,
+) => {
+    const R = { ...DEFAULT_ROUND };
+    if (statusRound) {
+        Object.keys(statusRound).forEach(key => {
+            // @ts-expect-error key-value unsolvable problem
+            R[key] = statusRound[key];
+        });
+    }
+
+    const round = new CoinjoinRound(R, options);
+    round.inputs = inputs;
+
+    if (roundOptions) {
+        Object.keys(roundOptions).forEach(key => {
+            // @ts-expect-error key-value unsolvable problem
+            round[key] = roundOptions[key];
+        });
+    }
+
+    if (roundParameters) {
+        round.roundParameters = {
+            ...round.roundParameters,
+            ...roundParameters,
+        };
+    }
+
+    return round;
+};
