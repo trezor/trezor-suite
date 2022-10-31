@@ -249,21 +249,6 @@ suite-desktop build windows codesign:
       - latest*.yml
     expire_in: 7 days
 
-suite-native build android:
-  image: $CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX/vdovhanych/react-native-android:5.5
-  stage: build
-  interruptible: true
-  # todo: fix failing build
-  allow_failure: true
-  script:
-    - yarn install --immutable
-    - yarn workspace @trezor/suite-native build:android
-    - mv suite-native/app/android/app/build/outputs/apk/dev/debug/app-dev-debug.apk .
-  artifacts:
-    expire_in: 7 day
-    paths:
-      - app-release.apk
-
 .connect-explorer build base:
   stage: build
   interruptible: true
