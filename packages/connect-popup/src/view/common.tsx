@@ -4,8 +4,9 @@ import { POPUP, ERRORS, PopupInit, CoreMessage, ConnectSettings } from '@trezor/
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 
-import { ConnectUI, ConnectUIProps } from '@trezor/connect-ui';
+import { ConnectUI } from '@trezor/connect-ui';
 import { StyleSheetWrapper } from './react/StylesSheetWrapper';
+import { reactEventBus } from '@trezor/connect-ui/src/utils/eventBus';
 
 export const header: HTMLElement = document.getElementsByTagName('header')[0];
 export const container: HTMLElement = document.getElementById('container')!;
@@ -48,54 +49,13 @@ export const createTooltip = (text: string) => {
     return tooltip;
 };
 
-export const clearView = () => {
+export const clearLegacyView = () => {
     // clear and hide legacy views
     const container = document.getElementById('container');
     if (container) {
         container.innerHTML = '';
         container.style.display = 'none';
     }
-
-    // clear and hide react views
-    const reactContainer = document.getElementById('react');
-    if (reactContainer) {
-        reactContainer.shadowRoot?.getElementById('reactRenderIn')?.remove();
-        reactContainer.style.display = 'none';
-    }
-};
-
-let reactRenderIn;
-
-// todo: ConnectUIProps
-export const renderConnectUI = (props: ConnectUIProps) => {
-    clearView();
-
-    const reactSlot = document.getElementById('react');
-
-    reactSlot!.style.display = 'flex';
-    reactSlot!.style.flex = '1';
-
-    if (!reactSlot!.shadowRoot) {
-        reactSlot!.attachShadow({ mode: 'open' });
-    }
-
-    reactRenderIn = document.createElement('div');
-    reactRenderIn.setAttribute('id', 'reactRenderIn');
-    reactRenderIn.style.display = 'flex';
-    reactRenderIn.style.flexDirection = 'column';
-    reactRenderIn.style.flex = '1';
-
-    // append the renderIn element inside the styleSlot
-    reactSlot!.shadowRoot!.appendChild(reactRenderIn);
-
-    const root = createRoot(reactRenderIn);
-    const Component = (
-        <StyleSheetWrapper>
-            <ConnectUI {...props} />
-        </StyleSheetWrapper>
-    );
-
-    root.render(Component);
 };
 
 const renderLegacyView = (className: string) => {
@@ -118,7 +78,7 @@ const renderLegacyView = (className: string) => {
 };
 
 export const showView = (component: string) => {
-    clearView();
+    reactEventBus.dispatch();
     return renderLegacyView(component);
 };
 
@@ -205,4 +165,35 @@ export const postMessageToParent = (message: CoreMessage) => {
         // https://github.com/electron/electron/issues/7228
         window.postMessage(message, window.location.origin);
     }
+};
+
+let reactRenderIn;
+
+export const renderConnectUI = () => {
+    const reactSlot = document.getElementById('react');
+
+    reactSlot!.style.display = 'flex';
+    reactSlot!.style.flex = '1';
+
+    if (!reactSlot!.shadowRoot) {
+        reactSlot!.attachShadow({ mode: 'open' });
+    }
+
+    reactRenderIn = document.createElement('div');
+    reactRenderIn.setAttribute('id', 'reactRenderIn');
+    reactRenderIn.style.display = 'flex';
+    reactRenderIn.style.flexDirection = 'column';
+    reactRenderIn.style.flex = '1';
+
+    // append the renderIn element inside the styleSlot
+    reactSlot!.shadowRoot!.appendChild(reactRenderIn);
+
+    const root = createRoot(reactRenderIn);
+    const Component = (
+        <StyleSheetWrapper>
+            <ConnectUI clearLegacyView={clearLegacyView} postMessage={postMessage} />
+        </StyleSheetWrapper>
+    );
+
+    root.render(Component);
 };
