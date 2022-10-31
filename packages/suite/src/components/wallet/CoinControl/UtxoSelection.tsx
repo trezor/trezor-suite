@@ -10,7 +10,7 @@ import { formatNetworkAmount, getUtxoOutpoint } from '@suite-common/wallet-utils
 import { useActions, useSelector } from '@suite-hooks';
 import { useTheme, Checkbox, FluidSpinner, variables } from '@trezor/components';
 import type { AccountUtxo } from '@trezor/connect';
-import { TransactionTimestamp } from '@wallet-components';
+import { TransactionTimestamp, UtxoAnonymity } from '@wallet-components';
 import { UtxoTag } from '@wallet-components/CoinControl/UtxoTag';
 import { useSendFormContext } from '@wallet-hooks';
 import { selectCoinjoinAccountByKey } from '@wallet-reducers/coinjoinReducer';
@@ -147,6 +147,7 @@ export const UtxoSelection = ({ isChecked, transaction, utxo }: UtxoSelectionPro
     const amountInBtc = (Number(utxo.amount) / 10 ** network.decimals).toString();
     const outputLabel = account.metadata.outputLabels?.[utxo.txid]?.[utxo.vout];
     const isLabelingPossible = device?.metadata.status === 'enabled' || device?.connected;
+    const anonymity = account.addresses?.anonymitySet?.[utxo.address];
 
     const handleCheckbox = () => toggleUtxoSelection(utxo);
     const showTransactionDetail: React.MouseEventHandler = e => {
@@ -187,6 +188,12 @@ export const UtxoSelection = ({ isChecked, transaction, utxo }: UtxoSelectionPro
                         <IconWrapper>
                             <FluidSpinner color={theme.TYPE_LIGHT_GREY} size={14} />
                         </IconWrapper>
+                    )}
+                    {anonymity && (
+                        <>
+                            <Dot />
+                            <UtxoAnonymity anonymity={anonymity} />
+                        </>
                     )}
                     {isLabelingPossible && (
                         <VisibleOnHover alwaysVisible={!!outputLabel}>

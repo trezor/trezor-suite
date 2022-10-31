@@ -4,6 +4,8 @@ import { Icon, useTheme, variables, CollapsibleBox } from '@trezor/components';
 import { WalletAccountTransaction } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { FormattedCryptoAmount, HiddenPlaceholder, Translation } from '@suite-components';
+import { useSelector } from '@suite-hooks/useSelector';
+import { UtxoAnonymity } from '@wallet-components';
 
 export const blurFix = css`
     margin-left: -10px;
@@ -40,7 +42,7 @@ const IOGrid = styled.div`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.NEUE_FONT_SIZE.SMALL};
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
-    grid-template-columns: auto auto auto; /* address, extra, amount */
+    grid-template-columns: auto auto auto; /* address, anonymity, amount */
     ${blurFix}
 `;
 
@@ -73,24 +75,35 @@ const IOGridCell = styled.div<{ isAccountOwned?: boolean }>`
 type EnhancedVinVout = WalletAccountTransaction['details']['vin'][number];
 
 const IOGridRow = ({
+    anonymitySet,
     tx: { symbol },
     vinvout: { isAccountOwned, addresses, value },
 }: {
+    anonymitySet?: Record<string, number | undefined>;
     tx: WalletAccountTransaction;
     vinvout: EnhancedVinVout;
-}) => (
-    <>
-        <IOGridCell isAccountOwned={isAccountOwned}>
-            <HiddenPlaceholder>{addresses}</HiddenPlaceholder>
-        </IOGridCell>
-        <IOGridCell isAccountOwned={isAccountOwned} />
-        <IOGridCell isAccountOwned={isAccountOwned}>
-            {value && (
-                <FormattedCryptoAmount value={formatNetworkAmount(value, symbol)} symbol={symbol} />
-            )}
-        </IOGridCell>
-    </>
-);
+}) => {
+    const anonymity = addresses?.length && anonymitySet?.[addresses[0]];
+
+    return (
+        <>
+            <IOGridCell isAccountOwned={isAccountOwned}>
+                <HiddenPlaceholder>{addresses}</HiddenPlaceholder>
+            </IOGridCell>
+            <IOGridCell isAccountOwned={isAccountOwned}>
+                {anonymity && <UtxoAnonymity anonymity={anonymity} />}
+            </IOGridCell>
+            <IOGridCell isAccountOwned={isAccountOwned}>
+                {value && (
+                    <FormattedCryptoAmount
+                        value={formatNetworkAmount(value, symbol)}
+                        symbol={symbol}
+                    />
+                )}
+            </IOGridCell>
+        </>
+    );
+};
 
 type IOSectionProps = {
     tx: WalletAccountTransaction;
@@ -100,8 +113,13 @@ type IOSectionProps = {
 
 const IOSection = ({ tx, inputs, outputs }: IOSectionProps) => {
     const theme = useTheme();
+
+    const { selectedAccount } = useSelector(state => state.wallet);
+
+    const anonymitySet = selectedAccount?.account?.addresses?.anonymitySet;
     const hasInputs = !!inputs?.length;
     const hasOutputs = !!outputs?.length;
+
     return (
         <>
             {hasInputs && (
@@ -112,7 +130,12 @@ const IOSection = ({ tx, inputs, outputs }: IOSectionProps) => {
             {hasInputs && (
                 <IOGrid>
                     {inputs.map(input => (
-                        <IOGridRow key={input.n} tx={tx} vinvout={input} />
+                        <IOGridRow
+                            key={input.n}
+                            anonymitySet={anonymitySet}
+                            tx={tx}
+                            vinvout={input}
+                        />
                     ))}
                 </IOGrid>
             )}
@@ -129,7 +152,12 @@ const IOSection = ({ tx, inputs, outputs }: IOSectionProps) => {
             {hasOutputs && (
                 <IOGrid>
                     {outputs.map(output => (
-                        <IOGridRow key={output.n} tx={tx} vinvout={output} />
+                        <IOGridRow
+                            key={output.n}
+                            anonymitySet={anonymitySet}
+                            tx={tx}
+                            vinvout={output}
+                        />
                     ))}
                 </IOGrid>
             )}

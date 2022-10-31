@@ -94,7 +94,7 @@ export const AnonymityLevelIndicator = forwardRef<HTMLDivElement, AnonymityLevel
                     <AnonymityLevel>
                         <Translation
                             id="TR_COINJOIN_ANONYMITY_LEVEL_INDICATOR"
-                            values={{ targetAnonymity }}
+                            values={{ anonymity: targetAnonymity }}
                         />
                     </AnonymityLevel>
                     <AnonymityStatusLabel
