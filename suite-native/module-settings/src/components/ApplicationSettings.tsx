@@ -41,8 +41,14 @@ export const ApplicationSettings = () => {
             <SettingsSectionItem
                 iconName="flag"
                 title="Localisation"
-                subtitle="Language, Currency"
+                subtitle="Currency"
                 onPress={() => handleNavigation(SettingsStackRoutes.SettingsLocalisation)}
+            />
+            <SettingsSectionItem
+                title="Customization"
+                iconName="palette"
+                subtitle="Color scheme"
+                onPress={() => handleNavigation(SettingsStackRoutes.SettingsCustomization)}
             />
         </SettingsSection>
     );

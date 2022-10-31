@@ -10,18 +10,27 @@ import {
 
 import { XpubScanScreen } from '../screens/XpubScanScreen';
 import { AccountsImportScreen } from '../screens/AccountsImportScreen';
+import { ScanQRCodeModalScreen } from '../screens/ScanQRCodeModalScreen';
 
 export const AccountsImportStack = createStackNavigator<AccountsImportStackParamList>();
 
 export const AccountsImportStackNavigator = () => (
     <AccountsImportStack.Navigator screenOptions={stackNavigationOptionsConfig}>
-        <AccountsImportStack.Screen
-            name={AccountsImportStackRoutes.XpubScan}
-            component={XpubScanScreen}
-        />
-        <AccountsImportStack.Screen
-            name={AccountsImportStackRoutes.AccountImport}
-            component={AccountsImportScreen}
-        />
+        <AccountsImportStack.Group>
+            <AccountsImportStack.Screen
+                name={AccountsImportStackRoutes.XpubScan}
+                component={XpubScanScreen}
+            />
+            <AccountsImportStack.Screen
+                name={AccountsImportStackRoutes.AccountImport}
+                component={AccountsImportScreen}
+            />
+        </AccountsImportStack.Group>
+        <AccountsImportStack.Group screenOptions={{ presentation: 'modal' }}>
+            <AccountsImportStack.Screen
+                name={AccountsImportStackRoutes.XpubScanModal}
+                component={ScanQRCodeModalScreen}
+            />
+        </AccountsImportStack.Group>
     </AccountsImportStack.Navigator>
 );

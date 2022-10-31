@@ -49,7 +49,10 @@ export type AppTabsParamList = {
 };
 
 export type AccountsImportStackParamList = {
-    [AccountsImportStackRoutes.XpubScan]: undefined;
+    [AccountsImportStackRoutes.XpubScan]: {
+        qrCode?: string;
+    };
+    [AccountsImportStackRoutes.XpubScanModal]: undefined;
     [AccountsImportStackRoutes.AccountImport]: {
         xpubAddress: XpubAddress;
         currencySymbol: NetworkSymbol;

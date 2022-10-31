@@ -1,7 +1,6 @@
-import { View } from 'react-native';
 import React from 'react';
 
-import { Text } from '@suite-native/atoms';
+import { Box, Text } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 const fetchingStyle = prepareNativeStyle(() => ({
@@ -19,7 +18,7 @@ export const AccountImportLoader = () => {
     const { applyStyle } = useNativeStyles();
 
     return (
-        <View style={[applyStyle(fetchingStyle)]}>
+        <Box style={applyStyle(fetchingStyle)}>
             <Text variant="titleMedium" color="gray1000" style={applyStyle(textStyle)}>
                 Checking Balances...
             </Text>
@@ -37,6 +36,6 @@ export const AccountImportLoader = () => {
             >
                 something...
             </Text>
-        </View>
+        </Box>
     );
 };

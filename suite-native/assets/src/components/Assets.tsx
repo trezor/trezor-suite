@@ -15,7 +15,7 @@ import {
     TabToStackCompositeNavigationProp,
     AccountsStackRoutes,
 } from '@suite-native/navigation';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { networks, NetworkSymbol } from '@suite-common/wallet-config';
 import { selectFiatCurrency } from '@suite-native/module-settings';
 import { RootState } from '@suite-native/state';
 
@@ -43,6 +43,7 @@ export const Assets = () => {
     const handleImportAssets = () => {
         navigation.navigate(RootStackRoutes.AccountsImport, {
             screen: AccountsImportStackRoutes.XpubScan,
+            params: {},
         });
     };
 
@@ -66,7 +67,7 @@ export const Assets = () => {
                         <AssetItem
                             key={asset.symbol}
                             iconName={asset.symbol}
-                            cryptoCurrencyName={asset.symbol}
+                            cryptoCurrencyName={networks[asset.symbol].name}
                             cryptoCurrencySymbol={asset.symbol}
                             fiatBalance={asset.fiatBalance}
                             cryptoCurrencyValue={asset.assetBalance.toFixed()}

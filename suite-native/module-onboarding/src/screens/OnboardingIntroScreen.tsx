@@ -15,36 +15,13 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 const introStyle = prepareNativeStyle(_ => ({
     flex: 1,
-    justifyContent: 'flex-end',
+    justifyContent: 'center',
+    alignItems: 'center',
 }));
 
 const introHeadlineStyle = prepareNativeStyle(utils => ({
-    paddingLeft: 71,
-    paddingRight: 71,
+    alignSelf: 'center',
     marginBottom: utils.spacings.large,
-}));
-
-const introDescriptionStyle = prepareNativeStyle(_ => ({
-    paddingLeft: 79,
-    paddingRight: 79,
-    marginBottom: 52,
-    alignItems: 'center',
-}));
-
-const introImagePreviewStyle = prepareNativeStyle(utils => ({
-    width: 387,
-    height: 297,
-    backgroundColor: utils.colors.gray0,
-    alignItems: 'center',
-    justifyContent: 'center',
-}));
-
-const introButtonStyle = prepareNativeStyle(_ => ({
-    position: 'relative',
-    bottom: 10,
-    paddingLeft: 29,
-    paddingRight: 29,
-    paddingBottom: 39,
 }));
 
 export const OnboardingIntroScreen = ({
@@ -59,33 +36,23 @@ export const OnboardingIntroScreen = ({
     const handleNavigateToAccountsImport = () => {
         navigation.navigate(RootStackRoutes.AccountsImport, {
             screen: AccountsImportStackRoutes.XpubScan,
+            params: {},
         });
     };
 
     return (
-        <Screen backgroundColor="gray1000" customHorizontalPadding={0}>
+        <Screen>
             <View style={applyStyle(introStyle)}>
-                <Text variant="titleMedium" color="gray0" style={applyStyle(introHeadlineStyle)}>
-                    Import only shits
+                <Text variant="titleMedium" style={applyStyle(introHeadlineStyle)}>
+                    Onboarding
                 </Text>
-                <View style={applyStyle(introDescriptionStyle)}>
-                    <Text variant="body" color="gray600">
-                        To add that shit, navigate to:
-                    </Text>
-                    <Text variant="body" color="gray600">
-                        Account {'>'} Details {'>'} Show xPUB
-                    </Text>
-                </View>
-                <View style={applyStyle(introImagePreviewStyle)}>
-                    <Text variant="body" color="gray1000">
-                        TODO screenshot from Suite
-                    </Text>
-                </View>
-                <View style={applyStyle(introButtonStyle)}>
-                    <Button onPress={handleNavigateToAccountsImport} size="large">
-                        Got em
-                    </Button>
-                </View>
+                <Button
+                    style={{ width: '100%' }}
+                    onPress={handleNavigateToAccountsImport}
+                    size="large"
+                >
+                    Start
+                </Button>
             </View>
         </Screen>
     );

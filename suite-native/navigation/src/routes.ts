@@ -20,6 +20,7 @@ export enum OnboardingStackRoutes {
 
 export enum AccountsImportStackRoutes {
     XpubScan = 'XpubScan',
+    XpubScanModal = 'XpubScanModal',
     AccountImport = 'AccountImport',
 }
 

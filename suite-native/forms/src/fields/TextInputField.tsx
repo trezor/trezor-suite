@@ -13,6 +13,7 @@ type AllowedInputWrapperProps = Pick<InputWrapperProps, 'hint'>;
 export interface FieldProps extends AllowedTextInputFieldProps, AllowedInputWrapperProps {
     name: FieldName;
     label: string;
+    onBlur?: () => void;
     defaultValue?: string;
 }
 
@@ -20,17 +21,25 @@ export const TextInputField = ({
     name,
     label,
     hint,
+    onBlur,
     defaultValue = '',
     ...otherProps
 }: FieldProps) => {
     const field = useField({ name, label, defaultValue });
-    const { errorMessage, onBlur, onChange, value, hasError } = field;
+    const { errorMessage, onBlur: hookFormOnBlur, onChange, value, hasError } = field; // prejmenovat
+
+    const handleOnBlur = () => {
+        hookFormOnBlur();
+        if (onBlur) {
+            onBlur();
+        }
+    };
 
     return (
         <InputWrapper error={errorMessage} hint={hint}>
             <Input
                 {...otherProps}
-                onBlur={onBlur}
+                onBlur={handleOnBlur}
                 onChangeText={onChange}
                 value={value}
                 hasError={hasError}

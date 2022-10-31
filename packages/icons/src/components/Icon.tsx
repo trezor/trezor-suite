@@ -18,6 +18,7 @@ import { IconName, icons } from '../icons';
 type IconProps = {
     name: IconName;
     size?: IconSize;
+    customSize?: number;
     color?: Color;
 };
 
@@ -30,12 +31,12 @@ const iconSizes = {
 
 export type IconSize = keyof typeof iconSizes;
 
-export const Icon = ({ name, size = 'large', color = 'gray1000' }: IconProps) => {
+export const Icon = ({ name, customSize, size = 'large', color = 'gray1000' }: IconProps) => {
     const svg = useSVG(icons[name]);
     const {
         utils: { colors },
     } = useNativeStyles();
-    const sizeNumber = iconSizes[size];
+    const sizeNumber = customSize || iconSizes[size];
     const paint = usePaintRef();
 
     return (

@@ -14,7 +14,11 @@
         {
             "path": "../../suite-common/wallet-types"
         },
+        {
+            "path": "../../suite-common/wallet-utils"
+        },
         { "path": "../atoms" },
+        { "path": "../module-settings" },
         { "path": "../../packages/icons" },
         { "path": "../../packages/styles" }
     ]
