@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { TREZOR_SIGNING_KEY_URL, WIKI_HOW_TO_RUN_URL } from '@trezor/urls';
+import { WIKI_HOW_TO_RUN_URL } from '@trezor/urls';
 import { Button, Dropdown, Icon, colors, variables, Link } from '@trezor/components';
 import { IconType } from '@trezor/components/src/support/types';
 import Translation from '../Translation';
 import { Platform, getPlatform } from '../../utils/navigator';
 import { versionUtils } from '@trezor/utils';
+
+export const TREZOR_SIGNING_KEY_URL = 'https://trezor.io/security/satoshilabs-2021-signing-key.asc';
 
 const StyledDropdown = styled(Dropdown)`
     height: 100%;
