@@ -23,6 +23,7 @@
     "scripts": {
         "lint": "eslint '**/*.{ts,js}'",
         "test:unit": "jest",
+        "test:discovery": "tsx ./tests/discovery-test.ts",
         "type-check": "tsc --build",
         "build:lib": "rimraf lib && tsc --build ./tsconfig.lib.json"
     },
