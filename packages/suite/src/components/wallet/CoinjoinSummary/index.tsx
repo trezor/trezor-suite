@@ -2,7 +2,6 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { Account } from '@suite-common/wallet-types';
-import { AnonymityChart } from './AnonymityChart';
 import { BalanceSection } from './BalanceSection';
 import { SummaryHeader } from './SummaryHeader';
 import { CoinjoinLog } from './CoinjoinLog';
@@ -20,8 +19,6 @@ export const CoinjoinSummary = ({ account }: CoinjoinSummaryProps) => (
         <SummaryHeader />
 
         <BalanceSection account={account} />
-
-        <AnonymityChart />
 
         <CoinjoinLog />
     </Container>
