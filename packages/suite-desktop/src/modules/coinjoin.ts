@@ -40,7 +40,7 @@ export const init: Module = ({ mainWindow }) => {
                     logger.debug(SERVICE_NAME, `CoinjoinBackend add listener ${eventName}`);
                     return backend.on(eventName, listener);
                 },
-                onRemoveListener: eventName => {
+                onRemoveListener: (eventName: any) => {
                     logger.debug(SERVICE_NAME, `CoinjoinBackend remove listener ${eventName}`);
                     return backend.removeAllListeners(eventName);
                 },
