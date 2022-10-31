@@ -7,7 +7,6 @@ export const TREZOR_COINS_URL = 'https://trezor.io/coins/';
 export const TREZOR_SUPPORT_URL = 'https://trezor.io/support/';
 export const TREZOR_RESELLERS_URL = 'https://trezor.io/resellers/';
 export const TREZOR_PASSWORDS_URL = 'https://trezor.io/passwords/';
-export const TREZOR_SIGNING_KEY_URL = 'https://trezor.io/security/satoshilabs-2021-signing-key.asc';
 export const TREZOR_TROUBLESHOOTING_URL = 'https://trezor.io/support/#technical-technical-issues';
 export const TREZOR_WALLET_ACCESS_URL =
     'https://trezor.io/support/technical/i-cannot-access-the-wallet/';
