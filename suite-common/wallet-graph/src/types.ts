@@ -85,7 +85,11 @@ export interface LineGraphTimeFrameItemAccountBalance {
     rates: FiatRates;
     balance?: string;
     fiatCurrencyRate?: number;
-    source?: string;
+    source?:
+        | 'FiatRatesForTimeFrame'
+        | 'BalanceHistoryInRange'
+        | 'BalanceAtStartOfRange'
+        | 'GeneratedTimeFrame';
     descriptor?: string;
 }
 

@@ -17,17 +17,11 @@ const graphWrapperStyle = prepareNativeStyle(_ => ({
     height: 250,
     justifyContent: 'center',
     alignItems: 'center',
-    marginVertical: 20,
 }));
 
 const graphStyle = prepareNativeStyle(_ => ({
     alignSelf: 'center',
     aspectRatio: 1.4,
-    width: '100%',
-}));
-
-const axisLabelStyle = prepareNativeStyle(_ => ({
-    alignSelf: 'center',
     width: '100%',
 }));
 
@@ -70,17 +64,16 @@ export const Graph = ({ points = [], loading = false }: GraphProps) => {
         <Box style={applyStyle(graphWrapperStyle)}>
             {!loading && nonZeroSumOfGraphPoints ? (
                 <>
-                    <Box style={applyStyle(axisLabelStyle)}>{axisLabels?.TopAxisLabel()}</Box>
                     <LineGraph
                         style={applyStyle(graphStyle)}
                         points={graphPoints}
                         color={defaultColorVariant.green}
-                        animated={false}
-                        // enablePanGesture
-                        // TopAxisLabel={axisLabels?.TopAxisLabel}
-                        // BottomAxisLabel={axisLabels?.BottomAxisLabel}
+                        animated
+                        verticalPadding={20}
+                        enablePanGesture
+                        TopAxisLabel={axisLabels?.TopAxisLabel}
+                        BottomAxisLabel={axisLabels?.BottomAxisLabel}
                     />
-                    <Box style={applyStyle(axisLabelStyle)}>{axisLabels?.BottomAxisLabel()}</Box>
                 </>
             ) : (
                 <Text variant="label" color="gray600">

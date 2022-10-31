@@ -8,7 +8,6 @@ import { Account } from '@suite-common/wallet-types';
 
 import { LineGraphTimeFrameItemAccountBalance, LineGraphTimeFrameValues } from './types';
 import {
-    getLineGraphPoints,
     getDifferentNetworkSymbolAccounts,
     getStartItemOfTimeFrame,
     mergeAndSortTimeFrameItems,
@@ -124,16 +123,7 @@ export const getSingleAccountGraphPointsThunk = createThunk(
                 timeFrame,
             );
 
-            // fill missing balances for time frame items (as graph points).
-            const allTimeFrameRatesWithBalances = allTimeFrameRates.map((rate, index) => {
-                if (index > 0) {
-                    rate.balance = allTimeFrameRates[index - 1].balance;
-                }
-                return rate;
-            });
-
-            const points = getLineGraphPoints(allTimeFrameRatesWithBalances);
-            return points;
+            return getTimeFrameIntervalsWithSummaryBalances([allTimeFrameRates]);
         }
         throw new Error(accountNotFoundError);
     },
