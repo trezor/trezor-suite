@@ -218,6 +218,21 @@ export class CoinjoinRound extends EventEmitter implements SerializedCoinjoinRou
                 };
             }
         }
+        if (this.phase === RoundPhase.TransactionSigning) {
+            const inputs = this.inputs.filter(i => !i.witness && !i.requested);
+            if (inputs.length > 0 && this.transactionData) {
+                inputs.forEach(input => {
+                    this.options.log(`Requesting witness for ~~${input.outpoint}~~`);
+                    input.setRequest('signature');
+                });
+                return {
+                    type: 'signature',
+                    roundId: this.id,
+                    inputs,
+                    transaction: this.transactionData,
+                };
+            }
+        }
     }
 
     resolveRequest({ type, inputs }: CoinjoinResponseEvent) {
@@ -233,6 +248,9 @@ export class CoinjoinRound extends EventEmitter implements SerializedCoinjoinRou
             } else if ('ownershipProof' in i) {
                 log(`Resolving ${type} request for ~~${i.outpoint}~~`);
                 input.setOwnershipProof(i.ownershipProof);
+            } else if ('signature' in i) {
+                log(`Resolving ${type} request for ~~${i.outpoint}~~`);
+                input.setWitness(i.signature, i.index);
             }
         });
     }

@@ -1,6 +1,10 @@
 import { networks } from '@trezor/utxo-lib';
 
-import { getScriptPubKeyFromAddress } from '../../src/utils/coordinatorUtils';
+import {
+    getScriptPubKeyFromAddress,
+    sortOutputs,
+    mergePubkeys,
+} from '../../src/utils/coordinatorUtils';
 
 describe('coordinatorUtils', () => {
     it('getScriptPubKeyFromAddress', () => {
@@ -73,5 +77,60 @@ describe('coordinatorUtils', () => {
                 'P2SH', // unknown scriptType
             ),
         ).toThrow(/Unsupported scriptType/);
+    });
+
+    it('sortOutputs', () => {
+        // sorting by amount
+        expect(
+            [
+                { scriptPubKey: '0', value: 2 },
+                { scriptPubKey: '1', value: 1 },
+            ].sort(sortOutputs),
+        ).toEqual([
+            { scriptPubKey: '0', value: 2 },
+            { scriptPubKey: '1', value: 1 },
+        ]);
+        // sorting by scriptPubKey
+        expect(
+            [
+                { scriptPubKey: '0 10', value: 1 },
+                { scriptPubKey: '0 10', value: 1 },
+                { scriptPubKey: '0 00', value: 1 },
+                { scriptPubKey: '1 12', value: 1 },
+                { scriptPubKey: '1 11', value: 1 },
+            ].sort(sortOutputs),
+        ).toEqual([
+            { scriptPubKey: '0 00', value: 1 },
+            { scriptPubKey: '0 10', value: 1 },
+            { scriptPubKey: '0 10', value: 1 },
+            { scriptPubKey: '1 11', value: 1 },
+            { scriptPubKey: '1 12', value: 1 },
+        ]);
+    });
+
+    it('mergePubkeys', () => {
+        expect(
+            mergePubkeys([
+                { Type: 'OutputAdded', output: { scriptPubKey: '01', value: 1 } },
+                { Type: 'OutputAdded', output: { scriptPubKey: '02', value: 1 } },
+                { Type: 'OutputAdded', output: { scriptPubKey: '03', value: 1 } },
+            ]),
+        ).toEqual([
+            { Type: 'OutputAdded', output: { scriptPubKey: '01', value: 1 } },
+            { Type: 'OutputAdded', output: { scriptPubKey: '02', value: 1 } },
+            { Type: 'OutputAdded', output: { scriptPubKey: '03', value: 1 } },
+        ]);
+
+        expect(
+            mergePubkeys([
+                { Type: 'OutputAdded', output: { scriptPubKey: '01', value: 1 } },
+                { Type: 'OutputAdded', output: { scriptPubKey: '01', value: 1 } },
+                { Type: 'OutputAdded', output: { scriptPubKey: '02', value: 1 } },
+                { Type: 'OutputAdded', output: { scriptPubKey: '01', value: 1 } },
+            ]),
+        ).toEqual([
+            { Type: 'OutputAdded', output: { scriptPubKey: '01', value: 3 } },
+            { Type: 'OutputAdded', output: { scriptPubKey: '02', value: 1 } },
+        ]);
     });
 });

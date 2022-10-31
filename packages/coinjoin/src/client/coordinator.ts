@@ -6,7 +6,8 @@ import {
     ConfirmationData,
     IssuanceData,
     RegistrationData,
-    TxPaymentRequest,
+    CoinjoinAffiliateTx,
+    CoinjoinAffiliateRequest,
 } from '../types/coordinator';
 
 export const getStatus = async (options: RequestOptions) => {
@@ -142,16 +143,8 @@ export * from '../types/coordinator';
 /**
  * @deprecated This request will be done by coordinator
  */
-export const getPaymentRequest = (
-    name: string,
-    outputs: { amount: number; address: string }[],
-    options: RequestOptions,
-) =>
-    request<TxPaymentRequest>(
-        'payment-request',
-        {
-            recipient_name: name,
-            outputs,
-        },
-        options,
-    );
+export const getAffiliateRequest = (tx: CoinjoinAffiliateTx, options: RequestOptions) =>
+    request<CoinjoinAffiliateRequest>('get_coinjoin_request_suite', tx, {
+        ...options,
+        baseUrl: 'https://dev-coinjoin-affiliate.trezor.io/',
+    });
