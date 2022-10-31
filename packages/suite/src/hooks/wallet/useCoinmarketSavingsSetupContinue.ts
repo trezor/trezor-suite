@@ -183,6 +183,7 @@ export const useSavingsSetupContinue = ({
         (!kycFinalStatus || !['Failed', 'Error'].includes(kycFinalStatus));
 
     const showReceivingAddressChangePaymentInfoLabel =
+        !!selectedProvider?.flow.paymentInfo.showReceivingAddressChangePaymentInfo &&
         !!savingsTrade?.receivingCryptoAddresses &&
         savingsTrade.receivingCryptoAddresses.length > 0;
 

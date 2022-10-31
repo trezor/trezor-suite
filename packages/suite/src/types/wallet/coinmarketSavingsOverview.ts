@@ -1,4 +1,4 @@
-import type { SavingsKYCStatus } from 'invity-api';
+import type { SavingsKYCStatus, SavingsProviderInfo } from 'invity-api';
 import type { WithSelectedAccountLoadedProps } from '@wallet-components';
 import type { SavingsContextValues } from './coinmarketSavings';
 
@@ -10,5 +10,5 @@ export type SavingsOverviewContextValues = SavingsContextValues & {
     savingsCryptoSum: string;
     savingsFiatSum: string;
     kycFinalStatus?: SavingsKYCStatus;
-    selectedProviderCompanyName?: string;
+    selectedProvider?: SavingsProviderInfo;
 };

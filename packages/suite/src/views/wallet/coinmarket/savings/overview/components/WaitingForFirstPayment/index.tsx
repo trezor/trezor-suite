@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Translation } from '@suite-components';
+import { SavingsPaymentMethod } from 'invity-api';
 
 const StyledCard = styled.div`
     background: rgba(239, 201, 65, 0.1);
@@ -24,14 +25,31 @@ const Description = styled.div`
     line-height: 18px;
 `;
 
-const WaitingForFirstPayment = () => (
-    <StyledCard>
-        <Header>
-            <Translation id="TR_SAVINGS_OVERVIEW_WAITING_FOR_FIRST_PAYMENT_HEADER" />
-        </Header>
-        <Description>
-            <Translation id="TR_SAVINGS_OVERVIEW_WAITING_FOR_FIRST_PAYMENT_DESCRIPTION" />
-        </Description>
-    </StyledCard>
-);
-export default WaitingForFirstPayment;
+interface WaitingForFirstPaymentProps {
+    paymentMethod?: SavingsPaymentMethod;
+    providerName?: string;
+}
+
+export const WaitingForFirstPayment = ({
+    paymentMethod,
+    providerName,
+}: WaitingForFirstPaymentProps) => {
+    const uppercasePaymentMethod = paymentMethod?.toUpperCase() as Uppercase<SavingsPaymentMethod>;
+
+    return (
+        <StyledCard>
+            <Header>
+                <Translation
+                    id={`TR_SAVINGS_OVERVIEW_WAITING_FOR_FIRST_${uppercasePaymentMethod}_PAYMENT_HEADER`}
+                    values={{ providerName }}
+                />
+            </Header>
+            <Description>
+                <Translation
+                    id={`TR_SAVINGS_OVERVIEW_WAITING_FOR_FIRST_${uppercasePaymentMethod}_PAYMENT_DESCRIPTION`}
+                    values={{ providerName }}
+                />
+            </Description>
+        </StyledCard>
+    );
+};

@@ -48,6 +48,8 @@ export const SELECTED_PROVIDER: SavingsProviderInfo = {
         paymentInfo: {
             isEnabled: false,
             isAutomaticPaymentPlanningEnabled: false,
+            showReceivingAddressChangePaymentInfo: false,
+            coinTransferDelayed: false,
         },
         phoneVerification: {
             isEnabled: false,

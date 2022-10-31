@@ -21,7 +21,7 @@ export const useSavingsOverview = ({
         isWatchingKYCStatus,
         kycFinalStatus,
         savingsTrade,
-        selectedProviderCompanyName,
+        selectedProvider,
         savingsTradePayments,
         isSavingsTradeLoading,
         trades,
@@ -30,7 +30,7 @@ export const useSavingsOverview = ({
         isWatchingKYCStatus: state.wallet.coinmarket.savings.isWatchingKYCStatus,
         kycFinalStatus: state.wallet.coinmarket.savings.kycFinalStatus,
         savingsTrade: state.wallet.coinmarket.savings.savingsTrade,
-        selectedProviderCompanyName: state.wallet.coinmarket.savings.selectedProvider?.companyName,
+        selectedProvider: state.wallet.coinmarket.savings.selectedProvider,
         savingsTradePayments: state.wallet.coinmarket.savings.savingsTradePayments,
         isSavingsTradeLoading: state.wallet.coinmarket.savings.isSavingsTradeLoading,
         trades: state.wallet.coinmarket.trades,
@@ -74,7 +74,7 @@ export const useSavingsOverview = ({
         savingsCryptoSum: savingsCryptoSum.toFixed(),
         savingsFiatSum: savingsFiatSum.toFixed(),
         kycFinalStatus,
-        selectedProviderCompanyName,
+        selectedProvider,
     };
 };
 

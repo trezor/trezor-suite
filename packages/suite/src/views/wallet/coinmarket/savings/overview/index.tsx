@@ -7,7 +7,7 @@ import {
     WithCoinmarketProps,
 } from '@wallet-components';
 import styled from 'styled-components';
-import { Icon } from '@trezor/components';
+import { Icon, variables } from '@trezor/components';
 import { FormattedCryptoAmount, Translation } from '@suite-components';
 import { Formatters, useFormatters } from '@suite-common/formatters';
 import { PaymentDetail } from './components/PaymentDetail';
@@ -16,9 +16,11 @@ import {
     useSavingsOverview,
 } from '@wallet-hooks/useCoinmarketSavingsOverview';
 import type { PaymentFrequency, SavingsKYCStatus, SavingsTrade } from 'invity-api';
-import WaitingForFirstPayment from './components/WaitingForFirstPayment';
+import { WaitingForFirstPayment } from './components/WaitingForFirstPayment';
 import { darken } from 'polished';
 import { NetworkSymbol } from '@wallet-types';
+import { AllFeesIncluded } from '../AllFeesIncluded';
+import { ProvidedBy } from '../ProvidedBy';
 
 const Wrapper = styled.div`
     display: flex;
@@ -47,7 +49,7 @@ const HeaderBlock = styled.div`
     justify-content: space-between;
     align-items: stretch;
     align-content: stretch;
-    height: 104px;
+    height: 120px;
 `;
 const Setup = styled(HeaderBlock)`
     background-color: ${props => props.theme.BG_GREY};
@@ -73,25 +75,31 @@ const Period = styled.div`
 const SoFarSaved = styled.div`
     display: flex;
     flex-direction: column;
+    align-items: flex-end;
     background-color: ${props => props.theme.BG_WHITE};
-    padding: 21px;
+    padding: 21px 0 0 21px;
     width: 100%;
-`;
-
-const Fiat = styled.div`
-    font-size: 20px;
-    line-height: 28px;
-    color: ${props => props.theme.TYPE_GREEN};
-    justify-content: end;
-    display: flex;
 `;
 
 const Crypto = styled.div`
     font-size: 20px;
     line-height: 28px;
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
-    justify-content: end;
+    color: ${props => props.theme.TYPE_GREEN};
     display: flex;
+`;
+
+const Fiat = styled.div`
+    font-size: 20px;
+    line-height: 28px;
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    display: flex;
+`;
+
+const Disclaimer = styled.div`
+    max-width: 300px;
+    margin-top: 10px;
+    font-size: ${variables.FONT_SIZE.SMALL};
+    text-align: right;
 `;
 
 const StyledIcon = styled(Icon)`
@@ -102,6 +110,11 @@ const StyledIcon = styled(Icon)`
         border-radius: 50%;
         background: ${props => darken(0.1)(props.theme.BG_GREY)};
     }
+`;
+
+const Footer = styled.div`
+    text-align: right;
+    margin-top: 20px;
 `;
 
 type SavingsOverviewPeriodTranslationId =
@@ -118,7 +131,8 @@ function renderSavingsStatus(
     savingsTradeItemCompletedExists: boolean,
     savingsFiatSum: string,
     savingsCryptoSum: string,
-    savingsTrade?: SavingsTrade,
+    coinTransferDelayed: boolean,
+    savingsTrade: SavingsTrade,
     kycFinalStatus?: SavingsKYCStatus,
     selectedProviderCompanyName?: string,
 ) {
@@ -131,23 +145,36 @@ function renderSavingsStatus(
         case kycFinalStatus === 'Failed':
             return <KYCFailed providerName={selectedProviderCompanyName} />;
         case !savingsTradeItemCompletedExists:
-            return <WaitingForFirstPayment />;
+            return (
+                <WaitingForFirstPayment
+                    paymentMethod={savingsTrade.paymentMethod}
+                    providerName={selectedProviderCompanyName}
+                />
+            );
         default:
             return (
                 <SoFarSaved>
-                    <Fiat>
-                        ≈&nbsp;
-                        <FiatAmountFormatter
-                            currency={savingsTrade?.fiatCurrency}
-                            value={savingsFiatSum}
-                        />
-                    </Fiat>
                     <Crypto>
                         <FormattedCryptoAmount
                             value={savingsCryptoSum}
-                            symbol={savingsTrade?.cryptoCurrency as NetworkSymbol}
+                            symbol={savingsTrade.cryptoCurrency as NetworkSymbol}
                         />
                     </Crypto>
+                    <Fiat>
+                        ≈&nbsp;
+                        <FiatAmountFormatter
+                            currency={savingsTrade.fiatCurrency}
+                            value={savingsFiatSum}
+                        />
+                    </Fiat>
+                    {coinTransferDelayed && (
+                        <Disclaimer>
+                            <Translation
+                                id="TR_SAVINGS_OVERVIEW_COIN_TRANSFER_DELAYED"
+                                values={{ providerName: selectedProviderCompanyName }}
+                            />
+                        </Disclaimer>
+                    )}
                 </SoFarSaved>
             );
     }
@@ -166,7 +193,7 @@ const Overview = (props: WithCoinmarketProps) => {
         savingsCryptoSum,
         savingsFiatSum,
         kycFinalStatus,
-        selectedProviderCompanyName,
+        selectedProvider,
     } = contextValues;
     const { FiatAmountFormatter } = formatters;
 
@@ -187,14 +214,14 @@ const Overview = (props: WithCoinmarketProps) => {
                             <SetupValues>
                                 <FiatPayment>
                                     <FiatAmountFormatter
-                                        value={savingsTrade?.fiatStringAmount || 0}
-                                        currency={savingsTrade?.fiatCurrency}
+                                        value={savingsTrade.fiatStringAmount || 0}
+                                        currency={savingsTrade.fiatCurrency}
                                         maximumFractionDigits={2}
                                         minimumFractionDigits={0}
                                     />
                                 </FiatPayment>
                                 <Period>
-                                    {savingsTrade?.paymentFrequency && (
+                                    {savingsTrade.paymentFrequency && (
                                         <Translation
                                             id={getPeriodTranslationId(
                                                 savingsTrade.paymentFrequency,
@@ -202,6 +229,7 @@ const Overview = (props: WithCoinmarketProps) => {
                                         />
                                     )}
                                 </Period>
+                                <AllFeesIncluded />
                             </SetupValues>
                             <StyledIcon
                                 icon="PENCIL"
@@ -217,9 +245,10 @@ const Overview = (props: WithCoinmarketProps) => {
                             savingsTradeItemCompletedExists,
                             savingsFiatSum,
                             savingsCryptoSum,
+                            !!selectedProvider?.flow.paymentInfo.coinTransferDelayed,
                             savingsTrade,
                             kycFinalStatus,
-                            selectedProviderCompanyName,
+                            selectedProvider?.companyName,
                         )}
                     </Right>
                 </HeaderWrapper>
@@ -236,6 +265,9 @@ const Overview = (props: WithCoinmarketProps) => {
                         savingsTradePayment={followingPayment}
                     />
                 )}
+                <Footer>
+                    <ProvidedBy providerName={selectedProvider?.companyName} />
+                </Footer>
             </Wrapper>
         </SavingsOverviewContext.Provider>
     );

@@ -6,6 +6,7 @@ import { Translation } from '@suite-components';
 
 const StyledTooltip = styled(Tooltip)`
     display: inline-block;
+    font-size: ${variables.FONT_SIZE.SMALL};
 `;
 
 const StyledLink = styled(Link)`
@@ -14,7 +15,7 @@ const StyledLink = styled(Link)`
     padding: 0 !important;
     cursor: pointer;
     color: ${({ theme }) => theme.TYPE_LIGHTER_GREY};
-    font-size: ${variables.FONT_SIZE.SMALL};
+    font-size: ${variables.FONT_SIZE.TINY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     display: inline;
     align-items: center;
