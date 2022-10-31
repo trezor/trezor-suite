@@ -11,6 +11,7 @@ const config: PlaywrightTestConfig = {
     },
     reportSlowTests: null,
     reporter: 'list',
+    timeout: 1000 * 60 * 30,
 };
 
 // eslint-disable-next-line import/no-default-export

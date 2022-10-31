@@ -6,6 +6,7 @@ import { Page, _electron as electron } from 'playwright';
 const mkdir = promisify(fs.mkdir);
 const fileExists = promisify(fs.exists);
 const copyFile = promisify(fs.copyFile);
+const chmod = promisify(fs.chmod);
 
 export const launchSuite = async () => {
     const electronApp = await electron.launch({
@@ -58,6 +59,11 @@ export const patchBinaries = async () => {
     await copyFile(
         coinjoinMiddlewarePathFrom,
         `${coinjoinMiddlewarePathTo}/WalletWasabi.WabiSabiClientLibrary`,
+    );
+    // todo: for some reason, wabisabiclient lib needs to update permissions
+    await chmod(
+        `${coinjoinMiddlewarePathTo}/WalletWasabi.WabiSabiClientLibrary`,
+        fs.constants.S_IXOTH,
     );
 };
 
