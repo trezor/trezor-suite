@@ -42,5 +42,6 @@ export const initAnalytics = () => {
             onEnable,
             onDisable,
         },
+        useQueue: true,
     });
 };

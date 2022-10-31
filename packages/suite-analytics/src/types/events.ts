@@ -79,7 +79,7 @@ export type SuiteAnalyticsEvent =
           type: EventType.DeviceSetupCompleted;
           payload: Partial<Omit<OnboardingAnalytics, 'startTime'>> & {
               duration: number;
-              device: 'T' | '1';
+              device: string;
           };
       }
     | {

@@ -10,6 +10,7 @@ import {
     PopupHandshake,
 } from '@trezor/connect';
 import { reactEventBus } from '@trezor/connect-ui/src/utils/eventBus';
+import { analytics, EventType } from '@trezor/connect-analytics';
 
 import * as view from './view';
 import {
@@ -74,6 +75,15 @@ const handleMessage = (event: MessageEvent<PopupEvent | UiEvent>) => {
     }
 
     const message = parseMessage(data);
+
+    if (
+        message?.payload &&
+        typeof message.payload === 'object' &&
+        'analytics' in message.payload &&
+        message.payload.analytics
+    ) {
+        analytics.report(message.payload.analytics);
+    }
 
     console.log('message.type', message.type);
     console.log('message', message);

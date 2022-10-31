@@ -164,17 +164,12 @@ const isSelectedInstance = [
 const getDeviceModel = [
     {
         description: `model T`,
-        device: SUITE_DEVICE,
+        device: getSuiteDevice(undefined, { model: 'T' }),
         result: 'T',
     },
     {
         description: `model One`,
-        device: getSuiteDevice(undefined, { major_version: 1 }),
-        result: '1',
-    },
-    {
-        description: `model One (no features)`,
-        device: getSuiteDevice({ type: 'unacquired' }),
+        device: getSuiteDevice(undefined, { model: '1' }),
         result: '1',
     },
 ];

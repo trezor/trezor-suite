@@ -4,12 +4,11 @@ import { Image, ImageProps } from '@trezor/components';
 import { ImageType } from '@trezor/components/src/components/Image/Image';
 import { getDeviceModel } from '@trezor/device-utils';
 
-const getImage = (majorVersion: '1' | 'T'): ImageType => {
+const getImage = (majorVersion: string): ImageType => {
     switch (majorVersion) {
         case '1':
             return 'ONE_DEVICE_CONFIRM';
         case 'T':
-            return 'T_DEVICE_CONFIRM';
         default:
             return 'T_DEVICE_CONFIRM';
     }
