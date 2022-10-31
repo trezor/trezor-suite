@@ -8,6 +8,7 @@ import { Account } from '@suite-common/wallet-types';
 import { Card, Translation } from '@suite-components';
 import { useActions, useSelector } from '@suite-hooks';
 import { Button } from '@trezor/components';
+import { selectCoinjoinAccountByKey } from '@wallet-reducers/coinjoinReducer';
 import { BalancePrivacyBreakdown } from './BalancePrivacyBreakdown';
 import { CoinjoinStatus } from './CoinjoinStatus';
 
@@ -37,9 +38,7 @@ export const BalanceSection = ({ account }: BalanceSectionProps) => {
         restoreSession: coinjoinActions.restoreCoinjoinSession.bind(null, account),
         stopSession: modalActions.openModal.bind(null, { type: 'cancel-coinjoin' }),
     });
-    const { coinjoin } = useSelector(state => state.wallet);
-
-    const session = coinjoin.accounts.find(a => a.key === account.key)?.session;
+    const coinjoinAccount = useSelector(state => selectCoinjoinAccountByKey(state, account.key));
 
     const goToSetup = () => actions.goto('wallet-anonymize', { preserveParams: true });
 
@@ -47,9 +46,9 @@ export const BalanceSection = ({ account }: BalanceSectionProps) => {
         <Container>
             <BalancePrivacyBreakdown />
 
-            {session ? (
+            {coinjoinAccount?.session ? (
                 <CoinjoinStatus
-                    session={session}
+                    session={coinjoinAccount.session}
                     pauseSession={actions.pauseSession}
                     restoreSession={actions.restoreSession}
                     stopSession={actions.stopSession}
