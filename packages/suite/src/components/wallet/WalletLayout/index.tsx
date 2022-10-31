@@ -91,7 +91,9 @@ export const WalletLayout = ({
                     height="300px"
                     animate={account.loader === 'account-loading'}
                 >
-                    <AccountLoadingProgress account={account} />
+                    {account.account?.backendType === 'coinjoin' && (
+                        <AccountLoadingProgress account={account} />
+                    )}
                 </SkeletonRectangle>
             </Wrapper>
         );
