@@ -19,6 +19,50 @@ export type EventTypeDeviceSelected = {
 };
 
 export type ConnectAnalyticsEvent =
+    | {
+          type: EventType.AppReady;
+          payload: {
+              version?: string;
+              origin?: string;
+              referrerApp?: string;
+              referrerEmail?: string;
+              method?: string;
+              transportType?: string;
+              transportVersion?: string;
+          };
+      }
+    | {
+          type: EventType.AppInfo;
+          payload: {
+              browserName: string;
+              browserVersion: string;
+              osName: string;
+              osVersion: string;
+              screenWidth: number;
+              screenHeight: number;
+              windowWidth: number;
+              windowHeight: number;
+              platformLanguages: string;
+          };
+      }
+    | {
+          type: EventType.ViewChange;
+          payload: {
+              nextView: string;
+          };
+      }
+    | {
+          type: EventType.WalletType;
+          payload: {
+              type: 'hidden' | 'standard';
+          };
+      }
+    | {
+          type: EventType.SettingsPermissions;
+          payload: {
+              duration: 'lifetime' | 'session';
+          };
+      }
     | EventTypeDeviceSelected
     | {
           type: EventType.SettingsTracking;
