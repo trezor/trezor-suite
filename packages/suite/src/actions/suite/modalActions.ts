@@ -135,6 +135,10 @@ export type UserContextPayload =
           decision: Deferred<RequestEnableTorResponse>;
       }
     | {
+          type: 'disable-tor-stop-coinjoin';
+          decision: Deferred<boolean>;
+      }
+    | {
           type: 'tor-loading';
           decision: Deferred<boolean>;
       }
@@ -231,6 +235,7 @@ type DeferredModals = Extract<
             | 'qr-reader'
             | 'disable-tor'
             | 'request-enable-tor'
+            | 'disable-tor-stop-coinjoin'
             | 'tor-loading'
             | 'review-transaction'
             | 'import-transaction'

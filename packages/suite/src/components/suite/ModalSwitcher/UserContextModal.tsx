@@ -37,6 +37,7 @@ import {
 
 import type { AcquiredDevice } from '@suite-types';
 import type { ReduxModalProps } from './types';
+import { DisableTorStopCoinjoin } from '@suite-components/modals/DisableTorStopCoinjoin';
 
 /** Modals opened as result of user action */
 export const UserContextModal = ({
@@ -151,6 +152,8 @@ export const UserContextModal = ({
             return <DisableTor decision={payload.decision} onCancel={onCancel} />;
         case 'request-enable-tor':
             return <RequestEnableTor decision={payload.decision} onCancel={onCancel} />;
+        case 'disable-tor-stop-coinjoin':
+            return <DisableTorStopCoinjoin decision={payload.decision} onCancel={onCancel} />;
         case 'tor-loading':
             return <TorLoading decision={payload.decision} onCancel={onCancel} />;
         case 'cancel-coinjoin':
