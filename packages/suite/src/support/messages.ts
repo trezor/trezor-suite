@@ -3770,6 +3770,14 @@ export default defineMessages({
         id: 'TR_TOR_ENABLE',
         defaultMessage: 'Enable Tor',
     },
+    TR_TOR_KEEP_RUNNING: {
+        id: 'TR_TOR_KEEP_RUNNING',
+        defaultMessage: 'Keep running Tor',
+    },
+    TR_TOR_STOP: {
+        id: 'TR_TOR_STOP',
+        defaultMessage: 'Stop Tor',
+    },
     TR_TOR_DISABLE: {
         id: 'TR_TOR_DISABLE',
         defaultMessage: 'Disable Tor',
@@ -3845,6 +3853,11 @@ export default defineMessages({
     TR_TOR_REQUEST_ENABLE_FOR_COIN_JOIN_SUBTITLE: {
         id: 'TR_TOR_REQUEST_ENABLE_FOR_COIN_JOIN_SUBTITLE',
         defaultMessage: "Please select 'Enable Tor' to continue or 'Leave' to quit the process.",
+    },
+    TR_TOR_KEEP_RUNNING_FOR_COIN_JOIN_SUBTITLE: {
+        id: 'TR_TOR_KEEP_RUNNING_FOR_COIN_JOIN_SUBTITLE',
+        defaultMessage:
+            "Please select 'Keep running Tor' to continue or 'Stop Tor' to quit the CoinJoin process.",
     },
     TR_TOR_REQUEST_ENABLE_FOR_COIN_JOIN_LEAVE: {
         id: 'TR_TOR_REQUEST_ENABLE_FOR_COIN_JOIN_LEAVE',
