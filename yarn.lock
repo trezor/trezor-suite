@@ -26105,26 +26105,27 @@ __metadata:
   languageName: node
   linkType: hard
 
-"patch-package@npm:^6.4.7":
-  version: 6.4.7
-  resolution: "patch-package@npm:6.4.7"
+"patch-package@npm:6.5.0":
+  version: 6.5.0
+  resolution: "patch-package@npm:6.5.0"
   dependencies:
     "@yarnpkg/lockfile": ^1.1.0
-    chalk: ^2.4.2
+    chalk: ^4.1.2
     cross-spawn: ^6.0.5
     find-yarn-workspace-root: ^2.0.0
     fs-extra: ^7.0.1
     is-ci: ^2.0.0
     klaw-sync: ^6.0.0
-    minimist: ^1.2.0
+    minimist: ^1.2.6
     open: ^7.4.2
     rimraf: ^2.6.3
     semver: ^5.6.0
     slash: ^2.0.0
     tmp: ^0.0.33
+    yaml: ^1.10.2
   bin:
     patch-package: index.js
-  checksum: f36d5324da3b69ee635e7cd2c68f4d3dd89dc91d60ffdaad3b602fd953277f4da901c91033683bf6ff31c14799bc049849af3a389455c25d0435fe9cfb0d4088
+  checksum: d300e87617e3fb990d1f78fd5be205b5a5e65dfdf197b1e7f76f3b3dfe1551a03d276cb5ee6b82ab4d57e78f54ddc22bde803eec1b0896560262b276d0b2c4ab
   languageName: node
   linkType: hard
 
@@ -32453,7 +32454,7 @@ __metadata:
     metro-react-native-babel-preset: ^0.72.3
     npm-run-all: ^4.1.5
     nx: 14.5.10
-    patch-package: ^6.4.7
+    patch-package: 6.5.0
     postinstall-postinstall: ^2.1.0
     prettier: ^2.7.1
     prettier-eslint: ^15.0.1
