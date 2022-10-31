@@ -1,7 +1,7 @@
 import { useCallback, useEffect } from 'react';
 import type {
-    SavingsSetupFormState,
     SavingsSetupContextValues,
+    SavingsSetupFormState,
     UseSavingsSetupProps,
 } from '@wallet-types/coinmarketSavingsSetup';
 import { useForm, useWatch } from 'react-hook-form';
@@ -17,8 +17,8 @@ import { useCoinmarketNavigation } from '@wallet-hooks/useCoinmarketNavigation';
 import regional from '@wallet-constants/coinmarket/regional';
 import {
     calculateAnnualSavings,
-    getPaymentFrequencyOptions,
     createReturnLink,
+    getPaymentFrequencyOptions,
 } from '@wallet-utils/coinmarket/savingsUtils';
 import { isDesktop } from '@suite-utils/env';
 import { useFormDraft } from '@wallet-hooks/useFormDraft';
@@ -126,7 +126,7 @@ export const useSavingsSetup = ({
     const methods = useForm<SavingsSetupFormState>({
         mode: 'onChange',
     });
-    const { register, control, formState, setValue, reset } = methods;
+    const { register, control, formState, setValue } = methods;
 
     const defaultCountryOption = regional.countriesOptions.find(
         option => option.value === userCountry,
@@ -172,7 +172,7 @@ export const useSavingsSetup = ({
         setValue,
     ]);
 
-    const { getDraft, saveDraft } = useFormDraft('coinmarket-savings-setup-request');
+    const { getDraft, saveDraft, removeDraft } = useFormDraft('coinmarket-savings-setup-request');
 
     useEffect(() => {
         const requestForm = getDraft(account.descriptor) as Parameters<typeof submitRequestForm>[0];
@@ -201,10 +201,7 @@ export const useSavingsSetup = ({
         async (formValues: SavingsSetupFormState) => {
             const { customFiatAmount, fiatAmount, paymentFrequency, country } = formValues;
             if (selectedProvider && country) {
-                const result = await openCoinmarketSavingsConfirmModal(
-                    selectedProvider.companyName,
-                );
-                if (result) {
+                if (await openCoinmarketSavingsConfirmModal(selectedProvider.companyName)) {
                     const savingsParameters: InitSavingsTradeRequest = {
                         amount: customFiatAmount || fiatAmount,
                         exchange: selectedProvider.name,
@@ -226,7 +223,7 @@ export const useSavingsSetup = ({
                         }
                     }
                 } else {
-                    reset(formValues);
+                    removeDraft(account.descriptor);
                 }
             }
         },
@@ -234,7 +231,7 @@ export const useSavingsSetup = ({
             account.descriptor,
             account.symbol,
             openCoinmarketSavingsConfirmModal,
-            reset,
+            removeDraft,
             saveDraft,
             selectedProvider,
             submitRequestForm,

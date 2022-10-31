@@ -1144,6 +1144,10 @@ export default defineMessages({
         defaultMessage: 'No providers',
         id: 'TR_SAVINGS_NO_PROVIDERS',
     },
+    TR_SAVINGS_PROVIDED_BY: {
+        defaultMessage: 'Provided by {providerName}',
+        id: 'TR_SAVINGS_PROVIDED_BY',
+    },
     TR_SAVINGS_SETUP_CUSTOM_FIAT_AMOUNT_REQUIRED: {
         defaultMessage: 'Amount is required.',
         id: 'TR_SAVINGS_SETUP_CUSTOM_FIAT_AMOUNT_REQUIRED',
@@ -1281,6 +1285,11 @@ export default defineMessages({
         id: 'TR_SAVINGS_OVERVIEW_PERIOD_QUARTERLY',
         dynamic: true,
     },
+    TR_SAVINGS_OVERVIEW_COIN_TRANSFER_DELAYED: {
+        defaultMessage:
+            'Coins are in {providerName} custody and will be transferred to your Trezor automatically.',
+        id: 'TR_SAVINGS_OVERVIEW_COIN_TRANSFER_DELAYED',
+    },
     TR_SAVINGS_OVERVIEW_PAYMENT_DETAIL_CURRENT_PAYMENT: {
         defaultMessage: 'Current payment',
         id: 'TR_SAVINGS_OVERVIEW_PAYMENT_DETAIL_CURRENT_PAYMENT',
@@ -1305,14 +1314,23 @@ export default defineMessages({
         defaultMessage: 'Hide payment details',
         id: 'TR_SAVINGS_OVERVIEW_PAYMENT_DETAIL_HIDE_PAYMENT_DETAILS_BUTTON_LABEL',
     },
-    TR_SAVINGS_OVERVIEW_WAITING_FOR_FIRST_PAYMENT_HEADER: {
+    TR_SAVINGS_OVERVIEW_WAITING_FOR_FIRST_BANKTRANSFER_PAYMENT_HEADER: {
         defaultMessage: 'Waiting for your first payment.',
         id: 'TR_SAVINGS_OVERVIEW_WAITING_FOR_FIRST_PAYMENT_HEADER',
     },
-    TR_SAVINGS_OVERVIEW_WAITING_FOR_FIRST_PAYMENT_DESCRIPTION: {
+    TR_SAVINGS_OVERVIEW_WAITING_FOR_FIRST_BANKTRANSFER_PAYMENT_DESCRIPTION: {
         defaultMessage:
             'Select View payment details to find the information you need to make the payment.',
         id: 'TR_SAVINGS_OVERVIEW_WAITING_FOR_FIRST_PAYMENT_DESCRIPTION',
+    },
+    TR_SAVINGS_OVERVIEW_WAITING_FOR_FIRST_ACH_PAYMENT_HEADER: {
+        defaultMessage: 'Now you wait.',
+        id: 'TR_SAVINGS_OVERVIEW_WAITING_FOR_FIRST_CHARGE_HEADER',
+    },
+    TR_SAVINGS_OVERVIEW_WAITING_FOR_FIRST_ACH_PAYMENT_DESCRIPTION: {
+        defaultMessage:
+            '{providerName} will charge your bank account automatically. It usually takes until the next working day.',
+        id: 'TR_SAVINGS_OVERVIEW_WAITING_FOR_FIRST_CHARGE_DESCRIPTION',
     },
     TR_SAVINGS_STATUS_PENDING: {
         defaultMessage: 'Pending',
@@ -1336,7 +1354,7 @@ export default defineMessages({
     },
     TR_SAVINGS_TERMS_1: {
         defaultMessage:
-            "You're here to buy cryptocurrency. If you were directed to this site for any other reason, please contact {provider} support before proceeding.",
+            "You're here to buy Bitcoin. If you were directed to this site for any other reason, please contact {provider} support before proceeding.",
         id: 'TR_SAVINGS_TERMS_1',
     },
     TR_SAVINGS_TERMS_2: {
@@ -1351,12 +1369,12 @@ export default defineMessages({
     },
     TR_SAVINGS_TERMS_4: {
         defaultMessage:
-            'You understand that cryptocurrencies are an emerging financial tool and that regulations may be limited in some areas. This may put you at a higher risk of fraud, theft, or market instability.',
+            'You understand that Bitcoin is an emerging financial tool and that regulations may be limited in some areas. This may put you at a higher risk of fraud, theft, or market instability.',
         id: 'TR_SAVINGS_TERMS_4',
     },
     TR_SAVINGS_TERMS_5: {
         defaultMessage:
-            "You understand that cryptocurrency transactions are irreversible and you won't be able to receive a refund for your purchase.",
+            "You understand that Bitcoin transactions are irreversible and you won't be able to receive a refund for your purchase.",
         id: 'TR_SAVINGS_TERMS_5',
     },
     TR_SAVINGS_I_UNDERSTAND: {
@@ -4403,8 +4421,8 @@ export default defineMessages({
         defaultMessage: 'Apple Pay',
         dynamic: true,
     },
-    TR_PAYMENT_METHOD_UNKOWN: {
-        id: 'TR_PAYMENT_METHOD_UNKOWN',
+    TR_PAYMENT_METHOD_UNKNOWN: {
+        id: 'TR_PAYMENT_METHOD_UNKNOWN',
         defaultMessage: 'Unknown',
     },
     TR_PAYMENT_METHOD_POLI: {

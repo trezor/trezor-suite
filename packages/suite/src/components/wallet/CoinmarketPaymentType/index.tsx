@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { variables } from '@trezor/components';
 import invityApi from '@suite-services/invityAPI';
-import { BuyCryptoPaymentMethod } from 'invity-api';
+import { BuyCryptoPaymentMethod, SavingsPaymentMethod } from 'invity-api';
 import { Translation } from '@suite-components';
 
 const Wrapper = styled.div`
@@ -33,16 +33,16 @@ const Text = styled.div`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
-interface Props {
+interface CoinmarketPaymentTypeProps {
     children?: React.ReactNode;
-    method?: BuyCryptoPaymentMethod;
+    method?: BuyCryptoPaymentMethod | SavingsPaymentMethod;
 }
 
-const CoinmarketPaymentType = ({ children, method }: Props) => (
+export const CoinmarketPaymentType = ({ children, method }: CoinmarketPaymentTypeProps) => (
     <Wrapper>
         {!method && (
             <Text>
-                <Translation id="TR_PAYMENT_METHOD_UNKOWN" />
+                <Translation id="TR_PAYMENT_METHOD_UNKNOWN" />
             </Text>
         )}
         {method && (
@@ -56,7 +56,7 @@ const CoinmarketPaymentType = ({ children, method }: Props) => (
                     </Bg>
                 </IconWrapper>
                 <div>
-                    {/* temporary solution - payment mehtod name will be returned by API server to be independent on translations */}
+                    {/* temporary solution - payment method name will be returned by API server to be independent on translations */}
                     <Text>
                         <Translation id={`TR_PAYMENT_METHOD_${method.toUpperCase()}` as any} />
                     </Text>
@@ -66,5 +66,3 @@ const CoinmarketPaymentType = ({ children, method }: Props) => (
         )}
     </Wrapper>
 );
-
-export default CoinmarketPaymentType;

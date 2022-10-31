@@ -14,7 +14,8 @@ import { Translation } from '@suite-components';
 import { AddressOptions } from '@wallet-views/coinmarket/common/AddressOptions';
 import FiatAmount from '../components/FiatAmount';
 import Summary from '../components/Summary';
-import { AllFeesIncluded } from '../components/AllFeesIncluded';
+import { AllFeesIncluded } from '../../AllFeesIncluded';
+import { ProvidedBy } from '../../ProvidedBy';
 
 const Header = styled.div`
     font-weight: 500;
@@ -53,6 +54,13 @@ const ReceivingAddressChangesPaymentInfoLabel = styled.div`
     margin-top: 8px;
     font-size: ${variables.FONT_SIZE.SMALL};
     color: ${props => props.theme.TYPE_DARK_GREY};
+`;
+
+const Footer = styled.div`
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-top: 30px;
 `;
 
 const CoinmarketSavingsSetupContinue = (props: WithSelectedAccountLoadedProps) => {
@@ -148,9 +156,13 @@ const CoinmarketSavingsSetupContinue = (props: WithSelectedAccountLoadedProps) =
                     </ReceivingAddressChangesPaymentInfoLabel>
                 )}
             </AddressOptionsWrapper>
-            <Button isDisabled={!canConfirmSetup} isLoading={isSubmitting}>
-                <Translation id="TR_SAVINGS_SETUP_CONFIRM_BUTTON" />
-            </Button>
+
+            <Footer>
+                <Button isDisabled={!canConfirmSetup} isLoading={isSubmitting}>
+                    <Translation id="TR_SAVINGS_SETUP_CONFIRM_BUTTON" />
+                </Button>
+                <ProvidedBy providerName={selectedProviderName} />
+            </Footer>
         </form>
     );
 };

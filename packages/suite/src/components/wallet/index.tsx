@@ -19,7 +19,7 @@ import {
     CoinmarketP2pTopPanel,
 } from './CoinmarketTopPanel';
 import CoinmarketProvidedByInvity from './CoinmarketProvidedByInvity';
-import CoinmarketPaymentType from './CoinmarketPaymentType';
+import { CoinmarketPaymentType } from './CoinmarketPaymentType';
 import CoinmarketFooter from './CoinmarketFooter';
 import CoinmarketBuyOfferInfo from './CoinmarketBuyOfferInfo';
 import CoinmarketSellOfferInfo from './CoinmarketSellOfferInfo';
