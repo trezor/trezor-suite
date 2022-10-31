@@ -168,12 +168,6 @@ export interface Round {
     inputRegistrationEnd: string;
 }
 
-export interface TxPaymentRequest {
-    amount: number;
-    recipient_name: string;
-    signature: string;
-}
-
 // errors from coordinator in string based format (see ./utils/http coordinatorRequest errorCode handling)
 export enum WabiSabiProtocolErrorCode {
     RoundNotFound = 'RoundNotFound',
@@ -211,4 +205,33 @@ export enum WabiSabiProtocolErrorCode {
     AliceAlreadySignalled = 'AliceAlreadySignalled',
     AliceAlreadyConfirmedConnection = 'AliceAlreadyConfirmedConnection',
     AlreadyRegisteredScript = 'AlreadyRegisteredScript',
+}
+
+// types and below should be removed after affiliate server implementation on coordinator
+
+interface AffiliateRequestInputs {
+    prevout: {
+        hash: string;
+        index: number;
+    };
+    script_pubkey: string;
+}
+
+interface AffiliateRequestOutputs {
+    amount: number;
+    script_pubkey: string;
+}
+
+export interface CoinjoinAffiliateTx {
+    inputs: AffiliateRequestInputs[];
+    outputs: AffiliateRequestOutputs[];
+}
+
+export interface CoinjoinAffiliateRequest {
+    fee_rate: number;
+    no_fee_threshold: number;
+    min_registrable_amount: number;
+    mask_public_key: string;
+    coinjoin_flags_array: number[];
+    signature: string;
 }
