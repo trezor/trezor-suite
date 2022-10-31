@@ -1,5 +1,5 @@
 import { AccountAddress } from './account';
-import { RoundPhase, TxPaymentRequest } from './coordinator';
+import { RoundPhase, CoinjoinAffiliateRequest } from './coordinator';
 
 export interface SerializedAlice {
     accountKey: string;
@@ -25,6 +25,8 @@ interface CoinjoinTxInputs {
     path?: string;
     outpoint: string;
     amount: number;
+    hash: string;
+    index: number;
     commitmentData: string;
     scriptPubKey: string;
     ownershipProof: string;
@@ -39,7 +41,7 @@ interface CoinjoinTxOutputs {
 export interface CoinjoinTransactionData {
     inputs: CoinjoinTxInputs[];
     outputs: CoinjoinTxOutputs[];
-    paymentRequest: TxPaymentRequest;
+    affiliateRequest: CoinjoinAffiliateRequest;
 }
 
 export interface CoinjoinRequestOwnershipEvent {
@@ -49,14 +51,14 @@ export interface CoinjoinRequestOwnershipEvent {
     commitmentData: string;
 }
 
-export interface CoinjoinRequestWitnessEvent {
-    type: 'witness';
+export interface CoinjoinRequestSignatureEvent {
+    type: 'signature';
     roundId: string;
     inputs: SerializedAlice[];
     transaction: CoinjoinTransactionData;
 }
 
-export type CoinjoinRequestEvent = CoinjoinRequestOwnershipEvent | CoinjoinRequestWitnessEvent;
+export type CoinjoinRequestEvent = CoinjoinRequestOwnershipEvent | CoinjoinRequestSignatureEvent;
 
 export interface CoinjoinResponseOwnership {
     outpoint: string;
@@ -65,8 +67,8 @@ export interface CoinjoinResponseOwnership {
 
 export interface CoinjoinResponseWitness {
     outpoint: string;
-    witness: string;
-    witnessIndex: number;
+    signature: string;
+    index: number;
 }
 
 export interface CoinjoinResponseWithError {
@@ -80,10 +82,10 @@ export interface CoinjoinResponseOwnershipEvent {
     inputs: (CoinjoinResponseOwnership | CoinjoinResponseWithError)[];
 }
 
-export interface CoinjoinResponseWitnessEvent {
-    type: 'witness';
+export interface CoinjoinResponseSignatureEvent {
+    type: 'signature';
     roundId: string;
     inputs: (CoinjoinResponseWitness | CoinjoinResponseWithError)[];
 }
 
-export type CoinjoinResponseEvent = CoinjoinResponseOwnershipEvent | CoinjoinResponseWitnessEvent;
+export type CoinjoinResponseEvent = CoinjoinResponseOwnershipEvent | CoinjoinResponseSignatureEvent;

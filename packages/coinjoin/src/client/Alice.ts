@@ -1,4 +1,4 @@
-import { getInputSize, getOutputSize } from '../utils/coordinatorUtils';
+import { getInputSize, getOutputSize, getWitnessFromSignature } from '../utils/coordinatorUtils';
 import {
     AllowedScriptTypes,
     RegistrationData,
@@ -86,6 +86,11 @@ export class Alice {
     setConfirmedCredentials(amount: Credentials[], vsize: Credentials[]) {
         this.confirmedAmountCredentials = amount;
         this.confirmedVsizeCredentials = vsize;
+    }
+
+    setWitness(signature: string, index: number) {
+        this.witness = getWitnessFromSignature(signature);
+        this.witnessIndex = index;
     }
 
     // serialize class

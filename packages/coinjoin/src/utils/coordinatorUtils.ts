@@ -1,6 +1,17 @@
-import { payments, Network } from '@trezor/utxo-lib';
+import {
+    payments,
+    address as baddress,
+    script as bscript,
+    bufferutils,
+    Network,
+} from '@trezor/utxo-lib';
 
-import { AllowedScriptTypes } from '../types/coordinator';
+import {
+    AllowedScriptTypes,
+    CoinjoinOutputAddedEvent,
+    CoinjoinInput,
+    CoinjoinOutput,
+} from '../types/coordinator';
 
 // WabiSabi coordinator is using custom format of address scriptPubKey
 // utxo-lib format: `OP_0 {sha256(redeemScript)}`, `OP_1 {witnessProgram}`
@@ -44,6 +55,22 @@ export const getScriptTypeFromScriptPubKey = (scriptPubKey: string) => {
     throw new Error('Unsupported scriptType');
 };
 
+// return WabiSabi.scriptPubKey in utxo-lib format (see getScriptPubKeyFromAddress)
+// return as hex string or as buffer
+export function prefixScriptPubKey(scriptPubKey: string, useHex?: boolean): string;
+export function prefixScriptPubKey(scriptPubKey: string, useHex: false): Buffer;
+export function prefixScriptPubKey(scriptPubKey: string, useHex = true) {
+    const [OP, hash] = scriptPubKey.split(' ');
+    const script = bscript.fromASM(`OP_${OP} ${hash}`);
+    return useHex ? script.toString('hex') : script;
+}
+
+// return address from WabiSabi.scriptPubKey
+export const getAddressFromScriptPubKey = (scriptPubKey: string, network: Network) => {
+    const script = prefixScriptPubKey(scriptPubKey, false);
+    return baddress.fromOutputScript(script, network);
+};
+
 // return WabiSabi coordinator config constants
 export const getInputSize = (type: AllowedScriptTypes) => {
     if (type === 'Taproot') return 58;
@@ -61,4 +88,73 @@ export const getOutputSize = (type: AllowedScriptTypes) => {
 export const getExternalOutputSize = (scriptPubKey: string) => {
     const type = getScriptTypeFromScriptPubKey(scriptPubKey);
     return getOutputSize(type);
+};
+
+// read index, hash and txid from input `outpoint`
+export const readOutpoint = (outpoint: string) => {
+    const reader = new bufferutils.BufferReader(Buffer.from(outpoint, 'hex'));
+    const txid = reader.readSlice(32);
+    const index = reader.readUInt32();
+    const hash = bufferutils.reverseBuffer(txid).toString('hex');
+    return { index, hash, txid: txid.toString('hex') };
+};
+
+// WalletWasabi/WalletWasabi/Helpers/ByteArrayComparer.cs
+const compareByteArray = (left: Buffer, right: Buffer) => {
+    if (!left && !right) return 0;
+    if (!left) return 1;
+    if (!right) return -1;
+
+    const min = Math.min(left.length, right.length);
+    for (let i = 0; i < min; i++) {
+        if (left[i] < right[i]) return -1;
+        if (left[i] > right[i]) return 1;
+    }
+    return left.length - right.length;
+};
+
+// WalletWasabi/WalletWasabi/WabiSabi/Models/MultipartyTransaction/SigningState.cs
+// merge outputs with the same scriptPubKey's
+export const mergePubkeys = (outputs: CoinjoinOutputAddedEvent[]) =>
+    outputs.reduce((a, item) => {
+        const duplicates = outputs.filter(o => o.output.scriptPubKey === item.output.scriptPubKey);
+        if (duplicates.length > 1) {
+            if (a.find(o => o.output.scriptPubKey === item.output.scriptPubKey)) return a;
+            const value = duplicates.reduce((v, b) => v + b.output.value, 0);
+            return a.concat({ ...item, output: { ...item.output, value } });
+        }
+        return a.concat(item);
+    }, [] as CoinjoinOutputAddedEvent[]);
+
+// WalletWasabi/WalletWasabi/WabiSabi/Models/MultipartyTransaction/SigningState.cs
+export const sortInputs = (a: CoinjoinInput, b: CoinjoinInput) => {
+    if (a.txOut.value === b.txOut.value) {
+        return compareByteArray(Buffer.from(a.outpoint), Buffer.from(b.outpoint));
+    }
+
+    return b.txOut.value - a.txOut.value;
+};
+
+// WalletWasabi/WalletWasabi/WabiSabi/Models/MultipartyTransaction/SigningState.cs
+export const sortOutputs = (a: CoinjoinOutput, b: CoinjoinOutput) => {
+    if (a.value === b.value)
+        return compareByteArray(Buffer.from(a.scriptPubKey), Buffer.from(b.scriptPubKey));
+    return b.value - a.value;
+};
+
+// Transform transaction signature to witness
+// bip-0141 format: chunks size + (chunk[i].size + chunk[i])
+export const getWitnessFromSignature = (signature: string) => {
+    const chunks = [Buffer.from(signature, 'hex')]; // TODO: possible to have more chunks in signature from Trezor?
+    const getChunkSize = (n: number) => {
+        const buf = Buffer.allocUnsafe(1);
+        buf.writeUInt8(n);
+        return buf;
+    };
+    const prefixedChunks = chunks.reduce(
+        (arr, chunk) => arr.concat([getChunkSize(chunk.length), chunk]),
+        [getChunkSize(chunks.length)],
+    );
+
+    return Buffer.concat(prefixedChunks).toString('hex');
 };
