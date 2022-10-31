@@ -1,4 +1,5 @@
-import { getFwType, getFwVersion, getDeviceModel } from '@suite-utils/device';
+import { getDeviceModel, getFirmwareType, getFirmwareVersion } from '@trezor/device-utils';
+
 import { isDesktop } from '@suite-utils/env';
 import { getUserAgent, getScreenWidth, getScreenHeight } from '@trezor/env-utils';
 import type { TrezorDevice } from '@suite-types';
@@ -14,7 +15,7 @@ const getDeviceInfo = (device?: TrezorDevice) => {
     if (!device?.features) {
         return '';
     }
-    return `model ${getDeviceModel(device)} ${getFwVersion(device)} ${getFwType(
+    return `model ${getDeviceModel(device)} ${getFirmwareVersion(device)} ${getFirmwareType(
         device,
     )} (revision ${device.features.revision})`;
 };

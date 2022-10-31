@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect } from 'react';
 import styled, { css } from 'styled-components';
 import { analytics, EventType } from '@trezor/suite-analytics';
+import { getFirmwareType, getFirmwareVersion } from '@trezor/device-utils';
 
 import { CharacterCount, Translation } from '@suite-components';
 import { Textarea, Select, variables, Button, CollapsibleBox } from '@trezor/components';
@@ -10,8 +11,6 @@ import { ViewWrapper, Header, Content } from '@guide-components';
 import { Rating, FeedbackCategory, FeedbackType, UserData } from '@suite-common/suite-types';
 import { getEnvironment } from '@suite-utils/env';
 import { getUserAgent, getWindowHeight, getWindowWidth, getOsName } from '@trezor/env-utils';
-
-import { getFwType, getFwVersion } from '@suite-utils/device';
 
 const Headline = styled.div`
     font-size: ${variables.FONT_SIZE.TINY};
@@ -174,7 +173,7 @@ export const Feedback = ({ type }: FeedbackProps) => {
 
     let firmwareType = '';
     if (device?.features) {
-        firmwareType = getFwType(device);
+        firmwareType = getFirmwareType(device);
     }
 
     const onSubmit = useCallback(() => {
@@ -186,7 +185,7 @@ export const Feedback = ({ type }: FeedbackProps) => {
             suite_revision: process.env.COMMITHASH || '',
             window_dimensions: `${getWindowWidth()}x${getWindowHeight()}`,
             device_type: device?.features?.model || '',
-            firmware_version: device?.features ? getFwVersion(device) : '',
+            firmware_version: device?.features ? getFirmwareVersion(device) : '',
             firmware_revision: device?.features?.revision || '',
             firmware_type: firmwareType,
         };

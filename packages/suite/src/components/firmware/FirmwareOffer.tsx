@@ -2,13 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import { Button, Icon, Tooltip, variables } from '@trezor/components';
 import { Translation, TrezorLink } from '@suite-components';
-import {
-    getChangelogUrl,
-    getFwType,
-    getFwUpdateVersion,
-    getFwVersion,
-    parseFirmwareChangelog,
-} from '@suite-utils/device';
+import { getFirmwareType, getFirmwareVersion } from '@trezor/device-utils';
+import { getChangelogUrl, getFwUpdateVersion, parseFirmwareChangelog } from '@suite-utils/device';
 import { useFirmware } from '@suite-hooks';
 import { AcquiredDevice, FirmwareType } from '@suite-types';
 
@@ -96,7 +91,7 @@ interface Props {
 const FirmwareOffer = ({ device, customFirmware, targetFirmwareType }: Props) => {
     const { targetType } = useFirmware();
 
-    const currentVersion = device.firmware !== 'none' ? getFwVersion(device) : undefined;
+    const currentVersion = device.firmware !== 'none' ? getFirmwareVersion(device) : undefined;
 
     const newVersion = customFirmware ? (
         <Translation id="TR_CUSTOM_FIRMWARE_VERSION" />
@@ -106,7 +101,7 @@ const FirmwareOffer = ({ device, customFirmware, targetFirmwareType }: Props) =>
 
     const parsedChangelog =
         !customFirmware && parseFirmwareChangelog(device.features, device.firmwareRelease);
-    const previousFirmwareType = `${getFwType(device)} `;
+    const previousFirmwareType = `${getFirmwareType(device)} `;
     const nextFirmwareType = targetFirmwareType || targetType;
     const formattedNextFirmwareType = nextFirmwareType ? `${nextFirmwareType} ` : '';
     const changelogUrl = getChangelogUrl(device);

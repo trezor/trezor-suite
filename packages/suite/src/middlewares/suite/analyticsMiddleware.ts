@@ -1,17 +1,17 @@
 import { MiddlewareAPI } from 'redux';
 import BigNumber from 'bignumber.js';
+import {
+    getBootloaderHash,
+    getBootloaderVersion,
+    getFirmwareRevision,
+    getFirmwareVersion,
+    isDeviceInBootloaderMode,
+} from '@trezor/device-utils';
 import { TRANSPORT, DEVICE } from '@trezor/connect';
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { SUITE, ROUTER, ANALYTICS } from '@suite-actions/constants';
 import { DISCOVERY } from '@wallet-actions/constants';
-import {
-    getPhysicalDeviceCount,
-    getFwVersion,
-    isDeviceInBootloader,
-    getBootloaderVersion,
-    getFwRevision,
-    getBootloaderHash,
-} from '@suite-utils/device';
+import { getPhysicalDeviceCount } from '@suite-utils/device';
 import { getSuiteReadyPayload, redactTransactionIdFromAnchor } from '@suite-utils/analytics';
 
 import type { AppState, Action, Dispatch } from '@suite-types';
@@ -62,13 +62,13 @@ const analyticsMiddleware =
 
                 if (!features || !mode) return;
 
-                if (!isDeviceInBootloader(action.payload)) {
+                if (!isDeviceInBootloaderMode(action.payload)) {
                     analytics.report({
                         type: EventType.DeviceConnect,
                         payload: {
                             mode,
-                            firmware: getFwVersion(action.payload),
-                            firmwareRevision: getFwRevision(action.payload),
+                            firmware: getFirmwareVersion(action.payload),
+                            firmwareRevision: getFirmwareRevision(action.payload),
                             bootloaderHash: getBootloaderHash(action.payload),
                             backup_type: features.backup_type || 'Bip39',
                             pin_protection: features.pin_protection,
@@ -85,7 +85,7 @@ const analyticsMiddleware =
                         type: EventType.DeviceConnect,
                         payload: {
                             mode: 'bootloader',
-                            firmware: getFwVersion(action.payload),
+                            firmware: getFirmwareVersion(action.payload),
                             bootloader: getBootloaderVersion(action.payload),
                         },
                     });

@@ -9,7 +9,7 @@ import { DeviceAnimation, OnboardingStepBox } from '@onboarding-components';
 import { useActions, useDevice, useOnboarding, useSelector } from '@suite-hooks';
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
 import { DEFAULT_LABEL, MAX_LABEL_LENGTH } from '@suite-constants/device';
-import { getDeviceModel } from '@suite-utils/device';
+import { getDeviceModel } from '@trezor/device-utils';
 
 const Option = styled.div`
     display: flex;

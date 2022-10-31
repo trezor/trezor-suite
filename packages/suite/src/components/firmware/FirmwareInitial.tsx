@@ -11,7 +11,8 @@ import { Translation } from '@suite-components';
 import { useDevice, useFirmware, useOnboarding, useSelector } from '@suite-hooks';
 import { ReconnectDevicePrompt, InstallButton, FirmwareOffer } from '@firmware-components';
 import { FirmwareType, TrezorDevice } from '@suite-types';
-import { getFwVersion, getFwUpdateVersion } from '@suite-utils/device';
+import { getFwUpdateVersion } from '@suite-utils/device';
+import { getFirmwareVersion } from '@trezor/device-utils';
 
 const InfoRow = styled.div`
     align-items: center;
@@ -123,7 +124,7 @@ export const FirmwareInitial = ({
 
     // Bitcoin-only firmware is only available on T2 from v2.0.8 - older devices must first upgrade to 2.1.1 which does not have a Bitcoin-only variant
     const isBitcoinOnlyAvailable = !!device.firmwareRelease?.release.url_bitcoinonly;
-    const currentFwVersion = getFwVersion(device);
+    const currentFwVersion = getFirmwareVersion(device);
     const availableFwVersion = getFwUpdateVersion(device);
     const hasLatestAvailableFw = !!(
         availableFwVersion &&

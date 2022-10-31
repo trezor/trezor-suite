@@ -1,8 +1,13 @@
 import * as semver from 'semver';
+import {
+    getBootloaderVersion,
+    getDeviceModel,
+    getFirmwareRevision,
+    getFirmwareVersion,
+} from '@trezor/device-utils';
 
 import { getEnvironment } from '@suite-utils/env';
 import { getBrowserName, getBrowserVersion, getOsName, getOsVersion } from '@trezor/env-utils';
-import { getBootloaderVersion, getDeviceModel, getFwRevision, getFwVersion } from './device';
 
 import type { TransportInfo } from '@trezor/connect';
 
@@ -119,9 +124,9 @@ export const validateDeviceCompatibility = (
         return false;
     }
 
-    const deviceFwVersion = getFwVersion(device);
+    const deviceFwVersion = getFirmwareVersion(device);
     const deviceBootloaderVersion = getBootloaderVersion(device);
-    const deviceFwRevision = getFwRevision(device);
+    const deviceFwRevision = getFirmwareRevision(device);
     const deviceFwVariant = device.firmwareType === 'bitcoin-only' ? 'bitcoin-only' : 'regular';
     const deviceModel = getDeviceModel(device).toLowerCase();
     const deviceVendor = device.features.vendor.toLowerCase();

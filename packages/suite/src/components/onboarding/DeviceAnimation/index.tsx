@@ -2,11 +2,12 @@ import styled, { css } from 'styled-components';
 import React, { useEffect, useRef, useState } from 'react';
 import Lottie, { LottieOptions } from 'lottie-react';
 import * as semver from 'semver';
-import { useTheme } from '@trezor/components';
 import { resolveStaticPath } from '@trezor/utils';
-import { getDeviceModel, getFwVersion } from '@suite-utils/device';
+
+import { useTheme } from '@trezor/components';
 
 import type { TrezorDevice } from '@suite/types/suite';
+import { getDeviceModel, getFirmwareVersion } from '@trezor/device-utils';
 
 const Wrapper = styled.div<{ size?: number; shape?: Shape }>`
     width: 100%;
@@ -82,7 +83,7 @@ export const DeviceAnimation = ({
     const deviceModel = device?.features && getDeviceModel(device) === '1' ? '1' : 't';
 
     // T1 bootloader before firmware version 1.8.0 can only be invoked by holding both buttons
-    const deviceFwVersion = device?.features ? getFwVersion(device) : '';
+    const deviceFwVersion = device?.features ? getFirmwareVersion(device) : '';
     let animationType = type;
     if (
         type === 'BOOTLOADER' &&

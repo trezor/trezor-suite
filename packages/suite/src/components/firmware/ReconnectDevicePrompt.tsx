@@ -1,13 +1,13 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 import * as semver from 'semver';
+import { getDeviceModel, getFirmwareVersion } from '@trezor/device-utils';
 
 import { H1, Button, ConfirmOnDevice, variables } from '@trezor/components';
 import { Modal, Translation, WebUsbButton } from '@suite-components';
 import { DeviceConfirmImage } from '@suite-components/images/DeviceConfirmImage';
 import { DeviceAnimation } from '@onboarding-components/DeviceAnimation';
 import { useDevice, useFirmware } from '@suite-hooks';
-import { getDeviceModel, getFwVersion } from '@suite/utils/suite/device';
 import {
     useRebootRequest,
     RebootRequestedMode,
@@ -155,7 +155,7 @@ const ReconnectLabel = ({
     requestedMode: RebootRequestedMode;
     device?: TrezorDevice;
 }) => {
-    const deviceFwVersion = device?.features ? getFwVersion(device) : '';
+    const deviceFwVersion = device?.features ? getFirmwareVersion(device) : '';
     const deviceModel = device?.features ? getDeviceModel(device) : 'T';
 
     if (requestedMode === 'bootloader') {

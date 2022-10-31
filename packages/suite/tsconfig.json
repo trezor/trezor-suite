@@ -66,6 +66,7 @@
         { "path": "../components" },
         { "path": "../connect" },
         { "path": "../crypto-utils" },
+        { "path": "../device-utils" },
         { "path": "../dom-utils" },
         { "path": "../env-utils" },
         { "path": "../message-system" },

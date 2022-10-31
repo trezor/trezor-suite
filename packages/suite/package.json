@@ -46,6 +46,7 @@
         "@trezor/components": "*",
         "@trezor/connect": "9.0.3",
         "@trezor/crypto-utils": "*",
+        "@trezor/device-utils": "*",
         "@trezor/dom-utils": "*",
         "@trezor/env-utils": "*",
         "@trezor/message-system": "*",
