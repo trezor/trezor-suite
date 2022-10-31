@@ -20,6 +20,7 @@ export interface DebugModeOptions {
     coinjoinRegtestServerEnvironment?: CoinjoinServerEnvironment;
     showDebugMenu: boolean;
     checkFirmwareAuthenticity: boolean;
+    coinjoinAllowNoTor: boolean;
 }
 
 export interface AutodetectSettings {
@@ -102,6 +103,7 @@ const initialState: SuiteState = {
             invityServerEnvironment: undefined,
             showDebugMenu: false,
             checkFirmwareAuthenticity: false,
+            coinjoinAllowNoTor: false,
         },
         autodetect: {
             language: true,
