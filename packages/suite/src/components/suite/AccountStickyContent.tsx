@@ -90,6 +90,9 @@ export const AccountStickyContent = ({ account, routeName }: AccountStickyConten
         if (routeName === 'wallet-sign-verify') {
             return <Translation id="TR_NAV_SIGN_VERIFY" />;
         }
+        if (routeName === 'wallet-anonymize') {
+            return <Translation id="TR_NAV_ANONYMIZE" />;
+        }
     };
 
     return (
