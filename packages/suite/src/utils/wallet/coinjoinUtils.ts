@@ -246,6 +246,17 @@ export const getSessionDeadlineFormat = (deadline: CoinjoinSession['sessionDeadl
     return formatToUse;
 };
 
+export const getPhaseTimerFormat = (deadline: CoinjoinSession['phaseDeadline']) => {
+    if (deadline === undefined || Number.isNaN(Number(deadline))) {
+        return;
+    }
+
+    const formatToUse: Array<keyof Duration> =
+        Number(deadline) - Date.now() >= 3600000 ? ['hours', 'minutes'] : ['minutes', 'seconds'];
+
+    return formatToUse;
+};
+
 export const calculateSessionProgress = (
     signedRounds: CoinjoinSession['signedRounds'],
     maxRounds: CoinjoinSession['maxRounds'],

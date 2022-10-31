@@ -14,16 +14,21 @@ export const formatTimeLeft = (
 
         const currentTime = Date.now();
 
-        const isPastTheDeadline = deadline.getTime() < currentTime;
-
-        if (isPastTheDeadline) {
-            return formatDuration({ minutes: 0 }, { locale, format: ['minutes'], zero: true });
-        }
+        const isPastTheDeadline = deadline.getTime() <= currentTime;
 
         const duration = intervalToDuration({
             start: currentTime,
             end: deadline,
         });
+
+        const isEqualToDeadline = !Object.values(duration).some(value => value !== 0);
+
+        if (isPastTheDeadline || isEqualToDeadline) {
+            return formatDuration(
+                { [format[format.length - 1]]: 0 },
+                { locale, format, zero: true },
+            );
+        }
 
         const formattedTimeLeft = formatDuration(duration, { locale, format });
 
