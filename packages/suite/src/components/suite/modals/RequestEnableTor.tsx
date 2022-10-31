@@ -4,6 +4,7 @@ import { Button, P } from '@trezor/components';
 import { Modal, Translation } from '@suite-components';
 import { UserContextPayload } from '@suite-actions/modalActions';
 import { isDevEnv } from '@suite-common/suite-utils';
+import { useSelector } from '@suite-hooks';
 
 const SmallModal = styled(Modal)`
     width: 560px;
@@ -30,6 +31,10 @@ export enum RequestEnableTorResponse {
 }
 
 export const RequestEnableTor = ({ onCancel, decision }: RequestEnableTorProps) => {
+    const { debug } = useSelector(state => ({
+        debug: state.suite.settings.debug,
+    }));
+
     const onEnableTor = () => {
         decision.resolve(RequestEnableTorResponse.Continue);
         onCancel();
@@ -55,8 +60,12 @@ export const RequestEnableTor = ({ onCancel, decision }: RequestEnableTorProps) 
                 heading={<Translation id="TR_TOR_ENABLE" />}
                 bottomBar={
                     <>
-                        {isDevEnv && (
-                            <Button variant="secondary" onClick={onSkip}>
+                        {(isDevEnv || debug.coinjoinAllowNoTor) && (
+                            <Button
+                                variant="secondary"
+                                onClick={onSkip}
+                                data-test="@request-enable-tor-modal/skip-button"
+                            >
                                 <Translation id="TR_TOR_SKIP" />
                             </Button>
                         )}
