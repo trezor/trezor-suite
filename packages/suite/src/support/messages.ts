@@ -7586,7 +7586,7 @@ export default defineMessages({
     },
     TR_COINJOIN_ANONYMITY_LEVEL_INDICATOR: {
         id: 'TR_COINJOIN_ANONYMITY_LEVEL_INDICATOR',
-        defaultMessage: '1 in {targetAnonymity}',
+        defaultMessage: '1 in {anonymity}',
     },
     TR_ANONYMITY_LEVEL_BAD: {
         id: 'TR_ANONYMITY_LEVEL_BAD',

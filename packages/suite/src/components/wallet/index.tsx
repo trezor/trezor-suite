@@ -32,6 +32,7 @@ import { DiscoveryProgress } from './DiscoveryProgress';
 import KYCInProgress from './KYCInProgress';
 import KYCFailed from './KYCFailed';
 import KYCError from './KYCError';
+import { UtxoAnonymity } from './PrivacyAccount/UtxoAnonymity';
 import { Pagination } from './Pagination';
 import { TransactionTimestamp } from './TransactionTimestamp';
 import { withCoinmarket, withSelectedAccountLoaded } from './hocs';
@@ -73,6 +74,7 @@ export {
     KYCInProgress,
     KYCFailed,
     KYCError,
+    UtxoAnonymity,
     Pagination,
     TransactionTimestamp,
     AccountMode,
