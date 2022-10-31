@@ -3,7 +3,7 @@ import { FormattedMessage } from 'react-intl';
 
 import styled from 'styled-components';
 
-import type { UiEvent } from '@trezor/connect';
+import { analytics, EventType } from '@trezor/connect-analytics';
 import { createUiResponse, UI, UiEvent } from '@trezor/connect';
 import { variables, PassphraseTypeCard } from '@trezor/components';
 
@@ -49,6 +49,13 @@ export const Passphrase = (props: PassphraseProps) => {
                 save: true,
             }),
         );
+
+        analytics.report({
+            type: EventType.WalletType,
+            payload: {
+                type: value ? 'hidden' : 'standard',
+            },
+        });
     };
 
     const offerPassphraseOnDevice =

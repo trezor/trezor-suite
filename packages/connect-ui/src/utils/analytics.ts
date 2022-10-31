@@ -1,5 +1,16 @@
 import { analytics, EventType, getRandomId } from '@trezor/connect-analytics';
 import { storage } from '@trezor/connect-common';
+import {
+    getBrowserName,
+    getBrowserVersion,
+    getOsName,
+    getOsVersion,
+    getScreenWidth,
+    getScreenHeight,
+    getWindowWidth,
+    getWindowHeight,
+    getPlatformLanguages,
+} from '@trezor/env-utils';
 
 const saveTrackingEnablement = (enablement: boolean) => {
     storage.save(state => ({
@@ -43,5 +54,20 @@ export const initAnalytics = () => {
             onDisable,
         },
         useQueue: true,
+    });
+
+    analytics.report({
+        type: EventType.AppInfo,
+        payload: {
+            browserName: getBrowserName(),
+            browserVersion: getBrowserVersion(),
+            osName: getOsName(),
+            osVersion: getOsVersion(),
+            screenWidth: getScreenWidth(),
+            screenHeight: getScreenHeight(),
+            windowWidth: getWindowWidth(),
+            windowHeight: getWindowHeight(),
+            platformLanguages: getPlatformLanguages().join(','),
+        },
     });
 };

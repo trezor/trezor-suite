@@ -70,11 +70,13 @@ const handleMessage = (event: MessageEvent<PopupEvent | UiEvent>) => {
 
     // catch first message from iframe
     if (data.type === POPUP.HANDSHAKE) {
-        handshake(data.payload); // eslint-disable-line @typescript-eslint/no-use-before-define
+        handshake(data); // eslint-disable-line @typescript-eslint/no-use-before-define
         return;
     }
 
     const message = parseMessage(data);
+
+    analytics.report({ type: EventType.ViewChange, payload: { nextView: message.type } });
 
     if (
         message?.payload &&
@@ -193,16 +195,31 @@ const init = (payload: PopupInit['payload']) => {
 };
 
 // handle POPUP.HANDSHAKE message from iframe
-const handshake = (payload: PopupHandshake['payload']) => {
+const handshake = (handshake: PopupHandshake) => {
+    const { payload } = handshake;
     if (!payload) return;
     // use trusted settings from iframe
     setState({ settings: payload.settings });
     setOperation(payload.method || '');
+
     if (payload.transport && payload.transport.outdated) {
         showBridgeUpdateNotification();
     }
 
     clearTimeout(handshakeTimeout);
+
+    analytics.report({
+        type: EventType.AppReady,
+        payload: {
+            version: payload?.settings?.version,
+            origin: payload?.settings?.origin,
+            referrerApp: payload?.settings?.manifest?.appUrl,
+            referrerEmail: payload?.settings?.manifest?.email,
+            method: payload?.method,
+            transportType: payload.transport?.type,
+            transportVersion: payload.transport?.version,
+        },
+    });
 };
 
 const onLoad = () => {
