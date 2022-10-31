@@ -17,18 +17,18 @@ import {
     getWindowHeight,
     getWindowWidth,
 } from '@trezor/env-utils';
-import { getIsTorEnabled } from '@suite-utils/tor';
-import { DeepPartial } from '@trezor/type-utils';
-import { accountsActions } from '@suite-common/wallet-core';
 import {
     getBootloaderHash,
     getBootloaderVersion,
     getDeviceModel,
-    getFwRevision,
-    getFwType,
-    getFwVersion,
-    getPhysicalDeviceUniqueIds,
-} from './device';
+    getFirmwareRevision,
+    getFirmwareType,
+    getFirmwareVersion,
+} from '@trezor/device-utils';
+import { getIsTorEnabled } from '@suite-utils/tor';
+import { DeepPartial } from '@trezor/type-utils';
+import { accountsActions } from '@suite-common/wallet-core';
+import { getPhysicalDeviceUniqueIds } from './device';
 
 export const REDACTED_REPLACEMENT = '[redacted]';
 
@@ -212,9 +212,9 @@ export const getApplicationInfo = (state: AppState, hideSensitiveInfo: boolean) 
             connected: device.connected,
             passphraseProtection: device.features?.passphrase_protection,
             model: getDeviceModel(device),
-            firmware: device.features ? getFwVersion(device) : '',
-            firmwareRevision: device.features ? getFwRevision(device) : '',
-            firmwareType: device.features ? getFwType(device) : '',
+            firmware: device.features ? getFirmwareVersion(device) : '',
+            firmwareRevision: device.features ? getFirmwareRevision(device) : '',
+            firmwareType: device.features ? getFirmwareType(device) : '',
             bootloader: device.features ? getBootloaderVersion(device) : '',
             bootloaderHash: device.features ? getBootloaderHash(device) : '',
             numberOfWallets:

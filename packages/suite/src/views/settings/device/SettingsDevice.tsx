@@ -5,8 +5,9 @@ import type { TransportInfo } from '@trezor/connect';
 import { SettingsLayout } from '@settings-components';
 import { Translation } from '@suite-components';
 import { SettingsSection, DeviceBanner } from '@suite-components/Settings';
-import { getDeviceModel, isDeviceRemembered } from '@suite-utils/device';
+import { isDeviceRemembered } from '@suite-utils/device';
 import { useDevice, useSelector } from '@suite-hooks';
+import { getDeviceModel } from '@trezor/device-utils';
 
 import { BackupRecoverySeed } from './BackupRecoverySeed';
 import { BackupFailed } from './BackupFailed';

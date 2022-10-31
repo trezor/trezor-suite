@@ -2,7 +2,7 @@ import React from 'react';
 import { TrezorDevice } from '@suite-types';
 import { Image, ImageProps } from '@trezor/components';
 import { ImageType } from '@trezor/components/src/components/Image/Image';
-import { getDeviceModel } from '@suite-utils/device';
+import { getDeviceModel } from '@trezor/device-utils';
 
 const getImage = (majorVersion: '1' | 'T'): ImageType => {
     switch (majorVersion) {

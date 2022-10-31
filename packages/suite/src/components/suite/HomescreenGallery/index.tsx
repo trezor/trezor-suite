@@ -1,14 +1,14 @@
 import React from 'react';
 import styled from 'styled-components';
 import { analytics, EventType } from '@trezor/suite-analytics';
+import { resolveStaticPath } from '@trezor/utils';
 
 import { homescreensT1, homescreensT2 } from '@suite-constants';
-import { resolveStaticPath } from '@trezor/utils';
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
 import { elementToHomescreen } from '@suite-utils/homescreen';
 import { AcquiredDevice } from '@suite-types';
 import { useActions } from '@suite-hooks';
-import { getDeviceModel } from '@suite-utils/device';
+import { getDeviceModel } from '@trezor/device-utils';
 
 type AnyImageName = typeof homescreensT1[number] | typeof homescreensT2[number];
 

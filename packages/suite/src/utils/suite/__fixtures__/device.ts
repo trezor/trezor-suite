@@ -161,7 +161,7 @@ const isSelectedInstance = [
     },
 ];
 
-const getVersion = [
+const getDeviceModel = [
     {
         description: `model T`,
         device: SUITE_DEVICE,
@@ -751,7 +751,7 @@ export default {
     isDeviceAccessible,
     isSelectedDevice,
     isSelectedInstance,
-    getVersion,
+    getDeviceModel,
     getNewInstanceNumber,
     getNewWalletNumber,
     findInstanceIndex,

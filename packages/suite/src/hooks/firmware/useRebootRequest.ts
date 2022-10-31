@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { valid, satisfies } from 'semver';
-import { getFwVersion } from '@suite-utils/device';
+import { getFirmwareVersion } from '@trezor/device-utils';
 import type { TrezorDevice } from '@suite-types';
 import { useActions } from '@suite-hooks';
 import * as firmwareActions from '@firmware-actions/firmwareActions';
@@ -24,7 +24,7 @@ export const useRebootRequest = (
     // then the 'automatic' method is enabled.
     const [method, setMethod] = useState<RebootMethod>(() => {
         if (!device?.connected || !device?.features) return 'manual';
-        const deviceFwVersion = getFwVersion(device);
+        const deviceFwVersion = getFirmwareVersion(device);
         return requestedMode === 'bootloader' &&
             valid(deviceFwVersion) &&
             satisfies(deviceFwVersion, '>=1.10.0 <2.0.0')

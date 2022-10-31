@@ -7301,6 +7301,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@trezor/device-utils@*, @trezor/device-utils@workspace:packages/device-utils":
+  version: 0.0.0-use.local
+  resolution: "@trezor/device-utils@workspace:packages/device-utils"
+  languageName: unknown
+  linkType: soft
+
 "@trezor/dom-utils@*, @trezor/dom-utils@workspace:packages/dom-utils":
   version: 0.0.0-use.local
   resolution: "@trezor/dom-utils@workspace:packages/dom-utils"
@@ -7765,6 +7771,7 @@ __metadata:
     "@trezor/components": "*"
     "@trezor/connect": 9.0.3
     "@trezor/crypto-utils": "*"
+    "@trezor/device-utils": "*"
     "@trezor/dom-utils": "*"
     "@trezor/env-utils": "*"
     "@trezor/message-system": "*"

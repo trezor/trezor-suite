@@ -1,6 +1,6 @@
 import { valid, satisfies } from 'semver';
 import type { AppState, TrezorDevice, ExtendedMessageDescriptor } from '@suite-types';
-import { getDeviceModel, getFwVersion } from '@suite-utils/device';
+import { getDeviceModel, getFirmwareVersion } from '@trezor/device-utils';
 
 export const getFormattedFingerprint = (fingerprint: string) =>
     [
@@ -81,7 +81,7 @@ export const validateFirmware = (
     }
 
     const deviceModel = getDeviceModel(device);
-    const deviceVersion = getFwVersion(device);
+    const deviceVersion = getFirmwareVersion(device);
     const format = parseFirmwareFormat(fw);
 
     if (!format) {

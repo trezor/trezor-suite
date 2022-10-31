@@ -1,5 +1,6 @@
-import { Device, KnownDevice, UnavailableCapability } from '@trezor/connect';
-import { TrezorDevice, AcquiredDevice, FirmwareType } from '@suite-types';
+import { Device, UnavailableCapability } from '@trezor/connect';
+import { TrezorDevice, AcquiredDevice } from '@suite-types';
+import { getDeviceModel } from '@trezor/device-utils';
 
 /**
  * Used in Welcome step in Onboarding
@@ -128,54 +129,6 @@ export const isSelectedDevice = (selected?: TrezorDevice | Device, device?: Trez
     if (!selected || !device) return false;
     if (!selected.id || selected.mode === 'bootloader') return selected.path === device.path;
     return selected.id === device.id;
-};
-
-export const isDeviceInBootloader = (device?: KnownDevice) => !!device?.features.bootloader_mode;
-
-export const getDeviceModel = (device: TrezorDevice): 'T' | '1' => {
-    const { features } = device;
-    return features && features.major_version > 1 ? 'T' : '1';
-};
-
-export const getFwRevision = (device?: KnownDevice) => device?.features.revision || '';
-
-export const getBootloaderHash = (device?: KnownDevice) => device?.features.bootloader_hash || '';
-
-export const getBootloaderVersion = (device?: KnownDevice) => {
-    if (!device?.features) {
-        return '';
-    }
-    const { features } = device;
-
-    if (isDeviceInBootloader(device) && features.major_version) {
-        return `${features.major_version}.${features.minor_version}.${features.patch_version}`;
-    }
-
-    return '';
-};
-
-export const getFwVersion = (device?: KnownDevice) => {
-    if (!device?.features) {
-        return '';
-    }
-    const { features } = device;
-
-    if (isDeviceInBootloader(device)) {
-        return features.fw_major
-            ? `${features.fw_major}.${features.fw_minor}.${features.fw_patch}`
-            : '';
-    }
-
-    return `${features.major_version}.${features.minor_version}.${features.patch_version}`;
-};
-
-export const getFwType = (device: KnownDevice) => {
-    if (isDeviceInBootloader(device)) {
-        return '';
-    }
-    return device.firmwareType === 'bitcoin-only'
-        ? FirmwareType.BitcoinOnly
-        : FirmwareType.Universal;
 };
 
 export const supportIntermediary = (features: TrezorDevice['features']) =>

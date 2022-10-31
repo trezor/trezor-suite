@@ -3,17 +3,17 @@ import { darken } from 'polished';
 import styled from 'styled-components';
 import { TREZOR_FORUM_URL, TREZOR_SUPPORT_URL } from '@trezor/urls';
 import { analytics, EventType } from '@trezor/suite-analytics';
+import { resolveStaticPath } from '@trezor/utils';
 
 import { Translation } from '@suite-components';
 import * as guideActions from '@suite-actions/guideActions';
 import { useActions, useSelector } from '@suite-hooks';
 import { Icon, Link, variables } from '@trezor/components';
 import { isDevEnv } from '@suite-common/suite-utils';
-import { resolveStaticPath } from '@trezor/utils';
-import { getFwVersion } from '@suite-utils/device';
 import { ViewWrapper, Header, Content } from '@guide-components';
 import { isDesktop } from '@suite-utils/env';
 import { UpdateState } from '@suite-reducers/desktopUpdateReducer';
+import { getFirmwareVersion } from '@trezor/device-utils';
 
 const Section = styled.div`
     & + & {
@@ -115,7 +115,7 @@ export const SupportFeedbackSelection = () => {
 
     const firmwareUpToDate = device?.firmware === 'valid';
     const firmwareVersion = device?.features ? (
-        getFwVersion(device) || <Translation id="TR_DEVICE_FW_UNKNOWN" />
+        getFirmwareVersion(device) || <Translation id="TR_DEVICE_FW_UNKNOWN" />
     ) : (
         <Translation id="TR_DEVICE_NOT_CONNECTED" />
     );

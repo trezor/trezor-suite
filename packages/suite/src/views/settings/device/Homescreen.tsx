@@ -9,7 +9,7 @@ import { variables } from '@trezor/components';
 import { useDevice, useActions } from '@suite-hooks';
 import * as modalActions from '@suite-actions/modalActions';
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
-import { getDeviceModel } from '@suite-utils/device';
+import { getDeviceModel } from '@trezor/device-utils';
 import {
     elementToHomescreen,
     fileToDataUrl,

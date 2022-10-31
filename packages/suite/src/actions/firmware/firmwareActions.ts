@@ -1,14 +1,14 @@
 import TrezorConnect, { Device, Unsuccessful } from '@trezor/connect';
 import { analytics, EventType } from '@trezor/suite-analytics';
+import { resolveStaticPath } from '@trezor/utils';
 
 import { FIRMWARE } from '@firmware-actions/constants';
-import { getBootloaderVersion, getFwVersion } from '@suite-utils/device';
 import { isDesktop } from '@suite-utils/env';
-import { resolveStaticPath } from '@trezor/utils';
 import { addToast } from '@suite-actions/notificationActions';
 
 import { Dispatch, GetState, AppState, AcquiredDevice, FirmwareType } from '@suite-types';
 import type { Await } from '@trezor/type-utils';
+import { getFirmwareVersion, getBootloaderVersion } from '@trezor/device-utils';
 
 export type FirmwareAction =
     | {
@@ -75,7 +75,7 @@ const firmwareInstall =
 
         const fromFwVersion =
             prevDevice && prevDevice.features && prevDevice.firmware !== 'none'
-                ? getFwVersion(prevDevice)
+                ? getFirmwareVersion(prevDevice)
                 : 'none';
         const fromBlVersion = getBootloaderVersion(device);
 
