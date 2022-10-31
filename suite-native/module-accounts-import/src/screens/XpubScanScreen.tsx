@@ -86,10 +86,10 @@ export const XpubScanScreen = ({
     );
 
     useEffect(() => {
-        if (route.params.qrCode) {
-            handleXpubResult(route.params.qrCode);
+        if (route?.params?.qrCode) {
+            handleXpubResult(route?.params?.qrCode);
         }
-    }, [handleXpubResult, route.params.qrCode]);
+    }, [handleXpubResult, route.params]);
 
     const handleSelectCurrency = (currencySymbol: NetworkSymbol) => {
         setSelectedCurrencySymbol(currencySymbol);
