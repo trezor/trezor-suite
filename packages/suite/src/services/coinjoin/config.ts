@@ -1,7 +1,7 @@
 import type { CoinjoinBackendSettings, CoinjoinClientSettings } from '@trezor/coinjoin';
 import type { PartialRecord } from '@trezor/type-utils';
 import type { CoinjoinServerEnvironment } from '@suite-common/wallet-types';
-import type { NetworkSymbol } from '@wallet-types';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
 
 type CoinjoinNetworksConfig = CoinjoinBackendSettings & CoinjoinClientSettings;
 
@@ -48,6 +48,10 @@ export const COINJOIN_NETWORKS: PartialRecord<NetworkSymbol, ServerEnvironment> 
             baseBlockHeight: 1746250,
             baseBlockHash: '000000001eec9e483ddc3a9f2eea25b2639887def9ee2816c748b77248335c08',
             /*  */
+            /* first block for vpub5Yme8cvVDuECgS5vuY8rYyVMrnSvDaUwbDeKLNhh3BKZYe3fpKKapVQUFAEVpyBbwaUhZLeZLcwcoRMweSfRtFxB6MenWh3NweXrQ3CTZM9 *
+            baseBlockHeight: 1821033,
+            baseBlockHash: '00000000000bb983f68a7bcff154f229f777ff0802788ae26424af9c15db3959',
+            /* */
             /* October 1st, 2022  */
             baseBlockHeight: 2349000,
             baseBlockHash: '0000000000000014af3e6e1a3f0a24be7bc65998b9bc01e4a05b134a89d304bf',
