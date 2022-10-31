@@ -1,3 +1,7 @@
+# 9.0.5 - UNRELEASED
+
+-   introduction of connect analytics
+
 # 9.0.4
 
 -   @trezor/blockchain-link 2.1.5

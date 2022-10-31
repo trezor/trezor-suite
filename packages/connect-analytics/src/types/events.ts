@@ -1,8 +1,28 @@
 import { EventType } from '../constants';
 
-export type ConnectAnalyticsEvent = {
-    type: EventType.SettingsTracking;
+export type EventTypeDeviceSelected = {
+    type: EventType.DeviceSelected;
     payload: {
-        value: boolean;
+        mode: 'normal' | 'bootloader' | 'initialize' | 'seedless';
+        pinProtection: boolean | '';
+        passphraseProtection: boolean | '';
+        backupType: string;
+        language: string;
+        model: string;
+        vendor: string;
+        firmware: string;
+        firmwareRevision: string;
+        firmwareType: string;
+        bootloaderHash: string;
+        bootloaderVersion: string;
     };
 };
+
+export type ConnectAnalyticsEvent =
+    | EventTypeDeviceSelected
+    | {
+          type: EventType.SettingsTracking;
+          payload: {
+              value: boolean;
+          };
+      };

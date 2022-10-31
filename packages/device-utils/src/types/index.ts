@@ -13,6 +13,7 @@ export type PartialDevice = Partial<{
         fw_patch: number | null;
         initialized: boolean | null;
         no_backup: boolean | null;
+        model: string | null;
     };
     firmwareType: string | null;
 }>;

@@ -92,7 +92,7 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
         actions.checkSeed();
     };
 
-    const model = device ? getDeviceModel(device) : 'T';
+    const model = device && getDeviceModel(device) === '1' ? '1' : 'T';
     const learnMoreUrl = getCheckBackupUrl(device);
     const isModelOne = model === '1';
     const statesInProgressBar = isModelOne
