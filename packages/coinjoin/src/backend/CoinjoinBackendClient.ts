@@ -12,9 +12,11 @@ import { HTTP_REQUEST_TIMEOUT } from '../constants';
 
 type CoinjoinBackendClientSettings = CoinjoinBackendSettings & {
     timeout?: number;
+    log?: (message: string) => void;
 };
 
 export class CoinjoinBackendClient {
+    protected readonly log;
     protected readonly wabisabiUrl;
     protected readonly blockbookUrls;
 
@@ -27,6 +29,7 @@ export class CoinjoinBackendClient {
     ];
 
     constructor(settings: CoinjoinBackendClientSettings) {
+        this.log = settings.log;
         this.wabisabiUrl = `${settings.wabisabiBackendUrl}api/v4/btc`;
         this.blockbookUrls = settings.blockbookUrls;
     }
@@ -162,10 +165,14 @@ export class CoinjoinBackendClient {
 
     private request(url: string, options?: RequestOptions) {
         return {
-            get: (path: string, query?: Record<string, any>) =>
-                httpGet(`${url}/${path}`, query, options),
-            post: (path: string, body?: Record<string, any>) =>
-                httpPost(`${url}/${path}`, body, options),
+            get: (path: string, query?: Record<string, any>) => {
+                this.log?.(`GET ${url}/${path}${query ? `?${new URLSearchParams(query)}` : ''}`);
+                return httpGet(`${url}/${path}`, query, options);
+            },
+            post: (path: string, body?: Record<string, any>) => {
+                this.log?.(`POST ${url}/${path}`);
+                return httpPost(`${url}/${path}`, body, options);
+            },
         };
     }
 }

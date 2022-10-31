@@ -19,26 +19,39 @@ import type {
     AccountCache,
 } from '../types/backend';
 
-interface Events {
+interface SimpleEvents {
+    log: string;
+}
+
+interface DescriptorEvents {
     progress: ScanAccountProgress;
 }
 
-type EventType<K extends keyof Events, D extends string> = `${K}/${D}`;
+type DescriptorEventType<K extends keyof DescriptorEvents, D extends string> = `${K}/${D}`;
 
 export declare interface CoinjoinBackend {
-    on<K extends keyof Events, D extends string>(
-        type: EventType<K, D>,
-        listener: (event: Events[K]) => void,
+    on<K extends keyof SimpleEvents>(type: K, listener: (event: SimpleEvents[K]) => void): this;
+    on<K extends keyof DescriptorEvents, D extends string>(
+        type: DescriptorEventType<K, D>,
+        listener: (event: DescriptorEvents[K]) => void,
     ): this;
-    off<K extends keyof Events, D extends string>(
-        type: EventType<K, D>,
-        listener: (event: Events[K]) => void,
+
+    off<K extends keyof SimpleEvents>(type: K, listener: (event: SimpleEvents[K]) => void): this;
+    off<K extends keyof DescriptorEvents, D extends string>(
+        type: DescriptorEventType<K, D>,
+        listener: (event: DescriptorEvents[K]) => void,
     ): this;
-    emit<K extends keyof Events, D extends string>(
-        type: EventType<K, D>,
-        ...args: Events[K][]
+
+    emit<K extends keyof SimpleEvents>(type: K, ...args: SimpleEvents[K][]): boolean;
+    emit<K extends keyof DescriptorEvents, D extends string>(
+        type: DescriptorEventType<K, D>,
+        ...args: DescriptorEvents[K][]
     ): boolean;
-    removeAllListeners<K extends keyof Events, D extends string>(type?: EventType<K, D>): this;
+
+    removeAllListeners<K extends keyof SimpleEvents>(type?: K): this;
+    removeAllListeners<K extends keyof DescriptorEvents, D extends string>(
+        type?: DescriptorEventType<K, D>,
+    ): this;
 }
 
 export class CoinjoinBackend extends EventEmitter {
@@ -54,7 +67,7 @@ export class CoinjoinBackend extends EventEmitter {
         super();
         this.settings = Object.freeze(settings);
         this.network = getNetwork(settings.network);
-        this.client = new CoinjoinBackendClient(settings);
+        this.client = new CoinjoinBackendClient({ ...settings, log: this.log.bind(this) });
         this.mempool = new CoinjoinMempoolController(this.client);
     }
 
@@ -133,5 +146,9 @@ export class CoinjoinBackend extends EventEmitter {
                 receiveCount: DISCOVERY_LOOKOUT,
                 changeCount: DISCOVERY_LOOKOUT,
             });
+    }
+
+    private log(message: string) {
+        this.emit('log', message);
     }
 }
