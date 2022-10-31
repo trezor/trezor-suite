@@ -25,7 +25,7 @@ const result = await TrezorConnect.authorizeCoinJoin(params);
 -   `maxRounds` — _required_ `number`
     > maximum number of rounds that Trezor is authorized to take part in
 -   `maxCoordinatorFeeRate` — _required_ `number`
-    > maximum coordination fee rate in units of 10\*\*8 percent
+    > maximum coordination fee rate in units of 10\*\*6 percent
 -   `maxFeePerKvbyte` — _required_ `number`
     > maximum mining fee rate in units of satoshis per 1000 vbytes
 -   `coin` - _optional_ `string`
