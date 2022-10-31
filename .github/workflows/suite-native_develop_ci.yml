@@ -5,7 +5,6 @@ on:
     branches:
       - develop
     paths:
-      - "packages/suite-*/**"
       - "suite-native/**"
       - "packages/icons/**"
   workflow_dispatch:
