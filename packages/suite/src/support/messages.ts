@@ -5617,10 +5617,30 @@ export default defineMessages({
         defaultMessage: 'There are no spendable UTXOs in your account.',
         description: 'Message showing in Coin control section',
     },
+    TR_REGISTERED_FOR_COINJOIN: {
+        id: 'TR_REGISTERED_FOR_COINJOIN',
+        defaultMessage: 'Registered in CoinJoin',
+        description: 'Tooltip over an icon in Coin control section',
+    },
+    TR_UNAVAILABLE_FOR_COINJOIN: {
+        id: 'TR_UNAVAILABLE_FOR_COINJOIN',
+        defaultMessage: 'Not available for CoinJoin - amount too small',
+        description: 'Tooltip over an icon in Coin control section',
+    },
     TR_CHANGE_ADDRESS_TOOLTIP: {
         id: 'TR_CHANGE_ADDRESS_TOOLTIP',
         defaultMessage: 'This is a change address created from a previous send.',
-        description: 'Tooltip over a change address icon in Coin control section',
+        description: 'Tooltip over an icon in Coin control section',
+    },
+    TR_PRIVATE_DESCRIPTION: {
+        id: 'TR_PRIVATE_DESCRIPTION',
+        defaultMessage: 'Anonymity at least {targetAnonymity}',
+        description: 'Sub-heading in Coin control section',
+    },
+    TR_NOT_PRIVATE_DESCRIPTION: {
+        id: 'TR_NOT_PRIVATE_DESCRIPTION',
+        defaultMessage: 'Anonymity below {targetAnonymity}',
+        description: 'Sub-heading in Coin control section',
     },
     TR_DUST: {
         id: 'TR_DUST',

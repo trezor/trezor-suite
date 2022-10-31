@@ -84,6 +84,10 @@ export const ESTIMATED_HOURS_BUFFER_MODIFIER = 0.25;
 export const RECOMMENDED_SKIP_ROUNDS = [4, 5] as [number, number];
 export const DEFAULT_MAX_MINING_FEE = 3;
 
+// lowest amount of satoshis in UTXO allowed for coinjoin
+// TODO: this value is supplied by the coordinator, but not saved yet; replace the hard-coded value with data fetched from coordinator
+export const UTXO_AMOUNT_THRESHOLD_FOR_COINJOIN = 5000;
+
 export const getCoinjoinConfig = (
     network: NetworkSymbol,
     environment?: CoinjoinServerEnvironment,

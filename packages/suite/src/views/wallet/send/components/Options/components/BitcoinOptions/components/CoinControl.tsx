@@ -5,13 +5,14 @@ import { fetchTransactionsThunk } from '@suite-common/wallet-core';
 import { amountToSatoshi, formatNetworkAmount } from '@suite-common/wallet-utils';
 import { FormattedCryptoAmount, Translation } from '@suite-components';
 import { SETTINGS } from '@suite-config';
-import { useActions } from '@suite-hooks';
+import { useActions, useSelector } from '@suite-hooks';
 import { ExtendedMessageDescriptor } from '@suite-types';
 import { Pagination } from '@wallet-components';
-import { Checkbox, Icon, Switch, variables } from '@trezor/components';
+import { useTheme, Checkbox, Icon, Switch, variables } from '@trezor/components';
 import { UtxoSelectionList } from '@wallet-components/CoinControl/UtxoSelectionList';
 import { useSendFormContext } from '@wallet-hooks';
 import { useBitcoinAmountUnit } from '@wallet-hooks/useBitcoinAmountUnit';
+import { selectCurrentTargetAnonymity } from '@wallet-reducers/coinjoinReducer';
 import { TypedFieldError } from '@wallet-types/form';
 
 const Row = styled.div`
@@ -21,21 +22,14 @@ const Row = styled.div`
 `;
 
 const SecondRow = styled(Row)`
+    border-bottom: 1px solid ${({ theme }) => theme.STROKE_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
     margin-top: 20px;
-`;
-
-const DustRow = styled.div`
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    margin-top: 6px;
+    padding-bottom: 14px;
 `;
 
 const GreyText = styled.div`
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
-`;
-
-const DustDescriptionRow = styled(GreyText)`
-    margin: 6px 0 12px 0;
 `;
 
 const StyledSwitch = styled(Switch)`
@@ -50,19 +44,18 @@ const AmountWrapper = styled.div`
 `;
 
 const MissingToInput = styled.div<{ isVisible: boolean }>`
-    /* using visibility rather than display to prevent line height */
+    /* using visibility rather than display to prevent line height change */
     visibility: ${({ isVisible }) => !isVisible && 'hidden'};
 `;
 
-const StyledPagination = styled(Pagination)`
-    margin-top: 20px;
+const Empty = styled.div`
+    border-bottom: 1px solid ${({ theme }) => theme.STROKE_GREY};
+    margin-bottom: 12px;
+    padding: 14px 0;
 `;
 
-const Line = styled.div`
-    width: 100%;
-    height: 1px;
-    border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
-    margin: 12px 0 16px 0;
+const StyledPagination = styled(Pagination)`
+    margin: 20px 0;
 `;
 
 interface CoinControlProps {
@@ -71,6 +64,8 @@ interface CoinControlProps {
 
 export const CoinControl = ({ close }: CoinControlProps) => {
     const [currentPage, setSelectedPage] = useState(1);
+
+    const targetAnonymity = useSelector(selectCurrentTargetAnonymity);
 
     const { fetchTransactions } = useActions({
         fetchTransactions: fetchTransactionsThunk,
@@ -84,6 +79,7 @@ export const CoinControl = ({ close }: CoinControlProps) => {
         errors,
         getDefaultValue,
         isCoinControlEnabled,
+        lowAnonymityUtxos,
         network,
         outputs,
         selectedUtxos,
@@ -94,7 +90,7 @@ export const CoinControl = ({ close }: CoinControlProps) => {
 
     const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
 
-    const inputs = isCoinControlEnabled ? selectedUtxos : composedInputs;
+    const theme = useTheme();
 
     const getTotal = (amounts: number[]) =>
         amounts.reduce((previous, current) => previous + current, 0);
@@ -102,6 +98,7 @@ export const CoinControl = ({ close }: CoinControlProps) => {
         formatNetworkAmount(amount.toString(), account.symbol);
 
     // calculate and format amounts
+    const inputs = isCoinControlEnabled ? selectedUtxos : composedInputs;
     const totalInputs = getTotal(inputs.map(input => Number(input.amount)));
     const totalOutputs = getTotal(
         outputs.map((_, i) => Number(getDefaultValue(`outputs[${i}].amount`, ''))),
@@ -131,17 +128,22 @@ export const CoinControl = ({ close }: CoinControlProps) => {
     const totalItems = account.utxo?.length || 0;
     const utxosPerPage = SETTINGS.TXS_PER_PAGE;
     const showPagination = totalItems > utxosPerPage;
-    const lastSpendableUtxoIndex = currentPage * utxosPerPage;
-    const spendableUtxosOnPage = spendableUtxos.slice(
-        lastSpendableUtxoIndex - utxosPerPage,
-        lastSpendableUtxoIndex,
-    );
-    const lastDustUtxoIndex = currentPage * utxosPerPage - spendableUtxos.length;
-    const dustOnPage = dustUtxos.slice(
-        lastDustUtxoIndex - utxosPerPage,
-        lastDustUtxoIndex > 0 ? lastDustUtxoIndex : 0,
-    );
 
+    // UTXOs and categories displayed on page
+    let previousItemsLength = 0;
+    const [spendableUtxosOnPage, lowAnonymityUtxosOnPage, dustUtxosOnPage] = [
+        spendableUtxos,
+        lowAnonymityUtxos,
+        dustUtxos,
+    ].map(utxoCategory => {
+        const lastIndexOnPage = currentPage * utxosPerPage - previousItemsLength;
+        previousItemsLength += utxoCategory.length;
+        return utxoCategory.slice(lastIndexOnPage - utxosPerPage, lastIndexOnPage);
+    });
+    const isCoinjoinAccount = account.accountType === 'coinjoin';
+    const hasEligibleUtxos = spendableUtxos.length + lowAnonymityUtxos.length > 0;
+
+    // fetch all transactions so that we can show a transaction timestamp for each UTXO
     useEffect(() => {
         const promise = fetchTransactions({
             accountKey: account.key,
@@ -169,7 +171,7 @@ export const CoinControl = ({ close }: CoinControlProps) => {
             <SecondRow>
                 <Checkbox
                     isChecked={allUtxosSelected}
-                    isDisabled={!spendableUtxos.length}
+                    isDisabled={!hasEligibleUtxos}
                     onClick={toggleCheckAllUtxos}
                 />
                 <GreyText>
@@ -184,23 +186,44 @@ export const CoinControl = ({ close }: CoinControlProps) => {
                     </MissingToInput>
                 </AmountWrapper>
             </SecondRow>
-            <Line />
-            {spendableUtxos.length ? (
-                <UtxoSelectionList utxos={spendableUtxosOnPage} />
-            ) : (
-                <Translation id="TR_NO_SPENDABLE_UTXOS" />
+            {!!spendableUtxosOnPage.length && (
+                <UtxoSelectionList
+                    withHeader={isCoinjoinAccount}
+                    heading={<Translation id="TR_PRIVATE" />}
+                    description={
+                        <Translation id="TR_PRIVATE_DESCRIPTION" values={{ targetAnonymity }} />
+                    }
+                    icon="SHIELD_CHECK"
+                    iconColor={theme.BG_GREEN}
+                    utxos={spendableUtxosOnPage}
+                />
             )}
-            {!!dustOnPage.length && (
-                <>
-                    <Line />
-                    <DustRow>
-                        <Translation id="TR_DUST" />
-                    </DustRow>
-                    <DustDescriptionRow>
-                        <Translation id="TR_DUST_DESCRIPTION" />
-                    </DustDescriptionRow>
-                    <UtxoSelectionList utxos={dustOnPage} />
-                </>
+            {!!lowAnonymityUtxosOnPage.length && (
+                <UtxoSelectionList
+                    withHeader
+                    heading={<Translation id="TR_NOT_PRIVATE" />}
+                    description={
+                        <Translation id="TR_NOT_PRIVATE_DESCRIPTION" values={{ targetAnonymity }} />
+                    }
+                    icon="SHIELD_CROSS"
+                    iconColor={theme.TYPE_DARK_ORANGE}
+                    utxos={lowAnonymityUtxosOnPage}
+                />
+            )}
+            {!hasEligibleUtxos && (
+                <Empty>
+                    <Translation id="TR_NO_SPENDABLE_UTXOS" />
+                </Empty>
+            )}
+            {!!dustUtxosOnPage.length && (
+                <UtxoSelectionList
+                    withHeader
+                    heading={<Translation id="TR_DUST" />}
+                    description={<Translation id="TR_DUST_DESCRIPTION" />}
+                    icon="INFO"
+                    iconColor={theme.TYPE_LIGHT_GREY}
+                    utxos={dustUtxosOnPage}
+                />
             )}
             {showPagination && (
                 <StyledPagination
@@ -210,7 +233,6 @@ export const CoinControl = ({ close }: CoinControlProps) => {
                     onPageSelected={setSelectedPage}
                 />
             )}
-            <Line />
         </>
     );
 };

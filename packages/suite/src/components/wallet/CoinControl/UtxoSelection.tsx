@@ -1,16 +1,20 @@
 import React from 'react';
+import BigNumber from 'bignumber.js';
 import styled, { css } from 'styled-components';
+import { darken } from 'polished';
 
+import { UTXO_AMOUNT_THRESHOLD_FOR_COINJOIN } from '@suite/services/coinjoin/config';
 import * as modalActions from '@suite-actions/modalActions';
 import { FiatValue, FormattedCryptoAmount, MetadataLabeling, Translation } from '@suite-components';
-import { formatNetworkAmount } from '@suite-common/wallet-utils';
+import { formatNetworkAmount, getUtxoOutpoint } from '@suite-common/wallet-utils';
 import { useActions, useSelector } from '@suite-hooks';
-import { useTheme, Checkbox, FluidSpinner, Icon, Tooltip, variables } from '@trezor/components';
+import { useTheme, Checkbox, FluidSpinner, variables } from '@trezor/components';
 import type { AccountUtxo } from '@trezor/connect';
 import { TransactionTimestamp } from '@wallet-components';
+import { UtxoTag } from '@wallet-components/CoinControl/UtxoTag';
 import { useSendFormContext } from '@wallet-hooks';
+import { selectCoinjoinAccountByKey } from '@wallet-reducers/coinjoinReducer';
 import { WalletAccountTransaction } from '@wallet-types';
-import { darken } from 'polished';
 
 const VisibleOnHover = styled.div<{ alwaysVisible?: boolean }>`
     display: ${({ alwaysVisible }) => (alwaysVisible ? 'contents' : 'none')};
@@ -123,14 +127,22 @@ interface UtxoSelectionProps {
 }
 
 export const UtxoSelection = ({ isChecked, transaction, utxo }: UtxoSelectionProps) => {
+    const { account, network, selectedUtxos, toggleUtxoSelection } = useSendFormContext();
+
     const device = useSelector(state => state.suite.device);
+    const coinjoinAccount = useSelector(state => selectCoinjoinAccountByKey(state, account.key));
     const { openModal } = useActions({
         openModal: modalActions.openModal,
     });
 
-    const { account, network, selectedUtxos, toggleUtxoSelection } = useSendFormContext();
     const theme = useTheme();
 
+    const isRegisteredForCoinjoin = coinjoinAccount?.session?.registeredUtxos.includes(
+        getUtxoOutpoint(utxo),
+    );
+    const isUnavailableForCoinjoin =
+        account.accountType === 'coinjoin' &&
+        new BigNumber(utxo.amount).lt(UTXO_AMOUNT_THRESHOLD_FOR_COINJOIN); // TODO: should include UTXOs banned from CoinJoin as well
     const isChangeAddress = utxo.path.split('/')[4] === '1';
     const amountInBtc = (Number(utxo.amount) / 10 ** network.decimals).toString();
     const outputLabel = account.metadata.outputLabels?.[utxo.txid]?.[utxo.vout];
@@ -153,14 +165,14 @@ export const UtxoSelection = ({ isChecked, transaction, utxo }: UtxoSelectionPro
             />
             <Body>
                 <Row>
+                    {isRegisteredForCoinjoin && (
+                        <UtxoTag tooltipMessage="TR_REGISTERED_FOR_COINJOIN" icon="SHUFFLE" />
+                    )}
+                    {isUnavailableForCoinjoin && (
+                        <UtxoTag tooltipMessage="TR_UNAVAILABLE_FOR_COINJOIN" icon="BLOCKED" />
+                    )}
                     {isChangeAddress && (
-                        <Tooltip
-                            interactive={false}
-                            cursor="pointer"
-                            content={<Translation id="TR_CHANGE_ADDRESS_TOOLTIP" />}
-                        >
-                            <Icon icon="CHANGE_ADDRESS" color={theme.TYPE_DARK_GREY} size={16} />
-                        </Tooltip>
+                        <UtxoTag tooltipMessage="TR_CHANGE_ADDRESS_TOOLTIP" icon="CHANGE_ADDRESS" />
                     )}
                     <Address>{utxo.address}</Address>
                     <StyledCryptoAmount

@@ -65,21 +65,17 @@ const getStateFromProps = (props: UseSendFormProps) => {
     // utxos might be spent using CoinControl feature
     const excludedUtxos: UseSendFormState['excludedUtxos'] = {};
     if (account.utxo) {
-        const coinjoinSession = props.coinjoinAccount?.session;
         const targetAnonymity = props.coinjoinAccount?.targetAnonymity || 1;
         const anonymitySet = account.addresses?.anonymitySet || {};
         account.utxo?.forEach(utxo => {
             const outpoint = getUtxoOutpoint(utxo);
             const anonymity = anonymitySet[utxo.address] || 1;
-            if (coinjoinSession && coinjoinSession.registeredUtxos.includes(outpoint)) {
-                // utxo is registered in coinjoin
-                excludedUtxos[outpoint] = 'mixing';
+            if (new BigNumber(utxo.amount).lte(Number(coinFees.dustLimit))) {
+                // is lower than dust limit
+                excludedUtxos[outpoint] = 'dust';
             } else if (anonymity < targetAnonymity) {
                 // didn't reach desired anonymity (coinjoin account)
                 excludedUtxos[outpoint] = 'low-anonymity';
-            } else if (new BigNumber(utxo.amount).lt(Number(coinFees.dustLimit))) {
-                // is lower than dust limit
-                excludedUtxos[outpoint] = 'dust';
             } else if (!utxo.confirmations) {
                 // is unconfirmed
                 // TODO: this is a new feature
@@ -235,7 +231,6 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
         composedLevels,
         composeRequest,
         excludedUtxos: state.excludedUtxos,
-        feeInfo: state.feeInfo,
         ...useFormMethods,
     });
 
