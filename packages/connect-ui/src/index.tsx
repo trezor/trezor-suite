@@ -1,32 +1,55 @@
-import React from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
-import { UI } from '@trezor/connect';
+import { CoreMessage, UI } from '@trezor/connect';
 
 // views
-import { Transport, TransportProps } from './views/Transport';
-import { Passphrase, PassphraseProps } from './views/Passphrase';
-import { ErrorView, ErrorViewProps } from './views/Error';
+import { Transport } from './views/Transport';
+import { Passphrase } from './views/Passphrase';
+import { ErrorView } from './views/Error';
 import { ThemeWrapper } from './support/ThemeWrapper';
 import { IntlWrapper } from './support/IntlWrapper';
 import { ErrorBoundary } from './support/ErrorBoundary';
 import { GlobalStyle } from './support/GlobalStyle';
 import { initAnalytics } from './utils/analytics';
 import { BottomRightFloatingBar } from './components/BottomRightFloatingBar';
+import { ConnectUIEventProps, reactEventBus } from './utils/eventBus';
 
-export type ConnectUIProps = TransportProps | PassphraseProps | ErrorViewProps;
+type ConnectUIProps = {
+    postMessage: (message: CoreMessage) => void;
+    clearLegacyView: () => void;
+};
+
+export const ConnectUI = ({ postMessage, clearLegacyView }: ConnectUIProps) => {
+    const [view, setView] = useState<ConnectUIEventProps | undefined>(undefined);
+
+    const listener = useCallback(
+        (detail?: ConnectUIEventProps) => {
+            clearLegacyView();
+            setView(detail);
+        },
+        [clearLegacyView],
+    );
+
+    useEffect(() => {
+        reactEventBus.on(listener);
+
+        return () => reactEventBus.remove(listener);
+    }, [listener]);
+
     useEffect(() => initAnalytics(), []);
 
     const getComponent = () => {
-        switch (props.type) {
+        if (!view?.type) return null;
+
+        switch (view.type) {
             case UI.TRANSPORT:
-                return <Transport {...props} />;
+                return <Transport />;
             case UI.REQUEST_PASSPHRASE:
-                return <Passphrase {...props} />;
+                return <Passphrase {...view} postMessage={postMessage} />;
             case 'error':
-                return <ErrorView {...props} />;
+                return <ErrorView {...view} />;
             default:
-                // @ts-expect-error
-                throw new Error(`no such view exists: ${props.type}`);
+                throw new Error(`no such view exists: ${view.type}`);
         }
     };
 

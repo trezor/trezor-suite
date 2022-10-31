@@ -8,9 +8,8 @@ import {
     PopupEvent,
     PopupInit,
     PopupHandshake,
-    UI,
-    createUiResponse,
 } from '@trezor/connect';
+import { reactEventBus } from '@trezor/connect-ui/src/utils/eventBus';
 
 import * as view from './view';
 import {
@@ -19,7 +18,6 @@ import {
     setOperation,
     initMessageChannel,
     postMessageToParent,
-    postMessage,
     renderConnectUI,
 } from './view/common';
 import {
@@ -55,10 +53,11 @@ const handleMessage = (event: MessageEvent<PopupEvent | UiEvent>) => {
 
     // This is message from the window.opener
     if (data.type === UI_REQUEST.IFRAME_FAILURE) {
-        renderConnectUI({
+        reactEventBus.dispatch({
             type: 'error',
             detail: 'iframe-failure',
         });
+
         return;
     }
 
@@ -89,7 +88,7 @@ const handleMessage = (event: MessageEvent<PopupEvent | UiEvent>) => {
             }
             break;
         case UI_REQUEST.TRANSPORT:
-            renderConnectUI(message);
+            reactEventBus.dispatch(message);
             break;
         case UI_REQUEST.SELECT_DEVICE:
             view.selectDevice(message.payload);
@@ -156,19 +155,7 @@ const handleMessage = (event: MessageEvent<PopupEvent | UiEvent>) => {
             break;
         // comes first
         case UI_REQUEST.REQUEST_PASSPHRASE:
-            renderConnectUI({
-                ...message,
-                onPassphraseSubmit: (value: string, passphraseOnDevice?: boolean) => {
-                    postMessage(
-                        createUiResponse(UI.RECEIVE_PASSPHRASE, {
-                            value,
-                            passphraseOnDevice,
-                            // todo: what is this param?
-                            save: true,
-                        }),
-                    );
-                },
-            });
+            reactEventBus.dispatch(message);
             break;
         // comes when user clicks "enter on device"
         case UI_REQUEST.REQUEST_PASSPHRASE_ON_DEVICE:
@@ -216,16 +203,19 @@ const onLoad = () => {
         return;
     }
 
+    renderConnectUI();
+
     postMessageToParent(createPopupMessage(POPUP.LOADED));
 
-    handshakeTimeout = setTimeout(() => {
-        renderConnectUI({
-            type: 'error',
-            detail: 'handshake-timeout',
-        });
-
+    handshakeTimeout = setTimeout(
+        () =>
+            reactEventBus.dispatch({
+                type: 'error',
+                detail: 'handshake-timeout',
+            }),
         // todo: increase timeout, now set low for testing
-    }, 30 * 1000);
+        30 * 1000,
+    );
 };
 
 window.addEventListener('load', onLoad, false);
