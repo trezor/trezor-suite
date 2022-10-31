@@ -5,12 +5,11 @@ import {
     fromUnixTime,
     differenceInMonths,
     subMinutes,
-    differenceInDays,
-    differenceInYears,
     isBefore,
     isAfter,
     isEqual,
     eachMinuteOfInterval,
+    differenceInMinutes,
 } from 'date-fns';
 
 import { CoinFiatRates, Account } from '@suite-common/wallet-types';
@@ -23,7 +22,7 @@ import { FiatCurrencyCode } from '@suite-common/suite-config/libDev/src';
 import TrezorConnect from '@trezor/connect';
 import { AccountBalanceHistory } from '@trezor/blockchain-link';
 
-import { lineGraphStepInMinutes, timeSwitchItems } from './config';
+import { timeSwitchItems } from './config';
 import {
     AggregatedDashboardHistory,
     AggregatedAccountHistory,
@@ -36,6 +35,7 @@ import {
     LineGraphPoint,
     LineGraphTimeFrameIntervalPoint,
 } from './types';
+import { MAX_GRAPH_POINTS_NUMBER } from './constants';
 
 type FiatRates = NonNullable<CoinFiatRates['current']>['rates'];
 
@@ -573,13 +573,13 @@ export const mergeAndSortTimeFrameItems = (
         ...balanceMovementsInTimeFrameRates.map(balanceHistoryInRange => ({
             ...balanceHistoryInRange,
             fiatCurrencyRate: balanceHistoryInRange.rates[fiatCurrency],
-            source: 'BalanceHistoryInRange',
+            source: 'BalanceHistoryInRange' as const,
         })),
         ...preparedFiatRatesForTimeFrame.map(timeInRange => ({
             ...timeInRange,
             balance: undefined,
             fiatCurrencyRate: timeInRange.rates[fiatCurrency],
-            source: 'FiatRatesForTimeFrame',
+            source: 'FiatRatesForTimeFrame' as const,
         })),
     ];
 
@@ -793,28 +793,8 @@ export const getLineGraphStepInMinutes = (
     valueBackInMinutes: number,
 ): number => {
     const startOfRangeDate = subMinutes(endOfRangeDate, valueBackInMinutes);
-    const differenceDays = differenceInDays(endOfRangeDate, startOfRangeDate);
-
-    if (differenceDays === 0) {
-        return lineGraphStepInMinutes.hour;
-    }
-    if (differenceDays === 1) {
-        return lineGraphStepInMinutes.day;
-    }
-    if (differenceDays > 1 && differenceDays < 30) {
-        return lineGraphStepInMinutes.week;
-    }
-    if (differenceDays >= 30 && differenceDays < 120) {
-        return lineGraphStepInMinutes.month;
-    }
-
-    if (differenceDays <= 365) {
-        return lineGraphStepInMinutes.year;
-    }
-
-    const differenceYears = differenceInYears(endOfRangeDate, startOfRangeDate);
-    // to prevent max URL length error, HTTP status 414, from Blockbook (timestamps are sent to Blockbook with HTTP GET)
-    return lineGraphStepInMinutes.year * differenceYears;
+    const differenceMinutes = differenceInMinutes(endOfRangeDate, startOfRangeDate);
+    return Math.ceil(differenceMinutes / MAX_GRAPH_POINTS_NUMBER);
 };
 
 export const getTimeFrameConfiguration = (
@@ -976,23 +956,16 @@ export const getTimeFrameIntervalsWithSummaryBalances = (
             );
             sumAmount = new BigNumber(sumAmount).plus(amount).toNumber();
         });
-        graphPoints.push({
-            date: new Date(finalAccountArraysWithAllBalances[0][i].time * 1000),
-            value: sumAmount,
-        });
+        if (finalAccountArraysWithAllBalances[0][i].source === 'FiatRatesForTimeFrame') {
+            graphPoints.push({
+                date: new Date(finalAccountArraysWithAllBalances[0][i].time * 1000),
+                value: sumAmount,
+            });
+        }
     }
 
     return graphPoints;
 };
-
-export const getLineGraphPoints = (timeFrameItems: LineGraphTimeFrameItemAccountBalance[]) =>
-    timeFrameItems.map(item => {
-        const value = new BigNumber(item.balance!).multipliedBy(item.fiatCurrencyRate!).toNumber();
-        return {
-            date: new Date(item.time * 1000),
-            value,
-        };
-    });
 
 /**
  * react-native-graph library has problems with rendering path when there are some invalid values.
