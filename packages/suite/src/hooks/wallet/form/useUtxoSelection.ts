@@ -6,7 +6,7 @@ import type { AccountUtxo, PROTO } from '@trezor/connect';
 import { getUtxoOutpoint } from '@suite-common/wallet-utils';
 
 type Props = UseFormMethods &
-    Pick<UseSendFormState, 'account' | 'composedLevels' | 'excludedUtxos' | 'feeInfo'> & {
+    Pick<UseSendFormState, 'account' | 'composedLevels' | 'excludedUtxos'> & {
         composeRequest: (field?: string) => void;
     };
 
@@ -15,7 +15,6 @@ export const useUtxoSelection = ({
     composedLevels,
     composeRequest,
     excludedUtxos,
-    feeInfo,
     register,
     setValue,
     watch,
@@ -40,19 +39,30 @@ export const useUtxoSelection = ({
     const isSelected = (utxo: AccountUtxo) =>
         selectedUtxos.some(selected => selected.txid === utxo.txid && selected.vout === utxo.vout);
 
-    // split all UTXOs into two arrays based on their value to separate UTXOs that do not excceed the dust limit
-    const [spendableUtxos, dustUtxos]: [AccountUtxo[], AccountUtxo[]] = account.utxo
-        ? account.utxo.reduce(
-              ([previousSpendable, previousDust]: [AccountUtxo[], AccountUtxo[]], current) =>
-                  feeInfo.dustLimit && parseInt(current.amount, 10) >= feeInfo.dustLimit
-                      ? [[...previousSpendable, current], previousDust]
-                      : [previousSpendable, [...previousDust, current]],
-              [[], []],
-          )
-        : [[], []];
+    const spendableUtxos: AccountUtxo[] = [];
+    const lowAnonymityUtxos: AccountUtxo[] = [];
+    const dustUtxos: AccountUtxo[] = [];
+    account?.utxo?.forEach(utxo => {
+        switch (excludedUtxos[getUtxoOutpoint(utxo)]) {
+            case 'low-anonymity':
+                lowAnonymityUtxos.push(utxo);
+                return;
+            case 'dust':
+                dustUtxos.push(utxo);
+                return;
+            default:
+                spendableUtxos.push(utxo);
+        }
+    });
 
-    // are all available UTXOs selected in the form?
-    const allUtxosSelected = !!selectedUtxos.length && spendableUtxos.every(isSelected);
+    // category displayed on top and controlled by the check-all checkbox
+    const topCategory =
+        [spendableUtxos, lowAnonymityUtxos, dustUtxos].find(utxoCategory => utxoCategory.length) ||
+        [];
+
+    // are all UTXOs in the top category selected?
+    const allUtxosSelected = !!topCategory?.every(isSelected);
+
     // transaction composed for the fee level chosen by the user
     const composedLevel = composedLevels?.[selectedFee || 'normal'];
 
@@ -95,7 +105,11 @@ export const useUtxoSelection = ({
         if (allUtxosSelected) {
             setValue('selectedUtxos', []);
         } else {
-            setValue('selectedUtxos', [...dustUtxos.filter(isSelected), ...spendableUtxos]);
+            // check top category and keep any already checked UTXOs from other categories
+            const selectedUtxosFromLowerCategories = selectedUtxos.filter(
+                utxo => !topCategory?.find(u => u.txid === utxo.txid && u.vout === utxo.vout),
+            );
+            setValue('selectedUtxos', topCategory.concat(selectedUtxosFromLowerCategories));
             setValue('isCoinControlEnabled', true);
         }
         composeRequest();
@@ -140,6 +154,7 @@ export const useUtxoSelection = ({
         dustUtxos,
         isCoinControlEnabled,
         isLowAnonymityUtxoSelected,
+        lowAnonymityUtxos,
         selectedUtxos,
         spendableUtxos,
         toggleAnonymityWarning,

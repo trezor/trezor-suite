@@ -47,7 +47,7 @@ export type FormState = {
 // local state of @wallet-hooks/useSendForm
 export type UseSendFormState = {
     account: Account;
-    excludedUtxos: Record<string, 'mixing' | 'low-anonymity' | 'dust' | 'unconfirmed' | undefined>;
+    excludedUtxos: Record<string, 'low-anonymity' | 'dust' | 'unconfirmed' | undefined>;
     network: Network;
     coinFees: FeeInfo;
     feeInfo: FeeInfo;
@@ -101,6 +101,7 @@ export type SendContextValues = Omit<UseFormMethods<FormState>, 'register'> &
         composedInputs: PROTO.TxInputType[];
         dustUtxos: AccountUtxo[];
         isCoinControlEnabled: boolean;
+        lowAnonymityUtxos: AccountUtxo[];
         selectedUtxos: AccountUtxo[];
         spendableUtxos: AccountUtxo[];
         isLowAnonymityUtxoSelected: boolean;
