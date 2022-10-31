@@ -7633,4 +7633,8 @@ export default defineMessages({
         id: 'TR_LOOKING_FOR_COINJOIN_ROUND',
         defaultMessage: 'Looking for a round',
     },
+    TR_COINJOIN_ROUNDS_LEFT: {
+        id: 'TR_COINJOIN_ROUNDS_LEFT',
+        defaultMessage: '{rounds, plural, one {# round} other {# rounds}} left',
+    },
 });

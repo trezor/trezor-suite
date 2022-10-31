@@ -8,6 +8,7 @@ import { CoinjoinLog } from './CoinjoinLog';
 
 const Container = styled.div`
     width: 100%;
+    margin-bottom: 24px;
 `;
 
 interface CoinjoinSummaryProps {

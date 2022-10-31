@@ -9,7 +9,7 @@ import { selectDevice } from '@suite-actions/suiteActions';
 import { goto } from '@suite-actions/routerActions';
 import { useSelector } from '@suite-hooks/useSelector';
 import { STATUS as DiscoveryStatus } from '@wallet-actions/constants/discoveryConstants';
-import { calculateSessionProgress, getSessionDeadlineFormat } from '@wallet-utils/coinjoinUtils';
+import { calculateSessionProgress, getPhaseTimerFormat } from '@wallet-utils/coinjoinUtils';
 import { selectRouterParams } from '@suite-reducers/routerReducer';
 import { CountdownTimer } from './CountdownTimer';
 import { WalletLabeling } from './Labeling';
@@ -136,13 +136,10 @@ export const CoinjoinStatusBar = ({ accountKey, session, isSingle }: CoinjoinSta
                 {sessionDeadline && (
                     <>
                         <Separator>•</Separator>
-                        <span>
-                            <CountdownTimer
-                                deadline={sessionDeadline}
-                                format={getSessionDeadlineFormat(sessionDeadline)}
-                            />{' '}
-                            <Translation id="TR_LEFT" />
-                        </span>
+                        <Translation
+                            id="TR_COINJOIN_ROUNDS_LEFT"
+                            values={{ rounds: maxRounds - signedRounds.length }}
+                        />
                     </>
                 )}
             </StatusText>
@@ -154,7 +151,12 @@ export const CoinjoinStatusBar = ({ accountKey, session, isSingle }: CoinjoinSta
                     <Translation
                         id="TR_COINJOIN_ROUND_COUNTDOWN"
                         values={{
-                            time: <CountdownTimer deadline={phaseDeadline} />,
+                            time: (
+                                <CountdownTimer
+                                    deadline={phaseDeadline}
+                                    format={getPhaseTimerFormat(phaseDeadline)}
+                                />
+                            ),
                         }}
                     />
                 </Note>
