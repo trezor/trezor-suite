@@ -25,4 +25,5 @@ fi
 
 echo "${CONTAINERS}"
 
+docker-compose -f ./docker/docker-compose.transport-test.yml pull
 docker-compose -f ./docker/docker-compose.suite-desktop-test.yml up --build --abort-on-container-exit --remove-orphans --force-recreate ${CONTAINERS}
