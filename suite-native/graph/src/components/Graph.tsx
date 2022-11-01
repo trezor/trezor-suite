@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { LineGraph, GraphPoint } from 'react-native-graph';
+import { GraphPoint, LineGraph } from 'react-native-graph';
 
 import { defaultColorVariant } from '@trezor/theme';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -11,6 +11,9 @@ import { AxisLabel } from './AxisLabel';
 type GraphProps = {
     points: GraphPoint[];
     loading?: boolean;
+    onPointSelected?: (point: GraphPoint) => void;
+    onGestureEnd?: () => void;
+    animated?: boolean;
 };
 
 const graphWrapperStyle = prepareNativeStyle(_ => ({
@@ -25,12 +28,24 @@ const graphStyle = prepareNativeStyle(_ => ({
     width: '100%',
 }));
 
-export const Graph = ({ points = [], loading = false }: GraphProps) => {
-    const { applyStyle } = useNativeStyles();
+const placeholderPoints = [
+    {
+        date: new Date(0),
+        originalDate: new Date(),
+        value: 0,
+    },
+];
 
+export const Graph = ({
+    onPointSelected,
+    onGestureEnd,
+    points = [],
+    loading = false,
+    animated = true,
+}: GraphProps) => {
+    const { applyStyle } = useNativeStyles();
     const nonZeroSumOfGraphPoints = useMemo(() => sumLineGraphPoints(points) > 0, [points]);
     const extremaFromGraphPoints = useMemo(() => getExtremaFromGraphPoints(points), [points]);
-
     const axisLabels = useMemo(() => {
         if (extremaFromGraphPoints?.max && extremaFromGraphPoints?.min) {
             return {
@@ -50,14 +65,7 @@ export const Graph = ({ points = [], loading = false }: GraphProps) => {
         }
     }, [extremaFromGraphPoints]);
 
-    const graphPoints = points.length
-        ? points
-        : [
-              {
-                  date: new Date(0),
-                  value: 0,
-              },
-          ];
+    const graphPoints = points.length ? points : placeholderPoints;
 
     // FIXME animated=true graph shows only 196 values, let's go with static for now.
     return (
@@ -68,11 +76,13 @@ export const Graph = ({ points = [], loading = false }: GraphProps) => {
                         style={applyStyle(graphStyle)}
                         points={graphPoints}
                         color={defaultColorVariant.green}
-                        animated
+                        animated={animated}
                         verticalPadding={20}
                         enablePanGesture
                         TopAxisLabel={axisLabels?.TopAxisLabel}
                         BottomAxisLabel={axisLabels?.BottomAxisLabel}
+                        onPointSelected={onPointSelected as any /* because of ExtendedGraphPoint */}
+                        onGestureEnd={onGestureEnd}
                     />
                 </>
             ) : (

@@ -1,0 +1,10 @@
+<svg viewBox="0 0 9 7" fill="none">
+  <g clip-path="url(#prefix__a)">
+    <path d="M3.703 6.495.855 1.51A1 1 0 0 1 1.723.015H7.42a1 1 0 0 1 .868 1.496L5.44 6.496a1 1 0 0 1-1.737 0v-.001Z" fill="#000"/>
+  </g>
+  <defs>
+    <clipPath id="prefix__a">
+      <path fill="#fff" d="M0 0h9v7H0z"/>
+    </clipPath>
+  </defs>
+</svg>

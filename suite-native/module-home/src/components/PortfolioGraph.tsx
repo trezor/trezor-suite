@@ -1,30 +1,45 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { Graph, TimeSwitch } from '@suite-native/graph';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Box, Text } from '@suite-native/atoms';
-import { enabledNetworks } from '@suite-native/config';
-import { Icon } from '@trezor/icons';
-import { selectFiatCurrency } from '@suite-native/module-settings';
-import { useFormatters } from '@suite-common/formatters';
-import {
-    getAllAccountsGraphPointsThunk,
-    selectDashboardGraph,
-    LineGraphTimeFrameValues,
-} from '@suite-common/wallet-graph';
+import { useAtom } from 'jotai';
 
-const arrowStyle = prepareNativeStyle(() => ({
-    marginRight: 4,
-}));
+import {
+    enhanceGraphPoints,
+    getAllAccountsGraphPointsThunk,
+    LineGraphTimeFrameValues,
+    selectDashboardGraph,
+} from '@suite-common/wallet-graph';
+import { Text } from '@suite-native/atoms';
+import { enabledNetworks } from '@suite-native/config';
+import { Graph, TimeSwitch } from '@suite-native/graph';
+import { selectFiatCurrency } from '@suite-native/module-settings';
+
+import {
+    PortfolioGraphHeader,
+    writeOnlyReferencePointAtom,
+    writeOnlySelectedPointAtom,
+} from './PortfolioGraphHeader';
 
 export const PortfolioGraph = () => {
     const dispatch = useDispatch();
-    const { applyStyle } = useNativeStyles();
-    const { FiatAmountFormatter } = useFormatters();
     const fiatCurrency = useSelector(selectFiatCurrency);
     const { points, error, loading } = useSelector(selectDashboardGraph);
+    const enhancedPoints = useMemo(() => enhanceGraphPoints(points), [points]);
     const [selectedTimeFrame, setSelectedTimeFrame] = useState<LineGraphTimeFrameValues>('day');
+    const [_, setSelectedPoint] = useAtom(writeOnlySelectedPointAtom);
+    const [__, setReferencePoint] = useAtom(writeOnlyReferencePointAtom);
+
+    const lastPoint = enhancedPoints[enhancedPoints.length - 1];
+    const firstPoint = enhancedPoints[0];
+
+    const setInitialSelectedPoints = useCallback(() => {
+        if (lastPoint && firstPoint) {
+            setSelectedPoint(lastPoint);
+            setReferencePoint(firstPoint);
+        }
+    }, [lastPoint, firstPoint, setSelectedPoint, setReferencePoint]);
+
+    useEffect(setInitialSelectedPoints, [setInitialSelectedPoints]);
 
     useEffect(() => {
         dispatch(
@@ -36,38 +51,25 @@ export const PortfolioGraph = () => {
         );
     }, [selectedTimeFrame, fiatCurrency, dispatch]);
 
-    const handleSelectTimeFrame = (timeFrame: LineGraphTimeFrameValues) => {
+    const handleSelectTimeFrame = useCallback((timeFrame: LineGraphTimeFrameValues) => {
         setSelectedTimeFrame(timeFrame);
-    };
-
-    // FIXME - I think it is necessary to have the same number of items in arrays we are switching between - for graphs to be animated when switching time frames...
+    }, []);
 
     return (
         <>
-            <Text variant="titleLarge">
-                {/* TODO calculate this from assets  */}
-                {FiatAmountFormatter.format(0)}
-            </Text>
-            <Box flexDirection="row" alignItems="center">
-                <Box marginRight="small">
-                    <Text variant="hint" color="gray600">
-                        Today, 15:45
-                    </Text>
-                </Box>
-                <Box style={applyStyle(arrowStyle)}>
-                    <Icon name="arrowUp" color="forest" size="extraSmall" />
-                </Box>
-                <Text color="forest" variant="hint">
-                    1.3%
-                </Text>
-            </Box>
+            <PortfolioGraphHeader />
             {error ? (
                 <Text variant="label" color="gray600">
                     {error}
                 </Text>
             ) : (
                 <>
-                    <Graph points={points} loading={loading} />
+                    <Graph
+                        points={enhancedPoints}
+                        loading={loading}
+                        onPointSelected={setSelectedPoint}
+                        onGestureEnd={setInitialSelectedPoints}
+                    />
                     <TimeSwitch
                         selectedTimeFrame={selectedTimeFrame}
                         onSelectTimeFrame={handleSelectTimeFrame}

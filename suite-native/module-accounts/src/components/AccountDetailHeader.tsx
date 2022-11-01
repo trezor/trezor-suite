@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useState } from 'react';
+import React, { memo, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { Graph, TimeSwitch } from '@suite-native/graph';
@@ -6,6 +6,7 @@ import { AccountBalance } from '@suite-native/accounts';
 import { Box, Text } from '@suite-native/atoms';
 import { AccountKey } from '@suite-common/suite-types';
 import {
+    enhanceGraphPoints,
     getSingleAccountGraphPointsThunk,
     LineGraphTimeFrameValues,
     selectAccountGraph,
@@ -21,6 +22,8 @@ export const AccountDetailHeader = memo(({ accountKey, accountName }: AccountDet
     const dispatch = useDispatch();
     const fiatCurrency = useSelector(selectFiatCurrency);
     const { points, error, loading } = useSelector(selectAccountGraph);
+    const enhancedPoints = useMemo(() => enhanceGraphPoints(points), [points]);
+
     const [selectedTimeFrame, setSelectedTimeFrame] = useState<LineGraphTimeFrameValues>('day');
 
     useEffect(() => {
@@ -46,7 +49,7 @@ export const AccountDetailHeader = memo(({ accountKey, accountName }: AccountDet
                 </Text>
             ) : (
                 <>
-                    <Graph points={points} loading={loading} />
+                    <Graph points={enhancedPoints} loading={loading} />
                     <TimeSwitch
                         selectedTimeFrame={selectedTimeFrame}
                         onSelectTimeFrame={handleSelectTimeFrame}
