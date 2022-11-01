@@ -9,9 +9,6 @@ describe('TrezorConnect.authorizeCoinJoin', () => {
     beforeAll(async () => {
         await setup(controller, {
             mnemonic: 'mnemonic_all',
-            settings: {
-                experimental_features: true,
-            },
         });
     });
 
