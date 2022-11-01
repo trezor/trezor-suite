@@ -126,6 +126,8 @@ export const AddAccount = ({ device, onCancel, symbol, noRedirect }: Props) => {
     const accountTypes =
         selectedNetworkEnabled && selectedNetwork?.networkType === 'bitcoin'
             ? NETWORKS.filter(n => n.symbol === selectedNetwork.symbol)
+                  // All coinjoin accounts currently visible only in debug mode
+                  .filter(n => n.backendType !== 'coinjoin' || debug.showDebugMenu)
             : undefined;
 
     const onEnableAccount = (account: Account) => {
