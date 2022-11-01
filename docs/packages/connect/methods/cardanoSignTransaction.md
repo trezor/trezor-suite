@@ -17,7 +17,7 @@ const result = await TrezorConnect.cardanoSignTransaction(params);
 -   `inputs` - _required_ `Array` of [CardanoInput](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/cardano/index.ts)
 -   `outputs` - _required_ `Array` of [CardanoOutput](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/cardano/index.ts)
 -   `fee` - _required_ `String`
--   `protocolMagic` - _required_ `Integer` 764824073 for Mainnet, 1097911063 for Testnet
+-   `protocolMagic` - _required_ `Integer` 764824073 for Mainnet, 1 for Preprod Testnet, 2 for Preview Testnet
 -   `networkId` - _required_ `Integer` 1 for Mainnet, 0 for Testnet
 -   `ttl` - _optional_ `String`
 -   `validityIntervalStart` - _optional_ `String`

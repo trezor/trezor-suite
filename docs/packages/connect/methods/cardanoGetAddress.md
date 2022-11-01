@@ -16,7 +16,7 @@ const result = await TrezorConnect.cardanoGetAddress(params);
 
 -   `addressParameters` — _required_ see description below
 -   `address` — _optional_ `string` address for validation (read `Handle button request` section below)
--   `protocolMagic` - _required_ `Integer` 764824073 for Mainnet, 1097911063 for Testnet
+-   `protocolMagic` - _required_ `Integer` 764824073 for Mainnet, 1 for Preprod Testnet, 2 for Preview Testnet
 -   `networkId` - _required_ `Integer` 1 for Mainnet, 0 for Testnet
 -   `showOnTrezor` — _optional_ `boolean` determines if address will be displayed on device. Default is set to `true`
 -   `derivationType` — _optional_ `CardanoDerivationType` enum. determines used derivation type. Default is set to ICARUS_TREZOR=2
@@ -242,7 +242,7 @@ TrezorConnect.cardanoGetAddress({
                 addressType: 8,
                 path: "m/44'/1815'/1'/0/2",
             },
-            protocolMagic: 1097911063,
+            protocolMagic: 1,
             networkId: 0,
             showOnTrezor: false,
         },
