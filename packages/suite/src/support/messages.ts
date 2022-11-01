@@ -7554,7 +7554,7 @@ export default defineMessages({
         defaultMessage: 'We recommend a minimum "1 in 5" anonymity level',
     },
     TR_NOT_ENOUGH_ANONYMIZED_FUNDS_WARNING: {
-        id: 'TR_NOT_ENOUGH_ANONYMIZED_FUNDS',
+        id: 'TR_NOT_ENOUGH_ANONYMIZED_FUNDS_WARNING',
         description: 'Warning in coinjoin send form',
         defaultMessage:
             'Not enough anonymized funds{br}Either anonymize more funds, or lower the anonymity level at your own risk',
