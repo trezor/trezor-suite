@@ -13,6 +13,7 @@ import {
     getExtremaFromGraphPoints,
     getSuccessAccountBalanceMovements,
     minAndMaxGraphPointArrayItemIndex,
+    enhanceGraphPoints,
 } from '../graphUtils';
 import { timeSwitchItems } from '../config';
 import {
@@ -147,34 +148,55 @@ const graphData3 = {
 
 describe('Graph utils', () => {
     describe('getLineGraphAllTimeStepInMinutes', () => {
+        const maxPointsNumber = 120;
         const endOfRange = new Date();
         // all time could be anything...minutes, hours, days...
         test('should step 30 minutes back', () => {
-            expect(getLineGraphStepInMinutes(endOfRange, 30)).toEqual(1);
+            expect(getLineGraphStepInMinutes(endOfRange, 30, maxPointsNumber)).toEqual(1);
         });
         test('should step one hour back', () => {
             expect(
-                getLineGraphStepInMinutes(endOfRange, timeSwitchItems.hour.valueBackInMinutes!),
+                getLineGraphStepInMinutes(
+                    endOfRange,
+                    timeSwitchItems.hour.valueBackInMinutes!,
+                    maxPointsNumber,
+                ),
             ).toEqual(1);
         });
         test('should step 3 hours back', () => {
             expect(
-                getLineGraphStepInMinutes(endOfRange, timeSwitchItems.hour.valueBackInMinutes! * 3),
+                getLineGraphStepInMinutes(
+                    endOfRange,
+                    timeSwitchItems.hour.valueBackInMinutes! * 3,
+                    maxPointsNumber,
+                ),
             ).toEqual(2);
         });
         test('should step one day back', () => {
             expect(
-                getLineGraphStepInMinutes(endOfRange, timeSwitchItems.day.valueBackInMinutes!),
+                getLineGraphStepInMinutes(
+                    endOfRange,
+                    timeSwitchItems.day.valueBackInMinutes!,
+                    maxPointsNumber,
+                ),
             ).toEqual(12);
         });
         test('should step one week back', () => {
             expect(
-                getLineGraphStepInMinutes(endOfRange, timeSwitchItems.week.valueBackInMinutes!),
+                getLineGraphStepInMinutes(
+                    endOfRange,
+                    timeSwitchItems.week.valueBackInMinutes!,
+                    maxPointsNumber,
+                ),
             ).toEqual(84);
         });
         test('should step one month back', () => {
             expect(
-                getLineGraphStepInMinutes(endOfRange, timeSwitchItems.month.valueBackInMinutes!),
+                getLineGraphStepInMinutes(
+                    endOfRange,
+                    timeSwitchItems.month.valueBackInMinutes!,
+                    maxPointsNumber,
+                ),
             ).toEqual(360);
         });
         test('should step circa 2 months back', () => {
@@ -182,6 +204,7 @@ describe('Graph utils', () => {
                 getLineGraphStepInMinutes(
                     endOfRange,
                     timeSwitchItems.month.valueBackInMinutes! * 2,
+                    maxPointsNumber,
                 ),
             ).toEqual(720);
         });
@@ -190,17 +213,26 @@ describe('Graph utils', () => {
                 getLineGraphStepInMinutes(
                     endOfRange,
                     timeSwitchItems.month.valueBackInMinutes! * 10,
+                    maxPointsNumber,
                 ),
             ).toEqual(3600);
         });
         test('should step circa one year back', () => {
             expect(
-                getLineGraphStepInMinutes(endOfRange, timeSwitchItems.year.valueBackInMinutes!),
+                getLineGraphStepInMinutes(
+                    endOfRange,
+                    timeSwitchItems.year.valueBackInMinutes!,
+                    maxPointsNumber,
+                ),
             ).toEqual(4380);
         });
         test('should step circa 4 years back', () => {
             expect(
-                getLineGraphStepInMinutes(endOfRange, timeSwitchItems.year.valueBackInMinutes! * 4),
+                getLineGraphStepInMinutes(
+                    endOfRange,
+                    timeSwitchItems.year.valueBackInMinutes! * 4,
+                    maxPointsNumber,
+                ),
             ).toEqual(17520);
         });
     });
@@ -295,8 +327,11 @@ describe('Graph utils', () => {
                 expect(Number.isNaN(point.value)).toBeFalsy(),
             );
         });
+    });
+
+    describe('enhanceGraphPoints', () => {
         test('should dates follow each other from the start of unix epoch', () => {
-            const validGraphPoints = getValidGraphPoints(graphPointsWithInvalidValues);
+            const validGraphPoints = enhanceGraphPoints(graphPointsWithInvalidValues);
             validGraphPoints.forEach((point, index) => {
                 if (index === 0) {
                     expect(point.date.getTime()).toEqual(0);

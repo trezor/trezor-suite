@@ -66,6 +66,12 @@ export interface LineGraphPoint {
     date: Date;
 }
 
+// graph does not show when dates do not follow each other from the unix epoch
+// so this will workaround showing actual dates
+export type ExtendedGraphPoint = {
+    originalDate: Date;
+} & LineGraphPoint;
+
 export type LineGraphTimeFrameValues = 'hour' | 'day' | 'week' | 'month' | 'year' | 'all';
 
 export type LineGraphTimeFrameConfiguration = {

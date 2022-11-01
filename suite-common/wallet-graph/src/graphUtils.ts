@@ -34,6 +34,7 @@ import {
     LineGraphTimeFrameValues,
     LineGraphPoint,
     LineGraphTimeFrameIntervalPoint,
+    ExtendedGraphPoint,
 } from './types';
 import { MAX_GRAPH_POINTS_NUMBER } from './constants';
 
@@ -791,10 +792,11 @@ export const getStartItemOfTimeFrame = async (
 export const getLineGraphStepInMinutes = (
     endOfRangeDate: Date,
     valueBackInMinutes: number,
+    maxPointsNumber: number,
 ): number => {
     const startOfRangeDate = subMinutes(endOfRangeDate, valueBackInMinutes);
     const differenceMinutes = differenceInMinutes(endOfRangeDate, startOfRangeDate);
-    return Math.ceil(differenceMinutes / MAX_GRAPH_POINTS_NUMBER);
+    return Math.ceil(differenceMinutes / maxPointsNumber);
 };
 
 export const getTimeFrameConfiguration = (
@@ -802,7 +804,11 @@ export const getTimeFrameConfiguration = (
     endOfRangeDate: Date,
     minutesBackToStartOfRange: number,
 ) => {
-    const stepInMinutes = getLineGraphStepInMinutes(endOfRangeDate, minutesBackToStartOfRange);
+    const stepInMinutes = getLineGraphStepInMinutes(
+        endOfRangeDate,
+        minutesBackToStartOfRange,
+        MAX_GRAPH_POINTS_NUMBER,
+    );
 
     return {
         ...timeSwitchItems[timeFrame],
@@ -967,19 +973,18 @@ export const getTimeFrameIntervalsWithSummaryBalances = (
     return graphPoints;
 };
 
-/**
- * react-native-graph library has problems with rendering path when there are some invalid values.
- * Also animated=true graph does not show when dates do not follow each other from the unix epoch
- * (start on 00:00:00 UTC on 1 January 1970).
- *
- */
-export const getValidGraphPoints = (graphPoints: LineGraphPoint[]) =>
-    graphPoints
-        .filter(point => !new BigNumber(point.value ?? '').isNaN())
-        .map((point, index) => ({
-            ...point,
-            date: new Date(index),
-        }));
+// react-native-graph library has problems with rendering path when there are some invalid values.
+export const getValidGraphPoints = (graphPoints: LineGraphPoint[]): LineGraphPoint[] =>
+    graphPoints.filter(point => !new BigNumber(point.value ?? '').isNaN());
+
+// animated=true graph does not show when dates do not follow each other from the unix epoch
+// (start on 00:00:00 UTC on 1 January 1970).
+export const enhanceGraphPoints = (graphPoints: LineGraphPoint[]): ExtendedGraphPoint[] =>
+    graphPoints.map((point, index) => ({
+        ...point,
+        date: new Date(index),
+        originalDate: point.date,
+    }));
 
 export const getFirstAccountBalanceMovement = async (account: Account) => {
     const accountBalanceHistory = await fetchAccountBalanceHistory(account, {
