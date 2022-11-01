@@ -44,7 +44,10 @@ const confirmInput = async (
     );
 
     const delay = 0; // TODO: delay cannot be longer than last confirmationInterval tick
-    log(`Confirming ~~${input.outpoint}~~ to ~~${round.id}~~ with delay ${delay}ms`);
+    const deadline = coordinator.RoundPhase.InputRegistration ? undefined : round.phaseDeadline;
+    log(
+        `Confirming ~~${input.outpoint}~~ to ~~${round.id}~~ with delay ${delay}ms and deadline ${deadline}`,
+    );
 
     const confirmationData = await coordinator.connectionConfirmation(
         round.id,
@@ -53,7 +56,7 @@ const confirmInput = async (
         input.realVsizeCredentials,
         zeroAmountCredentials,
         zeroVsizeCredentials,
-        { signal, baseUrl: coordinatorUrl, identity: input.outpoint, delay },
+        { signal, baseUrl: coordinatorUrl, identity: input.outpoint, delay, deadline },
     );
 
     // stop here if it's confirmationInterval at phase 0

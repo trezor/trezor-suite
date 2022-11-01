@@ -88,7 +88,13 @@ const joinInputsCredentials = async (
             realVsizeCredentials,
             zeroAmountCredentials,
             zeroVsizeCredentials,
-            { signal, baseUrl: coordinatorUrl, identity: getWeakRandomId(10), delay: 0 },
+            {
+                signal,
+                baseUrl: coordinatorUrl,
+                identity: getWeakRandomId(10),
+                delay: 0,
+                deadline: round.phaseDeadline,
+            },
         );
 
         amountCredentials = await middleware.getCredentials(
@@ -158,7 +164,7 @@ export const getOutputAmounts = async (
     options.log(`Decompose amounts: ${outputAmounts.join('')}`);
     return outputAmounts.map(amount => {
         const miningFee = Math.floor((outputSize * roundParameters.miningFeeRate) / 1000);
-        const coordinatorFee = 0; // TODO: middleware issue. should be `amount > plebsDontPayThreshold ? Math.floor(roundParameters.coordinationFeeRate.rate * amount) : 0` but middleware does not considerate coordinationFeeRate and plebs
+        const coordinatorFee = 0; // NOTE: middleware issue https://github.com/zkSNACKs/WalletWasabi/issues/8814 should be `amount > plebsDontPayThreshold ? Math.floor(roundParameters.coordinationFeeRate.rate * amount) : 0` but middleware does not considerate coordinationFeeRate and plebs for external amounts
         return amount + coordinatorFee + miningFee;
     });
 };
