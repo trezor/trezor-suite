@@ -24,6 +24,7 @@
         "@suite-common/wallet-core": "*",
         "@suite-common/wallet-types": "*",
         "@suite-common/wallet-utils": "*",
+        "@suite-native/accounts": "*",
         "@suite-native/atoms": "*",
         "@suite-native/config": "*",
         "@suite-native/forms": "*",

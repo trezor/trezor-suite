@@ -1,4 +1,5 @@
 import { createSelector, isAnyOf } from '@reduxjs/toolkit';
+import { A } from '@mobily/ts-belt';
 
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import { enhanceHistory, isUtxoBased } from '@suite-common/wallet-utils';
@@ -111,7 +112,8 @@ export const selectAccounts = (state: AccountsRootState) => state.wallet.account
 export const selectAccountByKey = createSelector(
     selectAccounts,
     (_state: AccountsRootState, accountKey: string) => accountKey,
-    (accounts, accountKey) => accounts.find(account => account.key === accountKey),
+    (accounts, accountKey): Account | null =>
+        accounts.find(account => account.key === accountKey) ?? null,
 );
 
 export const selectAccountsByNetworkSymbols = createSelector(
@@ -119,7 +121,7 @@ export const selectAccountsByNetworkSymbols = createSelector(
         selectAccounts,
         (_state: AccountsRootState, networkSymbols: NetworkSymbol[]) => networkSymbols,
     ],
-    (accounts, networkSymbols) =>
+    (accounts, networkSymbols): Account[] =>
         accounts.filter(account => networkSymbols.includes(account.symbol)),
 );
 
@@ -129,7 +131,7 @@ export const selectAccountsByNetworkAndDevice = createSelector(
         deviceState,
         networkSymbol,
     }),
-    (accounts, params) =>
+    (accounts, params): Account[] =>
         accounts.filter(
             account =>
                 account.deviceState === params.deviceState &&
@@ -150,6 +152,20 @@ export const selectAccountLabel = createSelector(
     },
 );
 
-export const selectIsAccountUtxoBased = createSelector([selectAccountByKey], account =>
+export const selectIsAccountUtxoBased = createSelector([selectAccountByKey], (account): boolean =>
     account ? isUtxoBased(account) : false,
+);
+
+export const selectIsAccountImported = createSelector(
+    selectAccounts,
+    (_state: AccountsRootState, accountDescriptor: string) => accountDescriptor,
+    (accounts, accountDescriptor): boolean =>
+        A.some(accounts, account => account.descriptor === accountDescriptor),
+);
+
+export const selectAccountByDescriptor = createSelector(
+    selectAccounts,
+    (_state: AccountsRootState, accountDescriptor: string) => accountDescriptor,
+    (accounts, accountDescriptor): Account | null =>
+        A.find(accounts, account => account.descriptor === accountDescriptor) ?? null,
 );

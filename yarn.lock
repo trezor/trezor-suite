@@ -6371,6 +6371,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/wallet-core@workspace:suite-common/wallet-core"
   dependencies:
+    "@mobily/ts-belt": ^3.11.0
     "@reduxjs/toolkit": ^1.8.3
     "@suite-common/fiat-services": "*"
     "@suite-common/redux-utils": "*"
@@ -6592,6 +6593,7 @@ __metadata:
     "@suite-common/wallet-core": "*"
     "@suite-common/wallet-types": "*"
     "@suite-common/wallet-utils": "*"
+    "@suite-native/accounts": "*"
     "@suite-native/atoms": "*"
     "@suite-native/config": "*"
     "@suite-native/forms": "*"
