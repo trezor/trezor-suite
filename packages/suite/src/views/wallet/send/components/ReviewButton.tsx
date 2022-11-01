@@ -95,12 +95,19 @@ export const ReviewButton = () => {
     const isDisabled = !possibleToSubmit || confirmationRequired;
     const showCoinControlWarning = possibleToSubmit && isLowAnonymityUtxoSelected;
     const buttonHasTwoLines = isLowAnonymity || showCoinControlWarning;
-    const primaryText = broadcastEnabled ? 'REVIEW_AND_SEND_TRANSACTION' : 'SIGN_TRANSACTION';
     const secondaryText = isCoinControlEnabled
         ? 'TR_YOU_SHOULD_ANONYMIZE'
         : 'TR_NOT_ENOUGH_ANONYMIZED_FUNDS';
 
     const toggleUtxoSelection = () => toggleOption('utxoSelection');
+    const getPrimaryText = () => {
+        if (showCoinControlWarning) {
+            return broadcastEnabled
+                ? 'TR_SEND_NOT_ANONYMIZED_COINS'
+                : 'TR_SIGN_WITH_NOT_ANONYMIZED_COINS';
+        }
+        return broadcastEnabled ? 'REVIEW_AND_SEND_TRANSACTION' : 'SIGN_TRANSACTION';
+    };
 
     const tooltipContent =
         isLowAnonymity || confirmationRequired ? (
@@ -155,7 +162,7 @@ export const ReviewButton = () => {
                 isDisabled={isDisabled || isLoading}
                 onClick={signTransaction}
             >
-                <Translation id={primaryText} />
+                <Translation id={getPrimaryText()} />
                 {buttonHasTwoLines && (
                     <SecondLine>
                         <Translation id={secondaryText} />

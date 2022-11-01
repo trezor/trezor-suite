@@ -7612,7 +7612,7 @@ export default defineMessages({
         id: 'TR_NOT_ENOUGH_ANONYMIZED_FUNDS_WARNING',
         description: 'Warning in coinjoin send form',
         defaultMessage:
-            'Not enough anonymized funds{br}Either anonymize more funds, or lower the anonymity level at your own risk',
+            'Not enough anonymized funds. Either anonymize more funds, lower the anonymity level, or select coins manually at your own risk.',
     },
     TR_BREAKING_ANONYMITY_CHECKBOX: {
         id: 'TR_BREAKING_ANONYMITY_CHECKBOX',
@@ -7641,12 +7641,22 @@ export default defineMessages({
     },
     TR_NOT_ENOUGH_ANONYMIZED_FUNDS: {
         id: 'TR_NOT_ENOUGH_ANONYMIZED_FUNDS',
-        description: 'Secondary button text in coinjoin sed form',
+        description: 'Secondary button text in coinjoin send form',
         defaultMessage: 'Not enough anonymized funds',
+    },
+    TR_SEND_NOT_ANONYMIZED_COINS: {
+        id: 'TR_SEND_NOT_ANONYMIZED_COINS',
+        description: 'Send button text in coinjoin account when low-anonymity UTXOs are selected',
+        defaultMessage: 'Send not anonymized Coins',
+    },
+    TR_SIGN_WITH_NOT_ANONYMIZED_COINS: {
+        id: 'TR_SIGN_WITH_NOT_ANONYMIZED_COINS',
+        description: 'Sign button text in coinjoin account when low-anonymity UTXOs are selected',
+        defaultMessage: 'Sign with not anonymized Coins',
     },
     TR_YOU_SHOULD_ANONYMIZE: {
         id: 'TR_YOU_SHOULD_ANONYMIZE',
-        description: 'Secondary button text in coinjoin sed form',
+        description: 'Secondary button text in coinjoin send form',
         defaultMessage: 'You should anonymize them',
     },
 });
