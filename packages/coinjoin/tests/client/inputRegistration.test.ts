@@ -57,7 +57,7 @@ describe('inputRegistration', () => {
                 ],
                 {
                     ...server?.requestOptions,
-                    round: { phaseDeadline: 0 },
+                    round: { phaseDeadline: Date.now() + 3000 },
                 },
             ),
             prison,
@@ -134,7 +134,7 @@ describe('inputRegistration', () => {
                 ],
                 {
                     ...server?.requestOptions,
-                    round: { phaseDeadline: 0 },
+                    round: { phaseDeadline: Date.now() + 3000 },
                 },
             ),
             prison,
@@ -192,7 +192,7 @@ describe('inputRegistration', () => {
                 ],
                 {
                     ...server?.requestOptions,
-                    round: { phaseDeadline: 0 },
+                    round: { phaseDeadline: Date.now() + 3000 },
                 },
             ),
             prison,
@@ -211,6 +211,38 @@ describe('inputRegistration', () => {
             if (input.outpoint === 'A3') {
                 expect(input.registrationData).toMatchObject({ aliceId: expect.any(String) });
             }
+        });
+    });
+
+    it('deadline in coordinator request', async () => {
+        server?.addListener('test-request', ({ url }, req) => {
+            if (url.endsWith('/input-registration')) {
+                // respond after phaseDeadline
+                setTimeout(() => {
+                    req.emit('test-response');
+                }, 4000);
+                return;
+            }
+            req.emit('test-response');
+        });
+
+        const response = await inputRegistration(
+            createCoinjoinRound(
+                [
+                    createInput('account-A', 'A1', { ownershipProof: '01A1' }),
+                    createInput('account-B', 'B1', { ownershipProof: '01B1' }),
+                ],
+                {
+                    ...server?.requestOptions,
+                    round: { phaseDeadline: Date.now() + 3000 },
+                },
+            ),
+            prison,
+            server?.requestOptions,
+        );
+
+        response.inputs.forEach(input => {
+            expect(input.error?.message).toMatch(/Aborted by deadline/);
         });
     });
 

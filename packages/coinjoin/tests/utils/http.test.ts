@@ -90,7 +90,7 @@ describe('http', () => {
 
         await expect(
             coordinatorRequest('status', {}, { baseUrl, signal: abort.signal }),
-        ).rejects.toThrow('The user aborted a request');
+        ).rejects.toThrow('Aborted by signal');
     });
 
     it('aborted delayed request', async () => {
@@ -98,7 +98,7 @@ describe('http', () => {
         setTimeout(() => abort.abort(), 300);
         await expect(
             coordinatorRequest('status', {}, { baseUrl, delay: 1000, signal: abort.signal }),
-        ).rejects.toThrow('The user aborted a request.');
+        ).rejects.toThrow('Aborted by signal');
     });
 
     it('successful', done => {

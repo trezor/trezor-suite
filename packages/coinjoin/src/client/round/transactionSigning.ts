@@ -82,7 +82,7 @@ const getTransactionData = async (
                 script_pubkey: i.scriptPubKey,
             })),
         },
-        { signal: options.signal },
+        { signal: options.signal, deadline: round.phaseDeadline },
     );
 
     return {
@@ -104,6 +104,7 @@ const sendTxSignature = async (
         baseUrl: coordinatorUrl,
         identity: input.outpoint, // NOTE: recycle input identity
         delay: 0,
+        deadline: round.phaseDeadline,
     });
     return input;
 };

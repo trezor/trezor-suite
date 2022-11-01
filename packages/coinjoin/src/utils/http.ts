@@ -1,11 +1,14 @@
 import fetch from 'cross-fetch';
 
-export interface RequestOptions {
+import { scheduleAction, ScheduleActionParams } from '@trezor/utils';
+
+import { HTTP_REQUEST_TIMEOUT } from '../constants';
+
+export interface RequestOptions extends ScheduleActionParams {
     method?: 'POST' | 'GET';
     baseUrl?: string;
     signal?: AbortSignal;
     parseJson?: boolean;
-    delay?: number;
     identity?: string;
     userAgent?: string;
 }
@@ -13,27 +16,6 @@ export interface RequestOptions {
 const parseResult = (text: string, json = true) => {
     if (!json) return text;
     return JSON.parse(text);
-};
-
-const requestDelay = async (options: RequestOptions) => {
-    const delay = options.delay || 0;
-    if (delay > 0) {
-        await new Promise<void>((resolve, reject) => {
-            let timeout: ReturnType<typeof setTimeout> | undefined;
-            const abortHandler = () => {
-                if (timeout) {
-                    clearTimeout(timeout);
-                    reject(new Error('The user aborted a request.'));
-                }
-            };
-            options.signal?.addEventListener('abort', abortHandler);
-            timeout = setTimeout(() => {
-                timeout = undefined;
-                options.signal?.removeEventListener('abort', abortHandler);
-                resolve();
-            }, delay);
-        });
-    }
 };
 
 const createHeaders = (options: RequestOptions) => {
@@ -54,13 +36,8 @@ const createHeaders = (options: RequestOptions) => {
     return headers;
 };
 
-export const httpGet = async (
-    url: string,
-    query?: Record<string, any>,
-    options: RequestOptions = {},
-) => {
+export const httpGet = (url: string, query?: Record<string, any>, options: RequestOptions = {}) => {
     const queryString = query ? `?${new URLSearchParams(query)}` : '';
-    await requestDelay(options);
     return fetch(`${url}${queryString}`, {
         method: 'GET',
         signal: options.signal,
@@ -68,19 +45,13 @@ export const httpGet = async (
     });
 };
 
-export const httpPost = async (
-    url: string,
-    body?: Record<string, any>,
-    options: RequestOptions = {},
-) => {
-    await requestDelay(options);
-    return fetch(url, {
+export const httpPost = (url: string, body?: Record<string, any>, options: RequestOptions = {}) =>
+    fetch(url, {
         method: 'POST',
         body: JSON.stringify(body),
         signal: options.signal,
         headers: createHeaders(options),
     });
-};
 
 // Requests to wasabi coordinator and middleware (CoinjoinClientLibrary bin)
 export const coordinatorRequest = async <R = void>(
@@ -90,9 +61,17 @@ export const coordinatorRequest = async <R = void>(
 ): Promise<R> => {
     const baseUrl = options.baseUrl || '';
 
-    const response = await httpPost(`${baseUrl}${url}`, body, options);
+    const request = async (signal?: AbortSignal) => {
+        const response = await httpPost(`${baseUrl}${url}`, body, { ...options, signal });
+        const text = await response.text();
+        return { response, text };
+    };
 
-    const text = await response.text();
+    const { response, text } = await scheduleAction(request, {
+        ...options,
+        timeout: HTTP_REQUEST_TIMEOUT,
+    });
+
     if (response.ok) {
         const json = typeof options.parseJson === 'boolean' ? options.parseJson : true;
         return parseResult(text, json);

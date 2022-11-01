@@ -70,7 +70,13 @@ const registerOutput = async (
         issuanceVsizeCredentials,
         zeroAmountCredentials,
         zeroVsizeCredentials,
-        { signal, baseUrl: coordinatorUrl, identity: getWeakRandomId(10), delay: 0 },
+        {
+            signal,
+            baseUrl: coordinatorUrl,
+            identity: getWeakRandomId(10),
+            delay: 0,
+            deadline: round.phaseDeadline,
+        },
     );
 
     const amountCredentialsOut = await middleware.getCredentials(
@@ -130,7 +136,12 @@ const registerOutput = async (
                 address,
                 outputAmountCredentials,
                 outputVsizeCredentials,
-                { signal, baseUrl: coordinatorUrl, identity: getWeakRandomId(10) },
+                {
+                    signal,
+                    baseUrl: coordinatorUrl,
+                    identity: getWeakRandomId(10),
+                    deadline: round.phaseDeadline,
+                },
             )
             .then(() => address)
             .catch(error => {
@@ -171,6 +182,7 @@ const readyToSign = (
         baseUrl: coordinatorUrl,
         identity: input.outpoint, // NOTE: recycle input identity
         delay: 0,
+        deadline: round.phaseDeadline,
     });
 
 export const outputRegistration = async (
