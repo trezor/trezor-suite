@@ -8,7 +8,7 @@ import { TooltipSymbol, Translation } from '@suite-components';
 import { Error } from '@suite-components/Error';
 import { useActions, useSelector } from '@suite-hooks';
 import { Card, Checkbox, Link, TooltipButton, variables } from '@trezor/components';
-import { ZKSNACKS_TERMS_URL } from '@trezor/urls';
+import { DATA_TOS_COINJOIN_URL, ZKSNACKS_TERMS_URL } from '@trezor/urls';
 import { startCoinjoinSession } from '@wallet-actions/coinjoinAccountActions';
 import { CryptoAmountWithHeader } from '@wallet-components/PrivacyAccount/CryptoAmountWithHeader';
 import {
@@ -195,8 +195,8 @@ export const CoinjoinSetupStrategies = ({ account }: CoinjoinSetupStrategiesProp
                                 <StyledLink href={ZKSNACKS_TERMS_URL}>{chunks}</StyledLink>
                             ),
                             trezor: chunks => (
-                                <StyledLink href="https://trezor.io">{chunks}</StyledLink>
-                            ), // TODO: replace URL
+                                <StyledLink href={DATA_TOS_COINJOIN_URL}>{chunks}</StyledLink>
+                            ),
                         }}
                     />
                 </StyledCheckbox>
