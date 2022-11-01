@@ -17,6 +17,7 @@ export interface CoinjoinClientInstance {
     rounds: { id: string; phase: RoundPhase }[]; // store only slice of Round in reducer. may be extended in the future
     feeRatesMedians: CoinjoinClientFeeRatesMedians;
     coordinatorFeeRate: number;
+    log: { time: number; value: string }[];
 }
 
 export interface CoinjoinState {
@@ -178,16 +179,40 @@ const createClient = (
 ) => {
     const exists = draft.clients[payload.symbol];
     if (exists) return;
-    draft.clients[payload.symbol] = transformCoinjoinStatus(payload.status);
+    draft.clients[payload.symbol] = {
+        ...transformCoinjoinStatus(payload.status),
+        log: [],
+    };
 };
 
 const updateClientStatus = (
     draft: CoinjoinState,
     payload: ExtractActionPayload<typeof COINJOIN.CLIENT_STATUS>,
 ) => {
-    const exists = draft.clients[payload.symbol];
-    if (!exists) return;
-    draft.clients[payload.symbol] = transformCoinjoinStatus(payload.status);
+    const client = draft.clients[payload.symbol];
+    if (!client) return;
+    draft.clients[payload.symbol] = {
+        ...client,
+        ...transformCoinjoinStatus(payload.status),
+    };
+};
+
+const handleClientLog = (
+    draft: CoinjoinState,
+    payload: ExtractActionPayload<typeof COINJOIN.CLIENT_LOG>,
+) => {
+    const client = draft.clients[payload.symbol];
+    if (!client) return;
+
+    // put message at 1st position
+    client.log.unshift({
+        time: Date.now(),
+        value: payload.message,
+    });
+    // keep max 200 messages
+    if (client.log.length > 200) {
+        client.log = client.log.slice(200, client.log.length);
+    }
 };
 
 export const coinjoinReducer = (
@@ -245,6 +270,11 @@ export const coinjoinReducer = (
             case COINJOIN.SESSION_TX_SIGNED:
                 signSession(draft, action.payload);
                 break;
+
+            case COINJOIN.CLIENT_LOG: {
+                handleClientLog(draft, action.payload);
+                break;
+            }
 
             // no default
         }
