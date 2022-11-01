@@ -335,10 +335,7 @@ export const Amount = ({ output, outputId }: Props) => {
             </Row>
             {isLowAnonymity && (
                 <StyledWarning withIcon>
-                    <Translation
-                        id="TR_NOT_ENOUGH_ANONYMIZED_FUNDS_WARNING"
-                        values={{ br: <br /> }}
-                    />
+                    <Translation id="TR_NOT_ENOUGH_ANONYMIZED_FUNDS_WARNING" />
                 </StyledWarning>
             )}
         </>
