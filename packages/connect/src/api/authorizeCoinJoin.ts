@@ -43,10 +43,6 @@ export default class AuthorizeCoinJoin extends AbstractMethod<
 
     async run() {
         const cmd = this.device.getCommands();
-        if (!this.device.features.experimental_features) {
-            // enable experimental features
-            await cmd.typedCall('ApplySettings', 'Success', { experimental_features: true });
-        }
 
         if (this.params.preauthorized) {
             try {
