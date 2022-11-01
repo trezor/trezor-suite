@@ -140,7 +140,8 @@ export const getMaxRounds = (
     targetAnonymity: number,
     anonymitySet: Record<string, number | undefined>,
 ) => {
-    const lowestAnonymity = Math.min(...Object.values(anonymitySet).map(item => item ?? 1));
+    // fallback to 1 if any value is undefined or the object is empty
+    const lowestAnonymity = Math.min(...(Object.values(anonymitySet).map(item => item ?? 1) || 1));
     return Math.ceil((targetAnonymity - lowestAnonymity) / ESTIMATED_ANONYMITY_GAINED_PER_ROUND);
 };
 
