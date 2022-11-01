@@ -44,7 +44,6 @@ export const AccountsImportScreen = ({
             });
             if (!ignore) {
                 if (fetchedAccountInfo?.success) {
-                    console.log(fetchedAccountInfo.payload, 'fetched account');
                     setAccountInfo(fetchedAccountInfo.payload);
                 } else {
                     showAccountInfoAlert({
@@ -69,8 +68,6 @@ export const AccountsImportScreen = ({
             ignore = true;
         };
     }, [xpubAddress, currencySymbol, navigation]);
-
-    console.log(accountInfo?.descriptor, 'account descriptor');
 
     return (
         <Screen header={<AccountImportHeader activeStep={accountInfo ? 3 : 2} />}>
