@@ -12,7 +12,6 @@ import { enabledNetworks } from '@suite-native/config';
 
 import { AccountImportSummaryForm } from './AccountImportSummaryForm';
 import { AccountImportImportedAccount } from './AccountImportImportedAccount';
-import { AccountImportUnsupportedAccount } from './AccountImportUnsupportedAccount';
 
 type AccountImportDetailProps = {
     networkSymbol: NetworkSymbol;
@@ -29,11 +28,9 @@ export const AccountImportSummary = ({ networkSymbol, accountInfo }: AccountImpo
 
     const isAccountImportSupported = enabledNetworks.some(network => network === networkSymbol);
 
-
     if (isAccountImportedAlready && account)
         return <AccountImportImportedAccount account={account} />;
     if (isAccountImportSupported)
         return <AccountImportSummaryForm networkSymbol={networkSymbol} accountInfo={accountInfo} />;
-    if (!isAccountImportSupported) return <AccountImportUnsupportedAccount />;
     return null;
 };
