@@ -16,15 +16,17 @@ type GraphProps = {
     animated?: boolean;
 };
 
+const GRAPH_HEIGHT = 250;
+
 const graphWrapperStyle = prepareNativeStyle(_ => ({
-    height: 250,
     justifyContent: 'center',
+    height: GRAPH_HEIGHT,
     alignItems: 'center',
 }));
 
 const graphStyle = prepareNativeStyle(_ => ({
     alignSelf: 'center',
-    aspectRatio: 1.4,
+    height: GRAPH_HEIGHT,
     width: '100%',
 }));
 
