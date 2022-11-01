@@ -5,6 +5,7 @@ import { Account } from '@suite-common/wallet-types';
 import { AnonymityChart } from './AnonymityChart';
 import { BalanceSection } from './BalanceSection';
 import { SummaryHeader } from './SummaryHeader';
+import { CoinjoinLog } from './CoinjoinLog';
 
 const Container = styled.div`
     width: 100%;
@@ -21,5 +22,7 @@ export const CoinjoinSummary = ({ account }: CoinjoinSummaryProps) => (
         <BalanceSection account={account} />
 
         <AnonymityChart />
+
+        <CoinjoinLog />
     </Container>
 );

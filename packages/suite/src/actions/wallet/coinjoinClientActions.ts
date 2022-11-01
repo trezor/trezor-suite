@@ -92,6 +92,15 @@ const clientSessionSignTransaction = (accountKey: string, roundId: string) =>
         },
     } as const);
 
+const clientLog = (symbol: Account['symbol'], message: string) =>
+    ({
+        type: COINJOIN.CLIENT_LOG,
+        payload: {
+            symbol,
+            message,
+        },
+    } as const);
+
 export type CoinjoinClientAction =
     | ReturnType<typeof clientEnable>
     | ReturnType<typeof clientDisable>
@@ -101,7 +110,8 @@ export type CoinjoinClientAction =
     | ReturnType<typeof clientSessionRoundChanged>
     | ReturnType<typeof clientSessionCompleted>
     | ReturnType<typeof clientSessionOwnership>
-    | ReturnType<typeof clientSessionSignTransaction>;
+    | ReturnType<typeof clientSessionSignTransaction>
+    | ReturnType<typeof clientLog>;
 
 /**
  * Show "do not disconnect" screen on Trezor.
@@ -460,6 +470,8 @@ export const initCoinjoinClient =
                 const response = await dispatch(onCoinjoinClientRequest(data));
                 client.resolveRequest(response);
             });
+            // handle log
+            client.on('log', message => dispatch(clientLog(symbol, message)));
             dispatch(clientEnableSuccess(symbol, status));
             return client;
         } catch (error) {
