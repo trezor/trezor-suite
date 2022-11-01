@@ -159,7 +159,7 @@ export default {
                     path: "m/1852'/1815'/4'/0/0",
                     stakingPath: "m/1852'/1815'/4'/2/0",
                 },
-                protocolMagic: PROTOCOL_MAGICS.testnet,
+                protocolMagic: PROTOCOL_MAGICS.testnet_preprod,
                 networkId: NETWORK_IDS.testnet,
             },
             result: {
@@ -193,7 +193,7 @@ export default {
                     path: "m/1852'/1815'/4'/0/0",
                     stakingKeyHash: '1bc428e4720702ebd5dab4fb175324c192dc9bb76cc5da956e3c8dff',
                 },
-                protocolMagic: PROTOCOL_MAGICS.testnet,
+                protocolMagic: PROTOCOL_MAGICS.testnet_preprod,
                 networkId: NETWORK_IDS.testnet,
             },
             result: {
@@ -232,7 +232,7 @@ export default {
                     paymentScriptHash: '0d5acbf6a1dfb0c8724e60df314987315ccbf78bb6c0f9b6f3d568fe',
                     stakingPath: "m/1852'/1815'/0'/2/0",
                 },
-                protocolMagic: PROTOCOL_MAGICS.testnet,
+                protocolMagic: PROTOCOL_MAGICS.testnet_preprod,
                 networkId: NETWORK_IDS.testnet,
             },
             result: {
@@ -276,7 +276,7 @@ export default {
                     path: "m/1852'/1815'/0'/0/0",
                     stakingScriptHash: '8d7bebc7a58f1c7b5fb7c9391071ecd3b51b032695522f8c555343a9',
                 },
-                protocolMagic: PROTOCOL_MAGICS.testnet,
+                protocolMagic: PROTOCOL_MAGICS.testnet_preprod,
                 networkId: NETWORK_IDS.testnet,
             },
             result: {
@@ -320,7 +320,7 @@ export default {
                     paymentScriptHash: '0d5acbf6a1dfb0c8724e60df314987315ccbf78bb6c0f9b6f3d568fe',
                     stakingScriptHash: '8d7bebc7a58f1c7b5fb7c9391071ecd3b51b032695522f8c555343a9',
                 },
-                protocolMagic: PROTOCOL_MAGICS.testnet,
+                protocolMagic: PROTOCOL_MAGICS.testnet_preprod,
                 networkId: NETWORK_IDS.testnet,
             },
             result: {
@@ -356,7 +356,7 @@ export default {
                     addressType: CardanoAddressType.ENTERPRISE,
                     path: "m/1852'/1815'/0'/0/0",
                 },
-                protocolMagic: PROTOCOL_MAGICS.testnet,
+                protocolMagic: PROTOCOL_MAGICS.testnet_preprod,
                 networkId: NETWORK_IDS.testnet,
             },
             result: {
@@ -391,7 +391,7 @@ export default {
                     addressType: CardanoAddressType.ENTERPRISE_SCRIPT,
                     paymentScriptHash: '0d5acbf6a1dfb0c8724e60df314987315ccbf78bb6c0f9b6f3d568fe',
                 },
-                protocolMagic: PROTOCOL_MAGICS.testnet,
+                protocolMagic: PROTOCOL_MAGICS.testnet_preprod,
                 networkId: NETWORK_IDS.testnet,
             },
             result: {
@@ -436,7 +436,7 @@ export default {
                         certificateIndex: 42,
                     },
                 },
-                protocolMagic: PROTOCOL_MAGICS.testnet,
+                protocolMagic: PROTOCOL_MAGICS.testnet_preprod,
                 networkId: NETWORK_IDS.testnet,
             },
             result: {
@@ -481,7 +481,7 @@ export default {
                         certificateIndex: 42,
                     },
                 },
-                protocolMagic: PROTOCOL_MAGICS.testnet,
+                protocolMagic: PROTOCOL_MAGICS.testnet_preprod,
                 networkId: NETWORK_IDS.testnet,
             },
             result: {
@@ -516,7 +516,7 @@ export default {
                     addressType: CardanoAddressType.REWARD,
                     stakingPath: "m/1852'/1815'/0'/2/0",
                 },
-                protocolMagic: PROTOCOL_MAGICS.testnet,
+                protocolMagic: PROTOCOL_MAGICS.testnet_preprod,
                 networkId: NETWORK_IDS.testnet,
             },
             result: {
@@ -551,7 +551,7 @@ export default {
                     addressType: CardanoAddressType.REWARD_SCRIPT,
                     stakingScriptHash: '8d7bebc7a58f1c7b5fb7c9391071ecd3b51b032695522f8c555343a9',
                 },
-                protocolMagic: PROTOCOL_MAGICS.testnet,
+                protocolMagic: PROTOCOL_MAGICS.testnet_preprod,
                 networkId: NETWORK_IDS.testnet,
             },
             result: {
