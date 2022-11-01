@@ -72,6 +72,11 @@ export const AddCoinJoinAccountButton = ({ network }: AddCoinJoinAccountProps) =
     });
 
     const onCreateCoinjoinAccountClick = async () => {
+        const createAccount = async () => {
+            await action.createCoinjoinAccount(network, 80);
+            setIsLoading(false);
+        };
+
         setIsLoading(true);
         // Checking if Tor is enable and if not open modal to force the user to enable it to use coinjoin.
         // Tor only works in desktop so checking we are running desktop.
@@ -89,7 +94,7 @@ export const AddCoinJoinAccountButton = ({ network }: AddCoinJoinAccountProps) =
                 return;
             }
             if (continueWithTor === RequestEnableTorResponse.Skip) {
-                action.createCoinjoinAccount(network, 80);
+                await createAccount();
                 return;
             }
 
@@ -101,7 +106,7 @@ export const AddCoinJoinAccountButton = ({ network }: AddCoinJoinAccountProps) =
             // When Tor was not loaded it means there was an error or user canceled it, stop the coinjoin account activation.
             if (!isTorLoaded) return;
         }
-        action.createCoinjoinAccount(network, 80);
+        await createAccount();
     };
 
     return (
