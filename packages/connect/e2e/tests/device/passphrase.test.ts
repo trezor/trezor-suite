@@ -21,14 +21,12 @@ describe('TrezorConnect passphrase', () => {
     beforeAll(async () => {
         await setup(controller, {
             mnemonic: 'mnemonic_all',
-            use_passphrase: true, // note: this will not work with 2-master and user-env
+            passphrase_protection: true,
         });
         await initTrezorConnect(controller, { debug: false });
-        await TrezorConnect.applySettings({ use_passphrase: true });
     });
 
-    afterAll(async () => {
-        await TrezorConnect.applySettings({ use_passphrase: false });
+    afterAll(() => {
         controller.dispose();
         TrezorConnect.dispose();
     });
