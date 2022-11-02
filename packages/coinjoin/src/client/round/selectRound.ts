@@ -135,6 +135,18 @@ export const selectUtxoForRound = async (
                         scriptType: account.scriptType,
                         anonymitySet: utxo.anonymityLevel,
                     }));
+
+                    // skip Round candidate if fees are greater than allowed by account
+                    if (
+                        roundParameters.miningFeeRate > account.maxFeePerKvbyte ||
+                        roundParameters.coordinationFeeRate.rate > account.maxCoordinatorFeeRate
+                    ) {
+                        options.log(
+                            `Skipping round ~~${round.id}~~ for ~~${account.accountKey}~~. Fees to high ${roundParameters.miningFeeRate} ${roundParameters.coordinationFeeRate.rate}`,
+                        );
+                        return [];
+                    }
+
                     // TODO: check account maxMining rate vs round miningRate + maxCoordinator rate vs round coordinationFeeRate
                     // ...finally call CoinjoinRound + Account + Round combination on middleware
                     return middleware
@@ -153,7 +165,7 @@ export const selectUtxoForRound = async (
     const sumUtxosInRounds = utxoSelection.map(acc => acc.reduce((a, b) => a + b.length, 0));
     const maxUtxosInRound = Math.max(...sumUtxosInRounds);
     if (maxUtxosInRound < 1) {
-        options.log('No results for selectUtxoForRound');
+        options.log('No results from selectUtxoForRound');
         return;
     }
 
