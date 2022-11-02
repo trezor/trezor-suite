@@ -215,7 +215,7 @@ const handshake = (handshake: PopupHandshake) => {
             origin: payload?.settings?.origin,
             referrerApp: payload?.settings?.manifest?.appUrl,
             referrerEmail: payload?.settings?.manifest?.email,
-            method: payload?.method,
+            appUrl: new URL(document.location.href).searchParams.get('appUrl') || '',
             transportType: payload.transport?.type,
             transportVersion: payload.transport?.version,
         },
