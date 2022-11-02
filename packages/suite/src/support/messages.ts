@@ -1316,21 +1316,25 @@ export default defineMessages({
     },
     TR_SAVINGS_OVERVIEW_WAITING_FOR_FIRST_BANKTRANSFER_PAYMENT_HEADER: {
         defaultMessage: 'Waiting for your first payment.',
-        id: 'TR_SAVINGS_OVERVIEW_WAITING_FOR_FIRST_PAYMENT_HEADER',
+        id: 'TR_SAVINGS_OVERVIEW_WAITING_FOR_FIRST_BANKTRANSFER_PAYMENT_HEADER',
+        dynamic: true,
     },
     TR_SAVINGS_OVERVIEW_WAITING_FOR_FIRST_BANKTRANSFER_PAYMENT_DESCRIPTION: {
         defaultMessage:
             'Select View payment details to find the information you need to make the payment.',
-        id: 'TR_SAVINGS_OVERVIEW_WAITING_FOR_FIRST_PAYMENT_DESCRIPTION',
+        id: 'TR_SAVINGS_OVERVIEW_WAITING_FOR_FIRST_BANKTRANSFER_PAYMENT_DESCRIPTION',
+        dynamic: true,
     },
     TR_SAVINGS_OVERVIEW_WAITING_FOR_FIRST_ACH_PAYMENT_HEADER: {
         defaultMessage: 'Now you wait.',
-        id: 'TR_SAVINGS_OVERVIEW_WAITING_FOR_FIRST_CHARGE_HEADER',
+        id: 'TR_SAVINGS_OVERVIEW_WAITING_FOR_FIRST_ACH_PAYMENT_HEADER',
+        dynamic: true,
     },
     TR_SAVINGS_OVERVIEW_WAITING_FOR_FIRST_ACH_PAYMENT_DESCRIPTION: {
         defaultMessage:
             '{providerName} will charge your bank account automatically. It usually takes until the next working day.',
-        id: 'TR_SAVINGS_OVERVIEW_WAITING_FOR_FIRST_CHARGE_DESCRIPTION',
+        id: 'TR_SAVINGS_OVERVIEW_WAITING_FOR_FIRST_ACH_PAYMENT_DESCRIPTION',
+        dynamic: true,
     },
     TR_SAVINGS_STATUS_PENDING: {
         defaultMessage: 'Pending',
