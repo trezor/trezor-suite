@@ -214,7 +214,10 @@
                 "AppImage"
             ]
         },
-        "afterSign": "scripts/notarize.ts"
+        "afterSign": "scripts/notarize.ts",
+        "releaseInfo": {
+            "releaseNotes": "### testing release 0.22.11"
+        }
     },
     "dependencies": {
         "@sentry/electron": "3.0.0",
