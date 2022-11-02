@@ -1403,7 +1403,7 @@ export default defineMessages({
     },
     TR_SAVINGS_FEES_TOOLTIP: {
         defaultMessage:
-            "What you see is what you'll get—the amount shown is the final amount you'll be charged. Here is detailed {feesOverviewLink}.",
+            "What you see is what you'll get—the amount shown is the final amount you'll be charged. Here is the detailed {feesOverviewLink}.",
         id: 'TR_SAVINGS_FEES_TOOLTIP',
     },
     TR_SAVINGS_FEES_TOOLTIP_FEES_LINK: {
@@ -3612,7 +3612,7 @@ export default defineMessages({
     },
     TR_ACCOUNT_TYPE_SLIP25_DESC: {
         id: 'TR_ACCOUNT_TYPE_SLIP25_DESC',
-        defaultMessage: 'What is CoinJoin account?',
+        defaultMessage: 'What is a CoinJoin account?',
     },
     TOAST_QR_INCORRECT_ADDRESS: {
         id: 'TOAST_QR_INCORRECT_ADDRESS',
@@ -6002,7 +6002,7 @@ export default defineMessages({
     },
     TR_OTHER_INPUTS_AND_OUTPUTS: {
         id: 'TR_OTHER_INPUTS_AND_OUTPUTS',
-        defaultMessage: 'Other input and outputs',
+        defaultMessage: 'Other inputs and outputs',
     },
     TR_CHAINED_TXS: {
         id: 'TR_CHAINED_TXS',

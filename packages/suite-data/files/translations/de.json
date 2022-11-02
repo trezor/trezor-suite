@@ -214,7 +214,6 @@
   "TR_ACCOUNT_TYPE_BIP84_TECH": "BIP84, P2WPKH, Bech32",
   "TR_ACCOUNT_TYPE_BIP86_DESC": "Taproot ist ein neuer Kontotyp, der den Datenschutz und die Netzwerkeffizienz verbessern kann. Einige Dienste unterstützen möglicherweise noch keine Adressen im Taproot-Format.",
   "TR_ACCOUNT_TYPE_BIP86_NAME": "Taproot",
-  "TR_ACCOUNT_TYPE_BIP86_NOT_SUPPORTED": "Die aktuelle Firmware unterstützt Taproot nicht. Bitte aktualisieren Sie Ihre Trezor-Firmware, um diese Funktion zu aktivieren.",
   "TR_ACCOUNT_TYPE_BIP86_TECH": "BIP86, P2TR, Bech32m",
   "TR_ACQUIRE_DEVICE": "Gerät erfassen",
   "TR_ACQUIRE_DEVICE_DESCRIPTION": "Bitte schließen Sie die Registerkarte in Ihrem Browser oder klicken Sie auf die Schaltfläche unten, um das Gerät zu benutzen, da Trezor nur in einer Sitzung verwendet werden kann.",
