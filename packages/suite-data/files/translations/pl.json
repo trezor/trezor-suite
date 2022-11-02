@@ -178,7 +178,6 @@
   "TR_ACCOUNT_IS_EMPTY_TITLE": "Brak transakcji... obecnie.",
   "TR_ACCOUNT_SEARCH_NO_RESULTS": "Brak wyników",
   "TR_ACCOUNT_TYPE": "Typ konta",
-  "TR_ACCOUNT_TYPE_BIP86_NOT_SUPPORTED": "Bieżąca wersja oprogramowania nie obsługuje Taproot. Zaktualizuj oprogramowanie Trezor, aby aktywować tę funkcję.",
   "TR_ACQUIRE_DEVICE": "Użyj Trezor tutaj",
   "TR_ACQUIRE_DEVICE_DESCRIPTION": "Wgląda na to, że Trezor jest używany w innym oknie. Zamknij wszystkie pozostałe okna lub karty, które mogą korzystać z Trezor.",
   "TR_ACQUIRE_DEVICE_TITLE": "Trwa inna sesja",

@@ -765,7 +765,6 @@
   "TR_PASSPHRASE_WALLET": "Portefeuille de phrase secrète #{id}",
   "TR_PAYMENT_METHOD_BANKTRANSFER": "Virement",
   "TR_PAYMENT_METHOD_CREDITCARD": "Carte de crédit",
-  "TR_PAYMENT_METHOD_UNKOWN": "Inconnu",
   "TR_PENDING_TX_HEADING": "En attente {count, plural, one {transaction} other {transactions}}",
   "TR_PERSONALIZATION": "Personnalisation",
   "TR_PIN": "Code PIN",

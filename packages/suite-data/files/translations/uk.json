@@ -125,7 +125,6 @@
   "TR_ACCOUNT_TYPE_BIP84_TECH": "BIP84, P2WPKH, Bech32",
   "TR_ACCOUNT_TYPE_BIP86_DESC": "Taproot - це новий тип облікового запису, який може підвищити ефективність конфіденційності та мережі. Деякі послуги можуть ще не підтримувати адреси формату Taproot.",
   "TR_ACCOUNT_TYPE_BIP86_NAME": "Taproot",
-  "TR_ACCOUNT_TYPE_BIP86_NOT_SUPPORTED": "Ваша прошивка не підтримує Taproot. Оновіть прошивку Trezor, щоб увімкнути цю функцію.",
   "TR_ACCOUNT_TYPE_BIP86_TECH": "BIP86, P2TR, Bech32m",
   "TR_ACCOUNT_TYPE_SHELLEY": "Shelley",
   "TR_ACCOUNT_TYPE_SHELLEY_DESC": "Адреси Shelley запровадили новий тип гаманця, який уможнює делегування стейку і заробляння нагород.",
