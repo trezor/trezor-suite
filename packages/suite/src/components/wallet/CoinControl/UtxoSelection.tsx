@@ -3,7 +3,6 @@ import BigNumber from 'bignumber.js';
 import styled, { css } from 'styled-components';
 import { darken } from 'polished';
 
-import { UTXO_AMOUNT_THRESHOLD_FOR_COINJOIN } from '@suite/services/coinjoin/config';
 import * as modalActions from '@suite-actions/modalActions';
 import { FiatValue, FormattedCryptoAmount, MetadataLabeling, Translation } from '@suite-components';
 import { formatNetworkAmount, getUtxoOutpoint } from '@suite-common/wallet-utils';
@@ -129,6 +128,7 @@ interface UtxoSelectionProps {
 export const UtxoSelection = ({ isChecked, transaction, utxo }: UtxoSelectionProps) => {
     const { account, network, selectedUtxos, toggleUtxoSelection } = useSendFormContext();
 
+    const coordinatorData = useSelector(state => state.wallet.coinjoin.clients[account.symbol]);
     const device = useSelector(state => state.suite.device);
     const coinjoinAccount = useSelector(state => selectCoinjoinAccountByKey(state, account.key));
     const { openModal } = useActions({
@@ -140,9 +140,14 @@ export const UtxoSelection = ({ isChecked, transaction, utxo }: UtxoSelectionPro
     const isRegisteredForCoinjoin = coinjoinAccount?.session?.registeredUtxos.includes(
         getUtxoOutpoint(utxo),
     );
-    const isUnavailableForCoinjoin =
-        account.accountType === 'coinjoin' &&
-        new BigNumber(utxo.amount).lt(UTXO_AMOUNT_THRESHOLD_FOR_COINJOIN); // TODO: should include UTXOs banned from CoinJoin as well
+    const amountTooSmallForCoinjoin =
+        coordinatorData && new BigNumber(utxo.amount).lt(coordinatorData.allowedInputAmounts.min);
+    const amountTooBigForCoinjoin =
+        coordinatorData && new BigNumber(utxo.amount).gt(coordinatorData.allowedInputAmounts.max);
+    const isUnavailableForCoinjoin = amountTooSmallForCoinjoin || amountTooBigForCoinjoin; // TODO: add blacklisted UTXOs - https://github.com/trezor/trezor-suite/issues/6757
+    const unavailableMessage = amountTooSmallForCoinjoin
+        ? 'TR_AMOUNT_TOO_SMALL_FOR_COINJOIN'
+        : 'TR_AMOUNT_TOO_BIG_FOR_COINJOIN';
     const isChangeAddress = utxo.path.split('/')[4] === '1';
     const amountInBtc = (Number(utxo.amount) / 10 ** network.decimals).toString();
     const outputLabel = account.metadata.outputLabels?.[utxo.txid]?.[utxo.vout];
@@ -170,7 +175,7 @@ export const UtxoSelection = ({ isChecked, transaction, utxo }: UtxoSelectionPro
                         <UtxoTag tooltipMessage="TR_REGISTERED_FOR_COINJOIN" icon="SHUFFLE" />
                     )}
                     {isUnavailableForCoinjoin && (
-                        <UtxoTag tooltipMessage="TR_UNAVAILABLE_FOR_COINJOIN" icon="BLOCKED" />
+                        <UtxoTag tooltipMessage={unavailableMessage} icon="BLOCKED" />
                     )}
                     {isChangeAddress && (
                         <UtxoTag tooltipMessage="TR_CHANGE_ADDRESS_TOOLTIP" icon="CHANGE_ADDRESS" />

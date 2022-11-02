@@ -89,6 +89,7 @@ export const transformCoinjoinStatus = (event: CoinjoinStatusEvent) => ({
     rounds: event.rounds.map(r => ({ id: r.id, phase: r.phase })),
     coordinatorFeeRate: event.coordinatorFeeRate,
     feeRatesMedians: transformFeeRatesMedians(event.feeRatesMedians),
+    allowedInputAmounts: event.allowedInputAmounts,
 });
 
 // convert suite account type to @trezor/coinjoin RegisterAccountParams scriptType

@@ -1,4 +1,9 @@
-import { ROUND_REGISTRATION_END_OFFSET } from '../constants';
+import {
+    MAX_COORDINATOR_FEE_RATE,
+    MAX_ALLOWED_AMOUNT,
+    MIN_ALLOWED_AMOUNT,
+    ROUND_REGISTRATION_END_OFFSET,
+} from '../constants';
 import {
     RoundPhase,
     Round,
@@ -131,16 +136,28 @@ export const findNearestDeadline = (rounds: Round[]) => {
     return Math.min(...deadlines);
 };
 
-// iterate Status and find coordinationFeeRate
-export const getCoordinatorFeeRate = (rounds: Round[]) => {
-    const rates = rounds.map(round => {
-        const roundParameters = getRoundParameters(round);
-        if (!roundParameters) return 0.003;
+// iterate Status and find relevant round data
+export const getDataFromRounds = (rounds: Round[]) => {
+    const [coordinatorFeeRates, maxAllowedAmounts, minAllowedAmounts] = rounds.reduce(
+        ([previousRates, previousMax, previousMin], round) => {
+            const roundParameters = getRoundParameters(round);
+            if (roundParameters) {
+                previousRates.push(roundParameters.coordinationFeeRate.rate);
+                previousMax.push(roundParameters.allowedInputAmounts.max);
+                previousMin.push(roundParameters.allowedInputAmounts.min);
+            }
+            return [previousRates, previousMax, previousMin];
+        },
+        [[], [], []] as number[][],
+    );
 
-        return roundParameters.coordinationFeeRate.rate;
-    });
-
-    return Math.max(...rates);
+    return {
+        coordinatorFeeRate: Math.max(...coordinatorFeeRates) ?? MAX_COORDINATOR_FEE_RATE,
+        allowedInputAmounts: {
+            min: Math.min(...minAllowedAmounts) ?? MIN_ALLOWED_AMOUNT,
+            max: Math.max(...maxAllowedAmounts) ?? MAX_ALLOWED_AMOUNT,
+        },
+    };
 };
 
 export const compareOutpoint = (a: string, b: string) =>

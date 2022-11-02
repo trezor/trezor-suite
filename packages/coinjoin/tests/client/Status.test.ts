@@ -139,6 +139,7 @@ describe('Status', () => {
                     {
                         Type: 'RoundCreated',
                         roundParameters: {
+                            allowedInputAmounts: {},
                             coordinationFeeRate: {},
                             connectionConfirmationTimeout: '0d 0h 0m 5s',
                             outputRegistrationTimeout: '0d 0h 0m 2s',
