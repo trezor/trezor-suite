@@ -12,6 +12,7 @@ import {
 } from './coinjoinClientActions';
 import { CoinjoinBackendService } from '@suite/services/coinjoin/coinjoinBackend';
 import { CoinjoinClientService } from '@suite/services/coinjoin/coinjoinClient';
+import { COORDINATOR_FEE_RATE_MULTIPLIER } from '@suite/services/coinjoin/config';
 import { getRegisterAccountParams, getMaxRounds } from '@wallet-utils/coinjoinUtils';
 import { Dispatch, GetState } from '@suite-types';
 import { Network } from '@suite-common/wallet-config';
@@ -333,7 +334,7 @@ export const createCoinjoinAccount =
     };
 
 const authorizeCoinjoin =
-    (account: Account, params: CoinjoinSessionParameters & { coordinator: string }) =>
+    (account: Account, coordinator: string, params: CoinjoinSessionParameters) =>
     async (dispatch: Dispatch, getState: GetState) => {
         const { device } = getState().suite;
 
@@ -345,7 +346,10 @@ const authorizeCoinjoin =
             useEmptyPassphrase: device?.useEmptyPassphrase,
             path: account.path,
             coin: account.symbol,
-            ...params,
+            coordinator,
+            maxCoordinatorFeeRate: params.maxCoordinatorFeeRate * COORDINATOR_FEE_RATE_MULTIPLIER,
+            maxFeePerKvbyte: params.maxFeePerKvbyte,
+            maxRounds: params.maxRounds,
         });
 
         if (auth.success) {
@@ -382,10 +386,7 @@ export const startCoinjoinSession =
 
         // authorize CoinjoinSession on Trezor
         const authResult = await dispatch(
-            authorizeCoinjoin(account, {
-                ...params,
-                coordinator: client.settings.coordinatorName,
-            }),
+            authorizeCoinjoin(account, client.settings.coordinatorName, params),
         );
 
         if (authResult) {
@@ -452,7 +453,7 @@ export const restoreCoinjoinSession =
             preauthorized: true, // this parameter will check if device is already authorized
             // reuse session params
             coordinator: client.settings.coordinatorName,
-            maxCoordinatorFeeRate: session.maxCoordinatorFeeRate,
+            maxCoordinatorFeeRate: session.maxCoordinatorFeeRate * COORDINATOR_FEE_RATE_MULTIPLIER,
             maxFeePerKvbyte: session.maxFeePerKvbyte,
             maxRounds,
         });

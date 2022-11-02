@@ -112,7 +112,7 @@ export const CoinjoinSetupStrategies = ({ account }: CoinjoinSetupStrategiesProp
     const toggleTermsConfirmation = () => setTermsConfirmed(current => !current);
     const anonymize = () =>
         actions.startCoinjoinSession(account, {
-            maxCoordinatorFeeRate: coordinatorData.coordinatorFeeRate * 10 ** 8, // transform to a format used by firmware (from percent/100 to 10**6 percent)
+            maxCoordinatorFeeRate: coordinatorData.coordinatorFeeRate,
             maxFeePerKvbyte:
                 (isCustom ? customMaxFee : coordinatorData.feeRatesMedians[strategy]) * 1000, // transform to kvB
             maxRounds,
