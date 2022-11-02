@@ -88,6 +88,10 @@ export const DEFAULT_MAX_MINING_FEE = 3;
 // TODO: this value is supplied by the coordinator, but not saved yet; replace the hard-coded value with data fetched from coordinator
 export const UTXO_AMOUNT_THRESHOLD_FOR_COINJOIN = 5000;
 
+// coordinator fee rate from status format (0.003)
+// firmware format (300 000 = 0.003 * 10 ** 8)
+export const COORDINATOR_FEE_RATE_MULTIPLIER = 10 ** 8;
+
 export const getCoinjoinConfig = (
     network: NetworkSymbol,
     environment?: CoinjoinServerEnvironment,
