@@ -29,10 +29,6 @@ type AccountImportDetailProps = {
     accountInfo: AccountInfo;
 };
 
-const importAnotherButtonStyle = prepareNativeStyle(utils => ({
-    marginTop: utils.spacings.large,
-    marginBottom: utils.spacings.medium,
-}));
 const contentWrapperStyle = prepareNativeStyle(_ => ({
     width: '100%',
     flex: 1,
@@ -100,14 +96,6 @@ export const AccountImportDetail = ({ networkSymbol, accountInfo }: AccountImpor
                         currencySymbol={networkSymbol}
                     />
                     <Divider />
-                    <Button
-                        style={applyStyle(importAnotherButtonStyle)}
-                        onPress={() => navigation.goBack()}
-                        size="large"
-                        colorScheme="gray"
-                    >
-                        Import another
-                    </Button>
                     <Button
                         onPress={handleImportAccount}
                         size="large"
