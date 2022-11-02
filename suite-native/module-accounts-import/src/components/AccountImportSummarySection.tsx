@@ -11,7 +11,6 @@ type AccountImportSummarySectionProps = {
 const contentWrapperStyle = prepareNativeStyle(_ => ({
     width: '100%',
     flex: 1,
-    justifyContent: 'flex-end',
 }));
 
 export const AccountImportSummarySection = ({
@@ -21,7 +20,7 @@ export const AccountImportSummarySection = ({
     const { applyStyle } = useNativeStyles();
 
     return (
-        <Box alignItems="center" flex={1}>
+        <Box alignItems="center" flex={1} justifyContent="space-between">
             <Text variant="titleMedium">{title}</Text>
             <Box style={applyStyle(contentWrapperStyle)}>{children}</Box>
         </Box>

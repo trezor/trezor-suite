@@ -11,7 +11,7 @@ import { AccountInfo } from '@trezor/connect';
 import { enabledNetworks } from '@suite-native/config';
 
 import { AccountImportSummaryForm } from './AccountImportSummaryForm';
-import { AccountImportImportedAccount } from './AccountImportImportedAccount';
+import { AccountAlreadyImported } from './AccountAlreadyImported';
 
 type AccountImportDetailProps = {
     networkSymbol: NetworkSymbol;
@@ -28,8 +28,7 @@ export const AccountImportSummary = ({ networkSymbol, accountInfo }: AccountImpo
 
     const isAccountImportSupported = enabledNetworks.some(network => network === networkSymbol);
 
-    if (isAccountImportedAlready && account)
-        return <AccountImportImportedAccount account={account} />;
+    if (isAccountImportedAlready && account) return <AccountAlreadyImported account={account} />;
     if (isAccountImportSupported)
         return <AccountImportSummaryForm networkSymbol={networkSymbol} accountInfo={accountInfo} />;
     return null;

@@ -1,9 +1,12 @@
 import type { BottomTabScreenProps, BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import type { StackScreenProps, StackNavigationProp } from '@react-navigation/stack';
-import type { RouteProp, ParamListBase, CompositeScreenProps } from '@react-navigation/native';
+import type { ParamListBase, CompositeScreenProps } from '@react-navigation/native';
 import { CompositeNavigationProp } from '@react-navigation/native';
 
 import { IconName } from '@trezor/icons';
+
+import { AccountsImportStackParamList, RootStackParamList } from './navigators';
+import { AccountsImportStackRoutes } from './routes';
 
 export type TabProps<T extends ParamListBase, K extends keyof T> = BottomTabScreenProps<T, K>;
 export type TabNavigationProp<
@@ -47,8 +50,6 @@ export type StackToStackCompositeNavigationProps<
     L extends ParamListBase,
 > = CompositeNavigationProp<StackNavigationProp<T, K>, StackNavigationProp<L>>;
 
-export type RouteProps<T extends ParamListBase, K extends keyof T> = RouteProp<T, K>;
-
 export type TabsOptions = {
     [routeName: string]: {
         routeName: string;
@@ -58,3 +59,9 @@ export type TabsOptions = {
         params?: Record<string, unknown>;
     };
 };
+
+type NavigationProp = StackToTabCompositeProps<
+    AccountsImportStackParamList,
+    AccountsImportStackRoutes.AccountImport,
+    RootStackParamList
+>;
