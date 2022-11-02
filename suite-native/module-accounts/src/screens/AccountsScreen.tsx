@@ -10,7 +10,7 @@ import {
     StackNavigationProps,
     StackProps,
 } from '@suite-native/navigation';
-import { Box, Button, Chip } from '@suite-native/atoms';
+import { Chip } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { CryptoIcon } from '@trezor/icons';
 import { NetworkSymbol } from '@suite-common/wallet-config';
@@ -24,10 +24,6 @@ const assetsFilterStyle = prepareNativeStyle(utils => ({
 
 const assetsFilterItemStyle = prepareNativeStyle(utils => ({
     marginRight: utils.spacings.small,
-}));
-
-const discoverAssetsButtonStyle = prepareNativeStyle(utils => ({
-    borderRadius: utils.borders.radii.round,
 }));
 
 export const AccountsScreen = ({
@@ -86,15 +82,6 @@ export const AccountsScreen = ({
                 />
             </View>
             <AccountsList assets={selectedAssets} onSelectAccount={handleSelectAccount} />
-            <Box flex={1} justifyContent="flex-end">
-                <Button
-                    style={applyStyle(discoverAssetsButtonStyle)}
-                    size="large"
-                    colorScheme="gray"
-                >
-                    Discover more Assets
-                </Button>
-            </Box>
         </Screen>
     );
 };
