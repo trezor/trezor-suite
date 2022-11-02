@@ -34,7 +34,9 @@ export const deriveAddresses = (
 export const fixTx = (transactions: Transaction[], client: CoinjoinBackendClient) =>
     Promise.all(
         transactions.map(async tx => {
-            const fetched = await client.fetchTransaction(tx.txid);
+            const fetched = await client.fetchTransaction(tx.txid, {
+                identity: client.getIdentityForBlock(tx.blockHeight),
+            });
             // tx.vsize missing in transactions from /block endpoint
             tx.feeRate = fetched.vsize
                 ? new BigNumber(tx.fee).div(fetched.vsize).decimalPlaces(2).toString()
