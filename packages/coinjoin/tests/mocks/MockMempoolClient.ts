@@ -11,6 +11,10 @@ export class MockMempoolClient implements MempoolClient {
         this.fetched = [];
     }
 
+    getIdentityForBlock() {
+        return 'default';
+    }
+
     fetchMempoolTxids() {
         return Promise.resolve(this.transactions.map(tx => tx.txid));
     }

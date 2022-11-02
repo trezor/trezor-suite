@@ -15,17 +15,28 @@ type CoinjoinBackendClientSettings = CoinjoinBackendSettings & {
 
 export class CoinjoinBackendClient extends EventEmitter {
     protected readonly wabisabiUrl;
-    protected readonly blockbookUrl;
+    protected readonly blockbookUrls;
+
+    private readonly identityWabisabi = 'Satoshi';
+    private readonly identitiesBlockbook = [
+        'Blockbook_1',
+        'Blockbook_2',
+        'Blockbook_3',
+        'Blockbook_4',
+    ];
 
     constructor(settings: CoinjoinBackendClientSettings) {
         super();
         this.wabisabiUrl = `${settings.wabisabiBackendUrl}api/v4/btc`;
-        this.blockbookUrl =
-            settings.blockbookUrls[Math.floor(Math.random() * settings.blockbookUrls.length)];
+        this.blockbookUrls = settings.blockbookUrls;
+    }
+
+    getIdentityForBlock(height: number | undefined) {
+        return this.identitiesBlockbook[(height ?? 0) & 0x3]; // Works only when identities.length === 4
     }
 
     fetchBlock(height: number, options?: RequestOptions): Promise<BlockbookBlock> {
-        return this.blockbook(options)
+        return this.blockbook({ identity: this.getIdentityForBlock(height), ...options })
             .get(`block/${height}`)
             .then(this.handleBlockbookResponse.bind(this));
     }
@@ -113,11 +124,12 @@ export class CoinjoinBackendClient extends EventEmitter {
     }
 
     protected wabisabi(options?: RequestOptions) {
-        return this.request(this.wabisabiUrl, options);
+        return this.request(this.wabisabiUrl, { identity: this.identityWabisabi, ...options });
     }
 
     protected blockbook(options?: RequestOptions) {
-        return this.request(this.blockbookUrl, {
+        const url = this.blockbookUrls[Math.floor(Math.random() * this.blockbookUrls.length)];
+        return this.request(url, {
             ...options,
             userAgent: '', // blockbook api requires user-agent to be sent, see ./utils/http.ts
         });

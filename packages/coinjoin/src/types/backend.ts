@@ -121,7 +121,10 @@ export interface FilterController {
 
 export type FilterClient = Pick<CoinjoinBackendClient, 'fetchFilters'>;
 
-export type MempoolClient = Pick<CoinjoinBackendClient, 'fetchMempoolTxids' | 'fetchTransaction'>;
+export type MempoolClient = Pick<
+    CoinjoinBackendClient,
+    'fetchMempoolTxids' | 'fetchTransaction' | 'getIdentityForBlock'
+>;
 
 export type AccountInfo = AccountInfoBase & {
     utxo: Utxo[];

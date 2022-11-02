@@ -22,7 +22,11 @@ export class CoinjoinMempoolController implements MempoolController {
         const txids = await this.client.fetchMempoolTxids();
         const entries = await Promise.allSettled(
             txids.map(async txid => {
-                const tx = this.mempool[txid] ?? (await this.client.fetchTransaction(txid));
+                const tx =
+                    this.mempool[txid] ??
+                    (await this.client.fetchTransaction(txid, {
+                        identity: this.client.getIdentityForBlock(undefined),
+                    }));
                 return [txid, tx] as const;
             }),
         )
