@@ -29,7 +29,7 @@
         "build:lib": "rimraf -rf lib && yarn tsc --build ./tsconfig.lib.json",
         "publish:lib": "./scripts/publish-lib.sh",
         "test:unit": "jest",
-        "test:e2e": "yarn jest --verbose --testPathPattern e2e/ --runInBand -c ../../jest.config.base.js",
+        "test:e2e": "ts-node -O '{\"module\": \"commonjs\", \"esModuleInterop\": true}' ./e2e/run.ts",
         "example:bridge": "jest --verbose -c jest.config.e2e.js --testPathPattern bridge.integration",
         "update:protobuf": "./scripts/protobuf-build.sh && yarn prettier --write \"{messages.json,src/types/messages.ts}\""
     },
@@ -39,6 +39,7 @@
         "@types/w3c-web-usb": "^1.0.6",
         "jest": "^26.6.3",
         "rimraf": "^3.0.2",
+        "ts-node": "^10.9.1",
         "typescript": "4.7.4"
     },
     "dependencies": {
