@@ -25,9 +25,9 @@
         "lottie-react": "^2.3.1",
         "polished": "^4.2.2",
         "react-date-range": "^1.4.0",
-        "react-intl": "^6.0.5",
-        "react-select": "^5.4.0",
-        "react-svg": "^15.1.6",
+        "react-intl": "^6.2.1",
+        "react-select": "^5.5.9",
+        "react-svg": "^15.1.11",
         "react-truncate": "^2.4.0",
         "react-use": "^17.4.0",
         "zxcvbn": "^4.4.2"
@@ -51,7 +51,7 @@
         "jest": "^26.6.3",
         "react": "18.2.0",
         "react-dom": "18.2.0",
-        "styled-components": "^5.3.5",
+        "styled-components": "^5.3.6",
         "stylelint": "^14.10.0",
         "stylelint-config-recommended": "^9.0.0",
         "stylelint-config-styled-components": "^0.1.1",
@@ -62,6 +62,6 @@
     },
     "peerDependencies": {
         "react": "18.2.0",
-        "styled-components": "^5.3.5"
+        "styled-components": "^5.3.6"
     }
 }

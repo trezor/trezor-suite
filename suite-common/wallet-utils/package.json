@@ -28,13 +28,13 @@
         "@trezor/urls": "*",
         "@trezor/utils": "*",
         "bignumber.js": "^9.1.0",
-        "date-fns": "^2.29.1",
+        "date-fns": "^2.29.3",
         "ethereumjs-util": "^7.1.5",
-        "pdfmake": "^0.2.5",
+        "pdfmake": "^0.2.6",
         "react": "18.2.0",
         "react-hook-form": "6.15.7",
         "trezor-address-validator": "^0.4.3",
-        "web3-utils": "^1.7.3"
+        "web3-utils": "^1.8.0"
     },
     "devDependencies": {
         "@types/pdfmake": "^0.1.21",
