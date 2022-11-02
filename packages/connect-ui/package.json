@@ -17,7 +17,7 @@
         "@trezor/connect-common": "*",
         "@trezor/env-utils": "*",
         "@trezor/urls": "*",
-        "react-intl": "^6.0.5"
+        "react-intl": "^6.2.1"
     },
     "devDependencies": {
         "@types/react": "18.0.21",
@@ -27,6 +27,6 @@
     },
     "peerDependencies": {
         "react": "18.2.0",
-        "styled-components": "^5.3.5"
+        "styled-components": "^5.3.6"
     }
 }

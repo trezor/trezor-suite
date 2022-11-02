@@ -26,7 +26,7 @@
         "redux-logger": "^3.0.6",
         "redux-thunk": "^2.3.0",
         "stringify-object": "^3.3.0",
-        "styled-components": "^5.3.5"
+        "styled-components": "^5.3.6"
     },
     "devDependencies": {
         "@types/markdown-it": "12.2.3",

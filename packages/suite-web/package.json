@@ -19,7 +19,7 @@
         "react-redux": "7.2.2",
         "react-router": "^5.2.0",
         "react-router-dom": "^5.2.0",
-        "styled-components": "^5.3.5",
+        "styled-components": "^5.3.6",
         "worker-loader": "^3.0.8"
     },
     "devDependencies": {
