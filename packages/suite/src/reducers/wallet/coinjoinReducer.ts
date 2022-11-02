@@ -11,6 +11,7 @@ import {
     transformCoinjoinStatus,
 } from '@wallet-utils/coinjoinUtils';
 import { selectSelectedAccount } from './selectedAccountReducer';
+import { CoinjoinStatusEvent } from '@trezor/coinjoin';
 
 export interface CoinjoinClientFeeRatesMedians {
     fast: number;
@@ -21,6 +22,7 @@ export interface CoinjoinClientInstance {
     rounds: { id: string; phase: RoundPhase }[]; // store only slice of Round in reducer. may be extended in the future
     feeRatesMedians: CoinjoinClientFeeRatesMedians;
     coordinatorFeeRate: number;
+    allowedInputAmounts: CoinjoinStatusEvent['allowedInputAmounts'];
     log: { time: number; value: string }[];
 }
 

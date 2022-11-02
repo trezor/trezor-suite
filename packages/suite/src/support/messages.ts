@@ -5622,9 +5622,14 @@ export default defineMessages({
         defaultMessage: 'Registered in CoinJoin',
         description: 'Tooltip over an icon in Coin control section',
     },
-    TR_UNAVAILABLE_FOR_COINJOIN: {
-        id: 'TR_UNAVAILABLE_FOR_COINJOIN',
-        defaultMessage: 'Not available for CoinJoin - amount too small',
+    TR_AMOUNT_TOO_SMALL_FOR_COINJOIN: {
+        id: 'TR_AMOUNT_TOO_SMALL_FOR_COINJOIN',
+        defaultMessage: 'Not available for CoinJoin - amount too small.',
+        description: 'Tooltip over an icon in Coin control section',
+    },
+    TR_AMOUNT_TOO_BIG_FOR_COINJOIN: {
+        id: 'TR_AMOUNT_TOO_BIG_FOR_COINJOIN',
+        defaultMessage: 'Not available for CoinJoin - amount too big.',
         description: 'Tooltip over an icon in Coin control section',
     },
     TR_CHANGE_ADDRESS_TOOLTIP: {

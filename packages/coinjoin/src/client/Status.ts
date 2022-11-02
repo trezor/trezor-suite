@@ -1,7 +1,7 @@
 import { EventEmitter } from 'events';
 
 import * as coordinator from './coordinator';
-import { findNearestDeadline, getCoordinatorFeeRate } from '../utils/roundUtils';
+import { findNearestDeadline, getDataFromRounds } from '../utils/roundUtils';
 import { STATUS_TIMEOUT } from '../constants';
 import { CoinjoinClientSettings, CoinjoinStatusEvent } from '../types';
 import { Round, RoundPhase } from '../types/coordinator';
@@ -114,7 +114,7 @@ export class Status extends EventEmitter {
                     rounds: status.roundStates,
                     changed,
                     feeRatesMedians: status.coinJoinFeeRateMedians,
-                    coordinatorFeeRate: getCoordinatorFeeRate(status.roundStates),
+                    ...getDataFromRounds(status.roundStates),
                 };
                 this.emit('update', statusEvent);
                 return statusEvent;
