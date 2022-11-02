@@ -16,7 +16,6 @@ type CoinjoinBackendClientSettings = CoinjoinBackendSettings & {
 export class CoinjoinBackendClient extends EventEmitter {
     protected readonly wabisabiUrl;
     protected readonly blockbookUrl;
-    protected readonly blockCache: BlockbookBlock[] = [];
 
     constructor(settings: CoinjoinBackendClientSettings) {
         super();
@@ -25,17 +24,10 @@ export class CoinjoinBackendClient extends EventEmitter {
             settings.blockbookUrls[Math.floor(Math.random() * settings.blockbookUrls.length)];
     }
 
-    private fetchAndParseBlock(height: number, options?: RequestOptions): Promise<BlockbookBlock> {
+    fetchBlock(height: number, options?: RequestOptions): Promise<BlockbookBlock> {
         return this.blockbook(options)
             .get(`block/${height}`)
             .then(this.handleBlockbookResponse.bind(this));
-    }
-
-    async fetchBlock(height: number, options?: RequestOptions) {
-        if (!this.blockCache[height]) {
-            this.blockCache[height] = await this.fetchAndParseBlock(height, options);
-        }
-        return this.blockCache[height];
     }
 
     fetchBlocks(heights: number[], options?: RequestOptions): Promise<BlockbookBlock[]> {
