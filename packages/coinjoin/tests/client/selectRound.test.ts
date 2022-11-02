@@ -207,6 +207,57 @@ describe('selectRound', () => {
         expect(result).toBeUndefined();
     });
 
+    it('Skipping round when fees are high', async () => {
+        // mock server response
+        // return error for each round with miningFeeRate: 1 (second round in fixture)
+        // for other rounds return invalid indices
+        const spy = jest.fn();
+        server?.addListener('test-request', ({ url }, req) => {
+            if (url.endsWith('/select-utxo-for-round')) {
+                spy();
+                req.emit('test-response', []);
+            }
+            req.emit('test-response');
+        });
+
+        const result = await selectUtxoForRound(
+            GENERATORS[1],
+            [
+                {
+                    id: '01',
+                    roundParameters: {
+                        ...ROUND_CREATION_EVENT.roundParameters,
+                        miningFeeRate: 200,
+                        coordinationFeeRate: {
+                            rate: 0.004,
+                        },
+                    },
+                } as any,
+            ],
+            [
+                {
+                    accountKey: 'account1',
+                    maxFeePerKvbyte: 100,
+                    utxos: [{ outpoint: 'AA', amount: 100 }],
+                },
+                {
+                    accountKey: 'account2',
+                    maxCoordinatorFeeRate: 0.003,
+                    utxos: [{ outpoint: 'BA', amount: 100 }],
+                },
+                {
+                    accountKey: 'account3',
+                    maxCoordinatorFeeRate: 0.005,
+                    utxos: [{ outpoint: 'CA', amount: 1000 }],
+                },
+            ] as any,
+            server?.requestOptions,
+        );
+
+        expect(spy).toBeCalledTimes(1); // middleware was called once for account3
+        expect(result).toBeUndefined();
+    });
+
     it('Success. new CoinjoinRound created', async () => {
         // dummy mock of /select-utxo-for-round
         // pick utxo which amount is greater than miningFeeRate + 1000
