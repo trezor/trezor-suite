@@ -10,7 +10,7 @@
         "type-check": "tsc --build"
     },
     "dependencies": {
-        "@mobily/ts-belt": "^3.11.0",
+        "@mobily/ts-belt": "^3.13.1",
         "@suite-common/formatters": "*",
         "@suite-common/wallet-config": "*",
         "@trezor/icons": "*",

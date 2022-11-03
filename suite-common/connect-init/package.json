@@ -12,7 +12,7 @@
         "test-unit:watch": "jest -o --watch"
     },
     "dependencies": {
-        "@reduxjs/toolkit": "^1.8.3",
+        "@reduxjs/toolkit": "1.8.3",
         "@suite-common/redux-utils": "*",
         "@suite-common/suite-types": "*",
         "@suite-common/test-utils": "*",

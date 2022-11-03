@@ -10,6 +10,6 @@
         "type-check": "tsc --build"
     },
     "dependencies": {
-        "ua-parser-js": "^1.0.2"
+        "ua-parser-js": "^1.0.32"
     }
 }
