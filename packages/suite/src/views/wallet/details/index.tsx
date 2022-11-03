@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { P } from '@trezor/components';
-import { WIKI_XPUB_URL } from '@trezor/urls';
+import { HELP_CENTER_XPUB_URL } from '@trezor/urls';
 import { WalletLayout } from '@wallet-components';
 import { useDevice, useActions, useSelector } from '@suite-hooks';
 import { Translation, Card } from '@suite-components';
@@ -104,7 +104,7 @@ const Details = () => {
                     <TextColumn
                         title={<Translation id="TR_ACCOUNT_DETAILS_XPUB_HEADER" />}
                         description={<Translation id="TR_ACCOUNT_DETAILS_XPUB" />}
-                        buttonLink={WIKI_XPUB_URL}
+                        buttonLink={HELP_CENTER_XPUB_URL}
                     />
                     <ActionColumn>
                         <ActionButton

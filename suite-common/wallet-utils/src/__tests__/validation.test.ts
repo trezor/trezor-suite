@@ -185,7 +185,7 @@ describe('validation', () => {
         );
         expect(isAddressDeprecated('1notValid', 'bch')).toBe(undefined);
         expect(isAddressDeprecated('12QeMLzSrB8XH8FvEzPMVoRxVAzTr5XM2y', 'bch')).toBe(
-            'WIKI_CASHADDR_URL',
+            'HELP_CENTER_CASHADDR_URL',
         );
     });
 

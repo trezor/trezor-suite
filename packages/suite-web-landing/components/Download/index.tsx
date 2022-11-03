@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { WIKI_HOW_TO_RUN_URL } from '@trezor/urls';
+import { HELP_CENTER_VERIFY_APP_URL } from '@trezor/urls';
 import { Button, Dropdown, Icon, colors, variables, Link } from '@trezor/components';
 import { IconType } from '@trezor/components/src/support/types';
 import Translation from '../Translation';
@@ -226,7 +226,7 @@ const Index = ({ pathToApp }: { pathToApp: string }) => {
                         {platform.includes('linux') && (
                             <Row>
                                 <Item>
-                                    <StyledLink variant="nostyle" href={WIKI_HOW_TO_RUN_URL}>
+                                    <StyledLink variant="nostyle" href={HELP_CENTER_VERIFY_APP_URL}>
                                         <Translation id="TR_SUITE_WEB_LANDING_HOW_TO_VERIFY" />
                                     </StyledLink>
                                 </Item>

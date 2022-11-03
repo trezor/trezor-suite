@@ -20,11 +20,9 @@ import {
 import { TrezorDevice } from '@suite-common/suite-types';
 import { ACCOUNT_TYPE } from '@suite-common/wallet-constants';
 import {
-    WIKI_BIP84_URL,
-    WIKI_BIP86_URL,
-    WIKI_BIP49_URL,
-    WIKI_BIP44_URL,
-    HELP_CENTER_COINJOIN,
+    HELP_CENTER_ADDRESSES_URL,
+    HELP_CENTER_COINJOIN_URL,
+    HELP_CENTER_TAPROOT_URL,
 } from '@trezor/urls';
 
 import { toFiatCurrency } from './fiatConverterUtils';
@@ -202,12 +200,16 @@ export const getAccountTypeDesc = (path: string) => {
 
 export const getAccountTypeUrl = (path: string) => {
     const bip43 = getBip43Type(path);
-    if (bip43 === 'bip86') return WIKI_BIP86_URL;
-    if (bip43 === 'bip84') return WIKI_BIP84_URL;
-    if (bip43 === 'bip49') return WIKI_BIP49_URL;
-    if (bip43 === 'shelley') return undefined;
-    if (bip43 === 'slip25') return HELP_CENTER_COINJOIN;
-    return WIKI_BIP44_URL;
+    switch (bip43) {
+        case 'bip86':
+            return HELP_CENTER_TAPROOT_URL;
+        case 'slip25':
+            return HELP_CENTER_COINJOIN_URL;
+        case 'shelley':
+            return undefined;
+        default:
+            return HELP_CENTER_ADDRESSES_URL;
+    }
 };
 
 export const getAccountDecimals = (symbol: NetworkSymbol) => {

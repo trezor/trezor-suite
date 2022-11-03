@@ -1,22 +1,24 @@
 import React from 'react';
-import { WIKI_FW_DOWNGRADE_URL } from '@trezor/urls';
 
 import { Translation } from '@suite-components';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@suite-components/Settings';
-import { useActions } from '@suite-hooks';
+import { useActions, useDevice } from '@suite-hooks';
 import * as routerActions from '@suite-actions/routerActions';
 import { useAnchor } from '@suite-hooks/useAnchor';
 import { SettingsAnchor } from '@suite-constants/anchors';
+import { getFirmwareDowngradeUrl } from '@suite-utils/device';
 
-interface CustomFirmwareProps {
-    isDeviceLocked: boolean;
-}
-
-export const CustomFirmware = ({ isDeviceLocked }: CustomFirmwareProps) => {
+export const CustomFirmware = () => {
     const { goto } = useActions({
         goto: routerActions.goto,
     });
     const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.CustomFirmware);
+    const { device, isLocked } = useDevice();
+
+    const isDeviceLocked = isLocked();
+    const firmwareDowngradeUrl = getFirmwareDowngradeUrl(device);
+
+    const openModal = () => goto('firmware-custom', { params: { cancelable: true } });
 
     return (
         <SectionItem
@@ -27,13 +29,11 @@ export const CustomFirmware = ({ isDeviceLocked }: CustomFirmwareProps) => {
             <TextColumn
                 title={<Translation id="TR_DEVICE_SETTINGS_CUSTOM_FIRMWARE_TITLE" />}
                 description={<Translation id="TR_DEVICE_SETTINGS_CUSTOM_FIRMWARE_DESCRIPTION" />}
-                buttonLink={WIKI_FW_DOWNGRADE_URL}
+                buttonLink={firmwareDowngradeUrl}
             />
             <ActionColumn>
                 <ActionButton
-                    onClick={() => {
-                        goto('firmware-custom', { params: { cancelable: true } });
-                    }}
+                    onClick={openModal}
                     variant="danger"
                     isDisabled={isDeviceLocked}
                     data-test="@settings/device/custom-firmware-modal-button"

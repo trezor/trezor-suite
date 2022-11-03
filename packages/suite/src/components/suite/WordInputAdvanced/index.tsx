@@ -1,6 +1,6 @@
 import React, { useEffect, useCallback } from 'react';
 import styled from 'styled-components';
-import { WIKI_ADVANCED_RECOVERY_URL } from '@trezor/urls';
+import { HELP_CENTER_ADVANCED_RECOVERY_URL } from '@trezor/urls';
 import { Button, ButtonPin, KEYBOARD_CODE } from '@trezor/components';
 import { Translation, TrezorLink, DeviceMatrixExplanation } from '@suite-components';
 
@@ -109,7 +109,10 @@ const WordInputAdvanced = (props: Props) => {
                     {
                         key: '2',
                         title: (
-                            <TrezorLink variant="underline" href={WIKI_ADVANCED_RECOVERY_URL}>
+                            <TrezorLink
+                                variant="underline"
+                                href={HELP_CENTER_ADVANCED_RECOVERY_URL}
+                            >
                                 <Translation id="TR_LEARN_ADVANCED_RECOVERY" />
                             </TrezorLink>
                         ),

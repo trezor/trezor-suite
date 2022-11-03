@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { P, Button, Image } from '@trezor/components';
-import { WIKI_FAILED_BACKUP_URL } from '@trezor/urls';
+import { HELP_CENTER_FAILED_BACKUP_URL } from '@trezor/urls';
 import { useSelector, useActions } from '@suite-hooks';
 import * as backupActions from '@backup-actions/backupActions';
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
@@ -133,7 +133,7 @@ export const Backup = ({ cancelable, onCancel }: ForegroundAppProps) => {
                         <StyledImage image="UNI_ERROR" />
                         <StyledP data-test="@backup/already-failed-message">
                             <Translation id="BACKUP_BACKUP_ALREADY_FAILED_DESCRIPTION" />
-                            <TrezorLink icon="EXTERNAL_LINK" href={WIKI_FAILED_BACKUP_URL}>
+                            <TrezorLink icon="EXTERNAL_LINK" href={HELP_CENTER_FAILED_BACKUP_URL}>
                                 <Translation id="TR_LEARN_MORE" />
                             </TrezorLink>
                         </StyledP>

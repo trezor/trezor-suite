@@ -1,6 +1,7 @@
 import { Device, UnavailableCapability } from '@trezor/connect';
 import { TrezorDevice, AcquiredDevice } from '@suite-types';
 import { getDeviceModel } from '@trezor/device-utils';
+import * as URLS from '@trezor/urls';
 
 /**
  * Used in Welcome step in Onboarding
@@ -242,6 +243,22 @@ export const getChangelogUrl = (
     getDeviceModel(device) === '1' ? 'legacy/firmware' : 'core'
 }/CHANGELOG.md
     `;
+
+const getUrlForModel = (t1Url: string, ttUrl: string, device?: TrezorDevice) =>
+    device && getDeviceModel(device) === '1' ? t1Url : ttUrl;
+
+export const getCheckBackupUrl = (device?: TrezorDevice) =>
+    getUrlForModel(URLS.HELP_CENTER_DRY_RUN_T1_URL, URLS.HELP_CENTER_DRY_RUN_TT_URL, device);
+
+export const getPackagingUrl = (device?: TrezorDevice) =>
+    getUrlForModel(URLS.HELP_CENTER_PACKAGING_T1_URL, URLS.HELP_CENTER_PACKAGING_TT_URL, device);
+
+export const getFirmwareDowngradeUrl = (device?: TrezorDevice) =>
+    getUrlForModel(
+        URLS.HELP_CENTER_FW_DOWNGRADE_T1_URL,
+        URLS.HELP_CENTER_FW_DOWNGRADE_TT_URL,
+        device,
+    );
 
 /**
  * Used by suiteActions

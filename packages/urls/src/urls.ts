@@ -24,32 +24,35 @@ export const SUITE_BRIDGE_URL = 'https://suite.trezor.io/web/bridge/';
 export const SUITE_FIRMWARE_URL = 'https://suite.trezor.io/web/firmware/';
 export const SUITE_UDEV_URL = 'https://suite.trezor.io/web/udev/';
 
-export const WIKI_URL = 'https://wiki.trezor.io/';
-export const WIKI_PIN_URL = 'https://wiki.trezor.io/User_manual:Entering_PIN';
-export const WIKI_DRY_RUN_URL = 'https://wiki.trezor.io/Check_your_seed_(Dry-run_recovery)';
-export const WIKI_PASSPHRASE_URL = 'https://wiki.trezor.io/Passphrase';
-export const WIKI_USER_MANUAL_URL = 'https://wiki.trezor.io/User_manual';
-export const WIKI_RECOVERY_SEED_URL = 'https://wiki.trezor.io/Recovery_seed';
-export const WIKI_PACKAGING_URL = 'https://wiki.trezor.io/Trezor_packaging_timeline';
-export const WIKI_RECOVERY_T1_URL = 'https://wiki.trezor.io/User_manual:Recovery__T1';
-export const WIKI_XRP_URL = 'https://wiki.trezor.io/Ripple_(XRP)';
-export const WIKI_CASHADDR_URL = 'https://wiki.trezor.io/CashAddr#cashaddr';
-export const WIKI_QR_CODE = 'https://wiki.trezor.io/QR_code';
-export const WIKI_BIP84_URL = 'https://wiki.trezor.io/Bech32';
-export const WIKI_BIP86_URL = 'https://wiki.trezor.io/Taproot';
-export const WIKI_BIP49_URL = 'https://wiki.trezor.io/P2SH';
-export const WIKI_BIP44_URL = 'https://wiki.trezor.io/P2PKH';
-export const WIKI_UDEV_URL = 'https://wiki.trezor.io/Udev_rules';
-export const WIKI_TOR_URL = 'https://wiki.trezor.io/Glossary:Tor';
-export const WIKI_HOW_TO_RUN_URL = 'https://wiki.trezor.io/Apps:Trezor_Suite#How_to_run';
-export const WIKI_FW_DOWNGRADE_URL = 'https://wiki.trezor.io/Firmware_downgrade';
-export const WIKI_FAILED_BACKUP_URL = 'https://wiki.trezor.io/Recovery_seed_backup_fail';
-export const WIKI_ADVANCED_RECOVERY_URL =
-    'https://wiki.trezor.io/Advanced_Recovery_(Trezor_Model_One_only)';
-export const WIKI_XPUB_URL =
-    'https://wiki.trezor.io/Suite_manual:Displaying_account_public_key_(XPUB)';
-
-export const HELP_CENTER_COINJOIN = 'https://trezor.io/learn/a/what-is-coinjoin';
+export const HELP_CENTER_PIN_URL = 'https://trezor.io/learn/a/pin-protection-on-trezor-devices';
+export const HELP_CENTER_DRY_RUN_T1_URL =
+    'https://trezor.io/learn/a/test-recovery-seed-on-trezor-model-one';
+export const HELP_CENTER_DRY_RUN_TT_URL =
+    'https://trezor.io/learn/a/test-recovery-seed-on-trezor-model-t';
+export const HELP_CENTER_PASSPHRASE_URL =
+    'https://trezor.io/learn/a/passphrases-and-hidden-wallets';
+export const HELP_CENTER_RECOVERY_SEED_URL = 'https://trezor.io/learn/a/how-to-use-a-recovery-seed';
+export const HELP_CENTER_PACKAGING_T1_URL =
+    'https://trezor.io/learn/a/authenticate-trezor-model-one';
+export const HELP_CENTER_PACKAGING_TT_URL = 'https://trezor.io/learn/a/authenticate-trezor-model-t';
+export const HELP_CENTER_XRP_URL = 'https://trezor.io/learn/a/ripple-xrp-on-trezor-model-t';
+export const HELP_CENTER_CASHADDR_URL = 'https://trezor.io/learn/a/glossary#CashAddr';
+export const HELP_CENTER_QR_CODE_URL = 'https://trezor.io/learn/a/qr-codes-in-trezor-suite-app';
+export const HELP_CENTER_ADDRESSES_URL = 'https://trezor.io/learn/a/addresses-transaction-history';
+export const HELP_CENTER_COINJOIN_URL = 'https://trezor.io/learn/a/what-is-coinjoin';
+export const HELP_CENTER_TAPROOT_URL = 'https://trezor.io/learn/a/what-is-taproot';
+export const HELP_CENTER_UDEV_URL = 'https://trezor.io/learn/a/udev-rules';
+export const HELP_CENTER_TOR_URL = 'https://trezor.io/learn/a/tor-in-trezor-suite-app';
+export const HELP_CENTER_VERIFY_APP_URL =
+    'https://trezor.io/learn/a/download-verify-trezor-suite-app';
+export const HELP_CENTER_FW_DOWNGRADE_T1_URL =
+    'https://trezor.io/learn/a/downgrade-firmware-trezor-model-one';
+export const HELP_CENTER_FW_DOWNGRADE_TT_URL =
+    'https://trezor.io/learn/a/downgrade-firmware-trezor-model-t';
+export const HELP_CENTER_FAILED_BACKUP_URL = 'https://trezor.io/support/a/trezor-recovery-issues';
+export const HELP_CENTER_ADVANCED_RECOVERY_URL =
+    'https://trezor.io/learn/a/advanced-recovery-on-trezor-model-one';
+export const HELP_CENTER_XPUB_URL = 'https://trezor.io/learn/a/trezor-suite-app-public-keys-xpub';
 
 export const SOCIAL_TWITTER_URL = 'https://twitter.com/trezor';
 export const SOCIAL_FACEBOOK_URL = 'https://www.facebook.com/trezor.io';

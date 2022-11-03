@@ -1,5 +1,4 @@
 import React from 'react';
-import { WIKI_DRY_RUN_URL } from '@trezor/urls';
 
 import { Translation } from '@suite-components';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@suite-components/Settings';
@@ -7,6 +6,7 @@ import { useDevice, useActions } from '@suite-hooks';
 import * as routerActions from '@suite-actions/routerActions';
 import { useAnchor } from '@suite-hooks/useAnchor';
 import { SettingsAnchor } from '@suite-constants/anchors';
+import { getCheckBackupUrl } from '@suite-utils/device';
 
 interface CheckRecoverySeedProps {
     isDeviceLocked: boolean;
@@ -20,6 +20,7 @@ export const CheckRecoverySeed = ({ isDeviceLocked }: CheckRecoverySeedProps) =>
     const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.CheckRecoverySeed);
 
     const needsBackup = !!device?.features?.needs_backup;
+    const learnMoreUrl = getCheckBackupUrl(device);
 
     return (
         <SectionItem
@@ -30,7 +31,7 @@ export const CheckRecoverySeed = ({ isDeviceLocked }: CheckRecoverySeedProps) =>
             <TextColumn
                 title={<Translation id="TR_CHECK_RECOVERY_SEED" />}
                 description={<Translation id="TR_CHECK_RECOVERY_SEED_DESCRIPTION" />}
-                buttonLink={WIKI_DRY_RUN_URL}
+                buttonLink={learnMoreUrl}
             />
             <ActionColumn>
                 <ActionButton

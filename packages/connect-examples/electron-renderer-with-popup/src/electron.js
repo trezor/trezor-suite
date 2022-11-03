@@ -21,7 +21,7 @@ function init() {
         }),
     );
 
-    // important: allow connect popup to open external links in default browser (wiki, wallet, bridge download...)
+    // important: allow connect popup to open external links in default browser (knowledge base, wallet, bridge download...)
     mainWindow.webContents.on(
         'new-window',
         (event, url, frameName, disposition, options, _additionalFeatures) => {

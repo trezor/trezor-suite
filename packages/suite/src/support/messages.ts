@@ -4006,8 +4006,8 @@ export default defineMessages({
         defaultMessage: 'Your seed may contain 12, 18, or 24 words.',
         dynamic: true,
     },
-    TR_YOU_EITHER_HAVE_T2: {
-        id: 'TR_YOU_EITHER_HAVE_T2',
+    TR_YOU_EITHER_HAVE_TT: {
+        id: 'TR_YOU_EITHER_HAVE_TT',
         defaultMessage: 'Your seed may contain 12, 18, 20, 24, or 33 words.',
         dynamic: true,
     },
@@ -4019,8 +4019,8 @@ export default defineMessages({
         id: 'TR_ON_YOUR_COMPUTER_ENTER',
         defaultMessage: 'Enter the words from your seed in the order displayed on your device.',
     },
-    TR_CHECK_RECOVERY_SEED_DESC_T2: {
-        id: 'TR_CHECK_RECOVERY_SEED_DESC_T2',
+    TR_CHECK_RECOVERY_SEED_DESC_TT: {
+        id: 'TR_CHECK_RECOVERY_SEED_DESC_TT',
         defaultMessage:
             'Your wallet backup, the recovery seed, is entered entirely on the Trezor Model T, through the device screen. We avoid passing any of your sensitive information to a potentially insecure computer or web browser.',
         dynamic: true,
