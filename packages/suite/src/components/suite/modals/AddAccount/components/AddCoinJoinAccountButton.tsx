@@ -73,7 +73,7 @@ export const AddCoinJoinAccountButton = ({ network }: AddCoinJoinAccountProps) =
 
     const onCreateCoinjoinAccountClick = async () => {
         const createAccount = async () => {
-            await action.createCoinjoinAccount(network, 80);
+            await action.createCoinjoinAccount(network, 10);
             setIsLoading(false);
         };
 
