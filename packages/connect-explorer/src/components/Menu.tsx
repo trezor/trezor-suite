@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { withRouter } from 'react-router-dom';
+import { RouteComponentProps, useLocation, withRouter } from 'react-router-dom';
+
 import InfinityMenu from 'react-infinity-menu';
 import { createGlobalStyle } from 'styled-components';
 
@@ -148,8 +149,8 @@ const getTree = (url: string) => {
     return filteredTree;
 };
 
-const Menu = props => {
-    const { location } = props;
+export const Menu = () => {
+    const location = useLocation();
     const [tree, setTree] = useState<any>();
 
     useEffect(() => {
@@ -172,5 +173,3 @@ const Menu = props => {
         </>
     );
 };
-
-export default withRouter(Menu);

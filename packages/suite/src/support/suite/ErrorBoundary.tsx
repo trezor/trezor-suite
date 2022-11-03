@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { connect, ConnectedComponent } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 import { Error } from '@suite-components/Error';
 import { reportToSentry } from '@suite-utils/sentry';
@@ -46,4 +46,4 @@ class ErrorBoundary extends React.Component<Props, StateProps> {
     }
 }
 
-export default connect(null, mapDispatchToProps)(ErrorBoundary);
+export default connect(null, mapDispatchToProps)(ErrorBoundary) as ConnectedComponent<any, any>;

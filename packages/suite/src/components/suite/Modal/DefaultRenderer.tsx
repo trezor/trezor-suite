@@ -11,7 +11,7 @@ export const DefaultRenderer = ({
     isCancelable,
     onCancel,
     ...rest
-}: ModalProps) => {
+}: ModalProps): React.ReactPortal | null => {
     const { openGuide } = useGuide();
     const { isMobileLayout } = useLayoutSize();
     const modalTarget = useModalTarget();
