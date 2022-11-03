@@ -46,6 +46,7 @@ export const icons = {
     standardWallet: require('../assets/icons/standardWallet.svg'),
     tor: require('../assets/icons/tor.svg'),
     trade: require('../assets/icons/trade.svg'),
+    trash: require('../assets/icons/trash.svg'),
     trezorT: require('../assets/icons/trezorT.svg'),
     warningCircle: require('../assets/icons/warningCircle.svg'),
 } as const;
