@@ -21,7 +21,7 @@
     "devDependencies": {
         "@playwright/test": "^1.22.2",
         "@trezor/trezor-user-env-link": "*",
-        "@types/react": "18.0.21",
+        "@types/react": "18.0.24",
         "@types/styled-components": "^5.1.25",
         "jest": "^26.6.3",
         "playwright": "^1.22.2",

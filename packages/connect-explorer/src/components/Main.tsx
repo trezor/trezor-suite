@@ -2,7 +2,7 @@ import React from 'react';
 import styled, { ThemeProvider } from 'styled-components';
 
 import { THEME } from '@trezor/components';
-import Menu from './Menu';
+import { Menu } from './Menu';
 
 const MainComponent = styled.main`
     max-width: 1170px;
