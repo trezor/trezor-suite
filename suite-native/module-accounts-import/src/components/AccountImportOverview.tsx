@@ -40,10 +40,6 @@ export const AccountImportOverview = ({ accountInfo, currencySymbol }: AssetsOve
     const cryptoAmount = formatNetworkAmount(accountInfo.availableBalance, currencySymbol);
     const fiatAmount = toFiatCurrency(cryptoAmount, fiatCurrency.label, fiatRates?.current?.rates);
 
-    const handleRemoveAsset = () => {
-        navigation.navigate();
-    };
-
     return (
         <Card style={applyStyle(assetCardStyle)}>
             <Box flexDirection="row" marginBottom="large" justifyContent="space-between">
@@ -61,7 +57,7 @@ export const AccountImportOverview = ({ accountInfo, currencySymbol }: AssetsOve
                 <IconButton
                     iconName="trash"
                     colorScheme="gray"
-                    onPress={() => console.log('trash it')}
+                    onPress={() => navigation.goBack()}
                     size="large"
                     isRounded
                 />
