@@ -21,6 +21,7 @@ import {
     enableRegtestAndGetCoins,
     createAccountFromMyAccounts,
 } from './utils/shortcuts';
+import { interceptInvityApi } from './utils/intercept-invity-api';
 
 const command = require('cypress-image-snapshot/command');
 const { skipOn, onlyOn } = require('@cypress/skip-test');
@@ -110,6 +111,7 @@ declare global {
                 coin: string,
                 accountNameAdd: string,
             ) => Chainable<Subject>;
+            interceptInvityApi: () => void;
         }
     }
 }
@@ -151,3 +153,4 @@ Cypress.Commands.add('onlyOn', onlyOn);
 
 Cypress.Commands.add('text', { prevSubject: true }, subject => subject.text());
 Cypress.Commands.add('createAccountFromMyAccounts', createAccountFromMyAccounts);
+Cypress.Commands.add('interceptInvityApi', interceptInvityApi);

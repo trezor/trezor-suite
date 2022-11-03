@@ -152,6 +152,7 @@ const Inputs = () => {
                     disabled={isBalanceZero}
                     onFractionClick={setRatioAmount}
                     onAllClick={setAllAmount}
+                    data-test="@coinmarket/exchange/fiat-input"
                 />
             )}
         </Wrapper>

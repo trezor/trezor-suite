@@ -79,6 +79,7 @@ const FiatInput = () => {
             innerRef={fiatInputRef}
             bottomText={<InputError error={fiatError} />}
             innerAddon={<FiatSelect />}
+            data-test="@coinmarket/exchange/fiat-input"
         />
     );
 };

@@ -48,6 +48,7 @@ const PaymentSuccessful = ({ account }: Props) => {
                 <Translation id="TR_EXCHANGE_DETAIL_SUCCESS_TEXT" />
             </Description>
             <Button
+                data-test="@coinmarket/exchange/payment/back-to-account"
                 onClick={() =>
                     goto('wallet-coinmarket-exchange', {
                         params: {

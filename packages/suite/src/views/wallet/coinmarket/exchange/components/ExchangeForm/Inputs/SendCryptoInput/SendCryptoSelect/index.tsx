@@ -88,6 +88,7 @@ const SendCryptoSelect = () => {
                     minWidth="100px"
                     isClean
                     hideTextCursor
+                    data-test="@coinmarket/exchange/crypto-currency-select"
                 />
             )}
         />

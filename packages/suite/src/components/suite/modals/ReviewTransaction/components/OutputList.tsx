@@ -181,6 +181,7 @@ const OutputList = ({
                 <RightBottom ref={htmlElement}>
                     {broadcastEnabled ? (
                         <StyledButton
+                            data-test="@modal/send"
                             isDisabled={!signedTx}
                             onClick={() => {
                                 if (decision) {
