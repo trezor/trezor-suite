@@ -57,7 +57,7 @@ _Device and backend connection is not required for this case since all data are 
 -   `send-max` - spends all available inputs from account
     -   `type` - _required_ with `send-max` value
     -   `address` - _required_ `string` recipient address
--   `opreturn` - [read more](https://wiki.trezor.io/OP_RETURN)
+-   `opreturn` - [read more](https://trezor.io/learn/a/use-op_return-in-trezor-suite-app)
     -   `type` - _required_ with `opreturn` value
     -   `dataHex` - _required_ `hexadecimal string` with arbitrary data
 -   `noaddress` - incomplete output, target address is not known yet. used only in precompose

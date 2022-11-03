@@ -2,7 +2,7 @@ import React, { lazy, Suspense, useState } from 'react';
 import styled from 'styled-components';
 
 import { TrezorLink, Translation, Modal, BundleLoader } from '@suite-components';
-import * as URLS from '@trezor/urls';
+import { HELP_CENTER_QR_CODE_URL } from '@trezor/urls';
 import { Icon, colors, P, Button, Textarea, SelectBar } from '@trezor/components';
 import { UserContextPayload } from '@suite-actions/modalActions';
 import { useTranslation } from '@suite-hooks';
@@ -163,7 +163,11 @@ export const QrScanner = ({ onCancel, decision, allowPaste }: Props) => {
                     {!isPasteMode && (
                         <Description>
                             <Translation id="TR_FOR_EASIER_AND_SAFER_INPUT" />
-                            <TrezorLink icon="EXTERNAL_LINK" size="small" href={URLS.WIKI_QR_CODE}>
+                            <TrezorLink
+                                icon="EXTERNAL_LINK"
+                                size="small"
+                                href={HELP_CENTER_QR_CODE_URL}
+                            >
                                 <Translation id="TR_LEARN_MORE" />
                             </TrezorLink>
                         </Description>

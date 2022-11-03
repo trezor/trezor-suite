@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { DATA_URL, WIKI_UDEV_URL } from '@trezor/urls';
+import { DATA_URL, HELP_CENTER_UDEV_URL } from '@trezor/urls';
 import { Translation, TrezorLink } from '@suite-components';
 import { variables, Button, Select, Link, Loader } from '@trezor/components';
 import { useSelector } from '@suite-hooks';
@@ -91,7 +91,7 @@ const UdevDownload = () => {
             </Download>
             <Manual>
                 <Translation id="TR_UDEV_DOWNLOAD_MANUAL" />
-                <TrezorLink variant="nostyle" href={WIKI_UDEV_URL}>
+                <TrezorLink variant="nostyle" href={HELP_CENTER_UDEV_URL}>
                     <Button variant="tertiary" icon="EXTERNAL_LINK" alignIcon="right">
                         <Translation id="TR_LEARN_MORE" />
                     </Button>

@@ -103,7 +103,9 @@ const TooltipLabel = ({
         return (
             <QuestionTooltip
                 label={addressLabel}
-                tooltip={<ReadMoreLink message="TR_BCH_ADDRESS_INFO" url="WIKI_CASHADDR_URL" />}
+                tooltip={
+                    <ReadMoreLink message="TR_BCH_ADDRESS_INFO" url="HELP_CENTER_CASHADDR_URL" />
+                }
             />
         );
     }

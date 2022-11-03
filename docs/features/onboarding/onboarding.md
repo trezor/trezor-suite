@@ -69,7 +69,7 @@ Invalid device states:
 
 -   Device connected, but in bootloader mode
 -   Device connected, but unreadable
--   [Seedless device setup](https://wiki.trezor.io/Enterprise#Seedless_setup) is not not supported in Suite (not to be confused with regular device without seed).
+-   [Seedless device setup](https://trezor.io/learn/a/seedless-setup) is not not supported in Suite (not to be confused with regular device without seed).
 
 Invalid transport states:
 

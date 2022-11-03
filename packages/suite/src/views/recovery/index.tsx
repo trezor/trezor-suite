@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { WIKI_DRY_RUN_URL } from '@trezor/urls';
 import { Button, H2, P, Image, variables } from '@trezor/components';
 import { SelectWordCount, SelectRecoveryType } from '@recovery-components';
 import { Loading, Translation, CheckItem, TrezorLink, Modal } from '@suite-components';
@@ -11,6 +10,8 @@ import { useDevice, useSelector, useActions } from '@suite-hooks';
 import type { ForegroundAppProps } from '@suite-types';
 import type { WordCount } from '@recovery-types';
 import { InstructionStep } from '@suite-components/InstructionStep';
+import { getCheckBackupUrl } from '@suite-utils/device';
+import { getDeviceModel } from '@trezor/device-utils';
 
 const StyledModal = styled(Modal)`
     min-height: 420px;
@@ -67,9 +68,6 @@ const CloseButton = ({ onClick, variant }: CloseButtonProps) => (
     </StyledButton>
 );
 
-const getModel = (majorVersion?: number) =>
-    majorVersion !== 1 && majorVersion !== 2 ? undefined : majorVersion;
-
 export const Recovery = ({ onCancel }: ForegroundAppProps) => {
     const { recovery, modal } = useSelector(state => ({
         recovery: state.recovery,
@@ -82,7 +80,6 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
         setAdvancedRecovery: recoveryActions.setAdvancedRecovery,
     });
     const { device, isLocked } = useDevice();
-    const model = getModel(device?.features?.major_version);
     const [understood, setUnderstood] = useState(false);
 
     const onSetWordsCount = (count: WordCount) => {
@@ -95,10 +92,12 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
         actions.checkSeed();
     };
 
-    const statesInProgressBar =
-        model === 1
-            ? ['initial', 'select-word-count', 'select-recovery-type', 'in-progress', 'finished']
-            : ['initial', 'in-progress', 'finished'];
+    const model = device ? getDeviceModel(device) : 'T';
+    const learnMoreUrl = getCheckBackupUrl(device);
+    const isModelOne = model === '1';
+    const statesInProgressBar = isModelOne
+        ? ['initial', 'select-word-count', 'select-recovery-type', 'in-progress', 'finished']
+        : ['initial', 'in-progress', 'finished'];
 
     if (!device || !device.features) {
         return (
@@ -127,7 +126,7 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
             {recovery.status === 'initial' && (
                 <StyledButton
                     onClick={() =>
-                        model === 1 ? actions.setStatus('select-word-count') : actions.checkSeed()
+                        isModelOne ? actions.setStatus('select-word-count') : actions.checkSeed()
                     }
                     isDisabled={!understood || isLocked()}
                     data-test="@recovery/start-button"
@@ -161,7 +160,7 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
                             >
                                 <Translation
                                     id={
-                                        model === 1
+                                        isModelOne
                                             ? 'TR_ON_YOUR_COMPUTER_ENTER'
                                             : 'TR_USING_TOUCHSCREEN'
                                     }
@@ -175,11 +174,7 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
                             description={<Translation id="TR_DRY_RUN_CHECK_ITEM_DESCRIPTION" />}
                             isChecked={understood}
                             link={
-                                <TrezorLink
-                                    icon="EXTERNAL_LINK"
-                                    size="tiny"
-                                    href={WIKI_DRY_RUN_URL}
-                                >
+                                <TrezorLink icon="EXTERNAL_LINK" size="tiny" href={learnMoreUrl}>
                                     <Translation id="TR_LEARN_MORE" />
                                 </TrezorLink>
                             }
@@ -209,7 +204,7 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
             case 'waiting-for-confirmation':
                 return modal.context !== '@modal/context-none' ? (
                     <>
-                        {model === 2 && (
+                        {!isModelOne && (
                             <LeftAlignedP>
                                 <Translation id="TR_ALL_THE_WORDS" />
                             </LeftAlignedP>

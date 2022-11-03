@@ -142,7 +142,7 @@ export const SettingsDevice = () => {
 
             <SettingsSection title={<Translation id="TR_ADVANCED" />} icon="GHOST">
                 <WipeDevice isDeviceLocked={isDeviceLocked} />
-                <CustomFirmware isDeviceLocked={isDeviceLocked} />
+                <CustomFirmware />
             </SettingsSection>
         </SettingsLayout>
     );

@@ -1,5 +1,5 @@
 import React from 'react';
-import { WIKI_RECOVERY_SEED_URL } from '@trezor/urls';
+import { HELP_CENTER_RECOVERY_SEED_URL } from '@trezor/urls';
 
 import { Translation } from '@suite-components';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@suite-components/Settings';
@@ -29,7 +29,7 @@ export const BackupRecoverySeed = ({ isDeviceLocked }: BackupRecoverySeedProps) 
             <TextColumn
                 title={<Translation id="TR_BACKUP_RECOVERY_SEED" />}
                 description={<Translation id="TR_BACKUP_SUBHEADING_1" />}
-                buttonLink={WIKI_RECOVERY_SEED_URL}
+                buttonLink={HELP_CENTER_RECOVERY_SEED_URL}
             />
             <ActionColumn>
                 <ActionButton
