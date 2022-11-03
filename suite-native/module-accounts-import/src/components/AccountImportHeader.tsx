@@ -19,13 +19,21 @@ import {
 type AccountImportHeaderProps = {
     activeStep: 1 | 2 | 3;
 };
+
+const CLOSE_BUTTON_SIZE = 48;
+
 const accountImportHeaderStyle = prepareNativeStyle(_ => ({
+    position: 'relative',
     width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: CLOSE_BUTTON_SIZE,
 }));
 
-const closeButtonSizeStyle = prepareNativeStyle(_ => ({
-    width: 48,
-    height: 48,
+const closeButtonStyle = prepareNativeStyle(_ => ({
+    position: 'absolute',
+    right: 0,
 }));
 
 type NavigationProp = StackToTabCompositeProps<
@@ -48,17 +56,10 @@ export const AccountImportHeader = ({ activeStep }: AccountImportHeaderProps) =>
         });
 
     return (
-        <Box
-            flexDirection="row"
-            justifyContent={isOnboardingFinished ? 'space-between' : 'center'}
-            alignItems="center"
-            marginBottom="small"
-            style={applyStyle(accountImportHeaderStyle)}
-        >
-            {isOnboardingFinished && <Box style={applyStyle(closeButtonSizeStyle)} />}
+        <Box style={applyStyle(accountImportHeaderStyle)}>
             <StepsProgressBar activeStep={activeStep} numberOfSteps={3} />
             {isOnboardingFinished && (
-                <Box style={applyStyle(closeButtonSizeStyle)}>
+                <Box style={applyStyle(closeButtonStyle)}>
                     <IconButton
                         iconName="close"
                         colorScheme="gray"
