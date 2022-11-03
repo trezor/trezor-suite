@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction, Slice } from '@reduxjs/toolkit';
 
 import { fiatCurrencies, FiatCurrency, FiatCurrencyCode } from '@suite-common/suite-config';
 
@@ -26,7 +26,18 @@ export const appSettingsPersistWhitelist: Array<keyof AppSettingsState> = [
     'fiatCurrency',
 ];
 
-export const appSettingsSlice = createSlice({
+export const appSettingsSlice: Slice<
+    AppSettingsState,
+    {
+        setColorScheme: (state: AppSettingsState, action: PayloadAction<AppColorScheme>) => void;
+        setFiatCurrency: (
+            state: AppSettingsState,
+            { payload }: PayloadAction<FiatCurrencyCode>,
+        ) => void;
+        setOnboardingFinished: (state: AppSettingsState, action: PayloadAction<boolean>) => void;
+    },
+    'appSettings'
+> = createSlice({
     name: 'appSettings',
     initialState: appSettingsInitialState,
     reducers: {

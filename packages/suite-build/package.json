@@ -38,7 +38,7 @@
         "terser-webpack-plugin": "^5.3.3",
         "ts-loader": "^9.3.1",
         "webpack": "^5.75.0",
-        "webpack-bundle-analyzer": "^4.5.0",
+        "webpack-bundle-analyzer": "^4.7.0",
         "webpack-merge": "^5.8.0",
         "webpack-nano": "^1.1.1",
         "webpack-plugin-serve": "^1.6.0",

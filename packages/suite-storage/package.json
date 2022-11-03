@@ -19,7 +19,7 @@
     "browser": "./src/web/index.ts",
     "dependencies": {
         "@trezor/env-utils": "*",
-        "broadcast-channel": "^4.14.0",
+        "broadcast-channel": "^4.18.1",
         "idb": "^7.1.1"
     },
     "devDependencies": {
