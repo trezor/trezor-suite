@@ -26,6 +26,12 @@ const contentWrapperStyle = prepareNativeStyle(() => ({
     marginBottom: 114,
 }));
 
+type NavigationProp = StackToTabCompositeProps<
+    AccountsImportStackParamList,
+    AccountsImportStackRoutes.AccountImport,
+    RootStackParamList
+>;
+
 export const AccountAlreadyImported = ({ account }: AccountImportImportedAccountProps) => {
     const { applyStyle } = useNativeStyles();
     const navigation = useNavigation<NavigationProp>();
