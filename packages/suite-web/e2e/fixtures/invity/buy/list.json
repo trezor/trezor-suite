@@ -1,0 +1,46 @@
+{
+    "country": "AT",
+    "suggestedFiatCurrency": "EUR",
+    "providers": [
+        {
+            "name": "btcdirect-sandbox",
+            "companyName": "BTC Direct",
+            "logo": "btcdirect-sandbox.png",
+            "isActive": true,
+            "tradedCoins": ["BCH", "BTC", "ETH", "LTC", "XRP"],
+            "tradedFiatCurrencies": ["EUR"],
+            "supportedCountries": ["AT", "BE", "BG", "SL"],
+            "paymentMethods": [
+                "bancontact",
+                "bankTransfer",
+                "creditCard",
+                "giropay",
+                "iDeal",
+                "sofort"
+            ],
+            "statusUrl": "https://my-sandbox.btcdirect.eu/en-gb/user/transactions?client=trezor",
+            "supportUrl": "https://support.btcdirect.eu/hc/en-gb?client=trezor"
+        },
+        {
+            "name": "banxa-sandbox",
+            "companyName": "Banxa",
+            "logo": "banxa-sandbox.png",
+            "isActive": true,
+            "tradedCoins": ["BCH", "BNB", "BSV", "BTC", "XRP"],
+            "tradedFiatCurrencies": ["AUD", "CAD", "SEK", "USD"],
+            "supportedCountries": ["DZ", "AS", "AD", "AX"],
+            "paymentMethods": [
+                "poli",
+                "auspost",
+                "bpay",
+                "creditCard",
+                "sofort",
+                "iDeal",
+                "dcinterac",
+                "bankTransfer"
+            ],
+            "statusUrl": "https://banxa.com/support/",
+            "supportUrl": "https://banxa.com/support/"
+        }
+    ]
+}

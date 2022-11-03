@@ -1,0 +1,29 @@
+{
+    "trade": {
+        "fiatStringAmount": "500",
+        "fiatCurrency": "EUR",
+        "receiveCurrency": "BTC",
+        "receiveStringAmount": "0.02066953",
+        "rate": 24190.19687433628,
+        "orderId": "6476d7c4-a873-400f-8276-5a47a43cd392",
+        "paymentId": "a879d7d9-f1e1-4a70-8748-f865427c1018",
+        "status": "LOGIN_REQUEST",
+        "exchange": "btcdirect",
+        "validUntil": "2022-07-31T16:42:22Z",
+        "minFiat": 30,
+        "maxFiat": 1001,
+        "minCrypto": 0.00128966,
+        "maxCrypto": 0.04303155,
+        "paymentMethod": "giropay",
+        "infoNote": "This offer is only preliminary. By choosing this offer, you will be redirected to BTC Direct site. After entering your details, you will get a more specific offer.",
+        "country": "AT",
+        "wantCrypto": false
+    },
+    "tradeForm": {
+        "form": {
+            "formMethod": "GET",
+            "formAction": "https://www.google.com",
+            "fields": {}
+        }
+    }
+}

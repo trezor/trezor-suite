@@ -221,6 +221,7 @@ const CoinmarketExchangeOfferInfo = ({
                         <CoinmarketProviderInfo
                             exchange={exchange}
                             providers={exchangeInfo?.providerInfos}
+                            data-test="@CoinmarketExchangeProviderInfo"
                         />
                     </RightColumn>
                 </Row>

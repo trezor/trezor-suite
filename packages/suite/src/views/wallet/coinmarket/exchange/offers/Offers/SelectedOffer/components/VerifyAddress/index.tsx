@@ -273,6 +273,7 @@ const VerifyAddressComponent = () => {
                     {(!addressVerified || addressVerified !== address) &&
                         selectedAccountOption.account && (
                             <Button
+                                data-test="@coinmarket/exchange/offers/confirm-on-trezor-button"
                                 isLoading={callInProgress}
                                 isDisabled={callInProgress}
                                 onClick={() => {
@@ -291,6 +292,7 @@ const VerifyAddressComponent = () => {
                     {((addressVerified && addressVerified === address) ||
                         selectedAccountOption?.type === 'NON_SUITE') && (
                         <Button
+                            data-test="@coinmarket/exchange/offers/continue-transaction-button"
                             isLoading={callInProgress}
                             onClick={() => {
                                 if (address) {

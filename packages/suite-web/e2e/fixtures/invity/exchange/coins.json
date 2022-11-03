@@ -1,0 +1,22 @@
+[
+    {
+        "ticker": "REGTEST",
+        "name": "Regtest",
+        "category": "Popular currencies"
+    },
+    {
+        "ticker": "ETH",
+        "name": "Ethereum",
+        "category": "Popular currencies"
+    },
+    {
+        "ticker": "ADA",
+        "name": "Cardano",
+        "category": "Popular currencies"
+    },
+    {
+        "ticker": "LTC",
+        "name": "Litecoin",
+        "category": "Popular currencies"
+    }
+]
