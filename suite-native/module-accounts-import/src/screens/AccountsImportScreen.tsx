@@ -12,7 +12,7 @@ import {
 
 import { AccountImportLoader } from '../components/AccountImportLoader';
 import { AccountImportHeader } from '../components/AccountImportHeader';
-import { AccountImportDetail } from '../components/AccountImportDetail';
+import { AccountImportSummary } from '../components/AccountImportSummary';
 
 export const AccountsImportScreen = ({
     navigation,
@@ -71,10 +71,10 @@ export const AccountsImportScreen = ({
 
     return (
         <Screen header={<AccountImportHeader activeStep={accountInfo ? 3 : 2} />}>
-            {!accountInfo ? (
-                <AccountImportLoader />
+            {accountInfo ? (
+                <AccountImportSummary accountInfo={accountInfo} networkSymbol={currencySymbol} />
             ) : (
-                <AccountImportDetail accountInfo={accountInfo} networkSymbol={currencySymbol} />
+                <AccountImportLoader />
             )}
         </Screen>
     );
