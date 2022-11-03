@@ -3,7 +3,6 @@ import { createReducer } from '@reduxjs/toolkit';
 import { GraphDataSource, LineGraphPoint } from './types';
 import { getAllAccountsGraphPointsThunk, getSingleAccountGraphPointsThunk } from './graphThunks';
 import { getValidGraphPoints } from './graphUtils';
-import { accountNotFoundError, networkAccountsNotFoundError } from './constants';
 
 export interface GraphState {
     dashboard: {
@@ -55,9 +54,7 @@ export const graphReducer = createReducer(graphInitialState, builder => {
             state.dashboard.loading = false;
         })
         .addCase(getAllAccountsGraphPointsThunk.rejected, (state, action) => {
-            if (action.error.message === networkAccountsNotFoundError) {
-                state.dashboard.error = action.error.message;
-            }
+            state.dashboard.error = action.error.message;
             state.dashboard.loading = false;
         })
         .addCase(getAllAccountsGraphPointsThunk.pending, state => {
@@ -71,9 +68,7 @@ export const graphReducer = createReducer(graphInitialState, builder => {
             state.account.loading = false;
         })
         .addCase(getSingleAccountGraphPointsThunk.rejected, (state, action) => {
-            if (action.error.message === accountNotFoundError) {
-                state.account.error = action.error.message;
-            }
+            state.account.error = action.error.message;
             state.account.loading = false;
         })
         .addCase(getSingleAccountGraphPointsThunk.pending, state => {

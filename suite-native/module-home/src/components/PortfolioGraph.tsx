@@ -9,10 +9,11 @@ import {
     LineGraphTimeFrameValues,
     selectDashboardGraph,
 } from '@suite-common/wallet-graph';
-import { Text } from '@suite-native/atoms';
+import { Box, Text } from '@suite-native/atoms';
 import { enabledNetworks } from '@suite-native/config';
-import { Graph, TimeSwitch } from '@suite-native/graph';
+import { Graph, graphWrapperStyle, TimeSwitch } from '@suite-native/graph';
 import { selectFiatCurrency } from '@suite-native/module-settings';
+import { useNativeStyles } from '@trezor/styles';
 
 import {
     PortfolioGraphHeader,
@@ -22,6 +23,7 @@ import {
 
 export const PortfolioGraph = () => {
     const dispatch = useDispatch();
+    const { applyStyle } = useNativeStyles();
     const fiatCurrency = useSelector(selectFiatCurrency);
     const { points, error, loading } = useSelector(selectDashboardGraph);
     const enhancedPoints = useMemo(() => enhanceGraphPoints(points), [points]);
@@ -59,9 +61,11 @@ export const PortfolioGraph = () => {
         <>
             <PortfolioGraphHeader />
             {error ? (
-                <Text variant="label" color="gray600">
-                    {error}
-                </Text>
+                <Box style={applyStyle(graphWrapperStyle)}>
+                    <Text variant="label" color="gray600">
+                        There are some troubles with loading graph points: {error}
+                    </Text>
+                </Box>
             ) : (
                 <>
                     <Graph
