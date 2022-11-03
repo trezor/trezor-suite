@@ -1,7 +1,7 @@
-import React, { memo, useEffect, useMemo, useState } from 'react';
+import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { Graph, graphWrapperStyle, TimeSwitch } from '@suite-native/graph';
+import { Graph, TimeSwitch } from '@suite-native/graph';
 import { AccountBalance } from '@suite-native/accounts';
 import { Box, Text } from '@suite-native/atoms';
 import { AccountKey } from '@suite-common/suite-types';
@@ -12,7 +12,7 @@ import {
     selectAccountGraph,
 } from '@suite-common/wallet-graph';
 import { selectFiatCurrency } from '@suite-native/module-settings';
-import { useNativeStyles } from '@trezor/styles';
+import { GraphError } from '@suite-native/graph/src/components/GraphError';
 
 type AccountDetailHeaderProps = {
     accountKey: AccountKey;
@@ -21,14 +21,13 @@ type AccountDetailHeaderProps = {
 
 export const AccountDetailHeader = memo(({ accountKey, accountName }: AccountDetailHeaderProps) => {
     const dispatch = useDispatch();
-    const { applyStyle } = useNativeStyles();
     const fiatCurrency = useSelector(selectFiatCurrency);
     const { points, error, loading } = useSelector(selectAccountGraph);
     const enhancedPoints = useMemo(() => enhanceGraphPoints(points), [points]);
 
     const [selectedTimeFrame, setSelectedTimeFrame] = useState<LineGraphTimeFrameValues>('day');
 
-    useEffect(() => {
+    const handleFetchGraphPoints = useCallback(() => {
         dispatch(
             getSingleAccountGraphPointsThunk({
                 accountKey,
@@ -38,6 +37,10 @@ export const AccountDetailHeader = memo(({ accountKey, accountName }: AccountDet
         );
     }, [selectedTimeFrame, fiatCurrency, accountKey, dispatch]);
 
+    useEffect(() => {
+        handleFetchGraphPoints();
+    }, [handleFetchGraphPoints]);
+
     const handleSelectTimeFrame = (timeFrame: LineGraphTimeFrameValues) => {
         setSelectedTimeFrame(timeFrame);
     };
@@ -46,20 +49,16 @@ export const AccountDetailHeader = memo(({ accountKey, accountName }: AccountDet
         <>
             <AccountBalance accountKey={accountKey} accountName={accountName} />
             {error ? (
-                <Box style={applyStyle(graphWrapperStyle)}>
-                    <Text variant="label" color="gray600">
-                        There are some troubles with loading graph points: {error}
-                    </Text>
-                </Box>
+                <GraphError error={error} onTryAgain={handleFetchGraphPoints} />
             ) : (
                 <>
                     <Graph points={enhancedPoints} loading={loading} />
-                    <TimeSwitch
-                        selectedTimeFrame={selectedTimeFrame}
-                        onSelectTimeFrame={handleSelectTimeFrame}
-                    />
                 </>
             )}
+            <TimeSwitch
+                selectedTimeFrame={selectedTimeFrame}
+                onSelectTimeFrame={handleSelectTimeFrame}
+            />
             <Box marginBottom="large">
                 <Text variant="titleSmall">Transactions</Text>
             </Box>
