@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import { DEFAULT_MAX_MINING_FEE, RECOMMENDED_SKIP_ROUNDS } from '@suite/services/coinjoin/config';
 import { Account } from '@suite-common/wallet-types';
-import { TooltipSymbol, Translation } from '@suite-components';
+import { TooltipSymbol, Translation, TrezorLink } from '@suite-components';
 import { Error } from '@suite-components/Error';
 import { useActions, useSelector } from '@suite-hooks';
 import { Card, Checkbox, Link, TooltipButton, variables } from '@trezor/components';
@@ -56,10 +56,6 @@ const CheckboxWrapper = styled.div`
 
 const StyledCheckbox = styled(Checkbox)`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-`;
-
-const StyledLink = styled(Link)`
-    text-decoration: underline;
 `;
 
 const StyledTooltipButton = styled(TooltipButton)`
@@ -192,10 +188,14 @@ export const CoinjoinSetupStrategies = ({ account }: CoinjoinSetupStrategiesProp
                         id="TR_TERMS_AND_PRIVACY_CONFIRMATION"
                         values={{
                             coordinator: chunks => (
-                                <StyledLink href={ZKSNACKS_TERMS_URL}>{chunks}</StyledLink>
+                                <Link href={ZKSNACKS_TERMS_URL} variant="underline">
+                                    {chunks}
+                                </Link>
                             ),
                             trezor: chunks => (
-                                <StyledLink href={DATA_TOS_COINJOIN_URL}>{chunks}</StyledLink>
+                                <TrezorLink href={DATA_TOS_COINJOIN_URL} variant="underline">
+                                    {chunks}
+                                </TrezorLink>
                             ),
                         }}
                     />
