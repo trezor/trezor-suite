@@ -3,7 +3,7 @@ import { configureStore, filterThunkActionTypes } from '@suite/support/tests/con
 import { PROTO } from '@trezor/connect';
 import { accountsReducer, transactionsReducer, blockchainReducer } from '@wallet-reducers';
 import feesReducer from '@wallet-reducers/feesReducer';
-import notificationsReducer from '@suite-reducers/notificationReducer';
+import { notificationsActions, notificationsReducer } from '@suite-common/toast-notifications';
 import * as fixtures from '../__fixtures__/blockchainActions';
 import {
     initBlockchainThunk,
@@ -165,7 +165,7 @@ describe('Blockchain Actions', () => {
                 expect(filterThunkActionTypes(store.getActions()).length).toEqual(0);
             } else {
                 const actions = filterThunkActionTypes(store.getActions()).filter(
-                    a => a.type !== '@notification/event',
+                    a => a.type !== notificationsActions.addEvent.type,
                 );
                 expect(actions.length).toEqual(result.length);
                 actions.forEach((action, index) => {

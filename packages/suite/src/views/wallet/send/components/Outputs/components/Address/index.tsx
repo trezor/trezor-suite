@@ -19,7 +19,7 @@ import {
 import { MAX_LENGTH } from '@suite-constants/inputs';
 import { ConvertAddress } from './components/ConvertAddress';
 import { PROTOCOL_TO_NETWORK } from '@suite-constants/protocol';
-import * as notificationActions from '@suite-actions/notificationActions';
+import { notificationsActions } from '@suite-common/toast-notifications';
 
 import type { Output } from '@wallet-types/sendForm';
 
@@ -59,7 +59,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
     } = useSendFormContext();
     const { openQrModal, addToast } = useActions({
         openQrModal: scanQrRequest,
-        addToast: notificationActions.addToast,
+        addToast: notificationsActions.addToast,
     });
 
     const { descriptor, networkType, symbol } = account;

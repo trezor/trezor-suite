@@ -1,7 +1,7 @@
 import TrezorConnect, { CommonParams } from '@trezor/connect';
 import { analytics, EventType } from '@trezor/suite-analytics';
 
-import * as notificationActions from '@suite-actions/notificationActions';
+import { notificationsActions } from '@suite-common/toast-notifications';
 import { BACKUP } from '@backup-actions/constants';
 
 import type { Dispatch, GetState } from '@suite-types';
@@ -46,7 +46,7 @@ export const backupDevice =
         const { device } = getState().suite;
         if (!device) {
             return dispatch(
-                notificationActions.addToast({
+                notificationsActions.addToast({
                     type: 'error',
                     error: 'Device not connected',
                 }),
@@ -65,7 +65,7 @@ export const backupDevice =
             },
         });
         if (!result.success) {
-            dispatch(notificationActions.addToast({ type: 'backup-failed' }));
+            dispatch(notificationsActions.addToast({ type: 'backup-failed' }));
             dispatch({
                 type: BACKUP.SET_ERROR,
                 payload: result.payload.error,
@@ -78,7 +78,7 @@ export const backupDevice =
                 },
             });
         } else {
-            dispatch(notificationActions.addToast({ type: 'backup-success' }));
+            dispatch(notificationsActions.addToast({ type: 'backup-success' }));
             dispatch({
                 type: BACKUP.SET_STATUS,
                 payload: 'finished',

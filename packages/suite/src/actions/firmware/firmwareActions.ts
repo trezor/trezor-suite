@@ -4,7 +4,7 @@ import { resolveStaticPath } from '@trezor/utils';
 
 import { FIRMWARE } from '@firmware-actions/constants';
 import { isDesktop } from '@suite-utils/env';
-import { addToast } from '@suite-actions/notificationActions';
+import { notificationsActions } from '@suite-common/toast-notifications';
 
 import { Dispatch, GetState, AppState, AcquiredDevice, FirmwareType } from '@suite-types';
 import type { Await } from '@trezor/type-utils';
@@ -291,13 +291,20 @@ export const checkFirmwareAuthenticity = () => async (dispatch: Dispatch, getSta
     });
     if (result.success) {
         if (result.payload.valid) {
-            dispatch(addToast({ type: 'firmware-check-authenticity-success' }));
+            dispatch(
+                notificationsActions.addToast({ type: 'firmware-check-authenticity-success' }),
+            );
         } else {
-            dispatch(addToast({ type: 'error', error: 'Firmware is not authentic!!!' }));
+            dispatch(
+                notificationsActions.addToast({
+                    type: 'error',
+                    error: 'Firmware is not authentic!!!',
+                }),
+            );
         }
     } else {
         dispatch(
-            addToast({
+            notificationsActions.addToast({
                 type: 'error',
                 error: `Unable to validate firmware: ${result.payload.error}`,
             }),
@@ -328,7 +335,7 @@ export const rebootToBootloader = () => async (dispatch: Dispatch, getState: Get
     });
 
     if (!response.success) {
-        dispatch(addToast({ type: 'error', error: response.payload.error }));
+        dispatch(notificationsActions.addToast({ type: 'error', error: response.payload.error }));
     }
 
     return response;

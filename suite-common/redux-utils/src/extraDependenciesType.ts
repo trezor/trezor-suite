@@ -4,7 +4,6 @@ import { Account, FeeInfo } from '@suite-common/wallet-types';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { BlockchainBlock, ConnectSettings, Manifest, PROTO } from '@trezor/connect';
-import { NotificationEventPayload } from '@suite-common/notifications';
 
 import { ActionType, SuiteCompatibleSelector, SuiteCompatibleThunk } from './types';
 
@@ -17,7 +16,6 @@ type ConnectInitSettings = {
 
 export type ExtraDependencies = {
     thunks: {
-        notificationsAddEvent: SuiteCompatibleThunk<NotificationEventPayload>;
         cardanoValidatePendingTxOnBlock: SuiteCompatibleThunk<{
             block: BlockchainBlock;
             timestamp: number;
@@ -27,6 +25,7 @@ export type ExtraDependencies = {
     selectors: {
         selectFeeInfo: (networkSymbol: NetworkSymbol) => SuiteCompatibleSelector<FeeInfo>;
         selectDevices: SuiteCompatibleSelector<TrezorDevice[]>;
+        selectCurrentDevice: SuiteCompatibleSelector<TrezorDevice | undefined>;
         selectBitcoinAmountUnit: SuiteCompatibleSelector<PROTO.AmountUnit>;
         selectEnabledNetworks: SuiteCompatibleSelector<NetworkSymbol[]>;
         selectLocalCurrency: SuiteCompatibleSelector<string>;

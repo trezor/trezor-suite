@@ -1,5 +1,6 @@
 import * as deviceSettingsActions from '../deviceSettingsActions';
-import { NOTIFICATION, SUITE } from '@suite-actions/constants';
+import { SUITE } from '@suite-actions/constants';
+import { notificationsActions } from '@suite-common/toast-notifications';
 
 const { getSuiteDevice } = global.JestMocks;
 
@@ -18,7 +19,7 @@ export default [
                     type: SUITE.FORGET_DEVICE,
                     payload: { features: { device_id: 'new-device-id' } },
                 },
-                { type: NOTIFICATION.TOAST, payload: { type: 'device-wiped' } },
+                { type: notificationsActions.addToast.type, payload: { type: 'device-wiped' } },
                 { type: SUITE.REQUEST_DEVICE_RECONNECT },
             ],
         },
@@ -73,7 +74,7 @@ export default [
                     type: SUITE.FORGET_DEVICE,
                     payload: { instance: 2, features: { device_id: 'new-device-id' } },
                 },
-                { type: NOTIFICATION.TOAST, payload: { type: 'device-wiped' } },
+                { type: notificationsActions.addToast.type, payload: { type: 'device-wiped' } },
                 { type: SUITE.REQUEST_DEVICE_RECONNECT },
             ],
         },
@@ -83,7 +84,12 @@ export default [
         action: () => deviceSettingsActions.wipeDevice(),
         mocks: { success: false, payload: { error: 'fuuu' } },
         result: {
-            actions: [{ type: NOTIFICATION.TOAST, payload: { type: 'error', error: 'fuuu' } }],
+            actions: [
+                {
+                    type: notificationsActions.addToast.type,
+                    payload: { type: 'error', error: 'fuuu' },
+                },
+            ],
         },
     },
     {
@@ -91,7 +97,9 @@ export default [
         action: () => deviceSettingsActions.applySettings({ label: 'foo' }),
         mocks: { success: true, payload: { message: 'huraa' } },
         result: {
-            actions: [{ type: NOTIFICATION.TOAST, payload: { type: 'settings-applied' } }],
+            actions: [
+                { type: notificationsActions.addToast.type, payload: { type: 'settings-applied' } },
+            ],
         },
     },
     {
@@ -99,7 +107,12 @@ export default [
         action: () => deviceSettingsActions.applySettings({ label: 'foo' }),
         mocks: { success: false, payload: { error: 'eeeh' } },
         result: {
-            actions: [{ type: NOTIFICATION.TOAST, payload: { type: 'error', error: 'eeeh' } }],
+            actions: [
+                {
+                    type: notificationsActions.addToast.type,
+                    payload: { type: 'error', error: 'eeeh' },
+                },
+            ],
         },
     },
     {
@@ -107,7 +120,9 @@ export default [
         action: () => deviceSettingsActions.changePin({}),
         mocks: { success: true, payload: { message: 'huraa' } },
         result: {
-            actions: [{ type: NOTIFICATION.TOAST, payload: { type: 'pin-changed' } }],
+            actions: [
+                { type: notificationsActions.addToast.type, payload: { type: 'pin-changed' } },
+            ],
         },
     },
     {
@@ -115,7 +130,12 @@ export default [
         action: () => deviceSettingsActions.changePin({}),
         mocks: { success: false, payload: { error: 'eeeh' } },
         result: {
-            actions: [{ type: NOTIFICATION.TOAST, payload: { type: 'error', error: 'eeeh' } }],
+            actions: [
+                {
+                    type: notificationsActions.addToast.type,
+                    payload: { type: 'error', error: 'eeeh' },
+                },
+            ],
         },
     },
 ];

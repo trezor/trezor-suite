@@ -5,25 +5,30 @@ import { PROTO } from '@trezor/connect';
 
 import { testMocks } from './mocks';
 
+const mockedConsoleLog = (...args: any) => {
+    // we don't want to see console.log in tests because it's too noisy
+    if (process.env.NODE_ENV !== 'test') {
+        // eslint-disable-next-line no-console
+        console.log(...args);
+    }
+};
+
 export const mockAction = (type: string): any =>
     createAction<any>(`@mocked/extraDependency/action/notImplemented/${type}`, (payload: any) => {
-        // eslint-disable-next-line no-console
-        console.log(`Calling not implemented action ${type} with payload: `, payload);
+        mockedConsoleLog(`Calling not implemented action ${type} with payload: `, payload);
         return { payload };
     });
 
 export const mockThunk = (type: string) =>
     createThunk(`@mocked/extraDependency/notImplemented/${type}`, (thunkPayload: any) => {
-        // eslint-disable-next-line no-console
-        console.log(`Calling not implemented thunk: ${type} and payload: `, thunkPayload);
+        mockedConsoleLog(`Calling not implemented thunk: ${type} and payload: `, thunkPayload);
         return thunkPayload;
     });
 
 export const mockSelector =
     <TReturn>(name: string, mockedReturnValue: TReturn, selectorArgs: any = {}) =>
     () => {
-        // eslint-disable-next-line no-console
-        console.log(
+        mockedConsoleLog(
             `Calling not implemented selector "${name}" with mocked value: `,
             mockedReturnValue,
             ' and args: ',
@@ -36,14 +41,12 @@ export const mockActionType = (type: string) =>
     `@mocked/extraDependency/actionType/notImplemented/${type}`;
 
 export const mockReducer = (name: string) => (state: any, action: any) => {
-    // eslint-disable-next-line no-console
-    console.log(`Calling not implemented reducer "${name}" with action: `, action);
+    mockedConsoleLog(`Calling not implemented reducer "${name}" with action: `, action);
     return state;
 };
 
 export const extraDependenciesMock: ExtraDependencies = {
     thunks: {
-        notificationsAddEvent: mockThunk('notificationsAddEvent'),
         cardanoValidatePendingTxOnBlock: mockThunk('validatePendingTxOnBlock'),
         cardanoFetchTrezorPools: mockThunk('fetchTrezorPools'),
     },
@@ -51,6 +54,7 @@ export const extraDependenciesMock: ExtraDependencies = {
         selectFeeInfo: (networkSymbol: any) =>
             mockSelector('selectFeeInfo', testMocks.fee, { networkSymbol }),
         selectDevices: mockSelector('selectDevices', []),
+        selectCurrentDevice: mockSelector('selectCurrentDevice', testMocks.getSuiteDevice()),
         selectBitcoinAmountUnit: mockSelector('selectBitcoinAmountUnit', PROTO.AmountUnit.BITCOIN),
         selectEnabledNetworks: mockSelector('selectEnabledNetworks', ['btc', 'test']),
         selectLocalCurrency: mockSelector('selectLocalCurrency', 'usd'),

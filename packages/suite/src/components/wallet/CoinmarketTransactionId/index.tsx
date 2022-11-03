@@ -4,7 +4,7 @@ import { variables, Button } from '@trezor/components';
 import { copyToClipboard } from '@trezor/dom-utils';
 import { useActions } from '@suite-hooks';
 import { Translation } from '@suite-components';
-import * as notificationActions from '@suite-actions/notificationActions';
+import { notificationsActions } from '@suite-common/toast-notifications';
 
 interface Props {
     transactionId: string;
@@ -43,7 +43,7 @@ const Value = styled.div`
 `;
 
 const TransactionId = ({ transactionId, className }: Props) => {
-    const { addNotification } = useActions({ addNotification: notificationActions.addToast });
+    const { addNotification } = useActions({ addNotification: notificationsActions.addToast });
     const copy = () => {
         const result = copyToClipboard(transactionId, null);
         if (typeof result !== 'string') {

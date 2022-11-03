@@ -2,10 +2,9 @@ import React, { useLayoutEffect, useRef, useState } from 'react';
 import styled, { css } from 'styled-components';
 import { Button, Icon, useTheme, variables } from '@trezor/components';
 import { Translation } from '@suite-components';
-import * as notificationActions from '@suite-actions/notificationActions';
+import { notificationsActions, NotificationEntry } from '@suite-common/toast-notifications';
 import { useActions } from '@suite-hooks';
 import { getNotificationIcon, getVariantColor } from '@suite-utils//notification';
-import type { NotificationEntry } from '@suite-reducers/notificationReducer';
 import NotificationRenderer, {
     NotificationViewProps,
 } from '@suite-components/NotificationRenderer';
@@ -64,7 +63,7 @@ const ToastNotification = ({
     const [isTall, setIsTall] = useState(false);
 
     const { closeNotification } = useActions({
-        closeNotification: notificationActions.close,
+        closeNotification: notificationsActions.close,
     });
 
     const theme = useTheme();

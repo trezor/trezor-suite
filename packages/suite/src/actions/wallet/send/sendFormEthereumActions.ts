@@ -1,7 +1,7 @@
 import TrezorConnect, { FeeLevel, TokenInfo } from '@trezor/connect';
 import BigNumber from 'bignumber.js';
 import { toWei } from 'web3-utils';
-import * as notificationActions from '@suite-actions/notificationActions';
+import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     calculateTotal,
     calculateMax,
@@ -283,7 +283,7 @@ export const signTransaction =
             // catch manual error from ReviewTransaction modal
             if (signedTx.payload.error === 'tx-cancelled') return;
             dispatch(
-                notificationActions.addToast({
+                notificationsActions.addToast({
                     type: 'sign-tx-error',
                     error: signedTx.payload.error,
                 }),

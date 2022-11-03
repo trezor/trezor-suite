@@ -6,7 +6,7 @@ import { Translation, Notifications } from '@suite-components';
 import { Dropdown, DropdownRef, variables } from '@trezor/components';
 import { ActionItem } from './ActionItem';
 import { useActions } from '@suite-hooks';
-import * as notificationActions from '@suite-actions/notificationActions';
+import { notificationsActions } from '@suite-common/toast-notifications';
 
 const Wrapper = styled.div`
     margin-left: 0;
@@ -36,7 +36,7 @@ export const NavNotifications = ({
     const dropdownRef = useRef<DropdownRef>();
 
     const { resetUnseen } = useActions({
-        resetUnseen: notificationActions.resetUnseen,
+        resetUnseen: notificationsActions.resetUnseen,
     });
 
     const handleToggleChange = useCallback(

@@ -1,3 +1,4 @@
+import { notificationsActions } from '@suite-common/toast-notifications';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
 import { accountsActions } from '@suite-common/wallet-core';
 import { PROTO } from '@trezor/connect';
@@ -1171,7 +1172,7 @@ export const signAndPush = [
             },
             actions: [
                 {
-                    type: '@notification/toast',
+                    type: notificationsActions.addToast.type,
                     payload: { type: 'tx-sent', formattedAmount: '1 ETH' }, // BUG ?
                 },
                 {
@@ -1195,7 +1196,7 @@ export const signAndPush = [
             },
             actions: [
                 {
-                    type: '@notification/toast',
+                    type: notificationsActions.addToast.type,
                     payload: { type: 'sign-tx-error' },
                 },
             ],
@@ -1225,7 +1226,7 @@ export const signAndPush = [
             },
             actions: [
                 {
-                    type: '@notification/toast',
+                    type: notificationsActions.addToast.type,
                     payload: { type: 'tx-sent', formattedAmount: '1 XRP' },
                 },
                 {
@@ -1249,7 +1250,7 @@ export const signAndPush = [
             },
             actions: [
                 {
-                    type: '@notification/toast',
+                    type: notificationsActions.addToast.type,
                     payload: { type: 'sign-tx-error' },
                 },
             ],
@@ -1345,7 +1346,7 @@ export const signAndPush = [
             },
             actions: [
                 {
-                    type: '@notification/toast',
+                    type: notificationsActions.addToast.type,
                     payload: { type: 'tx-sent', formattedAmount: '24.999999 BTC' },
                 },
                 {
@@ -1429,7 +1430,7 @@ export const signAndPush = [
             },
             actions: [
                 {
-                    type: '@notification/toast',
+                    type: notificationsActions.addToast.type,
                     payload: { type: 'sign-tx-error' },
                 },
             ],
@@ -1486,7 +1487,7 @@ export const signAndPush = [
             },
             actions: [
                 {
-                    type: '@notification/toast',
+                    type: notificationsActions.addToast.type,
                     payload: { type: 'sign-tx-error' },
                 },
             ],

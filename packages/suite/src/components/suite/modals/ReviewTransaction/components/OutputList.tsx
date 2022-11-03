@@ -5,7 +5,7 @@ import { analytics, EventType } from '@trezor/suite-analytics';
 import { Button, variables } from '@trezor/components';
 import { Translation } from '@suite-components';
 import { formatNetworkAmount, isTestnet } from '@suite-common/wallet-utils';
-import * as notificationActions from '@suite-actions/notificationActions';
+import { notificationsActions } from '@suite-common/toast-notifications';
 import { copyToClipboard, download } from '@trezor/dom-utils';
 import { useActions } from '@suite-hooks';
 import Detail from './Detail';
@@ -129,7 +129,7 @@ const OutputList = ({
 
     const htmlElement = createRef<HTMLDivElement>();
     const { addNotification } = useActions({
-        addNotification: notificationActions.addToast,
+        addNotification: notificationsActions.addToast,
     });
 
     return (

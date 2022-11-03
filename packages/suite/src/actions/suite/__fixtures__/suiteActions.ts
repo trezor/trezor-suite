@@ -1,8 +1,9 @@
 import { DEVICE, TRANSPORT } from '@trezor/connect';
-import { SUITE, NOTIFICATION, MODAL } from '@suite-actions/constants';
+import { SUITE, MODAL } from '@suite-actions/constants';
 import { DISCOVERY } from '@wallet-actions/constants';
 import { TorStatus } from '@suite-types';
 import * as suiteActions from '../suiteActions';
+import { notificationsActions } from '@suite-common/toast-notifications';
 
 const { getSuiteDevice, getConnectDevice } = global.JestMocks;
 
@@ -754,7 +755,7 @@ const acquireDevice = [
                 error: 'getFeatures error',
             },
         },
-        result: NOTIFICATION.TOAST,
+        result: notificationsActions.addToast.type,
     },
     {
         description: `without device`,
@@ -918,7 +919,7 @@ const authorizeDevice = [
                 error: 'getDeviceState error',
             },
         },
-        result: NOTIFICATION.TOAST,
+        result: notificationsActions.addToast.type,
     },
 ];
 
@@ -1014,7 +1015,7 @@ const createDeviceInstance = [
                 error: 'applySettings error',
             },
         },
-        result: NOTIFICATION.TOAST,
+        result: notificationsActions.addToast.type,
     },
     {
         description: `with passphrase_protection enabled`,

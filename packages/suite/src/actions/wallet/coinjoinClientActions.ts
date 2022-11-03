@@ -9,11 +9,11 @@ import {
 import { arrayDistinct } from '@trezor/utils';
 import * as COINJOIN from './constants/coinjoinConstants';
 import { prepareCoinjoinTransaction } from '@wallet-utils/coinjoinUtils';
-import { addToast } from '../suite/notificationActions';
 import { CoinjoinClientService } from '@suite/services/coinjoin/coinjoinClient';
 import { Dispatch, GetState } from '@suite-types';
 import { Account, CoinjoinServerEnvironment, RoundPhase } from '@suite-common/wallet-types';
 import { onCancel as closeModal, openModal } from '@suite-actions/modalActions';
+import { notificationsActions } from '@suite-common/toast-notifications';
 
 const clientEnable = (symbol: Account['symbol']) =>
     ({
@@ -407,7 +407,7 @@ export const signCoinjoinTx =
             });
 
             dispatch(
-                addToast({
+                notificationsActions.addToast({
                     type: 'error',
                     error: `Coinjoin signTransaction: ${signTx.payload.error}`,
                 }),
@@ -478,7 +478,7 @@ export const initCoinjoinClient =
             CoinjoinClientService.removeInstance(symbol);
             dispatch(clientEnableFailed(symbol));
             dispatch(
-                addToast({
+                notificationsActions.addToast({
                     type: 'error',
                     error: `Coinjoin client not enabled: ${error.message}`,
                 }),

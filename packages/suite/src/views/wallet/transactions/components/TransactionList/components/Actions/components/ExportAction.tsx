@@ -5,7 +5,7 @@ import { Translation } from '@suite-components';
 import { useActions } from '@suite-hooks';
 import { SETTINGS } from '@suite-config';
 import { useTranslation } from '@suite-hooks/useTranslation';
-import * as notificationActions from '@suite-actions/notificationActions';
+import { notificationsActions } from '@suite-common/toast-notifications';
 import { exportTransactionsThunk, fetchTransactionsThunk } from '@suite-common/wallet-core';
 import { ExportFileType } from '@suite-common/wallet-types';
 import { Account } from '@wallet-types';
@@ -19,7 +19,7 @@ export interface ExportActionProps {
 export const ExportAction = ({ account }: ExportActionProps) => {
     const { translationString } = useTranslation();
     const { addToast, fetchTransactions, exportTransactions } = useActions({
-        addToast: notificationActions.addToast,
+        addToast: notificationsActions.addToast,
         fetchTransactions: fetchTransactionsThunk,
         exportTransactions: exportTransactionsThunk,
     });

@@ -1,6 +1,6 @@
 import { copyToClipboard } from '@trezor/dom-utils';
 import { useActions } from '@suite-hooks';
-import { addToast } from '@suite-actions/notificationActions';
+import { notificationsActions } from '@suite-common/toast-notifications';
 
 type SignedMessageData = {
     message: string;
@@ -22,7 +22,7 @@ export const useCopySignedMessage = <T extends SignedMessageData>(
     { message, address, signature }: T,
     network?: string,
 ) => {
-    const { addNotification } = useActions({ addNotification: addToast });
+    const { addNotification } = useActions({ addNotification: notificationsActions.addToast });
 
     const canCopy = address && signature;
 

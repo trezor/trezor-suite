@@ -17,11 +17,11 @@ import {
 import { Account } from '@wallet-types';
 import * as metadataUtils from '@suite-utils/metadata';
 import * as modalActions from '@suite-actions/modalActions';
-import * as notificationActions from '@suite-actions/notificationActions';
 import DropboxProvider from '@suite-services/metadata/DropboxProvider';
 import GoogleProvider from '@suite-services/metadata/GoogleProvider';
 import FileSystemProvider from '@suite-services/metadata/FileSystemProvider';
 import { createAction } from '@reduxjs/toolkit';
+import { notificationsActions } from '@suite-common/toast-notifications';
 
 export const setAccountLoaded = createAction(METADATA.ACCOUNT_LOADED, (payload: Account) => ({
     payload,
@@ -170,7 +170,7 @@ const handleProviderError =
         if (!error?.code) {
             // if this happens, it means that there is a hole in error handling and it should be fixed
             return dispatch(
-                notificationActions.addToast({
+                notificationsActions.addToast({
                     type: 'error',
                     error: `Labeling action failed. ${error}`,
                 }),
@@ -198,7 +198,7 @@ const handleProviderError =
         }
 
         dispatch(
-            notificationActions.addToast({
+            notificationsActions.addToast({
                 type: 'error',
                 error: `${action}: ${error?.error}`,
             }),

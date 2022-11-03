@@ -1,7 +1,11 @@
 import { MiddlewareAPI } from 'redux';
 import { DEVICE } from '@trezor/connect';
 import { SUITE } from '@suite-actions/constants';
-import * as notificationActions from '@suite-actions/notificationActions';
+import {
+    notificationsActions,
+    removeAccountEventsThunk,
+    removeTransactionEventsThunk,
+} from '@suite-common/toast-notifications';
 import * as deviceUtils from '@suite-utils/device';
 import { AppState, Action, Dispatch } from '@suite-types';
 import { accountsActions, transactionsActions } from '@suite-common/wallet-core';
@@ -21,7 +25,7 @@ const eventsMiddleware =
 
         if (action.type === SUITE.APP_CHANGED && prevState.router.app === 'notifications') {
             // Leaving notification app. Mark all unseen notifications as seen
-            api.dispatch(notificationActions.resetUnseen());
+            api.dispatch(notificationsActions.resetUnseen());
         }
 
         if (action.type === DEVICE.CONNECT || action.type === DEVICE.CONNECT_UNACQUIRED) {
@@ -35,15 +39,19 @@ const eventsMiddleware =
                 .notifications.filter(
                     n => n.type === DEVICE.CONNECT_UNACQUIRED && device.path === n.device.path,
                 );
-            if (toRemove.length > 0) api.dispatch(notificationActions.remove(toRemove));
+            if (toRemove.length > 0) api.dispatch(notificationsActions.remove(toRemove));
 
             if (!device.features) {
                 // unacquired message
                 api.dispatch(
-                    notificationActions.addEvent({ type: DEVICE.CONNECT_UNACQUIRED, seen, device }),
+                    notificationsActions.addEvent({
+                        type: DEVICE.CONNECT_UNACQUIRED,
+                        seen,
+                        device,
+                    }),
                 );
             } else if (!device.remember) {
-                api.dispatch(notificationActions.addEvent({ type: DEVICE.CONNECT, seen, device }));
+                api.dispatch(notificationsActions.addEvent({ type: DEVICE.CONNECT, seen, device }));
             }
         }
 
@@ -59,7 +67,7 @@ const eventsMiddleware =
                         deviceUtils.isSelectedDevice(action.payload, n.device),
                 );
             if (notifications.length > 0) {
-                api.dispatch(notificationActions.resetUnseen(notifications));
+                api.dispatch(notificationsActions.resetUnseen(notifications));
             }
         }
 
@@ -82,26 +90,26 @@ const eventsMiddleware =
                             ? deviceUtils.isSelectedInstance(d, n.device)
                             : deviceUtils.isSelectedDevice(d, n.device),
                     );
-                    api.dispatch(notificationActions.remove(toRemove));
+                    api.dispatch(notificationsActions.remove(toRemove));
                 }
             });
         }
 
         if (transactionsActions.removeTransaction.match(action)) {
             const { txs } = action.payload;
-            api.dispatch(notificationActions.removeTransactionEvents(txs));
+            api.dispatch(removeTransactionEventsThunk(txs));
         }
 
         if (accountsActions.removeAccount.match(action)) {
             action.payload.forEach(account => {
-                api.dispatch(notificationActions.removeAccountEvents(account.descriptor));
+                api.dispatch(removeAccountEventsThunk(account.descriptor));
             });
         }
 
         switch (action.type) {
             // Example event: wallet creation
             case SUITE.AUTH_DEVICE:
-                api.dispatch(notificationActions.addEvent({ type: action.type, seen: true }));
+                api.dispatch(notificationsActions.addEvent({ type: action.type, seen: true }));
                 break;
             // no default
         }

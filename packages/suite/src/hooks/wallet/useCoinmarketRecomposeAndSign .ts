@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { AppState } from '@suite-types';
 import { useActions, useSelector, useTranslation } from '@suite-hooks';
 import * as sendFormActions from '@wallet-actions/sendFormActions';
-import * as notificationActions from '@suite-actions/notificationActions';
+import { notificationsActions } from '@suite-common/toast-notifications';
 import { DEFAULT_VALUES, DEFAULT_PAYMENT } from '@suite-common/wallet-constants';
 import { FormState, UseSendFormState } from '@wallet-types/sendForm';
 import { getFeeLevels } from '@suite-common/wallet-utils';
@@ -10,7 +10,7 @@ import { getFeeLevels } from '@suite-common/wallet-utils';
 export const useCoinmarketRecomposeAndSign = () => {
     const { translationString } = useTranslation();
     const { addNotification, composeAction, signAction } = useActions({
-        addNotification: notificationActions.addToast,
+        addNotification: notificationsActions.addToast,
         composeAction: sendFormActions.composeTransaction,
         signAction: sendFormActions.signTransaction,
     });

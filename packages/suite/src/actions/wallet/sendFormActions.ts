@@ -7,7 +7,7 @@ import {
     syncAccountsWithBlockchainThunk,
 } from '@suite-common/wallet-core';
 import * as suiteActions from '@suite-actions/suiteActions';
-import * as notificationActions from '@suite-actions/notificationActions';
+import { notificationsActions } from '@suite-common/toast-notifications';
 import * as modalActions from '@suite-actions/modalActions';
 import * as metadataActions from '@suite-actions/metadataActions';
 import { SEND } from '@wallet-actions/constants';
@@ -238,7 +238,7 @@ const pushTransaction = () => async (dispatch: Dispatch, getState: GetState) => 
     if (sentTx.success) {
         const { txid } = sentTx.payload;
         dispatch(
-            notificationActions.addToast({
+            notificationsActions.addToast({
                 type: 'tx-sent',
                 formattedAmount,
                 device,
@@ -314,7 +314,7 @@ const pushTransaction = () => async (dispatch: Dispatch, getState: GetState) => 
         }
     } else {
         dispatch(
-            notificationActions.addToast({ type: 'sign-tx-error', error: sentTx.payload.error }),
+            notificationsActions.addToast({ type: 'sign-tx-error', error: sentTx.payload.error }),
         );
     }
 
@@ -448,7 +448,7 @@ export const pushRawTransaction =
 
         if (sentTx.success) {
             dispatch(
-                notificationActions.addToast({
+                notificationsActions.addToast({
                     type: 'raw-tx-sent',
                     txid: sentTx.payload.txid,
                 }),
@@ -457,7 +457,7 @@ export const pushRawTransaction =
         } else {
             console.warn(sentTx.payload.error);
             dispatch(
-                notificationActions.addToast({
+                notificationsActions.addToast({
                     type: 'sign-tx-error',
                     error: sentTx.payload.error,
                 }),

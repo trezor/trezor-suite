@@ -1,6 +1,6 @@
 import TrezorConnect, { UiRequestButton, UI, Unsuccessful, Success } from '@trezor/connect';
 import { SIGN_VERIFY } from './constants';
-import { addToast } from '@suite-actions/notificationActions';
+import { notificationsActions } from '@suite-common/toast-notifications';
 import { openModal } from '@suite-actions/modalActions';
 import type { Dispatch, GetState, TrezorDevice } from '@suite-types';
 import type { Account } from '@wallet-types';
@@ -122,7 +122,7 @@ const onSignSuccess =
     (dispatch: Dispatch) =>
     ({ signature }: { signature: string }) => {
         dispatch(
-            addToast({
+            notificationsActions.addToast({
                 type: 'sign-message-success',
             }),
         );
@@ -135,7 +135,7 @@ const onSignSuccess =
 
 const onVerifySuccess = (dispatch: Dispatch) => () => {
     dispatch(
-        addToast({
+        notificationsActions.addToast({
             type: 'verify-message-success',
         }),
     );
@@ -157,7 +157,7 @@ const onError =
     ) =>
     (error: Error) => {
         dispatch(
-            addToast({
+            notificationsActions.addToast({
                 type,
                 error: error.message,
             }),

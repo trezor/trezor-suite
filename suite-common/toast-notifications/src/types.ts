@@ -1,11 +1,14 @@
-import produce from 'immer';
-import { NOTIFICATION } from '@suite-actions/constants';
-import { Action, TrezorDevice } from '@suite-types';
-import { Network } from '@wallet-types';
-import { UpdateState } from '@suite-reducers/desktopUpdateReducer';
-import type { PROTOCOL_SCHEME } from '@suite-constants/protocol';
-import type { TranslationKey } from '@suite-components/Translation/components/BaseTranslation';
-import { NotificationEventPayload, NotificationOptions } from '@suite-common/notifications';
+import { TranslationKey } from '@suite-common/intl-types';
+import { DesktopAppUpdateState, PROTOCOL_SCHEME } from '@suite-common/suite-constants';
+import { TrezorDevice } from '@suite-common/suite-types';
+import { Network, NetworkSymbol } from '@suite-common/wallet-config';
+import { DEVICE } from '@trezor/connect';
+
+export interface NotificationOptions {
+    seen?: boolean;
+    resolved?: boolean;
+    autoClose?: number | false;
+}
 
 export type ToastPayload = (
     | {
@@ -69,7 +72,7 @@ export type ToastPayload = (
       }
     | {
           type: 'auto-updater-error';
-          state: UpdateState;
+          state: DesktopAppUpdateState;
       }
     | {
           type: 'auto-updater-no-new';
@@ -115,62 +118,39 @@ export type ToastPayload = (
 ) &
     NotificationOptions;
 
-interface Common {
+export type NotificationEventPayload = (
+    | {
+          // only temporary, must be same as AUTH_DEVICE value in packages/suite/src/actions/suite/constants/suiteConstants.ts
+          // once that will be migrated to @suite-common, this should be replaced directly by suiteActions.authDevice.type
+          // this should not break type safety, if someone will change value of AUTH_DEVICE, it will throw error in place
+          // where action is used and you will need to change it also here
+          type: '@suite/auth-device';
+      }
+    | {
+          type: 'tx-received' | 'tx-confirmed';
+          formattedAmount: string;
+          device?: TrezorDevice;
+          descriptor: string;
+          symbol: NetworkSymbol;
+          txid: string;
+      }
+    | {
+          type: typeof DEVICE.CONNECT | typeof DEVICE.CONNECT_UNACQUIRED;
+          device: TrezorDevice;
+          needAttention?: boolean;
+      }
+) &
+    NotificationOptions;
+
+export interface CommonNotificationPayload {
     id: number; // programmer provided, might be used to find and close notification programmatically
     device?: TrezorDevice; // used to close notifications for device
     closed?: boolean;
     error?: string;
 }
 
-export type EventPayload = NotificationEventPayload;
-
-export type ToastNotification = { context: 'toast' } & Common & ToastPayload;
-export type EventNotification = { context: 'event' } & Common & EventPayload;
+export type ToastNotification = { context: 'toast' } & CommonNotificationPayload & ToastPayload;
+export type EventNotification = { context: 'event' } & CommonNotificationPayload &
+    NotificationEventPayload;
 
 export type NotificationEntry = ToastNotification | EventNotification;
-
-export type State = NotificationEntry[];
-
-const resetUnseen = (draft: State, payload?: State) => {
-    if (!payload) {
-        draft.forEach(n => {
-            if (!n.seen) n.seen = true;
-        });
-    } else {
-        payload.forEach(p => {
-            const item = draft.find(n => n.id === p.id);
-            if (item) item.seen = true;
-        });
-    }
-};
-
-const remove = (draft: State, payload: State | NotificationEntry) => {
-    const arr = !Array.isArray(payload) ? [payload] : payload;
-    arr.forEach(item => {
-        const index = draft.findIndex(n => n.id === item.id);
-        draft.splice(index, 1);
-    });
-};
-
-export default function notification(state: State = [], action: Action): State {
-    return produce(state, draft => {
-        switch (action.type) {
-            case NOTIFICATION.TOAST:
-            case NOTIFICATION.EVENT:
-                draft.unshift(action.payload);
-                break;
-            case NOTIFICATION.CLOSE: {
-                const item = draft.find(n => n.id === action.payload);
-                if (item) item.closed = true;
-                break;
-            }
-            case NOTIFICATION.RESET_UNSEEN:
-                resetUnseen(draft, action.payload);
-                break;
-            case NOTIFICATION.REMOVE:
-                remove(draft, action.payload);
-                break;
-            // no default
-        }
-    });
-}

@@ -14,6 +14,7 @@ import {
 } from '@suite-common/wallet-utils';
 import { settingsCommonConfig } from '@suite-common/suite-config';
 import { createThunk } from '@suite-common/redux-utils';
+import { notificationsActions } from '@suite-common/toast-notifications';
 
 import { transactionsActions } from '../transactions/transactionsActions';
 import { selectTransactions } from '../transactions/transactionsReducer';
@@ -75,7 +76,6 @@ export const fetchAndUpdateAccountThunk = createThunk(
     async (account: Account, { dispatch, extra, getState }) => {
         const {
             selectors: { selectDevices, selectBitcoinAmountUnit },
-            thunks: { notificationsAddEvent },
         } = extra;
 
         if (!isTrezorConnectBackendType(account.backendType)) return; // skip unsupported backend type
@@ -144,7 +144,7 @@ export const fetchAndUpdateAccountThunk = createThunk(
                     ? `${formatAmount(token.amount, token.decimals)} ${token.symbol.toUpperCase()}`
                     : formatNetworkAmount(tx.amount, account.symbol, true, areSatoshisUsed);
                 dispatch(
-                    notificationsAddEvent({
+                    notificationsActions.addEvent({
                         type: 'tx-confirmed',
                         formattedAmount,
                         device: accountDevice,

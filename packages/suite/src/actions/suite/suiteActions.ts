@@ -7,7 +7,7 @@ import * as deviceUtils from '@suite-utils/device';
 import { baseFetch, getIsTorLoading, isOnionUrl, torFetch } from '@suite-utils/tor';
 import { getCustomBackends } from '@suite-common/wallet-utils';
 import { sortByTimestamp } from '@suite-utils/device';
-import { addToast } from '@suite-actions/notificationActions';
+import { notificationsActions } from '@suite-common/toast-notifications';
 import * as modalActions from '@suite-actions/modalActions';
 import * as firmwareActions from '@firmware-actions/firmwareActions';
 import { TorStatus } from '@suite-types';
@@ -204,7 +204,7 @@ export const toggleTor =
             dispatch(updateTorStatus(previousStatus));
 
             dispatch(
-                addToast({
+                notificationsActions.addToast({
                     type: 'tor-toggle-error',
                     error: ipcResponse.error as TranslationKey,
                 }),
@@ -337,11 +337,13 @@ export const createDeviceInstance =
             });
 
             if (!response.success) {
-                dispatch(addToast({ type: 'error', error: response.payload.error }));
+                dispatch(
+                    notificationsActions.addToast({ type: 'error', error: response.payload.error }),
+                );
                 return;
             }
 
-            dispatch(addToast({ type: 'settings-applied' }));
+            dispatch(notificationsActions.addToast({ type: 'settings-applied' }));
         }
 
         dispatch({
@@ -499,7 +501,7 @@ export const acquireDevice =
 
         if (!response.success) {
             dispatch(
-                addToast({
+                notificationsActions.addToast({
                     type: 'acquire-error',
                     device,
                     error: response.payload.error,
@@ -579,7 +581,9 @@ export const authorizeDevice =
         }
 
         dispatch({ type: SUITE.AUTH_FAILED, payload: device });
-        dispatch(addToast({ type: 'auth-failed', error: response.payload.error }));
+        dispatch(
+            notificationsActions.addToast({ type: 'auth-failed', error: response.payload.error }),
+        );
         return false;
     };
 
@@ -617,13 +621,18 @@ export const authConfirm = () => async (dispatch: Dispatch, getState: GetState) 
             dispatch(forgetDevice(device));
             return;
         }
-        dispatch(addToast({ type: 'auth-confirm-error', error: response.payload.error }));
+        dispatch(
+            notificationsActions.addToast({
+                type: 'auth-confirm-error',
+                error: response.payload.error,
+            }),
+        );
         dispatch(receiveAuthConfirm(device, false));
         return;
     }
 
     if (response.payload.state !== device.state) {
-        dispatch(addToast({ type: 'auth-confirm-error' }));
+        dispatch(notificationsActions.addToast({ type: 'auth-confirm-error' }));
         dispatch(receiveAuthConfirm(device, false));
         return;
     }

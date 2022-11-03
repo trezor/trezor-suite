@@ -6,7 +6,7 @@ import {
     selectDiscoveryForDevice,
 } from '@wallet-reducers/discoveryReducer';
 import TrezorConnect, { BundleProgress, AccountInfo, UI } from '@trezor/connect';
-import { addToast } from '@suite-actions/notificationActions';
+import { notificationsActions } from '@suite-common/toast-notifications';
 import { SUITE } from '@suite-actions/constants';
 import { accountsActions } from '@suite-common/wallet-core';
 import * as metadataActions from '@suite-actions/metadataActions';
@@ -353,17 +353,30 @@ export const start =
 
         const discovery = selectDiscoveryForDevice(getState());
         if (!device) {
-            dispatch(addToast({ type: 'discovery-error', error: 'Device not found' }));
+            dispatch(
+                notificationsActions.addToast({
+                    type: 'discovery-error',
+                    error: 'Device not found',
+                }),
+            );
             return;
         }
         if (device.authConfirm) {
             dispatch(
-                addToast({ type: 'discovery-error', error: 'Device auth confirmation needed' }),
+                notificationsActions.addToast({
+                    type: 'discovery-error',
+                    error: 'Device auth confirmation needed',
+                }),
             );
             return;
         }
         if (!discovery) {
-            dispatch(addToast({ type: 'discovery-error', error: 'Discovery not found' }));
+            dispatch(
+                notificationsActions.addToast({
+                    type: 'discovery-error',
+                    error: 'Discovery not found',
+                }),
+            );
             return;
         }
 
@@ -503,7 +516,7 @@ export const start =
                 dispatch(update({ deviceState, status: DISCOVERY.STATUS.STOPPED }, DISCOVERY.STOP));
             } else {
                 dispatch(
-                    addToast({
+                    notificationsActions.addToast({
                         type: 'discovery-error',
                         error: 'Reading accounts error: Discovery process is not running',
                     }),
@@ -581,7 +594,7 @@ export const start =
             );
 
             if (error) {
-                dispatch(addToast({ type: 'discovery-error', error }));
+                dispatch(notificationsActions.addToast({ type: 'discovery-error', error }));
             }
         }
     };

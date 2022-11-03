@@ -1,7 +1,8 @@
 import * as receiveActions from '@wallet-actions/receiveActions';
 import { RECEIVE } from '../constants';
-import { NOTIFICATION, MODAL, SUITE } from '@suite-actions/constants';
+import { MODAL, SUITE } from '@suite-actions/constants';
 import { connectInitThunk } from '@suite-common/connect-init';
+import { notificationsActions } from '@suite-common/toast-notifications';
 
 const { getSuiteDevice } = global.JestMocks;
 
@@ -156,7 +157,7 @@ export default [
                 { type: connectInitThunk.pending.type, payload: undefined },
                 { type: connectInitThunk.fulfilled.type, payload: undefined },
                 {
-                    type: NOTIFICATION.TOAST,
+                    type: notificationsActions.addToast.type,
                     payload: {
                         type: 'verify-address-error',
                         error: 'Method for getAddress not defined',
@@ -227,7 +228,7 @@ export default [
                 { type: SUITE.LOCK_DEVICE, payload: true },
                 { type: SUITE.LOCK_DEVICE, payload: false },
                 {
-                    type: NOTIFICATION.TOAST,
+                    type: notificationsActions.addToast.type,
                     payload: { type: 'verify-address-error', error: 'Runtime error' },
                 },
                 { type: SUITE.SET_PROCESS_MODE, payload: undefined },

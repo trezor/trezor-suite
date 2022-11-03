@@ -3,7 +3,7 @@ import { ActionAvailability, CardanoStaking } from '@wallet-types/cardanoStaking
 import { SUITE } from '@suite-actions/constants';
 import trezorConnect, { PROTO } from '@trezor/connect';
 import { useActions, useSelector } from '@suite-hooks';
-import * as notificationActions from '@suite-actions/notificationActions';
+import { notificationsActions } from '@suite-common/toast-notifications';
 import * as cardanoStakingActions from '@wallet-actions/cardanoStakingActions';
 import { isTestnet } from '@suite-common/wallet-utils';
 import {
@@ -72,7 +72,7 @@ export const useCardanoStaking = (): CardanoStaking => {
             isFetchError: state.wallet.cardanoStaking.isFetchError,
         }));
     const { addToast, setPendingStakeTx, addFakePendingTx } = useActions({
-        addToast: notificationActions.addToast,
+        addToast: notificationsActions.addToast,
         setPendingStakeTx: cardanoStakingActions.setPendingStakeTx,
         addFakePendingTx: addFakePendingTxThunk,
     });

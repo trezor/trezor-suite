@@ -9,7 +9,7 @@ import { useTranslation } from '@suite-hooks/useTranslation';
 import * as coinmarketSellActions from '@wallet-actions/coinmarketSellActions';
 import * as coinmarketSpendActions from '@wallet-actions/coinmarketSpendActions';
 import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketCommonActions';
-import * as notificationActions from '@suite-actions/notificationActions';
+import { notificationsActions } from '@suite-common/toast-notifications';
 import type { FormState } from '@wallet-types/sendForm';
 import { amountToSatoshi, getFeeLevels } from '@suite-common/wallet-utils';
 import { isDesktop } from '@suite-utils/env';
@@ -54,7 +54,7 @@ export const useCoinmarketSpend = ({
     const [voucherSiteUrl, setVoucherSiteUrl] = useState<string | undefined>('error');
 
     const { addNotification, setShowLeaveModal, saveTrade, loadInvityData } = useActions({
-        addNotification: notificationActions.addToast,
+        addNotification: notificationsActions.addToast,
         setShowLeaveModal: coinmarketSellActions.setShowLeaveModal,
         saveTrade: coinmarketSpendActions.saveTrade,
         loadInvityData: coinmarketCommonActions.loadInvityData,

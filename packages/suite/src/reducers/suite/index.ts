@@ -3,7 +3,7 @@ import suite from './suiteReducer';
 import devices from './deviceReducer';
 import modal from './modalReducer';
 import logs from './logsReducer';
-import notifications from './notificationReducer';
+import { notificationsReducer } from '@suite-common/toast-notifications';
 import resize from './resizeReducer';
 import analytics from './analyticsReducer';
 import metadata from './metadataReducer';
@@ -18,7 +18,7 @@ export default {
     modal,
     devices,
     logs,
-    notifications,
+    notifications: notificationsReducer,
     resize,
     analytics,
     metadata,

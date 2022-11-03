@@ -4,7 +4,7 @@ import { Button, variables } from '@trezor/components';
 import { copyToClipboard } from '@trezor/dom-utils';
 import { Translation, Modal } from '@suite-components';
 import { Account } from '@wallet-types';
-import * as notificationActions from '@suite-actions/notificationActions';
+import { notificationsActions } from '@suite-common/toast-notifications';
 import { useActions } from '@suite-hooks';
 import { QrCode, QRCODE_PADDING, QRCODE_SIZE } from '@suite-components/QrCode';
 
@@ -50,7 +50,7 @@ export const ConfirmXpub = ({ xpub, accountIndex, symbol, accountLabel, onCancel
     // TODO: no-backup, backup failed
     // const needsBackup = device.features && device.features.needs_backup;
     const { addNotification } = useActions({
-        addNotification: notificationActions.addToast,
+        addNotification: notificationsActions.addToast,
     });
 
     const htmlElement = createRef<HTMLDivElement>();

@@ -8,6 +8,7 @@ import {
     Reducer,
     ReducersMapObject,
 } from 'redux';
+import { D } from '@mobily/ts-belt';
 
 import { createMiddleware, ExtraDependenciesPartial } from '@suite-common/redux-utils';
 import { mergeObject as mergeDeepObject } from '@trezor/utils';
@@ -30,8 +31,21 @@ export function configureMockStore<S = any, A extends Action = AnyAction>({
 } = {}) {
     let actions: A[] = [];
 
-    const actionLoggerMiddleware = createMiddleware<A>((action, { next }) => {
-        actions.push(action);
+    const actionLoggerMiddleware = createMiddleware((action, { next }) => {
+        if (action?.meta?.requestId) {
+            // requestId is generated random string, and it will break fixtures because they are static, so we remove it
+            if (action?.meta?.arg === undefined) {
+                // only requestId and requestStatus are left, remove meta completely
+                actions.push(D.deleteKey(action, 'meta') as any);
+            } else {
+                actions.push({
+                    ...action,
+                    meta: D.deleteKeys(action.meta, ['requestId', 'requestStatus']),
+                } as any);
+            }
+        } else {
+            actions.push(action as any);
+        }
 
         return next(action);
     });

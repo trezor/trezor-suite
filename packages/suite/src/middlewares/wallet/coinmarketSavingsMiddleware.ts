@@ -3,7 +3,7 @@ import type { AppState, Action, Dispatch } from '@suite-types';
 import { COINMARKET_SAVINGS } from '@wallet-actions/constants';
 import * as coinmarketSavingsActions from '@wallet-actions/coinmarketSavingsActions';
 import * as pollingActions from '@wallet-actions/pollingActions';
-import * as notificationActions from '@suite-actions/notificationActions';
+import { notificationsActions } from '@suite-common/toast-notifications';
 import invityAPI, { SavingsTradeKYCFinalStatuses } from '@suite-services/invityAPI';
 import {
     KYCStatusPollingIntervalMilliseconds,
@@ -87,7 +87,7 @@ const coinmarketSavingsMiddleware =
                                             ? 'savings-kyc-success'
                                             : 'savings-kyc-failed';
                                     api.dispatch(
-                                        notificationActions.addToast({
+                                        notificationsActions.addToast({
                                             type: notificationType,
                                         }),
                                     );

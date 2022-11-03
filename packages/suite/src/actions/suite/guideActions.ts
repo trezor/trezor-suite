@@ -2,7 +2,6 @@ import { analytics, EventType } from '@trezor/suite-analytics';
 
 import { GUIDE } from './constants';
 import { Dispatch } from '@suite-types';
-import { addToast } from '@suite-actions/notificationActions';
 
 import type {
     ActiveView,
@@ -11,6 +10,7 @@ import type {
     GuideCategory,
     GuideNode,
 } from '@suite-common/suite-types';
+import { notificationsActions } from '@suite-common/toast-notifications';
 
 export type GuideAction =
     | { type: typeof GUIDE.OPEN }
@@ -84,9 +84,9 @@ export const sendFeedback =
             await fetch(`${url}?${params.toString()}`, {
                 method: 'GET',
             });
-            dispatch(addToast({ type: 'user-feedback-send-success' }));
+            dispatch(notificationsActions.addToast({ type: 'user-feedback-send-success' }));
         } catch (err) {
-            dispatch(addToast({ type: 'user-feedback-send-error' }));
+            dispatch(notificationsActions.addToast({ type: 'user-feedback-send-error' }));
             console.error('failed to send user feedback', err);
         }
     };

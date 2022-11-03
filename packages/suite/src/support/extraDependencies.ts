@@ -4,7 +4,6 @@ import { TransactionsState, BlockchainState } from '@suite-common/wallet-core';
 import { saveAs } from 'file-saver';
 
 import { STORAGE } from '../actions/suite/constants';
-import { addEvent } from '@suite-actions/notificationActions';
 import { StorageLoadAction } from '@suite-actions/storageActions';
 import type { FiatRatesState } from '@suite-common/wallet-core';
 import { AppState } from '../types/suite';
@@ -35,7 +34,6 @@ const connectInitSettings = {
 
 export const extraDependencies: ExtraDependencies = {
     thunks: {
-        notificationsAddEvent: addEvent,
         cardanoValidatePendingTxOnBlock: cardanoStakingActions.validatePendingTxOnBlock,
         cardanoFetchTrezorPools: cardanoStakingActions.fetchTrezorPools,
     },
@@ -43,6 +41,7 @@ export const extraDependencies: ExtraDependencies = {
         selectFeeInfo: (networkSymbol: NetworkSymbol) => (state: AppState) =>
             state.wallet.fees[networkSymbol],
         selectDevices: (state: AppState) => state.devices,
+        selectCurrentDevice: (state: AppState) => state.suite.device,
         selectBitcoinAmountUnit: (state: AppState) => state.wallet.settings.bitcoinAmountUnit,
         selectEnabledNetworks: (state: AppState) => state.wallet.settings.enabledNetworks,
         selectLocalCurrency: (state: AppState) => state.wallet.settings.localCurrency,

@@ -13,7 +13,7 @@ import {
     formatNetworkAmount,
 } from '@suite-common/wallet-utils';
 import { WalletAccountTransaction } from '@wallet-types';
-import * as notificationActions from '@suite-actions/notificationActions';
+import { notificationsActions } from '@suite-common/toast-notifications';
 import { useActions } from '@suite-hooks';
 import { TokenTransferAddressLabel } from './TokenTransferAddressLabel';
 import { TargetAddressLabel } from './TargetAddressLabel';
@@ -86,7 +86,7 @@ export const Target = ({
 }: TargetProps) => {
     const targetAmount = getTargetAmount(target, transaction);
     const operation = getTxOperation(transaction);
-    const { addNotification } = useActions({ addNotification: notificationActions.addToast });
+    const { addNotification } = useActions({ addNotification: notificationsActions.addToast });
     const targetMetadata = accountMetadata?.outputLabels?.[transaction.txid]?.[target.n];
 
     return (
@@ -107,16 +107,18 @@ export const Target = ({
                             callback: () => {
                                 if (!target?.addresses) {
                                     // probably should not happen?
-                                    return addNotification({
+                                    addNotification({
                                         type: 'error',
                                         error: 'There is nothing to copy',
                                     });
+                                    return;
                                 }
                                 const result = copyToClipboard(target.addresses.join(), null);
                                 if (typeof result === 'string') {
-                                    return addNotification({ type: 'error', error: result });
+                                    addNotification({ type: 'error', error: result });
+                                    return;
                                 }
-                                return addNotification({ type: 'copy-to-clipboard' });
+                                addNotification({ type: 'copy-to-clipboard' });
                             },
                             label: <Translation id="TR_ADDRESS_MODAL_CLIPBOARD" />,
                             key: 'copy-address',

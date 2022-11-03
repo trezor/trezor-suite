@@ -1,7 +1,7 @@
 import TrezorConnect from '@trezor/connect';
 import { analytics, EventType } from '@trezor/suite-analytics';
 
-import { addToast } from '@suite-actions/notificationActions';
+import { notificationsActions } from '@suite-common/toast-notifications';
 import * as suiteActions from '@suite-actions/suiteActions';
 import * as deviceUtils from '@suite-utils/device';
 import * as modalActions from '@suite-actions/modalActions';
@@ -22,9 +22,9 @@ export const applySettings =
             ...params,
         });
         if (result.success) {
-            dispatch(addToast({ type: 'settings-applied' }));
+            dispatch(notificationsActions.addToast({ type: 'settings-applied' }));
         } else {
-            dispatch(addToast({ type: 'error', error: result.payload.error }));
+            dispatch(notificationsActions.addToast({ type: 'error', error: result.payload.error }));
         }
 
         return result;
@@ -44,20 +44,20 @@ export const changePin =
             ...params,
         });
         if (result.success) {
-            dispatch(addToast({ type: 'pin-changed' }));
+            dispatch(notificationsActions.addToast({ type: 'pin-changed' }));
         } else if (result.payload.code === 'Failure_PinMismatch') {
             dispatch(modalActions.openModal({ type: 'pin-mismatch' }));
         } else if (result.payload.error.includes('string overflow')) {
             // this is a workaround for FW < 1.10.0
             // translate generic error from the device if the entered PIN is longer than 9 digits
             dispatch(
-                addToast({
+                notificationsActions.addToast({
                     type: 'error',
                     error: 'Please upgrade your firmware to enable extended PIN format.',
                 }),
             );
         } else {
-            dispatch(addToast({ type: 'error', error: result.payload.error }));
+            dispatch(notificationsActions.addToast({ type: 'error', error: result.payload.error }));
         }
     };
 
@@ -88,7 +88,7 @@ export const wipeDevice = () => async (dispatch: Dispatch, getState: GetState) =
         deviceInstances.forEach(d => {
             dispatch(suiteActions.forgetDevice(d));
         });
-        dispatch(addToast({ type: 'device-wiped' }));
+        dispatch(notificationsActions.addToast({ type: 'device-wiped' }));
         analytics.report({
             type: EventType.SettingsDeviceWipe,
         });
@@ -106,7 +106,7 @@ export const wipeDevice = () => async (dispatch: Dispatch, getState: GetState) =
             dispatch(routerActions.goto('suite-index'));
         }
     } else {
-        dispatch(addToast({ type: 'error', error: result.payload.error }));
+        dispatch(notificationsActions.addToast({ type: 'error', error: result.payload.error }));
     }
 };
 
@@ -150,7 +150,7 @@ export const resetDevice =
         }
 
         if (!result.success) {
-            dispatch(addToast({ type: 'error', error: result.payload.error }));
+            dispatch(notificationsActions.addToast({ type: 'error', error: result.payload.error }));
         }
         return result;
     };
