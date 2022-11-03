@@ -1,7 +1,7 @@
 import React, { memo, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { Graph, TimeSwitch } from '@suite-native/graph';
+import { Graph, graphWrapperStyle, TimeSwitch } from '@suite-native/graph';
 import { AccountBalance } from '@suite-native/accounts';
 import { Box, Text } from '@suite-native/atoms';
 import { AccountKey } from '@suite-common/suite-types';
@@ -12,6 +12,7 @@ import {
     selectAccountGraph,
 } from '@suite-common/wallet-graph';
 import { selectFiatCurrency } from '@suite-native/module-settings';
+import { useNativeStyles } from '@trezor/styles';
 
 type AccountDetailHeaderProps = {
     accountKey: AccountKey;
@@ -20,6 +21,7 @@ type AccountDetailHeaderProps = {
 
 export const AccountDetailHeader = memo(({ accountKey, accountName }: AccountDetailHeaderProps) => {
     const dispatch = useDispatch();
+    const { applyStyle } = useNativeStyles();
     const fiatCurrency = useSelector(selectFiatCurrency);
     const { points, error, loading } = useSelector(selectAccountGraph);
     const enhancedPoints = useMemo(() => enhanceGraphPoints(points), [points]);
@@ -44,9 +46,11 @@ export const AccountDetailHeader = memo(({ accountKey, accountName }: AccountDet
         <>
             <AccountBalance accountKey={accountKey} accountName={accountName} />
             {error ? (
-                <Text variant="label" color="gray600">
-                    {error}
-                </Text>
+                <Box style={applyStyle(graphWrapperStyle)}>
+                    <Text variant="label" color="gray600">
+                        There are some troubles with loading graph points: {error}
+                    </Text>
+                </Box>
             ) : (
                 <>
                     <Graph points={enhancedPoints} loading={loading} />

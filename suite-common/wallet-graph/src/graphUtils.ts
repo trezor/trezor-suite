@@ -683,8 +683,8 @@ export const fetchAccountBalanceHistory = async (
         groupBy: groupByInSeconds,
     });
 
-    if (!response?.success) {
-        return [];
+    if (!response.success) {
+        throw new Error(response.payload.error);
     }
 
     return enhanceAccountBalanceHistory(account, response.payload);
@@ -724,8 +724,9 @@ export const fetchAccountBalanceHistoryWithBalanceBefore = async (
         to: getBlockbookSafeTime(getUnixTime(endOfTimeFrameDate)),
         groupBy: 60,
     });
-    if (!response?.success) {
-        return [];
+
+    if (!response.success) {
+        throw new Error(response.payload.error);
     }
 
     const balanceHistory = await processBalanceHistoryWithBalanceBefore(

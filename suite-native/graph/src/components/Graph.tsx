@@ -18,7 +18,7 @@ type GraphProps = {
 
 const GRAPH_HEIGHT = 250;
 
-const graphWrapperStyle = prepareNativeStyle(_ => ({
+export const graphWrapperStyle = prepareNativeStyle(_ => ({
     justifyContent: 'center',
     height: GRAPH_HEIGHT,
     alignItems: 'center',
@@ -59,7 +59,6 @@ export const Graph = ({
         }
     }, [extremaFromGraphPoints]);
 
-    // FIXME animated=true graph shows only 196 values, let's go with static for now.
     return (
         <Box style={applyStyle(graphWrapperStyle)}>
             {!loading && nonZeroSumOfGraphPoints ? (
