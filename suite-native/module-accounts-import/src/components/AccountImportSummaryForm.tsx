@@ -29,6 +29,8 @@ type AccountImportSummaryFormProps = {
     accountInfo: AccountInfo;
 };
 
+// TODO We shouldn't add navigation props to components like this.
+// Navigation hook should be typed properly to handle this.
 type NavigationProp = StackToTabCompositeProps<
     AccountsImportStackParamList,
     AccountsImportStackRoutes.AccountImport,
