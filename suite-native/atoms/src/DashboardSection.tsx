@@ -6,14 +6,16 @@ import { Box } from './Box';
 
 type DashboardSectionProps = {
     children: ReactNode;
-    title: string;
+    title?: string;
 };
 
 export const DashboardSection = ({ children, title }: DashboardSectionProps) => (
     <VStack spacing="medium">
-        <Text variant="hint" color="gray600">
-            {title}
-        </Text>
+        {title && (
+            <Text variant="hint" color="gray600">
+                {title}
+            </Text>
+        )}
         <Box>{children}</Box>
     </VStack>
 );

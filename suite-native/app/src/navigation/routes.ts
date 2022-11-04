@@ -26,12 +26,6 @@ const actionStack = typedTabOption({
     isActionTabItem: true,
 });
 
-const pricesStack = typedTabOption({
-    routeName: AppTabsRoutes.Prices,
-    iconName: 'prices',
-    label: 'Discover',
-});
-
 const settingsStack = typedTabOption({
     routeName: AppTabsRoutes.SettingsStack,
     iconName: 'trezorT',
@@ -42,6 +36,5 @@ export const rootTabsOptions = {
     ...homeStack,
     ...accountsStack,
     ...actionStack,
-    ...pricesStack,
     ...settingsStack,
 };

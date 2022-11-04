@@ -60,7 +60,7 @@ export const Assets = () => {
     };
 
     return (
-        <DashboardSection title="Assets">
+        <DashboardSection>
             <Card>
                 <VStack spacing={19}>
                     {assetsData.map(asset => (
@@ -77,7 +77,7 @@ export const Assets = () => {
                 </VStack>
             </Card>
             <View style={applyStyle(importStyle)}>
-                <Button colorScheme="gray" iconName="plus" onPress={handleImportAssets}>
+                <Button colorScheme="gray" size="large" onPress={handleImportAssets}>
                     Import Assets
                 </Button>
             </View>

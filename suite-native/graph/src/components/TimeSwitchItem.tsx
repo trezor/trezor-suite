@@ -12,19 +12,27 @@ type TimeSwitchItemProps = {
     onSelectTimeFrame: (timeFrame: LineGraphTimeFrameValues) => void;
 };
 
-type TextStyleProps = {
+type ItemStyleProps = {
     isSelected: boolean;
 };
-const textStyle = prepareNativeStyle<TextStyleProps>((utils, { isSelected }) => ({
+const textStyle = prepareNativeStyle<ItemStyleProps>((utils, { isSelected }) => ({
     ...utils.typography.hint,
     color: isSelected ? utils.colors.forest : utils.colors.gray500,
     textTransform: 'uppercase',
 }));
 
-const switchItemStyle = prepareNativeStyle(utils => ({
+const switchItemStyle = prepareNativeStyle<ItemStyleProps>((utils, { isSelected }) => ({
     flex: 1,
     alignItems: 'center',
     paddingVertical: utils.spacings.small,
+    paddingHorizontal: utils.spacings.medium,
+    extend: {
+        condition: isSelected,
+        style: {
+            backgroundColor: utils.colors.gray0,
+            borderRadius: utils.borders.radii.round,
+        },
+    },
 }));
 
 export const TimeSwitchItem = ({
@@ -35,19 +43,15 @@ export const TimeSwitchItem = ({
 }: TimeSwitchItemProps) => {
     const { applyStyle } = useNativeStyles();
 
+    const isSelected = selectedTimeFrame === value;
+
     return (
         <TouchableOpacity
             onPress={() => onSelectTimeFrame(value)}
             testID={`TimeSwitchItem_${value}`}
-            style={applyStyle(switchItemStyle)}
+            style={applyStyle(switchItemStyle, { isSelected })}
         >
-            <Text
-                style={applyStyle(textStyle, {
-                    isSelected: selectedTimeFrame === value,
-                })}
-            >
-                {shortcut}
-            </Text>
+            <Text style={applyStyle(textStyle, { isSelected })}>{shortcut}</Text>
         </TouchableOpacity>
     );
 };

@@ -73,7 +73,6 @@ export const TabBar = ({
                     <TabBarItem
                         key={route.key}
                         isFocused={isFocused}
-                        isActionTabItem={isActionTabItem}
                         iconName={iconName}
                         title={label}
                         onPress={handleTabBarItemPress}

@@ -44,7 +44,6 @@ export type AppTabsParamList = {
     [AppTabsRoutes.HomeStack]: NavigatorScreenParams<HomeStackParamList>;
     [AppTabsRoutes.AccountsStack]: NavigatorScreenParams<AccountsStackParamList>;
     [AppTabsRoutes.Action]: undefined;
-    [AppTabsRoutes.Prices]: undefined;
     [AppTabsRoutes.SettingsStack]: NavigatorScreenParams<SettingsStackParamList>;
 };
 

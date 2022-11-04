@@ -10,7 +10,6 @@ export enum AppTabsRoutes {
     HomeStack = 'HomeStack',
     AccountsStack = 'AccountsStack',
     Action = 'Action',
-    Prices = 'Prices',
     SettingsStack = 'SettingsStack',
 }
 

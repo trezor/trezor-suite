@@ -30,17 +30,17 @@ const buttonStyle = prepareNativeStyle<ButtonStyleProps>(
     (utils, { size, colorScheme, isDisabled }) => {
         const buttonSizeStyles: Record<ButtonSize, NativeStyleObject> = {
             small: {
-                height: 36,
+                height: 39,
                 paddingVertical: utils.spacings.small,
                 paddingHorizontal: 12,
             },
             medium: {
-                height: 44,
+                height: 48,
                 paddingVertical: 10,
                 paddingHorizontal: utils.spacings.medium,
             },
             large: {
-                height: 58,
+                height: 56,
                 paddingVertical: 17,
                 paddingHorizontal: utils.spacings.medium,
             },
