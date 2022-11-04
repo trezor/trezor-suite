@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { useAtom } from 'jotai';
+import { useFocusEffect } from '@react-navigation/native';
 
 import {
     enhanceGraphPoints,
@@ -51,9 +52,11 @@ export const PortfolioGraph = () => {
         );
     }, [selectedTimeFrame, fiatCurrency, dispatch]);
 
-    useEffect(() => {
+    const fetchGraphPoints = useCallback(() => {
         handleFetchGraphPoints();
     }, [handleFetchGraphPoints]);
+
+    useFocusEffect(fetchGraphPoints);
 
     const handleSelectTimeFrame = useCallback((timeFrame: LineGraphTimeFrameValues) => {
         setSelectedTimeFrame(timeFrame);

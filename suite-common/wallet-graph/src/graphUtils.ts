@@ -454,9 +454,33 @@ export const getFiatRatesForNetworkInTimeFrame = async (
     account: Account,
 ) => {
     const { symbol, descriptor } = account;
+    const datesInRangeUnixTimeArray = Array.from(datesInRangeUnixTimeSet);
+
+    // cannot find ticker config for symbol, e.g. BTC TEST - fallback to 0
+    if (!getTickerConfig({ symbol })) {
+        // pass arbitrary coin to get supported fiat currency rates - we need this to get currency symbols
+        const zeroFiatRates = await getFiatRatesForTimestamps({ symbol: 'btc' }, [
+            datesInRangeUnixTimeArray[0],
+        ]).then(res =>
+            (res?.tickers || []).map(({ rates }) => {
+                Object.keys(rates).forEach(fiatCurrencySymbol => {
+                    rates[fiatCurrencySymbol] = 0;
+                });
+
+                return rates;
+            }),
+        );
+
+        return datesInRangeUnixTimeArray.map(time => ({
+            time,
+            rates: zeroFiatRates[0],
+            descriptor,
+        }));
+    }
+
     const fiatRatesForDatesInRange = await getFiatRatesForTimestamps(
         { symbol },
-        Array.from(datesInRangeUnixTimeSet),
+        datesInRangeUnixTimeArray,
     ).then(res =>
         (res?.tickers || []).map(({ ts, rates }) => ({
             time: ts,
@@ -464,6 +488,7 @@ export const getFiatRatesForNetworkInTimeFrame = async (
             descriptor,
         })),
     );
+
     return fiatRatesForDatesInRange;
 };
 
