@@ -27,7 +27,7 @@ type RangeProps = {
     className?: string;
     max?: number;
     min?: number;
-    step?: number;
+    step?: string;
     onChange: React.ChangeEventHandler<HTMLInputElement>;
     thumbStyle?: CSSObject;
     trackStyle?: CSSObject;

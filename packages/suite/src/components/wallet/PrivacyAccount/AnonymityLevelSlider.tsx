@@ -104,7 +104,7 @@ export const AnonymityLevelSlider = ({ className }: AnonymityLevelSliderProps) =
                 value={sliderPosition}
                 onChange={handleSliderChange}
                 trackStyle={trackStyle}
-                step={0.1}
+                step="any"
             />
             <LabelsWrapper>
                 <Label>1</Label>
