@@ -22,6 +22,7 @@ import TrezorConnect, {
 import { arrayDistinct } from '@trezor/utils';
 import type { Account, CustomBackend, NetworksFees } from '@suite-common/wallet-types';
 import type { Timeout } from '@trezor/type-utils';
+import { notificationsActions } from '@suite-common/toast-notifications';
 
 import { selectAccounts } from '../accounts/accountsReducer';
 import { fetchAndUpdateAccountThunk } from '../accounts/accountsThunks';
@@ -93,9 +94,11 @@ export const updateFeeInfoThunk = createThunk(
             return;
 
         let newFeeInfo;
+
         if (network.networkType === 'ethereum') {
             // NOTE: ethereum smart fees are not implemented properly in @trezor/connect Issue: https://github.com/trezor/trezor-suite/issues/5340
             // create raw call to @trezor/blockchain-link, receive data and create FeeLevel.normal from it
+
             const result = await TrezorConnect.blockchainEstimateFee({
                 coin: network.symbol,
                 request: {
@@ -329,11 +332,10 @@ export const onBlockMinedThunk = createThunk(
 );
 
 export const onBlockchainNotificationThunk = createThunk(
-    `${blockchainActions}/onNotificationThunk`,
+    `${actionsPrefix}/onNotificationThunk`,
     (payload: BlockchainNotification, { dispatch, getState, extra }) => {
         const {
             selectors: { selectBitcoinAmountUnit, selectDevices },
-            thunks: { notificationsAddEvent },
         } = extra;
         const { descriptor, tx } = payload.notification;
         const symbol = payload.coin.shortcut.toLowerCase();
@@ -365,7 +367,7 @@ export const onBlockchainNotificationThunk = createThunk(
                 : formatNetworkAmount(tx.amount, account.symbol, true, areSatoshisUsed);
 
             dispatch(
-                notificationsAddEvent({
+                notificationsActions.addEvent({
                     type: 'tx-received',
                     formattedAmount,
                     device: accountDevice,

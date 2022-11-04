@@ -6241,24 +6241,11 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-common/notifications@*, @suite-common/notifications@workspace:suite-common/notifications":
-  version: 0.0.0-use.local
-  resolution: "@suite-common/notifications@workspace:suite-common/notifications"
-  dependencies:
-    "@suite-common/suite-types": "*"
-    "@suite-common/wallet-config": "*"
-    "@trezor/connect": 9.0.3
-    jest: ^26.6.3
-    typescript: 4.7.4
-  languageName: unknown
-  linkType: soft
-
 "@suite-common/redux-utils@*, @suite-common/redux-utils@workspace:suite-common/redux-utils":
   version: 0.0.0-use.local
   resolution: "@suite-common/redux-utils@workspace:suite-common/redux-utils"
   dependencies:
     "@reduxjs/toolkit": ^1.8.3
-    "@suite-common/notifications": "*"
     "@suite-common/suite-types": "*"
     "@suite-common/wallet-config": "*"
     "@suite-common/wallet-types": "*"
@@ -6296,6 +6283,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/suite-constants@workspace:suite-common/suite-constants"
   dependencies:
+    "@suite-common/wallet-config": "*"
     "@trezor/connect": 9.0.3
     jest: ^26.6.3
     typescript: 4.7.4
@@ -6332,6 +6320,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/test-utils@workspace:suite-common/test-utils"
   dependencies:
+    "@mobily/ts-belt": ^3.11.0
     "@reduxjs/toolkit": ^1.8.3
     "@suite-common/redux-utils": "*"
     "@suite-common/suite-types": "*"
@@ -6345,6 +6334,23 @@ __metadata:
     jest: ^26.6.3
     redux: ^4.2.0
     redux-thunk: ^2.3.0
+    typescript: 4.7.4
+  languageName: unknown
+  linkType: soft
+
+"@suite-common/toast-notifications@*, @suite-common/toast-notifications@workspace:suite-common/toast-notifications":
+  version: 0.0.0-use.local
+  resolution: "@suite-common/toast-notifications@workspace:suite-common/toast-notifications"
+  dependencies:
+    "@reduxjs/toolkit": ^1.8.3
+    "@suite-common/intl-types": "*"
+    "@suite-common/redux-utils": "*"
+    "@suite-common/suite-constants": "*"
+    "@suite-common/suite-types": "*"
+    "@suite-common/test-utils": "*"
+    "@suite-common/wallet-config": "*"
+    "@trezor/connect": 9.0.3
+    jest: ^26.6.3
     typescript: 4.7.4
   languageName: unknown
   linkType: soft
@@ -6379,6 +6385,7 @@ __metadata:
     "@suite-common/suite-types": "*"
     "@suite-common/suite-utils": "*"
     "@suite-common/test-utils": "*"
+    "@suite-common/toast-notifications": "*"
     "@suite-common/wallet-config": "*"
     "@suite-common/wallet-types": "*"
     "@suite-common/wallet-utils": "*"
@@ -7757,12 +7764,12 @@ __metadata:
     "@suite-common/formatters": "*"
     "@suite-common/intl-types": "*"
     "@suite-common/metadata-types": "*"
-    "@suite-common/notifications": "*"
     "@suite-common/redux-utils": "*"
     "@suite-common/suite-config": "*"
     "@suite-common/suite-types": "*"
     "@suite-common/suite-utils": "*"
     "@suite-common/test-utils": "*"
+    "@suite-common/toast-notifications": "*"
     "@suite-common/wallet-config": "*"
     "@suite-common/wallet-constants": "*"
     "@suite-common/wallet-core": "*"

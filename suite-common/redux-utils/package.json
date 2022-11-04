@@ -7,11 +7,11 @@
     "main": "src/index",
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
-        "type-check": "tsc --build"
+        "type-check": "tsc --build",
+        "test:unit": "jest -c ../../jest.config.base.js"
     },
     "dependencies": {
         "@reduxjs/toolkit": "^1.8.3",
-        "@suite-common/notifications": "*",
         "@suite-common/suite-types": "*",
         "@suite-common/wallet-config": "*",
         "@suite-common/wallet-types": "*",

@@ -1,14 +1,18 @@
 import { configureStore } from '@suite/support/tests/configureStore';
 
-import { NOTIFICATION, PROTOCOL } from '@suite-actions/constants';
+import { PROTOCOL } from '@suite-actions/constants';
 import protocolMiddleware from '../protocolMiddleware';
 import protocolReducer from '@suite-reducers/protocolReducer';
-import notificationReducer from '@suite-reducers/notificationReducer';
+import {
+    NotificationEntry,
+    notificationsActions,
+    notificationsReducer,
+} from '@suite-common/toast-notifications';
 
 const middlewares = [protocolMiddleware];
 
 type ProtocolState = ReturnType<typeof protocolReducer>;
-type NotificationsState = ReturnType<typeof notificationReducer>;
+type NotificationsState = ReturnType<typeof notificationsReducer>;
 
 export const getInitialState = (
     notifications: Partial<NotificationsState>,
@@ -32,8 +36,10 @@ const initStore = (state: State) => {
         const { protocol, notifications } = store.getState();
 
         store.getState().protocol = protocolReducer(protocol, action);
-        // @ts-expect-error
-        store.getState().notifications = notificationReducer(notifications, action);
+        store.getState().notifications = notificationsReducer(
+            notifications as NotificationEntry[],
+            action,
+        );
 
         store.getActions().push(action);
     });
@@ -86,7 +92,7 @@ describe('Protocol middleware', () => {
                 },
                 type: '@protocol/save-coin-protocol',
             },
-            { type: NOTIFICATION.CLOSE, payload: notificationIdToBeClosed },
+            notificationsActions.close(notificationIdToBeClosed),
         ]);
     });
 });

@@ -8,7 +8,6 @@ import type { SuiteAction } from '@suite-actions/suiteActions';
 import type { ResizeAction } from '@suite-actions/resizeActions';
 import type { ModalAction } from '@suite-actions/modalActions';
 import type { LogAction } from '@suite-actions/logsActions';
-import type { NotificationAction } from '@suite-actions/notificationActions';
 import type { AnalyticsAction } from '@suite-actions/analyticsActions';
 import type { MetadataAction } from '@suite-actions/metadataActions';
 import type { ProtocolAction } from '@suite-actions/protocolActions';
@@ -26,6 +25,7 @@ import type { GuideAction } from '@suite-actions/guideActions';
 import type { EnvironmentType } from '@suite-common/suite-types';
 import type { Route } from '@suite-constants/routes';
 import { transactionsActions } from '@suite-common/wallet-core';
+import { notificationsActions } from '@suite-common/toast-notifications';
 
 // reexport
 export type { ExtendedMessageDescriptor } from '@suite-components/Translation/components/BaseTranslation';
@@ -46,6 +46,9 @@ type TrezorConnectEvents = TransportEvent | UiEvent | DeviceEvent | BlockchainEv
 
 export type TransactionAction = ReturnType<
     typeof transactionsActions[keyof typeof transactionsActions]
+>;
+export type NotificationAction = ReturnType<
+    typeof notificationsActions[keyof typeof notificationsActions]
 >;
 
 // all actions from all apps used to properly type Dispatch.

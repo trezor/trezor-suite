@@ -2,24 +2,9 @@ import produce from 'immer';
 import { UpdateInfo, UpdateProgress } from '@trezor/suite-desktop-api';
 import { DESKTOP_UPDATE, SUITE } from '@suite-actions/constants';
 import { Action } from '@suite-types';
+import { DesktopAppUpdateState as UpdateState } from '@suite-common/suite-constants';
 
-/**
- * state: Current updater state
- * - checking: Checking Github for newer releases
- * - available: Newer version is available
- * - not-available: Currently on the latest version
- * - downloading: Currently downloading the latest version
- * - ready: Latest version is downloaded and going to be installed on the next restart
- */
-export enum UpdateState {
-    Checking = 'checking',
-    Available = 'available',
-    NotAvailable = 'not-available',
-    Downloading = 'downloading',
-    Ready = 'ready',
-    EarlyAccessEnable = 'early-access-enable',
-    EarlyAccessDisable = 'early-access-disable',
-}
+export { DesktopAppUpdateState as UpdateState } from '@suite-common/suite-constants';
 
 export type UpdateWindow = 'maximized' | 'minimized' | 'hidden';
 

@@ -2,7 +2,6 @@ import * as STORAGE from './storageConstants';
 import * as SUITE from './suiteConstants';
 import * as MODAL from './modalConstants';
 import * as LOGS from './logsConstants';
-import * as NOTIFICATION from './notificationConstants';
 import * as ROUTER from './routerConstants';
 import * as RESIZE from './resizeConstants';
 import * as ANALYTICS from './analyticsConstants';
@@ -17,7 +16,6 @@ export {
     SUITE,
     LOGS,
     MODAL,
-    NOTIFICATION,
     ROUTER,
     RESIZE,
     ANALYTICS,

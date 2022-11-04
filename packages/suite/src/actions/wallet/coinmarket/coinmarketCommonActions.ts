@@ -1,6 +1,6 @@
 import TrezorConnect, { UI, DeviceButtonRequest, PROTO } from '@trezor/connect';
 import { GetState, Dispatch } from '@suite-types';
-import * as notificationActions from '@suite-actions/notificationActions';
+import { notificationsActions } from '@suite-common/toast-notifications';
 import * as modalActions from '@suite-actions/modalActions';
 import {
     COINMARKET_BUY,
@@ -155,7 +155,7 @@ export const verifyAddress =
             if (response.payload.code === 'Method_PermissionsNotGranted') return;
 
             dispatch(
-                notificationActions.addToast({
+                notificationsActions.addToast({
                     type: 'verify-address-error',
                     error: response.payload.error,
                 }),

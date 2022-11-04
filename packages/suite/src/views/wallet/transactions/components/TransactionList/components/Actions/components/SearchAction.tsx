@@ -4,7 +4,7 @@ import { Input, Icon, useTheme, Tooltip, KEYBOARD_CODE } from '@trezor/component
 import { useActions } from '@suite-hooks';
 import { SETTINGS } from '@suite-config';
 import { useTranslation } from '@suite-hooks/useTranslation';
-import * as notificationActions from '@suite-actions/notificationActions';
+import { notificationsActions } from '@suite-common/toast-notifications';
 import { Account } from '@wallet-types';
 import { Translation } from '@suite-components';
 import { isFeatureFlagEnabled } from '@suite-common/suite-utils';
@@ -49,7 +49,7 @@ export const SearchAction = ({ account, search, setSearch, setSelectedPage }: Se
     const [hasFetchedAll, setHasFetchedAll] = useState(false);
     const { translationString } = useTranslation();
     const { addToast, fetchTransactions } = useActions({
-        addToast: notificationActions.addToast,
+        addToast: notificationsActions.addToast,
         fetchTransactions: fetchTransactionsThunk,
     });
 

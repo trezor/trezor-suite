@@ -1,6 +1,6 @@
-import { NOTIFICATION } from '@suite-actions/constants';
 import { analyzeTransactionsFixtures as analyzeTransactions } from '@suite-common/wallet-utils';
 import { blockchainActions, transactionsActions, accountsActions } from '@suite-common/wallet-core';
+import { notificationsActions } from '@suite-common/toast-notifications';
 
 const DEFAULT_ACCOUNT = {
     deviceState: 'deviceState',
@@ -542,7 +542,9 @@ export const onNotification = [
             notification: { descriptor: 'xpub', tx: { type: 'recv', amount: '100000' } },
             coin: { shortcut: 'btc' },
         },
-        actions: [{ type: NOTIFICATION.EVENT, payload: { formattedAmount: '0.001 BTC' } }],
+        actions: [
+            { type: notificationsActions.addEvent.type, payload: { formattedAmount: '0.001 BTC' } },
+        ],
         getAccountInfo: 3,
     },
     {
@@ -560,7 +562,12 @@ export const onNotification = [
             },
             coin: { shortcut: 'eth' },
         },
-        actions: [{ type: NOTIFICATION.EVENT, payload: { formattedAmount: '0.001 ERC20' } }],
+        actions: [
+            {
+                type: notificationsActions.addEvent.type,
+                payload: { formattedAmount: '0.001 ERC20' },
+            },
+        ],
         getAccountInfo: 2,
     },
     {

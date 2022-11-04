@@ -2,7 +2,7 @@ import TrezorConnect from '@trezor/connect';
 import type { ScanAccountProgress } from '@trezor/coinjoin/lib/types/backend';
 import * as COINJOIN from './constants/coinjoinConstants';
 import { goto } from '../suite/routerActions';
-import { addToast } from '../suite/notificationActions';
+import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     getCoinjoinServerEnvironment,
     initCoinjoinClient,
@@ -260,7 +260,7 @@ export const createCoinjoinAccount =
         });
         if (!unlockPath.success) {
             dispatch(
-                addToast({
+                notificationsActions.addToast({
                     type: 'error',
                     error: unlockPath.payload.error,
                 }),
@@ -280,7 +280,7 @@ export const createCoinjoinAccount =
         });
         if (!publicKey.success) {
             dispatch(
-                addToast({
+                notificationsActions.addToast({
                     type: 'error',
                     error: publicKey.payload.error,
                 }),
@@ -360,7 +360,7 @@ const authorizeCoinjoin =
         dispatch(coinjoinAccountAuthorizeFailed(account.key, auth.payload.error));
 
         dispatch(
-            addToast({
+            notificationsActions.addToast({
                 type: 'error',
                 error: `Coinjoin not authorized: ${auth.payload.error}`,
             }),
@@ -425,7 +425,7 @@ export const restoreCoinjoinSession =
         const coinjoinAccount = coinjoin.accounts.find(a => a.key === account.key);
         if (!device || !coinjoinAccount || !coinjoinAccount.session || !client) {
             dispatch(
-                addToast({
+                notificationsActions.addToast({
                     type: 'error',
                     error: `Coinjoin not authorized: missing data`,
                 }),
@@ -465,7 +465,7 @@ export const restoreCoinjoinSession =
             client.registerAccount(getRegisterAccountParams(account, session));
         } else {
             dispatch(
-                addToast({
+                notificationsActions.addToast({
                     type: 'error',
                     error: `Coinjoin not authorized: ${auth.payload.error}`,
                 }),

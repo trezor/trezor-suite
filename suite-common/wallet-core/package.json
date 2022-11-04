@@ -7,7 +7,7 @@
     "main": "src/index",
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
-        "test:unit": "jest -c=../../jest.config.native.js",
+        "test:unit": "jest -c=../../jest.config.base.js",
         "type-check": "tsc --build"
     },
     "dependencies": {
@@ -19,6 +19,7 @@
         "@suite-common/suite-types": "*",
         "@suite-common/suite-utils": "*",
         "@suite-common/test-utils": "*",
+        "@suite-common/toast-notifications": "*",
         "@suite-common/wallet-config": "*",
         "@suite-common/wallet-types": "*",
         "@suite-common/wallet-utils": "*",

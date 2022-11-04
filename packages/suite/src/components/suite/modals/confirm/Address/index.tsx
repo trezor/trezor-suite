@@ -1,7 +1,7 @@
 import React, { createRef } from 'react';
 import styled from 'styled-components';
 
-import * as notificationActions from '@suite-actions/notificationActions';
+import { notificationsActions } from '@suite-common/toast-notifications';
 import { Button, variables, ConfirmOnDevice } from '@trezor/components';
 import { copyToClipboard } from '@trezor/dom-utils';
 import { TrezorDevice } from '@suite-types';
@@ -65,7 +65,7 @@ export const ConfirmAddress = ({
     // TODO: no-backup, backup failed
     // const needsBackup = device.features && device.features.needs_backup;
 
-    const { addNotification } = useActions({ addNotification: notificationActions.addToast });
+    const { addNotification } = useActions({ addNotification: notificationsActions.addToast });
     const htmlElement = createRef<HTMLDivElement>();
 
     const copyAddress = () => {

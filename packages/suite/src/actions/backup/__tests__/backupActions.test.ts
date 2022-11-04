@@ -7,6 +7,7 @@ import { connectInitThunk } from '@suite-common/connect-init';
 import { SUITE } from '@suite-actions/constants';
 import { BACKUP } from '@backup-actions/constants';
 import * as backupActions from '@backup-actions/backupActions';
+import { notificationsActions } from '@suite-common/toast-notifications';
 
 jest.mock('@trezor/connect', () => {
     let fixture: any;
@@ -97,7 +98,7 @@ describe('Backup Actions', () => {
         expect(store.getActions().shift()).toEqual({ type: SUITE.LOCK_DEVICE, payload: true });
         expect(store.getActions().shift()).toEqual({ type: SUITE.LOCK_DEVICE, payload: false });
         expect(store.getActions().shift()).toMatchObject({
-            type: '@notification/toast',
+            type: notificationsActions.addToast.type,
             payload: { type: 'backup-success' },
         });
     });
@@ -129,7 +130,7 @@ describe('Backup Actions', () => {
         expect(store.getActions().shift()).toEqual({ type: SUITE.LOCK_DEVICE, payload: true });
         expect(store.getActions().shift()).toEqual({ type: SUITE.LOCK_DEVICE, payload: false });
         expect(store.getActions().shift()).toMatchObject({
-            type: '@notification/toast',
+            type: notificationsActions.addToast.type,
             payload: { type: 'backup-failed' },
         });
     });

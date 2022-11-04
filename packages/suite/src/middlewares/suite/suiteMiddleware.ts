@@ -4,7 +4,7 @@ import { SUITE, ROUTER } from '@suite-actions/constants';
 import * as suiteActions from '@suite-actions/suiteActions';
 import { AppState, Action, Dispatch } from '@suite-types';
 import { handleProtocolRequest } from '@suite-actions/protocolActions';
-import { addToast } from '@suite-actions/notificationActions';
+import { notificationsActions } from '@suite-common/toast-notifications';
 
 const suite =
     (api: MiddlewareAPI<Dispatch, AppState>) =>
@@ -31,7 +31,7 @@ const suite =
                 }
                 if (action.payload.desktopUpdate?.firstRun) {
                     api.dispatch(
-                        addToast({
+                        notificationsActions.addToast({
                             type: 'auto-updater-new-version-first-run',
                             version: action.payload.desktopUpdate.firstRun,
                         }),

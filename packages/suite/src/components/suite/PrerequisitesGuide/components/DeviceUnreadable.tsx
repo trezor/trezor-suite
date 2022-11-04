@@ -12,7 +12,7 @@ import {
     TROUBLESHOOTING_TIP_DIFFERENT_COMPUTER,
 } from '@suite-components/TroubleshootingTips/tips';
 import { useActions } from '@suite-hooks';
-import * as notificationActions from '@suite-actions/notificationActions';
+import { notificationsActions } from '@suite-common/toast-notifications';
 import type { TrezorDevice } from '@suite-types';
 import { isLinux } from '@trezor/env-utils';
 
@@ -41,7 +41,7 @@ const UdevDesktop = () => {
     const [response, setResponse] = useState(-1);
 
     const { addToast } = useActions({
-        addToast: notificationActions.addToast,
+        addToast: notificationsActions.addToast,
     });
 
     const handleCtaClick = async (event: React.MouseEvent) => {

@@ -1,9 +1,9 @@
 import { PROTOCOL } from './constants';
 import { getProtocolInfo, isProtocolScheme } from '@suite-utils/protocol';
-import { addToast } from '@suite-actions/notificationActions';
 import type { Dispatch } from '@suite-types';
 import type { PROTOCOL_SCHEME } from '@suite-constants/protocol';
 import type { SendFormState } from '@suite-reducers/protocolReducer';
+import { notificationsActions } from '@suite-common/toast-notifications';
 
 export type ProtocolAction =
     | {
@@ -38,7 +38,7 @@ export const handleProtocolRequest = (uri: string) => (dispatch: Dispatch) => {
 
         dispatch(saveCoinProtocol(scheme, address, amount));
         dispatch(
-            addToast({
+            notificationsActions.addToast({
                 type: 'coin-scheme-protocol',
                 address,
                 scheme,

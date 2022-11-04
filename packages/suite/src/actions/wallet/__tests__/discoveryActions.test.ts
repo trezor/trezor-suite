@@ -9,7 +9,6 @@ import discoveryReducer, {
     selectIsDiscoveryAuthConfirmationRequired,
 } from '@wallet-reducers/discoveryReducer';
 import walletSettingsReducer from '@wallet-reducers/settingsReducer';
-import { NOTIFICATION } from '@suite-actions/constants';
 import { DISCOVERY } from '@wallet-actions/constants';
 import { accountsActions } from '@suite-common/wallet-core';
 import { accountsReducer } from '@wallet-reducers';
@@ -24,6 +23,7 @@ import {
     unavailableCapabilities,
 } from '../__fixtures__/discoveryActions';
 import { NetworkSymbol } from '@suite-common/wallet-config';
+import { notificationsActions } from '@suite-common/toast-notifications';
 
 const { getSuiteDevice } = global.JestMocks;
 
@@ -228,7 +228,7 @@ describe('Discovery Actions', () => {
                 expect(result.bundleSize).toEqual(0);
             } else {
                 const action = store.getActions().pop();
-                expect(action.type).toEqual(NOTIFICATION.TOAST);
+                expect(action.type).toEqual(notificationsActions.addToast.type);
             }
         });
     });
@@ -349,7 +349,7 @@ describe('Discovery Actions', () => {
         const store = initStore(state);
         await store.dispatch(discoveryActions.start());
         const action = store.getActions().pop();
-        expect(action.type).toEqual(NOTIFICATION.TOAST);
+        expect(action.type).toEqual(notificationsActions.addToast.type);
     });
 
     it('Start discovery with device without auth confirmation', async () => {
@@ -358,7 +358,7 @@ describe('Discovery Actions', () => {
         const store = initStore(state);
         await store.dispatch(discoveryActions.start());
         const action = store.getActions().pop();
-        expect(action.type).toEqual(NOTIFICATION.TOAST);
+        expect(action.type).toEqual(notificationsActions.addToast.type);
     });
 
     it('Create discovery which already exist', () => {
@@ -492,7 +492,7 @@ describe('Discovery Actions', () => {
         store.dispatch(discoveryActions.create('device-state', SUITE_DEVICE));
         await store.dispatch(discoveryActions.start());
         const action = store.getActions().pop();
-        done(expect(action.type).toEqual(NOTIFICATION.TOAST));
+        done(expect(action.type).toEqual(notificationsActions.addToast.type));
     });
 
     it('Discovery completed but device is not connected anymore', async () => {
@@ -525,7 +525,7 @@ describe('Discovery Actions', () => {
         store.dispatch(discoveryActions.create('device-state', SUITE_DEVICE));
         await store.dispatch(discoveryActions.start());
         const action = store.getActions().pop();
-        expect(action.type).toEqual(NOTIFICATION.TOAST);
+        expect(action.type).toEqual(notificationsActions.addToast.type);
     });
 
     it('First iteration malformed error (invalid json not an array)', async () => {
@@ -539,7 +539,7 @@ describe('Discovery Actions', () => {
         store.dispatch(discoveryActions.create('device-state', SUITE_DEVICE));
         await store.dispatch(discoveryActions.start());
         const action = store.getActions().pop();
-        expect(action.type).toEqual(NOTIFICATION.TOAST);
+        expect(action.type).toEqual(notificationsActions.addToast.type);
     });
 
     it('TrezorConnect did not emit any progress event', async () => {

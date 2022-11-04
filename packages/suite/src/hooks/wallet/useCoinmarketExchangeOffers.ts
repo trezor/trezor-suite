@@ -10,7 +10,7 @@ import {
     ContextValues,
     ExchangeStep,
 } from '@wallet-types/coinmarketExchangeOffers';
-import * as notificationActions from '@suite-actions/notificationActions';
+import { notificationsActions } from '@suite-common/toast-notifications';
 import { splitToQuoteCategories } from '@wallet-utils/coinmarket/exchangeUtils';
 import { networksCompatibility as networks } from '@suite-common/wallet-config';
 import { getUnusedAddressFromAccount } from '@wallet-utils/coinmarket/coinmarketUtils';
@@ -60,7 +60,7 @@ export const useOffers = ({ selectedAccount }: UseCoinmarketExchangeFormProps) =
         openCoinmarketExchangeConfirmModal:
             coinmarketExchangeActions.openCoinmarketExchangeConfirmModal,
         saveTransactionId: coinmarketExchangeActions.saveTransactionId,
-        addNotification: notificationActions.addToast,
+        addNotification: notificationsActions.addToast,
         verifyAddress: coinmarketExchangeActions.verifyAddress,
     });
 

@@ -1,5 +1,5 @@
 import { db } from '@suite/storage';
-import * as notificationActions from '@suite-actions/notificationActions';
+import { notificationsActions } from '@suite-common/toast-notifications';
 import * as suiteActions from '@suite-actions/suiteActions';
 import { serializeDiscovery, serializeDevice } from '@suite-utils/storage';
 import type { Dispatch, GetState, TrezorDevice } from '@suite-types';
@@ -337,7 +337,7 @@ export const removeDatabase = () => async (dispatch: Dispatch, getState: GetStat
     });
     await db.removeDatabase();
     dispatch(
-        notificationActions.addToast({
+        notificationsActions.addToast({
             type: 'clear-storage',
         }),
     );

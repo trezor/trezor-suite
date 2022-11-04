@@ -2,7 +2,7 @@ import TrezorConnect, { UI, UiRequestButton } from '@trezor/connect';
 import { RECEIVE } from '@wallet-actions/constants';
 import * as suiteActions from '@suite-actions/suiteActions';
 import * as modalActions from '@suite-actions/modalActions';
-import * as notificationActions from '@suite-actions/notificationActions';
+import { notificationsActions } from '@suite-common/toast-notifications';
 import { GetState, Dispatch } from '@suite-types';
 import {
     getStakingPath,
@@ -161,7 +161,7 @@ export const showAddress =
             if (response.payload.code === 'Method_PermissionsNotGranted') return;
 
             dispatch(
-                notificationActions.addToast({
+                notificationsActions.addToast({
                     type: 'verify-address-error',
                     error: response.payload.error,
                 }),

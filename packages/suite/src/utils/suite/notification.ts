@@ -1,14 +1,7 @@
-import { NotificationEntry } from '@suite-reducers/notificationReducer';
+import { NotificationEntry } from '@suite-common/toast-notifications';
 import { ToastNotificationVariant, AppState } from '@suite-types';
 import { colors } from '@trezor/components';
 import type { NotificationViewProps } from '@suite-components/NotificationRenderer';
-
-export const findTransactionEvents = (descriptor: string, notifications: NotificationEntry[]) =>
-    notifications.filter(
-        n =>
-            (n.type === 'tx-sent' || n.type === 'tx-received' || n.type === 'tx-confirmed') &&
-            (n.descriptor === descriptor || n.txid === descriptor),
-    );
 
 export const getNotificationIcon = (variant: ToastNotificationVariant) => {
     switch (variant) {

@@ -1,4 +1,4 @@
-import { NotificationEntry } from '@suite-reducers/notificationReducer';
+import { NotificationEntry } from '@suite-common/toast-notifications';
 import { settingsCommonConfig } from '@suite-common/suite-config';
 
 const IMPORTANT_NOTIFICATION_TYPES: Array<NotificationEntry['type']> = [

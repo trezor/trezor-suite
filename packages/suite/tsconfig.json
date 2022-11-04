@@ -27,9 +27,6 @@
             "path": "../../suite-common/metadata-types"
         },
         {
-            "path": "../../suite-common/notifications"
-        },
-        {
             "path": "../../suite-common/redux-utils"
         },
         {
@@ -43,6 +40,9 @@
         },
         {
             "path": "../../suite-common/test-utils"
+        },
+        {
+            "path": "../../suite-common/toast-notifications"
         },
         {
             "path": "../../suite-common/wallet-config"

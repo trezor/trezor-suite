@@ -1,12 +1,12 @@
 import { analytics, AppUpdateEventStatus, EventType } from '@trezor/suite-analytics';
 
 import { DESKTOP_UPDATE } from '@suite-actions/constants';
-import { addToast } from '@suite-actions/notificationActions';
 import { Dispatch, GetState } from '@suite-types';
 import { UpdateState, UpdateWindow } from '@suite-reducers/desktopUpdateReducer';
 import { getAppUpdatePayload } from '@suite-utils/analytics';
 
 import { desktopApi, UpdateInfo, UpdateProgress } from '@trezor/suite-desktop-api';
+import { notificationsActions } from '@suite-common/toast-notifications';
 
 export type DesktopUpdateAction =
     | { type: typeof DESKTOP_UPDATE.CHECKING }
@@ -36,7 +36,7 @@ export const available = (info: UpdateInfo) => (dispatch: Dispatch, getState: Ge
 
 export const notAvailable = (info: UpdateInfo) => (dispatch: Dispatch) => {
     if (info.isManualCheck) {
-        dispatch(addToast({ type: 'auto-updater-no-new' }));
+        dispatch(notificationsActions.addToast({ type: 'auto-updater-no-new' }));
     }
 
     dispatch({
@@ -110,7 +110,7 @@ export const error = (err: Error) => (dispatch: Dispatch, getState: GetState) =>
 
     // Ignore displaying errors while checking
     if (state !== UpdateState.Checking) {
-        dispatch(addToast({ type: 'auto-updater-error', state }));
+        dispatch(notificationsActions.addToast({ type: 'auto-updater-error', state }));
 
         const payload = getAppUpdatePayload(AppUpdateEventStatus.Error, allowPrerelease, latest);
         analytics.report({

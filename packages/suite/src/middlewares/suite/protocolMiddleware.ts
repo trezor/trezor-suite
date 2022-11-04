@@ -1,16 +1,17 @@
 import { MiddlewareAPI } from 'redux';
 
-import { close } from '@suite-actions/notificationActions';
+import { notificationsActions, ToastPayload } from '@suite-common/toast-notifications';
 import { PROTOCOL } from '@suite-actions/constants';
 
 import type { AppState, Action, Dispatch } from '@suite-types';
-import type { ToastPayload } from '@suite-reducers/notificationReducer';
 
 // close custom protocol notification of given type
 const closeNotifications = (api: MiddlewareAPI<Dispatch, AppState>, type: ToastPayload['type']) => {
     api.getState()
         .notifications.filter(notification => notification.type === type && !notification.closed)
-        .forEach(protocolNotification => api.dispatch(close(protocolNotification.id)));
+        .forEach(protocolNotification =>
+            api.dispatch(notificationsActions.close(protocolNotification.id)),
+        );
 };
 
 const protocolMiddleware =

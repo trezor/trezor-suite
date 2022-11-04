@@ -11,7 +11,7 @@ import {
     loadCardanoLib,
     getDerivationType,
 } from '@wallet-utils/cardanoUtils';
-import * as notificationActions from '@suite-actions/notificationActions';
+import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     FormState,
     UseSendFormState,
@@ -133,7 +133,7 @@ export const composeTransaction =
                         error: error.message,
                     };
                     dispatch(
-                        notificationActions.addToast({
+                        notificationsActions.addToast({
                             type: 'sign-tx-error',
                             error: error.message,
                         }),
@@ -187,7 +187,7 @@ export const signTransaction =
             // catch manual error from ReviewTransaction modal
             if (res.payload.error === 'tx-cancelled') return;
             dispatch(
-                notificationActions.addToast({
+                notificationsActions.addToast({
                     type: 'sign-tx-error',
                     error: res.payload.error,
                 }),
@@ -198,7 +198,7 @@ export const signTransaction =
         if (res.payload.hash !== transactionInfo.transaction.unsignedTx.hash) {
             console.error("Constructed transaction doesn't match the hash returned by the device.");
             dispatch(
-                notificationActions.addToast({
+                notificationsActions.addToast({
                     type: 'sign-tx-error',
                     error: "Constructed transaction doesn't match the hash returned by the device.",
                 }),

@@ -8,7 +8,7 @@ import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketC
 import * as coinmarketSellActions from '@wallet-actions/coinmarketSellActions';
 import * as routerActions from '@suite-actions/routerActions';
 import { UseOffersProps, ContextValues, SellStep } from '@wallet-types/coinmarketSellOffers';
-import * as notificationActions from '@suite-actions/notificationActions';
+import { notificationsActions } from '@suite-common/toast-notifications';
 import { useCoinmarketRecomposeAndSign } from './useCoinmarketRecomposeAndSign ';
 import { useCoinmarketNavigation } from '@wallet-hooks/useCoinmarketNavigation';
 import { InvityAPIReloadQuotesAfterSeconds } from '@wallet-constants/coinmarket/metadata';
@@ -40,7 +40,7 @@ export const useOffers = ({ selectedAccount }: UseOffersProps) => {
         saveTrade: coinmarketSellActions.saveTrade,
         setIsFromRedirect: coinmarketSellActions.setIsFromRedirect,
         openCoinmarketSellConfirmModal: coinmarketSellActions.openCoinmarketSellConfirmModal,
-        addNotification: notificationActions.addToast,
+        addNotification: notificationsActions.addToast,
         saveTransactionId: coinmarketSellActions.saveTransactionId,
         submitRequestForm: coinmarketCommonActions.submitRequestForm,
         goto: routerActions.goto,

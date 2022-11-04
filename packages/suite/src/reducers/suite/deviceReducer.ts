@@ -8,7 +8,7 @@ import { createSelector } from '@reduxjs/toolkit';
 type State = TrezorDevice[];
 const initialState: State = [];
 
-export type CoinjoinRootState = {
+export type DeviceRootState = {
     devices: TrezorDevice[];
 };
 
@@ -460,12 +460,12 @@ const deviceReducer = (state: State = initialState, action: Action): State =>
         }
     });
 
-export const selectIsPendingTransportEvent = (state: CoinjoinRootState) => state.devices.length < 1;
+export const selectIsPendingTransportEvent = (state: DeviceRootState) => state.devices.length < 1;
 
-export const selectDevices = (state: CoinjoinRootState) => state.devices;
+export const selectDevices = (state: DeviceRootState) => state.devices;
 
 export const selectDeviceByState = createSelector(
-    [selectDevices, (_state: CoinjoinRootState, deviceState: string) => deviceState],
+    [selectDevices, (_state: DeviceRootState, deviceState: string) => deviceState],
     (devices, deviceState) => devices.find(({ state }) => state === deviceState),
 );
 
