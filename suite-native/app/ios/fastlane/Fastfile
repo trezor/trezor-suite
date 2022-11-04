@@ -26,6 +26,9 @@ platform :ios do
       certificate_password: ENV["APPSTORE_CERTIFICATE_PASSWORD"] || "default"
     )
 
+    load_appstore_connect_api_key
+    fetch_and_bump_versions
+
     if lane == :develop
       PROVISIONING_NAME = "AppStore io.trezor.suite.develop"
     elsif lane == :staging
@@ -96,6 +99,8 @@ platform :ios do
       api_key: api_key
     )
 
+    ENV["BUILD_NUMBER"] = previous_build_number + 1
+
     increment_build_number(
       xcodeproj: IOS_PROJECT,
       build_number: previous_build_number + 1
@@ -145,9 +150,7 @@ platform :ios do
 
   desc "Push a new beta build to TestFlight"
   private_lane :testing do |options|
-    load_appstore_connect_api_key
     prepare_signing
-    fetch_and_bump_versions
     build_testing(scheme: options[:scheme])
     upload_testing
   end
