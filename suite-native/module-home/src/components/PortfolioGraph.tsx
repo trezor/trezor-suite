@@ -9,11 +9,10 @@ import {
     LineGraphTimeFrameValues,
     selectDashboardGraph,
 } from '@suite-common/wallet-graph';
-import { Box, Text } from '@suite-native/atoms';
 import { enabledNetworks } from '@suite-native/config';
-import { Graph, graphWrapperStyle, TimeSwitch } from '@suite-native/graph';
+import { Graph, TimeSwitch } from '@suite-native/graph';
 import { selectFiatCurrency } from '@suite-native/module-settings';
-import { useNativeStyles } from '@trezor/styles';
+import { GraphError } from '@suite-native/graph/src/components/GraphError';
 
 import {
     PortfolioGraphHeader,
@@ -23,7 +22,6 @@ import {
 
 export const PortfolioGraph = () => {
     const dispatch = useDispatch();
-    const { applyStyle } = useNativeStyles();
     const fiatCurrency = useSelector(selectFiatCurrency);
     const { points, error, loading } = useSelector(selectDashboardGraph);
     const enhancedPoints = useMemo(() => enhanceGraphPoints(points), [points]);
@@ -43,7 +41,7 @@ export const PortfolioGraph = () => {
 
     useEffect(setInitialSelectedPoints, [setInitialSelectedPoints]);
 
-    useEffect(() => {
+    const handleFetchGraphPoints = useCallback(() => {
         dispatch(
             getAllAccountsGraphPointsThunk({
                 fiatCurrency: fiatCurrency.label,
@@ -53,6 +51,10 @@ export const PortfolioGraph = () => {
         );
     }, [selectedTimeFrame, fiatCurrency, dispatch]);
 
+    useEffect(() => {
+        handleFetchGraphPoints();
+    }, [handleFetchGraphPoints]);
+
     const handleSelectTimeFrame = useCallback((timeFrame: LineGraphTimeFrameValues) => {
         setSelectedTimeFrame(timeFrame);
     }, []);
@@ -61,11 +63,7 @@ export const PortfolioGraph = () => {
         <>
             <PortfolioGraphHeader />
             {error ? (
-                <Box style={applyStyle(graphWrapperStyle)}>
-                    <Text variant="label" color="gray600">
-                        There are some troubles with loading graph points: {error}
-                    </Text>
-                </Box>
+                <GraphError error={error} onTryAgain={handleFetchGraphPoints} />
             ) : (
                 <>
                     <Graph
@@ -74,12 +72,12 @@ export const PortfolioGraph = () => {
                         onPointSelected={setSelectedPoint}
                         onGestureEnd={setInitialSelectedPoints}
                     />
-                    <TimeSwitch
-                        selectedTimeFrame={selectedTimeFrame}
-                        onSelectTimeFrame={handleSelectTimeFrame}
-                    />
                 </>
             )}
+            <TimeSwitch
+                selectedTimeFrame={selectedTimeFrame}
+                onSelectTimeFrame={handleSelectTimeFrame}
+            />
         </>
     );
 };
