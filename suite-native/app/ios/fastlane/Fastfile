@@ -99,11 +99,12 @@ platform :ios do
       api_key: api_key
     )
 
-    ENV["BUILD_NUMBER"] = previous_build_number + 1
+    build_number_int = previous_build_number + 1
+    ENV["BUILD_NUMBER"] = "#{build_number_int}"
 
     increment_build_number(
       xcodeproj: IOS_PROJECT,
-      build_number: previous_build_number + 1
+      build_number: build_number_int
     )
     increment_version_number(
       xcodeproj: IOS_PROJECT,

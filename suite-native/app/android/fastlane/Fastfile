@@ -26,9 +26,10 @@ platform :android do
       json_key: google_play_json_key_file,
     )[0]
 
-    ENV["BUILD_NUMBER"] = previous_build_number + 1
+    build_number_int = previous_build_number + 1
+    ENV["BUILD_NUMBER"] = "#{build_number_int}"
 
-    android_set_version_code(gradle_file: APP_GRADLE_PATH, version_code: BUILD_NUMBER)
+    android_set_version_code(gradle_file: APP_GRADLE_PATH, version_code: build_number_int)
     android_set_version_name(gradle_file: APP_GRADLE_PATH, version_name: VERSION)
   end
 
@@ -39,11 +40,12 @@ platform :android do
       service_credentials_file: google_play_json_key_file,
     )
 
-    ENV["BUILD_NUMBER"] = latest_release[:buildVersion].to_i + 1
+    build_number_int = latest_release[:buildVersion].to_i + 1
+    ENV["BUILD_NUMBER"] = "#{build_number_int}"
 
     # when there are no Firebase releases yet
     unless latest_release.nil?
-      android_set_version_code(gradle_file: APP_GRADLE_PATH, version_code: BUILD_NUMBER)
+      android_set_version_code(gradle_file: APP_GRADLE_PATH, version_code: build_number_int)
     end
     android_set_version_name(gradle_file: APP_GRADLE_PATH, version_name: VERSION)
   end
