@@ -392,7 +392,6 @@
   "TR_CHECK_RECOVERY_SEED": "Verificar backup",
   "TR_CHECK_RECOVERY_SEED_DESCRIPTION": "Realize uma recuperação simulada para verificar o seu backup.",
   "TR_CHECK_RECOVERY_SEED_DESC_T1": "Introduza aqui as palavras da sua semente na ordem apresentada no seu dispositivo. Pode ser-lhe pedido que digite algumas palavras que não fazem parte da sua semente de recuperação como medida de segurança adicional.",
-  "TR_CHECK_RECOVERY_SEED_DESC_T2": "O backup da sua carteira, a semente de recuperação, é introduzido inteiramente no Trezor Modelo T, através da tela do dispositivo. Evitamos passar qualquer informação sensível sua para um computador ou navegador da web potencialmente inseguro.",
   "TR_CHECK_SEED": "Verificar backup",
   "TR_CHECK_SEED_IN_SETTINGS": "Verificar semente em Configurações",
   "TR_CHECK_YOUR_DEVICE": "Verifique a sua tela Trezor",
@@ -1476,6 +1475,5 @@
   "TR_YOUR_TREZOR_IS_NOT_BACKED_UP": "A sua carteira Trezor não está com apoio.",
   "TR_YOUR_WALLET_IS_READY_WHAT": "A sua carteira está pronta!",
   "TR_YOU_EITHER_HAVE_T1": "A sua semente pode conter 12, 18, ou 24 palavras.",
-  "TR_YOU_EITHER_HAVE_T2": "A sua semente pode conter 12, 18, 20, 24, ou 33 palavras.",
   "TR_YOU_WERE_DISCONNECTED_DOT": "Você foi desconectado."
 }

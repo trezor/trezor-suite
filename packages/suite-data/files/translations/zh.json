@@ -402,7 +402,6 @@
   "TR_CHECK_RECOVERY_SEED": "检查备份",
   "TR_CHECK_RECOVERY_SEED_DESCRIPTION": "执行模拟恢复以检查您的备份。",
   "TR_CHECK_RECOVERY_SEED_DESC_T1": "按照设备上显示的顺序，在这里输入您的种子中的单词。作为一项额外的安全措施，您可能会被要求输入一些不属于您的恢复种子的词语。",
-  "TR_CHECK_RECOVERY_SEED_DESC_T2": "你的钱包备份，即恢复种子，完全是在Trezor Model T上，通过设备触摸屏幕输入的。我们避免将你的任何敏感信息传递给可能不安全的电脑或网络浏览器。",
   "TR_CHECK_SEED": "检查备份",
   "TR_CHECK_SEED_IN_SETTINGS": "在设置中检查种子",
   "TR_CHECK_YOUR_DEVICE": "检查您的 Trezor 屏幕",
@@ -1570,6 +1569,5 @@
   "TR_YOUR_TREZOR_IS_NOT_BACKED_UP": "您的 Trezor 钱包尚未进行备份。",
   "TR_YOUR_WALLET_IS_READY_WHAT": "你的钱包已就绪，可以开始使用了",
   "TR_YOU_EITHER_HAVE_T1": "您的种子可能包含12、18个或24个单词。",
-  "TR_YOU_EITHER_HAVE_T2": "您的种子可能包含12、18、20、24或33个单词。",
   "TR_YOU_WERE_DISCONNECTED_DOT": "您已断开连接。"
 }
