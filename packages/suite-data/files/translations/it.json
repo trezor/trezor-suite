@@ -264,7 +264,6 @@
   "TR_CHECK_RECOVERY_SEED": "Verifica il seed di recupero",
   "TR_CHECK_RECOVERY_SEED_DESCRIPTION": "Il seed di recupero è un elenco di parole in un ordine specifico che memorizza tutte le informazioni necessarie.",
   "TR_CHECK_RECOVERY_SEED_DESC_T1": "Inserisci le parole dal tuo seed qui nell'ordine mostrato sul tuo dispositivo. Potrebbe esserti chiesto di digitare alcune parole che non sono parte del tuo seed di recupero come una misura di sicurezza aggiuntiva.",
-  "TR_CHECK_RECOVERY_SEED_DESC_T2": "Il backup del tuo portafoglio, il seed di recupero, è inserito interamente sul Trezor Model T, tramite lo schermo del dispositivo. Evitiamo di passare alcuna delle tue informazioni sensibili a un computer o un browser web potenzialmente non sicuri.",
   "TR_CHECK_SEED": "Controlla il seed",
   "TR_CHECK_SEED_IN_SETTINGS": "Controlla il seed nelle Impostazioni",
   "TR_CHECK_YOUR_DEVICE": "Controlla il tuo dispositivo",

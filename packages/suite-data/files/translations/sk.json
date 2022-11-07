@@ -830,6 +830,5 @@
   "TR_YOUR_TREZOR_IS_NOT_BACKED_UP": "Vaša peňaženka Trezor nie je zálohovaná.",
   "TR_YOUR_WALLET_IS_READY_WHAT": "Vaša peňaženka je pripravená na použitie!",
   "TR_YOU_EITHER_HAVE_T1": "Váš seed môže obsahovať 12, 18 alebo 24 slov.",
-  "TR_YOU_EITHER_HAVE_T2": "Váš seed môže obsahovať 12, 18, 20, 24 alebo 33 slov.",
   "TR_YOU_WERE_DISCONNECTED_DOT": "Boli ste odpojení."
 }

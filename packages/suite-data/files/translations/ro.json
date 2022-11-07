@@ -372,7 +372,6 @@
   "TR_CHECK_RECOVERY_SEED": "Verificați seed-ul de rezervă",
   "TR_CHECK_RECOVERY_SEED_DESCRIPTION": "Efectuați o recuperare simulată pentru a verifica copia de rezervă.",
   "TR_CHECK_RECOVERY_SEED_DESC_T1": "Introduceți aici cuvintele din seed-ul dvs. în ordinea afișată pe dispozitivul dvs. Este posibil să vi se ceară să introduceți câteva cuvinte care nu fac parte din seed-ul de recuperare, ca măsură de securitate suplimentară.",
-  "TR_CHECK_RECOVERY_SEED_DESC_T2": "Copia de rezervă a portofelului, seed-ul de recuperare, este introdusă în întregime pe Trezor Model T, prin intermediul ecranului dispozitivului. Evităm să transmitem orice informație sensibilă către un computer sau un browser web potențial nesigur.",
   "TR_CHECK_SEED": "Verificați seed-ul",
   "TR_CHECK_SEED_IN_SETTINGS": "Verificați seed-ul în setări",
   "TR_CHECK_YOUR_DEVICE": "Verificați dispozitivul dvs.",

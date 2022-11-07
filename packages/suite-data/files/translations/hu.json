@@ -413,7 +413,6 @@
   "TR_CHECK_RECOVERY_SEED": "Ellenőrizd a biztonsági mentést",
   "TR_CHECK_RECOVERY_SEED_DESCRIPTION": "Az eszköz szimulált helyreállítása a biztonsági mentés (helyreállító seed) ellenőrzése érdekében.",
   "TR_CHECK_RECOVERY_SEED_DESC_T1": "Írd be a seed-edből a szavakat abban a sorrendben, ahogy az eszközödön szerepelnek. További biztonsági lépésként lehetséges, hogy néhány olyan szót is be kell írnod, amelyek a seed-ednek nem részei.",
-  "TR_CHECK_RECOVERY_SEED_DESC_T2": "A tárca biztonsági mentését – a helyreállító seed-et – kizárólag a Trezor Model T képernyőjén kell beütni. Ezzel elkerüljük, hogy bármilyen érzékeny információ egy potenciálisan megbízhatatlan számítógépen vagy internetes böngészőn haladjon át.",
   "TR_CHECK_SEED": "Ellenőrizd a biztonsági mentést",
   "TR_CHECK_SEED_IN_SETTINGS": "Ellenőrizd a seed-et a Beállításokban",
   "TR_CHECK_YOUR_DEVICE": "Ellenőrizd a Trezor képernyőjét",
@@ -433,8 +432,6 @@
   "TR_COINMARKET_NO_OFFERS_RELOAD_PAGE_BUTTON": "Oldal frissítése",
   "TR_COINMARKET_UNKNOWN_PROVIDER": "ismeretlen szolgáltató",
   "TR_COINS": "Kripto",
-  "TR_COINS_ANONYMITY": "A coin-jain anonimitása",
-  "TR_COINS_ANONYMITY_TOOLTIP": "nagyon nagy anonimitás",
   "TR_COIN_CONTROL": "Érmevezérlés",
   "TR_COIN_CONTROL_TOOLTIP": "Az érmevezérlés lehetővé teszi a tranzakció bemeneteként használandó UTXO-k kézi kiválasztását.",
   "TR_COIN_DISCOVERY_IN_PROGRESS": "Egyenlegek ellenőrzése",
@@ -1671,6 +1668,5 @@
   "TR_YOUR_TREZOR_IS_NOT_BACKED_UP": "A Trezor tárcád nem rendelkezik biztonsági mentéssel.",
   "TR_YOUR_WALLET_IS_READY_WHAT": "A tárcád készen áll a használatra!",
   "TR_YOU_EITHER_HAVE_T1": "A seed 12, 18 vagy 24 szót tartalmazhat.",
-  "TR_YOU_EITHER_HAVE_T2": "A seed 12, 18, 20, 24 vagy 33 szót tartalmazhat.",
   "TR_YOU_WERE_DISCONNECTED_DOT": "Kapcsolat bontva."
 }
