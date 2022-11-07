@@ -1321,7 +1321,7 @@ export default defineMessages({
     },
     TR_SAVINGS_OVERVIEW_WAITING_FOR_FIRST_BANKTRANSFER_PAYMENT_DESCRIPTION: {
         defaultMessage:
-            'Select View payment details to find the information you need to make the payment.',
+            "Select 'View payment details' to find the information you need to make the payment.",
         id: 'TR_SAVINGS_OVERVIEW_WAITING_FOR_FIRST_BANKTRANSFER_PAYMENT_DESCRIPTION',
         dynamic: true,
     },
@@ -7640,12 +7640,12 @@ export default defineMessages({
     TR_SEND_NOT_ANONYMIZED_COINS: {
         id: 'TR_SEND_NOT_ANONYMIZED_COINS',
         description: 'Send button text in coinjoin account when low-anonymity UTXOs are selected',
-        defaultMessage: 'Send not anonymized Coins',
+        defaultMessage: 'Send non-anonymized Coins',
     },
     TR_SIGN_WITH_NOT_ANONYMIZED_COINS: {
         id: 'TR_SIGN_WITH_NOT_ANONYMIZED_COINS',
         description: 'Sign button text in coinjoin account when low-anonymity UTXOs are selected',
-        defaultMessage: 'Sign with not anonymized Coins',
+        defaultMessage: 'Sign with non-anonymized Coins',
     },
     TR_YOU_SHOULD_ANONYMIZE: {
         id: 'TR_YOU_SHOULD_ANONYMIZE',

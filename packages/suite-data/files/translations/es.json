@@ -417,7 +417,6 @@
   "TR_CHECK_RECOVERY_SEED": "Comprobar copia de seguridad",
   "TR_CHECK_RECOVERY_SEED_DESCRIPTION": "Realiza una recuperación simulada para comprobar tu copia de seguridad.",
   "TR_CHECK_RECOVERY_SEED_DESC_T1": "Introduce aquí las palabras de tu semilla en el orden en que se muestran en tu dispositivo. Es posible que se te pida que escribas algunas palabras que no son parte de tu semilla de recuperación como medida de seguridad adicional.",
-  "TR_CHECK_RECOVERY_SEED_DESC_T2": "La copia de seguridad de tu wallet (semilla de recuperación), se introduce completamente en el Trezor Model T a través de la pantalla del dispositivo. De este modo evitamos pasar cualquier información confidencial tuya a un ordenador o navegador potencialmente inseguro.",
   "TR_CHECK_SEED": "Comprobar copia de seguridad",
   "TR_CHECK_SEED_IN_SETTINGS": "Comprobar semilla en Ajustes",
   "TR_CHECK_YOUR_DEVICE": "Comprueba la pantalla de tu Trezor",
@@ -431,7 +430,6 @@
   "TR_COINJOIN_ACCESS_ACCOUNT_STEP_INITIAL_FEE_MESSAGE": "Se aplica una comisión de {fee}% del importe utilizado",
   "TR_COINJOIN_ACCESS_ACCOUNT_STEP_INITIAL_TITLE": "Anonimiza tus fondos",
   "TR_COINJOIN_ACCOUNTS": "Cuentas CoinJoin",
-  "TR_COINJOIN_COUNTDOWN": "{rounds} rondas restantes",
   "TR_COINJOIN_PAUSED": "Coinjoin pausado",
   "TR_COINJOIN_PHASE_1_MESSAGE": "Recopilando entradas",
   "TR_COINMARKET_NO_OFFERS_AUTORELOADING_IN": "La ofertas se actualizarán en",
@@ -442,8 +440,6 @@
   "TR_COINMARKET_NO_OFFERS_RELOAD_PAGE_BUTTON": "Actualizar ofertas",
   "TR_COINMARKET_UNKNOWN_PROVIDER": "Proveedor desconocido",
   "TR_COINS": "Criptomonedas",
-  "TR_COINS_ANONYMITY": "Anonimato de mis monedas",
-  "TR_COINS_ANONYMITY_TOOLTIP": "anonimato muy alto",
   "TR_COIN_CONTROL": "Control de monedas",
   "TR_COIN_CONTROL_TOOLTIP": "El control de monedas permite la selección manual de los UTXO que se utilizarán como entradas para una transacción.",
   "TR_COIN_DISCOVERY_IN_PROGRESS": "Comprobando los saldos",
@@ -1699,6 +1695,5 @@
   "TR_YOUR_TREZOR_IS_NOT_BACKED_UP": "Tu Trezor no está respaldado.",
   "TR_YOUR_WALLET_IS_READY_WHAT": "Tu wallet está lista para usarse.",
   "TR_YOU_EITHER_HAVE_T1": "Tu semilla puede contener 12, 18 o 24 palabras.",
-  "TR_YOU_EITHER_HAVE_T2": "Tu semilla puede contener 12, 18, 20, 24 o 33 palabras.",
   "TR_YOU_WERE_DISCONNECTED_DOT": "Has sido desconectado."
 }
