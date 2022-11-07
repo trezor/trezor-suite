@@ -16,9 +16,9 @@
         "type-check": "tsc --build tsconfig.json"
     },
     "dependencies": {
-        "@suite-common/suite-types": "*",
-        "@trezor/urls": "*",
-        "@trezor/utils": "*",
+        "@suite-common/suite-types": "workspace:*",
+        "@trezor/urls": "workspace:*",
+        "@trezor/utils": "workspace:*",
         "ua-parser-js": "^1.0.32"
     },
     "devDependencies": {

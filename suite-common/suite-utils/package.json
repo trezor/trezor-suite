@@ -12,8 +12,8 @@
         "test-unit:watch": "jest -o --watch"
     },
     "dependencies": {
-        "@suite-common/suite-config": "*",
-        "@suite-common/wallet-config": "*",
+        "@suite-common/suite-config": "workspace:*",
+        "@suite-common/wallet-config": "workspace:*",
         "date-fns": "^2.29.3"
     },
     "devDependencies": {

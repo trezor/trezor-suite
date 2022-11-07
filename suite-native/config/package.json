@@ -11,7 +11,7 @@
         "type-check": "tsc --build"
     },
     "dependencies": {
-        "@suite-common/wallet-config": "*",
+        "@suite-common/wallet-config": "workspace:*",
         "react-native-config": "^1.4.6"
     },
     "devDependencies": {

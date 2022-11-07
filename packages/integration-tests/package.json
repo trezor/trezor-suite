@@ -8,7 +8,7 @@
     },
     "devDependencies": {
         "@playwright/test": "^1.22.2",
-        "@trezor/trezor-user-env-link": "*",
+        "@trezor/trezor-user-env-link": "workspace:*",
         "playwright": "^1.22.2"
     }
 }

@@ -11,8 +11,8 @@
     },
     "dependencies": {
         "@testing-library/react-native": "^11.0.0",
-        "@trezor/styles": "*",
-        "@trezor/theme": "*",
+        "@trezor/styles": "workspace:*",
+        "@trezor/theme": "workspace:*",
         "react": "18.2.0",
         "react-native-gesture-handler": "^2.7.0",
         "react-native-reanimated": "^2.12.0",

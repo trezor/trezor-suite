@@ -18,8 +18,8 @@
     },
     "dependencies": {
         "@tippyjs/react": "^4.2.6",
-        "@trezor/dom-utils": "*",
-        "@trezor/react-utils": "*",
+        "@trezor/dom-utils": "workspace:*",
+        "@trezor/react-utils": "workspace:*",
         "date-fns": "^2.29.1",
         "framer-motion": "^7.6.5",
         "lottie-react": "^2.3.1",

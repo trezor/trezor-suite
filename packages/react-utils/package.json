@@ -11,8 +11,8 @@
         "type-check": "tsc --build"
     },
     "dependencies": {
-        "@trezor/type-utils": "*",
-        "@trezor/utils": "*",
+        "@trezor/type-utils": "workspace:*",
+        "@trezor/utils": "workspace:*",
         "react": "18.2.0"
     },
     "devDependencies": {

@@ -52,7 +52,7 @@
         "typescript": "4.9.3"
     },
     "peerDependencies": {
-        "react": "*",
-        "react-native": "*"
+        "react": "workspace:*",
+        "react-native": "workspace:*"
     }
 }

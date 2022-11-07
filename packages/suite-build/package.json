@@ -23,8 +23,8 @@
     },
     "dependencies": {
         "@sentry/webpack-plugin": "^1.18.3",
-        "@suite-common/suite-config": "*",
-        "@trezor/suite": "*",
+        "@suite-common/suite-config": "workspace:*",
+        "@trezor/suite": "workspace:*",
         "babel-loader": "^9.1.0",
         "babel-plugin-styled-components": "^2.0.7",
         "copy-webpack-plugin": "^11.0.0",

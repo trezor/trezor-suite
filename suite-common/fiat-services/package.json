@@ -10,8 +10,8 @@
         "type-check": "tsc --build"
     },
     "dependencies": {
-        "@suite-common/suite-config": "*",
-        "@suite-common/wallet-types": "*",
+        "@suite-common/suite-config": "workspace:*",
+        "@suite-common/wallet-types": "workspace:*",
         "date-fns": "^2.29.3"
     },
     "devDependencies": {
