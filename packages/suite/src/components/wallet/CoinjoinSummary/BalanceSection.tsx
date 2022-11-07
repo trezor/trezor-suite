@@ -40,6 +40,8 @@ export const BalanceSection = ({ account }: BalanceSectionProps) => {
     });
     const coinjoinAccount = useSelector(state => selectCoinjoinAccountByKey(state, account.key));
 
+    const accountHasZeroBalance = account.availableBalance === '0';
+
     const goToSetup = () => actions.goto('wallet-anonymize', { preserveParams: true });
 
     return (
@@ -56,6 +58,7 @@ export const BalanceSection = ({ account }: BalanceSectionProps) => {
             ) : (
                 <AnonymizeButton
                     onClick={goToSetup}
+                    disabled={accountHasZeroBalance}
                     icon="ARROW_RIGHT_LONG"
                     alignIcon="right"
                     size={16}
