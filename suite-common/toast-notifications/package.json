@@ -12,13 +12,13 @@
     },
     "dependencies": {
         "@reduxjs/toolkit": "1.8.3",
-        "@suite-common/intl-types": "*",
-        "@suite-common/redux-utils": "*",
-        "@suite-common/suite-constants": "*",
-        "@suite-common/suite-types": "*",
-        "@suite-common/test-utils": "*",
-        "@suite-common/wallet-config": "*",
-        "@trezor/connect": "9.0.4"
+        "@suite-common/intl-types": "workspace:*",
+        "@suite-common/redux-utils": "workspace:*",
+        "@suite-common/suite-constants": "workspace:*",
+        "@suite-common/suite-types": "workspace:*",
+        "@suite-common/test-utils": "workspace:*",
+        "@suite-common/wallet-config": "workspace:*",
+        "@trezor/connect": "workspace:9.0.4"
     },
     "devDependencies": {
         "jest": "^26.6.3",

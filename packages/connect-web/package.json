@@ -38,8 +38,8 @@
         "prepublish": "yarn tsx ../../scripts/prepublish.js"
     },
     "dependencies": {
-        "@trezor/connect": "9.0.4",
-        "@trezor/utils": "^9.0.3",
+        "@trezor/connect": "workspace:9.0.4",
+        "@trezor/utils": "workspace:^9.0.3",
         "events": "^3.3.0"
     },
     "devDependencies": {

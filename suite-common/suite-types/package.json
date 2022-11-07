@@ -11,9 +11,9 @@
     },
     "dependencies": {
         "@reduxjs/toolkit": "1.8.3",
-        "@suite-common/metadata-types": "*",
-        "@suite-common/wallet-config": "*",
-        "@trezor/connect": "9.0.4",
+        "@suite-common/metadata-types": "workspace:*",
+        "@suite-common/wallet-config": "workspace:*",
+        "@trezor/connect": "workspace:9.0.4",
         "bignumber.js": "^9.1.0"
     },
     "devDependencies": {

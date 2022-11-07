@@ -11,7 +11,7 @@
         "type-check": "tsc --build"
     },
     "dependencies": {
-        "@suite-native/atoms": "*",
+        "@suite-native/atoms": "workspace:*",
         "react": "18.2.0",
         "react-hook-form": "6.15.7",
         "yup": "^0.32.11"

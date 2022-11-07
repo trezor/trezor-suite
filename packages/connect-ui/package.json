@@ -11,12 +11,12 @@
         "type-check": "tsc --build"
     },
     "dependencies": {
-        "@trezor/components": "*",
-        "@trezor/connect": "9.0.4",
-        "@trezor/connect-analytics": "*",
-        "@trezor/connect-common": "*",
-        "@trezor/env-utils": "*",
-        "@trezor/urls": "*",
+        "@trezor/components": "workspace:*",
+        "@trezor/connect": "workspace:9.0.4",
+        "@trezor/connect-analytics": "workspace:*",
+        "@trezor/connect-common": "workspace:*",
+        "@trezor/env-utils": "workspace:*",
+        "@trezor/urls": "workspace:*",
         "react-intl": "^6.2.1"
     },
     "devDependencies": {

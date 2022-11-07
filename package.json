@@ -97,7 +97,7 @@
         "@babel/preset-typescript": "^7.18.6",
         "@babel/runtime": "^7.20.1",
         "@nrwl/nx-cloud": "14.5.1",
-        "@suite-common/wallet-types": "*",
+        "@suite-common/wallet-types": "workspace:*",
         "@types/jest": "^26.0.24",
         "@types/node": "^18.11.9",
         "@types/prettier": "^2.7.1",

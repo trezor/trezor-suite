@@ -6913,16 +6913,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@suite-common/connect-init@*, @suite-common/connect-init@workspace:suite-common/connect-init":
+"@suite-common/connect-init@workspace:*, @suite-common/connect-init@workspace:suite-common/connect-init":
   version: 0.0.0-use.local
   resolution: "@suite-common/connect-init@workspace:suite-common/connect-init"
   dependencies:
     "@reduxjs/toolkit": 1.8.3
-    "@suite-common/redux-utils": "*"
-    "@suite-common/suite-types": "*"
-    "@suite-common/test-utils": "*"
-    "@trezor/connect": 9.0.4
-    "@trezor/utils": "*"
+    "@suite-common/redux-utils": "workspace:*"
+    "@suite-common/suite-types": "workspace:*"
+    "@suite-common/test-utils": "workspace:*"
+    "@trezor/connect": "workspace:9.0.4"
+    "@trezor/utils": "workspace:*"
     jest: ^26.6.3
     redux-mock-store: ^1.5.4
     redux-thunk: ^2.3.0
@@ -6930,29 +6930,29 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-common/fiat-services@*, @suite-common/fiat-services@workspace:suite-common/fiat-services":
+"@suite-common/fiat-services@workspace:*, @suite-common/fiat-services@workspace:suite-common/fiat-services":
   version: 0.0.0-use.local
   resolution: "@suite-common/fiat-services@workspace:suite-common/fiat-services"
   dependencies:
-    "@suite-common/suite-config": "*"
-    "@suite-common/wallet-types": "*"
+    "@suite-common/suite-config": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
     date-fns: ^2.29.3
     jest: ^26.6.3
     typescript: 4.9.3
   languageName: unknown
   linkType: soft
 
-"@suite-common/formatters@*, @suite-common/formatters@workspace:suite-common/formatters":
+"@suite-common/formatters@workspace:*, @suite-common/formatters@workspace:suite-common/formatters":
   version: 0.0.0-use.local
   resolution: "@suite-common/formatters@workspace:suite-common/formatters"
   dependencies:
     "@formatjs/intl": 2.5.1
-    "@suite-common/suite-config": "*"
-    "@suite-common/suite-constants": "*"
-    "@suite-common/suite-types": "*"
-    "@suite-common/wallet-config": "*"
-    "@suite-common/wallet-utils": "*"
-    "@trezor/connect": 9.0.4
+    "@suite-common/suite-config": "workspace:*"
+    "@suite-common/suite-constants": "workspace:*"
+    "@suite-common/suite-types": "workspace:*"
+    "@suite-common/wallet-config": "workspace:*"
+    "@suite-common/wallet-utils": "workspace:*"
+    "@trezor/connect": "workspace:9.0.4"
     bignumber.js: ^9.1.0
     jest: ^26.6.3
     react: 18.2.0
@@ -6961,11 +6961,11 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-common/intl-types@*, @suite-common/intl-types@workspace:suite-common/intl-types":
+"@suite-common/intl-types@workspace:*, @suite-common/intl-types@workspace:suite-common/intl-types":
   version: 0.0.0-use.local
   resolution: "@suite-common/intl-types@workspace:suite-common/intl-types"
   dependencies:
-    "@trezor/type-utils": "*"
+    "@trezor/type-utils": "workspace:*"
     jest: ^26.6.3
     react: 18.2.0
     react-intl: ^6.2.1
@@ -6973,7 +6973,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-common/metadata-types@*, @suite-common/metadata-types@workspace:suite-common/metadata-types":
+"@suite-common/metadata-types@workspace:*, @suite-common/metadata-types@workspace:suite-common/metadata-types":
   version: 0.0.0-use.local
   resolution: "@suite-common/metadata-types@workspace:suite-common/metadata-types"
   dependencies:
@@ -6982,15 +6982,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-common/redux-utils@*, @suite-common/redux-utils@workspace:suite-common/redux-utils":
+"@suite-common/redux-utils@workspace:*, @suite-common/redux-utils@workspace:suite-common/redux-utils":
   version: 0.0.0-use.local
   resolution: "@suite-common/redux-utils@workspace:suite-common/redux-utils"
   dependencies:
     "@reduxjs/toolkit": 1.8.3
-    "@suite-common/suite-types": "*"
-    "@suite-common/wallet-config": "*"
-    "@suite-common/wallet-types": "*"
-    "@trezor/connect": 9.0.4
+    "@suite-common/suite-types": "workspace:*"
+    "@suite-common/wallet-config": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
+    "@trezor/connect": "workspace:9.0.4"
     jest: ^26.6.3
     react: 18.2.0
     react-redux: 7.2.2
@@ -6999,19 +6999,19 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-common/sentry@*, @suite-common/sentry@workspace:suite-common/sentry":
+"@suite-common/sentry@workspace:*, @suite-common/sentry@workspace:suite-common/sentry":
   version: 0.0.0-use.local
   resolution: "@suite-common/sentry@workspace:suite-common/sentry"
   dependencies:
     "@sentry/integrations": 6.17.2
-    "@suite-common/suite-utils": "*"
-    "@trezor/utils": "*"
+    "@suite-common/suite-utils": "workspace:*"
+    "@trezor/utils": "workspace:*"
     jest: ^26.6.3
     typescript: 4.9.3
   languageName: unknown
   linkType: soft
 
-"@suite-common/suite-config@*, @suite-common/suite-config@workspace:suite-common/suite-config":
+"@suite-common/suite-config@workspace:*, @suite-common/suite-config@workspace:suite-common/suite-config":
   version: 0.0.0-use.local
   resolution: "@suite-common/suite-config@workspace:suite-common/suite-config"
   dependencies:
@@ -7020,56 +7020,56 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-common/suite-constants@*, @suite-common/suite-constants@workspace:suite-common/suite-constants":
+"@suite-common/suite-constants@workspace:*, @suite-common/suite-constants@workspace:suite-common/suite-constants":
   version: 0.0.0-use.local
   resolution: "@suite-common/suite-constants@workspace:suite-common/suite-constants"
   dependencies:
-    "@suite-common/wallet-config": "*"
-    "@trezor/connect": 9.0.4
+    "@suite-common/wallet-config": "workspace:*"
+    "@trezor/connect": "workspace:9.0.4"
     jest: ^26.6.3
     typescript: 4.9.3
   languageName: unknown
   linkType: soft
 
-"@suite-common/suite-types@*, @suite-common/suite-types@workspace:suite-common/suite-types":
+"@suite-common/suite-types@workspace:*, @suite-common/suite-types@workspace:suite-common/suite-types":
   version: 0.0.0-use.local
   resolution: "@suite-common/suite-types@workspace:suite-common/suite-types"
   dependencies:
     "@reduxjs/toolkit": 1.8.3
-    "@suite-common/metadata-types": "*"
-    "@suite-common/wallet-config": "*"
-    "@trezor/connect": 9.0.4
+    "@suite-common/metadata-types": "workspace:*"
+    "@suite-common/wallet-config": "workspace:*"
+    "@trezor/connect": "workspace:9.0.4"
     bignumber.js: ^9.1.0
     jest: ^26.6.3
     typescript: 4.9.3
   languageName: unknown
   linkType: soft
 
-"@suite-common/suite-utils@*, @suite-common/suite-utils@workspace:suite-common/suite-utils":
+"@suite-common/suite-utils@workspace:*, @suite-common/suite-utils@workspace:suite-common/suite-utils":
   version: 0.0.0-use.local
   resolution: "@suite-common/suite-utils@workspace:suite-common/suite-utils"
   dependencies:
-    "@suite-common/suite-config": "*"
-    "@suite-common/wallet-config": "*"
+    "@suite-common/suite-config": "workspace:*"
+    "@suite-common/wallet-config": "workspace:*"
     date-fns: ^2.29.3
     jest: ^26.6.3
     typescript: 4.9.3
   languageName: unknown
   linkType: soft
 
-"@suite-common/test-utils@*, @suite-common/test-utils@workspace:suite-common/test-utils":
+"@suite-common/test-utils@workspace:*, @suite-common/test-utils@workspace:suite-common/test-utils":
   version: 0.0.0-use.local
   resolution: "@suite-common/test-utils@workspace:suite-common/test-utils"
   dependencies:
     "@mobily/ts-belt": ^3.13.1
     "@reduxjs/toolkit": 1.8.3
-    "@suite-common/redux-utils": "*"
-    "@suite-common/suite-types": "*"
-    "@suite-common/wallet-config": "*"
-    "@suite-common/wallet-types": "*"
-    "@trezor/connect": 9.0.4
-    "@trezor/message-system": "*"
-    "@trezor/utils": "*"
+    "@suite-common/redux-utils": "workspace:*"
+    "@suite-common/suite-types": "workspace:*"
+    "@suite-common/wallet-config": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
+    "@trezor/connect": "workspace:9.0.4"
+    "@trezor/message-system": "workspace:*"
+    "@trezor/utils": "workspace:*"
     dropbox: ^10.32.0
     fake-indexeddb: ^4.0.0
     jest: ^26.6.3
@@ -7079,24 +7079,24 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-common/toast-notifications@*, @suite-common/toast-notifications@workspace:suite-common/toast-notifications":
+"@suite-common/toast-notifications@workspace:*, @suite-common/toast-notifications@workspace:suite-common/toast-notifications":
   version: 0.0.0-use.local
   resolution: "@suite-common/toast-notifications@workspace:suite-common/toast-notifications"
   dependencies:
     "@reduxjs/toolkit": 1.8.3
-    "@suite-common/intl-types": "*"
-    "@suite-common/redux-utils": "*"
-    "@suite-common/suite-constants": "*"
-    "@suite-common/suite-types": "*"
-    "@suite-common/test-utils": "*"
-    "@suite-common/wallet-config": "*"
-    "@trezor/connect": 9.0.4
+    "@suite-common/intl-types": "workspace:*"
+    "@suite-common/redux-utils": "workspace:*"
+    "@suite-common/suite-constants": "workspace:*"
+    "@suite-common/suite-types": "workspace:*"
+    "@suite-common/test-utils": "workspace:*"
+    "@suite-common/wallet-config": "workspace:*"
+    "@trezor/connect": "workspace:9.0.4"
     jest: ^26.6.3
     typescript: 4.9.3
   languageName: unknown
   linkType: soft
 
-"@suite-common/wallet-config@*, @suite-common/wallet-config@workspace:suite-common/wallet-config":
+"@suite-common/wallet-config@workspace:*, @suite-common/wallet-config@workspace:suite-common/wallet-config":
   version: 0.0.0-use.local
   resolution: "@suite-common/wallet-config@workspace:suite-common/wallet-config"
   dependencies:
@@ -7105,7 +7105,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-common/wallet-constants@*, @suite-common/wallet-constants@workspace:suite-common/wallet-constants":
+"@suite-common/wallet-constants@workspace:*, @suite-common/wallet-constants@workspace:suite-common/wallet-constants":
   version: 0.0.0-use.local
   resolution: "@suite-common/wallet-constants@workspace:suite-common/wallet-constants"
   dependencies:
@@ -7114,65 +7114,65 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-common/wallet-core@*, @suite-common/wallet-core@workspace:suite-common/wallet-core":
+"@suite-common/wallet-core@workspace:*, @suite-common/wallet-core@workspace:suite-common/wallet-core":
   version: 0.0.0-use.local
   resolution: "@suite-common/wallet-core@workspace:suite-common/wallet-core"
   dependencies:
     "@mobily/ts-belt": ^3.13.1
     "@reduxjs/toolkit": 1.8.3
-    "@suite-common/fiat-services": "*"
-    "@suite-common/redux-utils": "*"
-    "@suite-common/suite-config": "*"
-    "@suite-common/suite-types": "*"
-    "@suite-common/suite-utils": "*"
-    "@suite-common/test-utils": "*"
-    "@suite-common/toast-notifications": "*"
-    "@suite-common/wallet-config": "*"
-    "@suite-common/wallet-types": "*"
-    "@suite-common/wallet-utils": "*"
-    "@trezor/connect": 9.0.4
-    "@trezor/utils": "*"
+    "@suite-common/fiat-services": "workspace:*"
+    "@suite-common/redux-utils": "workspace:*"
+    "@suite-common/suite-config": "workspace:*"
+    "@suite-common/suite-types": "workspace:*"
+    "@suite-common/suite-utils": "workspace:*"
+    "@suite-common/test-utils": "workspace:*"
+    "@suite-common/toast-notifications": "workspace:*"
+    "@suite-common/wallet-config": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
+    "@suite-common/wallet-utils": "workspace:*"
+    "@trezor/connect": "workspace:9.0.4"
+    "@trezor/utils": "workspace:*"
     date-fns: ^2.29.3
     jest: ^26.6.3
     typescript: 4.9.3
   languageName: unknown
   linkType: soft
 
-"@suite-common/wallet-graph@*, @suite-common/wallet-graph@workspace:suite-common/wallet-graph":
+"@suite-common/wallet-graph@workspace:*, @suite-common/wallet-graph@workspace:suite-common/wallet-graph":
   version: 0.0.0-use.local
   resolution: "@suite-common/wallet-graph@workspace:suite-common/wallet-graph"
   dependencies:
     "@mobily/ts-belt": ^3.13.1
     "@reduxjs/toolkit": 1.8.3
-    "@suite-common/fiat-services": "*"
-    "@suite-common/redux-utils": "*"
-    "@suite-common/suite-config": "*"
-    "@suite-common/suite-utils": "*"
-    "@suite-common/test-utils": "*"
-    "@suite-common/wallet-config": "*"
-    "@suite-common/wallet-constants": "*"
-    "@suite-common/wallet-core": "*"
-    "@suite-common/wallet-types": "*"
-    "@suite-common/wallet-utils": "*"
-    "@trezor/blockchain-link": "*"
-    "@trezor/connect": 9.0.4
+    "@suite-common/fiat-services": "workspace:*"
+    "@suite-common/redux-utils": "workspace:*"
+    "@suite-common/suite-config": "workspace:*"
+    "@suite-common/suite-utils": "workspace:*"
+    "@suite-common/test-utils": "workspace:*"
+    "@suite-common/wallet-config": "workspace:*"
+    "@suite-common/wallet-constants": "workspace:*"
+    "@suite-common/wallet-core": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
+    "@suite-common/wallet-utils": "workspace:*"
+    "@trezor/blockchain-link": "workspace:*"
+    "@trezor/connect": "workspace:9.0.4"
     bignumber.js: ^9.1.0
     date-fns: ^2.29.3
     jest: ^26.6.3
   languageName: unknown
   linkType: soft
 
-"@suite-common/wallet-types@*, @suite-common/wallet-types@workspace:suite-common/wallet-types":
+"@suite-common/wallet-types@workspace:*, @suite-common/wallet-types@workspace:suite-common/wallet-types":
   version: 0.0.0-use.local
   resolution: "@suite-common/wallet-types@workspace:suite-common/wallet-types"
   dependencies:
-    "@suite-common/intl-types": "*"
-    "@suite-common/suite-utils": "*"
-    "@suite-common/wallet-config": "*"
-    "@suite-common/wallet-constants": "*"
-    "@trezor/connect": 9.0.4
-    "@trezor/type-utils": "*"
-    "@trezor/utils": "*"
+    "@suite-common/intl-types": "workspace:*"
+    "@suite-common/suite-utils": "workspace:*"
+    "@suite-common/wallet-config": "workspace:*"
+    "@suite-common/wallet-constants": "workspace:*"
+    "@trezor/connect": "workspace:9.0.4"
+    "@trezor/type-utils": "workspace:*"
+    "@trezor/utils": "workspace:*"
     jest: ^26.6.3
     react: 18.2.0
     react-hook-form: 6.15.7
@@ -7180,25 +7180,25 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-common/wallet-utils@*, @suite-common/wallet-utils@workspace:suite-common/wallet-utils":
+"@suite-common/wallet-utils@workspace:*, @suite-common/wallet-utils@workspace:suite-common/wallet-utils":
   version: 0.0.0-use.local
   resolution: "@suite-common/wallet-utils@workspace:suite-common/wallet-utils"
   dependencies:
     "@ethereumjs/common": ^2.6.4
     "@ethereumjs/tx": ^3.5.2
-    "@suite-common/fiat-services": "*"
-    "@suite-common/metadata-types": "*"
-    "@suite-common/suite-config": "*"
-    "@suite-common/suite-constants": "*"
-    "@suite-common/suite-types": "*"
-    "@suite-common/suite-utils": "*"
-    "@suite-common/test-utils": "*"
-    "@suite-common/wallet-config": "*"
-    "@suite-common/wallet-constants": "*"
-    "@suite-common/wallet-types": "*"
-    "@trezor/connect": 9.0.4
-    "@trezor/urls": "*"
-    "@trezor/utils": "*"
+    "@suite-common/fiat-services": "workspace:*"
+    "@suite-common/metadata-types": "workspace:*"
+    "@suite-common/suite-config": "workspace:*"
+    "@suite-common/suite-constants": "workspace:*"
+    "@suite-common/suite-types": "workspace:*"
+    "@suite-common/suite-utils": "workspace:*"
+    "@suite-common/test-utils": "workspace:*"
+    "@suite-common/wallet-config": "workspace:*"
+    "@suite-common/wallet-constants": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
+    "@trezor/connect": "workspace:9.0.4"
+    "@trezor/urls": "workspace:*"
+    "@trezor/utils": "workspace:*"
     "@types/pdfmake": ^0.2.2
     bignumber.js: ^9.1.0
     date-fns: ^2.29.3
@@ -7213,44 +7213,44 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-native/accounts@*, @suite-native/accounts@workspace:suite-native/accounts":
+"@suite-native/accounts@workspace:*, @suite-native/accounts@workspace:suite-native/accounts":
   version: 0.0.0-use.local
   resolution: "@suite-native/accounts@workspace:suite-native/accounts"
   dependencies:
     "@mobily/ts-belt": ^3.13.1
-    "@suite-common/formatters": "*"
-    "@suite-common/wallet-config": "*"
-    "@suite-common/wallet-core": "*"
-    "@suite-common/wallet-types": "*"
-    "@suite-common/wallet-utils": "*"
-    "@suite-native/atoms": "*"
-    "@suite-native/module-settings": "*"
-    "@trezor/icons": "*"
-    "@trezor/styles": "*"
+    "@suite-common/formatters": "workspace:*"
+    "@suite-common/wallet-config": "workspace:*"
+    "@suite-common/wallet-core": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
+    "@suite-common/wallet-utils": "workspace:*"
+    "@suite-native/atoms": "workspace:*"
+    "@suite-native/module-settings": "workspace:*"
+    "@trezor/icons": "workspace:*"
+    "@trezor/styles": "workspace:*"
     react: 18.2.0
     react-native: 0.70.5
     react-redux: 7.2.2
   languageName: unknown
   linkType: soft
 
-"@suite-native/assets@*, @suite-native/assets@workspace:suite-native/assets":
+"@suite-native/assets@workspace:*, @suite-native/assets@workspace:suite-native/assets":
   version: 0.0.0-use.local
   resolution: "@suite-native/assets@workspace:suite-native/assets"
   dependencies:
     "@react-navigation/native": ^6.0.11
     "@reduxjs/toolkit": 1.8.3
-    "@suite-common/formatters": "*"
-    "@suite-common/suite-config": "*"
-    "@suite-common/wallet-config": "*"
-    "@suite-common/wallet-core": "*"
-    "@suite-common/wallet-types": "*"
-    "@suite-common/wallet-utils": "*"
-    "@suite-native/atoms": "*"
-    "@suite-native/module-settings": "*"
-    "@suite-native/navigation": "*"
-    "@suite-native/state": "*"
-    "@trezor/icons": "*"
-    "@trezor/styles": "*"
+    "@suite-common/formatters": "workspace:*"
+    "@suite-common/suite-config": "workspace:*"
+    "@suite-common/wallet-config": "workspace:*"
+    "@suite-common/wallet-core": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
+    "@suite-common/wallet-utils": "workspace:*"
+    "@suite-native/atoms": "workspace:*"
+    "@suite-native/module-settings": "workspace:*"
+    "@suite-native/navigation": "workspace:*"
+    "@suite-native/state": "workspace:*"
+    "@trezor/icons": "workspace:*"
+    "@trezor/styles": "workspace:*"
     bignumber.js: ^9.1.0
     jotai: 1.9.1
     react: ^18.2.0
@@ -7259,17 +7259,17 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-native/atoms@*, @suite-native/atoms@workspace:suite-native/atoms":
+"@suite-native/atoms@workspace:*, @suite-native/atoms@workspace:suite-native/atoms":
   version: 0.0.0-use.local
   resolution: "@suite-native/atoms@workspace:suite-native/atoms"
   dependencies:
     "@mobily/ts-belt": ^3.13.1
-    "@suite-common/formatters": "*"
-    "@suite-common/wallet-config": "*"
-    "@trezor/icons": "*"
-    "@trezor/styles": "*"
-    "@trezor/theme": "*"
-    "@trezor/utils": "*"
+    "@suite-common/formatters": "workspace:*"
+    "@suite-common/wallet-config": "workspace:*"
+    "@trezor/icons": "workspace:*"
+    "@trezor/styles": "workspace:*"
+    "@trezor/theme": "workspace:*"
+    "@trezor/utils": "workspace:*"
     jest: ^26.6.3
     react: 18.2.0
     react-native: 0.70.5
@@ -7280,41 +7280,41 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-native/config@*, @suite-native/config@workspace:suite-native/config":
+"@suite-native/config@workspace:*, @suite-native/config@workspace:suite-native/config":
   version: 0.0.0-use.local
   resolution: "@suite-native/config@workspace:suite-native/config"
   dependencies:
-    "@suite-common/wallet-config": "*"
+    "@suite-common/wallet-config": "workspace:*"
     jest: ^26.6.3
     react-native-config: ^1.4.6
     typescript: 4.9.3
   languageName: unknown
   linkType: soft
 
-"@suite-native/forms@*, @suite-native/forms@workspace:suite-native/forms":
+"@suite-native/forms@workspace:*, @suite-native/forms@workspace:suite-native/forms":
   version: 0.0.0-use.local
   resolution: "@suite-native/forms@workspace:suite-native/forms"
   dependencies:
-    "@suite-native/atoms": "*"
+    "@suite-native/atoms": "workspace:*"
     react: 18.2.0
     react-hook-form: 6.15.7
     yup: ^0.32.11
   languageName: unknown
   linkType: soft
 
-"@suite-native/graph@*, @suite-native/graph@workspace:suite-native/graph":
+"@suite-native/graph@workspace:*, @suite-native/graph@workspace:suite-native/graph":
   version: 0.0.0-use.local
   resolution: "@suite-native/graph@workspace:suite-native/graph"
   dependencies:
     "@shopify/react-native-skia": 0.1.162
-    "@suite-common/formatters": "*"
-    "@suite-common/wallet-graph": "*"
-    "@suite-common/wallet-types": "*"
-    "@suite-native/atoms": "*"
-    "@suite-native/test-utils": "*"
-    "@trezor/icons": "*"
-    "@trezor/styles": "*"
-    "@trezor/theme": "*"
+    "@suite-common/formatters": "workspace:*"
+    "@suite-common/wallet-graph": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
+    "@suite-native/atoms": "workspace:*"
+    "@suite-native/test-utils": "workspace:*"
+    "@trezor/icons": "workspace:*"
+    "@trezor/styles": "workspace:*"
+    "@trezor/theme": "workspace:*"
     jest: ^26.6.3
     react: 18.2.0
     react-native: 0.70.5
@@ -7326,7 +7326,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-native/module-accounts-import@*, @suite-native/module-accounts-import@workspace:suite-native/module-accounts-import":
+"@suite-native/module-accounts-import@workspace:*, @suite-native/module-accounts-import@workspace:suite-native/module-accounts-import":
   version: 0.0.0-use.local
   resolution: "@suite-native/module-accounts-import@workspace:suite-native/module-accounts-import"
   dependencies:
@@ -7334,25 +7334,25 @@ __metadata:
     "@react-navigation/native": ^6.0.11
     "@react-navigation/stack": ^6.2.2
     "@reduxjs/toolkit": 1.8.3
-    "@suite-common/formatters": "*"
-    "@suite-common/redux-utils": "*"
-    "@suite-common/suite-types": "*"
-    "@suite-common/wallet-config": "*"
-    "@suite-common/wallet-constants": "*"
-    "@suite-common/wallet-core": "*"
-    "@suite-common/wallet-types": "*"
-    "@suite-common/wallet-utils": "*"
-    "@suite-native/accounts": "*"
-    "@suite-native/atoms": "*"
-    "@suite-native/config": "*"
-    "@suite-native/forms": "*"
-    "@suite-native/module-devices": "*"
-    "@suite-native/module-settings": "*"
-    "@suite-native/navigation": "*"
-    "@trezor/connect": 9.0.4
-    "@trezor/icons": "*"
-    "@trezor/styles": "*"
-    "@trezor/validation": "*"
+    "@suite-common/formatters": "workspace:*"
+    "@suite-common/redux-utils": "workspace:*"
+    "@suite-common/suite-types": "workspace:*"
+    "@suite-common/wallet-config": "workspace:*"
+    "@suite-common/wallet-constants": "workspace:*"
+    "@suite-common/wallet-core": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
+    "@suite-common/wallet-utils": "workspace:*"
+    "@suite-native/accounts": "workspace:*"
+    "@suite-native/atoms": "workspace:*"
+    "@suite-native/config": "workspace:*"
+    "@suite-native/forms": "workspace:*"
+    "@suite-native/module-devices": "workspace:*"
+    "@suite-native/module-settings": "workspace:*"
+    "@suite-native/navigation": "workspace:*"
+    "@trezor/connect": "workspace:9.0.4"
+    "@trezor/icons": "workspace:*"
+    "@trezor/styles": "workspace:*"
+    "@trezor/validation": "workspace:*"
     jest: ^26.6.3
     react: 18.2.0
     react-native: 0.70.5
@@ -7365,7 +7365,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-native/module-accounts@*, @suite-native/module-accounts@workspace:suite-native/module-accounts":
+"@suite-native/module-accounts@workspace:*, @suite-native/module-accounts@workspace:suite-native/module-accounts":
   version: 0.0.0-use.local
   resolution: "@suite-native/module-accounts@workspace:suite-native/module-accounts"
   dependencies:
@@ -7373,22 +7373,22 @@ __metadata:
     "@react-navigation/native": ^6.0.11
     "@react-navigation/stack": ^6.2.2
     "@reduxjs/toolkit": 1.8.3
-    "@suite-common/formatters": "*"
-    "@suite-common/suite-types": "*"
-    "@suite-common/wallet-config": "*"
-    "@suite-common/wallet-core": "*"
-    "@suite-common/wallet-graph": "*"
-    "@suite-common/wallet-types": "*"
-    "@suite-common/wallet-utils": "*"
-    "@suite-native/accounts": "*"
-    "@suite-native/atoms": "*"
-    "@suite-native/graph": "*"
-    "@suite-native/module-settings": "*"
-    "@suite-native/navigation": "*"
-    "@suite-native/transactions": "*"
-    "@trezor/icons": "*"
-    "@trezor/styles": "*"
-    "@trezor/theme": "*"
+    "@suite-common/formatters": "workspace:*"
+    "@suite-common/suite-types": "workspace:*"
+    "@suite-common/wallet-config": "workspace:*"
+    "@suite-common/wallet-core": "workspace:*"
+    "@suite-common/wallet-graph": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
+    "@suite-common/wallet-utils": "workspace:*"
+    "@suite-native/accounts": "workspace:*"
+    "@suite-native/atoms": "workspace:*"
+    "@suite-native/graph": "workspace:*"
+    "@suite-native/module-settings": "workspace:*"
+    "@suite-native/navigation": "workspace:*"
+    "@suite-native/transactions": "workspace:*"
+    "@trezor/icons": "workspace:*"
+    "@trezor/styles": "workspace:*"
+    "@trezor/theme": "workspace:*"
     jotai: 1.9.1
     react: 18.2.0
     react-native: 0.70.5
@@ -7396,20 +7396,20 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-native/module-dev-utils@*, @suite-native/module-dev-utils@workspace:suite-native/module-dev-utils":
+"@suite-native/module-dev-utils@workspace:*, @suite-native/module-dev-utils@workspace:suite-native/module-dev-utils":
   version: 0.0.0-use.local
   resolution: "@suite-native/module-dev-utils@workspace:suite-native/module-dev-utils"
   dependencies:
     "@react-navigation/core": ^6.2.2
     "@react-navigation/stack": ^6.2.2
-    "@suite-native/atoms": "*"
-    "@suite-native/config": "*"
-    "@suite-native/module-settings": "*"
-    "@suite-native/navigation": "*"
-    "@suite-native/storage": "*"
-    "@trezor/icons": "*"
-    "@trezor/styles": "*"
-    "@trezor/theme": "*"
+    "@suite-native/atoms": "workspace:*"
+    "@suite-native/config": "workspace:*"
+    "@suite-native/module-settings": "workspace:*"
+    "@suite-native/navigation": "workspace:*"
+    "@suite-native/storage": "workspace:*"
+    "@trezor/icons": "workspace:*"
+    "@trezor/styles": "workspace:*"
+    "@trezor/theme": "workspace:*"
     jest: ^26.6.3
     react: 18.2.0
     react-native: 0.70.5
@@ -7417,7 +7417,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-native/module-devices@*, @suite-native/module-devices@workspace:suite-native/module-devices":
+"@suite-native/module-devices@workspace:*, @suite-native/module-devices@workspace:suite-native/module-devices":
   version: 0.0.0-use.local
   resolution: "@suite-native/module-devices@workspace:suite-native/module-devices"
   dependencies:
@@ -7429,31 +7429,31 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-native/module-home@*, @suite-native/module-home@workspace:suite-native/module-home":
+"@suite-native/module-home@workspace:*, @suite-native/module-home@workspace:suite-native/module-home":
   version: 0.0.0-use.local
   resolution: "@suite-native/module-home@workspace:suite-native/module-home"
   dependencies:
     "@mobily/ts-belt": ^3.13.1
     "@react-navigation/native": ^6.0.11
     "@react-navigation/stack": ^6.2.2
-    "@suite-common/fiat-services": "*"
-    "@suite-common/formatters": "*"
-    "@suite-common/suite-utils": "*"
-    "@suite-common/wallet-config": "*"
-    "@suite-common/wallet-core": "*"
-    "@suite-common/wallet-graph": "*"
-    "@suite-common/wallet-types": "*"
-    "@suite-common/wallet-utils": "*"
-    "@suite-native/assets": "*"
-    "@suite-native/atoms": "*"
-    "@suite-native/config": "*"
-    "@suite-native/graph": "*"
-    "@suite-native/module-settings": "*"
-    "@suite-native/navigation": "*"
-    "@trezor/connect": 9.0.4
-    "@trezor/icons": "*"
-    "@trezor/styles": "*"
-    "@trezor/theme": "*"
+    "@suite-common/fiat-services": "workspace:*"
+    "@suite-common/formatters": "workspace:*"
+    "@suite-common/suite-utils": "workspace:*"
+    "@suite-common/wallet-config": "workspace:*"
+    "@suite-common/wallet-core": "workspace:*"
+    "@suite-common/wallet-graph": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
+    "@suite-common/wallet-utils": "workspace:*"
+    "@suite-native/assets": "workspace:*"
+    "@suite-native/atoms": "workspace:*"
+    "@suite-native/config": "workspace:*"
+    "@suite-native/graph": "workspace:*"
+    "@suite-native/module-settings": "workspace:*"
+    "@suite-native/navigation": "workspace:*"
+    "@trezor/connect": "workspace:9.0.4"
+    "@trezor/icons": "workspace:*"
+    "@trezor/styles": "workspace:*"
+    "@trezor/theme": "workspace:*"
     date-fns: ^2.29.1
     jest: ^26.6.3
     jotai: 1.9.1
@@ -7465,16 +7465,16 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-native/module-onboarding@*, @suite-native/module-onboarding@workspace:suite-native/module-onboarding":
+"@suite-native/module-onboarding@workspace:*, @suite-native/module-onboarding@workspace:suite-native/module-onboarding":
   version: 0.0.0-use.local
   resolution: "@suite-native/module-onboarding@workspace:suite-native/module-onboarding"
   dependencies:
     "@react-navigation/core": ^6.2.2
     "@react-navigation/native": ^6.0.11
     "@react-navigation/stack": ^6.2.2
-    "@suite-native/atoms": "*"
-    "@suite-native/navigation": "*"
-    "@trezor/styles": "*"
+    "@suite-native/atoms": "workspace:*"
+    "@suite-native/navigation": "workspace:*"
+    "@trezor/styles": "workspace:*"
     jest: ^26.6.3
     react: 18.2.0
     react-native: 0.70.5
@@ -7482,19 +7482,19 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-native/module-send-receive@*, @suite-native/module-send-receive@workspace:suite-native/module-send-receive":
+"@suite-native/module-send-receive@workspace:*, @suite-native/module-send-receive@workspace:suite-native/module-send-receive":
   version: 0.0.0-use.local
   resolution: "@suite-native/module-send-receive@workspace:suite-native/module-send-receive"
   dependencies:
     "@react-native-clipboard/clipboard": ^1.11.1
-    "@suite-common/wallet-core": "*"
-    "@suite-common/wallet-types": "*"
-    "@suite-common/wallet-utils": "*"
-    "@suite-native/accounts": "*"
-    "@suite-native/atoms": "*"
-    "@trezor/connect": 9.0.4
-    "@trezor/styles": "*"
-    "@trezor/theme": "*"
+    "@suite-common/wallet-core": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
+    "@suite-common/wallet-utils": "workspace:*"
+    "@suite-native/accounts": "workspace:*"
+    "@suite-native/atoms": "workspace:*"
+    "@trezor/connect": "workspace:9.0.4"
+    "@trezor/styles": "workspace:*"
+    "@trezor/theme": "workspace:*"
     jest: ^26.6.3
     react: 18.2.0
     react-native: 0.70.5
@@ -7504,7 +7504,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-native/module-settings@*, @suite-native/module-settings@workspace:suite-native/module-settings":
+"@suite-native/module-settings@workspace:*, @suite-native/module-settings@workspace:suite-native/module-settings":
   version: 0.0.0-use.local
   resolution: "@suite-native/module-settings@workspace:suite-native/module-settings"
   dependencies:
@@ -7512,14 +7512,14 @@ __metadata:
     "@react-navigation/native": ^6.0.11
     "@react-navigation/stack": ^6.2.2
     "@reduxjs/toolkit": 1.8.3
-    "@suite-common/suite-config": "*"
-    "@suite-native/atoms": "*"
-    "@suite-native/config": "*"
-    "@suite-native/navigation": "*"
-    "@suite-native/test-utils": "*"
-    "@trezor/icons": "*"
-    "@trezor/styles": "*"
-    "@trezor/theme": "*"
+    "@suite-common/suite-config": "workspace:*"
+    "@suite-native/atoms": "workspace:*"
+    "@suite-native/config": "workspace:*"
+    "@suite-native/navigation": "workspace:*"
+    "@suite-native/test-utils": "workspace:*"
+    "@trezor/icons": "workspace:*"
+    "@trezor/styles": "workspace:*"
+    "@trezor/theme": "workspace:*"
     jest: ^26.6.3
     react: 18.2.0
     react-native: 0.70.5
@@ -7528,19 +7528,19 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-native/navigation@*, @suite-native/navigation@workspace:suite-native/navigation":
+"@suite-native/navigation@workspace:*, @suite-native/navigation@workspace:suite-native/navigation":
   version: 0.0.0-use.local
   resolution: "@suite-native/navigation@workspace:suite-native/navigation"
   dependencies:
     "@react-navigation/bottom-tabs": ^6.3.1
     "@react-navigation/native": ^6.0.11
     "@react-navigation/stack": ^6.2.2
-    "@suite-common/wallet-config": "*"
-    "@suite-common/wallet-types": "*"
-    "@suite-native/atoms": "*"
-    "@trezor/icons": "*"
-    "@trezor/styles": "*"
-    "@trezor/theme": "*"
+    "@suite-common/wallet-config": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
+    "@suite-native/atoms": "workspace:*"
+    "@trezor/icons": "workspace:*"
+    "@trezor/styles": "workspace:*"
+    "@trezor/theme": "workspace:*"
     jest: ^26.6.3
     jotai: 1.9.1
     react: 18.2.0
@@ -7551,22 +7551,22 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-native/state@*, @suite-native/state@workspace:suite-native/state":
+"@suite-native/state@workspace:*, @suite-native/state@workspace:suite-native/state":
   version: 0.0.0-use.local
   resolution: "@suite-native/state@workspace:suite-native/state"
   dependencies:
     "@reduxjs/toolkit": 1.8.3
-    "@suite-common/redux-utils": "*"
-    "@suite-common/test-utils": "*"
-    "@suite-common/wallet-core": "*"
-    "@suite-common/wallet-graph": "*"
-    "@suite-native/config": "*"
-    "@suite-native/module-devices": "*"
-    "@suite-native/module-settings": "*"
-    "@suite-native/storage": "*"
-    "@trezor/connect": 9.0.4
-    "@trezor/styles": "*"
-    "@trezor/utils": "*"
+    "@suite-common/redux-utils": "workspace:*"
+    "@suite-common/test-utils": "workspace:*"
+    "@suite-common/wallet-core": "workspace:*"
+    "@suite-common/wallet-graph": "workspace:*"
+    "@suite-native/config": "workspace:*"
+    "@suite-native/module-devices": "workspace:*"
+    "@suite-native/module-settings": "workspace:*"
+    "@suite-native/storage": "workspace:*"
+    "@trezor/connect": "workspace:9.0.4"
+    "@trezor/styles": "workspace:*"
+    "@trezor/utils": "workspace:*"
     jest: ^26.6.3
     redux-flipper: 2.0.2
     redux-persist: 6.0.0
@@ -7574,7 +7574,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-native/storage@*, @suite-native/storage@workspace:suite-native/storage":
+"@suite-native/storage@workspace:*, @suite-native/storage@workspace:suite-native/storage":
   version: 0.0.0-use.local
   resolution: "@suite-native/storage@workspace:suite-native/storage"
   dependencies:
@@ -7587,13 +7587,13 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-native/test-utils@*, @suite-native/test-utils@workspace:suite-native/test-utils":
+"@suite-native/test-utils@workspace:*, @suite-native/test-utils@workspace:suite-native/test-utils":
   version: 0.0.0-use.local
   resolution: "@suite-native/test-utils@workspace:suite-native/test-utils"
   dependencies:
     "@testing-library/react-native": ^11.0.0
-    "@trezor/styles": "*"
-    "@trezor/theme": "*"
+    "@trezor/styles": "workspace:*"
+    "@trezor/theme": "workspace:*"
     jest: ^26.6.3
     react: 18.2.0
     react-native-gesture-handler: ^2.7.0
@@ -7604,22 +7604,22 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-native/transactions@*, @suite-native/transactions@workspace:suite-native/transactions":
+"@suite-native/transactions@workspace:*, @suite-native/transactions@workspace:suite-native/transactions":
   version: 0.0.0-use.local
   resolution: "@suite-native/transactions@workspace:suite-native/transactions"
   dependencies:
     "@mobily/ts-belt": ^3.13.1
     "@react-navigation/native": ^6.0.11
-    "@suite-common/formatters": "*"
-    "@suite-common/wallet-config": "*"
-    "@suite-common/wallet-core": "*"
-    "@suite-common/wallet-types": "*"
-    "@suite-common/wallet-utils": "*"
-    "@suite-native/atoms": "*"
-    "@suite-native/module-settings": "*"
-    "@suite-native/navigation": "*"
-    "@trezor/icons": "*"
-    "@trezor/styles": "*"
+    "@suite-common/formatters": "workspace:*"
+    "@suite-common/wallet-config": "workspace:*"
+    "@suite-common/wallet-core": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
+    "@suite-common/wallet-utils": "workspace:*"
+    "@suite-native/atoms": "workspace:*"
+    "@suite-native/module-settings": "workspace:*"
+    "@suite-native/navigation": "workspace:*"
+    "@trezor/icons": "workspace:*"
+    "@trezor/styles": "workspace:*"
     jotai: 1.9.1
     react: 18.2.0
     react-native: 0.70.5
@@ -7731,11 +7731,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@trezor/analytics@*, @trezor/analytics@workspace:packages/analytics":
+"@trezor/analytics@workspace:*, @trezor/analytics@workspace:packages/analytics":
   version: 0.0.0-use.local
   resolution: "@trezor/analytics@workspace:packages/analytics"
   dependencies:
-    "@trezor/utils": "*"
+    "@trezor/utils": "workspace:*"
     jest: ^26.6.3
     typescript: 4.9.3
   languageName: unknown
@@ -7756,12 +7756,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/blockchain-link@*, @trezor/blockchain-link@^2.1.5, @trezor/blockchain-link@workspace:packages/blockchain-link":
+"@trezor/blockchain-link@workspace:*, @trezor/blockchain-link@workspace:^2.1.5, @trezor/blockchain-link@workspace:packages/blockchain-link":
   version: 0.0.0-use.local
   resolution: "@trezor/blockchain-link@workspace:packages/blockchain-link"
   dependencies:
-    "@trezor/utils": ^9.0.3
-    "@trezor/utxo-lib": ^1.0.1
+    "@trezor/utils": "workspace:^9.0.3"
+    "@trezor/utxo-lib": "workspace:^1.0.1"
     "@types/web": ^0.0.80
     bignumber.js: ^9.1.0
     events: ^3.3.0
@@ -7782,13 +7782,13 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/coinjoin@*, @trezor/coinjoin@workspace:packages/coinjoin":
+"@trezor/coinjoin@workspace:*, @trezor/coinjoin@workspace:packages/coinjoin":
   version: 0.0.0-use.local
   resolution: "@trezor/coinjoin@workspace:packages/coinjoin"
   dependencies:
-    "@trezor/blockchain-link": "*"
-    "@trezor/utils": "*"
-    "@trezor/utxo-lib": "*"
+    "@trezor/blockchain-link": "workspace:*"
+    "@trezor/utils": "workspace:*"
+    "@trezor/utxo-lib": "workspace:*"
     bignumber.js: ^9.1.0
     cross-fetch: ^3.1.5
     events: ^3.3.0
@@ -7797,7 +7797,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/components@*, @trezor/components@workspace:packages/components":
+"@trezor/components@workspace:*, @trezor/components@workspace:packages/components":
   version: 0.0.0-use.local
   resolution: "@trezor/components@workspace:packages/components"
   dependencies:
@@ -7813,8 +7813,8 @@ __metadata:
     "@storybook/manager-webpack5": ^6.5.13
     "@storybook/react": ^6.5.13
     "@tippyjs/react": ^4.2.6
-    "@trezor/dom-utils": "*"
-    "@trezor/react-utils": "*"
+    "@trezor/dom-utils": "workspace:*"
+    "@trezor/react-utils": "workspace:*"
     "@types/react": 18.0.25
     "@types/react-date-range": ^1.4.4
     "@types/react-truncate": ^2.3.4
@@ -7847,16 +7847,16 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/connect-analytics@*, @trezor/connect-analytics@workspace:packages/connect-analytics":
+"@trezor/connect-analytics@workspace:*, @trezor/connect-analytics@workspace:packages/connect-analytics":
   version: 0.0.0-use.local
   resolution: "@trezor/connect-analytics@workspace:packages/connect-analytics"
   dependencies:
-    "@trezor/analytics": "*"
+    "@trezor/analytics": "workspace:*"
     typescript: 4.7.4
   languageName: unknown
   linkType: soft
 
-"@trezor/connect-common@*, @trezor/connect-common@0.0.10, @trezor/connect-common@workspace:packages/connect-common":
+"@trezor/connect-common@workspace:*, @trezor/connect-common@workspace:0.0.10, @trezor/connect-common@workspace:packages/connect-common":
   version: 0.0.0-use.local
   resolution: "@trezor/connect-common@workspace:packages/connect-common"
   dependencies:
@@ -7870,8 +7870,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/connect-explorer@workspace:packages/connect-explorer"
   dependencies:
-    "@trezor/components": "*"
-    "@trezor/connect-web": 9.0.4
+    "@trezor/components": "workspace:*"
+    "@trezor/connect-web": "workspace:9.0.4"
     "@types/markdown-it": ^12.2.3
     "@types/markdown-it-link-attributes": ^3.0.1
     "@types/react-router": ^5.1.19
@@ -7909,7 +7909,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/connect-iframe@workspace:packages/connect-iframe"
   dependencies:
-    "@trezor/connect": 9.0.4
+    "@trezor/connect": "workspace:9.0.4"
     copy-webpack-plugin: ^11.0.0
     html-webpack-plugin: ^5.5.0
     jest: ^26.6.3
@@ -7955,13 +7955,13 @@ __metadata:
   resolution: "@trezor/connect-popup@workspace:packages/connect-popup"
   dependencies:
     "@playwright/test": ^1.22.2
-    "@trezor/components": "*"
-    "@trezor/connect": 9.0.4
-    "@trezor/connect-analytics": "*"
-    "@trezor/connect-ui": "*"
-    "@trezor/crypto-utils": "*"
-    "@trezor/trezor-user-env-link": "*"
-    "@trezor/urls": "*"
+    "@trezor/components": "workspace:*"
+    "@trezor/connect": "workspace:9.0.4"
+    "@trezor/connect-analytics": "workspace:*"
+    "@trezor/connect-ui": "workspace:*"
+    "@trezor/crypto-utils": "workspace:*"
+    "@trezor/trezor-user-env-link": "workspace:*"
+    "@trezor/urls": "workspace:*"
     "@types/react": 18.0.25
     "@types/styled-components": ^5.1.25
     jest: ^26.6.3
@@ -7978,16 +7978,16 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/connect-ui@*, @trezor/connect-ui@workspace:packages/connect-ui":
+"@trezor/connect-ui@workspace:*, @trezor/connect-ui@workspace:packages/connect-ui":
   version: 0.0.0-use.local
   resolution: "@trezor/connect-ui@workspace:packages/connect-ui"
   dependencies:
-    "@trezor/components": "*"
-    "@trezor/connect": 9.0.4
-    "@trezor/connect-analytics": "*"
-    "@trezor/connect-common": "*"
-    "@trezor/env-utils": "*"
-    "@trezor/urls": "*"
+    "@trezor/components": "workspace:*"
+    "@trezor/connect": "workspace:9.0.4"
+    "@trezor/connect-analytics": "workspace:*"
+    "@trezor/connect-common": "workspace:*"
+    "@trezor/env-utils": "workspace:*"
+    "@trezor/urls": "workspace:*"
     "@types/react": 18.0.25
     "@types/styled-components": ^5.1.25
     jest: ^26.6.3
@@ -7999,12 +7999,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/connect-web@9.0.4, @trezor/connect-web@workspace:packages/connect-web":
+"@trezor/connect-web@workspace:9.0.4, @trezor/connect-web@workspace:packages/connect-web":
   version: 0.0.0-use.local
   resolution: "@trezor/connect-web@workspace:packages/connect-web"
   dependencies:
-    "@trezor/connect": 9.0.4
-    "@trezor/utils": ^9.0.3
+    "@trezor/connect": "workspace:9.0.4"
+    "@trezor/utils": "workspace:^9.0.3"
     "@types/chrome": 0.0.181
     "@types/w3c-web-usb": ^1.0.5
     events: ^3.3.0
@@ -8018,18 +8018,18 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/connect@9.0.4, @trezor/connect@workspace:packages/connect":
+"@trezor/connect@workspace:9.0.4, @trezor/connect@workspace:packages/connect":
   version: 0.0.0-use.local
   resolution: "@trezor/connect@workspace:packages/connect"
   dependencies:
-    "@trezor/blockchain-link": ^2.1.5
-    "@trezor/connect-analytics": "*"
-    "@trezor/connect-common": 0.0.10
-    "@trezor/device-utils": "*"
-    "@trezor/transport": ^1.1.5
-    "@trezor/trezor-user-env-link": "*"
-    "@trezor/utils": ^9.0.3
-    "@trezor/utxo-lib": ^1.0.1
+    "@trezor/blockchain-link": "workspace:^2.1.5"
+    "@trezor/connect-analytics": "workspace:*"
+    "@trezor/connect-common": "workspace:0.0.10"
+    "@trezor/device-utils": "workspace:*"
+    "@trezor/transport": "workspace:^1.1.5"
+    "@trezor/trezor-user-env-link": "workspace:*"
+    "@trezor/utils": "workspace:^9.0.3"
+    "@trezor/utxo-lib": "workspace:^1.0.1"
     "@types/karma": ^6.3.3
     "@types/parse-uri": ^1.0.0
     "@types/randombytes": ^2.0.0
@@ -8055,13 +8055,13 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/crypto-utils@*, @trezor/crypto-utils@workspace:packages/crypto-utils":
+"@trezor/crypto-utils@workspace:*, @trezor/crypto-utils@workspace:packages/crypto-utils":
   version: 0.0.0-use.local
   resolution: "@trezor/crypto-utils@workspace:packages/crypto-utils"
   languageName: unknown
   linkType: soft
 
-"@trezor/device-utils@*, @trezor/device-utils@workspace:packages/device-utils":
+"@trezor/device-utils@workspace:*, @trezor/device-utils@workspace:packages/device-utils":
   version: 0.0.0-use.local
   resolution: "@trezor/device-utils@workspace:packages/device-utils"
   dependencies:
@@ -8069,7 +8069,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/dom-utils@*, @trezor/dom-utils@workspace:packages/dom-utils":
+"@trezor/dom-utils@workspace:*, @trezor/dom-utils@workspace:packages/dom-utils":
   version: 0.0.0-use.local
   resolution: "@trezor/dom-utils@workspace:packages/dom-utils"
   dependencies:
@@ -8078,7 +8078,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/env-utils@*, @trezor/env-utils@workspace:packages/env-utils":
+"@trezor/env-utils@workspace:*, @trezor/env-utils@workspace:packages/env-utils":
   version: 0.0.0-use.local
   resolution: "@trezor/env-utils@workspace:packages/env-utils"
   dependencies:
@@ -8086,13 +8086,13 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/icons@*, @trezor/icons@workspace:packages/icons":
+"@trezor/icons@workspace:*, @trezor/icons@workspace:packages/icons":
   version: 0.0.0-use.local
   resolution: "@trezor/icons@workspace:packages/icons"
   dependencies:
     "@shopify/react-native-skia": 0.1.162
-    "@trezor/styles": "*"
-    "@trezor/theme": "*"
+    "@trezor/styles": "workspace:*"
+    "@trezor/theme": "workspace:*"
     jest: ^26.6.3
     react: 18.2.0
     react-native: 0.70.5
@@ -8107,18 +8107,18 @@ __metadata:
   resolution: "@trezor/integration-tests@workspace:packages/integration-tests"
   dependencies:
     "@playwright/test": ^1.22.2
-    "@trezor/trezor-user-env-link": "*"
+    "@trezor/trezor-user-env-link": "workspace:*"
     playwright: ^1.22.2
   languageName: unknown
   linkType: soft
 
-"@trezor/ipc-proxy@*, @trezor/ipc-proxy@workspace:packages/ipc-proxy":
+"@trezor/ipc-proxy@workspace:*, @trezor/ipc-proxy@workspace:packages/ipc-proxy":
   version: 0.0.0-use.local
   resolution: "@trezor/ipc-proxy@workspace:packages/ipc-proxy"
   languageName: unknown
   linkType: soft
 
-"@trezor/message-system@*, @trezor/message-system@workspace:packages/message-system":
+"@trezor/message-system@workspace:*, @trezor/message-system@workspace:packages/message-system":
   version: 0.0.0-use.local
   resolution: "@trezor/message-system@workspace:packages/message-system"
   dependencies:
@@ -8133,23 +8133,23 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/react-utils@*, @trezor/react-utils@workspace:packages/react-utils":
+"@trezor/react-utils@workspace:*, @trezor/react-utils@workspace:packages/react-utils":
   version: 0.0.0-use.local
   resolution: "@trezor/react-utils@workspace:packages/react-utils"
   dependencies:
-    "@trezor/type-utils": "*"
-    "@trezor/utils": "*"
+    "@trezor/type-utils": "workspace:*"
+    "@trezor/utils": "workspace:*"
     jest: ^26.6.3
     react: 18.2.0
     typescript: 4.9.3
   languageName: unknown
   linkType: soft
 
-"@trezor/request-manager@*, @trezor/request-manager@workspace:packages/request-manager":
+"@trezor/request-manager@workspace:*, @trezor/request-manager@workspace:packages/request-manager":
   version: 0.0.0-use.local
   resolution: "@trezor/request-manager@workspace:packages/request-manager"
   dependencies:
-    "@trezor/utils": "*"
+    "@trezor/utils": "workspace:*"
     "@types/node-fetch": ^2.6.2
     jest: ^26.6.3
     rimraf: ^3.0.2
@@ -8175,13 +8175,13 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/styles@*, @trezor/styles@workspace:packages/styles":
+"@trezor/styles@workspace:*, @trezor/styles@workspace:packages/styles":
   version: 0.0.0-use.local
   resolution: "@trezor/styles@workspace:packages/styles"
   dependencies:
     "@mobily/ts-belt": ^3.13.1
-    "@trezor/theme": "*"
-    "@types/react-native": "*"
+    "@trezor/theme": "workspace:*"
+    "@types/react-native": "workspace:*"
     css-in-js-utils: ^3.1.0
     csstype: ^3.1.1
     fela: ^12.2.1
@@ -8202,11 +8202,11 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/suite-analytics@*, @trezor/suite-analytics@workspace:packages/suite-analytics":
+"@trezor/suite-analytics@workspace:*, @trezor/suite-analytics@workspace:packages/suite-analytics":
   version: 0.0.0-use.local
   resolution: "@trezor/suite-analytics@workspace:packages/suite-analytics"
   dependencies:
-    "@trezor/analytics": "*"
+    "@trezor/analytics": "workspace:*"
     jest: ^26.6.3
     typescript: 4.9.3
   languageName: unknown
@@ -8218,8 +8218,8 @@ __metadata:
   dependencies:
     "@pmmmwh/react-refresh-webpack-plugin": ^0.5.9
     "@sentry/webpack-plugin": ^1.18.3
-    "@suite-common/suite-config": "*"
-    "@trezor/suite": "*"
+    "@suite-common/suite-config": "workspace:*"
+    "@trezor/suite": "workspace:*"
     "@types/copy-webpack-plugin": ^10.1.0
     "@types/webpack-bundle-analyzer": ^4.6.0
     "@types/webpack-plugin-serve": ^1.4.2
@@ -8247,13 +8247,13 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/suite-data@*, @trezor/suite-data@workspace:packages/suite-data":
+"@trezor/suite-data@workspace:*, @trezor/suite-data@workspace:packages/suite-data":
   version: 0.0.0-use.local
   resolution: "@trezor/suite-data@workspace:packages/suite-data"
   dependencies:
-    "@suite-common/suite-types": "*"
-    "@trezor/urls": "*"
-    "@trezor/utils": "*"
+    "@suite-common/suite-types": "workspace:*"
+    "@trezor/urls": "workspace:*"
+    "@trezor/utils": "workspace:*"
     "@types/fs-extra": ^9.0.13
     "@types/ua-parser-js": ^0.7.36
     autoprefixer: ^10.4.8
@@ -8276,7 +8276,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/suite-desktop-api@*, @trezor/suite-desktop-api@workspace:packages/suite-desktop-api":
+"@trezor/suite-desktop-api@workspace:*, @trezor/suite-desktop-api@workspace:packages/suite-desktop-api":
   version: 0.0.0-use.local
   resolution: "@trezor/suite-desktop-api@workspace:packages/suite-desktop-api"
   dependencies:
@@ -8291,16 +8291,16 @@ __metadata:
   resolution: "@trezor/suite-desktop-ui@workspace:packages/suite-desktop-ui"
   dependencies:
     "@sentry/electron": 3.0.0
-    "@suite-common/formatters": "*"
-    "@suite-common/sentry": "*"
-    "@trezor/components": "*"
-    "@trezor/connect": 9.0.4
-    "@trezor/ipc-proxy": "*"
-    "@trezor/suite": "*"
-    "@trezor/suite-analytics": "*"
-    "@trezor/suite-desktop-api": "*"
-    "@trezor/urls": "*"
-    "@trezor/utils": "*"
+    "@suite-common/formatters": "workspace:*"
+    "@suite-common/sentry": "workspace:*"
+    "@trezor/components": "workspace:*"
+    "@trezor/connect": "workspace:9.0.4"
+    "@trezor/ipc-proxy": "workspace:*"
+    "@trezor/suite": "workspace:*"
+    "@trezor/suite-analytics": "workspace:*"
+    "@trezor/suite-desktop-api": "workspace:*"
+    "@trezor/urls": "workspace:*"
+    "@trezor/utils": "workspace:*"
     "@types/react": 18.0.25
     "@types/react-dom": 18.0.9
     "@types/react-redux": ^7.1.24
@@ -8323,18 +8323,18 @@ __metadata:
     "@electron/notarize": 1.2.3
     "@playwright/test": ^1.22.2
     "@sentry/electron": 3.0.0
-    "@suite-common/sentry": "*"
-    "@suite-common/suite-types": "*"
-    "@suite-common/suite-utils": "*"
-    "@trezor/coinjoin": "*"
-    "@trezor/connect": 9.0.4
-    "@trezor/connect-common": "*"
-    "@trezor/ipc-proxy": "*"
-    "@trezor/request-manager": "*"
-    "@trezor/suite-desktop-api": "*"
-    "@trezor/trezor-user-env-link": "*"
-    "@trezor/urls": "*"
-    "@trezor/utils": "*"
+    "@suite-common/sentry": "workspace:*"
+    "@suite-common/suite-types": "workspace:*"
+    "@suite-common/suite-utils": "workspace:*"
+    "@trezor/coinjoin": "workspace:*"
+    "@trezor/connect": "workspace:9.0.4"
+    "@trezor/connect-common": "workspace:*"
+    "@trezor/ipc-proxy": "workspace:*"
+    "@trezor/request-manager": "workspace:*"
+    "@trezor/suite-desktop-api": "workspace:*"
+    "@trezor/trezor-user-env-link": "workspace:*"
+    "@trezor/urls": "workspace:*"
+    "@trezor/utils": "workspace:*"
     "@types/electron-localshortcut": ^3.1.0
     "@types/node-fetch": ^2.6.2
     chalk: ^4.1.2
@@ -8373,28 +8373,28 @@ __metadata:
     "@react-navigation/stack": ^6.2.2
     "@reduxjs/toolkit": 1.8.3
     "@shopify/react-native-skia": 0.1.162
-    "@suite-common/connect-init": "*"
-    "@suite-common/formatters": "*"
-    "@suite-common/wallet-core": "*"
-    "@suite-native/atoms": "*"
-    "@suite-native/config": "*"
-    "@suite-native/module-accounts": "*"
-    "@suite-native/module-accounts-import": "*"
-    "@suite-native/module-dev-utils": "*"
-    "@suite-native/module-home": "*"
-    "@suite-native/module-onboarding": "*"
-    "@suite-native/module-send-receive": "*"
-    "@suite-native/module-settings": "*"
-    "@suite-native/navigation": "*"
-    "@suite-native/state": "*"
-    "@suite-native/storage": "*"
-    "@suite-native/transactions": "*"
-    "@trezor/connect": 9.0.4
-    "@trezor/icons": "*"
-    "@trezor/styles": "*"
-    "@trezor/suite-data": "*"
-    "@trezor/theme": "*"
-    "@trezor/transport-native": "*"
+    "@suite-common/connect-init": "workspace:*"
+    "@suite-common/formatters": "workspace:*"
+    "@suite-common/wallet-core": "workspace:*"
+    "@suite-native/atoms": "workspace:*"
+    "@suite-native/config": "workspace:*"
+    "@suite-native/module-accounts": "workspace:*"
+    "@suite-native/module-accounts-import": "workspace:*"
+    "@suite-native/module-dev-utils": "workspace:*"
+    "@suite-native/module-home": "workspace:*"
+    "@suite-native/module-onboarding": "workspace:*"
+    "@suite-native/module-send-receive": "workspace:*"
+    "@suite-native/module-settings": "workspace:*"
+    "@suite-native/navigation": "workspace:*"
+    "@suite-native/state": "workspace:*"
+    "@suite-native/storage": "workspace:*"
+    "@suite-native/transactions": "workspace:*"
+    "@trezor/connect": "workspace:9.0.4"
+    "@trezor/icons": "workspace:*"
+    "@trezor/styles": "workspace:*"
+    "@trezor/suite-data": "workspace:*"
+    "@trezor/theme": "workspace:*"
+    "@trezor/transport-native": "workspace:*"
     babel-jest: ^26.6.3
     expo: ^47.0.8
     jest: ^26.6.3
@@ -8423,11 +8423,11 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/suite-storage@*, @trezor/suite-storage@workspace:packages/suite-storage":
+"@trezor/suite-storage@workspace:*, @trezor/suite-storage@workspace:packages/suite-storage":
   version: 0.0.0-use.local
   resolution: "@trezor/suite-storage@workspace:packages/suite-storage"
   dependencies:
-    "@trezor/env-utils": "*"
+    "@trezor/env-utils": "workspace:*"
     broadcast-channel: ^4.18.1
     idb: ^7.1.1
     jest: ^26.6.3
@@ -8441,12 +8441,12 @@ __metadata:
   dependencies:
     "@cypress/skip-test": ^2.6.1
     "@sentry/browser": 6.17.2
-    "@suite-common/formatters": "*"
-    "@suite-common/sentry": "*"
-    "@suite-common/test-utils": "*"
-    "@trezor/suite": "*"
-    "@trezor/trezor-user-env-link": "*"
-    "@trezor/utils": "*"
+    "@suite-common/formatters": "workspace:*"
+    "@suite-common/sentry": "workspace:*"
+    "@suite-common/test-utils": "workspace:*"
+    "@trezor/suite": "workspace:*"
+    "@trezor/trezor-user-env-link": "workspace:*"
+    "@trezor/utils": "workspace:*"
     "@types/chrome-remote-interface": ^0.31.4
     "@types/cypress-image-snapshot": ^3.1.6
     "@types/react": 18.0.25
@@ -8475,7 +8475,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/suite@*, @trezor/suite@workspace:packages/suite":
+"@trezor/suite@workspace:*, @trezor/suite@workspace:packages/suite":
   version: 0.0.0-use.local
   resolution: "@trezor/suite@workspace:packages/suite"
   dependencies:
@@ -8488,42 +8488,42 @@ __metadata:
     "@reduxjs/toolkit": 1.8.3
     "@sentry/minimal": 6.17.2
     "@sentry/types": 6.17.2
-    "@suite-common/connect-init": "*"
-    "@suite-common/fiat-services": "*"
-    "@suite-common/formatters": "*"
-    "@suite-common/intl-types": "*"
-    "@suite-common/metadata-types": "*"
-    "@suite-common/redux-utils": "*"
-    "@suite-common/suite-config": "*"
-    "@suite-common/suite-types": "*"
-    "@suite-common/suite-utils": "*"
-    "@suite-common/test-utils": "*"
-    "@suite-common/toast-notifications": "*"
-    "@suite-common/wallet-config": "*"
-    "@suite-common/wallet-constants": "*"
-    "@suite-common/wallet-core": "*"
-    "@suite-common/wallet-graph": "*"
-    "@suite-common/wallet-types": "*"
-    "@suite-common/wallet-utils": "*"
+    "@suite-common/connect-init": "workspace:*"
+    "@suite-common/fiat-services": "workspace:*"
+    "@suite-common/formatters": "workspace:*"
+    "@suite-common/intl-types": "workspace:*"
+    "@suite-common/metadata-types": "workspace:*"
+    "@suite-common/redux-utils": "workspace:*"
+    "@suite-common/suite-config": "workspace:*"
+    "@suite-common/suite-types": "workspace:*"
+    "@suite-common/suite-utils": "workspace:*"
+    "@suite-common/test-utils": "workspace:*"
+    "@suite-common/toast-notifications": "workspace:*"
+    "@suite-common/wallet-config": "workspace:*"
+    "@suite-common/wallet-constants": "workspace:*"
+    "@suite-common/wallet-core": "workspace:*"
+    "@suite-common/wallet-graph": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
+    "@suite-common/wallet-utils": "workspace:*"
     "@testing-library/react": 12.1.5
     "@testing-library/user-event": 12.8.3
-    "@trezor/coinjoin": "*"
-    "@trezor/components": "*"
-    "@trezor/connect": 9.0.4
-    "@trezor/crypto-utils": "*"
-    "@trezor/device-utils": "*"
-    "@trezor/dom-utils": "*"
-    "@trezor/env-utils": "*"
-    "@trezor/message-system": "*"
-    "@trezor/react-utils": "*"
-    "@trezor/suite-analytics": "*"
-    "@trezor/suite-data": "*"
-    "@trezor/suite-desktop-api": "*"
-    "@trezor/suite-storage": "*"
-    "@trezor/type-utils": "*"
-    "@trezor/urls": "*"
-    "@trezor/utils": "*"
-    "@trezor/validation": "*"
+    "@trezor/coinjoin": "workspace:*"
+    "@trezor/components": "workspace:*"
+    "@trezor/connect": "workspace:9.0.4"
+    "@trezor/crypto-utils": "workspace:*"
+    "@trezor/device-utils": "workspace:*"
+    "@trezor/dom-utils": "workspace:*"
+    "@trezor/env-utils": "workspace:*"
+    "@trezor/message-system": "workspace:*"
+    "@trezor/react-utils": "workspace:*"
+    "@trezor/suite-analytics": "workspace:*"
+    "@trezor/suite-data": "workspace:*"
+    "@trezor/suite-desktop-api": "workspace:*"
+    "@trezor/suite-storage": "workspace:*"
+    "@trezor/type-utils": "workspace:*"
+    "@trezor/urls": "workspace:*"
+    "@trezor/utils": "workspace:*"
+    "@trezor/validation": "workspace:*"
     "@types/file-saver": ^2.0.5
     "@types/invity-api": ^1.0.10
     "@types/jws": ^3.2.4
@@ -8596,7 +8596,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/theme@*, @trezor/theme@workspace:packages/theme":
+"@trezor/theme@workspace:*, @trezor/theme@workspace:packages/theme":
   version: 0.0.0-use.local
   resolution: "@trezor/theme@workspace:packages/theme"
   dependencies:
@@ -8606,7 +8606,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/transport-native@*, @trezor/transport-native@workspace:packages/transport-native":
+"@trezor/transport-native@workspace:*, @trezor/transport-native@workspace:packages/transport-native":
   version: 0.0.0-use.local
   resolution: "@trezor/transport-native@workspace:packages/transport-native"
   dependencies:
@@ -8618,17 +8618,17 @@ __metadata:
     react-native: 0.70.5
     typescript: 4.9.3
   peerDependencies:
-    react: "*"
-    react-native: "*"
+    react: "workspace:*"
+    react-native: "workspace:*"
   languageName: unknown
   linkType: soft
 
-"@trezor/transport@^1.1.5, @trezor/transport@workspace:packages/transport":
+"@trezor/transport@workspace:^1.1.5, @trezor/transport@workspace:packages/transport":
   version: 0.0.0-use.local
   resolution: "@trezor/transport@workspace:packages/transport"
   dependencies:
-    "@trezor/trezor-user-env-link": "*"
-    "@trezor/utils": ^9.0.3
+    "@trezor/trezor-user-env-link": "workspace:*"
+    "@trezor/utils": "workspace:^9.0.3"
     "@types/bytebuffer": ^5.0.44
     "@types/w3c-web-usb": ^1.0.6
     bytebuffer: ^5.0.1
@@ -8643,17 +8643,17 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/trezor-user-env-link@*, @trezor/trezor-user-env-link@workspace:packages/trezor-user-env-link":
+"@trezor/trezor-user-env-link@workspace:*, @trezor/trezor-user-env-link@workspace:packages/trezor-user-env-link":
   version: 0.0.0-use.local
   resolution: "@trezor/trezor-user-env-link@workspace:packages/trezor-user-env-link"
   dependencies:
-    "@trezor/utils": "*"
+    "@trezor/utils": "workspace:*"
     cross-fetch: ^3.1.5
     ws: ^8.11.0
   languageName: unknown
   linkType: soft
 
-"@trezor/type-utils@*, @trezor/type-utils@workspace:packages/type-utils":
+"@trezor/type-utils@workspace:*, @trezor/type-utils@workspace:packages/type-utils":
   version: 0.0.0-use.local
   resolution: "@trezor/type-utils@workspace:packages/type-utils"
   dependencies:
@@ -8662,7 +8662,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/urls@*, @trezor/urls@workspace:packages/urls":
+"@trezor/urls@workspace:*, @trezor/urls@workspace:packages/urls":
   version: 0.0.0-use.local
   resolution: "@trezor/urls@workspace:packages/urls"
   dependencies:
@@ -8672,7 +8672,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/utils@*, @trezor/utils@^9.0.3, @trezor/utils@workspace:packages/utils":
+"@trezor/utils@workspace:*, @trezor/utils@workspace:^9.0.3, @trezor/utils@workspace:packages/utils":
   version: 0.0.0-use.local
   resolution: "@trezor/utils@workspace:packages/utils"
   dependencies:
@@ -8682,11 +8682,11 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/utxo-lib@*, @trezor/utxo-lib@^1.0.1, @trezor/utxo-lib@workspace:packages/utxo-lib":
+"@trezor/utxo-lib@workspace:*, @trezor/utxo-lib@workspace:^1.0.1, @trezor/utxo-lib@workspace:packages/utxo-lib":
   version: 0.0.0-use.local
   resolution: "@trezor/utxo-lib@workspace:packages/utxo-lib"
   dependencies:
-    "@trezor/utils": ^9.0.3
+    "@trezor/utils": "workspace:^9.0.3"
     "@types/bchaddrjs": ^0.4.0
     "@types/bs58": ^4.0.1
     "@types/bs58check": ^2.1.0
@@ -8717,11 +8717,11 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/validation@*, @trezor/validation@workspace:packages/validation":
+"@trezor/validation@workspace:*, @trezor/validation@workspace:packages/validation":
   version: 0.0.0-use.local
   resolution: "@trezor/validation@workspace:packages/validation"
   dependencies:
-    "@trezor/utils": "*"
+    "@trezor/utils": "workspace:*"
     jest: ^26.6.3
     typescript: 4.9.3
     yup: ^0.32.11
@@ -15218,7 +15218,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"decamelize-keys@npm:^1.0.0, decamelize-keys@npm:^1.1.0":
+"decamelize-keys@npm:^1.0.0":
+  version: 1.1.1
+  resolution: "decamelize-keys@npm:1.1.1"
+  dependencies:
+    decamelize: ^1.1.0
+    map-obj: ^1.0.0
+  checksum: fc645fe20b7bda2680bbf9481a3477257a7f9304b1691036092b97ab04c0ab53e3bf9fcc2d2ae382536568e402ec41fb11e1d4c3836a9abe2d813dd9ef4311e0
+  languageName: node
+  linkType: hard
+
+"decamelize-keys@npm:^1.1.0":
   version: 1.1.0
   resolution: "decamelize-keys@npm:1.1.0"
   dependencies:
@@ -33314,7 +33324,7 @@ __metadata:
     "@babel/preset-typescript": ^7.18.6
     "@babel/runtime": ^7.20.1
     "@nrwl/nx-cloud": 14.5.1
-    "@suite-common/wallet-types": "*"
+    "@suite-common/wallet-types": "workspace:*"
     "@types/jest": ^26.0.24
     "@types/node": ^18.11.9
     "@types/prettier": ^2.7.1

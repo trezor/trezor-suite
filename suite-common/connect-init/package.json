@@ -13,11 +13,11 @@
     },
     "dependencies": {
         "@reduxjs/toolkit": "1.8.3",
-        "@suite-common/redux-utils": "*",
-        "@suite-common/suite-types": "*",
-        "@suite-common/test-utils": "*",
-        "@trezor/connect": "9.0.4",
-        "@trezor/utils": "*"
+        "@suite-common/redux-utils": "workspace:*",
+        "@suite-common/suite-types": "workspace:*",
+        "@suite-common/test-utils": "workspace:*",
+        "@trezor/connect": "workspace:9.0.4",
+        "@trezor/utils": "workspace:*"
     },
     "devDependencies": {
         "jest": "^26.6.3",

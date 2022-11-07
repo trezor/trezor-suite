@@ -10,7 +10,7 @@
         "type-check": "tsc --build"
     },
     "dependencies": {
-        "@trezor/type-utils": "*",
+        "@trezor/type-utils": "workspace:*",
         "react": "18.2.0",
         "react-intl": "^6.2.1"
     },

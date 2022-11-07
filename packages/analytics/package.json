@@ -12,7 +12,7 @@
         "build:lib": "rimraf lib && yarn tsc --build ./tsconfig.lib.json"
     },
     "dependencies": {
-        "@trezor/utils": "*"
+        "@trezor/utils": "workspace:*"
     },
     "devDependencies": {
         "jest": "^26.6.3",

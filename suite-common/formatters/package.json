@@ -12,12 +12,12 @@
     },
     "dependencies": {
         "@formatjs/intl": "2.5.1",
-        "@suite-common/suite-config": "*",
-        "@suite-common/suite-constants": "*",
-        "@suite-common/suite-types": "*",
-        "@suite-common/wallet-config": "*",
-        "@suite-common/wallet-utils": "*",
-        "@trezor/connect": "9.0.4",
+        "@suite-common/suite-config": "workspace:*",
+        "@suite-common/suite-constants": "workspace:*",
+        "@suite-common/suite-types": "workspace:*",
+        "@suite-common/wallet-config": "workspace:*",
+        "@suite-common/wallet-utils": "workspace:*",
+        "@trezor/connect": "workspace:9.0.4",
         "bignumber.js": "^9.1.0",
         "react": "18.2.0",
         "react-intl": "^6.2.1"
