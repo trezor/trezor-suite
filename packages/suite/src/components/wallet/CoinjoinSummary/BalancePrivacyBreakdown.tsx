@@ -30,13 +30,12 @@ const CheckIcon = styled(Icon)`
 
 export const BalancePrivacyBreakdown = () => {
     const currentAccount = useSelector(selectSelectedAccount);
-    const balanceBreakdown = useSelector(selectCurrentCoinjoinBalanceBreakdown);
+    const { anonymized, anonymizing, notAnonymized } = useSelector(
+        selectCurrentCoinjoinBalanceBreakdown,
+    );
     const currentSession = useSelector(selectCurrentCoinjoinSession);
 
     const theme = useTheme();
-
-    const notPrivateAmount = balanceBreakdown.notAnonymized;
-    const privateAmount = balanceBreakdown.anonymized;
 
     const isSessionRunning = !!currentSession;
 
@@ -49,16 +48,16 @@ export const BalancePrivacyBreakdown = () => {
             <CryptoAmountWithHeader
                 header={<Translation id="TR_NOT_PRIVATE" />}
                 headerIcon={<Icon icon="CROSS" size={15} />}
-                value={notPrivateAmount}
+                value={notAnonymized}
                 symbol={currentAccount?.symbol}
-                color={!isZero(notPrivateAmount || '0') ? undefined : theme.TYPE_LIGHT_GREY}
+                color={!isZero(notAnonymized || '0') ? undefined : theme.TYPE_LIGHT_GREY}
             />
 
             {isSessionRunning && (
                 <CryptoAmountWithHeader
                     header={<Translation id="TR_ANONYMIZING" />}
                     headerIcon={<Icon icon="SHUFFLE" size={15} />}
-                    value={balanceBreakdown.anonymizing}
+                    value={anonymizing}
                     symbol={currentAccount?.symbol}
                 />
             )}
@@ -70,9 +69,9 @@ export const BalancePrivacyBreakdown = () => {
                     </PrivateBalanceHeading>
                 }
                 headerIcon={<CheckIcon icon="CHECK" size={19} color={theme.TYPE_GREEN} />}
-                value={privateAmount}
+                value={anonymized}
                 symbol={currentAccount?.symbol}
-                color={!isZero(privateAmount || '0') ? theme.TYPE_GREEN : theme.TYPE_LIGHT_GREY}
+                color={!isZero(anonymized || '0') ? theme.TYPE_GREEN : theme.TYPE_LIGHT_GREY}
             />
         </Container>
     );
