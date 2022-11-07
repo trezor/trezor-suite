@@ -97,7 +97,12 @@ export const CoinjoinSetupStrategies = ({ account }: CoinjoinSetupStrategiesProp
     const maxRounds = getMaxRounds(targetAnonymity, account.addresses.anonymitySet);
     const isCustom = strategy === 'custom';
     const allChecked = connectedConfirmed && termsConfirmed;
+    const allAnonymized = notAnonymized === '0';
     const fee = new BigNumber(notAnonymized).times(coordinatorData.coordinatorFeeRate).toString();
+    const isDisabled = !allChecked || allAnonymized;
+    const buttonTooltipMessage = allAnonymized
+        ? 'TR_NOTHING_TO_ANONYMIZE'
+        : 'TR_CONFIRM_CONDITIONS';
 
     const reset = () => {
         setStrategy('recommended');
@@ -204,10 +209,8 @@ export const CoinjoinSetupStrategies = ({ account }: CoinjoinSetupStrategiesProp
 
             <StyledTooltipButton
                 onClick={anonymize}
-                isDisabled={!allChecked}
-                tooltipContent={
-                    !allChecked && <Translation id="TR_ANONYMISATION_BUTTON_DISABLED" />
-                }
+                isDisabled={isDisabled}
+                tooltipContent={isDisabled && <Translation id={buttonTooltipMessage} />}
             >
                 <Translation id="TR_ANONYMIZE" />
             </StyledTooltipButton>
