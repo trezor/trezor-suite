@@ -7288,10 +7288,6 @@ export default defineMessages({
         id: 'TR_FEE_RATE_CHANGED',
         defaultMessage: 'Fee rate has changed to complete transaction.',
     },
-    TR_COINJOIN_COUNTDOWN: {
-        id: 'TR_COINJOIN_COUNTDOWN',
-        defaultMessage: '{rounds} rounds left',
-    },
     TR_COINJOIN_ROUND_COUNTDOWN: {
         id: 'TR_COINJOIN_ROUND_COUNTDOWN',
         defaultMessage: 'Next transaction signing starts in {time}',
@@ -7307,14 +7303,6 @@ export default defineMessages({
     TR_ANONYMIZING: {
         id: 'TR_ANONYMIZING',
         defaultMessage: 'Anonymizing',
-    },
-    TR_COINS_ANONYMITY: {
-        id: 'TR_COINS_ANONYMITY',
-        defaultMessage: 'Anonymity of my coins',
-    },
-    TR_COINS_ANONYMITY_TOOLTIP: {
-        id: 'TR_COINS_ANONYMITY_TOOLTIP',
-        defaultMessage: 'very high anonymity',
     },
     TR_NOT_PRIVATE: {
         id: 'TR_NOT_PRIVATE',
