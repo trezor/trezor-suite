@@ -21,7 +21,7 @@
         "@trezor/styles": "*",
         "@trezor/theme": "*",
         "react": "18.2.0",
-        "react-native": "0.70.3",
+        "react-native": "0.70.5",
         "react-qr-code": "2.0.8",
         "react-redux": "7.2.2"
     },
