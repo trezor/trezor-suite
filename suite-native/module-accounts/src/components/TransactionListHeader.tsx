@@ -22,14 +22,18 @@ export const TransactionListHeader = memo(({ accountKey }: AccountDetailHeaderPr
     return (
         <>
             <AccountBalance accountKey={accountKey} />
-            {accountHasTransactions && <AccountDetailGraph accountKey={accountKey} />}
-            <Box marginBottom="large">
-                <Button iconName="receive" size="large">
-                    Receive
-                </Button>
-            </Box>
-            <Divider />
-            <Box marginVertical="large" marginHorizontal="medium">
+            {accountHasTransactions && (
+                <>
+                    <AccountDetailGraph accountKey={accountKey} />
+                    <Box marginBottom="large" paddingHorizontal="medium">
+                        <Button iconName="receive" size="large">
+                            Receive
+                        </Button>
+                    </Box>
+                    <Divider />
+                </>
+            )}
+            <Box marginVertical="medium" marginHorizontal="medium">
                 <Text variant="titleSmall">Transactions</Text>
             </Box>
         </>
