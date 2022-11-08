@@ -1,9 +1,9 @@
-import { AllowedRange, Round, FeeRateMedians } from './coordinator';
+import { AllowedRange, CoordinationFeeRate, FeeRateMedians, Round } from './coordinator';
 
 export interface CoinjoinStatusEvent {
     rounds: Round[];
     changed: Round[];
     feeRatesMedians: FeeRateMedians[];
-    coordinatorFeeRate: number;
+    coordinationFeeRate: CoordinationFeeRate;
     allowedInputAmounts: AllowedRange;
 }

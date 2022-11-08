@@ -37,7 +37,7 @@ describe(`CoinjoinClient`, () => {
 
         const status = await cli.enable();
         expect(status?.rounds.length).toBeGreaterThan(0);
-        expect(status?.coordinatorFeeRate).toBeGreaterThan(0);
+        expect(status?.coordinationFeeRate.rate).toBeGreaterThan(0);
 
         cli.disable();
     });

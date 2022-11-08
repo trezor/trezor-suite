@@ -114,7 +114,7 @@ const registerInput = async (
         );
 
         // Calculate mining and coordinator fee
-        // coordinator fee is 0 if input is remixed or amount is lower than plebsDontPayThreshold value
+        // coordinator fee is 0 if input is remixed or amount is lower than or equal to plebsDontPayThreshold value
         const { roundParameters } = round;
         const coordinatorFee =
             input.amount > roundParameters.coordinationFeeRate.plebsDontPayThreshold &&
