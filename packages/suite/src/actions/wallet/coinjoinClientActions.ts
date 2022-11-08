@@ -383,7 +383,7 @@ export const signCoinjoinTx =
                 coinjoinRequest: tx.coinjoinRequest,
                 coin: network,
                 preauthorized: true,
-                serialized: false,
+                serialize: false,
                 unlockPath,
             });
 
@@ -419,6 +419,11 @@ export const signCoinjoinTx =
             (promise, params) => promise.then(() => signTx(params)),
             Promise.resolve(),
         );
+
+        // disable busy screen
+        await dispatch(setBusyScreen(Object.keys(groupUtxosByAccount)));
+        // and close 'critical-coinjoin-phase' modal
+        dispatch(closeModal());
 
         // finally walk thru all requested utxos and find not resolved
         request.inputs.forEach(utxo => {
