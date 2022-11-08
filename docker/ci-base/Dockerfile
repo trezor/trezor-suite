@@ -105,7 +105,7 @@ ENV NODE_VERSION 16.15.0
 # base packages are downloaded and installed in concurrence with the fact that the troublesome
 # package relies on existence of another package already installed.
 # as a quick fix, create a project and install needed packages to provide yarn cache on image level.
-RUN yarn global add opencollective node-pre-gyp lerna
+RUN yarn global add opencollective node-pre-gyp
 
 # versions of local tools
 RUN node -v
