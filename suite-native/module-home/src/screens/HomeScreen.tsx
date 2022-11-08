@@ -9,7 +9,7 @@ import { PortfolioGraph } from '../components/PortfolioGraph';
 
 export const HomeScreen = () => (
     <Screen>
-        <VStack spacing={40}>
+        <VStack spacing="large">
             <DashboardHeader />
             <PortfolioGraph />
             <Assets />
