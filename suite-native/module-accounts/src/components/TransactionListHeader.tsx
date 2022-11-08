@@ -1,8 +1,6 @@
 import React, { memo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { A } from '@mobily/ts-belt';
-
 import { AccountBalance } from '@suite-native/accounts';
 import { Box, Text } from '@suite-native/atoms';
 import { AccountKey } from '@suite-common/suite-types';
@@ -19,7 +17,7 @@ export const TransactionListHeader = memo(({ accountKey }: AccountDetailHeaderPr
         selectAccountByKey(state, accountKey),
     );
 
-    const accountHasTransactions = A.isNotEmpty(account?.history.transactions ?? []);
+    const accountHasTransactions = !!account?.history.total ?? false;
 
     return (
         <>
