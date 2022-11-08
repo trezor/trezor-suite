@@ -7477,7 +7477,7 @@ export default defineMessages({
     TR_NOTHING_TO_ANONYMIZE: {
         id: 'TR_NOTHING_TO_ANONYMIZE',
         description: 'Tooltip content for disabled button in coinjoin section',
-        defaultMessage: 'Nothing to anonymize. Add funds or increase target anonymity.',
+        defaultMessage: 'Nothing to anonymize',
     },
     TR_CUSTOM_SETUP: {
         id: 'TR_CUSTOM_SETUP',

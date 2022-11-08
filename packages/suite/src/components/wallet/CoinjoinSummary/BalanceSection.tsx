@@ -7,8 +7,11 @@ import * as modalActions from '@suite-actions/modalActions';
 import { Account } from '@suite-common/wallet-types';
 import { Card, Translation } from '@suite-components';
 import { useActions, useSelector } from '@suite-hooks';
-import { Button } from '@trezor/components';
-import { selectCoinjoinAccountByKey } from '@wallet-reducers/coinjoinReducer';
+import { Button, variables } from '@trezor/components';
+import {
+    selectCoinjoinAccountByKey,
+    selectCurrentCoinjoinBalanceBreakdown,
+} from '@wallet-reducers/coinjoinReducer';
 import { BalancePrivacyBreakdown } from './BalancePrivacyBreakdown';
 import { CoinjoinStatus } from './CoinjoinStatus';
 
@@ -27,6 +30,12 @@ const AnonymizeButton = styled(Button)`
     padding: 9px 18px;
 `;
 
+const Message = styled.p`
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    font-size: ${variables.FONT_SIZE.SMALL};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+`;
+
 interface BalanceSectionProps {
     account: Account;
 }
@@ -39,33 +48,45 @@ export const BalanceSection = ({ account }: BalanceSectionProps) => {
         stopSession: modalActions.openModal.bind(null, { type: 'cancel-coinjoin' }),
     });
     const coinjoinAccount = useSelector(state => selectCoinjoinAccountByKey(state, account.key));
+    const { notAnonymized } = useSelector(selectCurrentCoinjoinBalanceBreakdown);
 
-    const accountHasZeroBalance = account.availableBalance === '0';
+    const allAnonymized = notAnonymized === '0';
 
     const goToSetup = () => actions.goto('wallet-anonymize', { preserveParams: true });
-
-    return (
-        <Container>
-            <BalancePrivacyBreakdown />
-
-            {coinjoinAccount?.session ? (
+    const getRightSideComponent = () => {
+        if (coinjoinAccount?.session) {
+            return (
                 <CoinjoinStatus
                     session={coinjoinAccount.session}
                     pauseSession={actions.pauseSession}
                     restoreSession={actions.restoreSession}
                     stopSession={actions.stopSession}
                 />
-            ) : (
-                <AnonymizeButton
-                    onClick={goToSetup}
-                    disabled={accountHasZeroBalance}
-                    icon="ARROW_RIGHT_LONG"
-                    alignIcon="right"
-                    size={16}
-                >
-                    <Translation id="TR_ANONYMIZE" />
-                </AnonymizeButton>
-            )}
+            );
+        }
+        if (allAnonymized) {
+            return (
+                <Message>
+                    <Translation id="TR_NOTHING_TO_ANONYMIZE" />
+                </Message>
+            );
+        }
+        return (
+            <AnonymizeButton
+                onClick={goToSetup}
+                icon="ARROW_RIGHT_LONG"
+                alignIcon="right"
+                size={16}
+            >
+                <Translation id="TR_ANONYMIZE" />
+            </AnonymizeButton>
+        );
+    };
+
+    return (
+        <Container>
+            <BalancePrivacyBreakdown />
+            {getRightSideComponent()}
         </Container>
     );
 };
