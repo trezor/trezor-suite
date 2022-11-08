@@ -11,7 +11,12 @@ type AccountDetailScreenHeaderProps = {
 export const AccountDetailScreenHeader = ({ accountName }: AccountDetailScreenHeaderProps) => {
     const navigation = useNavigation();
     return (
-        <Box flexDirection="row" justifyContent="space-between" alignItems="center">
+        <Box
+            flexDirection="row"
+            justifyContent="space-between"
+            alignItems="center"
+            paddingHorizontal="large"
+        >
             <IconButton
                 colorScheme="gray"
                 isRounded
