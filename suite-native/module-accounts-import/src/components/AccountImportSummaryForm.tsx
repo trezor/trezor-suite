@@ -78,11 +78,16 @@ export const AccountImportSummaryForm = ({
             }),
         );
         dispatch(setOnboardingFinished(true));
-        navigation.navigate(RootStackRoutes.AppTabs, {
-            screen: AppTabsRoutes.HomeStack,
-            params: {
-                screen: HomeStackRoutes.Home,
-            },
+        navigation.reset({
+            index: 0,
+            routes: [
+                {
+                    name: RootStackRoutes.AppTabs,
+                    params: {
+                        screen: HomeStackRoutes.Home,
+                    },
+                },
+            ],
         });
     });
 
