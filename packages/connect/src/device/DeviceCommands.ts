@@ -337,6 +337,16 @@ export class DeviceCommands {
         };
     }
 
+    async preauthorize(throwError: boolean) {
+        try {
+            await this.typedCall('DoPreauthorized', 'PreauthorizedRequest', {});
+            return true;
+        } catch (error) {
+            if (throwError) throw error;
+            return false;
+        }
+    }
+
     getDeviceState(networkType?: string) {
         // cardano backwards compatibility. we only need this for firmware before initialize.derive_cardano message was introduced
         if (!this.device.atLeast('2.4.3')) {

@@ -36,7 +36,6 @@ type Params = {
     options: TransactionOptions;
     coinInfo: BitcoinNetworkInfo;
     push: boolean;
-    preauthorized?: boolean;
     unlockPath?: PROTO.UnlockPath;
 };
 
@@ -84,6 +83,7 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
         }
         // set required firmware from coinInfo support
         this.firmwareRange = getFirmwareRange(this.name, coinInfo, this.firmwareRange);
+        this.preauthorized = payload.preauthorized;
         this.info = getLabel('Sign #NETWORK transaction', coinInfo);
 
         const inputs = validateTrezorInputs(payload.inputs, coinInfo);
@@ -129,7 +129,6 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
             },
             coinInfo,
             push: typeof payload.push === 'boolean' ? payload.push : false,
-            preauthorized: payload.preauthorized,
             unlockPath: payload.unlockPath,
         };
 
@@ -190,8 +189,8 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
             refTxs = params.refTxs;
         }
 
-        if (params.preauthorized) {
-            await device.getCommands().typedCall('DoPreauthorized', 'PreauthorizedRequest', {});
+        if (this.preauthorized) {
+            await device.getCommands().preauthorize(true);
         } else if (params.unlockPath) {
             await device.getCommands().unlockPath(params.unlockPath);
         }

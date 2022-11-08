@@ -403,8 +403,18 @@ export class Device extends EventEmitter {
         return this.externalState[this.instance];
     }
 
-    async validateState(networkType?: NETWORK.NetworkType) {
+    async validateState(networkType?: NETWORK.NetworkType, preauthorized = false) {
         if (!this.features) return;
+
+        if (!this.features.unlocked && preauthorized) {
+            // NOTE: auto locked device accepts preauthorized methods (authorizeConjoin, getOwnershipProof, signTransaction) without pin request.
+            // in that case it's enough to check if session_id is preauthorized...
+            if (await this.commands.preauthorize(false)) {
+                return;
+            }
+            // ...and if it's not then unlock device and proceed to regular GetAddress flow
+        }
+
         const altMode = this._altModeChange(networkType);
         const expectedState = altMode ? undefined : this.getExternalState();
         const state = await this.commands.getDeviceState(networkType);
@@ -473,7 +483,7 @@ export class Device extends EventEmitter {
         if (this.features && this.features.session_id && !feat.session_id) {
             feat.session_id = this.features.session_id;
         }
-        feat.unlocked = feat.unlocked || true;
+        feat.unlocked = feat.unlocked ?? true;
         // fix inconsistency of revision attribute between T1 and T2
         const revision = parseRevision(feat);
         feat.revision = revision;

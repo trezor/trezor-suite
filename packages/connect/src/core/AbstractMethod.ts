@@ -57,6 +57,8 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
 
     useDeviceState: boolean; // should validate device state?
 
+    preauthorized?: boolean; // another variant of device state validation
+
     useEmptyPassphrase: boolean;
 
     allowSeedlessDevice: boolean;
