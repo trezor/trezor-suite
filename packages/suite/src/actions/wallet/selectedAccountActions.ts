@@ -6,6 +6,7 @@ import { selectDiscoveryForDevice } from '@wallet-reducers/discoveryReducer';
 import * as metadataActions from '@suite-actions/metadataActions';
 import * as comparisonUtils from '@suite-utils/comparisonUtils';
 import { getSelectedAccount } from '@wallet-utils/accountUtils';
+import { isTrezorConnectBackendType } from '@suite-common/wallet-utils';
 import { accountsActions, blockchainActions } from '@suite-common/wallet-core';
 import { SelectedAccountStatus, SelectedAccountWatchOnlyMode } from '@suite-common/wallet-types';
 
@@ -31,10 +32,13 @@ const getAccountStateWithMode = (state: AppState, selectedAccount?: State) => {
         }
 
         // Backend status
-        const blockchain = state.wallet.blockchain[network.symbol];
-        if (!blockchain.connected && state.suite.online) {
-            mode.push('backend-disconnected');
+        if (isTrezorConnectBackendType(selectedAccount.account.backendType)) {
+            const blockchain = state.wallet.blockchain[network.symbol];
+            if (!blockchain.connected && state.suite.online) {
+                mode.push('backend-disconnected');
+            }
         }
+        // TODO else handle non-standard backends differently
     }
 
     // Account cannot be accessed
