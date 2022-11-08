@@ -517,7 +517,7 @@ export const onCall = async (message: CoreMessage) => {
             // Make sure that device will display pin/passphrase
             try {
                 const invalidDeviceState = method.useDeviceState
-                    ? await device.validateState(method.network)
+                    ? await device.validateState(method.network, method.preauthorized)
                     : undefined;
                 if (invalidDeviceState) {
                     if (isUsingPopup) {

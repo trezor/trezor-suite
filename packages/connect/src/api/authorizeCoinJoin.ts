@@ -6,7 +6,7 @@ import { PROTO } from '../constants';
 
 export default class AuthorizeCoinJoin extends AbstractMethod<
     'authorizeCoinJoin',
-    PROTO.AuthorizeCoinJoin & { preauthorized?: boolean }
+    PROTO.AuthorizeCoinJoin
 > {
     init() {
         const { payload } = this;
@@ -27,6 +27,7 @@ export default class AuthorizeCoinJoin extends AbstractMethod<
         const script_type = payload.scriptType || getScriptType(address_n);
         const coinInfo = getBitcoinNetwork(payload.coin || address_n);
         this.firmwareRange = getFirmwareRange(this.name, coinInfo, this.firmwareRange);
+        this.preauthorized = payload.preauthorized;
 
         this.params = {
             coordinator: payload.coordinator,
@@ -37,20 +38,16 @@ export default class AuthorizeCoinJoin extends AbstractMethod<
             coin_name: coinInfo?.name,
             script_type,
             amount_unit: payload.amountUnit,
-            preauthorized: payload.preauthorized,
         };
     }
 
     async run() {
         const cmd = this.device.getCommands();
 
-        if (this.params.preauthorized) {
-            try {
-                await cmd.typedCall('DoPreauthorized', 'PreauthorizedRequest', {});
+        if (this.preauthorized) {
+            if (await cmd.preauthorize(false)) {
                 // device is already preauthorized
                 return { message: 'Success' };
-            } catch (error) {
-                // just carry on and authorize again
             }
         }
 

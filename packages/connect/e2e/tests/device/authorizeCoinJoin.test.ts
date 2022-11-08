@@ -9,6 +9,10 @@ describe('TrezorConnect.authorizeCoinJoin', () => {
     beforeAll(async () => {
         await setup(controller, {
             mnemonic: 'mnemonic_all',
+            pin: '1234',
+            settings: {
+                auto_lock_delay_ms: 10000,
+            },
         });
     });
 
@@ -16,6 +20,12 @@ describe('TrezorConnect.authorizeCoinJoin', () => {
         // restart connect for each test (working with event listeners)
         TrezorConnect.dispose();
         await initTrezorConnect(controller, { debug: false });
+
+        TrezorConnect.on('DEVICE_EVENT', ev => {
+            if ('code' in ev.payload && ev.payload.code === 'ButtonRequest_PinEntry') {
+                controller.send({ type: 'emulator-input', value: '1234' });
+            }
+        });
     });
 
     afterAll(() => {
@@ -43,9 +53,13 @@ describe('TrezorConnect.authorizeCoinJoin', () => {
         expect(auth.success).toBe(true);
         expect(auth.payload).toEqual({ message: 'CoinJoin authorized' });
 
+        await new Promise(resolve => setTimeout(resolve, 11000)); // wait for auto-lock
+
         // remove all button listeners from initTrezorConnect (common.setup)
         // DebugLink decision SHOULD NOT! be required after authorization
         TrezorConnect.removeAllListeners();
+
+        await TrezorConnect.setBusy({ expiry_ms: 5000 });
 
         const commitmentData =
             '0f7777772e6578616d706c652e636f6d0000000000000000000000000000000000000000000000000000000000000001';
