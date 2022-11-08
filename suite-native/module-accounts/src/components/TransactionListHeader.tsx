@@ -2,7 +2,7 @@ import React, { memo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { AccountBalance } from '@suite-native/accounts';
-import { Box, Text } from '@suite-native/atoms';
+import { Box, Button, Divider, Text } from '@suite-native/atoms';
 import { AccountKey } from '@suite-common/suite-types';
 import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 
@@ -24,6 +24,12 @@ export const TransactionListHeader = memo(({ accountKey }: AccountDetailHeaderPr
             <AccountBalance accountKey={accountKey} />
             {accountHasTransactions && <AccountDetailGraph accountKey={accountKey} />}
             <Box marginBottom="large">
+                <Button iconName="receive" size="large">
+                    Receive
+                </Button>
+            </Box>
+            <Divider />
+            <Box marginVertical="large" marginHorizontal="medium">
                 <Text variant="titleSmall">Transactions</Text>
             </Box>
         </>

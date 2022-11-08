@@ -10,6 +10,7 @@ import {
     selectAccountGraph,
 } from '@suite-common/wallet-graph';
 import { selectFiatCurrency } from '@suite-native/module-settings';
+import { Box, Divider } from '@suite-native/atoms';
 
 type AccountDetailGraphProps = {
     accountKey: string;
@@ -44,12 +45,17 @@ export const AccountDetailGraph = ({ accountKey }: AccountDetailGraphProps) => {
     if (error) return <GraphError error={error} onTryAgain={handleFetchGraphPoints} />;
 
     return (
-        <>
-            <Graph points={enhancedPoints} loading={loading} />
-            <TimeSwitch
-                selectedTimeFrame={selectedTimeFrame}
-                onSelectTimeFrame={handleSelectTimeFrame}
-            />
-        </>
+        <Box>
+            <Box marginBottom="large">
+                <Graph points={enhancedPoints} loading={loading} />
+                <TimeSwitch
+                    selectedTimeFrame={selectedTimeFrame}
+                    onSelectTimeFrame={handleSelectTimeFrame}
+                />
+            </Box>
+            <Box marginBottom="large">
+                <Divider />
+            </Box>
+        </Box>
     );
 };
