@@ -21,7 +21,7 @@ export interface CoinjoinClientFeeRatesMedians {
 export interface CoinjoinClientInstance {
     rounds: { id: string; phase: RoundPhase }[]; // store only slice of Round in reducer. may be extended in the future
     feeRatesMedians: CoinjoinClientFeeRatesMedians;
-    coordinatorFeeRate: number;
+    coordinationFeeRate: CoinjoinStatusEvent['coordinationFeeRate'];
     allowedInputAmounts: CoinjoinStatusEvent['allowedInputAmounts'];
     log: { time: number; value: string }[];
 }

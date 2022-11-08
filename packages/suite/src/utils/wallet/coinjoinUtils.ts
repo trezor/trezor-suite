@@ -87,7 +87,7 @@ export const transformFeeRatesMedians = (medians: CoinjoinStatusEvent['feeRatesM
  */
 export const transformCoinjoinStatus = (event: CoinjoinStatusEvent) => ({
     rounds: event.rounds.map(r => ({ id: r.id, phase: r.phase })),
-    coordinatorFeeRate: event.coordinatorFeeRate,
+    coordinationFeeRate: event.coordinationFeeRate,
     feeRatesMedians: transformFeeRatesMedians(event.feeRatesMedians),
     allowedInputAmounts: event.allowedInputAmounts,
 });

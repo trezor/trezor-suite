@@ -123,7 +123,7 @@ export const selectUtxoForRound = async (
             const { roundParameters } = round;
             const roundConstants = {
                 miningFeeRate: roundParameters.miningFeeRate,
-                coordinationFeeRate: roundParameters.coordinationFeeRate,
+                coordinationFeeRate: roundParameters.coordinationFeeRate.rate,
                 allowedInputAmounts: roundParameters.allowedInputAmounts,
                 allowedOutputAmounts: roundParameters.allowedOutputAmounts,
                 allowedInputTypes: roundParameters.allowedInputScriptTypes,

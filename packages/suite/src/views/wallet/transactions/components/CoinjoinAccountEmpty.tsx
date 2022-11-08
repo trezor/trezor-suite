@@ -54,7 +54,7 @@ export const CoinjoinAccountEmpty = ({ account }: CoinjoinAccountEmptyProps) => 
                 <FeeText>
                     <Translation
                         id="TR_COINJOIN_ACCESS_ACCOUNT_STEP_INITIAL_FEE_MESSAGE"
-                        values={{ fee: coordinatorData.coordinatorFeeRate * 100 }}
+                        values={{ fee: coordinatorData.coordinationFeeRate.rate * 100 }}
                     />
                 </FeeText>
             )}

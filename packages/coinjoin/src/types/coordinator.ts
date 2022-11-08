@@ -52,7 +52,7 @@ export interface RegistrationData {
     isPayingZeroCoordinationFee: boolean;
 }
 
-export interface CoordinatorFeeRate {
+export interface CoordinationFeeRate {
     rate: number;
     plebsDontPayThreshold: number;
 }
@@ -60,10 +60,7 @@ export interface CoordinatorFeeRate {
 export interface CoinjoinRoundParameters {
     network: string;
     miningFeeRate: number;
-    coordinationFeeRate: {
-        rate: number;
-        plebsDontPayThreshold: number;
-    };
+    coordinationFeeRate: CoordinationFeeRate;
     maxSuggestedAmount: number;
     minInputCountByRound: number;
     maxInputCountByRound: number;
