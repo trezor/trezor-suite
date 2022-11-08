@@ -15,6 +15,7 @@ export const TransactionsEmptyState = () => {
     return (
         <Card style={applyStyle(cardStyle)}>
             <Box marginBottom="large">
+                {/* TODO add icon from Figma when it's as svg */}
                 <Text variant="titleSmall">No transactions...yet.</Text>
                 <Text variant="hint" color="gray600">
                     Get started by receiving transactions
