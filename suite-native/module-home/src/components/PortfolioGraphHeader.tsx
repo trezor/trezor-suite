@@ -51,13 +51,19 @@ const percentageChangeAtom = atom(get => {
     return percentageDiff(referencePoint.value, selectedPoint.value);
 });
 
+const hasPriceIncreasedAtom = atom(get => {
+    const percentageChange = get(percentageChangeAtom);
+    return percentageChange >= 0;
+});
+
 const headerStyle = prepareNativeStyle(utils => ({
     marginBottom: utils.spacings.small / 2,
     color: utils.colors.gray600,
 }));
 
-const PercentageChange = ({ hasPriceIncreased }: { hasPriceIncreased: boolean }) => {
+const PercentageChange = () => {
     const [percentageChange] = useAtom(percentageChangeAtom);
+    const [hasPriceIncreased] = useAtom(hasPriceIncreasedAtom);
 
     return (
         <Text color={getColorForPercentageChange(hasPriceIncreased)} variant="hint">
@@ -66,10 +72,10 @@ const PercentageChange = ({ hasPriceIncreased }: { hasPriceIncreased: boolean })
     );
 };
 
-const PercentageChangeArrow = ({ hasPriceIncreased }: { hasPriceIncreased: boolean }) => {
-    const [percentageChange] = useAtom(percentageChangeAtom);
+const PercentageChangeArrow = () => {
+    const [hasPriceIncreased] = useAtom(hasPriceIncreasedAtom);
 
-    const iconName: IconName = percentageChange >= 0 ? 'arrowUp' : 'arrowDown';
+    const iconName: IconName = hasPriceIncreased ? 'arrowUp' : 'arrowDown';
 
     return (
         <Icon
@@ -100,15 +106,14 @@ const priceIncreaseWrapperStyle = prepareNativeStyle<{ hasPriceIncreased: boolea
 
 const PriceIncreaseIndicator = () => {
     const { applyStyle } = useNativeStyles();
-    const [percentageChange] = useAtom(percentageChangeAtom);
-    const hasPriceIncreased = percentageChange >= 0;
+    const [hasPriceIncreased] = useAtom(hasPriceIncreasedAtom);
 
     return (
         <Box style={applyStyle(priceIncreaseWrapperStyle, { hasPriceIncreased })}>
             <Box style={applyStyle(arrowStyle)}>
-                <PercentageChangeArrow hasPriceIncreased={hasPriceIncreased} />
+                <PercentageChangeArrow />
             </Box>
-            <PercentageChange hasPriceIncreased={hasPriceIncreased} />
+            <PercentageChange />
         </Box>
     );
 };
