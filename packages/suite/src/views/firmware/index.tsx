@@ -34,16 +34,6 @@ const Wrapper = styled.div<{ isWithTopPadding: boolean }>`
 const StyledModal = styled(Modal)`
     width: 620px;
     min-height: 540px;
-
-    > ${Modal.Body} {
-        padding: 0;
-        margin-top: 0;
-        height: 100%;
-
-        > * {
-            height: 100%;
-        }
-    }
 `;
 
 type FirmwareProps = {
@@ -178,6 +168,7 @@ export const Firmware = ({ shouldSwitchFirmwareType }: FirmwareProps) => {
             }
             onCancel={onClose}
             data-test="@firmware"
+            heading={<Translation id="TR_INSTALL_FIRMWARE" />}
         >
             <Wrapper isWithTopPadding={!isCancelable}>{Component}</Wrapper>
         </StyledModal>
