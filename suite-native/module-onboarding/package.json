@@ -19,7 +19,7 @@
         "@suite-native/navigation": "*",
         "@trezor/styles": "*",
         "react": "18.2.0",
-        "react-native": "0.70.3"
+        "react-native": "0.70.5"
     },
     "devDependencies": {
         "jest": "^26.6.3",

@@ -36,10 +36,10 @@
         "@trezor/styles": "*",
         "@trezor/validation": "*",
         "react": "18.2.0",
-        "react-native": "0.70.3",
+        "react-native": "0.70.5",
         "react-native-config": "^1.4.6",
-        "react-native-reanimated": "^2.10.0",
-        "react-native-vision-camera": "^2.14.1",
+        "react-native-reanimated": "^2.12.0",
+        "react-native-vision-camera": "^2.15.2",
         "react-redux": "7.2.2",
         "vision-camera-code-scanner": "^0.2.0"
     },

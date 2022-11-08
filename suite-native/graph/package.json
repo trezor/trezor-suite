@@ -20,10 +20,10 @@
         "@trezor/styles": "*",
         "@trezor/theme": "*",
         "react": "18.2.0",
-        "react-native": "0.70.3",
+        "react-native": "0.70.5",
         "react-native-gesture-handler": "^2.7.0",
         "react-native-graph": "^0.3.0",
-        "react-native-reanimated": "^2.10.0",
+        "react-native-reanimated": "^2.12.0",
         "react-redux": "7.2.2"
     },
     "devDependencies": {
