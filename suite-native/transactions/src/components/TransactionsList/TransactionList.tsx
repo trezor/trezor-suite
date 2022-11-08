@@ -6,11 +6,12 @@ import { useNativeStyles, prepareNativeStyle } from '@trezor/styles';
 import { WalletAccountTransaction } from '@suite-common/wallet-types';
 import { groupTransactionsByDate } from '@suite-common/wallet-utils';
 import { selectIsLoadingTransactions } from '@suite-common/wallet-core';
-import { Text, Box } from '@suite-native/atoms';
+import { Box } from '@suite-native/atoms';
 import { TAB_BAR_HEIGHT } from '@suite-native/navigation';
 
 import { TransactionListGroupTitle } from './TransactionListGroupTitle';
 import { TransactionListItem } from './TransactionListItem';
+import { TransactionsEmptyState } from '../TransactionsEmptyState';
 
 type AccountTransactionProps = {
     transactions: WalletAccountTransaction[];
@@ -25,6 +26,7 @@ export const TX_PER_PAGE = 25;
 // That's why we add padding bottom to avoid style clash.
 const listWrapperStyle = prepareNativeStyle(_ => ({
     paddingBottom: TAB_BAR_HEIGHT,
+    height: '100%',
 }));
 
 export const TransactionList = ({
@@ -102,7 +104,7 @@ export const TransactionList = ({
                 renderSectionHeader={renderSectionHeader}
                 renderItem={renderItem}
                 ListHeaderComponent={listHeaderComponent}
-                ListEmptyComponent={<Text>No transactions.</Text>}
+                ListEmptyComponent={<TransactionsEmptyState />}
                 onEndReached={handleOnEndReached}
             />
         </Box>

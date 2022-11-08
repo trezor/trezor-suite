@@ -10,7 +10,7 @@ type CardProps = {
 
 const cardStyle = prepareNativeStyle(utils => ({
     backgroundColor: utils.colors.gray0,
-    borderRadius: 12,
+    borderRadius: utils.borders.radii.large / 2,
     padding: utils.spacings.medium,
 }));
 

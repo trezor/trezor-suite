@@ -5,7 +5,6 @@ import {
     AccountsStackParamList,
     AccountsStackRoutes,
     Screen,
-    ScreenHeader,
     StackProps,
 } from '@suite-native/navigation';
 import {
@@ -18,7 +17,8 @@ import {
 } from '@suite-common/wallet-core';
 import { TransactionList } from '@suite-native/transactions';
 
-import { AccountDetailHeader } from '../components/AccountDetailHeader';
+import { TransactionListHeader } from '../components/TransactionListHeader';
+import { AccountDetailScreenHeader } from '../components/AccountDetailScreenHeader';
 
 export const AccountDetailScreen = memo(
     ({ route }: StackProps<AccountsStackParamList, AccountsStackRoutes.AccountDetail>) => {
@@ -50,13 +50,14 @@ export const AccountDetailScreen = memo(
         if (!account) return null;
 
         return (
-            <Screen header={<ScreenHeader />} isScrollable={false}>
+            <Screen
+                header={<AccountDetailScreenHeader accountName={accountName} />}
+                isScrollable={false}
+            >
                 <TransactionList
                     transactions={accountTransactions}
                     fetchMoreTransactions={fetchMoreTransactions}
-                    listHeaderComponent={
-                        <AccountDetailHeader accountKey={accountKey} accountName={accountName} />
-                    }
+                    listHeaderComponent={<TransactionListHeader accountKey={accountKey} />}
                 />
             </Screen>
         );
