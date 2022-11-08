@@ -41,6 +41,7 @@ import { AccountMode } from './AccountMode';
 import { AccountException } from './AccountException';
 import { AccountAnnouncement } from './AccountAnnouncement';
 import { AccountTopPanel } from './AccountTopPanel';
+import { SummaryHeader as CoinjoinSummaryHeader } from './CoinjoinSummary/SummaryHeader';
 
 export {
     Title,
@@ -81,6 +82,7 @@ export {
     AccountException,
     AccountAnnouncement,
     AccountTopPanel,
+    CoinjoinSummaryHeader,
 };
 
 export type { WithCoinmarketProps, WithSelectedAccountLoadedProps };
