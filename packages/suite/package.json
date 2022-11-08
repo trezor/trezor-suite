@@ -64,7 +64,7 @@
         "dropbox": "^10.32.0",
         "ethereumjs-util": "^7.1.5",
         "file-saver": "^2.0.5",
-        "framer-motion": "^6.5.1",
+        "framer-motion": "^7.6.5",
         "history": "^4.10.1",
         "immer": "^9.0.15",
         "jws": "^4.0.0",
