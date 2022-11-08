@@ -24,12 +24,11 @@ const Title = styled(H2)`
     color: ${props => props.theme.TYPE_DARK_GREY};
 `;
 
-interface Props {
-    account: SelectedAccountException;
-}
-
-const getExceptionPage = ({ account }: Props) => {
-    switch (account.loader) {
+const getExceptionPage = (
+    loader: SelectedAccountException['loader'],
+    network: SelectedAccountException['network'],
+) => {
+    switch (loader) {
         case 'auth-failed':
             return <AuthFailed />;
         case 'discovery-error':
@@ -37,7 +36,7 @@ const getExceptionPage = ({ account }: Props) => {
         case 'discovery-empty':
             return <DiscoveryEmpty />;
         case 'account-not-enabled':
-            return <AccountNotEnabled network={account.network} />;
+            return <AccountNotEnabled network={network!} />;
         case 'account-not-loaded':
             return <AccountNotLoaded />;
         case 'account-not-exists':
@@ -46,12 +45,21 @@ const getExceptionPage = ({ account }: Props) => {
     }
 };
 
-export const AccountException = (props: Props) => {
-    const page = getExceptionPage(props);
-    if (page) return <Wrapper>{page}</Wrapper>;
+interface AccountExceptionProps {
+    loader: SelectedAccountException['loader'];
+    network: SelectedAccountException['network'];
+}
+
+export const AccountException = ({ loader, network }: AccountExceptionProps) => {
+    const page = getExceptionPage(loader, network);
+
+    if (page) {
+        return <Wrapper>{page}</Wrapper>;
+    }
+
     return (
         <Wrapper>
-            <Title>Exception {props.account.loader} not implemented</Title>
+            <Title>Exception {loader} not implemented</Title>
         </Wrapper>
     );
 };

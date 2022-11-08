@@ -1,11 +1,10 @@
 import React from 'react';
-import { WalletLayout } from '@wallet-components';
+import { WalletLayout, CoinjoinSummaryHeader } from '@wallet-components';
 import { getAccountTransactions } from '@suite-common/wallet-utils';
 import { useSelector } from '@suite-hooks';
 import { AppState } from '@suite-types';
 import { CoinjoinSummary } from '@wallet-components/CoinjoinSummary';
 import { selectIsLoadingTransactions } from '@suite-common/wallet-core';
-import { SummaryHeader as CoinjoinSummaryHeader } from '@wallet-components/CoinjoinSummary/SummaryHeader';
 
 import { NoTransactions } from './components/NoTransactions';
 import { AccountEmpty } from './components/AccountEmpty';

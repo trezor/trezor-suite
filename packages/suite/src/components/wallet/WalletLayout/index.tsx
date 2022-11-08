@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components';
-import { Progress } from '@trezor/components';
 import {
     AccountsMenu,
     AccountMode,
@@ -12,7 +11,7 @@ import { MAX_WIDTH_WALLET_CONTENT } from '@suite-constants/layout';
 import { AppState, ExtendedMessageDescriptor } from '@suite-types';
 import { useTranslation, useLayout } from '@suite-hooks';
 import { SkeletonRectangle } from '@suite-components/Skeleton';
-import { CoinjoinBackendService } from '@suite/services/coinjoin/coinjoinBackend';
+import { CoinjoinAccountDiscoveryProgress } from './components/CoinjoinAccountDiscoveryProgress';
 
 const Wrapper = styled.div`
     display: flex;
@@ -39,41 +38,6 @@ type WalletLayoutProps = {
     children?: React.ReactNode;
 };
 
-type ProgressInfo = {
-    progress?: number;
-    message?: string;
-};
-
-const AccountLoadingProgress = ({ account: { account } }: Pick<WalletLayoutProps, 'account'>) => {
-    const [progress, setProgress] = useState<ProgressInfo>({});
-
-    const { symbol: network, backendType, descriptor } = account || {};
-
-    useEffect(() => {
-        if (!network || backendType !== 'coinjoin') return;
-
-        const backend = CoinjoinBackendService.getInstance(network);
-        if (!backend) return;
-
-        const onProgress = ({ info }: { info?: ProgressInfo }) => info && setProgress(info);
-        backend.on(`progress/${descriptor}`, onProgress);
-        return () => {
-            backend.off(`progress/${descriptor}`, onProgress);
-        };
-    }, [network, backendType, descriptor]);
-
-    const value = progress.progress ?? 0;
-
-    return (
-        <>
-            <Progress max={1} value={value} />
-            <p>
-                {Math.floor(100 * value)} % {progress.message}
-            </p>
-        </>
-    );
-};
-
 export const WalletLayout = ({
     showEmptyHeaderPlaceholder = false,
     title,
@@ -85,37 +49,44 @@ export const WalletLayout = ({
 
     useLayout(l10nTitle, AccountTopPanel, AccountsMenu);
 
-    if (account.status === 'loading') {
+    const { status, account: selectedAccount, loader, mode, network } = account;
+
+    if (status === 'loading') {
+        if (selectedAccount?.backendType === 'coinjoin') {
+            return (
+                <Wrapper>
+                    <CoinjoinAccountDiscoveryProgress />
+                </Wrapper>
+            );
+        }
+
         return (
             <Wrapper>
                 <SkeletonRectangle
                     width="100%"
                     height="300px"
-                    animate={account.loader === 'account-loading'}
-                >
-                    {account.account?.backendType === 'coinjoin' && (
-                        <AccountLoadingProgress account={account} />
-                    )}
-                </SkeletonRectangle>
+                    borderRadius="12px"
+                    animate={loader === 'account-loading'}
+                />
             </Wrapper>
         );
     }
 
-    if (account.status === 'exception') {
+    if (status === 'exception') {
         return (
             <Wrapper>
-                <AccountMode mode={account.mode} />
-                <AccountAnnouncement selectedAccount={account} />
+                <AccountMode mode={mode} />
+                <AccountAnnouncement account={selectedAccount} />
                 <EmptyHeaderPlaceholder />
-                <AccountException account={account} />
+                <AccountException loader={loader} network={network} />
             </Wrapper>
         );
     }
 
     return (
         <Wrapper>
-            <AccountMode mode={account.mode} />
-            <AccountAnnouncement selectedAccount={account} />
+            <AccountMode mode={mode} />
+            <AccountAnnouncement account={selectedAccount} />
             {showEmptyHeaderPlaceholder && <EmptyHeaderPlaceholder />}
             {children}
         </Wrapper>

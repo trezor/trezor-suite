@@ -7665,4 +7665,53 @@ export default defineMessages({
         id: 'TR_COINJOIN_ROUNDS_LEFT',
         defaultMessage: '{rounds, plural, one {# round} other {# rounds}} left',
     },
+    TR_LOADING_FUNDS: {
+        id: 'TR_LOADING_FUNDS',
+        defaultMessage: 'Loading Funds...',
+    },
+    TR_COINJOIN_FACT_TITLE: {
+        id: 'TR_COINJOIN_FACT_TITLE',
+        defaultMessage: 'Did you know?',
+    },
+    TR_COINJOIN_FACT_ONE: {
+        id: 'TR_COINJOIN_FACT_ONE',
+        defaultMessage:
+            'Private funds will be hidden after you leave Trezor Suite. To find them again, use the “Hidden funds” button.',
+    },
+    TR_COINJOIN_FACT_TWO: {
+        id: 'TR_COINJOIN_FACT_TWO',
+        defaultMessage: 'Fun Coinjoin fact #2',
+    },
+    TR_COINJOIN_FACT_THREE: {
+        id: 'TR_COINJOIN_FACT_THREE',
+        defaultMessage: 'Fun Coinjoin fact #3',
+    },
+    TR_COINJOIN_FACT_FOUR: {
+        id: 'TR_COINJOIN_FACT_FOUR',
+        defaultMessage: 'Fun Coinjoin fact #4',
+    },
+    TR_COINJOIN_FACT_FIVE: {
+        id: 'TR_COINJOIN_FACT_FIVE',
+        defaultMessage: 'Fun Coinjoin fact #5',
+    },
+    TR_COINJOIN_FACT_SIX: {
+        id: 'TR_COINJOIN_FACT_SIX',
+        defaultMessage: 'Fun Coinjoin fact #6',
+    },
+    TR_COINJOIN_FACT_SEVEN: {
+        id: 'TR_COINJOIN_FACT_SEVEN',
+        defaultMessage: 'Fun Coinjoin fact #7',
+    },
+    TR_COINJOIN_FACT_EIGHT: {
+        id: 'TR_COINJOIN_FACT_EIGHT',
+        defaultMessage: 'Fun Coinjoin fact #8',
+    },
+    TR_COINJOIN_FACT_NINE: {
+        id: 'TR_COINJOIN_FACT_NINE',
+        defaultMessage: 'Fun Coinjoin fact #9',
+    },
+    TR_COINJOIN_FACT_TEN: {
+        id: 'TR_COINJOIN_FACT_TEN',
+        defaultMessage: 'Fun Coinjoin fact #10',
+    },
 });
