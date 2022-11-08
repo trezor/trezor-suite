@@ -5,6 +5,7 @@ import { selectAccountsByNetworkSymbols, selectAccountByKey } from '@suite-commo
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
+import { getTickerConfig } from '@suite-common/fiat-services';
 
 import { LineGraphTimeFrameItemAccountBalance, LineGraphTimeFrameValues } from './types';
 import {
@@ -16,6 +17,7 @@ import {
     fetchAccountBalanceHistoryWithBalanceBefore,
     getFiatRatesForNetworkInTimeFrame,
     getTimeFrameIntervalsWithSummaryBalances,
+    getZeroFiatRates,
 } from './graphUtils';
 import { accountNotFoundError, actionPrefix, networkAccountsNotFoundError } from './constants';
 
@@ -64,6 +66,7 @@ const getSingleAccountTimeFrameItems = async (
     fiatCurrency: FiatCurrencyCode,
     timeFrame: LineGraphTimeFrameValues,
 ) => {
+    let zeroFiatRatesFallback = null;
     const endOfTimeFrameDate = new Date();
     // get the first date with some account balance movement for calculating the time frame
     const firstAccountBalanceMovement = await getFirstAccountBalanceMovement(account);
@@ -78,14 +81,21 @@ const getSingleAccountTimeFrameItems = async (
         firstAccountBalanceMovement,
     );
 
+    // cannot find ticker config for symbol, e.g. BTC TEST - fallback to 0
+    if (!getTickerConfig({ symbol: account.symbol })) {
+        zeroFiatRatesFallback = await getZeroFiatRates({ timestampDatesInTimeFrame });
+    }
+
     const timeFrameRates = await getFiatRatesForNetworkInTimeFrame(
         timestampDatesInTimeFrame,
         account,
+        zeroFiatRatesFallback,
     );
 
     const startOfTimeFrameItemWithBalance = await getStartItemOfTimeFrame(
         account,
         startOfTimeFrameDate,
+        zeroFiatRatesFallback,
     );
 
     const balanceMovementsInTimeFrameRates = await fetchAccountBalanceHistoryWithBalanceBefore(
@@ -93,6 +103,7 @@ const getSingleAccountTimeFrameItems = async (
         startOfTimeFrameItemWithBalance,
         addSeconds(startOfTimeFrameDate, 1),
         endOfTimeFrameDate,
+        zeroFiatRatesFallback,
     );
 
     const allTimeFrameRates = mergeAndSortTimeFrameItems(
@@ -103,7 +114,6 @@ const getSingleAccountTimeFrameItems = async (
         fiatCurrency,
         account,
     );
-
     return allTimeFrameRates;
 };
 
@@ -152,6 +162,7 @@ export const getAllAccountsGraphPointsThunk = createThunk(
             });
 
             const accountTimeFrameItems = await Promise.all(accountTimeFrameItemsPromises);
+
             return getTimeFrameIntervalsWithSummaryBalances(accountTimeFrameItems);
         }
         throw new Error(networkAccountsNotFoundError);

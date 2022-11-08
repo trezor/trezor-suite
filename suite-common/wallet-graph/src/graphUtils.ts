@@ -11,6 +11,7 @@ import {
     eachMinuteOfInterval,
     differenceInMinutes,
 } from 'date-fns';
+import { D } from '@mobily/ts-belt';
 
 import { CoinFiatRates, Account } from '@suite-common/wallet-types';
 import type { BlockchainAccountBalanceHistory } from '@trezor/connect';
@@ -449,31 +450,45 @@ export const calcFakeGraphDataForTimestamps = (
     return sortedData;
 };
 
+let zeroFiatRatesCache: { [currency: string]: number } | undefined;
+
+export const getZeroFiatRates = async ({
+    timestampDatesInTimeFrame,
+}: {
+    timestampDatesInTimeFrame: number[];
+}) => {
+    // we can cache the result because currency symbols should be always same
+    if (zeroFiatRatesCache) return zeroFiatRatesCache;
+
+    // pass arbitrary coin to get supported fiat currency rates - we need this to get currency symbols
+    const anyFiatRates = await getFiatRatesForTimestamps(
+        { symbol: 'btc' },
+        timestampDatesInTimeFrame,
+    );
+
+    const fiatRates = (await anyFiatRates)?.tickers?.[0]?.rates;
+    if (fiatRates) {
+        const zeroFiatRates = D.map(fiatRates, () => 0);
+        zeroFiatRatesCache = zeroFiatRates;
+        return zeroFiatRates;
+    }
+
+    return null;
+};
+
 export const getFiatRatesForNetworkInTimeFrame = async (
     datesInRangeUnixTimeSet: number[],
     account: Account,
+    zeroFiatRatesFallback: FiatRates | null,
 ) => {
     const { symbol, descriptor } = account;
     const datesInRangeUnixTimeArray = Array.from(datesInRangeUnixTimeSet);
 
     // cannot find ticker config for symbol, e.g. BTC TEST - fallback to 0
-    if (!getTickerConfig({ symbol })) {
-        // pass arbitrary coin to get supported fiat currency rates - we need this to get currency symbols
-        const zeroFiatRates = await getFiatRatesForTimestamps({ symbol: 'btc' }, [
-            datesInRangeUnixTimeArray[0],
-        ]).then(res =>
-            (res?.tickers || []).map(({ rates }) => {
-                Object.keys(rates).forEach(fiatCurrencySymbol => {
-                    rates[fiatCurrencySymbol] = 0;
-                });
-
-                return rates;
-            }),
-        );
-
+    if (!getTickerConfig({ symbol }) && zeroFiatRatesFallback) {
         return datesInRangeUnixTimeArray.map(time => ({
             time,
-            rates: zeroFiatRates[0],
+            rates: zeroFiatRatesFallback,
             descriptor,
         }));
     }
@@ -534,12 +549,10 @@ export const prepareStartOfTimeFrame = (
     const firstFiatCurrencyRateFromTimeFrameRates = firstTimeFrameRate.time;
     const firstFiatCurrencyRateFromTimeFrameBalanceHistory =
         balanceMovementsInTimeFrameRates?.[0]?.time || Number.MAX_SAFE_INTEGER;
-
     const startOfTimeFrameFiatCurrencyRate = Math.min(
         firstFiatCurrencyRateFromTimeFrameRates,
         firstFiatCurrencyRateFromTimeFrameBalanceHistory,
     );
-
     let startOfTimeFrameData;
 
     // first timeFrameRates item is earlier than first account balance movement in time frame
@@ -588,7 +601,6 @@ export const mergeAndSortTimeFrameItems = (
         fiatCurrency,
         account,
     );
-
     const preparedFiatRatesForTimeFrame = filterNotNecessaryTimeFrameRates(
         preparedStartOfTimeFrameItem,
         timeFrameRates,
@@ -741,6 +753,7 @@ export const fetchAccountBalanceHistoryWithBalanceBefore = async (
     startOfTimeFrameItemWithBalance: LineGraphTimeFrameItemAccountBalance | null,
     startOfTimeFrameDate: Date,
     endOfTimeFrameDate: Date,
+    zeroFiatRatesFallback: FiatRates | null,
 ) => {
     const response = await TrezorConnect.blockchainGetAccountBalanceHistory({
         coin: account.symbol,
@@ -759,6 +772,17 @@ export const fetchAccountBalanceHistoryWithBalanceBefore = async (
         account,
         response.payload,
     );
+
+    const { symbol } = account;
+
+    // cannot find ticker config for symbol, e.g. BTC TEST - fallback to 0
+    if (!getTickerConfig({ symbol }) && zeroFiatRatesFallback) {
+        return balanceHistory.map(balanceHistoryPoint => ({
+            ...balanceHistoryPoint,
+            rates: zeroFiatRatesFallback,
+        }));
+    }
+
     return balanceHistory;
 };
 
@@ -798,6 +822,7 @@ export const getBalancesBeforeStartOfRange = (
 export const getStartItemOfTimeFrame = async (
     account: Account,
     startOfTimeFrame: Date,
+    zeroFiatRatesFallback: FiatRates | null,
 ): Promise<LineGraphTimeFrameItemAccountBalance | null> => {
     const accountBalanceHistoryToStartOfRange = await fetchAccountBalanceHistory(account, {
         to: getBlockbookSafeTime(getUnixTime(startOfTimeFrame)),
@@ -805,6 +830,18 @@ export const getStartItemOfTimeFrame = async (
     });
 
     if (accountBalanceHistoryToStartOfRange.length) {
+        const { symbol } = account;
+
+        // cannot find ticker config for symbol, e.g. BTC TEST - fallback to 0
+        if (!getTickerConfig({ symbol }) && zeroFiatRatesFallback) {
+            const startBalance =
+                accountBalanceHistoryToStartOfRange[accountBalanceHistoryToStartOfRange.length - 1];
+            return {
+                ...startBalance,
+                rates: zeroFiatRatesFallback,
+            };
+        }
+
         return accountBalanceHistoryToStartOfRange[accountBalanceHistoryToStartOfRange.length - 1];
     }
 

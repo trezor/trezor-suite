@@ -21,16 +21,25 @@ import { StylesProvider } from './StylesProvider';
 import { useSplashScreen } from './hooks/useSplashScreen';
 import { useFormattersConfig } from './hooks/useFormattersConfig';
 
+// Recommended approach from react docs if you really want to run something just once
+let isConnectInitializedGlobal = false;
+
 const AppComponent = () => {
     const dispatch = useDispatch();
     const formattersConfig = useFormattersConfig();
-    const [isConnectInitialized, setIsConnectInitialized] = useState(false);
+    const [isConnectInitialized, setIsConnectInitialized] = useState(isConnectInitializedGlobal);
 
     useEffect(() => {
         const initActions = async () => {
             try {
+                if (isConnectInitialized) return;
+
+                // TODO: proper error handling for all these thunks
                 await dispatch(connectInitThunk()).unwrap();
+
                 setIsConnectInitialized(true);
+                isConnectInitializedGlobal = true;
+
                 await dispatch(initBlockchainThunk()).unwrap();
                 /* Invoke reconnect manually here because we need to have fiat rates initialized
                  * immediately after the app is loaded.
@@ -45,7 +54,7 @@ const AppComponent = () => {
             }
         };
         initActions();
-    }, [dispatch]);
+    }, [dispatch, isConnectInitialized]);
 
     if (!isConnectInitialized) {
         return null;
