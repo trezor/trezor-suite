@@ -351,6 +351,7 @@ export type {
     AccountAddresses,
     AccountInfo,
     AccountBalanceHistory,
+    AnonymitySet,
     BlockchainSettings,
     FiatRates,
     ServerInfo,

@@ -1,10 +1,12 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
-import { Icon, useTheme, variables, CollapsibleBox } from '@trezor/components';
+
 import { WalletAccountTransaction } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { FormattedCryptoAmount, HiddenPlaceholder, Translation } from '@suite-components';
 import { useSelector } from '@suite-hooks/useSelector';
+import { AnonymitySet } from '@trezor/blockchain-link';
+import { Icon, useTheme, variables, CollapsibleBox } from '@trezor/components';
 import { UtxoAnonymity } from '@wallet-components';
 
 export const blurFix = css`
@@ -79,7 +81,7 @@ const IOGridRow = ({
     tx: { symbol },
     vinvout: { isAccountOwned, addresses, value },
 }: {
-    anonymitySet?: Record<string, number | undefined>;
+    anonymitySet?: AnonymitySet;
     tx: WalletAccountTransaction;
     vinvout: EnhancedVinVout;
 }) => {

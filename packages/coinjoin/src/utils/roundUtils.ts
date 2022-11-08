@@ -137,9 +137,10 @@ export const findNearestDeadline = (rounds: Round[]) => {
     return Math.min(...deadlines);
 };
 
-// iterate Status and find relevant round data
+// get relevant round data from the most recent round
 export const getDataFromRounds = (rounds: Round[]) => {
-    const roundParameters = getRoundParameters(rounds[rounds.length - 1]);
+    const lastRound = rounds.at(-1);
+    const roundParameters = lastRound && getRoundParameters(lastRound);
 
     return {
         coordinationFeeRate: {
