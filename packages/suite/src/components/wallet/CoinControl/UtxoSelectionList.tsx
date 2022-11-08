@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { transparentize } from 'polished';
 
-import { getAccountTransactions } from '@suite-common/wallet-utils';
+import { selectAccountTransactions } from '@suite-common/wallet-core';
 import { useSelector } from '@suite-hooks';
 import { Icon, variables, IconType } from '@trezor/components';
 import type { AccountUtxo } from '@trezor/connect';
@@ -57,13 +57,9 @@ export const UtxoSelectionList = ({
     utxos,
     withHeader,
 }: Props) => {
-    const { transactions } = useSelector(state => ({
-        transactions: state.wallet.transactions,
-    }));
-
     const { account, composedInputs, isCoinControlEnabled, selectedUtxos } = useSendFormContext();
 
-    const accountTransactions = getAccountTransactions(account.key, transactions.transactions);
+    const accountTransactions = useSelector(state => selectAccountTransactions(state, account.key));
 
     const isChecked = (utxo: AccountUtxo) =>
         isCoinControlEnabled

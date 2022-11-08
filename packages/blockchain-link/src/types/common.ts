@@ -122,6 +122,8 @@ export interface Transaction {
 
 /* Account */
 
+export type AnonymitySet = Record<string, number | undefined>;
+
 export interface Address {
     address: string;
     path: string;
@@ -138,7 +140,7 @@ export interface AccountAddresses {
     unused: Address[];
     // NOTE: anonymitySet currently is not calculated by @trezor/blockchain-link
     // format: key -> address, value -> anonymityLevel
-    anonymitySet?: Record<string, number | undefined>;
+    anonymitySet?: AnonymitySet;
 }
 
 export interface Utxo {

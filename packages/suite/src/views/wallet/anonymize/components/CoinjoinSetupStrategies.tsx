@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import BigNumber from 'bignumber.js';
 import styled from 'styled-components';
 
 import { DEFAULT_MAX_MINING_FEE, RECOMMENDED_SKIP_ROUNDS } from '@suite/services/coinjoin/config';
+import { selectAccountTransactions } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import { TooltipSymbol, Translation, TrezorLink } from '@suite-components';
 import { Error } from '@suite-components/Error';
@@ -11,11 +11,12 @@ import { Card, Checkbox, Link, TooltipButton, variables } from '@trezor/componen
 import { DATA_TOS_COINJOIN_URL, ZKSNACKS_TERMS_URL } from '@trezor/urls';
 import { startCoinjoinSession } from '@wallet-actions/coinjoinAccountActions';
 import { CryptoAmountWithHeader } from '@wallet-components/PrivacyAccount/CryptoAmountWithHeader';
+
 import {
     selectCurrentCoinjoinBalanceBreakdown,
     selectCurrentTargetAnonymity,
 } from '@wallet-reducers/coinjoinReducer';
-import { getMaxRounds } from '@wallet-utils/coinjoinUtils';
+import { calculateServiceFee, getMaxRounds } from '@wallet-utils/coinjoinUtils';
 import { CoinjoinCustomStrategy } from './CoinjoinCustomStrategy';
 import { CoinjoinDefaultStrategy, CoinJoinStrategy } from './CoinjoinDefaultStrategy';
 
@@ -83,8 +84,11 @@ export const CoinjoinSetupStrategies = ({ account }: CoinjoinSetupStrategiesProp
     const coordinatorData = useSelector(state => state.wallet.coinjoin.clients[account.symbol]);
     const targetAnonymity = useSelector(selectCurrentTargetAnonymity);
     const { notAnonymized } = useSelector(selectCurrentCoinjoinBalanceBreakdown);
+    const accountTransactions = useSelector(state => selectAccountTransactions(state, account.key));
 
-    if (!coordinatorData || !targetAnonymity || !account.addresses?.anonymitySet) {
+    const anonymitySet = account.addresses?.anonymitySet;
+
+    if (!coordinatorData || !targetAnonymity || !anonymitySet) {
         return (
             <Error
                 error={`Suite could not ${
@@ -94,11 +98,16 @@ export const CoinjoinSetupStrategies = ({ account }: CoinjoinSetupStrategiesProp
         );
     }
 
-    const maxRounds = getMaxRounds(targetAnonymity, account.addresses.anonymitySet);
+    const serviceFee = calculateServiceFee(
+        account.utxo || [],
+        coordinatorData.coordinationFeeRate,
+        anonymitySet,
+        accountTransactions,
+    );
+    const maxRounds = getMaxRounds(targetAnonymity, anonymitySet);
     const isCustom = strategy === 'custom';
     const allChecked = connectedConfirmed && termsConfirmed;
     const allAnonymized = notAnonymized === '0';
-    const fee = new BigNumber(notAnonymized).times(coordinatorData.coordinatorFeeRate).toString();
     const isDisabled = !allChecked || allAnonymized;
     const buttonTooltipMessage = allAnonymized
         ? 'TR_NOTHING_TO_ANONYMIZE'
@@ -113,7 +122,7 @@ export const CoinjoinSetupStrategies = ({ account }: CoinjoinSetupStrategiesProp
     const toggleTermsConfirmation = () => setTermsConfirmed(current => !current);
     const anonymize = () =>
         actions.startCoinjoinSession(account, {
-            maxCoordinatorFeeRate: coordinatorData.coordinatorFeeRate,
+            maxCoordinatorFeeRate: coordinatorData.coordinationFeeRate.rate,
             maxFeePerKvbyte:
                 (isCustom ? customMaxFee : coordinatorData.feeRatesMedians[strategy]) * 1000, // transform to kvB
             maxRounds,
@@ -146,7 +155,7 @@ export const CoinjoinSetupStrategies = ({ account }: CoinjoinSetupStrategiesProp
                                 <Translation id="TR_SERVICE_FEE" />
                             </AmountHeading>
                         }
-                        value={fee}
+                        value={serviceFee}
                         symbol={account.symbol}
                         note={<Translation id="TR_SERVICE_FEE_NOTE" />}
                     />

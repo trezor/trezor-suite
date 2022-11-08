@@ -1,16 +1,24 @@
 import BigNumber from 'bignumber.js';
-import {
-    CoinjoinStatusEvent,
-    RegisterAccountParams,
-    CoinjoinTransactionData,
-} from '@trezor/coinjoin';
+
 import { getUtxoOutpoint, getBip43Type } from '@suite-common/wallet-utils';
-import { Account, CoinjoinSession, CoinjoinSessionParameters } from '@suite-common/wallet-types';
+import {
+    Account,
+    CoinjoinSession,
+    CoinjoinSessionParameters,
+    WalletAccountTransaction,
+} from '@suite-common/wallet-types';
 import {
     ESTIMATED_ANONYMITY_GAINED_PER_ROUND,
     ESTIMATED_HOURS_PER_ROUND_WITHOUT_SKIPPING_ROUNDS,
     ESTIMATED_HOURS_PER_ROUND_WITH_SKIPPING_ROUNDS,
 } from '@suite/services/coinjoin/config';
+import { AnonymitySet } from '@trezor/blockchain-link';
+import {
+    CoinjoinStatusEvent,
+    RegisterAccountParams,
+    CoinjoinTransactionData,
+} from '@trezor/coinjoin';
+import { AccountUtxo } from '@trezor/connect';
 
 export type CoinjoinBalanceBreakdown = {
     notAnonymized: string;
@@ -28,7 +36,7 @@ export const breakdownCoinjoinBalance = ({
     registeredUtxos,
 }: {
     targetAnonymity: number | undefined;
-    anonymitySet: Record<string, number | undefined> | undefined;
+    anonymitySet: AnonymitySet | undefined;
     utxos: Account['utxo'];
     registeredUtxos?: string[];
 }): CoinjoinBalanceBreakdown => {
@@ -140,10 +148,7 @@ export const getRegisterAccountParams = (
 });
 
 // calculate max rounds from anonymity levels
-export const getMaxRounds = (
-    targetAnonymity: number,
-    anonymitySet: Record<string, number | undefined>,
-) => {
+export const getMaxRounds = (targetAnonymity: number, anonymitySet: AnonymitySet) => {
     // fallback to 1 if any value is undefined or the object is empty
     const lowestAnonymity = Math.min(...(Object.values(anonymitySet).map(item => item ?? 1) || 1));
     return Math.ceil((targetAnonymity - lowestAnonymity) / ESTIMATED_ANONYMITY_GAINED_PER_ROUND);
@@ -262,3 +267,28 @@ export const calculateSessionProgress = (
     signedRounds: CoinjoinSession['signedRounds'],
     maxRounds: CoinjoinSession['maxRounds'],
 ) => signedRounds.length / (maxRounds / 100);
+
+export const calculateServiceFee = (
+    utxos: AccountUtxo[],
+    coordinationFeeRate: CoinjoinStatusEvent['coordinationFeeRate'],
+    anonymitySet: AnonymitySet,
+    transactions: WalletAccountTransaction[],
+) => {
+    const feeInducingUtxos = utxos.filter(
+        utxo =>
+            new BigNumber(utxo.amount).gt(coordinationFeeRate.plebsDontPayThreshold) && // above plebsDontPayThreshold
+            [1, undefined].includes(anonymitySet[utxo.address]) && // no anonymity, i.e. not previously coinjoined, or cannot determine anonymity
+            transactions.find(transaction => transaction.txid === utxo.txid)?.type !== 'joint', // previous transaction is not a coinjoin (relevant when coinjoined but anonymity level remained at 1)
+    );
+    return feeInducingUtxos
+        ?.reduce(
+            (total, utxo) =>
+                total.plus(
+                    new BigNumber(utxo.amount)
+                        .times(coordinationFeeRate.rate)
+                        .integerValue(BigNumber.ROUND_FLOOR),
+                ),
+            new BigNumber(0),
+        )
+        .toString();
+};
