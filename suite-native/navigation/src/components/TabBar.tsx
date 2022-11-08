@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
+import { atom, useAtom } from 'jotai';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Box } from '@suite-native/atoms';
@@ -13,6 +14,8 @@ interface TabBarProps extends BottomTabBarProps {
     tabItemOptions: TabsOptions;
     SendReceiveComponent: React.ElementType;
 }
+
+export const isSendReceiveActionsVisibleAtom = atom(false);
 
 export const TAB_BAR_HEIGHT = 86;
 const tabBarStyle = prepareNativeStyle<{ insetLeft: number; insetRight: number }>(
@@ -36,18 +39,20 @@ export const TabBar = ({
     tabItemOptions,
     SendReceiveComponent,
 }: TabBarProps) => {
-    const [sendReceiveActionsVisible, setSendReceiveActionsVisible] = useState(false);
+    const [isSendReceiveActionsVisible, setIsSendReceiveActionsVisible] = useAtom(
+        isSendReceiveActionsVisibleAtom,
+    );
     const { applyStyle } = useNativeStyles();
     const insets = useSafeAreaInsets();
 
     const handleSendReceiveActionsVisibility = (visible: boolean) => {
-        setSendReceiveActionsVisible(visible);
+        setIsSendReceiveActionsVisible(visible);
     };
 
     return (
         <Box style={applyStyle(tabBarStyle, { insetLeft: insets.left, insetRight: insets.right })}>
             <SendReceiveComponent
-                isVisible={sendReceiveActionsVisible}
+                isVisible={isSendReceiveActionsVisible}
                 onVisibilityChange={handleSendReceiveActionsVisibility}
             />
             {state.routes.map((route, index) => {

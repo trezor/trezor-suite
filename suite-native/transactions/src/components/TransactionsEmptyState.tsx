@@ -1,8 +1,11 @@
 import React from 'react';
 import { Image } from 'react-native';
 
+import { useAtom } from 'jotai';
+
 import { Box, Button, Card, Text } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { isSendReceiveActionsVisibleAtom } from '@suite-native/navigation';
 
 const cardStyle = prepareNativeStyle(utils => ({
     justifyContent: 'center',
@@ -13,8 +16,13 @@ const cardStyle = prepareNativeStyle(utils => ({
     borderRadius: utils.borders.radii.large,
 }));
 
+const receiveButtonStyle = prepareNativeStyle(() => ({
+    width: 310,
+}));
+
 export const TransactionsEmptyState = () => {
     const { applyStyle } = useNativeStyles();
+    const [_, setIsSendReceiveActionsVisible] = useAtom(isSendReceiveActionsVisibleAtom);
     return (
         <Box paddingHorizontal="medium">
             <Card style={applyStyle(cardStyle)}>
@@ -26,7 +34,11 @@ export const TransactionsEmptyState = () => {
                         Get started by receiving transactions
                     </Text>
                 </Box>
-                <Button style={{ width: 310 }} iconName="receive">
+                <Button
+                    style={applyStyle(receiveButtonStyle)}
+                    iconName="receive"
+                    onPress={() => setIsSendReceiveActionsVisible(true)}
+                >
                     Receive
                 </Button>
             </Card>

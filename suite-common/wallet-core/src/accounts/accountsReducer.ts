@@ -116,6 +116,11 @@ export const selectAccountByKey = createSelector(
         accounts.find(account => account.key === accountKey) ?? null,
 );
 
+export const selectHasAccountTransactions = createSelector(
+    [selectAccountByKey],
+    (account): boolean => !!account?.history.total,
+);
+
 export const selectAccountsByNetworkSymbols = createSelector(
     [
         selectAccounts,

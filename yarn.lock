@@ -6646,6 +6646,7 @@ __metadata:
     "@trezor/icons": "*"
     "@trezor/styles": "*"
     "@trezor/theme": "*"
+    jotai: 1.9.0
     react: 18.2.0
     react-native: 0.70.5
     react-redux: 7.2.2
@@ -6798,6 +6799,7 @@ __metadata:
     "@trezor/styles": "*"
     "@trezor/theme": "*"
     jest: ^26.6.3
+    jotai: 1.9.0
     react: 18.2.0
     react-native: 0.70.5
     react-native-keyboard-aware-scroll-view: ^0.9.5
@@ -6875,6 +6877,7 @@ __metadata:
     "@suite-native/navigation": "*"
     "@trezor/icons": "*"
     "@trezor/styles": "*"
+    jotai: 1.9.0
     react: 18.2.0
     react-native: 0.70.5
     react-redux: 7.2.2
