@@ -409,6 +409,35 @@ export const pauseCoinjoinSession = (account: Account) => (dispatch: Dispatch) =
     dispatch(coinjoinSessionPause(account.key));
 };
 
+export const pauseCoinjoinSessionByDeviceId =
+    (deviceID: string) => (dispatch: Dispatch, getState: GetState) => {
+        const {
+            devices,
+            wallet: { accounts, coinjoin },
+        } = getState();
+
+        const disconnectedDevices = devices.filter(d => d.id === deviceID && d.remember);
+        const affectedAccounts = disconnectedDevices.flatMap(d =>
+            accounts.filter(a => a.accountType === 'coinjoin' && a.deviceState === d.state),
+        );
+
+        affectedAccounts.forEach(account => {
+            const accountWithSession = coinjoin.accounts.find(
+                a => a.key === account.key && a.session && !a.session.paused,
+            );
+            if (accountWithSession) {
+                // get @trezor/coinjoin client if available
+                const client = getCoinjoinClient(account.symbol);
+
+                // unregister account in @trezor/coinjoin
+                client?.unregisterAccount(account.key);
+
+                // dispatch data to reducer
+                dispatch(coinjoinSessionPause(account.key));
+            }
+        });
+    };
+
 // called from coinjoin account UI
 // try to restore current paused CoinjoinSession
 // use same parameters as in startCoinjoinSession but recalculate maxRounds value
