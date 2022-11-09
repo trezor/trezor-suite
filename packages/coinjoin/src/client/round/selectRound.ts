@@ -81,7 +81,10 @@ export const getAccountCandidates = (
                 const [low, high] = account.skipRounds;
                 // skip reached lower limit
                 // or skip randomly (20% chance with [4, 5] settings)
-                if (account.skipRoundCounter >= low || Math.random() > low / high) {
+                if (
+                    account.skipRoundCounter >= low ||
+                    (account.skipRoundCounter > 0 && Math.random() > low / high)
+                ) {
                     account.skipRoundCounter = 0;
                     log(`Random skip candidate ~~${accountKey}~~`);
                     return [];
