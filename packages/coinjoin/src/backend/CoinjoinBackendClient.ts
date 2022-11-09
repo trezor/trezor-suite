@@ -1,4 +1,4 @@
-import { EventEmitter } from 'events';
+import { scheduleAction } from '@trezor/utils';
 
 import { httpGet, httpPost, RequestOptions } from '../utils/http';
 import type {
@@ -8,12 +8,13 @@ import type {
     BlockbookTransaction,
 } from '../types/backend';
 import type { CoinjoinBackendSettings } from '../types';
+import { HTTP_REQUEST_TIMEOUT } from '../constants';
 
 type CoinjoinBackendClientSettings = CoinjoinBackendSettings & {
     timeout?: number;
 };
 
-export class CoinjoinBackendClient extends EventEmitter {
+export class CoinjoinBackendClient {
     protected readonly wabisabiUrl;
     protected readonly blockbookUrls;
 
@@ -26,7 +27,6 @@ export class CoinjoinBackendClient extends EventEmitter {
     ];
 
     constructor(settings: CoinjoinBackendClientSettings) {
-        super();
         this.wabisabiUrl = `${settings.wabisabiBackendUrl}api/v4/btc`;
         this.blockbookUrls = settings.blockbookUrls;
     }
@@ -36,9 +36,13 @@ export class CoinjoinBackendClient extends EventEmitter {
     }
 
     fetchBlock(height: number, options?: RequestOptions): Promise<BlockbookBlock> {
-        return this.blockbook({ identity: this.getIdentityForBlock(height), ...options })
-            .get(`block/${height}`)
-            .then(this.handleBlockbookResponse.bind(this));
+        const identity = this.getIdentityForBlock(height);
+        return this.scheduleGet(
+            this.blockbook,
+            this.handleBlockbookResponse,
+            { identity, ...options },
+            `block/${height}`,
+        );
     }
 
     fetchBlocks(heights: number[], options?: RequestOptions): Promise<BlockbookBlock[]> {
@@ -46,21 +50,29 @@ export class CoinjoinBackendClient extends EventEmitter {
     }
 
     fetchTransaction(txid: string, options?: RequestOptions): Promise<BlockbookTransaction> {
-        return this.blockbook(options)
-            .get(`tx/${txid}`)
-            .then(this.handleBlockbookResponse.bind(this));
+        return this.scheduleGet(
+            this.blockbook,
+            this.handleBlockbookResponse,
+            options,
+            `tx/${txid}`,
+        );
     }
 
-    async fetchFilters(
+    fetchFilters(
         bestKnownBlockHash: string,
         count: number,
         options?: RequestOptions,
     ): Promise<BlockFilterResponse> {
-        const response = await this.wabisabi(options).get('Blockchain/filters', {
-            bestKnownBlockHash,
-            count,
-        });
+        return this.scheduleGet(
+            this.wabisabi,
+            this.handleFiltersResponse,
+            options,
+            'Blockchain/filters',
+            { bestKnownBlockHash, count },
+        );
+    }
 
+    protected async handleFiltersResponse(response: Response) {
         if (response.status === 204) {
             // Provided hash is a tip
             return {
@@ -92,23 +104,37 @@ export class CoinjoinBackendClient extends EventEmitter {
         throw new Error(`${response.status}: ${response.statusText}`);
     }
 
-    async fetchMempoolTxids(options?: RequestOptions): Promise<string[]> {
-        const response = await this.wabisabi(options).get('Blockchain/mempool-hashes');
+    fetchMempoolTxids(options?: RequestOptions): Promise<string[]> {
+        return this.scheduleGet(
+            this.wabisabi,
+            this.handleMempoolResponse,
+            options,
+            'Blockchain/mempool-hashes',
+        );
+    }
+
+    protected handleMempoolResponse(response: Response) {
         if (response.status === 200) {
             return response.json();
         }
-
         throw new Error(`${response.status}: ${response.statusText}`);
     }
 
-    // TODO
-    async fetchServerInfo(options?: RequestOptions) {
-        const res = await this.wabisabi(options).get('Batch/synchronize', {
-            bestKnownBlockHash: '0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206',
-            maxNumberOfFilters: 0,
-            estimateSmartFeeMode: 'Conservative',
-        });
-        return res.json();
+    protected scheduleGet<T>(
+        backend: CoinjoinBackendClient['blockbook' | 'wabisabi'],
+        handler: (r: Response) => Promise<T>,
+        options: RequestOptions | undefined,
+        path: string,
+        query?: Record<string, any>,
+    ): Promise<T> {
+        return scheduleAction(
+            signal =>
+                backend
+                    .call(this, { ...options, signal }) // "global" signal is overriden by signal passed from scheduleAction
+                    .get(path, query)
+                    .then(handler.bind(this)),
+            { attempts: 3, timeout: HTTP_REQUEST_TIMEOUT, ...options }, // default attempts/timeout could be overriden by options
+        );
     }
 
     protected async handleBlockbookResponse(response: Response) {
