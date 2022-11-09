@@ -17,7 +17,7 @@ const cardStyle = prepareNativeStyle(utils => ({
 }));
 
 const receiveButtonStyle = prepareNativeStyle(() => ({
-    width: 310,
+    width: '90%',
 }));
 
 export const TransactionsEmptyState = () => {

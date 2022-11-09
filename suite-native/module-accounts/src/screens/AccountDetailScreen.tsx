@@ -51,7 +51,9 @@ export const AccountDetailScreen = memo(
 
         return (
             <Screen
-                header={<AccountDetailScreenHeader accountName={accountName} />}
+                header={
+                    <AccountDetailScreenHeader accountName={accountName} accountKey={accountKey} />
+                }
                 customHorizontalPadding={0}
                 isScrollable={false}
             >

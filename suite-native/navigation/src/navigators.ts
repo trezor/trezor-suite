@@ -34,6 +34,7 @@ export type AccountsStackParamList = {
         currencySymbol?: NetworkSymbol;
     };
     [AccountsStackRoutes.AccountDetail]: { accountKey: string };
+    [AccountsStackRoutes.AccountDetailSettings]: { accountKey: string };
 };
 
 export type OnboardingStackParamList = {
