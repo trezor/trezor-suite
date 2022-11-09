@@ -82,7 +82,7 @@ const createRoundLock = (mainSignal: AbortSignal) => {
     };
 };
 
-export class CoinjoinRound extends EventEmitter implements SerializedCoinjoinRound {
+export class CoinjoinRound extends EventEmitter {
     private lock?: ReturnType<typeof createRoundLock>;
     private options: CoinjoinRoundOptions;
 
@@ -182,7 +182,7 @@ export class CoinjoinRound extends EventEmitter implements SerializedCoinjoinRou
 
         if (this.inputs.length === 0 || this.phase === RoundPhase.Ended) {
             this.phase = RoundPhase.Ended;
-            this.emit('ended', { round: this });
+            this.emit('ended', { round: this.toSerialized() });
         }
 
         this.lock?.resolve();
@@ -220,7 +220,7 @@ export class CoinjoinRound extends EventEmitter implements SerializedCoinjoinRou
                 return {
                     type: 'ownership',
                     roundId: this.id,
-                    inputs,
+                    inputs: inputs.map(i => i.toSerialized()),
                     commitmentData: this.commitmentData,
                 };
             }
@@ -235,7 +235,7 @@ export class CoinjoinRound extends EventEmitter implements SerializedCoinjoinRou
                 return {
                     type: 'signature',
                     roundId: this.id,
-                    inputs,
+                    inputs: inputs.map(i => i.toSerialized()),
                     transaction: this.transactionData,
                 };
             }

@@ -5,6 +5,7 @@ export interface SerializedAlice {
     accountKey: string;
     path: string;
     outpoint: string;
+    error?: string;
 }
 
 export interface SerializedCoinjoinRound {
