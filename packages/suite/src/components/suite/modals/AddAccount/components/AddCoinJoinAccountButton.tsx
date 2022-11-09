@@ -4,7 +4,7 @@ import { useSelector, useActions } from '@suite-hooks';
 import { useDispatch } from 'react-redux';
 import { createCoinjoinAccount } from '@wallet-actions/coinjoinAccountActions';
 import * as modalActions from '@suite-actions/modalActions';
-import { Account, Network } from '@wallet-types';
+import { Account, Network, NetworkSymbol } from '@wallet-types';
 import { UnavailableCapabilities } from '@trezor/connect';
 import { AddButton } from './AddButton';
 import { getIsTorEnabled } from '@suite-utils/tor';
@@ -16,11 +16,13 @@ import { RequestEnableTorResponse } from '@suite-components/modals/RequestEnable
 
 interface VerifyAvailabilityProps {
     coinjoinAccounts: Account[];
+    symbol: NetworkSymbol;
     unavailableCapabilities?: UnavailableCapabilities;
 }
 
 const verifyAvailability = ({
     coinjoinAccounts,
+    symbol,
     unavailableCapabilities,
 }: VerifyAvailabilityProps) => {
     if (coinjoinAccounts.length > 0) {
@@ -30,7 +32,8 @@ const verifyAvailability = ({
     if (capability === 'no-support') {
         return <Translation id="MODAL_ADD_ACCOUNT_COINJOIN_NO_SUPPORT" />;
     }
-    if (!isDesktop() && !isDevEnv) {
+    // regtest CoinJoin account enabled in web app for development
+    if (!isDesktop() && !(isDevEnv && symbol === 'regtest')) {
         return <Translation id="MODAL_ADD_ACCOUNT_COINJOIN_DESKTOP_ONLY" />;
     }
     if (capability === 'update-required') {
@@ -68,6 +71,7 @@ export const AddCoinJoinAccountButton = ({ network }: AddCoinJoinAccountProps) =
 
     const disabledMessage = verifyAvailability({
         coinjoinAccounts,
+        symbol: network.symbol,
         unavailableCapabilities: device.unavailableCapabilities,
     });
 
