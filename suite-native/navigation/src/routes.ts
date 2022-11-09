@@ -35,6 +35,7 @@ export enum HomeStackRoutes {
 export enum AccountsStackRoutes {
     Accounts = 'Accounts',
     AccountDetail = 'AccountDetail',
+    AccountDetailSettings = 'AccountDetailSettings',
 }
 
 export enum SettingsStackRoutes {

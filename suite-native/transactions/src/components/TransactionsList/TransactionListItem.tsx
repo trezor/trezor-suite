@@ -39,6 +39,7 @@ const transactionListItemStyle = prepareNativeStyle(utils => ({
     alignItems: 'center',
     justifyContent: 'space-between',
     padding: utils.spacings.medium,
+    marginHorizontal: utils.spacings.medium,
 }));
 
 export const TransactionListItem = memo(({ transaction }: AccountTransactionListItemProps) => {
