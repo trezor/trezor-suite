@@ -113,6 +113,18 @@ export type CoinjoinClientAction =
     | ReturnType<typeof clientSessionSignTransaction>
     | ReturnType<typeof clientLog>;
 
+// return only active instances
+export const getCoinjoinClient = (symbol: Account['symbol']) =>
+    CoinjoinClientService.getInstance(symbol);
+
+export const unregisterByAccountKey =
+    (accountKey: string) => (_dispatch: Dispatch, getState: GetState) => {
+        const { accounts } = getState().wallet;
+        const realAccount = accounts.find(a => a.key === accountKey);
+        const client = realAccount && getCoinjoinClient(realAccount.symbol);
+        client?.unregisterAccount(accountKey);
+    };
+
 /**
  * Show "do not disconnect" screen on Trezor.
  * Multiple possible setups:
@@ -201,17 +213,21 @@ export const onCoinjoinRoundChanged =
                 dispatch(setBusyScreen(accountKeys));
                 dispatch(closeModal());
 
-                const isSessionCompleted = coinjoinAccountsWithSession.some(
+                const completedSessions = coinjoinAccountsWithSession.filter(
                     ({ session }) => session?.signedRounds?.length === session?.maxRounds,
                 );
 
-                if (isSessionCompleted) {
+                if (completedSessions.length > 0) {
                     dispatch(
                         openModal({
                             type: 'coinjoin-success',
                             relatedAccountKey,
                         }),
                     );
+                    completedSessions.forEach(({ key }) => {
+                        dispatch(clientSessionCompleted(key));
+                        dispatch(unregisterByAccountKey(key));
+                    });
                 }
             }
         }
@@ -490,10 +506,6 @@ export const initCoinjoinClient =
             );
         }
     };
-
-// return only active instances
-export const getCoinjoinClient = (symbol: Account['symbol']) =>
-    CoinjoinClientService.getInstance(symbol);
 
 export const analyzeTransactions =
     (accountInfo: AccountInfo, symbol: Account['symbol']) => async () => {
