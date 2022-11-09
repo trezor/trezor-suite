@@ -98,6 +98,7 @@ export class Alice {
             accountKey: this.accountKey,
             path: this.path,
             outpoint: this.outpoint,
+            error: this.error?.message,
         };
     }
 }
