@@ -125,7 +125,13 @@ export const onCoinjoinRoundChanged = [
         state: {
             accounts: [{ key: 'a', deviceState: 'device-state' }],
             coinjoin: {
-                accounts: [{ key: 'a', session: { signedRounds: ['1', '2'], maxRounds: 2 } }],
+                accounts: [
+                    {
+                        key: 'a',
+                        session: { signedRounds: ['1', '2'], maxRounds: 2 },
+                        previousSessions: [],
+                    },
+                ],
             },
         },
         params: {
@@ -135,7 +141,12 @@ export const onCoinjoinRoundChanged = [
             roundDeadline: Date.now() + 1000,
         },
         result: {
-            actions: [COINJOIN.SESSION_ROUND_CHANGED, MODAL.CLOSE, MODAL.OPEN_USER_CONTEXT],
+            actions: [
+                COINJOIN.SESSION_ROUND_CHANGED,
+                MODAL.CLOSE,
+                MODAL.OPEN_USER_CONTEXT,
+                COINJOIN.SESSION_COMPLETED,
+            ],
             trezorConnectCalledTimes: 1,
             trezorConnectCallsWith: { expiry_ms: undefined },
         },
@@ -146,7 +157,13 @@ export const onCoinjoinRoundChanged = [
         state: {
             accounts: [{ key: 'a', deviceState: 'device-state' }],
             coinjoin: {
-                accounts: [{ key: 'a', session: { signedRounds: ['1', '2'], maxRounds: 2 } }],
+                accounts: [
+                    {
+                        key: 'a',
+                        session: { signedRounds: ['1', '2'], maxRounds: 2 },
+                        previousSessions: [],
+                    },
+                ],
             },
         },
         params: [
@@ -191,6 +208,7 @@ export const onCoinjoinRoundChanged = [
                 COINJOIN.SESSION_ROUND_CHANGED,
                 MODAL.CLOSE,
                 MODAL.OPEN_USER_CONTEXT,
+                COINJOIN.SESSION_COMPLETED,
             ],
             trezorConnectCalledTimes: 2,
             trezorConnectCallsWith: { expiry_ms: undefined },
