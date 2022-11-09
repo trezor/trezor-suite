@@ -23,7 +23,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
         with:
-          lfs: true
+          lfs: "true"
       - name: Setup node
         uses: actions/setup-node@v3
         with:
@@ -51,6 +51,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+        with:
+          lfs: "true"
       - name: Setup node
         uses: actions/setup-node@v3
         with:
@@ -70,6 +72,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+        with:
+          lfs: "true"
       - name: Setup node
         uses: actions/setup-node@v3
         with:

@@ -12,6 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
+          lfs: "true"
           submodules: "true"
           fetch-depth: 0
       - name: Install node and yarn
