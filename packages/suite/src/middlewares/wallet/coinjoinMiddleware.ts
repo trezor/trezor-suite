@@ -1,5 +1,5 @@
 import type { MiddlewareAPI } from 'redux';
-import { UI } from '@trezor/connect';
+import { UI, DEVICE } from '@trezor/connect';
 import { SUITE, ROUTER } from '@suite-actions/constants';
 import { DISCOVERY } from '@wallet-actions/constants';
 import * as coinjoinAccountActions from '@wallet-actions/coinjoinAccountActions';
@@ -49,6 +49,10 @@ export const coinjoinMiddleware =
                     api.dispatch(coinjoinAccountActions.fetchAndUpdateAccount(a)),
                 );
             }
+        }
+
+        if (action.type === DEVICE.DISCONNECT && action.payload.id) {
+            api.dispatch(coinjoinAccountActions.pauseCoinjoinSessionByDeviceId(action.payload.id));
         }
 
         if (blockchainActions.synced.match(action)) {
