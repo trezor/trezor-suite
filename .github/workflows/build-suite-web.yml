@@ -2,6 +2,9 @@ name: "[Build] @trezor/suite-web"
 
 on:
   workflow_call:
+  push:
+    branches:
+      - "vd/actions-refactor"
 
 jobs:
   build-web:
@@ -52,7 +55,7 @@ jobs:
     needs: [build-web, build-landing]
     runs-on: ubuntu-latest
     env:
-      SUITE_DEPLOY_DIRECTORY: "suite@dev-suite.trezor.io:/trezor-suite/${{github.head_ref}}/"
+      SUITE_DEPLOY_DIRECTORY: "trezorci@dev-suite.do.sldev.cz:/opt/trezor-suite/${{github.head_ref}}/"
     steps:
       - name: Configure ssh credentials
         uses: webfactory/ssh-agent@v0.5.4
