@@ -21,7 +21,7 @@ import {
 
 export const AccountDetailSettings = ({
     route,
-}: StackProps<AccountsStackParamList, AccountsStackRoutes.AccountDetail>) => {
+}: StackProps<AccountsStackParamList, AccountsStackRoutes.AccountDetailSettings>) => {
     const { accountKey } = route.params;
     const navigation =
         useNavigation<
