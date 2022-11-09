@@ -138,7 +138,11 @@ export const CoinControl = ({ close }: CoinControlProps) => {
     ].map(utxoCategory => {
         const lastIndexOnPage = currentPage * utxosPerPage - previousItemsLength;
         previousItemsLength += utxoCategory.length;
-        return utxoCategory.slice(lastIndexOnPage - utxosPerPage, lastIndexOnPage);
+        // avoid negative values which may cause unintended results
+        return utxoCategory.slice(
+            Math.max(0, lastIndexOnPage - utxosPerPage),
+            Math.max(0, lastIndexOnPage),
+        );
     });
     const isCoinjoinAccount = account.accountType === 'coinjoin';
     const hasEligibleUtxos = spendableUtxos.length + lowAnonymityUtxos.length > 0;
