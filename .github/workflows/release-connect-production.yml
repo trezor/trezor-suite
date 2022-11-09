@@ -27,7 +27,7 @@ jobs:
           yarn workspace @trezor/connect-popup build
       - name: Build connect-explorer
           yarn install --immutable
-          __TREZOR_CONNECT_SRC=https://suite.corp.sldev.cz/connect/${{github.head_ref}}/ yarn workspace @trezor/connect-explorer build
+          __TREZOR_CONNECT_SRC=https://suite.corp.sldev.cz/connect/${{github.ref_name}}/ yarn workspace @trezor/connect-explorer build
       - name: Upload connect-web and connect-explorer to staging
         run: |
           ./ci/scripts/connect-release.sh 9

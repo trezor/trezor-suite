@@ -39,7 +39,7 @@ jobs:
       - name: Package version check
         run: |
           yarn install --no-immutable
-          node ./ci/scripts/check-version ${{ github.event.inputs.package }} ${{github.head_ref}} latest
+          node ./ci/scripts/check-version ${{ github.event.inputs.package }} ${{github.ref_name}} latest
 
       - name: Release npm package
         run: |
