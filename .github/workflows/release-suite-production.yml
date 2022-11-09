@@ -67,29 +67,8 @@ jobs:
           name: suite-web-build
           path: packages/suite-web/build
 
-  build-landing:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          lfs: "true"
-      - name: Setup node
-        uses: actions/setup-node@v3
-        with:
-          node-version-file: ".nvmrc"
-      - name: "Build suite-web landing"
-        run: |
-          yarn install --immutable
-          yarn workspace @trezor/suite-web-landing build
-      - name: Archive suite-web build results
-        uses: actions/upload-artifact@v3
-        with:
-          name: suite-web-landing-build
-          path: packages/suite-web-landing/build
-
   deploy-suite-web-production:
-    needs: [build-web, build-landing]
+    needs: [build-web]
     runs-on: ubuntu-latest
     env:
       BUCKET_NAME: "suite-dev.trezor.io"

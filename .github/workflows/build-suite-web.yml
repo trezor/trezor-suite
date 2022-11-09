@@ -32,7 +32,7 @@ jobs:
           path: packages/suite-web/build
 
   deploy-builds:
-    needs: [build-web, build-landing]
+    needs: [build-web]
     runs-on: ubuntu-latest
     env:
       SUITE_DEPLOY_DIRECTORY: "trezorci@dev-suite.do.sldev.cz:/opt/trezor-suite/${{github.ref_name}}/"
