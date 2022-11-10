@@ -24,7 +24,6 @@ import { AccountUtxo } from '@trezor/connect';
 
 export type CoinjoinBalanceBreakdown = {
     notAnonymized: string;
-    anonymizing: string;
     anonymized: string;
 };
 
@@ -35,16 +34,13 @@ export const breakdownCoinjoinBalance = ({
     targetAnonymity,
     anonymitySet,
     utxos,
-    registeredUtxos,
 }: {
     targetAnonymity: number | undefined;
     anonymitySet: AnonymitySet | undefined;
     utxos: Account['utxo'];
-    registeredUtxos?: string[];
 }): CoinjoinBalanceBreakdown => {
     const balanceBreakdown = {
         notAnonymized: '0',
-        anonymizing: '0',
         anonymized: '0',
     };
 
@@ -52,20 +48,15 @@ export const breakdownCoinjoinBalance = ({
         return balanceBreakdown;
     }
 
-    utxos?.forEach(({ address, amount, txid, vout }) => {
-        const outpoint = getUtxoOutpoint({ txid, vout });
+    utxos?.forEach(({ address, amount }) => {
         const bigAmount = new BigNumber(amount);
-        const { notAnonymized, anonymizing, anonymized } = balanceBreakdown;
+        const { notAnonymized, anonymized } = balanceBreakdown;
 
-        if (registeredUtxos?.includes(outpoint)) {
-            const newAnonymizing = new BigNumber(anonymizing).plus(bigAmount);
-
-            balanceBreakdown.anonymizing = newAnonymizing.toString();
-        } else if ((anonymitySet[address] || 0) < targetAnonymity) {
+        if ((anonymitySet[address] || 0) < targetAnonymity) {
             const newNotAnonymized = new BigNumber(notAnonymized).plus(bigAmount);
 
             balanceBreakdown.notAnonymized = newNotAnonymized.toString();
-        } else if ((anonymitySet[address] || 0) >= targetAnonymity) {
+        } else {
             const newAnonymized = new BigNumber(anonymized).plus(bigAmount);
 
             balanceBreakdown.anonymized = newAnonymized.toString();
