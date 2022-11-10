@@ -19,6 +19,13 @@ export const COINJOIN_NETWORKS: PartialRecord<NetworkSymbol, ServerEnvironment> 
         public: {
             network: 'test',
             coordinatorName: 'CoinJoinCoordinatorIdentifier',
+            /* clearnet addresses */
+            coordinatorUrl: 'https://dev-coinjoin-testnet.trezor.io/WabiSabi/',
+            // backend settings
+            wabisabiBackendUrl: 'https://dev-coinjoin-testnet.trezor.io/',
+            blockbookUrls: ['https://tbtc1.trezor.io/api/v2', 'https://tbtc2.trezor.io/api/v2'],
+            /* */
+            /* onion addresses *
             coordinatorUrl:
                 'http://dev-coinjoin-testnet.trezoriovpjcahpzkrewelclulmszwbqpzmzgub37gbcjlvluxtruqad.onion/WabiSabi/',
             // backend settings
@@ -28,6 +35,7 @@ export const COINJOIN_NETWORKS: PartialRecord<NetworkSymbol, ServerEnvironment> 
                 'http://tbtc1.trezoriovpjcahpzkrewelclulmszwbqpzmzgub37gbcjlvluxtruqad.onion/api/v2',
                 'http://tbtc2.trezoriovpjcahpzkrewelclulmszwbqpzmzgub37gbcjlvluxtruqad.onion/api/v2',
             ],
+            /* */
             /* wasabi production *
             baseBlockHeight: 828575,
             baseBlockHash: '00000000000f0d5edcaeba823db17f366be49a80d91d15b77747c2e017b8c20a',
