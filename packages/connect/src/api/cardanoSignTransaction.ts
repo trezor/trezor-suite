@@ -103,6 +103,17 @@ export default class CardanoSignTransaction extends AbstractMethod<
             );
         }
 
+        // @ts-expect-error payload.auxiliaryData.catalystRegistrationParameters is a legacy param
+        // kept for backward compatibility (for now)
+        if (payload.auxiliaryData && payload.auxiliaryData.catalystRegistrationParameters) {
+            console.warn(
+                'Please use governanceRegistrationParameters instead of catalystRegistrationParameters.',
+            );
+            payload.auxiliaryData.governanceRegistrationParameters =
+                // @ts-expect-error
+                payload.auxiliaryData.catalystRegistrationParameters;
+        }
+
         // validate incoming parameters
         validateParams(payload, [
             { name: 'signingMode', type: 'number', required: true },
@@ -410,6 +421,8 @@ export default class CardanoSignTransaction extends AbstractMethod<
                     type: auxiliaryDataType,
                     auxiliaryDataHash: message.auxiliary_data_hash!,
                     governanceSignature: message.governance_signature,
+                    // @ts-expect-error auxiliaryDataSupplement.catalystSignature kept for backward compatibility
+                    catalystSignature: message.governance_signature,
                 };
             }
             await typedCall('CardanoTxHostAck', 'CardanoTxItemAck');
