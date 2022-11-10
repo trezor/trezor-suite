@@ -24,6 +24,7 @@ export class TorController extends EventEmitter {
 
     getTorConfiguration(processId: number): string[] {
         const controlAuthCookiePath = path.join(this.options.torDataDir, 'control_auth_cookie');
+        // https://github.com/torproject/tor/blob/bf30943cb75911d70367106af644d4273baaa85d/doc/man/tor.1.txt
         return [
             // Try to write to disk less frequently than we would otherwise.
             '--AvoidDiskWrites',
@@ -37,8 +38,26 @@ export class TorController extends EventEmitter {
             '--DormantCanceledByStartup',
             '1',
             // Open this port to listen for connections from SOCKS-speaking applications.
+            // **ExtendedErrors** return extended error code in the SOCKS reply.
+            // **KeepAliveIsolateSOCKSAuth** keep alive circuits while they have at least
+            // one stream with SOCKS authentication active. After such a circuit is idle
+            // for more than MaxCircuitDirtiness seconds.
             '--SocksPort',
-            `${this.options.port}`,
+            `${this.options.port} ExtendedErrors KeepAliveIsolateSOCKSAuth`,
+            // Let a socks connection wait NUM seconds handshaking, and NUM seconds
+            // unattached waiting for an appropriate circuit, before we fail it. (Default:
+            // 2 minutes)
+            '--SocksTimeout',
+            '30', // Waits 30 seconds to build one circuit until it tries new one.
+            // Feel free to reuse a circuit that was first used at most NUM seconds ago,
+            // but never attach a new stream to a circuit that is too old.  For hidden
+            // services, this applies to the __last__ time a circuit was used, not the
+            // first. Circuits with streams constructed with SOCKS authentication via
+            // SocksPorts that have **KeepAliveIsolateSOCKSAuth** also remain alive
+            // for MaxCircuitDirtiness seconds after carrying the last such stream.
+            // (Default: 10 minutes)
+            '--MaxCircuitDirtiness',
+            '1800', // 30 minutes
             // The port on which Tor will listen for local connections from Tor controller applications.
             '--ControlPort',
             `${this.options.controlPort}`,
