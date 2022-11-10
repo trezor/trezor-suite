@@ -1,11 +1,11 @@
 import { Status } from '../../src/client/Status';
-import { ROUND_REGISTRATION_END_OFFSET } from '../../src/constants';
+import { ROUND_REGISTRATION_END_OFFSET, STATUS_TIMEOUT } from '../../src/constants';
 import { createServer, Server } from '../mocks/server';
 import { DEFAULT_ROUND } from '../fixtures/round.fixture';
 
 let server: Server | undefined;
 
-const waitForStatus = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+const waitForStatus = (ms: number) => new Promise(resolve => setTimeout(resolve, ms + 100));
 
 // mock STATUS_TIMEOUT
 jest.mock('../../src/constants', () => {
@@ -13,6 +13,7 @@ jest.mock('../../src/constants', () => {
     return {
         __esModule: true,
         ...originalModule,
+        HTTP_REQUEST_TIMEOUT: 1000,
         STATUS_TIMEOUT: {
             idle: 5000, // no registered accounts, occasionally fetch status to read fees
             enabled: 3000, // account is registered but utxo was not paired with Round
@@ -38,28 +39,31 @@ describe('Status', () => {
     it('Status mode timeouts', async () => {
         const status = new Status(server?.requestOptions);
 
-        const requestListener = jest.fn(req => {
+        const requestListener = jest.fn((_, req) => {
             expect(req.headers).toMatchObject({
                 'proxy-authorization': 'Basic Satoshi',
             });
+            req.emit('test-response', {
+                roundStates: [DEFAULT_ROUND],
+            });
         });
-        server?.addListener('test-handle-request', requestListener);
+        server?.addListener('test-request', requestListener);
 
         await status.start();
 
         status.setMode('enabled');
 
-        await waitForStatus(3100); // wait 3 sec (mocked STATUS_TIMEOUT.enabled)
+        await waitForStatus(STATUS_TIMEOUT.enabled); // wait 3 sec (mocked STATUS_TIMEOUT.enabled)
 
         expect(requestListener).toHaveBeenCalledTimes(2);
 
         status.setMode('registered');
-        await waitForStatus(600); // wait 0.5 sec (mocked STATUS_TIMEOUT.registered)
+        await waitForStatus(STATUS_TIMEOUT.registered); // wait 0.5 sec (mocked STATUS_TIMEOUT.registered)
 
         expect(requestListener).toHaveBeenCalledTimes(3);
 
         status.setMode('idle');
-        await waitForStatus(5000 + 600); // wait 5 sec (mocked STATUS_TIMEOUT.idle)
+        await waitForStatus(STATUS_TIMEOUT.idle + STATUS_TIMEOUT.registered); // wait 5.5 sec (mocked STATUS_TIMEOUT.idle)
 
         expect(requestListener).toHaveBeenCalledTimes(5); // 5 because new timeout is greater than current (STATUS_TIMEOUT.registered < STATUS_TIMEOUT.idle)
 
@@ -70,13 +74,16 @@ describe('Status', () => {
         const status = new Status(server?.requestOptions);
 
         const identities: string[] = [];
-        const requestListener = jest.fn(req => {
+        const requestListener = jest.fn((_, req) => {
             const id = req.headers['proxy-authorization'];
             if (!identities.includes(id)) {
                 identities.push(id);
             }
+            req.emit('test-response', {
+                roundStates: [DEFAULT_ROUND],
+            });
         });
-        server?.addListener('test-handle-request', requestListener);
+        server?.addListener('test-request', requestListener);
 
         await status.start();
 
@@ -121,6 +128,44 @@ describe('Status', () => {
 
         // resolved in then block
     });
+
+    it('Status start attempts, keep lifecycle regardless of failed requests', async done => {
+        let request = 0;
+        server?.addListener('test-request', (_, req) => {
+            if (request === 6) {
+                req.emit('test-response', {
+                    roundStates: [{ ...DEFAULT_ROUND, phase: 1 }],
+                });
+            } else {
+                setTimeout(
+                    () => {
+                        req.emit('test-response', {
+                            roundStates: [DEFAULT_ROUND],
+                        });
+                    },
+                    request % 2 === 0 ? 5000 : 0, // timeout error on every second request
+                );
+            }
+            request++;
+        });
+
+        const status = new Status(server?.requestOptions);
+
+        const errorListener = jest.fn();
+        status.on('exception', errorListener);
+        const updateListener = jest.fn();
+        status.on('update', updateListener);
+
+        await status.start();
+        status.setMode('registered'); // set faster iterations
+
+        status.on('update', () => {
+            expect(errorListener).toHaveBeenCalledTimes(2);
+            expect(updateListener).toHaveBeenCalledTimes(2);
+            status.stop();
+            done();
+        });
+    }, 7000);
 
     it('Status onStatusChange', async () => {
         const status = new Status(server?.requestOptions);
@@ -186,21 +231,21 @@ describe('Status', () => {
             req.emit('test-response', response);
         });
 
-        await waitForStatus(3100); // wait 3 sec (STATUS_TIMEOUT.enabled)
+        await waitForStatus(3000); // wait 3 sec (STATUS_TIMEOUT.enabled)
 
         expect(requestListener).toHaveBeenCalledTimes(3);
         expect(onUpdateListener).toHaveBeenCalledTimes(2);
-        await waitForStatus(3100); // wait 3 sec of STATUS_TIMEOUT.enabled  < connectionConfirmationTimeout 5 sec
+        await waitForStatus(STATUS_TIMEOUT.enabled); // wait 3 sec of STATUS_TIMEOUT.enabled  < connectionConfirmationTimeout 5 sec
 
         expect(requestListener).toHaveBeenCalledTimes(4);
         expect(onUpdateListener).toHaveBeenCalledTimes(3);
 
-        await waitForStatus(2100); // wait 2 sec of outputRegistrationTimeout < STATUS_TIMEOUT.enabled 3 sec
+        await waitForStatus(2000); // wait 2 sec of outputRegistrationTimeout < STATUS_TIMEOUT.enabled 3 sec
 
         expect(requestListener).toHaveBeenCalledTimes(5);
         expect(onUpdateListener).toHaveBeenCalledTimes(4);
 
-        await waitForStatus(2100); // wait 2 sec of transactionSigningTimeout < STATUS_TIMEOUT.enabled 3 sec
+        await waitForStatus(2000); // wait 2 sec of transactionSigningTimeout < STATUS_TIMEOUT.enabled 3 sec
 
         expect(requestListener).toHaveBeenCalledTimes(6);
         expect(onUpdateListener).toHaveBeenCalledTimes(5);
