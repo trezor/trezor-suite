@@ -37,12 +37,7 @@ export class Status extends EventEmitter {
         this.identities = ['Satoshi'];
     }
 
-    clearStatusTimeout() {
-        if (this.statusTimeout) clearTimeout(this.statusTimeout);
-        this.statusTimeout = undefined;
-    }
-
-    compareStatus(next: Round[]) {
+    private compareStatus(next: Round[]) {
         return next.filter(nextRound => {
             const known = this.rounds.find(prevRound => prevRound.id === nextRound.id);
             if (!known) return true; // new phase
@@ -67,7 +62,7 @@ export class Status extends EventEmitter {
             if (this.enabled && this.nextTimestamp > Date.now() + STATUS_TIMEOUT[this.mode]) {
                 // set to lower timeout
                 this.clearStatusTimeout();
-                this.statusTimeout = setTimeout(() => this.getStatus(), STATUS_TIMEOUT[this.mode]);
+                this.setStatusTimeout();
             }
         }
     }
@@ -82,50 +77,76 @@ export class Status extends EventEmitter {
         this.identities = this.identities.filter(i => i !== id);
     }
 
-    async getStatus() {
+    private clearStatusTimeout() {
+        if (this.statusTimeout) clearTimeout(this.statusTimeout);
+        this.statusTimeout = undefined;
+    }
+
+    private setStatusTimeout() {
         if (!this.enabled) return;
 
-        const identity = this.identities[Math.floor(Math.random() * this.identities.length)];
-        let status: Awaited<ReturnType<typeof coordinator.getStatus>> | undefined;
+        const nearestDeadline = findNearestDeadline(this.rounds);
+        // TODO: add timeout randomness?
+        const timeout =
+            this.mode !== 'idle' && nearestDeadline > 0
+                ? Math.min(nearestDeadline, STATUS_TIMEOUT[this.mode])
+                : STATUS_TIMEOUT[this.mode];
+        this.timestamp = Date.now();
+        this.nextTimestamp = this.timestamp + timeout;
+
+        this.statusTimeout = setTimeout(() => {
+            this.getStatus().then(() => {
+                // single status request might fail (no scheduled attempts are set)
+                // continue lifecycle regardless of the result until this.enabled
+                this.setStatusTimeout();
+            });
+        }, timeout);
+    }
+
+    private processStatus(status: coordinator.CoinjoinStatus) {
+        const changed = this.compareStatus(status.roundStates);
+        this.rounds = status.roundStates;
+
+        if (changed.length) {
+            const statusEvent = {
+                rounds: status.roundStates,
+                changed,
+                feeRatesMedians: status.coinJoinFeeRateMedians,
+                ...getDataFromRounds(status.roundStates),
+            };
+            this.emit('update', statusEvent);
+            return statusEvent;
+        }
+    }
+
+    async getStatus(attempts?: number) {
+        if (!this.enabled) return;
+
         try {
-            status = await coordinator.getStatus({
+            const identity = this.identities[Math.floor(Math.random() * this.identities.length)];
+            const status = await coordinator.getStatus({
                 baseUrl: this.settings.coordinatorUrl,
                 signal: this.abortController.signal,
                 identity,
+                attempts,
             });
+            return this.processStatus(status);
         } catch (error) {
             this.emit('exception', error.message);
-        }
-
-        if (status) {
-            const changed = this.compareStatus(status.roundStates);
-            this.rounds = status.roundStates;
-            const nearestDeadline = findNearestDeadline(this.rounds);
-            // TODO: add timeout randomness?
-            const timeout =
-                this.mode !== 'idle' && nearestDeadline > 0
-                    ? Math.min(nearestDeadline, STATUS_TIMEOUT[this.mode])
-                    : STATUS_TIMEOUT[this.mode];
-            this.timestamp = Date.now();
-            this.nextTimestamp = this.timestamp + timeout;
-            this.statusTimeout = setTimeout(() => this.getStatus(), timeout);
-            if (changed.length) {
-                const statusEvent = {
-                    rounds: status.roundStates,
-                    changed,
-                    feeRatesMedians: status.coinJoinFeeRateMedians,
-                    ...getDataFromRounds(status.roundStates),
-                };
-                this.emit('update', statusEvent);
-                return statusEvent;
-            }
         }
     }
 
     start() {
         this.abortController = new AbortController();
         this.enabled = true;
-        return this.getStatus();
+        // schedule 3 attempts on start
+        return this.getStatus(3).then(status => {
+            if (status) {
+                // start lifecycle only if status is present
+                this.setStatusTimeout();
+            }
+            return status;
+        });
     }
 
     stop() {
