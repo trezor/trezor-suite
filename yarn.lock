@@ -6512,6 +6512,7 @@ __metadata:
     "@trezor/icons": "*"
     "@trezor/styles": "*"
     bignumber.js: ^9.1.0
+    jotai: 1.9.1
     react: ^18.2.0
     react-native: 0.70.5
     react-redux: 7.2.2
@@ -6646,7 +6647,7 @@ __metadata:
     "@trezor/icons": "*"
     "@trezor/styles": "*"
     "@trezor/theme": "*"
-    jotai: 1.9.0
+    jotai: 1.9.1
     react: 18.2.0
     react-native: 0.70.5
     react-redux: 7.2.2
@@ -6713,7 +6714,7 @@ __metadata:
     "@trezor/theme": "*"
     date-fns: ^2.29.1
     jest: ^26.6.3
-    jotai: 1.9.0
+    jotai: 1.9.1
     react: 18.2.0
     react-native: 0.70.5
     react-native-graph: ^0.3.0
@@ -6799,7 +6800,7 @@ __metadata:
     "@trezor/styles": "*"
     "@trezor/theme": "*"
     jest: ^26.6.3
-    jotai: 1.9.0
+    jotai: 1.9.1
     react: 18.2.0
     react-native: 0.70.5
     react-native-keyboard-aware-scroll-view: ^0.9.5
@@ -6877,7 +6878,7 @@ __metadata:
     "@suite-native/navigation": "*"
     "@trezor/icons": "*"
     "@trezor/styles": "*"
-    jotai: 1.9.0
+    jotai: 1.9.1
     react: 18.2.0
     react-native: 0.70.5
     react-redux: 7.2.2
@@ -21558,9 +21559,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jotai@npm:1.9.0":
-  version: 1.9.0
-  resolution: "jotai@npm:1.9.0"
+"jotai@npm:1.9.1":
+  version: 1.9.1
+  resolution: "jotai@npm:1.9.1"
   peerDependencies:
     "@babel/core": "*"
     "@babel/template": "*"
@@ -21588,7 +21589,7 @@ __metadata:
       optional: true
     xstate:
       optional: true
-  checksum: 8b08421fbcc67068a58e17b287f1c640a6edb09ebb02f0284015c51e0b399ec8041cef9ca469d956b03b048f870f01de14ff51a01e9c790e21ea4f282127217a
+  checksum: 5923e252b8b0e7c102a9a5c7cad137b412bbef51d9deb54fff9ab466d391853c04b1f1609eedad4a9eba635fd84177758454328b818b67b976a47989b11f763a
   languageName: node
   linkType: hard
 
