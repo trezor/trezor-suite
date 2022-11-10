@@ -313,14 +313,13 @@ export const selectCurrentCoinjoinBalanceBreakdown = createSelector(
             account => account.key === selectedAccount?.key,
         );
 
-        const { targetAnonymity, session: currentSession } = currentCoinjoinAccount || {};
+        const { targetAnonymity } = currentCoinjoinAccount || {};
         const { addresses, utxo: utxos } = selectedAccount || {};
 
         const balanceBreakdown = breakdownCoinjoinBalance({
             targetAnonymity,
             anonymitySet: addresses?.anonymitySet,
             utxos,
-            registeredUtxos: currentSession?.registeredUtxos,
         });
 
         return balanceBreakdown;

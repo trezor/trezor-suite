@@ -30,9 +30,7 @@ const CheckIcon = styled(Icon)`
 
 export const BalancePrivacyBreakdown = () => {
     const currentAccount = useSelector(selectSelectedAccount);
-    const { anonymized, anonymizing, notAnonymized } = useSelector(
-        selectCurrentCoinjoinBalanceBreakdown,
-    );
+    const { anonymized, notAnonymized } = useSelector(selectCurrentCoinjoinBalanceBreakdown);
     const currentSession = useSelector(selectCurrentCoinjoinSession);
 
     const theme = useTheme();
@@ -46,21 +44,24 @@ export const BalancePrivacyBreakdown = () => {
     return (
         <Container isSessionRunning={isSessionRunning}>
             <CryptoAmountWithHeader
-                header={<Translation id="TR_NOT_PRIVATE" />}
-                headerIcon={<Icon icon="CROSS" size={15} />}
+                header={
+                    isSessionRunning ? (
+                        <Translation id="TR_ANONYMIZING" />
+                    ) : (
+                        <Translation id="TR_NOT_PRIVATE" />
+                    )
+                }
+                headerIcon={
+                    isSessionRunning ? (
+                        <Icon icon="SHUFFLE" size={15} />
+                    ) : (
+                        <Icon icon="CROSS" size={15} />
+                    )
+                }
                 value={notAnonymized}
                 symbol={currentAccount?.symbol}
                 color={!isZero(notAnonymized || '0') ? undefined : theme.TYPE_LIGHT_GREY}
             />
-
-            {isSessionRunning && (
-                <CryptoAmountWithHeader
-                    header={<Translation id="TR_ANONYMIZING" />}
-                    headerIcon={<Icon icon="SHUFFLE" size={15} />}
-                    value={anonymizing}
-                    symbol={currentAccount?.symbol}
-                />
-            )}
 
             <CryptoAmountWithHeader
                 header={
