@@ -1,3 +1,5 @@
+import path from 'path';
+
 import type { PlaywrightTestConfig } from '@playwright/test';
 
 const config: PlaywrightTestConfig = {
@@ -12,6 +14,7 @@ const config: PlaywrightTestConfig = {
     reportSlowTests: null,
     reporter: 'list',
     timeout: 1000 * 60 * 30,
+    outputDir: path.join(__dirname, 'test-results'),
 };
 
 // eslint-disable-next-line import/no-default-export

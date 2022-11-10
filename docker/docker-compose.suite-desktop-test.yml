@@ -12,6 +12,7 @@ services:
       - DISPLAY=$DISPLAY
       - LOCAL_USER_ID=$LOCAL_USER_ID
       - TEST_FILE=$TEST_FILE
+      - PWDEBUG=1
     image: registry.gitlab.com/satoshilabs/trezor/trezor-suite/base:latest
     ipc: host
     network_mode: service:trezor-user-env-unix
