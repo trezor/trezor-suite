@@ -6,6 +6,7 @@ import {
     ZeroCredentials,
     RealCredentials,
     CredentialsResponseValidation,
+    CoordinationFeeRate,
 } from '../types/coordinator';
 import {
     Credentials,
@@ -89,7 +90,7 @@ export const decomposeAmounts = async (
 export const selectUtxoForRound = async (
     constants: {
         allowedInputTypes: AllowedScriptTypes[];
-        coordinationFeeRate: any;
+        coordinationFeeRate: CoordinationFeeRate;
         miningFeeRate: number;
         allowedInputAmounts: AllowedRange;
         allowedOutputAmounts: AllowedRange;
