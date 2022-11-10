@@ -1,7 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { ESTIMATED_HOURS_BUFFER_MODIFIER } from '@suite/services/coinjoin/config';
+import {
+    ESTIMATED_HOURS_BUFFER_MODIFIER,
+    ESTIMATED_ROUNDS_FAIL_RATE_BUFFER,
+} from '@suite/services/coinjoin/config';
 import { getEstimatedTimePerRound } from '@wallet-utils/coinjoinUtils';
 import { Translation } from '@suite-components';
 import { DetailRow } from './DetailRow';
@@ -24,7 +27,8 @@ export const CoinjoinSessionDetail = ({
     maxFee,
     skipRounds,
 }: CoinjoinSessionDetailProps) => {
-    const estimatedTime = maxRounds * getEstimatedTimePerRound(!!skipRounds);
+    const estimatedTime =
+        (maxRounds / ESTIMATED_ROUNDS_FAIL_RATE_BUFFER) * getEstimatedTimePerRound(!!skipRounds);
     const timeBuffer = estimatedTime * ESTIMATED_HOURS_BUFFER_MODIFIER;
     const maxEstimatedTime = Math.ceil(estimatedTime + timeBuffer);
     const minEstimatedTime = Math.floor(estimatedTime - timeBuffer);

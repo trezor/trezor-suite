@@ -9,6 +9,8 @@ import {
 } from '@suite-common/wallet-types';
 import {
     ESTIMATED_ANONYMITY_GAINED_PER_ROUND,
+    ESTIMATED_MIN_ROUNDS_NEEDED,
+    ESTIMATED_ROUNDS_FAIL_RATE_BUFFER,
     ESTIMATED_HOURS_PER_ROUND_WITHOUT_SKIPPING_ROUNDS,
     ESTIMATED_HOURS_PER_ROUND_WITH_SKIPPING_ROUNDS,
 } from '@suite/services/coinjoin/config';
@@ -151,7 +153,11 @@ export const getRegisterAccountParams = (
 export const getMaxRounds = (targetAnonymity: number, anonymitySet: AnonymitySet) => {
     // fallback to 1 if any value is undefined or the object is empty
     const lowestAnonymity = Math.min(...(Object.values(anonymitySet).map(item => item ?? 1) || 1));
-    return Math.ceil((targetAnonymity - lowestAnonymity) / ESTIMATED_ANONYMITY_GAINED_PER_ROUND);
+    const estimatedRoundsCount = Math.ceil(
+        ((targetAnonymity - lowestAnonymity) / ESTIMATED_ANONYMITY_GAINED_PER_ROUND) *
+            ESTIMATED_ROUNDS_FAIL_RATE_BUFFER,
+    );
+    return Math.max(estimatedRoundsCount, ESTIMATED_MIN_ROUNDS_NEEDED);
 };
 
 // get time estimate in hours per round
