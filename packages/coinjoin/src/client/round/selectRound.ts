@@ -123,7 +123,7 @@ export const selectUtxoForRound = async (
             const { roundParameters } = round;
             const roundConstants = {
                 miningFeeRate: roundParameters.miningFeeRate,
-                coordinationFeeRate: roundParameters.coordinationFeeRate.rate,
+                coordinationFeeRate: roundParameters.coordinationFeeRate,
                 allowedInputAmounts: roundParameters.allowedInputAmounts,
                 allowedOutputAmounts: roundParameters.allowedOutputAmounts,
                 allowedInputTypes: roundParameters.allowedInputScriptTypes,
@@ -158,7 +158,10 @@ export const selectUtxoForRound = async (
                             baseUrl: options.middlewareUrl,
                         })
                         .then(indices => indices.filter(i => utxos[i])) // filter valid existing indices
-                        .catch(() => [] as number[]); // return empty response on error, TODO: should we provide preselected rounds/account anyway?
+                        .catch(error => {
+                            options.log(`selectUtxoForRound failed ${error.message}`);
+                            return [] as number[];
+                        }); // return empty response on error, TODO: should we provide preselected rounds/account anyway?
                 }),
             );
         }),
