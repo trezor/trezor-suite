@@ -25,5 +25,4 @@ export * from './TextDivider';
 export * from './TransactionItem';
 export * from './ProgressBar';
 export * from './Card';
-export * from './DashboardSection';
 export * from './StepsProgressBar';

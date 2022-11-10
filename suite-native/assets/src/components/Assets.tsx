@@ -1,10 +1,10 @@
 import React from 'react';
-import { View } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
+import { useAtom } from 'jotai';
 
-import { Button, Card, DashboardSection, VStack } from '@suite-native/atoms';
+import { Button, Card, VStack } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import {
     AppTabsParamList,
@@ -14,6 +14,7 @@ import {
     RootStackRoutes,
     TabToStackCompositeNavigationProp,
     AccountsStackRoutes,
+    isSendReceiveActionsVisibleAtom,
 } from '@suite-native/navigation';
 import { networks, NetworkSymbol } from '@suite-common/wallet-config';
 import { selectFiatCurrency } from '@suite-native/module-settings';
@@ -33,12 +34,17 @@ type HomeAssetsNavigationProp = TabToStackCompositeNavigationProp<
 >;
 
 export const Assets = () => {
+    const [_, setIsSendReceiveVisible] = useAtom(isSendReceiveActionsVisibleAtom);
     const navigation = useNavigation<HomeAssetsNavigationProp>();
     const { applyStyle } = useNativeStyles();
     const fiatCurrency = useSelector(selectFiatCurrency);
     const assetsData = useSelector((state: RootState) =>
         selectAssetsWithBalances(state, fiatCurrency.label),
     );
+
+    const handleReceive = () => {
+        setIsSendReceiveVisible(true);
+    };
 
     const handleImportAssets = () => {
         navigation.navigate(RootStackRoutes.AccountsImport, {
@@ -60,7 +66,7 @@ export const Assets = () => {
     };
 
     return (
-        <DashboardSection>
+        <>
             <Card>
                 <VStack spacing={19}>
                     {assetsData.map(asset => (
@@ -76,11 +82,14 @@ export const Assets = () => {
                     ))}
                 </VStack>
             </Card>
-            <View style={applyStyle(importStyle)}>
+            <VStack style={applyStyle(importStyle)} spacing="small">
                 <Button colorScheme="gray" size="large" onPress={handleImportAssets}>
                     Import Assets
                 </Button>
-            </View>
-        </DashboardSection>
+                <Button size="large" onPress={handleReceive}>
+                    Receive
+                </Button>
+            </VStack>
+        </>
     );
 };
