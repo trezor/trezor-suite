@@ -36,6 +36,10 @@ in
       Cocoa
       CoreServices
     ]);
+
+    # for WalletWasabi.WabiSabiClientLibrary
+    LD_LIBRARY_PATH = "${gcc}/lib:${openssl.out}/lib:${zlib}/lib:${stdenv.cc.cc.lib}/lib";
+
     shellHook = ''
       export NODE_OPTIONS=--max_old_space_size=4096
       export CURDIR="$(pwd)"
