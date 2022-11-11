@@ -13,6 +13,7 @@ jest.mock('cross-fetch', () => {
         default: (url: string, ...rest: any[]) => {
             if (url.includes('get_coinjoin_request_suite')) {
                 return {
+                    status: 200,
                     ok: true,
                     headers: { get: () => 'json' },
                     text: () => Promise.resolve(JSON.stringify({ fee_rate: 0.003 })),

@@ -48,7 +48,7 @@ export const inputUnregistration = (roundId: string, aliceId: string, options: R
             roundId,
             aliceId,
         },
-        { ...options, parseJson: false },
+        options,
     );
 
 export const connectionConfirmation = (
@@ -108,7 +108,7 @@ export const outputRegistration = (
             amountCredentialRequests: amountCredentials.credentialsRequest,
             vsizeCredentialRequests: vsizeCredentials.credentialsRequest,
         },
-        { ...options, parseJson: false },
+        options,
     );
 
 export const readyToSign = (roundId: string, aliceId: string, options: RequestOptions) =>
@@ -118,7 +118,7 @@ export const readyToSign = (roundId: string, aliceId: string, options: RequestOp
             roundId,
             aliceId,
         },
-        { ...options, parseJson: false },
+        options,
     );
 
 export const transactionSignature = (
@@ -134,7 +134,7 @@ export const transactionSignature = (
             inputIndex,
             witness,
         },
-        { ...options, parseJson: false },
+        options,
     );
 
 // reexport all coordinator types

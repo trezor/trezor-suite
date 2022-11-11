@@ -44,9 +44,10 @@ const DEFAULT = {
         },
     },
     'credential-issuance': {},
-    'output-registration': {},
-    'ready-to-sign': {},
-    'transaction-signature': {},
+    'output-registration': '',
+    'ready-to-sign': '',
+    'transaction-signature': '',
+    'input-unregistration': '',
 };
 
 export const getFreePort = () =>
@@ -65,15 +66,24 @@ export const getFreePort = () =>
 const handleRequest = (req: http.IncomingMessage, res: http.ServerResponse, testResponse?: any) => {
     if (res.writableEnded) return; // send default response if res.end wasn't called in test
 
-    res.setHeader('Content-Type', 'application/json');
     if (testResponse) {
+        res.setHeader('Content-Type', 'application/json');
         res.write(JSON.stringify(testResponse));
         res.end();
         return;
     }
+
     const url = req.url?.split('/').pop();
-    const data = DEFAULT[url as keyof typeof DEFAULT] || {};
-    res.write(JSON.stringify(data));
+    const data = DEFAULT[url as keyof typeof DEFAULT] ?? {};
+    if (typeof data === 'string') {
+        // not all coordinator responses are in json format
+        res.setHeader('Content-Type', 'text/xml');
+        res.write(data);
+    } else {
+        res.setHeader('Content-Type', 'application/json');
+        res.write(JSON.stringify(data));
+    }
+
     res.end();
 };
 

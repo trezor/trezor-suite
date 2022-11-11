@@ -8,14 +8,19 @@ export interface RequestOptions extends ScheduleActionParams {
     method?: 'POST' | 'GET';
     baseUrl?: string;
     signal?: AbortSignal;
-    parseJson?: boolean;
     identity?: string;
     userAgent?: string;
 }
 
-const parseResult = (text: string, json = true) => {
-    if (!json) return text;
-    return JSON.parse(text);
+const parseResult = (headers: Headers, text: string) => {
+    if (headers.get('content-type')?.includes('json')) {
+        try {
+            return JSON.parse(text);
+        } catch (e) {
+            // fall down and return text
+        }
+    }
+    return text;
 };
 
 const createHeaders = (options: RequestOptions) => {
@@ -62,25 +67,57 @@ export const coordinatorRequest = async <R = void>(
     const baseUrl = options.baseUrl || '';
 
     const request = async (signal?: AbortSignal) => {
-        const response = await httpPost(`${baseUrl}${url}`, body, { ...options, signal });
+        let response;
+        try {
+            response = await httpPost(`${baseUrl}${url}`, body, { ...options, signal });
+        } catch (e) {
+            // prevent dead cycles while using "deadline" option in scheduledAction
+            // catch fetch runtime errors like ECONNREFUSED or blocked by @trezor/request-manager
+            // and stop scheduledAction. those errors will not be resolved by retrying
+            if (options.deadline) {
+                return { error: e as Error };
+            }
+            throw e;
+        }
+
+        // throw unexpected network errors => retry scheduledAction
+        if (![200, 404, 500].includes(response.status)) {
+            if (response.status === 403 && options.identity) {
+                // NOTE: possibly blocked by cloudflare
+                // set random password to reset TOR circuit for this identity and then try again
+                const [user] = options.identity.split(':');
+                options.identity = `${user}:${Math.random()}`;
+            }
+            // log to app console and sentry if possible
+            console.error(`Unexpected error ${response.status} request to ${url}`);
+            throw new Error(`${response.status}: ${response.statusText}`);
+        }
+
         const text = await response.text();
         return { response, text };
     };
 
-    const { response, text } = await scheduleAction(request, {
+    const { response, text, error } = await scheduleAction(request, {
+        timeout: HTTP_REQUEST_TIMEOUT, // allow timeout override by options
         ...options,
-        timeout: HTTP_REQUEST_TIMEOUT,
     });
 
+    if (error) {
+        throw error;
+    }
+
+    const result = parseResult(response.headers, text);
     if (response.ok) {
-        const json = typeof options.parseJson === 'boolean' ? options.parseJson : true;
-        return parseResult(text, json);
+        return result;
     }
-    if (response.headers.get('content-type')?.includes('json')) {
+
+    // catch WabiSabiProtocolException
+    if (typeof result !== 'string' && result.errorCode) {
         // NOTE: coordinator/middleware error shape {type: string, errorCode: string, description: string, exceptionData: { Type: string } }
-        const { errorCode } = parseResult(text);
-        throw new Error(errorCode || text);
+        throw new Error(result.errorCode);
     }
-    const error = text ? `${response.statusText}: ${text}` : response.statusText;
-    throw new Error(`${baseUrl}${url} ${error}`);
+
+    // fallback error
+    const message = text ? `${response.statusText}: ${text}` : response.statusText;
+    throw new Error(`${baseUrl}${url} ${message}`);
 };
