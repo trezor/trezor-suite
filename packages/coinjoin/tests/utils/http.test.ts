@@ -70,7 +70,7 @@ describe('http', () => {
         });
 
         await expect(coordinatorRequest('status', {}, { baseUrl })).rejects.toThrow(
-            'Unexpected token',
+            'Internal Server Error: InternalErrorCodeExample',
         );
     });
 
@@ -82,6 +82,38 @@ describe('http', () => {
         });
 
         await expect(coordinatorRequest('status', {}, { baseUrl })).rejects.toThrow('Not Found');
+    });
+
+    it('with 403 error (repeated request)', async () => {
+        const identities: string[] = [];
+        const requestListener = jest.fn((_, req, res) => {
+            identities.push(req.headers['proxy-authorization']);
+            res.statusCode = 403;
+            res.end();
+            req.emit('test-response');
+        });
+        server?.addListener('test-request', requestListener);
+
+        jest.spyOn(console, 'error').mockImplementation(() => {}); // do not show error in console
+
+        await expect(
+            coordinatorRequest('status', {}, { baseUrl, attempts: 3, identity: 'abcd' }),
+        ).rejects.toThrow('Forbidden');
+
+        // 3 attempts with 3 identities
+        expect(requestListener).toBeCalledTimes(3);
+        expect(identities[0]).not.toEqual(identities[1]);
+        expect(identities[1]).not.toEqual(identities[2]);
+    });
+
+    it('with fetch runtime error', async () => {
+        await expect(
+            coordinatorRequest(
+                'status',
+                {},
+                { baseUrl: 'https://localhost/', deadline: Date.now() + 50000 },
+            ),
+        ).rejects.toThrow('ECONNREFUSED');
     });
 
     it('aborted request', async () => {
@@ -106,12 +138,12 @@ describe('http', () => {
             expect(resp).toMatchObject({ aliceId: expect.any(String) });
         });
         // without baseUrl
-        coordinatorRequest(`${baseUrl}status`, {}).then(resp => {
+        coordinatorRequest(`status`, {}, { baseUrl }).then(resp => {
             expect(resp).toEqual({ roundStates: [] });
         });
         // without json response
-        coordinatorRequest('ready-to-sign', {}, { baseUrl, parseJson: false }).then(resp => {
-            expect(resp).toEqual('{}');
+        coordinatorRequest('ready-to-sign', {}, { baseUrl }).then(resp => {
+            expect(resp).toEqual('');
             done();
         });
     });
