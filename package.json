@@ -48,6 +48,7 @@
         "patch": "yarn patch-package",
         "update-project-references": "yarn tsx ./scripts/updateProjectReferences.js",
         "verify-project-references": "yarn update-project-references --test",
+        "check-workspace-resolutions": "yarn tsx ./scripts/check-workspace-resolutions.ts",
         "generate-package": "yarn tsx ./scripts/generatePackage.js",
         "deps": "rimraf 'node_modules' '*/**/node_modules' && yarn",
         "msg-system-sign-config": "yarn workspace @trezor/message-system sign-config",
@@ -60,7 +61,7 @@
         "refs": "yarn update-project-references",
         "types": "yarn type-check",
         "messages": "yarn msg-system-sign-config",
-        "validate": "yarn verify-project-references && yarn nx:lint:js && yarn nx:lint:styles && yarn nx:build:libs && yarn nx:type-check && yarn nx:test-unit"
+        "validate": "yarn verify-project-references && yarn nx:lint:js && yarn nx:lint:styles && yarn nx:build:libs && yarn nx:type-check && yarn nx:test-unit && yarn check-workspace-resolutions"
     },
     "lint-staged": {
         "packages/**/*.{ts,tsx}": [

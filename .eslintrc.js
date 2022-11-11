@@ -256,6 +256,7 @@ module.exports = {
                 'packages/transport/**/*',
                 'packages/utxo-lib/**/*',
                 'ci/scripts/**/*',
+                'scripts/**/*',
                 'docs/**/*',
             ],
             rules: {
