@@ -3,6 +3,7 @@ import { Translation } from '@suite-components';
 import { useSelector, useActions } from '@suite-hooks';
 import { useDispatch } from 'react-redux';
 import { createCoinjoinAccount } from '@wallet-actions/coinjoinAccountActions';
+import { DEFAULT_TARGET_ANONYMITY } from '@suite/services/coinjoin/config';
 import * as modalActions from '@suite-actions/modalActions';
 import { Account, Network, NetworkSymbol } from '@wallet-types';
 import { UnavailableCapabilities } from '@trezor/connect';
@@ -77,7 +78,7 @@ export const AddCoinJoinAccountButton = ({ network }: AddCoinJoinAccountProps) =
 
     const onCreateCoinjoinAccountClick = async () => {
         const createAccount = async () => {
-            await action.createCoinjoinAccount(network, 10);
+            await action.createCoinjoinAccount(network, DEFAULT_TARGET_ANONYMITY);
             setIsLoading(false);
         };
 
