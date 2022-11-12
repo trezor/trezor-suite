@@ -8,11 +8,18 @@ import { TorIdentities } from './torIdentities';
 type InterceptorOptions = {
     handler: (event: InterceptedEvent) => void;
     getIsTorEnabled: () => boolean;
+    isDevEnv?: boolean;
 };
 
-const getIdentityName = (proxyAuthorization: string): string | undefined => {
+const getIdentityName = (proxyAuthorization?: http.OutgoingHttpHeader) => {
+    let identity;
     if (Array.isArray(proxyAuthorization)) {
-        const identity = proxyAuthorization[0];
+        [identity] = proxyAuthorization;
+    }
+    if (typeof proxyAuthorization === 'string') {
+        identity = proxyAuthorization;
+    }
+    if (identity) {
         const identityName = identity.match(/Basic (.*)/);
         // Only return identity name if it is explicitly defined.
         return identityName ? identityName[1] : undefined;
@@ -20,10 +27,23 @@ const getIdentityName = (proxyAuthorization: string): string | undefined => {
     return undefined;
 };
 
-const getAgent = (identityName: string | undefined) =>
-    TorIdentities.getIdentity(identityName || 'default');
+const getAgent = (identityName?: string) => TorIdentities.getIdentity(identityName || 'default');
 
-const isLocalhost = (hostname: string): boolean => ['127.0.0.1', 'localhost'].includes(hostname);
+const getAuthorizationOptions = (options: http.RequestOptions) => {
+    // Use Proxy-Authorization header to define proxy identity
+    // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Proxy-Authorization
+    if (options.headers && options.headers['Proxy-Authorization']) {
+        const identityName = getIdentityName(options.headers['Proxy-Authorization']);
+        // In the case that `Proxy-Authorization` was used for identity information we remove it.
+        delete options.headers['Proxy-Authorization'];
+        // Create proxy agent for the request
+        options.agent = getAgent(identityName);
+    }
+    return options;
+};
+
+const isLocalhost = (hostname?: string | null | undefined) =>
+    typeof hostname === 'string' && ['127.0.0.1', 'localhost'].includes(hostname);
 
 const interceptNetSocketConnect = (interceptorOptions: InterceptorOptions) => {
     const originalSocketConnect = net.Socket.prototype.connect;
@@ -67,93 +87,86 @@ const interceptNetConnect = (interceptorOptions: InterceptorOptions) => {
     };
 };
 
+// http(s).request could have different arguments according to it's types definition,
+// but we only care when second argument (url) is object containing RequestOptions.
+const overloadHttpRequest = (
+    interceptorOptions: InterceptorOptions,
+    url: string | URL | http.RequestOptions,
+    options?: http.RequestOptions | ((r: http.IncomingMessage) => void),
+    callback?: unknown,
+) => {
+    if (
+        !callback &&
+        typeof url === 'object' &&
+        'headers' in url &&
+        !isLocalhost(url.hostname) &&
+        (!options || typeof options === 'function')
+    ) {
+        const isTorEnabled = interceptorOptions.getIsTorEnabled();
+        // get authorization data from request headers
+        const overloadedOptions = getAuthorizationOptions(url);
+        const overloadedCallback = options;
+        // @ts-expect-error href does exist
+        const requestedUrl = overloadedOptions.href;
+
+        // block requests that explicitly requires TOR using Proxy-Authorization
+        if (!isTorEnabled && overloadedOptions.agent) {
+            if (interceptorOptions.isDevEnv) {
+                interceptorOptions.handler({
+                    method: 'http.request',
+                    details: `Conditionally allowed request with Proxy-Authorization ${requestedUrl}`,
+                });
+                // conditionally allow in dev mode
+                delete overloadedOptions.agent;
+            } else {
+                interceptorOptions.handler({
+                    method: 'http.request',
+                    details: `Request blocked ${requestedUrl}`,
+                });
+                throw new Error('Blocked request with Proxy-Authorization. TOR not enabled.');
+            }
+        }
+
+        // add default proxy agent
+        if (isTorEnabled && !overloadedOptions.agent) {
+            overloadedOptions.agent = getAgent();
+        }
+
+        interceptorOptions.handler({
+            method: 'http.request',
+            details: `${requestedUrl} with agent ${!!overloadedOptions.agent}`,
+        });
+
+        // return tuple of params for original request
+        return [overloadedOptions, overloadedCallback] as const;
+    }
+};
+
 const interceptHttp = (interceptorOptions: InterceptorOptions) => {
     const originalHttpRequest = http.request;
 
-    http.request = function (...args) {
-        const isTorEnabled = interceptorOptions.getIsTorEnabled();
-        // eslint-disable-next-line prefer-const
-        let [url, options, callback] = args as any;
-        // http.request could have different arguments according to it's types definition,
-        // but we only care when second argument is object containing RequestOptions.
-        if (!callback && typeof url === 'object' && (!options || typeof options === 'function')) {
-            const overloadedOptions = url;
-            const overloadedCallback = options;
-
-            const overloadedOptionsUrl = new URL(overloadedOptions.href);
-            // Use Proxy-Authorization header to define proxy identity
-            // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Proxy-Authorization
-            const proxyAuthorization = overloadedOptions.headers['Proxy-Authorization'];
-            if (proxyAuthorization) {
-                // In the case that `Proxy-Authorization` was used for identity information we remove it.
-                delete overloadedOptions.headers['Proxy-Authorization'];
-            }
-
-            // Requests to localhost should not use the proxy.
-            const isNotLocalhost = !isLocalhost(overloadedOptionsUrl.hostname);
-            const identityName = getIdentityName(proxyAuthorization);
-            const agent = isTorEnabled && isNotLocalhost ? getAgent(identityName) : undefined;
-
-            interceptorOptions.handler({ method: 'http.request', details: overloadedOptions.href });
-            return originalHttpRequest.call(
-                this,
-                {
-                    ...overloadedOptions,
-                    agent,
-                },
-                overloadedCallback as any,
-            );
+    http.request = (...args) => {
+        const overload = overloadHttpRequest(interceptorOptions, ...args);
+        if (overload) {
+            return originalHttpRequest(...overload);
         }
 
         // In cases that are not considered above we pass the args as they came.
-        // @ts-expect-error
-        return originalHttpRequest.apply(this, args);
+        return originalHttpRequest(...(args as Parameters<typeof http.request>));
     };
 };
 
 const interceptHttps = (interceptorOptions: InterceptorOptions) => {
     const originalHttpsRequest = https.request;
 
-    https.request = function (...args) {
-        const isTorEnabled = interceptorOptions.getIsTorEnabled();
-        const [url, options, callback] = args as any;
-        // https.request could have different arguments according to it's types definition,
-        // but we only care when second argument is object containing RequestOptions.
-        if (!callback && typeof url === 'object' && (!options || typeof options === 'function')) {
-            const overloadedOptions = url;
-            const overloadedCallback = options;
-
-            const overloadedOptionsUrl = new URL(overloadedOptions.href);
-            // Use Proxy-Authorization header to define proxy identity
-            // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Proxy-Authorization
-            const userAgent = overloadedOptions.headers['Proxy-Authorization'];
-            // In the case that `Proxy-Authorization` was used for identity information we remove it.
-            if (userAgent) {
-                delete overloadedOptions.headers['Proxy-Authorization'];
-            }
-            // Requests to localhost should not use the proxy.
-            const isNotLocalhost = !isLocalhost(overloadedOptionsUrl.hostname);
-            const identityName = getIdentityName(userAgent);
-            const agent = isTorEnabled && isNotLocalhost ? getAgent(identityName) : undefined;
-
-            interceptorOptions.handler({
-                method: 'https.request',
-                details: overloadedOptions.href,
-            });
-
-            return originalHttpsRequest.call(
-                this,
-                {
-                    ...overloadedOptions,
-                    agent,
-                },
-                overloadedCallback as any,
-            );
+    https.request = (...args) => {
+        const overload = overloadHttpRequest(interceptorOptions, ...args);
+        if (overload) {
+            return originalHttpsRequest(...overload);
         }
 
         // In cases that are not considered above we pass the args as they came.
-        // @ts-expect-error
-        return originalHttpsRequest.apply(this, args);
+        return originalHttpsRequest(...(args as Parameters<typeof https.request>));
     };
 };
 
