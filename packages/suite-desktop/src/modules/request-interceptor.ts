@@ -8,6 +8,7 @@
  * whereas request-filter logs and filters allowed requests from electron renderer process.
  */
 import { createInterceptor, InterceptedEvent } from '@trezor/request-manager';
+import { isDevEnv } from '@suite-common/suite-utils';
 
 import { Module } from './index';
 
@@ -21,6 +22,7 @@ export const init: Module = ({ store }) => {
             }
         },
         getIsTorEnabled: () => store.getTorSettings().running,
+        isDevEnv,
     };
 
     createInterceptor(options);
