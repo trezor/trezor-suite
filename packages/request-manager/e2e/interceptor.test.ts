@@ -98,6 +98,21 @@ describe('Interceptor', () => {
             expect(iPIdentitieA).toEqual(iPIdentitieA2);
             // Check if identities are different when using different identity.
             expect(iPIdentitieA).not.toEqual(iPIdentitieB);
+
+            // reset existing circuit using identity with password
+            const identityB2 = await fetch(testGetUrlHttps, {
+                headers: { 'Proxy-Authorization': 'Basic user:password' },
+            });
+            const iPIdentitieB2 = ((await identityB2.text()) as any).match(ipRegex)[0];
+            // ip for "user" did change
+            expect(iPIdentitieB2).not.toEqual(iPIdentitieB);
+            // continue using new circuit
+            const identityB3 = await fetch(testGetUrlHttps, {
+                headers: { 'Proxy-Authorization': 'Basic user' },
+            });
+            const iPIdentitieB3 = ((await identityB3.text()) as any).match(ipRegex)[0];
+            // same ip after change
+            expect(iPIdentitieB3).toEqual(iPIdentitieB2);
         });
     });
 

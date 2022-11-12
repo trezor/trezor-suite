@@ -16,14 +16,24 @@ export class TorIdentities {
         if (!this.torController) {
             throw new Error('TorIdentities is not initialized');
         }
-        if (!this.identities[identity]) {
-            this.identities[identity] = new SocksProxyAgent({
+
+        const [user, password] = identity.split(':');
+
+        if (this.identities[user] && password) {
+            // looks like destroy does nothing, but just in case
+            this.identities[user].destroy();
+            delete this.identities[user];
+        }
+
+        if (!this.identities[user]) {
+            this.identities[user] = new SocksProxyAgent({
                 hostname: this.torController.options.host,
                 port: this.torController.options.port,
-                userId: identity,
-                password: identity,
+                userId: user,
+                password: password || user,
             });
         }
-        return this.identities[identity];
+
+        return this.identities[user];
     }
 }
