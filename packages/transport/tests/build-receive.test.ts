@@ -1,9 +1,7 @@
-const { parseConfigure } = require('../src/lowlevel/protobuf/messages');
-const { buildOne } = require('../src/lowlevel/send');
-const { receiveOne } = require('../src/lowlevel/receive');
+import * as protobuf from 'protobufjs/light';
 
-const { buildBuffers } = require('../src/lowlevel/send');
-const { receiveAndParse } = require('../src/lowlevel/receive');
+import { buildOne, buildBuffers } from '../src/lowlevel/send';
+import { receiveOne, receiveAndParse } from '../src/lowlevel/receive';
 
 const messages = {
     StellarPaymentOp: {
@@ -91,7 +89,7 @@ const fixtures = [
     },
 ];
 
-const parsedMessages = parseConfigure({
+const parsedMessages = protobuf.Root.fromJSON({
     nested: { hw: { nested: { trezor: { nested: { messages: { nested: messages } } } } } },
 });
 
@@ -102,7 +100,7 @@ describe('encoding json -> protobuf -> json', () => {
                 // encoded message
                 const encodedMessage = buildOne(parsedMessages, f.name, f.in);
                 // then decode message and check, whether decoded message matches original json
-                const decodedMessage = receiveOne(parsedMessages, encodedMessage);
+                const decodedMessage = receiveOne(parsedMessages, encodedMessage.toString('hex'));
                 expect(decodedMessage.type).toEqual(f.name);
                 expect(decodedMessage.message).toEqual(f.in);
             });
