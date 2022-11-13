@@ -77,7 +77,7 @@ const confirmInput = async (
         { baseUrl: middlewareUrl }, // NOTE: post processing intentionally without abort signal (should not be aborted)
     );
 
-    log(`Confirmed ${input.outpoint} in ${round.id}`);
+    log(`Confirmed ~~${input.outpoint}~~ in ~~${round.id}~~`);
 
     input.setConfirmationData(confirmationData);
     input.setConfirmedCredentials(confirmedAmountCredentials, confirmedVsizeCredentials);
@@ -99,7 +99,7 @@ export const confirmationInterval = (
     let timeLeft = phaseDeadline - Date.now();
     if (timeLeft < timeoutDeadline || options.signal.aborted) {
         options.log(
-            `Ignoring confirmation interval for ~~${input.outpoint}~~. Deadline ${timeLeft}`,
+            `Ignoring confirmation interval for ~~${input.outpoint}~~. Deadline ${timeLeft}ms`,
         );
         return input;
     }
