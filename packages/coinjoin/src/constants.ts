@@ -12,7 +12,7 @@ export const DISCOVERY_LOOKOUT = 20;
 export const STATUS_TIMEOUT = {
     idle: 60000, // no registered accounts, occasionally fetch status to read fees
     enabled: 30000, // account is registered but utxo was not paired with Round
-    registered: 10000, // utxo is registered in Round
+    registered: 20000, // utxo is registered in Round
 } as const;
 
 // add 2 sec. offset to round.inputRegistrationEnd to prevent race conditions
