@@ -1,5 +1,6 @@
-const { createMessageFromName } = require('../src/lowlevel/protobuf/messages');
-const { parseConfigure } = require('../src/lowlevel/protobuf/messages');
+import * as protobuf from 'protobufjs/light';
+
+import { createMessageFromName } from '../src/lowlevel/protobuf/messages';
 
 const json = {
     nested: {
@@ -49,14 +50,7 @@ const json = {
 
 describe('messages', () => {
     test('createMessageFromName (wire_type case)', () => {
-        const messages = parseConfigure(json);
-        const name = 'TxAckPrevExtraData';
-
-        expect(() => createMessageFromName(messages, name)).not.toThrow();
-    });
-
-    test('[compatibility]: descriptors as string', () => {
-        const messages = parseConfigure(JSON.stringify(json));
+        const messages = protobuf.Root.fromJSON(json);
         const name = 'TxAckPrevExtraData';
 
         expect(() => createMessageFromName(messages, name)).not.toThrow();

@@ -1,7 +1,7 @@
-const ProtoBuf = require('protobufjs/light');
+import * as ProtoBuf from 'protobufjs/light';
 
-const { encode } = require('../src/lowlevel/protobuf/encode');
-const { decode } = require('../src/lowlevel/protobuf/decode');
+import { encode } from '../src/lowlevel/protobuf/encode';
+import { decode } from '../src/lowlevel/protobuf/decode';
 
 const HDNodeType = {
     fields: {
@@ -521,9 +521,10 @@ describe('Real messages', () => {
     fixtures.forEach(f => {
         describe(f.name, () => {
             const Messages = ProtoBuf.Root.fromJSON({
+                // @ts-expect-error
                 nested: { messages: { nested: { ...f.message } } },
             });
-            const Message = Messages.lookup(`messages.${f.name}`);
+            const Message = Messages.lookupType(`messages.${f.name}`);
 
             test('encode and decode', () => {
                 // serialize
@@ -538,6 +539,7 @@ describe('Real messages', () => {
 
     test('without Messages object', () => {
         expect(() => {
+            // @ts-expect-error
             encode(null, {});
         }).toThrowError();
     });

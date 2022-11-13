@@ -1,7 +1,7 @@
-const { encode } = require('../src/lowlevel/protobuf/encode');
-const { decode } = require('../src/lowlevel/protobuf/decode');
+import * as ProtoBuf from 'protobufjs/light';
 
-const ProtoBuf = require('protobufjs/light');
+import { encode } from '../src/lowlevel/protobuf/encode';
+import { decode } from '../src/lowlevel/protobuf/decode';
 
 const messages = {
     nested: {
@@ -197,7 +197,7 @@ describe('basic concepts', () => {
     describe('primitives encode/decode', () => {
         basicFixtures.forEach(f => {
             describe(f.name, () => {
-                const Message = Messages.lookup(`messages.${f.name}`);
+                const Message = Messages.lookupType(`messages.${f.name}`);
 
                 test(f.name, () => {
                     // serialize new way - this is to confirm new lib won't break old behavior
@@ -215,7 +215,7 @@ describe('basic concepts', () => {
     describe('advanced', () => {
         advancedFixtures.forEach(f => {
             describe(f.name, () => {
-                const Message = Messages.lookup(`messages.${f.name}`);
+                const Message = Messages.lookupType(`messages.${f.name}`);
 
                 test(f.name, () => {
                     // serialize new way - this is to confirm new lib won't break old behavior
@@ -254,7 +254,7 @@ describe('basic concepts', () => {
             };
 
             const SenderMessages = ProtoBuf.Root.fromJSON(messages);
-            const senderEncoded = encode(SenderMessages.lookup('messages.ButtonRequest'), {
+            const senderEncoded = encode(SenderMessages.lookupType('messages.ButtonRequest'), {
                 type: 'foo',
                 pages: 123,
             });
@@ -265,7 +265,7 @@ describe('basic concepts', () => {
             const ReceiverMessages = ProtoBuf.Root.fromJSON(receiverMessages);
 
             expect(() => {
-                decode(ReceiverMessages.lookup('messages.ButtonRequest'), senderEncoded);
+                decode(ReceiverMessages.lookupType('messages.ButtonRequest'), senderEncoded);
             }).toThrow();
         });
     });
