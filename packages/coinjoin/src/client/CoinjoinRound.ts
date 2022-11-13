@@ -1,6 +1,6 @@
 import { EventEmitter } from 'events';
 
-import { arrayPartition } from '@trezor/utils';
+import { arrayPartition, enumUtils } from '@trezor/utils';
 import { Network } from '@trezor/utxo-lib';
 
 import {
@@ -18,6 +18,7 @@ import {
 } from '../types/round';
 import {
     RoundPhase,
+    EndRoundState,
     Round,
     CoinjoinRoundParameters,
     WabiSabiProtocolErrorCode,
@@ -89,6 +90,7 @@ export class CoinjoinRound extends EventEmitter {
     // partial coordinator.Round
     id: string;
     phase: RoundPhase;
+    endRoundState: EndRoundState;
     coinjoinState: Round['coinjoinState'];
     inputRegistrationEnd: string;
     amountCredentialIssuerParameters: Round['amountCredentialIssuerParameters'];
@@ -107,6 +109,7 @@ export class CoinjoinRound extends EventEmitter {
         super();
         this.id = round.id;
         this.phase = 0;
+        this.endRoundState = round.endRoundState;
         this.coinjoinState = round.coinjoinState;
         this.inputRegistrationEnd = round.inputRegistrationEnd;
         this.amountCredentialIssuerParameters = round.amountCredentialIssuerParameters;
@@ -153,6 +156,7 @@ export class CoinjoinRound extends EventEmitter {
 
         // update data from status
         this.phase = changed.phase;
+        this.endRoundState = changed.endRoundState;
         this.coinjoinState = changed.coinjoinState;
         const { phaseDeadline, roundDeadline } = getCoinjoinRoundDeadlines(this);
         this.phaseDeadline = phaseDeadline;
@@ -178,12 +182,38 @@ export class CoinjoinRound extends EventEmitter {
         this.inputs = inputs;
         this.failed = this.failed.concat(...failed);
 
-        this.emit('changed', { round: this.toSerialized() });
-
         if (this.inputs.length === 0 || this.phase === RoundPhase.Ended) {
             this.phase = RoundPhase.Ended;
+            log(
+                `Ending round ~~${this.id}~~. End state ${enumUtils.getKeyByValue(
+                    EndRoundState,
+                    this.endRoundState,
+                )}`,
+            );
+
             this.emit('ended', { round: this.toSerialized() });
+
+            if (this.endRoundState === EndRoundState.TransactionBroadcasted) {
+                // detain all signed inputs and addresses forever
+                this.inputs.forEach(input =>
+                    prison.detain(input.outpoint, {
+                        roundId: this.id,
+                        reason: WabiSabiProtocolErrorCode.InputSpent,
+                        sentenceEnd: Infinity,
+                    }),
+                );
+
+                this.addresses.forEach(addr =>
+                    prison.detain(addr.address, {
+                        roundId: this.id,
+                        reason: WabiSabiProtocolErrorCode.AlreadyRegisteredScript,
+                        sentenceEnd: Infinity,
+                    }),
+                );
+            }
         }
+
+        this.emit('changed', { round: this.toSerialized() });
 
         this.lock?.resolve();
         this.lock = undefined;
@@ -318,6 +348,7 @@ export class CoinjoinRound extends EventEmitter {
         return {
             id: this.id,
             phase: this.phase,
+            endRoundState: this.endRoundState,
             inputs: this.inputs.map(i => i.toSerialized()),
             failed: this.failed.map(i => i.toSerialized()),
             addresses: this.addresses,

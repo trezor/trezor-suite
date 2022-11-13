@@ -1,5 +1,5 @@
 import { AccountAddress } from './account';
-import { RoundPhase, CoinjoinAffiliateRequest } from './coordinator';
+import { RoundPhase, EndRoundState, CoinjoinAffiliateRequest } from './coordinator';
 
 export interface SerializedAlice {
     accountKey: string;
@@ -11,6 +11,7 @@ export interface SerializedAlice {
 export interface SerializedCoinjoinRound {
     id: string;
     phase: RoundPhase;
+    endRoundState: EndRoundState;
     inputs: SerializedAlice[]; // list of registered inputs
     failed: SerializedAlice[]; // list of failed inputs
     addresses: AccountAddress[]; // list of addresses (outputs) used in this round in outputRegistration phase

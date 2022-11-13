@@ -222,6 +222,10 @@ export class CoinjoinClient extends EventEmitter {
                         if (this.rounds.length === 0) {
                             this.status.setMode(this.accounts.length > 0 ? 'enabled' : 'idle');
                         }
+                        // try to create new round immediately if previous didn't fail
+                        if (round.failed.length === 0) {
+                            this.onStatusUpdate({ changed: [], rounds: this.status.rounds });
+                        }
                     });
                     // add new round to the list
                     this.rounds.push(newRound);
