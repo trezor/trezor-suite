@@ -13,6 +13,12 @@ import { getNumberFromPixelString } from '@trezor/utils';
 import type { OAuthServerEnvironment } from '@suite-types/metadata';
 import type { InvityServerEnvironment } from '@wallet-types/invity';
 import type { CoinjoinServerEnvironment } from '@suite-common/wallet-types';
+import { createSelector } from '@reduxjs/toolkit';
+import { getIsTorEnabled, getIsTorLoading } from '@suite-utils/tor';
+
+export interface SuiteRootState {
+    suite: SuiteState;
+}
 
 export interface DebugModeOptions {
     invityServerEnvironment?: InvityServerEnvironment;
@@ -232,5 +238,13 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
             // no default
         }
     });
+
+export const selectTorState = createSelector(
+    (state: SuiteRootState) => state.suite.torStatus,
+    torStatus => ({
+        isTorEnabled: getIsTorEnabled(torStatus),
+        isTorLoading: getIsTorLoading(torStatus),
+    }),
+);
 
 export default suiteReducer;
