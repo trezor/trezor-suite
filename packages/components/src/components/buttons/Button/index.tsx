@@ -225,8 +225,12 @@ export const Button = React.forwardRef(
             </IconWrapper>
         ) : null;
         const Loader = (
-            <IconWrapper alignIcon={alignIcon} hasLabel={hasLabel}>
-                <FluidSpinner size={10} color={color} />
+            <IconWrapper alignIcon={alignIcon} variant={variant} hasLabel={hasLabel}>
+                <FluidSpinner
+                    size={getIconSize(variant, hasLabel) - 1}
+                    color={color}
+                    strokeWidth={2}
+                />
             </IconWrapper>
         );
         return (
