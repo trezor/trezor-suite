@@ -182,7 +182,7 @@
   "TR_INSTALL_BITCOIN_ONLY": "Install Bitcoin-only",
   "TR_INSTALL_FW_DISABLED_MULTIPLE_DEVICES": "Installing firmware with multiple devices connected is not allowed.",
   "TR_INSTALL_UNIVERSAL": "Install Universal",
-  "TR_COINJOIN_TRANSACTION": "Joint {symbol} transaction",
+  "TR_COINJOIN_TRANSACTION": "CoinJoin transaction",
   "TR_COINJOIN_TRANSACTION_TARGET": "{inMy} out of {in} inputs, {outMy} out of {out} outputs",
   "TR_LABELING_ADD_OUTPUT": "Add label",
   "TR_LABELING_ADD_WALLET": "Rename",

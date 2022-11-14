@@ -924,7 +924,7 @@
   "TR_I_HAVE_ENOUGH_TIME_TO_DO": "ウォレットをバックアップするのに十分な時間があります",
   "TR_I_UNDERSTAND_PASSPHRASE": "理解しました。パスフレーズは通常のパスワードと違って再取得できません。",
   "TR_I_UNDERSTAND_SEED_IS_IMPORTANT": "あなたにはバックアップを安全に保つ責任があります",
-  "TR_COINJOIN_TRANSACTION": "{symbol} のジョイント取引",
+  "TR_COINJOIN_TRANSACTION": "CoinJoin の取引",
   "TR_COINJOIN_TRANSACTION_TARGET": "{in} の入力中の {inMy} 、 {out} の出力中の {outMy}",
   "TR_LABELING": "ラベリング",
   "TR_LABELING_ADD_ACCOUNT": "名前を変更",

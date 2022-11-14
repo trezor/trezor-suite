@@ -3316,7 +3316,7 @@ export default defineMessages({
         id: 'TR_FAILED_TRANSACTION',
     },
     TR_COINJOIN_TRANSACTION: {
-        defaultMessage: 'Joint {symbol} transaction',
+        defaultMessage: 'CoinJoin transaction',
         id: 'TR_COINJOIN_TRANSACTION',
     },
     TR_COINJOIN_TRANSACTION_TARGET: {

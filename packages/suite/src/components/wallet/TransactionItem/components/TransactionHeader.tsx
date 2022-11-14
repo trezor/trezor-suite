@@ -54,7 +54,7 @@ export const TransactionHeader = ({ transaction, isPending }: TransactionHeaderP
     } else if (headingTxType === 'failed') {
         heading = <Translation id="TR_FAILED_TRANSACTION" />;
     } else if (headingTxType === 'joint') {
-        heading = <Translation id="TR_COINJOIN_TRANSACTION" values={{ symbol }} />;
+        heading = <Translation id="TR_COINJOIN_TRANSACTION" />;
     } else {
         heading = <Translation id="TR_UNKNOWN_TRANSACTION" />;
     }
