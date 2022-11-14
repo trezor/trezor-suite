@@ -8,12 +8,12 @@ import * as modalActions from '@suite-actions/modalActions';
 import { Account, Network, NetworkSymbol } from '@wallet-types';
 import { UnavailableCapabilities } from '@trezor/connect';
 import { AddButton } from './AddButton';
-import { getIsTorEnabled } from '@suite-utils/tor';
 import { isDesktop } from '@suite-utils/env';
 import { isDevEnv } from '@suite-common/suite-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { Dispatch } from '@suite-types';
 import { RequestEnableTorResponse } from '@suite-components/modals/RequestEnableTor';
+import { selectTorState } from '@suite-reducers/suiteReducer';
 
 interface VerifyAvailabilityProps {
     coinjoinAccounts: Account[];
@@ -52,7 +52,7 @@ const requestEnableTorAction = () => (dispatch: Dispatch) =>
 export const AddCoinJoinAccountButton = ({ network }: AddCoinJoinAccountProps) => {
     const [isLoading, setIsLoading] = useState(false);
 
-    const isTorEnabled = useSelector(state => getIsTorEnabled(state.suite.torStatus));
+    const { isTorEnabled } = useSelector(selectTorState);
     const device = useSelector(state => state.suite.device);
     const accounts = useSelector(state => state.wallet.accounts);
 

@@ -6,7 +6,7 @@ import { Button, P, Link, Select, Image, useTheme, variables, Loader } from '@tr
 import * as routerActions from '@suite-actions/routerActions';
 import { isDesktop, isWeb } from '@suite-utils/env';
 import { useSelector, useActions } from '@suite-hooks';
-import { getIsTorEnabled } from '@suite-utils/tor';
+import { selectTorState } from '@suite-reducers/suiteReducer';
 
 const Content = styled.div`
     display: flex;
@@ -96,15 +96,14 @@ interface Installer {
 }
 
 export const InstallBridge = () => {
+    const { isTorEnabled } = useSelector(selectTorState);
+    const transport = useSelector(state => state.suite.transport);
+    const [selectedTarget, setSelectedTarget] = useState<Installer | null>(null);
+
+    const theme = useTheme();
     const actions = useActions({
         goto: routerActions.goto,
     });
-    const { isTorEnabled, transport } = useSelector(state => ({
-        isTorEnabled: getIsTorEnabled(state.suite.torStatus),
-        transport: state.suite.transport,
-    }));
-    const theme = useTheme();
-    const [selectedTarget, setSelectedTarget] = useState<Installer | null>(null);
 
     const installers: Installer[] =
         transport && transport.bridge

@@ -6,12 +6,13 @@ import InputError from '@wallet-components/InputError';
 import { useSelector, useActions } from '@suite-hooks';
 import { toggleTor as toggleTorAction } from '@suite-actions/suiteActions';
 import { useDefaultUrls, useBackendsForm } from '@settings-hooks/backends';
-import { getIsTorEnabled, toTorUrl } from '@suite-utils/tor';
+import { toTorUrl } from '@suite-utils/tor';
 import ConnectionInfo from './ConnectionInfo';
 import { BackendInput } from './BackendInput';
 import { BackendTypeSelect } from './BackendTypeSelect';
 import { TorModal, TorResult } from './TorModal';
 import type { Network } from '@wallet-types';
+import { selectTorState } from '@suite-reducers/suiteReducer';
 
 const Wrapper = styled.div`
     display: flex;
@@ -67,10 +68,8 @@ interface CustomBackendsProps {
 }
 
 export const CustomBackends = ({ network, onCancel }: CustomBackendsProps) => {
-    const { blockchain, isTorEnabled } = useSelector(state => ({
-        blockchain: state.wallet.blockchain,
-        isTorEnabled: getIsTorEnabled(state.suite.torStatus),
-    }));
+    const { isTorEnabled } = useSelector(selectTorState);
+    const blockchain = useSelector(state => state.wallet.blockchain);
     const [torModalOpen, setTorModalOpen] = useState(false);
 
     const { toggleTor } = useActions({
