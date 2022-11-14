@@ -16,10 +16,10 @@ import { NavSettings } from './components/NavSettings';
 import { variables } from '@trezor/components';
 import { NavBackends } from './components/NavBackends';
 import { useGuide } from '@guide-hooks/useGuide';
-import { getIsTorEnabled, getIsTorLoading } from '@suite-utils/tor';
 import { SettingsAnchor } from '@suite-constants/anchors';
 
 import type { Route } from '@suite-types';
+import { selectTorState } from '@suite-reducers/suiteReducer';
 
 const Wrapper = styled.div`
     display: flex;
@@ -65,12 +65,12 @@ export const NavigationActions = ({
     closeMainNavigation,
     isMobileLayout,
 }: NavigationActionsProps) => {
-    const { activeApp, notifications, discreetMode, torStatus, allowPrerelease, enabledNetworks } =
+    const { isTorEnabled, isTorLoading } = useSelector(selectTorState);
+    const { activeApp, notifications, discreetMode, allowPrerelease, enabledNetworks } =
         useSelector(state => ({
             activeApp: state.router.app,
             notifications: state.notifications,
             discreetMode: state.wallet.settings.discreetMode,
-            torStatus: state.suite.torStatus,
             theme: state.suite.settings.theme,
             allowPrerelease: state.desktopUpdate.allowPrerelease,
             enabledNetworks: state.wallet.settings.enabledNetworks,
@@ -105,9 +105,6 @@ export const NavigationActions = ({
     const customBackends = useCustomBackends().filter(backend =>
         enabledNetworks.includes(backend.coin),
     );
-
-    const isTorEnabled = getIsTorEnabled(torStatus);
-    const isTorLoading = getIsTorLoading(torStatus);
 
     return (
         <WrapperComponent>
