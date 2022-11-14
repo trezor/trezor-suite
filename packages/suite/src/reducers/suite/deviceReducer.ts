@@ -40,8 +40,9 @@ const merge = (device: AcquiredDevice, upcoming: Partial<AcquiredDevice>): Trezo
         ...(upcoming.features && isUnlocked(upcoming.features)
             ? upcoming.features
             : device.features),
-        // ...except for `unlocked` which should reflect the actual state of the device.
+        // ...except for `unlocked` and `busy` which should reflect the actual state of the device.
         unlocked: upcoming.features ? upcoming.features.unlocked : null,
+        busy: upcoming.features?.busy,
     },
 });
 
