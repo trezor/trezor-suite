@@ -64,7 +64,7 @@ const Round = ({ transaction }: { transaction: WalletAccountTransaction }) => {
             <BaseTargetLayout
                 addressLabel={
                     <Translation
-                        id="TR_JOINT_TRANSACTION_TARGET"
+                        id="TR_COINJOIN_TRANSACTION_TARGET"
                         values={{
                             in: transaction.details.vin.length,
                             inMy: transaction.details.vin.filter(v => v.isAccountOwned).length,

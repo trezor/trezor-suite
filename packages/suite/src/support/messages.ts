@@ -3315,13 +3315,13 @@ export default defineMessages({
         defaultMessage: 'Failed transaction',
         id: 'TR_FAILED_TRANSACTION',
     },
-    TR_JOINT_TRANSACTION: {
+    TR_COINJOIN_TRANSACTION: {
         defaultMessage: 'Joint {symbol} transaction',
-        id: 'TR_JOINT_TRANSACTION',
+        id: 'TR_COINJOIN_TRANSACTION',
     },
-    TR_JOINT_TRANSACTION_TARGET: {
+    TR_COINJOIN_TRANSACTION_TARGET: {
         defaultMessage: '{inMy} out of {in} inputs, {outMy} out of {out} outputs',
-        id: 'TR_JOINT_TRANSACTION_TARGET',
+        id: 'TR_COINJOIN_TRANSACTION_TARGET',
     },
     TR_COINJOIN_TRANSACTION_BATCH: {
         defaultMessage: 'CoinJoin transactions',
