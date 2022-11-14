@@ -2,7 +2,7 @@ import { testMocks } from '@suite-common/test-utils';
 import * as MODAL from '@suite-actions/constants/modalConstants';
 import * as COINJOIN from '@wallet-actions/constants/coinjoinConstants';
 
-const DEVICE = testMocks.getSuiteDevice({ state: 'device-state', connected: true });
+export const DEVICE = testMocks.getSuiteDevice({ state: 'device-state', connected: true });
 
 export const onCoinjoinRoundChanged = [
     {
@@ -123,6 +123,7 @@ export const onCoinjoinRoundChanged = [
         description: 'Phase 4. (end) TrezorConnect.setBusy called',
         connect: undefined,
         state: {
+            devices: [{ ...DEVICE, features: { busy: true } }],
             accounts: [{ key: 'a', deviceState: 'device-state' }],
             coinjoin: {
                 accounts: [
@@ -152,9 +153,42 @@ export const onCoinjoinRoundChanged = [
         },
     },
     {
+        description: 'Phase 4. (end) TrezorConnect.setBusy not called (device is not busy)',
+        connect: undefined,
+        state: {
+            devices: [{ ...DEVICE, features: { busy: false } }],
+            accounts: [{ key: 'a', deviceState: 'device-state' }],
+            coinjoin: {
+                accounts: [
+                    {
+                        key: 'a',
+                        session: { signedRounds: ['1', '2'], maxRounds: 2 },
+                        previousSessions: [],
+                    },
+                ],
+            },
+        },
+        params: {
+            phase: 4,
+            inputs: [{ accountKey: 'a' }],
+            failed: [],
+            roundDeadline: Date.now() + 1000,
+        },
+        result: {
+            actions: [
+                COINJOIN.SESSION_ROUND_CHANGED,
+                MODAL.CLOSE,
+                MODAL.OPEN_USER_CONTEXT,
+                COINJOIN.SESSION_COMPLETED,
+            ],
+            trezorConnectCalledTimes: 0,
+        },
+    },
+    {
         description: 'Multiple events',
         connect: undefined,
         state: {
+            devices: [{ ...DEVICE, features: { busy: true } }],
             accounts: [{ key: 'a', deviceState: 'device-state' }],
             coinjoin: {
                 accounts: [

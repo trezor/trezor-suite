@@ -147,25 +147,31 @@ export const setBusyScreen =
 
         // collect unique physical devices (by device.id)
         const uniquePhysicalDevices = uniqueDeviceStates.reduce((result, state) => {
-            const device = devices.find(d => d.state === state);
+            const device = devices.find(d => d.connected && d.state === state);
             if (device && !result.find(d => d.id === device.id)) {
                 return result.concat(device);
             }
             return result;
         }, [] as typeof devices);
 
-        // TODO: check if device is connected, unlocked, and features.busy
+        const setBusy = (device: typeof uniquePhysicalDevices[number]) => {
+            if (!expiry && !device.features?.busy) {
+                // skip unnecessary call if device is not in busy state
+                return;
+            }
+
+            TrezorConnect.setBusy({
+                device: {
+                    path: device?.path,
+                },
+                keepSession: !!expiry, // do not release device session, keep it for signTransaction
+                expiry_ms: expiry,
+            });
+        };
+
         // async actions on each physical device in sequence
         return uniquePhysicalDevices.reduce(
-            (p, device) =>
-                p.then(() => {
-                    TrezorConnect.setBusy({
-                        device: {
-                            path: device?.path,
-                        },
-                        expiry_ms: expiry,
-                    });
-                }),
+            (p, device) => p.then(() => setBusy(device)),
             Promise.resolve(),
         );
     };

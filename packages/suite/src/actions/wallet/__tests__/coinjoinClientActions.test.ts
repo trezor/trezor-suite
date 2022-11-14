@@ -1,5 +1,5 @@
 import { combineReducers, createReducer } from '@reduxjs/toolkit';
-import { configureMockStore, testMocks } from '@suite-common/test-utils';
+import { configureMockStore } from '@suite-common/test-utils';
 
 import { accountsReducer } from '@wallet-reducers';
 import { coinjoinReducer } from '@wallet-reducers/coinjoinReducer';
@@ -14,20 +14,18 @@ jest.mock('@trezor/connect', () => global.JestMocks.getTrezorConnect({}));
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const TrezorConnect = require('@trezor/connect').default;
 
-const DEVICE = testMocks.getSuiteDevice({ state: 'device-state', connected: true });
-
 const rootReducer = combineReducers({
     suite: createReducer(
         {
             locks: [],
-            device: DEVICE,
+            device: fixtures.DEVICE,
             settings: {
                 debug: {},
             },
         },
         {},
     ),
-    devices: createReducer([DEVICE], {}),
+    devices: createReducer([fixtures.DEVICE], {}),
     modal: () => ({}),
     wallet: combineReducers({
         coinjoin: coinjoinReducer,
