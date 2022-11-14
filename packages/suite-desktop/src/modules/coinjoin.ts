@@ -59,6 +59,7 @@ export const init: Module = ({ mainWindow }) => {
 
             settings.middlewareUrl = `http://localhost:${port}/Cryptography/`;
             const client = new CoinjoinClient(settings);
+            client.on('log', message => logger.debug(SERVICE_NAME, message));
             clients.push(client);
             return {
                 onRequest: async (method, params) => {
