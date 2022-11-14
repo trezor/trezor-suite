@@ -12,6 +12,9 @@
             "path": "../../suite-common/wallet-core"
         },
         {
+            "path": "../../suite-common/wallet-graph"
+        },
+        {
             "path": "../../suite-common/wallet-types"
         },
         {
