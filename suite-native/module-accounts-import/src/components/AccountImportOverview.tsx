@@ -30,7 +30,7 @@ export const AccountImportOverview = ({ accountInfo, currencySymbol }: AssetsOve
     const { applyStyle } = useNativeStyles();
     const fiatCurrency = useSelector(selectFiatCurrency);
     const coins = useSelector(selectCoins);
-    const { FiatAmountFormatter, CryptoAmountFormatter, CurrencySymbolFormatter } = useFormatters();
+    const { FiatAmountFormatter, CryptoAmountFormatter } = useFormatters();
     const navigation = useNavigation();
 
     const fiatRates = useMemo(
@@ -50,8 +50,7 @@ export const AccountImportOverview = ({ accountInfo, currencySymbol }: AssetsOve
                         <Text variant="label" color="gray1000">
                             {CryptoAmountFormatter.format(cryptoAmount, {
                                 symbol: currencySymbol,
-                            })}{' '}
-                            {CurrencySymbolFormatter.format(currencySymbol)}
+                            })}
                         </Text>
                     </Box>
                 </Box>

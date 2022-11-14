@@ -22,11 +22,8 @@ export type CryptoAmountFormatterDataContext = {
 
 export const prepareCryptoAmountFormatter = (config: FormatterConfig) =>
     makeFormatter<CryptoAmountFormatterInputValue, string, CryptoAmountFormatterDataContext>(
-        (value, dataContext) => {
-            const { symbol, isBalance, withSymbol } = dataContext;
+        (value, { symbol, isBalance, withSymbol = true }) => {
             const { locale, bitcoinAmountUnit } = config;
-
-            const CurrencySymbolFormatter = prepareCurrencySymbolFormatter(config);
 
             const { features: networkFeatures } =
                 NETWORKS.find(network => network.symbol === symbol) ?? {};
@@ -54,6 +51,7 @@ export const prepareCryptoAmountFormatter = (config: FormatterConfig) =>
             }
 
             if (withSymbol && symbol) {
+                const CurrencySymbolFormatter = prepareCurrencySymbolFormatter(config);
                 return `${formattedValue} ${CurrencySymbolFormatter.format(symbol)}`;
             }
 

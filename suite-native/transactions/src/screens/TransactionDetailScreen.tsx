@@ -37,7 +37,6 @@ export const TransactionDetailScreen = ({
     const fiatAmount = toFiatCurrency(transactionAmount, fiatCurrency.label, transaction.rates);
     const cryptoAmountFormatted = CryptoAmountFormatter.format(transactionAmount, {
         symbol: transaction.symbol,
-        withSymbol: true,
     });
 
     return (

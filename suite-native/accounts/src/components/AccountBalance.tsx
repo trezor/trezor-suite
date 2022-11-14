@@ -47,7 +47,6 @@ export const AccountBalance = ({ accountKey }: AccountBalanceProps) => {
                     <Text color="gray600" variant="hint">
                         {CryptoAmountFormatter.format(cryptoAmount, {
                             symbol: account.symbol,
-                            withSymbol: true,
                         })}
                     </Text>
                 </Box>

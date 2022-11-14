@@ -85,7 +85,6 @@ export const TransactionListItem = memo(({ transaction }: AccountTransactionList
                 <Text variant="hint" color="gray600">
                     {CryptoAmountFormatter.format(transactionAmount, {
                         symbol: transaction.symbol,
-                        withSymbol: true,
                     })}
                 </Text>
             </Box>
