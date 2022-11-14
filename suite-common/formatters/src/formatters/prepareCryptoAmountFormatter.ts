@@ -25,7 +25,7 @@ export const prepareCryptoAmountFormatter = (config: FormatterConfig) =>
         (value, { symbol, isBalance, withSymbol = true }) => {
             const { locale, bitcoinAmountUnit } = config;
 
-            const { features: networkFeatures } =
+            const { features: networkFeatures, decimals } =
                 NETWORKS.find(network => network.symbol === symbol) ?? {};
 
             const areAmountUnitsSupported = !!networkFeatures?.includes('amount-unit');
@@ -47,7 +47,7 @@ export const prepareCryptoAmountFormatter = (config: FormatterConfig) =>
             if (isBalance) {
                 formattedValue = formatCoinBalance(String(formattedValue), locale);
             } else {
-                formattedValue = localizeNumber(formattedValue, locale);
+                formattedValue = localizeNumber(formattedValue, locale, 0, decimals);
             }
 
             if (withSymbol && symbol) {
