@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { Button, P } from '@trezor/components';
 import { Modal, Translation } from '@suite-components';
 import { UserContextPayload } from '@suite-actions/modalActions';
 import { isDevEnv } from '@suite-common/suite-utils';
 import { useSelector } from '@suite-hooks';
+import { selectTorState } from '@suite-reducers/suiteReducer';
 
 const SmallModal = styled(Modal)`
     width: 560px;
@@ -31,9 +32,15 @@ export enum RequestEnableTorResponse {
 }
 
 export const RequestEnableTor = ({ onCancel, decision }: RequestEnableTorProps) => {
-    const { debug } = useSelector(state => ({
-        debug: state.suite.settings.debug,
-    }));
+    const debug = useSelector(state => state.suite.settings.debug);
+    const { isTorLoading, isTorEnabled } = useSelector(selectTorState);
+
+    useEffect(() => {
+        if (isTorEnabled) {
+            decision.resolve(RequestEnableTorResponse.Skip);
+            onCancel();
+        }
+    }, [isTorEnabled, decision, onCancel]);
 
     const onEnableTor = () => {
         decision.resolve(RequestEnableTorResponse.Continue);
@@ -72,8 +79,18 @@ export const RequestEnableTor = ({ onCancel, decision }: RequestEnableTorProps) 
                         <Button variant="secondary" onClick={onCancel}>
                             <Translation id="TR_TOR_REQUEST_ENABLE_FOR_COIN_JOIN_LEAVE" />
                         </Button>
-                        <Button variant="primary" onClick={onEnableTor}>
-                            <Translation id="TR_TOR_ENABLE" />
+
+                        <Button
+                            variant="primary"
+                            onClick={onEnableTor}
+                            isLoading={isTorLoading}
+                            isDisabled={isTorLoading}
+                        >
+                            {isTorLoading ? (
+                                <Translation id="TR_ENABLING_TOR" />
+                            ) : (
+                                <Translation id="TR_TOR_ENABLE" />
+                            )}
                         </Button>
                     </>
                 }
