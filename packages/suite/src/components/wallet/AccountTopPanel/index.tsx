@@ -34,7 +34,7 @@ interface AccountTopPanelSkeletonProps {
 const AccountTopPanelSkeleton = ({ animate }: AccountTopPanelSkeletonProps) => (
     <AppNavigationPanel
         maxWidth="small"
-        title={<SkeletonRectangle width="260px" height="26px" animate={animate} />}
+        title={<SkeletonRectangle width="260px" height="28px" animate={animate} />}
         navigation={<AccountNavigation />}
     >
         <Stack margin="6px 0px 0px 0px" childMargin="0px 0px 8px 0px">
