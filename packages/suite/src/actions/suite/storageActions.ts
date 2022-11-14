@@ -116,6 +116,7 @@ export const forgetDevice = (device: TrezorDevice) => async (_: Dispatch, getSta
             promises.concat(
                 [removeAccountDraft(account)],
                 FormDraftPrefixKeyValues.map(prefix => removeAccountFormDraft(prefix, account.key)),
+                removeCoinjoinAccount(account.key),
             ),
         [] as Promise<void>[],
     );
