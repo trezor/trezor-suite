@@ -74,8 +74,7 @@ export const FormatterProvider = ({ config, children }: FormatterProviderProps) 
 
 export const prepareCryptoAmountFormatter = (config: FormatterConfig) =>
     makeFormatter<CryptoAmountFormatterInputValue, string, CryptoAmountFormatterDataContext>(
-        (value, dataContext) => {
-            const { symbol, isBalance } = dataContext;
+        (value, { symbol, isBalance, withSymbol = true }) => {
             const { locale, bitcoinAmountUnit } = config;
 
             // the rest functionality of your formatter...

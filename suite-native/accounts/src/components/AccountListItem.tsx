@@ -28,7 +28,7 @@ export const AccountListItem = ({ account }: AccountListItemProps) => {
     );
     const fiatCurrency = useSelector(selectFiatCurrency);
     const coins = useSelector(selectCoins);
-    const { FiatAmountFormatter, CryptoAmountFormatter, CurrencySymbolFormatter } = useFormatters();
+    const { FiatAmountFormatter, CryptoAmountFormatter } = useFormatters();
 
     const fiatRates = useMemo(
         () => coins.find(coin => coin.symbol === account.symbol),
@@ -58,8 +58,7 @@ export const AccountListItem = ({ account }: AccountListItemProps) => {
                 <Text variant="hint" color="gray600">
                     {CryptoAmountFormatter.format(account.formattedBalance, {
                         symbol: account.symbol,
-                    })}{' '}
-                    {CurrencySymbolFormatter.format(account.symbol)}
+                    })}
                 </Text>
             </Box>
         </Box>

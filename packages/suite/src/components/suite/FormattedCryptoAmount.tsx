@@ -1,10 +1,11 @@
 import React from 'react';
-import styled from 'styled-components';
 
+import styled from 'styled-components';
 import { HiddenPlaceholder, Sign } from '@suite-components';
+import { NetworkSymbol } from '@wallet-types';
+
 import { SignValue } from '@suite-common/suite-types';
 import { useFormatters } from '@suite-common/formatters';
-import { NetworkSymbol } from '@wallet-types';
 
 const Container = styled.span`
     max-width: 100%;
@@ -52,6 +53,7 @@ export const FormattedCryptoAmount = ({
     const formattedValue = CryptoAmountFormatter.format(value, {
         isBalance,
         symbol: networkSymbol,
+        withSymbol: false,
     });
 
     // output as a string, mostly for compatability with graphs
