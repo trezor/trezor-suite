@@ -38,7 +38,7 @@ export const AssetItem = ({
     onPress,
 }: AssetItemProps) => {
     const { applyStyle } = useNativeStyles();
-    const { CryptoAmountFormatter, CurrencySymbolFormatter, FiatAmountFormatter } = useFormatters();
+    const { CryptoAmountFormatter, FiatAmountFormatter } = useFormatters();
 
     return (
         <TouchableOpacity disabled={!onPress} onPress={onPress}>
@@ -56,9 +56,10 @@ export const AssetItem = ({
                     <Box alignItems="flex-end">
                         <Text>{FiatAmountFormatter.format(fiatBalance)}</Text>
                         <Text variant="hint" color="gray600">
-                            <>{`${CryptoAmountFormatter.format(cryptoCurrencyValue, {
+                            {CryptoAmountFormatter.format(cryptoCurrencyValue, {
                                 symbol: cryptoCurrencySymbol,
-                            })} ${CurrencySymbolFormatter.format(cryptoCurrencySymbol)}`}</>
+                                withSymbol: true,
+                            })}
                         </Text>
                     </Box>
                 </Box>

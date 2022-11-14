@@ -49,7 +49,7 @@ export const TransactionListItem = memo(({ transaction }: AccountTransactionList
         useNavigation<
             StackNavigationProps<RootStackParamList, AccountsStackRoutes.AccountDetail>
         >();
-    const { FiatAmountFormatter, CryptoAmountFormatter, CurrencySymbolFormatter } = useFormatters();
+    const { FiatAmountFormatter, CryptoAmountFormatter } = useFormatters();
     const transactionAmount = formatNetworkAmount(transaction.amount, transaction.symbol);
     const fiatAmount = toFiatCurrency(transactionAmount, fiatCurrency.label, transaction.rates);
 
@@ -83,9 +83,10 @@ export const TransactionListItem = memo(({ transaction }: AccountTransactionList
             <Box alignItems="flex-end">
                 <Text>{FiatAmountFormatter.format(fiatAmount ?? 0)}</Text>
                 <Text variant="hint" color="gray600">
-                    <>{`${CryptoAmountFormatter.format(transactionAmount, {
+                    {CryptoAmountFormatter.format(transactionAmount, {
                         symbol: transaction.symbol,
-                    })} ${CurrencySymbolFormatter.format(transaction.symbol)}`}</>
+                        withSymbol: true,
+                    })}
                 </Text>
             </Box>
         </TouchableOpacity>

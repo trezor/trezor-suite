@@ -26,7 +26,7 @@ export const TransactionDetailScreen = ({
     const transaction = useSelector(selectTransactionByTxid(txid));
     const blockchain = useSelector(selectBlockchainState);
     const fiatCurrency = useSelector(selectFiatCurrency);
-    const { CryptoAmountFormatter, CurrencySymbolFormatter } = useFormatters();
+    const { CryptoAmountFormatter } = useFormatters();
 
     // TODO please add empty state when design is ready
     if (!transaction) return null;
@@ -35,9 +35,10 @@ export const TransactionDetailScreen = ({
 
     const transactionAmount = formatNetworkAmount(transaction.amount, transaction.symbol);
     const fiatAmount = toFiatCurrency(transactionAmount, fiatCurrency.label, transaction.rates);
-    const cryptoAmountFormatted = `${CryptoAmountFormatter.format(transactionAmount, {
+    const cryptoAmountFormatted = CryptoAmountFormatter.format(transactionAmount, {
         symbol: transaction.symbol,
-    })} ${CurrencySymbolFormatter.format(transaction.symbol)}`;
+        withSymbol: true,
+    });
 
     return (
         <Screen header={<ScreenHeader />}>

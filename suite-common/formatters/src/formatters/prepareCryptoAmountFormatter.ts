@@ -10,19 +10,23 @@ import { PROTO } from '@trezor/connect';
 
 import { makeFormatter } from '../makeFormatter';
 import { FormatterConfig } from '../types';
+import { prepareCurrencySymbolFormatter } from './prepareCurrencySymbolFormatter';
 
 export type CryptoAmountFormatterInputValue = string | number | BigNumber;
 
 export type CryptoAmountFormatterDataContext = {
     isBalance?: boolean;
     symbol?: NetworkSymbol;
+    withSymbol?: boolean;
 };
 
 export const prepareCryptoAmountFormatter = (config: FormatterConfig) =>
     makeFormatter<CryptoAmountFormatterInputValue, string, CryptoAmountFormatterDataContext>(
         (value, dataContext) => {
-            const { symbol, isBalance } = dataContext;
+            const { symbol, isBalance, withSymbol } = dataContext;
             const { locale, bitcoinAmountUnit } = config;
+
+            const CurrencySymbolFormatter = prepareCurrencySymbolFormatter(config);
 
             const { features: networkFeatures } =
                 NETWORKS.find(network => network.symbol === symbol) ?? {};
@@ -47,6 +51,10 @@ export const prepareCryptoAmountFormatter = (config: FormatterConfig) =>
                 formattedValue = formatCoinBalance(String(formattedValue), locale);
             } else {
                 formattedValue = localizeNumber(formattedValue, locale);
+            }
+
+            if (withSymbol && symbol) {
+                return `${formattedValue} ${CurrencySymbolFormatter.format(symbol)}`;
             }
 
             return formattedValue;
