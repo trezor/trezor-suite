@@ -236,7 +236,7 @@ export const networks = {
         customBackends: ['blockbook', 'electrum'],
         accountTypes: {
             coinjoin: {
-                name: 'Bitcoin Testnet (PEA)',
+                name: 'Bitcoin Testnet (CoinJoin)',
                 bip43Path: "m/10025'/1'/i'/1'", // https://github.com/satoshilabs/slips/blob/master/slip-0025.md#public-key-derivation
                 backendType: 'coinjoin', // use non-standard backend
                 features: ['amount-unit'], // no rbf, no sign-verify
@@ -271,7 +271,7 @@ export const networks = {
         customBackends: ['blockbook', 'electrum'],
         accountTypes: {
             coinjoin: {
-                name: 'Bitcoin Regtest (PEA)',
+                name: 'Bitcoin Regtest (CoinJoin)',
                 bip43Path: "m/10025'/1'/i'/1'", // https://github.com/satoshilabs/slips/blob/master/slip-0025.md#public-key-derivation
                 backendType: 'coinjoin', // use non-standard backend
                 features: ['amount-unit'], // no rbf, no sign-verify
