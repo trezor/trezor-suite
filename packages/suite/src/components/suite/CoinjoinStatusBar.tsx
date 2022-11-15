@@ -153,6 +153,7 @@ export const CoinjoinStatusBar = ({ accountKey, session, isSingle }: CoinjoinSta
                         values={{
                             time: (
                                 <CountdownTimer
+                                    isApproximate
                                     deadline={phaseDeadline}
                                     format={getPhaseTimerFormat(phaseDeadline)}
                                 />

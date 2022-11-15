@@ -7515,4 +7515,8 @@ export default defineMessages({
         id: 'TR_COINJOIN_FACT_TEN',
         defaultMessage: 'Fun Coinjoin fact #10',
     },
+    TR_TIMER_PAST_DEADLINE: {
+        id: 'TR_TIMER_PAST_DEADLINE',
+        defaultMessage: 'Almost there...',
+    },
 });

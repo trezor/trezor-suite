@@ -285,6 +285,7 @@ export const CoinjoinStatus = ({
                     <Translation id={COINJOIN_PHASE_MESSAGES[phase]} />
                     <p>
                         <CountdownTimer
+                            isApproximate
                             deadline={phaseDeadline}
                             format={getPhaseTimerFormat(phaseDeadline)}
                         />
