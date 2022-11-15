@@ -2,6 +2,7 @@
 
 -   added Transaction.feeRate
 -   use Transaction.size provided by Blockbook instead of computing it from hex if available
+-   Electrum: fixed `joint` transaction handling
 
 # 2.1.4
 

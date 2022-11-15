@@ -46,7 +46,7 @@
         "test:e2e:node": "ts-node -O '{\"module\": \"commonjs\"}' ./e2e/run.ts node"
     },
     "dependencies": {
-        "@trezor/blockchain-link": "^2.1.4",
+        "@trezor/blockchain-link": "^2.1.5",
         "@trezor/connect-common": "0.0.9",
         "@trezor/transport": "^1.1.4",
         "@trezor/utils": "^9.0.3",
