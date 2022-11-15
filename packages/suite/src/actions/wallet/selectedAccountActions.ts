@@ -148,6 +148,7 @@ const getAccountState = (state: AppState): SelectedAccountStatus => {
                     status: 'loading',
                     loader: 'account-loading',
                     account,
+                    params,
                 };
             }
             if (account.status === 'error') {
@@ -194,6 +195,7 @@ const getAccountState = (state: AppState): SelectedAccountStatus => {
         return {
             status: 'loading',
             loader: 'account-loading',
+            params,
         };
     }
 

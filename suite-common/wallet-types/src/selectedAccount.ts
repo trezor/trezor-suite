@@ -24,7 +24,7 @@ export interface SelectedAccountLoading {
     account?: Account;
     network?: Network;
     discovery?: Discovery;
-    params?: undefined;
+    params?: WalletParams;
 }
 
 export interface SelectedAccountLoaded {
