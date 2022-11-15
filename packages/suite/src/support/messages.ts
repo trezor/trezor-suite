@@ -2765,6 +2765,18 @@ export default defineMessages({
         defaultMessage: 'Zcash',
         id: 'TR_NETWORK_ZCASH',
     },
+    TR_NETWORK_COINJOIN_BITCOIN: {
+        defaultMessage: 'CoinJoin',
+        id: 'TR_NETWORK_COINJOIN_BITCOIN',
+    },
+    TR_NETWORK_COINJOIN_BITCOIN_TESTNET: {
+        defaultMessage: 'CoinJoin Testnet',
+        id: 'TR_NETWORK_COINJOIN_BITCOIN_TESTNET',
+    },
+    TR_NETWORK_COINJOIN_BITCOIN_REGTEST: {
+        defaultMessage: 'CoinJoin Regtest',
+        id: 'TR_NETWORK_COINJOIN_BITCOIN_REGTEST',
+    },
     TR_NEW_COMMUNICATION_TOOL: {
         defaultMessage:
             'New communication tool to facilitate the connection between your Trezor and your internet browser.',
@@ -3774,10 +3786,6 @@ export default defineMessages({
     LABELING_ACCOUNT: {
         id: 'LABELING_ACCOUNT',
         defaultMessage: '{networkName} #{index}',
-    },
-    LABELING_ACCOUNT_WITH_TYPE: {
-        id: 'LABELING_ACCOUNT_WITH_TYPE',
-        defaultMessage: 'Account #{index} ({type})',
     },
     TR_LAST_UPDATE: {
         id: 'TR_LAST_UPDATE',

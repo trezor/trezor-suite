@@ -1,8 +1,7 @@
 import React, { forwardRef, useCallback, useMemo } from 'react';
 import { CoinLogo, variables } from '@trezor/components';
 import styled from 'styled-components';
-import { getTitleForNetwork } from '@suite-common/wallet-utils';
-import { Translation, FiatValue } from '@suite-components';
+import { AccountLabel, FiatValue } from '@suite-components';
 import { useActions } from '@suite-hooks';
 import { CoinBalance } from '@wallet-components';
 import { Account } from '@wallet-types';
@@ -106,89 +105,83 @@ interface AccountItemProps {
 }
 
 // Using `React.forwardRef` to be able to pass `ref` (item) TO parent (Menu/index)
-export const AccountItem = forwardRef((props: AccountItemProps, ref: React.Ref<HTMLDivElement>) => {
-    const { goto } = useActions({
-        goto: routerActions.goto,
-    });
-    const { account, selected, closeMenu } = props;
+export const AccountItem = forwardRef(
+    ({ account, selected, closeMenu }: AccountItemProps, ref: React.Ref<HTMLDivElement>) => {
+        const { goto } = useActions({
+            goto: routerActions.goto,
+        });
 
-    const accountRouteParams = useMemo(
-        () => ({
-            symbol: account.symbol,
-            accountIndex: account.index,
-            accountType: account.accountType,
-        }),
-        [account],
-    );
+        const { accountType, formattedBalance, index, metadata, networkType, symbol, tokens } =
+            account;
 
-    const handleClickOnTokens = useCallback<React.MouseEventHandler<HTMLButtonElement>>(
-        event => {
-            event.stopPropagation();
-            closeMenu();
-            goto('wallet-tokens', { params: accountRouteParams });
-        },
-        [accountRouteParams, closeMenu, goto],
-    );
+        const accountRouteParams = useMemo(
+            () => ({
+                symbol,
+                accountIndex: index,
+                accountType,
+            }),
+            [symbol, index, accountType],
+        );
 
-    const dataTestKey = `@account-menu/${account.symbol}/${account.accountType}/${account.index}`;
+        const handleClickOnTokens = useCallback<React.MouseEventHandler<HTMLButtonElement>>(
+            event => {
+                event.stopPropagation();
+                closeMenu();
+                goto('wallet-tokens', { params: accountRouteParams });
+            },
+            [accountRouteParams, closeMenu, goto],
+        );
 
-    const DefaultLabel = () => (
-        <>
-            <Translation id={getTitleForNetwork(account.symbol)} />
-            <span>&nbsp;#{account.index + 1}</span>
-        </>
-    );
+        const isTokensCountShown =
+            ['cardano', 'ethereum'].includes(networkType) && !!tokens?.length;
 
-    const accountLabel = account.metadata.accountLabel ? (
-        <span style={{ textOverflow: 'ellipsis', overflow: 'hidden' }}>
-            {account.metadata.accountLabel}
-        </span>
-    ) : (
-        <DefaultLabel />
-    );
+        const dataTestKey = `@account-menu/${symbol}/${accountType}/${index}`;
 
-    return (
-        <Wrapper selected={selected} type={account.accountType} ref={ref}>
-            <AccountHeader
-                onClick={() => {
-                    closeMenu();
-                    goto('wallet-index', { params: accountRouteParams });
-                }}
-                data-test={dataTestKey}
-            >
-                <Left>
-                    <CoinLogo size={16} symbol={account.symbol} />
-                </Left>
-                <Right>
-                    <Row>
-                        <AccountName data-test={`${dataTestKey}/label`}>{accountLabel}</AccountName>
-                    </Row>
-                    <Row>
-                        <Balance>
-                            <CoinBalance value={account.formattedBalance} symbol={account.symbol} />
-                        </Balance>
-                        {(account.networkType === 'ethereum' ||
-                            account.networkType === 'cardano') &&
-                            !!account.tokens?.length && (
-                                <TokensCount
-                                    count={account.tokens.length}
-                                    onClick={handleClickOnTokens}
+        return (
+            <Wrapper selected={selected} type={accountType} ref={ref}>
+                <AccountHeader
+                    onClick={() => {
+                        closeMenu();
+                        goto('wallet-index', { params: accountRouteParams });
+                    }}
+                    data-test={dataTestKey}
+                >
+                    <Left>
+                        <CoinLogo size={16} symbol={symbol} />
+                    </Left>
+                    <Right>
+                        <Row>
+                            <AccountName data-test={`${dataTestKey}/label`}>
+                                <AccountLabel
+                                    accountLabel={metadata.accountLabel}
+                                    accountType={accountType}
+                                    symbol={symbol}
+                                    index={index}
                                 />
+                            </AccountName>
+                        </Row>
+                        <Row>
+                            <Balance>
+                                <CoinBalance value={formattedBalance} symbol={symbol} />
+                            </Balance>
+                            {isTokensCountShown && (
+                                <TokensCount count={tokens.length} onClick={handleClickOnTokens} />
                             )}
-                    </Row>
-                    <Row>
-                        <FiatValue
-                            amount={account.formattedBalance}
-                            symbol={account.symbol}
-                            showApproximationIndicator
-                        >
-                            {({ value }) =>
-                                value ? <FiatValueWrapper>{value}</FiatValueWrapper> : null
-                            }
-                        </FiatValue>
-                    </Row>
-                </Right>
-            </AccountHeader>
-        </Wrapper>
-    );
-});
+                        </Row>
+                        <Row>
+                            <FiatValue
+                                amount={formattedBalance}
+                                symbol={symbol}
+                                showApproximationIndicator
+                            >
+                                {({ value }) =>
+                                    value ? <FiatValueWrapper>{value}</FiatValueWrapper> : null
+                                }
+                            </FiatValue>
+                        </Row>
+                    </Right>
+                </AccountHeader>
+            </Wrapper>
+        );
+    },
+);

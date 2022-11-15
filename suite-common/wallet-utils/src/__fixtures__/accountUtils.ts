@@ -72,6 +72,14 @@ export const accountTitleFixture = [
     { symbol: 'c', title: 'TR_NETWORK_UNKNOWN' },
 ];
 
+export const accountTitleCoinjoinFixture = [
+    { symbol: 'btc', title: 'TR_NETWORK_COINJOIN_BITCOIN' },
+    { symbol: 'test', title: 'TR_NETWORK_COINJOIN_BITCOIN_TESTNET' },
+    { symbol: 'regtest', title: 'TR_NETWORK_COINJOIN_BITCOIN_REGTEST' },
+    { symbol: 'btg', title: 'TR_NETWORK_UNKNOWN' },
+    { symbol: 'aaaaaa', title: 'TR_NETWORK_UNKNOWN' },
+];
+
 export const parseBIP44Path = [
     {
         path: `m/84'/0'/0'/1/0`,

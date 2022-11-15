@@ -1,3 +1,4 @@
+import { AccountLabel } from './AccountLabel';
 import DeviceIcon from './images/DeviceIcon';
 import CheckItem from './CheckItem';
 import { PrerequisitesGuide } from './PrerequisitesGuide';
@@ -54,6 +55,7 @@ import { CoinjoinStatusBar } from './CoinjoinStatusBar';
 import { CountdownTimer } from './CountdownTimer';
 
 export {
+    AccountLabel,
     DeviceIcon,
     CheckItem,
     DeviceInvalidModeLayout,
