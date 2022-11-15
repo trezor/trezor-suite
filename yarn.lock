@@ -7028,7 +7028,7 @@ __metadata:
   resolution: "@trezor/blockchain-link@workspace:packages/blockchain-link"
   dependencies:
     "@trezor/utils": ^9.0.3
-    "@trezor/utxo-lib": ^1.0.0
+    "@trezor/utxo-lib": ^1.0.1
     "@types/web": ^0.0.51
     bignumber.js: ^9.1.0
     events: ^3.3.0
@@ -7284,7 +7284,7 @@ __metadata:
     "@trezor/transport": ^1.1.4
     "@trezor/trezor-user-env-link": "*"
     "@trezor/utils": ^9.0.3
-    "@trezor/utxo-lib": ^1.0.0
+    "@trezor/utxo-lib": ^1.0.1
     "@types/karma": ^6.3.3
     "@types/parse-uri": ^1.0.0
     "@types/randombytes": ^2.0.0
@@ -7958,7 +7958,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/utxo-lib@*, @trezor/utxo-lib@^1.0.0, @trezor/utxo-lib@workspace:packages/utxo-lib":
+"@trezor/utxo-lib@*, @trezor/utxo-lib@^1.0.1, @trezor/utxo-lib@workspace:packages/utxo-lib":
   version: 0.0.0-use.local
   resolution: "@trezor/utxo-lib@workspace:packages/utxo-lib"
   dependencies:
