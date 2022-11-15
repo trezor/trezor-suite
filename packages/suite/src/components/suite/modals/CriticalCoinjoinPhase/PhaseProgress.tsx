@@ -102,8 +102,8 @@ export const PhaseProgress = ({ currentPhase, phaseDeadline }: PhaseProgressProp
 
         {phaseDeadline && (
             <TimerCointainer>
-                ~
                 <CountdownTimer
+                    isApproximate
                     deadline={phaseDeadline}
                     format={getPhaseTimerFormat(phaseDeadline)}
                 />
