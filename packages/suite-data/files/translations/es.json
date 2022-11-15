@@ -233,7 +233,7 @@
   "TR_ACCOUNT_TYPE_SHELLEY": "Shelley",
   "TR_ACCOUNT_TYPE_SHELLEY_DESC": "Las direcciones de la era Shelley han introducido un nuevo tipo de wallet, que puede soportar la delegación de stake y la obtención de recompensas.",
   "TR_ACCOUNT_TYPE_SLIP25_DESC": "¿Qué es una cuenta CoinJoin?",
-  "TR_ACCOUNT_TYPE_SLIP25_NAME": "Cuenta de privacidad mejorada",
+  "TR_ACCOUNT_TYPE_SLIP25_NAME": "CoinJoin",
   "TR_ACCOUNT_TYPE_SLIP25_TECH": "SLIP25, P2TR, Bech32m",
   "TR_ACQUIRE_DEVICE": "Utilizar el Trezor aquí",
   "TR_ACQUIRE_DEVICE_DESCRIPTION": "Tu Trezor parece estar en uso en otra ventana. Por favor, cierra todas las demás ventanas o pestañas que pudiesen estar utilizando tu Trezor.",

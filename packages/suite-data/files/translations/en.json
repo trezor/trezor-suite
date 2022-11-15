@@ -53,7 +53,7 @@
   "TR_ACCOUNT_TYPE_SHELLEY": "Shelley",
   "TR_ACCOUNT_TYPE_SHELLEY_DESC": "Shelley era addresses have introduced a new type of wallet that can support stake delegation and earning rewards.",
   "TR_ACCOUNT_TYPE_SLIP25_DESC": "What is a CoinJoin account?",
-  "TR_ACCOUNT_TYPE_SLIP25_NAME": "CoinJoin account",
+  "TR_ACCOUNT_TYPE_SLIP25_NAME": "CoinJoin",
   "TR_ACCOUNT_TYPE_SLIP25_TECH": "SLIP25, P2TR, Bech32m",
   "TR_ACCOUNT_TYPE_UPDATE_REQUIRED": "Please update device firmware to enable this Account Type.",
   "TR_ADD_HIDDEN_WALLET": "Add hidden wallet",

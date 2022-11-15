@@ -240,7 +240,7 @@
   "TR_ACCOUNT_TYPE_SHELLEY": "Shelley",
   "TR_ACCOUNT_TYPE_SHELLEY_DESC": "Shelley世代のアドレスによって、ステークの委任と報酬の獲得をサポートできる新しいタイプのウォレットが導入されました。",
   "TR_ACCOUNT_TYPE_SLIP25_DESC": "CoinJoin アカウントとは何ですか？",
-  "TR_ACCOUNT_TYPE_SLIP25_NAME": "CoinJoin アカウント",
+  "TR_ACCOUNT_TYPE_SLIP25_NAME": "CoinJoin",
   "TR_ACCOUNT_TYPE_SLIP25_TECH": "SLIP25, P2TR, Bech32m",
   "TR_ACCOUNT_TYPE_UPDATE_REQUIRED": "このアカウントタイプを有効にするには、デバイスのファームウェアを更新してください。",
   "TR_ACQUIRE_DEVICE": "ここでTrezorを使用してください",
