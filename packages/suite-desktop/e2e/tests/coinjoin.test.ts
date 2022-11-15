@@ -99,7 +99,7 @@ const receiveCoins = async () => {
 };
 
 const passThroughInitialRun = async (window: Page) => {
-    await window.click('[data-test="@onboarding/continue-button"]');
+    await window.click('[data-test="@analytics/continue-button"]');
     await window.click('[data-test="@onboarding/exit-app-button"]');
     await window.click('[data-test="@passphrase-type/standard"]');
     await window.waitForSelector('[data-test="@dashboard/graph"]');

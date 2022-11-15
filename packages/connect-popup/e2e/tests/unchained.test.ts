@@ -13,6 +13,14 @@ test.beforeAll(async () => {
     await TrezorUserEnvLink.connect();
 });
 
+const handleAnalyticsConfirm = async (popup: Page) => {
+    await popup.waitForSelector("button[data-test='@analytics/continue-button']", {
+        state: 'visible',
+        timeout: 40000,
+    });
+    await popup.click("button[data-test='@analytics/continue-button']");
+};
+
 /**
  * Returns a connect popup page
  * @param {Page} page - an instance of playwright's page object
@@ -61,7 +69,10 @@ const exportPublicKey = async (page: Page, iteration: number) => {
     if (iteration !== 0) await page.locator('button:has-text("Next")').click();
     const popup = await getConnectPopup(page);
     // click on "Don't ask again" in the first iteration
-    if (iteration === 0) await handleDontAskAgain(popup);
+    if (iteration === 0) {
+        await handleAnalyticsConfirm(popup);
+        await handleDontAskAgain(popup);
+    }
     await popup.waitForSelector(confirmBtn, { state: 'visible' });
     await popup.click(confirmBtn);
     await assertSuccess(page);
@@ -75,8 +86,8 @@ const exportPublicKey = async (page: Page, iteration: number) => {
 const signTransaction = async (page: Page, iteration: number) => {
     await page.locator('button:has-text("Next")').click();
     const popup = await getConnectPopup(page);
-    // click on "Don't ask again" in the first iteration
     if (iteration === 0) await handleDontAskAgain(popup);
+
     await popup.waitForSelector('//p[contains(., "Check recipient")]', {
         state: 'visible',
         timeout: 40000,

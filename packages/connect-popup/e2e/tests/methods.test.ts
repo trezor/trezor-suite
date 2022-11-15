@@ -97,8 +97,15 @@ fixtures.forEach(f => {
         await popup.waitForLoadState('load');
         log(f.url, 'popup promise resolved');
 
+        log(f.url, 'waiting for confirm analytics');
+        await popup.waitForSelector("button[data-test='@analytics/continue-button']", {
+            state: 'visible',
+            timeout: 40000,
+        });
+        await popup.click("button[data-test='@analytics/continue-button']");
+
         log(f.url, 'waiting for confirm permissions button');
-        await popup.waitForSelector('button.confirm', { state: 'visible', timeout: 40000 });
+        await popup.waitForSelector('button.confirm', { state: 'visible' });
         await popup.screenshot({
             path: `${screenshotsPath}/2-permissions.png`,
             fullPage: true,

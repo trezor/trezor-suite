@@ -16,8 +16,8 @@ describe('Onboarding - analytics consent', () => {
         cy.getTestElement('@settings/menu/close').click();
 
         cy.getTestElement('@analytics/consent');
-        cy.getTestElement('@onboarding/continue-button').click();
-        cy.getTestElement('@onboarding/continue-button').click();
+        cy.getTestElement('@analytics/continue-button').click();
+        cy.getTestElement('@analytics/continue-button').click();
 
         cy.getTestElement('@onboarding-layout/body').should('be.visible');
     });
@@ -31,8 +31,8 @@ describe('Onboarding - analytics consent', () => {
         cy.getTestElement('@settings/menu/close').click();
 
         cy.getTestElement('@analytics/consent');
-        cy.getTestElement('@onboarding/continue-button').click();
-        cy.getTestElement('@onboarding/continue-button').click();
+        cy.getTestElement('@analytics/continue-button').click();
+        cy.getTestElement('@analytics/continue-button').click();
 
         cy.getTestElement('@onboarding-layout/body').should('be.visible');
     });
@@ -49,7 +49,7 @@ describe('Onboarding - analytics consent', () => {
         cy.getTestElement('@settings/menu/close').click();
 
         cy.getTestElement('@analytics/consent');
-        cy.getTestElement('@onboarding/continue-button').click();
+        cy.getTestElement('@analytics/continue-button').click();
         cy.getTestElement('@onboarding/exit-app-button').click();
 
         cy.getTestElement('@suite-layout/body').should('be.visible');
@@ -68,7 +68,7 @@ describe('Onboarding - analytics consent', () => {
         cy.getTestElement('@settings/menu/close').click();
 
         cy.getTestElement('@analytics/consent');
-        cy.getTestElement('@onboarding/continue-button').click();
+        cy.getTestElement('@analytics/continue-button').click();
         cy.getTestElement('@onboarding/exit-app-button').click();
 
         cy.getTestElement('@suite-layout/body').should('be.visible');
@@ -83,7 +83,7 @@ describe('Onboarding - analytics consent', () => {
         cy.prefixedVisit('/accounts');
 
         cy.getTestElement('@analytics/consent');
-        cy.getTestElement('@onboarding/continue-button').click();
+        cy.getTestElement('@analytics/continue-button').click();
         cy.getTestElement('@onboarding/exit-app-button').click();
 
         cy.getTestElement('@suite-layout/body').should('be.visible');
@@ -98,7 +98,7 @@ describe('Onboarding - analytics consent', () => {
         cy.prefixedVisit('/accounts');
 
         cy.getTestElement('@analytics/consent');
-        cy.getTestElement('@onboarding/continue-button').click();
+        cy.getTestElement('@analytics/continue-button').click();
         cy.getTestElement('@onboarding/exit-app-button').click();
 
         cy.getTestElement('@suite-layout/body').should('be.visible');

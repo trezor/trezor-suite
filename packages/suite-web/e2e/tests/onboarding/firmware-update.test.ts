@@ -65,7 +65,7 @@ describe('fw update from empty device bootloader 2.0.3 to firmware 2.5.1', () =>
     });
 
     it('firmware update error', () => {
-        cy.getTestElement('@onboarding/continue-button').click();
+        cy.getTestElement('@analytics/continue-button').click();
 
         // hook into redux actions to bypass firmware hash check
         cy.window().its('store').should('exist');
@@ -91,7 +91,7 @@ describe('fw update from empty device bootloader 2.0.3 to firmware 2.5.1', () =>
             });
         });
 
-        cy.getTestElement('@onboarding/continue-button').click();
+        cy.getTestElement('@analytics/continue-button').click();
 
         cy.getTestElement('@firmware/install-button').click();
 

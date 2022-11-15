@@ -47,7 +47,12 @@ describe('Database migration', () => {
         // FROM
 
         cy.visit(baseUrl + from, {});
-        cy.passThroughInitialRun();
+        cy.getTestElement('@onboarding/continue-button', { timeout: 40000 })
+            .click()
+            .getTestElement('@onboarding/exit-app-button')
+            .click()
+            .getTestElement('@suite/loading')
+            .should('not.exist');
         cy.getTestElement('@passphrase-type/standard').click();
         cy.discoveryShouldFinish();
 

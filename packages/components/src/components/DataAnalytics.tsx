@@ -161,7 +161,7 @@ export const DataAnalytics = ({ onConfirm, analyticsLink, tosLink }: DataAnalyti
 
                 <ButtonWrapper>
                     <StyledButton
-                        data-test="@onboarding/continue-button"
+                        data-test="@analytics/continue-button"
                         onClick={() => onConfirm(trackingEnabled)}
                     >
                         <FormattedMessage id="TR_CONFIRM" defaultMessage="Confirm" />

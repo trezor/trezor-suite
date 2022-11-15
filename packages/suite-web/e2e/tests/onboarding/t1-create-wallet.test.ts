@@ -12,8 +12,8 @@ describe('Onboarding - create wallet', () => {
     // after calling "resetDevice" we almost always receive "device disconnected during action" which is error sent by bridge.
     it.skip('Success (basic)', () => {
         cy.task('startEmu', { version: '1-latest', wipe: true });
-        cy.getTestElement('@onboarding/continue-button').click();
-        cy.getTestElement('@onboarding/continue-button').click();
+        cy.getTestElement('@analytics/continue-button').click();
+        cy.getTestElement('@analytics/continue-button').click();
         cy.getTestElement('@firmware/continue-button').click();
 
         cy.getTestElement('@onboarding/path-create-button').click();

@@ -33,7 +33,7 @@ testPlaywright.describe.serial('Suite works with Electrum server', () => {
 
         await waitForDataTestSelector(suite.window, '@welcome/title');
 
-        await clickDataTest(suite.window, '@onboarding/continue-button');
+        await clickDataTest(suite.window, '@analytics/continue-button');
 
         await clickDataTest(suite.window, '@onboarding/exit-app-button');
 

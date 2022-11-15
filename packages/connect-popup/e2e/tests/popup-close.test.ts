@@ -82,6 +82,12 @@ test.beforeAll(async () => {
             page.click("button[data-test='@submit-button']"),
         ]);
 
+        await popup.waitForSelector("button[data-test='@analytics/continue-button']", {
+            state: 'visible',
+            timeout: 40000,
+        });
+        await popup.click("button[data-test='@analytics/continue-button']");
+
         popupClosedPromise = new Promise(resolve => {
             popup.on('close', () => resolve(undefined));
         });

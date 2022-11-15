@@ -53,8 +53,8 @@ describe('Onboarding - T2 in recovery mode', () => {
         cy.resetDb();
         cy.viewport(1080, 1440);
         cy.prefixedVisit('/');
-        cy.getTestElement('@onboarding/continue-button').click();
-        cy.getTestElement('@onboarding/continue-button').click();
+        cy.getTestElement('@analytics/continue-button').click();
+        cy.getTestElement('@analytics/continue-button').click();
 
         cy.getTestElement('@firmware/skip-button').click();
 
@@ -78,7 +78,7 @@ describe('Onboarding - T2 in recovery mode', () => {
         // now suite has reloaded. database is wiped.
         cy.task('startEmu', { wipe: false, version: '2.4.3' });
         // analytics opt-out again
-        cy.getTestElement('@onboarding/continue-button').click();
+        cy.getTestElement('@analytics/continue-button').click();
         // recovery device persisted reload
         cy.getTestElement('@onboarding/confirm-on-device');
         cy.wait(1000);
