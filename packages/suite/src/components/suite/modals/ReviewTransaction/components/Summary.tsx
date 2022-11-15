@@ -2,14 +2,9 @@ import React from 'react';
 import styled from 'styled-components';
 import BigNumber from 'bignumber.js';
 import { transparentize, darken } from 'polished';
-import {
-    getFeeUnits,
-    getTitleForNetwork,
-    formatNetworkAmount,
-    formatAmount,
-} from '@suite-common/wallet-utils';
+import { getFeeUnits, formatNetworkAmount, formatAmount } from '@suite-common/wallet-utils';
 import { Icon, useTheme, CoinLogo, variables } from '@trezor/components';
-import { Translation, FormattedCryptoAmount } from '@suite-components';
+import { Translation, FormattedCryptoAmount, AccountLabel } from '@suite-components';
 import { Account, Network } from '@wallet-types';
 import { formatDuration, isFeatureFlagEnabled } from '@suite-common/suite-utils';
 import { PrecomposedTransactionFinal, TxFinalCardano } from '@wallet-types/sendForm';
@@ -214,7 +209,7 @@ const Summary = ({
     ) as string;
 
     const theme = useTheme();
-    const { symbol } = account;
+    const { symbol, metadata, accountType, index } = account;
 
     const { feePerByte } = tx;
     const spentWithoutFee = !tx.token ? new BigNumber(tx.totalSpent).minus(tx.fee).toString() : '';
@@ -226,22 +221,11 @@ const Summary = ({
     const isFeeCustom = drafts[currentAccountKey]?.selectedFee === 'custom';
     const isComposedFeeRateDifferent = isFeeCustom && formFeeRate !== feePerByte;
 
-    const accountLabel = account.metadata.accountLabel ? (
-        <span style={{ textOverflow: 'ellipsis', overflow: 'hidden' }}>
-            {account.metadata.accountLabel}
-        </span>
-    ) : (
-        <>
-            <Translation id={getTitleForNetwork(account.symbol)} />
-            <span>&nbsp;#{account.index + 1}</span>
-        </>
-    );
-
     return (
         <Wrapper>
             <SummaryHead>
                 <IconWrapper>
-                    <CoinLogo size={48} symbol={account.symbol} />
+                    <CoinLogo size={48} symbol={symbol} />
                     <NestedIconWrapper>
                         <Icon size={12} color={theme.TYPE_DARK_GREY} icon="SEND" />
                     </NestedIconWrapper>
@@ -258,7 +242,12 @@ const Summary = ({
                 </Headline>
                 <AccountWrapper>
                     <Icon size={12} color={theme.TYPE_DARK_GREY} icon="WALLET" />
-                    {accountLabel}
+                    <AccountLabel
+                        accountLabel={metadata?.accountLabel}
+                        accountType={accountType}
+                        symbol={symbol}
+                        index={index}
+                    />
                 </AccountWrapper>
             </SummaryHead>
             <Separator />

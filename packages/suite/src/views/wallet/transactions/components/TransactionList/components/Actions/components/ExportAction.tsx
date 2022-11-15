@@ -10,7 +10,7 @@ import { exportTransactionsThunk, fetchTransactionsThunk } from '@suite-common/w
 import { ExportFileType } from '@suite-common/wallet-types';
 import { Account } from '@wallet-types';
 import { isFeatureFlagEnabled } from '@suite-common/suite-utils';
-import { getTitleForNetwork } from '@suite-common/wallet-utils';
+import { getTitleForNetwork, getTitleForCoinJoinAccount } from '@suite-common/wallet-utils';
 
 export interface ExportActionProps {
     account: Account;
@@ -49,10 +49,12 @@ export const ExportAction = ({ account }: ExportActionProps) => {
                     recursive: true,
                 });
                 const accountName =
-                    account.metadata.accountLabel ||
-                    `${translationString(getTitleForNetwork(account.symbol))} #${
-                        account.index + 1
-                    }`;
+                    account.metadata.accountLabel || account.accountType === 'coinjoin'
+                        ? translationString(getTitleForCoinJoinAccount(account.symbol))
+                        : translationString('LABELING_ACCOUNT', {
+                              networkName: translationString(getTitleForNetwork(account.symbol)),
+                              index: account.index + 1,
+                          });
                 await exportTransactions({ account, accountName, type });
             } catch (error) {
                 console.error('Export transaction failed: ', error);

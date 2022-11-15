@@ -12,6 +12,7 @@ import {
     getFirstFreshAddress,
     getNetwork,
     getTitleForNetwork,
+    getTitleForCoinJoinAccount,
     getUtxoFromSignedTransaction,
     getNetworkFeatures,
     hasNetworkFeatures,
@@ -63,6 +64,14 @@ describe('account utils', () => {
         fixtures.accountTitleFixture.forEach((fixture: any) => {
             it(fixture.symbol, () => {
                 expect(getTitleForNetwork(fixture.symbol)).toBe(fixture.title);
+            });
+        });
+    });
+
+    describe('get title for coinjoin accounts', () => {
+        fixtures.accountTitleCoinjoinFixture.forEach((fixture: any) => {
+            it(fixture.symbol, () => {
+                expect(getTitleForCoinJoinAccount(fixture.symbol)).toBe(fixture.title);
             });
         });
     });
