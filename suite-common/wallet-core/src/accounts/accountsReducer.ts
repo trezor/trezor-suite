@@ -1,5 +1,5 @@
 import { createSelector, isAnyOf } from '@reduxjs/toolkit';
-import { A } from '@mobily/ts-belt';
+import { A, pipe } from '@mobily/ts-belt';
 
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import { enhanceHistory, isUtxoBased } from '@suite-common/wallet-utils';
@@ -173,4 +173,15 @@ export const selectAccountByDescriptor = createSelector(
     (_state: AccountsRootState, accountDescriptor: string) => accountDescriptor,
     (accounts, accountDescriptor): Account | null =>
         A.find(accounts, account => account.descriptor === accountDescriptor) ?? null,
+);
+
+export const selectAccountsAmountPerSymbol = createSelector(
+    selectAccounts,
+    (_state: AccountsRootState, networkSymbol: NetworkSymbol) => networkSymbol,
+    (accounts, networkSymbol): number =>
+        pipe(
+            accounts,
+            A.filter(account => account.symbol === networkSymbol),
+            A.length,
+        ),
 );

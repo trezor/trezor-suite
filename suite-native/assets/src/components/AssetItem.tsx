@@ -1,11 +1,13 @@
 import React from 'react';
 import { TouchableOpacity } from 'react-native';
+import { useSelector } from 'react-redux';
 
-import { CryptoIcon, CryptoIconName } from '@trezor/icons';
+import { CryptoIcon, CryptoIconName, Icon } from '@trezor/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { useFormatters } from '@suite-common/formatters';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { Box, Text } from '@suite-native/atoms';
+import { AccountsRootState, selectAccountsAmountPerSymbol } from '@suite-common/wallet-core';
 
 type AssetItemProps = {
     cryptoCurrencySymbol: NetworkSymbol;
@@ -29,6 +31,10 @@ const assetContentStyle = prepareNativeStyle(() => ({
     marginLeft: 10,
 }));
 
+const iconStyle = prepareNativeStyle(() => ({
+    marginRight: 6,
+}));
+
 export const AssetItem = ({
     cryptoCurrencySymbol,
     cryptoCurrencyValue,
@@ -38,6 +44,9 @@ export const AssetItem = ({
     onPress,
 }: AssetItemProps) => {
     const { applyStyle } = useNativeStyles();
+    const accountsPerAsset = useSelector((state: AccountsRootState) =>
+        selectAccountsAmountPerSymbol(state, cryptoCurrencySymbol),
+    );
     const { CryptoAmountFormatter, FiatAmountFormatter } = useFormatters();
 
     return (
@@ -45,13 +54,16 @@ export const AssetItem = ({
             <Box style={applyStyle(assetItemWrapperStyle)}>
                 <CryptoIcon name={iconName} size="large" />
                 <Box style={applyStyle(assetContentStyle)}>
-                    <Box
-                        flexDirection="row"
-                        flex={1}
-                        justifyContent="space-between"
-                        alignItems="center"
-                    >
+                    <Box flex={1} justifyContent="space-between" alignItems="flex-start">
                         <Text>{cryptoCurrencyName}</Text>
+                        <Box flexDirection="row" alignItems="center">
+                            <Box style={applyStyle(iconStyle)}>
+                                <Icon size="medium" color="gray600" name="standardWallet" />
+                            </Box>
+                            <Text variant="hint" color="gray600">
+                                {accountsPerAsset}
+                            </Text>
+                        </Box>
                     </Box>
                     <Box alignItems="flex-end">
                         <Text>{FiatAmountFormatter.format(fiatBalance)}</Text>
