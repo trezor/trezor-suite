@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
 
 import { atom, useAtom } from 'jotai';
@@ -55,10 +55,6 @@ export const AccountBalance = ({ accountKey }: AccountBalanceProps) => {
     const { FiatAmountFormatter, CryptoAmountFormatter, CurrencySymbolFormatter } = useFormatters();
 
     if (!account) return null;
-
-    useEffect(() => {
-        console.log(point.value);
-    }, [point.value]);
 
     // TODO this should be done with formatters once they're prepared
     const cryptoAmount = formatNetworkAmount(account.availableBalance, account.symbol);

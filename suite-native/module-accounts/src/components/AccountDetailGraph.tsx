@@ -11,9 +11,10 @@ import {
     LineGraphTimeFrameValues,
     selectAccountGraph,
 } from '@suite-common/wallet-graph';
-import { writeOnlySelectedPointAtom, writeOnlyReferencePointAtom } from '@suite-native/accounts';
 import { selectFiatCurrency } from '@suite-native/module-settings';
 import { Box, Divider } from '@suite-native/atoms';
+
+import { writeOnlyReferencePointAtom, writeOnlySelectedPointAtom } from './AccountBalance';
 
 type AccountDetailGraphProps = {
     accountKey: string;
@@ -31,7 +32,6 @@ export const AccountDetailGraph = ({ accountKey }: AccountDetailGraphProps) => {
     const enhancedPoints = useMemo(() => enhanceGraphPoints(points), [points]);
     const [_, setSelectedPoint] = useAtom(writeOnlySelectedPointAtom);
     const [__, setReferencePoint] = useAtom(writeOnlyReferencePointAtom);
-
     const lastPoint = A.last(enhancedPoints);
     const firstPoint = A.head(enhancedPoints);
 

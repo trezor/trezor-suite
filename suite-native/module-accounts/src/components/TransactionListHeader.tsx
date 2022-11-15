@@ -3,13 +3,13 @@ import { useSelector } from 'react-redux';
 
 import { useAtom } from 'jotai';
 
-import { AccountBalance } from '@suite-native/accounts';
 import { Box, Button, Divider, Text } from '@suite-native/atoms';
 import { AccountKey } from '@suite-common/suite-types';
 import { AccountsRootState, selectHasAccountTransactions } from '@suite-common/wallet-core';
 import { isSendReceiveActionsVisibleAtom } from '@suite-native/navigation';
 
 import { AccountDetailGraph } from './AccountDetailGraph';
+import { AccountBalance } from './AccountBalance';
 
 type AccountDetailHeaderProps = {
     accountKey: AccountKey;
