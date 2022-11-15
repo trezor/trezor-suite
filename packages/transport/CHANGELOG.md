@@ -1,3 +1,9 @@
+# 1.1.5
+
+-   Removed flowtype generation
+-   Added CoinJoinRequest message
+-   Cardano: Added support for [CIP36](https://cips.cardano.org/cips/cip36/) Catalyst registration format
+
 # 1.1.4
 
 -   Added cardano types related to [babbage feature](https://github.com/trezor/trezor-suite/commit/efe9c78a2f74a1b7653b3fddf6cca35ba38d3ae9#diff-c1b9d6a93a3b65c45c4dcf06aa86d6c7a84bcc2e14fefdc4a9bdc3d3298c9a5a)
