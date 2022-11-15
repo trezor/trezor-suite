@@ -47,7 +47,7 @@
     },
     "dependencies": {
         "@trezor/blockchain-link": "^2.1.5",
-        "@trezor/connect-common": "0.0.9",
+        "@trezor/connect-common": "0.0.10",
         "@trezor/transport": "^1.1.5",
         "@trezor/utils": "^9.0.3",
         "@trezor/utxo-lib": "^1.0.1",
