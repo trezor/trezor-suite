@@ -4,7 +4,7 @@ import { FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 
 import { analytics, EventType } from '@trezor/connect-analytics';
-import { createUiResponse, UI, UiEvent } from '@trezor/connect';
+import { createUiResponse, UI, UiEvent, PostMessage } from '@trezor/connect';
 import { variables, PassphraseTypeCard } from '@trezor/components';
 
 import { View } from '../components/View';
@@ -34,7 +34,7 @@ const Divider = styled.div`
 
 export type PassphraseEventProps = Extract<UiEvent, { type: 'ui-request_passphrase' }>;
 
-type PassphraseProps = PassphraseEventProps & { postMessage: any };
+type PassphraseProps = PassphraseEventProps & { postMessage: PostMessage };
 
 export const Passphrase = (props: PassphraseProps) => {
     const { device } = props.payload;

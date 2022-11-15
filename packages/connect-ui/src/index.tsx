@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 
-import { CoreMessage, UI } from '@trezor/connect';
+import { PostMessage, UI } from '@trezor/connect';
 
 // views
 import { Transport } from './views/Transport';
@@ -15,7 +15,7 @@ import { BottomRightFloatingBar } from './components/BottomRightFloatingBar';
 import { ConnectUIEventProps, reactEventBus } from './utils/eventBus';
 
 type ConnectUIProps = {
-    postMessage: (message: CoreMessage) => void;
+    postMessage: PostMessage;
     clearLegacyView: () => void;
 };
 

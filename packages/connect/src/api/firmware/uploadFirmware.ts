@@ -1,6 +1,6 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/helpers/uploadFirmware.js
 
-import { UI, DEVICE, createUiMessage, CoreMessage } from '../../events';
+import { UI, DEVICE, createUiMessage, PostMessage } from '../../events';
 import { PROTO, ERRORS } from '../../constants';
 import type { Device } from '../../device/Device';
 import type { TypedCall } from '../../device/DeviceCommands';
@@ -14,11 +14,7 @@ const postConfirmationMessage = (device: Device) => {
     }
 };
 
-const postProgressMessage = (
-    device: Device,
-    progress: number,
-    postMessage: (message: CoreMessage) => void,
-) => {
+const postProgressMessage = (device: Device, progress: number, postMessage: PostMessage) => {
     postMessage(
         createUiMessage(UI.FIRMWARE_PROGRESS, {
             device: device.toMessageObject(),
@@ -29,7 +25,7 @@ const postProgressMessage = (
 
 export const uploadFirmware = async (
     typedCall: TypedCall,
-    postMessage: (message: CoreMessage) => void,
+    postMessage: PostMessage,
     device: Device,
     { payload }: PROTO.FirmwareUpload,
 ) => {
