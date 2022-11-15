@@ -44,7 +44,7 @@
         "@suite-common/wallet-utils": "*",
         "@trezor/coinjoin": "*",
         "@trezor/components": "*",
-        "@trezor/connect": "9.0.3",
+        "@trezor/connect": "9.0.4",
         "@trezor/crypto-utils": "*",
         "@trezor/device-utils": "*",
         "@trezor/dom-utils": "*",

@@ -222,7 +222,7 @@
         "@suite-common/suite-types": "*",
         "@suite-common/suite-utils": "*",
         "@trezor/coinjoin": "*",
-        "@trezor/connect": "9.0.3",
+        "@trezor/connect": "9.0.4",
         "@trezor/connect-common": "*",
         "@trezor/ipc-proxy": "*",
         "@trezor/request-manager": "*",

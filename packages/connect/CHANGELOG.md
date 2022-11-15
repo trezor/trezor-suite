@@ -1,3 +1,13 @@
+# 9.0.4
+
+-   @trezor/blockchain-link 2.1.5
+-   added `setBusy` method
+-   added `goerli` (TGOR) coin support
+-   added `serialize` and `coinjoinRequest` option to `signTransaction` method
+-   added `preauthorized` option to `authorizeCoinJoin` method
+-   Cardano: added support for [CIP36 Catalyst registration format](https://cips.cardano.org/cips/cip36/) in `cardanoSignTransaction` method
+    -   `auxiliaryData.catalystRegistrationParameters` is deprecated, use `auxiliaryData.governanceRegistrationParameters` instead
+
 # 9.0.3
 
 -   typescript: removed `EosGetPublicKey` type, use `GetPublicKey` type instead

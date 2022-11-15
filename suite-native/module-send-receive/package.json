@@ -17,7 +17,7 @@
         "@suite-common/wallet-utils": "*",
         "@suite-native/accounts": "*",
         "@suite-native/atoms": "*",
-        "@trezor/connect": "9.0.3",
+        "@trezor/connect": "9.0.4",
         "@trezor/styles": "*",
         "@trezor/theme": "*",
         "react": "18.2.0",
