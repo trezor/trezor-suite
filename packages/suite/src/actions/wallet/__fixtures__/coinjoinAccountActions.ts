@@ -41,7 +41,10 @@ export const createCoinjoinAccount = [
             actions: [
                 '@coinjoin/client-enable',
                 '@coinjoin/client-enable-success',
+                '@coinjoin/account-preloading',
                 notificationsActions.addToast.type,
+                '@coinjoin/account-preloading',
+                '@coinjoin/client-disable',
             ],
         },
     },
@@ -65,7 +68,12 @@ export const createCoinjoinAccount = [
             bip43Path: "m/10025'/1'/i'/1'",
         },
         result: {
-            actions: [notificationsActions.addToast.type],
+            actions: [
+                '@coinjoin/account-preloading',
+                notificationsActions.addToast.type,
+                '@coinjoin/account-preloading',
+                '@coinjoin/client-disable',
+            ],
         },
     },
     {
@@ -97,8 +105,10 @@ export const createCoinjoinAccount = [
         },
         result: {
             actions: [
+                '@coinjoin/account-preloading',
                 accountsActions.createAccount.type,
                 '@coinjoin/account-create',
+                '@coinjoin/account-preloading',
                 accountsActions.startCoinjoinAccountSync.type,
                 accountsActions.endCoinjoinAccountSync.type,
             ],

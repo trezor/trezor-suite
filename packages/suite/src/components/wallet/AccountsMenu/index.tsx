@@ -122,17 +122,17 @@ type AccountsMenuProps = {
 };
 
 export const AccountsMenu = ({ isMenuInline }: AccountsMenuProps) => {
-    const theme = useTheme();
-    const { discovery, getDiscoveryStatus, isDiscoveryRunning } = useDiscovery();
-    const { device, accounts, selectedAccount } = useSelector(state => ({
-        device: state.suite.device,
-        accounts: state.wallet.accounts,
-        selectedAccount: state.wallet.selectedAccount,
-    }));
-    const { params } = selectedAccount;
+    const device = useSelector(state => state.suite.device);
+    const accounts = useSelector(state => state.wallet.accounts);
+    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
+    const coinjoinIsPreloading = useSelector(state => state.wallet.coinjoin.isPreloading);
+
     const [isExpanded, setIsExpanded] = useState(false);
     const [animatedIcon, setAnimatedIcon] = useState(false);
     const { coinFilter, searchString } = useAccountSearch();
+
+    const theme = useTheme();
+    const { discovery, getDiscoveryStatus, isDiscoveryRunning } = useDiscovery();
 
     const discoveryStatus = getDiscoveryStatus();
     const discoveryInProgress = discoveryStatus && discoveryStatus.status === 'loading';
@@ -157,14 +157,6 @@ export const AccountsMenu = ({ isMenuInline }: AccountsMenuProps) => {
             </Wrapper>
         );
     }
-
-    const keepOpen = (group: Account['accountType']) => params?.accountType === group;
-
-    const isSelected = (account: Account) =>
-        params &&
-        account.symbol === params.symbol &&
-        account.accountType === params.accountType &&
-        account.index === params.accountIndex;
 
     const failed = getFailedAccounts(discovery);
 
@@ -194,22 +186,41 @@ export const AccountsMenu = ({ isMenuInline }: AccountsMenuProps) => {
     const ledgerAccounts = filteredAccounts.filter(
         a => a.accountType === 'ledger' && (!a.empty || a.visible),
     );
-    // const uniqueNetworks = [...new Set(filteredAccounts.map(item => item.symbol))];
+
+    const { params } = selectedAccount;
+
+    const keepOpen = (type: Account['accountType']) =>
+        params?.accountType === type || // selected account is from this group
+        (type === 'coinjoin' && coinjoinIsPreloading) || // coinjoin account is requested but not yet created
+        (!!searchString && searchString.length > 0); // filter by search string is active
+
+    const isSelected = (account: Account) =>
+        params &&
+        account.symbol === params.symbol &&
+        account.accountType === params.accountType &&
+        account.index === params.accountIndex;
 
     const buildGroup = (type: Account['accountType'], accounts: Account[]) => {
         const groupHasBalance = accounts.some(account => account.availableBalance !== '0');
 
-        if (!accounts.length) {
-            // show skeleton in 'normal' group while we wait for a discovery of first account
-            return <>{discoveryInProgress && type === 'normal' && <AccountItemSkeleton />}</>;
+        if (
+            !accounts.length &&
+            type !== 'normal' &&
+            (type !== 'coinjoin' || !coinjoinIsPreloading)
+        ) {
+            // hide empty groups except normal and preloading coinjoin to show skeletons
+            return;
         }
+
+        const isSkeletonShown =
+            discoveryInProgress || (type === 'coinjoin' && coinjoinIsPreloading);
 
         return (
             <AccountGroup
                 key={`${device.state}-${type}`}
                 type={type}
                 hasBalance={groupHasBalance}
-                keepOpen={keepOpen(type) || (!!searchString && searchString.length > 0)}
+                keepOpen={keepOpen(type)}
             >
                 {accounts.map(account => {
                     const selected = !!isSelected(account);
@@ -224,7 +235,7 @@ export const AccountsMenu = ({ isMenuInline }: AccountsMenuProps) => {
                         />
                     );
                 })}
-                {discoveryInProgress && <AccountItemSkeleton />}
+                {isSkeletonShown && <AccountItemSkeleton />}
             </AccountGroup>
         );
     };

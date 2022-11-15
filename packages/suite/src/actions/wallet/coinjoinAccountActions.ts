@@ -15,8 +15,8 @@ import { CoinjoinClientService } from '@suite/services/coinjoin/coinjoinClient';
 import { COORDINATOR_FEE_RATE_MULTIPLIER } from '@suite/services/coinjoin/config';
 import { getRegisterAccountParams, getMaxRounds } from '@wallet-utils/coinjoinUtils';
 import { Dispatch, GetState } from '@suite-types';
-import { Network } from '@suite-common/wallet-config';
-import { Account, CoinjoinSessionParameters } from '@suite-common/wallet-types';
+import { Network, NetworkSymbol } from '@suite-common/wallet-config';
+import { Account, CoinjoinAccount, CoinjoinSessionParameters } from '@suite-common/wallet-types';
 import { accountsActions, transactionsActions } from '@suite-common/wallet-core';
 import {
     isAccountOutdated,
@@ -84,6 +84,14 @@ const coinjoinAccountUnregister = (accountKey: string) =>
         },
     } as const);
 
+const coinjoinAccountPreloading = (isPreloading: boolean) =>
+    ({
+        type: COINJOIN.ACCOUNT_PRELOADING,
+        payload: {
+            isPreloading,
+        },
+    } as const);
+
 const coinjoinSessionPause = (accountKey: string) =>
     ({
         type: COINJOIN.SESSION_PAUSE,
@@ -118,6 +126,7 @@ export type CoinjoinAccountAction =
     | ReturnType<typeof coinjoinAccountAuthorizeFailed>
     | ReturnType<typeof coinjoinAccountUnregister>
     | ReturnType<typeof coinjoinAccountDiscoveryProgress>
+    | ReturnType<typeof coinjoinAccountPreloading>
     | ReturnType<typeof coinjoinSessionPause>
     | ReturnType<typeof coinjoinSessionRestore>;
 
@@ -230,6 +239,46 @@ export const fetchAndUpdateAccount =
         }
     };
 
+const clearCoinjoinInstances = ({
+    networkSymbol,
+    coinjoinAccounts,
+    dispatch,
+}: {
+    networkSymbol: NetworkSymbol;
+    coinjoinAccounts: CoinjoinAccount[];
+    dispatch: Dispatch;
+}) => {
+    dispatch(coinjoinAccountPreloading(false));
+    const other = coinjoinAccounts.find(a => a.symbol === networkSymbol);
+    // clear CoinjoinClientInstance if there are no related accounts left
+    if (!other) {
+        dispatch(clientDisable(networkSymbol));
+        CoinjoinBackendService.removeInstance(networkSymbol);
+        CoinjoinClientService.removeInstance(networkSymbol);
+    }
+};
+
+const handleError = ({
+    error,
+    networkSymbol,
+    dispatch,
+    getState,
+}: {
+    error: string;
+    networkSymbol: NetworkSymbol;
+    dispatch: Dispatch;
+    getState: GetState;
+}) => {
+    dispatch(
+        notificationsActions.addToast({
+            type: 'error',
+            error,
+        }),
+    );
+    const coinjoinAccounts = getState().wallet.coinjoin.accounts;
+    clearCoinjoinInstances({ networkSymbol, coinjoinAccounts, dispatch });
+};
+
 export const createCoinjoinAccount =
     (network: Network, targetAnonymity: number) =>
     async (dispatch: Dispatch, getState: GetState) => {
@@ -252,6 +301,8 @@ export const createCoinjoinAccount =
             await CoinjoinBackendService.createInstance(network.symbol, coinjoinServerEnvironment);
         }
 
+        dispatch(coinjoinAccountPreloading(true));
+
         const { device } = getState().suite;
         const unlockPath = await TrezorConnect.unlockPath({
             path: "m/10025'",
@@ -259,12 +310,12 @@ export const createCoinjoinAccount =
             useEmptyPassphrase: device?.useEmptyPassphrase,
         });
         if (!unlockPath.success) {
-            dispatch(
-                notificationsActions.addToast({
-                    type: 'error',
-                    error: unlockPath.payload.error,
-                }),
-            );
+            handleError({
+                error: unlockPath.payload.error,
+                networkSymbol: network.symbol,
+                dispatch,
+                getState,
+            });
             return;
         }
 
@@ -279,12 +330,12 @@ export const createCoinjoinAccount =
             coin: network.symbol,
         });
         if (!publicKey.success) {
-            dispatch(
-                notificationsActions.addToast({
-                    type: 'error',
-                    error: publicKey.payload.error,
-                }),
-            );
+            handleError({
+                error: publicKey.payload.error,
+                networkSymbol: network.symbol,
+                dispatch,
+                getState,
+            });
             return;
         }
 
@@ -317,6 +368,8 @@ export const createCoinjoinAccount =
             ),
         );
         dispatch(coinjoinAccountCreate(account.payload, targetAnonymity));
+
+        dispatch(coinjoinAccountPreloading(false));
 
         // switch to account
         dispatch(
@@ -521,7 +574,7 @@ export const forgetCoinjoinAccounts =
     (accounts: Account[]) => (dispatch: Dispatch, getState: GetState) => {
         const { coinjoin } = getState().wallet;
         // find all accounts to unregister
-        const coinjoinNetworks = coinjoin.accounts.reduce((res, cjAccount) => {
+        const coinjoinNetworks = coinjoin.accounts.reduce<NetworkSymbol[]>((res, cjAccount) => {
             const account = accounts.find(a => a.key === cjAccount.key);
             if (account) {
                 if (cjAccount.session) {
@@ -533,18 +586,13 @@ export const forgetCoinjoinAccounts =
                 }
             }
             return res;
-        }, [] as Account['symbol'][]);
+        }, []);
 
         // get new state
-        const otherCjAccounts = getState().wallet.coinjoin.accounts;
-        coinjoinNetworks.forEach(network => {
-            const other = otherCjAccounts.find(a => a.symbol === network);
-            // clear CoinjoinClientInstance if there are no related accounts left
-            if (!other) {
-                dispatch(clientDisable(network));
-                CoinjoinBackendService.removeInstance(network);
-                CoinjoinClientService.removeInstance(network);
-            }
+        const coinjoinAccounts = getState().wallet.coinjoin.accounts;
+
+        coinjoinNetworks.forEach(networkSymbol => {
+            clearCoinjoinInstances({ networkSymbol, coinjoinAccounts, dispatch });
         });
     };
 
@@ -552,7 +600,7 @@ export const restoreCoinjoin = () => (dispatch: Dispatch, getState: GetState) =>
     const { accounts, coinjoin } = getState().wallet;
 
     // find all networks to restore
-    const coinjoinNetworks = coinjoin.accounts.reduce((res, cjAccount) => {
+    const coinjoinNetworks = coinjoin.accounts.reduce<NetworkSymbol[]>((res, cjAccount) => {
         const account = accounts.find(a => a.key === cjAccount.key);
         if (account) {
             // currently it is not possible to full restore session while using passphrase.
@@ -566,7 +614,7 @@ export const restoreCoinjoin = () => (dispatch: Dispatch, getState: GetState) =>
             }
         }
         return res;
-    }, [] as Account['symbol'][]);
+    }, []);
 
     // async actions in sequence
     // TODO: handle client init error and do not proceed after first failure
