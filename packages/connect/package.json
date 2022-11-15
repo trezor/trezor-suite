@@ -50,7 +50,7 @@
         "@trezor/connect-common": "0.0.9",
         "@trezor/transport": "^1.1.4",
         "@trezor/utils": "^9.0.3",
-        "@trezor/utxo-lib": "^1.0.0",
+        "@trezor/utxo-lib": "^1.0.1",
         "bignumber.js": "^9.1.0",
         "blakejs": "^1.2.1",
         "bowser": "^2.11.0",

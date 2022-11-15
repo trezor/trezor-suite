@@ -63,7 +63,7 @@
     },
     "dependencies": {
         "@trezor/utils": "^9.0.3",
-        "@trezor/utxo-lib": "^1.0.0",
+        "@trezor/utxo-lib": "^1.0.1",
         "@types/web": "^0.0.51",
         "bignumber.js": "^9.1.0",
         "events": "^3.3.0",
