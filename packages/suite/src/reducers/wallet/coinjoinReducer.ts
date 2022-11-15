@@ -30,6 +30,7 @@ export interface CoinjoinClientInstance {
 export interface CoinjoinState {
     accounts: CoinjoinAccount[];
     clients: PartialRecord<Account['symbol'], CoinjoinClientInstance>;
+    isPreloading?: boolean;
 }
 
 export type CoinjoinRootState = {
@@ -41,6 +42,7 @@ export type CoinjoinRootState = {
 const initialState: CoinjoinState = {
     accounts: [],
     clients: {},
+    isPreloading: false,
 };
 
 type ExtractActionPayload<A> = Extract<Action, { type: A }> extends { type: A; payload: infer P }
@@ -51,6 +53,7 @@ const createAccount = (
     draft: CoinjoinState,
     { account, targetAnonymity }: ExtractActionPayload<typeof COINJOIN.ACCOUNT_CREATE>,
 ) => {
+    draft.isPreloading = false;
     const exists = draft.accounts.find(a => a.key === account.key);
     if (exists) return;
     draft.accounts.push({
@@ -265,6 +268,9 @@ export const coinjoinReducer = (
                 break;
             case COINJOIN.ACCOUNT_DISCOVERY_PROGRESS:
                 saveCheckpoint(draft, action);
+                break;
+            case COINJOIN.ACCOUNT_PRELOADING:
+                draft.isPreloading = action.payload.isPreloading;
                 break;
 
             case COINJOIN.CLIENT_ENABLE_SUCCESS:
