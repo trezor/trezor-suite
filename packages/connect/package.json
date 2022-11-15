@@ -49,7 +49,7 @@
         "@trezor/blockchain-link": "^2.1.4",
         "@trezor/connect-common": "0.0.9",
         "@trezor/transport": "^1.1.4",
-        "@trezor/utils": "^9.0.2",
+        "@trezor/utils": "^9.0.3",
         "@trezor/utxo-lib": "^1.0.0",
         "bignumber.js": "^9.1.0",
         "blakejs": "^1.2.1",
