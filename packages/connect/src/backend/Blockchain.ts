@@ -4,7 +4,7 @@ import BlockchainLink, {
     BlockchainLinkParams,
     BlockchainLinkResponse,
 } from '@trezor/blockchain-link';
-import { createBlockchainMessage, BLOCKCHAIN } from '../events';
+import { createBlockchainMessage, BLOCKCHAIN, PostMessage } from '../events';
 import { ERRORS } from '../constants';
 import { getOnionDomain } from '../utils/urlUtils';
 import {
@@ -15,7 +15,6 @@ import {
 } from '../workers/workers';
 
 import type { CoinInfo, Proxy } from '../types';
-import type { CoreMessage } from '../events';
 
 const getWorker = (type: string) => {
     switch (type) {
@@ -34,7 +33,7 @@ const getWorker = (type: string) => {
 
 export type BlockchainOptions = {
     coinInfo: CoinInfo;
-    postMessage: (message: CoreMessage) => void;
+    postMessage: PostMessage;
     proxy?: Proxy;
     onionDomains?: { [domain: string]: string };
     debug?: boolean;

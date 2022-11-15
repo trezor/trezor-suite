@@ -27,6 +27,8 @@ export type CoreMessage = {
 
 export type PostMessageEvent = MessageEvent<CoreMessage>;
 
+export type PostMessage = (message: CoreMessage) => void;
+
 // parse MessageEvent .data into CoreMessage
 export const parseMessage = (messageData: any): CoreMessage => {
     const message: CoreMessage = {

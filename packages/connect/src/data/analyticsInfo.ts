@@ -9,11 +9,11 @@ import {
     getFirmwareType,
     getFirmwareVersion,
 } from '@trezor/device-utils';
-import { CoreMessage, UI_REQUEST } from '../events';
+import { CoreMessage, PostMessage, UI_REQUEST } from '../events';
 import type { Device } from '../device/Device';
 
 export const enhancePostMessageWithAnalytics = (
-    callback: (message: CoreMessage) => void,
+    callback: PostMessage,
     message: CoreMessage,
     data: { device?: Device },
 ) => {
