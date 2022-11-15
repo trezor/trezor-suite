@@ -28,7 +28,7 @@
         "@suite-native/graph": "*",
         "@suite-native/module-settings": "*",
         "@suite-native/navigation": "*",
-        "@trezor/connect": "9.0.3",
+        "@trezor/connect": "9.0.4",
         "@trezor/icons": "*",
         "@trezor/styles": "*",
         "@trezor/theme": "*",

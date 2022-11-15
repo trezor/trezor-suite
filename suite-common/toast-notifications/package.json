@@ -18,7 +18,7 @@
         "@suite-common/suite-types": "*",
         "@suite-common/test-utils": "*",
         "@suite-common/wallet-config": "*",
-        "@trezor/connect": "9.0.3"
+        "@trezor/connect": "9.0.4"
     },
     "devDependencies": {
         "jest": "^26.6.3",
