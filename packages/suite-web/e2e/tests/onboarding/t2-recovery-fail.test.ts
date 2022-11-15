@@ -8,8 +8,8 @@ describe('Onboarding - recover wallet T2', () => {
         cy.prefixedVisit('/');
         cy.task('startEmu', { wipe: true, version: '2.4.3' });
 
-        cy.getTestElement('@onboarding/continue-button').click();
-        cy.getTestElement('@onboarding/continue-button').click();
+        cy.getTestElement('@analytics/continue-button').click();
+        cy.getTestElement('@analytics/continue-button').click();
 
         cy.getTestElement('@firmware/skip-button').click();
 

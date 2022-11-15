@@ -54,8 +54,8 @@ describe('Test Guide', () => {
 
     it('In onboarding with device', () => {
         cy.task('startEmu', { wipe: true });
-        cy.getTestElement('@onboarding/continue-button').click();
-        cy.getTestElement('@onboarding/continue-button').click();
+        cy.getTestElement('@analytics/continue-button').click();
+        cy.getTestElement('@analytics/continue-button').click();
         cy.getTestElement('@guide/button-open').click();
         cy.getTestElement('@guide/panel').should('be.visible');
         cy.getTestElement('@guide/button-feedback').click();

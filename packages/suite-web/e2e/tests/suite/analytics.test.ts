@@ -31,7 +31,7 @@ describe('Analytics', () => {
         cy.getTestElement('@analytics/toggle-switch').find('input').should('be.checked');
         cy.getTestElement('@analytics/toggle-switch').click({ force: true });
         cy.getTestElement('@analytics/toggle-switch').find('input').should('not.be.checked');
-        cy.getTestElement('@onboarding/continue-button').click();
+        cy.getTestElement('@analytics/continue-button').click();
 
         // assert that only "analytics/dispose" event was fired
         cy.wait('@data-fetch');
@@ -114,7 +114,7 @@ describe('Analytics', () => {
 
         // pass through onboarding with enabled analytics
         cy.getTestElement('@analytics/toggle-switch').find('input').should('be.checked');
-        cy.getTestElement('@onboarding/continue-button').click();
+        cy.getTestElement('@analytics/continue-button').click();
 
         // assert that more than 1 event was fired and it was "suite/ready" and "analytics/enable" for sure
         cy.wait('@data-fetch');

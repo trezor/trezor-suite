@@ -14,11 +14,11 @@ describe('Onboarding - create wallet', () => {
 
         cy.getTestElement('@analytics/consent').should('have.css', 'opacity', '1');
         cy.getTestElement('@welcome-layout/body').matchImageSnapshot('1-onboarding-create-wallet');
-        cy.getTestElement('@onboarding/continue-button').click();
+        cy.getTestElement('@analytics/continue-button').click();
 
         cy.getTestElement('@components/collapsible-box').should('have.css', 'opacity', '1');
         cy.getTestElement('@welcome-layout/body').matchImageSnapshot('2-onboarding-create-wallet');
-        cy.getTestElement('@onboarding/continue-button').click();
+        cy.getTestElement('@analytics/continue-button').click();
 
         cy.getTestElement('@components/collapsible-box').should('have.css', 'opacity', '1');
 
@@ -77,8 +77,8 @@ describe('Onboarding - create wallet', () => {
     // cypress open todo: re-enable
     it.skip('Success (Shamir backup)', () => {
         cy.task('startEmu', { wipe: true });
-        cy.getTestElement('@onboarding/continue-button').click();
-        cy.getTestElement('@onboarding/continue-button').click();
+        cy.getTestElement('@analytics/continue-button').click();
+        cy.getTestElement('@analytics/continue-button').click();
         cy.getTestElement('@firmware/skip-button').click();
         cy.getTestElement('@onboarding/path-create-button').click();
 

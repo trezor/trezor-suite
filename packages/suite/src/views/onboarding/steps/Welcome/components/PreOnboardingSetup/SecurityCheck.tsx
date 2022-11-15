@@ -158,7 +158,7 @@ const SecurityCheck = () => {
                                         startTime: Date.now(),
                                     });
                                 }}
-                                data-test="@onboarding/continue-button"
+                                data-test="@analytics/continue-button"
                             >
                                 <Translation id="TR_ONBOARDING_START_CTA" />
                             </OnboardingButtonCta>
