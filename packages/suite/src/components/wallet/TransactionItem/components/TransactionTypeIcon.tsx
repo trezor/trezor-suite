@@ -6,12 +6,15 @@ import { getTxIcon } from '@suite-common/wallet-utils';
 
 const IconsWrapper = styled.div`
     position: relative;
+    width: 24px;
 `;
 
 const ClockIcon = styled(Icon)`
     position: absolute;
-    top: 0;
-    right: 1px;
+    top: -2px;
+    right: 0;
+    background: ${({ theme }) => theme.BG_WHITE};
+    border-radius: 50%;
 `;
 
 interface TransactionTypeIconProps extends Omit<IconProps, 'icon'> {
@@ -22,23 +25,16 @@ interface TransactionTypeIconProps extends Omit<IconProps, 'icon'> {
 export const TransactionTypeIcon = ({ type, isPending, ...rest }: TransactionTypeIconProps) => {
     const theme = useTheme();
 
-    const icon = (
-        <Icon
-            icon={getTxIcon(type)}
-            color={type === 'failed' ? theme.TYPE_RED : theme.TYPE_LIGHT_GREY}
-            size={24}
-            {...rest}
-        />
+    return (
+        <IconsWrapper {...rest}>
+            <Icon
+                icon={getTxIcon(type)}
+                color={type === 'failed' ? theme.TYPE_RED : theme.TYPE_LIGHT_GREY}
+                size={type === 'joint' ? 20 : 24}
+                {...rest}
+            />
+
+            {isPending && <ClockIcon icon="CLOCK" size={12} color={theme.TYPE_ORANGE} />}
+        </IconsWrapper>
     );
-
-    if (isPending) {
-        return (
-            <IconsWrapper {...rest}>
-                {icon}
-                <ClockIcon icon="CLOCK" size={12} color={theme.TYPE_ORANGE} />
-            </IconsWrapper>
-        );
-    }
-
-    return icon;
 };
