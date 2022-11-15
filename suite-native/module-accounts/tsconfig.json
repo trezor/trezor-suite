@@ -3,6 +3,9 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
+            "path": "../../suite-common/formatters"
+        },
+        {
             "path": "../../suite-common/suite-types"
         },
         {
