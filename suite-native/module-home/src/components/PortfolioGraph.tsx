@@ -11,9 +11,8 @@ import {
     selectDashboardGraph,
 } from '@suite-common/wallet-graph';
 import { enabledNetworks } from '@suite-native/config';
-import { Graph, TimeSwitch } from '@suite-native/graph';
+import { Graph, TimeSwitch, GraphError } from '@suite-native/graph';
 import { selectFiatCurrency } from '@suite-native/module-settings';
-import { GraphError } from '@suite-native/graph/src/components/GraphError';
 
 import {
     PortfolioGraphHeader,
