@@ -17,7 +17,11 @@ import { getRegisterAccountParams, getMaxRounds } from '@wallet-utils/coinjoinUt
 import { Dispatch, GetState } from '@suite-types';
 import { Network, NetworkSymbol } from '@suite-common/wallet-config';
 import { Account, CoinjoinAccount, CoinjoinSessionParameters } from '@suite-common/wallet-types';
-import { accountsActions, transactionsActions } from '@suite-common/wallet-core';
+import {
+    accountsActions,
+    selectAccountByKey,
+    transactionsActions,
+} from '@suite-common/wallet-core';
 import {
     isAccountOutdated,
     getAccountTransactions,
@@ -451,16 +455,23 @@ export const startCoinjoinSession =
     };
 
 // called from coinjoin account UI or exceptions like device disconnection, forget wallet/account etc.
-export const pauseCoinjoinSession = (account: Account) => (dispatch: Dispatch) => {
-    // get @trezor/coinjoin client if available
-    const client = getCoinjoinClient(account.symbol);
+export const pauseCoinjoinSession =
+    (accountKey: string) => (dispatch: Dispatch, getState: GetState) => {
+        const account = selectAccountByKey(getState(), accountKey);
 
-    // unregister account in @trezor/coinjoin
-    client?.unregisterAccount(account.key);
+        if (!account) {
+            return;
+        }
 
-    // dispatch data to reducer
-    dispatch(coinjoinSessionPause(account.key));
-};
+        // get @trezor/coinjoin client if available
+        const client = getCoinjoinClient(account.symbol);
+
+        // unregister account in @trezor/coinjoin
+        client?.unregisterAccount(accountKey);
+
+        // dispatch data to reducer
+        dispatch(coinjoinSessionPause(accountKey));
+    };
 
 export const pauseCoinjoinSessionByDeviceId =
     (deviceID: string) => (dispatch: Dispatch, getState: GetState) => {
@@ -496,10 +507,15 @@ export const pauseCoinjoinSessionByDeviceId =
 // use same parameters as in startCoinjoinSession but recalculate maxRounds value
 // if Trezor is already preauthorized it will not ask for confirmation
 export const restoreCoinjoinSession =
-    (account: Account) => async (dispatch: Dispatch, getState: GetState) => {
+    (accountKey: string) => async (dispatch: Dispatch, getState: GetState) => {
         // TODO: check if device is connected, passphrase is authorized...
         const { device } = getState().suite;
         const { coinjoin } = getState().wallet;
+        const account = selectAccountByKey(getState(), accountKey);
+
+        if (!account) {
+            return;
+        }
 
         // get @trezor/coinjoin client if available
         const client = getCoinjoinClient(account.symbol);
@@ -556,35 +572,47 @@ export const restoreCoinjoinSession =
     };
 
 // called from coinjoin account UI or exceptions like device disconnection, forget wallet/account etc.
-export const stopCoinjoinSession = (account: Account) => (dispatch: Dispatch) => {
-    // get @trezor/coinjoin client if available
-    const client = getCoinjoinClient(account.symbol);
-    if (!client) {
-        return;
-    }
+export const stopCoinjoinSession =
+    (accountKey: string) => (dispatch: Dispatch, getState: GetState) => {
+        const account = selectAccountByKey(getState(), accountKey);
 
-    // unregister account in @trezor/coinjoin
-    client.unregisterAccount(account.key);
+        if (!account) {
+            return;
+        }
 
-    // dispatch data to reducer
-    dispatch(coinjoinAccountUnregister(account.key));
-};
+        // get @trezor/coinjoin client if available
+        const client = getCoinjoinClient(account.symbol);
+        if (!client) {
+            return;
+        }
+
+        // unregister account in @trezor/coinjoin
+        client.unregisterAccount(account.key);
+
+        // dispatch data to reducer
+        dispatch(coinjoinAccountUnregister(account.key));
+    };
 
 export const forgetCoinjoinAccounts =
     (accounts: Account[]) => (dispatch: Dispatch, getState: GetState) => {
         const { coinjoin } = getState().wallet;
+
         // find all accounts to unregister
         const coinjoinNetworks = coinjoin.accounts.reduce<NetworkSymbol[]>((res, cjAccount) => {
             const account = accounts.find(a => a.key === cjAccount.key);
+
             if (account) {
                 if (cjAccount.session) {
-                    dispatch(stopCoinjoinSession(account));
+                    dispatch(stopCoinjoinSession(cjAccount.key));
                 }
+
                 dispatch(coinjoinAccountRemove(cjAccount.key));
+
                 if (!res.includes(cjAccount.symbol)) {
                     return res.concat(cjAccount.symbol);
                 }
             }
+
             return res;
         }, []);
 
@@ -602,17 +630,19 @@ export const restoreCoinjoin = () => (dispatch: Dispatch, getState: GetState) =>
     // find all networks to restore
     const coinjoinNetworks = coinjoin.accounts.reduce<NetworkSymbol[]>((res, cjAccount) => {
         const account = accounts.find(a => a.key === cjAccount.key);
+
         if (account) {
             // currently it is not possible to full restore session while using passphrase.
             // related to @trezor/connect and inner-outer state
             if (cjAccount.session) {
-                dispatch(pauseCoinjoinSession(account));
+                dispatch(pauseCoinjoinSession(cjAccount.key));
             }
 
             if (!res.includes(account.symbol)) {
                 return res.concat(account.symbol);
             }
         }
+
         return res;
     }, []);
 

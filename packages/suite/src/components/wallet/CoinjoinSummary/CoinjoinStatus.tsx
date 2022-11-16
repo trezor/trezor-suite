@@ -12,7 +12,6 @@ import {
 import { CoinjoinSession } from '@suite-common/wallet-types';
 import { Translation } from '@suite-components/Translation';
 import { CountdownTimer } from '@suite-components';
-import { selectAccountByKey } from '@suite-common/wallet-core';
 import { COINJOIN_PHASE_MESSAGES } from '@suite-constants/coinjoin';
 import {
     calculateSessionProgress,
@@ -25,7 +24,6 @@ import {
     restoreCoinjoinSession,
     stopCoinjoinSession,
 } from '@wallet-actions/coinjoinAccountActions';
-import { useSelector } from '@suite-hooks/useSelector';
 
 const Container = styled.div`
     position: relative;
@@ -138,7 +136,6 @@ interface CoinjoinStatusProps {
 }
 
 export const CoinjoinStatus = ({ session, accountKey }: CoinjoinStatusProps) => {
-    const account = useSelector(state => selectAccountByKey(state, accountKey));
     const [isLoading, setIsLoading] = useState(false);
     const [isWheelHovered, setIsWheelHovered] = useState(false);
 
@@ -154,12 +151,12 @@ export const CoinjoinStatus = ({ session, accountKey }: CoinjoinStatusProps) => 
     const togglePause = useCallback(async () => {
         if (isPaused) {
             setIsLoading(true);
-            await dispatch(restoreCoinjoinSession(account!));
+            await dispatch(restoreCoinjoinSession(accountKey));
             setIsLoading(false);
         } else {
-            dispatch(pauseCoinjoinSession(account!));
+            dispatch(pauseCoinjoinSession(accountKey));
         }
-    }, [isPaused, dispatch, account]);
+    }, [isPaused, dispatch, accountKey]);
 
     const menuItems = useMemo<Array<GroupedMenuItems>>(
         () => [
@@ -211,14 +208,14 @@ export const CoinjoinStatus = ({ session, accountKey }: CoinjoinStatusProps) => 
                         ),
                         callback: () => {
                             menuRef.current?.close();
-                            dispatch(stopCoinjoinSession(account!));
+                            dispatch(stopCoinjoinSession(accountKey));
                         },
                         'data-test': `@coinjoin/cancel`,
                     },
                 ],
             },
         ],
-        [isPaused, togglePause, isLoading, dispatch, account],
+        [isPaused, togglePause, isLoading, dispatch, accountKey],
     );
 
     const iconConfig = {

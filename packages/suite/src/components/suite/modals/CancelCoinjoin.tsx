@@ -1,11 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Button } from '@trezor/components';
-import { SelectedAccountLoaded } from '@suite-common/wallet-types';
-import { useActions } from '@suite-hooks/useActions';
-import * as coinjoinAccountActions from '@wallet-actions/coinjoinAccountActions';
 import { useSelector } from '@suite-hooks/useSelector';
 import { Modal, Translation } from '..';
+import { selectSelectedAccount } from '@wallet-reducers/selectedAccountReducer';
+import { useDispatch } from 'react-redux';
+import { stopCoinjoinSession } from '@wallet-actions/coinjoinAccountActions';
 
 const StyledModal = styled(Modal)`
     width: 430px;
@@ -29,11 +29,13 @@ interface CancelCoinjoinProps {
 }
 
 export const CancelCoinjoin = ({ onClose }: CancelCoinjoinProps) => {
-    const { account } = useSelector(state => state.wallet.selectedAccount) as SelectedAccountLoaded;
+    const account = useSelector(selectSelectedAccount);
 
-    const { stopCoinjoinSession } = useActions({
-        stopCoinjoinSession: coinjoinAccountActions.stopCoinjoinSession,
-    });
+    const dispatch = useDispatch();
+
+    if (!account) {
+        return null;
+    }
 
     return (
         <StyledModal
@@ -48,7 +50,7 @@ export const CancelCoinjoin = ({ onClose }: CancelCoinjoinProps) => {
                     <StyledButton
                         variant="danger"
                         onClick={() => {
-                            stopCoinjoinSession(account);
+                            dispatch(stopCoinjoinSession(account.key));
                             onClose();
                         }}
                     >
