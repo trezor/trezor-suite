@@ -31,10 +31,14 @@ export type BlockFilter = {
     blockTime: number;
 };
 
-export type BlockFilterResponse = {
-    bestHeight: number;
-    filters: BlockFilter[];
-};
+export type BlockFilterResponse =
+    | { status: 'up-to-date' }
+    | { status: 'not-found' }
+    | {
+          status: 'ok';
+          bestHeight: number;
+          filters: BlockFilter[];
+      };
 
 type MethodContext = {
     client: CoinjoinBackendClient;

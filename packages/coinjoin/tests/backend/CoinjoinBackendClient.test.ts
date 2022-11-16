@@ -17,23 +17,23 @@ describe.skip('CoinjoinBackendClient', () => {
     });
 
     it('fetchFilters success', async () => {
-        const { filters } = await client.fetchFilters(ZERO_HASH, 10);
-        expect(filters.length).toBe(10);
+        const response = await client.fetchFilters(ZERO_HASH, 10);
+        expect(response.status).toBe('ok');
+        expect((response as any).filters.length).toBe(10);
     });
 
     it('fetchFilters tip', async () => {
-        const { filters } = await client.fetchFilters(TIP_HASH, 10);
-        expect(filters.length).toBe(0);
+        const { status } = await client.fetchFilters(TIP_HASH, 10);
+        expect(status).toBe('up-to-date');
+    });
+
+    it('fetchFilters not found', async () => {
+        const { status } = await client.fetchFilters(NONEXISTENT_HASH, 10);
+        expect(status).toBe('not-found');
     });
 
     it('fetchFilters bad params', async () => {
         await expect(client.fetchFilters(TIP_HASH, -1)).rejects.toThrow(/^400:/);
-    });
-
-    it('fetchFilters not found', async () => {
-        await expect(client.fetchFilters(NONEXISTENT_HASH, 10)).rejects.toThrow(
-            new RegExp(`404:.*${NONEXISTENT_HASH}`),
-        );
     });
 
     it('fetchFilters malformed', async () => {

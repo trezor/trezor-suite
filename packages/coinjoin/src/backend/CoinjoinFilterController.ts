@@ -36,9 +36,10 @@ export class CoinjoinFilterController implements FilterController {
             { signal: context?.abortSignal },
         );
 
-        const firstBlockHeight = filterBatch.filters[0]?.blockHeight;
+        const firstBlockHeight =
+            filterBatch.status === 'ok' ? filterBatch.filters[0]?.blockHeight : -1;
 
-        while (filterBatch.filters.length) {
+        while (filterBatch.status === 'ok') {
             const { bestHeight, filters } = filterBatch;
             const progressBatchSize = this.getProgressBatchSize(firstBlockHeight, bestHeight);
             for (let i = 0; i < filters.length; ++i) {
@@ -60,6 +61,10 @@ export class CoinjoinFilterController implements FilterController {
                 filterBatchSize,
                 { signal: context?.abortSignal },
             );
+        }
+
+        if (filterBatch.status === 'not-found') {
+            throw new Error('Block not found');
         }
     }
 }
