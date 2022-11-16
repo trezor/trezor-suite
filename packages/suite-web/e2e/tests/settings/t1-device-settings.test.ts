@@ -72,3 +72,5 @@ describe('T1 - Device settings', () => {
     // TODO: keyboard handling
     // TODO: set auto-lock (needs pin)
 });
+
+export {};

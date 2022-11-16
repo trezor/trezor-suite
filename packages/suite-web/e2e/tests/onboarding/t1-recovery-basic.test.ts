@@ -42,3 +42,5 @@ describe.skip('Onboarding - recover wallet T1', () => {
         cy.getTestElement('@onboarding/final');
     });
 });
+
+export {};

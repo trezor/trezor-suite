@@ -53,3 +53,5 @@ describe.skip('Passphrase - legacy flow', () => {
         cy.getTestElement('@modal/confirm-address/address-field');
     });
 });
+
+export {};

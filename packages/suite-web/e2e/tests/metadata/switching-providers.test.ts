@@ -61,3 +61,5 @@ describe(`Metadata - switching between cloud providers`, () => {
         cy.getTestElement('@account-menu/btc/normal/0/label').should('contain', 'google label');
     });
 });
+
+export {};

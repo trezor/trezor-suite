@@ -50,3 +50,5 @@ describe('Settings changes persist when device disconnected', () => {
         cy.getTestElement('@account-menu/eth/normal/0').should('be.visible');
     });
 });
+
+export {};

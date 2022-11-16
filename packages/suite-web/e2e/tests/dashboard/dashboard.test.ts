@@ -48,3 +48,5 @@ describe('Dashboard', () => {
     // QA todo: test for graph
     // QA todo: dashboard appearance for seed with tx history vs seed without tx history
 });
+
+export {};

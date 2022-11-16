@@ -61,3 +61,5 @@ describe('Export transactions', () => {
         });
     });
 });
+
+export {};

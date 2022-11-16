@@ -65,3 +65,5 @@ describe('Test Guide', () => {
         });
     });
 });
+
+export {};

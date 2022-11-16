@@ -95,3 +95,5 @@ describe('safety_checks Warning For PromptTemporarily', () => {
         cy.getTestElement('@banner/safety-checks/button');
     });
 });
+
+export {};

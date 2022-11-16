@@ -46,3 +46,5 @@ describe('Onboarding - recover wallet T1', () => {
         // todo: finish reading from device. needs support in trezor-user-env
     });
 });
+
+export {};

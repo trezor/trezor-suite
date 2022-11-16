@@ -35,3 +35,5 @@ describe('Coinmarket', () => {
         // todo: spend
     });
 });
+
+export {};

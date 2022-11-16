@@ -113,3 +113,5 @@ describe('Metadata - wallet labeling', () => {
         });
     });
 });
+
+export {};

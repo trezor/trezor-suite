@@ -90,3 +90,5 @@ describe('Custom-blockbook-discovery', () => {
         cy.getTestElement('@dashboard/graph').should('exist');
     });
 });
+
+export {};

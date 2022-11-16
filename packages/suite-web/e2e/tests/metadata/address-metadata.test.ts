@@ -43,3 +43,5 @@ describe('Metadata - address labeling', () => {
         cy.getTestElement('@metadata/input').type(' meoew meow{enter}');
     });
 });
+
+export {};

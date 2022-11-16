@@ -70,3 +70,5 @@ describe('Safety Checks Settings', () => {
             });
     });
 });
+
+export {};

@@ -112,3 +112,5 @@ describe.skip('Passphrase', () => {
         cy.getTestElement('@menu/switch-device').should('contain', 'Hidden wallet #1');
     });
 });
+
+export {};

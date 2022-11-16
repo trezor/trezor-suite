@@ -30,3 +30,5 @@ describe('Suite initial run', () => {
         cy.discoveryShouldFinish();
     });
 });
+
+export {};

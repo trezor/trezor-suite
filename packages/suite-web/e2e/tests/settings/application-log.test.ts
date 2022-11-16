@@ -27,3 +27,5 @@ describe('ApplicationLog', () => {
         // todo: check it really exports something;
     });
 });
+
+export {};

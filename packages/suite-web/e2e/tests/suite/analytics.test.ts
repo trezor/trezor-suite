@@ -157,3 +157,5 @@ describe('Analytics', () => {
         });
     });
 });
+
+export {};

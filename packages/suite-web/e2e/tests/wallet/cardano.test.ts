@@ -73,3 +73,5 @@ describe('Cardano', () => {
         cy.getTestElement('@app').matchImageSnapshot('staking-not-enabled');
     });
 });
+
+export {};

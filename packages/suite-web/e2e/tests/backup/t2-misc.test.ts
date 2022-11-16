@@ -67,3 +67,5 @@ describe('Backup misc', () => {
         cy.getTestElement('@backup/no-device');
     });
 });
+
+export {};

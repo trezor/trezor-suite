@@ -74,3 +74,5 @@ describe('Sign and verify', () => {
         cy.getTestElement('@toast/verify-message-success');
     });
 });
+
+export {};

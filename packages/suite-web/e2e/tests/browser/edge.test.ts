@@ -32,3 +32,5 @@ describe('Windows 10 with edge browser ', () => {
         cy.getTestElement('@welcome/title');
     });
 });
+
+export {};

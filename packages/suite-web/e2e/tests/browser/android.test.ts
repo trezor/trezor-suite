@@ -30,3 +30,5 @@ describe('Android with non-chrome browser', () => {
         cy.getTestElement('@welcome/title');
     });
 });
+
+export {};

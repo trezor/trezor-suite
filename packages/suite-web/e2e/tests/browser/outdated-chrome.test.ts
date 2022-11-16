@@ -32,3 +32,5 @@ describe('Windows 7 with outdated chrome ', () => {
         cy.getTestElement('@welcome/title');
     });
 });
+
+export {};

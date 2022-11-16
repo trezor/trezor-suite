@@ -59,3 +59,5 @@ describe('LTC send form with mocked blockbook', () => {
         );
     });
 });
+
+export {};
