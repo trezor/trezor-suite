@@ -24,7 +24,7 @@ import type {
     CurrencyOption,
 } from '@suite-common/wallet-types';
 
-import { amountToSatoshi, networkAmountToSatoshi } from './accountUtils';
+import { amountToSatoshi, getUtxoOutpoint, networkAmountToSatoshi } from './accountUtils';
 import { sanitizeHex } from './ethUtils';
 
 export const calculateTotal = (amount: string, fee: string): string => {
@@ -430,4 +430,34 @@ export const buildCurrencyOptions = (selected: CurrencyOption) => {
     });
 
     return result;
+};
+
+export const getExcludedUtxos = (
+    account: Account,
+    dustLimit?: number,
+    targetAnonymity?: number,
+) => {
+    // exclude utxos from default composeTransaction process (see sendFormBitcoinActions)
+    // utxos are stored as dictionary where:
+    // `key` is an outpoint (string combination of utxo.txid + utxo.vout)
+    // `value` is the reason
+    // utxos might be spent using CoinControl feature
+    const excludedUtxos: UseSendFormState['excludedUtxos'] = {};
+    const anonymitySet = account.addresses?.anonymitySet || {};
+    account.utxo?.forEach(utxo => {
+        const outpoint = getUtxoOutpoint(utxo);
+        const anonymity = anonymitySet[utxo.address] || 1;
+        if (new BigNumber(utxo.amount).lte(Number(dustLimit))) {
+            // is lower than dust limit
+            excludedUtxos[outpoint] = 'dust';
+        } else if (anonymity < (targetAnonymity || 1)) {
+            // didn't reach desired anonymity (coinjoin account)
+            excludedUtxos[outpoint] = 'low-anonymity';
+        } else if (!utxo.confirmations) {
+            // is unconfirmed
+            // TODO: this is a new feature
+            // excludedUtxos[outpoint] = 'unconfirmed';
+        }
+    });
+    return excludedUtxos;
 };

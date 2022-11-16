@@ -13,13 +13,14 @@ import { useAsyncDebounce } from '@trezor/react-utils';
 import { useActions } from '@suite-hooks';
 import { isChanged } from '@suite-utils/comparisonUtils';
 import * as sendFormActions from '@wallet-actions/sendFormActions';
-import { findComposeErrors } from '@suite-common/wallet-utils';
+import { findComposeErrors, getExcludedUtxos } from '@suite-common/wallet-utils';
 
 type Props = UseFormMethods<FormState> & {
     state: UseSendFormState;
     account: UseSendFormState['account']; // account from the component props !== state.account
     updateContext: SendContextValues['updateContext'];
     setAmount: (index: number, amount: string) => void;
+    targetAnonymity?: number;
 };
 
 // This hook should be used only as a sub-hook of `useSendForm`
@@ -33,6 +34,7 @@ export const useSendFormCompose = ({
     account,
     updateContext,
     setAmount,
+    targetAnonymity,
 }: Props) => {
     const [composedLevels, setComposedLevels] =
         useState<SendContextValues['composedLevels']>(undefined);
@@ -242,8 +244,9 @@ export const useSendFormCompose = ({
     );
 
     // handle props.account change:
-    // - update context state (state.account)
+    // - update context state (state.account, state.excludedUtxos)
     // - compose transaction with new data
+    // excludedUtxos need to be updated in case a new UTXO appears
     useEffect(() => {
         if (
             !isChanged(
@@ -255,9 +258,11 @@ export const useSendFormCompose = ({
             return; // account didn't change
         }
         if (!state.isDirty) {
-            // there was no interaction with the form, just update state.account
-            console.log('returning because no interaction');
-            updateContext({ account });
+            // there was no interaction with the form, just update account and excludedUtxos
+            updateContext({
+                account,
+                excludedUtxos: getExcludedUtxos(account, state.feeInfo.dustLimit, targetAnonymity),
+            });
             return;
         }
 
@@ -273,8 +278,21 @@ export const useSendFormCompose = ({
             clearErrors(composeErrors);
         }
         // start composing
-        updateContext({ account, isLoading: true });
-    }, [state.account, state.isDirty, account, clearErrors, errors, updateContext]);
+        updateContext({
+            account,
+            excludedUtxos: getExcludedUtxos(account, state.feeInfo.dustLimit, targetAnonymity),
+            isLoading: true,
+        });
+    }, [
+        state.account,
+        state.feeInfo.dustLimit,
+        state.isDirty,
+        account,
+        clearErrors,
+        errors,
+        targetAnonymity,
+        updateContext,
+    ]);
 
     return {
         composeDraft,
