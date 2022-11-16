@@ -1,8 +1,10 @@
 import React, { forwardRef, useCallback, useMemo } from 'react';
 import { CoinLogo, variables } from '@trezor/components';
 import styled from 'styled-components';
+import { isTestnet } from '@suite-common/wallet-utils';
 import { AccountLabel, FiatValue } from '@suite-components';
-import { useActions } from '@suite-hooks';
+import { Stack, SkeletonRectangle } from '@suite-components/Skeleton';
+import { useActions, useLoadingSkeleton } from '@suite-hooks';
 import { CoinBalance } from '@wallet-components';
 import { Account } from '@wallet-types';
 import * as routerActions from '@suite-actions/routerActions';
@@ -111,6 +113,8 @@ export const AccountItem = forwardRef(
             goto: routerActions.goto,
         });
 
+        const { shouldAnimate } = useLoadingSkeleton();
+
         const { accountType, formattedBalance, index, metadata, networkType, symbol, tokens } =
             account;
 
@@ -132,8 +136,12 @@ export const AccountItem = forwardRef(
             [accountRouteParams, closeMenu, goto],
         );
 
+        // Tokens tab is available for ethereum and cardano accounts only, not yet implemented for XRP
         const isTokensCountShown =
             ['cardano', 'ethereum'].includes(networkType) && !!tokens?.length;
+
+        // Show skeleton instead of zero balance during CoinJoin initial discovery
+        const isBalanceShown = account.backendType !== 'coinjoin' || account.status !== 'initial';
 
         const dataTestKey = `@account-menu/${symbol}/${accountType}/${index}`;
 
@@ -160,25 +168,51 @@ export const AccountItem = forwardRef(
                                 />
                             </AccountName>
                         </Row>
-                        <Row>
-                            <Balance>
-                                <CoinBalance value={formattedBalance} symbol={symbol} />
-                            </Balance>
-                            {isTokensCountShown && (
-                                <TokensCount count={tokens.length} onClick={handleClickOnTokens} />
-                            )}
-                        </Row>
-                        <Row>
-                            <FiatValue
-                                amount={formattedBalance}
-                                symbol={symbol}
-                                showApproximationIndicator
-                            >
-                                {({ value }) =>
-                                    value ? <FiatValueWrapper>{value}</FiatValueWrapper> : null
-                                }
-                            </FiatValue>
-                        </Row>
+                        {isBalanceShown && (
+                            <>
+                                <Row>
+                                    <Balance>
+                                        <CoinBalance value={formattedBalance} symbol={symbol} />
+                                    </Balance>
+                                    {isTokensCountShown && (
+                                        <TokensCount
+                                            count={tokens.length}
+                                            onClick={handleClickOnTokens}
+                                        />
+                                    )}
+                                </Row>
+                                <Row>
+                                    <FiatValue
+                                        amount={formattedBalance}
+                                        symbol={symbol}
+                                        showApproximationIndicator
+                                    >
+                                        {({ value }) =>
+                                            value ? (
+                                                <FiatValueWrapper>{value}</FiatValueWrapper>
+                                            ) : null
+                                        }
+                                    </FiatValue>
+                                </Row>
+                            </>
+                        )}
+                        {!isBalanceShown && (
+                            <Stack col margin="6px 0px 0px 0px" childMargin="0px 0px 8px 0px">
+                                <SkeletonRectangle
+                                    width="100px"
+                                    height="16px"
+                                    animate={shouldAnimate}
+                                />
+
+                                {!isTestnet(account.symbol) && (
+                                    <SkeletonRectangle
+                                        width="100px"
+                                        height="16px"
+                                        animate={shouldAnimate}
+                                    />
+                                )}
+                            </Stack>
+                        )}
                     </Right>
                 </AccountHeader>
             </Wrapper>

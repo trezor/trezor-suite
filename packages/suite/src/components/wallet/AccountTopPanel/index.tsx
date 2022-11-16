@@ -1,5 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
+import { NetworkSymbol } from '@suite-common/wallet-config';
+import { Account } from '@wallet-types';
 import { CoinLogo, H1, H3 } from '@trezor/components';
 import {
     Ticker,
@@ -29,32 +31,45 @@ const FiatBalanceWrapper = styled(H3)`
 
 interface AccountTopPanelSkeletonProps {
     animate?: boolean;
+    account?: Account;
+    symbol?: NetworkSymbol;
 }
 
-const AccountTopPanelSkeleton = ({ animate }: AccountTopPanelSkeletonProps) => (
+const AccountTopPanelSkeleton = ({ animate, account, symbol }: AccountTopPanelSkeletonProps) => (
     <AppNavigationPanel
         maxWidth="small"
-        title={<SkeletonRectangle width="260px" height="28px" animate={animate} />}
+        title={
+            account ? (
+                <AccountLabeling account={account} />
+            ) : (
+                <SkeletonRectangle width="260px" height="28px" animate={animate} />
+            )
+        }
         navigation={<AccountNavigation />}
     >
         <Stack margin="6px 0px 0px 0px" childMargin="0px 0px 8px 0px">
-            <SkeletonCircle size="24px" />
+            {symbol ? <CoinLogo size={24} symbol={symbol} /> : <SkeletonCircle size="24px" />}
 
             <Balance noMargin>
-                <SkeletonRectangle width="160px" height="24px" />
+                <SkeletonRectangle width="160px" height="24px" animate={animate} />
             </Balance>
         </Stack>
     </AppNavigationPanel>
 );
 
 export const AccountTopPanel = () => {
-    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
+    const { account, loader, status } = useSelector(state => state.wallet.selectedAccount);
 
-    if (selectedAccount.status !== 'loaded') {
-        return <AccountTopPanelSkeleton animate={selectedAccount.loader === 'account-loading'} />;
+    if (status !== 'loaded' || !account) {
+        return (
+            <AccountTopPanelSkeleton
+                animate={loader === 'account-loading'}
+                account={account}
+                symbol={account?.symbol}
+            />
+        );
     }
 
-    const { account } = selectedAccount;
     const { symbol, formattedBalance } = account;
 
     return (
