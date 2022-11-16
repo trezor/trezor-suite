@@ -27,7 +27,10 @@ export const submitRequestForm = async (
     if (formMethod === 'IFRAME') return;
 
     if (formMethod === 'GET' && formAction) {
-        window.open(formAction, isDesktop() ? '_blank' : formTarget);
+        setTimeout(() => {
+            // slightly delay opening of the new page, Suite Web may not complete storing data do DB otherwise
+            window.open(formAction, isDesktop() ? '_blank' : formTarget);
+        }, 100);
         return;
     }
 

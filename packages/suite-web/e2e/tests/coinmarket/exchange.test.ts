@@ -1,6 +1,6 @@
 // @group:coinmarket
 
-describe('Coinmarket exchange', () => {
+describe.skip('Coinmarket exchange', () => {
     beforeEach(() => {
         cy.task('startEmu', { wipe: true });
         cy.task('setupEmu', {

@@ -210,6 +210,7 @@ const VerifyAddressComponent = () => {
                     <Button
                         isLoading={callInProgress}
                         isDisabled={callInProgress}
+                        data-test="@coinmarket/buy/offers/confirm-on-trezor-button"
                         onClick={() => {
                             if (accountAddress && address) {
                                 verifyAddress(account, address, accountAddress.path);
@@ -223,6 +224,7 @@ const VerifyAddressComponent = () => {
                     <Button
                         isLoading={callInProgress}
                         isDisabled={callInProgress}
+                        data-test="@coinmarket/buy/offers/finish-transaction-button"
                         onClick={() => goToPayment(address)}
                     >
                         <Translation id="TR_BUY_GO_TO_PAYMENT" />

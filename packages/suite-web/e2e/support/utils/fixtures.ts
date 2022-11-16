@@ -7,4 +7,5 @@ export const fixtures = {
     '/api/buy/list': '/invity/buy/list.json',
     '/api/buy/quotes': '/invity/buy/quotes.json',
     '/api/buy/trade': '/invity/buy/trade.json',
+    '/api/buy/watch/0': '/invity/buy/watch.json',
 };

@@ -32,6 +32,7 @@ const SelectedOffer = () => {
                 selectedQuote={selectedQuote}
                 account={account}
                 providers={providersInfo}
+                data-test="@CoinmarketBuyOfferInfo"
             />
         </Wrapper>
     );
