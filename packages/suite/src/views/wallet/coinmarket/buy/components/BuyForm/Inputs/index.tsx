@@ -255,6 +255,7 @@ const Inputs = () => {
                                         .filter(c => buyInfo?.supportedFiatCurrencies.has(c))
                                         .map((currency: string) => buildOption(currency))}
                                     isSearchable
+                                    data-test="@coinmarket/buy/fiat-currency-select"
                                     value={value}
                                     isClearable={false}
                                     minWidth="58px"
@@ -305,6 +306,7 @@ const Inputs = () => {
                                     value={value}
                                     isSearchable
                                     isClearable={false}
+                                    data-test="@coinmarket/buy/crypto-currency-select"
                                     options={getCryptoOptions(
                                         account.symbol,
                                         account.networkType,

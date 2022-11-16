@@ -57,7 +57,9 @@ export function processQuotes(allQuotes: BuyTrade[]): [BuyTrade[], BuyTrade[]] {
     if (!allQuotes) allQuotes = [];
     allQuotes.forEach(q => {
         q.orderId = uuidv4();
-        q.paymentId = uuidv4();
+        if (!q.paymentId) {
+            q.paymentId = uuidv4();
+        }
     });
     const quotes = allQuotes.filter(q => !q.tags || !q.tags.includes('alternativeCurrency'));
     const alternativeQuotes = allQuotes.filter(

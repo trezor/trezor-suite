@@ -74,6 +74,7 @@ const Footer = () => {
                     name={countrySelect}
                     render={({ onChange, value }) => (
                         <StyledSelect
+                            data-test="@coinmarket/buy/country-select"
                             options={regional.countriesOptions}
                             isSearchable
                             value={value}
