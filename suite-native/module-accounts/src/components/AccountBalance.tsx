@@ -51,7 +51,7 @@ export const AccountBalance = ({ accountKey }: AccountBalanceProps) => {
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
-    const [point] = useAtom(selectedPointAtom);
+    const [selectedPoint] = useAtom(selectedPointAtom);
     const { FiatAmountFormatter, CryptoAmountFormatter } = useFormatters();
 
     if (!account) return null;
@@ -74,7 +74,7 @@ export const AccountBalance = ({ accountKey }: AccountBalanceProps) => {
                 </Box>
                 <Box>
                     <Text variant="titleLarge" color="gray800">
-                        <FiatAmountFormatter value={point.value} />
+                        <FiatAmountFormatter value={selectedPoint.value} />
                     </Text>
                 </Box>
             </Box>
