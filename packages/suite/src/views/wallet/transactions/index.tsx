@@ -55,7 +55,7 @@ const Transactions = () => {
                     <TransactionSummary account={account} />
                 )}
 
-                {isCoinjoinAccount && <CoinjoinSummary account={account} />}
+                {isCoinjoinAccount && <CoinjoinSummary accountKey={account.key} />}
 
                 <TransactionList
                     account={account}

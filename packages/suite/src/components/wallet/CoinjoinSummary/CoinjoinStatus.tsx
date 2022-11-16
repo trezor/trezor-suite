@@ -12,12 +12,20 @@ import {
 import { CoinjoinSession } from '@suite-common/wallet-types';
 import { Translation } from '@suite-components/Translation';
 import { CountdownTimer } from '@suite-components';
+import { selectAccountByKey } from '@suite-common/wallet-core';
 import { COINJOIN_PHASE_MESSAGES } from '@suite-constants/coinjoin';
 import {
     calculateSessionProgress,
     getPhaseTimerFormat,
     getSessionDeadlineFormat,
 } from '@wallet-utils/coinjoinUtils';
+import { useDispatch } from 'react-redux';
+import {
+    pauseCoinjoinSession,
+    restoreCoinjoinSession,
+    stopCoinjoinSession,
+} from '@wallet-actions/coinjoinAccountActions';
+import { useSelector } from '@suite-hooks/useSelector';
 
 const Container = styled.div`
     position: relative;
@@ -126,22 +134,17 @@ const TextCointainer = styled.p`
 
 interface CoinjoinStatusProps {
     session: CoinjoinSession;
-    stopSession: () => void;
-    pauseSession: () => void;
-    restoreSession: () => Promise<void>;
+    accountKey: string;
 }
 
-export const CoinjoinStatus = ({
-    session,
-    pauseSession,
-    restoreSession,
-    stopSession,
-}: CoinjoinStatusProps) => {
+export const CoinjoinStatus = ({ session, accountKey }: CoinjoinStatusProps) => {
+    const account = useSelector(state => selectAccountByKey(state, accountKey));
     const [isLoading, setIsLoading] = useState(false);
     const [isWheelHovered, setIsWheelHovered] = useState(false);
 
     const menuRef = useRef<HTMLUListElement & { close: () => void }>(null);
     const theme = useTheme();
+    const dispatch = useDispatch();
 
     const { maxRounds, signedRounds, paused, phaseDeadline, sessionDeadline, phase } = session;
 
@@ -151,12 +154,12 @@ export const CoinjoinStatus = ({
     const togglePause = useCallback(async () => {
         if (isPaused) {
             setIsLoading(true);
-            await restoreSession();
+            await dispatch(restoreCoinjoinSession(account!));
             setIsLoading(false);
         } else {
-            pauseSession();
+            dispatch(pauseCoinjoinSession(account!));
         }
-    }, [isPaused, pauseSession, restoreSession]);
+    }, [isPaused, dispatch, account]);
 
     const menuItems = useMemo<Array<GroupedMenuItems>>(
         () => [
@@ -208,14 +211,14 @@ export const CoinjoinStatus = ({
                         ),
                         callback: () => {
                             menuRef.current?.close();
-                            stopSession();
+                            dispatch(stopCoinjoinSession(account!));
                         },
                         'data-test': `@coinjoin/cancel`,
                     },
                 ],
             },
         ],
-        [stopSession, isPaused, togglePause, isLoading],
+        [isPaused, togglePause, isLoading, dispatch, account],
     );
 
     const iconConfig = {
