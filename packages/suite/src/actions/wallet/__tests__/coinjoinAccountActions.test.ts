@@ -2,6 +2,7 @@ import { configureStore } from '@suite/support/tests/configureStore';
 
 import { accountsReducer } from '@wallet-reducers';
 import { coinjoinReducer } from '@wallet-reducers/coinjoinReducer';
+import { Account } from '@wallet-types';
 import * as coinjoinAccountActions from '../coinjoinAccountActions';
 import * as fixtures from '../__fixtures__/coinjoinAccountActions';
 
@@ -121,9 +122,15 @@ describe('coinjoinAccountActions', () => {
     fixtures.stopCoinjoinSession.forEach(f => {
         it(`stopCoinjoinSession: ${f.description}`, async () => {
             const initialState = getInitialState();
-            const store = initStore(initialState);
+            const store = initStore({
+                ...initialState,
+                wallet: {
+                    ...initialState.wallet,
+                    accounts: [...initialState.wallet.accounts, f.account as Account],
+                },
+            });
 
-            await store.dispatch(coinjoinAccountActions.stopCoinjoinSession(f.params as any));
+            await store.dispatch(coinjoinAccountActions.stopCoinjoinSession(f.param));
 
             const actions = store.getActions();
             expect(actions.map(a => a.type)).toEqual(f.result.actions);

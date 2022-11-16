@@ -1,11 +1,13 @@
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { accountsActions } from '@suite-common/wallet-core';
+import { Account } from '@wallet-types';
 
-const ACCOUNT = {
+const ACCOUNT: Partial<Account> = {
     accountType: 'coinjoin',
     backendType: 'coinjoin',
     symbol: 'btc',
     deviceState: 'device-state',
+    key: '12345',
 };
 
 export const createCoinjoinAccount = [
@@ -166,17 +168,16 @@ export const startCoinjoinSession = [
 export const stopCoinjoinSession = [
     {
         description: 'client not found',
-        params: {
-            ...ACCOUNT,
-            symbol: 'ltc', // only btc is supported in tests
-        },
+        account: ACCOUNT,
+        param: '000',
         result: {
             actions: [],
         },
     },
     {
         description: 'success',
-        params: ACCOUNT,
+        account: ACCOUNT,
+        param: '12345',
         result: {
             actions: ['@coinjoin/account-unregister'],
         },
