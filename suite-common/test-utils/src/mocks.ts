@@ -1,7 +1,7 @@
 /* WARNING! This file should be imported ONLY in tests! */
 /* eslint-disable require-await */
 
-import { Device, Features } from '@trezor/connect';
+import { AccountUtxo, Device, Features } from '@trezor/connect';
 import { TrezorDevice, GuideNode, GuidePage, GuideCategory } from '@suite-common/suite-types';
 import { MessageSystem, Action } from '@trezor/message-system';
 import {
@@ -636,6 +636,17 @@ const getGuideNode = (type: string, id?: string): GuideNode => {
     return result;
 };
 
+const getUtxo = (utxo: Partial<AccountUtxo>): AccountUtxo => ({
+    address: 'tb1q4nytpy37cuz8yndtfqpau4nzsva0jh787ny3yg',
+    amount: '1',
+    blockHeight: 590093,
+    confirmations: 1,
+    path: "m/44'/60'/0'/0/1",
+    txid: '7e58757f43015242c0efa29447bea4583336f2358fdff587b52bbe040ad8982a',
+    vout: 1,
+    ...utxo,
+});
+
 const fee: FeeInfo = {
     blockTime: 1565797979,
     blockHeight: 590093,
@@ -679,6 +690,7 @@ export const testMocks = {
     getTrezorConnect,
     getMessageSystemConfig,
     getGuideNode,
+    getUtxo,
     fee,
     intlMock,
     mockedBlockchainNetworks,

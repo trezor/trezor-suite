@@ -21,7 +21,7 @@ import { Dispatch, GetState } from '@suite-types';
 export const composeTransaction =
     (formValues: FormState, formState: UseSendFormState) =>
     async (dispatch: Dispatch, getState: GetState) => {
-        const { account, feeInfo } = formState;
+        const { account, excludedUtxos, feeInfo } = formState;
 
         const {
             settings: { bitcoinAmountUnit },
@@ -75,7 +75,6 @@ export const composeTransaction =
         // exclude unspendable utxos if coin control is not enabled
         // unspendable utxos are defined in `useSendForm` hook
         let availableUtxo = account.utxo;
-        const { excludedUtxos } = formState;
         if (
             !formValues.isCoinControlEnabled &&
             excludedUtxos &&

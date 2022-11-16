@@ -1,7 +1,6 @@
 import { createContext, useContext, useCallback, useState, useEffect, useRef } from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { useActions, useSelector } from '@suite-hooks';
-import BigNumber from 'bignumber.js';
 import { useDidUpdate } from '@trezor/react-utils';
 import * as sendFormActions from '@wallet-actions/sendFormActions';
 import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
@@ -13,9 +12,9 @@ import { FormState, Output, SendContextValues, UseSendFormState } from '@wallet-
 import {
     getFeeLevels,
     getDefaultValues,
+    getExcludedUtxos,
     amountToSatoshi,
     formatAmount,
-    getUtxoOutpoint,
 } from '@suite-common/wallet-utils';
 import { useSendFormOutputs } from './useSendFormOutputs';
 import { useSendFormFields } from './useSendFormFields';
@@ -57,32 +56,11 @@ const getStateFromProps = (props: UseSendFormProps) => {
         value: props.localCurrency,
         label: props.localCurrency.toUpperCase(),
     };
-
-    // exclude utxos from default composeTransaction process (see sendFormBitcoinActions)
-    // utxos are stored as dictionary where:
-    // `key` is an outpoint (string combination of utxo.txid + utxo.vout)
-    // `value` is the reason
-    // utxos might be spent using CoinControl feature
-    const excludedUtxos: UseSendFormState['excludedUtxos'] = {};
-    if (account.utxo) {
-        const targetAnonymity = props.coinjoinAccount?.targetAnonymity || 1;
-        const anonymitySet = account.addresses?.anonymitySet || {};
-        account.utxo?.forEach(utxo => {
-            const outpoint = getUtxoOutpoint(utxo);
-            const anonymity = anonymitySet[utxo.address] || 1;
-            if (new BigNumber(utxo.amount).lte(Number(coinFees.dustLimit))) {
-                // is lower than dust limit
-                excludedUtxos[outpoint] = 'dust';
-            } else if (anonymity < targetAnonymity) {
-                // didn't reach desired anonymity (coinjoin account)
-                excludedUtxos[outpoint] = 'low-anonymity';
-            } else if (!utxo.confirmations) {
-                // is unconfirmed
-                // TODO: this is a new feature
-                // excludedUtxos[outpoint] = 'unconfirmed';
-            }
-        });
-    }
+    const excludedUtxos = getExcludedUtxos(
+        account,
+        coinFees.dustLimit,
+        props.coinjoinAccount?.targetAnonymity,
+    );
 
     return {
         account,
@@ -108,7 +86,6 @@ const getStateFromProps = (props: UseSendFormProps) => {
 export const useSendForm = (props: UseSendFormProps): SendContextValues => {
     // public variables, exported to SendFormContext
     const [state, setState] = useState<UseSendFormState>(getStateFromProps(props));
-
     // private variables, used inside sendForm hook
     const draft = useRef<FormState | undefined>(undefined);
     const {
@@ -202,6 +179,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
         ...useFormMethods,
         state,
         account: props.selectedAccount.account,
+        targetAnonymity: props.coinjoinAccount?.targetAnonymity,
         updateContext,
         setAmount: sendFormUtils.setAmount,
     });

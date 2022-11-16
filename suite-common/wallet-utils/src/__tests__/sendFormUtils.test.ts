@@ -5,12 +5,14 @@ import { networksCompatibility as NETWORKS } from '@suite-common/wallet-config';
 import { testMocks } from '@suite-common/test-utils';
 
 import * as fixtures from '../__fixtures__/sendFormUtils';
+import { getUtxoOutpoint } from '../accountUtils';
 import {
     calculateEthFee,
     calculateMax,
     calculateTotal,
     findComposeErrors,
     getBitcoinComposeOutputs,
+    getExcludedUtxos,
     getExternalComposeOutput,
     getFiatRate,
     getInputState,
@@ -19,7 +21,7 @@ import {
     serializeEthereumTx,
 } from '../sendFormUtils';
 
-const { getWalletAccount } = testMocks;
+const { getUtxo, getWalletAccount } = testMocks;
 
 describe('sendForm utils', () => {
     fixtures.prepareEthereumTransaction.forEach(f => {
@@ -367,5 +369,37 @@ describe('sendForm utils', () => {
         expect(getFiatRate({ current: { rates: {} } }, 'usd')).toBe(undefined);
         // @ts-expect-error invalid params
         expect(getFiatRate({ current: { rates: { usd: 1 } } }, 'usd')).toBe(1);
+    });
+
+    it('getExcludedUtxos', () => {
+        const dustUtxo = getUtxo({
+            address: 'two',
+            amount: '1',
+            vout: 1,
+        });
+        const lowAnonymityDustUtxo = getUtxo({
+            address: 'one',
+            amount: '1',
+            vout: 2,
+        });
+        const lowAnonymityUtxo = getUtxo({
+            address: 'one',
+            amount: '2',
+            vout: 3,
+        });
+        const spendableUtxo = getUtxo({
+            address: 'two',
+            amount: '2',
+            vout: 4,
+        });
+        const coinjoinAccount = getWalletAccount({
+            addresses: { anonymitySet: { one: 1, two: 2 }, change: [], used: [], unused: [] },
+            utxo: [dustUtxo, lowAnonymityDustUtxo, lowAnonymityUtxo, spendableUtxo],
+        });
+        const excludedUtxos = getExcludedUtxos(coinjoinAccount, 1, 2);
+        expect(excludedUtxos[getUtxoOutpoint(dustUtxo)]).toBe('dust');
+        expect(excludedUtxos[getUtxoOutpoint(lowAnonymityDustUtxo)]).toBe('dust');
+        expect(excludedUtxos[getUtxoOutpoint(lowAnonymityUtxo)]).toBe('low-anonymity');
+        expect(excludedUtxos[getUtxoOutpoint(spendableUtxo)]).toBe(undefined);
     });
 });
