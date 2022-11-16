@@ -24,6 +24,7 @@ import { useFees } from './form/useFees';
 import { PROTOCOL_TO_NETWORK } from '@suite-constants/protocol';
 import { useBitcoinAmountUnit } from './useBitcoinAmountUnit';
 import { useUtxoSelection } from './form/useUtxoSelection';
+import { TypedValidationRules } from '@suite-common/wallet-types';
 
 export const SendContext = createContext<SendContextValues | null>(null);
 SendContext.displayName = 'SendContext';
@@ -261,8 +262,6 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
         }
     }, [getValues, composedLevels, signTransaction, resetContext, updateContext, goto]);
 
-    const typedRegister = useCallback(<T>(rules?: T) => register(rules), [register]);
-
     // reset on account change
     useEffect(() => {
         if (state.account.key !== props.selectedAccount.account.key) {
@@ -367,7 +366,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
     return {
         ...state,
         ...useFormMethods,
-        register: typedRegister,
+        register: register as (rules?: TypedValidationRules) => (ref: any) => void,
         outputs: outputsFieldArray.fields,
         composedLevels,
         updateContext,

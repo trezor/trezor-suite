@@ -6,6 +6,7 @@ import messageSystemReducer from '@suite-reducers/messageSystemReducer';
 import WalletReducers from '@wallet-reducers';
 import * as messageSystem from '@suite-utils/messageSystem';
 import messageSystemMiddleware from '../messageSystemMiddleware';
+import { AppState } from '../../../reducers/store';
 
 const middlewares = [messageSystemMiddleware];
 
@@ -17,7 +18,7 @@ export const getInitialState = (
     messageSystem?: Partial<MessageSystemState>,
     wallet?: Partial<WalletsState>,
     suite?: Partial<SuiteState>,
-) => ({
+): Partial<AppState> => ({
     wallet: {
         ...WalletReducers(undefined, { type: 'foo' } as any),
         ...wallet,

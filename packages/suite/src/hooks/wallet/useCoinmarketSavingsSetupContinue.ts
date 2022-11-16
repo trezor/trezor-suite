@@ -20,6 +20,7 @@ import { SavingsTrade } from 'invity-api';
 import invityAPI from '@suite-services/invityAPI';
 import { useCoinmarketNavigation } from '@wallet-hooks/useCoinmarketNavigation';
 import { useFormDraft } from '@wallet-hooks/useFormDraft';
+import { TypedValidationRules } from '@suite-common/wallet-types';
 
 export const useSavingsSetupContinue = ({
     selectedAccount,
@@ -171,9 +172,6 @@ export const useSavingsSetupContinue = ({
         ],
     );
 
-    // TODO: extract
-    const typedRegister = useCallback(<T>(rules?: T) => register(rules), [register]);
-
     const canConfirmSetup =
         !!paymentFrequency &&
         !!fiatAmount &&
@@ -189,7 +187,7 @@ export const useSavingsSetupContinue = ({
 
     return {
         ...methods,
-        register: typedRegister,
+        register: register as (rules?: TypedValidationRules) => (ref: any) => void,
         onSubmit,
         annualSavingsCryptoAmount,
         annualSavingsFiatAmount,

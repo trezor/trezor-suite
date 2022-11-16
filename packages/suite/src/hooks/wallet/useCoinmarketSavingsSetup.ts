@@ -22,6 +22,7 @@ import {
 } from '@wallet-utils/coinmarket/savingsUtils';
 import { isDesktop } from '@suite-utils/env';
 import { useFormDraft } from '@wallet-hooks/useFormDraft';
+import { TypedValidationRules } from '@suite-common/wallet-types';
 
 export const useSavingsSetup = ({
     selectedAccount,
@@ -238,9 +239,6 @@ export const useSavingsSetup = ({
         ],
     );
 
-    // TODO: extract
-    const typedRegister = useCallback(<T>(rules?: T) => register(rules), [register]);
-
     const canConfirmSetup =
         !!countryEffective &&
         !!paymentFrequency &&
@@ -252,7 +250,7 @@ export const useSavingsSetup = ({
     return {
         ...methods,
         account,
-        register: typedRegister,
+        register: register as (rules?: TypedValidationRules) => (ref: any) => void,
         onSubmit,
         defaultPaymentFrequency: selectedProvider?.defaultPaymentFrequency,
         defaultFiatAmount: selectedProvider?.defaultPaymentAmount?.toString(),

@@ -33,6 +33,7 @@ import { useCoinmarketNavigation } from '@wallet-hooks/useCoinmarketNavigation';
 import type { AppState } from '@suite-types';
 import { useBitcoinAmountUnit } from '@wallet-hooks/useBitcoinAmountUnit';
 import { useDidUpdate } from '@trezor/react-utils';
+import { TypedValidationRules } from '@suite-common/wallet-types';
 
 export const ExchangeFormContext = createContext<ExchangeFormContextValues | null>(null);
 ExchangeFormContext.displayName = 'CoinmarketExchangeContext';
@@ -242,7 +243,6 @@ export const useCoinmarketExchangeForm = ({
         setValue(CRYPTO_INPUT, formattedCryptoValue, { shouldValidate: true });
     };
 
-    const typedRegister = useCallback(<T>(rules?: T) => register(rules), [register]);
     const isLoading =
         !exchangeInfo?.exchangeList ||
         exchangeInfo?.exchangeList.length === 0 ||
@@ -359,7 +359,7 @@ export const useCoinmarketExchangeForm = ({
         account,
         onSubmit,
         updateFiatValue,
-        register: typedRegister,
+        register: register as (rules?: TypedValidationRules) => (ref: any) => void,
         exchangeInfo,
         changeFeeLevel,
         saveQuoteRequest,

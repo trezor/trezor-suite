@@ -1,6 +1,6 @@
 export const getValueAndUnit = (valueAndUnit: string): [value: number, unit: string] => {
     const value = parseFloat(valueAndUnit);
-    const [unit] = valueAndUnit.match(/([a-zA-Z]*|%)$/) ?? [];
+    const [unit] = valueAndUnit.match(/([a-zA-Z]*|%)$/) ?? [''];
 
     return [value, unit];
 };

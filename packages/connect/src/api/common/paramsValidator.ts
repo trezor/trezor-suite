@@ -147,6 +147,7 @@ export const getFirmwareRange = (
             }
             if (c.coin) {
                 // rule for coin shortcut
+                // @ts-expect-error
                 return (typeof c.coin === 'string' ? [c.coin] : c.coin).includes(shortcut!);
             }
             // rule for method

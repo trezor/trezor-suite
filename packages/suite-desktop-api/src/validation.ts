@@ -1,6 +1,5 @@
 import { RendererChannels } from './api';
 import { SuiteThemeVariant } from './messages';
-import { UnionToTuple } from './methods';
 
 type Primitive = 'boolean' | 'string' | 'number';
 type OptionalPrimitive = Primitive | [Primitive, boolean];
@@ -20,10 +19,10 @@ export const isObject = (shape: { [key: string]: OptionalPrimitive }, value: any
     return !keys.includes(false);
 };
 
-const validThemes: UnionToTuple<SuiteThemeVariant> = ['light', 'dark', 'system'];
+const validThemes: Array<SuiteThemeVariant> = ['light', 'dark', 'system'];
 export const isTheme = (theme: any) => validThemes.includes(theme);
 
-const validChannels: UnionToTuple<keyof RendererChannels> = [
+const validChannels: Array<keyof RendererChannels> = [
     'oauth/response',
     'update/checking',
     'update/available',

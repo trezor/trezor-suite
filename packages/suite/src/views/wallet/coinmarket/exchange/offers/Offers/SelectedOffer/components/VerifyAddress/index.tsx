@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import styled from 'styled-components';
-import { useForm } from 'react-hook-form';
+import { RegisterOptions, useForm } from 'react-hook-form';
 import addressValidator from 'trezor-address-validator';
 import { QuestionTooltip, Translation } from '@suite-components';
 import { Input, variables, DeviceImage, Button } from '@trezor/components';
@@ -106,8 +106,8 @@ const VerifyAddressComponent = () => {
         mode: 'onChange',
     });
 
-    const typedRegister: (rules?: TypedValidationRules) => (ref: any) => void = useCallback(
-        <T,>(rules?: T) => register(rules),
+    const typedRegister = useCallback(
+        (rules?: TypedValidationRules) => register(rules as RegisterOptions),
         [register],
     );
 

@@ -36,6 +36,7 @@ import { useCoinmarketNavigation } from '@wallet-hooks/useCoinmarketNavigation';
 import type { AppState } from '@suite-types';
 import { useBitcoinAmountUnit } from '@wallet-hooks/useBitcoinAmountUnit';
 import { useDidUpdate } from '@trezor/react-utils';
+import { TypedValidationRules } from '@suite-common/wallet-types';
 
 export const SellFormContext = createContext<SellFormContextValues | null>(null);
 SellFormContext.displayName = 'CoinmarketSellContext';
@@ -212,7 +213,6 @@ export const useCoinmarketSellForm = ({
 
     const [amountLimits, setAmountLimits] = useState<AmountLimits | undefined>(undefined);
 
-    const typedRegister = useCallback(<T>(rules?: T) => register(rules), [register]);
     const isLoading = !sellInfo?.sellList || !state?.formValues?.outputs[0].address;
     const noProviders =
         sellInfo?.sellList?.providers.length === 0 ||
@@ -365,7 +365,7 @@ export const useCoinmarketSellForm = ({
         defaultCountry,
         defaultCurrency,
         onSubmit,
-        register: typedRegister,
+        register: register as (rules?: TypedValidationRules) => (ref: any) => void,
         sellInfo,
         changeFeeLevel,
         saveQuoteRequest,

@@ -73,7 +73,7 @@
     },
     "resolutions": {
         "@types/react-native": "0.70.3",
-        "typescript": "4.7.4",
+        "typescript": "4.9.3",
         "react-native": "0.70.5",
         "prettier": "2.7.1",
         "type-fest": "2.12.2",
@@ -83,7 +83,8 @@
         "@jest/types": "27.5.1",
         "webpack": "^5.75.0",
         "css-loader": "^6.7.2",
-        "html-webpack-plugin": "^5.5.0"
+        "html-webpack-plugin": "^5.5.0",
+        "@types/node": "18.11.9"
     },
     "devDependencies": {
         "@babel/cli": "^7.18.10",
@@ -98,9 +99,9 @@
         "@nrwl/nx-cloud": "14.5.1",
         "@suite-common/wallet-types": "*",
         "@types/jest": "^26.0.24",
-        "@types/node": "^16.11.49",
-        "@types/prettier": "^2.7.0",
-        "@typescript-eslint/eslint-plugin": "^5.33.1",
+        "@types/node": "^18.11.9",
+        "@types/prettier": "^2.7.1",
+        "@typescript-eslint/eslint-plugin": "^5.43.0",
         "@typescript-eslint/parser": "^5.33.1",
         "babel-jest": "^26.6.3",
         "eslint": "^8.22.0",
@@ -129,7 +130,7 @@
         "ts-node": "^10.9.1",
         "tsconfig-paths": "^4.1.0",
         "tsx": "^3.8.2",
-        "typescript": "4.7.4",
+        "typescript": "4.9.3",
         "version-bump-prompt": "^6.1.0"
     },
     "dependenciesMeta": {
