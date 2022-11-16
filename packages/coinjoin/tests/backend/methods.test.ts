@@ -19,6 +19,9 @@ const EMPTY_CHECKPOINT = {
     changeCount: DISCOVERY_LOOKOUT,
 };
 
+const hasFilters = (r: BlockFilterResponse): r is Extract<BlockFilterResponse, { status: 'ok' }> =>
+    r.status === 'ok';
+
 describe(`CoinjoinBackend methods`, () => {
     const client = new MockBackendClient();
     const fetchFiltersMock = jest.spyOn(client, 'fetchFilters');
@@ -28,7 +31,9 @@ describe(`CoinjoinBackend methods`, () => {
     const getRequestedFilters = () =>
         Promise.all(fetchFiltersMock.mock.results.map(res => res.value)).then(
             (response: BlockFilterResponse[]) =>
-                response.flatMap(res => res.filters.map(filter => filter.blockHeight as number)),
+                response
+                    .filter(hasFilters)
+                    .flatMap(res => res.filters.map(filter => filter.blockHeight as number)),
         );
 
     const getRequestedBlocks = () =>

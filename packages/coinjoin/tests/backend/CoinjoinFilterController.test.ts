@@ -35,7 +35,7 @@ const FIXTURES = [
             batchSize: 5,
             fromHash: 'foo',
         },
-        expected: [],
+        error: 'not found',
     },
 ];
 
@@ -47,16 +47,20 @@ describe('CoinjoinFilterController', () => {
     });
 
     describe('Filter controller', () => {
-        FIXTURES.forEach(({ description, params, expected }) => {
+        FIXTURES.forEach(({ description, params, expected, error }) => {
             it(description, async () => {
                 const controller = new CoinjoinFilterController(client, COINJOIN_BACKEND_SETTINGS);
                 const iterator = controller.getFilterIterator(params);
-                const received = [];
-                // eslint-disable-next-line no-restricted-syntax
-                for await (const { progress, ...b } of iterator) {
-                    received.push(b);
+                if (error) {
+                    await expect(() => iterator.next()).rejects.toThrow(error);
+                } else {
+                    const received = [];
+                    // eslint-disable-next-line no-restricted-syntax
+                    for await (const { progress, ...b } of iterator) {
+                        received.push(b);
+                    }
+                    expect(received).toEqual(expected);
                 }
-                expect(received).toEqual(expected);
             });
         });
     });

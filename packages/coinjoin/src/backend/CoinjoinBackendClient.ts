@@ -72,36 +72,35 @@ export class CoinjoinBackendClient {
         );
     }
 
-    protected async handleFiltersResponse(response: Response) {
-        if (response.status === 204) {
-            // Provided hash is a tip
-            return {
-                bestHeight: -1,
-                filters: [],
-            };
-        }
-        if (response.status === 200) {
-            const result: { bestHeight: number; filters: string[] } = await response.json();
-            const filters = result.filters.map<BlockFilter>(data => {
-                const [blockHeight, blockHash, filter, prevHash, blockTime] = data.split(':');
+    protected async handleFiltersResponse(response: Response): Promise<BlockFilterResponse> {
+        switch (response.status) {
+            case 204: // Provided hash is a tip
+                return { status: 'up-to-date' };
+            case 200: {
+                const result: { bestHeight: number; filters: string[] } = await response.json();
+                const filters = result.filters.map<BlockFilter>(data => {
+                    const [blockHeight, blockHash, filter, prevHash, blockTime] = data.split(':');
+                    return {
+                        blockHeight: Number(blockHeight),
+                        blockHash,
+                        filter,
+                        prevHash,
+                        blockTime: Number(blockTime),
+                    };
+                });
                 return {
-                    blockHeight: Number(blockHeight),
-                    blockHash,
-                    filter,
-                    prevHash,
-                    blockTime: Number(blockTime),
+                    status: 'ok',
+                    bestHeight: result.bestHeight,
+                    filters,
                 };
-            });
-            return {
-                bestHeight: result.bestHeight,
-                filters,
-            };
+            }
+            case 404: // hash does not exist, probably reorg
+                return { status: 'not-found' };
+            default: {
+                const error = await response.json().catch(() => response.statusText);
+                throw new Error(`${response.status}: ${error}`);
+            }
         }
-        if (response.status >= 400 && response.status < 500) {
-            const error = await response.json();
-            throw new Error(`${response.status}: ${error}`);
-        }
-        throw new Error(`${response.status}: ${response.statusText}`);
     }
 
     fetchMempoolTxids(options?: RequestOptions): Promise<string[]> {
