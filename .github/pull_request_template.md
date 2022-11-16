@@ -8,4 +8,4 @@
 
 Resolve <!--- link the issue here -->
 
-## Screenshots (if appropriate):
+## Screenshots:
