@@ -39,8 +39,8 @@ export interface IssuanceData {
 }
 
 export interface ConfirmationData {
-    realAmountCredentials: RealCredentials;
-    realVsizeCredentials: RealCredentials;
+    realAmountCredentials?: RealCredentials; // real Credentials are not present in phase: 0
+    realVsizeCredentials?: RealCredentials;
     zeroAmountCredentials: RealCredentials;
     zeroVsizeCredentials: RealCredentials;
 }
