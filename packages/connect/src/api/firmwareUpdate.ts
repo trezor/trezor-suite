@@ -106,7 +106,7 @@ export default class FirmwareUpdate extends AbstractMethod<'firmwareUpdate', Par
         } catch (err) {
             throw ERRORS.TypedError(
                 'Method_FirmwareUpdate_DownloadFailed',
-                'Failed to download firmware binary',
+                `Failed to download firmware binary ${err.message}`,
             );
         }
 
