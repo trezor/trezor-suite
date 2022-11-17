@@ -8,6 +8,7 @@ import { createIpcProxyHandler, IpcProxyHandlerOptions } from '@trezor/ipc-proxy
 import { CoinjoinBackend, CoinjoinClient } from '@trezor/coinjoin';
 
 import { CoinjoinProcess } from '../libs/processes/CoinjoinProcess';
+import { PowerSaveBlocker } from '../libs/power-save-blocker';
 
 import type { Module } from './index';
 
@@ -20,6 +21,8 @@ export const init: Module = ({ mainWindow }) => {
     const clients: CoinjoinClient[] = [];
 
     const coinjoinMiddleware = new CoinjoinProcess();
+
+    const powerSaveBlocker = new PowerSaveBlocker();
 
     logger.debug(SERVICE_NAME, `Starting service`);
 
@@ -68,6 +71,13 @@ export const init: Module = ({ mainWindow }) => {
                     if (method === 'disable') {
                         logger.debug(SERVICE_NAME, `CoinjoinClient binary stop`);
                         coinjoinMiddleware.stop();
+                        powerSaveBlocker.stopBlockingPowerSave();
+                    }
+                    if (method === 'registerAccount') {
+                        powerSaveBlocker.startBlockingPowerSave();
+                    }
+                    if (method === 'unregisterAccount') {
+                        powerSaveBlocker.stopBlockingPowerSave();
                     }
                     // needs type casting
                     return (client[method] as any)(...params); // bind method to instance context
@@ -108,6 +118,7 @@ export const init: Module = ({ mainWindow }) => {
             unregisterClientProxy();
             logger.info(SERVICE_NAME, 'Stopping (app quit)');
             coinjoinMiddleware.stop();
+            powerSaveBlocker.stopBlockingPowerSave();
         };
 
         app.on('before-quit', dispose);
