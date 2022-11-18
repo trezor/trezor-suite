@@ -1,4 +1,5 @@
 import TrezorConnect from '@trezor/connect';
+import * as versionUtils from '@trezor/utils/src/versionUtils'; // NOTE: only this module is required
 
 const { getController, setup, conditionalTest, initTrezorConnect } = global.Trezor;
 const { ADDRESS_N } = global.TestUtils;
@@ -176,8 +177,26 @@ describe('TrezorConnect.authorizeCoinJoin', () => {
     });
 
     conditionalTest(['1', '<2.5.3'], 'Authorize and re-authorize', async () => {
+        // difference in buttons request count between 2.5.3 and 2.5.4
+        // see: https://github.com/trezor/trezor-firmware/pull/2613
+        const features = await TrezorConnect.getFeatures();
+        if (!features.success) {
+            throw new Error(`Wallet state exception`);
+        }
+        const confirmationScreensCount = versionUtils.isNewer(
+            [
+                features.payload.major_version,
+                features.payload.minor_version,
+                features.payload.patch_version,
+            ],
+            '2.5.3',
+        )
+            ? 1
+            : 2;
+
         // setup two wallets, 1 with and 1 without passphrase
         await TrezorConnect.applySettings({ use_passphrase: true });
+
         const walletDefault = await TrezorConnect.getDeviceState({
             device: {
                 instance: 0,
@@ -217,7 +236,7 @@ describe('TrezorConnect.authorizeCoinJoin', () => {
         } as const;
 
         // watch for button requests
-        const spy = jest.fn();
+        const spy = typeof jest !== 'undefined' ? jest.fn() : jasmine.createSpy('on.button');
         TrezorConnect.on('button', spy);
 
         // authorize no passphrase wallet
@@ -227,7 +246,7 @@ describe('TrezorConnect.authorizeCoinJoin', () => {
             useEmptyPassphrase: true,
         });
 
-        expect(spy).toBeCalledTimes(2);
+        expect(spy).toBeCalledTimes(1 * confirmationScreensCount);
 
         // re-authorize
         await TrezorConnect.authorizeCoinJoin({
@@ -237,7 +256,7 @@ describe('TrezorConnect.authorizeCoinJoin', () => {
             preauthorized: true,
         });
 
-        expect(spy).toBeCalledTimes(2); // no more button requests
+        expect(spy).toBeCalledTimes(1 * confirmationScreensCount); // no more button requests
 
         // authorize passphrase wallet
         await TrezorConnect.authorizeCoinJoin({
@@ -245,7 +264,7 @@ describe('TrezorConnect.authorizeCoinJoin', () => {
             device: { instance: 1, state: walletA.payload.state },
         });
 
-        expect(spy).toBeCalledTimes(4);
+        expect(spy).toBeCalledTimes(2 * confirmationScreensCount);
 
         // re-authorize passphrase wallet
         await TrezorConnect.authorizeCoinJoin({
@@ -269,7 +288,7 @@ describe('TrezorConnect.authorizeCoinJoin', () => {
             preauthorized: true,
         });
 
-        expect(spy).toBeCalledTimes(4); // no more button requests
+        expect(spy).toBeCalledTimes(2 * confirmationScreensCount); // no more button requests
 
         // disable passphrase for future tests
         await TrezorConnect.applySettings({ use_passphrase: false });
