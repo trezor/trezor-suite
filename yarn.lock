@@ -5086,22 +5086,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@shopify/react-native-skia@npm:0.1.155":
-  version: 0.1.155
-  resolution: "@shopify/react-native-skia@npm:0.1.155"
+"@shopify/react-native-skia@npm:0.1.159":
+  version: 0.1.159
+  resolution: "@shopify/react-native-skia@npm:0.1.159"
   dependencies:
     canvaskit-wasm: 0.36.1
-    react-reconciler: 0.26.2
+    react-reconciler: ^0.27.0
   peerDependencies:
-    react: ">=16.8.1"
-    react-native: ">=0.63.0-rc.0 <1.0.x"
+    react: ">=18.0"
+    react-native: ">=0.64"
     react-native-reanimated: ">=2.0.0"
   peerDependenciesMeta:
     react-native-reanimated:
       optional: true
   bin:
     setup-skia-web: scripts/setup-canvaskit.js
-  checksum: 1363b270e8e2126e3f4768903337bb283cc356b82520bf7b6a1fc1c5f0e1ea365a9844e71a71be63be98677e851145859ac8d5f73b9e5e4acf6c1288d453c84a
+  checksum: adb9cdc1e1d739387c2a5ca50f76c4a38aadab2e9a7a9e9f4b46086adf18061b3c6f799251590d6b47e0118d2c67912cddc3e6448e0ec79d9e8a6b86296d64d6
   languageName: node
   linkType: hard
 
@@ -6566,7 +6566,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/graph@workspace:suite-native/graph"
   dependencies:
-    "@shopify/react-native-skia": 0.1.155
+    "@shopify/react-native-skia": 0.1.159
     "@suite-common/formatters": "*"
     "@suite-common/wallet-graph": "*"
     "@suite-common/wallet-types": "*"
@@ -7346,7 +7346,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/icons@workspace:packages/icons"
   dependencies:
-    "@shopify/react-native-skia": 0.1.155
+    "@shopify/react-native-skia": 0.1.159
     "@trezor/styles": "*"
     "@trezor/theme": "*"
     jest: ^26.6.3
@@ -7624,7 +7624,7 @@ __metadata:
     "@react-navigation/native": ^6.0.11
     "@react-navigation/stack": ^6.2.2
     "@reduxjs/toolkit": ^1.8.3
-    "@shopify/react-native-skia": 0.1.155
+    "@shopify/react-native-skia": 0.1.159
     "@suite-common/connect-init": "*"
     "@suite-common/formatters": "*"
     "@suite-common/wallet-core": "*"
@@ -28342,16 +28342,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-reconciler@npm:0.26.2":
-  version: 0.26.2
-  resolution: "react-reconciler@npm:0.26.2"
+"react-reconciler@npm:^0.27.0":
+  version: 0.27.0
+  resolution: "react-reconciler@npm:0.27.0"
   dependencies:
     loose-envify: ^1.1.0
-    object-assign: ^4.1.1
-    scheduler: ^0.20.2
+    scheduler: ^0.21.0
   peerDependencies:
-    react: ^17.0.2
-  checksum: 2ebceace56f547f51eaf142becefef9cca980eae4f42d90ee5a966f54a375f5082d78b71b00c40bbd9bca69e0e0f698c7d4e81cc7373437caa19831fddc1d01b
+    react: ^18.0.0
+  checksum: c2ae111f150c2a46970182df12ea8254719fdfec5e26574711b1838fc37863c63671460a351570fd359c088d891e7bb0ff89023c2f7c1582393b57dd517b92c2
   languageName: node
   linkType: hard
 
@@ -29887,13 +29886,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"scheduler@npm:^0.20.2":
-  version: 0.20.2
-  resolution: "scheduler@npm:0.20.2"
+"scheduler@npm:^0.21.0":
+  version: 0.21.0
+  resolution: "scheduler@npm:0.21.0"
   dependencies:
     loose-envify: ^1.1.0
-    object-assign: ^4.1.1
-  checksum: c4b35cf967c8f0d3e65753252d0f260271f81a81e427241295c5a7b783abf4ea9e905f22f815ab66676f5313be0a25f47be582254db8f9241b259213e999b8fc
+  checksum: 4f8285076041ed2c81acdd1faa987f1655fdbd30554bc667c1ea64743fc74fb3a04ca7d27454b3d678735df5a230137a3b84756061b43dc5796e80701b66d124
   languageName: node
   linkType: hard
 
