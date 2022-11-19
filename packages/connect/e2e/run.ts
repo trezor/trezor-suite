@@ -80,7 +80,9 @@ const getEmulatorOptions = (availableFirmwares: Firmwares) => {
 
     if (process.argv[2] === 'node') {
         // @ts-expect-error
-        runCLI(argv, [__dirname]);
+        const { results } = await runCLI(argv, [__dirname]);
+
+        process.exit(results.numFailedTests);
     } else if (process.argv[2] === 'web') {
         const { parseConfig } = karma.config;
         const { Server } = karma;
