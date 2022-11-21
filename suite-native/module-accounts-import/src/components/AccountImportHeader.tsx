@@ -13,7 +13,7 @@ import {
     HomeStackRoutes,
     RootStackParamList,
     RootStackRoutes,
-    ScreenHeaderWithIcons,
+    ScreenHeader,
     StackToTabCompositeProps,
 } from '@suite-native/navigation';
 
@@ -46,7 +46,7 @@ export const AccountImportHeader = ({ activeStep }: AccountImportHeaderProps) =>
         });
 
     return (
-        <ScreenHeaderWithIcons
+        <ScreenHeader
             rightIcon={
                 isOnboardingFinished && (
                     <Box style={applyStyle(closeButtonStyle)}>
@@ -60,8 +60,8 @@ export const AccountImportHeader = ({ activeStep }: AccountImportHeaderProps) =>
                     </Box>
                 )
             }
-        >
-            <StepsProgressBar activeStep={activeStep} numberOfSteps={3} />
-        </ScreenHeaderWithIcons>
+            titleComponent={<StepsProgressBar activeStep={activeStep} numberOfSteps={3} />}
+            hasGoBackIcon={false}
+        />
     );
 };

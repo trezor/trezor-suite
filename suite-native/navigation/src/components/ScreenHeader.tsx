@@ -1,31 +1,68 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
+import { View } from 'react-native';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { IconButton, Text } from '@suite-native/atoms';
+import { NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { IconButton } from '@suite-native/atoms';
 
-import { ScreenHeaderWithIcons } from './ScreenHeaderWithIcons';
-
-type ScreenHeaderProps = {
-    title?: string;
+type ScreenHeaderWithIconsProps = {
+    leftIcon?: ReactNode;
+    rightIcon?: ReactNode;
+    titleComponent?: ReactNode;
+    title?: string; // Title has higher priority than title component.
+    style?: NativeStyleObject;
+    hasGoBackIcon?: boolean;
 };
 
-export const ScreenHeader = ({ title }: ScreenHeaderProps) => {
+const ICON_SIZE = 48;
+
+const screenHeaderStyle = prepareNativeStyle(() => ({
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    height: ICON_SIZE,
+}));
+
+const iconWrapperStyle = prepareNativeStyle(() => ({
+    width: ICON_SIZE,
+    height: ICON_SIZE,
+}));
+
+const GoBackIcon = () => {
     const navigation = useNavigation();
+    return (
+        <IconButton
+            iconName="chevronLeft"
+            size="large"
+            colorScheme="gray"
+            onPress={() => navigation.goBack()}
+            isRounded
+        />
+    );
+};
+
+export const ScreenHeader = ({
+    leftIcon,
+    rightIcon,
+    titleComponent,
+    style,
+    title,
+    hasGoBackIcon = true,
+}: ScreenHeaderWithIconsProps) => {
+    const { applyStyle } = useNativeStyles();
+
+    const shouldDisplayGoBackButton = hasGoBackIcon && !leftIcon;
 
     return (
-        <ScreenHeaderWithIcons
-            leftIcon={
-                <IconButton
-                    iconName="chevronLeft"
-                    size="large"
-                    colorScheme="gray"
-                    onPress={() => navigation.goBack()}
-                    isRounded
-                />
-            }
-        >
-            {title && <Text variant="titleSmall">{title}</Text>}
-        </ScreenHeaderWithIcons>
+        <View style={[applyStyle(screenHeaderStyle), style]}>
+            {shouldDisplayGoBackButton ? (
+                <GoBackIcon />
+            ) : (
+                <View style={applyStyle(iconWrapperStyle)}>{leftIcon}</View>
+            )}
+            {title || titleComponent}
+            <View style={applyStyle(iconWrapperStyle)}>{rightIcon}</View>
+        </View>
     );
 };

@@ -6,7 +6,7 @@ import { IconButton, Text } from '@suite-native/atoms';
 import {
     AccountsStackParamList,
     AccountsStackRoutes,
-    ScreenHeaderWithIcons,
+    ScreenHeader,
     StackNavigationProps,
 } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -37,7 +37,7 @@ export const AccountDetailScreenHeader = ({
     };
 
     return (
-        <ScreenHeaderWithIcons
+        <ScreenHeader
             leftIcon={
                 <IconButton
                     colorScheme="gray"
@@ -59,6 +59,6 @@ export const AccountDetailScreenHeader = ({
             style={applyStyle(headerStyle)}
         >
             <Text>{accountName}</Text>
-        </ScreenHeaderWithIcons>
+        </ScreenHeader>
     );
 };
