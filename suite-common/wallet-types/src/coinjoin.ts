@@ -45,5 +45,5 @@ export interface CoinjoinAccount {
     targetAnonymity: number; // anonymity set by the user
     session?: CoinjoinSession; // current/active authorized session
     previousSessions: CoinjoinSession[]; // history
-    checkpoint?: CoinjoinDiscoveryCheckpoint;
+    checkpoints?: CoinjoinDiscoveryCheckpoint[];
 }

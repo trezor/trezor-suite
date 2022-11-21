@@ -22,11 +22,8 @@ import {
     selectAccountByKey,
     transactionsActions,
 } from '@suite-common/wallet-core';
-import {
-    isAccountOutdated,
-    getAccountTransactions,
-    sortByBIP44AddressIndex,
-} from '@suite-common/wallet-utils';
+import { getAccountTransactions, sortByBIP44AddressIndex } from '@suite-common/wallet-utils';
+import { selectCoinjoinAccountByKey } from '@wallet-reducers/coinjoinReducer';
 
 const coinjoinAccountCreate = (account: Account, targetAnonymity: number) =>
     ({
@@ -134,10 +131,10 @@ export type CoinjoinAccountAction =
     | ReturnType<typeof coinjoinSessionPause>
     | ReturnType<typeof coinjoinSessionRestore>;
 
-const getCheckpoint = (
+const getCheckpoints = (
     account: Extract<Account, { backendType: 'coinjoin' }>,
     getState: GetState,
-) => getState().wallet.coinjoin.accounts.find(a => a.key === account.key)?.checkpoint;
+) => selectCoinjoinAccountByKey(getState(), account.key)?.checkpoints;
 
 const getAccountCache = ({ addresses, path }: Extract<Account, { backendType: 'coinjoin' }>) => {
     if (!addresses) return;
@@ -167,6 +164,28 @@ export const updateClientAccount = (account: Account) => (_: Dispatch, getState:
     client.updateAccount(getRegisterAccountParams(accountToUpdate, params.session));
 };
 
+const coinjoinAccountCheckReorg =
+    (account: Account, checkpoint: ScanAccountProgress['checkpoint']) =>
+    (dispatch: Dispatch, getState: GetState) => {
+        const previousCheckpoint = selectCoinjoinAccountByKey(getState(), account.key)
+            ?.checkpoints?.[0];
+        if (previousCheckpoint && checkpoint.blockHeight < previousCheckpoint.blockHeight) {
+            const txs = getAccountTransactions(
+                account.key,
+                getState().wallet.transactions.transactions,
+            ).filter(({ blockHeight }) => !blockHeight || blockHeight >= checkpoint.blockHeight);
+            dispatch(transactionsActions.removeTransaction({ account, txs }));
+        }
+    };
+
+const coinjoinAccountAddTransactions =
+    (account: Account, transactions: ScanAccountProgress['transactions']) =>
+    (dispatch: Dispatch) => {
+        if (transactions.length) {
+            dispatch(transactionsActions.addTransaction({ account, transactions }));
+        }
+    };
+
 export const fetchAndUpdateAccount =
     (account: Account) => async (dispatch: Dispatch, getState: GetState) => {
         if (account.backendType !== 'coinjoin' || account.syncing) return;
@@ -178,43 +197,39 @@ export const fetchAndUpdateAccount =
         dispatch(accountsActions.startCoinjoinAccountSync(account));
 
         const onProgress = (progress: ScanAccountProgress) => {
-            if (progress.transactions.length) {
-                dispatch(
-                    transactionsActions.addTransaction({
-                        account,
-                        transactions: progress.transactions,
-                    }),
-                );
-            }
+            // removes transactions if current checkpoint precedes latest stored checkpoint
+            dispatch(coinjoinAccountCheckReorg(account, progress.checkpoint));
+            // add discovered transactions (if any)
+            dispatch(coinjoinAccountAddTransactions(account, progress.transactions));
+            // store current checkpoint (and all account data to db if remembered)
             dispatch(coinjoinAccountDiscoveryProgress(account, progress));
         };
 
         try {
             api.on(`progress/${account.descriptor}`, onProgress);
 
+            const prevTransactions = getState().wallet.transactions.transactions[account.key];
+
             const { pending, checkpoint, cache } = await api.scanAccount({
                 descriptor: account.descriptor,
-                checkpoint: getCheckpoint(account, getState),
+                checkpoints: getCheckpoints(account, getState),
                 cache: getAccountCache(account),
             });
 
             onProgress({ checkpoint, transactions: pending });
 
-            const transactions = getAccountTransactions(
-                account.key,
-                getState().wallet.transactions.transactions,
-            );
+            const transactions = getState().wallet.transactions.transactions[account.key];
 
-            const accountInfo = await api.getAccountInfo(
-                account.descriptor,
-                transactions,
-                checkpoint,
-                cache,
-            );
-            // TODO accountInfo.utxo don't have proper utxo.confirmations field, only 0/1
+            if (transactions !== prevTransactions || isInitialUpdate) {
+                const accountInfo = await api.getAccountInfo(
+                    account.descriptor,
+                    transactions ?? [],
+                    checkpoint,
+                    cache,
+                );
 
-            // TODO add isPending check?
-            if (isAccountOutdated(account, accountInfo) || isInitialUpdate) {
+                // TODO accountInfo.utxo don't have proper utxo.confirmations field, only 0/1
+
                 // calculate account anonymity set in CoinjoinClient
                 const accountInfoWithAnonymitySet = await dispatch(
                     analyzeTransactions(accountInfo, account.symbol),
