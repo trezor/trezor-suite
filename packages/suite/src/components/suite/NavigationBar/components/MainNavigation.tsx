@@ -147,7 +147,7 @@ export const MainNavigation = ({ isMobileLayout, closeMainNavigation }: MainNavi
 
                                 {isDisabled && (
                                     <NewBadge>
-                                        <Translation id="TR_SUITE_WEB_LANDING_SUB_SOON" />
+                                        <Translation id="TR_NAV_SOON_BADGE" />
                                     </NewBadge>
                                 )}
                             </ItemTitleWrapper>

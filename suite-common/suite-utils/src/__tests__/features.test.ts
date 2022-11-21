@@ -20,12 +20,6 @@ jest.mock('@suite-common/suite-config', () => ({
             FLAG: false,
         };
     },
-    get FLAGS_LANDING() {
-        return {
-            ...MOCK_FLAGS,
-            FLAG: true,
-        };
-    },
 }));
 
 describe('Features utils', () => {
@@ -42,11 +36,6 @@ describe('Features utils', () => {
     test('mock flag should be disabled for desktop', () => {
         // @ts-expect-error Mocked flag
         expect(features.isFeatureFlagEnabled('FLAG', 'desktop')).toBe(false);
-    });
-
-    test('mock flag should be enabled for landing', () => {
-        // @ts-expect-error Mocked flag
-        expect(features.isFeatureFlagEnabled('FLAG', 'landing')).toBe(true);
     });
 
     test('Unknown flag should always default to false', () => {

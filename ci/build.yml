@@ -66,35 +66,7 @@ suite-web build stable codesign:
       - packages/suite-web/scripts/s3sync.sh
       - packages/suite-web/build
 
-# Suite web landing build
-
 ## Build jobs
-suite-web-landing build dev:
-  stage: build
-  variables:
-    ASSET_PREFIX: /suite-web-landing/${CI_BUILD_REF_NAME}
-  script:
-    - yarn install --immutable
-    - yarn workspace @trezor/suite-web-landing build
-  artifacts:
-    expire_in: 7 days
-    paths:
-      - packages/suite-web-landing/build
-
-suite-web-landing build stable:
-  stage: build
-  only:
-    refs:
-      - /^release\//
-      - codesign
-  script:
-    - yarn install --immutable
-    - yarn workspace @trezor/suite-web-landing build
-  artifacts:
-    expire_in: 7 days
-    paths:
-      - packages/suite-web-landing/scripts/s3sync.sh
-      - packages/suite-web-landing/build
 
 # Suite desktop build
 .build: &build
