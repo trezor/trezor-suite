@@ -31,7 +31,9 @@ const setup = async (TrezorUserEnvLink, options) => {
 
     if (
         state.mnemonic === options.mnemonic &&
-        JSON.stringify(state.settings) === JSON.stringify(options.settings)
+        state.passphrase_protection === options.passphrase_protection &&
+        JSON.stringify(state.settings) === JSON.stringify(options.settings) &&
+        !options.settings?.auto_lock_delay_ms // if device lock itself between test cases test will end timeout. user-env changes required (pin_sequence) https://github.com/trezor/trezor-user-env/pull/205
     ) {
         return true;
     }
@@ -46,7 +48,6 @@ const setup = async (TrezorUserEnvLink, options) => {
     // the test using the same transport
     await TrezorUserEnvLink.api.stopBridge();
 
-    console.log('start emu!!!', emulatorStartOpts);
     await TrezorUserEnvLink.api.startEmu(emulatorStartOpts);
 
     const mnemonic =
