@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable no-console */
 
-const { notarize } = require('electron-notarize');
+const { notarize } = require('@electron/notarize');
 
 const pkg = require('../package.json');
 
