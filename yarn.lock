@@ -6998,7 +6998,6 @@ __metadata:
     stylelint: ^14.10.0
     stylelint-config-recommended: ^9.0.0
     stylelint-config-styled-components: ^0.1.1
-    stylelint-custom-processor-loader: ^0.6.0
     stylelint-processor-styled-components: ^1.10.0
     ts-loader: ^9.3.1
     typescript: 4.7.4
@@ -11472,13 +11471,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"big.js@npm:^3.1.3":
-  version: 3.2.0
-  resolution: "big.js@npm:3.2.0"
-  checksum: 299449e40555625a308f01d74378677036b2ec98b30aaa89794b3afbd4eaa104b7456a989affadfd7f630dc14b3f1df250de9bddc4a6fc664e60727887bb33e7
-  languageName: node
-  linkType: hard
-
 "big.js@npm:^5.2.2":
   version: 5.2.2
   resolution: "big.js@npm:5.2.2"
@@ -15500,13 +15492,6 @@ __metadata:
   version: 9.2.2
   resolution: "emoji-regex@npm:9.2.2"
   checksum: 8487182da74aabd810ac6d6f1994111dfc0e331b01271ae01ec1eb0ad7b5ecc2bbbbd2f053c05cb55a1ac30449527d819bbfbf0e3de1023db308cbcb47f86601
-  languageName: node
-  linkType: hard
-
-"emojis-list@npm:^2.0.0":
-  version: 2.1.0
-  resolution: "emojis-list@npm:2.1.0"
-  checksum: fb61fa6356dfcc9fbe6db8e334c29da365a34d3d82a915cb59621883d3023d804fd5edad5acd42b8eec016936e81d3b38e2faf921b32e073758374253afe1272
   languageName: node
   linkType: hard
 
@@ -21661,15 +21646,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"json5@npm:^0.5.0":
-  version: 0.5.1
-  resolution: "json5@npm:0.5.1"
-  bin:
-    json5: lib/cli.js
-  checksum: 9b85bf06955b23eaa4b7328aa8892e3887e81ca731dd27af04a5f5f1458fbc5e1de57a24442e3272f8a888dd1abe1cb68eb693324035f6b3aeba4fcab7667d62
-  languageName: node
-  linkType: hard
-
 "json5@npm:^1.0.1":
   version: 1.0.1
   resolution: "json5@npm:1.0.1"
@@ -22386,17 +22362,6 @@ __metadata:
     emojis-list: ^3.0.0
     json5: ^2.1.2
   checksum: 9078d1ed47cadc57f4c6ddbdb2add324ee7da544cea41de3b7f1128e8108fcd41cd3443a85b7ee8d7d8ac439148aa221922774efe4cf87506d4fb054d5889303
-  languageName: node
-  linkType: hard
-
-"loader-utils@npm:~1.1.0":
-  version: 1.1.0
-  resolution: "loader-utils@npm:1.1.0"
-  dependencies:
-    big.js: ^3.1.3
-    emojis-list: ^2.0.0
-    json5: ^0.5.0
-  checksum: 576f543375101a07735be2d308edb509b87d36c25f7af35f2926bf5ed52781437d1900518709554713d4eab5dfd37150fe7dadd24be606bf4e802bf392ea9c86
   languageName: node
   linkType: hard
 
@@ -31268,18 +31233,6 @@ __metadata:
   version: 0.1.1
   resolution: "stylelint-config-styled-components@npm:0.1.1"
   checksum: 1421187a27d11740f9ee224163231a9f3194c8055c27b0cb3204e76742c55a9397004bc70da9b3feee9988d0afe0d3c839186ef01d847a163ba7ad3299a9759a
-  languageName: node
-  linkType: hard
-
-"stylelint-custom-processor-loader@npm:^0.6.0":
-  version: 0.6.0
-  resolution: "stylelint-custom-processor-loader@npm:0.6.0"
-  dependencies:
-    loader-utils: ~1.1.0
-  peerDependencies:
-    stylelint: ">= 7.8"
-    webpack: ">= 2"
-  checksum: 557e19396b8c031cb71ee5a21d0313e4ed16f2959d6805dd9549ff8978ad42e855f94732dd38272c36e3e106b9d86f637d0d3202ef6f76006c4d7f833a6408d5
   languageName: node
   linkType: hard
 
