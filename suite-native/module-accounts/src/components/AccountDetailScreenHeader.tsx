@@ -2,7 +2,7 @@ import React from 'react';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { IconButton, Text } from '@suite-native/atoms';
+import { IconButton } from '@suite-native/atoms';
 import {
     AccountsStackParamList,
     AccountsStackRoutes,
@@ -57,8 +57,7 @@ export const AccountDetailScreenHeader = ({
                 />
             }
             style={applyStyle(headerStyle)}
-        >
-            <Text>{accountName}</Text>
-        </ScreenHeader>
+            title={accountName}
+        />
     );
 };

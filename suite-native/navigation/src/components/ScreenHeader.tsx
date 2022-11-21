@@ -4,7 +4,7 @@ import { View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 import { NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { IconButton } from '@suite-native/atoms';
+import { IconButton, Text } from '@suite-native/atoms';
 
 type ScreenHeaderWithIconsProps = {
     leftIcon?: ReactNode;
@@ -61,7 +61,7 @@ export const ScreenHeader = ({
             ) : (
                 <View style={applyStyle(iconWrapperStyle)}>{leftIcon}</View>
             )}
-            {title || titleComponent}
+            {title ? <Text variant="titleSmall">{title}</Text> : titleComponent}
             <View style={applyStyle(iconWrapperStyle)}>{rightIcon}</View>
         </View>
     );
