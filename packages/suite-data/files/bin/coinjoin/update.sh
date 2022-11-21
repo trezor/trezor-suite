@@ -9,9 +9,11 @@ BINARY_NAME=WalletWasabi.WabiSabiClientLibrary
 
 7z x -y CoinjoinClientLibrary-binary.zip
 
-# Re-naming direcotry from osx to mac to match the naming using in all the processes.
-mv osx-arm64/ mac-arm64/
-mv osx-x64/ mac-x64/
+# Re-naming directory from osx to mac to match the naming using in all the processes.
+cp -r osx-arm64/* mac-arm64/
+rm -rf osx-arm64
+cp -r osx-x64/* mac-x64/
+rm -rf osx-x64
 
 for p in linux-x64 linux-arm64 mac-x64 mac-arm64 win-x64; do
     cp -r ${p}/publish/* ${p}/
