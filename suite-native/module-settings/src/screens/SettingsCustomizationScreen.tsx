@@ -6,7 +6,7 @@ import { Box } from '@suite-native/atoms';
 import { ColorSchemePicker } from '../components/ColorSchemePicker';
 
 export const SettingsCustomizationScreen = () => (
-    <Screen header={<ScreenHeader title="Customization" />}>
+    <Screen header={<ScreenHeader title="Customization" hasGoBackIcon />}>
         <Box marginHorizontal="medium">
             <ColorSchemePicker />
         </Box>

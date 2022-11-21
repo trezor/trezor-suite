@@ -1,48 +1,68 @@
-import React from 'react';
-import { TouchableOpacity } from 'react-native';
+import React, { ReactNode } from 'react';
+import { View } from 'react-native';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Box, Text } from '@suite-native/atoms';
-import { Icon } from '@trezor/icons';
+import { NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { IconButton, Text } from '@suite-native/atoms';
 
-type ScreenHeaderProps = {
-    title?: string;
+type ScreenHeaderWithIconsProps = {
+    leftIcon?: ReactNode;
+    rightIcon?: ReactNode;
+    titleComponent?: ReactNode;
+    title?: string; // Title has higher priority than title component.
+    style?: NativeStyleObject;
+    hasGoBackIcon?: boolean;
 };
 
-const GO_BACK_BUTTON_SIZE = 40;
-const iconStyle = prepareNativeStyle(utils => ({
-    backgroundColor: utils.colors.gray300,
-    height: GO_BACK_BUTTON_SIZE,
-    width: GO_BACK_BUTTON_SIZE,
-    borderRadius: utils.borders.radii.round,
-    justifyContent: 'center',
-    alignItems: 'center',
-}));
+const ICON_SIZE = 48;
 
-const headerStyle = prepareNativeStyle(_ => ({
+const screenHeaderStyle = prepareNativeStyle(() => ({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingBottom: 10,
-    paddingTop: 15,
+    height: ICON_SIZE,
 }));
 
-export const ScreenHeader = ({ title }: ScreenHeaderProps) => {
-    const { applyStyle } = useNativeStyles();
+const iconWrapperStyle = prepareNativeStyle(() => ({
+    width: ICON_SIZE,
+    height: ICON_SIZE,
+}));
+
+const GoBackIcon = () => {
     const navigation = useNavigation();
+    return (
+        <IconButton
+            iconName="chevronLeft"
+            size="large"
+            colorScheme="gray"
+            onPress={() => navigation.goBack()}
+            isRounded
+        />
+    );
+};
+
+export const ScreenHeader = ({
+    leftIcon,
+    rightIcon,
+    titleComponent,
+    style,
+    title,
+    hasGoBackIcon = true,
+}: ScreenHeaderWithIconsProps) => {
+    const { applyStyle } = useNativeStyles();
+
+    const shouldDisplayGoBackButton = hasGoBackIcon && !leftIcon;
 
     return (
-        <Box style={applyStyle(headerStyle)}>
-            {/* TODO based on design it might be without BG color,
-             but design is not ready yet so there might be some inconsistencies */}
-            <TouchableOpacity style={applyStyle(iconStyle)} onPress={() => navigation.goBack()}>
-                <Icon name="chevronLeft" size="large" color="gray800" />
-            </TouchableOpacity>
-            {title && <Text variant="titleSmall">{title}</Text>}
-            {/* Empty box for centered header text */}
-            <Box style={{ width: GO_BACK_BUTTON_SIZE }} />
-        </Box>
+        <View style={[applyStyle(screenHeaderStyle), style]}>
+            {shouldDisplayGoBackButton ? (
+                <GoBackIcon />
+            ) : (
+                <View style={applyStyle(iconWrapperStyle)}>{leftIcon}</View>
+            )}
+            {title ? <Text variant="titleSmall">{title}</Text> : titleComponent}
+            <View style={applyStyle(iconWrapperStyle)}>{rightIcon}</View>
+        </View>
     );
 };
