@@ -1,14 +1,6 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 
-import {
-    Canvas,
-    ImageSVG,
-    useSVG,
-    Group,
-    Paint,
-    BlendColor,
-    usePaintRef,
-} from '@shopify/react-native-skia';
+import { Canvas, ImageSVG, useSVG, Group, Skia, BlendMode } from '@shopify/react-native-skia';
 
 import { useNativeStyles } from '@trezor/styles';
 import { Color } from '@trezor/theme';
@@ -37,13 +29,11 @@ export const Icon = ({ name, customSize, size = 'large', color = 'gray1000' }: I
         utils: { colors },
     } = useNativeStyles();
     const sizeNumber = customSize || iconSizes[size];
-    const paint = usePaintRef();
+    const paint = useMemo(() => Skia.Paint(), []);
+    paint.setColorFilter(Skia.ColorFilter.MakeBlend(Skia.Color(colors[color]), BlendMode.SrcIn));
 
     return (
         <Canvas style={{ height: sizeNumber, width: sizeNumber }}>
-            <Paint ref={paint}>
-                <BlendColor color={colors[color]} mode="srcIn" />
-            </Paint>
             <Group layer={paint}>
                 {svg && <ImageSVG svg={svg} x={0} y={0} width={sizeNumber} height={sizeNumber} />}
             </Group>
