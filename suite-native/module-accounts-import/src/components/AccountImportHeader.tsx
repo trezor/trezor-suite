@@ -13,23 +13,13 @@ import {
     HomeStackRoutes,
     RootStackParamList,
     RootStackRoutes,
+    ScreenHeaderWithIcons,
     StackToTabCompositeProps,
 } from '@suite-native/navigation';
 
 type AccountImportHeaderProps = {
     activeStep: 1 | 2 | 3;
 };
-
-const CLOSE_BUTTON_SIZE = 48;
-
-const accountImportHeaderStyle = prepareNativeStyle(_ => ({
-    position: 'relative',
-    width: '100%',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: CLOSE_BUTTON_SIZE,
-}));
 
 const closeButtonStyle = prepareNativeStyle(_ => ({
     position: 'absolute',
@@ -56,19 +46,22 @@ export const AccountImportHeader = ({ activeStep }: AccountImportHeaderProps) =>
         });
 
     return (
-        <Box style={applyStyle(accountImportHeaderStyle)}>
+        <ScreenHeaderWithIcons
+            rightIcon={
+                isOnboardingFinished && (
+                    <Box style={applyStyle(closeButtonStyle)}>
+                        <IconButton
+                            iconName="close"
+                            colorScheme="gray"
+                            onPress={handleCloseOnboarding}
+                            size="large"
+                            isRounded
+                        />
+                    </Box>
+                )
+            }
+        >
             <StepsProgressBar activeStep={activeStep} numberOfSteps={3} />
-            {isOnboardingFinished && (
-                <Box style={applyStyle(closeButtonStyle)}>
-                    <IconButton
-                        iconName="close"
-                        colorScheme="gray"
-                        onPress={handleCloseOnboarding}
-                        size="large"
-                        isRounded
-                    />
-                </Box>
-            )}
-        </Box>
+        </ScreenHeaderWithIcons>
     );
 };
