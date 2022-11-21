@@ -33,7 +33,7 @@
         "productName": "Trezor Suite",
         "copyright": "Copyright © ${author}",
         "asar": true,
-        "electronVersion": "18.3.5",
+        "electronVersion": "20.3.5",
         "directories": {
             "output": "build-electron"
         },
@@ -232,20 +232,20 @@
         "chalk": "^4.1.2",
         "electron-localshortcut": "^3.2.1",
         "electron-store": "^8.1.0",
-        "electron-updater": "5.2.1",
+        "electron-updater": "5.3.0",
         "node-fetch": "^2.6.7",
         "openpgp": "^5.5.0",
-        "systeminformation": "^5.12.6"
+        "systeminformation": "^5.14.4"
     },
     "devDependencies": {
+        "@electron/notarize": "1.2.3",
         "@playwright/test": "^1.22.2",
         "@trezor/trezor-user-env-link": "*",
         "@types/electron-localshortcut": "^3.1.0",
         "@types/node-fetch": "^2.6.2",
-        "electron": "18.3.5",
-        "electron-builder": "23.3.3",
-        "electron-notarize": "1.2.1",
-        "esbuild": "^0.15.7",
+        "electron": "20.3.5",
+        "electron-builder": "23.6.0",
+        "esbuild": "^0.15.15",
         "glob": "^8.0.3",
         "jest": "^26.6.3",
         "playwright": "^1.22.2",
