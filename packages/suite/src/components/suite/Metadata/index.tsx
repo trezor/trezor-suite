@@ -1,24 +1,16 @@
 import React from 'react';
-import { resolveStaticPath } from '@trezor/utils';
 import { SUITE_URL } from '@trezor/urls';
 import Helmet from 'react-helmet';
 import { useIntl } from 'react-intl';
 import messages from '@suite/support/messages';
 
-type Props = {
+type MetadataProps = {
     title?: string;
     description?: string;
-    image?: string;
     url?: string;
 };
 
-const Metadata = ({
-    title = 'Trezor Suite',
-    description,
-    // todo: test that it is really available
-    image = `${SUITE_URL}${resolveStaticPath('images/suite-web-landing/meta.png')}`,
-    url = SUITE_URL,
-}: Props) => {
+const Metadata = ({ title = 'Trezor Suite', description, url = SUITE_URL }: MetadataProps) => {
     const intl = useIntl();
     description = description || intl.formatMessage(messages.TR_SUITE_META_DESCRIPTION);
     return (
@@ -32,14 +24,14 @@ const Metadata = ({
             <meta property="og:url" key="og:url" content={url} />
             <meta property="og:title" key="og:title" content={title} />
             <meta property="og:description" key="og:description" content={description} />
-            <meta property="og:image" key="og:image" content={image} />
+            {/* <meta property="og:image" key="og:image" content={image} />*}
 
             {/* Twitter */}
             <meta property="twitter:card" key="twitter:card" content="summary_large_image" />
             <meta property="twitter:url" key="twitter:url" content={url} />
             <meta property="twitter:title" key="twitter:title" content={title} />
             <meta property="twitter:description" key="twitter:description" content={description} />
-            <meta property="twitter:image" key="twitter:image" content={image} />
+            {/* <meta property="twitter:image" key="twitter:image" content={image} /> */}
         </Helmet>
     );
 };
