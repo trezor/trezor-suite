@@ -8,7 +8,6 @@ import { createIpcProxyHandler, IpcProxyHandlerOptions } from '@trezor/ipc-proxy
 import { CoinjoinBackend, CoinjoinClient } from '@trezor/coinjoin';
 
 import { CoinjoinProcess } from '../libs/processes/CoinjoinProcess';
-import { getFreePort } from '../libs/getFreePort';
 
 import type { Module } from './index';
 
@@ -48,16 +47,9 @@ export const init: Module = ({ mainWindow }) => {
 
     const clientProxyOptions: IpcProxyHandlerOptions<CoinjoinClient> = {
         onCreateInstance: async (settings: ConstructorParameters<typeof CoinjoinClient>[0]) => {
-            let port: number;
-            if (!(await coinjoinMiddleware.status()).process) {
-                port = await getFreePort();
-            } else {
-                // If coinjoin middleware is already running but other client instance is created
-                // we use the same port.
-                port = coinjoinMiddleware.port;
-            }
-
-            settings.middlewareUrl = `http://localhost:${port}/Cryptography/`;
+            const port = await coinjoinMiddleware.getPort();
+            // override default url in coinjoin settings
+            settings.middlewareUrl = coinjoinMiddleware.getUrl();
             const client = new CoinjoinClient(settings);
             client.on('log', message => logger.debug(SERVICE_NAME, message));
             clients.push(client);
@@ -67,7 +59,7 @@ export const init: Module = ({ mainWindow }) => {
                     if (method === 'enable') {
                         logger.debug(SERVICE_NAME, `CoinjoinClient binary enable on port ${port}`);
                         try {
-                            await coinjoinMiddleware.startOnPort(port);
+                            await coinjoinMiddleware.start();
                         } catch (err) {
                             logger.error(SERVICE_NAME, `Start failed: ${err.message}`);
                             throw err; // pass this error to suite toast
