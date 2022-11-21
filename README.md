@@ -33,7 +33,6 @@
 | [@trezor/suite-desktop](./packages/suite-desktop)                     | suite build target for Mac, Win, Linux       |
 | [@trezor/suite-native](./suite-native/app)                            | suite build target for react-native          |
 | [@trezor/suite-storage](./packages/suite-storage)                     | abstract database definition for suite       |
-| [@trezor/suite-web-landing](./packages/suite-web-landing)             | https://suite.trezor.io/                     |
 | [@trezor/suite-web](./packages/suite-web)                             | suite build target for web                   |
 | [@trezor/suite](./packages/suite)                                     | Trezor Suite common code                     |
 | [@trezor/transport-native](./packages/transport-native)               | communication lib for React Native           |

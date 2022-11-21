@@ -25,7 +25,6 @@ suite-web deploy sldev:
   variables:
     DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/suite-web/${CI_BUILD_REF_NAME}
   needs:
-    - suite-web-landing build dev
     - suite-web build dev
   environment:
     name: ${CI_BUILD_REF_NAME}
@@ -33,26 +32,7 @@ suite-web deploy sldev:
   before_script: []
   script:
     - mkdir -p ${DEPLOY_DIRECTORY}/web
-    - rsync --delete -va packages/suite-web-landing/build/ "${DEPLOY_DIRECTORY}/"
     - rsync --delete -va packages/suite-web/build/ "${DEPLOY_DIRECTORY}/web/"
-  tags:
-    - deploy
-  interruptible: true
-
-# Suite web landing deploy to dev
-suite-web-landing deploy sldev:
-  stage: deploy to dev
-  variables:
-    DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/suite-web-landing/${CI_BUILD_REF_NAME}
-  needs:
-    - suite-web-landing build dev
-  environment:
-    name: ${CI_BUILD_REF_NAME}
-    url: $BASE_REVIEW_URL/${CI_BUILD_REF_NAME}
-  before_script: []
-  script:
-    - mkdir -p ${DEPLOY_DIRECTORY}
-    - rsync --delete -va packages/suite-web-landing/build/ "${DEPLOY_DIRECTORY}/"
   tags:
     - deploy
   interruptible: true

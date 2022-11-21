@@ -6,7 +6,6 @@ suite codesign deploy staging-suite:
     - suite-desktop build mac codesign
     - suite-desktop build linux codesign
     - suite-desktop build windows codesign
-    - suite-web-landing build stable
   environment:
     name: ${CI_BUILD_REF_NAME}-staging-suite
     url: ${STAGING_SUITE_SERVER_URL}
@@ -27,8 +26,6 @@ suite codesign deploy staging-suite:
     - cd packages/suite-web
     - ./scripts/s3sync.sh staging-suite
     - cd -
-    - cd packages/suite-web-landing
-    - ./scripts/s3sync.sh staging-suite
   tags:
     - deploy
 

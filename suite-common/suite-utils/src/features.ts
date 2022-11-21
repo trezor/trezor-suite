@@ -1,10 +1,4 @@
-import {
-    FLAGS,
-    FLAGS_WEB,
-    FLAGS_DESKTOP,
-    FLAGS_LANDING,
-    FeatureFlags,
-} from '@suite-common/suite-config';
+import { FLAGS, FLAGS_WEB, FLAGS_DESKTOP, FeatureFlags } from '@suite-common/suite-config';
 
 const getFlagsForEnv = (env?: string) => {
     switch (env) {
@@ -12,8 +6,6 @@ const getFlagsForEnv = (env?: string) => {
             return FLAGS_WEB;
         case 'desktop':
             return FLAGS_DESKTOP;
-        case 'landing':
-            return FLAGS_LANDING;
         default:
             return FLAGS;
     }

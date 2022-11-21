@@ -4,7 +4,7 @@ This repo contains a mix of packages with 3 different versioning schemes and sch
 
 ## Private Packages
 
-That is, all packages that have `private: true` in their `package.json` and are not consumed by third parties nor published to NPM. Because they get only consumed by other packages in this repo (eg. `@trezor/suite-data` or `@trezor/suite`) by the Yarn's [workspace resolution](https://classic.yarnpkg.com/en/docs/workspaces/) or are distributed in other forms like, for example, bundled applications (eg. `@trezor/suite-desktop`) or websites (eg. `@trezor/suite-web-landing`) we do not version them. That is, their version is kept at `1.0.0` all the time.
+That is, all packages that have `private: true` in their `package.json` and are not consumed by third parties nor published to NPM. Because they get only consumed by other packages in this repo (eg. `@trezor/suite-data` or `@trezor/suite`) by the Yarn's [workspace resolution](https://classic.yarnpkg.com/en/docs/workspaces/) or are distributed in other forms like, for example, bundled applications (eg. `@trezor/suite-desktop`) we do not version them. That is, their version is kept at `1.0.0` all the time.
 
 ## Public Packages
 

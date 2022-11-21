@@ -27,11 +27,5 @@ export const FLAGS_DESKTOP = {
     // Add overrides below
 } as const;
 
-// Landing specific flags
-export const FLAGS_LANDING = {
-    ...FLAGS,
-    // Add overrides below
-} as const;
-
 // List of all feature flags and their explanation
 export type FeatureFlags = keyof typeof FLAGS;

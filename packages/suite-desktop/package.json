@@ -42,7 +42,7 @@
             "!build/**/*.js.map",
             "dist/**/*.js",
             "package.json",
-            "!build/static/**/{favicon,icons,bin,browsers,suite-web-landing}",
+            "!build/static/**/{favicon,icons,bin,browsers}",
             "!bin/firmware",
             "!node_modules/@suite-common",
             "!node_modules/@trezor/**/{src,coverage,build,scripts,webpack,integration,e2e,libDev}",
