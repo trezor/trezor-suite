@@ -41,13 +41,13 @@ const getBuyTradeData = (status: BuyTradeStatus, theme: SuiteThemeColors) => {
         case 'TR_BUY_STATUS_PENDING':
         case 'TR_BUY_STATUS_ACTION_REQUIRED':
             return {
-                icon: 'CLOCK',
+                icon: 'CLOCK_ACTIVE',
                 color: theme.TYPE_ORANGE,
                 statusMessageId: message,
             } as const;
         case 'TR_BUY_STATUS_PENDING_GO_TO_GATEWAY':
             return {
-                icon: 'CLOCK',
+                icon: 'CLOCK_ACTIVE',
                 color: theme.TYPE_ORANGE,
                 statusMessageId: message,
             } as const;
@@ -72,7 +72,7 @@ const getSellTradeData = (status: SellTradeStatus, theme: SuiteThemeColors) => {
     switch (message) {
         case 'TR_SELL_STATUS_PENDING':
             return {
-                icon: 'CLOCK',
+                icon: 'CLOCK_ACTIVE',
                 color: theme.TYPE_ORANGE,
                 statusMessageId: message,
             } as const;
@@ -98,7 +98,7 @@ const getExchangeTradeData = (status: ExchangeTradeStatus, theme: SuiteThemeColo
         case 'TR_EXCHANGE_STATUS_CONFIRMING':
         case 'TR_EXCHANGE_STATUS_CONVERTING':
             return {
-                icon: 'CLOCK',
+                icon: 'CLOCK_ACTIVE',
                 color: theme.TYPE_ORANGE,
                 statusMessageId: message,
             } as const;
@@ -136,7 +136,7 @@ const getSavingsTradeData = (status: SavingsTradeItemStatus, theme: SuiteThemeCo
     switch (message) {
         case 'TR_SAVINGS_STATUS_PENDING':
             return {
-                icon: 'CLOCK',
+                icon: 'CLOCK_ACTIVE',
                 color: theme.TYPE_ORANGE,
                 statusMessageId: message,
             } as const;

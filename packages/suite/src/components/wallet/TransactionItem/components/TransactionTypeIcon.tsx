@@ -34,7 +34,7 @@ export const TransactionTypeIcon = ({ type, isPending, ...rest }: TransactionTyp
                 {...rest}
             />
 
-            {isPending && <ClockIcon icon="CLOCK" size={12} color={theme.TYPE_ORANGE} />}
+            {isPending && <ClockIcon icon="CLOCK_ACTIVE" size={12} color={theme.TYPE_ORANGE} />}
         </IconsWrapper>
     );
 };
