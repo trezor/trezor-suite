@@ -1,4 +1,5 @@
 import { BaseProcess, Status } from './BaseProcess';
+import { getFreePort } from '../getFreePort';
 
 export class CoinjoinProcess extends BaseProcess {
     port = 37128; // Default port, that is going to be updated when starting the process.
@@ -7,6 +8,17 @@ export class CoinjoinProcess extends BaseProcess {
         super('coinjoin', 'WalletWasabi.WabiSabiClientLibrary', {
             autoRestart: 0,
         });
+    }
+
+    getUrl() {
+        return `http://localhost:${this.port}/Cryptography/`;
+    }
+
+    async getPort() {
+        if (!(await this.status()).process) {
+            this.port = await getFreePort();
+        }
+        return this.port;
     }
 
     async status(): Promise<Status> {
@@ -19,18 +31,16 @@ export class CoinjoinProcess extends BaseProcess {
 
         // service
         try {
-            const resp = await fetch(
-                `http://localhost:${this.port}/Cryptography/analyze-transaction`,
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json-patch+json',
-                    },
-                    body: JSON.stringify({ transactions: [] }),
+            const resp = await fetch(`${this.getUrl()}get-version`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
                 },
-            );
+            });
             this.logger.debug(this.logTopic, `Checking status (${resp.status})`);
             if (resp.status === 200) {
+                const { version } = await resp.json();
+                this.logger.debug(this.logTopic, `WabiSabiClientLibrary version: ${version}`);
                 return {
                     service: true,
                     process: true,
@@ -47,8 +57,7 @@ export class CoinjoinProcess extends BaseProcess {
         };
     }
 
-    startOnPort(port: number): Promise<void> {
-        this.port = port;
+    start() {
         // We add the port where the process is going to run
         // since there is no way to pass it as argument yet.
         process.env.WCL_BIND_PORT = `${this.port}`;
