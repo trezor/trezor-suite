@@ -25,6 +25,7 @@ jobs:
       - name: "Build connect-web "
         run: |
           yarn install --immutable
+          yarn build:libs
           yarn workspace @trezor/connect-web build
           yarn workspace @trezor/connect-iframe build
           yarn workspace @trezor/connect-popup build

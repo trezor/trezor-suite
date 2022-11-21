@@ -24,6 +24,7 @@ jobs:
         run: |
           echo $ASSET_PREFIX
           yarn install --immutable
+          yarn build:libs
           yarn workspace @trezor/suite-web build
       - name: Archive code coverage results
         uses: actions/upload-artifact@v3
