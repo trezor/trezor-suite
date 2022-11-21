@@ -190,13 +190,18 @@ const restoreSession = (
     account.session.timeCreated = Date.now();
 };
 
+// Should store at most 3 latest checkpoints, from latest to oldest
 const saveCheckpoint = (
     draft: CoinjoinState,
     action: Extract<Action, { type: typeof COINJOIN.ACCOUNT_DISCOVERY_PROGRESS }>,
 ) => {
     const account = draft.accounts.find(a => a.key === action.payload.account.key);
     if (!account) return;
-    account.checkpoint = action.payload.progress.checkpoint;
+    const checkpointNew = action.payload.progress.checkpoint;
+    const checkpoints = (account.checkpoints ?? [])
+        .filter(({ blockHeight }) => blockHeight < checkpointNew.blockHeight)
+        .slice(0, 2);
+    account.checkpoints = [checkpointNew, ...checkpoints];
 };
 
 const createClient = (
