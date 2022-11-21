@@ -164,7 +164,7 @@ const SecurityCheck = () => {
                             </OnboardingButtonCta>
                             <HowLong>
                                 <IconWrapper>
-                                    <Icon size={12} icon="CLOCK" />
+                                    <Icon size={12} icon="CLOCK_ACTIVE" />
                                 </IconWrapper>
                                 <Translation id="TR_TAKES_N_MINUTES" values={{ n: '5' }} />
                             </HowLong>

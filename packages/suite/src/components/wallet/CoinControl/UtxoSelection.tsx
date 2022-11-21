@@ -64,7 +64,7 @@ const Body = styled.div`
 const Row = styled.div`
     align-items: center;
     display: flex;
-    gap: 8px;
+    gap: 6px;
 `;
 
 const BottomRow = styled(Row)`
@@ -150,6 +150,7 @@ export const UtxoSelection = ({ isChecked, transaction, utxo }: UtxoSelectionPro
     const unavailableMessage = amountTooSmallForCoinjoin
         ? 'TR_AMOUNT_TOO_SMALL_FOR_COINJOIN'
         : 'TR_AMOUNT_TOO_BIG_FOR_COINJOIN';
+    const isPendingTransaction = utxo.confirmations === 0;
     const isChangeAddress = utxo.path.split('/').at(-2) === '1'; // change address always has a 1 on the penultimate level of the derivation path
     const amountInBtc = (Number(utxo.amount) / 10 ** network.decimals).toString();
     const outputLabel = account.metadata.outputLabels?.[utxo.txid]?.[utxo.vout];
@@ -173,6 +174,9 @@ export const UtxoSelection = ({ isChecked, transaction, utxo }: UtxoSelectionPro
             />
             <Body>
                 <Row>
+                    {isPendingTransaction && (
+                        <UtxoTag tooltipMessage="TR_IN_PENDING_TRANSACTION" icon="CLOCK" />
+                    )}
                     {isRegisteredForCoinjoin && (
                         <UtxoTag tooltipMessage="TR_REGISTERED_FOR_COINJOIN" icon="SHUFFLE" />
                     )}

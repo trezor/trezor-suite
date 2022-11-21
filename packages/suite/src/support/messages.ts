@@ -5636,17 +5636,22 @@ export default defineMessages({
     },
     TR_AMOUNT_TOO_SMALL_FOR_COINJOIN: {
         id: 'TR_AMOUNT_TOO_SMALL_FOR_COINJOIN',
-        defaultMessage: 'Not available for CoinJoin - amount too small.',
+        defaultMessage: 'Not available for CoinJoin - amount too small',
         description: 'Tooltip over an icon in Coin control section',
     },
     TR_AMOUNT_TOO_BIG_FOR_COINJOIN: {
         id: 'TR_AMOUNT_TOO_BIG_FOR_COINJOIN',
-        defaultMessage: 'Not available for CoinJoin - amount too big.',
+        defaultMessage: 'Not available for CoinJoin - amount too big',
         description: 'Tooltip over an icon in Coin control section',
     },
     TR_CHANGE_ADDRESS_TOOLTIP: {
         id: 'TR_CHANGE_ADDRESS_TOOLTIP',
         defaultMessage: 'This is a change address created from a previous send.',
+        description: 'Tooltip over an icon in Coin control section',
+    },
+    TR_IN_PENDING_TRANSACTION: {
+        id: 'TR_IN_PENDING_TRANSACTION',
+        defaultMessage: 'In pending transaction',
         description: 'Tooltip over an icon in Coin control section',
     },
     TR_PRIVATE_DESCRIPTION: {

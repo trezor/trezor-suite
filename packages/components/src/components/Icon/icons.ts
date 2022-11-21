@@ -21,6 +21,7 @@ export const ICONS = {
     CHANGE_ADDRESS: require('../../images/icons/change_address.svg'),
     CHECK_ACTIVE: require('../../images/icons/check_active.svg'),
     CHECK: require('../../images/icons/check.svg'),
+    CLOCK_ACTIVE: require('../../images/icons/clock_active.svg'),
     CLOCK: require('../../images/icons/clock.svg'),
     COIN_CONTROL: require('../../images/icons/coin_control.svg'),
     COIN: require('../../images/icons/coin.svg'),
