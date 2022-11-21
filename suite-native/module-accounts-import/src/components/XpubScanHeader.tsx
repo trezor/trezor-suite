@@ -43,6 +43,7 @@ export const XpubScanHeader = ({
                 <Text variant="titleMedium">XPUB Import</Text>
             </Box>
             <View style={applyStyle(chipsWrapperStyle)}>
+                {/* TODO enable more coins */}
                 {enabledNetworks.map(network => (
                     <Chip
                         key={network}
