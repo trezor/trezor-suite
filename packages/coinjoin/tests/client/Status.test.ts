@@ -208,24 +208,31 @@ describe('Status', () => {
         expect(requestListener).toHaveBeenCalledTimes(2); // status fetched twice, because Round.inputRegistrationEnd timeout < STATUS_TIMEOUT.enabled
         expect(onUpdateListener).toHaveBeenCalledTimes(1); // status changed only once
 
-        let phase = 0;
         server?.removeAllListeners('test-request');
         server?.addListener('test-request', ({ url, resolve }) => {
             if (url.endsWith('/status')) {
-                if (phase < 4) phase++;
-                resolve({
-                    roundStates: [
-                        {
-                            ...round,
-                            phase,
-                        },
-                    ],
-                });
+                round.phase++;
+                if (round.phase <= 4) {
+                    resolve({
+                        roundStates: [
+                            round,
+                            {
+                                ...round,
+                                id: 'pendingRound',
+                                phase: 2, // intentionally keep it in one phase, see pendingRound explanation below
+                            },
+                        ],
+                    });
+                } else {
+                    // remove all rounds from state
+                    resolve({
+                        roundStates: [],
+                    });
+                }
             }
-            resolve();
         });
 
-        await waitForStatus(3000); // wait 3 sec (STATUS_TIMEOUT.enabled)
+        await waitForStatus(STATUS_TIMEOUT.enabled); // wait 3 sec (STATUS_TIMEOUT.enabled)
 
         expect(requestListener).toHaveBeenCalledTimes(3);
         expect(onUpdateListener).toHaveBeenCalledTimes(2);
@@ -243,6 +250,17 @@ describe('Status', () => {
 
         expect(requestListener).toHaveBeenCalledTimes(6);
         expect(onUpdateListener).toHaveBeenCalledTimes(5);
+
+        await waitForStatus(STATUS_TIMEOUT.enabled); // wait 3 sec (STATUS_TIMEOUT.enabled)
+        expect(requestListener).toHaveBeenCalledTimes(7);
+        expect(onUpdateListener).toHaveBeenCalledTimes(6);
+
+        // pendingRound should be ended. /status didn't report phase change until now, but round does not exists anymore
+        const lastParams = onUpdateListener.mock.calls[5][0];
+        expect(lastParams).toMatchObject({
+            changed: [expect.objectContaining({ id: 'pendingRound', phase: 4 })],
+            rounds: [],
+        });
 
         status.stop();
     }, 20000);

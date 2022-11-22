@@ -38,22 +38,36 @@ export class Status extends EventEmitter {
     }
 
     private compareStatus(next: Round[]) {
-        return next.filter(nextRound => {
-            const known = this.rounds.find(prevRound => prevRound.id === nextRound.id);
-            if (!known) return true; // new phase
-            if (nextRound.phase === known.phase + 1) return true; // expected update
-            if (known.phase === RoundPhase.Ended && known.endRoundState !== nextRound.endRoundState)
-                return true;
-            if (nextRound.phase === RoundPhase.Ended && known.phase !== RoundPhase.Ended)
-                return true; // round ended
-            if (nextRound.phase !== known.phase) {
-                this.emit(
-                    'exception',
-                    `Unexpected phase change: ${nextRound.id} ${known.phase} => ${nextRound.phase}`,
-                );
-            }
-            return false;
-        });
+        return next
+            .filter(nextRound => {
+                const known = this.rounds.find(prevRound => prevRound.id === nextRound.id);
+                if (!known) return true; // new phase
+                if (nextRound.phase === known.phase + 1) return true; // expected update
+                if (
+                    known.phase === RoundPhase.Ended &&
+                    known.endRoundState !== nextRound.endRoundState
+                )
+                    return true;
+                if (nextRound.phase === RoundPhase.Ended && known.phase !== RoundPhase.Ended)
+                    return true; // round ended
+                if (nextRound.phase !== known.phase) {
+                    this.emit(
+                        'exception',
+                        `Unexpected phase change: ${nextRound.id} ${known.phase} => ${nextRound.phase}`,
+                    );
+                }
+                return false;
+            })
+            .concat(
+                // end known rounds which are missing in /status
+                this.rounds
+                    .filter(
+                        prevRound =>
+                            prevRound.phase < RoundPhase.Ended &&
+                            !next.find(nextRound => prevRound.id === nextRound.id),
+                    )
+                    .map(r => ({ ...r, phase: RoundPhase.Ended })),
+            );
     }
 
     setMode(mode: StatusMode) {
