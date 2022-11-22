@@ -34,7 +34,7 @@ jobs:
 
   deploy-builds:
     needs: [build-web]
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, dev-suite1]
     env:
       SUITE_DEPLOY_DIRECTORY: "trezorci@dev-suite.do.sldev.cz:/opt/trezor-suite/${{github.ref_name}}/"
     steps:
