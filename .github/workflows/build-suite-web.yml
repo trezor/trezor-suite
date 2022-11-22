@@ -48,5 +48,4 @@ jobs:
         uses: actions/download-artifact@v3
       - name: Upload suite-web and suite-web-landing
         run: |
-          rsync --delete -va packages/suite-web-landing/build/ "${SUITE_DEPLOY_DIRECTORY}/"
-          rsync --delete -va packages/suite-web/build/ "${SUITE_DEPLOY_DIRECTORY}/web/"
+          rsync --delete -va suite-web-build/ "${SUITE_DEPLOY_DIRECTORY}/web/"
