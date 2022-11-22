@@ -8,6 +8,7 @@ import {
     AccountsImportStackRoutes,
     RootStackParamList,
     AccountsImportStackParamList,
+    RootStackRoutes,
 } from '@suite-native/navigation';
 
 import { AccountImportLoader } from '../components/AccountImportLoader';
@@ -30,7 +31,14 @@ export const AccountsImportScreen = ({
 
         const showAccountInfoAlert = ({ title, message }: { title: string; message: string }) => {
             Alert.alert(title, message, [
-                { text: 'OK, I will fix it', onPress: () => navigation.goBack() },
+                {
+                    text: 'OK, I will fix it',
+                    onPress: () =>
+                        navigation.navigate(RootStackRoutes.AccountsImport, {
+                            screen: AccountsImportStackRoutes.XpubScan,
+                            params: {},
+                        }),
+                },
             ]);
         };
 
