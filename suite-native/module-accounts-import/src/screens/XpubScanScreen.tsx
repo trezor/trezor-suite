@@ -37,7 +37,7 @@ const devXpubButtonStyle = prepareNativeStyle(utils => ({
     borderRadius: utils.borders.radii.round,
 }));
 
-const DEFAULT_CURRENCY_SYMBOL = 'doge';
+const DEFAULT_CURRENCY_SYMBOL = 'btc';
 
 const xpubFormValidationSchema = yup.object({
     xpubAddress: yup.string().required(),
