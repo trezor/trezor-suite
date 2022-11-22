@@ -8179,10 +8179,10 @@ __metadata:
     cross-fetch: ^3.1.5
     events: ^3.3.0
     jest: ^26.6.3
-    karma: ^6.3.16
+    karma: ^6.4.1
     karma-babel-preprocessor: ^8.0.2
-    karma-chrome-launcher: ^3.1.0
-    karma-jasmine: 4.0.1
+    karma-chrome-launcher: ^3.1.1
+    karma-jasmine: ^5.1.0
     karma-jasmine-async: ^0.0.1
     karma-sourcemap-loader: ^0.3.8
     karma-webpack: ^5.0.0
@@ -21617,10 +21617,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jasmine-core@npm:^3.6.0":
-  version: 3.99.1
-  resolution: "jasmine-core@npm:3.99.1"
-  checksum: 4e4a89739d99e471b86c7ccc4c5c244a77cc6d1e17b2b0d87d81266b8415697354d8873f7e764790a10661744f73a753a6e9bcd9b3e48c66a0c9b8a092b071b7
+"jasmine-core@npm:^4.1.0":
+  version: 4.5.0
+  resolution: "jasmine-core@npm:4.5.0"
+  checksum: e7adda527d544097ddb8aeec7bbbed19c59ca70ef57e1b740189eecf5cde3e0e20fba74d15c511b169105cface4fa2a775a6088c2220bf97f482b51b3c5d1fa1
   languageName: node
   linkType: hard
 
@@ -22698,7 +22698,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"karma-chrome-launcher@npm:^3.1.0":
+"karma-chrome-launcher@npm:^3.1.1":
   version: 3.1.1
   resolution: "karma-chrome-launcher@npm:3.1.1"
   dependencies:
@@ -22716,14 +22716,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"karma-jasmine@npm:4.0.1":
-  version: 4.0.1
-  resolution: "karma-jasmine@npm:4.0.1"
+"karma-jasmine@npm:^5.1.0":
+  version: 5.1.0
+  resolution: "karma-jasmine@npm:5.1.0"
   dependencies:
-    jasmine-core: ^3.6.0
+    jasmine-core: ^4.1.0
   peerDependencies:
-    karma: "*"
-  checksum: 28337c82941ed6c68e0c47ef432c2c91511214e84a336e78d9068daebd61a3c1cee6209207ddc5fe3ad78124597f58054b93aa0f973ff6dcc8a8fcd1951c9851
+    karma: ^6.0.0
+  checksum: ebefd1094e7c2b4c854027621d854908166c79cccaabb5a6ba0ace42cd785a9da0a9aad1aa41937956bd4848287eac04886eebfd7c851b927d2132d3563b7739
   languageName: node
   linkType: hard
 
@@ -22749,7 +22749,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"karma@npm:^6.3.16":
+"karma@npm:^6.4.1":
   version: 6.4.1
   resolution: "karma@npm:6.4.1"
   dependencies:
@@ -23211,18 +23211,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"loader-utils@npm:^2.0.0":
-  version: 2.0.4
-  resolution: "loader-utils@npm:2.0.4"
-  dependencies:
-    big.js: ^5.2.2
-    emojis-list: ^3.0.0
-    json5: ^2.1.2
-  checksum: a5281f5fff1eaa310ad5e1164095689443630f3411e927f95031ab4fb83b4a98f388185bb1fe949e8ab8d4247004336a625e9255c22122b815bb9a4c5d8fc3b7
-  languageName: node
-  linkType: hard
-
-"loader-utils@npm:^2.0.3":
+"loader-utils@npm:^2.0.0, loader-utils@npm:^2.0.3":
   version: 2.0.4
   resolution: "loader-utils@npm:2.0.4"
   dependencies:
