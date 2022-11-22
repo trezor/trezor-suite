@@ -4,9 +4,10 @@ import { WalletAccountTransaction } from '@wallet-types';
 import { Icon, useTheme, IconProps } from '@trezor/components';
 import { getTxIcon } from '@suite-common/wallet-utils';
 
-const IconsWrapper = styled.div`
+const IconsWrapper = styled.div<{ isJoint: boolean }>`
     position: relative;
     width: 24px;
+    transform: ${({ isJoint }) => isJoint && 'translate(2px, 0)'};
 `;
 
 const ClockIcon = styled(Icon)`
@@ -25,12 +26,14 @@ interface TransactionTypeIconProps extends Omit<IconProps, 'icon'> {
 export const TransactionTypeIcon = ({ type, isPending, ...rest }: TransactionTypeIconProps) => {
     const theme = useTheme();
 
+    const isJoint = type === 'joint';
+
     return (
-        <IconsWrapper {...rest}>
+        <IconsWrapper isJoint={isJoint} {...rest}>
             <Icon
                 icon={getTxIcon(type)}
                 color={type === 'failed' ? theme.TYPE_RED : theme.TYPE_LIGHT_GREY}
-                size={type === 'joint' ? 20 : 24}
+                size={isJoint ? 20 : 24}
                 {...rest}
             />
 

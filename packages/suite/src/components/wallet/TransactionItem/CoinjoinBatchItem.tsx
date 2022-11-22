@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import {
     formatNetworkAmount,
@@ -92,7 +92,7 @@ const Round = ({ transaction }: { transaction: WalletAccountTransaction }) => {
     );
 };
 
-const StyledCollapsibleBox = styled(CollapsibleBox)`
+const StyledCollapsibleBox = styled(CollapsibleBox)<{ isPending: boolean }>`
     background-color: ${props => props.theme.BG_WHITE};
     box-shadow: none;
     border-radius: 12px;
@@ -101,7 +101,7 @@ const StyledCollapsibleBox = styled(CollapsibleBox)`
     ${CollapsibleBox.Header} {
         padding: 12px 24px;
 
-        @media (max-width: ${variables.SCREEN_SIZE.SM}) {
+        ${variables.SCREEN_QUERY.MOBILE} {
             padding: 12px 16px;
         }
 
@@ -114,7 +114,7 @@ const StyledCollapsibleBox = styled(CollapsibleBox)`
     }
 
     ${CollapsibleBox.IconWrapper} {
-        transition: all 0.25s ease-in-out;
+        transition: all 0.2s ease-in-out;
         transition-property: margin-left, opacity;
     }
 
@@ -126,25 +126,52 @@ const StyledCollapsibleBox = styled(CollapsibleBox)`
     ${CollapsibleBox.Content} {
         padding: 8px;
     }
+
+    ${({ isPending }) =>
+        isPending &&
+        css`
+            border-left: 8px solid ${({ theme }) => theme.TYPE_ORANGE};
+
+            > div {
+                margin-left: -8px;
+            }
+
+            ${CollapsibleBox.Content} {
+                margin-left: 8px;
+            }
+
+            ${variables.SCREEN_QUERY.MOBILE} {
+                > div {
+                    margin-left: -8px;
+                }
+            }
+        `}
 `;
 
 type CoinjoinBatchItemProps = {
     transactions: WalletAccountTransaction[];
     localCurrency: string;
+    isPending: boolean;
 };
 
-export const CoinjoinBatchItem = ({ transactions, localCurrency }: CoinjoinBatchItemProps) => {
+export const CoinjoinBatchItem = ({
+    transactions,
+    localCurrency,
+    isPending,
+}: CoinjoinBatchItemProps) => {
     const lastTx = transactions[0];
     const amount = sumTransactions(transactions);
     const fiatAmount = sumTransactionsFiat(transactions, localCurrency);
     const { FiatAmountFormatter } = useFormatters();
+
     return (
         <StyledCollapsibleBox
             variant="large"
+            isPending={isPending}
             heading={
                 <>
                     <TxTypeIconWrapper>
-                        <TransactionTypeIcon type="joint" isPending={false} />
+                        <TransactionTypeIcon type="joint" isPending={isPending} />
                     </TxTypeIconWrapper>
                     <Content>
                         <Description>

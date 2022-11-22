@@ -138,6 +138,7 @@ export const TransactionList = ({
                                 <CoinjoinBatchItem
                                     key={item.rounds[0].txid}
                                     transactions={item.rounds}
+                                    isPending={isPending}
                                     localCurrency={localCurrency}
                                 />
                             ) : (
