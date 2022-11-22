@@ -62,8 +62,7 @@ export const XpubScanScreen = ({
 
     const resetToDefaultValues = useCallback(() => {
         setIsCameraRequested(false);
-        reset();
-    }, [reset]);
+    }, []);
 
     useFocusEffect(resetToDefaultValues);
 
