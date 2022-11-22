@@ -24,6 +24,7 @@ import { AccountImportHeader } from '../components/AccountImportHeader';
 const devXpubs: Partial<Record<NetworkSymbol, string>> & Record<'btc' | 'test', string> = {
     btc: 'zpub6rjNNddoAVvuYaD6WPdxiqFEToQHgrERjWMg7kM9gGGk6rhPMWNEmL5X745FGqBq8Wp136LfA3A7UjRGEYdJrf8dUfshzNrb5rvaryNfVJf',
     test: 'vpub5ZjRPuuMiEQnbwEDi9jtH1FaJMajZW78uZ1t3RJXKhxyMoTnPraKwGxiDo9SguDYvSieqjoLJxW5n2t9156RR1oeqRnURuftNZTzejBc4pa',
+    doge: 'dgub8sbe5Mi8LA4dXB9zPfLZW8armvaRkaqT37y6xfT1QA12ErATDf8iGEG8y7kamAnjLuEk9AMpTMMp6EK9Vjp2HHx91xdDEmWYpmD49fpoUYF',
 };
 
 const cameraStyle = prepareNativeStyle(_ => ({
@@ -37,7 +38,7 @@ const devXpubButtonStyle = prepareNativeStyle(utils => ({
     borderRadius: utils.borders.radii.round,
 }));
 
-const DEFAULT_CURRENCY_SYMBOL = 'btc';
+const DEFAULT_CURRENCY_SYMBOL = 'doge';
 
 const xpubFormValidationSchema = yup.object({
     xpubAddress: yup.string().required(),
@@ -92,6 +93,7 @@ export const XpubScanScreen = ({
     }, [handleXpubResult, route.params]);
 
     const handleSelectCurrency = (currencySymbol: NetworkSymbol) => {
+        console.log(currencySymbol, 'handle select');
         setSelectedCurrencySymbol(currencySymbol);
     };
 
