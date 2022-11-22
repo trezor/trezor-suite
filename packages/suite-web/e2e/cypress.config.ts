@@ -11,6 +11,7 @@ import * as metadataUtils from '@trezor/suite/src/utils/suite/metadata';
 import googleMock from './plugins/google';
 import dropboxMock from './plugins/dropbox';
 import bridgeMock from './plugins/bridge';
+import * as blockbookMock from './plugins/blockbook';
 
 const ensureRdpPort = (args: any[]) => {
     const existing = args.find(arg => arg.slice(0, 23) === '--remote-debugging-port');
@@ -28,6 +29,7 @@ const ensureRdpPort = (args: any[]) => {
 
 let port = 0;
 let client: any = null;
+let blockbook: Awaited<ReturnType<typeof blockbookMock['start']>> | undefined;
 
 // // add snapshot plugin
 // addMatchImageSnapshotPlugin(on);
@@ -198,6 +200,16 @@ export default defineConfig({
                         result.push(obj);
                     }
                     return result;
+                },
+                async startBlockbookMock({ endpointsFile }) {
+                    blockbook = await blockbookMock.start({ endpointsFile });
+                    return blockbook.port;
+                },
+                stopBlockbookMock() {
+                    if (blockbook) {
+                        blockbook.stop();
+                    }
+                    return null;
                 },
                 ...TrezorUserEnvLink.api,
             });
