@@ -508,7 +508,7 @@ export const initCoinjoinService =
 
         // find already running instance of @trezor/coinjoin client
         const knownService = CoinjoinService.getInstance(symbol);
-        if (knownService && knownClient?.status === 'synced') {
+        if (knownService && knownClient?.status === 'loaded') {
             return knownService;
         }
 

@@ -24,7 +24,7 @@ export interface CoinjoinClientFeeRatesMedians {
 }
 
 export interface CoinjoinClientInstance {
-    status: 'loading' | 'synced';
+    status: 'loading' | 'loaded';
     rounds: { id: string; phase: RoundPhase }[]; // store only slice of Round in reducer. may be extended in the future
     feeRatesMedians: CoinjoinClientFeeRatesMedians;
     coordinationFeeRate: CoinjoinStatusEvent['coordinationFeeRate'];
@@ -239,7 +239,7 @@ const createClient = (
 ) => {
     draft.clients[payload.symbol] = {
         ...transformCoinjoinStatus(payload.status),
-        status: 'synced',
+        status: 'loaded',
     };
 };
 
