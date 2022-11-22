@@ -210,6 +210,7 @@ const OutputList = ({
 
                                     reportTransactionCreatedEvent('copied');
                                 }}
+                                data-test="@send/copy-raw-transaction"
                             >
                                 <Translation id="COPY_TRANSACTION_TO_CLIPBOARD" />
                             </StyledButton>

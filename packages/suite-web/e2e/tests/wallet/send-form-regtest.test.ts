@@ -34,21 +34,32 @@ describe('Send form for bitcoin', () => {
         cy.getTestElement('outputs[0].amount').type('0.3');
         cy.getTestElement('add-output').click();
         cy.getTestElement('outputs[1].amount').type('0.6');
+
         cy.getTestElement('outputs[0].remove').click();
+
         cy.wait(10); // wait for animation
         cy.getTestElement('outputs[0].amount').should('be.visible'); // 1 output is visible
 
+        cy.getTestElement('outputs[0].address').type(
+            'bcrt1qkvwu9g3k2pdxewfqr7syz89r3gj557l374sg5v',
+        );
+
         // add locktime
         cy.getTestElement('add-locktime-button').click();
+
         cy.getTestElement('locktime-input').type('100');
-
-        // change broadcast option
-        cy.getTestElement('broadcast-button').click();
-
-        // todo: input address. there are missing validators for currency REGTEST
 
         // assert final state of form using screenshot
         cy.getTestElement('@wallet/send/outputs-and-options').matchImageSnapshot('bitcoin-send');
+
+        cy.getTestElement('@send/review-button').click();
+        cy.getTestElement('@prompts/confirm-on-device');
+        cy.task('pressYes');
+        cy.task('pressYes');
+        cy.task('pressYes');
+
+        // broadcast is off due to locktime, so we do not see '@modal/send'
+        cy.getTestElement('@send/copy-raw-transaction');
     });
 
     it('switch display units to satoshis, fill a form in satoshis and send', () => {
