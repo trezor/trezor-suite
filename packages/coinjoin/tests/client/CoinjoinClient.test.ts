@@ -1,8 +1,8 @@
 import { CoinjoinClient } from '../../src';
-import { createServer, Server } from '../mocks/server';
+import { createServer } from '../mocks/server';
 import { DEFAULT_ROUND } from '../fixtures/round.fixture';
 
-let server: Server | undefined;
+let server: Awaited<ReturnType<typeof createServer>>;
 
 describe(`CoinjoinClient`, () => {
     beforeAll(async () => {
@@ -10,7 +10,6 @@ describe(`CoinjoinClient`, () => {
     });
 
     beforeEach(() => {
-        server?.removeAllListeners('test-handle-request');
         server?.removeAllListeners('test-request');
     });
 
@@ -19,21 +18,17 @@ describe(`CoinjoinClient`, () => {
     });
 
     it('enable success', async () => {
-        server?.addListener('test-request', ({ url }, req, _res) => {
-            let response: any;
+        server?.addListener('test-request', ({ url, resolve }) => {
             if (url.endsWith('/status')) {
-                response = {
+                resolve({
                     roundStates: [DEFAULT_ROUND],
                     coinJoinFeeRateMedians: [],
-                };
+                });
             }
-            req.emit('test-response', response);
+            resolve();
         });
 
-        const cli = new CoinjoinClient({
-            network: 'regtest',
-            ...server?.requestOptions,
-        });
+        const cli = new CoinjoinClient(server?.requestOptions);
 
         const status = await cli.enable();
         expect(status?.rounds.length).toBeGreaterThan(0);

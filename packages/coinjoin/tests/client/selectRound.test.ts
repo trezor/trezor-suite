@@ -10,9 +10,9 @@ import {
     CoinjoinRoundGenerator,
 } from '../../src/client/round/selectRound';
 import { DEFAULT_ROUND, ROUND_CREATION_EVENT } from '../fixtures/round.fixture';
-import { createServer, Server } from '../mocks/server';
+import { createServer } from '../mocks/server';
 
-let server: Server | undefined;
+let server: Awaited<ReturnType<typeof createServer>>;
 
 // first two params of `selectRound` are always the same
 const GENERATORS: [CoinjoinRoundGenerator, AliceGenerator] = [
@@ -163,17 +163,13 @@ describe('selectRound', () => {
         // return error for each round with miningFeeRate: 1 (second round in fixture)
         // for other rounds return invalid indices
         const spy = jest.fn();
-        server?.addListener('test-request', ({ url, data }, req, res) => {
+        server?.addListener('test-request', ({ url, data, resolve, reject }) => {
             if (url.endsWith('/select-utxo-for-round')) {
                 spy();
                 if (data.constants.miningFeeRate === 1) {
-                    res.statusCode = 500;
-                    res.setHeader('Content-Type', 'application/json');
-                    res.write(JSON.stringify({ error: 'ExpectedRuntimeError' }));
-                    res.end();
-                    req.emit('test-response');
+                    reject(500, { error: 'ExpectedRuntimeError' });
                 } else {
-                    req.emit('test-response', {
+                    resolve({
                         indices: [5], // non existing indices (utxo indexes)
                     });
                 }
@@ -212,12 +208,12 @@ describe('selectRound', () => {
         // return error for each round with miningFeeRate: 1 (second round in fixture)
         // for other rounds return invalid indices
         const spy = jest.fn();
-        server?.addListener('test-request', ({ url }, req) => {
+        server?.addListener('test-request', ({ url, resolve }) => {
             if (url.endsWith('/select-utxo-for-round')) {
                 spy();
-                req.emit('test-response', []);
+                resolve([]);
             }
-            req.emit('test-response');
+            resolve();
         });
 
         const result = await selectUtxoForRound(
@@ -262,8 +258,7 @@ describe('selectRound', () => {
         // dummy mock of /select-utxo-for-round
         // pick utxo which amount is greater than miningFeeRate + 1000
         const spy = jest.fn();
-        server?.addListener('test-request', ({ url, data }, req, _res) => {
-            let response: any;
+        server?.addListener('test-request', ({ url, data, resolve }) => {
             if (url.endsWith('/select-utxo-for-round')) {
                 spy();
                 const indices = data.utxos.flatMap((utxo: any, i: number) => {
@@ -271,11 +266,11 @@ describe('selectRound', () => {
                     return i;
                 });
 
-                response = {
+                resolve({
                     indices,
-                };
+                });
             }
-            req.emit('test-response', response);
+            resolve();
         });
 
         const roundWithMiningFee = (miningFeeRate: number) => ({

@@ -1,9 +1,9 @@
 import { connectionConfirmation } from '../../src/client/round/connectionConfirmation';
-import { createServer, Server } from '../mocks/server';
+import { createServer } from '../mocks/server';
 import { createInput } from '../fixtures/input.fixture';
 import { createCoinjoinRound } from '../fixtures/round.fixture';
 
-let server: Server | undefined;
+let server: Awaited<ReturnType<typeof createServer>>;
 
 jest.mock('@trezor/utils', () => {
     const originalModule = jest.requireActual('@trezor/utils');
@@ -42,11 +42,11 @@ describe('connectionConfirmation', () => {
 
     it('try to confirm already confirmed input (Alice got credentials)', async () => {
         const spy = jest.fn();
-        server?.addListener('test-request', ({ url, data }, req) => {
+        server?.addListener('test-request', ({ url, data, resolve }) => {
             if (url.includes('connection-confirmation')) {
                 spy(data.aliceId);
             }
-            req.emit('test-response');
+            resolve();
         });
         const response = await connectionConfirmation(
             createCoinjoinRound(
@@ -85,15 +85,11 @@ describe('connectionConfirmation', () => {
     });
 
     it('try to confirm already confirmed input (coordinator error)', async () => {
-        server?.addListener('test-request', ({ url }, req, res) => {
+        server?.addListener('test-request', ({ url, resolve, reject }) => {
             if (url.includes('connection-confirmation')) {
-                res.statusCode = 500;
-                res.setHeader('Content-Type', 'application/json');
-                res.write(JSON.stringify({ errorCode: 'AliceAlreadyConfirmedConnection' }));
-                res.end();
-                res.end();
+                reject(500, { errorCode: 'AliceAlreadyConfirmedConnection' });
             }
-            req.emit('test-response');
+            resolve();
         });
         const response = await connectionConfirmation(
             createCoinjoinRound(
@@ -125,13 +121,12 @@ describe('connectionConfirmation', () => {
 
     it('connection confirmation in input registration phase (real credentials not received)', async () => {
         const spy = jest.fn();
-        server?.addListener('test-request', ({ url }, req) => {
+        server?.addListener('test-request', ({ url, resolve }) => {
             if (url.includes('connection-confirmation')) {
                 spy();
-                req.emit('test-response', {});
-                return;
+                resolve({});
             }
-            req.emit('test-response');
+            resolve();
         });
         const response = await connectionConfirmation(
             createCoinjoinRound(
@@ -165,14 +160,13 @@ describe('connectionConfirmation', () => {
     });
 
     it('404 error in coordinator connection-confirmation', async () => {
-        server?.addListener('test-request', ({ url, data }, req, res) => {
+        server?.addListener('test-request', ({ url, data, resolve, reject }) => {
             if (url.includes('connection-confirmation')) {
                 if (data.aliceId === '01A2-01a2') {
-                    res.writeHead(404);
-                    res.end();
+                    reject(404);
                 }
             }
-            req.emit('test-response');
+            resolve();
         });
         const response = await connectionConfirmation(
             createCoinjoinRound(

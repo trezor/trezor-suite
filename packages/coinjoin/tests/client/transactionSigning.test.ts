@@ -1,8 +1,10 @@
+import { networks } from '@trezor/utxo-lib';
+
 import { transactionSigning } from '../../src/client/round/transactionSigning';
-import { createServer, Server } from '../mocks/server';
+import { createServer } from '../mocks/server';
 import { createInput } from '../fixtures/input.fixture';
 
-let server: Server | undefined;
+let server: Awaited<ReturnType<typeof createServer>>;
 
 // Temporary mock until affiliate request will be moved to coordinator
 jest.mock('cross-fetch', () => {
@@ -104,7 +106,7 @@ describe('transactionSigning', () => {
                     ],
                 },
             } as any,
-            server?.requestOptions,
+            { ...server?.requestOptions, network: networks.bitcoin },
         );
         expect(response).toMatchObject({
             transactionData: {

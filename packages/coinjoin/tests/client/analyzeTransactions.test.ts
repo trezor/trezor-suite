@@ -1,9 +1,9 @@
 import { networks } from '@trezor/utxo-lib';
 
 import { analyzeTransactions } from '../../src/client/analyzeTransactions';
-import { createServer, Server } from '../mocks/server';
+import { createServer } from '../mocks/server';
 
-let server: Server | undefined;
+let server: Awaited<ReturnType<typeof createServer>>;
 
 // create simplified transaction
 const generateTx = (vin: any[], vout: any[]) => {
@@ -53,14 +53,13 @@ describe('analyzeTransactions', () => {
     });
 
     it('Regtest: simple analyze', async () => {
-        server?.addListener('test-request', ({ url, data }, req, _res) => {
-            let response: any;
+        server?.addListener('test-request', ({ url, data, resolve }) => {
             if (url.endsWith('/analyze-transaction')) {
-                response = {
+                resolve({
                     results: calcAnonymity(data.transactions),
-                };
+                });
             }
-            req.emit('test-response', response);
+            resolve();
         });
 
         const txHistory = [
