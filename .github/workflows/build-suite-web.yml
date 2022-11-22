@@ -37,7 +37,7 @@ jobs:
     needs: [build-web]
     runs-on: [self-hosted, dev-suite1]
     env:
-      SUITE_DEPLOY_DIRECTORY: "/opt/trezor-suite/${{github.ref_name}}" #remote deploy trezorci@dev-suite.do.sldev.cz:
+      SUITE_DEPLOY_DIRECTORY: "/opt/trezor-suite/suite-web/${{github.ref_name}}" #remote deploy trezorci@dev-suite.do.sldev.cz:
     steps:
       # TODO! disabled temporary to test self-hosted runner
       # - name: Configure ssh credentials
@@ -48,4 +48,5 @@ jobs:
         uses: actions/download-artifact@v3
       - name: Upload suite-web and suite-web-landing
         run: |
+          mkdir -p ${SUITE_DEPLOY_DIRECTORY}/web
           rsync --delete -va suite-web-build/ "${SUITE_DEPLOY_DIRECTORY}/web/"
