@@ -547,31 +547,31 @@ export const restoreCoinjoinSession =
             return;
         }
 
-        // get @trezor/coinjoin client if available
-        const client = getCoinjoinClient(account.symbol);
-        // get fresh data from reducer
-        const coinjoinAccount = coinjoin.accounts.find(a => a.key === account.key);
-        if (!device || !coinjoinAccount || !coinjoinAccount.session || !client) {
+        const errorToast = (error: string) => {
             dispatch(
                 notificationsActions.addToast({
                     type: 'error',
-                    error: `Coinjoin not authorized: missing data`,
+                    error,
                 }),
             );
-            return;
+        };
+
+        if (!device?.connected) {
+            return errorToast('Device is disconnected');
+        }
+
+        // get @trezor/coinjoin client if available
+        const client = getCoinjoinClient(account.symbol);
+        if (!client) {
+            return errorToast('CoinjoinClient is not enabled');
+        }
+        // get fresh data from reducer
+        const coinjoinAccount = coinjoin.accounts.find(a => a.key === account.key);
+        if (!coinjoinAccount || !coinjoinAccount.session) {
+            return errorToast('Coinjoin account session is missing');
         }
 
         const { session, rawLiquidityClue } = coinjoinAccount;
-
-        // recalculate maxRounds
-        const maxRounds = getMaxRounds(
-            coinjoinAccount.targetAnonymity,
-            account.addresses?.anonymitySet || {},
-        );
-
-        if (maxRounds !== session.maxRounds) {
-            // TODO: decision should Trezor ask for confirmation if it's already preauthorized but maxRounds changed? should it updated in CoinjoinSession?
-        }
 
         const auth = await TrezorConnect.authorizeCoinJoin({
             device,
@@ -583,12 +583,12 @@ export const restoreCoinjoinSession =
             coordinator: client.settings.coordinatorName,
             maxCoordinatorFeeRate: session.maxCoordinatorFeeRate * COORDINATOR_FEE_RATE_MULTIPLIER,
             maxFeePerKvbyte: session.maxFeePerKvbyte,
-            maxRounds,
+            maxRounds: session.maxRounds - session.signedRounds.length,
         });
 
         if (auth.success) {
             // dispatch data to reducer
-            dispatch(coinjoinSessionRestore(account.key)); // todo: pass new max rounds
+            dispatch(coinjoinSessionRestore(account.key));
             // register authorized account
             client.registerAccount(getRegisterAccountParams(account, session, rawLiquidityClue));
         } else {
