@@ -1,7 +1,7 @@
 import { coordinatorRequest } from '../../src/utils/http';
-import { createServer, Server } from '../mocks/server';
+import { createServer } from '../mocks/server';
 
-let server: Server | undefined;
+let server: Awaited<ReturnType<typeof createServer>>;
 let baseUrl = 'http://localhost:8081/';
 
 describe('http', () => {
@@ -20,12 +20,8 @@ describe('http', () => {
     });
 
     it('with 500 error', async () => {
-        server?.addListener('test-request', (_, req, res) => {
-            res.statusCode = 500;
-            res.setHeader('Content-Type', 'application/json');
-            res.write(JSON.stringify({ errorCode: 'InternalErrorCodeExample' }));
-            res.end();
-            req.emit('test-response');
+        server?.addListener('test-request', ({ reject }) => {
+            reject(500, { errorCode: 'InternalErrorCodeExample' });
         });
 
         await expect(coordinatorRequest('status', {}, { baseUrl })).rejects.toThrow(
@@ -34,12 +30,8 @@ describe('http', () => {
     });
 
     it('with 500 error without errorCode', async () => {
-        server?.addListener('test-request', (_, req, res) => {
-            res.statusCode = 500;
-            res.setHeader('Content-Type', 'application/json');
-            res.write(JSON.stringify({ error: 'InternalErrorCodeExample' }));
-            res.end();
-            req.emit('test-response');
+        server?.addListener('test-request', ({ reject }) => {
+            reject(500, { error: 'InternalErrorCodeExample' });
         });
 
         await expect(coordinatorRequest('status', {}, { baseUrl })).rejects.toThrow(
@@ -48,11 +40,11 @@ describe('http', () => {
     });
 
     it('with 500 error without json header', async () => {
-        server?.addListener('test-request', (_, req, res) => {
-            res.statusCode = 500;
-            res.write('InternalErrorCodeExample');
-            res.end();
-            req.emit('test-response');
+        server?.addListener('test-request', ({ response, resolve }) => {
+            response.statusCode = 500;
+            response.write('InternalErrorCodeExample');
+            response.end();
+            resolve();
         });
 
         await expect(coordinatorRequest('status', {}, { baseUrl })).rejects.toThrow(
@@ -61,12 +53,12 @@ describe('http', () => {
     });
 
     it('with 500 error with invalid json', async () => {
-        server?.addListener('test-request', (_, req, res) => {
-            res.statusCode = 500;
-            res.setHeader('Content-Type', 'application/json');
-            res.write('InternalErrorCodeExample');
-            res.end();
-            req.emit('test-response');
+        server?.addListener('test-request', ({ response, resolve }) => {
+            response.statusCode = 500;
+            response.setHeader('Content-Type', 'application/json');
+            response.write('InternalErrorCodeExample');
+            response.end();
+            resolve();
         });
 
         await expect(coordinatorRequest('status', {}, { baseUrl })).rejects.toThrow(
@@ -75,10 +67,8 @@ describe('http', () => {
     });
 
     it('with 404 error', async () => {
-        server?.addListener('test-request', (_, req, res) => {
-            res.statusCode = 404;
-            res.end();
-            req.emit('test-response');
+        server?.addListener('test-request', ({ reject }) => {
+            reject(404);
         });
 
         await expect(coordinatorRequest('status', {}, { baseUrl })).rejects.toThrow('Not Found');
@@ -86,11 +76,9 @@ describe('http', () => {
 
     it('with 403 error (repeated request)', async () => {
         const identities: string[] = [];
-        const requestListener = jest.fn((_, req, res) => {
-            identities.push(req.headers['proxy-authorization']);
-            res.statusCode = 403;
-            res.end();
-            req.emit('test-response');
+        const requestListener = jest.fn(({ reject, request }) => {
+            identities.push(request.headers['proxy-authorization']);
+            reject(403);
         });
         server?.addListener('test-request', requestListener);
 
@@ -138,8 +126,8 @@ describe('http', () => {
             expect(resp).toMatchObject({ aliceId: expect.any(String) });
         });
         // without baseUrl
-        coordinatorRequest(`status`, {}, { baseUrl }).then(resp => {
-            expect(resp).toEqual({ roundStates: [] });
+        coordinatorRequest<any>(`status`, {}, { baseUrl }).then(resp => {
+            expect(resp.roundStates.length).toEqual(1);
         });
         // without json response
         coordinatorRequest('ready-to-sign', {}, { baseUrl }).then(resp => {

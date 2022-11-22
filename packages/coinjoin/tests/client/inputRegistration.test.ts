@@ -1,10 +1,10 @@
 import { CoinjoinPrison } from '../../src/client/CoinjoinPrison';
 import { inputRegistration } from '../../src/client/round/inputRegistration';
-import { createServer, Server } from '../mocks/server';
+import { createServer } from '../mocks/server';
 import { createInput } from '../fixtures/input.fixture';
 import { createCoinjoinRound } from '../fixtures/round.fixture';
 
-let server: Server | undefined;
+let server: Awaited<ReturnType<typeof createServer>>;
 
 const prison = new CoinjoinPrison();
 
@@ -73,27 +73,27 @@ describe('inputRegistration', () => {
     });
 
     it('fees calculation for P2WPKH and Taproot (remix/coordinator/plebs)', async () => {
-        server?.addListener('test-request', ({ url, data }, req, _res) => {
-            let response: any;
+        server?.addListener('test-request', ({ url, data, resolve }) => {
             if (
                 url.endsWith('/input-registration') &&
                 (data.input === 'A1' || data.input === 'B1')
             ) {
                 // first input from each account is remixed (no coordinator fee)
-                response = {
+                resolve({
                     aliceId: data.input,
                     isPayingZeroCoordinationFee: true,
-                };
-            } else if (url.endsWith('/create-request')) {
-                response = {
+                });
+            }
+            if (url.endsWith('/create-request')) {
+                resolve({
                     realCredentialsRequestData: {
                         credentialsRequest: {
                             delta: data.amountsToRequest[0],
                         },
                     },
-                };
+                });
             }
-            req.emit('test-response', response);
+            resolve();
         });
 
         const response = await inputRegistration(
@@ -172,16 +172,13 @@ describe('inputRegistration', () => {
     });
 
     it('error in coordinator input-registration', async () => {
-        server?.addListener('test-request', ({ url, data }, req, res) => {
+        server?.addListener('test-request', ({ url, data, resolve, reject }) => {
             if (url.endsWith('/input-registration')) {
                 if (data.ownershipProof === '01A2') {
-                    res.statusCode = 500;
-                    res.setHeader('Content-Type', 'application/json');
-                    res.write(JSON.stringify({ error: 'ExpectedRuntimeError' }));
-                    res.end();
+                    reject(500, { error: 'ExpectedRuntimeError' });
                 }
             }
-            req.emit('test-response');
+            resolve();
         });
         const response = await inputRegistration(
             createCoinjoinRound(
@@ -215,15 +212,13 @@ describe('inputRegistration', () => {
     });
 
     it('deadline in coordinator request', async () => {
-        server?.addListener('test-request', ({ url }, req) => {
+        server?.addListener('test-request', ({ url, resolve }) => {
             if (url.endsWith('/input-registration')) {
                 // respond after phaseDeadline
-                setTimeout(() => {
-                    req.emit('test-response');
-                }, 4000);
+                setTimeout(resolve, 4000);
                 return;
             }
-            req.emit('test-response');
+            resolve();
         });
 
         const response = await inputRegistration(
@@ -247,14 +242,11 @@ describe('inputRegistration', () => {
     });
 
     it('error in middleware after successful registration (input should be unregistered while still can)', async () => {
-        server?.addListener('test-request', ({ url }, req, res) => {
+        server?.addListener('test-request', ({ url, resolve, reject }) => {
             if (url.endsWith('/create-request')) {
-                res.statusCode = 500;
-                res.setHeader('Content-Type', 'application/json');
-                res.write(JSON.stringify({ error: 'ExpectedRuntimeError' }));
-                res.end();
+                reject(500, { error: 'ExpectedRuntimeError' });
             }
-            req.emit('test-response');
+            resolve();
         });
         const response = await inputRegistration(
             createCoinjoinRound(

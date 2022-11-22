@@ -1,9 +1,9 @@
 import { Status } from '../../src/client/Status';
 import { ROUND_REGISTRATION_END_OFFSET, STATUS_TIMEOUT } from '../../src/constants';
-import { createServer, Server } from '../mocks/server';
+import { createServer } from '../mocks/server';
 import { DEFAULT_ROUND } from '../fixtures/round.fixture';
 
-let server: Server | undefined;
+let server: Awaited<ReturnType<typeof createServer>>;
 
 const waitForStatus = (ms: number) => new Promise(resolve => setTimeout(resolve, ms + 100));
 
@@ -39,13 +39,11 @@ describe('Status', () => {
     it('Status mode timeouts', async () => {
         const status = new Status(server?.requestOptions);
 
-        const requestListener = jest.fn((_, req) => {
-            expect(req.headers).toMatchObject({
+        const requestListener = jest.fn(({ request, resolve }) => {
+            expect(request.headers).toMatchObject({
                 'proxy-authorization': 'Basic Satoshi',
             });
-            req.emit('test-response', {
-                roundStates: [DEFAULT_ROUND],
-            });
+            resolve();
         });
         server?.addListener('test-request', requestListener);
 
@@ -74,14 +72,12 @@ describe('Status', () => {
         const status = new Status(server?.requestOptions);
 
         const identities: string[] = [];
-        const requestListener = jest.fn((_, req) => {
-            const id = req.headers['proxy-authorization'];
+        const requestListener = jest.fn(({ request, resolve }) => {
+            const id = request.headers['proxy-authorization'];
             if (!identities.includes(id)) {
                 identities.push(id);
             }
-            req.emit('test-response', {
-                roundStates: [DEFAULT_ROUND],
-            });
+            resolve();
         });
         server?.addListener('test-request', requestListener);
 
@@ -131,15 +127,15 @@ describe('Status', () => {
 
     it('Status start attempts, keep lifecycle regardless of failed requests', async done => {
         let request = 0;
-        server?.addListener('test-request', (_, req) => {
+        server?.addListener('test-request', ({ resolve }) => {
             if (request === 6) {
-                req.emit('test-response', {
+                resolve({
                     roundStates: [{ ...DEFAULT_ROUND, phase: 1 }],
                 });
             } else {
                 setTimeout(
                     () => {
-                        req.emit('test-response', {
+                        resolve({
                             roundStates: [DEFAULT_ROUND],
                         });
                     },
@@ -195,14 +191,13 @@ describe('Status', () => {
             },
         };
 
-        server?.addListener('test-request', ({ url }, req, _res) => {
-            let response: any;
+        server?.addListener('test-request', ({ url, resolve }) => {
             if (url.endsWith('/status')) {
-                response = {
+                resolve({
                     roundStates: [round],
-                };
+                });
             }
-            req.emit('test-response', response);
+            resolve();
         });
 
         status.setMode('enabled');
@@ -215,20 +210,19 @@ describe('Status', () => {
 
         let phase = 0;
         server?.removeAllListeners('test-request');
-        server?.addListener('test-request', ({ url }, req, _res) => {
-            let response: any;
+        server?.addListener('test-request', ({ url, resolve }) => {
             if (url.endsWith('/status')) {
                 if (phase < 4) phase++;
-                response = {
+                resolve({
                     roundStates: [
                         {
                             ...round,
                             phase,
                         },
                     ],
-                };
+                });
             }
-            req.emit('test-response', response);
+            resolve();
         });
 
         await waitForStatus(3000); // wait 3 sec (STATUS_TIMEOUT.enabled)

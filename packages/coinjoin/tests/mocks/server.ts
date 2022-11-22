@@ -1,6 +1,8 @@
 import * as net from 'net';
 import * as http from 'http';
 
+import { DEFAULT_ROUND, FEE_RATE_MEDIANS } from '../fixtures/round.fixture';
+
 // Mock coordinator and middleware responses
 
 const DEFAULT = {
@@ -30,7 +32,8 @@ const DEFAULT = {
     },
     // coordinator
     status: {
-        roundStates: [],
+        roundStates: [DEFAULT_ROUND],
+        coinJoinFeeRateMedians: FEE_RATE_MEDIANS,
     },
     'input-registration': {
         aliceId: Math.random().toString(),
@@ -87,43 +90,75 @@ const handleRequest = (req: http.IncomingMessage, res: http.ServerResponse, test
     res.end();
 };
 
-// export type Server = http.Server;
-export interface Server extends http.Server {
-    requestOptions: any;
+const rejectRequest = (res: http.ServerResponse, code: number, error?: any) => {
+    if (res.writableEnded) return;
+
+    res.statusCode = code;
+    try {
+        const json = JSON.stringify(error);
+        res.setHeader('Content-Type', 'application/json');
+        res.write(json);
+    } catch (e) {
+        res.write(error ?? '');
+    }
+    res.end();
+};
+
+interface TestRequest {
+    url: string;
+    data: any;
+    request: http.IncomingMessage;
+    response: http.ServerResponse;
+    resolve: (fn?: any) => void;
+    reject: (code: number, error?: any) => void;
+}
+
+interface MockedServerEvents {
+    (ev: 'test-request', listener: (r: TestRequest) => void): any;
+    (ev: 'test-handle-request', listener: (...args: any[]) => void): any;
+    (event: string, listener: (...args: any[]) => void): any;
+}
+
+export interface MockedServer extends Exclude<http.Server, 'addListener'> {
+    requestOptions: {
+        network: any;
+        coordinatorName: string;
+        coordinatorUrl: string;
+        middlewareUrl: string;
+        signal: AbortSignal;
+        log: (message: string) => any;
+    };
+    addListener: MockedServerEvents;
 }
 
 export const createServer = async () => {
     const port = await getFreePort();
-    const server = http.createServer((req, res) => {
-        server.emit('test-handle-request', req);
+    const server = http.createServer((request, response) => {
+        server.emit('test-handle-request', request);
         if (server.listenerCount('test-request') > 0) {
             let data = '';
-            req.on('data', chunk => {
+            request.on('data', chunk => {
                 data += chunk;
             });
-            req.on('end', () => {
-                server.emit(
-                    'test-request',
-                    {
-                        url: req.url || '',
-                        data: JSON.parse(data),
-                    },
-                    req,
-                    res,
-                );
-            });
-            // notify test and wait for the response
-            req.on('test-response', (responseData: any) => {
-                handleRequest(req, res, responseData);
+            request.on('end', () => {
+                const event: TestRequest = {
+                    url: request.url || '',
+                    data: JSON.parse(data),
+                    request,
+                    response,
+                    resolve: responseData => handleRequest(request, response, responseData),
+                    reject: (code, error) => rejectRequest(response, code, error),
+                };
+                server.emit('test-request', event);
             });
         } else {
-            handleRequest(req, res);
+            handleRequest(request, response);
         }
-    });
+    }) as MockedServer;
     server.listen(port);
 
-    // @ts-expect-error
     server.requestOptions = {
+        network: 'test',
         coordinatorName: 'CoinJoinCoordinatorIdentifier',
         coordinatorUrl: `http://localhost:${port}/`,
         middlewareUrl: `http://localhost:${port}/`,
@@ -131,5 +166,5 @@ export const createServer = async () => {
         log: () => {},
     };
 
-    return server as Server;
+    return server;
 };

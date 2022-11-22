@@ -1,10 +1,10 @@
 import { CoinjoinPrison } from '../../src/client/CoinjoinPrison';
 import { outputRegistration } from '../../src/client/round/outputRegistration';
-import { createServer, Server } from '../mocks/server';
+import { createServer } from '../mocks/server';
 import { createInput } from '../fixtures/input.fixture';
 import { createCoinjoinRound } from '../fixtures/round.fixture';
 
-let server: Server | undefined;
+let server: Awaited<ReturnType<typeof createServer>>;
 
 const prison = new CoinjoinPrison();
 

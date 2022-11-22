@@ -38,6 +38,21 @@ export const ROUND_CREATION_EVENT = {
     },
 };
 
+export const FEE_RATE_MEDIANS = [
+    {
+        timeFrame: '1d 0h 1m 0s',
+        medianFeeRate: 129000,
+    },
+    {
+        timeFrame: '7d 0h 1m 0s',
+        medianFeeRate: 129000,
+    },
+    {
+        timeFrame: '31d 0h 1m 0s',
+        medianFeeRate: 129000,
+    },
+];
+
 export const DEFAULT_ROUND = {
     id: '80b4e3efd1aedeb7b140d605946ca5662241d6829b6018bb0eee58c9ac929fce',
     blameOf: '0000000000000000000000000000000000000000000000000000000000000000',
