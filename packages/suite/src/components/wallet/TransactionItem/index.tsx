@@ -49,10 +49,10 @@ const Wrapper = styled(Card)<{
         props.isPending &&
         css`
             border-left: 8px solid ${props => props.theme.TYPE_ORANGE};
-            padding-left: 14px;
+            padding-left: 16px;
 
             @media (max-width: ${variables.SCREEN_SIZE.SM}) {
-                padding: 0px 10px;
+                padding: 0px 8px;
             }
         `}
 
