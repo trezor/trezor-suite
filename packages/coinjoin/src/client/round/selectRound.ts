@@ -126,7 +126,7 @@ export const selectUtxoForRound = async (
                 coordinationFeeRate: roundParameters.coordinationFeeRate,
                 allowedInputAmounts: roundParameters.allowedInputAmounts,
                 allowedOutputAmounts: roundParameters.allowedOutputAmounts,
-                allowedInputTypes: roundParameters.allowedInputScriptTypes,
+                allowedInputTypes: roundParameters.allowedInputTypes,
             };
             return Promise.all(
                 // ...and for each Account
