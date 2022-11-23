@@ -20,54 +20,69 @@ export class CoinjoinFilterController implements FilterController {
     }
 
     /**
-     * Returns number of blocks which must be scanned to change the discovery progress by 1 %,
-     * clamped by PROGRESS_BATCH_SIZE_MIN (so progress is not signalled too often)
-     * and PROGRESS_BATCH_SIZE_MAX (so there isn't too big gap between two progress signallings)
+     * Returns function which calculates progress for given block height and returns it whenever it changes by 1 %
+     * (clamped by PROGRESS_BATCH_SIZE_MIN so progress is not signalled too often and PROGRESS_BATCH_SIZE_MAX so
+     * there isn't too big gap between two progress signallings), or undefined when the change is smaller.
+     * First block progress is always signalled (required for handling reorgs properly)
      */
-    private getProgressBatchSize(firstBlock: number, bestBlock: number) {
-        const percent = Math.ceil((bestBlock - firstBlock) / 100);
-        return Math.min(Math.max(percent, PROGRESS_BATCH_SIZE_MIN), PROGRESS_BATCH_SIZE_MAX);
+    private getProgressHandler(baseHeight: number, bestHeight: number) {
+        const blockCount = bestHeight - baseHeight;
+        const percent = Math.ceil(blockCount / 100);
+        const batch = Math.min(Math.max(percent, PROGRESS_BATCH_SIZE_MIN), PROGRESS_BATCH_SIZE_MAX);
+        return (height: number) => {
+            const count = height - baseHeight;
+            return count % batch === 1 ? count / blockCount : undefined;
+        };
     }
 
-    async *getFilterIterator(params?: FilterControllerParams, context?: FilterControllerContext) {
-        const filterBatchSize = params?.batchSize ?? FILTERS_BATCH_SIZE;
+    async *getFilterIterator(params: FilterControllerParams, context?: FilterControllerContext) {
+        const [latestCheckpoint, ...olderCheckpoints] = params?.checkpoints?.length
+            ? params.checkpoints
+            : [this.baseBlock];
 
-        let counter = 0;
-        let filterBatch = await this.client.fetchFilters(
-            (params?.checkpoints?.[0] ?? this.baseBlock).blockHash,
-            filterBatchSize,
-            { signal: context?.abortSignal },
-        );
-
-        const firstBlockHeight =
-            filterBatch.status === 'ok' ? filterBatch.filters[0]?.blockHeight : -1;
-
-        while (filterBatch.status === 'ok') {
-            const { bestHeight, filters } = filterBatch;
-            const progressBatchSize = this.getProgressBatchSize(firstBlockHeight, bestHeight);
-            for (let i = 0; i < filters.length; ++i) {
-                const filter = filters[i];
-                let progress;
-                if (++counter >= progressBatchSize) {
-                    counter = 0;
-                    progress =
-                        (filter.blockHeight - firstBlockHeight) / (bestHeight - firstBlockHeight);
-                }
-                yield {
-                    ...filter,
-                    progress,
-                };
-            }
-            // eslint-disable-next-line no-await-in-loop
-            filterBatch = await this.client.fetchFilters(
-                filters[filters.length - 1].blockHash,
-                filterBatchSize,
+        const fetchFilterBatch = async ({ blockHeight, blockHash }: typeof latestCheckpoint) => ({
+            height: blockHeight,
+            hash: blockHash,
+            response: await this.client.fetchFilters(
+                blockHash,
+                params?.batchSize ?? FILTERS_BATCH_SIZE,
                 { signal: context?.abortSignal },
-            );
+            ),
+        });
+
+        // Try to fetch filters from the latest checkpoint
+        let batch = await fetchFilterBatch(latestCheckpoint);
+
+        // Backward phase:
+        // Try to rollback through the older checkpoints as long as 'not-found' (handles reorgs)
+        // eslint-disable-next-line no-restricted-syntax
+        for (const checkpoint of olderCheckpoints) {
+            if (batch.response.status !== 'not-found') break;
+            // eslint-disable-next-line no-await-in-loop
+            batch = await fetchFilterBatch(checkpoint);
         }
 
-        if (filterBatch.status === 'not-found') {
-            throw new Error('Block not found');
+        // Forward phase:
+        // If there are filters, iterate over them and fetch subsequent batch
+        if (batch.response.status === 'ok') {
+            const getProgress = this.getProgressHandler(batch.height, batch.response.bestHeight);
+            do {
+                const { filters } = batch.response;
+                // eslint-disable-next-line no-restricted-syntax
+                for (const filter of filters) {
+                    yield { ...filter, progress: getProgress(filter.blockHeight) };
+                }
+                // eslint-disable-next-line no-await-in-loop
+                batch = await fetchFilterBatch(filters[filters.length - 1]);
+            } while (batch.response.status === 'ok');
         }
+
+        // If filters couldn't be fetched (either due to reorg in forward phase
+        // or not old enough checkpoint in backward phase), throw error
+        if (batch.response.status === 'not-found') {
+            throw new Error(`Block not found: ${batch.hash}`);
+        }
+
+        // Here, batch.response.status is always up-to-date
     }
 }
