@@ -1,5 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import { View } from 'react-native';
+import { useSelector } from 'react-redux';
 
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 
@@ -13,17 +14,20 @@ import {
 import { Chip } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { CryptoIcon } from '@trezor/icons';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { networks, NetworkSymbol } from '@suite-common/wallet-config';
 import { AccountsList } from '@suite-native/accounts';
+import { selectAccountsSymbols } from '@suite-common/wallet-core';
 
 const assetsFilterStyle = prepareNativeStyle(utils => ({
     flexDirection: 'row',
+    flexWrap: 'wrap',
     borderRadius: utils.borders.radii.round,
     marginBottom: utils.spacings.medium,
 }));
 
 const assetsFilterItemStyle = prepareNativeStyle(utils => ({
     marginRight: utils.spacings.small,
+    marginBottom: utils.spacings.small,
 }));
 
 export const AccountsScreen = ({
@@ -31,6 +35,7 @@ export const AccountsScreen = ({
 }: StackProps<AccountsStackParamList, AccountsStackRoutes.Accounts>) => {
     const { applyStyle } = useNativeStyles();
     const [selectedAssets, setSelectedAssets] = useState<NetworkSymbol[]>([]);
+    const accountsSymbols = useSelector(selectAccountsSymbols);
     const navigation =
         useNavigation<StackNavigationProps<AccountsStackParamList, AccountsStackRoutes.Accounts>>();
 
@@ -66,20 +71,16 @@ export const AccountsScreen = ({
     return (
         <Screen>
             <View style={[applyStyle(assetsFilterStyle)]}>
-                <Chip
-                    icon={<CryptoIcon name="test" />}
-                    onSelect={() => handleSelectAsset('test')}
-                    title="testnet"
-                    isSelected={selectedAssets.includes('test')}
-                    style={applyStyle(assetsFilterItemStyle)}
-                />
-                <Chip
-                    icon={<CryptoIcon name="btc" />}
-                    onSelect={() => handleSelectAsset('btc')}
-                    title="btc"
-                    isSelected={selectedAssets.includes('btc')}
-                    style={applyStyle(assetsFilterItemStyle)}
-                />
+                {accountsSymbols.map(accountSymbol => (
+                    <Chip
+                        key={accountSymbol}
+                        icon={<CryptoIcon name={accountSymbol} />}
+                        onSelect={() => handleSelectAsset(accountSymbol)}
+                        title={networks[accountSymbol].name}
+                        isSelected={selectedAssets.includes(accountSymbol)}
+                        style={applyStyle(assetsFilterItemStyle)}
+                    />
+                ))}
             </View>
             <AccountsList assets={selectedAssets} onSelectAccount={handleSelectAccount} />
         </Screen>

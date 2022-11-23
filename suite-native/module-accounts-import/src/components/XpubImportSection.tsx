@@ -9,7 +9,7 @@ type XpubImportSectionProps = {
 };
 
 const iconWrapperStyle = prepareNativeStyle(_ => ({
-    paddingVertical: 75,
+    paddingBottom: 30,
 }));
 
 const importSectionWrapperStyle = prepareNativeStyle(_ => ({
