@@ -16,12 +16,14 @@ export function decodeBlake(buffer: Buffer) {
 }
 
 export function decodeBlake256Key(key: string) {
-    const buffer = bs58.decode(key);
+    const bytes = bs58.decode(key);
+    const buffer = Buffer.from(bytes);
     return decodeBlake(buffer);
 }
 
 export function decodeBlake256(address: string) {
-    const buffer = bs58.decode(address);
+    const bytes = bs58.decode(address);
+    const buffer = Buffer.from(bytes);
     if (buffer.length !== 26) throw new Error(`${address} invalid address length`);
     let payload;
     try {

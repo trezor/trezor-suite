@@ -36,7 +36,7 @@ const validateVersion = (version: number): version is VersionBytes =>
     !!BIP32_PAYMENT_TYPES[version as VersionBytes];
 
 const getVersion = (xpub: string) => {
-    const version = decode(xpub).readUInt32BE();
+    const version = Buffer.from(decode(xpub)).readUInt32BE();
     if (!validateVersion(version)) throw new Error(`Unknown xpub version: ${xpub}`);
     return version;
 };
