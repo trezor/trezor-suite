@@ -14,6 +14,7 @@
     "bugs": {
         "url": "https://github.com/trezor/trezor-suite/issues"
     },
+    "npmPublishAccess": "public",
     "license": "SEE LICENSE IN LICENSE.md",
     "description": "Collection of assets and utils used by trezor-connect library.",
     "main": "./lib/index.js",
@@ -30,7 +31,9 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "test:unit": "jest --coverage",
         "build:lib": "rimraf lib && yarn tsc --build ./tsconfig.lib.json",
-        "type-check": "tsc --build tsconfig.json"
+        "type-check": "tsc --build tsconfig.json",
+        "prepublishOnly": "yarn tsx ../../scripts/prepublishNPM.js",
+        "prepublish": "yarn tsx ../../scripts/prepublish.js"
     },
     "devDependencies": {
         "jest": "^26.6.3",

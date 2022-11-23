@@ -4,6 +4,7 @@
     "author": "Trezor.io",
     "homepage": "https://github.com/trezor/trezor-suite/tree/develop/packages/transport-native",
     "description": "Trezor device transport layer for React Native",
+    "npmPublishAccess": "public",
     "main": "lib/commonjs/index",
     "module": "lib/module/index",
     "types": "lib/typescript/index.d.ts",
@@ -25,7 +26,9 @@
     ],
     "scripts": {
         "type-check": "tsc --build tsconfig.json",
-        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "prepublishOnly": "yarn tsx ../../scripts/prepublishNPM.js",
+        "prepublish": "yarn tsx ../../scripts/prepublish.js"
     },
     "keywords": [
         "Trezor",

@@ -4,6 +4,7 @@
     "author": "Trezor <info@trezor.io>",
     "homepage": "https://github.com/trezor/trezor-suite/tree/develop/packages/blockchain-link",
     "description": "High-level javascript interface for blockchain communication",
+    "npmPublishAccess": "public",
     "license": "SEE LICENSE IN LICENSE.md",
     "repository": {
         "type": "git",
@@ -46,7 +47,9 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "test:unit": "jest --verbose -c jest.config.unit.js",
         "test:integration": "jest -c jest.config.integration.js",
-        "type-check": "tsc --build tsconfig.json"
+        "type-check": "tsc --build tsconfig.json",
+        "prepublishOnly": "yarn tsx ../../scripts/prepublishNPM.js",
+        "prepublish": "yarn tsx ../../scripts/prepublish.js"
     },
     "devDependencies": {
         "html-webpack-plugin": "^5.5.0",

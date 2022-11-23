@@ -54,7 +54,7 @@ beta deploy npm:
   <<: *packages_matrix
   script:
     - nix-shell --run "node ./ci/scripts/check-version $PACKAGE $CI_COMMIT_BRANCH beta"
-    - nix-shell --run "yarn && cd ./packages/$PACKAGE && yarn publish --tag beta"
+    - nix-shell --run "yarn && cd ./packages/$PACKAGE && yarn npm publish --tag beta"
 
 deploy npm:
   extends: .deploy npm base
@@ -62,7 +62,7 @@ deploy npm:
   <<: *packages_matrix
   script:
     - nix-shell --run "node ./ci/scripts/check-version $PACKAGE $CI_COMMIT_BRANCH latest"
-    - nix-shell --run "yarn && cd ./packages/${PACKAGE} && yarn publish"
+    - nix-shell --run "yarn && cd ./packages/${PACKAGE} && yarn npm publish"
 
 beta deploy npm connect:
   extends: .deploy npm base
@@ -71,7 +71,7 @@ beta deploy npm connect:
       - /^beta-release\//
   <<: *packages_matrix_connect
   script:
-    - nix-shell --run "yarn && cd ./packages/$PACKAGE && yarn publish --tag beta"
+    - nix-shell --run "yarn && cd ./packages/$PACKAGE && yarn npm publish --tag beta"
 
 deploy npm connect:
   extends: .deploy npm base
@@ -80,4 +80,4 @@ deploy npm connect:
       - /^npm-release\//
   <<: *packages_matrix_connect
   script:
-    - nix-shell --run "cd ./packages/${PACKAGE} && yarn publish"
+    - nix-shell --run "cd ./packages/${PACKAGE} && yarn npm publish"

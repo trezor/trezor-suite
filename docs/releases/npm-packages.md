@@ -1,6 +1,6 @@
 # Publishing @trezor package to npm registry
 
-`yarn publish` could be done manually on [gitlab CI](https://gitlab.com/satoshilabs/trezor/trezor-suite/-/pipelines/) in `deploy npm` phase.
+`yarn npm publish` should be done only on [gitlab CI](https://gitlab.com/satoshilabs/trezor/trezor-suite/-/pipelines/) in `deploy npm` phase.
 
 ### Purpose
 
