@@ -8,6 +8,6 @@
         "start": "node index.js"
     },
     "dependencies": {
-        "@trezor/connect": "beta"
+        "@trezor/connect": "9.0.4"
     }
 }
