@@ -2370,10 +2370,6 @@ export default defineMessages({
         defaultMessage: 'Change Homescreen',
         id: 'TR_ONBOARDING_FINAL_CHANGE_HOMESCREEN',
     },
-    TR_FIND_OUT_MORE_INFO: {
-        defaultMessage: 'Learn more',
-        id: 'TR_FIND_OUT_MORE_INFO',
-    },
     TR_FIRMWARE: {
         defaultMessage: 'Firmware',
         id: 'TR_FIRMWARE',
@@ -3052,11 +3048,6 @@ export default defineMessages({
             "You've successfully set up your Trezor and created your wallet. You should never use your Trezor without backing it up; it is the only way to recover a lost wallet.",
         description: 'Text in security page',
         id: 'TR_SECURITY_SUBHEADING',
-    },
-    TR_SEED_MANUAL_LINK: {
-        defaultMessage: 'recovery seed',
-        description: 'Link. Part of TR_BACKUP_SUBHEADING_1',
-        id: 'TR_SEED_MANUAL_LINK',
     },
     TR_SELECT_DEVICE: {
         defaultMessage: 'Select device',
