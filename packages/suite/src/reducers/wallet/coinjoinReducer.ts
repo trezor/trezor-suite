@@ -11,6 +11,7 @@ import { Action } from '@suite-types';
 import {
     breakdownCoinjoinBalance,
     getEstimatedTimePerRound,
+    getRoundPhaseFromSessionPhase,
     transformCoinjoinStatus,
 } from '@wallet-utils/coinjoinUtils';
 import { ESTIMATED_ROUNDS_FAIL_RATE_BUFFER, DEFAULT_CLIENT_STATUS } from '@suite/services/coinjoin';
@@ -96,8 +97,7 @@ const createSession = (
     account.session = {
         ...payload.params,
         timeCreated: Date.now(),
-        // phase: 0,
-        phaseDeadline: Date.now(),
+        sessionPhaseQueue: [],
         registeredUtxos: [],
         signedRounds: [],
     };
@@ -126,13 +126,13 @@ const updateSession = (
 
     account.session = {
         ...account.session,
-        phase,
-        phaseDeadline,
+        roundPhase: phase,
+        roundPhaseDeadline: phaseDeadline,
         sessionDeadline,
     };
 
     if (phase === RoundPhase.Ended) {
-        delete account.session.phase;
+        delete account.session.roundPhase;
     }
 };
 
@@ -159,6 +159,7 @@ const completeSession = (
         account.previousSessions.push({
             ...account.session,
             timeEnded: Date.now(),
+            sessionPhaseQueue: [],
         });
         delete account.session;
     }
@@ -186,8 +187,9 @@ const pauseSession = (
     const account = draft.accounts.find(a => a.key === payload.accountKey);
     if (!account || !account.session) return;
 
-    delete account.session.phase;
+    delete account.session.roundPhase;
     delete account.session.sessionDeadline;
+    account.session.sessionPhaseQueue = [];
     account.session.registeredUtxos = [];
     account.session.paused = true;
     account.session.interrupted = payload.interrupted;
@@ -255,6 +257,41 @@ const updateClientStatus = (
     };
 };
 
+const appendSessionPhase = (
+    draft: CoinjoinState,
+    payload: ExtractActionPayload<typeof COINJOIN.CLIENT_SESSION_PHASE>,
+) => {
+    const accounts = payload.accountKeys.flatMap(
+        accountKey => draft.accounts.find(({ key }) => key === accountKey) || [],
+    );
+
+    if (!accounts || !accounts.length) {
+        return;
+    }
+
+    accounts.forEach(({ session }) => {
+        if (!session) {
+            return;
+        }
+
+        const isPreviousRoundPhase =
+            getRoundPhaseFromSessionPhase(payload.phase) <
+            getRoundPhaseFromSessionPhase(
+                session?.sessionPhaseQueue[session?.sessionPhaseQueue.length - 1] || 0,
+            );
+        const isSameSessionPhase =
+            payload.phase === session?.sessionPhaseQueue[session?.sessionPhaseQueue.length - 1];
+        const isFirstPhase =
+            getRoundPhaseFromSessionPhase(payload.phase) === RoundPhase.InputRegistration;
+
+        if (isSameSessionPhase || (isPreviousRoundPhase && !isFirstPhase)) {
+            return;
+        }
+
+        session.sessionPhaseQueue.push(payload.phase);
+    });
+};
+
 export const coinjoinReducer = (
     state: CoinjoinState = initialState,
     action: Action,
@@ -302,6 +339,9 @@ export const coinjoinReducer = (
                 break;
             case COINJOIN.CLIENT_STATUS:
                 updateClientStatus(draft, action.payload);
+                break;
+            case COINJOIN.CLIENT_SESSION_PHASE:
+                appendSessionPhase(draft, action.payload);
                 break;
 
             case COINJOIN.SESSION_PAUSE:
@@ -419,5 +459,5 @@ export const selectIsCoinjoinBlockedByTor = createSelector(
 );
 
 export const selectIsAnySessionInCriticalPhase = createSelector(selectCoinjoinAccounts, accounts =>
-    accounts.some(acc => (acc.session?.phase ?? 0) > 0),
+    accounts.some(acc => (acc.session?.roundPhase ?? 0) > 0),
 );

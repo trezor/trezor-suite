@@ -2,7 +2,12 @@ import BigNumber from 'bignumber.js';
 
 import { getUtxoOutpoint, getBip43Type } from '@suite-common/wallet-utils';
 import { Account, WalletAccountTransaction } from '@suite-common/wallet-types';
-import { CoinjoinSession, CoinjoinSessionParameters } from '@wallet-types/coinjoin';
+import {
+    CoinjoinSession,
+    CoinjoinSessionParameters,
+    RoundPhase,
+    SessionPhase,
+} from '@wallet-types/coinjoin';
 import {
     ESTIMATED_ANONYMITY_GAINED_PER_ROUND,
     ESTIMATED_MIN_ROUNDS_NEEDED,
@@ -246,7 +251,7 @@ export const getSessionDeadlineFormat = (deadline: CoinjoinSession['sessionDeadl
     return formatToUse;
 };
 
-export const getPhaseTimerFormat = (deadline: CoinjoinSession['phaseDeadline']) => {
+export const getPhaseTimerFormat = (deadline: CoinjoinSession['roundPhaseDeadline']) => {
     if (deadline === undefined || Number.isNaN(Number(deadline))) {
         return;
     }
@@ -281,3 +286,14 @@ export const calculateServiceFee = (
         )
         .toString();
 };
+
+const roundPhases = [
+    RoundPhase.InputRegistration,
+    RoundPhase.ConnectionConfirmation,
+    RoundPhase.OutputRegistration,
+    RoundPhase.TransactionSigning,
+    RoundPhase.Ended,
+];
+
+export const getRoundPhaseFromSessionPhase = (sessionPhase: SessionPhase): RoundPhase =>
+    roundPhases[Number(String(sessionPhase)[0]) - 1];

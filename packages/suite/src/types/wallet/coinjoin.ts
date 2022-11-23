@@ -3,9 +3,9 @@ import { NetworkSymbol } from '@suite-common/wallet-config';
 // @trezor/coinjoin package is meant to be imported dynamically
 // importing types is safe, but importing an enum thru index will bundle whole lib
 import { RegisterAccountParams } from '@trezor/coinjoin';
-import { RoundPhase } from '@trezor/coinjoin/src/enums';
+import { RoundPhase, SessionPhase } from '@trezor/coinjoin/src/enums';
 
-export { RoundPhase } from '@trezor/coinjoin/src/enums';
+export { RoundPhase, SessionPhase };
 
 export type CoinjoinServerEnvironment = 'localhost' | 'public';
 
@@ -23,8 +23,9 @@ export interface CoinjoinSession extends CoinjoinSessionParameters {
     timeEnded?: number; // timestamp when was finished
     paused?: boolean; // current state
     interrupted?: boolean; // it was paused by force
-    phase?: RoundPhase; // current phase enum
-    phaseDeadline: string | number; // estimated time for phase change
+    sessionPhaseQueue: Array<SessionPhase>;
+    roundPhase?: RoundPhase; // current phase enum
+    roundPhaseDeadline?: string | number; // estimated time for phase change
     sessionDeadline?: string | number; // estimated time for a session's end
     signedRounds: string[]; // already signed rounds
 }

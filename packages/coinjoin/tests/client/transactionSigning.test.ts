@@ -116,6 +116,7 @@ describe('transactionSigning', () => {
                         },
                     ],
                 },
+                setSessionPhase: () => null,
             } as any, // simplified CoinjoinRound
             [
                 {

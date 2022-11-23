@@ -10,24 +10,24 @@ import type {
     CoinjoinClientSettings,
     RegisterAccountParams,
     CoinjoinStatusEvent,
-    CoinjoinRoundEvent,
-    CoinjoinRequestEvent,
     CoinjoinResponseEvent,
+    CoinjoinClientEvents,
 } from '../types';
 
-interface Events {
-    status: CoinjoinStatusEvent;
-    round: CoinjoinRoundEvent;
-    request: CoinjoinRequestEvent[];
-    exception: string;
-    log: string;
-}
-
 export declare interface CoinjoinClient {
-    on<K extends keyof Events>(type: K, listener: (event: Events[K]) => void): this;
-    off<K extends keyof Events>(type: K, listener: (event: Events[K]) => void): this;
-    emit<K extends keyof Events>(type: K, ...args: Events[K][]): boolean;
-    removeAllListeners<K extends keyof Events>(type?: K): this;
+    on<K extends keyof CoinjoinClientEvents>(
+        type: K,
+        listener: (event: CoinjoinClientEvents[K]) => void,
+    ): this;
+    off<K extends keyof CoinjoinClientEvents>(
+        type: K,
+        listener: (event: CoinjoinClientEvents[K]) => void,
+    ): this;
+    emit<K extends keyof CoinjoinClientEvents>(
+        type: K,
+        ...args: CoinjoinClientEvents[K][]
+    ): boolean;
+    removeAllListeners<K extends keyof CoinjoinClientEvents>(type?: K): this;
 }
 
 export class CoinjoinClient extends EventEmitter {
@@ -177,6 +177,14 @@ export class CoinjoinClient extends EventEmitter {
         this.emit('log', redacted);
     }
 
+    private setSessionPhase(event: CoinjoinClientEvents['session-phase']) {
+        if (this.status.mode === 'idle') {
+            return;
+        }
+
+        this.emit('session-phase', event);
+    }
+
     private async onStatusUpdate({
         changed,
         rounds,
@@ -211,6 +219,8 @@ export class CoinjoinClient extends EventEmitter {
                     coordinatorUrl: this.settings.coordinatorUrl,
                     middlewareUrl: this.settings.middlewareUrl,
                     log: (message: string) => this.log(message),
+                    setSessionPhase: (sessionPhase: CoinjoinClientEvents['session-phase']) =>
+                        this.setSessionPhase(sessionPhase),
                 },
             );
 

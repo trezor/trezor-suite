@@ -98,18 +98,19 @@ export const CoinjoinStatusBar = ({ accountKey, session, isSingle }: CoinjoinSta
         );
     };
 
-    const { phase, signedRounds, maxRounds, phaseDeadline, sessionDeadline, paused } = session;
+    const { roundPhase, signedRounds, maxRounds, roundPhaseDeadline, sessionDeadline, paused } =
+        session;
 
     const getSessionStatusMessage = () => {
         if (paused) {
             return <Translation id="TR_PAUSED" />;
         }
 
-        if (phase === undefined) {
+        if (roundPhase === undefined) {
             return <Translation id="TR_LOOKING_FOR_COINJOIN_ROUND" />;
         }
 
-        return <Translation id={COINJOIN_PHASE_MESSAGES[phase]} />;
+        return <Translation id={COINJOIN_PHASE_MESSAGES[roundPhase]} />;
     };
 
     const {
@@ -129,7 +130,8 @@ export const CoinjoinStatusBar = ({ accountKey, session, isSingle }: CoinjoinSta
         ),
     );
 
-    const isPastDeadline = new Date(phaseDeadline).getTime() <= Date.now() + 1000;
+    const isPastDeadline =
+        !!roundPhaseDeadline && new Date(roundPhaseDeadline).getTime() <= Date.now() + 1000;
 
     return (
         <Container>
@@ -149,7 +151,7 @@ export const CoinjoinStatusBar = ({ accountKey, session, isSingle }: CoinjoinSta
                 )}
             </StatusText>
 
-            {phase !== undefined && !paused && (
+            {roundPhase !== undefined && !paused && roundPhaseDeadline && (
                 <Note>
                     <Separator>•</Separator>
 
@@ -161,8 +163,8 @@ export const CoinjoinStatusBar = ({ accountKey, session, isSingle }: CoinjoinSta
                             ) : (
                                 <CountdownTimer
                                     isApproximate
-                                    deadline={phaseDeadline}
-                                    format={getPhaseTimerFormat(phaseDeadline)}
+                                    deadline={roundPhaseDeadline}
+                                    format={getPhaseTimerFormat(roundPhaseDeadline)}
                                 />
                             ),
                         }}
