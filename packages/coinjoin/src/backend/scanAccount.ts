@@ -109,12 +109,10 @@ export const scanAccount = async (
 
         await fixTx(transactions, client);
 
-        if (transactions.length || progress) {
-            onProgress({
-                checkpoint,
-                transactions,
-                info: progress ? { progress } : undefined,
-            });
+        if (progress !== undefined) {
+            onProgress({ checkpoint, transactions, info: { progress } });
+        } else if (transactions.length) {
+            onProgress({ checkpoint, transactions });
         }
     }
 

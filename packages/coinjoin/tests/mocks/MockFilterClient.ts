@@ -1,9 +1,9 @@
 import type { BlockFilter, FilterClient } from '../../src/types/backend';
 
 export class MockFilterClient implements FilterClient {
-    private readonly filters;
+    private filters: BlockFilter[] = [];
 
-    constructor(filters: BlockFilter[]) {
+    setFixture(filters: BlockFilter[]) {
         this.filters = filters;
     }
 
