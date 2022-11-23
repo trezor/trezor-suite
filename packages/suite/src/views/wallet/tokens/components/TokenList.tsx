@@ -74,14 +74,21 @@ export const TokenList = ({ tokens, explorerUrl, isTestnet, networkType }: Token
     return (
         <Wrapper isTestnet={isTestnet} noPadding>
             {tokens.map(t => {
-                const noName = !t.symbol || t.symbol.toLowerCase() === t.name?.toLowerCase();
+                // In Cardano token name is optional and in there is no symbol.
+                // However, if Cardano token doesn't have a name on blockchain, its TokenInfo has both name
+                // and symbol props set to a token fingerprint (done in blockchain-link) and we
+                // don't want to render it twice.
+                // In ethereum we are fine with rendering symbol - name even if they are the same.
+                const symbolMatchesName =
+                    networkType === 'cardano' && t.symbol?.toLowerCase() === t.name?.toLowerCase();
+                const noSymbol = !t.symbol || symbolMatchesName;
 
                 return (
                     <Fragment key={t.address}>
                         <Col isTestnet={isTestnet}>
-                            {!noName && <TokenSymbol>{t.symbol}</TokenSymbol>}
+                            {!noSymbol && <TokenSymbol>{t.symbol}</TokenSymbol>}
                             <TokenName>
-                                {!noName && ` - `}
+                                {!noSymbol && ` - `}
                                 {t.name}
                             </TokenName>
                         </Col>
