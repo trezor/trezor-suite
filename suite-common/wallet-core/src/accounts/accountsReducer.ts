@@ -185,3 +185,13 @@ export const selectAccountsAmountPerSymbol = createSelector(
             A.length,
         ),
 );
+
+export const selectImportedAccountSymbols = createSelector(
+    selectAccounts,
+    (accounts): NetworkSymbol[] =>
+        pipe(
+            accounts,
+            A.map(a => a.symbol),
+            A.uniq,
+        ) as NetworkSymbol[],
+);
