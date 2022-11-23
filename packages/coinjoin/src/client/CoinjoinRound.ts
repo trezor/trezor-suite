@@ -1,6 +1,6 @@
 import { EventEmitter } from 'events';
 
-import { arrayPartition, enumUtils, scheduleAction } from '@trezor/utils';
+import { scheduleAction, arrayDistinct, arrayPartition, enumUtils } from '@trezor/utils';
 import { Network } from '@trezor/utxo-lib';
 
 import {
@@ -9,7 +9,7 @@ import {
     getCoinjoinRoundDeadlines,
 } from '../utils/roundUtils';
 import { ROUND_PHASE_PROCESS_TIMEOUT } from '../constants';
-import { RoundPhase, EndRoundState } from '../enums';
+import { RoundPhase, EndRoundState, SessionPhase } from '../enums';
 import { AccountAddress, RegisterAccountParams } from '../types/account';
 import {
     SerializedCoinjoinRound,
@@ -28,6 +28,7 @@ import { inputRegistration } from './round/inputRegistration';
 import { connectionConfirmation } from './round/connectionConfirmation';
 import { outputRegistration } from './round/outputRegistration';
 import { transactionSigning } from './round/transactionSigning';
+import { CoinjoinClientEvents } from '../types';
 
 export interface CoinjoinRoundOptions {
     network: Network;
@@ -36,6 +37,7 @@ export interface CoinjoinRoundOptions {
     coordinatorUrl: string;
     middlewareUrl: string;
     log: (message: string) => void;
+    setSessionPhase: (event: CoinjoinClientEvents['session-phase']) => void;
 }
 
 interface Events {
@@ -124,6 +126,18 @@ export class CoinjoinRound extends EventEmitter {
         this.phaseDeadline = phaseDeadline;
         this.roundDeadline = roundDeadline;
         this.options = options;
+    }
+
+    setSessionPhase(phase: SessionPhase) {
+        const accountKeys = this.inputs
+            .concat(this.failed)
+            .map(input => input.accountKey)
+            .filter(arrayDistinct);
+
+        this.options.setSessionPhase({
+            phase,
+            accountKeys,
+        });
     }
 
     static create(
@@ -288,6 +302,7 @@ export class CoinjoinRound extends EventEmitter {
         if (this.phase === RoundPhase.TransactionSigning) {
             const inputs = this.inputs.filter(i => !i.witness && !i.requested);
             if (inputs.length > 0 && this.transactionData && this.liquidityClues) {
+                this.setSessionPhase(SessionPhase.TransactionSigning);
                 inputs.forEach(input => {
                     this.options.log(`Requesting witness for ~~${input.outpoint}~~`);
                     input.setRequest('signature');

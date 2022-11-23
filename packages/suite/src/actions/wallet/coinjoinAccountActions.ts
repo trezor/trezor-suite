@@ -199,7 +199,8 @@ export const fetchAndUpdateAccount =
     (account: Account) => async (dispatch: Dispatch, getState: GetState) => {
         if (account.backendType !== 'coinjoin' || account.syncing) return;
         // do not sync if any account CoinjoinSession is in critical phase
-        if (getState().wallet.coinjoin.accounts.some(acc => (acc.session?.phase ?? 0) > 0)) return;
+        if (getState().wallet.coinjoin.accounts.some(acc => (acc.session?.roundPhase ?? 0) > 0))
+            return;
 
         const api = await dispatch(initCoinjoinService(account.symbol));
         if (!api) return;

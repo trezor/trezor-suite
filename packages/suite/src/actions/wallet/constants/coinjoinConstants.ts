@@ -14,6 +14,7 @@ export const CLIENT_DISABLE = '@coinjoin/client-disable';
 export const CLIENT_ENABLE_SUCCESS = '@coinjoin/client-enable-success';
 export const CLIENT_ENABLE_FAILED = '@coinjoin/client-enable-failed';
 export const CLIENT_STATUS = '@coinjoin/client-status';
+export const CLIENT_SESSION_PHASE = '@coinjoin/session-phase';
 
 export const SESSION_PAUSE = '@coinjoin/session-pause';
 export const SESSION_RESTORE = '@coinjoin/session-restore';

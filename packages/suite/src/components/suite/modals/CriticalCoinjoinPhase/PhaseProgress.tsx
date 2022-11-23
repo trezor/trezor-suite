@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { CoinjoinSession, RoundPhase } from '@wallet-types/coinjoin';
+import { RoundPhase, CoinjoinSession } from '@wallet-types/coinjoin';
 import { FluidSpinner, Icon, useTheme, variables } from '@trezor/components';
 import { COINJOIN_PHASE_MESSAGES } from '@suite-constants/coinjoin';
 import { Translation } from '@suite-components/Translation';
@@ -81,22 +81,22 @@ const Step = ({ phase, currentPhase }: StepProps) => {
 };
 
 interface PhaseProgressProps {
-    currentPhase: RoundPhase;
-    phaseDeadline: CoinjoinSession['phaseDeadline'];
+    roundPhase: RoundPhase;
+    phaseDeadline: CoinjoinSession['roundPhaseDeadline'];
 }
 
-export const PhaseProgress = ({ currentPhase, phaseDeadline }: PhaseProgressProps) => (
+export const PhaseProgress = ({ roundPhase, phaseDeadline }: PhaseProgressProps) => (
     <Container>
         <Steps>
-            <Step phase={RoundPhase.ConnectionConfirmation} currentPhase={currentPhase} />
+            <Step phase={RoundPhase.ConnectionConfirmation} currentPhase={roundPhase} />
             <Separator />
-            <Step phase={RoundPhase.OutputRegistration} currentPhase={currentPhase} />
+            <Step phase={RoundPhase.OutputRegistration} currentPhase={roundPhase} />
             <Separator />
-            <Step phase={RoundPhase.TransactionSigning} currentPhase={currentPhase} />
+            <Step phase={RoundPhase.TransactionSigning} currentPhase={roundPhase} />
         </Steps>
 
         <Message>
-            <Translation id={COINJOIN_PHASE_MESSAGES[currentPhase]} />
+            <Translation id={COINJOIN_PHASE_MESSAGES[roundPhase]} />
             ...
         </Message>
 
