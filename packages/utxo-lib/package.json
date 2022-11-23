@@ -4,6 +4,7 @@
     "author": "Trezor <info@trezor.io>",
     "homepage": "https://github.com/trezor/trezor-suite/tree/develop/packages/utxo-lib",
     "description": "Client-side Bitcoin-like JavaScript library",
+    "npmPublishAccess": "public",
     "license": "SEE LICENSE IN LICENSE.md",
     "repository": {
         "type": "git",
@@ -30,7 +31,9 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "test:unit": "jest --verbose -c jest.config.js",
         "type-check": "tsc --build tsconfig.json",
-        "build:lib": "rimraf lib && yarn tsc --build ./tsconfig.lib.json"
+        "build:lib": "rimraf lib && yarn tsc --build ./tsconfig.lib.json",
+        "prepublishOnly": "yarn tsx ../../scripts/prepublishNPM.js",
+        "prepublish": "yarn tsx ../../scripts/prepublish.js"
     },
     "dependencies": {
         "@trezor/utils": "^9.0.3",

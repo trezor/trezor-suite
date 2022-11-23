@@ -4,6 +4,7 @@
     "author": "Trezor <info@trezor.io>",
     "homepage": "https://github.com/trezor/trezor-suite/tree/develop/packages/connect-web",
     "description": "High-level javascript interface for Trezor hardware wallet.",
+    "npmPublishAccess": "public",
     "license": "SEE LICENSE IN LICENSE.md",
     "repository": {
         "type": "git",
@@ -32,7 +33,9 @@
         "build:inline": "TS_NODE_PROJECT=\"tsconfig.lib.json\" webpack --config ./webpack/inline.webpack.config.ts",
         "build:webextension": "TS_NODE_PROJECT=\"tsconfig.lib.json\" yarn webpack --config ./webpack/prod.webpack.config.ts",
         "build": "rimraf build && yarn build:inline && yarn build:webextension",
-        "test:e2e": "yarn xvfb-maybe -- playwright test --config=./e2e/playwright.config.ts"
+        "test:e2e": "yarn xvfb-maybe -- playwright test --config=./e2e/playwright.config.ts",
+        "prepublishOnly": "yarn tsx ../../scripts/prepublishNPM.js",
+        "prepublish": "yarn tsx ../../scripts/prepublish.js"
     },
     "dependencies": {
         "@trezor/connect": "9.0.4",
