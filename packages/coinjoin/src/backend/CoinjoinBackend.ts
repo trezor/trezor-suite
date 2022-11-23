@@ -12,6 +12,7 @@ import type { CoinjoinBackendSettings } from '../types';
 import type {
     ScanAddressParams,
     ScanAccountParams,
+    ScanAddressCheckpoint,
     ScanAccountCheckpoint,
     ScanAccountProgress,
     Transaction,
@@ -57,12 +58,12 @@ export class CoinjoinBackend extends EventEmitter {
         this.mempool = new CoinjoinMempoolController(this.client);
     }
 
-    scanAccount({ descriptor, checkpoint, cache }: ScanAccountParams) {
+    scanAccount({ descriptor, checkpoints, cache }: ScanAccountParams) {
         this.abortController = new AbortController();
         const filters = new CoinjoinFilterController(this.client, this.settings);
 
         return scanAccount(
-            { descriptor, checkpoint: checkpoint ?? this.getInitialCheckpoint(), cache },
+            { descriptor, checkpoints: this.getCheckpoints(checkpoints), cache },
             {
                 client: this.client,
                 network: this.network,
@@ -74,12 +75,12 @@ export class CoinjoinBackend extends EventEmitter {
         );
     }
 
-    scanAddress({ descriptor, checkpoint }: ScanAddressParams) {
+    scanAddress({ descriptor, checkpoints }: ScanAddressParams) {
         this.abortController = new AbortController();
         const filters = new CoinjoinFilterController(this.client, this.settings);
 
         return scanAddress(
-            { descriptor, checkpoint: checkpoint ?? this.getInitialCheckpoint() },
+            { descriptor, checkpoints: this.getCheckpoints(checkpoints) },
             {
                 client: this.client,
                 network: this.network,
@@ -116,12 +117,21 @@ export class CoinjoinBackend extends EventEmitter {
         this.abortController?.abort();
     }
 
-    private getInitialCheckpoint(): ScanAccountCheckpoint {
-        return {
-            blockHash: this.settings.baseBlockHash,
-            blockHeight: this.settings.baseBlockHeight,
-            receiveCount: DISCOVERY_LOOKOUT,
-            changeCount: DISCOVERY_LOOKOUT,
-        };
+    private getCheckpoints(checkpoints?: ScanAccountCheckpoint[]): ScanAccountCheckpoint[];
+    private getCheckpoints(checkpoints?: ScanAddressCheckpoint[]): ScanAddressCheckpoint[];
+    private getCheckpoints(checkpoints: any[] = []) {
+        if (checkpoints.find(({ blockHeight }) => blockHeight <= this.settings.baseBlockHeight)) {
+            throw new Error('Cannot get checkpoint which precedes base block.');
+        }
+
+        return checkpoints
+            .slice()
+            .sort((a, b) => b.blockHeight - a.blockHeight)
+            .concat({
+                blockHash: this.settings.baseBlockHash,
+                blockHeight: this.settings.baseBlockHeight,
+                receiveCount: DISCOVERY_LOOKOUT,
+                changeCount: DISCOVERY_LOOKOUT,
+            });
     }
 }

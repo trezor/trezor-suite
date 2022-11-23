@@ -73,7 +73,7 @@ describe(`CoinjoinBackend methods`, () => {
         const { pending } = await scanAddress(
             {
                 descriptor: FIXTURES.SEGWIT_RECEIVE_ADDRESSES[0],
-                checkpoint: EMPTY_CHECKPOINT,
+                checkpoints: [EMPTY_CHECKPOINT],
             },
             getContext(progress => {
                 txs = txs.concat(progress.transactions);
@@ -101,7 +101,7 @@ describe(`CoinjoinBackend methods`, () => {
         const { pending, checkpoint } = await scanAccount(
             {
                 descriptor: FIXTURES.SEGWIT_XPUB,
-                checkpoint: EMPTY_CHECKPOINT,
+                checkpoints: [EMPTY_CHECKPOINT],
             },
             getContext(progress => {
                 txs = txs.concat(progress.transactions);
@@ -134,7 +134,7 @@ describe(`CoinjoinBackend methods`, () => {
         const half = await scanAccount(
             {
                 descriptor: FIXTURES.SEGWIT_XPUB,
-                checkpoint: EMPTY_CHECKPOINT,
+                checkpoints: [EMPTY_CHECKPOINT],
             },
             getContext(progress => {
                 txs = txs.concat(progress.transactions);
@@ -172,7 +172,7 @@ describe(`CoinjoinBackend methods`, () => {
         const full = await scanAccount(
             {
                 descriptor: FIXTURES.SEGWIT_XPUB,
-                checkpoint: half.checkpoint,
+                checkpoints: [half.checkpoint],
             },
             getContext(progress => {
                 txs = txs.concat(progress.transactions);
