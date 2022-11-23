@@ -7,7 +7,7 @@ import { CoinjoinPrison } from '../CoinjoinPrison';
 import * as middleware from '../middleware';
 import { Round } from '../coordinator';
 import { ROUND_SELECTION_REGISTRATION_OFFSET } from '../../constants';
-import { RoundPhase } from '../../enums';
+import { RoundPhase, SessionPhase } from '../../enums';
 
 export type CoinjoinRoundGenerator = (
     ...args: ConstructorParameters<typeof CoinjoinRound>
@@ -296,9 +296,11 @@ export const selectRound = async (
     prison: CoinjoinPrison,
     options: CoinjoinRoundOptions,
 ) => {
-    const { log } = options;
+    const { log, setSessionPhase } = options;
+    const accountKeys = accounts.map(({ accountKey }) => accountKey);
 
     log('Looking for rounds');
+    setSessionPhase({ phase: SessionPhase.RoundSearch, accountKeys });
     const roundCandidates = getRoundCandidates(
         roundGenerator,
         statusRounds,

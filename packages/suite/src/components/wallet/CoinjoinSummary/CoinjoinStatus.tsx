@@ -178,7 +178,7 @@ export const CoinjoinStatus = ({ session, accountKey }: CoinjoinStatusProps) => 
         restoreCoinjoinSession,
     });
 
-    const { paused, phaseDeadline, sessionDeadline, phase } = session;
+    const { paused, roundPhase, roundPhaseDeadline, sessionDeadline } = session;
 
     const isPaused = !!paused;
 
@@ -335,15 +335,15 @@ export const CoinjoinStatus = ({ session, accountKey }: CoinjoinStatusProps) => 
             );
         }
 
-        if (phase !== undefined) {
+        if (roundPhase !== undefined && roundPhaseDeadline !== undefined) {
             return (
                 <>
-                    <Translation id={COINJOIN_PHASE_MESSAGES[phase]} />
+                    <Translation id={COINJOIN_PHASE_MESSAGES[roundPhase]} />
                     <p>
                         <CountdownTimer
                             isApproximate
-                            deadline={phaseDeadline}
-                            format={getPhaseTimerFormat(phaseDeadline)}
+                            deadline={roundPhaseDeadline}
+                            format={getPhaseTimerFormat(roundPhaseDeadline)}
                         />
                     </p>
                 </>

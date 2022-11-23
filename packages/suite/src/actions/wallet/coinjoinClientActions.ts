@@ -5,6 +5,7 @@ import {
     SerializedCoinjoinRound,
     CoinjoinRequestEvent,
     CoinjoinResponseEvent,
+    CoinjoinClientEvents,
 } from '@trezor/coinjoin';
 import { arrayDistinct, arrayToDictionary, promiseAllSequence } from '@trezor/utils';
 import * as COINJOIN from './constants/coinjoinConstants';
@@ -98,6 +99,12 @@ const clientSessionSignTransaction = (payload: SessionSignTransactionPayload) =>
         payload,
     } as const);
 
+const clientAppendSessionPhase = (payload: CoinjoinClientEvents['session-phase']) =>
+    ({
+        type: COINJOIN.CLIENT_SESSION_PHASE,
+        payload,
+    } as const);
+
 export type CoinjoinClientAction =
     | ReturnType<typeof clientEnable>
     | ReturnType<typeof clientDisable>
@@ -107,7 +114,8 @@ export type CoinjoinClientAction =
     | ReturnType<typeof clientSessionRoundChanged>
     | ReturnType<typeof clientSessionCompleted>
     | ReturnType<typeof clientSessionOwnership>
-    | ReturnType<typeof clientSessionSignTransaction>;
+    | ReturnType<typeof clientSessionSignTransaction>
+    | ReturnType<typeof clientAppendSessionPhase>;
 
 // return only active instances
 export const getCoinjoinClient = (symbol: Account['symbol']) =>
@@ -186,7 +194,7 @@ export const onCoinjoinRoundChanged =
 
         let phaseChanged = false;
         coinjoinAccountsWithSession.forEach(account => {
-            if (account.session?.phase !== round.phase) {
+            if (account.session?.roundPhase !== round.phase) {
                 phaseChanged = true;
             }
             // notify reducers
@@ -518,6 +526,8 @@ export const initCoinjoinService =
                 const response = await dispatch(onCoinjoinClientRequest(data));
                 client.resolveRequest(response);
             });
+            // handle session phase change
+            client.on('session-phase', event => dispatch(clientAppendSessionPhase(event)));
             dispatch(clientEnableSuccess(symbol, status));
             return service;
         } catch (error) {

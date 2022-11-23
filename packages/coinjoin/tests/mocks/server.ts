@@ -2,6 +2,7 @@ import * as net from 'net';
 import * as http from 'http';
 
 import { DEFAULT_ROUND, FEE_RATE_MEDIANS } from '../fixtures/round.fixture';
+import { CoinjoinClientEvents } from '../../src/types/client';
 
 // Mock coordinator and middleware responses
 
@@ -198,6 +199,7 @@ export interface MockedServer extends Exclude<http.Server, 'addListener'> {
         middlewareUrl: string;
         signal: AbortSignal;
         log: (message: string) => any;
+        setSessionPhase: (event: CoinjoinClientEvents['session-phase']) => void;
     };
     addListener: MockedServerEvents;
 }
@@ -237,6 +239,7 @@ export const createServer = async () => {
         middlewareUrl: `http://localhost:${port}/`,
         signal: new AbortController().signal,
         log: () => {},
+        setSessionPhase: () => null,
     };
 
     return server;

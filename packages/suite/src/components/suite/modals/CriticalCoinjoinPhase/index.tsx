@@ -51,8 +51,9 @@ export const CriticalCoinjoinPhase = ({ relatedAccountKey }: CriticalCoinjoinPha
     );
 
     const session = relatedCoinjoinAccount?.session;
+    const roundPhase = session?.roundPhase;
 
-    if (!session?.phase) {
+    if (!roundPhase) {
         return null;
     }
 
@@ -71,7 +72,7 @@ export const CriticalCoinjoinPhase = ({ relatedAccountKey }: CriticalCoinjoinPha
                 </TextContainer>
             </Content>
 
-            <PhaseProgress currentPhase={session.phase} phaseDeadline={session.phaseDeadline} />
+            <PhaseProgress roundPhase={roundPhase} phaseDeadline={session.roundPhaseDeadline} />
         </StyledModal>
     );
 };
