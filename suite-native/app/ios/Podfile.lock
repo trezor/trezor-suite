@@ -103,7 +103,7 @@ PODS:
   - GoogleUtilitiesComponents (1.1.0):
     - GoogleUtilities/Logger
   - GTMSessionFetcher/Core (1.7.2)
-  - hermes-engine (0.70.3)
+  - hermes-engine (0.70.5)
   - libevent (2.1.12)
   - MLImage (1.0.0-beta3)
   - MLKitBarcodeScanning (2.2.0):
@@ -377,32 +377,32 @@ PODS:
     - RCTTypeSafety
     - React-Core
     - ReactCommon/turbomodule/core
-  - react-native-skia (0.1.155):
+  - react-native-skia (0.1.159):
     - React
     - React-callinvoker
     - React-Core
-    - react-native-skia/Api (= 0.1.155)
-    - react-native-skia/Jsi (= 0.1.155)
-    - react-native-skia/RNSkia (= 0.1.155)
-    - react-native-skia/SkiaHeaders (= 0.1.155)
-    - react-native-skia/Utils (= 0.1.155)
-  - react-native-skia/Api (0.1.155):
+    - react-native-skia/Api (= 0.1.159)
+    - react-native-skia/Jsi (= 0.1.159)
+    - react-native-skia/RNSkia (= 0.1.159)
+    - react-native-skia/SkiaHeaders (= 0.1.159)
+    - react-native-skia/Utils (= 0.1.159)
+  - react-native-skia/Api (0.1.159):
     - React
     - React-callinvoker
     - React-Core
-  - react-native-skia/Jsi (0.1.155):
+  - react-native-skia/Jsi (0.1.159):
     - React
     - React-callinvoker
     - React-Core
-  - react-native-skia/RNSkia (0.1.155):
+  - react-native-skia/RNSkia (0.1.159):
     - React
     - React-callinvoker
     - React-Core
-  - react-native-skia/SkiaHeaders (0.1.155):
+  - react-native-skia/SkiaHeaders (0.1.159):
     - React
     - React-callinvoker
     - React-Core
-  - react-native-skia/Utils (0.1.155):
+  - react-native-skia/Utils (0.1.159):
     - React
     - React-callinvoker
     - React-Core
@@ -753,7 +753,7 @@ SPEC CHECKSUMS:
   GoogleUtilities: 1d20a6ad97ef46f67bbdec158ce00563a671ebb7
   GoogleUtilitiesComponents: 679b2c881db3b615a2777504623df6122dd20afe
   GTMSessionFetcher: 5595ec75acf5be50814f81e9189490412bad82ba
-  hermes-engine: bb344d89a0d14c2c91ad357480a79698bb80e186
+  hermes-engine: 7fe5fc6ef707b7fdcb161b63898ec500e285653d
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
   MLImage: 489dfec109f21da8621b28d476401aaf7a0d4ff4
   MLKitBarcodeScanning: d92fe1911001ec36870162c5a0eb206f612b7169
@@ -784,7 +784,7 @@ SPEC CHECKSUMS:
   react-native-flipper: c33a4995958ef12a2b2f8290d63bed7adeed7634
   react-native-mmkv: 1265a348a4711097ba29c8bcefd5971f48220f2b
   react-native-safe-area-context: 99b24a0c5acd0d5dcac2b1a7f18c49ea317be99a
-  react-native-skia: 5a4253c77afcf0535b387d6025fc7c57af05cd3c
+  react-native-skia: 2534693e0ca785913931bd6c7a362729f1dd79a7
   react-native-splash-screen: 4312f786b13a81b5169ef346d76d33bc0c6dc457
   React-perflogger: e68d3795cf5d247a0379735cbac7309adf2fb931
   React-RCTActionSheet: 05452c3b281edb27850253db13ecd4c5a65bc247
