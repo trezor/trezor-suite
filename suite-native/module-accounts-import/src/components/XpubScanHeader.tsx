@@ -1,8 +1,9 @@
 import React from 'react';
 
 import { Box, Select, Text } from '@suite-native/atoms';
-import { networks, NetworkSymbol, networkSymbols } from '@suite-common/wallet-config';
+import { networks, NetworkSymbol } from '@suite-common/wallet-config';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { enabledNetworks } from '@suite-native/config/libDev/src';
 
 type XpubScanHeaderProps = {
     onSelectCurrency: (currencySymbol: NetworkSymbol) => void;
@@ -19,7 +20,7 @@ export const XpubScanHeader = ({
 }: XpubScanHeaderProps) => {
     const { applyStyle } = useNativeStyles();
 
-    const selectNetworkItems = networkSymbols.map(networkSymbol => ({
+    const selectNetworkItems = enabledNetworks.map(networkSymbol => ({
         value: networkSymbol,
         label: networks[networkSymbol].name,
         iconName: networkSymbol,
