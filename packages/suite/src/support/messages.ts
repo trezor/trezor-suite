@@ -7089,6 +7089,11 @@ export default defineMessages({
         id: 'TR_COINJOIN_ROUND_COUNTDOWN',
         defaultMessage: 'Next transaction signing starts in {time}',
     },
+    TR_COINJOIN_ROUND_COUNTDOWN_OVERTIME: {
+        id: 'TR_COINJOIN_ROUND_COUNTDOWN_OVERTIME',
+        defaultMessage: 'a moment',
+        description: 'when TR_COINJOIN_ROUND_COUNTDOWN runs out of time',
+    },
     TR_VIEW: {
         id: 'TR_VIEW',
         defaultMessage: 'View',
