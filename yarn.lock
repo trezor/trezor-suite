@@ -8837,8 +8837,8 @@ __metadata:
     bitcoin-ops: ^1.4.1
     blake-hash: ^2.0.0
     blakejs: ^1.2.1
-    bn.js: ^4.0.0
-    bs58: ^4.0.1
+    bn.js: ^5.2.1
+    bs58: ^5.0.0
     bs58check: ^2.1.2
     create-hash: ^1.2.0
     create-hmac: ^1.1.7
@@ -9721,16 +9721,6 @@ __metadata:
     "@types/node": "*"
     "@types/pdfkit": "*"
   checksum: 155ce45c0ef36c92ed5780e0ca47225252e6d403a31031fc5e1ad2dad8c6179bc2699f07866bfe25d530b02437b34a4696b70c52888cd1e13299edea8a501484
-  languageName: node
-  linkType: hard
-
-"@types/pdfmake@npm:^0.2.1":
-  version: 0.2.1
-  resolution: "@types/pdfmake@npm:0.2.1"
-  dependencies:
-    "@types/node": "*"
-    "@types/pdfkit": "*"
-  checksum: 09d2b93403be322257b266e88ee1280415e3305885419f9bf4e430732119c772e8bdf6caa97a13eb43b38e4bd18797375eb0dc816593366e4232c803f770407f
   languageName: node
   linkType: hard
 
@@ -12201,6 +12191,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"base-x@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "base-x@npm:4.0.0"
+  checksum: b25db9e07eb1998472a20557c7f00c797dc0595f79df95155ab74274e7fa98b9f2659b3ee547ac8773666b7f69540656793aeb97ad2b1ceccdb6fa5faaf69ac0
+  languageName: node
+  linkType: hard
+
 "base16@npm:^1.0.0":
   version: 1.0.0
   resolution: "base16@npm:1.0.0"
@@ -12790,12 +12787,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bs58@npm:^4.0.0, bs58@npm:^4.0.1":
+"bs58@npm:^4.0.0":
   version: 4.0.1
   resolution: "bs58@npm:4.0.1"
   dependencies:
     base-x: ^3.0.2
   checksum: b3c5365bb9e0c561e1a82f1a2d809a1a692059fae016be233a6127ad2f50a6b986467c3a50669ce4c18929dcccb297c5909314dd347a25a68c21b68eb3e95ac2
+  languageName: node
+  linkType: hard
+
+"bs58@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "bs58@npm:5.0.0"
+  dependencies:
+    base-x: ^4.0.0
+  checksum: 2475cb0684e07077521aac718e604a13e0f891d58cff923d437a2f7e9e28703ab39fce9f84c7c703ab369815a675f11e3bd394d38643bfe8969fbe42e6833d45
   languageName: node
   linkType: hard
 
@@ -20671,18 +20677,6 @@ __metadata:
   version: 3.1.1
   resolution: "interpret@npm:3.1.1"
   checksum: 35cebcf48c7351130437596d9ab8c8fe131ce4038da4561e6d665f25640e0034702a031cf7e3a5cea60ac7ac548bf17465e0571ede126f3d3a6933152171ac82
-  languageName: node
-  linkType: hard
-
-"intl-messageformat@npm:10.1.1":
-  version: 10.1.1
-  resolution: "intl-messageformat@npm:10.1.1"
-  dependencies:
-    "@formatjs/ecma402-abstract": 1.11.8
-    "@formatjs/fast-memoize": 1.2.4
-    "@formatjs/icu-messageformat-parser": 2.1.4
-    tslib: 2.4.0
-  checksum: 3f2a1747ead0b29a6cac8c9132b7880e75cc392b5e7eaf0bec425822f925f18cca4284f09cb1ddf444644239c53f26d81f09ccb91d412f58ae70f09d0d2f29c7
   languageName: node
   linkType: hard
 

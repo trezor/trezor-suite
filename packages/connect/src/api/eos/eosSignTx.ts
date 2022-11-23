@@ -133,7 +133,7 @@ const parseQuantity = (s: string): PROTO.EosAsset => {
 const parseAuth = (a: $EosAuthorization): PROTO.EosAuthorization => {
     const keyToBuffer = (pk: string) => {
         const len = pk.indexOf('EOS') === 0 ? 3 : 7;
-        const key = bs58.decode(pk.substring(len));
+        const key = Buffer.from(bs58.decode(pk.substring(len)));
         // key.slice(0, key.length - 4);
 
         return {
