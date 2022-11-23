@@ -1,3 +1,3 @@
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { networks, NetworkSymbol } from '@suite-common/wallet-config';
 
-export const enabledNetworks: NetworkSymbol[] = ['btc', 'test'];
+export const enabledNetworks: NetworkSymbol[] = Object.keys(networks) as NetworkSymbol[];
