@@ -27,7 +27,7 @@ export const XpubScanHeader = ({
     }));
 
     return (
-        <Box alignItems="center" marginBottom="large">
+        <Box alignItems="center" marginBottom="medium">
             <Box marginBottom="medium">
                 <Text variant="titleMedium">XPUB Import</Text>
             </Box>
