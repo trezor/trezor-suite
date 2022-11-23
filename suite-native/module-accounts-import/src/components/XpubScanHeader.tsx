@@ -3,7 +3,7 @@ import React from 'react';
 import { Box, Select, Text } from '@suite-native/atoms';
 import { networks, NetworkSymbol } from '@suite-common/wallet-config';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { enabledNetworks } from '@suite-native/config/libDev/src';
+import { enabledNetworks } from '@suite-native/config';
 
 type XpubScanHeaderProps = {
     onSelectCurrency: (currencySymbol: NetworkSymbol) => void;
