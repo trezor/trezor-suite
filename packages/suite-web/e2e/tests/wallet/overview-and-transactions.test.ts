@@ -56,3 +56,5 @@ describe('Overview and transactions check', () => {
         //
     });
 });
+
+export {};

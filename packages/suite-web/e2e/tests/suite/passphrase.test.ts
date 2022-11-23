@@ -166,3 +166,5 @@ describe('Passphrase', () => {
         cy.task('pressYes');
     });
 });
+
+export {};

@@ -195,6 +195,7 @@ export const fixPath = <T extends PROTO.TxInputType | PROTO.TxOutputType>(utxo: 
     // This is only a part of API wide issue: https://github.com/trezor/trezor-suite/issues/4875
     // it works only in runtime. type T needs to have address_n as string, but currently we are using Protobuf declaration
     if (utxo.address_n && typeof utxo.address_n === 'string') {
+        // @ts-expect-error Related to previous comment
         utxo.address_n = getHDPath(utxo.address_n);
     }
     return utxo;

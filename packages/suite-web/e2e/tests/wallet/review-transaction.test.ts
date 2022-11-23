@@ -152,3 +152,5 @@ describe('Review transaction modal', () => {
         });
     });
 });
+
+export {};

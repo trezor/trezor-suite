@@ -30,7 +30,7 @@
         "jest": "^26.6.3",
         "rimraf": "^3.0.2",
         "stellar-sdk": "^10.1.0",
-        "typescript": "4.7.4"
+        "typescript": "4.9.3"
     },
     "dependencies": {
         "bignumber.js": "^9.1.0"

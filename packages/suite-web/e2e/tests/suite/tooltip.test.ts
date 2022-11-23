@@ -23,6 +23,8 @@ describe('Test tooltip links', () => {
     });
 });
 
+export {};
+
 describe('Test tooltip conditional rendering', () => {
     beforeEach(() => {
         cy.task('startEmu', { wipe: true });
@@ -57,3 +59,5 @@ describe('Test tooltip conditional rendering', () => {
             .should('exist');
     });
 });
+
+export {};

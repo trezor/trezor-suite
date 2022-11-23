@@ -30,3 +30,5 @@ describe.skip('Discovery', () => {
         cy.getTestElement('@dashboard/loading', { timeout: DISCOVERY_LIMIT }).should('not.exist');
     });
 });
+
+export {};

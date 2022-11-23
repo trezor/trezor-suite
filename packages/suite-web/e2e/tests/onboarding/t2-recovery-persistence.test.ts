@@ -128,3 +128,5 @@ describe('Onboarding - T2 in recovery mode', () => {
         cy.getTestElement('@onboarding/skip-button').click();
     });
 });
+
+export {};

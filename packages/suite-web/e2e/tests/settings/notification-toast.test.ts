@@ -40,3 +40,5 @@ describe('Check notification toast', () => {
         cy.getTestElement('@toast/settings-applied').should('be.visible');
     });
 });
+
+export {};

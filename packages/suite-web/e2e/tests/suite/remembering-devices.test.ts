@@ -25,3 +25,5 @@ describe('Stories of device remembering', () => {
         // cy.getTestElement('@modal/connect-device');
     });
 });
+
+export {};

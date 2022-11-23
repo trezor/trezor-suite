@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { createContext, useContext, useCallback, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useSelector } from '@suite-hooks';
 import { getFeeLevels } from '@suite-common/wallet-utils';
@@ -9,6 +9,7 @@ import { FormState, FeeInfo } from '@wallet-types/sendForm';
 import { useFees } from './form/useFees';
 import { useCompose } from './form/useCompose';
 import { useBitcoinAmountUnit } from './useBitcoinAmountUnit';
+import { TypedValidationRules } from '@suite-common/wallet-types';
 
 export type Props = {
     tx: WalletAccountTransaction;
@@ -189,8 +190,6 @@ export const useRbf = (props: Props) => {
         }
     }, [finalize, getValues, setValue, composeRequest]);
 
-    const typedRegister = useCallback(<T>(rules?: T) => register(rules), [register]);
-
     // state can be undefined (no account, should never happen)
     // ts requires at least account field to be present (validated by context type)
     const ctxState = state ? { ...state } : { account: undefined };
@@ -219,7 +218,7 @@ export const useRbf = (props: Props) => {
     return {
         ...ctxState,
         isLoading,
-        register: typedRegister,
+        register: register as (rules?: TypedValidationRules) => (ref: any) => void,
         errors,
         setValue,
         getValues,

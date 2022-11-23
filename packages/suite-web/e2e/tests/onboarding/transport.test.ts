@@ -22,3 +22,5 @@ describe('Onboarding - transport webusb/bridge', () => {
         // todo: bridge page should be available (not implemented yet)
     });
 });
+
+export {};

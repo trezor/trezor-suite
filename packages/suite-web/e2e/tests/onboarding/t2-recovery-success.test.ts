@@ -41,3 +41,5 @@ describe('Onboarding - recover wallet T2', () => {
         cy.getTestElement('@onboarding/skip-button').click();
     });
 });
+
+export {};

@@ -100,3 +100,5 @@ describe('Onboarding - create wallet', () => {
         cy.task('inputEmu', '12');
     });
 });
+
+export {};

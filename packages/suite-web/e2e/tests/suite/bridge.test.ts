@@ -48,3 +48,5 @@ describe('Bridge page', () => {
         cy.getTestElement('@modal/close-button').click();
     });
 });
+
+export {};

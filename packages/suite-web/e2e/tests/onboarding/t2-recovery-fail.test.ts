@@ -29,3 +29,5 @@ describe('Onboarding - recover wallet T2', () => {
         cy.getTestElement('@onboarding/recovery/start-button', { timeout: 10000 }).click();
     });
 });
+
+export {};

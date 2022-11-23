@@ -2,12 +2,6 @@ type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
     ? I
     : never;
 
-export type UnionToTuple<T> = UnionToIntersection<T extends never ? never : (t: T) => T> extends (
-    _: never,
-) => infer W
-    ? [...UnionToTuple<Exclude<T, W>>, W]
-    : [];
-
 type MethodFactory<Union> = UnionToIntersection<Union[keyof Union]>;
 
 type OmitFirstArg<F> = F extends (first: any, ...args: infer P) => infer R
@@ -27,7 +21,7 @@ type OptionalParams<C, P> = ExtractUndefined<P> extends undefined
     ? (channel: C, payload?: P) => void
     : (channel: C, payload: P) => void;
 
-type StrictChannel = { [name: string]: any };
+export type StrictChannel = { [name: string]: any };
 
 /**
  * Listener method transforms channels list in to listener function.

@@ -150,3 +150,5 @@ On disable, it throws away all metadata related records from memory.`, () => {
         });
     });
 });
+
+export {};

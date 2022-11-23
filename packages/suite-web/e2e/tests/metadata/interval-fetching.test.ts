@@ -90,3 +90,5 @@ describe('Metadata - suite is watching cloud provider and syncs periodically', (
         });
     });
 });
+
+export {};

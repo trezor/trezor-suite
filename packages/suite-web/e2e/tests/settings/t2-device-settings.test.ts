@@ -118,3 +118,5 @@ describe('T2 - Device settings', () => {
     // TODO: upload custom image
     // TODO: set auto-lock (needs pin)
 });
+
+export {};

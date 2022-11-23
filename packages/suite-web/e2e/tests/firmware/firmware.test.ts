@@ -54,3 +54,5 @@ describe('Firmware', () => {
         cy.getTestElement('@modal/close-button').click();
     });
 });
+
+export {};

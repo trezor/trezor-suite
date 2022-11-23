@@ -177,3 +177,5 @@ describe('Account types suite', () => {
         });
     });
 });
+
+export {};

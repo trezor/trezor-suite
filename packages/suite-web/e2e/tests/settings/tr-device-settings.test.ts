@@ -128,3 +128,5 @@ describe('TR - Device settings', () => {
         cy.task('pressYes');
     });
 });
+
+export {};

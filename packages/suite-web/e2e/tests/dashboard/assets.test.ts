@@ -30,3 +30,5 @@ describe('Assets', () => {
         cy.contains('Bitcoin').should('be.visible').click();
     });
 });
+
+export {};

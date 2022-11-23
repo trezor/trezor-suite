@@ -84,3 +84,5 @@ describe('Coin Settings', () => {
         });
     });
 });
+
+export {};

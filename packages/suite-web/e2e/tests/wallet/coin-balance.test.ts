@@ -44,3 +44,5 @@ describe('Dashboard with regtest', () => {
             });
     });
 });
+
+export {};

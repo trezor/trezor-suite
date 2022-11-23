@@ -47,3 +47,5 @@ describe('Stories of bug report forms', () => {
         cy.getTestElement('@toast/user-feedback-send-success').should('be.visible');
     });
 });
+
+export {};

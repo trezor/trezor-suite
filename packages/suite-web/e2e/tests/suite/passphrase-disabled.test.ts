@@ -63,3 +63,5 @@ describe.skip('Suite switch wallet modal', () => {
         cy.getTestElement('@menu/switch-device').click();
     });
 });
+
+export {};

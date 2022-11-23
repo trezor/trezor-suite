@@ -65,3 +65,5 @@ describe('Google api errors', () => {
     // todo: add more possible errors
     // https://developers.google.com/drive/api/v3/handle-errors
 });
+
+export {};

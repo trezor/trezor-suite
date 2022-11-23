@@ -74,3 +74,5 @@ describe('New accounts', () => {
         cy.contains(expectedAccountMessage).should('not.exist');
     });
 });
+
+export {};

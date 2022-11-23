@@ -55,3 +55,5 @@ describe('General settings', () => {
         cy.getTestElement('@onboarding/welcome');
     });
 });
+
+export {};

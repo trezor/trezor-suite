@@ -46,3 +46,5 @@ describe('Backup success', () => {
         cy.getTestElement('@backup/continue-to-pin-button').should('not.be.disabled');
     });
 });
+
+export {};

@@ -41,3 +41,5 @@ describe('Look up a BTC account', () => {
         cy.getTestElement('@account-menu/ltc/normal/0').should('not.exist');
     });
 });
+
+export {};

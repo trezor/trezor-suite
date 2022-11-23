@@ -80,4 +80,6 @@ describe('Send form for bitcoin', () => {
     });
 });
 
+export {};
+
 // todo: send tx

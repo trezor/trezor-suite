@@ -47,3 +47,5 @@ describe('Install custom firmware', () => {
         cy.getTestElement('@firmware/reconnect-device/bootloader').should('be.visible');
     });
 });
+
+export {};

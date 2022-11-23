@@ -1,7 +1,7 @@
 import { MainChannels, RendererChannels, InvokeChannels } from './api';
-import { SendMethod, ListenerMethod, InvokeMethod, HandleMethod } from './methods';
+import { SendMethod, ListenerMethod, InvokeMethod, HandleMethod, StrictChannel } from './methods';
 
-type StrictIpcModule<Module, Channel, Evt = Event> = Omit<
+type StrictIpcModule<Module, Channel extends StrictChannel, Evt = Event> = Omit<
     Module,
     'on' | 'once' | 'removeListener' | 'removeAllListeners'
 > & {
