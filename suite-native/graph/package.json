@@ -10,7 +10,7 @@
         "type-check": "tsc --build"
     },
     "dependencies": {
-        "@shopify/react-native-skia": "0.1.159",
+        "@shopify/react-native-skia": "0.1.162",
         "@suite-common/formatters": "*",
         "@suite-common/wallet-graph": "*",
         "@suite-common/wallet-types": "*",
