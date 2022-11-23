@@ -8,8 +8,8 @@ type DevXpubProps = {
     onSelect: ({ xpubAddress }: { xpubAddress: string }) => void;
 };
 
-// Note: Btc and testnet are required right now. Everything else is always optional and can be undefined.
-const devXpubs: Partial<Record<NetworkSymbol, string>> & Record<'btc', string> = {
+const devXpubs: Partial<Record<NetworkSymbol, string>> = {
+    //
     btc: 'zpub6rjNNddoAVvuYaD6WPdxiqFEToQHgrERjWMg7kM9gGGk6rhPMWNEmL5X745FGqBq8Wp136LfA3A7UjRGEYdJrf8dUfshzNrb5rvaryNfVJf',
     test: 'vpub5ZjRPuuMiEQnbwEDi9jtH1FaJMajZW78uZ1t3RJXKhxyMoTnPraKwGxiDo9SguDYvSieqjoLJxW5n2t9156RR1oeqRnURuftNZTzejBc4pa',
     doge: 'dgub8sbe5Mi8LA4dXB9zPfLZW8armvaRkaqT37y6xfT1QA12ErATDf8iGEG8y7kamAnjLuEk9AMpTMMp6EK9Vjp2HHx91xdDEmWYpmD49fpoUYF',
@@ -21,13 +21,14 @@ const devXpubs: Partial<Record<NetworkSymbol, string>> & Record<'btc', string> =
     eth: '0xF410e37E9C8BCf8CF319c84Ae9dCEbe057804a04', // Public key, not xpub
 };
 
-export const DevXpub = ({ symbol, onSelect }: DevXpubProps) => (
-    <Box marginTop="medium">
-        <Button
-            onPress={() => onSelect({ xpubAddress: devXpubs[symbol] ?? devXpubs.btc })}
-            colorScheme="gray"
-        >
-            Use dev xPub
-        </Button>
-    </Box>
-);
+export const DevXpub = ({ symbol, onSelect }: DevXpubProps) => {
+    const xpub = devXpubs[symbol];
+    if (!xpub) return null;
+    return (
+        <Box marginTop="medium">
+            <Button onPress={() => onSelect({ xpubAddress: xpub })} colorScheme="gray">
+                Use dev xPub
+            </Button>
+        </Box>
+    );
+};

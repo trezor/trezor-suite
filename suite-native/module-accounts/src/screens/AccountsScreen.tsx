@@ -16,7 +16,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { CryptoIcon } from '@trezor/icons';
 import { networks, NetworkSymbol } from '@suite-common/wallet-config';
 import { AccountsList } from '@suite-native/accounts';
-import { selectImportedAccountSymbols } from '@suite-common/wallet-core';
+import { selectAccountsSymbols } from '@suite-common/wallet-core';
 
 const assetsFilterStyle = prepareNativeStyle(utils => ({
     flexDirection: 'row',
@@ -35,7 +35,7 @@ export const AccountsScreen = ({
 }: StackProps<AccountsStackParamList, AccountsStackRoutes.Accounts>) => {
     const { applyStyle } = useNativeStyles();
     const [selectedAssets, setSelectedAssets] = useState<NetworkSymbol[]>([]);
-    const importedAccountsSymbols = useSelector(selectImportedAccountSymbols);
+    const accountsSymbols = useSelector(selectAccountsSymbols);
     const navigation =
         useNavigation<StackNavigationProps<AccountsStackParamList, AccountsStackRoutes.Accounts>>();
 
@@ -71,7 +71,7 @@ export const AccountsScreen = ({
     return (
         <Screen>
             <View style={[applyStyle(assetsFilterStyle)]}>
-                {importedAccountsSymbols.map(accountSymbol => (
+                {accountsSymbols.map(accountSymbol => (
                     <Chip
                         key={accountSymbol}
                         icon={<CryptoIcon name={accountSymbol} />}
