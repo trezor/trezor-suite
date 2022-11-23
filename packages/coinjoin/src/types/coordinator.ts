@@ -66,8 +66,8 @@ export interface CoinjoinRoundParameters {
     maxInputCountByRound: number;
     allowedInputAmounts: AllowedRange;
     allowedOutputAmounts: AllowedRange;
-    allowedInputScriptTypes: AllowedScriptTypes[];
-    allowedOutputScriptTypes: AllowedScriptTypes[];
+    allowedInputTypes: AllowedScriptTypes[];
+    allowedOutputTypes: AllowedScriptTypes[];
     standardInputRegistrationTimeout: string;
     connectionConfirmationTimeout: string;
     outputRegistrationTimeout: string;
@@ -93,12 +93,12 @@ export interface CoinjoinInput {
         scriptPubKey: string; // format: "0 f23290d9f9be3d13a315b6febe29fc0786d34c96"
         value: number;
     };
-    ownershipProof: string;
 }
 
 export interface CoinjoinInputAddedEvent {
     Type: 'InputAdded';
     coin: CoinjoinInput;
+    ownershipProof: string;
 }
 
 export interface CoinjoinOutput {

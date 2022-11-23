@@ -25,7 +25,7 @@ const parseResult = (headers: Headers, text: string) => {
 
 const createHeaders = (options: RequestOptions) => {
     const headers: HeadersInit = {
-        'Content-Type': 'application/json-patch+json',
+        'Content-Type': 'application/json',
     };
     // add custom header to define TOR identity.
     // request is intercepted by @trezor/request-manager and requested identity is used to create TOR circuit

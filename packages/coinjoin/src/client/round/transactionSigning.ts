@@ -50,7 +50,7 @@ const getTransactionData = async (
                 index,
                 amount: input.coin.txOut.value,
                 scriptPubKey: prefixScriptPubKey(input.coin.txOut.scriptPubKey),
-                ownershipProof: input.coin.ownershipProof,
+                ownershipProof: input.ownershipProof,
                 commitmentData: round.commitmentData,
             };
         });

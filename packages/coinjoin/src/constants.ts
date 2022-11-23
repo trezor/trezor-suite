@@ -1,5 +1,5 @@
 // Maximum number of filters requested from backend in one request
-export const FILTERS_BATCH_SIZE = 1000;
+export const FILTERS_BATCH_SIZE = 10000;
 
 // Minimum number of blocks after which 'progress' event is fired by scanAccount
 export const PROGRESS_BATCH_SIZE_MIN = 10;
