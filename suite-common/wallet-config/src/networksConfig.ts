@@ -424,8 +424,6 @@ export type Network = Without<NetworkValue, 'accountTypes'> & {
     };
 };
 
-export const networkSymbols = Object.keys(networks) as NetworkSymbol[];
-
 // Transforms the network object into the previously used format so we don't have to change
 // every occurence. We could gradually start to use the network object directly and in the end
 // this could be removed.

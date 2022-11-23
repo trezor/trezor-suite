@@ -1,9 +1,9 @@
 import React from 'react';
 
+import { Box, Select, Text } from '@suite-native/atoms';
 import { networks, NetworkSymbol } from '@suite-common/wallet-config';
-import { Box, Text, Select } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { enabledNetworks } from '@suite-native/config';
+import { enabledNetworks } from '@suite-native/config/libDev/src';
 
 type XpubScanHeaderProps = {
     onSelectCurrency: (currencySymbol: NetworkSymbol) => void;
