@@ -80,10 +80,16 @@ export const getAnonymityScores = async (
         };
     });
 
-    const scores = await middleware.getAnonymityScores(params, {
-        baseUrl: options.middlewareUrl,
-        signal: options.signal,
-    });
+    const scores = await middleware
+        .getAnonymityScores(params, {
+            baseUrl: options.middlewareUrl,
+            signal: options.signal,
+        })
+        .catch(error => {
+            // TODO: remove before public release
+            console.warn('getAnonymityScores params', JSON.stringify(params));
+            throw error;
+        });
 
     return scores.reduce((dict, { address, anonymitySet }) => {
         dict[address] = anonymitySet;

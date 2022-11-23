@@ -37,10 +37,12 @@ export const init: Module = ({ mainWindow }) => {
                     return (backend[method] as any)(...params);
                 },
                 onAddListener: (eventName, listener) => {
+                    // TODO: remove/redact before public release. eventName contains xpub
                     logger.debug(SERVICE_NAME, `CoinjoinBackend add listener ${eventName}`);
                     return backend.on(eventName, listener);
                 },
-                onRemoveListener: (eventName: any) => {
+                onRemoveListener: eventName => {
+                    // TODO: remove/redact before public release. eventName contains xpub
                     logger.debug(SERVICE_NAME, `CoinjoinBackend remove listener ${eventName}`);
                     return backend.removeAllListeners(eventName);
                 },

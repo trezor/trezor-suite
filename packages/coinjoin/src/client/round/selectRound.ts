@@ -285,6 +285,16 @@ export const selectInputsForRound = async (
                         .then(indices => indices.filter(i => utxos[i])) // filter valid existing indices
                         .catch(error => {
                             options.log(`selectInputsForRound failed ${error.message}`);
+                            // TODO: remove before public release
+                            console.warn(
+                                'selectInputsForRound params',
+                                JSON.stringify({
+                                    ...roundConstants,
+                                    utxos,
+                                    anonScoreTarget: account.targetAnonymity,
+                                    liquidityClue: 0,
+                                }),
+                            );
                             return [] as number[];
                         });
                 }),
