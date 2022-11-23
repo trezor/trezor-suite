@@ -9,7 +9,7 @@ import argv from './jest.config';
     await TrezorUserEnvLink.connect();
 
     // @ts-expect-error
-    const { results } = runCLI(argv, [__dirname]);
+    const { results } = await runCLI(argv, [__dirname]);
 
     process.exit(results.numFailedTests);
 })();
