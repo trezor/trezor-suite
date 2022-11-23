@@ -25,7 +25,12 @@ const FIXTURES = [
         description: 'From middle',
         params: {
             batchSize: 5,
-            fromHash: FILTERS[FILTER_MIDDLE].prevHash,
+            checkpoints: [
+                {
+                    blockHash: FILTERS[FILTER_MIDDLE - 1].blockHash,
+                    blockHeight: FILTERS[FILTER_MIDDLE - 1].blockHeight,
+                },
+            ],
         },
         expected: FILTERS.slice(FILTER_MIDDLE),
     },
@@ -33,7 +38,12 @@ const FIXTURES = [
         description: 'Not found',
         params: {
             batchSize: 5,
-            fromHash: 'foo',
+            checkpoints: [
+                {
+                    blockHash: 'foo',
+                    blockHeight: 42,
+                },
+            ],
         },
         error: 'not found',
     },

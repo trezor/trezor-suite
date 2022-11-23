@@ -10,17 +10,15 @@ import type {
 } from '../types/backend';
 
 export const scanAddress = async (
-    params: ScanAddressParams & { checkpoint: ScanAddressCheckpoint },
+    params: ScanAddressParams & { checkpoints: ScanAddressCheckpoint[] },
     { client, network, filters, mempool, abortSignal, onProgress }: ScanAddressContext,
 ): Promise<ScanAddressResult> => {
     const address = params.descriptor;
     const script = getAddressScript(address, network);
-    let { checkpoint } = params;
+    const { checkpoints } = params;
+    let checkpoint = checkpoints[0];
 
-    const everyFilter = filters.getFilterIterator(
-        { fromHash: checkpoint.blockHash },
-        { abortSignal },
-    );
+    const everyFilter = filters.getFilterIterator({ checkpoints }, { abortSignal });
     // eslint-disable-next-line no-restricted-syntax
     for await (const { filter, blockHash, blockHeight, progress } of everyFilter) {
         checkpoint = { blockHash, blockHeight };

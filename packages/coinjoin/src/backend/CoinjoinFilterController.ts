@@ -9,11 +9,14 @@ import type { CoinjoinBackendSettings } from '../types';
 
 export class CoinjoinFilterController implements FilterController {
     private readonly client;
-    private readonly baseBlockHash;
+    private readonly baseBlock;
 
-    constructor(client: FilterClient, { baseBlockHash }: CoinjoinBackendSettings) {
+    constructor(client: FilterClient, { baseBlockHash, baseBlockHeight }: CoinjoinBackendSettings) {
         this.client = client;
-        this.baseBlockHash = baseBlockHash;
+        this.baseBlock = {
+            blockHash: baseBlockHash,
+            blockHeight: baseBlockHeight,
+        };
     }
 
     /**
@@ -31,7 +34,7 @@ export class CoinjoinFilterController implements FilterController {
 
         let counter = 0;
         let filterBatch = await this.client.fetchFilters(
-            params?.fromHash ?? this.baseBlockHash,
+            (params?.checkpoints?.[0] ?? this.baseBlock).blockHash,
             filterBatchSize,
             { signal: context?.abortSignal },
         );

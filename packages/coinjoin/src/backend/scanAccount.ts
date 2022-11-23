@@ -48,7 +48,7 @@ const analyzeAddresses = async (
 };
 
 export const scanAccount = async (
-    params: ScanAccountParams & { checkpoint: ScanAccountCheckpoint },
+    params: ScanAccountParams & { checkpoints: ScanAccountCheckpoint[] },
     { client, network, filters, mempool, abortSignal, onProgress }: ScanAccountContext,
 ): Promise<ScanAccountResult> => {
     const xpub = params.descriptor;
@@ -63,19 +63,17 @@ export const scanAccount = async (
                 }),
             );
 
-    const { receiveCount, changeCount } = params.checkpoint;
+    const { checkpoints } = params;
+    const { receiveCount, changeCount } = checkpoints[0];
     const { receivePrederived, changePrederived } = params.cache ?? {};
     let receive: AccountAddress[] = deriveMore('receive', receivePrederived)(0, receiveCount);
     let change: AccountAddress[] = deriveMore('change', changePrederived)(0, changeCount);
 
-    let { checkpoint } = params;
+    let checkpoint = checkpoints[0];
 
     const txs = new Set<BlockbookTransaction>();
 
-    const everyFilter = filters.getFilterIterator(
-        { fromHash: checkpoint.blockHash },
-        { abortSignal },
-    );
+    const everyFilter = filters.getFilterIterator({ checkpoints }, { abortSignal });
     // eslint-disable-next-line no-restricted-syntax
     for await (const { filter, blockHash, blockHeight, progress } of everyFilter) {
         const isMatch = getFilter(filter, blockHash);
