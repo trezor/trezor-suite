@@ -31690,6 +31690,9 @@ __metadata:
     tsx: ^3.8.2
     typescript: 4.7.4
     version-bump-prompt: ^6.1.0
+  dependenciesMeta:
+    core-js-pure:
+      built: false
   languageName: unknown
   linkType: soft
 
