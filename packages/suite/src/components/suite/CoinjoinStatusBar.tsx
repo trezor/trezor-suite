@@ -126,6 +126,8 @@ export const CoinjoinStatusBar = ({ accountKey, session, isSingle }: CoinjoinSta
         ),
     );
 
+    const isPastDeadline = new Date(phaseDeadline).getTime() <= Date.now() + 1000;
+
     return (
         <Container>
             <StyledProgressPie progress={progress} />
@@ -151,7 +153,9 @@ export const CoinjoinStatusBar = ({ accountKey, session, isSingle }: CoinjoinSta
                     <Translation
                         id="TR_COINJOIN_ROUND_COUNTDOWN"
                         values={{
-                            time: (
+                            time: isPastDeadline ? (
+                                <Translation id="TR_COINJOIN_ROUND_COUNTDOWN_OVERTIME" />
+                            ) : (
                                 <CountdownTimer
                                     isApproximate
                                     deadline={phaseDeadline}
