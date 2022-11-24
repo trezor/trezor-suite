@@ -1,4 +1,5 @@
 import { discovery } from '@trezor/utxo-lib';
+import { sortTxsFromLatest } from '../../utils';
 import { Api, tryGetScripthash, discoverAddress, AddressHistory, getTransactions } from '../utils';
 import { transformTransaction } from '../../blockbook/utils';
 import type { ElectrumAPI } from '../../../types/electrum';
@@ -14,15 +15,6 @@ type AddressInfo = Omit<AddressHistory, 'scripthash'> & {
     confirmed: number;
     unconfirmed: number;
 };
-
-const isNonNegative = (n: number | undefined): n is number => (n ?? -1) >= 0;
-
-export const sortTxsFromLatest = (
-    { blockHeight: a }: { blockHeight?: number },
-    { blockHeight: b }: { blockHeight?: number },
-) =>
-    (isNonNegative(b) ? b : Number.MAX_SAFE_INTEGER) -
-    (isNonNegative(a) ? a : Number.MAX_SAFE_INTEGER);
 
 const getBalances =
     (client: ElectrumAPI) =>
