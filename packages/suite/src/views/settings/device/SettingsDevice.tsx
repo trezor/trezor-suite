@@ -134,7 +134,7 @@ export const SettingsDevice = () => {
                     <SettingsSection title={<Translation id="TR_PERSONALIZATION" />} icon="PALETTE">
                         <DeviceLabel isDeviceLocked={isDeviceLocked} />
                         <Homescreen isDeviceLocked={isDeviceLocked} />
-                        {deviceModel === 'T' && <DisplayRotation isDeviceLocked={isDeviceLocked} />}
+                        {deviceModel !== '1' && <DisplayRotation isDeviceLocked={isDeviceLocked} />}
                         {pinProtection && <AutoLock isDeviceLocked={isDeviceLocked} />}
                     </SettingsSection>
                 </>

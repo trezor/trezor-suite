@@ -62,8 +62,8 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
         return null;
     }
 
-    const isModelT = getDeviceModel(device) === 'T';
-    const trezorModel = isModelT ? 2 : 1;
+    const isModel1 = getDeviceModel(device) === '1';
+    const trezorModel = isModel1 ? 1 : 2;
 
     const onUploadHomescreen = async (files: FileList | null) => {
         if (!files || !files.length) return;
@@ -103,14 +103,7 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
                 ref={anchorRef}
                 shouldHighlight={shouldHighlight}
             >
-                {isModelT ? (
-                    <TextColumn
-                        title={<Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_TITLE" />}
-                        description={
-                            <Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS_TT" />
-                        }
-                    />
-                ) : (
+                {isModel1 ? (
                     <TextColumn
                         title={<Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_TITLE" />}
                         description={
@@ -118,6 +111,13 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
                         }
                         buttonLink={HOMESCREEN_EDITOR_URL}
                         buttonTitle={<Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_EDITOR" />}
+                    />
+                ) : (
+                    <TextColumn
+                        title={<Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_TITLE" />}
+                        description={
+                            <Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS_TT" />
+                        }
                     />
                 )}
                 <ActionColumn>
