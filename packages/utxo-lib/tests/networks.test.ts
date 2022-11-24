@@ -38,11 +38,16 @@ describe('isNetworkType', () => {
             expect(isNetworkType('peercoin', networks[name])).toBe(isPeercoin);
         });
     });
-
     defs.forEach(name => {
         const isZcash = name === 'zcash' || name === 'zcashTest' || name === 'komodo';
         it(`${name} ${isZcash ? 'is' : 'is not'} zcash type`, () => {
             expect(isNetworkType('zcash', networks[name])).toBe(isZcash);
+        });
+    });
+    defs.forEach(name => {
+        const isLitecoin = name === 'litecoin' || name === 'litecoinTest';
+        it(`${name} ${isLitecoin ? 'is' : 'is not'} litcoin type`, () => {
+            expect(isNetworkType('litecoin', networks[name])).toBe(isLitecoin);
         });
     });
 

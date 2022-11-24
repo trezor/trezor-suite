@@ -258,6 +258,7 @@ const NETWORK_TYPES = {
     decred: [decred, decredTest, decredSim],
     peercoin: [peercoin, peercoinTest],
     zcash: [zcash, zcashTest, komodo],
+    litecoin: [litecoin, litecoinTest],
 };
 
 export type NetworkTypes = keyof typeof NETWORK_TYPES;
