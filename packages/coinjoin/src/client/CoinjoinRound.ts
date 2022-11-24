@@ -176,11 +176,15 @@ export class CoinjoinRound extends EventEmitter {
         await this.processPhase(accounts, prison);
 
         const [inputs, failed] = arrayPartition(this.inputs, input => !input.error);
-        failed.forEach(input =>
-            prison.detain(input.outpoint, { roundId: this.id, reason: input.error?.message }),
-        );
         this.inputs = inputs;
-        this.failed = this.failed.concat(...failed);
+
+        // do not pass failed inputs from InputRegistration to further phases
+        if (this.phase > RoundPhase.InputRegistration) {
+            failed.forEach(input =>
+                prison.detain(input.outpoint, { roundId: this.id, reason: input.error?.message }),
+            );
+            this.failed = this.failed.concat(...failed);
+        }
 
         if (this.inputs.length === 0 || this.phase === RoundPhase.Ended) {
             this.phase = RoundPhase.Ended;
