@@ -276,11 +276,9 @@ const appendSessionPhase = (
 
         const isPreviousRoundPhase =
             getRoundPhaseFromSessionPhase(payload.phase) <
-            getRoundPhaseFromSessionPhase(
-                session?.sessionPhaseQueue[session?.sessionPhaseQueue.length - 1] || 0,
-            );
-        const isSameSessionPhase =
-            payload.phase === session?.sessionPhaseQueue[session?.sessionPhaseQueue.length - 1];
+            getRoundPhaseFromSessionPhase(session?.sessionPhaseQueue.at(-1) || 0);
+        const isSameSessionPhase = payload.phase === session?.sessionPhaseQueue.at(-1);
+
         const isFirstPhase =
             getRoundPhaseFromSessionPhase(payload.phase) === RoundPhase.InputRegistration;
 

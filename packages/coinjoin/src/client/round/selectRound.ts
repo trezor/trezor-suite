@@ -44,6 +44,25 @@ export const getRoundCandidates = (
         });
 };
 
+export const getUnregisteredAccounts = (
+    accounts: Account[],
+    currentRounds: CoinjoinRound[],
+    { log }: CoinjoinRoundOptions,
+) =>
+    accounts.filter(({ accountKey }) => {
+        const isAlreadyRegistered = currentRounds.find(
+            round =>
+                round.phase !== RoundPhase.Ended &&
+                round.inputs.find(input => input.accountKey === accountKey),
+        );
+
+        if (isAlreadyRegistered) {
+            log(`Skipping candidate ~~${accountKey}~~. Already registered to round`);
+        }
+
+        return !isAlreadyRegistered;
+    });
+
 // Basic preselect Accounts
 // exclude Account.utxos which are registered in CoinjoinRounds or detained in CoinjoinPrison
 export const getAccountCandidates = (
@@ -66,17 +85,6 @@ export const getAccountCandidates = (
     return accounts.flatMap(account => {
         // skip account registered to critical rounds
         const { accountKey } = account;
-        const isAccountAlreadyRegistered = currentRounds.find(
-            round =>
-                round.phase !== RoundPhase.Ended &&
-                round.inputs.find(input => input.accountKey === accountKey),
-        );
-
-        if (isAccountAlreadyRegistered) {
-            log(`Skipping candidate ~~${accountKey}~~. Already registered to round`);
-            return [];
-        }
-
         // TODO: double-check account max signed rounds, should be done by suite tho
 
         const blameOfUtxos = arrayToDictionary(
@@ -126,6 +134,7 @@ export const getAccountCandidates = (
         log(
             `Skipping candidate ~~${accountKey}~~. Utxos ${utxos.length} of ${account.utxos.length}`,
         );
+
         return [];
     });
 };
@@ -295,10 +304,12 @@ export const selectRound = async (
     options: CoinjoinRoundOptions,
 ) => {
     const { log, setSessionPhase } = options;
-    const accountKeys = accounts.map(({ accountKey }) => accountKey);
+
+    const unregisteredAccounts = getUnregisteredAccounts(accounts, currentRounds, options);
+    const unregisteredAccountKeys = unregisteredAccounts.map(({ accountKey }) => accountKey);
 
     log('Looking for rounds');
-    setSessionPhase({ phase: SessionPhase.RoundSearch, accountKeys });
+    setSessionPhase({ phase: SessionPhase.RoundSearch, accountKeys: unregisteredAccountKeys });
     const roundCandidates = getRoundCandidates(
         roundGenerator,
         statusRounds,
@@ -311,19 +322,23 @@ export const selectRound = async (
     }
 
     log('Looking for accounts');
+    setSessionPhase({ phase: SessionPhase.CoinSelection, accountKeys: unregisteredAccountKeys });
     const accountCandidates = getAccountCandidates(
-        accounts,
+        unregisteredAccounts,
         statusRounds,
         currentRounds,
         prison,
         options,
     );
+
     if (accountCandidates.length < 1) {
         log('No suitable accounts');
+
         return;
     }
 
     log(`Looking for utxos`);
+    setSessionPhase({ phase: SessionPhase.RoundPairing, accountKeys: unregisteredAccountKeys });
     const newRound = await selectInputsForRound(
         aliceGenerator,
         roundCandidates,

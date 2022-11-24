@@ -7,7 +7,8 @@ import type { Account } from '../Account';
 import type { Alice } from '../Alice';
 import type { CoinjoinPrison } from '../CoinjoinPrison';
 import type { CoinjoinRound, CoinjoinRoundOptions } from '../CoinjoinRound';
-import type { AccountAddress } from '../../types';
+import { AccountAddress } from '../../types';
+import { SessionPhase } from '../../enums';
 
 /**
  * RoundPhase: 2, OutputRegistration
@@ -122,6 +123,7 @@ export const outputRegistration = async (
 
         // collect all used addresses
         // try to register outputs for each account (each input in account group)
+        round.setSessionPhase(SessionPhase.RegisteringOutputs);
         for (let group = 0; group < decomposedGroup.length; group++) {
             const { accountKey, outputs } = decomposedGroup[group];
             const account = accounts.find(a => a.accountKey === accountKey);
@@ -142,6 +144,7 @@ export const outputRegistration = async (
             }
         }
 
+        round.setSessionPhase(SessionPhase.AwaitingOthersOutputs);
         // inform coordinator that each registered input is ready to sign
         await Promise.all(round.inputs.map(input => readyToSign(round, input, options)));
         options.log(`Ready to sign ~~${round.id}~~`);

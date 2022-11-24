@@ -6,17 +6,17 @@ export enum SessionPhase {
     CoinRegistration = 14,
 
     // RoundPhase.ConnectionConfirmation
-    ConfirmingAvailability = 21,
-    AwaitingParticipants = 22,
+    AwaitingConfirmation = 21,
+    AwaitingOthersConfirmation = 22,
 
     // RoundPhase.OutputRegistration
     RegisteringOutputs = 31,
-    AwaitingVerification = 32,
+    AwaitingOthersOutputs = 32,
 
     // RoundPhase.TransactionSigning
     AwaitingCoinjoinTransaction = 41,
     TransactionSigning = 42,
-    SendingToCoordinator = 43,
+    SendingSignature = 43,
     AwaitingOtherSignatures = 44,
 }
 
