@@ -46,8 +46,8 @@ type Props = {
 const HomescreenGallery = ({ device, onConfirm }: Props) => {
     const { applySettings } = useActions({ applySettings: deviceSettingsActions.applySettings });
 
-    const isModelT = getDeviceModel(device) === 'T';
-    const trezorModel = isModelT ? 2 : 1;
+    const isModel1 = getDeviceModel(device) === '1';
+    const trezorModel = isModel1 ? 1 : 2;
 
     const setHomescreen = (image: AnyImageName) => {
         const element = document.getElementById(image);
@@ -62,7 +62,7 @@ const HomescreenGallery = ({ device, onConfirm }: Props) => {
 
     return (
         <Wrapper>
-            {!isModelT && (
+            {isModel1 && (
                 <BackgroundGalleryWrapper>
                     {homescreensT1.map(image => (
                         <BackgroundImageT1
@@ -83,7 +83,7 @@ const HomescreenGallery = ({ device, onConfirm }: Props) => {
                     ))}
                 </BackgroundGalleryWrapper>
             )}
-            {isModelT && (
+            {!isModel1 && (
                 <BackgroundGalleryWrapper>
                     {homescreensT2.map(image => (
                         <BackgroundImageT2
