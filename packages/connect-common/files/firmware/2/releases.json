@@ -9,7 +9,7 @@
         "url_bitcoinonly": "firmware/2/trezor-2.5.3-bitcoinonly.bin",
         "fingerprint": "4f57dca1abc1a60d82c4fef7c96e86d784fc7a1e5e3da724dd2ae4d14c6350bf",
         "fingerprint_bitcoinonly": "c094c84ba958129885fa725ee6ddb781b580fd2c7851e83aef9054ba4a10526c",
-        "notes": "https://blog.trezor.io/trezor-suite-update-and-trezor-model-t-firmware-november-2022-3aff90dc30a3",
+        "notes": "https://blog.trezor.io/trezor-suite-and-trezor-model-t-firmware-update-november-2022-a0b30bb0abf5",
         "changelog": "* Add SLIP-0025 CoinJoin accounts. \n* Show red error header when Trezor doesn't see USB data connection. \n* Add support for Zcash unified addresses. \n* Show fee rate when replacing transaction. \n* Optimize the signing of BTC transactions. \n* Support for Cardano CIP-36 governance registration format. \n* Extend decimals of fee rate to 2 digits. \n* Display only “sat” instead of “sat BTC”. \n* Fix sending XMR transaction to an integrated address. \n* Fix XMR primary address display."
     },
     {
