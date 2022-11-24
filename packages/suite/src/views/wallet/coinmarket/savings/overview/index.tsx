@@ -8,8 +8,12 @@ import {
 } from '@wallet-components';
 import styled from 'styled-components';
 import { Icon, variables } from '@trezor/components';
-import { FormattedCryptoAmount, Translation } from '@suite-components';
-import { Formatters, useFormatters } from '@suite-common/formatters';
+import {
+    FiatValue,
+    FormattedCryptoAmount,
+    HiddenPlaceholder,
+    Translation,
+} from '@suite-components';
 import { PaymentDetail } from './components/PaymentDetail';
 import {
     SavingsOverviewContext,
@@ -18,7 +22,7 @@ import {
 import type { PaymentFrequency, SavingsKYCStatus, SavingsTrade } from 'invity-api';
 import { WaitingForFirstPayment } from './components/WaitingForFirstPayment';
 import { darken } from 'polished';
-import { NetworkSymbol } from '@wallet-types';
+import type { Account, NetworkSymbol } from '@wallet-types';
 import { AllFeesIncluded } from '../AllFeesIncluded';
 import { ProvidedBy } from '../ProvidedBy';
 
@@ -61,7 +65,7 @@ const Setup = styled(HeaderBlock)`
 
 const SetupValues = styled.div``;
 
-const FiatPayment = styled.div`
+const StyledFiatValue = styled(FiatValue)`
     font-size: 30px;
     line-height: 34px;
 `;
@@ -88,7 +92,7 @@ const Crypto = styled.div`
     display: flex;
 `;
 
-const Fiat = styled.div`
+const Fiat = styled(HiddenPlaceholder)`
     font-size: 20px;
     line-height: 28px;
     color: ${props => props.theme.TYPE_LIGHT_GREY};
@@ -127,7 +131,7 @@ const getPeriodTranslationId = (
 
 function renderSavingsStatus(
     isWatchingKYCStatus: boolean,
-    formatters: Formatters,
+    symbol: Account['symbol'],
     savingsTradeItemCompletedExists: boolean,
     savingsFiatSum: string,
     savingsCryptoSum: string,
@@ -136,7 +140,6 @@ function renderSavingsStatus(
     kycFinalStatus?: SavingsKYCStatus,
     selectedProviderCompanyName?: string,
 ) {
-    const { FiatAmountFormatter } = formatters;
     switch (true) {
         case isWatchingKYCStatus:
             return <KYCInProgress />;
@@ -162,9 +165,11 @@ function renderSavingsStatus(
                     </Crypto>
                     <Fiat>
                         ≈&nbsp;
-                        <FiatAmountFormatter
-                            currency={savingsTrade.fiatCurrency}
-                            value={savingsFiatSum}
+                        <FiatValue
+                            shouldConvert={false}
+                            fiatCurrency={savingsTrade.fiatCurrency?.toLowerCase()}
+                            amount={savingsFiatSum}
+                            symbol={symbol}
                         />
                     </Fiat>
                     {coinTransferDelayed && (
@@ -181,7 +186,6 @@ function renderSavingsStatus(
 }
 
 const Overview = (props: WithCoinmarketProps) => {
-    const formatters = useFormatters();
     const contextValues = useSavingsOverview(props);
     const {
         savingsTrade,
@@ -194,13 +198,12 @@ const Overview = (props: WithCoinmarketProps) => {
         savingsFiatSum,
         kycFinalStatus,
         selectedProvider,
+        account,
     } = contextValues;
-    const { FiatAmountFormatter } = formatters;
-
     if (isSavingsTradeLoading || !savingsTrade) {
         return <Translation id="TR_LOADING" />;
     }
-
+    const { symbol } = account;
     // NOTE: Planned payments are sorted in descending order by plannedPaymentAt.
     const followingPayment = savingsTradePayments?.[0];
     const nextPayment = savingsTradePayments?.[1];
@@ -212,14 +215,16 @@ const Overview = (props: WithCoinmarketProps) => {
                     <Left>
                         <Setup>
                             <SetupValues>
-                                <FiatPayment>
-                                    <FiatAmountFormatter
-                                        value={savingsTrade.fiatStringAmount || 0}
-                                        currency={savingsTrade.fiatCurrency}
-                                        maximumFractionDigits={2}
-                                        minimumFractionDigits={0}
-                                    />
-                                </FiatPayment>
+                                <StyledFiatValue
+                                    shouldConvert={false}
+                                    amount={savingsTrade.fiatStringAmount || '0'}
+                                    symbol={symbol}
+                                    fiatCurrency={savingsTrade.fiatCurrency}
+                                    fiatAmountFormatterOptions={{
+                                        maximumFractionDigits: 2,
+                                        minimumFractionDigits: 0,
+                                    }}
+                                />
                                 <Period>
                                     {savingsTrade.paymentFrequency && (
                                         <Translation
@@ -241,7 +246,7 @@ const Overview = (props: WithCoinmarketProps) => {
                     <Right>
                         {renderSavingsStatus(
                             isWatchingKYCStatus,
-                            formatters,
+                            symbol,
                             savingsTradeItemCompletedExists,
                             savingsFiatSum,
                             savingsCryptoSum,

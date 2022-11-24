@@ -1,8 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { variables } from '@trezor/components';
-import { FormattedCryptoAmount, Translation } from '@suite-components';
-import { useFormatters } from '@suite-common/formatters';
+import { FiatValue, FormattedCryptoAmount, Translation } from '@suite-components';
 import { NetworkSymbol } from '@wallet-types';
 
 const SummaryWrapper = styled.div`
@@ -27,7 +26,7 @@ const Right = styled.div`
     flex-direction: column;
 `;
 
-const Fiat = styled.div`
+const StyledFiatValue = styled(FiatValue)`
     font-size: 20px;
     line-height: 28px;
     color: ${props => props.theme.TYPE_GREEN};
@@ -55,28 +54,24 @@ const Summary = ({
     annualSavingsCryptoAmount,
     annualSavingsFiatAmount,
     fiatCurrency,
-}: Props) => {
-    const { FiatAmountFormatter } = useFormatters();
-
-    return (
-        <SummaryWrapper>
-            <Left>
-                <Translation id="TR_SAVINGS_SETUP_SUMMARY_LABEL" />
-            </Left>
-            <Right>
-                <Fiat>
-                    <FiatAmountFormatter currency={fiatCurrency} value={annualSavingsFiatAmount} />
-                </Fiat>
-                <Crypto>
-                    ≈&nbsp;
-                    <FormattedCryptoAmount
-                        value={annualSavingsCryptoAmount}
-                        symbol={accountSymbol}
-                    />
-                </Crypto>
-            </Right>
-        </SummaryWrapper>
-    );
-};
+}: Props) => (
+    <SummaryWrapper>
+        <Left>
+            <Translation id="TR_SAVINGS_SETUP_SUMMARY_LABEL" />
+        </Left>
+        <Right>
+            <StyledFiatValue
+                shouldConvert={false}
+                fiatCurrency={fiatCurrency}
+                amount={annualSavingsFiatAmount.toString()}
+                symbol={accountSymbol}
+            />
+            <Crypto>
+                ≈&nbsp;
+                <FormattedCryptoAmount value={annualSavingsCryptoAmount} symbol={accountSymbol} />
+            </Crypto>
+        </Right>
+    </SummaryWrapper>
+);
 
 export default Summary;

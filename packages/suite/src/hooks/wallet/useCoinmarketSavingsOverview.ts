@@ -75,6 +75,7 @@ export const useSavingsOverview = ({
         savingsFiatSum: savingsFiatSum.toFixed(),
         kycFinalStatus,
         selectedProvider,
+        account,
     };
 };
 
