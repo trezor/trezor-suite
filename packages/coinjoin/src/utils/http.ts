@@ -66,15 +66,29 @@ export const coordinatorRequest = async <R = void>(
 ): Promise<R> => {
     const baseUrl = options.baseUrl || '';
 
+    const switchIdentity = () => {
+        if (options.identity) {
+            // set random password to reset TOR circuit for this identity and then try again
+            const [user] = options.identity.split(':');
+            options.identity = `${user}:${Math.random()}`;
+        }
+    };
+
     const request = async (signal?: AbortSignal) => {
         let response;
         try {
             response = await httpPost(`${baseUrl}${url}`, body, { ...options, signal });
         } catch (e) {
-            // prevent dead cycles while using "deadline" option in scheduledAction
-            // catch fetch runtime errors like ECONNREFUSED or blocked by @trezor/request-manager
-            // and stop scheduledAction. those errors will not be resolved by retrying
-            if (options.deadline) {
+            if ('code' in e && e.code === 'ECONNRESET') {
+                // catch errors from nodejs http module like "socket hang up" or "socket disconnected before secure TLS connection was established" etc.
+                // When sending request through a keep-alive enabled agent the underlying socket might be reused.
+                // But if server closes connection at unfortunate time client may run into a 'ECONNRESET' error.
+                // each case explanation in ./node_modules/@types/node/*/http.d.ts
+                switchIdentity();
+            } else if (options.deadline) {
+                // prevent dead cycles while using "deadline" option in scheduledAction
+                // catch fetch runtime errors like ECONNREFUSED or blocked by @trezor/request-manager
+                // and stop scheduledAction. those errors will not be resolved by retrying
                 return { error: e as Error };
             }
             throw e;
@@ -82,11 +96,9 @@ export const coordinatorRequest = async <R = void>(
 
         // throw unexpected network errors => retry scheduledAction
         if (![200, 404, 500].includes(response.status)) {
-            if (response.status === 403 && options.identity) {
+            if (response.status === 403) {
                 // NOTE: possibly blocked by cloudflare
-                // set random password to reset TOR circuit for this identity and then try again
-                const [user] = options.identity.split(':');
-                options.identity = `${user}:${Math.random()}`;
+                switchIdentity();
             }
             // log to app console and sentry if possible
             console.error(`Unexpected error ${response.status} request to ${url}`);

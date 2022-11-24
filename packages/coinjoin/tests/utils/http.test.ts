@@ -94,7 +94,31 @@ describe('http', () => {
         expect(identities[1]).not.toEqual(identities[2]);
     });
 
-    it('with fetch runtime error', async () => {
+    it('with ECONNRESET error', async () => {
+        const spy = jest.fn();
+        server?.addListener('test-request', ({ request, response, resolve }) => {
+            spy();
+            const identity = request.headers['proxy-authorization'];
+            if (identity && identity.split(':').length > 1) {
+                // handle request to change identity and resolve properly
+                resolve();
+            } else {
+                // trigger ECONNRESET error
+                response.destroy();
+            }
+        });
+
+        const resp = await coordinatorRequest<any>(
+            'status',
+            {},
+            { baseUrl, deadline: Date.now() + 3000, identity: 'abcd' },
+        );
+
+        expect(spy).toBeCalledTimes(2);
+        expect(resp.roundStates.length).toEqual(1);
+    });
+
+    it('with ECONNREFUSED error', async () => {
         await expect(
             coordinatorRequest(
                 'status',
