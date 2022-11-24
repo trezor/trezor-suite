@@ -6,6 +6,7 @@ import { Network } from '@wallet-types';
 import { TimestampedRates } from '@wallet-types/fiatRates';
 import { toFiatCurrency } from '@suite-common/wallet-utils';
 import { useFormatters } from '@suite-common/formatters';
+import type { FormatNumberOptions } from '@formatjs/intl';
 
 const StyledHiddenPlaceholder = styled(props => <HiddenPlaceholder {...props} />)`
     font-variant-numeric: tabular-nums;
@@ -29,6 +30,8 @@ interface CommonOwnProps {
     children?: (props: Params) => React.ReactElement | null;
     showApproximationIndicator?: boolean;
     disableHiddenPlaceholder?: boolean;
+    fiatAmountFormatterOptions?: FormatNumberOptions;
+    shouldConvert?: boolean;
 }
 
 interface DefaultSourceProps extends CommonOwnProps {
@@ -66,6 +69,8 @@ export const FiatValue = ({
     useCustomSource,
     showApproximationIndicator,
     disableHiddenPlaceholder,
+    fiatAmountFormatterOptions,
+    shouldConvert = true,
 }: FiatValueProps) => {
     const { FiatAmountFormatter } = useFormatters();
     const { fiat, settings } = useSelector(state => ({
@@ -81,13 +86,20 @@ export const FiatValue = ({
     )?.current;
 
     const ratesSource = useCustomSource ? source : currentFiatRates?.rates;
-    const fiatAmount = ratesSource ? toFiatCurrency(amount, targetCurrency, ratesSource) : null;
+    let fiatAmount: string | null = amount;
+    if (shouldConvert) {
+        fiatAmount = ratesSource ? toFiatCurrency(amount, targetCurrency, ratesSource) : null;
+    }
     const WrapperComponent = disableHiddenPlaceholder ? SameWidthNums : StyledHiddenPlaceholder;
     if (fiatAmount) {
         const fiatValueComponent = (
             <WrapperComponent className={className}>
                 {showApproximationIndicator && <>≈ </>}
-                <FiatAmountFormatter currency={targetCurrency} value={fiatAmount} />
+                <FiatAmountFormatter
+                    currency={targetCurrency}
+                    value={fiatAmount}
+                    {...fiatAmountFormatterOptions}
+                />
             </WrapperComponent>
         );
 
