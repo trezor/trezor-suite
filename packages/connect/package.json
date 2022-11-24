@@ -50,6 +50,7 @@
     },
     "dependencies": {
         "@trezor/blockchain-link": "^2.1.5",
+        "@trezor/connect-analytics": "*",
         "@trezor/connect-common": "0.0.10",
         "@trezor/device-utils": "*",
         "@trezor/transport": "^1.1.5",

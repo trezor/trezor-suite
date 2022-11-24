@@ -2,7 +2,7 @@
 import EventEmitter from 'events';
 import { DataManager } from '../data/DataManager';
 import { DeviceList } from '../device/DeviceList';
-// import { enhancePostMessageWithAnalytics } from '../data/analyticsInfo';
+import { enhancePostMessageWithAnalytics } from '../data/analyticsInfo';
 
 import { ERRORS } from '../constants';
 
@@ -362,8 +362,8 @@ export const onCall = async (message: CoreMessage) => {
         throw error;
     }
 
-    // method.postMessage = (message: CoreMessage) =>
-    //     enhancePostMessageWithAnalytics(postMessage, message, { device });
+    method.postMessage = (message: CoreMessage) =>
+        enhancePostMessageWithAnalytics(postMessage, message, { device });
 
     method.setDevice(device);
 
