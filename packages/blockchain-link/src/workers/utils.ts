@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js';
 import { isNotUndefined, parseHostname } from '@trezor/utils';
-import type { EnhancedVinVout } from '../types';
+import type { Transaction, EnhancedVinVout } from '../types';
 import type { VinVout } from '../types/blockbook';
 
 export type Addresses = ({ address: string } | string)[] | string;
@@ -64,3 +64,16 @@ export const prioritizeEndpoints = (urls: string[]) =>
         })
         .sort(([, a], [, b]) => b - a)
         .map(([url]) => url);
+
+const adjustHeight = (n: number | undefined) =>
+    n === undefined || n <= 0 ? Number.MAX_SAFE_INTEGER : n;
+
+export const sortTxsFromLatest = (txA: Transaction, txB: Transaction) => {
+    const a = adjustHeight(txA.blockHeight);
+    const b = adjustHeight(txB.blockHeight);
+    if (a === b) {
+        if (txA.details.vin.some(({ txid }) => txid === txB.txid)) return -1;
+        if (txB.details.vin.some(({ txid }) => txid === txA.txid)) return 1;
+    }
+    return b - a;
+};
