@@ -7,6 +7,7 @@ import { ROUND_SELECTION_REGISTRATION_OFFSET } from '../../constants';
 import type { Alice } from '../Alice';
 import type { CoinjoinPrison } from '../CoinjoinPrison';
 import type { CoinjoinRound, CoinjoinRoundOptions } from '../CoinjoinRound';
+import { SessionPhase } from '../../enums';
 
 /**
  * RoundPhase: 0, InputRegistration
@@ -175,6 +176,7 @@ export const inputRegistration = async (
     // try to register each input
     // failed inputs will be excluded from this round, successful will continue to phase: 1 (connectionConfirmation)
     options.log(`inputRegistration: ~~${round.id}~~`);
+    round.setSessionPhase(SessionPhase.CoinRegistration);
 
     await Promise.allSettled(
         round.inputs.map(input => registerInput(round, input, prison, options)),
