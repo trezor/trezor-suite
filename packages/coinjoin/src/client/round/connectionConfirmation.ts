@@ -3,6 +3,7 @@ import * as middleware from '../middleware';
 import { readTimeSpan } from '../../utils/roundUtils';
 import type { Alice } from '../Alice';
 import type { CoinjoinRound, CoinjoinRoundOptions } from '../CoinjoinRound';
+import { SessionPhase } from '../../enums';
 
 /**
  * usage in RoundPhase: 0, InputRegistration
@@ -175,6 +176,7 @@ export const connectionConfirmation = async (
     // try to confirm each input
     // failed inputs will be excluded from this round, successful will continue to phase: 2 (outputRegistration)
     options.log(`connectionConfirmation: ~~${round.id}~~`);
+    round.setSessionPhase(SessionPhase.AwaitingConfirmation);
 
     await Promise.allSettled(round.inputs.map(input => confirmInput(round, input, options))).then(
         result =>
@@ -184,6 +186,8 @@ export const connectionConfirmation = async (
                 }
             }),
     );
+
+    round.setSessionPhase(SessionPhase.AwaitingOthersConfirmation);
 
     return round;
 };

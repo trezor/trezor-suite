@@ -8,6 +8,7 @@ import {
     selectRound,
     AliceGenerator,
     CoinjoinRoundGenerator,
+    getUnregisteredAccounts,
 } from '../../src/client/round/selectRound';
 import { DEFAULT_ROUND, ROUND_CREATION_EVENT } from '../fixtures/round.fixture';
 import { createServer } from '../mocks/server';
@@ -122,9 +123,8 @@ describe('selectRound', () => {
     });
 
     it('Account already registered in CoinjoinRound', () => {
-        const result = getAccountCandidates(
+        const result = getUnregisteredAccounts(
             [{ accountKey: 'account-A', utxos: [{ outpoint: 'AA' }, { outpoint: 'AB' }] }] as any,
-            [],
             [
                 {
                     id: '03',
@@ -132,7 +132,6 @@ describe('selectRound', () => {
                     failed: [{ outpoint: 'Fa17ed' }],
                 },
             ] as any,
-            PRISON,
             server?.requestOptions,
         );
         expect(result).toEqual([]);
