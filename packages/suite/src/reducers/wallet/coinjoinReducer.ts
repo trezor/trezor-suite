@@ -242,7 +242,7 @@ const handleClientLog = (
     });
     // keep max 200 messages
     if (client.log.length > 200) {
-        client.log = client.log.slice(200, client.log.length);
+        client.log = client.log.slice(0, 200);
     }
 };
 
