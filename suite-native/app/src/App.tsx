@@ -44,6 +44,11 @@ const AppComponent = () => {
                 /* Invoke reconnect manually here because we need to have fiat rates initialized
                  * immediately after the app is loaded.
                  */
+
+                /* TODO We should only reconnect for accounts that we currently need.
+                   Currently all supported networks get reconnected but this can raise some
+                   performance problems because of making calls to blockbook that are unnecessary.
+                */
                 const promises = enabledNetworks.map(network =>
                     dispatch(reconnectBlockchainThunk(network)),
                 );

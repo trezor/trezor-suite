@@ -19,22 +19,12 @@ import { yup } from '@trezor/validation';
 import { XpubScanHeader } from '../components/XpubScanHeader';
 import { XpubImportSection } from '../components/XpubImportSection';
 import { AccountImportHeader } from '../components/AccountImportHeader';
-
-// Note: Btc and testnet are required right now. Everything else is always optional and can be undefined.
-const devXpubs: Partial<Record<NetworkSymbol, string>> & Record<'btc' | 'test', string> = {
-    btc: 'zpub6rjNNddoAVvuYaD6WPdxiqFEToQHgrERjWMg7kM9gGGk6rhPMWNEmL5X745FGqBq8Wp136LfA3A7UjRGEYdJrf8dUfshzNrb5rvaryNfVJf',
-    test: 'vpub5ZjRPuuMiEQnbwEDi9jtH1FaJMajZW78uZ1t3RJXKhxyMoTnPraKwGxiDo9SguDYvSieqjoLJxW5n2t9156RR1oeqRnURuftNZTzejBc4pa',
-};
+import { DevXpub } from '../components/DevXpub';
 
 const cameraStyle = prepareNativeStyle(_ => ({
     alignItems: 'center',
     marginTop: 20,
     marginBottom: 45,
-}));
-
-const devXpubButtonStyle = prepareNativeStyle(utils => ({
-    marginTop: utils.spacings.large,
-    borderRadius: utils.borders.radii.round,
 }));
 
 const DEFAULT_CURRENCY_SYMBOL = 'btc';
@@ -136,17 +126,7 @@ export const XpubScanScreen = ({
                     </VStack>
                 </Form>
                 {isDevelopOrDebugEnv() && (
-                    <Button
-                        style={applyStyle(devXpubButtonStyle)}
-                        onPress={() =>
-                            goToAccountImportScreen({
-                                xpubAddress: devXpubs[selectedCurrencySymbol] ?? devXpubs.btc,
-                            })
-                        }
-                        colorScheme="gray"
-                    >
-                        Use dev xPub
-                    </Button>
+                    <DevXpub symbol={selectedCurrencySymbol} onSelect={goToAccountImportScreen} />
                 )}
             </Box>
         </Screen>
