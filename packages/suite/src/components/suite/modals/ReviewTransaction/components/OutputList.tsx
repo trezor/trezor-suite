@@ -1,14 +1,14 @@
 import React, { createRef } from 'react';
 import styled from 'styled-components';
-import { analytics, EventType } from '@trezor/suite-analytics';
 
+import { analytics, EventType } from '@trezor/suite-analytics';
 import { Button, variables } from '@trezor/components';
 import { Translation } from '@suite-components';
 import { formatNetworkAmount, isTestnet } from '@suite-common/wallet-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { copyToClipboard, download } from '@trezor/dom-utils';
 import { useActions } from '@suite-hooks';
-import Detail from './Detail';
+import { TransactionDetails } from './TransactionDetails';
 import Indicator from './Indicator';
 import Output, { OutputProps } from './Output';
 import OutputElement from './OutputElement';
@@ -73,7 +73,7 @@ const StyledButton = styled(Button)`
     }
 `;
 
-interface Props {
+interface OutputListProps {
     account: Account;
     precomposedForm: FormState;
     precomposedTx: PrecomposedTransactionFinal | TxFinalCardano;
@@ -101,7 +101,7 @@ const OutputList = ({
     outputs,
     buttonRequests,
     isRbfAction,
-}: Props) => {
+}: OutputListProps) => {
     const { symbol } = account;
     const { options, selectedFee } = precomposedForm;
     const broadcastEnabled = options.includes('broadcast');
@@ -135,7 +135,7 @@ const OutputList = ({
     return (
         <Content>
             <Right>
-                {detailsOpen && <Detail tx={precomposedTx} txHash={signedTx?.tx} />}
+                {detailsOpen && <TransactionDetails tx={precomposedTx} txHash={signedTx?.tx} />}
                 <RightTop>
                     <RightTopInner>
                         {outputs.map((output, index) => {
