@@ -168,11 +168,17 @@ export const selectIsAccountImported = createSelector(
         A.some(accounts, account => account.descriptor === accountDescriptor),
 );
 
-export const selectAccountByDescriptor = createSelector(
+export const selectAccountByDescriptorAndNetworkSymbol = createSelector(
     selectAccounts,
-    (_state: AccountsRootState, accountDescriptor: string) => accountDescriptor,
-    (accounts, accountDescriptor): Account | null =>
-        A.find(accounts, account => account.descriptor === accountDescriptor) ?? null,
+    (_state: AccountsRootState, accountDescriptor: string, networkSymbol: NetworkSymbol) => ({
+        accountDescriptor,
+        networkSymbol,
+    }),
+    (accounts, { accountDescriptor, networkSymbol }): Account | null =>
+        A.find(
+            accounts,
+            account => account.descriptor === accountDescriptor && account.symbol === networkSymbol,
+        ) ?? null,
 );
 
 export const selectAccountsAmountPerSymbol = createSelector(

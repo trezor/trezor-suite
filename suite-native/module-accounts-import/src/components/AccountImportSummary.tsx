@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import {
     AccountsRootState,
-    selectAccountByDescriptor,
+    selectAccountByDescriptorAndNetworkSymbol,
     selectIsAccountImported,
 } from '@suite-common/wallet-core';
 import { NetworkSymbol } from '@suite-common/wallet-config';
@@ -20,18 +20,15 @@ type AccountImportDetailProps = {
 
 export const AccountImportSummary = ({ networkSymbol, accountInfo }: AccountImportDetailProps) => {
     const account = useSelector((state: AccountsRootState) =>
-        selectAccountByDescriptor(state, accountInfo.descriptor),
+        selectAccountByDescriptorAndNetworkSymbol(state, accountInfo.descriptor, networkSymbol),
     );
     const isAccountImportedAlready = useSelector((state: AccountsRootState) =>
         selectIsAccountImported(state, accountInfo.descriptor),
     );
 
     const isAccountImportSupported = enabledNetworks.some(network => network === networkSymbol);
-    const isXpubWithSameDifferentSymbolbAlreadyImported =
-        account && account.symbol !== networkSymbol;
 
-    if (isAccountImportedAlready && isXpubWithSameDifferentSymbolbAlreadyImported)
-        return <AccountAlreadyImported account={account} />;
+    if (isAccountImportedAlready && account) return <AccountAlreadyImported account={account} />;
     if (isAccountImportSupported)
         return <AccountImportSummaryForm networkSymbol={networkSymbol} accountInfo={accountInfo} />;
     return null;
