@@ -1,17 +1,19 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { Translation } from '@suite-components';
 import { Icon, variables } from '@trezor/components';
 
 const Wrapper = styled.div`
     align-items: center;
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     display: flex;
+    gap: 6px;
+`;
+
+const AnonymityLevel = styled.span`
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
     font-variant-numeric: tabular-nums;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    gap: 6px;
 `;
 
 interface UtxoAnonymityProps {
@@ -21,6 +23,6 @@ interface UtxoAnonymityProps {
 export const UtxoAnonymity = ({ anonymity }: UtxoAnonymityProps) => (
     <Wrapper>
         <Icon icon="USERS" size={20} />
-        <Translation id="TR_COINJOIN_ANONYMITY_LEVEL_INDICATOR" values={{ anonymity }} />
+        <AnonymityLevel>{anonymity}</AnonymityLevel>
     </Wrapper>
 );

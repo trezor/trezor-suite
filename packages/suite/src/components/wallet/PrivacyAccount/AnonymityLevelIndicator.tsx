@@ -9,6 +9,7 @@ import { AnonymityStatus } from '@suite-constants/coinjoin';
 const Container = styled.div`
     display: flex;
     align-items: center;
+    gap: 6px;
     justify-content: space-between;
     padding: 6px 10px;
     border-radius: 8px;
@@ -29,7 +30,7 @@ const Container = styled.div`
 `;
 
 const Values = styled.div`
-    min-width: 64px;
+    min-width: 50px;
 `;
 
 const AnonymityLevel = styled.p`
@@ -91,12 +92,7 @@ export const AnonymityLevelIndicator = forwardRef<HTMLDivElement, AnonymityLevel
                 <Icon icon="USERS" />
 
                 <Values>
-                    <AnonymityLevel>
-                        <Translation
-                            id="TR_COINJOIN_ANONYMITY_LEVEL_INDICATOR"
-                            values={{ anonymity: targetAnonymity }}
-                        />
-                    </AnonymityLevel>
+                    <AnonymityLevel>{targetAnonymity}</AnonymityLevel>
                     <AnonymityStatusLabel
                         color={getAnonymityStatusColor({ theme, anonymityStatus })}
                     >
