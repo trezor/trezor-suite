@@ -1,26 +1,33 @@
 import { BufferReader, BufferWriter } from '../bufferutils';
+import { isNetworkType } from '../networks';
 import { TransactionBase, TransactionOptions } from './base';
 
 const ADVANCED_TRANSACTION_MARKER = 0x00;
 const ADVANCED_TRANSACTION_FLAG = 0x01;
+const MWEB_PEGOUT_TX_FLAG = 0x08;
 
 function toBuffer<S>(
     tx: TransactionBase<S>,
     buffer?: Buffer,
     initialOffset?: number,
     _ALLOW_WITNESS = true,
+    _ALLOW_MWEB = true,
 ) {
-    if (!buffer) buffer = Buffer.allocUnsafe(tx.byteLength(_ALLOW_WITNESS));
+    if (!buffer) buffer = Buffer.allocUnsafe(tx.byteLength(_ALLOW_WITNESS, _ALLOW_MWEB));
 
     const bufferWriter = new BufferWriter(buffer, initialOffset || 0);
 
     bufferWriter.writeInt32(tx.version);
 
     const hasWitnesses = _ALLOW_WITNESS && tx.hasWitnesses();
+    const hasMweb = _ALLOW_MWEB && tx.isMwebPegOutTx();
 
     if (hasWitnesses) {
         bufferWriter.writeUInt8(ADVANCED_TRANSACTION_MARKER);
         bufferWriter.writeUInt8(ADVANCED_TRANSACTION_FLAG);
+    } else if (hasMweb) {
+        bufferWriter.writeUInt8(0);
+        bufferWriter.writeUInt8(MWEB_PEGOUT_TX_FLAG);
     }
 
     bufferWriter.writeVarInt(tx.ins.length);
@@ -42,6 +49,10 @@ function toBuffer<S>(
         tx.ins.forEach(input => {
             bufferWriter.writeVector(input.witness);
         });
+    }
+
+    if (hasMweb) {
+        bufferWriter.writeUInt8(0);
     }
 
     bufferWriter.writeUInt32(tx.locktime);
@@ -67,10 +78,12 @@ export function fromBuffer(buffer: Buffer, options: TransactionOptions) {
     const marker = bufferReader.readUInt8();
     const flag = bufferReader.readUInt8();
 
+    const hasMweb = flag === MWEB_PEGOUT_TX_FLAG && isNetworkType('litecoin', tx.network);
+
     let hasWitnesses = false;
     if (marker === ADVANCED_TRANSACTION_MARKER && flag === ADVANCED_TRANSACTION_FLAG) {
         hasWitnesses = true;
-    } else {
+    } else if (!hasMweb) {
         bufferReader.offset -= 2;
     }
 
@@ -100,6 +113,10 @@ export function fromBuffer(buffer: Buffer, options: TransactionOptions) {
 
         // was this pointless?
         if (!tx.hasWitnesses()) throw new Error('Transaction has superfluous witness data');
+    }
+
+    if (hasMweb) {
+        bufferReader.readUInt8();
     }
 
     tx.locktime = bufferReader.readUInt32();
