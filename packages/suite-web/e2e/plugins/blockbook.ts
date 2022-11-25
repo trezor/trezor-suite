@@ -27,13 +27,12 @@ interface StartParams {
 export const start = async ({ endpointsFile }: StartParams) => {
     const port = await getFreePort();
 
-    const { endpoints } = await import(`../fixtures/${endpointsFile}.ts`);
-
     const serverPromise = new Promise<Server>((resolve, reject) => {
         // @ts-expect-error
         const server: Server = new WebSocket.Server({ port });
         server.port = port;
-        server.on('connection', ws => {
+        server.on('connection', async ws => {
+            const { endpoints } = await import(`../fixtures/${endpointsFile}.ts`);
             ws.on('message', (data: any) => {
                 const json = JSON.parse(data);
 

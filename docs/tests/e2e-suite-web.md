@@ -90,7 +90,7 @@ Steps:
     - `export DISPLAY=${HOSTNAME}:0`
 1. In terminal window, navigate to `trezor-user-env` repo root and run `./run.sh`.
 1. In another window, run web `Suite` with `yarn suite:dev`.
-1. In a third window, run `npx cypress open --project packages/integration-tests/projects/suite-web --config 'baseUrl=http://localhost:8000'`.
+1. In a third window, run `npx cypress open --project packages/suite-web/e2e --config 'baseUrl=http://localhost:8000'`.
 
 #### Troubleshooting
 
@@ -116,7 +116,7 @@ When you need to update image snapshots you have 2 options:
 
 ### run_tests script
 
-The [run_tests.js script](https://github.com/trezor/trezor-suite/blob/develop/packages/integration-tests/projects/suite-web/run_tests.js)
+The [run_tests.js script](../../packages/suite-web/e2e/run_tests.ts)
 is the entry point for e2e tests. It:
 
 -   picks tests files to be run (see @tags)
