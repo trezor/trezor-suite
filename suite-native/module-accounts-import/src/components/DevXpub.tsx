@@ -18,7 +18,7 @@ const devXpubs: Partial<Record<NetworkSymbol, string>> = {
     btg: 'ypub6WVGAPrpnuTJN8AULEnWNNpvFR5Xcckn66fp8sL4FgEy5Z4oig1CbwySvj8v4iFVSANcHJVWzK211Bb8u71bCTVW9vY1PbAn59KmCzq99YW',
     dgb: 'ypub6X7pNV6ouYFiDGHjxCtbnV9EaCdq5uyVysMbR5Q79LHa3SWV93J7ubun37EJhfFQqsSGQBfz3UrAzNtYNhb5JsoPJbNKvbF9wKxBjgxfXkH',
     zec: 'xpub6CQdEahwhKRSn9BFc7oWpzNoeqG2ygv3xdofyk7He93NMjvDpGvcQ2o4dZfBNXpqzKydaHp5rhXRT3zYhRYJAErXxarH37f9hgRZ6UPiqfg',
-    eth: '0xF410e37E9C8BCf8CF319c84Ae9dCEbe057804a04', // Public key, not xpub
+    eth: '0x62270860B9a5337e46bE8563c512c9137AFa0384', // Public key, not xpub
 };
 
 export const DevXpub = ({ symbol, onSelect }: DevXpubProps) => {
