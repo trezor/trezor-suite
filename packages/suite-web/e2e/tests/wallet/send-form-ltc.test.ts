@@ -20,7 +20,7 @@ describe('LTC send form with mocked blockbook', () => {
         cy.task('stopBlockbookMock');
     });
 
-    it('spend mimble-wimble output', () => {
+    it('spend output originating from mimble-wimble peg out tx', () => {
         //
         // Test preparation
         //
@@ -53,8 +53,9 @@ describe('LTC send form with mocked blockbook', () => {
                 );
                 cy.getTestElement('outputs[0].setMax').click({ force: true });
 
-                // cy.pause();
-                // TDD TODO: click on review button, now it fails "slice out of bounds "
+                cy.getTestElement('@send/review-button').click();
+                cy.getTestElement('@prompts/confirm-on-device');
+                cy.task('pressYes');
             },
         );
     });
