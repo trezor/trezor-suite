@@ -27,8 +27,11 @@ export const AccountImportSummary = ({ networkSymbol, accountInfo }: AccountImpo
     );
 
     const isAccountImportSupported = enabledNetworks.some(network => network === networkSymbol);
+    const isXpubWithSameDifferentSymbolbAlreadyImported =
+        account && account.symbol !== networkSymbol;
 
-    if (isAccountImportedAlready && account) return <AccountAlreadyImported account={account} />;
+    if (isAccountImportedAlready && isXpubWithSameDifferentSymbolbAlreadyImported)
+        return <AccountAlreadyImported account={account} />;
     if (isAccountImportSupported)
         return <AccountImportSummaryForm networkSymbol={networkSymbol} accountInfo={accountInfo} />;
     return null;
