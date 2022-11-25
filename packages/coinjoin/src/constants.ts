@@ -9,6 +9,9 @@ export const PROGRESS_BATCH_SIZE_MAX = 10000;
 
 export const DISCOVERY_LOOKOUT = 20;
 
+// for change addresses as they're heavily used in coinjoin
+export const DISCOVERY_LOOKOUT_EXTENDED = 50;
+
 export const STATUS_TIMEOUT = {
     idle: 60000, // no registered accounts, occasionally fetch status to read fees
     enabled: 30000, // account is registered but utxo was not paired with Round

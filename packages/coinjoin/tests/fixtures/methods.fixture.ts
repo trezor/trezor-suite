@@ -388,6 +388,156 @@ export const SEGWIT_XPUB_RESULT = {
                 path: "m/84'/1'/0'/1/20",
                 transfers: 0,
             },
+            {
+                address: 'bcrt1qcd7flxasgwn0mk3hszfwcnywsmt3nv6pkyfue4',
+                path: "m/84'/1'/0'/1/21",
+                transfers: 0,
+            },
+            {
+                address: 'bcrt1qwfwwhurm2qwrm5t836zj8yme8nqq55703l3xp2',
+                path: "m/84'/1'/0'/1/22",
+                transfers: 0,
+            },
+            {
+                address: 'bcrt1qr5vc4ldeh35numf0sr7tddvkw2ww5wtu4m3nn5',
+                path: "m/84'/1'/0'/1/23",
+                transfers: 0,
+            },
+            {
+                address: 'bcrt1q8jxu8sjrx7wz5cslupct2g3d724qheenwfr8ne',
+                path: "m/84'/1'/0'/1/24",
+                transfers: 0,
+            },
+            {
+                address: 'bcrt1qklq0mjkju72wvvj4xw4fl2nfkzljerjkq5cj6e',
+                path: "m/84'/1'/0'/1/25",
+                transfers: 0,
+            },
+            {
+                address: 'bcrt1q2ytsdz2mzv04m7ty373ntqnnqcjpqfllfjjl8v',
+                path: "m/84'/1'/0'/1/26",
+                transfers: 0,
+            },
+            {
+                address: 'bcrt1qshw6c9pxrxhe78rv3yxntx7l205qxpdzltz58m',
+                path: "m/84'/1'/0'/1/27",
+                transfers: 0,
+            },
+            {
+                address: 'bcrt1qg5artwauue8xq0zhcvl5rv7wz8cdjy6ga5f95j',
+                path: "m/84'/1'/0'/1/28",
+                transfers: 0,
+            },
+            {
+                address: 'bcrt1qnrcfh3wsvs8tnk58d0dzgl47k0qmdxyqrwaqcw',
+                path: "m/84'/1'/0'/1/29",
+                transfers: 0,
+            },
+            {
+                address: 'bcrt1qygthhkrmw39090xna84c575m8sfwgm2sqvrs2f',
+                path: "m/84'/1'/0'/1/30",
+                transfers: 0,
+            },
+            {
+                address: 'bcrt1q5tpzfctscgvwaj276kxaf6tkfa2l35rcwl35xf',
+                path: "m/84'/1'/0'/1/31",
+                transfers: 0,
+            },
+            {
+                address: 'bcrt1q5ac3l6fcjgs6s9gptxslfp5m49gcleg4s8cz0g',
+                path: "m/84'/1'/0'/1/32",
+                transfers: 0,
+            },
+            {
+                address: 'bcrt1qafwugfusvd4c7pdwqy6nrdc5n8mrmnukd0mrvh',
+                path: "m/84'/1'/0'/1/33",
+                transfers: 0,
+            },
+            {
+                address: 'bcrt1q84hwcup9d326ctu3x05e9s74nt9565q0u5ejjj',
+                path: "m/84'/1'/0'/1/34",
+                transfers: 0,
+            },
+            {
+                address: 'bcrt1q0x76cx65yx8jpd3pamf2c7d84sekmrs64dwww8',
+                path: "m/84'/1'/0'/1/35",
+                transfers: 0,
+            },
+            {
+                address: 'bcrt1qgps3pj77rrrcvpphdw2yaqwlv3x6w95lscju76',
+                path: "m/84'/1'/0'/1/36",
+                transfers: 0,
+            },
+            {
+                address: 'bcrt1qka9j8r3n3utc3qtg3v4lsnxnhn5zks5sd8ryju',
+                path: "m/84'/1'/0'/1/37",
+                transfers: 0,
+            },
+            {
+                address: 'bcrt1qqmtf9f0yrr0mq7t4c0h8ezdsfwn5p87aqe2xdl',
+                path: "m/84'/1'/0'/1/38",
+                transfers: 0,
+            },
+            {
+                address: 'bcrt1qn7rfsgdp4edu2auukphm9d8gfc5h7tk9y2q8zj',
+                path: "m/84'/1'/0'/1/39",
+                transfers: 0,
+            },
+            {
+                address: 'bcrt1qhtx908walvleuryd940x7pgwkycmwq8rlv3p2v',
+                path: "m/84'/1'/0'/1/40",
+                transfers: 0,
+            },
+            {
+                address: 'bcrt1qh7lsaxngm53pmea6m2evwla3kz25auja8ww6qz',
+                path: "m/84'/1'/0'/1/41",
+                transfers: 0,
+            },
+            {
+                address: 'bcrt1qaa8r4fg5e7ner8zynkr9m42drwxl5qu3leydak',
+                path: "m/84'/1'/0'/1/42",
+                transfers: 0,
+            },
+            {
+                address: 'bcrt1q0gz24yavwayqwzmratecm6navw8zr2mesh9n20',
+                path: "m/84'/1'/0'/1/43",
+                transfers: 0,
+            },
+            {
+                address: 'bcrt1qxawuc27h4h0zxkqze03a4r54jmdnxx6lzql0m5',
+                path: "m/84'/1'/0'/1/44",
+                transfers: 0,
+            },
+            {
+                address: 'bcrt1qlwa2kqvl6wynhj02vcqwudfuhq78a4fyqgeja0',
+                path: "m/84'/1'/0'/1/45",
+                transfers: 0,
+            },
+            {
+                address: 'bcrt1qnfmw0xvwmn0v6kj6l3ra05u9n0c0vl0kspulu0',
+                path: "m/84'/1'/0'/1/46",
+                transfers: 0,
+            },
+            {
+                address: 'bcrt1q80626n3qccynt9krkuju4nsg9q7405p65a58h8',
+                path: "m/84'/1'/0'/1/47",
+                transfers: 0,
+            },
+            {
+                address: 'bcrt1qpcr0w6hkplc54zfdj62nqhkdm8vgtdtqh53htf',
+                path: "m/84'/1'/0'/1/48",
+                transfers: 0,
+            },
+            {
+                address: 'bcrt1qlfvws24zz5tjlak7f2pygd4c54s66ykxrxjn8t',
+                path: "m/84'/1'/0'/1/49",
+                transfers: 0,
+            },
+            {
+                address: 'bcrt1qzvluxcz8dutuhxk6mm694zwh6td9d4kx4h8jkm',
+                path: "m/84'/1'/0'/1/50",
+                transfers: 0,
+            },
         ],
         used: [
             {
@@ -853,7 +1003,7 @@ export const SEGWIT_XPUB_RESULT_HALF = {
             },
             { ...used2, balance: '999999890', received: '999999890', sent: '0', transfers: 1 },
         ],
-        change: [{ ...change1, transfers: 0 }, ...change.slice(0, -1)],
+        change: [{ ...change1, transfers: 0 }, ...change.slice(0, 19)],
     },
     history: {
         total: 3,
