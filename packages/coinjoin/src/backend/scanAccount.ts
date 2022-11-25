@@ -12,7 +12,7 @@ import type {
     ScanAccountResult,
     PrederivedAddress,
 } from '../types/backend';
-import { DISCOVERY_LOOKOUT } from '../constants';
+import { DISCOVERY_LOOKOUT, DISCOVERY_LOOKOUT_EXTENDED } from '../constants';
 
 const transformTx =
     (xpub: string, receive: AccountAddress[], change: AccountAddress[]) =>
@@ -95,6 +95,7 @@ export const scanAccount = async (
             lazyBlock,
             deriveMore('change', changePrederived),
             txs,
+            DISCOVERY_LOOKOUT_EXTENDED,
         );
 
         const transactions = Array.from(txs, transformTx(xpub, receive, change));
