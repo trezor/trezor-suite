@@ -64,7 +64,7 @@ export const FormattedCryptoAmount = ({
 
     const content = (
         <Container className={className}>
-            {signValue && <Sign value={signValue} />}
+            {!!signValue && <Sign value={signValue} />}
 
             <Value data-test={dataTest}>{formattedValue}</Value>
 
