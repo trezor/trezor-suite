@@ -3,7 +3,9 @@ import * as typeforce from 'typeforce';
 import { reverseBuffer, getChunkSize } from '../bufferutils';
 import * as bcrypto from '../crypto';
 import * as types from '../types';
-import { bitcoin as BITCOIN_NETWORK, Network } from '../networks';
+import * as bscript from '../script';
+
+import { bitcoin as BITCOIN_NETWORK, Network, isNetworkType } from '../networks';
 
 export function varSliceSize(someScript: Buffer) {
     const { length } = someScript;
@@ -78,9 +80,30 @@ export class TransactionBase<S = undefined> {
         return this.ins.some(x => x.witness.length !== 0);
     }
 
+    // Litecoin
+    // transaction with hogex input and output
+    // for example
+    // see https://ltc2.trezor.io/tx/efe11e0d8d562e73b7795c2a3b7e44c6b6390f2c42c3ae90bb1005009c27a3f3
+    isMwebPegOutTx(): boolean {
+        if (!isNetworkType('litecoin', this.network)) {
+            return false;
+        }
+        return (
+            this.outs.some(output => {
+                const asm = bscript.toASM(output.script);
+                return asm.startsWith('OP_8');
+            }) &&
+            this.ins.some(
+                input =>
+                    // at least 1 anyone can spend input
+                    !input.script.length,
+            )
+        );
+    }
+
     weight(): number {
-        const base = this.byteLength(false);
-        const total = this.byteLength(true);
+        const base = this.byteLength(false, false);
+        const total = this.byteLength(true, false);
         return base * 3 + total;
     }
 
@@ -88,7 +111,7 @@ export class TransactionBase<S = undefined> {
         return Math.ceil(this.weight() / 4);
     }
 
-    byteLength(_ALLOW_WITNESS = true): number {
+    byteLength(_ALLOW_WITNESS = true, _ALLOW_MWEB = true): number {
         const hasWitnesses = _ALLOW_WITNESS && this.hasWitnesses();
 
         return (
@@ -98,14 +121,17 @@ export class TransactionBase<S = undefined> {
             varuint.encodingLength(this.outs.length) +
             this.ins.reduce((sum, input) => sum + 40 + varSliceSize(input.script), 0) +
             this.outs.reduce((sum, output) => sum + 8 + varSliceSize(output.script), 0) +
-            (hasWitnesses ? this.ins.reduce((sum, input) => sum + vectorSize(input.witness), 0) : 0)
+            (hasWitnesses
+                ? this.ins.reduce((sum, input) => sum + vectorSize(input.witness), 0)
+                : 0) +
+            (_ALLOW_MWEB && this.isMwebPegOutTx() ? 3 : 0)
         );
     }
 
-    getHash(forWitness = false): Buffer {
+    getHash(forWitness = false, forMweb = false): Buffer {
         // wtxid for coinbase is always 32 bytes of 0x00
         if (forWitness && this.isCoinbase()) return Buffer.alloc(32, 0);
-        return bcrypto.hash256(this.toBuffer(undefined, undefined, forWitness));
+        return bcrypto.hash256(this.toBuffer(undefined, undefined, forWitness, forMweb));
     }
 
     getId(): string {
@@ -138,7 +164,12 @@ export class TransactionBase<S = undefined> {
         return this.specific;
     }
 
-    toBuffer(_buffer?: Buffer, _initialOffset?: number, _ALLOW_WITNESS = true): Buffer {
+    toBuffer(
+        _buffer?: Buffer,
+        _initialOffset?: number,
+        _ALLOW_WITNESS = true,
+        _ALLOW_MWEB = true,
+    ): Buffer {
         // to override by coin specific
         return EMPTY_SCRIPT;
     }

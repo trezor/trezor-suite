@@ -9,6 +9,7 @@ import fixturesDoge from './__fixtures__/transaction/doge';
 import fixturesKomodo from './__fixtures__/transaction/komodo';
 import fixturesPeercoin from './__fixtures__/transaction/peercoin';
 import fixturesZcash from './__fixtures__/transaction/zcash';
+import fixturesLitecoin from './__fixtures__/transaction/litecoin';
 
 describe('Transaction', () => {
     describe('import fromBuffer/fromHex', () => {
@@ -45,6 +46,8 @@ describe('Transaction', () => {
         fixturesPeercoin.valid.forEach(importExport);
 
         fixturesZcash.valid.forEach(importExport);
+
+        fixturesLitecoin.valid.forEach(importExport);
 
         // Decred requires special check for tree and witness
         fixturesDecred.valid.forEach(f => {
@@ -172,6 +175,13 @@ describe('Transaction', () => {
             });
         });
 
+        fixturesLitecoin.valid.forEach(f => {
+            it(`Litecoin: exports ${f.description} (${f.hash})`, () => {
+                const actual = utils.fromRaw(f.raw, { network: NETWORKS.litecoin });
+                expect(actual.toHex()).toEqual(f.hex);
+            });
+        });
+
         // TODO: decred, zcash, komodo
     });
 
@@ -222,6 +232,7 @@ describe('Transaction', () => {
             ...fixturesPeercoin.valid,
             ...fixturesKomodo.valid,
             ...fixturesZcash.valid,
+            ...fixturesLitecoin.valid,
         ].forEach((f: utils.Fixture) => {
             it(f.description, () => {
                 const tx = Transaction.fromHex(f.whex || f.hex, {
@@ -243,6 +254,7 @@ describe('Transaction', () => {
             ...fixturesPeercoin.valid,
             ...fixturesKomodo.valid,
             ...fixturesZcash.valid,
+            ...fixturesLitecoin.valid,
         ].forEach((f: utils.Fixture) => {
             it(`should return the id for ${f.id}(${f.description})`, () => {
                 const tx = Transaction.fromHex(f.whex || f.hex, {
