@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Truncate } from '@trezor/components';
+
+import { Truncate, variables } from '@trezor/components';
 import { FiatValue, FormattedCryptoAmount, Translation } from '@suite-components';
 import { Network, Account, NetworkSymbol } from '@wallet-types';
 import { TokenInfo } from '@trezor/connect';
@@ -16,17 +17,17 @@ const OutputWrapper = styled.div`
 `;
 
 const OutputHeadline = styled.div`
-    font-size: 12px;
-    font-weight: 500;
+    font-size: ${variables.FONT_SIZE.TINY};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     margin-bottom: 6px;
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
     word-break: break-word;
 `;
 
 const OutputValue = styled.div`
-    font-size: 14px;
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
-    font-weight: 500;
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    font-size: ${variables.FONT_SIZE.SMALL};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 
     display: flex;
     flex-wrap: wrap;
@@ -42,26 +43,26 @@ const OutputLeft = styled.div`
 const MultiIndicatorWrapper = styled.div<{ linesCount: number }>`
     display: flex;
     align-self: flex-start;
-    height: ${props => props.linesCount * 80}px;
+    height: ${({ linesCount }) => linesCount * 80}px;
     align-items: center;
     position: relative;
-    z-index: 1;
+    z-index: ${variables.Z_INDEX.BASE};
     &:after {
         z-index: -2;
         width: 10px;
         left: 10px;
         position: absolute;
         height: 100%;
-        border-top: 1px solid ${props => props.theme.STROKE_GREY};
-        border-bottom: 1px solid ${props => props.theme.STROKE_GREY};
-        border-left: 1px solid ${props => props.theme.STROKE_GREY};
+        border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
+        border-bottom: 1px solid ${({ theme }) => theme.STROKE_GREY};
+        border-left: 1px solid ${({ theme }) => theme.STROKE_GREY};
         content: '';
         display: block;
     }
     &:before {
         z-index: -1;
         width: 20px;
-        background: ${props => props.theme.BG_WHITE};
+        background: ${({ theme }) => theme.BG_WHITE};
         position: absolute;
         height: 50%;
         content: '';
@@ -102,7 +103,7 @@ const DotSeparator = styled.div`
     width: 3px;
     height: 3px;
     border-radius: 50%;
-    background: ${props => props.theme.TYPE_LIGHT_GREY};
+    background: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
 
 export type OutputElementLine = {
@@ -112,7 +113,7 @@ export type OutputElementLine = {
     plainValue?: boolean;
 };
 
-export type Props = {
+export type OutputElementProps = {
     indicator?: JSX.Element;
     lines: OutputElementLine[];
     cryptoSymbol?: NetworkSymbol;
@@ -154,7 +155,7 @@ const OutputElement = ({
     hasExpansion = false,
     fiatVisible = false,
     account,
-}: Props) => {
+}: OutputElementProps) => {
     const { tokens, networkType } = account;
     const cardanoFingerprint = getFingerprint(tokens, token?.symbol);
 

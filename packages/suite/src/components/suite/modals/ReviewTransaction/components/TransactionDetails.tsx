@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+
 import { Translation } from '@suite-components';
 import { Icon, useTheme, Box, variables } from '@trezor/components';
 import { PrecomposedTransactionFinal, TxFinalCardano } from '@wallet-types/sendForm';
@@ -7,23 +8,23 @@ import { PrecomposedTransactionFinal, TxFinalCardano } from '@wallet-types/sendF
 const TransactionDetailsWrapper = styled.div`
     display: flex;
     flex-direction: column;
-    box-shadow: 0 2px 5px 0 ${props => props.theme.BOX_SHADOW_BLACK_20};
-    background: ${props => props.theme.BG_WHITE_ALT};
+    box-shadow: 0 2px 5px 0 ${({ theme }) => theme.BOX_SHADOW_BLACK_20};
+    background: ${({ theme }) => theme.BG_WHITE_ALT};
     width: calc(100% + 20px);
     height: calc(100% + 20px);
     position: absolute;
     top: -15px;
     left: -20px;
     border-radius: 8px;
-    font-weight: 500;
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
 const DetailsHeader = styled.div`
     padding: 14px 16px 10px;
     text-align: left;
-    color: ${props => props.theme.TYPE_DARK_GREY};
-    font-weight: 600;
-    font-size: 14px;
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
+    font-size: ${variables.FONT_SIZE.SMALL};
+    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     display: flex;
     justify-content: space-between;
 `;
@@ -44,38 +45,38 @@ const HeadSection = styled(Box)`
     text-align: left;
     margin: 0 0 12px 0;
     border: 0;
-    background: ${props => props.theme.BG_GREY};
+    background: ${({ theme }) => theme.BG_GREY};
 `;
 
 const HeadSectionLine = styled.div`
     display: flex;
-    font-size: 14px;
+    font-size: ${variables.FONT_SIZE.SMALL};
     & + & {
         margin: 5px 0 0 0;
     }
 `;
 
 const HeadSectionName = styled.div`
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     margin-right: 15px;
     width: 60px;
 `;
 
 const HeadSectionValue = styled.div`
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
     flex: 1;
 `;
 
 const Section = styled.div`
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
-    font-weight: 500;
-    font-size: 12px;
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    font-size: ${variables.FONT_SIZE.TINY};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
 const SectionName = styled.div`
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
-    font-weight: 500;
-    font-size: 12px;
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    font-size: ${variables.FONT_SIZE.TINY};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     margin: 7px 0;
 `;
 
@@ -89,7 +90,7 @@ const SectionDivider = styled.div`
 
 const StyledBox = styled(Box)`
     border: 0px;
-    background: ${props => props.theme.BG_GREY};
+    background: ${({ theme }) => theme.BG_GREY};
     flex-direction: column;
     align-items: start;
     word-break: break-all;
@@ -103,14 +104,14 @@ const Pre = styled.pre`
     font-size: ${variables.FONT_SIZE.TINY};
 `;
 
-export interface Props {
+export interface TransactionDetailsProps {
     tx: PrecomposedTransactionFinal | TxFinalCardano;
     txHash?: string;
 }
 
 const prettify = (json: Record<any, any>) => JSON.stringify(json, null, 2);
 
-const TransactionDetails = ({ tx, txHash }: Props) => {
+export const TransactionDetails = ({ tx, txHash }: TransactionDetailsProps) => {
     const theme = useTheme();
     if (tx.transaction.inputs.length === 0) return null; // BTC-only, TODO: eth/ripple
 
@@ -165,5 +166,3 @@ const TransactionDetails = ({ tx, txHash }: Props) => {
         </TransactionDetailsWrapper>
     );
 };
-
-export default TransactionDetails;
