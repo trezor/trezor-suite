@@ -161,13 +161,6 @@ export const selectIsAccountUtxoBased = createSelector([selectAccountByKey], (ac
     account ? isUtxoBased(account) : false,
 );
 
-export const selectIsAccountImported = createSelector(
-    selectAccounts,
-    (_state: AccountsRootState, accountDescriptor: string) => accountDescriptor,
-    (accounts, accountDescriptor): boolean =>
-        A.some(accounts, account => account.descriptor === accountDescriptor),
-);
-
 export const selectAccountByDescriptorAndNetworkSymbol = createSelector(
     selectAccounts,
     (_state: AccountsRootState, accountDescriptor: string, networkSymbol: NetworkSymbol) => ({

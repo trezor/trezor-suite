@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux';
 import {
     AccountsRootState,
     selectAccountByDescriptorAndNetworkSymbol,
-    selectIsAccountImported,
 } from '@suite-common/wallet-core';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { AccountInfo } from '@trezor/connect';
@@ -22,13 +21,10 @@ export const AccountImportSummary = ({ networkSymbol, accountInfo }: AccountImpo
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByDescriptorAndNetworkSymbol(state, accountInfo.descriptor, networkSymbol),
     );
-    const isAccountImportedAlready = useSelector((state: AccountsRootState) =>
-        selectIsAccountImported(state, accountInfo.descriptor),
-    );
 
     const isAccountImportSupported = enabledNetworks.some(network => network === networkSymbol);
 
-    if (isAccountImportedAlready && account) return <AccountAlreadyImported account={account} />;
+    if (account) return <AccountAlreadyImported account={account} />;
     if (isAccountImportSupported)
         return <AccountImportSummaryForm networkSymbol={networkSymbol} accountInfo={accountInfo} />;
     return null;
