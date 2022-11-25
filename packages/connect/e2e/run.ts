@@ -16,8 +16,11 @@ const firmwareModel = process.env.TESTS_FIRMWARE_MODEL;
  * TODO: this code might be refactored and moved into TrezorUserEnvLink class later
  */
 const getEmulatorOptions = (availableFirmwares: Firmwares) => {
-    const latest2 = availableFirmwares['2'].find(fw => !fw.includes('-'));
-    const latest1 = availableFirmwares['1'].find(fw => !fw.includes('-'));
+    const getLatestFirmware = (model: keyof Firmwares) =>
+        availableFirmwares[model].find(fw => !fw.replace('-arm', '').includes('-'));
+
+    const latest2 = getLatestFirmware('2');
+    const latest1 = getLatestFirmware('1');
 
     if (!latest2 || !latest1) {
         // should never happen
