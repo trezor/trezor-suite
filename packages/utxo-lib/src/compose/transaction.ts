@@ -91,7 +91,7 @@ function inputComparator(aHash: Buffer, aVout: number, bHash: Buffer, bVout: num
 }
 
 function outputComparator(aScript: Buffer, aValue: string, bScript: Buffer, bValue: string) {
-    return new BN(aValue).sub(new BN(bValue)).toNumber() || aScript.compare(bScript);
+    return new BN(aValue).cmp(new BN(bValue)) || aScript.compare(bScript);
 }
 
 export function createTransaction(

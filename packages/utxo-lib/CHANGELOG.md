@@ -1,3 +1,7 @@
+# 1.0.2 - unreleased
+
+-   fix output sorting with amount above MAX_SAFE_INTEGER
+
 # 1.0.1
 
 -   add `TransactionBase.getWitness` method
