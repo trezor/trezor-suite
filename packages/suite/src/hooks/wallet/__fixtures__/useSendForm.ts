@@ -3,6 +3,45 @@ import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants'
 import { accountsActions } from '@suite-common/wallet-core';
 import { PROTO } from '@trezor/connect';
 
+const UTXO = {
+    '00': {
+        amount: '0',
+        address: 'should-never-be-used',
+        txid: '0000000000000000000000000000000000000000000000000000000000000000',
+        vout: 0,
+    },
+    AA: {
+        amount: '50000000000',
+        address: 'AA',
+        txid: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+        vout: 0,
+    },
+    BB: {
+        amount: '25000000000',
+        address: 'BB',
+        txid: 'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb',
+        vout: 0,
+    },
+    CC: {
+        amount: '12500000000',
+        address: 'CC',
+        txid: 'cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc',
+        vout: 0,
+    },
+    DD: {
+        amount: '6250000000',
+        address: 'DD',
+        txid: 'dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd',
+        vout: 0,
+    },
+    EE: {
+        amount: '6250000000',
+        address: 'EE',
+        txid: 'eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
+        vout: 0,
+    },
+};
+
 export const BTC_ACCOUNT = {
     status: 'loaded',
     account: {
@@ -28,14 +67,7 @@ export const BTC_ACCOUNT = {
         balance: '100000000000',
         availableBalance: '100000000000',
         formattedBalance: '1000 BTC',
-        utxo: [
-            { amount: '0', address: '00', txid: 'should-never-be-used', vout: 0 },
-            { amount: '50000000000', address: 'AA', txid: 'utxoA', vout: 0 },
-            { amount: '25000000000', address: 'BB', txid: 'utxoB', vout: 0 },
-            { amount: '12500000000', address: 'CC', txid: 'utxoC', vout: 0 },
-            { amount: '6250000000', address: 'DD', txid: 'utxoD', vout: 0 },
-            { amount: '6250000000', address: 'EE', txid: 'utxoE', vout: 0 },
-        ],
+        utxo: Object.values(UTXO),
         history: {},
     },
     network: { networkType: 'bitcoin', symbol: 'btc', decimals: 8, features: ['rbf'] },
@@ -587,20 +619,7 @@ export const setMax = [
                 account: {
                     // only utxos with enough anonymity are used in TrezorConnect.composeTransaction
                     // see sendFormBitcoinActions
-                    utxo: [
-                        {
-                            address: 'BB',
-                            amount: '25000000000',
-                            txid: 'utxoB',
-                            vout: 0,
-                        },
-                        {
-                            address: 'DD',
-                            amount: '6250000000',
-                            txid: 'utxoD',
-                            vout: 0,
-                        },
-                    ],
+                    utxo: [UTXO.BB, UTXO.DD],
                 },
             },
         },
@@ -1136,7 +1155,7 @@ const getComposeResponse = (resp?: any) => ({
             totalSpent: '2500000000',
             fee: '100',
             transaction: {
-                inputs: [{ amount: '12500000000', prev_hash: 'utxoC', prev_index: 0 }],
+                inputs: [{ amount: '12500000000', prev_hash: UTXO.CC.txid, prev_index: 0 }],
                 outputs: [
                     { address_n: [44, 0, 0, 1, 1], amount: '10000000000' },
                     { address: 'A-external', amount: '2499999900' },
@@ -1318,7 +1337,7 @@ export const signAndPush = [
                         transaction: {
                             inputs: [
                                 { amount: '0', prev_hash: 'should not be used', prev_index: 0 },
-                                { amount: '12500000000', prev_hash: 'utxoC', prev_index: 0 },
+                                { amount: '12500000000', prev_hash: UTXO.CC.txid, prev_index: 0 },
                             ],
                             outputs: [
                                 { address_n: [44, 0, 0, 1, 1], amount: '10000000000' },
@@ -1394,11 +1413,11 @@ export const signAndPush = [
                                 path: "m/44'/0'/0'/1/1",
                             },
                             // old utxo without used "utxoC"
-                            { txid: 'should-never-be-used', amount: '0', vout: 0 },
-                            { txid: 'utxoA', amount: '50000000000', vout: 0 },
-                            { txid: 'utxoB', amount: '25000000000', vout: 0 },
-                            { txid: 'utxoD', amount: '6250000000', vout: 0 },
-                            { txid: 'utxoE', amount: '6250000000', vout: 0 },
+                            UTXO['00'],
+                            UTXO.AA,
+                            UTXO.BB,
+                            UTXO.DD,
+                            UTXO.EE,
                         ],
                     },
                 },
