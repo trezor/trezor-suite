@@ -21,7 +21,12 @@ export const coinjoinMiddleware =
         }
 
         // do not close success and critical phase modals when they are open, similar to discovery middleware
-        const { modal } = api.getState();
+        const {
+            modal,
+            wallet: {
+                coinjoin: { accounts: previousAccountsState },
+            },
+        } = api.getState();
         const allowedModals = ['coinjoin-success', 'more-rounds-needed', 'critical-coinjoin-phase'];
 
         if (
@@ -57,6 +62,37 @@ export const coinjoinMiddleware =
 
         if (action.type === DEVICE.DISCONNECT && action.payload.id) {
             api.dispatch(coinjoinAccountActions.pauseCoinjoinSessionByDeviceId(action.payload.id));
+        }
+
+        if (action.type === COINJOIN.CLIENT_SESSION_PHASE) {
+            const account = api
+                .getState()
+                .wallet.coinjoin.accounts.find(({ key }) =>
+                    action.payload.accountKeys.includes(key),
+                ); // all accounts asocciated with the accountKeys array have the same session phase
+
+            if (account) {
+                const { key, session } = account;
+
+                const queueLength = session?.sessionPhaseQueue?.length;
+                const previousState = previousAccountsState
+                    .find(account => account.key === key)
+                    ?.session?.sessionPhaseQueue.at(-1);
+
+                const isSamePhase = action.payload.phase === previousState;
+
+                if (queueLength && queueLength > 1 && !isSamePhase) {
+                    const nextPhaseDelay =
+                        SESSION_PHASE_TRANSITION_DELAY -
+                        (Date.now() - (session?.lastSessionPhaseChangeTimestamp || Date.now()));
+                    const otherPhasesDelay = SESSION_PHASE_TRANSITION_DELAY * (queueLength - 2);
+                    const timeToDelay = nextPhaseDelay + otherPhasesDelay;
+
+                    setTimeout(() => {
+                        api.dispatch(clientShiftSessionPhase(action.payload.accountKeys));
+                    }, timeToDelay);
+                }
+            }
         }
 
         if (blockchainActions.synced.match(action)) {

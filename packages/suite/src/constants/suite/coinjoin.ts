@@ -9,6 +9,8 @@ export const COINJOIN_PHASE_MESSAGES: Record<RoundPhase, TranslationKey> = {
     [RoundPhase.Ended]: 'TR_COINJOIN_PHASE_4_MESSAGE',
 };
 
+export const SESSION_PHASE_TRANSITION_DELAY = 3000;
+
 /**
  * Values are upper limits of anonymity level for each status.
  */
