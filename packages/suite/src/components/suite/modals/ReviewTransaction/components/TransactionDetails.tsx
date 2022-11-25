@@ -17,6 +17,8 @@ const TransactionDetailsWrapper = styled.div`
     left: -20px;
     border-radius: 8px;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    /* stay above OutputElement_MultiIndicatorWrapper */
+    z-index: ${variables.Z_INDEX.EXPANDABLE_NAVIGATION};
 `;
 
 const DetailsHeader = styled.div`
