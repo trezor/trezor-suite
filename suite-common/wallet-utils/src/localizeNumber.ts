@@ -29,10 +29,14 @@ export const localizeNumber = (
         minimumFractionDigits: minDecimals,
     })
         .format(decimalNumber)
-        .slice(1); // remove leading zero
+        .slice(amount.isNegative() ? 2 : 1); // remove leading zero and minus sign i.e. -0.123 -> .123, 0.123 -> .123
 
     const isDecimalNumber =
         minDecimals > 0 || new BigNumber(formattedDecimalNumber).decimalPlaces() !== 0;
 
-    return formattedWholeNumber + (isDecimalNumber ? formattedDecimalNumber : '');
+    const hasNegativeZero = amount.isNegative() && wholeNumber === BigInt(0);
+
+    return `${hasNegativeZero ? '-' : ''}${formattedWholeNumber}${
+        isDecimalNumber ? formattedDecimalNumber : ''
+    }`;
 };
