@@ -105,6 +105,14 @@ const clientAppendSessionPhase = (payload: CoinjoinClientEvents['session-phase']
         payload,
     } as const);
 
+export const clientShiftSessionPhase = (accountKeys: string[]) =>
+    ({
+        type: COINJOIN.CLIENT_SESSION_PHASE_SHIFT,
+        payload: {
+            accountKeys,
+        },
+    } as const);
+
 export type CoinjoinClientAction =
     | ReturnType<typeof clientEnable>
     | ReturnType<typeof clientDisable>
@@ -115,7 +123,8 @@ export type CoinjoinClientAction =
     | ReturnType<typeof clientSessionCompleted>
     | ReturnType<typeof clientSessionOwnership>
     | ReturnType<typeof clientSessionSignTransaction>
-    | ReturnType<typeof clientAppendSessionPhase>;
+    | ReturnType<typeof clientAppendSessionPhase>
+    | ReturnType<typeof clientShiftSessionPhase>;
 
 // return only active instances
 export const getCoinjoinClient = (symbol: Account['symbol']) =>

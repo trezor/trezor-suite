@@ -14,6 +14,7 @@ import * as ACCOUNT_SEARCH from './accountSearch';
 import * as FORM_DRAFT from './formDraftConstants';
 import * as CARDANO_STAKING from './cardanoStakingConstants';
 import * as POLLING from './pollingConstants';
+import * as COINJOIN from './coinjoinConstants';
 
 export {
     SIGN_VERIFY,
@@ -32,4 +33,5 @@ export {
     FORM_DRAFT,
     CARDANO_STAKING,
     POLLING,
+    COINJOIN,
 };
