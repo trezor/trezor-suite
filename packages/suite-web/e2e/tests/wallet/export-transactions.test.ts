@@ -30,34 +30,21 @@ describe('Export transactions', () => {
             offset: { top: -150, left: 0 },
         });
 
-        // export pdf
-        cy.getTestElement('@wallet/accounts/export-transactions/dropdown').click({
-            scrollBehavior: false,
-        });
-        cy.getTestElement('@wallet/accounts/export-transactions/pdf').click({
-            scrollBehavior: false,
-        });
+        const extensions = ['pdf', 'csv', 'json'];
 
-        // export csv
-        cy.getTestElement('@wallet/accounts/export-transactions/dropdown').click({
-            scrollBehavior: false,
-        });
-        cy.getTestElement('@wallet/accounts/export-transactions/csv').click({
-            scrollBehavior: false,
-        });
-
-        // export json
-        cy.getTestElement('@wallet/accounts/export-transactions/dropdown').click({
-            scrollBehavior: false,
-        });
-        cy.getTestElement('@wallet/accounts/export-transactions/json').click({
-            scrollBehavior: false,
+        extensions.forEach(extension => {
+            cy.getTestElement('@wallet/accounts/export-transactions/dropdown').click({
+                scrollBehavior: false,
+            });
+            cy.getTestElement(`@wallet/accounts/export-transactions/${extension}`).click({
+                scrollBehavior: false,
+            });
         });
 
         // assert that downloads folder contains 3 files
-        cy.wait(500);
+        cy.wait(1000);
         cy.task('readDir', downloadsFolder).then(dir => {
-            cy.wrap(dir).should('have.length', 3);
+            cy.wrap(dir).should('have.length.at.least', 3);
         });
     });
 });
