@@ -37,7 +37,7 @@
         "@types/react-router-dom": "^5.1.7",
         "@types/styled-components": "^5.1.26",
         "chrome-remote-interface": "^0.31.3",
-        "cypress": "^10.10.0",
+        "cypress": "^11.2.0",
         "cypress-file-upload": "^5.0.8",
         "cypress-image-snapshot": "^4.0.1",
         "cypress-wait-until": "^1.7.2",

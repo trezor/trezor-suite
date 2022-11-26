@@ -8020,7 +8020,7 @@ __metadata:
     "@types/react-router-dom": ^5.1.7
     "@types/styled-components": ^5.1.26
     chrome-remote-interface: ^0.31.3
-    cypress: ^10.10.0
+    cypress: ^11.2.0
     cypress-file-upload: ^5.0.8
     cypress-image-snapshot: ^4.0.1
     cypress-wait-until: ^1.7.2
@@ -14300,9 +14300,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cypress@npm:^10.10.0":
-  version: 10.10.0
-  resolution: "cypress@npm:10.10.0"
+"cypress@npm:^11.2.0":
+  version: 11.2.0
+  resolution: "cypress@npm:11.2.0"
   dependencies:
     "@cypress/request": ^2.88.10
     "@cypress/xvfb": ^1.2.4
@@ -14348,7 +14348,7 @@ __metadata:
     yauzl: ^2.10.0
   bin:
     cypress: bin/cypress
-  checksum: 668a32534a527dba79754abbf98af176b80c539a12ec00058932ba2a19c794c7888323e59e738c30f726ad740c5451c31d02548a0cb7c1b1c8ad01c55a984ca2
+  checksum: e13649fb4b62a3c9dff7cc571f4e01dba009d8179b05c4f885c5ceb4ed76b78a7323fec491d992da35527708b54e596bfc9edb1d702f788317889f794d8c1e76
   languageName: node
   linkType: hard
 
