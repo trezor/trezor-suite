@@ -112,6 +112,34 @@ suite web 2-master manual:
   variables:
     FIRMWARE: 2-master
 
+# @trezor/suite-web using playwright
+.e2e suite-web playwright base:
+  stage: integration testing
+  variables:
+    COMPOSE_PROJECT_NAME: $CI_JOB_ID
+    COMPOSE_FILE: ./docker/docker-compose.suite-ci.yml
+    URL: ${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME}/
+  script:
+    - yarn install --immutable
+    - docker-compose pull
+    - docker-compose up -d trezor-user-env-unix
+    - docker-compose run test-run-playwright
+  after_script:
+    - docker-compose down
+    - docker network prune -f
+  interruptible: true
+
+e2e suite-web playwright:
+  extends: .e2e suite-web playwright base
+  only:
+    <<: *run_everything_rules
+
+e2e suite-web playwright manual:
+  extends: .e2e suite-web playwright base
+  except:
+    <<: *run_everything_rules
+  when: manual
+
 # TODO scheduled jobs against beta chrome channel
 # TODO scheduled jobs against suite.trezor.io
 

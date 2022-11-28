@@ -94,12 +94,14 @@ interface DeviceStatusProps {
     device: TrezorDevice;
     onRefreshClick?: () => void;
     showTextStatus?: boolean;
+    ['data-test']?: string;
 }
 
 export const DeviceStatus = ({
     device,
     onRefreshClick,
     showTextStatus = false,
+    ...props
 }: DeviceStatusProps) => {
     const status = getStatusForDevice(device);
     const theme = useTheme();
@@ -121,6 +123,7 @@ export const DeviceStatus = ({
                 icon="REFRESH"
                 size={12}
                 color={getStatusColor(status, theme)}
+                data-test={props['data-test']}
             />
         );
     }

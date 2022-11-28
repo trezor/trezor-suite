@@ -195,11 +195,14 @@ export const DeviceSelector = () => {
                                 showTextStatus={showTextStatus}
                                 device={selectedDevice}
                                 onRefreshClick={handleRefreshClick}
-                                data-test={
-                                    selectedDevice.connected
-                                        ? '@deviceStatus-connected'
-                                        : '@deviceStatus-disconnected'
-                                }
+                                data-test={(() => {
+                                    if (needsRefresh(selectedDevice)) {
+                                        return '@deviceStatus/needsRefresh';
+                                    }
+                                    return selectedDevice.connected
+                                        ? '@deviceStatus/connected'
+                                        : '@deviceStatus-disconnected';
+                                })()}
                             />
                         </DeviceLabel>
 
