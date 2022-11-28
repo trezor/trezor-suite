@@ -50,11 +50,6 @@ const DOGE_ACCOUNT = {
     ],
 };
 
-const WHALE_DOGE_ACCOUNT = {
-    ...DOGE_ACCOUNT,
-    utxo: [{ ...DOGE_ACCOUNT.utxo[0], amount: '11556856856800000000' }],
-};
-
 const FEE_LEVELS = [
     {
         label: 'normal',
@@ -451,40 +446,6 @@ export default {
                     transaction: {
                         inputs: [{ script_type: 'SPENDADDRESS' }],
                         outputs: [{ amount: '499808000', script_type: 'PAYTOADDRESS' }],
-                    },
-                },
-            ],
-        },
-        {
-            description: 'Doge (P2PKH): precompose with output higher than MAX_SAFE_INTEGER',
-            params: {
-                account: WHALE_DOGE_ACCOUNT,
-                feeLevels: DOGE_FEE_LEVELS,
-                outputs: [
-                    {
-                        address: 'DDn7UV1CrqVefzwrHyw7H2zEZZKqfzR2ZD',
-                        amount: '11556856849999734000',
-                    },
-                ],
-                coin: 'doge',
-            },
-            result: [
-                {
-                    type: 'final',
-                    bytes: 226,
-                    fee: '226000',
-                    max: undefined,
-                    totalSpent: '11556856849999960000',
-                    transaction: {
-                        inputs: [{ script_type: 'SPENDADDRESS' }],
-                        outputs: [
-                            { amount: '6800040000', script_type: 'PAYTOADDRESS' },
-                            {
-                                address: 'DDn7UV1CrqVefzwrHyw7H2zEZZKqfzR2ZD',
-                                amount: '11556856849999734000',
-                                script_type: 'PAYTOADDRESS',
-                            },
-                        ],
                     },
                 },
             ],
