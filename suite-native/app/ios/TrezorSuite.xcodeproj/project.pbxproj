@@ -15,10 +15,12 @@
 		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
-		7921EABF9B4E0D2D02C667E0 /* TrezorSuite-Bridging-Header.h in Headers */ = {isa = PBXBuildFile; fileRef = 331DE4797D7D27D172C9F370 /* TrezorSuite-Bridging-Header.h */; };
+		21FA532C2D76674DF4889829 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = D60DBD963C848C2B1E29428E /* ExpoModulesProvider.swift */; };
+		76B3194F29353457003AFB7C /* TrezorSuite-Bridging-Header.h in Headers */ = {isa = PBXBuildFile; fileRef = 76B3194E29353457003AFB7C /* TrezorSuite-Bridging-Header.h */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		B7CC8745CF111A3F51A8A62C /* libPods-TrezorSuite-TrezorSuiteTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 273A527BC1EA3E410C27EDEE /* libPods-TrezorSuite-TrezorSuiteTests.a */; };
 		D898137F4C9600283820D0B7 /* libPods-TrezorSuite.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A8792827D36DC705C457796 /* libPods-TrezorSuite.a */; };
+		EDD2E65F10FFDB9F5250AE25 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 581D87C108DBEE4E277051A7 /* ExpoModulesProvider.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,13 +53,15 @@
 		1917D242B5E323F716C5EF45 /* Pods-TrezorSuite.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TrezorSuite.release.xcconfig"; path = "Target Support Files/Pods-TrezorSuite/Pods-TrezorSuite.release.xcconfig"; sourceTree = "<group>"; };
 		273A527BC1EA3E410C27EDEE /* libPods-TrezorSuite-TrezorSuiteTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-TrezorSuite-TrezorSuiteTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3194F987709927EFF1882119 /* Pods-TrezorSuite.develop.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TrezorSuite.develop.xcconfig"; path = "Target Support Files/Pods-TrezorSuite/Pods-TrezorSuite.develop.xcconfig"; sourceTree = "<group>"; };
-		331DE4797D7D27D172C9F370 /* TrezorSuite-Bridging-Header.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "TrezorSuite-Bridging-Header.h"; sourceTree = "<group>"; };
 		3A8792827D36DC705C457796 /* libPods-TrezorSuite.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-TrezorSuite.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		581D87C108DBEE4E277051A7 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-TrezorSuite/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
+		76B3194E29353457003AFB7C /* TrezorSuite-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "TrezorSuite-Bridging-Header.h"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = TrezorSuite/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		936D5A3673CA75208B2813FA /* Pods-TrezorSuite-TrezorSuiteTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TrezorSuite-TrezorSuiteTests.release.xcconfig"; path = "Target Support Files/Pods-TrezorSuite-TrezorSuiteTests/Pods-TrezorSuite-TrezorSuiteTests.release.xcconfig"; sourceTree = "<group>"; };
 		9669662766350EA5327009C5 /* QRCodeFrameProcessor.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = QRCodeFrameProcessor.m; path = QRCodeFrameProcessor/QRCodeFrameProcessor.m; sourceTree = "<group>"; };
 		B41A1D5DA39955A36E0D9C87 /* QRCodeFrameProcessor.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = QRCodeFrameProcessor.swift; path = QRCodeFrameProcessor/QRCodeFrameProcessor.swift; sourceTree = "<group>"; };
 		BF4D70DF3908849F1BDCC695 /* Pods-TrezorSuite-TrezorSuiteTests.staging.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TrezorSuite-TrezorSuiteTests.staging.xcconfig"; path = "Target Support Files/Pods-TrezorSuite-TrezorSuiteTests/Pods-TrezorSuite-TrezorSuiteTests.staging.xcconfig"; sourceTree = "<group>"; };
+		D60DBD963C848C2B1E29428E /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-TrezorSuite-TrezorSuiteTests/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		F470CA9767FBD8F331B690CC /* Pods-TrezorSuite-TrezorSuiteTests.develop.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TrezorSuite-TrezorSuiteTests.develop.xcconfig"; path = "Target Support Files/Pods-TrezorSuite-TrezorSuiteTests/Pods-TrezorSuite-TrezorSuiteTests.develop.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -108,7 +112,7 @@
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
 				13B07FB71A68108700A75B9A /* main.m */,
-				331DE4797D7D27D172C9F370 /* TrezorSuite-Bridging-Header.h */,
+				76B3194E29353457003AFB7C /* TrezorSuite-Bridging-Header.h */,
 			);
 			name = TrezorSuite;
 			sourceTree = "<group>";
@@ -121,6 +125,22 @@
 				273A527BC1EA3E410C27EDEE /* libPods-TrezorSuite-TrezorSuiteTests.a */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		449B65032EE65493646BC3CB /* TrezorSuite */ = {
+			isa = PBXGroup;
+			children = (
+				581D87C108DBEE4E277051A7 /* ExpoModulesProvider.swift */,
+			);
+			name = TrezorSuite;
+			sourceTree = "<group>";
+		};
+		4E3ACE260435D345333549D3 /* TrezorSuiteTests */ = {
+			isa = PBXGroup;
+			children = (
+				D60DBD963C848C2B1E29428E /* ExpoModulesProvider.swift */,
+			);
+			name = TrezorSuiteTests;
 			sourceTree = "<group>";
 		};
 		80736439959D441D9BCFB197 /* Resources */ = {
@@ -152,6 +172,7 @@
 				BBD78D7AC51CEA395F1C20DB /* Pods */,
 				80736439959D441D9BCFB197 /* Resources */,
 				CBC276677A22BC751AF38EE0 /* QRCodeFrameProcessor */,
+				8D2A69531EE5004CD034B37D /* ExpoModulesProviders */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -165,6 +186,15 @@
 				00E356EE1AD99517003FC87E /* TrezorSuiteTests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		8D2A69531EE5004CD034B37D /* ExpoModulesProviders */ = {
+			isa = PBXGroup;
+			children = (
+				449B65032EE65493646BC3CB /* TrezorSuite */,
+				4E3ACE260435D345333549D3 /* TrezorSuiteTests */,
+			);
+			name = ExpoModulesProviders;
 			sourceTree = "<group>";
 		};
 		BBD78D7AC51CEA395F1C20DB /* Pods */ = {
@@ -198,7 +228,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7921EABF9B4E0D2D02C667E0 /* TrezorSuite-Bridging-Header.h in Headers */,
+				76B3194F29353457003AFB7C /* TrezorSuite-Bridging-Header.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -464,6 +494,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				00E356F31AD99517003FC87E /* TrezorSuiteTests.m in Sources */,
+				21FA532C2D76674DF4889829 /* ExpoModulesProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -473,6 +504,7 @@
 			files = (
 				13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
+				EDD2E65F10FFDB9F5250AE25 /* ExpoModulesProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -497,7 +529,7 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = TrezorSuiteTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -512,6 +544,7 @@
 					"-lc++",
 					"$(inherited)",
 				);
+				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_DEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TrezorSuite.app/TrezorSuite";
@@ -525,7 +558,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
 				INFOPLIST_FILE = TrezorSuiteTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -540,6 +573,7 @@
 					"-lc++",
 					"$(inherited)",
 				);
+				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_RELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TrezorSuite.app/TrezorSuite";
@@ -590,7 +624,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					/usr/lib/swift,
 					"$(inherited)",
@@ -641,6 +675,7 @@
 					"-ObjC",
 					"-lc++",
 				);
+				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_RELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = io.trezor.suite.staging;
 				PRODUCT_NAME = "Staging-TrezorSuite";
 				PROVISIONING_PROFILE_SPECIFIER = "AppStore io.trezor.suite.staging";
@@ -657,7 +692,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
 				INFOPLIST_FILE = TrezorSuiteTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -672,6 +707,7 @@
 					"-lc++",
 					"$(inherited)",
 				);
+				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_RELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TrezorSuite.app/TrezorSuite";
@@ -729,7 +765,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					/usr/lib/swift,
 					"$(inherited)",
@@ -780,6 +816,7 @@
 					"-ObjC",
 					"-lc++",
 				);
+				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_DEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = io.trezor.suite.develop;
 				PRODUCT_NAME = "Develop-TrezorSuite";
 				PROVISIONING_PROFILE_SPECIFIER = "AppStore io.trezor.suite.develop";
@@ -800,7 +837,7 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = TrezorSuiteTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -815,6 +852,7 @@
 					"-lc++",
 					"$(inherited)",
 				);
+				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_DEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TrezorSuite.app/TrezorSuite";
@@ -849,6 +887,7 @@
 					"-ObjC",
 					"-lc++",
 				);
+				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_DEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = io.trezor.suite.debug;
 				PRODUCT_NAME = "Debug-TrezorSuite";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -886,6 +925,7 @@
 					"-ObjC",
 					"-lc++",
 				);
+				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_RELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = io.trezor.suite;
 				PRODUCT_NAME = TrezorSuite;
 				PROVISIONING_PROFILE_SPECIFIER = "AppStore io.trezor.suite";
@@ -945,7 +985,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					/usr/lib/swift,
 					"$(inherited)",
@@ -1012,7 +1052,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					/usr/lib/swift,
 					"$(inherited)",
