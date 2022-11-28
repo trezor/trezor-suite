@@ -193,6 +193,8 @@ export const transactionSigning = async (
     } catch (error) {
         // NOTE: if anything goes wrong in this process this Round will be corrupted for all the users
         // registered inputs will probably be banned
+        round.setSessionPhase(SessionPhase.SignatureFailed);
+
         round.inputs.forEach(input =>
             input.setError(new Error(`transactionSigning failed: ${error.message}`)),
         );

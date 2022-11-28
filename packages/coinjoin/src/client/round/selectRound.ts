@@ -134,7 +134,6 @@ export const getAccountCandidates = (
         log(
             `Skipping candidate ~~${accountKey}~~. Utxos ${utxos.length} of ${account.utxos.length}`,
         );
-
         return [];
     });
 };
@@ -333,7 +332,6 @@ export const selectRound = async (
 
     if (accountCandidates.length < 1) {
         log('No suitable accounts');
-
         return;
     }
 
@@ -347,6 +345,10 @@ export const selectRound = async (
     );
     if (!newRound) {
         log('No suitable utxos');
+        setSessionPhase({
+            phase: SessionPhase.RetryingRoundPairing,
+            accountKeys: unregisteredAccountKeys,
+        });
         return;
     }
 

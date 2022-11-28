@@ -134,6 +134,7 @@ describe('selectRound', () => {
             ] as any,
             server?.requestOptions,
         );
+
         expect(result).toEqual([]);
     });
 

@@ -118,12 +118,12 @@ export const outputRegistration = async (
     // - decide if there is only 1 account registered should i abaddon this round and blame it on some "youngest" input?
     // - maybe if there is only 1 account inputs are so "far away" from each other that it is wort to mix anyway?
     try {
+        round.setSessionPhase(SessionPhase.RegisteringOutputs);
         // decompose output amounts for all registered inputs grouped by Account
         const decomposedGroup = await outputDecomposition(round, options);
 
         // collect all used addresses
         // try to register outputs for each account (each input in account group)
-        round.setSessionPhase(SessionPhase.RegisteringOutputs);
         for (let group = 0; group < decomposedGroup.length; group++) {
             const { accountKey, outputs } = decomposedGroup[group];
             const account = accounts.find(a => a.accountKey === accountKey);
@@ -153,6 +153,7 @@ export const outputRegistration = async (
         // registered inputs will probably be banned
         const message = `Output registration in ~~${round.id}~~ failed: ${error.message}`;
         options.log(message);
+        round.setSessionPhase(SessionPhase.OutputRegistrationFailed);
 
         round.inputs.forEach(input => input.setError(new Error(message)));
     }

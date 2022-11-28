@@ -7723,6 +7723,18 @@ export default defineMessages({
         id: 'TR_SESSION_PHASE_14_MESSAGE',
         defaultMessage: 'Registering coins',
     },
+    TR_SESSION_PHASE_15_MESSAGE: {
+        id: 'TR_SESSION_PHASE_15_MESSAGE',
+        defaultMessage: 'Account missing UTXOs, retrying',
+    },
+    TR_SESSION_PHASE_16_MESSAGE: {
+        id: 'TR_SESSION_PHASE_16_MESSAGE',
+        defaultMessage: 'Skipping round',
+    },
+    TR_SESSION_PHASE_17_MESSAGE: {
+        id: 'TR_SESSION_PHASE_17_MESSAGE',
+        defaultMessage: 'Pairing failed, retrying',
+    },
     TR_SESSION_PHASE_21_MESSAGE: {
         id: 'TR_SESSION_PHASE_21_MESSAGE',
         defaultMessage: 'Confirming availability',
@@ -7739,6 +7751,10 @@ export default defineMessages({
         id: 'TR_SESSION_PHASE_32_MESSAGE',
         defaultMessage: 'Coordinator verification',
     },
+    TR_SESSION_PHASE_33_MESSAGE: {
+        id: 'TR_SESSION_PHASE_32_MESSAGE',
+        defaultMessage: 'Verification failed, retrying',
+    },
     TR_SESSION_PHASE_41_MESSAGE: {
         id: 'TR_SESSION_PHASE_41_MESSAGE',
         defaultMessage: 'Waiting for transaction',
@@ -7754,5 +7770,9 @@ export default defineMessages({
     TR_SESSION_PHASE_44_MESSAGE: {
         id: 'TR_SESSION_PHASE_44_MESSAGE',
         defaultMessage: 'Waiting for signatures',
+    },
+    TR_SESSION_PHASE_45_MESSAGE: {
+        id: 'TR_SESSION_PHASE_45_MESSAGE',
+        defaultMessage: 'Signing failed, retrying',
     },
 });
