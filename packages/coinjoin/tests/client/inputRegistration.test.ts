@@ -260,4 +260,83 @@ describe('inputRegistration', () => {
         expect(response.inputs[0].registrationData).toMatchObject({ aliceId: expect.any(String) });
         expect(response.inputs[0].error?.message).toMatch(/ExpectedRuntimeError/);
     });
+
+    it('success. using connection-confirmation interval', async () => {
+        const spy = jest.fn();
+        server?.addListener('test-request', ({ url, resolve }) => {
+            if (url.endsWith('/connection-confirmation')) {
+                resolve({}); // return data without realCredentials
+                spy();
+            }
+            resolve();
+        });
+
+        const response = await inputRegistration(
+            createCoinjoinRound([createInput('account-A', 'A1', { ownershipProof: '01A1' })], {
+                ...server?.requestOptions,
+                round: { phaseDeadline: Date.now() + 10000 },
+                roundParameters: {
+                    connectionConfirmationTimeout: '0d 0h 0m 5s',
+                },
+            }),
+            prison,
+            server?.requestOptions,
+        );
+
+        expect(spy).toBeCalledTimes(3); // connection-confirmation was called 2 times: 10 sec phase deadline divided by 2 * 2.5 sec connectionConfirmationTimeout
+        expect(response.inputs[0].confirmationDeadline).toBeGreaterThan(Date.now() + 2400); // next connection-confirmation from phase 1 will be called in ~2.5 sec
+    }, 10000);
+
+    it('success. connection-confirmation returns realCredentials (coordinator is already in phase 1)', async () => {
+        const spy = jest.fn();
+        server?.addListener('test-request', ({ url, resolve }) => {
+            if (url.endsWith('/connection-confirmation')) {
+                spy();
+            }
+            resolve();
+        });
+
+        const response = await inputRegistration(
+            createCoinjoinRound([createInput('account-A', 'A1', { ownershipProof: '01A1' })], {
+                ...server?.requestOptions,
+                round: { phaseDeadline: Date.now() + 10000 },
+                roundParameters: {
+                    connectionConfirmationTimeout: '0d 0h 0m 4s',
+                },
+            }),
+            prison,
+            server?.requestOptions,
+        );
+
+        expect(spy).toBeCalledTimes(1); // connection-confirmation was called 1 time and responded with real realCredentials (default response of MockedServer)
+        expect(response.inputs[0].confirmationData).toMatchObject({
+            realAmountCredentials: expect.any(Object),
+        });
+    });
+
+    it('success. connection-confirmation aborted (example: status round phase change)', async () => {
+        const abort = new AbortController();
+        server?.addListener('test-request', ({ url, resolve }) => {
+            if (url.endsWith('/connection-confirmation')) {
+                resolve({});
+                abort.abort();
+            }
+            resolve();
+        });
+
+        const response = await inputRegistration(
+            createCoinjoinRound([createInput('account-A', 'A1', { ownershipProof: '01A1' })], {
+                ...server?.requestOptions,
+                round: { phaseDeadline: Date.now() + 10000 },
+                roundParameters: {
+                    connectionConfirmationTimeout: '0d 0h 0m 4s',
+                },
+            }),
+            prison,
+            { ...server?.requestOptions, signal: abort.signal },
+        );
+
+        expect(response.inputs[0].registrationData).toMatchObject({ aliceId: expect.any(String) });
+        expect(response.inputs[0].error).toBeUndefined(); // input without error even if request failed
+    });
 });
