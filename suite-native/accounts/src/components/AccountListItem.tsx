@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { AccountsRootState, selectAccountLabel, selectCoins } from '@suite-common/wallet-core';
-import { Box, Text } from '@suite-native/atoms';
+import { Box, DiscreetValue, Text } from '@suite-native/atoms';
 import { Account } from '@suite-common/wallet-types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { CryptoIcon } from '@trezor/icons';
@@ -52,14 +52,14 @@ export const AccountListItem = ({ account }: AccountListItemProps) => {
                 <Text color="gray800">{accountLabel}</Text>
             </Box>
             <Box alignItems="flex-end">
-                <Text color="gray800" variant="hint">
-                    {FiatAmountFormatter.format(fiatAmount ?? 0)}
-                </Text>
-                <Text variant="hint" color="gray600">
+                <DiscreetValue color="gray800" typography="hint">
+                    {FiatAmountFormatter.format(fiatAmount ?? 0) ?? ''}
+                </DiscreetValue>
+                <DiscreetValue typography="hint" color="gray600">
                     {CryptoAmountFormatter.format(account.formattedBalance, {
                         symbol: account.symbol,
                     })}
-                </Text>
+                </DiscreetValue>
             </Box>
         </Box>
     );
