@@ -836,6 +836,9 @@ export const hasNetworkFeatures = (
 
 // https://developer.bitcoin.org/reference/transactions.html#outpoint-the-specific-part-of-a-specific-output
 export const getUtxoOutpoint = (utxo: { txid: string; vout: number }) => {
+    if (utxo.txid.length !== 64) {
+        throw new Error('Invalid length of txid');
+    }
     const hash = bufferUtils.reverseBuffer(Buffer.from(utxo.txid, 'hex'));
     const buffer = Buffer.allocUnsafe(36);
     hash.copy(buffer);
