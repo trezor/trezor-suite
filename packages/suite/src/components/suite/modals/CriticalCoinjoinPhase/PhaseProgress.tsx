@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-import { RoundPhase, CoinjoinSession } from '@wallet-types/coinjoin';
+import { CoinjoinSession, RoundPhase, SessionPhase } from '@wallet-types/coinjoin';
 import { FluidSpinner, Icon, useTheme, variables } from '@trezor/components';
-import { COINJOIN_PHASE_MESSAGES } from '@suite-constants/coinjoin';
+import { SESSION_PHASE_MESSAGES } from '@suite-constants/coinjoin';
 import { Translation } from '@suite-components/Translation';
 import { CountdownTimer } from '@suite-components/CountdownTimer';
 import { getPhaseTimerFormat } from '@wallet-utils/coinjoinUtils';
@@ -83,9 +83,10 @@ const Step = ({ phase, currentPhase }: StepProps) => {
 interface PhaseProgressProps {
     roundPhase: RoundPhase;
     phaseDeadline: CoinjoinSession['roundPhaseDeadline'];
+    sessionPhase: SessionPhase;
 }
 
-export const PhaseProgress = ({ roundPhase, phaseDeadline }: PhaseProgressProps) => (
+export const PhaseProgress = ({ roundPhase, phaseDeadline, sessionPhase }: PhaseProgressProps) => (
     <Container>
         <Steps>
             <Step phase={RoundPhase.ConnectionConfirmation} currentPhase={roundPhase} />
@@ -96,7 +97,7 @@ export const PhaseProgress = ({ roundPhase, phaseDeadline }: PhaseProgressProps)
         </Steps>
 
         <Message>
-            <Translation id={COINJOIN_PHASE_MESSAGES[roundPhase]} />
+            <Translation id={SESSION_PHASE_MESSAGES[sessionPhase]} />
             ...
         </Message>
 

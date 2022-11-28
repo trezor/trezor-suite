@@ -5,7 +5,7 @@ import { Button, variables } from '@trezor/components';
 import { selectAccountByKey } from '@suite-common/wallet-core';
 import { WalletParams } from '@suite-common/wallet-types';
 import { CoinjoinSession } from '@wallet-types/coinjoin';
-import { COINJOIN_PHASE_MESSAGES } from '@suite-constants/coinjoin';
+import { ROUND_PHASE_MESSAGES } from '@suite-constants/coinjoin';
 import { selectDevice } from '@suite-actions/suiteActions';
 import { goto } from '@suite-actions/routerActions';
 import { useSelector } from '@suite-hooks/useSelector';
@@ -110,7 +110,7 @@ export const CoinjoinStatusBar = ({ accountKey, session, isSingle }: CoinjoinSta
             return <Translation id="TR_LOOKING_FOR_COINJOIN_ROUND" />;
         }
 
-        return <Translation id={COINJOIN_PHASE_MESSAGES[roundPhase]} />;
+        return <Translation id={ROUND_PHASE_MESSAGES[roundPhase]} />;
     };
 
     const {
