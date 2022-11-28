@@ -14,7 +14,7 @@ import { CoinjoinSession } from '@wallet-types/coinjoin';
 import { Translation } from '@suite-components/Translation';
 import { CountdownTimer } from '@suite-components';
 
-import { COINJOIN_PHASE_MESSAGES } from '@suite-constants/coinjoin';
+import { SESSION_PHASE_MESSAGES } from '@suite-constants/coinjoin';
 import { getPhaseTimerFormat, getSessionDeadlineFormat } from '@wallet-utils/coinjoinUtils';
 import {
     pauseCoinjoinSession,
@@ -146,7 +146,7 @@ const CrossIcon = styled(Icon)`
     height: 10px;
 `;
 
-const TextCointainer = styled.p`
+const TextCointainer = styled.div`
     height: 30px;
 `;
 
@@ -179,7 +179,8 @@ export const CoinjoinStatus = ({ session, accountKey }: CoinjoinStatusProps) => 
         restoreCoinjoinSession,
     });
 
-    const { paused, roundPhase, roundPhaseDeadline, sessionDeadline } = session;
+    const { paused, roundPhase, roundPhaseDeadline, sessionPhaseQueue, sessionDeadline } = session;
+    const sessionPhase = sessionPhaseQueue[0];
 
     const isPaused = !!paused;
 
@@ -336,18 +337,21 @@ export const CoinjoinStatus = ({ session, accountKey }: CoinjoinStatusProps) => 
             );
         }
 
-        if (roundPhase !== undefined && roundPhaseDeadline !== undefined) {
+        if (sessionPhase !== undefined) {
             return (
-                <>
-                    <Translation id={COINJOIN_PHASE_MESSAGES[roundPhase]} />
-                    <p>
-                        <CountdownTimer
-                            isApproximate
-                            deadline={roundPhaseDeadline}
-                            format={getPhaseTimerFormat(roundPhaseDeadline)}
-                        />
-                    </p>
-                </>
+                <TextCointainer>
+                    <Translation id={SESSION_PHASE_MESSAGES[sessionPhase]} />
+
+                    {roundPhase !== undefined && roundPhaseDeadline && (
+                        <p>
+                            <CountdownTimer
+                                isApproximate
+                                deadline={roundPhaseDeadline}
+                                format={getPhaseTimerFormat(roundPhaseDeadline)}
+                            />
+                        </p>
+                    )}
+                </TextCointainer>
             );
         }
 
