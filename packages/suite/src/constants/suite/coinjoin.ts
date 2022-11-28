@@ -14,14 +14,19 @@ export const SESSION_PHASE_MESSAGES: Record<SessionPhase, TranslationKey> = {
     [SessionPhase.CoinSelection]: 'TR_SESSION_PHASE_12_MESSAGE',
     [SessionPhase.RoundPairing]: 'TR_SESSION_PHASE_13_MESSAGE',
     [SessionPhase.CoinRegistration]: 'TR_SESSION_PHASE_14_MESSAGE',
+    [SessionPhase.AccountMissingUtxos]: 'TR_SESSION_PHASE_15_MESSAGE',
+    [SessionPhase.SkippingRound]: 'TR_SESSION_PHASE_16_MESSAGE',
+    [SessionPhase.RetryingRoundPairing]: 'TR_SESSION_PHASE_17_MESSAGE',
     [SessionPhase.AwaitingConfirmation]: 'TR_SESSION_PHASE_21_MESSAGE',
     [SessionPhase.AwaitingOthersConfirmation]: 'TR_SESSION_PHASE_22_MESSAGE',
     [SessionPhase.RegisteringOutputs]: 'TR_SESSION_PHASE_31_MESSAGE',
     [SessionPhase.AwaitingOthersOutputs]: 'TR_SESSION_PHASE_32_MESSAGE',
+    [SessionPhase.OutputRegistrationFailed]: 'TR_SESSION_PHASE_33_MESSAGE',
     [SessionPhase.AwaitingCoinjoinTransaction]: 'TR_SESSION_PHASE_41_MESSAGE',
     [SessionPhase.TransactionSigning]: 'TR_SESSION_PHASE_42_MESSAGE',
     [SessionPhase.SendingSignature]: 'TR_SESSION_PHASE_43_MESSAGE',
     [SessionPhase.AwaitingOtherSignatures]: 'TR_SESSION_PHASE_44_MESSAGE',
+    [SessionPhase.SignatureFailed]: 'TR_SESSION_PHASE_45_MESSAGE',
 };
 
 export const SESSION_PHASE_TRANSITION_DELAY = 3000;
