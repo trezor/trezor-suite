@@ -2,11 +2,11 @@ import React from 'react';
 import styled from 'styled-components';
 import { variables, Image } from '@trezor/components';
 import { Modal, Translation } from '@suite-components';
-import { useSelector } from '@suite-hooks/useSelector';
+import { useSelector, useDeviceModel } from '@suite-hooks';
 import { selectCoinjoinAccountByKey } from '@wallet-reducers/coinjoinReducer';
 import { PhaseProgress } from './PhaseProgress';
-import { useDeviceModel } from '@suite-hooks/useDeviceModel';
 import { DeviceModel } from '@trezor/device-utils';
+import { ROUND_PHASE_MESSAGES } from '@suite-constants/coinjoin';
 
 const StyledModal = styled(Modal)`
     width: 520px;
@@ -32,11 +32,17 @@ const CoinjoinText = styled.h3`
     text-transform: uppercase;
 `;
 
-const DisconnectText = styled.p`
+const DisconnectWarning = styled.p`
     font-size: 32px;
     line-height: 32px;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     color: ${({ theme }) => theme.TYPE_DARK_ORANGE};
+`;
+
+const Phase = styled.p`
+    margin-top: 16px;
+    color: ${({ theme }) => theme.TYPE_LIGHTER_GREY};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
 interface CriticalCoinjoinPhaseProps {
@@ -52,8 +58,9 @@ export const CriticalCoinjoinPhase = ({ relatedAccountKey }: CriticalCoinjoinPha
 
     const session = relatedCoinjoinAccount?.session;
     const roundPhase = session?.roundPhase;
+    const sessionPhase = session?.sessionPhaseQueue[0];
 
-    if (!roundPhase) {
+    if (!roundPhase || !sessionPhase) {
         return null;
     }
 
@@ -66,13 +73,20 @@ export const CriticalCoinjoinPhase = ({ relatedAccountKey }: CriticalCoinjoinPha
                     <CoinjoinText>
                         <Translation id="TR_COINJOIN_RUNNING" />
                     </CoinjoinText>
-                    <DisconnectText>
+                    <DisconnectWarning>
                         <Translation id="TR_DO_NOT_DISCONNECT_DEVICE" />
-                    </DisconnectText>
+                    </DisconnectWarning>
+                    <Phase>
+                        <Translation id={ROUND_PHASE_MESSAGES[roundPhase]} />
+                    </Phase>
                 </TextContainer>
             </Content>
 
-            <PhaseProgress roundPhase={roundPhase} phaseDeadline={session.roundPhaseDeadline} />
+            <PhaseProgress
+                roundPhase={roundPhase}
+                phaseDeadline={session.roundPhaseDeadline}
+                sessionPhase={sessionPhase}
+            />
         </StyledModal>
     );
 };
