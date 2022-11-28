@@ -1774,4 +1774,67 @@ export default [
             type: 'final',
         },
     },
+    {
+        description:
+            'builds a Dogecoin tx with change and both input and one of the outputs above MAX_SAFE_INTEGER',
+        request: {
+            basePath: [2147483692, 2147483651, 2147483648],
+            changeAddress: 'DKu2a8Wo6zC2dmBBYXwUG3fxWDHbKnNiPj',
+            changeId: 0,
+            dustThreshold: 999999,
+            feeRate: '1000',
+            height: 7000000,
+            network: 'doge',
+            outputs: [
+                {
+                    address: 'DDn7UV1CrqVefzwrHyw7H2zEZZKqfzR2ZD',
+                    amount: '11556856849999734000',
+                    type: 'complete',
+                },
+            ],
+            utxos: [
+                {
+                    addressPath: [0, 0],
+                    coinbase: false,
+                    height: 2272181,
+                    index: 1,
+                    own: false,
+                    transactionHash:
+                        '78c3ee88226c7f63060fbf27ab0450961c09241bfd56a12ce164881791c7c6e5',
+                    tsize: 0,
+                    value: '11556856856800000000',
+                    vsize: 0,
+                },
+            ],
+        },
+        result: {
+            bytes: 226,
+            fee: '226000',
+            feePerByte: '1000',
+            max: undefined,
+            totalSpent: '11556856849999960000',
+            transaction: {
+                PERM_outputs: {
+                    permutation: [1, 0],
+                    sorted: [
+                        { path: [2147483692, 2147483651, 2147483648, 1, 0], value: '6800040000' },
+                        {
+                            address: 'DDn7UV1CrqVefzwrHyw7H2zEZZKqfzR2ZD',
+                            value: '11556856849999734000',
+                        },
+                    ],
+                },
+                inputs: [
+                    {
+                        REV_hash:
+                            '78c3ee88226c7f63060fbf27ab0450961c09241bfd56a12ce164881791c7c6e5',
+                        index: 1,
+                        path: [2147483692, 2147483651, 2147483648, 0, 0],
+                        amount: '11556856856800000000',
+                    },
+                ],
+            },
+            type: 'final',
+        },
+    },
 ];
