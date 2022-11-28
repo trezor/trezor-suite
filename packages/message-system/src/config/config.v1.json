@@ -1,20 +1,20 @@
 {
     "version": 1,
-    "timestamp": "2022-10-13T00:00:00+00:00",
-    "sequence": 16,
+    "timestamp": "2022-11-28T00:00:00+00:00",
+    "sequence": 17,
     "actions": [
         {
             "conditions": [
                 {
                     "environment": {
-                        "desktop": "<22.9.3",
+                        "desktop": "<22.11.1",
                         "mobile": "!",
                         "web": "!"
                     }
                 }
             ],
             "message": {
-                "id": "a99d0ad4-3bab-4630-9352-fd17a518153f",
+                "id": "a99d0ad4-3bab-4660-9352-fd17a518153f",
                 "priority": 91,
                 "dismissible": true,
                 "variant": "warning",
@@ -29,7 +29,7 @@
                 },
                 "cta": {
                     "action": "external-link",
-                    "link": "https://suite.trezor.io/",
+                    "link": "https://trezor.io/trezor-suite",
                     "label": {
                         "en-GB": "Go to suite.trezor.io",
                         "en": "Go to suite.trezor.io",
