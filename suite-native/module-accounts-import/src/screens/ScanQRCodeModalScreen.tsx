@@ -1,109 +1,78 @@
 import React, { useEffect, useState } from 'react';
-import { Camera, useCameraDevices } from 'react-native-vision-camera';
-import { Linking, SafeAreaView } from 'react-native';
+import { ActivityIndicator, Platform } from 'react-native';
 
-import { BarcodeFormat, useScanBarcodes } from 'vision-camera-code-scanner';
+import { BarCodeEvent, BarCodeScanner, PermissionStatus } from 'expo-barcode-scanner';
 
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Box, IconButton, Text } from '@suite-native/atoms';
 import {
     AccountsImportStackParamList,
     AccountsImportStackRoutes,
+    Screen,
+    ScreenHeader,
     StackProps,
 } from '@suite-native/navigation';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { Box, Text } from '@suite-native/atoms';
 
-const cameraWrapperStyle = prepareNativeStyle(_ => ({
-    position: 'relative',
-    overflow: 'hidden',
-    flex: 1,
-}));
+import { CameraPermissionError } from '../components/CameraPermissionError';
+import { useCameraPermission } from '../hooks/useCameraPermission';
 
 const cameraStyle = prepareNativeStyle(_ => ({
     flex: 1,
     height: '100%',
 }));
 
-const modalHeaderStyle = prepareNativeStyle(utils => ({
-    flexDirection: 'row',
-    width: '100%',
-    padding: utils.spacings.medium,
-    flex: 1,
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    position: 'absolute',
-    zIndex: 1,
-    top: 20,
-}));
+const barCodeTypes = [BarCodeScanner.Constants.BarCodeType.qr];
 
 export const ScanQRCodeModalScreen = ({
     navigation,
 }: StackProps<AccountsImportStackParamList, AccountsImportStackRoutes.XpubScanModal>) => {
-    const [hasCameraPermission, setHasCameraPermission] = useState(false);
     const { applyStyle } = useNativeStyles();
-    const devices = useCameraDevices();
-    const device = devices.back;
+    const { cameraPermissionStatus, requestCameraPermission } = useCameraPermission();
+    const [scanned, setScanned] = useState(false);
+    const [isCameraLoading, setIsCameraLoading] = useState(Platform.OS === 'android');
 
     useEffect(() => {
-        const requestCamera = async () => {
-            let cameraPermission = await Camera.getCameraPermissionStatus();
-            if (cameraPermission !== 'authorized') {
-                setHasCameraPermission(false);
-                cameraPermission = await Camera.requestCameraPermission();
-            }
-            setHasCameraPermission(cameraPermission === 'authorized');
-            if (cameraPermission === 'denied') {
-                await Linking.openSettings();
-            }
-        };
+        // We need to delay mount of BarCodeScanner otherwise it will cause freeze during screen transition
+        // maybe this could be removed if we use @react-navigation/native-stack instead of just stack.
+        // Also not necessary on iOS because it's fast enough.
+        const timeout = setTimeout(() => {
+            setIsCameraLoading(false);
+        }, 700);
 
-        requestCamera();
+        return () => clearTimeout(timeout);
     }, []);
 
-    const [frameProcessor, barcodes] = useScanBarcodes([BarcodeFormat.QR_CODE], {
-        checkInverted: true,
-    });
-
-    useEffect(() => {
-        if (barcodes && barcodes.length) {
-            const [barcode] = barcodes;
-
-            navigation.navigate(AccountsImportStackRoutes.XpubScan, {
-                qrCode: barcode.displayValue,
-            });
-        }
-    }, [barcodes, navigation]);
-
-    const isCameraAllowed = hasCameraPermission && !!device;
-
-    if (!isCameraAllowed) return <Text>Camera is not allowed.</Text>;
+    const handleBarCodeScanned = ({ data }: BarCodeEvent) => {
+        setScanned(true);
+        navigation.navigate(AccountsImportStackRoutes.XpubScan, {
+            qrCode: data,
+        });
+    };
 
     return (
-        <SafeAreaView style={applyStyle(cameraWrapperStyle)}>
-            <Box
-                style={applyStyle(modalHeaderStyle)}
-                justifyContent="space-between"
-                alignItems="center"
-            >
-                {/* Width of close icon button */}
-                <Box style={{ width: 48 }} />
-                <Text color="gray0">Scan QR</Text>
-                {/* TODO first click is not working */}
-                <IconButton
-                    iconName="close"
-                    colorScheme="gray"
-                    size="large"
-                    isRounded
-                    style={{ zIndex: 100 }}
-                    onPress={navigation.goBack}
+        <Screen header={<ScreenHeader title="Scan QR" />}>
+            {cameraPermissionStatus === PermissionStatus.GRANTED ? (
+                <>
+                    {isCameraLoading ? (
+                        <Box alignItems="center" justifyContent="center" flex={1}>
+                            <ActivityIndicator size="large" />
+                            <Text>Loading camera...</Text>
+                        </Box>
+                    ) : (
+                        <BarCodeScanner
+                            onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
+                            barCodeTypes={barCodeTypes}
+                            style={applyStyle(cameraStyle)}
+                            type="back"
+                        />
+                    )}
+                </>
+            ) : (
+                <CameraPermissionError
+                    onPermissionRequest={requestCameraPermission}
+                    permissionStatus={cameraPermissionStatus}
                 />
-            </Box>
-            <Camera
-                style={applyStyle(cameraStyle)}
-                device={device}
-                frameProcessor={frameProcessor}
-                frameProcessorFps={5}
-                isActive
-            />
-        </SafeAreaView>
+            )}
+        </Screen>
     );
 };

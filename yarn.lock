@@ -6333,10 +6333,8 @@ __metadata:
     react-native: 0.70.5
     react-native-config: ^1.4.6
     react-native-reanimated: ^2.12.0
-    react-native-vision-camera: ^2.15.2
     react-redux: 7.2.2
     typescript: 4.9.3
-    vision-camera-code-scanner: ^0.2.0
   languageName: unknown
   linkType: soft
 
@@ -7375,6 +7373,7 @@ __metadata:
     "@trezor/transport-native": "workspace:*"
     babel-jest: ^26.6.3
     expo: ^47.0.8
+    expo-barcode-scanner: ^12.1.0
     jest: ^26.6.3
     metro-react-native-babel-preset: ^0.72.3
     node-libs-browser: ^2.2.1
@@ -7390,14 +7389,12 @@ __metadata:
     react-native-screens: ^3.13.1
     react-native-splash-screen: ^3.3.0
     react-native-svg: ^12.4.4
-    react-native-vision-camera: ^2.15.2
     react-qr-code: 2.0.8
     react-redux: 7.2.2
     react-test-renderer: 18.2.0
     redux-persist: 6.0.0
     simple-plist: 1.3.1
     typescript: 4.9.3
-    vision-camera-code-scanner: ^0.2.0
   languageName: unknown
   linkType: soft
 
@@ -16213,6 +16210,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"expo-barcode-scanner@npm:^12.1.0":
+  version: 12.1.0
+  resolution: "expo-barcode-scanner@npm:12.1.0"
+  dependencies:
+    expo-image-loader: ~4.0.0
+  peerDependencies:
+    expo: "*"
+  checksum: 196ed1433f561bc46a7bc6bd2085b4ede8c3e82a7f0ea0cc3d6aeaec7f6636246eafb2d46a6ae81af202365f66cb3c6b4a8df098aa694cd805ada7c7fead9201
+  languageName: node
+  linkType: hard
+
 "expo-constants@npm:~14.0.0, expo-constants@npm:~14.0.2":
   version: 14.0.2
   resolution: "expo-constants@npm:14.0.2"
@@ -16253,6 +16261,15 @@ __metadata:
   peerDependencies:
     expo: "*"
   checksum: 9a04b1fac7834641ddf001a365ddbbfac11b7a2377686e3765fba4b415189e107d7f494488a590458d724ce792ae98b7b9ab5bf25b99e0f84b60c4c0a97f263f
+  languageName: node
+  linkType: hard
+
+"expo-image-loader@npm:~4.0.0":
+  version: 4.0.0
+  resolution: "expo-image-loader@npm:4.0.0"
+  peerDependencies:
+    expo: "*"
+  checksum: 21b0a77bd9fd3b434db70e16e21f8531db668c30bd539bb230a52d47f7536b3baf8742db7fd70b41e2165330d92881ef31b8eb1c69b5088fa5d36e57464ca0e4
   languageName: node
   linkType: hard
 
@@ -26603,16 +26620,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-vision-camera@npm:^2.15.2":
-  version: 2.15.2
-  resolution: "react-native-vision-camera@npm:2.15.2"
-  peerDependencies:
-    react: "*"
-    react-native: "*"
-  checksum: 02436b3ba7ba67bcddf7ac3d334ceac134c8cd9d809441d7f3c287af1916a94a1a6194c8988f756cf556d9b7b60061b60de3d2500c638fe41374df6597d79191
-  languageName: node
-  linkType: hard
-
 "react-native@npm:0.70.5":
   version: 0.70.5
   resolution: "react-native@npm:0.70.5"
@@ -32002,17 +32009,6 @@ __metadata:
     unist-util-stringify-position: ^3.0.0
     vfile-message: ^3.0.0
   checksum: 14a9ea19d1801bb99fc9a451d220d2ee84d891bae52094db660f9bf637c1cada0c45a3e00962ff3e901da16dd5051367e25a4a214e40db57ae40f57363796b45
-  languageName: node
-  linkType: hard
-
-"vision-camera-code-scanner@npm:^0.2.0":
-  version: 0.2.0
-  resolution: "vision-camera-code-scanner@npm:0.2.0"
-  peerDependencies:
-    react: "*"
-    react-native: "*"
-    react-native-vision-camera: ">=2.9.4"
-  checksum: d3cee8df7a04be024a1a183de739d7acb67e86214e56fc634b6d0a07fc7fcdc6da3b2f91b2ea276065f39847debe8855e88636d09d2ca4f7022b7c873b50b20d
   languageName: node
   linkType: hard
 
