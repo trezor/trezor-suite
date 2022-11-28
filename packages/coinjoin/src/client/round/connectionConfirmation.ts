@@ -43,10 +43,12 @@ const confirmInput = async (
         { signal, baseUrl: middlewareUrl },
     );
 
-    const delay = 0; // TODO: delay cannot be longer than last confirmationInterval tick
-    const deadline = coordinator.RoundPhase.InputRegistration ? undefined : round.phaseDeadline;
+    const inputDeadline = input.confirmationDeadline - Date.now();
+    const delay =
+        inputDeadline > 0 && input.confirmationDeadline < round.phaseDeadline ? inputDeadline : 0;
+    const deadline = round.phaseDeadline;
     log(
-        `Confirming ~~${input.outpoint}~~ to ~~${round.id}~~ with delay ${delay}ms and deadline ${deadline}`,
+        `Confirming ~~${input.outpoint}~~ to ~~${round.id}~~ phase ${round.phase} with delay ${delay}ms and deadline ${deadline}`,
     );
 
     const confirmationData = await coordinator
@@ -60,6 +62,7 @@ const confirmInput = async (
             { signal, baseUrl: coordinatorUrl, identity: input.outpoint, delay, deadline },
         )
         .catch(error => {
+            log(`Confirmation failed ~~${input.outpoint}~~ in ~~${round.id}~~. Reason: ${error}`);
             // catch specific error
             if (
                 error.message ===
@@ -82,6 +85,7 @@ const confirmInput = async (
         !confirmationData.realAmountCredentials ||
         !confirmationData.realVsizeCredentials
     ) {
+        log(`Confirmed in phase ${round.phase} ~~${input.outpoint}~~ in ~~${round.id}~~`);
         return input;
     }
 
@@ -106,60 +110,52 @@ const confirmInput = async (
     return input;
 };
 
-// Because of the nature of coordinator registration process requires (after successfully registration)
-// to call `/connection-confirmation` in intervals less than connectionConfirmationTimeout * 0.9 to prevent AliceTimeout error on coordinator
+// Because of the nature of coordinator successful registration process requires
+// to call `/connection-confirmation` in intervals less than connectionConfirmationTimeout * 0.5 to prevent AliceTimeout error on coordinator
+// https://github.com/trezor/WalletWasabi/blob/master/WalletWasabi/WabiSabi/Client/AliceClient.cs
 export const confirmationInterval = (
     round: CoinjoinRound,
     input: Alice,
     options: CoinjoinRoundOptions,
-) => {
+): Promise<Alice> => {
     const { phaseDeadline } = round;
     const timeoutDeadline = Math.floor(
-        readTimeSpan(round.roundParameters.connectionConfirmationTimeout) * 0.5, // TODO: constant
+        readTimeSpan(round.roundParameters.connectionConfirmationTimeout) * 0.5,
     );
-    let timeLeft = phaseDeadline - Date.now();
-    if (timeLeft < timeoutDeadline || options.signal.aborted) {
-        options.log(
-            `Ignoring confirmation interval for ~~${input.outpoint}~~. Deadline ${timeLeft}ms`,
-        );
-        return input;
-    }
-
-    options.log(`Setting confirmation interval for ~~${input.outpoint}~~. Deadline ${timeLeft}ms`);
 
     return new Promise<Alice>(resolve => {
-        let timeout: ReturnType<typeof setTimeout>;
-
         const done = () => {
             options.log(`Confirmation interval for ~~${input.outpoint}~~ completed`);
-            options.signal.removeEventListener('abort', done);
-            clearTimeout(timeout);
             resolve(input);
         };
 
         const timeoutFn = async () => {
+            input.confirmationDeadline = Date.now() + timeoutDeadline;
+            const timeLeft = phaseDeadline - Date.now();
+            if (input.confirmationData || timeLeft < timeoutDeadline || options.signal.aborted) {
+                options.log(
+                    `Ignoring confirmation interval for ~~${input.outpoint}~~. Deadline ${timeLeft}ms`,
+                );
+                done();
+                return;
+            }
+
+            options.log(
+                `Setting confirmation interval for ~~${input.outpoint}~~. Deadline ${timeLeft}ms`,
+            );
+
             try {
                 await confirmInput(round, input, options);
-                timeLeft = phaseDeadline - Date.now();
-                options.log(
-                    `Confirmation interval for ~~${input.outpoint}~~. Time left ${timeLeft}ms.`,
-                );
-                if (timeLeft > timeoutDeadline) {
-                    timeout = setTimeout(timeoutFn, timeoutDeadline);
-                } else {
-                    // Alice timeout should be ok now
-                    done();
-                }
+                timeoutFn();
             } catch (error) {
                 options.log(`Confirmation interval with error ${error.message}`);
-                // do nothing. it will be processed by next phase in CoinjoinRound.processPhase
+                // do nothing. confirmationInterval might be aborted by Round phase change.
+                // error (if it's relevant) will be processed in next phase in confirmInput
                 done();
             }
         };
 
-        timeout = setTimeout(timeoutFn, timeoutDeadline);
-
-        options.signal.addEventListener('abort', done);
+        timeoutFn();
     });
 };
 

@@ -27,6 +27,7 @@ export class Alice {
     registrationData?: RegistrationData; // data from inputRegistration phase
     realAmountCredentials?: RealCredentials; // data from inputRegistration phase
     realVsizeCredentials?: RealCredentials; // data from inputRegistration phase
+    confirmationDeadline = 0;
     confirmationData?: ConfirmationData; // data from connectionConfirmation phase
     confirmedAmountCredentials?: Credentials[]; // data from connectionConfirmation phase
     confirmedVsizeCredentials?: Credentials[]; // data from connectionConfirmation phase
