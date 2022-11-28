@@ -8,7 +8,6 @@ import { useActions, useSelector } from '@suite-hooks';
 import { Account } from '@wallet-types';
 import * as suiteActions from '@suite-actions/suiteActions';
 import * as routerActions from '@suite-actions/routerActions';
-import Bech32Banner from './components/Bech32Banner';
 import TaprootBanner from './components/TaprootBanner';
 import { getBip43Type } from '@suite-common/wallet-utils';
 
@@ -70,7 +69,7 @@ interface AccountEmptyProps {
 }
 
 export const AccountEmpty = (props: AccountEmptyProps) => {
-    const { bech32BannerClosed, taprootBannerClosed } = useSelector(state => state.suite.flags);
+    const { taprootBannerClosed } = useSelector(state => state.suite.flags);
 
     const { goto, setFlag } = useActions({
         goto: routerActions.goto,
@@ -103,10 +102,6 @@ export const AccountEmpty = (props: AccountEmptyProps) => {
 
     return (
         <Wrapper>
-            {bip43 === 'bip84' && !bech32BannerClosed && (
-                <Bech32Banner onClose={() => setFlag('bech32BannerClosed', true)} />
-            )}
-
             {bip43 === 'bip86' && !taprootBannerClosed && (
                 <TaprootBanner onClose={() => setFlag('taprootBannerClosed', true)} />
             )}
