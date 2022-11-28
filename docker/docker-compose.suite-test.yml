@@ -15,7 +15,7 @@ services:
       service: suite-dev
     network_mode: service:trezor-user-env-unix
 
-  test-open:
+  test-open-cypress:
     # the Docker image to use from https://github.com/cypress-io/cypress-docker-images
     build:
       context: .
@@ -45,6 +45,26 @@ services:
     volumes:
       - ../:/e2e
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
+
+  test-open-playwright:
+    image: mcr.microsoft.com/playwright:focal
+    depends_on:
+      - suite-dev
+      - trezor-user-env-unix
+    network_mode: service:trezor-user-env-unix
+    environment:
+      - LOCAL_USER_ID=$LOCAL_USER_ID
+      - DISPLAY=$DISPLAY
+      - HEADLESS=false
+      # useful for debugging tests
+      - PWDEBUG=console
+      - TEST_FILE=$TEST_FILE
+    working_dir: /trezor-suite
+    command: bash -c "npx playwright install && docker/wait-for-200.sh http://localhost:8000/index.html && yarn workspace @trezor/suite test:e2e $TEST_FILE"
+    volumes:
+      - ../:/trezor-suite
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+
   bitcoin-regtest:
     image: ghcr.io/trezor/trezor-user-env-regtest # this is a special image that runs regtest and blockbook
     network_mode: service:trezor-user-env-unix

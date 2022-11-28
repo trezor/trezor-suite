@@ -31,7 +31,7 @@
     - yarn install --immutable
     - docker-compose pull
     - docker-compose up -d ${CONTAINERS}
-    - docker-compose run test-run
+    - docker-compose run test-run-cypress
   after_script:
     - docker cp ${CI_JOB_ID}_trezor-user-env-unix_1:/trezor-user-env/logs/debugging.log trezor-user-env-debugging.log
     - docker cp ${CI_JOB_ID}_trezor-user-env-unix_1:/trezor-user-env/logs/emulator_bridge.log tenv-emulator-bridge-debugging.log
