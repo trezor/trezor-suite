@@ -70,7 +70,7 @@ export const getAccountCandidates = (
     _statusRounds: Round[],
     currentRounds: CoinjoinRound[],
     prison: CoinjoinPrison,
-    { log }: CoinjoinRoundOptions,
+    { log, setSessionPhase }: CoinjoinRoundOptions,
 ) => {
     // TODO: walk thru all Round[] and search in round events for account input/output scriptPubKey which are not supposed to be there (interrupted round)
     // if they are in phase 0 put them to prison to cool off so they registration on coordinator will timeout naturally, otherwise prison for longer, they will be banned
@@ -81,6 +81,7 @@ export const getAccountCandidates = (
         .concat(prison.inmates.map(i => i.id));
 
     const blameOfInputs = prison.getBlameOfInmates();
+    const skippedAccounts: Array<{ key: string; reason: SessionPhase }> = [];
 
     const candidates = accounts.flatMap(account => {
         // skip account registered to critical rounds
@@ -118,6 +119,11 @@ export const getAccountCandidates = (
                 ) {
                     account.skipRoundCounter = 0;
                     log(`Random skip candidate ~~${accountKey}~~`);
+                    skippedAccounts.push({
+                        key: account.accountKey,
+                        reason: SessionPhase.SkippingRound,
+                    });
+
                     return [];
                 }
                 account.skipRoundCounter++;
@@ -134,9 +140,27 @@ export const getAccountCandidates = (
         log(
             `Skipping candidate ~~${accountKey}~~. Utxos ${utxos.length} of ${account.utxos.length}`,
         );
+        skippedAccounts.push({
+            key: account.accountKey,
+            reason: SessionPhase.AccountMissingUtxos,
+        });
 
         return [];
     });
+
+    if (skippedAccounts.length) {
+        const eventGroups = skippedAccounts.reduce((groups, { key, reason }) => {
+            if (!groups[reason]) {
+                groups[reason] = { phase: reason, accountKeys: [key] };
+            } else {
+                groups[reason].accountKeys.push(key);
+            }
+
+            return groups;
+        }, {} as Record<SessionPhase, Parameters<typeof setSessionPhase>[0]>);
+
+        Object.values(eventGroups).forEach(setSessionPhase);
+    }
 
     return candidates;
 };
@@ -337,7 +361,6 @@ export const selectRound = async (
 
     if (accountCandidates.length < 1) {
         log('No suitable accounts');
-
         return;
     }
 
@@ -351,6 +374,10 @@ export const selectRound = async (
     );
     if (!newRound) {
         log('No suitable utxos');
+        setSessionPhase({
+            phase: SessionPhase.RetryingRoundPairing,
+            accountKeys: unregisteredAccountKeys,
+        });
         return;
     }
 
