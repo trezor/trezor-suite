@@ -104,7 +104,7 @@ export const getAccountInfo = ({
         };
     }
 
-    const txsFromLatest = transactions.slice().sort(sortTxsFromLatest);
+    const txsFromLatest = sortTxsFromLatest(transactions);
     const txsFromOldest = txsFromLatest.slice().reverse();
 
     return {

@@ -76,11 +76,9 @@ const getAccountInfo: Api<Req, Res> = async (client, payload) => {
 
         const transactions =
             details === 'txs'
-                ? await getTransactions(client, history).then(txs =>
-                      txs
-                          .map(tx => transformTransaction(descriptor, undefined, tx))
-                          .sort(sortTxsFromLatest),
-                  )
+                ? await getTransactions(client, history)
+                      .then(txs => txs.map(tx => transformTransaction(descriptor, undefined, tx)))
+                      .then(sortTxsFromLatest)
                 : undefined;
 
         return {
@@ -125,11 +123,9 @@ const getAccountInfo: Api<Req, Res> = async (client, payload) => {
     };
 
     const transactions = ['tokenBalances', 'txids', 'txs'].includes(details)
-        ? await getTransactions(client, history).then(txs =>
-              txs
-                  .map(tx => transformTransaction(descriptor, addresses, tx))
-                  .sort(sortTxsFromLatest),
-          )
+        ? await getTransactions(client, history)
+              .then(txs => txs.map(tx => transformTransaction(descriptor, addresses, tx)))
+              .then(sortTxsFromLatest)
         : [];
 
     const extendAddressInfo = ({ address, path, transfers, balance }: Address): Address => ({
