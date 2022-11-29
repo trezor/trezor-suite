@@ -17,6 +17,7 @@ type AccountTransactionProps = {
     transactions: WalletAccountTransaction[];
     fetchMoreTransactions: (pageToFetch: number, perPage: number) => void;
     listHeaderComponent: JSX.Element;
+    accountKey: string;
 };
 
 export const TX_PER_PAGE = 25;
@@ -33,6 +34,7 @@ export const TransactionList = ({
     transactions,
     listHeaderComponent,
     fetchMoreTransactions,
+    accountKey,
 }: AccountTransactionProps) => {
     const { applyStyle, utils } = useNativeStyles();
     const isLoadingTransactions = useSelector(selectIsLoadingTransactions);
@@ -104,7 +106,7 @@ export const TransactionList = ({
                 renderSectionHeader={renderSectionHeader}
                 renderItem={renderItem}
                 ListHeaderComponent={listHeaderComponent}
-                ListEmptyComponent={<TransactionsEmptyState />}
+                ListEmptyComponent={<TransactionsEmptyState accountKey={accountKey} />}
                 onEndReached={handleOnEndReached}
             />
         </Box>

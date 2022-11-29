@@ -51,8 +51,7 @@ export type TabsOptions = {
     [routeName: string]: {
         routeName: string;
         iconName: IconName;
-        label?: string;
-        isActionTabItem?: boolean;
+        label: string;
         params?: Record<string, unknown>;
     };
 };

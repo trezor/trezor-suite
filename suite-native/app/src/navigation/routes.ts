@@ -22,6 +22,7 @@ const accountsStack = typedTabOption({
 
 const actionStack = typedTabOption({
     routeName: AppTabsRoutes.Action,
+    label: 'Receive',
     iconName: 'action',
 });
 

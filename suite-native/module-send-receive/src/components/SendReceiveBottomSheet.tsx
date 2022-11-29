@@ -1,4 +1,4 @@
-import React, { ReactNode, useState } from 'react';
+import React, { ReactNode, useEffect, useState } from 'react';
 
 import {
     RootStackParamList,
@@ -21,10 +21,16 @@ export const SendReceiveBottomSheet = ({
     route,
     navigation,
 }: StackProps<RootStackParamList, RootStackRoutes.SendReceive>) => {
-    const [selectedAccountKey, setSelectedAccountKey] = useState<string>('');
+    const [selectedAccountKey, setSelectedAccountKey] = useState<string>(
+        route.params.accountKey || '',
+    );
     const [contentType, setContentType] = useState<SendReceiveContentType>(DEFAULT_CONTENT_TYPE);
 
-    console.log(route.params.accountKey);
+    useEffect(() => {
+        if (route.params.accountKey) {
+            setContentType(sendReceiveContentType.createNewAddressToReceive);
+        }
+    }, [route.params.accountKey]);
 
     const handleChangeContentType = (type: SendReceiveContentType) => {
         setContentType(type);

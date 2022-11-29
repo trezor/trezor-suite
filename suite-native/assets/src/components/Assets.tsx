@@ -32,7 +32,6 @@ type HomeAssetsNavigationProp = TabToStackCompositeNavigationProp<
 >;
 
 export const Assets = () => {
-    // const [_, setIsSendReceiveVisible] = useAtom(isSendReceiveActionsVisibleAtom);
     const navigation = useNavigation<HomeAssetsNavigationProp>();
     const { applyStyle } = useNativeStyles();
     const fiatCurrency = useSelector(selectFiatCurrency);
@@ -41,7 +40,7 @@ export const Assets = () => {
     );
 
     const handleReceive = () => {
-        // setIsSendReceiveVisible(true);
+        navigation.navigate(RootStackRoutes.SendReceive, {});
     };
 
     const handleImportAssets = () => {

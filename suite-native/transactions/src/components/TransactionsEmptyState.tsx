@@ -1,11 +1,11 @@
 import React from 'react';
 import { Image } from 'react-native';
 
-import { useAtom } from 'jotai';
+import { useNavigation } from '@react-navigation/native';
 
 import { Box, Button, Card, Text } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { isSendReceiveActionsVisibleAtom } from '@suite-native/navigation';
+import { RootStackRoutes } from '@suite-native/navigation';
 
 const cardStyle = prepareNativeStyle(utils => ({
     justifyContent: 'center',
@@ -20,9 +20,14 @@ const receiveButtonStyle = prepareNativeStyle(() => ({
     width: '90%',
 }));
 
-export const TransactionsEmptyState = () => {
+export const TransactionsEmptyState = ({ accountKey }: { accountKey: string }) => {
+    const navigation = useNavigation();
     const { applyStyle } = useNativeStyles();
-    const [_, setIsSendReceiveActionsVisible] = useAtom(isSendReceiveActionsVisibleAtom);
+
+    const handleReceive = () => {
+        navigation.navigate(RootStackRoutes.SendReceive, { accountKey });
+    };
+
     return (
         <Box paddingHorizontal="medium">
             <Card style={applyStyle(cardStyle)}>
@@ -37,7 +42,7 @@ export const TransactionsEmptyState = () => {
                 <Button
                     style={applyStyle(receiveButtonStyle)}
                     iconName="receive"
-                    onPress={() => setIsSendReceiveActionsVisible(true)}
+                    onPress={handleReceive}
                 >
                     Receive
                 </Button>
