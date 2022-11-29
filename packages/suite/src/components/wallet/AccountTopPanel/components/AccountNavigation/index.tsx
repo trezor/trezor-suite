@@ -16,8 +16,11 @@ interface AccountNavigationProps {
 }
 
 const useStackingStatus = (account?: Account) => {
-    const trezorPools = useSelector(state => state.wallet.cardanoStaking.trezorPools);
-    const isFetchLoading = useSelector(state => state.wallet.cardanoStaking.isFetchLoading);
+    const cardanoNetwork = account && account.symbol === 'ada' ? 'mainnet' : 'testnet';
+    const { trezorPools, isFetchLoading } = useSelector(
+        state => state.wallet.cardanoStaking[cardanoNetwork],
+    );
+
     if (!account?.misc || !('staking' in account?.misc)) return false;
 
     const { poolId } = account.misc.staking;
@@ -41,12 +44,9 @@ export const AccountNavigation = ({
 
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     const { account } = selectedAccount;
-
     const showStakingStatus = useStackingStatus(account);
-
     const routerParams = useSelector(state => state.router.params) as WalletParams;
     const network = getNetwork(routerParams?.symbol || '');
-
     const networkType = account?.networkType || network?.networkType || 'bitcoin';
     const accountType = account?.accountType || routerParams?.accountType || 'normal';
     const symbol = account?.symbol || routerParams?.symbol || 'btc';

@@ -1,3 +1,5 @@
+export type CardanoNetwork = 'mainnet' | 'testnet';
+
 export type {
     PendingStakeTx,
     StakePool,

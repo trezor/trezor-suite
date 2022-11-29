@@ -62,15 +62,12 @@ export const useCardanoStaking = (): CardanoStaking => {
         throw Error('useCardanoStaking used for other network');
     }
 
-    const { device, locks, pendingStakeTxs, trezorPools, isFetchLoading, isFetchError } =
-        useSelector(state => ({
-            device: state.suite.device,
-            locks: state.suite.locks,
-            pendingStakeTxs: state.wallet.cardanoStaking.pendingTx,
-            trezorPools: state.wallet.cardanoStaking.trezorPools,
-            isFetchLoading: state.wallet.cardanoStaking.isFetchLoading,
-            isFetchError: state.wallet.cardanoStaking.isFetchError,
-        }));
+    const { device, locks, pendingStakeTxs, cardanoStaking } = useSelector(state => ({
+        device: state.suite.device,
+        locks: state.suite.locks,
+        pendingStakeTxs: state.wallet.cardanoStaking.pendingTx,
+        cardanoStaking: state.wallet.cardanoStaking,
+    }));
     const { addToast, setPendingStakeTx, addFakePendingTx } = useActions({
         addToast: notificationsActions.addToast,
         setPendingStakeTx: cardanoStakingActions.setPendingStakeTx,
@@ -100,11 +97,13 @@ export const useCardanoStaking = (): CardanoStaking => {
         isActive: isStakingActive,
     } = account.misc.staking;
 
+    const cardanoNetwork = account.symbol === 'ada' ? 'mainnet' : 'testnet';
+    const { trezorPools, isFetchLoading, isFetchError } = cardanoStaking[cardanoNetwork];
     const currentPool =
         registeredPoolId && trezorPools
             ? trezorPools?.pools.find(p => p.bech32 === registeredPoolId)
             : null;
-    const isStakingOnTrezorPool = !isFetchLoading ? !!currentPool : true; // fallback to true to prevent flickering in UI while we fetch the data
+    const isStakingOnTrezorPool = !isFetchLoading && !isFetchError ? !!currentPool : true; // fallback to true to prevent flickering in UI while we fetch the data
     const isCurrentPoolOversaturated = currentPool ? isPoolOverSaturated(currentPool) : false;
     const changeAddress = useMemo(() => getChangeAddressParameters(account), [account]);
     const prepareTxPlan = useCallback(
