@@ -65,7 +65,6 @@
   "IMPORT_CSV": "가져오기",
   "INCLUDING_FEE": "수수료 포함",
   "LABELING_ACCOUNT": "{networkName}#{index}",
-  "LABELING_ACCOUNT_WITH_TYPE": "계정 #{index}({type})",
   "LOCKTIME": "락타임",
   "LOCKTIME_ADD": "락타임 추가",
   "LOCKTIME_IS_NOT_SET": "락타임이 설정되지 않았습니다",

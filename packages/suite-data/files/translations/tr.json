@@ -23,7 +23,6 @@
   "IMPORT_CSV": "İçe aktar",
   "INCLUDING_FEE": "komisyon dahil",
   "LABELING_ACCOUNT": "{networkName}#{index}",
-  "LABELING_ACCOUNT_WITH_TYPE": "{networkName}#{index}{type}",
   "METADATA_MODAL_HEADING": "Bulut senkronizasyonu",
   "MODAL_ADD_ACCOUNT_TITLE": "Yeni hesap ekle",
   "NOTIFICATIONS_ALL_TITLE": "Tüm işlemler",
