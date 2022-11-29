@@ -6459,6 +6459,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/module-send-receive@workspace:suite-native/module-send-receive"
   dependencies:
+    "@mobily/ts-belt": ^3.13.1
     "@react-native-clipboard/clipboard": ^1.11.1
     "@react-navigation/native": ^6.0.11
     "@suite-common/wallet-core": "workspace:*"

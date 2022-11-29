@@ -1,12 +1,14 @@
 import React, { ReactNode, useEffect, useState } from 'react';
 
+import { S } from '@mobily/ts-belt';
+
 import {
     RootStackParamList,
     RootStackRoutes,
     Screen,
     ScreenHeader,
     StackProps,
-} from '@suite-native/navigation/libDev/src';
+} from '@suite-native/navigation';
 
 import { AccountSelectionStep } from '../components/AccountSelectionStep';
 import { sendReceiveContentType, SendReceiveContentType } from '../contentType';
@@ -26,10 +28,10 @@ export const ReceiveModalScreen = ({
     const [contentType, setContentType] = useState<SendReceiveContentType>(DEFAULT_CONTENT_TYPE);
 
     useEffect(() => {
-        if (route.params.accountKey) {
+        if (S.isNotEmpty(selectedAccountKey)) {
             setContentType(sendReceiveContentType.createNewAddressToReceive);
         }
-    }, [route.params.accountKey]);
+    }, [selectedAccountKey]);
 
     const handleChangeContentType = (type: SendReceiveContentType) => {
         setContentType(type);

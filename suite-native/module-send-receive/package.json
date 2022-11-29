@@ -11,6 +11,7 @@
         "type-check": "tsc --build"
     },
     "dependencies": {
+        "@mobily/ts-belt": "^3.13.1",
         "@react-native-clipboard/clipboard": "^1.11.1",
         "@react-navigation/native": "^6.0.11",
         "@suite-common/wallet-core": "workspace:*",
