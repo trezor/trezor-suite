@@ -2938,20 +2938,6 @@ export default defineMessages({
         defaultMessage: 'Buy {network}',
         id: 'TR_BUY_NETWORK',
     },
-    TR_BECH32_BANNER_TITLE: {
-        defaultMessage: 'New to Trezor Suite: Bech32 accounts!',
-        id: 'TR_BECH32_BANNER_TITLE',
-    },
-    TR_BECH32_BANNER_POINT_1: {
-        defaultMessage:
-            'Lowercase letters only = <strong>lower chance of any reviewing errors</strong>',
-        id: 'TR_BECH32_BANNER_POINT_1',
-    },
-    TR_BECH32_BANNER_POINT_2: {
-        defaultMessage:
-            'Efficient technology = <strong>pay up to 25% lower transactions fees</strong>',
-        id: 'TR_BECH32_BANNER_POINT_2',
-    },
     TR_TAPROOT_BANNER_TITLE: {
         defaultMessage: 'New to Trezor Suite: Taproot accounts!',
         id: 'TR_TAPROOT_BANNER_TITLE',
