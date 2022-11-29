@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect, useState } from 'react';
+import React, { ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { S } from '@mobily/ts-belt';
 
@@ -41,35 +41,38 @@ export const ReceiveModalScreen = ({
         setSelectedAccountKey(key);
     };
 
-    const handleClose = () => {
+    const handleClose = useCallback(() => {
         navigation.goBack();
         setSelectedAccountKey('');
         setContentType(DEFAULT_CONTENT_TYPE);
-    };
+    }, [navigation]);
 
-    const sendReceiveContent: Record<SendReceiveContentType, ReactNode> = {
-        [sendReceiveContentType.selectAccountToReceive]: (
-            <AccountSelectionStep
-                onChangeContentType={handleChangeContentType}
-                onSelectAccount={handleSelectAccount}
-            />
-        ),
-        [sendReceiveContentType.createNewAddressToReceive]: (
-            <AddressGenerationStep
-                accountKey={selectedAccountKey}
-                onChangeContentType={handleChangeContentType}
-            />
-        ),
-        [sendReceiveContentType.confirmNewAddressToReceive]: (
-            <AddressConfirmationStep
-                accountKey={selectedAccountKey}
-                onChangeContentType={handleChangeContentType}
-            />
-        ),
-        [sendReceiveContentType.generatedAddressToReceive]: (
-            <FreshAddressStep accountKey={selectedAccountKey} onClose={handleClose} />
-        ),
-    };
+    const sendReceiveContent: Record<SendReceiveContentType, ReactNode> = useMemo(
+        () => ({
+            [sendReceiveContentType.selectAccountToReceive]: (
+                <AccountSelectionStep
+                    onChangeContentType={handleChangeContentType}
+                    onSelectAccount={handleSelectAccount}
+                />
+            ),
+            [sendReceiveContentType.createNewAddressToReceive]: (
+                <AddressGenerationStep
+                    accountKey={selectedAccountKey}
+                    onChangeContentType={handleChangeContentType}
+                />
+            ),
+            [sendReceiveContentType.confirmNewAddressToReceive]: (
+                <AddressConfirmationStep
+                    accountKey={selectedAccountKey}
+                    onChangeContentType={handleChangeContentType}
+                />
+            ),
+            [sendReceiveContentType.generatedAddressToReceive]: (
+                <FreshAddressStep accountKey={selectedAccountKey} onClose={handleClose} />
+            ),
+        }),
+        [handleClose, selectedAccountKey],
+    );
 
     return (
         <Screen header={<ScreenHeader title="Receive" />}>{sendReceiveContent[contentType]}</Screen>
