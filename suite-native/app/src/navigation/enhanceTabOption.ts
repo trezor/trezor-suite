@@ -1,7 +1,14 @@
 import { IconName } from '@trezor/icons';
 import { AppTabsParamList } from '@suite-native/navigation';
 
-export const typedTabOption = <
+type TabOption<ParamList extends AppTabsParamList, RouteName extends keyof ParamList> = {
+    routeName: RouteName;
+    iconName: IconName;
+    label: string;
+    params?: ParamList[RouteName];
+};
+
+export const enhanceTabOption = <
     ParamList extends AppTabsParamList,
     RouteName extends keyof ParamList,
 >({
@@ -9,12 +16,7 @@ export const typedTabOption = <
     iconName,
     label,
     params,
-}: {
-    routeName: RouteName;
-    iconName: IconName;
-    label?: string;
-    params?: ParamList[RouteName];
-}) => ({
+}: TabOption<ParamList, RouteName>) => ({
     [routeName]: {
         routeName,
         iconName,
