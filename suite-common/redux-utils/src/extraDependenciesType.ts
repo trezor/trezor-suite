@@ -20,7 +20,7 @@ export type ExtraDependencies = {
             block: BlockchainBlock;
             timestamp: number;
         }>;
-        cardanoFetchTrezorPools: SuiteCompatibleThunk<'ADA' | 'tADA'>;
+        cardanoFetchTrezorPools: SuiteCompatibleThunk<'tADA' | 'ADA'>;
     };
     selectors: {
         selectFeeInfo: (networkSymbol: NetworkSymbol) => SuiteCompatibleSelector<FeeInfo>;

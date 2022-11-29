@@ -1,7 +1,7 @@
 import { BlockchainBlock } from '@trezor/connect';
 import { CARDANO_STAKE_POOL_TESTNET_URL, CARDANO_STAKE_POOL_MAINNET_URL } from '@trezor/urls';
 import { CARDANO_STAKING } from '@wallet-actions/constants';
-import { PendingStakeTx, PoolsResponse } from '@wallet-types/cardanoStaking';
+import { PendingStakeTx, PoolsResponse, CardanoNetwork } from '@wallet-types/cardanoStaking';
 import { Account, WalletAccountTransaction } from '@wallet-types';
 import { Dispatch, GetState } from '@suite-types';
 import { getUnixTime } from 'date-fns';
@@ -12,9 +12,13 @@ import { transactionsActions } from '@suite-common/wallet-core';
 export type CardanoStakingAction =
     | { type: typeof CARDANO_STAKING.ADD_PENDING_STAKE_TX; pendingStakeTx: PendingStakeTx }
     | { type: typeof CARDANO_STAKING.REMOVE_PENDING_STAKE_TX; accountKey: string }
-    | { type: typeof CARDANO_STAKING.SET_TREZOR_POOLS; trezorPools: PoolsResponse }
-    | { type: typeof CARDANO_STAKING.SET_FETCH_ERROR; error: boolean }
-    | { type: typeof CARDANO_STAKING.SET_FETCH_LOADING; loading: boolean };
+    | {
+          type: typeof CARDANO_STAKING.SET_TREZOR_POOLS;
+          trezorPools: PoolsResponse;
+          network: CardanoNetwork;
+      }
+    | { type: typeof CARDANO_STAKING.SET_FETCH_ERROR; error: boolean; network: CardanoNetwork }
+    | { type: typeof CARDANO_STAKING.SET_FETCH_LOADING; loading: boolean; network: CardanoNetwork };
 
 export const getPendingStakeTx =
     (account: Account) => (_dispatch: Dispatch, getState: GetState) => {
@@ -95,14 +99,19 @@ export const validatePendingStakeTxOnTx =
     };
 
 export const fetchTrezorPools = (network: 'ADA' | 'tADA') => async (dispatch: Dispatch) => {
+    const cardanoNetwork = network === 'ADA' ? 'mainnet' : 'testnet';
+
     dispatch({
         type: CARDANO_STAKING.SET_FETCH_LOADING,
         loading: true,
+        network: cardanoNetwork,
     });
 
     // Fetch ID of Trezor stake pool that will be used in delegation transaction
     const url =
-        network === 'tADA' ? CARDANO_STAKE_POOL_TESTNET_URL : CARDANO_STAKE_POOL_MAINNET_URL;
+        cardanoNetwork === 'mainnet'
+            ? CARDANO_STAKE_POOL_MAINNET_URL
+            : CARDANO_STAKE_POOL_TESTNET_URL;
 
     try {
         const response = await fetch(url, { credentials: 'same-origin' });
@@ -117,15 +126,18 @@ export const fetchTrezorPools = (network: 'ADA' | 'tADA') => async (dispatch: Di
         dispatch({
             type: CARDANO_STAKING.SET_TREZOR_POOLS,
             trezorPools: responseJson as PoolsResponse,
+            network: cardanoNetwork,
         });
     } catch (err) {
         dispatch({
             type: CARDANO_STAKING.SET_FETCH_ERROR,
             error: true,
+            network: cardanoNetwork,
         });
     }
     dispatch({
         type: CARDANO_STAKING.SET_FETCH_LOADING,
         loading: false,
+        network: cardanoNetwork,
     });
 };
