@@ -50,7 +50,7 @@ describe('Account types suite', () => {
         //
 
         onTopBar.openAccounts();
-        onAccountsPage.unpackAllAccountTypes();
+        onAccountsPage.clickAllAccountArrows();
         accsArray.forEach(({ type, coinAccountName }: { type: string; coinAccountName: string }) =>
             // for a specific type of BTC acc, get the current number of accounts
             cy
@@ -71,6 +71,11 @@ describe('Account types suite', () => {
                     );
                 }),
         );
+        onAccountsPage.clickAllAccountArrows();
+        // TODO: there's a bug ATM, uncomment after bugfix
+        // cy.get(`[type] > [data-test*="@account-menu/${coin}"]`).then(newAccounts => {
+        //     const numberOfAccounts1 = newAccounts.length;
+        //     expect(numberOfAccounts1).to.be.equal(currentAccounts.length);
     });
 
     /**
@@ -106,7 +111,7 @@ describe('Account types suite', () => {
         onTopBar.openAccounts();
         onAccountsPage.applyCoinFilter(coin);
         cy.discoveryShouldFinish();
-        onAccountsPage.unpackAllAccountTypes();
+        onAccountsPage.clickAllAccountArrows();
 
         accsArray.forEach(({ type, coinAccountName }: { type: string; coinAccountName: string }) =>
             cy
@@ -122,6 +127,12 @@ describe('Account types suite', () => {
                     );
                 }),
         );
+        // TODO: there's a bug ATM, uncomment after bugfix
+        // onAccountsPage.clickAllAccountArrows();
+        // cy.get(`[type] > [data-test*="@account-menu/${coin}"]`).then(newAccounts => {
+        //     const numberOfAccounts1 = newAccounts.length;
+        //     expect(numberOfAccounts1).to.be.equal(1);
+        // });
     });
 
     /**
