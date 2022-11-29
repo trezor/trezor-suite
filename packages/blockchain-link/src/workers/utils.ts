@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { isNotUndefined, parseHostname } from '@trezor/utils';
+import { isNotUndefined, parseHostname, topologicalSort } from '@trezor/utils';
 import type { Transaction, EnhancedVinVout } from '../types';
 import type { VinVout } from '../types/blockbook';
 
@@ -65,15 +65,25 @@ export const prioritizeEndpoints = (urls: string[]) =>
         .sort(([, a], [, b]) => b - a)
         .map(([url]) => url);
 
-const adjustHeight = (n: number | undefined) =>
-    n === undefined || n <= 0 ? Number.MAX_SAFE_INTEGER : n;
+const adjustHeight = ({ blockHeight }: { blockHeight?: number }) =>
+    blockHeight === undefined || blockHeight <= 0 ? Number.MAX_SAFE_INTEGER : blockHeight;
 
-export const sortTxsFromLatest = (txA: Transaction, txB: Transaction) => {
-    const a = adjustHeight(txA.blockHeight);
-    const b = adjustHeight(txB.blockHeight);
-    if (a === b) {
-        if (txA.details.vin.some(({ txid }) => txid === txB.txid)) return -1;
-        if (txB.details.vin.some(({ txid }) => txid === txA.txid)) return 1;
+export const sortTxsFromLatest = (transactions: Transaction[]) => {
+    const txs = transactions.slice().sort((a, b) => adjustHeight(b) - adjustHeight(a));
+    let from = 0;
+    while (from < txs.length - 1) {
+        const fromHeight = adjustHeight(txs[from]);
+        let to = from + 1;
+        if (fromHeight === adjustHeight(txs[to])) {
+            do {
+                to++;
+            } while (to < txs.length && fromHeight === adjustHeight(txs[to]));
+            const toposorted = topologicalSort(txs.slice(from, to), (a, b) =>
+                a.details.vin.some(({ txid }) => txid === b.txid),
+            );
+            txs.splice(from, toposorted.length, ...toposorted);
+        }
+        from = to;
     }
-    return b - a;
+    return txs;
 };

@@ -1030,3 +1030,18 @@ export const endpoints = {
     unsorted: [ONION_B, OTHER_B, LOCAL_B, ONION_A, OTHER_C, LOCAL_A, ONION_C, OTHER_A, LOCAL_C],
     sorted: [LOCAL_C, LOCAL_B, LOCAL_A, ONION_A, ONION_B, ONION_C, OTHER_B, OTHER_C, OTHER_A],
 };
+
+export const unsortedTxs = [
+    { txid: 'e', blockHeight: 30, details: { vin: [{ txid: 'f' }, { txid: 'g' }] } },
+    { txid: 'h', blockHeight: 20, details: { vin: [{ txid: 'e' }] } },
+    { txid: 'c', blockHeight: 50, details: { vin: [{ txid: 'a' }] } },
+    { txid: 'g', blockHeight: 30, details: { vin: [{ txid: 'b' }] } },
+    { txid: 'a', blockHeight: -1, details: { vin: [] } },
+    { txid: 'j', blockHeight: 10, details: { vin: [{ txid: 'x' }] } },
+    { txid: 'b', blockHeight: undefined, details: { vin: [{ txid: 'x' }] } },
+    { txid: 'd', blockHeight: 40, details: { vin: [{ txid: 'c' }] } },
+    { txid: 'i', blockHeight: 10, details: { vin: [{ txid: 'j' }] } },
+    { txid: 'f', blockHeight: 30, details: { vin: [{ txid: 'c' }, { txid: 'g' }, { txid: 'x' }] } },
+];
+
+export const sortedTxs = [...'abcdefghij'].map(txid => ({ txid }));

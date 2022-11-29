@@ -1,5 +1,5 @@
 import { filterTokenTransfers, transformTransaction } from '../../src/workers/blockbook/utils';
-import { filterTargets, prioritizeEndpoints } from '../../src/workers/utils';
+import { filterTargets, prioritizeEndpoints, sortTxsFromLatest } from '../../src/workers/utils';
 
 import * as fixtures from './fixtures/utils';
 
@@ -46,5 +46,9 @@ describe('blockbook/utils', () => {
             ];
             expect(resFixed).toStrictEqual(sorted);
         });
+    });
+
+    it('sortTxsFromLatest', () => {
+        expect(sortTxsFromLatest(fixtures.unsortedTxs as any)).toMatchObject(fixtures.sortedTxs);
     });
 });
