@@ -6,6 +6,10 @@ import { Blur, Canvas, Text, useFont } from '@shopify/react-native-skia';
 import { Color, TypographyStyle, typographyStylesBase } from '@trezor/theme';
 
 import { Text as AtomText } from './Text';
+import { Box } from './Box';
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const satoshiFont = require('../../../packages/theme/fonts/TTSatoshi-Regular.otf');
 
 type DiscreetValueProps = {
     typography?: TypographyStyle;
@@ -22,14 +26,13 @@ export const DiscreetValue = ({
 }: DiscreetValueProps) => {
     const [isDiscreetMode] = useAtom(isDiscreetModeOn);
     const { lineHeight, fontSize } = typographyStylesBase[typography];
-    // eslint-disable-next-line @typescript-eslint/no-var-requires,global-require
-    const font = useFont(require('../../../packages/theme/fonts/TTSatoshi-Bold.otf'), fontSize);
+    const font = useFont(satoshiFont, fontSize);
 
     if (isDiscreetMode && font) {
         return (
             <Canvas style={{ height: lineHeight, width: 70 }}>
                 <Text x={0} y={fontSize} text={children} font={font} />
-                <Blur blur={10} mode="decal" />
+                <Blur blur={15} mode="decal" />
             </Canvas>
         );
     }
