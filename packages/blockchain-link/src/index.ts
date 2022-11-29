@@ -1,5 +1,5 @@
 import { EventEmitter } from 'events';
-import { createDeferred, Deferred } from '@trezor/utils/lib/createDeferred';
+import { createDeferred, Deferred } from '@trezor/utils';
 import { CustomError } from './constants/errors';
 import { MESSAGES, RESPONSES } from './constants';
 import { Throttler } from './workers/throttler';

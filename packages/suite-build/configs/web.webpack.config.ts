@@ -17,6 +17,44 @@ const config: webpack.Configuration = {
     output: {
         path: path.join(baseDir, 'build'),
     },
+    module: {
+        rules: [
+            // note: this rule is copied from @trezor/connect-iframe
+            {
+                test: /sharedConnectionWorker/i,
+                loader: 'worker-loader',
+                issuer: /workers\/workers-*/i, // replace import ONLY in /workers\/workers- not @trezor/transport
+                options: {
+                    worker: 'SharedWorker',
+                    filename: './workers/shared-connection-worker.[contenthash].js',
+                },
+            },
+            // note: this rule is copied from @trezor/connect-iframe
+            {
+                test: /\workers\/blockbook\/index/i,
+                loader: 'worker-loader',
+                options: {
+                    filename: './workers/blockbook-worker.[contenthash].js',
+                },
+            },
+            // note: this rule is copied from @trezor/connect-iframe
+            {
+                test: /\workers\/ripple\/index/i,
+                loader: 'worker-loader',
+                options: {
+                    filename: './workers/ripple-worker.[contenthash].js',
+                },
+            },
+            // note: this rule is copied from @trezor/connect-iframe
+            {
+                test: /\workers\/blockfrost\/index/i,
+                loader: 'worker-loader',
+                options: {
+                    filename: './workers/blockfrost-worker.[contenthash].js',
+                },
+            },
+        ],
+    },
     plugins: [
         new CopyPlugin({
             patterns: ['browser-detection', 'fonts', 'images', 'oauth', 'videos', 'guide/assets']
@@ -28,12 +66,6 @@ const config: webpack.Configuration = {
                     {
                         from: path.join(__dirname, '..', '..', 'message-system', 'files'),
                         to: path.join(baseDir, 'build', 'static', 'message-system'),
-                    },
-                ])
-                .concat([
-                    {
-                        from: path.join(__dirname, '..', '..', 'connect-iframe', 'build'),
-                        to: path.join(baseDir, 'build', 'static', 'connect'),
                     },
                 ]),
             options: {
@@ -67,7 +99,10 @@ const config: webpack.Configuration = {
                 }),
         ),
         // imports from @trezor/connect in @trezor/suite package need to be replaced by imports from @trezor/connect-web
-        new webpack.NormalModuleReplacementPlugin(/@trezor\/connect$/, '@trezor/connect-web'),
+        new webpack.NormalModuleReplacementPlugin(
+            /@trezor\/connect$/,
+            '@trezor/connect-web/lib/iframeless',
+        ),
         ...(!isDev ? [new CssMinimizerPlugin()] : []),
     ],
 };
