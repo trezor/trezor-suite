@@ -40,7 +40,6 @@ export const XpubScanScreen = ({
 }: StackProps<AccountsImportStackParamList, AccountsImportStackRoutes.XpubScan>) => {
     const [selectedCurrencySymbol, setSelectedCurrencySymbol] =
         useState<NetworkSymbol>(DEFAULT_CURRENCY_SYMBOL);
-    const [isXpubInputFocused, setIsXpubInputFocused] = useState(false);
     const [_, setIsCameraRequested] = useState<boolean>(false);
     const { applyStyle } = useNativeStyles();
 
@@ -105,24 +104,14 @@ export const XpubScanScreen = ({
                 <TextDivider title="OR" />
                 <Form form={form}>
                     <VStack spacing="medium">
-                        <TextInputField
-                            onFocus={() => setIsXpubInputFocused(true)}
-                            onBlur={() => {
-                                if (watchXpubAddress) return;
-                                setIsXpubInputFocused(false);
-                            }}
-                            name="xpubAddress"
-                            label="Enter x-pub..."
-                        />
-                        {isXpubInputFocused && (
-                            <Button
-                                onPress={onXpubFormSubmit}
-                                size="large"
-                                isDisabled={!watchXpubAddress?.length}
-                            >
-                                Submit
-                            </Button>
-                        )}
+                        <TextInputField name="xpubAddress" label="Enter x-pub..." />
+                        <Button
+                            onPress={onXpubFormSubmit}
+                            size="large"
+                            isDisabled={!watchXpubAddress?.length}
+                        >
+                            Submit
+                        </Button>
                     </VStack>
                 </Form>
                 {isDevelopOrDebugEnv() && (
