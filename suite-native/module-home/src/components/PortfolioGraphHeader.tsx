@@ -3,7 +3,7 @@ import React from 'react';
 import { atom, useAtom } from 'jotai';
 import { format } from 'date-fns';
 
-import { Box, DiscreetValue, Text } from '@suite-native/atoms';
+import { Box, DiscreetText, Text } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { ExtendedGraphPoint, LineGraphPoint } from '@suite-common/wallet-graph';
 import { useFormatters } from '@suite-common/formatters';
@@ -123,9 +123,10 @@ const Balance = () => {
     const [point] = useAtom(selectedPointAtom);
 
     return (
-        <DiscreetValue typography="titleLarge">
-            {FiatAmountFormatter.format(point.value) ?? ''}
-        </DiscreetValue>
+        <DiscreetText
+            typography="titleLarge"
+            formattedAmount={FiatAmountFormatter.format(point.value) ?? ''}
+        />
     );
 };
 

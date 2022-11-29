@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Box, DiscreetValue, Text } from '@suite-native/atoms';
+import { Box, DiscreetText, Text } from '@suite-native/atoms';
 import { Icon, IconName } from '@trezor/icons';
 import { TransactionType } from '@suite-common/wallet-types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -45,10 +45,12 @@ export const TransactionDetailHeader = ({
                 />
                 <Text style={applyStyle(transactionTypeStyle)}>{transactionTypeTextMap[type]}</Text>
             </Box>
-            <DiscreetValue typography="titleMedium">{amount}</DiscreetValue>
-            <DiscreetValue typography="label" color="gray700">
-                {FiatAmountFormatter.format(fiatAmount ?? 0) ?? ''}
-            </DiscreetValue>
+            <DiscreetText typography="titleMedium" formattedAmount={amount} />
+            <DiscreetText
+                typography="label"
+                color="gray700"
+                formattedAmount={FiatAmountFormatter.format(fiatAmount ?? 0) ?? ''}
+            />
         </>
     );
 };

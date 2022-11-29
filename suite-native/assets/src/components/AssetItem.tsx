@@ -6,7 +6,7 @@ import { CryptoIcon, CryptoIconName, Icon } from '@trezor/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { useFormatters } from '@suite-common/formatters';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { Box, DiscreetValue, Text } from '@suite-native/atoms';
+import { Box, DiscreetText, Text } from '@suite-native/atoms';
 import { AccountsRootState, selectAccountsAmountPerSymbol } from '@suite-common/wallet-core';
 
 type AssetItemProps = {
@@ -66,14 +66,16 @@ export const AssetItem = ({
                         </Box>
                     </Box>
                     <Box alignItems="flex-end">
-                        <DiscreetValue>
-                            {FiatAmountFormatter.format(fiatBalance) ?? ''}
-                        </DiscreetValue>
-                        <DiscreetValue color="gray600" typography="hint">
-                            {CryptoAmountFormatter.format(cryptoCurrencyValue, {
+                        <DiscreetText
+                            formattedAmount={FiatAmountFormatter.format(fiatBalance) ?? ''}
+                        />
+                        <DiscreetText
+                            color="gray600"
+                            typography="hint"
+                            formattedAmount={CryptoAmountFormatter.format(cryptoCurrencyValue, {
                                 symbol: cryptoCurrencySymbol,
                             })}
-                        </DiscreetValue>
+                        />
                     </Box>
                 </Box>
             </Box>

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Box, Card, DiscreetValue, Divider, Text } from '@suite-native/atoms';
+import { Box, Card, DiscreetText, Divider, Text } from '@suite-native/atoms';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { WalletAccountTransaction } from '@suite-common/wallet-types';
 
@@ -11,7 +11,7 @@ type TransactionDetailAmountProps = {
 const TransactionDetailAmountRow = ({ title, value }: { title: string; value: string }) => (
     <Box flexDirection="row" justifyContent="space-between">
         <Text>{title}</Text>
-        <DiscreetValue color="forest">{value}</DiscreetValue>
+        <DiscreetText color="forest">{value}</DiscreetText>
     </Box>
 );
 
