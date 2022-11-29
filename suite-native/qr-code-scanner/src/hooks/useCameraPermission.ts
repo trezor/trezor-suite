@@ -10,7 +10,7 @@ export const useCameraPermission = () => {
     );
 
     const checkCameraPermissionStatus = useCallback(async () => {
-        const { status } = await BarCodeScanner.requestPermissionsAsync();
+        const { status } = await BarCodeScanner.getPermissionsAsync();
         setCameraPermissionStatus(status);
 
         return status;
