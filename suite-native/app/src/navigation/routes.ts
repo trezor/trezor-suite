@@ -23,7 +23,6 @@ const accountsStack = typedTabOption({
 const actionStack = typedTabOption({
     routeName: AppTabsRoutes.Action,
     iconName: 'action',
-    isActionTabItem: true,
 });
 
 const settingsStack = typedTabOption({

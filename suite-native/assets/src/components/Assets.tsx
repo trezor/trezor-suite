@@ -2,7 +2,6 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
-import { useAtom } from 'jotai';
 
 import { Button, Card, VStack } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -14,7 +13,6 @@ import {
     RootStackRoutes,
     TabToStackCompositeNavigationProp,
     AccountsStackRoutes,
-    isSendReceiveActionsVisibleAtom,
 } from '@suite-native/navigation';
 import { networks, NetworkSymbol } from '@suite-common/wallet-config';
 import { selectFiatCurrency } from '@suite-native/module-settings';
@@ -34,7 +32,7 @@ type HomeAssetsNavigationProp = TabToStackCompositeNavigationProp<
 >;
 
 export const Assets = () => {
-    const [_, setIsSendReceiveVisible] = useAtom(isSendReceiveActionsVisibleAtom);
+    // const [_, setIsSendReceiveVisible] = useAtom(isSendReceiveActionsVisibleAtom);
     const navigation = useNavigation<HomeAssetsNavigationProp>();
     const { applyStyle } = useNativeStyles();
     const fiatCurrency = useSelector(selectFiatCurrency);
@@ -43,7 +41,7 @@ export const Assets = () => {
     );
 
     const handleReceive = () => {
-        setIsSendReceiveVisible(true);
+        // setIsSendReceiveVisible(true);
     };
 
     const handleImportAssets = () => {

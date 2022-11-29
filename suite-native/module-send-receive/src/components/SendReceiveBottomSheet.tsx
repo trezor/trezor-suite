@@ -1,6 +1,12 @@
 import React, { ReactNode, useState } from 'react';
 
-import { BottomSheet } from '@suite-native/atoms';
+import {
+    RootStackParamList,
+    RootStackRoutes,
+    Screen,
+    ScreenHeader,
+    StackProps,
+} from '@suite-native/navigation';
 
 import { AccountActionStep } from './AccountActionStep';
 import { AccountSelectionStep } from './AccountSelectionStep';
@@ -9,30 +15,27 @@ import { AddressGenerationStep } from './AddressGenerationStep';
 import { AddressConfirmationStep } from './AddressConfirmationStep';
 import { FreshAddressStep } from './FreshAddressStep';
 
-type SendReceiveBottomSheetProps = {
-    isVisible: boolean;
-    onVisibilityChange: (visible: boolean) => void;
-};
-
 const DEFAULT_CONTENT_TYPE = sendReceiveContentType.chooseAction;
 
 export const SendReceiveBottomSheet = ({
-    isVisible,
-    onVisibilityChange,
-}: SendReceiveBottomSheetProps) => {
+    route,
+    navigation,
+}: StackProps<RootStackParamList, RootStackRoutes.SendReceive>) => {
     const [selectedAccountKey, setSelectedAccountKey] = useState<string>('');
     const [contentType, setContentType] = useState<SendReceiveContentType>(DEFAULT_CONTENT_TYPE);
+
+    console.log(route.params.accountKey);
 
     const handleChangeContentType = (type: SendReceiveContentType) => {
         setContentType(type);
     };
 
-    const handleSelectAccount = (accountKey: string) => {
-        setSelectedAccountKey(accountKey);
+    const handleSelectAccount = (key: string) => {
+        setSelectedAccountKey(key);
     };
 
     const handleClose = () => {
-        onVisibilityChange(false);
+        navigation.goBack();
         setSelectedAccountKey('');
         setContentType(DEFAULT_CONTENT_TYPE);
     };
@@ -77,13 +80,5 @@ export const SendReceiveBottomSheet = ({
         },
     };
 
-    return (
-        <BottomSheet
-            isVisible={isVisible}
-            onVisibilityChange={handleClose}
-            title={sendReceiveContent[contentType].title}
-        >
-            {sendReceiveContent[contentType].component}
-        </BottomSheet>
-    );
+    return <Screen header={<ScreenHeader />}>{sendReceiveContent[contentType].component}</Screen>;
 };

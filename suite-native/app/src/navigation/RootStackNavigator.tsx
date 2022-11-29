@@ -13,6 +13,7 @@ import {
 import { selectIsOnboardingFinished } from '@suite-native/module-settings';
 import { DevUtilsStackNavigator } from '@suite-native/module-dev-utils';
 import { TransactionDetailScreen } from '@suite-native/transactions';
+import { SendReceiveBottomSheet } from '@suite-native/module-send-receive';
 
 import { AppTabNavigator } from './AppTabNavigator';
 
@@ -28,24 +29,32 @@ export const RootStackNavigator = () => {
             }
             screenOptions={stackNavigationOptionsConfig}
         >
-            <RootStack.Screen
-                name={RootStackRoutes.OnboardingStack}
-                component={OnboardingStackNavigator}
-            />
-            <RootStack.Screen name={RootStackRoutes.AppTabs} component={AppTabNavigator} />
-            <RootStack.Screen
-                name={RootStackRoutes.AccountsImport}
-                component={AccountsImportStackNavigator}
-            />
-            <RootStack.Screen
-                options={{ title: RootStackRoutes.TransactionDetail }}
-                name={RootStackRoutes.TransactionDetail}
-                component={TransactionDetailScreen}
-            />
-            <RootStack.Screen
-                name={RootStackRoutes.DevUtilsStack}
-                component={DevUtilsStackNavigator}
-            />
+            <RootStack.Group>
+                <RootStack.Screen
+                    name={RootStackRoutes.OnboardingStack}
+                    component={OnboardingStackNavigator}
+                />
+                <RootStack.Screen name={RootStackRoutes.AppTabs} component={AppTabNavigator} />
+                <RootStack.Screen
+                    name={RootStackRoutes.AccountsImport}
+                    component={AccountsImportStackNavigator}
+                />
+                <RootStack.Screen
+                    options={{ title: RootStackRoutes.TransactionDetail }}
+                    name={RootStackRoutes.TransactionDetail}
+                    component={TransactionDetailScreen}
+                />
+                <RootStack.Screen
+                    name={RootStackRoutes.DevUtilsStack}
+                    component={DevUtilsStackNavigator}
+                />
+            </RootStack.Group>
+            <RootStack.Group screenOptions={{ presentation: 'modal' }}>
+                <RootStack.Screen
+                    name={RootStackRoutes.SendReceive}
+                    component={SendReceiveBottomSheet}
+                />
+            </RootStack.Group>
         </RootStack.Navigator>
     );
 };

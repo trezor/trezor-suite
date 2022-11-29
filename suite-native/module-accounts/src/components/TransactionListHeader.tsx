@@ -1,12 +1,9 @@
 import React, { memo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useAtom } from 'jotai';
-
 import { Box, Button, Divider, Text } from '@suite-native/atoms';
 import { AccountKey } from '@suite-common/suite-types';
 import { AccountsRootState, selectHasAccountTransactions } from '@suite-common/wallet-core';
-import { isSendReceiveActionsVisibleAtom } from '@suite-native/navigation';
 
 import { AccountDetailGraph } from './AccountDetailGraph';
 import { AccountBalance } from './AccountBalance';
@@ -16,7 +13,6 @@ type AccountDetailHeaderProps = {
 };
 
 export const TransactionListHeader = memo(({ accountKey }: AccountDetailHeaderProps) => {
-    const [_, setIsSendReceiveActionsVisible] = useAtom(isSendReceiveActionsVisibleAtom);
     const accountHasTransactions = useSelector((state: AccountsRootState) =>
         selectHasAccountTransactions(state, accountKey),
     );
@@ -28,11 +24,7 @@ export const TransactionListHeader = memo(({ accountKey }: AccountDetailHeaderPr
                 <>
                     <AccountDetailGraph accountKey={accountKey} />
                     <Box marginBottom="large" paddingHorizontal="medium">
-                        <Button
-                            iconName="receive"
-                            size="large"
-                            onPress={() => setIsSendReceiveActionsVisible(true)}
-                        >
+                        <Button iconName="receive" size="large" onPress={() => {}}>
                             Receive
                         </Button>
                     </Box>

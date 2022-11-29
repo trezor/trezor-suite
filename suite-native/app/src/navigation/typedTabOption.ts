@@ -8,20 +8,17 @@ export const typedTabOption = <
     routeName,
     iconName,
     label,
-    isActionTabItem,
     params,
 }: {
     routeName: RouteName;
     iconName: IconName;
     label?: string;
-    isActionTabItem?: boolean;
     params?: ParamList[RouteName];
 }) => ({
     [routeName]: {
         routeName,
         iconName,
         label,
-        isActionTabItem,
         params,
     },
 });
