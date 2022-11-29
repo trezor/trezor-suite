@@ -66,7 +66,6 @@
   "IMPORT_CSV": "Importa",
   "INCLUDING_FEE": "Costi inclusi",
   "LABELING_ACCOUNT": "{networkName} #{index}",
-  "LABELING_ACCOUNT_WITH_TYPE": "Conto #{index} ({type})",
   "LOCKTIME": "Orario di blocco",
   "LOCKTIME_ADD": "Aggiungi Orario di Blocco",
   "LOCKTIME_ADD_TOOLTIP": "L'orario di blocco imposta il primo orario in cui una transazione è estraibile in un blocco.",

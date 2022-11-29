@@ -61,7 +61,6 @@
   "IMPORT_CSV": "Importieren",
   "INCLUDING_FEE": "Inklusive Gebühr",
   "LABELING_ACCOUNT": "{networkName} #{index}",
-  "LABELING_ACCOUNT_WITH_TYPE": "Konto #{index} ({type})",
   "LOCKTIME": "Sperrzeit",
   "LOCKTIME_ADD": "Sperrzeit hinzufügen",
   "LOCKTIME_ADD_TOOLTIP": "Locktime legt den frühesten Zeitpunkt fest, zu dem eine Transaktion in einen Block gemined werden kann.",

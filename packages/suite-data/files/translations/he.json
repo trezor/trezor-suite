@@ -58,7 +58,6 @@
   "IMPORT_CSV": "ייבוא",
   "INCLUDING_FEE": "כולל עמלה",
   "LABELING_ACCOUNT": "{networkName}#{index}",
-  "LABELING_ACCOUNT_WITH_TYPE": "חשבון #{index} ({type})",
   "LOG_DESCRIPTION": "במקרה של יצירת קשר עם צוות התמיכה שלנו, ישנו תיעוד המכיל הרבה מידע טכני",
   "LOG_INCLUDE_BALANCE_DESCRIPTION": "במקרה שהבעיה שלך לא קשורה למאזן או לעסקאות שלך, אפשר לכבות את זה. המזהים של החשבון שלך (Xpubs) לא יכללו בתיעוד המועתק.",
   "LOG_INCLUDE_BALANCE_TITLE": "לכלול את המאזן המיוחס",

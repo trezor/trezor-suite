@@ -28,7 +28,7 @@ export default defineMessages({
     TR_HIDDEN_WALLET_TOOLTIP: {
         id: 'TR_HIDDEN_WALLET_TOOLTIP',
         defaultMessage:
-            'Passphrases add a custom phrase (e.g. a word, sentence, or string of characters) to your recovery seed. This creates a hidden wallet; each hidden wallet can use its own passphrase. Your standard wallet will still be accessible without a passphrase.',
+            'Passphrases add a custom phrase (e.g. a word, sentence, or string of characters) to your recovery seed. This creates a hidden wallet; each hidden wallet uses its own passphrase. Your standard wallet will still be accessible without a passphrase.',
     },
     TR_HIDDEN_WALLET_MODAL_DESCRIPTION: {
         id: 'TR_HIDDEN_WALLET_MODAL_DESCRIPTION',
@@ -2198,7 +2198,7 @@ export default defineMessages({
     },
     TR_DEVICE_SETTINGS_PASSPHRASE_DESC: {
         defaultMessage:
-            'Passphrases add a custom phrase (e.g. a word, sentence, or string of characters) to your recovery seed. This creates a hidden wallet; each hidden wallet can use its own passphrase. Your standard wallet will still be accessible without a passphrase. Do not forget your passphrase. Unlike everyday passwords, hidden wallet passphrases cannot be retrieved and your funds will be permanently lost.',
+            'Passphrases add a custom phrase (e.g. a word, sentence, or string of characters) to your recovery seed. This creates a hidden wallet; each hidden wallet uses its own passphrase. Your standard wallet will still be accessible without a passphrase. Do not forget your passphrase. Unlike everyday passwords, hidden wallet passphrases cannot be retrieved and your funds will be permanently lost.',
         id: 'TR_DEVICE_SETTINGS_PASSPHRASE_DESC',
     },
     TR_DEVICE_SETTINGS_SAFETY_CHECKS_TITLE: {
@@ -3309,7 +3309,7 @@ export default defineMessages({
         id: 'TR_FAILED_TRANSACTION',
     },
     TR_JOINT_TRANSACTION: {
-        defaultMessage: 'Joint {symbol} transaction',
+        defaultMessage: 'CoinJoin transaction',
         id: 'TR_JOINT_TRANSACTION',
     },
     TR_JOINT_TRANSACTION_TARGET: {
@@ -3597,7 +3597,7 @@ export default defineMessages({
     },
     TR_ACCOUNT_TYPE_SLIP25_NAME: {
         id: 'TR_ACCOUNT_TYPE_SLIP25_NAME',
-        defaultMessage: 'CoinJoin account',
+        defaultMessage: 'CoinJoin',
     },
     TR_ACCOUNT_TYPE_SLIP25_TECH: {
         id: 'TR_ACCOUNT_TYPE_SLIP25_TECH',
@@ -4011,7 +4011,7 @@ export default defineMessages({
     TR_CHECK_RECOVERY_SEED_DESC_TT: {
         id: 'TR_CHECK_RECOVERY_SEED_DESC_TT',
         defaultMessage:
-            'Your wallet backup, the recovery seed, is entered entirely on the Trezor Model T, through the device screen. We avoid passing any of your sensitive information to a potentially insecure computer or web browser.',
+            'Your recovery seed (wallet backup) is entered using the Trezor Model T touchscreen. This avoids exposing any of your sensitive information to a potentially insecure computer or web browser.',
         dynamic: true,
     },
     TR_USING_TOUCHSCREEN: {
@@ -5613,12 +5613,12 @@ export default defineMessages({
     },
     TR_AMOUNT_TOO_SMALL_FOR_COINJOIN: {
         id: 'TR_AMOUNT_TOO_SMALL_FOR_COINJOIN',
-        defaultMessage: 'Not available for CoinJoin - amount too small',
+        defaultMessage: 'Not suitable for CoinJoin - amount too small',
         description: 'Tooltip over an icon in Coin control section',
     },
     TR_AMOUNT_TOO_BIG_FOR_COINJOIN: {
         id: 'TR_AMOUNT_TOO_BIG_FOR_COINJOIN',
-        defaultMessage: 'Not available for CoinJoin - amount too big',
+        defaultMessage: 'Not suitable for CoinJoin - amount too high',
         description: 'Tooltip over an icon in Coin control section',
     },
     TR_CHANGE_ADDRESS_TOOLTIP: {
@@ -7086,7 +7086,7 @@ export default defineMessages({
     },
     TR_MY_COINS: {
         id: 'TR_MY_COINS',
-        defaultMessage: 'My coins',
+        defaultMessage: 'Privacy',
     },
     TR_ANONYMIZING: {
         id: 'TR_ANONYMIZING',
@@ -7443,7 +7443,7 @@ export default defineMessages({
     },
     TR_LOOKING_FOR_COINJOIN_ROUND: {
         id: 'TR_LOOKING_FOR_COINJOIN_ROUND',
-        defaultMessage: 'Looking for a round',
+        defaultMessage: 'Waiting for a round',
     },
     TR_COINJOIN_ROUNDS_LEFT: {
         id: 'TR_COINJOIN_ROUNDS_LEFT',
