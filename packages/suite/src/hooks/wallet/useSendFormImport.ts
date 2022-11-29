@@ -32,6 +32,10 @@ export const useSendFormImport = ({ network, tokens, localCurrencyOption, fiatRa
                 address: item.address || '',
             };
 
+            if (item.label) {
+                output.label = item.label;
+            }
+
             // currency is specified in csv
             if (item.currency) {
                 // sanitize csv data

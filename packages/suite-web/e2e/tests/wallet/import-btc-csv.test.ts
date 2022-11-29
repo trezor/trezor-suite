@@ -1,13 +1,22 @@
 // @group:wallet
 // @retry=2
 
+import { rerouteMetadataToMockProvider, stubOpen } from '../../stubs/metadata';
+
 describe('Import a BTC csv file', () => {
     beforeEach(() => {
         cy.task('startEmu', { wipe: true });
         cy.task('setupEmu');
         cy.task('startBridge');
+        cy.task('metadataStartProvider', 'dropbox');
+
         cy.viewport(1080, 1440).resetDb();
-        cy.prefixedVisit('/');
+        cy.prefixedVisit('/', {
+            onBeforeLoad: (win: Window) => {
+                cy.stub(win, 'open').callsFake(stubOpen(win));
+                cy.stub(win, 'fetch').callsFake(rerouteMetadataToMockProvider);
+            },
+        });
         cy.passThroughInitialRun();
         cy.discoveryShouldFinish();
     });
@@ -27,6 +36,12 @@ describe('Import a BTC csv file', () => {
         //
         cy.getTestElement('@suite/menu/wallet-index').click();
         cy.getTestElement('@account-menu/btc/normal/0').click();
+        cy.hoverTestElement("@metadata/accountLabel/m/84'/0'/0'/hover-container");
+        cy.getTestElement("@metadata/accountLabel/m/84'/0'/0'/add-label-button")
+            .should('be.visible')
+            .click();
+
+        cy.passThroughInitMetadata('dropbox');
         cy.getTestElement('@wallet/menu/wallet-send').click();
 
         //
