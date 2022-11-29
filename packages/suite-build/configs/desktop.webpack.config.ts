@@ -7,6 +7,7 @@ import { FLAGS } from '@suite-common/suite-config';
 
 import { assetPrefix, isDev, launchElectron } from '../utils/env';
 import { getPathForProject } from '../utils/path';
+import { NixosInterpreterPlugin } from '../plugins/nixos-interpreter-plugin';
 import ShellSpawnPlugin from '../plugins/shell-spawn-plugin';
 
 const electronArgsIndex = process.argv.indexOf('./webpack.config.ts') + 1;
@@ -53,6 +54,17 @@ const config: webpack.Configuration = {
                 isOnionLocation: FLAGS.ONION_LOCATION_META,
             },
             filename: path.join(baseDir, 'build', 'index.html'),
+        }),
+        // conditionally patch binaries on NixOS dev build
+        new NixosInterpreterPlugin({
+            cwd: baseDir,
+            files: [
+                path.join(
+                    baseDir,
+                    'build/static/bin/coinjoin/linux-x64',
+                    'WalletWasabi.WabiSabiClientLibrary',
+                ),
+            ],
         }),
         new ShellSpawnPlugin({
             cwd: baseDir,
