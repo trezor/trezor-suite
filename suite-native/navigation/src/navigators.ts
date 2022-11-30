@@ -65,5 +65,5 @@ export type RootStackParamList = {
     [RootStackRoutes.AccountsImport]: NavigatorScreenParams<AccountsImportStackParamList>;
     [RootStackRoutes.TransactionDetail]: { txid: string };
     [RootStackRoutes.DevUtilsStack]: undefined;
-    [RootStackRoutes.SendReceive]: { accountKey?: string };
+    [RootStackRoutes.ReceiveModal]: { accountKey?: string };
 };

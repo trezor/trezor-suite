@@ -34,7 +34,7 @@ export const AppTabNavigator = () => (
                 listeners={({ navigation }) => ({
                     tabPress: e => {
                         e.preventDefault();
-                        navigation.navigate(RootStackRoutes.SendReceive, { params: {} });
+                        navigation.navigate(RootStackRoutes.ReceiveModal, { params: {} });
                     },
                 })}
             />

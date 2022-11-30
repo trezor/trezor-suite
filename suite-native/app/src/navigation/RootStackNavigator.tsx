@@ -51,7 +51,7 @@ export const RootStackNavigator = () => {
             </RootStack.Group>
             <RootStack.Group screenOptions={{ presentation: 'modal' }}>
                 <RootStack.Screen
-                    name={RootStackRoutes.SendReceive}
+                    name={RootStackRoutes.ReceiveModal}
                     component={ReceiveModalScreen}
                 />
             </RootStack.Group>

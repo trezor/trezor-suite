@@ -4,7 +4,7 @@ export enum RootStackRoutes {
     AccountsImport = 'AccountsImport',
     DevUtilsStack = 'DevUtilsStack',
     TransactionDetail = 'TransactionDetail',
-    SendReceive = 'SendReceive',
+    ReceiveModal = 'ReceiveModal',
 }
 
 export enum AppTabsRoutes {

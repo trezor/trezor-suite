@@ -40,7 +40,7 @@ export const Assets = () => {
     );
 
     const handleReceive = () => {
-        navigation.navigate(RootStackRoutes.SendReceive, {});
+        navigation.navigate(RootStackRoutes.ReceiveModal, {});
     };
 
     const handleImportAssets = () => {

@@ -5,7 +5,11 @@ import { useNavigation } from '@react-navigation/native';
 
 import { Box, Button, Card, Text } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { RootStackRoutes } from '@suite-native/navigation';
+import {
+    RootStackParamList,
+    RootStackRoutes,
+    StackNavigationProps,
+} from '@suite-native/navigation';
 
 const cardStyle = prepareNativeStyle(utils => ({
     justifyContent: 'center',
@@ -21,11 +25,12 @@ const receiveButtonStyle = prepareNativeStyle(() => ({
 }));
 
 export const TransactionsEmptyState = ({ accountKey }: { accountKey: string }) => {
-    const navigation = useNavigation();
+    const navigation =
+        useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.ReceiveModal>>();
     const { applyStyle } = useNativeStyles();
 
     const handleReceive = () => {
-        navigation.navigate(RootStackRoutes.SendReceive, { accountKey });
+        navigation.navigate(RootStackRoutes.ReceiveModal, { accountKey });
     };
 
     return (

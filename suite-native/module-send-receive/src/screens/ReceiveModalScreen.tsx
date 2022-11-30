@@ -21,7 +21,7 @@ const DEFAULT_CONTENT_TYPE = sendReceiveContentType.selectAccountToReceive;
 export const ReceiveModalScreen = ({
     route,
     navigation,
-}: StackProps<RootStackParamList, RootStackRoutes.SendReceive>) => {
+}: StackProps<RootStackParamList, RootStackRoutes.ReceiveModal>) => {
     const [selectedAccountKey, setSelectedAccountKey] = useState<string>(
         route.params.accountKey || '',
     );
