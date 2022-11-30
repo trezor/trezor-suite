@@ -24,5 +24,6 @@ export * from './resolveStaticPath';
 export * from './scheduleAction';
 export * from './throwError';
 export * from './truncateMiddle';
+export * from './topologicalSort';
 export * as versionUtils from './versionUtils';
 export * as xssFilters from './xssFilters';
