@@ -26,7 +26,6 @@
         "@trezor/icons": "workspace:*",
         "@trezor/styles": "workspace:*",
         "bignumber.js": "^9.1.0",
-        "jotai": "1.9.1",
         "react": "^18.2.0",
         "react-native": "0.70.5",
         "react-redux": "7.2.2"

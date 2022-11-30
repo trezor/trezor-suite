@@ -58,6 +58,7 @@ export const AccountDetailScreen = memo(
                 isScrollable={false}
             >
                 <TransactionList
+                    accountKey={accountKey}
                     transactions={accountTransactions}
                     fetchMoreTransactions={fetchMoreTransactions}
                     listHeaderComponent={<TransactionListHeader accountKey={accountKey} />}

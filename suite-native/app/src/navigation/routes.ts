@@ -1,14 +1,14 @@
 import { AccountsStackRoutes, AppTabsRoutes } from '@suite-native/navigation';
 
-import { typedTabOption } from './typedTabOption';
+import { enhanceTabOption } from './enhanceTabOption';
 
-const homeStack = typedTabOption({
+const homeStack = enhanceTabOption({
     routeName: AppTabsRoutes.HomeStack,
     iconName: 'home',
     label: 'Home',
 });
 
-const accountsStack = typedTabOption({
+const accountsStack = enhanceTabOption({
     routeName: AppTabsRoutes.AccountsStack,
     iconName: 'discover',
     label: 'My Assets',
@@ -20,13 +20,13 @@ const accountsStack = typedTabOption({
     },
 });
 
-const actionStack = typedTabOption({
+const actionStack = enhanceTabOption({
     routeName: AppTabsRoutes.Action,
+    label: 'Receive',
     iconName: 'action',
-    isActionTabItem: true,
 });
 
-const settingsStack = typedTabOption({
+const settingsStack = enhanceTabOption({
     routeName: AppTabsRoutes.SettingsStack,
     iconName: 'trezorT',
     label: 'Trezor',

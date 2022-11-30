@@ -1,1 +1,1 @@
-export * from './components/SendReceiveBottomSheet';
+export * from './screens/ReceiveModalScreen';

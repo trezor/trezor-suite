@@ -11,12 +11,15 @@
         "type-check": "tsc --build"
     },
     "dependencies": {
+        "@mobily/ts-belt": "^3.13.1",
         "@react-native-clipboard/clipboard": "^1.11.1",
+        "@react-navigation/native": "^6.0.11",
         "@suite-common/wallet-core": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
         "@suite-common/wallet-utils": "workspace:*",
         "@suite-native/accounts": "workspace:*",
         "@suite-native/atoms": "workspace:*",
+        "@suite-native/navigation": "workspace:*",
         "@trezor/connect": "workspace:9.0.4",
         "@trezor/styles": "workspace:*",
         "@trezor/theme": "workspace:*",
