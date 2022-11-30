@@ -20,6 +20,7 @@ import TransactionsGraph from './TransactionsGraph';
 
 import DeviceInvalidModeLayout from './DeviceInvalidModeLayout';
 import { AppNavigationPanel } from './AppNavigationPanel';
+import { AppNavigationTooltip } from './AppNavigationTooltip';
 import { AppNavigation } from './AppNavigation';
 import Ticker from './Ticker';
 import { Translation } from './Translation';
@@ -81,6 +82,7 @@ export {
     QuestionTooltip,
     TransactionsGraph,
     AppNavigationPanel,
+    AppNavigationTooltip,
     AppNavigation,
     FormattedCryptoAmount,
     Ticker,

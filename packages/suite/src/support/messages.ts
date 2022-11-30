@@ -7502,4 +7502,9 @@ export default defineMessages({
         id: 'TR_TIMER_PAST_DEADLINE',
         defaultMessage: 'Almost there...',
     },
+    TR_UNAVAILABLE_WHILE_LOADING: {
+        id: 'TR_UNAVAILABLE_WHILE_LOADING',
+        description: 'CoinJoin account navigation button tooltip during discovery',
+        defaultMessage: 'Unavailable while loading',
+    },
 });

@@ -9,7 +9,7 @@ import {
     Dropdown,
     HoverAnimation,
 } from '@trezor/components';
-import { AccountFormCloseButton } from '@suite-components';
+import { AccountFormCloseButton, AppNavigationTooltip } from '@suite-components';
 import { useSelector } from '@suite-hooks';
 import { Route } from '@suite-types';
 import { AccountStickyContent } from './AccountStickyContent';
@@ -103,7 +103,7 @@ const SecondaryMenu = styled.div<{ visible: boolean }>`
     }
 `;
 
-const MenuElement = styled.div<{ isActive?: boolean }>`
+const MenuElement = styled.div<{ isActive: boolean }>`
     position: relative;
     height: ${SECONDARY_PANEL_HEIGHT};
     font-size: ${FONT_SIZE.NORMAL};
@@ -128,9 +128,11 @@ const MenuElement = styled.div<{ isActive?: boolean }>`
     }
 `;
 
-const StyledNavLink = styled.div<{ isActive?: boolean }>`
+const StyledNavLink = styled.div<{ isActive: boolean; isNavigationDisabled: boolean }>`
     padding: 9px 12px;
-    cursor: ${({ isActive }) => !isActive && 'pointer'};
+    cursor: ${({ isActive, isNavigationDisabled }) =>
+        isActive && isNavigationDisabled ? 'pointer' : 'default'};
+    opacity: ${({ isActive, isNavigationDisabled }) => !isActive && isNavigationDisabled && '.5'};
 `;
 
 const InnerWrap = styled.div`
@@ -156,10 +158,8 @@ const StyledIcon = styled(Icon)`
     margin-right: 10px;
 `;
 
-const RightContent = styled.div``;
-
-const StyledDropdown = styled(Dropdown)`
-    background: ${props => props.theme.BG_SECONDARY};
+const StyledDropdown = styled(Dropdown)<{ isDisabled: boolean }>`
+    background: ${({ isDisabled, theme }) => (isDisabled ? theme.BG_GREY : theme.BG_SECONDARY)};
     width: 38px;
     height: 38px;
     border-radius: 8px;
@@ -171,7 +171,7 @@ const StyledDropdown = styled(Dropdown)`
     }
 
     :hover {
-        background: ${props => props.theme.BG_SECONDARY_HOVER};
+        background: ${({ isDisabled, theme }) => !isDisabled && theme.BG_SECONDARY_HOVER};
     }
 `;
 
@@ -220,16 +220,17 @@ const isSecondaryMenuOverflown = ({ primary, secondary, wrapper }: MenuWidths) =
     primary + secondary >= wrapper;
 
 export const AppNavigation = ({ items, primaryContent, maxWidth, inView }: Props) => {
-    const theme = useTheme();
     const [condensedSecondaryMenuVisible, setCondensedSecondaryMenuVisible] =
         useState<boolean>(false);
     const wrapper = useRef<HTMLDivElement>(null);
     const primary = useRef<HTMLDivElement>(null);
     const secondary = useRef<HTMLDivElement>(null);
-    const { routeName, screenWidth } = useSelector(state => ({
-        routeName: state.router.route?.name,
-        screenWidth: state.resize.screenWidth,
-    }));
+
+    const routeName = useSelector(state => state.router.route?.name);
+    const { screenWidth } = useSelector(state => state.resize);
+    const { selectedAccount } = useSelector(state => state.wallet);
+
+    const theme = useTheme();
 
     useLayoutEffect(() => {
         if (primary.current && secondary.current && wrapper.current) {
@@ -262,14 +263,17 @@ export const AppNavigation = ({ items, primaryContent, maxWidth, inView }: Props
     const itemsSecondaryWithExtra = itemsSecondary.filter(item => item.extra);
     const itemsSecondaryWithoutExtra = itemsSecondary.filter(item => !item.extra);
 
-    const selectedAccount = useSelector(state => state.wallet.selectedAccount.account);
+    const isAccountLoading = selectedAccount.status === 'loading';
 
     return (
         <Wrapper ref={wrapper} inView={inView} subRoute={routeName && isSubsection(routeName)}>
             {routeName && isSubsection(routeName) ? (
                 <InnerWrap>
                     <MenuHolder maxWidth={maxWidth}>
-                        <AccountStickyContent routeName={routeName} account={selectedAccount} />
+                        <AccountStickyContent
+                            routeName={routeName}
+                            account={selectedAccount.account}
+                        />
                         <AccountFormCloseButton />
                     </MenuHolder>
                 </InnerWrap>
@@ -281,32 +285,37 @@ export const AppNavigation = ({ items, primaryContent, maxWidth, inView }: Props
                                 itemsPrimary.map(item => {
                                     const { id, title } = item;
                                     const isActive = isRouteActive(routeName, id);
+                                    const isHoverable = !isActive && !isAccountLoading;
+                                    const onClick = isAccountLoading ? undefined : item.callback;
 
                                     return (
                                         <MenuElement key={id} isActive={isActive}>
-                                            <HoverAnimation isHoverable={!isActive}>
-                                                <StyledNavLink
-                                                    isActive={isActive}
-                                                    onClick={item.callback}
-                                                    data-test={item['data-test']}
-                                                >
-                                                    {item.icon && (
-                                                        <IconWrapper>
-                                                            <StyledIcon
-                                                                size={18}
-                                                                icon={item.icon}
-                                                                color={
-                                                                    isActive
-                                                                        ? theme.TYPE_DARK_GREY
-                                                                        : undefined
-                                                                }
-                                                            />
-                                                        </IconWrapper>
-                                                    )}
+                                            <HoverAnimation isHoverable={isHoverable}>
+                                                <AppNavigationTooltip isActiveTab={isActive}>
+                                                    <StyledNavLink
+                                                        isActive={isActive}
+                                                        isNavigationDisabled={isAccountLoading}
+                                                        onClick={onClick}
+                                                        data-test={item['data-test']}
+                                                    >
+                                                        {item.icon && (
+                                                            <IconWrapper>
+                                                                <StyledIcon
+                                                                    size={18}
+                                                                    icon={item.icon}
+                                                                    color={
+                                                                        isActive
+                                                                            ? theme.TYPE_DARK_GREY
+                                                                            : undefined
+                                                                    }
+                                                                />
+                                                            </IconWrapper>
+                                                        )}
 
-                                                    <Text>{title}</Text>
-                                                    <RightContent>{item.rightContent}</RightContent>
-                                                </StyledNavLink>
+                                                        <Text>{title}</Text>
+                                                        {item.rightContent}
+                                                    </StyledNavLink>
+                                                </AppNavigationTooltip>
                                             </HoverAnimation>
                                         </MenuElement>
                                     );
@@ -314,57 +323,15 @@ export const AppNavigation = ({ items, primaryContent, maxWidth, inView }: Props
                         </Primary>
                         <Secondary ref={secondary}>
                             {condensedSecondaryMenuVisible && (
-                                <StyledDropdown
-                                    alignMenu="right"
-                                    offset={8}
-                                    items={[
-                                        {
-                                            key: 'all',
-                                            options: itemsSecondary.map(item => {
-                                                const { id, title } = item;
-                                                return {
-                                                    key: id,
-                                                    callback: () => {
-                                                        item.callback();
-                                                        return true;
-                                                    },
-                                                    label: title,
-                                                };
-                                            }),
-                                        },
-                                    ]}
-                                />
-                            )}
-                            <SecondaryMenu visible={!condensedSecondaryMenuVisible}>
-                                {itemsSecondaryWithoutExtra.map(item => {
-                                    const { id, title } = item;
-                                    return (
-                                        <StyledButton
-                                            key={id}
-                                            variant={
-                                                id === 'wallet-coinmarket-buy'
-                                                    ? 'primary'
-                                                    : 'secondary'
-                                            }
-                                            onClick={item.callback}
-                                            {...(item['data-test'] && {
-                                                'data-test': item['data-test'],
-                                            })}
-                                            isDisabled={condensedSecondaryMenuVisible}
-                                        >
-                                            <Text>{title}</Text>
-                                        </StyledButton>
-                                    );
-                                })}
-                                {itemsSecondaryWithExtra.length ? (
+                                <AppNavigationTooltip>
                                     <StyledDropdown
                                         alignMenu="right"
-                                        offset={5}
-                                        data-test="@wallet/menu/extra-dropdown"
+                                        offset={8}
+                                        isDisabled={isAccountLoading}
                                         items={[
                                             {
-                                                key: 'extra',
-                                                options: itemsSecondaryWithExtra.map(item => {
+                                                key: 'all',
+                                                options: itemsSecondary.map(item => {
                                                     const { id, title } = item;
                                                     return {
                                                         key: id,
@@ -373,13 +340,61 @@ export const AppNavigation = ({ items, primaryContent, maxWidth, inView }: Props
                                                             return true;
                                                         },
                                                         label: title,
-                                                        'data-test': item['data-test'],
                                                     };
                                                 }),
                                             },
                                         ]}
                                     />
-                                ) : undefined}
+                                </AppNavigationTooltip>
+                            )}
+                            <SecondaryMenu visible={!condensedSecondaryMenuVisible}>
+                                {itemsSecondaryWithoutExtra.map(item => {
+                                    const { id, title } = item;
+                                    return (
+                                        <AppNavigationTooltip key={id}>
+                                            <StyledButton
+                                                variant={
+                                                    id === 'wallet-coinmarket-buy'
+                                                        ? 'primary'
+                                                        : 'secondary'
+                                                }
+                                                onClick={item.callback}
+                                                {...(item['data-test'] && {
+                                                    'data-test': item['data-test'],
+                                                })}
+                                                isDisabled={isAccountLoading}
+                                            >
+                                                <Text>{title}</Text>
+                                            </StyledButton>
+                                        </AppNavigationTooltip>
+                                    );
+                                })}
+                                {!!itemsSecondaryWithExtra.length && (
+                                    <AppNavigationTooltip>
+                                        <StyledDropdown
+                                            alignMenu="right"
+                                            offset={5}
+                                            isDisabled={isAccountLoading}
+                                            data-test="@wallet/menu/extra-dropdown"
+                                            items={[
+                                                {
+                                                    key: 'extra',
+                                                    options: itemsSecondaryWithExtra.map(item => {
+                                                        const { id, title } = item;
+                                                        return {
+                                                            key: id,
+                                                            callback: isAccountLoading
+                                                                ? undefined
+                                                                : item.callback,
+                                                            label: title,
+                                                            'data-test': item['data-test'],
+                                                        };
+                                                    }),
+                                                },
+                                            ]}
+                                        />
+                                    </AppNavigationTooltip>
+                                )}
                             </SecondaryMenu>
                         </Secondary>
                     </KeepWidth>
