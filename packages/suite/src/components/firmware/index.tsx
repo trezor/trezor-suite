@@ -1,5 +1,6 @@
 export { CheckSeedStep } from './CheckSeed';
 export { ReconnectDevicePrompt } from './ReconnectDevicePrompt';
+export { FirmwareChangelog } from './FirmwareChangelog';
 export { FirmwareOffer } from './FirmwareOffer';
 export { FirmwareInstallation } from './FirmwareInstallation';
 export { FirmwareInitial } from './FirmwareInitial';

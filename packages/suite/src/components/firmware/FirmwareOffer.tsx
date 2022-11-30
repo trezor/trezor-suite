@@ -1,110 +1,69 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Button, Icon, Tooltip, variables } from '@trezor/components';
-import { Translation, TrezorLink } from '@suite-components';
+
+import { FirmwareChangelog } from '@firmware-components';
+import { Icon, Tooltip, variables } from '@trezor/components';
+import { Translation } from '@suite-components';
 import { getFirmwareType, getFirmwareVersion } from '@trezor/device-utils';
-import { getChangelogUrl, getFwUpdateVersion, parseFirmwareChangelog } from '@suite-utils/device';
-import { useFirmware } from '@suite-hooks';
+import { getFwUpdateVersion, parseFirmwareChangelog } from '@suite-utils/device';
+import { useFirmware, useTranslation } from '@suite-hooks';
 import { AcquiredDevice, FirmwareType } from '@suite-types';
 
 const FwVersionWrapper = styled.div`
     display: flex;
     width: 100%;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
     padding: 16px 0px;
-    /* border-bottom: 1px solid ${props => props.theme.STROKE_GREY}; */
 `;
 
 const FwVersion = styled.div`
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    text-align: center;
 `;
 
-const VersionWrapper = styled.div`
-    display: flex;
-    align-items: center;
-    margin-top: 6px;
-
-    .tippy-tooltip {
-        background: ${props => props.theme.BG_WHITE};
-    }
-`;
-
-const Version = styled.span<{ new?: boolean }>`
-    color: ${props => (props.new ? props.theme.TYPE_GREEN : props.theme.TYPE_LIGHT_GREY)};
+const Version = styled.div<{ isNew?: boolean }>`
+    color: ${({ isNew, theme }) => (isNew ? theme.TYPE_GREEN : theme.TYPE_LIGHT_GREY)};
     font-size: ${variables.FONT_SIZE.SMALL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-variant-numeric: tabular-nums;
-    margin-right: 6px;
+    margin-top: 6px;
 `;
 
-const Label = styled(Version)`
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+const Label = styled.div`
     font-size: ${variables.FONT_SIZE.TINY};
 `;
 
-const IconWrapper = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 0px 80px;
-`;
-
-const Changelog = styled.div`
-    color: ${props => props.theme.TYPE_DARK_GREY};
-    max-height: 360px;
-    min-width: 305px;
-    overflow: auto;
-`;
-
-const ChangelogGroup = styled.div`
-    margin-bottom: 20px;
-    color: ${props => props.theme.TYPE_DARK_GREY};
-    font-size: ${variables.FONT_SIZE.SMALL};
-`;
-
-const ChangelogHeading = styled.div`
-    display: flex;
-    justify-content: space-between;
-    font-size: ${variables.FONT_SIZE.NORMAL};
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    margin-bottom: 24px;
-`;
-
-const ChangesUl = styled.ul`
-    margin-left: 16px;
-
-    & > li {
-        margin: 4px 0;
-    }
-`;
-
-interface Props {
+interface FirmwareOfferProps {
     device: AcquiredDevice;
     customFirmware?: boolean;
     targetFirmwareType?: FirmwareType;
 }
 
-const FirmwareOffer = ({ device, customFirmware, targetFirmwareType }: Props) => {
+export const FirmwareOffer = ({
+    device,
+    customFirmware,
+    targetFirmwareType,
+}: FirmwareOfferProps) => {
     const { targetType } = useFirmware();
+    const { translationString } = useTranslation();
 
     const currentVersion = device.firmware !== 'none' ? getFirmwareVersion(device) : undefined;
+    const nextVersion = customFirmware
+        ? translationString('TR_CUSTOM_FIRMWARE_VERSION')
+        : getFwUpdateVersion(device);
+    const parsedChangelog = customFirmware
+        ? null
+        : parseFirmwareChangelog(device.features, device.firmwareRelease);
+    const currentTypeAndVersion = `${getFirmwareType(device)} ${currentVersion ?? ''}`.trim();
+    const nextTypeAndVersion = `${(targetFirmwareType || targetType) ?? ''} ${
+        nextVersion ?? ''
+    }`.trim();
 
-    const newVersion = customFirmware ? (
-        <Translation id="TR_CUSTOM_FIRMWARE_VERSION" />
-    ) : (
-        getFwUpdateVersion(device)
+    const nextVersionElement = (
+        <Version isNew data-test="@firmware/offer-version/new">
+            {nextTypeAndVersion}
+        </Version>
     );
-
-    const parsedChangelog =
-        !customFirmware && parseFirmwareChangelog(device.features, device.firmwareRelease);
-    const previousFirmwareType = `${getFirmwareType(device)} `;
-    const nextFirmwareType = targetFirmwareType || targetType;
-    const formattedNextFirmwareType = nextFirmwareType ? `${nextFirmwareType} ` : '';
-    const changelogUrl = getChangelogUrl(device);
 
     return (
         <FwVersionWrapper>
@@ -114,81 +73,28 @@ const FirmwareOffer = ({ device, customFirmware, targetFirmwareType }: Props) =>
                         <Label>
                             <Translation id="TR_ONBOARDING_CURRENT_VERSION" />
                         </Label>
-                        <VersionWrapper>
-                            <Version>
-                                {previousFirmwareType}
-                                {currentVersion}
-                            </Version>
-                        </VersionWrapper>
+                        <Version>{currentTypeAndVersion}</Version>
                     </FwVersion>
-                    <IconWrapper>
-                        <Icon icon="ARROW_RIGHT_LONG" size={16} />
-                    </IconWrapper>
+                    <Icon icon="ARROW_RIGHT_LONG" size={16} />
                 </>
             )}
             <FwVersion>
                 <Label>
                     <Translation id="TR_ONBOARDING_NEW_VERSION" />
                 </Label>
-                <VersionWrapper>
-                    {parsedChangelog ? (
-                        <Tooltip
-                            rich
-                            dashed
-                            content={
-                                <Changelog>
-                                    <ChangelogGroup key={parsedChangelog.versionString}>
-                                        <ChangelogHeading>
-                                            <Translation
-                                                id="TR_VERSION"
-                                                values={{ version: parsedChangelog.versionString }}
-                                            />
-                                            <TrezorLink
-                                                size="small"
-                                                variant="nostyle"
-                                                href={
-                                                    parsedChangelog.notes
-                                                        ? parsedChangelog.notes
-                                                        : changelogUrl
-                                                }
-                                            >
-                                                <Button
-                                                    variant="tertiary"
-                                                    icon="EXTERNAL_LINK"
-                                                    alignIcon="right"
-                                                >
-                                                    View all
-                                                </Button>
-                                            </TrezorLink>
-                                        </ChangelogHeading>
-                                        <ChangesUl>
-                                            {/* render individual changes for a given version */}
-                                            {parsedChangelog.changelog.map(
-                                                change =>
-                                                    // return only if change is not an empty array
-                                                    change && <li key={change}>{change}</li>,
-                                            )}
-                                        </ChangesUl>
-                                    </ChangelogGroup>
-                                </Changelog>
-                            }
-                            placement="top"
-                        >
-                            <Version new data-test="@firmware/offer-version/new">
-                                {formattedNextFirmwareType}
-                                {newVersion}
-                            </Version>
-                        </Tooltip>
-                    ) : (
-                        <Version new>
-                            {formattedNextFirmwareType}
-                            {newVersion}
-                        </Version>
-                    )}
-                </VersionWrapper>
+                {parsedChangelog ? (
+                    <Tooltip
+                        rich
+                        dashed
+                        content={<FirmwareChangelog device={device} {...parsedChangelog} />}
+                        placement="top"
+                    >
+                        {nextVersionElement}
+                    </Tooltip>
+                ) : (
+                    nextVersionElement
+                )}
             </FwVersion>
         </FwVersionWrapper>
     );
 };
-
-export { FirmwareOffer };

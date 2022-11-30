@@ -7512,4 +7512,9 @@ export default defineMessages({
         description: 'CoinJoin account navigation button tooltip during discovery',
         defaultMessage: 'Unavailable while loading',
     },
+    TR_VIEW_ALL: {
+        id: 'TR_VIEW_ALL',
+        description: 'Button opening changelog',
+        defaultMessage: 'View all',
+    },
 });
