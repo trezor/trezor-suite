@@ -33,14 +33,6 @@ export const ReceiveModalScreen = ({
         }
     }, [selectedAccountKey]);
 
-    const handleChangeContentType = (type: SendReceiveContentType) => {
-        setContentType(type);
-    };
-
-    const handleSelectAccount = (key: string) => {
-        setSelectedAccountKey(key);
-    };
-
     const handleClose = useCallback(() => {
         navigation.goBack();
         setSelectedAccountKey('');
@@ -51,20 +43,20 @@ export const ReceiveModalScreen = ({
         () => ({
             [sendReceiveContentType.selectAccountToReceive]: (
                 <AccountSelectionStep
-                    onChangeContentType={handleChangeContentType}
-                    onSelectAccount={handleSelectAccount}
+                    onChangeContentType={setContentType}
+                    onSelectAccount={setSelectedAccountKey}
                 />
             ),
             [sendReceiveContentType.createNewAddressToReceive]: (
                 <AddressGenerationStep
                     accountKey={selectedAccountKey}
-                    onChangeContentType={handleChangeContentType}
+                    onChangeContentType={setContentType}
                 />
             ),
             [sendReceiveContentType.confirmNewAddressToReceive]: (
                 <AddressConfirmationStep
                     accountKey={selectedAccountKey}
-                    onChangeContentType={handleChangeContentType}
+                    onChangeContentType={setContentType}
                 />
             ),
             [sendReceiveContentType.generatedAddressToReceive]: (
