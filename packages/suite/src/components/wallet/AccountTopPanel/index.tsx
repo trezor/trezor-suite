@@ -42,16 +42,16 @@ const AccountTopPanelSkeleton = ({ animate, account, symbol }: AccountTopPanelSk
             account ? (
                 <AccountLabeling account={account} />
             ) : (
-                <SkeletonRectangle width="260px" height="28px" animate={animate} />
+                <SkeletonRectangle width="260px" height="34px" animate={animate} />
             )
         }
         navigation={<AccountNavigation />}
     >
-        <Stack margin="6px 0px 0px 0px" childMargin="0px 0px 8px 0px">
+        <Stack alignItems="center">
             {symbol ? <CoinLogo size={24} symbol={symbol} /> : <SkeletonCircle size="24px" />}
 
             <Balance noMargin>
-                <SkeletonRectangle width="160px" height="24px" animate={animate} />
+                <SkeletonRectangle width="160px" height="32px" animate={animate} />
             </Balance>
         </Stack>
     </AppNavigationPanel>
