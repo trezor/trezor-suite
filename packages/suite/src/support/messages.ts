@@ -7399,22 +7399,6 @@ export default defineMessages({
         id: 'TR_COINJOIN_ANONYMITY_LEVEL_SETUP_DESCRIPTION',
         defaultMessage: 'Shows the number of people with whom your resources are indistinguishable',
     },
-    TR_ANONYMITY_LEVEL_BAD: {
-        id: 'TR_ANONYMITY_LEVEL_BAD',
-        defaultMessage: 'BAD',
-    },
-    TR_ANONYMITY_LEVEL_MEDIUM: {
-        id: 'TR_ANONYMITY_LEVEL_MEDIUM',
-        defaultMessage: 'MEDIUM',
-    },
-    TR_ANONYMITY_LEVEL_GOOD: {
-        id: 'TR_ANONYMITY_LEVEL_GOOD',
-        defaultMessage: 'GOOD',
-    },
-    TR_ANONYMITY_LEVEL_GREAT: {
-        id: 'TR_ANONYMITY_LEVEL_GREAT',
-        defaultMessage: 'GREAT',
-    },
     TR_ANONYMITY_LEVEL_BAD_WARNING: {
         id: 'TR_ANONYMITY_LEVEL_BAD_WARNING',
         defaultMessage: 'We recommend a minimum "1 in 5" anonymity level',
