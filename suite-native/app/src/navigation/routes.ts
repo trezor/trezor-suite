@@ -29,7 +29,7 @@ const actionStack = enhanceTabOption({
 const settingsStack = enhanceTabOption({
     routeName: AppTabsRoutes.SettingsStack,
     iconName: 'settings',
-    label: 'Trezor',
+    label: 'Settings',
 });
 
 export const rootTabsOptions = {
