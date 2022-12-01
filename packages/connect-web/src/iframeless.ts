@@ -18,7 +18,7 @@ import {
     createErrorMessage,
     CoreMessage,
     ConnectSettings,
-    Manifest,
+    // Manifest,
     PostMessageEvent,
     UiResponseEvent,
     CallMethod,
@@ -26,6 +26,8 @@ import {
 } from '@trezor/connect/lib/exports';
 import { Core, init as initCore, initTransport } from '@trezor/connect/lib/core';
 import { factory } from '@trezor/connect/lib/factory';
+import { manifest, dispose } from '@trezor/connect/lib';
+
 import { initLog } from '@trezor/connect/lib/utils/debug';
 
 import { createDeferred, Deferred } from '@trezor/utils';
@@ -40,22 +42,6 @@ let _core: Core | null = null;
 
 let _messageID = 0;
 export const messagePromises: { [key: number]: Deferred<any> } = {};
-
-const manifest = (data: Manifest) => {
-    _settings = parseConnectSettings({
-        ..._settings,
-        manifest: data,
-    });
-};
-
-const dispose = () => {
-    eventEmitter.removeAllListeners();
-    _settings = parseConnectSettings();
-    if (_core) {
-        _core.dispose();
-        _core = null;
-    }
-};
 
 // handle message received from iframe
 const handleMessage = (message: CoreMessage) => {
@@ -139,6 +125,8 @@ const init = async (settings: Partial<ConnectSettings> = {}): Promise<void> => {
     if (!_settings.manifest) {
         throw ERRORS.TypedError('Init_ManifestMissing');
     }
+    // todo: ??
+    _settings.origin = 'http://web.trezor.io/';
 
     if (_settings.lazyLoad) {
         // reset "lazyLoad" after first use
@@ -148,7 +136,7 @@ const init = async (settings: Partial<ConnectSettings> = {}): Promise<void> => {
 
     _log.enabled = !!_settings.debug;
 
-    _core = await initCore(_settings);
+    _core = initCore(_settings);
     _core.on(CORE_EVENT, handleMessage);
 
     await initTransport(_settings);

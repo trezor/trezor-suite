@@ -34,14 +34,14 @@ let _core: Core | null = null;
 let _messageID = 0;
 export const messagePromises: { [key: number]: Deferred<any> } = {};
 
-const manifest = (data: Manifest) => {
+export const manifest = (data: Manifest) => {
     _settings = parseConnectSettings({
         ..._settings,
         manifest: data,
     });
 };
 
-const dispose = () => {
+export const dispose = () => {
     eventEmitter.removeAllListeners();
     _settings = parseConnectSettings();
     if (_core) {
