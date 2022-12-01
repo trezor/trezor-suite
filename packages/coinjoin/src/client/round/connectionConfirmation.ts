@@ -34,15 +34,29 @@ const confirmInput = async (
 
     const { signal, coordinatorUrl, middlewareUrl, log } = options;
 
-    const zeroAmountCredentials = await middleware.getZeroCredentials(
-        round.amountCredentialIssuerParameters,
-        { signal, baseUrl: middlewareUrl },
-    );
-    const zeroVsizeCredentials = await middleware.getZeroCredentials(
-        round.vsizeCredentialIssuerParameters,
-        { signal, baseUrl: middlewareUrl },
-    );
+    const { confirmationParams } = input;
+    if (confirmationParams) {
+        // corner-case: connectionConfirmation request was delivered to coordinator but response was not received by client then request timeout or round phase changed happens.
+        // input is confirmed on coordinator but there is no confirmationData to continue. repeated request fails with AliceAlreadyConfirmedConnection
+        // solution: coordinator request might be recovered from cache by using exactly same params as before
+        // for that case use zeroAmountCredentials and zeroVsizeCredentials cached by failed request (below)
+        options.log(`Trying to restore confirmation data for ~~${input.outpoint}~~`);
+    }
 
+    const zeroAmountCredentials = confirmationParams
+        ? confirmationParams.zeroAmountCredentials
+        : await middleware.getZeroCredentials(round.amountCredentialIssuerParameters, {
+              signal,
+              baseUrl: middlewareUrl,
+          });
+    const zeroVsizeCredentials = confirmationParams
+        ? confirmationParams.zeroVsizeCredentials
+        : await middleware.getZeroCredentials(round.vsizeCredentialIssuerParameters, {
+              signal,
+              baseUrl: middlewareUrl,
+          });
+
+    // try not to hit real
     const inputDeadline = input.confirmationDeadline - Date.now();
     const delay =
         inputDeadline > 0 && input.confirmationDeadline < round.phaseDeadline ? inputDeadline : 0;
@@ -63,20 +77,13 @@ const confirmInput = async (
         )
         .catch(error => {
             log(`Confirmation failed ~~${input.outpoint}~~ in ~~${round.id}~~. Reason: ${error}`);
-            // catch specific error
-            if (
-                error.message ===
-                coordinator.WabiSabiProtocolErrorCode.AliceAlreadyConfirmedConnection
-            ) {
-                // NOTE: possible race condition between round phases:
-                // 1. suite is constantly confirming connection while in phase: 0 (see confirmationInterval below)
-                // 2. coordinator changes round phase to 1 before the deadline estimated by suite, suite doesn't know about phase change yet and is still in confirmation interval process
-                // 3. confirmation from interval is successfully sent as confirmation in phase: 1
-                // 5. suite receives phase change from coordinator and trying to process confirmation in phase: 1
-                // and here we are... ignoring it, if input doesn't have confirmedAmountCredentials it will fail in next phase
-            } else {
-                throw error;
+            // if error is not WabiSabiProtocolErrorCode like AliceNotFound, AliceAlreadyConfirmedConnection or other protocol violation
+            if (!Object.keys(coordinator.WabiSabiProtocolErrorCode).includes(error.message)) {
+                // then store failed params for recovering (see description above)
+                input.setConfirmationParams(zeroAmountCredentials, zeroVsizeCredentials);
             }
+
+            throw error;
         });
 
     // stop here if it's confirmationInterval at phase 0
@@ -104,6 +111,8 @@ const confirmInput = async (
 
     log(`Confirmed ~~${input.outpoint}~~ in ~~${round.id}~~`);
 
+    // reset confirmation params if used
+    input.setConfirmationParams();
     input.setConfirmationData(confirmationData);
     input.setConfirmedCredentials(confirmedAmountCredentials, confirmedVsizeCredentials);
 
