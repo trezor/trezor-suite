@@ -23,12 +23,12 @@ const accountsStack = enhanceTabOption({
 const actionStack = enhanceTabOption({
     routeName: AppTabsRoutes.Action,
     label: 'Receive',
-    iconName: 'action',
+    iconName: 'receive',
 });
 
 const settingsStack = enhanceTabOption({
     routeName: AppTabsRoutes.SettingsStack,
-    iconName: 'trezorT',
+    iconName: 'settings',
     label: 'Trezor',
 });
 
