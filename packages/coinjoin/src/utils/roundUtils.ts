@@ -156,4 +156,4 @@ export const compareOutpoint = (a: string, b: string) =>
     Buffer.from(a, 'hex').compare(Buffer.from(b, 'hex')) === 0;
 
 // sum input Credentials
-export const sumCredentials = (c: Credentials[]) => c[0].value + c[1].value;
+export const sumCredentials = (c: Credentials[]) => c.reduce((sum, cre) => sum + cre.value, 0);
