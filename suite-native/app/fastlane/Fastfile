@@ -1,9 +1,45 @@
 # Common Functions and Requirements
 # across Android/iOS Fastfiles
 
+# necessary for sed when a branch name includes slash
+def escape_slash(string)
+  string.gsub('/', '\/')
+end
+
 # Path Constants
 SUITE_NATIVE_ROOT_PATH = File.expand_path('../', Dir.pwd).freeze
 
+# Android project
+ANDROID_PATH = File.join(SUITE_NATIVE_ROOT_PATH, 'android').freeze
+ANDROID_FIREBASE_APP_ID = ENV['FIREBASE_APP_ID']
+
+# iOS project
+IOS_PATH = File.join(SUITE_NATIVE_ROOT_PATH, 'ios').freeze
+
+# Retrieve version of Suite Native app in package.json
+PACKAGE_JSON_PATH = File.join(SUITE_NATIVE_ROOT_PATH, 'package.json').freeze
+
+commit = last_git_commit
+commit_message = commit[:message]
+commit_hash = commit[:abbreviated_commit_hash]
+
+ENV["COMMIT_HASH"] = "#{commit_hash}"
+ENV["CHANGELOG"] = escape_slash "[#{git_branch}] - #{commit_message}".strip
+ENV["VERSION"] = load_json(json_path: "package.json")["suiteNativeVersion"]
+
+private_lane :replace_debug_info_environment_variables do
+  environment_file_name = ENV["ENVFILE"]
+  environment_file = File.join(SUITE_NATIVE_ROOT_PATH, environment_file_name)
+
+  sh(
+    <<-SHELL
+    sed -r -i '' "s/^(COMMIT_HASH)=(.*)$/\\1=#{ENV["COMMIT_HASH"]}/" '#{environment_file}'
+    sed -r -i '' "s/^(CHANGELOG)=(.*)$/\\1=#{ENV["CHANGELOG"]}/" '#{environment_file}'
+    sed -r -i '' "s/^(VERSION)=(.*)$/\\1=#{ENV["VERSION"]}/" '#{environment_file}'
+    sed -r -i '' "s/^(BUILD_NUMBER)=(.*)$/\\1=#{ENV["BUILD_NUMBER"]}/" '#{environment_file}'
+    SHELL
+  )
+end
+
 import "../ios/fastlane/Fastfile"
 import "../android/fastlane/Fastfile"
-

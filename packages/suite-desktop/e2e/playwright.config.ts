@@ -1,5 +1,4 @@
 import path from 'path';
-
 import type { PlaywrightTestConfig } from '@playwright/test';
 
 const config: PlaywrightTestConfig = {
