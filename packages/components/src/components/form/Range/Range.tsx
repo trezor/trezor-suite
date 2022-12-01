@@ -3,7 +3,6 @@ import styled, { css, CSSObject } from 'styled-components';
 
 const track = css`
     background: ${({ theme }) => theme.BG_GREEN};
-    cursor: pointer;
     height: 3px;
 `;
 
@@ -11,14 +10,14 @@ const thumb = css`
     appearance: none;
     background: ${({ theme }) => theme.TYPE_WHITE};
     border-radius: 50%;
-    box-shadow: 0 2px 4px 2px rgba(0, 0, 0, 0.2);
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5);
     cursor: grab;
     height: 26px;
     margin-top: -12px;
     width: 26px;
 
     :active {
-        box-shadow: 0 2px 4px 3px rgba(0, 0, 0, 0.2);
+        box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.5);
         cursor: grabbing;
     }
 `;
@@ -36,9 +35,11 @@ type RangeProps = {
 
 const Input = styled.input<Pick<RangeProps, 'thumbStyle' | 'trackStyle'>>`
     appearance: none;
-    margin: 30px 0 12px 0;
+    margin-top: 16px;
+    padding: 14px 0;
     vertical-align: top; /* prevent extra bottom space in Firefox */
     width: 100%;
+    cursor: pointer;
 
     ::-webkit-slider-runnable-track {
         ${track};

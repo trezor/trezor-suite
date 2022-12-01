@@ -15,6 +15,7 @@ import {
 import { ActionColumn, Row, TextColumn, ActionButton } from '@suite-components/Settings';
 import { CARD_PADDING_SIZE } from '@suite-constants/layout';
 import { NETWORKS } from '@wallet-config';
+import { AnonymityLevelSetupCard } from '@wallet-components/PrivacyAccount/AnonymityLevelSetupCard';
 
 const AccountTypeLabel = styled.div`
     display: flex;
@@ -50,6 +51,7 @@ const NoWrap = styled.span`
 
 const Details = () => {
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
+
     const { openModal } = useActions({
         openModal: modalActions.openModal,
     });
@@ -73,6 +75,7 @@ const Details = () => {
     const accountTypeTech = getAccountTypeTech(account.path);
     const accountTypeUrl = getAccountTypeUrl(account.path);
     const accountTypeDesc = getAccountTypeDesc(account.path);
+
     const isCoinjoinAccount = account.accountType === 'coinjoin';
 
     return (
@@ -81,6 +84,8 @@ const Details = () => {
             account={selectedAccount}
             showEmptyHeaderPlaceholder
         >
+            {isCoinjoinAccount && <AnonymityLevelSetupCard />}
+
             <StyledCard largePadding>
                 <Row>
                     <TextColumn
