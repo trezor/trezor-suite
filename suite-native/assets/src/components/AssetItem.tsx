@@ -66,13 +66,11 @@ export const AssetItem = ({
                         </Box>
                     </Box>
                     <Box alignItems="flex-end">
-                        <DiscreetText
-                            formattedAmount={FiatAmountFormatter.format(fiatBalance) ?? ''}
-                        />
+                        <DiscreetText text={FiatAmountFormatter.format(fiatBalance) ?? ''} />
                         <DiscreetText
                             color="gray600"
                             typography="hint"
-                            formattedAmount={CryptoAmountFormatter.format(cryptoCurrencyValue, {
+                            text={CryptoAmountFormatter.format(cryptoCurrencyValue, {
                                 symbol: cryptoCurrencySymbol,
                             })}
                         />

@@ -54,6 +54,8 @@ export const AccountBalance = ({ accountKey }: AccountBalanceProps) => {
     const [selectedPoint] = useAtom(selectedPointAtom);
     const { FiatAmountFormatter, CryptoAmountFormatter } = useFormatters();
 
+    console.log(selectedPoint.value);
+
     if (!account) return null;
 
     // TODO this should be done with formatters once they're prepared
@@ -66,16 +68,20 @@ export const AccountBalance = ({ accountKey }: AccountBalanceProps) => {
                     <Box style={applyStyle(cryptoIconStyle)}>
                         <CryptoIcon name={account.symbol} />
                     </Box>
-                    <DiscreetText color="gray600" typography="hint">
-                        {CryptoAmountFormatter.format(cryptoAmount, {
+                    <DiscreetText
+                        color="gray600"
+                        typography="hint"
+                        text={CryptoAmountFormatter.format(cryptoAmount, {
                             symbol: account.symbol,
                         })}
-                    </DiscreetText>
+                    />
                 </Box>
                 <Box>
-                    <DiscreetText typography="titleLarge" color="gray800">
-                        {FiatAmountFormatter.format(selectedPoint.value) ?? ''}
-                    </DiscreetText>
+                    <DiscreetText
+                        typography="titleLarge"
+                        color="gray800"
+                        text={FiatAmountFormatter.format(selectedPoint.value) ?? ''}
+                    />
                 </Box>
             </Box>
             <Box marginBottom="large">

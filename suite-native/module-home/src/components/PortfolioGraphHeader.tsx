@@ -125,7 +125,7 @@ const Balance = () => {
     return (
         <DiscreetText
             typography="titleLarge"
-            formattedAmount={FiatAmountFormatter.format(point.value) ?? ''}
+            text={FiatAmountFormatter.format(point.value) ?? ''}
         />
     );
 };

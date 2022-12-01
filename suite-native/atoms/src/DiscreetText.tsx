@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import { LayoutChangeEvent } from 'react-native';
 
 import { useAtom, atom } from 'jotai';
@@ -7,6 +7,7 @@ import { Blur, Canvas, Text as SkiaText, useFont } from '@shopify/react-native-s
 import { Color, TypographyStyle, typographyStylesBase } from '@trezor/theme';
 
 import { Text } from './Text';
+import { Box } from './Box';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const satoshiFont = require('../../../packages/theme/fonts/TTSatoshi-Regular.otf');
@@ -14,7 +15,7 @@ const satoshiFont = require('../../../packages/theme/fonts/TTSatoshi-Regular.otf
 type DiscreetValueProps = {
     typography?: TypographyStyle;
     color?: Color;
-    formattedAmount: string;
+    text: string;
 };
 
 export const isDiscreetModeOn = atom(true);
@@ -23,54 +24,46 @@ const DiscreetCanvas = ({
     width,
     height,
     fontSize,
-    formattedAmount,
+    text,
 }: {
     width: number;
     height: number;
     fontSize: number;
-    formattedAmount: string;
+    text: string;
 }) => {
     const font = useFont(satoshiFont, fontSize);
     if (!font) return null;
+
     return (
         <Canvas style={{ height, width }}>
-            <SkiaText x={0} y={fontSize} text={formattedAmount} font={font} />
+            <SkiaText x={0} y={fontSize} text={text} font={font} />
             <Blur blur={15} mode="decal" />
         </Canvas>
     );
 };
 
 export const DiscreetText = ({
-    formattedAmount,
+    text,
     color = 'gray800',
     typography = 'body',
 }: DiscreetValueProps) => {
     const [isDiscreetMode] = useAtom(isDiscreetModeOn);
-    const [width, setWidth] = useState(0);
+    const [width, setWidth] = useState(50);
     const { lineHeight, fontSize } = typographyStylesBase[typography];
 
-    const handleLayout = useCallback(({ nativeEvent }: LayoutChangeEvent) => {
+    const handleLayout = ({ nativeEvent }: LayoutChangeEvent) => {
         setWidth(nativeEvent.layout.width);
-    }, []);
+    };
 
-    const textElement = useMemo(
-        () => (
-            <Text variant={typography} color={color} onLayout={handleLayout}>
-                {formattedAmount}
-            </Text>
-        ),
-        [color, formattedAmount, handleLayout, typography],
+    return (
+        <Box>
+            {isDiscreetMode ? (
+                <DiscreetCanvas width={width} height={lineHeight} fontSize={fontSize} text={text} />
+            ) : (
+                <Text variant={typography} color={color} onLayout={handleLayout}>
+                    {text}
+                </Text>
+            )}
+        </Box>
     );
-
-    if (isDiscreetMode) {
-        return (
-            <DiscreetCanvas
-                width={width}
-                height={lineHeight}
-                fontSize={fontSize}
-                formattedAmount={formattedAmount}
-            />
-        );
-    }
-    return textElement;
 };

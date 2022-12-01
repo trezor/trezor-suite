@@ -45,11 +45,11 @@ export const TransactionDetailHeader = ({
                 />
                 <Text style={applyStyle(transactionTypeStyle)}>{transactionTypeTextMap[type]}</Text>
             </Box>
-            <DiscreetText typography="titleMedium" formattedAmount={amount} />
+            <DiscreetText typography="titleMedium" text={amount} />
             <DiscreetText
                 typography="label"
                 color="gray700"
-                formattedAmount={FiatAmountFormatter.format(fiatAmount ?? 0) ?? ''}
+                text={FiatAmountFormatter.format(fiatAmount ?? 0) ?? ''}
             />
         </>
     );

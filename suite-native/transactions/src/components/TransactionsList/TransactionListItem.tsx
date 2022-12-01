@@ -81,11 +81,11 @@ export const TransactionListItem = memo(({ transaction }: AccountTransactionList
                 </Box>
             </Box>
             <Box alignItems="flex-end">
-                <DiscreetText formattedAmount={FiatAmountFormatter.format(fiatAmount ?? 0) ?? ''} />
+                <DiscreetText text={FiatAmountFormatter.format(fiatAmount ?? 0) ?? ''} />
                 <DiscreetText
                     typography="hint"
                     color="gray600"
-                    formattedAmount={CryptoAmountFormatter.format(transactionAmount, {
+                    text={CryptoAmountFormatter.format(transactionAmount, {
                         symbol: transaction.symbol,
                     })}
                 />
