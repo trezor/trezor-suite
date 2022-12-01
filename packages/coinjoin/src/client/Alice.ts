@@ -4,6 +4,7 @@ import {
     RegistrationData,
     ConfirmationData,
     RealCredentials,
+    ZeroCredentials,
 } from '../types/coordinator';
 import { AccountUtxo } from '../types/account';
 import { Credentials } from '../types/middleware';
@@ -28,6 +29,10 @@ export class Alice {
     realAmountCredentials?: RealCredentials; // data from inputRegistration phase
     realVsizeCredentials?: RealCredentials; // data from inputRegistration phase
     confirmationDeadline = 0;
+    confirmationParams?: Readonly<{
+        zeroAmountCredentials: ZeroCredentials;
+        zeroVsizeCredentials: ZeroCredentials;
+    }>;
     confirmationData?: ConfirmationData; // data from connectionConfirmation phase
     confirmedAmountCredentials?: Credentials[]; // data from connectionConfirmation phase
     confirmedVsizeCredentials?: Credentials[]; // data from connectionConfirmation phase
@@ -77,6 +82,20 @@ export class Alice {
     setRealCredentials(amount: RealCredentials, vsize: RealCredentials) {
         this.realAmountCredentials = amount;
         this.realVsizeCredentials = vsize;
+    }
+
+    setConfirmationParams(
+        zeroAmountCredentials?: ZeroCredentials,
+        zeroVsizeCredentials?: ZeroCredentials,
+    ) {
+        if (zeroAmountCredentials && zeroVsizeCredentials) {
+            this.confirmationParams = {
+                zeroAmountCredentials,
+                zeroVsizeCredentials,
+            };
+        } else {
+            this.confirmationParams = undefined;
+        }
     }
 
     setConfirmationData(data: ConfirmationData) {

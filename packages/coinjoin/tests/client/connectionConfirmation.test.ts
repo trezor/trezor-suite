@@ -84,39 +84,69 @@ describe('connectionConfirmation', () => {
         expect(spy).toHaveBeenLastCalledWith('01B1-01b1');
     });
 
-    it('try to confirm already confirmed input (coordinator error)', async () => {
-        server?.addListener('test-request', ({ url, resolve, reject }) => {
-            if (url.includes('connection-confirmation')) {
-                reject(500, { errorCode: 'AliceAlreadyConfirmedConnection' });
+    it('recover connection-confirmation', async () => {
+        const params: string[] = [];
+        const spy = jest.fn();
+        server?.addListener('test-request', ({ url, data, resolve, reject }) => {
+            if (url.endsWith('/connection-confirmation')) {
+                const str = JSON.stringify(data);
+                if (params.includes(str)) {
+                    resolve();
+                } else {
+                    params.push(str);
+                    reject(500, { message: 'Proxy timeout' });
+                }
+            }
+            if (url.endsWith('/get-zero-credential-requests')) {
+                spy();
             }
             resolve();
         });
-        const response = await connectionConfirmation(
-            createCoinjoinRound(
-                [
-                    createInput('account-A', 'A1', {
-                        registrationData: {
-                            aliceId: '01A1-01a1',
-                        },
-                        realAmountCredentials: {},
-                        realVsizeCredentials: {},
-                    }),
-                    createInput('account-B', 'B1', {
-                        registrationData: {
-                            aliceId: '01B1-01b1',
-                        },
-                        realAmountCredentials: {},
-                        realVsizeCredentials: {},
-                    }),
-                ],
-                server?.requestOptions,
-            ),
+
+        const inputs = [
+            createInput('account-A', 'A1', {
+                registrationData: {
+                    aliceId: '01A1-01a1',
+                },
+                realAmountCredentials: {},
+                realVsizeCredentials: {},
+            }),
+            createInput('account-B', 'B1', {
+                registrationData: {
+                    aliceId: '01B1-01b1',
+                },
+                realAmountCredentials: {},
+                realVsizeCredentials: {},
+            }),
+        ];
+
+        const failedConfirmation = await connectionConfirmation(
+            createCoinjoinRound(inputs, server?.requestOptions),
             server?.requestOptions,
         );
-        // no failed inputs regardless of coordinator error
-        response.inputs.forEach(input => {
-            expect(input.error).toBeUndefined();
+        // inputs confirmationParams are cached
+        failedConfirmation.inputs.forEach(input => {
+            expect(input.error).not.toBeUndefined();
+            expect(input.confirmationParams).not.toBeUndefined();
+            expect(input.confirmationData).toBeUndefined();
+            // NOTE: this is only for test purposes. delete error so we can retry.
+            // normally its done by CoinjoinRound
+            delete input.error;
         });
+
+        expect(spy).toBeCalledTimes(4); // called twice per one input
+
+        const retryConfirmation = await connectionConfirmation(
+            createCoinjoinRound(inputs, server?.requestOptions),
+            server?.requestOptions,
+        );
+        retryConfirmation.inputs.forEach(input => {
+            expect(input.error).toBeUndefined(); // no more errors
+            expect(input.confirmationParams).toBeUndefined(); // confirmation params are removed
+            expect(input.confirmationData).not.toBeUndefined();
+        });
+
+        expect(spy).toBeCalledTimes(4); // not called at second attempt
     });
 
     it('connection confirmation in input registration phase (real credentials not received)', async () => {
