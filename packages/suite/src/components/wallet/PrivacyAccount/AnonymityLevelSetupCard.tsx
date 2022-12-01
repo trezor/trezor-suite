@@ -1,44 +1,57 @@
-import React, { forwardRef } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { Card, P, variables } from '@trezor/components';
 import { Translation } from '@suite-components';
+import { useSelector } from '@suite-hooks/useSelector';
+import { selectCurrentTargetAnonymity } from '@wallet-reducers/coinjoinReducer';
 
 import { AnonymityLevelSlider } from './AnonymityLevelSlider';
-import { DROPDOWN_MENU } from '@trezor/components/src/config/animations';
-
-const Container = styled.div`
-    position: relative;
-`;
 
 const SetupCard = styled(Card)`
+    position: relative;
+    margin-bottom: 20px;
+    overflow: hidden;
+`;
+
+const Level = styled.div`
     position: absolute;
-    top: 12px;
-    right: 0;
-    width: 460px;
-    z-index: ${variables.Z_INDEX.BASE};
-    box-shadow: 0px 4px 4px ${({ theme }) => theme.BOX_SHADOW_BLACK_15};
-    border-radius: 16px;
-    animation: ${DROPDOWN_MENU} 0.15s ease-in-out;
+    right: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 64px;
+    height: 42px;
+    border: 1.5px solid ${({ theme }) => theme.STROKE_GREY};
+    border-radius: 8px;
+    color: ${({ theme }) => theme.TYPE_GREEN};
+    font-size: ${variables.FONT_SIZE.H2};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
-const SliderWrapper = styled.div`
-    padding-bottom: 10px;
+const Text = styled.div`
+    margin-right: 72px;
+    margin-bottom: 38px;
 `;
 
-export const AnonymityLevelSetupCard = forwardRef<HTMLDivElement, Record<string, unknown>>(
-    (_, ref) => (
-        <Container ref={ref}>
-            <SetupCard>
+export const AnonymityLevelSetupCard = () => {
+    const targetAnonymity = useSelector(selectCurrentTargetAnonymity) || 1;
+
+    return (
+        <SetupCard>
+            <Level>
+                <span>{targetAnonymity}</span>
+            </Level>
+
+            <Text>
                 <P weight="medium">
                     <Translation id="TR_COINJOIN_ANONYMITY_LEVEL_SETUP_TITLE" />
                 </P>
                 <P size="tiny" weight="medium">
                     <Translation id="TR_COINJOIN_ANONYMITY_LEVEL_SETUP_DESCRIPTION" />
                 </P>
-                <SliderWrapper>
-                    <AnonymityLevelSlider />
-                </SliderWrapper>
-            </SetupCard>
-        </Container>
-    ),
-);
+            </Text>
+
+            <AnonymityLevelSlider />
+        </SetupCard>
+    );
+};
