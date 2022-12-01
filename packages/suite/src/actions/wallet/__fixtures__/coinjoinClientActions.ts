@@ -4,6 +4,8 @@ import * as COINJOIN from '@wallet-actions/constants/coinjoinConstants';
 
 export const DEVICE = testMocks.getSuiteDevice({ state: 'device-state', connected: true });
 
+const SESSION = { signedRounds: [] as string[], maxRounds: 10 };
+
 export const onCoinjoinRoundChanged = [
     {
         description: 'Phase 0. No associated coinjoin accounts',
@@ -11,7 +13,7 @@ export const onCoinjoinRoundChanged = [
         state: {
             coinjoin: {
                 accounts: [
-                    { key: 'a', session: { signedRounds: [] } },
+                    { key: 'a', session: SESSION },
                     { key: 'b' }, // account b exists but without session
                 ],
             },
@@ -32,7 +34,7 @@ export const onCoinjoinRoundChanged = [
         state: {
             accounts: [{ key: 'a', deviceState: 'device-state-2' }],
             coinjoin: {
-                accounts: [{ key: 'a', session: { signedRounds: [] } }],
+                accounts: [{ key: 'a', session: SESSION }],
             },
         },
         params: {
@@ -56,8 +58,8 @@ export const onCoinjoinRoundChanged = [
             ],
             coinjoin: {
                 accounts: [
-                    { key: 'a', session: { signedRounds: [] } },
-                    { key: 'b', session: { signedRounds: [] } },
+                    { key: 'a', session: SESSION },
+                    { key: 'b', session: SESSION },
                 ],
             },
         },
@@ -96,8 +98,8 @@ export const onCoinjoinRoundChanged = [
             ],
             coinjoin: {
                 accounts: [
-                    { key: 'a', session: { signedRounds: [] } },
-                    { key: 'b', session: { signedRounds: [] } },
+                    { key: 'a', session: SESSION },
+                    { key: 'b', session: SESSION },
                 ],
             },
         },
@@ -283,10 +285,11 @@ export const onCoinjoinClientRequest = [
                 { key: 'account-C', deviceState: 'device-2-state', utxo: [{}, {}] },
             ],
             coinjoin: {
+                clients: {},
                 accounts: [
-                    { key: 'account-A', session: {} },
-                    { key: 'account-B', session: {} },
-                    { key: 'account-C', session: {} },
+                    { key: 'account-A', session: SESSION },
+                    { key: 'account-B', session: SESSION },
+                    { key: 'account-C', session: SESSION },
                 ],
             },
         },
@@ -400,9 +403,9 @@ export const signCoinjoinTx = [
             coinjoin: {
                 clients: {},
                 accounts: [
-                    { key: 'account-A', session: { signedRounds: [] }, unlockPath: {} },
-                    { key: 'account-B', session: { signedRounds: [] }, unlockPath: {} },
-                    { key: 'account-C', session: { signedRounds: [] }, unlockPath: {} },
+                    { key: 'account-A', session: SESSION, unlockPath: {} },
+                    { key: 'account-B', session: SESSION, unlockPath: {} },
+                    { key: 'account-C', session: SESSION, unlockPath: {} },
                 ],
             },
         },
