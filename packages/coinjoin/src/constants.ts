@@ -28,6 +28,9 @@ export const ROUND_SELECTION_REGISTRATION_OFFSET = 30000;
 // custom timeout for http requests (default is 50000 ms)
 export const HTTP_REQUEST_TIMEOUT = 35000;
 
+// timeout for CoinjoinRound currently running process
+export const ROUND_PHASE_PROCESS_TIMEOUT = 10000;
+
 // fallback values for status request
 // usage of these values is extremely unlikely, there would have to be a change in the coordinator's API
 export const PLEBS_DONT_PAY_THRESHOLD = 1000000;
