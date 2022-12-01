@@ -239,6 +239,10 @@ export const onCoinjoinRoundChanged =
         }
     };
 
+// populate errors for failed subset of requested inputs
+const coinjoinResponseError = (utxos: CoinjoinRequestEvent['inputs'], error: string) =>
+    utxos.map(u => ({ outpoint: u.outpoint, error }));
+
 export const getOwnershipProof =
     (request: Extract<CoinjoinRequestEvent, { type: 'ownership' }>) =>
     async (_dispatch: Dispatch, getState: GetState) => {
@@ -272,17 +276,19 @@ export const getOwnershipProof =
             const realAccount = accounts.find(a => a.key === key);
             const utxos = groupUtxosByAccount[key];
             if (!coinjoinAccount || !realAccount) {
-                response.inputs.push(
-                    ...utxos.map(u => ({ outpoint: u.outpoint, error: 'Account not found' })),
-                );
-                return []; // TODO not registered?
+                response.inputs.push(...coinjoinResponseError(utxos, 'Account not found'));
+                return [];
+            }
+            const { session } = coinjoinAccount;
+            // do not provide ownership if requested account is no longer authorized
+            if (!session || session.signedRounds.length >= session.maxRounds) {
+                response.inputs.push(...coinjoinResponseError(utxos, 'Account without session'));
+                return [];
             }
             const device = devices.find(d => d.state === realAccount.deviceState);
             if (!device) {
-                response.inputs.push(
-                    ...utxos.map(u => ({ outpoint: u.outpoint, error: 'Device not found' })),
-                );
-                return []; // TODO disconnected
+                response.inputs.push(...coinjoinResponseError(utxos, 'Device not found'));
+                return [];
             }
 
             // TODO: double check if requested utxo exists in account?
@@ -368,15 +374,28 @@ export const signCoinjoinTx =
         const groupParamsByDevice = Object.keys(groupUtxosByAccount).flatMap(key => {
             const coinjoinAccount = coinjoin.accounts.find(r => r.key === key && r.session);
             const realAccount = accounts.find(a => a.key === key);
-            if (!coinjoinAccount || !realAccount) return []; // TODO: throw error not registered?
-
+            const utxos = groupUtxosByAccount[key];
+            if (!coinjoinAccount || !realAccount) {
+                response.inputs.push(...coinjoinResponseError(utxos, 'Account not found'));
+                return [];
+            }
+            const { session } = coinjoinAccount;
+            if (!session || session.signedRounds.length >= session.maxRounds) {
+                response.inputs.push(...coinjoinResponseError(utxos, 'Account without session'));
+                return [];
+            }
             const device = devices.find(d => d.state === realAccount.deviceState);
+            if (!device) {
+                response.inputs.push(...coinjoinResponseError(utxos, 'Device not found'));
+                return [];
+            }
+
             const tx = prepareCoinjoinTransaction(realAccount, request.transaction);
             return {
                 device,
                 unlockPath: realAccount.unlockPath,
                 tx,
-                utxos: groupUtxosByAccount[key],
+                utxos,
                 roundId: request.roundId,
                 key,
                 network: realAccount.symbol,
