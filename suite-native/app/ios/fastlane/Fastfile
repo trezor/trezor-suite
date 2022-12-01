@@ -1,6 +1,11 @@
 skip_docs
 
 # iOS Specific Constants
+# Retrieve version of Suite Native app in package.json
+PACKAGE_JSON_PATH = File.join(SUITE_NATIVE_ROOT_PATH, 'package.json').freeze
+version = load_json(json_path: "package.json")["suiteNativeVersion"]
+
+IOS_PATH = File.join(SUITE_NATIVE_ROOT_PATH, 'ios').freeze
 IOS_PROJECT = File.join(IOS_PATH, "TrezorSuite.xcodeproj").freeze
 IOS_PROJECT_WORKSPACE = File.join(IOS_PATH, "TrezorSuite.xcworkspace").freeze
 
@@ -9,6 +14,11 @@ platform :ios do
   before_all do |lane|
     xcversion(version: "14.1")
     puts "Running lane #{lane}..."
+
+    commit = last_git_commit
+    commit_message = commit[:message]
+    commit_hash = commit[:abbreviated_commit_hash]
+    ENV["VERSION"] = "#{version}"
 
     # creates temporary keychain
     keychain_name = ENV['TMP_KEYCHAIN_NAME']
@@ -132,7 +142,8 @@ platform :ios do
       scheme: build_scheme,
       output_name: "#{build_scheme}-TrezorSuite",
       workspace: IOS_PROJECT_WORKSPACE,
-      configuration: build_scheme
+      configuration: build_scheme,
+      xcargs: "COMMIT_HASH='#{commit_hash}' CHANGELOG='[#{git_branch}] - #{commit_message}' VERSION='#{version}' BUILD_NUMBER=''"
     )
   end
 

@@ -334,7 +334,7 @@ PODS:
     - React-Core
   - react-native-flipper (0.164.0):
     - React-Core
-  - react-native-mmkv (2.4.3):
+  - react-native-mmkv (2.5.1):
     - MMKV (>= 1.2.13)
     - React-Core
   - react-native-safe-area-context (4.4.1):
@@ -704,9 +704,9 @@ EXTERNAL SOURCES:
     :path: "../../../node_modules/react-native/ReactCommon/yoga"
 
 SPEC CHECKSUMS:
-  boost: a7c83b31436843459a1961bfd74b96033dc77234
+  boost: 33822b9202be3240e51605d20431570aa3a6c58e
   CocoaAsyncSocket: 065fd1e645c7abab64f7a6a2007a48038fdc6a99
-  DoubleConversion: 5189b271737e1565bdce30deb4a08d647e3f5f54
+  DoubleConversion: 9456fd505d3f9f70d786fcbe504b31de765010d9
   EXApplication: 034b1c40a8e9fe1bff76a1e511ee90dff64ad834
   EXBarCodeScanner: cb4deb49e59b6c7ed6bbf38d187802359908d2a8
   EXConstants: 3c86653c422dd77e40d10cbbabb3025003977415
@@ -734,7 +734,9 @@ SPEC CHECKSUMS:
   MMKV: 9c4663aa7ca255d478ff10f2f5cb7d17c1651ccd
   MMKVCore: 89f5c8a66bba2dcd551779dea4d412eeec8ff5bb
   OpenSSL-Universal: ebc357f1e6bc71fa463ccb2fe676756aff50e88c
-  RCT-Folly: 0080d0a6ebf2577475bda044aa59e2ca1f909cda
+  PromisesObjC: ab77feca74fa2823e7af4249b8326368e61014cb
+  Protobuf: 02524ec14183fe08fb259741659e79683788158b
+  RCT-Folly: 158339bb8a6ef9d2cab2fcccaac4455da5196d85
   RCTRequired: 21229f84411088e5d8538f21212de49e46cc83e2
   RCTTypeSafety: 62eed57a32924b09edaaf170a548d1fc96223086
   React: f0254ccddeeef1defe66c6b1bb9133a4f040792b
@@ -751,7 +753,7 @@ SPEC CHECKSUMS:
   React-logger: fdda34dd285bdb0232e059b19d9606fa0ec3bb9c
   react-native-config: bcafda5b4c51491ee1b0e1d0c4e3905bc7b56c1b
   react-native-flipper: c33a4995958ef12a2b2f8290d63bed7adeed7634
-  react-native-mmkv: 1265a348a4711097ba29c8bcefd5971f48220f2b
+  react-native-mmkv: 69b9c003f10afdd01addf7c6ee784ce42ee2eff3
   react-native-safe-area-context: 99b24a0c5acd0d5dcac2b1a7f18c49ea317be99a
   react-native-skia: 033ecd9b105c198ddbab832d206b0e3742b67f0c
   react-native-splash-screen: 4312f786b13a81b5169ef346d76d33bc0c6dc457

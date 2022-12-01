@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import { NativeModules } from 'react-native';
 
-import { isDebugEnv, isDevelopOrDebugEnv } from '@suite-native/config';
+import { isDevelopOrDebugEnv } from '@suite-native/config';
 import { Box, Button, Text, VStack } from '@suite-native/atoms';
 import {
     Screen,
@@ -41,7 +41,7 @@ export const DevUtilsScreen = ({
                         </Box>
                     </Box>
                     <VStack spacing="medium">
-                        {!isDebugEnv() && <BuildInfo />}
+                        <BuildInfo />
                         <Button onPress={() => navigation.navigate(DevUtilsStackRoutes.Demo)}>
                             See Component Demo
                         </Button>

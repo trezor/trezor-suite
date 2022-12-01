@@ -1,11 +1,24 @@
 skip_docs
 
 # Paths
+# Retrieve version of Suite Native app in package.json
+PACKAGE_JSON_PATH = File.join(SUITE_NATIVE_ROOT_PATH, 'package.json').freeze
+version = load_json(json_path: "package.json")["suiteNativeVersion"]
+
+ANDROID_PATH = File.join(SUITE_NATIVE_ROOT_PATH, 'android').freeze
+ANDROID_FIREBASE_APP_ID = ENV['FIREBASE_APP_ID']
 APP_GRADLE_PATH = File.join(ANDROID_PATH, 'app/build.gradle').freeze
 
 platform :android do
 
   before_all do |lane|
+    commit = last_git_commit
+    commit_message = commit[:message]
+    commit_hash = commit[:abbreviated_commit_hash]
+    ENV["COMMIT_HASH"] = "#{commit_hash}"
+    ENV["CHANGELOG"] = "[#{git_branch}] - #{commit_message}".strip
+    ENV["VERSION"] = "#{version}"
+
     if lane == :develop
       fetch_and_bump_firebase_version
     elsif lane == :staging
@@ -13,6 +26,8 @@ platform :android do
     elsif lane == :production
       fetch_and_bump_play_version
     end
+
+    replace_environment_variables
   end
 
   desc "Android: Increments internal build number and version number"
@@ -31,6 +46,17 @@ platform :android do
 
     android_set_version_code(gradle_file: APP_GRADLE_PATH, version_code: build_number_int)
     android_set_version_name(gradle_file: APP_GRADLE_PATH, version_name: VERSION)
+  end
+
+  private_lane :replace_environment_variables do
+    sh(
+      <<-SHELL
+      sed -r -i '' "s/^(COMMIT_HASH)=(.*)$/\\1=#{ENV["COMMIT_HASH"]}/" '#{File.join(SUITE_NATIVE_ROOT_PATH, '.env.debug')}'
+      sed -r -i '' "s/^(CHANGELOG)=(.*)$/\\1=#{ENV["CHANGELOG"]}/" '#{File.join(SUITE_NATIVE_ROOT_PATH, '.env.debug')}'
+      sed -r -i '' "s/^(VERSION)=(.*)$/\\1=#{ENV["VERSION"]}/" '#{File.join(SUITE_NATIVE_ROOT_PATH, '.env.debug')}'
+      sed -r -i '' "s/^(BUILD_NUMBER)=(.*)$/\\1=#{ENV["BUILD_NUMBER"]}/" '#{File.join(SUITE_NATIVE_ROOT_PATH, '.env.debug')}'
+      SHELL
+    )
   end
 
   private_lane :fetch_and_bump_firebase_version do
@@ -71,6 +97,18 @@ platform :android do
       skip_upload_apk: true
     )
 
+  end
+
+  desc "Build Debug build."
+  lane :debug do |options|
+    gradle(task: 'clean', project_dir: ANDROID_PATH)
+
+    gradle(
+      task: 'assemble',
+      flavor: 'Dev',
+      build_type: 'Release',
+      project_dir: ANDROID_PATH
+    )
   end
 
   desc "Deploy staging build to Google Play Store."

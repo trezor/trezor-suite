@@ -4,23 +4,6 @@
 # Path Constants
 SUITE_NATIVE_ROOT_PATH = File.expand_path('../', Dir.pwd).freeze
 
-# Android project
-ANDROID_PATH = File.join(SUITE_NATIVE_ROOT_PATH, 'android').freeze
-ANDROID_FIREBASE_APP_ID = ENV['FIREBASE_APP_ID']
-
-# iOS project
-IOS_PATH = File.join(SUITE_NATIVE_ROOT_PATH, 'ios').freeze
-
-# Retrieve version of Suite Native app in package.json
-PACKAGE_JSON_PATH = File.join(SUITE_NATIVE_ROOT_PATH, 'package.json').freeze
-VERSION = load_json(json_path: "package.json")["suiteNativeVersion"]
-
-commit = last_git_commit
-commit_message = commit[:message]
-commit_hash = commit[:abbreviated_commit_hash]
-
-COMMIT_HASH = "#{commit_hash}"
-CHANGELOG = "[#{git_branch}] - #{commit_message}"
-
 import "../ios/fastlane/Fastfile"
 import "../android/fastlane/Fastfile"
+
