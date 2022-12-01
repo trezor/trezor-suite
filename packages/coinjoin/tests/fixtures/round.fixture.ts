@@ -38,6 +38,19 @@ export const ROUND_CREATION_EVENT = {
     },
 };
 
+// random P2WPKH external input
+export const INPUT_ADDED_EVENT = {
+    Type: 'InputAdded',
+    coin: {
+        outpoint: 'AABBCCDD001123344000000000000000000000000000000000000000000000000000000',
+        txOut: {
+            scriptPubKey: '0 751e76e8199196d454941c45d1b3a323f1433bd6',
+            value: 5000,
+        },
+    },
+    ownershipProof: '',
+};
+
 export const FEE_RATE_MEDIANS = [
     {
         timeFrame: '1d 0h 1m 0s',

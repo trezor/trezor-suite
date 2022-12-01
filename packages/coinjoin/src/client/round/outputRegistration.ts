@@ -3,7 +3,6 @@ import { getWeakRandomId } from '@trezor/utils';
 import * as coordinator from '../coordinator';
 import * as middleware from '../middleware';
 import { outputDecomposition } from './outputDecomposition';
-import { sumCredentials } from '../../utils/roundUtils';
 import type { Account } from '../Account';
 import type { Alice } from '../Alice';
 import type { CoinjoinPrison } from '../CoinjoinPrison';
@@ -15,17 +14,14 @@ import type { AccountAddress } from '../../types';
  *
  * Process steps:
  * - Calculate output amounts using middleware (see ./outputDecomposition)
- * - Join all input Credentials in to one using coordinator /credential-issuance (see ./outputDecomposition)
- * - Decompose joined Credentials into calculated amounts using coordinator /credential-issuance
+ * - Combine registered Credentials in to outputs using coordinator /credential-issuance (see ./outputDecomposition)
  * - Register decomposed Credentials as outputs using coordinator /output-registration
  * - Finally call /ready-to-sign on coordinator for each input
  */
 
 const registerOutput = async (
     round: CoinjoinRound,
-    outputSize: number,
     outputAddress: AccountAddress[],
-    outputAmount: number,
     amountCredentials: middleware.Credentials[],
     vsizeCredentials: middleware.Credentials[],
     prison: CoinjoinPrison,
@@ -34,88 +30,16 @@ const registerOutput = async (
     const { roundParameters } = round;
     const { signal, coordinatorUrl, middlewareUrl } = options;
 
-    const availableAmount = sumCredentials(amountCredentials);
-    const availableVsize = sumCredentials(vsizeCredentials);
-    options.log(`registerOutput amount ${availableAmount}`);
-    options.log(`registerOutput vsize ${availableVsize}`);
-    const issuanceAmountCredentials = await middleware.getRealCredentials(
-        [outputAmount, availableAmount - outputAmount],
+    const outputAmountCredentials = await middleware.getRealCredentials(
+        [0, 0],
         amountCredentials,
         round.amountCredentialIssuerParameters,
         roundParameters.maxAmountCredentialValue,
         { signal, baseUrl: middlewareUrl },
     );
-    const issuanceVsizeCredentials = await middleware.getRealCredentials(
-        [outputSize, availableVsize - outputSize],
-        vsizeCredentials,
-        round.vsizeCredentialIssuerParameters,
-        roundParameters.maxVsizeCredentialValue,
-        { signal, baseUrl: middlewareUrl },
-    );
-
-    const zeroAmountCredentials = await middleware.getZeroCredentials(
-        round.amountCredentialIssuerParameters,
-        { signal, baseUrl: middlewareUrl },
-    );
-    const zeroVsizeCredentials = await middleware.getZeroCredentials(
-        round.vsizeCredentialIssuerParameters,
-        { signal, baseUrl: middlewareUrl },
-    );
-
-    // TODO: delay
-    // use random identity
-    const issuanceData = await coordinator.credentialIssuance(
-        round.id,
-        issuanceAmountCredentials,
-        issuanceVsizeCredentials,
-        zeroAmountCredentials,
-        zeroVsizeCredentials,
-        {
-            signal,
-            baseUrl: coordinatorUrl,
-            identity: getWeakRandomId(10),
-            delay: 0,
-            deadline: round.phaseDeadline,
-        },
-    );
-
-    const amountCredentialsOut = await middleware.getCredentials(
-        round.amountCredentialIssuerParameters,
-        issuanceData.realAmountCredentials,
-        issuanceAmountCredentials.credentialsResponseValidation,
-        { signal, baseUrl: middlewareUrl },
-    );
-    const vsizeCredentialsOut = await middleware.getCredentials(
-        round.vsizeCredentialIssuerParameters,
-        issuanceData.realVsizeCredentials,
-        issuanceVsizeCredentials.credentialsResponseValidation,
-        { signal, baseUrl: middlewareUrl },
-    );
-
-    const zeroAmountCredentialsOut = await middleware.getCredentials(
-        round.amountCredentialIssuerParameters,
-        issuanceData.zeroAmountCredentials,
-        zeroAmountCredentials.credentialsResponseValidation,
-        { signal, baseUrl: middlewareUrl },
-    );
-
-    const zeroVsizeCredentialsOut = await middleware.getCredentials(
-        round.vsizeCredentialIssuerParameters,
-        issuanceData.zeroVsizeCredentials,
-        zeroVsizeCredentials.credentialsResponseValidation,
-        { signal, baseUrl: middlewareUrl },
-    );
-
-    const outputAmountCredentials = await middleware.getRealCredentials(
-        [0, 0],
-        [amountCredentialsOut[0], zeroAmountCredentialsOut[0]],
-        round.amountCredentialIssuerParameters,
-        roundParameters.maxAmountCredentialValue,
-        { signal, baseUrl: middlewareUrl },
-    );
     const outputVsizeCredentials = await middleware.getRealCredentials(
-        [vsizeCredentialsOut[0].value - outputSize, 0],
-        [vsizeCredentialsOut[0], zeroVsizeCredentialsOut[0]],
+        [0, 0],
+        vsizeCredentials,
         round.vsizeCredentialIssuerParameters,
         roundParameters.maxVsizeCredentialValue,
         { signal, baseUrl: middlewareUrl },
@@ -166,8 +90,6 @@ const registerOutput = async (
 
     return {
         address,
-        amountCredentials: [amountCredentialsOut[1], zeroAmountCredentialsOut[1]],
-        vsizeCredentials: [vsizeCredentialsOut[1], zeroVsizeCredentialsOut[1]],
     };
 };
 
@@ -199,39 +121,30 @@ export const outputRegistration = async (
         const decomposedGroup = await outputDecomposition(round, options);
 
         // collect all used addresses
-        const usedAddresses: AccountAddress[] = [];
         // try to register outputs for each account (each input in account group)
         for (let group = 0; group < decomposedGroup.length; group++) {
-            const { amounts, accountKey, outputSize } = decomposedGroup[group];
+            const { accountKey, outputs } = decomposedGroup[group];
             const account = accounts.find(a => a.accountKey === accountKey);
             if (!account) throw new Error(`Unknown account ~~${accountKey}~~`);
             const { changeAddresses } = account;
-            let { amountCredentials, vsizeCredentials } = decomposedGroup[group];
-            for (let index = 0; index < amounts.length; index++) {
-                if (!amounts[index]) throw new Error(`Unknown amount at index ${index}`);
+            for (let index = 0; index < outputs.length; index++) {
                 // TODO: no not proceed if one of output fails (do not sign!!)
                 // eslint-disable-next-line no-await-in-loop
                 const result = await registerOutput(
                     round,
-                    outputSize,
                     changeAddresses,
-                    amounts[index],
-                    amountCredentials,
-                    vsizeCredentials,
+                    outputs[index].amountCredentials,
+                    outputs[index].vsizeCredentials,
                     prison,
                     options,
                 );
-                usedAddresses.push(result.address);
-                amountCredentials = result.amountCredentials;
-                vsizeCredentials = result.vsizeCredentials;
+                round.addresses.push(result.address);
             }
         }
 
         // inform coordinator that each registered input is ready to sign
         await Promise.all(round.inputs.map(input => readyToSign(round, input, options)));
         options.log(`Ready to sign ~~${round.id}~~`);
-
-        round.addresses = usedAddresses;
     } catch (error) {
         // NOTE: if anything goes wrong in this process this Round will be corrupted for all the users
         // registered inputs will probably be banned
