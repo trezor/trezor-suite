@@ -1,6 +1,6 @@
 import { EventEmitter } from 'events';
 
-import { arrayPartition, enumUtils } from '@trezor/utils';
+import { arrayPartition, enumUtils, scheduleAction } from '@trezor/utils';
 import { Network } from '@trezor/utxo-lib';
 
 import {
@@ -8,6 +8,7 @@ import {
     getRoundParameters,
     getCoinjoinRoundDeadlines,
 } from '../utils/roundUtils';
+import { ROUND_PHASE_PROCESS_TIMEOUT } from '../constants';
 import { RoundPhase, EndRoundState } from '../enums';
 import { AccountAddress, RegisterAccountParams } from '../types/account';
 import {
@@ -140,11 +141,30 @@ export class CoinjoinRound extends EventEmitter {
     }
 
     async onPhaseChange(changed: Round) {
-        // if round is currently locked interrupt running process
         if (this.lock) {
-            this.options.log(`Aborting round ${this.id}`);
-            this.lock.abort();
-            await this.lock.promise;
+            // if round is currently locked and phase was changed in expected order
+            // try to interrupt running process and start processing new phase
+            // but give current process some time to cool off
+            // example: http request is sent but response was not received yet and aborted
+            const shouldCoolOff = changed.phase === this.phase + 1;
+            const { promise, abort } = this.lock;
+            const unlock = () => {
+                this.options.log(`Aborting round ${this.id}`);
+                abort();
+                return promise;
+            };
+
+            if (!shouldCoolOff) {
+                await unlock();
+            } else {
+                this.options.log(
+                    `Waiting for round ${this.id} to cool off ${ROUND_PHASE_PROCESS_TIMEOUT}ms`,
+                );
+                // either process will finish gracefully or will be aborted
+                await scheduleAction(() => promise, { timeout: ROUND_PHASE_PROCESS_TIMEOUT }).catch(
+                    unlock,
+                );
+            }
         }
 
         if (this.phase === RoundPhase.Ended) return this;
