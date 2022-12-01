@@ -35,7 +35,7 @@ platform :ios do
     end
 
     ENV["ENVFILE"] = ".env.#{lane}"
-    replace_debug_info_environment_variables
+    replace_debug_info_environment_variables(platform: 'ios')
   end
 
     # temporary keychain database
@@ -71,7 +71,7 @@ platform :ios do
   end
 
   desc "Check certs and profiles"
-  private_lane :prepare_signing do |options|
+  private_lane :prepare_signing do
     app_identifier = CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
     api_key = lane_context[SharedValues::APP_STORE_CONNECT_API_KEY]
 

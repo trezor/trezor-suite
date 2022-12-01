@@ -15,7 +15,7 @@ platform :android do
     end
 
     ENV["ENVFILE"] = ".env.#{lane}"
-    replace_debug_info_environment_variables
+    replace_debug_info_environment_variables(platform: 'android')
   end
 
   desc "Android: Increments internal build number and version number"
