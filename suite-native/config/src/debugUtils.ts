@@ -1,7 +1,9 @@
-export const getAppVersion = () => process.env.VERSION || '';
+import Config from 'react-native-config';
 
-export const getCommitHash = () => process.env.COMMIT_HASH || '';
+export const getAppVersion = () => Config.VERSION || '';
 
-export const getBuildVersionNumber = () => process.env.BUILD_NUMBER || '';
+export const getCommitHash = () => Config.COMMIT_HASH || '';
 
-export const getChangelog = () => process.env.CHANGELOG || '';
+export const getBuildVersionNumber = () => Config.BUILD_NUMBER || '';
+
+export const getChangelog = () => Config.CHANGELOG || '';

@@ -13,6 +13,9 @@ platform :android do
     elsif lane == :production
       fetch_and_bump_play_version
     end
+
+    ENV["ENVFILE"] = ".env.#{lane}"
+    replace_debug_info_environment_variables
   end
 
   desc "Android: Increments internal build number and version number"
@@ -71,6 +74,18 @@ platform :android do
       skip_upload_apk: true
     )
 
+  end
+
+  desc "Build Debug build."
+  lane :debug do |options|
+    gradle(task: 'clean', project_dir: ANDROID_PATH)
+
+    gradle(
+      task: 'assemble',
+      flavor: 'Dev',
+      build_type: 'Release',
+      project_dir: ANDROID_PATH
+    )
   end
 
   desc "Deploy staging build to Google Play Store."

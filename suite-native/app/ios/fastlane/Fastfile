@@ -33,6 +33,9 @@ platform :ios do
     elsif lane == :production
       PROVISIONING_NAME = "AppStore io.trezor.suite"
     end
+
+    ENV["ENVFILE"] = ".env.#{lane}"
+    replace_debug_info_environment_variables
   end
 
     # temporary keychain database
