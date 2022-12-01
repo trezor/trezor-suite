@@ -122,7 +122,7 @@ platform :android do
         app: ANDROID_FIREBASE_APP_ID,
         apk_path: apk_path,
         service_credentials_file: google_play_json_key_file,
-        release_notes: "#{COMMIT_HASH} - #{CHANGELOG}",
+        release_notes: "#{ENV["COMMIT_HASH"]} - #{ENV["CHANGELOG"]}",
         groups: "develop-testers",
         debug: true
     )
