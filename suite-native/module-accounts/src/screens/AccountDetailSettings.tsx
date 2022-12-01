@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
@@ -11,7 +11,7 @@ import {
     StackNavigationProps,
     StackProps,
 } from '@suite-native/navigation';
-import { Box, Button, Text } from '@suite-native/atoms';
+import { BottomSheet, Box, Button, Text, VStack } from '@suite-native/atoms';
 import {
     accountsActions,
     AccountsRootState,
@@ -23,6 +23,7 @@ export const AccountDetailSettings = ({
     route,
 }: StackProps<AccountsStackParamList, AccountsStackRoutes.AccountDetailSettings>) => {
     const { accountKey } = route.params;
+    const [isXpubVisible, setIsXpubVisible] = useState(false);
     const navigation =
         useNavigation<
             StackNavigationProps<AccountsStackParamList, AccountsStackRoutes.AccountDetailSettings>
@@ -47,9 +48,17 @@ export const AccountDetailSettings = ({
             <Box marginBottom="large">
                 <Text variant="titleMedium">{accountName}</Text>
             </Box>
-            <Button onPress={handleRemoveAccount} colorScheme="gray">
-                Remove Account
-            </Button>
+            <VStack spacing="small">
+                <Button onPress={() => setIsXpubVisible(true)} colorScheme="gray">
+                    Show Xpub
+                </Button>
+                <Button onPress={handleRemoveAccount} colorScheme="gray">
+                    Remove Account
+                </Button>
+            </VStack>
+            <BottomSheet isVisible={isXpubVisible} onVisibilityChange={setIsXpubVisible}>
+                <Text>{account.descriptor}</Text>
+            </BottomSheet>
         </Screen>
     );
 };
