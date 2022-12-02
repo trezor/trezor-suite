@@ -34,7 +34,7 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     dispatch(languageActions.setLanguage(language));
 
     // 3. fetch message system config
-    await dispatch(messageSystemActions.init()).catch(err => console.error(err));
+    dispatch(messageSystemActions.init());
 
     // 4. redirecting user into welcome screen (if needed)
     dispatch(routerActions.initialRedirection());
