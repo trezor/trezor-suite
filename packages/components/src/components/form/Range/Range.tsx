@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useLayoutEffect, useMemo, useRef, useState } from 'react';
 import styled, { css, CSSObject } from 'styled-components';
+import { variables } from '@trezor/components';
 
 const track = css`
     background: ${({ theme }) => theme.BG_GREEN};
@@ -22,23 +23,13 @@ const thumb = css`
     }
 `;
 
-type RangeProps = {
-    className?: string;
-    max?: number;
-    min?: number;
-    step?: string;
-    onChange: React.ChangeEventHandler<HTMLInputElement>;
-    thumbStyle?: CSSObject;
-    trackStyle?: CSSObject;
-    value: number;
-};
-
 const Input = styled.input<Pick<RangeProps, 'thumbStyle' | 'trackStyle'>>`
-    appearance: none;
     margin-top: 16px;
     padding: 14px 0;
-    vertical-align: top; /* prevent extra bottom space in Firefox */
     width: 100%;
+    vertical-align: top; /* prevent extra bottom space in Firefox */
+    background: none;
+    appearance: none;
     cursor: pointer;
 
     ::-webkit-slider-runnable-track {
@@ -59,4 +50,78 @@ const Input = styled.input<Pick<RangeProps, 'thumbStyle' | 'trackStyle'>>`
     }
 `;
 
-export const Range = (props: RangeProps) => <Input type="range" {...props} />;
+const LabelsWrapper = styled.div<{ count: number; $width?: number }>`
+    display: grid;
+    grid-template-columns: ${({ count, $width }) =>
+        count && $width && `repeat(${count}, ${$width}px)`};
+    justify-content: space-between;
+`;
+
+const Label = styled.p<{ $width?: number }>`
+    position: relative;
+    justify-self: center;
+    padding-top: 2px;
+    min-width: ${({ $width }) => `${$width}px`};
+    text-align: center;
+    font-size: ${variables.FONT_SIZE.TINY};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    opacity: 0.5;
+    cursor: pointer;
+`;
+
+export interface RangeProps {
+    className?: string;
+    max?: number;
+    min?: number;
+    step?: string;
+    onChange: React.ChangeEventHandler<HTMLInputElement>;
+    thumbStyle?: CSSObject;
+    trackStyle?: CSSObject;
+    value: number;
+    labels?: (string | number)[];
+    onLabelClick?: (value: number) => void;
+}
+
+export const Range = ({ labels, onLabelClick, ...props }: RangeProps) => {
+    const [labelsElWidth, setLabelsElWidth] = useState<number>();
+
+    const lastLabelRef = useRef<HTMLParagraphElement>(null);
+
+    useLayoutEffect(() => {
+        if (!lastLabelRef.current) {
+            return;
+        }
+
+        setLabelsElWidth(lastLabelRef.current?.getBoundingClientRect().width);
+    }, [lastLabelRef, setLabelsElWidth]);
+
+    const labelComponents = useMemo(
+        () =>
+            labels?.map((label, i) => {
+                const isLastElement = i === labels.length - 1;
+
+                return (
+                    <Label
+                        key={label}
+                        $width={labelsElWidth}
+                        onClick={() => onLabelClick?.(Number.parseFloat(String(label)))}
+                        ref={isLastElement ? lastLabelRef : undefined}
+                    >
+                        {label}
+                    </Label>
+                );
+            }),
+        [labels, onLabelClick, lastLabelRef, labelsElWidth],
+    );
+
+    return (
+        <div>
+            <Input type="range" {...props} />
+            {labels?.length && (
+                <LabelsWrapper count={labels.length} $width={labelsElWidth}>
+                    {labelComponents}
+                </LabelsWrapper>
+            )}
+        </div>
+    );
+};

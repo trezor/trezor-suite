@@ -56,24 +56,6 @@ const MiningFeeText = styled(Text)`
     margin-top: 12px;
 `;
 
-const Mark = styled(Text)`
-    font-size: ${variables.FONT_SIZE.TINY};
-`;
-
-const LeftMark = styled(Mark)`
-    flex: 1 1 33%;
-`;
-
-const MiddleMark = styled(Mark)`
-    flex: 1 1 33.5%;
-    text-align: center;
-`;
-
-const RightMark = styled(Mark)`
-    flex: 1 1 33.5%;
-    text-align: right;
-`;
-
 const MiningFee = styled.section`
     flex-grow: 1;
 `;
@@ -149,12 +131,9 @@ export const CoinjoinCustomStrategy = ({
                         value={maxFee}
                         onChange={handleSliderChange}
                         trackStyle={trackStyle}
+                        labels={['1 sat/vB', '50 sat/vB', '100 sat/vB']}
+                        onLabelClick={number => setMaxFee(number)}
                     />
-                    <Row>
-                        <LeftMark>1 sat/vB</LeftMark>
-                        <MiddleMark>50 sat/vB</MiddleMark>
-                        <RightMark>100 sat/vB</RightMark>
-                    </Row>
                 </MiningFee>
                 <DetailWrapper>
                     <DetailHeading>
