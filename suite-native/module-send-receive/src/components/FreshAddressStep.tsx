@@ -3,7 +3,7 @@ import { Alert, Share, View } from 'react-native';
 import QRCode from 'react-qr-code';
 import { useSelector } from 'react-redux';
 
-import Clipboard from '@react-native-clipboard/clipboard';
+import * as Clipboard from 'expo-clipboard';
 
 import { Box, Button, HStack, Text } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -76,7 +76,7 @@ export const FreshAddressStep = ({ accountKey, onClose }: FreshAddressStepProps)
 
     const handleCopyAddressToClipboardAndClose = async () => {
         if (freshAddress) {
-            await Clipboard.setString(freshAddress.address);
+            await Clipboard.setStringAsync(freshAddress.address);
             onClose();
         }
     };
