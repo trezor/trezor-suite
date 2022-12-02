@@ -7505,6 +7505,7 @@ __metadata:
     "@trezor/theme": "workspace:*"
     "@trezor/transport-native": "workspace:*"
     babel-jest: ^26.6.3
+    babel-plugin-transform-remove-console: ^6.9.4
     expo: ^47.0.8
     expo-barcode-scanner: ^12.1.0
     expo-clipboard: ^4.0.1
@@ -10904,6 +10905,13 @@ __metadata:
   version: 7.0.0-beta.0
   resolution: "babel-plugin-syntax-trailing-function-commas@npm:7.0.0-beta.0"
   checksum: e37509156ca945dd9e4b82c66dd74f2d842ad917bd280cb5aa67960942300cd065eeac476d2514bdcdedec071277a358f6d517c31d9f9244d9bbc3619a8ecf8a
+  languageName: node
+  linkType: hard
+
+"babel-plugin-transform-remove-console@npm:^6.9.4":
+  version: 6.9.4
+  resolution: "babel-plugin-transform-remove-console@npm:6.9.4"
+  checksum: 1123c3816c6f89c064752199c8796f30265d937f5d8e1e43d3837f1c0e87ed0e6bbd0afa6117ce021c8b93ec1de7154e158674bb22331c7ed6609d10121359df
   languageName: node
   linkType: hard
 
