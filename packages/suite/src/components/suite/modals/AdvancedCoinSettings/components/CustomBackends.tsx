@@ -6,7 +6,6 @@ import InputError from '@wallet-components/InputError';
 import { useSelector, useActions } from '@suite-hooks';
 import { toggleTor as toggleTorAction } from '@suite-actions/suiteActions';
 import { useDefaultUrls, useBackendsForm } from '@settings-hooks/backends';
-import { toTorUrl } from '@suite-utils/tor';
 import ConnectionInfo from './ConnectionInfo';
 import { BackendInput } from './BackendInput';
 import { BackendTypeSelect } from './BackendTypeSelect';
@@ -139,17 +138,14 @@ export const CustomBackends = ({ network, onCancel }: CustomBackendsProps) => {
 
                 <BackendTypeSelect network={network} value={type} onChange={changeType} />
 
-                {(editable ? urls : defaultUrls).map(u => {
-                    const url = isTorEnabled && !editable ? toTorUrl(u) : u;
-                    return (
-                        <BackendInput
-                            key={url}
-                            url={url}
-                            active={url === blockchain[coin]?.url}
-                            onRemove={editable ? () => removeUrl(u) : undefined}
-                        />
-                    );
-                })}
+                {(editable ? urls : defaultUrls).map(url => (
+                    <BackendInput
+                        key={url}
+                        url={url}
+                        active={url === blockchain[coin]?.url}
+                        onRemove={editable ? () => removeUrl(url) : undefined}
+                    />
+                ))}
 
                 {editable && (
                     <Input

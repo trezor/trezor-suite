@@ -22,30 +22,11 @@ export const getTorUrlIfAvailable = (url: string) => {
     return `http://${subdomain ?? ''}${onionDomain}${rest ?? ''}`;
 };
 
-export const toTorUrl = (url: string) => {
-    const torUrl = getTorUrlIfAvailable(url);
-    if (!torUrl) {
-        console.warn(`tor url is not available for ${url}`);
-        return url;
-    }
-    return torUrl;
-};
-
 export const getIsTorDomain = (domain: string) => domain.endsWith('.onion');
 
 export const isOnionUrl = (url: string) => {
     const hostname = parseHostname(url);
     return !!hostname && getIsTorDomain(hostname);
-};
-
-export const baseFetch = window.fetch;
-
-export const torFetch = (input: RequestInfo | URL, init?: RequestInit | undefined) => {
-    if (typeof input === 'string') {
-        input = toTorUrl(input);
-    }
-
-    return baseFetch(input, init);
 };
 
 export const getIsTorEnabled = (torStatus: TorStatus) => {
