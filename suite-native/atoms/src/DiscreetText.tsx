@@ -12,7 +12,7 @@ import { Box } from './Box';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const satoshiFont = require('../../../packages/theme/fonts/TTSatoshi-Regular.otf');
 
-type DiscreetValueProps = {
+type DiscreetTextProps = {
     typography?: TypographyStyle;
     color?: Color;
     text: string;
@@ -46,7 +46,7 @@ export const DiscreetText = ({
     text,
     color = 'gray800',
     typography = 'body',
-}: DiscreetValueProps) => {
+}: DiscreetTextProps) => {
     const [isDiscreetMode] = useAtom(isDiscreetModeOn);
     const [width, setWidth] = useState(50);
     const { lineHeight, fontSize } = typographyStylesBase[typography];
