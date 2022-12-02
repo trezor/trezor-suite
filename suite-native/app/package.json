@@ -50,6 +50,7 @@
         "@trezor/suite-data": "workspace:*",
         "@trezor/theme": "workspace:*",
         "@trezor/transport-native": "workspace:*",
+        "babel-plugin-transform-remove-console": "^6.9.4",
         "expo": "^47.0.8",
         "expo-barcode-scanner": "^12.1.0",
         "expo-clipboard": "^4.0.1",
