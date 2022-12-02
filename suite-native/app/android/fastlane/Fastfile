@@ -33,7 +33,7 @@ platform :android do
     ENV["BUILD_NUMBER"] = "#{build_number_int}"
 
     android_set_version_code(gradle_file: APP_GRADLE_PATH, version_code: build_number_int)
-    android_set_version_name(gradle_file: APP_GRADLE_PATH, version_name: VERSION)
+    android_set_version_name(gradle_file: APP_GRADLE_PATH, version_name: ENV["VERSION"])
   end
 
   private_lane :fetch_and_bump_firebase_version do
@@ -50,7 +50,7 @@ platform :android do
     unless latest_release.nil?
       android_set_version_code(gradle_file: APP_GRADLE_PATH, version_code: build_number_int)
     end
-    android_set_version_name(gradle_file: APP_GRADLE_PATH, version_name: VERSION)
+    android_set_version_name(gradle_file: APP_GRADLE_PATH, version_name: ENV["VERSION"])
   end
 
   desc "Build and upload the app to Google Play Store."
