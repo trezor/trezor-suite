@@ -8,6 +8,8 @@ import { IntlProvider } from 'react-intl';
 import { NavigationContainer } from '@react-navigation/native';
 
 // FIXME this is only temporary until Intl refactor will be finished
+import * as Sentry from '@sentry/react-native';
+
 import enMessages from '@trezor/suite-data/files/translations/en.json';
 import { connectInitThunk } from '@suite-common/connect-init';
 import { store, storePersistor } from '@suite-native/state';
@@ -72,7 +74,18 @@ const AppComponent = () => {
     );
 };
 
-export const App = () => {
+if (!__DEV__) {
+    // IMPORTANT! This naive implementation of error boundary is only for development purposes.
+    // It should never make it to production release, because there is no sensitive data filtering.
+    Sentry.init({
+        dsn: 'https://d473f56df60c4974ae3f3ce00547c2a9@o117836.ingest.sentry.io/4504214699245568',
+        // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
+        // We recommend adjusting this value in production.
+        tracesSampleRate: 1.0,
+    });
+}
+
+const PureApp = () => {
     useSplashScreen();
 
     return (
@@ -93,3 +106,5 @@ export const App = () => {
         </GestureHandlerRootView>
     );
 };
+
+export const App = Sentry.wrap(PureApp);

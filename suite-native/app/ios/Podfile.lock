@@ -474,8 +474,12 @@ PODS:
   - RNScreens (3.18.1):
     - React-Core
     - React-RCTImage
+  - RNSentry (5.0.0-alpha.9):
+    - React-Core
+    - Sentry/HybridSDK (= 7.31.2)
   - RNSVG (12.4.4):
     - React-Core
+  - Sentry/HybridSDK (7.31.2)
   - SocketRocket (0.6.0)
   - trezor-transport-native (1.0.0):
     - React-Core
@@ -566,6 +570,7 @@ DEPENDENCIES:
   - RNGestureHandler (from `../../../node_modules/react-native-gesture-handler`)
   - RNReanimated (from `../../../node_modules/react-native-reanimated`)
   - RNScreens (from `../../../node_modules/react-native-screens`)
+  - "RNSentry (from `../../../node_modules/@sentry/react-native`)"
   - RNSVG (from `../../../node_modules/react-native-svg`)
   - "trezor-transport-native (from `../../../node_modules/@trezor/transport-native`)"
   - Yoga (from `../../../node_modules/react-native/ReactCommon/yoga`)
@@ -587,6 +592,7 @@ SPEC REPOS:
     - MMKV
     - MMKVCore
     - OpenSSL-Universal
+    - Sentry
     - SocketRocket
     - YogaKit
     - ZXingObjC
@@ -696,6 +702,8 @@ EXTERNAL SOURCES:
     :path: "../../../node_modules/react-native-reanimated"
   RNScreens:
     :path: "../../../node_modules/react-native-screens"
+  RNSentry:
+    :path: "../../../node_modules/@sentry/react-native"
   RNSVG:
     :path: "../../../node_modules/react-native-svg"
   trezor-transport-native:
@@ -771,7 +779,9 @@ SPEC CHECKSUMS:
   RNGestureHandler: b7a872907ee289ada902127f2554fa1d2c076122
   RNReanimated: 95fde05503235f14cd4a0cf526ffbad3d54af688
   RNScreens: 1b7bb502dac62cc4cf01b94bea591c8da275132f
+  RNSentry: ef53abfde32e4cddbf09d00b5c71907bd5177158
   RNSVG: ecd661f380a07ba690c9c5929c475a44f432d674
+  Sentry: b15765d11769852fe78c9add942f7df60ed5dbf5
   SocketRocket: fccef3f9c5cedea1353a9ef6ada904fde10d6608
   trezor-transport-native: 04d29d47d79fa07e4b02a70b87eeabd0f6199b0b
   Yoga: eca980a5771bf114c41a754098cd85e6e0d90ed7

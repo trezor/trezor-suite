@@ -4660,6 +4660,34 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@sentry/browser@npm:7.21.1":
+  version: 7.21.1
+  resolution: "@sentry/browser@npm:7.21.1"
+  dependencies:
+    "@sentry/core": 7.21.1
+    "@sentry/types": 7.21.1
+    "@sentry/utils": 7.21.1
+    tslib: ^1.9.3
+  checksum: 270448b4f99e9eb99a081c285ba454e06375fe7b3ff6c27f8064c174f46d8550a96696a3a6285c04a4cb0e3a93d84a3483f212335f8aaf546cdcba406f290fe3
+  languageName: node
+  linkType: hard
+
+"@sentry/cli@npm:2.7.0":
+  version: 2.7.0
+  resolution: "@sentry/cli@npm:2.7.0"
+  dependencies:
+    https-proxy-agent: ^5.0.0
+    node-fetch: ^2.6.7
+    npmlog: ^6.0.1
+    progress: ^2.0.3
+    proxy-from-env: ^1.1.0
+    which: ^2.0.2
+  bin:
+    sentry-cli: bin/sentry-cli
+  checksum: 48f5768d0325ff3813563782078309eafa6dd8dec469f84d2ccb43f0f6dce611bdc60f4d4b7f03b791bbbeb34855c0602778ab2a1c2c557bc020c27a30fcf6a3
+  languageName: node
+  linkType: hard
+
 "@sentry/cli@npm:^1.74.4":
   version: 1.74.5
   resolution: "@sentry/cli@npm:1.74.5"
@@ -4690,6 +4718,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@sentry/core@npm:7.21.1":
+  version: 7.21.1
+  resolution: "@sentry/core@npm:7.21.1"
+  dependencies:
+    "@sentry/types": 7.21.1
+    "@sentry/utils": 7.21.1
+    tslib: ^1.9.3
+  checksum: 96d493ddde5624cfd06146a72758eae979eee974e450f0748cca63973ffc1e0575467fbaa9df2e25e4291d5344845b9413a075390f37e89eea3f9a0cc2d95122
+  languageName: node
+  linkType: hard
+
 "@sentry/electron@npm:3.0.0":
   version: 3.0.0
   resolution: "@sentry/electron@npm:3.0.0"
@@ -4716,6 +4755,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@sentry/hub@npm:7.21.1":
+  version: 7.21.1
+  resolution: "@sentry/hub@npm:7.21.1"
+  dependencies:
+    "@sentry/core": 7.21.1
+    "@sentry/types": 7.21.1
+    "@sentry/utils": 7.21.1
+    tslib: ^1.9.3
+  checksum: 7ed60751594eb357f8c85aae1002f92fc889254b3471e754edea774e8f71d228d6d9c72c8e06af2964045b4fcf6cb3e868aa018e50d75071e333ab72f28fdac4
+  languageName: node
+  linkType: hard
+
 "@sentry/integrations@npm:6.17.2":
   version: 6.17.2
   resolution: "@sentry/integrations@npm:6.17.2"
@@ -4725,6 +4776,18 @@ __metadata:
     localforage: ^1.8.1
     tslib: ^1.9.3
   checksum: 7f81e93614c777e1579fdacda24d7b8da5bc7dd239c2fcbf08c45749f13906d3d110b7c796fd6761cde1812ebffcd0265d21acd961501e4acbbf9125034e299c
+  languageName: node
+  linkType: hard
+
+"@sentry/integrations@npm:7.21.1":
+  version: 7.21.1
+  resolution: "@sentry/integrations@npm:7.21.1"
+  dependencies:
+    "@sentry/types": 7.21.1
+    "@sentry/utils": 7.21.1
+    localforage: ^1.8.1
+    tslib: ^1.9.3
+  checksum: 34ede46c043a8f799a24d115575a293bbe09495e8c3f67f78b7ceb4a69a9f65380142741271edda16de45b8b485d5fc3c17b9fc757982eba804b90f370c8f13c
   languageName: node
   linkType: hard
 
@@ -4756,6 +4819,41 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@sentry/react-native@npm:5.0.0-alpha.9":
+  version: 5.0.0-alpha.9
+  resolution: "@sentry/react-native@npm:5.0.0-alpha.9"
+  dependencies:
+    "@sentry/browser": 7.21.1
+    "@sentry/cli": 2.7.0
+    "@sentry/core": 7.21.1
+    "@sentry/hub": 7.21.1
+    "@sentry/integrations": 7.21.1
+    "@sentry/react": 7.21.1
+    "@sentry/tracing": 7.21.1
+    "@sentry/types": 7.21.1
+    "@sentry/utils": 7.21.1
+  peerDependencies:
+    react: ">=17.0.0"
+    react-native: ">=0.70.0"
+  checksum: da86dd6270d50736b661c9549171a9828e66eb6ad032ba3eb4befba49c476ebd94a924a260943ebe86ab532c00c5e7d752106aba8976c28cecdb10785f9681f7
+  languageName: node
+  linkType: hard
+
+"@sentry/react@npm:7.21.1":
+  version: 7.21.1
+  resolution: "@sentry/react@npm:7.21.1"
+  dependencies:
+    "@sentry/browser": 7.21.1
+    "@sentry/types": 7.21.1
+    "@sentry/utils": 7.21.1
+    hoist-non-react-statics: ^3.3.2
+    tslib: ^1.9.3
+  peerDependencies:
+    react: 15.x || 16.x || 17.x || 18.x
+  checksum: f140795178b42db2a90a621cf7c5099b417b068ea2e66eb00dad1328f466c18159ebc6c8acd8f39b84bb97b45d9cc594c9eeba3bdc492f38b59ff8b3321e9db5
+  languageName: node
+  linkType: hard
+
 "@sentry/tracing@npm:6.17.2":
   version: 6.17.2
   resolution: "@sentry/tracing@npm:6.17.2"
@@ -4769,10 +4867,29 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@sentry/tracing@npm:7.21.1":
+  version: 7.21.1
+  resolution: "@sentry/tracing@npm:7.21.1"
+  dependencies:
+    "@sentry/core": 7.21.1
+    "@sentry/types": 7.21.1
+    "@sentry/utils": 7.21.1
+    tslib: ^1.9.3
+  checksum: 5cfaace3416dcfd404f2468485e2819b5392536eb044bfcb330d2604f7e33182b30ff1571b3f54aea655b2762f9bc45124f2e680176a446facb3029e645235b7
+  languageName: node
+  linkType: hard
+
 "@sentry/types@npm:6.17.2":
   version: 6.17.2
   resolution: "@sentry/types@npm:6.17.2"
   checksum: 0872f84ef93547a15a9c6567a1e7ce4f79ab4649829879637aba476437c4bb025bd4b0107799620818f8c2188521d3af221b3b35663ce968e5a44dc3a3a18ccb
+  languageName: node
+  linkType: hard
+
+"@sentry/types@npm:7.21.1":
+  version: 7.21.1
+  resolution: "@sentry/types@npm:7.21.1"
+  checksum: 0c89b3077aae599d4f4d918449c98b2da6be3820ec99036bb600c6e977ec0a6a906cc12bcb373ef42408b2e081163088c97f185cb349d1fdb2fc704a73de259b
   languageName: node
   linkType: hard
 
@@ -4783,6 +4900,16 @@ __metadata:
     "@sentry/types": 6.17.2
     tslib: ^1.9.3
   checksum: 15d2885a7da1bb30b78b2de54a031130aab59cb511ad5766d80daffeb2a08c5769b015e2a2687d4435b27e4474f79cc9fd19c1ad6bc0aabb572bea2a388ae0fb
+  languageName: node
+  linkType: hard
+
+"@sentry/utils@npm:7.21.1":
+  version: 7.21.1
+  resolution: "@sentry/utils@npm:7.21.1"
+  dependencies:
+    "@sentry/types": 7.21.1
+    tslib: ^1.9.3
+  checksum: caf6d913c1dcd10b03aa1bb143dc2e3f5d681714b52ad8e83155f9db0be998fb4014251bfa4434975a42df74201f1a83cef06e2ad9ab35a15bbdd1fd5a1594bf
   languageName: node
   linkType: hard
 
@@ -7364,6 +7491,7 @@ __metadata:
     "@react-navigation/native": ^6.0.11
     "@react-navigation/stack": ^6.2.2
     "@reduxjs/toolkit": 1.8.3
+    "@sentry/react-native": 5.0.0-alpha.9
     "@shopify/react-native-skia": 0.1.162
     "@suite-common/connect-init": "workspace:*"
     "@suite-common/formatters": "workspace:*"
@@ -23898,7 +24026,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"npmlog@npm:^6.0.0":
+"npmlog@npm:^6.0.0, npmlog@npm:^6.0.1":
   version: 6.0.2
   resolution: "npmlog@npm:6.0.2"
   dependencies:

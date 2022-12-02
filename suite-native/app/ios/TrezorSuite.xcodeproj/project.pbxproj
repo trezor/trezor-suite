@@ -269,6 +269,7 @@
 				BFF4D6126EF6A07488268E48 /* Headers */,
 				18CC5895CB3B45DA6177CC64 /* [CP] Embed Pods Frameworks */,
 				8A8C97CFD639B9BD6949F5D2 /* [CP] Copy Pods Resources */,
+				5BE0161902744A0B9BE87DE5 /* Upload Debug Symbols to Sentry */,
 			);
 			buildRules = (
 			);
@@ -353,7 +354,8 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "set -e\nNODE_OPTIONS=--openssl-legacy-provider\n\nWITH_ENVIRONMENT=\"../../../node_modules/react-native/scripts/xcode/with-environment.sh\"\nREACT_NATIVE_XCODE=\"../../../node_modules/react-native/scripts/react-native-xcode.sh\"\n\n/bin/sh -c \"$WITH_ENVIRONMENT $REACT_NATIVE_XCODE\"\n";
+			shellScript = "set -e\nexport SENTRY_PROPERTIES=sentry.properties\nexport EXTRA_PACKAGER_ARGS=\"--sourcemap-output $DERIVED_FILE_DIR/main.jsbundle.map\"\nNODE_OPTIONS=--openssl-legacy-provider\n\nWITH_ENVIRONMENT=\"../../../node_modules/react-native/scripts/xcode/with-environment.sh\"\n\n\n/bin/sh -c \"$WITH_ENVIRONMENT ./bundle-with-sentry.sh\"\n\n/bin/sh ../../../node_modules/@sentry/react-native/scripts/collect-modules.sh\n";
+			showEnvVarsInLog = 0;
 		};
 		18CC5895CB3B45DA6177CC64 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -370,6 +372,21 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-TrezorSuite/Pods-TrezorSuite-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		5BE0161902744A0B9BE87DE5 /* Upload Debug Symbols to Sentry */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Upload Debug Symbols to Sentry";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "export SENTRY_PROPERTIES=sentry.properties\nWITH_ENVIRONMENT=\"../../../node_modules/react-native/scripts/xcode/with-environment.sh\"\n\n/bin/sh -c \"$WITH_ENVIRONMENT ./upload-dsym-sentry.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		66875325D3ED8399137C2197 /* [CP] Check Pods Manifest.lock */ = {
