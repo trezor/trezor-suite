@@ -1,6 +1,7 @@
 import * as jws from 'jws';
 
 import { MESSAGE_SYSTEM } from '@suite-actions/constants';
+import { fetchWithTimeout } from '@trezor/utils';
 
 import type { Dispatch, GetState } from '@suite-types';
 import type { Category, MessageSystem } from '@trezor/message-system';
@@ -115,8 +116,8 @@ const fetchConfig = () => async (dispatch: Dispatch, getState: GetState) => {
 export const init = () => async (dispatch: Dispatch, _getState: GetState) => {
     await dispatch(fetchConfig());
 
-    setInterval(async () => {
-        await dispatch(fetchConfig());
+    setInterval(() => {
+        dispatch(fetchConfig());
     }, MESSAGE_SYSTEM.FETCH_CHECK_INTERVAL);
 };
 
