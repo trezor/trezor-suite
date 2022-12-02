@@ -281,15 +281,16 @@ export class DeviceList extends EventEmitter {
         if (this.stream) {
             this.stream.stop();
         }
-        if (this.transport) {
-            this.transport.stop();
-        }
-        if (this.fetchController) {
-            this.fetchController.abort();
-            this.fetchController = null;
-        }
-
         this.allDevices().forEach(device => device.dispose());
+        setTimeout(() => {
+            if (this.transport) {
+                this.transport.stop();
+            }
+            if (this.fetchController) {
+                this.fetchController.abort();
+                this.fetchController = null;
+            }
+        }, 1);
     }
 
     disconnectDevices() {
