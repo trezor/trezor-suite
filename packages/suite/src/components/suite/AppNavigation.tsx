@@ -131,7 +131,7 @@ const MenuElement = styled.div<{ isActive: boolean }>`
 const StyledNavLink = styled.div<{ isActive: boolean; isNavigationDisabled: boolean }>`
     padding: 9px 12px;
     cursor: ${({ isActive, isNavigationDisabled }) =>
-        isActive && isNavigationDisabled ? 'pointer' : 'default'};
+        isActive || isNavigationDisabled ? 'default' : 'pointer'};
     opacity: ${({ isActive, isNavigationDisabled }) => !isActive && isNavigationDisabled && '.5'};
 `;
 
@@ -168,10 +168,10 @@ const StyledDropdown = styled(Dropdown)<{ isDisabled: boolean }>`
     > :first-child {
         width: 100%;
         height: 100%;
-    }
 
-    :hover {
-        background: ${({ isDisabled, theme }) => !isDisabled && theme.BG_SECONDARY_HOVER};
+        :hover {
+            background: ${({ isDisabled, theme }) => !isDisabled && theme.BG_SECONDARY_HOVER};
+        }
     }
 `;
 
@@ -227,8 +227,8 @@ export const AppNavigation = ({ items, primaryContent, maxWidth, inView }: Props
     const secondary = useRef<HTMLDivElement>(null);
 
     const routeName = useSelector(state => state.router.route?.name);
-    const { screenWidth } = useSelector(state => state.resize);
-    const { selectedAccount } = useSelector(state => state.wallet);
+    const screenWidth = useSelector(state => state.resize.screenWidth);
+    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
 
     const theme = useTheme();
 
