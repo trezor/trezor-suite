@@ -108,7 +108,7 @@ platform :ios do
     )
     increment_version_number(
       xcodeproj: IOS_PROJECT,
-      version_number: VERSION
+      version_number: ENV["VERSION"]
     )
   end
 
