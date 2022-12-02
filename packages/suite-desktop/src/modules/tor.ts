@@ -8,13 +8,12 @@ import { HandshakeTorModule } from 'packages/suite-desktop-api/lib/messages';
 import TrezorConnect from '@trezor/connect';
 
 import { TorProcess } from '../libs/processes/TorProcess';
-import { onionDomain } from '../config';
 import { app, ipcMain } from '../typed-electron';
 import { getFreePort } from '../libs/getFreePort';
 
 import type { Dependencies } from './index';
 
-const load = async ({ mainWindow, store, interceptor }: Dependencies) => {
+const load = async ({ mainWindow, store }: Dependencies) => {
     const { logger } = global;
     const host = '127.0.0.1';
     const port = await getFreePort();
@@ -155,25 +154,6 @@ const load = async ({ mainWindow, store, interceptor }: Dependencies) => {
     ipcMain.on('tor/get-status', () => {
         logger.debug('tor', `Getting status (${store.getTorSettings().running ? 'ON' : 'OFF'})`);
         mainWindow.webContents.send('tor/status', store.getTorSettings().running);
-    });
-
-    interceptor.onBeforeRequest(details => {
-        const { hostname, protocol } = new URL(details.url);
-
-        // Redirect outgoing trezor.io requests to .onion domain
-        if (
-            store.getTorSettings().running &&
-            hostname.endsWith('trezor.io') &&
-            protocol === 'https:'
-        ) {
-            logger.info('tor', `Rewriting ${details.url} to .onion URL`);
-            return {
-                redirectURL: details.url.replace(
-                    /https:\/\/(([a-z0-9]+\.)*)trezor\.io(.*)/,
-                    `http://$1${onionDomain}$3`,
-                ),
-            };
-        }
     });
 
     app.on('before-quit', () => {

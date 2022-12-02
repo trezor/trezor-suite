@@ -4,7 +4,7 @@ import { desktopApi, HandshakeElectron } from '@trezor/suite-desktop-api';
 
 import * as comparisonUtils from '@suite-utils/comparisonUtils';
 import * as deviceUtils from '@suite-utils/device';
-import { baseFetch, getIsTorLoading, isOnionUrl, torFetch } from '@suite-utils/tor';
+import { getIsTorLoading, isOnionUrl } from '@suite-utils/tor';
 import { getCustomBackends } from '@suite-common/wallet-utils';
 import { sortByTimestamp } from '@suite-utils/device';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -184,8 +184,6 @@ export const toggleTor =
         const ipcResponse = await desktopApi.toggleTor(shouldEnable);
 
         if (ipcResponse.success) {
-            window.fetch = shouldEnable ? torFetch : baseFetch;
-
             const newStatus = shouldEnable ? TorStatus.Enabled : TorStatus.Disabled;
 
             dispatch(updateTorStatus(newStatus));
