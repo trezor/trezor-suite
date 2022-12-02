@@ -15,6 +15,7 @@ export const DISMISS_MESSAGE = '@message-system/dismiss-message';
  */
 export const FETCH_INTERVAL = 21600000; // 6 hours in milliseconds
 export const FETCH_CHECK_INTERVAL = 3600000; // 1 hour in milliseconds
+export const FETCH_TIMEOUT = 8000;
 
 /*
  * Bump version in case the new version of message system is not backward compatible.

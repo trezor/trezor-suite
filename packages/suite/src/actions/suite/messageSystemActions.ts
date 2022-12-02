@@ -1,7 +1,7 @@
 import * as jws from 'jws';
 
 import { MESSAGE_SYSTEM } from '@suite-actions/constants';
-import { fetchWithTimeout } from '@trezor/utils';
+import { scheduleAction } from '@trezor/utils';
 
 import type { Dispatch, GetState } from '@suite-types';
 import type { Category, MessageSystem } from '@trezor/message-system';
@@ -49,7 +49,10 @@ const fetchConfig = () => async (dispatch: Dispatch, getState: GetState) => {
             let isRemote = true;
 
             try {
-                const response = await fetch(MESSAGE_SYSTEM.CONFIG_URL_REMOTE);
+                const response = await scheduleAction(
+                    signal => fetch(MESSAGE_SYSTEM.CONFIG_URL_REMOTE, { signal }),
+                    { timeout: MESSAGE_SYSTEM.FETCH_TIMEOUT },
+                );
 
                 if (!response.ok) {
                     throw Error(response.statusText);
