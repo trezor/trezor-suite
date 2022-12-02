@@ -107,7 +107,7 @@ const TransactionDetail = styled.button`
     }
 `;
 
-const IconWrapper = styled.div`
+const StyledFluidSpinner = styled(FluidSpinner)`
     margin-right: 8px;
 `;
 
@@ -196,9 +196,7 @@ export const UtxoSelection = ({ isChecked, transaction, utxo }: UtxoSelectionPro
                     {transaction ? (
                         <TransactionTimestamp showDate transaction={transaction} />
                     ) : (
-                        <IconWrapper>
-                            <FluidSpinner color={theme.TYPE_LIGHT_GREY} size={14} />
-                        </IconWrapper>
+                        <StyledFluidSpinner color={theme.TYPE_LIGHT_GREY} size={14} />
                     )}
                     {anonymity && (
                         <>
