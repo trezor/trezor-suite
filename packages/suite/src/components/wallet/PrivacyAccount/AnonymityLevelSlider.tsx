@@ -1,7 +1,7 @@
 import React, { useCallback, useState, ChangeEventHandler } from 'react';
 import styled from 'styled-components';
 import { AnimatePresence, HTMLMotionProps, motion } from 'framer-motion';
-import { Range, P, Warning, variables, useTheme, motionEasing } from '@trezor/components';
+import { Range, Warning, useTheme, motionEasing } from '@trezor/components';
 import { Translation } from '@suite-components';
 import { useSelector, useActions, useAnonymityStatus } from '@suite-hooks';
 import { AnonymityStatus } from '@suite-constants/coinjoin';
@@ -15,22 +15,6 @@ const Container = styled.div`
 
 const Slider = styled(Range)`
     margin-top: 0;
-    background: none;
-    cursor: pointer;
-`;
-
-const LabelsWrapper = styled.div`
-    display: flex;
-    justify-content: space-between;
-    margin-left: 10px;
-`;
-
-const Label = styled(P)<{ $offset?: number }>`
-    position: relative;
-    left: ${({ $offset }) => $offset ?? 0}px;
-    font-size: ${variables.FONT_SIZE.TINY};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    opacity: 0.5;
     cursor: pointer;
 `;
 
@@ -115,16 +99,9 @@ export const AnonymityLevelSlider = ({ className }: AnonymityLevelSliderProps) =
                 onChange={handleSliderChange}
                 trackStyle={trackStyle}
                 step="any"
+                labels={[1, 3, 10, 30, 100]}
+                onLabelClick={number => setAnonymity(getPosition(number))}
             />
-            <LabelsWrapper>
-                <Label onClick={() => setSliderPosition(getPosition(1))}>1</Label>
-                <Label onClick={() => setSliderPosition(getPosition(3))}>3</Label>
-                <Label onClick={() => setSliderPosition(getPosition(10))} $offset={7}>
-                    10
-                </Label>
-                <Label onClick={() => setSliderPosition(getPosition(30))}>30</Label>
-                <Label onClick={() => setSliderPosition(getPosition(100))}>100</Label>
-            </LabelsWrapper>
 
             <AnimatePresence initial={!isErrorDisplayed}>
                 {isErrorDisplayed && (
