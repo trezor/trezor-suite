@@ -188,12 +188,12 @@ const IconRight = styled.div`
     }
 `;
 
-const MoreIcon = styled(Icon)`
+const MoreIcon = styled(Icon)<{ $isDisabled?: boolean }>`
     transition: background 0.1s;
     border-radius: 6px;
 
     :hover {
-        background: ${({ theme }) => theme.STROKE_GREY};
+        background: ${({ $isDisabled, theme }) => !$isDisabled && theme.STROKE_GREY};
     }
 `;
 
@@ -379,6 +379,7 @@ const Dropdown = forwardRef(
                 size={24}
                 icon="MORE"
                 color={!isDisabled ? theme.TYPE_DARK_GREY : theme.TYPE_LIGHT_GREY}
+                $isDisabled={isDisabled}
                 onClick={
                     !isDisabled
                         ? e => {
