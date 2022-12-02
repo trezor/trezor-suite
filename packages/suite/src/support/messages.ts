@@ -5606,6 +5606,11 @@ export default defineMessages({
         defaultMessage: 'There are no spendable UTXOs in your account.',
         description: 'Message showing in Coin control section',
     },
+    TR_LOADING_TRANSACTION_DETAILS: {
+        id: 'TR_LOADING_TRANSACTION_DETAILS',
+        defaultMessage: 'Loading transaction details',
+        description: 'Tooltip over a spinner icon in Coin control section',
+    },
     TR_REGISTERED_FOR_COINJOIN: {
         id: 'TR_REGISTERED_FOR_COINJOIN',
         defaultMessage: 'Registered in CoinJoin',
