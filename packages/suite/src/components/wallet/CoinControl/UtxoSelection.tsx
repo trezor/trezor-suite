@@ -7,7 +7,7 @@ import * as modalActions from '@suite-actions/modalActions';
 import { FiatValue, FormattedCryptoAmount, MetadataLabeling, Translation } from '@suite-components';
 import { formatNetworkAmount, getUtxoOutpoint } from '@suite-common/wallet-utils';
 import { useActions, useSelector } from '@suite-hooks';
-import { useTheme, Checkbox, FluidSpinner, variables } from '@trezor/components';
+import { useTheme, Checkbox, FluidSpinner, Tooltip, variables } from '@trezor/components';
 import type { AccountUtxo } from '@trezor/connect';
 import { TransactionTimestamp, UtxoAnonymity } from '@wallet-components';
 import { UtxoTag } from '@wallet-components/CoinControl/UtxoTag';
@@ -196,7 +196,13 @@ export const UtxoSelection = ({ isChecked, transaction, utxo }: UtxoSelectionPro
                     {transaction ? (
                         <TransactionTimestamp showDate transaction={transaction} />
                     ) : (
-                        <StyledFluidSpinner color={theme.TYPE_LIGHT_GREY} size={14} />
+                        <Tooltip
+                            interactive={false}
+                            cursor="pointer"
+                            content={<Translation id="TR_LOADING_TRANSACTION_DETAILS" />}
+                        >
+                            <StyledFluidSpinner color={theme.TYPE_LIGHT_GREY} size={14} />
+                        </Tooltip>
                     )}
                     {anonymity && (
                         <>
