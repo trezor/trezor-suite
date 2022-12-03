@@ -54,8 +54,6 @@ export const AccountBalance = ({ accountKey }: AccountBalanceProps) => {
     const [selectedPoint] = useAtom(selectedPointAtom);
     const { FiatAmountFormatter, CryptoAmountFormatter } = useFormatters();
 
-    console.log(selectedPoint.value);
-
     if (!account) return null;
 
     // TODO this should be done with formatters once they're prepared

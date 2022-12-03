@@ -5,6 +5,7 @@ import { useAtom, atom } from 'jotai';
 import { Blur, Canvas, Text as SkiaText, useFont } from '@shopify/react-native-skia';
 
 import { Color, TypographyStyle, typographyStylesBase } from '@trezor/theme';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { Text } from './Text';
 import { Box } from './Box';
@@ -20,17 +21,13 @@ type DiscreetTextProps = {
 
 export const isDiscreetModeOn = atom(true);
 
-const DiscreetCanvas = ({
-    width,
-    height,
-    fontSize,
-    text,
-}: {
+type DiscreetCanvasProps = {
     width: number;
     height: number;
     fontSize: number;
     text: string;
-}) => {
+};
+const DiscreetCanvas = ({ width, height, fontSize, text }: DiscreetCanvasProps) => {
     const font = useFont(satoshiFont, fontSize);
     if (!font) return null;
 
@@ -42,27 +39,75 @@ const DiscreetCanvas = ({
     );
 };
 
+const textStyle = prepareNativeStyle<{ isDiscreet: boolean }>((_, { isDiscreet }) => ({
+    extend: {
+        condition: isDiscreet,
+        style: {
+            opacity: 0,
+            height: 0,
+        },
+    },
+}));
+
+type DiscreetValueProps = {
+    onSetWidth: (width: number) => void;
+    typography?: TypographyStyle;
+    color?: Color;
+    isDiscreet: boolean;
+    text: string;
+};
+const DiscreetTextValue = ({
+    onSetWidth,
+    typography,
+    isDiscreet,
+    text,
+    color,
+}: DiscreetValueProps) => {
+    const { applyStyle } = useNativeStyles();
+
+    const handleLayout = ({ nativeEvent }: LayoutChangeEvent) => {
+        onSetWidth(nativeEvent.layout.width);
+    };
+
+    return (
+        <Box>
+            <Text
+                variant={typography}
+                color={color}
+                onLayout={handleLayout}
+                style={applyStyle(textStyle, { isDiscreet })}
+            >
+                {text}
+            </Text>
+        </Box>
+    );
+};
+
 export const DiscreetText = ({
     text,
     color = 'gray800',
     typography = 'body',
 }: DiscreetTextProps) => {
     const [isDiscreetMode] = useAtom(isDiscreetModeOn);
-    const [width, setWidth] = useState(50);
-    const { lineHeight, fontSize } = typographyStylesBase[typography];
+    const [width, setWidth] = useState(20);
 
-    const handleLayout = ({ nativeEvent }: LayoutChangeEvent) => {
-        setWidth(nativeEvent.layout.width);
+    const handleSetWidth = (textWidth: number) => {
+        setWidth(textWidth);
     };
+
+    const { lineHeight, fontSize } = typographyStylesBase[typography];
 
     return (
         <Box>
-            {isDiscreetMode ? (
+            <DiscreetTextValue
+                color={color}
+                onSetWidth={handleSetWidth}
+                typography={typography}
+                isDiscreet={isDiscreetMode}
+                text={text}
+            />
+            {isDiscreetMode && (
                 <DiscreetCanvas width={width} height={lineHeight} fontSize={fontSize} text={text} />
-            ) : (
-                <Text variant={typography} color={color} onLayout={handleLayout}>
-                    {text}
-                </Text>
             )}
         </Box>
     );
