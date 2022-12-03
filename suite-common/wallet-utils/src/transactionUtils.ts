@@ -55,9 +55,9 @@ export const parseDateKey = (key: string) => {
 export const groupTransactionsByDate = (transactions: WalletAccountTransaction[]) =>
     // Note: We should use ts-belt for sorting this array but currently, there can be undefined inside
     // Built-in sort doesn't include undefined elements but ts-belt does so there will be some refactoring involved.
-    // Spread ([...arr]) is not used, because it maintains undefined in the array while .slice() removes them so it's needed to do it like this for sorting.
-    transactions
-        .slice()
+    [...transactions]
+        // There could be some undefined/null in array, nut sure how it happens. Maybe related to pagination?
+        .filter(transaction => !!transaction)
         .sort(sortByBlockHeight)
         .reduce<{ [key: string]: WalletAccountTransaction[] }>((r, item) => {
             const key =
