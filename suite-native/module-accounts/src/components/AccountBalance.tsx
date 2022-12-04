@@ -9,7 +9,7 @@ import { CryptoIcon } from '@trezor/icons';
 import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { useFormatters } from '@suite-common/formatters';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
-import { ExtendedGraphPoint, LineGraphPoint } from '@suite-common/wallet-graph';
+import { EnhancedGraphPointWithCryptoBalance } from '@suite-native/graph';
 
 type AccountBalanceProps = {
     accountKey: string;
@@ -19,27 +19,25 @@ const cryptoIconStyle = prepareNativeStyle(utils => ({
     marginRight: utils.spacings.small / 2,
 }));
 
-const selectedPointAtom = atom<ExtendedGraphPoint>({
+const emptyPoint: EnhancedGraphPointWithCryptoBalance = {
     value: 0,
     date: new Date(),
-    originalDate: new Date(),
-});
+    timestamp: 0,
+    cryptoBalance: '0',
+};
+
+const selectedPointAtom = atom<EnhancedGraphPointWithCryptoBalance>(emptyPoint);
 
 // reference is usually first point, same as Revolut does in their app
-const referencePointAtom = atom<ExtendedGraphPoint>({
-    value: 0,
-    date: new Date(),
-    originalDate: new Date(),
-});
+const referencePointAtom = atom<EnhancedGraphPointWithCryptoBalance>(emptyPoint);
 
-export const writeOnlySelectedPointAtom = atom<null, ExtendedGraphPoint | LineGraphPoint>(
+export const writeOnlySelectedPointAtom = atom<null, EnhancedGraphPointWithCryptoBalance>(
     null, // it's a convention to pass `null` for the first argument
     (_get, set, updatedPoint) => {
-        // LineGraphPoint should never happen, but we need it to satisfy typescript because of originalDate
-        set(selectedPointAtom, updatedPoint as ExtendedGraphPoint);
+        set(selectedPointAtom, updatedPoint);
     },
 );
-export const writeOnlyReferencePointAtom = atom<null, ExtendedGraphPoint>(
+export const writeOnlyReferencePointAtom = atom<null, EnhancedGraphPointWithCryptoBalance>(
     null,
     (_get, set, updatedPoint) => {
         set(referencePointAtom, updatedPoint);
