@@ -1,6 +1,6 @@
 import { fromUnixTime } from 'date-fns';
 
-import { FiatGraphPoint, FiatGraphPointWithCryptoBalance } from '@suite-common/graph-neue';
+import { FiatGraphPoint, FiatGraphPointWithCryptoBalance } from '@suite-common/graph';
 
 export type EnhancedGraphPoint = {
     date: Date;

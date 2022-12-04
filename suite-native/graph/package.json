@@ -14,7 +14,7 @@
         "@mobily/ts-belt": "^3.13.1",
         "@shopify/react-native-skia": "0.1.162",
         "@suite-common/formatters": "workspace:*",
-        "@suite-common/graph-neue": "workspace:*",
+        "@suite-common/graph": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
         "@suite-native/atoms": "workspace:*",
         "@suite-native/test-utils": "workspace:*",

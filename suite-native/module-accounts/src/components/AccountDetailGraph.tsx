@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { A } from '@mobily/ts-belt';
 import { useAtom } from 'jotai';
 
-import { useGraphForSingleAccount } from '@suite-common/graph-neue';
+import { useGraphForSingleAccount } from '@suite-common/graph';
 import { Box, Divider } from '@suite-native/atoms';
 import {
     EnhancedGraphPointWithCryptoBalance,

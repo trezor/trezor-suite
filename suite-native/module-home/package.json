@@ -16,7 +16,7 @@
         "@react-navigation/stack": "^6.2.2",
         "@suite-common/fiat-services": "workspace:*",
         "@suite-common/formatters": "workspace:*",
-        "@suite-common/graph-neue": "workspace:*",
+        "@suite-common/graph": "workspace:*",
         "@suite-common/suite-utils": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",

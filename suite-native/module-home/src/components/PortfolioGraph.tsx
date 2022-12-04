@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { useAtom } from 'jotai';
 
-import { useGraphForAllAccounts } from '@suite-common/graph-neue';
+import { useGraphForAllAccounts } from '@suite-common/graph';
 import { enhanceGraphPoints, Graph, TimeSwitch } from '@suite-native/graph';
 import { selectFiatCurrency } from '@suite-native/module-settings';
 

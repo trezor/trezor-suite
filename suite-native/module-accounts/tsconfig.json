@@ -5,9 +5,7 @@
         {
             "path": "../../suite-common/formatters"
         },
-        {
-            "path": "../../suite-common/graph-neue"
-        },
+        { "path": "../../suite-common/graph" },
         {
             "path": "../../suite-common/suite-types"
         },

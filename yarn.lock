@@ -6053,9 +6053,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-common/graph-neue@workspace:*, @suite-common/graph-neue@workspace:suite-common/graph-neue":
+"@suite-common/graph@workspace:*, @suite-common/graph@workspace:suite-common/graph":
   version: 0.0.0-use.local
-  resolution: "@suite-common/graph-neue@workspace:suite-common/graph-neue"
+  resolution: "@suite-common/graph@workspace:suite-common/graph"
   dependencies:
     "@mobily/ts-belt": ^3.11.0
     "@suite-common/fiat-services": "workspace:*"
@@ -6067,7 +6067,7 @@ __metadata:
     "@suite-common/wallet-types": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
     "@trezor/blockchain-link": "workspace:*"
-    "@trezor/connect": 9.0.4
+    "@trezor/connect": "workspace:9.0.4"
     bignumber.js: ^9.1.0
     date-fns: ^2.29.1
     react: 18.2.0
@@ -6400,7 +6400,7 @@ __metadata:
     "@mobily/ts-belt": ^3.13.1
     "@shopify/react-native-skia": 0.1.162
     "@suite-common/formatters": "workspace:*"
-    "@suite-common/graph-neue": "workspace:*"
+    "@suite-common/graph": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/test-utils": "workspace:*"
@@ -6465,7 +6465,7 @@ __metadata:
     "@react-navigation/stack": ^6.2.2
     "@reduxjs/toolkit": 1.8.3
     "@suite-common/formatters": "workspace:*"
-    "@suite-common/graph-neue": "workspace:*"
+    "@suite-common/graph": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
@@ -6529,7 +6529,7 @@ __metadata:
     "@react-navigation/stack": ^6.2.2
     "@suite-common/fiat-services": "workspace:*"
     "@suite-common/formatters": "workspace:*"
-    "@suite-common/graph-neue": "workspace:*"
+    "@suite-common/graph": "workspace:*"
     "@suite-common/suite-utils": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
@@ -7127,7 +7127,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/connect@9.0.4, @trezor/connect@workspace:9.0.4, @trezor/connect@workspace:packages/connect":
+"@trezor/connect@workspace:9.0.4, @trezor/connect@workspace:packages/connect":
   version: 0.0.0-use.local
   resolution: "@trezor/connect@workspace:packages/connect"
   dependencies:
