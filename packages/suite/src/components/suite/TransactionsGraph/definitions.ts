@@ -1,10 +1,9 @@
 import { Account } from '@wallet-types';
-
 import {
     GraphRange,
     AggregatedAccountHistory,
     AggregatedDashboardHistory,
-} from '@suite-common/wallet-graph';
+} from '../../../types/wallet/graph';
 
 interface CommonProps {
     isLoading?: boolean;

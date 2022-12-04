@@ -1,15 +1,18 @@
 import React, { useMemo } from 'react';
 import { GraphPoint, LineGraph } from 'react-native-graph';
 
-import { A } from '@mobily/ts-belt';
+import { N } from '@mobily/ts-belt';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Box, Text } from '@suite-native/atoms';
-import { getExtremaFromGraphPoints } from '@suite-common/wallet-graph';
 
+import {
+    getExtremaFromGraphPoints,
+    EnhancedGraphPointWithCryptoBalance,
+    EnhancedGraphPoint,
+} from '../utils';
 import { AxisLabel } from './AxisLabel';
 import { GraphError } from './GraphError';
-import { EnhancedGraphPointWithCryptoBalance } from '../utils';
 
 type GraphProps<TGraphPoint extends GraphPoint> = {
     points: TGraphPoint[];
@@ -60,7 +63,10 @@ const emptyPoints: EnhancedGraphPointWithCryptoBalance[] = [
     { ...emptyGraphPoint, date: new Date(1) },
 ];
 
-export const Graph = <TGraphPoint extends GraphPoint>({
+// to avoid overflows from the screen
+const clampAxisLabels = (value: number) => N.clamp(value, 5, 90);
+
+export const Graph = <TGraphPoint extends EnhancedGraphPoint>({
     onPointSelected,
     onGestureEnd,
     points = [],
@@ -81,21 +87,19 @@ export const Graph = <TGraphPoint extends GraphPoint>({
             return {
                 TopAxisLabel: () => (
                     <AxisLabel
-                        x={extremaFromGraphPoints.max.x}
+                        x={clampAxisLabels(extremaFromGraphPoints.max.x)}
                         value={extremaFromGraphPoints.max.value}
                     />
                 ),
                 BottomAxisLabel: () => (
                     <AxisLabel
-                        x={extremaFromGraphPoints.min.x}
+                        x={clampAxisLabels(extremaFromGraphPoints.min.x)}
                         value={extremaFromGraphPoints.min.value}
                     />
                 ),
             };
         }
     }, [extremaFromGraphPoints]);
-
-    console.log(nonEmptyPoints);
 
     return (
         <Box style={applyStyle(graphWrapperStyle)}>

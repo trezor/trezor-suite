@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { A } from '@mobily/ts-belt';
@@ -10,7 +10,6 @@ import {
     EnhancedGraphPointWithCryptoBalance,
     enhanceGraphPoints,
     Graph,
-    GraphError,
     TimeSwitch,
 } from '@suite-native/graph';
 import { selectFiatCurrency } from '@suite-native/module-settings';
@@ -46,8 +45,6 @@ export const AccountDetailGraph = ({ accountKey }: AccountDetailGraphProps) => {
 
     useEffect(setInitialSelectedPoints, [setInitialSelectedPoints]);
 
-    if (error) return <GraphError error={error} onTryAgain={refetch} />;
-
     return (
         <Box>
             <Box marginBottom="large">
@@ -56,6 +53,8 @@ export const AccountDetailGraph = ({ accountKey }: AccountDetailGraphProps) => {
                     onGestureEnd={setInitialSelectedPoints}
                     points={enhancedPoints}
                     loading={isLoading}
+                    error={error}
+                    onTryAgain={refetch}
                 />
                 <TimeSwitch
                     selectedTimeFrame={hoursToHistory}

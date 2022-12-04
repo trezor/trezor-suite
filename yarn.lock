@@ -6252,30 +6252,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-common/wallet-graph@workspace:*, @suite-common/wallet-graph@workspace:suite-common/wallet-graph":
-  version: 0.0.0-use.local
-  resolution: "@suite-common/wallet-graph@workspace:suite-common/wallet-graph"
-  dependencies:
-    "@mobily/ts-belt": ^3.13.1
-    "@reduxjs/toolkit": 1.8.3
-    "@suite-common/fiat-services": "workspace:*"
-    "@suite-common/redux-utils": "workspace:*"
-    "@suite-common/suite-config": "workspace:*"
-    "@suite-common/suite-utils": "workspace:*"
-    "@suite-common/test-utils": "workspace:*"
-    "@suite-common/wallet-config": "workspace:*"
-    "@suite-common/wallet-constants": "workspace:*"
-    "@suite-common/wallet-core": "workspace:*"
-    "@suite-common/wallet-types": "workspace:*"
-    "@suite-common/wallet-utils": "workspace:*"
-    "@trezor/blockchain-link": "workspace:*"
-    "@trezor/connect": "workspace:9.0.4"
-    bignumber.js: ^9.1.0
-    date-fns: ^2.29.3
-    jest: ^26.6.3
-  languageName: unknown
-  linkType: soft
-
 "@suite-common/wallet-types@workspace:*, @suite-common/wallet-types@workspace:suite-common/wallet-types":
   version: 0.0.0-use.local
   resolution: "@suite-common/wallet-types@workspace:suite-common/wallet-types"
@@ -6421,15 +6397,16 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/graph@workspace:suite-native/graph"
   dependencies:
+    "@mobily/ts-belt": ^3.13.1
     "@shopify/react-native-skia": 0.1.162
     "@suite-common/formatters": "workspace:*"
-    "@suite-common/wallet-graph": "workspace:*"
+    "@suite-common/graph-neue": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/test-utils": "workspace:*"
     "@trezor/icons": "workspace:*"
     "@trezor/styles": "workspace:*"
-    "@trezor/theme": "workspace:*"
+    date-fns: ^2.29.1
     jest: ^26.6.3
     react: 18.2.0
     react-native: 0.70.5
@@ -6488,10 +6465,10 @@ __metadata:
     "@react-navigation/stack": ^6.2.2
     "@reduxjs/toolkit": 1.8.3
     "@suite-common/formatters": "workspace:*"
+    "@suite-common/graph-neue": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
-    "@suite-common/wallet-graph": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
     "@suite-native/accounts": "workspace:*"
@@ -6556,7 +6533,6 @@ __metadata:
     "@suite-common/suite-utils": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
-    "@suite-common/wallet-graph": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
     "@suite-native/assets": "workspace:*"
@@ -6690,7 +6666,6 @@ __metadata:
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/test-utils": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
-    "@suite-common/wallet-graph": "workspace:*"
     "@suite-native/config": "workspace:*"
     "@suite-native/module-devices": "workspace:*"
     "@suite-native/module-settings": "workspace:*"
@@ -7637,7 +7612,6 @@ __metadata:
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-constants": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
-    "@suite-common/wallet-graph": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
     "@testing-library/react": 12.1.5

@@ -8,12 +8,15 @@ import { useSelector, useActions } from '@suite-hooks';
 import * as graphActions from '@wallet-actions/graphActions';
 import { RangeSelector } from '@suite-components/TransactionsGraph/components/RangeSelector';
 
-import { aggregateBalanceHistory, getMinMaxValueFromData } from '@suite-common/wallet-graph';
 import { calcTicks, calcTicksFromData } from '@suite-common/suite-utils';
 import { variables, Button, Card } from '@trezor/components';
 
 import TransactionSummaryDropdown from './components/TransactionSummaryDropdown';
 import SummaryCards from './components/SummaryCards';
+import {
+    aggregateBalanceHistory,
+    getMinMaxValueFromData,
+} from '../../../../../utils/wallet/graphUtils';
 
 const Wrapper = styled.div`
     display: flex;

@@ -6,6 +6,9 @@
             "path": "../../suite-common/formatters"
         },
         {
+            "path": "../../suite-common/graph-neue"
+        },
+        {
             "path": "../../suite-common/suite-types"
         },
         {
@@ -13,9 +16,6 @@
         },
         {
             "path": "../../suite-common/wallet-core"
-        },
-        {
-            "path": "../../suite-common/wallet-graph"
         },
         {
             "path": "../../suite-common/wallet-types"

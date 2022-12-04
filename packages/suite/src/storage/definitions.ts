@@ -17,8 +17,8 @@ import type {
 
 import type { MessageSystem } from '@trezor/message-system';
 import type { BackendSettings, WalletSettings, CoinjoinAccount } from '@suite-common/wallet-types';
-import type { GraphData } from '@suite-common/wallet-graph';
 import type { StorageUpdateMessage } from '@trezor/suite-storage';
+import { GraphData } from '../types/wallet/graph';
 
 export interface DBWalletAccountTransaction {
     tx: WalletAccountTransaction;

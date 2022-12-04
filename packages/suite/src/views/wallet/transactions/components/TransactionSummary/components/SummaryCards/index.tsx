@@ -5,11 +5,12 @@ import BigNumber from 'bignumber.js';
 import { Translation, HiddenPlaceholder, FormattedDate } from '@suite-components';
 import { Account } from '@wallet-types';
 
-import { sumFiatValueMap, GraphRange, AggregatedAccountHistory } from '@suite-common/wallet-graph';
 import { useFormatters } from '@suite-common/formatters';
 import { variables } from '@trezor/components';
 
 import { InfoCard } from './components/InfoCard';
+import { AggregatedAccountHistory, GraphRange } from '../../../../../../../types/wallet/graph';
+import { sumFiatValueMap } from '../../../../../../../utils/wallet/graphUtils';
 
 const InfoCardsWrapper = styled.div`
     display: grid;

@@ -3,15 +3,7 @@ import { Dispatch, GetState } from '@suite-types';
 import { Account } from '@wallet-types';
 
 import { isTrezorConnectBackendType } from '@suite-common/wallet-utils';
-import {
-    ensureHistoryRates,
-    accountGraphDataFilterFn,
-    deviceGraphDataFilterFn,
-    enhanceBlockchainAccountHistory,
-    GraphRange,
-    GraphScale,
-    GraphData,
-} from '@suite-common/wallet-graph';
+
 import TrezorConnect from '@trezor/connect';
 
 import {
@@ -23,6 +15,13 @@ import {
     SET_SELECTED_RANGE,
     SET_SELECTED_VIEW,
 } from './constants/graphConstants';
+import { GraphData, GraphRange, GraphScale } from '../../types/wallet/graph';
+import {
+    ensureHistoryRates,
+    enhanceBlockchainAccountHistory,
+    accountGraphDataFilterFn,
+    deviceGraphDataFilterFn,
+} from '../../utils/wallet/graphUtils';
 
 export type GraphAction =
     | {

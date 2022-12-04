@@ -5,11 +5,6 @@ import { ComposedChart, Tooltip, Bar, YAxis, XAxis, Line, CartesianGrid, Cell } 
 import { useGraph } from '@suite-hooks';
 
 import { variables, Icon, useTheme } from '@trezor/components';
-import {
-    calcYDomain,
-    calcXDomain,
-    calcFakeGraphDataForTimestamps,
-} from '@suite-common/wallet-graph';
 
 import { Props } from './definitions';
 import { RangeSelector } from './components/RangeSelector';
@@ -20,6 +15,11 @@ import { CustomBar } from './components/CustomBar';
 import { CustomTooltipDashboard } from './components/CustomTooltipDashboard';
 import { CustomTooltipAccount } from './components/CustomTooltipAccount';
 import { SkeletonTransactionsGraph } from './components/SkeletonTransactionsGraph';
+import {
+    calcYDomain,
+    calcFakeGraphDataForTimestamps,
+    calcXDomain,
+} from '../../../utils/wallet/graphUtils';
 
 const Wrapper = styled.div`
     display: flex;

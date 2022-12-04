@@ -4,7 +4,7 @@ import { FormattedDate } from 'react-intl';
 import { differenceInMonths } from 'date-fns';
 
 import { useTheme } from '@trezor/components';
-import { GraphRange } from '@suite-common/wallet-graph';
+import { GraphRange } from '../../../../types/wallet/graph';
 
 interface CustomXAxisProps {
     selectedRange: GraphRange;
