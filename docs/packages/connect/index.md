@@ -16,7 +16,7 @@ TrezorConnect.init({
 
 Starting with Trezor Connect 7, we have implemented a new feature — Trezor Connect Manifest — which requires that you as a Trezor Connect integrator, to share your e-mail and application url with us.
 This provides us with the **ability to reach you in case of any required maintenance.**
-This subscription is mandatory. Trezor Connect raises an error that reads "Manifest not set if manifest is not provided. It can be either either set via `manifest` method or passed as a param in `init` method.
+This subscription is mandatory. Trezor Connect raises an error that reads "Manifest not set" if manifest is not provided. It can be either set via `manifest` method or passed as a param in `init` method.
 
 ```javascript
 TrezorConnect.manifest({
@@ -39,7 +39,7 @@ After implementing Trezor Connect, a small file containing a declaration
 of methods is downloaded. Once the Trezor Connect [method](methods.md) is used,
 the connection to the trezor.io external webpage is established and the
 Trezor Connect library is going to be downloaded and injected as an
-invisible iframe into your application. Trezor Connect is,
+invisible iframe into your application. Trezor Connect is open source,
 therefore it is provable that it is not saving any
 information about the device or account. Trezor Bridge has whitelisted
 domains set to "\*.trezor.io" and "localhost" and it is ignoring
