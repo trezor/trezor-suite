@@ -81,9 +81,8 @@ export const setProxy = async (api: TrezorConnect) => {
             username: 'johndoe',
             timeout: 100000,
         },
-        useOnionLinks: true,
     });
-    api.setProxy({ proxy: 'socks://localhost:9050', useOnionLinks: true });
+    api.setProxy({ proxy: 'socks://localhost:9050' });
     api.setProxy({ proxy: undefined });
 
     // @ts-expect-error

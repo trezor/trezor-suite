@@ -1,4 +1,3 @@
-import { config } from '../data/config';
 import { DataManager } from '../data/DataManager';
 import { ERRORS } from '../constants';
 import { Blockchain, BlockchainOptions } from './Blockchain';
@@ -31,10 +30,6 @@ export class BackendManager {
                 postMessage,
                 debug: DataManager.getSettings('debug'),
                 proxy: DataManager.getSettings('proxy'),
-                onionDomains:
-                    DataManager.getSettings('useOnionLinks') && !this.custom[coinInfo.shortcut]
-                        ? config.onionDomains
-                        : undefined,
                 onConnected: url => this.setPreferred(coinInfo.shortcut, url),
                 onDisconnected: () => this.remove(coinInfo.shortcut),
             });
