@@ -107,7 +107,7 @@ export const getAccountCandidates = (
 };
 
 // Use middleware algorithm to process preselected CoinjoinRounds and Accounts
-export const selectUtxoForRound = async (
+export const selectInputsForRound = async (
     generator: AliceGenerator,
     roundCandidates: CoinjoinRound[],
     accountCandidates: ReturnType<typeof getAccountCandidates>,
@@ -153,13 +153,21 @@ export const selectUtxoForRound = async (
                     // TODO: check account maxMining rate vs round miningRate + maxCoordinator rate vs round coordinationFeeRate
                     // ...finally call CoinjoinRound + Account + Round combination on middleware
                     return middleware
-                        .selectUtxoForRound(roundConstants, utxos, account.targetAnonymity, {
-                            signal: options.signal,
-                            baseUrl: options.middlewareUrl,
-                        })
+                        .selectInputsForRound(
+                            {
+                                ...roundConstants,
+                                utxos,
+                                anonScoreTarget: account.targetAnonymity,
+                                liquidityClue: 0, // TODO: to be done later
+                            },
+                            {
+                                signal: options.signal,
+                                baseUrl: options.middlewareUrl,
+                            },
+                        )
                         .then(indices => indices.filter(i => utxos[i])) // filter valid existing indices
                         .catch(error => {
-                            options.log(`selectUtxoForRound failed ${error.message}`);
+                            options.log(`selectInputsForRound failed ${error.message}`);
                             return [] as number[];
                         }); // return empty response on error, TODO: should we provide preselected rounds/account anyway?
                 }),
@@ -171,7 +179,7 @@ export const selectUtxoForRound = async (
     const sumUtxosInRounds = utxoSelection.map(acc => acc.reduce((a, b) => a + b.length, 0));
     const maxUtxosInRound = Math.max(...sumUtxosInRounds);
     if (maxUtxosInRound < 1) {
-        options.log('No results from selectUtxoForRound');
+        options.log('No results from selectInputsForRound');
         return;
     }
 
@@ -234,7 +242,7 @@ export const selectRound = async (
     }
 
     log(`Looking for utxos`);
-    const newRound = await selectUtxoForRound(
+    const newRound = await selectInputsForRound(
         aliceGenerator,
         roundCandidates,
         accountCandidates,

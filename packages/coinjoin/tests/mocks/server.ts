@@ -7,24 +7,24 @@ import { DEFAULT_ROUND, FEE_RATE_MEDIANS } from '../fixtures/round.fixture';
 
 const DEFAULT = {
     // middleware
-    'analyze-transaction': {
+    'get-anonymity-scores': {
         results: [],
     },
-    'select-utxo-for-round': {
+    'select-inputs-for-round': {
         indices: [],
     },
-    'create-request': {
-        realCredentialsRequestData: {},
+    'get-real-credential-requests': {
+        realCredentialRequests: {},
     },
-    'create-request-for-zero-amount': {
-        zeroCredentialsRequestData: {
+    'get-zero-credential-requests': {
+        zeroCredentialRequests: {
             credentialsRequest: {},
         },
     },
-    'handle-response': {
+    'get-credentials': {
         credentials: [{}, {}],
     },
-    'decompose-amounts': { outputAmounts: [] },
+    'get-outputs-amounts': { outputAmounts: [] },
     // payment request server
     'payment-request': {
         recipient_name: 'trezor.io',

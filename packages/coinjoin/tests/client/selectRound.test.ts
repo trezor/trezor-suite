@@ -4,7 +4,7 @@ import { CoinjoinPrison } from '../../src/client/CoinjoinPrison';
 import {
     getRoundCandidates,
     getAccountCandidates,
-    selectUtxoForRound,
+    selectInputsForRound,
     selectRound,
     AliceGenerator,
     CoinjoinRoundGenerator,
@@ -158,15 +158,15 @@ describe('selectRound', () => {
         expect(result.length).toBeLessThan(5); // should be 4 but there is always 20% chance that will be 3
     });
 
-    it('middleware/select-utxo-for-round throws error', async () => {
+    it('middleware/select-inputs-for-round throws error', async () => {
         // mock server response
         // return error for each round with miningFeeRate: 1 (second round in fixture)
         // for other rounds return invalid indices
         const spy = jest.fn();
         server?.addListener('test-request', ({ url, data, resolve, reject }) => {
-            if (url.endsWith('/select-utxo-for-round')) {
+            if (url.endsWith('/select-inputs-for-round')) {
                 spy();
-                if (data.constants.miningFeeRate === 1) {
+                if (data.miningFeeRate === 1) {
                     reject(500, { error: 'ExpectedRuntimeError' });
                 } else {
                     resolve({
@@ -176,7 +176,7 @@ describe('selectRound', () => {
             }
         });
 
-        const result = await selectUtxoForRound(
+        const result = await selectInputsForRound(
             GENERATORS[1],
             [
                 {
@@ -209,14 +209,14 @@ describe('selectRound', () => {
         // for other rounds return invalid indices
         const spy = jest.fn();
         server?.addListener('test-request', ({ url, resolve }) => {
-            if (url.endsWith('/select-utxo-for-round')) {
+            if (url.endsWith('/select-inputs-for-round')) {
                 spy();
                 resolve([]);
             }
             resolve();
         });
 
-        const result = await selectUtxoForRound(
+        const result = await selectInputsForRound(
             GENERATORS[1],
             [
                 {
@@ -255,14 +255,14 @@ describe('selectRound', () => {
     });
 
     it('Success. new CoinjoinRound created', async () => {
-        // dummy mock of /select-utxo-for-round
+        // dummy mock of /select-inputs-for-round
         // pick utxo which amount is greater than miningFeeRate + 1000
         const spy = jest.fn();
         server?.addListener('test-request', ({ url, data, resolve }) => {
-            if (url.endsWith('/select-utxo-for-round')) {
+            if (url.endsWith('/select-inputs-for-round')) {
                 spy();
                 const indices = data.utxos.flatMap((utxo: any, i: number) => {
-                    if (utxo.amount < 1000 + data.constants.miningFeeRate) return [];
+                    if (utxo.amount < 1000 + data.miningFeeRate) return [];
                     return i;
                 });
 

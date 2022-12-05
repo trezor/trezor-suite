@@ -26,7 +26,7 @@ const joinInputsCredentials = async (
 
     let amountCredentials = inputs[0].confirmedAmountCredentials!;
     let vsizeCredentials = inputs[0].confirmedVsizeCredentials!;
-    let { outputSize } = inputs[0];
+    const { inputSize, outputSize } = inputs[0];
 
     options.log(
         `Joining Credentials for account ~~${accountKey}~~. Total inputs: ${inputs.length}`,
@@ -37,6 +37,7 @@ const joinInputsCredentials = async (
             accountKey,
             amountCredentials,
             vsizeCredentials,
+            inputSize,
             outputSize,
         };
     }
@@ -109,24 +110,28 @@ const joinInputsCredentials = async (
             realVsizeCredentials.credentialsResponseValidation,
             { signal, baseUrl: middlewareUrl },
         );
-        outputSize = Math.max(outputSize, current.outputSize);
     }
 
     return {
         accountKey,
         amountCredentials,
         vsizeCredentials,
+        inputSize,
         outputSize,
     };
 };
 
-export const getOutputAmounts = async (
-    round: CoinjoinRound,
-    accountKey: string,
-    availableVsize: number,
-    outputSize: number,
-    options: CoinjoinRoundOptions,
-) => {
+interface GetOutputAmountsParams {
+    round: CoinjoinRound;
+    options: CoinjoinRoundOptions;
+    accountKey: string;
+    inputSize: number;
+    outputSize: number;
+    availableVsize: number;
+}
+
+export const getOutputAmounts = async (params: GetOutputAmountsParams) => {
+    const { round, accountKey, outputSize, options } = params;
     const { roundParameters } = round;
     const { signal, middlewareUrl } = options;
 
@@ -150,15 +155,16 @@ export const getOutputAmounts = async (
             externalAmounts.push(i.coin.txOut.value - coordinatorFee - miningFee);
         }
     });
-    const outputAmounts = await middleware.decomposeAmounts(
+    const outputAmounts = await middleware.getOutputsAmounts(
         {
-            feeRate: roundParameters.miningFeeRate,
+            inputSize: params.inputSize,
+            outputSize,
+            availableVsize: params.availableVsize,
+            miningFeeRate: roundParameters.miningFeeRate,
             allowedOutputAmounts: roundParameters.allowedOutputAmounts,
+            internalAmounts,
+            externalAmounts,
         },
-        outputSize,
-        availableVsize, // TODO: sum all available vsize and use chunks in output registration (increase nr of outputs)
-        internalAmounts,
-        externalAmounts,
         { signal, baseUrl: middlewareUrl },
     );
     options.log(`Decompose amounts: ${outputAmounts.join('')}`);
@@ -204,9 +210,16 @@ export const outputDecomposition = async (
 
     // calculate amounts
     const outputAmounts = await Promise.all(
-        joinedCredentials.map(({ vsizeCredentials, outputSize, accountKey }) => {
+        joinedCredentials.map(({ vsizeCredentials, inputSize, outputSize, accountKey }) => {
             const availableVsize = sumCredentials(vsizeCredentials);
-            return getOutputAmounts(round, accountKey, availableVsize, outputSize, options);
+            return getOutputAmounts({
+                round,
+                accountKey,
+                availableVsize,
+                inputSize,
+                outputSize,
+                options,
+            });
         }),
     );
 

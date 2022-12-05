@@ -22,8 +22,8 @@ export const getRealCredentials = async (
     maxCredentialValue: number,
     options: RequestOptions,
 ) => {
-    const data = await request<{ realCredentialsRequestData: RealCredentials }>(
-        'create-request',
+    const data = await request<{ realCredentialRequests: RealCredentials }>(
+        'get-real-credential-requests',
         {
             amountsToRequest,
             credentialIssuerParameters,
@@ -32,90 +32,76 @@ export const getRealCredentials = async (
         },
         options,
     );
-    return data.realCredentialsRequestData;
+    return data.realCredentialRequests;
 };
 
 export const getZeroCredentials = async (issuer: IssuerParameter, options: RequestOptions) => {
-    const data = await request<{ zeroCredentialsRequestData: ZeroCredentials }>(
-        'create-request-for-zero-amount',
+    const data = await request<{ zeroCredentialRequests: ZeroCredentials }>(
+        'get-zero-credential-requests',
         {
             credentialIssuerParameters: issuer,
         },
         options,
     );
-    return data.zeroCredentialsRequestData;
+    return data.zeroCredentialRequests;
 };
 
 export const getCredentials = async (
     credentialIssuerParameters: IssuerParameter,
-    registrationResponse: RealCredentials,
-    registrationValidationData: CredentialsResponseValidation,
+    credentialsResponse: RealCredentials,
+    credentialsValidationData: CredentialsResponseValidation,
     options: RequestOptions,
 ) => {
     const data = await request<{ credentials: Credentials[] }>(
-        'handle-response',
+        'get-credentials',
         {
             credentialIssuerParameters,
-            registrationResponse,
-            registrationValidationData,
+            credentialsResponse,
+            credentialsValidationData,
         },
         options,
     );
     return data.credentials;
 };
 
-export const decomposeAmounts = async (
-    constants: { feeRate: number; allowedOutputAmounts: AllowedRange },
-    outputSize: number,
-    availableVsize: number,
-    internalAmounts: number[],
-    externalAmounts: number[],
+export const getOutputsAmounts = async (
+    body: {
+        inputSize: number;
+        outputSize: number;
+        availableVsize: number;
+        miningFeeRate: number;
+        allowedOutputAmounts: AllowedRange;
+        internalAmounts: number[];
+        externalAmounts: number[];
+    },
     options: RequestOptions,
 ) => {
-    const data = await request<{ outputAmounts: number[] }>(
-        'decompose-amounts',
-        {
-            constants,
-            outputSize,
-            availableVsize,
-            internalAmounts,
-            externalAmounts,
-            strategy: 'minimum_cost',
-        },
-        options,
-    );
+    const data = await request<{ outputAmounts: number[] }>('get-outputs-amounts', body, options);
     return data.outputAmounts;
 };
 
-export const selectUtxoForRound = async (
-    constants: {
+export const selectInputsForRound = async (
+    body: {
         allowedInputTypes: AllowedScriptTypes[];
         coordinationFeeRate: CoordinationFeeRate;
         miningFeeRate: number;
         allowedInputAmounts: AllowedRange;
         allowedOutputAmounts: AllowedRange;
+        utxos: UtxoForRound[];
+        anonScoreTarget: number;
+        liquidityClue: number;
     },
-    utxos: UtxoForRound[],
-    anonScoreTarget: number,
     options: RequestOptions,
 ) => {
-    const data = await request<{ indices: number[] }>(
-        'select-utxo-for-round',
-        {
-            utxos,
-            constants,
-            anonScoreTarget,
-        },
-        options,
-    );
+    const data = await request<{ indices: number[] }>('select-inputs-for-round', body, options);
     return data.indices;
 };
 
-export const analyzeTransactions = async (
+export const getAnonymityScores = async (
     transactions: AnalyzeTransactionDetails[],
     options: RequestOptions,
 ) => {
-    const data = await request<AnalyzeResult>('analyze-transaction', { transactions }, options);
+    const data = await request<AnalyzeResult>('get-anonymity-scores', { transactions }, options);
     return data.results;
 };
 

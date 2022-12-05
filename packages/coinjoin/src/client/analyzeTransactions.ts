@@ -58,7 +58,7 @@ export const analyzeTransactions = async (
         } as AnalyzeTransactionDetails;
     });
 
-    const result = await middleware.analyzeTransactions(params, {
+    const result = await middleware.getAnonymityScores(params, {
         baseUrl: options.middlewareUrl,
         signal: options.signal,
     });

@@ -84,9 +84,9 @@ describe('inputRegistration', () => {
                     isPayingZeroCoordinationFee: true,
                 });
             }
-            if (url.endsWith('/create-request')) {
+            if (url.endsWith('/get-real-credential-requests')) {
                 resolve({
-                    realCredentialsRequestData: {
+                    realCredentialRequests: {
                         credentialsRequest: {
                             delta: data.amountsToRequest[0],
                         },
@@ -243,7 +243,7 @@ describe('inputRegistration', () => {
 
     it('error in middleware after successful registration (input should be unregistered while still can)', async () => {
         server?.addListener('test-request', ({ url, resolve, reject }) => {
-            if (url.endsWith('/create-request')) {
+            if (url.endsWith('/get-real-credential-requests')) {
                 reject(500, { error: 'ExpectedRuntimeError' });
             }
             resolve();
