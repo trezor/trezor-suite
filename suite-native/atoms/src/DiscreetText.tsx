@@ -13,12 +13,6 @@ import { Box } from './Box';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const satoshiFont = require('../../../packages/theme/fonts/TTSatoshi-Regular.otf');
 
-type DiscreetTextProps = {
-    typography?: TypographyStyle;
-    color?: Color;
-    text: string;
-};
-
 export const isDiscreetModeOn = atom(true);
 
 type DiscreetCanvasProps = {
@@ -49,20 +43,14 @@ const textStyle = prepareNativeStyle<{ isDiscreet: boolean }>((_, { isDiscreet }
     },
 }));
 
-type DiscreetValueProps = {
+type TextValueProps = {
     onSetWidth: (width: number) => void;
     typography?: TypographyStyle;
     color?: Color;
     isDiscreet: boolean;
-    text: string;
+    children: string;
 };
-const DiscreetTextValue = ({
-    onSetWidth,
-    typography,
-    isDiscreet,
-    text,
-    color,
-}: DiscreetValueProps) => {
+const TextValue = ({ onSetWidth, typography, isDiscreet, color, children }: TextValueProps) => {
     const { applyStyle } = useNativeStyles();
 
     const handleLayout = ({ nativeEvent }: LayoutChangeEvent) => {
@@ -77,37 +65,44 @@ const DiscreetTextValue = ({
                 onLayout={handleLayout}
                 style={applyStyle(textStyle, { isDiscreet })}
             >
-                {text}
+                {children}
             </Text>
         </Box>
     );
 };
 
+type DiscreetTextProps = {
+    typography?: TypographyStyle;
+    color?: Color;
+    children: string;
+};
 export const DiscreetText = ({
-    text,
+    children,
     color = 'gray800',
     typography = 'body',
 }: DiscreetTextProps) => {
     const [isDiscreetMode] = useAtom(isDiscreetModeOn);
-    const [width, setWidth] = useState(20);
-
-    const handleSetWidth = (textWidth: number) => {
-        setWidth(textWidth);
-    };
+    const [width, setWidth] = useState(0);
 
     const { lineHeight, fontSize } = typographyStylesBase[typography];
 
     return (
         <Box>
-            <DiscreetTextValue
+            <TextValue
                 color={color}
-                onSetWidth={handleSetWidth}
+                onSetWidth={setWidth}
                 typography={typography}
                 isDiscreet={isDiscreetMode}
-                text={text}
-            />
+            >
+                {children}
+            </TextValue>
             {isDiscreetMode && (
-                <DiscreetCanvas width={width} height={lineHeight} fontSize={fontSize} text={text} />
+                <DiscreetCanvas
+                    width={width}
+                    height={lineHeight}
+                    fontSize={fontSize}
+                    text={children}
+                />
             )}
         </Box>
     );
