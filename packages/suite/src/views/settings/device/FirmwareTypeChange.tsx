@@ -1,7 +1,7 @@
 import React from 'react';
-import styled, { useTheme } from 'styled-components';
+import styled from 'styled-components';
 
-import { Translation } from '@suite-components';
+import { Translation, TrezorLink } from '@suite-components';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@suite-components/Settings';
 import { useDevice, useActions } from '@suite-hooks';
 import * as routerActions from '@suite-actions/routerActions';
@@ -9,6 +9,7 @@ import { Button } from '@trezor/components';
 import { useAnchor } from '@suite-hooks/useAnchor';
 import { SettingsAnchor } from '@suite-constants/anchors';
 import { getFirmwareType, getFirmwareVersion } from '@trezor/device-utils';
+import { HELP_FIRMWARE_TYPE } from '@trezor/urls';
 
 const Version = styled.div`
     span {
@@ -31,7 +32,6 @@ export const FirmwareTypeChange = ({ isDeviceLocked }: FirmwareTypeProps) => {
         goto: routerActions.goto,
     });
 
-    const theme = useTheme();
     const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.FirmwareType);
 
     if (!device?.features) {
@@ -64,15 +64,15 @@ export const FirmwareTypeChange = ({ isDeviceLocked }: FirmwareTypeProps) => {
                                 id="TR_YOUR_FIRMWARE_TYPE"
                                 values={{
                                     version: (
-                                        <Button
-                                            variant="tertiary"
-                                            // icon={revision ? 'EXTERNAL_LINK' : undefined}
-                                            // alignIcon="right"
-                                            color={theme.TYPE_DARK_GREY} // TODO: remove when an article is added
-                                            disabled // TODO: this should link to an article in knowledge base or guide in the future
-                                        >
-                                            {currentFwType}
-                                        </Button>
+                                        <TrezorLink href={HELP_FIRMWARE_TYPE} variant="nostyle">
+                                            <Button
+                                                variant="tertiary"
+                                                icon="EXTERNAL_LINK"
+                                                alignIcon="right"
+                                            >
+                                                {currentFwType}
+                                            </Button>
+                                        </TrezorLink>
                                     ),
                                 }}
                             />
