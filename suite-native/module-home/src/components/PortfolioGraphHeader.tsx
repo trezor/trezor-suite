@@ -123,10 +123,9 @@ const Balance = () => {
     const [point] = useAtom(selectedPointAtom);
 
     return (
-        <DiscreetText
-            typography="titleLarge"
-            text={FiatAmountFormatter.format(point.value) ?? ''}
-        />
+        <DiscreetText typography="titleLarge">
+            {FiatAmountFormatter.format(point.value)}
+        </DiscreetText>
     );
 };
 

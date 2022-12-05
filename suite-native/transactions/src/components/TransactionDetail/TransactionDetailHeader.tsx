@@ -47,7 +47,7 @@ export const TransactionDetailHeader = ({
             </Box>
             <DiscreetText typography="titleMedium">{amount}</DiscreetText>
             <DiscreetText typography="label" color="gray700">
-                {FiatAmountFormatter.format(fiatAmount ?? 0) ?? ''}
+                {FiatAmountFormatter.format(fiatAmount ?? 0)}
             </DiscreetText>
         </>
     );

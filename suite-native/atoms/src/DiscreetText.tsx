@@ -81,10 +81,10 @@ const TextValue = ({ onSetWidth, typography, isDiscreet, color, children }: Text
 type DiscreetTextProps = {
     typography?: TypographyStyle;
     color?: Color;
-    children: string;
+    children?: string | null;
 };
 export const DiscreetText = ({
-    children,
+    children = '',
     color = 'gray800',
     typography = 'body',
 }: DiscreetTextProps) => {
@@ -92,6 +92,8 @@ export const DiscreetText = ({
     const [width, setWidth] = useState(0);
 
     const { lineHeight, fontSize } = typographyStylesBase[typography];
+
+    if (!children) return null;
 
     return (
         <Box>

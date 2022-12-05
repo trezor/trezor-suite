@@ -74,7 +74,7 @@ export const AccountBalance = ({ accountKey }: AccountBalanceProps) => {
                 </Box>
                 <Box>
                     <DiscreetText typography="titleLarge" color="gray800">
-                        {FiatAmountFormatter.format(selectedPoint.value) ?? ''}
+                        {FiatAmountFormatter.format(selectedPoint.value)}
                     </DiscreetText>
                 </Box>
             </Box>

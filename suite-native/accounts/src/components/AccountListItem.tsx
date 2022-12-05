@@ -53,7 +53,7 @@ export const AccountListItem = ({ account }: AccountListItemProps) => {
             </Box>
             <Box alignItems="flex-end">
                 <DiscreetText color="gray800" typography="hint">
-                    {FiatAmountFormatter.format(fiatAmount ?? 0) ?? ''}
+                    {FiatAmountFormatter.format(fiatAmount ?? 0)}
                 </DiscreetText>
                 <DiscreetText typography="hint" color="gray600">
                     {CryptoAmountFormatter.format(account.formattedBalance, {

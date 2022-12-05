@@ -66,7 +66,7 @@ export const AssetItem = ({
                         </Box>
                     </Box>
                     <Box alignItems="flex-end">
-                        <DiscreetText>{FiatAmountFormatter.format(fiatBalance) ?? ''}</DiscreetText>
+                        <DiscreetText>{FiatAmountFormatter.format(fiatBalance)}</DiscreetText>
                         <DiscreetText color="gray600" typography="hint">
                             {CryptoAmountFormatter.format(cryptoCurrencyValue, {
                                 symbol: cryptoCurrencySymbol,
