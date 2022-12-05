@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import { GraphPoint, LineGraph } from 'react-native-graph';
+import { ActivityIndicator } from 'react-native';
 
 import { N } from '@mobily/ts-belt';
 
@@ -48,7 +49,7 @@ const graphStyle = prepareNativeStyle<GraphStyleProps>((_, { loading, error }) =
     alignSelf: 'center',
     height: GRAPH_HEIGHT,
     width: '100%',
-    opacity: loading || !!error ? 0.2 : 1,
+    opacity: loading || !!error ? 0.1 : 1,
 }));
 
 export const emptyGraphPoint: EnhancedGraphPointWithCryptoBalance = {
@@ -79,7 +80,8 @@ export const Graph = <TGraphPoint extends EnhancedGraphPoint>({
         applyStyle,
         utils: { colors },
     } = useNativeStyles();
-    const isPointsEmpty = points.length === 0;
+    const isPointsEmpty = points.length <= 1;
+
     const nonEmptyPoints = isPointsEmpty ? emptyPoints : points;
     const extremaFromGraphPoints = useMemo(() => getExtremaFromGraphPoints(points), [points]);
     const axisLabels = useMemo(() => {
@@ -117,6 +119,7 @@ export const Graph = <TGraphPoint extends EnhancedGraphPoint>({
             />
             {loading && (
                 <Box style={applyStyle(graphMessageStyleContainer)}>
+                    <ActivityIndicator size="large" color={colors.green} />
                     <Text variant="label" color="gray600">
                         Loading graph data...
                     </Text>
