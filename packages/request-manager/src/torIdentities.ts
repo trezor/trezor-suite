@@ -12,7 +12,7 @@ export class TorIdentities {
         this.getIdentity('default');
     }
 
-    public static getIdentity(identity: string): SocksProxyAgent {
+    public static getIdentity(identity: string, timeout?: number): SocksProxyAgent {
         if (!this.torController) {
             throw new Error('TorIdentities is not initialized');
         }
@@ -31,6 +31,7 @@ export class TorIdentities {
                 port: this.torController.options.port,
                 userId: user,
                 password: password || user,
+                timeout,
             });
         }
 

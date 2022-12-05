@@ -27,7 +27,8 @@ const getIdentityName = (proxyAuthorization?: http.OutgoingHttpHeader) => {
     return undefined;
 };
 
-const getAgent = (identityName?: string) => TorIdentities.getIdentity(identityName || 'default');
+const getAgent = (identityName?: string, timeout?: number) =>
+    TorIdentities.getIdentity(identityName || 'default', timeout);
 
 const getAuthorizationOptions = (options: http.RequestOptions) => {
     // Use Proxy-Authorization header to define proxy identity
@@ -37,7 +38,7 @@ const getAuthorizationOptions = (options: http.RequestOptions) => {
         // In the case that `Proxy-Authorization` was used for identity information we remove it.
         delete options.headers['Proxy-Authorization'];
         // Create proxy agent for the request
-        options.agent = getAgent(identityName);
+        options.agent = getAgent(identityName, options.timeout);
     }
     return options;
 };
@@ -129,7 +130,7 @@ const overloadHttpRequest = (
 
         // add default proxy agent
         if (isTorEnabled && !overloadedOptions.agent) {
-            overloadedOptions.agent = getAgent();
+            overloadedOptions.agent = getAgent('default', overloadedOptions.timeout);
         }
 
         interceptorOptions.handler({
