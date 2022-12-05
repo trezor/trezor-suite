@@ -52,18 +52,14 @@ export const AccountListItem = ({ account }: AccountListItemProps) => {
                 <Text color="gray800">{accountLabel}</Text>
             </Box>
             <Box alignItems="flex-end">
-                <DiscreetText
-                    color="gray800"
-                    typography="hint"
-                    text={FiatAmountFormatter.format(fiatAmount ?? 0) ?? ''}
-                />
-                <DiscreetText
-                    typography="hint"
-                    color="gray600"
-                    text={CryptoAmountFormatter.format(account.formattedBalance, {
+                <DiscreetText color="gray800" typography="hint">
+                    {FiatAmountFormatter.format(fiatAmount ?? 0) ?? ''}
+                </DiscreetText>
+                <DiscreetText typography="hint" color="gray600">
+                    {CryptoAmountFormatter.format(account.formattedBalance, {
                         symbol: account.symbol,
                     })}
-                />
+                </DiscreetText>
             </Box>
         </Box>
     );

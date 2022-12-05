@@ -13,7 +13,14 @@ import { Box } from './Box';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const satoshiFont = require('../../../packages/theme/fonts/TTSatoshi-Regular.otf');
 
-export const isDiscreetModeOn = atom(true);
+const isDiscreetModeOn = atom(true);
+export const useDiscreetMode = () => {
+    const [isDiscreetMode, setIsDiscreetMode] = useAtom(isDiscreetModeOn);
+    return {
+        isDiscreetMode,
+        setIsDiscreetMode,
+    };
+};
 
 type DiscreetCanvasProps = {
     width: number;
@@ -81,7 +88,7 @@ export const DiscreetText = ({
     color = 'gray800',
     typography = 'body',
 }: DiscreetTextProps) => {
-    const [isDiscreetMode] = useAtom(isDiscreetModeOn);
+    const { isDiscreetMode } = useDiscreetMode();
     const [width, setWidth] = useState(0);
 
     const { lineHeight, fontSize } = typographyStylesBase[typography];

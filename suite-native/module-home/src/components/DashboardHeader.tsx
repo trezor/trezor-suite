@@ -1,9 +1,7 @@
 import React from 'react';
 
-import { useAtom } from 'jotai';
-
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Box, IconButton, isDiscreetModeOn, Text } from '@suite-native/atoms';
+import { Box, IconButton, useDiscreetMode, Text } from '@suite-native/atoms';
 
 const headerStyle = prepareNativeStyle(() => ({
     width: '100%',
@@ -20,13 +18,13 @@ const iconStyle = prepareNativeStyle(() => ({
 
 export const DashboardHeader = () => {
     const { applyStyle } = useNativeStyles();
-    const [isDiscreet, setIsDiscreet] = useAtom(isDiscreetModeOn);
+    const { isDiscreetMode, setIsDiscreetMode } = useDiscreetMode();
     return (
         <Box style={applyStyle(headerStyle)}>
             <Text>Home</Text>
             <IconButton
-                onPress={() => setIsDiscreet(!isDiscreet)}
-                iconName={isDiscreet ? 'eyeglasses' : 'eyeSlash'}
+                onPress={() => setIsDiscreetMode(!isDiscreetMode)}
+                iconName={isDiscreetMode ? 'eyeglasses' : 'eyeSlash'}
                 colorScheme="gray"
                 size="large"
                 style={applyStyle(iconStyle)}

@@ -11,7 +11,7 @@ type TransactionDetailAmountProps = {
 const TransactionDetailAmountRow = ({ title, value }: { title: string; value: string }) => (
     <Box flexDirection="row" justifyContent="space-between">
         <Text>{title}</Text>
-        <DiscreetText color="forest" text={value} />
+        <DiscreetText color="forest">{value}</DiscreetText>
     </Box>
 );
 
