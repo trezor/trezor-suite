@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { atom, useAtom } from 'jotai';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Box, Divider, Text } from '@suite-native/atoms';
+import { Box, DiscreetText, Divider } from '@suite-native/atoms';
 import { CryptoIcon } from '@trezor/icons';
 import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { useFormatters } from '@suite-common/formatters';
@@ -66,16 +66,16 @@ export const AccountBalance = ({ accountKey }: AccountBalanceProps) => {
                     <Box style={applyStyle(cryptoIconStyle)}>
                         <CryptoIcon name={account.symbol} />
                     </Box>
-                    <Text color="gray600" variant="hint">
+                    <DiscreetText color="gray600" typography="hint">
                         {CryptoAmountFormatter.format(cryptoAmount, {
                             symbol: account.symbol,
                         })}
-                    </Text>
+                    </DiscreetText>
                 </Box>
                 <Box>
-                    <Text variant="titleLarge" color="gray800">
-                        <FiatAmountFormatter value={selectedPoint.value} />
-                    </Text>
+                    <DiscreetText typography="titleLarge" color="gray800">
+                        {FiatAmountFormatter.format(selectedPoint.value)}
+                    </DiscreetText>
                 </Box>
             </Box>
             <Box marginBottom="large">

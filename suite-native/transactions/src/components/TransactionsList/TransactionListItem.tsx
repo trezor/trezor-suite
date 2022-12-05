@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { Box, Text } from '@suite-native/atoms';
+import { Box, DiscreetText, Text } from '@suite-native/atoms';
 import { TransactionType, WalletAccountTransaction } from '@suite-common/wallet-types';
 import { Icon, IconName } from '@trezor/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -81,12 +81,12 @@ export const TransactionListItem = memo(({ transaction }: AccountTransactionList
                 </Box>
             </Box>
             <Box alignItems="flex-end">
-                <Text>{FiatAmountFormatter.format(fiatAmount ?? 0)}</Text>
-                <Text variant="hint" color="gray600">
+                <DiscreetText>{FiatAmountFormatter.format(fiatAmount ?? 0)}</DiscreetText>
+                <DiscreetText typography="hint" color="gray600">
                     {CryptoAmountFormatter.format(transactionAmount, {
                         symbol: transaction.symbol,
                     })}
-                </Text>
+                </DiscreetText>
             </Box>
         </TouchableOpacity>
     );

@@ -9,6 +9,7 @@ export * from './Input/Input';
 export * from './CheckBox';
 export * from './Chip';
 export * from './Switch';
+export * from './DiscreetText';
 export * from './ListItem/ListItem';
 export * from './ListItem/SelectableListItem';
 export * from './Sheet/BottomSheet';

@@ -6355,6 +6355,7 @@ __metadata:
   resolution: "@suite-native/atoms@workspace:suite-native/atoms"
   dependencies:
     "@mobily/ts-belt": ^3.13.1
+    "@shopify/react-native-skia": 0.1.162
     "@suite-common/formatters": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@trezor/icons": "workspace:*"
@@ -6362,6 +6363,7 @@ __metadata:
     "@trezor/theme": "workspace:*"
     "@trezor/utils": "workspace:*"
     jest: ^26.6.3
+    jotai: 1.9.1
     react: 18.2.0
     react-native: 0.70.5
     react-native-gesture-handler: ^2.7.0
