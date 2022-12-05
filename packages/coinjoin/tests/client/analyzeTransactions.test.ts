@@ -54,7 +54,7 @@ describe('analyzeTransactions', () => {
 
     it('Regtest: simple analyze', async () => {
         server?.addListener('test-request', ({ url, data, resolve }) => {
-            if (url.endsWith('/analyze-transaction')) {
+            if (url.endsWith('/get-anonymity-scores')) {
                 resolve({
                     results: calcAnonymity(data.transactions),
                 });
