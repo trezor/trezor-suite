@@ -11,7 +11,7 @@ export class CoinjoinProcess extends BaseProcess {
     }
 
     getUrl() {
-        return `http://localhost:${this.port}/Cryptography/`;
+        return `http://localhost:${this.port}/`;
     }
 
     async getPort() {
