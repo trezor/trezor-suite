@@ -13,7 +13,6 @@ export const BLOCKCHAIN = {
 
 export interface BlockchainInfo extends ServerInfo {
     coin: CoinInfo;
-    cleanUrl?: string;
     misc?: {
         reserve?: string;
     };

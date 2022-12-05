@@ -11,16 +11,14 @@ export default class SetProxy extends AbstractMethod<'setProxy'> {
         this.useDevice = false;
         this.useUi = false;
 
-        validateParams(this.payload, [{ name: 'useOnionLinks', type: 'boolean' }]);
+        validateParams(this.payload, []);
     }
 
     async run() {
-        const { proxy, useOnionLinks } = DataManager.getSettings();
-        const isChanged =
-            proxy !== this.payload.proxy || useOnionLinks !== this.payload.useOnionLinks;
+        const { proxy } = DataManager.getSettings();
+        const isChanged = proxy !== this.payload.proxy;
         if (isChanged) {
             DataManager.settings.proxy = this.payload.proxy;
-            DataManager.settings.useOnionLinks = this.payload.useOnionLinks;
             await reconnectAllBackends();
         }
 

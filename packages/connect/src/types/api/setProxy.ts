@@ -8,7 +8,6 @@ import type { Proxy } from '../settings';
 
 export type SetProxy = {
     proxy: Proxy;
-    useOnionLinks?: boolean;
 };
 
 export declare function setProxy(params: CommonParams & SetProxy): Response<PROTO.Success>;

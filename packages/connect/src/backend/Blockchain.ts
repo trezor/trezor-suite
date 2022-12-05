@@ -6,7 +6,6 @@ import BlockchainLink, {
 } from '@trezor/blockchain-link';
 import { createBlockchainMessage, BLOCKCHAIN, PostMessage } from '../events';
 import { ERRORS } from '../constants';
-import { getOnionDomain } from '../utils/urlUtils';
 import {
     BlockbookWorker,
     RippleWorker,
@@ -35,7 +34,6 @@ export type BlockchainOptions = {
     coinInfo: CoinInfo;
     postMessage: PostMessage;
     proxy?: Proxy;
-    onionDomains?: { [domain: string]: string };
     debug?: boolean;
     onConnected?: (url: string) => void;
     onDisconnected?: () => void;
@@ -45,8 +43,6 @@ export class Blockchain {
     link: BlockchainLink;
     serverInfo?: ServerInfo;
     coinInfo: BlockchainOptions['coinInfo'];
-
-    onionDomains: { [onion: string]: string };
 
     postMessage: BlockchainOptions['postMessage'];
 
@@ -76,22 +72,7 @@ export class Blockchain {
             );
         }
 
-        // map clean urls in to object. key = onion domain, value = clean domain
-        const { onionDomains } = options;
-        this.onionDomains = onionDomains
-            ? blockchainLink.url.reduce((a: Record<string, string>, url) => {
-                  const onion = getOnionDomain(url, onionDomains);
-                  // NOTE: onion is not necessarily an onion domain.
-                  if (onion !== url) {
-                      a[onion] = url;
-                  }
-                  return a;
-              }, {})
-            : {};
-
-        const server = Object.keys(this.onionDomains).length
-            ? Object.keys(this.onionDomains)
-            : blockchainLink.url;
+        const server = blockchainLink.url;
 
         this.link = new BlockchainLink({
             name: this.coinInfo.shortcut,
@@ -126,16 +107,12 @@ export class Blockchain {
                 return;
             }
 
-            // find clean domain for current connection
-            const cleanUrl = this.onionDomains[info.url];
-
-            this.onConnected?.(cleanUrl || info.url);
+            this.onConnected?.(info.url);
 
             this.postMessage(
                 createBlockchainMessage(BLOCKCHAIN.CONNECT, {
                     coin: this.coinInfo,
                     ...info,
-                    cleanUrl,
                 }),
             );
         });
