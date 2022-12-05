@@ -79,11 +79,18 @@ export const coordinatorRequest = async <R = void>(
         try {
             response = await httpPost(`${baseUrl}${url}`, body, { ...options, signal });
         } catch (e) {
-            if ('code' in e && e.code === 'ECONNRESET') {
-                // catch errors from nodejs http module like "socket hang up" or "socket disconnected before secure TLS connection was established" etc.
-                // When sending request through a keep-alive enabled agent the underlying socket might be reused.
-                // But if server closes connection at unfortunate time client may run into a 'ECONNRESET' error.
-                // each case explanation in ./node_modules/@types/node/*/http.d.ts
+            // NOTE: this code probably belongs to @trezor/request-manager package since errors are tightly related to TOR
+            // catch errors from:
+            // - nodejs http module (by e.code) like "socket hang up" or "socket disconnected before secure TLS connection was established" (see ./node_modules/@types/node/*/http.d.ts)
+            // - socks module (by e.type and e.message) like "Socks5 proxy rejected connection" or "Proxy connection timed out" (see ./node_modules/socks/build/common/constants)
+            const socksErrors = ['Socks5', 'Proxy'];
+            const shouldSwitchIdentity =
+                ('code' in e && e.code === 'ECONNRESET') ||
+                ('type' in e &&
+                    e.type === 'system' &&
+                    socksErrors.some(se => e.message.includes(se)));
+
+            if (shouldSwitchIdentity) {
                 switchIdentity();
             } else if (options.deadline) {
                 // prevent dead cycles while using "deadline" option in scheduledAction
