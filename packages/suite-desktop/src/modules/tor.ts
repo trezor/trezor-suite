@@ -46,12 +46,7 @@ const load = async ({ mainWindow, store }: Dependencies) => {
     };
 
     const getProxySettings = (shouldEnableTor: boolean) =>
-        shouldEnableTor
-            ? {
-                  proxy: `socks://${address}`,
-                  useOnionLinks: true,
-              }
-            : { proxy: '', useOnionLinks: false };
+        shouldEnableTor ? { proxy: `socks://${address}` } : { proxy: '' };
 
     const setupTor = async (settings: TorSettings) => {
         const shouldEnableTor = settings.running;
