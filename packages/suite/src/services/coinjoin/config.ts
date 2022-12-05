@@ -20,7 +20,7 @@ export const COINJOIN_NETWORKS: PartialRecord<NetworkSymbol, ServerEnvironment> 
             network: 'test',
             coordinatorName: 'CoinJoinCoordinatorIdentifier',
             /* clearnet addresses */
-            coordinatorUrl: 'https://dev-coinjoin-testnet.trezor.io/WabiSabi/',
+            coordinatorUrl: 'https://dev-coinjoin-testnet.trezor.io/wabisabi/',
             // backend settings
             wabisabiBackendUrl: 'https://dev-coinjoin-testnet.trezor.io/',
             blockbookUrls: ['https://tbtc1.trezor.io/api/v2', 'https://tbtc2.trezor.io/api/v2'],
@@ -57,33 +57,33 @@ export const COINJOIN_NETWORKS: PartialRecord<NetworkSymbol, ServerEnvironment> 
             baseBlockHash: '0000000000000014af3e6e1a3f0a24be7bc65998b9bc01e4a05b134a89d304bf',
             /* */
             // client settings
-            middlewareUrl: 'http://localhost:8081/Cryptography/',
+            middlewareUrl: 'http://localhost:8081/',
         },
     },
     regtest: {
         public: {
             network: 'regtest',
             coordinatorName: 'CoinJoinCoordinatorIdentifier',
-            coordinatorUrl: 'https://dev-coinjoin.trezor.io/WabiSabi/',
+            coordinatorUrl: 'https://dev-coinjoin.trezor.io/backend/wabisabi/',
             // backend settings
-            wabisabiBackendUrl: 'https://dev-coinjoin.trezor.io/WabiSabi/',
+            wabisabiBackendUrl: 'https://dev-coinjoin.trezor.io/backend/',
             blockbookUrls: ['https://dev-coinjoin.trezor.io/blockbook/api/v2'],
             baseBlockHeight: 0,
             baseBlockHash: '0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206',
             // client settings
-            middlewareUrl: 'https://dev-coinjoin.trezor.io/Cryptography/',
+            middlewareUrl: 'https://dev-coinjoin.trezor.io/client/',
         },
         localhost: {
             network: 'regtest',
             coordinatorName: 'CoinJoinCoordinatorIdentifier',
-            coordinatorUrl: 'http://localhost:8081/WabiSabi/',
+            coordinatorUrl: 'http://localhost:8081/backend/wabisabi/',
             // backend settings
-            wabisabiBackendUrl: 'http://localhost:8081/WabiSabi/',
+            wabisabiBackendUrl: 'http://localhost:8081/backend/',
             blockbookUrls: ['http://localhost:8081/blockbook/api/v2'],
             baseBlockHeight: 0,
             baseBlockHash: '0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206',
             // client settings
-            middlewareUrl: 'http://localhost:8081/Cryptography/',
+            middlewareUrl: 'http://localhost:8081/client/',
         },
     },
 };

@@ -17,12 +17,12 @@ const AnonymityLevel = styled.span`
 `;
 
 interface UtxoAnonymityProps {
-    anonymity: number;
+    anonymity: number; // float
 }
 
 export const UtxoAnonymity = ({ anonymity }: UtxoAnonymityProps) => (
     <Wrapper>
         <Icon icon="USERS" size={20} />
-        <AnonymityLevel>{anonymity}</AnonymityLevel>
+        <AnonymityLevel>{Math.floor(anonymity)}</AnonymityLevel>
     </Wrapper>
 );
