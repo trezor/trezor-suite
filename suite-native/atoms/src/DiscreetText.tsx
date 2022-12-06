@@ -13,7 +13,7 @@ import { Box } from './Box';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const satoshiFont = require('../../../packages/theme/fonts/TTSatoshi-Regular.otf');
 
-const isDiscreetModeOn = atom(true);
+const isDiscreetModeOn = atom(false);
 export const useDiscreetMode = () => {
     const [isDiscreetMode, setIsDiscreetMode] = useAtom(isDiscreetModeOn);
     return {
