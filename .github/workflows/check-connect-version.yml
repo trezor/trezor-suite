@@ -1,4 +1,4 @@
-name: "Connect version check"
+name: "[Check] @trezor/connect version check"
 
 on:
   pull_request:
@@ -6,7 +6,7 @@ on:
       - release/connect-v9
 
 jobs:
-  version_beta_check:
+  version-beta-check:
     name: Check if connect version is beta
     runs-on: ubuntu-latest
     steps:
@@ -15,7 +15,7 @@ jobs:
           bash ./ci/scripts/check-beta-version.sh
         continue-on-error: true
 
-  version_bump_check:
+  version-bump-check:
     name: Check connect version bump
     runs-on: ubuntu-latest
     steps:
@@ -29,7 +29,7 @@ jobs:
           node ci/scripts/check-version.js connect npm-release latest
         continue-on-error: true
 
-  dependencies_check:
+  dependencies-check:
     name: Check connect dependencies
     runs-on: ubuntu-latest
     steps:

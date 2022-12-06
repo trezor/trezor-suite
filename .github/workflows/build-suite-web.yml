@@ -1,0 +1,52 @@
+name: "[Build] @trezor/suite-web"
+
+on:
+  workflow_call:
+  push:
+    branches:
+      - "vd/actions-refactor"
+
+jobs:
+  build-web:
+    runs-on: ubuntu-latest
+    env:
+      ASSET_PREFIX: "/suite-web/${{github.ref_name}}/web"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          lfs: "true"
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: ".nvmrc"
+      - name: "Build suite-web"
+        run: |
+          echo $ASSET_PREFIX
+          yarn install --immutable
+          yarn build:libs
+          yarn workspace @trezor/message-system sign-config
+          yarn workspace @trezor/suite-web build
+      - name: Archive code coverage results
+        uses: actions/upload-artifact@v3
+        with:
+          name: suite-web-build
+          path: packages/suite-web/build
+
+  deploy-builds:
+    needs: [build-web]
+    runs-on: [self-hosted, dev-suite1]
+    env:
+      SUITE_DEPLOY_DIRECTORY: "/opt/trezor-suite/suite-web/${{github.ref_name}}" #remote deploy trezorci@dev-suite.do.sldev.cz:
+    steps:
+      # TODO! disabled temporary to test self-hosted runner
+      # - name: Configure ssh credentials
+      #   uses: webfactory/ssh-agent@v0.5.4
+      #   with:
+      #     ssh-private-key: ${{ secrets.DEV_SSH_SUITE_WEB }}
+      - name: Download suite-web build results
+        uses: actions/download-artifact@v3
+      - name: Upload suite-web and suite-web-landing
+        run: |
+          mkdir -p ${SUITE_DEPLOY_DIRECTORY}/web
+          rsync --delete -va suite-web-build/ "${SUITE_DEPLOY_DIRECTORY}/web/"

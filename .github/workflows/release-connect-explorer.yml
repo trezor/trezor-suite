@@ -1,4 +1,4 @@
-name: connect-explorer build and deploy
+name: "[Release] @trezor/connect-explorer gh pages"
 
 on:
   push:
@@ -13,6 +13,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+        with:
+          lfs: "true"
 
       - name: Setup node
         uses: actions/setup-node@v3

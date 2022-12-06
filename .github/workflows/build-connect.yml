@@ -1,0 +1,59 @@
+name: "[Build] @trezor/connect"
+
+on:
+  workflow_call:
+  push:
+    branches:
+      - "vd/actions-refactor"
+
+jobs:
+  build-connect:
+    name: Build connect
+    runs-on: ubuntu-latest
+    env:
+      ASSET_PREFIX: "/connect/${{github.ref_name}}/"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          lfs: "true"
+          submodules: recursive
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: ".nvmrc"
+      - name: "Build connect-web "
+        run: |
+          yarn install --immutable
+          yarn build:libs
+          yarn workspace @trezor/connect-web build
+          yarn workspace @trezor/connect-iframe build
+          yarn workspace @trezor/connect-popup build
+
+      - name: Upload connect-build results
+        uses: actions/upload-artifact@v3
+        with:
+          name: connect-build
+          path: |
+            packages/connect-iframe/build
+            packages/connect-web/build
+            packages/connect-popup/build
+
+  deploy-builds:
+    needs: [build-connect]
+    runs-on: ubuntu-latest
+    env:
+      CONNECT_DEPLOY_DIRECTORY: "trezorci@dev-suite.do.sldev.cz:/opt/trezor-suite/connect/${{github.ref_name}}"
+    steps:
+      - name: Configure ssh credentials
+        uses: webfactory/ssh-agent@v0.5.4
+        with:
+          ssh-private-key: ${{ secrets.DEV_SSH_SUITE_WEB }}
+      - name: Download suite-web build results
+        uses: actions/download-artifact@v3
+      - name: Upload connect dev build
+        run: |
+          mv packages/connect-iframe/build ./connect-build
+          mv packages/packages/connect-web/build ./connect-build
+          mv packages/packages/connect-popup/build ./connect-build
+          rsync --delete -va connect-build/ "${CONNECT_DEPLOY_DIRECTORY}/"

@@ -1,16 +1,19 @@
-name: suite-native produciton release
+name: "[Release] @trezor/suite-native production"
 
 on:
   workflow_dispatch:
 
 jobs:
-  android_production:
+  release-android:
+    name: Release @trezor/suite-native Android
     runs-on: ubuntu-latest
     environment: production
     timeout-minutes: 45
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          lfs: "true"
 
       - name: Setup node
         uses: actions/setup-node@v3
