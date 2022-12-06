@@ -68,24 +68,35 @@ const checkPackageDependencies = packageName => {
             cwd: PACKAGE_PATH,
         }).stdout;
 
-        const viewResultJSON = JSON.parse(viewResultRaw);
+        // means that this package is new and has never been released
+        if (!viewResultRaw) {
+            updateNeeded.push(dependency);
+        } else {
+            const viewResultJSON = JSON.parse(viewResultRaw);
 
-        if (viewResultJSON.error) {
-            console.log(viewResultJSON);
-            return;
-        }
+            if (viewResultJSON.error) {
+                console.log(viewResultJSON);
+                return;
+            }
 
-        const remoteChecksum = viewResultJSON[dependency].dist.shasum;
+            const remoteChecksum = viewResultJSON[dependency].dist.shasum;
 
-        console.log('remote checksum: ', remoteChecksum);
+            console.log('remote checksum: ', remoteChecksum);
 
-        if (localChecksum !== remoteChecksum) {
-            if (!updateNeeded.includes(dependency)) {
+            if (localChecksum !== remoteChecksum) {
+                // if the checked dependency is already in the array, remove it and push it to the end of array
+                // this way, the final array should be sorted in order in which that dependencies listed there
+                // should be released from the last to the first
+                const index = updateNeeded.findIndex(lib => lib === dependency);
+                if (index > -1) {
+                    updateNeeded.splice(index, 1);
+                }
                 updateNeeded.push(dependency);
             }
         }
 
         console.log('---> recurring into nested package: ', name);
+
         checkPackageDependencies(name);
     });
 };
