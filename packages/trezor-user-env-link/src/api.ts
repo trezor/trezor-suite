@@ -35,6 +35,10 @@ interface ReadAndConfirmShamirMnemonicEmu {
     threshold: number;
 }
 
+// remember which version was bridge last started with and reuse it on other places where
+// bridge is started and stopped implicitly (setupEmu)
+let bridgeVersion: string | undefined;
+
 export const api = (controller: any) => ({
     setupEmu: async (options: SetupEmu) => {
         const defaults = {
@@ -56,7 +60,7 @@ export const api = (controller: any) => ({
             ...defaults,
             ...options,
         });
-        await controller.send({ type: 'bridge-start' });
+        await controller.send({ type: 'bridge-start', version: bridgeVersion });
         return null;
     },
     sendToAddressAndMineBlock: async (options: SendToAddressAndMineBlock) => {
@@ -74,6 +78,7 @@ export const api = (controller: any) => ({
         return null;
     },
     startBridge: async (version?: string) => {
+        bridgeVersion = version;
         await controller.send({ type: 'bridge-start', version });
         return null;
     },
