@@ -46,8 +46,8 @@ const LabelButton = styled(Button)`
     overflow: hidden;
 `;
 
-const ActionButton = styled(Button)<{ isVisible?: boolean }>`
-    margin-left: ${({ isVisible }) => !isVisible && '14px'};
+const ActionButton = styled(Button)<{ isValueVisible?: boolean; isVisible?: boolean }>`
+    margin-left: ${({ isValueVisible, isVisible }) => (isValueVisible || !isVisible) && '12px'};
     visibility: ${({ isVisible }) => (isVisible ? 'visible' : 'hidden')};
     /* hack to keep button in place to prevent vertical jumping (if used display: none) */
     width: ${({ isVisible }) => (isVisible ? 'auto' : '0')};
@@ -343,6 +343,7 @@ export const MetadataLabeling = (props: Props) => {
                             isLoading={actionButtonsDisabled}
                             isDisabled={actionButtonsDisabled}
                             isVisible={isVisible}
+                            isValueVisible={!!props.payload.value}
                             onClick={e => {
                                 e.stopPropagation();
                                 // by clicking on add label button, metadata.editing field is set
