@@ -131,6 +131,10 @@ export const UtxoSelection = ({ isChecked, transaction, utxo }: UtxoSelectionPro
     const coordinatorData = useSelector(state => state.wallet.coinjoin.clients[account.symbol]);
     const device = useSelector(state => state.suite.device);
     const coinjoinAccount = useSelector(state => selectCoinjoinAccountByKey(state, account.key));
+    // selecting metadata from store rather than send form context which does not update on metadata change
+    const outputLabels = useSelector(
+        state => state.wallet.selectedAccount.account?.metadata.outputLabels,
+    );
     const { openModal } = useActions({
         openModal: modalActions.openModal,
     });
@@ -153,7 +157,7 @@ export const UtxoSelection = ({ isChecked, transaction, utxo }: UtxoSelectionPro
     const isPendingTransaction = utxo.confirmations === 0;
     const isChangeAddress = utxo.path.split('/').at(-2) === '1'; // change address always has a 1 on the penultimate level of the derivation path
     const amountInBtc = (Number(utxo.amount) / 10 ** network.decimals).toString();
-    const outputLabel = account.metadata.outputLabels?.[utxo.txid]?.[utxo.vout];
+    const outputLabel = outputLabels?.[utxo.txid]?.[utxo.vout];
     const isLabelingPossible = device?.metadata.status === 'enabled' || device?.connected;
     const anonymity = account.addresses?.anonymitySet?.[utxo.address];
 
