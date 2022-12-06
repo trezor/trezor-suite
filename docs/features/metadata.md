@@ -1,7 +1,9 @@
 # Metadata (labeling)
 
-Metadata is a feature which allows the user to associate persistent data with their accounts, transactions, addresses or even hidden wallets.
+Metadata is a feature that allows the user to associate persistent data with their wallets, accounts, receive addresses, and outputs.
 Trezor Suite refers to metadata as to "labeling" in the user interface.
+
+For non-technical introduction, see [Trezor Learn](https://trezor.io/learn/a/labels-in-trezor-suite-app).
 
 ## Data stores
 
@@ -11,9 +13,9 @@ Because Trezor Suite is not a typical application with a backend server, data mu
 -   Google Drive
 -   Local file system (desktop only)
 
-Planned to be supported in the future:
+### Google Drive specifics
 
--   SD card
+Google Drive authentication has differing implementations for desktop and web version of Suite. For security reasons, Google does not allow the _authorization code flow_ for web apps, thus only allowing the user of web Suite to log in via the _implicit flow_ with an access token lasting for lasts one hour. _Authorization code flow_ used in the desktop app leverages a refresh token to enable the user to stay logged in permanently while using desktop Suite. To implement this flow, we had to establish an authorization backend holding a `client_secret`, see [@trezor/auth-server](https://github.com/trezor/trezor-suite/tree/develop/packages/auth-server).
 
 ## Data structure in store
 
@@ -47,7 +49,7 @@ account metadata example
 
 ### version 2.0.0 (future)
 
-Each record will have timestamp which will allow user to resolve potential conflicts
+Each record will have timestamp which will allow user to resolve potential conflicts. (Implementation not currently planned.)
 
 ## Data encryption
 
@@ -115,6 +117,19 @@ Account has metadata property which is an object of following shape:
   accountLabel: string
 }
 ```
+
+## Where metadata can be set
+
+-   Wallet label is set in the modal where wallet is selected.
+-   Account label is set in account header.
+-   Receiving address label is set in the receive address list.
+-   Output label is set in send form address field, coin control or transaction history
+
+Note that transaction history displays output label and address next to each other. Receive address is replaced by its label if it is defined. If output label is not set, only an address (or its label) is displayed in transaction history.
+
+Wallet and account labels can also be displayed in other places in Suite as read-only, i.e. in send form when sending to an address belonging to another discovered wallet or account.
+
+Device name set in device settings is not part of metadata.
 
 ## User stories
 
