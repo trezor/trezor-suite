@@ -38,3 +38,4 @@ export { TorLoading } from './TorLoading';
 export { CancelCoinjoin } from './CancelCoinjoin';
 export { CriticalCoinjoinPhase } from './CriticalCoinjoinPhase';
 export { CoinjoinSuccess } from './CoinjoinSuccess';
+export { MoreRoundsNeeded } from './MoreRoundsNeeded';

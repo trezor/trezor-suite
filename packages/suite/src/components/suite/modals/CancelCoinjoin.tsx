@@ -8,7 +8,7 @@ import { useDispatch } from 'react-redux';
 import { stopCoinjoinSession } from '@wallet-actions/coinjoinAccountActions';
 
 const StyledModal = styled(Modal)`
-    width: 430px;
+    width: 435px;
 `;
 
 const StyledButton = styled(Button)`
