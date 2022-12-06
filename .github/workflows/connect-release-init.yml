@@ -29,12 +29,7 @@ jobs:
           node-version-file: ".nvmrc"
       - name: Run @trezor/connect create release branch
         run: |
-          if [ '${{ github.event.inputs.semver }}' == 'beta' ]
-          then
-              git checkout -B beta-release/connect
-          else
-              git checkout -B npm-release/connect
-          fi
+          git checkout -B npm-release/connect
           npm install -g yarn && yarn install
           git config --global user.name "trezor-ci"
           git config --global user.email "${{ secrets.TREZOR_BOT_EMAIL }}"
@@ -42,7 +37,7 @@ jobs:
           yarn install --no-immutable
           git add . && git commit -m "release: @trezor/connect (${{ github.event.inputs.semver }})" && git push origin npm-release/connect -f
           gh config set prompt disabled
-          gh pr create --repo trezor/trezor-suite --title "npm-release @trezor/connect ${{ github.event.inputs.semver }} [1/2]" --body-file "docs/releases/connect-npm.md" --base develop
+          gh pr create --repo trezor/trezor-suite --title "prerelease @trezor/connect ${{ github.event.inputs.semver }} [1/2]" --body-file "docs/releases/connect-prerelease.md" --base develop
         env:
           GITHUB_TOKEN: ${{ secrets.TREZOR_BOT_TOKEN }}
 
@@ -56,11 +51,11 @@ jobs:
         with:
           node-version-file: ".nvmrc"
 
-      - name: Run @trezor/connect release trezor.io
+      - name: Run @trezor/connect release
         run: |
           git config --global user.name "trezor-ci"
           git config --global user.email "${{ secrets.TREZOR_BOT_EMAIL }}"
           gh config set prompt disabled
-          gh pr create --repo trezor/trezor-suite --title "release connect.trezor.io/9 ${{ github.event.inputs.semver }} [2/2]" --body-file "docs/releases/connect-trezor.io.md" --base release/connect-v9
+          gh pr create --repo trezor/trezor-suite --title "release connect ${{ github.event.inputs.semver }} [2/2]" --body-file "docs/releases/connect-release.md" --base release/connect-v9
         env:
           GITHUB_TOKEN: ${{ secrets.TREZOR_BOT_TOKEN }}
