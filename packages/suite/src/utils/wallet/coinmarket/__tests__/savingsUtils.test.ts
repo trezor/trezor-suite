@@ -1,3 +1,4 @@
+import { Translation } from '@suite-components/Translation';
 import { CustomPaymentAmountKey } from '@wallet-constants/coinmarket/savings';
 import {
     calculateAnnualSavings,
@@ -74,11 +75,26 @@ describe('coinmarket/savings utils', () => {
                 setupPaymentFrequencies: ['Daily', 'Weekly', 'Biweekly', 'Monthly', 'Quarterly'],
             }),
         ).toStrictEqual([
-            { label: 'Daily', value: 'Daily' },
-            { label: 'Weekly', value: 'Weekly' },
-            { label: 'Biweekly', value: 'Biweekly' },
-            { label: 'Monthly', value: 'Monthly' },
-            { label: 'Quarterly', value: 'Quarterly' },
+            {
+                label: Translation({ id: 'TR_SAVINGS_SETUP_PAYMENT_FREQUENCY_DAILY' }),
+                value: 'Daily',
+            },
+            {
+                label: Translation({ id: 'TR_SAVINGS_SETUP_PAYMENT_FREQUENCY_WEEKLY' }),
+                value: 'Weekly',
+            },
+            {
+                label: Translation({ id: 'TR_SAVINGS_SETUP_PAYMENT_FREQUENCY_BIWEEKLY' }),
+                value: 'Biweekly',
+            },
+            {
+                label: Translation({ id: 'TR_SAVINGS_SETUP_PAYMENT_FREQUENCY_MONTHLY' }),
+                value: 'Monthly',
+            },
+            {
+                label: Translation({ id: 'TR_SAVINGS_SETUP_PAYMENT_FREQUENCY_QUARTERLY' }),
+                value: 'Quarterly',
+            },
         ]);
     });
 });

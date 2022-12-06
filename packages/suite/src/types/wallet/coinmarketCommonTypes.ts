@@ -31,3 +31,5 @@ export type Option = { value: string; label: string };
 export type CountryOption = { value: FlagProps['country']; label: string };
 export type DefaultCountryOption = { value: string; label?: string };
 export type TranslationOption = { value: string; label?: ReactElement };
+
+export type PaymentFrequencyOption = Option & { label: JSX.Element };

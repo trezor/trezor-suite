@@ -68,7 +68,7 @@ const FiatAmount = ({
                         maximumFractionDigits={0}
                     />
                 ) : (
-                    amount
+                    <Translation id="TR_SAVINGS_SETUP_FIAT_AMOUNT_CUSTOM" />
                 ),
                 value: amount,
             })),
