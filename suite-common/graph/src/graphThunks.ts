@@ -2,12 +2,11 @@ import { A, D, pipe } from '@mobily/ts-belt';
 import BigNumber from 'bignumber.js';
 import { fromUnixTime, getUnixTime } from 'date-fns';
 
-import { getFiatRatesForTimestamps, getTickerConfig } from '@suite-common/fiat-services';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { AccountBalanceHistory as AccountMovementHistory } from '@trezor/blockchain-link';
-import TrezorConnect from '@trezor/connect';
+import TrezorConnect, { Success, Unsuccessful } from '@trezor/connect';
 
 import { NUMBER_OF_POINTS } from './constants';
 import {
@@ -18,8 +17,6 @@ import {
     mergeMultipleFiatBalanceHistories,
 } from './graphUtils';
 import { AccountItem, FiatGraphPoint, FiatGraphPointWithCryptoBalance } from './types';
-
-const hasFiatRatesAvialable = (symbol: NetworkSymbol) => !!getTickerConfig({ symbol });
 
 export const addBalanceForAccountMovementHistory = (
     data: AccountMovementHistory[],
@@ -96,6 +93,10 @@ type FiatRatesItem = {
 
 const fiatRatesCache: Record<string, FiatRatesItem[]> = {};
 
+// consider to have this utility directly in connect
+const isSuccessFiatResponse = <T>(res: Unsuccessful | Success<T>): res is Success<T> =>
+    !!res.success;
+
 export const getFiatRatesForNetworkInTimeFrame = async (
     timestamps: number[],
     networkSymbol: NetworkSymbol,
@@ -106,15 +107,26 @@ export const getFiatRatesForNetworkInTimeFrame = async (
         return fiatRatesCache[cacheKey];
     }
 
-    const fiatRatesForDatesInRange = await getFiatRatesForTimestamps(
-        { symbol: networkSymbol },
+    const fiatRatesForDatesInRange = await TrezorConnect.blockchainGetFiatRatesForTimestamps({
+        coin: networkSymbol,
         timestamps,
-    ).then(res =>
-        (res?.tickers || []).map(({ ts, rates }) => ({
-            time: ts,
-            rates,
-        })),
-    );
+    }).then(res => {
+        if (isSuccessFiatResponse(res)) {
+            if (timestamps.length !== res.payload.tickers.length) {
+                throw new Error(
+                    `Get fiat rates error: number of returned rates doesn't match number of requested timestamps`,
+                );
+            }
+
+            return res.payload.tickers.map(({ rates }, index) => ({
+                // blockbook returns little bit different timestamps than we requested.
+                // It's probably mapping to closes that is in his database, so we remap it back to requested timestamps.
+                time: timestamps[index],
+                rates,
+            }));
+        }
+        throw new Error(`Get fiat rates error: ${res.payload.error}`);
+    });
 
     fiatRatesCache[cacheKey] = fiatRatesForDatesInRange;
 
@@ -134,11 +146,8 @@ export const getMultipleAccountBalanceHistoryWithFiat = async ({
     numberOfPoints?: number;
     fiatCurrency: FiatCurrencyCode;
 }) => {
-    const accountsWithAvailableFiatRates = A.filter(accounts, account =>
-        hasFiatRatesAvialable(account.coin),
-    );
     const accountsWithBalanceHistory = await Promise.all(
-        accountsWithAvailableFiatRates.map(({ coin, descriptor }) =>
+        accounts.map(({ coin, descriptor }) =>
             getAccountBalanceHistory({
                 coin,
                 descriptor,
@@ -168,7 +177,7 @@ export const getMultipleAccountBalanceHistoryWithFiat = async ({
     );
 
     const coins = pipe(
-        accountsWithAvailableFiatRates,
+        accounts,
         A.map(({ coin }) => coin),
         A.uniq,
     );
