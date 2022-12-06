@@ -5,9 +5,11 @@ import {
 } from '@wallet-constants/coinmarket/savings';
 import type { CurrentFiatRates } from '@wallet-types/fiatRates';
 import BigNumber from 'bignumber.js';
-import type { Option } from '@wallet-types/coinmarketCommonTypes';
+import type { PaymentFrequencyOption } from '@wallet-types/coinmarketCommonTypes';
 import { isDesktop } from '@suite-utils/env';
 import { desktopApi } from '@trezor/suite-desktop-api';
+import { Translation } from '@suite-components/Translation';
+import type { PaymentFrequencyTranslationId } from '@wallet-types/coinmarketSavingsSetup';
 
 export const getStatusMessage = (status: SavingsTradeItemStatus) => {
     switch (status) {
@@ -71,13 +73,20 @@ export const calculateAnnualSavings = (
     };
 };
 
+const paymentFrequencyTranslationsIds: Record<PaymentFrequency, PaymentFrequencyTranslationId> = {
+    Daily: 'TR_SAVINGS_SETUP_PAYMENT_FREQUENCY_DAILY',
+    Biweekly: 'TR_SAVINGS_SETUP_PAYMENT_FREQUENCY_BIWEEKLY',
+    Weekly: 'TR_SAVINGS_SETUP_PAYMENT_FREQUENCY_WEEKLY',
+    Monthly: 'TR_SAVINGS_SETUP_PAYMENT_FREQUENCY_MONTHLY',
+    Quarterly: 'TR_SAVINGS_SETUP_PAYMENT_FREQUENCY_QUARTERLY',
+};
 export const getPaymentFrequencyOptions = (selectedProvider?: SavingsProviderInfo) =>
     selectedProvider?.setupPaymentFrequencies.map(
         paymentFrequency =>
             ({
-                label: paymentFrequency,
+                label: Translation({ id: paymentFrequencyTranslationsIds[paymentFrequency] }),
                 value: paymentFrequency,
-            } as Option),
+            } as PaymentFrequencyOption),
     ) ?? [];
 
 export const createReturnLink = async () => {

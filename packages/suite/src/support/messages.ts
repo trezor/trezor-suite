@@ -1082,7 +1082,7 @@ export default defineMessages({
     },
     TR_P2P_RECEIVING_ADDRESS_STEP: {
         defaultMessage: 'Receiving address',
-        id: 'TR_P2P_CONFIRM_SEND_STEP',
+        id: 'TR_P2P_RECEIVING_ADDRESS_STEP',
     },
     TR_P2P_GET_STARTED_INTRO: {
         defaultMessage:
@@ -1186,9 +1186,33 @@ export default defineMessages({
         defaultMessage: 'Frequency',
         id: 'TR_SAVINGS_SETUP_PAYMENT_FREQUENCY_LABEL',
     },
+    TR_SAVINGS_SETUP_PAYMENT_FREQUENCY_DAILY: {
+        defaultMessage: 'Daily',
+        id: 'TR_SAVINGS_SETUP_PAYMENT_FREQUENCY_DAILY',
+    },
+    TR_SAVINGS_SETUP_PAYMENT_FREQUENCY_WEEKLY: {
+        defaultMessage: 'Weekly',
+        id: 'TR_SAVINGS_SETUP_PAYMENT_FREQUENCY_WEEKLY',
+    },
+    TR_SAVINGS_SETUP_PAYMENT_FREQUENCY_BIWEEKLY: {
+        defaultMessage: 'Biweekly',
+        id: 'TR_SAVINGS_SETUP_PAYMENT_FREQUENCY_BIWEEKLY',
+    },
+    TR_SAVINGS_SETUP_PAYMENT_FREQUENCY_MONTHLY: {
+        defaultMessage: 'Monthly',
+        id: 'TR_SAVINGS_SETUP_PAYMENT_FREQUENCY_MONTHLY',
+    },
+    TR_SAVINGS_SETUP_PAYMENT_FREQUENCY_QUARTERLY: {
+        defaultMessage: 'Quarterly',
+        id: 'TR_SAVINGS_SETUP_PAYMENT_FREQUENCY_QUARTERLY',
+    },
     TR_SAVINGS_SETUP_FIAT_AMOUNT_LABEL: {
         defaultMessage: 'Amount',
         id: 'TR_SAVINGS_SETUP_FIAT_AMOUNT_LABEL',
+    },
+    TR_SAVINGS_SETUP_FIAT_AMOUNT_CUSTOM: {
+        defaultMessage: 'Custom',
+        id: 'TR_SAVINGS_SETUP_FIAT_AMOUNT_CUSTOM',
     },
     TR_SAVINGS_SETUP_RECEIVING_ADDRESS: {
         defaultMessage: 'Receiving address',
