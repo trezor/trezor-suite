@@ -34,14 +34,14 @@ const StyledCard = styled(Card)`
     flex-direction: column;
     padding-top: ${CARD_PADDING_SIZE};
     padding-bottom: ${CARD_PADDING_SIZE};
-`;
 
-const StyledRow = styled(Row)`
-    padding-top: 0;
-`;
+    :first-child {
+        padding-top: 0;
+    }
 
-const StyledRowBottom = styled(Row)`
-    padding-bottom: 0;
+    :last-child {
+        padding-bottom: 0;
+    }
 `;
 
 const NoWrap = styled.span`
@@ -73,6 +73,7 @@ const Details = () => {
     const accountTypeTech = getAccountTypeTech(account.path);
     const accountTypeUrl = getAccountTypeUrl(account.path);
     const accountTypeDesc = getAccountTypeDesc(account.path);
+    const isCoinjoinAccount = account.accountType === 'coinjoin';
 
     return (
         <WalletLayout
@@ -81,7 +82,7 @@ const Details = () => {
             showEmptyHeaderPlaceholder
         >
             <StyledCard largePadding>
-                <StyledRow>
+                <Row>
                     <TextColumn
                         title={<Translation id="TR_ACCOUNT_DETAILS_TYPE_HEADER" />}
                         description={<Translation id={accountTypeDesc} />}
@@ -99,35 +100,37 @@ const Details = () => {
                             (<Translation id={accountTypeTech} />)
                         </P>
                     </AccountTypeLabel>
-                </StyledRow>
-                <StyledRowBottom>
-                    <TextColumn
-                        title={<Translation id="TR_ACCOUNT_DETAILS_XPUB_HEADER" />}
-                        description={<Translation id="TR_ACCOUNT_DETAILS_XPUB" />}
-                        buttonLink={HELP_CENTER_XPUB_URL}
-                    />
-                    <ActionColumn>
-                        <ActionButton
-                            variant="secondary"
-                            data-test="@wallets/details/show-xpub-button"
-                            onClick={() =>
-                                openModal({
-                                    type: 'xpub',
-                                    xpub: account.descriptor,
-                                    accountPath: account.path,
-                                    accountIndex: account.index,
-                                    accountType: account.accountType,
-                                    symbol: account.symbol,
-                                    accountLabel: account.metadata.accountLabel,
-                                })
-                            }
-                            isLoading={isLocked() && !disabled}
-                            isDisabled={disabled}
-                        >
-                            <Translation id="TR_ACCOUNT_DETAILS_XPUB_BUTTON" />
-                        </ActionButton>
-                    </ActionColumn>
-                </StyledRowBottom>
+                </Row>
+                {!isCoinjoinAccount && (
+                    <Row>
+                        <TextColumn
+                            title={<Translation id="TR_ACCOUNT_DETAILS_XPUB_HEADER" />}
+                            description={<Translation id="TR_ACCOUNT_DETAILS_XPUB" />}
+                            buttonLink={HELP_CENTER_XPUB_URL}
+                        />
+                        <ActionColumn>
+                            <ActionButton
+                                variant="secondary"
+                                data-test="@wallets/details/show-xpub-button"
+                                onClick={() =>
+                                    openModal({
+                                        type: 'xpub',
+                                        xpub: account.descriptor,
+                                        accountPath: account.path,
+                                        accountIndex: account.index,
+                                        accountType: account.accountType,
+                                        symbol: account.symbol,
+                                        accountLabel: account.metadata.accountLabel,
+                                    })
+                                }
+                                isLoading={isLocked() && !disabled}
+                                isDisabled={disabled}
+                            >
+                                <Translation id="TR_ACCOUNT_DETAILS_XPUB_BUTTON" />
+                            </ActionButton>
+                        </ActionColumn>
+                    </Row>
+                )}
             </StyledCard>
         </WalletLayout>
     );
