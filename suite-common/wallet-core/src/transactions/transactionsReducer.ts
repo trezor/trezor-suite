@@ -1,9 +1,8 @@
 import { createSelector } from '@reduxjs/toolkit';
 
-import { Account, WalletAccountTransaction } from '@suite-common/wallet-types';
+import { Account, WalletAccountTransaction, AccountKey } from '@suite-common/wallet-types';
 import { findTransaction, isPending } from '@suite-common/wallet-utils';
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
-import { AccountKey } from '@suite-common/suite-types';
 
 import { fiatRatesActions } from '../fiat-rates/fiatRatesActions';
 import { accountsActions } from '../accounts/accountsActions';

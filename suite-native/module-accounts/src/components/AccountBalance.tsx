@@ -8,8 +8,7 @@ import { Box, DiscreetText, Divider } from '@suite-native/atoms';
 import { CryptoIcon } from '@trezor/icons';
 import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { useFormatters } from '@suite-common/formatters';
-import { formatNetworkAmount } from '@suite-common/wallet-utils';
-import { ExtendedGraphPoint, LineGraphPoint } from '@suite-common/wallet-graph';
+import { emptyGraphPoint, EnhancedGraphPointWithCryptoBalance } from '@suite-native/graph';
 
 type AccountBalanceProps = {
     accountKey: string;
@@ -19,27 +18,18 @@ const cryptoIconStyle = prepareNativeStyle(utils => ({
     marginRight: utils.spacings.small / 2,
 }));
 
-const selectedPointAtom = atom<ExtendedGraphPoint>({
-    value: 0,
-    date: new Date(),
-    originalDate: new Date(),
-});
+const selectedPointAtom = atom<EnhancedGraphPointWithCryptoBalance>(emptyGraphPoint);
 
 // reference is usually first point, same as Revolut does in their app
-const referencePointAtom = atom<ExtendedGraphPoint>({
-    value: 0,
-    date: new Date(),
-    originalDate: new Date(),
-});
+const referencePointAtom = atom<EnhancedGraphPointWithCryptoBalance>(emptyGraphPoint);
 
-export const writeOnlySelectedPointAtom = atom<null, ExtendedGraphPoint | LineGraphPoint>(
+export const writeOnlySelectedPointAtom = atom<null, EnhancedGraphPointWithCryptoBalance>(
     null, // it's a convention to pass `null` for the first argument
     (_get, set, updatedPoint) => {
-        // LineGraphPoint should never happen, but we need it to satisfy typescript because of originalDate
-        set(selectedPointAtom, updatedPoint as ExtendedGraphPoint);
+        set(selectedPointAtom, updatedPoint);
     },
 );
-export const writeOnlyReferencePointAtom = atom<null, ExtendedGraphPoint>(
+export const writeOnlyReferencePointAtom = atom<null, EnhancedGraphPointWithCryptoBalance>(
     null,
     (_get, set, updatedPoint) => {
         set(referencePointAtom, updatedPoint);
@@ -56,9 +46,6 @@ export const AccountBalance = ({ accountKey }: AccountBalanceProps) => {
 
     if (!account) return null;
 
-    // TODO this should be done with formatters once they're prepared
-    const cryptoAmount = formatNetworkAmount(account.availableBalance, account.symbol);
-
     return (
         <Box>
             <Box marginBottom="large" justifyContent="center" alignItems="center">
@@ -67,7 +54,7 @@ export const AccountBalance = ({ accountKey }: AccountBalanceProps) => {
                         <CryptoIcon name={account.symbol} />
                     </Box>
                     <DiscreetText color="gray600" typography="hint">
-                        {CryptoAmountFormatter.format(cryptoAmount, {
+                        {CryptoAmountFormatter.format(selectedPoint.cryptoBalance, {
                             symbol: account.symbol,
                         })}
                     </DiscreetText>

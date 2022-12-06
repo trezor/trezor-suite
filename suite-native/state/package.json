@@ -14,7 +14,6 @@
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/test-utils": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
-        "@suite-common/wallet-graph": "workspace:*",
         "@suite-native/config": "workspace:*",
         "@suite-native/module-devices": "workspace:*",
         "@suite-native/module-settings": "workspace:*",

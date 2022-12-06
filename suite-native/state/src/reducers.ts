@@ -7,7 +7,6 @@ import {
     prepareTransactionsReducer,
 } from '@suite-common/wallet-core';
 import { devicesReducer } from '@suite-native/module-devices';
-import { graphReducer } from '@suite-common/wallet-graph';
 import { appSettingsReducer, appSettingsPersistWhitelist } from '@suite-native/module-settings';
 import { typedPersistReducer } from '@suite-native/storage';
 
@@ -29,7 +28,6 @@ export const walletReducers = combineReducers({
     blockchain: blockchainReducer,
     fiat: fiatRatesReducer,
     transactions: transactionsReducer,
-    graph: graphReducer,
 });
 
 const walletPersistedReducer = typedPersistReducer({

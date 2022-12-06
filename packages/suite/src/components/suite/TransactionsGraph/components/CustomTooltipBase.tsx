@@ -5,9 +5,9 @@ import { Translation, FormattedDate } from '@suite-components';
 import { TooltipProps } from 'recharts';
 
 import { variables } from '@trezor/components';
-import { CommonAggregatedHistory } from '@suite-common/wallet-graph';
 
 import { Props as GraphProps } from '../definitions';
+import { CommonAggregatedHistory } from '../../../../types/wallet/graph';
 
 // Used for triggering custom Tooltip alignment
 const OFFSET_LIMIT_HORIZONTAL = 125;

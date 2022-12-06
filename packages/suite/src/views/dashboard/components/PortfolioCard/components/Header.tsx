@@ -8,7 +8,7 @@ import { useFastAccounts } from '@wallet-hooks';
 
 import { useFormatters } from '@suite-common/formatters';
 import { H2, Button, LoadingContent } from '@trezor/components';
-import { GraphRange } from '@suite-common/wallet-graph';
+import { GraphRange } from '../../../../../types/wallet/graph';
 
 const Wrapper = styled.div<{ hideBorder: boolean }>`
     display: flex;

@@ -4,6 +4,7 @@ import {
     PrecomposedTransactionFinal,
     TxFinalCardano,
     WalletAccountTransaction,
+    AccountKey,
 } from '@suite-common/wallet-types';
 import {
     findTransactions,
@@ -14,7 +15,6 @@ import {
 } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
 import { createThunk } from '@suite-common/redux-utils';
-import { AccountKey } from '@suite-common/suite-types';
 
 import { accountsActions } from '../accounts/accountsActions';
 import { selectTransactions } from './transactionsReducer';

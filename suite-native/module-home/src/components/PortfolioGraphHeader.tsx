@@ -5,9 +5,9 @@ import { format } from 'date-fns';
 
 import { Box, DiscreetText, Text } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { ExtendedGraphPoint, LineGraphPoint } from '@suite-common/wallet-graph';
 import { useFormatters } from '@suite-common/formatters';
 import { Icon, IconName } from '@trezor/icons';
+import { emptyGraphPoint, EnhancedGraphPoint } from '@suite-native/graph';
 
 const getColorForPercentageChange = (hasIncreased: boolean) => (hasIncreased ? 'forest' : 'red');
 
@@ -18,27 +18,19 @@ const percentageDiff = (a: number, b: number) => {
 
 // use atomic jotai structure for absolute minimum re-renders and maximum performance
 // otherwise graph will be freezing on slower device while point swipe gesture
-const selectedPointAtom = atom<ExtendedGraphPoint>({
-    value: 0,
-    date: new Date(),
-    originalDate: new Date(),
-});
+const selectedPointAtom = atom<EnhancedGraphPoint>(emptyGraphPoint);
 
 // reference is usually first point, same as Revolut does in their app
-const referencePointAtom = atom<ExtendedGraphPoint>({
-    value: 0,
-    date: new Date(),
-    originalDate: new Date(),
-});
+const referencePointAtom = atom<EnhancedGraphPoint>(emptyGraphPoint);
 
-export const writeOnlySelectedPointAtom = atom<null, ExtendedGraphPoint | LineGraphPoint>(
+export const writeOnlySelectedPointAtom = atom<null, EnhancedGraphPoint>(
     null, // it's a convention to pass `null` for the first argument
     (_get, set, updatedPoint) => {
         // LineGraphPoint should never happen, but we need it to satisfy typescript because of originalDate
-        set(selectedPointAtom, updatedPoint as ExtendedGraphPoint);
+        set(selectedPointAtom, updatedPoint);
     },
 );
-export const writeOnlyReferencePointAtom = atom<null, ExtendedGraphPoint>(
+export const writeOnlyReferencePointAtom = atom<null, EnhancedGraphPoint>(
     null,
     (_get, set, updatedPoint) => {
         set(referencePointAtom, updatedPoint);

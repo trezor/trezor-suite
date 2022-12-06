@@ -57,9 +57,11 @@ export type AccountBackendSpecific =
           syncing?: boolean;
       };
 
+export type AccountKey = string;
+
 export type Account = {
     deviceState: string;
-    key: string;
+    key: AccountKey;
     index: number;
     path: string;
     unlockPath?: PROTO.UnlockPath; // parameter used to unlock SLIP-25/coinjoin keychain

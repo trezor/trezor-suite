@@ -5,8 +5,8 @@ import { WalletAction, Account } from '@wallet-types';
 import { Action as SuiteAction } from '@suite-types';
 import { SETTINGS } from '@suite-config';
 
-import { GraphRange, GraphScale, GraphData, AccountIdentifier } from '@suite-common/wallet-graph';
 import { accountsActions } from '@suite-common/wallet-core';
+import { GraphData, AccountIdentifier, GraphRange, GraphScale } from '../../types/wallet/graph';
 
 export interface State {
     data: GraphData[];

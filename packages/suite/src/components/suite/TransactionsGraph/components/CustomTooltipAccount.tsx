@@ -6,10 +6,10 @@ import { FormattedCryptoAmount } from '@suite-components/FormattedCryptoAmount';
 import { NetworkSymbol } from '@wallet-types';
 
 import { Formatters, useFormatters } from '@suite-common/formatters';
-import { CommonAggregatedHistory } from '@suite-common/wallet-graph';
 
 import { Props as GraphProps, CryptoGraphProps } from '../definitions';
 import { CustomTooltipBase } from './CustomTooltipBase';
+import { CommonAggregatedHistory } from '../../../../types/wallet/graph';
 
 const StyledCryptoAmount = styled(FormattedCryptoAmount)`
     margin-right: 2px;

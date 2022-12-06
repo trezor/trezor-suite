@@ -11,11 +11,11 @@ import type { FormDraft, FormDraftKeyPrefix } from '@wallet-types/form';
 import type { PreloadStoreAction } from '@suite-support/preloadStore';
 
 import { getFormDraftKey } from '@suite-common/wallet-utils';
-import { deviceGraphDataFilterFn } from '@suite-common/wallet-graph';
-import type { GraphData } from '@suite-common/wallet-graph';
 import { FormDraftPrefixKeyValues } from '@suite-common/wallet-constants';
 
 import { STORAGE } from './constants';
+import { GraphData } from '../../types/wallet/graph';
+import { deviceGraphDataFilterFn } from '../../utils/wallet/graphUtils';
 
 export type StorageAction = NonNullable<PreloadStoreAction>;
 export type StorageLoadAction = Extract<StorageAction, { type: typeof STORAGE.LOAD }>;

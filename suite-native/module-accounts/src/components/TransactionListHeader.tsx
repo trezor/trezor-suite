@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { Box, Button, Divider, Text } from '@suite-native/atoms';
-import { AccountKey } from '@suite-common/suite-types';
+import { AccountKey } from '@suite-common/wallet-types';
 import { AccountsRootState, selectHasAccountTransactions } from '@suite-common/wallet-core';
 import {
     RootStackParamList,

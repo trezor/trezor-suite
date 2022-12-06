@@ -1,18 +1,18 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useCallback, useEffect, useMemo } from 'react';
+import { useSelector } from 'react-redux';
 
 import { A } from '@mobily/ts-belt';
 import { useAtom } from 'jotai';
 
-import { Graph, TimeSwitch, GraphError } from '@suite-native/graph';
-import {
-    enhanceGraphPoints,
-    getSingleAccountGraphPointsThunk,
-    LineGraphTimeFrameValues,
-    selectAccountGraph,
-} from '@suite-common/wallet-graph';
-import { selectFiatCurrency } from '@suite-native/module-settings';
+import { useGraphForSingleAccount } from '@suite-common/graph';
 import { Box, Divider } from '@suite-native/atoms';
+import {
+    EnhancedGraphPointWithCryptoBalance,
+    enhanceGraphPoints,
+    Graph,
+    TimeSwitch,
+} from '@suite-native/graph';
+import { selectFiatCurrency } from '@suite-native/module-settings';
 
 import { writeOnlyReferencePointAtom, writeOnlySelectedPointAtom } from './AccountBalance';
 
@@ -21,15 +21,16 @@ type AccountDetailGraphProps = {
 };
 
 export const AccountDetailGraph = ({ accountKey }: AccountDetailGraphProps) => {
-    const dispatch = useDispatch();
-    const [selectedTimeFrame, setSelectedTimeFrame] = useState<LineGraphTimeFrameValues>('day');
-
-    const handleSelectTimeFrame = (timeFrame: LineGraphTimeFrameValues) => {
-        setSelectedTimeFrame(timeFrame);
-    };
     const fiatCurrency = useSelector(selectFiatCurrency);
-    const { points, error, loading } = useSelector(selectAccountGraph);
-    const enhancedPoints = useMemo(() => enhanceGraphPoints(points), [points]);
+    const { graphPoints, error, isLoading, refetch, setHoursToHistory, hoursToHistory } =
+        useGraphForSingleAccount({
+            accountKey,
+            fiatCurrency: fiatCurrency.label,
+        });
+    const enhancedPoints = useMemo(
+        () => enhanceGraphPoints(graphPoints) as EnhancedGraphPointWithCryptoBalance[],
+        [graphPoints],
+    );
     const [_, setSelectedPoint] = useAtom(writeOnlySelectedPointAtom);
     const [__, setReferencePoint] = useAtom(writeOnlyReferencePointAtom);
     const lastPoint = A.last(enhancedPoints);
@@ -44,34 +45,20 @@ export const AccountDetailGraph = ({ accountKey }: AccountDetailGraphProps) => {
 
     useEffect(setInitialSelectedPoints, [setInitialSelectedPoints]);
 
-    const handleFetchGraphPoints = useCallback(() => {
-        dispatch(
-            getSingleAccountGraphPointsThunk({
-                accountKey,
-                fiatCurrency: fiatCurrency.label,
-                timeFrame: selectedTimeFrame,
-            }),
-        );
-    }, [dispatch, accountKey, fiatCurrency.label, selectedTimeFrame]);
-
-    useEffect(() => {
-        handleFetchGraphPoints();
-    }, [handleFetchGraphPoints]);
-
-    if (error) return <GraphError error={error} onTryAgain={handleFetchGraphPoints} />;
-
     return (
         <Box>
             <Box marginBottom="large">
-                <Graph
+                <Graph<EnhancedGraphPointWithCryptoBalance>
                     onPointSelected={setSelectedPoint}
                     onGestureEnd={setInitialSelectedPoints}
                     points={enhancedPoints}
-                    loading={loading}
+                    loading={isLoading}
+                    error={error}
+                    onTryAgain={refetch}
                 />
                 <TimeSwitch
-                    selectedTimeFrame={selectedTimeFrame}
-                    onSelectTimeFrame={handleSelectTimeFrame}
+                    selectedTimeFrame={hoursToHistory}
+                    onSelectTimeFrame={setHoursToHistory}
                 />
             </Box>
             <Box marginBottom="large">
