@@ -5,22 +5,18 @@ for_platform :ios do
 
   for_lane :debug do
     app_identifier 'io.trezor.suite.debug'
-    code_sign_identity 'Apple Development'
   end
 
   for_lane :develop do
     app_identifier 'io.trezor.suite.develop'
-    code_sign_identity 'iPhone Distribution'
   end
 
   for_lane :staging do
     app_identifier 'io.trezor.suite.staging'
-    code_sign_identity 'iPhone Distribution'
   end
 
   for_lane :production do
     app_identifier 'io.trezor.suite'
-    code_sign_identity 'iPhone Distribution'
   end
 end
 

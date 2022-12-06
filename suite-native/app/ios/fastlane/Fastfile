@@ -10,21 +10,18 @@ platform :ios do
     xcversion(version: "14.1")
     puts "Running lane #{lane}..."
 
-    if lane == :debug
-      provisioning_name = 'Automatic'
-    elsif
     if lane == :develop
-      provisioning_name = 'AppStore io.trezor.suite.develop'
+      PROVISIONING_NAME = "AppStore io.trezor.suite.develop"
       import_certificate_to_keychain
       load_appstore_connect_api_key
       fetch_and_bump_versions
     elsif lane == :staging
-      provisioning_name = 'AppStore io.trezor.suite.staging'
+      PROVISIONING_NAME = "AppStore io.trezor.suite.staging"
       import_certificate_to_keychain
       load_appstore_connect_api_key
       fetch_and_bump_versions
     elsif lane == :production
-      provisioning_name = 'AppStore io.trezor.suite'
+      PROVISIONING_NAME = "AppStore io.trezor.suite"
       import_certificate_to_keychain
       load_appstore_connect_api_key
       fetch_and_bump_versions
@@ -87,16 +84,18 @@ platform :ios do
     app_identifier = CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
     api_key = lane_context[SharedValues::APP_STORE_CONNECT_API_KEY]
 
+    # it makes sure you have a valid certificate and its private key installed on the local machine
     cert(
       api_key: api_key,
       keychain_path: "~/Library/Keychains/#{ENV['TMP_KEYCHAIN_NAME']}-db",
       keychain_password: ENV["TMP_KEYCHAIN_PASSWORD"]
     )
 
+    # it makes sure you have a valid provisioning profile installed locally, that matches the installed certificate
     sigh(
       api_key: api_key,
       app_identifier: app_identifier,
-      provisioning_name: provisioning_name,
+      provisioning_name: PROVISIONING_NAME,
       force: true # always recreate this exact profile to ensure it's valid and not expired
     )
   end
@@ -128,7 +127,7 @@ platform :ios do
   private_lane :build_testing do |options|
     build_scheme = options[:scheme]
     app_identifier = CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
-    code_sign_identity = CredentialsManager::AppfileConfig.try_fetch_value(:code_sign_identity)
+    code_sign_identity = "iPhone Distribution"
 
    # update the code signing identities to match profile name and app bundle identifier
    update_code_signing_settings(
@@ -136,7 +135,7 @@ platform :ios do
      targets: ["TrezorSuite"],
      code_sign_identity: code_sign_identity,
      bundle_identifier: app_identifier,
-     profile_name: provisioning_name,
+     profile_name: PROVISIONING_NAME,
      build_configurations: [build_scheme], # only toggle code signing settings for Release configurations
      path: IOS_PROJECT
    )
@@ -171,27 +170,39 @@ platform :ios do
 
   desc "Build and sign the app locally"
   private_lane :local do |options|
-    # TODO signing
-    puts "Before signing....."
-
     build_scheme = options[:scheme]
     app_identifier = CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
-    code_sign_identity = CredentialsManager::AppfileConfig.try_fetch_value(:code_sign_identity)
+    code_sign_identity = "Apple Development"
+
+    cert(
+      development: true,
+    )
+    sigh(
+      development: true,
+      app_identifier: app_identifier
+    )
 
     update_code_signing_settings(
       use_automatic_signing: true,
       targets: ["TrezorSuite"],
       code_sign_identity: code_sign_identity,
       bundle_identifier: app_identifier,
-      profile_name: provisioning_name,
       build_configurations: [build_scheme], # only toggle code signing settings for Release configurations
       path: IOS_PROJECT
     )
 
-    puts "after update code signing settings....."
-
+    build_app(
+      scheme: build_scheme,
+      export_method: "development",
+      output_name: "#{build_scheme}-TrezorSuite",
+      workspace: IOS_PROJECT_WORKSPACE,
+      configuration: build_scheme
+    )
   end
 
+  lane :debug do
+    local(scheme: "Debug")
+  end
   lane :develop do
     testing(scheme: "Develop")
   end
