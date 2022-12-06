@@ -1,6 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useDispatch } from 'react-redux';
+import { transparentize } from 'polished';
+
 import { Button, Icon, useTheme, variables } from '@trezor/components';
 import { selectAccountByKey } from '@suite-common/wallet-core';
 import { WalletParams } from '@suite-common/wallet-types';
@@ -11,7 +13,7 @@ import { onCancel as closeModal } from '@suite-actions/modalActions';
 import { Modal, Translation } from '..';
 
 const StyledModal = styled(Modal)`
-    width: 430px;
+    width: 435px;
 `;
 
 const StyledButton = styled(Button)`
@@ -23,7 +25,7 @@ const StyledIcon = styled(Icon)`
     height: 84px;
     margin: 12px auto 32px;
     border-radius: 50%;
-    background: ${({ theme }) => theme.BG_GREY};
+    background: ${({ theme }) => transparentize(0.9, theme.BG_GREEN)};
 `;
 
 const Heading = styled.h3`
@@ -32,6 +34,11 @@ const Heading = styled.h3`
     line-height: 32px;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     color: ${({ theme }) => theme.TYPE_GREEN};
+`;
+
+const Text = styled.p`
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
 interface CoinjoinSuccessProps {
@@ -51,6 +58,7 @@ export const CoinjoinSuccess = ({ relatedAccountKey }: CoinjoinSuccessProps) => 
 
     const { symbol, index, accountType } = relatedAccount;
 
+    const close = () => dispatch(closeModal());
     const navigateToRelatedAccount = () => {
         dispatch(closeModal());
         dispatch(
@@ -77,7 +85,7 @@ export const CoinjoinSuccess = ({ relatedAccountKey }: CoinjoinSuccessProps) => 
         <StyledModal
             bottomBar={
                 <>
-                    <StyledButton variant="secondary" onClick={() => dispatch(closeModal())}>
+                    <StyledButton variant="secondary" onClick={close}>
                         <Translation id="TR_DISMISS" />
                     </StyledButton>
                     {!isOnAccountPage && (
@@ -93,6 +101,9 @@ export const CoinjoinSuccess = ({ relatedAccountKey }: CoinjoinSuccessProps) => 
             <Heading>
                 <Translation id="TR_COINJOIN_COMPLETED" />
             </Heading>
+            <Text>
+                <Translation id="TR_COINJOIN_COMPLETED_DESCRIPTION" />
+            </Text>
         </StyledModal>
     );
 };

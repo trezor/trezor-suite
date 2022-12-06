@@ -152,6 +152,9 @@ export type UserContextPayload =
     | {
           type: 'coinjoin-success';
           relatedAccountKey: string;
+      }
+    | {
+          type: 'more-rounds-needed';
       };
 
 export type ModalAction =

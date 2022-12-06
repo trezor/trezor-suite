@@ -33,6 +33,7 @@ import {
     CancelCoinjoin,
     CriticalCoinjoinPhase,
     CoinjoinSuccess,
+    MoreRoundsNeeded,
 } from '@suite-components/modals';
 
 import type { AcquiredDevice } from '@suite-types';
@@ -162,6 +163,8 @@ export const UserContextModal = ({
             return <CriticalCoinjoinPhase relatedAccountKey={payload.relatedAccountKey} />;
         case 'coinjoin-success':
             return <CoinjoinSuccess relatedAccountKey={payload.relatedAccountKey} />;
+        case 'more-rounds-needed':
+            return <MoreRoundsNeeded />;
 
         default:
             return null;
