@@ -3,16 +3,24 @@ for_platform :ios do
   itc_team_id("119058140") # App Store Connect Team ID
   team_id("C3P22XVH2C") # Developer Portal Team ID
 
+  for_lane :debug do
+    app_identifier 'io.trezor.suite.debug'
+    code_sign_identity 'Apple Development'
+  end
+
   for_lane :develop do
     app_identifier 'io.trezor.suite.develop'
+    code_sign_identity 'iPhone Distribution'
   end
 
   for_lane :staging do
     app_identifier 'io.trezor.suite.staging'
+    code_sign_identity 'iPhone Distribution'
   end
 
   for_lane :production do
     app_identifier 'io.trezor.suite'
+    code_sign_identity 'iPhone Distribution'
   end
 end
 
@@ -20,6 +28,9 @@ end
 for_platform :android do
   json_key_file(ENV['GOOGLE_PLAY_JSON_KEY_FILE']) # Path to the json secret file - Follow https://docs.fastlane.tools/actions/supply/#setup to get one
 
+  for_lane :debug do
+    package_name 'io.trezor.suite.debug'
+  end
   for_lane :develop do
     package_name 'io.trezor.suite.develop'
   end
