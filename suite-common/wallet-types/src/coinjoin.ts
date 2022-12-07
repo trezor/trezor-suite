@@ -26,6 +26,7 @@ export interface CoinjoinSession extends CoinjoinSessionParameters {
     timeCreated: number; // timestamp when was created
     timeEnded?: number; // timestamp when was finished
     paused?: boolean; // current state
+    interrupted?: boolean; // it was paused by force
     phase?: RoundPhase; // current phase enum
     phaseDeadline: string | number; // estimated time for phase change
     sessionDeadline?: string | number; // estimated time for a session's end
