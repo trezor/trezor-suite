@@ -15,7 +15,7 @@ Because Trezor Suite is not a typical application with a backend server, data mu
 
 ### Google Drive specifics
 
-Google Drive authentication has differing implementations for desktop and web version of Suite. For security reasons, Google does not allow the _authorization code flow_ for web apps, thus only allowing the user of web Suite to log in via the _implicit flow_ with an access token lasting for lasts one hour. _Authorization code flow_ used in the desktop app leverages a refresh token to enable the user to stay logged in permanently while using desktop Suite. To implement this flow, we had to establish an authorization backend holding a `client_secret`, see [@trezor/auth-server](https://github.com/trezor/trezor-suite/tree/develop/packages/auth-server).
+Google Drive authentication has differing implementations for desktop and web version of Suite. For security reasons, Google does not allow the _authorization code flow_ for web apps, thus only allowing the user of web Suite to log in via the _implicit flow_ with an access token lasting for lasts one hour. _Authorization code flow_ used in the desktop app leverages a refresh token to enable the user to stay logged in permanently while using desktop Suite. To implement this flow, we had to establish an authorization backend holding a `client_secret`, see [@trezor/auth-server](https://github.com/trezor/trezor-suite/tree/develop/packages/auth-server). If the authorization via our backend fails for some reason, there is a fallback to the _implicit flow_ in the desktop app. TODO: switch from the fallback flow to the _authorization code flow_ as soon as possible so that the user does not have to re-authenticate every hour.
 
 ## Data structure in store
 
@@ -118,16 +118,21 @@ Account has metadata property which is an object of following shape:
 }
 ```
 
-## Where metadata can be set
+## Where metadata is set and displayed
 
 -   Wallet label is set in the modal where wallet is selected.
 -   Account label is set in account header.
 -   Receiving address label is set in the receive address list.
 -   Output label is set in send form address field, coin control or transaction history
 
-Note that transaction history displays output label and address next to each other. Receive address is replaced by its label if it is defined. If output label is not set, only an address (or its label) is displayed in transaction history.
+Note that transaction history displays output label and address next to each other. If the output does not have a label, only the address is shown. If it does, the address is shown when the label is hovered. The address is displayed as follows:
 
-Wallet and account labels can also be displayed in other places in Suite as read-only, i.e. in send form when sending to an address belonging to another discovered wallet or account.
+-   If a receive address has a label, its label is displayed.
+-   If a receive address has a label and it belongs to the same account, it is replaced by "Sent to myself".
+-   If an outgoing address belongs to another discovered wallet or account, it is replaced by the account label (and wallet label, if it is a different wallet).
+-   If none of the above is true, plain address is displayed.
+
+Wallet and account labels can also be displayed in other places in Suite as read-only, e.g. in send form when sending to an address belonging to another discovered wallet or account.
 
 Device name set in device settings is not part of metadata.
 
