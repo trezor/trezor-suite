@@ -6,7 +6,7 @@ import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { AccountBalanceHistory as AccountMovementHistory } from '@trezor/blockchain-link';
-import TrezorConnect, { Success, Unsuccessful } from '@trezor/connect';
+import TrezorConnect from '@trezor/connect';
 
 import { NUMBER_OF_POINTS } from './constants';
 import {
@@ -93,10 +93,6 @@ type FiatRatesItem = {
 
 const fiatRatesCache: Record<string, FiatRatesItem[]> = {};
 
-// consider to have this utility directly in connect
-const isSuccessFiatResponse = <T>(res: Unsuccessful | Success<T>): res is Success<T> =>
-    !!res.success;
-
 export const getFiatRatesForNetworkInTimeFrame = async (
     timestamps: number[],
     networkSymbol: NetworkSymbol,
@@ -111,7 +107,7 @@ export const getFiatRatesForNetworkInTimeFrame = async (
         coin: networkSymbol,
         timestamps,
     }).then(res => {
-        if (isSuccessFiatResponse(res)) {
+        if (res.success) {
             if (timestamps.length !== res.payload.tickers.length) {
                 throw new Error(
                     `Get fiat rates error: number of returned rates doesn't match number of requested timestamps`,
