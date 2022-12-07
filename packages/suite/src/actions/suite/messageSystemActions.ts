@@ -49,16 +49,22 @@ const fetchConfig = () => async (dispatch: Dispatch, getState: GetState) => {
             let isRemote = true;
 
             try {
-                const response = await scheduleAction(
-                    signal => fetch(MESSAGE_SYSTEM.CONFIG_URL_REMOTE, { signal }),
+                await scheduleAction(
+                    async signal => {
+                        const response = await fetch(MESSAGE_SYSTEM.CONFIG_URL_REMOTE, { signal });
+
+                        if (!response.ok) {
+                            throw Error(response.statusText);
+                        }
+
+                        jwsResponse = await response.text();
+                    },
                     { timeout: MESSAGE_SYSTEM.FETCH_TIMEOUT },
                 );
 
-                if (!response.ok) {
-                    throw Error(response.statusText);
+                if (!jwsResponse) {
+                    throw Error('Parsing of response failed');
                 }
-
-                jwsResponse = await response.text();
             } catch (error) {
                 console.error(`Fetching of remote JWS config failed: ${error}`);
 
