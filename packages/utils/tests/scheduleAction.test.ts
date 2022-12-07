@@ -137,4 +137,15 @@ describe('scheduleAction', () => {
 
         expect(spy).toBeCalledTimes(2);
     });
+
+    it("don't abort after success", async () => {
+        let signal: AbortSignal | undefined;
+        const action = (sig?: AbortSignal) => {
+            signal = sig;
+            return Promise.resolve(true);
+        };
+        const result = await scheduleAction(action, {});
+        expect(result).toBe(true);
+        expect(signal?.aborted).toBe(false);
+    });
 });
