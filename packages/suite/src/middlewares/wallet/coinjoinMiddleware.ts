@@ -69,5 +69,15 @@ export const coinjoinMiddleware =
             }
         }
 
+        if (action.type === SUITE.TOR_STATUS) {
+            if (['Disabling', 'Disabled', 'Error'].includes(action.payload)) {
+                api.dispatch(coinjoinAccountActions.pauseInterruptAllCoinjoinSessions());
+            }
+            // We restore sessions that were interrupted when successfully Enabled, not when Enabling.
+            if (action.payload === 'Enabled') {
+                api.dispatch(coinjoinAccountActions.restoreAllInterruptedCoinjoinSession());
+            }
+        }
+
         return action;
     };

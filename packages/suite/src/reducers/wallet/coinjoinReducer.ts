@@ -175,6 +175,7 @@ const pauseSession = (
     delete account.session.sessionDeadline;
     account.session.registeredUtxos = [];
     account.session.paused = true;
+    account.session.interrupted = payload.interrupted;
     account.session.timeEnded = Date.now();
 };
 
@@ -186,6 +187,7 @@ const restoreSession = (
     if (!account || !account.session) return;
 
     delete account.session.paused;
+    delete account.session.interrupted;
     delete account.session.timeEnded;
     account.session.timeCreated = Date.now();
 };
