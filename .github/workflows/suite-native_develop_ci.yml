@@ -50,6 +50,7 @@ jobs:
       - name: Fastlane build and deploy
         working-directory: suite-native/app/
         env:
+          SIGNING_KEY_FILE: release.keystore
           SIGNING_KEY_STORE_PASSWORD: ${{ secrets.SIGNING_KEY_STORE_PASSWORD }}
           SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
           SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}

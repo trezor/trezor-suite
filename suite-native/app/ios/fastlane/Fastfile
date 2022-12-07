@@ -10,28 +10,21 @@ platform :ios do
     xcversion(version: "14.1")
     puts "Running lane #{lane}..."
 
-    # creates temporary keychain
-    keychain_name = ENV['TMP_KEYCHAIN_NAME']
-    keychain_password = ENV['TMP_KEYCHAIN_PASSWORD']
-    ensure_temp_keychain(keychain_name, keychain_password)
-
-    # import certificate to temporary keychain
-    import_certificate(
-      keychain_name: ENV['TMP_KEYCHAIN_NAME'],
-      keychain_password: ENV['TMP_KEYCHAIN_PASSWORD'],
-      certificate_path: "TrezorDistributionCertificate.p12",
-      certificate_password: ENV["APPSTORE_CERTIFICATE_PASSWORD"] || "default"
-    )
-
-    load_appstore_connect_api_key
-    fetch_and_bump_versions
-
     if lane == :develop
       PROVISIONING_NAME = "AppStore io.trezor.suite.develop"
+      import_certificate_to_keychain
+      load_appstore_connect_api_key
+      fetch_and_bump_versions
     elsif lane == :staging
       PROVISIONING_NAME = "AppStore io.trezor.suite.staging"
+      import_certificate_to_keychain
+      load_appstore_connect_api_key
+      fetch_and_bump_versions
     elsif lane == :production
       PROVISIONING_NAME = "AppStore io.trezor.suite"
+      import_certificate_to_keychain
+      load_appstore_connect_api_key
+      fetch_and_bump_versions
     end
 
     ENV["ENVFILE"] = ".env.#{lane}"
@@ -58,6 +51,22 @@ platform :ios do
       create_temp_keychain(name, password)
     end
 
+  desc "Import certificate to keychain"
+  private_lane :import_certificate_to_keychain do |options|
+    # creates temporary keychain
+    keychain_name = ENV['TMP_KEYCHAIN_NAME']
+    keychain_password = ENV['TMP_KEYCHAIN_PASSWORD']
+    ensure_temp_keychain(keychain_name, keychain_password)
+
+    # import certificate to temporary keychain
+    import_certificate(
+      keychain_name: ENV['TMP_KEYCHAIN_NAME'],
+      keychain_password: ENV['TMP_KEYCHAIN_PASSWORD'],
+      certificate_path: "TrezorDistributionCertificate.p12",
+      certificate_password: ENV["APPSTORE_CERTIFICATE_PASSWORD"] || "default"
+    )
+  end
+
   desc "Load Appstore Connect API Key information to use in subsequent lanes"
   private_lane :load_appstore_connect_api_key do |options|
     app_store_connect_api_key(
@@ -75,12 +84,14 @@ platform :ios do
     app_identifier = CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
     api_key = lane_context[SharedValues::APP_STORE_CONNECT_API_KEY]
 
+    # it makes sure you have a valid certificate and its private key installed on the local machine
     cert(
       api_key: api_key,
       keychain_path: "~/Library/Keychains/#{ENV['TMP_KEYCHAIN_NAME']}-db",
       keychain_password: ENV["TMP_KEYCHAIN_PASSWORD"]
     )
 
+    # it makes sure you have a valid provisioning profile installed locally, that matches the installed certificate
     sigh(
       api_key: api_key,
       app_identifier: app_identifier,
@@ -116,12 +127,13 @@ platform :ios do
   private_lane :build_testing do |options|
     build_scheme = options[:scheme]
     app_identifier = CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
+    code_sign_identity = "iPhone Distribution"
 
    # update the code signing identities to match profile name and app bundle identifier
    update_code_signing_settings(
      use_automatic_signing: false, # turn off automatic signing during build so correct code signing identity is guaranteed to be used
      targets: ["TrezorSuite"],
-     code_sign_identity: "iPhone Distribution",
+     code_sign_identity: code_sign_identity,
      bundle_identifier: app_identifier,
      profile_name: PROVISIONING_NAME,
      build_configurations: [build_scheme], # only toggle code signing settings for Release configurations
@@ -156,6 +168,41 @@ platform :ios do
     upload_testing
   end
 
+  desc "Build and sign the app locally"
+  private_lane :local do |options|
+    build_scheme = options[:scheme]
+    app_identifier = CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
+    code_sign_identity = "Apple Development"
+
+    cert(
+      development: true,
+    )
+    sigh(
+      development: true,
+      app_identifier: app_identifier
+    )
+
+    update_code_signing_settings(
+      use_automatic_signing: true,
+      targets: ["TrezorSuite"],
+      code_sign_identity: code_sign_identity,
+      bundle_identifier: app_identifier,
+      build_configurations: [build_scheme], # only toggle code signing settings for Release configurations
+      path: IOS_PROJECT
+    )
+
+    build_app(
+      scheme: build_scheme,
+      export_method: "development",
+      output_name: "#{build_scheme}-TrezorSuite",
+      workspace: IOS_PROJECT_WORKSPACE,
+      configuration: build_scheme
+    )
+  end
+
+  lane :debug do
+    local(scheme: "Debug")
+  end
   lane :develop do
     testing(scheme: "Develop")
   end
