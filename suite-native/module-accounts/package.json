@@ -16,7 +16,6 @@
         "@react-navigation/stack": "^6.2.2",
         "@reduxjs/toolkit": "1.8.3",
         "@suite-common/formatters": "workspace:*",
-        "@suite-common/graph": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",

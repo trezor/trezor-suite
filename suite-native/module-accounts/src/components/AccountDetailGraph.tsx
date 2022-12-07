@@ -4,14 +4,14 @@ import { useSelector } from 'react-redux';
 import { A } from '@mobily/ts-belt';
 import { useAtom } from 'jotai';
 
-import { useGraphForSingleAccount } from '@suite-common/graph';
-import { Box, Divider } from '@suite-native/atoms';
 import {
+    useGraphForSingleAccount,
     EnhancedGraphPointWithCryptoBalance,
     enhanceGraphPoints,
     Graph,
     TimeSwitch,
 } from '@suite-native/graph';
+import { Box, Divider } from '@suite-native/atoms';
 import { selectFiatCurrency } from '@suite-native/module-settings';
 
 import { writeOnlyReferencePointAtom, writeOnlySelectedPointAtom } from './AccountBalance';
