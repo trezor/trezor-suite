@@ -245,4 +245,9 @@ export const selectTorState = createSelector(
     }),
 );
 
+export const selectDebug = createSelector(
+    (state: SuiteRootState) => state.suite.settings.debug,
+    debug => debug,
+);
+
 export default suiteReducer;

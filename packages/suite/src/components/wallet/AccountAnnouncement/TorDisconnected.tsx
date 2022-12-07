@@ -3,13 +3,16 @@ import { NotificationCard, Translation } from '@suite-components';
 import { useActions, useSelector } from '@suite-hooks';
 import * as suiteActions from '@suite-actions/suiteActions';
 import { selectTorState } from '@suite-reducers/suiteReducer';
+import { selectIsCoinjoinBlockedByTor } from '@wallet-reducers/coinjoinReducer';
 
 export const TorDisconnected = () => {
     const { isTorLoading } = useSelector(selectTorState);
-
+    const isCoinjoinBlockedByTor = useSelector(selectIsCoinjoinBlockedByTor);
     const { toggleTor } = useActions({
         toggleTor: suiteActions.toggleTor,
     });
+
+    if (!isCoinjoinBlockedByTor) return null;
 
     return (
         <NotificationCard

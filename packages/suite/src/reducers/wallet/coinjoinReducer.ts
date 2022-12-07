@@ -11,8 +11,9 @@ import {
     transformCoinjoinStatus,
 } from '@wallet-utils/coinjoinUtils';
 import { ESTIMATED_ROUNDS_FAIL_RATE_BUFFER } from '@suite/services/coinjoin/config';
-import { selectSelectedAccount } from './selectedAccountReducer';
+import { selectSelectedAccount, selectSelectedAccountParams } from './selectedAccountReducer';
 import { CoinjoinStatusEvent } from '@trezor/coinjoin';
+import { selectDebug, selectTorState } from '@suite-reducers/suiteReducer';
 
 export interface CoinjoinClientFeeRatesMedians {
     fast: number;
@@ -366,5 +367,20 @@ export const selectCurrentTargetAnonymity = createSelector(
         const { targetAnonymity } = currentCoinjoinAccount || {};
 
         return targetAnonymity;
+    },
+);
+
+export const selectIsCoinjoinBlockedByTor = createSelector(
+    [selectSelectedAccountParams, selectTorState, selectDebug],
+    (accountParams, { isTorEnabled }, debug) => {
+        if (!accountParams) {
+            return false;
+        }
+
+        if (debug.coinjoinAllowNoTor) {
+            return false;
+        }
+
+        return accountParams.accountType === 'coinjoin' && !isTorEnabled;
     },
 );

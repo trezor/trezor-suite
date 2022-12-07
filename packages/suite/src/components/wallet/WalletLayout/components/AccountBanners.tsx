@@ -9,6 +9,7 @@ import DeviceUnavailable from '../../AccountMode/DeviceUnavailable';
 import XRPReserve from '../../AccountAnnouncement/XRPReserve';
 import AccountImported from '../../AccountAnnouncement/AccountImported';
 import AccountOutOfSync from '../../AccountAnnouncement/AccountOutOfSync';
+import { TorDisconnected } from '@wallet-components/AccountAnnouncement/TorDisconnected';
 
 const BannersWrapper = styled.div`
     display: flex;
@@ -28,6 +29,7 @@ export const AccountBanners = ({ account }: AccountBannersProps) => (
         <AuthConfirmFailed />
         <BackendDisconnected />
         <DeviceUnavailable />
+        <TorDisconnected />
         <XRPReserve account={account} />
         <AccountImported account={account} />
         <AccountOutOfSync account={account} />
