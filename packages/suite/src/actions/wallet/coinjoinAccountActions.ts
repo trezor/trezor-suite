@@ -193,7 +193,7 @@ export const fetchAndUpdateAccount =
         const api = CoinjoinBackendService.getInstance(account.symbol);
         if (!api) return;
 
-        const isInitialUpdate = account.status !== 'ready';
+        const isInitialUpdate = account.status === 'initial' || account.status === 'error';
         dispatch(accountsActions.startCoinjoinAccountSync(account));
 
         const onProgress = (progress: ScanAccountProgress) => {
@@ -235,24 +235,24 @@ export const fetchAndUpdateAccount =
                     analyzeTransactions(accountInfo, account.symbol),
                 );
 
-                dispatch(accountsActions.updateAccount(account, accountInfoWithAnonymitySet));
+                // status must be set here already (instead of wait for endCoinjoinAccountSync)
+                // so it's potentially stored into db
+                dispatch(
+                    accountsActions.updateAccount(
+                        { ...account, status: 'ready' },
+                        accountInfoWithAnonymitySet,
+                    ),
+                );
 
                 // update account in CoinjoinClient
                 dispatch(updateClientAccount(account));
             }
 
-            // TODO remove invalid transactions
-
-            // TODO notify about new transactions
-
             dispatch(accountsActions.endCoinjoinAccountSync(account, 'ready'));
         } catch (error) {
-            dispatch(
-                accountsActions.endCoinjoinAccountSync(
-                    account,
-                    isInitialUpdate ? 'error' : 'ready',
-                ),
-            );
+            // 'error' when no previous discovery was successful, 'out-of-sync' otherwise
+            const status = isInitialUpdate ? 'error' : 'out-of-sync';
+            dispatch(accountsActions.endCoinjoinAccountSync(account, status));
         } finally {
             api.off(`progress/${account.descriptor}`, onProgress);
         }

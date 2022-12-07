@@ -73,7 +73,12 @@ export const extraDependencies: ExtraDependencies = {
                 state.transactions[k][item.order] = item.tx;
             });
         },
-        storageLoadAccounts: (_, { payload }: StorageLoadAction) => payload.accounts,
+        storageLoadAccounts: (_, { payload }: StorageLoadAction) =>
+            payload.accounts.map(acc =>
+                acc.backendType === 'coinjoin' && acc.status === 'ready'
+                    ? { ...acc, status: 'out-of-sync' }
+                    : acc,
+            ),
         storageLoadFiatRates: (state: FiatRatesState, { payload }: StorageLoadAction) => {
             state.coins = payload.fiatRates;
         },
