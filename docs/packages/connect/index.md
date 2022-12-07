@@ -14,7 +14,7 @@ TrezorConnect.init({
 });
 ```
 
-Starting with Trezor Connect 7, we have implemented a new feature — Trezor Connect Manifest — which requires that you as a Trezor Connect integrator, to share your e-mail and application url with us.
+Trezor Connect Manifest requires that you, as a Trezor Connect integrator, share your e-mail and application url with us.
 This provides us with the **ability to reach you in case of any required maintenance.**
 This subscription is mandatory. Trezor Connect raises an error that reads "Manifest not set" if manifest is not provided. It can be either set via `manifest` method or passed as a param in `init` method.
 
@@ -24,6 +24,8 @@ TrezorConnect.manifest({
     appUrl: 'http://your.application.com',
 });
 ```
+
+If you need more customization, refer to [init method documentation](./methods/init.md)
 
 ## API methods
 
