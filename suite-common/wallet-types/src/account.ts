@@ -53,7 +53,7 @@ export type AccountBackendSpecific =
       }
     | {
           backendType: Extract<BackendType, 'coinjoin'>;
-          status: 'initial' | 'ready' | 'error';
+          status: 'initial' | 'ready' | 'error' | 'out-of-sync';
           syncing?: boolean;
       };
 
