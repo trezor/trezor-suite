@@ -5,10 +5,11 @@ import { useDispatch } from 'react-redux';
 import { goto } from '@suite-actions/routerActions';
 import { Card, Translation } from '@suite-components';
 import { useSelector } from '@suite-hooks';
-import { Button, variables } from '@trezor/components';
+import { variables, TooltipButton } from '@trezor/components';
 import {
     selectCoinjoinAccountByKey,
     selectCurrentCoinjoinBalanceBreakdown,
+    selectIsCoinjoinBlockedByTor,
 } from '@wallet-reducers/coinjoinReducer';
 import { BalancePrivacyBreakdown } from './BalancePrivacyBreakdown';
 import { CoinjoinStatus } from './CoinjoinStatus';
@@ -21,7 +22,7 @@ const Container = styled(Card)`
     margin-bottom: 10px;
 `;
 
-const AnonymizeButton = styled(Button)`
+const AnonymizeButton = styled(TooltipButton)`
     justify-content: space-between;
     width: 154px;
     height: 46px;
@@ -41,6 +42,7 @@ interface BalanceSectionProps {
 export const BalanceSection = ({ accountKey }: BalanceSectionProps) => {
     const coinjoinAccount = useSelector(state => selectCoinjoinAccountByKey(state, accountKey));
     const { notAnonymized } = useSelector(selectCurrentCoinjoinBalanceBreakdown);
+    const isCoinJoinBlocked = useSelector(selectIsCoinjoinBlockedByTor);
 
     const dispatch = useDispatch();
 
@@ -65,8 +67,14 @@ export const BalanceSection = ({ accountKey }: BalanceSectionProps) => {
             <AnonymizeButton
                 onClick={goToSetup}
                 icon="ARROW_RIGHT_LONG"
+                isDisabled={isCoinJoinBlocked}
                 alignIcon="right"
                 size={16}
+                tooltipContent={
+                    isCoinJoinBlocked && (
+                        <Translation id="TR_UNAVAILABLE_COINJOIN_TOR_DISABLE_TOOLTIP" />
+                    )
+                }
             >
                 <Translation id="TR_ANONYMIZE" />
             </AnonymizeButton>

@@ -8,10 +8,12 @@ import {
     Icon,
     useTheme,
     variables,
+    Tooltip,
 } from '@trezor/components';
 import { CoinjoinSession } from '@suite-common/wallet-types';
 import { Translation } from '@suite-components/Translation';
 import { CountdownTimer } from '@suite-components';
+
 import { COINJOIN_PHASE_MESSAGES } from '@suite-constants/coinjoin';
 import {
     calculateSessionProgress,
@@ -24,6 +26,8 @@ import {
     restoreCoinjoinSession,
     stopCoinjoinSession,
 } from '@wallet-actions/coinjoinAccountActions';
+import { useSelector } from '@suite-hooks';
+import { selectIsCoinjoinBlockedByTor } from '@wallet-reducers/coinjoinReducer';
 
 const Container = styled.div`
     position: relative;
@@ -52,7 +56,12 @@ const MenuLabel = styled.div`
     }
 `;
 
-const ProgressWheel = styled.div<{ progress: number; isPaused: boolean; isLoading: boolean }>`
+const ProgressWheel = styled.div<{
+    progress: number;
+    isPaused: boolean;
+    isResumeDisable: boolean;
+    isLoading: boolean;
+}>`
     display: flex;
     justify-content: center;
     align-items: center;
@@ -66,7 +75,11 @@ const ProgressWheel = styled.div<{ progress: number; isPaused: boolean; isLoadin
         } 0)`};
     transition: background 0.1s, opacity 0.05s;
     user-select: none;
-    cursor: pointer;
+    ${({ isResumeDisable }) =>
+        !isResumeDisable &&
+        css`
+            cursor: pointer;
+        `}
 
     ${({ isLoading }) =>
         !isLoading &&
@@ -121,6 +134,10 @@ const PauseIcon = styled(Icon)`
     ${iconBase};
 `;
 
+const PausedInTooltipIcon = styled(PauseIcon)`
+    margin-left: 12px;
+`;
+
 const CrossIcon = styled(Icon)`
     width: 10px;
     height: 10px;
@@ -138,6 +155,7 @@ interface CoinjoinStatusProps {
 export const CoinjoinStatus = ({ session, accountKey }: CoinjoinStatusProps) => {
     const [isLoading, setIsLoading] = useState(false);
     const [isWheelHovered, setIsWheelHovered] = useState(false);
+    const isCoinJoinBlockedByTor = useSelector(selectIsCoinjoinBlockedByTor);
 
     const menuRef = useRef<HTMLUListElement & { close: () => void }>(null);
     const theme = useTheme();
@@ -149,6 +167,7 @@ export const CoinjoinStatus = ({ session, accountKey }: CoinjoinStatusProps) => 
     const isPaused = !!paused;
 
     const togglePause = useCallback(async () => {
+        if (isCoinJoinBlockedByTor) return;
         if (isPaused) {
             setIsLoading(true);
             await dispatch(restoreCoinjoinSession(accountKey));
@@ -156,7 +175,7 @@ export const CoinjoinStatus = ({ session, accountKey }: CoinjoinStatusProps) => 
         } else {
             dispatch(pauseCoinjoinSession(accountKey));
         }
-    }, [isPaused, dispatch, accountKey]);
+    }, [isCoinJoinBlockedByTor, isPaused, dispatch, accountKey]);
 
     const menuItems = useMemo<Array<GroupedMenuItems>>(
         () => [
@@ -173,7 +192,7 @@ export const CoinjoinStatus = ({ session, accountKey }: CoinjoinStatusProps) => 
                         ),
                         callback: togglePause,
                         'data-test': `@coinjoin/resume`,
-                        isHidden: !isPaused || isLoading,
+                        isHidden: !isPaused || isLoading || isCoinJoinBlockedByTor,
                     },
                     {
                         key: 'resuming',
@@ -215,7 +234,7 @@ export const CoinjoinStatus = ({ session, accountKey }: CoinjoinStatusProps) => 
                 ],
             },
         ],
-        [isPaused, togglePause, isLoading, dispatch, accountKey],
+        [isCoinJoinBlockedByTor, isPaused, togglePause, isLoading, dispatch, accountKey],
     );
 
     const iconConfig = {
@@ -224,6 +243,17 @@ export const CoinjoinStatus = ({ session, accountKey }: CoinjoinStatusProps) => 
     };
 
     const getProgressContent = () => {
+        if (isCoinJoinBlockedByTor) {
+            return (
+                <Tooltip content={<Translation id="TR_UNAVAILABLE_COINJOIN_TOR_DISABLE_TOOLTIP" />}>
+                    <>
+                        <PausedInTooltipIcon icon="PAUSE" {...iconConfig} />
+                        <Translation id="TR_PAUSED" />
+                    </>
+                </Tooltip>
+            );
+        }
+
         if (isPaused) {
             if (isWheelHovered) {
                 return (
@@ -308,6 +338,7 @@ export const CoinjoinStatus = ({ session, accountKey }: CoinjoinStatusProps) => 
                 progress={progress}
                 isPaused={isPaused}
                 isLoading={isLoading}
+                isResumeDisable={isCoinJoinBlockedByTor}
                 onClick={togglePause}
                 onMouseEnter={() => setIsWheelHovered(true)}
                 onMouseLeave={() => setIsWheelHovered(false)}

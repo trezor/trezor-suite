@@ -3870,6 +3870,10 @@ export default defineMessages({
         id: 'TR_TOR_DISABLE_ONIONS_ONLY_NO_MORE_DESCRIPTION',
         defaultMessage: 'You can safely disable Tor now.',
     },
+    TR_UNAVAILABLE_COINJOIN_TOR_DISABLE_TOOLTIP: {
+        id: 'TR_UNAVAILABLE_COINJOIN_TOR_DISABLE_TOOLTIP',
+        defaultMessage: 'Unavailable. Tor is disabled.',
+    },
     TR_ONION_BACKEND_TOR_NEEDED: {
         id: 'TR_ONION_BACKEND_TOR_NEEDED',
         defaultMessage:
