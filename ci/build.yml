@@ -138,7 +138,7 @@ suite-desktop build mac codesign:
     paths:
       - ${artifact}
       - latest*.yml
-    expire_in: 7 days
+    expire_in: 30 days
 
 ## Suite desktop Linux app
 suite-desktop build linux:
@@ -177,7 +177,7 @@ suite-desktop build linux codesign:
     paths:
       - ${artifact}
       - latest*.yml
-    expire_in: 7 days
+    expire_in: 30 days
 
 ## Suite desktop Windows app
 suite-desktop build windows:
@@ -219,7 +219,7 @@ suite-desktop build windows codesign:
     paths:
       - ${artifact}
       - latest*.yml
-    expire_in: 7 days
+    expire_in: 30 days
 
 .connect-explorer build base:
   stage: build
