@@ -93,11 +93,12 @@ const coinjoinAccountPreloading = (isPreloading: boolean) =>
         },
     } as const);
 
-const coinjoinSessionPause = (accountKey: string) =>
+const coinjoinSessionPause = (accountKey: string, interrupted: boolean) =>
     ({
         type: COINJOIN.SESSION_PAUSE,
         payload: {
             accountKey,
+            interrupted,
         },
     } as const);
 
@@ -471,13 +472,13 @@ export const startCoinjoinSession =
 
 // called from coinjoin account UI or exceptions like device disconnection, forget wallet/account etc.
 export const pauseCoinjoinSession =
-    (accountKey: string) => (dispatch: Dispatch, getState: GetState) => {
+    (accountKey: string, interrupted = false) =>
+    (dispatch: Dispatch, getState: GetState) => {
         const account = selectAccountByKey(getState(), accountKey);
 
         if (!account) {
             return;
         }
-
         // get @trezor/coinjoin client if available
         const client = getCoinjoinClient(account.symbol);
 
@@ -485,7 +486,7 @@ export const pauseCoinjoinSession =
         client?.unregisterAccount(accountKey);
 
         // dispatch data to reducer
-        dispatch(coinjoinSessionPause(accountKey));
+        dispatch(coinjoinSessionPause(accountKey, interrupted));
     };
 
 export const pauseCoinjoinSessionByDeviceId =
@@ -512,7 +513,7 @@ export const pauseCoinjoinSessionByDeviceId =
                 client?.unregisterAccount(account.key);
 
                 // dispatch data to reducer
-                dispatch(coinjoinSessionPause(account.key));
+                dispatch(coinjoinSessionPause(account.key, false));
             }
         });
     };
@@ -584,6 +585,42 @@ export const restoreCoinjoinSession =
                 }),
             );
         }
+    };
+
+export const pauseInterruptAllCoinjoinSessions = () => (dispatch: Dispatch, getState: GetState) => {
+    const {
+        wallet: { accounts, coinjoin },
+    } = getState();
+
+    const coinjoinAccounts = accounts.filter(a => a.accountType === 'coinjoin');
+
+    coinjoinAccounts.forEach(account => {
+        const isAccountWithSession = coinjoin.accounts.find(
+            a => a.key === account.key && a.session && !a.session.paused,
+        );
+        if (isAccountWithSession) {
+            dispatch(pauseCoinjoinSession(account.key, true));
+        }
+    });
+};
+
+export const restoreAllInterruptedCoinjoinSession =
+    () => (dispatch: Dispatch, getState: GetState) => {
+        const {
+            wallet: { accounts, coinjoin },
+        } = getState();
+
+        const coinjoinAccounts = accounts.filter(a => a.accountType === 'coinjoin');
+
+        coinjoinAccounts.forEach(account => {
+            const isAccountWithPausedSessionInterrupted = coinjoin.accounts.find(
+                a =>
+                    a.key === account.key && a.session && a.session.paused && a.session.interrupted,
+            );
+            if (isAccountWithPausedSessionInterrupted) {
+                dispatch(restoreCoinjoinSession(account.key));
+            }
+        });
     };
 
 // called from coinjoin account UI or exceptions like device disconnection, forget wallet/account etc.
