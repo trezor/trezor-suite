@@ -52,6 +52,18 @@ const rejectWhenAborted = (signal: AbortSignal | undefined, clear: AbortSignal) 
         clear.addEventListener('abort', onClear);
     });
 
+const resolveAction = async <T>(action: ScheduledAction<T>, clear: AbortSignal) => {
+    const aborter = new AbortController();
+    const onClear = () => aborter.abort();
+    if (clear.aborted) onClear();
+    clear.addEventListener('abort', onClear);
+    try {
+        return await new Promise<T>(resolve => resolve(action(aborter.signal)));
+    } finally {
+        clear.removeEventListener('abort', onClear);
+    }
+};
+
 const attemptLoop = async <T>(
     attempts: number,
     attempt: ScheduledAction<T>,
@@ -92,7 +104,7 @@ export const scheduleAction = async <T>(
                     () =>
                         Promise.race([
                             rejectAfterMs(timeout, abortedByTimeout, clear),
-                            new Promise<T>(resolve => resolve(action(clear))),
+                            resolveAction(action, clear),
                         ]),
                     () => resolveAfterMs(gap ?? 0, clear),
                     clear,
