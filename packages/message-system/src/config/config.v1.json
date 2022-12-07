@@ -1,8 +1,60 @@
 {
     "version": 1,
-    "timestamp": "2022-11-28T00:00:00+00:00",
-    "sequence": 17,
+    "timestamp": "2022-12-07T00:00:00+00:00",
+    "sequence": 18,
     "actions": [
+        {
+            "conditions": [
+                {
+                    "environment": {
+                        "desktop": "32.12.1",
+                        "mobile": "!",
+                        "web": "32.12.1"
+                    }
+                }
+            ],
+            "message": {
+                "id": "c3196201-b796-5c43-abdb-ac68c15ae371",
+                "priority": 99,
+                "dismissible": true,
+                "variant": "critical",
+                "category": "banner",
+                "content": {
+                    "en-GB": "TEST message system 32.12.1",
+                    "en": "TEST message system 32.12.1",
+                    "es": "TEST message system 32.12.1",
+                    "cs": "TEST message system 32.12.1",
+                    "ru": "TEST message system 32.12.1",
+                    "ja": "TEST message system 32.12.1。"
+                }
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "environment": {
+                        "desktop": "0.22.12",
+                        "mobile": "!",
+                        "web": "0.22.12"
+                    }
+                }
+            ],
+            "message": {
+                "id": "c3196201-b796-5c43-abdb-ac68c15ae371",
+                "priority": 99,
+                "dismissible": true,
+                "variant": "critical",
+                "category": "banner",
+                "content": {
+                    "en-GB": "TEST message system 0.22.12",
+                    "en": "TEST message system 0.22.12",
+                    "es": "TEST message system 0.22.12",
+                    "cs": "TEST message system 0.22.12",
+                    "ru": "TEST message system 0.22.12",
+                    "ja": "TEST message system 0.22.12。"
+                }
+            }
+        },
         {
             "conditions": [
                 {
