@@ -8,6 +8,7 @@ import {
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';
 
+import { SelectCoinScreen } from '../screens/SelectCoinScreen';
 import { XpubScanScreen } from '../screens/XpubScanScreen';
 import { AccountsImportScreen } from '../screens/AccountsImportScreen';
 import { ScanQRCodeModalScreen } from '../screens/ScanQRCodeModalScreen';
@@ -17,6 +18,10 @@ export const AccountsImportStack = createStackNavigator<AccountsImportStackParam
 export const AccountsImportStackNavigator = () => (
     <AccountsImportStack.Navigator screenOptions={stackNavigationOptionsConfig}>
         <AccountsImportStack.Group>
+            <AccountsImportStack.Screen
+                name={AccountsImportStackRoutes.SelectCoin}
+                component={SelectCoinScreen}
+            />
             <AccountsImportStack.Screen
                 name={AccountsImportStackRoutes.XpubScan}
                 component={XpubScanScreen}

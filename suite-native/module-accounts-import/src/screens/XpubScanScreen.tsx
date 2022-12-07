@@ -92,7 +92,7 @@ export const XpubScanScreen = ({
     };
 
     return (
-        <Screen header={<AccountImportHeader activeStep={1} />}>
+        <Screen header={<AccountImportHeader activeStep={2} />}>
             <Box>
                 <XpubScanHeader
                     onSelectCurrency={handleSelectCurrency}

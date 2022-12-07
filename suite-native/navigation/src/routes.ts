@@ -19,6 +19,7 @@ export enum OnboardingStackRoutes {
 }
 
 export enum AccountsImportStackRoutes {
+    SelectCoin = 'SelectCoin',
     XpubScan = 'XpubScan',
     XpubScanModal = 'XpubScanModal',
     AccountImport = 'AccountImport',

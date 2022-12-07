@@ -45,8 +45,7 @@ export const Assets = () => {
 
     const handleImportAssets = () => {
         navigation.navigate(RootStackRoutes.AccountsImport, {
-            screen: AccountsImportStackRoutes.XpubScan,
-            params: {},
+            screen: AccountsImportStackRoutes.SelectCoin,
         });
     };
 

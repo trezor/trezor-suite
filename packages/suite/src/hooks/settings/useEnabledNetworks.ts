@@ -1,7 +1,8 @@
-import { NETWORKS } from '@wallet-config';
 import { useSelector, useActions } from '@suite-hooks';
 import { changeCoinVisibility } from '@settings-actions/walletSettingsActions';
 import type { Network } from '@wallet-types';
+
+import { getMainnets, getTestnets } from '@suite-common/wallet-config';
 
 type EnabledNetworks = {
     mainnets: Network[];
@@ -16,11 +17,9 @@ export const useEnabledNetworks = (): EnabledNetworks => {
         debug: state.suite.settings.debug.showDebugMenu,
     }));
 
-    const mainnets: Network[] = NETWORKS.filter(n => !n.accountType && !n.testnet);
+    const mainnets: Network[] = getMainnets();
 
-    const testnets: Network[] = NETWORKS.filter(
-        n => !n.accountType && n.testnet === true && (n.symbol !== 'regtest' || debug),
-    );
+    const testnets: Network[] = getTestnets(debug);
 
     const { setEnabled } = useActions({
         setEnabled: changeCoinVisibility,

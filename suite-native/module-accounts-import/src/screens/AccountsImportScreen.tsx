@@ -78,7 +78,7 @@ export const AccountsImportScreen = ({
     }, [xpubAddress, currencySymbol, navigation]);
 
     return (
-        <Screen header={<AccountImportHeader activeStep={accountInfo ? 3 : 2} />}>
+        <Screen header={<AccountImportHeader activeStep={accountInfo ? 4 : 3} />}>
             {accountInfo ? (
                 <AccountImportSummary accountInfo={accountInfo} networkSymbol={currencySymbol} />
             ) : (

@@ -18,7 +18,7 @@ import {
 } from '@suite-native/navigation';
 
 type AccountImportHeaderProps = {
-    activeStep: 1 | 2 | 3;
+    activeStep: 1 | 2 | 3 | 4;
 };
 
 const closeButtonStyle = prepareNativeStyle(_ => ({
@@ -60,7 +60,7 @@ export const AccountImportHeader = ({ activeStep }: AccountImportHeaderProps) =>
                     </Box>
                 )
             }
-            titleComponent={<StepsProgressBar activeStep={activeStep} numberOfSteps={3} />}
+            titleComponent={<StepsProgressBar activeStep={activeStep} numberOfSteps={4} />}
             hasGoBackIcon={false}
         />
     );
