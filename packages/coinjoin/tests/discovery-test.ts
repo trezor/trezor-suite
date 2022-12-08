@@ -1,9 +1,9 @@
 /* eslint-disable no-console */
-/* eslint-disable @typescript-eslint/prefer-ts-expect-error */
+/* eslint-disable @typescript-eslint/no-var-requires */
 
-// @ts-ignore
-import { getCoinjoinConfig } from '../../suite/src/services/coinjoin/config';
 import { CoinjoinBackend } from '../src/backend/CoinjoinBackend';
+
+const { getCoinjoinConfig } = require('../../suite/src/services/coinjoin/config');
 
 const supportedNetworks = ['btc', 'test', 'regtest'] as const;
 const isSupportedNetwork = (network: string): network is typeof supportedNetworks[number] =>
