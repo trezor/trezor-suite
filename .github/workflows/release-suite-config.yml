@@ -1,0 +1,48 @@
+name: "[Release] suite config"
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Release environment"
+        type: environment
+        required: true
+
+jobs:
+  release-config:
+    environment: ${{ github.event.inputs.environment }}
+    runs-on: ubuntu-latest
+    env:
+      AWS_REGION: "eu-central-1"
+      AWS_CLOUDFRONT_ID: E1ERY5K2OTKKI1
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          lfs: true
+      - name: Configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v1-node16
+        with:
+          role-to-assume: arn:aws:iam::538326561891:role/github-actions-trezor-suite
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Build and sign ${{ github.event.inputs.environment }} config
+        if: ${{ github.event.inputs.environment == 'develop' }}
+        run: |
+          yarn install
+          yarn workspace @trezor/message-system sign-config
+
+      - name: Build and sign ${{ github.event.inputs.environment }} config
+        if: ${{ github.event.inputs.environment == 'production' }}
+        env:
+          IS_CODESIGN_BUILD: "true"
+          JWS_PRIVATE_KEY_ENV: ${{ secrets.JWS_PRIVATE_KEY_ENV }}
+          JWS_PUBLIC_KEY_ENV: ${{ secrets.JWS_PRIVATE_KEY_ENV }}
+        run: |
+          yarn install
+          yarn workspace @trezor/message-system sign-config
+
+      - name: Upload suite-web and suite-web-landing
+        run: |
+          aws s3 cp packages/message-system/files/config.v1.jws s3://data.trezor.io/config/${{ github.event.inputs.environment }}/config.v1.jws
+          aws cloudfront create-invalidation --distribution-id ${AWS_CLOUDFRONT_ID} --paths '/config/${{ github.event.inputs.environment }}/*'
