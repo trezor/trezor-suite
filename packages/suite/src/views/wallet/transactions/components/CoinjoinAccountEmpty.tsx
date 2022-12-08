@@ -7,6 +7,7 @@ import { Account } from '@wallet-types';
 import { Button, Card, H2, Image, P, variables } from '@trezor/components';
 import { Translation } from '@suite-components/Translation';
 import { goto } from '@suite-actions/routerActions';
+import { CoinjoinSummaryHeader } from '@wallet-components/index';
 
 const Container = styled(Card)`
     align-items: center;
@@ -39,32 +40,35 @@ export const CoinjoinAccountEmpty = ({ account }: CoinjoinAccountEmptyProps) => 
     const dispatch = useDispatch();
 
     return (
-        <Container>
-            <Image image="COINJOIN_MESS" width={300} />
+        <>
+            <CoinjoinSummaryHeader />
+            <Container>
+                <Image image="COINJOIN_MESS" width={300} />
 
-            <Heading>
-                <Translation id="TR_COINJOIN_ACCESS_ACCOUNT_STEP_INITIAL_TITLE" />
-            </Heading>
+                <Heading>
+                    <Translation id="TR_COINJOIN_ACCESS_ACCOUNT_STEP_INITIAL_TITLE" />
+                </Heading>
 
-            <AccountDescription>
-                <Translation id="TR_COINJOIN_ACCESS_ACCOUNT_STEP_INITIAL_DESCRIPTION" />
-            </AccountDescription>
+                <AccountDescription>
+                    <Translation id="TR_COINJOIN_ACCESS_ACCOUNT_STEP_INITIAL_DESCRIPTION" />
+                </AccountDescription>
 
-            {coordinatorData && (
-                <FeeText>
+                {coordinatorData && (
+                    <FeeText>
+                        <Translation
+                            id="TR_COINJOIN_ACCESS_ACCOUNT_STEP_INITIAL_FEE_MESSAGE"
+                            values={{ fee: coordinatorData.coordinationFeeRate.rate * 100 }}
+                        />
+                    </FeeText>
+                )}
+
+                <Button onClick={() => dispatch(goto('wallet-receive', { preserveParams: true }))}>
                     <Translation
-                        id="TR_COINJOIN_ACCESS_ACCOUNT_STEP_INITIAL_FEE_MESSAGE"
-                        values={{ fee: coordinatorData.coordinationFeeRate.rate * 100 }}
+                        id="TR_RECEIVE_NETWORK"
+                        values={{ network: account.symbol.toUpperCase() }}
                     />
-                </FeeText>
-            )}
-
-            <Button onClick={() => dispatch(goto('wallet-receive', { preserveParams: true }))}>
-                <Translation
-                    id="TR_RECEIVE_NETWORK"
-                    values={{ network: account.symbol.toUpperCase() }}
-                />
-            </Button>
-        </Container>
+                </Button>
+            </Container>
+        </>
     );
 };

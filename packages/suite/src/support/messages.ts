@@ -77,6 +77,10 @@ export default defineMessages({
         defaultMessage: 'Account does not exist',
         id: 'TR_ACCOUNT_EXCEPTION_NOT_EXIST',
     },
+    TR_ACCOUNT_OUT_OF_SYNC: {
+        defaultMessage: 'Account is possibly out-of-sync',
+        id: 'TR_ACCOUNT_OUT_OF_SYNC',
+    },
     TR_ACCOUNT_IMPORTED_ANNOUNCEMENT: {
         defaultMessage:
             'A watch-only account is a public address you’ve imported into your wallet, allowing the wallet to watch for outputs but not spend them.',

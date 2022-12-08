@@ -1,7 +1,6 @@
 import React from 'react';
 import styled, { useTheme } from 'styled-components';
 import { H3, Icon, variables } from '@trezor/components';
-import { CoinjoinSummaryHeader } from '@wallet-components';
 import { Card, Translation } from '@suite-components';
 import { AccountLoadingProgress } from './AccountLoadingProgress';
 import { RotatingFacts } from './RotatingFacts';
@@ -11,6 +10,7 @@ const Container = styled(Card)`
     align-items: center;
     padding-top: 36px;
     padding-bottom: 36px;
+    margin-bottom: 24px;
 `;
 
 const FactHeading = styled.div`
@@ -31,23 +31,19 @@ export const CoinjoinAccountDiscoveryProgress = () => {
     const theme = useTheme();
 
     return (
-        <>
-            <CoinjoinSummaryHeader />
+        <Container>
+            <H3>
+                <Translation id="TR_LOADING_FUNDS" />
+            </H3>
 
-            <Container>
-                <H3>
-                    <Translation id="TR_LOADING_FUNDS" />
-                </H3>
+            <AccountLoadingProgress />
 
-                <AccountLoadingProgress />
+            <FactHeading>
+                <SparksIcon icon="EXPERIMENTAL" size={13} color={theme.TYPE_ORANGE} />
+                <Translation id="TR_COINJOIN_FACT_TITLE" />
+            </FactHeading>
 
-                <FactHeading>
-                    <SparksIcon icon="EXPERIMENTAL" size={13} color={theme.TYPE_ORANGE} />
-                    <Translation id="TR_COINJOIN_FACT_TITLE" />
-                </FactHeading>
-
-                <RotatingFacts />
-            </Container>
-        </>
+            <RotatingFacts />
+        </Container>
     );
 };
