@@ -7117,7 +7117,7 @@ __metadata:
     "@trezor/connect-analytics": "workspace:*"
     "@trezor/connect-common": "workspace:0.0.10"
     "@trezor/device-utils": "workspace:*"
-    "@trezor/transport": "workspace:^1.1.5"
+    "@trezor/transport": "workspace:^1.1.6"
     "@trezor/trezor-user-env-link": "workspace:*"
     "@trezor/utils": "workspace:^9.0.4"
     "@trezor/utxo-lib": "workspace:^1.0.2"
@@ -7713,7 +7713,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/transport@workspace:^1.1.5, @trezor/transport@workspace:packages/transport":
+"@trezor/transport@workspace:^1.1.6, @trezor/transport@workspace:packages/transport":
   version: 0.0.0-use.local
   resolution: "@trezor/transport@workspace:packages/transport"
   dependencies:
@@ -7729,6 +7729,7 @@ __metadata:
     protobufjs: ^7.1.2
     rimraf: ^3.0.2
     ts-node: ^10.9.1
+    tsx: ^3.8.2
     typescript: 4.9.3
   languageName: unknown
   linkType: soft

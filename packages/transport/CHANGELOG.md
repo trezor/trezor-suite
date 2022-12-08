@@ -1,3 +1,7 @@
+# 1.1.6
+
+-   Dependencies: typescript 4.9
+
 # 1.1.5
 
 -   Removed flowtype generation
