@@ -11,10 +11,12 @@ import { QRCodeScanner } from '@suite-native/qr-code-scanner';
 
 export const ScanQRCodeModalScreen = ({
     navigation,
+    route,
 }: StackProps<AccountsImportStackParamList, AccountsImportStackRoutes.XpubScanModal>) => {
     const handleBarCodeScanned = (data: string) => {
         navigation.navigate(AccountsImportStackRoutes.XpubScan, {
             qrCode: data,
+            networkSymbol: route.params.networkSymbol,
         });
     };
 

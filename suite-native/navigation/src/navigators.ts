@@ -7,7 +7,6 @@ import {
     AppTabsRoutes,
     AccountsImportStackRoutes,
     HomeStackRoutes,
-    OnboardingStackRoutes,
     RootStackRoutes,
     SettingsStackRoutes,
     AccountsStackRoutes,
@@ -31,14 +30,10 @@ export type SettingsStackParamList = {
 
 export type AccountsStackParamList = {
     [AccountsStackRoutes.Accounts]: {
-        currencySymbol?: NetworkSymbol;
+        networkSymbol?: NetworkSymbol;
     };
     [AccountsStackRoutes.AccountDetail]: { accountKey: string };
     [AccountsStackRoutes.AccountDetailSettings]: { accountKey: string };
-};
-
-export type OnboardingStackParamList = {
-    [OnboardingStackRoutes.Onboarding]: undefined;
 };
 
 export type AppTabsParamList = {
@@ -49,19 +44,21 @@ export type AppTabsParamList = {
 };
 
 export type AccountsImportStackParamList = {
-    [AccountsImportStackRoutes.SelectCoin]: undefined;
+    [AccountsImportStackRoutes.SelectNetwork]: undefined;
     [AccountsImportStackRoutes.XpubScan]: {
         qrCode?: string;
+        networkSymbol: NetworkSymbol;
     };
-    [AccountsImportStackRoutes.XpubScanModal]: undefined;
+    [AccountsImportStackRoutes.XpubScanModal]: {
+        networkSymbol: NetworkSymbol;
+    };
     [AccountsImportStackRoutes.AccountImport]: {
         xpubAddress: XpubAddress;
-        currencySymbol: NetworkSymbol;
+        networkSymbol: NetworkSymbol;
     };
 };
 
 export type RootStackParamList = {
-    [RootStackRoutes.OnboardingStack]: NavigatorScreenParams<OnboardingStackParamList>;
     [RootStackRoutes.AppTabs]: NavigatorScreenParams<AppTabsParamList>;
     [RootStackRoutes.AccountsImport]: NavigatorScreenParams<AccountsImportStackParamList>;
     [RootStackRoutes.TransactionDetail]: { txid: string };

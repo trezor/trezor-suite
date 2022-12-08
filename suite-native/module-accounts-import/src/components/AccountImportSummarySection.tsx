@@ -11,6 +11,7 @@ type AccountImportSummarySectionProps = {
 const contentWrapperStyle = prepareNativeStyle(_ => ({
     width: '100%',
     flex: 1,
+    marginTop: 70,
 }));
 
 export const AccountImportSummarySection = ({

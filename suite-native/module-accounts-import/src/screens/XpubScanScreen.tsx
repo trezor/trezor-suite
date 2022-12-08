@@ -1,10 +1,9 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { View } from 'react-native';
-import { useSelector } from 'react-redux';
 
 import { useFocusEffect } from '@react-navigation/native';
 
-import { Box, Button, Card, Text, TextDivider, VStack } from '@suite-native/atoms';
+import { Button, Card, TextDivider, VStack } from '@suite-native/atoms';
 import { isDevelopOrDebugEnv } from '@suite-native/config';
 import { Form, TextInputField, useForm } from '@suite-native/forms';
 import {
@@ -15,12 +14,12 @@ import {
 } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { yup } from '@trezor/validation';
+import { networks } from '@suite-common/wallet-config';
 
 import { XpubImportSection } from '../components/XpubImportSection';
 import { AccountImportHeader } from '../components/AccountImportHeader';
-import { selectSelectedCoin } from '../accountsImportSlice';
 import { DevXpub } from '../components/DevXpub';
-import { SelectableAssetItem } from '../components/SelectableAssetItem';
+import { SelectableNetworkItem } from '../components/SelectableNetworkItem';
 
 const cameraStyle = prepareNativeStyle(_ => ({
     alignItems: 'center',
@@ -39,13 +38,13 @@ export const XpubScanScreen = ({
 }: StackProps<AccountsImportStackParamList, AccountsImportStackRoutes.XpubScan>) => {
     const { applyStyle } = useNativeStyles();
     const [_, setIsCameraRequested] = useState<boolean>(false);
-    const selectedCoin = useSelector(selectSelectedCoin);
 
     const form = useForm<XpubFormValues>({
         validation: xpubFormValidationSchema,
     });
     const { handleSubmit, setValue, watch, reset } = form;
     const watchXpubAddress = watch('xpubAddress');
+    const selectedCurrencySymbol = route.params.networkSymbol;
 
     const resetToDefaultValues = useCallback(() => {
         setIsCameraRequested(false);
@@ -56,7 +55,7 @@ export const XpubScanScreen = ({
     const goToAccountImportScreen = ({ xpubAddress }: XpubFormValues) => {
         navigation.navigate(AccountsImportStackRoutes.AccountImport, {
             xpubAddress,
-            currencySymbol: selectedCoin.cryptoCurrencySymbol,
+            networkSymbol: selectedCurrencySymbol,
         });
     };
 
@@ -82,48 +81,40 @@ export const XpubScanScreen = ({
         reset({
             xpubAddress: '',
         });
-        navigation.navigate(AccountsImportStackRoutes.XpubScanModal);
+        navigation.navigate(AccountsImportStackRoutes.XpubScanModal, {
+            networkSymbol: selectedCurrencySymbol,
+        });
     };
 
     return (
         <Screen header={<AccountImportHeader activeStep={2} />}>
-            <Box>
-                <Box alignItems="center" marginBottom="medium">
-                    <Box marginBottom="medium">
-                        <Text variant="titleMedium">XPUB Import</Text>
-                    </Box>
-                </Box>
-                <Card>
-                    <SelectableAssetItem
-                        cryptoCurrencyName={selectedCoin.cryptoCurrencyName}
-                        cryptoCurrencySymbol={selectedCoin.cryptoCurrencySymbol}
-                        iconName={selectedCoin.iconName}
-                        onPressActionButton={() => navigation.goBack()}
-                    />
-                </Card>
-                <View style={applyStyle(cameraStyle)}>
-                    <XpubImportSection onRequestCamera={handleRequestCamera} />
-                </View>
-                <TextDivider title="OR" />
-                <Form form={form}>
-                    <VStack spacing="medium">
-                        <TextInputField name="xpubAddress" label="Enter x-pub..." />
-                        <Button
-                            onPress={onXpubFormSubmit}
-                            size="large"
-                            isDisabled={!watchXpubAddress?.length}
-                        >
-                            Submit
-                        </Button>
-                    </VStack>
-                </Form>
-                {isDevelopOrDebugEnv() && (
-                    <DevXpub
-                        symbol={selectedCoin.cryptoCurrencySymbol}
-                        onSelect={goToAccountImportScreen}
-                    />
-                )}
-            </Box>
+            <Card>
+                <SelectableNetworkItem
+                    cryptoCurrencyName={networks[selectedCurrencySymbol].name}
+                    cryptoCurrencySymbol={selectedCurrencySymbol}
+                    iconName={selectedCurrencySymbol}
+                    onPressActionButton={() => navigation.goBack()}
+                />
+            </Card>
+            <View style={applyStyle(cameraStyle)}>
+                <XpubImportSection onRequestCamera={handleRequestCamera} />
+            </View>
+            <TextDivider title="OR" />
+            <Form form={form}>
+                <VStack spacing="medium">
+                    <TextInputField name="xpubAddress" label="Enter x-pub..." />
+                    <Button
+                        onPress={onXpubFormSubmit}
+                        size="large"
+                        isDisabled={!watchXpubAddress?.length}
+                    >
+                        Submit
+                    </Button>
+                </VStack>
+            </Form>
+            {isDevelopOrDebugEnv() && (
+                <DevXpub symbol={selectedCurrencySymbol} onSelect={goToAccountImportScreen} />
+            )}
         </Screen>
     );
 };

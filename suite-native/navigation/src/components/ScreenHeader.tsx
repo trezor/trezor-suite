@@ -4,15 +4,16 @@ import { View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 import { NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { IconButton, Text } from '@suite-native/atoms';
+import { IconButton, StepsProgressBar, Text } from '@suite-native/atoms';
 
 type ScreenHeaderWithIconsProps = {
     leftIcon?: ReactNode;
     rightIcon?: ReactNode;
-    titleComponent?: ReactNode;
-    title?: string; // Title has higher priority than title component.
+    title?: string;
     style?: NativeStyleObject;
     hasGoBackIcon?: boolean;
+    numberOfSteps?: number;
+    activeStep?: number;
 };
 
 const ICON_SIZE = 48;
@@ -27,6 +28,13 @@ const screenHeaderStyle = prepareNativeStyle(() => ({
 const iconWrapperStyle = prepareNativeStyle(() => ({
     width: ICON_SIZE,
     height: ICON_SIZE,
+}));
+
+const progressBarWrapperStyle = prepareNativeStyle(() => ({
+    height: ICON_SIZE,
+    alignItems: 'center',
+    paddingTop: 7,
+    justifyContent: 'space-between',
 }));
 
 const GoBackIcon = () => {
@@ -45,9 +53,10 @@ const GoBackIcon = () => {
 export const ScreenHeader = ({
     leftIcon,
     rightIcon,
-    titleComponent,
     style,
     title,
+    numberOfSteps,
+    activeStep,
     hasGoBackIcon = true,
 }: ScreenHeaderWithIconsProps) => {
     const { applyStyle } = useNativeStyles();
@@ -61,7 +70,15 @@ export const ScreenHeader = ({
             ) : (
                 <View style={applyStyle(iconWrapperStyle)}>{leftIcon}</View>
             )}
-            {title ? <Text variant="titleSmall">{title}</Text> : titleComponent}
+            {activeStep && numberOfSteps ? (
+                <View style={applyStyle(progressBarWrapperStyle)}>
+                    <StepsProgressBar numberOfSteps={numberOfSteps} activeStep={activeStep} />
+                    {title && <Text variant="titleSmall">{title}</Text>}
+                </View>
+            ) : (
+                <>{title && <Text variant="titleSmall">{title}</Text>}</>
+            )}
+
             <View style={applyStyle(iconWrapperStyle)}>{rightIcon}</View>
         </View>
     );

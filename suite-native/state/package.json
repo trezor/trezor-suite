@@ -15,7 +15,6 @@
         "@suite-common/test-utils": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
         "@suite-native/config": "workspace:*",
-        "@suite-native/module-accounts-import": "workspace:*",
         "@suite-native/module-devices": "workspace:*",
         "@suite-native/module-settings": "workspace:*",
         "@suite-native/storage": "workspace:*",

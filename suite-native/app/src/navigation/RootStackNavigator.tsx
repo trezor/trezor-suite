@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux';
 import { createStackNavigator } from '@react-navigation/stack';
 
 import { AccountsImportStackNavigator } from '@suite-native/module-accounts-import';
-import { OnboardingStackNavigator } from '@suite-native/module-onboarding';
 import {
     RootStackParamList,
     RootStackRoutes,
@@ -30,10 +29,6 @@ export const RootStackNavigator = () => {
             screenOptions={stackNavigationOptionsConfig}
         >
             <RootStack.Group>
-                <RootStack.Screen
-                    name={RootStackRoutes.OnboardingStack}
-                    component={OnboardingStackNavigator}
-                />
                 <RootStack.Screen name={RootStackRoutes.AppTabs} component={AppTabNavigator} />
                 <RootStack.Screen
                     name={RootStackRoutes.AccountsImport}

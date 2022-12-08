@@ -87,9 +87,9 @@ export const AccountImportSummaryForm = ({
     });
 
     return (
-        <AccountImportSummarySection title="Import asset">
+        <AccountImportSummarySection title="Asset imported">
             <Form form={form}>
-                <AccountImportOverview accountInfo={accountInfo} currencySymbol={networkSymbol} />
+                <AccountImportOverview accountInfo={accountInfo} networkSymbol={networkSymbol} />
                 <Divider />
                 <Button
                     onPress={handleImportAccount}

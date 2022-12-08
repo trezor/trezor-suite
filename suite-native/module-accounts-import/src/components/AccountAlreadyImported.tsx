@@ -41,7 +41,9 @@ export const AccountAlreadyImported = ({ account }: AccountImportImportedAccount
     const handleImportAnotherAsset = () =>
         navigation.navigate(RootStackRoutes.AccountsImport, {
             screen: AccountsImportStackRoutes.XpubScan,
-            params: {},
+            params: {
+                networkSymbol: account.symbol,
+            },
         });
 
     const handleNavigateToDashboard = () =>

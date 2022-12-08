@@ -11,7 +11,7 @@ export type SelectableAssetItemProps = {
     cryptoCurrencySymbol: NetworkSymbol;
     cryptoCurrencyName: string;
     iconName: CryptoIconName;
-    onPress?: () => void;
+    onPress?: (networkSymbol: NetworkSymbol) => void;
     onPressActionButton?: () => void;
 };
 
@@ -28,9 +28,11 @@ const cryptoIconStyle = prepareNativeStyle(utils => ({
     width: 48,
     borderRadius: utils.borders.radii.round,
     backgroundColor: utils.colors.gray200,
+    justifyContent: 'center',
+    alignItems: 'center',
 }));
 
-export const SelectableAssetItem = ({
+export const SelectableNetworkItem = ({
     cryptoCurrencyName,
     cryptoCurrencySymbol,
     iconName,
@@ -38,24 +40,24 @@ export const SelectableAssetItem = ({
     onPressActionButton,
 }: SelectableAssetItemProps) => {
     const { applyStyle } = useNativeStyles();
-
     const { CurrencySymbolFormatter } = useFormatters();
 
+    const handlePress = () => {
+        if (!onPress) return;
+        onPress(cryptoCurrencySymbol);
+    };
+
     return (
-        <TouchableOpacity disabled={!onPress} onPress={onPress}>
+        <TouchableOpacity disabled={!onPress} onPress={handlePress}>
             <Box flexDirection="row" alignItems="center">
                 <Box justifyContent="center" alignItems="center">
-                    <Box
-                        justifyContent="center"
-                        alignItems="center"
-                        style={applyStyle(cryptoIconStyle)}
-                    >
+                    <Box style={applyStyle(cryptoIconStyle)}>
                         <CryptoIcon name={iconName} />
                     </Box>
                 </Box>
                 <Box style={applyStyle(selectableAssetContentStyle)}>
                     <Box flex={1} justifyContent="space-between" alignItems="flex-start">
-                        <Text>{cryptoCurrencyName}</Text>
+                        <Text variant="body">{cryptoCurrencyName}</Text>
                         <Box flexDirection="row" alignItems="center">
                             <Text variant="hint" color="gray600">
                                 {CurrencySymbolFormatter.format(cryptoCurrencySymbol)}
