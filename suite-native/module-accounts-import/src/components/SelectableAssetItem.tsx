@@ -7,11 +7,12 @@ import { Box, Button, Text } from '@suite-native/atoms';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { useFormatters } from '@suite-common/formatters';
 
-type SelectableAssetItemProps = {
+export type SelectableAssetItemProps = {
     cryptoCurrencySymbol: NetworkSymbol;
     cryptoCurrencyName: string;
     iconName: CryptoIconName;
-    onPress: () => void;
+    onPress?: () => void;
+    onPressActionButton?: () => void;
 };
 
 const selectableAssetContentStyle = prepareNativeStyle(() => ({
@@ -34,6 +35,7 @@ export const SelectableAssetItem = ({
     cryptoCurrencySymbol,
     iconName,
     onPress,
+    onPressActionButton,
 }: SelectableAssetItemProps) => {
     const { applyStyle } = useNativeStyles();
 
@@ -60,11 +62,13 @@ export const SelectableAssetItem = ({
                             </Text>
                         </Box>
                     </Box>
-                    <Box alignItems="flex-end">
-                        <Button colorScheme="gray" size="small">
-                            Change
-                        </Button>
-                    </Box>
+                    {onPressActionButton && (
+                        <Box alignItems="flex-end">
+                            <Button colorScheme="gray" size="small" onPress={onPressActionButton}>
+                                Change
+                            </Button>
+                        </Box>
+                    )}
                 </Box>
             </Box>
         </TouchableOpacity>

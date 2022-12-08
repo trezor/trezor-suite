@@ -12,6 +12,7 @@
             "path": "../../suite-common/wallet-core"
         },
         { "path": "../config" },
+        { "path": "../module-accounts-import" },
         { "path": "../module-devices" },
         { "path": "../module-settings" },
         { "path": "../storage" },

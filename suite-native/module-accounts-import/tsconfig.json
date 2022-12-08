@@ -27,7 +27,6 @@
             "path": "../../suite-common/wallet-utils"
         },
         { "path": "../accounts" },
-        { "path": "../assets" },
         { "path": "../atoms" },
         { "path": "../config" },
         { "path": "../forms" },

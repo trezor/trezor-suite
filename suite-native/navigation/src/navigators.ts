@@ -52,7 +52,6 @@ export type AccountsImportStackParamList = {
     [AccountsImportStackRoutes.SelectCoin]: undefined;
     [AccountsImportStackRoutes.XpubScan]: {
         qrCode?: string;
-        currencySymbol: NetworkSymbol;
     };
     [AccountsImportStackRoutes.XpubScanModal]: undefined;
     [AccountsImportStackRoutes.AccountImport]: {

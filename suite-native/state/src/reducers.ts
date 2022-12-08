@@ -7,6 +7,7 @@ import {
     prepareTransactionsReducer,
 } from '@suite-common/wallet-core';
 import { devicesReducer } from '@suite-native/module-devices';
+import { accountsImportReducer } from '@suite-native/module-accounts-import';
 import { appSettingsReducer, appSettingsPersistWhitelist } from '@suite-native/module-settings';
 import { typedPersistReducer } from '@suite-native/storage';
 
@@ -40,4 +41,5 @@ export const rootReducers = combineReducers({
     appSettings: appSettingsPersistedReducer,
     devices: devicesReducer,
     wallet: walletPersistedReducer,
+    accountsImport: accountsImportReducer,
 });
