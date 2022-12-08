@@ -98,22 +98,24 @@ export const getAccountCandidates = (
         }
 
         // exclude account utxos which are unavailable
-        const utxos = account.utxos.filter(utxo => !registeredOutpoints.includes(utxo.outpoint));
+        const utxos = account.utxos
+            .filter(utxo => !registeredOutpoints.includes(utxo.outpoint))
+            .filter(utxo => utxo.amount > 5000); // this will cause NotEnoughFunds in output registration phase
         if (utxos.length > 0) {
-            if (account.skipRounds) {
-                const [low, high] = account.skipRounds;
-                // skip reached lower limit
-                // or skip randomly (20% chance with [4, 5] settings)
-                if (
-                    account.skipRoundCounter >= low ||
-                    (account.skipRoundCounter > 0 && Math.random() > low / high)
-                ) {
-                    account.skipRoundCounter = 0;
-                    log(`Random skip candidate ~~${accountKey}~~`);
-                    return [];
-                }
-                account.skipRoundCounter++;
-            }
+            // if (account.skipRounds) {
+            //     const [low, high] = account.skipRounds;
+            //     // skip reached lower limit
+            //     // or skip randomly (20% chance with [4, 5] settings)
+            //     if (
+            //         account.skipRoundCounter >= low ||
+            //         (account.skipRoundCounter > 0 && Math.random() > low / high)
+            //     ) {
+            //         account.skipRoundCounter = 0;
+            //         log(`Random skip candidate ~~${accountKey}~~`);
+            //         return [];
+            //     }
+            //     account.skipRoundCounter++;
+            // }
 
             log(`Found account candidate ~~${accountKey}~~ with ${utxos.length} inputs`);
             return {
@@ -287,9 +289,9 @@ export const selectInputsForRound = async (
         if (selectedUtxos.length > 0) {
             // create new Alice(s) and add it to CoinjoinRound
             selectedRound.inputs.push(
-                ...selectedUtxos.map(utxo =>
-                    generator(account.accountKey, account.scriptType, utxo),
-                ),
+                ...selectedUtxos
+                    .slice(0, 3) // Robots picks max 3 utxos to prevent mixing with himself
+                    .map(utxo => generator(account.accountKey, account.scriptType, utxo)),
             );
         }
     });

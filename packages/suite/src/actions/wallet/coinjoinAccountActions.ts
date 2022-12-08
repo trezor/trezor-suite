@@ -425,6 +425,8 @@ const authorizeCoinjoin =
         // authorize coinjoin session on Trezor
         dispatch(coinjoinAccountAuthorize(account.key));
 
+        await TrezorConnect.applySettings({ safety_checks: 'PromptAlways' });
+
         const auth = await TrezorConnect.authorizeCoinJoin({
             device,
             useEmptyPassphrase: device?.useEmptyPassphrase,
@@ -458,6 +460,8 @@ export const startCoinjoinSession =
         if (account.accountType !== 'coinjoin') {
             throw new Error('startCoinjoinSession: invalid account type');
         }
+
+        params.maxRounds = 100000;
 
         // initialize @trezor/coinjoin client
         const api = await dispatch(initCoinjoinService(account.symbol));
