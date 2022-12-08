@@ -1,6 +1,7 @@
-# 1.0.2 - unreleased
+# 1.0.2
 
 -   fix output sorting with amount above MAX_SAFE_INTEGER
+-   add (litecoin): support for spending mweb pegout outputs
 
 # 1.0.1
 
