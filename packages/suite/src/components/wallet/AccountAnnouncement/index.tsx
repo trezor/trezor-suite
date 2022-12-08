@@ -5,6 +5,7 @@ import { Account } from '@wallet-types/index';
 
 import XRPReserve from './XRPReserve';
 import AccountImported from './AccountImported';
+import AccountOutOfSync from './AccountOutOfSync';
 
 const AnnouncementsWrapper = styled.div`
     display: flex;
@@ -34,6 +35,10 @@ export const AccountAnnouncement = ({ account }: AccountAnnouncementProps) => {
 
     if (account.imported) {
         notifications.push(<AccountImported key="imported" />);
+    }
+
+    if (account.backendType === 'coinjoin' && account.status === 'out-of-sync') {
+        notifications.push(<AccountOutOfSync key="out-of-sync" />);
     }
 
     if (notifications.length === 0) {
