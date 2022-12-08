@@ -1,13 +1,10 @@
 import React, { useMemo, useState } from 'react';
-import { Alert, Share, View } from 'react-native';
-import QRCode from 'react-qr-code';
 import { useSelector } from 'react-redux';
 
 import * as Clipboard from 'expo-clipboard';
 
-import { Box, Button, HStack, Text } from '@suite-native/atoms';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { defaultColorVariant } from '@trezor/theme';
+import { QRCode } from '@suite-native/accounts';
+import { Box } from '@suite-native/atoms';
 import {
     TransactionsRootState,
     AccountsRootState,
@@ -22,23 +19,7 @@ type FreshAddressStepProps = {
     onClose: () => void;
 };
 
-export const QRCODE_SIZE = 197;
-export const QRCODE_PADDING = 12;
-
-const qrCodeStyle = prepareNativeStyle(_ => ({
-    padding: QRCODE_PADDING,
-    alignItems: 'center',
-    justifyContent: 'center',
-}));
-
-const actionButtonsStyle = prepareNativeStyle(_ => ({
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexDirection: 'row',
-}));
-
 export const FreshAddressStep = ({ accountKey, onClose }: FreshAddressStepProps) => {
-    const { applyStyle } = useNativeStyles();
     const [freshAddressError, setFreshAddressError] = useState();
 
     const account = useSelector((state: AccountsRootState) =>
@@ -62,18 +43,6 @@ export const FreshAddressStep = ({ accountKey, onClose }: FreshAddressStepProps)
         }
     }, [account, pendingAddresses, isAccountUtxoBased]);
 
-    const handleShareAddress = async () => {
-        if (freshAddress) {
-            try {
-                await Share.share({
-                    message: freshAddress.address,
-                });
-            } catch (error) {
-                Alert.alert('Something went wrong.', error.message);
-            }
-        }
-    };
-
     const handleCopyAddressToClipboardAndClose = async () => {
         if (freshAddress) {
             await Clipboard.setStringAsync(freshAddress.address);
@@ -84,30 +53,10 @@ export const FreshAddressStep = ({ accountKey, onClose }: FreshAddressStepProps)
     return (
         <Box>
             {!freshAddressError ? (
-                <>
-                    <View style={applyStyle(qrCodeStyle)}>
-                        {freshAddress?.address && (
-                            <QRCode
-                                bgColor={defaultColorVariant.gray0}
-                                fgColor={defaultColorVariant.gray900}
-                                level="Q"
-                                size={QRCODE_SIZE}
-                                value={freshAddress.address}
-                            />
-                        )}
-                    </View>
-                    <Box margin="small" alignItems="center" justifyContent="center">
-                        <Text variant="body">{freshAddress?.address}</Text>
-                    </Box>
-                    <HStack spacing={15} style={applyStyle(actionButtonsStyle)}>
-                        <Button size="large" colorScheme="gray" onPress={handleShareAddress}>
-                            Share
-                        </Button>
-                        <Button size="large" onPress={handleCopyAddressToClipboardAndClose}>
-                            Copy & Close
-                        </Button>
-                    </HStack>
-                </>
+                <QRCode
+                    address={freshAddress?.address}
+                    onCopy={handleCopyAddressToClipboardAndClose}
+                />
             ) : (
                 'Something went wrong...'
             )}

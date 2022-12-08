@@ -8,7 +8,7 @@ import { Icon, IconName } from '@trezor/icons';
 import { Text } from '../Text';
 
 export type ButtonSize = 'small' | 'medium' | 'large';
-export type ButtonColorScheme = 'primary' | 'gray';
+export type ButtonColorScheme = 'primary' | 'gray' | 'red';
 
 export interface ButtonProps extends Omit<TouchableOpacityProps, 'style'> {
     iconName?: IconName;
@@ -53,6 +53,9 @@ const buttonStyle = prepareNativeStyle<ButtonStyleProps>(
             gray: {
                 backgroundColor: utils.colors.gray300,
             },
+            red: {
+                backgroundColor: utils.transparentize(0.9, utils.colors.red),
+            },
         };
 
         return {
@@ -75,6 +78,7 @@ const buttonStyle = prepareNativeStyle<ButtonStyleProps>(
 const buttonColorSchemeFontColor: Record<ButtonColorScheme, Color> = {
     primary: 'gray0',
     gray: 'gray800',
+    red: 'red',
 };
 
 export const Button = ({

@@ -6318,8 +6318,10 @@ __metadata:
     "@suite-native/navigation": "workspace:*"
     "@trezor/icons": "workspace:*"
     "@trezor/styles": "workspace:*"
+    "@trezor/theme": "workspace:*"
     react: 18.2.0
     react-native: 0.70.5
+    react-qr-code: 2.0.8
     react-redux: 7.2.2
   languageName: unknown
   linkType: soft
@@ -6482,6 +6484,7 @@ __metadata:
     "@trezor/icons": "workspace:*"
     "@trezor/styles": "workspace:*"
     "@trezor/theme": "workspace:*"
+    expo-clipboard: ^4.0.1
     jotai: 1.9.1
     react: 18.2.0
     react-native: 0.70.5
