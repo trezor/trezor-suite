@@ -6,9 +6,9 @@ import {
     Screen,
     StackProps,
 } from '@suite-native/navigation';
-import { Box, Card, Text, VStack } from '@suite-native/atoms';
-import { SelectAssetItem } from '@suite-native/assets';
-import { networks, NetworkSymbol } from '@suite-common/wallet-config';
+import { Box, Text } from '@suite-native/atoms';
+import { SelectableAssetList } from '@suite-native/assets';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 import { mainnets, testnets } from '@suite-native/config';
 
 import { AccountImportHeader } from '../components/AccountImportHeader';
@@ -16,18 +16,6 @@ import { AccountImportHeader } from '../components/AccountImportHeader';
 export const SelectCoinScreen = ({
     navigation,
 }: StackProps<AccountsImportStackParamList, AccountsImportStackRoutes.SelectCoin>) => {
-    const mainnetNetworkItems = mainnets.map(network => ({
-        value: network.symbol,
-        label: networks[network.symbol].name,
-        iconName: network.symbol,
-    }));
-
-    const testnetNetworkItems = testnets.map(network => ({
-        value: network.symbol,
-        label: networks[network.symbol].name,
-        iconName: network.symbol,
-    }));
-
     const handleSelectCoin = (currencySymbol: NetworkSymbol) => {
         navigation.navigate(AccountsImportStackRoutes.XpubScan, {
             currencySymbol,
@@ -43,38 +31,16 @@ export const SelectCoinScreen = ({
                     </Box>
                 </Box>
             </Box>
-            <Text variant="hint" color="gray600">
-                Pick a coin to import
-            </Text>
-            <Card>
-                <VStack spacing={19}>
-                    {mainnetNetworkItems.map(({ value, label, iconName }) => (
-                        <SelectAssetItem
-                            key={value}
-                            iconName={iconName}
-                            cryptoCurrencyName={label}
-                            cryptoCurrencySymbol={value}
-                            onPress={() => handleSelectCoin(value)}
-                        />
-                    ))}
-                </VStack>
-            </Card>
-            <Text variant="hint" color="gray600">
-                Testnet coins (Hold no value, only for testing)
-            </Text>
-            <Card>
-                <VStack spacing={19}>
-                    {testnetNetworkItems.map(({ value, label, iconName }) => (
-                        <SelectAssetItem
-                            key={value}
-                            iconName={iconName}
-                            cryptoCurrencyName={label}
-                            cryptoCurrencySymbol={value}
-                            onPress={() => handleSelectCoin(value)}
-                        />
-                    ))}
-                </VStack>
-            </Card>
+            <SelectableAssetList
+                title="Pick a coin to import"
+                items={mainnets}
+                onSelectItem={handleSelectCoin}
+            />
+            <SelectableAssetList
+                title="Testnet coins (Hold no value, only for testing)"
+                items={testnets}
+                onSelectItem={handleSelectCoin}
+            />
         </Screen>
     );
 };

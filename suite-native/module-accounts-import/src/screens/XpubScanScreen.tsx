@@ -3,8 +3,7 @@ import { View } from 'react-native';
 
 import { useFocusEffect } from '@react-navigation/native';
 
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { Box, Button, TextDivider, VStack } from '@suite-native/atoms';
+import { Box, Button, TextDivider, VStack, Text, Card } from '@suite-native/atoms';
 import { isDevelopOrDebugEnv } from '@suite-native/config';
 import { Form, TextInputField, useForm } from '@suite-native/forms';
 import {
@@ -16,7 +15,6 @@ import {
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { yup } from '@trezor/validation';
 
-import { XpubScanHeader } from '../components/XpubScanHeader';
 import { XpubImportSection } from '../components/XpubImportSection';
 import { AccountImportHeader } from '../components/AccountImportHeader';
 import { DevXpub } from '../components/DevXpub';
@@ -27,8 +25,6 @@ const cameraStyle = prepareNativeStyle(_ => ({
     marginBottom: 45,
 }));
 
-const DEFAULT_CURRENCY_SYMBOL = 'btc';
-
 const xpubFormValidationSchema = yup.object({
     xpubAddress: yup.string().required(),
 });
@@ -38,10 +34,9 @@ export const XpubScanScreen = ({
     navigation,
     route,
 }: StackProps<AccountsImportStackParamList, AccountsImportStackRoutes.XpubScan>) => {
-    const [selectedCurrencySymbol, setSelectedCurrencySymbol] =
-        useState<NetworkSymbol>(DEFAULT_CURRENCY_SYMBOL);
     const [_, setIsCameraRequested] = useState<boolean>(false);
     const { applyStyle } = useNativeStyles();
+    const { currencySymbol } = route.params;
 
     const form = useForm<XpubFormValues>({
         validation: xpubFormValidationSchema,
@@ -58,7 +53,7 @@ export const XpubScanScreen = ({
     const goToAccountImportScreen = ({ xpubAddress }: XpubFormValues) => {
         navigation.navigate(AccountsImportStackRoutes.AccountImport, {
             xpubAddress,
-            currencySymbol: selectedCurrencySymbol,
+            currencySymbol,
         });
     };
 
@@ -80,10 +75,6 @@ export const XpubScanScreen = ({
         }
     }, [handleXpubResult, route.params]);
 
-    const handleSelectCurrency = (currencySymbol: NetworkSymbol) => {
-        setSelectedCurrencySymbol(currencySymbol);
-    };
-
     const handleRequestCamera = () => {
         reset({
             xpubAddress: '',
@@ -94,10 +85,9 @@ export const XpubScanScreen = ({
     return (
         <Screen header={<AccountImportHeader activeStep={2} />}>
             <Box>
-                <XpubScanHeader
-                    onSelectCurrency={handleSelectCurrency}
-                    selectedCurrencySymbol={selectedCurrencySymbol}
-                />
+                <Card>
+                    <Text>{currencySymbol}</Text>
+                </Card>
                 <View style={applyStyle(cameraStyle)}>
                     <XpubImportSection onRequestCamera={handleRequestCamera} />
                 </View>
@@ -115,7 +105,7 @@ export const XpubScanScreen = ({
                     </VStack>
                 </Form>
                 {isDevelopOrDebugEnv() && (
-                    <DevXpub symbol={selectedCurrencySymbol} onSelect={goToAccountImportScreen} />
+                    <DevXpub symbol={currencySymbol} onSelect={goToAccountImportScreen} />
                 )}
             </Box>
         </Screen>
