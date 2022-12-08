@@ -39,7 +39,7 @@
     },
     "dependencies": {
         "@trezor/connect": "workspace:9.0.4",
-        "@trezor/utils": "workspace:^9.0.3",
+        "@trezor/utils": "workspace:^9.0.4",
         "events": "^3.3.0"
     },
     "devDependencies": {

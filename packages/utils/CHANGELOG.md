@@ -1,3 +1,9 @@
+# 9.0.4
+
+-   add enum utils
+-   add `topologicalSort` util
+-   fix retroactive abort in `scheduleAction`
+
 # 9.0.3
 
 -   add `redactUserPathFromString`
