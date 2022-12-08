@@ -13,7 +13,7 @@ let JWS_PRIVATE_KEY: string;
 if (isCodesignBuild) {
     console.log('Signing config using production private key!');
 
-    JWS_PRIVATE_KEY = fs.readFileSync(process.env.JWS_PRIVATE_KEY_FILE!, 'utf-8');
+    JWS_PRIVATE_KEY = process.env.JWS_PRIVATE_KEY_ENV!;
 } else {
     console.log('Signing config using develop private key!');
 
