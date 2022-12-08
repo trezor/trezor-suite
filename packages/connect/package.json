@@ -54,7 +54,7 @@
         "@trezor/connect-common": "workspace:0.0.10",
         "@trezor/device-utils": "workspace:*",
         "@trezor/transport": "workspace:^1.1.5",
-        "@trezor/utils": "workspace:^9.0.3",
+        "@trezor/utils": "workspace:^9.0.4",
         "@trezor/utxo-lib": "workspace:^1.0.1",
         "bignumber.js": "^9.1.0",
         "blakejs": "^1.2.1",
