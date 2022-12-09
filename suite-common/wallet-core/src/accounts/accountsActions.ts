@@ -74,11 +74,7 @@ const createAccount = createAction(
                 discoveryItem.coin,
             ),
             tokens: enhanceTokens(accountInfo.tokens),
-            addresses: enhanceAddresses(
-                accountInfo.addresses,
-                discoveryItem.networkType,
-                discoveryItem.index,
-            ),
+            addresses: enhanceAddresses(accountInfo, discoveryItem),
             utxo: enhanceUtxo(accountInfo.utxo, discoveryItem.networkType, discoveryItem.index),
             history: accountInfo.history,
             metadata: {
@@ -113,11 +109,7 @@ const updateAccount = createAction(
                         account.symbol,
                     ),
                     utxo: enhanceUtxo(accountInfo.utxo, account.networkType, account.index),
-                    addresses: enhanceAddresses(
-                        accountInfo.addresses,
-                        account.networkType,
-                        account.index,
-                    ),
+                    addresses: enhanceAddresses(accountInfo, account),
                     tokens: enhanceTokens(accountInfo.tokens),
                     ...getAccountSpecific(accountInfo, account.networkType),
                 },

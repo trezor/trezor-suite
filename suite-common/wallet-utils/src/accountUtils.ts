@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js';
 
-import { AccountInfo, AccountAddresses, AccountAddress } from '@trezor/connect';
-import { bufferUtils } from '@trezor/utils';
+import { AccountInfo, AccountAddresses, AccountAddress, AccountTransaction } from '@trezor/connect';
+import { arrayDistinct, bufferUtils } from '@trezor/utils';
 import {
     networksCompatibility as NETWORKS,
     Network,
@@ -388,10 +388,26 @@ export const enhanceTokens = (tokens: Account['tokens']) => {
         }));
 };
 
+const countAddressTransfers = (transactions: AccountTransaction[]) =>
+    transactions
+        .flatMap(tx =>
+            tx.details.vin
+                .concat(tx.details.vout)
+                .flatMap(({ addresses }) => addresses ?? [])
+                .filter(arrayDistinct),
+        )
+        .reduce(
+            (transfers, address) => ({ ...transfers, [address]: (transfers[address] ?? 0) + 1 }),
+            {} as { [address: string]: number },
+        );
+
 export const enhanceAddresses = (
-    addresses: AccountAddresses | undefined,
-    networkType: Account['networkType'],
-    accountIndex: Account['index'],
+    { addresses, history: { transactions = [] }, page }: AccountInfo,
+    {
+        networkType,
+        index: accountIndex,
+        addresses: oldAddresses,
+    }: Pick<Account, 'networkType' | 'index' | 'addresses'>,
 ): AccountAddresses | undefined => {
     // Addresses used in Suite include full derivation path including account index.
     // These addresses are derived on a backend (Blockbook/Blockfrost) from a public key.
@@ -403,20 +419,46 @@ export const enhanceAddresses = (
     // So we rely on the client (this function) to replace it with correct account index.
 
     if (!addresses) return undefined;
-    if (networkType !== 'cardano') return addresses;
 
-    const accountIndexStr = accountIndex.toString();
+    switch (networkType) {
+        case 'cardano': {
+            const accountIndexStr = accountIndex.toString();
 
-    const replaceAccountIndex = (address: AccountAddress) => ({
-        ...address,
-        path: address.path.replace('i', accountIndexStr),
-    });
+            const replaceAccountIndex = (address: AccountAddress) => ({
+                ...address,
+                path: address.path.replace('i', accountIndexStr),
+            });
 
-    const used = addresses.used.map(replaceAccountIndex);
-    const unused = addresses.unused.map(replaceAccountIndex);
-    const change = addresses.change.map(replaceAccountIndex);
+            return {
+                ...addresses,
+                used: addresses.used.map(replaceAccountIndex),
+                unused: addresses.unused.map(replaceAccountIndex),
+                change: addresses.change.map(replaceAccountIndex),
+            };
+        }
+        case 'bitcoin': {
+            // Pending txs (for counting recently used change addresses) are only
+            // on first page of Blockbook getAccountInfo responses (moreover, electrum & coinjoin
+            // backends always return page.index = 1)
+            if (page?.index !== 1) return oldAddresses ?? addresses;
 
-    return { used, unused, change, anonymitySet: addresses.anonymitySet };
+            const pendingTxs = transactions.filter(({ blockHeight = 0 }) => blockHeight <= 0);
+            if (!pendingTxs.length) return addresses;
+
+            const pendingTransfers = countAddressTransfers(pendingTxs);
+            const addPendingTransfers = (address: AccountAddress) => ({
+                ...address,
+                transfers: address.transfers || pendingTransfers[address.address] || 0,
+            });
+
+            return {
+                ...addresses,
+                change: addresses.change.map(addPendingTransfers),
+            };
+        }
+        default:
+            return addresses;
+    }
 };
 
 export const enhanceUtxo = (
