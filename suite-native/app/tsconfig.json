@@ -17,7 +17,6 @@
         { "path": "../module-accounts-import" },
         { "path": "../module-dev-utils" },
         { "path": "../module-home" },
-        { "path": "../module-onboarding" },
         { "path": "../module-send-receive" },
         { "path": "../module-settings" },
         { "path": "../navigation" },

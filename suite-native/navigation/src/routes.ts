@@ -1,5 +1,4 @@
 export enum RootStackRoutes {
-    OnboardingStack = 'OnboardingStack',
     AppTabs = 'AppTabs',
     AccountsImport = 'AccountsImport',
     DevUtilsStack = 'DevUtilsStack',
@@ -14,11 +13,8 @@ export enum AppTabsRoutes {
     SettingsStack = 'SettingsStack',
 }
 
-export enum OnboardingStackRoutes {
-    Onboarding = 'Onboarding',
-}
-
 export enum AccountsImportStackRoutes {
+    SelectNetwork = 'SelectNetwork',
     XpubScan = 'XpubScan',
     XpubScanModal = 'XpubScanModal',
     AccountImport = 'AccountImport',

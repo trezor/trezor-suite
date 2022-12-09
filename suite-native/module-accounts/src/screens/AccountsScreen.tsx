@@ -40,10 +40,10 @@ export const AccountsScreen = ({
         useNavigation<StackNavigationProps<AccountsStackParamList, AccountsStackRoutes.Accounts>>();
 
     const handleScreenFocus = useCallback(() => {
-        const { currencySymbol } = route.params;
+        const { networkSymbol } = route.params;
 
-        if (currencySymbol) {
-            setSelectedAssets([currencySymbol]);
+        if (networkSymbol) {
+            setSelectedAssets([networkSymbol]);
         }
 
         return () => {
@@ -53,12 +53,12 @@ export const AccountsScreen = ({
 
     useFocusEffect(handleScreenFocus);
 
-    const handleSelectAsset = (currencySymbol: NetworkSymbol) => {
+    const handleSelectAsset = (networkSymbol: NetworkSymbol) => {
         setSelectedAssets(assets => {
-            if (assets.includes(currencySymbol)) {
-                return assets.filter(asset => asset !== currencySymbol);
+            if (assets.includes(networkSymbol)) {
+                return assets.filter(asset => asset !== networkSymbol);
             }
-            return [...assets, currencySymbol];
+            return [...assets, networkSymbol];
         });
     };
 

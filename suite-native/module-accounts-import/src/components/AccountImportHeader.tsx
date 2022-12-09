@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/core';
 
-import { Box, IconButton, StepsProgressBar } from '@suite-native/atoms';
+import { Box, IconButton } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { selectIsOnboardingFinished } from '@suite-native/module-settings';
 import {
@@ -18,7 +18,7 @@ import {
 } from '@suite-native/navigation';
 
 type AccountImportHeaderProps = {
-    activeStep: 1 | 2 | 3;
+    activeStep: 1 | 2 | 3 | 4;
 };
 
 const closeButtonStyle = prepareNativeStyle(_ => ({
@@ -60,7 +60,9 @@ export const AccountImportHeader = ({ activeStep }: AccountImportHeaderProps) =>
                     </Box>
                 )
             }
-            titleComponent={<StepsProgressBar activeStep={activeStep} numberOfSteps={3} />}
+            activeStep={activeStep}
+            numberOfSteps={4}
+            title="XPUB Import"
             hasGoBackIcon={false}
         />
     );

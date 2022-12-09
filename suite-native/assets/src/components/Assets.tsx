@@ -45,18 +45,17 @@ export const Assets = () => {
 
     const handleImportAssets = () => {
         navigation.navigate(RootStackRoutes.AccountsImport, {
-            screen: AccountsImportStackRoutes.XpubScan,
-            params: {},
+            screen: AccountsImportStackRoutes.SelectNetwork,
         });
     };
 
-    const handleShowAllAccountsForAsset = (currencySymbol: NetworkSymbol) => {
+    const handleShowAllAccountsForAsset = (networkSymbol: NetworkSymbol) => {
         navigation.navigate(RootStackRoutes.AppTabs, {
             screen: AppTabsRoutes.AccountsStack,
             params: {
                 screen: AccountsStackRoutes.Accounts,
                 params: {
-                    currencySymbol,
+                    networkSymbol,
                 },
             },
         });

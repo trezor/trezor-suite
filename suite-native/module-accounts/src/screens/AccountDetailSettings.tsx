@@ -40,7 +40,7 @@ export const AccountDetailSettings = ({
 
     const handleRemoveAccount = () => {
         dispatch(accountsActions.removeAccount([account]));
-        navigation.navigate(AccountsStackRoutes.Accounts, { currencySymbol: account.symbol });
+        navigation.navigate(AccountsStackRoutes.Accounts, { networkSymbol: account.symbol });
     };
 
     return (

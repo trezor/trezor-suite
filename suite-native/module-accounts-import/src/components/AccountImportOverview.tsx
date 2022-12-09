@@ -16,7 +16,7 @@ import { selectCoins } from '@suite-common/wallet-core';
 
 type AssetsOverviewProps = {
     accountInfo: AccountInfo;
-    currencySymbol: NetworkSymbol;
+    networkSymbol: NetworkSymbol;
 };
 
 const assetCardStyle = prepareNativeStyle(utils => ({
@@ -26,7 +26,7 @@ const assetCardStyle = prepareNativeStyle(utils => ({
     width: '100%',
 }));
 
-export const AccountImportOverview = ({ accountInfo, currencySymbol }: AssetsOverviewProps) => {
+export const AccountImportOverview = ({ accountInfo, networkSymbol }: AssetsOverviewProps) => {
     const { applyStyle } = useNativeStyles();
     const fiatCurrency = useSelector(selectFiatCurrency);
     const coins = useSelector(selectCoins);
@@ -34,22 +34,22 @@ export const AccountImportOverview = ({ accountInfo, currencySymbol }: AssetsOve
     const navigation = useNavigation();
 
     const fiatRates = useMemo(
-        () => coins.find(coin => coin.symbol === currencySymbol),
-        [currencySymbol, coins],
+        () => coins.find(coin => coin.symbol === networkSymbol),
+        [networkSymbol, coins],
     );
-    const cryptoAmount = formatNetworkAmount(accountInfo.availableBalance, currencySymbol);
+    const cryptoAmount = formatNetworkAmount(accountInfo.availableBalance, networkSymbol);
     const fiatAmount = toFiatCurrency(cryptoAmount, fiatCurrency.label, fiatRates?.current?.rates);
 
     return (
         <Card style={applyStyle(assetCardStyle)}>
             <Box flexDirection="row" marginBottom="large" justifyContent="space-between">
                 <Box flexDirection="row">
-                    <CryptoIcon name={currencySymbol} size="large" />
+                    <CryptoIcon name={networkSymbol} size="large" />
                     <Box marginLeft="medium">
-                        <Text>{networks[currencySymbol].name}</Text>
+                        <Text>{networks[networkSymbol].name}</Text>
                         <Text variant="label" color="gray1000">
                             {CryptoAmountFormatter.format(cryptoAmount, {
-                                symbol: currencySymbol,
+                                symbol: networkSymbol,
                             })}
                         </Text>
                     </Box>

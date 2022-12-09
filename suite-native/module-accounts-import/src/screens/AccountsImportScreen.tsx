@@ -23,7 +23,7 @@ export const AccountsImportScreen = ({
     AccountsImportStackRoutes.AccountImport,
     RootStackParamList
 >) => {
-    const { xpubAddress, currencySymbol } = route.params;
+    const { xpubAddress, networkSymbol } = route.params;
     const [accountInfo, setAccountInfo] = useState<AccountInfo | null>(null);
 
     useEffect(() => {
@@ -36,7 +36,9 @@ export const AccountsImportScreen = ({
                     onPress: () =>
                         navigation.navigate(RootStackRoutes.AccountsImport, {
                             screen: AccountsImportStackRoutes.XpubScan,
-                            params: {},
+                            params: {
+                                networkSymbol,
+                            },
                         }),
                 },
             ]);
@@ -46,7 +48,7 @@ export const AccountsImportScreen = ({
         // the form, the account is imported and user is somewhere in the app
         const getAccountInfo = async () => {
             const fetchedAccountInfo = await TrezorConnect.getAccountInfo({
-                coin: currencySymbol,
+                coin: networkSymbol,
                 descriptor: xpubAddress,
                 details: 'txs',
             });
@@ -75,12 +77,12 @@ export const AccountsImportScreen = ({
         return () => {
             ignore = true;
         };
-    }, [xpubAddress, currencySymbol, navigation]);
+    }, [xpubAddress, networkSymbol, navigation]);
 
     return (
-        <Screen header={<AccountImportHeader activeStep={accountInfo ? 3 : 2} />}>
+        <Screen header={<AccountImportHeader activeStep={accountInfo ? 4 : 3} />}>
             {accountInfo ? (
-                <AccountImportSummary accountInfo={accountInfo} networkSymbol={currencySymbol} />
+                <AccountImportSummary accountInfo={accountInfo} networkSymbol={networkSymbol} />
             ) : (
                 <AccountImportLoader />
             )}

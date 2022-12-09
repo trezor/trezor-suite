@@ -15,7 +15,7 @@ const accountsStack = enhanceTabOption({
     params: {
         screen: AccountsStackRoutes.Accounts,
         params: {
-            currencySymbol: undefined,
+            networkSymbol: undefined,
         },
     },
 });

@@ -438,3 +438,10 @@ export const networksCompatibility: Network[] = Object.entries(networks).flatMap
         })),
     ],
 );
+
+export const getMainnets = () => networksCompatibility.filter(n => !n.accountType && !n.testnet);
+
+export const getTestnets = (debug = false) =>
+    networksCompatibility.filter(
+        n => !n.accountType && n.testnet === true && (n.symbol !== 'regtest' || debug),
+    );
