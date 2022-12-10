@@ -6956,12 +6956,13 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/connect-common@workspace:*, @trezor/connect-common@workspace:0.0.10, @trezor/connect-common@workspace:packages/connect-common":
+"@trezor/connect-common@workspace:*, @trezor/connect-common@workspace:0.0.11, @trezor/connect-common@workspace:packages/connect-common":
   version: 0.0.0-use.local
   resolution: "@trezor/connect-common@workspace:packages/connect-common"
   dependencies:
     jest: ^26.6.3
     rimraf: ^3.0.2
+    tsx: ^3.8.2
     typescript: 4.9.3
   languageName: unknown
   linkType: soft
@@ -7124,7 +7125,7 @@ __metadata:
   dependencies:
     "@trezor/blockchain-link": "workspace:^2.1.5"
     "@trezor/connect-analytics": "workspace:*"
-    "@trezor/connect-common": "workspace:0.0.10"
+    "@trezor/connect-common": "workspace:0.0.11"
     "@trezor/transport": "workspace:^1.1.6"
     "@trezor/trezor-user-env-link": "workspace:*"
     "@trezor/utils": "workspace:^9.0.4"

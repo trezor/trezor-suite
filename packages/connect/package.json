@@ -50,7 +50,7 @@
     },
     "dependencies": {
         "@trezor/blockchain-link": "workspace:^2.1.5",
-        "@trezor/connect-common": "workspace:0.0.10",
+        "@trezor/connect-common": "workspace:0.0.11",
         "@trezor/transport": "workspace:^1.1.6",
         "@trezor/utils": "workspace:^9.0.4",
         "@trezor/utxo-lib": "workspace:^1.0.2",
@@ -63,8 +63,8 @@
         "randombytes": "2.1.0"
     },
     "devDependencies": {
-        "@trezor/trezor-user-env-link": "workspace:*",
         "@trezor/connect-analytics": "workspace:*",
+        "@trezor/trezor-user-env-link": "workspace:*",
         "@types/karma": "^6.3.3",
         "@types/parse-uri": "^1.0.0",
         "@types/randombytes": "^2.0.0",
