@@ -7,7 +7,10 @@ const fs = require('fs');
 const path = require('path');
 const child_process = require('child_process');
 
-const packages = fs.readdirSync(path.join(__dirname, '..', '..', 'packages'), {
+const rootPath = path.join(__dirname, '..', '..');
+const packagesPath = path.join(rootPath, 'packages');
+
+const packages = fs.readdirSync(packagesPath, {
     encoding: 'utf-8',
 });
 
@@ -107,6 +110,20 @@ if (updateNeeded.length) {
     console.log('='.repeat(20));
     console.log('there are npm dependencies that *MIGHT* need to be released first: ');
     console.log(updateNeeded.join('\n'));
+
+    updateNeeded.forEach(package => {
+        console.log(`changelog draft: ${package}`);
+        const changelog = child_process.spawnSync(
+            'bash',
+            ['./ci/scripts/create_changelog_draft.sh', package.split('/').pop()],
+            {
+                encoding: 'utf-8',
+                cwd: rootPath,
+            },
+        ).stdout;
+        console.log(changelog);
+    });
+
     process.exit(1);
 }
 
