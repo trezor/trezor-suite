@@ -18,7 +18,7 @@ on:
           - minor
 
 jobs:
-  bump_version:
+  pre-release:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -41,7 +41,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.TREZOR_BOT_TOKEN }}
 
-  release_trezor-io:
+  release:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
