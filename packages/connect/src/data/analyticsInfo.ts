@@ -1,17 +1,12 @@
 /* eslint-disable no-case-declarations */
-import { EventType } from '@trezor/connect-analytics';
-import {
-    getBootloaderHash,
-    getBootloaderVersion,
-    getDeviceMode,
-    getDeviceModel,
-    getFirmwareRevision,
-    getFirmwareType,
-    getFirmwareVersion,
-} from '@trezor/device-utils';
+// import { EventType } from '@trezor/connect-analytics';
 import { CoreMessage, PostMessage, UI_REQUEST } from '../events';
-import type { Device } from '../device/Device';
+import type { Device } from '../types';
 
+// TODO: imho this belongs somewhere to packages/connect-iframe package.
+// There I can freely import from anyplace within monorepo without needing
+// to release new packages. Having it here means that I would need to
+// release 2 new packages to npm which is unjustifiable burden
 export const enhancePostMessageWithAnalytics = (
     callback: PostMessage,
     message: CoreMessage,
@@ -23,23 +18,30 @@ export const enhancePostMessageWithAnalytics = (
 
             callback({
                 ...message,
+                // @ts-expect-error (EventType.DeviceSelected is inlined here)
                 payload: {
                     ...message.payload,
                     analytics: {
-                        type: EventType.DeviceSelected,
+                        // todo: type inlined temporarily
+                        // type: EventType.DeviceSelected,
+                        type: 'device/selected',
                         payload: {
-                            mode: getDeviceMode(device),
-                            pinProtection: device?.features.pin_protection || '',
-                            passphraseProtection: device?.features.passphrase_protection || '',
-                            backupType: device?.features.backup_type || 'Bip39',
-                            language: device?.features.language || '',
-                            model: getDeviceModel(device),
-                            vendor: device?.features.vendor || '',
-                            firmware: getFirmwareVersion(device),
-                            firmwareRevision: getFirmwareRevision(device),
-                            firmwareType: getFirmwareType(device),
-                            bootloaderHash: getBootloaderHash(device),
-                            bootloaderVersion: getBootloaderVersion(device),
+                            mode: device?.mode || '',
+                            pinProtection: device?.features?.pin_protection || '',
+                            passphraseProtection: device?.features?.passphrase_protection || '',
+                            backupType: device?.features?.backup_type || 'Bip39',
+                            language: device?.features?.language || '',
+                            model: device?.features?.model || '',
+                            vendor: device?.features?.vendor || '',
+                            // TODO:
+                            // I don't want to release @trezor/device-utils into npm just because of this file.
+                            // we can probably assign result of getFirmwareVersion to device object directly and remove this utility everywhere
+                            // firmware: getFirmwareVersion(device),
+                            firmwareRevision: device?.features?.revision || '',
+                            firmwareType: device?.firmwareType || '',
+                            bootloaderHash: device?.features?.bootloader_hash || '',
+                            // TODO: see previous comment
+                            // bootloaderVersion: getBootloaderVersion(device),
                         },
                     },
                 },

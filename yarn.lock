@@ -7116,7 +7116,6 @@ __metadata:
     "@trezor/blockchain-link": "workspace:^2.1.5"
     "@trezor/connect-analytics": "workspace:*"
     "@trezor/connect-common": "workspace:0.0.10"
-    "@trezor/device-utils": "workspace:*"
     "@trezor/transport": "workspace:^1.1.6"
     "@trezor/trezor-user-env-link": "workspace:*"
     "@trezor/utils": "workspace:^9.0.4"

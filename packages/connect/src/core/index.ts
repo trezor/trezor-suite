@@ -363,7 +363,7 @@ export const onCall = async (message: CoreMessage) => {
     }
 
     method.postMessage = (message: CoreMessage) =>
-        enhancePostMessageWithAnalytics(postMessage, message, { device });
+        enhancePostMessageWithAnalytics(postMessage, message, { device: device.toMessageObject() });
 
     method.setDevice(device);
 
