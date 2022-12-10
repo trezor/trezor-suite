@@ -1,7 +1,8 @@
 .packages_matrix: &packages_matrix
   parallel:
     matrix:
-      - PACKAGE: [
+      - PACKAGE:
+          [
             "blockchain-link",
             "components",
             "connect-common",
@@ -10,9 +11,6 @@
             "utxo-lib",
             "connect-plugin-stellar",
             "connect-plugin-ethereum",
-            # connect packages have temporarily own jobs
-            # "connect",
-            # "connect-web",
             "connect-common",
           ]
 
@@ -68,7 +66,7 @@ beta deploy npm connect:
   extends: .deploy npm base
   only:
     refs:
-      - /^beta-release\//
+      - release/connect-v9
   <<: *packages_matrix_connect
   script:
     - nix-shell --run "yarn && cd ./packages/$PACKAGE && yarn npm publish --tag beta"
@@ -77,7 +75,7 @@ deploy npm connect:
   extends: .deploy npm base
   only:
     refs:
-      - /^npm-release\//
+      - release/connect-v9
   <<: *packages_matrix_connect
   script:
     - nix-shell --run "cd ./packages/${PACKAGE} && yarn npm publish"
