@@ -1,4 +1,4 @@
-# 0.0.11 - UNRELEASED
+# 0.0.11
 
 -   refactor storage
     -   `storage.load(key)` -> `storage.load().key`
