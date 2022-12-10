@@ -1,3 +1,8 @@
+# 2.1.6
+
+-   deps: updated typescript to 4.9
+-   fix: order of txs in the same block
+
 # 2.1.5
 
 -   added Transaction.feeRate
