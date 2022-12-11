@@ -181,11 +181,12 @@ export interface CardanoGovernanceRegistrationDelegation {
 export interface CardanoGovernanceRegistrationParameters {
     votingPublicKey?: string;
     stakingPath: string | number[];
-    rewardAddressParameters: CardanoAddressParameters;
+    rewardAddressParameters?: CardanoAddressParameters;
     nonce: string;
     format?: PROTO.CardanoGovernanceRegistrationFormat;
     delegations?: CardanoGovernanceRegistrationDelegation[];
     votingPurpose?: number;
+    rewardAddress?: string;
 }
 
 export interface CardanoAuxiliaryData {

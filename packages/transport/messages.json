@@ -2274,7 +2274,6 @@
                     }
                 },
                 "reward_address_parameters": {
-                    "rule": "required",
                     "type": "CardanoAddressParametersType",
                     "id": 3
                 },
@@ -2298,6 +2297,10 @@
                 "voting_purpose": {
                     "type": "uint64",
                     "id": 7
+                },
+                "reward_address": {
+                    "type": "string",
+                    "id": 8
                 }
             }
         },

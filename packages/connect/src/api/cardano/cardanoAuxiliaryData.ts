@@ -41,8 +41,12 @@ const transformGovernanceRegistrationParameters = (
         { name: 'format', type: 'number' },
         { name: 'delegations', type: 'array', allowEmpty: true },
         { name: 'votingPurpose', type: 'uint' },
+        { name: 'address', type: 'string' },
     ]);
-    validateAddressParameters(governanceRegistrationParameters.rewardAddressParameters);
+    const { rewardAddressParameters } = governanceRegistrationParameters;
+    if (rewardAddressParameters) {
+        validateAddressParameters(rewardAddressParameters);
+    }
 
     const { delegations } = governanceRegistrationParameters;
     if (delegations && delegations.length > MAX_DELEGATION_COUNT) {
@@ -55,13 +59,14 @@ const transformGovernanceRegistrationParameters = (
     return {
         voting_public_key: governanceRegistrationParameters.votingPublicKey,
         staking_path: validatePath(governanceRegistrationParameters.stakingPath, 3),
-        reward_address_parameters: addressParametersToProto(
-            governanceRegistrationParameters.rewardAddressParameters,
-        ),
+        reward_address_parameters: rewardAddressParameters
+            ? addressParametersToProto(rewardAddressParameters)
+            : undefined,
         nonce: governanceRegistrationParameters.nonce,
         format: governanceRegistrationParameters.format,
         delegations: delegations?.map(transformDelegation),
         voting_purpose: governanceRegistrationParameters.votingPurpose,
+        reward_address: governanceRegistrationParameters.rewardAddress,
     };
 };
 
@@ -93,7 +98,7 @@ export const modifyAuxiliaryDataForBackwardsCompatibility = (
     auxiliary_data: PROTO.CardanoTxAuxiliaryData,
 ): PROTO.CardanoTxAuxiliaryData => {
     const { governance_registration_parameters } = auxiliary_data;
-    if (governance_registration_parameters) {
+    if (governance_registration_parameters?.reward_address_parameters) {
         governance_registration_parameters.reward_address_parameters =
             modifyAddressParametersForBackwardsCompatibility(
                 device,

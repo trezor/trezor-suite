@@ -421,6 +421,11 @@ const legacyResults = {
         rules: ['<2.5.3', '1'],
         payload: false,
     },
+    GovernanceRegistrationExternalRewardAddress: {
+        // older FW doesn't support reward address given as a string in governance registrations
+        rules: ['<2.5.4', '1'],
+        payload: false,
+    },
 };
 
 export default {
@@ -1033,6 +1038,55 @@ export default {
                 },
             },
             legacyResults: [legacyResults.beforeGovernanceRegistrationCIP36],
+        },
+
+        {
+            description: 'signTransactionWithCIP36GovernanceRegistrationAndExternalRewardAddress',
+            params: {
+                inputs: [SAMPLE_INPUTS.shelley_input],
+                outputs: [SAMPLE_OUTPUTS.simple_shelley_output],
+                fee: FEE,
+                ttl: TTL,
+                auxiliaryData: {
+                    governanceRegistrationParameters: {
+                        stakingPath: "m/1852'/1815'/0'/2/0",
+                        nonce: '22634813',
+                        format: CardanoGovernanceRegistrationFormat.CIP36,
+                        delegations: [
+                            {
+                                votingPublicKey:
+                                    '1af8fa0b754ff99253d983894e63a2b09cbb56c833ba18c3384210163f63dcfc',
+                                weight: 1,
+                            },
+                        ],
+                        rewardAddress:
+                            'addr1q84sh2j72ux0l03fxndjnhctdg7hcppsaejafsa84vh7lwgmcs5wgus8qt4atk45lvt4xfxpjtwfhdmvchdf2m3u3hlsd5tq5r',
+                    },
+                },
+                protocolMagic: PROTOCOL_MAGICS.mainnet,
+                networkId: NETWORK_IDS.mainnet,
+                signingMode: CardanoTxSigningMode.ORDINARY_TRANSACTION,
+            },
+            result: {
+                hash: 'a5c5506777fb62aa98e6c45f1c85ab9ddf706a1f199e777c43f2288a6b4fdcab',
+                witnesses: [
+                    {
+                        type: 1,
+                        pubKey: '5d010cf16fdeff40955633d6c565f3844a288a24967cf6b76acbeb271b4f13c1',
+                        signature:
+                            '98e68184bc090fe95c461bd8d26b462861d382dbfce051bc9cb04a7d51c2ba293960e19ac9099c6d10912c89a3102fcd958c31e87eb9e142136b6411ab55f107',
+                        chainCode: null,
+                    },
+                ],
+                auxiliaryDataSupplement: {
+                    type: 1,
+                    auxiliaryDataHash:
+                        '3830a90f2c5dc23ddd478cefcb8642f0b36afa77769239146d9cba83ed196e41',
+                    governanceSignature:
+                        'ba05ac525e5dcc74e5a6cdbb7fb111d8e21163d79fe76777a5b730fe93512f09415f6f7b4904b12c6f12fe33b6c553d9889beb024299fa1256a0d3e98c8ff203',
+                },
+            },
+            legacyResults: [legacyResults.GovernanceRegistrationExternalRewardAddress],
         },
 
         {
