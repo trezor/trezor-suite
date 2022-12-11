@@ -8,23 +8,27 @@ platform :ios do
 
   before_all do |lane|
     xcversion(version: "14.1")
-    puts "Running lane #{lane}..."
+    app_identifier = CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
+
+    puts "Running lane #{lane} with App ID #{app_identifier}"
 
     if lane == :develop
-      PROVISIONING_NAME = "AppStore io.trezor.suite.develop"
+      PROVISIONING_NAME = "AppStore #{app_identifier}"
       import_certificate_to_keychain
       load_appstore_connect_api_key
       fetch_and_bump_versions
     elsif lane == :staging
-      PROVISIONING_NAME = "AppStore io.trezor.suite.staging"
+      PROVISIONING_NAME = "AppStore #{app_identifier}"
       import_certificate_to_keychain
       load_appstore_connect_api_key
       fetch_and_bump_versions
     elsif lane == :production
-      PROVISIONING_NAME = "AppStore io.trezor.suite"
+      PROVISIONING_NAME = "AppStore #{app_identifier}"
       import_certificate_to_keychain
       load_appstore_connect_api_key
       fetch_and_bump_versions
+    elsif lane == :debug
+      PROVISIONING_NAME = "#{app_identifier} Development"
     end
 
     ENV["ENVFILE"] = ".env.#{lane}"
@@ -127,7 +131,7 @@ platform :ios do
   private_lane :build_testing do |options|
     build_scheme = options[:scheme]
     app_identifier = CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
-    code_sign_identity = "iPhone Distribution"
+    code_sign_identity = "iPhone Distribution" # sign an app before distributing it through the App Store
 
    # update the code signing identities to match profile name and app bundle identifier
    update_code_signing_settings(
@@ -172,16 +176,19 @@ platform :ios do
   private_lane :local do |options|
     build_scheme = options[:scheme]
     app_identifier = CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
-    code_sign_identity = "Apple Development"
+    code_sign_identity = "Apple Development" # use app services during development and testing
 
     cert(
       development: true,
     )
     sigh(
       development: true,
-      app_identifier: app_identifier
+      app_identifier: app_identifier,
+      provisioning_name: PROVISIONING_NAME,
+      force: true # always recreate this exact profile to ensure it's valid and not expired
     )
 
+    # Configures Xcode's Codesigning options
     update_code_signing_settings(
       use_automatic_signing: true,
       targets: ["TrezorSuite"],
