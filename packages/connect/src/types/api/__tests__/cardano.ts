@@ -345,6 +345,7 @@ export const cardanoSignTransaction = async (api: TrezorConnect) => {
                     },
                 ],
                 votingPurpose: 0,
+                rewardAddress: 'Ae2..',
             },
         },
         additionalWitnessRequests: ['m/44'],

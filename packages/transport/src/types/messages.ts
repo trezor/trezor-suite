@@ -841,11 +841,12 @@ export type CardanoGovernanceRegistrationDelegation = {
 export type CardanoGovernanceRegistrationParametersType = {
     voting_public_key?: string;
     staking_path: number[];
-    reward_address_parameters: CardanoAddressParametersType;
+    reward_address_parameters?: CardanoAddressParametersType;
     nonce: UintType;
     format?: CardanoGovernanceRegistrationFormat;
     delegations?: CardanoGovernanceRegistrationDelegation[];
     voting_purpose?: UintType;
+    reward_address?: string;
 };
 
 // CardanoTxAuxiliaryData

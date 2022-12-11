@@ -112,6 +112,8 @@ Trezor supports signing transactions with auxiliary data containing a governance
 
 Trezor does not support the 1694 derivation paths at the moment.
 
+The reward address can be provided either as a `rewardAddress` string or as a `rewardAddressParameters` object. For the smoothest user experience, we recommend providing `rewardAddressParameters` of a BASE address owned by the device.
+
 ### Transaction examples
 
 #### Ordinary transaction
@@ -309,13 +311,21 @@ TrezorConnect.cardanoSignTransaction({
     ttl: '10',
     auxiliaryData: {
         governanceRegistrationParameters: {
-            votingPublicKey: '1af8fa0b754ff99253d983894e63a2b09cbb56c833ba18c3384210163f63dcfc',
             stakingPath: "m/1852'/1815'/0'/2/0",
             rewardAddressParameters: {
-                addressType: CardanoAddressType.REWARD,
+                addressType: CardanoAddressType.BASE,
+                path: "m/1852'/1815'/0'/0/0",
                 stakingPath: "m/1852'/1815'/0'/2/0",
             },
             nonce: '22634813',
+            format: CardanoGovernanceRegistrationFormat.CIP36,
+            delegations: [
+                {
+                    votingPublicKey:
+                        '1af8fa0b754ff99253d983894e63a2b09cbb56c833ba18c3384210163f63dcfc',
+                    weight: 1,
+                },
+            ],
         },
     },
     protocolMagic: 764824073,
