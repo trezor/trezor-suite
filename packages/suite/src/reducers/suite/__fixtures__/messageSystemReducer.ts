@@ -23,6 +23,7 @@ const initialState = {
         banner: [],
         context: [],
         modal: [],
+        feature: [],
     },
     dismissedMessages: {},
 };
@@ -107,7 +108,7 @@ export default [
         actions: [
             {
                 type: MESSAGE_SYSTEM.SAVE_VALID_MESSAGES,
-                payload: { banner: messageIds, context: [], modal: [] },
+                payload: { banner: messageIds, context: [], modal: [], feature: [] },
             },
         ],
         result: {
@@ -145,11 +146,13 @@ export default [
                     banner: true,
                     context: false,
                     modal: true,
+                    feature: false,
                 },
                 [messageIds[1]]: {
                     banner: false,
                     context: true,
                     modal: false,
+                    feature: false,
                 },
             },
         },

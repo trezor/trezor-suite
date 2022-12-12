@@ -3,24 +3,15 @@ import produce from 'immer';
 import { Action } from '@suite-types';
 import { MESSAGE_SYSTEM, STORAGE } from '@suite-actions/constants';
 
-import type { MessageSystem } from '@trezor/message-system';
+import type { MessageSystem, Category } from '@trezor/message-system';
 
-export type MessageState = {
-    banner: boolean;
-    context: boolean;
-    modal: boolean;
-};
+export type MessageState = { [key in Category]: boolean };
 
 export type State = {
     config: MessageSystem | null;
     currentSequence: number;
     timestamp: number;
-
-    validMessages: {
-        banner: string[];
-        context: string[];
-        modal: string[];
-    };
+    validMessages: { [key in Category]: string[] };
     dismissedMessages: {
         [key: string]: MessageState;
     };
@@ -35,13 +26,19 @@ const initialState: State = {
         banner: [],
         context: [],
         modal: [],
+        feature: [],
     },
     dismissedMessages: {},
 };
 
 const getMessageStateById = (draft: State, id: string): MessageState => {
     if (!draft.dismissedMessages[id]) {
-        draft.dismissedMessages[id] = { banner: false, context: false, modal: false };
+        draft.dismissedMessages[id] = {
+            banner: false,
+            context: false,
+            modal: false,
+            feature: false,
+        };
     }
     return draft.dismissedMessages[id];
 };

@@ -630,4 +630,21 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
     if (oldVersion < 32) {
         db.createObjectStore('coinjoinAccounts');
     }
+
+    if (oldVersion < 33) {
+        let cursor = await transaction.objectStore('messageSystem').openCursor();
+        while (cursor) {
+            const messageSystem = cursor.value;
+            Object.values(messageSystem.dismissedMessages).forEach(dismissedMessage => {
+                if (typeof dismissedMessage.feature === 'undefined') {
+                    dismissedMessage.feature = false;
+                }
+            });
+
+            // eslint-disable-next-line no-await-in-loop
+            await cursor.update(messageSystem);
+            // eslint-disable-next-line no-await-in-loop
+            cursor = await cursor.continue();
+        }
+    }
 };

@@ -66,12 +66,17 @@ describe('Message system middleware', () => {
             id: '506b1322-8632-11eb-8dcd-0242ac130003',
             category: ['modal'],
         };
+        const message4 = {
+            id: '506b1322-8632-11eb-8dcd-0242ac130004',
+            category: 'feature',
+        };
 
         // @ts-expect-error: all properties except category and id are not required for testing
         jest.spyOn(messageSystem, 'getValidMessages').mockImplementation(() => [
             message1,
             message2,
             message3,
+            message4,
         ]);
 
         const store = initStore(getInitialState(undefined, undefined, undefined));
@@ -89,6 +94,7 @@ describe('Message system middleware', () => {
                     banner: [message1.id, message2.id],
                     modal: [message2.id, message3.id],
                     context: [message2.id],
+                    feature: [message4.id],
                 },
             },
         ]);
@@ -100,7 +106,7 @@ describe('Message system middleware', () => {
         const store = initStore(getInitialState(undefined, undefined, undefined));
         await store.dispatch({
             type: MESSAGE_SYSTEM.FETCH_CONFIG_SUCCESS_UPDATE,
-            payload: { sequence: 1 },
+            payload: { config: { sequence: 1 }, timestamp: 0 },
         });
 
         const result = store.getActions();
