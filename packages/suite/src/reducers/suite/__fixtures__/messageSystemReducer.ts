@@ -35,6 +35,7 @@ export default [
         actions: [
             {
                 type: MESSAGE_SYSTEM.FETCH_CONFIG_SUCCESS,
+                payload: { config, timestamp },
             },
         ],
         result: { ...initialState, timestamp },
@@ -45,8 +46,7 @@ export default [
         actions: [
             {
                 type: MESSAGE_SYSTEM.FETCH_CONFIG_SUCCESS_UPDATE,
-                payload: config,
-                isRemote: true,
+                payload: { config, timestamp },
             },
         ],
         result: {
@@ -62,8 +62,7 @@ export default [
         actions: [
             {
                 type: MESSAGE_SYSTEM.FETCH_CONFIG_SUCCESS_UPDATE,
-                payload: config,
-                isRemote: false,
+                payload: { config, timestamp: 0 },
             },
         ],
         result: {

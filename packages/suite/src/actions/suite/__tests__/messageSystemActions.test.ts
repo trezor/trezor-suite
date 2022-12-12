@@ -46,6 +46,9 @@ describe('Message system actions', () => {
         });
 
         it("stores the fetched config if it's sequence number is higher than the current one", async () => {
+            const timestamp = 123456789;
+            jest.spyOn(Date, 'now').mockImplementation(() => timestamp);
+
             const store = initStore({
                 messageSystem: { ...getInitialState().messageSystem, currentSequence: 0 },
             });
@@ -56,8 +59,8 @@ describe('Message system actions', () => {
             expect(store.getActions()[0].type).toBe(
                 messageSystemConstants.FETCH_CONFIG_SUCCESS_UPDATE,
             );
-            expect(store.getActions()[0].payload).not.toBe(undefined);
-            expect(store.getActions()[0].isRemote).toBe(true);
+            expect(store.getActions()[0].payload.config).not.toBe(undefined);
+            expect(store.getActions()[0].payload.timestamp).toBe(timestamp);
         });
 
         it("does not store the fetched config if it's sequence number is the same as the current one", async () => {
@@ -119,9 +122,9 @@ describe('Message system actions', () => {
             expect(store.getActions()[0].type).toBe(
                 messageSystemConstants.FETCH_CONFIG_SUCCESS_UPDATE,
             );
-            expect(store.getActions()[0].payload).not.toBe(undefined);
-            expect(store.getActions()[0].payload.sequence).toBe(10);
-            expect(store.getActions()[0].isRemote).toBe(false);
+            expect(store.getActions()[0].payload.config).not.toBe(undefined);
+            expect(store.getActions()[0].payload.config.sequence).toBe(10);
+            expect(store.getActions()[0].payload.timestamp).toBe(0);
 
             expect(console.error).toHaveBeenCalled();
         });

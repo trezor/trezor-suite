@@ -27,9 +27,9 @@ The system of messages is based on a configuration file in which messages with s
 
 Current configuration file is located in `packages/message-system/src/config` folder. Its name is `config.vX.json`. The `X` express current version messaging system.
 
-The config is fetched at launch of the application and then every 6 hours. It remembers the previously fetched config to inform the user even if he is offline. For this reason, the latest available config during build time is bundled with the application.
+The config is fetched at launch of the application and then every minute. It remembers the previously fetched config to inform the user even if he is offline. For this reason, the latest available config during build time is bundled with the application.
 
-If fetching of a new config fails, the fetching process is repeated every 1 hour.
+If fetching of a new config fails, the fetching process is repeated every 30 seconds.
 
 ### Schema
 
