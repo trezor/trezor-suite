@@ -2,25 +2,6 @@
   refs:
     - schedules
 
-# tests whether there are not 'too many' outdated dependencies
-.outdated:
-  stage: utils
-  needs: []
-  allow_failure: true
-  script:
-    - ./ci/scripts/outdated.sh
-
-outdated nightly:
-  extends: .outdated
-  only:
-    <<: *run_everything_rules
-
-outdated:
-  extends: .outdated
-  when: manual
-  except:
-    <<: *run_everything_rules
-
 # tests whether urls in constants return 200 status (shall detect dead links)
 .urls health:
   stage: utils
