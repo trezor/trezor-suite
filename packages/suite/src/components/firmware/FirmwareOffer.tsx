@@ -12,6 +12,7 @@ import { AcquiredDevice, FirmwareType } from '@suite-types';
 const FwVersionWrapper = styled.div`
     display: flex;
     width: 100%;
+    max-width: 364px;
     justify-content: space-between;
     align-items: center;
     padding: 16px 0px;
@@ -20,6 +21,10 @@ const FwVersionWrapper = styled.div`
 const FwVersion = styled.div`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     text-align: center;
+
+    &:only-child {
+        margin: 0 auto;
+    }
 `;
 
 const Version = styled.div<{ isNew?: boolean }>`
