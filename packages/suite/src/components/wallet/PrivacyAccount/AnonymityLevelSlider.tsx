@@ -1,20 +1,50 @@
 import React, { useCallback, ChangeEventHandler } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { AnimatePresence, HTMLMotionProps, motion } from 'framer-motion';
-import { Range, Warning, useTheme, motionEasing } from '@trezor/components';
+import { Range, Warning, useTheme, motionEasing, Icon, variables } from '@trezor/components';
 import { Translation } from '@suite-components';
-import { useSelector, useAnonymityStatus } from '@suite-hooks';
+import { useAnonymityStatus } from '@suite-hooks';
 import { AnonymityStatus } from '@suite-constants/coinjoin';
-import { selectSelectedAccount } from '@wallet-reducers/selectedAccountReducer';
 
 const Container = styled.div`
     display: flex;
     flex-direction: column;
+    position: relative;
 `;
 
-const Slider = styled(Range)`
-    margin-top: 0;
-    cursor: pointer;
+const blurredStyle = css<{ $isBlurred: boolean }>`
+    transition: filter 0.15s;
+    filter: ${({ $isBlurred }) => $isBlurred && 'blur(7px)'};
+`;
+
+const AnonymityRange = styled(Range)<{ $isBlurred: boolean }>`
+    ${blurredStyle}
+`;
+
+const DisabledMessage = styled.p`
+    position: absolute;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    backdrop-filter: grayscale(0.5);
+    filter: ${({ theme }) => `drop-shadow(0px 0px 8px ${theme.BG_LIGHT_GREY})`};
+
+    > :first-child {
+        margin-right: 6px;
+    }
+`;
+
+const RedText = styled.span`
+    margin-right: 2px;
+    color: ${({ theme }) => theme.TYPE_RED};
+`;
+
+const AnonymityWarning = styled(Warning)`
+    ${blurredStyle}
 `;
 
 const expandAnimation: HTMLMotionProps<'div'> = {
@@ -40,12 +70,16 @@ export const getValue = (position: number) =>
 export const getPosition = (value: number) => minPosition + (Math.log(value) - minValue) / scale;
 
 interface AnonymityLevelSliderProps {
+    isSessionActive: boolean;
     position: number;
     setAnonymity: (value: number) => void;
 }
 
-export const AnonymityLevelSlider = ({ position, setAnonymity }: AnonymityLevelSliderProps) => {
-    const currentAccount = useSelector(selectSelectedAccount);
+export const AnonymityLevelSlider = ({
+    isSessionActive,
+    position,
+    setAnonymity,
+}: AnonymityLevelSliderProps) => {
     const { anonymityStatus } = useAnonymityStatus();
 
     const theme = useTheme();
@@ -58,10 +92,6 @@ export const AnonymityLevelSlider = ({ position, setAnonymity }: AnonymityLevelS
         },
         [setAnonymity],
     );
-
-    if (!currentAccount) {
-        return null;
-    }
 
     const trackStyle = {
         background: `\
@@ -78,24 +108,36 @@ export const AnonymityLevelSlider = ({ position, setAnonymity }: AnonymityLevelS
 
     return (
         <Container>
-            <Slider
+            <AnonymityRange
                 value={position}
                 onChange={handleSliderChange}
                 trackStyle={trackStyle}
                 step="any"
-                labels={[1, 3, 10, 30, 100]}
                 onLabelClick={number => setAnonymity(number)}
+                $isBlurred={isSessionActive}
             />
 
             <AnimatePresence initial={!isErrorDisplayed}>
                 {isErrorDisplayed && (
                     <motion.div {...expandAnimation}>
-                        <Warning critical withIcon>
-                            <Translation id="TR_ANONYMITY_LEVEL_BAD_WARNING" />
-                        </Warning>
+                        <AnonymityWarning critical withIcon $isBlurred={isSessionActive}>
+                            <Translation
+                                values={{
+                                    red: chunks => <RedText>{chunks}</RedText>,
+                                }}
+                                id="TR_LOW_ANONYMITY_WARNING"
+                            />
+                        </AnonymityWarning>
                     </motion.div>
                 )}
             </AnimatePresence>
+
+            {isSessionActive && (
+                <DisabledMessage>
+                    <Icon icon="INFO" size={14} color={theme.TYPE_DARK_GREY} />
+                    <Translation id="TR_DISABLED_ANONYMITY_CHANGE_MESSAGE" />
+                </DisabledMessage>
+            )}
         </Container>
     );
 };
