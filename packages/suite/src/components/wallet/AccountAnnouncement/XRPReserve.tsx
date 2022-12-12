@@ -4,11 +4,11 @@ import { NotificationCard, Translation, ReadMoreLink } from '@suite-components';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import type { Account } from '@wallet-types/index';
 
-interface Props {
+interface XRPReserveProps {
     account: Account | undefined;
 }
 
-const XRPReserve = ({ account }: Props) => {
+export const XRPReserve = ({ account }: XRPReserveProps) => {
     if (account?.networkType !== 'ripple') return null;
     const bigBalance = new Bignumber(account.balance);
     const bigReserve = new Bignumber(account.misc.reserve);
@@ -28,5 +28,3 @@ const XRPReserve = ({ account }: Props) => {
         </NotificationCard>
     ) : null;
 };
-
-export default XRPReserve;

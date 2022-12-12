@@ -6,11 +6,9 @@ type AccountImportedProps = {
     account: Account | undefined;
 };
 
-const AccountImported = ({ account }: AccountImportedProps) =>
+export const AccountImported = ({ account }: AccountImportedProps) =>
     account?.imported ? (
         <NotificationCard variant="info">
             <Translation id="TR_ACCOUNT_IMPORTED_ANNOUNCEMENT" />
         </NotificationCard>
     ) : null;
-
-export default AccountImported;

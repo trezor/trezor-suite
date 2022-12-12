@@ -20,6 +20,7 @@ import {
 import { calculateServiceFee, getMaxRounds } from '@wallet-utils/coinjoinUtils';
 import { CoinjoinCustomStrategy } from './CoinjoinCustomStrategy';
 import { CoinjoinDefaultStrategy, CoinJoinStrategy } from './CoinjoinDefaultStrategy';
+import { useMessageSystem, Feature } from '@suite-hooks/useMessageSystem';
 
 const StyledCard = styled(Card)`
     margin-bottom: 8px;
@@ -89,6 +90,9 @@ export const CoinjoinSetupStrategies = ({ account }: CoinjoinSetupStrategiesProp
     const { isLocked } = useDevice();
     const isCoinJoinBlockedByTor = useSelector(selectIsCoinjoinBlockedByTor);
 
+    const { getFeatureMessageContent, isFeatureEnabled } = useMessageSystem();
+    const featureMessageContent = getFeatureMessageContent(Feature.coinjoin);
+
     const anonymitySet = account.addresses?.anonymitySet;
 
     if (!coordinatorData || !targetAnonymity || !anonymitySet) {
@@ -111,20 +115,29 @@ export const CoinjoinSetupStrategies = ({ account }: CoinjoinSetupStrategiesProp
     const isCustom = strategy === 'custom';
     const allChecked = connectedConfirmed && termsConfirmed;
     const allAnonymized = notAnonymized === '0';
-    const isDisabled = !allChecked || allAnonymized || isLocked(false) || isCoinJoinBlockedByTor;
 
-    let buttonTooltipMessage:
-        | 'TR_NOTHING_TO_ANONYMIZE'
-        | 'TR_CONFIRM_CONDITIONS'
-        | 'TR_UNAVAILABLE_COINJOIN_TOR_DISABLE_TOOLTIP'
-        | undefined;
-    if (isCoinJoinBlockedByTor) {
-        buttonTooltipMessage = 'TR_UNAVAILABLE_COINJOIN_TOR_DISABLE_TOOLTIP';
-    } else if (allAnonymized) {
-        buttonTooltipMessage = 'TR_NOTHING_TO_ANONYMIZE';
-    } else if (!termsConfirmed) {
-        buttonTooltipMessage = 'TR_CONFIRM_CONDITIONS';
-    }
+    const isCoinJoinDisabled = !isFeatureEnabled(Feature.coinjoin);
+    const isDisabled =
+        !allChecked ||
+        allAnonymized ||
+        isLocked(false) ||
+        isCoinJoinBlockedByTor ||
+        isCoinJoinDisabled;
+
+    const getButtonTooltipMessage = () => {
+        if (isCoinJoinDisabled && featureMessageContent) {
+            return featureMessageContent;
+        }
+        if (isCoinJoinBlockedByTor) {
+            return <Translation id="TR_UNAVAILABLE_COINJOIN_TOR_DISABLE_TOOLTIP" />;
+        }
+        if (allAnonymized) {
+            return <Translation id="TR_NOTHING_TO_ANONYMIZE" />;
+        }
+        if (!allChecked) {
+            return <Translation id="TR_CONFIRM_CONDITIONS" />;
+        }
+    };
 
     const reset = () => {
         setStrategy('recommended');
@@ -232,7 +245,7 @@ export const CoinjoinSetupStrategies = ({ account }: CoinjoinSetupStrategiesProp
             <StyledTooltipButton
                 onClick={anonymize}
                 isDisabled={isDisabled}
-                tooltipContent={buttonTooltipMessage && <Translation id={buttonTooltipMessage} />}
+                tooltipContent={getButtonTooltipMessage()}
             >
                 <Translation id="TR_ANONYMIZE" />
             </StyledTooltipButton>
