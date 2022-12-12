@@ -1,7 +1,10 @@
 import produce from 'immer';
+import { createSelector } from '@reduxjs/toolkit';
+
 import { STORAGE, METADATA } from '@suite-actions/constants';
 import { Action } from '@suite-types';
 import { MetadataState } from '@suite-types/metadata';
+import { selectDevice } from '@suite-reducers/suiteReducer';
 
 export const initialState: MetadataState = {
     // is Suite trying to load metadata (get master key -> sync cloud)?
@@ -32,5 +35,14 @@ const metadataReducer = (state = initialState, action: Action): MetadataState =>
             // no default
         }
     });
+
+const selectMetadata = (state: { metadata: MetadataState }) => state.metadata;
+
+// is everything ready (more or less) to add label?
+export const selectIsLabelingAvailable = createSelector(
+    [selectDevice, selectMetadata],
+    (device, metadata) =>
+        !!(metadata.enabled && device?.metadata?.status === 'enabled' && metadata.provider),
+);
 
 export default metadataReducer;

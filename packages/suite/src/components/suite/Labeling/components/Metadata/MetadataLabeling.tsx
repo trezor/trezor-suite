@@ -9,6 +9,7 @@ import { Translation } from '@suite-components';
 import { Props, ExtendedProps, DropdownMenuItem } from './definitions';
 import { withEditable } from './withEditable';
 import { withDropdown } from './withDropdown';
+import { selectIsLabelingAvailable } from '@suite-reducers/metadataReducer';
 import type { Timeout } from '@trezor/type-utils';
 
 const LabelValue = styled.div`
@@ -227,12 +228,7 @@ export const MetadataLabeling = (props: Props) => {
         };
     }, [props.payload.defaultValue, timeout]);
 
-    // is everything ready (more or less) to add label?
-    const labelingAvailable = !!(
-        metadata.enabled &&
-        device?.metadata?.status === 'enabled' &&
-        metadata.provider
-    );
+    const isLabelingAvailable = useSelector(selectIsLabelingAvailable);
 
     // labeling is possible (it is possible to make it available) when we may obtain keys from device. If enabled, we already have them
     // (and only need to connect provider), or if device is connected, we may initiate TrezorConnect.CipherKeyValue call and get them
@@ -248,7 +244,7 @@ export const MetadataLabeling = (props: Props) => {
             // isn't initiation in progress?
             !metadata.initiating &&
             // is there something that needs to be initiated?
-            !labelingAvailable
+            !isLabelingAvailable
         ) {
             // provide force=true argument (user wants to enable metadata)
             init(true);

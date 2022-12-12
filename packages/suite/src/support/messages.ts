@@ -7839,4 +7839,12 @@ export default defineMessages({
         defaultMessage:
             'Proceed with caution. This may be a fraudulent transaction. <a>Read more here.</a>',
     },
+    TR_SENDFORM_LABELING_EXAMPLE_1: {
+        id: 'TR_SENDFORM_LABELING_EXAMPLE_1',
+        defaultMessage: 'Savings',
+    },
+    TR_SENDFORM_LABELING_EXAMPLE_2: {
+        id: 'TR_SENDFORM_LABELING_EXAMPLE_2',
+        defaultMessage: 'Rent',
+    },
 });
