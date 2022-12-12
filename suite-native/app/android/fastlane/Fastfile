@@ -83,7 +83,7 @@ platform :android do
     gradle(
       task: 'assemble',
       flavor: 'Dev',
-      build_type: 'Release',
+      build_type: 'Debug',
       project_dir: ANDROID_PATH
     )
   end
