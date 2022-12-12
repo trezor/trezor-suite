@@ -54,12 +54,12 @@ const messageSystemReducer = (state: State = initialState, action: Action): Stat
                     ...action.payload.messageSystem,
                 };
             case MESSAGE_SYSTEM.FETCH_CONFIG_SUCCESS:
-                draft.timestamp = Date.now();
+                draft.timestamp = action.payload.timestamp;
                 break;
             case MESSAGE_SYSTEM.FETCH_CONFIG_SUCCESS_UPDATE:
-                draft.timestamp = action.isRemote ? Date.now() : 0;
-                draft.config = action.payload;
-                draft.currentSequence = action.payload.sequence;
+                draft.timestamp = action.payload.timestamp;
+                draft.config = action.payload.config;
+                draft.currentSequence = action.payload.config.sequence;
                 break;
             case MESSAGE_SYSTEM.FETCH_CONFIG_ERROR:
                 draft.timestamp = 0;

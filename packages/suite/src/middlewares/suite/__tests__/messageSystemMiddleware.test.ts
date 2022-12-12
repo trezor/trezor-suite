@@ -82,12 +82,15 @@ describe('Message system middleware', () => {
         const store = initStore(getInitialState(undefined, undefined, undefined));
         await store.dispatch({
             type: MESSAGE_SYSTEM.FETCH_CONFIG_SUCCESS_UPDATE,
-            payload: { sequence: 1 },
+            payload: { config: { sequence: 1 }, timestamp: 0 },
         });
 
         const result = store.getActions();
         expect(result).toEqual([
-            { type: MESSAGE_SYSTEM.FETCH_CONFIG_SUCCESS_UPDATE, payload: { sequence: 1 } },
+            {
+                type: MESSAGE_SYSTEM.FETCH_CONFIG_SUCCESS_UPDATE,
+                payload: { config: { sequence: 1 }, timestamp: 0 },
+            },
             {
                 type: MESSAGE_SYSTEM.SAVE_VALID_MESSAGES,
                 payload: {
@@ -111,10 +114,13 @@ describe('Message system middleware', () => {
 
         const result = store.getActions();
         expect(result).toEqual([
-            { type: MESSAGE_SYSTEM.FETCH_CONFIG_SUCCESS_UPDATE, payload: { sequence: 1 } },
+            {
+                type: MESSAGE_SYSTEM.FETCH_CONFIG_SUCCESS_UPDATE,
+                payload: { config: { sequence: 1 }, timestamp: 0 },
+            },
             {
                 type: MESSAGE_SYSTEM.SAVE_VALID_MESSAGES,
-                payload: { banner: [], context: [], modal: [] },
+                payload: { banner: [], context: [], modal: [], feature: [] },
             },
         ]);
     });
