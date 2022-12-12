@@ -27,14 +27,18 @@ type DiscreetCanvasProps = {
     height: number;
     fontSize: number;
     text: string;
+    color: Color;
 };
-const DiscreetCanvas = ({ width, height, fontSize, text }: DiscreetCanvasProps) => {
+const DiscreetCanvas = ({ width, height, fontSize, text, color }: DiscreetCanvasProps) => {
     const font = useFont(satoshiFont, fontSize);
+    const {
+        utils: { colors },
+    } = useNativeStyles();
     if (!font) return null;
 
     return (
         <Canvas style={{ height, width }}>
-            <SkiaText x={0} y={fontSize} text={text} font={font} />
+            <SkiaText x={0} y={fontSize} text={text} font={font} color={colors[color]} />
             <Blur blur={15} mode="decal" />
         </Canvas>
     );
@@ -111,6 +115,7 @@ export const DiscreetText = ({
                     height={lineHeight}
                     fontSize={fontSize}
                     text={children}
+                    color={color}
                 />
             )}
         </Box>
