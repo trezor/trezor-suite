@@ -47,9 +47,10 @@ export const WalletLayout = ({
     const { status, account: selectedAccount, loader, network } = account;
 
     if (status === 'loading') {
-        if (selectedAccount?.backendType === 'coinjoin') {
+        if (selectedAccount?.accountType === 'coinjoin') {
             return (
                 <Wrapper>
+                    <AccountBanners account={selectedAccount} />
                     <CoinjoinAccountDiscoveryProgress />
                 </Wrapper>
             );
