@@ -125,18 +125,15 @@ export default [
         actions: [
             {
                 type: MESSAGE_SYSTEM.DISMISS_MESSAGE,
-                category: 'banner',
-                id: messageIds[0],
+                payload: { category: 'banner', id: messageIds[0] },
             },
             {
                 type: MESSAGE_SYSTEM.DISMISS_MESSAGE,
-                category: 'context',
-                id: messageIds[1],
+                payload: { category: 'context', id: messageIds[1] },
             },
             {
                 type: MESSAGE_SYSTEM.DISMISS_MESSAGE,
-                category: 'modal',
-                id: messageIds[0],
+                payload: { category: 'modal', id: messageIds[0] },
             },
         ],
         result: {

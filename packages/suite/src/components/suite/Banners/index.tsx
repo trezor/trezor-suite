@@ -27,7 +27,7 @@ const Banners = () => {
         firmwareHashInvalid: state.firmware.firmwareHashInvalid,
     }));
 
-    const { banner: messageSystemBanner } = useMessageSystem();
+    const { bannerMessage } = useMessageSystem();
 
     // The dismissal doesn't need to outlive the session. Use local state.
     const [safetyChecksDismissed, setSafetyChecksDismissed] = useState(false);
@@ -84,11 +84,11 @@ const Banners = () => {
     }
 
     // message system banners should always be visible in the app even if app body is blurred
-    const useMessageSystemBanner = messageSystemBanner && messageSystemBanner.priority >= priority;
+    const useMessageSystemBanner = bannerMessage && bannerMessage.priority >= priority;
 
     return (
         <Wrapper>
-            {useMessageSystemBanner && <MessageSystemBanner message={messageSystemBanner} />}
+            {useMessageSystemBanner && <MessageSystemBanner message={bannerMessage} />}
             {isTranslationMode() && <TranslationMode />}
             <OnlineStatus isOnline={online} />
             {!useMessageSystemBanner && banner}

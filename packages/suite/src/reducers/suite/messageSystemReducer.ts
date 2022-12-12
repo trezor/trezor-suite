@@ -68,8 +68,8 @@ const messageSystemReducer = (state: State = initialState, action: Action): Stat
                 draft.validMessages = action.payload;
                 break;
             case MESSAGE_SYSTEM.DISMISS_MESSAGE:
-                messageState = getMessageStateById(draft, action.id);
-                messageState[action.category] = true;
+                messageState = getMessageStateById(draft, action.payload.id);
+                messageState[action.payload.category] = true;
                 break;
             default:
                 break;
