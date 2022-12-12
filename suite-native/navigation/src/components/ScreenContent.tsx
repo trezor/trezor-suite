@@ -16,16 +16,13 @@ const screenContentStyle = prepareNativeStyle<{
     insets: EdgeInsets;
     customHorizontalPadding: number;
     customVerticalPadding: number;
-}>((_, { insets, customHorizontalPadding, customVerticalPadding }) => {
-    const { top, right, bottom, left } = insets;
-    return {
-        flexGrow: 1,
-        paddingTop: Math.max(top, customVerticalPadding),
-        paddingBottom: Math.max(bottom, customVerticalPadding),
-        paddingLeft: Math.max(left, customHorizontalPadding),
-        paddingRight: Math.max(right, customHorizontalPadding),
-    };
-});
+}>((_, { customHorizontalPadding, customVerticalPadding }) => ({
+    flexGrow: 1,
+    paddingTop: customVerticalPadding,
+    paddingBottom: customVerticalPadding,
+    paddingLeft: customHorizontalPadding,
+    paddingRight: customHorizontalPadding,
+}));
 
 export const ScreenContent = ({
     children,

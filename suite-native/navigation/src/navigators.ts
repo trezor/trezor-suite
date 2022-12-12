@@ -29,9 +29,7 @@ export type SettingsStackParamList = {
 };
 
 export type AccountsStackParamList = {
-    [AccountsStackRoutes.Accounts]: {
-        networkSymbol?: NetworkSymbol;
-    };
+    [AccountsStackRoutes.Accounts]: undefined;
     [AccountsStackRoutes.AccountDetail]: { accountKey: string };
     [AccountsStackRoutes.AccountDetailSettings]: { accountKey: string };
 };
@@ -44,10 +42,13 @@ export type AppTabsParamList = {
 };
 
 export type AccountsImportStackParamList = {
-    [AccountsImportStackRoutes.SelectNetwork]: undefined;
+    [AccountsImportStackRoutes.SelectNetwork]: {
+        origin?: AccountsStackRoutes.Accounts | HomeStackRoutes.Home;
+    };
     [AccountsImportStackRoutes.XpubScan]: {
         qrCode?: string;
         networkSymbol: NetworkSymbol;
+        origin?: AccountsStackRoutes.Accounts | HomeStackRoutes.Home;
     };
     [AccountsImportStackRoutes.XpubScanModal]: {
         networkSymbol: NetworkSymbol;

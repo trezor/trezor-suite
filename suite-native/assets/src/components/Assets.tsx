@@ -13,8 +13,9 @@ import {
     RootStackRoutes,
     TabToStackCompositeNavigationProp,
     AccountsStackRoutes,
+    HomeStackRoutes,
 } from '@suite-native/navigation';
-import { networks, NetworkSymbol } from '@suite-common/wallet-config';
+import { networks } from '@suite-common/wallet-config';
 import { selectFiatCurrency } from '@suite-native/module-settings';
 import { RootState } from '@suite-native/state';
 
@@ -46,17 +47,17 @@ export const Assets = () => {
     const handleImportAssets = () => {
         navigation.navigate(RootStackRoutes.AccountsImport, {
             screen: AccountsImportStackRoutes.SelectNetwork,
+            params: {
+                origin: HomeStackRoutes.Home,
+            },
         });
     };
 
-    const handleShowAllAccountsForAsset = (networkSymbol: NetworkSymbol) => {
+    const handleShowAssetsAccounts = () => {
         navigation.navigate(RootStackRoutes.AppTabs, {
             screen: AppTabsRoutes.AccountsStack,
             params: {
                 screen: AccountsStackRoutes.Accounts,
-                params: {
-                    networkSymbol,
-                },
             },
         });
     };
@@ -73,7 +74,7 @@ export const Assets = () => {
                             cryptoCurrencySymbol={asset.symbol}
                             fiatBalance={asset.fiatBalance}
                             cryptoCurrencyValue={asset.assetBalance.toFixed()}
-                            onPress={() => handleShowAllAccountsForAsset(asset.symbol)}
+                            onPress={handleShowAssetsAccounts}
                         />
                     ))}
                 </VStack>

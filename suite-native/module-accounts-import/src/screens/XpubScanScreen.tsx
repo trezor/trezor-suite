@@ -87,7 +87,7 @@ export const XpubScanScreen = ({
     };
 
     return (
-        <Screen header={<AccountImportHeader activeStep={2} />}>
+        <Screen header={<AccountImportHeader origin={route.params.origin} activeStep={2} />}>
             <Card>
                 <SelectableNetworkItem
                     cryptoCurrencyName={networks[selectedCurrencySymbol].name}

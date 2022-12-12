@@ -17,8 +17,7 @@ export type AccountListItemProps = {
 const accountListItemStyle = prepareNativeStyle(utils => ({
     backgroundColor: utils.colors.gray0,
     padding: utils.spacings.medium,
-    borderRadius: 12,
-    marginBottom: utils.spacings.small,
+    borderRadius: utils.borders.radii.medium,
 }));
 
 export const AccountListItem = ({ account }: AccountListItemProps) => {
@@ -52,7 +51,7 @@ export const AccountListItem = ({ account }: AccountListItemProps) => {
                 <Text color="gray800">{accountLabel}</Text>
             </Box>
             <Box alignItems="flex-end">
-                <DiscreetText color="gray800" typography="hint">
+                <DiscreetText color="gray1000" typography="hint">
                     {FiatAmountFormatter.format(fiatAmount ?? 0)}
                 </DiscreetText>
                 <DiscreetText typography="hint" color="gray600">

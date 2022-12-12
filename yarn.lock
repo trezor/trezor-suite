@@ -6307,6 +6307,7 @@ __metadata:
   resolution: "@suite-native/accounts@workspace:suite-native/accounts"
   dependencies:
     "@mobily/ts-belt": ^3.13.1
+    "@react-navigation/native": ^6.0.11
     "@suite-common/formatters": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
@@ -6314,6 +6315,7 @@ __metadata:
     "@suite-common/wallet-utils": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/module-settings": "workspace:*"
+    "@suite-native/navigation": "workspace:*"
     "@trezor/icons": "workspace:*"
     "@trezor/styles": "workspace:*"
     react: 18.2.0
