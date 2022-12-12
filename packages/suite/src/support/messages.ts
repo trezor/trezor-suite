@@ -7432,10 +7432,6 @@ export default defineMessages({
         id: 'TR_COINJOIN_ANONYMITY_LEVEL_SETUP_DESCRIPTION',
         defaultMessage: 'Shows the number of people with whom your resources are indistinguishable',
     },
-    TR_ANONYMITY_LEVEL_BAD_WARNING: {
-        id: 'TR_ANONYMITY_LEVEL_BAD_WARNING',
-        defaultMessage: 'We recommend a minimum "1 in 5" anonymity level',
-    },
     TR_NOT_ENOUGH_ANONYMIZED_FUNDS_WARNING: {
         id: 'TR_NOT_ENOUGH_ANONYMIZED_FUNDS_WARNING',
         description: 'Warning in coinjoin send form',
@@ -7564,5 +7560,14 @@ export default defineMessages({
         id: 'TR_VIEW_ALL',
         description: 'Button opening changelog',
         defaultMessage: 'View all',
+    },
+    TR_DISABLED_ANONYMITY_CHANGE_MESSAGE: {
+        id: 'TR_DISABLED_ANONYMITY_CHANGE_MESSAGE',
+        defaultMessage: 'Editing disabled while Coinjoin is running',
+    },
+    TR_LOW_ANONYMITY_WARNING: {
+        id: 'TR_LOW_ANONYMITY_WARNING',
+        defaultMessage:
+            "<red>Very low anonymity.</red> We recommend using at least 1 in 5, as anything bellow isn't secure.",
     },
 });

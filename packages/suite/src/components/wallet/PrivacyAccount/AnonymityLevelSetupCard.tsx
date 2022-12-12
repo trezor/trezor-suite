@@ -3,7 +3,10 @@ import styled from 'styled-components';
 import { Card, Input, P, variables } from '@trezor/components';
 import { Translation } from '@suite-components';
 import { useSelector } from '@suite-hooks/useSelector';
-import { selectCurrentTargetAnonymity } from '@wallet-reducers/coinjoinReducer';
+import {
+    selectCurrentCoinjoinSession,
+    selectCurrentTargetAnonymity,
+} from '@wallet-reducers/coinjoinReducer';
 
 import { AnonymityLevelSlider, getPosition } from './AnonymityLevelSlider';
 import { useDispatch } from 'react-redux';
@@ -26,16 +29,28 @@ const Level = styled(Input)`
     color: ${({ theme }) => theme.TYPE_GREEN};
     font-size: ${variables.FONT_SIZE.H2};
     text-align: center;
+
+    :disabled {
+        color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+        background: ${({ theme }) => theme.BG_LIGHT_RED};
+    }
+`;
+
+const Description = styled(P)`
+    margin-top: 6px;
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
 
 const Text = styled.div`
     margin-right: 72px;
-    margin-bottom: 38px;
+    margin-bottom: 14px;
 `;
 
 export const AnonymityLevelSetupCard = () => {
     const currentAccount = useSelector(selectSelectedAccount);
     const targetAnonymity = useSelector(selectCurrentTargetAnonymity) || 1;
+    const session = useSelector(selectCurrentCoinjoinSession);
+
     const [inputValue, setInputValue] = useState<number | ''>(targetAnonymity);
     const [sliderPosition, setSliderPosition] = useState(getPosition(targetAnonymity || 1));
 
@@ -96,6 +111,8 @@ export const AnonymityLevelSetupCard = () => {
         setAnonymity(formattedNumber);
     };
 
+    const isSessionActive = !!session;
+
     return (
         <SetupCard>
             <Level
@@ -105,18 +122,23 @@ export const AnonymityLevelSetupCard = () => {
                 onChange={handleChange}
                 onFocus={handleFocus}
                 onBlur={handleBlur}
+                isDisabled={isSessionActive}
             />
 
             <Text>
                 <P weight="medium">
                     <Translation id="TR_COINJOIN_ANONYMITY_LEVEL_SETUP_TITLE" />
                 </P>
-                <P size="tiny" weight="medium">
+                <Description size="small" weight="medium">
                     <Translation id="TR_COINJOIN_ANONYMITY_LEVEL_SETUP_DESCRIPTION" />
-                </P>
+                </Description>
             </Text>
 
-            <AnonymityLevelSlider position={sliderPosition} setAnonymity={setAnonymity} />
+            <AnonymityLevelSlider
+                isSessionActive={isSessionActive}
+                position={sliderPosition}
+                setAnonymity={setAnonymity}
+            />
         </SetupCard>
     );
 };
