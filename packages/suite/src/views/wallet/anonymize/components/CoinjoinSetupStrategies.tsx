@@ -6,7 +6,7 @@ import { selectAccountTransactions } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import { TooltipSymbol, Translation, TrezorLink } from '@suite-components';
 import { Error } from '@suite-components/Error';
-import { useActions, useSelector } from '@suite-hooks';
+import { useActions, useSelector, useDevice } from '@suite-hooks';
 import { Card, Checkbox, Link, TooltipButton, variables } from '@trezor/components';
 import { DATA_TOS_COINJOIN_URL, ZKSNACKS_TERMS_URL } from '@trezor/urls';
 import { startCoinjoinSession } from '@wallet-actions/coinjoinAccountActions';
@@ -85,6 +85,7 @@ export const CoinjoinSetupStrategies = ({ account }: CoinjoinSetupStrategiesProp
     const targetAnonymity = useSelector(selectCurrentTargetAnonymity);
     const { notAnonymized } = useSelector(selectCurrentCoinjoinBalanceBreakdown);
     const accountTransactions = useSelector(state => selectAccountTransactions(state, account.key));
+    const { isLocked } = useDevice();
 
     const anonymitySet = account.addresses?.anonymitySet;
 
@@ -108,10 +109,14 @@ export const CoinjoinSetupStrategies = ({ account }: CoinjoinSetupStrategiesProp
     const isCustom = strategy === 'custom';
     const allChecked = connectedConfirmed && termsConfirmed;
     const allAnonymized = notAnonymized === '0';
-    const isDisabled = !allChecked || allAnonymized;
-    const buttonTooltipMessage = allAnonymized
-        ? 'TR_NOTHING_TO_ANONYMIZE'
-        : 'TR_CONFIRM_CONDITIONS';
+    const isDisabled = !allChecked || allAnonymized || isLocked(false);
+
+    let buttonTooltipMessage: 'TR_NOTHING_TO_ANONYMIZE' | 'TR_CONFIRM_CONDITIONS' | undefined;
+    if (allAnonymized) {
+        buttonTooltipMessage = 'TR_NOTHING_TO_ANONYMIZE';
+    } else if (!termsConfirmed) {
+        buttonTooltipMessage = 'TR_CONFIRM_CONDITIONS';
+    }
 
     const reset = () => {
         setStrategy('recommended');
@@ -219,7 +224,7 @@ export const CoinjoinSetupStrategies = ({ account }: CoinjoinSetupStrategiesProp
             <StyledTooltipButton
                 onClick={anonymize}
                 isDisabled={isDisabled}
-                tooltipContent={isDisabled && <Translation id={buttonTooltipMessage} />}
+                tooltipContent={buttonTooltipMessage && <Translation id={buttonTooltipMessage} />}
             >
                 <Translation id="TR_ANONYMIZE" />
             </StyledTooltipButton>
