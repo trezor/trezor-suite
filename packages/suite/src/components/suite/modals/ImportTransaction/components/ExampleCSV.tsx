@@ -3,7 +3,8 @@ import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
 import { P, Icon, variables, motionAnimation } from '@trezor/components';
 import { Translation } from '@suite-components';
-import { useSelector } from '@suite-hooks';
+import { useSelector, useTranslation } from '@suite-hooks';
+import { selectIsLabelingAvailable } from '@suite-reducers/metadataReducer';
 
 const Wrapper = styled.div`
     display: flex;
@@ -34,6 +35,9 @@ const ExpandButton = styled.div`
 export const ExampleCSV = () => {
     const [isExpanded, setExpanded] = useState(false);
     const { account } = useSelector(state => state.wallet.selectedAccount);
+    const isLabelingAvailable = useSelector(selectIsLabelingAvailable);
+    const { translationString } = useTranslation();
+
     if (!account) return null;
 
     // for BTC get first two unused addresses
@@ -66,11 +70,17 @@ export const ExampleCSV = () => {
                 {isExpanded && (
                     <ExpandWrapper {...motionAnimation.expand}>
                         {/* CSV keys shouldn't be translated */}
-                        <P size="small">address,amount,currency</P>
+                        <P size="small">address,amount,currency{isLabelingAvailable && ',label'}</P>
                         <P size="small">
                             {addresses[0]},0.31337,{account.symbol.toUpperCase()}
+                            {isLabelingAvailable &&
+                                `,${translationString('TR_SENDFORM_LABELING_EXAMPLE_1')}`}
                         </P>
-                        <P size="small">{addresses[1]},0.1,USD</P>
+                        <P size="small">
+                            {addresses[1]},0.1,USD
+                            {isLabelingAvailable &&
+                                `,${translationString('TR_SENDFORM_LABELING_EXAMPLE_2')}`}
+                        </P>
                     </ExpandWrapper>
                 )}
             </AnimatePresence>
