@@ -20,8 +20,10 @@ export type MessageSystemAction =
       }
     | {
           type: typeof MESSAGE_SYSTEM.DISMISS_MESSAGE;
-          category: Category;
-          id: string;
+          payload: {
+              category: Category;
+              id: string;
+          };
       };
 
 export type ValidMessagesPayload = { [key in Category]: string[] };
@@ -131,6 +133,8 @@ export const saveValidMessages = (payload: ValidMessagesPayload) => ({
 
 export const dismissMessage = (id: string, category: Category): MessageSystemAction => ({
     type: MESSAGE_SYSTEM.DISMISS_MESSAGE,
-    id,
-    category,
+    payload: {
+        id,
+        category,
+    },
 });

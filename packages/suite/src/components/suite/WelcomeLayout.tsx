@@ -101,7 +101,7 @@ interface WelcomeLayoutProps {
 // WelcomeLayout is a top-level wrapper similar to @suite-components/SuiteLayout
 // used in Preloader and Onboarding
 export const WelcomeLayout = ({ children }: WelcomeLayoutProps) => {
-    const { banner } = useMessageSystem();
+    const { bannerMessage } = useMessageSystem();
     const { isGuideOpen, isGuideOnTop } = useGuide();
 
     // do not animate welcome bar on initial load
@@ -109,7 +109,7 @@ export const WelcomeLayout = ({ children }: WelcomeLayoutProps) => {
 
     return (
         <Wrapper>
-            {banner && <MessageSystemBanner message={banner} />}
+            {bannerMessage && <MessageSystemBanner message={bannerMessage} />}
             <Body data-test="@welcome-layout/body">
                 <WelcomeWrapper>
                     <AnimatePresence>

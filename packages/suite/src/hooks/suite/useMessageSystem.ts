@@ -2,8 +2,11 @@ import { useMemo } from 'react';
 import { useSelector } from './useSelector';
 
 export const useMessageSystem = () => {
-    const { config, validMessages, dismissedMessages } = useSelector(state => state.messageSystem);
-    const banner = useMemo(() => {
+    const config = useSelector(state => state.messageSystem.config);
+    const validMessages = useSelector(state => state.messageSystem.validMessages);
+    const dismissedMessages = useSelector(state => state.messageSystem.dismissedMessages);
+
+    const bannerMessage = useMemo(() => {
         const nonDismissedValidMessages = validMessages.banner.filter(
             id => !dismissedMessages[id]?.banner,
         );
@@ -22,6 +25,6 @@ export const useMessageSystem = () => {
     // TODO: context messages and modal messages
 
     return {
-        banner,
+        bannerMessage,
     };
 };

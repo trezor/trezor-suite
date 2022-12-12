@@ -126,14 +126,14 @@ interface OnboardingLayoutProps {
 }
 
 export const OnboardingLayout = ({ children }: OnboardingLayoutProps) => {
-    const { banner } = useMessageSystem();
+    const { bannerMessage } = useMessageSystem();
     const { activeStepId } = useOnboarding();
 
     const activeStep = useMemo(() => steps.find(step => step.id === activeStepId)!, [activeStepId]);
 
     return (
         <Wrapper>
-            {banner && <MessageSystemBanner message={banner} />}
+            {bannerMessage && <MessageSystemBanner message={bannerMessage} />}
 
             <Body data-test="@onboarding-layout/body">
                 <ScrollingWrapper>
