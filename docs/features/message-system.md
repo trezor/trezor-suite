@@ -8,18 +8,16 @@ Message system was implemented to allow sending emergency messages to Trezor Sui
 
 ## Types of in-app messages
 
-There are four ways of displaying message to a user.
+There are multiple ways of displaying message to a user:
 
 -   banner
     -   looks like a cookie bar above the page
 -   modal
     -   _TODO: missing implementation_
 -   context
-    -   messages on specific places in app - high level (e.g. settings page)
-    -   _TODO: missing implementation_
--   super-context
-    -   messages on specific places in the app - low level (e.g. category in settings page)
-    -   _TODO: missing implementation_
+    -   messages on specific places in app (e.g. settings page, banner in account page)
+-   feature
+    -   disabling some feature with an explanation message
 
 ## Implementation
 
@@ -190,7 +188,7 @@ Structure of config, types and optionality of specific keys can be found in the 
                 - The range is 0 to 100.
                 */
                 "priority": 100,
-                // When user closes the message, it will never show again.
+                // When a user closes the message, it will never show again until the user clear app storage.
                 "dismissible": true,
                 /*
                 Variants:
@@ -199,7 +197,7 @@ Structure of config, types and optionality of specific keys can be found in the 
                 - critical (red)
                 */
                 "variant": "warning",
-                // Options: banner, modal, context, super-context
+                // Options: banner, modal, context, feature
                 "category": "banner",
                 /*
                 - Message in language of Suite app is shown to a user.
@@ -241,13 +239,22 @@ Structure of config, types and optionality of specific keys can be found in the 
                     },
                     "image": "https://example.com/example.png"
                 },
-                // Used only for context and super-context. (To be implemented)
+                // Used only for context.
                 "context": {
                     "domain": [
-                        "coins.*.receive",
+                        "coins.receive",
                         "coins.btc"
                   ]
                 }
+                 // Used only for feature
+                "feature": [
+                    {
+                        "domain": [
+                          "coinjoin"
+                        ],
+                        "flag": false
+                    }
+                ]
             }
         }
     ]

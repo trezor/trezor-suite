@@ -59,6 +59,7 @@ export const getInitialState = ({ suite, router }: any = {}) => ({
             banner: [],
             context: [],
             modal: [],
+            feature: [],
         },
     },
     modal: {

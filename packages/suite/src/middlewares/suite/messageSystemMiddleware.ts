@@ -43,6 +43,7 @@ const messageSystemMiddleware =
                 banner: [],
                 modal: [],
                 context: [],
+                feature: [],
             };
 
             messages.forEach(message => {
@@ -52,15 +53,7 @@ const messageSystemMiddleware =
                     categories = [categories];
                 }
 
-                categories.forEach(category => {
-                    if (category === 'banner') {
-                        payload.banner.push(message.id);
-                    } else if (category === 'modal') {
-                        payload.modal.push(message.id);
-                    } else if (category === 'context') {
-                        payload.context.push(message.id);
-                    }
-                });
+                categories.forEach(category => payload[category]?.push(message.id));
             });
 
             api.dispatch(saveValidMessages(payload));

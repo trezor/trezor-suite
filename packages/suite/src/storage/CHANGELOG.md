@@ -1,5 +1,9 @@
 # Storage changelog
 
+## 33
+
+-   added `messageSystem.dismissedMessages[id].feature`
+
 ## 32
 
 -   added `coinjoinAccounts`

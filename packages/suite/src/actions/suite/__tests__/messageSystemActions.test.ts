@@ -175,11 +175,13 @@ describe('Message system actions', () => {
         const bannerMessages = [fixtures.messageId1, fixtures.messageId2, fixtures.messageId3];
         const contextMessages = [fixtures.messageId2];
         const modalMessages = [fixtures.messageId1];
+        const featureMessages = [fixtures.messageId3];
 
         const payload = {
             banner: [fixtures.messageId1, fixtures.messageId2, fixtures.messageId3],
             context: [fixtures.messageId2],
             modal: [fixtures.messageId1],
+            feature: [fixtures.messageId3],
         };
 
         store.dispatch(messageSystemActions.saveValidMessages(payload));
@@ -193,10 +195,14 @@ describe('Message system actions', () => {
         expect(store.getState().messageSystem.validMessages.modal.length).toEqual(
             modalMessages.length,
         );
+        expect(store.getState().messageSystem.validMessages.feature.length).toEqual(
+            featureMessages.length,
+        );
 
         expect(store.getState().messageSystem.validMessages.banner).toEqual(bannerMessages);
         expect(store.getState().messageSystem.validMessages.context).toEqual(contextMessages);
         expect(store.getState().messageSystem.validMessages.modal).toEqual(modalMessages);
+        expect(store.getState().messageSystem.validMessages.feature).toEqual(featureMessages);
     });
 
     it('dismissMessage', () => {
@@ -210,6 +216,7 @@ describe('Message system actions', () => {
             banner: true,
             context: false,
             modal: false,
+            feature: false,
         });
 
         store.dispatch(messageSystemActions.dismissMessage(fixtures.messageId1, 'modal'));
@@ -222,11 +229,13 @@ describe('Message system actions', () => {
             banner: true,
             context: false,
             modal: true,
+            feature: false,
         });
         expect(store.getState().messageSystem.dismissedMessages[fixtures.messageId2]).toEqual({
             banner: false,
             context: true,
             modal: false,
+            feature: false,
         });
     });
 });

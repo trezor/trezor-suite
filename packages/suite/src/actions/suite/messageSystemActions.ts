@@ -24,7 +24,7 @@ export type MessageSystemAction =
           id: string;
       };
 
-export type ValidMessagesPayload = { banner: string[]; context: string[]; modal: string[] };
+export type ValidMessagesPayload = { [key in Category]: string[] };
 
 const fetchSuccess = (): MessageSystemAction => ({
     type: MESSAGE_SYSTEM.FETCH_CONFIG_SUCCESS,

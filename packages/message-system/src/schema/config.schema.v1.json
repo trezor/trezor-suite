@@ -282,6 +282,25 @@
                                 },
                                 "additionalProperties": false
                             },
+                            "feature": {
+                                "type": "array",
+                                "minItems": 1,
+                                "items": {
+                                    "title": "Feature",
+                                    "description": "Only used for 'feature' category. Feature flag can disable a feature for a specific version of a specific app.",
+                                    "type": "object",
+                                    "required": ["domain", "flag"],
+                                    "properties": {
+                                        "domain": {
+                                            "type": "string"
+                                        },
+                                        "flag": {
+                                            "type": "boolean"
+                                        }
+                                    },
+                                    "additionalProperties": false
+                                }
+                            },
                             "context": {
                                 "title": "Context",
                                 "type": "object",
@@ -289,7 +308,7 @@
                                 "required": ["domain"],
                                 "properties": {
                                     "domain": {
-                                        "description": "The domain to which the message applies. Wildcards are allowed. Only used for 'context' category.",
+                                        "description": "The domain to which the message applies. Only used for 'context' category.",
                                         "oneOf": [
                                             {
                                                 "type": "string"
@@ -360,7 +379,7 @@
         },
         "category": {
             "type": "string",
-            "enum": ["banner", "context", "modal"]
+            "enum": ["banner", "context", "modal", "feature"]
         },
         "date-time": {
             "description": "ISO 8601 date-time format.",
