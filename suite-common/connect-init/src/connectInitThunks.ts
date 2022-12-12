@@ -62,6 +62,9 @@ export const connectInitThunk = createThunk(
             'backupDevice',
             'recoveryDevice',
             'checkFirmwareAuthenticity',
+            'authorizeCoinJoin',
+            'getOwnershipProof',
+            'setBusy',
         ] as const;
 
         wrappedMethods.forEach(key => {
