@@ -488,6 +488,11 @@ export class Device extends EventEmitter {
         const revision = parseRevision(feat);
         feat.revision = revision;
 
+        // old T1 is missing features.model
+        if (!feat.model && feat.major_version === 1) {
+            feat.model = '1';
+        }
+
         this.features = feat;
         this.featuresNeedsReload = false;
 
