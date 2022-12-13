@@ -56,9 +56,7 @@ export const FirmwareOffer = ({
     const nextVersion = customFirmware
         ? translationString('TR_CUSTOM_FIRMWARE_VERSION')
         : getFwUpdateVersion(device);
-    const parsedChangelog = customFirmware
-        ? null
-        : parseFirmwareChangelog(device.features, device.firmwareRelease);
+    const parsedChangelog = customFirmware ? null : parseFirmwareChangelog(device);
     const currentTypeAndVersion = `${getFirmwareType(device)} ${currentVersion ?? ''}`.trim();
     const nextTypeAndVersion = `${(targetFirmwareType || targetType) ?? ''} ${
         nextVersion ?? ''

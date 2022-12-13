@@ -1,6 +1,6 @@
 import { Device, UnavailableCapability } from '@trezor/connect';
 import { TrezorDevice, AcquiredDevice } from '@suite-types';
-import { getDeviceModel } from '@trezor/device-utils';
+import { DeviceModel, getDeviceModel } from '@trezor/device-utils';
 import * as URLS from '@trezor/urls';
 
 /**
@@ -132,23 +132,32 @@ export const isSelectedDevice = (selected?: TrezorDevice | Device, device?: Trez
     return selected.id === device.id;
 };
 
-export const supportIntermediary = (features: TrezorDevice['features']) =>
-    features?.major_version === 1;
+/**
+ *  When updating T1, always display changelog of the latest version, even though intermediary firmware is being installed.
+ *  When other models are updated, show changelog of version device is updated to.
+ *  (TT - in case of initial fw, before updating to newest version device has to be updated to specific version)
+ *  @param {TrezorDevice} device
+ */
+export const getFirmwareRelease = (device: TrezorDevice) => {
+    const deviceModel = getDeviceModel(device);
 
-export const getFwUpdateVersion = (device: AcquiredDevice) => {
-    // Thanks to intermediary FW we are always able to upgrade to the latest version on Model one.
-    const version =
-        device.firmwareRelease?.[supportIntermediary(device.features) ? 'latest' : 'release']
-            ?.version;
-    return version?.join('.') || null;
+    const firmwareReleaseType = deviceModel === DeviceModel.T1 ? 'latest' : 'release';
+
+    return device.firmwareRelease?.[firmwareReleaseType];
 };
 
-export const getUnavailabilityMessage = (reason: UnavailableCapability, model?: number) => {
+export const getFwUpdateVersion = (device: AcquiredDevice) => {
+    const firmwareReleaseVersion = getFirmwareRelease(device)?.version;
+
+    return firmwareReleaseVersion?.join('.') || null;
+};
+
+export const getCoinUnavailabilityMessage = (reason: UnavailableCapability) => {
     switch (reason) {
         case 'no-capability':
             return 'FW_CAPABILITY_NO_CAPABILITY';
         case 'no-support':
-            return model === 1 ? 'FW_CAPABILITY_SUPPORTED_IN_T2' : 'FW_CAPABILITY_NO_SUPPORT';
+            return 'FW_CAPABILITY_NO_SUPPORT';
         case 'update-required':
             return 'FW_CAPABILITY_UPDATE_REQUIRED';
         case 'trezor-connect-outdated':
@@ -236,29 +245,43 @@ export const getSelectedDevice = (
     });
 };
 
-export const getChangelogUrl = (
-    device: TrezorDevice,
-    revision?: string | null,
-) => `https://github.com/trezor/trezor-firmware/blob/${revision || 'master'}/${
-    getDeviceModel(device) === '1' ? 'legacy/firmware' : 'core'
-}/CHANGELOG.md
-    `;
+export const getChangelogUrl = (device: TrezorDevice, revision?: string | null) => {
+    const deviceModel = getDeviceModel(device);
+    const commit = revision || 'master';
+    const folder = deviceModel === DeviceModel.T1 ? 'legacy/firmware' : 'core';
 
-const getUrlForModel = (t1Url: string, ttUrl: string, device?: TrezorDevice) =>
-    device && getDeviceModel(device) === '1' ? t1Url : ttUrl;
+    return `https://github.com/trezor/trezor-firmware/blob/${commit}/${folder}/CHANGELOG.md`;
+};
 
-export const getCheckBackupUrl = (device?: TrezorDevice) =>
-    getUrlForModel(URLS.HELP_CENTER_DRY_RUN_T1_URL, URLS.HELP_CENTER_DRY_RUN_TT_URL, device);
+export const getCheckBackupUrl = (device?: TrezorDevice) => {
+    const deviceModel = getDeviceModel(device);
 
-export const getPackagingUrl = (device?: TrezorDevice) =>
-    getUrlForModel(URLS.HELP_CENTER_PACKAGING_T1_URL, URLS.HELP_CENTER_PACKAGING_TT_URL, device);
+    if (!deviceModel) {
+        return '';
+    }
 
-export const getFirmwareDowngradeUrl = (device?: TrezorDevice) =>
-    getUrlForModel(
-        URLS.HELP_CENTER_FW_DOWNGRADE_T1_URL,
-        URLS.HELP_CENTER_FW_DOWNGRADE_TT_URL,
-        device,
-    );
+    return URLS[`HELP_CENTER_DRY_RUN_T${deviceModel}_URL`];
+};
+
+export const getPackagingUrl = (device?: TrezorDevice) => {
+    const deviceModel = getDeviceModel(device);
+
+    if (!deviceModel) {
+        return '';
+    }
+
+    return URLS[`HELP_CENTER_PACKAGING_T${deviceModel}_URL`];
+};
+
+export const getFirmwareDowngradeUrl = (device?: TrezorDevice) => {
+    const deviceModel = getDeviceModel(device);
+
+    if (!deviceModel) {
+        return '';
+    }
+
+    return URLS[`HELP_CENTER_FW_DOWNGRADE_T${deviceModel}_URL`];
+};
 
 /**
  * Used by suiteActions
@@ -365,26 +388,24 @@ export const getPhysicalDeviceUniqueIds = (devices: Device[]) =>
 export const getPhysicalDeviceCount = (devices: Device[]) =>
     getPhysicalDeviceUniqueIds(devices).length;
 
-export const parseFirmwareChangelog = (
-    features: TrezorDevice['features'],
-    firmwareRelease: TrezorDevice['firmwareRelease'],
-) => {
-    if (!firmwareRelease?.changelog || firmwareRelease?.changelog?.length === 0) return null;
-    // Generate latest FW changelog if device has intermediary support
-    const release = firmwareRelease[supportIntermediary(features) ? 'latest' : 'release'];
-    // Default changelog format is just a long string where individual changes are separated by "*" symbol.
-    const changelog = release.changelog
+export const parseFirmwareChangelog = (device: TrezorDevice) => {
+    const firmwareRelease = getFirmwareRelease(device);
+
+    if (!device.firmwareRelease?.changelog?.length || !firmwareRelease) {
+        return null;
+    }
+
+    // Default changelog format is a long string where individual changes are separated by "*" symbol.
+    const changelog = firmwareRelease.changelog
         .trim()
         .split('*')
         .map(l => l.trim())
         .filter(l => l.length);
-    const { url, notes } = release;
-    // Get firmware version, convert to string and use it as a key in custom object
-    const versionString = release.version.join('.'); // e.g. [1,9,8] => "1.9.8"
+
     return {
-        url,
-        notes,
+        url: firmwareRelease.url,
+        notes: firmwareRelease.notes,
         changelog,
-        versionString,
+        versionString: firmwareRelease.version.join('.'),
     };
 };
