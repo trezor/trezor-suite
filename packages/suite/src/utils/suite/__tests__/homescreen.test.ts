@@ -1,7 +1,9 @@
 import * as Canvas from 'canvas';
 import crypto from 'crypto';
+import { DeviceModel } from '@trezor/device-utils';
 
 import * as homescreen from '../homescreen';
+import { getDeviceModelImageType } from '../homescreen';
 
 const homescreensPath = '../suite-data/files/images/homescreens';
 
@@ -22,22 +24,32 @@ const getMockElementToImageData =
     };
 const imgHashFixtures = [
     {
-        model: 2,
+        model: DeviceModel.TT,
         img: 'btc.png',
         hexHash: '2f037dc4958b2fb1935f03069eff6c9d',
     },
     {
-        model: 2,
+        model: DeviceModel.TT,
         img: 'doge.png',
         hexHash: 'ab152b7d305f53d942a289ffc695e0f1',
     },
     {
-        model: 1,
+        model: DeviceModel.T1,
         img: 'ancap.png',
         hexHash: '28ec73580bab3dfcc1e827caca49d0cd',
     },
     {
-        model: 1,
+        model: DeviceModel.T1,
+        img: 'anonymous.png',
+        hexHash: 'f82d789c632b6924486c80d75c53285f',
+    },
+    {
+        model: DeviceModel.TR,
+        img: 'ancap.png',
+        hexHash: '28ec73580bab3dfcc1e827caca49d0cd',
+    },
+    {
+        model: DeviceModel.TR,
         img: 'anonymous.png',
         hexHash: 'f82d789c632b6924486c80d75c53285f',
     },
@@ -54,7 +66,7 @@ describe('homescreen', () => {
         imgHashFixtures.forEach((fixture: Fixture) => {
             it(`${fixture.img} should result in hex that results in hash ${fixture.hexHash}`, async () => {
                 const image: any = await Canvas.loadImage(
-                    `${homescreensPath}/t${fixture.model}/${fixture.img}`,
+                    `${homescreensPath}/${getDeviceModelImageType(fixture.model)}/${fixture.img}`,
                 );
 
                 const fooElement = document.createElement('img');
@@ -73,7 +85,9 @@ describe('homescreen', () => {
             imgHashFixtures.forEach((fixture: Fixture) => {
                 it(`${fixture.img} should be checked as ok`, async () => {
                     const image: any = await Canvas.loadImage(
-                        `${homescreensPath}/t${fixture.model}/${fixture.img}`,
+                        `${homescreensPath}/${getDeviceModelImageType(fixture.model)}/${
+                            fixture.img
+                        }`,
                     );
 
                     const spy = jest.spyOn(homescreen, 'elementToImageData');
@@ -89,12 +103,22 @@ describe('homescreen', () => {
             imgHashFixtures.forEach((fixture: Fixture) => {
                 it(`${fixture.img} should error with "Not a correct height error"`, async () => {
                     const image: any = await Canvas.loadImage(
-                        `${homescreensPath}/t${fixture.model}/${fixture.img}`,
+                        `${homescreensPath}/${getDeviceModelImageType(fixture.model)}/${
+                            fixture.img
+                        }`,
                     );
                     const spy = jest.spyOn(homescreen, 'elementToImageData');
                     spy.mockImplementationOnce(getMockElementToImageData(image));
-                    const swappedModel = fixture.model === 1 ? 2 : 1;
-                    expect(homescreen.validateImageDimensions(image, swappedModel)).toBe(
+
+                    let swappedDeviceModel = DeviceModel.T1;
+                    if ([DeviceModel.T1, DeviceModel.TR].includes(fixture.model)) {
+                        swappedDeviceModel = DeviceModel.TT;
+                    }
+                    if (DeviceModel.TT === fixture.model) {
+                        swappedDeviceModel = DeviceModel.TR;
+                    }
+
+                    expect(homescreen.validateImageDimensions(image, swappedDeviceModel)).toBe(
                         homescreen.ImageValidationError.InvalidHeight,
                     );
                 });

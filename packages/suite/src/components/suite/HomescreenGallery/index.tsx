@@ -3,14 +3,14 @@ import styled from 'styled-components';
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { resolveStaticPath } from '@trezor/utils';
 
-import { homescreensT1, homescreensT2 } from '@suite-constants';
+import { homescreensBW64x128, homescreensColor128x128 } from '@suite-constants';
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
 import { elementToHomescreen } from '@suite-utils/homescreen';
 import { AcquiredDevice } from '@suite-types';
 import { useActions } from '@suite-hooks';
-import { getDeviceModel } from '@trezor/device-utils';
+import { DeviceModel, getDeviceModel } from '@trezor/device-utils';
 
-type AnyImageName = typeof homescreensT1[number] | typeof homescreensT2[number];
+type AnyImageName = typeof homescreensBW64x128[number] | typeof homescreensColor128x128[number];
 
 const Wrapper = styled.div`
     display: flex;
@@ -22,7 +22,7 @@ const BackgroundGalleryWrapper = styled.div`
     flex-wrap: wrap;
 `;
 
-const BackgroundImageT2 = styled.img`
+const BackgroundImageColor128x128 = styled.img`
     border-radius: 50%;
     margin: 5px;
     width: 80px;
@@ -30,7 +30,7 @@ const BackgroundImageT2 = styled.img`
     cursor: pointer;
 `;
 
-const BackgroundImageT1 = styled.img`
+const BackgroundImageBW64x128 = styled.img`
     margin: 5px;
     border-radius: 3px;
     cursor: pointer;
@@ -38,21 +38,22 @@ const BackgroundImageT1 = styled.img`
     height: 32px;
 `;
 
-type Props = {
+type HomescreenGalleryProps = {
     device: AcquiredDevice;
     onConfirm?: () => void;
 };
 
-const HomescreenGallery = ({ device, onConfirm }: Props) => {
+const HomescreenGallery = ({ device, onConfirm }: HomescreenGalleryProps) => {
     const { applySettings } = useActions({ applySettings: deviceSettingsActions.applySettings });
 
-    const isModel1 = getDeviceModel(device) === '1';
-    const trezorModel = isModel1 ? 1 : 2;
+    const deviceModel = getDeviceModel(device);
+
+    if (!deviceModel) return null;
 
     const setHomescreen = (image: AnyImageName) => {
         const element = document.getElementById(image);
         if (element instanceof HTMLImageElement) {
-            const hex = elementToHomescreen(element, trezorModel);
+            const hex = elementToHomescreen(element, deviceModel);
             applySettings({ homescreen: hex });
             if (onConfirm) {
                 onConfirm();
@@ -62,10 +63,11 @@ const HomescreenGallery = ({ device, onConfirm }: Props) => {
 
     return (
         <Wrapper>
-            {isModel1 && (
+            {[DeviceModel.T1, DeviceModel.TR].includes(deviceModel) && (
                 <BackgroundGalleryWrapper>
-                    {homescreensT1.map(image => (
-                        <BackgroundImageT1
+                    {homescreensBW64x128.map(image => (
+                        <BackgroundImageBW64x128
+                            data-test={`@modal/gallery/bw_64x128/${image}`}
                             key={image}
                             id={image}
                             // 2 eslint rules clashing
@@ -78,16 +80,16 @@ const HomescreenGallery = ({ device, onConfirm }: Props) => {
                                     },
                                 });
                             }}
-                            src={resolveStaticPath(`images/homescreens/t1/${image}.png`)}
+                            src={resolveStaticPath(`images/homescreens/BW_64x128/${image}.png`)}
                         />
                     ))}
                 </BackgroundGalleryWrapper>
             )}
-            {!isModel1 && (
+            {deviceModel === DeviceModel.TT && (
                 <BackgroundGalleryWrapper>
-                    {homescreensT2.map(image => (
-                        <BackgroundImageT2
-                            data-test={`@modal/gallery/t2/${image}`}
+                    {homescreensColor128x128.map(image => (
+                        <BackgroundImageColor128x128
+                            data-test={`@modal/gallery/color_128x128/${image}`}
                             key={image}
                             id={image}
                             // 2 eslint rules clashing
@@ -100,7 +102,7 @@ const HomescreenGallery = ({ device, onConfirm }: Props) => {
                                     },
                                 });
                             }}
-                            src={resolveStaticPath(`images/homescreens/t2/${image}.png`)}
+                            src={resolveStaticPath(`images/homescreens/COLOR_128x128/${image}.png`)}
                         />
                     ))}
                 </BackgroundGalleryWrapper>

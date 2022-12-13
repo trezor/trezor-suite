@@ -1,7 +1,7 @@
 // @group:settings
 // @retry=2
 
-describe('T2 - Device settings', () => {
+describe('TT - Device settings', () => {
     beforeEach(() => {
         cy.viewport(1080, 1440).resetDb();
         cy.task('startBridge');
@@ -71,7 +71,7 @@ describe('T2 - Device settings', () => {
         cy.log('change background');
         cy.getTestElement('@settings/device/select-from-gallery')
             .click()
-            .getTestElement(`@modal/gallery/t2/xmr`)
+            .getTestElement(`@modal/gallery/color_128x128/xmr`)
             .click()
             .getConfirmActionOnDeviceModal();
         cy.task('pressYes');
