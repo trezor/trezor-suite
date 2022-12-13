@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import Bignumber from 'bignumber.js';
 
 import { Account } from '@wallet-types/index';
-import { SelectedAccountWatchOnlyMode } from '@suite-common/wallet-types';
 
 import AuthConfirmFailed from '../../AccountMode/AuthConfirmFailed';
 import BackendDisconnected from '../../AccountMode/BackendDisconnected';
@@ -28,15 +27,14 @@ const RippleReserve = ({ account }: { account: Extract<Account, { networkType: '
 };
 
 type AccountBannersProps = {
-    mode?: SelectedAccountWatchOnlyMode[];
     account?: Account;
 };
 
-export const AccountBanners = ({ mode, account }: AccountBannersProps) => (
+export const AccountBanners = ({ account }: AccountBannersProps) => (
     <BannersWrapper>
-        {mode?.includes('auth-confirm-failed') && <AuthConfirmFailed />}
-        {mode?.includes('backend-disconnected') && <BackendDisconnected />}
-        {mode?.includes('device-unavailable') && <DeviceUnavailable />}
+        <AuthConfirmFailed />
+        <BackendDisconnected />
+        <DeviceUnavailable />
         {account?.networkType === 'ripple' && <RippleReserve account={account} />}
         {account?.imported && <AccountImported />}
         {account?.backendType === 'coinjoin' && account.status === 'out-of-sync' && (

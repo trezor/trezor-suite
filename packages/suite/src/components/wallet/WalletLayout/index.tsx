@@ -44,7 +44,7 @@ export const WalletLayout = ({
 
     useLayout(l10nTitle, AccountTopPanel, AccountsMenu);
 
-    const { status, account: selectedAccount, loader, mode, network } = account;
+    const { status, account: selectedAccount, loader, network } = account;
 
     if (status === 'loading') {
         if (selectedAccount?.backendType === 'coinjoin') {
@@ -67,21 +67,15 @@ export const WalletLayout = ({
         );
     }
 
-    if (status === 'exception') {
-        return (
-            <Wrapper>
-                <AccountBanners mode={mode} account={selectedAccount} />
-                <EmptyHeaderPlaceholder />
-                <AccountException loader={loader} network={network} />
-            </Wrapper>
-        );
-    }
-
     return (
         <Wrapper>
-            <AccountBanners mode={mode} account={selectedAccount} />
+            <AccountBanners account={selectedAccount} />
             {showEmptyHeaderPlaceholder && <EmptyHeaderPlaceholder />}
-            {children}
+            {status === 'exception' ? (
+                <AccountException loader={loader} network={network} />
+            ) : (
+                children
+            )}
         </Wrapper>
     );
 };
