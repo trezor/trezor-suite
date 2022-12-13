@@ -1,5 +1,5 @@
 import { testMocks } from '@suite-common/test-utils';
-import { WalletAccountTransaction } from '@suite-common/wallet-types/libDev/src';
+import { WalletAccountTransaction } from '@suite-common/wallet-types';
 import { AccountTransaction } from '@trezor/connect';
 
 import { TXS } from './transactions';
