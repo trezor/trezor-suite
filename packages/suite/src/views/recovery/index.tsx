@@ -159,11 +159,12 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
                                 title={<Translation id="TR_ENTER_ALL_WORDS_IN_CORRECT" />}
                             >
                                 <Translation
-                                    id={
-                                        isModelOne
-                                            ? 'TR_ON_YOUR_COMPUTER_ENTER'
-                                            : 'TR_USING_TOUCHSCREEN'
-                                    }
+                                    id={pickByDeviceModel(deviceModel, {
+                                        default: 'TR_SEED_WORDS_ENTER_BUTTONS',
+                                        [DeviceModel.T1]: 'TR_SEED_WORDS_ENTER_COMPUTER',
+                                        [DeviceModel.TT]: 'TR_SEED_WORDS_ENTER_TOUCHSCREEN',
+                                        [DeviceModel.TR]: 'TR_SEED_WORDS_ENTER_BUTTONS',
+                                    })}
                                 />
                             </InstructionStep>
                         </StepsContainer>

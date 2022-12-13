@@ -159,22 +159,24 @@ const ReconnectLabel = ({
     const deviceModel = device?.features ? getDeviceModel(device) : 'T';
 
     if (requestedMode === 'bootloader') {
-        if (deviceModel === '1') {
-            return semver.valid(deviceFwVersion) && semver.satisfies(deviceFwVersion, '<1.8.0') ? (
-                <Translation id="TR_HOLD_BOTH_BUTTONS" />
-            ) : (
-                <Translation id="TR_HOLD_LEFT_BUTTON" />
-            );
-        }
+        const switchToBootloaderModeMessage = pickByDeviceModel(deviceModel, {
+            default: 'TR_SWITCH_TO_BOOTLOADER_HOLD_LEFT_BUTTON',
+            [DeviceModel.T1]:
+                semver.valid(deviceFwVersion) && semver.satisfies(deviceFwVersion, '<1.8.0')
+                    ? 'TR_SWITCH_TO_BOOTLOADER_HOLD_BOTH_BUTTONS'
+                    : 'TR_SWITCH_TO_BOOTLOADER_HOLD_LEFT_BUTTON',
+            [DeviceModel.TT]: 'TR_SWITCH_TO_BOOTLOADER_SWIPE_YOUR_FINGERS',
+        } as const);
 
         return <Translation id="TR_SWIPE_YOUR_FINGERS" />;
     }
 
-    return deviceModel === '1' ? (
-        <Translation id="FIRMWARE_CONNECT_IN_NORMAL_MODEL_1" />
-    ) : (
-        <Translation id="FIRMWARE_CONNECT_IN_NORMAL_MODEL_2" />
-    );
+    const switchToNormalModeMessage = pickByDeviceModel(deviceModel, {
+        default: 'FIRMWARE_CONNECT_IN_NORMAL_MODEL_NO_BUTTON',
+        [DeviceModel.TR]: 'FIRMWARE_CONNECT_IN_NORMAL_MODEL_NO_TOUCH',
+    } as const);
+
+    return <Translation id={switchToNormalModeMessage} />;
 };
 
 interface ReconnectStepProps {

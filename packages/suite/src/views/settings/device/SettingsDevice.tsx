@@ -85,11 +85,12 @@ export const SettingsDevice = () => {
                     title={<Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_BOOTLOADER" />}
                     description={
                         <Translation
-                            id={
-                                deviceModel === '1'
-                                    ? 'TR_SETTINGS_DEVICE_BANNER_DESCRIPTION_BOOTLOADER_MODEL_1'
-                                    : 'TR_SETTINGS_DEVICE_BANNER_DESCRIPTION_BOOTLOADER_MODEL_2'
-                            }
+                            id={pickByDeviceModel(deviceModel, {
+                                default:
+                                    'TR_SETTINGS_DEVICE_BANNER_DESCRIPTION_BOOTLOADER_NO_BUTTONS',
+                                [DeviceModel.TT]:
+                                    'TR_SETTINGS_DEVICE_BANNER_DESCRIPTION_BOOTLOADER_NO_TOUCH',
+                            })}
                         />
                     }
                 />

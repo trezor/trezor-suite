@@ -60,7 +60,15 @@ export const RecoveryStep = () => {
             <RecoveryStepBox
                 key={status} // to properly rerender in translation mode
                 heading={<Translation id="TR_RECOVER_YOUR_WALLET_FROM" />}
-                description={<Translation id="TR_RECOVER_SUBHEADING_MODEL_T" />}
+                description={
+                    <Translation
+                        id={pickByDeviceModel(deviceModel, {
+                            default: 'TR_RECOVER_SUBHEADING_MODEL_TOUCH',
+                            [DeviceModel.TT]: 'TR_RECOVER_SUBHEADING_MODEL_TOUCH',
+                            [DeviceModel.TR]: 'TR_RECOVER_SUBHEADING_MODEL_BUTTONS',
+                        })}
+                    />
+                }
                 innerActions={
                     <OnboardingButtonCta
                         data-test="@onboarding/recovery/start-button"
