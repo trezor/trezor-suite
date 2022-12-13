@@ -15,6 +15,7 @@ import type { InvityServerEnvironment } from '@wallet-types/invity';
 import type { CoinjoinServerEnvironment } from '@wallet-types/coinjoin';
 import { createSelector } from '@reduxjs/toolkit';
 import { getIsTorEnabled, getIsTorLoading } from '@suite-utils/tor';
+import { getDeviceModel } from '@trezor/device-utils';
 
 export interface SuiteRootState {
     suite: SuiteState;
@@ -246,6 +247,13 @@ export const selectTorState = createSelector(
 );
 
 export const selectDebug = (state: SuiteRootState) => state.suite.settings.debug;
+
+export const selectDevice = (state: SuiteRootState) => state.suite.device;
+
+export const selectDeviceModel = createSelector(
+    [selectDevice, (_state: SuiteRootState, overrideDevice?: TrezorDevice) => overrideDevice],
+    (device, overrideDevice?: TrezorDevice) => getDeviceModel(overrideDevice || device),
+);
 
 export const selectLanguage = (state: SuiteRootState) => state.suite.settings.language;
 
