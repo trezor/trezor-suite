@@ -3,6 +3,8 @@ import { Button, Icon, Tooltip } from '@trezor/components';
 import { getReasonForDisabledAction, useCardanoStaking } from '@wallet-hooks/useCardanoStaking';
 import { Translation } from '@suite-components/Translation';
 import { Actions, StyledCard, Title, Heading, TransparentBox, Text } from '../primitives';
+import { DeviceModel } from '@trezor/device-utils';
+import { useDeviceModel } from '@suite-hooks/useDeviceModel';
 
 const Redelegate = () => {
     const {
@@ -15,6 +17,7 @@ const Redelegate = () => {
         isCurrentPoolOversaturated,
         isFetchError,
     } = useCardanoStaking();
+    const deviceModel = useDeviceModel() as DeviceModel.TT | DeviceModel.TR; // only T and R have Capability_Cardano
 
     useEffect(() => {
         calculateFeeAndDeposit('delegate');
@@ -24,7 +27,7 @@ const Redelegate = () => {
         <Button
             isLoading={loading}
             isDisabled={!delegatingAvailable.status || !deviceAvailable.status || !!pendingStakeTx}
-            icon="T2"
+            icon={`T${deviceModel}`}
             onClick={() => delegate()}
         >
             <Translation id="TR_STAKING_REDELEGATE" />

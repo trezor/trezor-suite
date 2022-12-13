@@ -1,8 +1,9 @@
 import React from 'react';
 import { Icon, useTheme } from '@trezor/components';
 import { TrezorDevice } from '@suite-types';
+import { getDeviceModel } from '@trezor/device-utils';
 
-interface Props {
+interface DeviceIconProps {
     device: TrezorDevice;
     size: number;
     color?: string;
@@ -10,28 +11,27 @@ interface Props {
     onClick?: any;
 }
 
-const getDeviceIcon = (majorVersion: number) => {
-    switch (majorVersion) {
-        case 1:
-            return 'T1';
-        case 2:
-            return 'T2';
-        default:
-            return 'T2';
-    }
-};
-
-const DeviceIcon = ({ device, size = 32, color, hoverColor, onClick, ...rest }: Props) => {
+const DeviceIcon = ({
+    device,
+    size = 32,
+    color,
+    hoverColor,
+    onClick,
+    ...rest
+}: DeviceIconProps) => {
     const theme = useTheme();
-    const defaultColor = color ?? theme.TYPE_LIGHT_GREY;
-    const majorVersion = device.features ? device.features.major_version : 2;
-    const icon = getDeviceIcon(majorVersion);
+    const deviceModel = getDeviceModel(device);
+
+    if (!deviceModel) {
+        return null;
+    }
+
     return (
         <Icon
-            icon={icon}
+            icon={`T${deviceModel}`}
             hoverColor={hoverColor}
             onClick={onClick}
-            color={defaultColor}
+            color={color ?? theme.TYPE_LIGHT_GREY}
             size={size}
             {...rest}
         />
