@@ -1,12 +1,11 @@
-import React, { useCallback, useState, ChangeEventHandler } from 'react';
+import React, { useCallback, ChangeEventHandler } from 'react';
 import styled from 'styled-components';
 import { AnimatePresence, HTMLMotionProps, motion } from 'framer-motion';
 import { Range, Warning, useTheme, motionEasing } from '@trezor/components';
 import { Translation } from '@suite-components';
-import { useSelector, useActions, useAnonymityStatus } from '@suite-hooks';
+import { useSelector, useAnonymityStatus } from '@suite-hooks';
 import { AnonymityStatus } from '@suite-constants/coinjoin';
 import { selectSelectedAccount } from '@wallet-reducers/selectedAccountReducer';
-import * as coinjoinActions from '@wallet-actions/coinjoinAccountActions';
 
 const Container = styled.div`
     display: flex;
@@ -36,41 +35,26 @@ const maxValue = Math.log(100);
 
 const scale = (maxValue - minValue) / (maxPosition - minPosition);
 
-const getValue = (position: number) =>
+export const getValue = (position: number) =>
     Math.round(Math.exp((position - minPosition) * scale + minValue));
-const getPosition = (value: number) => minPosition + (Math.log(value) - minValue) / scale;
+export const getPosition = (value: number) => minPosition + (Math.log(value) - minValue) / scale;
 
 interface AnonymityLevelSliderProps {
-    className?: string;
+    position: number;
+    setAnonymity: (value: number) => void;
 }
 
-export const AnonymityLevelSlider = ({ className }: AnonymityLevelSliderProps) => {
+export const AnonymityLevelSlider = ({ position, setAnonymity }: AnonymityLevelSliderProps) => {
     const currentAccount = useSelector(selectSelectedAccount);
-    const { anonymityStatus, targetAnonymity } = useAnonymityStatus();
-
-    const [sliderPosition, setSliderPosition] = useState(getPosition(targetAnonymity || 1));
-
-    const { coinjoinAccountUpdateAnonymity } = useActions({
-        coinjoinAccountUpdateAnonymity: coinjoinActions.coinjoinAccountUpdateAnonymity,
-    });
+    const { anonymityStatus } = useAnonymityStatus();
 
     const theme = useTheme();
-
-    const setAnonymity = useCallback(
-        (number: number) => {
-            if (!Number.isNaN(number)) {
-                coinjoinAccountUpdateAnonymity(currentAccount?.key ?? '', getValue(number));
-                setSliderPosition(number);
-            }
-        },
-        [coinjoinAccountUpdateAnonymity, currentAccount?.key],
-    );
 
     const handleSliderChange: ChangeEventHandler<HTMLInputElement> = useCallback(
         event => {
             const position = Number(event?.target?.value);
 
-            setAnonymity(position);
+            setAnonymity(getValue(position));
         },
         [setAnonymity],
     );
@@ -93,14 +77,14 @@ export const AnonymityLevelSlider = ({ className }: AnonymityLevelSliderProps) =
     const isErrorDisplayed = anonymityStatus === AnonymityStatus.Bad;
 
     return (
-        <Container className={className}>
+        <Container>
             <Slider
-                value={sliderPosition}
+                value={position}
                 onChange={handleSliderChange}
                 trackStyle={trackStyle}
                 step="any"
                 labels={[1, 3, 10, 30, 100]}
-                onLabelClick={number => setAnonymity(getPosition(number))}
+                onLabelClick={number => setAnonymity(number)}
             />
 
             <AnimatePresence initial={!isErrorDisplayed}>
