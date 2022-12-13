@@ -7,7 +7,7 @@ import { resolveStaticPath } from '@trezor/utils';
 import { useTheme } from '@trezor/components';
 
 import type { TrezorDevice } from '@suite/types/suite';
-import { getDeviceModel, getFirmwareVersion } from '@trezor/device-utils';
+import { DeviceModel, getDeviceModel, getFirmwareVersion } from '@trezor/device-utils';
 
 const Wrapper = styled.div<{ size?: number; shape?: Shape }>`
     width: 100%;
@@ -79,15 +79,15 @@ export const DeviceAnimation = ({
     const { THEME } = useTheme();
     const hologramRef = useRef<HTMLVideoElement>(null);
 
-    // if device features are not available, use T model animations
-    const deviceModel = device?.features && getDeviceModel(device) === '1' ? '1' : 't';
+    // if no Trezor available, show flagship model
+    const deviceModel = (getDeviceModel(device) || DeviceModel.TT).toLowerCase();
 
     // T1 bootloader before firmware version 1.8.0 can only be invoked by holding both buttons
     const deviceFwVersion = device?.features ? getFirmwareVersion(device) : '';
     let animationType = type;
     if (
         type === 'BOOTLOADER' &&
-        deviceModel === '1' &&
+        deviceModel === DeviceModel.T1 &&
         semver.valid(deviceFwVersion) &&
         semver.satisfies(deviceFwVersion, '<1.8.0')
     ) {
