@@ -2,14 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { NotificationCard, Translation } from '@suite-components';
 import { useSelector, useActions } from '@suite-hooks';
 import { reconnectBlockchainThunk } from '@suite-common/wallet-core';
+import { isTrezorConnectBackendType } from '@suite-common/wallet-utils';
 
 const Disconnected = () => {
     const { reconnect } = useActions({
         reconnect: reconnectBlockchainThunk,
     });
-    const { blockchain, selectedAccount } = useSelector(state => ({
+    const { blockchain, selectedAccount, online } = useSelector(state => ({
         blockchain: state.wallet.blockchain,
         selectedAccount: state.wallet.selectedAccount,
+        online: state.suite.online,
     }));
     const [progress, setProgress] = useState(false);
     const [time, setTime] = useState<number | null>(null);
@@ -30,6 +32,11 @@ const Disconnected = () => {
     }, [resolveTime]);
 
     if (selectedAccount.status !== 'loaded') return null;
+    // TODO handle non-standard backends differently
+    if (!isTrezorConnectBackendType(selectedAccount.account.backendType)) return null;
+    if (symbol && blockchain[symbol]?.connected) return null;
+    if (!online) return null;
+
     const { network } = selectedAccount;
     const click = async () => {
         setProgress(true);

@@ -6,55 +6,10 @@ import { selectDiscoveryForDevice } from '@wallet-reducers/discoveryReducer';
 import * as metadataActions from '@suite-actions/metadataActions';
 import * as comparisonUtils from '@suite-utils/comparisonUtils';
 import { getSelectedAccount } from '@wallet-utils/accountUtils';
-import { isTrezorConnectBackendType } from '@suite-common/wallet-utils';
 import { accountsActions, blockchainActions } from '@suite-common/wallet-core';
-import { SelectedAccountStatus, SelectedAccountWatchOnlyMode } from '@suite-common/wallet-types';
+import { SelectedAccountStatus } from '@suite-common/wallet-types';
 
 import { Action, Dispatch, GetState, AppState } from '@suite-types';
-import { State } from '@wallet-reducers/selectedAccountReducer';
-
-// Add notification to loaded SelectedAccountState
-const getAccountStateWithMode = (state: AppState, selectedAccount?: State) => {
-    const {
-        device,
-        lifecycle: { status },
-    } = state.suite;
-    if (!device || status !== 'ready') return;
-
-    // From this point there could be multiple loaders
-    const mode: SelectedAccountWatchOnlyMode[] = [];
-
-    if (selectedAccount && selectedAccount.status === 'loaded') {
-        const { account, discovery, network } = selectedAccount;
-        // Account does exists and it's visible but shouldn't be active
-        if (account && discovery && discovery.status < DISCOVERY.STATUS.STOPPING) {
-            mode.push('account-loading-others');
-        }
-
-        // Backend status
-        if (isTrezorConnectBackendType(selectedAccount.account.backendType)) {
-            const blockchain = state.wallet.blockchain[network.symbol];
-            if (!blockchain.connected && state.suite.online) {
-                mode.push('backend-disconnected');
-            }
-        }
-        // TODO else handle non-standard backends differently
-    }
-
-    // Account cannot be accessed
-    if (!device.connected) {
-        // device is disconnected
-        mode.push('device-disconnected');
-    } else if (device.authConfirm) {
-        // device needs auth confirmation (empty wallet)
-        mode.push('auth-confirm-failed');
-    } else if (!device.available) {
-        // device is unavailable (created with different passphrase settings)
-        mode.push('device-unavailable');
-    }
-
-    return mode.length > 0 ? mode : undefined;
-};
 
 const getAccountState = (state: AppState): SelectedAccountStatus => {
     const { device } = state.suite;
@@ -83,14 +38,11 @@ const getAccountState = (state: AppState): SelectedAccountStatus => {
         };
     }
 
-    const mode = getAccountStateWithMode(state);
-
     // account cannot exists since there are no selected networks in settings/wallet
     if (discovery.networks.length === 0) {
         return {
             status: 'exception',
             loader: 'discovery-empty',
-            mode,
         };
     }
 
@@ -115,7 +67,6 @@ const getAccountState = (state: AppState): SelectedAccountStatus => {
             network,
             discovery,
             params,
-            mode,
         };
     }
 
@@ -133,7 +84,6 @@ const getAccountState = (state: AppState): SelectedAccountStatus => {
             network,
             discovery,
             params,
-            mode,
         };
     }
 
@@ -163,18 +113,12 @@ const getAccountState = (state: AppState): SelectedAccountStatus => {
         }
 
         // Success!
-        const loadedState = {
+        return {
             status: 'loaded',
             account,
             network,
             discovery,
             params,
-            mode: undefined,
-        } as const;
-        const loadedMode = getAccountStateWithMode(state, loadedState);
-        return {
-            ...loadedState,
-            mode: loadedMode,
         };
     }
 
@@ -187,7 +131,6 @@ const getAccountState = (state: AppState): SelectedAccountStatus => {
             network,
             discovery,
             params,
-            mode,
         };
     }
 
@@ -205,7 +148,6 @@ const getAccountState = (state: AppState): SelectedAccountStatus => {
         network,
         discovery,
         params,
-        mode,
     };
 };
 
