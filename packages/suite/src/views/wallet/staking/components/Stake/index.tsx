@@ -20,6 +20,8 @@ import {
     Content,
     StyledH1,
 } from '../primitives';
+import { DeviceModel } from '@trezor/device-utils';
+import { useDeviceModel } from '@suite-hooks/useDeviceModel';
 
 const ColumnDeposit = styled(Column)`
     margin-left: 30px;
@@ -37,6 +39,8 @@ const Delegate = (props: { account: Account }) => {
         deviceAvailable,
         pendingStakeTx,
     } = useCardanoStaking();
+    const deviceModel = useDeviceModel() as DeviceModel.TT | DeviceModel.TR; // only T and R have Capability_Cardano
+
     const { account } = props;
 
     useEffect(() => {
@@ -53,7 +57,7 @@ const Delegate = (props: { account: Account }) => {
             }
             isLoading={loading}
             onClick={() => delegate()}
-            icon="T2"
+            icon={`T${deviceModel}`}
         >
             <Translation id="TR_STAKING_DELEGATE" />
         </Button>

@@ -20,6 +20,8 @@ import {
     Column,
 } from '../primitives';
 import { HiddenPlaceholder } from '@suite-components/HiddenPlaceholder';
+import { DeviceModel } from '@trezor/device-utils';
+import { useDeviceModel } from '@suite-hooks/useDeviceModel';
 
 const TitleSecond = styled.div`
     display: flex;
@@ -39,6 +41,8 @@ const Rewards = (props: { account: Account }) => {
         deviceAvailable,
         pendingStakeTx,
     } = useCardanoStaking();
+    const deviceModel = useDeviceModel() as DeviceModel.TT | DeviceModel.TR; // only T and R have Capability_Cardano
+
     const { account } = props;
 
     useEffect(() => {
@@ -54,7 +58,7 @@ const Rewards = (props: { account: Account }) => {
                 !deviceAvailable.status ||
                 !!pendingStakeTx
             }
-            icon="T2"
+            icon={`T${deviceModel}`}
             onClick={() => withdraw()}
         >
             <Translation id="TR_STAKING_WITHDRAW" />
