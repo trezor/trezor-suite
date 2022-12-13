@@ -1,4 +1,4 @@
-export const homescreensT1 = [
+export const homescreensBW64x128 = [
     'original', // note - has to be first
     'blank',
     'circleweb',
@@ -54,7 +54,7 @@ export const homescreensT1 = [
     'carlos',
 ] as const;
 
-export const homescreensT2 = [
+export const homescreensColor128x128 = [
     'default',
     'btc',
     'ltc',

@@ -1,29 +1,16 @@
 /* eslint-disable no-bitwise */
+import { DeviceModel } from '@trezor/device-utils';
 import * as pako from 'pako';
 
-type TrezorModelNumber = 1 | 2;
+const deviceModelDimensions = {
+    [DeviceModel.T1]: { width: 128, height: 64 },
+    [DeviceModel.TT]: { width: 144, height: 144 },
+    [DeviceModel.TR]: { width: 128, height: 64 },
+    [DeviceModel.UNKNOWN]: { width: 0, height: 0 },
+};
 
-const T1_WIDTH = 128;
-const T1_HEIGHT = 64;
-
-const T2_WIDTH = 144;
-const T2_HEIGHT = 144;
 const canvasId = 'homescreen-canvas';
 const supportedDataUrlRE = /^data:image\/(jpeg|png)/;
-
-const getWidth = (trezorModel: TrezorModelNumber) => {
-    if (trezorModel === 2) {
-        return T2_WIDTH;
-    }
-    return T1_WIDTH;
-};
-
-const getHeight = (trezorModel: TrezorModelNumber) => {
-    if (trezorModel === 2) {
-        return T2_HEIGHT;
-    }
-    return T1_HEIGHT;
-};
 
 const range = (length: number) => [...Array(length).keys()];
 
@@ -195,15 +182,11 @@ export const enum ImageValidationError {
     InvalidColorCombination = 'IMAGE_VALIDATION_ERROR_INVALID_COLOR_COMBINATION',
 }
 
-export const validateImageColors = (
-    origImage: HTMLImageElement,
-    trezorModel: TrezorModelNumber,
-) => {
-    const height = getHeight(trezorModel);
-    const width = getWidth(trezorModel);
+export const validateImageColors = (origImage: HTMLImageElement, deviceModel: DeviceModel) => {
+    const { width, height } = deviceModelDimensions[deviceModel];
     const imageData = elementToImageData(origImage, width, height);
 
-    if (trezorModel === 1) {
+    if ([DeviceModel.T1, DeviceModel.TR].includes(deviceModel)) {
         try {
             range(imageData.height).forEach((j: number) => {
                 range(imageData.width).forEach(i => {
@@ -229,12 +212,9 @@ export const validateImageColors = (
     }
 };
 
-export const validateImageDimensions = (
-    origImage: HTMLImageElement,
-    trezorModel: TrezorModelNumber,
-) => {
-    const height = getHeight(trezorModel);
-    const width = getWidth(trezorModel);
+export const validateImageDimensions = (origImage: HTMLImageElement, deviceModel: DeviceModel) => {
+    const { width, height } = deviceModelDimensions[deviceModel];
+
     if (origImage.height !== height) {
         return ImageValidationError.InvalidHeight;
     }
@@ -246,37 +226,36 @@ export const validateImageDimensions = (
 export const validateImageFormat = (dataUrl: string) =>
     !!dataUrl && supportedDataUrlRE.test(dataUrl) ? undefined : ImageValidationError.InvalidFormat;
 
-export const validate = (dataUrl: string, trezorModel: TrezorModelNumber) =>
+export const validate = (dataUrl: string, deviceModel: DeviceModel) =>
     validateImageFormat(dataUrl) ||
     dataUrlToImage(dataUrl).then(
         image =>
-            validateImageDimensions(image, trezorModel) ||
-            validateImageColors(image, trezorModel) ||
+            validateImageDimensions(image, deviceModel) ||
+            validateImageColors(image, deviceModel) ||
             undefined,
     );
 
-export const imageDataToHex = (imageData: ImageData, trezorModel: TrezorModelNumber) => {
-    const w = getWidth(trezorModel);
-    const h = getHeight(trezorModel);
+export const imageDataToHex = (imageData: ImageData, deviceModel: DeviceModel) => {
+    const { width, height } = deviceModelDimensions[deviceModel];
 
-    if (trezorModel === 2) {
-        return toif(w, h, imageData);
+    if (deviceModel === DeviceModel.TT) {
+        return toif(width, height, imageData);
     }
-    return toig(w, h, imageData);
+    return toig(width, height, imageData);
 };
 
 export const elementToHomescreen = (
     element: HTMLImageElement,
-    trezorModel: TrezorModelNumber,
+    deviceModel: DeviceModel,
     customElToDataFn?: typeof elementToImageData | undefined,
 ) => {
     // customElToDataFn needed for injecting mocked elementToImageData function in jest tests
-    const w = getWidth(trezorModel);
-    const h = getHeight(trezorModel);
+    const { width, height } = deviceModelDimensions[deviceModel];
+
     const imageData = customElToDataFn
-        ? customElToDataFn(element, w, h)
-        : elementToImageData(element, w, h);
-    const hex = imageDataToHex(imageData, trezorModel);
+        ? customElToDataFn(element, width, height)
+        : elementToImageData(element, width, height);
+    const hex = imageDataToHex(imageData, deviceModel);
     removeCanvas();
     return hex;
 };
@@ -291,3 +270,11 @@ export const getImageResolution = (url: string): Promise<{ width: number; height
                 height: img.height,
             });
     });
+
+export const getDeviceModelImageType = (deviceModel: DeviceModel) => {
+    if ([DeviceModel.T1, DeviceModel.TR].includes(deviceModel)) {
+        return `BW_64x128`;
+    }
+
+    return `COLOR_128x128`;
+};

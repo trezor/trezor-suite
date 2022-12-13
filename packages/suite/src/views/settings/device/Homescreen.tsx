@@ -9,7 +9,7 @@ import { variables } from '@trezor/components';
 import { useDevice, useActions } from '@suite-hooks';
 import * as modalActions from '@suite-actions/modalActions';
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
-import { getDeviceModel } from '@trezor/device-utils';
+import { DeviceModel, getDeviceModel } from '@trezor/device-utils';
 import {
     elementToHomescreen,
     fileToDataUrl,
@@ -62,15 +62,14 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
         return null;
     }
 
-    const isModel1 = getDeviceModel(device) === '1';
-    const trezorModel = isModel1 ? 1 : 2;
+    const deviceModel = getDeviceModel(device);
 
     const onUploadHomescreen = async (files: FileList | null) => {
         if (!files || !files.length) return;
         const image = files[0];
         const dataUrl = await fileToDataUrl(image);
 
-        const validationResult = await validate(dataUrl, trezorModel);
+        const validationResult = await validate(dataUrl, deviceModel);
         setValidationError(validationResult);
 
         setCustomHomescreen(dataUrl);
@@ -90,7 +89,7 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
     const onSelectCustomHomescreen = async () => {
         const element = document.getElementById('custom-image');
         if (element instanceof HTMLImageElement) {
-            const hex = elementToHomescreen(element, trezorModel);
+            const hex = elementToHomescreen(element, deviceModel);
             await applySettings({ homescreen: hex });
             setCustomHomescreen('');
         }
@@ -103,20 +102,22 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
                 ref={anchorRef}
                 shouldHighlight={shouldHighlight}
             >
-                {isModel1 ? (
+                {[DeviceModel.T1, DeviceModel.TR].includes(deviceModel) && (
                     <TextColumn
                         title={<Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_TITLE" />}
                         description={
-                            <Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS_T1" />
+                            <Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS_BW_128x64" />
                         }
                         buttonLink={HOMESCREEN_EDITOR_URL}
                         buttonTitle={<Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_EDITOR" />}
                     />
-                ) : (
+                )}
+
+                {DeviceModel.TT === deviceModel && (
                     <TextColumn
                         title={<Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_TITLE" />}
                         description={
-                            <Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS_TT" />
+                            <Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS_COLOR_144x144" />
                         }
                     />
                 )}

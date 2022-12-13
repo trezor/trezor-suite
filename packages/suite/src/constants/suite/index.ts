@@ -1,4 +1,4 @@
-import { homescreensT1, homescreensT2 } from './homescreens';
+import { homescreensBW64x128, homescreensColor128x128 } from './homescreens';
 import * as DEVICE from './device';
 
-export { homescreensT1, homescreensT2, DEVICE };
+export { homescreensBW64x128, homescreensColor128x128, DEVICE };

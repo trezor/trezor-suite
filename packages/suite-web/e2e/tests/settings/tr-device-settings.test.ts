@@ -8,10 +8,12 @@
 //   request to change display rotation but it has no effect. It should be at least hidden on client.
 // https://github.com/trezor/trezor-suite/issues/6567
 
+import { DeviceModel } from '@trezor/device-utils';
+
 describe('TR - Device settings', () => {
     const startEmuOpts = {
         url: 'https://gitlab.com/satoshilabs/trezor/trezor-firmware/-/jobs/3104755066/artifacts/raw/core/build/unix/trezor-emu-core',
-        model: 'R',
+        model: DeviceModel.TR,
         wipe: true,
     };
 
@@ -84,11 +86,7 @@ describe('TR - Device settings', () => {
         cy.log('change background');
         cy.getTestElement('@settings/device/select-from-gallery')
             .click()
-            .getTestElement(`@modal/gallery/t2/xmr`)
-            .click()
-            .getConfirmActionOnDeviceModal();
-        cy.task('pressYes');
-        cy.getConfirmActionOnDeviceModal().should('not.exist');
+            .getTestElement(`@modal/gallery/bw_64x128/invader`);
 
         /* TODO It wants T images not 1 images in this version
         .click()
