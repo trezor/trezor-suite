@@ -13,13 +13,8 @@ import {
     StackNavigationProps,
     StackProps,
 } from '@suite-native/navigation';
-import { BottomSheet, Box, Button, Card, Input, Text, VStack } from '@suite-native/atoms';
-import {
-    accountsActions,
-    AccountsRootState,
-    selectAccountByKey,
-    selectAccountLabel,
-} from '@suite-common/wallet-core';
+import { BottomSheet, Box, Button, Card, Text, VStack } from '@suite-native/atoms';
+import { accountsActions, AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { QRCode } from '@suite-native/accounts';
 // import { deriveAddresses } from '@trezor/utxo-lib';
 
@@ -47,9 +42,6 @@ export const AccountDetailSettings = ({
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
-    const accountName = useSelector((state: AccountsRootState) =>
-        selectAccountLabel(state, accountKey),
-    );
 
     if (!account) return null;
 
@@ -63,14 +55,14 @@ export const AccountDetailSettings = ({
         setIsXpubVisible(false);
     };
 
-    // console.log(deriveAddresses(account.descriptor, 'receive', 0, 10));
-    console.log(account.path);
+    // const derivedPaths = deriveAddresses(account.descriptor, 'receive', 0, 1);
+
+    // Derivation path format => m / purpose' / coin_type' / account' / change / index
+    // We don't need change & index
+    // const derivationPath = derivedPaths[0].path.split('/').slice(0, 4).join('/');
 
     return (
         <Screen header={<ScreenHeader />}>
-            <Box marginBottom="small">
-                <Input label="Account Name" value={accountName ?? ''} />
-            </Box>
             <Box flex={1} justifyContent="space-between">
                 <Card>
                     <VStack spacing="large">
@@ -78,11 +70,7 @@ export const AccountDetailSettings = ({
                             title="Coin"
                             value={networks[account.symbol].name}
                         />
-                        <AccountDetailSettingsRow title="Account Type" value="SegWit" />
-                        <AccountDetailSettingsRow
-                            title="Derivation Path"
-                            value="m/44'/60'/0'/0'/0"
-                        />
+                        {/* <AccountDetailSettingsRow title="Derivation Path" value={derivationPath} /> */}
                     </VStack>
                 </Card>
                 <VStack spacing="small">
