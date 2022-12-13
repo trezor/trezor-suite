@@ -220,7 +220,6 @@
   "TR_P2P_BACK_TO_ACCOUNT": "Gotowe! Powrót do mojego konta",
   "TR_P2P_CONFIRM": "Potwierdź",
   "TR_P2P_CONFIRMATIONS": "Potwierdzenia",
-  "TR_P2P_CONFIRM_SEND_STEP": "Adres odbiorcy",
   "TR_P2P_FOR_YOUR_SAFETY": "Pamiętaj o swoim bezpieczeństwie",
   "TR_P2P_GET_STARTED_ATTENTION": "Uwaga: NIE ZAMYKAJ Trezor Suite w żadnym momencie procesu lub będzie trzeba zacząć od początku.",
   "TR_P2P_GET_STARTED_INTRO": "Należy zainicjować transakcję na {providerName} – zastosuj się do poniższych kroków.",

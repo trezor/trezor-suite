@@ -224,7 +224,6 @@
   "TR_BASIC_RECOVERY": "표준 복구",
   "TR_BASIC_RECOVERY_OPTION": "복구를 위한 시드 문구를 한 단어 한 단어 입력하세요.",
   "TR_BCH_ADDRESS_INFO": "Bitcoin Cash는 주소 형식을 cashaddr로 변경했습니다. 주소를 변환하는 자세한 방법은 블로그에서 확인하세요. {TR_LEARN_MORE} ",
-  "TR_BECH32_BANNER_TITLE": "Trezor Suite의 새로운 기능: Bech32 계정! ",
   "TR_BEFORE_ANY_FURTHER_ACTIONS": "소셜 네트워크를 계정에 연결",
   "TR_BRIDGE_DEV_MODE_START": "포트 21324에서 Trezor Bridge 시작 ",
   "TR_BRIDGE_DEV_MODE_STOP": "기본 포트에서 Trezor Bridge 시작",
