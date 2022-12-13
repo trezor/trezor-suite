@@ -3852,7 +3852,7 @@ export default defineMessages({
     TR_TOR_DESCRIPTION: {
         id: 'TR_TOR_DESCRIPTION',
         defaultMessage:
-            "Enabling this will route all of Suite's traffic through the Tor network.{lineBreak}All requests to Trezor infrastructure will be pointed to our Tor services, increasing your privacy and security.",
+            "Enabling this will route all of Suite's traffic through the Tor network, increasing your privacy and security. Tor may take a while to load and initiate a connection.",
     },
     TR_TOR_REMOVE_ONION_AND_DISABLE: {
         id: 'TR_TOR_REMOVE_ONION_AND_DISABLE',
@@ -7423,7 +7423,7 @@ export default defineMessages({
         id: 'TR_NOT_ENOUGH_ANONYMIZED_FUNDS_WARNING',
         description: 'Warning in coinjoin send form',
         defaultMessage:
-            'Not enough anonymized funds. Either anonymize more funds, lower the anonymity level, or select coins manually at your own risk.',
+            'Not enough anonymized funds. You can either anonymize more coins, manually select UTXOs in Coin Control, or lower the anonymity level.',
     },
     TR_BREAKING_ANONYMITY_CHECKBOX: {
         id: 'TR_BREAKING_ANONYMITY_CHECKBOX',
@@ -7493,39 +7493,46 @@ export default defineMessages({
     },
     TR_COINJOIN_FACT_TWO: {
         id: 'TR_COINJOIN_FACT_TWO',
-        defaultMessage: 'Fun Coinjoin fact #2',
+        defaultMessage:
+            'The Trezor Model One was the world’s first hardware wallet, released on July 29, 2014. The follow-up Trezor Model T launched in 2018.',
     },
     TR_COINJOIN_FACT_THREE: {
         id: 'TR_COINJOIN_FACT_THREE',
-        defaultMessage: 'Fun Coinjoin fact #3',
+        defaultMessage:
+            "To Coinjoin you pay a fee to the coordinator of 0.3%. If you receive bitcoin from someone who uses CoinJoin, then you don't need to pay the coordinator fee.",
     },
     TR_COINJOIN_FACT_FOUR: {
         id: 'TR_COINJOIN_FACT_FOUR',
-        defaultMessage: 'Fun Coinjoin fact #4',
+        defaultMessage:
+            'Suite will not remember your CoinJoin account to protect your privacy, unless you explicitly choose to remember the wallet.',
     },
     TR_COINJOIN_FACT_FIVE: {
         id: 'TR_COINJOIN_FACT_FIVE',
-        defaultMessage: 'Fun Coinjoin fact #5',
+        defaultMessage:
+            'About 20% of Bitcoin is stuck in wallets by users who have lost access to their private keys. This equates to about 3.67M BTC.',
     },
     TR_COINJOIN_FACT_SIX: {
         id: 'TR_COINJOIN_FACT_SIX',
-        defaultMessage: 'Fun Coinjoin fact #6',
+        defaultMessage:
+            'On October 29th 2013 the first Bitcoin ATM was set up in a coffee shop in Vancouver, Canada. There were over 38,000 Bitcoin ATMs across the globe in 2022.',
     },
     TR_COINJOIN_FACT_SEVEN: {
         id: 'TR_COINJOIN_FACT_SEVEN',
-        defaultMessage: 'Fun Coinjoin fact #7',
+        defaultMessage:
+            'Bitcoin was created in the aftermath of the 2008 financial crisis by an anonymous person (or even group of people) known only by the pseudonym Satoshi Nakamoto.',
     },
     TR_COINJOIN_FACT_EIGHT: {
         id: 'TR_COINJOIN_FACT_EIGHT',
-        defaultMessage: 'Fun Coinjoin fact #8',
+        defaultMessage: 'One Bitcoin is equivalent to 100M satoshis (sats).',
     },
     TR_COINJOIN_FACT_NINE: {
         id: 'TR_COINJOIN_FACT_NINE',
-        defaultMessage: 'Fun Coinjoin fact #9',
+        defaultMessage: 'Less than 2% of the population owned Bitcoin in 2022.',
     },
     TR_COINJOIN_FACT_TEN: {
         id: 'TR_COINJOIN_FACT_TEN',
-        defaultMessage: 'Fun Coinjoin fact #10',
+        defaultMessage:
+            'CoinJoin is a collaborative bitcoin transaction, in which you mix your bitcoin together with hundreds of others.',
     },
     TR_TIMER_PAST_DEADLINE: {
         id: 'TR_TIMER_PAST_DEADLINE',
