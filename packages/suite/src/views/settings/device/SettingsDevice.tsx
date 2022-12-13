@@ -7,7 +7,7 @@ import { Translation } from '@suite-components';
 import { SettingsSection, DeviceBanner } from '@suite-components/Settings';
 import { isDeviceRemembered } from '@suite-utils/device';
 import { useDevice, useSelector } from '@suite-hooks';
-import { getDeviceModel } from '@trezor/device-utils';
+import { DeviceModel, getDeviceModel, selectByDeviceModel } from '@trezor/device-utils';
 
 import { BackupRecoverySeed } from './BackupRecoverySeed';
 import { BackupFailed } from './BackupFailed';
@@ -47,7 +47,7 @@ export const SettingsDevice = () => {
     const isDeviceLocked = isLocked();
     const bootloaderMode = device?.mode === 'bootloader';
     const deviceRemembered = isDeviceRemembered(device) && !device?.connected;
-    const deviceModel = device ? getDeviceModel(device) : undefined;
+    const deviceModel = getDeviceModel(device);
 
     if (deviceSettingsUnavailable(device, transport)) {
         return (
@@ -135,7 +135,9 @@ export const SettingsDevice = () => {
                     <SettingsSection title={<Translation id="TR_PERSONALIZATION" />} icon="PALETTE">
                         <DeviceLabel isDeviceLocked={isDeviceLocked} />
                         <Homescreen isDeviceLocked={isDeviceLocked} />
-                        {deviceModel !== '1' && <DisplayRotation isDeviceLocked={isDeviceLocked} />}
+                        {deviceModel === DeviceModel.TT && (
+                            <DisplayRotation isDeviceLocked={isDeviceLocked} />
+                        )}
                         {pinProtection && <AutoLock isDeviceLocked={isDeviceLocked} />}
                     </SettingsSection>
                 </>

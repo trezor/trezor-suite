@@ -90,13 +90,11 @@ describe('TR - Device settings', () => {
         cy.task('pressYes');
         cy.getConfirmActionOnDeviceModal().should('not.exist');
 
-        // change display rotation
-        cy.log('change display rotation');
-        cy.getTestElement('@settings/device/rotation-button/90')
-            .click()
+        /* TODO It wants T images not 1 images in this version
+        .click()
             .getConfirmActionOnDeviceModal();
         cy.task('pressYes');
-        cy.getConfirmActionOnDeviceModal().should('not.exist');
+        cy.getConfirmActionOnDeviceModal().should('not.exist'); */
     });
 
     it('backup in settings', () => {
