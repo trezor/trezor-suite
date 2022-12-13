@@ -40,22 +40,25 @@ export const AccountImportHeader = ({ activeStep, origin }: AccountImportHeaderP
     const isOnboardingFinished = useSelector(selectIsOnboardingFinished);
 
     const handleCloseOnboarding = () => {
-        if (origin === HomeStackRoutes.Home) {
-            navigation.navigate(RootStackRoutes.AppTabs, {
-                screen: AppTabsRoutes.HomeStack,
-                params: {
-                    screen: HomeStackRoutes.Home,
-                },
-            });
-        } else if (origin === AccountsStackRoutes.Accounts) {
-            navigation.navigate(RootStackRoutes.AppTabs, {
-                screen: AppTabsRoutes.AccountsStack,
-                params: {
-                    screen: AccountsStackRoutes.Accounts,
-                },
-            });
-        } else {
-            navigation.goBack();
+        switch (origin) {
+            case HomeStackRoutes.Home:
+                navigation.navigate(RootStackRoutes.AppTabs, {
+                    screen: AppTabsRoutes.HomeStack,
+                    params: {
+                        screen: HomeStackRoutes.Home,
+                    },
+                });
+                break;
+            case AccountsStackRoutes.Accounts:
+                navigation.navigate(RootStackRoutes.AppTabs, {
+                    screen: AppTabsRoutes.AccountsStack,
+                    params: {
+                        screen: AccountsStackRoutes.Accounts,
+                    },
+                });
+                break;
+            default:
+                navigation.goBack();
         }
     };
 

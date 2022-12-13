@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { Box } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { AccountsRootState, selectAccountsByNetworkSymbols } from '@suite-common/wallet-core';
-import { NetworkSymbol } from '@suite-common/wallet-config/libDev/src';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 
 import { AccountListItemInteractive } from './AccountListItemInteractive';
 
