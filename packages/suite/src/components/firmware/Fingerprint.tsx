@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { TrezorDevice } from '@suite-types';
 import { getFormattedFingerprint } from '@firmware-utils';
-import { supportIntermediary } from '@suite-utils/device';
+import { getFirmwareRelease } from '@suite-utils/device';
 
 const Wrapper = styled.pre`
     padding: 8px;
@@ -15,14 +15,14 @@ const Wrapper = styled.pre`
     font-family: monospace;
 `;
 
-const Fingerprint = ({ device }: { device: TrezorDevice }) => (
-    <Wrapper>
-        {/* device.firmwareRelease should be always defined here (this renders upon dispatching ButtonRequest_FirmwareCheck) */}
-        {getFormattedFingerprint(
-            device.firmwareRelease![supportIntermediary(device.features) ? 'latest' : 'release']
-                .fingerprint,
-        )}
-    </Wrapper>
-);
+type FingerprintProps = {
+    device: TrezorDevice;
+};
 
-export { Fingerprint };
+export const Fingerprint = ({ device }: FingerprintProps) => {
+    // device.firmwareRelease should be always defined here (this renders upon dispatching ButtonRequest_FirmwareCheck)
+    const { fingerprint } = getFirmwareRelease(device)!;
+    const formattedFingerprint = getFormattedFingerprint(fingerprint);
+
+    return <Wrapper>{formattedFingerprint}</Wrapper>;
+};
