@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect } from 'react';
 import styled, { css } from 'styled-components';
 import { analytics, EventType } from '@trezor/suite-analytics';
-import { getFirmwareType, getFirmwareVersion } from '@trezor/device-utils';
+import { getFirmwareType, getFirmwareVersion, getDeviceModel } from '@trezor/device-utils';
 
 import { CharacterCount, Translation } from '@suite-components';
 import { Textarea, Select, variables, Button, CollapsibleBox } from '@trezor/components';
@@ -184,7 +184,7 @@ export const Feedback = ({ type }: FeedbackProps) => {
             suite_version: process.env.VERSION || '',
             suite_revision: process.env.COMMITHASH || '',
             window_dimensions: `${getWindowWidth()}x${getWindowHeight()}`,
-            device_type: device?.features?.model || '',
+            device_model: getDeviceModel(device),
             firmware_version: device?.features ? getFirmwareVersion(device) : '',
             firmware_revision: device?.features?.revision || '',
             firmware_type: firmwareType,

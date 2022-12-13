@@ -58,7 +58,7 @@ export interface UserData {
     suite_version: string;
     suite_revision: string;
     window_dimensions: string;
-    device_type: string;
+    device_model: string;
     firmware_version: string;
     firmware_revision: string;
     firmware_type: string;
