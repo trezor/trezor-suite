@@ -121,12 +121,39 @@ describe('isDeviceRemembered', () => {
 describe('parseFirmwareChangelog', () => {
     fixtures.parseFirmwareChangelog.forEach(f => {
         it(f.description, () => {
-            expect(utils.parseFirmwareChangelog(f.features, f.firmwareRelease)).toEqual(
-                f.result[0],
-            );
-            expect(
-                utils.parseFirmwareChangelog(f.features_intermediary, f.firmwareRelease),
-            ).toEqual(f.result_intermediary[0]);
+            expect(utils.parseFirmwareChangelog(f.device)).toEqual(f.result);
+        });
+    });
+});
+
+describe('getChangelogUrl', () => {
+    fixtures.getChangelogUrl.forEach(f => {
+        it(f.description, () => {
+            expect(utils.getChangelogUrl(f.device, f.revision)).toEqual(f.result);
+        });
+    });
+});
+
+describe('getCheckBackupUrl', () => {
+    fixtures.getCheckBackupUrl.forEach(f => {
+        it(f.description, () => {
+            expect(utils.getCheckBackupUrl(f.device)).toEqual(f.result);
+        });
+    });
+});
+
+describe('getPackagingUrl', () => {
+    fixtures.getPackagingUrl.forEach(f => {
+        it(f.description, () => {
+            expect(utils.getPackagingUrl(f.device)).toEqual(f.result);
+        });
+    });
+});
+
+describe('getFirmwareDowngradeUrl', () => {
+    fixtures.getFirmwareDowngradeUrl.forEach(f => {
+        it(f.description, () => {
+            expect(utils.getFirmwareDowngradeUrl(f.device)).toEqual(f.result);
         });
     });
 });

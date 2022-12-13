@@ -4,7 +4,7 @@ import { Tooltip } from '@trezor/components';
 import { versionUtils } from '@trezor/utils';
 import { Coin, Translation } from '@suite-components';
 import { useDevice, useSelector } from '@suite-hooks';
-import { getUnavailabilityMessage } from '@suite-utils/device';
+import { getCoinUnavailabilityMessage } from '@suite-utils/device';
 import type { Network } from '@wallet-types';
 
 const Wrapper = styled.div`
@@ -69,9 +69,7 @@ const CoinsList = ({
                     locked ||
                     !supportedBySuite;
                 const unavailabilityTooltip =
-                    !!unavailable &&
-                    !isBootloaderMode &&
-                    getUnavailabilityMessage(unavailable, features?.major_version);
+                    !!unavailable && !isBootloaderMode && getCoinUnavailabilityMessage(unavailable);
                 const anyTooltip = lockedTooltip || unavailabilityTooltip || tooltip;
 
                 return (
