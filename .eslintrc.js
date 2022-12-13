@@ -189,6 +189,7 @@ module.exports = {
             'error',
             {
                 paths: [{ name: '.' }, { name: '..' }, { name: '../..' }],
+                patterns: ['**/libDev/src'],
             },
         ],
         'no-restricted-syntax': [
