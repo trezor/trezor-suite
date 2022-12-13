@@ -37,9 +37,7 @@ import { Pagination } from './Pagination';
 import { TransactionTimestamp } from './TransactionTimestamp';
 import { withCoinmarket, withSelectedAccountLoaded } from './hocs';
 import type { WithCoinmarketProps, WithSelectedAccountLoadedProps } from './hocs';
-import { AccountMode } from './AccountMode';
 import { AccountException } from './AccountException';
-import { AccountAnnouncement } from './AccountAnnouncement';
 import { AccountTopPanel } from './AccountTopPanel';
 import { SummaryHeader as CoinjoinSummaryHeader } from './CoinjoinSummary/SummaryHeader';
 
@@ -78,9 +76,7 @@ export {
     UtxoAnonymity,
     Pagination,
     TransactionTimestamp,
-    AccountMode,
     AccountException,
-    AccountAnnouncement,
     AccountTopPanel,
     CoinjoinSummaryHeader,
 };
