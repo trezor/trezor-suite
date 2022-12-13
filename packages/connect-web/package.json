@@ -1,6 +1,6 @@
 {
     "name": "@trezor/connect-web",
-    "version": "9.0.4",
+    "version": "9.0.5",
     "author": "Trezor <info@trezor.io>",
     "homepage": "https://github.com/trezor/trezor-suite/tree/develop/packages/connect-web",
     "description": "High-level javascript interface for Trezor hardware wallet.",
@@ -38,7 +38,7 @@
         "prepublish": "yarn tsx ../../scripts/prepublish.js"
     },
     "dependencies": {
-        "@trezor/connect": "workspace:9.0.4",
+        "@trezor/connect": "workspace:9.0.5",
         "@trezor/utils": "workspace:^9.0.4",
         "events": "^3.3.0"
     },

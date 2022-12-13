@@ -43,7 +43,7 @@
         "@suite-common/wallet-utils": "workspace:*",
         "@trezor/coinjoin": "workspace:*",
         "@trezor/components": "workspace:*",
-        "@trezor/connect": "workspace:9.0.4",
+        "@trezor/connect": "workspace:9.0.5",
         "@trezor/crypto-utils": "workspace:*",
         "@trezor/device-utils": "workspace:*",
         "@trezor/dom-utils": "workspace:*",
