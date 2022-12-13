@@ -6,7 +6,7 @@ import {
     Screen,
     StackProps,
 } from '@suite-native/navigation';
-import { NetworkSymbol } from '@suite-common/wallet-config/libDev/src';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 
 import { AccountImportHeader } from '../components/AccountImportHeader';
 import { SelectableNetworkList } from '../components/SelectableNetworkList';
