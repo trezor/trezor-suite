@@ -1,6 +1,7 @@
 import { valid, satisfies } from 'semver';
+import { DeviceModel, getDeviceModel, getFirmwareVersion } from '@trezor/device-utils';
+
 import type { AppState, TrezorDevice, ExtendedMessageDescriptor } from '@suite-types';
-import { getDeviceModel, getFirmwareVersion } from '@trezor/device-utils';
 
 export const getFormattedFingerprint = (fingerprint: string) =>
     [
@@ -46,29 +47,35 @@ export const getDescriptionForStatus = (
     }
 };
 
-export type FirmwareFormat = 'ONE' | 'ONE_EMBEDDED_V2' | 'ONE_V2' | 'T';
+// naming is based on fw version and chip, not model
+enum FirmwareFormat {
+    'T1' = 1,
+    'T1_EMBEDDED_V2',
+    'T1_V2',
+    'T2',
+}
 
-const FORMAT_MAP: { [format in FirmwareFormat]: ReturnType<typeof getDeviceModel> } = {
-    ONE: '1',
-    ONE_EMBEDDED_V2: '1',
-    ONE_V2: '1',
-    T: 'T',
+const FORMAT_MAP: { [format in FirmwareFormat]: ReturnType<typeof getDeviceModel>[] } = {
+    [FirmwareFormat.T1]: [DeviceModel.T1],
+    [FirmwareFormat.T1_EMBEDDED_V2]: [DeviceModel.T1],
+    [FirmwareFormat.T1_V2]: [DeviceModel.T1],
+    [FirmwareFormat.T2]: [DeviceModel.TT, DeviceModel.TR],
 };
 
 export const parseFirmwareFormat = (fw: ArrayBuffer): FirmwareFormat | undefined => {
-    const fwView = new Uint8Array(fw);
-    const header = String.fromCharCode(...Array.from(fwView.slice(0, 4)));
+    const firmwareView = new Uint8Array(fw);
+    const header = String.fromCharCode(...Array.from(firmwareView.slice(0, 4)));
+
     switch (header) {
         case 'TRZR': {
-            const headerEmbedded = String.fromCharCode(...Array.from(fwView.slice(256, 260)));
-            return headerEmbedded === 'TRZF' ? 'ONE_EMBEDDED_V2' : 'ONE';
+            const headerEmbedded = String.fromCharCode(...Array.from(firmwareView.slice(256, 260)));
+            return headerEmbedded === 'TRZF' ? FirmwareFormat.T1_EMBEDDED_V2 : FirmwareFormat.T1;
         }
         case 'TRZF':
-            return 'ONE_V2';
+            return FirmwareFormat.T1_V2;
         case 'TRZV':
-            return 'T';
-        default:
-            return undefined;
+            return FirmwareFormat.T2;
+        // no default
     }
 };
 
@@ -76,27 +83,28 @@ export const validateFirmware = (
     fw: ArrayBuffer,
     device: TrezorDevice | undefined,
 ): ExtendedMessageDescriptor['id'] | undefined => {
-    if (!device?.features) {
+    const deviceModel = getDeviceModel(device);
+
+    if (!deviceModel) {
         return 'TR_UNKNOWN_DEVICE';
     }
 
-    const deviceModel = getDeviceModel(device);
-    const deviceVersion = getFirmwareVersion(device);
-    const format = parseFirmwareFormat(fw);
+    const firmwareVersion = getFirmwareVersion(device);
+    const firmwareFormat = parseFirmwareFormat(fw);
 
-    if (!format) {
+    if (!firmwareFormat) {
         return 'TR_FIRMWARE_VALIDATION_UNRECOGNIZED_FORMAT';
     }
-    if (FORMAT_MAP[format] !== deviceModel) {
+    if (!FORMAT_MAP[firmwareFormat].includes(deviceModel)) {
         return 'TR_FIRMWARE_VALIDATION_UNMATCHING_DEVICE';
     }
 
-    const isOneV2 = valid(deviceVersion) && satisfies(deviceVersion, '>=1.8.0 <2.0.0');
+    const isT1V2 = valid(firmwareVersion) && satisfies(firmwareVersion, '>=1.8.0 <2.0.0');
 
-    if (isOneV2 && format === 'ONE') {
+    if (isT1V2 && firmwareFormat === FirmwareFormat.T1) {
         return 'TR_FIRMWARE_VALIDATION_TOO_OLD';
     }
-    if (!isOneV2 && format === 'ONE_V2') {
-        return 'TR_FIRMWARE_VALIDATION_ONE_V2';
+    if (!isT1V2 && firmwareFormat === FirmwareFormat.T1_V2) {
+        return 'TR_FIRMWARE_VALIDATION_T1_V2';
     }
 };

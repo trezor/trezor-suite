@@ -2478,9 +2478,9 @@ export default defineMessages({
         defaultMessage: 'Firmware is too old for your device',
         id: 'TR_FIRMWARE_VALIDATION_TOO_OLD',
     },
-    TR_FIRMWARE_VALIDATION_ONE_V2: {
+    TR_FIRMWARE_VALIDATION_T1_V2: {
         defaultMessage: 'You need to upgrade to bootloader 1.8.0 first',
-        id: 'TR_FIRMWARE_VALIDATION_ONE_V2',
+        id: 'TR_FIRMWARE_VALIDATION_T1_V2',
     },
     TR_FIRST_SEEN: {
         defaultMessage: 'First seen',
