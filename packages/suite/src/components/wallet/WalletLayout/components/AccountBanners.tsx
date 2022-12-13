@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import Bignumber from 'bignumber.js';
 
 import { Account } from '@wallet-types/index';
 
@@ -20,12 +19,6 @@ const BannersWrapper = styled.div`
     }
 `;
 
-const RippleReserve = ({ account }: { account: Extract<Account, { networkType: 'ripple' }> }) => {
-    const bigBalance = new Bignumber(account.balance);
-    const bigReserve = new Bignumber(account.misc.reserve);
-    return bigBalance.isLessThan(bigReserve) ? <XRPReserve reserve={account.misc.reserve} /> : null;
-};
-
 type AccountBannersProps = {
     account?: Account;
 };
@@ -35,10 +28,8 @@ export const AccountBanners = ({ account }: AccountBannersProps) => (
         <AuthConfirmFailed />
         <BackendDisconnected />
         <DeviceUnavailable />
-        {account?.networkType === 'ripple' && <RippleReserve account={account} />}
-        {account?.imported && <AccountImported />}
-        {account?.backendType === 'coinjoin' && account.status === 'out-of-sync' && (
-            <AccountOutOfSync />
-        )}
+        <XRPReserve account={account} />
+        <AccountImported account={account} />
+        <AccountOutOfSync account={account} />
     </BannersWrapper>
 );
