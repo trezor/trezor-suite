@@ -13,7 +13,6 @@ import {
     RootStackRoutes,
     TabToStackCompositeNavigationProp,
     AccountsStackRoutes,
-    HomeStackRoutes,
 } from '@suite-native/navigation';
 import { networks } from '@suite-common/wallet-config';
 import { selectFiatCurrency } from '@suite-native/module-settings';
@@ -47,9 +46,6 @@ export const Assets = () => {
     const handleImportAssets = () => {
         navigation.navigate(RootStackRoutes.AccountsImport, {
             screen: AccountsImportStackRoutes.SelectNetwork,
-            params: {
-                origin: HomeStackRoutes.Home,
-            },
         });
     };
 

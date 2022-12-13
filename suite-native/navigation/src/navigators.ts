@@ -42,13 +42,10 @@ export type AppTabsParamList = {
 };
 
 export type AccountsImportStackParamList = {
-    [AccountsImportStackRoutes.SelectNetwork]: {
-        origin?: AccountsStackRoutes.Accounts | HomeStackRoutes.Home;
-    };
+    [AccountsImportStackRoutes.SelectNetwork]: undefined;
     [AccountsImportStackRoutes.XpubScan]: {
         qrCode?: string;
         networkSymbol: NetworkSymbol;
-        origin?: AccountsStackRoutes.Accounts | HomeStackRoutes.Home;
     };
     [AccountsImportStackRoutes.XpubScanModal]: {
         networkSymbol: NetworkSymbol;

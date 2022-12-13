@@ -9,7 +9,6 @@ import { selectIsOnboardingFinished } from '@suite-native/module-settings';
 import {
     AccountsImportStackParamList,
     AccountsImportStackRoutes,
-    AccountsStackRoutes,
     AppTabsRoutes,
     HomeStackRoutes,
     RootStackParamList,
@@ -20,7 +19,6 @@ import {
 
 type AccountImportHeaderProps = {
     activeStep: 1 | 2 | 3 | 4;
-    origin?: string;
 };
 
 const closeButtonStyle = prepareNativeStyle(_ => ({
@@ -34,32 +32,18 @@ type NavigationProp = StackToTabCompositeProps<
     RootStackParamList
 >;
 
-export const AccountImportHeader = ({ activeStep, origin }: AccountImportHeaderProps) => {
+export const AccountImportHeader = ({ activeStep }: AccountImportHeaderProps) => {
     const { applyStyle } = useNativeStyles();
     const navigation = useNavigation<NavigationProp>();
     const isOnboardingFinished = useSelector(selectIsOnboardingFinished);
 
     const handleCloseOnboarding = () => {
-        switch (origin) {
-            case HomeStackRoutes.Home:
-                navigation.navigate(RootStackRoutes.AppTabs, {
-                    screen: AppTabsRoutes.HomeStack,
-                    params: {
-                        screen: HomeStackRoutes.Home,
-                    },
-                });
-                break;
-            case AccountsStackRoutes.Accounts:
-                navigation.navigate(RootStackRoutes.AppTabs, {
-                    screen: AppTabsRoutes.AccountsStack,
-                    params: {
-                        screen: AccountsStackRoutes.Accounts,
-                    },
-                });
-                break;
-            default:
-                navigation.goBack();
-        }
+        navigation.navigate(RootStackRoutes.AppTabs, {
+            screen: AppTabsRoutes.HomeStack,
+            params: {
+                screen: HomeStackRoutes.Home,
+            },
+        });
     };
 
     return (

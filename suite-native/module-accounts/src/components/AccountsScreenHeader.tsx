@@ -4,7 +4,6 @@ import { useNavigation } from '@react-navigation/native';
 
 import {
     AccountsImportStackRoutes,
-    AccountsStackRoutes,
     AppTabsParamList,
     AppTabsRoutes,
     RootStackParamList,
@@ -26,9 +25,6 @@ export const AccountsScreenHeader = () => {
     const handleImportAsset = () => {
         navigation.navigate(RootStackRoutes.AccountsImport, {
             screen: AccountsImportStackRoutes.SelectNetwork,
-            params: {
-                origin: AccountsStackRoutes.Accounts,
-            },
         });
     };
 
