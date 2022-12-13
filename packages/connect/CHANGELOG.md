@@ -1,6 +1,13 @@
-# 9.0.5 - UNRELEASED
+# 9.0.5
 
--   introduction of connect analytics
+-   added: analytics in popup
+-   fixed: `signTransaction` with litecoin mimble wimble pegout inputs
+-   fixed: `composeTransaction` cases when composing tx with multiple outputs where at least one is above MAX_SAFE_INTEGER
+-   updated: @trezor/blockchain-link 2.6.1
+-   updated: @trezor/connect-common 0.0.11
+-   updated: @trezor/transport 1.1.6
+-   updated: @trezor/utils 9.0.4
+-   updated: @trezor/utxo-lib 1.0.2
 
 # 9.0.4
 

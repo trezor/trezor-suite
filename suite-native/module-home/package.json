@@ -27,7 +27,7 @@
         "@suite-native/graph": "workspace:*",
         "@suite-native/module-settings": "workspace:*",
         "@suite-native/navigation": "workspace:*",
-        "@trezor/connect": "workspace:9.0.4",
+        "@trezor/connect": "workspace:9.0.5",
         "@trezor/icons": "workspace:*",
         "@trezor/styles": "workspace:*",
         "@trezor/theme": "workspace:*",

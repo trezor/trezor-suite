@@ -4,6 +4,6 @@
     "private": true,
     "scripts": {},
     "dependencies": {
-        "@trezor/connect-web": "workspace:9.0.4"
+        "@trezor/connect-web": "workspace:9.0.5"
     }
 }
