@@ -1,6 +1,6 @@
 import type { CoinjoinBackendSettings, CoinjoinClientSettings } from '@trezor/coinjoin';
 import type { PartialRecord } from '@trezor/type-utils';
-import type { CoinjoinServerEnvironment } from '@suite-common/wallet-types';
+import type { CoinjoinServerEnvironment } from '@wallet-types/coinjoin';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 
 type CoinjoinNetworksConfig = CoinjoinBackendSettings & CoinjoinClientSettings;

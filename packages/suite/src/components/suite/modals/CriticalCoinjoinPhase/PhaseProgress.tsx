@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { CoinjoinSession, RoundPhase } from '@suite-common/wallet-types';
+import { CoinjoinSession, RoundPhase } from '@wallet-types/coinjoin';
 import { FluidSpinner, Icon, useTheme, variables } from '@trezor/components';
 import { COINJOIN_PHASE_MESSAGES } from '@suite-constants/coinjoin';
 import { Translation } from '@suite-components/Translation';

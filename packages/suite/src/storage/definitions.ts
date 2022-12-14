@@ -16,7 +16,8 @@ import type {
 } from '@wallet-types';
 
 import type { MessageSystem } from '@trezor/message-system';
-import type { BackendSettings, WalletSettings, CoinjoinAccount } from '@suite-common/wallet-types';
+import type { BackendSettings, WalletSettings } from '@suite-common/wallet-types';
+import type { CoinjoinAccount } from '@wallet-types/coinjoin';
 import type { StorageUpdateMessage } from '@trezor/suite-storage';
 import { GraphData } from '../types/wallet/graph';
 

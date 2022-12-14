@@ -16,7 +16,8 @@ import { COORDINATOR_FEE_RATE_MULTIPLIER } from '@suite/services/coinjoin/config
 import { getRegisterAccountParams, getMaxRounds } from '@wallet-utils/coinjoinUtils';
 import { Dispatch, GetState } from '@suite-types';
 import { Network, NetworkSymbol } from '@suite-common/wallet-config';
-import { Account, CoinjoinAccount, CoinjoinSessionParameters } from '@suite-common/wallet-types';
+import { Account } from '@suite-common/wallet-types';
+import { CoinjoinAccount, CoinjoinSessionParameters } from '@wallet-types/coinjoin';
 import {
     accountsActions,
     selectAccountByKey,

@@ -10,7 +10,7 @@ import {
     variables,
     Tooltip,
 } from '@trezor/components';
-import { CoinjoinSession } from '@suite-common/wallet-types';
+import { CoinjoinSession } from '@wallet-types/coinjoin';
 import { Translation } from '@suite-components/Translation';
 import { CountdownTimer } from '@suite-components';
 
