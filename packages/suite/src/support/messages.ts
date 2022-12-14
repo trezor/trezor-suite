@@ -4022,17 +4022,29 @@ export default defineMessages({
             'Enter the words from your seed here in the order displayed on your device. You may be asked to type some words that are not part of your recovery seed as an additional security measure.',
         dynamic: true,
     },
+    TR_CHECK_RECOVERY_SEED_DESC_TT: {
+        id: 'TR_CHECK_RECOVERY_SEED_DESC_TT',
+        defaultMessage:
+            'Your recovery seed (wallet backup) is entered using the Trezor Model T touchscreen. This avoids exposing any of your sensitive information to a potentially insecure computer or web browser.',
+        dynamic: true,
+    },
+    TR_CHECK_RECOVERY_SEED_DESC_TR: {
+        id: 'TR_CHECK_RECOVERY_SEED_DESC_TT',
+        defaultMessage:
+            'Your recovery seed (wallet backup) is entered using the Trezor Model R buttons. This avoids exposing any of your sensitive information to a potentially insecure computer or web browser.',
+        dynamic: true,
+    },
     TR_SELECT_NUMBER_OF_WORDS: {
         id: 'TR_SELECT_NUMBER_OF_WORDS',
         defaultMessage: 'Select number of words in your seed',
     },
-    TR_YOU_EITHER_HAVE_T1: {
-        id: 'TR_YOU_EITHER_HAVE_T1',
+    TR_SEED_BACKUP_LENGTH: {
+        id: 'TR_SEED_BACKUP_LENGTH',
         defaultMessage: 'Your seed may contain 12, 18, or 24 words.',
         dynamic: true,
     },
-    TR_YOU_EITHER_HAVE_TT: {
-        id: 'TR_YOU_EITHER_HAVE_TT',
+    TR_SEED_BACKUP_LENGTH_INCLUDING_SHAMIR: {
+        id: 'TR_SEED_BACKUP_LENGTH_INCLUDING_SHAMIR',
         defaultMessage: 'Your seed may contain 12, 18, 20, 24, or 33 words.',
         dynamic: true,
     },
