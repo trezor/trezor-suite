@@ -4,59 +4,51 @@ skip_docs
 IOS_PROJECT = File.join(IOS_PATH, "TrezorSuite.xcodeproj").freeze
 IOS_PROJECT_WORKSPACE = File.join(IOS_PATH, "TrezorSuite.xcworkspace").freeze
 
+# temporary keychain database
+def delete_temp_keychain(name)
+  delete_keychain(
+    name: name
+  ) if File.exist? File.expand_path("~/Library/Keychains/#{name}-db")
+end
+
+def create_temp_keychain(name, password)
+  create_keychain(
+    name: name,
+    password: password,
+    unlock: true,
+    add_to_search_list: true,
+    timeout: 0
+  )
+end
+
+def ensure_temp_keychain(name, password)
+  delete_temp_keychain(name)
+  create_temp_keychain(name, password)
+end
+
 platform :ios do
 
   before_all do |lane|
     xcversion(version: "14.1")
     app_identifier = CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
 
-    puts "Running lane #{lane} with App ID #{app_identifier}"
+    puts "Running lane #{lane} with App ID #{app_identifier}."
 
-    if lane == :develop
+    if lane != :debug
       PROVISIONING_NAME = "AppStore #{app_identifier}"
       import_certificate_to_keychain
       load_appstore_connect_api_key
       fetch_and_bump_versions
-    elsif lane == :staging
-      PROVISIONING_NAME = "AppStore #{app_identifier}"
-      import_certificate_to_keychain
-      load_appstore_connect_api_key
-      fetch_and_bump_versions
-    elsif lane == :production
-      PROVISIONING_NAME = "AppStore #{app_identifier}"
-      import_certificate_to_keychain
-      load_appstore_connect_api_key
-      fetch_and_bump_versions
-    elsif lane == :debug
+    else
       PROVISIONING_NAME = "#{app_identifier} Development"
     end
 
     ENV["ENVFILE"] = ".env.#{lane}"
-    replace_debug_info_environment_variables(platform: 'ios')
+    replace_debug_info_environment_variables
   end
 
-    # temporary keychain database
-    def delete_temp_keychain(name)
-      delete_keychain(
-        name: name
-      ) if File.exist? File.expand_path("~/Library/Keychains/#{name}-db")
-    end
-    def create_temp_keychain(name, password)
-      create_keychain(
-        name: name,
-        password: password,
-        unlock: true,
-        add_to_search_list: true,
-        timeout: 0
-        )
-    end
-    def ensure_temp_keychain(name, password)
-      delete_temp_keychain(name)
-      create_temp_keychain(name, password)
-    end
-
   desc "Import certificate to keychain"
-  private_lane :import_certificate_to_keychain do |options|
+  private_lane :import_certificate_to_keychain do
     # creates temporary keychain
     keychain_name = ENV['TMP_KEYCHAIN_NAME']
     keychain_password = ENV['TMP_KEYCHAIN_PASSWORD']
@@ -72,7 +64,7 @@ platform :ios do
   end
 
   desc "Load Appstore Connect API Key information to use in subsequent lanes"
-  private_lane :load_appstore_connect_api_key do |options|
+  private_lane :load_appstore_connect_api_key do
     app_store_connect_api_key(
       key_id: ENV['APPSTORE_KEY_ID'], # the Key ID used for Appstore Connect authentication
       issuer_id: ENV['APPSTORE_KEY_ISSUER_ID'], # the issuer ID used for Appstore Connect authentication
@@ -84,7 +76,7 @@ platform :ios do
   end
 
   desc "Check certs and profiles"
-  private_lane :prepare_signing do
+  private_lane :prepare_distribution_signing do
     app_identifier = CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
     api_key = lane_context[SharedValues::APP_STORE_CONNECT_API_KEY]
 
@@ -105,7 +97,7 @@ platform :ios do
   end
 
   desc "Increments internal build number and version number"
-  private_lane :fetch_and_bump_versions do |options|
+  private_lane :fetch_and_bump_versions do
     app_identifier = CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
     api_key = lane_context[SharedValues::APP_STORE_CONNECT_API_KEY]
 
@@ -128,9 +120,11 @@ platform :ios do
   end
 
   desc "Build the iOS app for testing"
-  private_lane :build_testing do |options|
+  private_lane :build_app_to_distribute do |options|
     build_scheme = options[:scheme]
+    export_method = options[:export_method]
     app_identifier = CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
+
     code_sign_identity = "iPhone Distribution" # sign an app before distributing it through the App Store
 
    # update the code signing identities to match profile name and app bundle identifier
@@ -149,15 +143,19 @@ platform :ios do
     )
     build_app(
       scheme: build_scheme,
+      export_method: export_method,
       output_name: "#{build_scheme}-TrezorSuite",
       workspace: IOS_PROJECT_WORKSPACE,
       configuration: build_scheme
     )
   end
 
-  desc "Upload to TestFlight"
-  private_lane :upload_testing do |options|
+  desc "Sign, build and push a new build to TestFlight"
+  private_lane :build_to_testflight do |options|
     api_key = lane_context[SharedValues::APP_STORE_CONNECT_API_KEY]
+
+    prepare_distribution_signing
+    build_app_to_distribute(scheme: options[:scheme], export_method: options[:export_method])
 
     upload_to_testflight(
         api_key: api_key,
@@ -165,28 +163,50 @@ platform :ios do
     )
   end
 
-  desc "Push a new beta build to TestFlight"
-  private_lane :testing do |options|
-    prepare_signing
-    build_testing(scheme: options[:scheme])
-    upload_testing
+  desc "Sign, build and push a new build to App Store"
+  private_lane :build_to_app_store do |options|
+    prepare_distribution_signing
+    build_app_to_distribute(scheme: options[:scheme], export_method: options[:export_method])
+
+    upload_to_app_store(
+        api_key: api_key,
+        force: true, # not to generate HTML report
+        reject_if_possible: true, # if the app is already waiting for the review and not reviewing yet, cancel it
+        skip_metadata: false,
+        skip_screenshots: true,
+        languages: ['en-US'],
+        release_notes: {
+            "default" => "TODO idea - this could be specified from Github action input?",
+            "en-US" => "TODO idea - this could be specified from Github action input?",
+        }
+    )
   end
 
-  desc "Build and sign the app locally"
-  private_lane :local do |options|
+  desc "Sign and build the app locally and get .ipa"
+  private_lane :build_local_ipa do |options|
     build_scheme = options[:scheme]
+    export_method = options[:export_method]
     app_identifier = CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
-    code_sign_identity = "Apple Development" # use app services during development and testing
 
+    # 0. get username (to get or generate provisioning profile with a certificate for requesting user)
+    # 1 provisioning profile has to be connected with 1 local certificate so every developer will have own provisioning profile
+    apple_username = prompt(text: "Please, write your Apple ID Username and confirm: ")
+
+    # 1. development signing
     cert(
       development: true,
+      username: apple_username
     )
     sigh(
       development: true,
+      username: apple_username,
       app_identifier: app_identifier,
-      provisioning_name: PROVISIONING_NAME,
+      provisioning_name: "#{PROVISIONING_NAME} - #{apple_username}",
       force: true # always recreate this exact profile to ensure it's valid and not expired
     )
+
+    # 2. development build
+    code_sign_identity = "Apple Development" # use app services during development and testing
 
     # Configures Xcode's Codesigning options
     update_code_signing_settings(
@@ -200,7 +220,7 @@ platform :ios do
 
     build_app(
       scheme: build_scheme,
-      export_method: "development",
+      export_method: export_method,
       output_name: "#{build_scheme}-TrezorSuite",
       workspace: IOS_PROJECT_WORKSPACE,
       configuration: build_scheme
@@ -208,31 +228,15 @@ platform :ios do
   end
 
   lane :debug do
-    local(scheme: "Debug")
+    build_local_ipa(scheme: "Debug", export_method: "development")
   end
   lane :develop do
-    testing(scheme: "Develop")
+    build_to_testflight(scheme: "Develop", export_method: "app-store")
   end
   lane :staging do
-    testing(scheme: "Staging")
+    build_to_testflight(scheme: "Staging", export_method: "app-store")
   end
   lane :production do
-    # TODO
-    # sth(scheme: "Release", provisioning_name: "AppStore io.trezor.suite"))
-  end
-
-  after_all do |lane|
-    # This block is called, only if the executed lane was successful
-
-    # slack(
-    #   message: "Successfully deployed new App Update."
-    # )
-  end
-
-  error do |lane, exception|
-    # slack(
-    #   message: exception.message,
-    #   success: false
-    # )
+    build_to_app_store(scheme: "Release", export_method: "app-store")
   end
 end

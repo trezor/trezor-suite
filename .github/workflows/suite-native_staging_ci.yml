@@ -1,4 +1,4 @@
-name: suite-native staging ci
+name: suite-native staging release
 
 on:
   workflow_dispatch:
