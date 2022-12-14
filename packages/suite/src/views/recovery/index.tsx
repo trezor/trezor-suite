@@ -99,7 +99,7 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
         ? ['initial', 'select-word-count', 'select-recovery-type', 'in-progress', 'finished']
         : ['initial', 'in-progress', 'finished'];
 
-    if (!device || !device.features) {
+    if (!device || !device.features || !deviceModel) {
         return (
             <TinyModal
                 heading={<Translation id="TR_RECONNECT_HEADER" />}
@@ -138,20 +138,38 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
     );
 
     const getStep = () => {
+        const isShamirBackupAvailable =
+            device?.features?.capabilities?.includes('Capability_Shamir');
+
+        // Shamir backup uses 20 and 33 word shares
+        const seedBackupLengthMessage = isShamirBackupAvailable
+            ? 'TR_SEED_BACKUP_LENGTH_INCLUDING_SHAMIR'
+            : 'TR_SEED_BACKUP_LENGTH';
+
         switch (recovery.status) {
             case 'initial':
                 return (
                     <>
                         <LeftAlignedP>
-                            {model && <Translation id={`TR_CHECK_RECOVERY_SEED_DESC_T${model}`} />}
+                            <Translation id={seedBackupLengthMessage} />
                         </LeftAlignedP>
 
                         <StepsContainer>
                             <InstructionStep
                                 number="1"
-                                title={<Translation id="TR_SELECT_NUMBER_OF_WORDS" />}
+                                title={
+                                    <Translation
+                                        id={`TR_CHECK_RECOVERY_SEED_DESC_T${DeviceModel}`}
+                                    />
+                                }
                             >
-                                {model && <Translation id={`TR_YOU_EITHER_HAVE_T${model}`} />}
+                                <Translation
+                                    id={
+                                        isShamirBackupAvailable
+                                            ? 'TR_SEED_BACKUP_LENGTH_INCLUDING_SHAMIR'
+                                            : 'TR_SEED_BACKUP_LENGTH'
+                                    }
+                                />
                             </InstructionStep>
 
                             <InstructionStep
