@@ -17,6 +17,7 @@ import * as onboardingActions from '@onboarding-actions/onboardingActions';
 import * as backupActions from '@backup-actions/backupActions';
 import * as routerActions from '@suite-actions/routerActions';
 import { SettingsAnchor } from '@suite-constants/anchors';
+import { useDeviceModel } from '@suite-hooks/useDeviceModel';
 
 const StyledImage = styled(Image)`
     flex: 1;
@@ -30,13 +31,13 @@ export const BackupStep = () => {
         goto: routerActions.goto,
         updateAnalytics: onboardingActions.updateAnalytics,
     });
-    const { device, backup, locks } = useSelector(state => ({
-        device: state.suite.device,
+    const { backup, locks } = useSelector(state => ({
         backup: state.backup,
         locks: state.suite.locks,
     }));
+    const deviceModel = useDeviceModel();
 
-    if (!device || !device.features) {
+    if (!deviceModel) {
         return null;
     }
 
@@ -86,7 +87,7 @@ export const BackupStep = () => {
                     image="BACKUP"
                     heading={<Translation id="TR_CREATE_BACKUP" />}
                     description={<Translation id="TR_BACKUP_SUBHEADING_1" />}
-                    confirmOnDevice={device.features.major_version}
+                    deviceModel={deviceModel}
                 />
             )}
 

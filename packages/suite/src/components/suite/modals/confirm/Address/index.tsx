@@ -9,6 +9,7 @@ import { Translation, Modal } from '@suite-components';
 import { useActions } from '@suite-hooks';
 import DeviceDisconnected from './components/DeviceDisconnected';
 import { QrCode, QRCODE_PADDING, QRCODE_SIZE } from '@suite-components/QrCode';
+import { getDeviceModel } from '@trezor/device-utils';
 
 const Wrapper = styled.div`
     display: flex;
@@ -87,7 +88,7 @@ export const ConfirmAddress = ({
                 device.connected ? (
                     <ConfirmOnDevice
                         title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
-                        trezorModel={device.features?.major_version === 1 ? 1 : 2}
+                        deviceModel={getDeviceModel(device)}
                         onCancel={cancelable ? onCancel : undefined}
                         isConfirmed={confirmed}
                     />

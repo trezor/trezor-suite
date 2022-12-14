@@ -1,7 +1,12 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 import * as semver from 'semver';
-import { getDeviceModel, getFirmwareVersion } from '@trezor/device-utils';
+import {
+    DeviceModel,
+    getDeviceModel,
+    selectByDeviceModel,
+    getFirmwareVersion,
+} from '@trezor/device-utils';
 
 import { H1, Button, ConfirmOnDevice, variables } from '@trezor/components';
 import { Modal, Translation, WebUsbButton } from '@suite-components';
@@ -232,6 +237,7 @@ export const ReconnectDevicePrompt = ({
     const { rebootPhase, rebootMethod } = useRebootRequest(device, requestedMode);
 
     const isRebootAutomatic = rebootMethod === 'automatic';
+    const deviceModel = getDeviceModel(device);
 
     return (
         <StyledModal
@@ -239,7 +245,7 @@ export const ReconnectDevicePrompt = ({
                 isRebootAutomatic && (
                     <ConfirmOnDevice
                         title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
-                        trezorModel={device?.features?.major_version === 1 ? 1 : 2}
+                        deviceModel={deviceModel}
                         isConfirmed={rebootPhase !== 'wait-for-confirm'}
                     />
                 )

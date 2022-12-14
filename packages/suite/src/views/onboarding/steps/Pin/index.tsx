@@ -9,6 +9,7 @@ import {
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
 import { useActions, useSelector, useOnboarding } from '@suite-hooks';
 import PinStepBox from './PinStepBox';
+import { getDeviceModel } from '@trezor/device-utils';
 
 const SetPinStep = () => {
     const [showSkipConfirmation, setShowSkipConfirmation] = useState(false);
@@ -18,6 +19,7 @@ const SetPinStep = () => {
         'initial',
     );
     const { goToNextStep, showPinMatrix, updateAnalytics } = useOnboarding();
+    const deviceModel = getDeviceModel(device);
 
     const { changePin } = useActions({
         changePin: deviceSettingsActions.changePin,
@@ -57,7 +59,7 @@ const SetPinStep = () => {
     const showPinMismatch =
         modal.context === '@modal/context-user' && modal.payload.type === 'pin-mismatch'; // Set to true by T1 when user fails to enter same pin, not used at all with TT
 
-    // First button request that will pop out of the device is "ButtonRequest_ProtectCall" (T1) or "ButtonRequest_Other" (T2), requesting us to confirm enabling PIN
+    // First button request that will pop out of the device is "ButtonRequest_ProtectCall" (T1) or "ButtonRequest_Other" (TT/TR), requesting us to confirm enabling PIN
     // buttonRequests will be cleared on cancelling the confirmation prompt on the device, turning this condition to false.
     const showConfirmationPrompt = device.buttonRequests.find(
         b => b.code === 'ButtonRequest_Other' || b.code === 'ButtonRequest_ProtectCall',
@@ -147,7 +149,7 @@ const SetPinStep = () => {
                         </OnboardingButtonSkip>
                     ) : undefined
                 }
-                confirmOnDevice={showConfirmationPrompt ? device.features.major_version : undefined}
+                deviceModel={showConfirmationPrompt ? deviceModel : undefined}
             >
                 {/* // device requested showing a pin matrix, show the matrix also on "repeat-pin" status until we get fail or success response from the device */}
                 {(showPinMatrix || status === 'repeat-pin') && <PinMatrix device={device} />}

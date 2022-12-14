@@ -12,7 +12,7 @@ import { useDevice, useFirmware, useOnboarding, useSelector } from '@suite-hooks
 import { ReconnectDevicePrompt, InstallButton, FirmwareOffer } from '@firmware-components';
 import { FirmwareType, TrezorDevice } from '@suite-types';
 import { getFwUpdateVersion } from '@suite-utils/device';
-import { getFirmwareVersion } from '@trezor/device-utils';
+import { getFirmwareVersion, getDeviceModel } from '@trezor/device-utils';
 
 const InfoRow = styled.div`
     align-items: center;
@@ -112,6 +112,7 @@ export const FirmwareInitial = ({
 
     // User is following instructions for disconnecting/reconnecting a device in bootloader mode; We'll use cached version of the device
     const device = status === 'waiting-for-bootloader' ? cachedDevice : liveDevice;
+    const deviceModel = getDeviceModel(device);
 
     let content;
 
@@ -122,7 +123,7 @@ export const FirmwareInitial = ({
         return <ConnectDevicePromptManager device={device} />;
     }
 
-    // Bitcoin-only firmware is only available on T2 from v2.0.8 - older devices must first upgrade to 2.1.1 which does not have a Bitcoin-only variant
+    // Bitcoin-only firmware is only available on TT from v2.0.8 - older devices must first upgrade to 2.1.1 which does not have a Bitcoin-only variant
     const isBitcoinOnlyAvailable = !!device.firmwareRelease?.release.url_bitcoinonly;
     const currentFwVersion = getFirmwareVersion(device);
     const availableFwVersion = getFwUpdateVersion(device);
@@ -297,11 +298,7 @@ export const FirmwareInitial = ({
                     innerActions={content.innerActions}
                     outerActions={content.outerActions}
                     disableConfirmWrapper={!!standaloneFwUpdate}
-                    confirmOnDevice={
-                        status === 'waiting-for-confirmation'
-                            ? device?.features?.major_version
-                            : undefined
-                    }
+                    deviceModel={status === 'waiting-for-confirmation' ? deviceModel : undefined}
                     nested={!!standaloneFwUpdate}
                 >
                     {content.body}

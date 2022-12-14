@@ -3,6 +3,7 @@ import styled, { css } from 'styled-components';
 import { DeviceImage } from '../../DeviceImage';
 import { Icon } from '../../Icon';
 import { variables, animations } from '../../../config';
+import { type DeviceModel } from '@trezor/device-utils';
 
 enum AnimationDirection {
     Up,
@@ -125,7 +126,7 @@ const isStepActive = (index: number, activeStep?: number) => {
 export interface ConfirmOnDeviceProps {
     title: React.ReactNode;
     successText?: React.ReactNode;
-    trezorModel: 1 | 2;
+    deviceModel: DeviceModel;
     steps?: number;
     activeStep?: number;
     isConfirmed?: boolean;
@@ -137,7 +138,7 @@ export const ConfirmOnDevice = ({
     steps,
     activeStep,
     onCancel,
-    trezorModel,
+    deviceModel,
     successText,
     isConfirmed,
 }: ConfirmOnDeviceProps) => {
@@ -149,7 +150,7 @@ export const ConfirmOnDevice = ({
             data-test="@prompts/confirm-on-device"
         >
             <Left>
-                <DeviceImage height="34px" trezorModel={trezorModel} />
+                <DeviceImage height="34px" deviceModel={deviceModel} />
             </Left>
 
             <Middle>

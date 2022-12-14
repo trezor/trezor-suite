@@ -8,6 +8,7 @@ import {
     CollapsibleCardProps,
 } from '@trezor/components';
 import { Translation } from '@suite-components';
+import { DeviceModel } from '@trezor/device-utils';
 
 const ConfirmWrapper = styled.div`
     margin-bottom: 20px;
@@ -40,7 +41,7 @@ const StyledBackdrop = styled(Backdrop)<{ show: boolean }>`
 export interface OnboardingStepBoxProps extends CollapsibleCardProps {
     innerActions?: React.ReactNode;
     outerActions?: React.ReactNode;
-    confirmOnDevice?: number;
+    deviceModel?: DeviceModel;
     disableConfirmWrapper?: boolean;
     nested?: boolean;
 }
@@ -51,7 +52,7 @@ export const OnboardingStepBox = ({
     image,
     innerActions,
     outerActions,
-    confirmOnDevice,
+    deviceModel,
     disableConfirmWrapper,
     nested,
     className,
@@ -59,13 +60,13 @@ export const OnboardingStepBox = ({
     ...rest
 }: OnboardingStepBoxProps) => (
     <>
-        <StyledBackdrop show={!!confirmOnDevice && !disableConfirmWrapper} />
+        <StyledBackdrop show={!!deviceModel && !disableConfirmWrapper} />
         {!disableConfirmWrapper && (
             <ConfirmWrapper data-test="@onboarding/confirm-on-device">
-                {confirmOnDevice && (
+                {deviceModel && (
                     <ConfirmOnDevice
                         title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
-                        trezorModel={confirmOnDevice === 1 ? 1 : 2}
+                        deviceModel={deviceModel}
                     />
                 )}
             </ConfirmWrapper>

@@ -147,7 +147,7 @@ export const InstallBridge = () => {
                         </BridgeDesktopNote>
                     )}
                 </Version>
-                <StyledImage image="T_BRIDGE_CHECK" />
+                <StyledImage image="BRIDGE_CHECK_TT" />
                 {isLoading ? (
                     <LoaderWrapper data-test="@bridge/loading">
                         <CenteredLoader size={50} strokeWidth={2} />

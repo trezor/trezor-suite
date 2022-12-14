@@ -137,6 +137,7 @@ export const FinalStep = () => {
         modal: state.modal,
         onboardingAnalytics: state.onboarding.onboardingAnalytics,
     }));
+    const deviceModel = getDeviceModel(device);
 
     const [state, setState] = useState<'rename' | 'homescreen' | null>(null);
     const [label, setLabel] = useState('');
@@ -155,7 +156,7 @@ export const FinalStep = () => {
     return (
         <OnboardingStepBox
             data-test="@onboarding/final"
-            confirmOnDevice={isWaitingForConfirm ? device.features?.major_version : undefined}
+            deviceModel={isWaitingForConfirm ? deviceModel : undefined}
         >
             <Wrapper ref={wrapperRef} shouldWrap={width < 650}>
                 <DeviceImageWrapper>

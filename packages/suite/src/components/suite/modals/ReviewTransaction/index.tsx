@@ -11,6 +11,7 @@ import OutputList from './components/OutputList';
 import Summary from './components/Summary';
 import { isCardanoTx, getShortFingerprint } from '@wallet-utils/cardanoUtils';
 import { CardanoOutput } from '@trezor/connect';
+import { DeviceModel, getDeviceModel } from '@trezor/device-utils';
 
 const StyledModal = styled(Modal)`
     ${Modal.Body} {
@@ -79,6 +80,7 @@ export const ReviewTransaction = ({ decision }: ReviewTransactionProps) => {
     const [detailsOpen, setDetailsOpen] = useState(false);
 
     const { device } = useDevice();
+    const deviceModel = getDeviceModel(device);
 
     const { precomposedTx, precomposedForm, signedTx } = send;
 
@@ -193,7 +195,7 @@ export const ReviewTransaction = ({ decision }: ReviewTransactionProps) => {
     // remove 1 additional element to keep it consistent with TT where this step is swipeable with one button request
     if (
         typeof decreaseOutputId === 'number' &&
-        device.features?.major_version === 1 &&
+        deviceModel === DeviceModel.T1 &&
         buttonRequests.filter(r => r.code === 'ButtonRequest_ConfirmOutput').length > 1
     ) {
         buttonRequests.splice(-1, 1);
@@ -217,7 +219,7 @@ export const ReviewTransaction = ({ decision }: ReviewTransactionProps) => {
                     title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
                     steps={outputs.length}
                     activeStep={signedTx ? outputs.length + 1 : buttonRequests.length}
-                    trezorModel={device.features?.major_version === 1 ? 1 : 2}
+                    deviceModel={deviceModel}
                     successText={<Translation id="TR_CONFIRMED_TX" />}
                     onCancel={() => {
                         cancelSignTx();

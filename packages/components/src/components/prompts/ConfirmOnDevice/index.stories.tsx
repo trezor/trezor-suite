@@ -1,6 +1,7 @@
 import React from 'react';
 import { ConfirmOnDevice } from './index';
 import { StoryColumn } from '../../../support/Story';
+import { DeviceModel } from '@trezor/device-utils';
 
 export default {
     title: 'Misc/Prompts',
@@ -14,25 +15,33 @@ export default {
 export const Basic = () => (
     <>
         <StoryColumn minWidth={300}>
-            <ConfirmOnDevice successText="confirmed" title="Confirm on Trezor T1" trezorModel={1} />
+            <ConfirmOnDevice
+                successText="confirmed"
+                title="Confirm on Trezor T1"
+                deviceModel={DeviceModel.T1}
+            />
         </StoryColumn>
         <StoryColumn minWidth={300}>
             <ConfirmOnDevice
                 successText="confirmed"
                 title="Confirm with cancel"
                 onCancel={() => {}}
-                trezorModel={1}
+                deviceModel={DeviceModel.T1}
             />
         </StoryColumn>
         <StoryColumn minWidth={300}>
-            <ConfirmOnDevice successText="confirmed" title="Confirm on Trezor T2" trezorModel={2} />
+            <ConfirmOnDevice
+                successText="confirmed"
+                title="Confirm on Trezor TT"
+                deviceModel={DeviceModel.TT}
+            />
         </StoryColumn>
         <StoryColumn minWidth={300}>
             <ConfirmOnDevice
                 successText="confirmed"
                 title="With 3 steps no active"
                 steps={3}
-                trezorModel={2}
+                deviceModel={DeviceModel.TT}
             />
         </StoryColumn>
         <StoryColumn minWidth={300}>
@@ -40,7 +49,7 @@ export const Basic = () => (
                 successText="confirmed"
                 title="With 2 steps no active"
                 steps={2}
-                trezorModel={2}
+                deviceModel={DeviceModel.TT}
             />
         </StoryColumn>
         <StoryColumn minWidth={300}>
@@ -49,7 +58,7 @@ export const Basic = () => (
                 title="With 5 steps - active 4"
                 steps={5}
                 activeStep={4}
-                trezorModel={2}
+                deviceModel={DeviceModel.TT}
             />
         </StoryColumn>
         <StoryColumn minWidth={300}>
@@ -58,7 +67,7 @@ export const Basic = () => (
                 title="With 3 steps - active 1"
                 steps={3}
                 activeStep={1}
-                trezorModel={2}
+                deviceModel={DeviceModel.TT}
             />
         </StoryColumn>
         <StoryColumn minWidth={300}>
@@ -68,7 +77,7 @@ export const Basic = () => (
                 steps={5}
                 activeStep={3}
                 onCancel={() => {}}
-                trezorModel={2}
+                deviceModel={DeviceModel.TT}
             />
         </StoryColumn>
         <StoryColumn minWidth={300}>
@@ -78,7 +87,7 @@ export const Basic = () => (
                 steps={5}
                 activeStep={5}
                 onCancel={() => {}}
-                trezorModel={2}
+                deviceModel={DeviceModel.TT}
             />
         </StoryColumn>
     </>

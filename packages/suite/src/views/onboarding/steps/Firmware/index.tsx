@@ -10,7 +10,7 @@ import {
 } from '@firmware-components';
 import { useSelector, useFirmware, useOnboarding } from '@suite-hooks';
 import { TrezorDevice } from '@suite-types';
-import { getFirmwareType, getFirmwareVersion } from '@trezor/device-utils';
+import { getFirmwareType, getFirmwareVersion, getDeviceModel } from '@trezor/device-utils';
 
 const FirmwareStep = () => {
     const { device } = useSelector(state => ({
@@ -27,6 +27,7 @@ const FirmwareStep = () => {
         targetType,
     } = useFirmware();
     const [cachedDevice, setCachedDevice] = useState<TrezorDevice | undefined>(device);
+    const deviceModel = getDeviceModel(device);
 
     // special and hopefully very rare case. this appears when somebody tried to fool user into using a hacked firmware
     if (device?.id && firmwareHashInvalid.includes(device.id)) {
@@ -44,7 +45,7 @@ const FirmwareStep = () => {
             <OnboardingStepBox
                 image="FIRMWARE"
                 heading={<Translation id="TR_CHECK_FINGERPRINT" />}
-                confirmOnDevice={device.features?.major_version === 1 ? 1 : 2}
+                deviceModel={deviceModel}
             >
                 <Fingerprint device={device} />
             </OnboardingStepBox>
