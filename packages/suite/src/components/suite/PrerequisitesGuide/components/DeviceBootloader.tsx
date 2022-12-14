@@ -4,31 +4,37 @@ import { Translation, TroubleshootingTips } from '@suite-components';
 import { Button } from '@trezor/components';
 import { useActions } from '@suite-hooks';
 import * as routerActions from '@suite-actions/routerActions';
+import { TrezorDevice } from '@suite-types';
+import { DeviceModel, getDeviceModel, pickByDeviceModel } from '@trezor/device-utils';
 
 const WhiteSpace = styled.div`
     min-width: 60px;
 `;
 
 interface DeviceBootloaderProps {
-    trezorModel?: number;
+    device?: TrezorDevice;
 }
 
 /* User connected the device in bootloader mode, but in order to continue it needs to be in normal mode */
-export const DeviceBootloader = ({ trezorModel }: DeviceBootloaderProps) => {
+export const DeviceBootloader = ({ device }: DeviceBootloaderProps) => {
     const { goto } = useActions({
         goto: routerActions.goto,
     });
+    const deviceModel = getDeviceModel(device);
 
     const tips = [
         {
             key: 'device-bootloader',
             heading: <Translation id="TR_DEVICE_CONNECTED_BOOTLOADER_RECONNECT" />,
-            description:
-                trezorModel === 1 ? (
-                    <Translation id="TR_DEVICE_CONNECTED_BOOTLOADER_RECONNECT_IN_NORMAL_MODEL_1" />
-                ) : (
-                    <Translation id="TR_DEVICE_CONNECTED_BOOTLOADER_RECONNECT_IN_NORMAL_MODEL_2" />
-                ),
+            description: (
+                <Translation
+                    id={pickByDeviceModel(deviceModel, {
+                        default: 'TR_DEVICE_CONNECTED_BOOTLOADER_RECONNECT_IN_NORMAL_NO_BUTTON',
+                        [DeviceModel.TT]:
+                            'TR_DEVICE_CONNECTED_BOOTLOADER_RECONNECT_IN_NORMAL_NO_TOUCH',
+                    })}
+                />
+            ),
             noBullet: true,
             action: <WhiteSpace />, // To make the layout bit nicer - prevent floating above button on the next row.
         },

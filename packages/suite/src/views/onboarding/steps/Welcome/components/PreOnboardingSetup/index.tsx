@@ -19,9 +19,7 @@ const PreOnboardingSetup = () => {
     }));
 
     const { goToSubStep, rerun } = useOnboarding();
-    const { recovery } = useSelector(state => ({
-        recovery: state.recovery,
-    }));
+    const recovery = useSelector(state => state.recovery);
 
     const onConfirm = (trackingEnabled: boolean) => {
         if (trackingEnabled) {

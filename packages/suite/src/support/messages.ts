@@ -2991,17 +2991,21 @@ export default defineMessages({
         defaultMessage: 'Reconnect your Trezor',
         id: 'TR_RECONNECT_HEADER',
     },
-    TR_RECOVER_SUBHEADING: {
+    TR_RECOVER_SUBHEADING_COMPUTER: {
         defaultMessage:
             'If you want to recover an existing wallet, you can do so with your recovery seed. Select the number of words in your recovery seed.',
         description: 'Subheading in recover page. Basic info about recovery',
-        id: 'TR_RECOVER_SUBHEADING',
+        id: 'TR_RECOVER_SUBHEADING_COMPUTER',
     },
-    TR_RECOVER_SUBHEADING_MODEL_T: {
-        defaultMessage:
-            "Using a Trezor Model T, the entire recovery process is done on the device's touchscreen.",
+    TR_RECOVER_SUBHEADING_TOUCH: {
+        defaultMessage: "The entire recovery process is done on the device's touchscreen.",
         description: 'Subheading in recover page. Basic info about recovery',
-        id: 'TR_RECOVER_SUBHEADING_MODEL_T',
+        id: 'TR_RECOVER_SUBHEADING_TOUCH',
+    },
+    TR_RECOVER_SUBHEADING_BUTTONS: {
+        defaultMessage: "The entire recovery process is done on the device's screen using buttons.",
+        description: 'Subheading in recover page. Basic info about recovery',
+        id: 'TR_RECOVER_SUBHEADING_BUTTONS',
     },
     TR_RECOVERY_ERROR: {
         defaultMessage: 'Device recovery failed: {error}',
@@ -3124,15 +3128,15 @@ export default defineMessages({
         defaultMessage: 'Connect device to change Device Settings',
         id: 'TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED',
     },
-    TR_SETTINGS_DEVICE_BANNER_DESCRIPTION_BOOTLOADER_MODEL_1: {
+    TR_SETTINGS_DEVICE_BANNER_DESCRIPTION_BOOTLOADER_NO_BUTTONS: {
         defaultMessage:
             'Reconnect the device without holding any buttons while connecting the cable to access all other Settings.',
-        id: 'TR_SETTINGS_DEVICE_BANNER_DESCRIPTION_BOOTLOADER_MODEL_1',
+        id: 'TR_SETTINGS_DEVICE_BANNER_DESCRIPTION_BOOTLOADER_NO_BUTTONS',
     },
-    TR_SETTINGS_DEVICE_BANNER_DESCRIPTION_BOOTLOADER_MODEL_2: {
+    TR_SETTINGS_DEVICE_BANNER_DESCRIPTION_BOOTLOADER_NO_TOUCH: {
         defaultMessage:
             'Reconnect the device without touching the screen to access all other Settings.',
-        id: 'TR_SETTINGS_DEVICE_BANNER_DESCRIPTION_BOOTLOADER_MODEL_2',
+        id: 'TR_SETTINGS_DEVICE_BANNER_DESCRIPTION_BOOTLOADER_NO_TOUCH',
     },
     TR_SETTINGS_COINS_UNIVERSAL_FIRMWARE_SUGGESTION: {
         defaultMessage: 'For more coins, install <button>Universal</button> firmware.',
@@ -4052,27 +4056,27 @@ export default defineMessages({
         id: 'TR_ENTER_ALL_WORDS_IN_CORRECT',
         defaultMessage: 'Enter all words in the correct order',
     },
-    TR_ON_YOUR_COMPUTER_ENTER: {
-        id: 'TR_ON_YOUR_COMPUTER_ENTER',
+    TR_SEED_WORDS_ENTER_COMPUTER: {
+        id: 'TR_SEED_WORDS_ENTER_COMPUTER',
         defaultMessage: 'Enter the words from your seed in the order displayed on your device.',
     },
-    TR_CHECK_RECOVERY_SEED_DESC_TT: {
-        id: 'TR_CHECK_RECOVERY_SEED_DESC_TT',
-        defaultMessage:
-            'Your recovery seed (wallet backup) is entered using the Trezor Model T touchscreen. This avoids exposing any of your sensitive information to a potentially insecure computer or web browser.',
-        dynamic: true,
-    },
-    TR_USING_TOUCHSCREEN: {
-        id: 'TR_USING_TOUCHSCREEN',
+    TR_SEED_WORDS_ENTER_TOUCHSCREEN: {
+        id: 'TR_SEED_WORDS_ENTER_TOUCHSCREEN',
         defaultMessage:
             'Using the touchscreen display, enter all the words in the correct order until completed.',
+        dynamic: true,
     },
-    TR_CHOSE_RECOVERY_TYPE: {
-        id: 'TR_CHOSE_RECOVERY_TYPE',
-        defaultMessage: 'Chose recovery type',
+    TR_SEED_WORDS_ENTER_BUTTONS: {
+        id: 'TR_SEED_WORDS_ENTER_BUTTONS',
+        defaultMessage:
+            'Using buttons on the device, enter the words from your seed in the order displayed on your device.',
     },
-    TR_ALL_THE_WORDS: {
-        id: 'TR_ALL_THE_WORDS',
+    TR_CHOOSE_RECOVERY_TYPE: {
+        id: 'TR_CHOOSE_RECOVERY_TYPE',
+        defaultMessage: 'Choose recovery type',
+    },
+    TR_ENTER_SEED_WORDS_ON_DEVICE: {
+        id: 'TR_ENTER_SEED_WORDS_ON_DEVICE',
         defaultMessage:
             'The words are entered always on the device for security reasons. Please enter all the words in the correct order.',
     },
@@ -4654,10 +4658,6 @@ export default defineMessages({
         id: 'TR_RECONNECT_IN_NORMAL_SUCCESS',
         defaultMessage: 'Device is now ready',
     },
-    TR_SWIPE_YOUR_FINGERS: {
-        id: 'TR_SWIPE_YOUR_FINGERS',
-        defaultMessage: 'Swipe your finger across the touchscreen while connecting cable.',
-    },
     TR_VERSION: {
         id: 'TR_VERSION',
         defaultMessage: 'Version {version}',
@@ -5057,13 +5057,17 @@ export default defineMessages({
         defaultMessage: 'Sent',
         description: 'Used in graph tooltip: Sent x USD/BTC',
     },
-    TR_HOLD_BOTH_BUTTONS: {
-        id: 'TR_HOLD_BOTH_BUTTONS',
+    TR_SWITCH_TO_BOOTLOADER_HOLD_BOTH_BUTTONS: {
+        id: 'TR_SWITCH_TO_BOOTLOADER_HOLD_BOTH_BUTTONS',
         defaultMessage: 'Hold both buttons while connecting device',
     },
-    TR_HOLD_LEFT_BUTTON: {
-        id: 'TR_HOLD_LEFT_BUTTON',
+    TR_SWITCH_TO_BOOTLOADER_HOLD_LEFT_BUTTON: {
+        id: 'TR_SWITCH_TO_BOOTLOADER_HOLD_LEFT_BUTTON',
         defaultMessage: 'Hold one or both buttons while you reconnect the USB cable.',
+    },
+    TR_SWITCH_TO_BOOTLOADER_SWIPE_YOUR_FINGERS: {
+        id: 'TR_SWITCH_TO_BOOTLOADER_SWIPE_YOUR_FINGERS',
+        defaultMessage: 'Swipe your finger across the touchscreen while connecting cable.',
     },
     BACKUP_BACKUP_ALREADY_FINISHED_HEADING: {
         id: 'BACKUP_BACKUP_ALREADY_FINISHED_HEADING',
@@ -6027,12 +6031,12 @@ export default defineMessages({
         id: 'FIRMWARE_USER_TAKES_RESPONSIBILITY_CHECKBOX_DESC',
         defaultMessage: 'I accept the risk',
     },
-    FIRMWARE_CONNECT_IN_NORMAL_MODEL_1: {
-        id: 'FIRMWARE_CONNECT_IN_NORMAL_MODEL_1',
+    FIRMWARE_CONNECT_IN_NORMAL_MODEL_NO_BUTTON: {
+        id: 'FIRMWARE_CONNECT_IN_NORMAL_MODEL_NO_BUTTON',
         defaultMessage: 'Do not hold any buttons while connecting the cable.',
     },
-    FIRMWARE_CONNECT_IN_NORMAL_MODEL_2: {
-        id: 'FIRMWARE_CONNECT_IN_NORMAL_MODEL_2',
+    FIRMWARE_CONNECT_IN_NORMAL_MODEL_NO_TOUCH: {
+        id: 'FIRMWARE_CONNECT_IN_NORMAL_MODEL_NO_TOUCH',
         defaultMessage:
             "Please make sure you're not touching the display while connecting the device.",
     },
@@ -6630,12 +6634,12 @@ export default defineMessages({
         id: 'TR_DEVICE_CONNECTED_BOOTLOADER_RECONNECT',
         defaultMessage: 'In bootloader by mistake?',
     },
-    TR_DEVICE_CONNECTED_BOOTLOADER_RECONNECT_IN_NORMAL_MODEL_1: {
-        id: 'TR_DEVICE_CONNECTED_BOOTLOADER_RECONNECT_IN_NORMAL_MODEL_1',
+    TR_DEVICE_CONNECTED_BOOTLOADER_RECONNECT_IN_NORMAL_NO_BUTTON: {
+        id: 'TR_DEVICE_CONNECTED_BOOTLOADER_RECONNECT_IN_NORMAL_NO_BUTTON',
         defaultMessage: 'Reconnect the device without touching any buttons.',
     },
-    TR_DEVICE_CONNECTED_BOOTLOADER_RECONNECT_IN_NORMAL_MODEL_2: {
-        id: 'TR_DEVICE_CONNECTED_BOOTLOADER_RECONNECT_IN_NORMAL_MODEL_2',
+    TR_DEVICE_CONNECTED_BOOTLOADER_RECONNECT_IN_NORMAL_NO_TOUCH: {
+        id: 'TR_DEVICE_CONNECTED_BOOTLOADER_RECONNECT_IN_NORMAL_NO_TOUCH',
         defaultMessage: 'Reconnect the device without touching the screen.',
     },
     TR_WIPE_OR_UPDATE: {

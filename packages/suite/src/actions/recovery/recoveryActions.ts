@@ -8,6 +8,7 @@ import { Dispatch, GetState } from '@suite-types';
 import { WordCount } from '@recovery-types';
 import { DEVICE } from '@suite-constants';
 import { SUITE } from '@suite-actions/constants';
+import { DeviceModel, getDeviceModel } from '@trezor/device-utils';
 
 export type SeedInputStatus =
     | 'initial'
@@ -55,10 +56,12 @@ const submit = (word: string) => () => {
 const checkSeed = () => async (dispatch: Dispatch, getState: GetState) => {
     const { advancedRecovery, wordsCount } = getState().recovery;
     const { device } = getState().suite;
+    const deviceModel = getDeviceModel(device);
+
     if (!device || !device.features) return;
     dispatch(setError(''));
 
-    if (device.features.major_version === 1) {
+    if (deviceModel === DeviceModel.T1) {
         dispatch(setStatus('waiting-for-confirmation'));
     } else {
         dispatch(setStatus('in-progress'));
@@ -96,7 +99,9 @@ const recoverDevice = () => async (dispatch: Dispatch, getState: GetState) => {
     }
     dispatch(setError(''));
 
-    if (device.features.major_version === 1) {
+    const deviceModel = getDeviceModel(device);
+
+    if (deviceModel === DeviceModel.T1) {
         dispatch(setStatus('waiting-for-confirmation'));
     } else {
         dispatch(setStatus('in-progress'));

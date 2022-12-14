@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { HELP_CENTER_ADVANCED_RECOVERY_URL } from '@trezor/urls';
 import { Button, ButtonPin, KEYBOARD_CODE } from '@trezor/components';
 import { Translation, TrezorLink, DeviceMatrixExplanation } from '@suite-components';
+import { DeviceModel } from '@trezor/device-utils';
 
 const Wrapper = styled.div`
     display: flex;
@@ -28,12 +29,12 @@ const Backspace = styled(Button)`
     margin: 8px;
 `;
 
-interface Props {
+interface WordInputAdvancedProps {
     count: 6 | 9;
     onSubmit: (value: string) => void;
 }
 
-const WordInputAdvanced = (props: Props) => {
+const WordInputAdvanced = (props: WordInputAdvancedProps) => {
     const { onSubmit, count } = props;
 
     const backspace = useCallback(() => {
@@ -104,7 +105,7 @@ const WordInputAdvanced = (props: Props) => {
                     {
                         key: '1',
                         title: <Translation id="TR_RECOVERY_MATRIX_DISPLAYED_ON_TREZOR" />,
-                        deviceImage: 1,
+                        deviceModel: DeviceModel.T1,
                     },
                     {
                         key: '2',
