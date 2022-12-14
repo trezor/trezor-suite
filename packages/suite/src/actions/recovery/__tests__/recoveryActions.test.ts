@@ -3,6 +3,7 @@ import { configureStore } from '@suite/support/tests/configureStore';
 import recoveryReducer from '@recovery-reducers/recoveryReducer';
 import { Action } from '@suite-types';
 import * as recoveryActions from '@recovery-actions/recoveryActions';
+import { DeviceModel } from '@trezor/device-utils';
 
 jest.mock('@trezor/connect', () => ({
     ...jest.requireActual('@trezor/connect'),
@@ -25,6 +26,7 @@ export const getInitialState = (custom?: any): any => ({
         device: {
             features: {
                 major_version: 2,
+                model: DeviceModel.TT,
             },
         },
         flags: {},

@@ -8,6 +8,7 @@ import suiteReducer from '@suite-reducers/suiteReducer';
 import { ArrayElement } from '@trezor/type-utils';
 import { actions, reducerActions } from '../__fixtures__/firmwareActions';
 import { TrezorDevice } from '@suite-types';
+import { DeviceModel } from '@trezor/device-utils';
 
 type Fixture = ArrayElement<typeof actions>;
 
@@ -68,6 +69,7 @@ export const getInitialState = (override?: InitialState): any => {
                 type: 'acquired',
                 features: {
                     major_version: 2,
+                    model: DeviceModel.TT,
                 },
             },
             locks: [],
