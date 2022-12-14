@@ -7,7 +7,7 @@ const LevelContainer = styled.div`
     right: 20px;
     width: 68px;
 
-    .inputAddon {
+    ${Input.InputAddon} {
         font-size: ${variables.FONT_SIZE.SMALL};
         font-weight: ${variables.FONT_WEIGHT.MEDIUM};
         color: ${({ theme }) => theme.TYPE_LIGHT_GREY};

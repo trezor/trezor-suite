@@ -35,9 +35,9 @@ const StyledInput = styled.input<StyledInputProps>`
     height: ${({ variant }) => `${INPUT_HEIGHTS[variant as InputVariant]}px`};
     padding: 1px 16px 0 16px;
     padding-left: ${({ leftAddonWidth }) =>
-        leftAddonWidth ? `${leftAddonWidth + 18}px` : undefined};
+        leftAddonWidth ? `${leftAddonWidth + 19}px` : undefined};
     padding-right: ${({ rightAddonWidth }) =>
-        rightAddonWidth ? `${rightAddonWidth + 18}px` : undefined};
+        rightAddonWidth ? `${rightAddonWidth + 19}px` : undefined};
 `;
 
 const InputWrapper = styled.div`
@@ -128,7 +128,7 @@ export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> 
     onClear?: () => void;
 }
 
-export const Input = ({
+const Input = ({
     value,
     type = 'text',
     innerRef,
@@ -252,3 +252,7 @@ export const Input = ({
         </Wrapper>
     );
 };
+
+Input.InputAddon = InputAddon;
+
+export { Input };
