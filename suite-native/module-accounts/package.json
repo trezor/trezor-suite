@@ -26,6 +26,7 @@
         "@suite-native/graph": "workspace:*",
         "@suite-native/module-settings": "workspace:*",
         "@suite-native/navigation": "workspace:*",
+        "@suite-native/qr-code": "workspace:*",
         "@suite-native/transactions": "workspace:*",
         "@trezor/icons": "workspace:*",
         "@trezor/styles": "workspace:*",

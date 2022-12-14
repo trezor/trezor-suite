@@ -7,7 +7,7 @@ import { Box, Button, HStack, Text } from '@suite-native/atoms';
 import { defaultColorVariant } from '@trezor/theme';
 
 type QRCodeProps = {
-    address?: string;
+    data?: string;
     onCopy: () => void;
 };
 
@@ -26,15 +26,15 @@ const actionButtonsStyle = prepareNativeStyle(_ => ({
     flexDirection: 'row',
 }));
 
-export const QRCode = ({ address, onCopy }: QRCodeProps) => {
+export const QRCode = ({ data, onCopy }: QRCodeProps) => {
     const { applyStyle } = useNativeStyles();
 
-    if (!address) return null;
+    if (!data) return null;
 
-    const handleShareAddress = async () => {
+    const handleSharedata = async () => {
         try {
             await Share.share({
-                message: address,
+                message: data,
             });
         } catch (error) {
             Alert.alert('Something went wrong.', error.message);
@@ -44,21 +44,21 @@ export const QRCode = ({ address, onCopy }: QRCodeProps) => {
     return (
         <>
             <View style={applyStyle(qrCodeStyle)}>
-                {address && (
+                {data && (
                     <ReactQRCode
                         bgColor={defaultColorVariant.gray0}
                         fgColor={defaultColorVariant.gray900}
                         level="Q"
                         size={QRCODE_SIZE}
-                        value={address}
+                        value={data}
                     />
                 )}
             </View>
             <Box margin="small" alignItems="center" justifyContent="center">
-                <Text variant="body">{address}</Text>
+                <Text variant="body">{data}</Text>
             </Box>
             <HStack spacing={15} style={applyStyle(actionButtonsStyle)}>
-                <Button size="large" colorScheme="gray" onPress={handleShareAddress}>
+                <Button size="large" colorScheme="gray" onPress={handleSharedata}>
                     Share
                 </Button>
                 <Button size="large" onPress={onCopy}>

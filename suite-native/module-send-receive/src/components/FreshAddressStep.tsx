@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import * as Clipboard from 'expo-clipboard';
 
-import { QRCode } from '@suite-native/accounts';
+import { QRCode } from '@suite-native/qr-code';
 import { Box } from '@suite-native/atoms';
 import {
     TransactionsRootState,
@@ -54,7 +54,7 @@ export const FreshAddressStep = ({ accountKey, onClose }: FreshAddressStepProps)
         <Box>
             {!freshAddressError ? (
                 <QRCode
-                    address={freshAddress?.address}
+                    data={freshAddress?.address}
                     onCopy={handleCopyAddressToClipboardAndClose}
                 />
             ) : (

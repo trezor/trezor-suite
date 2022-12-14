@@ -6321,7 +6321,6 @@ __metadata:
     "@trezor/theme": "workspace:*"
     react: 18.2.0
     react-native: 0.70.5
-    react-qr-code: 2.0.8
     react-redux: 7.2.2
   languageName: unknown
   linkType: soft
@@ -6446,7 +6445,7 @@ __metadata:
     "@suite-native/module-devices": "workspace:*"
     "@suite-native/module-settings": "workspace:*"
     "@suite-native/navigation": "workspace:*"
-    "@suite-native/qr-code-scanner": "workspace:*"
+    "@suite-native/qr-code": "workspace:*"
     "@trezor/connect": "workspace:9.0.5"
     "@trezor/icons": "workspace:*"
     "@trezor/styles": "workspace:*"
@@ -6480,6 +6479,7 @@ __metadata:
     "@suite-native/graph": "workspace:*"
     "@suite-native/module-settings": "workspace:*"
     "@suite-native/navigation": "workspace:*"
+    "@suite-native/qr-code": "workspace:*"
     "@suite-native/transactions": "workspace:*"
     "@trezor/icons": "workspace:*"
     "@trezor/styles": "workspace:*"
@@ -6573,6 +6573,7 @@ __metadata:
     "@suite-native/accounts": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/navigation": "workspace:*"
+    "@suite-native/qr-code": "workspace:*"
     "@trezor/connect": "workspace:9.0.5"
     "@trezor/styles": "workspace:*"
     "@trezor/theme": "workspace:*"
@@ -6632,16 +6633,18 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-native/qr-code-scanner@workspace:*, @suite-native/qr-code-scanner@workspace:suite-native/qr-code-scanner":
+"@suite-native/qr-code@workspace:*, @suite-native/qr-code@workspace:suite-native/qr-code":
   version: 0.0.0-use.local
-  resolution: "@suite-native/qr-code-scanner@workspace:suite-native/qr-code-scanner"
+  resolution: "@suite-native/qr-code@workspace:suite-native/qr-code"
   dependencies:
     "@react-navigation/core": ^6.2.2
     "@suite-native/atoms": "workspace:*"
     "@trezor/styles": "workspace:*"
+    "@trezor/theme": "workspace:*"
     expo-barcode-scanner: ^12.1.0
     react: 18.2.0
     react-native: 0.70.5
+    react-qr-code: 2.0.8
   languageName: unknown
   linkType: soft
 
@@ -7512,7 +7515,6 @@ __metadata:
     react-native-screens: ^3.13.1
     react-native-splash-screen: ^3.3.0
     react-native-svg: ^12.4.4
-    react-qr-code: 2.0.8
     react-redux: 7.2.2
     react-test-renderer: 18.2.0
     redux-persist: 6.0.0

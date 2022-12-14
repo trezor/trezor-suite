@@ -13,9 +13,9 @@ import {
     StackNavigationProps,
     StackProps,
 } from '@suite-native/navigation';
-import { BottomSheet, Box, Button, Card, Text, VStack } from '@suite-native/atoms';
+import { BottomSheet, Box, Button, Card, IconButton, Text, VStack } from '@suite-native/atoms';
 import { accountsActions, AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
-import { QRCode } from '@suite-native/accounts';
+import { QRCode } from '@suite-native/qr-code';
 import { CryptoIcon } from '@trezor/icons';
 // import { deriveAddresses } from '@trezor/utxo-lib';
 
@@ -83,6 +83,7 @@ export const AccountDetailSettings = ({
                         {/* <AccountDetailSettingsRow title="Derivation Path" value={derivationPath} /> */}
                     </VStack>
                 </Card>
+                <IconButton iconName="close" onPress={() => {}} colorScheme="red" />
                 <VStack spacing="small">
                     <Button onPress={() => setIsXpubVisible(true)} colorScheme="gray">
                         View XPUB
@@ -93,7 +94,7 @@ export const AccountDetailSettings = ({
                 </VStack>
             </Box>
             <BottomSheet isVisible={isXpubVisible} onVisibilityChange={setIsXpubVisible}>
-                <QRCode address={account.descriptor} onCopy={handleCopyXpubToClipboardAndClose} />
+                <QRCode data={account.descriptor} onCopy={handleCopyXpubToClipboardAndClose} />
             </BottomSheet>
         </Screen>
     );

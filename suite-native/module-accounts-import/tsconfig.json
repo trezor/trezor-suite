@@ -33,7 +33,7 @@
         { "path": "../module-devices" },
         { "path": "../module-settings" },
         { "path": "../navigation" },
-        { "path": "../qr-code-scanner" },
+        { "path": "../qr-code" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/icons" },
         { "path": "../../packages/styles" },
