@@ -3,6 +3,7 @@ import { FIRMWARE } from '@firmware-actions/constants';
 import { SUITE } from '@suite-actions/constants';
 import * as firmwareActions from '@firmware-actions/firmwareActions';
 import { FirmwareType } from '@suite-types';
+import { DeviceModel } from '@trezor/device-utils';
 
 const { getSuiteDevice, getDeviceFeatures, getFirmwareRelease } = global.JestMocks;
 
@@ -14,7 +15,7 @@ const bootloaderDeviceNeedsIntermediary = {
             connected: true,
             firmwareRelease: { ...getFirmwareRelease(), isLatest: false },
         },
-        { major_version: 1 },
+        { major_version: 1, model: DeviceModel.T1 },
     ),
 };
 const firmwareUpdateResponsePayload = {
@@ -24,7 +25,7 @@ const firmwareUpdateResponsePayload = {
 
 export const actions = [
     {
-        description: 'Success T2',
+        description: 'Success TT',
         action: () => firmwareActions.firmwareUpdate(),
         mocks: {
             connect: {
@@ -49,7 +50,7 @@ export const actions = [
         },
     },
     {
-        description: 'Success T2 - install Bitcoin-only firmware',
+        description: 'Success TT - install Bitcoin-only firmware',
         action: () => firmwareActions.firmwareUpdate(FirmwareType.BitcoinOnly),
         mocks: {
             connect: {
@@ -113,14 +114,14 @@ export const actions = [
                 device: getSuiteDevice({
                     connected: true,
                     mode: 'bootloader',
-                    features: getDeviceFeatures({ major_version: 1 }),
+                    features: getDeviceFeatures({ major_version: 1, model: DeviceModel.T1 }),
                 }),
             },
             devices: [
                 getSuiteDevice({
                     connected: true,
                     mode: 'bootloader',
-                    features: getDeviceFeatures({ major_version: 1 }),
+                    features: getDeviceFeatures({ major_version: 1, model: DeviceModel.T1 }),
                 }),
             ],
         },
@@ -147,14 +148,14 @@ export const actions = [
                 device: getSuiteDevice({
                     connected: true,
                     mode: 'bootloader',
-                    features: getDeviceFeatures({ major_version: 1 }),
+                    features: getDeviceFeatures({ major_version: 1, model: DeviceModel.T1 }),
                 }),
             },
             devices: [
                 getSuiteDevice({
                     connected: true,
                     mode: 'bootloader',
-                    features: getDeviceFeatures({ major_version: 1 }),
+                    features: getDeviceFeatures({ major_version: 1, model: DeviceModel.T1 }),
                 }),
             ],
         },

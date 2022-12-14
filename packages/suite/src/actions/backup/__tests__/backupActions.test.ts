@@ -9,6 +9,7 @@ import { BACKUP } from '@backup-actions/constants';
 import * as backupActions from '@backup-actions/backupActions';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { CommonParams } from '@trezor/connect';
+import { DeviceModel } from '@trezor/device-utils';
 
 jest.mock('@trezor/connect', () => {
     let fixture: any;
@@ -47,6 +48,7 @@ export const getInitialState = (override: any) => {
                 type: 'acquired',
                 features: {
                     major_version: 2,
+                    model: DeviceModel.TT,
                 },
             },
             locks: [3],
