@@ -14,9 +14,6 @@ const accountsStack = enhanceTabOption({
     label: 'My Assets',
     params: {
         screen: AccountsStackRoutes.Accounts,
-        params: {
-            networkSymbol: undefined,
-        },
     },
 });
 

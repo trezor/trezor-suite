@@ -37,13 +37,14 @@ export const AccountImportHeader = ({ activeStep }: AccountImportHeaderProps) =>
     const navigation = useNavigation<NavigationProp>();
     const isOnboardingFinished = useSelector(selectIsOnboardingFinished);
 
-    const handleCloseOnboarding = () =>
+    const handleCloseOnboarding = () => {
         navigation.navigate(RootStackRoutes.AppTabs, {
             screen: AppTabsRoutes.HomeStack,
             params: {
                 screen: HomeStackRoutes.Home,
             },
         });
+    };
 
     return (
         <ScreenHeader

@@ -16,11 +16,11 @@ const screenContentStyle = prepareNativeStyle<{
     insets: EdgeInsets;
     customHorizontalPadding: number;
     customVerticalPadding: number;
-}>((_, { insets, customHorizontalPadding, customVerticalPadding }) => {
-    const { top, right, bottom, left } = insets;
+}>((_, { customHorizontalPadding, customVerticalPadding, insets }) => {
+    const { bottom, left, right } = insets;
     return {
         flexGrow: 1,
-        paddingTop: Math.max(top, customVerticalPadding),
+        paddingTop: customVerticalPadding,
         paddingBottom: Math.max(bottom, customVerticalPadding),
         paddingLeft: Math.max(left, customHorizontalPadding),
         paddingRight: Math.max(right, customHorizontalPadding),
