@@ -4,4 +4,6 @@
 
 ### Run it
 
-Just open `index.html` file in your browser of choice
+`npx http-server ./packages/connect-examples/browser-inline-script`
+
+And open on localhost.
