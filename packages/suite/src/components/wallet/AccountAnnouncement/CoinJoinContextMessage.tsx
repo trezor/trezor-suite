@@ -20,12 +20,14 @@ export const CoinJoinContextMessage = ({ account }: CoinJoinContextMessageProps)
                 message.cta
                     ? {
                           children: (
-                              <Link href={message.cta.link}>{message.cta.label[language]}</Link>
+                              <Link variant="nostyle" href={message.cta.link}>
+                                  {message.cta.label[language]}
+                              </Link>
                           ),
                       }
                     : undefined
             }
-            variant={message.variant === 'critical' ? 'error' : message.variant}
+            variant={message.variant}
         >
             {message.content[language]}
         </NotificationCard>
