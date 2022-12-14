@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import styled from 'styled-components';
 
 import { RECOMMENDED_SKIP_ROUNDS } from '@suite/services/coinjoin/config';
 import { Translation } from '@suite-components';
 import { Button, P, Range, Switch, variables } from '@trezor/components';
 import { CoinjoinSessionDetail } from './CoinjoinSessionDetail';
+import { SliderInput } from '@wallet-components/PrivacyAccount/SliderInput';
 
 const Row = styled.div`
     display: flex;
@@ -36,8 +37,16 @@ const SetupHeading = styled(Heading)`
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
 
-const Fee = styled(Heading)`
-    color: ${({ theme }) => theme.TYPE_GREEN};
+const FeeInput = styled(SliderInput)`
+    top: -6px;
+    right: 0;
+    width: 116px;
+
+    input {
+        height: 38px;
+        padding-left: 12px;
+        font-size: ${variables.FONT_SIZE.H3};
+    }
 `;
 
 const Subheading = styled.div`
@@ -57,6 +66,7 @@ const MiningFeeText = styled(Text)`
 `;
 
 const MiningFee = styled.section`
+    position: relative;
     flex-grow: 1;
 `;
 
@@ -95,14 +105,19 @@ export const CoinjoinCustomStrategy = ({
     setSkipRounds,
     skipRounds,
 }: CoinjoinCustomStrategyProps) => {
+    const inputRef = useRef<{ setPreviousValue: (number: number) => void }>(null);
+
     const skipRoundsValue = skipRounds ? RECOMMENDED_SKIP_ROUNDS : null;
     const trackStyle = {
         background:
             'linear-gradient(270deg, #bf6767 0%, #c8b882 18.73%, #c8b883 36.25%, #95cda5 43.99%,#2a9649 100%)',
     };
 
-    const handleSliderChange: React.ChangeEventHandler<HTMLInputElement> = e =>
-        setMaxFee(Number(e.target.value));
+    const handleSliderChange = (number: number) => {
+        inputRef.current?.setPreviousValue(number);
+        setMaxFee(number);
+    };
+
     const toggleSkipRounds = () => setSkipRounds(!skipRounds);
 
     return (
@@ -121,18 +136,27 @@ export const CoinjoinCustomStrategy = ({
                         <Heading>
                             <Translation id="TR_MAX_MINING_FEE" />
                         </Heading>
-                        <Fee>{maxFee} sat/vB</Fee>
+                        <FeeInput
+                            ref={inputRef}
+                            value={maxFee}
+                            min={1}
+                            max={500}
+                            onChange={setMaxFee}
+                            innerAddon={<span>sat/vB</span>}
+                            addonAlign="right"
+                        />
                     </Row>
                     <MiningFeeText>
                         <Translation id="TR_MINING_FEE_NOTE" />
                     </MiningFeeText>
                     <Range
                         min={1}
+                        max={500}
                         value={maxFee}
-                        onChange={handleSliderChange}
+                        onChange={e => handleSliderChange(Number(e.target.value))}
                         trackStyle={trackStyle}
-                        labels={['1 sat/vB', '50 sat/vB', '100 sat/vB']}
-                        onLabelClick={number => setMaxFee(number)}
+                        labels={['1 sat/vB', '250 sat/vB', '500 sat/vB']}
+                        onLabelClick={handleSliderChange}
                     />
                 </MiningFee>
                 <DetailWrapper>
