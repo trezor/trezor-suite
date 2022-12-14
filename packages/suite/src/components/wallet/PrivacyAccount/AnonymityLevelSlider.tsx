@@ -72,13 +72,13 @@ export const getPosition = (value: number) => minPosition + (Math.log(value) - m
 interface AnonymityLevelSliderProps {
     isSessionActive: boolean;
     position: number;
-    setAnonymity: (value: number) => void;
+    handleChange: (value: number) => void;
 }
 
 export const AnonymityLevelSlider = ({
     isSessionActive,
     position,
-    setAnonymity,
+    handleChange,
 }: AnonymityLevelSliderProps) => {
     const { anonymityStatus } = useAnonymityStatus();
 
@@ -88,9 +88,13 @@ export const AnonymityLevelSlider = ({
         event => {
             const position = Number(event?.target?.value);
 
-            setAnonymity(getValue(position));
+            if (Number.isNaN(position)) {
+                return;
+            }
+
+            handleChange(getValue(position));
         },
-        [setAnonymity],
+        [handleChange],
     );
 
     const trackStyle = {
@@ -113,8 +117,9 @@ export const AnonymityLevelSlider = ({
                 onChange={handleSliderChange}
                 trackStyle={trackStyle}
                 step="any"
-                onLabelClick={number => setAnonymity(number)}
                 $isBlurred={isSessionActive}
+                labels={[1, 3, 10, 30, 100]}
+                onLabelClick={number => handleChange(number)}
             />
 
             <AnimatePresence initial={!isErrorDisplayed}>
