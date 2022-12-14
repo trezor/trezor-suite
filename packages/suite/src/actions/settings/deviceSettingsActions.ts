@@ -9,6 +9,7 @@ import * as routerActions from '@suite-actions/routerActions';
 import { Dispatch, GetState } from '@suite-types';
 import { DEVICE } from '@suite-constants';
 import { SUITE } from '@suite-actions/constants';
+import { getDeviceModel } from '@trezor/device-utils';
 
 export const applySettings =
     (params: Parameters<typeof TrezorConnect.applySettings>[0]) =>
@@ -114,23 +115,16 @@ export const resetDevice =
     (params: Parameters<typeof TrezorConnect.resetDevice>[0] = {}) =>
     async (dispatch: Dispatch, getState: GetState) => {
         const { device } = getState().suite;
-        if (!device) return;
-        let defaults = {};
-        if (device.features?.major_version === 1) {
-            defaults = {
-                strength: DEVICE.DEFAULT_STRENGTH_T1,
-                label: DEVICE.DEFAULT_LABEL,
-                skip_backup: DEVICE.DEFAULT_SKIP_BACKUP,
-                passphrase_protection: DEVICE.DEFAULT_PASSPHRASE_PROTECTION,
-            };
-        } else {
-            defaults = {
-                strength: DEVICE.DEFAULT_STRENGTH_T2,
-                label: DEVICE.DEFAULT_LABEL,
-                skip_backup: DEVICE.DEFAULT_SKIP_BACKUP,
-                passphrase_protection: DEVICE.DEFAULT_PASSPHRASE_PROTECTION,
-            };
-        }
+        const deviceModel = getDeviceModel(device);
+
+        if (!device || !deviceModel) return;
+
+        const defaults = {
+            strength: DEVICE.DEFAULT_STRENGTH[deviceModel],
+            label: DEVICE.DEFAULT_LABEL,
+            skip_backup: DEVICE.DEFAULT_SKIP_BACKUP,
+            passphrase_protection: DEVICE.DEFAULT_PASSPHRASE_PROTECTION,
+        };
 
         const result = await TrezorConnect.resetDevice({
             device: {

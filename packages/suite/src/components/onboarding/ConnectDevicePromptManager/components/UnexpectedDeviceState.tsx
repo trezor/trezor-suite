@@ -4,16 +4,17 @@ import {
     TROUBLESHOOTING_TIP_BRIDGE_STATUS,
     TROUBLESHOOTING_TIP_BRIDGE_INSTALL,
 } from '@suite-components/TroubleshootingTips/tips';
+import { DeviceModel, pickByDeviceModel } from '@trezor/device-utils';
 
 // todo: remove in favour of suite-components
 interface UnexpectedDeviceStateProps {
     deviceStatus: any;
-    trezorModel?: number;
+    deviceModel?: DeviceModel;
 }
 
 export const UnexpectedDeviceState = ({
     deviceStatus,
-    trezorModel,
+    deviceModel,
 }: UnexpectedDeviceStateProps) => (
     <>
         {deviceStatus === 'unreadable' && (
@@ -39,12 +40,14 @@ export const UnexpectedDeviceState = ({
                     {
                         key: 'bootloader',
                         heading: <Translation id="TR_RECONNECT_IN_NORMAL" />,
-                        description:
-                            trezorModel === 1 ? (
-                                <Translation id="FIRMWARE_CONNECT_IN_NORMAL_MODEL_1" />
-                            ) : (
-                                <Translation id="FIRMWARE_CONNECT_IN_NORMAL_MODEL_2" />
-                            ),
+                        description: (
+                            <Translation
+                                id={pickByDeviceModel(deviceModel, {
+                                    default: 'FIRMWARE_CONNECT_IN_NORMAL_MODEL_NO_BUTTON',
+                                    [DeviceModel.TT]: 'FIRMWARE_CONNECT_IN_NORMAL_MODEL_NO_TOUCH',
+                                })}
+                            />
+                        ),
                     },
                 ]}
             />

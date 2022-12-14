@@ -6,6 +6,7 @@ import { DeviceMatrixExplanation, PinInput, Translation, TrezorLink } from '@sui
 import { TrezorDevice } from '@suite-types';
 import * as modalActions from '@suite-actions/modalActions';
 import { useActions } from '@suite-hooks';
+import { DeviceModel } from '@trezor/device-utils';
 
 export const PIN_MATRIX_MAX_WIDTH = '316px';
 
@@ -79,7 +80,7 @@ export const PinMatrix = ({ device, hideExplanation, invalid }: Props) => {
                             : {
                                   key: 'matrix',
                                   title: <Translation id="TR_PIN_MATRIX_DISPLAYED_ON_TREZOR" />,
-                                  deviceImage: 1,
+                                  deviceModel: DeviceModel.T1,
                               },
                         {
                             key: 'maxlength',

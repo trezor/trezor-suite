@@ -7,7 +7,7 @@ import { Translation } from '@suite-components';
 import { SettingsSection, DeviceBanner } from '@suite-components/Settings';
 import { isDeviceRemembered } from '@suite-utils/device';
 import { useDevice, useSelector } from '@suite-hooks';
-import { DeviceModel, getDeviceModel, selectByDeviceModel } from '@trezor/device-utils';
+import { DeviceModel, getDeviceModel, pickByDeviceModel } from '@trezor/device-utils';
 
 import { BackupRecoverySeed } from './BackupRecoverySeed';
 import { BackupFailed } from './BackupFailed';

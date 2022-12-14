@@ -4,7 +4,7 @@ import * as semver from 'semver';
 import {
     DeviceModel,
     getDeviceModel,
-    selectByDeviceModel,
+    pickByDeviceModel,
     getFirmwareVersion,
 } from '@trezor/device-utils';
 
@@ -160,8 +160,8 @@ const ReconnectLabel = ({
     requestedMode: RebootRequestedMode;
     device?: TrezorDevice;
 }) => {
-    const deviceFwVersion = device?.features ? getFirmwareVersion(device) : '';
-    const deviceModel = device?.features ? getDeviceModel(device) : 'T';
+    const deviceFwVersion = getFirmwareVersion(device);
+    const deviceModel = getDeviceModel(device);
 
     if (requestedMode === 'bootloader') {
         const switchToBootloaderModeMessage = pickByDeviceModel(deviceModel, {
@@ -173,7 +173,7 @@ const ReconnectLabel = ({
             [DeviceModel.TT]: 'TR_SWITCH_TO_BOOTLOADER_SWIPE_YOUR_FINGERS',
         } as const);
 
-        return <Translation id="TR_SWIPE_YOUR_FINGERS" />;
+        return <Translation id={switchToBootloaderModeMessage} />;
     }
 
     const switchToNormalModeMessage = pickByDeviceModel(deviceModel, {

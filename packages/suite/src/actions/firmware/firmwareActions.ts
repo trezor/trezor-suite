@@ -8,7 +8,12 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 
 import { Dispatch, GetState, AppState, AcquiredDevice, FirmwareType } from '@suite-types';
 import type { Await } from '@trezor/type-utils';
-import { getFirmwareVersion, getBootloaderVersion } from '@trezor/device-utils';
+import {
+    getFirmwareVersion,
+    getBootloaderVersion,
+    getDeviceModel,
+    DeviceModel,
+} from '@trezor/device-utils';
 
 export type FirmwareAction =
     | {
@@ -71,7 +76,7 @@ const firmwareInstall =
 
         dispatch(setStatus('started'));
 
-        const model = device.features.major_version;
+        const deviceModel = getDeviceModel(device);
 
         const fromFwVersion =
             prevDevice && prevDevice.features && prevDevice.firmware !== 'none'
@@ -110,11 +115,12 @@ const firmwareInstall =
                     : prevDevice.firmwareType === 'bitcoin-only';
             }
 
-            const intermediary = model === 1 && !toRelease.isLatest;
+            const shouldInstallIntermediaryFw =
+                deviceModel === DeviceModel.T1 && !toRelease.isLatest;
             const targetFirmwareVersion = toRelease.release.version.join('.');
 
             console.warn(
-                intermediary
+                shouldInstallIntermediaryFw
                     ? 'Cannot install latest firmware. Will install intermediary fw instead.'
                     : `Installing ${
                           toBitcoinOnlyFirmware ? FirmwareType.BitcoinOnly : FirmwareType.Universal
@@ -146,9 +152,9 @@ const firmwareInstall =
                 btcOnly: toBitcoinOnlyFirmware,
                 version: toRelease.release.version,
                 // if we detect latest firmware may not be used right away, we should use intermediary instead
-                intermediary,
+                intermediary: shouldInstallIntermediaryFw,
             });
-            if (updateResponse.success && intermediary) {
+            if (updateResponse.success && shouldInstallIntermediaryFw) {
                 dispatch({ type: FIRMWARE.SET_INTERMEDIARY_INSTALLED, payload: true });
             }
         }
@@ -174,7 +180,9 @@ const firmwareInstall =
         // ask user to wait until device reboots
         dispatch(
             setStatus(
-                model === 1 && device.features.minor_version < 10 ? 'unplug' : 'wait-for-reboot',
+                deviceModel === DeviceModel.T1 && device.features.minor_version < 10
+                    ? 'unplug'
+                    : 'wait-for-reboot',
             ),
         );
     };

@@ -90,7 +90,7 @@ export const PrerequisitesGuide = ({
                 case 'device-initialize':
                     return <DeviceInitialize />;
                 case 'device-bootloader':
-                    return <DeviceBootloader trezorModel={device?.features?.major_version} />;
+                    return <DeviceBootloader device={device} />;
                 case 'firmware-missing':
                     return <DeviceNoFirmware />;
                 case 'firmware-required':
