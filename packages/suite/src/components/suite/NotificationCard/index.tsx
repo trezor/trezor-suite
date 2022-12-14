@@ -9,37 +9,46 @@ import {
     variables,
     ButtonProps,
 } from '@trezor/components';
+import { darken } from 'polished';
 
 // TODO: move to components
 
-const getMainColor = (variant: Props['variant'], theme: SuiteThemeColors) => {
+interface NotificationCardProps {
+    children: React.ReactNode;
+    variant: 'loader' | 'info' | 'warning' | 'critical';
+    button?: ButtonProps;
+    className?: string;
+    ['data-test']?: string;
+}
+
+const getMainColor = (variant: NotificationCardProps['variant'], theme: SuiteThemeColors) => {
     switch (variant) {
         case 'info':
-            return theme.TYPE_ORANGE;
+            return theme.TYPE_DARK_ORANGE;
         case 'warning':
-            return theme.TYPE_ORANGE;
-        case 'error':
-            return theme.TYPE_RED;
+            return theme.TYPE_DARK_ORANGE;
+        case 'critical':
+            return theme.BUTTON_RED;
         default:
             return 'transparent';
     }
 };
 
-const getHoverColor = (variant: Props['variant']) => {
+const getHoverColor = (variant: NotificationCardProps['variant'], theme: SuiteThemeColors) => {
     // design guidelines missing
     switch (variant) {
         case 'info':
-            return '#B3870D';
+            return darken(theme.HOVER_DARKEN_FILTER, theme.TYPE_DARK_ORANGE);
         case 'warning':
-            return '#B3870D';
-        case 'error':
-            return 'BF4848';
+            return darken(theme.HOVER_DARKEN_FILTER, theme.TYPE_DARK_ORANGE);
+        case 'critical':
+            return theme.BUTTON_RED_HOVER;
         default:
             return 'transparent';
     }
 };
 
-const getIcon = (variant: Props['variant'], theme: SuiteThemeColors) => {
+const getIcon = (variant: NotificationCardProps['variant'], theme: SuiteThemeColors) => {
     switch (variant) {
         case 'loader':
             return <Loader size={22} />;
@@ -75,7 +84,9 @@ const Body = styled.div`
     font-size: ${variables.FONT_SIZE.SMALL};
 `;
 
-const NotificationButton = styled(Button)<{ notificationVariant: Props['variant'] }>`
+const NotificationButton = styled(Button)<{
+    notificationVariant: NotificationCardProps['variant'];
+}>`
     margin-left: 16px;
     color: ${props => props.theme.TYPE_WHITE};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
@@ -87,19 +98,17 @@ const NotificationButton = styled(Button)<{ notificationVariant: Props['variant'
     &:focus,
     &:active {
         color: ${props => props.theme.TYPE_WHITE};
-        background: ${props => getHoverColor(props.notificationVariant)};
+        background: ${props => getHoverColor(props.notificationVariant, props.theme)};
     }
 `;
 
-interface Props {
-    children: React.ReactNode;
-    variant: 'loader' | 'info' | 'warning' | 'error';
-    button?: ButtonProps;
-    className?: string;
-    ['data-test']?: string;
-}
-
-const NotificationCard = ({ variant, button, children, className, ...props }: Props) => {
+const NotificationCard = ({
+    variant,
+    button,
+    children,
+    className,
+    ...props
+}: NotificationCardProps) => {
     const theme = useTheme();
     const iconElement = getIcon(variant, theme);
     return (
