@@ -10,6 +10,7 @@ import {
     ScreenHeader,
     StackNavigationProps,
     StackProps,
+    ScreenContent,
 } from '@suite-native/navigation';
 import { BottomSheet, Box, Button, Text, VStack } from '@suite-native/atoms';
 import {
@@ -45,20 +46,22 @@ export const AccountDetailSettings = ({
 
     return (
         <Screen header={<ScreenHeader />}>
-            <Box marginBottom="large">
-                <Text variant="titleMedium">{accountName}</Text>
-            </Box>
-            <VStack spacing="small">
-                <Button onPress={() => setIsXpubVisible(true)} colorScheme="gray">
-                    Show Xpub
-                </Button>
-                <Button onPress={handleRemoveAccount} colorScheme="gray">
-                    Remove Account
-                </Button>
-            </VStack>
-            <BottomSheet isVisible={isXpubVisible} onVisibilityChange={setIsXpubVisible}>
-                <Text>{account.descriptor}</Text>
-            </BottomSheet>
+            <ScreenContent>
+                <Box marginBottom="large">
+                    <Text variant="titleMedium">{accountName}</Text>
+                </Box>
+                <VStack spacing="small">
+                    <Button onPress={() => setIsXpubVisible(true)} colorScheme="gray">
+                        Show Xpub
+                    </Button>
+                    <Button onPress={handleRemoveAccount} colorScheme="gray">
+                        Remove Account
+                    </Button>
+                </VStack>
+                <BottomSheet isVisible={isXpubVisible} onVisibilityChange={setIsXpubVisible}>
+                    <Text>{account.descriptor}</Text>
+                </BottomSheet>
+            </ScreenContent>
         </Screen>
     );
 };

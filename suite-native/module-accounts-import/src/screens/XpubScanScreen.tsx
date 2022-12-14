@@ -10,6 +10,7 @@ import {
     AccountsImportStackParamList,
     AccountsImportStackRoutes,
     Screen,
+    ScreenContent,
     StackProps,
 } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -88,33 +89,35 @@ export const XpubScanScreen = ({
 
     return (
         <Screen header={<AccountImportHeader activeStep={2} />}>
-            <Card>
-                <SelectableNetworkItem
-                    cryptoCurrencyName={networks[selectedCurrencySymbol].name}
-                    cryptoCurrencySymbol={selectedCurrencySymbol}
-                    iconName={selectedCurrencySymbol}
-                    onPressActionButton={() => navigation.goBack()}
-                />
-            </Card>
-            <View style={applyStyle(cameraStyle)}>
-                <XpubImportSection onRequestCamera={handleRequestCamera} />
-            </View>
-            <TextDivider title="OR" />
-            <Form form={form}>
-                <VStack spacing="medium">
-                    <TextInputField name="xpubAddress" label="Enter x-pub..." />
-                    <Button
-                        onPress={onXpubFormSubmit}
-                        size="large"
-                        isDisabled={!watchXpubAddress?.length}
-                    >
-                        Submit
-                    </Button>
-                </VStack>
-            </Form>
-            {isDevelopOrDebugEnv() && (
-                <DevXpub symbol={selectedCurrencySymbol} onSelect={goToAccountImportScreen} />
-            )}
+            <ScreenContent>
+                <Card>
+                    <SelectableNetworkItem
+                        cryptoCurrencyName={networks[selectedCurrencySymbol].name}
+                        cryptoCurrencySymbol={selectedCurrencySymbol}
+                        iconName={selectedCurrencySymbol}
+                        onPressActionButton={() => navigation.goBack()}
+                    />
+                </Card>
+                <View style={applyStyle(cameraStyle)}>
+                    <XpubImportSection onRequestCamera={handleRequestCamera} />
+                </View>
+                <TextDivider title="OR" />
+                <Form form={form}>
+                    <VStack spacing="medium">
+                        <TextInputField name="xpubAddress" label="Enter x-pub..." />
+                        <Button
+                            onPress={onXpubFormSubmit}
+                            size="large"
+                            isDisabled={!watchXpubAddress?.length}
+                        >
+                            Submit
+                        </Button>
+                    </VStack>
+                </Form>
+                {isDevelopOrDebugEnv() && (
+                    <DevXpub symbol={selectedCurrencySymbol} onSelect={goToAccountImportScreen} />
+                )}
+            </ScreenContent>
         </Screen>
     );
 };

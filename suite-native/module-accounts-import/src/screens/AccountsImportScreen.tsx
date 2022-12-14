@@ -9,6 +9,7 @@ import {
     RootStackParamList,
     AccountsImportStackParamList,
     RootStackRoutes,
+    ScreenContent,
 } from '@suite-native/navigation';
 
 import { AccountImportLoader } from '../components/AccountImportLoader';
@@ -81,11 +82,13 @@ export const AccountsImportScreen = ({
 
     return (
         <Screen header={<AccountImportHeader activeStep={accountInfo ? 4 : 3} />}>
-            {accountInfo ? (
-                <AccountImportSummary accountInfo={accountInfo} networkSymbol={networkSymbol} />
-            ) : (
-                <AccountImportLoader />
-            )}
+            <ScreenContent>
+                {accountInfo ? (
+                    <AccountImportSummary accountInfo={accountInfo} networkSymbol={networkSymbol} />
+                ) : (
+                    <AccountImportLoader />
+                )}
+            </ScreenContent>
         </Screen>
     );
 };

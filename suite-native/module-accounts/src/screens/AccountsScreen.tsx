@@ -4,6 +4,7 @@ import {
     AccountsStackParamList,
     AccountsStackRoutes,
     Screen,
+    ScreenContent,
     StackProps,
 } from '@suite-native/navigation';
 import { AccountsList } from '@suite-native/accounts';
@@ -27,7 +28,9 @@ export const AccountsScreen = ({
             header={<AccountsScreenHeader />}
             hasDivider
         >
-            <AccountsList onSelectAccount={handleSelectAccount} />
+            <ScreenContent>
+                <AccountsList onSelectAccount={handleSelectAccount} />
+            </ScreenContent>
         </Screen>
     );
 };

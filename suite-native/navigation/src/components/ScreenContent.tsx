@@ -4,12 +4,13 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Box } from '@suite-native/atoms';
+import { nativeSpacings } from '@trezor/theme';
 
 type ScreenContentProps = {
     children: ReactNode;
-    isScrollable: boolean;
-    customVerticalPadding: number;
-    customHorizontalPadding: number;
+    isScrollable?: boolean;
+    customVerticalPadding?: number;
+    customHorizontalPadding?: number;
 };
 
 const screenContentStyle = prepareNativeStyle<{
@@ -29,9 +30,9 @@ const screenContentStyle = prepareNativeStyle<{
 
 export const ScreenContent = ({
     children,
-    isScrollable,
-    customHorizontalPadding,
-    customVerticalPadding,
+    isScrollable = true,
+    customHorizontalPadding = nativeSpacings.medium,
+    customVerticalPadding = nativeSpacings.medium,
 }: ScreenContentProps) => {
     const { applyStyle } = useNativeStyles();
     const insets = useSafeAreaInsets();

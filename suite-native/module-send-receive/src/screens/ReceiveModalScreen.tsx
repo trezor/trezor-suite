@@ -6,6 +6,7 @@ import {
     RootStackParamList,
     RootStackRoutes,
     Screen,
+    ScreenContent,
     ScreenHeader,
     StackProps,
 } from '@suite-native/navigation';
@@ -67,6 +68,8 @@ export const ReceiveModalScreen = ({
     );
 
     return (
-        <Screen header={<ScreenHeader title="Receive" />}>{sendReceiveContent[contentType]}</Screen>
+        <Screen header={<ScreenHeader title="Receive" />}>
+            <ScreenContent>{sendReceiveContent[contentType]}</ScreenContent>
+        </Screen>
     );
 };

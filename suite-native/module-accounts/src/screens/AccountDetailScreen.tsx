@@ -5,6 +5,7 @@ import {
     AccountsStackParamList,
     AccountsStackRoutes,
     Screen,
+    ScreenContent,
     StackProps,
 } from '@suite-native/navigation';
 import {
@@ -55,14 +56,15 @@ export const AccountDetailScreen = memo(
                     <AccountDetailScreenHeader accountName={accountName} accountKey={accountKey} />
                 }
                 customHorizontalPadding={0}
-                isScrollable={false}
             >
-                <TransactionList
-                    accountKey={accountKey}
-                    transactions={accountTransactions}
-                    fetchMoreTransactions={fetchMoreTransactions}
-                    listHeaderComponent={<TransactionListHeader accountKey={accountKey} />}
-                />
+                <ScreenContent isScrollable={false}>
+                    <TransactionList
+                        accountKey={accountKey}
+                        transactions={accountTransactions}
+                        fetchMoreTransactions={fetchMoreTransactions}
+                        listHeaderComponent={<TransactionListHeader accountKey={accountKey} />}
+                    />
+                </ScreenContent>
             </Screen>
         );
     },

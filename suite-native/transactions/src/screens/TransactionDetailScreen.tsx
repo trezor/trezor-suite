@@ -6,6 +6,7 @@ import {
     RootStackParamList,
     RootStackRoutes,
     Screen,
+    ScreenContent,
     ScreenHeader,
     StackProps,
 } from '@suite-native/navigation';
@@ -41,21 +42,23 @@ export const TransactionDetailScreen = ({
 
     return (
         <Screen header={<ScreenHeader />}>
-            <TransactionDetailHeader
-                type={transaction.type}
-                amount={cryptoAmountFormatted}
-                fiatAmount={fiatAmount}
-            />
-            <Box marginVertical="large">
-                <Divider />
-            </Box>
-            <TransactionDetailData transaction={transaction} />
-            <Box marginVertical="large">
-                <Divider />
-            </Box>
-            <TransactionDetailConfirmations confirmations={confirmations} />
-            <Box marginVertical="large" />
-            <TransactionDetailAmount transaction={transaction} />
+            <ScreenContent>
+                <TransactionDetailHeader
+                    type={transaction.type}
+                    amount={cryptoAmountFormatted}
+                    fiatAmount={fiatAmount}
+                />
+                <Box marginVertical="large">
+                    <Divider />
+                </Box>
+                <TransactionDetailData transaction={transaction} />
+                <Box marginVertical="large">
+                    <Divider />
+                </Box>
+                <TransactionDetailConfirmations confirmations={confirmations} />
+                <Box marginVertical="large" />
+                <TransactionDetailAmount transaction={transaction} />
+            </ScreenContent>
         </Screen>
     );
 };

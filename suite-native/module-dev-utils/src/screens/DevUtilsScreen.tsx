@@ -8,6 +8,7 @@ import {
     StackProps,
     DevUtilsStackParamList,
     DevUtilsStackRoutes,
+    ScreenContent,
 } from '@suite-native/navigation';
 import { useStoragePersistor } from '@suite-native/storage';
 
@@ -24,33 +25,35 @@ export const DevUtilsScreen = ({
 
     return (
         <Screen>
-            {isDevelopOrDebugEnv() ? (
-                <Box marginBottom="large">
-                    <Box
-                        flexDirection="row"
-                        justifyContent="space-between"
-                        alignItems="center"
-                        marginBottom="large"
-                    >
-                        <Box>
-                            <Text variant="titleMedium">DEV utils</Text>
-                            <Text color="gray600" variant="hint">
-                                This section is shown only in local and develop builds! (Not in
-                                staging and production environments)
-                            </Text>
+            <ScreenContent>
+                {isDevelopOrDebugEnv() ? (
+                    <Box marginBottom="large">
+                        <Box
+                            flexDirection="row"
+                            justifyContent="space-between"
+                            alignItems="center"
+                            marginBottom="large"
+                        >
+                            <Box>
+                                <Text variant="titleMedium">DEV utils</Text>
+                                <Text color="gray600" variant="hint">
+                                    This section is shown only in local and develop builds! (Not in
+                                    staging and production environments)
+                                </Text>
+                            </Box>
                         </Box>
+                        <VStack spacing="medium">
+                            {!isDebugEnv() && <BuildInfo />}
+                            <Button onPress={() => navigation.navigate(DevUtilsStackRoutes.Demo)}>
+                                See Component Demo
+                            </Button>
+                            <Button colorScheme="primary" onPress={handleResetStorage}>
+                                Reset storage
+                            </Button>
+                        </VStack>
                     </Box>
-                    <VStack spacing="medium">
-                        {!isDebugEnv() && <BuildInfo />}
-                        <Button onPress={() => navigation.navigate(DevUtilsStackRoutes.Demo)}>
-                            See Component Demo
-                        </Button>
-                        <Button colorScheme="primary" onPress={handleResetStorage}>
-                            Reset storage
-                        </Button>
-                    </VStack>
-                </Box>
-            ) : null}
+                ) : null}
+            </ScreenContent>
         </Screen>
     );
 };

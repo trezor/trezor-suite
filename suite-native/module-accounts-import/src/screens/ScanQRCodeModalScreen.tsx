@@ -4,6 +4,7 @@ import {
     AccountsImportStackParamList,
     AccountsImportStackRoutes,
     Screen,
+    ScreenContent,
     ScreenHeader,
     StackProps,
 } from '@suite-native/navigation';
@@ -22,7 +23,9 @@ export const ScanQRCodeModalScreen = ({
 
     return (
         <Screen header={<ScreenHeader title="Scan QR" />}>
-            <QRCodeScanner onCodeScanned={handleBarCodeScanned} />
+            <ScreenContent>
+                <QRCodeScanner onCodeScanned={handleBarCodeScanned} />
+            </ScreenContent>
         </Screen>
     );
 };

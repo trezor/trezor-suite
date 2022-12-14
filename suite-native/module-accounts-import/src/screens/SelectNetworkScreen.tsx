@@ -4,6 +4,7 @@ import {
     AccountsImportStackParamList,
     AccountsImportStackRoutes,
     Screen,
+    ScreenContent,
     StackProps,
 } from '@suite-native/navigation';
 import { NetworkSymbol } from '@suite-common/wallet-config';
@@ -22,7 +23,9 @@ export const SelectNetworkScreen = ({
 
     return (
         <Screen header={<AccountImportHeader activeStep={1} />}>
-            <SelectableNetworkList onSelectItem={handleSelectNetworkSymbol} />
+            <ScreenContent>
+                <SelectableNetworkList onSelectItem={handleSelectNetworkSymbol} />
+            </ScreenContent>
         </Screen>
     );
 };

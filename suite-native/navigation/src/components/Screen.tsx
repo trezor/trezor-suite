@@ -6,14 +6,11 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Color, nativeSpacings } from '@trezor/theme';
 import { Box, Divider } from '@suite-native/atoms';
 
-import { ScreenContent } from './ScreenContent';
-
 type ScreenProps = {
     children: ReactNode;
     header?: ReactNode;
     hasDivider?: boolean;
     hasStatusBar?: boolean;
-    isScrollable?: boolean;
     backgroundColor?: Color;
     customVerticalPadding?: number;
     customHorizontalPadding?: number;
@@ -43,7 +40,6 @@ export const Screen = ({
     children,
     header,
     hasDivider = false,
-    isScrollable = true,
     hasStatusBar = true,
     backgroundColor = 'gray100',
     customVerticalPadding = nativeSpacings.medium,
@@ -86,13 +82,7 @@ export const Screen = ({
                     )}
                 </View>
             )}
-            <ScreenContent
-                isScrollable={isScrollable}
-                customVerticalPadding={customVerticalPadding}
-                customHorizontalPadding={customHorizontalPadding}
-            >
-                {children}
-            </ScreenContent>
+            {children}
         </SafeAreaView>
     );
 };

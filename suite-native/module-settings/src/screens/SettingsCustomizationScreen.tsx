@@ -1,14 +1,16 @@
 import React from 'react';
 
-import { Screen, ScreenHeader } from '@suite-native/navigation';
+import { Screen, ScreenContent, ScreenHeader } from '@suite-native/navigation';
 import { Box } from '@suite-native/atoms';
 
 import { ColorSchemePicker } from '../components/ColorSchemePicker';
 
 export const SettingsCustomizationScreen = () => (
     <Screen header={<ScreenHeader title="Customization" hasGoBackIcon />}>
-        <Box marginHorizontal="medium">
-            <ColorSchemePicker />
-        </Box>
+        <ScreenContent>
+            <Box marginHorizontal="medium">
+                <ColorSchemePicker />
+            </Box>
+        </ScreenContent>
     </Screen>
 );
