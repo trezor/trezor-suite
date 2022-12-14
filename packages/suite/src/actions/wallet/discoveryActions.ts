@@ -18,6 +18,7 @@ import { Account } from '@wallet-types';
 import { DiscoveryItem } from '@suite-common/wallet-types';
 import { getDerivationType } from '@wallet-utils/cardanoUtils';
 import { isTrezorConnectBackendType } from '@suite-common/wallet-utils';
+import { getDeviceModel, getFirmwareVersion } from '@trezor/device-utils';
 
 export type DiscoveryAction =
     | { type: typeof DISCOVERY.CREATE; payload: Discovery }
@@ -129,18 +130,14 @@ const handleProgress =
 
 const filterUnavailableNetworks = (enabledNetworks: Account['symbol'][], device?: TrezorDevice) =>
     NETWORKS.filter(n => {
+        const firmwareVersion = getFirmwareVersion(device);
+        const deviceModel = getDeviceModel(device);
+
         const isSupportedInSuite =
             !n.support || // support is not defined => is supported
-            !device?.features || // typescript. device undefined. => supported
-            (n.support[device.features.major_version] && // support is defined for current device
-                versionUtils.isNewerOrEqual(
-                    [
-                        device.features.major_version,
-                        device.features.minor_version,
-                        device.features.patch_version,
-                    ],
-                    n.support[device.features.major_version],
-                )); // device version is newer or equal to support field in networks => supported
+            !deviceModel || // typescript. device undefined. => supported
+            (n.support[deviceModel] && // support is defined for current device
+                versionUtils.isNewerOrEqual(firmwareVersion, n.support[deviceModel])); // device version is newer or equal to support field in networks => supported
 
         return (
             isTrezorConnectBackendType(n.backendType) && // exclude accounts with unsupported backend type
