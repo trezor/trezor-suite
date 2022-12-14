@@ -3587,13 +3587,9 @@ export default defineMessages({
         id: 'TR_ACCOUNT_TYPE_NO_CAPABILITY',
         defaultMessage: 'Not supported.',
     },
-    TR_ACCOUNT_TYPE_NO_SUPPORT_T1: {
-        id: 'TR_ACCOUNT_TYPE_NO_SUPPORT_T1',
-        defaultMessage: 'This Account Type is not supported on Trezor Model One.',
-    },
-    TR_ACCOUNT_TYPE_NO_SUPPORT_T2: {
-        id: 'TR_ACCOUNT_TYPE_NO_SUPPORT_T2',
-        defaultMessage: 'This Account Type is not supported on Trezor Model T.',
+    TR_ACCOUNT_TYPE_NO_SUPPORT: {
+        id: 'TR_ACCOUNT_TYPE_NO_SUPPORT',
+        defaultMessage: 'This Account Type is not supported on this Trezor model.',
     },
     TR_ACCOUNT_TYPE_UPDATE_REQUIRED: {
         id: 'TR_ACCOUNT_TYPE_UPDATE_REQUIRED',
@@ -4181,6 +4177,7 @@ export default defineMessages({
     MODAL_ADD_ACCOUNT_COINJOIN_NO_SUPPORT: {
         id: 'MODAL_ADD_ACCOUNT_COINJOIN_NO_SUPPORT',
         defaultMessage: 'CoinJoin is supported only on Trezor Model T',
+        description: 'TODO Model R',
     },
     MODAL_ADD_ACCOUNT_COINJOIN_UPDATE_REQUIRED: {
         id: 'MODAL_ADD_ACCOUNT_COINJOIN_UPDATE_REQUIRED',
@@ -6788,6 +6785,7 @@ export default defineMessages({
         id: 'TR_TROUBLESHOOTING_TIP_CABLE_DESCRIPTION',
         defaultMessage:
             'The cable must be fully inserted. If you have a Model T, the cable should "click" into place.',
+        description: 'TODO Model R',
     },
     TR_TROUBLESHOOTING_TIP_USB_PORT_TITLE: {
         id: 'TR_TROUBLESHOOTING_TIP_USB_PORT_TITLE',

@@ -11,17 +11,13 @@ const verifyAvailability = ({
     emptyAccounts,
     account,
     unavailableCapability,
-    majorVersion,
 }: {
     emptyAccounts: Account[];
     account: Account;
     unavailableCapability?: UnavailableCapability;
-    majorVersion?: number;
 }) => {
     if (unavailableCapability === 'no-support') {
-        return majorVersion === 1
-            ? 'TR_ACCOUNT_TYPE_NO_SUPPORT_T1'
-            : 'TR_ACCOUNT_TYPE_NO_SUPPORT_T2';
+        return 'TR_ACCOUNT_TYPE_NO_SUPPORT';
     }
     if (unavailableCapability === 'update-required') {
         return 'TR_ACCOUNT_TYPE_UPDATE_REQUIRED';
@@ -96,7 +92,6 @@ const AddDefaultAccountButton = ({
         emptyAccounts,
         account,
         unavailableCapability,
-        majorVersion: device?.features?.major_version,
     });
 
     return (
