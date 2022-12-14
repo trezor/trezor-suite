@@ -3,8 +3,9 @@ import { Alice } from '../Alice';
 import type { CoinjoinRound, CoinjoinRoundOptions } from '../CoinjoinRound';
 import { CoinjoinPrison } from '../CoinjoinPrison';
 import * as middleware from '../middleware';
-import { RoundPhase, Round } from '../coordinator';
+import { Round } from '../coordinator';
 import { ROUND_SELECTION_REGISTRATION_OFFSET } from '../../constants';
+import { RoundPhase } from '../../enums';
 
 export type CoinjoinRoundGenerator = (
     ...args: ConstructorParameters<typeof CoinjoinRound>

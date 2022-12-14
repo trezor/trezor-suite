@@ -5,12 +5,8 @@ import {
     PLEBS_DONT_PAY_THRESHOLD,
     ROUND_REGISTRATION_END_OFFSET,
 } from '../constants';
-import {
-    RoundPhase,
-    Round,
-    CoinjoinStateEvent,
-    CoinjoinRoundParameters,
-} from '../types/coordinator';
+import { RoundPhase } from '../enums';
+import { Round, CoinjoinStateEvent, CoinjoinRoundParameters } from '../types/coordinator';
 import { Credentials } from '../types/middleware';
 
 export const getRoundEvents = <T extends CoinjoinStateEvent['Type']>(
