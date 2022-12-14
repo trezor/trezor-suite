@@ -18,7 +18,7 @@ export const coinjoinMiddleware =
 
         // do not close success and critical phase modals when they are open, similar to discovery middleware
         const { modal } = api.getState();
-        const allowedModals = ['coinjoin-success', 'critical-coinjoin-phase'];
+        const allowedModals = ['coinjoin-success', 'more-rounds-needed', 'critical-coinjoin-phase'];
 
         if (
             action.type === UI.CLOSE_UI_WINDOW &&
