@@ -3,6 +3,7 @@ import BigNumber from 'bignumber.js';
 import {
     getBootloaderHash,
     getBootloaderVersion,
+    getDeviceModel,
     getFirmwareRevision,
     getFirmwareVersion,
     isDeviceInBootloaderMode,
@@ -77,7 +78,7 @@ const analyticsMiddleware =
                             isBitcoinOnly: action.payload.firmwareType === 'bitcoin-only',
                             totalDevices: getPhysicalDeviceCount(state.devices),
                             language: features.language,
-                            model: features.model,
+                            model: getDeviceModel(action.payload),
                         },
                     });
                 } else {
