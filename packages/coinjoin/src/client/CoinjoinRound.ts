@@ -8,6 +8,7 @@ import {
     getRoundParameters,
     getCoinjoinRoundDeadlines,
 } from '../utils/roundUtils';
+import { RoundPhase, EndRoundState } from '../enums';
 import { AccountAddress, RegisterAccountParams } from '../types/account';
 import {
     SerializedCoinjoinRound,
@@ -16,13 +17,7 @@ import {
     CoinjoinRequestEvent,
     CoinjoinResponseEvent,
 } from '../types/round';
-import {
-    RoundPhase,
-    EndRoundState,
-    Round,
-    CoinjoinRoundParameters,
-    WabiSabiProtocolErrorCode,
-} from '../types/coordinator';
+import { Round, CoinjoinRoundParameters, WabiSabiProtocolErrorCode } from '../types/coordinator';
 import { Account } from './Account';
 import { Alice } from './Alice';
 import { CoinjoinPrison } from './CoinjoinPrison';

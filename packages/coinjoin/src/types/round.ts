@@ -1,5 +1,6 @@
 import { AccountAddress } from './account';
-import { RoundPhase, EndRoundState, CoinjoinAffiliateRequest } from './coordinator';
+import { CoinjoinAffiliateRequest } from './coordinator';
+import { RoundPhase, EndRoundState } from '../enums';
 
 export interface SerializedAlice {
     accountKey: string;

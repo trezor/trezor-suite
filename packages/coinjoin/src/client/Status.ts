@@ -3,8 +3,9 @@ import { EventEmitter } from 'events';
 import * as coordinator from './coordinator';
 import { findNearestDeadline, getDataFromRounds } from '../utils/roundUtils';
 import { STATUS_TIMEOUT } from '../constants';
+import { RoundPhase } from '../enums';
 import { CoinjoinClientSettings, CoinjoinStatusEvent } from '../types';
-import { Round, RoundPhase } from '../types/coordinator';
+import { Round } from '../types/coordinator';
 
 type StatusMode = keyof typeof STATUS_TIMEOUT;
 
