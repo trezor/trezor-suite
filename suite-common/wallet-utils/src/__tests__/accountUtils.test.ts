@@ -23,6 +23,7 @@ import {
     getUtxoOutpoint,
     readUtxoOutpoint,
     sortByBIP44AddressIndex,
+    enhanceAddresses,
 } from '../accountUtils';
 import * as fixtures from '../__fixtures__/accountUtils';
 
@@ -290,5 +291,50 @@ describe('account utils', () => {
         expect(sortByBIP44AddressIndex(path, [f, e, d, c, b, a])).toEqual([a, b, c, d, e, f]);
         expect(sortByBIP44AddressIndex(path, [e, c, b, a, f, d])).toEqual([a, b, c, d, e, f]);
         expect(sortByBIP44AddressIndex(path, [b, c, a, f, d, e])).toEqual([a, b, c, d, e, f]);
+    });
+
+    it('enhanceAddresses: count transfers from pending txs', () => {
+        const getAddr = (address: string, transfers: number) => ({ address, transfers });
+        const getTx = (blockHeight: number, vinaddr: string, voutaddr: string) => ({
+            blockHeight,
+            details: {
+                vin: [{ addresses: [vinaddr] }],
+                vout: [{ addresses: [voutaddr] }],
+            },
+        });
+
+        const account: any = { networkType: 'bitcoin' };
+        const accountInfo: any = {
+            addresses: {
+                change: [getAddr('A', 1), getAddr('B', 0)],
+            },
+            history: { transactions: [getTx(1, 'A', 'C'), getTx(1, 'C', 'B')] },
+            page: { index: 1 },
+        };
+
+        // no pending tx, addresses just copied from accountInfo to account
+        account.addresses = enhanceAddresses(accountInfo, account);
+        expect(account.addresses.change).toEqual([getAddr('A', 1), getAddr('B', 0)]);
+
+        // pending tx with B, so B has now transfers 1
+        accountInfo.history.transactions[1].blockHeight = 0;
+        account.addresses = enhanceAddresses(accountInfo, account);
+        expect(account.addresses.change).toEqual([getAddr('A', 1), getAddr('B', 1)]);
+
+        // accountInfo with page index <> 1 without txs, preserve addresses and transfers
+        accountInfo.page.index = 2;
+        accountInfo.history.transactions = [];
+        account.addresses = enhanceAddresses(accountInfo, account);
+        expect(account.addresses.change).toEqual([getAddr('A', 1), getAddr('B', 1)]);
+
+        // accountInfo with page index 1 without txs, so B has now transfers 0
+        accountInfo.page.index = 1;
+        account.addresses = enhanceAddresses(accountInfo, account);
+        expect(account.addresses.change).toEqual([getAddr('A', 1), getAddr('B', 0)]);
+
+        // no addresses in accountInfo, so no addresses in account
+        accountInfo.addresses.change = [];
+        account.addresses = enhanceAddresses(accountInfo, account);
+        expect(account.addresses.change).toEqual([]);
     });
 });
