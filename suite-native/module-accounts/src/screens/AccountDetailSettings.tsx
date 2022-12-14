@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import * as Clipboard from 'expo-clipboard';
 import { useNavigation } from '@react-navigation/native';
 
-import { networks } from '@suite-common/wallet-config';
+import { networks, NetworkSymbol } from '@suite-common/wallet-config';
 import {
     AccountsStackParamList,
     AccountsStackRoutes,
@@ -16,6 +16,7 @@ import {
 import { BottomSheet, Box, Button, Card, Text, VStack } from '@suite-native/atoms';
 import { accountsActions, AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { QRCode } from '@suite-native/accounts';
+import { CryptoIcon } from '@trezor/icons';
 // import { deriveAddresses } from '@trezor/utxo-lib';
 
 const AccountDetailSettingsRow = ({ title, value }: { title: string; value: ReactNode }) => (
@@ -26,6 +27,15 @@ const AccountDetailSettingsRow = ({ title, value }: { title: string; value: Reac
         <Text variant="hint" color="gray1000">
             {value}
         </Text>
+    </Box>
+);
+
+const CryptoNameWithIcon = ({ symbol }: { symbol: NetworkSymbol }) => (
+    <Box flexDirection="row" alignItems="center">
+        <Text>{networks[symbol].name}</Text>
+        <Box marginLeft="small">
+            <CryptoIcon name={symbol} size="small" />
+        </Box>
     </Box>
 );
 
@@ -68,7 +78,7 @@ export const AccountDetailSettings = ({
                     <VStack spacing="large">
                         <AccountDetailSettingsRow
                             title="Coin"
-                            value={networks[account.symbol].name}
+                            value={<CryptoNameWithIcon symbol={account.symbol} />}
                         />
                         {/* <AccountDetailSettingsRow title="Derivation Path" value={derivationPath} /> */}
                     </VStack>
