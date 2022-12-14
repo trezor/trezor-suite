@@ -16,6 +16,7 @@ import { ModalEnvironment } from './ModalEnvironment';
 import { useModalTarget } from '@suite-support/ModalContext';
 import { Modal } from '.';
 import { versionUtils } from '@trezor/utils';
+import { useDeviceModel } from '@suite-hooks/useDeviceModel';
 
 const StyledTrezorModal = styled(TrezorModal)`
     ${Modal.Header} {
@@ -142,7 +143,7 @@ const DevicePromptModalRenderer = ({
     onAbort = () => TrezorConnect.cancel(),
     ...rest
 }: DevicePromptModalProps) => {
-    const deviceVerion = useSelector(state => state.suite.device?.features?.major_version);
+    const deviceModel = useDeviceModel();
     const transport = useSelector(state => state.suite.transport);
     const modalTarget = useModalTarget();
 
@@ -161,7 +162,7 @@ const DevicePromptModalRenderer = ({
                     isPillShown && (
                         <ConfirmOnDevice
                             title={pillTitle || <Translation id="TR_CONFIRM_ON_TREZOR" />}
-                            trezorModel={deviceVerion === 1 ? 1 : 2}
+                            deviceModel={deviceModel}
                             isConfirmed={isConfirmed}
                         />
                     )

@@ -6,6 +6,7 @@ import { useDevice, useFirmware } from '@suite-hooks';
 import { FirmwareOffer, ProgressBar, ReconnectDevicePrompt } from '@firmware-components';
 import { OnboardingStepBox } from '@onboarding-components';
 import { TrezorDevice } from '@suite-types';
+import { DeviceModel, getDeviceModel } from '@trezor/device-utils';
 
 interface FirmwareInstallationProps {
     cachedDevice?: TrezorDevice;
@@ -28,6 +29,8 @@ export const FirmwareInstallation = ({
     const { device } = useDevice();
     const { status, installingProgress, resetReducer, isWebUSB, subsequentInstalling } =
         useFirmware();
+    const deviceModel = getDeviceModel(device);
+    const cachedDeviceModel = getDeviceModel(cachedDevice);
 
     const statusIntlId = getTextForStatus(status);
     const statusText = statusIntlId ? <Translation id={statusIntlId} /> : null;
@@ -43,10 +46,10 @@ export const FirmwareInstallation = ({
     const getFakeProgressDuration = () => {
         if (cachedDevice?.firmware === 'none') {
             // device without fw starts installation without a confirmation and we need to fake progress bar for both devices (UI.FIRMWARE_PROGRESS is sent too late)
-            return cachedDevice.features.major_version === 1 ? 25 : 40; // T1 seems a bit faster
+            return cachedDeviceModel === DeviceModel.T1 ? 25 : 40; // T1 seems a bit faster
         }
         // Updating from older fw, device asks for confirmation, but sends first info about installation progress somewhat to late
-        return cachedDevice?.features?.major_version === 1 ? 25 : undefined; // 25s for T1, no fake progress for updating from older fw on T2
+        return cachedDeviceModel === DeviceModel.T1 ? 25 : undefined; // 25s for T1, no fake progress for updating from older fw on other devices
     };
 
     const InnerActionComponent = useMemo(() => {
@@ -93,11 +96,7 @@ export const FirmwareInstallation = ({
                         <Translation id="TR_INSTALL_FIRMWARE" />
                     )
                 }
-                confirmOnDevice={
-                    status === 'waiting-for-confirmation'
-                        ? device?.features?.major_version
-                        : undefined
-                }
+                deviceModel={status === 'waiting-for-confirmation' ? deviceModel : undefined}
                 innerActions={InnerActionComponent}
                 nested={!!standaloneFwUpdate}
                 disableConfirmWrapper={!!standaloneFwUpdate}

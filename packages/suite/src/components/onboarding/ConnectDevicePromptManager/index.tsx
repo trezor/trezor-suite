@@ -16,6 +16,7 @@ import { NoDeviceDetected } from './components/NoDeviceDetected';
 import { UnexpectedDeviceState } from './components/UnexpectedDeviceState';
 import { motion } from 'framer-motion';
 import { motionEasing } from '@trezor/components';
+import { getDeviceModel } from '@trezor/device-utils';
 
 const Wrapper = styled.div`
     display: flex;
@@ -50,6 +51,7 @@ export const ConnectDevicePromptManager = ({
     const deviceStatus = getConnectedDeviceStatus(device);
     const isDetectingDevice =
         (device && device.features && device.connected) || deviceStatus === 'unreadable';
+    const deviceModel = getDeviceModel();
 
     const deviceInUnexpectedState = isDetectingDevice
         ? deviceStatus !== 'ok' && deviceStatus !== 'initialized'
@@ -69,12 +71,7 @@ export const ConnectDevicePromptManager = ({
         content = <NoDeviceDetected offerWebUsb={isWebUsb(transport)} />;
     } else if (deviceInUnexpectedState) {
         // Device detected, but it is in unexpected state (unreadable, seedless, in bootloader)
-        content = (
-            <UnexpectedDeviceState
-                deviceStatus={deviceStatus!}
-                trezorModel={device?.features?.major_version}
-            />
-        );
+        content = <UnexpectedDeviceState deviceStatus={deviceStatus!} deviceModel={deviceModel} />;
     }
 
     return (

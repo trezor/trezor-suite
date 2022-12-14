@@ -11,6 +11,7 @@ import { isHexValid, isInteger } from '@suite-common/wallet-utils';
 import { AddressOptions } from '@wallet-views/coinmarket/common/AddressOptions';
 import { useAccountAddressDictionary } from '@wallet-hooks/useAccounts';
 import { ReceiveOptions, AccountSelectOption } from './ReceiveOptions';
+import { getDeviceModel } from '@trezor/device-utils';
 
 const Wrapper = styled.div`
     display: flex;
@@ -105,6 +106,7 @@ const VerifyAddressComponent = () => {
     const { register, watch, errors, formState, setValue, control } = useForm<FormState>({
         mode: 'onChange',
     });
+    const deviceModel = getDeviceModel(device);
 
     const typedRegister = useCallback(
         (rules?: TypedValidationRules) => register(rules as RegisterOptions),
@@ -203,12 +205,7 @@ const VerifyAddressComponent = () => {
 
                     {addressVerified && addressVerified === address && (
                         <Confirmed>
-                            {device && (
-                                <StyledDeviceImage
-                                    height={25}
-                                    trezorModel={device.features?.major_version === 1 ? 1 : 2}
-                                />
-                            )}
+                            <StyledDeviceImage height={25} deviceModel={deviceModel} />
                             <Translation id="TR_EXCHANGE_CONFIRMED_ON_TREZOR" />
                         </Confirmed>
                     )}

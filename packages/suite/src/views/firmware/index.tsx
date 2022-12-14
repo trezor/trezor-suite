@@ -16,6 +16,7 @@ import { OnboardingStepBox } from '@onboarding-components';
 import { useActions, useFirmware, useSelector } from '@suite-hooks';
 import { ConfirmOnDevice, variables } from '@trezor/components';
 import * as suiteActions from '@suite-actions/suiteActions';
+import { getDeviceModel } from '@trezor/device-utils';
 
 const Wrapper = styled.div<{ isWithTopPadding: boolean }>`
     display: flex;
@@ -43,13 +44,12 @@ type FirmwareProps = {
 export const Firmware = ({ shouldSwitchFirmwareType }: FirmwareProps) => {
     const { resetReducer, status, setStatus, error, firmwareUpdate, firmwareHashInvalid } =
         useFirmware();
-    const { device } = useSelector(state => ({
-        device: state.suite.device,
-    }));
+    const device = useSelector(state => state.suite.device);
     const { closeModalApp, acquireDevice } = useActions({
         closeModalApp: routerActions.closeModalApp,
         acquireDevice: suiteActions.acquireDevice,
     });
+    const deviceModel = getDeviceModel(device);
 
     const onClose = () => {
         if (device?.status !== 'available') {
@@ -162,7 +162,7 @@ export const Firmware = ({ shouldSwitchFirmwareType }: FirmwareProps) => {
                 status === 'waiting-for-confirmation' && (
                     <ConfirmOnDevice
                         title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
-                        trezorModel={device?.features?.major_version === 1 ? 1 : 2}
+                        deviceModel={deviceModel}
                     />
                 )
             }

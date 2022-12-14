@@ -4,6 +4,7 @@ import { ConfirmOnDevice } from '@trezor/components';
 import { Translation, Modal, ModalProps } from '@suite-components';
 import { TrezorDevice } from '@suite-types';
 import { Fingerprint } from '@firmware-components';
+import { getDeviceModel } from '@trezor/device-utils';
 
 const StyledModal = styled(Modal)`
     width: 360px;
@@ -18,7 +19,7 @@ export const ConfirmFingerprintModal = ({ device, ...rest }: ConfirmFingerprintP
         modalPrompt={
             <ConfirmOnDevice
                 title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
-                trezorModel={device.features?.major_version === 1 ? 1 : 2}
+                deviceModel={getDeviceModel(device)}
             />
         }
         heading={<Translation id="TR_CHECK_FINGERPRINT" />}

@@ -12,6 +12,7 @@ import * as deviceUtils from '@suite-utils/device';
 import { DeviceStatus } from './DeviceStatus';
 import { transparentize } from 'polished';
 import type { Timeout } from '@trezor/type-utils';
+import { getDeviceModel } from '@trezor/device-utils';
 
 const ArrowDown = styled(Icon)`
     margin-left: 4px;
@@ -124,6 +125,7 @@ export const DeviceSelector = () => {
     const stateAnimationTimerRef = useRef<Timeout | undefined>(undefined);
 
     const deviceNeedsRefresh = needsRefresh(selectedDevice);
+    const selectedDeviceModel = getDeviceModel(selectedDevice);
 
     const connectState = selectedDevice?.connected;
 
@@ -184,7 +186,7 @@ export const DeviceSelector = () => {
                 <>
                     <StyledDeviceImage
                         height={34}
-                        trezorModel={selectedDevice.features?.major_version === 1 ? 1 : 2}
+                        deviceModel={selectedDeviceModel}
                         isLowerOpacity={deviceNeedsRefresh}
                     />
 

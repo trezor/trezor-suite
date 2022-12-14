@@ -13,6 +13,7 @@ import {
 import { Translation } from '@suite-components';
 import { useActions, useSelector, useOnboarding } from '@suite-hooks';
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
+import { getDeviceModel } from '@trezor/device-utils';
 
 export const ResetDeviceStep = () => {
     const [submitted, setSubmitted] = useState(false);
@@ -22,6 +23,7 @@ export const ResetDeviceStep = () => {
     const { goToPreviousStep, goToNextStep, updateAnalytics } = useOnboarding();
 
     const device = useSelector(state => state.suite.device);
+    const deviceModel = getDeviceModel(device);
 
     // this step expects device
     if (!device || !device.features) {
@@ -70,7 +72,7 @@ export const ResetDeviceStep = () => {
             image="KEY"
             heading={<Translation id="TR_ONBOARDING_GENERATE_SEED" />}
             description={<Translation id="TR_ONBOARDING_GENERATE_SEED_DESCRIPTION" />}
-            confirmOnDevice={isWaitingForConfirmation ? device?.features?.major_version : undefined}
+            deviceModel={isWaitingForConfirmation ? deviceModel : undefined}
             innerActions={
                 isWaitingForConfirmation && (
                     <OnboardingButtonCta
