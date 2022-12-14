@@ -1,7 +1,7 @@
 import { CoinjoinBackend } from '@trezor/coinjoin';
 import { createIpcProxy } from '@trezor/ipc-proxy';
 import { isDesktop } from '@suite-utils/env';
-import { CoinjoinServerEnvironment } from '@suite-common/wallet-types';
+import { CoinjoinServerEnvironment } from '@wallet-types/coinjoin';
 import { NetworkSymbol } from '@wallet-types';
 import { getCoinjoinConfig } from './config';
 

@@ -2,7 +2,6 @@ export * from './account';
 export * from './backend';
 export * from './cardanoStaking';
 export * from './discovery';
-export * from './coinjoin';
 export * from './fiatRates';
 export * from './form';
 export * from './polling';

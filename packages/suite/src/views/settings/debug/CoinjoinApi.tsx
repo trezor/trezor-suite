@@ -6,7 +6,7 @@ import { COINJOIN_NETWORKS } from '@suite/services/coinjoin/config';
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@suite-components/Settings';
 import * as suiteActions from '@suite-actions/suiteActions';
 import { useSelector, useActions } from '@suite-hooks';
-import type { CoinjoinServerEnvironment } from '@suite-common/wallet-types';
+import type { CoinjoinServerEnvironment } from '@wallet-types/coinjoin';
 
 const StyledActionSelect = styled(ActionSelect)`
     min-width: 256px;

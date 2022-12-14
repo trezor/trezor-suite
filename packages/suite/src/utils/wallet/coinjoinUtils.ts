@@ -1,12 +1,8 @@
 import BigNumber from 'bignumber.js';
 
 import { getUtxoOutpoint, getBip43Type } from '@suite-common/wallet-utils';
-import {
-    Account,
-    CoinjoinSession,
-    CoinjoinSessionParameters,
-    WalletAccountTransaction,
-} from '@suite-common/wallet-types';
+import { Account, WalletAccountTransaction } from '@suite-common/wallet-types';
+import { CoinjoinSession, CoinjoinSessionParameters } from '@wallet-types/coinjoin';
 import {
     ESTIMATED_ANONYMITY_GAINED_PER_ROUND,
     ESTIMATED_MIN_ROUNDS_NEEDED,

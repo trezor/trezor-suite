@@ -2,7 +2,8 @@ import produce from 'immer';
 import { STORAGE } from '@suite-actions/constants';
 import { createSelector } from '@reduxjs/toolkit';
 import * as COINJOIN from '@wallet-actions/constants/coinjoinConstants';
-import { Account, CoinjoinAccount, RoundPhase } from '@suite-common/wallet-types';
+import { Account } from '@suite-common/wallet-types';
+import { CoinjoinAccount, RoundPhase } from '@wallet-types/coinjoin';
 import { Action } from '@suite-types';
 import { PartialRecord } from '@trezor/type-utils';
 import {
