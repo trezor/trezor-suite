@@ -58,8 +58,10 @@ jest.mock('@suite/services/coinjoin/coinjoinBackend', () =>
     }),
 );
 
+type PartialCoinjoinState = Partial<ReturnType<typeof coinjoinReducer>>;
+
 const DEVICE = global.JestMocks.getSuiteDevice({ state: 'device-state', connected: true });
-export const getInitialState = () => ({
+export const getInitialState = (coinjoin?: PartialCoinjoinState) => ({
     suite: {
         locks: [],
         device: DEVICE,
@@ -69,7 +71,10 @@ export const getInitialState = () => ({
     },
     devices: [DEVICE],
     wallet: {
-        coinjoin: coinjoinReducer(undefined, { type: 'foo' } as any),
+        coinjoin: {
+            ...coinjoinReducer(undefined, { type: 'foo' } as any),
+            ...coinjoin,
+        },
         accounts: accountsReducer(undefined, { type: 'foo' } as any),
     },
     modal: {},
@@ -108,7 +113,7 @@ describe('coinjoinAccountActions', () => {
 
     fixtures.startCoinjoinSession.forEach(f => {
         it(`startCoinjoinSession: ${f.description}`, async () => {
-            const initialState = getInitialState();
+            const initialState = getInitialState(f.state?.coinjoin as any); // partial Account
             const store = initStore(initialState);
             TrezorConnect.setTestFixtures(f.connect);
             // @ts-expect-error params are incomplete

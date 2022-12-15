@@ -124,10 +124,12 @@ const getCoinjoinAccountAddresses = (addresses: Account['addresses']) =>
 export const getRegisterAccountParams = (
     account: Account,
     params: CoinjoinSessionParameters,
+    rawLiquidityClue: RegisterAccountParams['rawLiquidityClue'],
 ): RegisterAccountParams => ({
     scriptType: getCoinjoinAccountScriptType(account.path),
     accountKey: account.key,
     targetAnonymity: params.targetAnonymity,
+    rawLiquidityClue,
     maxRounds: params.maxRounds,
     skipRounds: params.skipRounds,
     maxFeePerKvbyte: params.maxFeePerKvbyte,

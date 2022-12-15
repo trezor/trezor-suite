@@ -61,9 +61,19 @@ const createAccount = (
     draft.accounts.push({
         key: account.key,
         symbol: account.symbol,
+        rawLiquidityClue: null, // NOTE: liquidity clue is calculated from tx history. default value is `null`
         targetAnonymity,
         previousSessions: [],
     });
+};
+
+const setLiquidityClue = (
+    draft: CoinjoinState,
+    payload: ExtractActionPayload<typeof COINJOIN.ACCOUNT_SET_LIQUIDITY_CLUE>,
+) => {
+    const account = draft.accounts.find(a => a.key === payload.accountKey);
+    if (!account) return;
+    account.rawLiquidityClue = payload.rawLiquidityClue;
 };
 
 const updateTargetAnonymity = (
@@ -130,6 +140,7 @@ const signSession = (
 ) => {
     const account = draft.accounts.find(a => a.key === payload.accountKey);
     if (!account || !account.session) return;
+    account.rawLiquidityClue = payload.rawLiquidityClue;
     account.session = {
         ...account.session,
         signedRounds: account.session.signedRounds.concat(payload.roundId),
@@ -262,6 +273,9 @@ export const coinjoinReducer = (
 
             case COINJOIN.ACCOUNT_CREATE:
                 createAccount(draft, action.payload);
+                break;
+            case COINJOIN.ACCOUNT_SET_LIQUIDITY_CLUE:
+                setLiquidityClue(draft, action.payload);
                 break;
             case COINJOIN.ACCOUNT_REMOVE:
                 draft.accounts = draft.accounts.filter(a => a.key !== action.payload.accountKey);

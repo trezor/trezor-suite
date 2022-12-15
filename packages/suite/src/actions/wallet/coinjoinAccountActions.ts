@@ -52,6 +52,18 @@ export const coinjoinAccountUpdateAnonymity = (accountKey: string, targetAnonymi
         },
     } as const);
 
+export const coinjoinAccountSetLiquidityClue = (
+    accountKey: string,
+    rawLiquidityClue: CoinjoinAccount['rawLiquidityClue'],
+) =>
+    ({
+        type: COINJOIN.ACCOUNT_SET_LIQUIDITY_CLUE,
+        payload: {
+            accountKey,
+            rawLiquidityClue,
+        },
+    } as const);
+
 const coinjoinAccountAuthorize = (accountKey: string) =>
     ({
         type: COINJOIN.ACCOUNT_AUTHORIZE,
@@ -124,6 +136,7 @@ export type CoinjoinAccountAction =
     | ReturnType<typeof coinjoinAccountCreate>
     | ReturnType<typeof coinjoinAccountRemove>
     | ReturnType<typeof coinjoinAccountUpdateAnonymity>
+    | ReturnType<typeof coinjoinAccountSetLiquidityClue>
     | ReturnType<typeof coinjoinAccountAuthorize>
     | ReturnType<typeof coinjoinAccountAuthorizeSuccess>
     | ReturnType<typeof coinjoinAccountAuthorizeFailed>
@@ -160,10 +173,11 @@ export const updateClientAccount = (account: Account) => (_: Dispatch, getState:
     const { coinjoin, accounts } = getState().wallet;
     // get fresh data from reducer
     const accountToUpdate = accounts.find(a => a.key === account.key);
-    const params = coinjoin.accounts.find(r => r.key === account.key);
-    if (!params?.session || !accountToUpdate) return;
+    const coinjoinAccount = coinjoin.accounts.find(r => r.key === account.key);
+    if (!coinjoinAccount?.session || !accountToUpdate) return;
+    const { session, rawLiquidityClue } = coinjoinAccount;
 
-    client.updateAccount(getRegisterAccountParams(accountToUpdate, params.session));
+    client.updateAccount(getRegisterAccountParams(accountToUpdate, session, rawLiquidityClue));
 };
 
 const coinjoinAccountCheckReorg =
@@ -235,17 +249,24 @@ export const fetchAndUpdateAccount =
                 // TODO accountInfo.utxo don't have proper utxo.confirmations field, only 0/1
 
                 // calculate account anonymity set in CoinjoinClient
-                const accountInfoWithAnonymitySet = await dispatch(
-                    analyzeTransactions(accountInfo, account.symbol),
-                );
+                const result = await dispatch(analyzeTransactions(accountInfo, account.symbol));
+
+                // TODO when anonymity analysis fails, still allow to use account in some restricted mode?
+
+                if (accountInfo.addresses) {
+                    accountInfo.addresses.anonymitySet = result.anonymityScores;
+                }
+
+                if (isInitialUpdate) {
+                    // NOTE: set liquidity clue only on initial load.
+                    // further updates are done after coinjoin tx signing process
+                    dispatch(coinjoinAccountSetLiquidityClue(account.key, result.rawLiquidityClue));
+                }
 
                 // status must be set here already (instead of wait for endCoinjoinAccountSync)
                 // so it's potentially stored into db
                 dispatch(
-                    accountsActions.updateAccount(
-                        { ...account, status: 'ready' },
-                        accountInfoWithAnonymitySet,
-                    ),
+                    accountsActions.updateAccount({ ...account, status: 'ready' }, accountInfo),
                 );
 
                 // update account in CoinjoinClient
@@ -445,7 +466,8 @@ const authorizeCoinjoin =
 
 // called from coinjoin account UI
 export const startCoinjoinSession =
-    (account: Account, params: CoinjoinSessionParameters) => async (dispatch: Dispatch) => {
+    (account: Account, params: CoinjoinSessionParameters) =>
+    async (dispatch: Dispatch, getState: GetState) => {
         if (account.accountType !== 'coinjoin') {
             throw new Error('startCoinjoinSession: invalid account type');
         }
@@ -455,8 +477,11 @@ export const startCoinjoinSession =
         const client = await dispatch(
             initCoinjoinClient(account.symbol, coinjoinServerEnvironment),
         );
+        const coinjoinAccount = getState().wallet.coinjoin.accounts.find(
+            r => r.key === account.key,
+        );
 
-        if (!client) {
+        if (!client || !coinjoinAccount) {
             return;
         }
 
@@ -467,7 +492,9 @@ export const startCoinjoinSession =
 
         if (authResult) {
             // register authorized account
-            client.registerAccount(getRegisterAccountParams(account, params));
+            client.registerAccount(
+                getRegisterAccountParams(account, params, coinjoinAccount.rawLiquidityClue),
+            );
             // switch to account
             dispatch(goto('wallet-index', { preserveParams: true }));
         }
@@ -550,7 +577,7 @@ export const restoreCoinjoinSession =
             return;
         }
 
-        const { session } = coinjoinAccount;
+        const { session, rawLiquidityClue } = coinjoinAccount;
 
         // recalculate maxRounds
         const maxRounds = getMaxRounds(
@@ -579,7 +606,7 @@ export const restoreCoinjoinSession =
             // dispatch data to reducer
             dispatch(coinjoinSessionRestore(account.key)); // todo: pass new max rounds
             // register authorized account
-            client.registerAccount(getRegisterAccountParams(account, session));
+            client.registerAccount(getRegisterAccountParams(account, session, rawLiquidityClue));
         } else {
             dispatch(
                 notificationsActions.addToast({

@@ -7,6 +7,7 @@ export const ACCOUNT_AUTHORIZE_FAILED = '@coinjoin/account-authorize-failed';
 export const ACCOUNT_UNREGISTER = '@coinjoin/account-unregister';
 export const ACCOUNT_DISCOVERY_PROGRESS = '@coinjoin/account-discovery-progress';
 export const ACCOUNT_PRELOADING = '@coinjoin/account-preloading';
+export const ACCOUNT_SET_LIQUIDITY_CLUE = '@coinjoin/account-set-liquidity-clue';
 
 export const CLIENT_ENABLE = '@coinjoin/client-enable';
 export const CLIENT_DISABLE = '@coinjoin/client-disable';
