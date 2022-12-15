@@ -2,6 +2,7 @@ import { Network } from '@trezor/utxo-lib';
 
 import { getScriptPubKeyFromAddress } from '../utils/coordinatorUtils';
 import { AllowedScriptTypes } from '../types/coordinator';
+import { RawLiquidityClue } from '../types/middleware';
 import { RegisterAccountParams } from '../types';
 import { AccountUtxo, AccountAddress } from '../types/account';
 
@@ -29,6 +30,7 @@ export class Account {
     skipRounds?: [number, number];
     skipRoundCounter = 0;
     signedRounds: string[] = [];
+    rawLiquidityClue: RawLiquidityClue;
 
     constructor(account: RegisterAccountParams, network: Network) {
         this.accountKey = account.accountKey;
@@ -41,6 +43,7 @@ export class Account {
             account.scriptType,
         );
         this.targetAnonymity = account.targetAnonymity;
+        this.rawLiquidityClue = account.rawLiquidityClue;
         this.maxFeePerKvbyte = account.maxFeePerKvbyte;
         this.maxCoordinatorFeeRate = account.maxCoordinatorFeeRate;
         this.maxRounds = account.maxRounds;
@@ -55,5 +58,9 @@ export class Account {
             account.scriptType,
         );
         this.targetAnonymity = account.targetAnonymity;
+    }
+
+    updateRawLiquidityClue(value: RawLiquidityClue) {
+        this.rawLiquidityClue = value;
     }
 }

@@ -1,4 +1,5 @@
 import { AllowedScriptTypes } from './coordinator';
+import { RawLiquidityClue } from './middleware';
 
 export type RegisterAccountParams = {
     accountKey: string;
@@ -6,6 +7,7 @@ export type RegisterAccountParams = {
     utxos: AccountUtxo[];
     changeAddresses: Omit<AccountAddress, 'scriptPubKey'>[];
     targetAnonymity: number;
+    rawLiquidityClue: RawLiquidityClue;
     maxFeePerKvbyte: number;
     maxCoordinatorFeeRate: number;
     maxRounds: number;

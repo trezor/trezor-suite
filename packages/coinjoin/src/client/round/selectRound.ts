@@ -151,26 +151,33 @@ export const selectInputsForRound = async (
                         return [];
                     }
 
-                    // TODO: check account maxMining rate vs round miningRate + maxCoordinator rate vs round coordinationFeeRate
-                    // ...finally call CoinjoinRound + Account + Round combination on middleware
+                    // ...finally call get liquidityClue and
+                    // try to select the best utxos combination for given Round
                     return middleware
-                        .selectInputsForRound(
-                            {
-                                ...roundConstants,
-                                utxos,
-                                anonScoreTarget: account.targetAnonymity,
-                                liquidityClue: 0, // TODO: to be done later
-                            },
-                            {
-                                signal: options.signal,
-                                baseUrl: options.middlewareUrl,
-                            },
+                        .getLiquidityClue(
+                            account.rawLiquidityClue,
+                            roundParameters.maxSuggestedAmount,
+                            { baseUrl: options.middlewareUrl },
+                        )
+                        .then(liquidityClue =>
+                            middleware.selectInputsForRound(
+                                {
+                                    ...roundConstants,
+                                    utxos,
+                                    anonScoreTarget: account.targetAnonymity,
+                                    liquidityClue,
+                                },
+                                {
+                                    signal: options.signal,
+                                    baseUrl: options.middlewareUrl,
+                                },
+                            ),
                         )
                         .then(indices => indices.filter(i => utxos[i])) // filter valid existing indices
                         .catch(error => {
                             options.log(`selectInputsForRound failed ${error.message}`);
                             return [] as number[];
-                        }); // return empty response on error, TODO: should we provide preselected rounds/account anyway?
+                        });
                 }),
             );
         }),

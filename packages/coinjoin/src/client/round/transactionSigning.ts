@@ -1,4 +1,5 @@
 import * as coordinator from '../coordinator';
+import * as middleware from '../middleware';
 import { getRoundEvents, compareOutpoint } from '../../utils/roundUtils';
 import {
     mergePubkeys,
@@ -8,6 +9,7 @@ import {
     prefixScriptPubKey,
     getAddressFromScriptPubKey,
 } from '../../utils/coordinatorUtils';
+import type { Account } from '../Account';
 import type { Alice } from '../Alice';
 import type { CoinjoinRound, CoinjoinRoundOptions } from '../CoinjoinRound';
 import type { CoinjoinTransactionData } from '../../types';
@@ -92,6 +94,39 @@ const getTransactionData = async (
     };
 };
 
+const updateRawLiquidityClue = async (
+    round: CoinjoinRound,
+    accounts: Account[],
+    tx: CoinjoinTransactionData,
+    options: CoinjoinRoundOptions,
+) => {
+    const result = await Promise.all(
+        accounts.map(account => {
+            const externalAmounts = tx.outputs
+                .filter(o => !account.changeAddresses.find(addr => addr.address === o.address))
+                .map(o => o.amount);
+            return middleware.updateLiquidityClue(
+                account.rawLiquidityClue,
+                round.roundParameters.maxSuggestedAmount,
+                externalAmounts,
+                { baseUrl: options.middlewareUrl },
+            );
+        }),
+    );
+
+    return accounts.map((account, index) => {
+        const rawLiquidityClue = result[index];
+        // NOTE: immediately update new value in Account
+        // it's intentionally not updated by `updateAccount` to prevent race conditions
+        account.updateRawLiquidityClue(rawLiquidityClue);
+
+        return {
+            accountKey: account.accountKey,
+            rawLiquidityClue,
+        };
+    });
+};
+
 // TODO: delay
 // TODO: notify wallet about success and create "pending account" state in suite
 const sendTxSignature = async (
@@ -111,6 +146,7 @@ const sendTxSignature = async (
 
 export const transactionSigning = async (
     round: CoinjoinRound,
+    accounts: Account[],
     options: CoinjoinRoundOptions,
 ): Promise<CoinjoinRound> => {
     const inputsWithError = round.inputs.filter(input => input.error);
@@ -130,7 +166,14 @@ export const transactionSigning = async (
                 throw new Error('Wittiness not provided');
             }
             const transactionData = await getTransactionData(round, options);
+            const liquidityClues = await updateRawLiquidityClue(
+                round,
+                accounts,
+                transactionData,
+                options,
+            );
             round.transactionData = transactionData;
+            round.liquidityClues = liquidityClues;
             return round;
         }
 

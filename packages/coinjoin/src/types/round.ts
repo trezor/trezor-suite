@@ -1,5 +1,6 @@
 import { AccountAddress } from './account';
 import { CoinjoinAffiliateRequest } from './coordinator';
+import { RawLiquidityClue } from './middleware';
 import { RoundPhase, EndRoundState } from '../enums';
 
 export interface SerializedAlice {
@@ -47,6 +48,11 @@ export interface CoinjoinTransactionData {
     affiliateRequest: CoinjoinAffiliateRequest;
 }
 
+export interface CoinjoinTransactionLiquidityClue {
+    accountKey: string;
+    rawLiquidityClue: RawLiquidityClue;
+}
+
 export interface CoinjoinRequestOwnershipEvent {
     type: 'ownership';
     roundId: string;
@@ -59,6 +65,7 @@ export interface CoinjoinRequestSignatureEvent {
     roundId: string;
     inputs: SerializedAlice[];
     transaction: CoinjoinTransactionData;
+    liquidityClues: CoinjoinTransactionLiquidityClue[];
 }
 
 export type CoinjoinRequestEvent = CoinjoinRequestOwnershipEvent | CoinjoinRequestSignatureEvent;
