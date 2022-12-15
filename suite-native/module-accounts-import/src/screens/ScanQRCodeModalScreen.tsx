@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { QRCodeScanner } from '@suite-native/qr-code';
 import {
     AccountsImportStackParamList,
     AccountsImportStackRoutes,
@@ -7,7 +8,6 @@ import {
     ScreenHeader,
     StackProps,
 } from '@suite-native/navigation';
-import { QRCodeScanner } from '@suite-native/qr-code-scanner';
 
 export const ScanQRCodeModalScreen = ({
     navigation,

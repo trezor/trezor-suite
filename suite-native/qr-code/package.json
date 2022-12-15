@@ -1,5 +1,5 @@
 {
-    "name": "@suite-native/qr-code-scanner",
+    "name": "@suite-native/qr-code",
     "version": "1.0.0",
     "private": true,
     "license": "See LICENSE.md in repo root",
@@ -13,8 +13,11 @@
         "@react-navigation/core": "^6.2.2",
         "@suite-native/atoms": "workspace:*",
         "@trezor/styles": "workspace:*",
+        "@trezor/theme": "workspace:*",
         "expo-barcode-scanner": "^12.1.0",
+        "expo-clipboard": "^4.0.1",
         "react": "18.2.0",
-        "react-native": "0.70.5"
+        "react-native": "0.70.5",
+        "react-qr-code": "2.0.8"
     }
 }

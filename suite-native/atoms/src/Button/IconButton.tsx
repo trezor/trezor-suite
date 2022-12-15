@@ -26,11 +26,12 @@ const iconButtonStyle = prepareNativeStyle<StyleProps>(
         const colorSchemeStyles = {
             primary: {
                 backgroundColor: utils.colors.green,
-                color: utils.colors.gray0,
             },
             gray: {
                 backgroundColor: utils.colors.gray300,
-                color: utils.colors.gray700,
+            },
+            red: {
+                backgroundColor: utils.transparentize(0.9, utils.colors.red),
             },
         };
 
@@ -60,6 +61,17 @@ const iconButtonStyle = prepareNativeStyle<StyleProps>(
     },
 );
 
+const getIconColor = (colorScheme: ButtonColorScheme) => {
+    switch (colorScheme) {
+        case 'gray':
+            return 'gray700';
+        case 'red':
+            return 'red';
+        default:
+            return 'gray0';
+    }
+};
+
 export const IconButton = ({
     iconName,
     onPress,
@@ -75,11 +87,7 @@ export const IconButton = ({
             onPress={onPress}
             style={[applyStyle(iconButtonStyle, { isRounded, size, colorScheme }), style]}
         >
-            <Icon
-                name={iconName}
-                color={colorScheme === 'primary' ? 'gray0' : 'gray700'}
-                size={size}
-            />
+            <Icon name={iconName} color={getIconColor(colorScheme)} size={size} />
         </TouchableOpacity>
     );
 };

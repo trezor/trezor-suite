@@ -25,9 +25,11 @@
         { "path": "../graph" },
         { "path": "../module-settings" },
         { "path": "../navigation" },
+        { "path": "../qr-code" },
         { "path": "../transactions" },
         { "path": "../../packages/icons" },
         { "path": "../../packages/styles" },
-        { "path": "../../packages/theme" }
+        { "path": "../../packages/theme" },
+        { "path": "../../packages/utxo-lib" }
     ]
 }

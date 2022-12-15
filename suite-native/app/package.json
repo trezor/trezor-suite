@@ -66,7 +66,6 @@
         "react-native-screens": "^3.13.1",
         "react-native-splash-screen": "^3.3.0",
         "react-native-svg": "^12.4.4",
-        "react-qr-code": "2.0.8",
         "react-redux": "7.2.2",
         "redux-persist": "6.0.0"
     },
