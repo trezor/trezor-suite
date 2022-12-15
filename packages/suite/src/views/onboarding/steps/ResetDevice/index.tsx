@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import TrezorConnect from '@trezor/connect';
 import * as STEP from '@onboarding-constants/steps';
 import {
     OnboardingButtonBack,
@@ -8,7 +7,6 @@ import {
     OptionWrapper,
     OptionsDivider,
     OnboardingStepBox,
-    OnboardingButtonCta,
 } from '@onboarding-components';
 import { Translation } from '@suite-components';
 import { useActions, useSelector, useOnboarding } from '@suite-hooks';
@@ -73,17 +71,6 @@ export const ResetDeviceStep = () => {
             heading={<Translation id="TR_ONBOARDING_GENERATE_SEED" />}
             description={<Translation id="TR_ONBOARDING_GENERATE_SEED_DESCRIPTION" />}
             deviceModel={isWaitingForConfirmation ? deviceModel : undefined}
-            innerActions={
-                isWaitingForConfirmation && (
-                    <OnboardingButtonCta
-                        onClick={() => TrezorConnect.cancel()}
-                        icon="CANCEL"
-                        variant="danger"
-                    >
-                        <Translation id="TR_ABORT" />
-                    </OnboardingButtonCta>
-                )
-            }
             outerActions={
                 !isWaitingForConfirmation ? (
                     // There is no point to show back button if user can't click it because confirmOnDevice bubble is active

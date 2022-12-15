@@ -1,5 +1,4 @@
 import React from 'react';
-import TrezorConnect from '@trezor/connect';
 import { OnboardingButtonCta } from '@onboarding-components';
 import { SelectWordCount, SelectRecoveryType, SelectRecoveryWord } from '@recovery-components';
 import { Translation } from '@suite-components';
@@ -138,15 +137,6 @@ export const RecoveryStep = () => {
                 key={status} // to properly rerender in translation mode
                 heading={<Translation id="TR_RECOVER_YOUR_WALLET_FROM" />}
                 deviceModel={deviceModel}
-                innerActions={
-                    <OnboardingButtonCta
-                        onClick={() => TrezorConnect.cancel()}
-                        icon="CANCEL"
-                        variant="danger"
-                    >
-                        <Translation id="TR_ABORT" />
-                    </OnboardingButtonCta>
-                }
                 description={pickByDeviceModel(deviceModel, {
                     default: undefined,
                     [DeviceModel.T1]: getModel1Description(),
