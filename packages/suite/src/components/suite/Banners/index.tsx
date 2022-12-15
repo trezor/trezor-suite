@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { isDesktop } from '@suite-utils/env';
 import { isTranslationMode } from '@suite-utils/l10n';
 import { useSelector } from '@suite-hooks';
-import { useMessageSystem } from '@suite-hooks/useMessageSystem';
+import { selectBannerMessage } from '@suite-reducers/messageSystemReducer';
 import OnlineStatus from './OnlineStatus';
 import UpdateBridge from './UpdateBridge';
 import UpdateFirmware from './UpdateFirmware';
@@ -20,14 +20,11 @@ const Wrapper = styled.div`
 `;
 
 const Banners = () => {
-    const { transport, device, online, firmwareHashInvalid } = useSelector(state => ({
-        transport: state.suite.transport,
-        device: state.suite.device,
-        online: state.suite.online,
-        firmwareHashInvalid: state.firmware.firmwareHashInvalid,
-    }));
-
-    const { bannerMessage } = useMessageSystem();
+    const transport = useSelector(state => state.suite.transport);
+    const device = useSelector(state => state.suite.device);
+    const online = useSelector(state => state.suite.online);
+    const firmwareHashInvalid = useSelector(state => state.firmware.firmwareHashInvalid);
+    const bannerMessage = useSelector(selectBannerMessage);
 
     // The dismissal doesn't need to outlive the session. Use local state.
     const [safetyChecksDismissed, setSafetyChecksDismissed] = useState(false);

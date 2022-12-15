@@ -13,7 +13,11 @@ import {
 } from '@wallet-reducers/coinjoinReducer';
 import { BalancePrivacyBreakdown } from './BalancePrivacyBreakdown';
 import { CoinjoinStatus } from './CoinjoinStatus';
-import { useMessageSystem, Feature } from '@suite-hooks/useMessageSystem';
+import {
+    Feature,
+    selectIsFeatureDisabled,
+    selectFeatureMessageContent,
+} from '@suite-reducers/messageSystemReducer';
 
 const Container = styled(Card)`
     flex-direction: row;
@@ -52,10 +56,12 @@ export const BalanceSection = ({ accountKey }: BalanceSectionProps) => {
     const coinjoinAccount = useSelector(state => selectCoinjoinAccountByKey(state, accountKey));
     const { notAnonymized } = useSelector(selectCurrentCoinjoinBalanceBreakdown);
     const isCoinjoinBlockedByTor = useSelector(selectIsCoinjoinBlockedByTor);
-
-    const { isFeatureEnabled, getFeatureMessageContent } = useMessageSystem();
-
-    const isCoinJoinDisabled = !isFeatureEnabled(Feature.coinjoin);
+    const isCoinJoinDisabled = useSelector(state =>
+        selectIsFeatureDisabled(state, Feature.coinjoin),
+    );
+    const featureMessageContent = useSelector(state =>
+        selectFeatureMessageContent(state, Feature.coinjoin),
+    );
 
     const dispatch = useDispatch();
 
@@ -64,8 +70,8 @@ export const BalanceSection = ({ accountKey }: BalanceSectionProps) => {
     const goToSetup = () => dispatch(goto('wallet-anonymize', { preserveParams: true }));
 
     const getTooltipContent = () => {
-        if (isCoinJoinDisabled) {
-            return getFeatureMessageContent(Feature.coinjoin);
+        if (isCoinJoinDisabled && featureMessageContent) {
+            return featureMessageContent;
         }
         if (isCoinjoinBlockedByTor) {
             return <Translation id="TR_UNAVAILABLE_COINJOIN_TOR_DISABLE_TOOLTIP" />;
