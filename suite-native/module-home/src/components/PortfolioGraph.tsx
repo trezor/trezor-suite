@@ -37,7 +37,6 @@ export const PortfolioGraph = () => {
     return (
         <>
             <PortfolioGraphHeader />
-
             <Graph
                 points={enhancedPoints}
                 loading={isLoading}
