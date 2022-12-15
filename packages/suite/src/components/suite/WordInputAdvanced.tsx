@@ -34,7 +34,7 @@ interface WordInputAdvancedProps {
     onSubmit: (value: string) => void;
 }
 
-const WordInputAdvanced = (props: WordInputAdvancedProps) => {
+export const WordInputAdvanced = (props: WordInputAdvancedProps) => {
     const { onSubmit, count } = props;
 
     const backspace = useCallback(() => {
@@ -175,5 +175,3 @@ const WordInputAdvanced = (props: WordInputAdvancedProps) => {
         </Wrapper>
     );
 };
-
-export default WordInputAdvanced;

@@ -3,7 +3,7 @@ import { useRecovery } from '@suite-hooks';
 import TrezorConnect, { UI } from '@trezor/connect';
 import { WordInput, WordInputAdvanced } from '@suite-components';
 
-const RecoveryWordSelect = () => {
+export const SelectRecoveryWord = () => {
     const { wordRequestInputType } = useRecovery();
 
     if (wordRequestInputType === 6 || wordRequestInputType === 9) {
@@ -29,5 +29,3 @@ const RecoveryWordSelect = () => {
 
     return null;
 };
-
-export default RecoveryWordSelect;
