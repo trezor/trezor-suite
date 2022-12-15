@@ -170,18 +170,16 @@ const selectStyle = (
             background: theme.BG_WHITE_ALT_HOVER,
         },
     }),
-    input: (base, props) => ({
+    input: base => ({
         ...base,
         width: hideTextCursor ? 2 : 'auto',
         margin: hideTextCursor ? 0 : 2,
-        paddingLeft: (props as any).value && 16,
-        fontSize: NEUE_FONT_SIZE.NORMAL,
+        fontSize: NEUE_FONT_SIZE.SMALL,
+        fontWeight: FONT_WEIGHT.MEDIUM,
+        padding: '2px 6px',
         color: hideTextCursor ? 'transparent' : theme.TYPE_DARK_GREY,
         '& input': {
             textShadow: hideTextCursor ? `0 0 0 ${theme.TYPE_DARK_GREY} !important` : 'none',
-        },
-        '&:focus': {
-            paddingLeft: 16,
         },
     }),
     placeholder: base => ({
@@ -189,6 +187,7 @@ const selectStyle = (
         fontWeight: FONT_WEIGHT.MEDIUM,
         fontSize: NEUE_FONT_SIZE.SMALL,
         padding: '0 6px',
+        position: 'absolute',
     }),
 });
 
