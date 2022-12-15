@@ -55,6 +55,9 @@ const DEFAULT = {
         };
     },
     'get-outputs-amounts': { outputAmounts: [] },
+    'init-liquidity-clue': { rawLiquidityClue: null },
+    'update-liquidity-clue': { rawLiquidityClue: null },
+    'get-liquidity-clue': { liquidityClue: 1 },
     // payment request server
     'payment-request': {
         recipient_name: 'trezor.io',

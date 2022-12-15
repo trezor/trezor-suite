@@ -108,7 +108,7 @@ describe('analyzeTransactions', () => {
             ...server?.requestOptions,
             network: networks.regtest,
         });
-        expect(response).toMatchObject({
+        expect(response.anonymityScores).toMatchObject({
             bcrt1p9av3jgcyjkwlh6gevvdn95a6vzyfqz962ulm57fc9mjuptg0usls0qvqvk: 1,
             bcrt1pksq9t85p4lect9ra8frvsn3f358lpkwtmlcgcup8aqaxcvnr4ylqglgdfp: 2, // occurred twice => greater anonymity
         });

@@ -15,6 +15,7 @@ import {
     SerializedCoinjoinRound,
     CoinjoinRoundEvent,
     CoinjoinTransactionData,
+    CoinjoinTransactionLiquidityClue,
     CoinjoinRequestEvent,
     CoinjoinResponseEvent,
 } from '../types/round';
@@ -100,6 +101,7 @@ export class CoinjoinRound extends EventEmitter {
     commitmentData: string; // commitment data used for ownership proof and witness requests
     addresses: AccountAddress[] = []; // list of addresses (outputs) used in this round in outputRegistration phase
     transactionData?: CoinjoinTransactionData; // transaction to sign
+    liquidityClues?: CoinjoinTransactionLiquidityClue[]; // updated liquidity clues
 
     constructor(round: Round, options: CoinjoinRoundOptions) {
         super();
@@ -252,7 +254,7 @@ export class CoinjoinRound extends EventEmitter {
             case RoundPhase.OutputRegistration:
                 return outputRegistration(this, accounts, prison, processOptions);
             case RoundPhase.TransactionSigning:
-                return transactionSigning(this, processOptions);
+                return transactionSigning(this, accounts, processOptions);
             default:
                 return Promise.resolve(this);
         }
@@ -276,7 +278,7 @@ export class CoinjoinRound extends EventEmitter {
         }
         if (this.phase === RoundPhase.TransactionSigning) {
             const inputs = this.inputs.filter(i => !i.witness && !i.requested);
-            if (inputs.length > 0 && this.transactionData) {
+            if (inputs.length > 0 && this.transactionData && this.liquidityClues) {
                 inputs.forEach(input => {
                     this.options.log(`Requesting witness for ~~${input.outpoint}~~`);
                     input.setRequest('signature');
@@ -286,6 +288,7 @@ export class CoinjoinRound extends EventEmitter {
                     roundId: this.id,
                     inputs: inputs.map(i => i.toSerialized()),
                     transaction: this.transactionData,
+                    liquidityClues: this.liquidityClues,
                 };
             }
         }

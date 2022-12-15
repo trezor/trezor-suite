@@ -174,6 +174,7 @@ describe('selectRound', () => {
                     });
                 }
             }
+            resolve();
         });
 
         const result = await selectInputsForRound(

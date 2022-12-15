@@ -36,10 +36,17 @@ describe('transactionSigning', () => {
     });
 
     afterAll(() => {
-        if (server) server.close();
+        server?.close();
     });
 
-    it('affiliate-request', async () => {
+    it('affiliate-request and update-liquidity-clue', async () => {
+        server?.addListener('test-request', ({ url, data, resolve }) => {
+            if (url.endsWith('/update-liquidity-clue')) {
+                resolve({ rawLiquidityClue: data.externalAmounts[0] });
+            }
+            resolve();
+        });
+
         const response = await transactionSigning(
             {
                 id: '01',
@@ -56,10 +63,14 @@ describe('transactionSigning', () => {
                 ],
                 addresses: [
                     {
+                        path: "m/10025'/1'/0'/0'/1/0",
                         scriptPubKey:
-                            '51206a6daebd9abae25cdd376b811190163eb00c58e87da1867ba8546229098231c3',
+                            '1 b67b77a4cac9a32c463e5bbe0c6cbfbab3c86cb59518e5661766056e6a7e849c',
                     },
                 ],
+                roundParameters: {
+                    maxSuggestedAmount: 123456789,
+                },
                 coinjoinState: {
                     // test vectors from connect signTransactionPaymentRequest
                     events: [
@@ -105,7 +116,19 @@ describe('transactionSigning', () => {
                         },
                     ],
                 },
-            } as any,
+            } as any, // simplified CoinjoinRound
+            [
+                {
+                    accountKey: 'account-A',
+                    changeAddresses: [
+                        {
+                            address:
+                                'bc1pkeah0fx2ex3jc337twlqcm9lh2eusm94j5vw2eshvczku6n7sjwqrfyfj2',
+                        },
+                    ],
+                    updateRawLiquidityClue: () => {},
+                } as any, // simplified Account
+            ],
             { ...server?.requestOptions, network: networks.bitcoin },
         );
         expect(response).toMatchObject({
@@ -114,6 +137,7 @@ describe('transactionSigning', () => {
                     fee_rate: 0.003,
                 },
             },
+            liquidityClues: [{ accountKey: 'account-A', rawLiquidityClue: 2000000 }],
         });
     });
 

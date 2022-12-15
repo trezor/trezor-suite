@@ -38,3 +38,5 @@ export interface AnalyzeResult {
         anonymitySet: number;
     }[];
 }
+
+export type RawLiquidityClue = number | null;

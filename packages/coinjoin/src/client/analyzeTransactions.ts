@@ -58,13 +58,32 @@ export const analyzeTransactions = async (
         } as AnalyzeTransactionDetails;
     });
 
-    const result = await middleware.getAnonymityScores(params, {
+    const scores = await middleware.getAnonymityScores(params, {
         baseUrl: options.middlewareUrl,
         signal: options.signal,
     });
 
-    return result.reduce((dict, { address, anonymitySet }) => {
+    // find most recent coinjoin transaction in history
+    const cjTx = transactions.find(tx => tx.type === 'joint');
+    let rawLiquidityClue: middleware.RawLiquidityClue = null;
+    if (cjTx) {
+        const externalAmounts = cjTx.details.vout
+            .map(vout => transformVinVout(vout, options.network))
+            .filter(vout => !('address' in vout))
+            .map(o => Number(o.value));
+        rawLiquidityClue = await middleware.initLiquidityClue(externalAmounts, {
+            baseUrl: options.middlewareUrl,
+            signal: options.signal,
+        });
+    }
+
+    const anonymityScores = scores.reduce((dict, { address, anonymitySet }) => {
         dict[address] = anonymitySet;
         return dict;
     }, {} as Record<string, number>);
+
+    return {
+        anonymityScores,
+        rawLiquidityClue,
+    };
 };

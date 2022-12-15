@@ -13,6 +13,7 @@ import {
     UtxoForRound,
     AnalyzeTransactionDetails,
     AnalyzeResult,
+    RawLiquidityClue,
 } from '../types/middleware';
 
 export const getRealCredentials = async (
@@ -103,6 +104,42 @@ export const getAnonymityScores = async (
 ) => {
     const data = await request<AnalyzeResult>('get-anonymity-scores', { transactions }, options);
     return data.results;
+};
+
+export const initLiquidityClue = async (externalAmounts: number[], options: RequestOptions) => {
+    const data = await request<{ rawLiquidityClue: RawLiquidityClue }>(
+        'init-liquidity-clue',
+        { externalAmounts },
+        options,
+    );
+    return data.rawLiquidityClue;
+};
+
+export const updateLiquidityClue = async (
+    rawLiquidityClue: RawLiquidityClue,
+    maxSuggestedAmount: number,
+    externalAmounts: number[],
+    options: RequestOptions,
+) => {
+    const data = await request<{ rawLiquidityClue: RawLiquidityClue }>(
+        'update-liquidity-clue',
+        { rawLiquidityClue, maxSuggestedAmount, externalAmounts },
+        options,
+    );
+    return data.rawLiquidityClue;
+};
+
+export const getLiquidityClue = async (
+    rawLiquidityClue: RawLiquidityClue,
+    maxSuggestedAmount: number,
+    options: RequestOptions,
+) => {
+    const data = await request<{ liquidityClue: number }>(
+        'get-liquidity-clue',
+        { rawLiquidityClue, maxSuggestedAmount },
+        options,
+    );
+    return data.liquidityClue;
 };
 
 // reexport all middleware types
