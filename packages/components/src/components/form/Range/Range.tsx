@@ -78,7 +78,7 @@ export interface RangeProps {
     thumbStyle?: CSSObject;
     trackStyle?: CSSObject;
     value: number;
-    labels?: (string | number)[];
+    labels?: Array<{ value: string | number; component?: React.ReactNode }>;
     onLabelClick?: (value: number) => void;
 }
 
@@ -97,17 +97,17 @@ export const Range = ({ labels, onLabelClick, className, ...props }: RangeProps)
 
     const labelComponents = useMemo(
         () =>
-            labels?.map((label, i) => {
+            labels?.map(({ value, component }, i) => {
                 const isLastElement = i === labels.length - 1;
 
                 return (
                     <Label
-                        key={label}
+                        key={value}
                         $width={labelsElWidth}
-                        onClick={() => onLabelClick?.(Number.parseFloat(String(label)))}
+                        onClick={() => onLabelClick?.(Number.parseFloat(String(value)))}
                         ref={isLastElement ? lastLabelRef : undefined}
                     >
-                        {label}
+                        {component || value}
                     </Label>
                 );
             }),

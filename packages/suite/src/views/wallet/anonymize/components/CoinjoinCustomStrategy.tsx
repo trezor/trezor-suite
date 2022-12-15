@@ -155,7 +155,11 @@ export const CoinjoinCustomStrategy = ({
                         value={maxFee}
                         onChange={e => handleSliderChange(Number(e.target.value))}
                         trackStyle={trackStyle}
-                        labels={['1 sat/vB', '250 sat/vB', '500 sat/vB']}
+                        labels={[
+                            { value: '1 sat/vB' },
+                            { value: '250 sat/vB' },
+                            { value: '500 sat/vB' },
+                        ]}
                         onLabelClick={handleSliderChange}
                     />
                 </MiningFee>
