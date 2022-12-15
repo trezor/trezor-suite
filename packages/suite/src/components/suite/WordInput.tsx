@@ -75,12 +75,11 @@ const MenuList = (props: MenuListProps<Option, boolean>) => {
     );
 };
 
-interface Props {
+interface WordInputProps {
     onSubmit: (word: string) => void;
 }
 
-const WordInput = React.memo((props: Props) => {
-    const { onSubmit } = props;
+export const WordInput = React.memo(({ onSubmit }: WordInputProps) => {
     const { translationString } = useTranslation();
 
     const MemoSelect = React.memo(() => (
@@ -88,7 +87,8 @@ const WordInput = React.memo((props: Props) => {
             autoFocus
             isSearchable
             isClearable={false}
-            controlShouldRenderValue={false}
+            menuIsOpen
+            withDropdownIndicator={false}
             noOptionsMessage={({ inputValue }: { inputValue: string }) =>
                 translationString('TR_WORD_DOES_NOT_EXIST', { word: inputValue })
             }
@@ -111,5 +111,3 @@ const WordInput = React.memo((props: Props) => {
         </SelectWrapper>
     );
 });
-
-export default WordInput;

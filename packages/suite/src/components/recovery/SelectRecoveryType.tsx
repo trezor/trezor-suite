@@ -7,7 +7,7 @@ interface SelectRecoveryTypeProps {
     onSelect: (type: 'standard' | 'advanced') => void;
 }
 
-const SelectRecoveryType = ({ onSelect }: SelectRecoveryTypeProps) => (
+export const SelectRecoveryType = ({ onSelect }: SelectRecoveryTypeProps) => (
     <OptionsWrapper>
         <Option
             onClick={() => onSelect('standard')}
@@ -26,5 +26,3 @@ const SelectRecoveryType = ({ onSelect }: SelectRecoveryTypeProps) => (
         />
     </OptionsWrapper>
 );
-
-export default SelectRecoveryType;

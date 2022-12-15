@@ -9,11 +9,11 @@ const StyledOption = styled(Option)`
     justify-content: center;
 `;
 
-interface Props {
+interface SelectWordCountProps {
     onSelect: (number: WordCount) => void;
 }
 
-const SelectWordCount = ({ onSelect }: Props) => (
+export const SelectWordCount = ({ onSelect }: SelectWordCountProps) => (
     <OptionsWrapper>
         <StyledOption
             onClick={() => {
@@ -40,5 +40,3 @@ const SelectWordCount = ({ onSelect }: Props) => (
         />
     </OptionsWrapper>
 );
-
-export default SelectWordCount;
