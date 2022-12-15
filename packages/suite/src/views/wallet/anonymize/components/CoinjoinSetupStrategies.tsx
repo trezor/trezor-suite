@@ -93,7 +93,7 @@ export const CoinjoinSetupStrategies = ({ account }: CoinjoinSetupStrategiesProp
     const accountTransactions = useSelector(state => selectAccountTransactions(state, account.key));
     const { isLocked } = useDevice();
     const isCoinJoinBlockedByTor = useSelector(selectIsCoinjoinBlockedByTor);
-    const isCoinJoinDisabled = useSelector(state =>
+    const isCoinJoinDisabledByFeatureFlag = useSelector(state =>
         selectIsFeatureDisabled(state, Feature.coinjoin),
     );
     const featureMessageContent = useSelector(state =>
@@ -128,10 +128,10 @@ export const CoinjoinSetupStrategies = ({ account }: CoinjoinSetupStrategiesProp
         allAnonymized ||
         isLocked(false) ||
         isCoinJoinBlockedByTor ||
-        isCoinJoinDisabled;
+        isCoinJoinDisabledByFeatureFlag;
 
     const getButtonTooltipMessage = () => {
-        if (isCoinJoinDisabled && featureMessageContent) {
+        if (isCoinJoinDisabledByFeatureFlag && featureMessageContent) {
             return featureMessageContent;
         }
         if (isCoinJoinBlockedByTor) {

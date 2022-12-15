@@ -399,3 +399,7 @@ export const selectIsCoinjoinBlockedByTor = createSelector(
         return accountParams.accountType === 'coinjoin' && !isTorEnabled;
     },
 );
+
+export const selectIsAnySessionInCriticalPhase = createSelector(selectCoinjoinAccounts, accounts =>
+    accounts.some(acc => (acc.session?.phase ?? 0) > 0),
+);
