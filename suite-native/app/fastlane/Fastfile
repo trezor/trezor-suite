@@ -28,7 +28,7 @@ ENV["CHANGELOG"] = escape_slash "[#{git_branch}] - #{commit_message}".strip
 ENV["VERSION"] = load_json(json_path: "package.json")["suiteNativeVersion"]
 
 private_lane :replace_debug_info_environment_variables do |options|
-  platform = options[:platform]
+  platform = lane_context[SharedValues::PLATFORM_NAME]
   environment_file_name = ENV["ENVFILE"]
   environment_file = File.join(SUITE_NATIVE_ROOT_PATH, environment_file_name)
 
@@ -37,7 +37,7 @@ private_lane :replace_debug_info_environment_variables do |options|
   version_substitute = "s/^(VERSION)=(.*)$/\\1=#{ENV["VERSION"]}/"
   build_number_substitute = "s/^(BUILD_NUMBER)=(.*)$/\\1=#{ENV["BUILD_NUMBER"]}/"
 
-  if is_ci and platform == 'ios'
+  if is_ci and platform == :ios
     sh(
       <<-SHELL
       sed -r -i '' '#{commit_hash_substitute}' '#{environment_file}'
@@ -46,7 +46,7 @@ private_lane :replace_debug_info_environment_variables do |options|
       sed -r -i '' '#{build_number_substitute}' '#{environment_file}'
       SHELL
     )
-  elsif is_ci and platform == 'android'
+  elsif is_ci and platform == :android
     sh(
       <<-SHELL
       sed -r -i '#{commit_hash_substitute}' '#{environment_file}'

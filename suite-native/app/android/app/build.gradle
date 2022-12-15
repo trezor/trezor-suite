@@ -4,7 +4,7 @@ apply plugin: "com.android.application"
 project.ext.envConfigFiles = [
     dev: ".env.debug",
     firebasedevelop: ".env.develop",
-    firebasestaging: ".env.staging",
+    stag: ".env.staging",
     prod: ".env.production",
 ]
 
@@ -267,7 +267,7 @@ android {
         firebaseDevelop {
             applicationIdSuffix '.develop'
         }
-        firebaseStaging {
+        stag {
             applicationIdSuffix '.staging'
         }
         prod {
