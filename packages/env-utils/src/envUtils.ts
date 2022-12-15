@@ -1,5 +1,7 @@
 import UAParser from 'ua-parser-js';
 
+import { EnvUtils } from './types';
+
 let userAgentParser: UAParser;
 
 /* This way, we can override simple utils, which helps to polyfill methods which are not available in react-native. */
@@ -13,58 +15,58 @@ const getUserAgentParser = () => {
     return userAgentParser;
 };
 
-export const isAndroid = () => /Android/.test(getUserAgent());
+const isAndroid = () => /Android/.test(getUserAgent());
 
-export const isChromeOs = () => /CrOS/.test(getUserAgent());
+const isChromeOs = () => /CrOS/.test(getUserAgent());
 
-export const getBrowserVersion = () => getUserAgentParser().getBrowser().version || '';
+const getBrowserVersion = () => getUserAgentParser().getBrowser().version || '';
 
 /* Not correct for Linux as there is many different distributions in different versions */
-export const getOsVersion = () => getUserAgentParser().getOS().version || '';
+const getOsVersion = () => getUserAgentParser().getOS().version || '';
 
-export const getBrowserName = () => {
+const getBrowserName = () => {
     const browserName = getUserAgentParser().getBrowser().name;
     return browserName?.toLowerCase() || '';
 };
 
-export const isFirefox = () => getBrowserName() === 'firefox';
+const isFirefox = () => getBrowserName() === 'firefox';
 
 // List of platforms https://docker.apachezone.com/blog/74
-export const getPlatform = () => window.navigator.platform;
+const getPlatform = () => window.navigator.platform;
 
-export const getPlatformLanguages = () => window.navigator.languages;
+const getPlatformLanguages = () => window.navigator.languages;
 
-export const getScreenWidth = () => window.screen.width;
+const getScreenWidth = () => window.screen.width;
 
-export const getScreenHeight = () => window.screen.height;
+const getScreenHeight = () => window.screen.height;
 
-export const getWindowWidth = () => window.innerWidth;
+const getWindowWidth = () => window.innerWidth;
 
-export const getWindowHeight = () => window.innerHeight;
+const getWindowHeight = () => window.innerHeight;
 
-export const getLocationOrigin = () => window.location.origin;
+const getLocationOrigin = () => window.location.origin;
 
-export const getLocationHostname = () => window.location.hostname;
+const getLocationHostname = () => window.location.hostname;
 
-export const getProcessPlatform = () => process.platform;
+const getProcessPlatform = () => process.platform;
 
-export const isMacOs = () => {
+const isMacOs = () => {
     if (getProcessPlatform() === 'darwin') return true;
     if (typeof window === 'undefined') return;
 
     return getPlatform().startsWith('Mac');
 };
 
-export const isWindows = () => {
+const isWindows = () => {
     if (getProcessPlatform() === 'win32') return true;
     if (typeof window === 'undefined') return;
 
     return getPlatform().startsWith('Win');
 };
 
-export const isIOs = () => ['iPhone', 'iPad', 'iPod'].includes(getPlatform());
+const isIOs = () => ['iPhone', 'iPad', 'iPod'].includes(getPlatform());
 
-export const isLinux = () => {
+const isLinux = () => {
     if (getProcessPlatform() === 'linux') return true;
     if (typeof window === 'undefined') return;
 
@@ -74,7 +76,7 @@ export const isLinux = () => {
     return getPlatform().startsWith('Linux');
 };
 
-export const getOsName = () => {
+const getOsName = () => {
     if (isWindows()) return 'windows';
     if (isMacOs()) return 'macos';
     if (isAndroid()) return 'android';
@@ -83,4 +85,28 @@ export const getOsName = () => {
     if (isIOs()) return 'ios';
 
     return '';
+};
+
+export const envUtils: EnvUtils = {
+    getUserAgent,
+    isAndroid,
+    isChromeOs,
+    getBrowserVersion,
+    getOsVersion,
+    getBrowserName,
+    isFirefox,
+    getPlatform,
+    getPlatformLanguages,
+    getScreenWidth,
+    getScreenHeight,
+    getWindowWidth,
+    getWindowHeight,
+    getLocationOrigin,
+    getLocationHostname,
+    getProcessPlatform,
+    isMacOs,
+    isWindows,
+    isIOs,
+    isLinux,
+    getOsName,
 };
