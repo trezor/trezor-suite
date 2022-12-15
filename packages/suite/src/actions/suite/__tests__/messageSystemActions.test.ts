@@ -1,8 +1,6 @@
 import { configureStore } from '@suite/support/tests/configureStore';
 
-import messageSystemReducer, {
-    State as MessageSystemState,
-} from '@suite-reducers/messageSystemReducer';
+import messageSystemReducer, { MessageSystemState } from '@suite-reducers/messageSystemReducer';
 import * as messageSystemActions from '../messageSystemActions';
 import * as messageSystemConstants from '../constants/messageSystemConstants';
 import * as fixtures from '../__fixtures__/messageSystemActions';

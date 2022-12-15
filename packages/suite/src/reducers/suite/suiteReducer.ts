@@ -247,4 +247,6 @@ export const selectTorState = createSelector(
 
 export const selectDebug = (state: SuiteRootState) => state.suite.settings.debug;
 
+export const selectLanguage = (state: SuiteRootState) => state.suite.settings.language;
+
 export default suiteReducer;

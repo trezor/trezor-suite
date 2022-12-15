@@ -20,7 +20,11 @@ import {
 import { calculateServiceFee, getMaxRounds } from '@wallet-utils/coinjoinUtils';
 import { CoinjoinCustomStrategy } from './CoinjoinCustomStrategy';
 import { CoinjoinDefaultStrategy, CoinJoinStrategy } from './CoinjoinDefaultStrategy';
-import { useMessageSystem, Feature } from '@suite-hooks/useMessageSystem';
+import {
+    Feature,
+    selectIsFeatureDisabled,
+    selectFeatureMessageContent,
+} from '@suite-reducers/messageSystemReducer';
 
 const StyledCard = styled(Card)`
     margin-bottom: 8px;
@@ -89,9 +93,12 @@ export const CoinjoinSetupStrategies = ({ account }: CoinjoinSetupStrategiesProp
     const accountTransactions = useSelector(state => selectAccountTransactions(state, account.key));
     const { isLocked } = useDevice();
     const isCoinJoinBlockedByTor = useSelector(selectIsCoinjoinBlockedByTor);
-
-    const { getFeatureMessageContent, isFeatureEnabled } = useMessageSystem();
-    const featureMessageContent = getFeatureMessageContent(Feature.coinjoin);
+    const isCoinJoinDisabled = useSelector(state =>
+        selectIsFeatureDisabled(state, Feature.coinjoin),
+    );
+    const featureMessageContent = useSelector(state =>
+        selectFeatureMessageContent(state, Feature.coinjoin),
+    );
 
     const anonymitySet = account.addresses?.anonymitySet;
 
@@ -116,7 +123,6 @@ export const CoinjoinSetupStrategies = ({ account }: CoinjoinSetupStrategiesProp
     const allChecked = connectedConfirmed && termsConfirmed;
     const allAnonymized = notAnonymized === '0';
 
-    const isCoinJoinDisabled = !isFeatureEnabled(Feature.coinjoin);
     const isDisabled =
         !allChecked ||
         allAnonymized ||

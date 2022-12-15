@@ -2,7 +2,7 @@ import React from 'react';
 import { NotificationCard } from '@suite-components';
 import { Link } from '@trezor/components';
 import { useSelector } from '@suite-hooks';
-import { useMessageSystem, Context } from '@suite-hooks/useMessageSystem';
+import { Context, selectContextMessageContent } from '@suite-reducers/messageSystemReducer';
 import { Account } from '@wallet-types';
 
 type CoinJoinContextMessageProps = {
@@ -10,9 +10,7 @@ type CoinJoinContextMessageProps = {
 };
 
 export const CoinJoinContextMessage = ({ account }: CoinJoinContextMessageProps) => {
-    const { getContextMessage } = useMessageSystem();
-    const language = useSelector(state => state.suite.settings.language) || 'en';
-    const message = getContextMessage(Context.coinjoin);
+    const message = useSelector(state => selectContextMessageContent(state, Context.coinjoin));
 
     return account?.accountType === 'coinjoin' && message ? (
         <NotificationCard
@@ -21,7 +19,7 @@ export const CoinJoinContextMessage = ({ account }: CoinJoinContextMessageProps)
                     ? {
                           children: (
                               <Link variant="nostyle" href={message.cta.link}>
-                                  {message.cta.label[language]}
+                                  {message.cta.label}
                               </Link>
                           ),
                       }
@@ -29,7 +27,7 @@ export const CoinJoinContextMessage = ({ account }: CoinJoinContextMessageProps)
             }
             variant={message.variant}
         >
-            {message.content[language]}
+            {message.content}
         </NotificationCard>
     ) : null;
 };

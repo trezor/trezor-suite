@@ -5,7 +5,8 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { H1, TrezorLogo, Button, variables, SVG_IMAGES } from '@trezor/components';
 import { useOnce } from '@trezor/react-utils';
 import { Translation } from '@suite-components';
-import { useMessageSystem } from '@suite-hooks/useMessageSystem';
+import { useSelector } from '@suite-hooks';
+import { selectBannerMessage } from '@suite-reducers/messageSystemReducer';
 import MessageSystemBanner from '@suite-components/Banners/MessageSystemBanner';
 import TrezorLink from '@suite-components/TrezorLink';
 import { isWeb } from '@suite-utils/env';
@@ -101,7 +102,7 @@ interface WelcomeLayoutProps {
 // WelcomeLayout is a top-level wrapper similar to @suite-components/SuiteLayout
 // used in Preloader and Onboarding
 export const WelcomeLayout = ({ children }: WelcomeLayoutProps) => {
-    const { bannerMessage } = useMessageSystem();
+    const bannerMessage = useSelector(selectBannerMessage);
     const { isGuideOpen, isGuideOnTop } = useGuide();
 
     // do not animate welcome bar on initial load

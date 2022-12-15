@@ -1,4 +1,4 @@
-import messageSystemReducer, { State } from '../messageSystemReducer';
+import messageSystemReducer, { MessageSystemState } from '../messageSystemReducer';
 import fixtures, { timestamp } from '../__fixtures__/messageSystemReducer';
 
 import type { Action } from '@suite-types';
@@ -10,7 +10,7 @@ describe('Message system reducer', () => {
         });
 
         it(f.description, () => {
-            let state: State = f.initialState as State;
+            let state: MessageSystemState = f.initialState as MessageSystemState;
             f.actions.forEach(a => {
                 state = messageSystemReducer(state, a as Action);
             });

@@ -194,6 +194,15 @@ export const DEFAULT_STORE = {
     },
     devices: [], // to remove?
     protocol: { sendForm: {} },
+    messageSystem: {
+        validMessages: {
+            banner: [],
+            context: [],
+            modal: [],
+            feature: [],
+        },
+        dismissedMessages: {},
+    },
 };
 
 const DEFAULT_DRAFT = {

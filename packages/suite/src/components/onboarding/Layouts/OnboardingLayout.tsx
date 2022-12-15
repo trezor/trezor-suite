@@ -5,11 +5,11 @@ import { TrezorLogo, Button, variables } from '@trezor/components';
 import { TREZOR_SUPPORT_URL } from '@trezor/urls';
 import { TrezorLink, Translation } from '@suite-components';
 import { ProgressBar } from '@onboarding-components';
-import { useOnboarding } from '@suite-hooks';
+import { useSelector, useOnboarding } from '@suite-hooks';
 import { MAX_WIDTH } from '@suite-constants/layout';
 import steps from '@onboarding-config/steps';
 import { GuideButton, GuidePanel } from '@guide-components';
-import { useMessageSystem } from '@suite-hooks/useMessageSystem';
+import { selectBannerMessage } from '@suite-reducers/messageSystemReducer';
 import MessageSystemBanner from '@suite-components/Banners/MessageSystemBanner';
 import { ModalContextProvider } from '@suite-support/ModalContext';
 
@@ -126,7 +126,7 @@ interface OnboardingLayoutProps {
 }
 
 export const OnboardingLayout = ({ children }: OnboardingLayoutProps) => {
-    const { bannerMessage } = useMessageSystem();
+    const bannerMessage = useSelector(selectBannerMessage);
     const { activeStepId } = useOnboarding();
 
     const activeStep = useMemo(() => steps.find(step => step.id === activeStepId)!, [activeStepId]);
