@@ -1,4 +1,4 @@
-import React, { useCallback, ChangeEventHandler } from 'react';
+import React, { useCallback, ChangeEventHandler, useMemo } from 'react';
 import styled, { css } from 'styled-components';
 import { AnimatePresence, HTMLMotionProps, motion } from 'framer-motion';
 import { Range, Warning, useTheme, motionEasing, Icon, variables } from '@trezor/components';
@@ -21,7 +21,16 @@ const AnonymityRange = styled(Range)<{ $isBlurred: boolean }>`
     ${blurredStyle}
 `;
 
-const DisabledMessage = styled.p`
+const Label = styled.span`
+    display: flex;
+    align-items: center;
+
+    > :first-child {
+        margin-right: 3px;
+    }
+`;
+
+const DisabledMessage = styled.div`
     position: absolute;
     display: inline-flex;
     align-items: center;
@@ -110,6 +119,52 @@ export const AnonymityLevelSlider = ({
 
     const isErrorDisplayed = anonymityStatus === AnonymityStatus.Bad;
 
+    const labels = useMemo(
+        () => [
+            {
+                value: 1,
+                component: (
+                    <Label>
+                        <Icon icon="ONE_USER" size={14} color={theme.TYPE_DARK_GREY} /> 1
+                    </Label>
+                ),
+            },
+            {
+                value: 3,
+                component: (
+                    <Label>
+                        <Icon icon="TWO_USERS" size={14} color={theme.TYPE_DARK_GREY} /> 3
+                    </Label>
+                ),
+            },
+            {
+                value: 10,
+                component: (
+                    <Label>
+                        <Icon icon="THREE_USERS" size={14} color={theme.TYPE_DARK_GREY} /> 10
+                    </Label>
+                ),
+            },
+            {
+                value: 30,
+                component: (
+                    <Label>
+                        <Icon icon="FOUR_USERS" size={14} color={theme.TYPE_DARK_GREY} /> 30
+                    </Label>
+                ),
+            },
+            {
+                value: 100,
+                component: (
+                    <Label>
+                        <Icon icon="FOUR_USERS" size={14} color={theme.TYPE_DARK_GREY} /> 100
+                    </Label>
+                ),
+            },
+        ],
+        [theme],
+    );
+
     return (
         <Container>
             <AnonymityRange
@@ -117,9 +172,9 @@ export const AnonymityLevelSlider = ({
                 onChange={handleSliderChange}
                 trackStyle={trackStyle}
                 step="any"
-                $isBlurred={isSessionActive}
-                labels={[1, 3, 10, 30, 100]}
+                labels={labels}
                 onLabelClick={number => handleChange(number)}
+                $isBlurred={isSessionActive}
             />
 
             <AnimatePresence initial={!isErrorDisplayed}>

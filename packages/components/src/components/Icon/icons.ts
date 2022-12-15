@@ -106,4 +106,8 @@ export const ICONS = {
     WALLET_HIDDEN: require('../../images/icons/wallet_hidden.svg'),
     WALLET: require('../../images/icons/wallet.svg'),
     WARNING: require('../../images/icons/warning.svg'),
+    ONE_USER: require('../../images/icons/one_user.svg'),
+    TWO_USERS: require('../../images/icons/two_users.svg'),
+    THREE_USERS: require('../../images/icons/three_users.svg'),
+    FOUR_USERS: require('../../images/icons/four_users.svg'),
 };
