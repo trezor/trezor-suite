@@ -4,11 +4,11 @@ import { PinMatrix } from '@suite-components/PinMatrix';
 import {
     OnboardingButtonCta,
     OnboardingButtonSkip,
+    OnboardingStepBox,
     SkipStepConfirmation,
 } from '@onboarding-components';
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
 import { useActions, useSelector, useOnboarding } from '@suite-hooks';
-import PinStepBox from './PinStepBox';
 import { getDeviceModel } from '@trezor/device-utils';
 
 const SetPinStep = () => {
@@ -69,7 +69,8 @@ const SetPinStep = () => {
         // User entered 2 different PINs, show error and offer to try again
         // Used only on T1, TT shows pins mismatch error on its display
         return (
-            <PinStepBox
+            <OnboardingStepBox
+                image="PIN"
                 key="pin-mismatch" // to properly rerender in translation mode
                 heading={<Translation id="TR_PIN_MISMATCH_HEADING" />}
                 data-test="@pin-mismatch"
@@ -88,7 +89,8 @@ const SetPinStep = () => {
     if (status === 'success') {
         // Pin successfully set up
         return (
-            <PinStepBox
+            <OnboardingStepBox
+                image="PIN"
                 key={status} // to properly rerender in translation mode
                 heading={<Translation id="TR_PIN_HEADING_SUCCESS" />}
                 description={<Translation id="TR_PIN_SET_SUCCESS" />}
@@ -110,7 +112,8 @@ const SetPinStep = () => {
             {showSkipConfirmation && (
                 <SkipStepConfirmation onCancel={() => setShowSkipConfirmation(false)} />
             )}
-            <PinStepBox
+            <OnboardingStepBox
+                image="PIN"
                 key={status} // to properly rerender in translation mode
                 heading={
                     <>
@@ -153,7 +156,7 @@ const SetPinStep = () => {
             >
                 {/* // device requested showing a pin matrix, show the matrix also on "repeat-pin" status until we get fail or success response from the device */}
                 {(showPinMatrix || status === 'repeat-pin') && <PinMatrix device={device} />}
-            </PinStepBox>
+            </OnboardingStepBox>
         </>
     );
 };
