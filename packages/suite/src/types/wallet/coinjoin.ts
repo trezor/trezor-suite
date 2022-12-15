@@ -2,6 +2,7 @@ import { NetworkSymbol } from '@suite-common/wallet-config';
 
 // @trezor/coinjoin package is meant to be imported dynamically
 // importing types is safe, but importing an enum thru index will bundle whole lib
+import { RegisterAccountParams } from '@trezor/coinjoin';
 import { RoundPhase } from '@trezor/coinjoin/src/enums';
 
 export { RoundPhase } from '@trezor/coinjoin/src/enums';
@@ -39,6 +40,7 @@ export interface CoinjoinAccount {
     key: string; // reference to wallet Account.key
     symbol: NetworkSymbol;
     targetAnonymity: number; // anonymity set by the user
+    rawLiquidityClue: RegisterAccountParams['rawLiquidityClue'];
     session?: CoinjoinSession; // current/active authorized session
     previousSessions: CoinjoinSession[]; // history
     checkpoints?: CoinjoinDiscoveryCheckpoint[];

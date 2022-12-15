@@ -141,6 +141,11 @@ export const startCoinjoinSession = [
                 error: 'Cancelled',
             },
         },
+        state: {
+            coinjoin: {
+                accounts: [{ key: ACCOUNT.key }],
+            },
+        },
         params: ACCOUNT,
         result: {
             actions: [
@@ -156,6 +161,11 @@ export const startCoinjoinSession = [
             success: true,
             payload: {
                 message: 'Authorized',
+            },
+        },
+        state: {
+            coinjoin: {
+                accounts: [{ key: ACCOUNT.key }],
             },
         },
         params: ACCOUNT,

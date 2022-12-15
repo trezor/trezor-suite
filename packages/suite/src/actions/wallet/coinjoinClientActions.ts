@@ -6,13 +6,13 @@ import {
     CoinjoinRequestEvent,
     CoinjoinResponseEvent,
 } from '@trezor/coinjoin';
-import { arrayDistinct } from '@trezor/utils';
+import { arrayDistinct, throwError } from '@trezor/utils';
 import * as COINJOIN from './constants/coinjoinConstants';
 import { breakdownCoinjoinBalance, prepareCoinjoinTransaction } from '@wallet-utils/coinjoinUtils';
 import { CoinjoinClientService } from '@suite/services/coinjoin/coinjoinClient';
 import { Dispatch, GetState } from '@suite-types';
 import { Account } from '@suite-common/wallet-types';
-import { CoinjoinServerEnvironment, RoundPhase } from '@wallet-types/coinjoin';
+import { CoinjoinServerEnvironment, RoundPhase, CoinjoinAccount } from '@wallet-types/coinjoin';
 import { onCancel as closeModal, openModal } from '@suite-actions/modalActions';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { selectAccountByKey } from '@suite-common/wallet-core';
@@ -86,13 +86,16 @@ const clientSessionOwnership = (accountKey: string, roundId: string) =>
         },
     } as const);
 
-const clientSessionSignTransaction = (accountKey: string, roundId: string) =>
+export interface SessionSignTransactionPayload {
+    accountKey: string;
+    roundId: string;
+    rawLiquidityClue: CoinjoinAccount['rawLiquidityClue'];
+}
+
+const clientSessionSignTransaction = (payload: SessionSignTransactionPayload) =>
     ({
         type: COINJOIN.SESSION_TX_SIGNED,
-        payload: {
-            accountKey,
-            roundId,
-        },
+        payload,
     } as const);
 
 const clientLog = (symbol: Account['symbol'], message: string) =>
@@ -397,7 +400,7 @@ export const signCoinjoinTx =
                 response.inputs.push(...coinjoinResponseError(utxos, 'Account not found'));
                 return [];
             }
-            const { session } = coinjoinAccount;
+            const { session, rawLiquidityClue } = coinjoinAccount;
             if (!session || session.signedRounds.length >= session.maxRounds) {
                 response.inputs.push(...coinjoinResponseError(utxos, 'Account without session'));
                 return [];
@@ -417,6 +420,7 @@ export const signCoinjoinTx =
                 roundId: request.roundId,
                 key,
                 network: realAccount.symbol,
+                rawLiquidityClue,
             };
         });
 
@@ -428,9 +432,18 @@ export const signCoinjoinTx =
             key,
             network,
             unlockPath,
+            rawLiquidityClue,
         }: typeof groupParamsByDevice[number]) => {
             // notify reducer before signing, failed signing are also counted in Trezor maxRound limit
-            dispatch(clientSessionSignTransaction(key, roundId));
+            dispatch(
+                clientSessionSignTransaction({
+                    accountKey: key,
+                    roundId,
+                    rawLiquidityClue:
+                        request.liquidityClues.find(l => l.accountKey === key)?.rawLiquidityClue ||
+                        rawLiquidityClue,
+                }),
+            );
 
             const signTx = await TrezorConnect.signTransaction({
                 device,
@@ -550,37 +563,10 @@ export const initCoinjoinClient =
         }
     };
 
-export const analyzeTransactions =
-    (accountInfo: AccountInfo, symbol: Account['symbol']) => async () => {
-        if (!accountInfo.utxo || !accountInfo.addresses) return accountInfo;
-
-        const { utxo, history } = accountInfo;
-        // Fallback with anonymity 1 on each utxo
-        let anonymitySet = utxo.reduce((aSet, utxo) => {
-            aSet[utxo.address] = 1;
-            return aSet;
-        }, {} as Record<string, number>);
-
-        const client = getCoinjoinClient(symbol);
-        try {
-            const realAnonymitySet = await client?.analyzeTransactions(history.transactions || []);
-            if (realAnonymitySet) {
-                anonymitySet = realAnonymitySet;
-            }
-        } catch (error) {
-            console.warn('analyzeTransactions error', error);
-        }
-
-        const accountInfoWithAnonymitySet = {
-            ...accountInfo,
-            addresses: {
-                ...accountInfo.addresses,
-                anonymitySet,
-            },
-        };
-
-        return accountInfoWithAnonymitySet;
-    };
+export const analyzeTransactions = (accountInfo: AccountInfo, symbol: Account['symbol']) => () => {
+    const client = getCoinjoinClient(symbol) ?? throwError('Coinjoin client is missing');
+    return client.analyzeTransactions(accountInfo.history.transactions || []);
+};
 
 export const getCoinjoinServerEnvironment =
     (symbol: Account['symbol']) => (_: Dispatch, getState: GetState) => {

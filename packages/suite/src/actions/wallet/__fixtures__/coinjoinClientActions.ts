@@ -473,6 +473,7 @@ export const signCoinjoinTx = [
                     coinjoin_flags_array: [],
                 },
             },
+            liquidityClues: [],
         },
         result: {
             actions: [],
