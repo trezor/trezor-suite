@@ -58,6 +58,8 @@ export const selectIsColorSchemeActive =
     (colorScheme: AppColorScheme) => (state: SettingsSliceRootState) =>
         state.appSettings.colorScheme === colorScheme;
 export const selectFiatCurrency = (state: SettingsSliceRootState) => state.appSettings.fiatCurrency;
+export const selectFiatCurrencyCode = (state: SettingsSliceRootState) =>
+    state.appSettings.fiatCurrency.label;
 export const selectIsOnboardingFinished = (state: SettingsSliceRootState) =>
     state.appSettings.isOnboardingFinished;
 
