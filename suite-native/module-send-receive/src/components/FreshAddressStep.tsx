@@ -1,8 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import * as Clipboard from 'expo-clipboard';
-
 import { QRCode } from '@suite-native/qr-code';
 import { Box } from '@suite-native/atoms';
 import {
@@ -43,9 +41,8 @@ export const FreshAddressStep = ({ accountKey, onClose }: FreshAddressStepProps)
         }
     }, [account, pendingAddresses, isAccountUtxoBased]);
 
-    const handleCopyAddressToClipboardAndClose = async () => {
+    const handleCopyAddressToClipboardAndClose = () => {
         if (freshAddress) {
-            await Clipboard.setStringAsync(freshAddress.address);
             onClose();
         }
     };

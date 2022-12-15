@@ -1,7 +1,6 @@
 import React, { ReactNode, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import * as Clipboard from 'expo-clipboard';
 import { useNavigation } from '@react-navigation/native';
 
 import { networks, NetworkSymbol } from '@suite-common/wallet-config';
@@ -13,7 +12,7 @@ import {
     StackNavigationProps,
     StackProps,
 } from '@suite-native/navigation';
-import { BottomSheet, Box, Button, Card, IconButton, Text, VStack } from '@suite-native/atoms';
+import { BottomSheet, Box, Button, Card, Text, VStack } from '@suite-native/atoms';
 import { accountsActions, AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { QRCode } from '@suite-native/qr-code';
 import { CryptoIcon } from '@trezor/icons';
@@ -60,8 +59,7 @@ export const AccountDetailSettings = ({
         navigation.navigate(AccountsStackRoutes.Accounts);
     };
 
-    const handleCopyXpubToClipboardAndClose = async () => {
-        await Clipboard.setStringAsync(account.descriptor);
+    const handleCopyXpubToClipboardAndClose = () => {
         setIsXpubVisible(false);
     };
 
@@ -83,7 +81,6 @@ export const AccountDetailSettings = ({
                         {/* <AccountDetailSettingsRow title="Derivation Path" value={derivationPath} /> */}
                     </VStack>
                 </Card>
-                <IconButton iconName="close" onPress={() => {}} colorScheme="red" />
                 <VStack spacing="small">
                     <Button onPress={() => setIsXpubVisible(true)} colorScheme="gray">
                         View XPUB

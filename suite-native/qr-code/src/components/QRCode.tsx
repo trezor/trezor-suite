@@ -2,6 +2,8 @@ import React from 'react';
 import { Alert, Share, View } from 'react-native';
 import ReactQRCode from 'react-qr-code';
 
+import * as Clipboard from 'expo-clipboard';
+
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Box, Button, HStack, Text } from '@suite-native/atoms';
 import { defaultColorVariant } from '@trezor/theme';
@@ -41,6 +43,11 @@ export const QRCode = ({ data, onCopy }: QRCodeProps) => {
         }
     };
 
+    const handleCopy = async () => {
+        await Clipboard.setStringAsync(data);
+        onCopy();
+    };
+
     return (
         <>
             <View style={applyStyle(qrCodeStyle)}>
@@ -61,7 +68,7 @@ export const QRCode = ({ data, onCopy }: QRCodeProps) => {
                 <Button size="large" colorScheme="gray" onPress={handleSharedata}>
                     Share
                 </Button>
-                <Button size="large" onPress={onCopy}>
+                <Button size="large" onPress={handleCopy}>
                     Copy & Close
                 </Button>
             </HStack>

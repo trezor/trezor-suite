@@ -6485,7 +6485,6 @@ __metadata:
     "@trezor/styles": "workspace:*"
     "@trezor/theme": "workspace:*"
     "@trezor/utxo-lib": "workspace:*"
-    expo-clipboard: ^4.0.1
     jotai: 1.9.1
     react: 18.2.0
     react-native: 0.70.5
@@ -6577,7 +6576,6 @@ __metadata:
     "@trezor/connect": "workspace:9.0.5"
     "@trezor/styles": "workspace:*"
     "@trezor/theme": "workspace:*"
-    expo-clipboard: ^4.0.1
     jest: ^26.6.3
     react: 18.2.0
     react-native: 0.70.5
@@ -6642,6 +6640,7 @@ __metadata:
     "@trezor/styles": "workspace:*"
     "@trezor/theme": "workspace:*"
     expo-barcode-scanner: ^12.1.0
+    expo-clipboard: ^4.0.1
     react: 18.2.0
     react-native: 0.70.5
     react-qr-code: 2.0.8
