@@ -2,12 +2,13 @@
 /* eslint-disable global-require */
 
 import { configureStore } from '@suite/support/tests/configureStore';
-import { mergeObject } from '@trezor/utils';
+import { mergeDeepObject } from '@trezor/utils';
 import { connectInitThunk } from '@suite-common/connect-init';
 import { SUITE } from '@suite-actions/constants';
 import { BACKUP } from '@backup-actions/constants';
 import * as backupActions from '@backup-actions/backupActions';
 import { notificationsActions } from '@suite-common/toast-notifications';
+import { CommonParams } from '@trezor/connect';
 
 jest.mock('@trezor/connect', () => {
     let fixture: any;
@@ -59,7 +60,7 @@ export const getInitialState = (override: any) => {
         },
     };
     if (override) {
-        return mergeObject(defaults, override);
+        return mergeDeepObject(defaults, override);
     }
     return defaults;
 };
@@ -81,7 +82,9 @@ describe('Backup Actions', () => {
         const store = mockStore(state);
         await store.dispatch(connectInitThunk());
 
-        await store.dispatch(backupActions.backupDevice({ device: store.getState().suite.device }));
+        await store.dispatch(
+            backupActions.backupDevice({ device: store.getState().suite.device } as CommonParams),
+        );
 
         expect(store.getActions().shift()).toMatchObject({
             type: connectInitThunk.pending.type,
@@ -113,7 +116,9 @@ describe('Backup Actions', () => {
         const store = mockStore(state);
         await store.dispatch(connectInitThunk());
 
-        await store.dispatch(backupActions.backupDevice({ device: store.getState().suite.device }));
+        await store.dispatch(
+            backupActions.backupDevice({ device: store.getState().suite.device } as CommonParams),
+        );
 
         expect(store.getActions().shift()).toMatchObject({
             type: connectInitThunk.pending.type,

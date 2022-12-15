@@ -16,7 +16,7 @@ export * from './isAscii';
 export * from './isHex';
 export * from './isNotUndefined';
 export * from './isUrl';
-export * from './mergeObject';
+export * from './mergeDeepObject';
 export * from './objectPartition';
 export * from './parseHostname';
 export * from './redactUserPath';
