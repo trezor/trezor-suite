@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { VStack } from '@suite-native/atoms';
+import { Box, Divider, VStack } from '@suite-native/atoms';
 import { Screen, ScreenContent } from '@suite-native/navigation';
 import { Assets } from '@suite-native/assets';
 
@@ -9,11 +9,16 @@ import { PortfolioGraph } from '../components/PortfolioGraph';
 
 export const HomeScreen = () => (
     <Screen>
-        <ScreenContent>
+        <ScreenContent customHorizontalPadding={0}>
             <VStack spacing="large">
-                <DashboardHeader />
+                <Box paddingHorizontal="large">
+                    <DashboardHeader />
+                </Box>
                 <PortfolioGraph />
-                <Assets />
+                <Divider />
+                <Box paddingHorizontal="medium">
+                    <Assets />
+                </Box>
             </VStack>
         </ScreenContent>
     </Screen>
