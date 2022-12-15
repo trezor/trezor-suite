@@ -28,8 +28,8 @@ const screenContentStyle = prepareNativeStyle<{
 
 export const ScreenContent = ({
     children,
-    customHorizontalPadding = nativeSpacings.medium,
-    customVerticalPadding = nativeSpacings.medium,
+    customHorizontalPadding = nativeSpacings.small,
+    customVerticalPadding = nativeSpacings.small,
 }: ScreenContentProps) => {
     const { applyStyle } = useNativeStyles();
     const insets = useSafeAreaInsets();
