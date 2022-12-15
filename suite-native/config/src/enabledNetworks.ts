@@ -1,4 +1,6 @@
-import { networks, NetworkSymbol } from '@suite-common/wallet-config';
+import { networks, NetworkSymbol, getMainnets, getTestnets } from '@suite-common/wallet-config';
+
+const deprecatedNetworks = ['dash', 'btg', 'dgb', 'nmc', 'vtc'];
 
 // ordering defined by product - it is done according to the data about the coins and usage of them in Desktop Suite
 export const mainnetsOrder: NetworkSymbol[] = [
@@ -20,4 +22,13 @@ export const mainnetsOrder: NetworkSymbol[] = [
 
 export const testnetsOrder: NetworkSymbol[] = ['test', 'regtest', 'tgor', 'trop', 'tada', 'txrp'];
 
-export const enabledNetworks: NetworkSymbol[] = Object.keys(networks) as NetworkSymbol[];
+export const enabledNetworks: NetworkSymbol[] = Object.keys(networks).filter(
+    network => !deprecatedNetworks.includes(network),
+) as NetworkSymbol[];
+
+export const enabledMainnets = getMainnets().filter(network =>
+    enabledNetworks.includes(network.symbol),
+);
+export const enabledTestnets = getTestnets().filter(network =>
+    enabledNetworks.includes(network.symbol),
+);
