@@ -1,14 +1,11 @@
 import { configureStore } from '@suite/support/tests/configureStore';
 
 import * as logsActions from '../logsActions';
-import logsReducer, { State as LogsState } from '@suite-reducers/messageSystemReducer';
+import logsReducer, { State as LogsState } from '@suite-reducers/logsReducer';
 import { LOGS, SUITE } from '@suite-actions/constants';
 
 export const getInitialState = (state?: LogsState) => ({
-    logs: {
-        ...logsReducer(undefined, { type: 'foo' } as any),
-        ...state,
-    },
+    logs: [...logsReducer(undefined, { type: 'foo' } as any), ...(state || [])],
 });
 
 type State = ReturnType<typeof getInitialState>;
@@ -31,7 +28,7 @@ describe('Logs actions', () => {
         jest.spyOn(Date.prototype, 'toUTCString').mockReturnValue('Fri, 01 Jul 2022 10:07:17 GMT');
 
         const store = initStore({
-            logs: { ...getInitialState().logs },
+            logs: [...getInitialState().logs],
         });
 
         expect(store.getActions().length).toBe(0);
