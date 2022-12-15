@@ -1,11 +1,15 @@
 import type { MiddlewareAPI } from 'redux';
 import { UI, DEVICE } from '@trezor/connect';
-import { SUITE, ROUTER } from '@suite-actions/constants';
+import { SUITE, ROUTER, MESSAGE_SYSTEM } from '@suite-actions/constants';
+import { SESSION_ROUND_CHANGED } from '@wallet-actions/constants/coinjoinConstants';
 import { DISCOVERY } from '@wallet-actions/constants';
 import * as coinjoinAccountActions from '@wallet-actions/coinjoinAccountActions';
 import { CoinjoinBackendService } from '@suite/services/coinjoin/coinjoinBackend';
 import type { AppState, Action, Dispatch } from '@suite-types';
+import { RoundPhase } from '@wallet-types/coinjoin';
 import { blockchainActions, accountsActions } from '@suite-common/wallet-core';
+import { selectIsAnySessionInCriticalPhase } from '@wallet-reducers/coinjoinReducer';
+import { Feature, selectIsFeatureDisabled } from '@suite-reducers/messageSystemReducer';
 
 export const coinjoinMiddleware =
     (api: MiddlewareAPI<Dispatch, AppState>) =>
@@ -76,6 +80,29 @@ export const coinjoinMiddleware =
             // We restore sessions that were interrupted when successfully Enabled, not when Enabling.
             if (action.payload === 'Enabled') {
                 api.dispatch(coinjoinAccountActions.restoreAllInterruptedCoinjoinSession());
+            }
+        }
+
+        if (
+            action.type === MESSAGE_SYSTEM.SAVE_VALID_MESSAGES ||
+            action.type === SESSION_ROUND_CHANGED
+        ) {
+            const state = api.getState();
+
+            const isCoinJoinDisabledByFeatureFlag = selectIsFeatureDisabled(
+                state,
+                Feature.coinjoin,
+            );
+
+            if (isCoinJoinDisabledByFeatureFlag) {
+                const isAnySessionInCriticalPhase = selectIsAnySessionInCriticalPhase(state);
+                const hasCriticalPhaseJustEnded =
+                    action.type === SESSION_ROUND_CHANGED &&
+                    action.payload.round.phase === RoundPhase.Ended;
+
+                if (!isAnySessionInCriticalPhase || hasCriticalPhaseJustEnded) {
+                    api.dispatch(coinjoinAccountActions.pauseInterruptAllCoinjoinSessions());
+                }
             }
         }
 

@@ -27,6 +27,11 @@ import {
     selectIsCoinjoinBlockedByTor,
     selectSessionProgressByAccountKey,
 } from '@wallet-reducers/coinjoinReducer';
+import {
+    Feature,
+    selectIsFeatureDisabled,
+    selectFeatureMessageContent,
+} from '@suite-reducers/messageSystemReducer';
 
 const Container = styled.div`
     position: relative;
@@ -152,12 +157,20 @@ interface CoinjoinStatusProps {
 }
 
 export const CoinjoinStatus = ({ session, accountKey }: CoinjoinStatusProps) => {
-    const isCoinJoinBlockedByTor = useSelector(selectIsCoinjoinBlockedByTor);
+    const [isLoading, setIsLoading] = useState(false);
+    const [isWheelHovered, setIsWheelHovered] = useState(false);
+
     const sessionProgress = useSelector(state =>
         selectSessionProgressByAccountKey(state, accountKey),
     );
-    const [isLoading, setIsLoading] = useState(false);
-    const [isWheelHovered, setIsWheelHovered] = useState(false);
+    const isCoinJoinBlockedByTor = useSelector(selectIsCoinjoinBlockedByTor);
+    const isCoinJoinDisabledByFeatureFlag = useSelector(state =>
+        selectIsFeatureDisabled(state, Feature.coinjoin),
+    );
+    const featureMessageContent = useSelector(state =>
+        selectFeatureMessageContent(state, Feature.coinjoin),
+    );
+    const isCoinJoinBlocked = isCoinJoinBlockedByTor || isCoinJoinDisabledByFeatureFlag;
 
     const menuRef = useRef<HTMLUListElement & { close: () => void }>(null);
     const theme = useTheme();
@@ -168,7 +181,7 @@ export const CoinjoinStatus = ({ session, accountKey }: CoinjoinStatusProps) => 
     const isPaused = !!paused;
 
     const togglePause = useCallback(async () => {
-        if (isCoinJoinBlockedByTor) return;
+        if (isCoinJoinBlocked) return;
         if (isPaused) {
             setIsLoading(true);
             await dispatch(restoreCoinjoinSession(accountKey));
@@ -176,7 +189,7 @@ export const CoinjoinStatus = ({ session, accountKey }: CoinjoinStatusProps) => 
         } else {
             dispatch(pauseCoinjoinSession(accountKey));
         }
-    }, [isCoinJoinBlockedByTor, isPaused, dispatch, accountKey]);
+    }, [isCoinJoinBlocked, isPaused, dispatch, accountKey]);
 
     const menuItems = useMemo<Array<GroupedMenuItems>>(
         () => [
@@ -193,7 +206,7 @@ export const CoinjoinStatus = ({ session, accountKey }: CoinjoinStatusProps) => 
                         ),
                         callback: togglePause,
                         'data-test': `@coinjoin/resume`,
-                        isHidden: !isPaused || isLoading || isCoinJoinBlockedByTor,
+                        isHidden: !isPaused || isLoading || isCoinJoinDisabledByFeatureFlag,
                     },
                     {
                         key: 'resuming',
@@ -235,7 +248,7 @@ export const CoinjoinStatus = ({ session, accountKey }: CoinjoinStatusProps) => 
                 ],
             },
         ],
-        [isCoinJoinBlockedByTor, isPaused, togglePause, isLoading, dispatch, accountKey],
+        [isCoinJoinDisabledByFeatureFlag, isPaused, togglePause, isLoading, dispatch, accountKey],
     );
 
     const iconConfig = {
@@ -244,6 +257,16 @@ export const CoinjoinStatus = ({ session, accountKey }: CoinjoinStatusProps) => 
     };
 
     const getProgressContent = () => {
+        if (isCoinJoinDisabledByFeatureFlag) {
+            return (
+                <Tooltip content={featureMessageContent}>
+                    <>
+                        <PausedInTooltipIcon icon="PAUSE" {...iconConfig} />
+                        <Translation id="TR_PAUSED" />
+                    </>
+                </Tooltip>
+            );
+        }
         if (isCoinJoinBlockedByTor) {
             return (
                 <Tooltip content={<Translation id="TR_UNAVAILABLE_COINJOIN_TOR_DISABLE_TOOLTIP" />}>
@@ -339,7 +362,7 @@ export const CoinjoinStatus = ({ session, accountKey }: CoinjoinStatusProps) => 
                 progress={sessionProgress}
                 isPaused={isPaused}
                 isLoading={isLoading}
-                isResumeDisable={isCoinJoinBlockedByTor}
+                isResumeDisable={isCoinJoinBlocked}
                 onClick={togglePause}
                 onMouseEnter={() => setIsWheelHovered(true)}
                 onMouseLeave={() => setIsWheelHovered(false)}

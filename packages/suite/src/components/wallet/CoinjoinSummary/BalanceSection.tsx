@@ -56,7 +56,7 @@ export const BalanceSection = ({ accountKey }: BalanceSectionProps) => {
     const coinjoinAccount = useSelector(state => selectCoinjoinAccountByKey(state, accountKey));
     const { notAnonymized } = useSelector(selectCurrentCoinjoinBalanceBreakdown);
     const isCoinjoinBlockedByTor = useSelector(selectIsCoinjoinBlockedByTor);
-    const isCoinJoinDisabled = useSelector(state =>
+    const isCoinJoinDisabledByFeatureFlag = useSelector(state =>
         selectIsFeatureDisabled(state, Feature.coinjoin),
     );
     const featureMessageContent = useSelector(state =>
@@ -70,7 +70,7 @@ export const BalanceSection = ({ accountKey }: BalanceSectionProps) => {
     const goToSetup = () => dispatch(goto('wallet-anonymize', { preserveParams: true }));
 
     const getTooltipContent = () => {
-        if (isCoinJoinDisabled && featureMessageContent) {
+        if (isCoinJoinDisabledByFeatureFlag && featureMessageContent) {
             return featureMessageContent;
         }
         if (isCoinjoinBlockedByTor) {
@@ -98,7 +98,7 @@ export const BalanceSection = ({ accountKey }: BalanceSectionProps) => {
             <AnonymizeButton
                 onClick={goToSetup}
                 icon="ARROW_RIGHT_LONG"
-                isDisabled={isCoinJoinDisabled || isCoinjoinBlockedByTor}
+                isDisabled={isCoinJoinDisabledByFeatureFlag || isCoinjoinBlockedByTor}
                 alignIcon="right"
                 size={16}
                 tooltipContent={getTooltipContent()}
