@@ -3,11 +3,11 @@ export interface EnvUtils {
     isAndroid: () => boolean;
     isChromeOs: () => boolean;
     getBrowserVersion: () => string;
-    getOsVersion: () => string | number;
+    getOsVersion: () => string;
     getBrowserName: () => string;
     isFirefox: () => boolean;
     getPlatform: () => string;
-    getPlatformLanguages: any;
+    getPlatformLanguages: () => readonly string[];
     getScreenWidth: () => number;
     getScreenHeight: () => number;
     getWindowWidth: () => number;

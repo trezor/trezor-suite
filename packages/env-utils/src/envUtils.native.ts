@@ -10,7 +10,7 @@ const isChromeOs = () => false;
 
 const getBrowserVersion = () => '';
 
-const getOsVersion = () => Platform.Version;
+const getOsVersion = () => `${Platform.Version}`;
 
 const getBrowserName = () => '';
 

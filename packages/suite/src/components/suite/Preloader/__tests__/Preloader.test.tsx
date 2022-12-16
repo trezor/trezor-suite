@@ -1,7 +1,9 @@
 import React from 'react';
+
 import { configureStore } from '@suite/support/tests/configureStore';
 import { renderWithProviders, findByTestId } from '@suite/support/tests/hooksHelper';
-import * as envUtils from '@trezor/env-utils/src/envUtils';
+
+import { envUtils } from '@trezor/env-utils/src/envUtils';
 
 import Preloader from '..';
 
