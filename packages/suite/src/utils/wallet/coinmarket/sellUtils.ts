@@ -1,11 +1,12 @@
 import { v4 as uuidv4 } from 'uuid';
-import { desktopApi } from '@trezor/suite-desktop-api';
 import { Account } from '@wallet-types';
 import { AmountLimits } from '@wallet-types/coinmarketSellForm';
 import { SellFiatTrade, SellFiatTradeQuoteRequest, SellTradeStatus } from 'invity-api';
 import { isDesktop } from '@suite-utils/env';
-import { getLocationOrigin } from '@trezor/env-utils';
 import { ComposedTransactionInfo } from '@wallet-reducers/coinmarketReducer';
+
+import { getLocationOrigin } from '@trezor/env-utils';
+import { desktopApi } from '@trezor/suite-desktop-api';
 
 // loop through quotes and if all quotes are either with error below minimum or over maximum, return the limits
 export function getAmountLimits(

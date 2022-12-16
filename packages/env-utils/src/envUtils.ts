@@ -5,7 +5,7 @@ import { EnvUtils } from './types';
 let userAgentParser: UAParser;
 
 /* This way, we can override simple utils, which helps to polyfill methods which are not available in react-native. */
-export const getUserAgent = () => window.navigator.userAgent;
+const getUserAgent = () => window.navigator.userAgent;
 
 const getUserAgentParser = () => {
     if (!userAgentParser) {

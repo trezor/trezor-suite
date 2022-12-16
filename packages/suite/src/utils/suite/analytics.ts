@@ -1,6 +1,8 @@
-import { AppUpdateEvent } from '@trezor/suite-analytics';
-
 import { AppState } from '@suite-types';
+import { AccountTransactionBaseAnchor } from '@suite-constants/anchors';
+import type { AnalyticsState } from '@suite-reducers/analyticsReducer';
+
+import { AppUpdateEvent } from '@trezor/suite-analytics';
 import {
     getScreenWidth,
     getScreenHeight,
@@ -13,12 +15,10 @@ import {
     getPlatformLanguages,
 } from '@trezor/env-utils';
 import { getCustomBackends } from '@suite-common/wallet-utils';
-import { AccountTransactionBaseAnchor } from '@suite-constants/anchors';
-import { getIsTorEnabled } from './tor';
 import { UNIT_ABBREVIATIONS } from '@suite-common/suite-constants';
-
-import type { AnalyticsState } from '@suite-reducers/analyticsReducer';
 import type { UpdateInfo } from '@trezor/suite-desktop-api';
+
+import { getIsTorEnabled } from './tor';
 
 // redact transaction id from account transaction anchor
 export const redactTransactionIdFromAnchor = (anchor?: string) => {

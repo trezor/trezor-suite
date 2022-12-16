@@ -1,5 +1,4 @@
 import React, { useMemo } from 'react';
-import { analytics, EventType } from '@trezor/suite-analytics';
 
 import { Translation } from '@suite-components';
 import { isTranslationMode, getOsLocale } from '@suite-utils/l10n';
@@ -10,6 +9,8 @@ import * as languageActions from '@settings-actions/languageActions';
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@suite-components/Settings';
 import { useAnchor } from '@suite-hooks/useAnchor';
 import { SettingsAnchor } from '@suite-constants/anchors';
+
+import { analytics, EventType } from '@trezor/suite-analytics';
 import { getPlatformLanguages } from '@trezor/env-utils';
 
 const onlyComplete = (locale: [string, LocaleInfo]): locale is [Locale, LocaleInfo] =>

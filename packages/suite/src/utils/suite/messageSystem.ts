@@ -1,18 +1,16 @@
 import * as semver from 'semver';
+import { getEnvironment } from '@suite-utils/env';
+import type { Network } from '@wallet-types';
+import type { EnvironmentType, TrezorDevice } from '@suite-types';
+
 import {
     getBootloaderVersion,
     getDeviceModel,
     getFirmwareRevision,
     getFirmwareVersion,
 } from '@trezor/device-utils';
-
-import { getEnvironment } from '@suite-utils/env';
 import { getBrowserName, getBrowserVersion, getOsName, getOsVersion } from '@trezor/env-utils';
-
 import type { TransportInfo } from '@trezor/connect';
-
-import type { Network } from '@wallet-types';
-import type { EnvironmentType, TrezorDevice } from '@suite-types';
 import type {
     Duration,
     MessageSystem,

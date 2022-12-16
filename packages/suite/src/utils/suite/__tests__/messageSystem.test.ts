@@ -1,7 +1,9 @@
+import * as env from '@suite-utils/env';
+
+import { envUtils } from '@trezor/env-utils/src/envUtils';
+
 import * as messageSystem from '../messageSystem';
 import * as fixtures from '../__fixtures__/messageSystem';
-import * as env from '@suite-utils/env';
-import * as envUtils from '@trezor/env-utils/src/envUtils';
 
 describe('Message system utils', () => {
     describe('createVersionRange', () => {
@@ -110,7 +112,6 @@ describe('Message system utils', () => {
         fixtures.getValidMessages.forEach(f => {
             it(f.description, () => {
                 jest.spyOn(Date, 'now').mockImplementation(() => new Date(f.currentDate).getTime());
-                // @ts-expect-error
                 jest.spyOn(envUtils, 'getOsName').mockImplementation(() => f.osName);
                 userAgentGetter.mockReturnValue(f.userAgent);
                 // @ts-expect-error

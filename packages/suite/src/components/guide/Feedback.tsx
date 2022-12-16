@@ -1,15 +1,16 @@
 import React, { useCallback, useEffect } from 'react';
-import styled, { css } from 'styled-components';
-import { analytics, EventType } from '@trezor/suite-analytics';
-import { getFirmwareType, getFirmwareVersion } from '@trezor/device-utils';
 
+import styled, { css } from 'styled-components';
 import { CharacterCount, Translation } from '@suite-components';
-import { Textarea, Select, variables, Button, CollapsibleBox } from '@trezor/components';
 import { useActions, useDevice, useSelector } from '@suite-hooks';
 import * as guideActions from '@suite-actions/guideActions';
 import { ViewWrapper, Header, Content } from '@guide-components';
-import { Rating, FeedbackCategory, FeedbackType, UserData } from '@suite-common/suite-types';
 import { getEnvironment } from '@suite-utils/env';
+
+import { Rating, FeedbackCategory, FeedbackType, UserData } from '@suite-common/suite-types';
+import { Textarea, Select, variables, Button, CollapsibleBox } from '@trezor/components';
+import { getFirmwareType, getFirmwareVersion } from '@trezor/device-utils';
+import { analytics, EventType } from '@trezor/suite-analytics';
 import { getUserAgent, getWindowHeight, getWindowWidth, getOsName } from '@trezor/env-utils';
 
 const Headline = styled.div`

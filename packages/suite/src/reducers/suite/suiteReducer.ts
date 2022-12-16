@@ -1,20 +1,21 @@
 import produce from 'immer';
-import { TRANSPORT, TransportInfo } from '@trezor/connect';
-import { SuiteThemeVariant } from '@trezor/suite-desktop-api';
-import { variables } from '@trezor/components';
 import { SUITE, STORAGE } from '@suite-actions/constants';
 import { DISCOVERY } from '@wallet-actions/constants';
 import { Action, TrezorDevice, Lock, TorStatus } from '@suite-types';
 import type { Locale } from '@suite-config/languages';
 import { isWeb } from '@suite-utils/env';
-import { getWindowWidth } from '@trezor/env-utils';
 import { ensureLocale } from '@suite-utils/l10n';
-import { getNumberFromPixelString } from '@trezor/utils';
 import type { OAuthServerEnvironment } from '@suite-types/metadata';
 import type { InvityServerEnvironment } from '@wallet-types/invity';
 import type { CoinjoinServerEnvironment } from '@wallet-types/coinjoin';
 import { createSelector } from '@reduxjs/toolkit';
 import { getIsTorEnabled, getIsTorLoading } from '@suite-utils/tor';
+
+import { getNumberFromPixelString } from '@trezor/utils';
+import { getWindowWidth } from '@trezor/env-utils';
+import { variables } from '@trezor/components';
+import { SuiteThemeVariant } from '@trezor/suite-desktop-api';
+import { TRANSPORT, TransportInfo } from '@trezor/connect';
 
 export interface SuiteRootState {
     suite: SuiteState;

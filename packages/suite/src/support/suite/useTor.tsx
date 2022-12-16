@@ -1,11 +1,13 @@
 import { useEffect } from 'react';
-import { desktopApi } from '@trezor/suite-desktop-api';
+
 import { useActions } from '@suite-hooks';
 import { getIsTorDomain } from '@suite-utils/tor';
 import * as suiteActions from '@suite-actions/suiteActions';
 import { isWeb, isDesktop } from '@suite-utils/env';
-import { getLocationHostname } from '@trezor/env-utils';
 import { TorStatus } from '@suite-types';
+
+import { getLocationHostname } from '@trezor/env-utils';
+import { desktopApi } from '@trezor/suite-desktop-api';
 
 export const useTor = () => {
     const { updateTorStatus } = useActions({
