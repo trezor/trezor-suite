@@ -8,18 +8,10 @@ describe('Onboarding - transport webusb/bridge', () => {
     });
 
     it('Offer webusb as primary choice on web, but allow user to disable it and fallback to bridge', () => {
-        // the type was not immediately "WebUsbPlugin", causing a rerender
-        cy.window()
-            .its('store')
-            .invoke('getState')
-            .should(state => {
-                expect(state?.suite.transport?.type).to.deep.eq('WebUsbPlugin');
-            });
-
-        cy.getTestElement('@onboarding/expand-troubleshooting-tips').click();
-
+        cy.getTestElement('@webusb-button');
+        cy.getTestElement('@connect-device-prompt/no-device-detected').click();
         cy.getTestElement('@onboarding/try-bridge-button').click();
-        // todo: bridge page should be available (not implemented yet)
+        cy.getTestElement('@connect-device-prompt/bridge-not-running');
     });
 });
 
