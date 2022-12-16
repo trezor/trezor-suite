@@ -39,8 +39,8 @@ describe('Bridge page', () => {
         cy.getTestElement('@connect-device-prompt');
 
         // linux platforms show udev rules link also
-        // todo: rename @onboarding/expand-troubleshooting-tips as it is in suite now
-        cy.getTestElement('@onboarding/expand-troubleshooting-tips').click();
+        cy.getTestElement('@connect-device-prompt/no-device-detected').click();
+
         cy.getTestElement('@goto/udev').click();
         cy.getTestElement('@modal/udev').matchImageSnapshot('udev-modal');
 
