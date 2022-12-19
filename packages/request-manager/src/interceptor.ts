@@ -2,14 +2,9 @@ import net from 'net';
 import http from 'http';
 import https from 'https';
 import tls from 'tls';
-import { InterceptedEvent } from './types';
 import { TorIdentities } from './torIdentities';
-
-type InterceptorOptions = {
-    handler: (event: InterceptedEvent) => void;
-    getIsTorEnabled: () => boolean;
-    isDevEnv?: boolean;
-};
+import { InterceptorOptions } from './types';
+import { RequestPool } from './httpPool';
 
 const getIdentityName = (proxyAuthorization?: http.OutgoingHttpHeader) => {
     let identity;
@@ -65,6 +60,7 @@ const interceptNetSocketConnect = (interceptorOptions: InterceptorOptions) => {
         }
 
         interceptorOptions.handler({
+            type: 'INTERCEPTED_REQUEST',
             method: 'net.Socket.connect',
             details,
         });
@@ -79,6 +75,7 @@ const interceptNetConnect = (interceptorOptions: InterceptorOptions) => {
     net.connect = function (...args) {
         const [connectArguments] = args;
         interceptorOptions.handler({
+            type: 'INTERCEPTED_REQUEST',
             method: 'net.connect',
             details: (connectArguments as any).host,
         });
@@ -114,6 +111,7 @@ const overloadHttpRequest = (
         if (!isTorEnabled && overloadedOptions.agent) {
             if (interceptorOptions.isDevEnv) {
                 interceptorOptions.handler({
+                    type: 'INTERCEPTED_REQUEST',
                     method: 'http.request',
                     details: `Conditionally allowed request with Proxy-Authorization ${requestedUrl}`,
                 });
@@ -121,6 +119,7 @@ const overloadHttpRequest = (
                 delete overloadedOptions.agent;
             } else {
                 interceptorOptions.handler({
+                    type: 'INTERCEPTED_REQUEST',
                     method: 'http.request',
                     details: `Request blocked ${requestedUrl}`,
                 });
@@ -134,6 +133,7 @@ const overloadHttpRequest = (
         }
 
         interceptorOptions.handler({
+            type: 'INTERCEPTED_REQUEST',
             method: 'http.request',
             details: `${requestedUrl} with agent ${!!overloadedOptions.agent}`,
         });
@@ -143,13 +143,15 @@ const overloadHttpRequest = (
     }
 };
 
-const interceptHttp = (interceptorOptions: InterceptorOptions) => {
+const interceptHttp = (interceptorOptions: InterceptorOptions, requestPool: any) => {
     const originalHttpRequest = http.request;
 
     http.request = (...args) => {
         const overload = overloadHttpRequest(interceptorOptions, ...args);
         if (overload) {
-            return originalHttpRequest(...overload);
+            const request = originalHttpRequest(...overload);
+            requestPool.addRequest(request);
+            return request;
         }
 
         // In cases that are not considered above we pass the args as they came.
@@ -157,13 +159,15 @@ const interceptHttp = (interceptorOptions: InterceptorOptions) => {
     };
 };
 
-const interceptHttps = (interceptorOptions: InterceptorOptions) => {
+const interceptHttps = (interceptorOptions: InterceptorOptions, requestPool: any) => {
     const originalHttpsRequest = https.request;
 
     https.request = (...args) => {
         const overload = overloadHttpRequest(interceptorOptions, ...args);
         if (overload) {
-            return originalHttpsRequest(...overload);
+            const request = originalHttpsRequest(...overload);
+            requestPool.addRequest(request);
+            return request;
         }
 
         // In cases that are not considered above we pass the args as they came.
@@ -176,16 +180,23 @@ const interceptTlsConnect = (interceptorOptions: InterceptorOptions) => {
 
     tls.connect = function (...args) {
         const [options] = args as any;
-        interceptorOptions.handler({ method: 'tls.connect', details: options.servername });
+        interceptorOptions.handler({
+            type: 'INTERCEPTED_REQUEST',
+            method: 'tls.connect',
+            details: options.servername,
+        });
         // @ts-expect-error
         return originalTlsConnect.apply(this, args);
     };
 };
 
 export const createInterceptor = (interceptorOptions: InterceptorOptions) => {
+    const requestPool = new RequestPool(interceptorOptions);
     interceptNetSocketConnect(interceptorOptions);
     interceptNetConnect(interceptorOptions);
-    interceptHttp(interceptorOptions);
-    interceptHttps(interceptorOptions);
+    interceptHttp(interceptorOptions, requestPool);
+    interceptHttps(interceptorOptions, requestPool);
     interceptTlsConnect(interceptorOptions);
+
+    return { requestPool };
 };
