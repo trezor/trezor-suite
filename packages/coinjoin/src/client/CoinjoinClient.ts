@@ -215,6 +215,9 @@ export class CoinjoinClient extends EventEmitter {
             );
 
             if (newRound) {
+                // try to release all inmates detained due to blame round
+                this.prison.releaseBlameOfInmates(newRound.blameOf);
+
                 roundsToProcess.push(newRound);
                 if (!this.rounds.find(r => r.id === newRound.id)) {
                     newRound.on('changed', event => this.emit('round', event));

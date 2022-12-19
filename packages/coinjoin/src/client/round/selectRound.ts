@@ -1,3 +1,5 @@
+import { arrayPartition, arrayToDictionary } from '@trezor/utils';
+
 import { Account } from '../Account';
 import { Alice } from '../Alice';
 import type { CoinjoinRound, CoinjoinRoundOptions } from '../CoinjoinRound';
@@ -59,6 +61,8 @@ export const getAccountCandidates = (
         .flatMap(round => round.inputs.concat(round.failed).map(u => u.outpoint))
         .concat(prison.inmates.map(i => i.id));
 
+    const blameOfInputs = prison.getBlameOfInmates();
+
     return accounts.flatMap(account => {
         // skip account registered to critical rounds
         const { accountKey } = account;
@@ -74,6 +78,24 @@ export const getAccountCandidates = (
         }
 
         // TODO: double-check account max signed rounds, should be done by suite tho
+
+        const blameOfUtxos = arrayToDictionary(
+            account.utxos,
+            utxo => {
+                const blamedUtxo = blameOfInputs.find(i => i.id === utxo.outpoint);
+                return blamedUtxo?.roundId;
+            },
+            true,
+        );
+
+        if (Object.keys(blameOfUtxos).length > 0) {
+            log(`Found account candidate for blame round ~~${accountKey}~~`);
+            return {
+                ...account,
+                blameOf: blameOfUtxos,
+                utxos: [],
+            };
+        }
 
         // exclude account utxos which are unavailable
         const utxos = account.utxos.filter(utxo => !registeredOutpoints.includes(utxo.outpoint));
@@ -96,6 +118,7 @@ export const getAccountCandidates = (
             log(`Found account candidate ~~${accountKey}~~ with ${utxos.length} inputs`);
             return {
                 ...account,
+                blameOf: null,
                 utxos,
             };
         }
@@ -107,6 +130,34 @@ export const getAccountCandidates = (
     });
 };
 
+const selectInputsForBlameRound = (
+    generator: AliceGenerator,
+    roundCandidates: CoinjoinRound[],
+    accountCandidates: ReturnType<typeof getAccountCandidates>,
+    { log }: CoinjoinRoundOptions,
+) =>
+    roundCandidates.find(round => {
+        const inputs: CoinjoinRound['inputs'] = [];
+        accountCandidates.forEach(account => {
+            const utxos = account.blameOf ? account.blameOf[round.blameOf] : null;
+            if (utxos && utxos.length > 0) {
+                log(
+                    `Found blame round for account ~~${account.accountKey}~~ with ${utxos.length} inputs`,
+                );
+                inputs.push(
+                    ...utxos.map(utxo => generator(account.accountKey, account.scriptType, utxo)),
+                );
+            }
+        });
+
+        if (inputs.length > 0) {
+            round.inputs.push(...inputs);
+            log(`Created blame round ~~${round.id}~~ with ${round.inputs.length} inputs`);
+            return true;
+        }
+        return false;
+    });
+
 // Use middleware algorithm to process preselected CoinjoinRounds and Accounts
 export const selectInputsForRound = async (
     generator: AliceGenerator,
@@ -114,12 +165,33 @@ export const selectInputsForRound = async (
     accountCandidates: ReturnType<typeof getAccountCandidates>,
     options: CoinjoinRoundOptions,
 ) => {
+    // NOTE: regular Round.blameOf field is 64 length string filled with 0
+    // blame Round.blameOf is pointing to previously failed round id
+    const noBlameOf = '0'.repeat(64);
+    const [normalRounds, blameOfRounds] = arrayPartition(
+        roundCandidates,
+        r => r.blameOf === noBlameOf,
+    );
+    // Accounts awaiting for blame round are prioritized
+    // do not register them anywhere else until blame round is resolved
+    const [normalAccounts, blameOfAccounts] = arrayPartition(accountCandidates, r => !r.blameOf);
+
+    if (blameOfAccounts.length > 0) {
+        const blameRound = selectInputsForBlameRound(
+            generator,
+            blameOfRounds,
+            blameOfAccounts,
+            options,
+        );
+        return blameRound;
+    }
+
     // utxoSelection shape: array_of_rounds[ array_of_accounts[ array_of_useful_account_utxo_indexes[] ] ]
     // example for 2 roundCandidates with 3 accountCandidates: [ [ [], [], [0, 1, 2] ], [ [3], [], [0, 1, 2] ] ]
     // each account/utxo set needs to be calculated separately because of different targetAnonymity
     const utxoSelection = await Promise.all(
         // for each CoinjoinRound...
-        roundCandidates.map(round => {
+        normalRounds.map(round => {
             // ...create set of parameters
             const { roundParameters } = round;
             const roundConstants = {
@@ -131,7 +203,7 @@ export const selectInputsForRound = async (
             };
             return Promise.all(
                 // ...and for each Account
-                accountCandidates.map(account => {
+                normalAccounts.map(account => {
                     // ...also create set of parameters (utxos)
                     const utxos = account.utxos.map(utxo => ({
                         outpoint: utxo.outpoint,

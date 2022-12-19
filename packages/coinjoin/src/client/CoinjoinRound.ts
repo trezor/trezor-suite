@@ -86,6 +86,7 @@ export class CoinjoinRound extends EventEmitter {
 
     // partial coordinator.Round
     id: string;
+    blameOf: string;
     phase: RoundPhase;
     endRoundState: EndRoundState;
     coinjoinState: Round['coinjoinState'];
@@ -106,6 +107,7 @@ export class CoinjoinRound extends EventEmitter {
     constructor(round: Round, options: CoinjoinRoundOptions) {
         super();
         this.id = round.id;
+        this.blameOf = round.blameOf;
         this.phase = 0;
         this.endRoundState = round.endRoundState;
         this.coinjoinState = round.coinjoinState;
@@ -225,12 +227,19 @@ export class CoinjoinRound extends EventEmitter {
                 );
 
                 this.addresses.forEach(addr =>
-                    prison.detain(addr.address, {
+                    prison.detain(addr.scriptPubKey, {
                         roundId: this.id,
                         reason: WabiSabiProtocolErrorCode.AlreadyRegisteredScript,
                         sentenceEnd: Infinity,
                     }),
                 );
+            } else if (this.endRoundState === EndRoundState.NotAllAlicesSign) {
+                log('Awaiting blame round');
+                const inmates = this.inputs
+                    .map(i => i.outpoint)
+                    .concat(this.addresses.map(a => a.scriptPubKey));
+
+                prison.detainForBlameRound(inmates, this.id);
             }
         }
 

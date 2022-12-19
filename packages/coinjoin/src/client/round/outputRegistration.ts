@@ -73,8 +73,8 @@ const registerOutput = async (
                     error.message === coordinator.WabiSabiProtocolErrorCode.AlreadyRegisteredScript
                 ) {
                     prison.detain(address.scriptPubKey, {
-                        roundId: round.id,
                         reason: error.message,
+                        sentenceEnd: Infinity, // this address should never be recycled
                     });
                     return tryToRegisterOutput();
                 }
