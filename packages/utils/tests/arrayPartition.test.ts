@@ -50,5 +50,13 @@ describe('arrayPartition', () => {
                 ['c', 'd', 'e'],
             ]);
         });
+
+        it('partition with type predicate', () => {
+            const foobars = [{ foo: 1 }, { bar: 3 }, { bar: 2 }, { foo: 4 }];
+            const isFoo = (item: typeof foobars[number]): item is { foo: number } => 'foo' in item;
+            const [foos, bars] = arrayPartition(foobars, isFoo);
+            expect(foos).toEqual([{ foo: 1 }, { foo: 4 }]);
+            expect(bars).toEqual([{ bar: 3 }, { bar: 2 }]);
+        });
     });
 });
