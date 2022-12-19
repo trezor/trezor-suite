@@ -34,6 +34,24 @@ describe('arrayToDictionary', () => {
         });
     });
 
+    it('array to multidictionary', () => {
+        const array = [
+            { value: 1, name: 'a' },
+            { value: 2, name: 'b' },
+            { value: 3, name: 'c' },
+            { value: 4, name: 'b' },
+        ];
+        const dictionary = arrayToDictionary(array, e => e.name, true);
+        expect(dictionary).toStrictEqual({
+            a: [{ value: 1, name: 'a' }],
+            b: [
+                { value: 2, name: 'b' },
+                { value: 4, name: 'b' },
+            ],
+            c: [{ value: 3, name: 'c' }],
+        });
+    });
+
     it('array with calculated keys', () => {
         const array = ['aalpha', 'bbeta', 'ggamma', 'ddelta'];
         const dictionary = arrayToDictionary(array, e => e.toUpperCase().slice(1));
