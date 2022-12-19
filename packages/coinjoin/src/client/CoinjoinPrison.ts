@@ -35,6 +35,23 @@ export class CoinjoinPrison {
         return this.inmates.find(i => i.id === id);
     }
 
+    detainForBlameRound(ids: string[], roundId: string) {
+        ids.forEach(id => {
+            this.detain(id, {
+                reason: 'blameOf',
+                roundId,
+            });
+        });
+    }
+
+    getBlameOfInmates() {
+        return this.inmates.filter(i => i.reason === 'blameOf');
+    }
+
+    releaseBlameOfInmates(roundId: string) {
+        this.inmates = this.inmates.filter(inmate => inmate.roundId !== roundId);
+    }
+
     // called on each status change before rounds are processed
     release() {
         const now = Date.now();

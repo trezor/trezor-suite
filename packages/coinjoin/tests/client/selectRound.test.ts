@@ -28,6 +28,7 @@ describe('selectRound', () => {
     });
 
     beforeEach(() => {
+        PRISON.inmates = [];
         server?.removeAllListeners('test-request');
     });
 
@@ -181,14 +182,17 @@ describe('selectRound', () => {
             GENERATORS[1],
             [
                 {
+                    ...DEFAULT_ROUND,
                     id: '01',
                     roundParameters: ROUND_CREATION_EVENT.roundParameters,
                 } as any,
                 {
+                    ...DEFAULT_ROUND,
                     id: '02',
                     roundParameters: { ...ROUND_CREATION_EVENT.roundParameters, miningFeeRate: 1 },
                 } as any,
                 {
+                    ...DEFAULT_ROUND,
                     id: '03',
                     roundParameters: ROUND_CREATION_EVENT.roundParameters,
                 } as any,
@@ -221,6 +225,7 @@ describe('selectRound', () => {
             GENERATORS[1],
             [
                 {
+                    ...DEFAULT_ROUND,
                     id: '01',
                     roundParameters: {
                         ...ROUND_CREATION_EVENT.roundParameters,
@@ -342,6 +347,47 @@ describe('selectRound', () => {
             phase: 0,
             roundParameters: { miningFeeRate: 1 },
             commitmentData: expect.any(String),
+        });
+    });
+
+    it('Success. new blame Round created', async () => {
+        const spy = jest.fn();
+        server?.addListener('test-request', ({ url, resolve }) => {
+            if (url.endsWith('/select-inputs-for-round')) {
+                spy();
+                resolve([]);
+            }
+            resolve();
+        });
+
+        const blameOf = '1'.repeat(64);
+
+        PRISON.detainForBlameRound(['AA', 'AB'], blameOf);
+
+        const result = await selectRound(
+            ...GENERATORS,
+            [
+                {
+                    accountKey: 'account-A',
+                    scriptType: 'Taproot',
+                    utxos: [{ outpoint: 'AA' }, { outpoint: 'AB' }, { outpoint: 'AC' }],
+                },
+            ] as any,
+            [
+                { ...DEFAULT_ROUND, id: '01' },
+                { ...DEFAULT_ROUND, id: '02', blameOf },
+            ],
+            [],
+            PRISON,
+            server?.requestOptions,
+        );
+
+        expect(spy).toBeCalledTimes(0); // middleware was not called, detained inputs were used
+        expect(result?.inputs.length).toBe(2);
+        expect(result).toMatchObject({
+            id: '02',
+            blameOf,
+            inputs: [{ outpoint: 'AA' }, { outpoint: 'AB' }],
         });
     });
 

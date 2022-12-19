@@ -14,4 +14,6 @@ export enum EndRoundState {
     TransactionBroadcasted = 4,
     NotAllAlicesSign = 5,
     AbortedNotEnoughAlicesSigned = 6,
+    AbortedNotAllAlicesConfirmed = 7,
+    AbortedLoadBalancing = 8,
 }
