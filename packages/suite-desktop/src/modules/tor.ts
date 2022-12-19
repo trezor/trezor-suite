@@ -142,13 +142,17 @@ const load = async ({ mainWindow, store }: Dependencies) => {
         }
 
         // Once Tor is toggled it renderer should know the new status.
-        mainWindow.webContents.send('tor/status', store.getTorSettings().running);
+        mainWindow.webContents.send('tor/status', {
+            type: store.getTorSettings().running ? 'Enabled' : 'Disabled',
+        });
         return { success: true };
     });
 
     ipcMain.on('tor/get-status', () => {
         logger.debug('tor', `Getting status (${store.getTorSettings().running ? 'ON' : 'OFF'})`);
-        mainWindow.webContents.send('tor/status', store.getTorSettings().running);
+        mainWindow.webContents.send('tor/status', {
+            type: store.getTorSettings().running ? 'Enabled' : 'Disabled',
+        });
     });
 
     app.on('before-quit', () => {

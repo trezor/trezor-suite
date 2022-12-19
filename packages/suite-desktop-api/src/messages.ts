@@ -2,6 +2,22 @@ import { ExtractUndefined } from './methods';
 
 export type SuiteThemeVariant = 'light' | 'dark' | 'system';
 
+export const TOR_STATUS_EVENT_TYPE = {
+    Enabled: 'Enabled',
+    Disabled: 'Disabled',
+    Misbehaving: 'Misbehaving',
+    Error: 'Error',
+} as const;
+type TorStatusEventType = keyof typeof TOR_STATUS_EVENT_TYPE;
+export type TorStatusEvent =
+    | {
+          type: Exclude<TorStatusEventType, 'Error'>;
+      }
+    | {
+          type: Exclude<TorStatusEventType, 'Enabled' | 'Disabled' | 'Misbehaving'>;
+          message: string;
+      };
+
 export type BootstrapTorEvent =
     | {
           type: 'progress';

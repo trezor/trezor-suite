@@ -9,6 +9,7 @@ import {
     InvokeResult,
     BootstrapTorEvent,
     HandshakeTorModule,
+    TorStatusEvent,
 } from './messages';
 
 // Event messages from renderer to main process
@@ -46,7 +47,7 @@ export interface RendererChannels {
     'spend/message': Partial<MessageEvent>;
 
     // tor
-    'tor/status': boolean;
+    'tor/status': TorStatusEvent;
     'tor/bootstrap': BootstrapTorEvent;
 
     // custom protocol
