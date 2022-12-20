@@ -5,6 +5,7 @@ import { sumAddressValues } from '@trezor/blockchain-link/lib/workers/electrum/m
 import { isTxConfirmed, doesTxContainAddress, deriveAddresses } from './backendUtils';
 import type {
     Transaction,
+    AddressInfo,
     AccountInfo,
     ScanAccountCheckpoint,
     Address,
@@ -59,19 +60,24 @@ const deriveTxAddresses = (
         };
     });
 
-export const getAccountInfo = ({
-    descriptor,
-    transactions,
-    checkpoint,
-    cache,
-    network,
-}: {
+type GetAddressInfoParams = {
     descriptor: string;
     transactions: Transaction[];
-    checkpoint?: ScanAccountCheckpoint;
-    cache?: AccountCache;
     network: Network;
-}): AccountInfo => {
+};
+
+type GetAccountInfoParams = GetAddressInfoParams & {
+    checkpoint: ScanAccountCheckpoint;
+    cache?: AccountCache;
+};
+
+type GetAccountInfo = {
+    (params: GetAccountInfoParams): AccountInfo;
+    (params: GetAddressInfoParams): AddressInfo;
+};
+
+export const getAccountInfo: GetAccountInfo = params => {
+    const { descriptor, transactions, network } = params;
     const txCountTotal = transactions.length;
     const balanceTotal = transactions.reduce(sumBalance, 0);
 
@@ -79,35 +85,10 @@ export const getAccountInfo = ({
     const txCountConfirmed = txsConfirmed.length;
     const balanceConfirmed = txsConfirmed.reduce(sumBalance, 0);
 
-    let addresses;
-    if (checkpoint) {
-        const receive = deriveTxAddresses(
-            descriptor,
-            'receive',
-            checkpoint.receiveCount,
-            cache?.receivePrederived,
-            network,
-            txsConfirmed,
-        );
-        const change = deriveTxAddresses(
-            descriptor,
-            'change',
-            checkpoint.changeCount,
-            cache?.changePrederived,
-            network,
-            txsConfirmed,
-        );
-        addresses = {
-            change,
-            unused: receive.filter(({ transfers }) => !transfers),
-            used: receive.filter(({ transfers }) => transfers),
-        };
-    }
-
     const txsFromLatest = sortTxsFromLatest(transactions);
     const txsFromOldest = txsFromLatest.slice().reverse();
 
-    return {
+    const commonInfo = {
         descriptor,
         balance: balanceConfirmed.toString(),
         availableBalance: balanceTotal.toString(),
@@ -117,11 +98,39 @@ export const getAccountInfo = ({
             unconfirmed: txCountTotal - txCountConfirmed,
             transactions: txsFromLatest,
         },
-        addresses,
         page: getPagination(transactions.length),
-        utxo: getAccountUtxo({
-            transactions: txsFromOldest,
-            addresses,
-        }),
     };
+
+    if ('checkpoint' in params) {
+        const receive = deriveTxAddresses(
+            descriptor,
+            'receive',
+            params.checkpoint.receiveCount,
+            params.cache?.receivePrederived,
+            network,
+            txsConfirmed,
+        );
+        const change = deriveTxAddresses(
+            descriptor,
+            'change',
+            params.checkpoint.changeCount,
+            params.cache?.changePrederived,
+            network,
+            txsConfirmed,
+        );
+        const addresses = {
+            change,
+            unused: receive.filter(({ transfers }) => !transfers),
+            used: receive.filter(({ transfers }) => transfers),
+        };
+        return {
+            ...commonInfo,
+            addresses,
+            utxo: getAccountUtxo({ transactions: txsFromOldest, addresses }),
+        };
+    }
+    return {
+        ...commonInfo,
+        utxo: getAccountUtxo({ transactions: txsFromOldest }),
+    } as AccountInfo;
 };

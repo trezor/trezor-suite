@@ -133,8 +133,15 @@ export type MempoolClient = Pick<
     'fetchMempoolTxids' | 'fetchTransaction' | 'getIdentityForBlock'
 >;
 
-export type AccountInfo = AccountInfoBase & {
+export type AddressInfo = AccountInfoBase & {
+    history: AccountInfoBase['history'] & {
+        transactions: NonNullable<AccountInfoBase['history']['transactions']>;
+    };
     utxo: Utxo[];
+};
+
+export type AccountInfo = AddressInfo & {
+    addresses: NonNullable<AccountInfoBase['addresses']>;
 };
 
 export type PrederivedAddress = Pick<Address, 'address' | 'path'>;
