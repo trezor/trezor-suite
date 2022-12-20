@@ -178,7 +178,12 @@ export const startCoinjoinSession = [
 export const stopCoinjoinSession = [
     {
         description: 'client not found',
-        account: ACCOUNT,
+        state: {
+            accounts: [ACCOUNT],
+            coinjoin: {
+                accounts: [{ key: ACCOUNT.key }],
+            },
+        },
         param: '000',
         result: {
             actions: [],
@@ -186,7 +191,12 @@ export const stopCoinjoinSession = [
     },
     {
         description: 'success',
-        account: ACCOUNT,
+        state: {
+            accounts: [ACCOUNT],
+            coinjoin: {
+                accounts: [{ key: ACCOUNT.key }],
+            },
+        },
         param: '12345',
         result: {
             actions: ['@coinjoin/account-unregister'],
