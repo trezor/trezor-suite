@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import styled from 'styled-components';
 
-import { RECOMMENDED_SKIP_ROUNDS } from '@suite/services/coinjoin/config';
+import { RECOMMENDED_SKIP_ROUNDS } from '@suite/services/coinjoin';
 import { Translation } from '@suite-components';
 import { Button, P, Range, Switch, variables } from '@trezor/components';
 import { CoinjoinSessionDetail } from './CoinjoinSessionDetail';

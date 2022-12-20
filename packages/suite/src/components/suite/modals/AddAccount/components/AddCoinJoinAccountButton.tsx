@@ -3,7 +3,7 @@ import { Translation } from '@suite-components';
 import { useSelector, useActions } from '@suite-hooks';
 import { useDispatch } from 'react-redux';
 import { createCoinjoinAccount } from '@wallet-actions/coinjoinAccountActions';
-import { DEFAULT_TARGET_ANONYMITY } from '@suite/services/coinjoin/config';
+import { DEFAULT_TARGET_ANONYMITY } from '@suite/services/coinjoin';
 import * as modalActions from '@suite-actions/modalActions';
 import { Account, Network, NetworkSymbol } from '@wallet-types';
 import { UnavailableCapabilities } from '@trezor/connect';

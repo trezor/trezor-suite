@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import {
     ESTIMATED_HOURS_BUFFER_MODIFIER,
     ESTIMATED_ROUNDS_FAIL_RATE_BUFFER,
-} from '@suite/services/coinjoin/config';
+} from '@suite/services/coinjoin';
 import { getEstimatedTimePerRound } from '@wallet-utils/coinjoinUtils';
 import { Translation } from '@suite-components';
 import { DetailRow } from './DetailRow';

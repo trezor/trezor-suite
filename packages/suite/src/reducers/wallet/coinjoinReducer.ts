@@ -13,7 +13,7 @@ import {
     getEstimatedTimePerRound,
     transformCoinjoinStatus,
 } from '@wallet-utils/coinjoinUtils';
-import { ESTIMATED_ROUNDS_FAIL_RATE_BUFFER } from '@suite/services/coinjoin/config';
+import { ESTIMATED_ROUNDS_FAIL_RATE_BUFFER, DEFAULT_CLIENT_STATUS } from '@suite/services/coinjoin';
 import { selectSelectedAccount, selectSelectedAccountParams } from './selectedAccountReducer';
 import { selectDebug, selectTorState } from '@suite-reducers/suiteReducer';
 import { selectAccountByKey } from '@suite-common/wallet-core';
@@ -24,6 +24,7 @@ export interface CoinjoinClientFeeRatesMedians {
 }
 
 export interface CoinjoinClientInstance {
+    status: 'loading' | 'synced';
     rounds: { id: string; phase: RoundPhase }[]; // store only slice of Round in reducer. may be extended in the future
     feeRatesMedians: CoinjoinClientFeeRatesMedians;
     coordinationFeeRate: CoinjoinStatusEvent['coordinationFeeRate'];
@@ -220,13 +221,26 @@ const saveCheckpoint = (
     account.checkpoints = [checkpointNew, ...checkpoints];
 };
 
+const initClient = (
+    draft: CoinjoinState,
+    payload: ExtractActionPayload<typeof COINJOIN.CLIENT_ENABLE>,
+) => {
+    const exists = draft.clients[payload.symbol];
+    if (exists) return;
+    draft.clients[payload.symbol] = {
+        ...DEFAULT_CLIENT_STATUS,
+        status: 'loading',
+    };
+};
+
 const createClient = (
     draft: CoinjoinState,
     payload: ExtractActionPayload<typeof COINJOIN.CLIENT_ENABLE_SUCCESS>,
 ) => {
-    const exists = draft.clients[payload.symbol];
-    if (exists) return;
-    draft.clients[payload.symbol] = transformCoinjoinStatus(payload.status);
+    draft.clients[payload.symbol] = {
+        ...transformCoinjoinStatus(payload.status),
+        status: 'synced',
+    };
 };
 
 const updateClientStatus = (
@@ -276,10 +290,14 @@ export const coinjoinReducer = (
                 draft.isPreloading = action.payload.isPreloading;
                 break;
 
+            case COINJOIN.CLIENT_ENABLE:
+                initClient(draft, action.payload);
+                break;
             case COINJOIN.CLIENT_ENABLE_SUCCESS:
                 createClient(draft, action.payload);
                 break;
             case COINJOIN.CLIENT_DISABLE:
+            case COINJOIN.CLIENT_ENABLE_FAILED:
                 delete draft.clients[action.payload.symbol];
                 break;
             case COINJOIN.CLIENT_STATUS:

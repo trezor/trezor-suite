@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 
-import { DEFAULT_MAX_MINING_FEE, RECOMMENDED_SKIP_ROUNDS } from '@suite/services/coinjoin/config';
+import { DEFAULT_MAX_MINING_FEE, RECOMMENDED_SKIP_ROUNDS } from '@suite/services/coinjoin';
 import { selectAccountTransactions } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import { TooltipSymbol, Translation, TrezorLink } from '@suite-components';
