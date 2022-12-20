@@ -8,7 +8,6 @@ import {
     initCoinjoinClient,
     getCoinjoinClient,
     clientDisable,
-    analyzeTransactions,
 } from './coinjoinClientActions';
 import { CoinjoinBackendService } from '@suite/services/coinjoin/coinjoinBackend';
 import { CoinjoinClientService } from '@suite/services/coinjoin/coinjoinClient';
@@ -211,6 +210,9 @@ export const fetchAndUpdateAccount =
         const api = CoinjoinBackendService.getInstance(account.symbol);
         if (!api) return;
 
+        const client = CoinjoinClientService.getInstance(account.symbol);
+        if (!client) return;
+
         const isInitialUpdate = account.status === 'initial' || account.status === 'error';
         dispatch(accountsActions.startCoinjoinAccountSync(account));
 
@@ -248,20 +250,24 @@ export const fetchAndUpdateAccount =
 
                 // TODO accountInfo.utxo don't have proper utxo.confirmations field, only 0/1
 
-                // calculate account anonymity set in CoinjoinClient
-                const result = await dispatch(analyzeTransactions(accountInfo, account.symbol));
-
-                // TODO when anonymity analysis fails, still allow to use account in some restricted mode?
-
-                if (accountInfo.addresses) {
-                    accountInfo.addresses.anonymitySet = result.anonymityScores;
-                }
-
                 if (isInitialUpdate) {
-                    // NOTE: set liquidity clue only on initial load.
-                    // further updates are done after coinjoin tx signing process
-                    dispatch(coinjoinAccountSetLiquidityClue(account.key, result.rawLiquidityClue));
+                    // On initial update, calculate account anonymity set AND liquidity clue in CoinjoinClient
+                    // Further updates of liquidity clue are done after coinjoin tx signing process
+                    const { anonymityScores, rawLiquidityClue } = await client.analyzeTransactions(
+                        accountInfo.history.transactions,
+                    );
+                    accountInfo.addresses.anonymitySet = anonymityScores;
+                    dispatch(coinjoinAccountSetLiquidityClue(account.key, rawLiquidityClue));
+                } else {
+                    // Else calculate only account anonymity set in CoinjoinClient
+                    const { anonymityScores } = await client.analyzeTransactions(
+                        accountInfo.history.transactions,
+                        ['anonymityScores'],
+                    );
+                    accountInfo.addresses.anonymitySet = anonymityScores;
                 }
+
+                // TODO when transaction analysis fails, still allow to use account in some restricted mode?
 
                 // status must be set here already (instead of wait for endCoinjoinAccountSync)
                 // so it's potentially stored into db

@@ -3,16 +3,17 @@ import { arrayPartition } from '@trezor/utils';
 
 import * as middleware from './middleware';
 import { Transaction, EnhancedVinVout } from '../types/backend';
-import {
-    AnalyzeTransactionDetails,
-    AnalyzeInternalVinVout,
-    AnalyzeExternalVinVout,
-} from '../types/middleware';
+import { AnalyzeInternalVinVout, AnalyzeExternalVinVout } from '../types/middleware';
 
 interface AnalyzeTransactionsOptions {
     network: Network;
     middlewareUrl: string;
     signal: AbortSignal;
+}
+
+export interface AnalyzeTransactionsResult {
+    anonymityScores: Record<string, number>;
+    rawLiquidityClue: middleware.RawLiquidityClue;
 }
 
 const transformVinVout = (vinvout: EnhancedVinVout, network: Network) => {
@@ -31,23 +32,44 @@ const transformVinVout = (vinvout: EnhancedVinVout, network: Network) => {
     } as AnalyzeExternalVinVout;
 };
 
+const isInternal = (
+    vinvout: AnalyzeInternalVinVout | AnalyzeExternalVinVout,
+): vinvout is AnalyzeInternalVinVout => 'address' in vinvout;
+
+export const getRawLiquidityClue = (
+    transactions: Transaction[],
+    options: AnalyzeTransactionsOptions,
+): Promise<middleware.RawLiquidityClue> => {
+    // find most recent coinjoin transaction in history
+    const cjTx = transactions.find(tx => tx.type === 'joint');
+    if (!cjTx) return Promise.resolve(null);
+    const externalAmounts = cjTx.details.vout
+        .map(vout => transformVinVout(vout, options.network))
+        .filter(vout => !('address' in vout))
+        .map(o => Number(o.value));
+    return middleware.initLiquidityClue(externalAmounts, {
+        baseUrl: options.middlewareUrl,
+        signal: options.signal,
+    });
+};
+
 /**
  * Get transactions from CoinjoinBackend.getAccountInfo and calculate anonymity in middleware.
  * Returns { key => value } where `key` is an address and `value` is an anonymity level of that address
  */
-export const analyzeTransactions = async (
+export const getAnonymityScores = async (
     transactions: Transaction[],
     options: AnalyzeTransactionsOptions,
 ) => {
     const params = transactions.map(tx => {
         const [internalInputs, externalInputs] = arrayPartition(
             tx.details.vin.map(vin => transformVinVout(vin, options.network)),
-            vin => 'address' in vin,
+            isInternal,
         );
 
         const [internalOutputs, externalOutputs] = arrayPartition(
             tx.details.vout.map(vout => transformVinVout(vout, options.network)),
-            vout => 'address' in vout,
+            isInternal,
         );
 
         return {
@@ -55,7 +77,7 @@ export const analyzeTransactions = async (
             externalInputs,
             internalOutputs,
             externalOutputs,
-        } as AnalyzeTransactionDetails;
+        };
     });
 
     const scores = await middleware.getAnonymityScores(params, {
@@ -63,27 +85,24 @@ export const analyzeTransactions = async (
         signal: options.signal,
     });
 
-    // find most recent coinjoin transaction in history
-    const cjTx = transactions.find(tx => tx.type === 'joint');
-    let rawLiquidityClue: middleware.RawLiquidityClue = null;
-    if (cjTx) {
-        const externalAmounts = cjTx.details.vout
-            .map(vout => transformVinVout(vout, options.network))
-            .filter(vout => !('address' in vout))
-            .map(o => Number(o.value));
-        rawLiquidityClue = await middleware.initLiquidityClue(externalAmounts, {
-            baseUrl: options.middlewareUrl,
-            signal: options.signal,
-        });
-    }
-
-    const anonymityScores = scores.reduce((dict, { address, anonymitySet }) => {
+    return scores.reduce((dict, { address, anonymitySet }) => {
         dict[address] = anonymitySet;
         return dict;
     }, {} as Record<string, number>);
-
-    return {
-        anonymityScores,
-        rawLiquidityClue,
-    };
 };
+
+export const analyzeTransactions = async <T extends keyof AnalyzeTransactionsResult>(
+    transactions: Transaction[],
+    options: AnalyzeTransactionsOptions,
+    sections?: T[],
+): Promise<{ [P in T]: AnalyzeTransactionsResult[P] }> =>
+    ({
+        anonymityScores:
+            !sections || sections.includes('anonymityScores' as T)
+                ? await getAnonymityScores(transactions, options)
+                : undefined,
+        rawLiquidityClue:
+            !sections || sections.includes('rawLiquidityClue' as T)
+                ? await getRawLiquidityClue(transactions, options)
+                : undefined,
+    } as AnalyzeTransactionsResult);
