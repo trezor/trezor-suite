@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { RECOMMENDED_SKIP_ROUNDS } from '@suite/services/coinjoin/config';
+import { RECOMMENDED_SKIP_ROUNDS } from '@suite/services/coinjoin';
 import { Translation } from '@suite-components';
 import { Button, P, variables } from '@trezor/components';
 import { CoinjoinClientFeeRatesMedians } from '@wallet-reducers/coinjoinReducer';

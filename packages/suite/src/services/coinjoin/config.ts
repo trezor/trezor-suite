@@ -1,3 +1,9 @@
+import {
+    PLEBS_DONT_PAY_THRESHOLD,
+    COORDINATOR_FEE_RATE,
+    MIN_ALLOWED_AMOUNT,
+    MAX_ALLOWED_AMOUNT,
+} from '@trezor/coinjoin/src/constants';
 import type { CoinjoinBackendSettings, CoinjoinClientSettings } from '@trezor/coinjoin';
 import type { PartialRecord } from '@trezor/type-utils';
 import type { CoinjoinServerEnvironment } from '@wallet-types/coinjoin';
@@ -102,6 +108,16 @@ export const DEFAULT_MAX_MINING_FEE = 3;
 export const COORDINATOR_FEE_RATE_MULTIPLIER = 10 ** 8;
 
 export const DEFAULT_TARGET_ANONYMITY = 10;
+
+export const DEFAULT_CLIENT_STATUS = {
+    rounds: [],
+    feeRatesMedians: { fast: 0, recommended: 0 },
+    coordinationFeeRate: {
+        rate: COORDINATOR_FEE_RATE,
+        plebsDontPayThreshold: PLEBS_DONT_PAY_THRESHOLD,
+    },
+    allowedInputAmounts: { min: MIN_ALLOWED_AMOUNT, max: MAX_ALLOWED_AMOUNT },
+};
 
 export const getCoinjoinConfig = (
     network: NetworkSymbol,

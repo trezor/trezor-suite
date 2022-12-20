@@ -4,7 +4,7 @@ import { SUITE, ROUTER, MESSAGE_SYSTEM } from '@suite-actions/constants';
 import { SESSION_ROUND_CHANGED } from '@wallet-actions/constants/coinjoinConstants';
 import { DISCOVERY } from '@wallet-actions/constants';
 import * as coinjoinAccountActions from '@wallet-actions/coinjoinAccountActions';
-import { CoinjoinBackendService } from '@suite/services/coinjoin/coinjoinBackend';
+import { CoinjoinService } from '@suite/services/coinjoin';
 import type { AppState, Action, Dispatch } from '@suite-types';
 import { RoundPhase } from '@wallet-types/coinjoin';
 import { blockchainActions, accountsActions } from '@suite-common/wallet-core';
@@ -17,7 +17,7 @@ export const coinjoinMiddleware =
     (action: Action): Action => {
         // cancel discovery for each CoinjoinBackend
         if (action.type === ROUTER.LOCATION_CHANGE && action.payload.app !== 'wallet') {
-            CoinjoinBackendService.getInstances().forEach(b => b.cancel());
+            CoinjoinService.getInstances().forEach(({ backend }) => backend.cancel());
         }
 
         // do not close success and critical phase modals when they are open, similar to discovery middleware
@@ -36,7 +36,7 @@ export const coinjoinMiddleware =
         next(action);
 
         if (action.type === SUITE.READY) {
-            api.dispatch(coinjoinAccountActions.restoreCoinjoin());
+            api.dispatch(coinjoinAccountActions.restoreCoinjoinAccounts());
         }
 
         if (accountsActions.removeAccount.match(action)) {

@@ -1,6 +1,7 @@
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { accountsActions } from '@suite-common/wallet-core';
 import { Account } from '@wallet-types';
+import * as COINJOIN from '@wallet-actions/constants/coinjoinConstants';
 
 const ACCOUNT: Partial<Account> = {
     accountType: 'coinjoin',
@@ -9,6 +10,8 @@ const ACCOUNT: Partial<Account> = {
     deviceState: 'device-state',
     key: '12345',
 };
+
+const SESSION = { signedRounds: [] as string[], maxRounds: 10 };
 
 export const createCoinjoinAccount = [
     {
@@ -20,8 +23,8 @@ export const createCoinjoinAccount = [
         },
         result: {
             actions: [
-                '@coinjoin/client-enable',
-                '@coinjoin/client-enable-failed',
+                COINJOIN.CLIENT_ENABLE,
+                COINJOIN.CLIENT_ENABLE_FAILED,
                 notificationsActions.addToast.type,
             ],
         },
@@ -41,12 +44,12 @@ export const createCoinjoinAccount = [
         },
         result: {
             actions: [
-                '@coinjoin/client-enable',
-                '@coinjoin/client-enable-success',
-                '@coinjoin/account-preloading',
+                COINJOIN.CLIENT_ENABLE,
+                COINJOIN.CLIENT_ENABLE_SUCCESS,
+                COINJOIN.ACCOUNT_PRELOADING,
                 notificationsActions.addToast.type,
-                '@coinjoin/account-preloading',
-                '@coinjoin/client-disable',
+                COINJOIN.ACCOUNT_PRELOADING,
+                COINJOIN.CLIENT_DISABLE,
             ],
         },
     },
@@ -71,10 +74,12 @@ export const createCoinjoinAccount = [
         },
         result: {
             actions: [
-                '@coinjoin/account-preloading',
+                COINJOIN.CLIENT_ENABLE,
+                COINJOIN.CLIENT_ENABLE_SUCCESS,
+                COINJOIN.ACCOUNT_PRELOADING,
                 notificationsActions.addToast.type,
-                '@coinjoin/account-preloading',
-                '@coinjoin/client-disable',
+                COINJOIN.ACCOUNT_PRELOADING,
+                COINJOIN.CLIENT_DISABLE,
             ],
         },
     },
@@ -107,10 +112,12 @@ export const createCoinjoinAccount = [
         },
         result: {
             actions: [
-                '@coinjoin/account-preloading',
+                COINJOIN.CLIENT_ENABLE,
+                COINJOIN.CLIENT_ENABLE_SUCCESS,
+                COINJOIN.ACCOUNT_PRELOADING,
                 accountsActions.createAccount.type,
-                '@coinjoin/account-create',
-                '@coinjoin/account-preloading',
+                COINJOIN.ACCOUNT_CREATE,
+                COINJOIN.ACCOUNT_PRELOADING,
                 accountsActions.startCoinjoinAccountSync.type,
                 accountsActions.endCoinjoinAccountSync.type,
             ],
@@ -127,8 +134,8 @@ export const startCoinjoinSession = [
         },
         result: {
             actions: [
-                '@coinjoin/client-enable',
-                '@coinjoin/client-enable-failed',
+                COINJOIN.CLIENT_ENABLE,
+                COINJOIN.CLIENT_ENABLE_FAILED,
                 notificationsActions.addToast.type,
             ],
         },
@@ -149,8 +156,10 @@ export const startCoinjoinSession = [
         params: ACCOUNT,
         result: {
             actions: [
-                '@coinjoin/account-authorize',
-                '@coinjoin/account-authorize-failed',
+                COINJOIN.CLIENT_ENABLE,
+                COINJOIN.CLIENT_ENABLE_SUCCESS,
+                COINJOIN.ACCOUNT_AUTHORIZE,
+                COINJOIN.ACCOUNT_AUTHORIZE_FAILED,
                 notificationsActions.addToast.type,
             ],
         },
@@ -170,7 +179,12 @@ export const startCoinjoinSession = [
         },
         params: ACCOUNT,
         result: {
-            actions: ['@coinjoin/account-authorize', '@coinjoin/account-authorize-success'], // authorize, success
+            actions: [
+                COINJOIN.CLIENT_ENABLE,
+                COINJOIN.CLIENT_ENABLE_SUCCESS,
+                COINJOIN.ACCOUNT_AUTHORIZE,
+                COINJOIN.ACCOUNT_AUTHORIZE_SUCCESS,
+            ],
         },
     },
 ];
@@ -191,6 +205,7 @@ export const stopCoinjoinSession = [
     },
     {
         description: 'success',
+        client: 'btc',
         state: {
             accounts: [ACCOUNT],
             coinjoin: {
@@ -200,6 +215,39 @@ export const stopCoinjoinSession = [
         param: '12345',
         result: {
             actions: ['@coinjoin/account-unregister'],
+        },
+    },
+];
+
+export const restoreCoinjoinAccounts = [
+    {
+        description: 'four accounts, two networks, one success, one failed',
+        state: {
+            accounts: [
+                { key: 'account-1', symbol: 'regtest' }, // regtest is not supported in tests
+                { key: 'account-2', symbol: 'regtest' },
+                { key: 'account-A', symbol: 'btc' },
+                { key: 'account-B', symbol: 'btc' },
+            ],
+            coinjoin: {
+                clients: {},
+                accounts: [
+                    { key: 'account-2', session: { ...SESSION, paused: true } },
+                    { key: 'account-B', session: { ...SESSION, paused: true } },
+                    { key: 'account-A', session: SESSION },
+                    { key: 'account-1', session: { ...SESSION, paused: true } },
+                ],
+            },
+        },
+        result: {
+            actions: [
+                COINJOIN.SESSION_PAUSE, // pause account-A session
+                COINJOIN.CLIENT_ENABLE,
+                COINJOIN.CLIENT_ENABLE_FAILED,
+                notificationsActions.addToast.type, // failed account 1 + 2 client init
+                COINJOIN.CLIENT_ENABLE,
+                COINJOIN.CLIENT_ENABLE_SUCCESS, // success account A + B client init
+            ],
         },
     },
 ];

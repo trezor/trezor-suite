@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { Switch } from '@trezor/components';
-import { COINJOIN_NETWORKS } from '@suite/services/coinjoin/config';
+import { COINJOIN_NETWORKS } from '@suite/services/coinjoin';
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@suite-components/Settings';
 import * as suiteActions from '@suite-actions/suiteActions';
 import { useSelector, useActions } from '@suite-hooks';
