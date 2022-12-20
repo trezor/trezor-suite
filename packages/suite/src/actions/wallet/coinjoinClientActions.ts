@@ -9,10 +9,10 @@ import {
 import { arrayDistinct, arrayToDictionary } from '@trezor/utils';
 import * as COINJOIN from './constants/coinjoinConstants';
 import { breakdownCoinjoinBalance, prepareCoinjoinTransaction } from '@wallet-utils/coinjoinUtils';
-import { CoinjoinClientService } from '@suite/services/coinjoin/coinjoinClient';
+import { CoinjoinService } from '@suite/services/coinjoin';
 import { Dispatch, GetState } from '@suite-types';
 import { Account } from '@suite-common/wallet-types';
-import { CoinjoinServerEnvironment, RoundPhase, CoinjoinAccount } from '@wallet-types/coinjoin';
+import { RoundPhase, CoinjoinAccount } from '@wallet-types/coinjoin';
 import { onCancel as closeModal, openModal } from '@suite-actions/modalActions';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { selectAccountByKey } from '@suite-common/wallet-core';
@@ -111,7 +111,7 @@ export type CoinjoinClientAction =
 
 // return only active instances
 export const getCoinjoinClient = (symbol: Account['symbol']) =>
-    CoinjoinClientService.getInstance(symbol);
+    CoinjoinService.getInstance(symbol)?.client;
 
 export const unregisterByAccountKey =
     (accountKey: string) => (_dispatch: Dispatch, getState: GetState) => {
@@ -500,20 +500,28 @@ export const onCoinjoinClientRequest = (data: CoinjoinRequestEvent[]) => (dispat
         }),
     );
 
-export const initCoinjoinClient =
-    (symbol: Account['symbol'], environment?: CoinjoinServerEnvironment) =>
-    async (dispatch: Dispatch) => {
+export const initCoinjoinService =
+    (symbol: Account['symbol']) => async (dispatch: Dispatch, getState: GetState) => {
+        const { clients } = getState().wallet.coinjoin;
+        const knownClient = clients[symbol];
+        if (knownClient?.status === 'loading') return;
+
         // find already running instance of @trezor/coinjoin client
-        const knownClient = CoinjoinClientService.getInstance(symbol);
-        if (knownClient) {
-            return knownClient;
+        const knownService = CoinjoinService.getInstance(symbol);
+        if (knownService && knownClient?.status === 'synced') {
+            return knownService;
         }
+
+        const { debug } = getState().suite.settings;
+        const environment =
+            symbol === 'regtest' ? debug.coinjoinRegtestServerEnvironment : undefined;
 
         // or start new instance
         dispatch(clientEnable(symbol));
 
-        const client = await CoinjoinClientService.createInstance(symbol, environment);
         try {
+            const service = await CoinjoinService.createInstance(symbol, environment);
+            const { client } = service;
             const status = await client.enable();
             if (!status) {
                 throw new Error('status is missing');
@@ -528,9 +536,9 @@ export const initCoinjoinClient =
                 client.resolveRequest(response);
             });
             dispatch(clientEnableSuccess(symbol, status));
-            return client;
+            return service;
         } catch (error) {
-            CoinjoinClientService.removeInstance(symbol);
+            CoinjoinService.removeInstance(symbol);
             dispatch(clientEnableFailed(symbol));
             dispatch(
                 notificationsActions.addToast({
@@ -538,13 +546,5 @@ export const initCoinjoinClient =
                     error: `Coinjoin client not enabled: ${error.message}`,
                 }),
             );
-        }
-    };
-
-export const getCoinjoinServerEnvironment =
-    (symbol: Account['symbol']) => (_: Dispatch, getState: GetState) => {
-        const { debug } = getState().suite.settings;
-        if (symbol === 'regtest') {
-            return debug.coinjoinRegtestServerEnvironment;
         }
     };

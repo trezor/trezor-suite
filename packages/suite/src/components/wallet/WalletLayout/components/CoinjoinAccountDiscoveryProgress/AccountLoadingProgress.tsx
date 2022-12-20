@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Progress } from '@trezor/components';
-import { CoinjoinBackendService } from '@suite/services/coinjoin/coinjoinBackend';
+import { CoinjoinService } from '@suite/services/coinjoin';
 import { selectSelectedAccount } from '@wallet-reducers/selectedAccountReducer';
 import { useSelector } from '@suite-hooks/useSelector';
 
@@ -26,18 +26,18 @@ export const AccountLoadingProgress = () => {
             return;
         }
 
-        const backend = CoinjoinBackendService.getInstance(network);
+        const api = CoinjoinService.getInstance(network);
 
-        if (!backend) {
+        if (!api) {
             return;
         }
 
         const onProgress = ({ info }: { info?: ProgressInfo }) => info && setProgress(info);
 
-        backend.on(`progress/${descriptor}`, onProgress);
+        api.backend.on(`progress/${descriptor}`, onProgress);
 
         return () => {
-            backend.off(`progress/${descriptor}`, onProgress);
+            api.backend.off(`progress/${descriptor}`, onProgress);
         };
     }, [network, backendType, descriptor]);
 

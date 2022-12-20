@@ -3,16 +3,9 @@ import type { ScanAccountProgress } from '@trezor/coinjoin/lib/types/backend';
 import * as COINJOIN from './constants/coinjoinConstants';
 import { goto } from '../suite/routerActions';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import {
-    getCoinjoinServerEnvironment,
-    initCoinjoinClient,
-    getCoinjoinClient,
-    clientDisable,
-} from './coinjoinClientActions';
-import { CoinjoinBackendService } from '@suite/services/coinjoin/coinjoinBackend';
-import { CoinjoinClientService } from '@suite/services/coinjoin/coinjoinClient';
-import { COORDINATOR_FEE_RATE_MULTIPLIER } from '@suite/services/coinjoin/config';
-import { getRegisterAccountParams, getMaxRounds } from '@wallet-utils/coinjoinUtils';
+import { initCoinjoinService, getCoinjoinClient, clientDisable } from './coinjoinClientActions';
+import { CoinjoinService, COORDINATOR_FEE_RATE_MULTIPLIER } from '@suite/services/coinjoin';
+import { getRegisterAccountParams } from '@wallet-utils/coinjoinUtils';
 import { Dispatch, GetState } from '@suite-types';
 import { Network, NetworkSymbol } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
@@ -207,12 +200,10 @@ export const fetchAndUpdateAccount =
         // do not sync if any account CoinjoinSession is in critical phase
         if (getState().wallet.coinjoin.accounts.some(acc => (acc.session?.phase ?? 0) > 0)) return;
 
-        const api = CoinjoinBackendService.getInstance(account.symbol);
+        const api = await dispatch(initCoinjoinService(account.symbol));
         if (!api) return;
 
-        const client = CoinjoinClientService.getInstance(account.symbol);
-        if (!client) return;
-
+        const { backend, client } = api;
         const isInitialUpdate = account.status === 'initial' || account.status === 'error';
         dispatch(accountsActions.startCoinjoinAccountSync(account));
 
@@ -226,11 +217,11 @@ export const fetchAndUpdateAccount =
         };
 
         try {
-            api.on(`progress/${account.descriptor}`, onProgress);
+            backend.on(`progress/${account.descriptor}`, onProgress);
 
             const prevTransactions = getState().wallet.transactions.transactions[account.key];
 
-            const { pending, checkpoint, cache } = await api.scanAccount({
+            const { pending, checkpoint, cache } = await backend.scanAccount({
                 descriptor: account.descriptor,
                 checkpoints: getCheckpoints(account, getState),
                 cache: getAccountCache(account),
@@ -241,7 +232,7 @@ export const fetchAndUpdateAccount =
             const transactions = getState().wallet.transactions.transactions[account.key];
 
             if (transactions !== prevTransactions || isInitialUpdate) {
-                const accountInfo = await api.getAccountInfo(
+                const accountInfo = await backend.getAccountInfo(
                     account.descriptor,
                     transactions ?? [],
                     checkpoint,
@@ -285,7 +276,7 @@ export const fetchAndUpdateAccount =
             const status = isInitialUpdate ? 'error' : 'out-of-sync';
             dispatch(accountsActions.endCoinjoinAccountSync(account, status));
         } finally {
-            api.off(`progress/${account.descriptor}`, onProgress);
+            backend.off(`progress/${account.descriptor}`, onProgress);
         }
     };
 
@@ -303,8 +294,7 @@ const clearCoinjoinInstances = ({
     // clear CoinjoinClientInstance if there are no related accounts left
     if (!other) {
         dispatch(clientDisable(networkSymbol));
-        CoinjoinBackendService.removeInstance(networkSymbol);
-        CoinjoinClientService.removeInstance(networkSymbol);
+        CoinjoinService.removeInstance(networkSymbol);
     }
 };
 
@@ -336,19 +326,10 @@ export const createCoinjoinAccount =
             throw new Error('createCoinjoinAccount: invalid account type');
         }
 
-        const coinjoinServerEnvironment = dispatch(getCoinjoinServerEnvironment(network.symbol));
-
         // initialize @trezor/coinjoin client
-        const client = await dispatch(
-            initCoinjoinClient(network.symbol, coinjoinServerEnvironment),
-        );
-        if (!client) {
+        const api = await dispatch(initCoinjoinService(network.symbol));
+        if (!api) {
             return;
-        }
-
-        // initialize @trezor/coinjoin backend
-        if (!CoinjoinBackendService.getInstance(network.symbol)) {
-            await CoinjoinBackendService.createInstance(network.symbol, coinjoinServerEnvironment);
         }
 
         dispatch(coinjoinAccountPreloading(true));
@@ -479,26 +460,23 @@ export const startCoinjoinSession =
         }
 
         // initialize @trezor/coinjoin client
-        const coinjoinServerEnvironment = dispatch(getCoinjoinServerEnvironment(account.symbol));
-        const client = await dispatch(
-            initCoinjoinClient(account.symbol, coinjoinServerEnvironment),
-        );
+        const api = await dispatch(initCoinjoinService(account.symbol));
         const coinjoinAccount = getState().wallet.coinjoin.accounts.find(
             r => r.key === account.key,
         );
 
-        if (!client || !coinjoinAccount) {
+        if (!api || !coinjoinAccount) {
             return;
         }
 
         // authorize CoinjoinSession on Trezor
         const authResult = await dispatch(
-            authorizeCoinjoin(account, client.settings.coordinatorName, params),
+            authorizeCoinjoin(account, api.client.settings.coordinatorName, params),
         );
 
         if (authResult) {
             // register authorized account
-            client.registerAccount(
+            api.client.registerAccount(
                 getRegisterAccountParams(account, params, coinjoinAccount.rawLiquidityClue),
             );
             // switch to account
@@ -712,17 +690,16 @@ export const forgetCoinjoinAccounts =
         });
     };
 
-export const restoreCoinjoin = () => (dispatch: Dispatch, getState: GetState) => {
+export const restoreCoinjoinAccounts = () => (dispatch: Dispatch, getState: GetState) => {
     const { accounts, coinjoin } = getState().wallet;
 
     // find all networks to restore
     const coinjoinNetworks = coinjoin.accounts.reduce<NetworkSymbol[]>((res, cjAccount) => {
         const account = accounts.find(a => a.key === cjAccount.key);
-
         if (account) {
             // currently it is not possible to full restore session while using passphrase.
             // related to @trezor/connect and inner-outer state
-            if (cjAccount.session) {
+            if (cjAccount.session && !cjAccount.session.paused) {
                 dispatch(pauseCoinjoinSession(cjAccount.key));
             }
 
@@ -730,20 +707,15 @@ export const restoreCoinjoin = () => (dispatch: Dispatch, getState: GetState) =>
                 return res.concat(account.symbol);
             }
         }
-
         return res;
     }, []);
 
     // async actions in sequence
-    // TODO: handle client init error and do not proceed after first failure
     return coinjoinNetworks.reduce(
         (p, symbol) =>
             p.then(async () => {
-                const coinjoinServerEnvironment = dispatch(getCoinjoinServerEnvironment(symbol));
-                // initialize @trezor/coinjoin backend
-                await CoinjoinBackendService.createInstance(symbol, coinjoinServerEnvironment);
-                // initialize @trezor/coinjoin client
-                await dispatch(initCoinjoinClient(symbol, coinjoinServerEnvironment));
+                // initialize @trezor/coinjoin CoinjoinClient
+                await dispatch(initCoinjoinService(symbol));
             }),
         Promise.resolve(),
     );
