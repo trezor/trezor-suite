@@ -113,7 +113,7 @@ export class CoinjoinBackend extends EventEmitter {
     getAccountInfo(
         descriptor: string,
         transactions: Transaction[],
-        checkpoint?: ScanAccountCheckpoint,
+        checkpoint: ScanAccountCheckpoint,
         cache?: AccountCache,
     ) {
         const accountInfo = getAccountInfo({
@@ -124,6 +124,15 @@ export class CoinjoinBackend extends EventEmitter {
             network: this.network,
         });
         return Promise.resolve(accountInfo);
+    }
+
+    getAddressInfo(address: string, transactions: Transaction[]) {
+        const addressInfo = getAccountInfo({
+            descriptor: address,
+            transactions,
+            network: this.network,
+        });
+        return Promise.resolve(addressInfo);
     }
 
     cancel() {
