@@ -5,6 +5,7 @@ import { getIsTorDomain } from '@suite-utils/tor';
 import * as suiteActions from '@suite-actions/suiteActions';
 import { isWeb, isDesktop } from '@suite-utils/env';
 import { getLocationHostname } from '@trezor/env-utils';
+import { TorStatusEvent } from 'packages/suite-desktop-api/lib/messages';
 import { TorStatus } from '@suite-types';
 
 export const useTor = () => {
@@ -21,9 +22,11 @@ export const useTor = () => {
         }
 
         if (isDesktop()) {
-            desktopApi.on('tor/status', (newStatus: boolean) =>
-                updateTorStatus(newStatus ? TorStatus.Enabled : TorStatus.Disabled),
-            );
+            desktopApi.on('tor/status', (newStatus: TorStatusEvent) => {
+                updateTorStatus(
+                    newStatus.type === 'Enabled' ? TorStatus.Enabled : TorStatus.Disabled,
+                );
+            });
             desktopApi.getTorStatus();
         }
     }, [updateTorStatus]);
