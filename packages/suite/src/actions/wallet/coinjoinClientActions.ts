@@ -1,4 +1,4 @@
-import TrezorConnect, { AccountInfo } from '@trezor/connect';
+import TrezorConnect from '@trezor/connect';
 import {
     CoinjoinStatusEvent,
     CoinjoinRoundEvent,
@@ -6,7 +6,7 @@ import {
     CoinjoinRequestEvent,
     CoinjoinResponseEvent,
 } from '@trezor/coinjoin';
-import { arrayDistinct, throwError } from '@trezor/utils';
+import { arrayDistinct } from '@trezor/utils';
 import * as COINJOIN from './constants/coinjoinConstants';
 import { breakdownCoinjoinBalance, prepareCoinjoinTransaction } from '@wallet-utils/coinjoinUtils';
 import { CoinjoinClientService } from '@suite/services/coinjoin/coinjoinClient';
@@ -562,11 +562,6 @@ export const initCoinjoinClient =
             );
         }
     };
-
-export const analyzeTransactions = (accountInfo: AccountInfo, symbol: Account['symbol']) => () => {
-    const client = getCoinjoinClient(symbol) ?? throwError('Coinjoin client is missing');
-    return client.analyzeTransactions(accountInfo.history.transactions || []);
-};
 
 export const getCoinjoinServerEnvironment =
     (symbol: Account['symbol']) => (_: Dispatch, getState: GetState) => {
