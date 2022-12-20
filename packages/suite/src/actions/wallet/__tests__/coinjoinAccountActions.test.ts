@@ -1,8 +1,8 @@
-import { configureStore } from '@suite/support/tests/configureStore';
+import { combineReducers, createReducer } from '@reduxjs/toolkit';
+import { configureMockStore, testMocks } from '@suite-common/test-utils';
 
 import { accountsReducer } from '@wallet-reducers';
 import { coinjoinReducer } from '@wallet-reducers/coinjoinReducer';
-import { Account } from '@wallet-types';
 import * as coinjoinAccountActions from '../coinjoinAccountActions';
 import * as fixtures from '../__fixtures__/coinjoinAccountActions';
 
@@ -58,50 +58,54 @@ jest.mock('@suite/services/coinjoin/coinjoinBackend', () =>
     }),
 );
 
-type PartialCoinjoinState = Partial<ReturnType<typeof coinjoinReducer>>;
+const DEVICE = testMocks.getSuiteDevice({ state: 'device-state', connected: true });
 
-const DEVICE = global.JestMocks.getSuiteDevice({ state: 'device-state', connected: true });
-export const getInitialState = (coinjoin?: PartialCoinjoinState) => ({
-    suite: {
-        locks: [],
-        device: DEVICE,
-        settings: {
-            debug: {},
+const rootReducer = combineReducers({
+    suite: createReducer(
+        {
+            locks: [],
+            device: DEVICE,
+            settings: {
+                debug: {},
+            },
         },
-    },
-    devices: [DEVICE],
-    wallet: {
-        coinjoin: {
-            ...coinjoinReducer(undefined, { type: 'foo' } as any),
-            ...coinjoin,
-        },
-        accounts: accountsReducer(undefined, { type: 'foo' } as any),
-    },
-    modal: {},
+        {},
+    ),
+    devices: createReducer([DEVICE], {}),
+    modal: () => ({}),
+    wallet: combineReducers({
+        coinjoin: coinjoinReducer,
+        accounts: accountsReducer,
+    }),
 });
 
-type State = ReturnType<typeof getInitialState>;
-const mockStore = configureStore<State, any>();
+type State = ReturnType<typeof rootReducer>;
+type Wallet = Partial<State['wallet']> & { devices?: State['devices'] };
 
-const initStore = (state: State) => {
-    const store = mockStore(state);
-    store.subscribe(() => {
-        const action = store.getActions().pop();
-        const { coinjoin, accounts } = store.getState().wallet;
-        store.getState().wallet = {
-            coinjoin: coinjoinReducer(coinjoin, action),
-            accounts: accountsReducer(accounts, action),
+const initStore = ({ accounts, coinjoin, devices }: Wallet = {}) => {
+    const preloadedState: State = JSON.parse(
+        JSON.stringify(rootReducer(undefined, { type: 'init' })),
+    );
+    if (devices) {
+        preloadedState.devices = devices;
+    }
+    if (accounts) {
+        preloadedState.wallet.accounts = accounts;
+    }
+    if (coinjoin) {
+        preloadedState.wallet.coinjoin = {
+            ...preloadedState.wallet.coinjoin,
+            ...coinjoin,
         };
-        store.getActions().push(action);
-    });
-    return store;
+    }
+    // State != suite AppState, therefore <any>
+    return configureMockStore<any>({ reducer: rootReducer, preloadedState });
 };
 
 describe('coinjoinAccountActions', () => {
     fixtures.createCoinjoinAccount.forEach(f => {
         it(`createCoinjoinAccount: ${f.description}`, async () => {
-            const initialState = getInitialState();
-            const store = initStore(initialState);
+            const store = initStore();
             TrezorConnect.setTestFixtures(f.connect);
 
             await store.dispatch(coinjoinAccountActions.createCoinjoinAccount(f.params as any, 80)); // params are incomplete
@@ -113,8 +117,7 @@ describe('coinjoinAccountActions', () => {
 
     fixtures.startCoinjoinSession.forEach(f => {
         it(`startCoinjoinSession: ${f.description}`, async () => {
-            const initialState = getInitialState(f.state?.coinjoin as any); // partial Account
-            const store = initStore(initialState);
+            const store = initStore();
             TrezorConnect.setTestFixtures(f.connect);
             // @ts-expect-error params are incomplete
             await store.dispatch(coinjoinAccountActions.startCoinjoinSession(f.params, {}));
@@ -126,14 +129,7 @@ describe('coinjoinAccountActions', () => {
 
     fixtures.stopCoinjoinSession.forEach(f => {
         it(`stopCoinjoinSession: ${f.description}`, async () => {
-            const initialState = getInitialState();
-            const store = initStore({
-                ...initialState,
-                wallet: {
-                    ...initialState.wallet,
-                    accounts: [...initialState.wallet.accounts, f.account as Account],
-                },
-            });
+            const store = initStore(f.state as Wallet);
 
             await store.dispatch(coinjoinAccountActions.stopCoinjoinSession(f.param));
 
