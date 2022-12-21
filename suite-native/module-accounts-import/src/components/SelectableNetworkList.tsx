@@ -3,14 +3,13 @@ import React from 'react';
 import { A, pipe } from '@mobily/ts-belt';
 
 import { Box, Card, Text, VStack } from '@suite-native/atoms';
+import { Network, networks, NetworkSymbol } from '@suite-common/wallet-config';
 import {
-    Network,
-    networks,
-    NetworkSymbol,
-    getMainnets,
-    getTestnets,
-} from '@suite-common/wallet-config';
-import { mainnetsOrder, testnetsOrder } from '@suite-native/config';
+    mainnetsOrder,
+    testnetsOrder,
+    enabledMainnets,
+    enabledTestnets,
+} from '@suite-native/config';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { SelectableNetworkItem } from './SelectableNetworkItem';
@@ -37,8 +36,8 @@ const mapAndSortNetworkItems = (networkItems: Network[], networkOrder: NetworkSy
         A.sort((a, b) => (a.order > b.order ? 1 : -1)),
     );
 
-const sortedMainnetsNetworks = mapAndSortNetworkItems(getMainnets(), mainnetsOrder);
-const sortedTestnetNetworks = mapAndSortNetworkItems(getTestnets(), testnetsOrder);
+const sortedMainnetsNetworks = mapAndSortNetworkItems(enabledMainnets, mainnetsOrder);
+const sortedTestnetNetworks = mapAndSortNetworkItems(enabledTestnets, testnetsOrder);
 
 export const SelectableNetworkList = ({ onSelectItem }: SelectableAssetListProps) => {
     const { applyStyle } = useNativeStyles();
