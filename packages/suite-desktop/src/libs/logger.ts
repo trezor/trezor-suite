@@ -16,18 +16,20 @@ export type Options = {
     logFormat?: string; // Output format of the log
 };
 
+const userDataDir = app?.getPath('userData');
+
 export const defaultOptions: Options = {
     colors: true,
     writeToConsole: true,
     writeToDisk: false,
     outputFile: 'trezor-suite-log-%ts.txt',
-    outputPath: app?.getPath('home') ?? process.cwd(),
+    outputPath: userDataDir ? `${userDataDir}/logs` : process.cwd(),
     logFormat: '%dt - %lvl(%top): %msg',
 } as const;
 
 export class Logger implements ILogger {
     static instance: Logger;
-    private stream: fs.WriteStream | undefined;
+    private stream?: Promise<fs.WriteStream | undefined>;
     private options: Options;
     private logLevel = 0;
 
@@ -38,27 +40,37 @@ export class Logger implements ILogger {
             ...options,
         };
 
-        if (this.logLevel > 0 && this.options.writeToDisk) {
-            if (!this.options.outputFile) {
+        this.stream = this.prepareWriteStream(this.options);
+    }
+
+    private async prepareWriteStream({ writeToDisk, outputFile, outputPath }: Options) {
+        if (this.logLevel > 0 && writeToDisk) {
+            if (!outputFile) {
                 this.error(
                     'logger',
-                    `Can't write log to file because outputFile is not properly set (${this.options.outputFile})`,
+                    `Can't write log to file because outputFile is not properly set (${outputFile})`,
                 );
                 return;
             }
 
-            if (!this.options.outputPath) {
+            if (!outputPath) {
                 this.error(
                     'logger',
-                    `Can't write log to file because outputPath is not properly set (${this.options.outputPath})`,
+                    `Can't write log to file because outputPath is not properly set (${outputPath})`,
                 );
                 return;
             }
 
-            this.stream = fs.createWriteStream(
-                path.join(this.options.outputPath, this.format(this.options.outputFile)),
-            );
+            try {
+                await fs.promises.access(outputPath, fs.constants.R_OK);
+            } catch {
+                await fs.promises.mkdir(outputPath);
+            }
+
+            return fs.createWriteStream(path.join(outputPath, this.format(outputFile)));
         }
+        this.exit();
+    }
     }
 
     private log(level: LogLevel, topic: string, message: string | string[]) {
@@ -86,13 +98,14 @@ export class Logger implements ILogger {
         );
     }
 
-    private write(level: LogLevel, message: string) {
+    private async write(level: LogLevel, message: string) {
         if (this.options.writeToConsole) {
             console.log(this.options.colors ? this.color(level, message) : message);
         }
 
-        if (this.stream !== undefined) {
-            this.stream.write(`${message}\n`);
+        const stream = await this.stream;
+        if (stream !== undefined) {
+            stream.write(`${message}\n`);
         }
     }
 
@@ -125,9 +138,10 @@ export class Logger implements ILogger {
         }
     }
 
-    public exit() {
-        if (this.stream !== undefined) {
-            this.stream.end();
+    public async exit() {
+        const stream = await this.stream;
+        if (stream !== undefined) {
+            stream.end();
         }
     }
 
