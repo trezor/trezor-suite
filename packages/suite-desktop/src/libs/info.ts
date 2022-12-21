@@ -8,7 +8,7 @@ import { b2t } from './utils';
 
 export const getBuildInfo = () => [
     'Info:',
-    `- Version: ${app.getVersion()}`,
+    `- Version: ${app?.getVersion()}`,
     `- Electron: ${process.versions.electron}`,
     `- Commit: ${process.env.COMMITHASH}`,
     `- Dev: ${b2t(isDevEnv)}`,
