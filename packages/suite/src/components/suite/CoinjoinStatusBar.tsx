@@ -10,12 +10,13 @@ import { selectDevice } from '@suite-actions/suiteActions';
 import { goto } from '@suite-actions/routerActions';
 import { useSelector } from '@suite-hooks/useSelector';
 import { STATUS as DiscoveryStatus } from '@wallet-actions/constants/discoveryConstants';
-import { calculateSessionProgress, getPhaseTimerFormat } from '@wallet-utils/coinjoinUtils';
+import { getPhaseTimerFormat } from '@wallet-utils/coinjoinUtils';
 import { selectRouterParams } from '@suite-reducers/routerReducer';
 import { CountdownTimer } from './CountdownTimer';
 import { WalletLabeling } from './Labeling';
 import { ProgressPie } from './ProgressPie';
 import { Translation } from './Translation';
+import { selectSessionProgressByAccountKey } from '@wallet-reducers/coinjoinReducer';
 
 const SPACING = 6;
 
@@ -63,7 +64,9 @@ export const CoinjoinStatusBar = ({ accountKey, session, isSingle }: CoinjoinSta
     const selectedDevice = useSelector(state => state.suite.device);
     const routerParams = useSelector(selectRouterParams);
     const discovery = useSelector(state => state.wallet.discovery);
-
+    const sessionProgress = useSelector(state =>
+        selectSessionProgressByAccountKey(state, accountKey),
+    );
     const dispatch = useDispatch();
 
     if (!relatedAccount) {
@@ -96,7 +99,6 @@ export const CoinjoinStatusBar = ({ accountKey, session, isSingle }: CoinjoinSta
     };
 
     const { phase, signedRounds, maxRounds, phaseDeadline, sessionDeadline, paused } = session;
-    const progress = calculateSessionProgress(signedRounds, maxRounds);
 
     const getSessionStatusMessage = () => {
         if (paused) {
@@ -131,7 +133,7 @@ export const CoinjoinStatusBar = ({ accountKey, session, isSingle }: CoinjoinSta
 
     return (
         <Container>
-            <StyledProgressPie progress={progress} />
+            <StyledProgressPie progress={sessionProgress} />
 
             <StatusText>
                 {getSessionStatusMessage()}

@@ -258,11 +258,6 @@ export const getPhaseTimerFormat = (deadline: CoinjoinSession['phaseDeadline']) 
     return formatToUse;
 };
 
-export const calculateSessionProgress = (
-    signedRounds: CoinjoinSession['signedRounds'],
-    maxRounds: CoinjoinSession['maxRounds'],
-) => signedRounds.length / (maxRounds / 100);
-
 export const calculateServiceFee = (
     utxos: AccountUtxo[],
     coordinationFeeRate: CoinjoinStatusEvent['coordinationFeeRate'],

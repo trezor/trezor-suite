@@ -1,11 +1,13 @@
 import produce from 'immer';
-import { STORAGE } from '@suite-actions/constants';
 import { createSelector } from '@reduxjs/toolkit';
+import { CoinjoinStatusEvent } from '@trezor/coinjoin';
+import BigNumber from 'bignumber.js';
+import { PartialRecord } from '@trezor/type-utils';
+import { STORAGE } from '@suite-actions/constants';
 import * as COINJOIN from '@wallet-actions/constants/coinjoinConstants';
 import { Account } from '@suite-common/wallet-types';
 import { CoinjoinAccount, RoundPhase } from '@wallet-types/coinjoin';
 import { Action } from '@suite-types';
-import { PartialRecord } from '@trezor/type-utils';
 import {
     breakdownCoinjoinBalance,
     getEstimatedTimePerRound,
@@ -13,8 +15,8 @@ import {
 } from '@wallet-utils/coinjoinUtils';
 import { ESTIMATED_ROUNDS_FAIL_RATE_BUFFER } from '@suite/services/coinjoin/config';
 import { selectSelectedAccount, selectSelectedAccountParams } from './selectedAccountReducer';
-import { CoinjoinStatusEvent } from '@trezor/coinjoin';
 import { selectDebug, selectTorState } from '@suite-reducers/suiteReducer';
+import { selectAccountByKey } from '@suite-common/wallet-core';
 
 export interface CoinjoinClientFeeRatesMedians {
     fast: number;
@@ -356,6 +358,31 @@ export const selectCurrentCoinjoinBalanceBreakdown = createSelector(
         });
 
         return balanceBreakdown;
+    },
+);
+
+export const selectSessionProgressByAccountKey = createSelector(
+    [selectCoinjoinAccountByKey, selectAccountByKey],
+    (coinjoinAccount, relatedAccounts) => {
+        const { targetAnonymity } = coinjoinAccount || {};
+        const { addresses, balance, utxo: utxos } = relatedAccounts || {};
+
+        if (!balance || !utxos) {
+            return 0;
+        }
+
+        const { anonymized } = breakdownCoinjoinBalance({
+            targetAnonymity,
+            anonymitySet: addresses?.anonymitySet,
+            utxos,
+        });
+
+        const progress = new BigNumber(anonymized)
+            .div(new BigNumber(balance).div(100))
+            .integerValue()
+            .toNumber();
+
+        return progress;
     },
 );
 

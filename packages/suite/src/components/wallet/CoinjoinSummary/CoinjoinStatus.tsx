@@ -15,11 +15,7 @@ import { Translation } from '@suite-components/Translation';
 import { CountdownTimer } from '@suite-components';
 
 import { COINJOIN_PHASE_MESSAGES } from '@suite-constants/coinjoin';
-import {
-    calculateSessionProgress,
-    getPhaseTimerFormat,
-    getSessionDeadlineFormat,
-} from '@wallet-utils/coinjoinUtils';
+import { getPhaseTimerFormat, getSessionDeadlineFormat } from '@wallet-utils/coinjoinUtils';
 import { useDispatch } from 'react-redux';
 import {
     pauseCoinjoinSession,
@@ -27,7 +23,10 @@ import {
     stopCoinjoinSession,
 } from '@wallet-actions/coinjoinAccountActions';
 import { useSelector } from '@suite-hooks';
-import { selectIsCoinjoinBlockedByTor } from '@wallet-reducers/coinjoinReducer';
+import {
+    selectIsCoinjoinBlockedByTor,
+    selectSessionProgressByAccountKey,
+} from '@wallet-reducers/coinjoinReducer';
 
 const Container = styled.div`
     position: relative;
@@ -153,17 +152,19 @@ interface CoinjoinStatusProps {
 }
 
 export const CoinjoinStatus = ({ session, accountKey }: CoinjoinStatusProps) => {
+    const isCoinJoinBlockedByTor = useSelector(selectIsCoinjoinBlockedByTor);
+    const sessionProgress = useSelector(state =>
+        selectSessionProgressByAccountKey(state, accountKey),
+    );
     const [isLoading, setIsLoading] = useState(false);
     const [isWheelHovered, setIsWheelHovered] = useState(false);
-    const isCoinJoinBlockedByTor = useSelector(selectIsCoinjoinBlockedByTor);
 
     const menuRef = useRef<HTMLUListElement & { close: () => void }>(null);
     const theme = useTheme();
     const dispatch = useDispatch();
 
-    const { maxRounds, signedRounds, paused, phaseDeadline, sessionDeadline, phase } = session;
+    const { paused, phaseDeadline, sessionDeadline, phase } = session;
 
-    const progress = calculateSessionProgress(signedRounds, maxRounds);
     const isPaused = !!paused;
 
     const togglePause = useCallback(async () => {
@@ -335,7 +336,7 @@ export const CoinjoinStatus = ({ session, accountKey }: CoinjoinStatusProps) => 
         <Container>
             <SessionControlsMenu alignMenu="right" items={menuItems} ref={menuRef} />
             <ProgressWheel
-                progress={progress}
+                progress={sessionProgress}
                 isPaused={isPaused}
                 isLoading={isLoading}
                 isResumeDisable={isCoinJoinBlockedByTor}
