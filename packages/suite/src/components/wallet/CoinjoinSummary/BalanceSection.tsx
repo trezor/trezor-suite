@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux';
 import { goto } from '@suite-actions/routerActions';
 import { Card, Translation } from '@suite-components';
 import { useSelector } from '@suite-hooks';
-import { variables, TooltipButton } from '@trezor/components';
+import { variables, TooltipButton, Image } from '@trezor/components';
 import {
     selectCoinjoinAccountByKey,
     selectCurrentCoinjoinBalanceBreakdown,
@@ -26,11 +26,19 @@ const AnonymizeButton = styled(TooltipButton)`
     justify-content: space-between;
     width: 154px;
     height: 46px;
+    margin-right: 10px;
     padding: 9px 18px;
 `;
 
-const Message = styled.p`
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+const AnonymizedIndicator = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-right: 32px;
+`;
+
+const AmomymizedMessage = styled.span`
+    color: ${({ theme }) => theme.TYPE_GREEN};
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
@@ -57,9 +65,12 @@ export const BalanceSection = ({ accountKey }: BalanceSectionProps) => {
 
         if (allAnonymized) {
             return (
-                <Message>
-                    <Translation id="TR_NOTHING_TO_ANONYMIZE" />
-                </Message>
+                <AnonymizedIndicator>
+                    <Image image="CHECK_SHIELD" width={90} />
+                    <AmomymizedMessage>
+                        <Translation id="TR_ALL_FUNDS_ANONYMIZED" />
+                    </AmomymizedMessage>
+                </AnonymizedIndicator>
             );
         }
 

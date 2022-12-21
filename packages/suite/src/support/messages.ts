@@ -7574,4 +7574,8 @@ export default defineMessages({
         defaultMessage:
             "<red>Very low anonymity.</red> We recommend using at least 1 in 5, as anything bellow isn't secure.",
     },
+    TR_ALL_FUNDS_ANONYMIZED: {
+        id: 'TR_ALL_FUNDS_ANONYMIZED',
+        defaultMessage: 'All funds private',
+    },
 });
