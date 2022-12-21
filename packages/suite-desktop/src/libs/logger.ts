@@ -4,6 +4,8 @@ import path from 'path';
 import chalk from 'chalk';
 import { app } from 'electron';
 
+import { getBuildInfo, getComputerInfo } from './info';
+
 const logLevels = ['mute', 'error', 'warn', 'info', 'debug'] as const;
 export type LogLevel = typeof logLevels[number];
 
@@ -45,6 +47,12 @@ export class Logger implements ILogger {
 
     private async prepareWriteStream({ writeToDisk, outputFile, outputPath }: Options) {
         if (this.logLevel > 0 && writeToDisk) {
+            const stream = await this.stream;
+            if (stream !== undefined) {
+                // Do not create a new file if there is one currently open.
+                return;
+            }
+
             if (!outputFile) {
                 this.error(
                     'logger',
@@ -71,6 +79,13 @@ export class Logger implements ILogger {
         }
         this.exit();
     }
+
+    private async logBasicInfo() {
+        const buildInfo = getBuildInfo();
+        this.info('build', buildInfo);
+
+        const computerInfo = await getComputerInfo();
+        this.debug('computer', computerInfo);
     }
 
     private log(level: LogLevel, topic: string, message: string | string[]) {
@@ -163,5 +178,26 @@ export class Logger implements ILogger {
 
     public get level() {
         return logLevels[this.logLevel];
+    }
+
+    public set level(level: LogLevel) {
+        this.logLevel = logLevels.indexOf(level);
+    }
+
+    public get config() {
+        return this.options;
+    }
+
+    public set config(options: Partial<Options>) {
+        this.options = {
+            ...this.options,
+            ...options,
+        };
+
+        this.stream = this.prepareWriteStream(this.options);
+
+        if (options.writeToDisk) {
+            this.logBasicInfo();
+        }
     }
 }

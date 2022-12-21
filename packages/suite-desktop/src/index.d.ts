@@ -34,6 +34,20 @@ declare interface ILogger {
      * Log Level getter
      */
     level: LogLevel;
+    /**
+     * Log Level setter
+     * @param level(LogLevel) - Log level
+     */
+    level;
+    /**
+     * Options getter.
+     */
+    config: Options;
+    /**
+     * Options setter.
+     * @param options(Partial<Options>) - Log options
+     */
+    config;
 }
 
 // Globals
