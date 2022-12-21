@@ -11,6 +11,7 @@ import { StrictBrowserWindow } from '../typed-electron';
 // General modules (both dev & prod)
 const MODULES = [
     // Event Logging
+    'event-logging/index',
     'event-logging/process',
     'event-logging/app',
     'event-logging/contents',

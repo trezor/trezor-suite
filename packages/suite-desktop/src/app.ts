@@ -17,13 +17,13 @@ import { initModules } from './modules';
 import { init as initTorModule } from './modules/tor';
 import { createInterceptor } from './libs/request-interceptor';
 import { hangDetect } from './hang-detect';
-import { createLogger } from './logger';
+import { Logger } from './libs/logger';
 
 // @ts-expect-error using internal electron API to set suite version in dev mode correctly
 if (isDevEnv) app.setVersion(process.env.VERSION);
 
 // Logger
-const logger = createLogger();
+const logger = new Logger();
 
 // Globals
 global.logger = logger;

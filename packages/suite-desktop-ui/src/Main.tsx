@@ -24,6 +24,7 @@ import { useFormattersConfig } from '@suite-hooks';
 import history from '@suite/support/history';
 import { ModalContextProvider } from '@suite-support/ModalContext';
 import { desktopHandshake } from '@suite-actions/suiteActions';
+import * as STORAGE from '@suite-actions/constants/storageConstants';
 
 import { SENTRY_CONFIG } from '@suite-common/sentry';
 import { desktopApi } from '@trezor/suite-desktop-api';
@@ -78,6 +79,19 @@ export const init = async (container: HTMLElement) => {
     const store = initStore(preloadAction);
 
     await desktopApi.handshake();
+
+    // start logging to file if Debug menu is active
+    if (
+        preloadAction?.type === STORAGE.LOAD &&
+        preloadAction.payload.suiteSettings?.settings.debug.showDebugMenu
+    ) {
+        desktopApi.configLogger({
+            level: 'debug',
+            options: {
+                writeToDisk: true,
+            },
+        });
+    }
 
     // Loading Tor as separate module, before the rest of the modules.
     const { shouldRunTor } = await desktopApi.loadTorModule();
