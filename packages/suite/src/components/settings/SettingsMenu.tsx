@@ -7,6 +7,7 @@ import * as routerActions from '@suite-actions/routerActions';
 import * as suiteActions from '@suite-actions/suiteActions';
 import { FADE_IN } from '@trezor/components/src/config/animations';
 import { AppNavigationItem } from '@suite-components/AppNavigation';
+import { desktopApi } from '@trezor/suite-desktop-api';
 
 const CloseButtonWrapper = styled.div<{ isAppNavigationPanelInView?: boolean }>`
     position: absolute;
@@ -87,6 +88,18 @@ export const SettingsMenu = () => {
                         if (clickCounter === 4) {
                             setClickCounter(0);
                             setDebugMode({ showDebugMenu: !showDebugMenu });
+                            if (desktopApi.available) {
+                                desktopApi.configLogger(
+                                    showDebugMenu
+                                        ? {} // Reset to default values.
+                                        : {
+                                              level: 'debug',
+                                              options: {
+                                                  writeToDisk: true,
+                                              },
+                                          },
+                                );
+                            }
                         }
                     }}
                 >

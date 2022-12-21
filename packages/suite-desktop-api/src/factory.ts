@@ -104,5 +104,10 @@ export const factory = <R extends StrictIpcRenderer<any>>(ipcRenderer?: R): Desk
 
         // Udev rules
         installUdevRules: () => ipcRenderer.invoke('udev/install'),
+
+        // Logger
+        configLogger: config => {
+            ipcRenderer.send('logger/config', config);
+        },
     };
 };

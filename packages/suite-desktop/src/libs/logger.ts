@@ -4,10 +4,15 @@ import path from 'path';
 import chalk from 'chalk';
 import { app } from 'electron';
 
+import { isDevEnv } from '@suite-common/suite-utils';
+
 import { getBuildInfo, getComputerInfo } from './info';
 
 const logLevels = ['mute', 'error', 'warn', 'info', 'debug'] as const;
+
 export type LogLevel = typeof logLevels[number];
+const isLogLevel = (level: string): level is LogLevel =>
+    !!level && logLevels.includes(level as LogLevel);
 
 export type Options = {
     colors?: boolean; // Console output has colors
@@ -19,26 +24,35 @@ export type Options = {
 };
 
 const userDataDir = app?.getPath('userData');
-
-export const defaultOptions: Options = {
-    colors: true,
-    writeToConsole: true,
-    writeToDisk: false,
-    outputFile: 'trezor-suite-log-%ts.txt',
-    outputPath: userDataDir ? `${userDataDir}/logs` : process.cwd(),
-    logFormat: '%dt - %lvl(%top): %msg',
-} as const;
+const logLevelSwitchValue = app?.commandLine.getSwitchValue('log-level');
+const logLevelByEnv = isDevEnv ? 'debug' : 'error';
+const logLevelDefault = isLogLevel(logLevelSwitchValue) ? logLevelSwitchValue : logLevelByEnv;
 
 export class Logger implements ILogger {
     static instance: Logger;
     private stream?: Promise<fs.WriteStream | undefined>;
+    private defaultOptions: Options;
     private options: Options;
     private logLevel = 0;
 
-    constructor(level: LogLevel, options?: Options) {
-        this.logLevel = logLevels.indexOf(level);
+    constructor(level?: LogLevel, options?: Options) {
+        const logLevel = level || logLevelDefault;
+
+        this.logLevel = logLevels.indexOf(logLevel);
+
+        this.defaultOptions = {
+            colors: true,
+            writeToConsole: !app?.commandLine.hasSwitch('log-no-print'),
+            writeToDisk: app?.commandLine.hasSwitch('log-write'),
+            outputFile: app?.commandLine.getSwitchValue('log-file') || 'trezor-suite-log-%ts.txt',
+            outputPath:
+                app?.commandLine.getSwitchValue('log-path') ||
+                (userDataDir ? `${userDataDir}/logs` : process.cwd()),
+            logFormat: '%dt - %lvl(%top): %msg',
+        };
+
         this.options = {
-            ...defaultOptions,
+            ...this.defaultOptions,
             ...options,
         };
 
@@ -50,7 +64,7 @@ export class Logger implements ILogger {
             const stream = await this.stream;
             if (stream !== undefined) {
                 // Do not create a new file if there is one currently open.
-                return;
+                return stream;
             }
 
             if (!outputFile) {
@@ -181,7 +195,7 @@ export class Logger implements ILogger {
     }
 
     public set level(level: LogLevel) {
-        this.logLevel = logLevels.indexOf(level);
+        this.logLevel = logLevels.indexOf(isLogLevel(level) ? level : logLevelDefault);
     }
 
     public get config() {
@@ -189,14 +203,18 @@ export class Logger implements ILogger {
     }
 
     public set config(options: Partial<Options>) {
-        this.options = {
-            ...this.options,
-            ...options,
-        };
+        if (options) {
+            this.options = {
+                ...this.options,
+                ...options,
+            };
+        } else {
+            this.options = this.defaultOptions;
+        }
 
         this.stream = this.prepareWriteStream(this.options);
 
-        if (options.writeToDisk) {
+        if (options?.writeToDisk) {
             this.logBasicInfo();
         }
     }

@@ -4,6 +4,7 @@ import {
     HandshakeClient,
     HandshakeElectron,
     HandshakeEvent,
+    LoggerConfig,
     UpdateInfo,
     UpdateProgress,
     InvokeResult,
@@ -25,6 +26,7 @@ export interface MainChannels {
     'update/check': boolean | undefined;
     'update/download': void;
     'update/install': void;
+    'logger/config': LoggerConfig;
 }
 
 // Event messages from main to renderer process
@@ -109,4 +111,6 @@ export interface DesktopApi {
     clearUserData: DesktopApiInvoke<'user-data/clear'>;
     // Udev rules
     installUdevRules: DesktopApiInvoke<'udev/install'>;
+    // Logger
+    configLogger: DesktopApiSend<'logger/config'>;
 }
