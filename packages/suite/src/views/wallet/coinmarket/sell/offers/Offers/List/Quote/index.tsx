@@ -263,15 +263,21 @@ const Quote = ({ className, quote, amountInCrypto }: Props) => {
                     </Left>
                 )}
                 <Right>
-                    <StyledButton isDisabled={!!quote.error} onClick={() => selectQuote(quote)}>
-                        <Translation
-                            id={
-                                needToRegisterOrVerifyBankAccount(quote)
-                                    ? 'TR_SELL_REGISTER'
-                                    : 'TR_SELL_GET_THIS_OFFER'
-                            }
-                        />
-                    </StyledButton>
+                    {quote.status === 'LOGIN_REQUEST' ? (
+                        <StyledButton onClick={() => selectQuote(quote)}>
+                            <Translation id="TR_LOGIN_PROCEED" />
+                        </StyledButton>
+                    ) : (
+                        <StyledButton isDisabled={!!quote.error} onClick={() => selectQuote(quote)}>
+                            <Translation
+                                id={
+                                    needToRegisterOrVerifyBankAccount(quote)
+                                        ? 'TR_SELL_REGISTER'
+                                        : 'TR_SELL_GET_THIS_OFFER'
+                                }
+                            />
+                        </StyledButton>
+                    )}
                 </Right>
             </Main>
             <Details>
