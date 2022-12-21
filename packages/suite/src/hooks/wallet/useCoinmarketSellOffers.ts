@@ -165,7 +165,7 @@ export const useOffers = ({ selectedAccount }: UseOffersProps) => {
         });
         setCallInProgress(false);
         if (response) {
-            if (response.trade.error) {
+            if (response.trade.error && response.trade.status !== 'LOGIN_REQUEST') {
                 console.log(`[doSellTrade] ${response.trade.error}`);
                 addNotification({
                     type: 'error',

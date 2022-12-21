@@ -1553,6 +1553,10 @@ export default defineMessages({
         id: 'TR_BUY_GET_THIS_OFFER',
         defaultMessage: 'Get this deal',
     },
+    TR_LOGIN_PROCEED: {
+        id: 'TR_LOGIN_PROCEED',
+        defaultMessage: 'Proceed',
+    },
     TR_OFFER_ERROR_MINIMUM_CRYPTO: {
         defaultMessage:
             'The chosen amount of {amount} is lower than the accepted minimum of {min}.',

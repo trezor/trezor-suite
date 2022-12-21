@@ -251,13 +251,19 @@ const Quote = ({ className, quote, wantCrypto }: Props) => {
                     </Left>
                 )}
                 <Right>
-                    <StyledButton
-                        isDisabled={!!quote.error}
-                        onClick={() => selectQuote(quote)}
-                        data-test="@coinmarket/buy/offers/get-this-deal-button"
-                    >
-                        <Translation id="TR_BUY_GET_THIS_OFFER" />
-                    </StyledButton>
+                    {quote.status === 'LOGIN_REQUEST' ? (
+                        <StyledButton onClick={() => selectQuote(quote)}>
+                            <Translation id="TR_LOGIN_PROCEED" />
+                        </StyledButton>
+                    ) : (
+                        <StyledButton
+                            isDisabled={!!quote.error}
+                            onClick={() => selectQuote(quote)}
+                            data-test="@coinmarket/buy/offers/get-this-deal-button"
+                        >
+                            <Translation id="TR_BUY_GET_THIS_OFFER" />
+                        </StyledButton>
+                    )}
                 </Right>
             </Main>
             <Details>
