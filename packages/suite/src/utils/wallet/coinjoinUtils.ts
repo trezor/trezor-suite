@@ -7,8 +7,7 @@ import {
     ESTIMATED_ANONYMITY_GAINED_PER_ROUND,
     ESTIMATED_MIN_ROUNDS_NEEDED,
     ESTIMATED_ROUNDS_FAIL_RATE_BUFFER,
-    ESTIMATED_HOURS_PER_ROUND_WITHOUT_SKIPPING_ROUNDS,
-    ESTIMATED_HOURS_PER_ROUND_WITH_SKIPPING_ROUNDS,
+    ESTIMATED_HOURS_PER_ROUND,
 } from '@suite/services/coinjoin/config';
 import { AnonymitySet } from '@trezor/blockchain-link';
 import {
@@ -150,10 +149,10 @@ export const getMaxRounds = (targetAnonymity: number, anonymitySet: AnonymitySet
 };
 
 // get time estimate in hours per round
-export const getEstimatedTimePerRound = (skipRounds: boolean) =>
+export const getEstimatedTimePerRound = (skipRounds?: [number, number]) =>
     skipRounds
-        ? ESTIMATED_HOURS_PER_ROUND_WITH_SKIPPING_ROUNDS
-        : ESTIMATED_HOURS_PER_ROUND_WITHOUT_SKIPPING_ROUNDS;
+        ? ESTIMATED_HOURS_PER_ROUND * (skipRounds[1] / skipRounds[0])
+        : ESTIMATED_HOURS_PER_ROUND;
 
 /**
  * Transform @trezor/coinjoin CoinjoinRequestEvent.CoinjoinTransactionData to @trezor/connect signTransaction params

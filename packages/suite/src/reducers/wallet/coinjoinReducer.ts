@@ -117,7 +117,7 @@ const updateSession = (
         (typeof phase === 'number' ? 1 : 0);
     const timeLeftTillRoundEnd = roundDeadline - Date.now();
 
-    const timePerRoundInMilliseconds = getEstimatedTimePerRound(!!skipRounds) * 3600000;
+    const timePerRoundInMilliseconds = getEstimatedTimePerRound(skipRounds) * 3600000;
     const sessionDeadlineRaw = Date.now() + roundsLeft * timePerRoundInMilliseconds;
 
     const sessionDeadline = sessionDeadlineRaw + timeLeftTillRoundEnd;

@@ -84,11 +84,7 @@ export const CoinjoinDefaultStrategy = ({
                     isSelected={!isRecommended}
                     onClick={setFast}
                 >
-                    <CoinjoinSessionDetail
-                        maxRounds={maxRounds}
-                        maxFee={feeRatesMedians.fast}
-                        skipRounds={null}
-                    />
+                    <CoinjoinSessionDetail maxRounds={maxRounds} maxFee={feeRatesMedians.fast} />
                 </RadioFrame>
             </ButtonRow>
         </>
