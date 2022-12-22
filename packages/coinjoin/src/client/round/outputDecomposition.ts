@@ -1,10 +1,9 @@
-import { getWeakRandomId } from '@trezor/utils';
+import { getWeakRandomId, arrayToDictionary } from '@trezor/utils';
 
 import * as coordinator from '../coordinator';
 import * as middleware from '../middleware';
 import { getRoundEvents, compareOutpoint, sumCredentials } from '../../utils/roundUtils';
 import { getExternalOutputSize } from '../../utils/coordinatorUtils';
-import type { Alice } from '../Alice';
 import type { CoinjoinRound, CoinjoinRoundOptions } from '../CoinjoinRound';
 
 /**
@@ -387,16 +386,16 @@ export const outputDecomposition = async (
     options: CoinjoinRoundOptions,
 ): Promise<DecomposedOutputs[]> => {
     // group inputs by accountKeys
-    const groupInputsByAccount = round.inputs.reduce((result, input) => {
-        if (!result[input.accountKey]) {
-            result[input.accountKey] = [];
-        }
-        if (!input.confirmedAmountCredentials || !input.confirmedVsizeCredentials) {
-            throw new Error(`Missing confirmed credentials for ~~${input.outpoint}~~`);
-        }
-        result[input.accountKey].push(input);
-        return result;
-    }, {} as Record<string, Alice[]>);
+    const groupInputsByAccount = arrayToDictionary(
+        round.inputs,
+        input => {
+            if (!input.confirmedAmountCredentials || !input.confirmedVsizeCredentials) {
+                throw new Error(`Missing confirmed credentials for ~~${input.outpoint}~~`);
+            }
+            return input.accountKey;
+        },
+        true,
+    );
 
     options.log(`Decompose ${Object.keys(groupInputsByAccount).length} accounts`);
 
