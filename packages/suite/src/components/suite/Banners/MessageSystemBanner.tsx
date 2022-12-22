@@ -42,7 +42,7 @@ const MessageSystemBanner = ({ message }: Props) => {
         let onClick: () => Window | Promise<void> | null;
         if (action === 'internal-link') {
             // @ts-expect-error: impossible to add all href options to the message system config json schema
-            onClick = () => goto(link, { anchor });
+            onClick = () => goto(link, { anchor, preserveParams: true });
         } else if (action === 'external-link') {
             onClick = () =>
                 window.open(

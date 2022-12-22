@@ -42,4 +42,6 @@ export const enum SettingsAnchor {
 
 export const AccountTransactionBaseAnchor = '@account/transaction';
 
+export const CoinJoinLogsAnchor = '@coinjoin/logs';
+
 export type AnchorType = SettingsAnchor | string;
