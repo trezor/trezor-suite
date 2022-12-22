@@ -7495,57 +7495,161 @@ export default defineMessages({
         id: 'TR_LOADING_FUNDS',
         defaultMessage: 'Loading Funds...',
     },
-    TR_COINJOIN_FACT_TITLE: {
-        id: 'TR_COINJOIN_FACT_TITLE',
+    TR_LOADING_FACT_TITLE: {
+        id: 'TR_LOADING_FACT_TITLE',
         defaultMessage: 'Did you know?',
     },
-    TR_COINJOIN_FACT_ONE: {
-        id: 'TR_COINJOIN_FACT_ONE',
+    TR_LOADING_FACT_0: {
+        id: 'TR_LOADING_FACT_0',
+        description: '140 symbols max',
         defaultMessage:
-            'Private funds will be hidden after you leave Trezor Suite. To find them again, use the “Hidden funds” button.',
+            'Private funds will be hidden after you leave Trezor Suite. To find them again, use the “Hidden funds” button',
     },
-    TR_COINJOIN_FACT_TWO: {
-        id: 'TR_COINJOIN_FACT_TWO',
+    TR_LOADING_FACT_1: {
+        id: 'TR_LOADING_FACT_1',
+        description: '140 symbols max',
         defaultMessage:
-            'The Trezor Model One was the world’s first hardware wallet, released on July 29, 2014. The follow-up Trezor Model T launched in 2018.',
+            "The Trezor Model One was the world's first hardware wallet, released on July 29, 2014. The follow-up Trezor Model T launched in 2018",
     },
-    TR_COINJOIN_FACT_THREE: {
-        id: 'TR_COINJOIN_FACT_THREE',
+    TR_LOADING_FACT_2: {
+        id: 'TR_LOADING_FACT_2',
+        description: '140 symbols max',
         defaultMessage:
-            "To Coinjoin you pay a fee to the coordinator of 0.3%. If you receive bitcoin from someone who uses CoinJoin, then you don't need to pay the coordinator fee.",
+            "To Coinjoin you pay a fee to the coordinator of 0.3%. If you receive bitcoin from someone who uses CoinJoin, then you don't need to pay the coordinator fee",
     },
-    TR_COINJOIN_FACT_FOUR: {
-        id: 'TR_COINJOIN_FACT_FOUR',
+    TR_LOADING_FACT_3: {
+        id: 'TR_LOADING_FACT_3',
         defaultMessage:
-            'Suite will not remember your CoinJoin account to protect your privacy, unless you explicitly choose to remember the wallet.',
+            'Suite will not remember your CoinJoin account to protect your privacy, unless you explicitly choose to remember the wallet',
     },
-    TR_COINJOIN_FACT_FIVE: {
-        id: 'TR_COINJOIN_FACT_FIVE',
+    TR_LOADING_FACT_4: {
+        id: 'TR_LOADING_FACT_4',
+        description: '140 symbols max',
         defaultMessage:
-            'About 20% of Bitcoin is stuck in wallets by users who have lost access to their private keys. This equates to about 3.67M BTC.',
+            'About 20% of Bitcoin is stuck in wallets by users who have lost access to their private keys. This equates to about 3.67M BTC',
     },
-    TR_COINJOIN_FACT_SIX: {
-        id: 'TR_COINJOIN_FACT_SIX',
+    TR_LOADING_FACT_5: {
+        id: 'TR_LOADING_FACT_5',
+        description: '140 symbols max',
         defaultMessage:
-            'On October 29th 2013 the first Bitcoin ATM was set up in a coffee shop in Vancouver, Canada. There were over 38,000 Bitcoin ATMs across the globe in 2022.',
+            'On October 29th 2013 the first Bitcoin ATM was set up in a coffee shop in Vancouver, Canada. There were over 38,000 Bitcoin ATMs across the globe in 2022',
     },
-    TR_COINJOIN_FACT_SEVEN: {
-        id: 'TR_COINJOIN_FACT_SEVEN',
+    TR_LOADING_FACT_6: {
+        id: 'TR_LOADING_FACT_6',
+        description: '140 symbols max',
         defaultMessage:
-            'Bitcoin was created in the aftermath of the 2008 financial crisis by an anonymous person (or even group of people) known only by the pseudonym Satoshi Nakamoto.',
+            'Bitcoin was created in the aftermath of the 2008 financial crisis by an anonymous person (or even group of people) known only by the pseudonym Satoshi Nakamoto',
     },
-    TR_COINJOIN_FACT_EIGHT: {
-        id: 'TR_COINJOIN_FACT_EIGHT',
-        defaultMessage: 'One Bitcoin is equivalent to 100M satoshis (sats).',
+    TR_LOADING_FACT_7: {
+        id: 'TR_LOADING_FACT_7',
+        description: '140 symbols max',
+        defaultMessage: 'One Bitcoin is equivalent to 100M satoshis (sats)',
     },
-    TR_COINJOIN_FACT_NINE: {
-        id: 'TR_COINJOIN_FACT_NINE',
-        defaultMessage: 'Less than 2% of the population owned Bitcoin in 2022.',
+    TR_LOADING_FACT_8: {
+        id: 'TR_LOADING_FACT_8',
+        description: '140 symbols max',
+        defaultMessage: 'Less than 2% of the population owned Bitcoin in 2022',
     },
-    TR_COINJOIN_FACT_TEN: {
-        id: 'TR_COINJOIN_FACT_TEN',
+    TR_LOADING_FACT_9: {
+        id: 'TR_LOADING_FACT_9',
+        description: '140 symbols max',
         defaultMessage:
-            'CoinJoin is a collaborative bitcoin transaction, in which you mix your bitcoin together with hundreds of others.',
+            'CoinJoin is a collaborative bitcoin transaction, in which you mix your bitcoin together with hundreds of others',
+    },
+    TR_LOADING_FACT_10: {
+        id: 'TR_LOADING_FACT_10',
+        description: '140 symbols max',
+        defaultMessage:
+            "If you don't want to wait for account discovery next time and are confident about your privacy on this computer, then choose to remember your wallet",
+    },
+    TR_LOADING_FACT_11: {
+        id: 'TR_LOADING_FACT_11',
+        description: '140 symbols max',
+        defaultMessage: 'A Coinjoin is a transaction with hundreds of inputs and outputs',
+    },
+    TR_LOADING_FACT_12: {
+        id: 'TR_LOADING_FACT_12',
+        description: '140 symbols max',
+        defaultMessage:
+            "Like cash, you don't keep your entire net worth in your pocket, you keep walking around money for incidental expenses. - Satoshi Nakamoto",
+    },
+    TR_LOADING_FACT_13: {
+        id: 'TR_LOADING_FACT_13',
+        description: '140 symbols max',
+        defaultMessage: 'Privacy is not secrecy. - Eric Hughes ',
+    },
+    TR_LOADING_FACT_14: {
+        id: 'TR_LOADING_FACT_14',
+        description: '140 symbols max',
+        defaultMessage:
+            'Privacy is the power to selectively reveal oneself to the world. - Eric Hughes',
+    },
+    TR_LOADING_FACT_15: {
+        id: 'TR_LOADING_FACT_15',
+        description: '140 symbols max',
+        defaultMessage: 'CoinJoin transactions requires a minimum input of 5000 sats',
+    },
+    TR_LOADING_FACT_16: {
+        id: 'TR_LOADING_FACT_16',
+        description: '140 symbols max',
+        defaultMessage: 'CoinJoin account is using taproot addresses',
+    },
+    TR_LOADING_FACT_17: {
+        id: 'TR_LOADING_FACT_17',
+        description: '140 symbols max',
+        defaultMessage:
+            'El Salvador became the first nation to accept Bitcoin as legal tender in September 2021',
+    },
+    TR_LOADING_FACT_18: {
+        id: 'TR_LOADING_FACT_18',
+        description: '140 symbols max',
+        defaultMessage:
+            'Laszlo Hanyecz made first commercial BTC transaction. He bought 2 pizzas for 10,000 BTC',
+    },
+    TR_LOADING_FACT_19: {
+        id: 'TR_LOADING_FACT_19',
+        description: '140 symbols max',
+        defaultMessage: 'The last Bitcoin should be mined some time around the year 2140',
+    },
+    TR_LOADING_FACT_20: {
+        id: 'TR_LOADING_FACT_20',
+        description: '140 symbols max',
+        defaultMessage:
+            "Mel B, better known as 'Scary Spice', was the first mainstream musician to accept Bitcoin payments for a single",
+    },
+    TR_LOADING_FACT_21: {
+        id: 'TR_LOADING_FACT_21',
+        description: '140 symbols max',
+        defaultMessage:
+            "Bitcoin transactions are grouped together in 'blocks'. These blocks are organized in a chronological sequence comprising the blockchain",
+    },
+    TR_LOADING_FACT_22: {
+        id: 'TR_LOADING_FACT_22',
+        description: '140 symbols max',
+        defaultMessage:
+            "'Bitcoin halving' is the mechanism by which the reward for mining BTC is cut in half every four years. In the beginning, mining one block would earn you 50 BTC, whereas in 2022 it earns you 6.25 BTC",
+    },
+    TR_LOADING_FACT_23: {
+        id: 'TR_LOADING_FACT_23',
+        description: '140 symbols max',
+        defaultMessage: 'Bitcoin has a maximum market cap of 21M coins',
+    },
+    TR_LOADING_FACT_24: {
+        id: 'TR_LOADING_FACT_24',
+        description: '140 symbols max',
+        defaultMessage:
+            'The largest ever Bitcoin trade was 161,500 BTC in April 2020, making it worth about $1.1bn',
+    },
+    TR_LOADING_FACT_25: {
+        id: 'TR_LOADING_FACT_25',
+        description: '140 symbols max',
+        defaultMessage: 'Bitcoin first reached parity with the US Dollar in February 2011',
+    },
+    TR_LOADING_FACT_26: {
+        id: 'TR_LOADING_FACT_26',
+        description: '140 symbols max',
+        defaultMessage:
+            'Slush Pool is the oldest Bitcoin mining pool, and also the first to be publicly available. Today it is operated by Braiins Pool',
     },
     TR_TIMER_PAST_DEADLINE: {
         id: 'TR_TIMER_PAST_DEADLINE',
