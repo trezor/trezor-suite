@@ -19,7 +19,7 @@ const Separator = styled.hr`
 interface CoinjoinSessionDetailProps {
     maxFee: number;
     maxRounds: number;
-    skipRounds: [number, number] | null;
+    skipRounds?: [number, number];
 }
 
 export const CoinjoinSessionDetail = ({
@@ -28,7 +28,7 @@ export const CoinjoinSessionDetail = ({
     skipRounds,
 }: CoinjoinSessionDetailProps) => {
     const estimatedTime =
-        (maxRounds / ESTIMATED_ROUNDS_FAIL_RATE_BUFFER) * getEstimatedTimePerRound(!!skipRounds);
+        (maxRounds / ESTIMATED_ROUNDS_FAIL_RATE_BUFFER) * getEstimatedTimePerRound(skipRounds);
     const timeBuffer = estimatedTime * ESTIMATED_HOURS_BUFFER_MODIFIER;
     const maxEstimatedTime = Math.ceil(estimatedTime + timeBuffer);
     const minEstimatedTime = Math.floor(estimatedTime - timeBuffer);

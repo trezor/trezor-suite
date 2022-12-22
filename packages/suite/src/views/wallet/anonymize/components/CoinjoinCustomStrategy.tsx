@@ -107,7 +107,7 @@ export const CoinjoinCustomStrategy = ({
 }: CoinjoinCustomStrategyProps) => {
     const inputRef = useRef<{ setPreviousValue: (number: number) => void }>(null);
 
-    const skipRoundsValue = skipRounds ? RECOMMENDED_SKIP_ROUNDS : null;
+    const skipRoundsValue = skipRounds ? RECOMMENDED_SKIP_ROUNDS : undefined;
     const trackStyle = {
         background:
             'linear-gradient(270deg, #bf6767 0%, #c8b882 18.73%, #c8b883 36.25%, #95cda5 43.99%,#2a9649 100%)',
