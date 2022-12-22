@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { app } from 'electron';
+import { app, shell } from 'electron';
 
 import { InvokeResult } from '@trezor/suite-desktop-api';
 
@@ -59,3 +59,17 @@ export const clear = async (): Promise<InvokeResult> => {
 export const getInfo = () => ({
     dir: app.getPath('userData'),
 });
+
+export const open = async (directory: string): Promise<InvokeResult> => {
+    const dir = `${app.getPath('userData')}${directory}`;
+    try {
+        const errorMessage = await shell.openPath(dir);
+        if (errorMessage) {
+            throw new Error(errorMessage);
+        }
+        return { success: true };
+    } catch (error) {
+        global.logger.error('user-data', `Opening user data directory failed: ${error.message}`);
+        return { success: false, error: error.message, code: error.code };
+    }
+};
