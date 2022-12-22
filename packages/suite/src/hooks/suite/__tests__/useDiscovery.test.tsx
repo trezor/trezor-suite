@@ -1,4 +1,5 @@
 import React from 'react';
+import { act } from '@testing-library/react';
 import { configureStore } from '@suite/support/tests/configureStore';
 import { renderWithProviders } from '@suite/support/tests/hooksHelper';
 
@@ -51,7 +52,6 @@ const Component = ({ callback }: { callback: Callback }) => {
     return null;
 };
 
-// TODO: fix this test so that it is compatible with react-redux 7.2.3 and higher
 test('useDiscovery', () => {
     const store = initStore(getInitialState());
 
@@ -61,7 +61,7 @@ test('useDiscovery', () => {
     const { unmount } = renderWithProviders(store, <Component callback={callback} />);
 
     actions.forEach(a => {
-        store.dispatch(a.action);
+        act(() => store.dispatch(a.action));
         const len = renders.length;
         expect(len).toEqual(a.renders); // validate render numbers
         expect(renders[len - 1]).toMatchObject(a.result); // validate hook values

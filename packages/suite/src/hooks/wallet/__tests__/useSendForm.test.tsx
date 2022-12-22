@@ -100,7 +100,17 @@ interface TestCallback {
 const Component = ({ callback }: { callback: TestCallback }) => {
     const values = useSendFormContext();
     callback.getContextValues = () => values;
-    return values.isLoading ? <div>Loading</div> : null;
+
+    // NOTE: rendering briefly explanation:
+    // sendForm.state.isLoading field is updated **BEFORE** last render of react-hook-form
+    // results are verified **BEFORE** components are finally rerendered.
+    // force additional re-render here (using state update) before removing loader from the view
+    const [loading, setLoading] = React.useState(false);
+    React.useEffect(() => {
+        setLoading(values.isLoading);
+    }, [loading, values.isLoading]);
+
+    return loading ? <div>Loading</div> : null;
 };
 
 interface Result {
