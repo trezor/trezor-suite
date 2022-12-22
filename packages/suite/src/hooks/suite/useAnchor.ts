@@ -6,9 +6,7 @@ import * as routerActions from '@suite-actions/routerActions';
 export const useAnchor = (anchorId: string) => {
     const anchorRef = useRef<HTMLDivElement>(null);
 
-    const { anchor } = useSelector(state => ({
-        anchor: state.router.anchor,
-    }));
+    const anchor = useSelector(state => state.router.anchor);
 
     const { onAnchorChange } = useActions({
         onAnchorChange: routerActions.onAnchorChange,

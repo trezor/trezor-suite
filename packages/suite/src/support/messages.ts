@@ -7452,6 +7452,18 @@ export default defineMessages({
         description: 'Tooltip in coinjoin send form',
         defaultMessage: 'You can:',
     },
+    TR_COINJOIN_LOGS_TITLE: {
+        id: 'TR_COINJOIN_LOGS_TITLE',
+        defaultMessage: 'CoinJoin debug log',
+    },
+    TR_COINJOIN_LOGS_DESCRIPTION: {
+        id: 'TR_COINJOIN_LOGS_DESCRIPTION',
+        defaultMessage: 'Open folder with log files.',
+    },
+    TR_COINJOIN_LOGS_ACTION: {
+        id: 'TR_COINJOIN_LOGS_ACTION',
+        defaultMessage: 'Find logs',
+    },
     TR_ANONYMIZATION_OPTION_1: {
         id: 'TR_ANONYMIZATION_OPTION_1',
         description: 'Tooltip in coinjoin send form',

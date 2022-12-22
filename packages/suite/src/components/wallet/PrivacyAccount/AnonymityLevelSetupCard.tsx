@@ -16,6 +16,7 @@ import { SliderInput } from './SliderInput';
 
 const SetupCard = styled(Card)`
     position: relative;
+    margin-top: 12px; /* Prevent "jumping" of cards when switching from Overview tab. */
     margin-bottom: 20px;
     overflow: hidden;
 `;
