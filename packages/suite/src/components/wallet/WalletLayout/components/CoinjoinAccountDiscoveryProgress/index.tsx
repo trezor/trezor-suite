@@ -40,7 +40,7 @@ export const CoinjoinAccountDiscoveryProgress = () => {
 
             <FactHeading>
                 <SparksIcon icon="EXPERIMENTAL" size={13} color={theme.TYPE_ORANGE} />
-                <Translation id="TR_COINJOIN_FACT_TITLE" />
+                <Translation id="TR_LOADING_FACT_TITLE" />
             </FactHeading>
 
             <RotatingFacts />
