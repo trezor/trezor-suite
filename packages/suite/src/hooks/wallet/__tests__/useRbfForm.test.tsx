@@ -8,6 +8,7 @@ import resizeReducer from '@suite-reducers/resizeReducer';
 import {
     renderWithProviders,
     waitForLoader,
+    waitForRender,
     actionSequence,
 } from '@suite/support/tests/hooksHelper';
 import { ChangeFee } from '@suite-components/modals/TransactionDetail/components/ChangeFee';
@@ -91,7 +92,12 @@ interface TestCallback {
 const Component = ({ callback }: { callback: TestCallback }) => {
     const values = useRbfContext();
     callback.getContextValues = () => values;
-    return values.isLoading ? <div>Loading</div> : null;
+    const [loading, setLoading] = React.useState(false);
+    React.useEffect(() => {
+        setLoading(values.isLoading);
+    }, [loading, values.isLoading]);
+
+    return loading ? <div>Loading</div> : null;
 };
 
 describe('useRbfForm hook', () => {
@@ -144,28 +150,34 @@ describe('useRbfForm hook', () => {
 
             if (!callback.getContextValues) throw Error('callback.getContextValues missing');
 
-            // wait for possible second render (decrease, set-max calculation)
-            await waitForLoader();
+            if (f.expectRerender) {
+                await waitForRender();
+
+                // wait for possible second render (decrease, set-max calculation)
+                await waitForLoader();
+            }
 
             const { composedLevels } = callback.getContextValues();
 
             // check composeTransaction result
             expect(composedLevels).toMatchObject(f.composedLevels);
 
-            // send
-            await actionSequence([
-                {
-                    type: 'click',
-                    element: '@send/replace-tx-button',
-                },
-            ]);
+            const sendAction = () =>
+                actionSequence([
+                    {
+                        type: 'click',
+                        element: '@send/replace-tx-button',
+                    },
+                ]);
 
-            // check signTransaction params
             if (f.signedTx) {
+                // send and check signTransaction params
+                await sendAction();
                 expect(signTransactionMock).toBeCalledTimes(1);
                 const params = signTransactionMock.mock.calls[0][0];
                 expect(params).toMatchObject(f.signedTx);
             } else {
+                await expect(sendAction()).rejects.toThrow('Unable to perform pointer interaction'); // button `pointer-events: none`
                 expect(signTransactionMock).toBeCalledTimes(0);
             }
 

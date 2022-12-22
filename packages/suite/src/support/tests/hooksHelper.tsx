@@ -1,7 +1,7 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 import { IntlProvider } from 'react-intl';
-import { act, render, screen, waitFor, waitForElementToBeRemoved } from '@testing-library/react';
+import { act, render, screen, waitForElementToBeRemoved } from '@testing-library/react';
 import { ConnectedThemeProvider } from '@suite-support/ConnectedThemeProvider';
 import userEvent from '@testing-library/user-event';
 import { MockedFormatterProvider } from '@suite-common/formatters';
@@ -31,6 +31,9 @@ export const waitForLoader = (text = /Loading/i) => {
     }
 };
 
+export const waitForRender = (delay = 1) =>
+    act(() => new Promise(resolve => setTimeout(resolve, delay)));
+
 export function findByTestId(id: string): HTMLElement;
 export function findByTestId(id: RegExp): HTMLElement[];
 export function findByTestId(id: any) {
@@ -54,45 +57,49 @@ export type UserAction<R = any> = {
     value?: string;
     delay?: number;
     result?: R;
+    expectRerender?: boolean;
 };
 
-export const actionSequence = async <A extends UserAction[]>(
+export const actionSequence = <A extends UserAction[]>(
     actions: A,
     callback?: (action: A[number]) => void,
 ) => {
-    for (let i = 0; i < actions.length; i++) {
-        const action = actions[i];
-        const element = findByTestId(action.element);
-        if (action.type === 'hover') {
-            userEvent.hover(element);
-        }
-        if (action.type === 'click') {
-            userEvent.click(element);
-        } else if (action.type === 'input') {
-            const { value } = action;
-            if (!value) {
-                userEvent.clear(element);
-                // eslint-disable-next-line no-await-in-loop
-                await waitFor(() => {
-                    expect(element).toBeTruthy();
-                });
-            } else {
-                // eslint-disable-next-line no-await-in-loop
-                await act(() =>
-                    userEvent.type(
-                        element,
-                        value,
+    const user = userEvent.setup();
+
+    return actions.reduce(
+        (p, action) =>
+            p.then(async () => {
+                const element = findByTestId(action.element);
+                if (action.type === 'hover') {
+                    await user.hover(element);
+                }
+                if (action.type === 'click') {
+                    await user.click(element);
+                } else if (action.type === 'input') {
+                    const { value } = action;
+                    const typeUser = userEvent.setup(
                         action.delay ? { delay: action.delay } : undefined,
-                    ),
-                );
-            }
-        }
+                    );
+                    if (!value) {
+                        await typeUser.clear(element);
+                    } else {
+                        await typeUser.type(element, value);
+                    }
 
-        // wait for compose
-        // eslint-disable-next-line no-await-in-loop
-        await waitForLoader();
+                    // NOTE: typing or clearing inputs requires extra user action for proper render
+                    await user.click(element);
+                }
 
-        // action complete. run test
-        if (callback) callback(action);
-    }
+                // wait for compose
+                await waitForLoader();
+
+                // in few cases extra render is needed. explained in each fixture
+                if (action.expectRerender) {
+                    await waitForRender();
+                }
+                // action complete. run test
+                if (callback) callback(action);
+            }),
+        Promise.resolve(),
+    );
 };

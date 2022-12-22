@@ -1704,6 +1704,7 @@ export const feeChange = [
                 type: 'input',
                 element: 'outputs[0].amount',
                 value: '.1',
+                expectRerender: true, // caused by feeLimit set in useFees sub hook
                 result: {
                     estimateFeeCalls: 2,
                     formValues: {
@@ -1738,6 +1739,7 @@ export const feeChange = [
                 type: 'input',
                 element: 'feeLimit',
                 value: '0',
+                expectRerender: true, // caused by feeLimit set in useFees sub hook
                 result: {
                     estimateFeeCalls: 3,
                     formValues: {
