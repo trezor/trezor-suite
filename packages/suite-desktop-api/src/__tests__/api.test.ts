@@ -237,6 +237,20 @@ describe('DesktopApi', () => {
             api.clearUserData(true);
         });
 
+        it('DesktopApi.openUserDataDirectory', async () => {
+            const spy = jest
+                .spyOn(ipcRenderer, 'invoke')
+                .mockImplementation(() => Promise.resolve({ success: true }));
+
+            const result = await api.openUserDataDirectory();
+            expect(spy).toBeCalledWith('user-data/open', '');
+            expect(result.success).toBe(true);
+
+            const existingDirectory = '/metadata';
+            api.openUserDataDirectory(existingDirectory);
+            expect(spy).toBeCalledWith('user-data/open', existingDirectory);
+        });
+
         it('DesktopApi.installUdevRules', async () => {
             const spy = jest
                 .spyOn(ipcRenderer, 'invoke')

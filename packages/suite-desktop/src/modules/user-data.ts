@@ -11,5 +11,10 @@ export const init: Module = () => {
         return userData.clear();
     });
 
+    ipcMain.handle('user-data/open', (_, directory = '') => {
+        logger.info('user-data', `Opening user-data${directory} folder.`);
+        return userData.open(directory);
+    });
+
     return () => userData.getInfo();
 };
