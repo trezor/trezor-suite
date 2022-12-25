@@ -1,4 +1,4 @@
-export type CardanoNetwork = 'mainnet' | 'testnet';
+export type CardanoNetwork = 'mainnet' | 'preview';
 
 export type {
     PendingStakeTx,

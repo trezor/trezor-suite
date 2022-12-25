@@ -9,7 +9,7 @@ Collection of assets and utilities used by @trezor/connect\* packages.
 
 ### bridge
 
-Data in `releases.json` are used to determin which version of Bridge to use depending on the user's operating system.
+Data in `releases.json` are used to determine which version of Bridge to use depending on the user's operating system.
 
 ### firmware
 

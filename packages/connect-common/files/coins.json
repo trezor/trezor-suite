@@ -268,10 +268,10 @@
             "decimals": 8,
             "decred": false,
             "default_fee_b": {
-                "Economy": 70,
-                "High": 200,
-                "Low": 10,
-                "Normal": 140
+                "Economy": 1,
+                "High": 100,
+                "Low": 1,
+                "Normal": 1
             },
             "dust_limit": 546,
             "extra_data": false,
@@ -1730,7 +1730,7 @@
             "bech32_prefix": "sys",
             "blockchain_link": {
                 "type": "blockbook",
-                "url": ["https://sys1.bcfn.ca"]
+                "url": ["https://blockbook.elint.services"]
             },
             "blocktime_seconds": 60,
             "cashaddr_prefix": null,
@@ -2549,11 +2549,11 @@
         {
             "blockchain_link": {
                 "type": "blockfrost",
-                "url": ["wss://trezor-cardano-testnet.blockfrost.io"]
+                "url": ["wss://trezor-cardano-preview.blockfrost.io"]
             },
             "curve": "ed25519",
             "decimals": 6,
-            "name": "Cardano Testnet",
+            "name": "Cardano Preview Testnet",
             "shortcut": "tADA",
             "slip44": 1815,
             "support": {

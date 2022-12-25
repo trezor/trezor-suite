@@ -177,6 +177,6 @@ describe('cardano utils', () => {
     });
 
     it(`getTTL`, () => {
-        expect(getTtl(true)).toBe(59032373);
+        expect(getTtl(true)).toBe(-13254411);
     });
 });

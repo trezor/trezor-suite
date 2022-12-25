@@ -16,7 +16,7 @@ interface AccountNavigationProps {
 }
 
 const useStackingStatus = (account?: Account) => {
-    const cardanoNetwork = account && account.symbol === 'ada' ? 'mainnet' : 'testnet';
+    const cardanoNetwork = account && account.symbol === 'ada' ? 'mainnet' : 'preview';
     const { trezorPools, isFetchLoading } = useSelector(
         state => state.wallet.cardanoStaking[cardanoNetwork],
     );

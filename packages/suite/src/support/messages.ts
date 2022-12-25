@@ -6890,7 +6890,7 @@ export default defineMessages({
         id: 'TR_ACCOUNT_TYPE_SHELLEY',
     },
     TR_NETWORK_CARDANO_TESTNET: {
-        defaultMessage: 'Cardano Testnet',
+        defaultMessage: 'Cardano Preview Testnet',
         id: 'TR_NETWORK_CARDANO_TESTNET',
     },
     TR_STAKING_REWARDS_TITLE: {

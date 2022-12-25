@@ -97,7 +97,7 @@ export const useCardanoStaking = (): CardanoStaking => {
         isActive: isStakingActive,
     } = account.misc.staking;
 
-    const cardanoNetwork = account.symbol === 'ada' ? 'mainnet' : 'testnet';
+    const cardanoNetwork = account.symbol === 'ada' ? 'mainnet' : 'preview';
     const { trezorPools, isFetchLoading, isFetchError } = cardanoStaking[cardanoNetwork];
     const currentPool =
         registeredPoolId && trezorPools

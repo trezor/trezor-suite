@@ -27,7 +27,7 @@ describe('cardanoStakingReducer reducer', () => {
                 isFetchError: false,
                 isFetchLoading: false,
             },
-            testnet: {
+            preview: {
                 trezorPools: undefined,
                 isFetchError: false,
                 isFetchLoading: false,
@@ -61,7 +61,7 @@ describe('cardanoStakingReducer reducer', () => {
                         isFetchError: false,
                         isFetchLoading: false,
                     },
-                    testnet: {
+                    preview: {
                         trezorPools: {
                             pools: [],
                             next: { hex: 'a', bech32: 'b', live_stake: 'a', saturation: 'a' },
@@ -85,7 +85,7 @@ describe('cardanoStakingReducer reducer', () => {
                 isFetchError: false,
                 isFetchLoading: false,
             },
-            testnet: {
+            preview: {
                 trezorPools: {
                     pools: [],
                     next: { hex: 'a', bech32: 'b', live_stake: 'a', saturation: 'a' },
@@ -109,7 +109,7 @@ describe('cardanoStakingReducer reducer', () => {
                 isFetchError: false,
                 isFetchLoading: true,
             },
-            testnet: {
+            preview: {
                 trezorPools: undefined,
                 isFetchError: false,
                 isFetchLoading: false,
@@ -118,12 +118,12 @@ describe('cardanoStakingReducer reducer', () => {
         });
     });
 
-    it('CARDANO_STAKING.SET_FETCH_LOADING testnet', () => {
+    it('CARDANO_STAKING.SET_FETCH_LOADING preview', () => {
         expect(
             reducer(undefined, {
                 type: CARDANO_STAKING.SET_FETCH_LOADING,
                 loading: true,
-                network: 'testnet',
+                network: 'preview',
             } as any),
         ).toEqual({
             mainnet: {
@@ -131,7 +131,7 @@ describe('cardanoStakingReducer reducer', () => {
                 isFetchError: false,
                 isFetchLoading: false,
             },
-            testnet: {
+            preview: {
                 trezorPools: undefined,
                 isFetchError: false,
                 isFetchLoading: true,
@@ -153,7 +153,7 @@ describe('cardanoStakingReducer reducer', () => {
                 isFetchError: true,
                 isFetchLoading: false,
             },
-            testnet: {
+            preview: {
                 trezorPools: undefined,
                 isFetchError: false,
                 isFetchLoading: false,
@@ -175,7 +175,7 @@ describe('cardanoStakingReducer reducer', () => {
                 isFetchError: true,
                 isFetchLoading: false,
             },
-            testnet: {
+            preview: {
                 trezorPools: undefined,
                 isFetchError: false,
                 isFetchLoading: false,
@@ -214,7 +214,7 @@ describe('cardanoStakingReducer reducer', () => {
             } as any),
         ).toEqual({
             pendingTx: [],
-            testnet: {
+            preview: {
                 trezorPools: undefined,
                 isFetchError: false,
                 isFetchLoading: false,
@@ -248,11 +248,11 @@ describe('cardanoStakingReducer reducer', () => {
         });
     });
 
-    it('CARDANO_STAKING.SET_TREZOR_POOLS testnet', () => {
+    it('CARDANO_STAKING.SET_TREZOR_POOLS preview', () => {
         expect(
             reducer(undefined, {
                 type: CARDANO_STAKING.SET_TREZOR_POOLS,
-                network: 'testnet',
+                network: 'preview',
                 trezorPools: {
                     next: {
                         hex: 'a0',
@@ -277,7 +277,7 @@ describe('cardanoStakingReducer reducer', () => {
                 },
             } as any),
         ).toEqual({
-            testnet: {
+            preview: {
                 trezorPools: {
                     next: {
                         hex: 'a0',

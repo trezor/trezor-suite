@@ -11,7 +11,7 @@ export interface State {
         isFetchLoading: boolean;
         isFetchError: boolean;
     };
-    testnet: {
+    preview: {
         trezorPools: PoolsResponse | undefined;
         isFetchLoading: boolean;
         isFetchError: boolean;
@@ -25,7 +25,7 @@ export const initialState: State = {
         isFetchLoading: false,
         isFetchError: false,
     },
-    testnet: {
+    preview: {
         trezorPools: undefined,
         isFetchLoading: false,
         isFetchError: false,

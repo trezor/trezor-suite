@@ -4,7 +4,7 @@
     },
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "typescript.reportStyleChecksAsWarnings": false,
-    "cSpell.words": ["blockbook", "bootloader", "webworkers"],
+    "cSpell.words": ["blockbook", "bootloader", "cardano", "webworkers"],
     "editor.formatOnSave": true,
     "[html]": {
         "editor.defaultFormatter": "esbenp.prettier-vscode"
