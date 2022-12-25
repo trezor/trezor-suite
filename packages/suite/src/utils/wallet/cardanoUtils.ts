@@ -197,8 +197,8 @@ export const getTtl = (testnet: boolean) => {
     // In order to correctly calculate current slot (and TTL) we start from a point from which we know that
     // 1 slot = 1 second (which was not always the case)
     // https://cardano.stackexchange.com/questions/491/calculate-timestamp-from-slot/494#494
-    const shelleySlot = testnet ? 48409057 : 4924800;
-    const shelleyTimestamp = testnet ? 1642778273 : 1596491091;
+    const shelleySlot = testnet ? 6192449 : 4924800;
+    const shelleyTimestamp = testnet ? 1672848449 : 1596491091;
     const currentTimestamp = Math.floor(new Date().getTime() / 1000);
     const currentSlot = shelleySlot + currentTimestamp - shelleyTimestamp;
     return currentSlot + CARDANO_DEFAULT_TTL_OFFSET;

@@ -23,7 +23,7 @@ export const allowedDomains = [
     'googleapis.com',
     onionDomain,
     'trezor-cardano-mainnet.blockfrost.io',
-    'trezor-cardano-testnet.blockfrost.io',
+    'trezor-cardano-preview.blockfrost.io',
     'blockfrost.dev',
 ];
 

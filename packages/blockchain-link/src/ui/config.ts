@@ -454,9 +454,9 @@ export default [
     },
     {
         blockchain: {
-            name: 'Cardano Testnet',
+            name: 'Cardano Preview Testnet',
             worker: 'js/blockfrost-worker.js',
-            server: ['wss://trezor-cardano-testnet.blockfrost.io'],
+            server: ['wss://trezor-cardano-preview.blockfrost.io'],
             debug: true,
         },
         data: {

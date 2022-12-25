@@ -1,5 +1,5 @@
 import { BlockchainBlock } from '@trezor/connect';
-import { CARDANO_STAKE_POOL_TESTNET_URL, CARDANO_STAKE_POOL_MAINNET_URL } from '@trezor/urls';
+import { CARDANO_STAKE_POOL_PREVIEW_URL, CARDANO_STAKE_POOL_MAINNET_URL } from '@trezor/urls';
 import { CARDANO_STAKING } from '@wallet-actions/constants';
 import { PendingStakeTx, PoolsResponse, CardanoNetwork } from '@wallet-types/cardanoStaking';
 import { Account, WalletAccountTransaction } from '@wallet-types';
@@ -99,7 +99,7 @@ export const validatePendingStakeTxOnTx =
     };
 
 export const fetchTrezorPools = (network: 'ADA' | 'tADA') => async (dispatch: Dispatch) => {
-    const cardanoNetwork = network === 'ADA' ? 'mainnet' : 'testnet';
+    const cardanoNetwork = network === 'ADA' ? 'mainnet' : 'preview';
 
     dispatch({
         type: CARDANO_STAKING.SET_FETCH_LOADING,
@@ -111,7 +111,7 @@ export const fetchTrezorPools = (network: 'ADA' | 'tADA') => async (dispatch: Di
     const url =
         cardanoNetwork === 'mainnet'
             ? CARDANO_STAKE_POOL_MAINNET_URL
-            : CARDANO_STAKE_POOL_TESTNET_URL;
+            : CARDANO_STAKE_POOL_PREVIEW_URL;
 
     try {
         const response = await fetch(url, { credentials: 'same-origin' });

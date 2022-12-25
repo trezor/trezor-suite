@@ -67,8 +67,8 @@ export const LTC_ADDRESS_INFO_URL =
 
 export const CARDANO_STAKE_POOL_MAINNET_URL =
     'https://trezor-cardano-mainnet.blockfrost.io/api/v0/pools/';
-export const CARDANO_STAKE_POOL_TESTNET_URL =
-    'https://trezor-cardano-testnet.blockfrost.io/api/v0/pools/';
+export const CARDANO_STAKE_POOL_PREVIEW_URL =
+    'https://trezor-cardano-preview.blockfrost.io/api/v0/pools/';
 
 export const CHROME_URL = 'https://www.google.com/chrome/';
 export const CHROME_UPDATE_URL = 'https://support.google.com/chrome/answer/95414';
