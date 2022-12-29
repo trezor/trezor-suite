@@ -24,6 +24,8 @@ PODS:
     - ExpoModulesCore
   - ExpoKeepAwake (11.0.1):
     - ExpoModulesCore
+  - ExpoLocalization (14.0.0):
+    - ExpoModulesCore
   - ExpoModulesCore (1.0.3):
     - React-Core
     - ReactCommon/turbomodule/core
@@ -504,6 +506,7 @@ DEPENDENCIES:
   - Expo (from `../../../node_modules/expo`)
   - ExpoClipboard (from `../../../node_modules/expo-clipboard/ios`)
   - ExpoKeepAwake (from `../../../node_modules/expo-keep-awake/ios`)
+  - ExpoLocalization (from `../../../node_modules/expo-localization/ios`)
   - ExpoModulesCore (from `../../../node_modules/expo-modules-core`)
   - FBLazyVector (from `../../../node_modules/react-native/Libraries/FBLazyVector`)
   - FBReactNativeSpec (from `../../../node_modules/react-native/React/FBReactNativeSpec`)
@@ -620,6 +623,8 @@ EXTERNAL SOURCES:
     :path: "../../../node_modules/expo-clipboard/ios"
   ExpoKeepAwake:
     :path: "../../../node_modules/expo-keep-awake/ios"
+  ExpoLocalization:
+    :path: "../../../node_modules/expo-localization/ios"
   ExpoModulesCore:
     :path: "../../../node_modules/expo-modules-core"
   FBLazyVector:
@@ -724,6 +729,7 @@ SPEC CHECKSUMS:
   Expo: 36b5f625d36728adbdd1934d4d57182f319ab832
   ExpoClipboard: 334921ae215b4be261e393e6fdd9050025008a20
   ExpoKeepAwake: 69b59d0a8d2b24de9f82759c39b3821fec030318
+  ExpoLocalization: e202d1e2a4950df17ac8d0889d65a1ffd7532d7e
   ExpoModulesCore: b5d21c8880afda6fb6ee95469f9ac2ec9b98e995
   FBLazyVector: affa4ba1bfdaac110a789192f4d452b053a86624
   FBReactNativeSpec: 269cfc7534efd27ae16b918d185a49297e642f0a

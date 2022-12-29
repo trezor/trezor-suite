@@ -53,6 +53,7 @@
         "expo": "^47.0.8",
         "expo-barcode-scanner": "^12.1.0",
         "expo-clipboard": "^4.0.1",
+        "expo-localization": "^14.0.0",
         "node-libs-browser": "^2.2.1",
         "react": "18.2.0",
         "react-intl": "^6.0.5",

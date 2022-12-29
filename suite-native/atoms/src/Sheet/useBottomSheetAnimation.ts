@@ -10,15 +10,16 @@ import {
 } from 'react-native-reanimated';
 import { useCallback, useEffect } from 'react';
 import { PanGestureHandlerGestureEvent } from 'react-native-gesture-handler';
-import { Dimensions, NativeScrollEvent } from 'react-native';
+import { NativeScrollEvent } from 'react-native';
 
 import { useNativeStyles } from '@trezor/styles';
+import { getScreenHeight } from '@trezor/env-utils';
 
 type GestureHandlerContext = {
     translatePanY: number;
 };
 
-const SCREEN_HEIGHT = Dimensions.get('screen').height;
+const SCREEN_HEIGHT = getScreenHeight();
 
 export const useBottomSheetAnimation = ({
     onVisibilityChange,
