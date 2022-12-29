@@ -7,6 +7,7 @@
     android:icon="@mipmap/ic_launcher"
     android:roundIcon="@mipmap/ic_launcher_round"
     android:allowBackup="false"
+    android:theme="@style/Theme.App.SplashScreen"
   >
     <activity
       android:name=".MainActivity"
@@ -16,7 +17,6 @@
       android:windowSoftInputMode="adjustResize"
       android:screenOrientation="portrait"
       android:exported="true"
-      android:theme="@style/Theme.App.SplashScreen"
     >
       <intent-filter>
         <action android:name="android.intent.action.MAIN"/>

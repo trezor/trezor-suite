@@ -29,15 +29,10 @@ let isConnectInitializedGlobal = false;
 // Keep the splash screen visible while we fetch resources
 SplashScreen.preventAutoHideAsync();
 
-const AppComponent = ({
-    onSetIsAppReady,
-    appIsReady,
-}: {
-    onSetIsAppReady: () => void;
-    appIsReady: boolean;
-}) => {
+const AppComponent = () => {
     const dispatch = useDispatch();
     const formattersConfig = useFormattersConfig();
+    const [appIsReady, setAppIsReady] = useState(false);
     const [isConnectInitialized, setIsConnectInitialized] = useState(isConnectInitializedGlobal);
 
     useEffect(() => {
@@ -68,19 +63,26 @@ const AppComponent = ({
                 Alert.alert('Error', error?.message ?? 'Unknown error');
                 console.error(error.message);
             } finally {
-                console.log('LALALALALALALLALALA nastavuji zeje ready!!!');
                 // Tell the application to render
-                onSetIsAppReady();
+                setAppIsReady(true);
             }
         };
         initActions();
-    }, [dispatch, isConnectInitialized, appIsReady, onSetIsAppReady]);
+    }, [dispatch, isConnectInitialized]);
+
+    useEffect(() => {
+        const checkSplashScreenHide = async () => {
+            if (appIsReady) {
+                await SplashScreen.hideAsync();
+            }
+        };
+
+        checkSplashScreenHide();
+    }, [appIsReady]);
 
     if (!isConnectInitialized && !appIsReady) {
         return null;
     }
-
-    console.log('HOOHOOO');
 
     return (
         <FormatterProvider config={formattersConfig}>
@@ -100,49 +102,22 @@ if (!__DEV__) {
     });
 }
 
-const PureApp = () => {
-    const [appIsReady, setAppIsReady] = useState(false);
-
-    useEffect(() => {
-        console.log('111111');
-        const checkSplashScreenHide = async () => {
-            if (appIsReady) {
-                // This tells the splash screen to hide immediately! If we call this after
-                // `setAppIsReady`, then we may see a blank screen while the app is
-                // loading its initial state and rendering its first pixels. So instead,
-                // we hide the splash screen once we know the root view has already
-                // performed layout.
-                console.log('LALALALALALALLALALA 222222');
-                await SplashScreen.hideAsync();
-            }
-        };
-
-        checkSplashScreenHide();
-    }, [appIsReady]);
-
-    return (
-        <GestureHandlerRootView style={{ flex: 1 }}>
-            <IntlProvider locale="en" defaultLocale="en" messages={enMessages}>
-                <NavigationContainer>
-                    <Provider store={store}>
-                        <StorageProvider persistor={storePersistor}>
-                            <SafeAreaProvider>
-                                <StylesProvider>
-                                    <AppComponent
-                                        appIsReady={appIsReady}
-                                        onSetIsAppReady={() => {
-                                            console.log('HHJHHJJHJHJH');
-                                            setAppIsReady(true);
-                                        }}
-                                    />
-                                </StylesProvider>
-                            </SafeAreaProvider>
-                        </StorageProvider>
-                    </Provider>
-                </NavigationContainer>
-            </IntlProvider>
-        </GestureHandlerRootView>
-    );
-};
+const PureApp = () => (
+    <GestureHandlerRootView style={{ flex: 1 }}>
+        <IntlProvider locale="en" defaultLocale="en" messages={enMessages}>
+            <NavigationContainer>
+                <Provider store={store}>
+                    <StorageProvider persistor={storePersistor}>
+                        <SafeAreaProvider>
+                            <StylesProvider>
+                                <AppComponent />
+                            </StylesProvider>
+                        </SafeAreaProvider>
+                    </StorageProvider>
+                </Provider>
+            </NavigationContainer>
+        </IntlProvider>
+    </GestureHandlerRootView>
+);
 
 export const App = Sentry.wrap(PureApp);
