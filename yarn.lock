@@ -6358,6 +6358,7 @@ __metadata:
     "@shopify/react-native-skia": 0.1.162
     "@suite-common/formatters": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
+    "@trezor/env-utils": "workspace:*"
     "@trezor/icons": "workspace:*"
     "@trezor/styles": "workspace:*"
     "@trezor/theme": "workspace:*"
@@ -7181,6 +7182,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/env-utils@workspace:packages/env-utils"
   dependencies:
+    expo-localization: ^14.0.0
+    react-native: 0.70.5
     ua-parser-js: ^1.0.32
   languageName: unknown
   linkType: soft
@@ -7499,6 +7502,7 @@ __metadata:
     expo: ^47.0.8
     expo-barcode-scanner: ^12.1.0
     expo-clipboard: ^4.0.1
+    expo-localization: ^14.0.0
     jest: ^26.6.3
     metro-react-native-babel-preset: ^0.72.3
     node-libs-browser: ^2.2.1
@@ -16428,6 +16432,17 @@ __metadata:
   peerDependencies:
     expo: "*"
   checksum: 1e642db9a3b83fc96e61b7d9451d8467ce7d734fe091dff4f3707fcd3cf83fc666b91a58759d6cefe5a7bf61cbd786d63630cab848ec09f59da38422321fd6be
+  languageName: node
+  linkType: hard
+
+"expo-localization@npm:^14.0.0":
+  version: 14.0.0
+  resolution: "expo-localization@npm:14.0.0"
+  dependencies:
+    rtl-detect: ^1.0.2
+  peerDependencies:
+    expo: "*"
+  checksum: b1107fec3ce98386b21a1ed3adad279559cc24d07403ff32e4253e337f1018a115b265d471f374f76515c3ca6b0b73e132eff7783f51bd248908da3ca3c269a6
   languageName: node
   linkType: hard
 
@@ -28135,6 +28150,13 @@ __metadata:
   dependencies:
     "@babel/runtime": ^7.1.2
   checksum: 51756329f691cacd3e1b48f0f9d04a69338a90013f2d2942ca1ae3b069c952f70055f5fd76c66921e9a5cb956276252376a847c3294bd0ee54be9ceb32ea868c
+  languageName: node
+  linkType: hard
+
+"rtl-detect@npm:^1.0.2":
+  version: 1.0.4
+  resolution: "rtl-detect@npm:1.0.4"
+  checksum: d562535baa0db62f57f0a1d4676297bff72fd6b94e88f0f0900d5c3e810ab512c5c4cadffd3e05fbe8d9c74310c919afa3ea8c1001c244e5555e8eef12d02d6f
   languageName: node
   linkType: hard
 

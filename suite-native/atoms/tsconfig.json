@@ -8,6 +8,7 @@
         {
             "path": "../../suite-common/wallet-config"
         },
+        { "path": "../../packages/env-utils" },
         { "path": "../../packages/icons" },
         { "path": "../../packages/styles" },
         { "path": "../../packages/theme" },

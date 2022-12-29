@@ -1,1 +1,25 @@
-export * from './envUtils';
+import { envUtils } from './envUtils';
+
+export const {
+    getUserAgent,
+    isAndroid,
+    isChromeOs,
+    getBrowserVersion,
+    getOsVersion,
+    getBrowserName,
+    isFirefox,
+    getPlatform,
+    getPlatformLanguages,
+    getScreenWidth,
+    getScreenHeight,
+    getWindowWidth,
+    getWindowHeight,
+    getLocationOrigin,
+    getLocationHostname,
+    getProcessPlatform,
+    isMacOs,
+    isWindows,
+    isIOs,
+    isLinux,
+    getOsName,
+} = envUtils;
