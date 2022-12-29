@@ -18,6 +18,7 @@
 		21FA532C2D76674DF4889829 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = D60DBD963C848C2B1E29428E /* ExpoModulesProvider.swift */; };
 		76B3194F29353457003AFB7C /* TrezorSuite-Bridging-Header.h in Headers */ = {isa = PBXBuildFile; fileRef = 76B3194E29353457003AFB7C /* TrezorSuite-Bridging-Header.h */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		A023D6B292624041A8A651C1 /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AB7062BC7F914509A6203CCC /* SplashScreen.storyboard */; };
 		B7CC8745CF111A3F51A8A62C /* libPods-TrezorSuite-TrezorSuiteTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 273A527BC1EA3E410C27EDEE /* libPods-TrezorSuite-TrezorSuiteTests.a */; };
 		D898137F4C9600283820D0B7 /* libPods-TrezorSuite.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A8792827D36DC705C457796 /* libPods-TrezorSuite.a */; };
 		EDD2E65F10FFDB9F5250AE25 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 581D87C108DBEE4E277051A7 /* ExpoModulesProvider.swift */; };
@@ -59,6 +60,7 @@
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = TrezorSuite/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		936D5A3673CA75208B2813FA /* Pods-TrezorSuite-TrezorSuiteTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TrezorSuite-TrezorSuiteTests.release.xcconfig"; path = "Target Support Files/Pods-TrezorSuite-TrezorSuiteTests/Pods-TrezorSuite-TrezorSuiteTests.release.xcconfig"; sourceTree = "<group>"; };
 		9669662766350EA5327009C5 /* QRCodeFrameProcessor.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = QRCodeFrameProcessor.m; path = QRCodeFrameProcessor/QRCodeFrameProcessor.m; sourceTree = "<group>"; };
+		AB7062BC7F914509A6203CCC /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = TrezorSuite/SplashScreen.storyboard; sourceTree = "<group>"; };
 		B41A1D5DA39955A36E0D9C87 /* QRCodeFrameProcessor.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = QRCodeFrameProcessor.swift; path = QRCodeFrameProcessor/QRCodeFrameProcessor.swift; sourceTree = "<group>"; };
 		BF4D70DF3908849F1BDCC695 /* Pods-TrezorSuite-TrezorSuiteTests.staging.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TrezorSuite-TrezorSuiteTests.staging.xcconfig"; path = "Target Support Files/Pods-TrezorSuite-TrezorSuiteTests/Pods-TrezorSuite-TrezorSuiteTests.staging.xcconfig"; sourceTree = "<group>"; };
 		D60DBD963C848C2B1E29428E /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-TrezorSuite-TrezorSuiteTests/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
@@ -113,6 +115,7 @@
 				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
 				13B07FB71A68108700A75B9A /* main.m */,
 				76B3194E29353457003AFB7C /* TrezorSuite-Bridging-Header.h */,
+				AB7062BC7F914509A6203CCC /* SplashScreen.storyboard */,
 			);
 			name = TrezorSuite;
 			sourceTree = "<group>";
@@ -334,6 +337,7 @@
 				04E83DA1286A16FB00551381 /* TTSatoshi-DemiBold.otf in Resources */,
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				A023D6B292624041A8A651C1 /* SplashScreen.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -1,16 +1,15 @@
 <resources>
-
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
-        <!-- Customize your theme here. -->
-        <item name="android:windowIsTranslucent">true</item>
-        <item name="android:editTextBackground">@drawable/rn_edit_text_material</item>
-    </style>
-
-    <!-- Adds the splash screen definition -->
-    <style name="SplashTheme" parent="Theme.SplashScreen">
-        <item name="android:windowIsTranslucent">true</item>
-        <item name="postSplashScreenTheme">@style/AppTheme</item>
-    </style>
-
+  <!-- Base application theme. -->
+  <style name="AppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
+    <!-- Customize your theme here. -->
+    <item name="android:windowIsTranslucent">true</item>
+    <item name="android:editTextBackground">@drawable/rn_edit_text_material</item>
+  </style>
+  <style name="Theme.App.SplashScreen" parent="AppTheme">
+    <!-- Below line is handled by '@expo/configure-splash-screen' command and it's discouraged to modify it manually -->
+    <item name="android:windowIsTranslucent">true</item>
+    <item name="android:windowBackground">@drawable/splashscreen</item>
+    <item name="android:windowFullscreen">true</item>
+    <!-- Customize your splash screen theme here -->
+  </style>
 </resources>
