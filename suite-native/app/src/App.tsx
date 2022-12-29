@@ -32,7 +32,7 @@ SplashScreen.preventAutoHideAsync();
 const AppComponent = () => {
     const dispatch = useDispatch();
     const formattersConfig = useFormattersConfig();
-    const [appIsReady, setAppIsReady] = useState(false);
+    const [isAppReady, setIsAppReady] = useState(false);
     const [isConnectInitialized, setIsConnectInitialized] = useState(isConnectInitializedGlobal);
 
     useEffect(() => {
@@ -64,23 +64,19 @@ const AppComponent = () => {
                 console.error(error.message);
             } finally {
                 // Tell the application to render
-                setAppIsReady(true);
+                setIsAppReady(true);
             }
         };
         initActions();
     }, [dispatch, isConnectInitialized]);
 
     useEffect(() => {
-        const checkSplashScreenHide = async () => {
-            if (appIsReady) {
-                await SplashScreen.hideAsync();
-            }
-        };
+        if (isAppReady) {
+            SplashScreen.hideAsync();
+        }
+    }, [isAppReady]);
 
-        checkSplashScreenHide();
-    }, [appIsReady]);
-
-    if (!isConnectInitialized && !appIsReady) {
+    if (!isAppReady) {
         return null;
     }
 

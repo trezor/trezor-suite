@@ -28189,13 +28189,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rtl-detect@npm:^1.0.2":
-  version: 1.0.4
-  resolution: "rtl-detect@npm:1.0.4"
-  checksum: d562535baa0db62f57f0a1d4676297bff72fd6b94e88f0f0900d5c3e810ab512c5c4cadffd3e05fbe8d9c74310c919afa3ea8c1001c244e5555e8eef12d02d6f
-  languageName: node
-  linkType: hard
-
 "run-async@npm:^2.4.0":
   version: 2.4.1
   resolution: "run-async@npm:2.4.1"
