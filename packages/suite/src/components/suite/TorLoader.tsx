@@ -1,14 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { Button, Progress, Image, variables } from '@trezor/components';
+import { Button, Progress, Icon, variables } from '@trezor/components';
 import { TorStatus } from '@suite-types';
 import { Translation } from '@suite-components/Translation';
 
-const StyledImage = styled(Image)`
+const StyledIcon = styled(Icon)`
     margin-bottom: 28px;
-    width: auto;
-    height: 110px;
 `;
 
 const Text = styled.h2`
@@ -92,7 +90,7 @@ export const TorLoader = ({ torStatus, progress, disableTor }: TorLoaderProps) =
     return (
         <>
             <MessageWrapper>
-                <StyledImage image="TOR_ENABLING" />
+                <StyledIcon icon="TOR" size={110} />
                 <Text>
                     <Translation id={message} />
                 </Text>
