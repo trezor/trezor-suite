@@ -3,11 +3,17 @@
  */
 import { captureException } from '@sentry/electron';
 import { session } from 'electron';
-import { HandshakeTorModule } from 'packages/suite-desktop-api/lib/messages';
+import {
+    BootstrapTorEvent,
+    HandshakeTorModule,
+    TorStatusEventType,
+    TOR_STATUS_EVENT_TYPE,
+} from 'packages/suite-desktop-api/lib/messages';
+import { BootstrapEvent } from 'packages/request-manager/lib/types';
 
 import TrezorConnect from '@trezor/connect';
 
-import { TorProcess } from '../libs/processes/TorProcess';
+import { TorProcess, TorProcessStatus } from '../libs/processes/TorProcess';
 import { app, ipcMain } from '../typed-electron';
 import { getFreePort } from '../libs/getFreePort';
 
@@ -48,6 +54,48 @@ const load = async ({ mainWindow, store }: Dependencies) => {
     const getProxySettings = (shouldEnableTor: boolean) =>
         shouldEnableTor ? { proxy: `socks://${address}` } : { proxy: '' };
 
+    const handleTorProcessStatus = (status: TorProcessStatus) => {
+        let type: TorStatusEventType;
+
+        if (!status.process) {
+            type = TOR_STATUS_EVENT_TYPE.Disabled;
+        } else if (status.isBootstrapping) {
+            type = TOR_STATUS_EVENT_TYPE.Bootstrapping;
+        } else if (status.service) {
+            type = TOR_STATUS_EVENT_TYPE.Enabled;
+        } else {
+            type = TOR_STATUS_EVENT_TYPE.Disabled;
+        }
+        mainWindow.webContents.send('tor/status', {
+            type,
+        });
+    };
+
+    const handleBootstrapEvent = (bootstrapEvent: BootstrapEvent) => {
+        if (bootstrapEvent.type === 'slow') {
+            mainWindow.webContents.send('tor/bootstrap', {
+                type: 'slow',
+            });
+        }
+        if (bootstrapEvent.type === 'progress') {
+            logger.info(
+                'tor',
+                `Bootstrap - ${bootstrapEvent.progress || ''}% - ${bootstrapEvent.summary || ''}`,
+            );
+
+            const event: BootstrapTorEvent = {
+                type: 'progress',
+                summary: bootstrapEvent.summary || '',
+                progress: {
+                    current: Number(bootstrapEvent.progress),
+                    total: 100,
+                },
+            };
+
+            mainWindow.webContents.send('tor/bootstrap', event);
+        }
+    };
+
     const setupTor = async (settings: TorSettings) => {
         const shouldEnableTor = settings.running;
         const isTorRunning = (await tor.status()).process;
@@ -58,28 +106,7 @@ const load = async ({ mainWindow, store }: Dependencies) => {
 
         if (shouldEnableTor === true) {
             setProxy(`socks5://${host}:${port}`);
-            tor.torController.on(
-                'bootstrap/event',
-                (bootstrapEvent: { progress: string; summary: string }) => {
-                    if (bootstrapEvent && bootstrapEvent.summary && bootstrapEvent.progress) {
-                        logger.info(
-                            'tor',
-                            `Bootstrap - ${bootstrapEvent.progress || ''}% - ${
-                                bootstrapEvent.summary || ''
-                            }`,
-                        );
-
-                        mainWindow.webContents.send('tor/bootstrap', {
-                            type: 'progress',
-                            summary: bootstrapEvent.summary,
-                            progress: {
-                                current: Number(bootstrapEvent.progress),
-                                total: 100,
-                            },
-                        });
-                    }
-                },
-            );
+            tor.torController.on('bootstrap/event', handleBootstrapEvent);
             try {
                 await tor.start();
             } catch (error) {
@@ -95,8 +122,11 @@ const load = async ({ mainWindow, store }: Dependencies) => {
                 tor.torController.removeAllListeners();
             }
         } else {
+            mainWindow.webContents.send('tor/status', {
+                type: TOR_STATUS_EVENT_TYPE.Disabling,
+            });
             setProxy('');
-            tor.torController.stopWhileLoading();
+            tor.torController.stop();
             await tor.stop();
         }
 
@@ -142,13 +172,15 @@ const load = async ({ mainWindow, store }: Dependencies) => {
         }
 
         // Once Tor is toggled it renderer should know the new status.
-        mainWindow.webContents.send('tor/status', store.getTorSettings().running);
+        const status = await tor.status();
+        handleTorProcessStatus(status);
         return { success: true };
     });
 
-    ipcMain.on('tor/get-status', () => {
+    ipcMain.on('tor/get-status', async () => {
         logger.debug('tor', `Getting status (${store.getTorSettings().running ? 'ON' : 'OFF'})`);
-        mainWindow.webContents.send('tor/status', store.getTorSettings().running);
+        const status = await tor.status();
+        handleTorProcessStatus(status);
     });
 
     app.on('before-quit', () => {

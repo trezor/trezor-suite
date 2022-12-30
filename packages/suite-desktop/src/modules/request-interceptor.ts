@@ -12,13 +12,25 @@ import { isDevEnv } from '@suite-common/suite-utils';
 
 import { Module } from './index';
 
-export const init: Module = ({ store }) => {
+export const init: Module = ({ mainWindow, store }) => {
     const { logger } = global;
 
     const options = {
         handler: (event: InterceptedEvent) => {
-            if (event.method && event.details) {
+            if (event.type === 'INTERCEPTED_REQUEST') {
                 logger.debug('request-interceptor', `${event.method} - ${event.details}`);
+            }
+            if (event.type === 'INTERCEPTED_RESPONSE') {
+                logger.debug(
+                    'request-interceptor',
+                    `request to ${event.host} took ${event.time}ms and responded with status code ${event.statusCode}`,
+                );
+            }
+            if (event.type === 'NETWORK_MISBEHAVING') {
+                logger.debug('request-interceptor', 'networks is misbehaving');
+                mainWindow.webContents.send('tor/status', {
+                    type: 'Misbehaving',
+                });
             }
         },
         getIsTorEnabled: () => store.getTorSettings().running,
