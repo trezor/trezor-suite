@@ -17,4 +17,6 @@ export type {
     HandshakeElectron,
     HandshakeEvent,
     BootstrapTorEvent,
+    TorStatusEventType,
+    TorStatusEvent,
 } from './messages';
