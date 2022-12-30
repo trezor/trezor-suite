@@ -17,6 +17,7 @@ export const SET_DEBUG_MODE = '@suite/set-debug-mode';
 export const SET_FLAG = '@suite/set-flag';
 export const ONLINE_STATUS = '@suite/online-status';
 export const TOR_STATUS = '@suite/tor-status';
+export const TOR_BOOTSTRAP = '@suite/tor-bootstrap';
 export const ONION_LINKS = '@suite/onion-links';
 export const APP_CHANGED = '@suite/app-changed';
 export const ADD_BUTTON_REQUEST = '@suite/add-button-request';

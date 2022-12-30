@@ -4,13 +4,13 @@ import { desktopApi, HandshakeElectron } from '@trezor/suite-desktop-api';
 
 import * as comparisonUtils from '@suite-utils/comparisonUtils';
 import * as deviceUtils from '@suite-utils/device';
-import { getIsTorLoading, isOnionUrl } from '@suite-utils/tor';
+import { isOnionUrl } from '@suite-utils/tor';
 import { getCustomBackends } from '@suite-common/wallet-utils';
 import { sortByTimestamp } from '@suite-utils/device';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import * as modalActions from '@suite-actions/modalActions';
 import * as firmwareActions from '@firmware-actions/firmwareActions';
-import { TorStatus } from '@suite-types';
+import { TorBootstrap, TorStatus } from '@suite-types';
 import { SUITE, METADATA } from './constants';
 import type { Locale } from '@suite-config/languages';
 import type {
@@ -21,7 +21,7 @@ import type {
     ButtonRequest,
     AppState,
 } from '@suite-types';
-import type { DebugModeOptions, AutodetectSettings } from '@suite-reducers/suiteReducer';
+import { DebugModeOptions, AutodetectSettings, selectTorState } from '@suite-reducers/suiteReducer';
 import type { TranslationKey } from '@suite-components/Translation/components/BaseTranslation';
 import { createAction } from '@reduxjs/toolkit';
 
@@ -57,6 +57,7 @@ export type SuiteAction =
     | { type: typeof SUITE.SET_DEBUG_MODE; payload: Partial<DebugModeOptions> }
     | { type: typeof SUITE.ONLINE_STATUS; payload: boolean }
     | { type: typeof SUITE.TOR_STATUS; payload: TorStatus }
+    | { type: typeof SUITE.TOR_BOOTSTRAP; payload: TorBootstrap | null }
     | { type: typeof SUITE.ONION_LINKS; payload: boolean }
     | { type: typeof SUITE.LOCK_UI; payload: boolean }
     | ReturnType<typeof lockDevice>
@@ -148,7 +149,7 @@ export const updateOnlineStatus = (payload: boolean): SuiteAction => ({
 });
 
 /**
- * Triggered by `@suite-support/TorStatus`
+ * Triggered by `@suite/tor-status`
  * Set `tor` status in suite reducer
  * @param {boolean} payload
  * @returns {Action}
@@ -160,11 +161,7 @@ export const updateTorStatus = (payload: TorStatus): SuiteAction => ({
 
 export const toggleTor =
     (shouldEnable: boolean) => async (dispatch: Dispatch, getState: GetState) => {
-        const isTorLoading = getIsTorLoading(getState().suite.torStatus);
-
-        if (isTorLoading) {
-            return;
-        }
+        const { torBootstrap } = selectTorState(getState());
 
         const backends = getCustomBackends(getState().wallet.blockchain);
         // Is there any network with only onion custom backends?
@@ -177,17 +174,23 @@ export const toggleTor =
             if (!res) return;
         }
 
-        const progressStatus = shouldEnable ? TorStatus.Enabling : TorStatus.Disabling;
+        if (shouldEnable && torBootstrap) {
+            // Reset Tor Bootstrap before starting it.
+            dispatch({
+                type: SUITE.TOR_BOOTSTRAP,
+                payload: null,
+            });
+        }
 
-        dispatch(updateTorStatus(progressStatus));
+        if (shouldEnable) {
+            // Updating here TorStatus to Enabling so user gets faster feedback that something is happening
+            // instead of wait for the event coming from request-manager in useTor.
+            dispatch(updateTorStatus(TorStatus.Enabling));
+        }
 
         const ipcResponse = await desktopApi.toggleTor(shouldEnable);
 
         if (ipcResponse.success) {
-            const newStatus = shouldEnable ? TorStatus.Enabled : TorStatus.Disabled;
-
-            dispatch(updateTorStatus(newStatus));
-
             analytics.report({
                 type: EventType.SettingsTor,
                 payload: {
@@ -197,10 +200,6 @@ export const toggleTor =
         }
 
         if (!ipcResponse.success && ipcResponse.error) {
-            const previousStatus = shouldEnable ? TorStatus.Disabled : TorStatus.Enabled;
-
-            dispatch(updateTorStatus(previousStatus));
-
             dispatch(
                 notificationsActions.addToast({
                     type: 'tor-toggle-error',
@@ -216,6 +215,62 @@ export const setOnionLinks = (payload: boolean): SuiteAction => ({
     type: SUITE.ONION_LINKS,
     payload,
 });
+
+/**
+ * Triggered by `@suite/tor-bootstrap`
+ * Set torBootstrap in suite reducer
+ * @returns
+ */
+export const updateTorBootstrap = (payload: TorBootstrap | null): SuiteAction => ({
+    type: SUITE.TOR_BOOTSTRAP,
+    payload,
+});
+
+export const setTorBootstrap =
+    (torBootstrap: TorBootstrap) => (dispatch: Dispatch, getState: GetState) => {
+        const { torBootstrap: previousTorBootstrap } = selectTorState(getState());
+
+        const payload: TorBootstrap = {
+            current: torBootstrap.current,
+            total: torBootstrap.total,
+            isSlow: previousTorBootstrap ? previousTorBootstrap.isSlow : false,
+        };
+
+        dispatch({
+            type: SUITE.TOR_BOOTSTRAP,
+            payload,
+        });
+    };
+
+export const setTorBootstrapSlow =
+    (isSlow: boolean) => (dispatch: Dispatch, getState: GetState) => {
+        const { torBootstrap: previousTorBootstrap } = selectTorState(getState());
+
+        if (!previousTorBootstrap) {
+            // Does not make sense to set bootstrap to slow when there is no bootstrap happening.
+            return;
+        }
+
+        if (isSlow && !previousTorBootstrap?.isSlow) {
+            dispatch(
+                notificationsActions.addToast({
+                    type: 'tor-is-slow',
+                    autoClose: false,
+                }),
+            );
+        }
+
+        const payload: TorBootstrap = {
+            current: previousTorBootstrap.current,
+            total: previousTorBootstrap.total,
+            isSlow,
+        };
+
+        dispatch({
+            type: SUITE.TOR_BOOTSTRAP,
+            payload,
+        });
+    };
 
 /**
  * Called from `suiteMiddleware`

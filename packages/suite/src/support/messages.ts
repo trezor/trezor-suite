@@ -7122,6 +7122,10 @@ export default defineMessages({
         id: 'TR_DISABLING_TOR',
         defaultMessage: 'Disabling Tor',
     },
+    TR_TOR_IS_SLOW_MESSAGE: {
+        id: 'TR_TOR_IS_SLOW_MESSAGE',
+        defaultMessage: 'Tor is connecting to the network.<br></br>Hang in there.',
+    },
     TR_CUSTOM_FIRMWARE_GITHUB: {
         id: 'TR_CUSTOM_FIRMWARE_GITHUB',
         defaultMessage: 'You can find all official releases on',
