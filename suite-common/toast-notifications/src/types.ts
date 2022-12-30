@@ -115,6 +115,9 @@ export type ToastPayload = (
           type: 'tor-toggle-error';
           error: TranslationKey;
       }
+    | {
+          type: 'tor-is-slow';
+      }
 ) &
     NotificationOptions;
 
