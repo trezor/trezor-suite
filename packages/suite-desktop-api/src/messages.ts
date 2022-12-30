@@ -2,7 +2,25 @@ import { ExtractUndefined } from './methods';
 
 export type SuiteThemeVariant = 'light' | 'dark' | 'system';
 
+export const TOR_STATUS_EVENT_TYPE = {
+    Enabled: 'Enabled',
+    Disabled: 'Disabled',
+    Disabling: 'Disabling',
+    Bootstrapping: 'Bootstrapping',
+    Misbehaving: 'Misbehaving',
+    Error: 'Error',
+} as const;
+export type TorStatusEventType = keyof typeof TOR_STATUS_EVENT_TYPE;
+
+export type TorStatusEvent = {
+    type: TorStatusEventType;
+    message?: string;
+};
+
 export type BootstrapTorEvent =
+    | {
+          type: 'slow';
+      }
     | {
           type: 'progress';
           summary: string;
