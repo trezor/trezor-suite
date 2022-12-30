@@ -48,7 +48,8 @@ const info = (
     notification: NotificationRendererProps['notification'],
     messageId: ExtendedMessageDescriptor['id'],
     values: ExtendedMessageDescriptor['values'] = {},
-) => simple(View, notification, 'info', messageId, values);
+    icon?: NotificationViewProps['icon'],
+) => simple(View, notification, 'info', messageId, values, icon);
 
 const NotificationRenderer = ({ notification, render }: NotificationRendererProps) => {
     switch (notification.type) {
@@ -136,6 +137,14 @@ const NotificationRenderer = ({ notification, render }: NotificationRendererProp
             });
         case 'tor-toggle-error':
             return error(render, notification, notification.error);
+        case 'tor-is-slow':
+            return info(
+                render,
+                notification,
+                'TR_TOR_IS_SLOW_MESSAGE',
+                { br: () => <br /> },
+                'TOR',
+            );
         case 'coin-scheme-protocol':
             return <CoinProtocolRenderer render={render} notification={notification} />;
         case 'tx-received':

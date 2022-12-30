@@ -4,13 +4,13 @@ import { useSelector, useActions } from '@suite-hooks';
 import { useDispatch } from 'react-redux';
 import { createCoinjoinAccount } from '@wallet-actions/coinjoinAccountActions';
 import { DEFAULT_TARGET_ANONYMITY } from '@suite/services/coinjoin';
+import * as suiteActions from '@suite-actions/suiteActions';
 import * as modalActions from '@suite-actions/modalActions';
 import { Account, Network, NetworkSymbol } from '@wallet-types';
 import { UnavailableCapabilities } from '@trezor/connect';
 import { AddButton } from './AddButton';
 import { isDesktop } from '@suite-utils/env';
 import { isDevEnv } from '@suite-common/suite-utils';
-import { desktopApi } from '@trezor/suite-desktop-api';
 import { Dispatch } from '@suite-types';
 import { RequestEnableTorResponse } from '@suite-components/modals/RequestEnableTor';
 import { selectTorState } from '@suite-reducers/suiteReducer';
@@ -56,7 +56,12 @@ export const AddCoinJoinAccountButton = ({ network }: AddCoinJoinAccountProps) =
     const device = useSelector(state => state.suite.device);
     const accounts = useSelector(state => state.wallet.accounts);
 
-    const action = useActions({ createCoinjoinAccount, requestEnableTorAction });
+    const action = useActions({
+        createCoinjoinAccount,
+        requestEnableTorAction,
+        toggleTor: suiteActions.toggleTor,
+    });
+
     const dispatch = useDispatch();
 
     if (!device) {
@@ -104,7 +109,7 @@ export const AddCoinJoinAccountButton = ({ network }: AddCoinJoinAccountProps) =
             }
 
             // Triggering Tor process and displaying Tor loading to give user feedback of Tor progress.
-            desktopApi.toggleTor(true);
+            action.toggleTor(true);
             const isTorLoaded = await dispatch(
                 modalActions.openDeferredModal({ type: 'tor-loading' }),
             );
