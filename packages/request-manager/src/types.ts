@@ -39,3 +39,10 @@ export type InterceptorOptions = {
     getIsTorEnabled: () => boolean;
     isDevEnv?: boolean;
 };
+
+export const TOR_CONTROLLER_STATUS = {
+    Bootstrapping: 'Bootstrapping',
+    Stopped: 'Stopped',
+    CircuitEstablished: 'CircuitEstablished',
+} as const;
+export type TorControllerStatus = keyof typeof TOR_CONTROLLER_STATUS;
