@@ -58,8 +58,6 @@ export const PNG_IMAGES = {
     UNDERSTAND_2x: 'Understand@2x.png',
     WALLET: 'Wallet.png',
     WALLET_2x: 'Wallet@2x.png',
-    TOR_ENABLING: 'TorEnabling.png',
-    TOR_ENABLING_2x: 'TorEnabling@2x.png',
     COINJOIN_MESS: 'CoinjoinMess.png',
     DONT_DISCONNECT_T: 'DontDisconnectT.png',
     DONT_DISCONNECT_T_2x: 'DontDisconnectT@2x.png',
