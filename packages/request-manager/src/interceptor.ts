@@ -143,7 +143,7 @@ const overloadHttpRequest = (
     }
 };
 
-const interceptHttp = (interceptorOptions: InterceptorOptions) => {
+const interceptHttp = (interceptorOptions: InterceptorOptions, requestPool: RequestPool) => {
     const originalHttpRequest = http.request;
 
     http.request = (...args) => {
@@ -157,7 +157,7 @@ const interceptHttp = (interceptorOptions: InterceptorOptions) => {
     };
 };
 
-const interceptHttps = (interceptorOptions: InterceptorOptions) => {
+const interceptHttps = (interceptorOptions: InterceptorOptions, requestPool: RequestPool) => {
     const originalHttpsRequest = https.request;
 
     https.request = (...args) => {
