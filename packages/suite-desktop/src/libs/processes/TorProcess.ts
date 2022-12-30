@@ -1,4 +1,4 @@
-import { TorController, TorIdentities } from '@trezor/request-manager';
+import { TorController, TorIdentities, TOR_CONTROLLER_STATUS } from '@trezor/request-manager';
 
 import { BaseProcess, Status } from './BaseProcess';
 
@@ -8,6 +8,8 @@ interface TorConnectionOptions {
     controlPort: number;
     torDataDir: string;
 }
+
+export type TorProcessStatus = Status & { isBootstrapping?: boolean };
 
 export class TorProcess extends BaseProcess {
     torController: TorController;
@@ -32,23 +34,12 @@ export class TorProcess extends BaseProcess {
         });
     }
 
-    async status(): Promise<Status> {
-        try {
-            const isAlive = await this.torController.status();
-            if (isAlive) {
-                return {
-                    service: true,
-                    process: true,
-                };
-            }
-        } catch {
-            //
-        }
-
-        // process
+    async status(): Promise<TorProcessStatus> {
+        const torControllerStatus = await this.torController.getStatus();
         return {
-            service: false,
+            service: torControllerStatus === TOR_CONTROLLER_STATUS.CircuitEstablished,
             process: Boolean(this.process),
+            isBootstrapping: torControllerStatus === TOR_CONTROLLER_STATUS.Bootstrapping,
         };
     }
 
