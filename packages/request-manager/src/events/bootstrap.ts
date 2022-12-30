@@ -21,12 +21,15 @@ export const bootstrapParser = (message: string): BootstrapEvent[] => {
     return clientStatusGroups.map(clientStatus => {
         const clientStatusParsed = statusParser(clientStatus);
         return {
+            type: 'progress',
             progress: clientStatusParsed?.groups?.progress ?? '',
             summary: clientStatusParsed?.groups?.summary ?? '',
         };
     });
 };
 
-export enum BootstrapEventProgress {
-    Done = '100',
-}
+export const BOOTSTRAP_EVENT_PROGRESS = {
+    ConnectingToRelay: '5',
+    Done: '100',
+} as const;
+export type BootstrapEventProgress = keyof typeof BOOTSTRAP_EVENT_PROGRESS;
