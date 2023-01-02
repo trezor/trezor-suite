@@ -45,6 +45,13 @@ export type SuiteAnalyticsEvent =
           payload: AppUpdateEvent;
       }
     | {
+          type: EventType.AppUriHandler;
+          payload: {
+              scheme: string;
+              isAmountPresent: boolean;
+          };
+      }
+    | {
           type: EventType.DeviceConnect;
           payload: {
               mode: 'normal' | 'bootloader' | 'initialize' | 'seedless';
