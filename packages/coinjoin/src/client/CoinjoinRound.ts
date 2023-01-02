@@ -7,6 +7,7 @@ import {
     getCommitmentData,
     getRoundParameters,
     getCoinjoinRoundDeadlines,
+    getBroadcastedTxDetails,
 } from '../utils/roundUtils';
 import { ROUND_PHASE_PROCESS_TIMEOUT, ACCOUNT_BUSY_TIMEOUT } from '../constants';
 import { RoundPhase, EndRoundState, SessionPhase } from '../enums';
@@ -18,6 +19,7 @@ import {
     CoinjoinTransactionLiquidityClue,
     CoinjoinRequestEvent,
     CoinjoinResponseEvent,
+    BroadcastedTransactionDetails,
 } from '../types/round';
 import { Round, CoinjoinRoundParameters, WabiSabiProtocolErrorCode } from '../types/coordinator';
 import { Account } from './Account';
@@ -116,6 +118,7 @@ export class CoinjoinRound extends EventEmitter {
     commitmentData: string; // commitment data used for ownership proof and witness requests
     addresses: AccountAddress[] = []; // list of addresses (outputs) used in this round in outputRegistration phase
     transactionData?: CoinjoinTransactionData; // transaction to sign
+    broadcastedTxDetails?: BroadcastedTransactionDetails; // transaction broadcasted
     liquidityClues?: CoinjoinTransactionLiquidityClue[]; // updated liquidity clues
 
     constructor(round: Round, prison: CoinjoinPrison, options: CoinjoinRoundOptions) {
@@ -274,6 +277,12 @@ export class CoinjoinRound extends EventEmitter {
                         sentenceEnd: Infinity,
                     }),
                 );
+
+                this.broadcastedTxDetails = getBroadcastedTxDetails({
+                    coinjoinState: this.coinjoinState,
+                    transactionData: this.transactionData,
+                    network: this.options.network,
+                });
             } else if (this.endRoundState === EndRoundState.NotAllAlicesSign) {
                 log('Awaiting blame round');
                 const inmates = this.inputs
@@ -446,6 +455,7 @@ export class CoinjoinRound extends EventEmitter {
             id: this.id,
             phase: this.phase,
             endRoundState: this.endRoundState,
+            broadcastedTxDetails: this.broadcastedTxDetails,
             inputs: this.inputs.map(i => i.toSerialized()),
             failed: this.failed.map(i => i.toSerialized()),
             addresses: this.addresses,

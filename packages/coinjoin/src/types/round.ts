@@ -19,26 +19,29 @@ export interface SerializedCoinjoinRound {
     addresses: AccountAddress[]; // list of addresses (outputs) used in this round in outputRegistration phase
     phaseDeadline: number; // deadline is inaccurate, phase may change earlier
     roundDeadline: number; // deadline is inaccurate,round may end earlier
+    broadcastedTxDetails?: BroadcastedTransactionDetails; // calculated from tx data and witnesses from coordinator
 }
 
 export interface CoinjoinRoundEvent {
     round: SerializedCoinjoinRound;
 }
 
-interface CoinjoinTxInputs {
+export interface CoinjoinTxInputs {
     path?: string;
     outpoint: string;
     amount: number;
     hash: string;
     index: number;
     commitmentData: string;
+    address: string;
     scriptPubKey: string;
     ownershipProof: string;
 }
 
-interface CoinjoinTxOutputs {
+export interface CoinjoinTxOutputs {
     path?: string;
     address: string;
+    scriptPubKey: string;
     amount: number;
 }
 
@@ -46,6 +49,14 @@ export interface CoinjoinTransactionData {
     inputs: CoinjoinTxInputs[];
     outputs: CoinjoinTxOutputs[];
     affiliateRequest: CoinjoinAffiliateRequest;
+}
+
+export interface BroadcastedTransactionDetails extends CoinjoinTransactionData {
+    txid: string;
+    hash: string;
+    hex: string;
+    size: number;
+    vsize: number;
 }
 
 export interface CoinjoinTransactionLiquidityClue {

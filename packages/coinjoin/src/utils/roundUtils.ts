@@ -1,4 +1,4 @@
-import { bufferutils } from '@trezor/utxo-lib';
+import { bufferutils, Transaction, Network } from '@trezor/utxo-lib';
 
 import {
     COORDINATOR_FEE_RATE_FALLBACK,
@@ -10,12 +10,14 @@ import {
     MAX_MINING_FEE_MODIFIER,
 } from '../constants';
 import { RoundPhase } from '../enums';
+import { CoinjoinTransactionData } from '../types';
 import {
     Round,
     CoinjoinStateEvent,
     CoinjoinRoundParameters,
     CoinjoinAffiliateRequest,
     CoinjoinStatus,
+    CoinjoinState,
 } from '../types/coordinator';
 import { Credentials } from '../types/middleware';
 
@@ -220,5 +222,51 @@ export const getAffiliateRequest = (
         mask_public_key: mask.toString('hex'),
         signature: signature.toString('hex'),
         coinjoin_flags_array: flags,
+    };
+};
+
+export const getBroadcastedTxDetails = ({
+    coinjoinState: { isFullySigned, witnesses },
+    transactionData,
+    network,
+}: {
+    coinjoinState: CoinjoinState;
+    network: Network;
+    transactionData?: CoinjoinTransactionData;
+}) => {
+    if (!isFullySigned || !witnesses || !transactionData) return;
+
+    const { reverseBuffer, BufferReader } = bufferutils;
+    const tx = new Transaction({ network });
+
+    // constants assigned by coordinator
+    tx.version = 1;
+    tx.locktime = 0;
+    const sequence = 4294967295;
+
+    transactionData.inputs.forEach((input, index) => {
+        tx.ins.push({
+            hash: reverseBuffer(Buffer.from(input.hash, 'hex')),
+            index: input.index,
+            script: Buffer.allocUnsafe(0), // script is not used in calculation
+            sequence,
+            witness: new BufferReader(Buffer.from(witnesses[index], 'hex')).readVector(),
+        });
+    });
+
+    transactionData.outputs.forEach(output => {
+        tx.outs.push({
+            value: output.amount.toString(),
+            script: Buffer.from(output.scriptPubKey, 'hex'),
+        });
+    });
+
+    return {
+        ...transactionData,
+        hex: tx.toHex(),
+        hash: tx.getHash().toString('hex'),
+        txid: tx.getId(),
+        size: tx.weight(),
+        vsize: tx.virtualSize(),
     };
 };
