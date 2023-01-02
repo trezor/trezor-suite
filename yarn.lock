@@ -2858,6 +2858,25 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@expo/configure-splash-screen@npm:^0.6.0":
+  version: 0.6.0
+  resolution: "@expo/configure-splash-screen@npm:0.6.0"
+  dependencies:
+    color-string: ^1.5.3
+    commander: ^5.1.0
+    fs-extra: ^9.0.0
+    glob: ^7.1.6
+    lodash: ^4.17.15
+    pngjs: ^5.0.0
+    xcode: ^3.0.0
+    xml-js: ^1.6.11
+  bin:
+    configure-splash-screen: build/index-cli.js
+    expo-splash-screen: build/index-cli.js
+  checksum: 59f088d79f2fdaa21f0e60b41dab3e8cf4387b519ee32bd6b03b1c140512433f1e81dca1bf1842cfee2a86c36e24f26b12e8650327ea3ef8c3a30ad9ec1987cf
+  languageName: node
+  linkType: hard
+
 "@expo/dev-server@npm:0.1.123":
   version: 0.1.123
   resolution: "@expo/dev-server@npm:0.1.123"
@@ -7503,6 +7522,7 @@ __metadata:
     expo-barcode-scanner: ^12.1.0
     expo-clipboard: ^4.0.1
     expo-localization: ^14.0.0
+    expo-splash-screen: ^0.17.5
     jest: ^26.6.3
     metro-react-native-babel-preset: ^0.72.3
     node-libs-browser: ^2.2.1
@@ -7516,7 +7536,6 @@ __metadata:
     react-native-reanimated: ^2.12.0
     react-native-safe-area-context: ^4.4.1
     react-native-screens: ^3.13.1
-    react-native-splash-screen: ^3.3.0
     react-native-svg: ^12.4.4
     react-redux: 7.2.2
     react-test-renderer: 18.2.0
@@ -12709,7 +12728,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"color-string@npm:^1.9.0":
+"color-string@npm:^1.5.3, color-string@npm:^1.9.0":
   version: 1.9.1
   resolution: "color-string@npm:1.9.1"
   dependencies:
@@ -16468,6 +16487,18 @@ __metadata:
     compare-versions: ^3.4.0
     invariant: ^2.2.4
   checksum: 252c85bac78cfe2c7986c0540a89bcb65a7d004316efd94734ecac54397dc0d1cab46e8406ee4cc2fe8bf1e271f8aa6f5c4d6097f49f55920797bcfba4bd9eab
+  languageName: node
+  linkType: hard
+
+"expo-splash-screen@npm:^0.17.5":
+  version: 0.17.5
+  resolution: "expo-splash-screen@npm:0.17.5"
+  dependencies:
+    "@expo/configure-splash-screen": ^0.6.0
+    "@expo/prebuild-config": 5.0.7
+  peerDependencies:
+    expo: "*"
+  checksum: 20bee835725b52846be8ea9221fb51829f2d6080784d05fd77bcc68f51f15871bdcc5f845c7230317f044ca94d0b001e81a5e50082404be81b9d16466cd7880c
   languageName: node
   linkType: hard
 
@@ -25171,6 +25202,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"pngjs@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "pngjs@npm:5.0.0"
+  checksum: 04e912cc45fb9601564e2284efaf0c5d20d131d9b596244f8a6789fc6cdb6b18d2975a6bbf7a001858d7e159d5c5c5dd7b11592e97629b7137f7f5cef05904c8
+  languageName: node
+  linkType: hard
+
 "pngjs@npm:^6.0.0":
   version: 6.0.0
   resolution: "pngjs@npm:6.0.0"
@@ -26756,15 +26794,6 @@ __metadata:
     react: "*"
     react-native: "*"
   checksum: 2d120bcf4f75fd05583fb78d3894b4ecb9fcc53759df11cbe1499ad5bc47becec8defbf89028297c8aee3a4735ab020f4b65358235e02fd9f3cdf22bb68ede4e
-  languageName: node
-  linkType: hard
-
-"react-native-splash-screen@npm:^3.3.0":
-  version: 3.3.0
-  resolution: "react-native-splash-screen@npm:3.3.0"
-  peerDependencies:
-    react-native: ">=0.57.0"
-  checksum: 14c565d5d4214f55586dcf6f7abd12d99d3e0667f67de3bda7aa24988971567b283a4187fbc0c6269c83b3c21d59d1950335c61bb0780ec2d065e20b3b9199d0
   languageName: node
   linkType: hard
 
@@ -33069,13 +33098,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"xcode@npm:^3.0.1":
+"xcode@npm:^3.0.0, xcode@npm:^3.0.1":
   version: 3.0.1
   resolution: "xcode@npm:3.0.1"
   dependencies:
     simple-plist: ^1.1.0
     uuid: ^7.0.3
   checksum: 908ff85851f81aec6e36ca24427db092e1cc068f052716e14de5e762196858039efabbe053a1abe8920184622501049e74a93618e8692b982f7604a9847db108
+  languageName: node
+  linkType: hard
+
+"xml-js@npm:^1.6.11":
+  version: 1.6.11
+  resolution: "xml-js@npm:1.6.11"
+  dependencies:
+    sax: ^1.2.4
+  bin:
+    xml-js: ./bin/cli.js
+  checksum: 24a55479919413687105fc2d8ab05e613ebedb1c1bc12258a108e07cff5ef793779297db854800a4edf0281303ebd1f177bc4a588442f5344e62b3dddda26c2b
   languageName: node
   linkType: hard
 

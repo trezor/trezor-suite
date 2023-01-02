@@ -29,6 +29,9 @@ PODS:
   - ExpoModulesCore (1.0.3):
     - React-Core
     - ReactCommon/turbomodule/core
+  - EXSplashScreen (0.17.5):
+    - ExpoModulesCore
+    - React-Core
   - FBLazyVector (0.70.5)
   - FBReactNativeSpec (0.70.5):
     - RCT-Folly (= 2021.07.22.00)
@@ -376,8 +379,6 @@ PODS:
     - React
     - React-callinvoker
     - React-Core
-  - react-native-splash-screen (3.3.0):
-    - React-Core
   - React-perflogger (0.70.5)
   - React-RCTActionSheet (0.70.5):
     - React-Core/RCTActionSheetHeaders (= 0.70.5)
@@ -508,6 +509,7 @@ DEPENDENCIES:
   - ExpoKeepAwake (from `../../../node_modules/expo-keep-awake/ios`)
   - ExpoLocalization (from `../../../node_modules/expo-localization/ios`)
   - ExpoModulesCore (from `../../../node_modules/expo-modules-core`)
+  - EXSplashScreen (from `../../../node_modules/expo-splash-screen/ios`)
   - FBLazyVector (from `../../../node_modules/react-native/Libraries/FBLazyVector`)
   - FBReactNativeSpec (from `../../../node_modules/react-native/React/FBReactNativeSpec`)
   - Flipper (= 0.125.0)
@@ -557,7 +559,6 @@ DEPENDENCIES:
   - react-native-mmkv (from `../../../node_modules/react-native-mmkv`)
   - react-native-safe-area-context (from `../../../node_modules/react-native-safe-area-context`)
   - "react-native-skia (from `../../../node_modules/@shopify/react-native-skia`)"
-  - react-native-splash-screen (from `../../../node_modules/react-native-splash-screen`)
   - React-perflogger (from `../../../node_modules/react-native/ReactCommon/reactperflogger`)
   - React-RCTActionSheet (from `../../../node_modules/react-native/Libraries/ActionSheetIOS`)
   - React-RCTAnimation (from `../../../node_modules/react-native/Libraries/NativeAnimation`)
@@ -627,6 +628,8 @@ EXTERNAL SOURCES:
     :path: "../../../node_modules/expo-localization/ios"
   ExpoModulesCore:
     :path: "../../../node_modules/expo-modules-core"
+  EXSplashScreen:
+    :path: "../../../node_modules/expo-splash-screen/ios"
   FBLazyVector:
     :path: "../../../node_modules/react-native/Libraries/FBLazyVector"
   FBReactNativeSpec:
@@ -675,8 +678,6 @@ EXTERNAL SOURCES:
     :path: "../../../node_modules/react-native-safe-area-context"
   react-native-skia:
     :path: "../../../node_modules/@shopify/react-native-skia"
-  react-native-splash-screen:
-    :path: "../../../node_modules/react-native-splash-screen"
   React-perflogger:
     :path: "../../../node_modules/react-native/ReactCommon/reactperflogger"
   React-RCTActionSheet:
@@ -731,6 +732,7 @@ SPEC CHECKSUMS:
   ExpoKeepAwake: 69b59d0a8d2b24de9f82759c39b3821fec030318
   ExpoLocalization: e202d1e2a4950df17ac8d0889d65a1ffd7532d7e
   ExpoModulesCore: b5d21c8880afda6fb6ee95469f9ac2ec9b98e995
+  EXSplashScreen: 3e989924f61a8dd07ee4ea584c6ba14be9b51949
   FBLazyVector: affa4ba1bfdaac110a789192f4d452b053a86624
   FBReactNativeSpec: 269cfc7534efd27ae16b918d185a49297e642f0a
   Flipper: 26fc4b7382499f1281eb8cb921e5c3ad6de91fe0
@@ -769,7 +771,6 @@ SPEC CHECKSUMS:
   react-native-mmkv: 69b9c003f10afdd01addf7c6ee784ce42ee2eff3
   react-native-safe-area-context: 99b24a0c5acd0d5dcac2b1a7f18c49ea317be99a
   react-native-skia: 033ecd9b105c198ddbab832d206b0e3742b67f0c
-  react-native-splash-screen: 4312f786b13a81b5169ef346d76d33bc0c6dc457
   React-perflogger: e68d3795cf5d247a0379735cbac7309adf2fb931
   React-RCTActionSheet: 05452c3b281edb27850253db13ecd4c5a65bc247
   React-RCTAnimation: 578eebac706428e68466118e84aeacf3a282b4da

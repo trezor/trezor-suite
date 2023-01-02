@@ -2,6 +2,7 @@ package io.trezor.suite;
 import expo.modules.ReactActivityDelegateWrapper;
 
 import android.os.Bundle;
+import androidx.core.splashscreen.SplashScreen;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
@@ -23,8 +24,8 @@ public class MainActivity extends ReactActivity {
    */
   @Override
   protected void onCreate(Bundle savedInstanceState) {
-    androidx.core.splashscreen.SplashScreen.installSplashScreen(this); // native splash screen which will be skipped
-    org.devio.rn.splashscreen.SplashScreen.show(this, true); // custom splash screen from react-native-splash-screen library
+    // Handle the splash screen transition (https://developer.android.com/guide/topics/ui/splash-screen/migrate#java).
+    SplashScreen.installSplashScreen(this);
 
     super.onCreate(null);
   }

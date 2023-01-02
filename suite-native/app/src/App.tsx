@@ -5,6 +5,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Provider, useDispatch } from 'react-redux';
 import { IntlProvider } from 'react-intl';
 
+import * as SplashScreen from 'expo-splash-screen';
 import { NavigationContainer } from '@react-navigation/native';
 
 // FIXME this is only temporary until Intl refactor will be finished
@@ -20,15 +21,18 @@ import { enabledNetworks } from '@suite-native/config';
 
 import { RootStackNavigator } from './navigation/RootStackNavigator';
 import { StylesProvider } from './StylesProvider';
-import { useSplashScreen } from './hooks/useSplashScreen';
 import { useFormattersConfig } from './hooks/useFormattersConfig';
 
 // Recommended approach from react docs if you really want to run something just once
 let isConnectInitializedGlobal = false;
 
+// Keep the splash screen visible while we fetch resources
+SplashScreen.preventAutoHideAsync();
+
 const AppComponent = () => {
     const dispatch = useDispatch();
     const formattersConfig = useFormattersConfig();
+    const [isAppReady, setIsAppReady] = useState(false);
     const [isConnectInitialized, setIsConnectInitialized] = useState(isConnectInitializedGlobal);
 
     useEffect(() => {
@@ -58,12 +62,21 @@ const AppComponent = () => {
             } catch (error) {
                 Alert.alert('Error', error?.message ?? 'Unknown error');
                 console.error(error.message);
+            } finally {
+                // Tell the application to render
+                setIsAppReady(true);
             }
         };
         initActions();
     }, [dispatch, isConnectInitialized]);
 
-    if (!isConnectInitialized) {
+    useEffect(() => {
+        if (isAppReady) {
+            SplashScreen.hideAsync();
+        }
+    }, [isAppReady]);
+
+    if (!isAppReady) {
         return null;
     }
 
@@ -85,26 +98,22 @@ if (!__DEV__) {
     });
 }
 
-const PureApp = () => {
-    useSplashScreen();
-
-    return (
-        <GestureHandlerRootView style={{ flex: 1 }}>
-            <IntlProvider locale="en" defaultLocale="en" messages={enMessages}>
-                <NavigationContainer>
-                    <Provider store={store}>
-                        <StorageProvider persistor={storePersistor}>
-                            <SafeAreaProvider>
-                                <StylesProvider>
-                                    <AppComponent />
-                                </StylesProvider>
-                            </SafeAreaProvider>
-                        </StorageProvider>
-                    </Provider>
-                </NavigationContainer>
-            </IntlProvider>
-        </GestureHandlerRootView>
-    );
-};
+const PureApp = () => (
+    <GestureHandlerRootView style={{ flex: 1 }}>
+        <IntlProvider locale="en" defaultLocale="en" messages={enMessages}>
+            <NavigationContainer>
+                <Provider store={store}>
+                    <StorageProvider persistor={storePersistor}>
+                        <SafeAreaProvider>
+                            <StylesProvider>
+                                <AppComponent />
+                            </StylesProvider>
+                        </SafeAreaProvider>
+                    </StorageProvider>
+                </Provider>
+            </NavigationContainer>
+        </IntlProvider>
+    </GestureHandlerRootView>
+);
 
 export const App = Sentry.wrap(PureApp);
