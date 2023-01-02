@@ -105,7 +105,15 @@ const analyticsMiddleware =
                     }, {});
 
                 const accountsWithNonZeroBalance = state.wallet.accounts
-                    .filter(account => new BigNumber(account.balance).gt(0))
+                    .filter(
+                        account =>
+                            new BigNumber(account.balance).gt(0) ||
+                            new BigNumber(
+                                (account.tokens || []).filter(token =>
+                                    new BigNumber(token.balance || 0).gt(0),
+                                ).length,
+                            ).gt(0),
+                    )
                     .reduce((acc: { [key: string]: number }, obj) => {
                         const id = `${obj.symbol}_${obj.accountType}`;
                         acc[id] = (acc[id] || 0) + 1;
