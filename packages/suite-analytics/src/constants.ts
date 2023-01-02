@@ -15,6 +15,8 @@ export enum EventType {
     TransportType = 'transport-type',
     AppUpdate = 'app-update',
 
+    AppUriHandler = 'app/uri-handler',
+
     DeviceConnect = 'device-connect',
     DeviceDisconnect = 'device-disconnect',
     DeviceUpdateFirmware = 'device-update-firmware',

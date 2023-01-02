@@ -1,5 +1,6 @@
 import { PROTOCOL_SCHEME } from '@suite-constants/protocol';
 import { parseQuery, parseUri } from './parseUri';
+import { analytics, EventType } from '@trezor/suite-analytics';
 
 export type CoinProtocolInfo = {
     scheme: PROTOCOL_SCHEME;
@@ -23,6 +24,14 @@ export const getProtocolInfo = (uri: string): CoinProtocolInfo | null => {
             if (!pathname && !host) return null; // address may be in pathname (regular bitcoin:addr) or host (bitcoin://addr)
             const floatAmount = Number.parseFloat(params.amount ?? '');
             const amount = !Number.isNaN(floatAmount) && floatAmount > 0 ? floatAmount : undefined;
+
+            analytics.report({
+                type: EventType.AppUriHandler,
+                payload: {
+                    scheme,
+                    isAmountPresent: amount !== undefined,
+                },
+            });
 
             return {
                 scheme,
