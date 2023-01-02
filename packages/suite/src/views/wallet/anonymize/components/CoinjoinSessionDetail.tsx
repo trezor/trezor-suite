@@ -34,6 +34,10 @@ export const CoinjoinSessionDetail = ({
     const minEstimatedTime = Math.floor(estimatedTime - timeBuffer);
     const maxMiningFeeValue = `${maxFee} sat/vB`;
 
+    const skippingChance = skipRounds
+        ? Math.round((1 - skipRounds[0] / skipRounds[1]) * 100)
+        : undefined;
+
     return (
         <dl>
             <DetailRow
@@ -53,10 +57,10 @@ export const CoinjoinSessionDetail = ({
             <DetailRow
                 term={<Translation id="TR_SKIP_ROUNDS" />}
                 value={
-                    skipRounds ? (
+                    skippingChance ? (
                         <Translation
-                            id="TR_SKIP_ROUNDS_VALUE"
-                            values={{ part: skipRounds[0], total: skipRounds[1] }}
+                            id="TR_SKIP_ROUNDS_CHANCE"
+                            values={{ value: skippingChance }}
                         />
                     ) : (
                         <Translation id="TR_NONE" />
