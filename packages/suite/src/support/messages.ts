@@ -7266,11 +7266,6 @@ export default defineMessages({
         description: 'Max number of coinjoin rounds',
         defaultMessage: 'max {rounds}',
     },
-    TR_SKIP_ROUNDS_VALUE: {
-        id: 'TR_SKIP_ROUNDS_VALUE',
-        description: 'Average ratio of skipped coinjoin rounds',
-        defaultMessage: 'avg. {part} out of {total}',
-    },
     TR_NONE: {
         id: 'TR_NONE',
         description: 'Skipped coinjoin rounds',
@@ -7693,5 +7688,9 @@ export default defineMessages({
     TR_ALL_FUNDS_ANONYMIZED: {
         id: 'TR_ALL_FUNDS_ANONYMIZED',
         defaultMessage: 'All funds private',
+    },
+    TR_SKIP_ROUNDS_CHANCE: {
+        id: 'TR_SKIP_ROUNDS_CHANCE',
+        defaultMessage: '{value}% chance',
     },
 });
