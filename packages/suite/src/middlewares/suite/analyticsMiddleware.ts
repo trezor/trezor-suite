@@ -112,6 +112,13 @@ const analyticsMiddleware =
                         return acc;
                     }, {});
 
+                const accountsWithTokens = state.wallet.accounts
+                    .filter(account => new BigNumber((account.tokens || []).length).gt(0))
+                    .reduce((acc: { [key: string]: number }, obj) => {
+                        acc[obj.symbol] = (acc[obj.symbol] || 0) + 1;
+                        return acc;
+                    }, {});
+
                 analytics.report({
                     type: EventType.AccountsStatus,
                     payload: { ...accountsWithTransactions },
@@ -120,6 +127,11 @@ const analyticsMiddleware =
                 analytics.report({
                     type: EventType.AccountsNonZeroBalance,
                     payload: { ...accountsWithNonZeroBalance },
+                });
+
+                analytics.report({
+                    type: EventType.AccountsTokensStatus,
+                    payload: { ...accountsWithTokens },
                 });
                 break;
             }
