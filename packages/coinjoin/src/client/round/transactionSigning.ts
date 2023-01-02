@@ -40,20 +40,19 @@ const getTransactionData = (
 
     const inputs = registeredInputs
         .sort((a, b) => sortInputs(a.coin, b.coin))
-        .map(input => {
-            const { index, hash } = readOutpoint(input.coin.outpoint);
-            const internal = myInputsInRound.find(a =>
-                compareOutpoint(a.outpoint, input.coin.outpoint),
-            );
-
+        .map(({ coin, ownershipProof }) => {
+            const { index, hash } = readOutpoint(coin.outpoint);
+            const internal = myInputsInRound.find(a => compareOutpoint(a.outpoint, coin.outpoint));
+            const address = getAddressFromScriptPubKey(coin.txOut.scriptPubKey, options.network);
             return {
                 path: internal?.path,
-                outpoint: internal?.outpoint || input.coin.outpoint, // NOTE: internal outpoints are in lowercase, coordinators in uppercase
+                outpoint: internal?.outpoint || coin.outpoint, // NOTE: internal outpoints are in lowercase, coordinators in uppercase
                 hash,
                 index,
-                amount: input.coin.txOut.value,
-                scriptPubKey: prefixScriptPubKey(input.coin.txOut.scriptPubKey),
-                ownershipProof: input.ownershipProof,
+                amount: coin.txOut.value,
+                address,
+                scriptPubKey: prefixScriptPubKey(coin.txOut.scriptPubKey),
+                ownershipProof,
                 commitmentData: round.commitmentData,
             };
         });
