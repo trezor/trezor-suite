@@ -102,6 +102,12 @@ export type SuiteAnalyticsEvent =
           };
       }
     | {
+          type: EventType.AccountsTokensStatus;
+          payload: {
+              [key: string]: number;
+          };
+      }
+    | {
           type: EventType.AccountsNewAccount;
           payload: {
               type: string;
