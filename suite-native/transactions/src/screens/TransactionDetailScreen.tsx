@@ -46,9 +46,6 @@ export const TransactionDetailScreen = ({
                 amount={cryptoAmountFormatted}
                 fiatAmount={fiatAmount}
             />
-            <Box marginVertical="large">
-                <Divider />
-            </Box>
             <TransactionDetailData transaction={transaction} />
             <Box marginVertical="large">
                 <Divider />
