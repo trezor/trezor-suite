@@ -10,7 +10,31 @@ type TransactionDetailSummaryProps = {
     transactionStatus: 'confirmed' | 'pending';
 };
 
-const TransactionDetailSummaryStepper = () => <Icon name="warningCircle" />;
+const TransactionDetailSummaryStepper = () => {
+    const { utils } = useNativeStyles();
+
+    return (
+        <Box
+            style={{
+                justifyContent: 'center',
+                alignItems: 'center',
+                backgroundColor: utils.colors.gray100,
+                width: 16,
+                height: 16,
+                borderRadius: utils.borders.radii.round,
+            }}
+        >
+            <Box
+                style={{
+                    width: 4,
+                    height: 4,
+                    borderRadius: utils.borders.radii.round,
+                    backgroundColor: utils.colors.gray400,
+                }}
+            />
+        </Box>
+    );
+};
 
 const Border = () => {
     const { utils } = useNativeStyles();
@@ -20,15 +44,16 @@ const Border = () => {
             style={{
                 borderLeftWidth: 1,
                 borderColor: utils.colors.gray400,
-                height: 20,
+                height: 10,
                 width: 1,
+                marginLeft: utils.spacings.small,
             }}
         />
     );
 };
 
 const TransactionDetailSummaryRow = ({ value, title }: { value: string; title: string }) => (
-    <Box flexDirection="row">
+    <Box flexDirection="row" alignItems="center">
         <TransactionDetailSummaryStepper />
         <Box marginLeft="medium">
             <Text color="gray600" variant="hint">
@@ -46,22 +71,36 @@ export const TransactionDetailSummary = ({
 }: TransactionDetailSummaryProps) => {
     const { utils } = useNativeStyles();
 
+    const isTransactionPending = transactionStatus === 'pending';
+
     return (
         <Card>
             <VStack>
                 <TransactionDetailSummaryRow value={origin} title="From" />
                 <Border />
-                <Box flexDirection="row">
+                <Box flexDirection="row" alignItems="center">
                     <Box
                         style={{
-                            backgroundColor: utils.colors.forest,
+                            marginLeft: -12,
+                            marginRight: utils.spacings.small,
+                            backgroundColor: isTransactionPending
+                                ? utils.colors.yellow
+                                : utils.colors.forest,
                             borderRadius: utils.borders.radii.round,
                             padding: utils.spacings.small,
                         }}
                     >
-                        <Icon name="check" color="gray0" />
+                        <Icon
+                            name={isTransactionPending ? 'clockClockwise' : 'check'}
+                            color="gray0"
+                        />
                     </Box>
-                    <Text>{transactionStatus}</Text>
+                    <Text
+                        style={{ textTransform: 'capitalize' }}
+                        color={isTransactionPending ? 'yellow' : 'forest'}
+                    >
+                        {transactionStatus}
+                    </Text>
                 </Box>
                 <Border />
                 <TransactionDetailSummaryRow title="To" value={target} />
