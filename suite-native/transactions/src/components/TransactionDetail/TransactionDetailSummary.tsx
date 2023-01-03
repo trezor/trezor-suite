@@ -1,55 +1,53 @@
 import React from 'react';
 
-import { useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Box, Card, VStack, Text } from '@suite-native/atoms';
 import { Icon } from '@trezor/icons';
 
 type TransactionDetailSummaryProps = {
-    origin: string;
-    target: string;
+    origin?: string;
+    target?: string;
     transactionStatus: 'confirmed' | 'pending';
 };
 
+const stepperDotWrapperStyle = prepareNativeStyle(utils => ({
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: utils.colors.gray100,
+    width: 16,
+    height: 16,
+    borderRadius: utils.borders.radii.round,
+}));
+
+const stepperDotStyle = prepareNativeStyle(utils => ({
+    width: 4,
+    height: 4,
+    borderRadius: utils.borders.radii.round,
+    backgroundColor: utils.colors.gray400,
+}));
+
 const TransactionDetailSummaryStepper = () => {
-    const { utils } = useNativeStyles();
+    const { applyStyle } = useNativeStyles();
 
     return (
-        <Box
-            style={{
-                justifyContent: 'center',
-                alignItems: 'center',
-                backgroundColor: utils.colors.gray100,
-                width: 16,
-                height: 16,
-                borderRadius: utils.borders.radii.round,
-            }}
-        >
-            <Box
-                style={{
-                    width: 4,
-                    height: 4,
-                    borderRadius: utils.borders.radii.round,
-                    backgroundColor: utils.colors.gray400,
-                }}
-            />
+        <Box style={applyStyle(stepperDotWrapperStyle)}>
+            <Box style={applyStyle(stepperDotStyle)} />
         </Box>
     );
 };
 
-const Border = () => {
-    const { utils } = useNativeStyles();
+const borderLineStyle = prepareNativeStyle(utils => ({
+    borderLeftWidth: 1,
+    borderColor: utils.colors.gray400,
+    height: 10,
+    width: 1,
+    marginLeft: utils.spacings.small,
+}));
 
-    return (
-        <Box
-            style={{
-                borderLeftWidth: 1,
-                borderColor: utils.colors.gray400,
-                height: 10,
-                width: 1,
-                marginLeft: utils.spacings.small,
-            }}
-        />
-    );
+const BorderLine = () => {
+    const { applyStyle } = useNativeStyles();
+
+    return <Box style={applyStyle(borderLineStyle)} />;
 };
 
 const TransactionDetailSummaryRow = ({ value, title }: { value: string; title: string }) => (
@@ -64,12 +62,24 @@ const TransactionDetailSummaryRow = ({ value, title }: { value: string; title: s
     </Box>
 );
 
+const confirmationIconStyle = prepareNativeStyle<{ isTransactionPending: boolean }>(
+    (utils, { isTransactionPending }) => ({
+        marginLeft: -12,
+        marginRight: utils.spacings.small,
+        backgroundColor: isTransactionPending ? utils.colors.yellow : utils.colors.forest,
+        borderRadius: utils.borders.radii.round,
+        padding: utils.spacings.small,
+    }),
+);
+
 export const TransactionDetailSummary = ({
     origin,
     target,
     transactionStatus,
 }: TransactionDetailSummaryProps) => {
-    const { utils } = useNativeStyles();
+    const { applyStyle } = useNativeStyles();
+
+    if (!origin || !target) return null;
 
     const isTransactionPending = transactionStatus === 'pending';
 
@@ -77,19 +87,9 @@ export const TransactionDetailSummary = ({
         <Card>
             <VStack>
                 <TransactionDetailSummaryRow value={origin} title="From" />
-                <Border />
+                <BorderLine />
                 <Box flexDirection="row" alignItems="center">
-                    <Box
-                        style={{
-                            marginLeft: -12,
-                            marginRight: utils.spacings.small,
-                            backgroundColor: isTransactionPending
-                                ? utils.colors.yellow
-                                : utils.colors.forest,
-                            borderRadius: utils.borders.radii.round,
-                            padding: utils.spacings.small,
-                        }}
-                    >
+                    <Box style={applyStyle(confirmationIconStyle, { isTransactionPending })}>
                         <Icon
                             name={isTransactionPending ? 'clockClockwise' : 'check'}
                             color="gray0"
@@ -102,7 +102,7 @@ export const TransactionDetailSummary = ({
                         {transactionStatus}
                     </Text>
                 </Box>
-                <Border />
+                <BorderLine />
                 <TransactionDetailSummaryRow title="To" value={target} />
             </VStack>
         </Card>
