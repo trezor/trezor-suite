@@ -1,7 +1,8 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { Linking } from 'react-native';
 
-import { Box, Divider } from '@suite-native/atoms';
+import { BottomSheet, Box, Button, Card, Divider, Text } from '@suite-native/atoms';
 import {
     RootStackParamList,
     RootStackRoutes,
@@ -13,15 +14,23 @@ import { selectBlockchainState, selectTransactionByTxid } from '@suite-common/wa
 import { formatNetworkAmount, getConfirmations, toFiatCurrency } from '@suite-common/wallet-utils';
 import { selectFiatCurrency } from '@suite-native/module-settings';
 import { useFormatters } from '@suite-common/formatters';
+import { Icon } from '@trezor/icons';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { TransactionDetailHeader } from '../components/TransactionDetail/TransactionDetailHeader';
 import { TransactionDetailData } from '../components/TransactionDetail/TransactionDetailData';
-import { TransactionDetailConfirmations } from '../components/TransactionDetail/TransactionDetailConfirmations';
-import { TransactionDetailAmount } from '../components/TransactionDetail/TransactionDetailAmount';
+import { TransactionDetailSheets } from '../components/TransactionDetail/TransactionDetailSheets';
+
+const BLOCKCHAIN_EXPLORER_URL = 'https://www.blockchain.com/explorer/transactions';
+
+const linkStyle = prepareNativeStyle(_ => ({
+    marginRight: 12,
+}));
 
 export const TransactionDetailScreen = ({
     route,
 }: StackProps<RootStackParamList, RootStackRoutes.TransactionDetail>) => {
+    const { applyStyle } = useNativeStyles();
     const { txid } = route.params;
     const transaction = useSelector(selectTransactionByTxid(txid));
     const blockchain = useSelector(selectBlockchainState);
@@ -39,6 +48,10 @@ export const TransactionDetailScreen = ({
         symbol: transaction.symbol,
     });
 
+    const handleOpenBlockchain = () => {
+        Linking.openURL(`${BLOCKCHAIN_EXPLORER_URL}/${transaction.symbol}/${transaction.txid}`);
+    };
+
     return (
         <Screen header={<ScreenHeader />}>
             <TransactionDetailHeader
@@ -50,9 +63,20 @@ export const TransactionDetailScreen = ({
             <Box marginVertical="large">
                 <Divider />
             </Box>
-            <TransactionDetailConfirmations confirmations={confirmations} />
+            <TransactionDetailSheets />
+            {/* <TransactionDetailConfirmations confirmations={confirmations} /> */}
+            {/* <TransactionDetailAmount transaction={transaction} /> */}
             <Box marginVertical="large" />
-            <TransactionDetailAmount transaction={transaction} />
+            <Button
+                onPress={handleOpenBlockchain}
+                colorScheme="gray"
+                // style={applyStyle(exploreButtonStyle)}
+            >
+                <Box flexDirection="row" alignItems="center">
+                    <Text style={applyStyle(linkStyle)}>Explore in blockchain</Text>
+                    <Icon size="mediumLarge" name="arrowUpRight" color="gray1000" />
+                </Box>
+            </Button>
         </Screen>
     );
 };
