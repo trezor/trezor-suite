@@ -9,6 +9,7 @@ export const icons = {
     actionHorizontal: require('../assets/icons/actionHorizontal.svg'),
     arrowDown: require('../assets/icons/arrowDown.svg'),
     arrowUp: require('../assets/icons/arrowUp.svg'),
+    arrowUpRight: require('../assets/icons/arrowUpRight.svg'),
     backspace: require('../assets/icons/backspace.svg'),
     biometric: require('../assets/icons/biometric.svg'),
     calendar: require('../assets/icons/calendar.svg'),

@@ -53,7 +53,7 @@ export const TransactionDetailData = ({ transaction }: TransactionDetailDataProp
                                 symbol: transaction.symbol,
                             })}
                         </Text>
-                        <Text>
+                        <Text variant="hint" color="gray600">
                             {`≈ ${FiatAmountFormatter.format(fiatFeeAmount ?? 0, {
                                 currency: fiatCurrency.label,
                             })}`}
