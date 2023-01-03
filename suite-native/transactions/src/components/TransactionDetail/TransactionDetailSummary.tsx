@@ -44,7 +44,7 @@ const borderLineStyle = prepareNativeStyle(utils => ({
     marginLeft: utils.spacings.small,
 }));
 
-const BorderLine = () => {
+const VerticalSeparator = () => {
     const { applyStyle } = useNativeStyles();
 
     return <Box style={applyStyle(borderLineStyle)} />;
@@ -87,7 +87,7 @@ export const TransactionDetailSummary = ({
         <Card>
             <VStack>
                 <TransactionDetailSummaryRow value={origin} title="From" />
-                <BorderLine />
+                <VerticalSeparator />
                 <Box flexDirection="row" alignItems="center">
                     <Box style={applyStyle(confirmationIconStyle, { isTransactionPending })}>
                         <Icon
@@ -102,7 +102,7 @@ export const TransactionDetailSummary = ({
                         {transactionStatus}
                     </Text>
                 </Box>
-                <BorderLine />
+                <VerticalSeparator />
                 <TransactionDetailSummaryRow title="To" value={target} />
             </VStack>
         </Card>
