@@ -1,3 +1,7 @@
+import { getLuminance } from 'polished';
+
+import { CSSColor } from '@trezor/theme';
+
 export const getValueAndUnit = (valueAndUnit: string): [value: number, unit: string] => {
     const value = parseFloat(valueAndUnit);
     const [unit] = valueAndUnit.match(/([a-zA-Z]*|%)$/) ?? [''];
@@ -26,4 +30,9 @@ export const sum = (valuesAndUnits: string[]) => {
 export const negative = (value: number): number => {
     if (value <= 0) return value;
     return value * -1;
+};
+
+export const isDarkColor = (color: CSSColor) => {
+    const luminance = getLuminance(color);
+    return luminance < 0.5;
 };

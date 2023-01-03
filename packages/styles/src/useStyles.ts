@@ -16,7 +16,7 @@ import {
     StyleOrStylesParam,
     StyleUtils,
 } from './types';
-import { multiply, getValueAndUnit, sum, negative } from './utils';
+import { multiply, getValueAndUnit, sum, negative, isDarkColor } from './utils';
 import { processStyles, processNativeStyles } from './processStyles';
 import { mediaQueries } from './mediaQueries';
 import { useDirection } from './useDirection';
@@ -29,6 +29,7 @@ const sharedUtils = {
     sum,
     negative,
     transparentize: transparentize as ColorTransformFunction,
+    isDarkColor,
 };
 
 export const useStyles = () => {

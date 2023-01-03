@@ -49,22 +49,24 @@ export const Screen = ({
     customVerticalPadding = nativeSpacings.medium,
     customHorizontalPadding = nativeSpacings.medium,
 }: ScreenProps) => {
-    const { applyStyle } = useNativeStyles();
+    const {
+        applyStyle,
+        utils: { colors, isDarkColor },
+    } = useNativeStyles();
     const insets = useSafeAreaInsets();
+    const barStyle = isDarkColor(colors[backgroundColor]) ? 'light-content' : 'dark-content';
 
     return (
         <SafeAreaView
-            style={[
-                applyStyle(screenContainerStyle, {
-                    backgroundColor,
-                }),
-            ]}
+            style={applyStyle(screenContainerStyle, {
+                backgroundColor,
+            })}
         >
             <StatusBar
-                barStyle="dark-content"
+                barStyle={barStyle}
                 hidden={!hasStatusBar}
-                translucent={!hasStatusBar}
-                backgroundColor="transparent"
+                translucent={false}
+                backgroundColor={colors[backgroundColor]}
             />
             {header && (
                 <View>
