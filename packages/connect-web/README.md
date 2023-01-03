@@ -52,4 +52,5 @@ For more instructions [refer to this document](https://github.com/trezor/trezor-
 
 -   clone repository: `git clone git@github.com:trezor/trezor-suite.git`
 -   install node_modules: `yarn && yarn build:libs`
+-   generate certs `yarn workspace @trezor/connect-web predev`
 -   It is possible to run local dev server with iframe and popup using: `yarn workspace @trezor/connect-web dev` Note: don't forget to visit `https://localhost:8088/` and allow self-signed certificate. No UI is displayed here.
