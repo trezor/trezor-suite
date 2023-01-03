@@ -7,7 +7,7 @@ import type * as CSS from 'csstype';
 // https://emotion.sh/docs/typescript#define-a-theme
 import type { Theme, NativeTheme, CSSColor } from '@trezor/theme';
 
-import type { multiply, getValueAndUnit, sum, negative } from './utils';
+import type { multiply, getValueAndUnit, sum, negative, isDarkColor } from './utils';
 import type { mediaQueries } from './mediaQueries';
 
 export type Breakpoint = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'xxl';
@@ -36,6 +36,7 @@ export interface UniversalStyleUtils extends DirectionUtils {
     darken: ColorTransformFunction;
     lighten: ColorTransformFunction;
     transparentize: ColorTransformFunction;
+    isDarkColor: typeof isDarkColor;
 }
 
 export interface StyleUtils extends Theme, UniversalStyleUtils {
