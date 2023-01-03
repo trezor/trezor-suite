@@ -43,7 +43,7 @@ export const TransactionDetailData = ({ transaction }: TransactionDetailDataProp
                 <TransactionDetailSummary
                     target="1F1t Xzy2 ....  002A 4xQx"
                     origin="HODL Bitcoins"
-                    transactionStatus="confirmed"
+                    transactionStatus="pending"
                 />
                 <Card>
                     <Box flexDirection="row" justifyContent="space-between" alignItems="center">
