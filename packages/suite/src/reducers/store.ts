@@ -46,7 +46,7 @@ const middleware = [
     ...recoveryMiddlewares,
 ];
 
-const excludedActions = ['@log/add', '@coinjoin/client-log'];
+const excludedActions = ['@log/add'];
 
 if (!process.env.CODESIGN_BUILD) {
     const excludeLogger = (_getState: any, action: any): boolean => {
