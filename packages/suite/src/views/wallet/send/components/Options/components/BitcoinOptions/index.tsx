@@ -54,6 +54,7 @@ export const BitcoinOptions = () => {
         toggleOption,
         composeTransaction,
         resetDefaultValue,
+        setValue,
     } = useSendFormContext();
 
     const options = useWatch<FormOptions[]>({
@@ -67,7 +68,10 @@ export const BitcoinOptions = () => {
     const utxoSelectionEnabled = options.includes('utxoSelection');
     const broadcastEnabled = options.includes('broadcast');
 
-    const toggleUtxoSelection = () => toggleOption('utxoSelection');
+    const toggleUtxoSelection = () => {
+        setValue('hasCoinControlBeenOpened', true); // required for analytics
+        toggleOption('utxoSelection');
+    };
 
     return (
         <Wrapper>

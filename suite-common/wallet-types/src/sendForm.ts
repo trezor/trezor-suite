@@ -42,6 +42,7 @@ export type FormState = {
     rippleDestinationTag?: string;
     rbfParams?: RbfTransactionParams;
     isCoinControlEnabled: boolean;
+    hasCoinControlBeenOpened: boolean;
     selectedUtxos: AccountUtxo[];
 };
 // local state of @wallet-hooks/useSendForm

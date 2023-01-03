@@ -103,7 +103,8 @@ const OutputList = ({
     isRbfAction,
 }: OutputListProps) => {
     const { symbol } = account;
-    const { options, selectedFee } = precomposedForm;
+    const { options, selectedFee, isCoinControlEnabled, hasCoinControlBeenOpened } =
+        precomposedForm;
     const broadcastEnabled = options.includes('broadcast');
 
     const reportTransactionCreatedEvent = (action: 'sent' | 'copied' | 'downloaded' | 'replaced') =>
@@ -124,6 +125,8 @@ const OutputList = ({
                 rippleDestinationTag: !!options.includes('rippleDestinationTag'),
                 ethereumNonce: !!options.includes('ethereumNonce'),
                 selectedFee: selectedFee || 'normal',
+                isCoinControlEnabled,
+                hasCoinControlBeenOpened,
             },
         });
 
