@@ -8,11 +8,11 @@ import type { HandshakeClient } from '@trezor/suite-desktop-api';
 
 import { ipcMain } from './typed-electron';
 import { APP_NAME } from './libs/constants';
-import * as store from './libs/store';
+import { Store } from './libs/store';
 import { MIN_HEIGHT, MIN_WIDTH } from './libs/screen';
 import { getBuildInfo, getComputerInfo } from './libs/info';
 import { restartApp } from './libs/app-utils';
-import { clearAppCache } from './libs/user-data';
+import { clearAppCache, initUserData } from './libs/user-data';
 import { initModules } from './modules';
 import { init as initTorModule } from './modules/tor';
 import { createInterceptor } from './libs/request-interceptor';
@@ -22,11 +22,6 @@ import { Logger } from './libs/logger';
 // @ts-expect-error using internal electron API to set suite version in dev mode correctly
 if (isDevEnv) app.setVersion(process.env.VERSION);
 
-// Logger
-const logger = new Logger();
-
-// Globals
-global.logger = logger;
 global.resourcesPath = isDevEnv
     ? path.join(__dirname, '..', 'build', 'static')
     : process.resourcesPath;
@@ -57,7 +52,7 @@ const createMainWindow = (winBounds: WinBounds) => {
             resizeDebounce = null;
             if (!mainWindow) return;
             const winBound = mainWindow.getBounds() as WinBounds;
-            store.setWinBounds(winBound);
+            Store.getStore().setWinBounds(winBound);
             logger.debug('app', 'new winBounds saved');
         }, 1000);
     });
@@ -72,6 +67,12 @@ const createMainWindow = (winBounds: WinBounds) => {
 };
 
 const init = async () => {
+    initUserData(); // has to be before initSentry and logger
+
+    // Logger
+    const logger = new Logger();
+    global.logger = logger;
+
     logger.info('main', `Application starting`);
 
     // https://www.electronjs.org/docs/all#apprequestsingleinstancelock
@@ -83,12 +84,16 @@ const init = async () => {
         return;
     }
 
+    const store = Store.getStore();
+
     const sentryConfig: ElectronOptions = {
         ...SENTRY_CONFIG,
         ipcMode: IPCMode.Classic,
         getSessions: () => [session.defaultSession],
     };
 
+    // Sentry still ignore userPath change so in local build it uses @trezor/suite-desktop/sentry folder.
+    // I believe it is not a problem.
     initSentry(sentryConfig);
 
     app.name = APP_NAME; // overrides @trezor/suite-desktop app name in menu

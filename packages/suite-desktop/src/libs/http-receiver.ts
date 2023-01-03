@@ -119,14 +119,21 @@ export class HttpReceiver extends EventEmitter {
 
     start() {
         return new Promise((resolve, reject) => {
+            const port = HttpReceiver.PORTS[0];
             this.server.on('error', e => {
-                // @ts-expect-error - type is missing
-                this.logger.error('http-receiver', `Start error code: ${e.code}`);
-                // if (e.code === 'EADDRINUSE') {} // TODO: Try different port if already in use
                 this.server.close();
-                return reject();
+                // @ts-expect-error - type is missing
+                const errorCode: string = e.code;
+
+                const errorMessage =
+                    errorCode === 'EADDRINUSE'
+                        ? `Port ${port} already in use!` // TODO: Try different port?
+                        : `Start error code: ${errorCode}`;
+
+                this.logger.error('http-receiver', errorMessage);
+                return reject(new Error(`http-receiver: ${errorMessage}`));
             });
-            this.server.listen(HttpReceiver.PORTS[0], '127.0.0.1', undefined, () => {
+            this.server.listen(port, '127.0.0.1', undefined, () => {
                 this.logger.info('http-receiver', 'Server started');
                 const address = this.getServerAddress();
                 if (address) {

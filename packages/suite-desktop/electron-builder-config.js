@@ -1,12 +1,15 @@
 const { suiteVersion } = require('../suite/package.json');
 const schemes = require('./uriSchemes.json');
 
+const isCodesignBuild = process.env.IS_CODESIGN_BUILD === 'true';
+
 /* eslint-disable no-template-curly-in-string */ // to be able to use patterns like ${author} and ${arch}
 module.exports = {
     appId: 'io.trezor.TrezorSuite',
     extraMetadata: {
         version: suiteVersion,
-        name: '@trezor/suite-desktop',
+        // distingush between dev and prod builds so different userDataDir is used
+        name: `@trezor/suite-desktop${isCodesignBuild ? '' : '-dev'}`,
     },
     productName: 'Trezor Suite',
     copyright: 'Copyright © ${author}',

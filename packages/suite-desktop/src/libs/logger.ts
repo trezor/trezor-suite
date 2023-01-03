@@ -23,7 +23,6 @@ export type Options = {
     logFormat?: string; // Output format of the log
 };
 
-const userDataDir = app?.getPath('userData');
 const logLevelSwitchValue = app?.commandLine.getSwitchValue('log-level');
 const logLevelByEnv = isDevEnv ? 'debug' : 'error';
 const logLevelDefault = isLogLevel(logLevelSwitchValue) ? logLevelSwitchValue : logLevelByEnv;
@@ -39,6 +38,8 @@ export class Logger implements ILogger {
         const logLevel = level || logLevelDefault;
 
         this.logLevel = logLevels.indexOf(logLevel);
+
+        const userDataDir = app?.getPath('userData');
 
         this.defaultOptions = {
             colors: true,

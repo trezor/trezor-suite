@@ -93,12 +93,15 @@ export const initModules = async (dependencies: Dependencies) => {
                     });
                     return [moduleToLoad, payload] as const;
                 } catch (err) {
-                    logger.error('modules', `Couldn't load ${moduleToLoad} (${err.toString()})`);
+                    logger.error('modules', `Couldn't load ${moduleToLoad} (${err?.toString()})`);
                     dependencies.mainWindow.webContents.send('handshake/event', {
                         type: 'error',
                         message: `${moduleToLoad} error`,
                     });
-                    throw err;
+
+                    throw new Error(
+                        `Check if there is another instance of the Suite app running. ${err}`,
+                    );
                 }
             }),
         )

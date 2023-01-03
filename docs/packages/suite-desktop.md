@@ -2,7 +2,7 @@
 
 ## Main differences between suite-web and suite-desktop builds
 
-### @trezor/connect API
+### - @trezor/connect API
 
 -   suite-web
 
@@ -20,7 +20,7 @@
 
     On the renderer context all `@trezor/connect` methods from are replaced by `@trezor/ipc-proxy` methods. see [index](https://github.com/trezor/trezor-suite/blob/develop/packages/suite-desktop/src/Main.tsx)
 
-### Firmware binaries
+### - Firmware binaries
 
 -   suite-web
 
@@ -30,9 +30,21 @@
 
     firmware binaries are bundled as application resources in `bin` directory, full path depends on OS but it could be found on the as level as `app.asar` file, and they are downloaded using `fs.readFile` API. see @trezor/connect/src/utils/assets
 
-### Trezor Bridge (trezord)
+### - Trezor Bridge (trezord)
 
-### Tor
+### - Tor
+
+## App ID and name by environment
+
+| Environment           | App ID                 | App name             | User data dir name            |
+| --------------------- | ---------------------- | -------------------- | ----------------------------- |
+| production (codesign) | `com.trezor.suite`     | `Trezor Suite`       | `@trezor/suite-desktop`       |
+| development (sldev)   | `com.trezor.suite.dev` | `Trezor Suite Dev`   | `@trezor/suite-desktop-dev`   |
+| local                 | `com.github.Electron`  | `Trezor Suite Local` | `@trezor/suite-desktop-local` |
+
+Suite app name and ID are set by the environment so that Suite uses different user data dir and it's not mixed between environments. The main benefit is that you can switch back and forth between Suite dev versions without losing your remembered production wallets. One disadvantage of this solution is checking of other instance running is not so straitforward between environments.
+
+Same concept (user data separated by environment) works on web out of the box (storage per domain name).
 
 ## Debugging main process (Chrome dev tools)
 
