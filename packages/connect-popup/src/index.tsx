@@ -212,10 +212,10 @@ const handshake = (handshake: PopupHandshake) => {
         type: EventType.AppReady,
         payload: {
             version: payload?.settings?.version,
+            // reported in IFRAME.INIT. either origin where iframe was initiated or chrome.runtime.id for extensions
             origin: payload?.settings?.origin,
             referrerApp: payload?.settings?.manifest?.appUrl,
             referrerEmail: payload?.settings?.manifest?.email,
-            appUrl: new URL(document.location.href).searchParams.get('appUrl') || '',
             transportType: payload.transport?.type,
             transportVersion: payload.transport?.version,
         },

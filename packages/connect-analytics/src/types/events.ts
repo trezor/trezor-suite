@@ -26,7 +26,6 @@ export type ConnectAnalyticsEvent =
               origin?: string;
               referrerApp?: string;
               referrerEmail?: string;
-              appUrl: string;
               transportType?: string;
               transportVersion?: string;
           };
