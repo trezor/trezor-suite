@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { app, shell } from 'electron';
 
+import { isDevEnv } from '@suite-common/suite-utils';
 import { InvokeResult } from '@trezor/suite-desktop-api';
 
 export const clearAppCache = () =>
@@ -9,6 +10,26 @@ export const clearAppCache = () =>
         const cachePath = path.join(app.getPath('userData'), 'Cache');
         fs.rm(cachePath, { recursive: true }, err => (err ? reject(err) : resolve()));
     });
+
+/**
+ * By default, Electron uses the app name from package.json to construct the userData directory.
+ * It's overriten in electron-builder-config.js for builds. And here for local development.
+ * Default (codesigned builds): @trezor/suite-desktop,
+ * Dev (non-production builds): @trezor/suite-desktop-dev
+ * Local development: @trezor/suite-desktop-local
+ */
+export const initUserData = () => {
+    if (isDevEnv) {
+        const userDataDirDefault = app.getPath('userData');
+        const userDataDir = `${userDataDirDefault}-local`;
+        try {
+            fs.accessSync(userDataDir, fs.constants.R_OK);
+        } catch {
+            fs.mkdirSync(userDataDir);
+        }
+        app.setPath('userData', userDataDir);
+    }
+};
 
 export const save = async (
     directory: string,

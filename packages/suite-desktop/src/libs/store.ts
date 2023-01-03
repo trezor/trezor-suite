@@ -1,53 +1,80 @@
-import Store from 'electron-store';
+import ElectronStore from 'electron-store';
 
 import { SuiteThemeVariant } from '@trezor/suite-desktop-api';
 
 import { getInitialWindowSize } from './screen';
 
-// creates config.json inside appData folder https://electronjs.org/docs/api/app#appgetpathname
-const store = new Store<{
-    winBounds: WinBounds;
-    updateSettings: UpdateSettings;
-    themeSettings: SuiteThemeVariant;
-    torSettings: TorSettings;
-    bridgeSettings: BridgeSettings;
-}>();
+export class Store {
+    private static instance: Store;
+    private store: ElectronStore<{
+        winBounds: WinBounds;
+        updateSettings: UpdateSettings;
+        themeSettings: SuiteThemeVariant;
+        torSettings: TorSettings;
+        bridgeSettings: BridgeSettings;
+    }>;
 
-export const getWinBounds = () => store.get('winBounds', getInitialWindowSize());
-
-export const setWinBounds = (winBounds: WinBounds) => {
-    // save only non zero dimensions
-    if (winBounds.width > 0 && winBounds.height > 0) {
-        store.set('winBounds', winBounds);
+    private constructor() {
+        this.store = new ElectronStore();
     }
-};
 
-export const getUpdateSettings = () => store.get('updateSettings', { allowPrerelease: false });
+    public static getStore(): Store {
+        if (!Store.instance) {
+            Store.instance = new Store();
+        }
 
-export const setUpdateSettings = (updateSettings: UpdateSettings) =>
-    store.set('updateSettings', updateSettings);
+        return Store.instance;
+    }
 
-export const getThemeSettings = () => store.get('themeSettings', 'system');
+    public getWinBounds() {
+        return this.store.get('winBounds', getInitialWindowSize());
+    }
 
-export const setThemeSettings = (themeSettings: SuiteThemeVariant) =>
-    store.set('themeSettings', themeSettings);
+    public setWinBounds(winBounds: WinBounds) {
+        // save only non zero dimensions
+        if (winBounds.width > 0 && winBounds.height > 0) {
+            this.store.set('winBounds', winBounds);
+        }
+    }
 
-export const getTorSettings = () =>
-    store.get('torSettings', {
-        running: false,
-        address: '',
-    });
+    public getUpdateSettings() {
+        return this.store.get('updateSettings', { allowPrerelease: false });
+    }
 
-export const setTorSettings = (torSettings: TorSettings) => store.set('torSettings', torSettings);
+    public setUpdateSettings(updateSettings: UpdateSettings) {
+        this.store.set('updateSettings', updateSettings);
+    }
 
-export const getBridgeSettings = () =>
-    store.get('bridgeSettings', {
-        startOnStartup: true,
-    });
+    public getThemeSettings() {
+        return this.store.get('themeSettings', 'system');
+    }
 
-export const setBridgeSettings = (bridgeSettings: BridgeSettings) => {
-    store.set('bridgeSettings', bridgeSettings);
-};
+    public setThemeSettings(themeSettings: SuiteThemeVariant) {
+        this.store.set('themeSettings', themeSettings);
+    }
 
-/** Deletes all items from the store. */
-export const clear = () => store.clear();
+    public getTorSettings() {
+        return this.store.get('torSettings', {
+            running: false,
+            address: '',
+        });
+    }
+    public setTorSettings(torSettings: TorSettings) {
+        this.store.set('torSettings', torSettings);
+    }
+
+    public getBridgeSettings() {
+        return this.store.get('bridgeSettings', {
+            startOnStartup: true,
+        });
+    }
+
+    public setBridgeSettings(bridgeSettings: BridgeSettings) {
+        this.store.set('bridgeSettings', bridgeSettings);
+    }
+
+    /** Deletes all items from the store. */
+    public clear() {
+        this.store.clear();
+    }
+}
