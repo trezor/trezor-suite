@@ -81,6 +81,24 @@ class AccountsPage {
         cy.getTestElement('@account-menu/btc/legacy/0').click({ force: true });
         cy.getTestElement('@app').scrollTo('bottom');
     }
+
+    clickOnDesiredAccount(coinName: NetworkSymbol) {
+        cy.getTestElement(`@account-menu/${coinName}/normal/0`)
+            .click()
+            .parent()
+            .should('have.class', 'selected');
+    }
+
+    exportDesiredTransactionType(typeOfExport: string) {
+        cy.getTestElement('@wallet/accounts/export-transactions/dropdown').click({
+            scrollBehavior: false,
+        });
+        cy.getTestElement(`@wallet/accounts/export-transactions/${typeOfExport}`)
+            .should('be.visible')
+            .click({
+                scrollBehavior: false,
+            });
+    }
 }
 
 export const onAccountsPage = new AccountsPage();
