@@ -93,8 +93,8 @@ Available flags:
 | `--log-level=NAME`    | Set the logging level. Available levels are [name (value)]: error (1), warn (2), info(3), debug (4). All logs with a value equal or lower to the selected log level will be displayed. |
 | `--log-write`         | Write log to disk                                                                                                                                                                      |
 | `--log-ui`            | Enables printing of UI console messages in the console.                                                                                                                                |
-| `--log-file=FILENAME` | Name of the output file (defaults to `log-%ts.txt`)                                                                                                                                    |
-| `--log-path=PATHNAME` | Path for the output file (defaults to home or current working directory)                                                                                                               |
+| `--log-file=FILENAME` | Name of the output file (defaults to `trezor-suite-log-%tt.txt`)                                                                                                                       |
+| `--log-path=PATHNAME` | Path for the output file (defaults to `/logs` subfolder of Suite data directory or current working directory)                                                                          |
 | `--enable-updater`    | Enables the auto updater (if disabled in feature flags)                                                                                                                                |
 | `--disable-updater`   | Disables the auto updater (if enabled in feature flags)                                                                                                                                |
 | `--updater-url=URL`   | Set custom URL for auto-updater (default is github)                                                                                                                                    |

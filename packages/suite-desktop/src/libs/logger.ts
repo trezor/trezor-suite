@@ -44,7 +44,7 @@ export class Logger implements ILogger {
             colors: true,
             writeToConsole: !app?.commandLine.hasSwitch('log-no-print'),
             writeToDisk: app?.commandLine.hasSwitch('log-write'),
-            outputFile: app?.commandLine.getSwitchValue('log-file') || 'trezor-suite-log-%ts.txt',
+            outputFile: app?.commandLine.getSwitchValue('log-file') || 'trezor-suite-log-%tt.txt',
             outputPath:
                 app?.commandLine.getSwitchValue('log-path') ||
                 (userDataDir ? `${userDataDir}/logs` : process.cwd()),
@@ -147,7 +147,8 @@ export class Logger implements ILogger {
 
         message = message
             .replace('%dt', new Date().toISOString())
-            .replace('%ts', (+new Date()).toString());
+            .replace('%ts', (+new Date()).toString())
+            .replace('%tt', new Date().toISOString().split('.')[0].replace(/:/g, '-'));
 
         return message;
     }
