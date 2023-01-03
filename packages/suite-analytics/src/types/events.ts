@@ -150,6 +150,8 @@ export type SuiteAnalyticsEvent =
               ethereumNonce: boolean;
               rippleDestinationTag: boolean;
               selectedFee: string;
+              isCoinControlEnabled: boolean;
+              hasCoinControlBeenOpened: boolean;
           };
       }
     | {
