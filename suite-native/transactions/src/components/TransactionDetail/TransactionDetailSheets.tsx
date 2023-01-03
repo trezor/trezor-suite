@@ -48,12 +48,12 @@ export const TransactionDetailSheets = () => {
                     onPress={() => setIsParametersSheetExpanded(true)}
                 />
                 <BottomSheetTrigger
-                    iconName="close"
+                    iconName="clockClockwise"
                     title="Current values"
                     onPress={() => setIsValuesSheetExpanded(true)}
                 />
                 <BottomSheetTrigger
-                    iconName="close"
+                    iconName="swap"
                     title="Inputs & Outputs"
                     onPress={() => setIsInputsSheetExpanded(true)}
                 />
