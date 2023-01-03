@@ -28,7 +28,6 @@ export interface CoinjoinClientInstance {
     feeRatesMedians: CoinjoinClientFeeRatesMedians;
     coordinationFeeRate: CoinjoinStatusEvent['coordinationFeeRate'];
     allowedInputAmounts: CoinjoinStatusEvent['allowedInputAmounts'];
-    log: { time: number; value: string }[];
 }
 
 export interface CoinjoinState {
@@ -227,10 +226,7 @@ const createClient = (
 ) => {
     const exists = draft.clients[payload.symbol];
     if (exists) return;
-    draft.clients[payload.symbol] = {
-        ...transformCoinjoinStatus(payload.status),
-        log: [],
-    };
+    draft.clients[payload.symbol] = transformCoinjoinStatus(payload.status);
 };
 
 const updateClientStatus = (
@@ -243,24 +239,6 @@ const updateClientStatus = (
         ...client,
         ...transformCoinjoinStatus(payload.status),
     };
-};
-
-const handleClientLog = (
-    draft: CoinjoinState,
-    payload: ExtractActionPayload<typeof COINJOIN.CLIENT_LOG>,
-) => {
-    const client = draft.clients[payload.symbol];
-    if (!client) return;
-
-    // put message at 1st position
-    client.log.unshift({
-        time: Date.now(),
-        value: payload.message,
-    });
-    // keep max 200 messages
-    if (client.log.length > 200) {
-        client.log = client.log.slice(0, 200);
-    }
 };
 
 export const coinjoinReducer = (
@@ -324,11 +302,6 @@ export const coinjoinReducer = (
             case COINJOIN.SESSION_TX_SIGNED:
                 signSession(draft, action.payload);
                 break;
-
-            case COINJOIN.CLIENT_LOG: {
-                handleClientLog(draft, action.payload);
-                break;
-            }
 
             // no default
         }
