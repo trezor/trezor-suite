@@ -11,7 +11,7 @@ import {
 import { D } from '@mobily/ts-belt';
 
 import { createMiddleware, ExtraDependenciesPartial } from '@suite-common/redux-utils';
-import { mergeObject as mergeDeepObject } from '@trezor/utils';
+import { mergeDeepObject } from '@trezor/utils';
 
 import { extraDependenciesMock } from './extraDependenciesMock';
 
