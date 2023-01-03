@@ -26,6 +26,9 @@ export const TransactionDetailData = ({ transaction }: TransactionDetailDataProp
         return new Date(transaction.blockTime * 1000).toLocaleTimeString();
     };
 
+    const transactionOriginAddresses = transaction.details.vin[0].addresses;
+    const transactionTargetAddresses = transaction.targets[0].addresses;
+
     return (
         <>
             <VStack>
@@ -41,8 +44,8 @@ export const TransactionDetailData = ({ transaction }: TransactionDetailDataProp
                     </Box>
                 </Card>
                 <TransactionDetailSummary
-                    target="1F1t Xzy2 ....  002A 4xQx"
-                    origin="HODL Bitcoins"
+                    origin={transactionOriginAddresses && transactionOriginAddresses[0]}
+                    target={transactionTargetAddresses && transactionTargetAddresses[0]}
                     transactionStatus="pending"
                 />
                 <Card>

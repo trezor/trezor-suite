@@ -10,7 +10,7 @@ import {
     ScreenHeader,
     StackProps,
 } from '@suite-native/navigation';
-import { selectTransactionByTxid } from '@suite-common/wallet-core';
+import { selectBlockchainState, selectTransactionByTxid } from '@suite-common/wallet-core';
 import { formatNetworkAmount, toFiatCurrency } from '@suite-common/wallet-utils';
 import { selectFiatCurrency } from '@suite-native/module-settings';
 import { useFormatters } from '@suite-common/formatters';
@@ -21,8 +21,6 @@ import { TransactionDetailHeader } from '../components/TransactionDetail/Transac
 import { TransactionDetailData } from '../components/TransactionDetail/TransactionDetailData';
 import { TransactionDetailSheets } from '../components/TransactionDetail/TransactionDetailSheets';
 
-const BLOCKCHAIN_EXPLORER_URL = 'https://www.blockchain.com/explorer/transactions';
-
 const linkStyle = prepareNativeStyle(_ => ({
     marginRight: 12,
 }));
@@ -30,10 +28,10 @@ const linkStyle = prepareNativeStyle(_ => ({
 export const TransactionDetailScreen = ({
     route,
 }: StackProps<RootStackParamList, RootStackRoutes.TransactionDetail>) => {
-    const { applyStyle } = useNativeStyles();
+    const { applyStyle, utils } = useNativeStyles();
     const { txid } = route.params;
     const transaction = useSelector(selectTransactionByTxid(txid));
-    // const blockchain = useSelector(selectBlockchainState);
+    const blockchain = useSelector(selectBlockchainState);
     const fiatCurrency = useSelector(selectFiatCurrency);
     const { CryptoAmountFormatter } = useFormatters();
 
@@ -49,12 +47,13 @@ export const TransactionDetailScreen = ({
     });
 
     const handleOpenBlockchain = () => {
+        const baseUrl = blockchain[transaction.symbol].explorer.tx;
         // TODO this should open the https://goerli2.trezor.io/
-        Linking.openURL(`${BLOCKCHAIN_EXPLORER_URL}/${transaction.symbol}/${transaction.txid}`);
+        Linking.openURL(`${baseUrl}${transaction.txid}`);
     };
 
     return (
-        <Screen header={<ScreenHeader />}>
+        <Screen customHorizontalPadding={utils.spacings.small} header={<ScreenHeader />}>
             <VStack spacing="large">
                 <TransactionDetailHeader
                     type={transaction.type}
