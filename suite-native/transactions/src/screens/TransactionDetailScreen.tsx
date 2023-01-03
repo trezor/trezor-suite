@@ -35,10 +35,7 @@ export const TransactionDetailScreen = ({
     const fiatCurrency = useSelector(selectFiatCurrency);
     const { CryptoAmountFormatter } = useFormatters();
 
-    // TODO please add empty state when design is ready
     if (!transaction) return null;
-
-    // const confirmations = getConfirmations(transaction, blockchain[transaction.symbol].blockHeight);
 
     const transactionAmount = formatNetworkAmount(transaction.amount, transaction.symbol);
     const fiatAmount = toFiatCurrency(transactionAmount, fiatCurrency.label, transaction.rates);
@@ -48,7 +45,6 @@ export const TransactionDetailScreen = ({
 
     const handleOpenBlockchain = () => {
         const baseUrl = blockchain[transaction.symbol].explorer.tx;
-        // TODO this should open the https://goerli2.trezor.io/
         Linking.openURL(`${baseUrl}${transaction.txid}`);
     };
 
