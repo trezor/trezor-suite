@@ -7,12 +7,14 @@ import { isWeb, isDesktop } from '@suite-utils/env';
 import { getLocationHostname } from '@trezor/env-utils';
 import { TorStatus } from '@suite-types';
 import { selectTorState } from '@suite-reducers/suiteReducer';
+import { notificationsActions } from '@suite-common/toast-notifications';
 
 export const useTor = () => {
-    const { updateTorStatus, setTorBootstrap, setTorBootstrapSlow } = useActions({
+    const { updateTorStatus, setTorBootstrap, setTorBootstrapSlow, addToast } = useActions({
         updateTorStatus: suiteActions.updateTorStatus,
         setTorBootstrap: suiteActions.setTorBootstrap,
         setTorBootstrapSlow: suiteActions.setTorBootstrapSlow,
+        addToast: notificationsActions.addToast,
     });
     const { torBootstrap, isTorEnabling } = useSelector(selectTorState);
 
@@ -40,6 +42,13 @@ export const useTor = () => {
                     case 'Disabled':
                         updateTorStatus(TorStatus.Disabled);
                         break;
+                    case 'Misbehaving':
+                        // When network is slow for some reason but still working we display toast message
+                        // to let the user know that it is going to take some time but it's working.
+                        addToast({
+                            type: 'tor-is-slow',
+                        });
+                        break;
                     default:
                         updateTorStatus(TorStatus.Error);
                 }
@@ -47,7 +56,7 @@ export const useTor = () => {
         }
 
         return () => desktopApi.removeAllListeners('tor/status');
-    }, [updateTorStatus, torBootstrap]);
+    }, [updateTorStatus, torBootstrap, addToast]);
 
     useEffect(() => {
         desktopApi.on('tor/bootstrap', (bootstrapEvent: BootstrapTorEvent) => {
