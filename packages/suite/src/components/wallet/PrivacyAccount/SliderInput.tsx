@@ -29,6 +29,8 @@ const Level = styled(Input)`
     }
 `;
 
+const MAX_ALLOWED_INTEGER = 1000000;
+
 interface SliderInputProps extends Pick<InputProps, 'isDisabled' | 'innerAddon' | 'addonAlign'> {
     value: number | '';
     onChange: (number: number) => void;
@@ -70,7 +72,7 @@ export const SliderInput = forwardRef<
         }
 
         const number = Number(target.value);
-        if (Number.isNaN(number)) {
+        if (Number.isNaN(number) || number > MAX_ALLOWED_INTEGER) {
             return;
         }
 
