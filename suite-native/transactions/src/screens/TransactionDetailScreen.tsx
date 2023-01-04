@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { Linking } from 'react-native';
+import { Linking, TouchableOpacity } from 'react-native';
 
 import { Box, Button, Text, VStack } from '@suite-native/atoms';
 import {
@@ -21,8 +21,14 @@ import { TransactionDetailHeader } from '../components/TransactionDetail/Transac
 import { TransactionDetailData } from '../components/TransactionDetail/TransactionDetailData';
 import { TransactionDetailSheets } from '../components/TransactionDetail/TransactionDetailSheets';
 
-const linkStyle = prepareNativeStyle(_ => ({
-    marginRight: 12,
+const buttonStyle = prepareNativeStyle(utils => ({
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: utils.colors.gray200,
+    borderRadius: utils.borders.radii.round,
+    paddingVertical: 12,
+    height: 48,
 }));
 
 export const TransactionDetailScreen = ({
@@ -59,13 +65,11 @@ export const TransactionDetailScreen = ({
                 <TransactionDetailData transaction={transaction} />
             </VStack>
             <TransactionDetailSheets />
-            <Box marginVertical="large" />
-            <Button onPress={handleOpenBlockchain} colorScheme="gray">
-                <Box flexDirection="row" alignItems="center">
-                    <Text style={applyStyle(linkStyle)}>Explore in blockchain</Text>
-                    <Icon size="mediumLarge" name="arrowUpRight" color="gray1000" />
-                </Box>
-            </Button>
+            <Box marginBottom="large" />
+            <TouchableOpacity onPress={handleOpenBlockchain} style={applyStyle(buttonStyle)}>
+                <Text style={applyStyle(buttonStyle)}>Explore in blockchain</Text>
+                <Icon size="mediumLarge" name="arrowUpRight" color="gray1000" />
+            </TouchableOpacity>
         </Screen>
     );
 };
