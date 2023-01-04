@@ -17,6 +17,8 @@ const stepperDotWrapperStyle = prepareNativeStyle(utils => ({
     width: 16,
     height: 16,
     borderRadius: utils.borders.radii.round,
+    borderWidth: 1,
+    borderColor: utils.colors.red,
 }));
 
 const stepperDotStyle = prepareNativeStyle(utils => ({
@@ -41,7 +43,6 @@ const borderLineStyle = prepareNativeStyle(utils => ({
     borderColor: utils.colors.gray400,
     height: 10,
     width: 1,
-    marginLeft: utils.spacings.small,
 }));
 
 const VerticalSeparator = () => {
@@ -50,32 +51,43 @@ const VerticalSeparator = () => {
     return <Box style={applyStyle(borderLineStyle)} />;
 };
 
-const TransactionDetailSummaryRow = ({ value, title }: { value: string; title: string }) => (
+export const RowWithTitle = ({ title, value }: { title: string; value: string }) => (
+    <>
+        <Text color="gray600" variant="hint">
+            {title}
+        </Text>
+        <Text>{value}</Text>
+    </>
+);
+
+const SummaryRow = ({
+    children,
+    leftComponent,
+}: {
+    children: React.ReactNode;
+    leftComponent: React.ReactNode;
+}) => (
     <Box flexDirection="row" alignItems="center">
-        <TransactionDetailSummaryStepper />
-        <Box marginLeft="medium">
-            <Text color="gray600" variant="hint">
-                {title}
-            </Text>
-            <Text numberOfLines={1} ellipsizeMode="middle" style={{ maxWidth: 160 }}>
-                {value}
-            </Text>
+        <Box style={{ width: 40, borderWidth: 1, borderColor: 'red', alignItems: 'center' }}>
+            {leftComponent}
         </Box>
+        <Box marginLeft="medium">{children}</Box>
     </Box>
 );
 
 const confirmationIconStyle = prepareNativeStyle<{ isTransactionPending: boolean }>(
     (utils, { isTransactionPending }) => ({
-        marginLeft: -12,
-        marginRight: utils.spacings.small,
         backgroundColor: isTransactionPending ? utils.colors.yellow : utils.colors.forest,
         borderRadius: utils.borders.radii.round,
         padding: utils.spacings.small,
+        marginVertical: utils.spacings.small,
     }),
 );
 
 const cardContentStyle = prepareNativeStyle(utils => ({
-    paddingHorizontal: utils.spacings.medium,
+    borderColor: 'red',
+    borderWidth: 1,
+    overflow: 'hidden',
 }));
 
 const transactionStatusTextStyle = prepareNativeStyle(() => ({
@@ -96,24 +108,41 @@ export const TransactionDetailSummary = ({
     return (
         <Card>
             <VStack style={applyStyle(cardContentStyle)}>
-                <TransactionDetailSummaryRow value={origin} title="From" />
-                <VerticalSeparator />
-                <Box flexDirection="row" alignItems="center">
-                    <Box style={applyStyle(confirmationIconStyle, { isTransactionPending })}>
-                        <Icon
-                            name={isTransactionPending ? 'clockClockwise' : 'check'}
-                            color="gray0"
-                        />
-                    </Box>
+                <SummaryRow leftComponent={<TransactionDetailSummaryStepper />}>
+                    <RowWithTitle title="From" value={origin} />
+                </SummaryRow>
+
+                <SummaryRow
+                    leftComponent={
+                        <Box
+                            alignItems="center"
+                            style={{ width: 40, borderWidth: 1, borderColor: 'red' }}
+                        >
+                            <VerticalSeparator />
+                            <Box
+                                style={applyStyle(confirmationIconStyle, { isTransactionPending })}
+                            >
+                                <Icon
+                                    name={isTransactionPending ? 'clockClockwise' : 'check'}
+                                    color="gray0"
+                                />
+                            </Box>
+
+                            <VerticalSeparator />
+                        </Box>
+                    }
+                >
                     <Text
                         style={applyStyle(transactionStatusTextStyle)}
                         color={isTransactionPending ? 'yellow' : 'forest'}
                     >
                         {transactionStatus}
                     </Text>
-                </Box>
-                <VerticalSeparator />
-                <TransactionDetailSummaryRow title="To" value={target} />
+                </SummaryRow>
+
+                <SummaryRow leftComponent={<TransactionDetailSummaryStepper />}>
+                    <RowWithTitle title="To" value={target} />
+                </SummaryRow>
             </VStack>
         </Card>
     );
