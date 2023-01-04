@@ -1,5 +1,5 @@
 import TrezorConnect from '@trezor/connect';
-import { ScanAccountProgress, BroadcastedTransactionDetails } from '@trezor/coinjoin';
+import type { ScanAccountProgress, BroadcastedTransactionDetails } from '@trezor/coinjoin';
 import { promiseAllSequence } from '@trezor/utils';
 
 import { SUITE } from '@suite-actions/constants';
