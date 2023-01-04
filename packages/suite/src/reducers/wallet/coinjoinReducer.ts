@@ -160,7 +160,7 @@ const updateSession = (
     }
 };
 
-const signSession = (
+const sessionTxSigned = (
     draft: CoinjoinState,
     payload: ExtractActionPayload<typeof COINJOIN.SESSION_TX_SIGNED>,
 ) => {
@@ -412,7 +412,7 @@ export const coinjoinReducer = (
                 completeSession(draft, action.payload);
                 break;
             case COINJOIN.SESSION_TX_SIGNED:
-                signSession(draft, action.payload);
+                sessionTxSigned(draft, action.payload);
                 break;
             case COINJOIN.SESSION_STARTING:
                 updateSessionStarting(draft, action.payload);
