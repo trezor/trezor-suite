@@ -1,25 +1,32 @@
 /* eslint-disable no-console */
 /* eslint-disable @typescript-eslint/no-var-requires */
 
-import { CoinjoinBackend } from '../src/backend/CoinjoinBackend';
+import { CoinjoinBackend } from '../../src/backend/CoinjoinBackend';
+import type { CoinjoinBackendSettings } from '../../src/types';
 
-const { getCoinjoinConfig } = require('../../suite/src/services/coinjoin/config');
+const { getCoinjoinConfig } = require('../../../suite/src/services/coinjoin/config');
 
 const supportedNetworks = ['btc', 'test', 'regtest'] as const;
 const isSupportedNetwork = (network: string): network is typeof supportedNetworks[number] =>
     supportedNetworks.includes(network as any);
 
-const [network, descriptor] = process.argv.slice(2);
+export const getAccountInfoParams = (network: string, descriptor: string) => {
+    if (!network) throw new Error('network arg missing');
+    if (!isSupportedNetwork(network)) throw new Error('unsupported network');
+    if (!descriptor) throw new Error('descriptor arg missing');
 
-if (!network) throw new Error('network arg missing');
-if (!isSupportedNetwork(network)) throw new Error('unsupported network');
-if (!descriptor) throw new Error('descriptor arg missing');
+    const config: CoinjoinBackendSettings = getCoinjoinConfig(network);
 
-const config = getCoinjoinConfig(network);
+    return {
+        descriptor,
+        config,
+    };
+};
 
-(async () => {
-    console.log('✅', 'Start');
-
+export const getAccountInfo = async ({
+    descriptor,
+    config,
+}: ReturnType<typeof getAccountInfoParams>) => {
     const backend = new CoinjoinBackend(config);
     const transactions: Parameters<typeof backend['getAccountInfo']>[1] = [];
 
@@ -45,8 +52,5 @@ const config = getCoinjoinConfig(network);
 
     backend.removeAllListeners();
 
-    const accountInfo = await backend.getAccountInfo(descriptor, transactions, checkpoint, cache);
-
-    console.log('✅', 'End, printing account info:');
-    console.log(JSON.stringify(accountInfo, null, 4));
-})();
+    return backend.getAccountInfo(descriptor, transactions, checkpoint, cache);
+};
