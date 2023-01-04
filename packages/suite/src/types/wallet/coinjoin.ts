@@ -4,9 +4,9 @@ import { PartialRecord } from '@trezor/type-utils';
 // @trezor/coinjoin package is meant to be imported dynamically
 // importing types is safe, but importing an enum thru index will bundle whole lib
 import { RegisterAccountParams } from '@trezor/coinjoin';
-import { RoundPhase, SessionPhase } from '@trezor/coinjoin/src/enums';
+import { RoundPhase, SessionPhase, EndRoundState } from '@trezor/coinjoin/src/enums';
 
-export { RoundPhase, SessionPhase };
+export { RoundPhase, SessionPhase, EndRoundState };
 
 export interface CoinjoinSessionParameters {
     targetAnonymity: number;
