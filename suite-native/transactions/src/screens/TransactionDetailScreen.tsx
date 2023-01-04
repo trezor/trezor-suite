@@ -2,7 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { Linking, TouchableOpacity } from 'react-native';
 
-import { Box, Button, Text, VStack } from '@suite-native/atoms';
+import { Box, Text, VStack } from '@suite-native/atoms';
 import {
     RootStackParamList,
     RootStackRoutes,
