@@ -36,7 +36,7 @@ const addTransaction = createAction(
         page,
         perPage,
     }: {
-        transactions: AccountTransaction[];
+        transactions: (AccountTransaction & Partial<WalletAccountTransaction>)[];
         account: Account;
         page?: number;
         perPage?: number;
