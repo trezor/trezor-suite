@@ -184,6 +184,10 @@ export interface WalletAccountTransaction extends AccountTransaction {
     symbol: NetworkSymbol;
     rates?: TimestampedRates['rates'];
     rbfParams?: RbfTransactionParams;
+    /**
+     * prepending txs have deadline (blockHeight) when they should be removed from UI
+     */
+    deadline?: number;
 }
 
 export interface SignTransactionData {

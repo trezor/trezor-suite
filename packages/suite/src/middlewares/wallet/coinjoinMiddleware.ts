@@ -6,6 +6,7 @@ import { SUITE, ROUTER, MESSAGE_SYSTEM } from '@suite-actions/constants';
 import {
     SESSION_ROUND_CHANGED,
     SET_DEBUG_SETTINGS,
+    SESSION_TX_BROADCASTED,
 } from '@wallet-actions/constants/coinjoinConstants';
 import { COINJOIN, DISCOVERY } from '@wallet-actions/constants';
 import * as coinjoinAccountActions from '@wallet-actions/coinjoinAccountActions';
@@ -14,7 +15,12 @@ import * as storageActions from '@suite-actions/storageActions';
 import { CoinjoinService } from '@suite/services/coinjoin';
 import type { AppState, Action, Dispatch } from '@suite-types';
 import { CoinjoinConfig, RoundPhase } from '@wallet-types/coinjoin';
-import { accountsActions, blockchainActions, selectAccountByKey } from '@suite-common/wallet-core';
+import {
+    accountsActions,
+    blockchainActions,
+    selectAccountByKey,
+    transactionsActions,
+} from '@suite-common/wallet-core';
 import {
     selectCoinjoinAccountByKey,
     selectIsAnySessionInCriticalPhase,
@@ -52,6 +58,33 @@ export const coinjoinMiddleware =
 
         // propagate action to reducers
         next(action);
+
+        // catch broadcasted transactions and create prepending transaction(s) for each account
+        if (action.type === SESSION_TX_BROADCASTED && action.payload.round.broadcastedTxDetails) {
+            const {
+                accountKeys,
+                round: { broadcastedTxDetails },
+            } = action.payload;
+            accountKeys.forEach(accountKey => {
+                api.dispatch(
+                    coinjoinAccountActions.createPendingTransaction(
+                        accountKey,
+                        broadcastedTxDetails,
+                    ),
+                );
+            });
+        }
+
+        // catch prepending tx creation and update accountInfo
+        if (
+            transactionsActions.addTransaction.match(action) &&
+            action.payload.account.accountType === 'coinjoin' &&
+            action.payload.transactions.some(tx => 'deadline' in tx)
+        ) {
+            api.dispatch(
+                coinjoinAccountActions.updatePendingAccountInfo(action.payload.account.key),
+            );
+        }
 
         if (action.type === SUITE.READY) {
             const state = api.getState();

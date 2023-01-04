@@ -1,6 +1,7 @@
 import TrezorConnect from '@trezor/connect';
-import type { ScanAccountProgress } from '@trezor/coinjoin/lib/types/backend';
+import { ScanAccountProgress, BroadcastedTransactionDetails } from '@trezor/coinjoin';
 import { promiseAllSequence } from '@trezor/utils';
+
 import { SUITE } from '@suite-actions/constants';
 import * as COINJOIN from './constants/coinjoinConstants';
 import { goto } from '../suite/routerActions';
@@ -241,17 +242,83 @@ const coinjoinAccountCheckReorg =
             const txs = getAccountTransactions(
                 account.key,
                 state.wallet.transactions.transactions,
-            ).filter(({ blockHeight }) => !blockHeight || blockHeight >= checkpoint.blockHeight);
+            ).filter(
+                ({ blockHeight }) =>
+                    !blockHeight || blockHeight >= checkpoint.blockHeight || blockHeight < 0,
+            );
             dispatch(transactionsActions.removeTransaction({ account, txs }));
         }
     };
 
 const coinjoinAccountAddTransactions =
-    (account: Account, transactions: ScanAccountProgress['transactions']) =>
-    (dispatch: Dispatch) => {
-        if (transactions.length) {
-            dispatch(transactionsActions.addTransaction({ account, transactions }));
+    (props: Parameters<typeof transactionsActions.addTransaction>[0]) => (dispatch: Dispatch) => {
+        if (props.transactions.length > 0) {
+            dispatch(transactionsActions.addTransaction(props));
         }
+    };
+
+/**
+Action called from coinjoinMiddleware as reaction to prepending tx creation.
+Prepending tx could be created either as result of successful CoinjoinRound (not broadcasted by suite)
+or as result of sendFormActions > addFakePendingTxThunk (broadcasted by suite)
+in both cases Account should:
+- exclude spent utxo
+- mark addresses as used
+- recalculate anonymity
+- recalculate balance
+prepending txs have deadline (blockHeight) when they should be removed from UI
+ */
+export const updatePendingAccountInfo =
+    (accountKey: string) => async (dispatch: Dispatch, getState: GetState) => {
+        const state = getState();
+        const account = selectAccountByKey(state, accountKey);
+        const coinjoinAccount = selectCoinjoinAccountByKey(state, accountKey);
+        if (account?.backendType !== 'coinjoin' || !coinjoinAccount?.checkpoints) return;
+
+        const api = await dispatch(coinjoinClientActions.initCoinjoinService(account.symbol));
+        if (!api) return;
+
+        const { backend, client } = api;
+        const transactions = state.wallet.transactions.transactions[account.key];
+
+        const accountInfo = await backend.getAccountInfo(
+            account.descriptor,
+            transactions,
+            coinjoinAccount.checkpoints[0],
+            getAccountCache(account),
+        );
+
+        const { anonymityScores } = await client.analyzeTransactions(
+            accountInfo.history.transactions,
+            ['anonymityScores'],
+        );
+        accountInfo.addresses.anonymitySet = anonymityScores;
+
+        dispatch(accountsActions.updateAccount(account, accountInfo));
+    };
+
+export const createPendingTransaction =
+    (accountKey: string, payload: BroadcastedTransactionDetails) =>
+    async (dispatch: Dispatch, getState: GetState) => {
+        const state = getState();
+        const account = selectAccountByKey(state, accountKey);
+        const coinjoinAccount = selectCoinjoinAccountByKey(state, accountKey);
+        if (account?.backendType !== 'coinjoin' || !coinjoinAccount?.checkpoints) return;
+
+        const api = await dispatch(coinjoinClientActions.initCoinjoinService(account.symbol));
+        if (!api) return;
+
+        const { backend } = api;
+
+        // deadline = pending tx not found in mempool after two mined blocks
+        const pending = await backend.createPendingTransaction(account, payload);
+        const deadline = state.wallet.blockchain[account.symbol].blockHeight + 2;
+        dispatch(
+            coinjoinAccountAddTransactions({
+                account,
+                transactions: [{ ...pending, deadline }],
+            }),
+        );
     };
 
 export const fetchAndUpdateAccount =
@@ -272,7 +339,9 @@ export const fetchAndUpdateAccount =
             // removes transactions if current checkpoint precedes latest stored checkpoint
             dispatch(coinjoinAccountCheckReorg(account, progress.checkpoint));
             // add discovered transactions (if any)
-            dispatch(coinjoinAccountAddTransactions(account, progress.transactions));
+            dispatch(
+                coinjoinAccountAddTransactions({ account, transactions: progress.transactions }),
+            );
             // store current checkpoint (and all account data to db if remembered)
             dispatch(coinjoinAccountDiscoveryProgress(account, progress));
         };
@@ -290,6 +359,22 @@ export const fetchAndUpdateAccount =
                 cache: getAccountCache(account),
                 progressHandle,
             });
+
+            // Remove prepending transactions with outdated deadline or present in scanAccount response
+            const prepending = prevTransactions
+                ? prevTransactions.filter(tx => 'deadline' in tx)
+                : [];
+            if (prepending.length > 0) {
+                const { blockHeight } = state.wallet.blockchain[account.symbol];
+                const prependingToRemove = prepending.filter(
+                    tx => tx.deadline! < blockHeight || pending.some(tx2 => tx2.txid === tx.txid),
+                );
+                if (prependingToRemove.length > 0) {
+                    dispatch(
+                        transactionsActions.removeTransaction({ account, txs: prependingToRemove }),
+                    );
+                }
+            }
 
             onProgress({ checkpoint, transactions: pending });
 
