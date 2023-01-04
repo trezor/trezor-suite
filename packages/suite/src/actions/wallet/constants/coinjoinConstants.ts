@@ -16,13 +16,15 @@ export const CLIENT_ENABLE_FAILED = '@coinjoin/client-enable-failed';
 export const CLIENT_STATUS = '@coinjoin/client-status';
 export const CLIENT_SESSION_PHASE = '@coinjoin/session-phase';
 
+export const SESSION_STARTING = '@coinjoin/session-starting';
 export const SESSION_PAUSE = '@coinjoin/session-pause';
 export const SESSION_RESTORE = '@coinjoin/session-restore';
 export const SESSION_ROUND_CHANGED = '@coinjoin/session-round-changed';
 export const SESSION_COMPLETED = '@coinjoin/session-completed';
 export const SESSION_OWNERSHIP = '@coinjoin/session-ownership';
 export const SESSION_TX_SIGNED = '@coinjoin/session-tx-signed';
-export const SESSION_STARTING = '@coinjoin/session-starting';
+export const SESSION_TX_BROADCASTED = '@coinjoin/session-tx-broadcasted';
+export const SESSION_TX_FAILED = '@coinjoin/session-tx-failed';
 
 export const SET_DEBUG_SETTINGS = '@coinjoin/set-debug-settings';
 

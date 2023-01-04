@@ -148,6 +148,8 @@ export const onCoinjoinRoundChanged = [
         },
         params: {
             phase: 4,
+            endRoundState: 4,
+            broadcastedTxDetails: { txid: 'abcd' },
             inputs: [{ accountKey: 'a' }],
             failed: [],
             roundDeadline: Date.now() + 1000,
@@ -155,6 +157,7 @@ export const onCoinjoinRoundChanged = [
         result: {
             actions: [
                 COINJOIN.SESSION_ROUND_CHANGED,
+                COINJOIN.SESSION_TX_BROADCASTED,
                 MODAL.OPEN_USER_CONTEXT,
                 COINJOIN.SESSION_COMPLETED,
             ],
@@ -181,6 +184,7 @@ export const onCoinjoinRoundChanged = [
         },
         params: {
             phase: 4,
+            endRoundState: 2,
             inputs: [{ accountKey: 'a' }],
             failed: [],
             roundDeadline: Date.now() + 1000,
@@ -188,6 +192,7 @@ export const onCoinjoinRoundChanged = [
         result: {
             actions: [
                 COINJOIN.SESSION_ROUND_CHANGED,
+                COINJOIN.SESSION_TX_FAILED,
                 MODAL.OPEN_USER_CONTEXT,
                 COINJOIN.SESSION_COMPLETED,
             ],
@@ -245,6 +250,8 @@ export const onCoinjoinRoundChanged = [
             },
             {
                 phase: 4,
+                endRoundState: 4,
+                broadcastedTxDetails: { txid: 'abcd' },
                 inputs: [{ accountKey: 'a' }],
                 failed: [],
                 roundDeadline: Date.now() + 1000,
@@ -259,6 +266,7 @@ export const onCoinjoinRoundChanged = [
                 COINJOIN.SESSION_ROUND_CHANGED,
                 COINJOIN.SESSION_ROUND_CHANGED,
                 MODAL.CLOSE,
+                COINJOIN.SESSION_TX_BROADCASTED,
                 MODAL.OPEN_USER_CONTEXT,
                 COINJOIN.SESSION_COMPLETED,
             ],
