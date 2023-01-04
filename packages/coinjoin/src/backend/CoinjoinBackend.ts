@@ -7,6 +7,7 @@ import { DISCOVERY_LOOKOUT } from '../constants';
 import { scanAccount } from './scanAccount';
 import { scanAddress } from './scanAddress';
 import { getAccountInfo } from './getAccountInfo';
+import { createPendingTransaction } from './createPendingTx';
 import { getNetwork } from '../utils/settingsUtils';
 import type { CoinjoinBackendSettings, LogEvent, Logger, LogLevel } from '../types';
 import type {
@@ -138,6 +139,10 @@ export class CoinjoinBackend extends EventEmitter {
             network: this.network,
         });
         return Promise.resolve(addressInfo);
+    }
+
+    createPendingTransaction(...args: Parameters<typeof createPendingTransaction>) {
+        return Promise.resolve(createPendingTransaction(...args));
     }
 
     cancel() {

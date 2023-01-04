@@ -17,6 +17,13 @@ export interface CoinjoinClientSettings extends BaseSettings {
     middlewareUrl: string;
 }
 
+export type {
+    ScanAddressProgress,
+    ScanAddressCheckpoint,
+    ScanAccountProgress,
+    ScanAccountCheckpoint,
+} from './backend';
+
 export * from './account';
 export * from './client';
 export * from './round';
