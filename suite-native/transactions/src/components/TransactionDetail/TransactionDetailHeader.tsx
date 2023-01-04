@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Box, DiscreetText, Text } from '@suite-native/atoms';
+import { Box, DiscreetText, ErrorMessage, Text } from '@suite-native/atoms';
 import { Icon, IconName } from '@trezor/icons';
 import { TransactionType } from '@suite-common/wallet-types';
 import { useFormatters } from '@suite-common/formatters';
@@ -40,6 +40,10 @@ export const TransactionDetailHeader = ({
     fiatAmount,
 }: TransactionDetailHeaderProps) => {
     const { FiatAmountFormatter } = useFormatters();
+
+    if (type !== 'recv' && type !== 'sent')
+        return <ErrorMessage errorMessage={`Unknown transaction type ${type}.`} />;
+
     return (
         <Box alignItems="center">
             <Box flexDirection="row" alignItems="center" marginBottom="small">

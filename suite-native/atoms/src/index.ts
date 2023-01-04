@@ -27,3 +27,4 @@ export * from './TransactionItem';
 export * from './ProgressBar';
 export * from './Card';
 export * from './StepsProgressBar';
+export * from './ErrorMessage';

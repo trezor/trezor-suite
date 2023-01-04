@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
+
+import * as Clipboard from 'expo-clipboard';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Box, Card, VStack, Text } from '@suite-native/atoms';
+import { Box, Card, VStack, Text, ErrorMessage, IconButton } from '@suite-native/atoms';
 import { Icon } from '@trezor/icons';
 
 type TransactionDetailSummaryProps = {
@@ -41,7 +43,6 @@ const borderLineStyle = prepareNativeStyle(utils => ({
     borderColor: utils.colors.gray400,
     height: 10,
     width: 1,
-    marginLeft: utils.spacings.small,
 }));
 
 const VerticalSeparator = () => {
@@ -50,27 +51,69 @@ const VerticalSeparator = () => {
     return <Box style={applyStyle(borderLineStyle)} />;
 };
 
-const TransactionDetailSummaryRow = ({ value, title }: { value: string; title: string }) => (
-    <Box flexDirection="row" alignItems="center">
-        <TransactionDetailSummaryStepper />
-        <Box marginLeft="medium">
-            <Text color="gray600" variant="hint">
-                {title}
-            </Text>
-            <Text>{value}</Text>
+export const RowWithTitle = ({ title, value }: { title: string; value: string }) => {
+    const handleCopy = () => Clipboard.setStringAsync(value);
+    return (
+        <Box flexDirection="row" justifyContent="space-between" alignItems="center">
+            <Box>
+                <Text color="gray600" variant="hint">
+                    {title}
+                </Text>
+                <Text numberOfLines={1} ellipsizeMode="middle" style={{ width: 160 }}>
+                    {value}
+                </Text>
+            </Box>
+            <IconButton
+                iconName="copy"
+                onPress={handleCopy}
+                isRounded
+                colorScheme="gray"
+                size="large"
+            />
         </Box>
-    </Box>
-);
+    );
+};
+
+const summaryColumnStyle = prepareNativeStyle(_ => ({
+    width: 40,
+    alignItems: 'center',
+}));
+
+const SummaryRow = ({
+    children,
+    leftComponent,
+}: {
+    children: ReactNode;
+    leftComponent: ReactNode;
+}) => {
+    const { applyStyle } = useNativeStyles();
+
+    return (
+        <Box flexDirection="row" alignItems="center">
+            <Box style={applyStyle(summaryColumnStyle)}>{leftComponent}</Box>
+            <Box marginLeft="medium" flex={1}>
+                {children}
+            </Box>
+        </Box>
+    );
+};
 
 const confirmationIconStyle = prepareNativeStyle<{ isTransactionPending: boolean }>(
     (utils, { isTransactionPending }) => ({
-        marginLeft: -12,
-        marginRight: utils.spacings.small,
         backgroundColor: isTransactionPending ? utils.colors.yellow : utils.colors.forest,
         borderRadius: utils.borders.radii.round,
         padding: utils.spacings.small,
+        marginVertical: utils.spacings.small,
     }),
 );
+
+const cardContentStyle = prepareNativeStyle(_ => ({
+    overflow: 'hidden',
+}));
+
+const transactionStatusTextStyle = prepareNativeStyle(() => ({
+    textTransform: 'capitalize',
+}));
 
 export const TransactionDetailSummary = ({
     origin,
@@ -79,31 +122,44 @@ export const TransactionDetailSummary = ({
 }: TransactionDetailSummaryProps) => {
     const { applyStyle } = useNativeStyles();
 
-    if (!origin || !target) return null;
+    if (!origin || !target)
+        return <ErrorMessage errorMessage="Target and Origin of transaction is unknown." />;
 
     const isTransactionPending = transactionStatus === 'pending';
 
     return (
         <Card>
-            <VStack>
-                <TransactionDetailSummaryRow value={origin} title="From" />
-                <VerticalSeparator />
-                <Box flexDirection="row" alignItems="center">
-                    <Box style={applyStyle(confirmationIconStyle, { isTransactionPending })}>
-                        <Icon
-                            name={isTransactionPending ? 'clockClockwise' : 'check'}
-                            color="gray0"
-                        />
-                    </Box>
+            <VStack style={applyStyle(cardContentStyle)}>
+                <SummaryRow leftComponent={<TransactionDetailSummaryStepper />}>
+                    <RowWithTitle title="From" value={origin} />
+                </SummaryRow>
+                <SummaryRow
+                    leftComponent={
+                        <Box alignItems="center">
+                            <VerticalSeparator />
+                            <Box
+                                style={applyStyle(confirmationIconStyle, { isTransactionPending })}
+                            >
+                                <Icon
+                                    name={isTransactionPending ? 'clockClockwise' : 'confirmation'}
+                                    color="gray0"
+                                />
+                            </Box>
+
+                            <VerticalSeparator />
+                        </Box>
+                    }
+                >
                     <Text
-                        style={{ textTransform: 'capitalize' }}
+                        style={applyStyle(transactionStatusTextStyle)}
                         color={isTransactionPending ? 'yellow' : 'forest'}
                     >
                         {transactionStatus}
                     </Text>
-                </Box>
-                <VerticalSeparator />
-                <TransactionDetailSummaryRow title="To" value={target} />
+                </SummaryRow>
+                <SummaryRow leftComponent={<TransactionDetailSummaryStepper />}>
+                    <RowWithTitle title="To" value={target} />
+                </SummaryRow>
             </VStack>
         </Card>
     );

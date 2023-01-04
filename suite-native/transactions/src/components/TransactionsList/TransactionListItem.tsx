@@ -27,6 +27,11 @@ const transactionIconMap: Partial<Record<TransactionType, IconName>> = {
     sent: 'send',
 };
 
+const transactionTextMap: Partial<Record<TransactionType, string>> = {
+    recv: 'Received',
+    sent: 'Sent',
+};
+
 const iconStyle = prepareNativeStyle(utils => ({
     backgroundColor: utils.colors.gray300,
     padding: utils.spacings.small,
@@ -76,7 +81,7 @@ export const TransactionListItem = memo(({ transaction }: AccountTransactionList
                     <Icon name={transactionIconMap[transaction.type] ?? 'placeholder'} />
                 </Box>
                 <Box>
-                    <Text>{transaction.type}</Text>
+                    <Text>{transactionTextMap[transaction.type] ?? transaction.type}</Text>
                     <Text>{getTransactionTimestamp()?.toLocaleTimeString()}</Text>
                 </Box>
             </Box>

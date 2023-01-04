@@ -34,10 +34,12 @@ const BottomSheetTrigger = ({
     );
 };
 
+type SheetType = 'parameters' | 'values' | 'inputs';
+
 export const TransactionDetailSheets = () => {
-    const [isParametersSheetExpanded, setIsParametersSheetExpanded] = useState(false);
-    const [isValuesSheetExpanded, setIsValuesSheetExpanded] = useState(false);
-    const [isInputsSheetExpanded, setIsInputsSheetExpanded] = useState(false);
+    const [expandedSheet, setExpandedSheet] = useState<SheetType | null>(null);
+
+    const handleCloseExpandedSheet = () => setExpandedSheet(null);
 
     return (
         <Card>
@@ -45,35 +47,35 @@ export const TransactionDetailSheets = () => {
                 <BottomSheetTrigger
                     iconName="warningCircle"
                     title="Parameters"
-                    onPress={() => setIsParametersSheetExpanded(true)}
+                    onPress={() => setExpandedSheet('parameters')}
                 />
                 <BottomSheetTrigger
                     iconName="clockClockwise"
                     title="Current values"
-                    onPress={() => setIsValuesSheetExpanded(true)}
+                    onPress={() => setExpandedSheet('values')}
                 />
                 <BottomSheetTrigger
                     iconName="swap"
                     title="Inputs & Outputs"
-                    onPress={() => setIsInputsSheetExpanded(true)}
+                    onPress={() => setExpandedSheet('inputs')}
                 />
             </VStack>
 
             <BottomSheet
-                isVisible={isParametersSheetExpanded}
-                onVisibilityChange={() => setIsParametersSheetExpanded(!isParametersSheetExpanded)}
+                isVisible={expandedSheet === 'parameters'}
+                onVisibilityChange={handleCloseExpandedSheet}
             >
                 <Text>Parameters</Text>
             </BottomSheet>
             <BottomSheet
-                isVisible={isValuesSheetExpanded}
-                onVisibilityChange={() => setIsValuesSheetExpanded(!isValuesSheetExpanded)}
+                isVisible={expandedSheet === 'values'}
+                onVisibilityChange={handleCloseExpandedSheet}
             >
                 <Text>Current values</Text>
             </BottomSheet>
             <BottomSheet
-                isVisible={isInputsSheetExpanded}
-                onVisibilityChange={() => setIsInputsSheetExpanded(!isInputsSheetExpanded)}
+                isVisible={expandedSheet === 'inputs'}
+                onVisibilityChange={handleCloseExpandedSheet}
             >
                 <Text>Inputs & Outputs</Text>
             </BottomSheet>

@@ -22,6 +22,8 @@ export const icons = {
     clockClockwise: require('../assets/icons/clockClockwise.svg'),
     close: require('../assets/icons/close.svg'),
     closeCircle: require('../assets/icons/closeCircle.svg'),
+    confirmation: require('../assets/icons/confirmation.svg'),
+    copy: require('../assets/icons/copy.svg'),
     discover: require('../assets/icons/discover.svg'),
     eject: require('../assets/icons/eject.svg'),
     eyeSlash: require('../assets/icons/eyeSlash.svg'),
