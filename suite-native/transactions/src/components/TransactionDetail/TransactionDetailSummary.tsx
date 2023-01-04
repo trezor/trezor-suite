@@ -57,7 +57,9 @@ const TransactionDetailSummaryRow = ({ value, title }: { value: string; title: s
             <Text color="gray600" variant="hint">
                 {title}
             </Text>
-            <Text>{value}</Text>
+            <Text numberOfLines={1} ellipsizeMode="middle" style={{ maxWidth: 160 }}>
+                {value}
+            </Text>
         </Box>
     </Box>
 );
@@ -72,6 +74,14 @@ const confirmationIconStyle = prepareNativeStyle<{ isTransactionPending: boolean
     }),
 );
 
+const cardContentStyle = prepareNativeStyle(utils => ({
+    paddingHorizontal: utils.spacings.medium,
+}));
+
+const transactionStatusTextStyle = prepareNativeStyle(() => ({
+    textTransform: 'capitalize',
+}));
+
 export const TransactionDetailSummary = ({
     origin,
     target,
@@ -85,7 +95,7 @@ export const TransactionDetailSummary = ({
 
     return (
         <Card>
-            <VStack>
+            <VStack style={applyStyle(cardContentStyle)}>
                 <TransactionDetailSummaryRow value={origin} title="From" />
                 <VerticalSeparator />
                 <Box flexDirection="row" alignItems="center">
@@ -96,7 +106,7 @@ export const TransactionDetailSummary = ({
                         />
                     </Box>
                     <Text
-                        style={{ textTransform: 'capitalize' }}
+                        style={applyStyle(transactionStatusTextStyle)}
                         color={isTransactionPending ? 'yellow' : 'forest'}
                     >
                         {transactionStatus}
