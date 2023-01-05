@@ -49,9 +49,11 @@ export default class CheckFirmwareAuthenticity extends AbstractMethod<'checkFirm
             randombytes(32),
         );
 
-        const result = await this.device.commands.typedCall('GetFirmwareHash', 'FirmwareHash', {
-            challenge,
-        });
+        const result = await this.device
+            .getCommands()
+            .typedCall('GetFirmwareHash', 'FirmwareHash', {
+                challenge,
+            });
 
         const { message } = result;
         const { hash: actualFirmwareHash } = message;
