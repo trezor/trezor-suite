@@ -392,11 +392,14 @@ describe('sendForm utils', () => {
             amount: '2',
             vout: 4,
         });
-        const coinjoinAccount = getWalletAccount({
-            addresses: { anonymitySet: { one: 1, two: 2 }, change: [], used: [], unused: [] },
-            utxo: [dustUtxo, lowAnonymityDustUtxo, lowAnonymityUtxo, spendableUtxo],
+
+        const excludedUtxos = getExcludedUtxos({
+            utxos: [dustUtxo, lowAnonymityDustUtxo, lowAnonymityUtxo, spendableUtxo],
+            anonymitySet: { one: 1, two: 2 },
+            targetAnonymity: 2,
+            dustLimit: 1,
         });
-        const excludedUtxos = getExcludedUtxos(coinjoinAccount, 1, 2);
+
         expect(excludedUtxos[getUtxoOutpoint(dustUtxo)]).toBe('dust');
         expect(excludedUtxos[getUtxoOutpoint(lowAnonymityDustUtxo)]).toBe('dust');
         expect(excludedUtxos[getUtxoOutpoint(lowAnonymityUtxo)]).toBe('low-anonymity');

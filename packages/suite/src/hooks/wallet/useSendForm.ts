@@ -7,12 +7,16 @@ import * as walletSettingsActions from '@settings-actions/walletSettingsActions'
 import * as routerActions from '@suite-actions/routerActions';
 import * as protocolActions from '@suite-actions/protocolActions';
 import { AppState } from '@suite-types';
-import { FormState, Output, SendContextValues, UseSendFormState } from '@wallet-types/sendForm';
-
+import {
+    FormState,
+    Output,
+    SendContextValues,
+    UseSendFormState,
+    TypedValidationRules,
+} from '@suite-common/wallet-types';
 import {
     getFeeLevels,
     getDefaultValues,
-    getExcludedUtxos,
     amountToSatoshi,
     formatAmount,
 } from '@suite-common/wallet-utils';
@@ -24,7 +28,7 @@ import { useFees } from './form/useFees';
 import { PROTOCOL_TO_NETWORK } from '@suite-constants/protocol';
 import { useBitcoinAmountUnit } from './useBitcoinAmountUnit';
 import { useUtxoSelection } from './form/useUtxoSelection';
-import { TypedValidationRules } from '@suite-common/wallet-types';
+import { useExcludedUtxos } from './form/useExcludedUtxos';
 
 export const SendContext = createContext<SendContextValues | null>(null);
 SendContext.displayName = 'SendContext';
@@ -57,15 +61,9 @@ const getStateFromProps = (props: UseSendFormProps) => {
         value: props.localCurrency,
         label: props.localCurrency.toUpperCase(),
     };
-    const excludedUtxos = getExcludedUtxos(
-        account,
-        coinFees.dustLimit,
-        props.coinjoinAccount?.targetAnonymity,
-    );
 
     return {
         account,
-        excludedUtxos,
         network,
         coinFees,
         feeInfo,
@@ -160,6 +158,12 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
         [state],
     );
 
+    const excludedUtxos = useExcludedUtxos({
+        account: state.account,
+        dustLimit: state.coinFees.dustLimit,
+        targetAnonymity: props.coinjoinAccount?.targetAnonymity,
+    });
+
     // declare sendFormUtils, sub-hook of useSendForm
     const sendFormUtils = useSendFormFields({
         ...useFormMethods,
@@ -180,7 +184,6 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
         ...useFormMethods,
         state,
         account: props.selectedAccount.account,
-        targetAnonymity: props.coinjoinAccount?.targetAnonymity,
         updateContext,
         setAmount: sendFormUtils.setAmount,
     });
@@ -209,7 +212,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
         account: state.account,
         composedLevels,
         composeRequest,
-        excludedUtxos: state.excludedUtxos,
+        excludedUtxos,
         ...useFormMethods,
     });
 
@@ -379,6 +382,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
         ...sendFormUtils,
         ...sendFormOutputs,
         ...utxoSelection,
+        excludedUtxos,
     };
 };
 

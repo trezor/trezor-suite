@@ -45,10 +45,12 @@ export type FormState = {
     hasCoinControlBeenOpened: boolean;
     selectedUtxos: AccountUtxo[];
 };
+
+export type ExcludedUtxos = Record<string, 'low-anonymity' | 'dust' | undefined>;
+
 // local state of @wallet-hooks/useSendForm
 export type UseSendFormState = {
     account: Account;
-    excludedUtxos: Record<string, 'low-anonymity' | 'dust' | 'unconfirmed' | undefined>;
     network: Network;
     coinFees: FeeInfo;
     feeInfo: FeeInfo;
@@ -61,6 +63,30 @@ export type UseSendFormState = {
     online: boolean;
     metadataEnabled: boolean;
 };
+
+export interface ComposeActionContext {
+    account: Account;
+    network: Network;
+    feeInfo: FeeInfo;
+    excludedUtxos?: ExcludedUtxos;
+}
+
+export interface UtxoSelectionContext {
+    excludedUtxos: ExcludedUtxos;
+    allUtxosSelected: boolean;
+    composedInputs: PROTO.TxInputType[];
+    dustUtxos: AccountUtxo[];
+    isCoinControlEnabled: boolean;
+    lowAnonymityUtxos: AccountUtxo[];
+    selectedUtxos: AccountUtxo[];
+    spendableUtxos: AccountUtxo[];
+    isLowAnonymityUtxoSelected: boolean;
+    anonymityWarningChecked: boolean;
+    toggleAnonymityWarning: () => void;
+    toggleCheckAllUtxos: () => void;
+    toggleCoinControl: () => void;
+    toggleUtxoSelection: (utxo: AccountUtxo) => void;
+}
 
 // strongly typed UseFormMethods.getValues with fallback value
 export interface GetDefaultValue {
@@ -98,6 +124,7 @@ export type SendContextValues = Omit<UseFormMethods<FormState>, 'register'> &
         // useSendFormCompose
         setDraftSaveRequest: React.Dispatch<React.SetStateAction<boolean>>;
         // UTXO selection
+        excludedUtxos: ExcludedUtxos;
         allUtxosSelected: boolean;
         composedInputs: PROTO.TxInputType[];
         dustUtxos: AccountUtxo[];

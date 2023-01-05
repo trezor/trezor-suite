@@ -2,14 +2,14 @@ import BigNumber from 'bignumber.js';
 import { createContext, useContext, useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useSelector } from '@suite-hooks';
-import { getExcludedUtxos, getFeeLevels } from '@suite-common/wallet-utils';
 import { DEFAULT_PAYMENT, DEFAULT_OPRETURN, DEFAULT_VALUES } from '@suite-common/wallet-constants';
+import { TypedValidationRules } from '@suite-common/wallet-types';
+import { getExcludedUtxos, getFeeLevels } from '@suite-common/wallet-utils';
 import { Account, WalletAccountTransaction } from '@wallet-types';
 import { FormState, FeeInfo } from '@wallet-types/sendForm';
 import { useFees } from './form/useFees';
 import { useCompose } from './form/useCompose';
 import { useBitcoinAmountUnit } from './useBitcoinAmountUnit';
-import { TypedValidationRules } from '@suite-common/wallet-types';
 
 export type Props = {
     tx: WalletAccountTransaction;
@@ -120,11 +120,12 @@ const useRbfState = ({ tx, finalize, chainedTxs }: Props, currentState: boolean)
     // find coinjoin account related to current account
     const coinjoinAccount = coinjoinAccounts.find(a => a.key === selectedAccount.account.key);
 
-    const excludedUtxos = getExcludedUtxos(
-        rbfAccount,
-        coinFees?.dustLimit,
-        coinjoinAccount?.targetAnonymity,
-    );
+    const excludedUtxos = getExcludedUtxos({
+        utxos: rbfAccount.utxo,
+        dustLimit: coinFees.dustLimit,
+        anonymitySet: rbfAccount.addresses?.anonymitySet,
+        targetAnonymity: coinjoinAccount?.targetAnonymity,
+    });
 
     return {
         account: rbfAccount,
