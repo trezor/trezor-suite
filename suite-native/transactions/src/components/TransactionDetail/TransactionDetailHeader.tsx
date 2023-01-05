@@ -1,10 +1,10 @@
 import React from 'react';
 
-import { Box, DiscreetText, Text } from '@suite-native/atoms';
+import { Box, DiscreetText, ErrorMessage, Text } from '@suite-native/atoms';
 import { Icon, IconName } from '@trezor/icons';
 import { TransactionType } from '@suite-common/wallet-types';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { useFormatters } from '@suite-common/formatters';
+import { Color } from '@trezor/theme';
 
 type TransactionDetailHeaderProps = {
     type: TransactionType;
@@ -12,43 +12,59 @@ type TransactionDetailHeaderProps = {
     fiatAmount: string | null;
 };
 
-const transactionTypeTextMap: Partial<Record<TransactionType, string>> = {
-    recv: 'received',
-    sent: 'sent',
+type TransactionTypeInfo = {
+    text: string;
+    iconName: IconName;
+    sign: string;
+    signColor: Color;
 };
 
-const transactionIconMap: Partial<Record<TransactionType, IconName>> = {
-    recv: 'receive',
-    sent: 'send',
+const transactionTypeInfo: Partial<Record<TransactionType, TransactionTypeInfo>> = {
+    recv: {
+        text: 'Received',
+        iconName: 'receive',
+        sign: '+',
+        signColor: 'forest',
+    },
+    sent: {
+        text: 'Sending',
+        iconName: 'send',
+        sign: '-',
+        signColor: 'red',
+    },
 };
-
-const transactionTypeStyle = prepareNativeStyle(utils => ({
-    ...utils.typography.titleSmall,
-    textTransform: 'capitalize',
-    color: utils.colors.forest,
-}));
 
 export const TransactionDetailHeader = ({
     type,
     amount,
     fiatAmount,
 }: TransactionDetailHeaderProps) => {
-    const { applyStyle } = useNativeStyles();
     const { FiatAmountFormatter } = useFormatters();
+
+    if (type !== 'recv' && type !== 'sent')
+        return <ErrorMessage errorMessage={`Unknown transaction type ${type}.`} />;
+
     return (
-        <>
-            <Box flexDirection="row" marginBottom="small">
+        <Box alignItems="center">
+            <Box flexDirection="row" alignItems="center" marginBottom="small">
+                <Text variant="hint" color="gray600">
+                    {transactionTypeInfo[type]?.text}
+                </Text>
                 <Icon
-                    name={transactionIconMap[type] ?? 'placeholder'}
-                    color="forest"
-                    size="large"
+                    name={transactionTypeInfo[type]?.iconName ?? 'placeholder'}
+                    color="gray600"
+                    size="medium"
                 />
-                <Text style={applyStyle(transactionTypeStyle)}>{transactionTypeTextMap[type]}</Text>
             </Box>
-            <DiscreetText typography="titleMedium">{amount}</DiscreetText>
+            <Box flexDirection="row">
+                <Text variant="titleMedium" color={transactionTypeInfo[type]?.signColor}>
+                    {transactionTypeInfo[type]?.sign}
+                </Text>
+                <DiscreetText typography="titleMedium">{amount}</DiscreetText>
+            </Box>
             <DiscreetText typography="label" color="gray700">
-                {FiatAmountFormatter.format(fiatAmount ?? 0)}
+                {`≈  ${FiatAmountFormatter.format(fiatAmount ?? 0)}`}
             </DiscreetText>
-        </>
+        </Box>
     );
 };

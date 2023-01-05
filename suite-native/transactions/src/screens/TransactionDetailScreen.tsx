@@ -1,7 +1,8 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { Linking } from 'react-native';
 
-import { Box, Divider } from '@suite-native/atoms';
+import { Box, Button, Text, VStack } from '@suite-native/atoms';
 import {
     RootStackParamList,
     RootStackRoutes,
@@ -10,28 +11,31 @@ import {
     StackProps,
 } from '@suite-native/navigation';
 import { selectBlockchainState, selectTransactionByTxid } from '@suite-common/wallet-core';
-import { formatNetworkAmount, getConfirmations, toFiatCurrency } from '@suite-common/wallet-utils';
+import { formatNetworkAmount, toFiatCurrency } from '@suite-common/wallet-utils';
 import { selectFiatCurrency } from '@suite-native/module-settings';
 import { useFormatters } from '@suite-common/formatters';
+import { Icon } from '@trezor/icons';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { TransactionDetailHeader } from '../components/TransactionDetail/TransactionDetailHeader';
 import { TransactionDetailData } from '../components/TransactionDetail/TransactionDetailData';
-import { TransactionDetailConfirmations } from '../components/TransactionDetail/TransactionDetailConfirmations';
-import { TransactionDetailAmount } from '../components/TransactionDetail/TransactionDetailAmount';
+import { TransactionDetailSheets } from '../components/TransactionDetail/TransactionDetailSheets';
+
+const buttonStyle = prepareNativeStyle(utils => ({
+    marginTop: utils.spacings.large,
+}));
 
 export const TransactionDetailScreen = ({
     route,
 }: StackProps<RootStackParamList, RootStackRoutes.TransactionDetail>) => {
+    const { applyStyle, utils } = useNativeStyles();
     const { txid } = route.params;
     const transaction = useSelector(selectTransactionByTxid(txid));
     const blockchain = useSelector(selectBlockchainState);
     const fiatCurrency = useSelector(selectFiatCurrency);
     const { CryptoAmountFormatter } = useFormatters();
 
-    // TODO please add empty state when design is ready
     if (!transaction) return null;
-
-    const confirmations = getConfirmations(transaction, blockchain[transaction.symbol].blockHeight);
 
     const transactionAmount = formatNetworkAmount(transaction.amount, transaction.symbol);
     const fiatAmount = toFiatCurrency(transactionAmount, fiatCurrency.label, transaction.rates);
@@ -39,23 +43,32 @@ export const TransactionDetailScreen = ({
         symbol: transaction.symbol,
     });
 
+    const handleOpenBlockchain = () => {
+        const baseUrl = blockchain[transaction.symbol].explorer.tx;
+        Linking.openURL(`${baseUrl}${transaction.txid}`);
+    };
+
     return (
-        <Screen header={<ScreenHeader />}>
-            <TransactionDetailHeader
-                type={transaction.type}
-                amount={cryptoAmountFormatted}
-                fiatAmount={fiatAmount}
-            />
-            <Box marginVertical="large">
-                <Divider />
-            </Box>
-            <TransactionDetailData transaction={transaction} />
-            <Box marginVertical="large">
-                <Divider />
-            </Box>
-            <TransactionDetailConfirmations confirmations={confirmations} />
-            <Box marginVertical="large" />
-            <TransactionDetailAmount transaction={transaction} />
+        <Screen customHorizontalPadding={utils.spacings.small} header={<ScreenHeader />}>
+            <VStack spacing="large">
+                <TransactionDetailHeader
+                    type={transaction.type}
+                    amount={cryptoAmountFormatted}
+                    fiatAmount={fiatAmount}
+                />
+                <TransactionDetailData transaction={transaction} />
+            </VStack>
+            <TransactionDetailSheets />
+            <Button
+                onPress={handleOpenBlockchain}
+                colorScheme="gray"
+                style={applyStyle(buttonStyle)}
+            >
+                <Box flexDirection="row">
+                    <Text>Explore in blockchain</Text>
+                    <Icon size="mediumLarge" name="arrowUpRight" color="gray1000" />
+                </Box>
+            </Button>
         </Screen>
     );
 };
