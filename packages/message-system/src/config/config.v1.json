@@ -1,13 +1,40 @@
 {
     "version": 1,
-    "timestamp": "2022-11-28T00:00:00+00:00",
-    "sequence": 17,
+    "timestamp": "2023-01-05T00:00:00+00:00",
+    "sequence": 20,
     "actions": [
         {
             "conditions": [
                 {
                     "environment": {
-                        "desktop": "<22.11.1",
+                        "desktop": ">=23.1.0",
+                        "mobile": "!",
+                        "web": "!"
+                    }
+                }
+            ],
+            "message": {
+                "id": "c3196202-b796-4c57-abdb-ac38c15ae342",
+                "priority": 50,
+                "dismissible": false,
+                "variant": "warning",
+                "category": "context",
+                "content": {
+                    "en-GB": "CoinJoin account is currently in testing phase.",
+                    "en": "CoinJoin account is currently in testing phase.",
+                    "es": "La cuenta CoinJoin se encuentra actualmente en fase de pruebas.",
+                    "cs": "CoinJoin účet je zatím ve fázi testování.",
+                    "ru": "Счет CoinJoin в настоящее время находится на стадии тестирования.",
+                    "ja": "CoinJoinのアカウントは現在テスト段階です。"
+                },
+                "context": { "domain": "accounts.coinjoin" }
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "environment": {
+                        "desktop": "<22.12.1",
                         "mobile": "!",
                         "web": "!"
                     }
@@ -31,12 +58,12 @@
                     "action": "external-link",
                     "link": "https://trezor.io/trezor-suite",
                     "label": {
-                        "en-GB": "Go to suite.trezor.io",
-                        "en": "Go to suite.trezor.io",
-                        "es": "Ir a suite.trezor.io",
-                        "cs": "Přejít na suite.trezor.io",
-                        "ru": "Перейти на suite.trezor.io",
-                        "ja": "suite.trezor.ioに移動"
+                        "en-GB": "Go to trezor.io/trezor-suite",
+                        "en": "Go to trezor.io/trezor-suite",
+                        "es": "Ir a trezor.io/trezor-suite",
+                        "cs": "Přejít na trezor.io/trezor-suite",
+                        "ru": "Перейти на trezor.io/trezor-suite",
+                        "ja": "trezor.io/trezor-suite に移動"
                     }
                 }
             }
