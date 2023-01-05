@@ -28,7 +28,7 @@
 
 /packages/connect-web @mroz22 @szymonlesisz @sime
 
-/packages/icons @Nodonisko @juriczech @PeKne
+/packages/icons @trezor/suite-mobile
 
 /packages/integration-tests @mroz22 @ondracja
 
@@ -48,7 +48,7 @@
 
 /packages/suite-desktop-api @szymonlesisz @marekrjpolak
 
-/suite-native @Nodonisko @juriczech @PeKne
+/suite-native @trezor/suite-mobile
 
 /packages/suite-storage @matejkriz
 
@@ -56,7 +56,7 @@
 
 /packages/transport @mroz22
 
-/packages/transport-native @Nodonisko
+/packages/transport-native @trezor/suite-mobile
 
 /packages/theme @Nodonisko
 
@@ -72,4 +72,4 @@
 
 /packages/suite/src/support/messages.ts @alex-jerechinsky
 
-/suite-common/graph @Nodonisko
+/suite-common/graph @trezor/suite-mobile
