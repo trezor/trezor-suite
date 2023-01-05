@@ -56,7 +56,7 @@
 
 /packages/transport @mroz22
 
-/packages/transport-native @trezor/suite-mobile
+/packages/transport-native @trezor/suite-mobile @Nodonisko
 
 /packages/theme @Nodonisko
 
@@ -72,4 +72,4 @@
 
 /packages/suite/src/support/messages.ts @alex-jerechinsky
 
-/suite-common/graph @trezor/suite-mobile
+/suite-common/graph @trezor/suite-mobile @Nodonisko
