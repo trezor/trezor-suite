@@ -61,6 +61,7 @@ test.beforeAll(async () => {
             requests.push({ url: request.url() });
         });
 
+        let requestIndex = 0;
         page.on('response', async response => {
             // ignore other than bridge requests
             if (!response.url().startsWith('http://127.0.0.1:21325')) {
@@ -69,7 +70,8 @@ test.beforeAll(async () => {
             if (response.url().endsWith('release/2')) {
                 releasePromise!.resolve(undefined);
             }
-            console.log(response.status(), response.url());
+            console.log(requestIndex, response.status(), response.url());
+            requestIndex++;
             responses.push({
                 url: response.url(),
                 status: response.status(),

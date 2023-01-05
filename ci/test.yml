@@ -200,6 +200,7 @@ transport manual:
     COMPOSE_PROJECT_NAME: $CI_JOB_ID
     COMPOSE_FILE: ./docker/docker-compose.connect-popup-ci.yml
     URL: ${DEV_SERVER_URL}/connect/${CI_BUILD_REF_NAME}/
+    TEST_FILE: $TEST_FILE
   script:
     - yarn install --immutable
     - docker-compose pull
@@ -216,6 +217,11 @@ transport manual:
       - ./packages/connect-popup/connect-popup-overview.html
       - ./packages/connect-popup/test-results
   interruptible: true
+  parallel:
+    matrix:
+      - TEST_FILE: ["methods"]
+      - TEST_FILE: ["popup-close"]
+      - TEST_FILE: ["unchained"]
 
 connect-popup:
   extends: .e2e connect-popup
