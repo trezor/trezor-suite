@@ -41,6 +41,7 @@ describe('safety_checks Warning For PromptTemporarily', () => {
         });
         cy.get(`[data-test="@radio-button-prompt"]`).click();
         cy.getTestElement('@safety-checks-apply').click();
+        cy.getTestElement('@prompts/confirm-on-device');
         cy.task('pressYes');
     });
 
@@ -67,6 +68,7 @@ describe('safety_checks Warning For PromptTemporarily', () => {
         });
         cy.get('[data-test="@radio-button-strict"]').click();
         cy.getTestElement('@safety-checks-apply').click();
+        cy.getTestElement('@prompts/confirm-on-device');
         cy.task('pressYes');
         // Assert the warning is gone.
         cy.getTestElement('@banner/safety-checks/button').should('not.exist');
@@ -81,6 +83,7 @@ describe('safety_checks Warning For PromptTemporarily', () => {
         });
         cy.get('[data-test="@radio-button-strict"]').click();
         cy.getTestElement('@safety-checks-apply').click();
+        cy.getTestElement('@prompts/confirm-on-device');
         cy.task('pressYes');
         // Assert the warning is gone.
         cy.getTestElement('@banner/safety-checks/button').should('not.exist');
@@ -90,6 +93,7 @@ describe('safety_checks Warning For PromptTemporarily', () => {
         });
         cy.get(`[data-test="@radio-button-prompt"]`).click();
         cy.getTestElement('@safety-checks-apply').click();
+        cy.getTestElement('@prompts/confirm-on-device');
         cy.task('pressYes');
         // Assert the warning appear again.
         cy.getTestElement('@banner/safety-checks/button');

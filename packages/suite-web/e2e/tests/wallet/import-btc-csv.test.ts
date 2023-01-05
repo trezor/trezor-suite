@@ -66,12 +66,10 @@ describe('Import a BTC csv file', () => {
                 // process data
                 cy.getTestElement('outputs[0].address')
                     .should('be.visible')
-                    .invoke('val')
-                    .should('equal', firstAddress);
+                    .should('have.value', firstAddress);
                 cy.getTestElement('outputs[1].address')
                     .should('be.visible')
-                    .invoke('val')
-                    .should('equal', secondAddress);
+                    .should('have.value', secondAddress);
                 cy.log(secondAddress);
             });
         });
