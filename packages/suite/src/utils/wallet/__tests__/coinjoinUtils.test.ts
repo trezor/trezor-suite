@@ -2,44 +2,22 @@ import * as coinjoinUtils from '../coinjoinUtils';
 import * as fixtures from '../__fixtures__/coinjoinUtils';
 
 describe('breakdownCoinjoinBalance', () => {
-    const commonUtxo = {
-        txid: '1',
-        vout: 1,
-        amount: '100',
-        blockHeight: 100,
-        path: 'string',
-        confirmations: 100,
-    };
-
-    const params: Parameters<typeof coinjoinUtils.breakdownCoinjoinBalance>[0] = {
-        targetAnonymity: 80,
-        anonymitySet: {
-            one: 1,
-            two: 100,
-            three: 30,
-        },
-        utxos: [
-            {
-                address: 'one',
-                ...commonUtxo,
-            },
-            {
-                address: 'two',
-                ...commonUtxo,
-            },
-            {
-                address: 'three',
-                ...commonUtxo,
-            },
-        ],
-    };
-
     it('works without session', () => {
-        const breakdown = coinjoinUtils.breakdownCoinjoinBalance(params);
+        const breakdown = coinjoinUtils.breakdownCoinjoinBalance(fixtures.breakdownParams);
 
         expect(breakdown).toEqual({
             notAnonymized: '200',
             anonymized: '100',
+        });
+    });
+});
+
+describe('calculateAnonymityProgress', () => {
+    it('calculates correctly', () => {
+        fixtures.calculateProgressParams.forEach(({ params, result }) => {
+            const progress = coinjoinUtils.calculateAnonymityProgress(params);
+
+            expect(progress).toEqual(result);
         });
     });
 });

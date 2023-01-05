@@ -1,7 +1,6 @@
 import produce from 'immer';
 import { createSelector } from '@reduxjs/toolkit';
 import { CoinjoinStatusEvent } from '@trezor/coinjoin';
-import BigNumber from 'bignumber.js';
 import { PartialRecord } from '@trezor/type-utils';
 import { STORAGE } from '@suite-actions/constants';
 import * as COINJOIN from '@wallet-actions/constants/coinjoinConstants';
@@ -10,6 +9,7 @@ import { CoinjoinAccount, RoundPhase } from '@wallet-types/coinjoin';
 import { Action } from '@suite-types';
 import {
     breakdownCoinjoinBalance,
+    calculateAnonymityProgress,
     getEstimatedTimePerRound,
     transformCoinjoinStatus,
 } from '@wallet-utils/coinjoinUtils';
@@ -362,16 +362,11 @@ export const selectSessionProgressByAccountKey = createSelector(
             return 0;
         }
 
-        const { anonymized } = breakdownCoinjoinBalance({
+        const progress = calculateAnonymityProgress({
             targetAnonymity,
             anonymitySet: addresses?.anonymitySet,
             utxos,
         });
-
-        const progress = new BigNumber(anonymized)
-            .div(new BigNumber(balance).div(100))
-            .integerValue()
-            .toNumber();
 
         return progress;
     },

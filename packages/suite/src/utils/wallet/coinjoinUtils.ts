@@ -66,6 +66,49 @@ export const breakdownCoinjoinBalance = ({
 };
 
 /**
+ * Calculates account anonymity progress – how much UTXOs are anonymized relatively to the target anonymity
+ */
+export const calculateAnonymityProgress = ({
+    targetAnonymity,
+    anonymitySet,
+    utxos,
+}: {
+    targetAnonymity: number | undefined;
+    anonymitySet: AnonymitySet | undefined;
+    utxos: Account['utxo'];
+}): number => {
+    if (!anonymitySet || targetAnonymity === undefined || !utxos || !utxos.length) {
+        return 0;
+    }
+
+    if (targetAnonymity === 1) {
+        return 100;
+    }
+
+    let weightedCurrentAnonymity = new BigNumber(0);
+    let weightedTargetAnonymity = new BigNumber(0);
+
+    utxos?.forEach(({ address, amount }) => {
+        const bigAmount = new BigNumber(amount);
+
+        const currentAnonymity = anonymitySet[address] || 1;
+
+        weightedCurrentAnonymity = weightedCurrentAnonymity.plus(
+            bigAmount.times(Math.min(currentAnonymity, targetAnonymity) - 1),
+        );
+        weightedTargetAnonymity = weightedTargetAnonymity.plus(
+            bigAmount.times(targetAnonymity - 1),
+        );
+    });
+
+    return weightedCurrentAnonymity
+        .div(weightedTargetAnonymity)
+        .times(100)
+        .integerValue()
+        .toNumber();
+};
+
+/**
  * Transform from coordinator format to coinjoinReducer format `CoinjoinClientFeeRatesMedians`
  * array => object { name: value-in-vBytes }
  */
