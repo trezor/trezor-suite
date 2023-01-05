@@ -145,7 +145,7 @@ export const UtxoSelection = ({ isChecked, transaction, utxo }: UtxoSelectionPro
         coordinatorData && new BigNumber(utxo.amount).gt(coordinatorData.allowedInputAmounts.max);
     const isUnavailableForCoinjoin =
         account.accountType === 'coinjoin' &&
-        (amountTooSmallForCoinjoin || amountTooBigForCoinjoin); // TODO: add blacklisted UTXOs - https://github.com/trezor/trezor-suite/issues/6757
+        (amountTooSmallForCoinjoin || amountTooBigForCoinjoin);
     const unavailableMessage = amountTooSmallForCoinjoin
         ? 'TR_AMOUNT_TOO_SMALL_FOR_COINJOIN'
         : 'TR_AMOUNT_TOO_BIG_FOR_COINJOIN';

@@ -13,7 +13,7 @@ import { useAsyncDebounce } from '@trezor/react-utils';
 import { useActions } from '@suite-hooks';
 import { isChanged } from '@suite-utils/comparisonUtils';
 import * as sendFormActions from '@wallet-actions/sendFormActions';
-import { findComposeErrors, getExcludedUtxos } from '@suite-common/wallet-utils';
+import { findComposeErrors } from '@suite-common/wallet-utils';
 
 type Props = UseFormMethods<FormState> & {
     state: UseSendFormState;
@@ -34,7 +34,6 @@ export const useSendFormCompose = ({
     account,
     updateContext,
     setAmount,
-    targetAnonymity,
 }: Props) => {
     const [composedLevels, setComposedLevels] =
         useState<SendContextValues['composedLevels']>(undefined);
@@ -244,9 +243,8 @@ export const useSendFormCompose = ({
     );
 
     // handle props.account change:
-    // - update context state (state.account, state.excludedUtxos)
+    // - update context state (state.account)
     // - compose transaction with new data
-    // excludedUtxos need to be updated in case a new UTXO appears
     useEffect(() => {
         if (
             !isChanged(
@@ -258,11 +256,8 @@ export const useSendFormCompose = ({
             return; // account didn't change
         }
         if (!state.isDirty) {
-            // there was no interaction with the form, just update account and excludedUtxos
-            updateContext({
-                account,
-                excludedUtxos: getExcludedUtxos(account, state.feeInfo.dustLimit, targetAnonymity),
-            });
+            // there was no interaction with the form, just update state.account
+            updateContext({ account });
             return;
         }
 
@@ -278,11 +273,7 @@ export const useSendFormCompose = ({
             clearErrors(composeErrors);
         }
         // start composing
-        updateContext({
-            account,
-            excludedUtxos: getExcludedUtxos(account, state.feeInfo.dustLimit, targetAnonymity),
-            isLoading: true,
-        });
+        updateContext({ account, isLoading: true });
     }, [
         state.account,
         state.feeInfo.dustLimit,
@@ -290,7 +281,6 @@ export const useSendFormCompose = ({
         account,
         clearErrors,
         errors,
-        targetAnonymity,
         updateContext,
     ]);
 
