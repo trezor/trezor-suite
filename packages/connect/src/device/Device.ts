@@ -101,8 +101,7 @@ export class Device extends EventEmitter {
 
     activitySessionID?: string | null;
 
-    // @ts-expect-error: strictPropertyInitialization
-    commands: DeviceCommands;
+    commands?: DeviceCommands;
 
     keepSession = false;
 
@@ -268,7 +267,7 @@ export class Device extends EventEmitter {
     }
 
     async _runInner<X>(fn: (() => Promise<X>) | undefined, options: RunOptions): Promise<void> {
-        if (!this.isUsedHere() || this.commands.disposed || !this.getExternalState()) {
+        if (!this.isUsedHere() || this.commands?.disposed || !this.getExternalState()) {
             // acquire session
             await this.acquire();
 
@@ -353,6 +352,9 @@ export class Device extends EventEmitter {
     }
 
     getCommands() {
+        if (!this.commands) {
+            throw ERRORS.TypedError('Runtime', `Device: commands not defined`);
+        }
         return this.commands;
     }
 
@@ -409,7 +411,7 @@ export class Device extends EventEmitter {
         if (!this.features.unlocked && preauthorized) {
             // NOTE: auto locked device accepts preauthorized methods (authorizeConjoin, getOwnershipProof, signTransaction) without pin request.
             // in that case it's enough to check if session_id is preauthorized...
-            if (await this.commands.preauthorize(false)) {
+            if (await this.getCommands().preauthorize(false)) {
                 return;
             }
             // ...and if it's not then unlock device and proceed to regular GetAddress flow
@@ -417,7 +419,7 @@ export class Device extends EventEmitter {
 
         const altMode = this._altModeChange(networkType);
         const expectedState = altMode ? undefined : this.getExternalState();
-        const state = await this.commands.getDeviceState(networkType);
+        const state = await this.getCommands().getDeviceState(networkType);
         const uniqueState = `${state}@${this.features.device_id || 'device_id'}:${this.instance}`;
         if (!this.useLegacyPassphrase() && this.features.session_id) {
             this.setInternalState(this.features.session_id);
@@ -455,12 +457,12 @@ export class Device extends EventEmitter {
             }
         }
 
-        const { message } = await this.commands.typedCall('Initialize', 'Features', payload);
+        const { message } = await this.getCommands().typedCall('Initialize', 'Features', payload);
         this._updateFeatures(message);
     }
 
     async getFeatures() {
-        const { message } = await this.commands.typedCall('GetFeatures', 'Features', {});
+        const { message } = await this.getCommands().typedCall('GetFeatures', 'Features', {});
         this._updateFeatures(message);
     }
 
