@@ -39,8 +39,7 @@ const TransactionDetailSummaryStepper = () => {
 };
 
 const borderLineStyle = prepareNativeStyle(utils => ({
-    borderLeftWidth: 1,
-    borderColor: utils.colors.gray400,
+    backgroundColor: utils.colors.gray400,
     height: 10,
     width: 1,
 }));
