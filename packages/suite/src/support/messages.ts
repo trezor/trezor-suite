@@ -3882,6 +3882,18 @@ export default defineMessages({
         id: 'TR_UNAVAILABLE_COINJOIN_TOR_DISABLE_TOOLTIP',
         defaultMessage: 'Unavailable. Tor is disabled.',
     },
+    TR_UNAVAILABLE_COINJOIN_DEVICE_DISCONNECTED: {
+        id: 'TR_UNAVAILABLE_COINJOIN_DEVICE_DISCONNECTED',
+        defaultMessage: 'Unavailable. Device is disconnected.',
+    },
+    TR_UNAVAILABLE_COINJOIN_ACCOUNT_OUT_OF_SYNC: {
+        id: 'TR_UNAVAILABLE_COINJOIN_ACCOUNT_OUT_OF_SYNC',
+        defaultMessage: 'Unavailable. Account is possibly out-of-sync.',
+    },
+    TR_UNAVAILABLE_COINJOIN_NO_INTERNET: {
+        id: 'TR_UNAVAILABLE_COINJOIN_NO_INTERNET',
+        defaultMessage: 'Unavailable. No internet connection.',
+    },
     TR_ONION_BACKEND_TOR_NEEDED: {
         id: 'TR_ONION_BACKEND_TOR_NEEDED',
         defaultMessage:

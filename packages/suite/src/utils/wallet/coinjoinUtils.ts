@@ -1,7 +1,11 @@
 import BigNumber from 'bignumber.js';
 
 import { getUtxoOutpoint, getBip43Type } from '@suite-common/wallet-utils';
-import { Account, WalletAccountTransaction } from '@suite-common/wallet-types';
+import {
+    Account,
+    SelectedAccountStatus,
+    WalletAccountTransaction,
+} from '@suite-common/wallet-types';
 import { CoinjoinSession, CoinjoinSessionParameters } from '@wallet-types/coinjoin';
 import {
     ESTIMATED_ANONYMITY_GAINED_PER_ROUND,
@@ -280,4 +284,12 @@ export const calculateServiceFee = (
             new BigNumber(0),
         )
         .toString();
+};
+
+export const getIsCoinjoinOutOfSync = (selectedAccount: SelectedAccountStatus) => {
+    if (selectedAccount.status !== 'loaded') return true;
+    const { account } = selectedAccount;
+    if (account.backendType === 'coinjoin') {
+        return account.status === 'out-of-sync';
+    }
 };

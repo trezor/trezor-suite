@@ -16,6 +16,7 @@ import type { CoinjoinServerEnvironment } from '@wallet-types/coinjoin';
 import { createSelector } from '@reduxjs/toolkit';
 import { getIsTorEnabled, getIsTorLoading } from '@suite-utils/tor';
 import { getDeviceModel } from '@trezor/device-utils';
+import { getStatus } from '@suite-utils/device';
 
 export interface SuiteRootState {
     suite: SuiteState;
@@ -244,6 +245,11 @@ export const selectTorState = createSelector(
         isTorEnabled: getIsTorEnabled(torStatus),
         isTorLoading: getIsTorLoading(torStatus),
     }),
+);
+
+export const selectDeviceState = createSelector(
+    (state: SuiteRootState) => state.suite.device,
+    device => device && getStatus(device),
 );
 
 export const selectDebug = (state: SuiteRootState) => state.suite.settings.debug;
