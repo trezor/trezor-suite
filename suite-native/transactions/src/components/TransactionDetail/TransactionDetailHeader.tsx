@@ -19,7 +19,7 @@ type TransactionTypeInfo = {
     signColor: Color;
 };
 
-const transactionTypeInfo: Partial<Record<TransactionType, TransactionTypeInfo>> = {
+const transactionTypeInfo = {
     recv: {
         text: 'Received',
         iconName: 'receive',
@@ -32,7 +32,7 @@ const transactionTypeInfo: Partial<Record<TransactionType, TransactionTypeInfo>>
         sign: '-',
         signColor: 'red',
     },
-};
+} as const satisfies Partial<Record<TransactionType, TransactionTypeInfo>>;
 
 export const TransactionDetailHeader = ({
     type,
@@ -48,17 +48,13 @@ export const TransactionDetailHeader = ({
         <Box alignItems="center">
             <Box flexDirection="row" alignItems="center" marginBottom="small">
                 <Text variant="hint" color="gray600">
-                    {transactionTypeInfo[type]?.text}
+                    {transactionTypeInfo[type].text}
                 </Text>
-                <Icon
-                    name={transactionTypeInfo[type]?.iconName ?? 'placeholder'}
-                    color="gray600"
-                    size="medium"
-                />
+                <Icon name={transactionTypeInfo[type].iconName} color="gray600" size="medium" />
             </Box>
             <Box flexDirection="row">
-                <Text variant="titleMedium" color={transactionTypeInfo[type]?.signColor}>
-                    {transactionTypeInfo[type]?.sign}
+                <Text variant="titleMedium" color={transactionTypeInfo[type].signColor}>
+                    {transactionTypeInfo[type].sign}
                 </Text>
                 <DiscreetText typography="titleMedium">{amount}</DiscreetText>
             </Box>
