@@ -2,7 +2,7 @@ import React from 'react';
 import { TouchableOpacity } from 'react-native';
 import { useSelector } from 'react-redux';
 
-import { CryptoIcon, CryptoIconName, Icon } from '@trezor/icons';
+import { CryptoIconName, CryptoIconWithPercentage, Icon } from '@trezor/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { useFormatters } from '@suite-common/formatters';
 import { NetworkSymbol } from '@suite-common/wallet-config';
@@ -16,6 +16,8 @@ type AssetItemProps = {
     iconName: CryptoIconName;
     onPress?: () => void;
     fiatBalance: string;
+    fiatPercentage: number;
+    fiatPercentageOffset: number;
 };
 
 const assetItemWrapperStyle = prepareNativeStyle(() => ({
@@ -41,6 +43,8 @@ export const AssetItem = ({
     cryptoCurrencyName,
     iconName,
     fiatBalance,
+    fiatPercentage,
+    fiatPercentageOffset,
     onPress,
 }: AssetItemProps) => {
     const { applyStyle } = useNativeStyles();
@@ -52,7 +56,11 @@ export const AssetItem = ({
     return (
         <TouchableOpacity disabled={!onPress} onPress={onPress}>
             <Box style={applyStyle(assetItemWrapperStyle)}>
-                <CryptoIcon name={iconName} size="large" />
+                <CryptoIconWithPercentage
+                    iconName={iconName}
+                    percentage={fiatPercentage}
+                    percentageOffset={fiatPercentageOffset}
+                />
                 <Box style={applyStyle(assetContentStyle)}>
                     <Box flex={1} justifyContent="space-between" alignItems="flex-start">
                         <Text>{cryptoCurrencyName}</Text>

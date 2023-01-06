@@ -9,7 +9,7 @@ import { FiatCurrencyCode } from '@suite-common/suite-config';
 type Assets = Partial<Record<NetworkSymbol, string[]>>;
 type FormattedAssets = Partial<Record<NetworkSymbol, BigNumber>>;
 
-interface AssetType {
+export interface AssetType {
     symbol: NetworkSymbol;
     network: Network;
     assetBalance: BigNumber;
