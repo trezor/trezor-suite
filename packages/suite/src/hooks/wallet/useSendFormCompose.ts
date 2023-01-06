@@ -4,11 +4,12 @@ import {
     FormState,
     UseSendFormState,
     SendContextValues,
+    ExcludedUtxos,
     PrecomposedTransaction,
     PrecomposedTransactionCardano,
     PrecomposedLevels,
     PrecomposedLevelsCardano,
-} from '@wallet-types/sendForm';
+} from '@suite-common/wallet-types';
 import { useAsyncDebounce } from '@trezor/react-utils';
 import { useActions } from '@suite-hooks';
 import { isChanged } from '@suite-utils/comparisonUtils';
@@ -17,6 +18,7 @@ import { findComposeErrors } from '@suite-common/wallet-utils';
 
 type Props = UseFormMethods<FormState> & {
     state: UseSendFormState;
+    excludedUtxos: ExcludedUtxos;
     account: UseSendFormState['account']; // account from the component props !== state.account
     updateContext: SendContextValues['updateContext'];
     setAmount: (index: number, amount: string) => void;
@@ -32,6 +34,7 @@ export const useSendFormCompose = ({
     clearErrors,
     state,
     account,
+    excludedUtxos,
     updateContext,
     setAmount,
 }: Props) => {
@@ -55,12 +58,17 @@ export const useSendFormCompose = ({
             updateContext({ isLoading: true, isDirty: true });
             setComposedLevels(undefined);
 
-            const result = await composeTransaction(values, state);
+            const result = await composeTransaction(values, {
+                account,
+                network: state.network,
+                feeInfo: state.feeInfo,
+                excludedUtxos,
+            });
 
             setComposedLevels(result);
             updateContext({ isLoading: false, isDirty: true }); // isDirty needs to be set again, "state" is cached in updateContext callback
         },
-        [state, composeTransaction, updateContext],
+        [account, excludedUtxos, state.network, state.feeInfo, composeTransaction, updateContext],
     );
 
     // called from composeRequest useEffect
@@ -75,7 +83,12 @@ export const useSendFormCompose = ({
             // save draft (it could be changed later, after composing)
             setDraftSaveRequest(true);
 
-            return composeTransaction(values, state);
+            return composeTransaction(values, {
+                account,
+                network: state.network,
+                feeInfo: state.feeInfo,
+                excludedUtxos,
+            });
         };
 
         // store current request ID before async debounced process and compare it later. see explanation below
@@ -93,7 +106,17 @@ export const useSendFormCompose = ({
             // result undefined: (FormState got errors or sendFormActions got errors)
             updateContext({ isLoading: false });
         }
-    }, [state, updateContext, debounce, errors, getValues, composeTransaction]);
+    }, [
+        account,
+        excludedUtxos,
+        state.network,
+        state.feeInfo,
+        updateContext,
+        debounce,
+        errors,
+        getValues,
+        composeTransaction,
+    ]);
 
     // Create a compose request which should be processed in useEffect below
     // This function should be called from the UI (input.onChange, button.click etc...)

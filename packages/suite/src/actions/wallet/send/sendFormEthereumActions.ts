@@ -17,12 +17,12 @@ import {
 import { ETH_DEFAULT_GAS_LIMIT, ERC20_GAS_LIMIT } from '@suite-common/wallet-constants';
 import {
     FormState,
-    UseSendFormState,
+    ComposeActionContext,
     PrecomposedLevels,
     PrecomposedTransaction,
     PrecomposedTransactionFinal,
     ExternalOutput,
-} from '@wallet-types/sendForm';
+} from '@suite-common/wallet-types';
 import { Dispatch, GetState } from '@suite-types';
 
 const calculate = (
@@ -102,7 +102,7 @@ const calculate = (
 };
 
 export const composeTransaction =
-    (formValues: FormState, formState: UseSendFormState) => async () => {
+    (formValues: FormState, formState: ComposeActionContext) => async () => {
         const { account, network, feeInfo } = formState;
         const composeOutputs = getExternalComposeOutput(formValues, account, network);
         if (!composeOutputs) return; // no valid Output
