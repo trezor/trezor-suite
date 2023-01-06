@@ -380,10 +380,9 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
         loadTransaction,
         signTransaction: sign,
         setDraftSaveRequest,
+        utxoSelection,
         ...sendFormUtils,
         ...sendFormOutputs,
-        ...utxoSelection,
-        excludedUtxos,
     };
 };
 

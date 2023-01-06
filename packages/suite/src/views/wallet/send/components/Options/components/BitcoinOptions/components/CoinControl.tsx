@@ -73,19 +73,21 @@ export const CoinControl = ({ close }: CoinControlProps) => {
 
     const {
         account,
-        allUtxosSelected,
-        composedInputs,
-        dustUtxos,
         errors,
         getDefaultValue,
-        isCoinControlEnabled,
-        lowAnonymityUtxos,
         network,
         outputs,
-        selectedUtxos,
-        spendableUtxos,
-        toggleCheckAllUtxos,
-        toggleCoinControl,
+        utxoSelection: {
+            allUtxosSelected,
+            composedInputs,
+            dustUtxos,
+            isCoinControlEnabled,
+            lowAnonymityUtxos,
+            selectedUtxos,
+            spendableUtxos,
+            toggleCheckAllUtxos,
+            toggleCoinControl,
+        },
     } = useSendFormContext();
 
     const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);

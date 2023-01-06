@@ -57,7 +57,10 @@ export const UtxoSelectionList = ({
     utxos,
     withHeader,
 }: Props) => {
-    const { account, composedInputs, isCoinControlEnabled, selectedUtxos } = useSendFormContext();
+    const {
+        account,
+        utxoSelection: { composedInputs, isCoinControlEnabled, selectedUtxos },
+    } = useSendFormContext();
 
     const accountTransactions = useSelector(state => selectAccountTransactions(state, account.key));
 

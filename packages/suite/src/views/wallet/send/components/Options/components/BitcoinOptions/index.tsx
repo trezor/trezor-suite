@@ -49,7 +49,7 @@ export const BitcoinOptions = () => {
         network,
         addOutput,
         control,
-        isCoinControlEnabled,
+        utxoSelection: { isCoinControlEnabled },
         getDefaultValue,
         toggleOption,
         composeTransaction,

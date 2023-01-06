@@ -56,7 +56,6 @@ const SecondLine = styled.p`
 export const ReviewButton = () => {
     const { device, isLocked } = useDevice();
     const {
-        anonymityWarningChecked,
         control,
         errors,
         online,
@@ -64,11 +63,14 @@ export const ReviewButton = () => {
         signTransaction,
         getValues,
         getDefaultValue,
-        toggleAnonymityWarning,
         toggleOption,
         composedLevels,
-        isCoinControlEnabled,
-        isLowAnonymityUtxoSelected,
+        utxoSelection: {
+            anonymityWarningChecked,
+            isCoinControlEnabled,
+            isLowAnonymityUtxoSelected,
+            toggleAnonymityWarning,
+        },
     } = useSendFormContext();
 
     const options = useWatch<FormOptions[]>({
