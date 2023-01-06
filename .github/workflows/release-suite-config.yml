@@ -1,5 +1,9 @@
 name: "[Release] suite config"
 
+permissions:
+  id-token: write # for fetching the OIDC token
+  contents: read # for actions/checkout
+
 on:
   workflow_dispatch:
     inputs:
