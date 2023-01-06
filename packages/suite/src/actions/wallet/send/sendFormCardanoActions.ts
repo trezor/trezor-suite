@@ -14,14 +14,14 @@ import {
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     FormState,
-    UseSendFormState,
+    ComposeActionContext,
     PrecomposedLevelsCardano,
     PrecomposedTransactionFinalCardano,
-} from '@wallet-types/sendForm';
+} from '@suite-common/wallet-types';
 import { Dispatch, GetState } from '@suite-types';
 
 export const composeTransaction =
-    (formValues: FormState, formState: UseSendFormState) =>
+    (formValues: FormState, formState: ComposeActionContext) =>
     async (dispatch: Dispatch): Promise<PrecomposedLevelsCardano | undefined> => {
         const { account, feeInfo } = formState;
         const changeAddress = getChangeAddressParameters(account);

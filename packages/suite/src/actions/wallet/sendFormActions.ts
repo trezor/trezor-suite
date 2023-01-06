@@ -25,10 +25,10 @@ import { Dispatch, GetState } from '@suite-types';
 import { Account } from '@wallet-types';
 import {
     FormState,
-    UseSendFormState,
+    ComposeActionContext,
     PrecomposedTransactionFinal,
     PrecomposedTransactionFinalCardano,
-} from '@wallet-types/sendForm';
+} from '@suite-common/wallet-types';
 import * as sendFormBitcoinActions from './send/sendFormBitcoinActions';
 import * as sendFormEthereumActions from './send/sendFormEthereumActions';
 import * as sendFormRippleActions from './send/sendFormRippleActions';
@@ -167,7 +167,7 @@ export const convertDrafts = () => (dispatch: Dispatch, getState: GetState) => {
 };
 
 export const composeTransaction =
-    (formValues: FormState, formState: UseSendFormState) => (dispatch: Dispatch) => {
+    (formValues: FormState, formState: ComposeActionContext) => (dispatch: Dispatch) => {
         const { account } = formState;
         if (account.networkType === 'bitcoin') {
             return dispatch(sendFormBitcoinActions.composeTransaction(formValues, formState));

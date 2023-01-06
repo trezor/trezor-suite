@@ -11,15 +11,15 @@ import {
 import { BTC_RBF_SEQUENCE, BTC_LOCKTIME_SEQUENCE } from '@suite-common/wallet-constants';
 import {
     FormState,
-    UseSendFormState,
+    ComposeActionContext,
     PrecomposedLevels,
     PrecomposedTransaction,
     PrecomposedTransactionFinal,
-} from '@wallet-types/sendForm';
+} from '@suite-common/wallet-types';
 import { Dispatch, GetState } from '@suite-types';
 
 export const composeTransaction =
-    (formValues: FormState, formState: UseSendFormState) =>
+    (formValues: FormState, formState: ComposeActionContext) =>
     async (dispatch: Dispatch, getState: GetState) => {
         const { account, excludedUtxos, feeInfo } = formState;
 
@@ -166,6 +166,7 @@ export const composeTransaction =
                 const getErrorMessage = () => {
                     const isLowAnonymity =
                         account.accountType === 'coinjoin' &&
+                        excludedUtxos &&
                         !!Object.values(excludedUtxos).filter(reason => reason === 'low-anonymity')
                             .length;
 

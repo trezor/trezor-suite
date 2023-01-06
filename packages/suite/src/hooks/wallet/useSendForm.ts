@@ -184,6 +184,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
         ...useFormMethods,
         state,
         account: props.selectedAccount.account,
+        excludedUtxos,
         updateContext,
         setAmount: sendFormUtils.setAmount,
     });
