@@ -74,24 +74,15 @@ export const composeTransaction =
 
         // exclude unspendable utxos if coin control is not enabled
         // unspendable utxos are defined in `useSendForm` hook
-        let availableUtxo = account.utxo;
-        if (
-            !formValues.isCoinControlEnabled &&
-            excludedUtxos &&
-            Object.keys(excludedUtxos).length > 0
-        ) {
-            availableUtxo = account.utxo.filter(u => {
-                const outpoint = getUtxoOutpoint(u);
-                return !excludedUtxos[outpoint];
-            });
-        }
+        const utxo = formValues.isCoinControlEnabled
+            ? formValues.selectedUtxos?.map(u => ({ ...u, required: true }))
+            : account.utxo.filter(u => (u as any).required || !excludedUtxos?.[getUtxoOutpoint(u)]);
 
-        const selectedUtxos = formValues.selectedUtxos?.map(u => ({ ...u, required: true }));
         const params = {
             account: {
                 path: account.path,
                 addresses: account.addresses,
-                utxo: formValues.isCoinControlEnabled ? selectedUtxos : availableUtxo,
+                utxo,
             },
             feeLevels: predefinedLevels,
             baseFee,
