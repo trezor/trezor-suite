@@ -23,7 +23,7 @@ jobs:
       - name: Configure aws credentials
         uses: aws-actions/configure-aws-credentials@v1-node16
         with:
-          role-to-assume: arn:aws:iam::538326561891:role/github-actions-trezor-suite
+          role-to-assume: arn:aws:iam::538326561891:role/github_actions
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Build and sign ${{ github.event.inputs.environment }} config
