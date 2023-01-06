@@ -38,7 +38,12 @@ export const Pin = ({ device, ...rest }: PinProps) => {
 
     return (
         <StyledModal
-            heading={<Translation id="TR_ENTER_PIN" />}
+            heading={
+                <Translation
+                    id="TR_ENTER_PIN_ON_DEVICE_LABEL"
+                    values={{ deviceLabel: device.label }}
+                />
+            }
             description={<Translation id="TR_THE_PIN_LAYOUT_IS_DISPLAYED" />}
             {...rest}
             data-test="@modal/pin"

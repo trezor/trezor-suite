@@ -2363,6 +2363,10 @@ export default defineMessages({
         description: 'Button. Submit PIN',
         id: 'TR_ENTER_PIN',
     },
+    TR_ENTER_PIN_ON_DEVICE_LABEL: {
+        defaultMessage: 'Enter PIN on {deviceLabel}',
+        id: 'TR_ENTER_PIN_ON_DEVICE_LABEL',
+    },
     TR_ENTER_SEED_WORDS_INSTRUCTION: {
         defaultMessage:
             'Enter the words from your seed here in the order displayed on your device. ',
