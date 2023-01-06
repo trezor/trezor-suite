@@ -125,7 +125,11 @@ interface UtxoSelectionProps {
 }
 
 export const UtxoSelection = ({ isChecked, transaction, utxo }: UtxoSelectionProps) => {
-    const { account, network, selectedUtxos, toggleUtxoSelection } = useSendFormContext();
+    const {
+        account,
+        network,
+        utxoSelection: { selectedUtxos, toggleUtxoSelection },
+    } = useSendFormContext();
 
     const coordinatorData = useSelector(state => state.wallet.coinjoin.clients[account.symbol]);
     const device = useSelector(state => state.suite.device);

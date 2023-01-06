@@ -124,18 +124,5 @@ export type SendContextValues = Omit<UseFormMethods<FormState>, 'register'> &
         // useSendFormCompose
         setDraftSaveRequest: React.Dispatch<React.SetStateAction<boolean>>;
         // UTXO selection
-        excludedUtxos: ExcludedUtxos;
-        allUtxosSelected: boolean;
-        composedInputs: PROTO.TxInputType[];
-        dustUtxos: AccountUtxo[];
-        isCoinControlEnabled: boolean;
-        lowAnonymityUtxos: AccountUtxo[];
-        selectedUtxos: AccountUtxo[];
-        spendableUtxos: AccountUtxo[];
-        isLowAnonymityUtxoSelected: boolean;
-        anonymityWarningChecked: boolean;
-        toggleAnonymityWarning: () => void;
-        toggleCheckAllUtxos: () => void;
-        toggleCoinControl: () => void;
-        toggleUtxoSelection: (utxo: AccountUtxo) => void;
+        utxoSelection: UtxoSelectionContext;
     };
