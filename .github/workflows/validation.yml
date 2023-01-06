@@ -28,6 +28,8 @@ jobs:
           key: yarn-cache-folder-${{ hashFiles('**/yarn.lock', '.yarnrc.yml') }}
           restore-keys: |
             yarn-cache-folder-
+      - name: check for duplicate dependencies
+        run: yarn dedupe --check
       - name: install deps
         run: yarn --immutable
       - name: check files for correct formatting
