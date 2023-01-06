@@ -6,7 +6,6 @@ import * as sendFormActions from '@wallet-actions/sendFormActions';
 import { findComposeErrors } from '@suite-common/wallet-utils';
 import {
     FormState,
-    FeeInfo,
     UseSendFormState,
     SendContextValues,
     PrecomposedTransaction,
@@ -14,15 +13,11 @@ import {
     PrecomposedLevels,
     PrecomposedLevelsCardano,
 } from '@wallet-types/sendForm';
-import { Account, Network } from '@wallet-types';
 
 type Props = UseFormMethods<FormState> & {
     // TODO: params required by sendFormActions (not the whole UseSendFormState), refactor both in the next PR
-    state?: {
-        account: Account;
-        network: Network;
-        feeInfo: FeeInfo;
-    };
+    state?: Pick<UseSendFormState, 'account' | 'network' | 'feeInfo'> &
+        Partial<Pick<UseSendFormState, 'excludedUtxos'>>;
     defaultField?: string;
 };
 

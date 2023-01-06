@@ -1,5 +1,9 @@
 export { DEFAULT_STORE } from './useSendForm';
 
+const ABCD = 'abcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcd';
+const DCBA = 'dcbadcbadcbadcbadcbadcbadcbadcbadcbadcbadcbadcbadcbadcbadcbadcba';
+const DUST = 'dust-limit-utxo-should-never-be-used-aaaaaaaaaaaaaaaaaaaaaaaaaaa';
+
 // m/44'/0'/0' all-all-all
 export const BTC_ACCOUNT = {
     status: 'loaded',
@@ -36,7 +40,7 @@ export const BTC_ACCOUNT = {
         balance: '1',
         availableBalance: '1',
         formattedBalance: '0.00000001 BTC',
-        utxo: [{ amount: '1', txid: 'dust-limit-utxo-should-never-be-used' }],
+        utxo: [{ amount: '1', txid: DUST }],
         history: {},
     },
     network: { networkType: 'bitcoin', symbol: 'btc', decimals: 8, features: ['rbf'] },
@@ -60,7 +64,7 @@ const PREPARE_TX = (params = {}) => ({
         utxo: [
             {
                 amount: '31000',
-                txid: 'DCBA',
+                txid: DCBA,
                 vout: 0,
                 address: 'address',
                 path: "m/44'/0'/0'/0/0",
@@ -306,7 +310,7 @@ export const composeAndSign = [
                     utxo: [
                         {
                             amount: '10000',
-                            txid: 'abcddcba',
+                            txid: ABCD,
                             vout: 0,
                             address: 'address',
                             path: "m/44'/0'/0'/0/1",
@@ -342,7 +346,7 @@ export const composeAndSign = [
                 type: 'final',
                 fee: '3741',
                 transaction: {
-                    inputs: [{ prev_hash: 'dcba' }, { prev_hash: 'abcddcba' }],
+                    inputs: [{ prev_hash: DCBA }, { prev_hash: ABCD }],
                     outputs: [
                         {
                             address: '1MCgrVZjXRJJJhi2Z6SR11GpRjCyvNjscY',
@@ -381,7 +385,7 @@ export const composeAndSign = [
                     utxo: [
                         {
                             amount: '1000',
-                            txid: 'abcddcba',
+                            txid: ABCD,
                             vout: 0,
                             address: 'address',
                             path: "m/44'/0'/0'/0/1",
@@ -418,7 +422,7 @@ export const composeAndSign = [
                 fee: '1000',
                 feePerByte: '2.94',
                 transaction: {
-                    inputs: [{ prev_hash: 'dcba' }, { prev_hash: 'abcddcba' }],
+                    inputs: [{ prev_hash: DCBA }, { prev_hash: ABCD }],
                     outputs: [
                         {
                             address: '1MCgrVZjXRJJJhi2Z6SR11GpRjCyvNjscY',
@@ -429,7 +433,7 @@ export const composeAndSign = [
             },
         },
         signedTx: {
-            inputs: [{ prev_hash: 'dcba' }, { prev_hash: 'abcddcba' }],
+            inputs: [{ prev_hash: DCBA }, { prev_hash: ABCD }],
             outputs: [
                 {
                     address: '1MCgrVZjXRJJJhi2Z6SR11GpRjCyvNjscY',
@@ -450,7 +454,7 @@ export const composeAndSign = [
                     utxo: [
                         {
                             amount: '1000',
-                            txid: 'abcddcba',
+                            txid: ABCD,
                             vout: 0,
                             address: 'address',
                             path: "m/44'/0'/0'/0/1",
@@ -492,7 +496,7 @@ export const composeAndSign = [
                 fee: '1800', // new utxo + old change-output + old fee (100)
                 feePerByte: '5.29',
                 transaction: {
-                    inputs: [{ prev_hash: 'dcba' }, { prev_hash: 'abcddcba' }], // new utxo added
+                    inputs: [{ prev_hash: DCBA }, { prev_hash: ABCD }], // new utxo added
                     outputs: [
                         // change output was removed
                         {
@@ -504,7 +508,7 @@ export const composeAndSign = [
             },
         },
         signedTx: {
-            inputs: [{ prev_hash: 'dcba' }, { prev_hash: 'abcddcba' }],
+            inputs: [{ prev_hash: DCBA }, { prev_hash: ABCD }],
             outputs: [
                 {
                     address: '1MCgrVZjXRJJJhi2Z6SR11GpRjCyvNjscY',
@@ -526,7 +530,7 @@ export const composeAndSign = [
                     utxo: [
                         {
                             amount: '500',
-                            txid: 'abcddcba',
+                            txid: ABCD,
                             vout: 0,
                             address: 'address',
                             path: "m/44'/0'/0'/0/1",
@@ -563,7 +567,7 @@ export const composeAndSign = [
                 type: 'final',
                 fee: '1921',
                 transaction: {
-                    inputs: [{ prev_hash: 'dcba' }],
+                    inputs: [{ prev_hash: DCBA }],
                     outputs: [
                         {
                             address: '1MCgrVZjXRJJJhi2Z6SR11GpRjCyvNjscY',
@@ -574,7 +578,7 @@ export const composeAndSign = [
             },
         },
         signedTx: {
-            inputs: [{ prev_hash: 'dcba' }],
+            inputs: [{ prev_hash: DCBA }],
             outputs: [
                 {
                     address: '1MCgrVZjXRJJJhi2Z6SR11GpRjCyvNjscY',
@@ -623,7 +627,7 @@ export const composeAndSign = [
                 type: 'final',
                 fee: '769',
                 transaction: {
-                    inputs: [{ prev_hash: 'dcba' }],
+                    inputs: [{ prev_hash: DCBA }],
                     outputs: [
                         {
                             address: '1MCgrVZjXRJJJhi2Z6SR11GpRjCyvNjscY',
@@ -634,7 +638,7 @@ export const composeAndSign = [
             },
         },
         signedTx: {
-            inputs: [{ prev_hash: 'dcba' }],
+            inputs: [{ prev_hash: DCBA }],
             outputs: [
                 {
                     address: '1MCgrVZjXRJJJhi2Z6SR11GpRjCyvNjscY',
@@ -679,7 +683,7 @@ export const composeAndSign = [
             },
         },
         signedTx: {
-            inputs: [{ prev_hash: 'dcba' }],
+            inputs: [{ prev_hash: DCBA }],
             outputs: [
                 {
                     address: '1MCgrVZjXRJJJhi2Z6SR11GpRjCyvNjscY',
@@ -774,7 +778,7 @@ export const composeAndSign = [
             utxo: [
                 {
                     amount: '800',
-                    txid: 'DCBA',
+                    txid: DCBA,
                     vout: 0,
                     address: 'address',
                     path: "m/44'/0'/0'/0/0",
