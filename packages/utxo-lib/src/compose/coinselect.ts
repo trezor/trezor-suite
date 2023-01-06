@@ -1,7 +1,7 @@
 import * as BN from 'bn.js';
 import { split as bitcoinJsSplit } from '../coinselect/outputs/split';
 import { coinselect as bitcoinJsCoinselect } from '../coinselect';
-import { transactionBytes, finalize } from '../coinselect/utils';
+import { transactionBytes } from '../coinselect/utils';
 import * as utils from './utils';
 import type { ComposeRequest } from './request';
 import type { CoinSelectInput, CoinSelectOutputFinal, CoinSelectOptions } from '../coinselect';
@@ -39,7 +39,6 @@ export function coinselect(
     baseFee?: number,
     floorBaseFee?: boolean,
     dustOutputFee?: number,
-    skipUtxoSelection?: boolean,
     skipPermutation?: boolean,
 ): Result {
     const inputs0 = utils.convertInputs(utxos, height, txType);
@@ -55,10 +54,7 @@ export function coinselect(
 
     const algorithm = countMax ? bitcoinJsSplit : bitcoinJsCoinselect;
     // finalize using requested custom inputs or use coin select algorithm
-    const result =
-        skipUtxoSelection != null && !countMax
-            ? finalize(inputs0, outputs0, feeRate, options)
-            : algorithm(inputs0, outputs0, feeRate, options);
+    const result = algorithm(inputs0, outputs0, feeRate, options);
     if (!result.inputs || !result.outputs) {
         return {
             type: 'false',

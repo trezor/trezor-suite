@@ -18,7 +18,6 @@ export function composeTx({
     baseFee,
     floorBaseFee,
     dustOutputFee,
-    skipUtxoSelection,
     skipPermutation,
 }: request.ComposeRequest): result.ComposeResult {
     if (outputs.length === 0) {
@@ -62,7 +61,6 @@ export function composeTx({
             baseFee,
             floorBaseFee,
             dustOutputFee,
-            skipUtxoSelection,
             skipPermutation,
         );
     } catch (e) {
