@@ -84,8 +84,8 @@ describe('Database migration', () => {
         cy.getTestElement('@wallet/menu/close-button').last().click();
 
         // check and store address of first btc tx
+        cy.get('[data-test^="@metadata/outputLabel"] > span').should('be.visible');
         cy.get('[data-test^="@metadata/outputLabel"] > span')
-            .should('be.visible')
             .first()
             .invoke('text')
             .as('firstTxLabel');
