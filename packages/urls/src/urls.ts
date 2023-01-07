@@ -25,12 +25,14 @@ export const SUITE_FIRMWARE_URL = 'https://suite.trezor.io/web/firmware/';
 export const SUITE_UDEV_URL = 'https://suite.trezor.io/web/udev/';
 
 export const HELP_CENTER_PIN_URL = 'https://trezor.io/learn/a/pin-protection-on-trezor-devices';
-export const HELP_CENTER_DRY_RUN_T1_URL =
-    'https://trezor.io/learn/a/test-recovery-seed-on-trezor-model-one';
-export const HELP_CENTER_DRY_RUN_TT_URL =
-    'https://trezor.io/learn/a/test-recovery-seed-on-trezor-model-t';
-export const HELP_CENTER_DRY_RUN_TR_URL =
-    'https://trezor.io/learn/a/test-recovery-seed-on-trezor-model-r';
+// todo: these are not used anywhere, commenting out because of this check
+// https://gitlab.com/satoshilabs/trezor/trezor-suite/-/jobs/3567617048
+// export const HELP_CENTER_DRY_RUN_T1_URL =
+//     'https://trezor.io/learn/a/test-recovery-seed-on-trezor-model-one';
+// export const HELP_CENTER_DRY_RUN_TT_URL =
+//     'https://trezor.io/learn/a/test-recovery-seed-on-trezor-model-t';
+// export const HELP_CENTER_DRY_RUN_TR_URL =
+//     'https://trezor.io/learn/a/test-recovery-seed-on-trezor-model-r';
 export const HELP_CENTER_PASSPHRASE_URL =
     'https://trezor.io/learn/a/passphrases-and-hidden-wallets';
 export const HELP_CENTER_RECOVERY_SEED_URL = 'https://trezor.io/learn/a/how-to-use-a-recovery-seed';
