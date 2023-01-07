@@ -16,6 +16,7 @@ import FiatAmount from '../components/FiatAmount';
 import Summary from '../components/Summary';
 import { AllFeesIncluded } from '../../AllFeesIncluded';
 import { ProvidedBy } from '../../ProvidedBy';
+import ReauthorizationCard from '@wallet-components/CoinmarketReauthorizationCard';
 
 const Header = styled.div`
     font-weight: 500;
@@ -91,12 +92,15 @@ const CoinmarketSavingsSetupContinue = (props: WithSelectedAccountLoadedProps) =
         showReceivingAddressChangePaymentInfoLabel,
     } = useSavingsSetupContinue(props);
 
+    const reauthorizationUrl = savingsTrade?.reauthorizationUrl;
+
     if (isSavingsTradeLoading || !savingsTrade) {
         return <Translation id="TR_LOADING" />;
     }
 
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
+            {reauthorizationUrl && <ReauthorizationCard reauthorizationUrl={reauthorizationUrl} />}
             {isWatchingKYCStatus && <KYCInProgress />}
             {!isWatchingKYCStatus && kycFinalStatus === 'Failed' && (
                 <KYCFailed providerName={selectedProviderName} />
@@ -156,7 +160,6 @@ const CoinmarketSavingsSetupContinue = (props: WithSelectedAccountLoadedProps) =
                     </ReceivingAddressChangesPaymentInfoLabel>
                 )}
             </AddressOptionsWrapper>
-
             <Footer>
                 <Button isDisabled={!canConfirmSetup} isLoading={isSubmitting}>
                     <Translation id="TR_SAVINGS_SETUP_CONFIRM_BUTTON" />

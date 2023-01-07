@@ -6,7 +6,7 @@ import FiatInput from './FiatInput';
 import { CRYPTO_INPUT, FIAT_INPUT, OUTPUT_AMOUNT } from '@suite/types/wallet/coinmarketSellForm';
 import CryptoInput from './CryptoInput';
 import { useLayoutSize } from '@suite/hooks/suite';
-import FractionButtons from '@suite/components/wallet/CoinMarketFractionButtons';
+import FractionButtons from '@wallet-components/CoinmarketFractionButtons';
 import { amountToSatoshi, isZero } from '@suite-common/wallet-utils';
 import { Wrapper, Left, Middle, Right, StyledIcon } from '@wallet-views/coinmarket';
 import { useBitcoinAmountUnit } from '@wallet-hooks/useBitcoinAmountUnit';

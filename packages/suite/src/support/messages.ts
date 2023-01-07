@@ -1318,6 +1318,14 @@ export default defineMessages({
             'Coins are in {providerName} custody and will be transferred to your Trezor automatically.',
         id: 'TR_SAVINGS_OVERVIEW_COIN_TRANSFER_DELAYED',
     },
+    TR_SAVINGS_AUTHORIZATION_ERROR: {
+        defaultMessage: 'Your authorization expired, please folow the button.',
+        id: 'TR_SAVINGS_AUTHORIZATION_ERROR',
+    },
+    TR_SAVINGS_AUTHORIZATION_ERROR_BUTTON_LABEL: {
+        defaultMessage: 'Reauthorize account',
+        id: 'TR_SAVINGS_AUTHORIZATION_ERROR_BUTTON_LABEL',
+    },
     TR_SAVINGS_OVERVIEW_PAYMENT_DETAIL_CURRENT_PAYMENT: {
         defaultMessage: 'Current payment',
         id: 'TR_SAVINGS_OVERVIEW_PAYMENT_DETAIL_CURRENT_PAYMENT',

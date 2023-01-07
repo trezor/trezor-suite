@@ -11,6 +11,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Translation } from '@suite-components';
 import { useFormatters } from '@suite-common/formatters';
+import ReauthorizationCard from '@wallet-components/CoinmarketReauthorizationCard';
 
 const Header = styled.div`
     font-size: 24px;
@@ -88,12 +89,15 @@ const PaymentInfo = (props: WithCoinmarketProps) => {
         selectedProviderName,
     } = useSavingsPaymentInfo(props);
 
+    const reauthorizationUrl = savingsTrade?.reauthorizationUrl;
+
     if (isSavingsTradeLoading || !savingsTrade) {
         return <Translation id="TR_LOADING" />;
     }
 
     return (
         <>
+            {reauthorizationUrl && <ReauthorizationCard reauthorizationUrl={reauthorizationUrl} />}
             {isWatchingKYCStatus && <KYCInProgress />}
             {!isWatchingKYCStatus && kycFinalStatus === 'Failed' && (
                 <KYCFailed providerName={selectedProviderName} />
