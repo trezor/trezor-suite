@@ -9,7 +9,9 @@ const StyledCard = styled(SavingsKYCCard)`
     color: ${props => props.theme.BG_RED};
 `;
 const Icon = styled.div`
-    margin-right: 17px;
+    margin-right: 14px;
+    height: 22px;
+    width: 22px;
 `;
 const Text = styled.div``;
 const Header = styled.div`

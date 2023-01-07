@@ -25,6 +25,7 @@ import { darken } from 'polished';
 import type { Account, NetworkSymbol } from '@wallet-types';
 import { AllFeesIncluded } from '../AllFeesIncluded';
 import { ProvidedBy } from '../ProvidedBy';
+import ReauthorizationCard from '@wallet-components/CoinmarketReauthorizationCard';
 
 const Wrapper = styled.div`
     display: flex;
@@ -200,6 +201,9 @@ const Overview = (props: WithCoinmarketProps) => {
         selectedProvider,
         account,
     } = contextValues;
+
+    const reauthorizationUrl = savingsTrade?.reauthorizationUrl;
+
     if (isSavingsTradeLoading || !savingsTrade) {
         return <Translation id="TR_LOADING" />;
     }
@@ -211,6 +215,9 @@ const Overview = (props: WithCoinmarketProps) => {
     return (
         <SavingsOverviewContext.Provider value={contextValues}>
             <Wrapper>
+                {reauthorizationUrl && (
+                    <ReauthorizationCard reauthorizationUrl={reauthorizationUrl} />
+                )}
                 <HeaderWrapper>
                     <Left>
                         <Setup>
