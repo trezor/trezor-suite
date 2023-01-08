@@ -3,7 +3,6 @@ import { Device, DEVICE, Features } from '@trezor/connect';
 import { SUITE, STORAGE, METADATA } from '@suite-actions/constants';
 import * as deviceUtils from '@suite-utils/device';
 import type { TrezorDevice, AcquiredDevice, Action, ButtonRequest } from '@suite-types';
-import { createSelector } from '@reduxjs/toolkit';
 
 type State = TrezorDevice[];
 const initialState: State = [];
@@ -462,12 +461,5 @@ const deviceReducer = (state: State = initialState, action: Action): State =>
     });
 
 export const selectIsPendingTransportEvent = (state: DeviceRootState) => state.devices.length < 1;
-
-export const selectDevices = (state: DeviceRootState) => state.devices;
-
-export const selectDeviceByState = createSelector(
-    [selectDevices, (_state: DeviceRootState, deviceState: string) => deviceState],
-    (devices, deviceState) => devices.find(({ state }) => state === deviceState),
-);
 
 export default deviceReducer;
