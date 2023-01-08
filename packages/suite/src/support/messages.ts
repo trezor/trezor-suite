@@ -3884,7 +3884,7 @@ export default defineMessages({
     },
     TR_UNAVAILABLE_COINJOIN_DEVICE_DISCONNECTED: {
         id: 'TR_UNAVAILABLE_COINJOIN_DEVICE_DISCONNECTED',
-        defaultMessage: 'Unavailable. Device is disconnected.',
+        defaultMessage: 'Unavailable. Associated device is disconnected.',
     },
     TR_UNAVAILABLE_COINJOIN_ACCOUNT_OUT_OF_SYNC: {
         id: 'TR_UNAVAILABLE_COINJOIN_ACCOUNT_OUT_OF_SYNC',

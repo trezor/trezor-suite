@@ -1,10 +1,22 @@
+import { TranslationKey } from '@suite-common/intl-types';
 import { useSelector } from '@suite-hooks';
+import {
+    Feature,
+    selectFeatureMessageContent,
+    selectIsFeatureDisabled,
+} from '@suite-reducers/messageSystemReducer';
 import { selectDeviceState } from '@suite-reducers/suiteReducer';
 import { selectIsCoinjoinBlockedByTor } from '@wallet-reducers/coinjoinReducer';
 import { getIsCoinjoinOutOfSync } from '@wallet-utils/coinjoinUtils';
 
 export const useBlockedCoinjoinResume = () => {
     const isCoinJoinBlockedByTor = useSelector(selectIsCoinjoinBlockedByTor);
+    const isCoinJoinDisabledByFeatureFlag = useSelector(state =>
+        selectIsFeatureDisabled(state, Feature.coinjoin),
+    );
+    const featureMessageContent = useSelector(state =>
+        selectFeatureMessageContent(state, Feature.coinjoin),
+    );
     const { selectedAccount, online } = useSelector(state => ({
         selectedAccount: state.wallet.selectedAccount,
         online: state.suite.online,
@@ -13,11 +25,7 @@ export const useBlockedCoinjoinResume = () => {
     const deviceStatus = useSelector(selectDeviceState);
     const isDeviceDisconnected = deviceStatus !== 'connected';
 
-    let coinjoinResumeBlockedMessageId:
-        | 'TR_UNAVAILABLE_COINJOIN_TOR_DISABLE_TOOLTIP'
-        | 'TR_UNAVAILABLE_COINJOIN_DEVICE_DISCONNECTED'
-        | 'TR_UNAVAILABLE_COINJOIN_ACCOUNT_OUT_OF_SYNC'
-        | 'TR_UNAVAILABLE_COINJOIN_NO_INTERNET' = 'TR_UNAVAILABLE_COINJOIN_NO_INTERNET';
+    let coinjoinResumeBlockedMessageId: TranslationKey | undefined;
 
     if (!online) {
         coinjoinResumeBlockedMessageId = 'TR_UNAVAILABLE_COINJOIN_NO_INTERNET';
@@ -30,10 +38,15 @@ export const useBlockedCoinjoinResume = () => {
     }
 
     const isCoinjoinResumeBlocked =
-        isCoinJoinBlockedByTor || isDeviceDisconnected || isAccountOutOfSync || !online;
+        isCoinJoinBlockedByTor ||
+        isDeviceDisconnected ||
+        isAccountOutOfSync ||
+        !online ||
+        isCoinJoinDisabledByFeatureFlag;
 
     return {
         coinjoinResumeBlockedMessageId,
         isCoinjoinResumeBlocked,
+        featureMessageContent,
     };
 };
