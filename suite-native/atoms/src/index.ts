@@ -28,3 +28,4 @@ export * from './ProgressBar';
 export * from './Card';
 export * from './StepsProgressBar';
 export * from './ErrorMessage';
+export { useDebugView } from './DebugView';
