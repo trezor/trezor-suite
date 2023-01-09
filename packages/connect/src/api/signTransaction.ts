@@ -6,7 +6,7 @@ import { validateParams, getFirmwareRange } from './common/paramsValidator';
 import { getBitcoinNetwork } from '../data/coinInfo';
 import { getLabel } from '../utils/pathUtils';
 import { PROTO, ERRORS } from '../constants';
-import { isBackendSupported, initBlockchain } from '../backend/BlockchainLink';
+import { isBackendSupported, initBlockchain, Blockchain } from '../backend/BlockchainLink';
 import {
     requireReferencedTransactions,
     getReferencedTransactions,
@@ -135,59 +135,65 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
         this.params.options = enhanceSignTx(this.params.options, coinInfo);
     }
 
+    private async fetchAddresses(blockchain: Blockchain) {
+        const {
+            device,
+            params: { inputs, coinInfo },
+        } = this;
+
+        // TODO: validate inputs address_n's === same account
+        const accountPath = inputs.find(i => i.address_n);
+        if (!accountPath || !accountPath.address_n) {
+            throw ERRORS.TypedError('Runtime', 'Account not found');
+        }
+        const address_n = accountPath.address_n.slice(0, 3);
+        const node = await device.getCommands().getHDNode({ address_n }, { coinInfo });
+        const account = await blockchain.getAccountInfo({
+            descriptor: node.xpubSegwit || node.xpub,
+            details: 'tokens',
+        });
+        return account.addresses;
+    }
+
+    private async fetchRefTxs(useLegacySignProcess: boolean) {
+        const {
+            params: { inputs, outputs, options, coinInfo, addresses },
+        } = this;
+
+        const requiredRefTxs = requireReferencedTransactions(inputs, options, coinInfo);
+        const refTxsIds = requiredRefTxs ? getReferencedTransactions(inputs) : [];
+        const origTxsIds = !useLegacySignProcess ? getOrigTransactions(inputs, outputs) : [];
+
+        if (!refTxsIds.length && !origTxsIds.length) {
+            return [];
+        }
+
+        // validate and initialize backend
+        isBackendSupported(coinInfo);
+        const blockchain = await initBlockchain(coinInfo, this.postMessage);
+
+        const refTxs = !refTxsIds.length
+            ? []
+            : await blockchain.getTransactions(refTxsIds).then(rawTxs => {
+                  enhanceTrezorInputs(this.params.inputs, rawTxs);
+                  return transformReferencedTransactions(rawTxs, coinInfo);
+              });
+
+        const origTxs = !origTxsIds.length
+            ? []
+            : await blockchain.getTransactions(origTxsIds).then(async rawOrigTxs => {
+                  // if sender account addresses not provided, fetch account info from the blockbook
+                  const accountAddresses = addresses ?? (await this.fetchAddresses(blockchain));
+                  return transformOrigTransactions(rawOrigTxs, coinInfo, accountAddresses);
+              });
+
+        return refTxs.concat(origTxs);
+    }
+
     async run() {
         const { device, params } = this;
-
-        let refTxs: RefTransaction[] = [];
-        const useLegacySignProcess = device.unavailableCapabilities.replaceTransaction;
-        if (!params.refTxs) {
-            const requiredRefTxs = requireReferencedTransactions(
-                params.inputs,
-                params.options,
-                params.coinInfo,
-            );
-            const refTxsIds = getReferencedTransactions(params.inputs);
-            if (requiredRefTxs && refTxsIds.length > 0) {
-                // validate and initialize backend
-                isBackendSupported(params.coinInfo);
-                const blockchain = await initBlockchain(params.coinInfo, this.postMessage);
-                const rawTxs = await blockchain.getTransactions(refTxsIds);
-                enhanceTrezorInputs(this.params.inputs, rawTxs);
-                refTxs = transformReferencedTransactions(rawTxs, params.coinInfo);
-
-                const origTxsIds = getOrigTransactions(params.inputs, params.outputs);
-                if (!useLegacySignProcess && origTxsIds.length > 0) {
-                    const rawOrigTxs = await blockchain.getTransactions(origTxsIds);
-                    let { addresses } = params;
-                    // sender account addresses not provided
-                    // fetch account info from the blockbook
-                    if (!addresses) {
-                        // TODO: validate inputs address_n's === same account
-                        const accountPath = params.inputs.find(i => i.address_n);
-                        if (!accountPath || !accountPath.address_n) {
-                            throw ERRORS.TypedError('Runtime', 'Account not found');
-                        }
-                        const address_n = accountPath.address_n.slice(0, 3);
-                        const node = await device
-                            .getCommands()
-                            .getHDNode({ address_n }, { coinInfo: params.coinInfo });
-                        const account = await blockchain.getAccountInfo({
-                            descriptor: node.xpubSegwit || node.xpub,
-                            details: 'tokens',
-                        });
-                        addresses = account.addresses;
-                    }
-                    const origRefTxs = transformOrigTransactions(
-                        rawOrigTxs,
-                        params.coinInfo,
-                        addresses,
-                    );
-                    refTxs = refTxs.concat(origRefTxs);
-                }
-            }
-        } else {
-            refTxs = params.refTxs;
-        }
+        const useLegacySignProcess = !!device.unavailableCapabilities.replaceTransaction;
+        const refTxs = params.refTxs ?? (await this.fetchRefTxs(useLegacySignProcess));
 
         if (this.preauthorized) {
             await device.getCommands().preauthorize(true);
