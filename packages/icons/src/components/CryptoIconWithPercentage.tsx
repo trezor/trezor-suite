@@ -1,6 +1,15 @@
 import React from 'react';
 
-import { Canvas, Circle, Group, ImageSVG, Path, Skia, useSVG } from '@shopify/react-native-skia';
+import {
+    Canvas,
+    Circle,
+    Group,
+    ImageSVG,
+    Path,
+    Skia,
+    useSVG,
+    useSpring,
+} from '@shopify/react-native-skia';
 
 import { useNativeStyles } from '@trezor/styles';
 
@@ -25,6 +34,10 @@ export const CryptoIconWithPercentage = ({
     const percentageColor = utils.coinsColors[iconName] ?? utils.colors.gray500;
     const path = Skia.Path.Make();
     path.addCircle(CANVAS_SIZE / 2, CANVAS_SIZE / 2, RADIUS);
+    const percentageFill = useSpring(percentage / 100, {
+        damping: 100,
+        mass: 5,
+    });
 
     return (
         <Canvas style={{ height: CANVAS_SIZE, width: CANVAS_SIZE }}>
@@ -45,7 +58,7 @@ export const CryptoIconWithPercentage = ({
                 <Path
                     path={path}
                     start={0}
-                    end={percentage >= 99 ? 1 : percentage / 100}
+                    end={percentageFill}
                     // eslint-disable-next-line react/style-prop-object
                     style="stroke"
                     strokeWidth={8}

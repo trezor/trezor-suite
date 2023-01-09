@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js';
 
-import { AssetType } from '../assetsSelectors';
+import { AssetType } from '../../assetsSelectors';
 
 export const assetsFixtureZeroBalance: AssetType[] = [
     {

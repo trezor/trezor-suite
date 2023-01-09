@@ -1,4 +1,4 @@
-import * as fixtures from '../fixtures/assets';
+import * as fixtures from './fixtures/assets';
 import { calculateAssetsPercentage } from '../utils';
 
 describe('calculateAssetsPercentage', () => {
@@ -27,7 +27,7 @@ describe('calculateAssetsPercentage', () => {
         expect(eth.fiatPercentageOffset).toBeCloseTo(77.66974942692278);
 
         expect(ltc.fiatPercentage).toBe(0);
-        expect(ltc.fiatPercentageOffset).toBe(100);
+        expect(ltc.fiatPercentageOffset).toBe(0);
     });
 
     it('calculateAssetsPercentage - single asset', () => {

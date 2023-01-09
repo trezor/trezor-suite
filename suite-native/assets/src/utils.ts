@@ -5,13 +5,12 @@ export const calculateAssetsPercentage = (assetsData: AssetType[]) => {
     let previousPercentage = 0;
 
     return assetsData.map(asset => {
-        if (fiatTotal === 0) {
+        const fiatBalance = Number(asset.fiatBalance);
+        if (fiatTotal === 0 || Number.isNaN(asset.fiatBalance) || fiatBalance === 0) {
             return { ...asset, fiatPercentage: 0, fiatPercentageOffset: 0 };
         }
 
-        const fiatPercentage = Number.isNaN(asset.fiatBalance)
-            ? 0
-            : (100 / fiatTotal) * Number(asset.fiatBalance);
+        const fiatPercentage = (100 / fiatTotal) * fiatBalance;
 
         const assetWithPercentage = {
             ...asset,
