@@ -25,6 +25,7 @@ import {
 } from '@trezor/connect/lib/exports';
 import { factory } from '@trezor/connect/lib/factory';
 import { initLog } from '@trezor/connect/lib/utils/debug';
+import { config } from '@trezor/connect/lib/data/config';
 
 import * as iframe from './iframe';
 import * as popup from './popup';
@@ -295,6 +296,22 @@ const disableWebUSB = () => {
     });
 };
 
+/**
+ * Initiate device pairing procedure.
+ */
+const requestWebUSBDevice = async () => {
+    try {
+        await window.navigator.usb.requestDevice({ filters: config.webusb });
+        iframe.postMessage({
+            event: UI_EVENT,
+            type: TRANSPORT.REQUEST_DEVICE,
+        });
+    } catch (_err) {
+        // user hits cancel gets "DOMException: No device selected."
+        // no need to log this
+    }
+};
+
 const TrezorConnect = factory({
     eventEmitter,
     manifest,
@@ -304,6 +321,7 @@ const TrezorConnect = factory({
     uiResponse,
     renderWebUSBButton,
     disableWebUSB,
+    requestWebUSBDevice,
     cancel,
     dispose,
 });

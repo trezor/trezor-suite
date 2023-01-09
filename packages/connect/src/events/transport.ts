@@ -7,7 +7,7 @@ export const TRANSPORT = {
     ERROR: 'transport-error',
     UPDATE: 'transport-update',
     STREAM: 'transport-stream',
-    REQUEST: 'transport-request_device',
+    REQUEST_DEVICE: 'transport-request_device',
     DISABLE_WEBUSB: 'transport-disable_webusb',
     START_PENDING: 'transport-start_pending',
 } as const;
@@ -61,6 +61,11 @@ export type TransportEvent =
 
 export interface TransportDisableWebUSB {
     type: typeof TRANSPORT.DISABLE_WEBUSB;
+    payload?: undefined;
+}
+
+export interface TransportRequestWebUSBDevice {
+    type: typeof TRANSPORT.REQUEST_DEVICE;
     payload?: undefined;
 }
 

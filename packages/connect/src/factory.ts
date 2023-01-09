@@ -12,6 +12,7 @@ interface Dependencies {
     uiResponse: TrezorConnect['uiResponse'];
     renderWebUSBButton: TrezorConnect['renderWebUSBButton'];
     disableWebUSB: TrezorConnect['disableWebUSB'];
+    requestWebUSBDevice: TrezorConnect['requestWebUSBDevice'];
     cancel: TrezorConnect['cancel'];
     dispose: TrezorConnect['dispose'];
 }
@@ -25,6 +26,7 @@ export const factory = ({
     uiResponse,
     renderWebUSBButton,
     disableWebUSB,
+    requestWebUSBDevice,
     cancel,
     dispose,
 }: Dependencies): TrezorConnect => {
@@ -240,6 +242,8 @@ export const factory = ({
         renderWebUSBButton,
 
         disableWebUSB,
+
+        requestWebUSBDevice,
     };
     return api;
 };
