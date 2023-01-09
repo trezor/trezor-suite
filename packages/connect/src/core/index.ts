@@ -160,6 +160,16 @@ export const handleMessage = (message: CoreMessage, isTrustedOrigin = false) => 
             disableWebUSBTransport();
             break;
 
+        case TRANSPORT.REQUEST_DEVICE:
+            /**
+             * after pairing with device is requested in native context, for example see
+             * requestWebUSBDevice in connect-web/src/index, this is used to trigger transport
+             * enumeration
+             */
+            // todo: enable when it is needed
+            // _deviceList?.enumerate();
+            break;
+
         // messages from UI (popup/modal...)
         case UI.RECEIVE_DEVICE:
         case UI.RECEIVE_CONFIRMATION:

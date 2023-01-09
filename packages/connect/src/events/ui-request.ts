@@ -4,7 +4,7 @@
 import type { EventTypeDeviceSelected } from '@trezor/connect-analytics';
 
 import type { PROTO } from '../constants';
-import type { TransportDisableWebUSB } from './transport';
+import type { TransportDisableWebUSB, TransportRequestWebUSBDevice } from './transport';
 import type { Device, CoinInfo, BitcoinNetworkInfo } from '../types';
 import type { DiscoveryAccountType, DiscoveryAccount, SelectFeeLevel } from '../types/account';
 import type { MessageFactoryFn } from '../types/utils';
@@ -266,7 +266,8 @@ export type UiEvent =
     | FirmwareException
     | UiRequestAddressValidation
     | UiRequestSetOperation
-    | TransportDisableWebUSB;
+    | TransportDisableWebUSB
+    | TransportRequestWebUSBDevice;
 
 export type UiEventMessage = UiEvent & { event: typeof UI_EVENT };
 
