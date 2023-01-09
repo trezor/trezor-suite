@@ -11,7 +11,7 @@
     },
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
-        "@shopify/react-native-skia": "0.1.162",
+        "@shopify/react-native-skia": "0.1.163",
         "@suite-common/formatters": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
         "@trezor/env-utils": "workspace:*",

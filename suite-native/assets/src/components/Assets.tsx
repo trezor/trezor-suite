@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
@@ -20,6 +20,7 @@ import { RootState } from '@suite-native/state';
 
 import { AssetItem } from './AssetItem';
 import { selectAssetsWithBalances } from '../assetsSelectors';
+import { calculateAssetsPercentage } from '../utils';
 
 const importStyle = prepareNativeStyle(_ => ({
     marginTop: 12,
@@ -37,6 +38,11 @@ export const Assets = () => {
     const fiatCurrency = useSelector(selectFiatCurrency);
     const assetsData = useSelector((state: RootState) =>
         selectAssetsWithBalances(state, fiatCurrency.label),
+    );
+
+    const assetsDataWithPercentage = useMemo(
+        () => calculateAssetsPercentage(assetsData),
+        [assetsData],
     );
 
     const handleReceive = () => {
@@ -62,13 +68,15 @@ export const Assets = () => {
         <>
             <Card>
                 <VStack spacing={19}>
-                    {assetsData.map(asset => (
+                    {assetsDataWithPercentage.map(asset => (
                         <AssetItem
                             key={asset.symbol}
                             iconName={asset.symbol}
                             cryptoCurrencyName={networks[asset.symbol].name}
                             cryptoCurrencySymbol={asset.symbol}
                             fiatBalance={asset.fiatBalance}
+                            fiatPercentage={asset.fiatPercentage}
+                            fiatPercentageOffset={asset.fiatPercentageOffset}
                             cryptoCurrencyValue={asset.assetBalance.toFixed()}
                             onPress={handleShowAssetsAccounts}
                         />

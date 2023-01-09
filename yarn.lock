@@ -4894,9 +4894,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@shopify/react-native-skia@npm:0.1.162":
-  version: 0.1.162
-  resolution: "@shopify/react-native-skia@npm:0.1.162"
+"@shopify/react-native-skia@npm:0.1.163":
+  version: 0.1.163
+  resolution: "@shopify/react-native-skia@npm:0.1.163"
   dependencies:
     "@types/pixelmatch": ^5.2.4
     "@types/pngjs": ^6.0.1
@@ -4915,7 +4915,7 @@ __metadata:
       optional: true
   bin:
     setup-skia-web: scripts/setup-canvaskit.js
-  checksum: e01355a5bafa7095b82591a72ce213199d9a5e26bd137c9e2577bc7e748fc4cdca2142ccc8b8cb6b36c88b2a1ee03852fcf800b1269c91525fd3322c79aa4c70
+  checksum: b58b990b0369d9024b415b9baf6e1dea540e30dd2b8237ed7e070360611c2fc9030bf143e2ff994da534407fe7256de2561cb9d2cd28b09aac8a3d92822dfc70
   languageName: node
   linkType: hard
 
@@ -6327,7 +6327,9 @@ __metadata:
     "@suite-native/state": "workspace:*"
     "@trezor/icons": "workspace:*"
     "@trezor/styles": "workspace:*"
+    "@trezor/theme": "workspace:*"
     bignumber.js: ^9.1.0
+    jest: ^26.6.3
     react: ^18.2.0
     react-native: 0.70.5
     react-redux: 7.2.2
@@ -6339,7 +6341,7 @@ __metadata:
   resolution: "@suite-native/atoms@workspace:suite-native/atoms"
   dependencies:
     "@mobily/ts-belt": ^3.13.1
-    "@shopify/react-native-skia": 0.1.162
+    "@shopify/react-native-skia": 0.1.163
     "@suite-common/formatters": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@trezor/env-utils": "workspace:*"
@@ -6385,7 +6387,7 @@ __metadata:
   resolution: "@suite-native/graph@workspace:suite-native/graph"
   dependencies:
     "@mobily/ts-belt": ^3.13.1
-    "@shopify/react-native-skia": 0.1.162
+    "@shopify/react-native-skia": 0.1.163
     "@suite-common/formatters": "workspace:*"
     "@suite-common/graph": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
@@ -7178,7 +7180,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/icons@workspace:packages/icons"
   dependencies:
-    "@shopify/react-native-skia": 0.1.162
+    "@shopify/react-native-skia": 0.1.163
     "@trezor/styles": "workspace:*"
     "@trezor/theme": "workspace:*"
     jest: ^26.6.3
@@ -7461,7 +7463,7 @@ __metadata:
     "@react-navigation/stack": ^6.2.2
     "@reduxjs/toolkit": 1.8.3
     "@sentry/react-native": 5.0.0-alpha.9
-    "@shopify/react-native-skia": 0.1.162
+    "@shopify/react-native-skia": 0.1.163
     "@suite-common/connect-init": "workspace:*"
     "@suite-common/formatters": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"

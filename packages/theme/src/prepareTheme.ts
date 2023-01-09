@@ -1,6 +1,7 @@
 import { Borders, borders, NativeBorders, nativeBorders } from './borders';
 import { BoxShadows, boxShadows, NativeBoxShadows, nativeBoxShadows } from './boxShadows';
 import { Colors, colorVariants, ThemeColorVariant } from './colors';
+import { CoinsColors, coinsColors } from './coinsColors';
 import { FontFamilies, fontFamilies, NativeFontFamilies, nativeFontFamilies } from './fontFamilies';
 import { fontWeights, FontWeights } from './fontWeights';
 import { Sizes, sizes } from './sizes';
@@ -48,6 +49,7 @@ export interface NativeTheme {
     borders: NativeBorders;
     boxShadows: NativeBoxShadows;
     colors: Colors;
+    coinsColors: CoinsColors;
     fontFamilies: NativeFontFamilies;
     spacings: NativeSpacings;
     typography: NativeTypographyStyles;
@@ -61,6 +63,7 @@ export const prepareNativeTheme = ({ colorVariant }: PrepareThemeOptions): Nativ
         borders: nativeBorders,
         boxShadows: nativeBoxShadows,
         colors,
+        coinsColors,
         fontFamilies: nativeFontFamilies,
         spacings: nativeSpacings,
         typography: nativeTypography,
