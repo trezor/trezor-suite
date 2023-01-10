@@ -10,9 +10,20 @@
             "prev_hash": "7956f1de3e7362b04115b64a31f0b6822c50dd6c08d78398f392a0ac3f0e357b",
             "prev_index": 1,
             "script_sig": "",
-            "sequence": 4294967295
+            "sequence": 4294967295,
+            "address_n": [2147483734, 2147483649, 2147483648, 1, 0],
+            "amount": 4600,
+            "script_type": "SPENDTAPROOT",
+            "witness": "0140493145b992dacbd7ea579a415efc2cba20c3bf0f7827d1bcf999109c0d11783fe96f91ddb04a889faa17ad21ecc5c81a578009744e95c7e721aff2a5c4429166"
         }
     ],
     "lock_time": 0,
+    "outputs": [
+        {
+            "address": "tb1paxhjl357yzctuf3fe58fcdx6nul026hhh6kyldpfsf3tckj9a3wslqd7zd",
+            "amount": 4450,
+            "script_type": "PAYTOADDRESS"
+        }
+    ],
     "version": 1
 }
