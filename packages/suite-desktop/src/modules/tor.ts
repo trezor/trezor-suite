@@ -3,14 +3,9 @@
  */
 import { captureException } from '@sentry/electron';
 import { session } from 'electron';
-import {
-    BootstrapTorEvent,
-    HandshakeTorModule,
-    TorStatusEventType,
-    TOR_STATUS_EVENT_TYPE,
-} from 'packages/suite-desktop-api/lib/messages';
-import { BootstrapEvent } from 'packages/request-manager/lib/types';
 
+import { TorStatus, BootstrapTorEvent, HandshakeTorModule } from '@trezor/suite-desktop-api';
+import { BootstrapEvent } from '@trezor/request-manager';
 import TrezorConnect from '@trezor/connect';
 
 import { TorProcess, TorProcessStatus } from '../libs/processes/TorProcess';
@@ -55,16 +50,16 @@ const load = async ({ mainWindow, store }: Dependencies) => {
         shouldEnableTor ? { proxy: `socks://${address}` } : { proxy: '' };
 
     const handleTorProcessStatus = (status: TorProcessStatus) => {
-        let type: TorStatusEventType;
+        let type: TorStatus;
 
         if (!status.process) {
-            type = TOR_STATUS_EVENT_TYPE.Disabled;
+            type = TorStatus.Disabled;
         } else if (status.isBootstrapping) {
-            type = TOR_STATUS_EVENT_TYPE.Bootstrapping;
+            type = TorStatus.Enabling;
         } else if (status.service) {
-            type = TOR_STATUS_EVENT_TYPE.Enabled;
+            type = TorStatus.Enabled;
         } else {
-            type = TOR_STATUS_EVENT_TYPE.Disabled;
+            type = TorStatus.Disabled;
         }
         mainWindow.webContents.send('tor/status', {
             type,
@@ -123,7 +118,7 @@ const load = async ({ mainWindow, store }: Dependencies) => {
             }
         } else {
             mainWindow.webContents.send('tor/status', {
-                type: TOR_STATUS_EVENT_TYPE.Disabling,
+                type: TorStatus.Disabling,
             });
             setProxy('');
             tor.torController.stop();
