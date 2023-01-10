@@ -4,8 +4,15 @@ import styled from 'styled-components';
 import { Button, Progress, Icon, variables } from '@trezor/components';
 import { Translation } from '@suite-components/Translation';
 
-const StyledIcon = styled(Icon)`
+const IconWrapper = styled.div`
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
     margin-bottom: 28px;
+    background: ${({ theme }) => theme.BG_GREY};
+    display: flex;
+    align-items: center;
+    justify-content: center;
 `;
 
 const Text = styled.h2`
@@ -29,6 +36,7 @@ const MessageWrapper = styled.div`
 
 const MessageSlowWrapper = styled(MessageWrapper)`
     flex-direction: row;
+    margin-top: 28px;
 `;
 
 const DisableButton = styled(Button)`
@@ -64,6 +72,7 @@ const StyledProgress = styled(Progress)`
 const ProgressWrapper = styled.div`
     display: flex;
     align-items: center;
+    background: ${({ theme }) => theme.BG_GREY};
     border-radius: 8px;
     width: 100%;
     min-height: 45px;
@@ -101,7 +110,9 @@ export const TorProgressBar = ({
     return (
         <>
             <MessageWrapper>
-                <StyledIcon icon="TOR" size={110} />
+                <IconWrapper>
+                    <Icon icon="TOR" size={80} />
+                </IconWrapper>
                 <Text>
                     <Translation id={message} />
                 </Text>
