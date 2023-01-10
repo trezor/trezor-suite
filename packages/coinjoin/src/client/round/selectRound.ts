@@ -238,6 +238,8 @@ export const selectInputsForRound = async (
                                     utxos,
                                     anonScoreTarget: account.targetAnonymity,
                                     liquidityClue,
+                                    semiPrivateThreshold: 2,
+                                    consolidationMode: false,
                                 },
                                 {
                                     signal: options.signal,
