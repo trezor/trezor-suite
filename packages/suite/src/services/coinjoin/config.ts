@@ -26,9 +26,9 @@ export const COINJOIN_NETWORKS: PartialRecord<NetworkSymbol, ServerEnvironment> 
             network: 'test',
             coordinatorName: 'CoinJoinCoordinatorIdentifier',
             /* clearnet addresses */
-            coordinatorUrl: 'https://dev-coinjoin-testnet.trezor.io/wabisabi/',
+            coordinatorUrl: 'https://wasabiwallet.co/wabisabi/',
             // backend settings
-            wabisabiBackendUrl: 'https://dev-coinjoin-testnet.trezor.io/',
+            wabisabiBackendUrl: 'https://wasabiwallet.co/',
             blockbookUrls: ['https://tbtc1.trezor.io/api/v2', 'https://tbtc2.trezor.io/api/v2'],
             /* */
             /* onion addresses *
