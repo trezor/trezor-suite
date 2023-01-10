@@ -222,7 +222,7 @@ export const validateReferencedTransactions = (
 ) => {
     if (!Array.isArray(txs) || txs.length === 0) return; // allow empty, they will be downloaded later...
     // collect sets of transactions defined by inputs/outputs
-    const refTxs = getReferencedTransactions(inputs);
+    const refTxs = requireReferencedTransactions(inputs) ? getReferencedTransactions(inputs) : [];
     const origTxs = getOrigTransactions(inputs, outputs); // NOTE: origTxs are used in RBF
     const transformedTxs: RefTransaction[] = txs.map(tx => {
         // validate common fields
