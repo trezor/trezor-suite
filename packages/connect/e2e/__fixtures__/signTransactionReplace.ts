@@ -356,5 +356,40 @@ export default {
                     '01000000000102d64ae26dceee1e309bed0821f39275b5f6e65d0072f8e23747ae76006967765e0100000017160014039ba06270e6c6c1ad4e6940515aa5cdbad33f9effffffff35ac1adc9e0cf408013090c52527d3cf9468d51e1a6c8408f5ed673eff41aaef0000000017160014209297fb46272a0b7e05139440dbd39daea3e25affffffff01301b0f000000000017a9142369da13fee80c9d7fd8043bf1275c04deb360e68702483045022100bd303aa0d923e73300e37971d43b9cd134230f8287e0e3b702aacd19ba8ef97b02202b4368b3e9d7478b8529ea2aeea23f6612ec05854510794958d6ce58c19082ad012103bb0e339d7495b1f355c49d385b79343e52e68d99de2fe1f7f476c465c9ccd1670247304402204869b27aa926d98bfd36912f71e335c1d6afb2c1a28102407066db5257e1b8810220197bcac3c85a721547974bd7309a6ea2b809810a595cbdca2da9599af4038ba2012103c2c2e65556ca4b7371549324b99390725493c8a6792e093a0bdcbb3e2d7df4ab00000000',
             },
         },
+        {
+            description: 'Testnet (RBF): Taproot',
+            skip: ['<1.10.4', '<2.4.3'],
+            params: {
+                coin: 'Testnet',
+                inputs: [
+                    {
+                        address_n: ADDRESS_N("m/86'/1'/0'/1/0"),
+                        amount: '4600',
+                        script_type: 'SPENDTAPROOT',
+                        prev_hash:
+                            '7956f1de3e7362b04115b64a31f0b6822c50dd6c08d78398f392a0ac3f0e357b',
+                        prev_index: 1,
+                        orig_hash:
+                            '901593bed347678d9762fdee728c35dc4ec3cfdc3728a4d72dcaab3751122e85',
+                        orig_index: 0,
+                    },
+                ],
+                outputs: [
+                    {
+                        address: 'tb1paxhjl357yzctuf3fe58fcdx6nul026hhh6kyldpfsf3tckj9a3wslqd7zd',
+                        amount: '4050',
+                        script_type: 'PAYTOADDRESS',
+                        orig_hash:
+                            '901593bed347678d9762fdee728c35dc4ec3cfdc3728a4d72dcaab3751122e85',
+                        orig_index: 0,
+                    },
+                ],
+                refTxs: TX_CACHE(['901593']), // Taproot RBF still requires streaming original txs (unlike previous txs)
+            },
+            result: {
+                serializedTx:
+                    '010000000001017b350e3faca092f39883d7086cdd502c82b6f0314ab61541b062733edef156790100000000ffffffff01d20f000000000000225120e9af2fc69e20b0be2629cd0e9c34da9f3ef56af7beac4fb4298262bc5a45ec5d0140f0c345143097123efd78acfdd22d5f0334b775ad46310f01d2f1fe9708993256c6c55bdd6c65ee5e83d054e10a060b9306d92d4df676ec761a08b2ca642ec08000000000',
+            },
+        },
     ],
 };
