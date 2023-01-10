@@ -9,6 +9,7 @@
  */
 import { createInterceptor, InterceptedEvent } from '@trezor/request-manager';
 import { isDevEnv } from '@suite-common/suite-utils';
+import { TorStatus } from '@trezor/suite-desktop-api';
 
 import { Module } from './index';
 
@@ -29,7 +30,7 @@ export const init: Module = ({ mainWindow, store }) => {
             if (event.type === 'NETWORK_MISBEHAVING') {
                 logger.debug('request-interceptor', 'networks is misbehaving');
                 mainWindow.webContents.send('tor/status', {
-                    type: 'Misbehaving',
+                    type: TorStatus.Misbehaving,
                 });
             }
         },
