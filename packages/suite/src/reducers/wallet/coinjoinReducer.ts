@@ -18,7 +18,6 @@ import { ESTIMATED_ROUNDS_FAIL_RATE_BUFFER, DEFAULT_CLIENT_STATUS } from '@suite
 import { selectSelectedAccount, selectSelectedAccountParams } from './selectedAccountReducer';
 import { selectDebug, selectTorState } from '@suite-reducers/suiteReducer';
 import { selectAccountByKey } from '@suite-common/wallet-core';
-import { SESSION_PHASE_TRANSITION_DELAY } from '@suite-constants/coinjoin';
 
 export interface CoinjoinClientFeeRatesMedians {
     fast: number;
@@ -111,7 +110,7 @@ const updateSession = (
     const account = draft.accounts.find(a => a.key === accountKey);
     if (!account || !account.session) return;
 
-    const { signedRounds, maxRounds, skipRounds } = account.session;
+    const { signedRounds, maxRounds, skipRounds, roundPhase } = account.session;
     const { phase, phaseDeadline, roundDeadline } = round;
 
     const roundsLeft =
@@ -124,6 +123,10 @@ const updateSession = (
     const sessionDeadlineRaw = Date.now() + roundsLeft * timePerRoundInMilliseconds;
 
     const sessionDeadline = sessionDeadlineRaw + timeLeftTillRoundEnd;
+
+    if (typeof roundPhase !== 'undefined' && roundPhase !== phase) {
+        account.session.sessionPhaseQueue = [];
+    }
 
     account.session = {
         ...account.session,
@@ -190,7 +193,6 @@ const pauseSession = (
 
     delete account.session.roundPhase;
     delete account.session.sessionDeadline;
-    delete account.session.lastSessionPhaseChangeTimestamp;
     account.session.sessionPhaseQueue = [];
     account.session.registeredUtxos = [];
     account.session.paused = true;
@@ -259,11 +261,11 @@ const updateClientStatus = (
     };
 };
 
-const appendSessionPhase = (
+const updateSessionPhase = (
     draft: CoinjoinState,
     payload: ExtractActionPayload<typeof COINJOIN.CLIENT_SESSION_PHASE>,
 ) => {
-    const accounts = payload.accountKeys.flatMap(
+    const accounts = payload.accountKeys?.flatMap(
         accountKey => draft.accounts.find(({ key }) => key === accountKey) || [],
     );
 
@@ -271,55 +273,20 @@ const appendSessionPhase = (
         return;
     }
 
-    accounts.forEach(({ session }) => {
-        if (!session) {
-            return;
-        }
-
-        const isPreviousRoundPhase =
-            getRoundPhaseFromSessionPhase(payload.phase) <
-            getRoundPhaseFromSessionPhase(session?.sessionPhaseQueue.at(-1) || 0);
-        const isSameSessionPhase = payload.phase === session?.sessionPhaseQueue.at(-1);
-
-        const isFirstPhase =
-            getRoundPhaseFromSessionPhase(payload.phase) === RoundPhase.InputRegistration;
-
-        if (isSameSessionPhase || (isPreviousRoundPhase && !isFirstPhase)) {
-            return;
-        }
-
-        const timeSinceLastChange =
-            Date.now() - (session.lastSessionPhaseChangeTimestamp || Date.now());
-
-        if (timeSinceLastChange > SESSION_PHASE_TRANSITION_DELAY) {
-            session.sessionPhaseQueue = [payload.phase];
-        } else {
-            session.sessionPhaseQueue.push(payload.phase);
-        }
-
-        session.lastSessionPhaseChangeTimestamp = Date.now();
-    });
-};
-
-const shiftSessionPhase = (
-    draft: CoinjoinState,
-    payload: ExtractActionPayload<typeof COINJOIN.CLIENT_SESSION_PHASE_SHIFT>,
-) => {
-    const accounts = payload.accountKeys.flatMap(
-        accountKey => draft.accounts.find(({ key }) => key === accountKey) || [],
-    );
-
-    if (!accounts || !accounts.length) {
-        return;
-    }
+    const { phase } = payload;
 
     accounts.forEach(({ session }) => {
         if (!session) {
             return;
         }
+        const previousSessionPhase = session.sessionPhaseQueue.at(-1) ?? 0;
+        const roundPhase = getRoundPhaseFromSessionPhase(phase);
+        const isFirstRoundPhase = roundPhase === RoundPhase.InputRegistration;
 
-        if (session.sessionPhaseQueue.length > 1) {
-            session.sessionPhaseQueue.shift();
+        // Allow only subsequent session phases
+        // or phases from the first round phase if they are not the same as current one.
+        if (phase > previousSessionPhase || (isFirstRoundPhase && phase !== previousSessionPhase)) {
+            session.sessionPhaseQueue.push(phase);
         }
     });
 };
@@ -373,12 +340,8 @@ export const coinjoinReducer = (
                 updateClientStatus(draft, action.payload);
                 break;
             case COINJOIN.CLIENT_SESSION_PHASE:
-                appendSessionPhase(draft, action.payload);
+                updateSessionPhase(draft, action.payload);
                 break;
-            case COINJOIN.CLIENT_SESSION_PHASE_SHIFT:
-                shiftSessionPhase(draft, action.payload);
-                break;
-
             case COINJOIN.SESSION_PAUSE:
                 pauseSession(draft, action.payload);
                 break;
@@ -406,6 +369,11 @@ export const selectCoinjoinClients = (state: CoinjoinRootState) => state.wallet.
 export const selectCoinjoinAccountByKey = createSelector(
     [selectCoinjoinAccounts, (_state: CoinjoinRootState, accountKey: string) => accountKey],
     (accounts, accountKey) => accounts.find(account => account.key === accountKey),
+);
+
+export const selectSessionByAccountKey = createSelector(
+    [selectCoinjoinAccounts, (_state: CoinjoinRootState, accountKey: string) => accountKey],
+    (accounts, accountKey) => accounts.find(account => account.key === accountKey)?.session,
 );
 
 export const selectCurrentCoinjoinBalanceBreakdown = createSelector(

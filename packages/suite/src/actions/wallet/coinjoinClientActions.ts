@@ -99,18 +99,10 @@ const clientSessionSignTransaction = (payload: SessionSignTransactionPayload) =>
         payload,
     } as const);
 
-const clientAppendSessionPhase = (payload: CoinjoinClientEvents['session-phase']) =>
+const clientSessionPhase = (payload: CoinjoinClientEvents['session-phase']) =>
     ({
         type: COINJOIN.CLIENT_SESSION_PHASE,
         payload,
-    } as const);
-
-export const clientShiftSessionPhase = (accountKeys: string[]) =>
-    ({
-        type: COINJOIN.CLIENT_SESSION_PHASE_SHIFT,
-        payload: {
-            accountKeys,
-        },
     } as const);
 
 export type CoinjoinClientAction =
@@ -123,8 +115,7 @@ export type CoinjoinClientAction =
     | ReturnType<typeof clientSessionCompleted>
     | ReturnType<typeof clientSessionOwnership>
     | ReturnType<typeof clientSessionSignTransaction>
-    | ReturnType<typeof clientAppendSessionPhase>
-    | ReturnType<typeof clientShiftSessionPhase>;
+    | ReturnType<typeof clientSessionPhase>;
 
 // return only active instances
 export const getCoinjoinClient = (symbol: Account['symbol']) =>
@@ -553,7 +544,7 @@ export const initCoinjoinService =
                 client.resolveRequest(response);
             });
             // handle session phase change
-            client.on('session-phase', event => dispatch(clientAppendSessionPhase(event)));
+            client.on('session-phase', event => dispatch(clientSessionPhase(event)));
             dispatch(clientEnableSuccess(symbol, status));
             return service;
         } catch (error) {

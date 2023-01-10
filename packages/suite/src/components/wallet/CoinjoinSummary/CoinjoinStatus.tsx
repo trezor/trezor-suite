@@ -31,6 +31,7 @@ import {
     selectIsFeatureDisabled,
     selectFeatureMessageContent,
 } from '@suite-reducers/messageSystemReducer';
+import { useCoinjoinSessionPhase } from '@wallet-hooks';
 
 const Container = styled.div`
     position: relative;
@@ -179,8 +180,9 @@ export const CoinjoinStatus = ({ session, accountKey }: CoinjoinStatusProps) => 
         restoreCoinjoinSession,
     });
 
-    const { paused, roundPhase, roundPhaseDeadline, sessionPhaseQueue, sessionDeadline } = session;
-    const sessionPhase = sessionPhaseQueue[0];
+    const sessionPhase = useCoinjoinSessionPhase(accountKey);
+
+    const { paused, roundPhase, roundPhaseDeadline, sessionDeadline } = session;
 
     const isPaused = !!paused;
 

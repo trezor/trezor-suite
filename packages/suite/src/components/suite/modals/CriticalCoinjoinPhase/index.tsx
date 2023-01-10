@@ -8,6 +8,7 @@ import { PhaseProgress } from './PhaseProgress';
 import { useDeviceModel } from '@suite-hooks/useDeviceModel';
 import { DeviceModel } from '@trezor/device-utils';
 import { ROUND_PHASE_MESSAGES } from '@suite-constants/coinjoin';
+import { useCoinjoinSessionPhase } from '@wallet-hooks';
 
 const StyledModal = styled(Modal)`
     width: 520px;
@@ -59,7 +60,7 @@ export const CriticalCoinjoinPhase = ({ relatedAccountKey }: CriticalCoinjoinPha
 
     const session = relatedCoinjoinAccount?.session;
     const roundPhase = session?.roundPhase;
-    const sessionPhase = session?.sessionPhaseQueue[0];
+    const sessionPhase = useCoinjoinSessionPhase(relatedAccountKey);
 
     if (!roundPhase || !sessionPhase) {
         return null;
