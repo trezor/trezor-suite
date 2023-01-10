@@ -1,8 +1,8 @@
 import React, { useCallback } from 'react';
-import { NativeModules } from 'react-native';
+import { NativeModules, TouchableOpacity } from 'react-native';
 
 import { isDebugEnv, isDevelopOrDebugEnv } from '@suite-native/config';
-import { Box, Button, Text, VStack } from '@suite-native/atoms';
+import { Box, Button, Card, CheckBox, Text, useDebugView, VStack } from '@suite-native/atoms';
 import {
     Screen,
     StackProps,
@@ -13,10 +13,38 @@ import { useStoragePersistor } from '@suite-native/storage';
 
 import { BuildInfo } from '../components/BuildInfo';
 
+const DevCheckBoxListItem = ({
+    title,
+    onPress,
+    isChecked,
+}: {
+    title: string;
+    onPress: () => void;
+    isChecked: boolean;
+}) => (
+    <TouchableOpacity onPress={onPress}>
+        <Box
+            flexDirection="row"
+            justifyContent="space-between"
+            alignItems="center"
+            paddingVertical="small"
+        >
+            <Text variant="body">{title}</Text>
+            <CheckBox isChecked={isChecked} onChange={onPress} />
+        </Box>
+    </TouchableOpacity>
+);
+
 export const DevUtilsScreen = ({
     navigation,
 }: StackProps<DevUtilsStackParamList, DevUtilsStackRoutes.DevUtils>) => {
     const persistor = useStoragePersistor();
+    const {
+        toggleFlashOnRerender,
+        toggleRerenderCount,
+        isFlashOnRerenderEnabled,
+        isRerenderCountEnabled,
+    } = useDebugView();
 
     const handleResetStorage = useCallback(() => {
         persistor.purge().then(() => NativeModules.DevSettings.reload());
@@ -42,6 +70,20 @@ export const DevUtilsScreen = ({
                     </Box>
                     <VStack spacing="medium">
                         {!isDebugEnv() && <BuildInfo />}
+
+                        <Card style={{ marginVertical: 16 }}>
+                            <DevCheckBoxListItem
+                                title="Flash on rerender"
+                                onPress={toggleFlashOnRerender}
+                                isChecked={isFlashOnRerenderEnabled}
+                            />
+                            <DevCheckBoxListItem
+                                title="Show rerender count"
+                                onPress={toggleRerenderCount}
+                                isChecked={isRerenderCountEnabled}
+                            />
+                        </Card>
+
                         <Button onPress={() => navigation.navigate(DevUtilsStackRoutes.Demo)}>
                             See Component Demo
                         </Button>

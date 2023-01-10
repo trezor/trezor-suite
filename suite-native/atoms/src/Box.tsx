@@ -6,6 +6,8 @@ import { D, pipe } from '@mobily/ts-belt';
 import { NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Spacing } from '@trezor/theme';
 
+import { useDebugView, DebugView } from './DebugView';
+
 const layoutStylePropsKeys = [
     'flex',
     'flexDirection',
@@ -49,6 +51,8 @@ const boxStyle = prepareNativeStyle<BoxStyleProps>((_utils, { ...styles }) => ({
 
 export const Box = ({ style, ...props }: BoxProps) => {
     const { applyStyle, utils } = useNativeStyles();
+    const { isFlashOnRerenderEnabled } = useDebugView();
+    const ViewComponent = isFlashOnRerenderEnabled ? DebugView : View;
 
     const layoutStyles = D.selectKeys(props, [...layoutStylePropsKeys]);
     const spacingStyles = pipe(
@@ -59,7 +63,7 @@ export const Box = ({ style, ...props }: BoxProps) => {
     const otherProps = D.deleteKeys(props, [...layoutStylePropsKeys, ...spacingStylePropsKeys]);
 
     return (
-        <View
+        <ViewComponent
             style={[applyStyle(boxStyle, { ...layoutStyles, ...spacingStyles }), style]}
             {...otherProps}
         />
