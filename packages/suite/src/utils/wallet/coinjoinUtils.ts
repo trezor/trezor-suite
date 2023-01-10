@@ -352,3 +352,6 @@ const roundPhases = [
 
 export const getRoundPhaseFromSessionPhase = (sessionPhase: SessionPhase): RoundPhase =>
     roundPhases[Number(String(sessionPhase)[0]) - 1];
+
+export const getFirstSessionPhaseFromRoundPhase = (roundPhase?: RoundPhase): SessionPhase =>
+    Number(`${(roundPhase || 0) + 1}1`);
