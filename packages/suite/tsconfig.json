@@ -23,6 +23,7 @@
         {
             "path": "../../suite-common/intl-types"
         },
+        { "path": "../../suite-common/invity" },
         {
             "path": "../../suite-common/metadata-types"
         },

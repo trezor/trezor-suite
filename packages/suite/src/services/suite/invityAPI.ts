@@ -42,7 +42,7 @@ import {
     FormResponse,
 } from 'invity-api';
 import { isDesktop } from '@suite-utils/env';
-import type { InvityServerEnvironment, InvityServers } from '@wallet-types/invity';
+import type { InvityServerEnvironment, InvityServers } from '@suite-common/invity';
 
 export const SavingsTradeKYCFinalStatuses: SavingsKYCStatus[] = ['Failed', 'Verified'];
 

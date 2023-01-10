@@ -6068,6 +6068,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-common/invity@workspace:*, @suite-common/invity@workspace:suite-common/invity":
+  version: 0.0.0-use.local
+  resolution: "@suite-common/invity@workspace:suite-common/invity"
+  dependencies:
+    typescript: 4.9.3
+  languageName: unknown
+  linkType: soft
+
 "@suite-common/metadata-types@workspace:*, @suite-common/metadata-types@workspace:suite-common/metadata-types":
   version: 0.0.0-use.local
   resolution: "@suite-common/metadata-types@workspace:suite-common/metadata-types"
@@ -7584,6 +7592,7 @@ __metadata:
     "@suite-common/fiat-services": "workspace:*"
     "@suite-common/formatters": "workspace:*"
     "@suite-common/intl-types": "workspace:*"
+    "@suite-common/invity": "workspace:*"
     "@suite-common/metadata-types": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-config": "workspace:*"
