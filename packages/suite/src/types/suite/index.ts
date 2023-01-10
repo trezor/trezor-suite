@@ -102,14 +102,7 @@ export type ForegroundAppProps = {
 
 export type ToastNotificationVariant = 'success' | 'info' | 'warning' | 'error' | 'transparent';
 
-export enum TorStatus {
-    Disabled = 'Disabled',
-    Enabling = 'Enabling',
-    Disabling = 'Disabling',
-    Enabled = 'Enabled',
-    Error = 'Error',
-}
-
+export { TorStatus } from '@trezor/suite-desktop-api/src/enums';
 export interface TorBootstrap {
     current: number;
     total: number;

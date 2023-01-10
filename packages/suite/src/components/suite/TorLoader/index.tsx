@@ -2,6 +2,7 @@ import React, { useState, useEffect, ComponentType } from 'react';
 
 import styled from 'styled-components';
 import { TorStatus } from '@suite-types';
+
 import { Translation } from '@suite-components';
 import { useActions, useSelector } from '@suite-hooks';
 import { selectTorState } from '@suite-reducers/suiteReducer';

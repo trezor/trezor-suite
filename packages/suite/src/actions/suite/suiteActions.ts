@@ -1,6 +1,7 @@
 import TrezorConnect, { Device, DEVICE } from '@trezor/connect';
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { desktopApi, HandshakeElectron } from '@trezor/suite-desktop-api';
+import { TorStatus } from '@suite-types';
 
 import * as comparisonUtils from '@suite-utils/comparisonUtils';
 import * as deviceUtils from '@suite-utils/device';
@@ -10,7 +11,6 @@ import { sortByTimestamp } from '@suite-utils/device';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import * as modalActions from '@suite-actions/modalActions';
 import * as firmwareActions from '@firmware-actions/firmwareActions';
-import { TorBootstrap, TorStatus } from '@suite-types';
 import { SUITE, METADATA } from './constants';
 import type { Locale } from '@suite-config/languages';
 import type {
@@ -20,6 +20,7 @@ import type {
     TrezorDevice,
     ButtonRequest,
     AppState,
+    TorBootstrap,
 } from '@suite-types';
 import { DebugModeOptions, AutodetectSettings, selectTorState } from '@suite-reducers/suiteReducer';
 import type { TranslationKey } from '@suite-components/Translation/components/BaseTranslation';

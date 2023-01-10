@@ -1,10 +1,11 @@
 import produce from 'immer';
 import { TRANSPORT, TransportInfo } from '@trezor/connect';
 import { SuiteThemeVariant } from '@trezor/suite-desktop-api';
+import { Action, TrezorDevice, Lock, TorBootstrap, TorStatus } from '@suite-types';
+
 import { variables } from '@trezor/components';
 import { SUITE, STORAGE } from '@suite-actions/constants';
 import { DISCOVERY } from '@wallet-actions/constants';
-import { Action, TrezorDevice, Lock, TorStatus, TorBootstrap } from '@suite-types';
 import type { Locale } from '@suite-config/languages';
 import { isWeb } from '@suite-utils/env';
 import { getWindowWidth } from '@trezor/env-utils';

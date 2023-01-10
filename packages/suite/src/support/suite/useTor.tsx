@@ -1,11 +1,12 @@
 import { useEffect } from 'react';
 import { desktopApi, BootstrapTorEvent, TorStatusEvent } from '@trezor/suite-desktop-api';
+import { TorStatus } from '@suite-types';
+
 import { useActions, useSelector } from '@suite-hooks';
 import { getIsTorDomain } from '@suite-utils/tor';
 import * as suiteActions from '@suite-actions/suiteActions';
 import { isWeb, isDesktop } from '@suite-utils/env';
 import { getLocationHostname } from '@trezor/env-utils';
-import { TorStatus } from '@suite-types';
 import { selectTorState } from '@suite-reducers/suiteReducer';
 import { notificationsActions } from '@suite-common/toast-notifications';
 
@@ -29,28 +30,13 @@ export const useTor = () => {
         if (isDesktop()) {
             desktopApi.on('tor/status', (newStatus: TorStatusEvent) => {
                 const { type } = newStatus;
-                switch (type) {
-                    case 'Bootstrapping':
-                        updateTorStatus(TorStatus.Enabling);
-                        break;
-                    case 'Enabled':
-                        updateTorStatus(TorStatus.Enabled);
-                        break;
-                    case 'Disabling':
-                        updateTorStatus(TorStatus.Disabling);
-                        break;
-                    case 'Disabled':
-                        updateTorStatus(TorStatus.Disabled);
-                        break;
-                    case 'Misbehaving':
-                        // When network is slow for some reason but still working we display toast message
-                        // to let the user know that it is going to take some time but it's working.
-                        addToast({
-                            type: 'tor-is-slow',
-                        });
-                        break;
-                    default:
-                        updateTorStatus(TorStatus.Error);
+                updateTorStatus(type);
+                if (type === TorStatus.Misbehaving) {
+                    // When network is slow for some reason but still working we display toast message
+                    // to let the user know that it is going to take some time but it's working.
+                    addToast({
+                        type: 'tor-is-slow',
+                    });
                 }
             });
         }
