@@ -5,7 +5,7 @@ import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@suite-comp
 import * as suiteActions from '@suite-actions/suiteActions';
 import { useSelector, useActions } from '@suite-hooks';
 import invityAPI from '@suite-services/invityAPI';
-import type { InvityServerEnvironment } from '@wallet-types/invity';
+import type { InvityServerEnvironment } from '@suite-common/invity';
 import { useAnchor } from '@suite-hooks/useAnchor';
 import { SettingsAnchor } from '@suite-constants/anchors';
 

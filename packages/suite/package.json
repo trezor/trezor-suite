@@ -29,6 +29,7 @@
         "@suite-common/fiat-services": "workspace:*",
         "@suite-common/formatters": "workspace:*",
         "@suite-common/intl-types": "workspace:*",
+        "@suite-common/invity": "workspace:*",
         "@suite-common/metadata-types": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-config": "workspace:*",
