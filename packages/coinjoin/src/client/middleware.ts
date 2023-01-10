@@ -91,6 +91,8 @@ export const selectInputsForRound = async (
         utxos: UtxoForRound[];
         anonScoreTarget: number;
         liquidityClue: number;
+        semiPrivateThreshold: number;
+        consolidationMode: boolean;
     },
     options: RequestOptions,
 ) => {
