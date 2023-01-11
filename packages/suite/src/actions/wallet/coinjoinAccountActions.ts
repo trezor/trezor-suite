@@ -1,5 +1,6 @@
 import TrezorConnect from '@trezor/connect';
 import type { ScanAccountProgress } from '@trezor/coinjoin/lib/types/backend';
+import { promiseAllSequence } from '@trezor/utils';
 import * as COINJOIN from './constants/coinjoinConstants';
 import { goto } from '../suite/routerActions';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -710,13 +711,8 @@ export const restoreCoinjoinAccounts = () => (dispatch: Dispatch, getState: GetS
         return res;
     }, []);
 
-    // async actions in sequence
-    return coinjoinNetworks.reduce(
-        (p, symbol) =>
-            p.then(async () => {
-                // initialize @trezor/coinjoin CoinjoinClient
-                await dispatch(initCoinjoinService(symbol));
-            }),
-        Promise.resolve(),
+    // async actions in sequence, initialize CoinjoinCService for each network
+    return promiseAllSequence(
+        coinjoinNetworks.map(symbol => () => dispatch(initCoinjoinService(symbol))),
     );
 };

@@ -1,5 +1,6 @@
 import { combineReducers, createReducer } from '@reduxjs/toolkit';
 import { configureMockStore } from '@suite-common/test-utils';
+import { promiseAllSequence } from '@trezor/utils';
 
 import { accountsReducer } from '@wallet-reducers';
 import { coinjoinReducer } from '@wallet-reducers/coinjoinReducer';
@@ -69,11 +70,12 @@ describe('coinjoinClientActions', () => {
             TrezorConnect.setTestFixtures(f.connect);
 
             if (Array.isArray(f.params)) {
-                await Promise.all(
-                    f.params.map(p =>
-                        store.dispatch(
-                            onCoinjoinRoundChanged({ round: p as any }), // params are incomplete
-                        ),
+                await promiseAllSequence(
+                    f.params.map(
+                        (round: any) => () =>
+                            store.dispatch(
+                                onCoinjoinRoundChanged({ round }), // params are incomplete
+                            ),
                     ),
                 );
             } else {
