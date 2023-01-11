@@ -6,7 +6,7 @@ import {
     CoinjoinRequestEvent,
     CoinjoinResponseEvent,
 } from '@trezor/coinjoin';
-import { arrayDistinct, arrayToDictionary } from '@trezor/utils';
+import { arrayDistinct, arrayToDictionary, promiseAllSequence } from '@trezor/utils';
 import * as COINJOIN from './constants/coinjoinConstants';
 import { breakdownCoinjoinBalance, prepareCoinjoinTransaction } from '@wallet-utils/coinjoinUtils';
 import { CoinjoinService } from '@suite/services/coinjoin';
@@ -150,31 +150,28 @@ export const setBusyScreen =
             return result;
         }, [] as typeof devices);
 
-        const setBusy = (device: typeof uniquePhysicalDevices[number]) => {
-            if (!expiry && !device.features?.busy) {
-                // skip unnecessary call if device is not in busy state
-                return;
-            }
-
-            TrezorConnect.setBusy({
-                device: {
-                    path: device?.path,
-                },
-                keepSession: !!expiry, // do not release device session, keep it for signTransaction
-                expiry_ms: expiry,
-            });
-        };
-
         // async actions on each physical device in sequence
-        return uniquePhysicalDevices.reduce(
-            (p, device) => p.then(() => setBusy(device)),
-            Promise.resolve(),
+        return promiseAllSequence(
+            uniquePhysicalDevices.map(device => () => {
+                if (!expiry && !device.features?.busy) {
+                    // skip unnecessary call if device is not in busy state
+                    return Promise.resolve();
+                }
+
+                return TrezorConnect.setBusy({
+                    device: {
+                        path: device?.path,
+                    },
+                    keepSession: !!expiry, // do not release device session, keep it for signTransaction
+                    expiry_ms: expiry,
+                });
+            }),
         );
     };
 
 export const onCoinjoinRoundChanged =
     ({ round }: CoinjoinRoundEvent) =>
-    (dispatch: Dispatch, getState: GetState) => {
+    async (dispatch: Dispatch, getState: GetState) => {
         const state = getState();
         const { accounts } = state.wallet.coinjoin;
         // collect all account.keys from the round including failed one
@@ -200,7 +197,7 @@ export const onCoinjoinRoundChanged =
         // critical actions should be triggered only once
         if (phaseChanged) {
             if (round.phase === RoundPhase.ConnectionConfirmation) {
-                dispatch(setBusyScreen(accountKeys, round.roundDeadline - Date.now()));
+                await dispatch(setBusyScreen(accountKeys, round.roundDeadline - Date.now()));
 
                 dispatch(
                     openModal({
@@ -211,7 +208,7 @@ export const onCoinjoinRoundChanged =
             }
 
             if (round.phase === RoundPhase.Ended) {
-                dispatch(setBusyScreen(accountKeys));
+                await dispatch(setBusyScreen(accountKeys));
                 dispatch(closeModal());
 
                 const completedSessions = coinjoinAccountsWithSession.filter(
@@ -309,35 +306,27 @@ export const getOwnershipProof =
             return { key, device, bundle, utxos };
         });
 
-        // process single TrezorDevice bundle, fill the response object
-        const getOwnershipBundle = async ({
-            device,
-            bundle,
-            utxos,
-        }: typeof groupParamsByDevice[number]) => {
-            const proof = await TrezorConnect.getOwnershipProof({
-                device,
-                bundle,
-            });
-            if (proof.success) {
-                proof.payload.forEach((p, i) => {
-                    if (!utxos[i]) return; // double check if data from Trezor corresponds with request
-                    response.inputs.push({
-                        outpoint: utxos[i].outpoint,
-                        ownershipProof: p.ownership_proof,
-                    });
+        // process all bundles in sequence one device by one, fill the response object
+        await promiseAllSequence(
+            groupParamsByDevice.map(({ device, bundle, utxos }) => async () => {
+                const proof = await TrezorConnect.getOwnershipProof({
+                    device,
+                    bundle,
                 });
-                return;
-            }
-            utxos.forEach(u => {
-                response.inputs.push({ outpoint: u.outpoint, error: proof.payload.error });
-            });
-        };
-
-        // process all bundles in sequence, one device by one
-        await groupParamsByDevice.reduce(
-            (promise, params) => promise.then(() => getOwnershipBundle(params)),
-            Promise.resolve(),
+                if (proof.success) {
+                    proof.payload.forEach((p, i) => {
+                        if (!utxos[i]) return; // double check if data from Trezor corresponds with request
+                        response.inputs.push({
+                            outpoint: utxos[i].outpoint,
+                            ownershipProof: p.ownership_proof,
+                        });
+                    });
+                    return;
+                }
+                utxos.forEach(u => {
+                    response.inputs.push({ outpoint: u.outpoint, error: proof.payload.error });
+                });
+            }),
         );
 
         // finally walk thru all requested utxos and find not resolved
@@ -404,72 +393,66 @@ export const signCoinjoinTx =
             };
         });
 
-        const signTx = async ({
-            device,
-            tx,
-            utxos,
-            roundId,
-            key,
-            network,
-            unlockPath,
-            rawLiquidityClue,
-        }: typeof groupParamsByDevice[number]) => {
-            // notify reducer before signing, failed signing are also counted in Trezor maxRound limit
-            dispatch(
-                clientSessionSignTransaction({
-                    accountKey: key,
-                    roundId,
-                    rawLiquidityClue:
-                        request.liquidityClues.find(l => l.accountKey === key)?.rawLiquidityClue ||
-                        rawLiquidityClue,
-                }),
-            );
+        // sign all transactions in sequence one device by one, fill the response object
+        await promiseAllSequence(
+            groupParamsByDevice.map(
+                ({ device, tx, utxos, roundId, key, network, unlockPath, rawLiquidityClue }) =>
+                    async () => {
+                        // notify reducer before signing, failed signing are also counted in Trezor maxRound limit
+                        dispatch(
+                            clientSessionSignTransaction({
+                                accountKey: key,
+                                roundId,
+                                rawLiquidityClue:
+                                    request.liquidityClues.find(l => l.accountKey === key)
+                                        ?.rawLiquidityClue || rawLiquidityClue,
+                            }),
+                        );
 
-            const signTx = await TrezorConnect.signTransaction({
-                device,
-                useEmptyPassphrase: device?.useEmptyPassphrase,
-                // @ts-expect-error TODO: tx.inputs/outputs path is a string
-                inputs: tx.inputs,
-                // @ts-expect-error TODO: tx.inputs/outputs path is a string
-                outputs: tx.outputs,
-                coinjoinRequest: tx.coinjoinRequest,
-                coin: network,
-                preauthorized: true,
-                serialize: false,
-                unlockPath,
-            });
-
-            if (signTx.success) {
-                let utxoIndex = 0;
-                tx.inputs.forEach((input, index) => {
-                    if (input.script_type !== 'EXTERNAL') {
-                        response.inputs.push({
-                            outpoint: utxos[utxoIndex].outpoint,
-                            signature: signTx.payload.signatures[index],
-                            index,
+                        const signTx = await TrezorConnect.signTransaction({
+                            device,
+                            useEmptyPassphrase: device?.useEmptyPassphrase,
+                            // @ts-expect-error TODO: tx.inputs/outputs path is a string
+                            inputs: tx.inputs,
+                            // @ts-expect-error TODO: tx.inputs/outputs path is a string
+                            outputs: tx.outputs,
+                            coinjoinRequest: tx.coinjoinRequest,
+                            coin: network,
+                            preauthorized: true,
+                            serialize: false,
+                            unlockPath,
                         });
-                        utxoIndex++;
-                    }
-                });
-                return;
-            }
 
-            utxos.forEach(u => {
-                response.inputs.push({ outpoint: u.outpoint, error: signTx.payload.error });
-            });
+                        if (signTx.success) {
+                            let utxoIndex = 0;
+                            tx.inputs.forEach((input, index) => {
+                                if (input.script_type !== 'EXTERNAL') {
+                                    response.inputs.push({
+                                        outpoint: utxos[utxoIndex].outpoint,
+                                        signature: signTx.payload.signatures[index],
+                                        index,
+                                    });
+                                    utxoIndex++;
+                                }
+                            });
+                            return;
+                        }
 
-            dispatch(
-                notificationsActions.addToast({
-                    type: 'error',
-                    error: `Coinjoin signTransaction: ${signTx.payload.error}`,
-                }),
-            );
-        };
+                        utxos.forEach(u => {
+                            response.inputs.push({
+                                outpoint: u.outpoint,
+                                error: signTx.payload.error,
+                            });
+                        });
 
-        // async actions in sequence
-        await groupParamsByDevice.reduce(
-            (promise, params) => promise.then(() => signTx(params)),
-            Promise.resolve(),
+                        dispatch(
+                            notificationsActions.addToast({
+                                type: 'error',
+                                error: `Coinjoin signTransaction: ${signTx.payload.error}`,
+                            }),
+                        );
+                    },
+            ),
         );
 
         // disable busy screen
