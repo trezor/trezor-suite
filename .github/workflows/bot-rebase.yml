@@ -1,0 +1,23 @@
+name: "[Bot] rebase pull request"
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  rebase-pr:
+    name: Rebase pull request
+    runs-on: ubuntu-latest
+    if: github.event.issue.pull_request != '' && contains(github.event.comment.body, '/rebase')
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.TREZOR_BOT_TOKEN }}
+      - name: Auto rebase pull request
+        uses: cirrus-actions/rebase@1.8
+        with:
+          autosquash: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.TREZOR_BOT_TOKEN }}
