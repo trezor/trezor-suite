@@ -19,6 +19,7 @@ export * from './isUrl';
 export * from './mergeDeepObject';
 export * from './objectPartition';
 export * from './parseHostname';
+export * from './promiseAllSequence';
 export * from './redactUserPath';
 export * from './resolveStaticPath';
 export * from './scheduleAction';
