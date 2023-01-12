@@ -1,12 +1,8 @@
-import fetch from 'node-fetch';
-
-// testing build. yarn workspace @trezor/transport build:lib is a required step therefore
-import TrezorLink from '../../lib';
-import messages from '../../messages.json';
-
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
-const { BridgeV2 } = TrezorLink;
+// testing build. yarn workspace @trezor/transport build:lib is a required step therefore
+import { BridgeTransport } from '../../lib';
+import messages from '../../messages.json';
 
 // todo: introduce global jest config for e2e
 jest.setTimeout(60000);
@@ -28,7 +24,9 @@ describe('bridge', () => {
         await TrezorUserEnvLink.connect();
     });
 
-    afterAll(() => {
+    afterAll(async () => {
+        await TrezorUserEnvLink.send({ type: 'emulator-stop' });
+        await TrezorUserEnvLink.send({ type: 'bridge-stop' });
         TrezorUserEnvLink.disconnect();
     });
 
@@ -40,39 +38,34 @@ describe('bridge', () => {
             let devices: any[];
             let session: any;
             beforeEach(async () => {
+                // todo: swapping emulator-stop and bridge-stop line can simulate "emulator process died" error
+                await TrezorUserEnvLink.send({ type: 'emulator-stop' });
                 await TrezorUserEnvLink.send({ type: 'bridge-stop' });
                 await TrezorUserEnvLink.send({ type: 'emulator-start', ...emulatorStartOpts });
                 await TrezorUserEnvLink.send({ type: 'emulator-setup', ...emulatorSetupOpts });
                 await TrezorUserEnvLink.send({ type: 'bridge-start', version: bridgeVersion });
 
-                BridgeV2.setFetch(fetch, true);
-
-                bridge = new BridgeV2(undefined, undefined);
-
-                // this is how @trezor/connect is using it at the moment
-                // bridge.setBridgeLatestVersion(bridgeVersion);
-
-                await bridge.init(false);
-                bridge.configure(messages);
+                bridge = new BridgeTransport({ messages });
+                await bridge.init();
 
                 devices = await bridge.enumerate();
-
                 expect(devices).toEqual([
                     {
                         path: '1',
                         session: null,
-                        debugSession: null,
                         product: 0,
                         vendor: 0,
+                        // we don't use it but bridge returns
                         debug: true,
+                        debugSession: null,
                     },
                 ]);
 
-                session = await bridge.acquire({ path: devices[0].path }, false);
+                session = await bridge.acquire({ input: { path: devices[0].path } });
             });
 
             test(`Call(GetFeatures)`, async () => {
-                const message = await bridge.call(session, 'GetFeatures', {}, false);
+                const message = await bridge.call({ session, name: 'GetFeatures', data: {} });
                 expect(message).toMatchObject({
                     type: 'Features',
                     message: {
@@ -82,12 +75,12 @@ describe('bridge', () => {
                 });
             });
 
-            test(`post(GetFeatures) - read`, async () => {
-                const postResponse = await bridge.post(session, 'GetFeatures', {}, false);
-                expect(postResponse).toEqual(undefined);
+            test(`send(GetFeatures) - receive`, async () => {
+                const sendResponse = await bridge.send({ session, name: 'GetFeatures', data: {} });
+                expect(sendResponse).toEqual(undefined);
 
-                const readResponse = await bridge.read(session, false);
-                expect(readResponse).toMatchObject({
+                const receiveResponse = await bridge.receive({ session });
+                expect(receiveResponse).toMatchObject({
                     type: 'Features',
                     message: {
                         vendor: 'trezor.io',
@@ -96,20 +89,20 @@ describe('bridge', () => {
                 });
             });
 
-            test(`call(ChangePin) - post(Cancel) - read`, async () => {
+            test(`call(ChangePin) - send(Cancel) - receive`, async () => {
                 // initiate change pin procedure on device
-                const callResponse = await bridge.call(session, 'ChangePin', {}, false);
+                const callResponse = await bridge.call({ session, name: 'ChangePin', data: {} });
                 expect(callResponse).toMatchObject({
                     type: 'ButtonRequest',
                 });
 
                 // cancel change pin procedure
-                const postResponse = await bridge.post(session, 'Cancel', {}, false);
-                expect(postResponse).toEqual(undefined);
+                const sendResponse = await bridge.send({ session, name: 'Cancel', data: {} });
+                expect(sendResponse).toEqual(undefined);
 
-                // read response
-                const readResponse = await bridge.read(session, false);
-                expect(readResponse).toMatchObject({
+                // receive response
+                const receiveResponse = await bridge.receive({ session });
+                expect(receiveResponse).toMatchObject({
                     type: 'Failure',
                     message: {
                         code: 'Failure_ActionCancelled',
@@ -118,7 +111,11 @@ describe('bridge', () => {
                 });
 
                 // validate that we can continue with communication
-                const message = await bridge.call(session, 'GetFeatures', {}, false);
+                const message = await bridge.call({
+                    session,
+                    name: 'GetFeatures',
+                    data: {},
+                });
                 expect(message).toMatchObject({
                     type: 'Features',
                     message: {
@@ -128,20 +125,20 @@ describe('bridge', () => {
                 });
             });
 
-            test(`call(Backup) - post(Cancel) - read`, async () => {
+            test(`call(Backup) - send(Cancel) - receive`, async () => {
                 // initiate change pin procedure on device
-                const callResponse = await bridge.call(session, 'BackupDevice', {}, false);
+                const callResponse = await bridge.call({ session, name: 'BackupDevice', data: {} });
                 expect(callResponse).toMatchObject({
                     type: 'ButtonRequest',
                 });
 
                 // cancel change pin procedure
-                const postResponse = await bridge.post(session, 'Cancel', {}, false);
-                expect(postResponse).toEqual(undefined);
+                const sendResponse = await bridge.send({ session, name: 'Cancel', data: {} });
+                expect(sendResponse).toEqual(undefined);
 
-                // read response
-                const readResponse = await bridge.read(session, false);
-                expect(readResponse).toMatchObject({
+                // receive response
+                const receiveResponse = await bridge.receive({ session });
+                expect(receiveResponse).toMatchObject({
                     type: 'Failure',
                     message: {
                         code: 'Failure_ActionCancelled',
@@ -150,7 +147,7 @@ describe('bridge', () => {
                 });
 
                 // validate that we can continue with communication
-                const message = await bridge.call(session, 'GetFeatures', {}, false);
+                const message = await bridge.call({ session, name: 'GetFeatures', data: {} });
                 expect(message).toMatchObject({
                     type: 'Features',
                     message: {
