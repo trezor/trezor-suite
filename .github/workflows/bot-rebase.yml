@@ -10,6 +10,16 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event.issue.pull_request != '' && contains(github.event.comment.body, '/rebase')
     steps:
+      - name: Respond in pull request
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: "Start rebasing: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            })
       - name: Checkout code
         uses: actions/checkout@v3
         with:
