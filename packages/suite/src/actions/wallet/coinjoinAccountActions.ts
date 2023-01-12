@@ -16,8 +16,12 @@ import {
     selectAccountByKey,
     transactionsActions,
 } from '@suite-common/wallet-core';
+import {
+    selectCoinjoinAccountByKey,
+    selectIsAccountWithSessionByAccountKey,
+    selectIsAccountWithPausedSessionInterruptedByAccountKey,
+} from '@wallet-reducers/coinjoinReducer';
 import { getAccountTransactions, sortByBIP44AddressIndex } from '@suite-common/wallet-utils';
-import { selectCoinjoinAccountByKey } from '@wallet-reducers/coinjoinReducer';
 
 const coinjoinAccountCreate = (account: Account, targetAnonymity: number) =>
     ({
@@ -607,16 +611,15 @@ export const restoreCoinjoinSession =
     };
 
 export const pauseInterruptAllCoinjoinSessions = () => (dispatch: Dispatch, getState: GetState) => {
+    const state = getState();
     const {
-        wallet: { accounts, coinjoin },
-    } = getState();
+        wallet: { accounts },
+    } = state;
 
     const coinjoinAccounts = accounts.filter(a => a.accountType === 'coinjoin');
 
     coinjoinAccounts.forEach(account => {
-        const isAccountWithSession = coinjoin.accounts.find(
-            a => a.key === account.key && a.session && !a.session.paused,
-        );
+        const isAccountWithSession = selectIsAccountWithSessionByAccountKey(state, account.key);
         if (isAccountWithSession) {
             dispatch(pauseCoinjoinSession(account.key, true));
         }
@@ -625,17 +628,16 @@ export const pauseInterruptAllCoinjoinSessions = () => (dispatch: Dispatch, getS
 
 export const restoreAllInterruptedCoinjoinSession =
     () => (dispatch: Dispatch, getState: GetState) => {
+        const state = getState();
         const {
-            wallet: { accounts, coinjoin },
-        } = getState();
+            wallet: { accounts },
+        } = state;
 
         const coinjoinAccounts = accounts.filter(a => a.accountType === 'coinjoin');
 
         coinjoinAccounts.forEach(account => {
-            const isAccountWithPausedSessionInterrupted = coinjoin.accounts.find(
-                a =>
-                    a.key === account.key && a.session && a.session.paused && a.session.interrupted,
-            );
+            const isAccountWithPausedSessionInterrupted =
+                selectIsAccountWithPausedSessionInterruptedByAccountKey(state, account.key);
             if (isAccountWithPausedSessionInterrupted) {
                 dispatch(restoreCoinjoinSession(account.key));
             }
