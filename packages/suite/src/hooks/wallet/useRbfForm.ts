@@ -208,7 +208,8 @@ export const useRbf = (props: Props) => {
         if (ctxState.account?.networkType !== 'bitcoin' || !composedLevels) return;
         const { selectedFee, setMaxOutputId, outputs } = getValues();
         const tx = composedLevels[selectedFee || 'normal'];
-        if (tx.type === 'error' && tx.error === 'NOT-ENOUGH-FUNDS') {
+        // sometimes tx is undefined (e.g. when fee level is changed during the initial compose)
+        if (tx?.type === 'error' && tx.error === 'NOT-ENOUGH-FUNDS') {
             // try again with decreased output (use set-max calculation on the first possible output)
             if (typeof setMaxOutputId !== 'number') {
                 setValue(
