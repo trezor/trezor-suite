@@ -1,19 +1,9 @@
 /// <reference types="w3c-web-usb" />
 
 import { EventEmitter } from 'events';
+import { TREZOR_DESCS } from '../constants';
 
 const T1HID_VENDOR = 0x534c;
-
-const TREZOR_DESCS = [
-    // TREZOR v1
-    // won't get opened, but we can show error at least
-    { vendorId: 0x534c, productId: 0x0001 },
-    // TREZOR webusb Bootloader
-    { vendorId: 0x1209, productId: 0x53c0 },
-    // TREZOR webusb Firmware
-    { vendorId: 0x1209, productId: 0x53c1 },
-];
-
 const CONFIGURATION_ID = 1;
 const INTERFACE_ID = 0;
 const ENDPOINT_ID = 1;

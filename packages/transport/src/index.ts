@@ -20,6 +20,7 @@ export type {
     TrezorDeviceInfoWithSession,
     MessageFromTrezor,
 } from './types';
+export { TREZOR_DESCS } from './constants';
 
 export { Messages } from './types';
 
