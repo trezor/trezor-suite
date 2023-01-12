@@ -1,3 +1,5 @@
+import fetch from 'cross-fetch';
+
 export type HttpRequestOptions = {
     body?: Array<any> | Record<string, unknown> | string;
     url: string;
@@ -5,17 +7,7 @@ export type HttpRequestOptions = {
     skipContentTypeHeader?: boolean;
 };
 
-// slight hack to make Flow happy, but to allow Node to set its own fetch
-// Request, RequestOptions and Response are built-in types of Flow for fetch API
-let _fetch: (input: string | Request, init?: any) => Promise<Response> =
-    typeof window === 'undefined' ? () => Promise.reject() : window.fetch;
-
-let _isNode = false;
-
-export function setFetch(fetch: any, isNode?: boolean) {
-    _fetch = fetch;
-    _isNode = !!isNode;
-}
+const _isNode = typeof process !== 'undefined' && typeof window === 'undefined';
 
 function contentType(body: any) {
     if (typeof body === 'string') {
@@ -48,6 +40,9 @@ export async function request(options: HttpRequestOptions) {
         body: wrapBody(options.body),
         credentials: 'same-origin',
         headers: {},
+        // @ts-expect-error
+        signal: options.signal,
+        // keepalive: true,
     };
 
     // this is just for flowtype
@@ -66,7 +61,8 @@ export async function request(options: HttpRequestOptions) {
         };
     }
 
-    const res = await _fetch(options.url, fetchOptions);
+    // @ts-expect-error todo
+    const res = await fetch(options.url, fetchOptions);
     const resText = await res.text();
     if (res.ok) {
         return parseResult(resText);

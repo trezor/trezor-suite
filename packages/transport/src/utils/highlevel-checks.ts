@@ -1,12 +1,12 @@
 // input checks for high-level transports
 
-import type { TrezorDeviceInfoWithSession, MessageFromTrezor } from '../types';
+import type { Descriptor, MessageFromTrezor } from '../types';
 
 const ERROR = 'Wrong result type.';
 
 export function info(res: any) {
     if (typeof res !== 'object' || res == null) {
-        throw new Error('Wrong result type.');
+        throw new Error(ERROR);
     }
     const { version } = res;
     if (typeof version !== 'string') {
@@ -33,14 +33,14 @@ function convertSession(r: any) {
     return r;
 }
 
-export function devices(res: any): Array<TrezorDeviceInfoWithSession> {
+export function devices(res: any): Descriptor[] {
     if (typeof res !== 'object') {
         throw new Error(ERROR);
     }
     if (!(res instanceof Array)) {
         throw new Error(ERROR);
     }
-    return res.map((o: any): TrezorDeviceInfoWithSession => {
+    return res.map((o: any): Descriptor => {
         if (typeof o !== 'object' || o == null) {
             throw new Error(ERROR);
         }
@@ -52,11 +52,11 @@ export function devices(res: any): Array<TrezorDeviceInfoWithSession> {
         return {
             path: pathS,
             session: convertSession(o.session),
-            debugSession: convertSession(o.debugSession),
-            // @ts-expect-error
+            // @ts-expect-error - this is part of response too, might add it to type later
             product: o.product,
             vendor: o.vendor,
-            debug: !!o.debug,
+            debug: o.debug,
+            debugSession: o.debugSession,
         };
     });
 }
@@ -84,5 +84,7 @@ export function call(res: any): MessageFromTrezor {
     if (typeof message !== 'object' || message == null) {
         throw new Error(ERROR);
     }
+    // @ts-expect-error
+    // todo: add strong check for MessageType. Now we check only string
     return { type, message };
 }

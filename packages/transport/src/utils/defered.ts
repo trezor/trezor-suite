@@ -1,4 +1,4 @@
-// todo: move to @trezor/utils. probably "resolveAfter"?
+// todo: move to @trezor/utils
 
 export type Deferred<T> = {
     promise: Promise<T>;
@@ -26,12 +26,4 @@ export function create<T>(): Deferred<T> {
         promise,
         rejectingPromise,
     };
-}
-
-export function resolveTimeoutPromise<T>(delay: number, result: T): Promise<T> {
-    return new Promise(resolve => {
-        setTimeout(() => {
-            resolve(result);
-        }, delay);
-    });
 }
