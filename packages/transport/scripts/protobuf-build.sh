@@ -7,7 +7,7 @@ echo $#
 PARENT_PATH=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
 
 SRC="../../submodules/trezor-common/protob"
-DIST="."
+DIST="./src"
 
 if [[ $# -ne 0 && $# -ne 2 ]]
     then
@@ -35,7 +35,7 @@ grep -hv -e '^import ' -e '^syntax' -e '^package' -e 'option java_' "$SRC"/messa
 | grep -v '    reserved '>> "$DIST"/messages.proto
 
 # BUILD messages.json from message.proto
-node_modules/.bin/pbjs -t json -p "$DIST" -o "$DIST"/messages.json --keep-case messages.proto
+npx pbjs -t json -p "$DIST" -o "$DIST"/messages.json --keep-case messages.proto
 rm "$DIST"/messages.proto
 
 cd "$PARENT_PATH"

@@ -4,7 +4,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const json = require('../messages.json');
+const json = require('../src/messages.json');
 const { RULE_PATCH, TYPE_PATCH, DEFINITION_PATCH, SKIP, UINT_TYPE } = require('./protobuf-patches');
 
 const args = process.argv.slice(2);

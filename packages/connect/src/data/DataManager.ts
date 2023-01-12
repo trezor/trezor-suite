@@ -17,8 +17,6 @@ export class DataManager {
 
     static settings: ConnectSettings;
 
-    private static messages: JSON;
-
     static async load(settings: ConnectSettings, withAssets = true) {
         const ts = settings.env === 'web' ? `?r=${settings.timestamp}` : '';
         this.settings = settings;
@@ -61,8 +59,6 @@ export class DataManager {
         });
         await Promise.all(assetPromises);
 
-        this.messages = await httpRequest(`${config.messages}${ts}`, 'json');
-
         // parse bridge JSON
         parseBridgeJSON(this.assets.bridge);
 
@@ -72,10 +68,6 @@ export class DataManager {
         // parse firmware definitions
         parseFirmware(this.assets['firmware-t1'], 1);
         parseFirmware(this.assets['firmware-t2'], 2);
-    }
-
-    static getProtobufMessages() {
-        return this.messages;
     }
 
     static isWhitelisted(origin: string) {

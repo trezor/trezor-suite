@@ -21,8 +21,7 @@
         "!**/*.map",
         "scripts/protobuf-build.sh",
         "scripts/protobuf-patches",
-        "scripts/protobuf-types.js",
-        "messages.json"
+        "scripts/protobuf-types.js"
     ],
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",

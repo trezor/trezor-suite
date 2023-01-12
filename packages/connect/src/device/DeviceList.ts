@@ -7,6 +7,8 @@ import TrezorLink, {
     Transport,
     TrezorDeviceInfoWithSession as DeviceDescriptor,
 } from '@trezor/transport';
+import * as messages from '@trezor/transport/lib/messages.json';
+
 import fetch from 'cross-fetch';
 import { ERRORS } from '../constants';
 import { TRANSPORT, DEVICE, TransportInfo } from '../events';
@@ -71,8 +73,6 @@ export class DeviceList extends EventEmitter {
 
     creatingDevicesDescriptors: { [k: string]: DeviceDescriptor } = {};
 
-    messages: JSON | Record<string, any>;
-
     transportStartPending = 0;
 
     penalizedDevices: { [deviceID: string]: number } = {};
@@ -112,7 +112,6 @@ export class DeviceList extends EventEmitter {
         }
 
         this.transport = new Fallback(transports);
-        this.messages = DataManager.getProtobufMessages();
     }
 
     async init() {
@@ -121,7 +120,7 @@ export class DeviceList extends EventEmitter {
             _log.debug('Initializing transports');
             await transport.init(_log.enabled);
             _log.debug('Configuring transports');
-            await transport.configure(JSON.stringify(this.messages));
+            await transport.configure(JSON.stringify(messages));
             _log.debug('Configuring transports done');
 
             const { activeName } = transport;
