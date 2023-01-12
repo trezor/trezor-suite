@@ -648,7 +648,6 @@ export const onCall = async (message: CoreMessage) => {
                 method.dispose();
             }
 
-            // restore default messages
             if (_deviceList) {
                 if (response.success) {
                     _deviceList.removeAuthPenalty(device);
