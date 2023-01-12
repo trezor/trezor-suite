@@ -8,8 +8,17 @@ import { CoinjoinService } from '@suite/services/coinjoin';
 import type { AppState, Action, Dispatch } from '@suite-types';
 import { RoundPhase } from '@wallet-types/coinjoin';
 import { blockchainActions, accountsActions } from '@suite-common/wallet-core';
-import { selectIsAnySessionInCriticalPhase } from '@wallet-reducers/coinjoinReducer';
+import {
+    selectIsAccountWithSessionByAccountKey,
+    selectIsAnySessionInCriticalPhase,
+    selectIsAccountWithPausedSessionInterruptedByAccountKey,
+    selectIsAccountWithSessionInCriticalPhaseByAccountKey,
+    selectIsCoinjoinBlockedByTor,
+} from '@wallet-reducers/coinjoinReducer';
+import { selectDeviceState } from '@suite-reducers/suiteReducer';
+
 import { Feature, selectIsFeatureDisabled } from '@suite-reducers/messageSystemReducer';
+import { getIsCoinjoinOutOfSync } from '@wallet-utils/coinjoinUtils';
 
 export const coinjoinMiddleware =
     (api: MiddlewareAPI<Dispatch, AppState>) =>
@@ -30,6 +39,52 @@ export const coinjoinMiddleware =
             allowedModals.includes(modal.payload?.type)
         ) {
             return action;
+        }
+
+        if (accountsActions.updateSelectedAccount.match(action)) {
+            const { account } = action.payload;
+            const state = api.getState();
+            const selectedAccountPrevStatus =
+                state?.wallet?.selectedAccount?.account?.backendType === 'coinjoin' &&
+                state?.wallet?.selectedAccount?.account?.status;
+            const selectedAccountNextStatus =
+                account && account.backendType === 'coinjoin' && account.status;
+
+            const deviceStatus = selectDeviceState(state);
+            const isDeviceConnected = deviceStatus === 'connected';
+            const isCoinJoinBlockedByTor = selectIsCoinjoinBlockedByTor(state);
+
+            const isCoinjoinResumeAllowed = !isCoinJoinBlockedByTor || isDeviceConnected;
+
+            if (
+                account &&
+                selectedAccountPrevStatus === 'ready' &&
+                selectedAccountNextStatus === 'out-of-sync'
+            ) {
+                const isAccountWithSession = selectIsAccountWithSessionByAccountKey(
+                    state,
+                    account.key,
+                );
+                const isAccountInCriticalPhase =
+                    selectIsAccountWithSessionInCriticalPhaseByAccountKey(state, account.key);
+                if (!isAccountInCriticalPhase && isAccountWithSession) {
+                    api.dispatch(coinjoinAccountActions.pauseCoinjoinSession(account.key, true));
+                }
+            } else if (
+                account &&
+                selectedAccountPrevStatus === 'out-of-sync' &&
+                selectedAccountNextStatus === 'ready' &&
+                isCoinjoinResumeAllowed
+            ) {
+                // When account goes from out-of-sync to ready, session should resume automatically if
+                // there is not any other condition blocking coinjoin resume.
+                const isAccountWithPausedSessionInterrupted =
+                    selectIsAccountWithPausedSessionInterruptedByAccountKey(state, account.key);
+
+                if (isAccountWithPausedSessionInterrupted) {
+                    api.dispatch(coinjoinAccountActions.restoreCoinjoinSession(account.key));
+                }
+            }
         }
 
         // propagate action to reducers
@@ -74,11 +129,18 @@ export const coinjoinMiddleware =
         }
 
         if (action.type === SUITE.TOR_STATUS) {
+            const state = api.getState();
+            const deviceStatus = selectDeviceState(state);
+            const isDeviceConnected = deviceStatus === 'connected';
+            const isAccountOutOfSync = getIsCoinjoinOutOfSync(state.wallet.selectedAccount);
+            const isCoinjoinResumeAllowed = !isAccountOutOfSync || isDeviceConnected;
+
             if (['Disabling', 'Disabled', 'Error'].includes(action.payload)) {
                 api.dispatch(coinjoinAccountActions.pauseInterruptAllCoinjoinSessions());
             }
-            // We restore sessions that were interrupted when successfully Enabled, not when Enabling.
-            if (action.payload === 'Enabled') {
+            // We restore sessions that were interrupted when successfully Enabled if
+            // there is not any other condition blocking coinjoin resume.
+            if (action.payload === 'Enabled' && isCoinjoinResumeAllowed) {
                 api.dispatch(coinjoinAccountActions.restoreAllInterruptedCoinjoinSession());
             }
         }

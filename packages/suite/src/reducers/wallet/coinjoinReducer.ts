@@ -11,13 +11,12 @@ import {
     breakdownCoinjoinBalance,
     calculateAnonymityProgress,
     getEstimatedTimePerRound,
-    getIsCoinjoinOutOfSync,
     getRoundPhaseFromSessionPhase,
     transformCoinjoinStatus,
 } from '@wallet-utils/coinjoinUtils';
 import { ESTIMATED_ROUNDS_FAIL_RATE_BUFFER, DEFAULT_CLIENT_STATUS } from '@suite/services/coinjoin';
 import { selectSelectedAccount, selectSelectedAccountParams } from './selectedAccountReducer';
-import { selectDebug, selectDeviceState, selectTorState } from '@suite-reducers/suiteReducer';
+import { selectDebug, selectTorState } from '@suite-reducers/suiteReducer';
 import { selectAccountByKey } from '@suite-common/wallet-core';
 
 export interface CoinjoinClientFeeRatesMedians {
