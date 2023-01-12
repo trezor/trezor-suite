@@ -1,15 +1,9 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/data/config.json
 
+import { TREZOR_DESCS } from '@trezor/transport';
+
 export const config = {
-    webusb: [
-        // TREZOR v1
-        // won't get opened, but we can show error at least
-        { vendorId: 0x534c, productId: 0x0001 },
-        // TREZOR webusb Bootloader
-        { vendorId: 0x1209, productId: 0x53c0 },
-        // TREZOR webusb Firmware
-        { vendorId: 0x1209, productId: 0x53c1 },
-    ],
+    webusb: TREZOR_DESCS,
     whitelist: [
         { origin: 'chrome-extension://imloifkgjagghnncjkhggdhalmcnfklk', priority: 1 },
         { origin: 'chrome-extension://niebkpllfhmpfbffbfifagfgoamhpflf', priority: 1 },
