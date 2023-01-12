@@ -6,7 +6,7 @@ import * as Clipboard from 'expo-clipboard';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Box, Button, HStack, Text } from '@suite-native/atoms';
-import { defaultColorVariant } from '@trezor/theme';
+import { colorVariants } from '@trezor/theme';
 
 type QRCodeProps = {
     data?: string;
@@ -53,8 +53,8 @@ export const QRCode = ({ data, onCopy }: QRCodeProps) => {
             <View style={applyStyle(qrCodeStyle)}>
                 {data && (
                     <ReactQRCode
-                        bgColor={defaultColorVariant.gray0}
-                        fgColor={defaultColorVariant.gray900}
+                        bgColor={colorVariants.standard.gray0}
+                        fgColor={colorVariants.standard.gray900}
                         level="Q"
                         size={QRCODE_SIZE}
                         value={data}

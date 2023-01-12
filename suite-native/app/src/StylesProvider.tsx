@@ -12,7 +12,7 @@ type StylesProviderProps = {
 
 const renderer = createRenderer();
 
-const DEFAULT_COLOR_VARIANT: ThemeColorVariant = 'chill';
+const DEFAULT_COLOR_VARIANT: ThemeColorVariant = 'standard';
 
 const getColorVariant = (
     systemColorScheme: ReturnType<typeof useColorScheme>,
