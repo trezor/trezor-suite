@@ -7,12 +7,14 @@ import { BasicDetails } from './components/BasicDetails';
 import { AdvancedDetails, TabID } from './components/AdvancedDetails';
 import { ChangeFee } from './components/ChangeFee';
 import {
-    getNetwork,
     getConfirmations,
     isPending,
     findChainedTransactions,
+    getAccountKey,
+    getAccountNetwork,
 } from '@suite-common/wallet-utils';
 import { useSelector } from '@suite-hooks';
+import { selectAccountByKey } from '@suite-common/wallet-core';
 
 const StyledModal = styled(Modal)`
     width: 755px;
@@ -89,7 +91,9 @@ export const TransactionDetail = ({ tx, rbfForm, onCancel }: TransactionDetailPr
               )
         : [];
 
-    const network = getNetwork(tx.symbol);
+    const accountKey = getAccountKey(tx.descriptor, tx.symbol, tx.deviceState);
+    const account = useSelector(state => selectAccountByKey(state, accountKey));
+    const network = account && getAccountNetwork(account);
 
     return (
         <StyledModal
@@ -106,7 +110,7 @@ export const TransactionDetail = ({ tx, rbfForm, onCancel }: TransactionDetailPr
                 />
 
                 <SectionActions>
-                    {tx.rbfParams && (
+                    {network?.features?.includes('rbf') && tx.rbfParams && (
                         <>
                             {section === 'CHANGE_FEE' && (
                                 // Show back button and section title when bumping fee/finalizing txs
