@@ -5,7 +5,6 @@ import CopyWebpackPlugin from 'copy-webpack-plugin';
 import TerserPlugin from 'terser-webpack-plugin';
 
 const COMMON_DATA_SRC = '../../packages/connect-common/files';
-const MESSAGES_SRC = '../../packages/transport/messages.json';
 
 const DIST = path.resolve(__dirname, '../build');
 
@@ -103,8 +102,6 @@ export default {
             patterns: [
                 // copy firmware releases, bridge releases from '@trezor/connect-common'
                 { from: COMMON_DATA_SRC, to: `${DIST}/data` },
-                // copy messages.json from '@trezor/transport'
-                { from: MESSAGES_SRC, to: `${DIST}/data/messages`, force: true },
             ],
         }),
         new HtmlWebpackPlugin({

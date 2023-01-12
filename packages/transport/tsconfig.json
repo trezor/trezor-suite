@@ -5,7 +5,7 @@
         "esModuleInterop": false,
         "outDir": "./libDev"
     },
-    "include": ["src"],
+    "include": ["src", "src/messages.json"],
     "references": [
         { "path": "../utils" },
         { "path": "../trezor-user-env-link" }
