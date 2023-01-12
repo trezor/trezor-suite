@@ -13,9 +13,9 @@ describe('TrezorConnect.unlockPath', () => {
         await initTrezorConnect(controller);
     });
 
-    afterAll(() => {
+    afterAll(async () => {
         controller.dispose();
-        TrezorConnect.dispose();
+        await TrezorConnect.dispose();
     });
 
     conditionalTest(['1', '<2.5.3'], 'Unlock SLIP-25 + getAddress', async () => {

@@ -22,7 +22,7 @@ export type Transport = {
     enumerate(): Promise<Array<TrezorDeviceInfoWithSession>>;
     listen(old?: Array<TrezorDeviceInfoWithSession>): Promise<Array<TrezorDeviceInfoWithSession>>;
     acquire(input: AcquireInput, debugLink: boolean): Promise<string>;
-    release(session: string, onclose: boolean, debugLink: boolean): Promise<void>;
+    release(session: string, onclose: boolean, debugLink?: boolean): Promise<void>;
     configure(signedData: JSON | string): Promise<void>;
     call(
         session: string,

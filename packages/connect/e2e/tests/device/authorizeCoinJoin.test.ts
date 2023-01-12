@@ -19,7 +19,8 @@ describe('TrezorConnect.authorizeCoinJoin', () => {
 
     beforeEach(async () => {
         // restart connect for each test (working with event listeners)
-        TrezorConnect.dispose();
+        await TrezorConnect.dispose();
+
         await initTrezorConnect(controller, { debug: false });
 
         TrezorConnect.on('DEVICE_EVENT', ev => {
@@ -29,9 +30,9 @@ describe('TrezorConnect.authorizeCoinJoin', () => {
         });
     });
 
-    afterAll(() => {
+    afterAll(async () => {
         controller.dispose();
-        TrezorConnect.dispose();
+        await TrezorConnect.dispose();
     });
 
     conditionalTest(['1', '<2.5.3'], 'Coinjoin success', async () => {
