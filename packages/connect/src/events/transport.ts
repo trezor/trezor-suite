@@ -1,17 +1,11 @@
 import { serializeError } from '../constants/errors';
 import type { MessageFactoryFn } from '../types/utils';
 
-export const TRANSPORT_EVENT = 'TRANSPORT_EVENT';
-export const TRANSPORT = {
-    START: 'transport-start',
-    ERROR: 'transport-error',
-    UPDATE: 'transport-update',
-    STREAM: 'transport-stream',
-    REQUEST_DEVICE: 'transport-request_device',
-    DISABLE_WEBUSB: 'transport-disable_webusb',
-    START_PENDING: 'transport-start_pending',
-} as const;
+import { TRANSPORT as $TRANSPORT } from '@trezor/transport';
+import type { Transport } from '@trezor/transport';
 
+export const TRANSPORT_EVENT = 'TRANSPORT_EVENT';
+export const TRANSPORT = $TRANSPORT;
 export interface BridgeInfo {
     version: number[];
     directory: string;
@@ -37,7 +31,7 @@ export interface UdevInfo {
 }
 
 export interface TransportInfo {
-    type: string;
+    type: Transport['name'];
     version: string;
     outdated: boolean;
     bridge?: BridgeInfo;

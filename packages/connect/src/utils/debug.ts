@@ -22,6 +22,7 @@ type LogMessage = {
 
 const MAX_ENTRIES = 100;
 
+// todo: move this to some sharable place. already using this in transport but without access to types
 class Log {
     prefix: string;
     enabled: boolean;

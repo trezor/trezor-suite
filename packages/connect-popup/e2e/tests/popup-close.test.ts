@@ -131,7 +131,9 @@ test.beforeAll(async () => {
 
         if (bridgeVersion === '2.0.31') {
             expect(responses[12].url).toEqual('http://127.0.0.1:21325/post/2');
-            await page.waitForSelector('text=Failure_ActionCancelled');
+            // text=Failure_ActionCancelled should not happen here, this is a message from device but when
+            // user closes popup, we are not really waiting for 'Cancel' message to be sent to the device
+            await page.waitForSelector('text=Method_Interrupted');
         }
     });
 
@@ -143,7 +145,6 @@ test.beforeAll(async () => {
         await releasePromise!.promise;
         await popupClosedPromise;
         await page.waitForTimeout(WAIT_AFTER_TEST);
-
         responses.forEach(response => {
             expect(response.status).toEqual(200);
             // no post endpoint is used

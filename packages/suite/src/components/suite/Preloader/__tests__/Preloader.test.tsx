@@ -166,7 +166,7 @@ describe('Preloader component', () => {
         const store = initStore(
             getInitialState({
                 suite: {
-                    transport: { type: 'WebUsbPlugin' },
+                    transport: { type: 'WebusbTransport' },
                 },
             }),
         );
@@ -199,7 +199,7 @@ describe('Preloader component', () => {
         const store = initStore(
             getInitialState({
                 suite: {
-                    transport: { type: 'WebUsbPlugin' },
+                    transport: { type: 'WebUsbTransport' },
                     device: { type: 'unreadable', error: 'LIBUSB_ERROR_ACCESS' },
                 },
             }),

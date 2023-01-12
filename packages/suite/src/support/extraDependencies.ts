@@ -25,7 +25,7 @@ const connectInitSettings = {
     transportReconnect: true,
     debug: false,
     popup: false,
-    webusb: isWeb(),
+    webusb: isWeb(), // deprecated, use transports
     manifest: {
         email: 'info@trezor.io',
         appUrl: '@trezor/suite',

@@ -4,14 +4,14 @@ const fixtures = [
     {
         description: `Transport is webusb`,
         transport: {
-            type: 'WebUsbPlugin',
+            type: 'WebUsbTransport',
         },
         result: true,
     },
     {
         description: `Transport is not webusb (bridge)`,
         transport: {
-            type: 'bridge',
+            type: 'BridgeTransport',
         },
         result: false,
     },
@@ -20,7 +20,7 @@ const fixtures = [
         transport: undefined,
         result: false,
     },
-];
+] as const;
 
 describe('transport', () => {
     fixtures.forEach(f => {

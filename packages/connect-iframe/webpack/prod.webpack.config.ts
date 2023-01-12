@@ -31,15 +31,20 @@ export default {
                     },
                 },
             },
-            {
-                test: /sharedConnectionWorker/i,
-                loader: 'worker-loader',
-                issuer: /workers\/workers-*/i, // replace import ONLY in /workers\/workers- not @trezor/transport
-                options: {
-                    worker: 'SharedWorker',
-                    filename: './workers/shared-connection-worker.[contenthash].js',
-                },
-            },
+            // {
+            //     test: (input: any) => {
+            //         // todo: we could use regexp but using function is nice for debugging
+            //         if (input.includes('background-sharedworker')) {
+            //             return true;
+            //         }
+            //         return false;
+            //     },
+            //     loader: 'worker-loader',
+            //     options: {
+            //         worker: 'SharedWorker',
+            //         filename: './workers/sessions-background-sharedworker.[contenthash].js',
+            //     },
+            // },
             {
                 test: /\workers\/blockbook\/index/i,
                 loader: 'worker-loader',
@@ -77,6 +82,10 @@ export default {
             crypto: require.resolve('crypto-browserify'), // required by multiple dependencies
             stream: require.resolve('stream-browserify'), // required by utxo-lib and keccak
             events: require.resolve('events'),
+            // nodeusb dependencies, but it should't be needed, since it is only in desktop
+            // any ideas?
+            // path: require.resolve('path-browserify'),
+            // os: require.resolve('os-browserify/browser'),
         },
     },
     performance: {
@@ -97,6 +106,9 @@ export default {
         new webpack.NormalModuleReplacementPlugin(/\/utils\/assets$/, resource => {
             resource.request = resource.request.replace(/assets$/, 'assets-browser');
         }),
+        // resolve @trezor/transport module as "browser"
+        // ? ???
+
         // copy public files
         new CopyWebpackPlugin({
             patterns: [

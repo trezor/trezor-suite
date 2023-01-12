@@ -362,7 +362,7 @@ export class DeviceCommands {
     }
 
     // Sends an async message to the opened device.
-    async call(
+    private async call(
         type: MessageKey,
         msg: DefaultMessageResponse['message'] = {},
     ): Promise<DefaultMessageResponse> {
@@ -370,7 +370,11 @@ export class DeviceCommands {
         logger.debug('Sending', type, logMessage);
 
         try {
-            const promise = this.transport.call(this.sessionId, type, msg, false) as any; // TODO: https://github.com/trezor/trezor-suite/issues/5301
+            const promise = this.transport.call({
+                session: this.sessionId,
+                name: type,
+                data: msg,
+            }) as any; // TODO: https://github.com/trezor/trezor-suite/issues/5301
             this.callPromise = promise;
             const res = await promise;
             const logMessage = filterForLog(res.type, res.message);
@@ -408,7 +412,7 @@ export class DeviceCommands {
         } catch (error) {
             // handle possible race condition
             // Bridge may have some unread message in buffer, read it
-            await this.transport.read(this.sessionId, false);
+            await this.transport.receive({ session: this.sessionId });
             // throw error anyway, next call should be resolved properly
             throw error;
         }
@@ -416,7 +420,10 @@ export class DeviceCommands {
     }
 
     async _commonCall(type: MessageKey, msg?: DefaultMessageResponse['message']) {
+        console.log('DEVICE COMMANDS CALL, TYPE', type);
         const resp = await this.call(type, msg);
+        console.log('DEVICE COMMANDS CALL done, TYPE', type);
+
         return this._filterCommonTypes(resp);
     }
 
@@ -508,6 +515,8 @@ export class DeviceCommands {
                         ? this._commonCall('PassphraseAck', { passphrase })
                         : this._commonCall('PassphraseAck', { on_device: true });
                 },
+                // todo: does it make sense? error might have resulted from device disconnected.
+                // with webusb, this leads to pretty common "Session not found"
                 err =>
                     this._commonCall('Cancel', {}).catch((e: any) => {
                         throw err || e;
@@ -687,7 +696,7 @@ export class DeviceCommands {
         // those are: Pin, Passphrase, Word
         // _cancelableRequest holds reference to the UI promise `reject` method
         // in those cases `this.transport.call` needs to be used
-        // calling `this.transport.post` (below) will result with throttling somewhere in low level
+        // calling `this.transport.send` (below) will result with throttling somewhere in low level
         // trezor-link or trezord (not sure which one) will reject NEXT incoming call with "Cancelled" error
         if (this._cancelableRequest) {
             this._cancelableRequest();
@@ -703,19 +712,37 @@ export class DeviceCommands {
          * Bridge version =< 2.0.28 has a bug that doesn't permit it to cancel
          * user interactions in progress, so we have to do it manually.
          */
-        const { activeName, version } = this.transport;
-        if (
-            activeName &&
-            activeName === 'BridgeTransport' &&
-            versionCompare(version, '2.0.28') < 1
-        ) {
-            await this.device.legacyForceRelease();
+        const { name, version } = this.transport;
+        if (name === 'BridgeTransport' && versionCompare(version, '2.0.28') < 1) {
+            try {
+                await this.device.legacyForceRelease();
+            } catch (err) {
+                // ignore
+            }
         } else {
-            await this.transport.post(this.sessionId, 'Cancel', {}, false);
-            // post does not read back from usb stack. this means that there is a pending message left
-            // and we need to remove it so that it does not interfere with the next transport call.
-            // see DeviceCommands.typedCall
-            await this.transport.read(this.sessionId, false);
+            try {
+                console.log('DEVICE COMMANDS CANCEL SEND');
+                await this.transport.send({
+                    session: this.sessionId,
+                    name: 'Cancel',
+                    data: {},
+                });
+                console.log('DEVICE COMMANDS CANCEL SEND DONE');
+            } catch (err) {
+                console.log('DEVICE COMMANDS SEND ERR', err);
+                // ignore
+            }
+            try {
+                // post does not read back from usb stack. this means that there is a pending message left
+                // and we need to remove it so that it does not interfere with the next transport call.
+                // see DeviceCommands.typedCall
+                console.log('DEVICE COMMANDS CANCEL receive');
+                await this.transport.receive({ session: this.sessionId });
+                console.log('DEVICE COMMANDS CANCEL receive done');
+            } catch (err) {
+                console.log('DEVICE COMMANDS RECEIVE ERR', err);
+                // ignore
+            }
         }
     }
 }

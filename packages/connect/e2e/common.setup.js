@@ -109,7 +109,7 @@ const initTrezorConnect = async (TrezorUserEnvLink, options) => {
             appUrl: 'tests.connect.trezor.io',
             email: 'tests@connect.trezor.io',
         },
-        webusb: false,
+        transports: ['BridgeTransport'],
         debug: false,
         popup: false,
         pendingTransportEvent: true,

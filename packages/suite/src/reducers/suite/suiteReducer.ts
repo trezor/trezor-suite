@@ -110,6 +110,7 @@ const initialState: SuiteState = {
             showDebugMenu: false,
             checkFirmwareAuthenticity: false,
             coinjoinAllowNoTor: false,
+            transports: [],
         },
         autodetect: {
             language: true,

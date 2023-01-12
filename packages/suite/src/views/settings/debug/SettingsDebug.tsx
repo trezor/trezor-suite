@@ -12,6 +12,7 @@ import { InvityApi } from './InvityApi';
 import { CoinjoinApi } from './CoinjoinApi';
 import { OAuthApi } from './OAuthApi';
 import { CheckFirmwareAuthenticity } from './CheckFirmwareAuthenticity';
+import { Transport } from './Transport';
 
 export const SettingsDebug = () => (
     <SettingsLayout>
@@ -38,6 +39,9 @@ export const SettingsDebug = () => (
         </SettingsSection>
         <SettingsSection title="Testing">
             <ThrowTestingError />
+        </SettingsSection>
+        <SettingsSection title="Transports">
+            <Transport />
         </SettingsSection>
     </SettingsLayout>
 );

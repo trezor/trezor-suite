@@ -148,6 +148,11 @@ const init = async (settings: Partial<ConnectSettings> = {}): Promise<void> => {
         throw ERRORS.TypedError('Init_ManifestMissing');
     }
 
+    // defaults for connect-web
+    if (!_settings.transports?.length) {
+        _settings.transports = ['BridgeTransport', 'WebUsbTransport'];
+    }
+
     if (_settings.lazyLoad) {
         // reset "lazyLoad" after first use
         _settings.lazyLoad = false;

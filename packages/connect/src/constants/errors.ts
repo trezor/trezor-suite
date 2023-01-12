@@ -71,6 +71,7 @@ export const serializeError = (payload: any) => {
 // in both bridge and extension
 export const WRONG_PREVIOUS_SESSION_ERROR_MESSAGE = 'wrong previous session';
 export const INVALID_PIN_ERROR_MESSAGE = 'PIN invalid';
+// todo: not anymore ?
 export const WEBUSB_ERROR_MESSAGE = 'NetworkError: Unable to claim interface.';
 // trezord error prefix.
 // user has insufficient permissions. may occur in Linux (missing udev rules), Windows and MacOS.

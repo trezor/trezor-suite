@@ -1,5 +1,8 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
 import EventEmitter from 'events';
+
+import { TRANSPORT } from '@trezor/transport';
+
 import { DataManager } from '../data/DataManager';
 import { DeviceList } from '../device/DeviceList';
 import { enhancePostMessageWithAnalytics } from '../data/analyticsInfo';
@@ -12,7 +15,6 @@ import {
     UI,
     POPUP,
     IFRAME,
-    TRANSPORT,
     DEVICE,
     createUiMessage,
     createPopupMessage,
@@ -166,8 +168,7 @@ export const handleMessage = (message: CoreMessage, isTrustedOrigin = false) => 
              * requestWebUSBDevice in connect-web/src/index, this is used to trigger transport
              * enumeration
              */
-            // todo: enable when it is needed
-            // _deviceList?.enumerate();
+            _deviceList?.enumerate();
             break;
 
         // messages from UI (popup/modal...)
@@ -211,7 +212,7 @@ const initDevice = async (method: AbstractMethod) => {
         throw ERRORS.TypedError('Transport_Missing');
     }
 
-    const isWebUsb = _deviceList.transportType() === 'WebUsbPlugin';
+    const isWebUsb = _deviceList.transportType() === 'WebUsbTransport';
     let device: Device | typeof undefined;
     let showDeviceSelection = isWebUsb;
     if (method.devicePath) {
@@ -619,7 +620,8 @@ export const onCall = async (message: CoreMessage) => {
             // it's a race condition between two tabs
             // workaround is to enumerate transport again and report changes to get a valid session number
             if (_deviceList && error.message === ERRORS.WRONG_PREVIOUS_SESSION_ERROR_MESSAGE) {
-                _deviceList.enumerate();
+                console.log('EDGECASE: deviceList.enumerate!');
+                await _deviceList.enumerate();
             }
             messageResponse = createResponseMessage(method.responseID, false, { error });
         }
@@ -629,6 +631,7 @@ export const onCall = async (message: CoreMessage) => {
         // TODO: This requires a massive refactoring https://github.com/trezor/trezor-suite/issues/5323
         // @ts-expect-error TODO: messageResponse should be assigned from the response of "inner" function
         const response = messageResponse;
+        console.log('response core', response);
 
         if (response) {
             if (method.name === 'rebootToBootloader' && response.success) {
@@ -639,7 +642,9 @@ export const onCall = async (message: CoreMessage) => {
                 // (acquire > Initialize > nothing > release)
                 await device.run(() => Promise.resolve(), { skipFinalReload: true });
             }
+            console.log('await device.cleanup');
             await device.cleanup();
+            console.log('await device.cleanup done');
 
             closePopup();
             cleanup();
@@ -677,6 +682,7 @@ const cleanup = () => {
  * @memberof Core
  */
 const closePopup = () => {
+    console.log('closePopup _popupPromise', _popupPromise);
     if (_popupPromise) {
         postMessage(createPopupMessage(POPUP.CANCEL_POPUP_REQUEST));
     }
@@ -846,7 +852,8 @@ const handleDeviceSelectionChanges = (interruptDevice?: DeviceTyped) => {
     const uiPromise = findUiPromise(UI.RECEIVE_DEVICE);
     if (uiPromise && _deviceList) {
         const list = _deviceList.asArray();
-        const isWebUsb = _deviceList.transportType().indexOf('webusb') >= 0;
+        // todo: maybe also nodeusb? probably not
+        const isWebUsb = _deviceList.transportType() === 'WebUsbTransport';
 
         if (list.length === 1 && !isWebUsb) {
             // there is only one device. use it
@@ -921,9 +928,11 @@ const initDeviceList = async (settings: ConnectSettings) => {
         });
 
         _deviceList.on(TRANSPORT.ERROR, async error => {
+            console.log('_deviceList.on(TRANSPORT.ERROR', error);
             _log.warn('TRANSPORT.ERROR', error);
             if (_deviceList) {
                 _deviceList.disconnectDevices();
+                // todo:
                 _deviceList.dispose();
             }
 
@@ -941,9 +950,12 @@ const initDeviceList = async (settings: ConnectSettings) => {
             postMessage(createTransportMessage(TRANSPORT.START, transportType)),
         );
 
-        await _deviceList.init();
+        _deviceList.init();
         if (_deviceList) {
+            console.log('==core initDeviceList, waitForTransportFirstEvent, awaiting...');
+            console.log('=== transport.stopped', _deviceList.transport.stopped);
             await _deviceList.waitForTransportFirstEvent();
+            console.log('==core initDeviceList, waitForTransportFirstEvent, done');
         }
     } catch (error) {
         _deviceList = undefined;
@@ -981,15 +993,13 @@ export class Core extends EventEmitter {
     }
 
     getTransportInfo(): TransportInfo {
-        if (_deviceList) {
-            return _deviceList.getTransportInfo();
+        if (!_deviceList) {
+            throw ERRORS.TypedError(
+                'Runtime',
+                'unable to get device info, deviceList not initialized',
+            );
         }
-
-        return {
-            type: '',
-            version: '',
-            outdated: true,
-        };
+        return _deviceList.getTransportInfo();
     }
 }
 
@@ -1047,10 +1057,16 @@ export const initTransport = async (settings: ConnectSettings) => {
 
 const disableWebUSBTransport = async () => {
     if (!_deviceList) return;
-    if (_deviceList.transportType() !== 'WebUsbPlugin') return;
+    if (_deviceList.transportType() !== 'WebUsbTransport') return;
     // override settings
     const settings = DataManager.getSettings();
-    settings.webusb = false;
+
+    if (settings.transports?.includes('WebUsbTransport')) {
+        settings.transports.splice(settings.transports.indexOf('WebUsbTransport'));
+    }
+    if (!settings.transports?.includes('BridgeTransport')) {
+        settings.transports!.unshift('BridgeTransport');
+    }
 
     try {
         // disconnect previous device list

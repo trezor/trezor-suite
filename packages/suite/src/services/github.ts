@@ -27,7 +27,9 @@ const getTransportInfo = (transport?: Partial<TransportInfo>) => {
     if (!transport?.type) {
         return 'N/A';
     }
-    return transport?.type === 'bridge' ? `${transport.type} ${transport.version}` : transport.type;
+    return transport?.type === 'BridgeTransport'
+        ? `${transport.type} ${transport.version}`
+        : transport.type;
 };
 
 export const openGithubIssue = ({ device, transport }: DebugInfo) => {

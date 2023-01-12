@@ -1,4 +1,5 @@
 import type { BlockchainSettings } from '@trezor/blockchain-link';
+import type { Transport } from '@trezor/transport';
 
 export interface Manifest {
     appUrl: string;
@@ -15,7 +16,8 @@ export interface ConnectSettings {
     hostIcon?: string;
     popup?: boolean;
     transportReconnect?: boolean;
-    webusb?: boolean;
+    webusb?: boolean; // deprecated
+    transports?: Transport['name'][];
     pendingTransportEvent?: boolean;
     lazyLoad?: boolean;
     interactionTimeout?: number;

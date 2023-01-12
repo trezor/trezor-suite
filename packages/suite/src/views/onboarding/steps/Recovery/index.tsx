@@ -117,6 +117,12 @@ export const RecoveryStep = () => {
         );
     }
 
+    // todo:
+    // relying on status is not really correct here. status 'in-progress' is set when TrezorConnect.recoveryDevice
+    // is called. But it does not mean that 'recovery process' is already running. TrezorConnect does some preparation
+    // first (acquire, initialize) and only sends recovery message later. This means that there is a possible racecondition
+    // that button calling TrezorConnect.cancel() does not have anything to cancel yet. Proper fix would be to set
+    // in-progress status after TrezorConnect.recoveryDevice was called && ButtonRequest (ProtectedCall) was received
     if (status === 'in-progress') {
         const getModel1Description = () => {
             if (wordRequestInputType === 'plain') {

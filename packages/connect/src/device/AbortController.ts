@@ -7,6 +7,7 @@
 
 import EventEmitter from 'events';
 
+// todo: resolve duplicity with transport
 class AbortSignal {
     eventEmitter: EventEmitter;
 

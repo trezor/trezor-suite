@@ -1,18 +1,20 @@
 // original file https://github.com/trezor/connect/blob/develop/src/js/device/DeviceList.js
 
-/* eslint-disable max-classes-per-file, @typescript-eslint/no-use-before-define */
+/* eslint-disable no-restricted-syntax */
 
 import EventEmitter from 'events';
-import TrezorLink, {
-    Transport,
-    TrezorDeviceInfoWithSession as DeviceDescriptor,
-} from '@trezor/transport';
-import * as messages from '@trezor/transport/lib/messages.json';
 
-import fetch from 'cross-fetch';
+// todo: maybe 2 utilities Transport.init.browser Transport.init.node primo v transportu
+import {
+    BridgeTransport,
+    WebUsbTransport,
+    NodeUsbTransport,
+    Transport,
+    TRANSPORT,
+    Descriptor,
+} from '@trezor/transport';
 import { ERRORS } from '../constants';
-import { TRANSPORT, DEVICE, TransportInfo } from '../events';
-import { DescriptorStream, DeviceDescriptorDiff } from './DescriptorStream';
+import { DEVICE, TransportInfo } from '../events';
 import { Device } from './Device';
 import type { Device as DeviceTyped } from '../types';
 import { DataManager } from '../data/DataManager';
@@ -20,28 +22,11 @@ import { getBridgeInfo } from '../data/transportInfo';
 import { initLog } from '../utils/debug';
 import { resolveAfter } from '../utils/promiseUtils';
 
-import { WebUsbPlugin, ReactNativeUsbPlugin } from '../workers/workers';
-import { getAbortController } from './AbortController';
-import type { Controller } from './AbortController';
-
-const { BridgeV2, Fallback } = TrezorLink;
-
 // custom log
 const _log = initLog('DeviceList');
-
-// TODO: plugins are not typed in 'trezor-link'
-type LowLevelPlugin = {
-    name: 'WebUsbPlugin' | 'ReactNativePlugin';
-    unreadableHidDeviceChange: {
-        on: (event: string, fn: any) => void;
-    };
-    unreadableHidDevice: boolean; // not sure
-};
-
 interface DeviceListEvents {
     [TRANSPORT.START]: TransportInfo;
     [TRANSPORT.ERROR]: string;
-    [TRANSPORT.STREAM]: DescriptorStream;
     [DEVICE.CONNECT]: DeviceTyped;
     [DEVICE.CONNECT_UNACQUIRED]: DeviceTyped;
     [DEVICE.DISCONNECT]: DeviceTyped;
@@ -62,92 +47,291 @@ export interface DeviceList {
     emit<K extends keyof DeviceListEvents>(type: K, args: DeviceListEvents[K]): boolean;
 }
 export class DeviceList extends EventEmitter {
+    // @ts-expect-error has no initializer
     transport: Transport;
 
-    transportPlugin: LowLevelPlugin | typeof undefined;
-
-    // @ts-expect-error: strictPropertyInitialization
-    stream: DescriptorStream;
+    // array of transport that might be used in this environment
+    transports: Transport[] = [];
 
     devices: { [path: string]: Device } = {};
 
-    creatingDevicesDescriptors: { [k: string]: DeviceDescriptor } = {};
+    creatingDevicesDescriptors: { [k: string]: Descriptor } = {};
 
     transportStartPending = 0;
 
     penalizedDevices: { [deviceID: string]: number } = {};
 
-    fetchController?: Controller | null;
-
     constructor() {
         super();
+        let { transports } = DataManager.settings;
 
-        const { env, webusb } = DataManager.settings;
-
-        const transports: Transport[] = [];
-
-        if (env === 'react-native' && typeof ReactNativeUsbPlugin !== 'undefined') {
-            transports.push(ReactNativeUsbPlugin());
-        } else {
-            const bridgeLatestVersion = getBridgeInfo().version.join('.');
-            const bridge = new BridgeV2(undefined, undefined);
-            bridge.setBridgeLatestVersion(bridgeLatestVersion);
-
-            this.fetchController = getAbortController();
-            const { signal } = this.fetchController;
-            // @ts-expect-error TODO: https://github.com/trezor/trezor-suite/issues/5332
-            const fetchWithSignal = (args, options = {}) => fetch(args, { ...options, signal });
-
-            // detection of environment browser/node
-            // todo: code should not be detecting environment itself. imho it should be built with this information passed from build process maybe?
-            const isNode =
-                !!process?.release?.name && process.release.name.search(/node|io\.js/) !== -1;
-            BridgeV2.setFetch(fetchWithSignal, isNode);
-            // @ts-expect-error TODO: https://github.com/trezor/trezor-suite/issues/5332
-            transports.push(bridge);
+        // we fill in `transports` with a reasonable fallback in src/index.
+        // since web index is released into npm, we can not rely
+        // on that that transports will be always set here. We need to provide a 'fallback of the last resort'
+        if (!transports?.length) {
+            transports = ['BridgeTransport', 'WebUsbTransport'];
         }
 
-        if (webusb && typeof WebUsbPlugin !== 'undefined') {
-            transports.push(WebUsbPlugin());
-        }
+        // mapping of provided transports[] to @trezor/transport classes
+        transports.forEach(transportType => {
+            if (typeof transportType === 'string') {
+                switch (transportType) {
+                    case 'NodeUsbTransport':
+                        this.transports.push(new NodeUsbTransport());
+                        break;
+                    case 'WebUsbTransport':
+                        // todo: any idea how to configure typescript here?
+                        // @ts-expect-error
+                        this.transports.push(new WebUsbTransport());
+                        break;
+                    case 'BridgeTransport':
+                        this.transports.push(
+                            new BridgeTransport({
+                                latestVersion: getBridgeInfo().version.join('.'),
+                            }),
+                        );
+                        break;
+                    default:
+                        throw ERRORS.TypedError(
+                            'Runtime',
+                            `DeviceList.init: transports[] of unexpected type: ${transportType}`,
+                        );
+                    // not implemented
+                    // case 'UdpTransport':
+                }
 
-        this.transport = new Fallback(transports);
+                // todo: a better check whether abstract transport class is in prototype of provided transport object?
+            } else if (typeof transportType === 'object') {
+                // todo: allow transports to be either string or a class (useful for react-native)
+                this.transports.unshift(transportType);
+            } else {
+                // runtime check
+                throw ERRORS.TypedError(
+                    'Runtime',
+                    'DeviceList.init: transports[] of unexpected type',
+                );
+            }
+        });
     }
 
+    /**
+     * Init @trezor/transport and do something with its results
+     */
     async init() {
-        const { transport } = this;
+        console.log('DEVICE.LIST init');
         try {
             _log.debug('Initializing transports');
-            await transport.init(_log.enabled);
-            _log.debug('Configuring transports');
-            await transport.configure(JSON.stringify(messages));
-            _log.debug('Configuring transports done');
 
-            const { activeName } = transport;
-            if (activeName === 'LowlevelTransportWithSharedConnections') {
-                // @ts-expect-error TODO: https://github.com/trezor/trezor-suite/issues/5332
-                this.transportPlugin = transport.activeTransport.plugin;
+            let lastError: any = null;
+
+            for (const transport of this.transports) {
+                this.transport = transport;
+                const result = await this.transport.init();
+
+                if (result.success) {
+                    lastError = '';
+                    break;
+                } else {
+                    lastError = result.message;
+                }
             }
 
-            await this._initStream();
+            const _transportLog = initLog('@trezor/transport', true);
+            // todo: move log somewhere to utils
+            this.transport.setLogger(_transportLog);
+
+            if (lastError || !this.transport) {
+                throw (
+                    lastError ||
+                    ERRORS.TypedError(
+                        'Runtime',
+                        'DeviceList.init: No transport could be initialized.',
+                    )
+                );
+            }
+
+            /**
+             * listen to change of descriptors reported by @trezor/transport
+             * we can say that this part lets connect know about
+             * "external activities with trezor devices" such as device was connected/disconnected
+             * or it was acquired or released by another application.
+             * releasing/acquiring device by this application is not solved here but directly
+             * where transport.acquire, transport.release is called
+             */
+            this.transport.on(TRANSPORT.UPDATE, diff => {
+                diff.connected.forEach(async descriptor => {
+                    const path = descriptor.path.toString();
+                    const priority = DataManager.getSettings('priority');
+                    const penalty = this.getAuthPenalty();
+
+                    if (priority || penalty) {
+                        await resolveAfter(501 + penalty + 100 * priority, null);
+                    }
+                    if (descriptor.session == null) {
+                        await this._createAndSaveDevice(descriptor);
+                    } else {
+                        const device = this._createUnacquiredDevice(descriptor);
+                        this.devices[path] = device;
+                        this.emit(DEVICE.CONNECT_UNACQUIRED, device.toMessageObject());
+                    }
+                });
+
+                diff.acquired.forEach(descriptor => {
+                    const path = descriptor.path.toString();
+                    if (this.creatingDevicesDescriptors[path]) {
+                        this.creatingDevicesDescriptors[path] = descriptor;
+                    }
+                });
+
+                diff.acquiredElsewhere.forEach((descriptor: Descriptor) => {
+                    const path = descriptor.path.toString();
+                    const device = this.devices[path];
+
+                    if (device) {
+                        // device.originalDescriptor = descriptor;
+                        device.interruptionFromOutside();
+                    }
+                });
+
+                // todo: not sure if this part is needed.
+                diff.released.forEach(descriptor => {
+                    const path = descriptor.path.toString();
+                    const device = this.devices[path];
+                    if (device) {
+                        device.keepSession = false;
+                    }
+                    // if (device?.commands?.disposed) {
+
+                    // todo:?
+                    // this.devices[path].originalDescriptor.session = null;
+
+                    // todo: shouldn't this be in releasedByMyself?
+                    // device.activitySessionID = null;
+                    // }
+                });
+
+                diff.releasedElsewhere.forEach(async descriptor => {
+                    const path = descriptor.path.toString();
+                    const device = this.devices[path];
+                    if (device) {
+                        // if (device.commands?.disposed) {
+                        // set "was used status" via featuresNeedsReload
+                        // todo: maybe already in acquiredElsewhere?
+                        device.featuresNeedsReload = true;
+                        // }
+
+                        if (device.isUnacquired() && !device.isInconsistent()) {
+                            // wait for publish changes
+                            await resolveAfter(501, null);
+                            _log.debug('Create device from unacquired', device);
+                            await this._createAndSaveDevice(descriptor);
+                        }
+                    }
+                });
+
+                const events = [
+                    {
+                        d: diff.changedSessions,
+                        e: DEVICE.CHANGED,
+                    },
+                    {
+                        d: diff.acquired,
+                        e: DEVICE.ACQUIRED,
+                    },
+                    {
+                        d: diff.released,
+                        e: DEVICE.RELEASED,
+                    },
+                ];
+
+                events.forEach(({ d, e }) => {
+                    d.forEach(descriptor => {
+                        const path = descriptor.path.toString();
+                        const device = this.devices[path];
+                        _log.debug('Event', e, device);
+                        if (device) {
+                            this.emit(e, device.toMessageObject());
+                        }
+                    });
+                });
+
+                diff.disconnected.forEach(descriptor => {
+                    const path = descriptor.path.toString();
+                    const device = this.devices[path];
+                    if (device != null) {
+                        device.disconnect();
+                        delete this.devices[path];
+                        this.emit(DEVICE.DISCONNECT, device.toMessageObject());
+                    }
+                });
+
+                // todo: not sure if this is correct, it might be duplication of writes to
+                // this.devices[d.path].activitySessionID in case of acquired/release by myself
+                // maybe, updating of descriptors should be done only in diff.acquiredElsewhere,
+                // diff.releasedElsewhere blocks
+
+                // whenever descriptors change we need to update them so that we can use them
+                // in subsequent transport.acquire calls
+                diff.descriptors.forEach(d => {
+                    if (this.devices[d.path]) {
+                        this.devices[d.path].originalDescriptor = {
+                            session: d.session,
+                            path: d.path,
+                        };
+                        // todo: not sure about updating activitySessionID, imho this should
+                        // be done only after acquire/release
+                        this.devices[d.path].activitySessionID = d.session;
+                    }
+                });
+            });
+
+            // just like transport emits updates, it may also start producing errors, for example bridge
+            // process crashes.
+            this.transport.on(TRANSPORT.ERROR, error => {
+                this.emit(TRANSPORT.ERROR, error);
+            });
 
             // listen for self emitted events and resolve pending transport event if needed
             this.on(DEVICE.CONNECT, this.resolveTransportEvent.bind(this));
             this.on(DEVICE.CONNECT_UNACQUIRED, this.resolveTransportEvent.bind(this));
+
+            console.log('DEVICE.LIST, enumerate');
+            // enumerating for the first time. we intentionally postpone emitting TRANSPORT_START
+            // event until we read descriptors for the first time
+            const descriptors = await this.transport.enumerate();
+
+            console.log('DEVICE.LIST, enumerate done', descriptors);
+
+            if (descriptors.length > 0 && DataManager.getSettings('pendingTransportEvent')) {
+                console.log('DEVICE.LIST START PENDING!');
+                this.transportStartPending = descriptors.length;
+            } else {
+                this.emit(TRANSPORT.START, this.getTransportInfo());
+            }
+            this.transport.handleDescriptorsChange(descriptors);
+            this.transport.listen();
         } catch (error) {
+            // todo: transport probably never throws. or should never throw?
             this.emit(TRANSPORT.ERROR, error);
         }
     }
 
-    resolveTransportEvent() {
+    private resolveTransportEvent() {
+        console.log('DEVICE.LIST resolve transport event', this.transportStartPending);
         this.transportStartPending--;
+
         if (this.transportStartPending === 0) {
-            this.stream.emit(TRANSPORT.START);
+            this.emit(TRANSPORT.START, this.getTransportInfo());
+        }
+
+        // this should never happen (race condition), just in case, add a console.error for sentry
+        if (this.transportStartPending < 0) {
+            console.error('DeviceList: transportStartPending < 0');
         }
     }
 
-    async waitForTransportFirstEvent() {
-        await new Promise<void>(resolve => {
+    waitForTransportFirstEvent() {
+        return new Promise<void>(resolve => {
             const handler = () => {
                 this.removeListener(TRANSPORT.START, handler);
                 this.removeListener(TRANSPORT.ERROR, handler);
@@ -158,68 +342,14 @@ export class DeviceList extends EventEmitter {
         });
     }
 
-    /**
-     * Transport events handler
-     * @param {Transport} transport
-     * @memberof DeviceList
-     */
-    _initStream() {
-        const stream = new DescriptorStream(this.transport);
-
-        stream.on(TRANSPORT.START_PENDING, (pending: number) => {
-            this.transportStartPending = pending;
-        });
-
-        stream.on(TRANSPORT.START, () => {
-            this.emit(TRANSPORT.START, this.getTransportInfo());
-        });
-
-        stream.on(TRANSPORT.UPDATE, (diff: DeviceDescriptorDiff) => {
-            new DiffHandler(this, diff).handle();
-        });
-
-        stream.on(TRANSPORT.ERROR, error => {
-            this.emit(TRANSPORT.ERROR, error);
-            stream.stop();
-        });
-
-        stream.listen();
-        this.stream = stream;
-
-        if (this.transportPlugin && this.transportPlugin.name === 'WebUsbPlugin') {
-            const { unreadableHidDeviceChange } = this.transportPlugin;
-            // TODO: https://github.com/trezor/trezor-link/issues/40
-            const UNREADABLE_PATH = 'unreadable'; // unreadable device doesn't return incremental path.
-            unreadableHidDeviceChange.on('change', () => {
-                if (this.transportPlugin && this.transportPlugin.unreadableHidDevice) {
-                    const device = this._createUnreadableDevice(
-                        {
-                            path: UNREADABLE_PATH,
-                            session: null,
-                            debugSession: null,
-                            debug: false,
-                        },
-                        'HID_DEVICE',
-                    );
-                    this.devices[UNREADABLE_PATH] = device;
-                    this.emit(DEVICE.CONNECT_UNACQUIRED, device.toMessageObject());
-                } else {
-                    const device = this.devices[UNREADABLE_PATH];
-                    delete this.devices[UNREADABLE_PATH];
-                    this.emit(DEVICE.DISCONNECT, device.toMessageObject());
-                }
-            });
-        }
-
-        this.emit(TRANSPORT.STREAM, stream);
-    }
-
-    async _createAndSaveDevice(descriptor: DeviceDescriptor) {
+    private async _createAndSaveDevice(descriptor: Descriptor) {
         _log.debug('Creating Device', descriptor);
-        await new CreateDeviceHandler(descriptor, this).handle();
+        console.log('_createAndSaveDevice CreateDeviceHandler.handle() waiting');
+        await this.handle(descriptor);
+        console.log('_createAndSaveDevice CreateDeviceHandler.handle() done');
     }
 
-    _createUnacquiredDevice(descriptor: DeviceDescriptor) {
+    private _createUnacquiredDevice(descriptor: Descriptor) {
         _log.debug('Creating Unacquired Device', descriptor);
         const device = Device.createUnacquired(this.transport, descriptor);
         device.once(DEVICE.ACQUIRED, () => {
@@ -229,7 +359,7 @@ export class DeviceList extends EventEmitter {
         return device;
     }
 
-    _createUnreadableDevice(descriptor: DeviceDescriptor, unreadableError: string) {
+    private _createUnreadableDevice(descriptor: Descriptor, unreadableError: string) {
         _log.debug('Creating Unreadable Device', descriptor, unreadableError);
         return Device.createUnacquired(this.transport, descriptor, unreadableError);
     }
@@ -255,15 +385,7 @@ export class DeviceList extends EventEmitter {
     }
 
     transportType() {
-        const { transport, transportPlugin } = this;
-        const { activeName } = transport;
-        if (activeName === 'BridgeTransport') {
-            return 'bridge';
-        }
-        if (transportPlugin) {
-            return transportPlugin.name;
-        }
-        return transport.name;
+        return this.transport.name;
     }
 
     getTransportInfo(): TransportInfo {
@@ -277,9 +399,6 @@ export class DeviceList extends EventEmitter {
     async dispose() {
         this.removeAllListeners();
 
-        if (this.stream) {
-            this.stream.stop();
-        }
         // release all devices
         await Promise.all(this.allDevices().map(device => device.dispose()));
 
@@ -287,10 +406,6 @@ export class DeviceList extends EventEmitter {
         // and we can safely kill all async subscriptions in transport layer
         if (this.transport) {
             this.transport.stop();
-        }
-        if (this.fetchController) {
-            this.fetchController.abort();
-            this.fetchController = null;
         }
     }
 
@@ -301,15 +416,17 @@ export class DeviceList extends EventEmitter {
         });
     }
 
-    enumerate() {
-        this.stream.enumerate();
-        if (!this.stream.current) return;
-        // update current values
-        this.stream.current.forEach(descriptor => {
-            const path = descriptor.path.toString();
-            const device = this.devices[path];
-            if (device) {
-                device.updateDescriptor(descriptor);
+    async enumerate() {
+        console.log('deviceList.enumerate');
+
+        const res = await this.transport.enumerate();
+        res.forEach(d => {
+            if (this.devices[d.path]) {
+                this.devices[d.path].originalDescriptor = {
+                    session: d.session,
+                    path: d.path,
+                };
+                this.devices[d.path].activitySessionID = d.session;
             }
         });
     }
@@ -323,7 +440,7 @@ export class DeviceList extends EventEmitter {
         this.penalizedDevices[deviceID] = Math.min(penalty, 5000);
     }
 
-    getAuthPenalty() {
+    private getAuthPenalty() {
         const { penalizedDevices } = this;
         return Object.keys(penalizedDevices).reduce(
             (penalty, key) => Math.max(penalty, penalizedDevices[key]),
@@ -336,44 +453,24 @@ export class DeviceList extends EventEmitter {
         const deviceID = device.features.device_id;
         delete this.penalizedDevices[deviceID];
     }
-}
-
-/**
- * DeviceList initialization
- * returns instance of DeviceList
- * @returns {Promise<DeviceList>}
- */
-export const getDeviceList = async () => {
-    const list = new DeviceList();
-    await list.init();
-    return list;
-};
-
-// Helper class for creating new device
-class CreateDeviceHandler {
-    descriptor: DeviceDescriptor;
-
-    list: DeviceList;
-
-    path: string;
-
-    constructor(descriptor: DeviceDescriptor, list: DeviceList) {
-        this.descriptor = descriptor;
-        this.list = list;
-        this.path = descriptor.path.toString();
-    }
 
     // main logic
-    async handle() {
+    private async handle(descriptor: Descriptor) {
         // creatingDevicesDescriptors is needed, so that if *during* creating of Device,
         // other application acquires the device and changes the descriptor,
         // the new unacquired device has correct descriptor
-        this.list.creatingDevicesDescriptors[this.path] = this.descriptor;
+        const path = descriptor.path.toString();
+        this.creatingDevicesDescriptors[path] = descriptor;
 
         try {
             // "regular" device creation
-            await this._takeAndCreateDevice();
+            console.log('this._takeAndCreateDevice()');
+            await this._takeAndCreateDevice(descriptor);
+            console.log('this._takeAndCreateDevice() done');
         } catch (error) {
+            console.log('handle:error:code', error.code);
+            console.log('handle:error:message', error.message);
+
             _log.debug('Cannot create device', error);
 
             if (error.code === 'Device_NotFound') {
@@ -381,165 +478,48 @@ class CreateDeviceHandler {
                 // it's a race condition between "device_changed" and "device_disconnected"
             } else if (
                 error.message === ERRORS.WRONG_PREVIOUS_SESSION_ERROR_MESSAGE ||
-                error.toString() === ERRORS.WEBUSB_ERROR_MESSAGE
+                error?.message?.includes('Unable to claim interface')
             ) {
-                this.list.enumerate();
-                this._handleUsedElsewhere();
-            } else if (error.message.indexOf(ERRORS.LIBUSB_ERROR_MESSAGE) >= 0) {
+                this.enumerate();
+                this._handleUsedElsewhere(descriptor);
+            } else if (error.message?.indexOf(ERRORS.LIBUSB_ERROR_MESSAGE) >= 0) {
                 // catch one of trezord LIBUSB_ERRORs
-                const device = this.list._createUnreadableDevice(
-                    this.list.creatingDevicesDescriptors[this.path],
+                const device = this._createUnreadableDevice(
+                    this.creatingDevicesDescriptors[path],
                     error.message,
                 );
-                this.list.devices[this.path] = device;
-                this.list.emit(DEVICE.CONNECT_UNACQUIRED, device.toMessageObject());
+                this.devices[path] = device;
+                this.emit(DEVICE.CONNECT_UNACQUIRED, device.toMessageObject());
             } else if (error.code === 'Device_InitializeFailed') {
                 // firmware bug - device is in "show address" state which cannot be cancelled
-                this._handleUsedElsewhere();
+                this._handleUsedElsewhere(descriptor);
             } else if (error.code === 'Device_UsedElsewhere') {
                 // most common error - someone else took the device at the same time
-                this._handleUsedElsewhere();
+                this._handleUsedElsewhere(descriptor);
             } else {
                 await resolveAfter(501, null);
-                await this.handle();
+                await this.handle(descriptor);
             }
         }
-        delete this.list.creatingDevicesDescriptors[this.path];
+        delete this.creatingDevicesDescriptors[path];
     }
 
-    async _takeAndCreateDevice() {
-        const device = Device.fromDescriptor(this.list.transport, this.descriptor);
-        this.list.devices[this.path] = device;
-        await device.run();
-        this.list.emit(DEVICE.CONNECT, device.toMessageObject());
+    private async _takeAndCreateDevice(descriptor: Descriptor) {
+        const device = Device.fromDescriptor(this.transport, descriptor);
+        const path = descriptor.path.toString();
+
+        this.devices[path] = device;
+        const promise = device.run();
+        await promise;
+
+        this.emit(DEVICE.CONNECT, device.toMessageObject());
     }
 
-    _handleUsedElsewhere() {
-        const device = this.list._createUnacquiredDevice(
-            this.list.creatingDevicesDescriptors[this.path],
-        );
-        this.list.devices[this.path] = device;
-        this.list.emit(DEVICE.CONNECT_UNACQUIRED, device.toMessageObject());
-    }
-}
+    private _handleUsedElsewhere(descriptor: Descriptor) {
+        const path = descriptor.path.toString();
 
-// Helper class for actual logic of handling differences
-class DiffHandler {
-    list: DeviceList;
-
-    diff: DeviceDescriptorDiff;
-
-    constructor(list: DeviceList, diff: DeviceDescriptorDiff) {
-        this.list = list;
-        this.diff = diff;
-    }
-
-    handle() {
-        _log.debug('Update DescriptorStream', this.diff);
-
-        // note - this intentionally does not wait for connected devices
-        // createDevice inside waits for the updateDescriptor event
-        this._createConnectedDevices();
-        this._createReleasedDevices();
-        this._signalAcquiredDevices();
-
-        this._updateDescriptors();
-        this._emitEvents();
-        this._disconnectDevices();
-    }
-
-    _updateDescriptors() {
-        this.diff.descriptors.forEach((descriptor: DeviceDescriptor) => {
-            const path = descriptor.path.toString();
-            const device = this.list.devices[path];
-            if (device) {
-                device.updateDescriptor(descriptor);
-            }
-        });
-    }
-
-    _emitEvents() {
-        const events = [
-            {
-                d: this.diff.changedSessions,
-                e: DEVICE.CHANGED,
-            },
-            {
-                d: this.diff.acquired,
-                e: DEVICE.ACQUIRED,
-            },
-            {
-                d: this.diff.released,
-                e: DEVICE.RELEASED,
-            },
-        ];
-
-        events.forEach(({ d, e }) => {
-            d.forEach(descriptor => {
-                const path = descriptor.path.toString();
-                const device = this.list.devices[path];
-                _log.debug('Event', e, device);
-                if (device) {
-                    this.list.emit(e, device.toMessageObject());
-                }
-            });
-        });
-    }
-
-    // tries to read info about connected devices
-    _createConnectedDevices() {
-        this.diff.connected.forEach(async descriptor => {
-            const path = descriptor.path.toString();
-            const priority = DataManager.getSettings('priority');
-            const penalty = this.list.getAuthPenalty();
-            _log.debug('Connected', priority, penalty, descriptor.session, this.list.devices);
-            if (priority || penalty) {
-                await resolveAfter(501 + penalty + 100 * priority, null);
-            }
-            if (descriptor.session == null) {
-                await this.list._createAndSaveDevice(descriptor);
-            } else {
-                const device = await this.list._createUnacquiredDevice(descriptor);
-                this.list.devices[path] = device;
-                this.list.emit(DEVICE.CONNECT_UNACQUIRED, device.toMessageObject());
-            }
-        });
-    }
-
-    _signalAcquiredDevices() {
-        this.diff.acquired.forEach(descriptor => {
-            const path = descriptor.path.toString();
-            if (this.list.creatingDevicesDescriptors[path]) {
-                this.list.creatingDevicesDescriptors[path] = descriptor;
-            }
-        });
-    }
-
-    // tries acquire and read info about recently released devices
-    _createReleasedDevices() {
-        this.diff.released.forEach(async descriptor => {
-            const path = descriptor.path.toString();
-            const device = this.list.devices[path];
-            if (device) {
-                if (device.isUnacquired() && !device.isInconsistent()) {
-                    // wait for publish changes
-                    await resolveAfter(501, null);
-                    _log.debug('Create device from unacquired', device);
-                    await this.list._createAndSaveDevice(descriptor);
-                }
-            }
-        });
-    }
-
-    _disconnectDevices() {
-        this.diff.disconnected.forEach(descriptor => {
-            const path = descriptor.path.toString();
-            const device = this.list.devices[path];
-            if (device != null) {
-                device.disconnect();
-                delete this.list.devices[path];
-                this.list.emit(DEVICE.DISCONNECT, device.toMessageObject());
-            }
-        });
+        const device = this._createUnacquiredDevice(this.creatingDevicesDescriptors[path]);
+        this.devices[path] = device;
+        this.emit(DEVICE.CONNECT_UNACQUIRED, device.toMessageObject());
     }
 }
