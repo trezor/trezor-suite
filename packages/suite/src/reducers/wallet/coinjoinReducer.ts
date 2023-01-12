@@ -11,12 +11,13 @@ import {
     breakdownCoinjoinBalance,
     calculateAnonymityProgress,
     getEstimatedTimePerRound,
+    getIsCoinjoinOutOfSync,
     getRoundPhaseFromSessionPhase,
     transformCoinjoinStatus,
 } from '@wallet-utils/coinjoinUtils';
 import { ESTIMATED_ROUNDS_FAIL_RATE_BUFFER, DEFAULT_CLIENT_STATUS } from '@suite/services/coinjoin';
 import { selectSelectedAccount, selectSelectedAccountParams } from './selectedAccountReducer';
-import { selectDebug, selectTorState } from '@suite-reducers/suiteReducer';
+import { selectDebug, selectDeviceState, selectTorState } from '@suite-reducers/suiteReducer';
 import { selectAccountByKey } from '@suite-common/wallet-core';
 
 export interface CoinjoinClientFeeRatesMedians {
@@ -459,4 +460,23 @@ export const selectIsCoinjoinBlockedByTor = createSelector(
 
 export const selectIsAnySessionInCriticalPhase = createSelector(selectCoinjoinAccounts, accounts =>
     accounts.some(acc => (acc.session?.roundPhase ?? 0) > 0),
+);
+
+export const selectIsAccountWithSessionInCriticalPhaseByAccountKey = createSelector(
+    [selectCoinjoinAccountByKey],
+    coinjoinAccount => (coinjoinAccount?.session?.roundPhase ?? 0) > 0,
+);
+
+export const selectIsAccountWithSessionByAccountKey = createSelector(
+    [selectCoinjoinAccounts, (_state: CoinjoinRootState, accountKey: string) => accountKey],
+    (coinjoinAccounts, accountKey) =>
+        coinjoinAccounts.find(a => a.key === accountKey && a.session && !a.session.paused),
+);
+
+export const selectIsAccountWithPausedSessionInterruptedByAccountKey = createSelector(
+    [selectCoinjoinAccountByKey],
+    coinjoinAccount =>
+        coinjoinAccount?.session &&
+        coinjoinAccount.session.paused &&
+        coinjoinAccount.session.interrupted,
 );
