@@ -26,18 +26,19 @@ type TestCase = {
 };
 
 describe(`TrezorConnect methods`, () => {
-    afterAll(done => {
+    afterAll(async () => {
         // reset controller at the end
         if (controller) {
             controller.dispose();
             controller = undefined;
         }
-        done();
     });
 
     fixtures.forEach((testCase: TestCase) => {
         describe(`TrezorConnect.${testCase.method}`, () => {
             beforeAll(async () => {
+                await TrezorConnect.dispose();
+
                 try {
                     if (!controller) {
                         controller = getController(testCase.method);
@@ -49,17 +50,10 @@ describe(`TrezorConnect methods`, () => {
                     await setup(controller, testCase.setup);
 
                     await initTrezorConnect(controller);
-                    // done();
                 } catch (error) {
                     console.log('Controller WS init error', error);
-                    // done(error);
                 }
             }, 40000);
-
-            afterAll(done => {
-                TrezorConnect.dispose();
-                done();
-            });
 
             testCase.tests.forEach(t => {
                 // check if test should be skipped on current configuration
@@ -99,7 +93,6 @@ describe(`TrezorConnect methods`, () => {
                         }
 
                         expect(result).toMatchObject(expected);
-                        // done();
                     },
                     t.customTimeout || 20000,
                 );
