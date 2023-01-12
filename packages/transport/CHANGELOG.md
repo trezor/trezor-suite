@@ -1,3 +1,9 @@
+# 1.1.7 (not released)
+
+-   Added: nodeusb transport
+-   Reworked: webusb transport, sharedworker
+-   Removed: FallbackTransport
+
 # 1.1.6
 
 -   Dependencies: typescript 4.9

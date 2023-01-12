@@ -1,8 +1,3 @@
-import BridgeTransportV2 from './bridge/v2';
-import LowlevelTransportWithSharedConnections from './lowlevel/withSharedConnections';
-import FallbackTransport from './fallback';
-import WebUsbPlugin from './lowlevel/webusb';
-
 // Long.js needed to make protobuf encoding work with numbers over Number.MAX_SAFE_INTEGER
 // Docs claim that it should be enough to only install this dependency and it will be required automatically
 // see: https://github.com/protobufjs/protobuf.js/#compatibility
@@ -14,19 +9,22 @@ import * as Long from 'long';
 protobuf.util.Long = Long;
 protobuf.configure();
 
-export type {
-    Transport,
-    AcquireInput,
-    TrezorDeviceInfoWithSession,
-    MessageFromTrezor,
-} from './types';
+export { Transport, TRANSPORT } from './transports/abstract';
+
+// messages are exported but there is no real need to use them elsewhere
+// transports have reference to this already
+export * as Messages from './types/messages';
+export type { Descriptor } from './types';
 export { TREZOR_DESCS } from './constants';
 
-export { Messages } from './types';
+// browser + node
+export { BridgeTransport } from './transports/bridge';
 
-export default {
-    BridgeV2: BridgeTransportV2,
-    Fallback: FallbackTransport,
-    Lowlevel: LowlevelTransportWithSharedConnections,
-    WebUsb: WebUsbPlugin,
-};
+// node only
+export { NodeUsbTransport } from './transports/nodeusb';
+
+// browser (chrome-like) only
+export { WebUsbTransport } from './transports/webusb';
+
+export { SessionsBackground } from './sessions/background';
+export { SessionsClient } from './sessions/client';

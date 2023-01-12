@@ -16,6 +16,12 @@
         "transport"
     ],
     "main": "./lib/index.js",
+    "browser": {
+        "./lib/transports/nodeusb": "./lib/transports/nodeusb.browser",
+        "./lib/transports/webusb": "./lib/transports/webusb.browser",
+        "./src/transports/nodeusb": "./src/transports/nodeusb.browser",
+        "./src/transports/webusb": "./src/transports/webusb.browser"
+    },
     "files": [
         "lib/",
         "!**/*.map",
@@ -38,12 +44,14 @@
     "devDependencies": {
         "@trezor/trezor-user-env-link": "workspace:*",
         "@types/bytebuffer": "^5.0.44",
+        "@types/sharedworker": "^0.0.84",
         "@types/w3c-web-usb": "^1.0.6",
         "jest": "^26.6.3",
         "rimraf": "^3.0.2",
         "ts-node": "^10.9.1",
         "tsx": "^3.8.2",
-        "typescript": "4.9.3"
+        "typescript": "4.9.3",
+        "worker-loader": "^3.0.8"
     },
     "dependencies": {
         "@trezor/utils": "workspace:^9.0.4",
@@ -51,6 +59,7 @@
         "json-stable-stringify": "^1.0.2",
         "long": "^4.0.0",
         "prettier": "2.8.0",
-        "protobufjs": "^6.11.3"
+        "protobufjs": "^6.11.3",
+        "usb": "^2.5.2"
     }
 }

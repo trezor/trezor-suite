@@ -1,13 +1,7 @@
 // Module for loading the protobuf description from serialized description
 
 import * as protobuf from 'protobufjs/light';
-
-export function parseConfigure(data: protobuf.INamespace) {
-    if (typeof data === 'string') {
-        return protobuf.Root.fromJSON(JSON.parse(data));
-    }
-    return protobuf.Root.fromJSON(data);
-}
+import type { MessageFromTrezor } from '../../types';
 
 export const createMessageFromName = (messages: protobuf.Root, name: string) => {
     const Message = messages.lookupType(name);
@@ -27,7 +21,10 @@ export const createMessageFromName = (messages: protobuf.Root, name: string) => 
 export const createMessageFromType = (messages: protobuf.Root, typeId: number) => {
     const MessageType = messages.lookupEnum('MessageType');
 
-    const messageName = MessageType.valuesById[typeId].replace('MessageType_', '');
+    const messageName = MessageType.valuesById[typeId].replace(
+        'MessageType_',
+        '',
+    ) as MessageFromTrezor['type'];
 
     const Message = messages.lookupType(messageName);
 
