@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import TrezorLink from '@suite-components/TrezorLink';
 import { WalletAccountTransaction } from '@suite-common/wallet-types';
 import TransactionItem from '@wallet-components/TransactionItem';
+import { Network } from '@wallet-types';
 
 const Wrapper = styled.div`
     text-align: left;
@@ -24,16 +25,18 @@ const ChainedTransactionItem = styled(TransactionItem)`
 
 interface ChainedTxsProps {
     txs: WalletAccountTransaction[];
+    network: Network;
     explorerUrl: string;
 }
 
-export const ChainedTxs = ({ txs, explorerUrl }: ChainedTxsProps) => (
+export const ChainedTxs = ({ txs, network, explorerUrl }: ChainedTxsProps) => (
     <Wrapper>
         {txs.map(tx => (
             <StyledTrezorLink key={tx.txid} href={`${explorerUrl}${tx.txid}`} variant="nostyle">
                 <ChainedTransactionItem
                     key={tx.txid}
                     transaction={tx}
+                    network={network}
                     isPending
                     isActionDisabled
                     accountKey={`${tx.descriptor}-${tx.symbol}-${tx.deviceState}`}

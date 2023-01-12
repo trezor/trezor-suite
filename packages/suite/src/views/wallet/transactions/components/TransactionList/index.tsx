@@ -10,6 +10,7 @@ import {
     groupTransactionsByDate,
     advancedSearchTransactions,
     groupJointTransactions,
+    getAccountNetwork,
 } from '@suite-common/wallet-utils';
 import { SETTINGS } from '@suite-config';
 import { WalletAccountTransaction, Account } from '@wallet-types';
@@ -48,6 +49,8 @@ export const TransactionList = ({
         localCurrency: state.wallet.settings.localCurrency,
         anchor: state.router.anchor,
     }));
+
+    const network = getAccountNetwork(account);
 
     // Search
     const [search, setSearch] = useState('');
@@ -148,13 +151,14 @@ export const TransactionList = ({
                                     isPending={isPending}
                                     accountMetadata={account.metadata}
                                     accountKey={account.key}
+                                    network={network!}
                                 />
                             ),
                         )}
                     </TransactionsGroup>
                 );
             }),
-        [transactionsByDate, account.key, account.metadata, localCurrency, symbol],
+        [transactionsByDate, account.key, account.metadata, localCurrency, symbol, network],
     );
 
     // if total pages cannot be determined check current page and number of txs (XRP)

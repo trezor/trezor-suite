@@ -352,6 +352,12 @@ export const getAllAccounts = (deviceState: string | typeof undefined, accounts:
 export const getNetwork = (symbol: string): Network | null =>
     NETWORKS.find(c => c.symbol === symbol) || null;
 
+export const getAccountNetwork = ({
+    symbol,
+    accountType,
+}: Pick<Account, 'symbol' | 'accountType'>) =>
+    NETWORKS.find(n => n.symbol === symbol && (n.accountType || 'normal') === accountType);
+
 export const isNetworkSymbol = (symbol: string): symbol is NetworkSymbol => !!getNetwork(symbol);
 
 /**

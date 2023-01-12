@@ -64,7 +64,7 @@ export const AdvancedDetails = ({
     } else if (selectedTab === 'io' && network.networkType !== 'ripple') {
         content = <IODetails tx={tx} />;
     } else if (selectedTab === 'chained' && chainedTxs.length > 0) {
-        content = <ChainedTxs txs={chainedTxs} explorerUrl={explorerUrl} />;
+        content = <ChainedTxs txs={chainedTxs} explorerUrl={explorerUrl} network={network} />;
     }
 
     return (

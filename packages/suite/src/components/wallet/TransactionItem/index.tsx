@@ -8,7 +8,7 @@ import { useActions } from '@suite-hooks';
 import * as modalActions from '@suite-actions/modalActions';
 import { formatNetworkAmount, isTestnet, isTxUnknown } from '@suite-common/wallet-utils';
 import { AccountMetadata } from '@suite-types/metadata';
-import { WalletAccountTransaction } from '@wallet-types';
+import { Network, WalletAccountTransaction } from '@wallet-types';
 import { TransactionTypeIcon } from './components/TransactionTypeIcon';
 import { TransactionHeading } from './components/TransactionHeading';
 import {
@@ -85,6 +85,7 @@ interface TransactionItemProps {
     isActionDisabled?: boolean; // Used in "chained transactions" transaction detail modal
     accountMetadata?: AccountMetadata;
     accountKey: string;
+    network: Network;
     className?: string;
 }
 
@@ -95,6 +96,7 @@ const TransactionItem = React.memo(
         accountMetadata,
         isActionDisabled,
         isPending,
+        network,
         className,
     }: TransactionItemProps) => {
         const { type, targets, tokens } = transaction;
@@ -331,13 +333,18 @@ const TransactionItem = React.memo(
                                 )}
                             </TargetsWrapper>
                         </NextRow>
-                        {!isActionDisabled && transaction.rbfParams && (
-                            <NextRow>
-                                <Button variant="tertiary" onClick={() => openTxDetailsModal(true)}>
-                                    <Translation id="TR_BUMP_FEE" />
-                                </Button>
-                            </NextRow>
-                        )}
+                        {!isActionDisabled &&
+                            transaction.rbfParams &&
+                            network.features?.includes('rbf') && (
+                                <NextRow>
+                                    <Button
+                                        variant="tertiary"
+                                        onClick={() => openTxDetailsModal(true)}
+                                    >
+                                        <Translation id="TR_BUMP_FEE" />
+                                    </Button>
+                                </NextRow>
+                            )}
                     </Content>
                 </Body>
             </Wrapper>
