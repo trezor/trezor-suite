@@ -3,6 +3,7 @@ import { ActionCreatorWithPreparedPayload } from '@reduxjs/toolkit';
 import { Account, FeeInfo } from '@suite-common/wallet-types';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { TrezorDevice } from '@suite-common/suite-types';
+
 import { BlockchainBlock, ConnectSettings, Manifest, PROTO } from '@trezor/connect';
 
 import { ActionType, SuiteCompatibleSelector, SuiteCompatibleThunk } from './types';
@@ -30,6 +31,9 @@ export type ExtraDependencies = {
         selectEnabledNetworks: SuiteCompatibleSelector<NetworkSymbol[]>;
         selectLocalCurrency: SuiteCompatibleSelector<string>;
         selectIsPendingTransportEvent: SuiteCompatibleSelector<boolean>;
+        // todo: we do not want to, so far, transfer coinjoin to @suite-common
+        // but this is exactly what I need to get DebugModeOptions type instead of any
+        selectDebugSettings: SuiteCompatibleSelector<any>;
     };
     // You should only use ActionCreatorWithPayload from redux-toolkit!
     // That means you will need to convert actual action creators in packages/suite to use createAction from redux-toolkit,

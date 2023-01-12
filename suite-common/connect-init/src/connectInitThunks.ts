@@ -17,7 +17,11 @@ export const connectInitThunk = createThunk(
     `${actionsPrefix}/initThunk`,
     async (_, { dispatch, getState, extra }) => {
         const {
-            selectors: { selectEnabledNetworks, selectIsPendingTransportEvent },
+            selectors: {
+                selectEnabledNetworks,
+                selectIsPendingTransportEvent,
+                selectDebugSettings,
+            },
             actions: { lockDevice },
             utils: { connectInitSettings },
         } = extra;
@@ -85,6 +89,7 @@ export const connectInitThunk = createThunk(
             await TrezorConnect.init({
                 ...connectInitSettings,
                 pendingTransportEvent: selectIsPendingTransportEvent(getState()),
+                transports: selectDebugSettings(getState()).transports,
             });
         } catch (error) {
             let formattedError: string;
