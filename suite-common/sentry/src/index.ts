@@ -64,10 +64,11 @@ const ignoreErrors = [
     'ERR_NETWORK_IO_SUSPENDED',
     'ERR_NETWORK_CHANGED',
     'Error: HTTP Error',
-    'other call in progress',
-    'Action cancelled by user',
     'ResizeObserver loop limit exceeded',
-    'device disconnected during action',
+    // @trezor/transport errors, todo: make sure all of these are legit
+    'other call in progress', // -> legit, comes from bridge originally, we allowed user to init another connect call
+    'Action cancelled by user', // -> not legit, expected err
+    'device disconnected during action', // -> not legit, expected err
 ];
 
 export const SENTRY_CONFIG: Options = {
