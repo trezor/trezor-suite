@@ -25,7 +25,9 @@ const MODULES = [
     'theme',
     'http-receiver',
     'metadata',
-    'bridge',
+    // todo: enable bridge again. now bridge process is disabled for testing. maybe we will need
+    // to implement killing processes from suite?
+    // 'bridge',
     'custom-protocols',
     'auto-updater',
     'store',
