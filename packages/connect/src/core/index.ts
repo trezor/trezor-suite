@@ -969,12 +969,12 @@ export class Core extends EventEmitter {
         handleMessage(message, isTrustedOrigin);
     }
 
-    dispose() {
-        if (_deviceList) {
-            _deviceList.dispose();
-        }
+    async dispose() {
         disposeBackend();
         this.removeAllListeners();
+        if (_deviceList) {
+            await _deviceList.dispose();
+        }
     }
 
     getCurrentMethod() {
@@ -1055,7 +1055,7 @@ const disableWebUSBTransport = async () => {
 
     try {
         // disconnect previous device list
-        _deviceList.dispose();
+        await _deviceList.dispose();
         // and init with new settings, without webusb
         await initDeviceList(settings);
     } catch (error) {

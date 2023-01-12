@@ -684,7 +684,8 @@ export class Device extends EventEmitter {
                 if (this.commands) {
                     this.commands.cancel();
                 }
-                this.transport.release(this.activitySessionID, true, false);
+
+                return this.transport.release(this.activitySessionID, true);
             } catch (err) {
                 // empty
             }

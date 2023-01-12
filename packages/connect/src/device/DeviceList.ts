@@ -275,12 +275,17 @@ export class DeviceList extends EventEmitter {
         };
     }
 
-    dispose() {
+    async dispose() {
         this.removeAllListeners();
 
         if (this.stream) {
             this.stream.stop();
         }
+        // release all devices
+        await Promise.all(this.allDevices().map(device => device.dispose()));
+
+        // now we can be relatively sure that release calls have been dispatched
+        // and we can safely kill all async subscriptions in transport layer
         if (this.transport) {
             this.transport.stop();
         }
@@ -288,8 +293,6 @@ export class DeviceList extends EventEmitter {
             this.fetchController.abort();
             this.fetchController = null;
         }
-
-        this.allDevices().forEach(device => device.dispose());
     }
 
     disconnectDevices() {

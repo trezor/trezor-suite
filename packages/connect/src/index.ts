@@ -41,11 +41,11 @@ const manifest = (data: Manifest) => {
     });
 };
 
-const dispose = () => {
+const dispose = async () => {
     eventEmitter.removeAllListeners();
     _settings = parseConnectSettings();
     if (_core) {
-        _core.dispose();
+        await _core.dispose();
         _core = null;
     }
 };

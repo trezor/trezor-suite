@@ -65,6 +65,7 @@ const dispose = () => {
     if (_popupManager) {
         _popupManager.close();
     }
+    return Promise.resolve(undefined);
 };
 
 const cancel = (error?: string) => {

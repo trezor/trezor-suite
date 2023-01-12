@@ -26,9 +26,9 @@ describe('TrezorConnect passphrase', () => {
         await initTrezorConnect(controller, { debug: false });
     });
 
-    afterAll(() => {
+    afterAll(async () => {
         controller.dispose();
-        TrezorConnect.dispose();
+        await TrezorConnect.dispose();
     });
 
     // firmware after passphrase redesign

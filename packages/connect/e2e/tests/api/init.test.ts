@@ -4,8 +4,8 @@ import TrezorConnect from '@trezor/connect';
 const INIT_ERROR = { code: 'Init_ManifestMissing' };
 
 describe('TrezorConnect.init', () => {
-    afterEach(() => {
-        TrezorConnect.dispose();
+    afterEach(async () => {
+        await TrezorConnect.dispose();
     });
 
     beforeAll(() => {

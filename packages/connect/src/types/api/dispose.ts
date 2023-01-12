@@ -1,1 +1,1 @@
-export declare function dispose(): void;
+export declare function dispose(): Promise<void>;
