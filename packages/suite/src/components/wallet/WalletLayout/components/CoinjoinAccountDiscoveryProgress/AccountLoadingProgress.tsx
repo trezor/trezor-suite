@@ -4,6 +4,7 @@ import { Progress } from '@trezor/components';
 import { CoinjoinService } from '@suite/services/coinjoin';
 import { selectSelectedAccount } from '@wallet-reducers/selectedAccountReducer';
 import { useSelector } from '@suite-hooks/useSelector';
+import { getAccountProgressHandle } from '@wallet-utils/coinjoinUtils';
 
 const DiscoveryProgress = styled(Progress)`
     max-width: 440px;
@@ -19,7 +20,8 @@ export const AccountLoadingProgress = () => {
     const selectedAccount = useSelector(selectSelectedAccount);
     const [progress, setProgress] = useState<ProgressInfo>({});
 
-    const { symbol: network, backendType, descriptor } = selectedAccount || {};
+    const { symbol: network, backendType } = selectedAccount || {};
+    const progressHandle = selectedAccount && getAccountProgressHandle(selectedAccount);
 
     useEffect(() => {
         if (!network || backendType !== 'coinjoin') {
@@ -34,12 +36,12 @@ export const AccountLoadingProgress = () => {
 
         const onProgress = ({ info }: { info?: ProgressInfo }) => info && setProgress(info);
 
-        api.backend.on(`progress/${descriptor}`, onProgress);
+        api.backend.on(`progress/${progressHandle}`, onProgress);
 
         return () => {
-            api.backend.off(`progress/${descriptor}`, onProgress);
+            api.backend.off(`progress/${progressHandle}`, onProgress);
         };
-    }, [network, backendType, descriptor]);
+    }, [network, backendType, progressHandle]);
 
     const value = progress.progress ?? 0;
 

@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js';
+import { createHash } from 'crypto';
 
 import { getUtxoOutpoint, getBip43Type } from '@suite-common/wallet-utils';
 import {
@@ -355,3 +356,6 @@ export const getRoundPhaseFromSessionPhase = (sessionPhase: SessionPhase): Round
 
 export const getFirstSessionPhaseFromRoundPhase = (roundPhase?: RoundPhase): SessionPhase =>
     Number(`${(roundPhase || 0) + 1}1`);
+
+export const getAccountProgressHandle = (account: Account) =>
+    createHash('sha256').update(account.key).digest('hex').slice(0, 16);

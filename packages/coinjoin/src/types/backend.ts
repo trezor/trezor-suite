@@ -83,12 +83,14 @@ export type ScanAccountProgress = ScanProgress<ScanAccountCheckpoint>;
 
 export type ScanAccountParams = {
     descriptor: string;
+    progressHandle?: string;
     checkpoints?: ScanAccountCheckpoint[];
     cache?: AccountCache;
 };
 
 export type ScanAddressParams = {
     descriptor: string;
+    progressHandle?: string;
     checkpoints?: ScanAddressCheckpoint[];
 };
 

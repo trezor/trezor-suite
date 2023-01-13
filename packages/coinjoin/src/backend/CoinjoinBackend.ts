@@ -71,7 +71,7 @@ export class CoinjoinBackend extends EventEmitter {
         this.mempool = new CoinjoinMempoolController(this.client);
     }
 
-    scanAccount({ descriptor, checkpoints, cache }: ScanAccountParams) {
+    scanAccount({ descriptor, progressHandle, checkpoints, cache }: ScanAccountParams) {
         this.abortController = new AbortController();
         const filters = new CoinjoinFilterController(this.client, this.settings);
 
@@ -83,12 +83,13 @@ export class CoinjoinBackend extends EventEmitter {
                 abortSignal: this.abortController.signal,
                 filters,
                 mempool: this.mempool,
-                onProgress: progress => this.emit(`progress/${descriptor}`, progress),
+                onProgress: progress =>
+                    this.emit(`progress/${progressHandle ?? descriptor}`, progress),
             },
         );
     }
 
-    scanAddress({ descriptor, checkpoints }: ScanAddressParams) {
+    scanAddress({ descriptor, progressHandle, checkpoints }: ScanAddressParams) {
         this.abortController = new AbortController();
         const filters = new CoinjoinFilterController(this.client, this.settings);
 
@@ -101,7 +102,7 @@ export class CoinjoinBackend extends EventEmitter {
                 filters,
                 mempool: this.mempool,
                 onProgress: progress =>
-                    this.emit(`progress/${descriptor}`, {
+                    this.emit(`progress/${progressHandle ?? descriptor}`, {
                         ...progress,
                         // TODO resolve this correctly
                         checkpoint: { ...progress.checkpoint, receiveCount: -1, changeCount: -1 },

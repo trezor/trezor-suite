@@ -6,7 +6,7 @@ import { goto } from '../suite/routerActions';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { initCoinjoinService, getCoinjoinClient, clientDisable } from './coinjoinClientActions';
 import { CoinjoinService, COORDINATOR_FEE_RATE_MULTIPLIER } from '@suite/services/coinjoin';
-import { getRegisterAccountParams } from '@wallet-utils/coinjoinUtils';
+import { getAccountProgressHandle, getRegisterAccountParams } from '@wallet-utils/coinjoinUtils';
 import { Dispatch, GetState } from '@suite-types';
 import { Network, NetworkSymbol } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
@@ -218,8 +218,10 @@ export const fetchAndUpdateAccount =
             dispatch(coinjoinAccountDiscoveryProgress(account, progress));
         };
 
+        const progressHandle = getAccountProgressHandle(account);
+
         try {
-            backend.on(`progress/${account.descriptor}`, onProgress);
+            backend.on(`progress/${progressHandle}`, onProgress);
 
             const prevTransactions = getState().wallet.transactions.transactions[account.key];
 
@@ -227,6 +229,7 @@ export const fetchAndUpdateAccount =
                 descriptor: account.descriptor,
                 checkpoints: getCheckpoints(account, getState),
                 cache: getAccountCache(account),
+                progressHandle,
             });
 
             onProgress({ checkpoint, transactions: pending });
@@ -278,7 +281,7 @@ export const fetchAndUpdateAccount =
             const status = isInitialUpdate ? 'error' : 'out-of-sync';
             dispatch(accountsActions.endCoinjoinAccountSync(account, status));
         } finally {
-            backend.off(`progress/${account.descriptor}`, onProgress);
+            backend.off(`progress/${progressHandle}`, onProgress);
         }
     };
 
