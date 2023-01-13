@@ -1,9 +1,19 @@
 import url from 'url';
 
 import { TOR_URLS } from '@trezor/urls';
-import { isDevEnv } from '@suite-common/suite-utils';
+import { isDevEnv, isCodesignBuild } from '@suite-common/suite-utils';
 
-export const APP_NAME = 'Trezor Suite';
+const getAppName = () => {
+    const appName = 'Trezor Suite';
+
+    if (!isCodesignBuild) {
+        return `${appName} ${isDevEnv ? 'Local' : 'Dev'}`;
+    }
+
+    return appName;
+};
+
+export const APP_NAME = getAppName();
 
 export const FILE_PROTOCOL = 'file';
 
