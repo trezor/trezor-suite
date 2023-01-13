@@ -18,10 +18,7 @@ export const ColorSchemePicker = () => {
             <Text>Color Scheme</Text>
             <HStack style={applyStyle(stackStyle)} spacing="small">
                 <ColorSchemePickerItem colorScheme="standard" />
-                <ColorSchemePickerItem colorScheme="chill" />
                 <ColorSchemePickerItem colorScheme="dark" />
-            </HStack>
-            <HStack style={applyStyle(stackStyle)} spacing="small">
                 <ColorSchemePickerItem colorScheme="system" />
             </HStack>
         </VStack>

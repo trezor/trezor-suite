@@ -57,7 +57,7 @@ const useGetSystemColorVariant = (): ThemeColorVariant => {
     if (colorScheme === 'dark') {
         return 'dark';
     }
-    return 'chill';
+    return 'standard';
 };
 
 export const ColorSchemePickerItem = ({ colorScheme }: ColorSchemePickerItemProps) => {
