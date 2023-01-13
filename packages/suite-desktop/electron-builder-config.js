@@ -5,7 +5,8 @@ const isCodesignBuild = process.env.IS_CODESIGN_BUILD === 'true';
 
 /* eslint-disable no-template-curly-in-string */ // to be able to use patterns like ${author} and ${arch}
 module.exports = {
-    appId: 'io.trezor.TrezorSuite',
+    // distingush between dev and prod builds
+    appId: `io.trezor.TrezorSuite${isCodesignBuild ? '' : '.dev'}`,
     extraMetadata: {
         version: suiteVersion,
         // distingush between dev and prod builds so different userDataDir is used

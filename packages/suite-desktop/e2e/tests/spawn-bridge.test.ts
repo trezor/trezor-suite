@@ -24,7 +24,7 @@ testPlaywright.describe.serial('Bridge', () => {
     testPlaywright('App spawns bundled bridge and stops it after app quit', async ({ request }) => {
         const suite = await launchSuite();
         const title = await suite.window.title();
-        expectPlaywright(title).toBe('Trezor Suite');
+        expectPlaywright(title).toContain('Trezor Suite');
 
         // We wait for `@welcome/title` or `@dashboard/graph` since
         // one or the other will be display depending on the state of the app
