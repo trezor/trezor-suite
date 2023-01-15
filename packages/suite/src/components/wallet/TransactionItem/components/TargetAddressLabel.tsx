@@ -5,7 +5,7 @@ import { ArrayElement } from '@trezor/type-utils';
 import { Translation, AddressLabeling } from '@suite-components';
 import { AccountMetadata } from '@suite-types/metadata';
 
-const TruncatedSpan = styled.span`
+const TruncatedSpan = styled.span<{ isBlurred?: boolean }>`
     overflow: hidden;
     text-overflow: ellipsis;
 `;

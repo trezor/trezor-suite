@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Translation, Modal } from '@suite-components';
 import { variables, Button } from '@trezor/components';
+import { HELP_CENTER_ZERO_VALUE_ATTACKS } from '@trezor/urls';
+import { getIsZeroValuePhishing } from '@suite-common/suite-utils';
+import { Translation, Modal, TrezorLink } from '@suite-components';
 import { WalletAccountTransaction } from '@wallet-types';
 import { BasicDetails } from './components/BasicDetails';
 import { AdvancedDetails, TabID } from './components/AdvancedDetails';
@@ -24,9 +26,18 @@ const StyledModal = styled(Modal)`
     }
 `;
 
-const Wrapper = styled.div`
-    width: 100%;
-    flex-direction: column;
+const PhishingBanner = styled.div`
+    margin-bottom: 6px;
+    padding: 6px 0;
+    border-radius: 8px;
+    background: ${({ theme }) => theme.BG_RED};
+    color: ${({ theme }) => theme.TYPE_WHITE};
+    font-size: ${variables.FONT_SIZE.SMALL};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+`;
+
+const HelpLink = styled(TrezorLink)`
+    color: ${({ theme }) => theme.TYPE_WHITE};
 `;
 
 const SectionActions = styled.div`
@@ -94,6 +105,7 @@ export const TransactionDetail = ({ tx, rbfForm, onCancel }: TransactionDetailPr
     const accountKey = getAccountKey(tx.descriptor, tx.symbol, tx.deviceState);
     const account = useSelector(state => selectAccountByKey(state, accountKey));
     const network = account && getAccountNetwork(account);
+    const isZeroValuePhishing = getIsZeroValuePhishing(tx);
 
     return (
         <StyledModal
@@ -101,98 +113,111 @@ export const TransactionDetail = ({ tx, rbfForm, onCancel }: TransactionDetailPr
             onCancel={onCancel}
             heading={<Translation id="TR_TRANSACTION_DETAILS" />}
         >
-            <Wrapper>
-                <BasicDetails
-                    explorerUrl={blockchain.explorer.tx}
-                    tx={tx}
-                    network={network!}
-                    confirmations={confirmations}
-                />
+            {isZeroValuePhishing && (
+                <PhishingBanner>
+                    <Translation
+                        id="TR_ZERO_PHISHING_BANNER"
+                        values={{
+                            a: chunks => (
+                                <HelpLink href={HELP_CENTER_ZERO_VALUE_ATTACKS} variant="underline">
+                                    {chunks}
+                                </HelpLink>
+                            ),
+                        }}
+                    />
+                </PhishingBanner>
+            )}
 
-                <SectionActions>
-                    {network?.features?.includes('rbf') && tx.rbfParams && (
-                        <>
-                            {section === 'CHANGE_FEE' && (
-                                // Show back button and section title when bumping fee/finalizing txs
+            <BasicDetails
+                explorerUrl={blockchain.explorer.tx}
+                tx={tx}
+                network={network!}
+                confirmations={confirmations}
+            />
+
+            <SectionActions>
+                {network?.features?.includes('rbf') && tx.rbfParams && (
+                    <>
+                        {section === 'CHANGE_FEE' && (
+                            // Show back button and section title when bumping fee/finalizing txs
+                            <>
+                                <Col>
+                                    <Button
+                                        variant="tertiary"
+                                        onClick={() => {
+                                            setSection('DETAILS');
+                                            setFinalize(false);
+                                            setTab(undefined);
+                                        }}
+                                        icon="ARROW_LEFT"
+                                    >
+                                        <Translation id="TR_BACK" />
+                                    </Button>
+                                </Col>
+
+                                <Middle>
+                                    <SectionTitle>
+                                        <Translation
+                                            id={finalize ? 'TR_FINALIZE_TX' : 'TR_REPLACE_TX'}
+                                        />
+                                    </SectionTitle>
+                                </Middle>
+                            </>
+                        )}
+
+                        <Right>
+                            {section === 'DETAILS' && (
+                                // change fee and finalize tx buttons visible only in details
                                 <>
-                                    <Col>
+                                    <Button
+                                        variant="tertiary"
+                                        onClick={() => {
+                                            setSection('CHANGE_FEE');
+                                            setTab(undefined);
+                                        }}
+                                    >
+                                        <Translation id="TR_BUMP_FEE" />
+                                    </Button>
+
+                                    {network?.networkType === 'bitcoin' && (
+                                        // finalize button only possible in BTC rbf
                                         <Button
                                             variant="tertiary"
                                             onClick={() => {
-                                                setSection('DETAILS');
-                                                setFinalize(false);
-                                                setTab(undefined);
-                                            }}
-                                            icon="ARROW_LEFT"
-                                        >
-                                            <Translation id="TR_BACK" />
-                                        </Button>
-                                    </Col>
-
-                                    <Middle>
-                                        <SectionTitle>
-                                            <Translation
-                                                id={finalize ? 'TR_FINALIZE_TX' : 'TR_REPLACE_TX'}
-                                            />
-                                        </SectionTitle>
-                                    </Middle>
-                                </>
-                            )}
-
-                            <Right>
-                                {section === 'DETAILS' && (
-                                    // change fee and finalize tx buttons visible only in details
-                                    <>
-                                        <Button
-                                            variant="tertiary"
-                                            onClick={() => {
+                                                setFinalize(true);
                                                 setSection('CHANGE_FEE');
                                                 setTab(undefined);
                                             }}
                                         >
-                                            <Translation id="TR_BUMP_FEE" />
+                                            <Translation id="TR_FINALIZE_TX" />
                                         </Button>
-
-                                        {network?.networkType === 'bitcoin' && (
-                                            // finalize button only possible in BTC rbf
-                                            <Button
-                                                variant="tertiary"
-                                                onClick={() => {
-                                                    setFinalize(true);
-                                                    setSection('CHANGE_FEE');
-                                                    setTab(undefined);
-                                                }}
-                                            >
-                                                <Translation id="TR_FINALIZE_TX" />
-                                            </Button>
-                                        )}
-                                    </>
-                                )}
-                            </Right>
-                        </>
-                    )}
-                </SectionActions>
-
-                {section === 'CHANGE_FEE' ? (
-                    <ChangeFee
-                        tx={tx}
-                        finalize={finalize}
-                        chainedTxs={chainedTxs}
-                        showChained={() => {
-                            setSection('DETAILS');
-                            setTab('chained');
-                        }}
-                    />
-                ) : (
-                    <AdvancedDetails
-                        explorerUrl={blockchain.explorer.tx}
-                        defaultTab={tab}
-                        network={network!}
-                        tx={tx}
-                        chainedTxs={chainedTxs}
-                    />
+                                    )}
+                                </>
+                            )}
+                        </Right>
+                    </>
                 )}
-            </Wrapper>
+            </SectionActions>
+
+            {section === 'CHANGE_FEE' ? (
+                <ChangeFee
+                    tx={tx}
+                    finalize={finalize}
+                    chainedTxs={chainedTxs}
+                    showChained={() => {
+                        setSection('DETAILS');
+                        setTab('chained');
+                    }}
+                />
+            ) : (
+                <AdvancedDetails
+                    explorerUrl={blockchain.explorer.tx}
+                    defaultTab={tab}
+                    network={network!}
+                    tx={tx}
+                    chainedTxs={chainedTxs}
+                />
+            )}
         </StyledModal>
     );
 };

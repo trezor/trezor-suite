@@ -7818,4 +7818,14 @@ export default defineMessages({
         id: 'TR_COINJOIN_STEP_3_DESCRIPTION',
         defaultMessage: 'Your Bitcoin will be mixed with other peoples’ to make it untracable. ',
     },
+    TR_ZERO_PHISHING_TOOLTIP: {
+        id: 'TR_ZERO_PHISHING_TOOLTIP',
+        defaultMessage:
+            'Address poisoning alert! This transaction looks suspicious. <a>Learn more.</a>',
+    },
+    TR_ZERO_PHISHING_BANNER: {
+        id: 'TR_ZERO_PHISHING_BANNER',
+        defaultMessage:
+            'Proceed with caution. This may be a fraudulent transaction. <a>Read more here.</a>',
+    },
 });

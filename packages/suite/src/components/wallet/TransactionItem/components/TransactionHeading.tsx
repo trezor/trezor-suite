@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { variables, Icon, useTheme } from '@trezor/components';
-import { FormattedCryptoAmount } from '@suite-components';
+import { HELP_CENTER_ZERO_VALUE_ATTACKS } from '@trezor/urls';
+import { getIsZeroValuePhishing } from '@suite-common/suite-utils';
+import { FormattedCryptoAmount, TooltipSymbol, Translation, TrezorLink } from '@suite-components';
 import {
     formatAmount,
     formatNetworkAmount,
@@ -22,6 +24,8 @@ const Wrapper = styled.span`
 `;
 
 const HeadingWrapper = styled.div`
+    display: flex;
+    align-items: center;
     text-overflow: ellipsis;
     overflow: hidden;
 `;
@@ -38,12 +42,21 @@ const ChevronIconWrapper = styled.div<{ show: boolean; animate: boolean }>`
     }
 `;
 
-const StyledCryptoAmount = styled(FormattedCryptoAmount)`
-    color: ${({ theme }) => theme.TYPE_DARK_GREY};
+const StyledCryptoAmount = styled(FormattedCryptoAmount)<{ isZeroValuePhishing: boolean }>`
+    color: ${({ theme, isZeroValuePhishing }) =>
+        isZeroValuePhishing ? theme.TYPE_LIGHT_GREY : theme.TYPE_DARK_GREY};
     font-size: ${variables.FONT_SIZE.NORMAL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     white-space: nowrap;
     flex: 0;
+`;
+
+const HelpLink = styled(TrezorLink)`
+    color: ${({ theme }) => theme.TYPE_ORANGE};
+
+    path {
+        fill: ${({ theme }) => theme.TYPE_ORANGE};
+    }
 `;
 
 interface TransactionHeadingProps {
@@ -63,7 +76,10 @@ export const TransactionHeading = ({
     nestedItemIsHovered,
     onClick,
 }: TransactionHeadingProps) => {
+    const [headingIsHovered, setHeadingIsHovered] = useState(false);
+
     const theme = useTheme();
+
     const symbol = getTxHeaderSymbol(transaction);
     const nTokens = transaction.tokens.length;
     const isTokenTransaction = transaction.tokens.length;
@@ -73,7 +89,7 @@ export const TransactionHeading = ({
     const targetSymbol = transaction.type === 'self' ? transaction.symbol : symbol;
     let amount = null;
 
-    const [headingIsHovered, setHeadingIsHovered] = useState(false);
+    const isZeroValuePhishing = getIsZeroValuePhishing(transaction);
 
     if (useSingleRowLayout) {
         // For single token transaction instead of showing coin amount we rather show the token amount
@@ -86,7 +102,12 @@ export const TransactionHeading = ({
             ? getTxOperation(transaction)
             : getTxOperation(transfer);
         amount = targetAmount && (
-            <StyledCryptoAmount value={targetAmount} symbol={targetSymbol} signValue={operation} />
+            <StyledCryptoAmount
+                value={targetAmount}
+                symbol={targetSymbol}
+                signValue={operation}
+                isZeroValuePhishing={isZeroValuePhishing}
+            />
         );
     }
 
@@ -99,6 +120,7 @@ export const TransactionHeading = ({
                 value={formatNetworkAmount(abs, transaction.symbol)}
                 symbol={transaction.symbol}
                 signValue={transaction.amount}
+                isZeroValuePhishing={isZeroValuePhishing}
             />
         );
     }
@@ -109,6 +131,7 @@ export const TransactionHeading = ({
                 value={formatNetworkAmount(transaction.fee, transaction.symbol)}
                 symbol={transaction.symbol}
                 signValue="neg"
+                isZeroValuePhishing={isZeroValuePhishing}
             />
         );
     }
@@ -121,6 +144,27 @@ export const TransactionHeading = ({
                 onClick={onClick}
             >
                 <HeadingWrapper>
+                    {isZeroValuePhishing && (
+                        <TooltipSymbol
+                            content={
+                                <Translation
+                                    id="TR_ZERO_PHISHING_TOOLTIP"
+                                    values={{
+                                        a: chunks => (
+                                            <HelpLink
+                                                href={HELP_CENTER_ZERO_VALUE_ATTACKS}
+                                                icon="EXTERNAL_LINK"
+                                                size="small"
+                                            >
+                                                {chunks}
+                                            </HelpLink>
+                                        ),
+                                    }}
+                                />
+                            }
+                            icon="WARNING"
+                        />
+                    )}
                     <TransactionHeader transaction={transaction} isPending={isPending} />
                 </HeadingWrapper>
 
