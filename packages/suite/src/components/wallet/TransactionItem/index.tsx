@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import styled, { css } from 'styled-components';
 import { AnimatePresence } from 'framer-motion';
 import { variables, Button, Card } from '@trezor/components';
+import { getIsZeroValuePhishing } from '@suite-common/suite-utils';
 import { Translation } from '@suite-components';
 import { useActions } from '@suite-hooks';
 import * as modalActions from '@suite-actions/modalActions';
@@ -34,12 +35,14 @@ import { anchorOutlineStyles } from '@suite-utils/anchor';
 import { TransactionTimestamp } from '@wallet-components/TransactionTimestamp';
 
 const Wrapper = styled(Card)<{
-    isPending?: boolean;
-    shouldHighlight?: boolean;
+    isPending: boolean;
+    shouldHighlight: boolean;
+    isZeroValuePhishing: boolean;
 }>`
     display: flex;
     flex-direction: row;
     padding: 0 24px;
+    opacity: ${({ isZeroValuePhishing }) => isZeroValuePhishing && 0.6};
 
     @media (max-width: ${variables.SCREEN_SIZE.SM}) {
         padding: 0px 16px;
@@ -148,6 +151,8 @@ const TransactionItem = React.memo(
             });
         };
 
+        const isZeroValuePhishing = getIsZeroValuePhishing(transaction);
+
         // we are using slightly different layout for 1 targets txs to better match the design
         // the only difference is that crypto amount is in the same row as tx heading/description
         // fiat amount is in the second row along with address
@@ -159,6 +164,7 @@ const TransactionItem = React.memo(
                 isPending={isPending}
                 ref={anchorRef}
                 shouldHighlight={shouldHighlight}
+                isZeroValuePhishing={isZeroValuePhishing}
                 className={className}
             >
                 <Body>

@@ -59,6 +59,8 @@ export const HELP_CENTER_ADVANCED_RECOVERY_URL =
     'https://trezor.io/learn/a/advanced-recovery-on-trezor-model-one';
 export const HELP_CENTER_XPUB_URL = 'https://trezor.io/learn/a/trezor-suite-app-public-keys-xpub';
 export const HELP_FIRMWARE_TYPE = 'https://trezor.io/learn/a/bitcoin-only-firmware-on-trezor';
+export const HELP_CENTER_ZERO_VALUE_ATTACKS =
+    'https://trezor.io/support/a/address-poisoning-attacks';
 
 export const SOCIAL_TWITTER_URL = 'https://twitter.com/trezor';
 export const SOCIAL_FACEBOOK_URL = 'https://www.facebook.com/trezor.io';

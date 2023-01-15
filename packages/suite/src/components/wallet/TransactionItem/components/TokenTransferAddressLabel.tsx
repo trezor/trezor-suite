@@ -1,14 +1,24 @@
 import React from 'react';
+import styled from 'styled-components';
+import { ArrayElement } from '@trezor/type-utils';
 import { Translation, AddressLabeling } from '@suite-components';
 import { WalletAccountTransaction } from '@wallet-types';
-import { ArrayElement } from '@trezor/type-utils';
+
+const BlurWrapper = styled.span<{ isBlurred: boolean }>`
+    filter: ${({ isBlurred }) => isBlurred && 'blur(2px)'};
+`;
 
 interface TokenTransferAddressLabelProps {
     transfer: ArrayElement<WalletAccountTransaction['tokens']>;
     type: WalletAccountTransaction['type'];
+    isZeroValuePhishing: boolean;
 }
 
-export const TokenTransferAddressLabel = ({ transfer, type }: TokenTransferAddressLabelProps) => {
+export const TokenTransferAddressLabel = ({
+    transfer,
+    type,
+    isZeroValuePhishing,
+}: TokenTransferAddressLabelProps) => {
     if (type === 'self') {
         return <Translation id="TR_SENT_TO_SELF" />;
     }
@@ -16,5 +26,5 @@ export const TokenTransferAddressLabel = ({ transfer, type }: TokenTransferAddre
         return <AddressLabeling address={transfer.to} />;
     }
 
-    return <>{transfer.to}</>;
+    return <BlurWrapper isBlurred={isZeroValuePhishing}>{transfer.to}</BlurWrapper>;
 };

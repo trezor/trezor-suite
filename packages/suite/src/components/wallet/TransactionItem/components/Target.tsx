@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { variables } from '@trezor/components';
+import { getIsZeroValuePhishing } from '@suite-common/suite-utils';
 import { FiatValue, Translation, MetadataLabeling, FormattedCryptoAmount } from '@suite-components';
 import { ArrayElement } from '@trezor/type-utils';
 import {
@@ -42,15 +43,21 @@ interface TokenTransferProps {
 export const TokenTransfer = ({
     transfer,
     transaction,
-
     ...baseLayoutProps
 }: TokenTransferProps) => {
     const operation = getTxOperation(transfer);
+    const isZeroValuePhishing = getIsZeroValuePhishing(transaction);
 
     return (
         <BaseTargetLayout
             {...baseLayoutProps}
-            addressLabel={<TokenTransferAddressLabel transfer={transfer} type={transaction.type} />}
+            addressLabel={
+                <TokenTransferAddressLabel
+                    isZeroValuePhishing={isZeroValuePhishing}
+                    transfer={transfer}
+                    type={transaction.type}
+                />
+            }
             amount={
                 !baseLayoutProps.singleRowLayout && (
                     <StyledCryptoAmount
