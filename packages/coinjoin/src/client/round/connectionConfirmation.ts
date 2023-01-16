@@ -1,7 +1,7 @@
 import * as coordinator from '../coordinator';
 import * as middleware from '../middleware';
 import { readTimeSpan } from '../../utils/roundUtils';
-import type { Alice } from '../Alice';
+import type { Alice, AliceConfirmationInterval } from '../Alice';
 import type { CoinjoinRound, CoinjoinRoundOptions } from '../CoinjoinRound';
 import { SessionPhase } from '../../enums';
 
@@ -19,6 +19,7 @@ import { SessionPhase } from '../../enums';
 const confirmInput = async (
     round: CoinjoinRound,
     input: Alice,
+    delay: number,
     options: CoinjoinRoundOptions,
 ): Promise<Alice> => {
     if (input.error) {
@@ -57,11 +58,9 @@ const confirmInput = async (
               baseUrl: middlewareUrl,
           });
 
-    // try not to hit real
-    const inputDeadline = input.confirmationDeadline - Date.now();
-    const delay =
-        inputDeadline > 0 && input.confirmationDeadline < round.phaseDeadline ? inputDeadline : 0;
-    const deadline = round.phaseDeadline;
+    const deadline =
+        round.phaseDeadline + readTimeSpan(round.roundParameters.connectionConfirmationTimeout);
+
     log(
         `Confirming ~~${input.outpoint}~~ to ~~${round.id}~~ phase ${round.phase} with delay ${delay}ms and deadline ${deadline}`,
     );
@@ -127,37 +126,42 @@ export const confirmationInterval = (
     round: CoinjoinRound,
     input: Alice,
     options: CoinjoinRoundOptions,
-): Promise<Alice> => {
-    const { phaseDeadline } = round;
-    const timeoutDeadline = Math.floor(
+): AliceConfirmationInterval => {
+    const intervalDelay = Math.floor(
         readTimeSpan(round.roundParameters.connectionConfirmationTimeout) * 0.5,
     );
 
-    return new Promise<Alice>(resolve => {
+    const controller = new AbortController();
+
+    const promise = new Promise<Alice>(resolve => {
         const done = () => {
             options.log(`Confirmation interval for ~~${input.outpoint}~~ completed`);
             resolve(input);
         };
 
         const timeoutFn = async () => {
-            input.confirmationDeadline = Date.now() + timeoutDeadline;
-            const timeLeft = phaseDeadline - Date.now();
-            if (input.confirmationData || timeLeft < timeoutDeadline || options.signal.aborted) {
-                options.log(
-                    `Ignoring confirmation interval for ~~${input.outpoint}~~. Deadline ${timeLeft}ms`,
-                );
-                done();
-                return;
-            }
-
             options.log(
-                `Setting confirmation interval for ~~${input.outpoint}~~. Deadline ${timeLeft}ms`,
+                `Setting confirmation interval for ~~${input.outpoint}~~. Delay ${intervalDelay}ms`,
             );
 
             try {
-                await confirmInput(round, input, options);
-                timeoutFn();
+                await confirmInput(round, input, intervalDelay, {
+                    ...options,
+                    signal: controller.signal,
+                });
+
+                if (input.confirmationData) {
+                    done();
+                } else {
+                    timeoutFn();
+                }
             } catch (error) {
+                if (
+                    !controller.signal.aborted &&
+                    error.message !== coordinator.WabiSabiProtocolErrorCode.WrongPhase
+                ) {
+                    input.setError(error);
+                }
                 options.log(`Confirmation interval with error ${error.message}`);
                 // do nothing. confirmationInterval might be aborted by Round phase change.
                 // error (if it's relevant) will be processed in next phase in confirmInput
@@ -167,6 +171,11 @@ export const confirmationInterval = (
 
         timeoutFn();
     });
+
+    return {
+        abort: () => controller.abort(),
+        promise,
+    };
 };
 
 export const connectionConfirmation = async (
@@ -178,13 +187,22 @@ export const connectionConfirmation = async (
     options.log(`connectionConfirmation: ~~${round.id}~~`);
     round.setSessionPhase(SessionPhase.AwaitingConfirmation);
 
-    await Promise.allSettled(round.inputs.map(input => confirmInput(round, input, options))).then(
-        result =>
-            result.forEach((r, i) => {
-                if (r.status !== 'fulfilled') {
-                    round.inputs[i].setError(r.reason);
-                }
-            }),
+    const { inputs } = round;
+    await Promise.allSettled(
+        inputs.map(input => {
+            const interval =
+                input.getConfirmationInterval() || confirmationInterval(round, input, options);
+            if (!input.getConfirmationInterval()) {
+                input.setConfirmationInterval(interval);
+            }
+            return interval.promise;
+        }),
+    ).then(result =>
+        result.forEach((r, i) => {
+            if (r.status !== 'fulfilled') {
+                inputs[i].setError(r.reason);
+            }
+        }),
     );
 
     round.setSessionPhase(SessionPhase.AwaitingOthersConfirmation);

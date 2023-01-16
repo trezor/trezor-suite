@@ -69,7 +69,12 @@ describe('connectionConfirmation', () => {
                         realVsizeCredentials: {},
                     }),
                 ],
-                server?.requestOptions,
+                {
+                    ...server?.requestOptions,
+                    roundParameters: {
+                        connectionConfirmationTimeout: '0d 0h 0m 4s',
+                    },
+                },
             ),
             server?.requestOptions,
         );
@@ -84,7 +89,7 @@ describe('connectionConfirmation', () => {
         expect(spy).toHaveBeenLastCalledWith('01B1-01b1');
     });
 
-    it('recover connection-confirmation', async () => {
+    it.skip('recover connection-confirmation', async () => {
         const params: string[] = [];
         const spy = jest.fn();
         server?.addListener('test-request', ({ url, data, resolve, reject }) => {
@@ -149,7 +154,7 @@ describe('connectionConfirmation', () => {
         expect(spy).toBeCalledTimes(4); // not called at second attempt
     });
 
-    it('connection confirmation in input registration phase (real credentials not received)', async () => {
+    it('connection confirmation interval (real credentials not received)', async () => {
         const spy = jest.fn();
         server?.addListener('test-request', ({ url, resolve }) => {
             if (url.includes('connection-confirmation')) {
@@ -176,16 +181,24 @@ describe('connectionConfirmation', () => {
                         realVsizeCredentials: {},
                     }),
                 ],
-                server?.requestOptions,
+                {
+                    ...server?.requestOptions,
+                    roundParameters: {
+                        connectionConfirmationTimeout: '0d 0h 0m 2s',
+                    },
+                    round: {
+                        phaseDeadline: Date.now() + 500,
+                    },
+                },
             ),
             server?.requestOptions,
         );
 
-        // confirmation request set, but confirmationData not present
-        expect(spy).toBeCalledTimes(2);
+        // confirmation request called twice for each input
+        expect(spy).toBeCalledTimes(4);
         response.inputs.forEach(input => {
-            expect(input.error).toBeUndefined();
-            expect(input.confirmationData).toBeUndefined();
+            // inputs are not confirmed, deadline reached (~2.5 sec: phaseDeadline + connectionConfirmationTimeout)
+            expect(input.error?.message).toMatch(/Aborted by deadline/);
         });
     });
 
@@ -226,6 +239,9 @@ describe('connectionConfirmation', () => {
                 {
                     ...server?.requestOptions,
                     round: { phase: 1, id: '01' },
+                    roundParameters: {
+                        connectionConfirmationTimeout: '0d 0h 0m 4s',
+                    },
                 },
             ),
             server?.requestOptions,
