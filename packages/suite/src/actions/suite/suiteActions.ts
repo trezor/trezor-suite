@@ -60,6 +60,7 @@ export type SuiteAction =
     | { type: typeof SUITE.TOR_STATUS; payload: TorStatus }
     | { type: typeof SUITE.TOR_BOOTSTRAP; payload: TorBootstrap | null }
     | { type: typeof SUITE.ONION_LINKS; payload: boolean }
+    | { type: typeof SUITE.SHOW_COINJOIN_EXPLANATION; payload: boolean }
     | { type: typeof SUITE.LOCK_UI; payload: boolean }
     | ReturnType<typeof lockDevice>
     | { type: typeof SUITE.LOCK_ROUTER; payload: boolean }
@@ -272,6 +273,15 @@ export const setTorBootstrapSlow =
             payload,
         });
     };
+
+export const toggleCoinjoinExplanation = () => (dispatch: Dispatch, getState: GetState) => {
+    const currentState = getState().suite.settings.isCoinjoinExplanationHidden;
+
+    dispatch({
+        type: SUITE.SHOW_COINJOIN_EXPLANATION,
+        payload: !currentState,
+    });
+};
 
 /**
  * Called from `suiteMiddleware`

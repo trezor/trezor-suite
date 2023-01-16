@@ -19,12 +19,12 @@ import {
     selectFeatureMessageContent,
 } from '@suite-reducers/messageSystemReducer';
 
-const Container = styled(Card)`
+export const Container = styled(Card)`
     flex-direction: row;
     justify-content: space-between;
     width: 100%;
+    height: 150px;
     align-items: center;
-    margin-bottom: 10px;
 `;
 
 const AnonymizeButton = styled(TooltipButton)`

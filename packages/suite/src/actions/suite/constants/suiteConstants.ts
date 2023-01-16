@@ -24,6 +24,7 @@ export const ADD_BUTTON_REQUEST = '@suite/add-button-request';
 export const SET_PROCESS_MODE = '@suite/set-process-mode';
 export const SET_THEME = '@suite/set-theme';
 export const SET_AUTODETECT = '@suite/set-autodetect';
+export const SHOW_COINJOIN_EXPLANATION = '@suite/show-coinjoin-explanation';
 export const LOCK_UI = '@suite/lock-ui';
 export const LOCK_DEVICE = '@suite/lock-device';
 export const LOCK_ROUTER = '@suite/lock-router';
