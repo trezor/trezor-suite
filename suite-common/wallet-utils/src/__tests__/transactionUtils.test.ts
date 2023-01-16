@@ -14,12 +14,17 @@ import {
     groupTransactionsByDate,
     groupJointTransactions,
     isPending,
-    parseDateKey,
+    parseTransactionDateKey,
+    parseTransactionMonthKey,
 } from '../transactionUtils';
 
 describe('transaction utils', () => {
-    it('parseKey', () => {
-        expect(parseDateKey('2019-10-05')).toEqual(new Date(2019, 9, 5));
+    it('parseTransactionDateKey', () => {
+        expect(parseTransactionDateKey('2019-10-05')).toEqual(new Date(2019, 9, 5));
+    });
+
+    it('parseTransactionMonthKey', () => {
+        expect(parseTransactionMonthKey('2023-01')).toEqual(new Date(2023, 0));
     });
 
     Object.keys(fixtures.isPending).forEach(f => {
@@ -30,7 +35,7 @@ describe('transaction utils', () => {
         });
     });
 
-    it('groupTransactionsByDate', () => {
+    it('groupTransactionsByDate - groupBy day', () => {
         const groupedTxs = groupTransactionsByDate([
             testMocks.getWalletTransaction({ blockTime: 1565792979, blockHeight: 5 }),
             testMocks.getWalletTransaction({ blockTime: 1565792379, blockHeight: 4 }),
@@ -51,6 +56,34 @@ describe('transaction utils', () => {
                 testMocks.getWalletTransaction({ blockTime: 1570127200, blockHeight: 3 }),
             ],
             '2019-8-14': [
+                testMocks.getWalletTransaction({ blockTime: 1565792979, blockHeight: 5 }),
+                testMocks.getWalletTransaction({ blockTime: 1565792379, blockHeight: 4 }),
+            ],
+        });
+    });
+
+    it('groupTransactionsByDate - groupBy month', () => {
+        const groupedTxs = groupTransactionsByDate(
+            [
+                testMocks.getWalletTransaction({ blockTime: 1565792979, blockHeight: 5 }),
+                testMocks.getWalletTransaction({ blockTime: 1565792379, blockHeight: 4 }),
+                testMocks.getWalletTransaction({ blockHeight: 0 }),
+                testMocks.getWalletTransaction({ blockTime: 1570147200, blockHeight: 2 }),
+                testMocks.getWalletTransaction({ blockTime: 1570127200, blockHeight: 3 }),
+                testMocks.getWalletTransaction({ blockHeight: undefined }),
+            ],
+            'month',
+        );
+        expect(groupedTxs).toEqual({
+            pending: [
+                testMocks.getWalletTransaction({ blockHeight: 0 }),
+                testMocks.getWalletTransaction({ blockHeight: undefined }),
+            ],
+            '2019-10': [
+                testMocks.getWalletTransaction({ blockTime: 1570127200, blockHeight: 3 }),
+                testMocks.getWalletTransaction({ blockTime: 1570147200, blockHeight: 2 }),
+            ],
+            '2019-8': [
                 testMocks.getWalletTransaction({ blockTime: 1565792979, blockHeight: 5 }),
                 testMocks.getWalletTransaction({ blockTime: 1565792379, blockHeight: 4 }),
             ],
