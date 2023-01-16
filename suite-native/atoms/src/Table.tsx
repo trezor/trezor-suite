@@ -3,12 +3,14 @@ import React, { ReactNode } from 'react';
 import { Box } from './Box';
 import { Text } from './Text';
 
-
 type TableProps = {
     children: ReactNode;
 };
+type TdProps = {
+    children?: ReactNode;
+};
 
-export const Td = ({ children }: TableProps) => (
+export const Td = ({ children }: TdProps) => (
     <Box flex={1}>
         <Text variant="hint" color="gray1000">
             {children}
@@ -16,7 +18,7 @@ export const Td = ({ children }: TableProps) => (
     </Box>
 );
 
-export const Th = ({ children }: TableProps) => (
+export const Th = ({ children }: TdProps) => (
     <Box flex={1}>
         <Text variant="hint" color="gray600">
             {children}

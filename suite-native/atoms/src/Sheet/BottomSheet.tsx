@@ -12,9 +12,10 @@ import { BottomSheetHeader } from './BottomSheetHeader';
 
 type BottomSheetProps = {
     isVisible: boolean;
-    onVisibilityChange: (isVisible: boolean) => void;
+    onClose: (isVisible: boolean) => void;
     children: ReactNode;
     title?: string;
+    subtitle?: string;
 };
 
 type WrapperStyleProps = {
@@ -25,7 +26,7 @@ const sheetWrapperStyle = prepareNativeStyle<WrapperStyleProps>((utils, { insetB
     borderTopLeftRadius: utils.borders.radii.large,
     borderTopRightRadius: utils.borders.radii.large,
     paddingBottom: Math.max(insetBottom, utils.spacings.medium),
-    height: 600,
+    maxHeight: '70%',
 }));
 
 const sheetWithOverlayStyle = prepareNativeStyle(_ => ({
@@ -35,8 +36,9 @@ const sheetWithOverlayStyle = prepareNativeStyle(_ => ({
 
 export const BottomSheet = ({
     isVisible,
-    onVisibilityChange,
+    onClose,
     title,
+    subtitle,
     children,
 }: BottomSheetProps) => {
     const { applyStyle } = useNativeStyles();
@@ -50,7 +52,7 @@ export const BottomSheet = ({
         panGestureEvent,
         scrollEvent,
     } = useBottomSheetAnimation({
-        onVisibilityChange,
+        onClose,
         isVisible,
         isCloseScrollEnabled,
         setIsCloseScrollEnabled: (isScrollEnabled: boolean) => {
@@ -83,7 +85,11 @@ export const BottomSheet = ({
                         }),
                     ]}
                 >
-                    <BottomSheetHeader title={title} onCloseSheet={closeSheetAnimated} />
+                    <BottomSheetHeader
+                        title={title}
+                        subtitle={subtitle}
+                        onCloseSheet={closeSheetAnimated}
+                    />
                     <ScrollView
                         ref={scrollViewRef.current}
                         waitFor={

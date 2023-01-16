@@ -22,12 +22,12 @@ type GestureHandlerContext = {
 const SCREEN_HEIGHT = getScreenHeight();
 
 export const useBottomSheetAnimation = ({
-    onVisibilityChange,
+    onClose,
     isVisible,
     isCloseScrollEnabled,
     setIsCloseScrollEnabled,
 }: {
-    onVisibilityChange: (isVisible: boolean) => void;
+    onClose: (isVisible: boolean) => void;
     isVisible: boolean;
     isCloseScrollEnabled: boolean;
     setIsCloseScrollEnabled: (isCloseScrollEnabled: boolean) => void;
@@ -74,11 +74,11 @@ export const useBottomSheetAnimation = ({
                 easing: Easing.out(Easing.cubic),
             },
             () => {
-                runOnJS(onVisibilityChange)(false);
+                runOnJS(onClose)(false);
                 runOnJS(setIsCloseScrollEnabled)(true);
             },
         );
-    }, [translatePanY, animatedTransparency, onVisibilityChange, setIsCloseScrollEnabled]);
+    }, [translatePanY, animatedTransparency, onClose, setIsCloseScrollEnabled]);
 
     const openSheetAnimated = useCallback(() => {
         'worklet';
