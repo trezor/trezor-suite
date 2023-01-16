@@ -65,7 +65,7 @@ const transformMemo = (memo: Memo) => {
         case StellarSdk.MemoText:
             return { type: 1, text: memo.value!.toString('utf-8') };
         case StellarSdk.MemoID:
-            return { type: 2, id: memo.value };
+            return { type: 2, id: memo.value!.toString('utf-8') };
         case StellarSdk.MemoHash:
             // stringify is not necessary, Buffer is also accepted
             return { type: 3, hash: memo.value!.toString('hex') };
