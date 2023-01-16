@@ -39,7 +39,7 @@ import { withCoinmarket, withSelectedAccountLoaded } from './hocs';
 import type { WithCoinmarketProps, WithSelectedAccountLoadedProps } from './hocs';
 import { AccountException } from './AccountException';
 import { AccountTopPanel } from './AccountTopPanel';
-import { SummaryHeader as CoinjoinSummaryHeader } from './CoinjoinSummary/SummaryHeader';
+import { CoinjoinExplanation } from './CoinjoinExplanation';
 
 export {
     Title,
@@ -78,7 +78,7 @@ export {
     TransactionTimestamp,
     AccountException,
     AccountTopPanel,
-    CoinjoinSummaryHeader,
+    CoinjoinExplanation,
 };
 
 export type { WithCoinmarketProps, WithSelectedAccountLoadedProps };

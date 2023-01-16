@@ -67,6 +67,7 @@ export interface SuiteSettings {
     };
     language: Locale;
     torOnionLinks: boolean;
+    isCoinjoinExplanationHidden: boolean;
     debug: DebugModeOptions;
     autodetect: AutodetectSettings;
 }
@@ -108,6 +109,7 @@ const initialState: SuiteState = {
         },
         language: ensureLocale('en'),
         torOnionLinks: isWeb(),
+        isCoinjoinExplanationHidden: false,
         debug: {
             invityServerEnvironment: undefined,
             showDebugMenu: false,
@@ -214,6 +216,10 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
 
             case SUITE.ONION_LINKS:
                 draft.settings.torOnionLinks = action.payload;
+                break;
+
+            case SUITE.SHOW_COINJOIN_EXPLANATION:
+                draft.settings.isCoinjoinExplanationHidden = action.payload;
                 break;
 
             case SUITE.LOCK_UI:

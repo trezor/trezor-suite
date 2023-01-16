@@ -3937,19 +3937,6 @@ export default defineMessages({
         id: 'TR_TOR_REQUEST_ENABLE_FOR_COIN_JOIN_LEAVE',
         defaultMessage: 'Leave',
     },
-    TR_COINJOIN_ACCESS_ACCOUNT_STEP_INITIAL_TITLE: {
-        id: 'TR_COINJOIN_ACCESS_ACCOUNT_STEP_INITIAL_TITLE',
-        defaultMessage: 'Anonymize your funds',
-    },
-    TR_COINJOIN_ACCESS_ACCOUNT_STEP_INITIAL_DESCRIPTION: {
-        id: 'TR_COINJOIN_ACCESS_ACCOUNT_STEP_INITIAL_DESCRIPTION',
-        defaultMessage:
-            'Inputs from multiple senders are combined into a single transaction, making it difficult for external parties to analyze your connection to an old address.',
-    },
-    TR_COINJOIN_ACCESS_ACCOUNT_STEP_INITIAL_FEE_MESSAGE: {
-        id: 'TR_COINJOIN_ACCESS_ACCOUNT_STEP_INITIAL_FEE_MESSAGE',
-        defaultMessage: 'A fee of {fee}% of the used amount is applied',
-    },
     TR_TRANSACTIONS: {
         id: 'TR_TRANSACTIONS',
         defaultMessage: 'Transactions',
@@ -7790,5 +7777,45 @@ export default defineMessages({
     TR_SESSION_PHASE_45_MESSAGE: {
         id: 'TR_SESSION_PHASE_45_MESSAGE',
         defaultMessage: 'Signing failed, retrying',
+    },
+    TR_COINJOIN_EXPLANATION_TITLE: {
+        id: 'TR_COINJOIN_EXPLANATION_TITLE',
+        defaultMessage: 'How it works',
+    },
+    TR_EMPTY_ACCOUNT_TITLE: {
+        id: 'TR_EMPTY_ACCOUNT_TITLE',
+        defaultMessage: 'No Funds',
+    },
+    TR_EMPTY_COINJOIN_ACCOUNT_SUBTITLE: {
+        id: 'TR_EMPTY_COINJOIN_ACCOUNT_SUBTITLE',
+        defaultMessage: 'Receive some funds to start anonymizing.',
+    },
+    TR_STEP: {
+        id: 'TR_STEP',
+        defaultMessage: 'Step {number}',
+    },
+    TR_COINJOIN_STEP_1_TITLE: {
+        id: 'TR_COINJOIN_STEP_1_TITLE',
+        defaultMessage: 'Add Bitcoin',
+    },
+    TR_COINJOIN_STEP_1_DESCRIPTION: {
+        id: 'TR_COINJOIN_STEP_1_DESCRIPTION',
+        defaultMessage: 'Send whatever you want anonymised to this Account.',
+    },
+    TR_COINJOIN_STEP_2_TITLE: {
+        id: 'TR_COINJOIN_STEP_2_TITLE',
+        defaultMessage: 'Start CoinJoin',
+    },
+    TR_COINJOIN_STEP_2_DESCRIPTION: {
+        id: 'TR_COINJOIN_STEP_2_DESCRIPTION',
+        defaultMessage: 'Click on button and confirm it on your Trezor.',
+    },
+    TR_COINJOIN_STEP_3_TITLE: {
+        id: 'TR_COINJOIN_STEP_3_TITLE',
+        defaultMessage: 'Wait for the magic',
+    },
+    TR_COINJOIN_STEP_3_DESCRIPTION: {
+        id: 'TR_COINJOIN_STEP_3_DESCRIPTION',
+        defaultMessage: 'Your Bitcoin will be mixed with other peoples’ to make it untracable. ',
     },
 });

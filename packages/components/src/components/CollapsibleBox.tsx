@@ -138,6 +138,7 @@ interface CollapsibleBoxProps extends React.HtmlHTMLAttributes<HTMLDivElement> {
     noContentPadding?: boolean;
     headerJustifyContent?: 'space-between' | 'center';
     opened?: boolean;
+    onCollapse?: () => void;
     headingButton?: ({
         collapsed,
         animatedIcon,
@@ -162,6 +163,7 @@ const CollapsibleBox: React.FC<CollapsibleBoxProps> & CollapsibleBoxSubcomponent
     variant = 'small',
     headerJustifyContent = 'space-between',
     opened = false,
+    onCollapse,
     headingButton,
     ...rest
 }: CollapsibleBoxProps) => {
@@ -175,9 +177,10 @@ const CollapsibleBox: React.FC<CollapsibleBoxProps> & CollapsibleBoxSubcomponent
     }, [opened]);
 
     const handleHeaderClick = useCallback(() => {
+        onCollapse?.();
         setCollapsed(!collapsed);
         setAnimatedIcon(true);
-    }, [collapsed]);
+    }, [collapsed, onCollapse]);
 
     return (
         <Wrapper variant={variant} {...rest}>

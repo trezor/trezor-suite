@@ -164,6 +164,16 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 case SUITE.SET_AUTODETECT:
                     api.dispatch(storageActions.saveSuiteSettings());
                     break;
+                case SUITE.SHOW_COINJOIN_EXPLANATION: {
+                    const isWalletRemembered = api.getState().suite.device?.remember;
+
+                    if (!isWalletRemembered) {
+                        break;
+                    }
+
+                    api.dispatch(storageActions.saveSuiteSettings());
+                    break;
+                }
 
                 case ANALYTICS.INIT:
                 case ANALYTICS.ENABLE:
@@ -233,7 +243,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                     api.dispatch(storageActions.saveCoinjoinAccount(action.payload.accountKey));
                     break;
                 case COINJOIN.ACCOUNT_REMOVE:
-                    storageActions.removeCoinjoinAccount(action.payload.accountKey);
+                    storageActions.removeCoinjoinAccount(action.payload.accountKey, api.getState());
                     break;
 
                 default:

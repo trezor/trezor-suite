@@ -2,7 +2,7 @@ import { db } from '@suite/storage';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import * as suiteActions from '@suite-actions/suiteActions';
 import { serializeDiscovery, serializeDevice } from '@suite-utils/storage';
-import type { Dispatch, GetState, TrezorDevice } from '@suite-types';
+import type { AppState, Dispatch, GetState, TrezorDevice } from '@suite-types';
 import type { Account, Network } from '@wallet-types';
 import type { Discovery } from '@wallet-reducers/discoveryReducer';
 import type { FormState } from '@wallet-types/sendForm';
@@ -54,9 +54,31 @@ export const saveCoinjoinAccount =
         return db.addItem('coinjoinAccounts', account, accountKey, true);
     };
 
-export const removeCoinjoinAccount = async (accountKey: string) => {
+const removeCoinjoinRelatedSetting = (state: AppState) => {
+    const settings = { ...state.suite.settings };
+
+    settings.isCoinjoinExplanationHidden = false;
+
+    db.addItem(
+        'suiteSettings',
+        {
+            settings,
+            flags: state.suite.flags,
+        },
+        'suite',
+        true,
+    );
+};
+
+export const removeCoinjoinAccount = async (accountKey: string, state: AppState) => {
     if (!(await db.isAccessible())) return;
-    return db.removeItemByPK('coinjoinAccounts', accountKey);
+
+    await db.removeItemByPK('coinjoinAccounts', accountKey);
+
+    const savedCoinjoinAccounts = await db.getItemsExtended('coinjoinAccounts');
+    if (!savedCoinjoinAccounts.length) {
+        removeCoinjoinRelatedSetting(state);
+    }
 };
 
 // send form drafts end
@@ -116,7 +138,7 @@ export const forgetDevice = (device: TrezorDevice) => async (_: Dispatch, getSta
             promises.concat(
                 [removeAccountDraft(account)],
                 FormDraftPrefixKeyValues.map(prefix => removeAccountFormDraft(prefix, account.key)),
-                removeCoinjoinAccount(account.key),
+                removeCoinjoinAccount(account.key, getState()),
             ),
         [] as Promise<void>[],
     );

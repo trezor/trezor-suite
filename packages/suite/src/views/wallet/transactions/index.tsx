@@ -1,5 +1,5 @@
 import React from 'react';
-import { WalletLayout } from '@wallet-components';
+import { WalletLayout, CoinjoinExplanation } from '@wallet-components';
 import { getAccountTransactions } from '@suite-common/wallet-utils';
 import { useSelector } from '@suite-hooks';
 import { AppState } from '@suite-types';
@@ -8,7 +8,6 @@ import { selectIsLoadingTransactions } from '@suite-common/wallet-core';
 
 import { NoTransactions } from './components/NoTransactions';
 import { AccountEmpty } from './components/AccountEmpty';
-import { CoinjoinAccountEmpty } from './components/CoinjoinAccountEmpty';
 import { TransactionList } from './components/TransactionList';
 import { TransactionSummary } from './components/TransactionSummary';
 import { CoinjoinAccountDiscoveryProgress } from '@wallet-components/WalletLayout/components/CoinjoinAccountDiscoveryProgress';
@@ -47,22 +46,26 @@ const Transactions = () => {
     if (account.backendType === 'coinjoin') {
         const isLoading = account.status === 'out-of-sync' && !!account.syncing;
         const isEmpty = !accountTransactions.length;
+
         return (
             <Layout selectedAccount={selectedAccount}>
                 {isLoading && <CoinjoinAccountDiscoveryProgress />}
-                {!isEmpty && (
+
+                {!isLoading && (
                     <>
-                        <CoinjoinSummary accountKey={account.key} />
-                        <TransactionList
-                            account={account}
-                            transactions={accountTransactions}
-                            symbol={account.symbol}
-                            isLoading={transactionsIsLoading}
-                        />
+                        <CoinjoinSummary accountKey={account.key} isEmpty={isEmpty} />
+
+                        {isEmpty ? (
+                            <CoinjoinExplanation />
+                        ) : (
+                            <TransactionList
+                                account={account}
+                                transactions={accountTransactions}
+                                symbol={account.symbol}
+                                isLoading={transactionsIsLoading}
+                            />
+                        )}
                     </>
-                )}
-                {isEmpty && !isLoading && (
-                    <CoinjoinAccountEmpty account={selectedAccount.account} />
                 )}
             </Layout>
         );
