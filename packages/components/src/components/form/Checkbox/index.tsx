@@ -28,8 +28,12 @@ const IconWrapper = styled.div<
     max-width: 24px;
     height: 24px;
     border-radius: 4px;
-    background: ${({ $color, isChecked, theme }) =>
-        isChecked ? $color || theme.BG_GREEN : theme.BG_WHITE};
+    background: ${({ $color, isChecked, isDisabled, theme }) => {
+        if (isDisabled) {
+            return theme.BG_GREY;
+        }
+        return isChecked ? $color || theme.BG_GREEN : theme.BG_WHITE;
+    }};
     border: 2px solid
         ${({ $color, isChecked, theme }) =>
             isChecked ? $color || theme.BG_GREEN : theme.STROKE_GREY};
@@ -57,7 +61,7 @@ const handleKeyboard = (
     event: React.KeyboardEvent<HTMLElement>,
     onClick: CheckboxProps['onClick'],
 ) => {
-    if (event.code === KEYBOARD_CODE.SPACE) {
+    if (onClick && event.code === KEYBOARD_CODE.SPACE) {
         onClick(event);
     }
 };
@@ -66,7 +70,7 @@ export interface CheckboxProps extends React.HTMLAttributes<HTMLDivElement> {
     color?: string;
     isChecked?: boolean;
     isDisabled?: boolean;
-    onClick: (
+    onClick?: (
         event: React.KeyboardEvent<HTMLElement> | React.MouseEvent<HTMLElement> | null,
     ) => any;
 }
