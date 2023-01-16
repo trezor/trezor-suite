@@ -11,11 +11,11 @@ import { selectTorState } from '@suite-reducers/suiteReducer';
 import { notificationsActions } from '@suite-common/toast-notifications';
 
 export const useTor = () => {
-    const { updateTorStatus, setTorBootstrap, setTorBootstrapSlow, addToast } = useActions({
+    const { updateTorStatus, setTorBootstrap, setTorBootstrapSlow, addToastOnce } = useActions({
         updateTorStatus: suiteActions.updateTorStatus,
         setTorBootstrap: suiteActions.setTorBootstrap,
         setTorBootstrapSlow: suiteActions.setTorBootstrapSlow,
-        addToast: notificationsActions.addToast,
+        addToastOnce: notificationsActions.addToastOnce,
     });
     const { torBootstrap, isTorEnabling } = useSelector(selectTorState);
 
@@ -34,7 +34,7 @@ export const useTor = () => {
                 if (type === TorStatus.Misbehaving) {
                     // When network is slow for some reason but still working we display toast message
                     // to let the user know that it is going to take some time but it's working.
-                    addToast({
+                    addToastOnce({
                         type: 'tor-is-slow',
                     });
                 }
@@ -42,7 +42,7 @@ export const useTor = () => {
         }
 
         return () => desktopApi.removeAllListeners('tor/status');
-    }, [updateTorStatus, torBootstrap, addToast]);
+    }, [updateTorStatus, torBootstrap, addToastOnce]);
 
     useEffect(() => {
         desktopApi.on('tor/bootstrap', (bootstrapEvent: BootstrapTorEvent) => {
