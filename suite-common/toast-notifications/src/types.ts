@@ -157,3 +157,9 @@ export type EventNotification = { context: 'event' } & CommonNotificationPayload
     NotificationEventPayload;
 
 export type NotificationEntry = ToastNotification | EventNotification;
+
+export type NotificationsState = NotificationEntry[];
+
+export type NotificationsRootState = {
+    notifications: NotificationsState;
+};
