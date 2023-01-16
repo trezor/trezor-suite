@@ -28,8 +28,12 @@ const IconWrapper = styled.div<
     max-width: 24px;
     height: 24px;
     border-radius: 4px;
-    background: ${({ $color, isChecked, theme }) =>
-        isChecked ? $color || theme.BG_GREEN : theme.BG_WHITE};
+    background: ${({ $color, isChecked, isDisabled, theme }) => {
+        if (isDisabled) {
+            return theme.BG_GREY;
+        }
+        return isChecked ? $color || theme.BG_GREEN : theme.BG_WHITE;
+    }};
     border: 2px solid
         ${({ $color, isChecked, theme }) =>
             isChecked ? $color || theme.BG_GREEN : theme.STROKE_GREY};
