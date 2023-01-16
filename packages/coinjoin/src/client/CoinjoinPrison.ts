@@ -1,3 +1,5 @@
+import { WabiSabiProtocolErrorCode } from '../types/coordinator';
+
 export interface PrisonInmate {
     id: string; // AccountUtxo/Alice.outpoint or AccountAddress scriptPubKey
     sentenceStart: number;
@@ -50,6 +52,17 @@ export class CoinjoinPrison {
 
     releaseBlameOfInmates(roundId: string) {
         this.inmates = this.inmates.filter(inmate => inmate.roundId !== roundId);
+    }
+
+    // release inputs detained by successful input-registration
+    releaseRegisteredInmates(roundId: string) {
+        this.inmates = this.inmates.filter(
+            inmate =>
+                !(
+                    inmate.roundId === roundId &&
+                    inmate.reason === WabiSabiProtocolErrorCode.AliceAlreadyRegistered
+                ),
+        );
     }
 
     // called on each status change before rounds are processed
