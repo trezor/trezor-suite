@@ -5674,7 +5674,7 @@ export default defineMessages({
     },
     TR_REGISTERED_FOR_COINJOIN: {
         id: 'TR_REGISTERED_FOR_COINJOIN',
-        defaultMessage: 'Registered in CoinJoin',
+        defaultMessage: 'Registered in CoinJoin, temporarily unavailable for sending.',
         description: 'Tooltip over an icon in Coin control section',
     },
     TR_AMOUNT_TOO_SMALL_FOR_COINJOIN: {

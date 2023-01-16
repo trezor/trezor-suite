@@ -26,18 +26,18 @@ export const useUtxoSelection = ({
         register({ name: 'anonymityWarningChecked', type: 'custom' });
     }, [register]);
 
+    const canBeSelected = (utxo: AccountUtxo) =>
+        // @ts-expect-error - coinjoin reason not yet implemented (#7323)
+        excludedUtxos[getUtxoOutpoint(utxo)] !== 'coinjoin';
+
     // has coin control been enabled manually?
     const isCoinControlEnabled = watch('isCoinControlEnabled');
     // fee level
     const selectedFee = watch('selectedFee');
     // confirmation of spending low-anonymity UTXOs - only relevant for coinjoin account
     const anonymityWarningChecked = watch('anonymityWarningChecked');
-    // manually selected UTXOs
-    const selectedUtxos: AccountUtxo[] = watch('selectedUtxos') || [];
-
-    // is the UTXO manually selected?
-    const isSelected = (utxo: AccountUtxo) =>
-        selectedUtxos.some(selected => selected.txid === utxo.txid && selected.vout === utxo.vout);
+    // manually selected UTXOs, stripped from UTXOs which cannot be selected due to being registered for coinjoin
+    const selectedUtxos: AccountUtxo[] = watch('selectedUtxos')?.filter(canBeSelected) || [];
 
     const spendableUtxos: AccountUtxo[] = [];
     const lowAnonymityUtxos: AccountUtxo[] = [];
@@ -55,13 +55,19 @@ export const useUtxoSelection = ({
         }
     });
 
-    // category displayed on top and controlled by the check-all checkbox
+    // category displayed on top and controlled by the check-all checkbox, without UTXOs registered for coinjoin
     const topCategory =
         [spendableUtxos, lowAnonymityUtxos, dustUtxos].find(utxoCategory => utxoCategory.length) ||
         [];
 
     // are all UTXOs in the top category selected?
-    const allUtxosSelected = !!topCategory?.every(isSelected);
+    const allUtxosSelected = !!topCategory
+        ?.filter(canBeSelected)
+        .every(utxo =>
+            selectedUtxos.some(
+                selected => selected.txid === utxo.txid && selected.vout === utxo.vout,
+            ),
+        );
 
     // transaction composed for the fee level chosen by the user
     const composedLevel = composedLevels?.[selectedFee || 'normal'];
@@ -85,7 +91,7 @@ export const useUtxoSelection = ({
         [account.utxo, composedInputs],
     );
 
-    // at least one of the selected UTXOs does not comply to targe anonymity
+    // at least one of the selected UTXOs does not comply to target anonymity
     const isLowAnonymityUtxoSelected =
         account.accountType === 'coinjoin' &&
         selectedUtxos.some(

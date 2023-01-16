@@ -35,26 +35,6 @@ const StyledCheckbox = styled(Checkbox)<{ isChecked: boolean; $isGrey: boolean }
         `};
 `;
 
-const Wrapper = styled.div`
-    align-items: flex-start;
-    border-radius: 8px;
-    display: flex;
-    margin: 1px -12px;
-    padding: 12px 12px 8px;
-    transition: background 0.25s ease-out;
-    cursor: pointer;
-
-    &:hover {
-        background: ${({ theme }) => theme.BG_GREY};
-        ${StyledCheckbox} > :first-child {
-            border-color: ${({ theme }) => darken(theme.HOVER_DARKEN_FILTER, theme.STROKE_GREY)};
-        }
-        ${VisibleOnHover} {
-            display: contents;
-        }
-    }
-`;
-
 const Body = styled.div`
     flex-grow: 1;
     /* prevent overflow if contents (e.g. label) are too long */
@@ -70,6 +50,31 @@ const Row = styled.div`
 const BottomRow = styled(Row)`
     margin-top: 6px;
     min-height: 24px;
+`;
+
+const Wrapper = styled.div<{ isDisabled: boolean }>`
+    align-items: flex-start;
+    border-radius: 8px;
+    display: flex;
+    margin: 1px -12px;
+    padding: 12px 12px 8px;
+    transition: background 0.25s ease-out;
+    cursor: ${({ isDisabled }) => (isDisabled ? 'default' : 'pointer')};
+
+    :hover {
+        background: ${({ isDisabled, theme }) => !isDisabled && theme.BG_GREY};
+        ${StyledCheckbox} > :first-child {
+            border-color: ${({ isDisabled, theme }) =>
+                !isDisabled && darken(theme.HOVER_DARKEN_FILTER, theme.STROKE_GREY)};
+        }
+        ${VisibleOnHover} {
+            display: contents;
+        }
+    }
+
+    ${Row} > *:not(${/* sc-selector */ VisibleOnHover}) {
+        opacity: ${({ isDisabled }) => isDisabled && 0.6};
+    }
 `;
 
 const Dot = styled.div`
@@ -102,7 +107,7 @@ const TransactionDetail = styled.button`
     padding: 0;
     text-decoration: underline;
 
-    &:hover {
+    :hover {
         color: ${({ theme }) => theme.TYPE_DARK_GREY};
     }
 `;
@@ -141,7 +146,7 @@ export const UtxoSelection = ({ isChecked, transaction, utxo }: UtxoSelectionPro
 
     const theme = useTheme();
 
-    const isRegisteredForCoinjoin = coinjoinAccount?.session?.registeredUtxos.includes(
+    const isRegisteredForCoinjoin = !!coinjoinAccount?.session?.registeredUtxos.includes(
         getUtxoOutpoint(utxo),
     );
     const amountTooSmallForCoinjoin =
@@ -156,12 +161,12 @@ export const UtxoSelection = ({ isChecked, transaction, utxo }: UtxoSelectionPro
         : 'TR_AMOUNT_TOO_BIG_FOR_COINJOIN';
     const isPendingTransaction = utxo.confirmations === 0;
     const isChangeAddress = utxo.path.split('/').at(-2) === '1'; // change address always has a 1 on the penultimate level of the derivation path
-    const amountInBtc = (Number(utxo.amount) / 10 ** network.decimals).toString();
+    const amountInBtc = new BigNumber(utxo.amount).dividedBy(10 ** network.decimals).toString();
     const outputLabel = outputLabels?.[utxo.txid]?.[utxo.vout];
     const isLabelingPossible = device?.metadata.status === 'enabled' || device?.connected;
     const anonymity = account.addresses?.anonymitySet?.[utxo.address];
 
-    const handleCheckbox = () => toggleUtxoSelection(utxo);
+    const handleCheckbox = () => (isRegisteredForCoinjoin ? undefined : toggleUtxoSelection(utxo));
     const showTransactionDetail: React.MouseEventHandler = e => {
         e.stopPropagation(); // do not trigger the checkbox
         if (transaction) {
@@ -170,11 +175,11 @@ export const UtxoSelection = ({ isChecked, transaction, utxo }: UtxoSelectionPro
     };
 
     return (
-        <Wrapper onClick={handleCheckbox}>
+        <Wrapper isDisabled={isRegisteredForCoinjoin} onClick={handleCheckbox}>
             <StyledCheckbox
                 $isGrey={!selectedUtxos.length}
                 isChecked={isChecked}
-                onClick={handleCheckbox}
+                isDisabled={isRegisteredForCoinjoin}
             />
             <Body>
                 <Row>
