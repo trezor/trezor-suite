@@ -254,6 +254,8 @@ export class CoinjoinRound extends EventEmitter {
                     .concat(this.addresses.map(a => a.scriptPubKey));
 
                 prison.detainForBlameRound(inmates, this.id);
+            } else if (this.endRoundState === EndRoundState.AbortedNotEnoughAlices) {
+                prison.releaseRegisteredInmates(this.id);
             }
         }
 
