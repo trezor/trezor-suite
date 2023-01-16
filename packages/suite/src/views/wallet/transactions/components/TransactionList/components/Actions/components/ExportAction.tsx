@@ -25,6 +25,17 @@ export const ExportAction = ({ account }: ExportActionProps) => {
     });
 
     const [isExportRunning, setIsExportRunning] = useState(false);
+
+    const getAccountTitle = useCallback(() => {
+        if (account.accountType === 'coinjoin') {
+            return translationString(getTitleForCoinJoinAccount(account.symbol));
+        }
+        return translationString('LABELING_ACCOUNT', {
+            networkName: translationString(getTitleForNetwork(account.symbol)),
+            index: account.index + 1,
+        });
+    }, [account, translationString]);
+
     const runExport = useCallback(
         async (type: ExportFileType) => {
             if (isExportRunning) {
@@ -48,13 +59,7 @@ export const ExportAction = ({ account }: ExportActionProps) => {
                     noLoading: true,
                     recursive: true,
                 });
-                const accountName =
-                    account.metadata.accountLabel || account.accountType === 'coinjoin'
-                        ? translationString(getTitleForCoinJoinAccount(account.symbol))
-                        : translationString('LABELING_ACCOUNT', {
-                              networkName: translationString(getTitleForNetwork(account.symbol)),
-                              index: account.index + 1,
-                          });
+                const accountName = account.metadata.accountLabel || getAccountTitle();
                 await exportTransactions({ account, accountName, type });
             } catch (error) {
                 console.error('Export transaction failed: ', error);
@@ -73,6 +78,7 @@ export const ExportAction = ({ account }: ExportActionProps) => {
             exportTransactions,
             addToast,
             translationString,
+            getAccountTitle,
         ],
     );
 
