@@ -1,84 +1,53 @@
 import React, { useState } from 'react';
-import { TouchableOpacity } from 'react-native';
 
-import { BottomSheet, Box, Card, Text, VStack } from '@suite-native/atoms';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Icon, IconName } from '@trezor/icons';
+import { FiatCurrency } from 'suite-common/suite-config/src';
 
-const triggerStyle = prepareNativeStyle(utils => ({
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingVertical: utils.spacings.small,
-}));
+import { Blockchain, WalletAccountTransaction } from '@suite-common/wallet-types/src';
+import { Card, VStack } from '@suite-native/atoms';
 
-const BottomSheetTrigger = ({
-    iconName,
-    title,
-    onPress,
-}: {
-    iconName: IconName;
-    title: string;
-    onPress: () => void;
-}) => {
-    const { applyStyle } = useNativeStyles();
-    return (
-        <TouchableOpacity style={applyStyle(triggerStyle)} onPress={onPress}>
-            <Box flexDirection="row">
-                <Box marginRight="medium">
-                    <Icon name={iconName} color="forest" />
-                </Box>
-                <Text>{title}</Text>
-            </Box>
-            <Icon name="chevronRight" />
-        </TouchableOpacity>
-    );
-};
+import { TransactionDetailParametersSheet } from './TransactionDetailParametersSheet';
+import { TransactionDetailValuesSheet } from './TransactionDetailValuesSheet';
+import { TransactionDetailInputsSheet } from './TransactionDetailInputsSheet';
 
 type SheetType = 'parameters' | 'values' | 'inputs';
 
-export const TransactionDetailSheets = () => {
+type TransactionDetailSheetsProps = {
+    transaction: WalletAccountTransaction;
+    blockchain: Blockchain;
+    fiatCurrency: FiatCurrency;
+};
+
+export const TransactionDetailSheets = ({
+    transaction,
+    blockchain,
+    fiatCurrency,
+}: TransactionDetailSheetsProps) => {
     const [expandedSheet, setExpandedSheet] = useState<SheetType | null>(null);
 
-    const handleCloseExpandedSheet = () => setExpandedSheet(null);
-
+    const toggleSheet = (sheetName: SheetType) => {
+        setExpandedSheet(expandedSheet === sheetName ? null : sheetName);
+    };
     return (
         <Card>
             <VStack spacing="small">
-                <BottomSheetTrigger
-                    iconName="warningCircle"
-                    title="Parameters"
-                    onPress={() => setExpandedSheet('parameters')}
+                <TransactionDetailParametersSheet
+                    isVisible={expandedSheet === 'parameters'}
+                    transaction={transaction}
+                    blockchain={blockchain}
+                    onSheetVisibilityChange={() => toggleSheet('parameters')}
                 />
-                <BottomSheetTrigger
-                    iconName="clockClockwise"
-                    title="Current values"
-                    onPress={() => setExpandedSheet('values')}
+                <TransactionDetailValuesSheet
+                    isVisible={expandedSheet === 'values'}
+                    transaction={transaction}
+                    fiatCurrency={fiatCurrency}
+                    onSheetVisibilityChange={() => toggleSheet('values')}
                 />
-                <BottomSheetTrigger
-                    iconName="swap"
-                    title="Inputs & Outputs"
-                    onPress={() => setExpandedSheet('inputs')}
+                <TransactionDetailInputsSheet
+                    isVisible={expandedSheet === 'inputs'}
+                    transaction={transaction}
+                    onSheetVisibilityChange={() => toggleSheet('inputs')}
                 />
             </VStack>
-
-            <BottomSheet
-                isVisible={expandedSheet === 'parameters'}
-                onVisibilityChange={handleCloseExpandedSheet}
-            >
-                <Text>Parameters</Text>
-            </BottomSheet>
-            <BottomSheet
-                isVisible={expandedSheet === 'values'}
-                onVisibilityChange={handleCloseExpandedSheet}
-            >
-                <Text>Current values</Text>
-            </BottomSheet>
-            <BottomSheet
-                isVisible={expandedSheet === 'inputs'}
-                onVisibilityChange={handleCloseExpandedSheet}
-            >
-                <Text>Inputs & Outputs</Text>
-            </BottomSheet>
         </Card>
     );
 };

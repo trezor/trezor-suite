@@ -61,7 +61,7 @@ export const Select = <TItemValue extends SelectItemValue>({
 
     return (
         <>
-            <BottomSheet isVisible={isOpen} onVisibilityChange={setIsOpen} title={selectLabel}>
+            <BottomSheet isVisible={isOpen} onClose={setIsOpen} title={selectLabel}>
                 {items.map(({ value, label, iconName }, index) => (
                     <SelectItem
                         key={value}

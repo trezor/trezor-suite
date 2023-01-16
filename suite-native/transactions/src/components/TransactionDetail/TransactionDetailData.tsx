@@ -9,6 +9,7 @@ import { useFormatters } from '@suite-common/formatters';
 import { selectFiatCurrency } from '@suite-native/module-settings';
 
 import { TransactionDetailSummary } from './TransactionDetailSummary';
+import { TransactionDetailRow } from './TransactionDetailRow';
 
 type TransactionDetailDataProps = {
     transaction: WalletAccountTransaction;
@@ -21,9 +22,14 @@ export const TransactionDetailData = ({ transaction }: TransactionDetailDataProp
     const fee = formatNetworkAmount(transaction.fee, transaction.symbol);
     const fiatFeeAmount = toFiatCurrency(fee, fiatCurrency.label, transaction.rates);
 
-    const getBlockTime = () => {
+    const getBlockDatetime = () => {
         if (!transaction.blockTime) return '';
-        return new Date(transaction.blockTime * 1000).toLocaleTimeString();
+        return new Date(transaction.blockTime * 1000).toLocaleString('en-US', {
+            weekday: 'short',
+            month: 'numeric',
+            hour: 'numeric',
+            minute: 'numeric',
+        });
     };
 
     // Only one input and output address for now until UX comes up with design to support multiple outputs
@@ -36,15 +42,14 @@ export const TransactionDetailData = ({ transaction }: TransactionDetailDataProp
         <>
             <VStack>
                 <Card>
-                    <Box flexDirection="row" justifyContent="space-between" alignItems="center">
-                        <Text color="gray600">Date</Text>
-                        <Box flexDirection="row">
-                            <Text color="gray1000">{getBlockTime()}</Text>
-                            <Box marginLeft="small">
-                                <Icon name="calendar" color="gray1000" />
-                            </Box>
+                    <TransactionDetailRow title="Date">
+                        <Text variant="hint" color="gray1000">
+                            {getBlockDatetime()}
+                        </Text>
+                        <Box marginLeft="small">
+                            <Icon name="calendar" size="medium" color="gray1000" />
                         </Box>
-                    </Box>
+                    </TransactionDetailRow>
                 </Card>
                 <TransactionDetailSummary
                     origin={transactionOriginAddresses && transactionOriginAddresses[0]}
@@ -52,8 +57,7 @@ export const TransactionDetailData = ({ transaction }: TransactionDetailDataProp
                     transactionStatus={isTransactionPending ? 'pending' : 'confirmed'}
                 />
                 <Card>
-                    <Box flexDirection="row" justifyContent="space-between" alignItems="center">
-                        <Text color="gray600">Fee</Text>
+                    <TransactionDetailRow title="Fee">
                         <Box alignItems="flex-end">
                             <Text color="gray1000">
                                 {CryptoAmountFormatter.format(fee, {
@@ -66,7 +70,7 @@ export const TransactionDetailData = ({ transaction }: TransactionDetailDataProp
                                 })}`}
                             </Text>
                         </Box>
-                    </Box>
+                    </TransactionDetailRow>
                 </Card>
             </VStack>
             <Box marginVertical="medium">

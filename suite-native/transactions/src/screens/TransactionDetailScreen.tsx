@@ -31,11 +31,12 @@ export const TransactionDetailScreen = ({
     const { applyStyle, utils } = useNativeStyles();
     const { txid } = route.params;
     const transaction = useSelector(selectTransactionByTxid(txid));
-    const blockchain = useSelector(selectBlockchainState);
+    const blockchainState = useSelector(selectBlockchainState);
     const fiatCurrency = useSelector(selectFiatCurrency);
     const { CryptoAmountFormatter } = useFormatters();
 
     if (!transaction) return null;
+    const blockchain = blockchainState[transaction.symbol];
 
     const transactionAmount = formatNetworkAmount(transaction.amount, transaction.symbol);
     const fiatAmount = toFiatCurrency(transactionAmount, fiatCurrency.label, transaction.rates);
@@ -44,7 +45,7 @@ export const TransactionDetailScreen = ({
     });
 
     const handleOpenBlockchain = () => {
-        const baseUrl = blockchain[transaction.symbol].explorer.tx;
+        const baseUrl = blockchain.explorer.tx;
         Linking.openURL(`${baseUrl}${transaction.txid}`);
     };
 
@@ -58,7 +59,11 @@ export const TransactionDetailScreen = ({
                 />
                 <TransactionDetailData transaction={transaction} />
             </VStack>
-            <TransactionDetailSheets />
+            <TransactionDetailSheets
+                transaction={transaction}
+                blockchain={blockchain}
+                fiatCurrency={fiatCurrency}
+            />
             <Button
                 onPress={handleOpenBlockchain}
                 colorScheme="gray"

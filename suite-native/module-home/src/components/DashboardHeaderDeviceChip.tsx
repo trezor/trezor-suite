@@ -35,7 +35,7 @@ export const DashboardHeaderDeviceChip = () => {
             </TouchableOpacity>
             <BottomSheet
                 isVisible={isDeviceModalVisible}
-                onVisibilityChange={setIsDeviceModalVisible}
+                onClose={setIsDeviceModalVisible}
                 title=""
             >
                 <Text variant="body">TODO: list of all my watch only wallets</Text>

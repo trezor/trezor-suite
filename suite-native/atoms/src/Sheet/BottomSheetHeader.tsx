@@ -1,48 +1,57 @@
 import React from 'react';
-import { TouchableOpacity, View } from 'react-native';
+import { View } from 'react-native';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Icon } from '@trezor/icons';
 
 import { Text } from '../Text';
+import { IconButton } from '../Button/IconButton';
+import { Divider } from '../Divider';
 
 type BottomSheetHeaderProps = {
     title?: string;
+    subtitle?: string;
     onCloseSheet: () => void;
 };
-
-const CLOSE_BUTTON_SIZE = 40;
-
-const closeButtonStyle = prepareNativeStyle(utils => ({
-    borderRadius: utils.borders.radii.round,
-    height: CLOSE_BUTTON_SIZE,
-    width: CLOSE_BUTTON_SIZE,
-    justifyContent: 'center',
-    alignItems: 'center',
-}));
 
 const sheetHeaderStyle = prepareNativeStyle(utils => ({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: utils.spacings.medium,
-    paddingVertical: utils.spacings.medium,
+    paddingHorizontal: utils.spacings.large,
+    paddingVertical: utils.spacings.extraLarge,
 }));
 
-// To center the title
-const closeButtonPlaceholderStyle = prepareNativeStyle(() => ({
-    width: CLOSE_BUTTON_SIZE,
+const titlesContainer = prepareNativeStyle(_ => ({
+    maxWidth: '60%',
 }));
 
-export const BottomSheetHeader = ({ title, onCloseSheet }: BottomSheetHeaderProps) => {
+export const BottomSheetHeader = ({ title, subtitle, onCloseSheet }: BottomSheetHeaderProps) => {
     const { applyStyle } = useNativeStyles();
     return (
-        <View style={applyStyle(sheetHeaderStyle)}>
-            <View style={applyStyle(closeButtonPlaceholderStyle)} />
-            <Text variant="titleSmall">{title}</Text>
-            <TouchableOpacity onPress={onCloseSheet} style={applyStyle(closeButtonStyle)}>
-                <Icon name="close" />
-            </TouchableOpacity>
+        <View>
+            <View style={applyStyle(sheetHeaderStyle)}>
+                <View style={applyStyle(titlesContainer)}>
+                    <Text variant="titleSmall">{title}</Text>
+                    {subtitle && (
+                        <Text
+                            variant="label"
+                            color="gray600"
+                            numberOfLines={1}
+                            ellipsizeMode="tail"
+                        >
+                            {subtitle}
+                        </Text>
+                    )}
+                </View>
+                <IconButton
+                    iconName="close"
+                    onPress={onCloseSheet}
+                    colorScheme="gray"
+                    size="large"
+                    isRounded
+                />
+            </View>
+            <Divider />
         </View>
     );
 };

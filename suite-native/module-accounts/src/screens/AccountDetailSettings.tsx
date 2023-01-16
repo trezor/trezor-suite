@@ -90,7 +90,7 @@ export const AccountDetailSettings = ({
                     </Button>
                 </VStack>
             </Box>
-            <BottomSheet isVisible={isXpubVisible} onVisibilityChange={setIsXpubVisible}>
+            <BottomSheet isVisible={isXpubVisible} onClose={setIsXpubVisible}>
                 <QRCode data={account.descriptor} onCopy={handleCopyXpubToClipboardAndClose} />
             </BottomSheet>
         </Screen>
