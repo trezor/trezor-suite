@@ -28,4 +28,5 @@ export * from './ProgressBar';
 export * from './Card';
 export * from './StepsProgressBar';
 export * from './ErrorMessage';
+export * from './Table';
 export { useDebugView } from './DebugView';

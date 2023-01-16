@@ -1,0 +1,32 @@
+import React, { ReactNode } from 'react';
+
+import { Box } from './Box';
+import { Text } from './Text';
+
+
+type TableProps = {
+    children: ReactNode;
+};
+
+export const Td = ({ children }: TableProps) => (
+    <Box flex={1}>
+        <Text variant="hint" color="gray1000">
+            {children}
+        </Text>
+    </Box>
+);
+
+export const Th = ({ children }: TableProps) => (
+    <Box flex={1}>
+        <Text variant="hint" color="gray600">
+            {children}
+        </Text>
+    </Box>
+);
+export const Tr = ({ children }: TableProps) => (
+    <Box flexDirection="row" justifyContent="space-between" marginVertical="small">
+        {children}
+    </Box>
+);
+
+export const Table = ({ children }: TableProps) => <Box>{children}</Box>;
