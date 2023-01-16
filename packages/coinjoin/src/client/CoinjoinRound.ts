@@ -219,6 +219,10 @@ export class CoinjoinRound extends EventEmitter {
             this.failed = this.failed.concat(...failed);
         }
 
+        if (this.phase > RoundPhase.ConnectionConfirmation) {
+            inputs.forEach(i => i.clearConfirmationInterval());
+        }
+
         if (this.inputs.length === 0 || this.phase === RoundPhase.Ended) {
             this.phase = RoundPhase.Ended;
             log(
@@ -382,6 +386,8 @@ export class CoinjoinRound extends EventEmitter {
     end() {
         this.options.log(`Aborting round ${this.id}`);
         this.lock?.abort();
+
+        this.inputs.forEach(i => i.clearConfirmationInterval());
 
         this.phase = RoundPhase.Ended;
         this.inputs = [];

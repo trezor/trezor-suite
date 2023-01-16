@@ -265,7 +265,9 @@ describe('inputRegistration', () => {
         const spy = jest.fn();
         server?.addListener('test-request', ({ url, resolve }) => {
             if (url.endsWith('/connection-confirmation')) {
-                resolve({}); // return data without realCredentials
+                if (spy.mock.calls.length < 2) {
+                    resolve({}); // return data without realCredentials
+                }
                 spy();
             }
             resolve();
@@ -283,8 +285,9 @@ describe('inputRegistration', () => {
             server?.requestOptions,
         );
 
+        await Promise.all(response.inputs.map(input => input.getConfirmationInterval()?.promise));
+
         expect(spy).toBeCalledTimes(3); // connection-confirmation was called 2 times: 10 sec phase deadline divided by 2 * 2.5 sec connectionConfirmationTimeout
-        expect(response.inputs[0].confirmationDeadline).toBeGreaterThan(Date.now() + 2400); // next connection-confirmation from phase 1 will be called in ~2.5 sec
     }, 10000);
 
     it('success. connection-confirmation returns realCredentials (coordinator is already in phase 1)', async () => {
@@ -308,18 +311,20 @@ describe('inputRegistration', () => {
             server?.requestOptions,
         );
 
+        await Promise.all(response.inputs.map(input => input.getConfirmationInterval()?.promise));
+
         expect(spy).toBeCalledTimes(1); // connection-confirmation was called 1 time and responded with real realCredentials (default response of MockedServer)
         expect(response.inputs[0].confirmationData).toMatchObject({
             realAmountCredentials: expect.any(Object),
         });
     });
 
-    it('success. connection-confirmation aborted (example: status round phase change)', async () => {
-        const abort = new AbortController();
+    it('success. confirmation interval is aborted after registration', async done => {
+        const spy = jest.fn();
         server?.addListener('test-request', ({ url, resolve }) => {
             if (url.endsWith('/connection-confirmation')) {
+                spy();
                 resolve({});
-                abort.abort();
             }
             resolve();
         });
@@ -329,14 +334,32 @@ describe('inputRegistration', () => {
                 ...server?.requestOptions,
                 round: { phaseDeadline: Date.now() + 10000 },
                 roundParameters: {
-                    connectionConfirmationTimeout: '0d 0h 0m 4s',
+                    connectionConfirmationTimeout: '0d 0h 0m 2s',
                 },
             }),
             prison,
-            { ...server?.requestOptions, signal: abort.signal },
+            { ...server?.requestOptions },
         );
 
         expect(response.inputs[0].registrationData).toMatchObject({ aliceId: expect.any(String) });
+        expect(response.inputs[0].getConfirmationInterval()).not.toBeUndefined();
         expect(response.inputs[0].error).toBeUndefined(); // input without error even if request failed
+
+        // wait few confirmation iterations
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        expect(spy.mock.calls.length).toBeGreaterThan(0);
+
+        // 2. wait for confirmation interval to resolve
+        Promise.all(response.inputs.map(input => input.getConfirmationInterval()?.promise)).then(
+            res => {
+                res.forEach(input => {
+                    expect(input?.getConfirmationInterval()).toBeUndefined();
+                });
+                done();
+            },
+        );
+
+        // 1. abort confirmation interval
+        response.inputs.forEach(input => input.clearConfirmationInterval());
     });
 });

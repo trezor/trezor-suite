@@ -1,3 +1,5 @@
+import * as trezorUtils from '@trezor/utils';
+
 import { createServer } from '../mocks/server';
 import { DEFAULT_ROUND, createCoinjoinRound } from '../fixtures/round.fixture';
 import { createInput } from '../fixtures/input.fixture';
@@ -27,6 +29,9 @@ jest.mock('../../src/constants', () => {
         get ROUND_PHASE_PROCESS_TIMEOUT() {
             return 10000;
         },
+        get ROUND_SELECTION_REGISTRATION_OFFSET() {
+            return 30000;
+        },
     };
 });
 
@@ -45,10 +50,23 @@ describe(`CoinjoinRound`, () => {
     });
 
     it('onPhaseChange lock cool off resolved', async () => {
-        const spy = jest.fn();
+        const delayMock = jest
+            .spyOn(trezorUtils, 'getRandomNumberInRange')
+            .mockImplementation(() => 800);
+
+        const constantsMock = jest
+            .spyOn(CONSTANTS, 'ROUND_SELECTION_REGISTRATION_OFFSET', 'get')
+            .mockReturnValue(1000 as any);
+
+        const registrationSpy = jest.fn();
+        const confirmationSpy = jest.fn();
+
         server?.addListener('test-request', ({ url, resolve }) => {
+            if (url.endsWith('/input-registration')) {
+                registrationSpy();
+            }
             if (url.endsWith('/connection-confirmation')) {
-                spy();
+                confirmationSpy();
             }
             resolve();
         });
@@ -62,7 +80,7 @@ describe(`CoinjoinRound`, () => {
                 ...server?.requestOptions,
                 round: { phaseDeadline: Date.now() + 10000 },
                 roundParameters: {
-                    connectionConfirmationTimeout: '0d 0h 0m 5s',
+                    connectionConfirmationTimeout: '0d 0h 0m 4s',
                 },
             },
         );
@@ -70,39 +88,47 @@ describe(`CoinjoinRound`, () => {
         // process but not wait for the result
         round.process([], PRISON);
 
-        // confirmationInterval is now set to ~2.5 sec.
+        // input-registration is now set with delay ~0.8 sec.
         // we want to change phase earlier
         await new Promise(resolve => setTimeout(resolve, 500));
+        expect(registrationSpy).toBeCalledTimes(0); // no registrations yet
 
-        // change Round phase before confirmationInterval was called
+        // change Round phase before input-registration was called
         await round.onPhaseChange({ ...DEFAULT_ROUND, phase: 1 });
 
-        // confirmationData should be assigned,
-        // confirmationInterval was called successfully,
-        // lock was not aborted
+        // registrationData should be assigned,
+        // confirmationInterval should be assigned,
+        // lock was not aborted (no error in input => signal was not aborted)
         round.inputs.forEach(input => {
             expect(input.error).toBeUndefined();
-            expect(input.confirmationData).not.toBeUndefined();
+            expect(input.registrationData).not.toBeUndefined();
+            expect(input.getConfirmationInterval).not.toBeUndefined();
         });
-        expect(spy).toBeCalledTimes(2); // two confirmations
+        expect(registrationSpy).toBeCalledTimes(2); // two registrations
+        expect(confirmationSpy).toBeCalledTimes(0); // no confirmations yet
 
         await round.process([], PRISON);
         round.inputs.forEach(input => {
             expect(input.error).toBeUndefined();
             expect(input.confirmationData).not.toBeUndefined();
         });
-        expect(spy).toBeCalledTimes(2); // no more confirmations
+        expect(confirmationSpy).toBeCalledTimes(2); // two confirmations
+
+        delayMock.mockRestore();
+        constantsMock.mockRestore();
     });
 
     it('onPhaseChange lock cool off aborted', async () => {
-        jest.spyOn(CONSTANTS, 'ROUND_PHASE_PROCESS_TIMEOUT', 'get').mockReturnValue(500 as any);
+        const constantsMock = jest
+            .spyOn(CONSTANTS, 'ROUND_PHASE_PROCESS_TIMEOUT', 'get')
+            .mockReturnValue(500 as any);
 
-        const spy = jest.fn();
         server?.addListener('test-request', ({ url, resolve }) => {
-            if (url.endsWith('/connection-confirmation')) {
-                spy();
+            if (url.endsWith('/input-registration')) {
+                setTimeout(resolve, 2000);
+            } else {
+                resolve();
             }
-            resolve();
         });
 
         const round = createCoinjoinRound(
@@ -122,32 +148,29 @@ describe(`CoinjoinRound`, () => {
         // process phase 0 but not wait for the result
         round.process([], PRISON);
 
-        // confirmationInterval is now set to ~2.5 sec.
+        // input-registration will respond in  ~2 sec.
         // we want to change phase earlier
         await new Promise(resolve => setTimeout(resolve, 500));
 
-        // change Round phase before confirmationInterval was called
+        // change Round phase before input-registration was called
         await round.onPhaseChange({ ...DEFAULT_ROUND, phase: 1 });
 
-        // confirmationData should NOT be assigned,
-        // confirmationInterval was aborted,
-        // lock was aborted
+        // registrationData should NOT be assigned,
+        // confirmationInterval should NOT be assigned,
+        // lock was aborted, registration request was aborted
         round.inputs.forEach(input => {
-            expect(input.error).toBeUndefined(); // confirmationInterval errors are "expected" therefore not assigned
-            expect(input.confirmationData).toBeUndefined();
-            expect(input.confirmationParams).not.toBeUndefined(); // confirmationParams are stored for retry
+            expect(input.error?.message).toMatch(/Aborted by signal/);
+            expect(input.registrationData).toBeUndefined();
+            expect(input.getConfirmationInterval()).toBeUndefined();
         });
-        expect(spy).toBeCalledTimes(0); // no confirmations
 
         // process phase 1
         await round.process([], PRISON);
 
-        // confirmationData are assigned
-        round.inputs.forEach(input => {
-            expect(input.confirmationData).not.toBeUndefined();
-            expect(input.confirmationParams).toBeUndefined(); // params are cleared
-        });
-        expect(spy).toBeCalledTimes(2); // two confirmations
+        expect(round.inputs.length).toBe(0); // no valid inputs, requests aborted
+        expect(round.failed.length).toBe(0); // no errored inputs, inputs with errors in inputRegistration are not passed further
+
+        constantsMock.mockRestore();
     });
 
     it('onPhaseChange lock cool off not used', async () => {

@@ -15,6 +15,11 @@ interface AlicePendingRequest {
     timestamp: number;
 }
 
+export interface AliceConfirmationInterval {
+    promise: Promise<Alice>;
+    abort: () => void;
+}
+
 export class Alice {
     path: string; // utxo derivation path
     outpoint: string;
@@ -28,11 +33,11 @@ export class Alice {
     registrationData?: RegistrationData; // data from inputRegistration phase
     realAmountCredentials?: RealCredentials; // data from inputRegistration phase
     realVsizeCredentials?: RealCredentials; // data from inputRegistration phase
-    confirmationDeadline = 0;
     confirmationParams?: Readonly<{
         zeroAmountCredentials: ZeroCredentials;
         zeroVsizeCredentials: ZeroCredentials;
     }>;
+    confirmationInterval?: AliceConfirmationInterval;
     confirmationData?: ConfirmationData; // data from connectionConfirmation phase
     confirmedAmountCredentials?: Credentials[]; // data from connectionConfirmation phase
     confirmedVsizeCredentials?: Credentials[]; // data from connectionConfirmation phase
@@ -82,6 +87,19 @@ export class Alice {
     setRealCredentials(amount: RealCredentials, vsize: RealCredentials) {
         this.realAmountCredentials = amount;
         this.realVsizeCredentials = vsize;
+    }
+
+    setConfirmationInterval(interval: AliceConfirmationInterval) {
+        this.confirmationInterval = interval;
+    }
+
+    clearConfirmationInterval() {
+        this.confirmationInterval?.abort();
+        this.confirmationInterval = undefined;
+    }
+
+    getConfirmationInterval() {
+        return this.confirmationInterval;
     }
 
     setConfirmationParams(

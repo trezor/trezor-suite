@@ -152,9 +152,10 @@ const registerInput = async (
 
         // store RealCredentials
         input.setRealCredentials(realAmountCredentials, realVsizeCredentials);
-
         // set confirmation interval
-        return confirmationInterval(round, input, options);
+        input.setConfirmationInterval(confirmationInterval(round, input, options));
+
+        return input;
     } catch (error) {
         // TODO: try to unregister if post processing fails?
         // await coordinator.inputUnregistration(round.id, registrationData.aliceId, {
