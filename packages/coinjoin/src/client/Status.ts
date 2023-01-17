@@ -45,6 +45,14 @@ export class Status extends EventEmitter {
                 if (!known) return true; // new phase
                 if (nextRound.phase === known.phase + 1) return true; // expected update
                 if (
+                    nextRound.phase === RoundPhase.TransactionSigning &&
+                    !known.affiliateRequest &&
+                    nextRound.affiliateRequest
+                ) {
+                    return true; // affiliateRequest is propagated asynchronously, might be added after phase change
+                }
+
+                if (
                     known.phase === RoundPhase.Ended &&
                     known.endRoundState !== nextRound.endRoundState
                 )
@@ -119,6 +127,12 @@ export class Status extends EventEmitter {
     }
 
     private processStatus(status: coordinator.CoinjoinStatus) {
+        // add matching coinjoinRequest to rounds
+        status.roundStates.forEach(round => {
+            const roundRequest = status.affiliateInformation.coinjoinRequests[round.id];
+            round.affiliateRequest = roundRequest?.trezor;
+        });
+
         const changed = this.compareStatus(status.roundStates);
         this.rounds = status.roundStates;
 

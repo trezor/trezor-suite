@@ -30,6 +30,7 @@ export class Alice {
     requested?: AlicePendingRequest; // pending request sent to wallet (Suite)
     ownershipProof?: string; // data used in inputRegistration phase, received as response to RequestEvent, provided by wallet (Suite)
     registrationData?: RegistrationData; // data from inputRegistration phase
+    affiliationFlag?: boolean; // affiliation flag is used in /ready-to-sign request **only** when Alice pays coordination fee
     realAmountCredentials?: RealCredentials; // data from inputRegistration phase
     realVsizeCredentials?: RealCredentials; // data from inputRegistration phase
     confirmationInterval?: AliceConfirmationInterval;
@@ -75,8 +76,9 @@ export class Alice {
         this.ownershipProof = proof;
     }
 
-    setRegistrationData(data: RegistrationData) {
+    setRegistrationData(data: RegistrationData, flag?: boolean) {
         this.registrationData = data;
+        this.affiliationFlag = flag;
     }
 
     setRealCredentials(amount: RealCredentials, vsize: RealCredentials) {

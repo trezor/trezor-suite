@@ -1,7 +1,7 @@
 import { Status } from '../../src/client/Status';
 import { ROUND_REGISTRATION_END_OFFSET, STATUS_TIMEOUT } from '../../src/constants';
 import { createServer } from '../mocks/server';
-import { DEFAULT_ROUND } from '../fixtures/round.fixture';
+import { DEFAULT_ROUND, ROUND_CREATION_EVENT, AFFILIATE_INFO } from '../fixtures/round.fixture';
 
 let server: Awaited<ReturnType<typeof createServer>>;
 
@@ -127,16 +127,19 @@ describe('Status', () => {
 
     it('Status start attempts, keep lifecycle regardless of failed requests', async done => {
         let request = 0;
+
         server?.addListener('test-request', ({ resolve }) => {
             if (request === 6) {
                 resolve({
                     roundStates: [{ ...DEFAULT_ROUND, phase: 1 }],
+                    affiliateInformation: AFFILIATE_INFO,
                 });
             } else {
                 setTimeout(
                     () => {
                         resolve({
                             roundStates: [DEFAULT_ROUND],
+                            affiliateInformation: AFFILIATE_INFO,
                         });
                     },
                     request % 2 === 0 ? 5000 : 0, // timeout error on every second request
@@ -178,10 +181,9 @@ describe('Status', () => {
             coinjoinState: {
                 events: [
                     {
-                        Type: 'RoundCreated',
+                        ...ROUND_CREATION_EVENT,
                         roundParameters: {
-                            allowedInputAmounts: {},
-                            coordinationFeeRate: {},
+                            ...ROUND_CREATION_EVENT.roundParameters,
                             connectionConfirmationTimeout: '0d 0h 0m 5s',
                             outputRegistrationTimeout: '0d 0h 0m 2s',
                             transactionSigningTimeout: '0d 0h 0m 2s',
@@ -195,6 +197,7 @@ describe('Status', () => {
             if (url.endsWith('/status')) {
                 resolve({
                     roundStates: [round],
+                    affiliateInformation: AFFILIATE_INFO,
                 });
             }
             resolve();
@@ -222,11 +225,13 @@ describe('Status', () => {
                                 phase: 2, // intentionally keep it in one phase, see pendingRound explanation below
                             },
                         ],
+                        affiliateInformation: AFFILIATE_INFO,
                     });
                 } else {
                     // remove all rounds from state
                     resolve({
                         roundStates: [],
+                        affiliateInformation: AFFILIATE_INFO,
                     });
                 }
             }
@@ -264,6 +269,71 @@ describe('Status', () => {
 
         status.stop();
     }, 20000);
+
+    it('Status onStatusChange with delayed affiliateRequest', async () => {
+        const round = {
+            ...DEFAULT_ROUND,
+            phase: 3,
+            inputRegistrationEnd: Date.now(),
+            coinjoinState: {
+                events: [
+                    {
+                        ...ROUND_CREATION_EVENT,
+                        roundParameters: {
+                            ...ROUND_CREATION_EVENT.roundParameters,
+                            transactionSigningTimeout: '0d 0h 0m 1s',
+                        },
+                    },
+                ],
+            },
+        };
+
+        const affiliateData = Buffer.from('{}', 'utf-8').toString('base64');
+        const requestListener = jest.fn();
+        server?.addListener('test-request', ({ url, resolve }) => {
+            if (url.endsWith('/status')) {
+                const calls = requestListener.mock.calls.length;
+                requestListener();
+
+                if (calls > 2) {
+                    // start sending coinjoinRequests after third iteration
+                    const coinjoinRequests = { [round.id]: { trezor: affiliateData } };
+                    resolve({
+                        roundStates: [round],
+                        affiliateInformation: {
+                            ...AFFILIATE_INFO,
+                            coinjoinRequests,
+                        },
+                    });
+                } else {
+                    resolve({
+                        roundStates: [round],
+                        affiliateInformation: AFFILIATE_INFO,
+                    });
+                }
+            }
+        });
+
+        const status = new Status(server?.requestOptions);
+
+        const onUpdateListener = jest.fn();
+        status.on('update', onUpdateListener);
+
+        status.setMode('enabled');
+        await status.start();
+
+        expect(requestListener).toHaveBeenCalledTimes(1); // status fetched once, on start
+        expect(onUpdateListener).toHaveBeenCalledTimes(1); // status changed once, on start
+
+        await waitForStatus(3000); // wait 3 iterations, transactionSigningTimeout = 1 sec.
+
+        expect(requestListener).toHaveBeenCalledTimes(4); // status fetched 4 times
+        expect(onUpdateListener).toHaveBeenCalledTimes(2); // status changed twice, coinjoinRequests added at 3rd iteration
+
+        expect(onUpdateListener.mock.calls[1][0]).toMatchObject({
+            changed: [{ affiliateRequest: affiliateData }],
+        });
+    });
 
     it('just for coverage', () => {
         const status = new Status(server?.requestOptions);

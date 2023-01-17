@@ -1,7 +1,7 @@
 import * as net from 'net';
 import * as http from 'http';
 
-import { DEFAULT_ROUND, FEE_RATE_MEDIANS } from '../fixtures/round.fixture';
+import { DEFAULT_ROUND, FEE_RATE_MEDIANS, AFFILIATE_INFO } from '../fixtures/round.fixture';
 import { CoinjoinClientEvents } from '../../src/types/client';
 
 // Mock coordinator and middleware responses
@@ -68,6 +68,7 @@ const DEFAULT = {
     status: {
         roundStates: [DEFAULT_ROUND],
         coinJoinFeeRateMedians: FEE_RATE_MEDIANS,
+        affiliateInformation: AFFILIATE_INFO,
     },
     'input-registration': {
         aliceId: Math.random().toString(),

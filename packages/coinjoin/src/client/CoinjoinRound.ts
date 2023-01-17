@@ -95,6 +95,7 @@ export class CoinjoinRound extends EventEmitter {
     inputRegistrationEnd: string;
     amountCredentialIssuerParameters: Round['amountCredentialIssuerParameters'];
     vsizeCredentialIssuerParameters: Round['vsizeCredentialIssuerParameters'];
+    affiliateRequest: Round['affiliateRequest'];
     //
     roundParameters: CoinjoinRoundParameters;
     inputs: Alice[] = []; // list of registered inputs
@@ -194,6 +195,7 @@ export class CoinjoinRound extends EventEmitter {
         const { phaseDeadline, roundDeadline } = getCoinjoinRoundDeadlines(this);
         this.phaseDeadline = phaseDeadline;
         this.roundDeadline = roundDeadline;
+        this.affiliateRequest = changed.affiliateRequest;
 
         this.emit('changed', { round: this.toSerialized() });
 
