@@ -2,6 +2,7 @@ export enum RootStackRoutes {
     AppTabs = 'AppTabs',
     AccountsImport = 'AccountsImport',
     DevUtilsStack = 'DevUtilsStack',
+    AccountSettings = 'AccountSettings',
     TransactionDetail = 'TransactionDetail',
     ReceiveModal = 'ReceiveModal',
 }
@@ -9,7 +10,7 @@ export enum RootStackRoutes {
 export enum AppTabsRoutes {
     HomeStack = 'HomeStack',
     AccountsStack = 'AccountsStack',
-    Action = 'Action',
+    ReceiveScreen = 'ReceiveScreen',
     SettingsStack = 'SettingsStack',
 }
 

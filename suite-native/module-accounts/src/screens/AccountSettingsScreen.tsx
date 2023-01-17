@@ -7,6 +7,8 @@ import { networks, NetworkSymbol } from '@suite-common/wallet-config';
 import {
     AccountsStackParamList,
     AccountsStackRoutes,
+    RootStackParamList,
+    RootStackRoutes,
     Screen,
     ScreenHeader,
     StackNavigationProps,
@@ -38,9 +40,9 @@ const CryptoNameWithIcon = ({ symbol }: { symbol: NetworkSymbol }) => (
     </Box>
 );
 
-export const AccountDetailSettings = ({
+export const AccountSettingsScreen = ({
     route,
-}: StackProps<AccountsStackParamList, AccountsStackRoutes.AccountDetailSettings>) => {
+}: StackProps<RootStackParamList, RootStackRoutes.AccountSettings>) => {
     const { accountKey } = route.params;
     const [isXpubVisible, setIsXpubVisible] = useState(false);
     const navigation =
