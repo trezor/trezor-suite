@@ -16,16 +16,10 @@ import * as view from './view';
 import {
     setState,
     showView,
-    setOperation,
     initMessageChannel,
     postMessageToParent,
     renderConnectUI,
 } from './view/common';
-import {
-    showFirmwareUpdateNotification,
-    showBridgeUpdateNotification,
-    showBackupNotification,
-} from './view/notification';
 
 let handshakeTimeout: ReturnType<typeof setTimeout>;
 
@@ -87,20 +81,29 @@ const handleMessage = (event: MessageEvent<PopupEvent | UiEvent>) => {
         analytics.report(message.payload.analytics);
     }
 
-    console.log('message.type', message.type);
-    console.log('message', message);
+    switch (message.type) {
+        case UI_REQUEST.TRANSPORT:
+        case UI_REQUEST.FIRMWARE_OUTDATED:
+        case UI_REQUEST.DEVICE_NEEDS_BACKUP:
+        case UI_REQUEST.REQUEST_PASSPHRASE:
+            // todo: I don't have power to solve this now
+            // @ts-expect-error
+            reactEventBus.dispatch(message);
+            // already implemented in react. return here
+            return;
+        default:
+        // no default
+    }
+
+    // otherwise we still render in legacy way
+    // dispatch empty message to instruct the "reactified"
+    // part of app to hide the main content
+    reactEventBus.dispatch();
+
     switch (message.type) {
         case UI_REQUEST.LOADING:
             // case UI.REQUEST_UI_WINDOW :
             showView('loader');
-            break;
-        case UI_REQUEST.SET_OPERATION:
-            if (typeof message.payload === 'string') {
-                setOperation(message.payload);
-            }
-            break;
-        case UI_REQUEST.TRANSPORT:
-            reactEventBus.dispatch(message);
             break;
         case UI_REQUEST.SELECT_DEVICE:
             view.selectDevice(message.payload);
@@ -144,12 +147,6 @@ const handleMessage = (event: MessageEvent<PopupEvent | UiEvent>) => {
         case UI_REQUEST.FIRMWARE_NOT_COMPATIBLE:
             view.firmwareNotCompatible(message.payload);
             break;
-        case UI_REQUEST.FIRMWARE_OUTDATED:
-            showFirmwareUpdateNotification(message.payload);
-            break;
-        case UI_REQUEST.DEVICE_NEEDS_BACKUP:
-            showBackupNotification(message.payload);
-            break;
         case UI_REQUEST.REQUEST_PERMISSION:
             view.initPermissionsView(message.payload);
             break;
@@ -164,10 +161,6 @@ const handleMessage = (event: MessageEvent<PopupEvent | UiEvent>) => {
             break;
         case UI_REQUEST.INVALID_PIN:
             showView('invalid-pin');
-            break;
-        // comes first
-        case UI_REQUEST.REQUEST_PASSPHRASE:
-            reactEventBus.dispatch(message);
             break;
         // comes when user clicks "enter on device"
         case UI_REQUEST.REQUEST_PASSPHRASE_ON_DEVICE:
@@ -198,15 +191,13 @@ const init = (payload: PopupInit['payload']) => {
 const handshake = (handshake: PopupHandshake) => {
     const { payload } = handshake;
     if (!payload) return;
-    // use trusted settings from iframe
-    setState({ settings: payload.settings });
-    setOperation(payload.method || '');
-
-    if (payload.transport && payload.transport.outdated) {
-        showBridgeUpdateNotification();
-    }
 
     clearTimeout(handshakeTimeout);
+
+    // use trusted settings from iframe
+    setState({ settings: payload.settings });
+
+    reactEventBus.dispatch(handshake);
 
     analytics.report({
         type: EventType.AppReady,
@@ -240,6 +231,10 @@ const onLoad = () => {
                 type: 'error',
                 detail: 'handshake-timeout',
             }),
+        // in theory, a user might have extremely slow internet connection and handshake
+        // could be done after this is fired. the question is, should we disallow communication
+        // after error screen has been rendered? maybe it would be better to keep loader loading
+        // and display some kind of modal instead
         90 * 1000,
     );
 };

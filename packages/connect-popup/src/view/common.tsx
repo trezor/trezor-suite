@@ -24,23 +24,6 @@ const channel = new MessageChannel(); // used in direct element communication (i
 export const setState = (newState: State) => (state = { ...state, ...newState });
 export const getState = () => state;
 
-export const setOperation = (operation: string) => {
-    const infoPanel = document.getElementsByClassName('info-panel')[0];
-    const operationEl = infoPanel.getElementsByClassName('operation')[0];
-    const originEl = infoPanel.getElementsByClassName('origin')[0] as HTMLElement;
-    operationEl.innerHTML = operation;
-    const { settings } = getState();
-    originEl.innerText = settings?.hostLabel ?? settings?.origin ?? '';
-
-    const icon = settings?.hostIcon;
-    if (icon) {
-        const iconContainers = document.getElementsByClassName('service-info');
-        for (let i = 0; i < iconContainers.length; i++) {
-            iconContainers[i].innerHTML = `<img src="${icon}" alt="" />`;
-        }
-    }
-};
-
 export const createTooltip = (text: string) => {
     const tooltip = document.createElement('div');
     tooltip.setAttribute('tooltip', text);

@@ -19,77 +19,6 @@
     color: #757575;
     border: 1px solid #757575;
 }
-aside {
-    display: flex;
-    flex-flow: column;
-    width: 50%;
-    height: 100%;
-    border-right: 1px solid #e3e3e3;
-    background-color: #f9f9f9;
-}
-aside .wrapper {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    padding: 24px;
-}
-aside svg {
-    width: auto;
-    height: 24px;
-    align-self: flex-start;
-    margin-right: 20px;
-}
-aside .info-panel {
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    text-align: center;
-}
-aside .info-panel h2,
-aside .info-panel p {
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
-    word-break: break-word;
-}
-aside .service-info {
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 10px;
-}
-aside .service-info.desktop {
-    display: flex;
-}
-aside .service-info.mobile {
-    display: none;
-}
-aside .service-info img {
-    height: 30px;
-    width: auto;
-}
-@media screen and (max-width: 639px) {
-    aside .service-info {
-        justify-content: flex-end;
-        margin: 0;
-    }
-}
-@media screen and (max-width: 425px) {
-    aside .header {
-        width: 100%;
-        display: flex;
-        justify-content: space-between;
-    }
-    aside .service-info.desktop {
-        display: none;
-    }
-    aside .service-info.mobile {
-        display: flex;
-    }
-}
 *,
 *:before,
 *:after {
@@ -143,6 +72,8 @@ section {
     display: flex;
     justify-content: center;
     text-align: center;
+    margin-left: auto;
+    margin-right: auto;
 }
 #views {
     display: none;
@@ -1118,99 +1049,6 @@ section > div .divider span:after {
     section > div {
         height: 500px;
         max-width: 390px;
-    }
-}
-.notification {
-    width: 100%;
-    background-color: #ffefd9;
-}
-.notification .notification-item {
-    padding: 20px;
-    border-top: 1px solid #eb8a00;
-}
-.notification .notification-item:first-child {
-    border: 0px;
-}
-.notification .header {
-    margin-bottom: 10px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-.notification .header .left {
-    display: flex;
-    align-items: center;
-}
-.notification h3 {
-    font-weight: 600;
-    font-size: 14px;
-    color: #eb8a00;
-}
-.notification p {
-    padding-left: 30px;
-    font-weight: 300;
-    font-size: 14px;
-    color: #eb8a00;
-}
-.notification .warning-icon {
-    width: 30px;
-    height: 30px;
-}
-.notification .warning-icon::before {
-    display: inline-block;
-    font-family: 'icomoon';
-    font-style: normal;
-    font-weight: normal;
-    line-height: 1;
-    font-size: 24px;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.004);
-    content: '\e908';
-    position: relative;
-    top: 2px;
-    right: 5px;
-    width: 30px;
-    height: 30px;
-    color: #eb8a00;
-    font-size: 30px;
-}
-.notification .close-icon {
-    width: 20px;
-    height: 20px;
-}
-.notification .close-icon::before {
-    display: inline-block;
-    font-family: 'icomoon';
-    font-style: normal;
-    font-weight: normal;
-    line-height: 1;
-    font-size: 24px;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.004);
-    content: '\e90a';
-    position: relative;
-    top: 1px;
-    left: 5px;
-    width: 20px;
-    height: 20px;
-    color: #eb8a00;
-    font-size: 20px;
-}
-.notification .close-icon:hover {
-    cursor: pointer;
-}
-.notification .button {
-    margin-top: 13px;
-    display: block;
-}
-@media screen and (max-width: 639px) {
-    .notification .notification-item {
-        padding: 10px 20px;
-    }
-    .notification .header {
-        margin-bottom: 0;
     }
 }
 [tooltip] {
