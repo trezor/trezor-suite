@@ -4,7 +4,6 @@ import {
     RegistrationData,
     ConfirmationData,
     RealCredentials,
-    ZeroCredentials,
 } from '../types/coordinator';
 import { AccountUtxo } from '../types/account';
 import { Credentials } from '../types/middleware';
@@ -33,10 +32,6 @@ export class Alice {
     registrationData?: RegistrationData; // data from inputRegistration phase
     realAmountCredentials?: RealCredentials; // data from inputRegistration phase
     realVsizeCredentials?: RealCredentials; // data from inputRegistration phase
-    confirmationParams?: Readonly<{
-        zeroAmountCredentials: ZeroCredentials;
-        zeroVsizeCredentials: ZeroCredentials;
-    }>;
     confirmationInterval?: AliceConfirmationInterval;
     confirmationData?: ConfirmationData; // data from connectionConfirmation phase
     confirmedAmountCredentials?: Credentials[]; // data from connectionConfirmation phase
@@ -100,20 +95,6 @@ export class Alice {
 
     getConfirmationInterval() {
         return this.confirmationInterval;
-    }
-
-    setConfirmationParams(
-        zeroAmountCredentials?: ZeroCredentials,
-        zeroVsizeCredentials?: ZeroCredentials,
-    ) {
-        if (zeroAmountCredentials && zeroVsizeCredentials) {
-            this.confirmationParams = {
-                zeroAmountCredentials,
-                zeroVsizeCredentials,
-            };
-        } else {
-            this.confirmationParams = undefined;
-        }
     }
 
     setConfirmationData(data: ConfirmationData) {
