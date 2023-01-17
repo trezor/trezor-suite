@@ -4,7 +4,7 @@ import { RawLiquidityClue } from './middleware';
 export type RegisterAccountParams = {
     accountKey: string;
     scriptType: AllowedScriptTypes;
-    utxos: AccountUtxo[];
+    utxos: Omit<AccountUtxo, 'scriptPubKey'>[];
     changeAddresses: Omit<AccountAddress, 'scriptPubKey'>[];
     targetAnonymity: number;
     rawLiquidityClue: RawLiquidityClue;
@@ -17,6 +17,8 @@ export type RegisterAccountParams = {
 export interface AccountUtxo {
     path: string;
     outpoint: string;
+    address: string;
+    scriptPubKey: string;
     amount: number;
     anonymityLevel: number;
 }

@@ -243,7 +243,7 @@ export const selectInputsForRound = async (
                     const utxos = account.utxos.map(utxo => ({
                         outpoint: utxo.outpoint,
                         amount: utxo.amount,
-                        scriptType: account.scriptType,
+                        scriptPubKey: utxo.scriptPubKey,
                         anonymitySet: utxo.anonymityLevel,
                     }));
 

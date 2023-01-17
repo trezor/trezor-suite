@@ -1,5 +1,3 @@
-import { AllowedScriptTypes } from './coordinator';
-
 export interface Credentials {
     value: number;
     randomness: string;
@@ -11,7 +9,7 @@ export interface Credentials {
 export type UtxoForRound = {
     outpoint: string;
     amount: number;
-    scriptType: AllowedScriptTypes;
+    scriptPubKey: string;
     anonymitySet: number;
 };
 
