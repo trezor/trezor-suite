@@ -6,9 +6,8 @@ import {
     ConfirmationData,
     IssuanceData,
     RegistrationData,
-    CoinjoinAffiliateTx,
-    CoinjoinAffiliateRequest,
 } from '../types/coordinator';
+import { AFFILIATION_FLAG } from '../constants';
 
 export const getStatus = async (options: RequestOptions) => {
     const data = await request<CoinjoinStatus>(
@@ -111,12 +110,18 @@ export const outputRegistration = (
         options,
     );
 
-export const readyToSign = (roundId: string, aliceId: string, options: RequestOptions) =>
+export const readyToSign = (
+    roundId: string,
+    aliceId: string,
+    affiliationFlag: boolean,
+    options: RequestOptions,
+) =>
     request(
         'ready-to-sign',
         {
             roundId,
             aliceId,
+            affiliationFlag: affiliationFlag ? AFFILIATION_FLAG : undefined,
         },
         options,
     );
@@ -139,12 +144,3 @@ export const transactionSignature = (
 
 // reexport all coordinator types
 export * from '../types/coordinator';
-
-/**
- * @deprecated This request will be done by coordinator
- */
-export const getAffiliateRequest = (tx: CoinjoinAffiliateTx, options: RequestOptions) =>
-    request<CoinjoinAffiliateRequest>('get_coinjoin_request_suite', tx, {
-        ...options,
-        baseUrl: 'https://dev-coinjoin-affiliate.trezor.io/',
-    });

@@ -1,8 +1,15 @@
 import { RoundPhase, EndRoundState } from '../enums';
+import { AFFILIATION_FLAG } from '../constants';
+
+export type AffiliationFlag = typeof AFFILIATION_FLAG;
 
 export interface CoinjoinStatus {
     roundStates: Round[];
     coinJoinFeeRateMedians: FeeRateMedians[];
+    affiliateInformation: {
+        runningAffiliateServers: AffiliationFlag[];
+        coinjoinRequests: Record<string, Record<AffiliationFlag, string>>;
+    };
 }
 
 export interface CredentialsResponseValidation {
@@ -147,6 +154,7 @@ export interface Round {
     inputRegistrationStart: string;
     inputRegistrationTimeout: string;
     inputRegistrationEnd: string;
+    affiliateRequest?: string; // conditionally added by ./client/Status
 }
 
 // errors from coordinator in string based format (see ./utils/http coordinatorRequest errorCode handling)
@@ -186,26 +194,6 @@ export enum WabiSabiProtocolErrorCode {
     AliceAlreadySignalled = 'AliceAlreadySignalled',
     AliceAlreadyConfirmedConnection = 'AliceAlreadyConfirmedConnection',
     AlreadyRegisteredScript = 'AlreadyRegisteredScript',
-}
-
-// types and below should be removed after affiliate server implementation on coordinator
-
-interface AffiliateRequestInputs {
-    prevout: {
-        hash: string;
-        index: number;
-    };
-    script_pubkey: string;
-}
-
-interface AffiliateRequestOutputs {
-    amount: number;
-    script_pubkey: string;
-}
-
-export interface CoinjoinAffiliateTx {
-    inputs: AffiliateRequestInputs[];
-    outputs: AffiliateRequestOutputs[];
 }
 
 export interface CoinjoinAffiliateRequest {
