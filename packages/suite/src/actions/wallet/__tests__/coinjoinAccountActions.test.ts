@@ -159,4 +159,20 @@ describe('coinjoinAccountActions', () => {
             expect(actions.map(a => a.type)).toEqual(f.result.actions);
         });
     });
+
+    fixtures.restoreCoinjoinSession.forEach(f => {
+        it(`restoreCoinjoinSession: ${f.description}`, async () => {
+            const store = initStore(f.state as Wallet);
+
+            if (f.client) {
+                await CoinjoinService.createInstance(f.client as any);
+            }
+
+            await store.dispatch(coinjoinAccountActions.restoreCoinjoinSession(f.param));
+
+            const actions = store.getActions();
+
+            expect(actions.map(a => a.type)).toEqual(f.result.actions);
+        });
+    });
 });
