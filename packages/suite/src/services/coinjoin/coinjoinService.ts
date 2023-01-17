@@ -31,6 +31,11 @@ export class CoinjoinService {
         if (this.instances[network]) return this.instances[network] as CoinjoinServiceInstance;
         const [backend, client] = await loadInstance(network, environment);
         const instance = { backend, client };
+        if (!isDesktop()) {
+            // display client log directly in console
+            client.on('log', console.log);
+        }
+
         this.instances[network] = instance;
         return instance;
     }
