@@ -6,7 +6,12 @@ import {
     ROUND_REGISTRATION_END_OFFSET,
 } from '../constants';
 import { RoundPhase } from '../enums';
-import { Round, CoinjoinStateEvent, CoinjoinRoundParameters } from '../types/coordinator';
+import {
+    Round,
+    CoinjoinStateEvent,
+    CoinjoinRoundParameters,
+    CoinjoinAffiliateRequest,
+} from '../types/coordinator';
 import { Credentials } from '../types/middleware';
 
 export const getRoundEvents = <T extends CoinjoinStateEvent['Type']>(
@@ -157,3 +162,25 @@ export const compareOutpoint = (a: string, b: string) =>
 
 // sum input Credentials
 export const sumCredentials = (c: Credentials[]) => c.reduce((sum, cre) => sum + cre.value, 0);
+
+export const getAffiliateRequest = (base64data?: string): CoinjoinAffiliateRequest => {
+    if (!base64data) {
+        throw new Error('Missing affiliate request data');
+    }
+
+    const str = Buffer.from(base64data, 'base64').toString();
+    const affiliateRequest = JSON.parse(str);
+
+    if (
+        !('fee_rate' in affiliateRequest) ||
+        !('min_registrable_amount' in affiliateRequest) ||
+        !('no_fee_threshold' in affiliateRequest) ||
+        !('mask_public_key' in affiliateRequest) ||
+        !('coinjoin_flags_array' in affiliateRequest) ||
+        !('signature' in affiliateRequest)
+    ) {
+        throw new Error('Invalid affiliate request data');
+    }
+
+    return affiliateRequest;
+};

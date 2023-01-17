@@ -1,6 +1,6 @@
 import * as coordinator from '../coordinator';
 import * as middleware from '../middleware';
-import { getRoundEvents, compareOutpoint } from '../../utils/roundUtils';
+import { getRoundEvents, compareOutpoint, getAffiliateRequest } from '../../utils/roundUtils';
 import {
     mergePubkeys,
     sortInputs,
@@ -15,10 +15,10 @@ import type { CoinjoinRound, CoinjoinRoundOptions } from '../CoinjoinRound';
 import { CoinjoinTransactionData } from '../../types';
 import { SessionPhase } from '../../enums';
 
-const getTransactionData = async (
+const getTransactionData = (
     round: CoinjoinRound,
     options: CoinjoinRoundOptions,
-): Promise<CoinjoinTransactionData> => {
+): CoinjoinTransactionData => {
     const registeredInputs = getRoundEvents('InputAdded', round.coinjoinState.events);
     const registeredOutputs = mergePubkeys(
         getRoundEvents('OutputAdded', round.coinjoinState.events),
@@ -73,25 +73,10 @@ const getTransactionData = async (
             };
         });
 
-    // TODO: affiliate request should be done by coordinator
-    const affiliateRequest = await coordinator.getAffiliateRequest(
-        {
-            inputs: inputs.map(i => ({
-                prevout: { hash: i.hash, index: i.index },
-                script_pubkey: i.scriptPubKey,
-            })),
-            outputs: outputs.map(i => ({
-                amount: i.amount,
-                script_pubkey: i.scriptPubKey,
-            })),
-        },
-        { signal: options.signal, deadline: round.phaseDeadline },
-    );
-
     return {
         inputs,
         outputs,
-        affiliateRequest,
+        affiliateRequest: getAffiliateRequest(round.affiliateRequest),
     };
 };
 
@@ -168,7 +153,7 @@ export const transactionSigning = async (
             }
 
             round.setSessionPhase(SessionPhase.AwaitingCoinjoinTransaction);
-            const transactionData = await getTransactionData(round, options);
+            const transactionData = getTransactionData(round, options);
             const liquidityClues = await updateRawLiquidityClue(
                 round,
                 accounts,

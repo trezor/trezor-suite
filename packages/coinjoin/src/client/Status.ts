@@ -122,6 +122,12 @@ export class Status extends EventEmitter {
         const changed = this.compareStatus(status.roundStates);
         this.rounds = status.roundStates;
 
+        // add matching coinjoinRequest to changed round
+        changed.forEach(round => {
+            const roundRequest = status.affiliateInformation.coinjoinRequests[round.id];
+            round.affiliateRequest = roundRequest?.trezor;
+        });
+
         if (changed.length) {
             const statusEvent = {
                 rounds: status.roundStates,

@@ -1,7 +1,7 @@
 import { Status } from '../../src/client/Status';
 import { ROUND_REGISTRATION_END_OFFSET, STATUS_TIMEOUT } from '../../src/constants';
 import { createServer } from '../mocks/server';
-import { DEFAULT_ROUND } from '../fixtures/round.fixture';
+import { DEFAULT_ROUND, AFFILIATE_INFO } from '../fixtures/round.fixture';
 
 let server: Awaited<ReturnType<typeof createServer>>;
 
@@ -127,16 +127,19 @@ describe('Status', () => {
 
     it('Status start attempts, keep lifecycle regardless of failed requests', async done => {
         let request = 0;
+
         server?.addListener('test-request', ({ resolve }) => {
             if (request === 6) {
                 resolve({
                     roundStates: [{ ...DEFAULT_ROUND, phase: 1 }],
+                    affiliateInformation: AFFILIATE_INFO,
                 });
             } else {
                 setTimeout(
                     () => {
                         resolve({
                             roundStates: [DEFAULT_ROUND],
+                            affiliateInformation: AFFILIATE_INFO,
                         });
                     },
                     request % 2 === 0 ? 5000 : 0, // timeout error on every second request
@@ -195,6 +198,7 @@ describe('Status', () => {
             if (url.endsWith('/status')) {
                 resolve({
                     roundStates: [round],
+                    affiliateInformation: AFFILIATE_INFO,
                 });
             }
             resolve();
@@ -222,11 +226,13 @@ describe('Status', () => {
                                 phase: 2, // intentionally keep it in one phase, see pendingRound explanation below
                             },
                         ],
+                        affiliateInformation: AFFILIATE_INFO,
                     });
                 } else {
                     // remove all rounds from state
                     resolve({
                         roundStates: [],
+                        affiliateInformation: AFFILIATE_INFO,
                     });
                 }
             }

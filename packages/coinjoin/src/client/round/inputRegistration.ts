@@ -88,8 +88,20 @@ const registerInput = async (
             throw error;
         });
 
+    // Calculate mining and coordinator fee
+    // coordinator fee is 0 if input is remixed or amount is lower than or equal to plebsDontPayThreshold value
+    const { roundParameters } = round;
+    const coordinatorFee =
+        input.amount > roundParameters.coordinationFeeRate.plebsDontPayThreshold &&
+        !registrationData.isPayingZeroCoordinationFee
+            ? Math.floor(roundParameters.coordinationFeeRate.rate * input.amount)
+            : 0;
+    const miningFee = Math.floor((input.inputSize * roundParameters.miningFeeRate) / 1000);
+    const amount = input.amount - coordinatorFee - miningFee;
+    const vsize = roundParameters.maxVsizeAllocationPerAlice - input.inputSize;
+
     // store RegistrationData
-    input.setRegistrationData(registrationData);
+    input.setRegistrationData(registrationData, coordinatorFee > 0 ? 'trezor' : undefined);
     // and put input to prison
     prison.detain(input.outpoint, {
         roundId: round.id,
@@ -113,19 +125,6 @@ const registerInput = async (
             zeroVsizeCredentials.credentialsResponseValidation,
             { baseUrl: middlewareUrl }, // NOTE: without abort signal (should not be aborted)
         );
-
-        // Calculate mining and coordinator fee
-        // coordinator fee is 0 if input is remixed or amount is lower than or equal to plebsDontPayThreshold value
-        const { roundParameters } = round;
-        const coordinatorFee =
-            input.amount > roundParameters.coordinationFeeRate.plebsDontPayThreshold &&
-            !registrationData.isPayingZeroCoordinationFee
-                ? Math.floor(roundParameters.coordinationFeeRate.rate * input.amount)
-                : 0;
-
-        const miningFee = Math.floor((input.inputSize * roundParameters.miningFeeRate) / 1000);
-        const amount = input.amount - coordinatorFee - miningFee;
-        const vsize = roundParameters.maxVsizeAllocationPerAlice - input.inputSize;
 
         // use Credentials to get RealCredentials. use them in outputConfirmation
         const realAmountCredentials = await middleware.getRealCredentials(

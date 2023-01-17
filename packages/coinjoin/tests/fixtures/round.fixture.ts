@@ -87,6 +87,11 @@ export const DEFAULT_ROUND = {
     ).toUTCString(),
 } as Round;
 
+export const AFFILIATE_INFO = {
+    runningAffiliateServers: ['trezor'],
+    coinjoinRequests: {},
+};
+
 type CJRoundOptions = ConstructorParameters<typeof CoinjoinRound>[1];
 interface CreateCoinjoinRoundOptions extends CJRoundOptions {
     statusRound?: Partial<Round>;

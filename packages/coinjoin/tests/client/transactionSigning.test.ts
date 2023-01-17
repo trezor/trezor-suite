@@ -6,25 +6,14 @@ import { createInput } from '../fixtures/input.fixture';
 
 let server: Awaited<ReturnType<typeof createServer>>;
 
-// Temporary mock until affiliate request will be moved to coordinator
-jest.mock('cross-fetch', () => {
-    const originalModule = jest.requireActual('cross-fetch');
-    return {
-        __esModule: true,
-        ...originalModule,
-        default: (url: string, ...rest: any[]) => {
-            if (url.includes('get_coinjoin_request_suite')) {
-                return {
-                    status: 200,
-                    ok: true,
-                    headers: { get: () => 'json' },
-                    text: () => Promise.resolve(JSON.stringify({ fee_rate: 0.003 })),
-                };
-            }
-            return originalModule.default(url, ...rest);
-        },
-    };
-});
+const COINJOIN_REQUEST = {
+    fee_rate: 300000,
+    min_registrable_amount: 5000,
+    no_fee_threshold: 1000000,
+    coinjoin_flags_array: [0, 0],
+    mask_public_key: '0000',
+    signature: '0000',
+};
 
 describe('transactionSigning', () => {
     beforeAll(async () => {
@@ -49,6 +38,9 @@ describe('transactionSigning', () => {
 
         const response = await transactionSigning(
             {
+                affiliateRequest: Buffer.from(JSON.stringify(COINJOIN_REQUEST), 'utf-8').toString(
+                    'base64',
+                ),
                 id: '01',
                 phase: 3,
                 inputs: [
@@ -134,9 +126,7 @@ describe('transactionSigning', () => {
         );
         expect(response).toMatchObject({
             transactionData: {
-                affiliateRequest: {
-                    fee_rate: 0.003,
-                },
+                affiliateRequest: COINJOIN_REQUEST,
             },
             liquidityClues: [{ accountKey: 'account-A', rawLiquidityClue: 2000000 }],
         });
