@@ -162,6 +162,7 @@ const getCoinjoinAccountUtxos = (utxos: Account['utxo'], anonymitySet: any = {})
         .map(utxo => ({
             path: utxo.path,
             outpoint: getUtxoOutpoint(utxo),
+            address: utxo.address,
             amount: Number(utxo.amount),
             anonymityLevel: anonymitySet[utxo.address] || 1,
         })) || [];
