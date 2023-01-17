@@ -1,4 +1,4 @@
-import { PopupHandshake } from '@trezor/connect';
+import { PopupHandshake, UI_REQUEST, Device } from '@trezor/connect';
 
 import { TransportEventProps } from '../views/Transport';
 import { PassphraseEventProps } from '../views/Passphrase';
@@ -8,7 +8,9 @@ export type ConnectUIEventProps =
     | TransportEventProps
     | PassphraseEventProps
     | ErrorViewProps
-    | PopupHandshake;
+    | PopupHandshake
+    | { type: typeof UI_REQUEST.DEVICE_NEEDS_BACKUP; device: Device }
+    | { type: typeof UI_REQUEST.FIRMWARE_OUTDATED; device: Device };
 
 const reactChannel = 'react';
 

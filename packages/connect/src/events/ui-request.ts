@@ -147,6 +147,7 @@ export interface UiRequestAddressValidation {
     payload: UiRequestButtonData | undefined;
 }
 
+// todo: not used at the moment
 export interface UiRequestSetOperation {
     type: typeof UI_REQUEST.SET_OPERATION;
     payload: string;
