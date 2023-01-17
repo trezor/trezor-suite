@@ -251,3 +251,20 @@ export const restoreCoinjoinAccounts = [
         },
     },
 ];
+
+export const restoreCoinjoinSession = [
+    {
+        description: 'restore one paused coinjoin session',
+        client: 'btc',
+        state: {
+            accounts: [ACCOUNT],
+            coinjoin: {
+                accounts: [{ key: ACCOUNT.key, session: { ...SESSION, paused: true } }],
+            },
+        },
+        param: '12345',
+        result: {
+            actions: [COINJOIN.SESSION_RESTORE],
+        },
+    },
+];
