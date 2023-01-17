@@ -1,20 +1,37 @@
 import { Network } from '@trezor/utxo-lib';
 
-import { getScriptPubKeyFromAddress } from '../utils/coordinatorUtils';
+import { getScriptPubKeyFromAddress, prefixScriptPubKey } from '../utils/coordinatorUtils';
 import { AllowedScriptTypes } from '../types/coordinator';
 import { RawLiquidityClue } from '../types/middleware';
 import { RegisterAccountParams } from '../types';
 import { AccountUtxo, AccountAddress } from '../types/account';
+
+const enhanceAccountUtxo = (
+    utxos: Omit<AccountUtxo, 'scriptPubKey'>[],
+    network: Network,
+    scriptType: AllowedScriptTypes,
+): AccountUtxo[] =>
+    utxos.map(({ path, address, outpoint, amount, anonymityLevel }) => ({
+        path,
+        address,
+        scriptPubKey: prefixScriptPubKey(
+            getScriptPubKeyFromAddress(address, network, scriptType),
+            true,
+        ),
+        outpoint,
+        amount,
+        anonymityLevel,
+    }));
 
 const enhanceAccountAddresses = (
     addresses: Omit<AccountAddress, 'scriptPubKey'>[],
     network: Network,
     scriptType: AllowedScriptTypes,
 ): AccountAddress[] =>
-    addresses.flatMap(address => ({
-        path: address.path,
-        address: address.address,
-        scriptPubKey: getScriptPubKeyFromAddress(address.address, network, scriptType),
+    addresses.map(({ path, address }) => ({
+        path,
+        address,
+        scriptPubKey: getScriptPubKeyFromAddress(address, network, scriptType),
     }));
 
 export class Account {
@@ -36,7 +53,7 @@ export class Account {
         this.accountKey = account.accountKey;
         this.network = network;
         this.scriptType = account.scriptType;
-        this.utxos = account.utxos;
+        this.utxos = enhanceAccountUtxo(account.utxos, network, account.scriptType);
         this.changeAddresses = enhanceAccountAddresses(
             account.changeAddresses,
             network,
@@ -51,7 +68,7 @@ export class Account {
     }
 
     update(account: RegisterAccountParams) {
-        this.utxos = account.utxos;
+        this.utxos = enhanceAccountUtxo(account.utxos, this.network, account.scriptType);
         this.changeAddresses = enhanceAccountAddresses(
             account.changeAddresses,
             this.network,
