@@ -2,7 +2,7 @@ import React from 'react';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { Box, Text, VStack } from '@suite-native/atoms';
+import { Text, VStack } from '@suite-native/atoms';
 import { AccountsList } from '@suite-native/accounts';
 import {
     AppTabsParamList,
