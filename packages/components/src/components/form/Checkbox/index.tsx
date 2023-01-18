@@ -33,6 +33,7 @@ const IconWrapper = styled.div<
     border: 2px solid
         ${({ $color, isChecked, theme }) =>
             isChecked ? $color || theme.BG_GREEN : theme.STROKE_GREY};
+    transition: border 0.1s ease-in-out;
 
     :hover,
     :focus {
@@ -66,9 +67,7 @@ export interface CheckboxProps extends React.HTMLAttributes<HTMLDivElement> {
     color?: string;
     isChecked?: boolean;
     isDisabled?: boolean;
-    onClick: (
-        event: React.KeyboardEvent<HTMLElement> | React.MouseEvent<HTMLElement> | null,
-    ) => any;
+    onClick: React.EventHandler<React.SyntheticEvent>;
 }
 
 export const Checkbox = ({
