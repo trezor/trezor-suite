@@ -5,7 +5,7 @@ import * as backupActions from '@suite/actions/backup/backupActions';
 import { Translation } from '@suite-components/Translation';
 import { variables } from '@trezor/components';
 import { useActions, useSelector } from '@suite/hooks/suite';
-import BackupSeedCard from './BackupSeedCard';
+import { BackupSeedCard } from './BackupSeedCard';
 
 const Wrapper = styled.div`
     display: flex;
@@ -15,19 +15,20 @@ const Wrapper = styled.div`
 
 const Instructions = styled.div`
     text-align: center;
-    margin: 26px 0px;
+    margin: 16px 0px 26px;
     color: ${props => props.theme.TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.FONT_SIZE.TINY};
 `;
 
 const Items = styled.div`
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
     width: 100%;
-    justify-content: space-between;
 
     @media only screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
-        flex-direction: column;
+        grid-template-columns: 1fr;
     }
 `;
 

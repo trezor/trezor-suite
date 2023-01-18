@@ -14,14 +14,12 @@ const StyledCheckbox = styled(Checkbox)`
 `;
 
 const Card = styled.div<{ checked: boolean }>`
-    display: flex;
-    padding: 12px 24px;
-
+    position: relative;
+    padding: 24px;
     border-radius: 10px;
     border: solid 1.5px ${({ theme, checked }) => (checked ? theme.TYPE_GREEN : theme.STROKE_GREY)};
     transition: box-shadow 0.2s ease-in-out, border 0.2s ease-in-out;
     cursor: pointer;
-    transition: all 0.2s ease-in-out;
 
     :hover {
         box-shadow: 0 4px 10px 0 ${props => props.theme.BOX_SHADOW_OPTION_CARD};
@@ -33,10 +31,10 @@ const Card = styled.div<{ checked: boolean }>`
         }
     }
 
-    @media only screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
-        flex-direction: row;
+    @media only screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
+        display: flex;
         align-items: center;
-        width: 100%;
+        padding-right: 56px;
     }
 `;
 
@@ -50,7 +48,6 @@ const Content = styled.div`
     display: flex;
     flex-direction: column;
     flex: 1;
-    margin-top: 24px;
 
     @media only screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
         margin-top: 0px;
@@ -62,6 +59,10 @@ const IconWrapper = styled.div`
     margin-bottom: 30px;
 
     @media only screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
+        margin-bottom: 20px;
+    }
+
+    @media only screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
         display: none;
     }
 `;
@@ -102,5 +103,3 @@ export const BackupSeedCard = ({
         </Card>
     );
 };
-
-export default BackupSeedCard;
