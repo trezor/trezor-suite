@@ -8,7 +8,7 @@ const StyledCheckbox = styled(Checkbox)`
     right: 0;
     top: 20px;
 
-    @media only screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
+    ${variables.SCREEN_QUERY.MOBILE} {
         top: auto;
     }
 `;
@@ -22,8 +22,8 @@ const Card = styled.div<{ checked: boolean }>`
     cursor: pointer;
 
     :hover {
-        box-shadow: 0 4px 10px 0 ${props => props.theme.BOX_SHADOW_OPTION_CARD};
-        border: 1.5px solid ${props => (props.checked ? props.theme.TYPE_GREEN : 'transparent')};
+        box-shadow: 0 4px 10px 0 ${({ theme }) => theme.BOX_SHADOW_OPTION_CARD};
+        border: 1.5px solid ${({ theme, checked }) => (checked ? theme.TYPE_GREEN : 'transparent')};
 
         ${StyledCheckbox} > :first-child {
             border: ${({ theme }) =>
@@ -31,7 +31,7 @@ const Card = styled.div<{ checked: boolean }>`
         }
     }
 
-    @media only screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
+    ${variables.SCREEN_QUERY.MOBILE} {
         display: flex;
         align-items: center;
         padding-right: 56px;
@@ -39,7 +39,7 @@ const Card = styled.div<{ checked: boolean }>`
 `;
 
 const Label = styled.span`
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.FONT_SIZE.NORMAL};
 `;
@@ -49,7 +49,7 @@ const Content = styled.div`
     flex-direction: column;
     flex: 1;
 
-    @media only screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
+    ${variables.SCREEN_QUERY.BELOW_TABLET} {
         margin-top: 0px;
     }
 `;
@@ -58,11 +58,11 @@ const IconWrapper = styled.div`
     display: flex;
     margin-bottom: 30px;
 
-    @media only screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
+    ${variables.SCREEN_QUERY.BELOW_TABLET} {
         margin-bottom: 20px;
     }
 
-    @media only screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
+    ${variables.SCREEN_QUERY.MOBILE} {
         display: none;
     }
 `;
