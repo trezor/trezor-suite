@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 import { FiatCurrency } from 'suite-common/suite-config/src';
 
-import { Blockchain, WalletAccountTransaction } from '@suite-common/wallet-types/src';
+import { WalletAccountTransaction } from '@suite-common/wallet-types/src';
 import { Card, VStack } from '@suite-native/atoms';
 
 import { TransactionDetailParametersSheet } from './TransactionDetailParametersSheet';
@@ -13,13 +13,11 @@ type SheetType = 'parameters' | 'values' | 'inputs';
 
 type TransactionDetailSheetsProps = {
     transaction: WalletAccountTransaction;
-    blockchain: Blockchain;
     fiatCurrency: FiatCurrency;
 };
 
 export const TransactionDetailSheets = ({
     transaction,
-    blockchain,
     fiatCurrency,
 }: TransactionDetailSheetsProps) => {
     const [expandedSheet, setExpandedSheet] = useState<SheetType | null>(null);
@@ -33,7 +31,6 @@ export const TransactionDetailSheets = ({
                 <TransactionDetailParametersSheet
                     isVisible={expandedSheet === 'parameters'}
                     transaction={transaction}
-                    blockchain={blockchain}
                     onSheetVisibilityChange={() => toggleSheet('parameters')}
                 />
                 <TransactionDetailValuesSheet

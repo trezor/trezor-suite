@@ -1,4 +1,4 @@
-import { PayloadAction } from '@reduxjs/toolkit';
+import { createSelector, PayloadAction } from '@reduxjs/toolkit';
 
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import { networksCompatibility, NetworkSymbol } from '@suite-common/wallet-config';
@@ -166,3 +166,18 @@ export const selectBlockchainState = (state: BlockchainRootState) => state.walle
 export const selectNetworkBlockchainInfo =
     (networkSymbol: NetworkSymbol) => (state: BlockchainRootState) =>
         state.wallet.blockchain[networkSymbol];
+
+export const selectBlockchainHeight = createSelector(
+    selectBlockchainState,
+    (_state: BlockchainRootState, symbol: NetworkSymbol) => symbol,
+    (blockchainInfo, symbol) => blockchainInfo[symbol].blockHeight,
+);
+
+export const selectBlockchainExplorerBySymbol = createSelector(
+    selectBlockchainState,
+    (_state: BlockchainRootState, symbol?: NetworkSymbol) => symbol,
+    (blockchain, symbol) => {
+        if (!symbol) return null;
+        return blockchain[symbol].explorer;
+    },
+);

@@ -1,12 +1,14 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 
 import * as Clipboard from 'expo-clipboard';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Blockchain, WalletAccountTransaction } from '@suite-common/wallet-types';
+import { WalletAccountTransaction } from '@suite-common/wallet-types';
 import { Box, Card, IconButton, Text, VStack } from '@suite-native/atoms';
 import { Icon } from '@trezor/icons';
 import { getConfirmations, getFeeRate, getFeeUnits } from '@suite-common/wallet-utils';
+import { BlockchainRootState, selectBlockchainHeight } from '@suite-common/wallet-core';
 
 import { TransactionDetailSheet } from './TransactionDetailSheet';
 import { TransactionDetailRow } from './TransactionDetailRow';
@@ -15,7 +17,6 @@ type TransactionDetailParametersSheetProps = {
     isVisible: boolean;
     transaction: WalletAccountTransaction;
     onSheetVisibilityChange: () => void;
-    blockchain: Blockchain;
 };
 
 const transactionIdStyle = prepareNativeStyle(_ => ({
@@ -26,11 +27,16 @@ export const TransactionDetailParametersSheet = ({
     isVisible,
     onSheetVisibilityChange,
     transaction,
-    blockchain,
 }: TransactionDetailParametersSheetProps) => {
     const { applyStyle } = useNativeStyles();
+    const blockchainHeight = useSelector((state: BlockchainRootState) =>
+        selectBlockchainHeight(state, transaction.symbol),
+    );
+
     const handleClickCopy = () => Clipboard.setStringAsync(transaction.txid);
-    const confirmationsCount = getConfirmations(transaction, blockchain.blockHeight);
+
+    const confirmationsCount = getConfirmations(transaction, blockchainHeight);
+
     return (
         <TransactionDetailSheet
             isVisible={isVisible}
