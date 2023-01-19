@@ -13,7 +13,6 @@ import {
 import {
     BlockchainRootState,
     selectBlockchainExplorerBySymbol,
-    selectBlockchainState,
     selectTransactionByTxid,
 } from '@suite-common/wallet-core';
 import { formatNetworkAmount, toFiatCurrency } from '@suite-common/wallet-utils';

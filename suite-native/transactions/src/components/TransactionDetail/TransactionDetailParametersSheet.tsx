@@ -8,7 +8,7 @@ import { WalletAccountTransaction } from '@suite-common/wallet-types';
 import { Box, Card, IconButton, Text, VStack } from '@suite-native/atoms';
 import { Icon } from '@trezor/icons';
 import { getConfirmations, getFeeRate, getFeeUnits } from '@suite-common/wallet-utils';
-import { BlockchainRootState, selectBlockchainHeight } from '@suite-common/wallet-core';
+import { BlockchainRootState, selectBlockchainHeightBySymbol } from '@suite-common/wallet-core';
 
 import { TransactionDetailSheet } from './TransactionDetailSheet';
 import { TransactionDetailRow } from './TransactionDetailRow';
@@ -30,7 +30,7 @@ export const TransactionDetailParametersSheet = ({
 }: TransactionDetailParametersSheetProps) => {
     const { applyStyle } = useNativeStyles();
     const blockchainHeight = useSelector((state: BlockchainRootState) =>
-        selectBlockchainHeight(state, transaction.symbol),
+        selectBlockchainHeightBySymbol(state, transaction.symbol),
     );
 
     const handleClickCopy = () => Clipboard.setStringAsync(transaction.txid);
