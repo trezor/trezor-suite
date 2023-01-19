@@ -68,6 +68,7 @@ export interface SuiteSettings {
     language: Locale;
     torOnionLinks: boolean;
     isCoinjoinExplanationHidden: boolean;
+    isCoinjoinCexWarningHidden: boolean;
     debug: DebugModeOptions;
     autodetect: AutodetectSettings;
 }
@@ -110,6 +111,7 @@ const initialState: SuiteState = {
         language: ensureLocale('en'),
         torOnionLinks: isWeb(),
         isCoinjoinExplanationHidden: false,
+        isCoinjoinCexWarningHidden: false,
         debug: {
             invityServerEnvironment: undefined,
             showDebugMenu: false,
@@ -220,6 +222,9 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
 
             case SUITE.SHOW_COINJOIN_EXPLANATION:
                 draft.settings.isCoinjoinExplanationHidden = action.payload;
+                break;
+            case SUITE.COINJOIN_CEX_WARNING:
+                draft.settings.isCoinjoinCexWarningHidden = action.payload;
                 break;
 
             case SUITE.LOCK_UI:

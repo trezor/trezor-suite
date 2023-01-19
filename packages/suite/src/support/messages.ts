@@ -7816,7 +7816,19 @@ export default defineMessages({
     },
     TR_COINJOIN_STEP_3_DESCRIPTION: {
         id: 'TR_COINJOIN_STEP_3_DESCRIPTION',
-        defaultMessage: 'Your Bitcoin will be mixed with other peoples’ to make it untracable. ',
+        defaultMessage: 'Your Bitcoin will be mixed with other peoples’ to make it untracable.',
+    },
+    TR_COINJOIN_CEX_WARNING: {
+        id: 'TR_COINJOIN_CEX_WARNING',
+        defaultMessage: 'Exchanges may not serve you if you use CoinJoin',
+    },
+    TR_COINJOIN_CEX_EXPLANATION: {
+        id: 'TR_COINJOIN_CEX_EXPLANATION',
+        defaultMessage: 'They may reject your deposits or withdrawals and blacklist you',
+    },
+    TR_COINJOIN_CEX_DISMISS: {
+        id: 'TR_COINJOIN_CEX_DISMISS',
+        defaultMessage: 'I Understand',
     },
     TR_ZERO_PHISHING_TOOLTIP: {
         id: 'TR_ZERO_PHISHING_TOOLTIP',

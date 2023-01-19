@@ -5,16 +5,20 @@ import { useDevice, useSelector, useActions } from '@suite-hooks';
 import * as receiveActions from '@wallet-actions/receiveActions';
 
 import { selectPendingAccountAddresses } from '@suite-common/wallet-core';
+import { selectDevice } from '@suite-reducers/suiteReducer';
 
 import { FreshAddress } from './components/FreshAddress';
 import { UsedAddresses } from './components/UsedAddresses';
+import { CoinjoinCexWarning } from './components/CoinjoinCexWarning';
 
 const Receive = () => {
-    const { selectedAccount, receive, device } = useSelector(state => ({
-        selectedAccount: state.wallet.selectedAccount,
-        receive: state.wallet.receive,
-        device: state.suite.device,
-    }));
+    const isCexWarningHidden = useSelector(
+        state => state.suite.settings.isCoinjoinCexWarningHidden,
+    );
+    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
+    const receive = useSelector(state => state.wallet.receive);
+    const device = useSelector(selectDevice);
+
     const { showAddress } = useActions({
         showAddress: receiveActions.showAddress,
     });
@@ -38,6 +42,9 @@ const Receive = () => {
     return (
         <WalletLayout title="TR_NAV_RECEIVE" account={selectedAccount}>
             <WalletLayoutHeader title="TR_NAV_RECEIVE" />
+
+            {!isCexWarningHidden && <CoinjoinCexWarning />}
+
             <FreshAddress
                 account={account}
                 addresses={receive}
@@ -46,6 +53,7 @@ const Receive = () => {
                 locked={isDeviceLocked}
                 pendingAddresses={pendingAddresses}
             />
+
             <UsedAddresses
                 account={account}
                 addresses={receive}

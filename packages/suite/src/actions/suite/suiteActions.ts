@@ -61,6 +61,7 @@ export type SuiteAction =
     | { type: typeof SUITE.TOR_BOOTSTRAP; payload: TorBootstrap | null }
     | { type: typeof SUITE.ONION_LINKS; payload: boolean }
     | { type: typeof SUITE.SHOW_COINJOIN_EXPLANATION; payload: boolean }
+    | { type: typeof SUITE.COINJOIN_CEX_WARNING; payload: boolean }
     | { type: typeof SUITE.LOCK_UI; payload: boolean }
     | ReturnType<typeof lockDevice>
     | { type: typeof SUITE.LOCK_ROUTER; payload: boolean }
@@ -282,6 +283,12 @@ export const toggleCoinjoinExplanation = () => (dispatch: Dispatch, getState: Ge
         payload: !currentState,
     });
 };
+
+export const hideCoinjoinCexWarning = () => (dispatch: Dispatch) =>
+    dispatch({
+        type: SUITE.COINJOIN_CEX_WARNING,
+        payload: true,
+    });
 
 /**
  * Called from `suiteMiddleware`
