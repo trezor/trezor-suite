@@ -37,7 +37,7 @@ const StyledImage = styled(props => <Image {...props} />)`
 
 const SecurityItem = styled.div`
     color: ${props => props.theme.TYPE_LIGHT_GREY};
-    font-size: ${variables.FONT_SIZE.BUTTON};
+    font-size: ${variables.FONT_SIZE.SMALL};
 
     & + & {
         margin-top: 12px;

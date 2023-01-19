@@ -62,7 +62,6 @@ export const FONT_SIZE = {
     NORMAL: '16px',
     SMALL: '14px',
     TINY: '12px',
-    BUTTON: '14px',
     H1: '36px',
     H2: '24px',
     H3: '20px',
