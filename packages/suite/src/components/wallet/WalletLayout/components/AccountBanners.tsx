@@ -16,8 +16,8 @@ const BannersWrapper = styled.div`
     display: flex;
     flex-direction: column;
 
-    :has(*) {
-        margin-bottom: 10px;
+    > div:last-child {
+        margin-bottom: 24px;
     }
 `;
 
