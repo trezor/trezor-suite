@@ -6,7 +6,7 @@ import * as metadataActions from '@suite-actions/metadataActions';
 import * as comparisonUtils from '@suite-utils/comparisonUtils';
 import { getSelectedAccount } from '@wallet-utils/accountUtils';
 import { accountsActions, blockchainActions } from '@suite-common/wallet-core';
-import { getAccountNetwork } from '@suite-common/wallet-utils';
+import { getNetwork } from '@suite-common/wallet-utils';
 import { SelectedAccountStatus } from '@suite-common/wallet-types';
 
 import { Action, Dispatch, GetState, AppState } from '@suite-types';
@@ -57,7 +57,7 @@ const getAccountState = (state: AppState): SelectedAccountStatus => {
                   symbol: discovery.networks[0],
               };
 
-    const network = getAccountNetwork(params)!;
+    const network = getNetwork(params.symbol, params.accountType)!;
 
     // account cannot exists since requested network is not selected in settings/wallet
     if (!discovery.networks.find(n => n === network.symbol)) {

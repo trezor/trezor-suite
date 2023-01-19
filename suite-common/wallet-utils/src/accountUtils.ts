@@ -4,6 +4,8 @@ import { AccountInfo, AccountAddresses, AccountAddress, AccountTransaction } fro
 import { arrayDistinct, bufferUtils } from '@trezor/utils';
 import {
     networksCompatibility as NETWORKS,
+    isNetworkSymbol,
+    getNetwork,
     Network,
     NetworkFeature,
     NetworkSymbol,
@@ -26,6 +28,8 @@ import {
 } from '@trezor/urls';
 
 import { toFiatCurrency } from './fiatConverterUtils';
+
+export { isNetworkSymbol, getNetwork };
 
 export const isUtxoBased = (account: Account) =>
     account.networkType === 'bitcoin' || account.networkType === 'cardano';
@@ -225,11 +229,7 @@ export const getAccountTypeUrl = (path: string) => {
     }
 };
 
-export const getAccountDecimals = (symbol: NetworkSymbol) => {
-    const network = NETWORKS.find(n => n.symbol === symbol);
-
-    return network?.decimals;
-};
+export const getAccountDecimals = (symbol: NetworkSymbol) => getNetwork(symbol)?.decimals;
 
 export const stripNetworkAmount = (amount: string, decimals: number) =>
     new BigNumber(amount).toFixed(decimals, 1);
@@ -348,17 +348,6 @@ export const getAllAccounts = (deviceState: string | typeof undefined, accounts:
     if (!deviceState) return [];
     return accounts.filter(a => a.deviceState === deviceState && a.visible);
 };
-
-export const getNetwork = (symbol: string): Network | null =>
-    NETWORKS.find(c => c.symbol === symbol) || null;
-
-export const getAccountNetwork = ({
-    symbol,
-    accountType,
-}: Pick<Account, 'symbol' | 'accountType'>) =>
-    NETWORKS.find(n => n.symbol === symbol && (n.accountType || 'normal') === accountType);
-
-export const isNetworkSymbol = (symbol: string): symbol is NetworkSymbol => !!getNetwork(symbol);
 
 /**
  * Returns a string used as an index to separate txs for given account inside a transactions reducer
@@ -545,10 +534,7 @@ export const getTotalFiatBalance = (
     return instanceBalance;
 };
 
-export const isTestnet = (symbol: NetworkSymbol) => {
-    const net = NETWORKS.find(n => n.symbol === symbol);
-    return net?.testnet ?? false;
-};
+export const isTestnet = (symbol: NetworkSymbol) => getNetwork(symbol)?.testnet ?? false;
 
 export const isAccountOutdated = (account: Account, freshInfo: AccountInfo) => {
     // changed transaction count when app is running during tx confirmation

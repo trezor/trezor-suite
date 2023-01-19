@@ -1,9 +1,9 @@
 import { createSelector } from '@reduxjs/toolkit';
 import BigNumber from 'bignumber.js';
 
-import { Network, networksCompatibility, NetworkSymbol } from '@suite-common/wallet-config';
+import { Network, NetworkSymbol } from '@suite-common/wallet-config';
 import { selectAccounts, selectCoins } from '@suite-common/wallet-core';
-import { toFiatCurrency } from '@suite-common/wallet-utils';
+import { getNetwork, toFiatCurrency } from '@suite-common/wallet-utils';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 
 type Assets = Partial<Record<NetworkSymbol, string[]>>;
@@ -56,9 +56,7 @@ export const selectAssetsWithBalances = createSelector(
     (networks, formattedAssets, coins, fiatCurrency): AssetType[] =>
         networks
             .map((networkSymbol: NetworkSymbol) => {
-                const network = networksCompatibility.find(
-                    n => n.symbol === networkSymbol && !n.accountType,
-                );
+                const network = getNetwork(networkSymbol);
                 if (!network) {
                     console.error('unknown network');
                     return;

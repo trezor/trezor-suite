@@ -1,7 +1,7 @@
 import { Account, Network } from '@wallet-types';
-import { NETWORKS } from '@wallet-config';
 import TrezorConnect from '@trezor/connect';
 import { TrezorDevice } from '@suite-types';
+import { getNetwork } from '@suite-common/wallet-utils';
 
 const suiteToInvitySymbols = [
     {
@@ -105,14 +105,8 @@ export const getComposeAddressPlaceholder = async (
             // use legacy (the most expensive) address for fee calculation
             // as we do not know what address type the exchange will use
             const legacy =
-                NETWORKS.find(
-                    network =>
-                        network.symbol === account.symbol && network.accountType === 'legacy',
-                ) ||
-                NETWORKS.find(
-                    network =>
-                        network.symbol === account.symbol && network.accountType === 'segwit',
-                ) ||
+                getNetwork(account.symbol, 'legacy') ||
+                getNetwork(account.symbol, 'segwit') ||
                 network;
             if (legacy && device) {
                 // try to get the already discovered legacy account

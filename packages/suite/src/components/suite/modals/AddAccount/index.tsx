@@ -9,6 +9,7 @@ import { useSelector, useActions } from '@suite-hooks';
 import { accountsActions } from '@suite-common/wallet-core';
 import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
 import * as routerActions from '@suite-actions/routerActions';
+import { getNetwork } from '@suite-common/wallet-utils';
 import { arrayPartition } from '@trezor/utils';
 
 import { AccountTypeSelect } from './components/AccountTypeSelect';
@@ -79,7 +80,7 @@ export const AddAccount = ({ device, onCancel, symbol, noRedirect }: Props) => {
 
     const handleNetworkSelection = (symbol?: Network['symbol']) => {
         if (symbol) {
-            const networkToSelect = NETWORKS.find(n => n.symbol === symbol);
+            const networkToSelect = getNetwork(symbol);
 
             // To prevent account type selection reset
             const alreadySelected =
