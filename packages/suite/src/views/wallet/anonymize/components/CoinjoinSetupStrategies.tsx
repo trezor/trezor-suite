@@ -1,71 +1,93 @@
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 
-import { DEFAULT_MAX_MINING_FEE, RECOMMENDED_SKIP_ROUNDS } from '@suite/services/coinjoin';
-import { selectAccountTransactions } from '@suite-common/wallet-core';
+import { RECOMMENDED_SKIP_ROUNDS } from '@suite/services/coinjoin';
 import { Account } from '@suite-common/wallet-types';
-import { TooltipSymbol, Translation, TrezorLink } from '@suite-components';
+import { Translation, TrezorLink } from '@suite-components';
 import { Error } from '@suite-components/Error';
-import { useActions, useSelector, useDevice } from '@suite-hooks';
-import { Card, Checkbox, Link, TooltipButton, variables } from '@trezor/components';
+import { useSelector, useDevice } from '@suite-hooks';
+import { Button, Card, Checkbox, Icon, Image, Link, Tooltip, variables } from '@trezor/components';
 import { DATA_TOS_COINJOIN_URL, ZKSNACKS_TERMS_URL } from '@trezor/urls';
 import { startCoinjoinSession } from '@wallet-actions/coinjoinAccountActions';
-import { CryptoAmountWithHeader } from '@wallet-components/PrivacyAccount/CryptoAmountWithHeader';
-
 import {
     selectCurrentCoinjoinBalanceBreakdown,
     selectCurrentTargetAnonymity,
     selectIsCoinjoinBlockedByTor,
 } from '@wallet-reducers/coinjoinReducer';
-import { calculateServiceFee, getMaxRounds } from '@wallet-utils/coinjoinUtils';
-import { CoinjoinCustomStrategy } from './CoinjoinCustomStrategy';
-import { CoinjoinDefaultStrategy, CoinJoinStrategy } from './CoinjoinDefaultStrategy';
+import { getMaxRounds } from '@wallet-utils/coinjoinUtils';
 import {
     Feature,
     selectIsFeatureDisabled,
     selectFeatureMessageContent,
 } from '@suite-reducers/messageSystemReducer';
+import { Tile } from './Tile';
 
 const StyledCard = styled(Card)`
-    margin-bottom: 8px;
+    padding: 24px;
 `;
 
 const Row = styled.div`
-    border-bottom: 1px solid ${({ theme }) => theme.STROKE_GREY};
     display: flex;
-    gap: 50px;
-    margin: 20px 0;
-    padding-bottom: 30px;
 `;
 
-const StyledCryptoAmountWithHeader = styled(CryptoAmountWithHeader)`
-    flex-basis: 50%;
-`;
-
-const Heading = styled.div`
+const TopRow = styled(Row)`
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.FONT_SIZE.H3};
+    justify-content: space-between;
+    margin-bottom: 32px;
+`;
+
+const TopFeeRow = styled(Row)`
+    justify-content: space-between;
+    margin-bottom: 8px;
+`;
+
+const BottomFeeRow = styled(Row)`
+    gap: 4px;
+`;
+
+const FeeWrapper = styled.div`
+    border-bottom: 1px solid ${({ theme }) => theme.STROKE_GREY};
+    border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
+    margin: 24px 0;
+    padding: 16px 0;
+`;
+
+const FeeHeading = styled.div`
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
-const ConfirmationsHeading = styled(Heading)`
-    margin-bottom: 4px;
+const FeeValue = styled.div`
+    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
 `;
 
-const AmountHeading = styled.div`
-    color: ${({ theme }) => theme.TYPE_GREEN};
+const FeeNote = styled.p`
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    font-size: ${variables.FONT_SIZE.SMALL};
 `;
 
-const CheckboxWrapper = styled.div`
-    align-items: center;
-    display: flex;
-    margin: 16px 0;
+const Tiles = styled.div`
+    display: grid;
+    gap: 12px;
+    grid-template-columns: repeat(3, 1fr);
+`;
+
+const ImageWrapper = styled.div`
+    height: 100px;
+`;
+
+const TrezorImage = styled(Image)`
+    margin-top: 4px;
 `;
 
 const StyledCheckbox = styled(Checkbox)`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
-const StyledTooltipButton = styled(TooltipButton)`
+const StyledButton = styled(Button)`
     margin: 24px auto 0 auto;
 
     :disabled {
@@ -73,24 +95,34 @@ const StyledTooltipButton = styled(TooltipButton)`
     }
 `;
 
+const tiles = [
+    {
+        title: <Translation id="TR_COINJOIN_TILE_1_TITLE" />,
+        description: <Translation id="TR_COINJOIN_TILE_1_DESCRIPTION" />,
+        image: <Image image="CLOCK" height={80} />,
+    },
+    {
+        title: <Translation id="TR_COINJOIN_TILE_2_TITLE" />,
+        description: <Translation id="TR_COINJOIN_TILE_2_DESCRIPTION" />,
+        image: <TrezorImage image="CONNECTED_T" height={88} />,
+    },
+    {
+        title: <Translation id="TR_COINJOIN_TILE_3_TITLE" />,
+        description: <Translation id="TR_COINJOIN_TILE_3_DESCRIPTION" />,
+        image: <Image image="BACKUP" height={80} />,
+    },
+];
+
 interface CoinjoinSetupStrategiesProps {
     account: Account;
 }
 
 export const CoinjoinSetupStrategies = ({ account }: CoinjoinSetupStrategiesProps) => {
-    const [strategy, setStrategy] = useState<CoinJoinStrategy>('recommended');
-    const [customMaxFee, setCustomMaxFee] = useState(DEFAULT_MAX_MINING_FEE);
-    const [customSkipRounds, setCustomSkipRounds] = useState(true);
-    const [connectedConfirmed, setConnectedConfirmed] = useState(false);
     const [termsConfirmed, setTermsConfirmed] = useState(false);
 
-    const actions = useActions({
-        startCoinjoinSession,
-    });
     const coordinatorData = useSelector(state => state.wallet.coinjoin.clients[account.symbol]);
     const targetAnonymity = useSelector(selectCurrentTargetAnonymity);
     const { notAnonymized } = useSelector(selectCurrentCoinjoinBalanceBreakdown);
-    const accountTransactions = useSelector(state => selectAccountTransactions(state, account.key));
     const { isLocked } = useDevice();
     const isCoinJoinBlockedByTor = useSelector(selectIsCoinjoinBlockedByTor);
     const isCoinJoinDisabledByFeatureFlag = useSelector(state =>
@@ -99,6 +131,8 @@ export const CoinjoinSetupStrategies = ({ account }: CoinjoinSetupStrategiesProp
     const featureMessageContent = useSelector(state =>
         selectFeatureMessageContent(state, Feature.coinjoin),
     );
+
+    const dispatch = useDispatch();
 
     const anonymitySet = account.addresses?.anonymitySet;
 
@@ -112,21 +146,14 @@ export const CoinjoinSetupStrategies = ({ account }: CoinjoinSetupStrategiesProp
         );
     }
 
-    const serviceFee = calculateServiceFee(
-        account.utxo || [],
-        coordinatorData.coordinationFeeRate,
-        anonymitySet,
-        accountTransactions,
-    );
     const maxRounds = getMaxRounds(targetAnonymity, anonymitySet);
-    const isCustom = strategy === 'custom';
-    const allChecked = connectedConfirmed && termsConfirmed;
     const allAnonymized = notAnonymized === '0';
+    const deviceIsLockedOrDisconnected = isLocked(false);
 
     const isDisabled =
-        !allChecked ||
+        !termsConfirmed ||
         allAnonymized ||
-        isLocked(false) ||
+        deviceIsLockedOrDisconnected ||
         isCoinJoinBlockedByTor ||
         isCoinJoinDisabledByFeatureFlag;
 
@@ -134,101 +161,67 @@ export const CoinjoinSetupStrategies = ({ account }: CoinjoinSetupStrategiesProp
         if (isCoinJoinDisabledByFeatureFlag && featureMessageContent) {
             return featureMessageContent;
         }
+        if (deviceIsLockedOrDisconnected) {
+            return <Translation id="TR_UNAVAILABLE_COINJOIN_DEVICE_DISCONNECTED" />;
+        }
         if (isCoinJoinBlockedByTor) {
             return <Translation id="TR_UNAVAILABLE_COINJOIN_TOR_DISABLE_TOOLTIP" />;
         }
         if (allAnonymized) {
             return <Translation id="TR_NOTHING_TO_ANONYMIZE" />;
         }
-        if (!allChecked) {
+        if (!termsConfirmed) {
             return <Translation id="TR_CONFIRM_CONDITIONS" />;
         }
     };
 
-    const reset = () => {
-        setStrategy('recommended');
-        setCustomMaxFee(DEFAULT_MAX_MINING_FEE);
-        setCustomSkipRounds(true);
-    };
-    const toggleConnectConfirmation = () => setConnectedConfirmed(current => !current);
     const toggleTermsConfirmation = () => setTermsConfirmed(current => !current);
     const anonymize = () =>
-        actions.startCoinjoinSession(account, {
-            maxCoordinatorFeeRate: coordinatorData.coordinationFeeRate.rate,
-            maxFeePerKvbyte:
-                (isCustom ? customMaxFee : coordinatorData.feeRatesMedians[strategy]) * 1000, // transform to kvB
-            maxRounds,
-            skipRounds:
-                (strategy === 'custom' && customSkipRounds) || strategy === 'recommended'
-                    ? RECOMMENDED_SKIP_ROUNDS
-                    : undefined,
-            targetAnonymity,
-        });
+        dispatch(
+            startCoinjoinSession(account, {
+                maxCoordinatorFeeRate: coordinatorData.coordinationFeeRate.rate,
+                maxFeePerKvbyte: coordinatorData.feeRatesMedians.recommended * 1000, // transform to kvB
+                maxRounds,
+                skipRounds: RECOMMENDED_SKIP_ROUNDS,
+                targetAnonymity,
+            }),
+        );
 
     return (
         <>
             <StyledCard>
-                <Heading>
-                    <Translation id="TR_START_ANONYMISATION" />
-                </Heading>
-                <Row>
-                    <StyledCryptoAmountWithHeader
-                        header={
-                            <AmountHeading>
-                                <Translation id="TR_AMOUNT" />
-                            </AmountHeading>
-                        }
-                        value={notAnonymized}
-                        symbol={account.symbol}
-                    />
-                    <StyledCryptoAmountWithHeader
-                        header={
-                            <AmountHeading>
-                                <Translation id="TR_SERVICE_FEE" />
-                            </AmountHeading>
-                        }
-                        value={serviceFee}
-                        symbol={account.symbol}
-                        note={<Translation id="TR_SERVICE_FEE_NOTE" />}
-                    />
-                </Row>
-                {isCustom ? (
-                    <CoinjoinCustomStrategy
-                        maxRounds={maxRounds}
-                        maxFee={customMaxFee}
-                        skipRounds={customSkipRounds}
-                        setMaxFee={setCustomMaxFee}
-                        setSkipRounds={setCustomSkipRounds}
-                        reset={reset}
-                    />
-                ) : (
-                    <CoinjoinDefaultStrategy
-                        maxRounds={maxRounds}
-                        feeRatesMedians={coordinatorData.feeRatesMedians}
-                        strategy={strategy}
-                        setStrategy={setStrategy}
-                    />
-                )}
-            </StyledCard>
-
-            <StyledCard>
-                <ConfirmationsHeading>
-                    <Translation id="TR_CONFIRMATIONS" />
-                </ConfirmationsHeading>
-                <CheckboxWrapper>
-                    <StyledCheckbox
-                        isChecked={connectedConfirmed}
-                        onClick={toggleConnectConfirmation}
-                        data-test="@coinjoin/checkbox-1"
-                    >
-                        <Translation id="TR_DEVICE_CONNECTED_CONFIRMATION" />
-                    </StyledCheckbox>
-                    <TooltipSymbol content={<Translation id="TR_DEVICE_CONNECTED_TOOLTIP" />} />
-                </CheckboxWrapper>
+                <TopRow>
+                    <Translation id="TR_COINJOIN_SETUP" />
+                </TopRow>
+                <Tiles>
+                    {tiles.map(tile => (
+                        <Tile
+                            key={tile.title.props.id}
+                            title={tile.title}
+                            description={tile.description}
+                        >
+                            <ImageWrapper>{tile.image}</ImageWrapper>
+                        </Tile>
+                    ))}
+                </Tiles>
+                <FeeWrapper>
+                    <TopFeeRow>
+                        <FeeHeading>
+                            <Translation id="TR_SERVICE_FEE" />
+                        </FeeHeading>
+                        <FeeValue>0.3%</FeeValue>
+                    </TopFeeRow>
+                    <BottomFeeRow>
+                        <Icon icon="INFO" size={16} />
+                        <FeeNote>
+                            <Translation id="TR_SERVICE_FEE_NOTE" />
+                        </FeeNote>
+                    </BottomFeeRow>
+                </FeeWrapper>
                 <StyledCheckbox
                     isChecked={termsConfirmed}
                     onClick={toggleTermsConfirmation}
-                    data-test="@coinjoin/checkbox-2"
+                    data-test="@coinjoin/checkbox"
                 >
                     <Translation
                         id="TR_TERMS_AND_PRIVACY_CONFIRMATION"
@@ -248,13 +241,11 @@ export const CoinjoinSetupStrategies = ({ account }: CoinjoinSetupStrategiesProp
                 </StyledCheckbox>
             </StyledCard>
 
-            <StyledTooltipButton
-                onClick={anonymize}
-                isDisabled={isDisabled}
-                tooltipContent={getButtonTooltipMessage()}
-            >
-                <Translation id="TR_ANONYMIZE" />
-            </StyledTooltipButton>
+            <Tooltip content={getButtonTooltipMessage()}>
+                <StyledButton onClick={anonymize} isDisabled={isDisabled}>
+                    <Translation id="TR_START_COINJOIN" />
+                </StyledButton>
+            </Tooltip>
         </>
     );
 };

@@ -2,11 +2,7 @@ import BigNumber from 'bignumber.js';
 import { createHash } from 'crypto';
 
 import { getUtxoOutpoint, getBip43Type } from '@suite-common/wallet-utils';
-import {
-    Account,
-    SelectedAccountStatus,
-    WalletAccountTransaction,
-} from '@suite-common/wallet-types';
+import { Account, SelectedAccountStatus } from '@suite-common/wallet-types';
 import {
     CoinjoinSession,
     CoinjoinSessionParameters,
@@ -25,7 +21,6 @@ import {
     RegisterAccountParams,
     CoinjoinTransactionData,
 } from '@trezor/coinjoin';
-import { AccountUtxo } from '@trezor/connect';
 
 export type CoinjoinBalanceBreakdown = {
     notAnonymized: string;
@@ -308,31 +303,6 @@ export const getPhaseTimerFormat = (deadline: CoinjoinSession['roundPhaseDeadlin
         Number(deadline) - Date.now() >= 3600000 ? ['hours', 'minutes'] : ['minutes', 'seconds'];
 
     return formatToUse;
-};
-
-export const calculateServiceFee = (
-    utxos: AccountUtxo[],
-    coordinationFeeRate: CoinjoinStatusEvent['coordinationFeeRate'],
-    anonymitySet: AnonymitySet,
-    transactions: WalletAccountTransaction[],
-) => {
-    const feeInducingUtxos = utxos.filter(
-        utxo =>
-            new BigNumber(utxo.amount).gt(coordinationFeeRate.plebsDontPayThreshold) && // above plebsDontPayThreshold
-            [1, undefined].includes(anonymitySet[utxo.address]) && // no anonymity, i.e. not previously coinjoined, or cannot determine anonymity
-            transactions.find(transaction => transaction.txid === utxo.txid)?.type !== 'joint', // previous transaction is not a coinjoin (relevant when coinjoined but anonymity level remained at 1)
-    );
-    return feeInducingUtxos
-        ?.reduce(
-            (total, utxo) =>
-                total.plus(
-                    new BigNumber(utxo.amount)
-                        .times(coordinationFeeRate.rate)
-                        .integerValue(BigNumber.ROUND_FLOOR),
-                ),
-            new BigNumber(0),
-        )
-        .toString();
 };
 
 export const getIsCoinjoinOutOfSync = (selectedAccount: SelectedAccountStatus) => {

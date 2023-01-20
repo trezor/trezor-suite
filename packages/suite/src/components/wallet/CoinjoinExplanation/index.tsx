@@ -65,7 +65,7 @@ const STEPS: Array<Omit<ProcessStepProps, 'number'>> = [
     },
     {
         image: 'BACKUP',
-        title: <Translation id="TR_COINJOIN_STEP_2_TITLE" />,
+        title: <Translation id="TR_START_COINJOIN" />,
         description: <Translation id="TR_COINJOIN_STEP_2_DESCRIPTION" />,
     },
     {

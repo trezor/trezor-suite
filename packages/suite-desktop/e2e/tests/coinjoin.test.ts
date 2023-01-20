@@ -53,8 +53,7 @@ const enableCoinjoinInSettings = async (window: Page) => {
 const startCoinjoin = async (window: Page) => {
     await window.click('role=button[name="Anonymize"]');
 
-    await window.click('[data-test="@coinjoin/checkbox-2"] div >> nth=0');
-    await window.click('[data-test="@coinjoin/checkbox-1"]');
+    await window.click('[data-test="@coinjoin/checkbox"] div >> nth=0');
     await window.click('role=button[name="Anonymize"]');
     await window.waitForSelector('[data-test="@prompts/confirm-on-device"]');
     await TrezorUserEnvLink.api.pressYes();

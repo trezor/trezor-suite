@@ -7153,11 +7153,6 @@ export default defineMessages({
         id: 'TR_PRIVATE',
         defaultMessage: 'Private',
     },
-    TR_START_ANONYMISATION: {
-        id: 'TR_START_ANONYMISATION',
-        description: 'Heading in coin join settings',
-        defaultMessage: 'Start Anonymization',
-    },
     TR_AMOUNT: {
         id: 'TR_AMOUNT',
         description: 'Heading in coin join settings',
@@ -7168,42 +7163,51 @@ export default defineMessages({
         description: 'Heading in coin join settings',
         defaultMessage: 'Service fee',
     },
-    TR_SETUP: {
-        id: 'TR_SETUP',
+    TR_COINJOIN_SETUP: {
+        id: 'TR_COINJOIN_SETUP',
         description: 'Heading in coin join settings',
-        defaultMessage: 'Setup',
-    },
-    TR_CONFIRMATIONS: {
-        id: 'TR_CONFIRMATIONS',
-        description: 'Heading in coin join settings',
-        defaultMessage: 'Confirmations',
-    },
-    TR_OVERVIEW: {
-        id: 'TR_OVERVIEW',
-        description: 'Heading in coin join settings',
-        defaultMessage: 'Overview',
-    },
-    TR_SKIP_ROUNDS_HEADING: {
-        id: 'TR_SKIP_ROUNDS_HEADING',
-        description: 'Heading in coin join settings',
-        defaultMessage: 'Allow Trezor to skip rounds',
-    },
-    TR_SKIP_ROUNDS_DESCRIPTION: {
-        id: 'TR_SKIP_ROUNDS_DESCRIPTION',
-        description: 'Description in coin join settings',
         defaultMessage:
-            'By allowing rounds to be skipped, you make it more difficult to prove any relation between your inputs. This means you can further obfuscate the origin of the funds.',
+            'Your coins will be shuffled with other peoples’ to achieve more anonymity. ',
     },
-    TR_COIN_JOIN_STRATEGY: {
-        id: 'TR_COIN_JOIN_STRATEGY',
-        description: 'Description above coin join strategy settings',
-        defaultMessage:
-            "We've preselected an ideal setup based on current market & pools conditions. You can also define your own parameters via Custom setup using the button above. This is recommended for advanced users only.",
+    TR_COINJOIN_TILE_1_TITLE: {
+        id: 'TR_COINJOIN_TILE_1_TITLE',
+        description: 'Tile in coinjoin settings',
+        defaultMessage: 'Takes a few hours',
+    },
+    TR_COINJOIN_TILE_2_TITLE: {
+        id: 'TR_COINJOIN_TILE_2_TITLE',
+        description: 'Tile in coinjoin settings',
+        defaultMessage: 'Works when connected',
+    },
+    TR_COINJOIN_TILE_3_TITLE: {
+        id: 'TR_COINJOIN_TILE_3_TITLE',
+        description: 'Tile in coinjoin settings',
+        defaultMessage: 'Coins stay in your Trezor',
+    },
+    TR_COINJOIN_TILE_1_DESCRIPTION: {
+        id: 'TR_COINJOIN_TILE_1_DESCRIPTION',
+        description: 'Tile in coinjoin settings',
+        defaultMessage: 'You can keep your laptop and Trezor locked',
+    },
+    TR_COINJOIN_TILE_2_DESCRIPTION: {
+        id: 'TR_COINJOIN_TILE_2_DESCRIPTION',
+        description: 'Tile in coinjoin settings',
+        defaultMessage: 'You can safely pause the CoinJoin',
+    },
+    TR_COINJOIN_TILE_3_DESCRIPTION: {
+        id: 'TR_COINJOIN_TILE_3_DESCRIPTION',
+        description: 'Tile in coinjoin settings',
+        defaultMessage: 'Your bitcoin is always under your control',
     },
     TR_SERVICE_FEE_NOTE: {
         id: 'TR_SERVICE_FEE_NOTE',
         description: 'Note in coinjoin strategy settings',
         defaultMessage: 'Note: You’re also paying a mining fee',
+    },
+    TR_OVERVIEW: {
+        id: 'TR_OVERVIEW',
+        description: 'Heading in coin join settings',
+        defaultMessage: 'Overview',
     },
     TR_MINING_FEE_NOTE: {
         id: 'TR_MINING_FEE_NOTE',
@@ -7245,6 +7249,17 @@ export default defineMessages({
         description: 'Coinjoin strategy item - average ratio of skipped coin join rounds',
         defaultMessage: 'Skip rounds',
     },
+    TR_SKIP_ROUNDS_HEADING: {
+        id: 'TR_SKIP_ROUNDS_HEADING',
+        description: 'Heading in coin join settings',
+        defaultMessage: 'Allow Trezor to skip rounds',
+    },
+    TR_SKIP_ROUNDS_DESCRIPTION: {
+        id: 'TR_SKIP_ROUNDS_DESCRIPTION',
+        description: 'Description in coin join settings',
+        defaultMessage:
+            'By allowing rounds to be skipped, you make it more difficult to prove any relation between your inputs. This means you can further obfuscate the origin of the funds.',
+    },
     TR_MAX_MINING_FEE: {
         id: 'TR_MAX_MINING_FEE',
         description: 'Coinjoin strategy item - fee amount',
@@ -7282,17 +7297,6 @@ export default defineMessages({
         id: 'TR_NONE',
         description: 'Skipped coinjoin rounds',
         defaultMessage: 'none',
-    },
-    TR_DEVICE_CONNECTED_CONFIRMATION: {
-        id: 'TR_DEVICE_CONNECTED_CONFIRMATION',
-        description: 'Checkbox in coinjoin settings',
-        defaultMessage: "I'm not going to disconnect the Trezor before finishing CoinJoin",
-    },
-    TR_DEVICE_CONNECTED_TOOLTIP: {
-        id: 'TR_DEVICE_CONNECTED_TOOLTIP',
-        description: 'Tooltip in coinjoin settings',
-        defaultMessage:
-            "Most of the time you can safely disconnect Trezor and the CoinJoin will be paused. However, disconnecting during a critical signing phase can disrupt the CoinJoin round for all participants. You won't lose any money, but you may be banned from some upcoming CoinJoin rounds. All of your funds remain spendable.",
     },
     TR_TERMS_AND_PRIVACY_CONFIRMATION: {
         id: 'TR_TERMS_AND_PRIVACY_CONFIRMATION',
@@ -7813,8 +7817,8 @@ export default defineMessages({
         id: 'TR_COINJOIN_STEP_1_DESCRIPTION',
         defaultMessage: 'Send whatever you want anonymised to this Account.',
     },
-    TR_COINJOIN_STEP_2_TITLE: {
-        id: 'TR_COINJOIN_STEP_2_TITLE',
+    TR_START_COINJOIN: {
+        id: 'TR_START_COINJOIN',
         defaultMessage: 'Start CoinJoin',
     },
     TR_COINJOIN_STEP_2_DESCRIPTION: {
