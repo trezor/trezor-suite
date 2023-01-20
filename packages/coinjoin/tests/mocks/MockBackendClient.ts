@@ -13,6 +13,8 @@ type BlockFixture = {
     previousBlockHash: string;
     filter: string;
     txs: TransactionFixture[];
+    page: number;
+    totalPages: number;
 };
 
 export class MockBackendClient extends CoinjoinBackendClient {
@@ -64,6 +66,7 @@ export class MockBackendClient extends CoinjoinBackendClient {
                     return this.mockResponse(200, {
                         bestHeight: -1,
                         filters: this.blocks
+                            .filter(({ page }) => page === 1)
                             .slice(from, from + count)
                             .map(
                                 ({ height, hash, filter, previousBlockHash }) =>
@@ -82,7 +85,7 @@ export class MockBackendClient extends CoinjoinBackendClient {
     }
 
     protected blockbook(): MockEndpoint {
-        const parseGet = (path: string) => {
+        const parseGet = (path: string, query?: Record<string, any>) => {
             const [what, which] = path.split('/');
             switch (what) {
                 case 'tx': {
@@ -91,7 +94,8 @@ export class MockBackendClient extends CoinjoinBackendClient {
                 }
                 case 'block': {
                     const height = parseInt(which, 10);
-                    const block = this.blocks.find(b => b.height === height);
+                    const page = query?.page ?? 1;
+                    const block = this.blocks.find(b => b.height === height && b.page === page);
                     return block ? this.mockResponse(200, block) : this.mockResponse(404);
                 }
                 default:
