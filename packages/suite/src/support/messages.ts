@@ -3894,6 +3894,10 @@ export default defineMessages({
         id: 'TR_UNAVAILABLE_COINJOIN_NO_INTERNET',
         defaultMessage: 'Unavailable. No internet connection.',
     },
+    TR_UNAVAILABLE_COINJOIN_AMOUNTS_TOO_SMALL: {
+        id: 'TR_UNAVAILABLE_COINJOIN_AMOUNTS_TOO_SMALL',
+        defaultMessage: 'Too small amounts to be used in coinjoin.',
+    },
     TR_ONION_BACKEND_TOR_NEEDED: {
         id: 'TR_ONION_BACKEND_TOR_NEEDED',
         defaultMessage:
