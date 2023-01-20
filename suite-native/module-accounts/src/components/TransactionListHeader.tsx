@@ -44,7 +44,7 @@ export const TransactionListHeader = memo(({ accountKey }: AccountDetailHeaderPr
                     <Divider />
                 </>
             )}
-            <Box marginVertical="medium" marginHorizontal="medium">
+            <Box marginTop="extraLarge" marginBottom="medium" marginHorizontal="large">
                 <Text variant="titleSmall">Transactions</Text>
             </Box>
         </>

@@ -5,7 +5,7 @@ import BigNumber from 'bignumber.js';
 import { variables } from '@trezor/components';
 import { Translation, HiddenPlaceholder, FormattedCryptoAmount } from '@suite-components';
 import { useFormatters } from '@suite-common/formatters';
-import { parseDateKey, isTestnet } from '@suite-common/wallet-utils';
+import { parseTransactionDateKey, isTestnet } from '@suite-common/wallet-utils';
 import { Network } from '@wallet-types';
 import { SECONDARY_PANEL_HEIGHT } from '@suite-components/AppNavigation';
 
@@ -72,7 +72,7 @@ const DayHeader = ({
 }: Props) => {
     const { FiatAmountFormatter } = useFormatters();
 
-    const parsedDate = parseDateKey(dateKey);
+    const parsedDate = parseTransactionDateKey(dateKey);
     const showFiatValue = !isTestnet(symbol);
     return (
         <Wrapper>

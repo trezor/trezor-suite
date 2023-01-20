@@ -37,12 +37,23 @@ export const isPending = (tx: WalletAccountTransaction | AccountTransaction) =>
     !!tx && (!tx.blockHeight || tx.blockHeight < 0);
 
 /* Convert date to string in YYYY-MM-DD format */
-export const getDateKey = (d: Date) => `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+const generateTransactionDateKey = (d: Date) =>
+    `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
 
 /** Parse Date object from a string in YYYY-MM-DD format */
-export const parseDateKey = (key: string) => {
+export const parseTransactionDateKey = (key: string) => {
     const parts = key.split('-');
     const d = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
+    return d;
+};
+
+/* Convert date to string in YYYY-MM format */
+const generateTransactionMonthKey = (d: Date) => `${d.getFullYear()}-${d.getMonth() + 1}`;
+
+/** Parse Date object from a string in YYYY-MM format */
+export const parseTransactionMonthKey = (key: string) => {
+    const parts = key.split('-');
+    const d = new Date(Number(parts[0]), Number(parts[1]) - 1);
     return d;
 };
 
@@ -52,24 +63,32 @@ export const parseDateKey = (key: string) => {
  *
  * @param {WalletAccountTransaction[]} transactions
  */
-export const groupTransactionsByDate = (transactions: WalletAccountTransaction[]) =>
+export const groupTransactionsByDate = (
+    transactions: WalletAccountTransaction[],
+    groupBy: 'day' | 'month' = 'day',
+) => {
     // Note: We should use ts-belt for sorting this array but currently, there can be undefined inside
     // Built-in sort doesn't include undefined elements but ts-belt does so there will be some refactoring involved.
-    [...transactions]
-        // There could be some undefined/null in array, nut sure how it happens. Maybe related to pagination?
-        .filter(transaction => !!transaction)
-        .sort(sortByBlockHeight)
-        .reduce<{ [key: string]: WalletAccountTransaction[] }>((r, item) => {
-            const key =
-                item.blockHeight && item.blockHeight > 0 && item.blockTime && item.blockTime > 0
-                    ? getDateKey(new Date(item.blockTime * 1000))
-                    : 'pending';
-            const prev = r[key] ?? [];
-            return {
-                ...r,
-                [key]: [...prev, item],
-            };
-        }, {});
+    const keyFormatter =
+        groupBy === 'day' ? generateTransactionDateKey : generateTransactionMonthKey;
+    return (
+        [...transactions]
+            // There could be some undefined/null in array, not sure how it happens. Maybe related to pagination?
+            .filter(transaction => !!transaction)
+            .sort(sortByBlockHeight)
+            .reduce<{ [key: string]: WalletAccountTransaction[] }>((r, item) => {
+                const key =
+                    item.blockHeight && item.blockHeight > 0 && item.blockTime && item.blockTime > 0
+                        ? keyFormatter(new Date(item.blockTime * 1000))
+                        : 'pending';
+                const prev = r[key] ?? [];
+                return {
+                    ...r,
+                    [key]: [...prev, item],
+                };
+            }, {})
+    );
+};
 
 export const groupJointTransactions = (transactions: WalletAccountTransaction[]) =>
     transactions

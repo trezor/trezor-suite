@@ -20,6 +20,31 @@ type AccountTransactionProps = {
     accountKey: string;
 };
 
+type RenderItemParams = {
+    item: WalletAccountTransaction;
+    section: { monthKey: string; data: WalletAccountTransaction[] };
+    index: number;
+};
+
+type RenderSectionHeaderParams = {
+    section: {
+        monthKey: string;
+    };
+};
+
+const renderItem = ({ item, section, index }: RenderItemParams) => (
+    <TransactionListItem
+        key={item.txid}
+        transaction={item}
+        isFirst={index === 0}
+        isLast={index === section.data.length - 1}
+    />
+);
+
+const renderSectionHeader = ({ section: { monthKey } }: RenderSectionHeaderParams) => (
+    <TransactionListGroupTitle key={monthKey} monthKey={monthKey} />
+);
+
 export const TX_PER_PAGE = 25;
 
 // NOTE: This is due to Box wrapper that is set by isScrollable prop in suite-native/module-accounts/src/screens/AccountDetailScreen.tsx
@@ -38,13 +63,13 @@ export const TransactionList = ({
 }: AccountTransactionProps) => {
     const { applyStyle, utils } = useNativeStyles();
     const isLoadingTransactions = useSelector(selectIsLoadingTransactions);
-    const accountTransactionsByDate = useMemo(
-        () => groupTransactionsByDate(transactions),
+    const accountTransactionsByMonth = useMemo(
+        () => groupTransactionsByDate(transactions, 'month'),
         [transactions],
     );
-    const transactionDateKeys = useMemo(
-        () => Object.keys(accountTransactionsByDate),
-        [accountTransactionsByDate],
+    const transactionMonthKeys = useMemo(
+        () => Object.keys(accountTransactionsByMonth),
+        [accountTransactionsByMonth],
     );
     const initialPageNumber = Math.ceil((transactions.length || 1) / TX_PER_PAGE);
     const [page, setPage] = useState(initialPageNumber);
@@ -66,33 +91,11 @@ export const TransactionList = ({
 
     const sectionsData = useMemo(
         () =>
-            transactionDateKeys.map(dateKey => ({
-                dateKey,
-                data: [...accountTransactionsByDate[dateKey]],
+            transactionMonthKeys.map(monthKey => ({
+                monthKey,
+                data: [...accountTransactionsByMonth[monthKey]],
             })),
-        [accountTransactionsByDate, transactionDateKeys],
-    );
-
-    interface RenderItemParams {
-        item: WalletAccountTransaction;
-    }
-
-    const renderItem = useCallback(
-        ({ item }: RenderItemParams) => <TransactionListItem key={item.txid} transaction={item} />,
-        [],
-    );
-
-    interface RenderSectionHeaderParams {
-        section: {
-            dateKey: string;
-        };
-    }
-
-    const renderSectionHeader = useCallback(
-        ({ section: { dateKey } }: RenderSectionHeaderParams) => (
-            <TransactionListGroupTitle key={dateKey} dateKey={dateKey} />
-        ),
-        [],
+        [accountTransactionsByMonth, transactionMonthKeys],
     );
 
     if (isLoadingTransactions)
@@ -103,11 +106,12 @@ export const TransactionList = ({
         <Box style={applyStyle(listWrapperStyle)}>
             <SectionList
                 sections={sectionsData}
-                renderSectionHeader={renderSectionHeader}
                 renderItem={renderItem}
-                ListHeaderComponent={listHeaderComponent}
+                renderSectionHeader={renderSectionHeader}
                 ListEmptyComponent={<TransactionsEmptyState accountKey={accountKey} />}
+                ListHeaderComponent={listHeaderComponent}
                 onEndReached={handleOnEndReached}
+                stickySectionHeadersEnabled={false}
             />
         </Box>
     );
