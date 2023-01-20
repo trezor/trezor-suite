@@ -1,6 +1,7 @@
 import produce from 'immer';
 import { memoizeWithArgs, memoize } from 'proxy-memoize';
-import { CoinjoinStatusEvent } from '@trezor/coinjoin';
+import BigNumber from 'bignumber.js';
+import { CoinjoinStatusEvent, getInputSize, getOutputSize } from '@trezor/coinjoin';
 import { PartialRecord } from '@trezor/type-utils';
 import { STORAGE } from '@suite-actions/constants';
 import { Account, AccountKey } from '@suite-common/wallet-types';
@@ -398,6 +399,14 @@ export const selectCoinjoinAccountByKey = memoizeWithArgs(
     },
 );
 
+export const selectCoinjoinClient = memoizeWithArgs(
+    (state: CoinjoinRootState, accountKey: AccountKey) => {
+        const coinjoinAccount = selectCoinjoinAccountByKey(state, accountKey);
+        const clients = selectCoinjoinClients(state);
+        return coinjoinAccount?.symbol && clients[coinjoinAccount?.symbol];
+    },
+);
+
 export const selectSessionByAccountKey = memoizeWithArgs(
     (state: CoinjoinRootState, accountKey: AccountKey) => {
         const coinjoinAccounts = selectCoinjoinAccounts(state);
@@ -516,5 +525,34 @@ export const selectIsAccountWithPausedSessionInterruptedByAccountKey = memoizeWi
             coinjoinAccount.session.paused &&
             coinjoinAccount.session.interrupted
         );
+    },
+);
+
+export const selectMinAllowedInputWithFee = memoizeWithArgs(
+    (state: CoinjoinRootState, accountKey: AccountKey) => {
+        const coinjoinClient = selectCoinjoinClient(state, accountKey);
+        const status = coinjoinClient || DEFAULT_CLIENT_STATUS;
+        const minAllowedInput = status.allowedInputAmounts.min;
+        const txSize = getInputSize('Taproot') + getOutputSize('Taproot');
+        const recommendedFeeRate = status.feeRatesMedians.recommended;
+
+        return minAllowedInput + txSize * recommendedFeeRate;
+    },
+);
+
+export const selectIsCoinjoinBlockedByAmountsTooSmall = memoizeWithArgs(
+    (state: CoinjoinRootState, accountKey: AccountKey) => {
+        const selectedAccount = selectSelectedAccount(state);
+
+        const minAllowedInputWithFee = selectMinAllowedInputWithFee(state, accountKey);
+        const targetAnonymity = selectCurrentTargetAnonymity(state) || 0;
+
+        const anonymitySet = selectedAccount?.addresses?.anonymitySet || {};
+        const utxos = selectedAccount?.utxo || [];
+
+        // return true if all non-privat funds are too small
+        return utxos
+            .filter(utxo => (anonymitySet[utxo.address] ?? 1) < targetAnonymity)
+            .every(utxo => new BigNumber(utxo.amount).lt(minAllowedInputWithFee));
     },
 );
