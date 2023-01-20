@@ -23,7 +23,6 @@
         { "path": "../atoms" },
         { "path": "../module-settings" },
         { "path": "../navigation" },
-        { "path": "../state" },
         { "path": "../../packages/icons" },
         { "path": "../../packages/styles" },
         { "path": "../../packages/theme" }

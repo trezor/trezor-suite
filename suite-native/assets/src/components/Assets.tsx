@@ -16,7 +16,6 @@ import {
 } from '@suite-native/navigation';
 import { networks } from '@suite-common/wallet-config';
 import { selectFiatCurrency } from '@suite-native/module-settings';
-import { RootState } from '@suite-native/state';
 
 import { AssetItem } from './AssetItem';
 import { selectAssetsWithBalances } from '../assetsSelectors';
@@ -36,8 +35,8 @@ export const Assets = () => {
     const navigation = useNavigation<HomeAssetsNavigationProp>();
     const { applyStyle } = useNativeStyles();
     const fiatCurrency = useSelector(selectFiatCurrency);
-    const assetsData = useSelector((state: RootState) =>
-        selectAssetsWithBalances(state, fiatCurrency.label),
+    const assetsData = useSelector((state: any) =>
+        selectAssetsWithBalances(fiatCurrency.label, state),
     );
 
     const assetsDataWithPercentage = useMemo(
@@ -50,12 +49,14 @@ export const Assets = () => {
     };
 
     const handleImportAssets = () => {
+        // TODO: move this to Dashboard screen directly
         navigation.navigate(RootStackRoutes.AccountsImport, {
             screen: AccountsImportStackRoutes.SelectNetwork,
         });
     };
 
     const handleShowAssetsAccounts = () => {
+        // TODO: move this to Dashboard screen directly
         navigation.navigate(RootStackRoutes.AppTabs, {
             screen: AppTabsRoutes.AccountsStack,
             params: {

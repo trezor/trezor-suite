@@ -1,9 +1,10 @@
-import { createSelector, isAnyOf } from '@reduxjs/toolkit';
+import { isAnyOf } from '@reduxjs/toolkit';
 import { A, pipe } from '@mobily/ts-belt';
+import { memoize, memoizeWithArgs } from 'proxy-memoize';
 
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import { enhanceHistory, isUtxoBased } from '@suite-common/wallet-utils';
-import { Account } from '@suite-common/wallet-types';
+import { Account, AccountKey } from '@suite-common/wallet-types';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
 import { accountsActions } from './accountsActions';
@@ -109,44 +110,45 @@ export const prepareAccountsReducer = createReducerWithExtraDeps(
 
 export const selectAccounts = (state: AccountsRootState) => state.wallet.accounts;
 
-export const selectAccountByKey = createSelector(
-    selectAccounts,
-    (_state: AccountsRootState, accountKey: string) => accountKey,
-    (accounts, accountKey): Account | null =>
-        accounts.find(account => account.key === accountKey) ?? null,
+export const selectAccountByKey = memoizeWithArgs(
+    (state: AccountsRootState, accountKey: AccountKey) => {
+        const accounts = selectAccounts(state);
+
+        return accounts.find(account => account.key === accountKey) ?? null;
+    },
 );
 
-export const selectHasAccountTransactions = createSelector(
-    [selectAccountByKey],
-    (account): boolean => !!account?.history.total,
+export const selectHasAccountTransactions = memoizeWithArgs(
+    (state: AccountsRootState, accountKey: AccountKey) => {
+        const account = selectAccountByKey(state, accountKey);
+
+        return !!account?.history.total;
+    },
 );
 
-export const selectAccountsByNetworkSymbols = createSelector(
-    [
-        selectAccounts,
-        (_state: AccountsRootState, networkSymbols: NetworkSymbol[]) => networkSymbols,
-    ],
-    (accounts, networkSymbols): Account[] =>
-        accounts.filter(account => networkSymbols.includes(account.symbol)),
+export const selectAccountsByNetworkSymbols = memoizeWithArgs(
+    (state: AccountsRootState, networkSymbols: NetworkSymbol[]) => {
+        const accounts = selectAccounts(state);
+
+        return accounts.filter(account => networkSymbols.includes(account.symbol));
+    },
 );
 
-export const selectAccountsByNetworkAndDevice = createSelector(
-    selectAccounts,
-    (_state: AccountsRootState, deviceState: string, networkSymbol: NetworkSymbol) => ({
-        deviceState,
-        networkSymbol,
-    }),
-    (accounts, params): Account[] =>
-        accounts.filter(
-            account =>
-                account.deviceState === params.deviceState &&
-                account.symbol === params.networkSymbol,
-        ),
+export const selectAccountsByNetworkAndDevice = memoizeWithArgs(
+    (state: AccountsRootState, deviceState: string, networkSymbol: NetworkSymbol) => {
+        const accounts = selectAccounts(state);
+
+        return accounts.filter(
+            account => account.deviceState === deviceState && account.symbol === networkSymbol,
+        );
+    },
 );
 
-export const selectAccountLabel = createSelector(
-    [selectAccountByKey, selectAccounts],
-    (account, accounts) => {
+export const selectAccountLabel = memoizeWithArgs(
+    (state: AccountsRootState, accountKey: AccountKey) => {
+        const account = selectAccountByKey(state, accountKey);
+        const accounts = selectAccounts(state);
+
         const accountData = accounts.find(acc => acc.descriptor === account?.descriptor);
         if (accountData) {
             const {
@@ -157,39 +159,44 @@ export const selectAccountLabel = createSelector(
     },
 );
 
-export const selectIsAccountUtxoBased = createSelector([selectAccountByKey], (account): boolean =>
-    account ? isUtxoBased(account) : false,
+export const selectIsAccountUtxoBased = memoizeWithArgs(
+    (state: AccountsRootState, accountKey: AccountKey) => {
+        const account = selectAccountByKey(state, accountKey);
+
+        return account ? isUtxoBased(account) : false;
+    },
 );
 
-export const selectAccountByDescriptorAndNetworkSymbol = createSelector(
-    selectAccounts,
-    (_state: AccountsRootState, accountDescriptor: string, networkSymbol: NetworkSymbol) => ({
-        accountDescriptor,
-        networkSymbol,
-    }),
-    (accounts, { accountDescriptor, networkSymbol }): Account | null =>
-        A.find(
-            accounts,
-            account => account.descriptor === accountDescriptor && account.symbol === networkSymbol,
-        ) ?? null,
+export const selectAccountByDescriptorAndNetworkSymbol = memoizeWithArgs(
+    (state: AccountsRootState, accountDescriptor: string, networkSymbol: NetworkSymbol) => {
+        const accounts = selectAccounts(state);
+
+        return (
+            A.find(
+                accounts,
+                account =>
+                    account.descriptor === accountDescriptor && account.symbol === networkSymbol,
+            ) ?? null
+        );
+    },
 );
 
-export const selectAccountsAmountPerSymbol = createSelector(
-    selectAccounts,
-    (_state: AccountsRootState, networkSymbol: NetworkSymbol) => networkSymbol,
-    (accounts, networkSymbol): number =>
-        pipe(
+export const selectAccountsAmountPerSymbol = memoizeWithArgs(
+    (state: AccountsRootState, networkSymbol: NetworkSymbol) => {
+        const accounts = selectAccounts(state);
+
+        return pipe(
             accounts,
             A.filter(account => account.symbol === networkSymbol),
             A.length,
-        ),
+        );
+    },
 );
 
-export const selectAccountsSymbols = createSelector(
-    selectAccounts,
-    (accounts): NetworkSymbol[] =>
+export const selectAccountsSymbols = memoize(
+    (state: AccountsRootState): NetworkSymbol[] =>
         pipe(
-            accounts,
+            selectAccounts(state),
             A.map(a => a.symbol),
             A.uniq,
         ) as NetworkSymbol[],

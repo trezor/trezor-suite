@@ -1,15 +1,15 @@
 import produce from 'immer';
+import { memoize, memoizeWithArgs } from 'proxy-memoize';
 
 import { Action } from '@suite-types';
 import { MESSAGE_SYSTEM, STORAGE } from '@suite-actions/constants';
-import { createSelector } from '@reduxjs/toolkit';
-import { selectLanguage } from './suiteReducer';
+import { selectLanguage, SuiteRootState } from './suiteReducer';
 
 import { Message, MessageSystem, Category } from '@trezor/message-system';
 
 export type MessageSystemRootState = {
     messageSystem: MessageSystemState;
-};
+} & SuiteRootState;
 
 export type MessageState = { [key in Category]: boolean };
 
@@ -100,47 +100,43 @@ const messageSystemReducer = (
 const comparePriority = (a: Message, b: Message) => b.priority - a.priority;
 
 const makeSelectActiveMessagesByCategory = (category: Category) =>
-    createSelector(
-        (state: MessageSystemRootState) => state.messageSystem.config,
-        (state: MessageSystemRootState) => state.messageSystem.validMessages,
-        (state: MessageSystemRootState) => state.messageSystem.dismissedMessages,
-        (config, validMessages, dismissedMessages) => {
-            const nonDismissedValidMessages = validMessages[category].filter(
-                id => !dismissedMessages[id]?.[category],
-            );
+    memoize((state: MessageSystemRootState) => {
+        const { config, validMessages, dismissedMessages } = state.messageSystem;
+        const nonDismissedValidMessages = validMessages[category].filter(
+            id => !dismissedMessages[id]?.[category],
+        );
 
-            const messages = config?.actions
-                .filter(({ message }) => nonDismissedValidMessages.includes(message.id))
-                .map(action => action.message);
+        const messages = config?.actions
+            .filter(({ message }) => nonDismissedValidMessages.includes(message.id))
+            .map(action => action.message);
 
-            if (!messages?.length) return [];
+        if (!messages?.length) return [];
 
-            return messages.sort(comparePriority);
-        },
-    );
+        return messages.sort(comparePriority);
+    });
 
 export const selectActiveBannerMessages = makeSelectActiveMessagesByCategory('banner');
 export const selectActiveContextMessages = makeSelectActiveMessagesByCategory('context');
 export const selectActiveModalMessages = makeSelectActiveMessagesByCategory('modal');
 export const selectActiveFeatureMessages = makeSelectActiveMessagesByCategory('feature');
 
-export const selectBannerMessage = createSelector(
-    selectActiveBannerMessages,
-    messages => messages[0],
+export const selectBannerMessage = memoize((state: MessageSystemRootState) => {
+    const activeBannerMessages = selectActiveBannerMessages(state);
+    return activeBannerMessages[0];
+});
+
+export const selectContextMessage = memoizeWithArgs(
+    (state: MessageSystemRootState, domain: ContextDomain) => {
+        const activeContextMessages = selectActiveContextMessages(state);
+        return activeContextMessages.find(message => message.context?.domain === domain);
+    },
 );
 
-export const selectContextMessage = createSelector(
-    selectActiveContextMessages,
-    (_state: MessageSystemRootState, domain: ContextDomain) => domain,
-    (messages, domain) => messages.find(message => message.context?.domain === domain),
-);
-
-export const selectContextMessageContent = createSelector(
-    selectActiveContextMessages,
-    (_state: MessageSystemRootState, domain: ContextDomain) => domain,
-    selectLanguage,
-    (messages, domain, language) => {
-        const message = messages.find(message => message.context?.domain === domain);
+export const selectContextMessageContent = memoizeWithArgs(
+    (state: MessageSystemRootState, domain: ContextDomain) => {
+        const activeContextMessages = selectActiveContextMessages(state);
+        const language = selectLanguage(state);
+        const message = activeContextMessages.find(message => message.context?.domain === domain);
         if (!message) return;
         return {
             ...message,
@@ -155,37 +151,42 @@ export const selectContextMessageContent = createSelector(
     },
 );
 
-export const selectFeatureMessage = createSelector(
-    selectActiveFeatureMessages,
-    (_state: MessageSystemRootState, domain: FeatureDomain) => domain,
-    (messages, domain) =>
-        messages.find(message => message.feature?.some(feature => feature.domain === domain)),
+export const selectFeatureMessage = memoizeWithArgs(
+    (state: MessageSystemRootState, domain: FeatureDomain) => {
+        const activeFeatureMessages = selectActiveFeatureMessages(state);
+        return activeFeatureMessages.find(message =>
+            message.feature?.some(feature => feature.domain === domain),
+        );
+    },
 );
 
-export const selectFeatureMessageContent = createSelector(
-    selectFeatureMessage,
-    selectLanguage,
-    (message, language) => message?.content[language] ?? message?.content.en,
+export const selectFeatureMessageContent = memoizeWithArgs(
+    (state: MessageSystemRootState, domain: FeatureDomain) => {
+        const featureMessages = selectFeatureMessage(state, domain);
+        const language = selectLanguage(state);
+        return featureMessages?.content[language] ?? featureMessages?.content.en;
+    },
 );
 
-export const selectFeatureFlag = createSelector(
-    selectFeatureMessage,
-    (_state: MessageSystemRootState, domain: FeatureDomain) => domain,
-    (message, domain) => message?.feature?.find(feature => feature.domain === domain)?.flag,
+export const selectFeatureFlag = memoizeWithArgs(
+    (state: MessageSystemRootState, domain: FeatureDomain) => {
+        const featureMessages = selectFeatureMessage(state, domain);
+        return featureMessages?.feature?.find(feature => feature.domain === domain)?.flag;
+    },
 );
 
-export const selectIsFeatureEnabled = createSelector(
-    selectFeatureFlag,
-    (_state: MessageSystemRootState, _domain: FeatureDomain, defaultValue?: boolean) =>
-        defaultValue ?? true,
-    (featureFlag, defaultValue) => featureFlag ?? defaultValue,
+export const selectIsFeatureEnabled = memoizeWithArgs(
+    (state: MessageSystemRootState, domain: FeatureDomain, defaultValue?: boolean) => {
+        const featureFlag = selectFeatureFlag(state, domain);
+        return featureFlag ?? defaultValue ?? true;
+    },
 );
 
-export const selectIsFeatureDisabled = createSelector(
-    selectFeatureFlag,
-    (_state: MessageSystemRootState, _domain: FeatureDomain, defaultValue?: boolean) =>
-        defaultValue ?? false,
-    (featureFlag, defaultValue) => (typeof featureFlag === 'boolean' ? !featureFlag : defaultValue),
+export const selectIsFeatureDisabled = memoizeWithArgs(
+    (state: MessageSystemRootState, domain: FeatureDomain, defaultValue?: boolean) => {
+        const featureFlag = selectFeatureFlag(state, domain);
+        return typeof featureFlag === 'boolean' ? !featureFlag : defaultValue ?? false;
+    },
 );
 
 export default messageSystemReducer;

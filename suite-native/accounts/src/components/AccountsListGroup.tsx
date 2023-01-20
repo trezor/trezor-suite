@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { Box } from '@suite-native/atoms';
@@ -21,8 +21,10 @@ const accountListGroupStyle = prepareNativeStyle(utils => ({
 
 export const AccountsListGroup = ({ symbol, onSelectAccount }: AccountsListGroupProps) => {
     const { applyStyle } = useNativeStyles();
+    const symbols = useMemo(() => [symbol], [symbol]);
     const accounts = useSelector((state: AccountsRootState) =>
-        selectAccountsByNetworkSymbols(state, [symbol]),
+        // we need to memoize [symbol] array to prevent re-renders with every state change
+        selectAccountsByNetworkSymbols(state, symbols),
     );
 
     return (

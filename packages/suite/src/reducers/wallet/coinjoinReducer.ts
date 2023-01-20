@@ -1,9 +1,9 @@
 import produce from 'immer';
-import { createSelector } from '@reduxjs/toolkit';
+import { memoizeWithArgs, memoize } from 'proxy-memoize';
 import { CoinjoinStatusEvent } from '@trezor/coinjoin';
 import { PartialRecord } from '@trezor/type-utils';
 import { STORAGE } from '@suite-actions/constants';
-import { Account } from '@suite-common/wallet-types';
+import { Account, AccountKey } from '@suite-common/wallet-types';
 import { CoinjoinAccount, RoundPhase } from '@wallet-types/coinjoin';
 import { COINJOIN } from '@wallet-actions/constants';
 import { Action } from '@suite-types';
@@ -15,9 +15,13 @@ import {
     transformCoinjoinStatus,
 } from '@wallet-utils/coinjoinUtils';
 import { ESTIMATED_ROUNDS_FAIL_RATE_BUFFER, DEFAULT_CLIENT_STATUS } from '@suite/services/coinjoin';
-import { selectSelectedAccount, selectSelectedAccountParams } from './selectedAccountReducer';
-import { selectDebug, selectTorState } from '@suite-reducers/suiteReducer';
-import { selectAccountByKey } from '@suite-common/wallet-core';
+import {
+    SelectedAccountRootState,
+    selectSelectedAccount,
+    selectSelectedAccountParams,
+} from './selectedAccountReducer';
+import { selectDebug, selectTorState, SuiteRootState } from '@suite-reducers/suiteReducer';
+import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 
 export interface CoinjoinClientFeeRatesMedians {
     fast: number;
@@ -42,7 +46,9 @@ export type CoinjoinRootState = {
     wallet: {
         coinjoin: CoinjoinState;
     };
-};
+} & AccountsRootState &
+    SelectedAccountRootState &
+    SuiteRootState;
 
 const initialState: CoinjoinState = {
     accounts: [],
@@ -366,39 +372,45 @@ export const coinjoinReducer = (
 export const selectCoinjoinAccounts = (state: CoinjoinRootState) => state.wallet.coinjoin.accounts;
 export const selectCoinjoinClients = (state: CoinjoinRootState) => state.wallet.coinjoin.clients;
 
-export const selectCoinjoinAccountByKey = createSelector(
-    [selectCoinjoinAccounts, (_state: CoinjoinRootState, accountKey: string) => accountKey],
-    (accounts, accountKey) => accounts.find(account => account.key === accountKey),
-);
-
-export const selectSessionByAccountKey = createSelector(
-    [selectCoinjoinAccounts, (_state: CoinjoinRootState, accountKey: string) => accountKey],
-    (accounts, accountKey) => accounts.find(account => account.key === accountKey)?.session,
-);
-
-export const selectCurrentCoinjoinBalanceBreakdown = createSelector(
-    [selectSelectedAccount, selectCoinjoinAccounts],
-    (selectedAccount, coinjoinAccounts) => {
-        const currentCoinjoinAccount = coinjoinAccounts.find(
-            account => account.key === selectedAccount?.key,
-        );
-
-        const { targetAnonymity } = currentCoinjoinAccount || {};
-        const { addresses, utxo: utxos } = selectedAccount || {};
-
-        const balanceBreakdown = breakdownCoinjoinBalance({
-            targetAnonymity,
-            anonymitySet: addresses?.anonymitySet,
-            utxos,
-        });
-
-        return balanceBreakdown;
+export const selectCoinjoinAccountByKey = memoizeWithArgs(
+    (state: CoinjoinRootState, accountKey: AccountKey) => {
+        const coinjoinAccounts = selectCoinjoinAccounts(state);
+        return coinjoinAccounts.find(account => account.key === accountKey);
     },
 );
 
-export const selectSessionProgressByAccountKey = createSelector(
-    [selectCoinjoinAccountByKey, selectAccountByKey],
-    (coinjoinAccount, relatedAccounts) => {
+export const selectSessionByAccountKey = memoizeWithArgs(
+    (state: CoinjoinRootState, accountKey: AccountKey) => {
+        const coinjoinAccounts = selectCoinjoinAccounts(state);
+        return coinjoinAccounts.find(account => account.key === accountKey)?.session;
+    },
+);
+
+export const selectCurrentCoinjoinBalanceBreakdown = memoize((state: CoinjoinRootState) => {
+    const selectedAccount = selectSelectedAccount(state);
+    const coinjoinAccounts = selectCoinjoinAccounts(state);
+
+    const currentCoinjoinAccount = coinjoinAccounts.find(
+        account => account.key === selectedAccount?.key,
+    );
+
+    const { targetAnonymity } = currentCoinjoinAccount || {};
+    const { addresses, utxo: utxos } = selectedAccount || {};
+
+    const balanceBreakdown = breakdownCoinjoinBalance({
+        targetAnonymity,
+        anonymitySet: addresses?.anonymitySet,
+        utxos,
+    });
+
+    return balanceBreakdown;
+});
+
+export const selectSessionProgressByAccountKey = memoizeWithArgs(
+    (state: CoinjoinRootState, accountKey: AccountKey) => {
+        const coinjoinAccount = selectCoinjoinAccountByKey(state, accountKey);
+        const relatedAccounts = selectAccountByKey(state, accountKey);
+
         const { targetAnonymity } = coinjoinAccount || {};
         const { addresses, balance, utxo: utxos } = relatedAccounts || {};
 
@@ -416,66 +428,75 @@ export const selectSessionProgressByAccountKey = createSelector(
     },
 );
 
-export const selectCurrentCoinjoinSession = createSelector(
-    [selectSelectedAccount, selectCoinjoinAccounts],
-    (selectedAccount, coinjoinAccounts) => {
-        const currentCoinjoinAccount = coinjoinAccounts.find(
-            account => account.key === selectedAccount?.key,
+export const selectCurrentCoinjoinSession = memoize((state: CoinjoinRootState) => {
+    const selectedAccount = selectSelectedAccount(state);
+    const coinjoinAccounts = selectCoinjoinAccounts(state);
+
+    const currentCoinjoinAccount = coinjoinAccounts.find(
+        account => account.key === selectedAccount?.key,
+    );
+
+    const { session } = currentCoinjoinAccount || {};
+
+    return session;
+});
+
+export const selectCurrentTargetAnonymity = memoize((state: CoinjoinRootState) => {
+    const selectedAccount = selectSelectedAccount(state);
+    const coinjoinAccounts = selectCoinjoinAccounts(state);
+
+    const currentCoinjoinAccount = coinjoinAccounts.find(
+        account => account.key === selectedAccount?.key,
+    );
+
+    const { targetAnonymity } = currentCoinjoinAccount || {};
+
+    return targetAnonymity;
+});
+
+export const selectIsCoinjoinBlockedByTor = memoize((state: CoinjoinRootState) => {
+    const accountParams = selectSelectedAccountParams(state);
+    const { isTorEnabled } = selectTorState(state);
+    const debug = selectDebug(state);
+
+    if (!accountParams) {
+        return false;
+    }
+
+    if (debug.coinjoinAllowNoTor) {
+        return false;
+    }
+
+    return accountParams.accountType === 'coinjoin' && !isTorEnabled;
+});
+
+export const selectIsAnySessionInCriticalPhase = memoize((state: CoinjoinRootState) => {
+    const coinjoinAccounts = selectCoinjoinAccounts(state);
+
+    return coinjoinAccounts.some(acc => (acc.session?.roundPhase ?? 0) > 0);
+});
+
+export const selectIsAccountWithSessionInCriticalPhaseByAccountKey = memoizeWithArgs(
+    (state: CoinjoinRootState, accountKey: AccountKey) => {
+        const coinjoinAccount = selectCoinjoinAccountByKey(state, accountKey);
+        return (coinjoinAccount?.session?.roundPhase ?? 0) > 0;
+    },
+);
+
+export const selectIsAccountWithSessionByAccountKey = memoizeWithArgs(
+    (state: CoinjoinRootState, accountKey: AccountKey) => {
+        const coinjoinAccounts = selectCoinjoinAccounts(state);
+        return coinjoinAccounts.find(a => a.key === accountKey && a.session && !a.session.paused);
+    },
+);
+
+export const selectIsAccountWithPausedSessionInterruptedByAccountKey = memoizeWithArgs(
+    (state: CoinjoinRootState, accountKey: AccountKey) => {
+        const coinjoinAccount = selectCoinjoinAccountByKey(state, accountKey);
+        return (
+            coinjoinAccount?.session &&
+            coinjoinAccount.session.paused &&
+            coinjoinAccount.session.interrupted
         );
-
-        const { session } = currentCoinjoinAccount || {};
-
-        return session;
     },
-);
-
-export const selectCurrentTargetAnonymity = createSelector(
-    [selectSelectedAccount, selectCoinjoinAccounts],
-    (selectedAccount, coinjoinAccounts) => {
-        const currentCoinjoinAccount = coinjoinAccounts.find(
-            account => account.key === selectedAccount?.key,
-        );
-
-        const { targetAnonymity } = currentCoinjoinAccount || {};
-
-        return targetAnonymity;
-    },
-);
-
-export const selectIsCoinjoinBlockedByTor = createSelector(
-    [selectSelectedAccountParams, selectTorState, selectDebug],
-    (accountParams, { isTorEnabled }, debug) => {
-        if (!accountParams) {
-            return false;
-        }
-
-        if (debug.coinjoinAllowNoTor) {
-            return false;
-        }
-
-        return accountParams.accountType === 'coinjoin' && !isTorEnabled;
-    },
-);
-
-export const selectIsAnySessionInCriticalPhase = createSelector(selectCoinjoinAccounts, accounts =>
-    accounts.some(acc => (acc.session?.roundPhase ?? 0) > 0),
-);
-
-export const selectIsAccountWithSessionInCriticalPhaseByAccountKey = createSelector(
-    [selectCoinjoinAccountByKey],
-    coinjoinAccount => (coinjoinAccount?.session?.roundPhase ?? 0) > 0,
-);
-
-export const selectIsAccountWithSessionByAccountKey = createSelector(
-    [selectCoinjoinAccounts, (_state: CoinjoinRootState, accountKey: string) => accountKey],
-    (coinjoinAccounts, accountKey) =>
-        coinjoinAccounts.find(a => a.key === accountKey && a.session && !a.session.paused),
-);
-
-export const selectIsAccountWithPausedSessionInterruptedByAccountKey = createSelector(
-    [selectCoinjoinAccountByKey],
-    coinjoinAccount =>
-        coinjoinAccount?.session &&
-        coinjoinAccount.session.paused &&
-        coinjoinAccount.session.interrupted,
 );

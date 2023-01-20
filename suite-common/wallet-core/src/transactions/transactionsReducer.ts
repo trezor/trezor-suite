@@ -1,4 +1,4 @@
-import { createSelector } from '@reduxjs/toolkit';
+import { memoize, memoizeWithArgs } from 'proxy-memoize';
 
 import { Account, WalletAccountTransaction, AccountKey } from '@suite-common/wallet-types';
 import { findTransaction, isPending } from '@suite-common/wallet-utils';
@@ -155,14 +155,14 @@ export const selectAccountTransactions = (
     accountKey: string | null,
 ) => state.wallet.transactions.transactions[accountKey ?? ''] ?? [];
 
-export const selectAllTransactions = createSelector(
-    selectTransactions,
-    (transactions): WalletAccountTransaction[] => Object.values(transactions).flat(),
-);
+export const selectAllTransactions = memoize((state: TransactionsRootState) => {
+    const transactions = selectTransactions(state);
+    return Object.values(transactions).flat();
+});
 
-export const selectPendingAccountAddresses = createSelector(
-    [selectAccountTransactions],
-    accountTransactions => {
+export const selectPendingAccountAddresses = memoizeWithArgs(
+    (state: TransactionsRootState, accountKey: AccountKey | null) => {
+        const accountTransactions = selectAccountTransactions(state, accountKey);
         const pendingAddresses: string[] = [];
         const pendingTxs = accountTransactions.filter(isPending);
         pendingTxs.forEach(t =>
@@ -174,9 +174,9 @@ export const selectPendingAccountAddresses = createSelector(
     },
 );
 
-export const selectTransactionByTxid = (txid: string) =>
-    createSelector(
-        [selectAllTransactions],
-        (transactions): WalletAccountTransaction | null =>
-            transactions.find(tx => tx.txid === txid) ?? null,
-    );
+export const selectTransactionByTxid = memoizeWithArgs(
+    (txid: string, state: TransactionsRootState) => {
+        const transactions = selectAllTransactions(state);
+        return transactions.find(tx => tx.txid === txid) ?? null;
+    },
+);
