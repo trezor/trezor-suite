@@ -1,10 +1,16 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
+
 import { Card } from '@suite-components';
+import { useSelector } from '@suite-hooks';
+import {
+    pauseCoinjoinSession,
+    restoreCoinjoinSession,
+} from '@wallet-actions/coinjoinAccountActions';
 import { WalletLayout } from '@wallet-components';
 import { useSendForm, SendContext, UseSendFormProps } from '@wallet-hooks/useSendForm';
-import { useSelector } from '@suite-hooks';
-
+import { selectCoinjoinAccountByKey } from '@wallet-reducers/coinjoinReducer';
 import { Header } from './components/Header';
 import Outputs from './components/Outputs';
 import Options from './components/Options';
@@ -28,7 +34,33 @@ interface SendLoadedProps extends UseSendFormProps {
 // separated to call `useSendForm` hook at top level
 // children are only for test purposes, this prop is not available in regular build
 const SendLoaded = ({ children, ...props }: SendLoadedProps) => {
-    const sendContextValues = useSendForm(props);
+    const [isCoinjoinPausedAutomatically, setIsCoinjoinPausedAutomatically] = useState(false);
+
+    const coinjoinAccount = useSelector(state =>
+        selectCoinjoinAccountByKey(state, props.selectedAccount.account.key),
+    );
+
+    const dispatch = useDispatch();
+
+    const sendContextValues = useSendForm({ ...props, coinjoinAccount });
+
+    const accountKey = props.selectedAccount.account.key;
+    const accountType = props.selectedAccount.account?.accountType;
+    const isSessionPaused = coinjoinAccount?.session?.paused;
+
+    // pause coinjoin when send form is open to avoid changing UTXOs while preparing transaction or breaking a coinjoin round
+    // automatically resume coinjoin upon leaving the send form
+    useEffect(() => {
+        if (accountType === 'coinjoin' && !isSessionPaused && !isCoinjoinPausedAutomatically) {
+            dispatch(pauseCoinjoinSession(accountKey));
+            setIsCoinjoinPausedAutomatically(true);
+        }
+        return () => {
+            if (isCoinjoinPausedAutomatically && isSessionPaused) {
+                dispatch(restoreCoinjoinSession(accountKey));
+            }
+        };
+    }, [accountKey, accountType, dispatch, isCoinjoinPausedAutomatically, isSessionPaused]);
 
     return (
         <WalletLayout title="TR_NAV_SEND" account={props.selectedAccount}>
@@ -58,8 +90,6 @@ interface SendProps {
 
 const Send = ({ children }: SendProps) => {
     const props = useSelector(state => ({
-        selectedAccount: state.wallet.selectedAccount,
-        coinjoinAccounts: state.wallet.coinjoin.accounts,
         fiat: state.wallet.fiat,
         localCurrency: state.wallet.settings.localCurrency,
         fees: state.wallet.fees,
@@ -67,22 +97,15 @@ const Send = ({ children }: SendProps) => {
         sendRaw: state.wallet.send.sendRaw,
         metadataEnabled: state.metadata.enabled && !!state.metadata.provider,
     }));
-
-    const { selectedAccount, coinjoinAccounts } = props;
+    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
 
     if (selectedAccount.status !== 'loaded') {
         return <WalletLayout title="TR_NAV_SEND" account={selectedAccount} />;
     }
 
-    // find coinjoin account related to current account
-    const coinjoinAccount =
-        selectedAccount.account.accountType === 'coinjoin'
-            ? coinjoinAccounts.find(a => a.key === selectedAccount.account.key)
-            : undefined;
-
     /* children are only for test purposes, this prop is not available in regular build */
     return (
-        <SendLoaded {...props} selectedAccount={selectedAccount} coinjoinAccount={coinjoinAccount}>
+        <SendLoaded {...props} selectedAccount={selectedAccount}>
             {children}
         </SendLoaded>
     );
