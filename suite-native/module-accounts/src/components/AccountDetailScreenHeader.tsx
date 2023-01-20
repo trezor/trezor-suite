@@ -6,8 +6,10 @@ import { IconButton } from '@suite-native/atoms';
 import {
     AccountsStackParamList,
     AccountsStackRoutes,
+    RootStackParamList,
+    RootStackRoutes,
     ScreenHeader,
-    StackNavigationProps,
+    StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
@@ -15,6 +17,12 @@ type AccountDetailScreenHeaderProps = {
     accountName?: string;
     accountKey: string;
 };
+
+type AccountDetailNavigationProps = StackToStackCompositeNavigationProps<
+    AccountsStackParamList,
+    AccountsStackRoutes.AccountDetail,
+    RootStackParamList
+>;
 
 const headerStyle = prepareNativeStyle(utils => ({
     paddingHorizontal: utils.spacings.medium,
@@ -25,13 +33,10 @@ export const AccountDetailScreenHeader = ({
     accountKey,
 }: AccountDetailScreenHeaderProps) => {
     const { applyStyle } = useNativeStyles();
-    const navigation =
-        useNavigation<
-            StackNavigationProps<AccountsStackParamList, AccountsStackRoutes.AccountDetail>
-        >();
+    const navigation = useNavigation<AccountDetailNavigationProps>();
 
     const handleSettingsNavigation = () => {
-        navigation.navigate(AccountsStackRoutes.AccountDetailSettings, {
+        navigation.navigate(RootStackRoutes.AccountSettings, {
             accountKey,
         });
     };

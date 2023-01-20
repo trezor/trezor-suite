@@ -1,5 +1,4 @@
 export const sendReceiveContentType = {
-    selectAccountToReceive: 'selectAccountToReceive',
     createNewAddressToReceive: 'createNewAddressToReceive',
     confirmNewAddressToReceive: 'confirmNewAddressToReceive',
     generatedAddressToReceive: 'generatedAddressToReceive',

@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { createStackNavigator } from '@react-navigation/stack';
 
+import { AccountSettingsScreen } from '@suite-native/module-accounts';
 import { AccountsImportStackNavigator } from '@suite-native/module-accounts-import';
 import {
     RootStackParamList,
@@ -28,22 +29,25 @@ export const RootStackNavigator = () => {
             }
             screenOptions={stackNavigationOptionsConfig}
         >
-            <RootStack.Group>
-                <RootStack.Screen name={RootStackRoutes.AppTabs} component={AppTabNavigator} />
-                <RootStack.Screen
-                    name={RootStackRoutes.AccountsImport}
-                    component={AccountsImportStackNavigator}
-                />
-                <RootStack.Screen
-                    options={{ title: RootStackRoutes.TransactionDetail }}
-                    name={RootStackRoutes.TransactionDetail}
-                    component={TransactionDetailScreen}
-                />
-                <RootStack.Screen
-                    name={RootStackRoutes.DevUtilsStack}
-                    component={DevUtilsStackNavigator}
-                />
-            </RootStack.Group>
+            <RootStack.Screen name={RootStackRoutes.AppTabs} component={AppTabNavigator} />
+            <RootStack.Screen
+                name={RootStackRoutes.AccountsImport}
+                component={AccountsImportStackNavigator}
+            />
+            <RootStack.Screen
+                options={{ title: RootStackRoutes.AccountSettings }}
+                name={RootStackRoutes.AccountSettings}
+                component={AccountSettingsScreen}
+            />
+            <RootStack.Screen
+                options={{ title: RootStackRoutes.TransactionDetail }}
+                name={RootStackRoutes.TransactionDetail}
+                component={TransactionDetailScreen}
+            />
+            <RootStack.Screen
+                name={RootStackRoutes.DevUtilsStack}
+                component={DevUtilsStackNavigator}
+            />
             <RootStack.Group screenOptions={{ presentation: 'modal' }}>
                 <RootStack.Screen
                     name={RootStackRoutes.ReceiveModal}

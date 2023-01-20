@@ -5,14 +5,12 @@ import { BottomTabBarProps, createBottomTabNavigator } from '@react-navigation/b
 import { HomeStackNavigator } from '@suite-native/module-home';
 import { AccountsStackNavigator } from '@suite-native/module-accounts';
 import { SettingsStackNavigator } from '@suite-native/module-settings';
-import { AppTabsParamList, AppTabsRoutes, RootStackRoutes, TabBar } from '@suite-native/navigation';
-import { Text } from '@suite-native/atoms';
+import { ReceiveAccountsScreen } from '@suite-native/module-send-receive';
+import { AppTabsParamList, AppTabsRoutes, TabBar } from '@suite-native/navigation';
 
 import { rootTabsOptions } from './routes';
 
 const Tab = createBottomTabNavigator<AppTabsParamList>();
-
-const DummyComponent = () => <Text>This never gets rendered.</Text>;
 
 export const AppTabNavigator = () => (
     <>
@@ -29,14 +27,9 @@ export const AppTabNavigator = () => (
             <Tab.Screen name={AppTabsRoutes.HomeStack} component={HomeStackNavigator} />
             <Tab.Screen name={AppTabsRoutes.AccountsStack} component={AccountsStackNavigator} />
             <Tab.Screen
-                name={AppTabsRoutes.Action}
-                component={DummyComponent}
-                listeners={({ navigation }) => ({
-                    tabPress: e => {
-                        e.preventDefault();
-                        navigation.navigate(RootStackRoutes.ReceiveModal, { params: {} });
-                    },
-                })}
+                options={{ title: AppTabsRoutes.ReceiveScreen }}
+                name={AppTabsRoutes.ReceiveScreen}
+                component={ReceiveAccountsScreen}
             />
             <Tab.Screen name={AppTabsRoutes.SettingsStack} component={SettingsStackNavigator} />
         </Tab.Navigator>

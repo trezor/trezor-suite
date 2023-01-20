@@ -46,7 +46,7 @@ export const Assets = () => {
     );
 
     const handleReceive = () => {
-        navigation.navigate(RootStackRoutes.ReceiveModal, {});
+        navigation.navigate(AppTabsRoutes.ReceiveScreen);
     };
 
     const handleImportAssets = () => {

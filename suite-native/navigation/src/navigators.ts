@@ -37,7 +37,7 @@ export type AccountsStackParamList = {
 export type AppTabsParamList = {
     [AppTabsRoutes.HomeStack]: NavigatorScreenParams<HomeStackParamList>;
     [AppTabsRoutes.AccountsStack]: NavigatorScreenParams<AccountsStackParamList>;
-    [AppTabsRoutes.Action]: undefined;
+    [AppTabsRoutes.ReceiveScreen]: undefined;
     [AppTabsRoutes.SettingsStack]: NavigatorScreenParams<SettingsStackParamList>;
 };
 
@@ -59,7 +59,8 @@ export type AccountsImportStackParamList = {
 export type RootStackParamList = {
     [RootStackRoutes.AppTabs]: NavigatorScreenParams<AppTabsParamList>;
     [RootStackRoutes.AccountsImport]: NavigatorScreenParams<AccountsImportStackParamList>;
+    [RootStackRoutes.AccountSettings]: { accountKey: string };
     [RootStackRoutes.TransactionDetail]: { txid: string };
     [RootStackRoutes.DevUtilsStack]: undefined;
-    [RootStackRoutes.ReceiveModal]: { accountKey?: string };
+    [RootStackRoutes.ReceiveModal]: { accountKey: string };
 };
