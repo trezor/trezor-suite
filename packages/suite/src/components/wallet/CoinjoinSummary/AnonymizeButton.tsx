@@ -8,6 +8,7 @@ import { useSelector } from '@suite-hooks';
 import { TooltipButton } from '@trezor/components';
 import {
     selectIsCoinjoinBlockedByTor,
+    selectIsCoinjoinBlockedByAmountsTooSmall,
 } from '@wallet-reducers/coinjoinReducer';
 import {
     Feature,
@@ -37,6 +38,9 @@ interface AnonymizeButtonProps {
 
 export const AnonymizeButton = ({ accountKey }: AnonymizeButtonProps) => {
     const isCoinjoinBlockedByTor = useSelector(selectIsCoinjoinBlockedByTor);
+    const isCoinjoinBlockedByAmountsTooSmall = useSelector(state =>
+        selectIsCoinjoinBlockedByAmountsTooSmall(state, accountKey),
+    );
 
     const isCoinJoinDisabledByFeatureFlag = useSelector(state =>
         selectIsFeatureDisabled(state, Feature.coinjoin),
@@ -49,6 +53,7 @@ export const AnonymizeButton = ({ accountKey }: AnonymizeButtonProps) => {
 
     const isDisabled =
         isCoinJoinDisabledByFeatureFlag ||
+        isCoinjoinBlockedByAmountsTooSmall ||
         isCoinjoinBlockedByTor;
 
     const goToSetup = () => dispatch(goto('wallet-anonymize', { preserveParams: true }));
@@ -59,6 +64,9 @@ export const AnonymizeButton = ({ accountKey }: AnonymizeButtonProps) => {
         }
         if (isCoinjoinBlockedByTor) {
             return <Translation id="TR_UNAVAILABLE_COINJOIN_TOR_DISABLE_TOOLTIP" />;
+        }
+        if (isCoinjoinBlockedByAmountsTooSmall) {
+            return <Translation id="TR_UNAVAILABLE_COINJOIN_AMOUNTS_TOO_SMALL" />;
         }
     };
 
