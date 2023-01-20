@@ -1,11 +1,11 @@
 import { SessionPhase } from '../enums';
-import { AllowedRange, CoordinationFeeRate, FeeRateMedians, Round } from './coordinator';
+import { AllowedRange, CoordinationFeeRate, Round } from './coordinator';
 import { CoinjoinRequestEvent, CoinjoinRoundEvent } from './round';
 
 export interface CoinjoinStatusEvent {
     rounds: Round[];
     changed: Round[];
-    feeRatesMedians: FeeRateMedians[];
+    feeRatesMedians: { fast: number; recommended: number };
     coordinationFeeRate: CoordinationFeeRate;
     allowedInputAmounts: AllowedRange;
 }

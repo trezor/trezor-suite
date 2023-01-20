@@ -23,17 +23,13 @@ import {
 import { selectTorState, SuiteRootState } from '@suite-reducers/suiteReducer';
 import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 
-export interface CoinjoinClientFeeRatesMedians {
-    fast: number;
-    recommended: number;
-}
-
-export interface CoinjoinClientInstance {
-    status: 'loading' | 'loaded';
+export interface CoinjoinClientInstance
+    extends Pick<
+        CoinjoinStatusEvent,
+        'coordinationFeeRate' | 'allowedInputAmounts' | 'feeRatesMedians'
+    > {
     rounds: { id: string; phase: RoundPhase }[]; // store only slice of Round in reducer. may be extended in the future
-    feeRatesMedians: CoinjoinClientFeeRatesMedians;
-    coordinationFeeRate: CoinjoinStatusEvent['coordinationFeeRate'];
-    allowedInputAmounts: CoinjoinStatusEvent['allowedInputAmounts'];
+    status: 'loading' | 'loaded';
 }
 
 export interface CoinjoinState {

@@ -109,31 +109,16 @@ export const calculateAnonymityProgress = ({
         .toNumber();
 };
 
-/**
- * Transform from coordinator format to coinjoinReducer format `CoinjoinClientFeeRatesMedians`
- * array => object { name: value-in-vBytes }
- */
-export const transformFeeRatesMedians = (medians: CoinjoinStatusEvent['feeRatesMedians']) => {
-    const [fast, recommended] = medians.map(m => m.medianFeeRate);
-    // convert from kvBytes (kilo virtual bytes) to vBytes (how the value is displayed in UI)
-    const kvB2vB = (v: number) => (v ? Math.round(v / 1000) : 1);
-
-    return {
-        fast: kvB2vB(fast) * 2, // NOTE: this calculation will be smarter once have enough data
-        recommended: kvB2vB(recommended),
-    };
-};
-
-/**
- * Transform from coordinator format to coinjoinReducer format `CoinjoinClientInstance`
- * - coordinatorFeeRate: multiply the amount registered for coinjoin by this value to get the total fee
- * - feeRatesMedians: array => object with values in kvBytes
- */
-export const transformCoinjoinStatus = (event: CoinjoinStatusEvent) => ({
-    rounds: event.rounds.map(r => ({ id: r.id, phase: r.phase })),
-    coordinationFeeRate: event.coordinationFeeRate,
-    feeRatesMedians: transformFeeRatesMedians(event.feeRatesMedians),
-    allowedInputAmounts: event.allowedInputAmounts,
+export const transformCoinjoinStatus = ({
+    coordinationFeeRate,
+    feeRatesMedians,
+    allowedInputAmounts,
+    rounds,
+}: CoinjoinStatusEvent) => ({
+    coordinationFeeRate,
+    feeRatesMedians,
+    allowedInputAmounts,
+    rounds: rounds.map(({ id, phase }) => ({ id, phase })),
 });
 
 // convert suite account type to @trezor/coinjoin RegisterAccountParams scriptType

@@ -11,6 +11,7 @@ import {
     CoinjoinStateEvent,
     CoinjoinRoundParameters,
     CoinjoinAffiliateRequest,
+    CoinjoinStatus,
 } from '../types/coordinator';
 import { Credentials } from '../types/middleware';
 
@@ -139,7 +140,7 @@ export const findNearestDeadline = (rounds: Round[]) => {
 };
 
 // get relevant round data from the most recent round
-export const getDataFromRounds = (rounds: Round[]) => {
+const getDataFromRounds = (rounds: Round[]) => {
     const lastRound = rounds.at(-1);
     const roundParameters = lastRound && getRoundParameters(lastRound);
 
@@ -154,6 +155,41 @@ export const getDataFromRounds = (rounds: Round[]) => {
             max: roundParameters?.allowedInputAmounts.max ?? MAX_ALLOWED_AMOUNT,
             min: roundParameters?.allowedInputAmounts.min ?? MIN_ALLOWED_AMOUNT,
         },
+    };
+};
+
+/**
+ * Transform from coordinator format to coinjoinReducer format `CoinjoinClientFeeRatesMedians`
+ * array => object { name: value-in-vBytes }
+ */
+const transformFeeRatesMedians = (medians: CoinjoinStatus['coinJoinFeeRateMedians']) => {
+    const [fast, recommended] = medians.map(m => m.medianFeeRate);
+    // convert from kvBytes (kilo virtual bytes) to vBytes (how the value is displayed in UI)
+    const kvB2vB = (v: number) => (v ? Math.round(v / 1000) : 1);
+
+    return {
+        fast: kvB2vB(fast) * 2, // NOTE: this calculation will be smarter once have enough data
+        recommended: kvB2vB(recommended),
+    };
+};
+
+/**
+ * Transform from coordinator format to coinjoinReducer format `CoinjoinClientInstance`
+ * - coordinatorFeeRate: multiply the amount registered for coinjoin by this value to get the total fee
+ * - feeRatesMedians: array => object with values in kvBytes
+ */
+export const transformStatus = ({
+    coinJoinFeeRateMedians,
+    roundStates: rounds,
+}: CoinjoinStatus) => {
+    const feeRatesMedians = transformFeeRatesMedians(coinJoinFeeRateMedians);
+    const { allowedInputAmounts, coordinationFeeRate } = getDataFromRounds(rounds);
+
+    return {
+        rounds,
+        feeRatesMedians,
+        coordinationFeeRate,
+        allowedInputAmounts,
     };
 };
 
