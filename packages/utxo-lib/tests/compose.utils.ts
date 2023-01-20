@@ -186,7 +186,11 @@ export class TxWeightCalculator {
 
 type FinalResult = Exclude<ComposeResult, { type: 'nonfinal' } | { type: 'error' }>;
 
-export function verifyTxBytes(tx: FinalResult, txType: TxType = 'p2pkh', network?: Network) {
+export function verifyTxBytes(
+    tx: FinalResult,
+    txType: Exclude<TxType, 'p2wsh'> = 'p2pkh',
+    network?: Network,
+) {
     const calc = new TxWeightCalculator();
     tx.transaction.inputs.forEach(() => {
         calc.addInputByKey(txType);
