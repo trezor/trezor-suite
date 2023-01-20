@@ -128,7 +128,10 @@ export const DEFAULT_CLIENT_STATUS = {
         rate: COORDINATOR_FEE_RATE,
         plebsDontPayThreshold: PLEBS_DONT_PAY_THRESHOLD,
     },
-    allowedInputAmounts: { min: MIN_ALLOWED_AMOUNT, max: MAX_ALLOWED_AMOUNT },
+    allowedInputAmounts: {
+        min: MIN_ALLOWED_AMOUNT,
+        max: MAX_ALLOWED_AMOUNT,
+    },
 };
 
 export const getCoinjoinConfig = (

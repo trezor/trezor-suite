@@ -92,6 +92,12 @@ export const AFFILIATE_INFO = {
     coinjoinRequests: {},
 };
 
+export const STATUS_EVENT = {
+    roundStates: [],
+    affiliateInformation: AFFILIATE_INFO,
+    coinJoinFeeRateMedians: FEE_RATE_MEDIANS,
+};
+
 type CJRoundOptions = ConstructorParameters<typeof CoinjoinRound>[1];
 interface CreateCoinjoinRoundOptions extends CJRoundOptions {
     statusRound?: Partial<Round>;

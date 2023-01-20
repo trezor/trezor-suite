@@ -1,7 +1,12 @@
 import { Status } from '../../src/client/Status';
 import { ROUND_REGISTRATION_END_OFFSET, STATUS_TIMEOUT } from '../../src/constants';
 import { createServer } from '../mocks/server';
-import { DEFAULT_ROUND, ROUND_CREATION_EVENT, AFFILIATE_INFO } from '../fixtures/round.fixture';
+import {
+    AFFILIATE_INFO,
+    DEFAULT_ROUND,
+    STATUS_EVENT,
+    ROUND_CREATION_EVENT,
+} from '../fixtures/round.fixture';
 
 let server: Awaited<ReturnType<typeof createServer>>;
 
@@ -131,15 +136,15 @@ describe('Status', () => {
         server?.addListener('test-request', ({ resolve }) => {
             if (request === 6) {
                 resolve({
+                    ...STATUS_EVENT,
                     roundStates: [{ ...DEFAULT_ROUND, phase: 1 }],
-                    affiliateInformation: AFFILIATE_INFO,
                 });
             } else {
                 setTimeout(
                     () => {
                         resolve({
+                            ...STATUS_EVENT,
                             roundStates: [DEFAULT_ROUND],
-                            affiliateInformation: AFFILIATE_INFO,
                         });
                     },
                     request % 2 === 0 ? 5000 : 0, // timeout error on every second request
@@ -196,8 +201,8 @@ describe('Status', () => {
         server?.addListener('test-request', ({ url, resolve }) => {
             if (url.endsWith('/status')) {
                 resolve({
+                    ...STATUS_EVENT,
                     roundStates: [round],
-                    affiliateInformation: AFFILIATE_INFO,
                 });
             }
             resolve();
@@ -217,6 +222,7 @@ describe('Status', () => {
                 round.phase++;
                 if (round.phase <= 4) {
                     resolve({
+                        ...STATUS_EVENT,
                         roundStates: [
                             round,
                             {
@@ -225,13 +231,11 @@ describe('Status', () => {
                                 phase: 2, // intentionally keep it in one phase, see pendingRound explanation below
                             },
                         ],
-                        affiliateInformation: AFFILIATE_INFO,
                     });
                 } else {
                     // remove all rounds from state
                     resolve({
-                        roundStates: [],
-                        affiliateInformation: AFFILIATE_INFO,
+                        ...STATUS_EVENT,
                     });
                 }
             }
@@ -299,6 +303,7 @@ describe('Status', () => {
                     // start sending coinjoinRequests after third iteration
                     const coinjoinRequests = { [round.id]: { trezor: affiliateData } };
                     resolve({
+                        ...STATUS_EVENT,
                         roundStates: [round],
                         affiliateInformation: {
                             ...AFFILIATE_INFO,
@@ -307,8 +312,8 @@ describe('Status', () => {
                     });
                 } else {
                     resolve({
+                        ...STATUS_EVENT,
                         roundStates: [round],
-                        affiliateInformation: AFFILIATE_INFO,
                     });
                 }
             }

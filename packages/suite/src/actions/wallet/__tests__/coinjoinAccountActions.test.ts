@@ -24,6 +24,7 @@ jest.mock('@suite/services/coinjoin/coinjoinService', () => {
                     rounds: [{ id: '00', phase: 0 }],
                     feeRatesMedians: [],
                     coordinatorFeeRate: 0.003,
+                    allowedInputAmounts: { min: 5000, max: 134375000000 },
                 }),
             ),
             registerAccount: jest.fn(),
