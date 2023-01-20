@@ -1,4 +1,4 @@
-import { scheduleAction } from '@trezor/utils';
+import { promiseAllSequence, scheduleAction } from '@trezor/utils';
 
 import { httpGet, httpPost, RequestOptions } from '../utils/http';
 import type {
@@ -38,14 +38,33 @@ export class CoinjoinBackendClient {
         return this.identitiesBlockbook[(height ?? 0) & 0x3]; // Works only when identities.length === 4
     }
 
-    fetchBlock(height: number, options?: RequestOptions): Promise<BlockbookBlock> {
-        const identity = this.getIdentityForBlock(height);
+    protected fetchBlockPage(
+        height: number,
+        page: number,
+        options?: RequestOptions,
+    ): Promise<BlockbookBlock> {
         return this.scheduleGet(
             this.blockbook,
             this.handleBlockbookResponse,
-            { identity, ...options },
+            options,
             `block/${height}`,
+            { page },
         );
+    }
+
+    async fetchBlock(height: number, options?: RequestOptions): Promise<BlockbookBlock> {
+        const identity = this.getIdentityForBlock(height);
+        const pageOptions = { identity, ...options };
+        const { txs, ...block } = await this.fetchBlockPage(height, 1, pageOptions);
+        const nextPages = await promiseAllSequence(
+            Array(block.totalPages - 1)
+                .fill(0)
+                .map((_, i) => () => this.fetchBlockPage(height, i + 2, pageOptions)),
+        );
+        return {
+            ...block,
+            txs: txs.concat(nextPages.flatMap(b => b.txs)),
+        };
     }
 
     fetchBlocks(heights: number[], options?: RequestOptions): Promise<BlockbookBlock[]> {

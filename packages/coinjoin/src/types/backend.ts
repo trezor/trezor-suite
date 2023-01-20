@@ -19,6 +19,8 @@ export type { BlockbookTransaction, VinVout, EnhancedVinVout };
 export type { Address, Utxo, Transaction, AccountAddresses };
 
 export type BlockbookBlock = {
+    page: number;
+    totalPages: number;
     height: number;
     txs: BlockbookTransaction[];
 };
