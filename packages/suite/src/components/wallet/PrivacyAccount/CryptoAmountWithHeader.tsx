@@ -34,18 +34,12 @@ const CryptoAmount = styled(FormattedCryptoAmount)<{ color?: string }>`
     font-size: ${variables.FONT_SIZE.H3};
 `;
 
-const Note = styled.p`
-    margin-top: 4px;
-`;
-
 interface CryptoAmountWithHeaderProps {
     header: React.ReactNode;
     headerIcon?: React.ReactNode;
     value: string;
     symbol: NetworkSymbol;
     color?: string;
-    note?: React.ReactNode;
-    className?: string;
 }
 
 export const CryptoAmountWithHeader = ({
@@ -54,17 +48,13 @@ export const CryptoAmountWithHeader = ({
     value,
     symbol,
     color,
-    note,
-    className,
 }: CryptoAmountWithHeaderProps) => (
-    <Container className={className}>
+    <Container>
         <Header>
             {headerIcon && headerIcon} {header}
         </Header>
 
         <CryptoAmount value={formatNetworkAmount(value, symbol)} symbol={symbol} color={color} />
         <FiatValue amount={value} symbol={symbol} showApproximationIndicator />
-
-        {note && <Note>{note}</Note>}
     </Container>
 );
