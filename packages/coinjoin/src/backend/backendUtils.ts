@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js';
 
-import { deriveAddresses as deriveNewAddresses } from '@trezor/utxo-lib';
+import { deriveAddresses as deriveNewAddresses, Network } from '@trezor/utxo-lib';
+import { getTransactionVbytes } from '@trezor/utxo-lib/lib/vsize';
 
 import type { CoinjoinBackendClient } from './CoinjoinBackendClient';
 import type { VinVout, Transaction, PrederivedAddress } from '../types/backend';
@@ -31,16 +32,19 @@ export const deriveAddresses = (
 };
 
 /** @deprecated Temporary workaround, should be removed before releasing */
-export const fixTx = (transactions: Transaction[], client: CoinjoinBackendClient) =>
+export const fixTx = (
+    transactions: Transaction[],
+    client: CoinjoinBackendClient,
+    network: Network,
+) =>
     Promise.all(
         transactions.map(async tx => {
             const fetched = await client.fetchTransaction(tx.txid, {
                 identity: client.getIdentityForBlock(tx.blockHeight),
             });
             // tx.vsize missing in transactions from /block endpoint
-            tx.feeRate = fetched.vsize
-                ? new BigNumber(tx.fee).div(fetched.vsize).decimalPlaces(2).toString()
-                : undefined;
+            tx.vsize = getTransactionVbytes(tx.details, network);
+            tx.feeRate = new BigNumber(tx.fee).div(tx.vsize).decimalPlaces(2).toString();
             // tx.size and tx.hex missing in transactions from /block endpoint
             tx.details.size =
                 fetched.size || typeof fetched.hex === 'string' ? fetched.hex.length / 2 : 0;

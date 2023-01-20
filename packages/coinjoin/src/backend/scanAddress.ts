@@ -28,7 +28,7 @@ export const scanAddress = async (
             const blockTxs = block.txs.filter(doesTxContainAddress(address));
             const transactions = blockTxs.map(tx => transformTransaction(address, undefined, tx));
 
-            await fixTx(transactions, client);
+            await fixTx(transactions, client, network);
 
             onProgress({
                 checkpoint,

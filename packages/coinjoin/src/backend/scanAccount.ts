@@ -108,7 +108,7 @@ export const scanAccount = async (
 
         txs.clear();
 
-        await fixTx(transactions, client);
+        await fixTx(transactions, client, network);
 
         if (progress !== undefined) {
             onProgress({ checkpoint, transactions, info: { progress } });
