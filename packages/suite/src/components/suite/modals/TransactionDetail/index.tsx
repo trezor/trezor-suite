@@ -11,7 +11,7 @@ import {
     isPending,
     findChainedTransactions,
     getAccountKey,
-    getAccountNetwork,
+    getNetwork,
 } from '@suite-common/wallet-utils';
 import { useSelector } from '@suite-hooks';
 import { selectAccountByKey } from '@suite-common/wallet-core';
@@ -93,7 +93,7 @@ export const TransactionDetail = ({ tx, rbfForm, onCancel }: TransactionDetailPr
 
     const accountKey = getAccountKey(tx.descriptor, tx.symbol, tx.deviceState);
     const account = useSelector(state => selectAccountByKey(state, accountKey));
-    const network = account && getAccountNetwork(account);
+    const network = account && getNetwork(account.symbol, account.accountType);
 
     return (
         <StyledModal

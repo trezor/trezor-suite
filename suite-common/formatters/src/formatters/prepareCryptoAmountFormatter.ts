@@ -1,10 +1,11 @@
 import BigNumber from 'bignumber.js';
 
-import { networksCompatibility as NETWORKS, NetworkSymbol } from '@suite-common/wallet-config';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 import {
     localizeNumber,
     networkAmountToSatoshi,
     formatCoinBalance,
+    getNetwork,
 } from '@suite-common/wallet-utils';
 import { PROTO } from '@trezor/connect';
 
@@ -25,8 +26,7 @@ export const prepareCryptoAmountFormatter = (config: FormatterConfig) =>
         (value, { symbol, isBalance, withSymbol = true }) => {
             const { locale, bitcoinAmountUnit } = config;
 
-            const { features: networkFeatures, decimals } =
-                NETWORKS.find(network => network.symbol === symbol) ?? {};
+            const { features: networkFeatures, decimals } = (symbol && getNetwork(symbol)) ?? {};
 
             const areAmountUnitsSupported = !!networkFeatures?.includes('amount-unit');
 

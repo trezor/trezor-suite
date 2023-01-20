@@ -10,7 +10,7 @@ import {
     groupTransactionsByDate,
     advancedSearchTransactions,
     groupJointTransactions,
-    getAccountNetwork,
+    getNetwork,
 } from '@suite-common/wallet-utils';
 import { SETTINGS } from '@suite-config';
 import { WalletAccountTransaction, Account } from '@wallet-types';
@@ -50,7 +50,7 @@ export const TransactionList = ({
         anchor: state.router.anchor,
     }));
 
-    const network = getAccountNetwork(account);
+    const network = getNetwork(account.symbol, account.accountType);
 
     // Search
     const [search, setSearch] = useState('');

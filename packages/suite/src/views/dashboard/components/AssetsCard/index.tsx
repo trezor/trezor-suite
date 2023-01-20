@@ -1,7 +1,6 @@
 import React from 'react';
 import styled, { useTheme } from 'styled-components';
 import BigNumber from 'bignumber.js';
-import { NETWORKS } from '@wallet-config';
 import { Section } from '@dashboard-components';
 import { AssetTable, AssetTableSkeleton } from './components/AssetTable';
 import { AssetGrid, AssetGridSkeleton } from './components/AssetGrid';
@@ -13,6 +12,7 @@ import { useAccounts } from '@wallet-hooks';
 import * as suiteActions from '@suite-actions/suiteActions';
 import * as routerActions from '@suite-actions/routerActions';
 import { AnimatePresence } from 'framer-motion';
+import { getNetwork } from '@suite-common/wallet-utils';
 
 const StyledCard = styled(Card)`
     flex-direction: column;
@@ -94,7 +94,7 @@ const AssetsCard = () => {
 
     const assetsData: assetType[] = networks
         .map(symbol => {
-            const network = NETWORKS.find(n => n.symbol === symbol && !n.accountType);
+            const network = getNetwork(symbol);
             if (!network) {
                 console.error('unknown network');
                 return null;

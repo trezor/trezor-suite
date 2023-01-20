@@ -2,8 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import { CoinLogo, variables } from '@trezor/components';
 import { Modal, Translation } from '@suite-components';
-import { NETWORKS } from '@wallet-config';
 import { NetworkSymbol } from '@suite/types/wallet';
+import { getNetwork } from '@suite-common/wallet-utils';
 import { CustomBackends } from './components/CustomBackends';
 
 const Section = styled.div`
@@ -38,7 +38,7 @@ interface AdvancedCoinSettingsProps {
 }
 
 export const AdvancedCoinSettings = ({ coin, onCancel }: AdvancedCoinSettingsProps) => {
-    const network = NETWORKS.find(network => network.symbol === coin);
+    const network = getNetwork(coin);
 
     if (!network) {
         return null;

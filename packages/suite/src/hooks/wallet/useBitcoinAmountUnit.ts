@@ -3,8 +3,8 @@ import { useSelector } from '@suite-hooks/useSelector';
 import { useActions } from '@suite-hooks/useActions';
 import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
 
-import { NETWORKS } from '@wallet-config';
 import { NetworkSymbol } from '@wallet-types';
+import { getNetwork } from '@suite-common/wallet-utils';
 
 export const useBitcoinAmountUnit = (symbol?: NetworkSymbol) => {
     const bitcoinAmountUnit = useSelector(state => state.wallet.settings.bitcoinAmountUnit);
@@ -22,10 +22,7 @@ export const useBitcoinAmountUnit = (symbol?: NetworkSymbol) => {
     const areUnitsSupportedByDevice = !unavailableCapabilities?.amountUnit;
 
     const areUnitsSupportedByNetwork =
-        symbol &&
-        NETWORKS.find(({ symbol: networkSymbol }) => networkSymbol === symbol)?.features?.includes(
-            'amount-unit',
-        );
+        symbol && getNetwork(symbol)?.features?.includes('amount-unit');
 
     return {
         bitcoinAmountUnit,

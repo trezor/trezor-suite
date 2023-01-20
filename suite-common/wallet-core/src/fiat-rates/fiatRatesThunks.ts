@@ -8,10 +8,10 @@ import {
 } from '@suite-common/fiat-services';
 import TrezorConnect, { AccountTransaction, BlockchainFiatRatesUpdate } from '@trezor/connect';
 import { createThunk } from '@suite-common/redux-utils';
-import { NetworkSymbol, networksCompatibility as NETWORKS } from '@suite-common/wallet-config';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 import { Account, CoinFiatRates, TickerId } from '@suite-common/wallet-types';
 import { FIAT } from '@suite-common/suite-config';
-import { getAccountTransactions, isTestnet } from '@suite-common/wallet-utils';
+import { getAccountTransactions, getNetwork, isTestnet } from '@suite-common/wallet-utils';
 import { getBlockbookSafeTime } from '@suite-common/suite-utils';
 
 import { fiatRatesActions, actionPrefix } from './fiatRatesActions';
@@ -128,11 +128,8 @@ export const updateCurrentFiatRatesThunk = createThunk(
         { dispatch, getState },
     ) => {
         const fiat = selectCoins(getState());
-        const network = NETWORKS.find(t =>
-            ticker.tokenAddress
-                ? t.symbol === ticker.mainNetworkSymbol
-                : t.symbol === ticker.symbol,
-        );
+        const symbol = ticker.tokenAddress ? ticker.mainNetworkSymbol : ticker.symbol;
+        const network = symbol && getNetwork(symbol);
         // skip testnets
         if (!network || network.testnet) return;
 

@@ -446,3 +446,22 @@ export const getTestnets = (debug = false) =>
     networksCompatibility.filter(
         n => !n.accountType && n.testnet === true && (n.symbol !== 'regtest' || debug),
     );
+
+export const isNetworkSymbol = (symbol: string): symbol is NetworkSymbol => symbol in networks;
+
+type GetNetwork = {
+    <T extends NetworkSymbol>(
+        symbol: T,
+        accountType?: (keyof Networks[T]['accountTypes'] & string) | 'normal',
+    ): Network;
+    (symbol: string, accountType?: string): Network | null;
+};
+
+export const getNetwork: GetNetwork = (symbol: string, accountType = 'normal') => {
+    if (!isNetworkSymbol(symbol)) return null;
+    const { accountTypes, ...network } = networks[symbol];
+    const override = (accountTypes as any)[accountType];
+    if (override) return { symbol, accountType, ...network, ...override };
+    if (accountType === 'normal') return { symbol, ...network };
+    return null;
+};
