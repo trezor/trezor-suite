@@ -7214,26 +7214,6 @@ export default defineMessages({
         description: 'Note in coinjoin strategy settings',
         defaultMessage: 'Mining fee might be lower. Selected fee is the max value.',
     },
-    TR_RECOMMENDED: {
-        id: 'TR_RECOMMENDED',
-        description: 'Coinjoin strategy',
-        defaultMessage: 'Recommended',
-    },
-    TR_FAST: {
-        id: 'TR_FAST',
-        description: 'Coinjoin strategy',
-        defaultMessage: 'Fast',
-    },
-    TR_RECOMMENDED_SUBHEADING: {
-        id: 'TR_RECOMMENDED_SUBHEADING',
-        description: 'Coinjoin strategy description',
-        defaultMessage: 'Secure, but takes time',
-    },
-    TR_FAST_SUBHEADING: {
-        id: 'TR_FAST_SUBHEADING',
-        description: 'Coinjoin strategy description',
-        defaultMessage: 'Faster, more expensive',
-    },
     TR_ESTIMATED_TIME: {
         id: 'TR_ESTIMATED_TIME',
         description: 'Coinjoin strategy item - time to complete coin join',

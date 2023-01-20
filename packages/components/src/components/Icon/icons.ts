@@ -31,7 +31,6 @@ export const ICONS = {
     COPY: require('../../images/icons/copy.svg'),
     CROSS: require('../../images/icons/cross.svg'),
     CSV: require('../../images/icons/csv.svg'),
-    CUSTOMIZE: require('../../images/icons/customize.svg'),
     DASHBOARD: require('../../images/icons/dashboard.svg'),
     DATA: require('../../images/icons/data.svg'),
     DISCREET: require('../../images/icons/discreet.svg'),
