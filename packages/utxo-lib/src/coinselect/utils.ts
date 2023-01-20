@@ -15,6 +15,7 @@ export const INPUT_SCRIPT_LENGTH = {
     p2sh: 107, //   1 + 72 (DER signature) + 1 + 33 (PUBKEY)
     p2tr: 65, //    1 + 64 (SCHNORR signature)
     p2wpkh: 107, // 1 + 72 (DER signature) + 1 + 33 (PUBKEY)
+    p2wsh: 107, // TODO usually 1 + 72 + 1 + 72 + 1 + 70
 } as const;
 
 export const OUTPUT_SCRIPT_LENGTH = {
@@ -27,7 +28,7 @@ export const OUTPUT_SCRIPT_LENGTH = {
 
 export type TxType = keyof typeof INPUT_SCRIPT_LENGTH;
 
-const SEGWIT_INPUT_SCRIPT_TYPES: TxType[] = ['p2sh', 'p2tr', 'p2wpkh'];
+const SEGWIT_INPUT_SCRIPT_TYPES: TxType[] = ['p2sh', 'p2tr', 'p2wpkh', 'p2wsh'];
 
 // transaction header + footer: 4 byte version, 4 byte lock time
 const TX_BASE = 32; // 4 * (4 + 4)
@@ -41,7 +42,8 @@ type VinVout = { script: { length: number }; weight?: number };
 export function getVarIntSize(length: number) {
     if (length < 253) return 1;
     if (length < 65536) return 3;
-    return 5;
+    if (length < 4294967296) return 5;
+    return 9;
 }
 
 export function inputWeight(input: Vin) {
@@ -79,10 +81,7 @@ export function getFeeForBytes(feeRate: number, bytes: number) {
 }
 
 export function transactionWeight(inputs: Vin[], outputs: VinVout[]) {
-    const segwitInputs = inputs.reduce(
-        (x, i) => x + (SEGWIT_INPUT_SCRIPT_TYPES.includes(i.type) ? 1 : 0),
-        0,
-    );
+    const segwitInputs = inputs.filter(i => SEGWIT_INPUT_SCRIPT_TYPES.includes(i.type)).length;
 
     return (
         TX_BASE +
