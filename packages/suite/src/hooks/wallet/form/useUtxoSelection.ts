@@ -35,10 +35,6 @@ export const useUtxoSelection = ({
     // manually selected UTXOs
     const selectedUtxos: AccountUtxo[] = watch('selectedUtxos') || [];
 
-    // is the UTXO manually selected?
-    const isSelected = (utxo: AccountUtxo) =>
-        selectedUtxos.some(selected => selected.txid === utxo.txid && selected.vout === utxo.vout);
-
     const spendableUtxos: AccountUtxo[] = [];
     const lowAnonymityUtxos: AccountUtxo[] = [];
     const dustUtxos: AccountUtxo[] = [];
@@ -61,7 +57,9 @@ export const useUtxoSelection = ({
         [];
 
     // are all UTXOs in the top category selected?
-    const allUtxosSelected = !!topCategory?.every(isSelected);
+    const allUtxosSelected = !!topCategory?.every((utxo: AccountUtxo) =>
+        selectedUtxos.some(selected => selected.txid === utxo.txid && selected.vout === utxo.vout),
+    );
 
     // transaction composed for the fee level chosen by the user
     const composedLevel = composedLevels?.[selectedFee || 'normal'];

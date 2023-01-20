@@ -453,10 +453,6 @@ export const getExcludedUtxos = (
         } else if (anonymity < (targetAnonymity || 1)) {
             // didn't reach desired anonymity (coinjoin account)
             excludedUtxos[outpoint] = 'low-anonymity';
-        } else if (!utxo.confirmations) {
-            // is unconfirmed
-            // TODO: this is a new feature
-            // excludedUtxos[outpoint] = 'unconfirmed';
         }
     });
     return excludedUtxos;
