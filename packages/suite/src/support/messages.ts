@@ -5659,11 +5659,6 @@ export default defineMessages({
         defaultMessage: 'Loading transaction details',
         description: 'Tooltip over a spinner icon in Coin control section',
     },
-    TR_REGISTERED_FOR_COINJOIN: {
-        id: 'TR_REGISTERED_FOR_COINJOIN',
-        defaultMessage: 'Registered in CoinJoin',
-        description: 'Tooltip over an icon in Coin control section',
-    },
     TR_AMOUNT_TOO_SMALL_FOR_COINJOIN: {
         id: 'TR_AMOUNT_TOO_SMALL_FOR_COINJOIN',
         defaultMessage: 'Not suitable for CoinJoin - amount too small',

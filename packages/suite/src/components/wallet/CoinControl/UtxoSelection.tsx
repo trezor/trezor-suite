@@ -5,14 +5,13 @@ import { darken } from 'polished';
 
 import * as modalActions from '@suite-actions/modalActions';
 import { FiatValue, FormattedCryptoAmount, MetadataLabeling, Translation } from '@suite-components';
-import { formatNetworkAmount, getUtxoOutpoint } from '@suite-common/wallet-utils';
+import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { useActions, useSelector } from '@suite-hooks';
 import { useTheme, Checkbox, FluidSpinner, Tooltip, variables } from '@trezor/components';
 import type { AccountUtxo } from '@trezor/connect';
 import { TransactionTimestamp, UtxoAnonymity } from '@wallet-components';
 import { UtxoTag } from '@wallet-components/CoinControl/UtxoTag';
 import { useSendFormContext } from '@wallet-hooks';
-import { selectCoinjoinAccountByKey } from '@wallet-reducers/coinjoinReducer';
 import { WalletAccountTransaction } from '@wallet-types';
 
 const VisibleOnHover = styled.div<{ alwaysVisible?: boolean }>`
@@ -130,7 +129,6 @@ export const UtxoSelection = ({ isChecked, transaction, utxo }: UtxoSelectionPro
 
     const coordinatorData = useSelector(state => state.wallet.coinjoin.clients[account.symbol]);
     const device = useSelector(state => state.suite.device);
-    const coinjoinAccount = useSelector(state => selectCoinjoinAccountByKey(state, account.key));
     // selecting metadata from store rather than send form context which does not update on metadata change
     const outputLabels = useSelector(
         state => state.wallet.selectedAccount.account?.metadata.outputLabels,
@@ -141,9 +139,6 @@ export const UtxoSelection = ({ isChecked, transaction, utxo }: UtxoSelectionPro
 
     const theme = useTheme();
 
-    const isRegisteredForCoinjoin = coinjoinAccount?.session?.registeredUtxos.includes(
-        getUtxoOutpoint(utxo),
-    );
     const amountTooSmallForCoinjoin =
         coordinatorData && new BigNumber(utxo.amount).lt(coordinatorData.allowedInputAmounts.min);
     const amountTooBigForCoinjoin =
@@ -180,9 +175,6 @@ export const UtxoSelection = ({ isChecked, transaction, utxo }: UtxoSelectionPro
                 <Row>
                     {isPendingTransaction && (
                         <UtxoTag tooltipMessage="TR_IN_PENDING_TRANSACTION" icon="CLOCK" />
-                    )}
-                    {isRegisteredForCoinjoin && (
-                        <UtxoTag tooltipMessage="TR_REGISTERED_FOR_COINJOIN" icon="SHUFFLE" />
                     )}
                     {isUnavailableForCoinjoin && (
                         <UtxoTag tooltipMessage={unavailableMessage} icon="BLOCKED" />
