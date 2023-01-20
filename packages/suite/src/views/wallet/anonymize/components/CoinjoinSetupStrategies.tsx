@@ -159,7 +159,7 @@ export const CoinjoinSetupStrategies = ({ account }: CoinjoinSetupStrategiesProp
                 (isCustom ? customMaxFee : coordinatorData.feeRatesMedians[strategy]) * 1000, // transform to kvB
             maxRounds,
             skipRounds:
-                customSkipRounds || strategy === 'recommended'
+                (strategy === 'custom' && customSkipRounds) || strategy === 'recommended'
                     ? RECOMMENDED_SKIP_ROUNDS
                     : undefined,
             targetAnonymity,
