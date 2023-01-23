@@ -10,6 +10,7 @@ const store = new Store<{
     updateSettings: UpdateSettings;
     themeSettings: SuiteThemeVariant;
     torSettings: TorSettings;
+    bridgeSettings: BridgeSettings;
 }>();
 
 export const getWinBounds = () => store.get('winBounds', getInitialWindowSize());
@@ -38,6 +39,15 @@ export const getTorSettings = () =>
     });
 
 export const setTorSettings = (torSettings: TorSettings) => store.set('torSettings', torSettings);
+
+export const getBridgeSettings = () =>
+    store.get('bridgeSettings', {
+        startOnStartup: true,
+    });
+
+export const setBridgeSettings = (bridgeSettings: BridgeSettings) => {
+    store.set('bridgeSettings', bridgeSettings);
+};
 
 /** Deletes all items from the store. */
 export const clear = () => store.clear();

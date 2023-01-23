@@ -115,5 +115,9 @@ export const factory = <R extends StrictIpcRenderer<any>>(ipcRenderer?: R): Desk
         configLogger: config => {
             ipcRenderer.send('logger/config', config);
         },
+
+        getBridgeStatus: () => ipcRenderer.invoke('bridge/get-status'),
+
+        toggleBridge: () => ipcRenderer.invoke('bridge/toggle'),
     };
 };

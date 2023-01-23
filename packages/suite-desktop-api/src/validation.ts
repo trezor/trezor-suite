@@ -36,5 +36,6 @@ const validChannels: Array<keyof RendererChannels> = [
     'tor/bootstrap',
     'protocol/open',
     'handshake/event',
+    'bridge/status',
 ];
 export const isValidChannel = (channel: any) => validChannels.includes(channel);
