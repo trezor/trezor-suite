@@ -1,3 +1,4 @@
+export * from './abortablePromise';
 export * from './arrayDistinct';
 export * from './arrayPartition';
 export * from './arrayToDictionary';
