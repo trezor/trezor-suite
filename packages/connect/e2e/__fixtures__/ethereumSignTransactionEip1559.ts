@@ -12,6 +12,9 @@ export default {
     method: 'ethereumSignTransaction',
     setup: {
         mnemonic: commonFixtures.setup.mnemonic,
+        settings: {
+            safety_checks: 2,
+        },
     },
     tests: commonFixtures.tests.flatMap(({ name, parameters, result }) => {
         const fixture = {

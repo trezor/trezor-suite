@@ -17,6 +17,9 @@ export default {
     method: 'ethereumSignTransaction',
     setup: {
         mnemonic: commonFixtures.setup.mnemonic,
+        settings: {
+            safety_checks: 2,
+        },
     },
     tests: commonFixtures.tests
         // exclude test using integer value higher than Number.maxSafeInteger

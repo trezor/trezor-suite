@@ -64,8 +64,6 @@ const setup = async (TrezorUserEnvLink, options) => {
         options,
     });
 
-    await TrezorUserEnvLink.send({ type: 'emulator-allow-unsafe-paths' });
-
     if (options.settings) {
         // allow apply-settings to fail, older FW may not know some flags yet
         try {

@@ -4,6 +4,9 @@ export default {
     method: 'ethereumGetAddress',
     setup: {
         mnemonic: commonFixtures.setup.mnemonic,
+        settings: {
+            safety_checks: 2,
+        },
     },
     tests: commonFixtures.tests.flatMap(({ parameters: params, result }) => ({
         description: params.path,
