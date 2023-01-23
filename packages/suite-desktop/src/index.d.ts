@@ -78,6 +78,9 @@ declare interface LocalStore {
     getTorSettings(): TorSettings;
     setTorSettings(torSettings: TorSettings): void;
     clear(): void;
+    // todo: this is a never ending story, should we model it as transport? processes? bridge?
+    getBridgeSettings(): BridgeSettings;
+    setBridgeSettings(bridgeSettings: BridgeSettings): void;
 }
 
 declare type WinBounds = {
@@ -109,4 +112,11 @@ declare type TorSettings = {
      * wants to use their own tor instance and don't run the bundled one.
      */
     address: string;
+};
+
+declare type BridgeSettings = {
+    /**
+     * Should bridge process be spawned on application startup
+     */
+    startOnStartup: boolean;
 };

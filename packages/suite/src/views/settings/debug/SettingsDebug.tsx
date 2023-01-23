@@ -12,6 +12,8 @@ import { InvityApi } from './InvityApi';
 import { CoinjoinApi } from './CoinjoinApi';
 import { OAuthApi } from './OAuthApi';
 import { CheckFirmwareAuthenticity } from './CheckFirmwareAuthenticity';
+import { Transport } from './Transport';
+import { Processes } from './Processes';
 
 export const SettingsDebug = () => (
     <SettingsLayout>
@@ -38,6 +40,14 @@ export const SettingsDebug = () => (
         </SettingsSection>
         <SettingsSection title="Testing">
             <ThrowTestingError />
+        </SettingsSection>
+        {!isWeb() && (
+            <SettingsSection title="Processes">
+                <Processes />
+            </SettingsSection>
+        )}
+        <SettingsSection title="Transports">
+            <Transport />
         </SettingsSection>
     </SettingsLayout>
 );

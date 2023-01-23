@@ -11,6 +11,7 @@ import {
     BootstrapTorEvent,
     HandshakeTorModule,
     TorStatusEvent,
+    Status,
 } from './messages';
 
 // Event messages from renderer to main process
@@ -55,6 +56,9 @@ export interface RendererChannels {
     // custom protocol
     'protocol/open': string;
 
+    // bridge
+    'bridge/status': Status;
+
     'handshake/event': HandshakeEvent;
 }
 
@@ -69,6 +73,8 @@ export interface InvokeChannels {
     'metadata/write': (options: { file: string; content: string }) => InvokeResult;
     'server/request-address': (route: string) => string | undefined;
     'tor/toggle': (shouldEnableTor: boolean) => InvokeResult;
+    'bridge/toggle': () => InvokeResult;
+    'bridge/get-status': () => InvokeResult<Status>;
     'user-data/clear': () => InvokeResult;
     'user-data/open': (directory?: string) => InvokeResult;
     'udev/install': () => InvokeResult;
@@ -116,4 +122,7 @@ export interface DesktopApi {
     installUdevRules: DesktopApiInvoke<'udev/install'>;
     // Logger
     configLogger: DesktopApiSend<'logger/config'>;
+    // Bridge
+    getBridgeStatus: DesktopApiInvoke<'bridge/get-status'>;
+    toggleBridge: DesktopApiInvoke<'bridge/toggle'>;
 }

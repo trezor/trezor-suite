@@ -96,6 +96,12 @@ export type UpdateProgress = Partial<{
     verifying: boolean;
 }>;
 
+// todo: suite-desktop-api does not suite-desktop dependency but we could reuse lot of types from there I guess
+export type Status = {
+    service: boolean;
+    process: boolean;
+};
+
 export type InvokeResult<Payload = undefined> = ExtractUndefined<Payload> extends undefined
     ? { success: true; payload?: Payload } | { success: false; error: string; code?: string }
     : { success: true; payload: Payload } | { success: false; error: string; code?: string };
