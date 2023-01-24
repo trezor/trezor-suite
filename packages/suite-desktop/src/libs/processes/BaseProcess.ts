@@ -1,5 +1,5 @@
 import path from 'path';
-import { spawn, ChildProcess, IOType } from 'child_process';
+import { spawn, ChildProcess } from 'child_process';
 
 import { isDevEnv } from '@suite-common/suite-utils';
 
@@ -19,7 +19,6 @@ export type Options = {
     startupCooldown?: number;
     stopKillWait?: number;
     autoRestart?: number;
-    stdio?: [IOType, IOType, IOType];
 };
 
 const defaultOptions: Options = {
@@ -139,7 +138,7 @@ export abstract class BaseProcess {
             this.process = spawn(processPath, params, {
                 cwd: processDir,
                 env: processEnv,
-                stdio: this.options.stdio || ['ignore', 'ignore', 'ignore'],
+                stdio: ['ignore', 'ignore', 'ignore'],
             });
             this.process.on('error', err => this.onError(err));
             this.process.on('exit', code => this.onExit(code));
