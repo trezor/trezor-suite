@@ -19,7 +19,7 @@
         "@suite-common/suite-types": "workspace:*",
         "@trezor/urls": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "ua-parser-js": "^1.0.32"
+        "ua-parser-js": "^1.0.33"
     },
     "devDependencies": {
         "@types/fs-extra": "^9.0.13",
