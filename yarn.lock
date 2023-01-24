@@ -6240,6 +6240,7 @@ __metadata:
     "@trezor/utils": "workspace:*"
     date-fns: ^2.29.3
     jest: ^26.6.3
+    proxy-memoize: ^2.0.0
     typescript: 4.9.3
   languageName: unknown
   linkType: soft
@@ -25984,6 +25985,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"proxy-compare@npm:2.4.0":
+  version: 2.4.0
+  resolution: "proxy-compare@npm:2.4.0"
+  checksum: ff8952db96980ad7123a1368aa6fed6b1eb390c22758152805bb5e1d4511fb50e798c19deb93feaa3b22f103a758c38d265ae34e4769d4e1748ee59795dfa6b2
+  languageName: node
+  linkType: hard
+
 "proxy-from-env@npm:1.0.0":
   version: 1.0.0
   resolution: "proxy-from-env@npm:1.0.0"
@@ -25995,6 +26003,15 @@ __metadata:
   version: 1.1.0
   resolution: "proxy-from-env@npm:1.1.0"
   checksum: ed7fcc2ba0a33404958e34d95d18638249a68c430e30fcb6c478497d72739ba64ce9810a24f53a7d921d0c065e5b78e3822759800698167256b04659366ca4d4
+  languageName: node
+  linkType: hard
+
+"proxy-memoize@npm:^2.0.0":
+  version: 2.0.1
+  resolution: "proxy-memoize@npm:2.0.1"
+  dependencies:
+    proxy-compare: 2.4.0
+  checksum: 4851411fcc9b4410555321f64d6a87fc287b88a4821e926bc264947edf77ecf7a6ee12534fa3a324efa2431ce81ea0383d5d1785f6cbf6661ad1be2b0d7e31d8
   languageName: node
   linkType: hard
 

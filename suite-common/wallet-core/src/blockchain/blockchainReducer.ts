@@ -1,4 +1,5 @@
 import { PayloadAction } from '@reduxjs/toolkit';
+import { memoizeWithArgs } from 'proxy-memoize';
 
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import { networksCompatibility, NetworkSymbol } from '@suite-common/wallet-config';
@@ -166,3 +167,18 @@ export const selectBlockchainState = (state: BlockchainRootState) => state.walle
 export const selectNetworkBlockchainInfo =
     (networkSymbol: NetworkSymbol) => (state: BlockchainRootState) =>
         state.wallet.blockchain[networkSymbol];
+
+export const selectBlockchainHeightBySymbol = memoizeWithArgs(
+    (state: BlockchainRootState, symbol: NetworkSymbol) => {
+        const blockchain = selectNetworkBlockchainInfo(symbol)(state);
+        return blockchain.blockHeight;
+    },
+);
+
+export const selectBlockchainExplorerBySymbol = memoizeWithArgs(
+    (state: BlockchainRootState, symbol?: NetworkSymbol) => {
+        if (!symbol) return null;
+        const blockchain = selectNetworkBlockchainInfo(symbol)(state);
+        return blockchain.explorer;
+    },
+);

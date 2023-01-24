@@ -10,7 +10,11 @@ import {
     ScreenHeader,
     StackProps,
 } from '@suite-native/navigation';
-import { selectBlockchainState, selectTransactionByTxid } from '@suite-common/wallet-core';
+import {
+    BlockchainRootState,
+    selectBlockchainExplorerBySymbol,
+    selectTransactionByTxid,
+} from '@suite-common/wallet-core';
 import { formatNetworkAmount, toFiatCurrency } from '@suite-common/wallet-utils';
 import { selectFiatCurrency } from '@suite-native/module-settings';
 import { useFormatters } from '@suite-common/formatters';
@@ -31,12 +35,13 @@ export const TransactionDetailScreen = ({
     const { applyStyle, utils } = useNativeStyles();
     const { txid } = route.params;
     const transaction = useSelector(selectTransactionByTxid(txid));
-    const blockchainState = useSelector(selectBlockchainState);
+    const blockchainExplorer = useSelector((state: BlockchainRootState) =>
+        selectBlockchainExplorerBySymbol(state, transaction?.symbol),
+    );
     const fiatCurrency = useSelector(selectFiatCurrency);
     const { CryptoAmountFormatter } = useFormatters();
 
     if (!transaction) return null;
-    const blockchain = blockchainState[transaction.symbol];
 
     const transactionAmount = formatNetworkAmount(transaction.amount, transaction.symbol);
     const fiatAmount = toFiatCurrency(transactionAmount, fiatCurrency.label, transaction.rates);
@@ -45,8 +50,8 @@ export const TransactionDetailScreen = ({
     });
 
     const handleOpenBlockchain = () => {
-        const baseUrl = blockchain.explorer.tx;
-        Linking.openURL(`${baseUrl}${transaction.txid}`);
+        if (!blockchainExplorer) return;
+        Linking.openURL(`${blockchainExplorer.tx}${transaction.txid}`);
     };
 
     return (
@@ -59,11 +64,7 @@ export const TransactionDetailScreen = ({
                 />
                 <TransactionDetailData transaction={transaction} />
             </VStack>
-            <TransactionDetailSheets
-                transaction={transaction}
-                blockchain={blockchain}
-                fiatCurrency={fiatCurrency}
-            />
+            <TransactionDetailSheets transaction={transaction} fiatCurrency={fiatCurrency} />
             <Button
                 onPress={handleOpenBlockchain}
                 colorScheme="gray"
