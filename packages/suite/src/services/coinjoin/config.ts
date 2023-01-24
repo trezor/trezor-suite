@@ -26,9 +26,9 @@ export const COINJOIN_NETWORKS: PartialRecord<NetworkSymbol, ServerEnvironment> 
             network: 'test',
             coordinatorName: 'CoinJoinCoordinatorIdentifier',
             /* clearnet addresses */
-            coordinatorUrl: 'https://dev-coinjoin-testnet.trezor.io/wabisabi/',
+            coordinatorUrl: 'https://wasabiwallet.co/wabisabi/',
             // backend settings
-            wabisabiBackendUrl: 'https://dev-coinjoin-testnet.trezor.io/',
+            wabisabiBackendUrl: 'https://wasabiwallet.co/',
             blockbookUrls: ['https://tbtc1.trezor.io/api/v2', 'https://tbtc2.trezor.io/api/v2'],
             /* */
             /* onion addresses *
@@ -62,6 +62,18 @@ export const COINJOIN_NETWORKS: PartialRecord<NetworkSymbol, ServerEnvironment> 
             baseBlockHeight: 2349000,
             baseBlockHash: '0000000000000014af3e6e1a3f0a24be7bc65998b9bc01e4a05b134a89d304bf',
             /* */
+            // client settings
+            middlewareUrl: 'http://localhost:8081/',
+        },
+        staging: {
+            network: 'test',
+            coordinatorName: 'CoinJoinCoordinatorIdentifier',
+            coordinatorUrl: 'https://dev-coinjoin-testnet.trezor.io/wabisabi/',
+            // backend settings
+            wabisabiBackendUrl: 'https://dev-coinjoin-testnet.trezor.io/',
+            blockbookUrls: ['https://tbtc1.trezor.io/api/v2', 'https://tbtc2.trezor.io/api/v2'],
+            baseBlockHeight: 2349000,
+            baseBlockHash: '0000000000000014af3e6e1a3f0a24be7bc65998b9bc01e4a05b134a89d304bf',
             // client settings
             middlewareUrl: 'http://localhost:8081/',
         },

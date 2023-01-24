@@ -8,6 +8,7 @@ import {
     onCoinjoinRoundChanged,
     onCoinjoinClientRequest,
     signCoinjoinTx,
+    setDebugSettings,
 } from '../coinjoinClientActions';
 import * as fixtures from '../__fixtures__/coinjoinClientActions';
 
@@ -131,6 +132,27 @@ describe('coinjoinClientActions', () => {
             });
 
             expect(response).toMatchObject(f.result.response);
+        });
+    });
+
+    it('setDebugSettings', () => {
+        const store = initStore();
+        expect(store.getState().wallet.coinjoin.debug).toBeUndefined();
+
+        store.dispatch(setDebugSettings({ coinjoinServerEnvironment: { test: 'public' } }));
+
+        expect(store.getState().wallet.coinjoin.debug).toMatchObject({
+            coinjoinServerEnvironment: { test: 'public' },
+        });
+
+        store.dispatch(setDebugSettings({ coinjoinServerEnvironment: { regtest: 'localhost' } }));
+        expect(store.getState().wallet.coinjoin.debug).toMatchObject({
+            coinjoinServerEnvironment: { test: 'public', regtest: 'localhost' },
+        });
+
+        store.dispatch(setDebugSettings({ coinjoinServerEnvironment: { test: 'staging' } }));
+        expect(store.getState().wallet.coinjoin.debug).toMatchObject({
+            coinjoinServerEnvironment: { test: 'staging', regtest: 'localhost' },
         });
     });
 });
