@@ -7,7 +7,6 @@ export class CoinjoinProcess extends BaseProcess {
     constructor() {
         super('coinjoin', 'WalletWasabi.WabiSabiClientLibrary', {
             autoRestart: 0,
-            stdio: ['inherit', 'inherit', 'inherit'],
         });
     }
 
