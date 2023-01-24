@@ -298,6 +298,23 @@ const updateSessionPhase = (
     });
 };
 
+const updateDebugMode = (
+    draft: CoinjoinState,
+    payload: ExtractActionPayload<typeof COINJOIN.SET_DEBUG_SETTINGS>,
+) => {
+    if (payload.coinjoinServerEnvironment && draft.debug?.coinjoinServerEnvironment) {
+        draft.debug.coinjoinServerEnvironment = {
+            ...draft.debug.coinjoinServerEnvironment,
+            ...payload.coinjoinServerEnvironment,
+        };
+    } else {
+        draft.debug = {
+            ...draft.debug,
+            ...payload,
+        };
+    }
+};
+
 export const coinjoinReducer = (
     state: CoinjoinState = initialState,
     action: Action,
@@ -310,10 +327,7 @@ export const coinjoinReducer = (
                 break;
 
             case COINJOIN.SET_DEBUG_SETTINGS:
-                draft.debug = {
-                    ...draft.debug,
-                    ...action.payload,
-                };
+                updateDebugMode(draft, action.payload);
                 break;
 
             case COINJOIN.ACCOUNT_CREATE:

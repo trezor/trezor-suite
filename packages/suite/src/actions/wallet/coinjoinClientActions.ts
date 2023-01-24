@@ -511,7 +511,7 @@ export const initCoinjoinService =
         }
 
         const environment =
-            symbol === 'regtest' ? debug?.coinjoinRegtestServerEnvironment : undefined;
+            debug?.coinjoinServerEnvironment && debug?.coinjoinServerEnvironment[symbol];
 
         // or start new instance
         dispatch(clientEnable(symbol));

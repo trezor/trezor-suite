@@ -35,10 +35,14 @@ const enableCoinjoinInSettings = async (window: Page) => {
     await window.click('[data-test="@settings/menu/debug"]');
 
     // change regtest server source to localhost (actually not changing anything because it is default)
-    await window.click('[data-test="@settings/coinjoin-server-select/input"]', { trial: true });
-    await window.click('[data-test="@settings/coinjoin-server-select/input"]');
-    await window.click('[data-test="@settings/coinjoin-server-select/option/localhost"]');
-    await window.click('[data-test="@settings/debug/coinjoin-allow-no-tor"] >> role=button');
+    await window.click('[data-test="@settings/debug/coinjoin/regtest/server-select/input"]', {
+        trial: true,
+    });
+    await window.click('[data-test="@settings/debug/coinjoin/regtest/server-select/input"]');
+    await window.click(
+        '[data-test="@settings/debug/coinjoin/regtest/server-select/option/localhost"]',
+    );
+    await window.click('[data-test="@settings/debug/coinjoin/allow-no-tor"] >> role=button');
 
     // go to coins menu
     await window.click('[data-test="@settings/menu/wallet"]');
