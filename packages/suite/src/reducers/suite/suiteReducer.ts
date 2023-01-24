@@ -14,10 +14,10 @@ import { getNumberFromPixelString } from '@trezor/utils';
 import type { OAuthServerEnvironment } from '@suite-types/metadata';
 import type { InvityServerEnvironment } from '@suite-common/invity';
 import type { CoinjoinServerEnvironment } from '@wallet-types/coinjoin';
-import { createSelector } from '@reduxjs/toolkit';
 import { getDeviceModel } from '@trezor/device-utils';
 import { getStatus } from '@suite-utils/device';
 import { getIsTorEnabled, getIsTorLoading } from '@suite-utils/tor';
+import { memoizeWithArgs, memoize } from 'proxy-memoize';
 
 export interface SuiteRootState {
     suite: SuiteState;
@@ -252,10 +252,9 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
         }
     });
 
-export const selectTorState = createSelector(
-    (state: SuiteRootState) => state.suite.torStatus,
-    (state: SuiteRootState) => state.suite.torBootstrap,
-    (torStatus, torBootstrap) => ({
+export const selectTorState = memoize((state: SuiteRootState) => {
+    const { torStatus, torBootstrap } = state.suite;
+    return {
         isTorEnabled: getIsTorEnabled(torStatus),
         isTorLoading: getIsTorLoading(torStatus),
         isTorError: torStatus === TorStatus.Error,
@@ -263,21 +262,23 @@ export const selectTorState = createSelector(
         isTorDisabled: torStatus === TorStatus.Disabled,
         isTorEnabling: torStatus === TorStatus.Enabling,
         torBootstrap,
-    }),
-);
+    };
+});
 
-export const selectDeviceState = createSelector(
-    (state: SuiteRootState) => state.suite.device,
-    device => device && getStatus(device),
-);
+export const selectDeviceState = memoize((state: SuiteRootState) => {
+    const { device } = state.suite;
+    return device && getStatus(device);
+});
 
 export const selectDebug = (state: SuiteRootState) => state.suite.settings.debug;
 
 export const selectDevice = (state: SuiteRootState) => state.suite.device;
 
-export const selectDeviceModel = createSelector(
-    [selectDevice, (_state: SuiteRootState, overrideDevice?: TrezorDevice) => overrideDevice],
-    (device, overrideDevice?: TrezorDevice) => getDeviceModel(overrideDevice || device),
+export const selectDeviceModel = memoizeWithArgs(
+    (state: SuiteRootState, overrideDevice?: TrezorDevice) => {
+        const device = selectDevice(state);
+        return getDeviceModel(overrideDevice || device);
+    },
 );
 
 export const selectLanguage = (state: SuiteRootState) => state.suite.settings.language;

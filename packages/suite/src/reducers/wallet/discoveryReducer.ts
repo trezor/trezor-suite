@@ -1,5 +1,5 @@
 import produce from 'immer';
-import { createSelector } from '@reduxjs/toolkit';
+import { memoize } from 'proxy-memoize';
 import { DISCOVERY } from '@wallet-actions/constants';
 import { STORAGE } from '@suite-actions/constants';
 import { createDeferred } from '@trezor/utils';
@@ -96,11 +96,12 @@ export const selectDiscoveryForDevice = (state: RootState) =>
  * Helper selector called from components
  * return `true` if discovery process is running/completed and `authConfirm` is required
  */
-export const selectIsDiscoveryAuthConfirmationRequired = createSelector(
-    selectDiscoveryForDevice,
-    discovery =>
+export const selectIsDiscoveryAuthConfirmationRequired = memoize((state: RootState) => {
+    const discovery = selectDiscoveryForDevice(state);
+    return (
         discovery &&
         discovery.authConfirm &&
         (discovery.status < DISCOVERY.STATUS.STOPPING ||
-            discovery.status === DISCOVERY.STATUS.COMPLETED),
-);
+            discovery.status === DISCOVERY.STATUS.COMPLETED)
+    );
+});

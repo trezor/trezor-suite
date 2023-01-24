@@ -17,8 +17,8 @@ import { Text } from './Text';
 
 const FLASH_DURATION = 300;
 // set these to true if you are debugging rerenders locally
-const FLASH_ON_RERENDER = false;
-const RERENDER_COUNT_ENABLED = false;
+const FLASH_ON_RERENDER = true;
+const RERENDER_COUNT_ENABLED = true;
 
 const isFlashOnRerenderEnabledAtom = atom(FLASH_ON_RERENDER);
 const isRerenderCountEnabledAtom = atom(RERENDER_COUNT_ENABLED);

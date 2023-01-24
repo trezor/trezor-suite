@@ -34,7 +34,7 @@ export const TransactionDetailScreen = ({
 }: StackProps<RootStackParamList, RootStackRoutes.TransactionDetail>) => {
     const { applyStyle, utils } = useNativeStyles();
     const { txid } = route.params;
-    const transaction = useSelector(selectTransactionByTxid(txid));
+    const transaction = useSelector((state: any) => selectTransactionByTxid(txid, state));
     const blockchainExplorer = useSelector((state: BlockchainRootState) =>
         selectBlockchainExplorerBySymbol(state, transaction?.symbol),
     );

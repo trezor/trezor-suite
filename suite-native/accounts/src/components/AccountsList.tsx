@@ -4,11 +4,7 @@ import { useSelector } from 'react-redux';
 import { A } from '@mobily/ts-belt';
 
 import { Text } from '@suite-native/atoms';
-import {
-    AccountsRootState,
-    selectAccounts,
-    selectAccountsSymbols,
-} from '@suite-common/wallet-core';
+import { selectAccounts, selectAccountsSymbols } from '@suite-common/wallet-core';
 
 import { AccountsListGroup } from './AccountsListGroup';
 
@@ -18,7 +14,7 @@ type AccountsListProps = {
 
 export const AccountsList = ({ onSelectAccount }: AccountsListProps) => {
     const accountsSymbols = useSelector(selectAccountsSymbols);
-    const accounts = useSelector((state: AccountsRootState) => selectAccounts(state));
+    const accounts = useSelector(selectAccounts);
 
     if (A.isEmpty(accounts)) return <Text>No accounts found.</Text>;
 
