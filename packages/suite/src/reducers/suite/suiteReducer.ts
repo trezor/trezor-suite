@@ -13,7 +13,6 @@ import { ensureLocale } from '@suite-utils/l10n';
 import { getNumberFromPixelString } from '@trezor/utils';
 import type { OAuthServerEnvironment } from '@suite-types/metadata';
 import type { InvityServerEnvironment } from '@suite-common/invity';
-import type { CoinjoinServerEnvironment } from '@wallet-types/coinjoin';
 import { getDeviceModel } from '@trezor/device-utils';
 import { getStatus } from '@suite-utils/device';
 import { getIsTorEnabled, getIsTorLoading } from '@suite-utils/tor';
@@ -26,10 +25,8 @@ export interface SuiteRootState {
 export interface DebugModeOptions {
     invityServerEnvironment?: InvityServerEnvironment;
     oauthServerEnvironment?: OAuthServerEnvironment;
-    coinjoinRegtestServerEnvironment?: CoinjoinServerEnvironment;
     showDebugMenu: boolean;
     checkFirmwareAuthenticity: boolean;
-    coinjoinAllowNoTor: boolean;
 }
 
 export interface AutodetectSettings {
@@ -116,7 +113,6 @@ const initialState: SuiteState = {
             invityServerEnvironment: undefined,
             showDebugMenu: false,
             checkFirmwareAuthenticity: false,
-            coinjoinAllowNoTor: false,
         },
         autodetect: {
             language: true,

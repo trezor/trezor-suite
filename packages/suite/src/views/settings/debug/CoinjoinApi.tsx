@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { Switch } from '@trezor/components';
 import { COINJOIN_NETWORKS } from '@suite/services/coinjoin';
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@suite-components/Settings';
-import * as suiteActions from '@suite-actions/suiteActions';
+import * as coinjoinClientActions from '@wallet-actions/coinjoinClientActions';
 import { useSelector, useActions } from '@suite-hooks';
 import type { CoinjoinServerEnvironment } from '@wallet-types/coinjoin';
 
@@ -13,30 +13,28 @@ const StyledActionSelect = styled(ActionSelect)`
 `;
 
 export const CoinjoinApi = () => {
-    const { setDebugMode } = useActions({
-        setDebugMode: suiteActions.setDebugMode,
+    const { setDebugSettings } = useActions({
+        setDebugSettings: coinjoinClientActions.setDebugSettings,
     });
-    const { debug } = useSelector(state => ({
-        debug: state.suite.settings.debug,
-    }));
+    const debug = useSelector(state => state.wallet.coinjoin.debug);
 
     const options = Object.keys(COINJOIN_NETWORKS.regtest!).map(environment => ({
         label: environment,
         value: environment,
     }));
     const selectedOption =
-        options.find(option => option.value === debug.coinjoinRegtestServerEnvironment) ||
+        options.find(option => option.value === debug?.coinjoinRegtestServerEnvironment) ||
         options[0];
 
     const handleApiChange = (item: { value: CoinjoinServerEnvironment }) => {
-        setDebugMode({
+        setDebugSettings({
             coinjoinRegtestServerEnvironment: item.value,
         });
     };
 
     const handleTorChange = () => {
-        setDebugMode({
-            coinjoinAllowNoTor: !debug.coinjoinAllowNoTor,
+        setDebugSettings({
+            coinjoinAllowNoTor: !debug?.coinjoinAllowNoTor,
         });
     };
 
@@ -61,7 +59,7 @@ export const CoinjoinApi = () => {
                 <ActionColumn>
                     <Switch
                         onChange={handleTorChange}
-                        isChecked={debug.coinjoinAllowNoTor}
+                        isChecked={debug?.coinjoinAllowNoTor ?? false}
                         data-test="@settings/coinjoin-allow-no-tor-checkbox"
                     />
                 </ActionColumn>

@@ -32,7 +32,9 @@ export enum RequestEnableTorResponse {
 }
 
 export const RequestEnableTor = ({ onCancel, decision }: RequestEnableTorProps) => {
-    const debug = useSelector(state => state.suite.settings.debug);
+    const coinjoinAllowNoTor = useSelector(
+        state => state.wallet.coinjoin.debug?.coinjoinAllowNoTor,
+    );
     const { isTorLoading, isTorEnabled } = useSelector(selectTorState);
 
     useEffect(() => {
@@ -67,7 +69,7 @@ export const RequestEnableTor = ({ onCancel, decision }: RequestEnableTorProps) 
                 heading={<Translation id="TR_TOR_ENABLE" />}
                 bottomBar={
                     <>
-                        {(isDevEnv || debug.coinjoinAllowNoTor) && (
+                        {(isDevEnv || coinjoinAllowNoTor) && (
                             <Button
                                 variant="secondary"
                                 onClick={onSkip}
