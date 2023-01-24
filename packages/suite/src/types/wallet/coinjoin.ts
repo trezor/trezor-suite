@@ -46,3 +46,8 @@ export interface CoinjoinAccount {
     previousSessions: CoinjoinSession[]; // history
     checkpoints?: CoinjoinDiscoveryCheckpoint[];
 }
+
+export interface CoinjoinDebugSettings {
+    coinjoinAllowNoTor?: boolean;
+    coinjoinRegtestServerEnvironment?: CoinjoinServerEnvironment;
+}

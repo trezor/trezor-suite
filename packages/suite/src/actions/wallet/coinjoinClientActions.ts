@@ -13,7 +13,7 @@ import { breakdownCoinjoinBalance, prepareCoinjoinTransaction } from '@wallet-ut
 import { CoinjoinService } from '@suite/services/coinjoin';
 import { Dispatch, GetState } from '@suite-types';
 import { Account } from '@suite-common/wallet-types';
-import { RoundPhase, CoinjoinAccount } from '@wallet-types/coinjoin';
+import { RoundPhase, CoinjoinAccount, CoinjoinDebugSettings } from '@wallet-types/coinjoin';
 import { onCancel as closeModal, openModal } from '@suite-actions/modalActions';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { selectAccountByKey } from '@suite-common/wallet-core';
@@ -105,7 +105,14 @@ const clientSessionPhase = (payload: CoinjoinClientEvents['session-phase']) =>
         payload,
     } as const);
 
+export const setDebugSettings = (payload: CoinjoinDebugSettings) =>
+    ({
+        type: COINJOIN.SET_DEBUG_SETTINGS,
+        payload,
+    } as const);
+
 export type CoinjoinClientAction =
+    | ReturnType<typeof setDebugSettings>
     | ReturnType<typeof clientEnable>
     | ReturnType<typeof clientDisable>
     | ReturnType<typeof clientEnableSuccess>
@@ -493,7 +500,7 @@ export const onCoinjoinClientRequest = (data: CoinjoinRequestEvent[]) => (dispat
 
 export const initCoinjoinService =
     (symbol: Account['symbol']) => async (dispatch: Dispatch, getState: GetState) => {
-        const { clients } = getState().wallet.coinjoin;
+        const { clients, debug } = getState().wallet.coinjoin;
         const knownClient = clients[symbol];
         if (knownClient?.status === 'loading') return;
 
@@ -503,9 +510,8 @@ export const initCoinjoinService =
             return knownService;
         }
 
-        const { debug } = getState().suite.settings;
         const environment =
-            symbol === 'regtest' ? debug.coinjoinRegtestServerEnvironment : undefined;
+            symbol === 'regtest' ? debug?.coinjoinRegtestServerEnvironment : undefined;
 
         // or start new instance
         dispatch(clientEnable(symbol));
