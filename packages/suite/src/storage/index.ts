@@ -4,7 +4,7 @@ import { migrate } from './migrations';
 
 import type { SuiteDBSchema } from './definitions';
 
-const VERSION = 33; // don't forget to add migration and CHANGELOG when changing versions!
+const VERSION = 34; // don't forget to add migration and CHANGELOG when changing versions!
 
 /**
  *  If the object stores don't already exist then creates them.
@@ -85,6 +85,9 @@ const onUpgrade: OnUpgradeFunc<SuiteDBSchema> = async (db, oldVersion, newVersio
 
         // coinjoin, added in 32
         db.createObjectStore('coinjoinAccounts');
+
+        // coinjoin settings
+        db.createObjectStore('coinjoinDebugSettings');
     } else {
         // migrate functions
         await migrate(db, oldVersion, newVersion, transaction);

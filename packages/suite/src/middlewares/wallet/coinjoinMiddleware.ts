@@ -1,9 +1,13 @@
 import type { MiddlewareAPI } from 'redux';
 import { UI, DEVICE } from '@trezor/connect';
 import { SUITE, ROUTER, MESSAGE_SYSTEM } from '@suite-actions/constants';
-import { SESSION_ROUND_CHANGED } from '@wallet-actions/constants/coinjoinConstants';
+import {
+    SESSION_ROUND_CHANGED,
+    SET_DEBUG_SETTINGS,
+} from '@wallet-actions/constants/coinjoinConstants';
 import { DISCOVERY } from '@wallet-actions/constants';
 import * as coinjoinAccountActions from '@wallet-actions/coinjoinAccountActions';
+import * as storageActions from '@suite-actions/storageActions';
 import { CoinjoinService } from '@suite/services/coinjoin';
 import type { AppState, Action, Dispatch } from '@suite-types';
 import { RoundPhase } from '@wallet-types/coinjoin';
@@ -166,6 +170,10 @@ export const coinjoinMiddleware =
                     api.dispatch(coinjoinAccountActions.pauseInterruptAllCoinjoinSessions());
                 }
             }
+        }
+
+        if (action.type === SET_DEBUG_SETTINGS) {
+            api.dispatch(storageActions.saveCoinjoinDebugSettings());
         }
 
         return action;
