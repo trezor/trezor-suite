@@ -1,5 +1,9 @@
 # Storage changelog
 
+## 34
+
+-   added `coinjoinDebugSettings`
+
 ## 33
 
 -   added `messageSystem.dismissedMessages[id].feature`

@@ -306,6 +306,7 @@ export const coinjoinReducer = (
         switch (action.type) {
             case STORAGE.LOAD:
                 draft.accounts = action.payload.coinjoinAccounts;
+                draft.debug = action.payload.coinjoinDebugSettings;
                 break;
 
             case COINJOIN.SET_DEBUG_SETTINGS:

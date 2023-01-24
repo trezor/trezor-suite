@@ -82,6 +82,12 @@ export const removeCoinjoinAccount = async (accountKey: string, state: AppState)
     }
 };
 
+export const saveCoinjoinDebugSettings = () => async (_dispatch: Dispatch, getState: GetState) => {
+    if (!(await db.isAccessible())) return;
+    const { debug } = getState().wallet.coinjoin;
+    db.addItem('coinjoinDebugSettings', debug || {}, 'debug', true);
+};
+
 // send form drafts end
 
 export const saveFormDraft = async (key: string, draft: FormDraft) => {

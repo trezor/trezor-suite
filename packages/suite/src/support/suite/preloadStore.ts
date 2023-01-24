@@ -40,6 +40,7 @@ export const preloadStore = async () => {
     const formDrafts = await db.getItemsWithKeys('formDrafts');
     const firmware = await db.getItemByPK('firmware', 'firmware');
     const coinjoinAccounts = await db.getItemsExtended('coinjoinAccounts');
+    const coinjoinDebugSettings = await db.getItemByPK('coinjoinDebugSettings', 'debug');
 
     return {
         type: STORAGE.LOAD,
@@ -61,6 +62,7 @@ export const preloadStore = async () => {
             backendSettings,
             firmware,
             coinjoinAccounts,
+            coinjoinDebugSettings,
         },
     } as const;
 };

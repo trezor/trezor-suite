@@ -647,4 +647,8 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
             cursor = await cursor.continue();
         }
     }
+
+    if (oldVersion < 34) {
+        db.createObjectStore('coinjoinDebugSettings');
+    }
 };
