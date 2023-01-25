@@ -39,31 +39,32 @@ export const useTor = () => {
                     });
                 }
             });
+            return () => desktopApi.removeAllListeners('tor/status');
         }
-
-        return () => desktopApi.removeAllListeners('tor/status');
     }, [updateTorStatus, torBootstrap, addToastOnce]);
 
     useEffect(() => {
-        desktopApi.on('tor/bootstrap', (bootstrapEvent: BootstrapTorEvent) => {
-            if (bootstrapEvent.type === 'slow') {
-                setTorBootstrapSlow(true);
-            }
-
-            if (bootstrapEvent.type === 'progress') {
-                setTorBootstrap({
-                    current: bootstrapEvent.progress.current,
-                    total: bootstrapEvent.progress.total,
-                });
-
-                if (bootstrapEvent.progress.current === bootstrapEvent.progress.total) {
-                    updateTorStatus(TorStatus.Enabled);
-                } else if (!isTorEnabling) {
-                    updateTorStatus(TorStatus.Enabling);
+        if (isDesktop()) {
+            desktopApi.on('tor/bootstrap', (bootstrapEvent: BootstrapTorEvent) => {
+                if (bootstrapEvent.type === 'slow') {
+                    setTorBootstrapSlow(true);
                 }
-            }
-        });
 
-        return () => desktopApi.removeAllListeners('tor/bootstrap');
+                if (bootstrapEvent.type === 'progress') {
+                    setTorBootstrap({
+                        current: bootstrapEvent.progress.current,
+                        total: bootstrapEvent.progress.total,
+                    });
+
+                    if (bootstrapEvent.progress.current === bootstrapEvent.progress.total) {
+                        updateTorStatus(TorStatus.Enabled);
+                    } else if (!isTorEnabling) {
+                        updateTorStatus(TorStatus.Enabling);
+                    }
+                }
+            });
+
+            return () => desktopApi.removeAllListeners('tor/bootstrap');
+        }
     }, [updateTorStatus, setTorBootstrap, torBootstrap, setTorBootstrapSlow, isTorEnabling]);
 };
