@@ -94,6 +94,7 @@ const Footer = () => {
                         <StyledSelect
                             options={regional.countriesOptions}
                             isSearchable
+                            data-test="@coinmarket/sell/country-select"
                             value={value}
                             formatOptionLabel={(option: CountryOption) => {
                                 const labelParts = getCountryLabelParts(option.label);
@@ -122,6 +123,7 @@ const Footer = () => {
             </Left>
             <StyledRight>
                 <StyledButton
+                    data-test="@coinmarket/sell/compare-button"
                     isDisabled={!(formIsValid && hasValues) || formState.isSubmitting}
                     isLoading={formState.isSubmitting || isComposing}
                     type="submit"

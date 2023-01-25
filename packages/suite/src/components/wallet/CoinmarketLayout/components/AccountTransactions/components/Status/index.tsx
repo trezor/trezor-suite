@@ -186,7 +186,11 @@ const Status = ({ trade, className, tradeType }: Props) => {
     }
 
     return (
-        <Wrapper color={data.color} className={className}>
+        <Wrapper
+            data-test="@coinmarket/menu/trade-transactions/status"
+            color={data.color}
+            className={className}
+        >
             <StyledIcon color={data.color} size={10} icon={data.icon} />
             <Text>
                 <Translation id={data.statusMessageId} />

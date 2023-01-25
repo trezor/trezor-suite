@@ -169,6 +169,7 @@ const CryptoInput = ({ activeInput, setActiveInput }: Props) => {
 
     return (
         <Input
+            data-test="@coinmarket/sell/crypto-input"
             onFocus={() => {
                 setActiveInput(CRYPTO_INPUT);
             }}
@@ -224,6 +225,7 @@ const CryptoInput = ({ activeInput, setActiveInput }: Props) => {
                             )}
                             isClean
                             hideTextCursor
+                            data-test="@coinmarket/sell/crypto-currency-select"
                             isDisabled={account.networkType !== 'ethereum'}
                             minWidth="100px"
                             formatOptionLabel={(option: any) => (
