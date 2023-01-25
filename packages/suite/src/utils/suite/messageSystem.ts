@@ -109,7 +109,17 @@ export const validateTransportCompatibility = (
     const { version } = transport;
     const type = transport.type.toLowerCase();
 
-    return validateVersionCompatibility(transportCondition, type, version);
+    // transport names were changed in https://github.com/trezor/trezor-suite/pull/7411
+    // to avoid breaking changes with v1 messaging system schema, we introduce this translation
+    let legacyTransportType: 'bridge' | 'webusbplugin' | undefined;
+
+    if (type === 'BridgeTransport') {
+        legacyTransportType = 'bridge';
+    } else if (type === 'WebUsbTransport') {
+        legacyTransportType = 'webusbplugin';
+    }
+
+    return validateVersionCompatibility(transportCondition, legacyTransportType || type, version);
 };
 
 export const validateDeviceCompatibility = (
