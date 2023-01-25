@@ -32,7 +32,7 @@ Which tracks:
   c_instance_id: 'qlT0xL2XKV',
   c_session_id: 'FZjilOYQic',
   c_timestamp: 1624893047903,
-  type: 'bridge',
+  type: 'BridgeTransport',
   version: '2.0.30'
 }
 ```
