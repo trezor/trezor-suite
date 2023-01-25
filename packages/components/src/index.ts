@@ -52,6 +52,7 @@ export * from './components/CollapsibleBox';
 export * from './components/CollapsibleCard';
 export * from './components/Passphrase/PassphraseTypeCard';
 export * from './components/DataAnalytics';
+export * from './components/Note/Note';
 
 export * from './constants/keyboardEvents';
 
