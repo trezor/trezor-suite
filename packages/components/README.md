@@ -6,7 +6,7 @@ This repository contains components, images and hooks that do not depend on Suit
 
 Each component can be inspected separately in [Storybook](https://storybook.js.org/). Stories are deployed automatically by pipeline via `storybook-build` command to https://suite.corp.sldev.cz/components/develop. To see your local changes, run Storybook locally:
 
-`yarn @workspace @trezor/components storybook`
+`yarn workspace @trezor/components storybook`
 
 ## Icons
 
