@@ -8,13 +8,13 @@ export default [
         data: {
             type: 'transport-type',
             payload: {
-                type: 'bridge',
+                type: 'BridgeTransport',
                 version: '2',
             },
         },
         encoded: `c_v=1.18&c_type=transport-type&c_commit=abcdef&c_instance_id=1&c_session_id=2&c_timestamp=${new Date(
             '2021-04-01T12:10:00.000Z',
-        ).getTime()}&c_message_id=random&type=bridge&version=2`,
+        ).getTime()}&c_message_id=random&type=BridgeTransport&version=2`,
     },
     {
         currentDate: '2021-04-02T12:10:00.000Z',
