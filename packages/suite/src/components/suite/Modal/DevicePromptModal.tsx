@@ -102,7 +102,7 @@ export const AbortButton = ({ onAbort, className }: AbortButtonProps) => {
 
     // checks compatability for use in other places
     const isActionAbortable =
-        transport?.type === 'bridge'
+        transport?.type === 'BridgeTransport'
             ? versionUtils.isNewerOrEqual(transport?.version as string, '2.0.31')
             : true; // Works via WebUSB
 
@@ -149,7 +149,7 @@ const DevicePromptModalRenderer = ({
 
     // duplicated because headerComponents should receive undefined if isAbortable === false
     const isActionAbortable =
-        transport?.type === 'bridge'
+        transport?.type === 'BridgeTransport'
             ? isAbortable && versionUtils.isNewerOrEqual(transport?.version as string, '2.0.31')
             : isAbortable; // Works via WebUSB
 

@@ -140,6 +140,11 @@ const init = async (settings: Partial<ConnectSettings> = {}) => {
         throw ERRORS.TypedError('Init_ManifestMissing');
     }
 
+    if (!_settings.transports?.length) {
+        // default fallback for node
+        _settings.transports = ['BridgeTransport'];
+    }
+
     if (_settings.lazyLoad) {
         // reset "lazyLoad" after first use
         _settings.lazyLoad = false;
@@ -148,7 +153,6 @@ const init = async (settings: Partial<ConnectSettings> = {}) => {
 
     _core = await initCore(_settings);
     _core.on(CORE_EVENT, handleMessage);
-
     await initTransport(_settings);
 };
 

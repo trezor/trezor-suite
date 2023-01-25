@@ -117,7 +117,7 @@ export const InstallBridge = () => {
 
     const preferredTarget = installers.find(i => i.preferred === true);
     const data = {
-        currentVersion: transport?.type === 'bridge' ? transport!.version : null,
+        currentVersion: transport?.type === 'BridgeTransport' ? transport!.version : null,
         latestVersion: transport?.bridge ? transport.bridge.version.join('.') : null,
         installers,
         target: preferredTarget || installers[0],

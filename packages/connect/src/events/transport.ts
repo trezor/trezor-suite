@@ -1,5 +1,6 @@
 import { serializeError } from '../constants/errors';
 import type { MessageFactoryFn } from '../types/utils';
+import type { Transport } from '@trezor/transport';
 
 export const TRANSPORT_EVENT = 'TRANSPORT_EVENT';
 export const TRANSPORT = {
@@ -37,7 +38,7 @@ export interface UdevInfo {
 }
 
 export interface TransportInfo {
-    type: string;
+    type: Transport['name'];
     version: string;
     outdated: boolean;
     bridge?: BridgeInfo;

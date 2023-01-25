@@ -131,14 +131,14 @@ const reducerActions = [
             {
                 type: TRANSPORT.START,
                 payload: {
-                    type: 'bridge',
+                    type: 'BridgeTransport',
                 },
             },
         ],
         result: [
             {
                 transport: {
-                    type: 'bridge',
+                    type: 'BridgeTransport',
                 },
             },
         ],
