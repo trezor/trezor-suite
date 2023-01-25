@@ -9,45 +9,69 @@ import { getPrettierConfig } from './utils/getPrettierConfig';
 import { getWorkspacesList } from './utils/getWorkspacesList';
 
 const templatePath = './scripts/package-template';
-const packagesFolder = './packages';
+
+const scopes = {
+    '@suite-common': {
+        path: 'suite-common/',
+        templatePath: 'package-template/',
+    },
+    '@suite-native': {
+        path: 'suite-native/',
+        templatePath: 'package-template/',
+    },
+    '@trezor': {
+        path: 'packages/',
+        templatePath: 'package-template/',
+    },
+};
+
+const exitWithErrorMessage = errorMessage => {
+    console.error(errorMessage);
+    process.exit(1);
+};
 
 (async () => {
-    const packageFolderName = process.argv?.[2];
-    if (!packageFolderName) {
-        console.error(
-            `${chalk.bold.red('Please enter package name -')} ${chalk.italic.red(
-                'yarn generate-package your-package-name',
+    const newPackage = process.argv?.[2];
+    if (!newPackage || typeof newPackage !== 'string' || !newPackage.includes('/')) {
+        exitWithErrorMessage(
+            `${chalk.bold.red('Please enter package scope and name -')} ${chalk.italic.red(
+                'yarn generate-package @scope/new-package-name',
             )}`,
         );
-        process.exit(1);
     }
 
-    const packageName = `@trezor/${packageFolderName}`;
-    const packagePath = `${packagesFolder}/${packageFolderName}`;
+    const [packageScope, packageName] = newPackage.split('/');
 
+    const validScopes = Object.keys(scopes);
+    if (!validScopes.includes(packageScope)) {
+        exitWithErrorMessage(
+            chalk.bold.red(
+                `Invalid scope ${packageScope}. Please use one of the supported scopes: ${validScopes.join(
+                    ', ',
+                )}`,
+            ),
+        );
+    }
+
+    const packagePath = `${scopes[packageScope].path}/${packageName}`;
     const workspacesNames = Object.keys(getWorkspacesList());
-
     if (fs.existsSync(packagePath)) {
-        console.error(
+        exitWithErrorMessage(
             chalk.bold.red(`Folder ${packagePath} already exists! Please choose different name.`),
         );
-        process.exit(1);
     }
-
-    if (workspacesNames.includes(packageName)) {
-        console.error(
-            chalk.bold.red(`Package ${packageName} already exists! Please choose different name.`),
+    if (workspacesNames.includes(newPackage)) {
+        exitWithErrorMessage(
+            chalk.bold.red(`Package ${newPackage} already exists! Please choose different name.`),
         );
-        process.exit(1);
     }
 
     const packageJson = sortPackageJson({
         ...templatePackageJson,
-        name: packageName,
+        name: newPackage,
     });
 
     const prettierConfig = await getPrettierConfig();
-
     const serializeConfig = config =>
         prettier.format(JSON.stringify(config).replace(/\\\\/g, '/'), prettierConfig);
 
@@ -55,9 +79,7 @@ const packagesFolder = './packages';
         fsExtra.copySync(templatePath, packagePath);
         fs.writeFileSync(`${packagePath}/package.json`, serializeConfig(packageJson));
     } catch (error) {
-        console.error(error);
-        console.error(chalk.bold.red('Package creation failed.'));
-        process.exit(1);
+        exitWithErrorMessage(`${error}\n${chalk.bold.red('Package creation failed.')}`);
     }
 
     console.log(chalk.bold.green(`Package ${packageName} successfully created!`));
