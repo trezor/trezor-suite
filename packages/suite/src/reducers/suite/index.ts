@@ -1,9 +1,10 @@
+import { notificationsReducer } from '@suite-common/toast-notifications';
+import { logsSlice } from '@suite-common/logger';
+
 import router from './routerReducer';
 import suite from './suiteReducer';
 import devices from './deviceReducer';
 import modal from './modalReducer';
-import logs from './logsReducer';
-import { notificationsReducer } from '@suite-common/toast-notifications';
 import resize from './resizeReducer';
 import analytics from './analyticsReducer';
 import metadata from './metadataReducer';
@@ -17,7 +18,7 @@ export default {
     router,
     modal,
     devices,
-    logs,
+    logs: logsSlice.reducer,
     notifications: notificationsReducer,
     resize,
     analytics,

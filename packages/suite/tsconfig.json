@@ -24,6 +24,7 @@
             "path": "../../suite-common/intl-types"
         },
         { "path": "../../suite-common/invity" },
+        { "path": "../../suite-common/logger" },
         {
             "path": "../../suite-common/metadata-types"
         },

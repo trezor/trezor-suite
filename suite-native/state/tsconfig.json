@@ -2,6 +2,7 @@
     "extends": "../../tsconfig.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        { "path": "../../suite-common/logger" },
         {
             "path": "../../suite-common/redux-utils"
         },
@@ -12,6 +13,7 @@
             "path": "../../suite-common/wallet-core"
         },
         { "path": "../config" },
+        { "path": "../logger" },
         { "path": "../module-devices" },
         { "path": "../module-settings" },
         { "path": "../storage" },

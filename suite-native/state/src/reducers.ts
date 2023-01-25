@@ -8,6 +8,7 @@ import {
 } from '@suite-common/wallet-core';
 import { devicesReducer } from '@suite-native/module-devices';
 import { appSettingsReducer, appSettingsPersistWhitelist } from '@suite-native/module-settings';
+import { logsSlice } from '@suite-common/logger';
 import { preparePersistReducer } from '@suite-native/storage';
 
 import { extraDependencies } from './extraDependencies';
@@ -40,5 +41,6 @@ export const prepareRootReducers = async () => {
         appSettings: appSettingsPersistedReducer,
         wallet: walletPersistedReducer,
         devices: devicesReducer,
+        logs: logsSlice.reducer,
     });
 };

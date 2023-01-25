@@ -1,11 +1,13 @@
 import React, { createRef, useState } from 'react';
-import styled from 'styled-components';
-import { Switch, Button, variables } from '@trezor/components';
 
+import styled from 'styled-components';
 import { Translation, Modal } from '@suite-components';
 import { useSelector } from '@suite-hooks';
 import { SectionItem, ActionColumn, TextColumn } from '@suite-components/Settings';
 import { getApplicationInfo, getApplicationLog, prettifyLog } from '@suite-utils/logsUtils';
+
+import { selectLogs } from '@suite-common/logger';
+import { Switch, Button, variables } from '@trezor/components';
 
 const LogWrapper = styled.pre`
     padding: 20px;
@@ -42,10 +44,10 @@ type ApplicationLogProps = { onCancel: () => void };
 export const ApplicationLog = ({ onCancel }: ApplicationLogProps) => {
     const htmlElement = createRef<HTMLPreElement>();
     const [hideSensitiveInfo, setHideSensitiveInfo] = useState(false);
+    const logs = useSelector(selectLogs);
 
-    const { state, logs } = useSelector(state => ({
+    const { state } = useSelector(state => ({
         state,
-        logs: state.logs,
     }));
 
     const actionLog = getApplicationLog(logs, hideSensitiveInfo);
