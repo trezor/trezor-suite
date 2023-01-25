@@ -5,7 +5,7 @@ import { MAX_WIDTH_WALLET_CONTENT } from '@suite-constants/layout';
 import { AppState, ExtendedMessageDescriptor } from '@suite-types';
 import { useTranslation, useLayout } from '@suite-hooks';
 import { SkeletonRectangle } from '@suite-components/Skeleton';
-import { CoinjoinAccountDiscoveryProgress } from './components/CoinjoinAccountDiscoveryProgress';
+import { CoinjoinAccountDiscovery } from './components/CoinjoinAccountDiscovery';
 import { AccountBanners } from './components/AccountBanners';
 
 const Wrapper = styled.div`
@@ -51,7 +51,7 @@ export const WalletLayout = ({
             return (
                 <Wrapper>
                     <AccountBanners account={selectedAccount} />
-                    <CoinjoinAccountDiscoveryProgress />
+                    <CoinjoinAccountDiscovery />
                 </Wrapper>
             );
         }
