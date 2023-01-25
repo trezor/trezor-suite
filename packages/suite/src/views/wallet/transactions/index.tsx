@@ -10,7 +10,7 @@ import { NoTransactions } from './components/NoTransactions';
 import { AccountEmpty } from './components/AccountEmpty';
 import { TransactionList } from './components/TransactionList';
 import { TransactionSummary } from './components/TransactionSummary';
-import { CoinjoinAccountDiscoveryProgress } from '@wallet-components/WalletLayout/components/CoinjoinAccountDiscoveryProgress';
+import { CoinjoinAccountDiscoveryProgress } from '@wallet-components/WalletLayout/components/CoinjoinAccountDiscovery/CoinjoinAccountDiscoveryProgress';
 
 interface LayoutProps {
     selectedAccount: AppState['wallet']['selectedAccount'];
