@@ -1,0 +1,35 @@
+{
+    "country": "AT",
+    "providers": [
+        {
+            "name": "btcdirect-sell",
+            "companyName": "BTC Direct",
+            "logo": "btcdirect.png",
+            "type": "Fiat",
+            "isActive": true,
+            "tradedCoins": ["REGTEST", "LTC", "ETH", "ADA"],
+            "tradedFiatCurrencies": ["EUR"],
+            "supportedCountries": ["AT", "SE", "SK", "SL"],
+            "statusUrl": "https://my.btcdirect.eu/en-gb/user/transactions?client=trezor",
+            "supportUrl": "https://support.btcdirect.eu/hc/en-gb?client=trezor",
+            "quoteInfo": "I saw a mudcrab today.",
+            "paymentMethods": ["bankTransfer"],
+            "flow": "BANK_ACCOUNT"
+        },
+        {
+            "name": "banxa-sell",
+            "companyName": "Banxa",
+            "logo": "banxa-icon.png",
+            "type": "Fiat",
+            "isActive": true,
+            "tradedCoins": ["REGTEST", "LTC", "ETH", "ADA"],
+            "tradedFiatCurrencies": ["EUR"],
+            "supportedCountries": ["AT", "SE", "SK", "SL"],
+            "statusUrl": "https://banxa.com/support/",
+            "supportUrl": "https://banxa.com/support/",
+            "paymentMethods": ["bankTransfer"],
+            "flow": "PAYMENT_GATE",
+            "isRefundAddressRequired": true
+        }
+    ]
+}

@@ -243,11 +243,11 @@ const Quote = ({ className, quote, amountInCrypto }: Props) => {
         sellInfo.providerInfos[exchange]?.flow === 'BANK_ACCOUNT';
 
     return (
-        <Wrapper className={className}>
+        <Wrapper className={className} data-test="@coinmarket/sell/offers/quote-rectangle">
             <Main>
                 {error && <Left>N/A</Left>}
                 {!error && (
-                    <Left>
+                    <Left data-test="@coinmarket/sell/offers/crypto-amount">
                         {amountInCrypto ? (
                             <CoinmarketFiatAmount
                                 amount={quote.fiatStringAmount}
@@ -263,21 +263,19 @@ const Quote = ({ className, quote, amountInCrypto }: Props) => {
                     </Left>
                 )}
                 <Right>
-                    {quote.status === 'LOGIN_REQUEST' ? (
-                        <StyledButton onClick={() => selectQuote(quote)}>
-                            <Translation id="TR_LOGIN_PROCEED" />
-                        </StyledButton>
-                    ) : (
-                        <StyledButton isDisabled={!!quote.error} onClick={() => selectQuote(quote)}>
-                            <Translation
-                                id={
-                                    needToRegisterOrVerifyBankAccount(quote)
-                                        ? 'TR_SELL_REGISTER'
-                                        : 'TR_SELL_GET_THIS_OFFER'
-                                }
-                            />
-                        </StyledButton>
-                    )}
+                    <StyledButton
+                        isDisabled={!!quote.error}
+                        onClick={() => selectQuote(quote)}
+                        data-test="@coinmarket/sell/offers/get-this-deal-button"
+                    >
+                        <Translation
+                            id={
+                                needToRegisterOrVerifyBankAccount(quote)
+                                    ? 'TR_SELL_REGISTER'
+                                    : 'TR_SELL_GET_THIS_OFFER'
+                            }
+                        />
+                    </StyledButton>
                 </Right>
             </Main>
             <Details>
@@ -285,7 +283,7 @@ const Quote = ({ className, quote, amountInCrypto }: Props) => {
                     <Heading>
                         <Translation id="TR_SELL_PROVIDER" />
                     </Heading>
-                    <Value>
+                    <Value data-test="@coinmarket/sell/offers/provider-name">
                         <CoinmarketProviderInfo
                             exchange={exchange}
                             providers={sellInfo.providerInfos}
@@ -296,7 +294,7 @@ const Quote = ({ className, quote, amountInCrypto }: Props) => {
                     <Heading>
                         <Translation id="TR_SELL_PAID_BY" />
                     </Heading>
-                    <Value>
+                    <Value data-test="@coinmarket/sell/offers/paid-by">
                         <CoinmarketPaymentType method={paymentMethod}>
                             {verificationInfo && (
                                 <VerificationInfo>

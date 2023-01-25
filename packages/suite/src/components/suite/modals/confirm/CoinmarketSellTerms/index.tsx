@@ -83,13 +83,18 @@ export const CoinmarketSellTerms = ({ decision, onCancel, provider }: Props) => 
             </Text>
             <Footer>
                 <FooterContent>
-                    <Checkbox isChecked={isChecked} onClick={() => setIsChecked(!isChecked)}>
+                    <Checkbox
+                        isChecked={isChecked}
+                        onClick={() => setIsChecked(!isChecked)}
+                        data-test="@coinmarket/sell/offers/buy-terms-agree-checkbox"
+                    >
                         <CheckText>
                             <Translation id="TR_SELL_I_UNDERSTAND" />
                         </CheckText>
                     </Checkbox>
                     <Button
                         isDisabled={!isChecked}
+                        data-test="@coinmarket/sell/offers/buy-terms-confirm-button"
                         onClick={() => {
                             decision.resolve(true);
                             onCancel();

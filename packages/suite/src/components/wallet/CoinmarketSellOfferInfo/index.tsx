@@ -124,7 +124,7 @@ const CoinmarketSellOfferInfo = ({ selectedQuote, transactionId, providers, acco
                     <LeftColumn>
                         <Translation id="TR_SELL_SPEND" />
                     </LeftColumn>
-                    <RightColumn>
+                    <RightColumn data-test="@coinmarket/sell/selected-offer/crypto-amount">
                         <Dark>
                             <CoinmarketCryptoAmount
                                 amount={cryptoStringAmount}
@@ -137,7 +137,7 @@ const CoinmarketSellOfferInfo = ({ selectedQuote, transactionId, providers, acco
                     <LeftColumn>
                         <Translation id="TR_SELL_RECEIVE" />
                     </LeftColumn>
-                    <RightColumn>
+                    <RightColumn data-test="@coinmarket/sell/selected-offer/fiat-amount">
                         <Dark>
                             <CoinmarketFiatAmount
                                 amount={fiatStringAmount}
@@ -150,7 +150,7 @@ const CoinmarketSellOfferInfo = ({ selectedQuote, transactionId, providers, acco
                     <LeftColumn>
                         <Translation id="TR_SELL_PROVIDER" />
                     </LeftColumn>
-                    <RightColumn>
+                    <RightColumn data-test="@coinmarket/sell/selected-offer/provider-name">
                         <CoinmarketProviderInfo exchange={exchange} providers={providers} />
                     </RightColumn>
                 </Row>
@@ -158,7 +158,7 @@ const CoinmarketSellOfferInfo = ({ selectedQuote, transactionId, providers, acco
                     <LeftColumn>
                         <Translation id="TR_SELL_PAID_BY" />
                     </LeftColumn>
-                    <RightColumn>
+                    <RightColumn data-test="@coinmarket/sell/selected-offer/paid-by">
                         <CoinmarketPaymentType method={paymentMethod} />
                     </RightColumn>
                 </Row>

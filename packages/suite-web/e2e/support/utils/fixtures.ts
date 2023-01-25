@@ -10,6 +10,10 @@ export const fixtures = {
     '/api/buy/quotes': '/invity/buy/quotes.json',
     '/api/buy/trade': '/invity/buy/trade.json',
     '/api/buy/watch/0': '/invity/buy/watch.json',
+    '/api/sell/list': '/invity/sell/list.json',
+    '/api/sell/fiat/quotes': '/invity/sell/quotes.json',
+    '/api/sell/fiat/trade': '/invity/sell/trade.json',
+    '/api/sell/fiat/watch/0': '/invity/sell/watch.json',
 };
 
 const btcdirectSavingsFixturesDictionary = {

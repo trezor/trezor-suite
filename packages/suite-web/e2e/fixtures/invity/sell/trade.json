@@ -1,0 +1,26 @@
+{
+    "trade": {
+        "amountInCrypto": true,
+        "fiatStringAmount": "98.12",
+        "fiatCurrency": "EUR",
+        "cryptoCurrency": "BTC",
+        "cryptoStringAmount": "0.005",
+        "rate": 19624,
+        "quoteId": "quoteid1",
+        "orderId": "53b9232d-0801-4b1e-9f73-29fb80a568ac",
+        "paymentId": "633757",
+        "originalPaymentId": "8d415525-240d-41d9-9b45-d1db4adf5e2a",
+        "status": "SEND_CRYPTO",
+        "refundAddress": "bc1qasc9qzy9hkpu7u6qk4cnpkpm73953plz4ht020",
+        "destinationAddress": "bcrt1qnspxpr2xj9s2jt6qlhuvdnxw6q55jvyg6q7g5r",
+        "destinationPaymentExtraId": "",
+        "exchange": "btcdirect-sell",
+        "validUntil": "2023-01-23T14:30:11Z",
+        "minFiat": 25.61,
+        "maxFiat": 42700.74,
+        "minCrypto": 0.0015138,
+        "maxCrypto": 2.52372305,
+        "paymentMethod": "bankTransfer",
+        "country": "AT"
+    }
+}
