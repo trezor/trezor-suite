@@ -1,5 +1,5 @@
 import produce from 'immer';
-import { TRANSPORT, TransportInfo } from '@trezor/connect';
+import { TRANSPORT, TransportInfo, ConnectSettings } from '@trezor/connect';
 import { SuiteThemeVariant } from '@trezor/suite-desktop-api';
 import { Action, TrezorDevice, Lock, TorBootstrap, TorStatus } from '@suite-types';
 
@@ -27,6 +27,7 @@ export interface DebugModeOptions {
     oauthServerEnvironment?: OAuthServerEnvironment;
     showDebugMenu: boolean;
     checkFirmwareAuthenticity: boolean;
+    transports: ConnectSettings['transports'];
 }
 
 export interface AutodetectSettings {
@@ -113,6 +114,7 @@ const initialState: SuiteState = {
             invityServerEnvironment: undefined,
             showDebugMenu: false,
             checkFirmwareAuthenticity: false,
+            transports: [],
         },
         autodetect: {
             language: true,
