@@ -150,7 +150,7 @@ describe('Preloader component', () => {
         const store = initStore(
             getInitialState({
                 suite: {
-                    transport: { type: 'bridge' },
+                    transport: { type: 'BridgeTransport' },
                 },
             }),
         );
@@ -166,7 +166,7 @@ describe('Preloader component', () => {
         const store = initStore(
             getInitialState({
                 suite: {
-                    transport: { type: 'WebUsbPlugin' },
+                    transport: { type: 'WebUsbTransport' },
                 },
             }),
         );
@@ -182,7 +182,7 @@ describe('Preloader component', () => {
         const store = initStore(
             getInitialState({
                 suite: {
-                    transport: { type: 'bridge' },
+                    transport: { type: 'BridgeTransport' },
                     device: { type: 'unacquired' },
                 },
             }),
@@ -199,7 +199,7 @@ describe('Preloader component', () => {
         const store = initStore(
             getInitialState({
                 suite: {
-                    transport: { type: 'WebUsbPlugin' },
+                    transport: { type: 'WebUsbTransport' },
                     device: { type: 'unreadable', error: 'LIBUSB_ERROR_ACCESS' },
                 },
             }),
@@ -218,7 +218,7 @@ describe('Preloader component', () => {
         const store = initStore(
             getInitialState({
                 suite: {
-                    transport: { type: 'bridge' },
+                    transport: { type: 'BridgeTransport' },
                     device: { type: 'unreadable', error: 'LIBUSB_ERROR_ACCESS' },
                 },
             }),
@@ -237,7 +237,7 @@ describe('Preloader component', () => {
         const store = initStore(
             getInitialState({
                 suite: {
-                    transport: { type: 'bridge' },
+                    transport: { type: 'BridgeTransport' },
                     device: { type: 'unreadable', error: 'LIBUSB_ERROR_ACCESS' },
                 },
             }),
@@ -254,7 +254,7 @@ describe('Preloader component', () => {
         const store = initStore(
             getInitialState({
                 suite: {
-                    transport: { type: 'bridge' },
+                    transport: { type: 'BridgeTransport' },
                     device: { type: 'unreadable', error: 'Unexpected error' },
                 },
             }),
@@ -271,7 +271,7 @@ describe('Preloader component', () => {
         const store = initStore(
             getInitialState({
                 suite: {
-                    transport: { type: 'bridge' },
+                    transport: { type: 'BridgeTransport' },
                     device: { features: null },
                 },
             }),
@@ -288,7 +288,7 @@ describe('Preloader component', () => {
         const store = initStore(
             getInitialState({
                 suite: {
-                    transport: { type: 'bridge' },
+                    transport: { type: 'BridgeTransport' },
                     device: { mode: 'seedless', features: {} },
                 },
             }),
@@ -306,7 +306,7 @@ describe('Preloader component', () => {
         const store = initStore(
             getInitialState({
                 suite: {
-                    transport: { type: 'bridge' },
+                    transport: { type: 'BridgeTransport' },
                     device: { features: { recovery_mode: true } },
                 },
             }),
@@ -324,7 +324,7 @@ describe('Preloader component', () => {
         const store = initStore(
             getInitialState({
                 suite: {
-                    transport: { type: 'bridge' },
+                    transport: { type: 'BridgeTransport' },
                     device: { mode: 'initialize', features: {} },
                 },
             }),
@@ -342,7 +342,7 @@ describe('Preloader component', () => {
         const store = initStore(
             getInitialState({
                 suite: {
-                    transport: { type: 'bridge' },
+                    transport: { type: 'BridgeTransport' },
                     device: { mode: 'bootloader', features: { firmware_present: true } },
                 },
             }),
@@ -360,7 +360,7 @@ describe('Preloader component', () => {
         const store = initStore(
             getInitialState({
                 suite: {
-                    transport: { type: 'bridge' },
+                    transport: { type: 'BridgeTransport' },
                     device: { mode: 'bootloader', features: { firmware_present: false } },
                 },
             }),
@@ -378,7 +378,7 @@ describe('Preloader component', () => {
         const store = initStore(
             getInitialState({
                 suite: {
-                    transport: { type: 'bridge' },
+                    transport: { type: 'BridgeTransport' },
                     device: { firmware: 'required', features: {} },
                 },
             }),

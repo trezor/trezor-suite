@@ -82,13 +82,21 @@ export class DeviceList extends EventEmitter {
     constructor() {
         super();
 
-        const { env, webusb } = DataManager.settings;
+        const { env } = DataManager.settings;
+        let { transports: transportSettings } = DataManager.settings;
 
         const transports: Transport[] = [];
 
+        // fallback of "the last instance".
+        // since web index (that otherwise set fallbacks) is released into npm, we can not rely
+        // on that that transports will be always set here. We need to provide a 'fallback of the last resort'
+        if (!transportSettings?.length) {
+            transportSettings = ['BridgeTransport', 'WebUsbTransport'];
+        }
+
         if (env === 'react-native' && typeof ReactNativeUsbPlugin !== 'undefined') {
             transports.push(ReactNativeUsbPlugin());
-        } else {
+        } else if (transportSettings?.includes('BridgeTransport')) {
             const bridgeLatestVersion = getBridgeInfo().version.join('.');
             const bridge = new BridgeV2(undefined, undefined);
             bridge.setBridgeLatestVersion(bridgeLatestVersion);
@@ -107,7 +115,7 @@ export class DeviceList extends EventEmitter {
             transports.push(bridge);
         }
 
-        if (webusb && typeof WebUsbPlugin !== 'undefined') {
+        if (transportSettings?.includes('WebUsbTransport') && typeof WebUsbPlugin !== 'undefined') {
             transports.push(WebUsbPlugin());
         }
 
@@ -125,7 +133,7 @@ export class DeviceList extends EventEmitter {
             _log.debug('Configuring transports done');
 
             const { activeName } = transport;
-            if (activeName === 'LowlevelTransportWithSharedConnections') {
+            if (activeName === 'WebUsbTransport') {
                 // @ts-expect-error TODO: https://github.com/trezor/trezor-suite/issues/5332
                 this.transportPlugin = transport.activeTransport.plugin;
             }
@@ -256,15 +264,11 @@ export class DeviceList extends EventEmitter {
     }
 
     transportType() {
-        const { transport, transportPlugin } = this;
+        const { transport } = this;
         const { activeName } = transport;
-        if (activeName === 'BridgeTransport') {
-            return 'bridge';
-        }
-        if (transportPlugin) {
-            return transportPlugin.name;
-        }
-        return transport.name;
+        // 'UnknownTransport' should never happen, only for ts, will change in
+        // https://github.com/trezor/trezor-suite/pull/6509/
+        return activeName || 'UnknownTransport';
     }
 
     getTransportInfo(): TransportInfo {

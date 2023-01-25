@@ -25,7 +25,9 @@ const initialSettings: ConnectSettings = {
     popup: true,
     popupSrc: `${DEFAULT_DOMAIN}popup.html`,
     webusbSrc: `${DEFAULT_DOMAIN}webusb.html`,
+    // deprecated, use transports instead
     webusb: true,
+    transports: undefined,
     pendingTransportEvent: true,
     supportedBrowser:
         typeof navigator !== 'undefined' ? !/Trident|MSIE|Edge/.test(navigator.userAgent) : true, // TODO: https://github.com/trezor/trezor-suite/issues/5319
@@ -147,8 +149,13 @@ export const parseConnectSettings = (input: Partial<ConnectSettings> = {}) => {
         settings.transportReconnect = input.transportReconnect;
     }
 
+    // deprecated, settings.transport should be used instead
     if (typeof input.webusb === 'boolean') {
         settings.webusb = input.webusb;
+    }
+
+    if (Array.isArray(input.transports)) {
+        settings.transports = input.transports;
     }
 
     if (typeof input.popup === 'boolean') {

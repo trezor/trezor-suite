@@ -103,7 +103,6 @@ const Component = ({ callback }: { callback: TestCallback }) => {
 describe('useRbfForm hook', () => {
     beforeAll(async () => {
         await TrezorConnect.init({
-            webusb: false,
             transportReconnect: false,
             pendingTransportEvent: false,
             manifest: {

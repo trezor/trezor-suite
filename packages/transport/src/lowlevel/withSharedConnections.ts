@@ -117,7 +117,7 @@ export default class LowlevelTransportWithSharedConnections {
     defereds: { [id: number]: Deferred<MessageFromSharedWorker> } = {};
     isOutdated = false;
     latestId = 0;
-    name = 'LowlevelTransportWithSharedConnections';
+    name = 'WebUsbTransport';
     plugin: LowlevelTransportSharedPlugin;
     requestNeeded = false;
     sharedWorker: null | SharedWorker = null;

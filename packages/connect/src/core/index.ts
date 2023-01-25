@@ -211,7 +211,7 @@ const initDevice = async (method: AbstractMethod) => {
         throw ERRORS.TypedError('Transport_Missing');
     }
 
-    const isWebUsb = _deviceList.transportType() === 'WebUsbPlugin';
+    const isWebUsb = _deviceList.transportType() === 'WebUsbTransport';
     let device: Device | typeof undefined;
     let showDeviceSelection = isWebUsb;
     if (method.devicePath) {
@@ -847,7 +847,7 @@ const handleDeviceSelectionChanges = (interruptDevice?: DeviceTyped) => {
     const uiPromise = findUiPromise(UI.RECEIVE_DEVICE);
     if (uiPromise && _deviceList) {
         const list = _deviceList.asArray();
-        const isWebUsb = _deviceList.transportType().indexOf('webusb') >= 0;
+        const isWebUsb = _deviceList.transportType() === 'WebUsbTransport';
 
         if (list.length === 1 && !isWebUsb) {
             // there is only one device. use it
@@ -1048,10 +1048,16 @@ export const initTransport = async (settings: ConnectSettings) => {
 
 const disableWebUSBTransport = async () => {
     if (!_deviceList) return;
-    if (_deviceList.transportType() !== 'WebUsbPlugin') return;
+    if (_deviceList.transportType() !== 'WebUsbTransport') return;
     // override settings
     const settings = DataManager.getSettings();
-    settings.webusb = false;
+
+    if (settings.transports?.includes('WebUsbTransport')) {
+        settings.transports.splice(settings.transports.indexOf('WebUsbTransport'));
+    }
+    if (!settings.transports?.includes('BridgeTransport')) {
+        settings.transports!.unshift('BridgeTransport');
+    }
 
     try {
         // disconnect previous device list
