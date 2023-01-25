@@ -7679,6 +7679,22 @@ export default defineMessages({
         defaultMessage:
             'Slush Pool is the oldest Bitcoin mining pool, and also the first to be publicly available. Today it is operated by Braiins Pool',
     },
+    TR_REMEMBER_WALLET_TITLE: {
+        id: 'TR_REMEMBER_WALLET_TITLE',
+        description: 'Displayed during coinjoin account discovery',
+        defaultMessage: 'Remember the wallet to load faster next time',
+    },
+    TR_REMEMBER_WALLET_NOTE: {
+        id: 'TR_REMEMBER_WALLET_NOTE',
+        description: 'Displayed during coinjoin account discovery',
+        defaultMessage: 'Note: This will remember all assets on this wallet',
+    },
+    TR_REMEMBER_WALLET_DESCRIPTION: {
+        id: 'TR_REMEMBER_WALLET_DESCRIPTION',
+        description: 'Displayed during coinjoin account discovery',
+        defaultMessage:
+            "It's being loaded anonymously. Remember account to the load instantly & save custom setups.",
+    },
     TR_TIMER_PAST_DEADLINE: {
         id: 'TR_TIMER_PAST_DEADLINE',
         defaultMessage: 'Almost there...',
