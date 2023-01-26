@@ -379,13 +379,19 @@ export const selectDevice =
  *
  * Use `forgetDevice` to forget a device regardless if its current state.
  */
-export const toggleRememberDevice = (payload: TrezorDevice, forceRemember?: true): SuiteAction => ({
-    type: SUITE.REMEMBER_DEVICE,
-    payload,
-    remember: !payload.remember || !!forceRemember,
-    // if device is already remembered, do not force it, it would remove the remember on return to suite
-    forceRemember: payload.remember ? undefined : forceRemember,
-});
+export const toggleRememberDevice =
+    (payload: TrezorDevice, forceRemember?: true) => (dispatch: Dispatch) => {
+        analytics.report({
+            type: payload.remember ? EventType.SwitchDeviceForget : EventType.SwitchDeviceRemember,
+        });
+        return dispatch({
+            type: SUITE.REMEMBER_DEVICE,
+            payload,
+            remember: !payload.remember || !!forceRemember,
+            // if device is already remembered, do not force it, it would remove the remember on return to suite
+            forceRemember: payload.remember ? undefined : forceRemember,
+        });
+    };
 
 export const forgetDevice = (payload: TrezorDevice): SuiteAction => ({
     type: SUITE.FORGET_DEVICE,

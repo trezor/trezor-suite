@@ -185,14 +185,7 @@ export const WalletInstance = ({
                     <SwitchCol>
                         <Switch
                             isChecked={!!instance.remember}
-                            onChange={() => {
-                                toggleRememberDevice(instance);
-                                analytics.report({
-                                    type: instance.remember
-                                        ? EventType.SwitchDeviceForget
-                                        : EventType.SwitchDeviceRemember,
-                                });
-                            }}
+                            onChange={() => toggleRememberDevice(instance)}
                             dataTest={`${dataTestBase}/toggle-remember-switch`}
                         />
                     </SwitchCol>
