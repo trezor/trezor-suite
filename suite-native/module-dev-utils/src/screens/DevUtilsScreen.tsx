@@ -1,5 +1,5 @@
-import React, { useCallback } from 'react';
-import { NativeModules, TouchableOpacity } from 'react-native';
+import React from 'react';
+import { TouchableOpacity } from 'react-native';
 
 import { isDebugEnv, isDevelopOrDebugEnv } from '@suite-native/config';
 import { Box, Button, Card, CheckBox, Text, useDebugView, VStack } from '@suite-native/atoms';
@@ -9,7 +9,7 @@ import {
     DevUtilsStackParamList,
     DevUtilsStackRoutes,
 } from '@suite-native/navigation';
-import { useStoragePersistor } from '@suite-native/storage';
+import { purgeStorage, useStoragePersistor } from '@suite-native/storage';
 
 import { BuildInfo } from '../components/BuildInfo';
 
@@ -46,9 +46,9 @@ export const DevUtilsScreen = ({
         isRerenderCountEnabled,
     } = useDebugView();
 
-    const handleResetStorage = useCallback(() => {
-        persistor.purge().then(() => NativeModules.DevSettings.reload());
-    }, [persistor]);
+    const handleResetStorage = () => {
+        purgeStorage(persistor);
+    };
 
     return (
         <Screen>

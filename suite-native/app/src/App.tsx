@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Alert } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { Provider, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { IntlProvider } from 'react-intl';
 
 import * as SplashScreen from 'expo-splash-screen';
@@ -13,9 +13,8 @@ import * as Sentry from '@sentry/react-native';
 
 import enMessages from '@trezor/suite-data/files/translations/en.json';
 import { connectInitThunk } from '@suite-common/connect-init';
-import { store, storePersistor } from '@suite-native/state';
 import { initBlockchainThunk, reconnectBlockchainThunk } from '@suite-common/wallet-core';
-import { StorageProvider } from '@suite-native/storage';
+import { StoreProvider } from '@suite-native/state';
 import { FormatterProvider } from '@suite-common/formatters';
 import { enabledNetworks } from '@suite-native/config';
 
@@ -102,15 +101,13 @@ const PureApp = () => (
     <GestureHandlerRootView style={{ flex: 1 }}>
         <IntlProvider locale="en" defaultLocale="en" messages={enMessages}>
             <NavigationContainer>
-                <Provider store={store}>
-                    <StorageProvider persistor={storePersistor}>
-                        <SafeAreaProvider>
-                            <StylesProvider>
-                                <AppComponent />
-                            </StylesProvider>
-                        </SafeAreaProvider>
-                    </StorageProvider>
-                </Provider>
+                <StoreProvider>
+                    <SafeAreaProvider>
+                        <StylesProvider>
+                            <AppComponent />
+                        </StylesProvider>
+                    </SafeAreaProvider>
+                </StoreProvider>
             </NavigationContainer>
         </IntlProvider>
     </GestureHandlerRootView>

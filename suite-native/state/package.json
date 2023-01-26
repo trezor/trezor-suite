@@ -21,6 +21,8 @@
         "@trezor/connect": "workspace:9.0.5",
         "@trezor/styles": "workspace:*",
         "@trezor/utils": "workspace:*",
+        "react": "18.2.0",
+        "react-redux": "7.2.2",
         "redux-flipper": "2.0.2",
         "redux-persist": "6.0.0"
     },
