@@ -103,7 +103,7 @@ export const TransactionListItem = memo(
         const transactionAmount = formatNetworkAmount(transaction.amount, transaction.symbol);
         const fiatAmount = toFiatCurrency(transactionAmount, fiatCurrency.label, transaction.rates);
         const transactionBlockTime = useSelector((state: TransactionsRootState) =>
-            selectTransactionBlockTimeById(transaction.txid, state),
+            selectTransactionBlockTimeById(state, transaction.txid),
         );
 
         const handleNavigateToTransactionDetail = () => {

@@ -6021,6 +6021,7 @@ __metadata:
   resolution: "@suite-common/formatters@workspace:suite-common/formatters"
   dependencies:
     "@formatjs/intl": 2.5.1
+    "@mobily/ts-belt": ^3.13.1
     "@suite-common/suite-config": "workspace:*"
     "@suite-common/suite-constants": "workspace:*"
     "@suite-common/suite-types": "workspace:*"

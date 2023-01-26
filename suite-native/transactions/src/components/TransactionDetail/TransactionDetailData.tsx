@@ -20,7 +20,7 @@ export const TransactionDetailData = ({ transaction }: TransactionDetailDataProp
     const { FiatAmountFormatter, CryptoAmountFormatter, DateTimeFormatter } = useFormatters();
     const fiatCurrency = useSelector(selectFiatCurrency);
     const transactionBlockTime = useSelector((state: TransactionsRootState) =>
-        selectTransactionBlockTimeById(transaction.txid, state),
+        selectTransactionBlockTimeById(state, transaction.txid),
     );
 
     const fee = formatNetworkAmount(transaction.fee, transaction.symbol);
