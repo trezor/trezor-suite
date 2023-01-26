@@ -38,12 +38,13 @@ const Receive = () => {
     }
 
     const disabled = !!device.authConfirm;
+    const showCexWarning = account?.accountType === 'coinjoin' && !isCexWarningHidden;
 
     return (
         <WalletLayout title="TR_NAV_RECEIVE" account={selectedAccount}>
             <WalletLayoutHeader title="TR_NAV_RECEIVE" />
 
-            {!isCexWarningHidden && <CoinjoinCexWarning />}
+            {showCexWarning && <CoinjoinCexWarning />}
 
             <FreshAddress
                 account={account}
