@@ -20,6 +20,9 @@ import { Formatter } from './makeFormatter';
 import { FormatterConfig, FormatterProviderConfig } from './types';
 import { SignValueFormatter } from './formatters/SignValueFormatter';
 import { prepareCurrencySymbolFormatter } from './formatters/prepareCurrencySymbolFormatter';
+import { prepareDateFormatter } from './formatters/prepareDateFormatters';
+import { prepareTimeFormatter } from './formatters/prepareTimeFormatter';
+import { prepareDateTimeFormatter } from './formatters/prepareDateTimeFormatter';
 
 type FormatterProviderProps = {
     children: React.ReactNode;
@@ -40,6 +43,9 @@ export type Formatters = {
         string | null,
         FiatAmountFormatterDataContext<FormatNumberOptions>
     >;
+    DateFormatter: Formatter<Date | number, string>;
+    TimeFormatter: Formatter<Date | number, string>;
+    DateTimeFormatter: Formatter<Date | number | null, string | null>;
 };
 
 export const FormatterProviderContext = createContext<Formatters>({} as Formatters);
@@ -49,13 +55,19 @@ export const getFormatters = (config: FormatterConfig): Formatters => {
     const CoinBalanceFormatter = prepareCoinBalanceFormatter(config);
     const CurrencySymbolFormatter = prepareCurrencySymbolFormatter(config);
     const FiatAmountFormatter = prepareFiatAmountFormatter(config);
+    const DateFormatter = prepareDateFormatter(config);
+    const TimeFormatter = prepareTimeFormatter(config);
+    const DateTimeFormatter = prepareDateTimeFormatter(config);
 
     return {
         CryptoAmountFormatter,
         CoinBalanceFormatter,
         CurrencySymbolFormatter,
         FiatAmountFormatter,
+        DateFormatter,
         SignValueFormatter,
+        TimeFormatter,
+        DateTimeFormatter,
     };
 };
 

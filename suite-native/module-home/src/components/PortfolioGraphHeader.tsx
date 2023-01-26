@@ -1,7 +1,6 @@
 import React from 'react';
 
 import { atom, useAtom } from 'jotai';
-import { format } from 'date-fns';
 
 import { Box, DiscreetText, Text } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -123,9 +122,11 @@ const Balance = () => {
 
 export const GraphTimeIndicator = () => {
     const [point] = useAtom(selectedPointAtom);
+    const { DateFormatter } = useFormatters();
 
     // TOOD: proper formatter, for example use just hours and minutes for small scales etc.
-    return <>{format(point.originalDate, 'd. MMM k:mm')}</>;
+    return <DateFormatter value={point.originalDate} />;
+    // {format(point.originalDate, 'd. MMM k:mm')}</DateFormatter>;
 };
 
 export const PortfolioGraphHeader = () => {

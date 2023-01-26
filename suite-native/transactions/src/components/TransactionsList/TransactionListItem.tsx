@@ -98,7 +98,7 @@ export const TransactionListItem = memo(
             useNavigation<
                 StackNavigationProps<RootStackParamList, AccountsStackRoutes.AccountDetail>
             >();
-        const { FiatAmountFormatter, CryptoAmountFormatter } = useFormatters();
+        const { FiatAmountFormatter, CryptoAmountFormatter, DateTimeFormatter } = useFormatters();
         const transactionAmount = formatNetworkAmount(transaction.amount, transaction.symbol);
         const fiatAmount = toFiatCurrency(transactionAmount, fiatCurrency.label, transaction.rates);
 
@@ -147,7 +147,9 @@ export const TransactionListItem = memo(
                         </Box>
                     </Box>
                     <Text variant="hint" color="gray600">
-                        {formatTransactionDate()}
+                        <DateTimeFormatter
+                            value={transaction.blockTime ? transaction.blockTime * 1000 : null}
+                        />
                     </Text>
                 </Box>
 
