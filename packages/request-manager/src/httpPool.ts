@@ -10,7 +10,7 @@ interface RequestData {
 
 export class RequestPool {
     requestPool: RequestData[] = [];
-    requestTimeoutLimit = 1000 * 10;
+    requestTimeoutLimit = 1000 * 30;
     isNetworkMisbehaving = false;
     interceptorOptions: InterceptorOptions;
 
