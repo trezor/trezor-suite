@@ -130,4 +130,12 @@ describe('address', () => {
             });
         });
     });
+
+    describe('getAddressType', () => {
+        fixtures.addressTypes.forEach(([network, address, type]) => {
+            it(`${network} ${address}`, () => {
+                expect(baddress.getAddressType(address, getNetwork(network))).toBe(type);
+            });
+        });
+    });
 });

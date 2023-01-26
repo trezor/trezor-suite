@@ -8,7 +8,7 @@ import * as bs58check from './bs58check';
 import * as typeforce from 'typeforce';
 import * as bscript from './script';
 import * as payments from './payments';
-import { bitcoin as BITCOIN_NETWORK } from './networks';
+import { bitcoin as BITCOIN_NETWORK, Network } from './networks';
 import * as types from './types';
 
 export interface Base58CheckResult {
@@ -123,50 +123,87 @@ export function fromOutputScript(output: Buffer, network = BITCOIN_NETWORK) {
     throw new Error(`${bscript.toASM(output)} has no matching Address`);
 }
 
-export function toOutputScript(address: string, network = BITCOIN_NETWORK) {
-    let decodeBase58: Base58CheckResult | undefined;
-    let decodeBech32: Bech32Result | undefined;
-
+function decodeAddress(address: string, network: Network) {
     try {
-        decodeBase58 = fromBase58Check(address, network);
-    } catch (e) {
-        // silent error
-    }
-
-    if (decodeBase58) {
-        if (decodeBase58.version === network.pubKeyHash)
-            return payments.p2pkh({ hash: decodeBase58.hash }).output as Buffer;
-        if (decodeBase58.version === network.scriptHash)
-            return payments.p2sh({ hash: decodeBase58.hash }).output as Buffer;
-    } else {
+        const { hash, version } = fromBase58Check(address, network);
+        return { success: true, format: 'base58', version, hash } as const;
+    } catch {
         try {
-            decodeBech32 = fromBech32(address);
-        } catch (e) {
-            // silent error
-        }
-
-        if (decodeBech32) {
-            if (decodeBech32.prefix !== network.bech32)
-                throw new Error(`${address} has an invalid prefix`);
-            if (decodeBech32.version === 0) {
-                if (decodeBech32.data.length === 20)
-                    return payments.p2wpkh({ hash: decodeBech32.data }).output as Buffer;
-                if (decodeBech32.data.length === 32)
-                    return payments.p2wsh({ hash: decodeBech32.data }).output as Buffer;
+            const { data, prefix, version } = fromBech32(address);
+            if (prefix === network.bech32) {
+                return { success: true, format: 'bech32', version, hash: data } as const;
             }
-            if (
-                decodeBech32.version >= FUTURE_SEGWIT_MIN_VERSION &&
-                decodeBech32.version <= FUTURE_SEGWIT_MAX_VERSION &&
-                decodeBech32.data.length >= FUTURE_SEGWIT_MIN_SIZE &&
-                decodeBech32.data.length <= FUTURE_SEGWIT_MAX_SIZE
-            ) {
-                return bscript.compile([
-                    decodeBech32.version + FUTURE_SEGWIT_VERSION_DIFF,
-                    decodeBech32.data,
-                ]);
-            }
+            return { success: false, error: 'bech32-invalid-prefix' } as const;
+        } catch {
+            // silent
         }
     }
+    return { success: false, error: 'unknown-format' } as const;
+}
 
+// Returned address types are compatible with trezor-address-validator types
+function identifyAddressType(
+    format: 'base58' | 'bech32',
+    version: number,
+    hash: Buffer,
+    network: Network,
+) {
+    if (format === 'base58') {
+        if (version === network.pubKeyHash) return 'p2pkh' as const;
+        if (version === network.scriptHash) return 'p2sh' as const;
+    } else if (format === 'bech32') {
+        if (version === 0) {
+            if (hash.length === 20) return 'p2wpkh' as const;
+            if (hash.length === 32) return 'p2wsh' as const;
+        } else if (version === 1 && hash.length === 32) {
+            return 'p2tr' as const;
+        } else if (
+            version >= FUTURE_SEGWIT_MIN_VERSION &&
+            version <= FUTURE_SEGWIT_MAX_VERSION &&
+            hash.length >= FUTURE_SEGWIT_MIN_SIZE &&
+            hash.length <= FUTURE_SEGWIT_MAX_SIZE
+        ) {
+            return 'p2w-unknown' as const;
+        }
+    }
+    return 'unknown';
+}
+
+function createOutputScript(
+    type: Exclude<ReturnType<typeof identifyAddressType>, 'unknown'>,
+    hash: Buffer,
+    version: number,
+) {
+    switch (type) {
+        case 'p2pkh':
+            return payments.p2pkh({ hash }).output as Buffer;
+        case 'p2sh':
+            return payments.p2sh({ hash }).output as Buffer;
+        case 'p2wpkh':
+            return payments.p2wpkh({ hash }).output as Buffer;
+        case 'p2wsh':
+            return payments.p2wsh({ hash }).output as Buffer;
+        case 'p2tr':
+        case 'p2w-unknown':
+            return bscript.compile([version + FUTURE_SEGWIT_VERSION_DIFF, hash]);
+        // no default
+    }
+}
+
+export function getAddressType(address: string, network = BITCOIN_NETWORK) {
+    const { success, format, version, hash } = decodeAddress(address, network);
+    return success ? identifyAddressType(format, version, hash, network) : 'unknown';
+}
+
+export function toOutputScript(address: string, network = BITCOIN_NETWORK) {
+    const { success, format, version, hash, error } = decodeAddress(address, network);
+    if (success) {
+        const type = identifyAddressType(format, version, hash, network);
+        if (type !== 'unknown') {
+            return createOutputScript(type, hash, version);
+        }
+    } else if (error === 'bech32-invalid-prefix') {
+        throw new Error(`${address} has an invalid prefix`);
+    }
     throw new Error(`${address} has no matching Script`);
 }
