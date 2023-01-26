@@ -13,6 +13,7 @@
         { "path": "../wallet-types" },
         { "path": "../wallet-utils" },
         { "path": "../../packages/connect" },
+        { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" }
     ]
 }

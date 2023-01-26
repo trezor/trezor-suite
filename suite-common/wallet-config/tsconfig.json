@@ -2,6 +2,8 @@
     "extends": "../../tsconfig.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
-        { "path": "../../packages/device-utils" }
+        { "path": "../intl-types" },
+        { "path": "../../packages/device-utils" },
+        { "path": "../../packages/type-utils" }
     ]
 }

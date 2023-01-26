@@ -81,6 +81,7 @@ module.exports = {
                     '**/suite-desktop/scripts/**',
                     '**/suite-desktop/e2e/**',
                 ],
+                includeTypes: true,
             },
         ],
         // Does not work with TypeScript export type.
