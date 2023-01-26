@@ -1,9 +1,9 @@
 import { persistReducer } from 'redux-persist';
 import { Reducer } from '@reduxjs/toolkit';
 
-import { mmkvStorage } from './storage';
+import { initMmkvStorage } from './storage';
 
-export const typedPersistReducer = <TReducerInitialState>({
+export const preparePersistReducer = async <TReducerInitialState>({
     reducer,
     persistedKeys,
     key,
@@ -11,4 +11,8 @@ export const typedPersistReducer = <TReducerInitialState>({
     reducer: Reducer<TReducerInitialState>;
     persistedKeys: Array<keyof TReducerInitialState>;
     key: string;
-}) => persistReducer({ key, storage: mmkvStorage, whitelist: persistedKeys as string[] }, reducer);
+}) =>
+    persistReducer(
+        { key, storage: await initMmkvStorage(), whitelist: persistedKeys as string[] },
+        reducer,
+    );
