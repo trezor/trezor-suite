@@ -11,6 +11,7 @@
     },
     "dependencies": {
         "@sentry/integrations": "6.17.2",
+        "@sentry/types": "6.17.2",
         "@suite-common/suite-utils": "workspace:*",
         "@trezor/utils": "workspace:*"
     },
