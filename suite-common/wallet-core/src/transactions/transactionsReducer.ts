@@ -180,3 +180,13 @@ export const selectTransactionByTxid = memoizeWithArgs(
         return transactions.find(tx => tx.txid === txid) ?? null;
     },
 );
+
+export const selectTransactionBlockTimeById = memoizeWithArgs(
+    (txid: string, state: TransactionsRootState) => {
+        const transaction = selectTransactionByTxid(txid, state);
+        if (transaction?.blockTime) {
+            return transaction.blockTime * 1000;
+        }
+        return null;
+    },
+);

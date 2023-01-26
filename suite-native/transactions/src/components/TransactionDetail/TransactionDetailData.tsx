@@ -7,6 +7,7 @@ import { Icon } from '@trezor/icons';
 import { formatNetworkAmount, isPending, toFiatCurrency } from '@suite-common/wallet-utils';
 import { useFormatters } from '@suite-common/formatters';
 import { selectFiatCurrency } from '@suite-native/module-settings';
+import { selectTransactionBlockTimeById, TransactionsRootState } from '@suite-common/wallet-core';
 
 import { TransactionDetailSummary } from './TransactionDetailSummary';
 import { TransactionDetailRow } from './TransactionDetailRow';
@@ -16,21 +17,14 @@ type TransactionDetailDataProps = {
 };
 
 export const TransactionDetailData = ({ transaction }: TransactionDetailDataProps) => {
-    const { FiatAmountFormatter, CryptoAmountFormatter } = useFormatters();
+    const { FiatAmountFormatter, CryptoAmountFormatter, DateTimeFormatter } = useFormatters();
     const fiatCurrency = useSelector(selectFiatCurrency);
+    const transactionBlockTime = useSelector((state: TransactionsRootState) =>
+        selectTransactionBlockTimeById(transaction.txid, state),
+    );
 
     const fee = formatNetworkAmount(transaction.fee, transaction.symbol);
     const fiatFeeAmount = toFiatCurrency(fee, fiatCurrency.label, transaction.rates);
-
-    const getBlockDatetime = () => {
-        if (!transaction.blockTime) return '';
-        return new Date(transaction.blockTime * 1000).toLocaleString('en-US', {
-            weekday: 'short',
-            month: 'numeric',
-            hour: 'numeric',
-            minute: 'numeric',
-        });
-    };
 
     // Only one input and output address for now until UX comes up with design to support multiple outputs
     const transactionOriginAddresses = transaction.details.vin[0].addresses;
@@ -44,7 +38,7 @@ export const TransactionDetailData = ({ transaction }: TransactionDetailDataProp
                 <Card>
                     <TransactionDetailRow title="Date">
                         <Text variant="hint" color="gray1000">
-                            {getBlockDatetime()}
+                            <DateTimeFormatter value={transactionBlockTime} />
                         </Text>
                         <Box marginLeft="small">
                             <Icon name="calendar" size="medium" color="gray1000" />
