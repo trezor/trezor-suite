@@ -33,7 +33,7 @@
         "@suite-native/module-settings": "workspace:*",
         "@suite-native/navigation": "workspace:*",
         "@suite-native/qr-code": "workspace:*",
-        "@trezor/connect": "workspace:9.0.5",
+        "@trezor/connect": "workspace:9.0.6",
         "@trezor/icons": "workspace:*",
         "@trezor/styles": "workspace:*",
         "@trezor/validation": "workspace:*",
