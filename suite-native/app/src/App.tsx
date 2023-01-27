@@ -4,6 +4,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useDispatch } from 'react-redux';
 import { IntlProvider } from 'react-intl';
+import { RootSiblingParent } from 'react-native-root-siblings';
 
 import * as SplashScreen from 'expo-splash-screen';
 import { NavigationContainer } from '@react-navigation/native';
@@ -104,7 +105,10 @@ const PureApp = () => (
                 <StoreProvider>
                     <SafeAreaProvider>
                         <StylesProvider>
-                            <AppComponent />
+                            {/* TODO: REMOVE RootSiblingParent when is our notification UI ready */}
+                            <RootSiblingParent>
+                                <AppComponent />
+                            </RootSiblingParent>
                         </StylesProvider>
                     </SafeAreaProvider>
                 </StoreProvider>

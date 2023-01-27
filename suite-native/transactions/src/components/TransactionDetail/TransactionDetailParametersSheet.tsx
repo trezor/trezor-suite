@@ -1,14 +1,13 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
-import * as Clipboard from 'expo-clipboard';
-
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { WalletAccountTransaction } from '@suite-common/wallet-types';
 import { Box, Card, IconButton, Text, VStack } from '@suite-native/atoms';
 import { Icon } from '@trezor/icons';
 import { getConfirmations, getFeeRate, getFeeUnits } from '@suite-common/wallet-utils';
 import { BlockchainRootState, selectBlockchainHeightBySymbol } from '@suite-common/wallet-core';
+import { useCopyToClipboard } from '@suite-native/helpers';
 
 import { TransactionDetailSheet } from './TransactionDetailSheet';
 import { TransactionDetailRow } from './TransactionDetailRow';
@@ -28,12 +27,13 @@ export const TransactionDetailParametersSheet = ({
     onSheetVisibilityChange,
     transaction,
 }: TransactionDetailParametersSheetProps) => {
+    const copyToClipboard = useCopyToClipboard();
     const { applyStyle } = useNativeStyles();
     const blockchainHeight = useSelector((state: BlockchainRootState) =>
         selectBlockchainHeightBySymbol(state, transaction.symbol),
     );
 
-    const handleClickCopy = () => Clipboard.setStringAsync(transaction.txid);
+    const handleClickCopy = () => copyToClipboard(transaction.txid);
 
     const confirmationsCount = getConfirmations(transaction, blockchainHeight);
 

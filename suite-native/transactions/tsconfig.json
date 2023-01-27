@@ -21,6 +21,7 @@
             "path": "../../suite-common/wallet-utils"
         },
         { "path": "../atoms" },
+        { "path": "../helpers" },
         { "path": "../module-settings" },
         { "path": "../navigation" },
         { "path": "../../packages/icons" },

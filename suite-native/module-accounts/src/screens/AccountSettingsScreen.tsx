@@ -61,7 +61,7 @@ export const AccountSettingsScreen = ({
         navigation.navigate(AccountsStackRoutes.Accounts);
     };
 
-    const handleCopyXpubToClipboardAndClose = () => {
+    const handleClose = () => {
         setIsXpubVisible(false);
     };
 
@@ -93,7 +93,7 @@ export const AccountSettingsScreen = ({
                 </VStack>
             </Box>
             <BottomSheet isVisible={isXpubVisible} onClose={setIsXpubVisible}>
-                <QRCode data={account.descriptor} onCopy={handleCopyXpubToClipboardAndClose} />
+                <QRCode data={account.descriptor} onCopy={handleClose} />
             </BottomSheet>
         </Screen>
     );

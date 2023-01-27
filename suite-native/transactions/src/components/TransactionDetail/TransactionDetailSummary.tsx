@@ -1,7 +1,6 @@
 import React, { ReactNode } from 'react';
 
-import * as Clipboard from 'expo-clipboard';
-
+import { useCopyToClipboard } from '@suite-native/helpers';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Box, Card, VStack, Text, ErrorMessage, IconButton } from '@suite-native/atoms';
 import { Icon } from '@trezor/icons';
@@ -51,7 +50,7 @@ const VerticalSeparator = () => {
 };
 
 export const RowWithTitle = ({ title, value }: { title: string; value: string }) => {
-    const handleCopy = () => Clipboard.setStringAsync(value);
+    const copyToClipboard = useCopyToClipboard();
     return (
         <Box flexDirection="row" justifyContent="space-between" alignItems="center">
             <Box>
@@ -64,7 +63,7 @@ export const RowWithTitle = ({ title, value }: { title: string; value: string })
             </Box>
             <IconButton
                 iconName="copy"
-                onPress={handleCopy}
+                onPress={() => copyToClipboard(value)}
                 isRounded
                 colorScheme="gray"
                 size="large"
