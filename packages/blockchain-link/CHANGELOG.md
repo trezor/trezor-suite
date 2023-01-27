@@ -1,3 +1,7 @@
+# 2.1.7
+
+-   feat: cardano preview testnet
+
 # 2.1.6
 
 -   deps: updated typescript to 4.9
