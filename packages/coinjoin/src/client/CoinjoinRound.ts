@@ -82,6 +82,14 @@ const createRoundLock = (mainSignal: AbortSignal) => {
     };
 };
 
+interface CreateRoundProps {
+    accounts: Account[];
+    statusRounds: Round[];
+    coinjoinRounds: CoinjoinRound[];
+    prison: CoinjoinPrison;
+    options: CoinjoinRoundOptions;
+}
+
 export class CoinjoinRound extends EventEmitter {
     private lock?: ReturnType<typeof createRoundLock>;
     private options: CoinjoinRoundOptions;
@@ -141,22 +149,16 @@ export class CoinjoinRound extends EventEmitter {
         });
     }
 
-    static create(
-        accounts: Account[],
-        statusRounds: Round[],
-        coinjoinRounds: CoinjoinRound[],
-        prison: CoinjoinPrison,
-        options: CoinjoinRoundOptions,
-    ) {
-        return selectRound(
-            (...args: ConstructorParameters<typeof CoinjoinRound>) => new CoinjoinRound(...args),
-            (...args: ConstructorParameters<typeof Alice>) => new Alice(...args),
+    static create({ accounts, statusRounds, coinjoinRounds, prison, options }: CreateRoundProps) {
+        return selectRound({
+            roundGenerator: (...args) => new CoinjoinRound(...args),
+            aliceGenerator: (...args) => new Alice(...args),
             accounts,
             statusRounds,
             coinjoinRounds,
             prison,
             options,
-        );
+        });
     }
 
     async onPhaseChange(changed: Round) {

@@ -15,14 +15,24 @@ export type CoinjoinRoundGenerator = (
 
 export type AliceGenerator = (...args: ConstructorParameters<typeof Alice>) => Alice;
 
+export interface SelectRoundProps {
+    roundGenerator: CoinjoinRoundGenerator;
+    aliceGenerator: AliceGenerator;
+    accounts: Account[];
+    statusRounds: Round[];
+    coinjoinRounds: CoinjoinRound[];
+    prison: CoinjoinPrison;
+    options: CoinjoinRoundOptions;
+}
+
 // Basic preselect CoinjoinRound candidates
 // reuse existing CoinjoinRounds or create new one
-export const getRoundCandidates = (
-    generator: CoinjoinRoundGenerator,
-    statusRounds: Round[],
-    currentRounds: CoinjoinRound[],
-    options: CoinjoinRoundOptions,
-) => {
+export const getRoundCandidates = ({
+    roundGenerator,
+    statusRounds,
+    coinjoinRounds,
+    options,
+}: Pick<SelectRoundProps, 'roundGenerator' | 'statusRounds' | 'coinjoinRounds' | 'options'>) => {
     const now = Date.now();
     return statusRounds
         .filter(
@@ -32,11 +42,11 @@ export const getRoundCandidates = (
                     ROUND_SELECTION_REGISTRATION_OFFSET,
         )
         .flatMap(round => {
-            const current = currentRounds.find(r => r.id === round.id);
+            const current = coinjoinRounds.find(r => r.id === round.id);
             if (current) return current;
             // try to create new CoinjoinRound
             try {
-                return generator(round, options);
+                return roundGenerator(round, options);
             } catch (e) {
                 // constructor fails on invalid round data (highly unlikely)
                 return [];
@@ -44,13 +54,13 @@ export const getRoundCandidates = (
         });
 };
 
-export const getUnregisteredAccounts = (
-    accounts: Account[],
-    currentRounds: CoinjoinRound[],
-    { log }: CoinjoinRoundOptions,
-) =>
+export const getUnregisteredAccounts = ({
+    accounts,
+    coinjoinRounds,
+    options: { log },
+}: Pick<SelectRoundProps, 'accounts' | 'coinjoinRounds' | 'options'>) =>
     accounts.filter(({ accountKey }) => {
-        const isAlreadyRegistered = currentRounds.find(
+        const isAlreadyRegistered = coinjoinRounds.find(
             round =>
                 round.phase !== RoundPhase.Ended &&
                 round.inputs.find(input => input.accountKey === accountKey),
@@ -65,18 +75,17 @@ export const getUnregisteredAccounts = (
 
 // Basic preselect Accounts
 // exclude Account.utxos which are registered in CoinjoinRounds or detained in CoinjoinPrison
-export const getAccountCandidates = (
-    accounts: Account[],
-    _statusRounds: Round[],
-    currentRounds: CoinjoinRound[],
-    prison: CoinjoinPrison,
-    { log, setSessionPhase }: CoinjoinRoundOptions,
-) => {
+export const getAccountCandidates = ({
+    accounts,
+    coinjoinRounds,
+    prison,
+    options: { log, setSessionPhase },
+}: Pick<SelectRoundProps, 'accounts' | 'coinjoinRounds' | 'prison' | 'options'>) => {
     // TODO: walk thru all Round[] and search in round events for account input/output scriptPubKey which are not supposed to be there (interrupted round)
     // if they are in phase 0 put them to prison to cool off so they registration on coordinator will timeout naturally, otherwise prison for longer, they will be banned
 
     // collect outpoints of all currently registered inputs in CoinjoinRounds + inputs in prison
-    const registeredOutpoints = currentRounds
+    const registeredOutpoints = coinjoinRounds
         .flatMap(round => round.inputs.concat(round.failed).map(u => u.outpoint))
         .concat(prison.inmates.map(i => i.id));
 
@@ -165,12 +174,17 @@ export const getAccountCandidates = (
     return candidates;
 };
 
-const selectInputsForBlameRound = (
-    generator: AliceGenerator,
-    roundCandidates: CoinjoinRound[],
-    accountCandidates: ReturnType<typeof getAccountCandidates>,
-    { log }: CoinjoinRoundOptions,
-) =>
+interface SelectInputsForRoundProps extends Pick<SelectRoundProps, 'aliceGenerator' | 'options'> {
+    roundCandidates: CoinjoinRound[];
+    accountCandidates: ReturnType<typeof getAccountCandidates>;
+}
+
+const selectInputsForBlameRound = ({
+    aliceGenerator,
+    roundCandidates,
+    accountCandidates,
+    options: { log },
+}: SelectInputsForRoundProps) =>
     roundCandidates.find(round => {
         const inputs: CoinjoinRound['inputs'] = [];
         accountCandidates.forEach(account => {
@@ -180,7 +194,9 @@ const selectInputsForBlameRound = (
                     `Found blame round for account ~~${account.accountKey}~~ with ${utxos.length} inputs`,
                 );
                 inputs.push(
-                    ...utxos.map(utxo => generator(account.accountKey, account.scriptType, utxo)),
+                    ...utxos.map(utxo =>
+                        aliceGenerator(account.accountKey, account.scriptType, utxo),
+                    ),
                 );
             }
         });
@@ -194,12 +210,12 @@ const selectInputsForBlameRound = (
     });
 
 // Use middleware algorithm to process preselected CoinjoinRounds and Accounts
-export const selectInputsForRound = async (
-    generator: AliceGenerator,
-    roundCandidates: CoinjoinRound[],
-    accountCandidates: ReturnType<typeof getAccountCandidates>,
-    options: CoinjoinRoundOptions,
-) => {
+export const selectInputsForRound = async ({
+    aliceGenerator,
+    roundCandidates,
+    accountCandidates,
+    options,
+}: SelectInputsForRoundProps) => {
     // NOTE: regular Round.blameOf field is 64 length string filled with 0
     // blame Round.blameOf is pointing to previously failed round id
     const noBlameOf = '0'.repeat(64);
@@ -212,12 +228,12 @@ export const selectInputsForRound = async (
     const [normalAccounts, blameOfAccounts] = arrayPartition(accountCandidates, r => !r.blameOf);
 
     if (blameOfAccounts.length > 0) {
-        const blameRound = selectInputsForBlameRound(
-            generator,
-            blameOfRounds,
-            blameOfAccounts,
+        const blameRound = selectInputsForBlameRound({
+            aliceGenerator,
+            roundCandidates: blameOfRounds,
+            accountCandidates: blameOfAccounts,
             options,
-        );
+        });
         return blameRound;
     }
 
@@ -313,7 +329,7 @@ export const selectInputsForRound = async (
             // create new Alice(s) and add it to CoinjoinRound
             selectedRound.inputs.push(
                 ...selectedUtxos.map(utxo =>
-                    generator(account.accountKey, account.scriptType, utxo),
+                    aliceGenerator(account.accountKey, account.scriptType, utxo),
                 ),
             );
         }
@@ -322,28 +338,28 @@ export const selectInputsForRound = async (
     return selectedRound;
 };
 
-export const selectRound = async (
-    roundGenerator: CoinjoinRoundGenerator,
-    aliceGenerator: AliceGenerator,
-    accounts: Account[],
-    statusRounds: Round[],
-    currentRounds: CoinjoinRound[],
-    prison: CoinjoinPrison,
-    options: CoinjoinRoundOptions,
-) => {
+export const selectRound = async ({
+    roundGenerator,
+    aliceGenerator,
+    accounts,
+    statusRounds,
+    coinjoinRounds,
+    prison,
+    options,
+}: SelectRoundProps) => {
     const { log, setSessionPhase } = options;
 
-    const unregisteredAccounts = getUnregisteredAccounts(accounts, currentRounds, options);
+    const unregisteredAccounts = getUnregisteredAccounts({ accounts, coinjoinRounds, options });
     const unregisteredAccountKeys = unregisteredAccounts.map(({ accountKey }) => accountKey);
 
     log('Looking for rounds');
     setSessionPhase({ phase: SessionPhase.RoundSearch, accountKeys: unregisteredAccountKeys });
-    const roundCandidates = getRoundCandidates(
+    const roundCandidates = getRoundCandidates({
         roundGenerator,
         statusRounds,
-        currentRounds,
+        coinjoinRounds,
         options,
-    );
+    });
     if (roundCandidates.length < 1) {
         log('No suitable rounds');
         return;
@@ -351,13 +367,12 @@ export const selectRound = async (
 
     log('Looking for accounts');
     setSessionPhase({ phase: SessionPhase.CoinSelection, accountKeys: unregisteredAccountKeys });
-    const accountCandidates = getAccountCandidates(
-        unregisteredAccounts,
-        statusRounds,
-        currentRounds,
+    const accountCandidates = getAccountCandidates({
+        accounts: unregisteredAccounts,
+        coinjoinRounds,
         prison,
         options,
-    );
+    });
 
     if (accountCandidates.length < 1) {
         log('No suitable accounts');
@@ -366,12 +381,12 @@ export const selectRound = async (
 
     log(`Looking for utxos`);
     setSessionPhase({ phase: SessionPhase.RoundPairing, accountKeys: unregisteredAccountKeys });
-    const newRound = await selectInputsForRound(
+    const newRound = await selectInputsForRound({
         aliceGenerator,
         roundCandidates,
         accountCandidates,
         options,
-    );
+    });
     if (!newRound) {
         log('No suitable utxos');
         setSessionPhase({

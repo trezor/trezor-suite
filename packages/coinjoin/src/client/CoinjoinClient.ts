@@ -207,12 +207,12 @@ export class CoinjoinClient extends EventEmitter {
 
         // there are no CoinjoinRounds to process? try to create new one
         if (roundsToProcess.length === 0) {
-            const newRound = await CoinjoinRound.create(
-                this.accounts,
-                rounds,
-                this.rounds,
-                this.prison,
-                {
+            const newRound = await CoinjoinRound.create({
+                accounts: this.accounts,
+                statusRounds: rounds,
+                coinjoinRounds: this.rounds,
+                prison: this.prison,
+                options: {
                     network: this.network,
                     signal: this.abortController.signal,
                     coordinatorName: this.settings.coordinatorName,
@@ -222,7 +222,7 @@ export class CoinjoinClient extends EventEmitter {
                     setSessionPhase: (sessionPhase: CoinjoinClientEvents['session-phase']) =>
                         this.setSessionPhase(sessionPhase),
                 },
-            );
+            });
 
             if (newRound) {
                 // try to release all inmates detained due to blame round
