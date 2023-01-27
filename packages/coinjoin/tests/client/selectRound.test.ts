@@ -13,23 +13,19 @@ import {
 import { DEFAULT_ROUND, ROUND_CREATION_EVENT } from '../fixtures/round.fixture';
 import { createServer } from '../mocks/server';
 
-let server: Awaited<ReturnType<typeof createServer>>;
-
-// first two params of `selectRound` are always the same
-const GENERATORS: [CoinjoinRoundGenerator, AliceGenerator] = [
-    (...args) => new CoinjoinRound(...args),
-    (...args) => new Alice(...args),
-];
-
-const PRISON = new CoinjoinPrison();
-
 describe('selectRound', () => {
+    let server: Awaited<ReturnType<typeof createServer>>;
+
+    const roundGenerator: CoinjoinRoundGenerator = (...args) => new CoinjoinRound(...args);
+    const aliceGenerator: AliceGenerator = (...args) => new Alice(...args);
+    const prison = new CoinjoinPrison();
+
     beforeAll(async () => {
         server = await createServer();
     });
 
     beforeEach(() => {
-        PRISON.inmates = [];
+        prison.inmates = [];
         server?.removeAllListeners('test-request');
     });
 
@@ -39,19 +35,19 @@ describe('selectRound', () => {
     });
 
     it('no available candidates in status Rounds', async () => {
-        const result = await getRoundCandidates(
-            GENERATORS[0],
-            [{ phase: 1 }, { phase: 0, inputRegistrationEnd: new Date() }] as any,
-            [],
-            server?.requestOptions,
-        );
+        const result = await getRoundCandidates({
+            roundGenerator,
+            statusRounds: [{ phase: 1 }, { phase: 0, inputRegistrationEnd: new Date() }] as any,
+            coinjoinRounds: [],
+            options: server?.requestOptions,
+        });
         expect(result).toEqual([]);
     });
 
     it('CoinjoinRound creation failed on status Round without RoundCreated event', async () => {
-        const result = await getRoundCandidates(
-            GENERATORS[0],
-            [
+        const result = await getRoundCandidates({
+            roundGenerator,
+            statusRounds: [
                 {
                     ...DEFAULT_ROUND,
                     coinjoinState: {
@@ -59,101 +55,108 @@ describe('selectRound', () => {
                     },
                 },
             ] as any,
-            [],
-            server?.requestOptions,
-        );
+            coinjoinRounds: [],
+            options: server?.requestOptions,
+        });
         expect(result).toEqual([]);
     });
 
     it('select existing CoinjoinRound', () => {
         const cjRound = new CoinjoinRound(DEFAULT_ROUND, server?.requestOptions);
-        const result = getRoundCandidates(
-            GENERATORS[0],
-            [DEFAULT_ROUND],
-            [cjRound],
-            server?.requestOptions,
-        );
+        const result = getRoundCandidates({
+            roundGenerator,
+            statusRounds: [DEFAULT_ROUND],
+            coinjoinRounds: [cjRound],
+            options: server?.requestOptions,
+        });
         expect(result[0]).toBe(cjRound);
     });
 
     it('no available Accounts', () => {
-        const result = getAccountCandidates([], [], [], PRISON, server?.requestOptions);
+        const result = getAccountCandidates({
+            accounts: [],
+            coinjoinRounds: [],
+            prison: prison,
+            options: server?.requestOptions,
+        });
         expect(result).toEqual([]);
     });
 
     it('no available utxos', () => {
-        const result = getAccountCandidates(
-            [{ utxos: [] }] as any,
-            [],
-            [],
-            PRISON,
-            server?.requestOptions,
-        );
+        const result = getAccountCandidates({
+            accounts: [{ utxos: [] }] as any,
+            coinjoinRounds: [],
+            prison: prison,
+            options: server?.requestOptions,
+        });
         expect(result).toEqual([]);
     });
 
     it('utxo in prison', () => {
-        PRISON.detain('Ba99ed');
+        prison.detain('Ba99ed');
 
-        const result = getAccountCandidates(
-            [{ utxos: [{ outpoint: 'Ba99ed' }] }] as any,
-            [],
-            [],
-            PRISON,
-            server?.requestOptions,
-        );
+        const result = getAccountCandidates({
+            accounts: [{ utxos: [{ outpoint: 'Ba99ed' }] }] as any,
+            coinjoinRounds: [],
+            prison: prison,
+            options: server?.requestOptions,
+        });
         expect(result).toEqual([]);
     });
 
     it('utxo already registered in CoinjoinRound', () => {
-        const result = getAccountCandidates(
-            [{ utxos: [{ outpoint: 'AA' }] }] as any,
-            [],
-            [
+        const result = getAccountCandidates({
+            accounts: [{ utxos: [{ outpoint: 'AA' }] }] as any,
+            coinjoinRounds: [
                 {
                     id: '00',
                     inputs: [{ outpoint: 'AA' }],
                     failed: [],
                 },
             ] as any,
-            PRISON,
-            server?.requestOptions,
-        );
+            prison,
+            options: server?.requestOptions,
+        });
         expect(result).toEqual([]);
     });
 
     it('Account already registered in CoinjoinRound', () => {
-        const result = getUnregisteredAccounts(
-            [{ accountKey: 'account-A', utxos: [{ outpoint: 'AA' }, { outpoint: 'AB' }] }] as any,
-            [
+        const result = getUnregisteredAccounts({
+            accounts: [
+                { accountKey: 'account-A', utxos: [{ outpoint: 'AA' }, { outpoint: 'AB' }] },
+            ] as any,
+            coinjoinRounds: [
                 {
                     id: '03',
                     inputs: [{ accountKey: 'account-A', outpoint: 'AA' }],
                     failed: [{ outpoint: 'Fa17ed' }],
                 },
             ] as any,
-            server?.requestOptions,
-        );
+            options: server?.requestOptions,
+        });
 
         expect(result).toEqual([]);
     });
 
     it('Account skipping rounds', () => {
-        const account = [
+        const accounts = [
             {
                 accountKey: 'account-A',
                 skipRounds: [4, 5],
                 skipRoundCounter: 0,
                 utxos: [{ outpoint: 'AA' }, { outpoint: 'AB' }],
-            },
+            } as any,
         ];
 
         // iterate 5 times
-        const result = new Array(5)
-            .fill(0, 0, 5)
-            .flatMap(() =>
-                getAccountCandidates(account as any, [], [], PRISON, server?.requestOptions),
-            );
+        const result = new Array(5).fill(0, 0, 5).flatMap(() =>
+            getAccountCandidates({
+                accounts,
+                coinjoinRounds: [],
+                prison,
+                options: server?.requestOptions,
+            }),
+        );
 
         // skipped at least once
         expect(result.length).toBeLessThan(5); // should be 4 but there is always 20% chance that will be 3
@@ -178,9 +181,9 @@ describe('selectRound', () => {
             resolve();
         });
 
-        const result = await selectInputsForRound(
-            GENERATORS[1],
-            [
+        const result = await selectInputsForRound({
+            aliceGenerator,
+            roundCandidates: [
                 {
                     ...DEFAULT_ROUND,
                     id: '01',
@@ -197,12 +200,12 @@ describe('selectRound', () => {
                     roundParameters: ROUND_CREATION_EVENT.roundParameters,
                 } as any,
             ],
-            [
+            accountCandidates: [
                 { accountKey: 'account1', utxos: [{ outpoint: 'AA', amount: 100 }] },
                 { accountKey: 'account2', utxos: [{ outpoint: 'BA', amount: 100 }] },
             ] as any,
-            server?.requestOptions,
-        );
+            options: server?.requestOptions,
+        });
 
         expect(spy).toBeCalledTimes(6);
         expect(result).toBeUndefined();
@@ -221,9 +224,9 @@ describe('selectRound', () => {
             resolve();
         });
 
-        const result = await selectInputsForRound(
-            GENERATORS[1],
-            [
+        const result = await selectInputsForRound({
+            aliceGenerator,
+            roundCandidates: [
                 {
                     ...DEFAULT_ROUND,
                     id: '01',
@@ -236,7 +239,7 @@ describe('selectRound', () => {
                     },
                 } as any,
             ],
-            [
+            accountCandidates: [
                 {
                     accountKey: 'account1',
                     maxFeePerKvbyte: 100,
@@ -253,8 +256,8 @@ describe('selectRound', () => {
                     utxos: [{ outpoint: 'CA', amount: 1000 }],
                 },
             ] as any,
-            server?.requestOptions,
-        );
+            options: server?.requestOptions,
+        });
 
         expect(spy).toBeCalledTimes(1); // middleware was called once for account3
         expect(result).toBeUndefined();
@@ -294,9 +297,10 @@ describe('selectRound', () => {
             },
         });
 
-        const result = await selectRound(
-            ...GENERATORS,
-            [
+        const result = await selectRound({
+            roundGenerator,
+            aliceGenerator,
+            accounts: [
                 {
                     accountKey: 'account-A',
                     scriptType: 'Taproot',
@@ -317,7 +321,7 @@ describe('selectRound', () => {
                     utxos: [{ outpoint: 'CA', amount: 2000 }], // this will be picked by all rounds
                 },
             ] as any,
-            [
+            statusRounds: [
                 {
                     ...roundWithMiningFee(20),
                     id: '01',
@@ -331,10 +335,10 @@ describe('selectRound', () => {
                     id: '03',
                 },
             ] as any,
-            [],
-            PRISON,
-            server?.requestOptions,
-        );
+            coinjoinRounds: [],
+            prison,
+            options: server?.requestOptions,
+        });
 
         expect(spy).toBeCalledTimes(9);
 
@@ -362,25 +366,26 @@ describe('selectRound', () => {
 
         const blameOf = '1'.repeat(64);
 
-        PRISON.detainForBlameRound(['AA', 'AB'], blameOf);
+        prison.detainForBlameRound(['AA', 'AB'], blameOf);
 
-        const result = await selectRound(
-            ...GENERATORS,
-            [
+        const result = await selectRound({
+            roundGenerator,
+            aliceGenerator,
+            accounts: [
                 {
                     accountKey: 'account-A',
                     scriptType: 'Taproot',
                     utxos: [{ outpoint: 'AA' }, { outpoint: 'AB' }, { outpoint: 'AC' }],
                 },
             ] as any,
-            [
+            statusRounds: [
                 { ...DEFAULT_ROUND, id: '01' },
                 { ...DEFAULT_ROUND, id: '02', blameOf },
             ],
-            [],
-            PRISON,
-            server?.requestOptions,
-        );
+            coinjoinRounds: [],
+            prison,
+            options: server?.requestOptions,
+        });
 
         expect(spy).toBeCalledTimes(0); // middleware was not called, detained inputs were used
         expect(result?.inputs.length).toBe(2);
@@ -394,29 +399,39 @@ describe('selectRound', () => {
     // all tested above, this is just for coverage
     it('selectRound without results', async () => {
         // no rounds
-        const result = await selectRound(...GENERATORS, [], [], [], PRISON, server?.requestOptions);
+        const result = await selectRound({
+            roundGenerator,
+            aliceGenerator,
+            accounts: [],
+            statusRounds: [],
+            coinjoinRounds: [],
+            prison,
+            options: server?.requestOptions,
+        });
         expect(result).toBeUndefined();
 
         // no accounts
-        const result2 = await selectRound(
-            ...GENERATORS,
-            [],
-            [DEFAULT_ROUND],
-            [],
-            PRISON,
-            server?.requestOptions,
-        );
+        const result2 = await selectRound({
+            roundGenerator,
+            aliceGenerator,
+            accounts: [],
+            statusRounds: [DEFAULT_ROUND],
+            coinjoinRounds: [],
+            prison,
+            options: server?.requestOptions,
+        });
         expect(result2).toBeUndefined();
 
         // no result from middleware
-        const result3 = await selectRound(
-            ...GENERATORS,
-            [{ utxos: [{ outpoint: 'AA' }] }] as any,
-            [DEFAULT_ROUND],
-            [],
-            PRISON,
-            server?.requestOptions,
-        );
+        const result3 = await selectRound({
+            roundGenerator,
+            aliceGenerator,
+            accounts: [{ utxos: [{ outpoint: 'AA' }] }] as any,
+            statusRounds: [DEFAULT_ROUND],
+            coinjoinRounds: [],
+            prison,
+            options: server?.requestOptions,
+        });
         expect(result3).toBeUndefined();
     });
 });
