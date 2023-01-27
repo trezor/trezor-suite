@@ -88,6 +88,7 @@ interface CreateRoundProps {
     coinjoinRounds: CoinjoinRound[];
     prison: CoinjoinPrison;
     options: CoinjoinRoundOptions;
+    runningAffiliateServer: boolean;
 }
 
 export class CoinjoinRound extends EventEmitter {
@@ -149,7 +150,14 @@ export class CoinjoinRound extends EventEmitter {
         });
     }
 
-    static create({ accounts, statusRounds, coinjoinRounds, prison, options }: CreateRoundProps) {
+    static create({
+        accounts,
+        statusRounds,
+        coinjoinRounds,
+        prison,
+        options,
+        runningAffiliateServer,
+    }: CreateRoundProps) {
         return selectRound({
             roundGenerator: (...args) => new CoinjoinRound(...args),
             aliceGenerator: (...args) => new Alice(...args),
@@ -158,6 +166,7 @@ export class CoinjoinRound extends EventEmitter {
             coinjoinRounds,
             prison,
             options,
+            runningAffiliateServer,
         });
     }
 
@@ -383,6 +392,17 @@ export class CoinjoinRound extends EventEmitter {
                 // no more inputs left in round, breaking the round
                 this.lock?.abort();
             }
+        }
+    }
+
+    onAffiliateServerStatus(status: boolean) {
+        if (!status && this.phase <= RoundPhase.OutputRegistration) {
+            // if affiliate server goes offline try to abort round if it's not in critical phase.
+            // if round is in critical phase, there is noting much we can do...
+            // ...we need to continue and hope that server will become online before transaction signing phase
+            this.options.log(`Affiliate server offline. Aborting round ${this.id}`);
+            this.lock?.abort();
+            this.inputs.forEach(i => i.clearConfirmationInterval());
         }
     }
 
