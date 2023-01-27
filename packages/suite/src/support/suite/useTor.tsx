@@ -39,9 +39,12 @@ export const useTor = () => {
                     });
                 }
             });
+            if (!isTorEnabling) {
+                desktopApi.getTorStatus();
+            }
             return () => desktopApi.removeAllListeners('tor/status');
         }
-    }, [updateTorStatus, torBootstrap, addToastOnce]);
+    }, [updateTorStatus, torBootstrap, addToastOnce, isTorEnabling]);
 
     useEffect(() => {
         if (isDesktop()) {
