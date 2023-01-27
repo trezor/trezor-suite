@@ -1,3 +1,10 @@
+# 9.0.5
+
+-   feat(utils): add promiseAllSequence util
+-   feat(utils): arrayToDictionary strongly typed keys, optional keys
+-   feat(utils): arrayPartition type predicate support
+-   feat(utils): arrayToDictionary support multiple
+
 # 9.0.4
 
 -   add enum utils

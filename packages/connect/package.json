@@ -52,7 +52,7 @@
         "@trezor/blockchain-link": "workspace:^2.1.6",
         "@trezor/connect-common": "workspace:0.0.11",
         "@trezor/transport": "workspace:^1.1.7",
-        "@trezor/utils": "workspace:^9.0.4",
+        "@trezor/utils": "workspace:^9.0.5",
         "@trezor/utxo-lib": "workspace:^1.0.3",
         "bignumber.js": "^9.1.0",
         "blakejs": "^1.2.1",
