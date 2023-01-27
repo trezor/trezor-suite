@@ -134,9 +134,10 @@ export class TorController extends EventEmitter {
         const bootstrap: BootstrapEvent[] = bootstrapParser(message);
         bootstrap.forEach(event => {
             if (event.type !== 'progress') return;
-            if (event.progress === BOOTSTRAP_EVENT_PROGRESS.ConnectingToRelay) {
-                // We consider that bootstrap has started when first event come from ControlPort.
-                // If we do not receive this first event, we can consider there is something going wrong and
+            if (event.progress && !this.getIsBootstrapping()) {
+                // We consider that bootstrap has started when we receive any bootstrap event and
+                // Tor is not bootstrapping yet.
+                // If we do not receive any bootstrapping event, we can consider there is something going wrong and
                 // an error will be thrown when `maxTriesWaiting` is reached in `waitUntilAlive`.
                 this.startBootstrap();
             }
