@@ -240,8 +240,7 @@ const onLoad = () => {
                 type: 'error',
                 detail: 'handshake-timeout',
             }),
-        // todo: increase timeout, now set low for testing
-        30 * 1000,
+        90 * 1000,
     );
 };
 
