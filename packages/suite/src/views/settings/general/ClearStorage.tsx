@@ -7,6 +7,7 @@ import * as routerActions from '@suite-actions/routerActions';
 import { useActions } from '@suite-hooks';
 import { useAnchor } from '@suite-hooks/useAnchor';
 import { SettingsAnchor } from '@suite-constants/anchors';
+import { reloadApp } from '@suite-utils/reload';
 
 export const ClearStorage = () => {
     const { removeDatabase, goto } = useActions({
@@ -33,13 +34,11 @@ export const ClearStorage = () => {
                         if (desktopApi.available) {
                             // Reset the desktop-specific store.
                             desktopApi.clearStore();
-                            // relaunch desktop app
-                            desktopApi.appRestart();
                         } else {
                             // redirect to / and reload the web
                             await goto('suite-index');
-                            window.location.reload();
                         }
+                        reloadApp();
                     }}
                     variant="secondary"
                     data-test="@settings/reset-app-button"

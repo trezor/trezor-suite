@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { H1, P, Button, variables } from '@trezor/components';
-import { desktopApi } from '@trezor/suite-desktop-api';
 import { db } from '@suite/storage';
+import { reloadApp } from '@suite-utils/reload';
 
 const Wrapper = styled.div`
     display: flex;
@@ -54,14 +54,6 @@ const ErrorMessage = styled.span`
     color: ${props => props.theme.TYPE_DARK_GREY};
 `;
 
-const refresh = () => {
-    if (desktopApi.available) {
-        desktopApi.appRestart();
-    } else if (typeof window !== 'undefined') {
-        window.location.reload();
-    }
-};
-
 type ErrorProps = {
     error: string;
 };
@@ -77,7 +69,7 @@ export const Error = ({ error }: ErrorProps) => (
                 icon="REFRESH"
                 variant="tertiary"
                 onClick={() => {
-                    refresh();
+                    reloadApp();
                 }}
             >
                 Reload window
@@ -88,7 +80,7 @@ export const Error = ({ error }: ErrorProps) => (
                 variant="tertiary"
                 onClick={() => {
                     db.removeDatabase();
-                    refresh();
+                    reloadApp();
                 }}
             >
                 Clear storage and reload

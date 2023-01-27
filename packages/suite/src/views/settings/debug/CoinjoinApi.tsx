@@ -8,6 +8,7 @@ import * as coinjoinClientActions from '@wallet-actions/coinjoinClientActions';
 import { useSelector, useActions } from '@suite-hooks';
 import { CoinjoinServerEnvironment } from '@wallet-types/coinjoin';
 import { NetworkSymbol, networks } from '@suite-common/wallet-config';
+import { reloadApp } from '@suite-utils/reload';
 
 const StyledActionSelect = styled(ActionSelect)`
     min-width: 256px;
@@ -59,6 +60,8 @@ export const CoinjoinApi = () => {
                 [network]: value,
             },
         });
+        // reload the Suite to reinitialize everything, with a slight delay to let the browser save the settings
+        reloadApp(100);
     };
 
     const handleTorChange = () => {

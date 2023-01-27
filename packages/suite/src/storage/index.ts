@@ -1,5 +1,5 @@
 import SuiteDB, { OnUpgradeFunc } from '@trezor/suite-storage';
-import { desktopApi } from '@trezor/suite-desktop-api';
+import { reloadApp } from '@suite-utils/reload';
 import { migrate } from './migrations';
 
 import type { SuiteDBSchema } from './definitions';
@@ -94,12 +94,4 @@ const onUpgrade: OnUpgradeFunc<SuiteDBSchema> = async (db, oldVersion, newVersio
     }
 };
 
-const onDowngrade = () => {
-    if (desktopApi.available) {
-        desktopApi.appRestart();
-    } else if (typeof window !== 'undefined') {
-        window.location.reload();
-    }
-};
-
-export const db = new SuiteDB<SuiteDBSchema>('trezor-suite', VERSION, onUpgrade, onDowngrade);
+export const db = new SuiteDB<SuiteDBSchema>('trezor-suite', VERSION, onUpgrade, reloadApp);
