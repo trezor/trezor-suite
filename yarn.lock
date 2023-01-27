@@ -7135,7 +7135,7 @@ __metadata:
     "@trezor/blockchain-link": "workspace:^2.1.6"
     "@trezor/connect-analytics": "workspace:*"
     "@trezor/connect-common": "workspace:0.0.11"
-    "@trezor/transport": "workspace:^1.1.6"
+    "@trezor/transport": "workspace:^1.1.7"
     "@trezor/trezor-user-env-link": "workspace:*"
     "@trezor/utils": "workspace:^9.0.4"
     "@trezor/utxo-lib": "workspace:^1.0.3"
@@ -7741,7 +7741,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/transport@workspace:^1.1.6, @trezor/transport@workspace:packages/transport":
+"@trezor/transport@workspace:^1.1.7, @trezor/transport@workspace:packages/transport":
   version: 0.0.0-use.local
   resolution: "@trezor/transport@workspace:packages/transport"
   dependencies:

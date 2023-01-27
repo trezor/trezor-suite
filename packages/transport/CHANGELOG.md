@@ -1,3 +1,7 @@
+# 1.1.7
+
+-   Code cleanup, sharing constants with @trezor/connect
+
 # 1.1.6
 
 -   Dependencies: typescript 4.9
