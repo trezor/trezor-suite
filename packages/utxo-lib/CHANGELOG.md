@@ -1,3 +1,7 @@
+# 1.0.3
+
+-   chore: remove unused skipUtxoSelection
+
 # 1.0.2
 
 -   fix output sorting with amount above MAX_SAFE_INTEGER
