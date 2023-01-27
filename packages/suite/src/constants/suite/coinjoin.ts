@@ -17,6 +17,7 @@ export const SESSION_PHASE_MESSAGES: Record<SessionPhase, TranslationKey> = {
     [SessionPhase.AccountMissingUtxos]: 'TR_SESSION_PHASE_15_MESSAGE',
     [SessionPhase.SkippingRound]: 'TR_SESSION_PHASE_16_MESSAGE',
     [SessionPhase.RetryingRoundPairing]: 'TR_SESSION_PHASE_17_MESSAGE',
+    [SessionPhase.AffiliateServerOffline]: 'TR_SESSION_PHASE_18_MESSAGE',
     [SessionPhase.AwaitingConfirmation]: 'TR_SESSION_PHASE_21_MESSAGE',
     [SessionPhase.AwaitingOthersConfirmation]: 'TR_SESSION_PHASE_22_MESSAGE',
     [SessionPhase.RegisteringOutputs]: 'TR_SESSION_PHASE_31_MESSAGE',
