@@ -41,7 +41,7 @@ export const FreshAddressStep = ({ accountKey, onClose }: FreshAddressStepProps)
         }
     }, [account, pendingAddresses, isAccountUtxoBased]);
 
-    const handleCopyAddressToClipboardAndClose = () => {
+    const handleClose = () => {
         if (freshAddress) {
             onClose();
         }
@@ -50,10 +50,7 @@ export const FreshAddressStep = ({ accountKey, onClose }: FreshAddressStepProps)
     return (
         <Box>
             {!freshAddressError ? (
-                <QRCode
-                    data={freshAddress?.address}
-                    onCopy={handleCopyAddressToClipboardAndClose}
-                />
+                <QRCode data={freshAddress?.address} onCopy={handleClose} />
             ) : (
                 'Something went wrong...'
             )}
