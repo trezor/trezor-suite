@@ -1,3 +1,10 @@
+# 9.0.6
+
+-   fix: list tslib as direct dependency
+-   fix: various improvement and fixes regarding RBF (https://github.com/trezor/trezor-suite/pull/7378)
+-   change: increase handshake timeout in popup to 90 seconds
+-   change: TrezorConnect.dispose is now async and resolves only after connected device is released
+
 # 9.0.5
 
 -   added: analytics in popup
