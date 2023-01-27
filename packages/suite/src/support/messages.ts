@@ -7745,6 +7745,10 @@ export default defineMessages({
         id: 'TR_SESSION_PHASE_17_MESSAGE',
         defaultMessage: 'Pairing failed, retrying',
     },
+    TR_SESSION_PHASE_18_MESSAGE: {
+        id: 'TR_SESSION_PHASE_18_MESSAGE',
+        defaultMessage: 'The coinjoin service is temporarily unavailable',
+    },
     TR_SESSION_PHASE_21_MESSAGE: {
         id: 'TR_SESSION_PHASE_21_MESSAGE',
         defaultMessage: 'Confirming availability',
