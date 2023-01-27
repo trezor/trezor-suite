@@ -8,6 +8,7 @@ import invityAPI from '@suite-services/invityAPI';
 import type { InvityServerEnvironment } from '@suite-common/invity';
 import { useAnchor } from '@suite-hooks/useAnchor';
 import { SettingsAnchor } from '@suite-constants/anchors';
+import { reloadApp } from '@suite-utils/reload';
 
 const StyledActionSelect = styled(ActionSelect)`
     min-width: 256px;
@@ -51,11 +52,7 @@ export const InvityApi = () => {
                         });
                         invityAPI.setInvityServersEnvironment(item.value);
                         // reload the Suite to reinitialize everything, with a slight delay to let the browser save the settings
-                        if (typeof window !== 'undefined') {
-                            window.setTimeout(() => {
-                                window.location.reload();
-                            }, 100);
-                        }
+                        reloadApp(100);
                     }}
                     value={selectedInvityApiServer}
                     options={invityApiServerOptions}
