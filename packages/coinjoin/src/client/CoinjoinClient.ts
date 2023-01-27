@@ -53,6 +53,7 @@ export class CoinjoinClient extends EventEmitter {
             }
         });
         this.status.on('exception', event => this.emit('exception', event));
+        this.status.on('affiliate-server', event => this.onAffiliateServerStatus(event));
 
         this.prison = new CoinjoinPrison();
     }
@@ -185,6 +186,10 @@ export class CoinjoinClient extends EventEmitter {
         this.emit('session-phase', event);
     }
 
+    private onAffiliateServerStatus(status: boolean) {
+        this.rounds.map(r => r.onAffiliateServerStatus(status));
+    }
+
     private async onStatusUpdate({
         changed,
         rounds,
@@ -212,6 +217,7 @@ export class CoinjoinClient extends EventEmitter {
                 statusRounds: rounds,
                 coinjoinRounds: this.rounds,
                 prison: this.prison,
+                runningAffiliateServer: this.status.isAffiliateServerRunning(),
                 options: {
                     network: this.network,
                     signal: this.abortController.signal,

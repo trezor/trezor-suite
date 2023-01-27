@@ -8,6 +8,7 @@ export enum SessionPhase {
     AccountMissingUtxos = 15,
     SkippingRound = 16,
     RetryingRoundPairing = 17,
+    AffiliateServerOffline = 18,
 
     // RoundPhase.ConnectionConfirmation
     AwaitingConfirmation = 21,

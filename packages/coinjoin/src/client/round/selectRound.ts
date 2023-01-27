@@ -23,6 +23,7 @@ export interface SelectRoundProps {
     coinjoinRounds: CoinjoinRound[];
     prison: CoinjoinPrison;
     options: CoinjoinRoundOptions;
+    runningAffiliateServer: boolean;
 }
 
 // Basic preselect CoinjoinRound candidates
@@ -346,6 +347,7 @@ export const selectRound = async ({
     coinjoinRounds,
     prison,
     options,
+    runningAffiliateServer,
 }: SelectRoundProps) => {
     const { log, setSessionPhase } = options;
 
@@ -353,6 +355,15 @@ export const selectRound = async ({
     const unregisteredAccountKeys = unregisteredAccounts.map(({ accountKey }) => accountKey);
 
     log('Looking for rounds');
+    if (!runningAffiliateServer) {
+        log('Affiliate server is not running. Round selection ignored');
+        setSessionPhase({
+            phase: SessionPhase.AffiliateServerOffline,
+            accountKeys: unregisteredAccountKeys,
+        });
+        return;
+    }
+
     setSessionPhase({ phase: SessionPhase.RoundSearch, accountKeys: unregisteredAccountKeys });
     const roundCandidates = getRoundCandidates({
         roundGenerator,
