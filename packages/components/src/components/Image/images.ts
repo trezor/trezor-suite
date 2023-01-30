@@ -62,6 +62,4 @@ export const PNG_IMAGES = {
     DONT_DISCONNECT_T_2x: 'DontDisconnectT@2x.png',
     DONT_DISCONNECT_R: 'DontDisconnectR.png',
     DONT_DISCONNECT_R_2x: 'DontDisconnectR@2x.png',
-    CONNECTED_T: 'Trezor_T_Connected.png',
-    CONNECTED_T_2x: 'Trezor_T_Connected@2x.png',
 } as const;
