@@ -12,12 +12,12 @@ import {
 } from '@suite-common/wallet-core';
 import { getFirstFreshAddress } from '@suite-common/wallet-utils';
 
-type FreshAddressStepProps = {
+type ReceiveAddressProps = {
     accountKey: string;
     onClose: () => void;
 };
 
-export const FreshAddressStep = ({ accountKey, onClose }: FreshAddressStepProps) => {
+export const ReceiveAddress = ({ accountKey, onClose }: ReceiveAddressProps) => {
     const [freshAddressError, setFreshAddressError] = useState();
 
     const account = useSelector((state: AccountsRootState) =>
@@ -50,7 +50,7 @@ export const FreshAddressStep = ({ accountKey, onClose }: FreshAddressStepProps)
     return (
         <Box>
             {!freshAddressError ? (
-                <QRCode data={freshAddress?.address} onCopy={handleClose} />
+                <QRCode data={freshAddress?.address} onCopy={handleClose} isShareEnabled />
             ) : (
                 'Something went wrong...'
             )}

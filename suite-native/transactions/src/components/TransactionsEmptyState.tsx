@@ -47,6 +47,7 @@ export const TransactionsEmptyState = ({ accountKey }: { accountKey: string }) =
                 <Button
                     style={applyStyle(receiveButtonStyle)}
                     iconName="receive"
+                    iconPosition="left"
                     onPress={handleReceive}
                 >
                     Receive

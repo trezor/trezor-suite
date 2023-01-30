@@ -48,10 +48,10 @@ export const AccountListItem = ({ account }: AccountListItemProps) => {
                 <Box marginRight="small">
                     <CryptoIcon name={account.symbol} />
                 </Box>
-                <Text color="gray800">{accountLabel}</Text>
+                <Text>{accountLabel}</Text>
             </Box>
             <Box alignItems="flex-end">
-                <DiscreetText color="gray1000" typography="hint">
+                <DiscreetText color="gray1000">
                     {FiatAmountFormatter.format(fiatAmount ?? 0)}
                 </DiscreetText>
                 <DiscreetText typography="hint" color="gray600">

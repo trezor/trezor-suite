@@ -1,6 +1,8 @@
 import React from 'react';
 import { TouchableOpacity, TouchableOpacityProps, View } from 'react-native';
 
+import { RequireAllOrNone } from 'type-fest';
+
 import { Color } from '@trezor/theme';
 import { NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Icon, IconName } from '@trezor/icons';
@@ -10,14 +12,18 @@ import { Text } from '../Text';
 export type ButtonSize = 'small' | 'medium' | 'large';
 export type ButtonColorScheme = 'primary' | 'gray' | 'red';
 
-export interface ButtonProps extends Omit<TouchableOpacityProps, 'style'> {
-    iconName?: IconName;
-    iconPosition?: 'left' | 'right';
-    colorScheme?: ButtonColorScheme;
-    size?: ButtonSize;
-    style?: NativeStyleObject;
-    isDisabled?: boolean;
-}
+export type ButtonProps = Omit<TouchableOpacityProps, 'style'> &
+    RequireAllOrNone<
+        {
+            iconName?: IconName;
+            iconPosition?: 'left' | 'right';
+            colorScheme?: ButtonColorScheme;
+            size?: ButtonSize;
+            style?: NativeStyleObject;
+            isDisabled?: boolean;
+        },
+        'iconName' | 'iconPosition'
+    >;
 
 type ButtonStyleProps = {
     size: ButtonSize;
@@ -101,7 +107,7 @@ const buttonColorSchemeFontColor: Record<ButtonColorScheme, Color> = {
 
 export const Button = ({
     iconName,
-    iconPosition = 'left',
+    iconPosition,
     style,
     children,
     colorScheme = 'primary',
