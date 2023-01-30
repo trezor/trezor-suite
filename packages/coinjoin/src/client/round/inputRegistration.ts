@@ -178,12 +178,13 @@ export const inputRegistration = async (
     options.log(`inputRegistration: ~~${round.id}~~`);
     round.setSessionPhase(SessionPhase.CoinRegistration);
 
+    const { inputs } = round;
     await Promise.allSettled(
-        round.inputs.map(input => registerInput(round, input, prison, options)),
+        inputs.map(input => registerInput(round, input, prison, options)),
     ).then(result =>
         result.forEach((r, i) => {
             if (r.status !== 'fulfilled') {
-                round.inputs[i].setError(r.reason);
+                inputs[i].setError(r.reason);
             }
         }),
     );

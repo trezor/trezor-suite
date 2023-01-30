@@ -172,14 +172,14 @@ export const transactionSigning = async (
         }
 
         round.setSessionPhase(SessionPhase.SendingSignature);
-        await Promise.allSettled(
-            round.inputs.map(input => sendTxSignature(round, input, options)),
-        ).then(result =>
-            result.forEach((r, i) => {
-                if (r.status !== 'fulfilled') {
-                    round.inputs[i].setError(r.reason);
-                }
-            }),
+        const { inputs } = round;
+        await Promise.allSettled(inputs.map(input => sendTxSignature(round, input, options))).then(
+            result =>
+                result.forEach((r, i) => {
+                    if (r.status !== 'fulfilled') {
+                        inputs[i].setError(r.reason);
+                    }
+                }),
         );
     } catch (error) {
         // NOTE: if anything goes wrong in this process this Round will be corrupted for all the users
