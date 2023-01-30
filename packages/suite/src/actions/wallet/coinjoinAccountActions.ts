@@ -19,7 +19,6 @@ import {
 import {
     selectCoinjoinAccountByKey,
     selectIsAccountWithSessionByAccountKey,
-    selectIsAccountWithPausedSessionInterruptedByAccountKey,
 } from '@wallet-reducers/coinjoinReducer';
 import { getAccountTransactions, sortByBIP44AddressIndex } from '@suite-common/wallet-utils';
 
@@ -129,6 +128,15 @@ const coinjoinAccountDiscoveryProgress = (account: Account, progress: ScanAccoun
         },
     } as const);
 
+const coinjoinSessionStarting = (accountKey: string, isStarting: boolean) =>
+    ({
+        type: COINJOIN.SESSION_STARTING,
+        payload: {
+            accountKey,
+            isStarting,
+        },
+    } as const);
+
 export type CoinjoinAccountAction =
     | ReturnType<typeof coinjoinAccountCreate>
     | ReturnType<typeof coinjoinAccountRemove>
@@ -141,7 +149,8 @@ export type CoinjoinAccountAction =
     | ReturnType<typeof coinjoinAccountDiscoveryProgress>
     | ReturnType<typeof coinjoinAccountPreloading>
     | ReturnType<typeof coinjoinSessionPause>
-    | ReturnType<typeof coinjoinSessionRestore>;
+    | ReturnType<typeof coinjoinSessionRestore>
+    | ReturnType<typeof coinjoinSessionStarting>;
 
 const getCheckpoints = (
     account: Extract<Account, { backendType: 'coinjoin' }>,
@@ -167,10 +176,10 @@ export const updateClientAccount = (account: Account) => (_: Dispatch, getState:
     const client = getCoinjoinClient(account.symbol);
     if (!client) return;
 
-    const { coinjoin, accounts } = getState().wallet;
+    const { accounts } = getState().wallet;
     // get fresh data from reducer
     const accountToUpdate = accounts.find(a => a.key === account.key);
-    const coinjoinAccount = coinjoin.accounts.find(r => r.key === account.key);
+    const coinjoinAccount = selectCoinjoinAccountByKey(getState(), account.key);
     if (!coinjoinAccount?.session || !accountToUpdate) return;
     const { session, rawLiquidityClue } = coinjoinAccount;
 
@@ -470,13 +479,13 @@ export const startCoinjoinSession =
 
         // initialize @trezor/coinjoin client
         const api = await dispatch(initCoinjoinService(account.symbol));
-        const coinjoinAccount = getState().wallet.coinjoin.accounts.find(
-            r => r.key === account.key,
-        );
+        const coinjoinAccount = selectCoinjoinAccountByKey(getState(), account.key);
 
         if (!api || !coinjoinAccount) {
             return;
         }
+
+        dispatch(coinjoinSessionStarting(account.key, true));
 
         // authorize CoinjoinSession on Trezor
         const authResult = await dispatch(
@@ -491,6 +500,8 @@ export const startCoinjoinSession =
             // switch to account
             dispatch(goto('wallet-index', { preserveParams: true }));
         }
+
+        dispatch(coinjoinSessionStarting(account.key, false));
     };
 
 // called from coinjoin account UI or exceptions like device disconnection, forget wallet/account etc.
@@ -548,8 +559,8 @@ export const pauseCoinjoinSessionByDeviceId =
 export const restoreCoinjoinSession =
     (accountKey: string) => async (dispatch: Dispatch, getState: GetState) => {
         // TODO: check if device is connected, passphrase is authorized...
-        const { device } = getState().suite;
-        const { coinjoin } = getState().wallet;
+        const state = getState();
+        const { device } = state.suite;
         const account = selectAccountByKey(getState(), accountKey);
 
         if (!account) {
@@ -575,12 +586,14 @@ export const restoreCoinjoinSession =
             return errorToast('CoinjoinClient is not enabled');
         }
         // get fresh data from reducer
-        const coinjoinAccount = coinjoin.accounts.find(a => a.key === account.key);
+        const coinjoinAccount = selectCoinjoinAccountByKey(state, account.key);
         if (!coinjoinAccount || !coinjoinAccount.session) {
             return errorToast('Coinjoin account session is missing');
         }
 
         const { session, rawLiquidityClue } = coinjoinAccount;
+
+        dispatch(coinjoinSessionStarting(accountKey, true));
 
         const auth = await TrezorConnect.authorizeCoinJoin({
             device,
@@ -608,6 +621,8 @@ export const restoreCoinjoinSession =
                 }),
             );
         }
+
+        dispatch(coinjoinSessionStarting(accountKey, false));
     };
 
 export const pauseInterruptAllCoinjoinSessions = () => (dispatch: Dispatch, getState: GetState) => {
@@ -625,24 +640,6 @@ export const pauseInterruptAllCoinjoinSessions = () => (dispatch: Dispatch, getS
         }
     });
 };
-
-export const restoreAllInterruptedCoinjoinSession =
-    () => (dispatch: Dispatch, getState: GetState) => {
-        const state = getState();
-        const {
-            wallet: { accounts },
-        } = state;
-
-        const coinjoinAccounts = accounts.filter(a => a.accountType === 'coinjoin');
-
-        coinjoinAccounts.forEach(account => {
-            const isAccountWithPausedSessionInterrupted =
-                selectIsAccountWithPausedSessionInterruptedByAccountKey(state, account.key);
-            if (isAccountWithPausedSessionInterrupted) {
-                dispatch(restoreCoinjoinSession(account.key));
-            }
-        });
-    };
 
 // called from coinjoin account UI or exceptions like device disconnection, forget wallet/account etc.
 export const stopCoinjoinSession =

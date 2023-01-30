@@ -157,6 +157,22 @@ const signSession = (
     };
 };
 
+const updateSessionStarting = (
+    draft: CoinjoinState,
+    payload: ExtractActionPayload<typeof COINJOIN.SESSION_STARTING>,
+) => {
+    const account = draft.accounts.find(a => a.key === payload.accountKey);
+    if (!account || !account.session) return;
+    if (payload.isStarting) {
+        account.session = {
+            ...account.session,
+            starting: payload.isStarting,
+        };
+    } else {
+        delete account.session.starting;
+    }
+};
+
 const completeSession = (
     draft: CoinjoinState,
     payload: ExtractActionPayload<typeof COINJOIN.SESSION_COMPLETED>,
@@ -380,9 +396,11 @@ export const coinjoinReducer = (
             case COINJOIN.SESSION_COMPLETED:
                 completeSession(draft, action.payload);
                 break;
-
             case COINJOIN.SESSION_TX_SIGNED:
                 signSession(draft, action.payload);
+                break;
+            case COINJOIN.SESSION_STARTING:
+                updateSessionStarting(draft, action.payload);
                 break;
 
             // no default
