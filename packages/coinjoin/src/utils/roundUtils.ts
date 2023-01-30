@@ -162,7 +162,7 @@ const getDataFromRounds = (rounds: Round[]) => {
  * Transform from coordinator format to coinjoinReducer format `CoinjoinClientFeeRatesMedians`
  * array => object { name: value-in-vBytes }
  */
-const transformFeeRatesMedians = (medians: CoinjoinStatus['coinJoinFeeRateMedians']) => {
+export const transformFeeRatesMedians = (medians: CoinjoinStatus['coinJoinFeeRateMedians']) => {
     const [fast, recommended] = medians.map(m => m.medianFeeRate);
     // convert from kvBytes (kilo virtual bytes) to vBytes (how the value is displayed in UI)
     const kvB2vB = (v: number) => (v ? Math.round(v / 1000) : 1);

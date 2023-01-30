@@ -1,6 +1,18 @@
-import { getCommitmentData, readTimeSpan, estimatePhaseDeadline } from '../../src/utils/roundUtils';
+import {
+    getCommitmentData,
+    readTimeSpan,
+    estimatePhaseDeadline,
+    transformFeeRatesMedians,
+    transformStatus,
+} from '../../src/utils/roundUtils';
 import { ROUND_REGISTRATION_END_OFFSET } from '../../src/constants';
-import { DEFAULT_ROUND } from '../fixtures/round.fixture';
+import {
+    DEFAULT_ROUND,
+    FEE_RATE_MEDIANS,
+    FEE_RATE_RESULTS,
+    STATUS_EVENT,
+    STATUS_TRANSFORMED,
+} from '../fixtures/round.fixture';
 
 describe('roundUtils', () => {
     it('getCommitmentData', () => {
@@ -75,5 +87,21 @@ describe('roundUtils', () => {
             }),
             Date.now(),
         );
+    });
+
+    describe('transformFeeRatesMedians', () => {
+        it('transform correctly', () => {
+            const feeRatesMedians = transformFeeRatesMedians(FEE_RATE_MEDIANS);
+
+            expect(feeRatesMedians).toEqual(FEE_RATE_RESULTS);
+        });
+    });
+
+    describe('transformStatus', () => {
+        it('transform correctly', () => {
+            const feeRatesMedians = transformStatus(STATUS_EVENT);
+
+            expect(feeRatesMedians).toEqual(STATUS_TRANSFORMED);
+        });
     });
 });

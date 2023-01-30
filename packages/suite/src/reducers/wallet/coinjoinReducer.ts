@@ -48,7 +48,7 @@ export type CoinjoinRootState = {
     SelectedAccountRootState &
     SuiteRootState;
 
-const initialState: CoinjoinState = {
+export const initialState: CoinjoinState = {
     accounts: [],
     clients: {},
     isPreloading: false,
