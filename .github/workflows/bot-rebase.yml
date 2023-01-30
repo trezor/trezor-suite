@@ -31,3 +31,14 @@ jobs:
           autosquash: true
         env:
           GITHUB_TOKEN: ${{ secrets.TREZOR_BOT_TOKEN }}
+      - name: Report failure
+        if: ${{ failure() }}
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: "Rebasing failed, please rebase manually."
+            })
