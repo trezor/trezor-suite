@@ -43,10 +43,6 @@ const TopFeeRow = styled(Row)`
     margin-bottom: 8px;
 `;
 
-const BottomFeeRow = styled(Row)`
-    gap: 4px;
-`;
-
 const FeeWrapper = styled.div`
     border-bottom: 1px solid ${({ theme }) => theme.STROKE_GREY};
     border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
@@ -61,12 +57,6 @@ const FeeHeading = styled.div`
 
 const FeeValue = styled.div`
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-`;
-
-const FeeNote = styled.p`
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    font-size: ${variables.FONT_SIZE.SMALL};
 `;
 
 const Tiles = styled.div`
@@ -105,11 +95,11 @@ const tiles: TileProps[] = [
     },
 ];
 
-interface CoinjoinSetupStrategiesProps {
+interface CoinjoinConfirmationProps {
     account: Account;
 }
 
-export const CoinjoinSetupStrategies = ({ account }: CoinjoinSetupStrategiesProps) => {
+export const CoinjoinConfirmation = ({ account }: CoinjoinConfirmationProps) => {
     const [termsConfirmed, setTermsConfirmed] = useState(false);
 
     const coordinatorData = useSelector(state => state.wallet.coinjoin.clients[account.symbol]);
@@ -197,12 +187,9 @@ export const CoinjoinSetupStrategies = ({ account }: CoinjoinSetupStrategiesProp
                         </FeeHeading>
                         <FeeValue>0.3%</FeeValue>
                     </TopFeeRow>
-                    <BottomFeeRow>
-                        <Icon icon="INFO" size={16} />
-                        <FeeNote>
-                            <Translation id="TR_SERVICE_FEE_NOTE" />
-                        </FeeNote>
-                    </BottomFeeRow>
+                    <Note>
+                        <Translation id="TR_SERVICE_FEE_NOTE" />
+                    </Note>
                 </FeeWrapper>
                 <StyledCheckbox
                     isChecked={termsConfirmed}

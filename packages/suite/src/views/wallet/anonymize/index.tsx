@@ -2,7 +2,7 @@ import React from 'react';
 
 import { useSelector } from '@suite-hooks';
 import { WalletLayoutHeader } from '@wallet-components';
-import { CoinjoinSetupStrategies } from '@wallet-views/anonymize/components/CoinjoinSetupStrategies';
+import { CoinjoinConfirmation } from '@wallet-views/anonymize/components/CoinjoinConfirmation';
 import { WalletLayout } from '@wallet-components/WalletLayout';
 
 const Anonymize = () => {
@@ -13,7 +13,7 @@ const Anonymize = () => {
             {selectedAccount.status === 'loaded' && (
                 <>
                     <WalletLayoutHeader title="TR_NAV_ANONYMIZE" />
-                    <CoinjoinSetupStrategies account={selectedAccount.account} />
+                    <CoinjoinConfirmation account={selectedAccount.account} />
                 </>
             )}
         </WalletLayout>
