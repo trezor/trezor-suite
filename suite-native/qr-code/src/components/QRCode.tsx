@@ -4,12 +4,13 @@ import ReactQRCode from 'react-qr-code';
 
 import { useCopyToClipboard } from '@suite-native/helpers';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Box, Button, HStack, Text } from '@suite-native/atoms';
+import { Box, Button, Text, VStack } from '@suite-native/atoms';
 import { colorVariants } from '@trezor/theme';
 
 type QRCodeProps = {
     data?: string;
     onCopy: () => void;
+    isShareEnabled?: boolean;
 };
 
 export const QRCODE_SIZE = 197;
@@ -27,8 +28,9 @@ const actionButtonsStyle = prepareNativeStyle(_ => ({
     flexDirection: 'row',
 }));
 
-export const QRCode = ({ data, onCopy }: QRCodeProps) => {
+export const QRCode = ({ data, onCopy, isShareEnabled = false }: QRCodeProps) => {
     const copyToClipboard = useCopyToClipboard();
+
     const { applyStyle } = useNativeStyles();
 
     if (!data) return null;
@@ -64,14 +66,24 @@ export const QRCode = ({ data, onCopy }: QRCodeProps) => {
             <Box margin="small" alignItems="center" justifyContent="center">
                 <Text variant="body">{data}</Text>
             </Box>
-            <HStack spacing={15} style={applyStyle(actionButtonsStyle)}>
-                <Button size="large" colorScheme="gray" onPress={handleSharedata}>
-                    Share
-                </Button>
+
+            <VStack spacing="small">
+                {isShareEnabled && (
+                    <Button
+                        iconName="share"
+                        iconPosition="right"
+                        size="large"
+                        colorScheme="gray"
+                        onPress={handleSharedata}
+                        style={applyStyle(actionButtonsStyle)}
+                    >
+                        Share
+                    </Button>
+                )}
                 <Button size="large" onPress={handleCopyAndClose}>
                     Copy & Close
                 </Button>
-            </HStack>
+            </VStack>
         </>
     );
 };

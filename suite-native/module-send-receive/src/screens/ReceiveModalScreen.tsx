@@ -1,5 +1,9 @@
-import React, { ReactNode, useCallback, useMemo, useState } from 'react';
+import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 
+import { Box, Card, ErrorMessage, Text, VStack } from '@suite-native/atoms';
+import { AccountListItem } from '@suite-native/accounts';
+import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import {
     RootStackParamList,
     RootStackRoutes,
@@ -8,48 +12,38 @@ import {
     StackProps,
 } from '@suite-native/navigation';
 
-import { sendReceiveContentType, SendReceiveContentType } from '../contentType';
-import { AddressGenerationStep } from '../components/AddressGenerationStep';
-import { AddressConfirmationStep } from '../components/AddressConfirmationStep';
-import { FreshAddressStep } from '../components/FreshAddressStep';
-
-const DEFAULT_CONTENT_TYPE = sendReceiveContentType.createNewAddressToReceive;
+import { ReceiveAddress } from '../components/ReceiveAddress';
+import { ReceiveTextHint } from '../components/ReceiveTextHint';
 
 export const ReceiveModalScreen = ({
     route,
     navigation,
 }: StackProps<RootStackParamList, RootStackRoutes.ReceiveModal>) => {
-    const [selectedAccountKey, setSelectedAccountKey] = useState<string>(route.params.accountKey);
-    const [contentType, setContentType] = useState<SendReceiveContentType>(DEFAULT_CONTENT_TYPE);
-
-    const handleClose = useCallback(() => {
-        navigation.goBack();
-        setSelectedAccountKey('');
-        setContentType(DEFAULT_CONTENT_TYPE);
-    }, [navigation]);
-
-    const sendReceiveContent: Record<SendReceiveContentType, ReactNode> = useMemo(
-        () => ({
-            [sendReceiveContentType.createNewAddressToReceive]: (
-                <AddressGenerationStep
-                    accountKey={selectedAccountKey}
-                    onChangeContentType={setContentType}
-                />
-            ),
-            [sendReceiveContentType.confirmNewAddressToReceive]: (
-                <AddressConfirmationStep
-                    accountKey={selectedAccountKey}
-                    onChangeContentType={setContentType}
-                />
-            ),
-            [sendReceiveContentType.generatedAddressToReceive]: (
-                <FreshAddressStep accountKey={selectedAccountKey} onClose={handleClose} />
-            ),
-        }),
-        [handleClose, selectedAccountKey],
+    const [addressIsVisible, setAddressIsVisible] = useState(false);
+    const { accountKey } = route.params;
+    const account = useSelector((state: AccountsRootState) =>
+        selectAccountByKey(state, accountKey),
     );
 
+    if (!account) return <ErrorMessage errorMessage={`Account ${accountKey} not found.`} />;
+
     return (
-        <Screen header={<ScreenHeader title="Receive" />}>{sendReceiveContent[contentType]}</Screen>
+        <Screen header={<ScreenHeader title="Receive address" />}>
+            <VStack spacing="medium">
+                <AccountListItem account={account} />
+                <Box marginLeft="small">
+                    <Text variant="hint" color="gray600">
+                        Address
+                    </Text>
+                </Box>
+                <Card>
+                    {addressIsVisible ? (
+                        <ReceiveAddress accountKey={accountKey} onClose={navigation.goBack} />
+                    ) : (
+                        <ReceiveTextHint onShowAddress={() => setAddressIsVisible(true)} />
+                    )}
+                </Card>
+            </VStack>
+        </Screen>
     );
 };
