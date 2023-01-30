@@ -12,6 +12,7 @@ export type ButtonColorScheme = 'primary' | 'gray' | 'red';
 
 export interface ButtonProps extends Omit<TouchableOpacityProps, 'style'> {
     iconName?: IconName;
+    iconPosition?: 'left' | 'right';
     colorScheme?: ButtonColorScheme;
     size?: ButtonSize;
     style?: NativeStyleObject;
@@ -23,8 +24,25 @@ type ButtonStyleProps = {
     colorScheme: ButtonColorScheme;
     isDisabled: boolean;
 };
-
-const iconStyle = prepareNativeStyle(_ => ({ marginRight: 10.5 }));
+type IconStyleProps = {
+    position: 'left' | 'right';
+};
+const iconStyle = prepareNativeStyle((utils, { position }: IconStyleProps) => ({
+    extend: [
+        {
+            condition: position === 'left',
+            style: {
+                marginRight: utils.spacings.small,
+            },
+        },
+        {
+            condition: position === 'right',
+            style: {
+                marginLeft: utils.spacings.small,
+            },
+        },
+    ],
+}));
 
 const buttonStyle = prepareNativeStyle<ButtonStyleProps>(
     (utils, { size, colorScheme, isDisabled }) => {
@@ -83,6 +101,7 @@ const buttonColorSchemeFontColor: Record<ButtonColorScheme, Color> = {
 
 export const Button = ({
     iconName,
+    iconPosition = 'left',
     style,
     children,
     colorScheme = 'primary',
@@ -92,27 +111,29 @@ export const Button = ({
 }: ButtonProps) => {
     const { applyStyle } = useNativeStyles();
 
+    const icon = iconName ? (
+        <View style={applyStyle(iconStyle, { position: iconPosition })}>
+            <Icon
+                name={iconName}
+                color={colorScheme === 'primary' ? 'gray0' : 'gray700'}
+                size={size}
+            />
+        </View>
+    ) : null;
     return (
         <TouchableOpacity
             style={[applyStyle(buttonStyle, { size, colorScheme, isDisabled }), style]}
             disabled={isDisabled}
             {...props}
         >
-            {iconName && (
-                <View style={applyStyle(iconStyle)}>
-                    <Icon
-                        name={iconName}
-                        color={colorScheme === 'primary' ? 'gray0' : 'gray700'}
-                        size={size}
-                    />
-                </View>
-            )}
+            {iconPosition === 'left' && icon}
             <Text
                 variant="highlight"
                 color={isDisabled ? 'gray500' : buttonColorSchemeFontColor[colorScheme]}
             >
                 {children}
             </Text>
+            {iconPosition === 'right' && icon}
         </TouchableOpacity>
     );
 };
