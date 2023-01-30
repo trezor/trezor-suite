@@ -175,8 +175,18 @@ export const selectPendingAccountAddresses = memoizeWithArgs(
 );
 
 export const selectTransactionByTxid = memoizeWithArgs(
-    (txid: string, state: TransactionsRootState) => {
+    (state: TransactionsRootState, txid: string) => {
         const transactions = selectAllTransactions(state);
         return transactions.find(tx => tx.txid === txid) ?? null;
+    },
+);
+
+export const selectTransactionBlockTimeById = memoizeWithArgs(
+    (state: TransactionsRootState, txid: string) => {
+        const transaction = selectTransactionByTxid(state, txid);
+        if (transaction?.blockTime) {
+            return transaction.blockTime * 1000;
+        }
+        return null;
     },
 );

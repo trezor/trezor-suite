@@ -14,6 +14,7 @@ import {
     BlockchainRootState,
     selectBlockchainExplorerBySymbol,
     selectTransactionByTxid,
+    TransactionsRootState,
 } from '@suite-common/wallet-core';
 import { formatNetworkAmount, toFiatCurrency } from '@suite-common/wallet-utils';
 import { selectFiatCurrency } from '@suite-native/module-settings';
@@ -34,7 +35,9 @@ export const TransactionDetailScreen = ({
 }: StackProps<RootStackParamList, RootStackRoutes.TransactionDetail>) => {
     const { applyStyle, utils } = useNativeStyles();
     const { txid } = route.params;
-    const transaction = useSelector((state: any) => selectTransactionByTxid(txid, state));
+    const transaction = useSelector((state: TransactionsRootState) =>
+        selectTransactionByTxid(state, txid),
+    );
     const blockchainExplorer = useSelector((state: BlockchainRootState) =>
         selectBlockchainExplorerBySymbol(state, transaction?.symbol),
     );

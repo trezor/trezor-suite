@@ -17,6 +17,7 @@ import {
 } from '@suite-native/navigation';
 import { selectFiatCurrency } from '@suite-native/module-settings';
 import { useFormatters } from '@suite-common/formatters';
+import { selectTransactionBlockTimeById, TransactionsRootState } from '@suite-common/wallet-core';
 
 import { TransactionListItemIcon } from './TransactionListItemIcon';
 
@@ -98,22 +99,12 @@ export const TransactionListItem = memo(
             useNavigation<
                 StackNavigationProps<RootStackParamList, AccountsStackRoutes.AccountDetail>
             >();
-        const { FiatAmountFormatter, CryptoAmountFormatter } = useFormatters();
+        const { FiatAmountFormatter, CryptoAmountFormatter, DateTimeFormatter } = useFormatters();
         const transactionAmount = formatNetworkAmount(transaction.amount, transaction.symbol);
         const fiatAmount = toFiatCurrency(transactionAmount, fiatCurrency.label, transaction.rates);
-
-        // TODO: replace with datetime formater module when ready
-        const formatTransactionDate = () => {
-            const { blockHeight, blockTime } = transaction;
-            if (!blockTime || blockHeight === 0) return null;
-            // TODO this is just MVP and should be properly formatted in next PR
-            return new Date(blockTime * 1000).toLocaleString('en-US', {
-                month: 'short',
-                day: 'numeric',
-                hour: 'numeric',
-                minute: 'numeric',
-            });
-        };
+        const transactionBlockTime = useSelector((state: TransactionsRootState) =>
+            selectTransactionBlockTimeById(state, transaction.txid),
+        );
 
         const handleNavigateToTransactionDetail = () => {
             navigation.navigate(RootStackRoutes.TransactionDetail, {
@@ -147,7 +138,7 @@ export const TransactionListItem = memo(
                         </Box>
                     </Box>
                     <Text variant="hint" color="gray600">
-                        {formatTransactionDate()}
+                        <DateTimeFormatter value={transactionBlockTime} />
                     </Text>
                 </Box>
 
