@@ -158,9 +158,11 @@ export const startCoinjoinSession = [
             actions: [
                 COINJOIN.CLIENT_ENABLE,
                 COINJOIN.CLIENT_ENABLE_SUCCESS,
+                COINJOIN.SESSION_STARTING,
                 COINJOIN.ACCOUNT_AUTHORIZE,
                 COINJOIN.ACCOUNT_AUTHORIZE_FAILED,
                 notificationsActions.addToast.type,
+                COINJOIN.SESSION_STARTING,
             ],
         },
     },
@@ -182,8 +184,10 @@ export const startCoinjoinSession = [
             actions: [
                 COINJOIN.CLIENT_ENABLE,
                 COINJOIN.CLIENT_ENABLE_SUCCESS,
+                COINJOIN.SESSION_STARTING,
                 COINJOIN.ACCOUNT_AUTHORIZE,
                 COINJOIN.ACCOUNT_AUTHORIZE_SUCCESS,
+                COINJOIN.SESSION_STARTING,
             ],
         },
     },
@@ -264,7 +268,11 @@ export const restoreCoinjoinSession = [
         },
         param: '12345',
         result: {
-            actions: [COINJOIN.SESSION_RESTORE],
+            actions: [
+                COINJOIN.SESSION_STARTING,
+                COINJOIN.SESSION_RESTORE,
+                COINJOIN.SESSION_STARTING,
+            ],
         },
     },
 ];

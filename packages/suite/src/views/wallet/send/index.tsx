@@ -1,13 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import React from 'react';
 import styled from 'styled-components';
 
 import { Card } from '@suite-components';
 import { useSelector } from '@suite-hooks';
-import {
-    pauseCoinjoinSession,
-    restoreCoinjoinSession,
-} from '@wallet-actions/coinjoinAccountActions';
 import { WalletLayout } from '@wallet-components';
 import { useSendForm, SendContext, UseSendFormProps } from '@wallet-hooks/useSendForm';
 import { selectCoinjoinAccountByKey } from '@wallet-reducers/coinjoinReducer';
@@ -34,33 +29,11 @@ interface SendLoadedProps extends UseSendFormProps {
 // separated to call `useSendForm` hook at top level
 // children are only for test purposes, this prop is not available in regular build
 const SendLoaded = ({ children, ...props }: SendLoadedProps) => {
-    const [isCoinjoinPausedAutomatically, setIsCoinjoinPausedAutomatically] = useState(false);
-
     const coinjoinAccount = useSelector(state =>
         selectCoinjoinAccountByKey(state, props.selectedAccount.account.key),
     );
 
-    const dispatch = useDispatch();
-
     const sendContextValues = useSendForm({ ...props, coinjoinAccount });
-
-    const accountKey = props.selectedAccount.account.key;
-    const accountType = props.selectedAccount.account?.accountType;
-    const isSessionPaused = coinjoinAccount?.session?.paused;
-
-    // pause coinjoin when send form is open to avoid changing UTXOs while preparing transaction or breaking a coinjoin round
-    // automatically resume coinjoin upon leaving the send form
-    useEffect(() => {
-        if (accountType === 'coinjoin' && !isSessionPaused && !isCoinjoinPausedAutomatically) {
-            dispatch(pauseCoinjoinSession(accountKey));
-            setIsCoinjoinPausedAutomatically(true);
-        }
-        return () => {
-            if (isCoinjoinPausedAutomatically && isSessionPaused) {
-                dispatch(restoreCoinjoinSession(accountKey));
-            }
-        };
-    }, [accountKey, accountType, dispatch, isCoinjoinPausedAutomatically, isSessionPaused]);
 
     return (
         <WalletLayout title="TR_NAV_SEND" account={props.selectedAccount}>

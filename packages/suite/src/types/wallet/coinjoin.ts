@@ -22,6 +22,7 @@ export interface CoinjoinSession extends CoinjoinSessionParameters {
     timeEnded?: number; // timestamp when was finished
     paused?: boolean; // current state
     interrupted?: boolean; // it was paused by force
+    starting?: boolean; // is coinjoin session (re)starting, i.e. initiated but not yet running
     sessionPhaseQueue: Array<SessionPhase>;
     roundPhase?: RoundPhase; // current phase enum
     roundPhaseDeadline?: string | number; // estimated time for phase change

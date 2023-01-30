@@ -22,5 +22,6 @@ export const SESSION_ROUND_CHANGED = '@coinjoin/session-round-changed';
 export const SESSION_COMPLETED = '@coinjoin/session-completed';
 export const SESSION_OWNERSHIP = '@coinjoin/session-ownership';
 export const SESSION_TX_SIGNED = '@coinjoin/session-tx-signed';
+export const SESSION_STARTING = '@coinjoin/session-starting';
 
 export const SET_DEBUG_SETTINGS = '@coinjoin/set-debug-settings';
