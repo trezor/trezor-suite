@@ -7384,10 +7384,6 @@ export default defineMessages({
         id: 'TR_RESUMING',
         defaultMessage: 'Resuming',
     },
-    TR_PAUSING: {
-        id: 'TR_PAUSING',
-        defaultMessage: 'Pausing',
-    },
     TR_COINJOIN_RUNNING: {
         id: 'TR_COINJOIN_RUNNING',
         defaultMessage: 'Coinjoin running',

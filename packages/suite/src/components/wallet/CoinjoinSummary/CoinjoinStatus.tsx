@@ -21,8 +21,11 @@ import {
     restoreCoinjoinSession,
     stopCoinjoinSession,
 } from '@wallet-actions/coinjoinAccountActions';
-import { useSelector, useActions } from '@suite-hooks';
-import { selectSessionProgressByAccountKey } from '@wallet-reducers/coinjoinReducer';
+import { useSelector, useActions, useDevice } from '@suite-hooks';
+import {
+    selectCoinjoinAccountByKey,
+    selectSessionProgressByAccountKey,
+} from '@wallet-reducers/coinjoinReducer';
 import { useBlockedCoinjoinResume } from '@suite/hooks/coinjoin/useBlockedCoinjoinResume';
 import { useCoinjoinSessionPhase } from '@wallet-hooks';
 
@@ -68,8 +71,8 @@ const ProgressContent = styled.div`
 const ProgressWheel = styled.div<{
     progress: number;
     isPaused: boolean;
-    isResumeDisabled: boolean;
-    isLoading: boolean;
+    isResumeBlocked: boolean;
+    isToggleDisabled: boolean;
 }>`
     display: flex;
     justify-content: center;
@@ -85,8 +88,8 @@ const ProgressWheel = styled.div<{
     transition: background 0.1s, opacity 0.05s;
     user-select: none;
 
-    ${({ theme, isResumeDisabled }) =>
-        isResumeDisabled &&
+    ${({ theme, isResumeBlocked }) =>
+        isResumeBlocked &&
         css`
             ${ProgressContent} {
                 background: ${theme.BG_LIGHT_RED};
@@ -97,9 +100,9 @@ const ProgressWheel = styled.div<{
             }
         `}
 
-    ${({ isLoading, isResumeDisabled }) =>
-        !isLoading &&
-        !isResumeDisabled &&
+    ${({ isResumeBlocked, isToggleDisabled }) =>
+        !isResumeBlocked &&
+        !isToggleDisabled &&
         css`
             cursor: pointer;
 
@@ -156,11 +159,11 @@ interface CoinjoinStatusProps {
 }
 
 export const CoinjoinStatus = ({ session, accountKey }: CoinjoinStatusProps) => {
-    const [isLoading, setIsLoading] = useState(false);
     const [isWheelHovered, setIsWheelHovered] = useState(false);
     const sessionProgress = useSelector(state =>
         selectSessionProgressByAccountKey(state, accountKey),
     );
+    const coinjoinAccount = useSelector(state => selectCoinjoinAccountByKey(state, accountKey));
 
     const { isCoinjoinResumeBlocked, coinjoinResumeBlockedMessageId, featureMessageContent } =
         useBlockedCoinjoinResume();
@@ -171,23 +174,25 @@ export const CoinjoinStatus = ({ session, accountKey }: CoinjoinStatusProps) => 
         restoreCoinjoinSession,
     });
 
+    const { isLocked } = useDevice();
+
     const sessionPhase = useCoinjoinSessionPhase(accountKey);
     const menuRef = useRef<HTMLUListElement & { close: () => void }>(null);
     const theme = useTheme();
 
     const { paused, roundPhase, roundPhaseDeadline, sessionDeadline } = session;
     const isPaused = !!paused;
+    const isLoading = coinjoinAccount?.session?.starting;
+    const isToggleDisabled = isLoading || isLocked();
 
-    const togglePause = useCallback(async () => {
-        if (isCoinjoinResumeBlocked) return;
+    const togglePause = useCallback(() => {
+        if (isCoinjoinResumeBlocked || isToggleDisabled) return;
         if (isPaused) {
-            setIsLoading(true);
-            await actions.restoreCoinjoinSession(accountKey);
-            setIsLoading(false);
+            actions.restoreCoinjoinSession(accountKey);
         } else {
             actions.pauseCoinjoinSession(accountKey);
         }
-    }, [isCoinjoinResumeBlocked, isPaused, actions, accountKey]);
+    }, [isCoinjoinResumeBlocked, isPaused, isToggleDisabled, actions, accountKey]);
 
     const menuItems = useMemo<Array<GroupedMenuItems>>(
         () => [
@@ -255,29 +260,22 @@ export const CoinjoinStatus = ({ session, accountKey }: CoinjoinStatusProps) => 
     };
 
     const getProgressContent = () => {
-        if (isPaused || isCoinjoinResumeBlocked) {
-            if (isWheelHovered && !isCoinjoinResumeBlocked) {
-                return (
-                    <>
-                        <PlayIcon icon="PLAY" {...iconConfig} />
-                        <Translation id="TR_RESUME" />
-                    </>
-                );
-            }
-
+        if (isPaused && isWheelHovered && !isCoinjoinResumeBlocked) {
             return (
                 <>
-                    <PauseIcon icon="PAUSE" {...iconConfig} />
-                    <Translation id="TR_PAUSED" />
+                    <PlayIcon icon="PLAY" {...iconConfig} />
+                    <Translation id="TR_RESUME" />
                 </>
             );
         }
 
-        if (isWheelHovered) {
+        if (isPaused || isCoinjoinResumeBlocked || isWheelHovered) {
             return (
                 <>
                     <PauseIcon icon="PAUSE" {...iconConfig} />
-                    <Translation id="TR_PAUSE" />
+                    <Translation
+                        id={isPaused || isCoinjoinResumeBlocked ? 'TR_PAUSED' : 'TR_PAUSE'}
+                    />
                 </>
             );
         }
@@ -302,17 +300,17 @@ export const CoinjoinStatus = ({ session, accountKey }: CoinjoinStatusProps) => 
     };
 
     const getProgressMessage = () => {
+        if (isLoading) {
+            return <Translation id="TR_RESUMING" />;
+        }
+
         if (isPaused) {
-            return (
-                <TextCointainer>
-                    <Translation id="TR_COINJOIN_PAUSED" />
-                </TextCointainer>
-            );
+            return <Translation id="TR_COINJOIN_PAUSED" />;
         }
 
         if (sessionPhase !== undefined) {
             return (
-                <TextCointainer>
+                <>
                     <Translation id={SESSION_PHASE_MESSAGES[sessionPhase]} />
 
                     {roundPhase !== undefined && roundPhaseDeadline && (
@@ -324,15 +322,11 @@ export const CoinjoinStatus = ({ session, accountKey }: CoinjoinStatusProps) => 
                             />
                         </p>
                     )}
-                </TextCointainer>
+                </>
             );
         }
 
-        return (
-            <TextCointainer>
-                <Translation id="TR_LOOKING_FOR_COINJOIN_ROUND" />
-            </TextCointainer>
-        );
+        return <Translation id="TR_LOOKING_FOR_COINJOIN_ROUND" />;
     };
 
     const tooltipMessage =
@@ -347,8 +341,8 @@ export const CoinjoinStatus = ({ session, accountKey }: CoinjoinStatusProps) => 
                 <ProgressWheel
                     progress={sessionProgress}
                     isPaused={isPaused}
-                    isLoading={isLoading}
-                    isResumeDisabled={isCoinjoinResumeBlocked}
+                    isToggleDisabled={isLoading || isToggleDisabled}
+                    isResumeBlocked={isCoinjoinResumeBlocked}
                     onClick={togglePause}
                     onMouseEnter={() => setIsWheelHovered(true)}
                     onMouseLeave={() => setIsWheelHovered(false)}
@@ -362,13 +356,7 @@ export const CoinjoinStatus = ({ session, accountKey }: CoinjoinStatusProps) => 
                     </ProgressContent>
                 </ProgressWheel>
             </Tooltip>
-            {isLoading ? (
-                <TextCointainer>
-                    {isPaused ? <Translation id="TR_RESUMING" /> : <Translation id="TR_PAUSING" />}
-                </TextCointainer>
-            ) : (
-                getProgressMessage()
-            )}
+            <TextCointainer>{getProgressMessage()}</TextCointainer>
         </Container>
     );
 };
