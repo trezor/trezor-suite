@@ -88,7 +88,7 @@ export const DEFAULT_ROUND = {
 } as Round;
 
 export const AFFILIATE_INFO = {
-    runningAffiliateServers: ['trezor'],
+    runningAffiliateServers: ['trezor' as const],
     coinjoinRequests: {},
 };
 
@@ -134,4 +134,22 @@ export const createCoinjoinRound = (
     }
 
     return round;
+};
+
+export const FEE_RATE_RESULTS = {
+    fast: 258,
+    recommended: 129,
+};
+
+export const STATUS_TRANSFORMED = {
+    feeRatesMedians: FEE_RATE_RESULTS,
+    allowedInputAmounts: {
+        max: 134375000000,
+        min: 5000,
+    },
+    rounds: [],
+    coordinationFeeRate: {
+        plebsDontPayThreshold: 1000000,
+        rate: 0.003,
+    },
 };

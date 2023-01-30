@@ -142,6 +142,20 @@ export const calculateProgressParams: Array<{
         },
         result: 0,
     },
+    {
+        params: {
+            ...baseCalculateProgressParams,
+            targetAnonymity: 1,
+            anonymitySet: { one: 10 },
+            utxos: [
+                {
+                    address: 'one',
+                    ...baseUtxo,
+                },
+            ],
+        },
+        result: 100,
+    },
 ];
 
 export const getMaxRounds = [
