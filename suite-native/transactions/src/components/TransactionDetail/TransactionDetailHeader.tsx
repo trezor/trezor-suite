@@ -35,26 +35,26 @@ const transactionTypeInfo = {
     self: {
         text: 'Self',
         iconName: 'send',
-        sign: '',
-        signColor: '',
+        sign: ' ',
+        signColor: 'gray200',
     },
     joint: {
         text: 'Joint',
         iconName: 'send',
-        sign: '',
-        signColor: '',
+        sign: ' ',
+        signColor: 'gray200',
     },
     failed: {
         text: 'Failed',
         iconName: 'send',
-        sign: '',
-        signColor: '',
+        sign: ' ',
+        signColor: 'gray200',
     },
     unknown: {
         text: 'Unknown',
         iconName: 'send',
-        sign: '',
-        signColor: '',
+        sign: ' ',
+        signColor: 'gray200',
     },
 } as const satisfies Record<TransactionType, TransactionTypeInfo>;
 
