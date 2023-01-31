@@ -14,6 +14,7 @@ import * as walletSettingsActions from '@settings-actions/walletSettingsActions'
 import { selectIsPendingTransportEvent } from '@suite-reducers/deviceReducer';
 import * as suiteActions from '../actions/suite/suiteActions';
 import { resolveStaticPath } from '@trezor/utils';
+import { fixLoadedCoinjoinAccount } from '@wallet-utils/coinjoinUtils';
 
 const connectSrc = resolveStaticPath('connect/');
 // 'https://localhost:8088/';
@@ -73,9 +74,7 @@ export const extraDependencies: ExtraDependencies = {
         },
         storageLoadAccounts: (_, { payload }: StorageLoadAction) =>
             payload.accounts.map(acc =>
-                acc.backendType === 'coinjoin' && acc.status === 'ready'
-                    ? { ...acc, status: 'out-of-sync' }
-                    : acc,
+                acc.backendType === 'coinjoin' ? fixLoadedCoinjoinAccount(acc) : acc,
             ),
         storageLoadFiatRates: (state: FiatRatesState, { payload }: StorageLoadAction) => {
             state.coins = payload.fiatRates;
