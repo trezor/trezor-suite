@@ -1,4 +1,4 @@
-import { memoize, memoizeWithArgs } from 'proxy-memoize';
+import { memoizeWithArgs } from 'proxy-memoize';
 
 import { Account, WalletAccountTransaction, AccountKey } from '@suite-common/wallet-types';
 import { findTransaction, isPending } from '@suite-common/wallet-utils';
@@ -155,11 +155,6 @@ export const selectAccountTransactions = (
     accountKey: string | null,
 ) => state.wallet.transactions.transactions[accountKey ?? ''] ?? [];
 
-export const selectAllTransactions = memoize((state: TransactionsRootState) => {
-    const transactions = selectTransactions(state);
-    return Object.values(transactions).flat();
-});
-
 export const selectPendingAccountAddresses = memoizeWithArgs(
     (state: TransactionsRootState, accountKey: AccountKey | null) => {
         const accountTransactions = selectAccountTransactions(state, accountKey);
@@ -174,16 +169,17 @@ export const selectPendingAccountAddresses = memoizeWithArgs(
     },
 );
 
-export const selectTransactionByTxid = memoizeWithArgs(
-    (state: TransactionsRootState, txid: string) => {
-        const transactions = selectAllTransactions(state);
+// Note: Account key is passed because there can be duplication of TXIDs if self transaction was sent.
+export const selectTransactionByTxidAndAccountKey = memoizeWithArgs(
+    (state: TransactionsRootState, txid: string, accountKey: AccountKey) => {
+        const transactions = selectAccountTransactions(state, accountKey);
         return transactions.find(tx => tx.txid === txid) ?? null;
     },
 );
 
 export const selectTransactionBlockTimeById = memoizeWithArgs(
-    (state: TransactionsRootState, txid: string) => {
-        const transaction = selectTransactionByTxid(state, txid);
+    (state: TransactionsRootState, txid: string, accountKey: AccountKey) => {
+        const transaction = selectTransactionByTxidAndAccountKey(state, txid, accountKey);
         if (transaction?.blockTime) {
             return transaction.blockTime * 1000;
         }

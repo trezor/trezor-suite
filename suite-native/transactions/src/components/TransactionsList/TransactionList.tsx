@@ -3,7 +3,7 @@ import { ActivityIndicator, SectionList } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { useNativeStyles, prepareNativeStyle } from '@trezor/styles';
-import { WalletAccountTransaction } from '@suite-common/wallet-types';
+import { AccountKey, WalletAccountTransaction } from '@suite-common/wallet-types';
 import { groupTransactionsByDate } from '@suite-common/wallet-utils';
 import { selectIsLoadingTransactions } from '@suite-common/wallet-core';
 import { Box } from '@suite-native/atoms';
@@ -24,6 +24,7 @@ type RenderItemParams = {
     item: WalletAccountTransaction;
     section: { monthKey: string; data: WalletAccountTransaction[] };
     index: number;
+    accountKey: AccountKey;
 };
 
 type RenderSectionHeaderParams = {
@@ -32,12 +33,13 @@ type RenderSectionHeaderParams = {
     };
 };
 
-const renderItem = ({ item, section, index }: RenderItemParams) => (
+const renderItem = ({ item, section, index, accountKey }: RenderItemParams) => (
     <TransactionListItem
         key={item.txid}
         transaction={item}
         isFirst={index === 0}
         isLast={index === section.data.length - 1}
+        accountKey={accountKey}
     />
 );
 
@@ -106,7 +108,9 @@ export const TransactionList = ({
         <Box style={applyStyle(listWrapperStyle)}>
             <SectionList
                 sections={sectionsData}
-                renderItem={renderItem}
+                renderItem={({ item, section, index }) =>
+                    renderItem({ item, section, index, accountKey })
+                }
                 renderSectionHeader={renderSectionHeader}
                 ListEmptyComponent={<TransactionsEmptyState accountKey={accountKey} />}
                 ListHeaderComponent={listHeaderComponent}
