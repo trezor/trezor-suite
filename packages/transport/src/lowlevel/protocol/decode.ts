@@ -1,5 +1,5 @@
-import * as ByteBuffer from 'bytebuffer';
 import { MESSAGE_HEADER_BYTE } from '../../config';
+import ByteBuffer from 'bytebuffer';
 
 /**
  * Reads meta information from buffer
