@@ -3,11 +3,11 @@ import { fromWei } from 'web3-utils';
 
 import {
     Account,
-    WalletAccountTransaction,
     RbfTransactionParams,
+    WalletAccountTransaction,
 } from '@suite-common/wallet-types';
 import { AccountMetadata } from '@suite-common/metadata-types';
-import { AccountTransaction, AccountAddress } from '@trezor/connect';
+import { AccountAddress, AccountTransaction } from '@trezor/connect';
 
 import { formatAmount, formatNetworkAmount } from './accountUtils';
 import { toFiatCurrency } from './fiatConverterUtils';
@@ -42,19 +42,17 @@ const generateTransactionDateKey = (d: Date) =>
 
 /** Parse Date object from a string in YYYY-MM-DD format */
 export const parseTransactionDateKey = (key: string) => {
-    const parts = key.split('-');
-    const d = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
-    return d;
+    const [year, month, day] = key.split('-');
+    return new Date(Number(year), Number(month) - 1, Number(day));
 };
 
 /* Convert date to string in YYYY-MM format */
 const generateTransactionMonthKey = (d: Date) => `${d.getFullYear()}-${d.getMonth() + 1}`;
 
-/** Parse Date object from a string in YYYY-MM format */
-export const parseTransactionMonthKey = (key: string) => {
-    const parts = key.split('-');
-    const d = new Date(Number(parts[0]), Number(parts[1]) - 1);
-    return d;
+/** Parse Date object from a string in YYYY-MM format to return localized month name */
+export const parseTransactionMonthKey = (key: string): string => {
+    const [year, month] = key.split('-');
+    return new Date(Number(year), Number(month)).toLocaleDateString('en-us', { month: 'long' });
 };
 
 /**

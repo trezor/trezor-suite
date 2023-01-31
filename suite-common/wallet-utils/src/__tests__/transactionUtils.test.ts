@@ -24,7 +24,7 @@ describe('transaction utils', () => {
     });
 
     it('parseTransactionMonthKey', () => {
-        expect(parseTransactionMonthKey('2023-01')).toEqual(new Date(2023, 0));
+        expect(parseTransactionMonthKey('2023-00')).toEqual('January');
     });
 
     Object.keys(fixtures.isPending).forEach(f => {

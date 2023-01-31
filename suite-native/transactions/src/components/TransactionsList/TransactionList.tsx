@@ -69,6 +69,7 @@ export const TransactionList = ({
         () => groupTransactionsByDate(transactions, 'month'),
         [transactions],
     );
+
     const transactionMonthKeys = useMemo(
         () => Object.keys(accountTransactionsByMonth),
         [accountTransactionsByMonth],

@@ -15,10 +15,7 @@ const dateTextStyle = prepareNativeStyle(utils => ({
 
 export const TransactionListGroupTitle = ({ monthKey }: TransactionListGroupProps) => {
     const { applyStyle } = useNativeStyles();
-    const sectionTitle =
-        monthKey === 'pending'
-            ? 'Pending'
-            : parseTransactionMonthKey(monthKey).toLocaleString('en-us', { month: 'long' });
+    const sectionTitle = monthKey === 'pending' ? 'Pending' : parseTransactionMonthKey(monthKey);
 
     return (
         <Text color="gray600" variant="hint" style={applyStyle(dateTextStyle)}>
