@@ -1,5 +1,4 @@
 import path from 'path';
-import fs from 'fs';
 import { app, BrowserWindow, session } from 'electron';
 import { init as initSentry, ElectronOptions, IPCMode } from '@sentry/electron';
 
@@ -13,6 +12,7 @@ import * as store from './libs/store';
 import { MIN_HEIGHT, MIN_WIDTH } from './libs/screen';
 import { getBuildInfo, getComputerInfo } from './libs/info';
 import { restartApp } from './libs/app-utils';
+import { clearAppCache } from './libs/user-data';
 import { initModules } from './modules';
 import { init as initTorModule } from './modules/tor';
 import { createInterceptor } from './libs/request-interceptor';
@@ -30,13 +30,6 @@ global.logger = logger;
 global.resourcesPath = isDevEnv
     ? path.join(__dirname, '..', 'build', 'static')
     : process.resourcesPath;
-
-const clearAppCache = () =>
-    new Promise<void>((resolve, reject) => {
-        const appFolder = process.env.PKGNAME!.replace('/', path.sep);
-        const cachePath = path.join(app.getPath('appData'), appFolder, 'Cache');
-        fs.rm(cachePath, { recursive: true }, err => (err ? reject(err) : resolve()));
-    });
 
 const createMainWindow = (winBounds: WinBounds) => {
     const mainWindow = new BrowserWindow({
