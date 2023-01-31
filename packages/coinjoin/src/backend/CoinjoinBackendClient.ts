@@ -8,7 +8,7 @@ import type {
     BlockbookTransaction,
 } from '../types/backend';
 import type { CoinjoinBackendSettings } from '../types';
-import { HTTP_REQUEST_TIMEOUT } from '../constants';
+import { GRADUAL_HTTP_REQUEST_TIMEOUTS } from '../constants';
 
 type CoinjoinBackendClientSettings = CoinjoinBackendSettings & {
     timeout?: number;
@@ -141,6 +141,10 @@ export class CoinjoinBackendClient {
         throw new Error(`${response.status}: ${response.statusText}`);
     }
 
+    private readonly defaultOptions = {
+        attempts: GRADUAL_HTTP_REQUEST_TIMEOUTS.map(timeout => ({ timeout })),
+    };
+
     protected scheduleGet<T>(
         backend: CoinjoinBackendClient['blockbook' | 'wabisabi'],
         handler: (r: Response) => Promise<T>,
@@ -154,7 +158,7 @@ export class CoinjoinBackendClient {
                     .call(this, { ...options, signal }) // "global" signal is overriden by signal passed from scheduleAction
                     .get(path, query)
                     .then(handler.bind(this)),
-            { attempts: 3, timeout: HTTP_REQUEST_TIMEOUT, ...options }, // default attempts/timeout could be overriden by options
+            { ...this.defaultOptions, ...options }, // default attempts/timeout could be overriden by options
         );
     }
 
