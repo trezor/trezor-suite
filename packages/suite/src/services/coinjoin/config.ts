@@ -14,6 +14,25 @@ type CoinjoinNetworksConfig = CoinjoinBackendSettings & CoinjoinClientSettings;
 type ServerEnvironment = PartialRecord<CoinjoinServerEnvironment, CoinjoinNetworksConfig>;
 
 export const COINJOIN_NETWORKS: PartialRecord<NetworkSymbol, ServerEnvironment> = {
+    btc: {
+        public: {
+            network: 'btc',
+            coordinatorName: 'CoinJoinCoordinatorIdentifier',
+            coordinatorUrl: 'https://wasabiwallet.io/wabisabi/',
+            wabisabiBackendUrl: 'https://wasabiwallet.io/',
+            blockbookUrls: [
+                'https://btc1.trezor.io/api/v2',
+                'https://btc2.trezor.io/api/v2',
+                'https://btc3.trezor.io/api/v2',
+                'https://btc4.trezor.io/api/v2',
+                'https://btc5.trezor.io/api/v2',
+            ],
+            /* 31.01.2023 */
+            baseBlockHeight: 774460,
+            baseBlockHash: '0000000000000000000013be741eb25cece368611509ac013332c2af7ce027ac',
+            middlewareUrl: 'http://localhost:8081/',
+        },
+    },
     /*
      * btc: https://wasabiwallet.io/ (tor http://wasabiukrxmkdgve5kynjztuovbg43uxcbcxn6y2okcrsg7gb6jdmbad.onion/)
      * available only in @suite-desktop
