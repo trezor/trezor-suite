@@ -1,6 +1,8 @@
 import React from 'react';
 
-import { Box, DiscreetText, ErrorMessage, Text } from '@suite-native/atoms';
+import { RequireAllOrNone } from 'type-fest';
+
+import { Box, DiscreetText, Text } from '@suite-native/atoms';
 import { Icon, IconName } from '@trezor/icons';
 import { TransactionType } from '@suite-common/wallet-types';
 import { useFormatters } from '@suite-common/formatters';
@@ -35,28 +37,23 @@ const transactionTypeInfo = {
     self: {
         text: 'Self',
         iconName: 'send',
-        sign: ' ',
-        signColor: 'gray200',
     },
     joint: {
         text: 'Joint',
         iconName: 'send',
-        sign: ' ',
-        signColor: 'gray200',
     },
     failed: {
         text: 'Failed',
         iconName: 'send',
-        sign: ' ',
-        signColor: 'gray200',
     },
     unknown: {
         text: 'Unknown',
         iconName: 'send',
-        sign: ' ',
-        signColor: 'gray200',
     },
-} as const satisfies Record<TransactionType, TransactionTypeInfo>;
+} as const satisfies Record<
+    TransactionType,
+    RequireAllOrNone<TransactionTypeInfo, 'sign' | 'signColor'>
+>;
 
 export const TransactionDetailHeader = ({
     type,
@@ -65,10 +62,9 @@ export const TransactionDetailHeader = ({
 }: TransactionDetailHeaderProps) => {
     const { FiatAmountFormatter } = useFormatters();
 
-    const { signColor, sign, text, iconName } = transactionTypeInfo[type];
+    const { text, iconName } = transactionTypeInfo[type];
 
-    if (type !== 'recv' && type !== 'sent')
-        return <ErrorMessage errorMessage={`Unknown transaction type ${type}.`} />;
+    const hasTransactionSign = type === 'sent' || type === 'recv';
 
     return (
         <Box alignItems="center">
@@ -79,9 +75,9 @@ export const TransactionDetailHeader = ({
                 <Icon name={iconName} color="gray600" size="medium" />
             </Box>
             <Box flexDirection="row">
-                {sign && signColor && (
-                    <Text variant="titleMedium" color={signColor}>
-                        {sign}
+                {hasTransactionSign && (
+                    <Text variant="titleMedium" color={transactionTypeInfo[type].signColor}>
+                        {transactionTypeInfo[type].sign}
                     </Text>
                 )}
                 <DiscreetText typography="titleMedium">{amount}</DiscreetText>
