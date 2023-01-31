@@ -4,6 +4,8 @@ import { CoinjoinBackendSettings } from '../types';
 
 export const getNetwork = (network: CoinjoinBackendSettings['network']) => {
     switch (network) {
+        case 'btc':
+            return networks.bitcoin;
         case 'test':
             return networks.testnet;
         case 'regtest':
