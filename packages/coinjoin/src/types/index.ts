@@ -1,5 +1,5 @@
 interface BaseSettings {
-    network: 'regtest' | 'test'; // | 'btc'
+    network: 'btc' | 'test' | 'regtest';
     coordinatorUrl: string;
 }
 
