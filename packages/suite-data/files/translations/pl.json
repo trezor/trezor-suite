@@ -51,7 +51,6 @@
   "FEE_LEVEL_HIGH": "Wysoka",
   "FEE_LEVEL_LOW": "Niska",
   "FEE_LEVEL_NORMAL": "Normalna",
-  "FIRMWARE_CONNECT_IN_NORMAL_MODEL_1": "Nie trzymać żadnych przycisków podczas podłączenia kabla.",
   "FIRMWARE_CONNECT_IN_NORMAL_MODEL_2": "Upewnij się, że nie trzymasz żadnych przycisków podczas podłączania urządzenia.",
   "FIRMWARE_USER_HAS_SEED_CHECKBOX_DESC": "Tak!",
   "FIRMWARE_USER_TAKES_RESPONSIBILITY_CHECKBOX_DESC": "Akceptuję ryzyko",
@@ -224,5 +223,6 @@
   "TR_P2P_GET_STARTED_ATTENTION": "Uwaga: NIE ZAMYKAJ Trezor Suite w żadnym momencie procesu lub będzie trzeba zacząć od początku.",
   "TR_P2P_GET_STARTED_INTRO": "Należy zainicjować transakcję na {providerName} – zastosuj się do poniższych kroków.",
   "TR_P2P_GET_STARTED_ITEM_1": "Wybierz “Przejdź do {providerName}”, aby przejść na stronę internetową naszego partnera.",
-  "TR_UPDATE_MODAL_NOT_NOW": "Nie teraz"
+  "TR_UPDATE_MODAL_NOT_NOW": "Nie teraz",
+  "TR_DEVICE_CONNECTED_BOOTLOADER_RECONNECT_IN_NORMAL_NO_BUTTON": "Nie trzymać żadnych przycisków podczas podłączenia kabla."
 }

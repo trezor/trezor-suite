@@ -28,7 +28,6 @@
   "TR_AFFECTED_TXS": "Αυτή η λειτουργία θα αφαιρέσει τις ακόλουθες συναλλαγές από το mempool",
   "TR_ALL": "Όλα",
   "TR_ALLOW_ANALYTICS": "Δεδομένα χρήσης",
-  "TR_ALL_THE_WORDS": "Οι λέξεις εισάγονται πάντα στη συσκευή για λόγους ασφαλείας. Παρακαλώ εισάγετε όλες τις λέξεις με τη σωστή σειρά.",
   "TR_ALL_TRANSACTIONS": "Συναλλαγές",
   "TR_APP": "Εφαρμογή",
   "TR_APPLICATION": "Εφαρμογή",
@@ -70,7 +69,6 @@
   "TR_CHECK_SEED_IN_SETTINGS": "Έλεγχος seed στις ρυθμίσεις",
   "TR_CHECK_YOUR_DEVICE": "Ελέγξτε την οθόνη του Trezor",
   "TR_CHOOSE_WALLET": "Πορτοφόλια",
-  "TR_CHOSE_RECOVERY_TYPE": "Επιλογή τύπου ανάκτησης",
   "TR_CLEAR": "Εκκαθάριση",
   "TR_CLEAR_ALL": "Εκκαθάριση όλων",
   "TR_COINMARKET_NO_OFFERS_RELOAD_PAGE_BUTTON": "Ανανέωση σελίδας",
@@ -86,5 +84,7 @@
   "TR_DEVICE_NOT_CONNECTED": "Η συσκευή δεν συνδέθηκε",
   "TR_DEVICE_NOT_INITIALIZED": "Το Trezor δεν έχει ρυθμιστεί",
   "TR_DEVICE_SETTINGS_BUTTON_WIPE_DEVICE": "Διαγραφή μνήμης",
-  "TR_EXCHANGE_FEES_INFO": "All fees included; the transaction fee is estimated at {feeAmount} ({feeAmountFiat})."
+  "TR_EXCHANGE_FEES_INFO": "All fees included; the transaction fee is estimated at {feeAmount} ({feeAmountFiat}).",
+  "TR_CHOOSE_RECOVERY_TYPE": "Επιλογή τύπου ανάκτησης",
+  "TR_ENTER_SEED_WORDS_ON_DEVICE": "Οι λέξεις εισάγονται πάντα στη συσκευή για λόγους ασφαλείας. Παρακαλώ εισάγετε όλες τις λέξεις με τη σωστή σειρά."
 }

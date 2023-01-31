@@ -48,7 +48,6 @@
   "FEE_LEVEL_HIGH": "높음",
   "FEE_LEVEL_LOW": "낮음",
   "FEE_LEVEL_NORMAL": "중간",
-  "FIRMWARE_CONNECT_IN_NORMAL_MODEL_1": "케이블에 연결하는 동안 어느 버튼도 누르지 마십시오.",
   "FIRMWARE_CONNECT_IN_NORMAL_MODEL_2": "장치를 연결하는 동안 장치의 디스플레이를 만지지 마십시오.",
   "FIRMWARE_USER_HAS_SEED_CHECKBOX_DESC": "네, 그렇게 할 겁니다!",
   "FIRMWARE_USER_TAKES_RESPONSIBILITY_CHECKBOX_DESC": "위험을 감수하겠습니다.",
@@ -192,7 +191,6 @@
   "TR_ALL": "모든",
   "TR_ALLOW_ANALYTICS": "데이터 사용량",
   "TR_ALLOW_ANALYTICS_DESCRIPTION": "모든 데이터는 익명으로 유지되며, Trezor 시스템 개선을 위해서만 사용됩니다.\n",
-  "TR_ALL_THE_WORDS": "보안상의 이유로 장치에 접속할 때마다 해당 문구들을 입력해야 합니다. 반드시 모든 단어를 순서대로 입력하십시오. ",
   "TR_ALL_TRANSACTIONS": "트랜잭션",
   "TR_APP": "앱",
   "TR_APPLICATION": "애플리케이션",
@@ -247,5 +245,7 @@
   "TR_BUY_DETAIL_SUCCESS_BUTTON": "계정으로 돌아가기",
   "TR_BUY_DETAIL_SUCCESS_TITLE": "승인됨",
   "TR_BUY_DETAIL_WAITING_FOR_USER_GATE": "제공업체 사이트로 가기",
-  "TR_EXCHANGE_FEES_INFO": "All fees included; the transaction fee is estimated at {feeAmount} ({feeAmountFiat})."
+  "TR_EXCHANGE_FEES_INFO": "All fees included; the transaction fee is estimated at {feeAmount} ({feeAmountFiat}).",
+  "TR_ENTER_SEED_WORDS_ON_DEVICE": "보안상의 이유로 장치에 접속할 때마다 해당 문구들을 입력해야 합니다. 반드시 모든 단어를 순서대로 입력하십시오. ",
+  "TR_DEVICE_CONNECTED_BOOTLOADER_RECONNECT_IN_NORMAL_NO_BUTTON": "케이블에 연결하는 동안 어느 버튼도 누르지 마십시오."
 }

@@ -47,7 +47,6 @@
   "FEE_LEVEL_HIGH": "Høj",
   "FEE_LEVEL_LOW": "Lav",
   "FEE_LEVEL_NORMAL": "Normal",
-  "FIRMWARE_CONNECT_IN_NORMAL_MODEL_1": "Sørg for, at du ikke holder nogen knapper nede, mens du tilslutter din enhed.",
   "FIRMWARE_CONNECT_IN_NORMAL_MODEL_2": "Sørg for, at du ikke holder nogen knapper nede, mens du tilslutter din enhed.",
   "FIRMWARE_USER_HAS_SEED_CHECKBOX_DESC": "Ja, det gør jeg!",
   "FIRMWARE_USER_TAKES_RESPONSIBILITY_CHECKBOX_DESC": "Jeg lever farligt!",
@@ -150,5 +149,6 @@
   "TR_DATE_WEEK_LONG": "1 uge",
   "TR_DATE_WEEK_SHORT": "1W",
   "TR_DATE_YEAR_LONG": "1 år",
-  "TR_EXCHANGE_FEES_INFO": "All fees included; the transaction fee is estimated at {feeAmount} ({feeAmountFiat})."
+  "TR_EXCHANGE_FEES_INFO": "All fees included; the transaction fee is estimated at {feeAmount} ({feeAmountFiat}).",
+  "TR_DEVICE_CONNECTED_BOOTLOADER_RECONNECT_IN_NORMAL_NO_BUTTON": "Sørg for, at du ikke holder nogen knapper nede, mens du tilslutter din enhed."
 }

@@ -49,7 +49,6 @@
   "FEE_LEVEL_HIGH": "Висока",
   "FEE_LEVEL_LOW": "Низька",
   "FEE_LEVEL_NORMAL": "Нормальна",
-  "FIRMWARE_CONNECT_IN_NORMAL_MODEL_1": "Не тисніть жодне кнопки під час підключення кабелю.",
   "OP_RETURN_ADD": "Додати OP Return",
   "OP_RETURN_TOOLTIP": "OP_RETURN можна використовувати для підтвердження права власності на цифрові активи, а також іноді для передачі додаткової інформації, необхідної для надсилання транзакцій.",
   "RAW_TRANSACTION": "Raw-транзакція",
@@ -200,7 +199,6 @@
   "TR_CHECK_SEED_IN_SETTINGS": "Перевірити seed-фразу у Налаштуваннях",
   "TR_CHECK_YOUR_DEVICE": "Перевірте екран свого Trezor",
   "TR_CHOOSE_WALLET": "Гаманці",
-  "TR_CHOSE_RECOVERY_TYPE": "Виберіть тип відновлення",
   "TR_CLEAR": "Очистити",
   "TR_CLEAR_ALL": "Очистити все",
   "TR_CLEAR_STORAGE": "Відновити застосунок",
@@ -274,8 +272,6 @@
   "TR_DEVICE_SETTINGS_DEVICE_LABEL": "Назва пристрою",
   "TR_DEVICE_SETTINGS_DISPLAY_ROTATION": "Обертання екрану",
   "TR_DEVICE_SETTINGS_HOMESCREEN_EDITOR": "Редактор головного екрану",
-  "TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS_T1": "Підтримує PNG або JPG, 128 х 64 пікселів та використовуючи тільки чорно-білий (не градації сірого).",
-  "TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS_TT": "Підтримує PNG або JPG, 144 x 144 пікселів",
   "TR_DEVICE_SETTINGS_HOMESCREEN_SELECT_FROM_GALLERY": "Виберіть з галереї",
   "TR_DEVICE_SETTINGS_HOMESCREEN_TITLE": "Домашній екран",
   "TR_DEVICE_SETTINGS_HOMESCREEN_UPLOAD_IMAGE": "Завантажити зображення",
@@ -319,5 +315,9 @@
   "TR_EXCHANGE_APPROVAL_VALUE": "Значення затвердження",
   "TR_EXCHANGE_APPROVAL_VALUE_INFINITE": "Нескінченне значення",
   "TR_EXCHANGE_APPROVAL_VALUE_INFINITE_INFO": "Створіть транзакцію затвердження для спрощення кількох обмінів {send} через {provider}. Це заощаджує на комісії, але несе ризик для ваших коштів у малоймовірному випадку недолік у договорі {provider}.",
-  "TR_EXCHANGE_FEES_INFO": "All fees included; the transaction fee is estimated at {feeAmount} ({feeAmountFiat})."
+  "TR_EXCHANGE_FEES_INFO": "All fees included; the transaction fee is estimated at {feeAmount} ({feeAmountFiat}).",
+  "TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS_BW_128x64": "Підтримує PNG або JPG, 128 х 64 пікселів та використовуючи тільки чорно-білий (не градації сірого).",
+  "TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS_COLOR_144x144": "Підтримує PNG або JPG, 144 x 144 пікселів",
+  "TR_CHOOSE_RECOVERY_TYPE": "Виберіть тип відновлення",
+  "TR_DEVICE_CONNECTED_BOOTLOADER_RECONNECT_IN_NORMAL_NO_BUTTON": "Не тисніть жодне кнопки під час підключення кабелю."
 }
