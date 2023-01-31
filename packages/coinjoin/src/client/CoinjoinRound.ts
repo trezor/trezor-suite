@@ -365,20 +365,24 @@ export class CoinjoinRound extends EventEmitter {
             input => !account.utxos.find(u => u.outpoint === input.outpoint),
         );
         // set error on each input
-        spentInputs.forEach(input =>
-            input.setError(new Error(WabiSabiProtocolErrorCode.InputSpent)),
-        ); // TODO: error same as wasabi coordinator?
+        spentInputs.forEach(input => {
+            input.clearConfirmationInterval();
+            input.setError(new Error(WabiSabiProtocolErrorCode.InputSpent));
+        }); // TODO: error same as wasabi coordinator?
 
         this.breakRound(spentInputs);
     }
 
     unregisterAccount(accountKey: string) {
         // find registered inputs related to Account
-        const affectedInputs = this.inputs.filter(input => input.accountKey === accountKey);
+        const registeredInputs = this.inputs.filter(input => input.accountKey === accountKey);
         // set error on each input
-        affectedInputs.forEach(input => input.setError(new Error('Unregistered account')));
+        registeredInputs.forEach(input => {
+            input.clearConfirmationInterval();
+            input.setError(new Error('Unregistered account'));
+        });
 
-        this.breakRound(affectedInputs);
+        this.breakRound(registeredInputs);
     }
 
     // decide if round process should be interrupted by Account change
