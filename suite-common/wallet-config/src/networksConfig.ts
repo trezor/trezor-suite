@@ -16,6 +16,12 @@ export const networks = {
         features: ['rbf', 'sign-verify', 'amount-unit'],
         customBackends: ['blockbook', 'electrum'],
         accountTypes: {
+            coinjoin: {
+                name: 'Bitcoin (CoinJoin)',
+                bip43Path: "m/10025'/0'/i'/1'", // https://github.com/satoshilabs/slips/blob/master/slip-0025.md#public-key-derivation
+                backendType: 'coinjoin', // use non-standard backend
+                features: ['amount-unit'], // no rbf, no sign-verify
+            },
             taproot: {
                 name: 'Bitcoin (Taproot)',
                 bip43Path: "m/86'/0'/i'",
