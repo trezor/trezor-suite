@@ -131,13 +131,13 @@ export class Status extends EventEmitter {
     private processStatus(status: coordinator.CoinjoinStatus) {
         // add matching coinjoinRequest to rounds
         status.roundStates.forEach(round => {
-            const roundRequest = status.affiliateInformation.coinjoinRequests[round.id];
+            const roundRequest = status.affiliateInformation?.coinjoinRequests[round.id];
             round.affiliateRequest = roundRequest?.trezor;
         });
 
         // report affiliate server status
         const runningAffiliateServer =
-            status.affiliateInformation.runningAffiliateServers.includes('trezor');
+            !!status.affiliateInformation?.runningAffiliateServers.includes('trezor');
         if (this.runningAffiliateServer !== runningAffiliateServer) {
             this.emit('affiliate-server', runningAffiliateServer);
         }
