@@ -1,4 +1,4 @@
-import { AnyAction, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { AnyAction, createSlice } from '@reduxjs/toolkit';
 
 export type LogEntry = { datetime: string; type: any; payload?: Record<any, any> };
 
@@ -20,21 +20,19 @@ export const logsSlice = createSlice({
     name: 'logs',
     initialState: logsSliceInitialState,
     reducers: {
-        addLog: (
-            state,
-            action: PayloadAction<{
-                action: AnyAction;
-                payload: Record<string, unknown> | undefined;
-            }>,
-        ) => {
-            state.logEntries.push({
+        addLog: {
+            reducer: (state, action) => {
+                state.logEntries.push({
+                    ...action.payload.payload,
+                });
+                if (state.logEntries.length > MAX_ENTRIES) {
+                    state.logEntries.shift();
+                }
+            },
+            prepare: (action: AnyAction) => ({
+                ...action.payload,
                 datetime: new Date().toUTCString(),
-                type: action.payload.action.type,
-                ...action.payload.payload,
-            });
-            if (state.logEntries.length > MAX_ENTRIES) {
-                state.logEntries.shift();
-            }
+            }),
         },
     },
 });
