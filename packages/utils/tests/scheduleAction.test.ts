@@ -148,4 +148,28 @@ describe('scheduleAction', () => {
         expect(result).toBe(true);
         expect(signal?.aborted).toBe(false);
     });
+
+    it('variable timeouts', async () => {
+        const TIMEOUTS = [50, 150, 100];
+        const MARGIN = 5;
+
+        const times: number[] = [Date.now()];
+        const action = (signal?: AbortSignal) => {
+            signal?.addEventListener('abort', () => times.push(Date.now()));
+            return new Promise(() => {});
+        };
+
+        await expect(() =>
+            scheduleAction(action, {
+                attempts: TIMEOUTS.map(timeout => ({ timeout })),
+            }),
+        ).rejects.toThrow(ERR_TIMEOUT);
+
+        expect(times.length).toEqual(TIMEOUTS.length + 1);
+        for (let i = 0; i < TIMEOUTS.length; i++) {
+            const diff = times[i + 1] - times[i];
+            expect(diff).toBeGreaterThanOrEqual(TIMEOUTS[i] - MARGIN);
+            expect(diff).toBeLessThanOrEqual(TIMEOUTS[i] + MARGIN);
+        }
+    });
 });
