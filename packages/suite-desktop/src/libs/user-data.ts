@@ -1,15 +1,22 @@
 import fs from 'fs';
+import path from 'path';
 import { app, shell } from 'electron';
 
 import { InvokeResult } from '@trezor/suite-desktop-api';
+
+export const clearAppCache = () =>
+    new Promise<void>((resolve, reject) => {
+        const cachePath = path.join(app.getPath('userData'), 'Cache');
+        fs.rm(cachePath, { recursive: true }, err => (err ? reject(err) : resolve()));
+    });
 
 export const save = async (
     directory: string,
     name: string,
     content: string,
 ): Promise<InvokeResult> => {
-    const dir = `${app.getPath('userData')}${directory}`;
-    const file = `${dir}/${name}`;
+    const dir = path.join(app.getPath('userData'), directory);
+    const file = path.join(dir, name);
 
     try {
         try {
@@ -27,8 +34,8 @@ export const save = async (
 };
 
 export const read = async (directory: string, name: string): Promise<InvokeResult<string>> => {
-    const dir = `${app.getPath('userData')}${directory}`;
-    const file = `${dir}/${name}`;
+    const dir = path.join(app.getPath('userData'), directory);
+    const file = path.join(dir, name);
 
     try {
         await fs.promises.access(file, fs.constants.R_OK);
@@ -46,7 +53,7 @@ export const read = async (directory: string, name: string): Promise<InvokeResul
 };
 
 export const clear = async (): Promise<InvokeResult> => {
-    const dir = app.getPath('userData');
+    const dir = path.normalize(app.getPath('userData'));
     try {
         await fs.promises.rm(dir, { recursive: true, force: true });
         return { success: true };
@@ -57,11 +64,12 @@ export const clear = async (): Promise<InvokeResult> => {
 };
 
 export const getInfo = () => ({
-    dir: app.getPath('userData'),
+    // Wrapped in path.normalize to make it multiplatform, otherwise path on Windows is broken.
+    dir: path.normalize(app.getPath('userData')),
 });
 
 export const open = async (directory: string): Promise<InvokeResult> => {
-    const dir = `${app.getPath('userData')}${directory}`;
+    const dir = path.join(app.getPath('userData'), directory);
     try {
         const errorMessage = await shell.openPath(dir);
         if (errorMessage) {

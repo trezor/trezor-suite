@@ -3,6 +3,7 @@
  */
 import { captureException } from '@sentry/electron';
 import { session } from 'electron';
+import path from 'path';
 
 import { TorStatus, BootstrapTorEvent, HandshakeTorModule } from '@trezor/suite-desktop-api';
 import { BootstrapEvent } from '@trezor/request-manager';
@@ -20,8 +21,7 @@ const load = async ({ mainWindow, store }: Dependencies) => {
     const port = await getFreePort();
     const address = `${host}:${port}`;
     const controlPort = await getFreePort();
-    const userData = app.getPath('userData');
-    const torDataDir = `${userData}/tor`;
+    const torDataDir = path.join(app.getPath('userData'), 'tor');
 
     /**
      * Merges given TorSettings with settings already present in the store,

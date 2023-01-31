@@ -22,8 +22,8 @@ export const init: Module = () => {
     ipcMain.handle('udev/install', async () => {
         const { logger, resourcesPath } = global;
         const resourceRules = path.join(resourcesPath, `bin/udev/${FILE_NAME}`);
-        const userRules = `${app.getPath('userData')}/${FILE_NAME}`;
-        const distRules = `/etc/udev/rules.d/${FILE_NAME}`;
+        const userRules = path.join(app.getPath('userData'), FILE_NAME);
+        const distRules = path.join('/etc/udev/rules.d/', FILE_NAME);
 
         logger.info('udev', `Installing ${resourceRules} > ${userRules} > ${distRules}`);
 
