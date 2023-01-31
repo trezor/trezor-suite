@@ -49,7 +49,6 @@
   "FEE_LEVEL_HIGH": "Hoch",
   "FEE_LEVEL_LOW": "Niedrig",
   "FEE_LEVEL_NORMAL": "Normal",
-  "FIRMWARE_CONNECT_IN_NORMAL_MODEL_1": "Bitte stellen Sie sicher, dass Sie keine Tasten halten, während Sie Ihr Gerät verbinden.",
   "FIRMWARE_CONNECT_IN_NORMAL_MODEL_2": "Bitte stellen Sie sicher, dass Sie keine Tasten halten, während Sie Ihr Gerät verbinden.",
   "FIRMWARE_USER_HAS_SEED_CHECKBOX_DESC": "Ja, habe ich!",
   "FIRMWARE_USER_TAKES_RESPONSIBILITY_CHECKBOX_DESC": "Ich lebe gefährlich!",
@@ -248,7 +247,6 @@
   "TR_ALL": "Alle",
   "TR_ALLOW_ANALYTICS": "Teilen von Analysedaten erlauben",
   "TR_ALLOW_ANALYTICS_DESCRIPTION": "Trezor Suite sammelt KEINE Kontostände oder persönlichen Daten. Alle Analysedaten werden anonymisiert.",
-  "TR_ALL_THE_WORDS": "Alle Wörter werden als zusätzliche Sicherheitsmaßnahme nur auf dem Gerät eingegeben. Bitte geben Sie alle Wörter sorgfältig in der richtigen Reihenfolge ein.",
   "TR_ALL_TRANSACTIONS": "Alle Transaktionen",
   "TR_APP": "App",
   "TR_APPLICATION": "Anwendung",
@@ -414,5 +412,7 @@
   "TR_DEVICE_LABEL_IS_NOT_CONNECTED": "Gerät {deviceLabel} ist nicht verbunden",
   "TR_DEVICE_LABEL_IS_UNAVAILABLE": "Gerät \"{deviceLabel}\" ist nicht verfügbar",
   "TR_DEVICE_NOT_CONNECTED": "Gerät nicht verbunden",
-  "TR_EXCHANGE_FEES_INFO": "All fees included; the transaction fee is estimated at {feeAmount} ({feeAmountFiat})."
+  "TR_EXCHANGE_FEES_INFO": "All fees included; the transaction fee is estimated at {feeAmount} ({feeAmountFiat}).",
+  "TR_ENTER_SEED_WORDS_ON_DEVICE": "Alle Wörter werden als zusätzliche Sicherheitsmaßnahme nur auf dem Gerät eingegeben. Bitte geben Sie alle Wörter sorgfältig in der richtigen Reihenfolge ein.",
+  "TR_DEVICE_CONNECTED_BOOTLOADER_RECONNECT_IN_NORMAL_NO_BUTTON": "Bitte stellen Sie sicher, dass Sie keine Tasten halten, während Sie Ihr Gerät verbinden."
 }

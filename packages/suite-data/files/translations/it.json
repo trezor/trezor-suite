@@ -49,7 +49,6 @@
   "FEE_LEVEL_HIGH": "Alto",
   "FEE_LEVEL_LOW": "Basso",
   "FEE_LEVEL_NORMAL": "Normale",
-  "FIRMWARE_CONNECT_IN_NORMAL_MODEL_1": "Sei pregato di assicurarti di non star premendo alcun pulsante connettendo il tuo dispositivo.",
   "FIRMWARE_CONNECT_IN_NORMAL_MODEL_2": "Sei pregato di assicurarti di non star premendo alcun pulsante connettendo il tuo dispositivo.",
   "FIRMWARE_USER_HAS_SEED_CHECKBOX_DESC": "Sì!",
   "FIRMWARE_USER_TAKES_RESPONSIBILITY_CHECKBOX_DESC": "Vivo pericolosamente!",
@@ -187,7 +186,6 @@
   "TR_ACCOUNT_IS_EMPTY_DESCRIPTION": "Inizia ricevendo le transazioni o comprando {network}.",
   "TR_ACCOUNT_TYPE_BIP44_TECH": "BIP44, P2PKH, Base58",
   "TR_ALLOW_ANALYTICS_DESCRIPTION": "Trezor Suite NON monitora alcun dato correlato al saldo o personale, tutto anonimanente",
-  "TR_ALL_THE_WORDS": "Tutte le parole sono inserite solo sul dispositivo come una funzionalità aggiuntiva di sicurezza. Sei pregato di inserire tutte le parole nell'ordine corretto con cautela.",
   "TR_ALL_TRANSACTIONS": "Tutte le Transazioni",
   "TR_APPLICATION": "Applicazione",
   "TR_ASSETS": "Risorse",
@@ -264,7 +262,6 @@
   "TR_CHECK_SEED_IN_SETTINGS": "Controlla il seed nelle Impostazioni",
   "TR_CHECK_YOUR_DEVICE": "Controlla il tuo dispositivo",
   "TR_CHOOSE_WALLET": "Scegli il portafoglio",
-  "TR_CHOSE_RECOVERY_TYPE": "Scegli il tipo di recupero",
   "TR_CREATE_BACKUP": "Crea backup",
   "TR_CREATE_HIDDEN_WALLET": "Crea portafoglio nascosto",
   "TR_CREATE_WALLET": "Crea portafoglio",
@@ -303,7 +300,10 @@
   "TR_DEVICE_IN_RECOVERY_MODE": "Il tuo dispositivo è in modalità recupero.",
   "TR_DEVICE_IN_RECOVERY_MODE_DESC": "Questo dispositivo è in modalità di ripristino. Clicca il pulsante per continuare.",
   "TR_DEVICE_SETTINGS_HOMESCREEN_EDITOR": "Editor della schermata home",
-  "TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS_T1": "Supporta PNG o JPG da 128 x 64 pixel, usando solo bianco e nero (non scala di grigi).",
-  "TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS_TT": "Supporta PNG o JPG da 144 x 144 pixel",
-  "TR_EXCHANGE_FEES_INFO": "All fees included; the transaction fee is estimated at {feeAmount} ({feeAmountFiat})."
+  "TR_EXCHANGE_FEES_INFO": "All fees included; the transaction fee is estimated at {feeAmount} ({feeAmountFiat}).",
+  "TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS_BW_128x64": "Supporta PNG o JPG da 128 x 64 pixel, usando solo bianco e nero (non scala di grigi).",
+  "TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS_COLOR_144x144": "Supporta PNG o JPG da 144 x 144 pixel",
+  "TR_CHOOSE_RECOVERY_TYPE": "Scegli il tipo di recupero",
+  "TR_ENTER_SEED_WORDS_ON_DEVICE": "Tutte le parole sono inserite solo sul dispositivo come una funzionalità aggiuntiva di sicurezza. Sei pregato di inserire tutte le parole nell'ordine corretto con cautela.",
+  "TR_DEVICE_CONNECTED_BOOTLOADER_RECONNECT_IN_NORMAL_NO_BUTTON": "Sei pregato di assicurarti di non star premendo alcun pulsante connettendo il tuo dispositivo."
 }

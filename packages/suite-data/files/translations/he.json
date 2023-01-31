@@ -46,7 +46,6 @@
   "FEE_LEVEL_HIGH": "גבוהה",
   "FEE_LEVEL_LOW": "נמוכה",
   "FEE_LEVEL_NORMAL": "רגילה",
-  "FIRMWARE_CONNECT_IN_NORMAL_MODEL_1": "אין ללחוץ על שום כפתור בזמן חיבור הכבל.",
   "FIRMWARE_CONNECT_IN_NORMAL_MODEL_2": "אנא ודאי כי אינך לוחצת על שום כפתור בזמן חיבור המכשיר.",
   "FIRMWARE_USER_HAS_SEED_CHECKBOX_DESC": "כן, אני כן!",
   "FIRMWARE_USER_TAKES_RESPONSIBILITY_CHECKBOX_DESC": "אני מקבלת את הסיכון",
@@ -130,5 +129,6 @@
   "TR_ONBOARDING_STEP_FIRMWARE": "קושחה",
   "TR_SETTINGS": "הגדרות",
   "TR_UP_TO_DATE": "עדכנית",
-  "TR_WALLET": "חשבונות"
+  "TR_WALLET": "חשבונות",
+  "TR_DEVICE_CONNECTED_BOOTLOADER_RECONNECT_IN_NORMAL_NO_BUTTON": "אין ללחוץ על שום כפתור בזמן חיבור הכבל."
 }

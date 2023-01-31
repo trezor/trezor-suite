@@ -1909,7 +1909,7 @@ export default defineMessages({
     },
     TR_BACKUP_SUBHEADING_1: {
         defaultMessage:
-            'Your Trezor will generate a list of words which you need to write down. This information is the most important part of securing your Trezor: it is the only offline backup of your Trezor and all wallets associated with it.',
+            'A seed backup is a series of randomly generated words created by your Trezor. It’s important that you write down this seed backup, as it is the only way to recover and access your funds.',
         description: 'Explanation what recovery seed is',
         id: 'TR_BACKUP_SUBHEADING_1',
     },
@@ -2092,7 +2092,7 @@ export default defineMessages({
     },
     TR_DEVICE_DISCONNECTED_DURING_ACTION_DESCRIPTION: {
         defaultMessage:
-            'Your Trezor was disconnected during the backup process. We strongly recommend that you use the factory reset option in the Suite settings to wipe your device and start the wallet backup process again.',
+            'Your Trezor was disconnected during the backup process. We strongly recommend that you use the factory reset option in Device settings to wipe your device and start the wallet backup process again.',
         description: 'Error message. Instruction what to do.',
         id: 'TR_DEVICE_DISCONNECTED_DURING_ACTION_DESCRIPTION',
     },
@@ -2620,7 +2620,7 @@ export default defineMessages({
         id: 'TR_NORMAL_ACCOUNTS',
     },
     TR_COINJOIN_ACCOUNTS: {
-        defaultMessage: 'CoinJoin accounts',
+        defaultMessage: 'Coinjoin accounts',
         id: 'TR_COINJOIN_ACCOUNTS',
     },
     TR_TAPROOT_ACCOUNTS: {
@@ -2810,15 +2810,15 @@ export default defineMessages({
         id: 'TR_NETWORK_ZCASH',
     },
     TR_NETWORK_COINJOIN_BITCOIN: {
-        defaultMessage: 'CoinJoin',
+        defaultMessage: 'Coinjoin',
         id: 'TR_NETWORK_COINJOIN_BITCOIN',
     },
     TR_NETWORK_COINJOIN_BITCOIN_TESTNET: {
-        defaultMessage: 'CoinJoin Testnet',
+        defaultMessage: 'Coinjoin Testnet',
         id: 'TR_NETWORK_COINJOIN_BITCOIN_TESTNET',
     },
     TR_NETWORK_COINJOIN_BITCOIN_REGTEST: {
-        defaultMessage: 'CoinJoin Regtest',
+        defaultMessage: 'Coinjoin Regtest',
         id: 'TR_NETWORK_COINJOIN_BITCOIN_REGTEST',
     },
     TR_NEW_COMMUNICATION_TOOL: {
@@ -3357,7 +3357,7 @@ export default defineMessages({
         id: 'TR_FAILED_TRANSACTION',
     },
     TR_JOINT_TRANSACTION: {
-        defaultMessage: 'CoinJoin transaction',
+        defaultMessage: 'Coinjoin transaction',
         id: 'TR_JOINT_TRANSACTION',
     },
     TR_JOINT_TRANSACTION_TARGET: {
@@ -3365,7 +3365,7 @@ export default defineMessages({
         id: 'TR_JOINT_TRANSACTION_TARGET',
     },
     TR_COINJOIN_TRANSACTION_BATCH: {
-        defaultMessage: 'CoinJoin transactions',
+        defaultMessage: 'Coinjoin transactions',
         id: 'TR_COINJOIN_TRANSACTION_BATCH',
     },
     TR_UNKNOWN_ERROR_SEE_CONSOLE: {
@@ -3460,7 +3460,7 @@ export default defineMessages({
     },
     TR_WIPING_YOUR_DEVICE: {
         defaultMessage:
-            'Factory Reset wipes the device memory, erasing all information including the Recovery Seed and PIN. Only perform a Factory Reset if you have a safe offline backup of your Recovery Seed, which allows you to restore your funds.',
+            'Factory reset wipes the device memory, erasing all information including the recovery seed and PIN. Only perform a factory reset if you have a safe offline backup of your recovery seed, which allows you to restore your funds.',
         id: 'TR_WIPING_YOUR_DEVICE',
     },
     TR_WORDS: {
@@ -3641,7 +3641,7 @@ export default defineMessages({
     },
     TR_ACCOUNT_TYPE_SLIP25_NAME: {
         id: 'TR_ACCOUNT_TYPE_SLIP25_NAME',
-        defaultMessage: 'CoinJoin',
+        defaultMessage: 'Coinjoin',
     },
     TR_ACCOUNT_TYPE_SLIP25_TECH: {
         id: 'TR_ACCOUNT_TYPE_SLIP25_TECH',
@@ -3649,7 +3649,7 @@ export default defineMessages({
     },
     TR_ACCOUNT_TYPE_SLIP25_DESC: {
         id: 'TR_ACCOUNT_TYPE_SLIP25_DESC',
-        defaultMessage: 'What is a CoinJoin account?',
+        defaultMessage: 'What is a coinjoin account?',
     },
     TOAST_QR_INCORRECT_ADDRESS: {
         id: 'TOAST_QR_INCORRECT_ADDRESS',
@@ -3934,7 +3934,7 @@ export default defineMessages({
     },
     TR_TOR_REQUEST_ENABLE_FOR_COIN_JOIN_TITLE: {
         id: 'TR_TOR_REQUEST_ENABLE_FOR_COIN_JOIN_TITLE',
-        defaultMessage: '<b>Tor</b> must be enabled to remain anonymous when running CoinJoin.',
+        defaultMessage: '<b>Tor</b> must be enabled to remain anonymous when running coinjoin.',
     },
     TR_TOR_REQUEST_ENABLE_FOR_COIN_JOIN_SUBTITLE: {
         id: 'TR_TOR_REQUEST_ENABLE_FOR_COIN_JOIN_SUBTITLE',
@@ -3943,7 +3943,7 @@ export default defineMessages({
     TR_TOR_KEEP_RUNNING_FOR_COIN_JOIN_SUBTITLE: {
         id: 'TR_TOR_KEEP_RUNNING_FOR_COIN_JOIN_SUBTITLE',
         defaultMessage:
-            "Please select 'Keep running Tor' to continue or 'Stop Tor' to quit the CoinJoin process.",
+            "Please select 'Keep running Tor' to continue or 'Stop Tor' to quit the coinjoin process.",
     },
     TR_TOR_REQUEST_ENABLE_FOR_COIN_JOIN_LEAVE: {
         id: 'TR_TOR_REQUEST_ENABLE_FOR_COIN_JOIN_LEAVE',
@@ -4187,20 +4187,20 @@ export default defineMessages({
     },
     MODAL_ADD_ACCOUNT_COINJOIN_LIMIT_EXCEEDED: {
         id: 'MODAL_ADD_ACCOUNT_COINJOIN_LIMIT_EXCEEDED',
-        defaultMessage: 'You can have only one CoinJoin account per wallet.',
+        defaultMessage: 'You can have only one coinjoin account per wallet.',
     },
     MODAL_ADD_ACCOUNT_COINJOIN_NO_SUPPORT: {
         id: 'MODAL_ADD_ACCOUNT_COINJOIN_NO_SUPPORT',
-        defaultMessage: 'CoinJoin is supported only on Trezor Model T',
+        defaultMessage: 'Coinjoin is supported only on Trezor Model T',
         description: 'TODO Model R',
     },
     MODAL_ADD_ACCOUNT_COINJOIN_UPDATE_REQUIRED: {
         id: 'MODAL_ADD_ACCOUNT_COINJOIN_UPDATE_REQUIRED',
-        defaultMessage: 'Please update your Firmware to enable the CoinJoin feature.',
+        defaultMessage: 'Please update your Firmware to enable the coinjoin feature.',
     },
     MODAL_ADD_ACCOUNT_COINJOIN_DESKTOP_ONLY: {
         id: 'MODAL_ADD_ACCOUNT_COINJOIN_DESKTOP_ONLY',
-        defaultMessage: 'CoinJoin account only available on Trezor Suite desktop app.',
+        defaultMessage: 'Coinjoin account only available on Trezor Suite desktop app.',
     },
     TR_DEVICE_IN_RECOVERY_MODE: {
         id: 'TR_DEVICE_IN_RECOVERY_MODE',
@@ -4893,7 +4893,7 @@ export default defineMessages({
     },
     SHAMIR_SEED: {
         id: 'SHAMIR_SEED',
-        defaultMessage: 'Shamir share backup',
+        defaultMessage: 'Advanced shamir share backup',
         description: 'Advanced, shamir backup. Seed has multiple parts.',
     },
     SHAMIR_SEED_DESCRIPTION: {
@@ -5415,7 +5415,7 @@ export default defineMessages({
     },
     LOCKTIME_ADD_TOOLTIP: {
         id: 'LOCKTIME_ADD_TOOLTIP',
-        defaultMessage: 'Locktime sets the earliest time a transaction can be mined in to a block.',
+        defaultMessage: 'Locktime sets the earliest time a transaction can be mined into a block.',
     },
     LOCKTIME_SCHEDULE_SEND: {
         id: 'LOCKTIME_SCHEDULE_SEND',
@@ -5673,12 +5673,12 @@ export default defineMessages({
     },
     TR_AMOUNT_TOO_SMALL_FOR_COINJOIN: {
         id: 'TR_AMOUNT_TOO_SMALL_FOR_COINJOIN',
-        defaultMessage: 'Not suitable for CoinJoin - amount too small',
+        defaultMessage: 'Not suitable for coinjoin - amount too small',
         description: 'Tooltip over an icon in Coin control section',
     },
     TR_AMOUNT_TOO_BIG_FOR_COINJOIN: {
         id: 'TR_AMOUNT_TOO_BIG_FOR_COINJOIN',
-        defaultMessage: 'Not suitable for CoinJoin - amount too high',
+        defaultMessage: 'Not suitable for coinjoin - amount too high',
         description: 'Tooltip over an icon in Coin control section',
     },
     TR_CHANGE_ADDRESS_TOOLTIP: {
@@ -6170,7 +6170,8 @@ export default defineMessages({
     },
     TR_BACKUP_CHECKBOX_1_TITLE: {
         id: 'TR_BACKUP_CHECKBOX_1_TITLE',
-        defaultMessage: 'Check your backup in Device Settings before sending money to the wallet.',
+        defaultMessage:
+            'Your seed backup lets you recover your funds in case of Trezor loss or damage.',
     },
     TR_BACKUP_CHECKBOX_1_DESCRIPTION: {
         id: 'TR_BACKUP_CHECKBOX_1_DESCRIPTION',
@@ -6179,7 +6180,7 @@ export default defineMessages({
     },
     TR_BACKUP_CHECKBOX_2_TITLE: {
         id: 'TR_BACKUP_CHECKBOX_2_TITLE',
-        defaultMessage: 'Never take a photo or make a digital copy of the backup.',
+        defaultMessage: 'Never take a picture or make a digital copy of your backup.',
     },
     TR_BACKUP_CHECKBOX_2_DESCRIPTION: {
         id: 'TR_BACKUP_CHECKBOX_2_DESCRIPTION',
@@ -6188,7 +6189,7 @@ export default defineMessages({
     },
     TR_BACKUP_CHECKBOX_3_TITLE: {
         id: 'TR_BACKUP_CHECKBOX_3_TITLE',
-        defaultMessage: 'Keep your backup secured and never share it with anyone.',
+        defaultMessage: 'Store your seed backup securely and never share it with anyone.',
     },
     TR_BACKUP_CHECKBOX_3_DESCRIPTION: {
         id: 'TR_BACKUP_CHECKBOX_3_DESCRIPTION',
@@ -6897,7 +6898,7 @@ export default defineMessages({
         id: 'TR_ACCOUNT_TYPE_SHELLEY',
     },
     TR_NETWORK_CARDANO_TESTNET: {
-        defaultMessage: 'Cardano Preview Testnet',
+        defaultMessage: 'Cardano Testnet',
         id: 'TR_NETWORK_CARDANO_TESTNET',
     },
     TR_STAKING_REWARDS_TITLE: {
@@ -7261,7 +7262,7 @@ export default defineMessages({
         id: 'TR_ROUNDS_TOOLTIP',
         description: 'Coinjoin strategy item tooltip',
         defaultMessage:
-            'The required anonymity is usually not achieved in a single transaction. The number represents how many CoinJoin rounds you allow your Trezor to participate in.',
+            'The required anonymity is usually not achieved in a single transaction. The number represents how many coinjoin rounds you allow your Trezor to participate in.',
     },
     TR_SKIP_ROUNDS_TOOLTIP: {
         id: 'TR_SKIP_ROUNDS_TOOLTIP',
@@ -7352,11 +7353,11 @@ export default defineMessages({
     },
     TR_CANCEL_COINJOIN: {
         id: 'TR_CANCEL_COINJOIN',
-        defaultMessage: 'Cancel CoinJoin',
+        defaultMessage: 'Cancel coinjoin',
     },
     TR_CANCEL_COINJOIN_QUESTION: {
         id: 'TR_CANCEL_COINJOIN_QUESTION',
-        defaultMessage: 'Do you really want to cancel this CoinJoin?',
+        defaultMessage: 'Do you really want to cancel this coinjoin?',
     },
     TR_CANCEL_COINJOIN_NO: {
         id: 'TR_CANCEL_COINJOIN_NO',
@@ -7424,7 +7425,7 @@ export default defineMessages({
         id: 'TR_MORE_ROUNDS_NEEDED_DESCRIPTION',
         description: 'Modal description when coinjoin ends',
         defaultMessage:
-            'We were unable to reach your desired anonymity level within the reserved rounds. Please run another CoinJoin. You will not pay any service fees twice.',
+            'We were unable to reach your desired anonymity level within the reserved rounds. Please run another coinjoin. You will not pay any service fees twice.',
     },
     TR_OK: {
         id: 'TR_OK',
@@ -7457,7 +7458,7 @@ export default defineMessages({
     },
     TR_COINJOIN_LOGS_TITLE: {
         id: 'TR_COINJOIN_LOGS_TITLE',
-        defaultMessage: 'CoinJoin debug log',
+        defaultMessage: 'Coinjoin debug log',
     },
     TR_COINJOIN_LOGS_DESCRIPTION: {
         id: 'TR_COINJOIN_LOGS_DESCRIPTION',
@@ -7490,12 +7491,12 @@ export default defineMessages({
     TR_SEND_NOT_ANONYMIZED_COINS: {
         id: 'TR_SEND_NOT_ANONYMIZED_COINS',
         description: 'Send button text in coinjoin account when low-anonymity UTXOs are selected',
-        defaultMessage: 'Send non-anonymized Coins',
+        defaultMessage: 'Send non-anonymized coins',
     },
     TR_SIGN_WITH_NOT_ANONYMIZED_COINS: {
         id: 'TR_SIGN_WITH_NOT_ANONYMIZED_COINS',
         description: 'Sign button text in coinjoin account when low-anonymity UTXOs are selected',
-        defaultMessage: 'Sign with non-anonymized Coins',
+        defaultMessage: 'Sign with non-anonymized coins',
     },
     TR_YOU_SHOULD_ANONYMIZE: {
         id: 'TR_YOU_SHOULD_ANONYMIZE',
@@ -7522,58 +7523,58 @@ export default defineMessages({
         id: 'TR_LOADING_FACT_0',
         description: '140 symbols max',
         defaultMessage:
-            'Private funds will be hidden after you leave Trezor Suite. To find them again, use the “Hidden funds” button',
+            'Private funds will be hidden after you leave Trezor Suite. To find them again, use the “Hidden funds” button.',
     },
     TR_LOADING_FACT_1: {
         id: 'TR_LOADING_FACT_1',
         description: '140 symbols max',
         defaultMessage:
-            "The Trezor Model One was the world's first hardware wallet, released on July 29, 2014. The follow-up Trezor Model T launched in 2018",
+            'The Trezor Model One was the world’s first hardware wallet, released on July 29, 2014. The follow-up Trezor Model T launched in 2018.',
     },
     TR_LOADING_FACT_2: {
         id: 'TR_LOADING_FACT_2',
         description: '140 symbols max',
         defaultMessage:
-            "To Coinjoin you pay a fee to the coordinator of 0.3%. If you receive bitcoin from someone who uses CoinJoin, then you don't need to pay the coordinator fee",
+            "To coinjoin you pay a fee to the coordinator of 0.3%. If you receive bitcoin from someone who uses coinjoin, then you don't need to pay the coordinator fee.",
     },
     TR_LOADING_FACT_3: {
         id: 'TR_LOADING_FACT_3',
         defaultMessage:
-            'Suite will not remember your CoinJoin account to protect your privacy, unless you explicitly choose to remember the wallet',
+            'Suite will not remember your coinjoin account in order to protect your privacy, unless you explicitly choose to remember the wallet.',
     },
     TR_LOADING_FACT_4: {
         id: 'TR_LOADING_FACT_4',
         description: '140 symbols max',
         defaultMessage:
-            'About 20% of Bitcoin is stuck in wallets by users who have lost access to their private keys. This equates to about 3.67M BTC',
+            'About 20% of Bitcoin is stuck in wallets by users who have lost access to their private keys. This equates to about 3.67M BTC.',
     },
     TR_LOADING_FACT_5: {
         id: 'TR_LOADING_FACT_5',
         description: '140 symbols max',
         defaultMessage:
-            'On October 29th 2013 the first Bitcoin ATM was set up in a coffee shop in Vancouver, Canada. There were over 38,000 Bitcoin ATMs across the globe in 2022',
+            'On October 29th 2013 the first Bitcoin ATM was set up in a coffee shop in Vancouver, Canada. There were over 38,000 Bitcoin ATMs across the globe in 2022.',
     },
     TR_LOADING_FACT_6: {
         id: 'TR_LOADING_FACT_6',
         description: '140 symbols max',
         defaultMessage:
-            'Bitcoin was created in the aftermath of the 2008 financial crisis by an anonymous person (or even group of people) known only by the pseudonym Satoshi Nakamoto',
+            'Bitcoin was created in the aftermath of the 2008 financial crisis by an anonymous person (or even group of people) known only by the pseudonym Satoshi Nakamoto.',
     },
     TR_LOADING_FACT_7: {
         id: 'TR_LOADING_FACT_7',
         description: '140 symbols max',
-        defaultMessage: 'One Bitcoin is equivalent to 100M satoshis (sats)',
+        defaultMessage: 'One Bitcoin is equivalent to 100M satoshis (sats).',
     },
     TR_LOADING_FACT_8: {
         id: 'TR_LOADING_FACT_8',
         description: '140 symbols max',
-        defaultMessage: 'Less than 2% of the population owned Bitcoin in 2022',
+        defaultMessage: 'Less than 2% of the population owned Bitcoin in 2022.',
     },
     TR_LOADING_FACT_9: {
         id: 'TR_LOADING_FACT_9',
         description: '140 symbols max',
         defaultMessage:
-            'CoinJoin is a collaborative bitcoin transaction, in which you mix your bitcoin together with hundreds of others',
+            'Coinjoin is a collaborative bitcoin transaction, in which you mix your bitcoin together with hundreds of others.',
     },
     TR_LOADING_FACT_10: {
         id: 'TR_LOADING_FACT_10',
@@ -7584,34 +7585,34 @@ export default defineMessages({
     TR_LOADING_FACT_11: {
         id: 'TR_LOADING_FACT_11',
         description: '140 symbols max',
-        defaultMessage: 'A Coinjoin is a transaction with hundreds of inputs and outputs',
+        defaultMessage: 'A coinjoin is a transaction with hundreds of inputs and outputs',
     },
     TR_LOADING_FACT_12: {
         id: 'TR_LOADING_FACT_12',
         description: '140 symbols max',
         defaultMessage:
-            "Like cash, you don't keep your entire net worth in your pocket, you keep walking around money for incidental expenses. - Satoshi Nakamoto",
+            "Like cash, you don't keep your entire net worth in your pocket, you keep walking around money for incidental expenses - Satoshi Nakamoto",
     },
     TR_LOADING_FACT_13: {
         id: 'TR_LOADING_FACT_13',
         description: '140 symbols max',
-        defaultMessage: 'Privacy is not secrecy. - Eric Hughes ',
+        defaultMessage: 'Privacy is not secrecy - Eric Hughes',
     },
     TR_LOADING_FACT_14: {
         id: 'TR_LOADING_FACT_14',
         description: '140 symbols max',
         defaultMessage:
-            'Privacy is the power to selectively reveal oneself to the world. - Eric Hughes',
+            'Privacy is the power to selectively reveal oneself to the world - Eric Hughes',
     },
     TR_LOADING_FACT_15: {
         id: 'TR_LOADING_FACT_15',
         description: '140 symbols max',
-        defaultMessage: 'CoinJoin transactions requires a minimum input of 5000 sats',
+        defaultMessage: 'Coinjoin transactions require a minimum input of 5000 sats',
     },
     TR_LOADING_FACT_16: {
         id: 'TR_LOADING_FACT_16',
         description: '140 symbols max',
-        defaultMessage: 'CoinJoin account is using taproot addresses',
+        defaultMessage: 'Coinjoin accounts use taproot addresses',
     },
     TR_LOADING_FACT_17: {
         id: 'TR_LOADING_FACT_17',
@@ -7702,12 +7703,12 @@ export default defineMessages({
     },
     TR_DISABLED_ANONYMITY_CHANGE_MESSAGE: {
         id: 'TR_DISABLED_ANONYMITY_CHANGE_MESSAGE',
-        defaultMessage: 'Editing disabled while Coinjoin is running',
+        defaultMessage: 'Editing disabled while coinjoin is running',
     },
     TR_LOW_ANONYMITY_WARNING: {
         id: 'TR_LOW_ANONYMITY_WARNING',
         defaultMessage:
-            "<red>Very low anonymity.</red> We recommend using at least 1 in 5, as anything bellow isn't secure.",
+            "<red>Very low anonymity.</red> We recommend using at least 1 in 5, as anything below this threshold isn't secure.",
     },
     TR_ALL_FUNDS_ANONYMIZED: {
         id: 'TR_ALL_FUNDS_ANONYMIZED',

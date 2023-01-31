@@ -13,7 +13,6 @@
   "CUSTOM_FEE_IS_NOT_SET": "işlem ücreti belirtilmedi",
   "FEE": "İşlem Ücreti",
   "FEE_LEVEL_NORMAL": "Normal",
-  "FIRMWARE_CONNECT_IN_NORMAL_MODEL_1": "Lütfen, cihazı bağlarken hiçbir düğmeye basmadığınızdan emin olun.",
   "FIRMWARE_CONNECT_IN_NORMAL_MODEL_2": "Lütfen, bağlantı sırasındayken ekrana dokunmadığınızdan emin olun.",
   "FIRMWARE_USER_TAKES_RESPONSIBILITY_CHECKBOX_DESC": "Tehlikeli yaşıyorum!",
   "FW_CAPABILITY_CONNECT_OUTDATED": "Uygulama güncellemesi gerekli",
@@ -202,5 +201,6 @@
   "TR_WIPE_DEVICE_HEADING": "Cihazınızı sıfırlamadan önce",
   "TR_WORDS": "{count} kelime",
   "TR_YOUR_WALLET_IS_READY_WHAT": "Cüzdanınız hazır. Peki ya şimdi?",
-  "TR_YOU_WERE_DISCONNECTED_DOT": "Bağlantınız koptu."
+  "TR_YOU_WERE_DISCONNECTED_DOT": "Bağlantınız koptu.",
+  "TR_DEVICE_CONNECTED_BOOTLOADER_RECONNECT_IN_NORMAL_NO_BUTTON": "Lütfen, cihazı bağlarken hiçbir düğmeye basmadığınızdan emin olun."
 }
