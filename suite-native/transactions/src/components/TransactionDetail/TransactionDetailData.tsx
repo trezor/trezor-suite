@@ -2,7 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 
 import { Box, Card, Divider, Text, VStack } from '@suite-native/atoms';
-import { WalletAccountTransaction } from '@suite-common/wallet-types';
+import { AccountKey, WalletAccountTransaction } from '@suite-common/wallet-types';
 import { Icon } from '@trezor/icons';
 import { formatNetworkAmount, isPending, toFiatCurrency } from '@suite-common/wallet-utils';
 import { useFormatters } from '@suite-common/formatters';
@@ -14,13 +14,14 @@ import { TransactionDetailRow } from './TransactionDetailRow';
 
 type TransactionDetailDataProps = {
     transaction: WalletAccountTransaction;
+    accountKey: AccountKey;
 };
 
-export const TransactionDetailData = ({ transaction }: TransactionDetailDataProps) => {
+export const TransactionDetailData = ({ transaction, accountKey }: TransactionDetailDataProps) => {
     const { FiatAmountFormatter, CryptoAmountFormatter, DateTimeFormatter } = useFormatters();
     const fiatCurrency = useSelector(selectFiatCurrency);
     const transactionBlockTime = useSelector((state: TransactionsRootState) =>
-        selectTransactionBlockTimeById(state, transaction.txid),
+        selectTransactionBlockTimeById(state, transaction.txid, accountKey),
     );
 
     const fee = formatNetworkAmount(transaction.fee, transaction.symbol);

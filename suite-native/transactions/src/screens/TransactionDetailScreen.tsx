@@ -65,7 +65,7 @@ export const TransactionDetailScreen = ({
                     amount={cryptoAmountFormatted}
                     fiatAmount={fiatAmount}
                 />
-                <TransactionDetailData transaction={transaction} />
+                <TransactionDetailData transaction={transaction} accountKey={accountKey} />
             </VStack>
             <TransactionDetailSheets transaction={transaction} fiatCurrency={fiatCurrency} />
             <Button
