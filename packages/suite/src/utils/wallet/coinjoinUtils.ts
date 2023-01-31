@@ -315,3 +315,25 @@ export const getFirstSessionPhaseFromRoundPhase = (roundPhase?: RoundPhase): Ses
 
 export const getAccountProgressHandle = (account: Account) =>
     createHash('sha256').update(account.key).digest('hex').slice(0, 16);
+
+export const fixLoadedCoinjoinAccount = ({
+    status,
+    ...account
+}: Extract<Account, { backendType: 'coinjoin' }>): Extract<
+    Account,
+    { backendType: 'coinjoin' }
+> => {
+    let statusFixed;
+
+    // If account had been successfully discovered before stored, it should be out-of-sync after loading
+    if (status === 'ready') statusFixed = 'out-of-sync' as const;
+    // If account was in error state (= never successfully discovered before), we could fall back to initial
+    else if (status === 'error') statusFixed = 'initial' as const;
+    else statusFixed = status;
+
+    return {
+        ...account,
+        status: statusFixed,
+        syncing: undefined, // If account was syncing when stored, we have to remove the flag
+    };
+};
