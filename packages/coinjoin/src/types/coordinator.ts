@@ -6,7 +6,7 @@ export type AffiliationFlag = typeof AFFILIATION_FLAG;
 export interface CoinjoinStatus {
     roundStates: Round[];
     coinJoinFeeRateMedians: FeeRateMedians[];
-    affiliateInformation: {
+    affiliateInformation?: {
         runningAffiliateServers: AffiliationFlag[];
         coinjoinRequests: Record<string, Record<AffiliationFlag, string>>;
     };
