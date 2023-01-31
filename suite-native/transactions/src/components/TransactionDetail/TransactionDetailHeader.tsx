@@ -36,23 +36,19 @@ const transactionTypeInfo = {
     },
     self: {
         text: 'Self',
-        iconName: 'send',
     },
     joint: {
         text: 'Joint',
-        iconName: 'send',
     },
     failed: {
         text: 'Failed',
-        iconName: 'send',
     },
     unknown: {
         text: 'Unknown',
-        iconName: 'send',
     },
 } as const satisfies Record<
     TransactionType,
-    RequireAllOrNone<TransactionTypeInfo, 'sign' | 'signColor'>
+    RequireAllOrNone<TransactionTypeInfo, 'sign' | 'signColor' | 'iconName'>
 >;
 
 export const TransactionDetailHeader = ({
@@ -62,7 +58,7 @@ export const TransactionDetailHeader = ({
 }: TransactionDetailHeaderProps) => {
     const { FiatAmountFormatter } = useFormatters();
 
-    const { text, iconName } = transactionTypeInfo[type];
+    const { text } = transactionTypeInfo[type];
 
     const hasTransactionSign = type === 'sent' || type === 'recv';
 
@@ -72,7 +68,9 @@ export const TransactionDetailHeader = ({
                 <Text variant="hint" color="gray600">
                     {text}
                 </Text>
-                <Icon name={iconName} color="gray600" size="medium" />
+                {hasTransactionSign && (
+                    <Icon name={transactionTypeInfo[type].iconName} color="gray600" size="medium" />
+                )}
             </Box>
             <Box flexDirection="row">
                 {hasTransactionSign && (
