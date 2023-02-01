@@ -1,6 +1,6 @@
 import { NavigatorScreenParams } from '@react-navigation/native';
 
-import { XpubAddress } from '@suite-common/wallet-types';
+import { AccountKey, XpubAddress } from '@suite-common/wallet-types';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
 import {
@@ -60,7 +60,7 @@ export type RootStackParamList = {
     [RootStackRoutes.AppTabs]: NavigatorScreenParams<AppTabsParamList>;
     [RootStackRoutes.AccountsImport]: NavigatorScreenParams<AccountsImportStackParamList>;
     [RootStackRoutes.AccountSettings]: { accountKey: string };
-    [RootStackRoutes.TransactionDetail]: { txid: string };
+    [RootStackRoutes.TransactionDetail]: { txid: string; accountKey: AccountKey };
     [RootStackRoutes.DevUtilsStack]: undefined;
     [RootStackRoutes.ReceiveModal]: { accountKey: string };
 };

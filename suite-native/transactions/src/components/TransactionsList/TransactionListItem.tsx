@@ -6,7 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import { Color } from '@trezor/theme';
 import { Box, DiscreetText, Text } from '@suite-native/atoms';
-import { TransactionType, WalletAccountTransaction } from '@suite-common/wallet-types';
+import { AccountKey, TransactionType, WalletAccountTransaction } from '@suite-common/wallet-types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { toFiatCurrency, formatNetworkAmount } from '@suite-common/wallet-utils';
 import {
@@ -23,6 +23,7 @@ import { TransactionListItemIcon } from './TransactionListItemIcon';
 
 type TransactionListItemProps = {
     transaction: WalletAccountTransaction;
+    accountKey: AccountKey;
     isFirst?: boolean;
     isLast?: boolean;
 };
@@ -92,7 +93,7 @@ const addressStyle = prepareNativeStyle(utils => ({
 }));
 
 export const TransactionListItem = memo(
-    ({ transaction, isFirst = false, isLast = false }: TransactionListItemProps) => {
+    ({ transaction, accountKey, isFirst = false, isLast = false }: TransactionListItemProps) => {
         const { applyStyle } = useNativeStyles();
         const fiatCurrency = useSelector(selectFiatCurrency);
         const navigation =
@@ -103,12 +104,13 @@ export const TransactionListItem = memo(
         const transactionAmount = formatNetworkAmount(transaction.amount, transaction.symbol);
         const fiatAmount = toFiatCurrency(transactionAmount, fiatCurrency.label, transaction.rates);
         const transactionBlockTime = useSelector((state: TransactionsRootState) =>
-            selectTransactionBlockTimeById(state, transaction.txid),
+            selectTransactionBlockTimeById(state, transaction.txid, accountKey),
         );
 
         const handleNavigateToTransactionDetail = () => {
             navigation.navigate(RootStackRoutes.TransactionDetail, {
                 txid: transaction.txid,
+                accountKey,
             });
         };
 
