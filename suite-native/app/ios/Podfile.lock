@@ -4,6 +4,9 @@ PODS:
   - DoubleConversion (1.1.6)
   - EXApplication (5.1.1):
     - ExpoModulesCore
+  - EXAV (13.1.0):
+    - ExpoModulesCore
+    - ReactCommon/turbomodule/core
   - EXBarCodeScanner (12.3.1):
     - EXImageLoader
     - ExpoModulesCore
@@ -543,6 +546,7 @@ DEPENDENCIES:
   - boost (from `../../../node_modules/react-native/third-party-podspecs/boost.podspec`)
   - DoubleConversion (from `../../../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec`)
   - EXApplication (from `../../../node_modules/expo-application/ios`)
+  - EXAV (from `../../../node_modules/expo-av/ios`)
   - EXBarCodeScanner (from `../../../node_modules/expo-barcode-scanner/ios`)
   - EXConstants (from `../../../node_modules/expo-constants/ios`)
   - EXImageLoader (from `../../../node_modules/expo-image-loader/ios`)
@@ -651,6 +655,8 @@ EXTERNAL SOURCES:
     :podspec: "../../../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec"
   EXApplication:
     :path: "../../../node_modules/expo-application/ios"
+  EXAV:
+    :path: "../../../node_modules/expo-av/ios"
   EXBarCodeScanner:
     :path: "../../../node_modules/expo-barcode-scanner/ios"
   EXConstants:
@@ -759,10 +765,11 @@ EXTERNAL SOURCES:
     :path: "../../../node_modules/react-native/ReactCommon/yoga"
 
 SPEC CHECKSUMS:
-  boost: a7c83b31436843459a1961bfd74b96033dc77234
+  boost: 57d2868c099736d80fcd648bf211b4431e51a558
   CocoaAsyncSocket: 065fd1e645c7abab64f7a6a2007a48038fdc6a99
   DoubleConversion: 5189b271737e1565bdce30deb4a08d647e3f5f54
   EXApplication: d8f53a7eee90a870a75656280e8d4b85726ea903
+  EXAV: 4b92292fb107520a25956bea940a94a3bb4911ca
   EXBarCodeScanner: a0ce3f62afd873351c7a5743649574b57422bb7d
   EXConstants: f348da07e21b23d2b085e270d7b74f282df1a7d9
   EXImageLoader: fd053169a8ee932dd83bf1fe5487a50c26d27c2b
@@ -791,7 +798,7 @@ SPEC CHECKSUMS:
   MMKV: 9c4663aa7ca255d478ff10f2f5cb7d17c1651ccd
   MMKVCore: 89f5c8a66bba2dcd551779dea4d412eeec8ff5bb
   OpenSSL-Universal: ebc357f1e6bc71fa463ccb2fe676756aff50e88c
-  RCT-Folly: 0080d0a6ebf2577475bda044aa59e2ca1f909cda
+  RCT-Folly: 424b8c9a7a0b9ab2886ffe9c3b041ef628fd4fb1
   RCTRequired: c154ebcfbf41d6fef86c52674fc1aa08837ff538
   RCTTypeSafety: 3063e5a1e5b1dc2cbeda5c8f8926c0ad1a6b0871
   React: 0a1a36e8e81cfaac244ed88b97f23ab56e5434f0

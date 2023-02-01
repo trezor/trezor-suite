@@ -6521,6 +6521,7 @@ __metadata:
     "@suite-native/module-settings": "workspace:*"
     "@suite-native/navigation": "workspace:*"
     "@suite-native/qr-code": "workspace:*"
+    "@suite-native/video-assets": "workspace:*"
     "@trezor/connect": "workspace:9.0.6"
     "@trezor/icons": "workspace:*"
     "@trezor/styles": "workspace:*"
@@ -6823,6 +6824,20 @@ __metadata:
     react-native: 0.71.2
     react-native-gesture-handler: ^2.9.0
     react-redux: 7.2.2
+  languageName: unknown
+  linkType: soft
+
+"@suite-native/video-assets@workspace:*, @suite-native/video-assets@workspace:suite-native/video-assets":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/video-assets@workspace:suite-native/video-assets"
+  dependencies:
+    "@suite-native/atoms": "workspace:*"
+    "@trezor/styles": "workspace:*"
+    expo-av: ^13.0.2
+    prettier: 2.8.0
+    react: 18.2.0
+    react-native: 0.70.5
+    tsx: ^3.8.2
   languageName: unknown
   linkType: soft
 
@@ -16419,6 +16434,15 @@ __metadata:
     path-browserify: ^1.0.0
     url-parse: ^1.5.9
   checksum: 0c531bc2264b49a9d625e95afebf82a2b49e1550db0156401a62c72593a770c76ae5599eb9c6c5e3b418d34effb4705ab19c88568dc377671a741f373f5e5248
+  languageName: node
+  linkType: hard
+
+"expo-av@npm:^13.0.2":
+  version: 13.1.0
+  resolution: "expo-av@npm:13.1.0"
+  peerDependencies:
+    expo: "*"
+  checksum: 97d5a11b7d136f12c59f3f152ce7125a3ac629ae416ae80c3e7b9ae51d332f0a59eb1536b29f4c72aa46cb9204613d615281760ceec92a297f79360ac00cf642
   languageName: node
   linkType: hard
 

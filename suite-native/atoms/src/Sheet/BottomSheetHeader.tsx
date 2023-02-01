@@ -22,7 +22,7 @@ const sheetHeaderStyle = prepareNativeStyle(utils => ({
 }));
 
 const titlesContainer = prepareNativeStyle(_ => ({
-    maxWidth: '60%',
+    maxWidth: '70%',
 }));
 
 export const BottomSheetHeader = ({ title, subtitle, onCloseSheet }: BottomSheetHeaderProps) => {

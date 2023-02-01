@@ -20,6 +20,7 @@ import { XpubImportSection } from '../components/XpubImportSection';
 import { AccountImportHeader } from '../components/AccountImportHeader';
 import { DevXpub } from '../components/DevXpub';
 import { SelectableNetworkItem } from '../components/SelectableNetworkItem';
+import { XpubHint } from '../components/XpubHint';
 
 const cameraStyle = prepareNativeStyle(_ => ({
     alignItems: 'center',
@@ -103,6 +104,7 @@ export const XpubScanScreen = ({
             <Form form={form}>
                 <VStack spacing="medium">
                     <TextInputField name="xpubAddress" label="Enter x-pub..." />
+                    <XpubHint networkType={networks[selectedCurrencySymbol].networkType} />
                     <Button
                         onPress={onXpubFormSubmit}
                         size="large"

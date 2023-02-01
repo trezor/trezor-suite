@@ -1,0 +1,23 @@
+{
+    "name": "@suite-native/video-assets",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "test:unit": "jest -c ../../jest.config.native.js --passWithNoTests",
+        "type-check": "tsc --build",
+        "generate-videos": "yarn tsx ./scripts/generateVideos.ts"
+    },
+    "dependencies": {
+        "@suite-native/atoms": "workspace:*",
+        "@trezor/styles": "workspace:*",
+        "expo-av": "^13.0.2",
+        "prettier": "2.8.0",
+        "react": "18.2.0",
+        "react-native": "0.70.5",
+        "tsx": "^3.8.2"
+    }
+}
