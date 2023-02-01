@@ -12,9 +12,9 @@ import {
     isAnalyzing,
     isCodesignBuild,
     sentryAuthToken,
+    publicKey,
 } from '../utils/env';
 import { getRevision } from '../utils/git';
-import JWS_PUBLIC_KEY from '../utils/codesign';
 import { getPathForProject } from '../utils/path';
 // Get Suite App version from the Suite package.json
 import { suiteVersion } from '../../suite/package.json';
@@ -166,7 +166,7 @@ const config: webpack.Configuration = {
             'process.env.VERSION': JSON.stringify(suiteVersion),
             'process.env.COMMITHASH': JSON.stringify(gitRevision),
             'process.env.ASSET_PREFIX': JSON.stringify(assetPrefix),
-            'process.env.PUBLIC_KEY': JSON.stringify(JWS_PUBLIC_KEY),
+            'process.env.PUBLIC_KEY': JSON.stringify(publicKey),
             'process.env.CODESIGN_BUILD': isCodesignBuild,
             'process.env.SENTRY_RELEASE': JSON.stringify(sentryRelease),
         }),
