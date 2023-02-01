@@ -8,12 +8,6 @@ import { useSelector } from '@suite-hooks';
 import { useBitcoinAmountUnit } from '@wallet-hooks/useBitcoinAmountUnit';
 
 import { SignValue } from '@suite-common/suite-types';
-import {
-    formatCoinBalance,
-    localizeNumber,
-    networkAmountToSatoshi,
-} from '@suite-common/wallet-utils';
-import { isSignValuePositive } from '@suite-common/formatters';
 
 const Container = styled.span`
     max-width: 100%;
