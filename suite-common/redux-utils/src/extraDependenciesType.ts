@@ -4,6 +4,7 @@ import { Account, FeeInfo } from '@suite-common/wallet-types';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { BlockchainBlock, ConnectSettings, Manifest, PROTO } from '@trezor/connect';
+import { FiatCurrencyCode } from '@suite-common/suite-config';
 
 import { ActionType, SuiteCompatibleSelector, SuiteCompatibleThunk } from './types';
 
@@ -28,7 +29,7 @@ export type ExtraDependencies = {
         selectCurrentDevice: SuiteCompatibleSelector<TrezorDevice | undefined>;
         selectBitcoinAmountUnit: SuiteCompatibleSelector<PROTO.AmountUnit>;
         selectEnabledNetworks: SuiteCompatibleSelector<NetworkSymbol[]>;
-        selectLocalCurrency: SuiteCompatibleSelector<string>;
+        selectLocalCurrency: SuiteCompatibleSelector<FiatCurrencyCode>;
         selectIsPendingTransportEvent: SuiteCompatibleSelector<boolean>;
     };
     // You should only use ActionCreatorWithPayload from redux-toolkit!
@@ -38,9 +39,9 @@ export type ExtraDependencies = {
         setAccountLoadedMetadata: ActionCreatorWithPreparedPayload<[payload: Account], Account>;
         setAccountAddMetadata: ActionCreatorWithPreparedPayload<[payload: Account], Account>;
         setWalletSettingsLocalCurrency: ActionCreatorWithPreparedPayload<
-            [localCurrency: string],
+            [localCurrency: FiatCurrencyCode],
             {
-                localCurrency: string;
+                localCurrency: FiatCurrencyCode;
             }
         >;
         changeWalletSettingsNetworks: ActionCreatorWithPreparedPayload<

@@ -1,19 +1,20 @@
-import { analytics, EventType } from '@trezor/suite-analytics';
-import { FeeLevel, PROTO } from '@trezor/connect';
-
 import * as suiteActions from '@suite-actions/suiteActions';
 import { Dispatch, GetState } from '@suite-types';
-import { WALLET_SETTINGS } from './constants';
-import { UNIT_ABBREVIATIONS } from '@suite-common/suite-constants';
-
 import type { Network } from '@wallet-types';
 import { createAction } from '@reduxjs/toolkit';
+
+import { UNIT_ABBREVIATIONS } from '@suite-common/suite-constants';
+import { FeeLevel, PROTO } from '@trezor/connect';
+import { analytics, EventType } from '@trezor/suite-analytics';
+import { FiatCurrencyCode } from '@suite-common/suite-config';
+
+import { WALLET_SETTINGS } from './constants';
 
 export const setLocalCurrency = createAction(
     WALLET_SETTINGS.SET_LOCAL_CURRENCY,
     (localCurrency: string) => ({
         payload: {
-            localCurrency: localCurrency.toLowerCase(),
+            localCurrency: localCurrency.toLowerCase() as FiatCurrencyCode,
         },
     }),
 );

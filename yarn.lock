@@ -3848,7 +3848,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mobily/ts-belt@npm:^3.11.0, @mobily/ts-belt@npm:^3.13.1":
+"@mobily/ts-belt@npm:^3.13.1":
   version: 3.13.1
   resolution: "@mobily/ts-belt@npm:3.13.1"
   checksum: 507417608ddf4ecadf6f4f5dbdc32083000727d1a7a3604dc22670861f617d8bbb53622348649eab36d4d5c81b4331da7c4a3707b610866ebfadea3af27c60de
@@ -6026,12 +6026,15 @@ __metadata:
     "@suite-common/suite-constants": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
+    "@suite-common/wallet-core": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
     "@trezor/connect": "workspace:9.0.6"
     bignumber.js: ^9.1.0
     jest: ^26.6.3
     react: 18.2.0
     react-intl: ^6.2.1
+    react-redux: 7.2.2
     typescript: 4.9.3
   languageName: unknown
   linkType: soft
@@ -6040,7 +6043,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/graph@workspace:suite-common/graph"
   dependencies:
-    "@mobily/ts-belt": ^3.11.0
+    "@mobily/ts-belt": ^3.13.1
     "@suite-common/suite-config": "workspace:*"
     "@suite-common/suite-utils": "workspace:*"
     "@suite-common/test-utils": "workspace:*"
@@ -6091,6 +6094,7 @@ __metadata:
   resolution: "@suite-common/redux-utils@workspace:suite-common/redux-utils"
   dependencies:
     "@reduxjs/toolkit": 1.8.3
+    "@suite-common/suite-config": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
@@ -6257,6 +6261,7 @@ __metadata:
   resolution: "@suite-common/wallet-types@workspace:suite-common/wallet-types"
   dependencies:
     "@suite-common/intl-types": "workspace:*"
+    "@suite-common/suite-config": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-constants": "workspace:*"
     "@trezor/connect": "workspace:9.0.6"
@@ -6312,9 +6317,8 @@ __metadata:
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
-    "@suite-common/wallet-utils": "workspace:*"
     "@suite-native/atoms": "workspace:*"
-    "@suite-native/module-settings": "workspace:*"
+    "@suite-native/formatters": "workspace:*"
     "@suite-native/navigation": "workspace:*"
     "@trezor/icons": "workspace:*"
     "@trezor/styles": "workspace:*"
@@ -6387,6 +6391,21 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-native/formatters@workspace:*, @suite-native/formatters@workspace:suite-native/formatters":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/formatters@workspace:suite-native/formatters"
+  dependencies:
+    "@suite-common/formatters": "workspace:*"
+    "@suite-common/wallet-config": "workspace:*"
+    "@suite-common/wallet-core": "workspace:*"
+    "@suite-native/atoms": "workspace:*"
+    "@suite-native/module-settings": "workspace:*"
+    "@trezor/blockchain-link": "workspace:*"
+    react: 18.2.0
+    react-redux: 7.2.2
+  languageName: unknown
+  linkType: soft
+
 "@suite-native/forms@workspace:*, @suite-native/forms@workspace:suite-native/forms":
   version: 0.0.0-use.local
   resolution: "@suite-native/forms@workspace:suite-native/forms"
@@ -6451,10 +6470,10 @@ __metadata:
     "@suite-common/wallet-constants": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
-    "@suite-common/wallet-utils": "workspace:*"
     "@suite-native/accounts": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/config": "workspace:*"
+    "@suite-native/formatters": "workspace:*"
     "@suite-native/forms": "workspace:*"
     "@suite-native/module-devices": "workspace:*"
     "@suite-native/module-settings": "workspace:*"
@@ -6732,6 +6751,7 @@ __metadata:
     "@suite-common/wallet-types": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
     "@suite-native/atoms": "workspace:*"
+    "@suite-native/formatters": "workspace:*"
     "@suite-native/helpers": "workspace:*"
     "@suite-native/module-settings": "workspace:*"
     "@suite-native/navigation": "workspace:*"
@@ -7627,6 +7647,7 @@ __metadata:
     "@suite-common/metadata-types": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-config": "workspace:*"
+    "@suite-common/suite-constants": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/suite-utils": "workspace:*"
     "@suite-common/test-utils": "workspace:*"

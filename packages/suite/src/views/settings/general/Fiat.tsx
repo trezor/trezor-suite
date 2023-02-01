@@ -1,5 +1,4 @@
 import React from 'react';
-import { analytics, EventType } from '@trezor/suite-analytics';
 
 import { FIAT } from '@suite-config';
 import { Translation } from '@suite-components';
@@ -8,6 +7,9 @@ import { useSelector, useActions } from '@suite-hooks';
 import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
 import { useAnchor } from '@suite-hooks/useAnchor';
 import { SettingsAnchor } from '@suite-constants/anchors';
+
+import { analytics, EventType } from '@trezor/suite-analytics';
+import { FiatCurrencyCode } from '@suite-common/suite-config';
 
 const buildCurrencyOption = (currency: string) => ({
     value: currency,
@@ -32,7 +34,7 @@ export const Fiat = () => {
                 <ActionSelect
                     hideTextCursor
                     useKeyPressScroll
-                    onChange={(option: { value: string; label: string }) => {
+                    onChange={(option: { value: FiatCurrencyCode; label: string }) => {
                         setLocalCurrency(option.value);
                         analytics.report({
                             type: EventType.SettingsGeneralChangeFiat,

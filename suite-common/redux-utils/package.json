@@ -12,6 +12,7 @@
     },
     "dependencies": {
         "@reduxjs/toolkit": "1.8.3",
+        "@suite-common/suite-config": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",

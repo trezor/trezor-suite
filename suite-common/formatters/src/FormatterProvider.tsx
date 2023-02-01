@@ -11,7 +11,6 @@ import {
     CryptoAmountFormatterInputValue,
     prepareCryptoAmountFormatter,
 } from './formatters/prepareCryptoAmountFormatter';
-import { prepareCoinBalanceFormatter } from './formatters/prepareCoinBalanceFormatter';
 import {
     FiatAmountFormatterDataContext,
     prepareFiatAmountFormatter,
@@ -19,10 +18,10 @@ import {
 import { Formatter } from './makeFormatter';
 import { FormatterConfig, FormatterProviderConfig } from './types';
 import { SignValueFormatter } from './formatters/SignValueFormatter';
-import { prepareCurrencySymbolFormatter } from './formatters/prepareCurrencySymbolFormatter';
 import { prepareDateFormatter } from './formatters/prepareDateFormatters';
 import { prepareTimeFormatter } from './formatters/prepareTimeFormatter';
 import { prepareDateTimeFormatter } from './formatters/prepareDateTimeFormatter';
+import { prepareNetworkSymbolFormatter } from './formatters/prepareNetworkSymbolFormatter';
 
 type FormatterProviderProps = {
     children: React.ReactNode;
@@ -35,8 +34,7 @@ export type Formatters = {
         string,
         CryptoAmountFormatterDataContext
     >;
-    CoinBalanceFormatter: Formatter<string, string>;
-    CurrencySymbolFormatter: Formatter<NetworkSymbol, string>;
+    NetworkSymbolFormatter: Formatter<NetworkSymbol, string>;
     SignValueFormatter: Formatter<SignValue | undefined, string>;
     FiatAmountFormatter: Formatter<
         string | number,
@@ -52,8 +50,7 @@ export const FormatterProviderContext = createContext<Formatters>({} as Formatte
 
 export const getFormatters = (config: FormatterConfig): Formatters => {
     const CryptoAmountFormatter = prepareCryptoAmountFormatter(config);
-    const CoinBalanceFormatter = prepareCoinBalanceFormatter(config);
-    const CurrencySymbolFormatter = prepareCurrencySymbolFormatter(config);
+    const NetworkSymbolFormatter = prepareNetworkSymbolFormatter(config);
     const FiatAmountFormatter = prepareFiatAmountFormatter(config);
     const DateFormatter = prepareDateFormatter(config);
     const TimeFormatter = prepareTimeFormatter(config);
@@ -61,8 +58,7 @@ export const getFormatters = (config: FormatterConfig): Formatters => {
 
     return {
         CryptoAmountFormatter,
-        CoinBalanceFormatter,
-        CurrencySymbolFormatter,
+        NetworkSymbolFormatter,
         FiatAmountFormatter,
         DateFormatter,
         SignValueFormatter,

@@ -5,7 +5,6 @@ import { Icon } from '@trezor/icons';
 import { WalletAccountTransaction } from '@suite-common/wallet-types';
 import { Box, Card, Text, VStack } from '@suite-native/atoms';
 import { useFormatters } from '@suite-common/formatters';
-import { formatNetworkAmount } from '@suite-common/wallet-utils';
 
 import { TransactionDetailSheet } from './TransactionDetailSheet';
 
@@ -46,11 +45,6 @@ export const TransactionDetailInputsSheet = ({
     const txInputs = transaction.details.vin;
     const txOutputs = transaction.details.vin;
 
-    // TODO: needs refactoring, waiting for new formatters module
-    const formatCryptoInputAmount = (amount?: string) =>
-        CryptoAmountFormatter.format(formatNetworkAmount(amount ?? '0', transaction.symbol), {
-            symbol: transaction.symbol,
-        });
     return (
         <TransactionDetailSheet
             isVisible={isVisible}
@@ -91,7 +85,9 @@ export const TransactionDetailInputsSheet = ({
                                 <TransactionAddressAmount
                                     key={input.txid}
                                     address={input.addresses![0]}
-                                    amount={formatCryptoInputAmount(input.value)}
+                                    amount={CryptoAmountFormatter.format(input.value ?? '0', {
+                                        symbol: transaction.symbol,
+                                    })}
                                 />
                             ))}
                         </Box>
@@ -101,7 +97,9 @@ export const TransactionDetailInputsSheet = ({
                                 <TransactionAddressAmount
                                     key={output.txid}
                                     address={output.addresses![0]}
-                                    amount={formatCryptoInputAmount(output.value)}
+                                    amount={CryptoAmountFormatter.format(output.value ?? '0', {
+                                        symbol: transaction.symbol,
+                                    })}
                                 />
                             ))}
                         </Box>

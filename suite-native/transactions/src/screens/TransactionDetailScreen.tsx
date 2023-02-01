@@ -16,9 +16,6 @@ import {
     selectTransactionByTxidAndAccountKey,
     TransactionsRootState,
 } from '@suite-common/wallet-core';
-import { formatNetworkAmount, toFiatCurrency } from '@suite-common/wallet-utils';
-import { selectFiatCurrency } from '@suite-native/module-settings';
-import { useFormatters } from '@suite-common/formatters';
 import { Icon } from '@trezor/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
@@ -41,16 +38,8 @@ export const TransactionDetailScreen = ({
     const blockchainExplorer = useSelector((state: BlockchainRootState) =>
         selectBlockchainExplorerBySymbol(state, transaction?.symbol),
     );
-    const fiatCurrency = useSelector(selectFiatCurrency);
-    const { CryptoAmountFormatter } = useFormatters();
 
     if (!transaction) return null;
-
-    const transactionAmount = formatNetworkAmount(transaction.amount, transaction.symbol);
-    const fiatAmount = toFiatCurrency(transactionAmount, fiatCurrency.label, transaction.rates);
-    const cryptoAmountFormatted = CryptoAmountFormatter.format(transactionAmount, {
-        symbol: transaction.symbol,
-    });
 
     const handleOpenBlockchain = () => {
         if (!blockchainExplorer) return;
@@ -60,14 +49,10 @@ export const TransactionDetailScreen = ({
     return (
         <Screen customHorizontalPadding={utils.spacings.small} header={<ScreenHeader />}>
             <VStack spacing="large">
-                <TransactionDetailHeader
-                    type={transaction.type}
-                    amount={cryptoAmountFormatted}
-                    fiatAmount={fiatAmount}
-                />
+                <TransactionDetailHeader transaction={transaction} />
                 <TransactionDetailData transaction={transaction} accountKey={accountKey} />
             </VStack>
-            <TransactionDetailSheets transaction={transaction} fiatCurrency={fiatCurrency} />
+            <TransactionDetailSheets transaction={transaction} />
             <Button
                 onPress={handleOpenBlockchain}
                 colorScheme="gray"

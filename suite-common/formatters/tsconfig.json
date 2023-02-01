@@ -6,6 +6,8 @@
         { "path": "../suite-constants" },
         { "path": "../suite-types" },
         { "path": "../wallet-config" },
+        { "path": "../wallet-core" },
+        { "path": "../wallet-types" },
         { "path": "../wallet-utils" },
         { "path": "../../packages/connect" }
     ]

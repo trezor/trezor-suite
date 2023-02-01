@@ -1,10 +1,11 @@
 import produce from 'immer';
-import { PROTO } from '@trezor/connect';
 import { STORAGE } from '@suite-actions/constants';
-import { WalletSettings } from '@suite-common/wallet-types';
 import { WALLET_SETTINGS } from '@settings-actions/constants';
 import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
 import { Action, AppState } from '@suite-types';
+
+import { WalletSettings } from '@suite-common/wallet-types';
+import { PROTO } from '@trezor/connect';
 
 export type State = WalletSettings;
 
@@ -55,5 +56,6 @@ const settingsReducer = (state: State = initialState, action: Action): State =>
     });
 
 export const selectEnabledNetworks = (state: AppState) => state.wallet.settings.enabledNetworks;
+export const selectLocalCurrency = (state: AppState) => state.wallet.settings.localCurrency;
 
 export default settingsReducer;

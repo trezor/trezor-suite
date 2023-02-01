@@ -4,7 +4,7 @@ import { networksCompatibility as NETWORKS, NetworkSymbol } from '@suite-common/
 import { FormatterConfig } from '../types';
 import { makeFormatter } from '../makeFormatter';
 
-export const prepareCurrencySymbolFormatter = (config: FormatterConfig) =>
+export const prepareNetworkSymbolFormatter = (config: FormatterConfig) =>
     makeFormatter<NetworkSymbol, string>(symbol => {
         const { bitcoinAmountUnit } = config;
 

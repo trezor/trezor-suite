@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
 
-import { FiatCurrency } from 'suite-common/suite-config/src';
-
 import { WalletAccountTransaction } from '@suite-common/wallet-types/src';
 import { Card, VStack } from '@suite-native/atoms';
 
@@ -13,13 +11,9 @@ type SheetType = 'parameters' | 'values' | 'inputs';
 
 type TransactionDetailSheetsProps = {
     transaction: WalletAccountTransaction;
-    fiatCurrency: FiatCurrency;
 };
 
-export const TransactionDetailSheets = ({
-    transaction,
-    fiatCurrency,
-}: TransactionDetailSheetsProps) => {
+export const TransactionDetailSheets = ({ transaction }: TransactionDetailSheetsProps) => {
     const [expandedSheet, setExpandedSheet] = useState<SheetType | null>(null);
 
     const toggleSheet = (sheetName: SheetType) => {
@@ -36,7 +30,6 @@ export const TransactionDetailSheets = ({
                 <TransactionDetailValuesSheet
                     isVisible={expandedSheet === 'values'}
                     transaction={transaction}
-                    fiatCurrency={fiatCurrency}
                     onSheetVisibilityChange={() => toggleSheet('values')}
                 />
                 <TransactionDetailInputsSheet

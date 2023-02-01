@@ -77,6 +77,7 @@ export const AssetItem = ({
                         <DiscreetText>{FiatAmountFormatter.format(fiatBalance)}</DiscreetText>
                         <DiscreetText color="gray600" typography="hint">
                             {CryptoAmountFormatter.format(cryptoCurrencyValue, {
+                                isBalance: true,
                                 symbol: cryptoCurrencySymbol,
                             })}
                         </DiscreetText>
