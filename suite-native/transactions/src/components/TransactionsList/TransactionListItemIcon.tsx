@@ -10,9 +10,13 @@ type TransactionListItemIconProps = {
     transactionType: TransactionType;
 };
 
-const transactionIconMap: Partial<Record<TransactionType, IconName>> = {
+const transactionIconMap: Record<TransactionType, IconName> = {
     recv: 'receive',
     sent: 'send',
+    joint: 'placeholder',
+    self: 'placeholder',
+    failed: 'placeholder',
+    unknown: 'placeholder',
 };
 
 const transactionIconStyle = prepareNativeStyle(utils => ({
@@ -38,7 +42,7 @@ export const TransactionListItemIcon = ({
         <Box>
             <Box style={applyStyle(transactionIconStyle)}>
                 <Icon
-                    name={transactionIconMap[transactionType] ?? 'placeholder'}
+                    name={transactionIconMap[transactionType]}
                     color="gray600"
                     size="mediumLarge"
                 />
