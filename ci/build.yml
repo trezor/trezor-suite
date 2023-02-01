@@ -1,15 +1,4 @@
 # Config
-.config_sign_stable: &config_sign_stable
-  interruptible: true
-  dependencies:
-    - msg-system config sign stable
-
-.config_sign_dev: &config_sign_dev
-  interruptible: true
-  dependencies:
-    - install
-    - msg-system config sign dev
-
 .run_everything_rules: &run_everything_rules
   refs:
     - develop
@@ -32,7 +21,6 @@
 # Suite-web build
 suite-web build dev:
   stage: build
-  <<: *config_sign_dev
   variables:
     ASSET_PREFIX: /suite-web/${CI_BUILD_REF_NAME}/web
   script:
@@ -45,7 +33,6 @@ suite-web build dev:
 
 suite-web build stable codesign:
   stage: build
-  <<: *config_sign_stable
   only:
     refs:
       - codesign
@@ -97,7 +84,6 @@ suite-web build stable codesign:
 
 ## Suite desktop macOS app
 suite-desktop build mac:
-  <<: *config_sign_dev
   only:
     <<: *run_everything_rules
   tags:
@@ -109,7 +95,6 @@ suite-desktop build mac:
   <<: *build_nix
 
 suite-desktop build mac manual:
-  <<: *config_sign_dev
   when: manual
   except:
     <<: *run_everything_rules
@@ -122,7 +107,6 @@ suite-desktop build mac manual:
   <<: *build_nix
 
 suite-desktop build mac codesign:
-  <<: *config_sign_stable
   only:
     refs:
       - codesign
@@ -142,7 +126,6 @@ suite-desktop build mac codesign:
 
 ## Suite desktop Linux app
 suite-desktop build linux:
-  <<: *config_sign_dev
   only:
     <<: *run_everything_rules
   variables:
@@ -151,7 +134,6 @@ suite-desktop build linux:
   <<: *build
 
 suite-desktop build linux manual:
-  <<: *config_sign_dev
   when: manual
   except:
     <<: *run_everything_rules
@@ -161,7 +143,6 @@ suite-desktop build linux manual:
   <<: *build
 
 suite-desktop build linux codesign:
-  <<: *config_sign_stable
   only:
     refs:
       - codesign
@@ -181,7 +162,6 @@ suite-desktop build linux codesign:
 
 ## Suite desktop Windows app
 suite-desktop build windows:
-  <<: *config_sign_dev
   only:
     <<: *run_everything_rules
   image: $CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX/electronuserland/builder:16-wine
@@ -191,7 +171,6 @@ suite-desktop build windows:
   <<: *build
 
 suite-desktop build windows manual:
-  <<: *config_sign_dev
   when: manual
   except:
     <<: *run_everything_rules
@@ -202,7 +181,6 @@ suite-desktop build windows manual:
   <<: *build
 
 suite-desktop build windows codesign:
-  <<: *config_sign_stable
   only:
     refs:
       - codesign

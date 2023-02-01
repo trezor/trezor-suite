@@ -79,24 +79,6 @@ release commit messages:
   script:
     - ci/scripts/check_release_commit_messages.sh
 
-# Messaging system deploy to production
-msg-system codesign deploy:
-  stage: deploy to production
-  when: manual
-  needs:
-    - "msg-system config sign stable"
-  only:
-    refs:
-      - codesign
-  tags:
-    - deploy
-  variables:
-    AWS_CLOUDFRONT_ID: E1ERY5K2OTKKI1
-  script:
-    - source ${MSG_SYSTEM_DATA_DEPLOY_KEYFILE}
-    - aws s3 cp packages/message-system/files/config.v1.jws s3://data.trezor.io/config/stable/config.v1.jws --cache-control no-cache
-    - aws cloudfront create-invalidation --distribution-id ${AWS_CLOUDFRONT_ID} --paths '/config/stable/*'
-
 # connect v9 deploy to production jobs
 
 # Create rollback copy of connect.trezo.io

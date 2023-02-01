@@ -67,22 +67,6 @@ suite-desktop deploy sldev:
 #     - deploy
 # TODO: Disabled until the new suite native build is introduced. Fix this deploy job after.
 
-# Messaging system deploy to dev
-msg-system deploy sldev:
-  stage: deploy to dev
-  needs:
-    - "msg-system config sign dev"
-  when: manual
-  tags:
-    - deploy
-  variables:
-    AWS_CLOUDFRONT_ID: E1ERY5K2OTKKI1
-  script:
-    - source ${MSG_SYSTEM_DATA_DEPLOY_KEYFILE}
-    - aws s3 cp packages/message-system/files/config.v1.jws s3://data.trezor.io/config/develop/config.v1.jws --cache-control no-cache
-    - aws cloudfront create-invalidation --distribution-id ${AWS_CLOUDFRONT_ID} --paths '/config/develop/*'
-  interruptible: true
-
 .connect-explorer deploy dev base:
   stage: deploy to dev
   variables:
