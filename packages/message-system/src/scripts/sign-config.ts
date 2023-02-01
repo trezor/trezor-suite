@@ -5,22 +5,35 @@ import { join } from 'path';
 
 import { CONFIG_PATH, PACKAGE_ROOT, JWS_CONFIG_FILENAME } from '../constants';
 
-/* Only CI jobs flagged with "codesign", sign message system config by production private key.
- * All other branches use development key. */
-const isCodesignBuild = process.env.IS_CODESIGN_BUILD === 'true';
-let JWS_PRIVATE_KEY: string;
-
-if (isCodesignBuild) {
-    console.log('Signing config using production private key!');
-
-    JWS_PRIVATE_KEY = process.env.JWS_PRIVATE_KEY_ENV!;
-} else {
-    console.log('Signing config using develop private key!');
-
-    JWS_PRIVATE_KEY = `-----BEGIN EC PRIVATE KEY-----
+// There must be no extra spaces at the beginning of the line.
+const devPrivateKey = `-----BEGIN EC PRIVATE KEY-----
 MHQCAQEEINi7lfZE3Y5U9srS58A+AN7Ul7HeBXsHEfzVzijColOkoAcGBSuBBAAKoUQDQgAEbSUHJlr17+NywPS/w+xMkp3dSD8eWXSuAfFKwonZPe5fL63kISipJC+eJP7Mad0WxgyJoiMsZCV6BZPK2jIFdg==
 -----END EC PRIVATE KEY-----`;
-}
+
+const getPrivateKey = () => {
+    /* Only CI jobs flagged with "codesign", sign message system config by production private key.
+     * All other branches use development key. */
+    const isCodesignBuild = process.env.IS_CODESIGN_BUILD === 'true';
+
+    if (!isCodesignBuild) {
+        console.log('Signing config using develop private key!');
+
+        return devPrivateKey;
+    }
+
+    console.log('Signing config using production private key!');
+
+    const keyEnv = process.env.JWS_PRIVATE_KEY_ENV; // available on GitHub
+    const keyFile = process.env.JWS_PRIVATE_KEY_FILE; // available on GitLab
+
+    const privateKey = keyEnv || (keyFile && fs.readFileSync(keyFile, 'utf-8'));
+
+    if (!privateKey) {
+        throw Error('Missing private key!');
+    }
+
+    return privateKey;
+};
 
 const getConfigJwsSignature = () => {
     console.log('Creating a JWS signature from the config...');
@@ -30,7 +43,7 @@ const getConfigJwsSignature = () => {
     const jwsConfig = jws.sign({
         header: { alg: 'ES256' }, // Algorithm has to be consistent with the one used for verification https://github.com/trezor/trezor-suite/blob/develop/packages/suite/src/actions/suite/messageSystemActions.ts#L82
         payload: config,
-        secret: JWS_PRIVATE_KEY,
+        secret: getPrivateKey(),
     });
 
     console.log('JWS signature created!');
