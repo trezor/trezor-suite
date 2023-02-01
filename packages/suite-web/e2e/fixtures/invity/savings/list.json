@@ -1,0 +1,100 @@
+{
+    "country": "NL",
+    "providers": [
+        {
+            "name": "btcdirect-savings",
+            "companyName": "BTC Direct",
+            "isActive": true,
+            "tradedCoins": ["BTC"],
+            "tradedFiatCurrencies": ["EUR"],
+            "supportedCountries": ["BE", "CZ", "DE", "NL"],
+            "supportUrl": "https://support.btcdirect.eu/hc/en-gb?client=trezor",
+            "paymentMethods": ["bankTransfer"],
+            "identityDocuments": [
+                { "documentType": "Passport", "documentImageSides": ["Front"] },
+                { "documentType": "IdentityCard", "documentImageSides": ["Front", "Back"] },
+                { "documentType": "DrivingLicence", "documentImageSides": ["Front", "Back"] },
+                { "documentType": "ResidencePermit", "documentImageSides": ["Front", "Back"] },
+                { "documentType": "Selfie", "documentImageSides": ["Selfie"], "isRequired": true }
+            ],
+            "privacyPolicyUrl": "https://my.btcdirect.eu/en-gb/privacy-policy?client=trezor",
+            "flow": {
+                "afterLogin": { "isEnabled": false },
+                "credentials": {
+                    "isEnabled": true,
+                    "isFamilyNameEnabled": true,
+                    "isGivenNameEnabled": true,
+                    "isPhoneEnabled": true
+                },
+                "phoneVerification": { "isEnabled": true, "phoneVerificationType": "ClientApp" },
+                "afterSuccessfulPhoneVerification": { "isEnabled": true },
+                "kyc": {
+                    "isEnabled": true,
+                    "documentUploadType": "ClientApp",
+                    "isWaitingForKYCResult": false
+                },
+                "aml": { "isEnabled": true },
+                "bankAccount": { "isEnabled": false },
+                "cryptoWalletVerification": { "isEnabled": false },
+                "parameters": { "isEnabled": true, "receivingAddressCount": 1 },
+                "paymentInfo": {
+                    "isEnabled": true,
+                    "isAutomaticPaymentPlanningEnabled": false,
+                    "showReceivingAddressChangePaymentInfo": true,
+                    "coinTransferDelayed": false
+                }
+            },
+            "setupPaymentFrequencies": ["Weekly", "Biweekly", "Monthly", "Quarterly"],
+            "setupPaymentAmounts": ["30", "50", "100", "500"],
+            "minimumPaymentAmountLimit": 30,
+            "maximumPaymentAmountLimit": 2500,
+            "defaultPaymentFrequency": "Monthly",
+            "defaultPaymentAmount": 100
+        },
+        {
+            "name": "swan-bitcoin-savings",
+            "companyName": "Swan Bitcoin",
+            "logo": "swan-bitcoin.png",
+            "isActive": true,
+            "tradedCoins": ["BTC"],
+            "tradedFiatCurrencies": ["USD"],
+            "supportedCountries": ["US"],
+            "supportUrl": "https://help.swanbitcoin.com/hc/en-us/requests/new",
+            "paymentMethods": ["ach"],
+            "identityDocuments": [],
+            "privacyPolicyUrl": "https://www.swanbitcoin.com/privacy-policy",
+            "flow": {
+                "afterLogin": { "isEnabled": true },
+                "credentials": {
+                    "isEnabled": true,
+                    "isFamilyNameEnabled": true,
+                    "isGivenNameEnabled": true,
+                    "isPhoneEnabled": true
+                },
+                "phoneVerification": { "isEnabled": true, "phoneVerificationType": "External" },
+                "afterSuccessfulPhoneVerification": { "isEnabled": false },
+                "kyc": {
+                    "isEnabled": true,
+                    "documentUploadType": "External",
+                    "isWaitingForKYCResult": true
+                },
+                "aml": { "isEnabled": false },
+                "bankAccount": { "isEnabled": true },
+                "cryptoWalletVerification": { "isEnabled": false },
+                "parameters": { "isEnabled": true, "receivingAddressCount": 1 },
+                "paymentInfo": {
+                    "isEnabled": true,
+                    "isAutomaticPaymentPlanningEnabled": true,
+                    "showReceivingAddressChangePaymentInfo": false,
+                    "coinTransferDelayed": true
+                }
+            },
+            "setupPaymentFrequencies": ["Daily", "Weekly", "Monthly"],
+            "setupPaymentAmounts": ["40", "80", "120", "200"],
+            "minimumPaymentAmountLimit": 15,
+            "maximumPaymentAmountLimit": 1000,
+            "defaultPaymentFrequency": "Daily",
+            "defaultPaymentAmount": 120
+        }
+    ]
+}

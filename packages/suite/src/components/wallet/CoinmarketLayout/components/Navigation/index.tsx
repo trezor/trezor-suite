@@ -65,6 +65,7 @@ const Navigation = () => {
                 {showSavingsTab && (
                     <SavingsWalletLayoutNavLinkWrapper>
                         <WalletLayoutNavLink
+                            data-test="@coinmarket/menu/wallet-coinmarket-savings"
                             key="wallet-coinmarket-savings"
                             title="TR_NAV_SAVINGS"
                             values={{

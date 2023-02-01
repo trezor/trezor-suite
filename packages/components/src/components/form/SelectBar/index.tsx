@@ -141,7 +141,7 @@ export const SelectBar: <V extends ValueTypes>(props: SelectBarProps<V>) => JSX.
                                 : false
                         }
                         isInLine={isInLine}
-                        data-test={`select-bar/${String(option.value)}`}
+                        data-test={`@select-bar/${String(option.value)}`}
                     >
                         {option.label}
                     </Option>

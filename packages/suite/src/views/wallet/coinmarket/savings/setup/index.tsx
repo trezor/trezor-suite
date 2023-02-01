@@ -146,6 +146,7 @@ const CoinmarketSavingsSetup = (props: WithSelectedAccountLoadedProps) => {
                 defaultValue={defaultCountryOption}
                 render={({ onChange, value }) => (
                     <StyledSelect
+                        data-test="@coinmarket/savings/drop-down-country"
                         value={value}
                         label={<Translation id="TR_SAVINGS_UNSUPPORTED_COUNTRY_SELECT_LABEL" />}
                         options={regional.countriesOptions.filter(item =>
@@ -222,9 +223,14 @@ const CoinmarketSavingsSetup = (props: WithSelectedAccountLoadedProps) => {
                         annualSavingsCryptoAmount={annualSavingsCryptoAmount}
                         annualSavingsFiatAmount={annualSavingsFiatAmount}
                         fiatCurrency={fiatCurrency}
+                        data-test="@coinmarket/savings/summary"
                     />
 
-                    <ConfirmButton isDisabled={!canConfirmSetup} isLoading={isSubmitting}>
+                    <ConfirmButton
+                        data-test="@coinmarket/savings/confirm-setup"
+                        isDisabled={!canConfirmSetup}
+                        isLoading={isSubmitting}
+                    >
                         <Translation id="TR_SAVINGS_SETUP_CONFIRM_BUTTON" />
                     </ConfirmButton>
                 </>
