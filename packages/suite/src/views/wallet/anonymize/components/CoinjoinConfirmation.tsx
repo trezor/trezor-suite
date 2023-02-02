@@ -6,25 +6,18 @@ import { RECOMMENDED_SKIP_ROUNDS } from '@suite/services/coinjoin';
 import { Account } from '@suite-common/wallet-types';
 import { Translation, TrezorLink } from '@suite-components';
 import { Error } from '@suite-components/Error';
-import { useSelector, useDevice } from '@suite-hooks';
+import { useSelector } from '@suite-hooks';
 import { Button, Card, Checkbox, Link, Note, Tooltip, variables } from '@trezor/components';
 import { DATA_TOS_COINJOIN_URL, ZKSNACKS_TERMS_URL } from '@trezor/urls';
 import { startCoinjoinSession } from '@wallet-actions/coinjoinAccountActions';
 import {
-    selectCurrentCoinjoinBalanceBreakdown,
     selectCurrentTargetAnonymity,
-    selectIsCoinjoinSelectedAccountBlockedByTor,
     selectRoundsNeeded,
     selectRoundsFailRateBuffer,
 } from '@wallet-reducers/coinjoinReducer';
+import { useCoinjoinSessionBlockers } from '@suite/hooks/coinjoin/useCoinjoinSessionBlockers';
 import { getMaxRounds } from '@wallet-utils/coinjoinUtils';
-import {
-    Feature,
-    selectIsFeatureDisabled,
-    selectFeatureMessageContent,
-} from '@suite-reducers/messageSystemReducer';
 import { Tile, TileProps } from './Tile';
-import { selectDevice } from '@suite-reducers/suiteReducer';
 
 const StyledCard = styled(Card)`
     padding: 24px;
@@ -110,18 +103,12 @@ export const CoinjoinConfirmation = ({ account }: CoinjoinConfirmationProps) => 
     const targetAnonymity = useSelector(selectCurrentTargetAnonymity);
     const roundsNeeded = useSelector(state => selectRoundsNeeded(state, account.key));
     const roundsFailRateBuffer = useSelector(selectRoundsFailRateBuffer);
-    const { notAnonymized } = useSelector(selectCurrentCoinjoinBalanceBreakdown);
-    const device = useSelector(selectDevice);
-    const { isLocked } = useDevice();
-    const isCoinjoinBlockedByTor = useSelector(selectIsCoinjoinSelectedAccountBlockedByTor);
-    const isCoinjoinDisabledByFeatureFlag = useSelector(state =>
-        selectIsFeatureDisabled(state, Feature.coinjoin),
-    );
-    const featureMessageContent = useSelector(state =>
-        selectFeatureMessageContent(state, Feature.coinjoin),
-    );
 
     const dispatch = useDispatch();
+
+    const { coinjoinSessionBlockedMessage, isCoinjoinSessionBlocked } = useCoinjoinSessionBlockers(
+        account.key,
+    );
 
     const anonymitySet = account.addresses?.anonymitySet;
 
@@ -136,40 +123,17 @@ export const CoinjoinConfirmation = ({ account }: CoinjoinConfirmationProps) => 
     }
 
     const maxRounds = getMaxRounds(roundsNeeded, roundsFailRateBuffer);
-    const allAnonymized = notAnonymized === '0';
 
-    const isDisabled =
-        !termsConfirmed ||
-        allAnonymized ||
-        !device?.connected ||
-        isLocked(true) ||
-        isCoinjoinBlockedByTor ||
-        isCoinjoinDisabledByFeatureFlag;
+    const isDisabled = !termsConfirmed || isCoinjoinSessionBlocked;
 
     const getButtonTooltipMessage = () => {
-        if (isLoading) {
-            return;
-        }
-        if (isCoinjoinDisabledByFeatureFlag && featureMessageContent) {
-            return featureMessageContent;
-        }
-        if (!device?.connected) {
-            return <Translation id="TR_UNAVAILABLE_COINJOIN_DEVICE_DISCONNECTED" />;
-        }
-        if (isLocked(true)) {
-            return <Translation id="TR_UNAVAILABLE_COINJOIN_DEVICE_LOCKED" />;
-        }
-        if (isCoinjoinBlockedByTor) {
-            return <Translation id="TR_UNAVAILABLE_COINJOIN_TOR_DISABLE_TOOLTIP" />;
-        }
-        if (allAnonymized) {
-            return <Translation id="TR_NOTHING_TO_ANONYMIZE" />;
+        if (coinjoinSessionBlockedMessage) {
+            return coinjoinSessionBlockedMessage;
         }
         if (!termsConfirmed) {
             return <Translation id="TR_CONFIRM_CONDITIONS" />;
         }
     };
-
     const toggleTermsConfirmation = () => setTermsConfirmed(current => !current);
     const anonymize = async () => {
         setIsLoading(true);

@@ -283,4 +283,10 @@ export const selectLanguage = (state: SuiteRootState) => state.suite.settings.la
 
 export const selectLocks = (state: SuiteRootState) => state.suite.locks;
 
+export const selectIsDeviceLocked = memoize(
+    (state: SuiteRootState) =>
+        state.suite.locks.includes(SUITE.LOCK_TYPE.DEVICE) ||
+        state.suite.locks.includes(SUITE.LOCK_TYPE.UI),
+);
+
 export default suiteReducer;

@@ -24,6 +24,7 @@ import {
 import {
     selectCoinjoinAccounts,
     selectCoinjoinAccountByKey,
+    selectCoinjoinSessionBlockerByAccountKey,
     selectIsAccountWithSessionByAccountKey,
     selectIsAccountWithSessionInCriticalPhaseByAccountKey,
     selectIsAnySessionInCriticalPhase,
@@ -660,7 +661,7 @@ export const restoreCoinjoinSession =
         dispatch(coinjoinSessionStarting(accountKey, false));
     };
 
-export const pauseInterruptAllCoinjoinSessions = () => (dispatch: Dispatch, getState: GetState) => {
+export const interruptAllCoinjoinSessions = () => (dispatch: Dispatch, getState: GetState) => {
     const state = getState();
     const coinjoinAccounts = selectCoinjoinAccounts(state);
 
@@ -671,6 +672,22 @@ export const pauseInterruptAllCoinjoinSessions = () => (dispatch: Dispatch, getS
         }
     });
 };
+
+// check for blocking conditions of interrupted sessions and restore those eligible
+export const restoreInterruptedCoinjoinSessions =
+    () => (dispatch: Dispatch, getState: GetState) => {
+        const state = getState();
+        const coinjoinAccounts = selectCoinjoinAccounts(state);
+        const eligibleAccounts = coinjoinAccounts.filter(({ key, session }) => {
+            const hasSendFormOpen =
+                state.router.route?.name === 'wallet-send' &&
+                key === state.wallet.selectedAccount.account?.key;
+            const blocker = selectCoinjoinSessionBlockerByAccountKey(state, key);
+            return session?.interrupted && !hasSendFormOpen && !blocker;
+        });
+
+        eligibleAccounts.forEach(account => dispatch(restoreCoinjoinSession(account.key)));
+    };
 
 // called from coinjoin account UI or exceptions like device disconnection, forget wallet/account etc.
 export const stopCoinjoinSession =

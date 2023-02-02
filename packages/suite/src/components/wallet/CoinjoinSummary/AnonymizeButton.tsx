@@ -4,17 +4,8 @@ import { useDispatch } from 'react-redux';
 
 import { goto } from '@suite-actions/routerActions';
 import { Card, Translation } from '@suite-components';
-import { useSelector } from '@suite-hooks';
 import { TooltipButton } from '@trezor/components';
-import {
-    selectIsCoinjoinSelectedAccountBlockedByTor,
-    selectIsCoinjoinBlockedByAmountsTooSmall,
-} from '@wallet-reducers/coinjoinReducer';
-import {
-    Feature,
-    selectIsFeatureDisabled,
-    selectFeatureMessageContent,
-} from '@suite-reducers/messageSystemReducer';
+import { useCoinjoinSessionBlockers } from '@suite/hooks/coinjoin/useCoinjoinSessionBlockers';
 
 export const Container = styled(Card)`
     flex-direction: row;
@@ -37,47 +28,21 @@ interface AnonymizeButtonProps {
 }
 
 export const AnonymizeButton = ({ accountKey }: AnonymizeButtonProps) => {
-    const isCoinjoinBlockedByTor = useSelector(selectIsCoinjoinSelectedAccountBlockedByTor);
-    const isCoinjoinBlockedByAmountsTooSmall = useSelector(state =>
-        selectIsCoinjoinBlockedByAmountsTooSmall(state, accountKey),
-    );
-
-    const isCoinjoinDisabledByFeatureFlag = useSelector(state =>
-        selectIsFeatureDisabled(state, Feature.coinjoin),
-    );
-    const featureMessageContent = useSelector(state =>
-        selectFeatureMessageContent(state, Feature.coinjoin),
-    );
-
     const dispatch = useDispatch();
 
-    const isDisabled =
-        isCoinjoinDisabledByFeatureFlag ||
-        isCoinjoinBlockedByAmountsTooSmall ||
-        isCoinjoinBlockedByTor;
+    const { coinjoinSessionBlockedMessage, isCoinjoinSessionBlocked } =
+        useCoinjoinSessionBlockers(accountKey);
 
     const goToSetup = () => dispatch(goto('wallet-anonymize', { preserveParams: true }));
-
-    const getTooltipContent = () => {
-        if (isCoinjoinDisabledByFeatureFlag && featureMessageContent) {
-            return featureMessageContent;
-        }
-        if (isCoinjoinBlockedByTor) {
-            return <Translation id="TR_UNAVAILABLE_COINJOIN_TOR_DISABLE_TOOLTIP" />;
-        }
-        if (isCoinjoinBlockedByAmountsTooSmall) {
-            return <Translation id="TR_UNAVAILABLE_COINJOIN_AMOUNTS_TOO_SMALL" />;
-        }
-    };
 
     return (
         <Button
             onClick={goToSetup}
             icon="ARROW_RIGHT_LONG"
-            isDisabled={isDisabled}
+            isDisabled={isCoinjoinSessionBlocked}
             alignIcon="right"
             size={16}
-            tooltipContent={getTooltipContent()}
+            tooltipContent={coinjoinSessionBlockedMessage}
         >
             <Translation id="TR_ANONYMIZE" />
         </Button>
