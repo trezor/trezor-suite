@@ -6,7 +6,7 @@ import { FiatCurrencyCode } from '@suite-common/suite-config';
 export type FormatterProviderConfig = {
     locale: string;
     bitcoinAmountUnit: PROTO.AmountUnit;
-    fiatCurrency?: FiatCurrencyCode;
+    fiatCurrency: FiatCurrencyCode;
 };
 
 export interface FormatterConfig extends FormatterProviderConfig {

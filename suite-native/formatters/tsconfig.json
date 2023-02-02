@@ -11,14 +11,10 @@
         {
             "path": "../../suite-common/wallet-core"
         },
-        {
-            "path": "../../suite-common/wallet-types"
-        },
         { "path": "../atoms" },
-        { "path": "../formatters" },
-        { "path": "../navigation" },
-        { "path": "../../packages/icons" },
-        { "path": "../../packages/styles" },
-        { "path": "../../packages/theme" }
+        { "path": "../module-settings" },
+        {
+            "path": "../../packages/blockchain-link"
+        }
     ]
 }

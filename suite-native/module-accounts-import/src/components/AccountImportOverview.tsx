@@ -1,18 +1,15 @@
-import React, { useMemo } from 'react';
-import { useSelector } from 'react-redux';
+import React from 'react';
 
 import { useNavigation } from '@react-navigation/core';
 
 import { networks, NetworkSymbol } from '@suite-common/wallet-config';
-import { formatNetworkAmount, toFiatCurrency } from '@suite-common/wallet-utils';
 import { useFormatters } from '@suite-common/formatters';
 import { Box, Card, IconButton, Text } from '@suite-native/atoms';
 import { TextInputField } from '@suite-native/forms';
 import { AccountInfo } from '@trezor/connect';
 import { CryptoIcon } from '@trezor/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { selectFiatCurrency } from '@suite-native/module-settings';
-import { selectCoins } from '@suite-common/wallet-core';
+import { CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 
 type AssetsOverviewProps = {
     accountInfo: AccountInfo;
@@ -28,17 +25,8 @@ const assetCardStyle = prepareNativeStyle(utils => ({
 
 export const AccountImportOverview = ({ accountInfo, networkSymbol }: AssetsOverviewProps) => {
     const { applyStyle } = useNativeStyles();
-    const fiatCurrency = useSelector(selectFiatCurrency);
-    const coins = useSelector(selectCoins);
-    const { FiatAmountFormatter, CryptoAmountFormatter } = useFormatters();
+    const { CryptoAmountFormatter } = useFormatters();
     const navigation = useNavigation();
-
-    const fiatRates = useMemo(
-        () => coins.find(coin => coin.symbol === networkSymbol),
-        [networkSymbol, coins],
-    );
-    const cryptoAmount = formatNetworkAmount(accountInfo.availableBalance, networkSymbol);
-    const fiatAmount = toFiatCurrency(cryptoAmount, fiatCurrency.label, fiatRates?.current?.rates);
 
     return (
         <Card style={applyStyle(assetCardStyle)}>
@@ -48,9 +36,10 @@ export const AccountImportOverview = ({ accountInfo, networkSymbol }: AssetsOver
                     <Box marginLeft="medium">
                         <Text>{networks[networkSymbol].name}</Text>
                         <Text variant="label" color="gray1000">
-                            {CryptoAmountFormatter.format(cryptoAmount, {
-                                symbol: networkSymbol,
-                            })}
+                            <CryptoAmountFormatter
+                                value={accountInfo.availableBalance}
+                                symbol={networkSymbol}
+                            />
                         </Text>
                     </Box>
                 </Box>
@@ -64,7 +53,11 @@ export const AccountImportOverview = ({ accountInfo, networkSymbol }: AssetsOver
             </Box>
             <Box marginBottom="large">
                 <Text variant="titleLarge" color="gray1000">
-                    {FiatAmountFormatter.format(fiatAmount ?? 0)}
+                    <CryptoToFiatAmountFormatter
+                        value={accountInfo.availableBalance}
+                        network={networkSymbol}
+                        isDiscreetText={false}
+                    />
                 </Text>
             </Box>
             <Box>

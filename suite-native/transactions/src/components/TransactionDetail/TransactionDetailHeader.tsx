@@ -4,14 +4,13 @@ import { RequireAllOrNone } from 'type-fest';
 
 import { Box, DiscreetText, Text } from '@suite-native/atoms';
 import { Icon, IconName } from '@trezor/icons';
-import { TransactionType } from '@suite-common/wallet-types';
+import { TransactionType, WalletAccountTransaction } from '@suite-common/wallet-types';
 import { useFormatters } from '@suite-common/formatters';
 import { Color } from '@trezor/theme';
+import { CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 
 type TransactionDetailHeaderProps = {
-    type: TransactionType;
-    amount: string;
-    fiatAmount: string | null;
+    transaction: WalletAccountTransaction;
 };
 
 type TransactionTypeInfo = {
@@ -51,12 +50,9 @@ const transactionTypeInfo = {
     RequireAllOrNone<TransactionTypeInfo, 'sign' | 'signColor' | 'iconName'>
 >;
 
-export const TransactionDetailHeader = ({
-    type,
-    amount,
-    fiatAmount,
-}: TransactionDetailHeaderProps) => {
-    const { FiatAmountFormatter } = useFormatters();
+export const TransactionDetailHeader = ({ transaction }: TransactionDetailHeaderProps) => {
+    const { CryptoAmountFormatter } = useFormatters();
+    const { type } = transaction;
 
     const { text } = transactionTypeInfo[type];
 
@@ -78,11 +74,20 @@ export const TransactionDetailHeader = ({
                         {transactionTypeInfo[type].sign}
                     </Text>
                 )}
-                <DiscreetText typography="titleMedium">{amount}</DiscreetText>
+                <DiscreetText typography="titleMedium">
+                    {CryptoAmountFormatter.format(transaction.amount, {
+                        symbol: transaction.symbol,
+                    })}
+                </DiscreetText>
             </Box>
-            <DiscreetText typography="label" color="gray700">
-                {`≈  ${FiatAmountFormatter.format(fiatAmount ?? 0)}`}
-            </DiscreetText>
+            <Text>
+                ≈
+                <CryptoToFiatAmountFormatter
+                    value={transaction.amount}
+                    network={transaction.symbol}
+                    customRates={transaction.rates}
+                />
+            </Text>
         </Box>
     );
 };

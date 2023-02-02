@@ -4,14 +4,15 @@ export interface TickerId {
     tokenAddress?: string;
 }
 
+export type FiatRates = { [key: string]: number | undefined };
 export interface CurrentFiatRates {
     symbol: string;
-    rates: { [key: string]: number | undefined };
+    rates: FiatRates;
     ts: number;
 }
 
 export interface TimestampedRates {
-    rates: { [key: string]: number | undefined };
+    rates: FiatRates;
     ts: number;
 }
 

@@ -1,8 +1,6 @@
 import BigNumber from 'bignumber.js';
 
-import { CoinFiatRates } from '@suite-common/wallet-types';
-
-type FiatRates = NonNullable<CoinFiatRates['current']>['rates'];
+import { FiatRates } from '@suite-common/wallet-types';
 
 export const toFiatCurrency = (
     amount: string,

@@ -4,9 +4,9 @@ import { useSelector } from 'react-redux';
 import { Box, Card, Divider, Text, VStack } from '@suite-native/atoms';
 import { AccountKey, WalletAccountTransaction } from '@suite-common/wallet-types';
 import { Icon } from '@trezor/icons';
-import { formatNetworkAmount, isPending, toFiatCurrency } from '@suite-common/wallet-utils';
+import { isPending } from '@suite-common/wallet-utils';
 import { useFormatters } from '@suite-common/formatters';
-import { selectFiatCurrency } from '@suite-native/module-settings';
+import { CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { selectTransactionBlockTimeById, TransactionsRootState } from '@suite-common/wallet-core';
 
 import { TransactionDetailSummary } from './TransactionDetailSummary';
@@ -18,14 +18,10 @@ type TransactionDetailDataProps = {
 };
 
 export const TransactionDetailData = ({ transaction, accountKey }: TransactionDetailDataProps) => {
-    const { FiatAmountFormatter, CryptoAmountFormatter, DateTimeFormatter } = useFormatters();
-    const fiatCurrency = useSelector(selectFiatCurrency);
+    const { CryptoAmountFormatter, DateTimeFormatter } = useFormatters();
     const transactionBlockTime = useSelector((state: TransactionsRootState) =>
         selectTransactionBlockTimeById(state, transaction.txid, accountKey),
     );
-
-    const fee = formatNetworkAmount(transaction.fee, transaction.symbol);
-    const fiatFeeAmount = toFiatCurrency(fee, fiatCurrency.label, transaction.rates);
 
     // Only one input and output address for now until UX comes up with design to support multiple outputs
     const transactionOriginAddresses = transaction.details.vin[0].addresses;
@@ -55,14 +51,18 @@ export const TransactionDetailData = ({ transaction, accountKey }: TransactionDe
                     <TransactionDetailRow title="Fee">
                         <Box alignItems="flex-end">
                             <Text color="gray1000">
-                                {CryptoAmountFormatter.format(fee, {
-                                    symbol: transaction.symbol,
-                                })}
+                                <CryptoAmountFormatter
+                                    value={transaction.fee}
+                                    symbol={transaction.symbol}
+                                />
                             </Text>
                             <Text variant="hint" color="gray600">
-                                {`≈ ${FiatAmountFormatter.format(fiatFeeAmount ?? 0, {
-                                    currency: fiatCurrency.label,
-                                })}`}
+                                ≈{' '}
+                                <CryptoToFiatAmountFormatter
+                                    value={transaction.fee}
+                                    network={transaction.symbol}
+                                    customRates={transaction.rates}
+                                />
                             </Text>
                         </Box>
                     </TransactionDetailRow>

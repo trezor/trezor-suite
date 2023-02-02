@@ -14,6 +14,7 @@ export const MockedFormatterProvider = ({ children }: MockedFormatterProviderPro
 
     const formatters = getFormatters({
         locale: 'en',
+        fiatCurrency: 'usd',
         bitcoinAmountUnit: PROTO.AmountUnit.BITCOIN,
         intl,
     });

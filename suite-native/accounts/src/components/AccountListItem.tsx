@@ -1,14 +1,13 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
 
-import { AccountsRootState, selectAccountLabel, selectCoins } from '@suite-common/wallet-core';
+import { AccountsRootState, selectAccountLabel } from '@suite-common/wallet-core';
 import { Box, DiscreetText, Text } from '@suite-native/atoms';
 import { Account } from '@suite-common/wallet-types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { CryptoIcon } from '@trezor/icons';
 import { useFormatters } from '@suite-common/formatters';
-import { formatNetworkAmount, toFiatCurrency } from '@suite-common/wallet-utils';
-import { selectFiatCurrency } from '@suite-native/module-settings';
+import { CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 
 export type AccountListItemProps = {
     account: Account;
@@ -25,17 +24,7 @@ export const AccountListItem = ({ account }: AccountListItemProps) => {
     const accountLabel = useSelector((state: AccountsRootState) =>
         selectAccountLabel(state, account.key),
     );
-    const fiatCurrency = useSelector(selectFiatCurrency);
-    const coins = useSelector(selectCoins);
-    const { FiatAmountFormatter, CryptoAmountFormatter } = useFormatters();
-
-    const fiatRates = useMemo(
-        () => coins.find(coin => coin.symbol === account.symbol),
-        [account, coins],
-    );
-    // TODO this should be done with formatters once they're prepared
-    const cryptoAmount = formatNetworkAmount(account.availableBalance, account.symbol);
-    const fiatAmount = toFiatCurrency(cryptoAmount, fiatCurrency.label, fiatRates?.current?.rates);
+    const { CryptoAmountFormatter } = useFormatters();
 
     return (
         <Box
@@ -51,12 +40,14 @@ export const AccountListItem = ({ account }: AccountListItemProps) => {
                 <Text>{accountLabel}</Text>
             </Box>
             <Box alignItems="flex-end">
-                <DiscreetText color="gray1000">
-                    {FiatAmountFormatter.format(fiatAmount ?? 0)}
-                </DiscreetText>
+                <CryptoToFiatAmountFormatter
+                    value={account.availableBalance}
+                    network={account.symbol}
+                />
                 <DiscreetText typography="hint" color="gray600">
                     {CryptoAmountFormatter.format(account.formattedBalance, {
                         symbol: account.symbol,
+                        isBalance: true,
                     })}
                 </DiscreetText>
             </Box>

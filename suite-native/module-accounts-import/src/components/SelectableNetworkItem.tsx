@@ -40,7 +40,7 @@ export const SelectableNetworkItem = ({
     onPressActionButton,
 }: SelectableAssetItemProps) => {
     const { applyStyle } = useNativeStyles();
-    const { CurrencySymbolFormatter } = useFormatters();
+    const { NetworkSymbolFormatter } = useFormatters();
 
     const handlePress = () => {
         if (!onPress) return;
@@ -60,7 +60,7 @@ export const SelectableNetworkItem = ({
                         <Text variant="body">{cryptoCurrencyName}</Text>
                         <Box flexDirection="row" alignItems="center">
                             <Text variant="hint" color="gray600">
-                                {CurrencySymbolFormatter.format(cryptoCurrencySymbol)}
+                                <NetworkSymbolFormatter value={cryptoCurrencySymbol} />
                             </Text>
                         </Box>
                     </Box>

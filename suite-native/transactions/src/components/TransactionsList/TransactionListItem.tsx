@@ -8,15 +8,14 @@ import { Color } from '@trezor/theme';
 import { Box, DiscreetText, Text } from '@suite-native/atoms';
 import { AccountKey, TransactionType, WalletAccountTransaction } from '@suite-common/wallet-types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { toFiatCurrency, formatNetworkAmount } from '@suite-common/wallet-utils';
 import {
     AccountsStackRoutes,
     RootStackParamList,
     RootStackRoutes,
     StackNavigationProps,
 } from '@suite-native/navigation';
-import { selectFiatCurrency } from '@suite-native/module-settings';
 import { useFormatters } from '@suite-common/formatters';
+import { CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { selectTransactionBlockTimeById, TransactionsRootState } from '@suite-common/wallet-core';
 
 import { TransactionListItemIcon } from './TransactionListItemIcon';
@@ -95,14 +94,11 @@ const addressStyle = prepareNativeStyle(utils => ({
 export const TransactionListItem = memo(
     ({ transaction, accountKey, isFirst = false, isLast = false }: TransactionListItemProps) => {
         const { applyStyle } = useNativeStyles();
-        const fiatCurrency = useSelector(selectFiatCurrency);
         const navigation =
             useNavigation<
                 StackNavigationProps<RootStackParamList, AccountsStackRoutes.AccountDetail>
             >();
-        const { FiatAmountFormatter, CryptoAmountFormatter, DateTimeFormatter } = useFormatters();
-        const transactionAmount = formatNetworkAmount(transaction.amount, transaction.symbol);
-        const fiatAmount = toFiatCurrency(transactionAmount, fiatCurrency.label, transaction.rates);
+        const { CryptoAmountFormatter, DateTimeFormatter } = useFormatters();
         const transactionBlockTime = useSelector((state: TransactionsRootState) =>
             selectTransactionBlockTimeById(state, transaction.txid, accountKey),
         );
@@ -145,14 +141,13 @@ export const TransactionListItem = memo(
                 </Box>
 
                 <Box alignItems="flex-end">
-                    <Box flexDirection="row">
-                        <Text color={transactionTypeProperties.signColor}>
-                            {transactionTypeProperties.sign}{' '}
-                        </Text>
-                        <DiscreetText>{FiatAmountFormatter.format(fiatAmount ?? 0)}</DiscreetText>
-                    </Box>
+                    <CryptoToFiatAmountFormatter
+                        value={transaction.amount}
+                        network={transaction.symbol}
+                        customRates={transaction.rates}
+                    />
                     <DiscreetText typography="hint" color="gray600">
-                        {CryptoAmountFormatter.format(transactionAmount, {
+                        {CryptoAmountFormatter.format(transaction.amount, {
                             symbol: transaction.symbol,
                         })}
                     </DiscreetText>

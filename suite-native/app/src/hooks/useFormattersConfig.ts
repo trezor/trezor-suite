@@ -14,6 +14,6 @@ export const useFormattersConfig = (): FormatterProviderConfig => {
             fiatCurrency: fiatCurrency.label,
             bitcoinAmountUnit: PROTO.AmountUnit.BITCOIN,
         }),
-        [fiatCurrency],
+        [fiatCurrency.label],
     );
 };

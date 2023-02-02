@@ -7,11 +7,11 @@ export const isSignValuePositive = (value: SignValue) => {
         return;
     }
 
-    if (value === 'pos') {
+    if (value === 'positive') {
         return true;
     }
 
-    if (value === 'neg') {
+    if (value === 'negative') {
         return false;
     }
 
