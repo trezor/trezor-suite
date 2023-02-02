@@ -157,8 +157,19 @@ export const mapTestnetSymbol = (symbol: Network['symbol']) => {
 };
 
 export const getTagAndInfoNote = (quote: { infoNote?: string }) => {
-    if (quote.infoNote?.startsWith('#')) {
-        return { tag: quote.infoNote.substring(1) };
+    let tag = '';
+    let infoNote = (quote?.infoNote || '').trim();
+    if (infoNote.startsWith('#')) {
+        const splitNote = infoNote?.split('#') || [];
+        if (splitNote.length === 3) {
+            // infoNote contains "#badge_text#info_note_text"
+            [, tag, infoNote] = splitNote;
+        } else if (splitNote.length === 2) {
+            // infoNote contains "#badge_text"
+            infoNote = '';
+            tag = splitNote.pop() || '';
+        }
     }
-    return { infoNote: quote.infoNote };
+
+    return { tag, infoNote };
 };

@@ -77,13 +77,33 @@ describe('coinmarket utils', () => {
     });
 
     it('getTagAndInfoNote', () => {
-        expect(getTagAndInfoNote({})).toStrictEqual({ infoNote: undefined });
-        expect(getTagAndInfoNote({ infoNote: '' })).toStrictEqual({ infoNote: '' });
-        expect(getTagAndInfoNote({ infoNote: 'Foo' })).toStrictEqual({ infoNote: 'Foo' });
-        expect(getTagAndInfoNote({ infoNote: ' #Foo' })).toStrictEqual({ infoNote: ' #Foo' });
-        expect(getTagAndInfoNote({ infoNote: 'Foo#Bar' })).toStrictEqual({ infoNote: 'Foo#Bar' });
-        expect(getTagAndInfoNote({ infoNote: '#Foo' })).toStrictEqual({ tag: 'Foo' });
-        expect(getTagAndInfoNote({ infoNote: '# Foo' })).toStrictEqual({ tag: ' Foo' });
-        expect(getTagAndInfoNote({ infoNote: '##Bar' })).toStrictEqual({ tag: '#Bar' });
+        expect(getTagAndInfoNote({})).toStrictEqual({ infoNote: '', tag: '' });
+        expect(getTagAndInfoNote({ infoNote: '' })).toStrictEqual({ infoNote: '', tag: '' });
+        expect(getTagAndInfoNote({ infoNote: 'Foo' })).toStrictEqual({ infoNote: 'Foo', tag: '' });
+        expect(getTagAndInfoNote({ infoNote: ' #Foo' })).toStrictEqual({
+            infoNote: '',
+            tag: 'Foo',
+        });
+        expect(getTagAndInfoNote({ infoNote: 'Foo#Bar' })).toStrictEqual({
+            infoNote: 'Foo#Bar',
+            tag: '',
+        });
+        expect(getTagAndInfoNote({ infoNote: '#Foo' })).toStrictEqual({ infoNote: '', tag: 'Foo' });
+        expect(getTagAndInfoNote({ infoNote: '# Foo' })).toStrictEqual({
+            infoNote: '',
+            tag: ' Foo',
+        });
+        expect(getTagAndInfoNote({ infoNote: '##Bar' })).toStrictEqual({
+            infoNote: 'Bar',
+            tag: '',
+        });
+        expect(getTagAndInfoNote({ infoNote: '#Foo#Bar' })).toStrictEqual({
+            infoNote: 'Bar',
+            tag: 'Foo',
+        });
+        expect(getTagAndInfoNote({ infoNote: '  #Foo#Bar \t' })).toStrictEqual({
+            infoNote: 'Bar',
+            tag: 'Foo',
+        });
     });
 });
