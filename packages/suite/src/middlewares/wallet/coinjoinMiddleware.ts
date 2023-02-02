@@ -11,61 +11,26 @@ import * as coinjoinClientActions from '@wallet-actions/coinjoinClientActions';
 import * as storageActions from '@suite-actions/storageActions';
 import { CoinjoinService } from '@suite/services/coinjoin';
 import type { AppState, Action, Dispatch } from '@suite-types';
-import { RoundPhase, CoinjoinConfig } from '@wallet-types/coinjoin';
-import { blockchainActions, accountsActions } from '@suite-common/wallet-core';
+import { CoinjoinConfig, RoundPhase } from '@wallet-types/coinjoin';
+import { accountsActions, blockchainActions, selectAccountByKey } from '@suite-common/wallet-core';
 import {
     selectCoinjoinAccountByKey,
-    selectIsAccountWithSessionByAccountKey,
     selectIsAnySessionInCriticalPhase,
-    selectIsAccountWithPausedSessionInterruptedByAccountKey,
     selectIsAccountWithSessionInCriticalPhaseByAccountKey,
-    selectIsCoinjoinGloballyBlockedByTor,
+    selectIsCoinjoinBlockedByTor,
+    selectCoinjoinSessionBlockerByAccountKey,
 } from '@wallet-reducers/coinjoinReducer';
-import { selectDeviceState } from '@suite-reducers/suiteReducer';
+
 import {
     Feature,
-    selectIsFeatureDisabled,
     selectFeatureConfig,
+    selectIsFeatureDisabled,
 } from '@suite-reducers/messageSystemReducer';
 
 export const coinjoinMiddleware =
     (api: MiddlewareAPI<Dispatch, AppState>) =>
     (next: Dispatch) =>
     (action: Action): Action => {
-        // check for conditions that block restoring coinjoin session for all accounts
-        const isCoinjoinSessionBlockedGlobally = (state: AppState) => {
-            const deviceStatus = selectDeviceState(state);
-            const isDeviceDisconnected = deviceStatus !== 'connected';
-            const isCoinjoinBlockedByTor = selectIsCoinjoinGloballyBlockedByTor(state);
-            const isCoinjoinDisabledByFeatureFlag = selectIsFeatureDisabled(
-                state,
-                Feature.coinjoin,
-            );
-            const isCoinjoinBlockedByRoute = state.router.route?.name === 'wallet-send';
-            return (
-                isDeviceDisconnected ||
-                isCoinjoinBlockedByTor ||
-                isCoinjoinDisabledByFeatureFlag ||
-                isCoinjoinBlockedByRoute ||
-                !state.suite.online
-            );
-        };
-        // check for blocking conditions for individual accounts and restore session for those eligible
-        const restoreInterruptedCoinjoinSessions = (state: AppState) => {
-            const eligibleAccounts = state.wallet.accounts.filter(account => {
-                const coinjoinAccount = selectCoinjoinAccountByKey(state, account.key);
-                return (
-                    account.backendType === 'coinjoin' &&
-                    account.status !== 'out-of-sync' &&
-                    coinjoinAccount?.session?.interrupted &&
-                    !coinjoinAccount?.session?.starting
-                );
-            });
-            eligibleAccounts.forEach(account =>
-                api.dispatch(coinjoinAccountActions.restoreCoinjoinSession(account.key)),
-            );
-        };
-
         // cancel discovery for each CoinjoinBackend
         if (action.type === ROUTER.LOCATION_CHANGE && action.payload.app !== 'wallet') {
             CoinjoinService.getInstances().forEach(({ backend }) => backend.cancel());
@@ -81,42 +46,6 @@ export const coinjoinMiddleware =
             allowedModals.includes(modal.payload?.type)
         ) {
             return action;
-        }
-
-        if (accountsActions.updateSelectedAccount.match(action) && action.payload.account) {
-            const { account } = action.payload;
-            const state = api.getState();
-            const selectedAccountPrevStatus =
-                state?.wallet?.selectedAccount?.account?.backendType === 'coinjoin' &&
-                state?.wallet?.selectedAccount?.account?.status;
-            const selectedAccountNextStatus = account.backendType === 'coinjoin' && account.status;
-
-            if (
-                selectedAccountPrevStatus === 'ready' &&
-                selectedAccountNextStatus === 'out-of-sync'
-            ) {
-                const isAccountWithSession = selectIsAccountWithSessionByAccountKey(
-                    state,
-                    account.key,
-                );
-                const isAccountInCriticalPhase =
-                    selectIsAccountWithSessionInCriticalPhaseByAccountKey(state, account.key);
-                if (!isAccountInCriticalPhase && isAccountWithSession) {
-                    api.dispatch(coinjoinAccountActions.pauseCoinjoinSession(account.key, true));
-                }
-            } else if (
-                selectedAccountNextStatus === 'ready' &&
-                !isCoinjoinSessionBlockedGlobally(state)
-            ) {
-                // When account goes from out-of-sync to ready, session should resume automatically if
-                // there is not any other condition blocking coinjoin resume.
-                const isAccountWithPausedSessionInterrupted =
-                    selectIsAccountWithPausedSessionInterruptedByAccountKey(state, account.key);
-
-                if (isAccountWithPausedSessionInterrupted) {
-                    api.dispatch(coinjoinAccountActions.restoreCoinjoinSession(account.key));
-                }
-            }
         }
 
         // propagate action to reducers
@@ -148,18 +77,6 @@ export const coinjoinMiddleware =
             }
         }
 
-        if (action.type === DEVICE.DISCONNECT && action.payload.id) {
-            api.dispatch(coinjoinAccountActions.pauseCoinjoinSessionByDeviceId(action.payload.id));
-        }
-
-        if (action.type === SUITE.ONLINE_STATUS && !action.payload) {
-            if (selectIsAnySessionInCriticalPhase(api.getState())) {
-                api.dispatch(
-                    coinjoinClientActions.clientEmitException('Suite offline in critical phase'),
-                );
-            }
-        }
-
         if (blockchainActions.synced.match(action)) {
             const state = api.getState();
             const { symbol } = action.payload;
@@ -176,22 +93,92 @@ export const coinjoinMiddleware =
             }
         }
 
+        // Pause coinjoin session when device disconnects.
+        // This is not treated a temporary interruption with automatic restore because the user probably disconnects the device willingly.
+        if (action.type === DEVICE.DISCONNECT && action.payload.id) {
+            api.dispatch(coinjoinAccountActions.pauseCoinjoinSessionByDeviceId(action.payload.id));
+        }
+
+        // Pause/restore coinjoin session when Suite goes offline/online.
+        // This is just UX improvement as the session could not continue offline anyway.
+        if (action.type === SUITE.ONLINE_STATUS) {
+            if (action.payload === false) {
+                if (selectIsAnySessionInCriticalPhase(api.getState())) {
+                    api.dispatch(
+                        coinjoinClientActions.clientEmitException(
+                            'Suite offline in critical phase',
+                        ),
+                    );
+                }
+                api.dispatch(coinjoinAccountActions.interruptAllCoinjoinSessions());
+            } else if (action.payload === true) {
+                api.dispatch(coinjoinAccountActions.restoreInterruptedCoinjoinSessions());
+            }
+        }
+
+        // Pause/restore coinjoin session based on Tor status.
+        // Continuing coinjoin would be a privacy risk.
         if (action.type === SUITE.TOR_STATUS) {
-            const state = api.getState();
             if (['Disabling', 'Disabled', 'Error'].includes(action.payload)) {
-                if (selectIsAnySessionInCriticalPhase(state)) {
+                if (selectIsAnySessionInCriticalPhase(api.getState())) {
                     api.dispatch(
                         coinjoinClientActions.clientEmitException(
                             `TOR ${action.payload} in critical phase`,
                         ),
                     );
                 }
-                api.dispatch(coinjoinAccountActions.pauseInterruptAllCoinjoinSessions());
+                api.dispatch(coinjoinAccountActions.interruptAllCoinjoinSessions());
+            } else if (action.payload === 'Enabled') {
+                api.dispatch(coinjoinAccountActions.restoreInterruptedCoinjoinSessions());
             }
-            // We restore sessions that were interrupted when successfully Enabled if
-            // there is not any other condition blocking coinjoin resume.
-            if (action.payload === 'Enabled' && !isCoinjoinSessionBlockedGlobally(state)) {
-                restoreInterruptedCoinjoinSessions(state);
+        }
+
+        // Pause/restore coinjoin session when an account goes out of sync or in sync.
+        // As this is not crucial, it does not pause during the critical phase not to ruin a round.
+        if (accountsActions.endCoinjoinAccountSync.match(action)) {
+            const state = api.getState();
+            const { accountKey, status } = action.payload;
+            const session = selectCoinjoinAccountByKey(state, accountKey)?.session;
+            if (status === 'out-of-sync' && session && !session?.paused && !session?.starting) {
+                const isAccountInCriticalPhase =
+                    selectIsAccountWithSessionInCriticalPhaseByAccountKey(state, accountKey);
+                if (!isAccountInCriticalPhase) {
+                    api.dispatch(coinjoinAccountActions.pauseCoinjoinSession(accountKey, true));
+                }
+            } else if (status === 'ready' && session?.interrupted) {
+                const account = selectAccountByKey(state, accountKey);
+                if (account) {
+                    const blocker = selectCoinjoinSessionBlockerByAccountKey(state, account.key);
+                    if (!blocker)
+                        api.dispatch(coinjoinAccountActions.restoreCoinjoinSession(account.key));
+                }
+            }
+        }
+
+        // Pause/restore coinjoin session depending on current route.
+        // Device may be locked by another connect call, so check on LOCK_DEVICE action as well.
+        if (action.type === ROUTER.LOCATION_CHANGE || action.type === SUITE.LOCK_DEVICE) {
+            const state = api.getState();
+            const { locks } = state.suite;
+            if (!locks.includes(SUITE.LOCK_TYPE.DEVICE) && !locks.includes(SUITE.LOCK_TYPE.UI)) {
+                const previousRoute = state.router.settingsBackRoute.name;
+                if (previousRoute === 'wallet-send') {
+                    api.dispatch(coinjoinAccountActions.restoreInterruptedCoinjoinSessions());
+                } else {
+                    const accountKey = state.wallet.selectedAccount.account?.key;
+                    if (accountKey) {
+                        const session = selectCoinjoinAccountByKey(state, accountKey)?.session;
+                        if (
+                            state.router.route?.name === 'wallet-send' &&
+                            !session?.paused &&
+                            !session?.starting
+                        ) {
+                            api.dispatch(
+                                coinjoinAccountActions.pauseCoinjoinSession(accountKey, true),
+                            );
+                        }
+                    }
+                }
             }
         }
 
@@ -238,44 +225,13 @@ export const coinjoinMiddleware =
                     action.payload.round.phase === RoundPhase.Ended;
 
                 if (!isAnySessionInCriticalPhase || hasCriticalPhaseJustEnded) {
-                    api.dispatch(coinjoinAccountActions.pauseInterruptAllCoinjoinSessions());
+                    api.dispatch(coinjoinAccountActions.interruptAllCoinjoinSessions());
                 }
             }
         }
 
         if (action.type === SET_DEBUG_SETTINGS) {
             api.dispatch(storageActions.saveCoinjoinDebugSettings());
-        }
-
-        // automatically pause/restore coinjoin session depending on current route
-        // device may be locked by another connect call, so check on LOCK_DEVICE action as well
-        if (action.type === ROUTER.LOCATION_CHANGE || action.type === SUITE.LOCK_DEVICE) {
-            const state = api.getState();
-            const { locks } = state.suite;
-            if (!locks.includes(SUITE.LOCK_TYPE.DEVICE) && !locks.includes(SUITE.LOCK_TYPE.UI)) {
-                if (
-                    state.router.settingsBackRoute.name === 'wallet-send' &&
-                    !isCoinjoinSessionBlockedGlobally(state)
-                ) {
-                    // restore all interrupted sessions upon leaving send form
-                    restoreInterruptedCoinjoinSessions(state);
-                } else {
-                    const accountKey = state.wallet.selectedAccount.account?.key;
-                    if (accountKey) {
-                        const session = selectCoinjoinAccountByKey(state, accountKey)?.session;
-                        if (
-                            state.router.route?.name === 'wallet-send' &&
-                            !session?.paused &&
-                            !session?.starting
-                        ) {
-                            // pause session while in send form
-                            api.dispatch(
-                                coinjoinAccountActions.pauseCoinjoinSession(accountKey, true),
-                            );
-                        }
-                    }
-                }
-            }
         }
 
         return action;

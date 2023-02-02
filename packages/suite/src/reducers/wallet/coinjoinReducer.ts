@@ -1,6 +1,7 @@
 import produce from 'immer';
 import { memoizeWithArgs, memoize } from 'proxy-memoize';
 import BigNumber from 'bignumber.js';
+
 import { CoinjoinStatusEvent, getInputSize, getOutputSize } from '@trezor/coinjoin';
 import { PartialRecord } from '@trezor/type-utils';
 import { STORAGE } from '@suite-actions/constants';
@@ -14,6 +15,12 @@ import {
 import { COINJOIN } from '@wallet-actions/constants';
 import { Action } from '@suite-types';
 import {
+    selectDeviceState,
+    selectIsDeviceLocked,
+    selectTorState,
+    SuiteRootState,
+} from '@suite-reducers/suiteReducer';
+import {
     breakdownCoinjoinBalance,
     calculateAnonymityProgress,
     getRoundPhaseFromSessionPhase,
@@ -26,13 +33,13 @@ import {
     ESTIMATED_ROUNDS_FAIL_RATE_BUFFER,
     ESTIMATED_HOURS_PER_ROUND,
 } from '@suite/services/coinjoin';
-import {
-    SelectedAccountRootState,
-    selectSelectedAccount,
-    selectSelectedAccountParams,
-} from './selectedAccountReducer';
-import { selectTorState, SuiteRootState } from '@suite-reducers/suiteReducer';
 import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
+import {
+    Feature,
+    MessageSystemRootState,
+    selectIsFeatureDisabled,
+} from '@suite-reducers/messageSystemReducer';
+import { SelectedAccountRootState, selectSelectedAccount } from './selectedAccountReducer';
 
 export interface CoinjoinClientInstance
     extends Pick<
@@ -57,7 +64,8 @@ export type CoinjoinRootState = {
     };
 } & AccountsRootState &
     SelectedAccountRootState &
-    SuiteRootState;
+    SuiteRootState &
+    MessageSystemRootState;
 
 export const initialState: CoinjoinState = {
     accounts: [],
@@ -533,7 +541,7 @@ export const selectIsCoinjoinGloballyBlockedByTor = memoize((state: CoinjoinRoot
     return !isTorEnabled;
 });
 
-export const selectIsCoinjoinSelectedAccountBlockedByTor = memoize((state: CoinjoinRootState) => {
+export const selectIsCoinjoinBlockedByTor = memoize((state: CoinjoinRootState) => {
     const accountParams = selectSelectedAccountParams(state);
     const { isTorEnabled } = selectTorState(state);
 
@@ -568,17 +576,6 @@ export const selectIsAccountWithSessionByAccountKey = memoizeWithArgs(
     },
 );
 
-export const selectIsAccountWithPausedSessionInterruptedByAccountKey = memoizeWithArgs(
-    (state: CoinjoinRootState, accountKey: AccountKey) => {
-        const coinjoinAccount = selectCoinjoinAccountByKey(state, accountKey);
-        return (
-            coinjoinAccount?.session &&
-            coinjoinAccount.session.paused &&
-            coinjoinAccount.session.interrupted
-        );
-    },
-);
-
 export const selectMinAllowedInputWithFee = memoizeWithArgs(
     (state: CoinjoinRootState, accountKey: AccountKey) => {
         const coinjoinClient = selectCoinjoinClient(state, accountKey);
@@ -590,17 +587,20 @@ export const selectMinAllowedInputWithFee = memoizeWithArgs(
     },
 );
 
-export const selectIsCoinjoinBlockedByAmountsTooSmall = memoizeWithArgs(
+export const selectAreUtxosTooSmallByAccountKey = memoizeWithArgs(
     (state: CoinjoinRootState, accountKey: AccountKey) => {
-        const selectedAccount = selectSelectedAccount(state);
-
         const minAllowedInputWithFee = selectMinAllowedInputWithFee(state, accountKey);
-        const targetAnonymity = selectCurrentTargetAnonymity(state) || 0;
+        const account = selectAccountByKey(state, accountKey);
+        const coinjoinAccounts = selectCoinjoinAccounts(state);
+        // selectCoinjoinAccountByKey cannot be used because it is memoized and does not update on target anonymity change.
+        // selectCurrentTargetAnonymity cannot be used either because coinjoin middleware should be able to restore any session, regardless of the account being selected or not.
+        const targetAnonymity =
+            coinjoinAccounts.find(coinjoinAccount => coinjoinAccount.key === accountKey)
+                ?.targetAnonymity || 1;
+        const anonymitySet = account?.addresses?.anonymitySet || {};
+        const utxos = account?.utxo || [];
 
-        const anonymitySet = selectedAccount?.addresses?.anonymitySet || {};
-        const utxos = selectedAccount?.utxo || [];
-
-        // return true if all non-privat funds are too small
+        // Return true if all non-private funds are too small.
         return utxos
             .filter(utxo => (anonymitySet[utxo.address] ?? 1) < targetAnonymity)
             .every(utxo => new BigNumber(utxo.amount).lt(minAllowedInputWithFee));
@@ -657,5 +657,35 @@ export const selectRoundsLeft = memoizeWithArgs(
         const { maxRounds, signedRounds } = coinjoinSession;
 
         return maxRounds - signedRounds.length;
+    },
+);
+
+export const selectCoinjoinSessionBlockerByAccountKey = memoizeWithArgs(
+    (state: CoinjoinRootState, accountKey: AccountKey) => {
+        if (selectSessionByAccountKey(state, accountKey)?.starting) {
+            return 'SESSION_STARTING';
+        }
+        if (selectIsFeatureDisabled(state, Feature.coinjoin)) {
+            return 'FEATURE_DISABLED';
+        }
+        if (!state.suite.online) {
+            return 'OFFLINE';
+        }
+        if (selectAreUtxosTooSmallByAccountKey(state, accountKey)) {
+            return 'NOTHING_TO_ANONYMIZE';
+        }
+        if (selectIsCoinjoinBlockedByTor(state)) {
+            return 'TOR_DISABLED';
+        }
+        if (selectDeviceState(state) !== 'connected') {
+            return 'DEVICE_DISCONNECTED';
+        }
+        const account = selectAccountByKey(state, accountKey);
+        if (account?.backendType === 'coinjoin' && account?.status === 'out-of-sync') {
+            return 'ACCOUNT_OUT_OF_SYNC';
+        }
+        if (selectIsDeviceLocked(state)) {
+            return 'DEVICE_LOCKED';
+        }
     },
 );

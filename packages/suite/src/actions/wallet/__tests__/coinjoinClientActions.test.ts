@@ -226,9 +226,6 @@ describe('coinjoinClientActions', () => {
         store.dispatch({ type: '@suite/online-status', payload: false });
         expect(cli.client.emit).toBeCalledTimes(1);
 
-        store.dispatch({ type: '@suite/tor-status', payload: 'Disabled' });
-        expect(cli.client.emit).toBeCalledTimes(2);
-
         // restore session after previous action, and set phase to critical again
         // NOTE: dispatching { type: '@suite/tor-status', payload: 'Enabled' } requires a lot more fixtures
         const restoreSession = () => {
@@ -241,6 +238,10 @@ describe('coinjoinClientActions', () => {
                 payload: { accountKey: 'btc-account1', round: { phase: 1 } },
             });
         };
+
+        restoreSession();
+        store.dispatch({ type: '@suite/tor-status', payload: 'Disabled' });
+        expect(cli.client.emit).toBeCalledTimes(2);
 
         restoreSession();
         store.dispatch({ type: 'device-disconnect', payload: { id: 'device-id' } });
