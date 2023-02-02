@@ -10,7 +10,6 @@ import {
     SessionPhase,
 } from '@wallet-types/coinjoin';
 import {
-    ESTIMATED_ANONYMITY_GAINED_PER_ROUND,
     ESTIMATED_MIN_ROUNDS_NEEDED,
     ESTIMATED_ROUNDS_FAIL_RATE_BUFFER,
     ESTIMATED_HOURS_PER_ROUND,
@@ -171,22 +170,41 @@ export const getRegisterAccountParams = (
     changeAddresses: getCoinjoinAccountAddresses(account.addresses),
 });
 
-// calculate max rounds from anonymity levels
-export const getMaxRounds = (targetAnonymity: number, anonymitySet: AnonymitySet) => {
-    // fallback to 1 if any value is undefined or the object is empty
-    const lowestAnonymity = Math.min(...(Object.values(anonymitySet).map(item => item ?? 1) || 1));
-    const estimatedRoundsCount = Math.ceil(
-        ((targetAnonymity - lowestAnonymity) / ESTIMATED_ANONYMITY_GAINED_PER_ROUND) *
-            ESTIMATED_ROUNDS_FAIL_RATE_BUFFER,
-    );
+const getSkipRoundsRate = (skipRounds?: [number, number]) =>
+    skipRounds ? skipRounds[1] / skipRounds[0] : 1;
+
+// calculate max rounds to allow on device from estimated rounds needed
+export const getMaxRounds = (roundsNeeded: number) => {
+    const estimatedRoundsCount = Math.ceil(roundsNeeded * ESTIMATED_ROUNDS_FAIL_RATE_BUFFER);
+
     return Math.max(estimatedRoundsCount, ESTIMATED_MIN_ROUNDS_NEEDED);
 };
 
-// get time estimate in hours per round
-export const getEstimatedTimePerRound = (skipRounds?: [number, number]) =>
-    skipRounds
-        ? ESTIMATED_HOURS_PER_ROUND * (skipRounds[1] / skipRounds[0])
-        : ESTIMATED_HOURS_PER_ROUND;
+// get time estimate in millisecond per round
+export const getEstimatedTimePerRound = (
+    roundsDurationInHours: number,
+    skipRounds?: [number, number],
+) => roundsDurationInHours * 3_600_000 * getSkipRoundsRate(skipRounds);
+
+export const getSessionDeadline = ({
+    currentTimestamp,
+    roundDeadline,
+    timePerRound,
+    roundsLeft,
+    roundsNeeded,
+}: {
+    currentTimestamp: number;
+    roundDeadline: number;
+    timePerRound: number;
+    roundsLeft: number;
+    roundsNeeded: number;
+}) => {
+    const timeLeftTillRoundEnd = Math.max(roundDeadline - currentTimestamp, 0);
+
+    const sessionDeadlineRaw = currentTimestamp + Math.min(roundsNeeded, roundsLeft) * timePerRound;
+
+    return sessionDeadlineRaw + timeLeftTillRoundEnd;
+};
 
 /**
  * Transform @trezor/coinjoin CoinjoinRequestEvent.CoinjoinTransactionData to @trezor/connect signTransaction params
@@ -269,9 +287,9 @@ export const getSessionDeadlineFormat = (deadline: CoinjoinSession['sessionDeadl
     let formatToUse: Array<keyof Duration>;
     const millisecondsLeft = Number(deadline) - Date.now();
 
-    if (millisecondsLeft >= 3600000) {
+    if (millisecondsLeft >= 3_600_000) {
         formatToUse = ['hours'];
-    } else if (millisecondsLeft >= 60000) {
+    } else if (millisecondsLeft >= 60_000) {
         formatToUse = ['minutes'];
     } else {
         formatToUse = ['seconds'];

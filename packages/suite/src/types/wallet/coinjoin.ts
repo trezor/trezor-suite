@@ -25,7 +25,7 @@ export interface CoinjoinSession extends CoinjoinSessionParameters {
     sessionPhaseQueue: Array<SessionPhase>;
     roundPhase?: RoundPhase; // current phase enum
     roundPhaseDeadline?: string | number; // estimated time for phase change
-    sessionDeadline?: string | number; // estimated time for a session's end
+    sessionDeadline?: number; // estimated time for a session's end - not real deadline
     signedRounds: string[]; // already signed rounds
 }
 
