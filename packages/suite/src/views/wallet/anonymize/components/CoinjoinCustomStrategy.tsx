@@ -1,10 +1,8 @@
 import React, { useRef } from 'react';
 import styled from 'styled-components';
 
-import { RECOMMENDED_SKIP_ROUNDS } from '@suite/services/coinjoin';
 import { Translation } from '@suite-components';
 import { Button, P, Range, Switch, variables } from '@trezor/components';
-import { CoinjoinSessionDetail } from './CoinjoinSessionDetail';
 import { SliderInput } from '@wallet-components/PrivacyAccount/SliderInput';
 
 const Row = styled.div`
@@ -70,27 +68,12 @@ const MiningFee = styled.section`
     flex-grow: 1;
 `;
 
-const DetailWrapper = styled.section`
-    background: ${({ theme }) => theme.BG_GREY};
-    border-radius: 4px;
-    min-width: 260px;
-    padding: 16px;
-`;
-
-const DetailHeading = styled.div`
-    font-size: ${variables.FONT_SIZE.TINY};
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    margin-bottom: 16px;
-    text-transform: uppercase;
-`;
-
 const StyledSwitch = styled(Switch)`
     margin-top: 10px;
 `;
 
 interface CoinjoinCustomStrategyProps {
     maxFee: number;
-    maxRounds: number;
     reset: () => void;
     setMaxFee: React.Dispatch<React.SetStateAction<number>>;
     setSkipRounds: React.Dispatch<React.SetStateAction<boolean>>;
@@ -99,7 +82,6 @@ interface CoinjoinCustomStrategyProps {
 
 export const CoinjoinCustomStrategy = ({
     maxFee,
-    maxRounds,
     reset,
     setMaxFee,
     setSkipRounds,
@@ -107,7 +89,6 @@ export const CoinjoinCustomStrategy = ({
 }: CoinjoinCustomStrategyProps) => {
     const inputRef = useRef<{ setPreviousValue: (number: number) => void }>(null);
 
-    const skipRoundsValue = skipRounds ? RECOMMENDED_SKIP_ROUNDS : undefined;
     const trackStyle = {
         background:
             'linear-gradient(270deg, #bf6767 0%, #c8b882 18.73%, #c8b883 36.25%, #95cda5 43.99%,#2a9649 100%)',
@@ -163,16 +144,6 @@ export const CoinjoinCustomStrategy = ({
                         onLabelClick={handleSliderChange}
                     />
                 </MiningFee>
-                <DetailWrapper>
-                    <DetailHeading>
-                        <Translation id="TR_OVERVIEW" />
-                    </DetailHeading>
-                    <CoinjoinSessionDetail
-                        maxRounds={maxRounds}
-                        maxFee={maxFee}
-                        skipRounds={skipRoundsValue}
-                    />
-                </DetailWrapper>
             </MiddleRow>
             <Heading>
                 <Translation id="TR_SKIP_ROUNDS" />
