@@ -41,8 +41,8 @@ export const AccountListItem = ({ account }: AccountListItemProps) => {
             </Box>
             <Box alignItems="flex-end">
                 <CryptoToFiatAmountFormatter
-                  value={account.availableBalance}
-                  network={account.symbol}
+                    value={account.availableBalance}
+                    network={account.symbol}
                 />
                 <DiscreetText typography="hint" color="gray600">
                     {CryptoAmountFormatter.format(account.formattedBalance, {
