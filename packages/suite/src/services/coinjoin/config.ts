@@ -132,11 +132,11 @@ export const COINJOIN_NETWORKS: PartialRecord<NetworkSymbol, ServerEnvironment> 
 };
 
 // coinjoin strategy constants
-export const ESTIMATED_ANONYMITY_GAINED_PER_ROUND = 10;
+export const ESTIMATED_ANONYMITY_GAINED_PER_ROUND = 10; // TODO: danymic value
+export const MIN_ANONYMITY_GAINED_PER_ROUND = 0.1; // the minimum anonymity gain per coinjoin round that is used to avoid division by zero when computing roundsNeeded.
 export const ESTIMATED_ROUNDS_FAIL_RATE_BUFFER = 2.5;
 export const ESTIMATED_MIN_ROUNDS_NEEDED = 8;
 export const ESTIMATED_HOURS_PER_ROUND = 1;
-export const ESTIMATED_HOURS_BUFFER_MODIFIER = 0.25;
 export const RECOMMENDED_SKIP_ROUNDS = undefined; // temporary disabled for testing purposes // [4, 5] as [number, number];
 export const DEFAULT_MAX_MINING_FEE = 3;
 

@@ -49,13 +49,3 @@ describe('getSessionDeadlineFormat', () => {
         expect(result).toEqual(['seconds']);
     });
 });
-
-describe('getMaxRounds', () => {
-    fixtures.getMaxRounds.forEach(f => {
-        it(f.description, () => {
-            expect(
-                coinjoinUtils.getMaxRounds(f.params.targetAnonymity, f.params.anonymitySet),
-            ).toEqual(f.result);
-        });
-    });
-});
