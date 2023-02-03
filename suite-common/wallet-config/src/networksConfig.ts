@@ -25,7 +25,7 @@ export const networks = {
             taproot: {
                 name: 'Bitcoin (Taproot)',
                 bip43Path: "m/86'/0'/i'",
-                features: ['rbf', 'amount-unit'],
+                features: ['rbf', 'amount-unit'], // no sign-verify
             },
             segwit: {
                 name: 'Bitcoin (Legacy Segwit)',
@@ -71,7 +71,7 @@ export const networks = {
             tx: 'https://eth1.trezor.io/tx/',
             account: 'https://eth1.trezor.io/address/',
         },
-        features: ['sign-verify', 'tokens'],
+        features: ['rbf', 'sign-verify', 'tokens'],
         label: 'TR_NETWORK_ETHEREUM_LABEL',
         tooltip: 'TR_NETWORK_ETHEREUM_TOOLTIP',
         customBackends: ['blockbook'],
@@ -251,7 +251,7 @@ export const networks = {
             taproot: {
                 name: 'Bitcoin Testnet (taproot)',
                 bip43Path: "m/86'/1'/i'",
-                features: ['rbf', 'amount-unit'],
+                features: ['rbf', 'amount-unit'], // no sign-verify
             },
             segwit: {
                 name: 'Bitcoin Testnet (segwit)',
@@ -286,7 +286,7 @@ export const networks = {
             taproot: {
                 name: 'Bitcoin Regtest (taproot)',
                 bip43Path: "m/86'/1'/i'",
-                features: ['rbf', 'amount-unit'],
+                features: ['rbf', 'amount-unit'], // no sign-verify
             },
             segwit: {
                 name: 'Bitcoin Regtest (segwit)',
@@ -310,7 +310,7 @@ export const networks = {
             tx: 'https://ropsten1.trezor.io/tx/',
             account: 'https://ropsten1.trezor.io/address/',
         },
-        features: ['sign-verify', 'tokens'],
+        features: ['rbf', 'sign-verify', 'tokens'],
         customBackends: ['blockbook'],
         accountTypes: {},
     },
@@ -326,7 +326,7 @@ export const networks = {
             tx: 'https://goerli1.trezor.io/tx/',
             account: 'https://goerli1.trezor.io/address/',
         },
-        features: ['sign-verify', 'tokens'],
+        features: ['rbf', 'sign-verify', 'tokens'],
         customBackends: ['blockbook'],
         accountTypes: {},
     },

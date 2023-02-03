@@ -245,7 +245,7 @@ describe('account utils', () => {
 
         expect(getNetworkFeatures(btcAcc)).toEqual(['rbf', 'sign-verify', 'amount-unit']);
         expect(getNetworkFeatures(btcTaprootAcc)).toEqual(['rbf', 'amount-unit']);
-        expect(getNetworkFeatures(ethAcc)).toEqual(['sign-verify', 'tokens']);
+        expect(getNetworkFeatures(ethAcc)).toEqual(['rbf', 'sign-verify', 'tokens']);
         expect(getNetworkFeatures(coinJoinAcc)).toEqual(['amount-unit']);
     });
 
@@ -262,6 +262,7 @@ describe('account utils', () => {
         expect(hasNetworkFeatures(ethAcc, 'tokens')).toEqual(true);
         expect(hasNetworkFeatures(ethAcc, 'amount-unit')).toEqual(false);
         expect(hasNetworkFeatures(ethAcc, ['amount-unit', 'sign-verify'])).toEqual(false);
+        expect(hasNetworkFeatures(ethAcc, ['tokens', 'rbf'])).toEqual(true);
     });
 
     it('getUtxoOutpoint/readUtxoOutpoint', () => {
