@@ -27,7 +27,7 @@ import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core
 export interface CoinjoinClientInstance
     extends Pick<
         CoinjoinStatusEvent,
-        'coordinationFeeRate' | 'allowedInputAmounts' | 'feeRatesMedians'
+        'coordinationFeeRate' | 'allowedInputAmounts' | 'maxMiningFee'
     > {
     rounds: { id: string; phase: RoundPhase }[]; // store only slice of Round in reducer. may be extended in the future
     status: 'loading' | 'loaded';
@@ -552,9 +552,8 @@ export const selectMinAllowedInputWithFee = memoizeWithArgs(
         const status = coinjoinClient || DEFAULT_CLIENT_STATUS;
         const minAllowedInput = status.allowedInputAmounts.min;
         const txSize = getInputSize('Taproot') + getOutputSize('Taproot');
-        const recommendedFeeRate = status.feeRatesMedians.recommended;
 
-        return minAllowedInput + txSize * recommendedFeeRate;
+        return minAllowedInput + txSize * status.maxMiningFee;
     },
 );
 

@@ -162,7 +162,7 @@ export const CoinjoinConfirmation = ({ account }: CoinjoinConfirmationProps) => 
         dispatch(
             startCoinjoinSession(account, {
                 maxCoordinatorFeeRate: coordinatorData.coordinationFeeRate.rate,
-                maxFeePerKvbyte: coordinatorData.feeRatesMedians.recommended * 1000, // transform to kvB
+                maxFeePerKvbyte: coordinatorData.maxMiningFee * 1000, // transform to kvB
                 maxRounds,
                 skipRounds: RECOMMENDED_SKIP_ROUNDS,
                 targetAnonymity,

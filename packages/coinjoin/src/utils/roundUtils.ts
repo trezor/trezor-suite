@@ -1,5 +1,6 @@
 import {
     COORDINATOR_FEE_RATE,
+    MAX_MINING_FEE,
     MAX_ALLOWED_AMOUNT,
     MIN_ALLOWED_AMOUNT,
     PLEBS_DONT_PAY_THRESHOLD,
@@ -159,35 +160,25 @@ const getDataFromRounds = (rounds: Round[]) => {
 };
 
 /**
- * Transform from coordinator format to coinjoinReducer format `CoinjoinClientFeeRatesMedians`
- * array => object { name: value-in-vBytes }
- */
-export const transformFeeRatesMedians = (medians: CoinjoinStatus['coinJoinFeeRateMedians']) => {
-    const [fast, recommended] = medians.map(m => m.medianFeeRate);
-    // convert from kvBytes (kilo virtual bytes) to vBytes (how the value is displayed in UI)
-    const kvB2vB = (v: number) => (v ? Math.round(v / 1000) : 1);
-
-    return {
-        fast: kvB2vB(fast) * 2, // NOTE: this calculation will be smarter once have enough data
-        recommended: kvB2vB(recommended),
-    };
-};
-
-/**
  * Transform from coordinator format to coinjoinReducer format `CoinjoinClientInstance`
  * - coordinatorFeeRate: multiply the amount registered for coinjoin by this value to get the total fee
- * - feeRatesMedians: array => object with values in kvBytes
+ * - maxMiningFee: array => value in kvBytes
  */
 export const transformStatus = ({
     coinJoinFeeRateMedians,
     roundStates: rounds,
 }: CoinjoinStatus) => {
-    const feeRatesMedians = transformFeeRatesMedians(coinJoinFeeRateMedians);
     const { allowedInputAmounts, coordinationFeeRate } = getDataFromRounds(rounds);
+    // coinJoinFeeRateMedians include an array of medians per day, week and month - we take the second (week) median as the recommended fee rate
+    const recommendedMedian = coinJoinFeeRateMedians[1];
+    // the value is converted from kvBytes (kilo virtual bytes) to vBytes (how the value is displayed in UI)
+    const maxMiningFee = recommendedMedian
+        ? Math.round(coinJoinFeeRateMedians[1].medianFeeRate / 1000)
+        : MAX_MINING_FEE;
 
     return {
         rounds,
-        feeRatesMedians,
+        maxMiningFee,
         coordinationFeeRate,
         allowedInputAmounts,
     };

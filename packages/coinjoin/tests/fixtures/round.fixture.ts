@@ -136,13 +136,8 @@ export const createCoinjoinRound = (
     return round;
 };
 
-export const FEE_RATE_RESULTS = {
-    fast: 258,
-    recommended: 129,
-};
-
 export const STATUS_TRANSFORMED = {
-    feeRatesMedians: FEE_RATE_RESULTS,
+    maxMiningFee: 129,
     allowedInputAmounts: {
         max: 134375000000,
         min: 5000,
