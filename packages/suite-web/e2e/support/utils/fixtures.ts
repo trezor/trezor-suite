@@ -1,3 +1,5 @@
+import { SavingsSetupStatus } from 'invity-api';
+
 export const fixtures = {
     '/api/exchange/coins': '/invity/exchange/coins.json',
     '/api/exchange/list': '/invity/exchange/list.json',
@@ -8,4 +10,25 @@ export const fixtures = {
     '/api/buy/quotes': '/invity/buy/quotes.json',
     '/api/buy/trade': '/invity/buy/trade.json',
     '/api/buy/watch/0': '/invity/buy/watch.json',
+};
+
+const btcdirectSavingsFixturesDictionary = {
+    SetSavingsParameters: '/invity/savings/btcdirect/trade-set-savings-parameters.json',
+    ConfirmPaymentInfo: '/invity/savings/btcdirect/trade-confirm-payment-info.json',
+    Active: '/invity/savings/btcdirect/trade-active.json',
+};
+
+export const swanSavingsFixturesDictionary = {
+    SetSavingsParameters: '/invity/savings/swan/trade-set-savings-parameters.json',
+    Active: '/invity/savings/swan/trade-active.json',
+};
+
+export const btcdirectSavingsFixtures = {
+    '/api/savings/trezor/trade': (status: SavingsSetupStatus) =>
+        btcdirectSavingsFixturesDictionary[status],
+};
+
+export const swanSavingsFixtures = {
+    '/api/savings/trezor/trade': (status: SavingsSetupStatus) =>
+        swanSavingsFixturesDictionary[status],
 };
