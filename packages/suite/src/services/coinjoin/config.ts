@@ -3,6 +3,7 @@ import {
     COORDINATOR_FEE_RATE,
     MIN_ALLOWED_AMOUNT,
     MAX_ALLOWED_AMOUNT,
+    MAX_MINING_FEE,
 } from '@trezor/coinjoin/src/constants';
 import type { CoinjoinBackendSettings, CoinjoinClientSettings } from '@trezor/coinjoin';
 import type { PartialRecord } from '@trezor/type-utils';
@@ -142,7 +143,7 @@ export const DEFAULT_TARGET_ANONYMITY = 10;
 
 export const DEFAULT_CLIENT_STATUS = {
     rounds: [],
-    feeRatesMedians: { fast: 0, recommended: 0 },
+    maxMiningFee: MAX_MINING_FEE,
     coordinationFeeRate: {
         rate: COORDINATOR_FEE_RATE,
         plebsDontPayThreshold: PLEBS_DONT_PAY_THRESHOLD,

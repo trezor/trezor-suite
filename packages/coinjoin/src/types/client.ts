@@ -5,7 +5,7 @@ import { CoinjoinRequestEvent, CoinjoinRoundEvent } from './round';
 export interface CoinjoinStatusEvent {
     rounds: Round[];
     changed: Round[];
-    feeRatesMedians: { fast: number; recommended: number };
+    maxMiningFee: number;
     coordinationFeeRate: CoordinationFeeRate;
     allowedInputAmounts: AllowedRange;
 }

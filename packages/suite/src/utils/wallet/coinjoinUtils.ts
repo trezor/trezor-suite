@@ -111,12 +111,12 @@ export const calculateAnonymityProgress = ({
 
 export const transformCoinjoinStatus = ({
     coordinationFeeRate,
-    feeRatesMedians,
+    maxMiningFee,
     allowedInputAmounts,
     rounds,
 }: CoinjoinStatusEvent) => ({
     coordinationFeeRate,
-    feeRatesMedians,
+    maxMiningFee,
     allowedInputAmounts,
     rounds: rounds.map(({ id, phase }) => ({ id, phase })),
 });
