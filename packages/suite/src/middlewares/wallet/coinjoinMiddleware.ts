@@ -21,8 +21,11 @@ import {
     selectIsCoinjoinGloballyBlockedByTor,
 } from '@wallet-reducers/coinjoinReducer';
 import { selectDeviceState } from '@suite-reducers/suiteReducer';
-
-import { Feature, selectIsFeatureDisabled } from '@suite-reducers/messageSystemReducer';
+import {
+    Feature,
+    selectIsFeatureDisabled,
+    selectFeatureConfig,
+} from '@suite-reducers/messageSystemReducer';
 
 export const coinjoinMiddleware =
     (api: MiddlewareAPI<Dispatch, AppState>) =>
@@ -173,6 +176,24 @@ export const coinjoinMiddleware =
             const state = api.getState();
             if (action.payload === 'Enabled' && !isCoinjoinSessionBlockedGlobally(state)) {
                 restoreInterruptedCoinjoinSessions(state);
+            }
+        }
+
+        if (action.type === MESSAGE_SYSTEM.SAVE_VALID_MESSAGES) {
+            const state = api.getState();
+
+            const coinjoinConfig = selectFeatureConfig(state, Feature.coinjoin);
+
+            const averageAnonymityGainPerRound = Number(
+                coinjoinConfig?.averageAnonymityGainPerRound,
+            );
+
+            if (!Number.isNaN(averageAnonymityGainPerRound)) {
+                api.dispatch(
+                    coinjoinAccountActions.updateAverageAnonymityGainPerRound(
+                        averageAnonymityGainPerRound,
+                    ),
+                );
             }
         }
 

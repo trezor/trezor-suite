@@ -168,23 +168,23 @@ export const selectFeatureMessageContent = memoizeWithArgs(
     },
 );
 
-export const selectFeatureFlag = memoizeWithArgs(
+export const selectFeatureConfig = memoizeWithArgs(
     (state: MessageSystemRootState, domain: FeatureDomain) => {
         const featureMessages = selectFeatureMessage(state, domain);
-        return featureMessages?.feature?.find(feature => feature.domain === domain)?.flag;
+        return featureMessages?.feature?.find(feature => feature.domain === domain);
     },
 );
 
 export const selectIsFeatureEnabled = memoizeWithArgs(
     (state: MessageSystemRootState, domain: FeatureDomain, defaultValue?: boolean) => {
-        const featureFlag = selectFeatureFlag(state, domain);
+        const featureFlag = selectFeatureConfig(state, domain)?.flag;
         return featureFlag ?? defaultValue ?? true;
     },
 );
 
 export const selectIsFeatureDisabled = memoizeWithArgs(
     (state: MessageSystemRootState, domain: FeatureDomain, defaultValue?: boolean) => {
-        const featureFlag = selectFeatureFlag(state, domain);
+        const featureFlag = selectFeatureConfig(state, domain)?.flag;
         return typeof featureFlag === 'boolean' ? !featureFlag : defaultValue ?? false;
     },
 );

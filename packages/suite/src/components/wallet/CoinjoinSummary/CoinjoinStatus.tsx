@@ -26,6 +26,7 @@ import {
     selectCoinjoinAccountByKey,
     selectSessionProgressByAccountKey,
 } from '@wallet-reducers/coinjoinReducer';
+import { Feature, selectIsFeatureDisabled } from '@suite-reducers/messageSystemReducer';
 import { useBlockedCoinjoinResume } from '@suite/hooks/coinjoin/useBlockedCoinjoinResume';
 import { useCoinjoinSessionPhase } from '@wallet-hooks';
 
@@ -167,6 +168,9 @@ export const CoinjoinStatus = ({ session, accountKey }: CoinjoinStatusProps) => 
 
     const { isCoinjoinResumeBlocked, coinjoinResumeBlockedMessageId, featureMessageContent } =
         useBlockedCoinjoinResume();
+    const isCoinJoinDisabledByFeatureFlag = useSelector(state =>
+        selectIsFeatureDisabled(state, Feature.coinjoin),
+    );
 
     const actions = useActions({
         stopCoinjoinSession,
@@ -330,7 +334,7 @@ export const CoinjoinStatus = ({ session, accountKey }: CoinjoinStatusProps) => 
     };
 
     const tooltipMessage =
-        featureMessageContent ||
+        (isCoinJoinDisabledByFeatureFlag && featureMessageContent) ||
         (coinjoinResumeBlockedMessageId && <Translation id={coinjoinResumeBlockedMessageId} />);
 
     return (

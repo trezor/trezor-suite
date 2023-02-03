@@ -25,3 +25,6 @@ export const SESSION_TX_SIGNED = '@coinjoin/session-tx-signed';
 export const SESSION_STARTING = '@coinjoin/session-starting';
 
 export const SET_DEBUG_SETTINGS = '@coinjoin/set-debug-settings';
+
+export const UPDATE_AVERAGE_ANONYMITY_GAIN_PER_ROUND =
+    '@coinjoin/update-average-anonymity-gain-per-round';

@@ -7,9 +7,39 @@
             "conditions": [
                 {
                     "environment": {
+                        "desktop": ">=23.3.0",
+                        "mobile": "!",
+                        "web": ">=23.3.0"
+                    }
+                }
+            ],
+            "message": {
+                "id": "c4196202-b796-4c67-abcb-ac38c15ae343",
+                "priority": 90,
+                "dismissible": false,
+                "variant": "info",
+                "category": ["feature"],
+                "content": {
+                    "en-GB": "coinjoin config averageAnonymityGainPerRound",
+                    "en": "coinjoin config averageAnonymityGainPerRound",
+                    "es": "coinjoin config averageAnonymityGainPerRound",
+                    "cs": "coinjoin config averageAnonymityGainPerRound",
+                    "ru": "coinjoin config averageAnonymityGainPerRound",
+                    "ja": "coinjoin config averageAnonymityGainPerRound"
+                },
+                "feature": [
+                    { "domain": "coinjoin", "flag": true, "averageAnonymityGainPerRound": 5 }
+                ],
+                "context": { "domain": "accounts.coinjoin" }
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "environment": {
                         "desktop": "<23.2.1",
                         "mobile": "!",
-                        "web": "!"
+                        "web": "<23.2.1"
                     }
                 }
             ],
