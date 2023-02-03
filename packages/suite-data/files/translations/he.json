@@ -46,13 +46,11 @@
   "FEE_LEVEL_HIGH": "גבוהה",
   "FEE_LEVEL_LOW": "נמוכה",
   "FEE_LEVEL_NORMAL": "רגילה",
-  "FIRMWARE_CONNECT_IN_NORMAL_MODEL_2": "אנא ודאי כי אינך לוחצת על שום כפתור בזמן חיבור המכשיר.",
   "FIRMWARE_USER_HAS_SEED_CHECKBOX_DESC": "כן, אני כן!",
   "FIRMWARE_USER_TAKES_RESPONSIBILITY_CHECKBOX_DESC": "אני מקבלת את הסיכון",
   "FW_CAPABILITY_CONNECT_OUTDATED": "נדרש עדכון של האפליקציה",
   "FW_CAPABILITY_NO_CAPABILITY": "לא נתמך",
   "FW_CAPABILITY_NO_SUPPORT": "לא נתמך",
-  "FW_CAPABILITY_SUPPORTED_IN_T2": "המטבע נתמך רק ב-Trezor Model T",
   "FW_CAPABILITY_UPDATE_REQUIRED": "נדרש עדכון",
   "IMPORT_CSV": "ייבוא",
   "INCLUDING_FEE": "כולל עמלה",
@@ -95,6 +93,7 @@
   "TR_CUSTOM_FIRMWARE_TITLE_UPLOAD": "טען קושחה זו",
   "TR_CUSTOM_FIRMWARE_VERSION": "מותאמת אישית",
   "TR_DEVICE": "מכשיר",
+  "TR_DEVICE_CONNECTED_BOOTLOADER_RECONNECT_IN_NORMAL_NO_BUTTON": "אין ללחוץ על שום כפתור בזמן חיבור הכבל.",
   "TR_DEVICE_LABEL": "תגית המכשיר: {label}",
   "TR_DEVICE_SETTINGS_CUSTOM_FIRMWARE_BUTTON": "התקן קושחה",
   "TR_DEVICE_SETTINGS_CUSTOM_FIRMWARE_DESCRIPTION": "זה אפשרי להתקין קושחה מותאמת אישית על מכשיר ה-Trezor שלך במידת הצורך. התקנת קושחה מותאמת אישית תמחק את הזיכרון שלו ועלולה להפוך אותו לבלתי שמיש. אין לבצע תהליך זה אלא אם את ממש יודעת מה את עושה.",
@@ -129,6 +128,5 @@
   "TR_ONBOARDING_STEP_FIRMWARE": "קושחה",
   "TR_SETTINGS": "הגדרות",
   "TR_UP_TO_DATE": "עדכנית",
-  "TR_WALLET": "חשבונות",
-  "TR_DEVICE_CONNECTED_BOOTLOADER_RECONNECT_IN_NORMAL_NO_BUTTON": "אין ללחוץ על שום כפתור בזמן חיבור הכבל."
+  "TR_WALLET": "חשבונות"
 }

@@ -16,13 +16,11 @@
   "FEE_LEVEL_HIGH": "عالية",
   "FEE_LEVEL_LOW": "منخفضة",
   "FEE_LEVEL_NORMAL": "عادية",
-  "FIRMWARE_CONNECT_IN_NORMAL_MODEL_2": "الرجاء التأكد من عدم ضغطك على اي أزرار أثناء توصيل جهازك.",
   "FIRMWARE_USER_HAS_SEED_CHECKBOX_DESC": "نعم، أنا أقر بذلك!",
   "FIRMWARE_USER_TAKES_RESPONSIBILITY_CHECKBOX_DESC": "أوافق على تحمل مسؤلية المخاطر",
   "FW_CAPABILITY_CONNECT_OUTDATED": "يتطلب تحديث التطبيق",
   "FW_CAPABILITY_NO_CAPABILITY": "غير مدعوم",
   "FW_CAPABILITY_NO_SUPPORT": "غير مدعوم",
-  "FW_CAPABILITY_SUPPORTED_IN_T2": "العملات مدعومه من قبل تريزور موديل تي فقط",
   "FW_CAPABILITY_UPDATE_REQUIRED": "التحديث مطلوب",
   "METADATA_MODAL_HEADING": "حفظ التسميات",
   "RECEIVE_ADDRESS_REVEAL": "إظهار العنوان الكامل",
@@ -140,6 +138,7 @@
   "TR_DATE_YEAR_LONG": "1 سنه",
   "TR_DATE_YEAR_SHORT": "سنة واحدة",
   "TR_DECREASED_AMOUNT": "مبلغ جديد",
+  "TR_DEVICE_CONNECTED_BOOTLOADER_RECONNECT_IN_NORMAL_NO_BUTTON": "لا تقم بالضغط على أي من الازرار أثناء توصيل الكيبل.",
   "TR_EXCHANGE_FEES_INFO": "({ll fees included; the transaction fee is estimated at {feeAmount} ({feeAmountFiat.",
   "TR_HELP": "الدعم ",
   "TR_LABELING_ADD_ADDRESS": "أضف علامة",
@@ -175,7 +174,6 @@
   "TR_UPDATE_MODAL_START_DOWNLOAD": "ابدا في التحديث",
   "TR_UPDATE_MODAL_UPDATE_DOWNLOADED": "تم تنزيل التحديث",
   "TR_UP_TO_DATE": "مُحدث",
-  "TR_USING_TOUCHSCREEN": "باستخدام الشاشة، أدخل جميع الكلمات بالترتيب الصحيح حتى تكتمل.",
   "TR_VALUES": "الرصيد",
   "TR_VERIFY": "تأكيد",
   "TR_VERIFYING_PIN": "جاري التأكيد...",
@@ -193,6 +191,5 @@
   "TR_WALLET_RECOVERED_FROM_SEED": "اكتمل الاسترداد",
   "TR_WALLET_SELECTION_ACCESS_HIDDEN_WALLET": "الدخول إلى المحفظة المخفية",
   "TR_WALLET_SELECTION_HIDDEN_WALLET": "المحفظة المخفية",
-  "TR_WARNING": "تحذير",
-  "TR_DEVICE_CONNECTED_BOOTLOADER_RECONNECT_IN_NORMAL_NO_BUTTON": "لا تقم بالضغط على أي من الازرار أثناء توصيل الكيبل."
+  "TR_WARNING": "تحذير"
 }

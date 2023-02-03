@@ -35,7 +35,6 @@
   "FW_CAPABILITY_CONNECT_OUTDATED": "Es requereix actualitzar l'aplicació",
   "FW_CAPABILITY_NO_CAPABILITY": "No compatible",
   "FW_CAPABILITY_NO_SUPPORT": "No compatible",
-  "FW_CAPABILITY_SUPPORTED_IN_T2": "La moneda sols es compatible amb el Trezor Model T",
   "FW_CAPABILITY_UPDATE_REQUIRED": "Actualització necessària",
   "IMPORT_CSV": "Importar",
   "LABELING_ACCOUNT": "{networkName} #{index}",
