@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, Platform } from 'react-native';
+import { Platform } from 'react-native';
 
 import { BarCodeEvent, BarCodeScanner, PermissionStatus } from 'expo-barcode-scanner';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Box, Text } from '@suite-native/atoms';
+import { Box, Loader } from '@suite-native/atoms';
 
 import { CameraPermissionError } from './CameraPermissionError';
 import { useCameraPermission } from '../hooks/useCameraPermission';
@@ -46,8 +46,7 @@ export const QRCodeScanner = ({ onCodeScanned }: QRCodeScannerProps) => {
     if (isCameraLoading) {
         return (
             <Box alignItems="center" justifyContent="center" flex={1}>
-                <ActivityIndicator size="large" />
-                <Text>Loading camera...</Text>
+                <Loader title="Loading camera..." />
             </Box>
         );
     }

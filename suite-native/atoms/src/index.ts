@@ -30,4 +30,5 @@ export * from './StepsProgressBar';
 export * from './ErrorMessage';
 export * from './Table';
 export * from './Link';
+export * from './Loader';
 export { useDebugView } from './DebugView';
