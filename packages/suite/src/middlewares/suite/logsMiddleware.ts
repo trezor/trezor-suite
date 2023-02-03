@@ -29,9 +29,7 @@ const log =
             api.dispatch(
                 addLog({
                     action,
-                    payload: {
-                        enabledNetworks: action.payload.join(','),
-                    },
+                    type: action.type,
                 }),
             );
         }
@@ -51,9 +49,10 @@ const log =
             case DESKTOP_UPDATE.AVAILABLE:
             case DESKTOP_UPDATE.NOT_AVAILABLE:
             case MODAL.CLOSE:
+                console.log('prvni logger', action);
                 api.dispatch(
                     addLog({
-                        action,
+                        type: action.type,
                         payload: {
                             ...action,
                             type: undefined,
@@ -64,7 +63,7 @@ const log =
             case DESKTOP_UPDATE.READY:
                 api.dispatch(
                     addLog({
-                        action,
+                        type: action.type,
                         payload: {
                             version: action.payload.version,
                             releaseDate: action.payload.releaseDate,
@@ -83,7 +82,7 @@ const log =
             case SUITE.REMEMBER_DEVICE:
                 api.dispatch(
                     addLog({
-                        action,
+                        type: action.type,
                         payload: {
                             ...action.payload,
                             firmwareRelease: undefined,
@@ -95,7 +94,7 @@ const log =
             case METADATA.SET_PROVIDER:
                 api.dispatch(
                     addLog({
-                        action,
+                        type: action.type,
                         payload: {
                             ...action.payload,
                             tokens: undefined,
@@ -107,7 +106,7 @@ const log =
             case TRANSPORT.START:
                 api.dispatch(
                     addLog({
-                        action,
+                        type: action.type,
                         payload: {
                             type: action.payload.type,
                             version: action.payload.version,
@@ -116,12 +115,14 @@ const log =
                 );
                 break;
             case TRANSPORT.ERROR:
-                api.dispatch(addLog({ action, payload: { error: action.payload.error } }));
+                api.dispatch(
+                    addLog({ type: action.type, payload: { error: action.payload.error } }),
+                );
                 break;
             case ROUTER.LOCATION_CHANGE:
                 api.dispatch(
                     addLog({
-                        action,
+                        type: action.type,
                         payload: {
                             pathname: action.payload.pathname,
                             app: action.payload.app,
@@ -135,7 +136,7 @@ const log =
             case SUITE.ONLINE_STATUS:
                 api.dispatch(
                     addLog({
-                        action,
+                        type: action.type,
                         payload: {
                             status: action.payload,
                         },
@@ -146,7 +147,7 @@ const log =
                 if (action.payload) {
                     api.dispatch(
                         addLog({
-                            action,
+                            type: action.type,
                             payload: {
                                 code: action.payload.code,
                             },
@@ -157,7 +158,7 @@ const log =
             case PROTOCOL.SAVE_COIN_PROTOCOL:
                 api.dispatch(
                     addLog({
-                        action,
+                        type: action.type,
                         payload: {
                             scheme: action.payload.scheme,
                         },
@@ -167,7 +168,7 @@ const log =
             case MODAL.OPEN_USER_CONTEXT:
                 api.dispatch(
                     addLog({
-                        action,
+                        type: action.type,
                         payload: {
                             type: action.payload.type,
                         },

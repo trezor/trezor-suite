@@ -4,11 +4,11 @@ import { addLog } from '@suite-common/logger';
 
 export const logsMiddleware = createMiddleware((action, { next, dispatch }) => {
     if (setOnboardingFinished.match(action)) {
-        dispatch(addLog({ action, payload: { ...action } }));
+        dispatch(addLog({ type: action.type, payload: { ...action } }));
     }
 
     if (setColorScheme.match(action)) {
-        dispatch(addLog({ action, payload: { ...action } }));
+        dispatch(addLog({ type: action.type, payload: { ...action } }));
     }
 
     return next(action);

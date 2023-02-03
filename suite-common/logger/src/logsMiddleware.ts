@@ -8,14 +8,14 @@ import { addLog } from './logsSlice';
 
 export const logsMiddleware = createMiddleware((action, { next, dispatch }) => {
     if (isAnyOf(accountsActions.createAccount, accountsActions.updateAccount)(action)) {
-        dispatch(addLog({ action, payload: { ...action.payload } }));
+        dispatch(addLog({ type: action.type, payload: { ...action.payload } }));
     }
 
     if (accountsActions.updateSelectedAccount.match(action)) {
         if (action.payload.account) {
             dispatch(
                 addLog({
-                    action,
+                    type: action.type,
                     payload: {
                         account: {
                             ...getAccountIdentifier(action.payload.account),
@@ -28,7 +28,7 @@ export const logsMiddleware = createMiddleware((action, { next, dispatch }) => {
         } else {
             dispatch(
                 addLog({
-                    action,
+                    type: action.type,
                     payload: { ...action, type: undefined },
                 }),
             );
@@ -36,7 +36,7 @@ export const logsMiddleware = createMiddleware((action, { next, dispatch }) => {
     }
 
     if (blockchainActions.setBackend.match(action)) {
-        dispatch(addLog({ action, payload: { ...action.payload, urls: undefined } }));
+        dispatch(addLog({ type: action.type, payload: { ...action.payload, urls: undefined } }));
     }
 
     return next(action);

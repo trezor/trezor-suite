@@ -21,17 +21,25 @@ export const logsSlice = createSlice({
     initialState: logsSliceInitialState,
     reducers: {
         addLog: {
-            reducer: (state, action) => {
+            reducer: (state, action: AnyAction) => {
                 state.logEntries.push({
-                    ...action.payload.payload,
+                    ...action.payload,
                 });
                 if (state.logEntries.length > MAX_ENTRIES) {
                     state.logEntries.shift();
                 }
             },
-            prepare: (action: AnyAction) => ({
-                ...action.payload,
-                datetime: new Date().toUTCString(),
+            // Type of logged action needs to be sent separately (not by spreading action),
+            // because if payload would have type property as well,
+            // these two would override each other.
+            prepare: props => ({
+                payload: {
+                    datetime: new Date().toUTCString(),
+                    type: props.type,
+                    payload: {
+                        ...props.payload,
+                    },
+                },
             }),
         },
     },
