@@ -5,7 +5,12 @@ import { CoinjoinStatusEvent, getInputSize, getOutputSize } from '@trezor/coinjo
 import { PartialRecord } from '@trezor/type-utils';
 import { STORAGE } from '@suite-actions/constants';
 import { Account, AccountKey } from '@suite-common/wallet-types';
-import { CoinjoinAccount, RoundPhase, CoinjoinDebugSettings } from '@wallet-types/coinjoin';
+import {
+    CoinjoinAccount,
+    RoundPhase,
+    CoinjoinDebugSettings,
+    CoinjoinConfig,
+} from '@wallet-types/coinjoin';
 import { COINJOIN } from '@wallet-actions/constants';
 import { Action } from '@suite-types';
 import {
@@ -41,6 +46,7 @@ export interface CoinjoinState {
     clients: PartialRecord<Account['symbol'], CoinjoinClientInstance>;
     isPreloading?: boolean;
     debug?: CoinjoinDebugSettings;
+    config: CoinjoinConfig;
 }
 
 export type CoinjoinRootState = {
@@ -55,6 +61,9 @@ export const initialState: CoinjoinState = {
     accounts: [],
     clients: {},
     isPreloading: false,
+    config: {
+        averageAnonymityGainPerRound: ESTIMATED_ANONYMITY_GAINED_PER_ROUND,
+    },
 };
 
 type ExtractActionPayload<A> = Extract<Action, { type: A }> extends { type: A; payload: infer P }
@@ -396,6 +405,10 @@ export const coinjoinReducer = (
             case COINJOIN.SESSION_STARTING:
                 updateSessionStarting(draft, action.payload);
                 break;
+            case COINJOIN.UPDATE_AVERAGE_ANONYMITY_GAIN_PER_ROUND:
+                draft.config.averageAnonymityGainPerRound =
+                    action.payload.averageAnonymityGainPerRound;
+                break;
 
             // no default
         }
@@ -583,6 +596,7 @@ export const selectRoundsNeeded = memoizeWithArgs(
     (state: CoinjoinRootState, accountKey: AccountKey) => {
         const account = selectAccountByKey(state, accountKey);
         const targetAnonymity = selectCurrentTargetAnonymity(state) || 0;
+        const { averageAnonymityGainPerRound } = state.wallet.coinjoin.config;
 
         const anonymitySet = account?.addresses?.anonymitySet || {};
         const utxos = account?.utxo || [];
@@ -611,7 +625,7 @@ export const selectRoundsNeeded = memoizeWithArgs(
 
         return Math.ceil(
             (targetAnonymity - accountAnonCapped) /
-                Math.max(ESTIMATED_ANONYMITY_GAINED_PER_ROUND, MIN_ANONYMITY_GAINED_PER_ROUND), // TODO math max makes no sense for static values, but ESTIMATED_ANONYMITY_GAINED_PER_ROUND will be replaced by dynamic value
+                Math.max(averageAnonymityGainPerRound, MIN_ANONYMITY_GAINED_PER_ROUND),
         );
     },
 );

@@ -52,3 +52,7 @@ export interface CoinjoinDebugSettings {
     coinjoinAllowNoTor?: boolean;
     coinjoinServerEnvironment?: PartialRecord<NetworkSymbol, CoinjoinServerEnvironment>;
 }
+
+export interface CoinjoinConfig {
+    averageAnonymityGainPerRound: number;
+}
