@@ -131,7 +131,7 @@ export const ESTIMATED_ROUNDS_FAIL_RATE_BUFFER = 2.5;
 export const ESTIMATED_MIN_ROUNDS_NEEDED = 8;
 export const ESTIMATED_HOURS_PER_ROUND = 1;
 export const ESTIMATED_HOURS_BUFFER_MODIFIER = 0.25;
-export const RECOMMENDED_SKIP_ROUNDS = [4, 5] as [number, number];
+export const RECOMMENDED_SKIP_ROUNDS = undefined; // temporary disabled for testing purposes // [4, 5] as [number, number];
 export const DEFAULT_MAX_MINING_FEE = 3;
 
 // coordinator fee rate from status format (0.003)
