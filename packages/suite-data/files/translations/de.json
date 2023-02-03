@@ -49,13 +49,11 @@
   "FEE_LEVEL_HIGH": "Hoch",
   "FEE_LEVEL_LOW": "Niedrig",
   "FEE_LEVEL_NORMAL": "Normal",
-  "FIRMWARE_CONNECT_IN_NORMAL_MODEL_2": "Bitte stellen Sie sicher, dass Sie keine Tasten halten, während Sie Ihr Gerät verbinden.",
   "FIRMWARE_USER_HAS_SEED_CHECKBOX_DESC": "Ja, habe ich!",
   "FIRMWARE_USER_TAKES_RESPONSIBILITY_CHECKBOX_DESC": "Ich lebe gefährlich!",
   "FW_CAPABILITY_CONNECT_OUTDATED": "Anwendungsaktualisierung erforderlich",
   "FW_CAPABILITY_NO_CAPABILITY": "Nicht unterstützt",
   "FW_CAPABILITY_NO_SUPPORT": "Nicht unterstützt",
-  "FW_CAPABILITY_SUPPORTED_IN_T2": "Coin wird nur auf Trezor Model T unterstützt",
   "FW_CAPABILITY_UPDATE_REQUIRED": "Update erforderlich",
   "IMPORT_CSV": "Importieren",
   "INCLUDING_FEE": "Inklusive Gebühr",
@@ -407,12 +405,12 @@
   "TR_CREATE_HIDDEN_WALLET": "Versteckte Wallet hinzufügen",
   "TR_CREATE_WALLET": "Wallet Erstellen",
   "TR_CURRENT_FEE": "Aktuell",
+  "TR_DEVICE_CONNECTED_BOOTLOADER_RECONNECT_IN_NORMAL_NO_BUTTON": "Bitte stellen Sie sicher, dass Sie keine Tasten halten, während Sie Ihr Gerät verbinden.",
   "TR_DEVICE_LABEL": "Gerätebezeichnung: {label}.",
   "TR_DEVICE_LABEL_IS_NOT_BACKED_UP": "Gerät {deviceLabel} ist nicht gesichert",
   "TR_DEVICE_LABEL_IS_NOT_CONNECTED": "Gerät {deviceLabel} ist nicht verbunden",
   "TR_DEVICE_LABEL_IS_UNAVAILABLE": "Gerät \"{deviceLabel}\" ist nicht verfügbar",
   "TR_DEVICE_NOT_CONNECTED": "Gerät nicht verbunden",
-  "TR_EXCHANGE_FEES_INFO": "All fees included; the transaction fee is estimated at {feeAmount} ({feeAmountFiat}).",
   "TR_ENTER_SEED_WORDS_ON_DEVICE": "Alle Wörter werden als zusätzliche Sicherheitsmaßnahme nur auf dem Gerät eingegeben. Bitte geben Sie alle Wörter sorgfältig in der richtigen Reihenfolge ein.",
-  "TR_DEVICE_CONNECTED_BOOTLOADER_RECONNECT_IN_NORMAL_NO_BUTTON": "Bitte stellen Sie sicher, dass Sie keine Tasten halten, während Sie Ihr Gerät verbinden."
+  "TR_EXCHANGE_FEES_INFO": "All fees included; the transaction fee is estimated at {feeAmount} ({feeAmountFiat})."
 }

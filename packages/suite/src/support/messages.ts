@@ -1319,7 +1319,8 @@ export default defineMessages({
         id: 'TR_SAVINGS_OVERVIEW_COIN_TRANSFER_DELAYED',
     },
     TR_SAVINGS_AUTHORIZATION_ERROR: {
-        defaultMessage: 'Your authorization expired, please folow the button.',
+        defaultMessage:
+            'Your authorization expired. To continue using Save Bitcoin, please select Reauthorize account.',
         id: 'TR_SAVINGS_AUTHORIZATION_ERROR',
     },
     TR_SAVINGS_AUTHORIZATION_ERROR_BUTTON_LABEL: {
@@ -2541,7 +2542,7 @@ export default defineMessages({
     TR_ONBOARDING_DATA_COLLECTION_DESCRIPTION: {
         id: 'TR_ONBOARDING_DATA_COLLECTION_DESCRIPTION',
         defaultMessage:
-            'All data is anonymous and is used only for product development purposes. Read more in our <analytics>technical documentation</analytics> and <tos>Terms & Conditions</tos>.',
+            'All data collected is anonymous and is used to improve product performance and development. More in <analytics>technical documentation</analytics> and <tos>Terms & Conditions</tos>.',
     },
     TR_EJECT_WALLET: {
         defaultMessage: 'Eject wallet',
@@ -2686,7 +2687,7 @@ export default defineMessages({
         id: 'TR_NAV_SEND',
     },
     TR_NAV_DETAILS: {
-        defaultMessage: 'Account',
+        defaultMessage: 'Details',
         id: 'TR_NAV_DETAILS',
     },
     TR_NAV_TOKENS: {
@@ -3015,7 +3016,8 @@ export default defineMessages({
         id: 'TR_RECOVER_SUBHEADING_TOUCH',
     },
     TR_RECOVER_SUBHEADING_BUTTONS: {
-        defaultMessage: "The entire recovery process is done on the device's screen using buttons.",
+        defaultMessage:
+            "The entire recovery process is done on the device's screen using the buttons.",
         description: 'Subheading in recover page. Basic info about recovery',
         id: 'TR_RECOVER_SUBHEADING_BUTTONS',
     },
@@ -3589,7 +3591,7 @@ export default defineMessages({
     TR_ACCOUNT_DETAILS_XPUB: {
         id: 'TR_ACCOUNT_DETAILS_XPUB',
         defaultMessage:
-            'Handle your account public key (xPUB) carefully. When exposed, a third party will be able to see your entire transaction history.',
+            'Handle your account public key (XPUB) carefully. When exposed, a third party will be able to see your entire transaction history.',
     },
     TR_ACCOUNT_DETAILS_XPUB_BUTTON: {
         id: 'TR_ACCOUNT_DETAILS_XPUB_BUTTON',
@@ -3601,7 +3603,7 @@ export default defineMessages({
     },
     TR_ACCOUNT_TYPE_NO_SUPPORT: {
         id: 'TR_ACCOUNT_TYPE_NO_SUPPORT',
-        defaultMessage: 'This Account Type is not supported on this Trezor model.',
+        defaultMessage: 'This account type is not supported on this Trezor model.',
     },
     TR_ACCOUNT_TYPE_UPDATE_REQUIRED: {
         id: 'TR_ACCOUNT_TYPE_UPDATE_REQUIRED',
@@ -3904,7 +3906,7 @@ export default defineMessages({
     },
     TR_UNAVAILABLE_COINJOIN_AMOUNTS_TOO_SMALL: {
         id: 'TR_UNAVAILABLE_COINJOIN_AMOUNTS_TOO_SMALL',
-        defaultMessage: 'Too small amounts to be used in coinjoin.',
+        defaultMessage: 'Amounts are too small for coinjoin.',
     },
     TR_ONION_BACKEND_TOR_NEEDED: {
         id: 'TR_ONION_BACKEND_TOR_NEEDED',
@@ -4080,7 +4082,7 @@ export default defineMessages({
     TR_SEED_WORDS_ENTER_BUTTONS: {
         id: 'TR_SEED_WORDS_ENTER_BUTTONS',
         defaultMessage:
-            'Using buttons on the device, enter the words from your seed in the order displayed on your device.',
+            'Using the buttons on the device, enter the words from your seed in the order displayed on your device.',
     },
     TR_CHOOSE_RECOVERY_TYPE: {
         id: 'TR_CHOOSE_RECOVERY_TYPE',
@@ -4893,7 +4895,7 @@ export default defineMessages({
     },
     SHAMIR_SEED: {
         id: 'SHAMIR_SEED',
-        defaultMessage: 'Advanced shamir share backup',
+        defaultMessage: 'Advanced Shamir Backup',
         description: 'Advanced, shamir backup. Seed has multiple parts.',
     },
     SHAMIR_SEED_DESCRIPTION: {
@@ -7179,8 +7181,7 @@ export default defineMessages({
     TR_COINJOIN_SETUP: {
         id: 'TR_COINJOIN_SETUP',
         description: 'Heading in coin join settings',
-        defaultMessage:
-            'Your coins will be shuffled with other peoples’ to achieve more anonymity. ',
+        defaultMessage: 'Your coins will be mixed with other peoples’ to achieve privacy.',
     },
     TR_COINJOIN_TILE_1_TITLE: {
         id: 'TR_COINJOIN_TILE_1_TITLE',
@@ -7195,7 +7196,7 @@ export default defineMessages({
     TR_COINJOIN_TILE_3_TITLE: {
         id: 'TR_COINJOIN_TILE_3_TITLE',
         description: 'Tile in coinjoin settings',
-        defaultMessage: 'Coins stay in your Trezor',
+        defaultMessage: 'Protected by your Trezor',
     },
     TR_COINJOIN_TILE_1_DESCRIPTION: {
         id: 'TR_COINJOIN_TILE_1_DESCRIPTION',
@@ -7205,7 +7206,7 @@ export default defineMessages({
     TR_COINJOIN_TILE_2_DESCRIPTION: {
         id: 'TR_COINJOIN_TILE_2_DESCRIPTION',
         description: 'Tile in coinjoin settings',
-        defaultMessage: 'You can safely pause the CoinJoin',
+        defaultMessage: 'You can safely pause coinjoin',
     },
     TR_COINJOIN_TILE_3_DESCRIPTION: {
         id: 'TR_COINJOIN_TILE_3_DESCRIPTION',
@@ -7674,18 +7675,18 @@ export default defineMessages({
     TR_REMEMBER_WALLET_TITLE: {
         id: 'TR_REMEMBER_WALLET_TITLE',
         description: 'Displayed during coinjoin account discovery',
-        defaultMessage: 'Remember the wallet to load faster next time',
+        defaultMessage: 'Remember wallet',
     },
     TR_REMEMBER_WALLET_NOTE: {
         id: 'TR_REMEMBER_WALLET_NOTE',
         description: 'Displayed during coinjoin account discovery',
-        defaultMessage: 'Note: This will remember all assets on this wallet',
+        defaultMessage: 'This will remember all assets on this wallet',
     },
     TR_REMEMBER_WALLET_DESCRIPTION: {
         id: 'TR_REMEMBER_WALLET_DESCRIPTION',
         description: 'Displayed during coinjoin account discovery',
         defaultMessage:
-            "It's being loaded anonymously. Remember account to the load instantly & save custom setups.",
+            'It’s still being loaded anonymously, but with faster loading times and saved custom setups.',
     },
     TR_TIMER_PAST_DEADLINE: {
         id: 'TR_TIMER_PAST_DEADLINE',
@@ -7764,7 +7765,7 @@ export default defineMessages({
     },
     TR_SESSION_PHASE_32_MESSAGE: {
         id: 'TR_SESSION_PHASE_32_MESSAGE',
-        defaultMessage: 'Coordinator verification',
+        defaultMessage: 'Verification failed, retrying',
     },
     TR_SESSION_PHASE_33_MESSAGE: {
         id: 'TR_SESSION_PHASE_32_MESSAGE',
@@ -7800,7 +7801,7 @@ export default defineMessages({
     },
     TR_EMPTY_COINJOIN_ACCOUNT_SUBTITLE: {
         id: 'TR_EMPTY_COINJOIN_ACCOUNT_SUBTITLE',
-        defaultMessage: 'Receive some funds to start anonymizing.',
+        defaultMessage: 'Receive some funds and start coinjoining.',
     },
     TR_STEP: {
         id: 'TR_STEP',
@@ -7808,19 +7809,19 @@ export default defineMessages({
     },
     TR_COINJOIN_STEP_1_TITLE: {
         id: 'TR_COINJOIN_STEP_1_TITLE',
-        defaultMessage: 'Add Bitcoin',
+        defaultMessage: 'Add bitcoin',
     },
     TR_COINJOIN_STEP_1_DESCRIPTION: {
         id: 'TR_COINJOIN_STEP_1_DESCRIPTION',
-        defaultMessage: 'Send whatever you want anonymised to this Account.',
+        defaultMessage: 'Send yourself some coins to be anonymized',
     },
     TR_START_COINJOIN: {
         id: 'TR_START_COINJOIN',
-        defaultMessage: 'Start CoinJoin',
+        defaultMessage: 'Start coinjoin',
     },
     TR_COINJOIN_STEP_2_DESCRIPTION: {
         id: 'TR_COINJOIN_STEP_2_DESCRIPTION',
-        defaultMessage: 'Click on button and confirm it on your Trezor.',
+        defaultMessage: 'Click the button and confirm it on your Trezor.',
     },
     TR_COINJOIN_STEP_3_TITLE: {
         id: 'TR_COINJOIN_STEP_3_TITLE',
@@ -7828,19 +7829,19 @@ export default defineMessages({
     },
     TR_COINJOIN_STEP_3_DESCRIPTION: {
         id: 'TR_COINJOIN_STEP_3_DESCRIPTION',
-        defaultMessage: 'Your Bitcoin will be mixed with other peoples’ to make it untracable.',
+        defaultMessage: 'Your coins will be mixed with other peoples’ to achieve privacy',
     },
     TR_COINJOIN_CEX_WARNING: {
         id: 'TR_COINJOIN_CEX_WARNING',
-        defaultMessage: 'Exchanges may not serve you if you use CoinJoin',
+        defaultMessage: 'Exchanges may not serve you if you use coinjoin.',
     },
     TR_COINJOIN_CEX_EXPLANATION: {
         id: 'TR_COINJOIN_CEX_EXPLANATION',
-        defaultMessage: 'They may reject your deposits or withdrawals and blacklist you',
+        defaultMessage: 'They may reject your deposits or withdrawals and blacklist you.',
     },
     TR_COINJOIN_CEX_DISMISS: {
         id: 'TR_COINJOIN_CEX_DISMISS',
-        defaultMessage: 'I Understand',
+        defaultMessage: 'I understand',
     },
     TR_ZERO_PHISHING_TOOLTIP: {
         id: 'TR_ZERO_PHISHING_TOOLTIP',
