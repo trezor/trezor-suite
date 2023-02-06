@@ -140,7 +140,7 @@ export const AccountItem = forwardRef(
         const isTokensCountShown =
             ['cardano', 'ethereum'].includes(networkType) && !!tokens?.length;
 
-        // Show skeleton instead of zero balance during CoinJoin initial discovery
+        // Show skeleton instead of zero balance during coinjoin initial discovery
         const isBalanceShown = account.backendType !== 'coinjoin' || account.status !== 'initial';
 
         const dataTestKey = `@account-menu/${symbol}/${accountType}/${index}`;

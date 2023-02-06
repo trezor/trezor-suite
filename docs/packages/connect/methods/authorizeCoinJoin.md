@@ -1,4 +1,4 @@
-## Bitcoin: authorize Coinjoin
+## Bitcoin: authorize coinjoin
 
 Allow device to do preauthorized operations in `signTransaction` and `getOwnershipProof` methods without further user interaction.
 
@@ -38,7 +38,7 @@ const result = await TrezorConnect.authorizeCoinJoin(params);
 -   `preauthorized` — _optional_
     > Check if device session is already preauthorized and take no further action if so
 -   `coinjoinRequest` — _optional_ `PROTO.CoinJoinRequest`
-    > Signing request for a CoinJoin transaction
+    > Signing request for a coinjoin transaction
 
 ### Example:
 

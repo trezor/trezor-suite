@@ -33,7 +33,7 @@ const verifyAvailability = ({
     if (capability === 'no-support') {
         return <Translation id="MODAL_ADD_ACCOUNT_COINJOIN_NO_SUPPORT" />;
     }
-    // regtest CoinJoin account enabled in web app for development
+    // regtest coinjoin account enabled in web app for development
     if (!isDesktop() && !(isDevEnv && symbol === 'regtest')) {
         return <Translation id="MODAL_ADD_ACCOUNT_COINJOIN_DESKTOP_ONLY" />;
     }
