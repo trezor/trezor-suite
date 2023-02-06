@@ -38,6 +38,7 @@ export class DataManager {
         if (!this.settings.trustedHost && !whitelist) {
             this.settings.debug = false;
         }
+
         this.settings.priority = DataManager.getPriority(whitelist);
 
         const knownHost = DataManager.getHostLabel(
@@ -49,8 +50,11 @@ export class DataManager {
         }
 
         // hotfix webusb + chrome:72, allow webextensions
-        if (this.settings.popup && this.settings.webusb && this.settings.env !== 'webextension') {
-            this.settings.webusb = false;
+        if (this.settings.popup && this.settings.env !== 'webextension') {
+            // allow all but WebUsbTransport
+            this.settings.transports = this.settings.transports?.filter(
+                (transport: string) => transport !== 'WebUsbTransport',
+            );
         }
 
         if (!withAssets) return;
