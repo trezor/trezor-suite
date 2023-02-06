@@ -180,11 +180,12 @@ export class PopupManager extends EventEmitter {
     }
 
     handleExtensionConnect(port: chrome.runtime.Port) {
+        // Ignore port if name does not match
         if (port.name !== 'trezor-connect') return;
-        if (!this._window || (this._window && this._window.id !== port.sender?.tab?.id)) {
-            port.disconnect();
-            return;
-        }
+
+        // Ignore port if name does match, but port created not by current popup
+        if (!this._window || (this._window && this._window.id !== port.sender?.tab?.id)) return;
+
         // since POPUP.BOOTSTRAP will not be handled by "handleMessage" we need to threat "content-script" connection as the same event
         // popup is opened properly, now wait for POPUP.LOADED message (in this case handled by "handleExtensionMessage")
         if (this.openTimeout) clearTimeout(this.openTimeout);
