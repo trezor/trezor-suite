@@ -35,7 +35,7 @@ describe('TrezorConnect.authorizeCoinJoin', () => {
         await TrezorConnect.dispose();
     });
 
-    conditionalTest(['1', '<2.5.3'], 'Coinjoin success', async () => {
+    conditionalTest(['1', '<2.5.4'], 'Coinjoin success', async () => {
         // unlocked path is required for tx validation
         const unlockPath = await TrezorConnect.unlockPath({
             path: ADDRESS_N("m/10025'"),
@@ -177,7 +177,7 @@ describe('TrezorConnect.authorizeCoinJoin', () => {
         expect(round3.payload).toMatchObject({ error: 'Exceeded number of coinjoin rounds.' });
     });
 
-    conditionalTest(['1', '<2.5.3'], 'Authorize and re-authorize', async () => {
+    conditionalTest(['1', '<2.5.4'], 'Authorize and re-authorize', async () => {
         // difference in buttons request count between 2.5.3 and 2.5.4
         // see: https://github.com/trezor/trezor-firmware/pull/2613
         const features = await TrezorConnect.getFeatures();
