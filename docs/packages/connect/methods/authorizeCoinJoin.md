@@ -1,4 +1,4 @@
-## Bitcoin: authorize CoinJoin
+## Bitcoin: authorize Coinjoin
 
 Allow device to do preauthorized operations in `signTransaction` and `getOwnershipProof` methods without further user interaction.
 
