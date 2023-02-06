@@ -17,7 +17,6 @@ const dateTextStyle = prepareNativeStyle(utils => ({
 export const TransactionListGroupTitle = ({ monthKey }: TransactionListGroupProps) => {
     const { applyStyle } = useNativeStyles();
     const { MonthNameFormatter } = useFormatters();
-    console.log(parseTransactionMonthKey(monthKey), 'month key');
     const sectionTitle =
         monthKey === 'pending'
             ? 'Pending'

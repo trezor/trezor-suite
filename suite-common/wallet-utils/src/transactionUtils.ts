@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js';
 import { fromWei } from 'web3-utils';
+import { addDays, startOfMonth } from 'date-fns';
 
 import {
     Account,
@@ -47,16 +48,11 @@ export const parseTransactionDateKey = (key: string) => {
 };
 
 export type MonthKey = string & { __type: 'MonthKey' };
-
-/* Convert date to string in YYYY-MM format */
 const generateTransactionMonthKey = (d: Date): MonthKey =>
-    `${d.getFullYear()}-${d.getMonth() + 1}` as MonthKey;
+    // Adding days because of time zones of UTC
+    addDays(startOfMonth(d), 1).toISOString() as MonthKey;
 
-/** Parse Date object from a string in YYYY-MM format to return localized month name */
-export const parseTransactionMonthKey = (key: MonthKey): Date => {
-    const [year, month] = key.split('-');
-    return new Date(Number(year), Number(month) - 1);
-};
+export const parseTransactionMonthKey = (key: MonthKey): Date => new Date(key);
 
 /**
  * Returns object with transactions grouped by a date. Key is a string in YYYY-MM-DD format.

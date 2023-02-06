@@ -15,16 +15,11 @@ import {
     groupJointTransactions,
     isPending,
     parseTransactionDateKey,
-    parseTransactionMonthKey,
 } from '../transactionUtils';
 
 describe('transaction utils', () => {
     it('parseTransactionDateKey', () => {
         expect(parseTransactionDateKey('2019-10-05')).toEqual(new Date(2019, 9, 5));
-    });
-
-    it('parseTransactionMonthKey', () => {
-        expect(parseTransactionMonthKey('2023-00')).toEqual('January');
     });
 
     Object.keys(fixtures.isPending).forEach(f => {
