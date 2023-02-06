@@ -32,13 +32,11 @@ export const logsSlice = createSlice({
             // Type of logged action needs to be sent separately (not by spreading action),
             // because if payload would have type property as well,
             // these two would override each other.
-            prepare: props => ({
+            prepare: ({ type, payload }) => ({
                 payload: {
                     datetime: new Date().toUTCString(),
-                    type: props.type,
-                    payload: {
-                        ...props.payload,
-                    },
+                    type,
+                    payload,
                 },
             }),
         },
