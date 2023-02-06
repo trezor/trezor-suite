@@ -73,7 +73,7 @@ const addCoinjoinAccount = async (window: Page) => {
     await window.click('[data-test="@settings/wallet/network/regtest"]');
     await window.click('[data-test="@add-account-type/select/input"]', { trial: true });
     await window.click('[data-test="@add-account-type/select/input"]');
-    await window.click('[data-test="@add-account-type/select/option/Bitcoin Regtest (CoinJoin)"]');
+    await window.click('[data-test="@add-account-type/select/option/Bitcoin Regtest"]');
     await window.click('[data-test="@add-account"]');
 
     await window.screenshot({ path: './test-results/1.png', fullPage: true, type: 'png' });

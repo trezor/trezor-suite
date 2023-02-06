@@ -107,10 +107,7 @@ declare global {
             }) => Chainable<Subject>;
             skipOn: (nameOrFlag: string | boolean, cb?: () => void) => Cypress.Chainable<any>;
             onlyOn: (nameOrFlag: string | boolean, cb?: () => void) => Cypress.Chainable<any>;
-            createAccountFromMyAccounts: (
-                coin: string,
-                accountNameAdd: string,
-            ) => Chainable<Subject>;
+            createAccountFromMyAccounts: (coin: string, label: string) => Chainable<Subject>;
             interceptInvityApi: () => void;
         }
     }

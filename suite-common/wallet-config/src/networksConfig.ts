@@ -17,22 +17,18 @@ export const networks = {
         customBackends: ['blockbook', 'electrum'],
         accountTypes: {
             coinjoin: {
-                name: 'Bitcoin (CoinJoin)',
                 bip43Path: "m/10025'/0'/i'/1'", // https://github.com/satoshilabs/slips/blob/master/slip-0025.md#public-key-derivation
                 backendType: 'coinjoin', // use non-standard backend
                 features: ['amount-unit'], // no rbf, no sign-verify
             },
             taproot: {
-                name: 'Bitcoin (Taproot)',
                 bip43Path: "m/86'/0'/i'",
                 features: ['rbf', 'amount-unit'], // no sign-verify
             },
             segwit: {
-                name: 'Bitcoin (Legacy Segwit)',
                 bip43Path: "m/49'/0'/i'",
             },
             legacy: {
-                name: 'Bitcoin (Legacy)',
                 bip43Path: "m/44'/0'/i'",
             },
         },
@@ -51,11 +47,9 @@ export const networks = {
         customBackends: ['blockbook'],
         accountTypes: {
             segwit: {
-                name: 'Litecoin (segwit)',
                 bip43Path: "m/49'/2'/i'",
             },
             legacy: {
-                name: 'Litecoin (legacy)',
                 bip43Path: "m/44'/2'/i'",
             },
         },
@@ -130,7 +124,6 @@ export const networks = {
         customBackends: ['blockbook'],
         accountTypes: {
             legacy: {
-                name: 'Bitcoin Gold (legacy)',
                 bip43Path: "m/44'/156'/i'",
             },
         },
@@ -161,7 +154,6 @@ export const networks = {
         customBackends: ['blockbook'],
         accountTypes: {
             legacy: {
-                name: 'DigiByte (legacy)',
                 bip43Path: "m/44'/20'/i'",
             },
         },
@@ -205,11 +197,9 @@ export const networks = {
         customBackends: ['blockbook'],
         accountTypes: {
             segwit: {
-                name: 'Vertcoin (segwit)',
                 bip43Path: "m/49'/28'/i'",
             },
             legacy: {
-                name: 'Vertcoin (legacy)',
                 bip43Path: "m/44'/28'/i'",
             },
         },
@@ -243,22 +233,18 @@ export const networks = {
         customBackends: ['blockbook', 'electrum'],
         accountTypes: {
             coinjoin: {
-                name: 'Bitcoin Testnet (CoinJoin)',
                 bip43Path: "m/10025'/1'/i'/1'", // https://github.com/satoshilabs/slips/blob/master/slip-0025.md#public-key-derivation
                 backendType: 'coinjoin', // use non-standard backend
                 features: ['amount-unit'], // no rbf, no sign-verify
             },
             taproot: {
-                name: 'Bitcoin Testnet (taproot)',
                 bip43Path: "m/86'/1'/i'",
                 features: ['rbf', 'amount-unit'], // no sign-verify
             },
             segwit: {
-                name: 'Bitcoin Testnet (segwit)',
                 bip43Path: "m/49'/1'/i'",
             },
             legacy: {
-                name: 'Bitcoin Testnet (legacy)',
                 bip43Path: "m/44'/1'/i'",
             },
         },
@@ -278,22 +264,18 @@ export const networks = {
         customBackends: ['blockbook', 'electrum'],
         accountTypes: {
             coinjoin: {
-                name: 'Bitcoin Regtest (CoinJoin)',
                 bip43Path: "m/10025'/1'/i'/1'", // https://github.com/satoshilabs/slips/blob/master/slip-0025.md#public-key-derivation
                 backendType: 'coinjoin', // use non-standard backend
                 features: ['amount-unit'], // no rbf, no sign-verify
             },
             taproot: {
-                name: 'Bitcoin Regtest (taproot)',
                 bip43Path: "m/86'/1'/i'",
                 features: ['rbf', 'amount-unit'], // no sign-verify
             },
             segwit: {
-                name: 'Bitcoin Regtest (segwit)',
                 bip43Path: "m/49'/1'/i'",
             },
             legacy: {
-                name: 'Bitcoin Regtest (legacy)',
                 bip43Path: "m/44'/1'/i'",
             },
         },
