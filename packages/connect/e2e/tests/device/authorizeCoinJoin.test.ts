@@ -53,7 +53,7 @@ describe('TrezorConnect.authorizeCoinJoin', () => {
         });
 
         expect(auth.success).toBe(true);
-        expect(auth.payload).toEqual({ message: 'CoinJoin authorized' });
+        expect(auth.payload).toEqual({ message: 'Coinjoin authorized' });
 
         await new Promise(resolve => setTimeout(resolve, 11000)); // wait for auto-lock
 
