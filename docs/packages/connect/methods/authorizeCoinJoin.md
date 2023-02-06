@@ -60,7 +60,7 @@ TrezorConnect.authorizeCoinJoin({
 {
     success: true,
     payload: {
-        message: 'CoinJoin authorized'
+        message: 'Coinjoin authorized'
     }
 }
 ```
