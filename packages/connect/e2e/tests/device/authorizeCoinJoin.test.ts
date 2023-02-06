@@ -174,7 +174,7 @@ describe('TrezorConnect.authorizeCoinJoin', () => {
         // ... and again, fees should exceed maxRounds
         const round3 = await TrezorConnect.signTransaction(params);
         expect(round3.success).toBe(false);
-        expect(round3.payload).toMatchObject({ error: 'Exceeded number of CoinJoin rounds.' });
+        expect(round3.payload).toMatchObject({ error: 'Exceeded number of coinjoin rounds.' });
     });
 
     conditionalTest(['1', '<2.5.3'], 'Authorize and re-authorize', async () => {
