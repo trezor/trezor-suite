@@ -166,8 +166,7 @@ export const handleMessage = (message: CoreMessage, isTrustedOrigin = false) => 
              * requestWebUSBDevice in connect-web/src/index, this is used to trigger transport
              * enumeration
              */
-            // todo: enable when it is needed
-            // _deviceList?.enumerate();
+            _deviceList?.enumerate();
             break;
 
         // messages from UI (popup/modal...)

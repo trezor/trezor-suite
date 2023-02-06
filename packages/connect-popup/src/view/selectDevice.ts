@@ -1,8 +1,13 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/popup/view/selectDevice.js
 
-import { UI, POPUP, ERRORS, createUiResponse, UiRequestSelectDevice } from '@trezor/connect';
+import TrezorConnect, {
+    UI,
+    POPUP,
+    ERRORS,
+    createUiResponse,
+    UiRequestSelectDevice,
+} from '@trezor/connect-web';
 import { SUITE_BRIDGE_URL, SUITE_UDEV_URL, TREZOR_SUPPORT_URL } from '@trezor/urls';
-import { config } from '@trezor/connect/src/data/config';
 import { container, getState, showView, postMessage } from './common';
 import { getOS } from '@trezor/connect/lib/utils/browserUtils';
 
@@ -25,12 +30,13 @@ const initWebUsbButton = (webusb: boolean, showLoader: boolean) => {
             return;
         }
         try {
-            await usb.requestDevice({ filters: config.webusb });
+            await TrezorConnect.requestWebUSBDevice();
             if (showLoader) {
                 showView('loader');
             }
         } catch (error) {
-            // empty, do nothing
+            // empty, do nothing, should not happen anyway
+            console.error(error);
         }
     };
 
