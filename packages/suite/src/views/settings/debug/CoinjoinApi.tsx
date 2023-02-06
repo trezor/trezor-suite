@@ -92,7 +92,7 @@ export const CoinjoinApi = () => {
             <SectionItem data-test="@settings/debug/coinjoin-allow-no-tor">
                 <TextColumn
                     title="Allow no Tor"
-                    description="Normally, Coinjoin is allowed only when Tor is running. You may allow coinjoin without running Tor"
+                    description="Normally, coinjoin is allowed only when Tor is running. You may allow coinjoin without running Tor"
                 />
                 <ActionColumn>
                     <Switch

@@ -48,12 +48,12 @@
                 "variant": "warning",
                 "category": "context",
                 "content": {
-                    "en-GB": "CoinJoin account is currently in testing phase.",
-                    "en": "CoinJoin account is currently in testing phase.",
-                    "es": "La cuenta CoinJoin se encuentra actualmente en fase de pruebas.",
-                    "cs": "CoinJoin účet je zatím ve fázi testování.",
-                    "ru": "Счет CoinJoin в настоящее время находится на стадии тестирования.",
-                    "ja": "CoinJoinのアカウントは現在テスト段階です。"
+                    "en-GB": "Coinjoin account is currently in testing phase.",
+                    "en": "Coinjoin account is currently in testing phase.",
+                    "es": "La cuenta Coinjoin se encuentra actualmente en fase de pruebas.",
+                    "cs": "Coinjoin účet je zatím ve fázi testování.",
+                    "ru": "Счет Coinjoin в настоящее время находится на стадии тестирования.",
+                    "ja": "Coinjoinのアカウントは現在テスト段階です。"
                 },
                 "context": { "domain": "accounts.coinjoin" }
             }

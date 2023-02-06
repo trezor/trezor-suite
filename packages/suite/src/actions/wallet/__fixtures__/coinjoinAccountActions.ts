@@ -15,7 +15,7 @@ const SESSION = { signedRounds: [] as string[], maxRounds: 10 };
 
 export const createCoinjoinAccount = [
     {
-        description: 'unsupported Coinjoin client',
+        description: 'unsupported coinjoin client',
         params: {
             symbol: 'ltc', // only btc is supported in tests
             networkType: 'bitcoin',

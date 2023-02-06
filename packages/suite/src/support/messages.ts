@@ -7690,7 +7690,7 @@ export default defineMessages({
     },
     TR_UNAVAILABLE_WHILE_LOADING: {
         id: 'TR_UNAVAILABLE_WHILE_LOADING',
-        description: 'CoinJoin account navigation button tooltip during discovery',
+        description: 'Coinjoin account navigation button tooltip during discovery',
         defaultMessage: 'Unavailable while loading',
     },
     TR_VIEW_ALL: {
