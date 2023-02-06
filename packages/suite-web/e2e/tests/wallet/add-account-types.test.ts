@@ -39,10 +39,10 @@ describe('Account types suite', () => {
         //
         const coin: NetworkSymbol = 'btc';
         const accsArray = [
-            { type: 'normal', coinAccountName: 'Bitcoin' },
-            { type: 'taproot', coinAccountName: 'Bitcoin (Taproot)' },
-            { type: 'segwit', coinAccountName: 'Bitcoin (Legacy Segwit)' },
-            { type: 'legacy', coinAccountName: 'Bitcoin (Legacy)' },
+            { type: 'normal' },
+            { type: 'taproot' },
+            { type: 'segwit' },
+            { type: 'legacy' },
         ];
 
         //
@@ -51,7 +51,7 @@ describe('Account types suite', () => {
 
         onTopBar.openAccounts();
         onAccountsPage.clickAllAccountArrows();
-        accsArray.forEach(({ type, coinAccountName }: { type: string; coinAccountName: string }) =>
+        accsArray.forEach(({ type }: { type: string }) =>
             // for a specific type of BTC acc, get the current number of accounts
             cy
                 .get(`[type="${type}"] > [data-test^="@account-menu/${coin}/${type}/"]`)
@@ -59,7 +59,7 @@ describe('Account types suite', () => {
                     const numberOfAccounts1 = specificAccounts.length;
 
                     // for a specific type of BTC acc, add a new acc
-                    cy.createAccountFromMyAccounts(coin, coinAccountName);
+                    cy.createAccountFromMyAccounts(coin, type);
 
                     // for a specific type of BTC acc, get the current number of accounts again for comparison
                     cy.get(`[type="${type}"] > [data-test^="@account-menu/${coin}/${type}/"]`).then(
@@ -94,11 +94,7 @@ describe('Account types suite', () => {
         // Test preparation
         //
         const coin: NetworkSymbol = 'ltc';
-        const accsArray = [
-            { type: 'normal', coinAccountName: 'Litecoin' },
-            { type: 'segwit', coinAccountName: 'Litecoin (segwit)' },
-            { type: 'legacy', coinAccountName: 'Litecoin (legacy)' },
-        ];
+        const accsArray = [{ type: 'normal' }, { type: 'segwit' }, { type: 'legacy' }];
 
         //
         // Test execution
@@ -113,12 +109,12 @@ describe('Account types suite', () => {
         cy.discoveryShouldFinish();
         onAccountsPage.clickAllAccountArrows();
 
-        accsArray.forEach(({ type, coinAccountName }: { type: string; coinAccountName: string }) =>
+        accsArray.forEach(({ type }: { type: string }) =>
             cy
                 .get(`[type="${type}"] > [data-test^="@account-menu/${coin}/${type}/"]`)
                 .then(specificAccounts => {
                     const numberOfAccounts1 = specificAccounts.length;
-                    cy.createAccountFromMyAccounts(coin, coinAccountName);
+                    cy.createAccountFromMyAccounts(coin, type);
                     cy.get(`[type="${type}"] > [data-test^="@account-menu/${coin}/${type}/"]`).then(
                         specificAccounts => {
                             const numberOfAccounts2 = specificAccounts.length;

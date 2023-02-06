@@ -24,7 +24,7 @@ const TypeInfo = styled.div`
 const buildAccountTypeOption = (network: Network) =>
     ({
         value: network,
-        label: network.name,
+        label: network.accountType || 'normal',
     } as const);
 
 type Option = ReturnType<typeof buildAccountTypeOption>;
