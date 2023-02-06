@@ -46,13 +46,16 @@ export const parseTransactionDateKey = (key: string) => {
     return new Date(Number(year), Number(month) - 1, Number(day));
 };
 
+export type MonthKey = string & { __type: 'MonthKey' };
+
 /* Convert date to string in YYYY-MM format */
-const generateTransactionMonthKey = (d: Date) => `${d.getFullYear()}-${d.getMonth() + 1}`;
+const generateTransactionMonthKey = (d: Date): MonthKey =>
+    `${d.getFullYear()}-${d.getMonth() + 1}` as MonthKey;
 
 /** Parse Date object from a string in YYYY-MM format to return localized month name */
-export const parseTransactionMonthKey = (key: string): string => {
+export const parseTransactionMonthKey = (key: MonthKey): Date => {
     const [year, month] = key.split('-');
-    return new Date(Number(year), Number(month)).toLocaleDateString('en-us', { month: 'long' });
+    return new Date(Number(year), Number(month) - 1);
 };
 
 /**
