@@ -146,7 +146,6 @@ export const BridgeUpdateNotification = () => (
     />
 );
 
-// todo: not used yet, need to sync with product
 export const SuspiciousOriginNotification = () => (
     <Notification
         variant="danger"
