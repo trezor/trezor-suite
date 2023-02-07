@@ -26,7 +26,7 @@ describe('transaction utils', () => {
 
     it('parseTransactionMonthKey', () => {
         expect(parseTransactionMonthKey('2023-01-01T00:00:00.000Z' as MonthKey)).toEqual(
-            new Date('2023-01'),
+            new Date('2023-01').toUTCString(),
         );
     });
 
@@ -82,11 +82,11 @@ describe('transaction utils', () => {
                 testMocks.getWalletTransaction({ blockHeight: 0 }),
                 testMocks.getWalletTransaction({ blockHeight: undefined }),
             ],
-            '2019-10-01T22:00:00.000Z': [
+            'Tue, 01 Oct 2019 22:00:00 GMT': [
                 testMocks.getWalletTransaction({ blockTime: 1570127200, blockHeight: 3 }),
                 testMocks.getWalletTransaction({ blockTime: 1570147200, blockHeight: 2 }),
             ],
-            '2019-08-01T22:00:00.000Z': [
+            'Thu, 01 Aug 2019 22:00:00 GMT': [
                 testMocks.getWalletTransaction({ blockTime: 1565792979, blockHeight: 5 }),
                 testMocks.getWalletTransaction({ blockTime: 1565792379, blockHeight: 4 }),
             ],

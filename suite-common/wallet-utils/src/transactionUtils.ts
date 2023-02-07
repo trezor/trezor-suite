@@ -50,9 +50,10 @@ export const parseTransactionDateKey = (key: string) => {
 export type MonthKey = string & { __type: 'MonthKey' };
 const generateTransactionMonthKey = (d: Date): MonthKey =>
     // Adding days because of time zones of UTC
-    addDays(startOfMonth(d), 1).toISOString() as MonthKey;
+    addDays(startOfMonth(d), 1).toUTCString() as MonthKey;
 
-export const parseTransactionMonthKey = (key: MonthKey): Date => new Date(key);
+export const parseTransactionMonthKey = (key: MonthKey): MonthKey =>
+    new Date(key).toUTCString() as MonthKey;
 
 /**
  * Returns object with transactions grouped by a date. Key is a string in YYYY-MM-DD format.
