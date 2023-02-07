@@ -19,6 +19,9 @@ const CANVAS_SIZE = 48;
 const ICON_SIZE = 24;
 const RADIUS = 20;
 
+const path = Skia.Path.Make();
+path.addCircle(CANVAS_SIZE / 2, CANVAS_SIZE / 2, RADIUS);
+
 type CryptoIconProps = {
     iconName: CryptoIconName;
     percentage: number;
@@ -32,8 +35,7 @@ export const CryptoIconWithPercentage = ({
     const iconSvg = useSVG(cryptoIcons[iconName]);
     const { utils } = useNativeStyles();
     const percentageColor = utils.coinsColors[iconName] ?? utils.colors.gray500;
-    const path = Skia.Path.Make();
-    path.addCircle(CANVAS_SIZE / 2, CANVAS_SIZE / 2, RADIUS);
+
     const percentageFill = useSpring(percentage / 100, {
         damping: 100,
         mass: 5,
