@@ -6428,6 +6428,7 @@ __metadata:
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@suite-native/atoms": "workspace:*"
+    "@suite-native/react-native-graph": "workspace:*"
     "@suite-native/test-utils": "workspace:*"
     "@trezor/icons": "workspace:*"
     "@trezor/styles": "workspace:*"
@@ -6436,7 +6437,6 @@ __metadata:
     react: 18.2.0
     react-native: 0.70.5
     react-native-gesture-handler: ^2.7.0
-    react-native-graph: ^0.3.0
     react-native-reanimated: ^2.12.0
     react-redux: 7.2.2
     typescript: 4.9.3
@@ -6588,7 +6588,6 @@ __metadata:
     jotai: 1.9.1
     react: 18.2.0
     react-native: 0.70.5
-    react-native-graph: ^0.3.0
     react-redux: 7.2.2
     typescript: 4.9.3
   languageName: unknown
@@ -6678,6 +6677,20 @@ __metadata:
     react: 18.2.0
     react-native: 0.70.5
     react-qr-code: 2.0.8
+  languageName: unknown
+  linkType: soft
+
+"@suite-native/react-native-graph@workspace:*, @suite-native/react-native-graph@workspace:suite-native/react-native-graph":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/react-native-graph@workspace:suite-native/react-native-graph"
+  dependencies:
+    "@shopify/react-native-skia": 0.1.163
+    "@types/react": 18.0.25
+    "@types/react-native": 0.70.3
+    react: 18.2.0
+    react-native: 0.70.5
+    react-native-gesture-handler: ^2.7.0
+    react-native-reanimated: ^2.12.0
   languageName: unknown
   linkType: soft
 
@@ -26765,19 +26778,6 @@ __metadata:
   version: 0.70.3
   resolution: "react-native-gradle-plugin@npm:0.70.3"
   checksum: 04a3379842bcb4709ac6b37e093a3de59acd33b28b200885843b13908fac685a77ab81d732c34090c56e5c0eec971d578b227f302bd04fe7901e8792d434f41f
-  languageName: node
-  linkType: hard
-
-"react-native-graph@npm:^0.3.0":
-  version: 0.3.0
-  resolution: "react-native-graph@npm:0.3.0"
-  peerDependencies:
-    "@shopify/react-native-skia": "*"
-    react: "*"
-    react-native: "*"
-    react-native-gesture-handler: ">=2"
-    react-native-reanimated: ">=2"
-  checksum: ec9e4bf7a6d4ff28d0c465deeee16a40331fa0e8d899ecb2a9bdf2542aa5105c984e404654b965ff80d20dd870804867cfd7fc9638c9c5cd429ffa10dd987803
   languageName: node
   linkType: hard
 
