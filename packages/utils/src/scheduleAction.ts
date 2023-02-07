@@ -10,9 +10,13 @@ export type ScheduleActionParams = {
     deadline?: number; // Timestamp in which all attempts are rejected (default = none)
     attempts?:
         | number // How many attempts before failure (default = one, or infinite when deadline is set)
-        | AttemptParams[]; // Array of timeouts and gaps for every attempt (length = attempt count)
+        | readonly AttemptParams[]; // Array of timeouts and gaps for every attempt (length = attempt count)
     signal?: AbortSignal;
 } & AttemptParams; // Ignored when attempts is AttemptParams[]
+
+const isArray = (
+    attempts: ScheduleActionParams['attempts'],
+): attempts is readonly AttemptParams[] => Array.isArray(attempts);
 
 const abortedBySignal = () => new Error('Aborted by signal');
 const abortedByDeadline = () => new Error('Aborted by deadline');
@@ -101,12 +105,12 @@ export const scheduleAction = async <T>(
 ) => {
     const { signal, delay, attempts, timeout, deadline, gap } = params;
     const deadlineMs = deadline && deadline - Date.now();
-    const attemptCount = Array.isArray(attempts)
+    const attemptCount = isArray(attempts)
         ? attempts.length
         : attempts ?? (deadline ? Infinity : 1);
     const clearAborter = new AbortController();
     const clear = clearAborter.signal;
-    const getParams = Array.isArray(attempts)
+    const getParams = isArray(attempts)
         ? (attempt: number) => attempts[attempt]
         : () => ({ timeout, gap });
 
