@@ -186,3 +186,31 @@ export const selectTransactionBlockTimeById = memoizeWithArgs(
         return null;
     },
 );
+
+export const selectTransactionTargets = memoizeWithArgs(
+    (state: TransactionsRootState, txid: string, accountKey: AccountKey) => {
+        const transaction = selectTransactionByTxidAndAccountKey(state, txid, accountKey);
+        return transaction?.targets;
+    },
+);
+
+export const selectTransactionFirstTargetAddress = memoizeWithArgs(
+    (state: TransactionsRootState, txid: string, accountKey: AccountKey) => {
+        const transactionTargets = selectTransactionTargets(state, txid, accountKey);
+        return transactionTargets?.[0]?.addresses?.[0];
+    },
+);
+
+export const selectTransactionFirstInputAddress = memoizeWithArgs(
+    (state: TransactionsRootState, txid: string, accountKey: AccountKey) => {
+        const transaction = selectTransactionByTxidAndAccountKey(state, txid, accountKey);
+        return transaction?.details?.vin?.[0].addresses?.[0];
+    },
+);
+
+export const selectTransactionFirstOutputAddress = memoizeWithArgs(
+    (state: TransactionsRootState, txid: string, accountKey: AccountKey) => {
+        const transaction = selectTransactionByTxidAndAccountKey(state, txid, accountKey);
+        return transaction?.details?.vout?.[0].addresses?.[0];
+    },
+);

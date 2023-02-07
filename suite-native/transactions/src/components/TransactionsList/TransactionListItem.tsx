@@ -16,7 +16,11 @@ import {
 } from '@suite-native/navigation';
 import { useFormatters } from '@suite-common/formatters';
 import { CryptoToFiatAmountFormatter } from '@suite-native/formatters';
-import { selectTransactionBlockTimeById, TransactionsRootState } from '@suite-common/wallet-core';
+import {
+    selectTransactionBlockTimeById,
+    selectTransactionFirstTargetAddress,
+    TransactionsRootState,
+} from '@suite-common/wallet-core';
 
 import { TransactionListItemIcon } from './TransactionListItemIcon';
 
@@ -77,13 +81,14 @@ const transactionListItemStyle = prepareNativeStyle<TransactionListItemStyleProp
     }),
 );
 
-const titleCointainerStyle = prepareNativeStyle(_ => ({
-    maxWidth: '50%',
+const descriptionBoxStyle = prepareNativeStyle(_ => ({
     flexDirection: 'row',
     alignItems: 'center',
+    maxWidth: '60%',
 }));
-
 const addressStyle = prepareNativeStyle(utils => ({
+    flex: 1,
+    alignItems: 'center',
     backgroundColor: utils.colors.gray100,
     marginLeft: utils.spacings.small,
     paddingHorizontal: utils.spacings.small,
@@ -102,6 +107,9 @@ export const TransactionListItem = memo(
         const transactionBlockTime = useSelector((state: TransactionsRootState) =>
             selectTransactionBlockTimeById(state, transaction.txid, accountKey),
         );
+        const transactionTargetAddress = useSelector((state: TransactionsRootState) =>
+            selectTransactionFirstTargetAddress(state, transaction.txid, accountKey),
+        );
 
         const handleNavigateToTransactionDetail = () => {
             navigation.navigate(RootStackRoutes.TransactionDetail, {
@@ -117,27 +125,31 @@ export const TransactionListItem = memo(
                 onPress={() => handleNavigateToTransactionDetail()}
                 style={applyStyle(transactionListItemStyle, { isFirst, isLast })}
             >
-                <TransactionListItemIcon
-                    cryptoIconName={transaction.symbol}
-                    transactionType={transaction.type}
-                />
-                <Box>
-                    <Box style={applyStyle(titleCointainerStyle)}>
-                        <Text>{transactionTypeProperties.prefix}</Text>
-                        <Box style={applyStyle(addressStyle)}>
-                            <Text
-                                variant="label"
-                                color="gray600"
-                                numberOfLines={1}
-                                ellipsizeMode="middle"
-                            >
-                                {transaction.txid}
-                            </Text>
+                <Box style={applyStyle(descriptionBoxStyle)}>
+                    <TransactionListItemIcon
+                        cryptoIconName={transaction.symbol}
+                        transactionType={transaction.type}
+                    />
+                    <Box marginLeft="medium" flex={1}>
+                        <Box flexDirection="row">
+                            <Text>{transactionTypeProperties.prefix}</Text>
+                            {transactionTargetAddress && (
+                                <Box style={applyStyle(addressStyle)}>
+                                    <Text
+                                        variant="label"
+                                        color="gray600"
+                                        numberOfLines={1}
+                                        ellipsizeMode="middle"
+                                    >
+                                        {transactionTargetAddress}
+                                    </Text>
+                                </Box>
+                            )}
                         </Box>
+                        <Text variant="hint" color="gray600">
+                            <DateTimeFormatter value={transactionBlockTime} />
+                        </Text>
                     </Box>
-                    <Text variant="hint" color="gray600">
-                        <DateTimeFormatter value={transactionBlockTime} />
-                    </Text>
                 </Box>
 
                 <Box alignItems="flex-end">
