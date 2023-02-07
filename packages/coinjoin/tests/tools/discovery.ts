@@ -30,9 +30,7 @@ export const getAccountInfo = async ({
     const backend = new CoinjoinBackend(config);
     const transactions: Parameters<(typeof backend)['getAccountInfo']>[1] = [];
 
-    backend.on('log', message => {
-        console.log('🌐', message);
-    });
+    backend.on('log', ({ level, payload }) => console[level]('🌐', payload));
 
     backend.on(`progress/${descriptor}`, e => {
         transactions.push(...e.transactions);
