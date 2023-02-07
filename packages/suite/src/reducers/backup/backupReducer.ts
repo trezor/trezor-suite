@@ -3,6 +3,10 @@ import { BACKUP } from '@backup-actions/constants';
 import { ConfirmKey, BackupStatus } from '@backup-actions/backupActions';
 import { Action } from '@suite-types';
 
+export interface BackupRootState {
+    backup: BackupState;
+}
+
 export interface BackupState {
     userConfirmed: ConfirmKey[];
     status: BackupStatus;
@@ -44,5 +48,7 @@ const backup = (state: BackupState = initialState, action: Action) =>
             // no default
         }
     });
+
+export const selectBackup = (state: BackupRootState) => state.backup;
 
 export default backup;

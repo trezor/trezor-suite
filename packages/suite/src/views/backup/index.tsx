@@ -1,16 +1,18 @@
 import React from 'react';
 import styled from 'styled-components';
+import { useDispatch } from 'react-redux';
 import { P, Button, Image } from '@trezor/components';
 import { HELP_CENTER_FAILED_BACKUP_URL } from '@trezor/urls';
-import { useSelector, useActions } from '@suite-hooks';
-import * as backupActions from '@backup-actions/backupActions';
-import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
+import { useSelector } from '@suite-hooks';
+import { backupDevice } from '@backup-actions/backupActions';
+import { changePin } from '@settings-actions/deviceSettingsActions';
 import { Loading, Translation, TrezorLink, Modal } from '@suite-components';
 import { PreBackupCheckboxes, AfterBackupCheckboxes } from '@backup-components';
 import { canStart, canContinue } from '@backup-utils';
-
+import { selectDevice, selectLocks } from '@suite-reducers/suiteReducer';
 import type { ForegroundAppProps } from '@suite-types';
 import type { BackupStatus } from '@backup-actions/backupActions';
+import { selectBackup } from '@backup-reducers/backupReducer';
 
 const StyledButton = styled(Button)`
     width: 224px;
@@ -83,28 +85,24 @@ const getEdgeCaseModalHeading = (unfinishedBackup: boolean) => {
 };
 
 export const Backup = ({ cancelable, onCancel }: ForegroundAppProps) => {
-    const { device, backup, locks } = useSelector(state => ({
-        device: state.suite.device,
-        backup: state.backup,
-        locks: state.suite.locks,
-    }));
-    const actions = useActions({
-        backupDevice: backupActions.backupDevice,
-        changePin: deviceSettingsActions.changePin,
-    });
+    const device = useSelector(selectDevice);
+    const backup = useSelector(selectBackup);
+    const locks = useSelector(selectLocks);
 
-    const onClose = () => onCancel();
+    const dispatch = useDispatch();
 
     const nonErrorBackupStatuses = ['initial', 'in-progress', 'finished'] as const;
 
-    if (!device || !device.features || !device.connected) {
+    const isDeviceUnavailable = !device || !device.features || !device.connected;
+
+    if (isDeviceUnavailable) {
         return (
             <SmallModal
                 heading={<Translation id="TR_RECONNECT_HEADER" />}
                 isCancelable={cancelable}
                 onCancel={onCancel}
                 data-test="@backup/no-device"
-                bottomBar={<CloseButton onClick={onClose} variant="TR_CLOSE" />}
+                bottomBar={<CloseButton onClick={onCancel} variant="TR_CLOSE" />}
             >
                 <StyledImage image="CONNECT_DEVICE" width="360" />
             </SmallModal>
@@ -126,7 +124,7 @@ export const Backup = ({ cancelable, onCancel }: ForegroundAppProps) => {
                 isCancelable
                 onCancel={onCancel}
                 heading={getEdgeCaseModalHeading(device.features.unfinished_backup)}
-                bottomBar={<CloseButton onClick={onClose} variant="TR_CLOSE" />}
+                bottomBar={<CloseButton onClick={onCancel} variant="TR_CLOSE" />}
             >
                 {device.features.unfinished_backup ? (
                     <VerticalCenter>
@@ -162,34 +160,35 @@ export const Backup = ({ cancelable, onCancel }: ForegroundAppProps) => {
                 <>
                     {backup.status === 'initial' && (
                         <>
-                            <CloseButton onClick={onClose} variant="TR_CANCEL" />
+                            <CloseButton onClick={onCancel} variant="TR_CANCEL" />
                             <StyledButton
                                 data-test="@backup/start-button"
-                                onClick={() => actions.backupDevice()}
+                                onClick={() => dispatch(backupDevice())}
                                 isDisabled={!canStart(backup.userConfirmed, locks)}
                             >
                                 <Translation id="TR_CREATE_BACKUP" />
                             </StyledButton>
                         </>
                     )}
+
                     {backup.status === 'finished' && (
                         <>
                             {device?.features?.pin_protection ? (
                                 <StyledButton
                                     isDisabled={!canContinue(backup.userConfirmed)}
-                                    onClick={onClose}
+                                    onClick={() => onCancel()}
                                 >
                                     <Translation id="TR_CLOSE" />
                                 </StyledButton>
                             ) : (
                                 <>
-                                    <CloseButton onClick={onClose} variant="TR_SKIP_PIN" />
+                                    <CloseButton onClick={onCancel} variant="TR_SKIP_PIN" />
                                     <StyledButton
                                         data-test="@backup/continue-to-pin-button"
                                         isDisabled={!canContinue(backup.userConfirmed)}
                                         onClick={() => {
-                                            onClose();
-                                            actions.changePin({});
+                                            onCancel();
+                                            dispatch(changePin({}));
                                         }}
                                     >
                                         <Translation id="TR_CONTINUE_TO_PIN" />
@@ -198,8 +197,9 @@ export const Backup = ({ cancelable, onCancel }: ForegroundAppProps) => {
                             )}
                         </>
                     )}
+
                     {backup.status === 'error' && (
-                        <CloseButton onClick={onClose} variant="TR_CLOSE" />
+                        <CloseButton onClick={onCancel} variant="TR_CLOSE" />
                     )}
                 </>
             }
@@ -223,6 +223,7 @@ export const Backup = ({ cancelable, onCancel }: ForegroundAppProps) => {
                     <AfterBackupCheckboxes />
                 </>
             )}
+
             {backup.status === 'error' && (
                 <VerticalCenter>
                     <StyledImage image="UNI_ERROR" />

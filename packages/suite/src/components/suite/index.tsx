@@ -1,6 +1,6 @@
 import { AccountLabel } from './AccountLabel';
 import DeviceIcon from './images/DeviceIcon';
-import CheckItem from './CheckItem';
+import { CheckItem } from './CheckItem';
 import { PrerequisitesGuide } from './PrerequisitesGuide';
 import { WelcomeLayout } from './WelcomeLayout';
 

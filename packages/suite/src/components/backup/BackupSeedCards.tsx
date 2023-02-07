@@ -62,7 +62,7 @@ const items = [
     },
 ] as const;
 
-const BackupSeedCards = () => {
+export const BackupSeedCards = () => {
     const backup = useSelector(state => state.backup);
 
     const dispatch = useDispatch();
@@ -90,5 +90,3 @@ const BackupSeedCards = () => {
         </Wrapper>
     );
 };
-
-export default BackupSeedCards;
