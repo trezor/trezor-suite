@@ -286,4 +286,6 @@ export const selectDeviceModel = memoizeWithArgs(
 
 export const selectLanguage = (state: SuiteRootState) => state.suite.settings.language;
 
+export const selectLocks = (state: SuiteRootState) => state.suite.locks;
+
 export default suiteReducer;

@@ -35,7 +35,14 @@ interface CheckItemProps {
     onClick: () => void;
 }
 
-const CheckItem = ({ title, description, isChecked, link, onClick, ...rest }: CheckItemProps) => (
+export const CheckItem = ({
+    title,
+    description,
+    isChecked,
+    link,
+    onClick,
+    ...rest
+}: CheckItemProps) => (
     <StyledCheckbox isChecked={isChecked} onClick={onClick} {...rest}>
         <CheckboxRight>
             <CheckboxTitle>{title}</CheckboxTitle>
@@ -44,5 +51,3 @@ const CheckItem = ({ title, description, isChecked, link, onClick, ...rest }: Ch
         </CheckboxRight>
     </StyledCheckbox>
 );
-
-export default CheckItem;
