@@ -31,6 +31,7 @@ export const COINJOIN_NETWORKS: PartialRecord<NetworkSymbol, ServerEnvironment> 
             /* 31.01.2023 */
             baseBlockHeight: 774460,
             baseBlockHash: '0000000000000000000013be741eb25cece368611509ac013332c2af7ce027ac',
+            filtersBatchSize: 1000,
             middlewareUrl: 'http://localhost:8081/',
         },
     },
@@ -82,6 +83,7 @@ export const COINJOIN_NETWORKS: PartialRecord<NetworkSymbol, ServerEnvironment> 
             baseBlockHeight: 2349000,
             baseBlockHash: '0000000000000014af3e6e1a3f0a24be7bc65998b9bc01e4a05b134a89d304bf',
             /* */
+            filtersBatchSize: 10000,
             // client settings
             middlewareUrl: 'http://localhost:8081/',
         },
@@ -94,6 +96,7 @@ export const COINJOIN_NETWORKS: PartialRecord<NetworkSymbol, ServerEnvironment> 
             blockbookUrls: ['https://tbtc1.trezor.io/api/v2', 'https://tbtc2.trezor.io/api/v2'],
             baseBlockHeight: 2349000,
             baseBlockHash: '0000000000000014af3e6e1a3f0a24be7bc65998b9bc01e4a05b134a89d304bf',
+            filtersBatchSize: 10000,
             // client settings
             middlewareUrl: 'http://localhost:8081/',
         },
@@ -108,6 +111,7 @@ export const COINJOIN_NETWORKS: PartialRecord<NetworkSymbol, ServerEnvironment> 
             blockbookUrls: ['https://dev-coinjoin.trezor.io/blockbook/api/v2'],
             baseBlockHeight: 0,
             baseBlockHash: '0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206',
+            filtersBatchSize: 10000,
             // client settings
             middlewareUrl: 'https://dev-coinjoin.trezor.io/client/',
         },
@@ -120,6 +124,7 @@ export const COINJOIN_NETWORKS: PartialRecord<NetworkSymbol, ServerEnvironment> 
             blockbookUrls: ['http://localhost:8081/blockbook/api/v2'],
             baseBlockHeight: 0,
             baseBlockHash: '0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206',
+            filtersBatchSize: 10000,
             // client settings
             middlewareUrl: 'http://localhost:8081/client/',
         },
