@@ -102,7 +102,6 @@ const createSession = (
         ...payload.params,
         timeCreated: Date.now(),
         sessionPhaseQueue: [],
-        registeredUtxos: [],
         signedRounds: [],
     };
 };
@@ -214,7 +213,6 @@ const pauseSession = (
     delete account.session.roundPhase;
     delete account.session.sessionDeadline;
     account.session.sessionPhaseQueue = [];
-    account.session.registeredUtxos = [];
     account.session.paused = true;
     account.session.interrupted = payload.interrupted;
     account.session.timeEnded = Date.now();
