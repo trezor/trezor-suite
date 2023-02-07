@@ -17,7 +17,6 @@ export interface CoinjoinSessionParameters {
 }
 
 export interface CoinjoinSession extends CoinjoinSessionParameters {
-    registeredUtxos: string[]; // list of utxos (outpoints) registered in session
     timeCreated: number; // timestamp when was created
     timeEnded?: number; // timestamp when was finished
     paused?: boolean; // current state

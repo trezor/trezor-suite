@@ -15,7 +15,6 @@ const account = {
         targetAnonymity: 20,
         timeCreated: 1674818299886,
         sessionPhaseQueue: [],
-        registeredUtxos: [],
         signedRounds: [],
         paused: true,
         interrupted: false,
