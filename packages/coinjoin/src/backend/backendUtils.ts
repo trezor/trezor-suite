@@ -2,6 +2,7 @@ import BigNumber from 'bignumber.js';
 
 import { deriveAddresses as deriveNewAddresses, Network } from '@trezor/utxo-lib';
 import { getTransactionVbytes } from '@trezor/utxo-lib/lib/vsize';
+import { promiseAllSequence } from '@trezor/utils';
 
 import type { CoinjoinBackendClient } from './CoinjoinBackendClient';
 import type { VinVout, Transaction, PrederivedAddress } from '../types/backend';
@@ -37,8 +38,9 @@ export const fixTx = (
     client: CoinjoinBackendClient,
     network: Network,
 ) =>
-    Promise.all(
-        transactions.map(async tx => {
+    // must be sequential in order not to hit backend's rate limiter
+    promiseAllSequence(
+        transactions.map(tx => async () => {
             const fetched = await client.fetchTransaction(tx.txid, {
                 identity: client.getIdentityForBlock(tx.blockHeight),
             });
