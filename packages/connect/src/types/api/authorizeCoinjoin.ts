@@ -1,7 +1,7 @@
 import type { PROTO } from '../../constants';
 import type { Params, Response } from '../params';
 
-export interface AuthorizeCoinJoin {
+export interface AuthorizeCoinjoin {
     path: string | number[];
     coordinator: string;
     maxRounds: number;
@@ -13,6 +13,6 @@ export interface AuthorizeCoinJoin {
     preauthorized?: boolean;
 }
 
-export declare function authorizeCoinJoin(
-    params: Params<AuthorizeCoinJoin>,
+export declare function authorizeCoinjoin(
+    params: Params<AuthorizeCoinjoin>,
 ): Response<PROTO.Success>;

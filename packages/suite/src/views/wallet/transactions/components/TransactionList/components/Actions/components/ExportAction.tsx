@@ -10,7 +10,7 @@ import { exportTransactionsThunk, fetchTransactionsThunk } from '@suite-common/w
 import { ExportFileType } from '@suite-common/wallet-types';
 import { Account } from '@wallet-types';
 import { isFeatureFlagEnabled } from '@suite-common/suite-utils';
-import { getTitleForNetwork, getTitleForCoinJoinAccount } from '@suite-common/wallet-utils';
+import { getTitleForNetwork, getTitleForCoinjoinAccount } from '@suite-common/wallet-utils';
 
 export interface ExportActionProps {
     account: Account;
@@ -28,7 +28,7 @@ export const ExportAction = ({ account }: ExportActionProps) => {
 
     const getAccountTitle = useCallback(() => {
         if (account.accountType === 'coinjoin') {
-            return translationString(getTitleForCoinJoinAccount(account.symbol));
+            return translationString(getTitleForCoinjoinAccount(account.symbol));
         }
         return translationString('LABELING_ACCOUNT', {
             networkName: translationString(getTitleForNetwork(account.symbol)),

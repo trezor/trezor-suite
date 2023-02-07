@@ -22,7 +22,7 @@
 -   added `setBusy` method
 -   added `goerli` (TGOR) coin support
 -   added `serialize` and `coinjoinRequest` option to `signTransaction` method
--   added `preauthorized` option to `authorizeCoinJoin` method
+-   added `preauthorized` option to `authorizeCoinjoin` method
 -   Cardano: added support for [CIP36 Catalyst registration format](https://cips.cardano.org/cips/cip36/) in `cardanoSignTransaction` method
     -   `auxiliaryData.catalystRegistrationParameters` is deprecated, use `auxiliaryData.governanceRegistrationParameters` instead
 
@@ -69,6 +69,6 @@
 
 -   `getOwnershipId` method
 -   `getOwnershipProof` method
--   `authorizeCoinJoin` method
+-   `authorizeCoinjoin` method
 -   `getFirmwareHash` method
 -   [support for babbage features in cardano](https://github.com/trezor/trezor-suite/commit/efe9c78a2f74a1b7653b3fddf6cca35ba38d3ae9)

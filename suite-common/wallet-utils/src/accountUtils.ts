@@ -93,7 +93,7 @@ export const getFiatValue = (amount: string, rate: string, fixedTo = 2) => {
     return fiatValue;
 };
 
-export const getTitleForCoinJoinAccount = (symbol: NetworkSymbol) => {
+export const getTitleForCoinjoinAccount = (symbol: NetworkSymbol) => {
     switch (symbol.toLowerCase()) {
         case 'btc':
             return 'TR_NETWORK_COINJOIN_BITCOIN';

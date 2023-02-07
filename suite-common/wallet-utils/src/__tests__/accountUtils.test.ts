@@ -12,7 +12,7 @@ import {
     getFirstFreshAddress,
     getNetwork,
     getTitleForNetwork,
-    getTitleForCoinJoinAccount,
+    getTitleForCoinjoinAccount,
     getUtxoFromSignedTransaction,
     getNetworkFeatures,
     hasNetworkFeatures,
@@ -72,7 +72,7 @@ describe('account utils', () => {
     describe('get title for coinjoin accounts', () => {
         fixtures.accountTitleCoinjoinFixture.forEach((fixture: any) => {
             it(fixture.symbol, () => {
-                expect(getTitleForCoinJoinAccount(fixture.symbol)).toBe(fixture.title);
+                expect(getTitleForCoinjoinAccount(fixture.symbol)).toBe(fixture.title);
             });
         });
     });
@@ -237,7 +237,7 @@ describe('account utils', () => {
 
         const ethAcc = testMocks.getWalletAccount();
 
-        const coinJoinAcc = testMocks.getWalletAccount({
+        const coinjoinAcc = testMocks.getWalletAccount({
             networkType: 'bitcoin',
             symbol: 'regtest',
             accountType: 'coinjoin',
@@ -246,7 +246,7 @@ describe('account utils', () => {
         expect(getNetworkFeatures(btcAcc)).toEqual(['rbf', 'sign-verify', 'amount-unit']);
         expect(getNetworkFeatures(btcTaprootAcc)).toEqual(['rbf', 'amount-unit']);
         expect(getNetworkFeatures(ethAcc)).toEqual(['rbf', 'sign-verify', 'tokens']);
-        expect(getNetworkFeatures(coinJoinAcc)).toEqual(['amount-unit']);
+        expect(getNetworkFeatures(coinjoinAcc)).toEqual(['amount-unit']);
     });
 
     it('hasNetworkFeatures', () => {

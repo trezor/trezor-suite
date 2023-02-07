@@ -42,7 +42,7 @@ export const AnonymizeButton = ({ accountKey }: AnonymizeButtonProps) => {
         selectIsCoinjoinBlockedByAmountsTooSmall(state, accountKey),
     );
 
-    const isCoinJoinDisabledByFeatureFlag = useSelector(state =>
+    const isCoinjoinDisabledByFeatureFlag = useSelector(state =>
         selectIsFeatureDisabled(state, Feature.coinjoin),
     );
     const featureMessageContent = useSelector(state =>
@@ -52,14 +52,14 @@ export const AnonymizeButton = ({ accountKey }: AnonymizeButtonProps) => {
     const dispatch = useDispatch();
 
     const isDisabled =
-        isCoinJoinDisabledByFeatureFlag ||
+        isCoinjoinDisabledByFeatureFlag ||
         isCoinjoinBlockedByAmountsTooSmall ||
         isCoinjoinBlockedByTor;
 
     const goToSetup = () => dispatch(goto('wallet-anonymize', { preserveParams: true }));
 
     const getTooltipContent = () => {
-        if (isCoinJoinDisabledByFeatureFlag && featureMessageContent) {
+        if (isCoinjoinDisabledByFeatureFlag && featureMessageContent) {
             return featureMessageContent;
         }
         if (isCoinjoinBlockedByTor) {

@@ -217,7 +217,7 @@ export const factory = ({
 
         applySettings: params => call({ ...params, method: 'applySettings' }),
 
-        authorizeCoinJoin: params => call({ ...params, method: 'authorizeCoinJoin' }),
+        authorizeCoinjoin: params => call({ ...params, method: 'authorizeCoinjoin' }),
 
         backupDevice: params => call({ ...params, method: 'backupDevice' }),
 

@@ -32,16 +32,16 @@ export const coinjoinMiddleware =
         const isCoinjoinSessionBlockedGlobally = (state: AppState) => {
             const deviceStatus = selectDeviceState(state);
             const isDeviceDisconnected = deviceStatus !== 'connected';
-            const isCoinJoinBlockedByTor = selectIsCoinjoinBlockedByTor(state);
-            const isCoinJoinDisabledByFeatureFlag = selectIsFeatureDisabled(
+            const isCoinjoinBlockedByTor = selectIsCoinjoinBlockedByTor(state);
+            const isCoinjoinDisabledByFeatureFlag = selectIsFeatureDisabled(
                 state,
                 Feature.coinjoin,
             );
             const isCoinjoinBlockedByRoute = state.router.route?.name === 'wallet-send';
             return (
                 isDeviceDisconnected ||
-                isCoinJoinBlockedByTor ||
-                isCoinJoinDisabledByFeatureFlag ||
+                isCoinjoinBlockedByTor ||
+                isCoinjoinDisabledByFeatureFlag ||
                 isCoinjoinBlockedByRoute ||
                 !state.suite.online
             );
@@ -174,12 +174,12 @@ export const coinjoinMiddleware =
         ) {
             const state = api.getState();
 
-            const isCoinJoinDisabledByFeatureFlag = selectIsFeatureDisabled(
+            const isCoinjoinDisabledByFeatureFlag = selectIsFeatureDisabled(
                 state,
                 Feature.coinjoin,
             );
 
-            if (isCoinJoinDisabledByFeatureFlag) {
+            if (isCoinjoinDisabledByFeatureFlag) {
                 const isAnySessionInCriticalPhase = selectIsAnySessionInCriticalPhase(state);
                 const hasCriticalPhaseJustEnded =
                     action.type === SESSION_ROUND_CHANGED &&

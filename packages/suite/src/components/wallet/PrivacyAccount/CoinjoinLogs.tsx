@@ -6,7 +6,7 @@ import { Translation } from '@suite-components';
 import { Card } from '@trezor/components';
 import { useSelector } from '@suite-hooks/useSelector';
 import { useAnchor } from '@suite-hooks/useAnchor';
-import { CoinJoinLogsAnchor } from '@suite-constants/anchors';
+import { CoinjoinLogsAnchor } from '@suite-constants/anchors';
 import { anchorOutlineStyles } from '@suite-utils/anchor';
 
 const SetupCard = styled(Card)<{ shouldHighlight?: boolean }>`
@@ -18,9 +18,9 @@ const SetupCard = styled(Card)<{ shouldHighlight?: boolean }>`
     ${anchorOutlineStyles}
 `;
 
-export const CoinJoinLogs = () => {
+export const CoinjoinLogs = () => {
     const showDebugMenu = useSelector(state => state.suite.settings.debug.showDebugMenu);
-    const { anchorRef, shouldHighlight } = useAnchor(CoinJoinLogsAnchor);
+    const { anchorRef, shouldHighlight } = useAnchor(CoinjoinLogsAnchor);
 
     if (!showDebugMenu) return null;
 

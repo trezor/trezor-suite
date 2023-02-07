@@ -10,8 +10,8 @@ import { selectIsCoinjoinBlockedByTor } from '@wallet-reducers/coinjoinReducer';
 import { getIsCoinjoinOutOfSync } from '@wallet-utils/coinjoinUtils';
 
 export const useBlockedCoinjoinResume = () => {
-    const isCoinJoinBlockedByTor = useSelector(selectIsCoinjoinBlockedByTor);
-    const isCoinJoinDisabledByFeatureFlag = useSelector(state =>
+    const isCoinjoinBlockedByTor = useSelector(selectIsCoinjoinBlockedByTor);
+    const isCoinjoinDisabledByFeatureFlag = useSelector(state =>
         selectIsFeatureDisabled(state, Feature.coinjoin),
     );
     const featureMessageContent = useSelector(state =>
@@ -29,7 +29,7 @@ export const useBlockedCoinjoinResume = () => {
 
     if (!online) {
         coinjoinResumeBlockedMessageId = 'TR_UNAVAILABLE_COINJOIN_NO_INTERNET';
-    } else if (isCoinJoinBlockedByTor) {
+    } else if (isCoinjoinBlockedByTor) {
         coinjoinResumeBlockedMessageId = 'TR_UNAVAILABLE_COINJOIN_TOR_DISABLE_TOOLTIP';
     } else if (isDeviceDisconnected) {
         coinjoinResumeBlockedMessageId = 'TR_UNAVAILABLE_COINJOIN_DEVICE_DISCONNECTED';
@@ -38,11 +38,11 @@ export const useBlockedCoinjoinResume = () => {
     }
 
     const isCoinjoinResumeBlocked =
-        isCoinJoinBlockedByTor ||
+        isCoinjoinBlockedByTor ||
         isDeviceDisconnected ||
         isAccountOutOfSync ||
         !online ||
-        isCoinJoinDisabledByFeatureFlag;
+        isCoinjoinDisabledByFeatureFlag;
 
     return {
         coinjoinResumeBlockedMessageId,

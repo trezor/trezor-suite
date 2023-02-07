@@ -16,7 +16,7 @@ import { ActionColumn, Row, TextColumn, ActionButton } from '@suite-components/S
 import { CARD_PADDING_SIZE } from '@suite-constants/layout';
 import { NETWORKS } from '@wallet-config';
 import { AnonymityLevelSetupCard } from '@wallet-components/PrivacyAccount/AnonymityLevelSetupCard';
-import { CoinJoinLogs } from '@wallet-components/PrivacyAccount/CoinJoinLogs';
+import { CoinjoinLogs } from '@wallet-components/PrivacyAccount/CoinjoinLogs';
 
 const AccountTypeLabel = styled.div`
     display: flex;
@@ -139,7 +139,7 @@ const Details = () => {
                 )}
             </StyledCard>
 
-            {isCoinjoinAccount && <CoinJoinLogs />}
+            {isCoinjoinAccount && <CoinjoinLogs />}
         </WalletLayout>
     );
 };

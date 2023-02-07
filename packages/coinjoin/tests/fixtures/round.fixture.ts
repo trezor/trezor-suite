@@ -95,7 +95,7 @@ export const AFFILIATE_INFO = {
 export const STATUS_EVENT = {
     roundStates: [],
     affiliateInformation: AFFILIATE_INFO,
-    coinJoinFeeRateMedians: FEE_RATE_MEDIANS,
+    coinjoinFeeRateMedians: FEE_RATE_MEDIANS,
 };
 
 type CJRoundOptions = ConstructorParameters<typeof CoinjoinRound>[1];
