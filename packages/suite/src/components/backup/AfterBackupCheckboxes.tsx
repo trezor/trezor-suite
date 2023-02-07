@@ -5,11 +5,7 @@ import { useSelector, useActions } from '@suite-hooks';
 import * as backupActions from '@suite/actions/backup/backupActions';
 
 const CheckboxWrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 10px;
-    margin-bottom: 2px;
+    margin-top: 38px;
 `;
 
 const AfterBackupCheckboxes = () => {
