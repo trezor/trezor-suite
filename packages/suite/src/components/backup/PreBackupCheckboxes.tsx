@@ -6,13 +6,7 @@ import * as backupActions from '@suite/actions/backup/backupActions';
 import { variables } from '@trezor/components';
 
 const CheckboxWrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 10px;
-    margin-bottom: 2px;
-    align-self: center;
-    max-width: 80%;
+    margin-top: 38px;
 
     @media only screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
         max-width: 100%;
