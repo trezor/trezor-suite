@@ -443,7 +443,7 @@ const authorizeCoinjoin =
         // authorize coinjoin session on Trezor
         dispatch(coinjoinAccountAuthorize(account.key));
 
-        const auth = await TrezorConnect.authorizeCoinJoin({
+        const auth = await TrezorConnect.authorizeCoinjoin({
             device,
             useEmptyPassphrase: device?.useEmptyPassphrase,
             path: account.path,
@@ -595,7 +595,7 @@ export const restoreCoinjoinSession =
 
         dispatch(coinjoinSessionStarting(accountKey, true));
 
-        const auth = await TrezorConnect.authorizeCoinJoin({
+        const auth = await TrezorConnect.authorizeCoinjoin({
             device,
             useEmptyPassphrase: device?.useEmptyPassphrase,
             path: account.path,

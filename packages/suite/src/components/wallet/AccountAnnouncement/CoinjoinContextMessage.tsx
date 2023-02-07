@@ -5,11 +5,11 @@ import { useSelector } from '@suite-hooks';
 import { Context, selectContextMessageContent } from '@suite-reducers/messageSystemReducer';
 import { Account } from '@wallet-types';
 
-type CoinJoinContextMessageProps = {
+type CoinjoinContextMessageProps = {
     account?: Account;
 };
 
-export const CoinJoinContextMessage = ({ account }: CoinJoinContextMessageProps) => {
+export const CoinjoinContextMessage = ({ account }: CoinjoinContextMessageProps) => {
     const message = useSelector(state => selectContextMessageContent(state, Context.coinjoin));
 
     return account?.accountType === 'coinjoin' && message ? (

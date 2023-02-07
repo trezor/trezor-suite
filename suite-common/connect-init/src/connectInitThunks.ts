@@ -62,7 +62,7 @@ export const connectInitThunk = createThunk(
             'backupDevice',
             'recoveryDevice',
             'checkFirmwareAuthenticity',
-            'authorizeCoinJoin',
+            'authorizeCoinjoin',
             'getOwnershipProof',
             'setBusy',
         ] as const;

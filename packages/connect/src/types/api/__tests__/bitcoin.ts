@@ -687,8 +687,8 @@ export const getOwnershipProof = async (api: TrezorConnect) => {
     api.getOwnershipProof({ coin_name: 'btc' });
 };
 
-export const authorizeCoinJoin = async (api: TrezorConnect) => {
-    const result = await api.authorizeCoinJoin({
+export const authorizeCoinjoin = async (api: TrezorConnect) => {
+    const result = await api.authorizeCoinjoin({
         path: 'm/44',
         coordinator: 'TrezorCoinjoinCoordinator',
         maxRounds: 1,
@@ -700,7 +700,7 @@ export const authorizeCoinJoin = async (api: TrezorConnect) => {
         payload.message.toLowerCase();
     }
 
-    api.authorizeCoinJoin({
+    api.authorizeCoinjoin({
         path: 'm/44',
         coordinator: 'TrezorCoinjoinCoordinator',
         maxRounds: 1,
@@ -712,9 +712,9 @@ export const authorizeCoinJoin = async (api: TrezorConnect) => {
     });
 
     // @ts-expect-error incomplete params
-    api.authorizeCoinJoin({ path: 'm/44', coordinator: '' });
+    api.authorizeCoinjoin({ path: 'm/44', coordinator: '' });
     // @ts-expect-error incomplete params
-    api.authorizeCoinJoin({ path: 'm/44', maxRounds: 1 });
+    api.authorizeCoinjoin({ path: 'm/44', maxRounds: 1 });
     // @ts-expect-error incomplete params
-    api.authorizeCoinJoin({ coordinator: '', maxCoordinatorFeeRate: 1 });
+    api.authorizeCoinjoin({ coordinator: '', maxCoordinatorFeeRate: 1 });
 };

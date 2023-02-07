@@ -106,8 +106,8 @@ export const CoinjoinConfirmation = ({ account }: CoinjoinConfirmationProps) => 
     const targetAnonymity = useSelector(selectCurrentTargetAnonymity);
     const { notAnonymized } = useSelector(selectCurrentCoinjoinBalanceBreakdown);
     const { isLocked } = useDevice();
-    const isCoinJoinBlockedByTor = useSelector(selectIsCoinjoinBlockedByTor);
-    const isCoinJoinDisabledByFeatureFlag = useSelector(state =>
+    const isCoinjoinBlockedByTor = useSelector(selectIsCoinjoinBlockedByTor);
+    const isCoinjoinDisabledByFeatureFlag = useSelector(state =>
         selectIsFeatureDisabled(state, Feature.coinjoin),
     );
     const featureMessageContent = useSelector(state =>
@@ -136,17 +136,17 @@ export const CoinjoinConfirmation = ({ account }: CoinjoinConfirmationProps) => 
         !termsConfirmed ||
         allAnonymized ||
         deviceIsLockedOrDisconnected ||
-        isCoinJoinBlockedByTor ||
-        isCoinJoinDisabledByFeatureFlag;
+        isCoinjoinBlockedByTor ||
+        isCoinjoinDisabledByFeatureFlag;
 
     const getButtonTooltipMessage = () => {
-        if (isCoinJoinDisabledByFeatureFlag && featureMessageContent) {
+        if (isCoinjoinDisabledByFeatureFlag && featureMessageContent) {
             return featureMessageContent;
         }
         if (deviceIsLockedOrDisconnected) {
             return <Translation id="TR_UNAVAILABLE_COINJOIN_DEVICE_DISCONNECTED" />;
         }
-        if (isCoinJoinBlockedByTor) {
+        if (isCoinjoinBlockedByTor) {
             return <Translation id="TR_UNAVAILABLE_COINJOIN_TOR_DISABLE_TOOLTIP" />;
         }
         if (allAnonymized) {

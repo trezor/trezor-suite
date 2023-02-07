@@ -3,7 +3,7 @@ import { analytics, EventType } from '@trezor/suite-analytics';
 import { Account, Network } from '@wallet-types';
 import { UnavailableCapability } from '@trezor/connect';
 import { Translation } from '@suite-components';
-import { AddCoinJoinAccountButton } from './AddCoinJoinAccountButton';
+import { AddCoinjoinAccountButton } from './AddCoinjoinAccountButton';
 import { AddButton } from './AddButton';
 import { useAccountSearch, useSelector } from '@suite-hooks';
 
@@ -109,7 +109,7 @@ export const AddAccountButton = ({
 }: AddAccountButtonProps) => {
     switch (network.accountType) {
         case 'coinjoin':
-            return <AddCoinJoinAccountButton network={network} />;
+            return <AddCoinjoinAccountButton network={network} />;
         default:
             return (
                 <AddDefaultAccountButton

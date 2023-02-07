@@ -285,7 +285,7 @@ const getTrezorConnect = <M>(methods?: M) => {
                 ...getFixture(),
                 _params,
             })),
-            authorizeCoinJoin: jest.fn(async _params => ({
+            authorizeCoinjoin: jest.fn(async _params => ({
                 success: false,
                 ...getFixture(),
                 _params,

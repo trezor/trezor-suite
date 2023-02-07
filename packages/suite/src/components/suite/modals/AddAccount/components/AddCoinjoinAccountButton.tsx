@@ -42,14 +42,14 @@ const verifyAvailability = ({
     }
 };
 
-interface AddCoinJoinAccountProps {
+interface AddCoinjoinAccountProps {
     network: Network;
 }
 
 const requestEnableTorAction = () => (dispatch: Dispatch) =>
     dispatch(modalActions.openDeferredModal({ type: 'request-enable-tor' }));
 
-export const AddCoinJoinAccountButton = ({ network }: AddCoinJoinAccountProps) => {
+export const AddCoinjoinAccountButton = ({ network }: AddCoinjoinAccountProps) => {
     const [isLoading, setIsLoading] = useState(false);
 
     const { isTorEnabled } = useSelector(selectTorState);

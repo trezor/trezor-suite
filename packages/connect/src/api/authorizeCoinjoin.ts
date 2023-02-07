@@ -4,8 +4,8 @@ import { validatePath, getScriptType } from '../utils/pathUtils';
 import { getBitcoinNetwork } from '../data/coinInfo';
 import { PROTO } from '../constants';
 
-export default class AuthorizeCoinJoin extends AbstractMethod<
-    'authorizeCoinJoin',
+export default class AuthorizeCoinjoin extends AbstractMethod<
+    'authorizeCoinjoin',
     PROTO.AuthorizeCoinJoin
 > {
     init() {

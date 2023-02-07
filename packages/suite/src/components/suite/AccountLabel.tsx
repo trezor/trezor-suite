@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { getTitleForNetwork, getTitleForCoinJoinAccount } from '@suite-common/wallet-utils';
+import { getTitleForNetwork, getTitleForCoinjoinAccount } from '@suite-common/wallet-utils';
 import { Translation } from '@suite-components';
 import { Account } from '@wallet-types';
 
@@ -28,7 +28,7 @@ export const AccountLabel = ({
     }
 
     if (accountType === 'coinjoin') {
-        return <Translation id={getTitleForCoinJoinAccount(symbol)} />;
+        return <Translation id={getTitleForCoinjoinAccount(symbol)} />;
     }
 
     return (

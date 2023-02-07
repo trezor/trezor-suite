@@ -10,7 +10,7 @@ import { XRPReserve } from '../../AccountAnnouncement/XRPReserve';
 import { AccountImported } from '../../AccountAnnouncement/AccountImported';
 import { AccountOutOfSync } from '../../AccountAnnouncement/AccountOutOfSync';
 import { TorDisconnected } from '../../AccountAnnouncement/TorDisconnected';
-import { CoinJoinContextMessage } from '../../AccountAnnouncement/CoinJoinContextMessage';
+import { CoinjoinContextMessage } from '../../AccountAnnouncement/CoinjoinContextMessage';
 
 const BannersWrapper = styled.div`
     display: flex;
@@ -27,7 +27,7 @@ type AccountBannersProps = {
 
 export const AccountBanners = ({ account }: AccountBannersProps) => (
     <BannersWrapper>
-        <CoinJoinContextMessage account={account} />
+        <CoinjoinContextMessage account={account} />
         <AuthConfirmFailed />
         <BackendDisconnected />
         <DeviceUnavailable />

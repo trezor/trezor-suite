@@ -37,7 +37,7 @@
             -   [pushTransaction](./packages/connect/methods/pushTransaction.md)
             -   [signMessage](./packages/connect/methods/signMessage.md)
             -   [verifyMessage](./packages/connect/methods/verifyMessage.md)
-            -   [authorizeCoinJoin](./packages/connect/methods/authorizeCoinJoin.md)
+            -   [authorizeCoinjoin](./packages/connect/methods/authorizeCoinjoin.md)
             -   [ethereumGetAddress](./packages/connect/methods/ethereumGetAddress.md)
             -   [ethereumSignTransaction](./packages/connect/methods/ethereumSignTransaction.md)
             -   [ethereumSignMessage](./packages/connect/methods/ethereumSignMessage.md)
