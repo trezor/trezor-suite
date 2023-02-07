@@ -8,7 +8,7 @@ import { scanAccount } from './scanAccount';
 import { scanAddress } from './scanAddress';
 import { getAccountInfo } from './getAccountInfo';
 import { getNetwork } from '../utils/settingsUtils';
-import type { CoinjoinBackendSettings } from '../types';
+import type { CoinjoinBackendSettings, LogEvent, Logger, LogLevel } from '../types';
 import type {
     ScanAddressParams,
     ScanAccountParams,
@@ -20,7 +20,7 @@ import type {
 } from '../types/backend';
 
 interface SimpleEvents {
-    log: string;
+    log: LogEvent;
 }
 
 interface DescriptorEvents {
@@ -67,7 +67,7 @@ export class CoinjoinBackend extends EventEmitter {
         super();
         this.settings = Object.freeze(settings);
         this.network = getNetwork(settings.network);
-        this.client = new CoinjoinBackendClient({ ...settings, log: this.log.bind(this) });
+        this.client = new CoinjoinBackendClient({ ...settings, logger: this.getLogger() });
         this.mempool = new CoinjoinMempoolController(this.client);
     }
 
@@ -158,7 +158,16 @@ export class CoinjoinBackend extends EventEmitter {
             });
     }
 
-    private log(message: string) {
-        this.emit('log', message);
+    private getLogger(): Logger {
+        const emit =
+            (level: LogLevel) =>
+            (...payload: unknown[]) =>
+                this.emit('log', { level, payload });
+        return {
+            debug: emit('debug'),
+            log: emit('log'),
+            warn: emit('warn'),
+            error: emit('error'),
+        };
     }
 }
