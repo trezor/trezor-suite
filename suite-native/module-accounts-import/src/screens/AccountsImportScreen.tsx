@@ -25,6 +25,7 @@ export const AccountsImportScreen = ({
 >) => {
     const { xpubAddress, networkSymbol } = route.params;
     const [accountInfo, setAccountInfo] = useState<AccountInfo | null>(null);
+    const [isLoaded, setIsLoaded] = useState(false);
 
     useEffect(() => {
         let ignore = false;
@@ -81,10 +82,10 @@ export const AccountsImportScreen = ({
 
     return (
         <Screen header={<AccountImportHeader activeStep={accountInfo ? 4 : 3} />}>
-            {accountInfo ? (
+            {isLoaded && accountInfo ? (
                 <AccountImportSummary accountInfo={accountInfo} networkSymbol={networkSymbol} />
             ) : (
-                <AccountImportLoader />
+                <AccountImportLoader onLoad={() => setIsLoaded(true)} />
             )}
         </Screen>
     );
