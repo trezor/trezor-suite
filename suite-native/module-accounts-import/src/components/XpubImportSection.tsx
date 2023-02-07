@@ -1,8 +1,9 @@
 import React from 'react';
 
-import { Icon } from '@trezor/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Box, Button } from '@suite-native/atoms';
+
+import { QrWithLaser } from './QRWithLaser';
 
 type XpubImportSectionProps = {
     onRequestCamera: () => void;
@@ -21,7 +22,7 @@ export const XpubImportSection = ({ onRequestCamera }: XpubImportSectionProps) =
     return (
         <Box style={applyStyle(importSectionWrapperStyle)}>
             <Box justifyContent="center" alignItems="center" style={applyStyle(iconWrapperStyle)}>
-                <Icon name="qrCodeImport" customSize={176} />
+                <QrWithLaser />
             </Box>
             <Button size="large" onPress={onRequestCamera}>
                 Scan QR

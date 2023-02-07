@@ -4894,14 +4894,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@shopify/react-native-skia@npm:0.1.163":
-  version: 0.1.163
-  resolution: "@shopify/react-native-skia@npm:0.1.163"
+"@shopify/react-native-skia@npm:0.1.172":
+  version: 0.1.172
+  resolution: "@shopify/react-native-skia@npm:0.1.172"
   dependencies:
     "@types/pixelmatch": ^5.2.4
     "@types/pngjs": ^6.0.1
     "@types/ws": ^8.5.3
-    canvaskit-wasm: 0.36.1
+    canvaskit-wasm: 0.38.0
     pixelmatch: ^5.3.0
     pngjs: ^6.0.0
     react-reconciler: ^0.27.0
@@ -4915,7 +4915,7 @@ __metadata:
       optional: true
   bin:
     setup-skia-web: scripts/setup-canvaskit.js
-  checksum: b58b990b0369d9024b415b9baf6e1dea540e30dd2b8237ed7e070360611c2fc9030bf143e2ff994da534407fe7256de2561cb9d2cd28b09aac8a3d92822dfc70
+  checksum: 469526c9c8b884bc9abda9e456e96f61dadd4883b52bcaf9f6ee0a52cac3f669b3a1167c0c1abc3573ac2422b90352d99914458050975406631d1d9f33e12787
   languageName: node
   linkType: hard
 
@@ -6372,7 +6372,7 @@ __metadata:
   resolution: "@suite-native/atoms@workspace:suite-native/atoms"
   dependencies:
     "@mobily/ts-belt": ^3.13.1
-    "@shopify/react-native-skia": 0.1.163
+    "@shopify/react-native-skia": 0.1.172
     "@suite-common/formatters": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@trezor/env-utils": "workspace:*"
@@ -6435,7 +6435,7 @@ __metadata:
   resolution: "@suite-native/graph@workspace:suite-native/graph"
   dependencies:
     "@mobily/ts-belt": ^3.13.1
-    "@shopify/react-native-skia": 0.1.163
+    "@shopify/react-native-skia": 0.1.172
     "@suite-common/formatters": "workspace:*"
     "@suite-common/graph": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
@@ -6486,6 +6486,7 @@ __metadata:
     "@react-navigation/native": ^6.0.11
     "@react-navigation/stack": ^6.2.2
     "@reduxjs/toolkit": 1.8.3
+    "@shopify/react-native-skia": 0.1.172
     "@suite-common/formatters": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
@@ -7277,7 +7278,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/icons@workspace:packages/icons"
   dependencies:
-    "@shopify/react-native-skia": 0.1.163
+    "@shopify/react-native-skia": 0.1.172
     "@trezor/styles": "workspace:*"
     "@trezor/theme": "workspace:*"
     jest: ^26.6.3
@@ -7562,7 +7563,7 @@ __metadata:
     "@react-navigation/stack": ^6.2.2
     "@reduxjs/toolkit": 1.8.3
     "@sentry/react-native": 5.0.0-alpha.9
-    "@shopify/react-native-skia": 0.1.163
+    "@shopify/react-native-skia": 0.1.172
     "@suite-common/connect-init": "workspace:*"
     "@suite-common/formatters": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
@@ -12273,10 +12274,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"canvaskit-wasm@npm:0.36.1":
-  version: 0.36.1
-  resolution: "canvaskit-wasm@npm:0.36.1"
-  checksum: 7a90d1a641d9d9fc5a10fcc0ec64a73714247dfb5c41182644f5886b6e601f6e018282d2ac545acce66cd478b598640abdd58d8ae6db282d252d14d1d16eeb47
+"canvaskit-wasm@npm:0.38.0":
+  version: 0.38.0
+  resolution: "canvaskit-wasm@npm:0.38.0"
+  checksum: 5a743d7623187949241e1b18aa2bb43016dc837fa903594921afed4afb6b58032bccf81a30cdf71e23f185fc3827864f8ce780799c38de5325492a0fe2425e4e
   languageName: node
   linkType: hard
 
