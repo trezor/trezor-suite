@@ -20,3 +20,4 @@ export interface CoinjoinClientSettings extends BaseSettings {
 export * from './account';
 export * from './client';
 export * from './round';
+export * from './logger';

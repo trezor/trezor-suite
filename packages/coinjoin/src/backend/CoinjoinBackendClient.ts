@@ -7,16 +7,16 @@ import type {
     BlockFilterResponse,
     BlockbookTransaction,
 } from '../types/backend';
-import type { CoinjoinBackendSettings } from '../types';
+import type { CoinjoinBackendSettings, Logger } from '../types';
 import { GRADUAL_HTTP_REQUEST_SCHEDULE } from '../constants';
 
 type CoinjoinBackendClientSettings = CoinjoinBackendSettings & {
     timeout?: number;
-    log?: (message: string) => void;
+    logger?: Logger;
 };
 
 export class CoinjoinBackendClient {
-    protected readonly log;
+    protected readonly logger;
     protected readonly wabisabiUrl;
     protected readonly blockbookUrls;
 
@@ -29,7 +29,7 @@ export class CoinjoinBackendClient {
     ];
 
     constructor(settings: CoinjoinBackendClientSettings) {
-        this.log = settings.log;
+        this.logger = settings.logger;
         this.wabisabiUrl = `${settings.wabisabiBackendUrl}api/v4/btc`;
         this.blockbookUrls = settings.blockbookUrls;
     }
@@ -154,9 +154,9 @@ export class CoinjoinBackendClient {
                     .call(this, { ...options, signal }) // "global" signal is overriden by signal passed from scheduleAction
                     .get(path, query)
                     .then(handler.bind(this))
-                    .catch(err => {
-                        this.log?.(`ERROR ${err?.message}`);
-                        throw err;
+                    .catch(error => {
+                        this.logger?.error(error?.message);
+                        throw error;
                     }),
             { attempts: GRADUAL_HTTP_REQUEST_SCHEDULE, ...options }, // default attempts/timeout could be overriden by options
         );
@@ -189,11 +189,12 @@ export class CoinjoinBackendClient {
     private request(url: string, options?: RequestOptions) {
         return {
             get: (path: string, query?: Record<string, any>) => {
-                this.log?.(`GET ${url}/${path}${query ? `?${new URLSearchParams(query)}` : ''}`);
+                const params = query ? `?${new URLSearchParams(query)}` : '';
+                this.logger?.log(`GET ${url}/${path}${params}`);
                 return httpGet(`${url}/${path}`, query, options);
             },
             post: (path: string, body?: Record<string, any>) => {
-                this.log?.(`POST ${url}/${path}`);
+                this.logger?.log(`POST ${url}/${path}`);
                 return httpPost(`${url}/${path}`, body, options);
             },
         };
