@@ -1,17 +1,24 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useDispatch } from 'react-redux';
 import { darken } from 'polished';
-import { Button, CollapsibleBox, Icon, variables } from '@trezor/components';
+import { Button, Icon, variables } from '@trezor/components';
 import { HELP_CENTER_COINJOIN_URL } from '@trezor/urls';
 import { Translation, TrezorLink } from '@suite-components';
-import { useSelector } from '@suite-hooks/useSelector';
-import { toggleCoinjoinExplanation } from '@suite-actions/suiteActions';
 import { ProcessStep, ProcessStepProps } from './ProcessStep';
 
-const Container = styled(CollapsibleBox)`
+const Container = styled.div`
+    padding: 20px 20px 16px;
     border-radius: 14px;
     background: ${({ theme }) => theme.STROKE_GREY};
+`;
+
+const Heading = styled.div`
+    display: flex;
+    align-items: center;
+    margin-bottom: 18px;
+    font-size: ${variables.FONT_SIZE.SMALL};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
 
 const QuestionIcon = styled(Icon)`
@@ -75,42 +82,25 @@ const STEPS: Array<Omit<ProcessStepProps, 'number'>> = [
     },
 ];
 
-export const CoinjoinExplanation = () => {
-    const isCoinjoinExplanationHidden = useSelector(
-        state => state.suite.settings.isCoinjoinExplanationHidden,
-    );
+export const CoinjoinExplanation = () => (
+    <Container>
+        <Heading>
+            <QuestionIcon icon="QUESTION" size={15} />
+            <Translation id="TR_COINJOIN_EXPLANATION_TITLE" />
+        </Heading>
 
-    const dispatch = useDispatch();
+        <Steps>
+            {STEPS.map((step, index) => (
+                <ProcessStep number={index + 1} key={step.image} {...step} />
+            ))}
+        </Steps>
 
-    return (
-        <Container
-            heading={
-                <>
-                    <QuestionIcon icon="QUESTION" size={15} />
-                    <Translation id="TR_COINJOIN_EXPLANATION_TITLE" />
-                </>
-            }
-            opened={!isCoinjoinExplanationHidden}
-            onCollapse={() => dispatch(toggleCoinjoinExplanation())}
-            variant="small"
-        >
-            <Steps>
-                {STEPS.map((step, index) => (
-                    <ProcessStep number={index + 1} key={step.image} {...step} />
-                ))}
-            </Steps>
-
-            <ButtonContainer>
-                <TrezorLink href={HELP_CENTER_COINJOIN_URL} variant="nostyle">
-                    <StyledButton icon="EXTERNAL_LINK">
-                        <Translation id="TR_LEARN_MORE" />
-                    </StyledButton>
-                </TrezorLink>
-
-                <Button onClick={() => dispatch(toggleCoinjoinExplanation())}>
-                    <Translation id="TR_GOT_IT" />
-                </Button>
-            </ButtonContainer>
-        </Container>
-    );
-};
+        <ButtonContainer>
+            <TrezorLink href={HELP_CENTER_COINJOIN_URL} variant="nostyle">
+                <StyledButton icon="EXTERNAL_LINK">
+                    <Translation id="TR_LEARN_MORE" />
+                </StyledButton>
+            </TrezorLink>
+        </ButtonContainer>
+    </Container>
+);

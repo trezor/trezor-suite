@@ -1,4 +1,5 @@
 import produce from 'immer';
+import { memoizeWithArgs, memoize } from 'proxy-memoize';
 import { TRANSPORT, TransportInfo, ConnectSettings } from '@trezor/connect';
 import { SuiteThemeVariant } from '@trezor/suite-desktop-api';
 import { Action, TrezorDevice, Lock, TorBootstrap, TorStatus } from '@suite-types';
@@ -16,7 +17,6 @@ import type { InvityServerEnvironment } from '@suite-common/invity';
 import { getDeviceModel } from '@trezor/device-utils';
 import { getStatus } from '@suite-utils/device';
 import { getIsTorEnabled, getIsTorLoading } from '@suite-utils/tor';
-import { memoizeWithArgs, memoize } from 'proxy-memoize';
 
 export interface SuiteRootState {
     suite: SuiteState;
@@ -65,7 +65,6 @@ export interface SuiteSettings {
     };
     language: Locale;
     torOnionLinks: boolean;
-    isCoinjoinExplanationHidden: boolean;
     isCoinjoinCexWarningHidden: boolean;
     debug: DebugModeOptions;
     autodetect: AutodetectSettings;
@@ -108,7 +107,6 @@ const initialState: SuiteState = {
         },
         language: ensureLocale('en'),
         torOnionLinks: isWeb(),
-        isCoinjoinExplanationHidden: false,
         isCoinjoinCexWarningHidden: false,
         debug: {
             invityServerEnvironment: undefined,
@@ -218,9 +216,6 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
                 draft.settings.torOnionLinks = action.payload;
                 break;
 
-            case SUITE.SHOW_COINJOIN_EXPLANATION:
-                draft.settings.isCoinjoinExplanationHidden = action.payload;
-                break;
             case SUITE.COINJOIN_CEX_WARNING:
                 draft.settings.isCoinjoinCexWarningHidden = action.payload;
                 break;
