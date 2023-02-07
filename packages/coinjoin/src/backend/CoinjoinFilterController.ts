@@ -68,12 +68,13 @@ export class CoinjoinFilterController implements FilterController {
             const getProgress = this.getProgressHandler(batch.height, batch.response.bestHeight);
             do {
                 const { filters } = batch.response;
+                const nextBatchPromise = fetchFilterBatch(filters[filters.length - 1]);
                 // eslint-disable-next-line no-restricted-syntax
                 for (const filter of filters) {
                     yield { ...filter, progress: getProgress(filter.blockHeight) };
                 }
                 // eslint-disable-next-line no-await-in-loop
-                batch = await fetchFilterBatch(filters[filters.length - 1]);
+                batch = await nextBatchPromise;
             } while (batch.response.status === 'ok');
         }
 
