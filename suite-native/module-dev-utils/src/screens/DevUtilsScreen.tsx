@@ -104,9 +104,15 @@ export const DevUtilsScreen = ({
                             />
                         </Card>
 
-                        <Button onPress={() => setAreLogsVisible(!areLogsVisible)}>
-                            {!areLogsVisible ? 'Show Logs' : 'Hide Logs'}
-                        </Button>
+                        <Card>
+                            <Box flexDirection="row" justifyContent="space-between">
+                                <Text>Show logs</Text>
+                                <CheckBox
+                                    isChecked={areLogsVisible}
+                                    onChange={() => setAreLogsVisible(!areLogsVisible)}
+                                />
+                            </Box>
+                        </Card>
                         <Button onPress={() => navigation.navigate(DevUtilsStackRoutes.Demo)}>
                             See Component Demo
                         </Button>
