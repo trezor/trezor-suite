@@ -48,7 +48,7 @@ export const parseTransactionDateKey = (key: string) => {
 };
 
 export type MonthKey = string & { __type: 'MonthKey' };
-const generateTransactionMonthKey = (d: Date): MonthKey =>
+export const generateTransactionMonthKey = (d: Date): MonthKey =>
     // Adding days because of time zones of UTC
     addDays(startOfMonth(d), 1).toUTCString() as MonthKey;
 

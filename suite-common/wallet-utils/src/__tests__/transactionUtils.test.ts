@@ -17,6 +17,7 @@ import {
     parseTransactionDateKey,
     parseTransactionMonthKey,
     MonthKey,
+    generateTransactionMonthKey,
 } from '../transactionUtils';
 
 describe('transaction utils', () => {
@@ -77,17 +78,22 @@ describe('transaction utils', () => {
             ],
             'month',
         );
+
+        const firstBlocktime = 1570127200;
+        const secondBlocktime = 1565792979;
+        const firstMonth = generateTransactionMonthKey(new Date(firstBlocktime * 1000));
+        const secondMonth = generateTransactionMonthKey(new Date(secondBlocktime * 1000));
         expect(groupedTxs).toEqual({
             pending: [
                 testMocks.getWalletTransaction({ blockHeight: 0 }),
                 testMocks.getWalletTransaction({ blockHeight: undefined }),
             ],
-            'Tue, 01 Oct 2019 22:00:00 GMT': [
-                testMocks.getWalletTransaction({ blockTime: 1570127200, blockHeight: 3 }),
+            [firstMonth]: [
+                testMocks.getWalletTransaction({ blockTime: firstBlocktime, blockHeight: 3 }),
                 testMocks.getWalletTransaction({ blockTime: 1570147200, blockHeight: 2 }),
             ],
-            'Thu, 01 Aug 2019 22:00:00 GMT': [
-                testMocks.getWalletTransaction({ blockTime: 1565792979, blockHeight: 5 }),
+            [secondMonth]: [
+                testMocks.getWalletTransaction({ blockTime: secondBlocktime, blockHeight: 5 }),
                 testMocks.getWalletTransaction({ blockTime: 1565792379, blockHeight: 4 }),
             ],
         });
