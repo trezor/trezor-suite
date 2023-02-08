@@ -2,8 +2,10 @@
     "extends": "../../tsconfig.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        { "path": "../../suite-common/logger" },
         { "path": "../atoms" },
         { "path": "../config" },
+        { "path": "../helpers" },
         { "path": "../module-settings" },
         { "path": "../navigation" },
         { "path": "../storage" },
