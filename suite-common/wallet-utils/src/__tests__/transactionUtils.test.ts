@@ -26,7 +26,7 @@ describe('transaction utils', () => {
 
     it('parseTransactionMonthKey', () => {
         expect(parseTransactionMonthKey('2023-01-01T00:00:00.000Z' as MonthKey)).toEqual(
-            new Date('2023-01').toUTCString(),
+            new Date('2023-01'),
         );
     });
 
