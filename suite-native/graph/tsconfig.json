@@ -13,6 +13,7 @@
             "path": "../../suite-common/wallet-types"
         },
         { "path": "../atoms" },
+        { "path": "../react-native-graph" },
         { "path": "../test-utils" },
         { "path": "../../packages/icons" },
         { "path": "../../packages/styles" }

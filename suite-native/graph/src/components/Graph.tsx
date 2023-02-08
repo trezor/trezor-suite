@@ -1,9 +1,9 @@
 import React, { useMemo } from 'react';
-import { GraphPoint, LineGraph } from 'react-native-graph';
 import { ActivityIndicator } from 'react-native';
 
 import { N } from '@mobily/ts-belt';
 
+import { GraphPoint, LineGraph } from '@suite-native/react-native-graph';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Box, Text } from '@suite-native/atoms';
 

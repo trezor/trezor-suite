@@ -18,6 +18,7 @@
         "@suite-common/wallet-core": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
         "@suite-native/atoms": "workspace:*",
+        "@suite-native/react-native-graph": "workspace:*",
         "@suite-native/test-utils": "workspace:*",
         "@trezor/icons": "workspace:*",
         "@trezor/styles": "workspace:*",
@@ -25,7 +26,6 @@
         "react": "18.2.0",
         "react-native": "0.70.5",
         "react-native-gesture-handler": "^2.7.0",
-        "react-native-graph": "^0.3.0",
         "react-native-reanimated": "^2.12.0",
         "react-redux": "7.2.2"
     },
