@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 
 import { WalletAccountTransaction } from '@suite-common/wallet-types/src';
 import { Card, VStack } from '@suite-native/atoms';
+import { isTestnet } from '@suite-common/wallet-utils';
 
 import { TransactionDetailParametersSheet } from './TransactionDetailParametersSheet';
 import { TransactionDetailValuesSheet } from './TransactionDetailValuesSheet';
@@ -19,6 +20,9 @@ export const TransactionDetailSheets = ({ transaction }: TransactionDetailSheets
     const toggleSheet = (sheetName: SheetType) => {
         setExpandedSheet(expandedSheet === sheetName ? null : sheetName);
     };
+
+    const isValuesSheetVisible = !isTestnet(transaction.symbol);
+
     return (
         <Card>
             <VStack spacing="small">
@@ -27,11 +31,15 @@ export const TransactionDetailSheets = ({ transaction }: TransactionDetailSheets
                     transaction={transaction}
                     onSheetVisibilityChange={() => toggleSheet('parameters')}
                 />
-                <TransactionDetailValuesSheet
-                    isVisible={expandedSheet === 'values'}
-                    transaction={transaction}
-                    onSheetVisibilityChange={() => toggleSheet('values')}
-                />
+
+                {isValuesSheetVisible && (
+                    <TransactionDetailValuesSheet
+                        isVisible={expandedSheet === 'values'}
+                        transaction={transaction}
+                        fiatCurrency={fiatCurrency}
+                        onSheetVisibilityChange={() => toggleSheet('values')}
+                    />
+                )}
                 <TransactionDetailInputsSheet
                     isVisible={expandedSheet === 'inputs'}
                     transaction={transaction}

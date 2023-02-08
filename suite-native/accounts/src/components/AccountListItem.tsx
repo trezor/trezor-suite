@@ -21,10 +21,10 @@ const accountListItemStyle = prepareNativeStyle(utils => ({
 
 export const AccountListItem = ({ account }: AccountListItemProps) => {
     const { applyStyle } = useNativeStyles();
+    const { CryptoAmountFormatter } = useFormatters();
     const accountLabel = useSelector((state: AccountsRootState) =>
         selectAccountLabel(state, account.key),
     );
-    const { CryptoAmountFormatter } = useFormatters();
 
     return (
         <Box

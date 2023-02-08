@@ -7,6 +7,7 @@ import { selectCoins } from '@suite-common/wallet-core';
 import { convertCryptoToFiatAmount, useFormatters } from '@suite-common/formatters';
 import { selectFiatCurrency } from '@suite-native/module-settings';
 import { FiatRates } from '@trezor/blockchain-link';
+import { isTestnet } from '@suite-common/wallet-utils';
 
 import { FormatterProps } from '../types';
 
@@ -26,9 +27,10 @@ export const CryptoToFiatAmountFormatter = ({
     const fiatCurrency = useSelector(selectFiatCurrency);
     const { FiatAmountFormatter } = useFormatters();
 
+    const isTestnetCoin = isTestnet(network);
     const rates = customRates ?? coins.find(coin => coin.symbol === network)?.current?.rates;
 
-    if (!value || !rates) return null;
+    if (!value || !rates || isTestnetCoin) return null;
 
     const fiatValue = convertCryptoToFiatAmount({
         value,

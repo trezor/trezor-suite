@@ -5,7 +5,11 @@ import { useNavigation } from '@react-navigation/native';
 
 import { Box, Button, Divider, Text } from '@suite-native/atoms';
 import { AccountKey } from '@suite-common/wallet-types';
-import { AccountsRootState, selectHasAccountTransactions } from '@suite-common/wallet-core';
+import {
+    AccountsRootState,
+    selectIsTestnetAccount,
+    selectHasAccountTransactions,
+} from '@suite-common/wallet-core';
 import {
     RootStackParamList,
     RootStackRoutes,
@@ -25,17 +29,19 @@ export const TransactionListHeader = memo(({ accountKey }: AccountDetailHeaderPr
     const accountHasTransactions = useSelector((state: AccountsRootState) =>
         selectHasAccountTransactions(state, accountKey),
     );
+    const isTestnetAccount = useSelector((state: AccountsRootState) =>
+        selectIsTestnetAccount(state, accountKey),
+    );
 
     const handleReceive = () => {
         navigation.navigate(RootStackRoutes.ReceiveModal, { accountKey });
     };
-
     return (
         <>
             <AccountBalance accountKey={accountKey} />
             {accountHasTransactions && (
                 <>
-                    <AccountDetailGraph accountKey={accountKey} />
+                    {!isTestnetAccount && <AccountDetailGraph accountKey={accountKey} />}
                     <Box marginBottom="large" paddingHorizontal="medium">
                         <Button iconLeft="receive" size="large" onPress={handleReceive}>
                             Receive

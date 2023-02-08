@@ -37,6 +37,7 @@ export const TransactionDetailData = ({ transaction, accountKey }: TransactionDe
     );
 
     const isTransactionPending = isPending(transaction);
+
     return (
         <>
             <VStack>
