@@ -33,6 +33,7 @@ export const onCoinjoinRoundChanged = [
         connect: undefined,
         state: {
             accounts: [{ key: 'a', deviceState: 'device-state-2' }],
+            selectedAccount: { key: 'a' },
             coinjoin: {
                 accounts: [{ key: 'a', session: SESSION }],
             },
@@ -56,6 +57,7 @@ export const onCoinjoinRoundChanged = [
                 { key: 'a', deviceState: 'device-state' },
                 { key: 'b', deviceState: 'device-state-2' },
             ],
+            selectedAccount: { key: 'a' },
             coinjoin: {
                 accounts: [
                     { key: 'a', session: SESSION },
@@ -96,6 +98,7 @@ export const onCoinjoinRoundChanged = [
                 { key: 'a', deviceState: 'device-state' },
                 { key: 'b', deviceState: 'device-state-2' },
             ],
+            selectedAccount: { key: 'a' },
             coinjoin: {
                 accounts: [
                     { key: 'a', session: SESSION },
@@ -127,6 +130,7 @@ export const onCoinjoinRoundChanged = [
         state: {
             devices: [{ ...DEVICE, features: { busy: true } }],
             accounts: [{ key: 'a', deviceState: 'device-state' }],
+            selectedAccount: { key: 'a' },
             coinjoin: {
                 accounts: [
                     {
@@ -160,6 +164,7 @@ export const onCoinjoinRoundChanged = [
         state: {
             devices: [{ ...DEVICE, features: { busy: false } }],
             accounts: [{ key: 'a', deviceState: 'device-state' }],
+            selectedAccount: { key: 'a' },
             coinjoin: {
                 accounts: [
                     {
@@ -192,6 +197,7 @@ export const onCoinjoinRoundChanged = [
         state: {
             devices: [{ ...DEVICE, features: { busy: true } }],
             accounts: [{ key: 'a', deviceState: 'device-state' }],
+            selectedAccount: { key: 'a' },
             coinjoin: {
                 accounts: [
                     {

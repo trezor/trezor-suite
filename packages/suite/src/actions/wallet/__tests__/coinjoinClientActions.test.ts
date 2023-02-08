@@ -4,6 +4,7 @@ import { promiseAllSequence } from '@trezor/utils';
 
 import { accountsReducer } from '@wallet-reducers';
 import { coinjoinReducer } from '@wallet-reducers/coinjoinReducer';
+import selectedAccountReducer from '@wallet-reducers/selectedAccountReducer';
 import {
     onCoinjoinRoundChanged,
     onCoinjoinClientRequest,
@@ -32,13 +33,14 @@ const rootReducer = combineReducers({
     wallet: combineReducers({
         coinjoin: coinjoinReducer,
         accounts: accountsReducer,
+        selectedAccount: selectedAccountReducer,
     }),
 });
 
 type State = ReturnType<typeof rootReducer>;
 type Wallet = Partial<State['wallet']> & { devices?: State['devices'] };
 
-const initStore = ({ accounts, coinjoin, devices }: Wallet = {}) => {
+const initStore = ({ accounts, coinjoin, devices, selectedAccount }: Wallet = {}) => {
     // TODO: didn't found better way how to generate initial state or pass it dynamically to rootReducer creator
     const preloadedState: State = JSON.parse(
         JSON.stringify(rootReducer(undefined, { type: 'init' })),
@@ -54,6 +56,9 @@ const initStore = ({ accounts, coinjoin, devices }: Wallet = {}) => {
             ...preloadedState.wallet.coinjoin,
             ...coinjoin,
         };
+    }
+    if (selectedAccount) {
+        preloadedState.wallet.selectedAccount = selectedAccount;
     }
     // State != suite AppState, therefore <any>
     const store = configureMockStore<any>({ reducer: rootReducer, preloadedState });
