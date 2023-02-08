@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 
 import { useNativeStyles, prepareNativeStyle } from '@trezor/styles';
 import { AccountKey, WalletAccountTransaction } from '@suite-common/wallet-types';
-import { groupTransactionsByDate } from '@suite-common/wallet-utils';
+import { groupTransactionsByDate, MonthKey } from '@suite-common/wallet-utils';
 import { selectIsLoadingTransactions } from '@suite-common/wallet-core';
 import { Box } from '@suite-native/atoms';
 import { TAB_BAR_HEIGHT } from '@suite-native/navigation';
@@ -22,14 +22,14 @@ type AccountTransactionProps = {
 
 type RenderItemParams = {
     item: WalletAccountTransaction;
-    section: { monthKey: string; data: WalletAccountTransaction[] };
+    section: { monthKey: MonthKey; data: WalletAccountTransaction[] };
     index: number;
     accountKey: AccountKey;
 };
 
 type RenderSectionHeaderParams = {
     section: {
-        monthKey: string;
+        monthKey: MonthKey;
     };
 };
 
@@ -69,8 +69,9 @@ export const TransactionList = ({
         () => groupTransactionsByDate(transactions, 'month'),
         [transactions],
     );
+
     const transactionMonthKeys = useMemo(
-        () => Object.keys(accountTransactionsByMonth),
+        () => Object.keys(accountTransactionsByMonth) as MonthKey[],
         [accountTransactionsByMonth],
     );
     const initialPageNumber = Math.ceil((transactions.length || 1) / TX_PER_PAGE);

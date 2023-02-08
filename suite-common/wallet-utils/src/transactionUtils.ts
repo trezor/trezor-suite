@@ -1,13 +1,14 @@
 import BigNumber from 'bignumber.js';
 import { fromWei } from 'web3-utils';
+import { addDays, startOfMonth } from 'date-fns';
 
 import {
     Account,
-    WalletAccountTransaction,
     RbfTransactionParams,
+    WalletAccountTransaction,
 } from '@suite-common/wallet-types';
 import { AccountMetadata } from '@suite-common/metadata-types';
-import { AccountTransaction, AccountAddress } from '@trezor/connect';
+import { AccountAddress, AccountTransaction } from '@trezor/connect';
 
 import { formatAmount, formatNetworkAmount } from './accountUtils';
 import { toFiatCurrency } from './fiatConverterUtils';
@@ -42,20 +43,16 @@ const generateTransactionDateKey = (d: Date) =>
 
 /** Parse Date object from a string in YYYY-MM-DD format */
 export const parseTransactionDateKey = (key: string) => {
-    const parts = key.split('-');
-    const d = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
-    return d;
+    const [year, month, day] = key.split('-');
+    return new Date(Number(year), Number(month) - 1, Number(day));
 };
 
-/* Convert date to string in YYYY-MM format */
-const generateTransactionMonthKey = (d: Date) => `${d.getFullYear()}-${d.getMonth() + 1}`;
+export type MonthKey = string & { __type: 'MonthKey' };
+export const generateTransactionMonthKey = (d: Date): MonthKey =>
+    // Adding days because of time zones of UTC
+    addDays(startOfMonth(d), 1).toUTCString() as MonthKey;
 
-/** Parse Date object from a string in YYYY-MM format */
-export const parseTransactionMonthKey = (key: string) => {
-    const parts = key.split('-');
-    const d = new Date(Number(parts[0]), Number(parts[1]) - 1);
-    return d;
-};
+export const parseTransactionMonthKey = (key: MonthKey): Date => new Date(key);
 
 /**
  * Returns object with transactions grouped by a date. Key is a string in YYYY-MM-DD format.

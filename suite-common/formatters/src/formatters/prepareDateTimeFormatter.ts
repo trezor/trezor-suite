@@ -2,7 +2,7 @@ import { A, pipe } from '@mobily/ts-belt';
 
 import { makeFormatter } from '../makeFormatter';
 import { FormatterConfig } from '../types';
-import { prepareDateFormatter } from './prepareDateFormatters';
+import { prepareDateFormatter } from './prepareDateFormatter';
 import { prepareTimeFormatter } from './prepareTimeFormatter';
 
 export const prepareDateTimeFormatter = (config: FormatterConfig) =>

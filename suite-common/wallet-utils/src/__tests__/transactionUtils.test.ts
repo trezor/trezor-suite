@@ -16,6 +16,8 @@ import {
     isPending,
     parseTransactionDateKey,
     parseTransactionMonthKey,
+    MonthKey,
+    generateTransactionMonthKey,
 } from '../transactionUtils';
 
 describe('transaction utils', () => {
@@ -24,7 +26,9 @@ describe('transaction utils', () => {
     });
 
     it('parseTransactionMonthKey', () => {
-        expect(parseTransactionMonthKey('2023-01')).toEqual(new Date(2023, 0));
+        expect(parseTransactionMonthKey('2023-01-01T00:00:00.000Z' as MonthKey)).toEqual(
+            new Date('2023-01'),
+        );
     });
 
     Object.keys(fixtures.isPending).forEach(f => {
@@ -74,17 +78,22 @@ describe('transaction utils', () => {
             ],
             'month',
         );
+
+        const firstBlocktime = 1570127200;
+        const secondBlocktime = 1565792979;
+        const firstMonth = generateTransactionMonthKey(new Date(firstBlocktime * 1000));
+        const secondMonth = generateTransactionMonthKey(new Date(secondBlocktime * 1000));
         expect(groupedTxs).toEqual({
             pending: [
                 testMocks.getWalletTransaction({ blockHeight: 0 }),
                 testMocks.getWalletTransaction({ blockHeight: undefined }),
             ],
-            '2019-10': [
-                testMocks.getWalletTransaction({ blockTime: 1570127200, blockHeight: 3 }),
+            [firstMonth]: [
+                testMocks.getWalletTransaction({ blockTime: firstBlocktime, blockHeight: 3 }),
                 testMocks.getWalletTransaction({ blockTime: 1570147200, blockHeight: 2 }),
             ],
-            '2019-8': [
-                testMocks.getWalletTransaction({ blockTime: 1565792979, blockHeight: 5 }),
+            [secondMonth]: [
+                testMocks.getWalletTransaction({ blockTime: secondBlocktime, blockHeight: 5 }),
                 testMocks.getWalletTransaction({ blockTime: 1565792379, blockHeight: 4 }),
             ],
         });

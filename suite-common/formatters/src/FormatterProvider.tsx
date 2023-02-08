@@ -18,10 +18,11 @@ import {
 import { Formatter } from './makeFormatter';
 import { FormatterConfig, FormatterProviderConfig } from './types';
 import { SignValueFormatter } from './formatters/SignValueFormatter';
-import { prepareDateFormatter } from './formatters/prepareDateFormatters';
+import { prepareDateFormatter } from './formatters/prepareDateFormatter';
 import { prepareTimeFormatter } from './formatters/prepareTimeFormatter';
 import { prepareDateTimeFormatter } from './formatters/prepareDateTimeFormatter';
 import { prepareNetworkSymbolFormatter } from './formatters/prepareNetworkSymbolFormatter';
+import { MonthNameFormatter } from './formatters/prepareMonthNameFormatter';
 
 type FormatterProviderProps = {
     children: React.ReactNode;
@@ -44,6 +45,7 @@ export type Formatters = {
     DateFormatter: Formatter<Date | number, string>;
     TimeFormatter: Formatter<Date | number, string>;
     DateTimeFormatter: Formatter<Date | number | null, string | null>;
+    MonthNameFormatter: Formatter<Date, string>;
 };
 
 export const FormatterProviderContext = createContext<Formatters>({} as Formatters);
@@ -64,6 +66,7 @@ export const getFormatters = (config: FormatterConfig): Formatters => {
         SignValueFormatter,
         TimeFormatter,
         DateTimeFormatter,
+        MonthNameFormatter,
     };
 };
 
