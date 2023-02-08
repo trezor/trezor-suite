@@ -22,6 +22,7 @@ import {
     selectFeatureMessageContent,
 } from '@suite-reducers/messageSystemReducer';
 import { Tile, TileProps } from './Tile';
+import { selectDevice } from '@suite-reducers/suiteReducer';
 
 const StyledCard = styled(Card)`
     padding: 24px;
@@ -106,6 +107,7 @@ export const CoinjoinConfirmation = ({ account }: CoinjoinConfirmationProps) => 
     const coordinatorData = useSelector(state => state.wallet.coinjoin.clients[account.symbol]);
     const targetAnonymity = useSelector(selectCurrentTargetAnonymity);
     const { notAnonymized } = useSelector(selectCurrentCoinjoinBalanceBreakdown);
+    const device = useSelector(selectDevice);
     const { isLocked } = useDevice();
     const isCoinjoinBlockedByTor = useSelector(selectIsCoinjoinBlockedByTor);
     const isCoinjoinDisabledByFeatureFlag = useSelector(state =>
@@ -131,12 +133,12 @@ export const CoinjoinConfirmation = ({ account }: CoinjoinConfirmationProps) => 
 
     const maxRounds = getMaxRounds(targetAnonymity, anonymitySet);
     const allAnonymized = notAnonymized === '0';
-    const deviceIsLockedOrDisconnected = isLocked(false);
 
     const isDisabled =
         !termsConfirmed ||
         allAnonymized ||
-        deviceIsLockedOrDisconnected ||
+        !device?.connected ||
+        isLocked(true) ||
         isCoinjoinBlockedByTor ||
         isCoinjoinDisabledByFeatureFlag;
 
@@ -147,8 +149,11 @@ export const CoinjoinConfirmation = ({ account }: CoinjoinConfirmationProps) => 
         if (isCoinjoinDisabledByFeatureFlag && featureMessageContent) {
             return featureMessageContent;
         }
-        if (deviceIsLockedOrDisconnected) {
+        if (!device?.connected) {
             return <Translation id="TR_UNAVAILABLE_COINJOIN_DEVICE_DISCONNECTED" />;
+        }
+        if (isLocked(true)) {
+            return <Translation id="TR_UNAVAILABLE_COINJOIN_DEVICE_LOCKED" />;
         }
         if (isCoinjoinBlockedByTor) {
             return <Translation id="TR_UNAVAILABLE_COINJOIN_TOR_DISABLE_TOOLTIP" />;
