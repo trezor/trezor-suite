@@ -22,7 +22,7 @@ describe(`CoinjoinClient`, () => {
             if (url.endsWith('/status')) {
                 resolve({
                     roundStates: [DEFAULT_ROUND],
-                    coinjoinFeeRateMedians: [],
+                    coinJoinFeeRateMedians: [],
                     affiliateInformation: AFFILIATE_INFO,
                 });
             }

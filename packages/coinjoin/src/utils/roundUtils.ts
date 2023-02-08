@@ -165,15 +165,15 @@ const getDataFromRounds = (rounds: Round[]) => {
  * - maxMiningFee: array => value in kvBytes
  */
 export const transformStatus = ({
-    coinjoinFeeRateMedians,
+    coinJoinFeeRateMedians,
     roundStates: rounds,
 }: CoinjoinStatus) => {
     const { allowedInputAmounts, coordinationFeeRate } = getDataFromRounds(rounds);
-    // coinjoinFeeRateMedians include an array of medians per day, week and month - we take the second (week) median as the recommended fee rate
-    const recommendedMedian = coinjoinFeeRateMedians[1];
+    // coinJoinFeeRateMedians include an array of medians per day, week and month - we take the second (week) median as the recommended fee rate
+    const recommendedMedian = coinJoinFeeRateMedians[1];
     // the value is converted from kvBytes (kilo virtual bytes) to vBytes (how the value is displayed in UI)
     const maxMiningFee = recommendedMedian
-        ? Math.round(coinjoinFeeRateMedians[1].medianFeeRate / 1000)
+        ? Math.round(coinJoinFeeRateMedians[1].medianFeeRate / 1000)
         : MAX_MINING_FEE;
 
     return {
