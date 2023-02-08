@@ -25,7 +25,7 @@ interface GetOutputAmountsParams {
 const getOutputAmounts = async (params: GetOutputAmountsParams) => {
     const { round, accountKey, outputSize, options } = params;
     const { roundParameters } = round;
-    const { signal, middlewareUrl } = options;
+    const { signal, middlewareUrl, logger } = options;
 
     const registeredInputs = getRoundEvents('InputAdded', round.coinjoinState.events);
     const internalAmounts: number[] = [];
@@ -47,6 +47,9 @@ const getOutputAmounts = async (params: GetOutputAmountsParams) => {
             externalAmounts.push(i.coin.txOut.value - coordinatorFee - miningFee);
         }
     });
+    logger.log(`Internal inputs: ${internalAmounts.join(',')}`);
+    logger.log(`External inputs: ${externalAmounts.join(',')}`);
+
     const outputAmounts = await middleware.getOutputsAmounts(
         {
             inputSize: params.inputSize,
@@ -59,7 +62,7 @@ const getOutputAmounts = async (params: GetOutputAmountsParams) => {
         },
         { signal, baseUrl: middlewareUrl },
     );
-    options.log(`Decompose amounts: ${outputAmounts.join(',')}`);
+    logger.log(`Decompose amounts: ${outputAmounts.join(',')}`);
     return outputAmounts.map(amount => {
         const miningFee = Math.floor((outputSize * roundParameters.miningFeeRate) / 1000);
         const coordinatorFee = 0; // NOTE: middleware issue https://github.com/zkSNACKs/WalletWasabi/issues/8814 should be `amount > plebsDontPayThreshold ? Math.floor(roundParameters.coordinationFeeRate.rate * amount) : 0` but middleware does not considerate coordinationFeeRate and plebs for external amounts
@@ -84,11 +87,15 @@ interface CredentialIssuanceParams {
 const credentialIssuance = async (params: CredentialIssuanceParams) => {
     const { round, amountToRequest, amountCredentials, vsizeToRequest, vsizeCredentials } = params;
     const { roundParameters } = round;
-    const { signal, coordinatorUrl, middlewareUrl, log } = params.options;
+    const { signal, coordinatorUrl, middlewareUrl, logger } = params.options;
 
-    log('Joining credentials');
-    log(`Amount ${amountCredentials.map(c => c.value).join(',')} to ${amountToRequest.join(',')}`);
-    log(`Vsize ${vsizeCredentials.map(c => c.value).join(',')} to ${vsizeToRequest.join(',')}`);
+    logger.log('Joining credentials');
+    logger.log(
+        `Amount ${amountCredentials.map(c => c.value).join(',')} to ${amountToRequest.join(',')}`,
+    );
+    logger.log(
+        `Vsize ${vsizeCredentials.map(c => c.value).join(',')} to ${vsizeToRequest.join(',')}`,
+    );
 
     // Credentials are always joined in pairs
     if (
@@ -180,10 +187,14 @@ const credentialIssuance = async (params: CredentialIssuanceParams) => {
         vsizeCredentials: [vsizeCredentialsOut[1], zeroVsizeCredentialsOut[1]],
     };
 
-    log(`Output amount credentials: ${output.amountCredentials.map(c => c.value).join(',')}`);
-    log(`Output vsize credentials: ${output.vsizeCredentials.map(c => c.value).join(',')}`);
-    log(`Change amount credentials: ${change.amountCredentials.map(c => c.value).join(',')}`);
-    log(`Change vsize credentials: ${change.vsizeCredentials.map(c => c.value).join(',')}`);
+    logger.log(
+        `Output amount credentials: ${output.amountCredentials.map(c => c.value).join(',')}`,
+    );
+    logger.log(`Output vsize credentials: ${output.vsizeCredentials.map(c => c.value).join(',')}`);
+    logger.log(
+        `Change amount credentials: ${change.amountCredentials.map(c => c.value).join(',')}`,
+    );
+    logger.log(`Change vsize credentials: ${change.vsizeCredentials.map(c => c.value).join(',')}`);
 
     return {
         output,
@@ -315,9 +326,9 @@ const createOutputsCredentials = async (params: CreateOutputsCredentials): Promi
             const amountDust = sumCredentials(updatedAmountCredentials);
             const vsizeDust = sumCredentials(updatedVsizeCredentials);
 
-            options.log(`Amount dust: ${amountDust}`);
-            options.log(`Vsize dust: ${vsizeDust}`);
-            options.log('Decomposition completed');
+            options.logger.log(`Amount dust: ${amountDust}`);
+            options.logger.log(`Vsize dust: ${vsizeDust}`);
+            options.logger.log('Decomposition completed');
 
             return result.sort((a, b) => (a.amount > b.amount ? -1 : 1));
         }
@@ -397,7 +408,9 @@ export const outputDecomposition = async (
         true,
     );
 
-    options.log(`Decompose ${Object.keys(groupInputsByAccount).length} accounts`);
+    const { logger } = options;
+
+    logger.log(`Decompose ${Object.keys(groupInputsByAccount).length} accounts`);
 
     // calculate amounts
     const outputAmounts = await Promise.all(
@@ -421,7 +434,7 @@ export const outputDecomposition = async (
         Object.keys(groupInputsByAccount).map((accountKey, index) => {
             if (!outputAmounts[index]) throw new Error(`Missing amounts at index ${index}`);
 
-            options.log(`Create outputs: ${outputAmounts[index].join(',')}`);
+            logger.log(`Create outputs: ${outputAmounts[index].join(',')}`);
             const inputs = groupInputsByAccount[accountKey];
             const amountCredentials = inputs.flatMap(i => i.confirmedAmountCredentials!);
             const vsizeCredentials = inputs.flatMap(i => i.confirmedVsizeCredentials!);

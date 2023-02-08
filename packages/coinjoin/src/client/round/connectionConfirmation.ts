@@ -23,18 +23,18 @@ const confirmInput = async (
     options: CoinjoinRoundOptions,
 ): Promise<Alice> => {
     if (input.error) {
-        options.log(`Trying to confirm input with error ${input.error}`);
+        options.logger.warn(`Trying to confirm input with error ${input.error}`);
         throw input.error;
     }
     if (!input.registrationData || !input.realAmountCredentials || !input.realVsizeCredentials) {
         throw new Error(`Trying to confirm unregistered input ~~${input.outpoint}~~`);
     }
     if (input.confirmedAmountCredentials && input.confirmedVsizeCredentials) {
-        options.log(`Input ~~${input.outpoint}~~ already confirmed. Skipping.`);
+        options.logger.log(`Input ~~${input.outpoint}~~ already confirmed. Skipping.`);
         return input;
     }
 
-    const { signal, coordinatorUrl, middlewareUrl, log } = options;
+    const { signal, coordinatorUrl, middlewareUrl, logger } = options;
 
     const zeroAmountCredentials = await middleware.getZeroCredentials(
         round.amountCredentialIssuerParameters,
@@ -54,7 +54,7 @@ const confirmInput = async (
     const deadline =
         round.phaseDeadline + readTimeSpan(round.roundParameters.connectionConfirmationTimeout);
 
-    log(
+    logger.log(
         `Confirming ~~${input.outpoint}~~ to ~~${round.id}~~ phase ${round.phase} with delay ${delay}ms and deadline ${deadline}`,
     );
 
@@ -74,7 +74,7 @@ const confirmInput = async (
         !confirmationData.realAmountCredentials ||
         !confirmationData.realVsizeCredentials
     ) {
-        log(`Confirmed in phase ${round.phase} ~~${input.outpoint}~~ in ~~${round.id}~~`);
+        logger.log(`Confirmed in phase ${round.phase} ~~${input.outpoint}~~ in ~~${round.id}~~`);
         return input;
     }
 
@@ -91,7 +91,7 @@ const confirmInput = async (
         { baseUrl: middlewareUrl }, // NOTE: post processing intentionally without abort signal (should not be aborted)
     );
 
-    log(`Confirmed ~~${input.outpoint}~~ in ~~${round.id}~~`);
+    logger.log(`Confirmed ~~${input.outpoint}~~ in ~~${round.id}~~`);
 
     input.setConfirmationData(confirmationData);
     input.setConfirmedCredentials(confirmedAmountCredentials, confirmedVsizeCredentials);
@@ -114,13 +114,14 @@ export const confirmationInterval = (
     const controller = new AbortController();
 
     const promise = new Promise<Alice>(resolve => {
+        const { logger } = options;
         const done = () => {
-            options.log(`Confirmation interval for ~~${input.outpoint}~~ completed`);
+            logger.log(`Confirmation interval for ~~${input.outpoint}~~ completed`);
             resolve(input);
         };
 
         const timeoutFn = async () => {
-            options.log(
+            logger.log(
                 `Setting confirmation interval for ~~${input.outpoint}~~. Delay ${intervalDelay}ms`,
             );
 
@@ -142,7 +143,7 @@ export const confirmationInterval = (
                 ) {
                     input.setError(error);
                 }
-                options.log(`Confirmation interval with error ${error.message}`);
+                logger.warn(`Confirmation interval with error ${error.message}`);
                 // do nothing. confirmationInterval might be aborted by Round phase change.
                 // error (if it's relevant) will be processed in next phase in confirmInput
                 done();
@@ -164,7 +165,7 @@ export const connectionConfirmation = async (
 ) => {
     // try to confirm each input
     // failed inputs will be excluded from this round, successful will continue to phase: 2 (outputRegistration)
-    options.log(`connectionConfirmation: ~~${round.id}~~`);
+    options.logger.log(`connectionConfirmation: ~~${round.id}~~`);
     round.setSessionPhase(SessionPhase.AwaitingConfirmation);
 
     const { inputs } = round;

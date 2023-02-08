@@ -3,6 +3,7 @@ import * as http from 'http';
 
 import { DEFAULT_ROUND, FEE_RATE_MEDIANS, AFFILIATE_INFO } from '../fixtures/round.fixture';
 import { CoinjoinClientEvents } from '../../src/types/client';
+import { Logger } from '../../src/types/logger';
 
 // Mock coordinator and middleware responses
 
@@ -199,7 +200,7 @@ export interface MockedServer extends Exclude<http.Server, 'addListener'> {
         coordinatorUrl: string;
         middlewareUrl: string;
         signal: AbortSignal;
-        log: (message: string) => any;
+        logger: Logger;
         setSessionPhase: (event: CoinjoinClientEvents['session-phase']) => void;
     };
     addListener: MockedServerEvents;
@@ -239,7 +240,12 @@ export const createServer = async () => {
         coordinatorUrl: `http://localhost:${port}/`,
         middlewareUrl: `http://localhost:${port}/`,
         signal: new AbortController().signal,
-        log: () => {},
+        logger: {
+            debug: () => {},
+            log: () => {},
+            warn: () => {},
+            error: () => {},
+        },
         setSessionPhase: () => null,
     };
 

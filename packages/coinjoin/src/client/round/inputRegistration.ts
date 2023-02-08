@@ -25,18 +25,19 @@ const registerInput = async (
     prison: CoinjoinPrison,
     options: CoinjoinRoundOptions,
 ): Promise<Alice> => {
+    const { logger } = options;
     if (input.error) {
-        options.log(`Trying to register input with error ${input.error}`);
+        logger.warn(`Trying to register input with error ${input.error}`);
         throw input.error;
     }
     // stop here and request for ownership proof from the wallet
     if (!input.ownershipProof) {
-        options.log(`Waiting for ~~${input.outpoint}~~ ownership proof`);
+        logger.log(`Waiting for ~~${input.outpoint}~~ ownership proof`);
         return input;
     }
 
     if (input.registrationData) {
-        options.log(`Input ~~${input.outpoint}~~ already registered. Skipping.`);
+        logger.log(`Input ~~${input.outpoint}~~ already registered. Skipping.`);
         return input;
     }
 
@@ -56,7 +57,7 @@ const registerInput = async (
     // note that this may cause that the input will not be registered if phase change before expected deadline
     const deadline = round.phaseDeadline - Date.now() - ROUND_SELECTION_REGISTRATION_OFFSET;
     const delay = deadline > 0 ? getRandomNumberInRange(0, deadline) : 0;
-    options.log(
+    logger.log(
         `Trying to register ~~${input.outpoint}~~ to ~~${round.id}~~ with delay ${delay}ms and deadline ${round.phaseDeadline}`,
     );
 
@@ -77,7 +78,7 @@ const registerInput = async (
             },
         )
         .catch(error => {
-            options.log(
+            logger.warn(
                 `Registration ~~${input.outpoint}~~ to ~~${round.id}~~ failed: ${error.message}`,
             );
             // catch specific error
@@ -142,10 +143,10 @@ const registerInput = async (
             { baseUrl: middlewareUrl },
         );
 
-        options.log(
+        logger.log(
             `Registration ~~${input.outpoint}~~ to ~~${round.id}~~ successful. aliceId: ${registrationData.aliceId}`,
         );
-        options.log(
+        logger.log(
             `~~${input.outpoint}~~ will pay ${coordinatorFee} coordinator fee and ${miningFee} mining fee`,
         );
 
@@ -175,7 +176,7 @@ export const inputRegistration = async (
 ) => {
     // try to register each input
     // failed inputs will be excluded from this round, successful will continue to phase: 1 (connectionConfirmation)
-    options.log(`inputRegistration: ~~${round.id}~~`);
+    options.logger.log(`inputRegistration: ~~${round.id}~~`);
     round.setSessionPhase(SessionPhase.CoinRegistration);
 
     const { inputs } = round;

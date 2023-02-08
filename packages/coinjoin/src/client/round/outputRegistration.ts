@@ -29,7 +29,7 @@ const registerOutput = async (
     options: CoinjoinRoundOptions,
 ) => {
     const { roundParameters } = round;
-    const { signal, coordinatorUrl, middlewareUrl } = options;
+    const { signal, coordinatorUrl, middlewareUrl, logger } = options;
 
     const outputAmountCredentials = await middleware.getRealCredentials(
         [0, 0],
@@ -52,6 +52,7 @@ const registerOutput = async (
     const tryToRegisterOutput = (): Promise<AccountAddress> => {
         const address = outputAddress.find(a => !prison.isDetained(a.scriptPubKey));
         if (!address) {
+            logger.error(`No change address available`);
             throw new Error('No change address available');
         }
 
@@ -73,6 +74,7 @@ const registerOutput = async (
                 if (
                     error.message === coordinator.WabiSabiProtocolErrorCode.AlreadyRegisteredScript
                 ) {
+                    logger.error(`Change address already used (AlreadyRegisteredScript)`);
                     prison.detain(address.scriptPubKey, {
                         reason: error.message,
                         sentenceEnd: Infinity, // this address should never be recycled
@@ -114,6 +116,9 @@ export const outputRegistration = async (
     prison: CoinjoinPrison,
     options: CoinjoinRoundOptions,
 ) => {
+    const { logger } = options;
+
+    logger.log(`outputRegistration: ~~${round.id}~~`);
     // TODO:
     // - decide if there is only 1 account registered should i abaddon this round and blame it on some "youngest" input?
     // - maybe if there is only 1 account inputs are so "far away" from each other that it is wort to mix anyway?
@@ -147,12 +152,12 @@ export const outputRegistration = async (
         round.setSessionPhase(SessionPhase.AwaitingOthersOutputs);
         // inform coordinator that each registered input is ready to sign
         await Promise.all(round.inputs.map(input => readyToSign(round, input, options)));
-        options.log(`Ready to sign ~~${round.id}~~`);
+        logger.log(`Ready to sign ~~${round.id}~~`);
     } catch (error) {
         // NOTE: if anything goes wrong in this process this Round will be corrupted for all the users
         // registered inputs will probably be banned
         const message = `Output registration in ~~${round.id}~~ failed: ${error.message}`;
-        options.log(message);
+        logger.error(`Output registration failed: ${error.message}`);
         round.setSessionPhase(SessionPhase.OutputRegistrationFailed);
 
         round.inputs.forEach(input => input.setError(new Error(message)));

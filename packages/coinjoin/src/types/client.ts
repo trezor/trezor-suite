@@ -1,6 +1,7 @@
 import { SessionPhase } from '../enums';
 import { AllowedRange, CoordinationFeeRate, Round } from './coordinator';
 import { CoinjoinRequestEvent, CoinjoinRoundEvent } from './round';
+import { LogEvent } from './logger';
 
 export interface CoinjoinStatusEvent {
     rounds: Round[];
@@ -15,7 +16,7 @@ export interface CoinjoinClientEvents {
     round: CoinjoinRoundEvent;
     request: CoinjoinRequestEvent[];
     exception: string;
-    log: string;
+    log: LogEvent;
     'session-phase': {
         phase: SessionPhase;
         accountKeys: string[];
