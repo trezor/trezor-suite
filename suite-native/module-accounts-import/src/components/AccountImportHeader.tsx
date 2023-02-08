@@ -28,7 +28,7 @@ const closeButtonStyle = prepareNativeStyle(_ => ({
 
 type NavigationProp = StackToTabCompositeProps<
     AccountsImportStackParamList,
-    AccountsImportStackRoutes.AccountImport,
+    AccountsImportStackRoutes.AccountImportSummary,
     RootStackParamList
 >;
 

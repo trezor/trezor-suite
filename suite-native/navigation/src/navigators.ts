@@ -2,6 +2,7 @@ import { NavigatorScreenParams } from '@react-navigation/native';
 
 import { AccountKey, XpubAddress } from '@suite-common/wallet-types';
 import { NetworkSymbol } from '@suite-common/wallet-config';
+import { AccountInfo } from '@trezor/connect';
 
 import {
     AppTabsRoutes,
@@ -50,8 +51,12 @@ export type AccountsImportStackParamList = {
     [AccountsImportStackRoutes.XpubScanModal]: {
         networkSymbol: NetworkSymbol;
     };
-    [AccountsImportStackRoutes.AccountImport]: {
+    [AccountsImportStackRoutes.AccountImportLoading]: {
         xpubAddress: XpubAddress;
+        networkSymbol: NetworkSymbol;
+    };
+    [AccountsImportStackRoutes.AccountImportSummary]: {
+        accountInfo: AccountInfo;
         networkSymbol: NetworkSymbol;
     };
 };

@@ -1,5 +1,4 @@
-/* eslint-disable global-require */
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Image } from 'react-native';
 import Animated, {
     useAnimatedStyle,
@@ -11,9 +10,7 @@ import Animated, {
 import { Box, Loader, Text, VStack } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-type AccountImportLoaderProps = {
-    onLoad(): void;
-};
+const LINE_VISIBILITY_DURATION = 1500;
 
 const loaderContainerStyle = prepareNativeStyle(utils => ({
     flex: 1,
@@ -28,10 +25,9 @@ const textContainerStyle = prepareNativeStyle(utils => ({
     overflow: 'hidden',
     height: utils.typography.titleMedium.lineHeight,
 }));
-export const AccountImportLoader = ({ onLoad }: AccountImportLoaderProps) => {
+export const AccountImportLoader = () => {
     const { applyStyle, utils } = useNativeStyles();
     const { lineHeight } = utils.typography.titleMedium;
-    const lineVisibilityDuration = 1500;
     const animatedTextStyle = useAnimatedStyle(() => ({
         height: lineHeight * 3,
         transform: [
@@ -39,21 +35,16 @@ export const AccountImportLoader = ({ onLoad }: AccountImportLoaderProps) => {
                 translateY: withSequence(
                     withTiming(lineHeight),
                     withTiming(0),
-                    withDelay(lineVisibilityDuration, withTiming(-lineHeight)),
-                    withDelay(lineVisibilityDuration, withTiming(-2 * lineHeight)),
+                    withDelay(LINE_VISIBILITY_DURATION, withTiming(-lineHeight)),
+                    withDelay(LINE_VISIBILITY_DURATION, withTiming(-2 * lineHeight)),
                 ),
             },
         ],
     }));
 
-    useEffect(() => {
-        // loader should disappear after 5 seconds soonest by design.
-        const timeout = setTimeout(onLoad, 5000);
-        return () => clearTimeout(timeout);
-    }, [onLoad]);
-
     return (
         <Box style={applyStyle(loaderContainerStyle)}>
+            {/* eslint-disable-next-line global-require */}
             <Image source={require('../assets/globe.png')} style={applyStyle(imageStyle)} />
             <VStack spacing="large" flex={1} justifyContent="center">
                 <Loader />

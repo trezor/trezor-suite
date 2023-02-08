@@ -1,8 +1,8 @@
 import { ActivityIndicator } from 'react-native';
 import React from 'react';
 
-import { useNativeStyles } from '@trezor/styles/';
-import { Color } from '@trezor/theme/';
+import { useNativeStyles } from '@trezor/styles';
+import { Color } from '@trezor/theme';
 
 import { Box } from './Box';
 import { Text } from './Text';

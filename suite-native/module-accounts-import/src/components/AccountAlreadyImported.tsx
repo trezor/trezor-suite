@@ -30,7 +30,7 @@ const contentWrapperStyle = prepareNativeStyle(() => ({
 // Navigation hook should be typed properly to handle this.
 type NavigationProp = StackToTabCompositeProps<
     AccountsImportStackParamList,
-    AccountsImportStackRoutes.AccountImport,
+    AccountsImportStackRoutes.AccountImportSummary,
     RootStackParamList
 >;
 

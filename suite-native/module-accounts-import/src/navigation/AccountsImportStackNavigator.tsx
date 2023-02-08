@@ -10,7 +10,8 @@ import {
 
 import { SelectNetworkScreen } from '../screens/SelectNetworkScreen';
 import { XpubScanScreen } from '../screens/XpubScanScreen';
-import { AccountsImportScreen } from '../screens/AccountsImportScreen';
+import { AccountImportLoadingScreen } from '../screens/AccountImportLoadingScreen';
+import { AccountImportSummaryScreen } from '../screens/AccountImportSummaryScreen';
 import { ScanQRCodeModalScreen } from '../screens/ScanQRCodeModalScreen';
 
 export const AccountsImportStack = createStackNavigator<AccountsImportStackParamList>();
@@ -27,8 +28,12 @@ export const AccountsImportStackNavigator = () => (
                 component={XpubScanScreen}
             />
             <AccountsImportStack.Screen
-                name={AccountsImportStackRoutes.AccountImport}
-                component={AccountsImportScreen}
+                name={AccountsImportStackRoutes.AccountImportLoading}
+                component={AccountImportLoadingScreen}
+            />
+            <AccountsImportStack.Screen
+                name={AccountsImportStackRoutes.AccountImportSummary}
+                component={AccountImportSummaryScreen}
             />
         </AccountsImportStack.Group>
         <AccountsImportStack.Group screenOptions={{ presentation: 'modal' }}>

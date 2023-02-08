@@ -13,19 +13,34 @@ import {
 
 import { AccountImportLoader } from '../components/AccountImportLoader';
 import { AccountImportHeader } from '../components/AccountImportHeader';
-import { AccountImportSummary } from '../components/AccountImportSummary';
 
-export const AccountsImportScreen = ({
+const LOADING_ANIMATION_DURATION = 5000;
+
+export const AccountImportLoadingScreen = ({
     navigation,
     route,
 }: StackToTabCompositeScreenProps<
     AccountsImportStackParamList,
-    AccountsImportStackRoutes.AccountImport,
+    AccountsImportStackRoutes.AccountImportLoading,
     RootStackParamList
 >) => {
     const { xpubAddress, networkSymbol } = route.params;
     const [accountInfo, setAccountInfo] = useState<AccountInfo | null>(null);
-    const [isLoaded, setIsLoaded] = useState(false);
+    const [isAnimationFinished, setIsAnimationFinished] = useState(false);
+
+    useEffect(() => {
+        if (accountInfo && isAnimationFinished)
+            navigation.navigate(AccountsImportStackRoutes.AccountImportSummary, {
+                accountInfo,
+                networkSymbol,
+            });
+    }, [isAnimationFinished, accountInfo, navigation, networkSymbol]);
+
+    useEffect(() => {
+        // loader should disappear after 5 seconds soonest by design.
+        const timeout = setTimeout(() => setIsAnimationFinished(true), LOADING_ANIMATION_DURATION);
+        return () => clearTimeout(timeout);
+    }, [setIsAnimationFinished]);
 
     useEffect(() => {
         let ignore = false;
@@ -81,12 +96,8 @@ export const AccountsImportScreen = ({
     }, [xpubAddress, networkSymbol, navigation]);
 
     return (
-        <Screen header={<AccountImportHeader activeStep={accountInfo ? 4 : 3} />}>
-            {isLoaded && accountInfo ? (
-                <AccountImportSummary accountInfo={accountInfo} networkSymbol={networkSymbol} />
-            ) : (
-                <AccountImportLoader onLoad={() => setIsLoaded(true)} />
-            )}
+        <Screen header={<AccountImportHeader activeStep={3} />}>
+            <AccountImportLoader />
         </Screen>
     );
 };
