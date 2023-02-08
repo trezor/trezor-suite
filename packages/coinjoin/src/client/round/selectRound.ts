@@ -319,7 +319,7 @@ export const selectInputsForRound = async ({
 
     // get index of Round with maximum possble utxos
     const roundIndex = sumUtxosInRounds.findIndex(count => count === maxUtxosInRound);
-    const selectedRound = roundCandidates[roundIndex];
+    const selectedRound = normalRounds[roundIndex];
 
     // setup new Round
     accountCandidates.forEach((account, accountIndex) => {
