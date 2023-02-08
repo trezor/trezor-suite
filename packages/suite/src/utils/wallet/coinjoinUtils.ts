@@ -9,11 +9,7 @@ import {
     RoundPhase,
     SessionPhase,
 } from '@wallet-types/coinjoin';
-import {
-    ESTIMATED_MIN_ROUNDS_NEEDED,
-    ESTIMATED_ROUNDS_FAIL_RATE_BUFFER,
-    ESTIMATED_HOURS_PER_ROUND,
-} from '@suite/services/coinjoin/config';
+import { ESTIMATED_MIN_ROUNDS_NEEDED } from '@suite/services/coinjoin/config';
 import { AnonymitySet } from '@trezor/blockchain-link';
 import {
     CoinjoinStatusEvent,
@@ -174,8 +170,8 @@ const getSkipRoundsRate = (skipRounds?: [number, number]) =>
     skipRounds ? skipRounds[1] / skipRounds[0] : 1;
 
 // calculate max rounds to allow on device from estimated rounds needed
-export const getMaxRounds = (roundsNeeded: number) => {
-    const estimatedRoundsCount = Math.ceil(roundsNeeded * ESTIMATED_ROUNDS_FAIL_RATE_BUFFER);
+export const getMaxRounds = (roundsNeeded: number, roundsFailRateBuffer: number) => {
+    const estimatedRoundsCount = Math.ceil(roundsNeeded * roundsFailRateBuffer);
 
     return Math.max(estimatedRoundsCount, ESTIMATED_MIN_ROUNDS_NEEDED);
 };

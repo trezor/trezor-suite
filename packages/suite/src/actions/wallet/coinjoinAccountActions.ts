@@ -137,11 +137,21 @@ const coinjoinSessionStarting = (accountKey: string, isStarting: boolean) =>
         },
     } as const);
 
-export const updateAverageAnonymityGainPerRound = (averageAnonymityGainPerRound: number) =>
+export const updateCoinjoinConfig = ({
+    averageAnonymityGainPerRound,
+    roundsFailRateBuffer,
+    roundsDurationInHours,
+}: {
+    averageAnonymityGainPerRound: number;
+    roundsFailRateBuffer: number;
+    roundsDurationInHours: number;
+}) =>
     ({
-        type: COINJOIN.UPDATE_AVERAGE_ANONYMITY_GAIN_PER_ROUND,
+        type: COINJOIN.UPDATE_CONFIG,
         payload: {
             averageAnonymityGainPerRound,
+            roundsFailRateBuffer,
+            roundsDurationInHours,
         },
     } as const);
 
@@ -155,7 +165,7 @@ export type CoinjoinAccountAction =
     | ReturnType<typeof coinjoinAccountAuthorizeFailed>
     | ReturnType<typeof coinjoinAccountUnregister>
     | ReturnType<typeof coinjoinAccountDiscoveryProgress>
-    | ReturnType<typeof updateAverageAnonymityGainPerRound>
+    | ReturnType<typeof updateCoinjoinConfig>
     | ReturnType<typeof coinjoinAccountPreloading>
     | ReturnType<typeof coinjoinSessionPause>
     | ReturnType<typeof coinjoinSessionRestore>

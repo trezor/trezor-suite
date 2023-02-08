@@ -9,7 +9,11 @@ import {
 } from '@trezor/coinjoin';
 import { arrayDistinct, arrayToDictionary, promiseAllSequence } from '@trezor/utils';
 import * as COINJOIN from './constants/coinjoinConstants';
-import { selectRoundsNeeded, selectRoundsLeft } from '@wallet-reducers/coinjoinReducer';
+import {
+    selectRoundsNeeded,
+    selectRoundsLeft,
+    selectRoundsDurationInHours,
+} from '@wallet-reducers/coinjoinReducer';
 import {
     breakdownCoinjoinBalance,
     prepareCoinjoinTransaction,
@@ -205,7 +209,10 @@ export const onCoinjoinRoundChanged =
             .concat(round.failed)
             .map(input => input.accountKey)
             .filter(arrayDistinct);
+
         const currentTimestamp = Date.now();
+
+        const roundsDurationInHours = selectRoundsDurationInHours(state);
 
         const coinjoinAccountsWithSession = accountKeys.flatMap(
             accountKey => accounts.find(r => r.key === accountKey && r.session) || [],
@@ -220,7 +227,10 @@ export const onCoinjoinRoundChanged =
             const sessionDeadline = getSessionDeadline({
                 currentTimestamp,
                 roundDeadline: round.roundDeadline,
-                timePerRound: getEstimatedTimePerRound(account.session?.skipRounds),
+                timePerRound: getEstimatedTimePerRound(
+                    roundsDurationInHours,
+                    account.session?.skipRounds,
+                ),
                 roundsLeft: selectRoundsLeft(state, account.key),
                 roundsNeeded: selectRoundsNeeded(state, account.key),
             });
