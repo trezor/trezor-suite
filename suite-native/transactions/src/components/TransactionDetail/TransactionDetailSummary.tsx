@@ -4,6 +4,7 @@ import { useCopyToClipboard } from '@suite-native/helpers';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Box, Card, VStack, Text, ErrorMessage, IconButton } from '@suite-native/atoms';
 import { Icon } from '@trezor/icons';
+import { AccountAddressFormatter } from '@suite-native/formatters';
 
 type TransactionDetailSummaryProps = {
     origin?: string;
@@ -49,17 +50,21 @@ const VerticalSeparator = () => {
     return <Box style={applyStyle(borderLineStyle)} />;
 };
 
+const addressTextStyle = prepareNativeStyle(() => ({
+    width: 160,
+}));
+
 export const RowWithTitle = ({ title, value }: { title: string; value: string }) => {
+    const { applyStyle } = useNativeStyles();
     const copyToClipboard = useCopyToClipboard();
+
     return (
         <Box flexDirection="row" justifyContent="space-between" alignItems="center">
             <Box>
                 <Text color="gray600" variant="hint">
                     {title}
                 </Text>
-                <Text numberOfLines={1} ellipsizeMode="middle" style={{ width: 160 }}>
-                    {value}
-                </Text>
+                <AccountAddressFormatter value={value} style={applyStyle(addressTextStyle)} />
             </Box>
             <IconButton
                 iconName="copy"
