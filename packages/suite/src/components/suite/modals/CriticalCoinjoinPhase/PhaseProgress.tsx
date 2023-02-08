@@ -5,7 +5,6 @@ import { FluidSpinner, Icon, useTheme, variables } from '@trezor/components';
 import { SESSION_PHASE_MESSAGES } from '@suite-constants/coinjoin';
 import { Translation } from '@suite-components/Translation';
 import { CountdownTimer } from '@suite-components/CountdownTimer';
-import { getPhaseTimerFormat } from '@wallet-utils/coinjoinUtils';
 
 const Container = styled.div`
     padding: 32px 38px 0;
@@ -106,7 +105,7 @@ export const PhaseProgress = ({ roundPhase, phaseDeadline, sessionPhase }: Phase
                 <CountdownTimer
                     isApproximate
                     deadline={phaseDeadline}
-                    format={getPhaseTimerFormat(phaseDeadline)}
+                    pastDeadlineMessage="TR_TIMER_PAST_DEADLINE"
                 />
             </TimerCointainer>
         )}

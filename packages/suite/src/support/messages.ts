@@ -7508,9 +7508,10 @@ export default defineMessages({
         id: 'TR_LOOKING_FOR_COINJOIN_ROUND',
         defaultMessage: 'Waiting for a round',
     },
-    TR_COINJOIN_ROUNDS_LEFT: {
-        id: 'TR_COINJOIN_ROUNDS_LEFT',
-        defaultMessage: '{rounds, plural, one {# round} other {# rounds}} left',
+    TR_COINJOIN_SESSION_COUNTDOWN: {
+        id: 'TR_COINJOIN_SESSION_COUNTDOWN',
+        description: 'deadline including unit i.e. 5 hours or 15 minutes',
+        defaultMessage: '{deadline} left',
     },
     TR_LOADING_FUNDS: {
         id: 'TR_LOADING_FUNDS',

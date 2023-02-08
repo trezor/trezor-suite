@@ -1,15 +1,11 @@
 import BigNumber from 'bignumber.js';
 import { createHash } from 'crypto';
+import hoursToMilliseconds from 'date-fns/hoursToMilliseconds';
 
 import { getUtxoOutpoint, getBip43Type } from '@suite-common/wallet-utils';
 import { Account, SelectedAccountStatus } from '@suite-common/wallet-types';
-import {
-    CoinjoinSession,
-    CoinjoinSessionParameters,
-    RoundPhase,
-    SessionPhase,
-} from '@wallet-types/coinjoin';
 import { ESTIMATED_MIN_ROUNDS_NEEDED } from '@suite/services/coinjoin/config';
+import { CoinjoinSessionParameters, RoundPhase, SessionPhase } from '@wallet-types/coinjoin';
 import { AnonymitySet } from '@trezor/blockchain-link';
 import {
     CoinjoinStatusEvent,
@@ -180,7 +176,7 @@ export const getMaxRounds = (roundsNeeded: number, roundsFailRateBuffer: number)
 export const getEstimatedTimePerRound = (
     roundsDurationInHours: number,
     skipRounds?: [number, number],
-) => roundsDurationInHours * 3_600_000 * getSkipRoundsRate(skipRounds);
+) => hoursToMilliseconds(roundsDurationInHours) * getSkipRoundsRate(skipRounds);
 
 export const getSessionDeadline = ({
     currentTimestamp,
@@ -273,36 +269,6 @@ export const prepareCoinjoinTransaction = (
             signature: affiliateRequest.signature,
         },
     };
-};
-
-export const getSessionDeadlineFormat = (deadline: CoinjoinSession['sessionDeadline']) => {
-    if (deadline === undefined || Number.isNaN(Number(deadline))) {
-        return;
-    }
-
-    let formatToUse: Array<keyof Duration>;
-    const millisecondsLeft = Number(deadline) - Date.now();
-
-    if (millisecondsLeft >= 3_600_000) {
-        formatToUse = ['hours'];
-    } else if (millisecondsLeft >= 60_000) {
-        formatToUse = ['minutes'];
-    } else {
-        formatToUse = ['seconds'];
-    }
-
-    return formatToUse;
-};
-
-export const getPhaseTimerFormat = (deadline: CoinjoinSession['roundPhaseDeadline']) => {
-    if (deadline === undefined || Number.isNaN(Number(deadline))) {
-        return;
-    }
-
-    const formatToUse: Array<keyof Duration> =
-        Number(deadline) - Date.now() >= 3600000 ? ['hours', 'minutes'] : ['minutes', 'seconds'];
-
-    return formatToUse;
 };
 
 export const getIsCoinjoinOutOfSync = (selectedAccount: SelectedAccountStatus) => {
