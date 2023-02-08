@@ -54,7 +54,14 @@ export const init: Module = ({ mainWindow }) => {
             // override default url in coinjoin settings
             settings.middlewareUrl = coinjoinMiddleware.getUrl();
             const client = new CoinjoinClient(settings);
-            client.on('log', message => logger.debug(SERVICE_NAME, message));
+            client.on('log', ({ level, payload }) => {
+                if (level === 'log') {
+                    // suite-desktop logger doesn't have "log", using "debug" instead
+                    logger.debug(SERVICE_NAME, payload);
+                } else {
+                    logger[level](SERVICE_NAME, payload);
+                }
+            });
             clients.push(client);
             return {
                 onRequest: async (method, params) => {
