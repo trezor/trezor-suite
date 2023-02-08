@@ -135,14 +135,26 @@ export const transactionSigning = async (
     accounts: Account[],
     options: CoinjoinRoundOptions,
 ): Promise<CoinjoinRound> => {
+    const { logger } = options;
+
+    logger.log(`transactionSigning: ~~${round.id}~~`);
+
     const inputsWithError = round.inputs.filter(input => input.error);
     if (inputsWithError.length > 0) {
-        options.log('Trying to sign input with assigned error');
+        inputsWithError.forEach(input => {
+            logger.error(`Trying to sign input with assigned error ${input.error?.message}`);
+        });
+        return round;
+    }
+
+    const alreadyRequested = round.inputs.some(input => input.requested?.type === 'signature');
+    if (alreadyRequested) {
+        logger.error(`Signature request was not fulfilled`);
         return round;
     }
 
     if (!round.affiliateRequest) {
-        options.log('Trying to sign without affiliate request. Waiting for status');
+        logger.error(`Missing affiliate request. Waiting for status`);
         round.setSessionPhase(SessionPhase.AwaitingCoinjoinTransaction);
         return round;
     }
@@ -150,14 +162,6 @@ export const transactionSigning = async (
     try {
         const inputsWithoutWitness = round.inputs.filter(input => !input.witness);
         if (inputsWithoutWitness.length > 0) {
-            const alreadyRequested = inputsWithoutWitness.find(input => input.requested);
-            if (alreadyRequested) {
-                options.log(
-                    `Trying to sign but request was not fulfilled yet ${inputsWithoutWitness.length}`,
-                );
-                throw new Error('Wittiness not provided');
-            }
-
             round.setSessionPhase(SessionPhase.AwaitingCoinjoinTransaction);
             const transactionData = getTransactionData(round, options);
             const liquidityClues = await updateRawLiquidityClue(
@@ -172,26 +176,19 @@ export const transactionSigning = async (
         }
 
         round.setSessionPhase(SessionPhase.SendingSignature);
-        const { inputs } = round;
-        await Promise.allSettled(inputs.map(input => sendTxSignature(round, input, options))).then(
-            result =>
-                result.forEach((r, i) => {
-                    if (r.status !== 'fulfilled') {
-                        inputs[i].setError(r.reason);
-                    }
-                }),
-        );
+
+        await Promise.all(round.inputs.map(input => sendTxSignature(round, input, options)));
+
+        round.setSessionPhase(SessionPhase.AwaitingOtherSignatures);
+        logger.log(`Round ${round.id} signed successfully`);
     } catch (error) {
         // NOTE: if anything goes wrong in this process this Round will be corrupted for all the users
         // registered inputs will probably be banned
         round.setSessionPhase(SessionPhase.SignatureFailed);
+        logger.error(`Round signing failed: ${error.message}`);
 
-        round.inputs.forEach(input =>
-            input.setError(new Error(`transactionSigning failed: ${error.message}`)),
-        );
+        round.inputs.forEach(input => input.setError(error));
     }
 
-    round.setSessionPhase(SessionPhase.AwaitingOtherSignatures);
-    options.log(`Round ${round.id} signed successfully`);
     return round;
 };

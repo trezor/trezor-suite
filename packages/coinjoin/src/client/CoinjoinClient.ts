@@ -5,6 +5,7 @@ import { Account } from './Account';
 import { CoinjoinPrison } from './CoinjoinPrison';
 import { CoinjoinRound } from './CoinjoinRound';
 import { getNetwork } from '../utils/settingsUtils';
+import { redacted } from '../utils/redacted';
 import { analyzeTransactions, AnalyzeTransactionsResult } from './analyzeTransactions';
 import type {
     CoinjoinClientSettings,
@@ -12,6 +13,8 @@ import type {
     CoinjoinStatusEvent,
     CoinjoinResponseEvent,
     CoinjoinClientEvents,
+    Logger,
+    LogLevel,
 } from '../types';
 
 export declare interface CoinjoinClient {
@@ -32,6 +35,7 @@ export declare interface CoinjoinClient {
 
 export class CoinjoinClient extends EventEmitter {
     readonly settings: CoinjoinClientSettings;
+    private logger: Logger;
     private network;
     private abortController: AbortController; // used for interruption
     private status: Status;
@@ -42,6 +46,7 @@ export class CoinjoinClient extends EventEmitter {
     constructor(settings: CoinjoinClientSettings) {
         super();
         this.settings = Object.freeze(settings);
+        this.logger = this.getLogger();
         this.network = getNetwork(settings.network);
         this.abortController = new AbortController();
 
@@ -97,7 +102,7 @@ export class CoinjoinClient extends EventEmitter {
         if (this.accounts.find(a => a.accountKey === account.accountKey)) {
             throw new Error('Trying to register account that already exists');
         }
-        this.log(`Register account ~~${account.accountKey}~~`);
+        this.logger.log(`Register account ~~${account.accountKey}~~`);
 
         // iterate Status more frequently
         if (this.accounts.length === 0) {
@@ -114,7 +119,7 @@ export class CoinjoinClient extends EventEmitter {
     }
 
     updateAccount(account: RegisterAccountParams) {
-        this.log(`Update account ~~${account.accountKey}~~`);
+        this.logger.log(`Update account ~~${account.accountKey}~~`);
         const accountToUpdate = this.accounts.find(a => a.accountKey === account.accountKey);
         if (accountToUpdate) {
             this.rounds.forEach(round => round.updateAccount(account));
@@ -130,7 +135,7 @@ export class CoinjoinClient extends EventEmitter {
     }
 
     unregisterAccount(accountKey: string) {
-        this.log(`Unregister account ~~${accountKey}~~`);
+        this.logger.log(`Unregister account ~~${accountKey}~~`);
         this.rounds.forEach(round => {
             round.unregisterAccount(accountKey);
         });
@@ -159,23 +164,6 @@ export class CoinjoinClient extends EventEmitter {
 
         // trigger round processing
         this.onStatusUpdate({ rounds, changed });
-    }
-
-    // emit log events to wallet
-    private log(message: string) {
-        if (this.listenerCount('log') < 1) return;
-        // redact log messages, parts wrapped into <...> like accountKey, round id, outpoint etc
-        const redacted = message.replace(/(~~([^~~]+)~~)/g, match => {
-            if (match.length > 16) {
-                return `${match.substring(2, 10)}...${match.substring(
-                    match.length - 10,
-                    match.length - 2,
-                )}`;
-            }
-            return `[redacted]`;
-        });
-
-        this.emit('log', redacted);
     }
 
     private setSessionPhase(event: CoinjoinClientEvents['session-phase']) {
@@ -224,9 +212,8 @@ export class CoinjoinClient extends EventEmitter {
                     coordinatorName: this.settings.coordinatorName,
                     coordinatorUrl: this.settings.coordinatorUrl,
                     middlewareUrl: this.settings.middlewareUrl,
-                    log: (message: string) => this.log(message),
-                    setSessionPhase: (sessionPhase: CoinjoinClientEvents['session-phase']) =>
-                        this.setSessionPhase(sessionPhase),
+                    logger: this.logger,
+                    setSessionPhase: sessionPhase => this.setSessionPhase(sessionPhase),
                 },
             });
 
@@ -278,5 +265,16 @@ export class CoinjoinClient extends EventEmitter {
         if (requests.length > 0) {
             this.emit('request', requests);
         }
+    }
+
+    private getLogger(): Logger {
+        const emit = (level: LogLevel) => (payload: string) =>
+            this.emit('log', { level, payload: redacted(payload) });
+        return {
+            debug: emit('debug'),
+            log: emit('log'),
+            warn: emit('warn'),
+            error: emit('error'),
+        };
     }
 }
