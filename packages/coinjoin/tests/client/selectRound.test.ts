@@ -10,7 +10,11 @@ import {
     CoinjoinRoundGenerator,
     getUnregisteredAccounts,
 } from '../../src/client/round/selectRound';
-import { DEFAULT_ROUND, ROUND_CREATION_EVENT } from '../fixtures/round.fixture';
+import {
+    DEFAULT_ROUND,
+    ROUND_CREATION_EVENT,
+    createCoinjoinRound,
+} from '../fixtures/round.fixture';
 import { createServer } from '../mocks/server';
 
 describe('selectRound', () => {
@@ -76,7 +80,7 @@ describe('selectRound', () => {
         const result = getAccountCandidates({
             accounts: [],
             coinjoinRounds: [],
-            prison: prison,
+            prison,
             options: server?.requestOptions,
         });
         expect(result).toEqual([]);
@@ -86,7 +90,7 @@ describe('selectRound', () => {
         const result = getAccountCandidates({
             accounts: [{ utxos: [] }] as any,
             coinjoinRounds: [],
-            prison: prison,
+            prison,
             options: server?.requestOptions,
         });
         expect(result).toEqual([]);
@@ -98,7 +102,7 @@ describe('selectRound', () => {
         const result = getAccountCandidates({
             accounts: [{ utxos: [{ outpoint: 'Ba99ed' }] }] as any,
             coinjoinRounds: [],
-            prison: prison,
+            prison,
             options: server?.requestOptions,
         });
         expect(result).toEqual([]);
@@ -261,6 +265,67 @@ describe('selectRound', () => {
 
         expect(spy).toBeCalledTimes(1); // middleware was called once for account3
         expect(result).toBeUndefined();
+    });
+
+    it('Multiple blame rounds in roundCandidates', async () => {
+        // pick utxo which amount is greater than miningFeeRate
+        server?.addListener('test-request', ({ url, data, resolve }) => {
+            if (url.endsWith('/select-inputs-for-round')) {
+                const indices = data.utxos.flatMap((utxo: any, i: number) => {
+                    if (utxo.amount < data.miningFeeRate) return [];
+                    return i;
+                });
+                resolve({ indices });
+            }
+            resolve();
+        });
+
+        const result = await selectInputsForRound({
+            aliceGenerator,
+            roundCandidates: [
+                createCoinjoinRound([], {
+                    ...server?.requestOptions,
+                    statusRound: { id: 'ff01', blameOf: '01ff' },
+                }),
+                createCoinjoinRound([], {
+                    ...server?.requestOptions,
+                    statusRound: { id: 'aa02' },
+                    roundParameters: {
+                        miningFeeRate: 300000, // this round will be skipped, fees to high
+                    },
+                }),
+                createCoinjoinRound([], {
+                    ...server?.requestOptions,
+                    statusRound: { id: 'ff02', blameOf: '02ff' },
+                }),
+                createCoinjoinRound([], {
+                    ...server?.requestOptions,
+                    statusRound: { id: 'aa01' },
+                }),
+                createCoinjoinRound([], {
+                    ...server?.requestOptions,
+                    statusRound: { id: 'ff03', blameOf: '03ff' },
+                }),
+            ],
+            accountCandidates: [
+                {
+                    accountKey: 'account1',
+                    scriptType: 'Taproot',
+                    utxos: [{ outpoint: 'AA', amount: 200000 }],
+                },
+                {
+                    accountKey: 'account2',
+                    scriptType: 'Taproot',
+                    utxos: [{ outpoint: 'BA', amount: 200000 }],
+                },
+            ] as any,
+            options: server?.requestOptions,
+        });
+
+        expect(result).toMatchObject({
+            id: 'aa01',
+            inputs: [{ outpoint: 'AA' }, { outpoint: 'BA' }],
+        });
     });
 
     it('Success. new CoinjoinRound created', async () => {
