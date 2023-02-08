@@ -24,7 +24,7 @@ export interface CoinjoinSession extends CoinjoinSessionParameters {
     starting?: boolean; // is coinjoin session (re)starting, i.e. initiated but not yet running
     sessionPhaseQueue: Array<SessionPhase>;
     roundPhase?: RoundPhase; // current phase enum
-    roundPhaseDeadline?: string | number; // estimated time for phase change
+    roundPhaseDeadline?: number; // estimated time for phase change
     sessionDeadline?: number; // estimated time for a session's end - not real deadline
     signedRounds: string[]; // already signed rounds
 }
