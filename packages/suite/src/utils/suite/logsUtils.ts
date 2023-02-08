@@ -1,11 +1,13 @@
 import { Account, Discovery } from '@wallet-types';
 import { DISCOVERY } from '@wallet-actions/constants';
 import { SUITE } from '@suite-actions/constants';
-import { DEVICE } from '@trezor/connect';
-import { LogEntry } from '@suite-reducers/logsReducer';
 import { AppState, TrezorDevice } from '@suite-types';
-import { getCustomBackends } from '@suite-common/wallet-utils';
 import { getEnvironment } from '@suite-utils/env';
+import { getIsTorEnabled } from '@suite-utils/tor';
+
+import { LogEntry } from '@suite-common/logger';
+import { DEVICE } from '@trezor/connect';
+import { getCustomBackends } from '@suite-common/wallet-utils';
 import {
     getBrowserName,
     getBrowserVersion,
@@ -25,9 +27,9 @@ import {
     getFirmwareType,
     getFirmwareVersion,
 } from '@trezor/device-utils';
-import { getIsTorEnabled } from '@suite-utils/tor';
 import { DeepPartial } from '@trezor/type-utils';
 import { accountsActions } from '@suite-common/wallet-core';
+
 import { getPhysicalDeviceUniqueIds } from './device';
 
 export const REDACTED_REPLACEMENT = '[redacted]';

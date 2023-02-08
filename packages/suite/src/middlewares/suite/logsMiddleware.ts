@@ -1,7 +1,5 @@
 import { MiddlewareAPI } from 'redux';
 import { AppState, Action, Dispatch } from '@suite-types';
-import * as logActions from '@suite-actions/logsActions';
-import { TRANSPORT, DEVICE } from '@trezor/connect';
 import {
     ANALYTICS,
     DESKTOP_UPDATE,
@@ -12,54 +10,26 @@ import {
     SUITE,
 } from '@suite-actions/constants';
 import { DISCOVERY } from '@wallet-actions/constants';
-import { getAccountIdentifier } from '@suite-common/wallet-utils';
-import { Account } from '@suite-common/wallet-types';
 import { WALLET_SETTINGS } from '@settings-actions/constants';
 import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
 import { redactTransactionIdFromAnchor } from '@suite-utils/analytics';
-import { accountsActions, blockchainActions } from '@suite-common/wallet-core';
-import { isAnyOf } from '@reduxjs/toolkit';
+
+import { addLog } from '@suite-common/logger';
+import { TRANSPORT, DEVICE } from '@trezor/connect';
 import { redactUserPathFromString } from '@trezor/utils';
 
 const log =
     (api: MiddlewareAPI<Dispatch, AppState>) =>
     (next: Dispatch) =>
     (action: Action): Action => {
-        next(action);
-
-        // avoid endless loops, see default in switch
-        // also do not log any log related actions
-        if (action.type.startsWith('@log')) return action;
-
-        if (isAnyOf(accountsActions.createAccount, accountsActions.updateAccount)(action)) {
-            const { payload }: { payload: Account } = action;
-            api.dispatch(logActions.addAction(action, { ...payload }));
-        }
-
-        if (accountsActions.updateSelectedAccount.match(action)) {
-            if (action.payload.account) {
-                api.dispatch(
-                    logActions.addAction(action, {
-                        account: {
-                            ...getAccountIdentifier(action.payload.account),
-                            index: action.payload.account.index,
-                            path: action.payload.account.path,
-                        },
-                    }),
-                );
-            } else {
-                api.dispatch(logActions.addAction(action, { ...action, type: undefined }));
-            }
-        }
-
-        if (blockchainActions.setBackend.match(action)) {
-            api.dispatch(logActions.addAction(action, { ...action.payload, urls: undefined }));
-        }
+        // IMPORTANT: Part of the middleware that's using actions from suite-common/wallet-core package
+        // can be found in this file: suite-common/logger/src/logsMiddleware.ts
 
         if (walletSettingsActions.changeNetworks.match(action)) {
             api.dispatch(
-                logActions.addAction(action, {
-                    enabledNetworks: action.payload.join(','),
+                addLog({
+                    action,
+                    type: action.type,
                 }),
             );
         }
@@ -79,21 +49,28 @@ const log =
             case DESKTOP_UPDATE.AVAILABLE:
             case DESKTOP_UPDATE.NOT_AVAILABLE:
             case MODAL.CLOSE:
+                console.log('prvni logger', action);
                 api.dispatch(
-                    logActions.addAction(action, {
-                        ...action,
-                        type: undefined,
+                    addLog({
+                        type: action.type,
+                        payload: {
+                            ...action,
+                            type: undefined,
+                        },
                     }),
                 );
                 break;
             case DESKTOP_UPDATE.READY:
                 api.dispatch(
-                    logActions.addAction(action, {
-                        version: action.payload.version,
-                        releaseDate: action.payload.releaseDate,
-                        downloadedFile: redactUserPathFromString(
-                            action.payload.downloadedFile || '',
-                        ),
+                    addLog({
+                        type: action.type,
+                        payload: {
+                            version: action.payload.version,
+                            releaseDate: action.payload.releaseDate,
+                            downloadedFile: redactUserPathFromString(
+                                action.payload.downloadedFile || '',
+                            ),
+                        },
                     }),
                 );
                 break;
@@ -104,39 +81,53 @@ const log =
             case SUITE.UPDATE_SELECTED_DEVICE:
             case SUITE.REMEMBER_DEVICE:
                 api.dispatch(
-                    logActions.addAction(action, {
-                        ...action.payload,
-                        firmwareRelease: undefined,
-                        unavailableCapabilities: undefined,
+                    addLog({
+                        type: action.type,
+                        payload: {
+                            ...action.payload,
+                            firmwareRelease: undefined,
+                            unavailableCapabilities: undefined,
+                        },
                     }),
                 );
                 break;
             case METADATA.SET_PROVIDER:
                 api.dispatch(
-                    logActions.addAction(action, {
-                        ...action.payload,
-                        tokens: undefined,
-                        user: undefined,
+                    addLog({
+                        type: action.type,
+                        payload: {
+                            ...action.payload,
+                            tokens: undefined,
+                            user: undefined,
+                        },
                     }),
                 );
                 break;
             case TRANSPORT.START:
                 api.dispatch(
-                    logActions.addAction(action, {
-                        type: action.payload.type,
-                        version: action.payload.version,
+                    addLog({
+                        type: action.type,
+                        payload: {
+                            type: action.payload.type,
+                            version: action.payload.version,
+                        },
                     }),
                 );
                 break;
             case TRANSPORT.ERROR:
-                api.dispatch(logActions.addAction(action, { error: action.payload.error }));
+                api.dispatch(
+                    addLog({ type: action.type, payload: { error: action.payload.error } }),
+                );
                 break;
             case ROUTER.LOCATION_CHANGE:
                 api.dispatch(
-                    logActions.addAction(action, {
-                        pathname: action.payload.pathname,
-                        app: action.payload.app,
-                        anchor: redactTransactionIdFromAnchor(action.payload.anchor),
+                    addLog({
+                        type: action.type,
+                        payload: {
+                            pathname: action.payload.pathname,
+                            app: action.payload.app,
+                            anchor: redactTransactionIdFromAnchor(action.payload.anchor),
+                        },
                     }),
                 );
                 break;
@@ -144,38 +135,50 @@ const log =
             case SUITE.TOR_STATUS:
             case SUITE.ONLINE_STATUS:
                 api.dispatch(
-                    logActions.addAction(action, {
-                        status: action.payload,
+                    addLog({
+                        type: action.type,
+                        payload: {
+                            status: action.payload,
+                        },
                     }),
                 );
                 break;
             case SUITE.ADD_BUTTON_REQUEST:
                 if (action.payload) {
                     api.dispatch(
-                        logActions.addAction(action, {
-                            code: action.payload.code,
+                        addLog({
+                            type: action.type,
+                            payload: {
+                                code: action.payload.code,
+                            },
                         }),
                     );
                 }
                 break;
             case PROTOCOL.SAVE_COIN_PROTOCOL:
                 api.dispatch(
-                    logActions.addAction(action, {
-                        scheme: action.payload.scheme,
+                    addLog({
+                        type: action.type,
+                        payload: {
+                            scheme: action.payload.scheme,
+                        },
                     }),
                 );
                 break;
             case MODAL.OPEN_USER_CONTEXT:
                 api.dispatch(
-                    logActions.addAction(action, {
-                        type: action.payload.type,
+                    addLog({
+                        type: action.type,
+                        payload: {
+                            type: action.payload.type,
+                        },
                     }),
                 );
                 break;
 
             // no default
         }
-        return action;
+        return next(action);
     };
 
 export default log;

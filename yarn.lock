@@ -6080,6 +6080,18 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-common/logger@workspace:*, @suite-common/logger@workspace:suite-common/logger":
+  version: 0.0.0-use.local
+  resolution: "@suite-common/logger@workspace:suite-common/logger"
+  dependencies:
+    "@reduxjs/toolkit": 1.8.3
+    "@suite-common/redux-utils": "workspace:*"
+    "@suite-common/wallet-core": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
+    "@suite-common/wallet-utils": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@suite-common/metadata-types@workspace:*, @suite-common/metadata-types@workspace:suite-common/metadata-types":
   version: 0.0.0-use.local
   resolution: "@suite-common/metadata-types@workspace:suite-common/metadata-types"
@@ -6454,6 +6466,16 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-native/logger@workspace:*, @suite-native/logger@workspace:suite-native/logger":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/logger@workspace:suite-native/logger"
+  dependencies:
+    "@suite-common/logger": "workspace:*"
+    "@suite-common/redux-utils": "workspace:*"
+    "@suite-native/module-settings": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@suite-native/module-accounts-import@workspace:*, @suite-native/module-accounts-import@workspace:suite-native/module-accounts-import":
   version: 0.0.0-use.local
   resolution: "@suite-native/module-accounts-import@workspace:suite-native/module-accounts-import"
@@ -6699,10 +6721,12 @@ __metadata:
   resolution: "@suite-native/state@workspace:suite-native/state"
   dependencies:
     "@reduxjs/toolkit": 1.8.3
+    "@suite-common/logger": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/test-utils": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-native/config": "workspace:*"
+    "@suite-native/logger": "workspace:*"
     "@suite-native/module-devices": "workspace:*"
     "@suite-native/module-settings": "workspace:*"
     "@suite-native/storage": "workspace:*"
@@ -7657,6 +7681,7 @@ __metadata:
     "@suite-common/formatters": "workspace:*"
     "@suite-common/intl-types": "workspace:*"
     "@suite-common/invity": "workspace:*"
+    "@suite-common/logger": "workspace:*"
     "@suite-common/metadata-types": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-config": "workspace:*"
@@ -7709,7 +7734,7 @@ __metadata:
     "@types/uuid": ^8.3.4
     "@types/zxcvbn": ^4.4.1
     bignumber.js: ^9.1.0
-    canvas: ^2.10.2
+    canvas: 2.10.2
     date-fns: ^2.29.3
     dropbox: ^10.32.0
     ethereumjs-util: ^7.1.5
@@ -12230,7 +12255,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"canvas@npm:^2.10.2":
+"canvas@npm:2.10.2":
   version: 2.10.2
   resolution: "canvas@npm:2.10.2"
   dependencies:

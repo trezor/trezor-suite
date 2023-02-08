@@ -1,3 +1,5 @@
+import { logsMiddleware } from '@suite-common/logger';
+
 import log from './logsMiddleware';
 import suite from './suiteMiddleware';
 import redirect from './redirectMiddleware';
@@ -13,6 +15,7 @@ import sentry from './sentryMiddleware';
 
 export default [
     log,
+    logsMiddleware, // Common logs shared between desktop and mobile app
     redirect,
     suite,
     analytics,

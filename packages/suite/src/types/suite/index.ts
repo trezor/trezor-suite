@@ -1,13 +1,11 @@
 import type { ThunkDispatch, ThunkAction as TAction } from 'redux-thunk';
 import type { Store as ReduxStore } from 'redux';
-import type { UiEvent, DeviceEvent, TransportEvent, BlockchainEvent } from '@trezor/connect';
 import type { RouterAction } from '@suite-actions/routerActions';
 import type { AppState } from '@suite/reducers/store';
 import type { StorageAction } from '@suite-actions/storageActions';
 import type { SuiteAction } from '@suite-actions/suiteActions';
 import type { ResizeAction } from '@suite-actions/resizeActions';
 import type { ModalAction } from '@suite-actions/modalActions';
-import type { LogAction } from '@suite-actions/logsActions';
 import type { AnalyticsAction } from '@suite-actions/analyticsActions';
 import type { MetadataAction } from '@suite-actions/metadataActions';
 import type { ProtocolAction } from '@suite-actions/protocolActions';
@@ -18,12 +16,14 @@ import type { FirmwareAction } from '@firmware-actions/firmwareActions';
 import type { WalletAction } from '@wallet-types';
 import type { BackupAction } from '@backup-actions/backupActions';
 import type { RecoveryAction } from '@recovery-actions/recoveryActions';
-import type { ObjectValues } from '@trezor/type-utils';
 import type { SUITE } from '@suite-actions/constants';
 import type { MessageSystemAction } from '@suite-actions/messageSystemActions';
 import type { GuideAction } from '@suite-actions/guideActions';
-import type { EnvironmentType } from '@suite-common/suite-types';
 import type { Route } from '@suite-constants/routes';
+
+import type { EnvironmentType } from '@suite-common/suite-types';
+import type { ObjectValues } from '@trezor/type-utils';
+import type { UiEvent, DeviceEvent, TransportEvent, BlockchainEvent } from '@trezor/connect';
 import { transactionsActions } from '@suite-common/wallet-core';
 import { notificationsActions } from '@suite-common/toast-notifications';
 
@@ -59,7 +59,6 @@ export type Action =
     | StorageAction
     | SuiteAction
     | TransactionAction
-    | LogAction
     | ModalAction
     | NotificationAction
     | AnalyticsAction
