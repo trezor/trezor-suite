@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
-import { useTheme, Icon } from '@trezor/components';
+import { Note } from '@trezor/components';
 import {
     ConnectDevicePromptManager,
     OnboardingStepBox,
@@ -14,13 +14,11 @@ import { FirmwareType, TrezorDevice } from '@suite-types';
 import { getFwUpdateVersion } from '@suite-utils/device';
 import { getFirmwareVersion, getDeviceModel } from '@trezor/device-utils';
 
-const InfoRow = styled.div`
+const Description = styled.div`
     align-items: center;
     display: flex;
-    font-weight: 600;
-    gap: 4px;
-    margin: 8px auto 0 auto;
-    max-width: max-content;
+    flex-direction: column;
+    gap: 16px;
 `;
 
 const ButtonRow = styled.div`
@@ -91,7 +89,6 @@ export const FirmwareInitial = ({
     const { device: liveDevice } = useDevice();
     const { setStatus, status } = useFirmware();
     const { goToNextStep, updateAnalytics } = useOnboarding();
-    const theme = useTheme();
     const devices = useSelector(state => state.devices);
 
     // todo: move to utils device.ts
@@ -153,13 +150,12 @@ export const FirmwareInitial = ({
         content = {
             heading: <Translation id="TR_INSTALL_BITCOIN_FW" />,
             description: (
-                <>
+                <Description>
                     <Translation id="TR_FIRMWARE_SUBHEADING_BITCOIN" />
-                    <InfoRow>
-                        <Icon size={12} color={theme.TYPE_LIGHT_GREY} icon="INFO" />
+                    <Note>
                         <Translation id="TR_CHANGE_FIRMWARE_TYPE_ANYTIME" />
-                    </InfoRow>
-                </>
+                    </Note>
+                </Description>
             ),
             body: cachedDevice?.firmwareRelease ? (
                 <FirmwareOffer device={cachedDevice} />

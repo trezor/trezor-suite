@@ -1,8 +1,8 @@
 import React from 'react';
 import BigNumber from 'bignumber.js';
-import styled, { css, useTheme } from 'styled-components';
+import styled, { css } from 'styled-components';
 import { UseFormMethods } from 'react-hook-form';
-import { Input, Button, variables, Icon } from '@trezor/components';
+import { Input, Button, Note, variables } from '@trezor/components';
 import { FeeLevel } from '@trezor/connect';
 import { Translation } from '@suite-components';
 import { InputError } from '@wallet-components';
@@ -67,18 +67,6 @@ const StyledButton = styled(Button)`
     background: none;
 `;
 
-const FeeRateWarning = styled.div`
-    display: flex;
-    align-items: center;
-    font-size: ${variables.FONT_SIZE.TINY};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
-
-    > :first-child {
-        margin-right: 8px;
-    }
-`;
-
 // feeLimit error notification button
 const SetDefaultLimit = ({ onClick }: { onClick: () => void }) => (
     <ButtonWrapper>
@@ -128,8 +116,6 @@ export const CustomFee = ({
     composedFeePerByte,
 }: CustomFeeProps) => {
     const { maxFee, minFee } = feeInfo;
-
-    const theme = useTheme();
 
     const feePerUnitValue = getValues(FEE_PER_UNIT);
     const feeLimitValue = getValues(FEE_LIMIT);
@@ -262,10 +248,9 @@ export const CustomFee = ({
             </Wrapper>
 
             {isComposedFeeRateDifferent && networkType === 'bitcoin' && (
-                <FeeRateWarning>
-                    <Icon icon="INFO" size={12} color={theme.TYPE_LIGHTER_GREY} />
+                <Note>
                     <Translation id="TR_FEE_ROUNDING_WARNING" />
-                </FeeRateWarning>
+                </Note>
             )}
         </div>
     );
