@@ -23,6 +23,8 @@ import {
     DEFAULT_CLIENT_STATUS,
     ESTIMATED_ANONYMITY_GAINED_PER_ROUND,
     MIN_ANONYMITY_GAINED_PER_ROUND,
+    ESTIMATED_ROUNDS_FAIL_RATE_BUFFER,
+    ESTIMATED_HOURS_PER_ROUND,
 } from '@suite/services/coinjoin';
 import {
     SelectedAccountRootState,
@@ -63,6 +65,8 @@ export const initialState: CoinjoinState = {
     isPreloading: false,
     config: {
         averageAnonymityGainPerRound: ESTIMATED_ANONYMITY_GAINED_PER_ROUND,
+        roundsFailRateBuffer: ESTIMATED_ROUNDS_FAIL_RATE_BUFFER,
+        roundsDurationInHours: ESTIMATED_HOURS_PER_ROUND,
     },
 };
 
@@ -405,9 +409,11 @@ export const coinjoinReducer = (
             case COINJOIN.SESSION_STARTING:
                 updateSessionStarting(draft, action.payload);
                 break;
-            case COINJOIN.UPDATE_AVERAGE_ANONYMITY_GAIN_PER_ROUND:
-                draft.config.averageAnonymityGainPerRound =
-                    action.payload.averageAnonymityGainPerRound;
+            case COINJOIN.UPDATE_CONFIG:
+                draft.config = {
+                    ...draft.config,
+                    ...action.payload,
+                };
                 break;
 
             // no default
@@ -415,7 +421,17 @@ export const coinjoinReducer = (
     });
 
 export const selectCoinjoinAccounts = (state: CoinjoinRootState) => state.wallet.coinjoin.accounts;
+
 export const selectCoinjoinClients = (state: CoinjoinRootState) => state.wallet.coinjoin.clients;
+
+export const selectAverageAnonymityGainPerRound = (state: CoinjoinRootState) =>
+    state.wallet.coinjoin.config.averageAnonymityGainPerRound;
+
+export const selectRoundsDurationInHours = (state: CoinjoinRootState) =>
+    state.wallet.coinjoin.config.roundsDurationInHours;
+
+export const selectRoundsFailRateBuffer = (state: CoinjoinRootState) =>
+    state.wallet.coinjoin.config.roundsFailRateBuffer;
 
 export const selectCoinjoinAccountByKey = memoizeWithArgs(
     (state: CoinjoinRootState, accountKey: AccountKey) => {
@@ -596,7 +612,7 @@ export const selectRoundsNeeded = memoizeWithArgs(
     (state: CoinjoinRootState, accountKey: AccountKey) => {
         const account = selectAccountByKey(state, accountKey);
         const targetAnonymity = selectCurrentTargetAnonymity(state) || 0;
-        const { averageAnonymityGainPerRound } = state.wallet.coinjoin.config;
+        const averageAnonymityGainPerRound = selectAverageAnonymityGainPerRound(state);
 
         const anonymitySet = account?.addresses?.anonymitySet || {};
         const utxos = account?.utxo || [];

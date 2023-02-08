@@ -10,7 +10,7 @@ import * as coinjoinAccountActions from '@wallet-actions/coinjoinAccountActions'
 import * as storageActions from '@suite-actions/storageActions';
 import { CoinjoinService } from '@suite/services/coinjoin';
 import type { AppState, Action, Dispatch } from '@suite-types';
-import { RoundPhase } from '@wallet-types/coinjoin';
+import { RoundPhase, CoinjoinConfig } from '@wallet-types/coinjoin';
 import { blockchainActions, accountsActions } from '@suite-common/wallet-core';
 import {
     selectCoinjoinAccountByKey,
@@ -182,18 +182,25 @@ export const coinjoinMiddleware =
         if (action.type === MESSAGE_SYSTEM.SAVE_VALID_MESSAGES) {
             const state = api.getState();
 
-            const coinjoinConfig = selectFeatureConfig(state, Feature.coinjoin);
+            const incomingConfig = selectFeatureConfig(state, Feature.coinjoin);
 
-            const averageAnonymityGainPerRound = Number(
-                coinjoinConfig?.averageAnonymityGainPerRound,
-            );
+            if (incomingConfig) {
+                const config = {
+                    ...state.wallet.coinjoin.config,
+                };
 
-            if (!Number.isNaN(averageAnonymityGainPerRound)) {
-                api.dispatch(
-                    coinjoinAccountActions.updateAverageAnonymityGainPerRound(
-                        averageAnonymityGainPerRound,
-                    ),
+                // Iterate over existing config and replace the value from remote config only if it's valid number.
+                (Object.keys(config) as Array<keyof CoinjoinConfig>).forEach(
+                    (key: keyof CoinjoinConfig) => {
+                        const value = Number(incomingConfig[key]);
+
+                        if (!Number.isNaN(value) && typeof config[key] !== 'undefined') {
+                            config[key] = value;
+                        }
+                    },
                 );
+
+                api.dispatch(coinjoinAccountActions.updateCoinjoinConfig(config));
             }
         }
 
