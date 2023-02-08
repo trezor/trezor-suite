@@ -33,7 +33,7 @@ export class CoinjoinService {
         const instance = { backend, client };
         if (!isDesktop()) {
             // display client log directly in console
-            client.on('log', console.log);
+            client.on('log', ({ level, payload }) => console[level](payload));
         }
 
         this.instances[network] = instance;
