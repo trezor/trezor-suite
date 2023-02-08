@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Icon, Button } from '@trezor/components';
+
+import { Button, Note } from '@trezor/components';
 import { Translation } from '@suite-components';
 import { isDesktop } from '@suite-utils/env';
 import { useCoinmarketSpendContext } from '@wallet-hooks/useCoinmarketSpend';
@@ -16,10 +17,6 @@ const ProviderInfo = styled.div`
     align-items: center;
     margin-bottom: 15px;
     color: ${props => props.theme.TYPE_LIGHT_GREY};
-`;
-
-const StyledIcon = styled(Icon)`
-    padding-right: 4px;
 `;
 
 const IframeWrapper = styled.div`
@@ -40,21 +37,9 @@ const WebContent = styled.div`
 
 const IframeContent = styled.div``;
 
-const WebInfo = styled.div`
-    display: flex;
-    justify-content: center;
-`;
-
 const StyledButton = styled(Button)`
     margin-top: 25px;
 `;
-
-const Left = styled.div`
-    padding-right: 5px;
-    display: flex;
-`;
-
-const Right = styled.div``;
 
 const CoinmarketSpend = () => {
     const { isLoading, noProviders, voucherSiteUrl, openWindow, setShowLeaveModal } =
@@ -74,12 +59,9 @@ const CoinmarketSpend = () => {
                     {showIframe && (
                         <IframeContent>
                             <ProviderInfo>
-                                <Left>
-                                    <StyledIcon icon="INFO" />
-                                </Left>
-                                <Right>
+                                <Note>
                                     <Translation id="TR_SPEND_PROVIDER_CONTENT" />
-                                </Right>
+                                </Note>
                             </ProviderInfo>
                             <IframeWrapper>
                                 <iframe
@@ -98,14 +80,9 @@ const CoinmarketSpend = () => {
                     )}
                     {!showIframe && (
                         <WebContent>
-                            <WebInfo>
-                                <Left>
-                                    <StyledIcon icon="INFO" />
-                                </Left>
-                                <Right>
-                                    <Translation id="TR_SPEND_PROVIDER_CONTENT_WINDOW" />
-                                </Right>
-                            </WebInfo>
+                            <Note>
+                                <Translation id="TR_SPEND_PROVIDER_CONTENT_WINDOW" />
+                            </Note>
                             <StyledButton
                                 variant="primary"
                                 onClick={() => {

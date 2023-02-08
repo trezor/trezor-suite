@@ -1,7 +1,7 @@
 import React, { useCallback, ChangeEventHandler, useMemo } from 'react';
 import styled, { css } from 'styled-components';
 import { AnimatePresence, HTMLMotionProps, motion } from 'framer-motion';
-import { Range, Warning, useTheme, motionEasing, Icon, variables } from '@trezor/components';
+import { Range, Warning, useTheme, motionEasing, Icon, Note } from '@trezor/components';
 import { Translation } from '@suite-components';
 import { useAnonymityStatus } from '@suite-hooks';
 import { AnonymityStatus } from '@suite-constants/coinjoin';
@@ -30,21 +30,13 @@ const Label = styled.span`
     }
 `;
 
-const DisabledMessage = styled.div`
+const StyledNote = styled(Note)`
     position: absolute;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 100%;
-    color: ${({ theme }) => theme.TYPE_DARK_GREY};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
     backdrop-filter: grayscale(0.5);
     filter: ${({ theme }) => `drop-shadow(0px 0px 8px ${theme.BG_LIGHT_GREY})`};
-
-    > :first-child {
-        margin-right: 6px;
-    }
 `;
 
 const RedText = styled.span`
@@ -193,10 +185,9 @@ export const AnonymityLevelSlider = ({
             </AnimatePresence>
 
             {isSessionActive && (
-                <DisabledMessage>
-                    <Icon icon="INFO" size={14} color={theme.TYPE_DARK_GREY} />
+                <StyledNote color={theme.TYPE_DARK_GREY}>
                     <Translation id="TR_DISABLED_ANONYMITY_CHANGE_MESSAGE" />
-                </DisabledMessage>
+                </StyledNote>
             )}
         </Container>
     );
