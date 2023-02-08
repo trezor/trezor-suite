@@ -49,7 +49,6 @@ const log =
             case DESKTOP_UPDATE.AVAILABLE:
             case DESKTOP_UPDATE.NOT_AVAILABLE:
             case MODAL.CLOSE:
-                console.log('prvni logger', action);
                 api.dispatch(
                     addLog({
                         type: action.type,
