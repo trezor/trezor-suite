@@ -67,7 +67,7 @@ const DEFAULT = {
     // coordinator
     status: {
         roundStates: [DEFAULT_ROUND],
-        coinjoinFeeRateMedians: FEE_RATE_MEDIANS,
+        coinJoinFeeRateMedians: FEE_RATE_MEDIANS,
         affiliateInformation: AFFILIATE_INFO,
     },
     'input-registration': {
