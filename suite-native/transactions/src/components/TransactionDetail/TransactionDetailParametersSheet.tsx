@@ -8,6 +8,7 @@ import { Icon } from '@trezor/icons';
 import { getConfirmations, getFeeRate, getFeeUnits } from '@suite-common/wallet-utils';
 import { BlockchainRootState, selectBlockchainHeightBySymbol } from '@suite-common/wallet-core';
 import { useCopyToClipboard } from '@suite-native/helpers';
+import { TransactionIdFormatter } from '@suite-native/formatters';
 
 import { TransactionDetailSheet } from './TransactionDetailSheet';
 import { TransactionDetailRow } from './TransactionDetailRow';
@@ -54,14 +55,7 @@ export const TransactionDetailParametersSheet = ({
                             paddingLeft="medium"
                             style={applyStyle(transactionIdStyle)}
                         >
-                            <Text
-                                variant="hint"
-                                color="gray1000"
-                                numberOfLines={1}
-                                ellipsizeMode="tail"
-                            >
-                                #{transaction.txid}
-                            </Text>
+                            <TransactionIdFormatter value={transaction.txid} />
                             <Box marginLeft="medium">
                                 <IconButton
                                     iconName="copy"

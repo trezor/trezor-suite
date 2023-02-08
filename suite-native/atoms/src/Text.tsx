@@ -4,7 +4,7 @@ import { Text as RNText, TextProps as RNTextProps, TextStyle } from 'react-nativ
 import { useNativeStyles, prepareNativeStyle, NativeStyleObject } from '@trezor/styles';
 import { Color, TypographyStyle } from '@trezor/theme';
 
-interface TextProps extends Omit<RNTextProps, 'style'> {
+export interface TextProps extends Omit<RNTextProps, 'style'> {
     variant?: TypographyStyle;
     color?: Color;
     align?: TextStyle['textAlign'];

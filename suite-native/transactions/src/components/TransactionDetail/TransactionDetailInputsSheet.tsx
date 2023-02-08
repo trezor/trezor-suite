@@ -5,6 +5,7 @@ import { Icon } from '@trezor/icons';
 import { WalletAccountTransaction } from '@suite-common/wallet-types';
 import { Box, Card, Text, VStack } from '@suite-native/atoms';
 import { useFormatters } from '@suite-common/formatters';
+import { AccountAddressFormatter } from '@suite-native/formatters';
 
 import { TransactionDetailSheet } from './TransactionDetailSheet';
 
@@ -25,9 +26,7 @@ const addressAmountColumnStyle = prepareNativeStyle(_ => ({
 
 const TransactionAddressAmount = ({ address, amount }: TransactionAddressAmountProps) => (
     <Box>
-        <Text variant="hint" color="gray1000" numberOfLines={1} ellipsizeMode="middle">
-            {address}
-        </Text>
+        <AccountAddressFormatter value={address} variant="hint" />
         <Text variant="label" color="gray600">
             {amount}
         </Text>

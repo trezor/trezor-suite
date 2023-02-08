@@ -8,8 +8,9 @@ import { convertCryptoToFiatAmount, useFormatters } from '@suite-common/formatte
 import { selectFiatCurrency } from '@suite-native/module-settings';
 import { FiatRates } from '@trezor/blockchain-link';
 
-type CryptoToFiatAmountFormatterProps = {
-    value: string | null;
+import { FormatterProps } from '../types';
+
+type CryptoToFiatAmountFormatterProps = FormatterProps<string | null> & {
     network: NetworkSymbol;
     customRates?: FiatRates;
     isDiscreetText?: boolean;

@@ -15,7 +15,7 @@ import {
     StackNavigationProps,
 } from '@suite-native/navigation';
 import { useFormatters } from '@suite-common/formatters';
-import { CryptoToFiatAmountFormatter } from '@suite-native/formatters';
+import { AccountAddressFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import {
     selectTransactionBlockTimeById,
     selectTransactionFirstTargetAddress,
@@ -135,14 +135,11 @@ export const TransactionListItem = memo(
                             <Text>{transactionTypeProperties.prefix}</Text>
                             {transactionTargetAddress && (
                                 <Box style={applyStyle(addressStyle)}>
-                                    <Text
+                                    <AccountAddressFormatter
+                                        value={transactionTargetAddress}
                                         variant="label"
                                         color="gray600"
-                                        numberOfLines={1}
-                                        ellipsizeMode="middle"
-                                    >
-                                        {transactionTargetAddress}
-                                    </Text>
+                                    />
                                 </Box>
                             )}
                         </Box>
