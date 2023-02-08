@@ -48,8 +48,8 @@ const Log = () => {
 
     return (
         <Box>
-            <Text>{JSON.stringify(logs)}</Text>
             <Button onPress={handleCopy}>Copy</Button>
+            <Text>{JSON.stringify(logs)}</Text>
         </Box>
     );
 };
