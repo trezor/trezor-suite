@@ -12,7 +12,12 @@ export default {
         className: {
             control: false,
         },
+        color: {
+            control: 'color',
+        },
     },
 };
 
-export const Basic: ComponentStory<typeof Note> = args => <Note>{args.children}</Note>;
+export const Basic: ComponentStory<typeof Note> = args => (
+    <Note color={args.color}>{args.children}</Note>
+);
