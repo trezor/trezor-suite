@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { TouchableOpacity } from 'react-native';
+import { useSelector } from 'react-redux';
 
 import { isDebugEnv, isDevelopOrDebugEnv } from '@suite-native/config';
 import { Box, Button, Card, CheckBox, Text, useDebugView, VStack } from '@suite-native/atoms';
@@ -10,6 +11,8 @@ import {
     DevUtilsStackRoutes,
 } from '@suite-native/navigation';
 import { purgeStorage, useStoragePersistor } from '@suite-native/storage';
+import { selectLogs } from '@suite-common/logger';
+import { useCopyToClipboard } from '@suite-native/helpers';
 
 import { BuildInfo } from '../components/BuildInfo';
 
@@ -35,6 +38,22 @@ const DevCheckBoxListItem = ({
     </TouchableOpacity>
 );
 
+const Log = () => {
+    const logs = useSelector(selectLogs);
+    const copyToClipboard = useCopyToClipboard();
+
+    const handleCopy = async () => {
+        await copyToClipboard(JSON.stringify(logs), 'Logs copied to clipboard.');
+    };
+
+    return (
+        <Box>
+            <Text>{JSON.stringify(logs)}</Text>
+            <Button onPress={handleCopy}>Copy</Button>
+        </Box>
+    );
+};
+
 export const DevUtilsScreen = ({
     navigation,
 }: StackProps<DevUtilsStackParamList, DevUtilsStackRoutes.DevUtils>) => {
@@ -45,6 +64,7 @@ export const DevUtilsScreen = ({
         isFlashOnRerenderEnabled,
         isRerenderCountEnabled,
     } = useDebugView();
+    const [areLogsVisible, setAreLogsVisible] = useState(false);
 
     const handleResetStorage = () => {
         purgeStorage(persistor);
@@ -84,12 +104,23 @@ export const DevUtilsScreen = ({
                             />
                         </Card>
 
+                        <Card>
+                            <Box flexDirection="row" justifyContent="space-between">
+                                <Text>Show logs</Text>
+                                <CheckBox
+                                    isChecked={areLogsVisible}
+                                    onChange={() => setAreLogsVisible(!areLogsVisible)}
+                                />
+                            </Box>
+                        </Card>
                         <Button onPress={() => navigation.navigate(DevUtilsStackRoutes.Demo)}>
                             See Component Demo
                         </Button>
                         <Button colorScheme="primary" onPress={handleResetStorage}>
                             Reset storage
                         </Button>
+
+                        {areLogsVisible && <Log />}
                     </VStack>
                 </Box>
             ) : null}
