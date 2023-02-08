@@ -9,7 +9,6 @@ import { ROUND_PHASE_MESSAGES } from '@suite-constants/coinjoin';
 import { selectDevice } from '@suite-actions/suiteActions';
 import { goto } from '@suite-actions/routerActions';
 import { useSelector } from '@suite-hooks/useSelector';
-import { STATUS as DiscoveryStatus } from '@wallet-actions/constants/discoveryConstants';
 import { getPhaseTimerFormat } from '@wallet-utils/coinjoinUtils';
 import { selectRouterParams } from '@suite-reducers/routerReducer';
 import { CountdownTimer } from './CountdownTimer';
@@ -63,7 +62,6 @@ export const CoinjoinStatusBar = ({ accountKey, session, isSingle }: CoinjoinSta
     const relatedAccount = useSelector(state => selectAccountByKey(state, accountKey));
     const selectedDevice = useSelector(state => state.suite.device);
     const routerParams = useSelector(selectRouterParams);
-    const discovery = useSelector(state => state.wallet.discovery);
     const sessionProgress = useSelector(state =>
         selectSessionProgressByAccountKey(state, accountKey),
     );
@@ -122,14 +120,6 @@ export const CoinjoinStatusBar = ({ accountKey, session, isSingle }: CoinjoinSta
     const isOnAccountPage =
         symbolParam === symbol && indexParam === index && accountTypeParam === accountType;
 
-    const areDevicesDiscovered = devices.every(({ state }) =>
-        discovery.find(
-            discoveryState =>
-                discoveryState.deviceState === state &&
-                discoveryState.status === DiscoveryStatus.COMPLETED,
-        ),
-    );
-
     const isPastDeadline =
         !!roundPhaseDeadline && new Date(roundPhaseDeadline).getTime() <= Date.now() + 1000;
 
@@ -179,8 +169,7 @@ export const CoinjoinStatusBar = ({ accountKey, session, isSingle }: CoinjoinSta
                 </Note>
             )}
 
-            {((isOnSelectedDevice && !isOnAccountPage) ||
-                (!isOnSelectedDevice && areDevicesDiscovered)) && (
+            {((isOnSelectedDevice && !isOnAccountPage) || !isOnSelectedDevice) && (
                 <ViewButton variant="tertiary" onClick={handleViewAccount}>
                     <Translation id="TR_VIEW" />
                 </ViewButton>
