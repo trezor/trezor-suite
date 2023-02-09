@@ -1,4 +1,5 @@
 import { CoinjoinRound } from '../../src/client/CoinjoinRound';
+import { CoinjoinPrison } from '../../src/client/CoinjoinPrison';
 import { Round } from '../../src/types/coordinator';
 import { ROUND_SELECTION_REGISTRATION_OFFSET } from '../../src/constants';
 
@@ -98,15 +99,23 @@ export const STATUS_EVENT = {
     coinJoinFeeRateMedians: FEE_RATE_MEDIANS,
 };
 
-type CJRoundOptions = ConstructorParameters<typeof CoinjoinRound>[1];
+type CJRoundArgs = ConstructorParameters<typeof CoinjoinRound>;
+type CJRoundOptions = CJRoundArgs[2];
 interface CreateCoinjoinRoundOptions extends CJRoundOptions {
     statusRound?: Partial<Round>;
     round?: Partial<CoinjoinRound>;
+    prison?: CJRoundArgs[1];
     roundParameters?: Partial<CoinjoinRound['roundParameters']>;
 }
 export const createCoinjoinRound = (
     inputs: CoinjoinRound['inputs'],
-    { statusRound, round: roundOptions, roundParameters, ...options }: CreateCoinjoinRoundOptions,
+    {
+        statusRound,
+        round: roundOptions,
+        roundParameters,
+        prison,
+        ...options
+    }: CreateCoinjoinRoundOptions,
 ) => {
     const R = { ...DEFAULT_ROUND };
     if (statusRound) {
@@ -116,7 +125,7 @@ export const createCoinjoinRound = (
         });
     }
 
-    const round = new CoinjoinRound(R, options);
+    const round = new CoinjoinRound(R, prison || new CoinjoinPrison(), options);
     round.inputs = inputs;
 
     if (roundOptions) {

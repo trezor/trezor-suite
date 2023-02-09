@@ -5,7 +5,6 @@ import * as middleware from '../middleware';
 import { outputDecomposition } from './outputDecomposition';
 import type { Account } from '../Account';
 import type { Alice } from '../Alice';
-import type { CoinjoinPrison } from '../CoinjoinPrison';
 import type { CoinjoinRound, CoinjoinRoundOptions } from '../CoinjoinRound';
 import { AccountAddress } from '../../types';
 import { SessionPhase } from '../../enums';
@@ -25,7 +24,6 @@ const registerOutput = async (
     outputAddress: AccountAddress[],
     amountCredentials: middleware.Credentials[],
     vsizeCredentials: middleware.Credentials[],
-    prison: CoinjoinPrison,
     options: CoinjoinRoundOptions,
 ) => {
     const { roundParameters } = round;
@@ -50,7 +48,7 @@ const registerOutput = async (
     // - try again with different address and link my new address with old address (privacy loss against coordinator?)
     // - intentionally stop output registrations for all other credentials. Question: which input will be banned if i call readyToSign on each anyway? is it better to break here and not to proceed to signing?
     const tryToRegisterOutput = (): Promise<AccountAddress> => {
-        const address = outputAddress.find(a => !prison.isDetained(a.scriptPubKey));
+        const address = outputAddress.find(a => !round.prison.isDetained(a.scriptPubKey));
         if (!address) {
             logger.error(`No change address available`);
             throw new Error('No change address available');
@@ -75,7 +73,7 @@ const registerOutput = async (
                     error.message === coordinator.WabiSabiProtocolErrorCode.AlreadyRegisteredScript
                 ) {
                     logger.error(`Change address already used (AlreadyRegisteredScript)`);
-                    prison.detain(address.scriptPubKey, {
+                    round.prison.detain(address.scriptPubKey, {
                         reason: error.message,
                         sentenceEnd: Infinity, // this address should never be recycled
                     });
@@ -86,7 +84,7 @@ const registerOutput = async (
     };
 
     const address = await tryToRegisterOutput();
-    prison.detain(address.scriptPubKey, {
+    round.prison.detain(address.scriptPubKey, {
         roundId: round.id,
         reason: coordinator.WabiSabiProtocolErrorCode.AlreadyRegisteredScript,
     });
@@ -113,7 +111,6 @@ const readyToSign = (
 export const outputRegistration = async (
     round: CoinjoinRound,
     accounts: Account[],
-    prison: CoinjoinPrison,
     options: CoinjoinRoundOptions,
 ) => {
     const { logger } = options;
@@ -142,7 +139,6 @@ export const outputRegistration = async (
                     changeAddresses,
                     outputs[index].amountCredentials,
                     outputs[index].vsizeCredentials,
-                    prison,
                     options,
                 );
                 round.addresses.push(result.address);

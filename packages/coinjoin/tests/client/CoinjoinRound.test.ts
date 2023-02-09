@@ -3,12 +3,9 @@ import * as trezorUtils from '@trezor/utils';
 import { createServer } from '../mocks/server';
 import { DEFAULT_ROUND, createCoinjoinRound } from '../fixtures/round.fixture';
 import { createInput } from '../fixtures/input.fixture';
-import { CoinjoinPrison } from '../../src/client/CoinjoinPrison';
 import * as CONSTANTS from '../../src/constants';
 
 let server: Awaited<ReturnType<typeof createServer>>;
-
-const PRISON = new CoinjoinPrison();
 
 // mock random delay function
 jest.mock('@trezor/utils', () => {
@@ -86,7 +83,7 @@ describe(`CoinjoinRound`, () => {
         );
 
         // process but not wait for the result
-        round.process([], PRISON);
+        round.process([]);
 
         // input-registration is now set with delay ~0.8 sec.
         // we want to change phase earlier
@@ -107,7 +104,7 @@ describe(`CoinjoinRound`, () => {
         expect(registrationSpy).toBeCalledTimes(2); // two registrations
         expect(confirmationSpy).toBeCalledTimes(0); // no confirmations yet
 
-        await round.process([], PRISON);
+        await round.process([]);
         round.inputs.forEach(input => {
             expect(input.error).toBeUndefined();
             expect(input.confirmationData).not.toBeUndefined();
@@ -146,7 +143,7 @@ describe(`CoinjoinRound`, () => {
         );
 
         // process phase 0 but not wait for the result
-        round.process([], PRISON);
+        round.process([]);
 
         // input-registration will respond in  ~2 sec.
         // we want to change phase earlier
@@ -165,7 +162,7 @@ describe(`CoinjoinRound`, () => {
         });
 
         // process phase 1
-        await round.process([], PRISON);
+        await round.process([]);
 
         expect(round.inputs.length).toBe(0); // no valid inputs, requests aborted
         expect(round.failed.length).toBe(0); // no errored inputs, inputs with errors in inputRegistration are not passed further
@@ -197,7 +194,7 @@ describe(`CoinjoinRound`, () => {
         );
 
         // process but not wait for the result
-        round.process([], PRISON);
+        round.process([]);
 
         // we want to change phase before input-registration response
         await new Promise(resolve => setTimeout(resolve, 500));

@@ -33,7 +33,8 @@ export const getRoundCandidates = ({
     statusRounds,
     coinjoinRounds,
     options,
-}: Pick<SelectRoundProps, 'roundGenerator' | 'statusRounds' | 'coinjoinRounds' | 'options'>) => {
+    prison,
+}: Omit<SelectRoundProps, 'aliceGenerator' | 'accounts' | 'runningAffiliateServer'>) => {
     const now = Date.now();
     return statusRounds
         .filter(
@@ -47,7 +48,7 @@ export const getRoundCandidates = ({
             if (current) return current;
             // try to create new CoinjoinRound
             try {
-                return roundGenerator(round, options);
+                return roundGenerator(round, prison, options);
             } catch (e) {
                 // constructor fails on invalid round data (highly unlikely)
                 return [];
@@ -372,6 +373,7 @@ export const selectRound = async ({
         statusRounds,
         coinjoinRounds,
         options,
+        prison,
     });
     if (roundCandidates.length < 1) {
         logger.log('No suitable rounds');

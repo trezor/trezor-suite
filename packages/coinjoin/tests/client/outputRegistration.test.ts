@@ -1,12 +1,9 @@
-import { CoinjoinPrison } from '../../src/client/CoinjoinPrison';
 import { outputRegistration } from '../../src/client/round/outputRegistration';
 import { createServer } from '../mocks/server';
 import { createInput } from '../fixtures/input.fixture';
 import { createCoinjoinRound } from '../fixtures/round.fixture';
 
 let server: Awaited<ReturnType<typeof createServer>>;
-
-const prison = new CoinjoinPrison();
 
 describe('outputRegistration', () => {
     beforeAll(async () => {
@@ -30,7 +27,6 @@ describe('outputRegistration', () => {
                 },
             }),
             [],
-            prison,
             server?.requestOptions,
         );
         expect(response.inputs[0].error?.message).toMatch(/Missing confirmed credentials/);
