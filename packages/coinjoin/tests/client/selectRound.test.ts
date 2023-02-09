@@ -41,6 +41,7 @@ describe('selectRound', () => {
     it('no available candidates in status Rounds', async () => {
         const result = await getRoundCandidates({
             roundGenerator,
+            prison,
             statusRounds: [{ phase: 1 }, { phase: 0, inputRegistrationEnd: new Date() }] as any,
             coinjoinRounds: [],
             options: server?.requestOptions,
@@ -51,6 +52,7 @@ describe('selectRound', () => {
     it('CoinjoinRound creation failed on status Round without RoundCreated event', async () => {
         const result = await getRoundCandidates({
             roundGenerator,
+            prison,
             statusRounds: [
                 {
                     ...DEFAULT_ROUND,
@@ -66,9 +68,10 @@ describe('selectRound', () => {
     });
 
     it('select existing CoinjoinRound', () => {
-        const cjRound = new CoinjoinRound(DEFAULT_ROUND, server?.requestOptions);
+        const cjRound = new CoinjoinRound(DEFAULT_ROUND, prison, server?.requestOptions);
         const result = getRoundCandidates({
             roundGenerator,
+            prison,
             statusRounds: [DEFAULT_ROUND],
             coinjoinRounds: [cjRound],
             options: server?.requestOptions,

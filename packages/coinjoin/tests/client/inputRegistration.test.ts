@@ -1,12 +1,9 @@
-import { CoinjoinPrison } from '../../src/client/CoinjoinPrison';
 import { inputRegistration } from '../../src/client/round/inputRegistration';
 import { createServer } from '../mocks/server';
 import { createInput } from '../fixtures/input.fixture';
 import { createCoinjoinRound } from '../fixtures/round.fixture';
 
 let server: Awaited<ReturnType<typeof createServer>>;
-
-const prison = new CoinjoinPrison();
 
 // mock random delay function
 jest.mock('@trezor/utils', () => {
@@ -39,7 +36,6 @@ describe('inputRegistration', () => {
                 [createInput('account-A', 'A1'), createInput('account-B', 'B1')],
                 server?.requestOptions,
             ),
-            prison,
             server?.requestOptions,
         );
 
@@ -60,7 +56,6 @@ describe('inputRegistration', () => {
                     round: { phaseDeadline: Date.now() + 3000 },
                 },
             ),
-            prison,
             server?.requestOptions,
         );
 
@@ -137,7 +132,6 @@ describe('inputRegistration', () => {
                     round: { phaseDeadline: Date.now() + 3000 },
                 },
             ),
-            prison,
             server?.requestOptions,
         );
 
@@ -192,7 +186,6 @@ describe('inputRegistration', () => {
                     round: { phaseDeadline: Date.now() + 3000 },
                 },
             ),
-            prison,
             server?.requestOptions,
         );
 
@@ -232,7 +225,6 @@ describe('inputRegistration', () => {
                     round: { phaseDeadline: Date.now() + 3000 },
                 },
             ),
-            prison,
             server?.requestOptions,
         );
 
@@ -253,7 +245,6 @@ describe('inputRegistration', () => {
                 [createInput('account-A', 'A1', { ownershipProof: '01A1' })],
                 server?.requestOptions,
             ),
-            prison,
             server?.requestOptions,
         );
         // input have registrationData but also have an error and should be excluded
@@ -281,7 +272,6 @@ describe('inputRegistration', () => {
                     connectionConfirmationTimeout: '0d 0h 0m 5s',
                 },
             }),
-            prison,
             server?.requestOptions,
         );
 
@@ -307,7 +297,6 @@ describe('inputRegistration', () => {
                     connectionConfirmationTimeout: '0d 0h 0m 4s',
                 },
             }),
-            prison,
             server?.requestOptions,
         );
 
@@ -337,8 +326,7 @@ describe('inputRegistration', () => {
                     connectionConfirmationTimeout: '0d 0h 0m 2s',
                 },
             }),
-            prison,
-            { ...server?.requestOptions },
+            server?.requestOptions,
         );
 
         expect(response.inputs[0].registrationData).toMatchObject({ aliceId: expect.any(String) });

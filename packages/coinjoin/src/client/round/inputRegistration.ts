@@ -5,7 +5,6 @@ import * as middleware from '../middleware';
 import { confirmationInterval } from './connectionConfirmation';
 import { ROUND_SELECTION_REGISTRATION_OFFSET } from '../../constants';
 import type { Alice } from '../Alice';
-import type { CoinjoinPrison } from '../CoinjoinPrison';
 import type { CoinjoinRound, CoinjoinRoundOptions } from '../CoinjoinRound';
 import { SessionPhase } from '../../enums';
 
@@ -22,7 +21,6 @@ import { SessionPhase } from '../../enums';
 const registerInput = async (
     round: CoinjoinRound,
     input: Alice,
-    prison: CoinjoinPrison,
     options: CoinjoinRoundOptions,
 ): Promise<Alice> => {
     const { logger } = options;
@@ -104,7 +102,7 @@ const registerInput = async (
     // store RegistrationData and affiliateFlag
     input.setRegistrationData(registrationData, coordinatorFee > 0);
     // and put input to prison
-    prison.detain(input.outpoint, {
+    round.prison.detain(input.outpoint, {
         roundId: round.id,
         reason: coordinator.WabiSabiProtocolErrorCode.AliceAlreadyRegistered,
     });
@@ -169,25 +167,20 @@ const registerInput = async (
     }
 };
 
-export const inputRegistration = async (
-    round: CoinjoinRound,
-    prison: CoinjoinPrison,
-    options: CoinjoinRoundOptions,
-) => {
+export const inputRegistration = async (round: CoinjoinRound, options: CoinjoinRoundOptions) => {
     // try to register each input
     // failed inputs will be excluded from this round, successful will continue to phase: 1 (connectionConfirmation)
     options.logger.log(`inputRegistration: ~~${round.id}~~`);
     round.setSessionPhase(SessionPhase.CoinRegistration);
 
     const { inputs } = round;
-    await Promise.allSettled(
-        inputs.map(input => registerInput(round, input, prison, options)),
-    ).then(result =>
-        result.forEach((r, i) => {
-            if (r.status !== 'fulfilled') {
-                inputs[i].setError(r.reason);
-            }
-        }),
+    await Promise.allSettled(inputs.map(input => registerInput(round, input, options))).then(
+        result =>
+            result.forEach((r, i) => {
+                if (r.status !== 'fulfilled') {
+                    inputs[i].setError(r.reason);
+                }
+            }),
     );
 
     return round;

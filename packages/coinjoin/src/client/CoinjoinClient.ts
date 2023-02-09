@@ -256,7 +256,7 @@ export class CoinjoinClient extends EventEmitter {
                 this.status.setMode('registered');
 
                 // wait for the result
-                return round.process(this.accounts, this.prison);
+                return round.process(this.accounts);
             }),
         );
 
