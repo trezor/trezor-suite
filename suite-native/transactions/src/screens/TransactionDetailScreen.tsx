@@ -2,7 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { Linking } from 'react-native';
 
-import { Box, Button, Text, VStack } from '@suite-native/atoms';
+import { Button, VStack } from '@suite-native/atoms';
 import {
     RootStackParamList,
     RootStackRoutes,
@@ -16,7 +16,6 @@ import {
     selectTransactionByTxidAndAccountKey,
     TransactionsRootState,
 } from '@suite-common/wallet-core';
-import { Icon } from '@trezor/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { TransactionDetailHeader } from '../components/TransactionDetail/TransactionDetailHeader';
@@ -54,14 +53,12 @@ export const TransactionDetailScreen = ({
             </VStack>
             <TransactionDetailSheets transaction={transaction} />
             <Button
+                iconLeft="arrowUpRight"
                 onPress={handleOpenBlockchain}
-                colorScheme="gray"
+                colorScheme="tertiary"
                 style={applyStyle(buttonStyle)}
             >
-                <Box flexDirection="row">
-                    <Text>Explore in blockchain</Text>
-                    <Icon size="mediumLarge" name="arrowUpRight" color="gray1000" />
-                </Box>
+                Explore in blockchain
             </Button>
         </Screen>
     );

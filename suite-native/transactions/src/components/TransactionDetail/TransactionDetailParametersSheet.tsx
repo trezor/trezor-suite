@@ -60,9 +60,8 @@ export const TransactionDetailParametersSheet = ({
                                 <IconButton
                                     iconName="copy"
                                     onPress={handleClickCopy}
-                                    isRounded
-                                    colorScheme="gray"
-                                    size="large"
+                                    colorScheme="tertiary"
+                                    size="medium"
                                 />
                             </Box>
                         </Box>

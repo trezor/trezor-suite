@@ -47,7 +47,7 @@ export const ReceiveTextHint = ({ onShowAddress }: ReceiveTextHintProps) => {
                     </Link>
                 </Box>
             </VStack>
-            <Button iconName="eye" iconPosition="left" size="large" onPress={onShowAddress}>
+            <Button iconLeft="eye" size="large" onPress={onShowAddress}>
                 Show address
             </Button>
         </VStack>

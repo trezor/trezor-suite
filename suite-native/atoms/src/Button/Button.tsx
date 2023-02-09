@@ -1,38 +1,101 @@
-import React from 'react';
-import { TouchableOpacity, TouchableOpacityProps, View } from 'react-native';
+import React, { useState } from 'react';
+import { Pressable, PressableProps, View } from 'react-native';
+import Animated from 'react-native-reanimated';
 
-import { RequireAllOrNone } from 'type-fest';
+import { MergeExclusive } from 'type-fest';
 
-import { Color } from '@trezor/theme';
+import { Color, TypographyStyle, nativeSpacings } from '@trezor/theme';
 import { NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Icon, IconName } from '@trezor/icons';
 
 import { Text } from '../Text';
+import { useButtonPressAnimatedStyle } from './useButtonPressAnimatedStyle';
 
 export type ButtonSize = 'small' | 'medium' | 'large';
-export type ButtonColorScheme = 'primary' | 'gray' | 'red';
+export type ButtonColorScheme = 'primary' | 'secondary' | 'tertiary' | 'danger';
 
-export type ButtonProps = Omit<TouchableOpacityProps, 'style'> &
-    RequireAllOrNone<
-        {
-            iconName?: IconName;
-            iconPosition?: 'left' | 'right';
-            colorScheme?: ButtonColorScheme;
-            size?: ButtonSize;
-            style?: NativeStyleObject;
-            isDisabled?: boolean;
-        },
-        'iconName' | 'iconPosition'
-    >;
+export type ButtonProps = Omit<PressableProps, 'style' | 'onPressIn' | 'onPressOut'> & {
+    children: string;
+    colorScheme?: ButtonColorScheme;
+    size?: ButtonSize;
+    style?: NativeStyleObject;
+    isDisabled?: boolean;
+} & MergeExclusive<{ iconLeft?: IconName }, { iconRight?: IconName }>;
 
-type ButtonStyleProps = {
+type ButtonColorSchemeColors = {
+    backgroundColor: Color;
+    onPressColor: Color;
+    disabledBackgroundColor: Color;
+    textColor: Color;
+    disabledTextColor: Color;
+};
+
+export type ButtonStyleProps = {
     size: ButtonSize;
     colorScheme: ButtonColorScheme;
     isDisabled: boolean;
+    hasTitle?: boolean;
 };
+
 type IconStyleProps = {
     position: 'left' | 'right';
 };
+
+export const buttonSchemeToColorsMap = {
+    primary: {
+        backgroundColor: 'forest',
+        onPressColor: 'forest900',
+        disabledBackgroundColor: 'gray200',
+        textColor: 'gray0',
+        disabledTextColor: 'gray500',
+    },
+    secondary: {
+        backgroundColor: 'green',
+        onPressColor: 'green900',
+        disabledBackgroundColor: 'gray200',
+        textColor: 'gray0',
+        disabledTextColor: 'gray500',
+    },
+    tertiary: {
+        backgroundColor: 'gray200',
+        onPressColor: 'gray300',
+        disabledBackgroundColor: 'gray200',
+        textColor: 'gray800',
+        disabledTextColor: 'gray500',
+    },
+    danger: {
+        backgroundColor: 'red',
+        onPressColor: 'red700',
+        disabledBackgroundColor: 'gray200',
+        textColor: 'gray0',
+        disabledTextColor: 'gray500',
+    },
+} as const satisfies Record<ButtonColorScheme, ButtonColorSchemeColors>;
+
+const sizeToDimensionsMap = {
+    small: {
+        height: 40,
+        paddingVertical: 10,
+        paddingHorizontal: nativeSpacings.medium,
+    },
+    medium: {
+        height: 48,
+        paddingVertical: 12,
+        paddingHorizontal: 20,
+    },
+    large: {
+        height: 56,
+        paddingVertical: nativeSpacings.medium,
+        paddingHorizontal: nativeSpacings.large,
+    },
+} as const satisfies Record<ButtonSize, NativeStyleObject>;
+
+const textSizeToVariantMap = {
+    small: 'hint',
+    medium: 'body',
+    large: 'body',
+} as const satisfies Record<ButtonSize, TypographyStyle>;
+
 const iconStyle = prepareNativeStyle((utils, { position }: IconStyleProps) => ({
     extend: [
         {
@@ -50,96 +113,89 @@ const iconStyle = prepareNativeStyle((utils, { position }: IconStyleProps) => ({
     ],
 }));
 
-const buttonStyle = prepareNativeStyle<ButtonStyleProps>(
+export const buttonStyle = prepareNativeStyle<ButtonStyleProps>(
     (utils, { size, colorScheme, isDisabled }) => {
-        const buttonSizeStyles: Record<ButtonSize, NativeStyleObject> = {
-            small: {
-                height: 39,
-                paddingVertical: utils.spacings.small,
-                paddingHorizontal: 12,
-            },
-            medium: {
-                height: 48,
-                paddingVertical: 10,
-                paddingHorizontal: utils.spacings.medium,
-            },
-            large: {
-                height: 56,
-                paddingVertical: 17,
-                paddingHorizontal: utils.spacings.medium,
-            },
-        };
-
-        const buttonColorSchemeStyles: Record<ButtonColorScheme, NativeStyleObject> = {
-            primary: {
-                backgroundColor: utils.colors.green,
-            },
-            gray: {
-                backgroundColor: utils.colors.gray300,
-            },
-            red: {
-                backgroundColor: utils.transparentize(0.9, utils.colors.red),
-            },
-        };
-
+        const sizeDimensions = sizeToDimensionsMap[size];
+        const schemeColors = buttonSchemeToColorsMap[colorScheme];
         return {
             flexDirection: 'row',
             justifyContent: 'center',
             alignItems: 'center',
             borderRadius: utils.borders.radii.round,
-            ...buttonSizeStyles[size],
-            ...buttonColorSchemeStyles[colorScheme],
-            extend: {
-                condition: isDisabled,
-                style: {
-                    backgroundColor: utils.colors.gray200,
+            ...sizeDimensions,
+            extend: [
+                {
+                    condition: isDisabled,
+                    style: {
+                        backgroundColor: utils.colors[schemeColors.disabledBackgroundColor],
+                    },
                 },
-            },
+            ],
         };
     },
 );
 
-const buttonColorSchemeFontColor: Record<ButtonColorScheme, Color> = {
-    primary: 'gray0',
-    gray: 'gray800',
-    red: 'red',
-};
-
 export const Button = ({
-    iconName,
-    iconPosition,
+    iconLeft,
+    iconRight,
     style,
     children,
     colorScheme = 'primary',
     size = 'medium',
     isDisabled = false,
-    ...props
+    ...pressableProps
 }: ButtonProps) => {
+    const [isPressed, setIsPressed] = useState(false);
     const { applyStyle } = useNativeStyles();
+    const { backgroundColor, onPressColor, textColor, disabledBackgroundColor, disabledTextColor } =
+        buttonSchemeToColorsMap[colorScheme];
 
+    const animatedPressStyle = useButtonPressAnimatedStyle(
+        isPressed,
+        backgroundColor,
+        onPressColor,
+    );
+
+    const handlePressIn = () => setIsPressed(true);
+    const handlePressOut = () => setIsPressed(false);
+
+    const iconName = iconLeft || iconRight;
     const icon = iconName ? (
-        <View style={applyStyle(iconStyle, { position: iconPosition })}>
+        <View style={applyStyle(iconStyle, { position: iconLeft ? 'left' : 'right' })}>
             <Icon
                 name={iconName}
-                color={colorScheme === 'primary' ? 'gray0' : 'gray700'}
+                color={isDisabled ? disabledBackgroundColor : textColor}
                 size={size}
             />
         </View>
     ) : null;
     return (
-        <TouchableOpacity
-            style={[applyStyle(buttonStyle, { size, colorScheme, isDisabled }), style]}
+        <Pressable
             disabled={isDisabled}
-            {...props}
+            onPressIn={handlePressIn}
+            onPressOut={handlePressOut}
+            {...pressableProps}
         >
-            {iconPosition === 'left' && icon}
-            <Text
-                variant="highlight"
-                color={isDisabled ? 'gray500' : buttonColorSchemeFontColor[colorScheme]}
+            <Animated.View
+                style={[
+                    animatedPressStyle,
+                    applyStyle(buttonStyle, {
+                        size,
+                        colorScheme,
+                        isDisabled,
+                    }),
+                    style,
+                ]}
             >
-                {children}
-            </Text>
-            {iconPosition === 'right' && icon}
-        </TouchableOpacity>
+                {iconLeft && icon}
+                <Text
+                    variant={textSizeToVariantMap[size]}
+                    color={isDisabled ? disabledTextColor : textColor}
+                >
+                    {children}
+                </Text>
+                {iconRight && icon}
+            </Animated.View>
+        </Pressable>
     );
 };

@@ -69,9 +69,8 @@ export const RowWithTitle = ({ title, value }: { title: string; value: string })
             <IconButton
                 iconName="copy"
                 onPress={() => copyToClipboard(value)}
-                isRounded
-                colorScheme="gray"
-                size="large"
+                colorScheme="tertiary"
+                size="medium"
             />
         </Box>
     );

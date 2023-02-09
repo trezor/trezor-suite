@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { TextInput } from 'react-native';
+import { TextInput, View } from 'react-native';
 
 import {
     Text,
@@ -17,6 +17,9 @@ import {
     InputWrapper,
     Input,
     VStack,
+    Button,
+    ButtonColorScheme,
+    Divider,
 } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Screen, ScreenHeader } from '@suite-native/navigation';
@@ -44,29 +47,125 @@ export const DemoScreen = () => {
     const [inputText, setInputText] = useState<string>('');
     const demoInputRef = useRef<TextInput | null>(null);
 
+    const buttonColorSchemes = [
+        'primary',
+        'secondary',
+        'tertiary',
+        'danger',
+    ] satisfies ButtonColorScheme[];
+
     const handleRadioPress = (value: string | number) => {
         setRadioChecked(value.toString());
     };
 
     return (
         <Screen header={<ScreenHeader />}>
-            <Box>
+            <VStack spacing="medium">
+                <VStack>
+                    <Text variant="titleSmall">Button:</Text>
+                    {buttonColorSchemes.map(buttonScheme => (
+                        <VStack key={buttonScheme}>
+                            <Text>{buttonScheme}</Text>
+                            <Box
+                                flexDirection="row"
+                                justifyContent="space-around"
+                                alignItems="center"
+                            >
+                                <Button colorScheme={buttonScheme} size="large" iconLeft="calendar">
+                                    Large
+                                </Button>
+
+                                <Button
+                                    colorScheme={buttonScheme}
+                                    size="medium"
+                                    iconLeft="calendar"
+                                >
+                                    Medium
+                                </Button>
+
+                                <Button colorScheme={buttonScheme} size="small" iconLeft="calendar">
+                                    Small
+                                </Button>
+                            </Box>
+                        </VStack>
+                    ))}
+                </VStack>
+                <Divider />
+                <VStack>
+                    <Text variant="titleSmall">IconButton:</Text>
+                    {buttonColorSchemes.map(buttonScheme => (
+                        <View key={buttonScheme}>
+                            <Text>{buttonScheme}</Text>
+                            <Box
+                                flexDirection="row"
+                                justifyContent="space-around"
+                                alignItems="center"
+                            >
+                                <IconButton
+                                    colorScheme={buttonScheme}
+                                    size="large"
+                                    iconName="calendar"
+                                >
+                                    Large
+                                </IconButton>
+
+                                <IconButton
+                                    colorScheme={buttonScheme}
+                                    size="medium"
+                                    iconName="calendar"
+                                >
+                                    Medium
+                                </IconButton>
+
+                                <IconButton
+                                    colorScheme={buttonScheme}
+                                    size="small"
+                                    iconName="calendar"
+                                >
+                                    Small
+                                </IconButton>
+                            </Box>
+                        </View>
+                    ))}
+                    <View>
+                        <Text>with title</Text>
+                        <Box flexDirection="row" justifyContent="space-around" alignItems="center">
+                            <IconButton
+                                colorScheme="primary"
+                                size="large"
+                                iconName="calendar"
+                                title="large"
+                            >
+                                Large
+                            </IconButton>
+
+                            <IconButton
+                                colorScheme="primary"
+                                size="medium"
+                                iconName="calendar"
+                                title="medium"
+                            >
+                                Medium
+                            </IconButton>
+
+                            <IconButton
+                                colorScheme="primary"
+                                size="small"
+                                iconName="calendar"
+                                title="small"
+                            >
+                                Small
+                            </IconButton>
+                        </Box>
+                    </View>
+                </VStack>
+                <Divider />
                 <Box>
                     <SearchInput
                         value={inputText}
                         onChange={setInputText}
                         placeholder="Type here.."
                     />
-                    <Box>
-                        <IconButton
-                            size="small"
-                            colorScheme="gray"
-                            iconName="check"
-                            onPress={() => {}}
-                        />
-                        <IconButton iconName="check" isRounded onPress={() => {}} />
-                        <IconButton size="large" iconName="check" isRounded onPress={() => {}} />
-                    </Box>
                     <Box marginVertical="medium">
                         <VStack style={applyStyle(inputStackStyle)} spacing="small">
                             <InputWrapper label="Recipient">
@@ -242,7 +341,7 @@ export const DemoScreen = () => {
                     <CoinsSettings />
                     <DeviceActionButtons />
                 </Box>
-            </Box>
+            </VStack>
         </Screen>
     );
 };

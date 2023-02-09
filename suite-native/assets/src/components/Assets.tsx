@@ -85,7 +85,7 @@ export const Assets = () => {
                 </VStack>
             </Card>
             <VStack style={applyStyle(importStyle)} spacing="small">
-                <Button colorScheme="gray" size="large" onPress={handleImportAssets}>
+                <Button colorScheme="tertiary" size="large" onPress={handleImportAssets}>
                     Import Assets
                 </Button>
                 <Button size="large" onPress={handleReceive}>

@@ -45,10 +45,9 @@ export const AccountImportOverview = ({ accountInfo, networkSymbol }: AssetsOver
                 </Box>
                 <IconButton
                     iconName="trash"
-                    colorScheme="gray"
+                    colorScheme="tertiary"
                     onPress={() => navigation.goBack()}
-                    size="large"
-                    isRounded
+                    size="medium"
                 />
             </Box>
             <Box marginBottom="large">
