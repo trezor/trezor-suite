@@ -5,7 +5,7 @@ import { extractCredentialsFromAuthorizationFlow, getOauthReceiverUrl } from '@s
 import { METADATA } from '@suite-actions/constants';
 import { getWeakRandomId } from '@trezor/utils';
 
-// this is incorrectly typed in dropbox
+// Dropbox messed up types, that's why @ts-expect-error occurs in this file
 
 class DropboxProvider extends AbstractMetadataProvider {
     client: Dropbox;
@@ -64,6 +64,7 @@ class DropboxProvider extends AbstractMetadataProvider {
 
         try {
             // dropbox supports authorization code flow for both web and desktop
+            // @ts-expect-error dropbox lib types url as String object, but it is primite string
             const { code } = await extractCredentialsFromAuthorizationFlow(url);
 
             if (!code)
@@ -71,6 +72,7 @@ class DropboxProvider extends AbstractMetadataProvider {
 
             const { result } = await this.auth.getAccessTokenFromCode(redirectUrl, code);
 
+            // @ts-expect-error dropbox lib types result as Object, but access_token & refresh_token are available there as strings
             const { access_token: accessToken, refresh_token: refreshToken } = result;
 
             this.auth.setAccessToken(accessToken);
@@ -131,11 +133,12 @@ class DropboxProvider extends AbstractMetadataProvider {
                 if (!match) match = matchLegacy;
 
                 if (match && 'metadata' in match.metadata) {
-                    const download = await this.client.filesDownload({
+                    const { result } = await this.client.filesDownload({
                         path: match!.metadata.metadata.path_lower!,
                     });
 
-                    const ab = await download.result.fileBlob.arrayBuffer();
+                    // @ts-expect-error fileBlob is missing in dropbox lib types file, but it is available
+                    const ab = await result.fileBlob.arrayBuffer();
 
                     return this.ok(Buffer.from(ab));
                 }
