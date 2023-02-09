@@ -50,7 +50,114 @@ export const DemoScreen = () => {
 
     return (
         <Screen header={<ScreenHeader />}>
-            <Box>
+            <VStack spacing="medium">
+                <VStack>
+                    <Text variant="titleSmall">Button:</Text>
+                    {buttonColorSchemes.map(buttonScheme => (
+                        <VStack key={buttonScheme}>
+                            <Text>{buttonScheme}</Text>
+                            <Box
+                                flexDirection="row"
+                                justifyContent="space-around"
+                                alignItems="center"
+                            >
+                                <Button
+                                    colorSchemeName={buttonScheme}
+                                    size="large"
+                                    iconLeft="calendar"
+                                >
+                                    Large
+                                </Button>
+
+                                <Button
+                                    colorSchemeName={buttonScheme}
+                                    size="medium"
+                                    iconLeft="calendar"
+                                >
+                                    Medium
+                                </Button>
+
+                                <Button
+                                    colorSchemeName={buttonScheme}
+                                    size="small"
+                                    iconLeft="calendar"
+                                >
+                                    Small
+                                </Button>
+                            </Box>
+                        </VStack>
+                    ))}
+                </VStack>
+                <Divider />
+                <VStack>
+                    <Text variant="titleSmall">IconButton:</Text>
+                    {buttonColorSchemes.map(buttonScheme => (
+                        <View key={buttonScheme}>
+                            <Text>{buttonScheme}</Text>
+                            <Box
+                                flexDirection="row"
+                                justifyContent="space-around"
+                                alignItems="center"
+                            >
+                                <IconButton
+                                    colorSchemeName={buttonScheme}
+                                    size="large"
+                                    iconName="calendar"
+                                >
+                                    Large
+                                </IconButton>
+
+                                <IconButton
+                                    colorSchemeName={buttonScheme}
+                                    size="medium"
+                                    iconName="calendar"
+                                >
+                                    Medium
+                                </IconButton>
+
+                                <IconButton
+                                    colorSchemeName={buttonScheme}
+                                    size="small"
+                                    iconName="calendar"
+                                >
+                                    Small
+                                </IconButton>
+                            </Box>
+                        </View>
+                    ))}
+                    <View>
+                        <Text>with title</Text>
+                        <Box flexDirection="row" justifyContent="space-around" alignItems="center">
+                            <IconButton
+                                colorSchemeName="primary"
+                                size="large"
+                                iconName="calendar"
+                                title="large"
+                            >
+                                Large
+                            </IconButton>
+
+                            <IconButton
+                                colorSchemeName="primary"
+                                size="medium"
+                                iconName="calendar"
+                                title="medium"
+                            >
+                                Medium
+                            </IconButton>
+
+                            <IconButton
+                                colorSchemeName="primary"
+                                size="small"
+                                iconName="calendar"
+                                title="small"
+                            >
+                                Small
+                            </IconButton>
+                        </Box>
+                    </View>
+                </VStack>
+                <Divider />
                 <Box>
                     <SearchInput
                         value={inputText}
@@ -242,7 +349,7 @@ export const DemoScreen = () => {
                     <CoinsSettings />
                     <DeviceActionButtons />
                 </Box>
-            </Box>
+            </VStack>
         </Screen>
     );
 };

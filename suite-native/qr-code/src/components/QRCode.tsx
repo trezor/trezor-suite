@@ -66,7 +66,6 @@ export const QRCode = ({ data, onCopy, isShareEnabled = false }: QRCodeProps) =>
             <Box margin="small" alignItems="center" justifyContent="center">
                 <Text variant="body">{data}</Text>
             </Box>
-
             <VStack spacing="small">
                 {isShareEnabled && (
                     <Button

@@ -1,93 +1,108 @@
-import React from 'react';
-import { TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import { Pressable, PressableProps } from 'react-native';
+import Animated from 'react-native-reanimated';
 
 import { Icon, IconName } from '@trezor/icons';
-import { NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import {
+    NativeStyleObject,
+    prepareNativeStyle,
+    mergeNativeStyles,
+    useNativeStyles,
+} from '@trezor/styles';
 
-import { ButtonColorScheme, ButtonSize } from './Button';
+import {
+    ButtonColorSchemeName,
+    ButtonSize,
+    buttonSchemeToColorsMap,
+    buttonStyle,
+    ButtonStyleProps,
+} from './Button';
+import { Box } from '../Box';
+import { Text } from '../Text';
+import { useButtonPressAnimatedStyle } from './useButtonPressAnimatedStyle';
 
-type IconButtonProps = {
+type IconButtonProps = Omit<PressableProps, 'style'> & {
     iconName: IconName;
-    onPress: () => void;
-    isRounded?: boolean;
-    colorScheme?: ButtonColorScheme;
+    colorSchemeName?: ButtonColorSchemeName;
     size?: ButtonSize;
     style?: NativeStyleObject;
+    title?: string;
+    isDisabled?: boolean;
 };
 
-type StyleProps = {
-    isRounded: boolean;
-    size: ButtonSize;
-    colorScheme: ButtonColorScheme;
-};
+const iconButtonStyle = mergeNativeStyles([
+    buttonStyle,
+    prepareNativeStyle<ButtonStyleProps>((_, { size, hasTitle }) => {
+        const sizeDimensions = {
+            small: 40,
+            medium: 48,
+            large: 56,
+        } as const satisfies Record<ButtonSize, number>;
 
-const iconButtonStyle = prepareNativeStyle<StyleProps>(
-    (utils, { isRounded, colorScheme, size }) => {
-        const colorSchemeStyles = {
-            primary: {
-                backgroundColor: utils.colors.green,
-            },
-            gray: {
-                backgroundColor: utils.colors.gray300,
-            },
-            red: {
-                backgroundColor: utils.transparentize(0.9, utils.colors.red),
-            },
-        };
-
-        const sizeStyles = {
-            small: {
-                width: 16,
-                height: 16,
-                borderRadius: isRounded ? utils.borders.radii.round : utils.borders.radii.small / 2,
-            },
-            medium: {
-                width: 32,
-                height: 32,
-                borderRadius: isRounded ? utils.borders.radii.round : utils.borders.radii.small,
-            },
-            large: {
-                width: 48,
-                height: 48,
-                borderRadius: isRounded ? utils.borders.radii.round : utils.borders.radii.small,
-            },
-        };
         return {
-            justifyContent: 'center',
-            alignItems: 'center',
-            ...colorSchemeStyles[colorScheme],
-            ...sizeStyles[size],
+            padding: 0,
+            height: sizeDimensions[size],
+            width: hasTitle ? 'auto' : sizeDimensions[size],
         };
-    },
-);
-
-const getIconColor = (colorScheme: ButtonColorScheme) => {
-    switch (colorScheme) {
-        case 'gray':
-            return 'gray700';
-        case 'red':
-            return 'red';
-        default:
-            return 'gray0';
-    }
-};
+    }),
+]);
 
 export const IconButton = ({
     iconName,
-    onPress,
     style,
-    colorScheme = 'primary',
+    title,
+    colorSchemeName = 'primary',
     size = 'medium',
-    isRounded = false,
+    isDisabled = false,
+    ...pressableProps
 }: IconButtonProps) => {
+    const [isPressed, setIsPressed] = useState(false);
     const { applyStyle } = useNativeStyles();
+    const { textColor, disabledTextColor, backgroundColor, onPressColor } =
+        buttonSchemeToColorsMap[colorSchemeName];
 
+    const animatedPressStyle = useButtonPressAnimatedStyle(
+        isPressed,
+        backgroundColor,
+        onPressColor,
+    );
+
+    const iconColor = isDisabled ? disabledTextColor : textColor;
+
+    const handlePressIn = () => setIsPressed(true);
+    const handlePressOut = () => setIsPressed(false);
     return (
-        <TouchableOpacity
-            onPress={onPress}
-            style={[applyStyle(iconButtonStyle, { isRounded, size, colorScheme }), style]}
-        >
-            <Icon name={iconName} color={getIconColor(colorScheme)} size={size} />
-        </TouchableOpacity>
+        <Box alignItems="center" style={style}>
+            <Pressable
+                onPressIn={handlePressIn}
+                onPressOut={handlePressOut}
+                disabled={isDisabled}
+                {...pressableProps}
+            >
+                <Animated.View
+                    style={[
+                        animatedPressStyle,
+                        applyStyle(iconButtonStyle, {
+                            size,
+                            colorSchemeName,
+                            isDisabled,
+                            hasTitle: !!title,
+                        }),
+                    ]}
+                >
+                    <Icon name={iconName} color={iconColor} size={size} />
+                </Animated.View>
+            </Pressable>
+            <Pressable
+                disabled={isDisabled}
+                onPressIn={handlePressIn}
+                onPressOut={handlePressOut}
+                {...pressableProps}
+            >
+                <Text variant="label" color="gray600">
+                    {title}
+                </Text>
+            </Pressable>
+        </Box>
     );
 };

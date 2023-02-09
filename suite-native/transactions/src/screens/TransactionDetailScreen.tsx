@@ -56,7 +56,7 @@ export const TransactionDetailScreen = ({
             <Button
                 iconLeft="arrowUpRight"
                 onPress={handleOpenBlockchain}
-                colorScheme="tertiary"
+                colorSchemeName="tertiary"
                 style={applyStyle(buttonStyle)}
             >
                 Explore in blockchain

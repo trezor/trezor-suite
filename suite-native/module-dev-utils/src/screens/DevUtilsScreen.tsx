@@ -116,7 +116,7 @@ export const DevUtilsScreen = ({
                         <Button onPress={() => navigation.navigate(DevUtilsStackRoutes.Demo)}>
                             See Component Demo
                         </Button>
-                        <Button colorScheme="primary" onPress={handleResetStorage}>
+                        <Button colorSchemeName="primary" onPress={handleResetStorage}>
                             Reset storage
                         </Button>
 

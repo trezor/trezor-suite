@@ -45,18 +45,16 @@ export const AccountDetailScreenHeader = ({
         <ScreenHeader
             leftIcon={
                 <IconButton
-                    colorScheme="gray"
-                    isRounded
-                    size="large"
+                    colorSchemeName="tertiary"
+                    size="medium"
                     iconName="chevronLeft"
                     onPress={() => navigation.goBack()}
                 />
             }
             rightIcon={
                 <IconButton
-                    colorScheme="gray"
-                    isRounded
-                    size="large"
+                    colorSchemeName="tertiary"
+                    size="medium"
                     iconName="settings"
                     onPress={handleSettingsNavigation}
                 />

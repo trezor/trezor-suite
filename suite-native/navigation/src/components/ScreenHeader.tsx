@@ -42,10 +42,9 @@ const GoBackIcon = () => {
     return (
         <IconButton
             iconName="chevronLeft"
-            size="large"
-            colorScheme="gray"
+            size="medium"
+            colorSchemeName="tertiary"
             onPress={() => navigation.goBack()}
-            isRounded
         />
     );
 };

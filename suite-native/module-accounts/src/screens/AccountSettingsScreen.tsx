@@ -84,10 +84,10 @@ export const AccountSettingsScreen = ({
                     </VStack>
                 </Card>
                 <VStack spacing="small">
-                    <Button onPress={() => setIsXpubVisible(true)} colorScheme="tertiary">
+                    <Button onPress={() => setIsXpubVisible(true)} colorSchemeName="tertiary">
                         View XPUB
                     </Button>
-                    <Button onPress={handleRemoveAccount} colorScheme="danger">
+                    <Button onPress={handleRemoveAccount} colorSchemeName="danger">
                         Remove Account
                     </Button>
                 </VStack>
