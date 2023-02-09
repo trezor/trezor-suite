@@ -12,51 +12,8 @@ jest.mock('@trezor/connect', () => global.JestMocks.getTrezorConnect({}));
 const TrezorConnect = require('@trezor/connect').default;
 
 jest.mock('@suite/services/coinjoin/coinjoinService', () => {
-    const allowed = ['btc', 'test'];
-    const clients: Record<string, any> = {}; // @trezor/coinjoin CoinjoinClient
-    const getMockedInstance = (network: string) => {
-        const client = {
-            settings: { coordinatorName: '', network },
-            on: jest.fn(),
-            off: jest.fn(),
-            enable: jest.fn(() =>
-                Promise.resolve({
-                    rounds: [{ id: '00', phase: 0 }],
-                    maxMiningFee: 0,
-                    coordinatorFeeRate: 0.003,
-                    allowedInputAmounts: { min: 5000, max: 134375000000 },
-                }),
-            ),
-            registerAccount: jest.fn(),
-            unregisterAccount: jest.fn(),
-            updateAccount: jest.fn(),
-        };
-        const backend = {
-            on: jest.fn(),
-            off: jest.fn(),
-            cancel: jest.fn(),
-            scanAccount: jest.fn(() => Promise.reject(new Error('TODO: implement me'))),
-        };
-        return { client, backend };
-    };
-
-    return {
-        // for test purposes enable only btc network
-        CoinjoinService: {
-            getInstance: (symbol: string) => clients[symbol],
-            getInstances: () => Object.values(clients),
-            createInstance: (symbol: string) => {
-                if (!allowed.includes(symbol)) throw new Error('Client not supported');
-                if (clients[symbol]) return clients[symbol];
-                const instance = getMockedInstance(symbol);
-                clients[symbol] = instance;
-                return instance;
-            },
-            removeInstance: (symbol: string) => {
-                delete clients[symbol];
-            },
-        },
-    };
+    const mock = jest.requireActual('../__fixtures__/mockCoinjoinService');
+    return mock.mockCoinjoinService();
 });
 
 const DEVICE = testMocks.getSuiteDevice({ state: 'device-state', connected: true });

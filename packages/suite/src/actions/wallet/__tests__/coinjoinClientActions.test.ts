@@ -1,21 +1,30 @@
 import { combineReducers, createReducer } from '@reduxjs/toolkit';
-import { configureMockStore } from '@suite-common/test-utils';
+import { configureMockStore, testMocks } from '@suite-common/test-utils';
 import { promiseAllSequence } from '@trezor/utils';
 
 import { accountsReducer } from '@wallet-reducers';
 import { coinjoinReducer } from '@wallet-reducers/coinjoinReducer';
 import selectedAccountReducer from '@wallet-reducers/selectedAccountReducer';
+import messageSystemReducer from '@suite-reducers/messageSystemReducer';
 import {
+    initCoinjoinService,
     onCoinjoinRoundChanged,
     onCoinjoinClientRequest,
     signCoinjoinTx,
     setDebugSettings,
+    clientEmitException,
 } from '../coinjoinClientActions';
 import * as fixtures from '../__fixtures__/coinjoinClientActions';
+import { coinjoinMiddleware } from '@wallet-middlewares/coinjoinMiddleware';
 
 jest.mock('@trezor/connect', () => global.JestMocks.getTrezorConnect({}));
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const TrezorConnect = require('@trezor/connect').default;
+
+jest.mock('@suite/services/coinjoin/coinjoinService', () => {
+    const mock = jest.requireActual('../__fixtures__/mockCoinjoinService');
+    return mock.mockCoinjoinService();
+});
 
 const rootReducer = combineReducers({
     suite: createReducer(
@@ -30,6 +39,7 @@ const rootReducer = combineReducers({
     ),
     devices: createReducer([fixtures.DEVICE], {}),
     modal: () => ({}),
+    messageSystem: messageSystemReducer,
     wallet: combineReducers({
         coinjoin: coinjoinReducer,
         accounts: accountsReducer,
@@ -61,7 +71,11 @@ const initStore = ({ accounts, coinjoin, devices, selectedAccount }: Wallet = {}
         preloadedState.wallet.selectedAccount = selectedAccount;
     }
     // State != suite AppState, therefore <any>
-    const store = configureMockStore<any>({ reducer: rootReducer, preloadedState });
+    const store = configureMockStore<any>({
+        reducer: rootReducer,
+        preloadedState,
+        middleware: [coinjoinMiddleware],
+    });
     return store;
 };
 
@@ -159,5 +173,84 @@ describe('coinjoinClientActions', () => {
         expect(store.getState().wallet.coinjoin.debug).toMatchObject({
             coinjoinServerEnvironment: { test: 'staging', regtest: 'localhost' },
         });
+    });
+
+    it('clientEmitException', async () => {
+        const store = initStore();
+
+        const cli1 = await store.dispatch(initCoinjoinService('btc'));
+        const cli2 = await store.dispatch(initCoinjoinService('test'));
+
+        if (!cli1 || !cli2) throw new Error('Client not initialized');
+
+        store.dispatch(clientEmitException('Some exception'));
+
+        expect(cli1.client.emit).toBeCalledTimes(1);
+        expect(cli2.client.emit).toBeCalledTimes(1);
+        expect(cli2.client.emit).toBeCalledWith('log', {
+            level: 'error',
+            payload: 'Some exception',
+        });
+
+        store.dispatch(clientEmitException('Other exception', { symbol: 'btc' }));
+
+        expect(cli1.client.emit).toBeCalledTimes(2);
+        expect(cli2.client.emit).toBeCalledTimes(1);
+    });
+
+    it('clientEmitException from coinjoinMiddleware', async () => {
+        const store = initStore({
+            accounts: [
+                testMocks.getWalletAccount({
+                    deviceState: 'device-state',
+                    accountType: 'coinjoin',
+                    key: 'btc-account1',
+                    symbol: 'btc',
+                }),
+            ],
+            coinjoin: {
+                accounts: [
+                    {
+                        key: 'btc-account1',
+                        symbol: 'btc',
+                        session: { roundPhase: 1, signedRounds: [], maxRounds: 10 },
+                    },
+                ],
+            } as any,
+        });
+
+        const cli = await store.dispatch(initCoinjoinService('btc'));
+
+        if (!cli) throw new Error('Client not initialized');
+
+        store.dispatch({ type: '@suite/online-status', payload: false });
+        expect(cli.client.emit).toBeCalledTimes(1);
+
+        store.dispatch({ type: '@suite/tor-status', payload: 'Disabled' });
+        expect(cli.client.emit).toBeCalledTimes(2);
+
+        // restore session after previous action, and set phase to critical again
+        // NOTE: dispatching { type: '@suite/tor-status', payload: 'Enabled' } requires a lot more fixtures
+        const restoreSession = () => {
+            store.dispatch({
+                type: '@coinjoin/session-restore',
+                payload: { accountKey: 'btc-account1' },
+            });
+            store.dispatch({
+                type: '@coinjoin/session-round-changed',
+                payload: { accountKey: 'btc-account1', round: { phase: 1 } },
+            });
+        };
+
+        restoreSession();
+        store.dispatch({ type: 'device-disconnect', payload: { id: 'device-id' } });
+        expect(cli.client.emit).toBeCalledTimes(3);
+
+        restoreSession();
+        store.dispatch({
+            type: '@common/wallet-core/accounts/removeAccount',
+            payload: [{ key: 'btc-account1' }],
+        });
+        expect(cli.client.emit).toBeCalledTimes(4);
     });
 });

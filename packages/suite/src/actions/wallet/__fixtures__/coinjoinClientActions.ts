@@ -2,7 +2,12 @@ import { testMocks } from '@suite-common/test-utils';
 import * as MODAL from '@suite-actions/constants/modalConstants';
 import * as COINJOIN from '@wallet-actions/constants/coinjoinConstants';
 
-export const DEVICE = testMocks.getSuiteDevice({ state: 'device-state', connected: true });
+export const DEVICE = testMocks.getSuiteDevice({
+    state: 'device-state',
+    connected: true,
+    available: true,
+    remember: true,
+});
 
 const SESSION = { signedRounds: [] as string[], maxRounds: 10 };
 

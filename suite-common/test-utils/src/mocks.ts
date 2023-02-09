@@ -269,10 +269,11 @@ const getTrezorConnect = <M>(methods?: M) => {
         return fixtures;
     };
 
-    const { PROTO } = jest.requireActual('@trezor/connect');
+    const originalModule = jest.requireActual('@trezor/connect');
 
     return {
         __esModule: true, // export as module
+        ...originalModule,
         default: {
             // define mocked TrezorConnect methods
             init: () => {},
@@ -404,23 +405,6 @@ const getTrezorConnect = <M>(methods?: M) => {
             },
             ...methods,
         },
-        DEVICE_EVENT: 'DEVICE_EVENT',
-        UI_EVENT: 'UI_EVENT',
-        TRANSPORT_EVENT: 'TRANSPORT_EVENT',
-        BLOCKCHAIN_EVENT: 'BLOCKCHAIN_EVENT',
-        DEVICE: {},
-        BLOCKCHAIN: {
-            CONNECT: 'blockchain-connect',
-            BLOCK: 'blockchain-block',
-            NOTIFICATION: 'blockchain-notification',
-            ERROR: 'blockchain-error',
-        },
-        TRANSPORT: {},
-        UI: {
-            REQUEST_PIN: 'ui-request_pin',
-            REQUEST_BUTTON: 'ui-request_button',
-        },
-        PROTO,
     };
 };
 
