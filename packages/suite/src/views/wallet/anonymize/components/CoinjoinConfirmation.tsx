@@ -101,6 +101,7 @@ interface CoinjoinConfirmationProps {
 
 export const CoinjoinConfirmation = ({ account }: CoinjoinConfirmationProps) => {
     const [termsConfirmed, setTermsConfirmed] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     const coordinatorData = useSelector(state => state.wallet.coinjoin.clients[account.symbol]);
     const targetAnonymity = useSelector(selectCurrentTargetAnonymity);
@@ -140,6 +141,9 @@ export const CoinjoinConfirmation = ({ account }: CoinjoinConfirmationProps) => 
         isCoinjoinDisabledByFeatureFlag;
 
     const getButtonTooltipMessage = () => {
+        if (isLoading) {
+            return;
+        }
         if (isCoinjoinDisabledByFeatureFlag && featureMessageContent) {
             return featureMessageContent;
         }
@@ -158,8 +162,9 @@ export const CoinjoinConfirmation = ({ account }: CoinjoinConfirmationProps) => 
     };
 
     const toggleTermsConfirmation = () => setTermsConfirmed(current => !current);
-    const anonymize = () =>
-        dispatch(
+    const anonymize = async () => {
+        setIsLoading(true);
+        await dispatch(
             startCoinjoinSession(account, {
                 maxCoordinatorFeeRate: coordinatorData.coordinationFeeRate.rate,
                 maxFeePerKvbyte: coordinatorData.maxMiningFee * 1000, // transform to kvB
@@ -168,6 +173,8 @@ export const CoinjoinConfirmation = ({ account }: CoinjoinConfirmationProps) => 
                 targetAnonymity,
             }),
         );
+        setIsLoading(false);
+    };
 
     return (
         <>
@@ -215,7 +222,7 @@ export const CoinjoinConfirmation = ({ account }: CoinjoinConfirmationProps) => 
             </StyledCard>
 
             <Tooltip content={getButtonTooltipMessage()}>
-                <StyledButton onClick={anonymize} isDisabled={isDisabled}>
+                <StyledButton onClick={anonymize} isDisabled={isDisabled} isLoading={isLoading}>
                     <Translation id="TR_START_COINJOIN" />
                 </StyledButton>
             </Tooltip>
