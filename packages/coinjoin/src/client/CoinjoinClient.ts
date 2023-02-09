@@ -277,4 +277,14 @@ export class CoinjoinClient extends EventEmitter {
             error: emit('error'),
         };
     }
+
+    getRounds() {
+        return this.rounds.map(round => round.toSerialized());
+    }
+
+    getRoundsInCriticalPhase() {
+        return this.rounds.flatMap(round =>
+            round.isInCriticalPhase() ? round.toSerialized() : [],
+        );
+    }
 }
