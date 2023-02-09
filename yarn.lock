@@ -2161,13 +2161,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@esbuild-kit/cjs-loader@npm:^2.4.0":
-  version: 2.4.0
-  resolution: "@esbuild-kit/cjs-loader@npm:2.4.0"
+"@esbuild-kit/cjs-loader@npm:^2.4.2":
+  version: 2.4.2
+  resolution: "@esbuild-kit/cjs-loader@npm:2.4.2"
   dependencies:
     "@esbuild-kit/core-utils": ^3.0.0
-    get-tsconfig: ^4.2.0
-  checksum: 267aef1c921317daa40345d2a58fb5482bf69cf32949458af2d78dbeeaf527860928111c550fbaa30f0c710314f9c2e1cec703f8104a6b5464c35e9692ba7cdf
+    get-tsconfig: ^4.4.0
+  checksum: e346e339bfc7eff5c52c270fd0ec06a7f2341b624adfb69f84b7d83f119c35070420906f2761a0b4604e0a0ec90e35eaf12544585476c428ed6d6ee3b250c0fe
   languageName: node
   linkType: hard
 
@@ -2181,13 +2181,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@esbuild-kit/esm-loader@npm:^2.5.0":
-  version: 2.5.0
-  resolution: "@esbuild-kit/esm-loader@npm:2.5.0"
+"@esbuild-kit/esm-loader@npm:^2.5.5":
+  version: 2.5.5
+  resolution: "@esbuild-kit/esm-loader@npm:2.5.5"
   dependencies:
     "@esbuild-kit/core-utils": ^3.0.0
-    get-tsconfig: ^4.2.0
-  checksum: 49611646f8b02ff7b41e6aacae797c4aae9edbf7c73f2c8a5ea43208e317473005930b8751749b607089110e5b93a52059b6cab4fff8e32b6acdb1811529a8d8
+    get-tsconfig: ^4.4.0
+  checksum: 9d4a03ffc937fbec75a8456c3d45d7cdb1a65768416791a5720081753502bc9f485ba27942a46f564b12483b140a8a46c12433a4496430d93e4513e430484ec7
   languageName: node
   linkType: hard
 
@@ -6132,7 +6132,7 @@ __metadata:
     jest: ^26.6.3
     redux-mock-store: ^1.5.4
     redux-thunk: ^2.3.0
-    typescript: 4.9.3
+    typescript: 4.9.5
   languageName: unknown
   linkType: soft
 
@@ -6144,7 +6144,7 @@ __metadata:
     "@suite-common/wallet-types": "workspace:*"
     date-fns: ^2.29.3
     jest: ^26.6.3
-    typescript: 4.9.3
+    typescript: 4.9.5
   languageName: unknown
   linkType: soft
 
@@ -6167,7 +6167,7 @@ __metadata:
     react: 18.2.0
     react-intl: ^6.2.8
     react-redux: 7.2.2
-    typescript: 4.9.3
+    typescript: 4.9.5
   languageName: unknown
   linkType: soft
 
@@ -6200,7 +6200,7 @@ __metadata:
     jest: ^26.6.3
     react: 18.2.0
     react-intl: ^6.2.8
-    typescript: 4.9.3
+    typescript: 4.9.5
   languageName: unknown
   linkType: soft
 
@@ -6208,7 +6208,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/invity@workspace:suite-common/invity"
   dependencies:
-    typescript: 4.9.3
+    typescript: 4.9.5
   languageName: unknown
   linkType: soft
 
@@ -6229,7 +6229,7 @@ __metadata:
   resolution: "@suite-common/metadata-types@workspace:suite-common/metadata-types"
   dependencies:
     jest: ^26.6.3
-    typescript: 4.9.3
+    typescript: 4.9.5
   languageName: unknown
   linkType: soft
 
@@ -6247,7 +6247,7 @@ __metadata:
     react: 18.2.0
     react-redux: 7.2.2
     redux: ^4.2.0
-    typescript: 4.9.3
+    typescript: 4.9.5
   languageName: unknown
   linkType: soft
 
@@ -6260,7 +6260,7 @@ __metadata:
     "@suite-common/suite-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     jest: ^26.6.3
-    typescript: 4.9.3
+    typescript: 4.9.5
   languageName: unknown
   linkType: soft
 
@@ -6269,7 +6269,7 @@ __metadata:
   resolution: "@suite-common/suite-config@workspace:suite-common/suite-config"
   dependencies:
     jest: ^26.6.3
-    typescript: 4.9.3
+    typescript: 4.9.5
   languageName: unknown
   linkType: soft
 
@@ -6280,7 +6280,7 @@ __metadata:
     "@suite-common/wallet-config": "workspace:*"
     "@trezor/connect": "workspace:9.0.6"
     jest: ^26.6.3
-    typescript: 4.9.3
+    typescript: 4.9.5
   languageName: unknown
   linkType: soft
 
@@ -6294,7 +6294,7 @@ __metadata:
     "@trezor/connect": "workspace:9.0.6"
     bignumber.js: ^9.1.1
     jest: ^26.6.3
-    typescript: 4.9.3
+    typescript: 4.9.5
   languageName: unknown
   linkType: soft
 
@@ -6309,7 +6309,7 @@ __metadata:
     bignumber.js: ^9.1.1
     date-fns: ^2.29.3
     jest: ^26.6.3
-    typescript: 4.9.3
+    typescript: 4.9.5
   languageName: unknown
   linkType: soft
 
@@ -6332,7 +6332,7 @@ __metadata:
     jest: ^26.6.3
     redux: ^4.2.0
     redux-thunk: ^2.3.0
-    typescript: 4.9.3
+    typescript: 4.9.5
   languageName: unknown
   linkType: soft
 
@@ -6349,7 +6349,7 @@ __metadata:
     "@suite-common/wallet-config": "workspace:*"
     "@trezor/connect": "workspace:9.0.6"
     jest: ^26.6.3
-    typescript: 4.9.3
+    typescript: 4.9.5
   languageName: unknown
   linkType: soft
 
@@ -6361,7 +6361,7 @@ __metadata:
     "@trezor/device-utils": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     jest: ^26.6.3
-    typescript: 4.9.3
+    typescript: 4.9.5
   languageName: unknown
   linkType: soft
 
@@ -6370,7 +6370,7 @@ __metadata:
   resolution: "@suite-common/wallet-constants@workspace:suite-common/wallet-constants"
   dependencies:
     jest: ^26.6.3
-    typescript: 4.9.3
+    typescript: 4.9.5
   languageName: unknown
   linkType: soft
 
@@ -6396,7 +6396,7 @@ __metadata:
     date-fns: ^2.29.3
     jest: ^26.6.3
     proxy-memoize: ^2.0.2
-    typescript: 4.9.3
+    typescript: 4.9.5
   languageName: unknown
   linkType: soft
 
@@ -6414,7 +6414,7 @@ __metadata:
     jest: ^26.6.3
     react: 18.2.0
     react-hook-form: 6.15.7
-    typescript: 4.9.3
+    typescript: 4.9.5
   languageName: unknown
   linkType: soft
 
@@ -6446,7 +6446,7 @@ __metadata:
     react: 18.2.0
     react-hook-form: 6.15.7
     trezor-address-validator: ^0.4.3
-    typescript: 4.9.3
+    typescript: 4.9.5
     web3-utils: ^1.8.0
   languageName: unknown
   linkType: soft
@@ -6519,8 +6519,8 @@ __metadata:
     react-native-gesture-handler: ^2.9.0
     react-native-reanimated: 2.14.4
     react-native-root-toast: ^3.3.1
-    react-native-safe-area-context: ^4.5.0
-    typescript: 4.9.3
+    react-native-safe-area-context: ^4.4.1
+    typescript: 4.9.5
   languageName: unknown
   linkType: soft
 
@@ -6530,8 +6530,8 @@ __metadata:
   dependencies:
     "@suite-common/wallet-config": "workspace:*"
     jest: ^26.6.3
-    react-native-config: ^1.5.0
-    typescript: 4.9.3
+    react-native-config: ^1.4.6
+    typescript: 4.9.5
   languageName: unknown
   linkType: soft
 
@@ -6584,7 +6584,7 @@ __metadata:
     react-native-gesture-handler: ^2.9.0
     react-native-reanimated: 2.14.4
     react-redux: 7.2.2
-    typescript: 4.9.3
+    typescript: 4.9.5
   languageName: unknown
   linkType: soft
 
@@ -6645,7 +6645,7 @@ __metadata:
     react-native-config: ^1.5.0
     react-native-reanimated: 2.14.4
     react-redux: 7.2.2
-    typescript: 4.9.3
+    typescript: 4.9.5
   languageName: unknown
   linkType: soft
 
@@ -6701,7 +6701,7 @@ __metadata:
     react: 18.2.0
     react-native: 0.71.2
     react-redux: 7.2.2
-    typescript: 4.9.3
+    typescript: 4.9.5
   languageName: unknown
   linkType: soft
 
@@ -6713,8 +6713,8 @@ __metadata:
     "@suite-common/suite-types": "workspace:*"
     jest: ^26.6.3
     react: 18.2.0
-    react-native: 0.71.2
-    typescript: 4.9.3
+    react-native: 0.70.5
+    typescript: 4.9.5
   languageName: unknown
   linkType: soft
 
@@ -6748,7 +6748,7 @@ __metadata:
     react: 18.2.0
     react-native: 0.71.2
     react-redux: 7.2.2
-    typescript: 4.9.3
+    typescript: 4.9.5
   languageName: unknown
   linkType: soft
 
@@ -6772,7 +6772,7 @@ __metadata:
     react: 18.2.0
     react-native: 0.71.2
     react-redux: 7.2.2
-    typescript: 4.9.3
+    typescript: 4.9.5
   languageName: unknown
   linkType: soft
 
@@ -6796,7 +6796,7 @@ __metadata:
     react: 18.2.0
     react-native: 0.71.2
     react-redux: 7.2.2
-    typescript: 4.9.3
+    typescript: 4.9.5
   languageName: unknown
   linkType: soft
 
@@ -6819,8 +6819,8 @@ __metadata:
     react: 18.2.0
     react-native: 0.71.2
     react-native-keyboard-aware-scroll-view: ^0.9.5
-    react-native-safe-area-context: ^4.5.0
-    typescript: 4.9.3
+    react-native-safe-area-context: ^4.4.1
+    typescript: 4.9.5
   languageName: unknown
   linkType: soft
 
@@ -6876,7 +6876,7 @@ __metadata:
     react-redux: 7.2.2
     redux-flipper: 2.0.2
     redux-persist: 6.0.0
-    typescript: 4.9.3
+    typescript: 4.9.5
   languageName: unknown
   linkType: soft
 
@@ -6892,7 +6892,7 @@ __metadata:
     react-native: 0.71.2
     react-native-mmkv: ^2.7.0
     redux-persist: 6.0.0
-    typescript: 4.9.3
+    typescript: 4.9.5
   languageName: unknown
   linkType: soft
 
@@ -6909,7 +6909,7 @@ __metadata:
     react-native-reanimated: 2.14.4
     react-native-safe-area-context: ^4.5.0
     react-redux: 7.2.2
-    typescript: 4.9.3
+    typescript: 4.9.5
   languageName: unknown
   linkType: soft
 
@@ -7049,7 +7049,7 @@ __metadata:
   dependencies:
     "@trezor/utils": "workspace:*"
     jest: ^26.6.3
-    typescript: 4.9.3
+    typescript: 4.9.5
   languageName: unknown
   linkType: soft
 
@@ -7063,8 +7063,8 @@ __metadata:
     jest: ^26.6.3
     node-fetch: ^2.6.7
     rimraf: ^3.0.2
-    tsx: ^3.8.2
-    typescript: 4.9.3
+    tsx: ^3.12.3
+    typescript: 4.9.5
   languageName: unknown
   linkType: soft
 
@@ -7083,9 +7083,8 @@ __metadata:
     ripple-lib: 1.10.0
     socks-proxy-agent: 6.1.1
     tiny-worker: ^2.3.0
-    ts-loader: ^9.3.1
-    tsx: ^3.8.2
-    typescript: 4.9.3
+    tsx: ^3.12.3
+    typescript: 4.9.5
     webpack: ^5.75.0
     webpack-cli: ^5.0.0
     webpack-dev-server: ^4.11.1
@@ -7153,8 +7152,7 @@ __metadata:
     stylelint-config-recommended: ^9.0.0
     stylelint-config-styled-components: ^0.1.1
     stylelint-processor-styled-components: ^1.10.0
-    ts-loader: ^9.3.1
-    typescript: 4.9.3
+    typescript: 4.9.5
     typescript-styled-plugin: ^0.18.2
     zxcvbn: ^4.4.2
   peerDependencies:
@@ -7178,8 +7176,8 @@ __metadata:
   dependencies:
     jest: ^26.6.3
     rimraf: ^3.0.2
-    tsx: ^3.8.2
-    typescript: 4.9.3
+    tsx: ^3.12.3
+    typescript: 4.9.5
   languageName: unknown
   linkType: soft
 
@@ -7214,8 +7212,7 @@ __metadata:
     rimraf: ^3.0.2
     stringify-object: ^3.3.0
     styled-components: ^5.3.6
-    ts-loader: ^9.3.1
-    typescript: 4.9.3
+    typescript: 4.9.5
     webpack: ^5.75.0
     webpack-cli: ^5.0.0
     webpack-dev-server: ^4.11.1
@@ -7232,7 +7229,7 @@ __metadata:
     jest: ^26.6.3
     rimraf: ^3.0.2
     terser-webpack-plugin: ^5.3.6
-    typescript: 4.9.3
+    typescript: 4.9.5
     webpack: ^5.75.0
     webpack-cli: ^5.0.0
     worker-loader: ^3.0.8
@@ -7246,7 +7243,7 @@ __metadata:
     "@metamask/eth-sig-util": ^5.0.2
     jest: ^26.6.3
     rimraf: ^3.0.2
-    typescript: 4.9.3
+    typescript: 4.9.5
   peerDependencies:
     "@metamask/eth-sig-util": ^5.0.2
   languageName: unknown
@@ -7260,7 +7257,7 @@ __metadata:
     jest: ^26.6.3
     rimraf: ^3.0.2
     stellar-sdk: ^10.4.0
-    typescript: 4.9.3
+    typescript: 4.9.5
   peerDependencies:
     "@trezor/connect": 9.x.x
     stellar-sdk: ^10.4.0
@@ -7284,7 +7281,7 @@ __metadata:
     jest: ^26.6.3
     playwright: ^1.22.2
     rimraf: ^3.0.2
-    typescript: 4.9.3
+    typescript: 4.9.5
     webpack: ^5.75.0
     webpack-cli: ^5.0.0
     webpack-dev-server: ^4.11.1
@@ -7309,7 +7306,7 @@ __metadata:
     "@types/styled-components": ^5.1.25
     jest: ^26.6.3
     react-intl: ^6.2.8
-    typescript: 4.9.3
+    typescript: 4.9.5
   peerDependencies:
     react: 18.2.0
     styled-components: ^5.3.6
@@ -7328,8 +7325,8 @@ __metadata:
     jest: ^26.6.3
     playwright: ^1.22.2
     rimraf: ^3.0.2
-    tsx: ^3.8.2
-    typescript: 4.9.3
+    tsx: ^3.12.3
+    typescript: 4.9.5
     webpack: ^5.75.0
     webpack-cli: ^5.0.0
     xvfb-maybe: ^0.2.1
@@ -7365,11 +7362,12 @@ __metadata:
     karma-webpack: ^5.0.0
     parse-uri: 1.0.7
     randombytes: 2.1.0
-    rimraf: ^3.0.2
+    rimraf: ^4.1.2
+    ts-loader: ^9.4.2
     ts-node: ^10.9.1
     tslib: 2.5.0
-    tsx: ^3.8.2
-    typescript: 4.9.3
+    tsx: ^3.12.3
+    typescript: 4.9.5
   languageName: unknown
   linkType: soft
 
@@ -7392,7 +7390,7 @@ __metadata:
   resolution: "@trezor/dom-utils@workspace:packages/dom-utils"
   dependencies:
     jest: ^26.6.3
-    typescript: 4.9.3
+    typescript: 4.9.5
   languageName: unknown
   linkType: soft
 
@@ -7418,8 +7416,8 @@ __metadata:
     react-native: 0.71.2
     react-native-reanimated: ^2.14.4
     svgo: 3.0.2
-    tsx: ^3.8.2
-    typescript: 4.9.3
+    tsx: ^3.12.3
+    typescript: 4.9.5
   languageName: unknown
   linkType: soft
 
@@ -7449,8 +7447,8 @@ __metadata:
     jest: ^26.6.3
     json-schema-to-typescript: ^11.0.2
     jws: ^4.0.0
-    tsx: ^3.8.2
-    typescript: 4.9.3
+    tsx: ^3.12.3
+    typescript: 4.9.5
   languageName: unknown
   linkType: soft
 
@@ -7462,7 +7460,7 @@ __metadata:
     "@trezor/utils": "workspace:*"
     jest: ^26.6.3
     react: 18.2.0
-    typescript: 4.9.3
+    typescript: 4.9.5
   languageName: unknown
   linkType: soft
 
@@ -7476,7 +7474,7 @@ __metadata:
     rimraf: ^3.0.2
     socks-proxy-agent: 6.1.1
     ts-node: ^10.9.1
-    typescript: 4.9.3
+    typescript: 4.9.5
   languageName: unknown
   linkType: soft
 
@@ -7492,7 +7490,7 @@ __metadata:
     minimatch: ^5.1.0
     prettier: 2.8.4
     sort-package-json: ^1.57.0
-    typescript: 4.9.3
+    typescript: 4.9.5
     yargs: 17.6.2
   languageName: unknown
   linkType: soft
@@ -7519,8 +7517,8 @@ __metadata:
     polished: ^4.2.2
     react: 18.2.0
     react-fela: ^12.2.1
-    react-native: 0.71.2
-    typescript: 4.9.3
+    react-native: 0.70.5
+    typescript: 4.9.5
   languageName: unknown
   linkType: soft
 
@@ -7530,7 +7528,7 @@ __metadata:
   dependencies:
     "@trezor/analytics": "workspace:*"
     jest: ^26.6.3
-    typescript: 4.9.3
+    typescript: 4.9.5
   languageName: unknown
   linkType: soft
 
@@ -7558,8 +7556,7 @@ __metadata:
     stream-browserify: ^3.0.0
     style-loader: ^3.3.1
     terser-webpack-plugin: ^5.3.6
-    ts-loader: ^9.3.1
-    typescript: 4.9.3
+    typescript: 4.9.5
     webpack: ^5.75.0
     webpack-bundle-analyzer: ^4.7.0
     webpack-merge: ^5.8.0
@@ -7590,8 +7587,8 @@ __metadata:
     postcss-modules-values: ^4.0.0
     simple-git: ^3.16.0
     style-loader: ^3.3.1
-    tsx: ^3.8.2
-    typescript: 4.9.3
+    tsx: ^3.12.3
+    typescript: 4.9.5
     ua-parser-js: ^1.0.33
     webpack: ^5.75.0
     webpack-cli: ^5.0.0
@@ -7604,7 +7601,7 @@ __metadata:
   dependencies:
     jest: ^26.6.3
     rimraf: ^3.0.2
-    typescript: 4.9.3
+    typescript: 4.9.5
   languageName: unknown
   linkType: soft
 
@@ -7634,7 +7631,7 @@ __metadata:
     react-redux: 7.2.2
     react-router-dom: ^5.2.0
     styled-components: ^5.3.6
-    typescript: 4.9.3
+    typescript: 4.9.5
   languageName: unknown
   linkType: soft
 
@@ -7673,8 +7670,8 @@ __metadata:
     playwright: ^1.22.2
     rimraf: ^3.0.2
     systeminformation: ^5.14.4
-    tsx: ^3.8.2
-    typescript: 4.9.3
+    tsx: ^3.12.3
+    typescript: 4.9.5
     xvfb-maybe: ^0.2.1
   languageName: unknown
   linkType: soft
@@ -7744,7 +7741,7 @@ __metadata:
     react-test-renderer: 18.2.0
     redux-persist: 6.0.0
     simple-plist: 1.3.1
-    typescript: 4.9.3
+    typescript: 4.9.5
   languageName: unknown
   linkType: soft
 
@@ -7756,7 +7753,7 @@ __metadata:
     broadcast-channel: ^4.18.1
     idb: ^7.1.1
     jest: ^26.6.3
-    typescript: 4.9.3
+    typescript: 4.9.5
   languageName: unknown
   linkType: soft
 
@@ -7794,8 +7791,8 @@ __metadata:
     react-router-dom: ^5.2.0
     rimraf: ^3.0.2
     styled-components: ^5.3.6
-    tsx: ^3.8.2
-    typescript: 4.9.3
+    tsx: ^3.12.3
+    typescript: 4.9.5
     webpack: ^5.75.0
     worker-loader: ^3.0.8
   languageName: unknown
@@ -7916,8 +7913,8 @@ __metadata:
     stylelint-config-recommended: ^9.0.0
     stylelint-config-styled-components: ^0.1.1
     trezor-address-validator: ^0.4.3
-    tsx: ^3.8.2
-    typescript: 4.9.3
+    tsx: ^3.12.3
+    typescript: 4.9.5
     typescript-styled-plugin: ^0.18.2
     uuid: ^9.0.0
     web3-utils: ^1.8.2
@@ -7931,7 +7928,7 @@ __metadata:
   dependencies:
     csstype: ^3.1.1
     jest: ^26.6.3
-    typescript: 4.9.3
+    typescript: 4.9.5
   languageName: unknown
   linkType: soft
 
@@ -7944,8 +7941,8 @@ __metadata:
     jest: ^26.6.3
     pod-install: ^0.1.38
     react: 18.2.0
-    react-native: 0.71.2
-    typescript: 4.9.3
+    react-native: 0.70.5
+    typescript: 4.9.5
   peerDependencies:
     react: "workspace:*"
     react-native: "workspace:*"
@@ -7968,8 +7965,8 @@ __metadata:
     protobufjs: ^6.11.3
     rimraf: ^3.0.2
     ts-node: ^10.9.1
-    tsx: ^3.8.2
-    typescript: 4.9.3
+    tsx: ^3.12.3
+    typescript: 4.9.5
   languageName: unknown
   linkType: soft
 
@@ -7988,7 +7985,7 @@ __metadata:
   resolution: "@trezor/type-utils@workspace:packages/type-utils"
   dependencies:
     jest: ^26.6.3
-    typescript: 4.9.3
+    typescript: 4.9.5
   languageName: unknown
   linkType: soft
 
@@ -7998,7 +7995,7 @@ __metadata:
   dependencies:
     jest: ^26.6.3
     node-fetch: ^2.6.7
-    typescript: 4.9.3
+    typescript: 4.9.5
   languageName: unknown
   linkType: soft
 
@@ -8008,8 +8005,8 @@ __metadata:
   dependencies:
     jest: ^26.6.3
     rimraf: ^3.0.2
-    tsx: ^3.8.2
-    typescript: 4.9.3
+    tsx: ^3.12.3
+    typescript: 4.9.5
   languageName: unknown
   linkType: soft
 
@@ -8041,9 +8038,9 @@ __metadata:
     pushdata-bitcoin: ^1.0.1
     rimraf: ^3.0.2
     tiny-secp256k1: ^1.1.6
-    tsx: ^3.8.2
+    tsx: ^3.12.3
     typeforce: ^1.18.0
-    typescript: 4.9.3
+    typescript: 4.9.5
     varuint-bitcoin: ^1.1.2
     wif: ^2.0.6
   languageName: unknown
@@ -8055,7 +8052,7 @@ __metadata:
   dependencies:
     "@trezor/utils": "workspace:*"
     jest: ^26.6.3
-    typescript: 4.9.3
+    typescript: 4.9.5
     yup: ^0.32.11
   languageName: unknown
   linkType: soft
@@ -15267,7 +15264,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"enhanced-resolve@npm:^5.0.0, enhanced-resolve@npm:^5.10.0":
+"enhanced-resolve@npm:^5.0.0":
+  version: 5.12.0
+  resolution: "enhanced-resolve@npm:5.12.0"
+  dependencies:
+    graceful-fs: ^4.2.4
+    tapable: ^2.2.0
+  checksum: bf3f787facaf4ce3439bef59d148646344e372bef5557f0d37ea8aa02c51f50a925cd1f07b8d338f18992c29f544ec235a8c64bcdb56030196c48832a5494174
+  languageName: node
+  linkType: hard
+
+"enhanced-resolve@npm:^5.10.0":
   version: 5.10.0
   resolution: "enhanced-resolve@npm:5.10.0"
   dependencies:
@@ -18049,6 +18056,13 @@ __metadata:
   version: 4.2.0
   resolution: "get-tsconfig@npm:4.2.0"
   checksum: dfae3520bee20b71a651fdc93fd29901013dfc4df9fb41a423cf3efb4468c79087ef9d3bc3d0625b6486397730991d2a749eed4985d8ab411f481319c3e931e5
+  languageName: node
+  linkType: hard
+
+"get-tsconfig@npm:^4.4.0":
+  version: 4.4.0
+  resolution: "get-tsconfig@npm:4.4.0"
+  checksum: e193558b4f0c84c81ae9688cf5b9950dc0b341e44f91b002713fd0c37cfb73108e1cd9998ed540bcc423f193fde32cc58a15e99dd469f5158a2eb4a148611176
   languageName: node
   linkType: hard
 
@@ -31077,8 +31091,8 @@ __metadata:
     ts-jest: ^26.5.6
     ts-node: ^10.9.1
     tsconfig-paths: ^4.1.0
-    tsx: ^3.8.2
-    typescript: 4.9.3
+    tsx: ^3.12.3
+    typescript: 4.9.5
     version-bump-prompt: ^6.1.0
   dependenciesMeta:
     core-js-pure:
@@ -31188,9 +31202,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ts-loader@npm:^9.3.1":
-  version: 9.4.1
-  resolution: "ts-loader@npm:9.4.1"
+"ts-loader@npm:^9.4.2":
+  version: 9.4.2
+  resolution: "ts-loader@npm:9.4.2"
   dependencies:
     chalk: ^4.1.0
     enhanced-resolve: ^5.0.0
@@ -31199,7 +31213,7 @@ __metadata:
   peerDependencies:
     typescript: "*"
     webpack: ^5.0.0
-  checksum: b8947f6d396621cc3f6ba8d4c14fa09eba03c4b7eeabbc429481e923a973c244fb80feb44e900f03fc1010755a6bf14fc561c574fb79e324f39b5b6ef1dcca6c
+  checksum: 6f306ee4c615c2a159fb177561e3fb86ca2cbd6c641e710d408a64b4978e1ff3f2c9733df07bff27d3f82efbfa7c287523d4306049510c7485ac2669a9c37eb0
   languageName: node
   linkType: hard
 
@@ -31313,20 +31327,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tsx@npm:^3.8.2":
-  version: 3.10.1
-  resolution: "tsx@npm:3.10.1"
+"tsx@npm:^3.12.3":
+  version: 3.12.3
+  resolution: "tsx@npm:3.12.3"
   dependencies:
-    "@esbuild-kit/cjs-loader": ^2.4.0
+    "@esbuild-kit/cjs-loader": ^2.4.2
     "@esbuild-kit/core-utils": ^3.0.0
-    "@esbuild-kit/esm-loader": ^2.5.0
+    "@esbuild-kit/esm-loader": ^2.5.5
     fsevents: ~2.3.2
   dependenciesMeta:
     fsevents:
       optional: true
   bin:
     tsx: dist/cli.js
-  checksum: 73374106476f74697797cdb730d7f1305abbccd5db73321719a817cdff93d43389304ba072053353bae28a41618d69bcab2b6c9cc0dd0e33f7deda890aaf8c36
+  checksum: fd04a164d543ff7df030e253280b509257f2d32f9d439d26f33beb1a7c23e91a36fd8d86f150e94187e0598ab58b12e6bc5b7c6798ef0bcc8ffcbc65a31597d2
   languageName: node
   linkType: hard
 
@@ -31485,23 +31499,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:4.9.3":
-  version: 4.9.3
-  resolution: "typescript@npm:4.9.3"
+"typescript@npm:4.9.5":
+  version: 4.9.5
+  resolution: "typescript@npm:4.9.5"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 17b8f816050b412403e38d48eef0e893deb6be522d6dc7caf105e54a72e34daf6835c447735fd2b28b66784e72bfbf87f627abb4818a8e43d1fa8106396128dc
+  checksum: ee000bc26848147ad423b581bd250075662a354d84f0e06eb76d3b892328d8d4440b7487b5a83e851b12b255f55d71835b008a66cbf8f255a11e4400159237db
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@npm%3A4.9.3#~builtin<compat/typescript>":
-  version: 4.9.3
-  resolution: "typescript@patch:typescript@npm%3A4.9.3#~builtin<compat/typescript>::version=4.9.3&hash=f456af"
+"typescript@patch:typescript@npm%3A4.9.5#~builtin<compat/typescript>":
+  version: 4.9.5
+  resolution: "typescript@patch:typescript@npm%3A4.9.5#~builtin<compat/typescript>::version=4.9.5&hash=f456af"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: ef65c22622d864497d0a0c5db693523329b3284c15fe632e93ad9aa059e8dc38ef3bd767d6f26b1e5ecf9446f49bd0f6c4e5714a2eeaf352805dc002479843d1
+  checksum: 2eee5c37cad4390385db5db5a8e81470e42e8f1401b0358d7390095d6f681b410f2c4a0c496c6ff9ebd775423c7785cdace7bcdad76c7bee283df3d9718c0f20
   languageName: node
   linkType: hard
 
