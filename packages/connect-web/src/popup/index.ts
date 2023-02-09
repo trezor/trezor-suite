@@ -264,6 +264,7 @@ export class PopupManager extends EventEmitter {
             this.emit(POPUP.CLOSED, errorMessage ? `Popup error: ${errorMessage}` : null);
             this.close();
         } else if (data.type === POPUP.LOADED) {
+            console.log('=========== popup loaded', data)
             if (this.popupPromise) {
                 this.popupPromise.resolve();
             }

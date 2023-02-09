@@ -38,6 +38,14 @@ const escapeHtml = (payload: any) => {
 // handle messages from window.opener and iframe
 const handleMessage = (event: MessageEvent<PopupEvent | UiEvent>) => {
     const { data } = event;
+
+    console.log('============ handle message ===================');
+    console.log(event);
+
+    if (!event.isTrusted) {
+        console.log('============ !isTrusted ===================');
+        return;
+    }
     if (!data) return;
 
     // This is message from the window.opener

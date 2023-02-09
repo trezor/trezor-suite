@@ -137,11 +137,12 @@ export const postMessage = (message: CoreMessage) => {
 };
 
 export const postMessageToParent = (message: CoreMessage) => {
+    console.log('post message', window);
     if (window.opener) {
         // post message to parent and wait for POPUP.INIT message
-        window.opener.postMessage(message, '*');
+        window.opener.postMessage(message, window.opener.origin);
     } else {
-        // webextensions doesn't have "window.opener" reference and expect this message in "content-script" above popup [see: ./src/plugins/webextension/trezor-content-script.js]
+        // webextensions don't have "window.opener" reference and expect this message in "content-script" above popup [see: packages/connect-web/src/webextension/trezor-content-script.js]
         // future communication channel with webextension iframe will be "ChromePort"
 
         // and electron (electron which uses connect hosted outside)
