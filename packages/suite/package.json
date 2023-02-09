@@ -63,7 +63,7 @@
         "@trezor/validation": "workspace:*",
         "bignumber.js": "^9.1.1",
         "date-fns": "^2.29.3",
-        "dropbox": "^10.32.0",
+        "dropbox": "^10.34.0",
         "ethereumjs-util": "^7.1.5",
         "file-saver": "^2.0.5",
         "framer-motion": "^9.0.2",

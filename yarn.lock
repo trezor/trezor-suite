@@ -7889,7 +7889,7 @@ __metadata:
     bignumber.js: ^9.1.1
     canvas: 2.10.2
     date-fns: ^2.29.3
-    dropbox: ^10.32.0
+    dropbox: ^10.34.0
     ethereumjs-util: ^7.1.5
     file-saver: ^2.0.5
     framer-motion: ^9.0.2
@@ -14976,7 +14976,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dropbox@npm:^10.32.0":
+"dropbox@npm:^10.32.0, dropbox@npm:^10.34.0":
   version: 10.34.0
   resolution: "dropbox@npm:10.34.0"
   dependencies:
