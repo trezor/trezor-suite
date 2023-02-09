@@ -13,6 +13,7 @@ import {
 } from '../utils';
 import { AxisLabel } from './AxisLabel';
 import { GraphError } from './GraphError';
+import { SelectionDotWithLine } from './SelectionDotWithLine';
 
 type GraphProps<TGraphPoint extends GraphPoint> = {
     points: TGraphPoint[];
@@ -111,10 +112,12 @@ export const Graph = <TGraphPoint extends EnhancedGraphPoint>({
                 animated={animated}
                 verticalPadding={20}
                 enablePanGesture
+                SelectionDot={SelectionDotWithLine}
                 TopAxisLabel={axisLabels?.TopAxisLabel}
                 BottomAxisLabel={axisLabels?.BottomAxisLabel}
                 onPointSelected={onPointSelected as any /* because of ExtendedGraphPoint */}
                 onGestureEnd={onGestureEnd}
+                panGestureDelay={0}
             />
             {loading && (
                 <Box style={applyStyle(graphMessageStyleContainer)}>
