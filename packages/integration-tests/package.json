@@ -7,8 +7,8 @@
         "test:connect:webextension": "node ./projects/connect-webextension/test.js"
     },
     "devDependencies": {
-        "@playwright/test": "^1.22.2",
+        "@playwright/test": "^1.30.0",
         "@trezor/trezor-user-env-link": "workspace:*",
-        "playwright": "^1.22.2"
+        "playwright": "^1.30.0"
     }
 }

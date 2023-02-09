@@ -2191,6 +2191,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@esbuild/android-arm64@npm:0.17.7":
+  version: 0.17.7
+  resolution: "@esbuild/android-arm64@npm:0.17.7"
+  conditions: os=android & cpu=arm64
+  languageName: node
+  linkType: hard
+
 "@esbuild/android-arm@npm:0.15.15":
   version: 0.15.15
   resolution: "@esbuild/android-arm@npm:0.15.15"
@@ -2198,10 +2205,157 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@esbuild/android-arm@npm:0.17.7":
+  version: 0.17.7
+  resolution: "@esbuild/android-arm@npm:0.17.7"
+  conditions: os=android & cpu=arm
+  languageName: node
+  linkType: hard
+
+"@esbuild/android-x64@npm:0.17.7":
+  version: 0.17.7
+  resolution: "@esbuild/android-x64@npm:0.17.7"
+  conditions: os=android & cpu=x64
+  languageName: node
+  linkType: hard
+
+"@esbuild/darwin-arm64@npm:0.17.7":
+  version: 0.17.7
+  resolution: "@esbuild/darwin-arm64@npm:0.17.7"
+  conditions: os=darwin & cpu=arm64
+  languageName: node
+  linkType: hard
+
+"@esbuild/darwin-x64@npm:0.17.7":
+  version: 0.17.7
+  resolution: "@esbuild/darwin-x64@npm:0.17.7"
+  conditions: os=darwin & cpu=x64
+  languageName: node
+  linkType: hard
+
+"@esbuild/freebsd-arm64@npm:0.17.7":
+  version: 0.17.7
+  resolution: "@esbuild/freebsd-arm64@npm:0.17.7"
+  conditions: os=freebsd & cpu=arm64
+  languageName: node
+  linkType: hard
+
+"@esbuild/freebsd-x64@npm:0.17.7":
+  version: 0.17.7
+  resolution: "@esbuild/freebsd-x64@npm:0.17.7"
+  conditions: os=freebsd & cpu=x64
+  languageName: node
+  linkType: hard
+
+"@esbuild/linux-arm64@npm:0.17.7":
+  version: 0.17.7
+  resolution: "@esbuild/linux-arm64@npm:0.17.7"
+  conditions: os=linux & cpu=arm64
+  languageName: node
+  linkType: hard
+
+"@esbuild/linux-arm@npm:0.17.7":
+  version: 0.17.7
+  resolution: "@esbuild/linux-arm@npm:0.17.7"
+  conditions: os=linux & cpu=arm
+  languageName: node
+  linkType: hard
+
+"@esbuild/linux-ia32@npm:0.17.7":
+  version: 0.17.7
+  resolution: "@esbuild/linux-ia32@npm:0.17.7"
+  conditions: os=linux & cpu=ia32
+  languageName: node
+  linkType: hard
+
 "@esbuild/linux-loong64@npm:0.15.15":
   version: 0.15.15
   resolution: "@esbuild/linux-loong64@npm:0.15.15"
   conditions: os=linux & cpu=loong64
+  languageName: node
+  linkType: hard
+
+"@esbuild/linux-loong64@npm:0.17.7":
+  version: 0.17.7
+  resolution: "@esbuild/linux-loong64@npm:0.17.7"
+  conditions: os=linux & cpu=loong64
+  languageName: node
+  linkType: hard
+
+"@esbuild/linux-mips64el@npm:0.17.7":
+  version: 0.17.7
+  resolution: "@esbuild/linux-mips64el@npm:0.17.7"
+  conditions: os=linux & cpu=mips64el
+  languageName: node
+  linkType: hard
+
+"@esbuild/linux-ppc64@npm:0.17.7":
+  version: 0.17.7
+  resolution: "@esbuild/linux-ppc64@npm:0.17.7"
+  conditions: os=linux & cpu=ppc64
+  languageName: node
+  linkType: hard
+
+"@esbuild/linux-riscv64@npm:0.17.7":
+  version: 0.17.7
+  resolution: "@esbuild/linux-riscv64@npm:0.17.7"
+  conditions: os=linux & cpu=riscv64
+  languageName: node
+  linkType: hard
+
+"@esbuild/linux-s390x@npm:0.17.7":
+  version: 0.17.7
+  resolution: "@esbuild/linux-s390x@npm:0.17.7"
+  conditions: os=linux & cpu=s390x
+  languageName: node
+  linkType: hard
+
+"@esbuild/linux-x64@npm:0.17.7":
+  version: 0.17.7
+  resolution: "@esbuild/linux-x64@npm:0.17.7"
+  conditions: os=linux & cpu=x64
+  languageName: node
+  linkType: hard
+
+"@esbuild/netbsd-x64@npm:0.17.7":
+  version: 0.17.7
+  resolution: "@esbuild/netbsd-x64@npm:0.17.7"
+  conditions: os=netbsd & cpu=x64
+  languageName: node
+  linkType: hard
+
+"@esbuild/openbsd-x64@npm:0.17.7":
+  version: 0.17.7
+  resolution: "@esbuild/openbsd-x64@npm:0.17.7"
+  conditions: os=openbsd & cpu=x64
+  languageName: node
+  linkType: hard
+
+"@esbuild/sunos-x64@npm:0.17.7":
+  version: 0.17.7
+  resolution: "@esbuild/sunos-x64@npm:0.17.7"
+  conditions: os=sunos & cpu=x64
+  languageName: node
+  linkType: hard
+
+"@esbuild/win32-arm64@npm:0.17.7":
+  version: 0.17.7
+  resolution: "@esbuild/win32-arm64@npm:0.17.7"
+  conditions: os=win32 & cpu=arm64
+  languageName: node
+  linkType: hard
+
+"@esbuild/win32-ia32@npm:0.17.7":
+  version: 0.17.7
+  resolution: "@esbuild/win32-ia32@npm:0.17.7"
+  conditions: os=win32 & cpu=ia32
+  languageName: node
+  linkType: hard
+
+"@esbuild/win32-x64@npm:0.17.7":
+  version: 0.17.7
+  resolution: "@esbuild/win32-x64@npm:0.17.7"
+  conditions: os=win32 & cpu=x64
   languageName: node
   linkType: hard
 
@@ -4243,15 +4397,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@playwright/test@npm:^1.22.2":
-  version: 1.27.0
-  resolution: "@playwright/test@npm:1.27.0"
+"@playwright/test@npm:^1.30.0":
+  version: 1.30.0
+  resolution: "@playwright/test@npm:1.30.0"
   dependencies:
     "@types/node": "*"
-    playwright-core: 1.27.0
+    playwright-core: 1.30.0
   bin:
     playwright: cli.js
-  checksum: ee72ba5f00b0ebc344e2ea710f8c8c11b82f187bbce4f90918a93081b24c50ac18dc4b6f0b56509a06c17d9bf6a0e4482cf62d9021a6db05cd403b5bcc65e13f
+  checksum: 777432ac9cf3d0341fcd8dd265cb4c0775619d0ef48252b32a7c4d632d8038449756ec34bec873828cadbc08ba634e81176cb193304d34e699472771b7fb4d1e
   languageName: node
   linkType: hard
 
@@ -7077,7 +7231,7 @@ __metadata:
     express: ^4.18.2
     jest: ^26.6.3
     node-fetch: ^2.6.7
-    rimraf: ^3.0.2
+    rimraf: ^4.1.2
     tsx: ^3.12.3
     typescript: 4.9.5
   languageName: unknown
@@ -7094,7 +7248,7 @@ __metadata:
     events: ^3.3.0
     html-webpack-plugin: ^5.5.0
     jest: ^26.6.3
-    rimraf: ^3.0.2
+    rimraf: ^4.1.2
     ripple-lib: 1.10.0
     socks-proxy-agent: 6.1.1
     tiny-worker: ^2.3.0
@@ -7121,7 +7275,7 @@ __metadata:
     golomb: 1.2.0
     jest: ^26.6.3
     n64: ^0.2.10
-    rimraf: ^3.0.2
+    rimraf: ^4.1.2
     typescript: 4.7.4
   languageName: unknown
   linkType: soft
@@ -7190,7 +7344,7 @@ __metadata:
   resolution: "@trezor/connect-common@workspace:packages/connect-common"
   dependencies:
     jest: ^26.6.3
-    rimraf: ^3.0.2
+    rimraf: ^4.1.2
     tsx: ^3.12.3
     typescript: 4.9.5
   languageName: unknown
@@ -7224,7 +7378,7 @@ __metadata:
     redux: ^4.2.0
     redux-logger: ^3.0.6
     redux-thunk: ^2.3.0
-    rimraf: ^3.0.2
+    rimraf: ^4.1.2
     stringify-object: ^3.3.0
     styled-components: ^5.3.6
     typescript: 4.9.5
@@ -7242,7 +7396,7 @@ __metadata:
     copy-webpack-plugin: ^11.0.0
     html-webpack-plugin: ^5.5.0
     jest: ^26.6.3
-    rimraf: ^3.0.2
+    rimraf: ^4.1.2
     terser-webpack-plugin: ^5.3.6
     typescript: 4.9.5
     webpack: ^5.75.0
@@ -7257,7 +7411,7 @@ __metadata:
   dependencies:
     "@metamask/eth-sig-util": ^5.0.2
     jest: ^26.6.3
-    rimraf: ^3.0.2
+    rimraf: ^4.1.2
     typescript: 4.9.5
   peerDependencies:
     "@metamask/eth-sig-util": ^5.0.2
@@ -7270,7 +7424,7 @@ __metadata:
   dependencies:
     bignumber.js: ^9.1.1
     jest: ^26.6.3
-    rimraf: ^3.0.2
+    rimraf: ^4.1.2
     stellar-sdk: ^10.4.0
     typescript: 4.9.5
   peerDependencies:
@@ -7283,7 +7437,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/connect-popup@workspace:packages/connect-popup"
   dependencies:
-    "@playwright/test": ^1.22.2
+    "@playwright/test": ^1.30.0
     "@trezor/components": "workspace:*"
     "@trezor/connect": "workspace:9.0.6"
     "@trezor/connect-analytics": "workspace:*"
@@ -7294,8 +7448,8 @@ __metadata:
     "@types/react": 18.0.27
     "@types/styled-components": ^5.1.25
     jest: ^26.6.3
-    playwright: ^1.22.2
-    rimraf: ^3.0.2
+    playwright: ^1.30.0
+    rimraf: ^4.1.2
     typescript: 4.9.5
     webpack: ^5.75.0
     webpack-cli: ^5.0.0
@@ -7338,8 +7492,8 @@ __metadata:
     "@types/w3c-web-usb": ^1.0.5
     events: ^3.3.0
     jest: ^26.6.3
-    playwright: ^1.22.2
-    rimraf: ^3.0.2
+    playwright: ^1.30.0
+    rimraf: ^4.1.2
     tsx: ^3.12.3
     typescript: 4.9.5
     webpack: ^5.75.0
@@ -7440,9 +7594,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/integration-tests@workspace:packages/integration-tests"
   dependencies:
-    "@playwright/test": ^1.22.2
+    "@playwright/test": ^1.30.0
     "@trezor/trezor-user-env-link": "workspace:*"
-    playwright: ^1.22.2
+    playwright: ^1.30.0
   languageName: unknown
   linkType: soft
 
@@ -7486,7 +7640,7 @@ __metadata:
     "@trezor/utils": "workspace:*"
     "@types/node-fetch": ^2.6.2
     jest: ^26.6.3
-    rimraf: ^3.0.2
+    rimraf: ^4.1.2
     socks-proxy-agent: 6.1.1
     ts-node: ^10.9.1
     typescript: 4.9.5
@@ -7615,7 +7769,7 @@ __metadata:
   resolution: "@trezor/suite-desktop-api@workspace:packages/suite-desktop-api"
   dependencies:
     jest: ^26.6.3
-    rimraf: ^3.0.2
+    rimraf: ^4.1.2
     typescript: 4.9.5
   languageName: unknown
   linkType: soft
@@ -7655,7 +7809,7 @@ __metadata:
   resolution: "@trezor/suite-desktop@workspace:packages/suite-desktop"
   dependencies:
     "@electron/notarize": 1.2.3
-    "@playwright/test": ^1.22.2
+    "@playwright/test": ^1.30.0
     "@sentry/electron": 3.0.0
     "@suite-common/sentry": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
@@ -7672,19 +7826,19 @@ __metadata:
     "@types/electron-localshortcut": ^3.1.0
     "@types/node-fetch": ^2.6.2
     chalk: ^4.1.2
-    electron: 20.3.5
+    electron: 20.3.12
     electron-builder: 23.6.0
     electron-localshortcut: ^3.2.1
     electron-store: ^8.1.0
     electron-updater: 5.3.0
-    esbuild: ^0.15.15
-    glob: ^8.0.3
+    esbuild: ^0.17.6
+    glob: ^8.1.0
     jest: ^26.6.3
     node-fetch: ^2.6.7
     openpgp: ^5.5.0
-    playwright: ^1.22.2
-    rimraf: ^3.0.2
-    systeminformation: ^5.14.4
+    playwright: ^1.30.0
+    rimraf: ^4.1.2
+    systeminformation: ^5.17.8
     tsx: ^3.12.3
     typescript: 4.9.5
     xvfb-maybe: ^0.2.1
@@ -7804,7 +7958,7 @@ __metadata:
     react-redux: 7.2.2
     react-router: ^5.2.0
     react-router-dom: ^5.2.0
-    rimraf: ^3.0.2
+    rimraf: ^4.1.2
     styled-components: ^5.3.6
     tsx: ^3.12.3
     typescript: 4.9.5
@@ -7978,7 +8132,7 @@ __metadata:
     long: ^4.0.0
     prettier: 2.8.4
     protobufjs: ^6.11.3
-    rimraf: ^3.0.2
+    rimraf: ^4.1.2
     ts-node: ^10.9.1
     tsx: ^3.12.3
     typescript: 4.9.5
@@ -8019,7 +8173,7 @@ __metadata:
   resolution: "@trezor/utils@workspace:packages/utils"
   dependencies:
     jest: ^26.6.3
-    rimraf: ^3.0.2
+    rimraf: ^4.1.2
     tsx: ^3.12.3
     typescript: 4.9.5
   languageName: unknown
@@ -8051,7 +8205,7 @@ __metadata:
     jest: ^26.6.3
     minimaldata: ^1.0.2
     pushdata-bitcoin: ^1.0.1
-    rimraf: ^3.0.2
+    rimraf: ^4.1.2
     tiny-secp256k1: ^1.1.6
     tsx: ^3.12.3
     typeforce: ^1.18.0
@@ -15152,16 +15306,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"electron@npm:20.3.5":
-  version: 20.3.5
-  resolution: "electron@npm:20.3.5"
+"electron@npm:20.3.12":
+  version: 20.3.12
+  resolution: "electron@npm:20.3.12"
   dependencies:
     "@electron/get": ^1.14.1
     "@types/node": ^16.11.26
     extract-zip: ^2.0.1
   bin:
     electron: cli.js
-  checksum: 8fcc1e83acbdda3c5e3d729b88a5794d8d0297cc3d25470f40553d1072cff96a0c95cd1591360fc6101ac7db45869dc6b413a6181e3fcb64689fb6dfbc859364
+  checksum: 5f98c73836fcf5dcb542f0a3ee562a548cdb8d17efbb3c6142d82657b67539619cd07e4931675c942cefa5efb825677831e52e7d67602add2c2480e0e9916700
   languageName: node
   linkType: hard
 
@@ -15741,7 +15895,84 @@ __metadata:
   languageName: node
   linkType: hard
 
-"esbuild@npm:^0.15.15, esbuild@npm:~0.15.10":
+"esbuild@npm:^0.17.6":
+  version: 0.17.7
+  resolution: "esbuild@npm:0.17.7"
+  dependencies:
+    "@esbuild/android-arm": 0.17.7
+    "@esbuild/android-arm64": 0.17.7
+    "@esbuild/android-x64": 0.17.7
+    "@esbuild/darwin-arm64": 0.17.7
+    "@esbuild/darwin-x64": 0.17.7
+    "@esbuild/freebsd-arm64": 0.17.7
+    "@esbuild/freebsd-x64": 0.17.7
+    "@esbuild/linux-arm": 0.17.7
+    "@esbuild/linux-arm64": 0.17.7
+    "@esbuild/linux-ia32": 0.17.7
+    "@esbuild/linux-loong64": 0.17.7
+    "@esbuild/linux-mips64el": 0.17.7
+    "@esbuild/linux-ppc64": 0.17.7
+    "@esbuild/linux-riscv64": 0.17.7
+    "@esbuild/linux-s390x": 0.17.7
+    "@esbuild/linux-x64": 0.17.7
+    "@esbuild/netbsd-x64": 0.17.7
+    "@esbuild/openbsd-x64": 0.17.7
+    "@esbuild/sunos-x64": 0.17.7
+    "@esbuild/win32-arm64": 0.17.7
+    "@esbuild/win32-ia32": 0.17.7
+    "@esbuild/win32-x64": 0.17.7
+  dependenciesMeta:
+    "@esbuild/android-arm":
+      optional: true
+    "@esbuild/android-arm64":
+      optional: true
+    "@esbuild/android-x64":
+      optional: true
+    "@esbuild/darwin-arm64":
+      optional: true
+    "@esbuild/darwin-x64":
+      optional: true
+    "@esbuild/freebsd-arm64":
+      optional: true
+    "@esbuild/freebsd-x64":
+      optional: true
+    "@esbuild/linux-arm":
+      optional: true
+    "@esbuild/linux-arm64":
+      optional: true
+    "@esbuild/linux-ia32":
+      optional: true
+    "@esbuild/linux-loong64":
+      optional: true
+    "@esbuild/linux-mips64el":
+      optional: true
+    "@esbuild/linux-ppc64":
+      optional: true
+    "@esbuild/linux-riscv64":
+      optional: true
+    "@esbuild/linux-s390x":
+      optional: true
+    "@esbuild/linux-x64":
+      optional: true
+    "@esbuild/netbsd-x64":
+      optional: true
+    "@esbuild/openbsd-x64":
+      optional: true
+    "@esbuild/sunos-x64":
+      optional: true
+    "@esbuild/win32-arm64":
+      optional: true
+    "@esbuild/win32-ia32":
+      optional: true
+    "@esbuild/win32-x64":
+      optional: true
+  bin:
+    esbuild: bin/esbuild
+  checksum: 5b019eebf71db2133eae984be1fb1734b18aaa7e3b13e50318e52b4c35e042e9db00da3ca0f257f6efc6acf262ecbd1f00435709df7520316d344acf26e3c710
+  languageName: node
+  linkType: hard
+
+"esbuild@npm:~0.15.10":
   version: 0.15.15
   resolution: "esbuild@npm:0.15.15"
   dependencies:
@@ -18248,7 +18479,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"glob@npm:^8.0.1, glob@npm:^8.0.3":
+"glob@npm:^8.0.1":
   version: 8.0.3
   resolution: "glob@npm:8.0.3"
   dependencies:
@@ -18258,6 +18489,19 @@ __metadata:
     minimatch: ^5.0.1
     once: ^1.3.0
   checksum: 50bcdea19d8e79d8de5f460b1939ffc2b3299eac28deb502093fdca22a78efebc03e66bf54f0abc3d3d07d8134d19a32850288b7440d77e072aa55f9d33b18c5
+  languageName: node
+  linkType: hard
+
+"glob@npm:^8.1.0":
+  version: 8.1.0
+  resolution: "glob@npm:8.1.0"
+  dependencies:
+    fs.realpath: ^1.0.0
+    inflight: ^1.0.4
+    inherits: 2
+    minimatch: ^5.0.1
+    once: ^1.3.0
+  checksum: 92fbea3221a7d12075f26f0227abac435de868dd0736a17170663783296d0dd8d3d532a5672b4488a439bf5d7fb85cdd07c11185d6cd39184f0385cbdfb86a47
   languageName: node
   linkType: hard
 
@@ -25450,23 +25694,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"playwright-core@npm:1.27.0":
-  version: 1.27.0
-  resolution: "playwright-core@npm:1.27.0"
+"playwright-core@npm:1.30.0":
+  version: 1.30.0
+  resolution: "playwright-core@npm:1.30.0"
   bin:
     playwright: cli.js
-  checksum: e45565af0c33c34ccf7b513d8e84eda5101f0e12d495e9e1c2bfe16b675ddcdd8f064c449a1bd908365f2f126c8d40cc14bf95976e881e2e1620cd239240ed23
+  checksum: 4c5693f27245a1168f94708ecd8e1eb0d200de435b25cc07cfa25b97a094633818954dc00baf24e0ff551825f672050b83d1309362c1f97213fe8ebd2a147ed9
   languageName: node
   linkType: hard
 
-"playwright@npm:^1.22.2":
-  version: 1.27.0
-  resolution: "playwright@npm:1.27.0"
+"playwright@npm:^1.30.0":
+  version: 1.30.0
+  resolution: "playwright@npm:1.30.0"
   dependencies:
-    playwright-core: 1.27.0
+    playwright-core: 1.30.0
   bin:
     playwright: cli.js
-  checksum: 1843eae3b702234bdffe114212ff16549892cb0698cb21fd4148c3b64867beaa38dcea33faaa8e47d2b9c1dfad21d330a7ad67242e044124ca3ce493916edca6
+  checksum: 1987446ed07e25c0c6dedce8314209b49536eb4c7fa82e57e7fea9bd8128bacd08e49f9e89af30a647839bf2603b8c8321f50e23e334a11c1c29eedb838a81a3
   languageName: node
   linkType: hard
 
@@ -28292,6 +28536,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"rimraf@npm:^4.1.2":
+  version: 4.1.2
+  resolution: "rimraf@npm:4.1.2"
+  bin:
+    rimraf: dist/cjs/src/bin.js
+  checksum: 480b8147fd9bcbef3ac118f88a7b1169c3872977a3411a0c84df838bfc30e175a394c0db6f9619fc8b8a886a18c6d779d5e74f380a0075ecc710afaf81b3f50c
+  languageName: node
+  linkType: hard
+
 "rimraf@npm:~2.2.6":
   version: 2.2.8
   resolution: "rimraf@npm:2.2.8"
@@ -30464,12 +30717,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"systeminformation@npm:^5.14.4":
-  version: 5.14.4
-  resolution: "systeminformation@npm:5.14.4"
+"systeminformation@npm:^5.17.8":
+  version: 5.17.8
+  resolution: "systeminformation@npm:5.17.8"
   bin:
     systeminformation: lib/cli.js
-  checksum: 6ec87c701b7e9e5917fc4f4807ca8f78c1ec7c7cab486db867e9284c0328c66680ab3ab4c6653b1c3db0927ad7b560c6e6006c8fc5b8192e06db90ea49aa5e41
+  checksum: faea46485d646c304e1cf19956155345e1e2e644b605c40189851846b544e58a9937467b3e577151b54a54ed5310b625cca49665aa7ef1eb1bf8a8e3d7282d8d
   conditions: (os=darwin | os=linux | os=win32 | os=freebsd | os=openbsd | os=netbsd | os=sunos | os=android)
   languageName: node
   linkType: hard
@@ -31110,7 +31363,7 @@ __metadata:
     postinstall-postinstall: ^2.1.0
     prettier: 2.8.4
     prettier-eslint: ^15.0.1
-    rimraf: ^3.0.2
+    rimraf: ^4.1.2
     semver: ^7.3.8
     ts-jest: ^26.5.6
     ts-node: ^10.9.1

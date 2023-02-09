@@ -14,7 +14,7 @@
         "clean": "rimraf ./build-electron && yarn rimraf ./build && yarn rimraf ./dist",
         "build:ui": "yarn workspace @trezor/suite-build run build:desktop",
         "build:app": "NODE_ENV=production tsx scripts/build.ts && yarn build:app:electron",
-        "build:app:dev": "tsx scripts/build.ts",
+        "build:app:dev": "NODE_ENV=development tsx scripts/build.ts",
         "build:app:electron": "yarn electron-builder --c.extraMetadata.version=$(node -p \"require('../suite/package').suiteVersion\")",
         "build:linux": "yarn clean && yarn build:ui && yarn build:app --publish never --linux --x64 --arm64",
         "build:mac": "yarn clean && yarn build:ui && yarn build:app --publish never --mac --x64 --arm64",
@@ -33,7 +33,7 @@
         "productName": "Trezor Suite",
         "copyright": "Copyright © ${author}",
         "asar": true,
-        "electronVersion": "20.3.5",
+        "electronVersion": "20.3.12",
         "directories": {
             "output": "build-electron"
         },
@@ -235,21 +235,21 @@
         "electron-updater": "5.3.0",
         "node-fetch": "^2.6.7",
         "openpgp": "^5.5.0",
-        "systeminformation": "^5.14.4"
+        "systeminformation": "^5.17.8"
     },
     "devDependencies": {
         "@electron/notarize": "1.2.3",
-        "@playwright/test": "^1.22.2",
+        "@playwright/test": "^1.30.0",
         "@trezor/trezor-user-env-link": "workspace:*",
         "@types/electron-localshortcut": "^3.1.0",
         "@types/node-fetch": "^2.6.2",
-        "electron": "20.3.5",
+        "electron": "20.3.12",
         "electron-builder": "23.6.0",
-        "esbuild": "^0.15.15",
-        "glob": "^8.0.3",
+        "esbuild": "^0.17.6",
+        "glob": "^8.1.0",
         "jest": "^26.6.3",
-        "playwright": "^1.22.2",
-        "rimraf": "^3.0.2",
+        "playwright": "^1.30.0",
+        "rimraf": "^4.1.2",
         "tsx": "^3.12.3",
         "typescript": "4.9.5",
         "xvfb-maybe": "^0.2.1"
