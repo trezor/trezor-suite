@@ -37,12 +37,7 @@ export const TransactionListHeader = memo(({ accountKey }: AccountDetailHeaderPr
                 <>
                     <AccountDetailGraph accountKey={accountKey} />
                     <Box marginBottom="large" paddingHorizontal="medium">
-                        <Button
-                            iconName="receive"
-                            iconPosition="left"
-                            size="large"
-                            onPress={handleReceive}
-                        >
+                        <Button iconLeft="receive" size="large" onPress={handleReceive}>
                             Receive
                         </Button>
                     </Box>

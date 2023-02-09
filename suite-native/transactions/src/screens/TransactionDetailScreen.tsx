@@ -2,7 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { Linking } from 'react-native';
 
-import { Box, Button, Text, VStack } from '@suite-native/atoms';
+import { Button, VStack } from '@suite-native/atoms';
 import {
     RootStackParamList,
     RootStackRoutes,
@@ -54,14 +54,12 @@ export const TransactionDetailScreen = ({
             </VStack>
             <TransactionDetailSheets transaction={transaction} />
             <Button
+                iconLeft="arrowUpRight"
                 onPress={handleOpenBlockchain}
-                colorScheme="gray"
+                colorScheme="tertiary"
                 style={applyStyle(buttonStyle)}
             >
-                <Box flexDirection="row">
-                    <Text>Explore in blockchain</Text>
-                    <Icon size="mediumLarge" name="arrowUpRight" color="gray1000" />
-                </Box>
+                Explore in blockchain
             </Button>
         </Screen>
     );

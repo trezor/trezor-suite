@@ -26,7 +26,7 @@ export const DevXpub = ({ symbol, onSelect }: DevXpubProps) => {
     if (!xpub) return null;
     return (
         <Box marginTop="medium">
-            <Button onPress={() => onSelect({ xpubAddress: xpub })} colorScheme="gray">
+            <Button onPress={() => onSelect({ xpubAddress: xpub })} colorScheme="tertiary">
                 Use dev xPub
             </Button>
         </Box>

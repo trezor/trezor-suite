@@ -71,7 +71,7 @@ export const AccountAlreadyImported = ({ account }: AccountImportImportedAccount
                         <Box marginBottom="medium">
                             <Button
                                 size="large"
-                                colorScheme="gray"
+                                colorScheme="tertiary"
                                 onPress={handleImportAnotherAsset}
                             >
                                 Import another asset

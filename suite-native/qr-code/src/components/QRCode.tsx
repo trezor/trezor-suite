@@ -70,10 +70,9 @@ export const QRCode = ({ data, onCopy, isShareEnabled = false }: QRCodeProps) =>
             <VStack spacing="small">
                 {isShareEnabled && (
                     <Button
-                        iconName="share"
-                        iconPosition="right"
+                        iconRight="share"
                         size="large"
-                        colorScheme="gray"
+                        colorScheme="tertiary"
                         onPress={handleSharedata}
                         style={applyStyle(actionButtonsStyle)}
                     >
