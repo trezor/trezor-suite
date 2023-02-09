@@ -440,4 +440,8 @@ export class CoinjoinRound extends EventEmitter {
             roundDeadline: this.roundDeadline,
         };
     }
+
+    isInCriticalPhase() {
+        return this.phase > RoundPhase.InputRegistration && this.phase < RoundPhase.Ended;
+    }
 }
