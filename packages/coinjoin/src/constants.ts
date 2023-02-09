@@ -39,6 +39,9 @@ export const FILTERS_REQUEST_TIMEOUT = 300000;
 // timeout for CoinjoinRound currently running process
 export const ROUND_PHASE_PROCESS_TIMEOUT = 10000;
 
+// timeout between account/round creation
+export const ACCOUNT_BUSY_TIMEOUT = 30000;
+
 // fallback values for status request
 // usage of these values is extremely unlikely, there would have to be a change in the coordinator's API
 export const PLEBS_DONT_PAY_THRESHOLD = 1000000;
