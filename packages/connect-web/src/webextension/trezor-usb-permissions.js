@@ -36,6 +36,7 @@ const switchToPopupTab = event => {
 };
 
 window.addEventListener('message', event => {
+    console.log('trezor-usb-permissinos.js event', event);
     if (event.data === 'usb-permissions-init') {
         const iframe = document.getElementById('trezor-usb-permissions');
         if (!iframe || !(iframe instanceof HTMLIFrameElement)) {

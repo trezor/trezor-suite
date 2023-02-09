@@ -255,6 +255,7 @@ window.addEventListener('message', handleMessage, false);
 window.closeWindow = () => {
     setTimeout(() => {
         window.postMessage({ type: POPUP.CLOSE_WINDOW }, window.location.origin);
-        window.close();
+        // window.close();
+        console.log('========== close ================');
     }, 100);
 };

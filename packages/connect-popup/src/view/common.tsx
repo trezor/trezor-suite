@@ -139,6 +139,9 @@ export const postMessage = (message: CoreMessage) => {
 export const postMessageToParent = (message: CoreMessage) => {
     console.log('post message', window);
     if (window.opener) {
+        console.log('window.opener present');
+        console.log('window.opener.origin', window.opener.origin);
+        console.log('window.origin',window.origin);
         // post message to parent and wait for POPUP.INIT message
         window.opener.postMessage(message, window.opener.origin);
     } else {
