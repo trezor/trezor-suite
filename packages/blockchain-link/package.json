@@ -68,7 +68,7 @@
         "@trezor/utils": "workspace:^9.0.5",
         "@trezor/utxo-lib": "workspace:^1.0.3",
         "@types/web": "^0.0.80",
-        "bignumber.js": "^9.1.0",
+        "bignumber.js": "^9.1.1",
         "events": "^3.3.0",
         "ripple-lib": "1.10.0",
         "socks-proxy-agent": "6.1.1",
