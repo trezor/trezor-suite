@@ -99,6 +99,12 @@ export const getAccountCandidates = ({
         const { accountKey } = account;
         // TODO: double-check account max signed rounds, should be done by suite tho
 
+        // account was detained
+        if (prison.isDetained(accountKey)) {
+            logger.log(`Account ~~${accountKey}~~ detained`);
+            return [];
+        }
+
         const blameOfUtxos = arrayToDictionary(
             account.utxos,
             utxo => {

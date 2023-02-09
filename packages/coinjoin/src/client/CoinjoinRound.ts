@@ -8,7 +8,7 @@ import {
     getRoundParameters,
     getCoinjoinRoundDeadlines,
 } from '../utils/roundUtils';
-import { ROUND_PHASE_PROCESS_TIMEOUT } from '../constants';
+import { ROUND_PHASE_PROCESS_TIMEOUT, ACCOUNT_BUSY_TIMEOUT } from '../constants';
 import { RoundPhase, EndRoundState, SessionPhase } from '../enums';
 import { AccountAddress, RegisterAccountParams } from '../types/account';
 import {
@@ -354,6 +354,11 @@ export class CoinjoinRound extends EventEmitter {
             if ('error' in i) {
                 log(`Resolving ${type} request for ~~${i.outpoint}~~ with error. ${i.error}`);
                 input.setError(new Error(i.error));
+                if (type === 'ownership') {
+                    // wallet request respond with error, account (device) is busy,
+                    // detain whole account for short while and try again later
+                    this.prison.detain(input.accountKey, { sentenceEnd: ACCOUNT_BUSY_TIMEOUT });
+                }
             } else if ('ownershipProof' in i) {
                 log(`Resolving ${type} request for ~~${i.outpoint}~~`);
                 input.setOwnershipProof(i.ownershipProof);
