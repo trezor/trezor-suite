@@ -4,7 +4,12 @@ import { promiseAllSequence } from '@trezor/utils';
 import * as COINJOIN from './constants/coinjoinConstants';
 import { goto } from '../suite/routerActions';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { initCoinjoinService, getCoinjoinClient, clientDisable } from './coinjoinClientActions';
+import {
+    initCoinjoinService,
+    getCoinjoinClient,
+    clientDisable,
+    clientEmitException,
+} from './coinjoinClientActions';
 import { CoinjoinService, COORDINATOR_FEE_RATE_MULTIPLIER } from '@suite/services/coinjoin';
 import { getAccountProgressHandle, getRegisterAccountParams } from '@wallet-utils/coinjoinUtils';
 import { Dispatch, GetState } from '@suite-types';
@@ -17,8 +22,10 @@ import {
     transactionsActions,
 } from '@suite-common/wallet-core';
 import {
+    selectCoinjoinAccounts,
     selectCoinjoinAccountByKey,
     selectIsAccountWithSessionByAccountKey,
+    selectIsAccountWithSessionInCriticalPhaseByAccountKey,
 } from '@wallet-reducers/coinjoinReducer';
 import { getAccountTransactions, sortByBIP44AddressIndex } from '@suite-common/wallet-utils';
 
@@ -544,10 +551,11 @@ export const pauseCoinjoinSession =
 
 export const pauseCoinjoinSessionByDeviceId =
     (deviceID: string) => (dispatch: Dispatch, getState: GetState) => {
+        const state = getState();
         const {
             devices,
-            wallet: { accounts, coinjoin },
-        } = getState();
+            wallet: { accounts },
+        } = state;
 
         const disconnectedDevices = devices.filter(d => d.id === deviceID && d.remember);
         const affectedAccounts = disconnectedDevices.flatMap(d =>
@@ -555,10 +563,16 @@ export const pauseCoinjoinSessionByDeviceId =
         );
 
         affectedAccounts.forEach(account => {
-            const accountWithSession = coinjoin.accounts.find(
-                a => a.key === account.key && a.session && !a.session.paused,
-            );
-            if (accountWithSession) {
+            const isAccountWithSession = selectIsAccountWithSessionByAccountKey(state, account.key);
+            if (isAccountWithSession) {
+                // log exception in critical phase
+                if (selectIsAccountWithSessionInCriticalPhaseByAccountKey(state, account.key)) {
+                    dispatch(
+                        clientEmitException(`Device disconnected in critical phase`, {
+                            symbol: account.symbol,
+                        }),
+                    );
+                }
                 // get @trezor/coinjoin client if available
                 const client = getCoinjoinClient(account.symbol);
 
@@ -684,13 +698,23 @@ export const stopCoinjoinSession =
 
 export const forgetCoinjoinAccounts =
     (accounts: Account[]) => (dispatch: Dispatch, getState: GetState) => {
-        const { coinjoin } = getState().wallet;
+        const state = getState();
+        const { coinjoin } = state.wallet;
 
         // find all accounts to unregister
         const coinjoinNetworks = coinjoin.accounts.reduce<NetworkSymbol[]>((res, cjAccount) => {
             const account = accounts.find(a => a.key === cjAccount.key);
 
             if (account) {
+                // log exception in critical phase
+                if (selectIsAccountWithSessionInCriticalPhaseByAccountKey(state, cjAccount.key)) {
+                    dispatch(
+                        clientEmitException(`Forget account in critical phase`, {
+                            symbol: account.symbol,
+                        }),
+                    );
+                }
+
                 if (cjAccount.session) {
                     dispatch(stopCoinjoinSession(cjAccount.key));
                 }
