@@ -118,7 +118,16 @@ export const init: Module = ({ mainWindow }) => {
             backends.forEach(b => b.cancel());
             backends.splice(0, backends.length);
 
-            clients.forEach(c => c.disable());
+            clients.forEach(cli => {
+                // emit unexpected app close before disabling the client
+                if (cli.getRoundsInCriticalPhase().length > 0) {
+                    cli.emit('log', {
+                        level: 'error',
+                        payload: 'Suite closed in critical phase',
+                    });
+                }
+                cli.disable();
+            });
             clients.splice(0, clients.length);
 
             unregisterBackendProxy();

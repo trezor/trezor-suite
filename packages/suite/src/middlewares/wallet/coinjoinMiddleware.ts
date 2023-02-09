@@ -7,6 +7,7 @@ import {
 } from '@wallet-actions/constants/coinjoinConstants';
 import { DISCOVERY } from '@wallet-actions/constants';
 import * as coinjoinAccountActions from '@wallet-actions/coinjoinAccountActions';
+import * as coinjoinClientActions from '@wallet-actions/coinjoinClientActions';
 import * as storageActions from '@suite-actions/storageActions';
 import { CoinjoinService } from '@suite/services/coinjoin';
 import type { AppState, Action, Dispatch } from '@suite-types';
@@ -151,6 +152,14 @@ export const coinjoinMiddleware =
             api.dispatch(coinjoinAccountActions.pauseCoinjoinSessionByDeviceId(action.payload.id));
         }
 
+        if (action.type === SUITE.ONLINE_STATUS && !action.payload) {
+            if (selectIsAnySessionInCriticalPhase(api.getState())) {
+                api.dispatch(
+                    coinjoinClientActions.clientEmitException('Suite offline in critical phase'),
+                );
+            }
+        }
+
         if (blockchainActions.synced.match(action)) {
             const state = api.getState();
             const { symbol } = action.payload;
@@ -168,12 +177,19 @@ export const coinjoinMiddleware =
         }
 
         if (action.type === SUITE.TOR_STATUS) {
+            const state = api.getState();
             if (['Disabling', 'Disabled', 'Error'].includes(action.payload)) {
+                if (selectIsAnySessionInCriticalPhase(state)) {
+                    api.dispatch(
+                        coinjoinClientActions.clientEmitException(
+                            `TOR ${action.payload} in critical phase`,
+                        ),
+                    );
+                }
                 api.dispatch(coinjoinAccountActions.pauseInterruptAllCoinjoinSessions());
             }
             // We restore sessions that were interrupted when successfully Enabled if
             // there is not any other condition blocking coinjoin resume.
-            const state = api.getState();
             if (action.payload === 'Enabled' && !isCoinjoinSessionBlockedGlobally(state)) {
                 restoreInterruptedCoinjoinSessions(state);
             }

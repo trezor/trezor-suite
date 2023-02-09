@@ -385,6 +385,23 @@ export const getOwnershipProof =
         return response;
     };
 
+interface ClientEmitExceptionOptions {
+    symbol?: Account['symbol'];
+}
+
+// use CoinjoinClient emitter to log/throw exceptions
+// exceptions will be reported to sentry in suite-desktop build
+export const clientEmitException =
+    (reason: string, options: ClientEmitExceptionOptions = {}) =>
+    () => {
+        (options.symbol
+            ? [CoinjoinService.getInstance(options.symbol)]
+            : CoinjoinService.getInstances()
+        ).forEach(instance => {
+            instance?.client.emit('log', { level: 'error', payload: reason });
+        });
+    };
+
 export const signCoinjoinTx =
     (request: Extract<CoinjoinRequestEvent, { type: 'signature' }>) =>
     async (dispatch: Dispatch, getState: GetState) => {
