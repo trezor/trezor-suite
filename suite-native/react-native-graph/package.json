@@ -12,7 +12,7 @@
     },
     "dependencies": {
         "@shopify/react-native-skia": "0.1.173",
-        "@types/react": "18.0.25",
+        "@types/react": "18.0.27",
         "react": "18.2.0",
         "react-native": "0.71.2",
         "react-native-gesture-handler": "^2.9.0",

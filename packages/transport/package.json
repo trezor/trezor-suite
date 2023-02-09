@@ -51,7 +51,7 @@
         "bytebuffer": "^5.0.1",
         "json-stable-stringify": "^1.0.2",
         "long": "^4.0.0",
-        "prettier": "2.8.0",
+        "prettier": "2.8.4",
         "protobufjs": "^6.11.3"
     }
 }
