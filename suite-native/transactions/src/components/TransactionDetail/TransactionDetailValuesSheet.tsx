@@ -3,13 +3,16 @@ import { useSelector } from 'react-redux';
 
 import { pipe } from '@mobily/ts-belt';
 
-import { convertCryptoToFiatAmount, useFormatters } from '@suite-common/formatters';
+import { convertCryptoToFiatAmount } from '@suite-common/formatters';
 import { FiatRates, WalletAccountTransaction } from '@suite-common/wallet-types';
 import { Card, Table, Td, Text, Th, Tr, VStack } from '@suite-native/atoms';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { selectCoins } from '@suite-common/wallet-core';
 import { selectFiatCurrency } from '@suite-native/module-settings';
-import { CryptoToFiatAmountFormatter } from '@suite-native/formatters';
+import {
+    CryptoToFiatAmountFormatter,
+    PercentageDifferenceFormatter,
+} from '@suite-native/formatters';
 
 import { TransactionDetailSheet } from './TransactionDetailSheet';
 
@@ -32,7 +35,6 @@ const TodayHeaderCell = ({
     network,
     historicalRates,
 }: TodayHeaderCellProps) => {
-    const { SignValueFormatter } = useFormatters();
     const coins = useSelector(selectCoins);
     const fiatCurrency = useSelector(selectFiatCurrency);
     const currentRates = coins.find(coin => coin.symbol === network)?.current?.rates;
@@ -58,24 +60,14 @@ const TodayHeaderCell = ({
         Number,
     );
 
-    const hasPriceIncreased = fiatTotalHistoryNumeric < fiatTotalActualNumeric;
-    const isPercentDifferenceVisible = fiatTotalHistoryNumeric !== fiatTotalActualNumeric;
-
-    const percentageDifference = Math.abs(
-        Math.round(
-            ((fiatTotalActualNumeric - fiatTotalHistoryNumeric) / fiatTotalHistoryNumeric) * 100,
-        ),
-    );
-
     return (
         <Text variant="hint" color="gray600">
             Today{' '}
-            {isPercentDifferenceVisible && (
-                <Text variant="hint" color={hasPriceIncreased ? 'green' : 'red'}>
-                    <SignValueFormatter value={hasPriceIncreased ? 'positive' : 'negative'} />
-                    {`${percentageDifference}`}%
-                </Text>
-            )}
+            <PercentageDifferenceFormatter
+                oldValue={fiatTotalHistoryNumeric}
+                newValue={fiatTotalActualNumeric}
+                variant="hint"
+            />
         </Text>
     );
 };
