@@ -2,8 +2,5 @@
     "name": "connect-example-webextension",
     "version": "1.0.0",
     "private": true,
-    "scripts": {},
-    "dependencies": {
-        "@trezor/connect-web": "workspace:9.0.6"
-    }
+    "dependencies": {}
 }
