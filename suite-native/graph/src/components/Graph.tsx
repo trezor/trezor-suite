@@ -1,11 +1,10 @@
 import React, { useMemo } from 'react';
-import { ActivityIndicator } from 'react-native';
 
 import { N } from '@mobily/ts-belt';
 
 import { GraphPoint, LineGraph } from '@suite-native/react-native-graph';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Box, Text } from '@suite-native/atoms';
+import { Box, Loader } from '@suite-native/atoms';
 
 import {
     getExtremaFromGraphPoints,
@@ -119,10 +118,7 @@ export const Graph = <TGraphPoint extends EnhancedGraphPoint>({
             />
             {loading && (
                 <Box style={applyStyle(graphMessageStyleContainer)}>
-                    <ActivityIndicator size="large" color={colors.green} />
-                    <Text variant="label" color="gray600">
-                        Loading graph data...
-                    </Text>
+                    <Loader title="Loading graph data..." />
                 </Box>
             )}
             {error && !loading && (

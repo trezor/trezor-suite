@@ -18,7 +18,8 @@ export enum AccountsImportStackRoutes {
     SelectNetwork = 'SelectNetwork',
     XpubScan = 'XpubScan',
     XpubScanModal = 'XpubScanModal',
-    AccountImport = 'AccountImport',
+    AccountImportLoading = 'AccountImportLoading',
+    AccountImportSummary = 'AccountImportSummary',
 }
 
 export enum DevUtilsStackRoutes {

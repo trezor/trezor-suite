@@ -1,12 +1,12 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { ActivityIndicator, SectionList } from 'react-native';
+import { SectionList } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { useNativeStyles, prepareNativeStyle } from '@trezor/styles';
 import { AccountKey, WalletAccountTransaction } from '@suite-common/wallet-types';
 import { groupTransactionsByDate, MonthKey } from '@suite-common/wallet-utils';
 import { selectIsLoadingTransactions } from '@suite-common/wallet-core';
-import { Box } from '@suite-native/atoms';
+import { Box, Loader } from '@suite-native/atoms';
 import { TAB_BAR_HEIGHT } from '@suite-native/navigation';
 
 import { TransactionListGroupTitle } from './TransactionListGroupTitle';
@@ -63,7 +63,7 @@ export const TransactionList = ({
     fetchMoreTransactions,
     accountKey,
 }: AccountTransactionProps) => {
-    const { applyStyle, utils } = useNativeStyles();
+    const { applyStyle } = useNativeStyles();
     const isLoadingTransactions = useSelector(selectIsLoadingTransactions);
     const accountTransactionsByMonth = useMemo(
         () => groupTransactionsByDate(transactions, 'month'),
@@ -101,9 +101,7 @@ export const TransactionList = ({
         [accountTransactionsByMonth, transactionMonthKeys],
     );
 
-    if (isLoadingTransactions)
-        // TODO Temporary loading state just so it's visible that transactions are loading
-        return <ActivityIndicator size="large" color={utils.colors.forest} />;
+    if (isLoadingTransactions) return <Loader />;
 
     return (
         <Box style={applyStyle(listWrapperStyle)}>

@@ -1,6 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
+import { ErrorMessage } from '@suite-native/atoms';
 import {
     AccountsRootState,
     selectAccountByDescriptorAndNetworkSymbol,
@@ -23,9 +24,13 @@ export const AccountImportSummary = ({ networkSymbol, accountInfo }: AccountImpo
     );
 
     const isAccountImportSupported = enabledNetworks.some(network => network === networkSymbol);
+    if (!isAccountImportSupported) {
+        return <ErrorMessage errorMessage="Unsupported account network type." />;
+    }
 
-    if (account) return <AccountAlreadyImported account={account} />;
-    if (isAccountImportSupported)
-        return <AccountImportSummaryForm networkSymbol={networkSymbol} accountInfo={accountInfo} />;
-    return null;
+    return account ? (
+        <AccountAlreadyImported account={account} />
+    ) : (
+        <AccountImportSummaryForm networkSymbol={networkSymbol} accountInfo={accountInfo} />
+    );
 };

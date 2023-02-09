@@ -53,7 +53,7 @@ export const XpubScanScreen = ({
     useFocusEffect(resetToDefaultValues);
 
     const goToAccountImportScreen = ({ xpubAddress }: XpubFormValues) => {
-        navigation.navigate(AccountsImportStackRoutes.AccountImport, {
+        navigation.navigate(AccountsImportStackRoutes.AccountImportLoading, {
             xpubAddress,
             networkSymbol: selectedCurrencySymbol,
         });

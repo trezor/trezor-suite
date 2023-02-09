@@ -6677,6 +6677,7 @@ __metadata:
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@suite-native/atoms": "workspace:*"
+    "@trezor/connect": "workspace:*"
     "@trezor/icons": "workspace:*"
     "@trezor/styles": "workspace:*"
     "@trezor/theme": "workspace:*"
@@ -7202,7 +7203,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/connect@workspace:9.0.6, @trezor/connect@workspace:packages/connect":
+"@trezor/connect@workspace:*, @trezor/connect@workspace:9.0.6, @trezor/connect@workspace:packages/connect":
   version: 0.0.0-use.local
   resolution: "@trezor/connect@workspace:packages/connect"
   dependencies:
