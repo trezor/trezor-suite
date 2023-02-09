@@ -25,7 +25,7 @@ export const DashboardHeader = () => {
             <IconButton
                 onPress={() => setIsDiscreetMode(!isDiscreetMode)}
                 iconName={isDiscreetMode ? 'eyeglasses' : 'eyeSlash'}
-                colorSchemeName="tertiary"
+                colorScheme="tertiary"
                 size="medium"
                 style={applyStyle(iconStyle)}
             />

@@ -11,7 +11,7 @@ import {
 } from '@trezor/styles';
 
 import {
-    ButtonColorSchemeName,
+    ButtonColorScheme,
     ButtonSize,
     buttonSchemeToColorsMap,
     buttonStyle,
@@ -21,9 +21,9 @@ import { Box } from '../Box';
 import { Text } from '../Text';
 import { useButtonPressAnimatedStyle } from './useButtonPressAnimatedStyle';
 
-type IconButtonProps = Omit<PressableProps, 'style'> & {
+type IconButtonProps = Omit<PressableProps, 'style' | 'onPressIn' | 'onPressOut'> & {
     iconName: IconName;
-    colorSchemeName?: ButtonColorSchemeName;
+    colorScheme?: ButtonColorScheme;
     size?: ButtonSize;
     style?: NativeStyleObject;
     title?: string;
@@ -51,7 +51,7 @@ export const IconButton = ({
     iconName,
     style,
     title,
-    colorSchemeName = 'primary',
+    colorScheme = 'primary',
     size = 'medium',
     isDisabled = false,
     ...pressableProps
@@ -59,7 +59,7 @@ export const IconButton = ({
     const [isPressed, setIsPressed] = useState(false);
     const { applyStyle } = useNativeStyles();
     const { textColor, disabledTextColor, backgroundColor, onPressColor } =
-        buttonSchemeToColorsMap[colorSchemeName];
+        buttonSchemeToColorsMap[colorScheme];
 
     const animatedPressStyle = useButtonPressAnimatedStyle(
         isPressed,
@@ -79,29 +79,24 @@ export const IconButton = ({
                 disabled={isDisabled}
                 {...pressableProps}
             >
-                <Animated.View
-                    style={[
-                        animatedPressStyle,
-                        applyStyle(iconButtonStyle, {
-                            size,
-                            colorSchemeName,
-                            isDisabled,
-                            hasTitle: !!title,
-                        }),
-                    ]}
-                >
-                    <Icon name={iconName} color={iconColor} size={size} />
-                </Animated.View>
-            </Pressable>
-            <Pressable
-                disabled={isDisabled}
-                onPressIn={handlePressIn}
-                onPressOut={handlePressOut}
-                {...pressableProps}
-            >
-                <Text variant="label" color="gray600">
-                    {title}
-                </Text>
+                <Box alignItems="center">
+                    <Animated.View
+                        style={[
+                            animatedPressStyle,
+                            applyStyle(iconButtonStyle, {
+                                size,
+                                colorScheme,
+                                isDisabled,
+                                hasTitle: !!title,
+                            }),
+                        ]}
+                    >
+                        <Icon name={iconName} color={iconColor} size={size} />
+                    </Animated.View>
+                    <Text variant="label" color="gray600">
+                        {title}
+                    </Text>
+                </Box>
             </Pressable>
         </Box>
     );

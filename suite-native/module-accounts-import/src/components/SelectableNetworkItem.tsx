@@ -67,7 +67,7 @@ export const SelectableNetworkItem = ({
                     {onPressActionButton && (
                         <Box alignItems="flex-end">
                             <Button
-                                colorSchemeName="tertiary"
+                                colorScheme="tertiary"
                                 size="small"
                                 onPress={onPressActionButton}
                             >

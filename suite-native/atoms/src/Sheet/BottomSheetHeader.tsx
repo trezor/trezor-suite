@@ -46,7 +46,7 @@ export const BottomSheetHeader = ({ title, subtitle, onCloseSheet }: BottomSheet
                 <IconButton
                     iconName="close"
                     onPress={onCloseSheet}
-                    colorSchemeName="tertiary"
+                    colorScheme="tertiary"
                     size="medium"
                 />
             </View>

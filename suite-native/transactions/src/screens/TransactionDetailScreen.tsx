@@ -16,7 +16,6 @@ import {
     selectTransactionByTxidAndAccountKey,
     TransactionsRootState,
 } from '@suite-common/wallet-core';
-import { Icon } from '@trezor/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { TransactionDetailHeader } from '../components/TransactionDetail/TransactionDetailHeader';
@@ -56,7 +55,7 @@ export const TransactionDetailScreen = ({
             <Button
                 iconLeft="arrowUpRight"
                 onPress={handleOpenBlockchain}
-                colorSchemeName="tertiary"
+                colorScheme="tertiary"
                 style={applyStyle(buttonStyle)}
             >
                 Explore in blockchain

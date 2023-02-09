@@ -53,7 +53,7 @@ export const AccountImportHeader = ({ activeStep }: AccountImportHeaderProps) =>
                     <Box style={applyStyle(closeButtonStyle)}>
                         <IconButton
                             iconName="close"
-                            colorSchemeName="tertiary"
+                            colorScheme="tertiary"
                             onPress={handleCloseOnboarding}
                             size="medium"
                         />

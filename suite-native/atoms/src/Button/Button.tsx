@@ -12,17 +12,17 @@ import { Text } from '../Text';
 import { useButtonPressAnimatedStyle } from './useButtonPressAnimatedStyle';
 
 export type ButtonSize = 'small' | 'medium' | 'large';
-export type ButtonColorSchemeName = 'primary' | 'secondary' | 'tertiary' | 'danger';
+export type ButtonColorScheme = 'primary' | 'secondary' | 'tertiary' | 'danger';
 
-export type ButtonProps = Omit<PressableProps, 'style'> & {
+export type ButtonProps = Omit<PressableProps, 'style' | 'onPressIn' | 'onPressOut'> & {
     children: string;
-    colorSchemeName?: ButtonColorSchemeName;
+    colorScheme?: ButtonColorScheme;
     size?: ButtonSize;
     style?: NativeStyleObject;
     isDisabled?: boolean;
 } & MergeExclusive<{ iconLeft?: IconName }, { iconRight?: IconName }>;
 
-type ButtonColorScheme = {
+type ButtonColorSchemeColors = {
     backgroundColor: Color;
     onPressColor: Color;
     disabledBackgroundColor: Color;
@@ -32,7 +32,7 @@ type ButtonColorScheme = {
 
 export type ButtonStyleProps = {
     size: ButtonSize;
-    colorSchemeName: ButtonColorSchemeName;
+    colorScheme: ButtonColorScheme;
     isDisabled: boolean;
     hasTitle?: boolean;
 };
@@ -70,7 +70,7 @@ export const buttonSchemeToColorsMap = {
         textColor: 'gray0',
         disabledTextColor: 'gray500',
     },
-} as const satisfies Record<ButtonColorSchemeName, ButtonColorScheme>;
+} as const satisfies Record<ButtonColorScheme, ButtonColorSchemeColors>;
 
 const sizeToDimensionsMap = {
     small: {
@@ -114,9 +114,9 @@ const iconStyle = prepareNativeStyle((utils, { position }: IconStyleProps) => ({
 }));
 
 export const buttonStyle = prepareNativeStyle<ButtonStyleProps>(
-    (utils, { size, colorSchemeName, isDisabled }) => {
+    (utils, { size, colorScheme, isDisabled }) => {
         const sizeDimensions = sizeToDimensionsMap[size];
-        const schemeColors = buttonSchemeToColorsMap[colorSchemeName];
+        const schemeColors = buttonSchemeToColorsMap[colorScheme];
         return {
             flexDirection: 'row',
             justifyContent: 'center',
@@ -140,7 +140,7 @@ export const Button = ({
     iconRight,
     style,
     children,
-    colorSchemeName = 'primary',
+    colorScheme = 'primary',
     size = 'medium',
     isDisabled = false,
     ...pressableProps
@@ -148,7 +148,7 @@ export const Button = ({
     const [isPressed, setIsPressed] = useState(false);
     const { applyStyle } = useNativeStyles();
     const { backgroundColor, onPressColor, textColor, disabledBackgroundColor, disabledTextColor } =
-        buttonSchemeToColorsMap[colorSchemeName];
+        buttonSchemeToColorsMap[colorScheme];
 
     const animatedPressStyle = useButtonPressAnimatedStyle(
         isPressed,
@@ -169,16 +169,6 @@ export const Button = ({
             />
         </View>
     ) : null;
-
-    const icon = iconName ? (
-        <View style={applyStyle(iconStyle, { position: iconPosition })}>
-            <Icon
-                name={iconName}
-                color={colorScheme === 'primary' ? 'gray0' : 'gray700'}
-                size={size}
-            />
-        </View>
-    ) : null;
     return (
         <Pressable
             disabled={isDisabled}
@@ -191,7 +181,7 @@ export const Button = ({
                     animatedPressStyle,
                     applyStyle(buttonStyle, {
                         size,
-                        colorSchemeName,
+                        colorScheme,
                         isDisabled,
                     }),
                     style,

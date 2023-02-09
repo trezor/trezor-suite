@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { TextInput } from 'react-native';
+import { TextInput, View } from 'react-native';
 
 import {
     Text,
@@ -17,6 +17,9 @@ import {
     InputWrapper,
     Input,
     VStack,
+    Button,
+    ButtonColorScheme,
+    Divider,
 } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Screen, ScreenHeader } from '@suite-native/navigation';
@@ -44,6 +47,13 @@ export const DemoScreen = () => {
     const [inputText, setInputText] = useState<string>('');
     const demoInputRef = useRef<TextInput | null>(null);
 
+    const buttonColorSchemes = [
+        'primary',
+        'secondary',
+        'tertiary',
+        'danger',
+    ] satisfies ButtonColorScheme[];
+
     const handleRadioPress = (value: string | number) => {
         setRadioChecked(value.toString());
     };
@@ -61,27 +71,19 @@ export const DemoScreen = () => {
                                 justifyContent="space-around"
                                 alignItems="center"
                             >
-                                <Button
-                                    colorSchemeName={buttonScheme}
-                                    size="large"
-                                    iconLeft="calendar"
-                                >
+                                <Button colorScheme={buttonScheme} size="large" iconLeft="calendar">
                                     Large
                                 </Button>
 
                                 <Button
-                                    colorSchemeName={buttonScheme}
+                                    colorScheme={buttonScheme}
                                     size="medium"
                                     iconLeft="calendar"
                                 >
                                     Medium
                                 </Button>
 
-                                <Button
-                                    colorSchemeName={buttonScheme}
-                                    size="small"
-                                    iconLeft="calendar"
-                                >
+                                <Button colorScheme={buttonScheme} size="small" iconLeft="calendar">
                                     Small
                                 </Button>
                             </Box>
@@ -100,7 +102,7 @@ export const DemoScreen = () => {
                                 alignItems="center"
                             >
                                 <IconButton
-                                    colorSchemeName={buttonScheme}
+                                    colorScheme={buttonScheme}
                                     size="large"
                                     iconName="calendar"
                                 >
@@ -108,7 +110,7 @@ export const DemoScreen = () => {
                                 </IconButton>
 
                                 <IconButton
-                                    colorSchemeName={buttonScheme}
+                                    colorScheme={buttonScheme}
                                     size="medium"
                                     iconName="calendar"
                                 >
@@ -116,7 +118,7 @@ export const DemoScreen = () => {
                                 </IconButton>
 
                                 <IconButton
-                                    colorSchemeName={buttonScheme}
+                                    colorScheme={buttonScheme}
                                     size="small"
                                     iconName="calendar"
                                 >
@@ -129,7 +131,7 @@ export const DemoScreen = () => {
                         <Text>with title</Text>
                         <Box flexDirection="row" justifyContent="space-around" alignItems="center">
                             <IconButton
-                                colorSchemeName="primary"
+                                colorScheme="primary"
                                 size="large"
                                 iconName="calendar"
                                 title="large"
@@ -138,7 +140,7 @@ export const DemoScreen = () => {
                             </IconButton>
 
                             <IconButton
-                                colorSchemeName="primary"
+                                colorScheme="primary"
                                 size="medium"
                                 iconName="calendar"
                                 title="medium"
@@ -147,7 +149,7 @@ export const DemoScreen = () => {
                             </IconButton>
 
                             <IconButton
-                                colorSchemeName="primary"
+                                colorScheme="primary"
                                 size="small"
                                 iconName="calendar"
                                 title="small"
@@ -164,16 +166,6 @@ export const DemoScreen = () => {
                         onChange={setInputText}
                         placeholder="Type here.."
                     />
-                    <Box>
-                        <IconButton
-                            size="small"
-                            colorScheme="gray"
-                            iconName="check"
-                            onPress={() => {}}
-                        />
-                        <IconButton iconName="check" isRounded onPress={() => {}} />
-                        <IconButton size="large" iconName="check" isRounded onPress={() => {}} />
-                    </Box>
                     <Box marginVertical="medium">
                         <VStack style={applyStyle(inputStackStyle)} spacing="small">
                             <InputWrapper label="Recipient">
