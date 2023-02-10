@@ -1,7 +1,5 @@
 /* eslint-disable no-eval */
 
-import stringifyObject from 'stringify-object';
-
 import {
     TAB_CHANGE,
     FIELD_CHANGE,
@@ -79,16 +77,17 @@ const getParam = (field: Field<any>, $params: Record<string, any> = {}) => {
 const updateJavascript = (state: MethodState) => {
     const code =
         Object.keys(state.params).length > 0
-            ? stringifyObject(state.params, {
-                  indent: '  ',
-                  singleQuotes: false,
-                  transform: (obj, prop, originalResult) => {
-                      if (Object.prototype.toString.call(obj[prop]) === '[object ArrayBuffer]') {
+            ? JSON.stringify(
+                  state.params,
+                  (_, value) => {
+                      if (Object.prototype.toString.call(value) === '[object ArrayBuffer]') {
                           return 'ArrayBuffer';
                       }
-                      return originalResult;
+
+                      return value;
                   },
-              })
+                  2,
+              )
             : '';
 
     return {

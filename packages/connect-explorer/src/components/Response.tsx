@@ -1,7 +1,6 @@
 import React from 'react';
 import styled, { createGlobalStyle } from 'styled-components';
-import Inspector from 'react-inspector';
-import stringifyObject from 'stringify-object';
+import { Inspector } from 'react-inspector';
 import type { AppState } from '../types';
 
 import * as methodActions from '../actions/methodActions';
@@ -180,11 +179,11 @@ const Response = ({ code, docs, hasDocumentation, response, tab }: ResponseProps
                 switch (tab) {
                     case 'response': {
                         const json = response ? (
-                            <Inspector data={response} expandLevel={10} />
+                            <Inspector data={response} expandLevel={10} table={false} />
                         ) : null;
                         return (
                             <Container data-test="@response">
-                                <CopyToClipboard data={stringifyObject(response)} />
+                                <CopyToClipboard data={JSON.stringify(response, null, 2)} />
                                 {json}
                             </Container>
                         );
