@@ -21,7 +21,7 @@
         "@trezor/message-system": "workspace:*",
         "@trezor/utils": "workspace:*",
         "dropbox": "^10.32.0",
-        "fake-indexeddb": "^4.0.0",
+        "fake-indexeddb": "^4.0.1",
         "redux": "^4.2.0",
         "redux-thunk": "^2.3.0"
     },

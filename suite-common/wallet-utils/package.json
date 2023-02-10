@@ -34,7 +34,7 @@
         "react": "18.2.0",
         "react-hook-form": "6.15.7",
         "trezor-address-validator": "^0.4.3",
-        "web3-utils": "^1.8.0"
+        "web3-utils": "^1.8.2"
     },
     "devDependencies": {
         "@types/pdfmake": "^0.2.2",
