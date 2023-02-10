@@ -105,6 +105,7 @@ export const getAnonymityScores = async (
     options: RequestOptions,
 ) => {
     const data = await request<AnalyzeResult>('get-anonymity-scores', { transactions }, options);
+
     return data.results;
 };
 

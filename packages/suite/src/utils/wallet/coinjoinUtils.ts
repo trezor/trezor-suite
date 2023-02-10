@@ -140,7 +140,7 @@ const getCoinjoinAccountUtxos = (utxos: Account['utxo'], anonymitySet: any = {})
 
 // select only addresses without tx history
 const getCoinjoinAccountAddresses = (addresses: Account['addresses']) =>
-    addresses?.change.filter(a => !a.transfers) || [];
+    addresses?.change?.filter(a => !a.transfers) || [];
 
 /**
  * Transform from suite Account to @trezor/coinjoin RegisterAccountParams

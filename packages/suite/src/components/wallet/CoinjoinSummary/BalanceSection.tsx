@@ -6,11 +6,13 @@ import { useSelector } from '@suite-hooks';
 import {
     selectCoinjoinAccountByKey,
     selectCurrentCoinjoinBalanceBreakdown,
+    selectHasAnonymitySetError,
 } from '@wallet-reducers/coinjoinReducer';
 import { BalancePrivacyBreakdown } from './BalancePrivacyBreakdown';
 import { AnonymizedIndicator } from './AnonymizedIndicator';
 import { AnonymizeButton } from './AnonymizeButton';
 import { CoinjoinStatus } from './CoinjoinStatus';
+import { BalanceError } from './BalanceError';
 
 export const Container = styled(Card)`
     flex-direction: row;
@@ -27,8 +29,9 @@ interface BalanceSectionProps {
 export const BalanceSection = ({ accountKey }: BalanceSectionProps) => {
     const coinjoinAccount = useSelector(state => selectCoinjoinAccountByKey(state, accountKey));
     const { notAnonymized } = useSelector(selectCurrentCoinjoinBalanceBreakdown);
+    const hasAnonymitySetError = useSelector(selectHasAnonymitySetError);
 
-    const allAnonymized = notAnonymized === '0';
+    const allAnonymized = notAnonymized === '0' && !hasAnonymitySetError;
 
     const getRightSideComponent = () => {
         if (coinjoinAccount?.session) {
@@ -44,7 +47,8 @@ export const BalanceSection = ({ accountKey }: BalanceSectionProps) => {
 
     return (
         <Container>
-            <BalancePrivacyBreakdown />
+            {hasAnonymitySetError ? <BalanceError /> : <BalancePrivacyBreakdown />}
+
             {getRightSideComponent()}
         </Container>
     );

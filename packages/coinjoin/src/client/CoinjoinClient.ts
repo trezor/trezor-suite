@@ -92,6 +92,7 @@ export class CoinjoinClient extends EventEmitter {
             {
                 network: this.network,
                 middlewareUrl: this.settings.middlewareUrl,
+                logger: this.logger,
                 signal: this.abortController.signal,
             },
             sections,

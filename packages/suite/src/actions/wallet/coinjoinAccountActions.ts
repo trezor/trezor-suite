@@ -28,6 +28,7 @@ import {
     selectIsAccountWithSessionByAccountKey,
     selectIsAccountWithSessionInCriticalPhaseByAccountKey,
     selectIsAnySessionInCriticalPhase,
+    selectHasAnonymitySetError,
 } from '@wallet-reducers/coinjoinReducer';
 import { getAccountTransactions, sortByBIP44AddressIndex } from '@suite-common/wallet-utils';
 
@@ -277,8 +278,9 @@ export const fetchAndUpdateAccount =
 
             // get fresh state
             const transactions = getState().wallet.transactions.transactions[account.key];
+            const hasAnonymityError = selectHasAnonymitySetError(getState());
 
-            if (transactions !== prevTransactions || isInitialUpdate) {
+            if (transactions !== prevTransactions || isInitialUpdate || hasAnonymityError) {
                 const accountInfo = await backend.getAccountInfo(
                     account.descriptor,
                     transactions ?? [],
