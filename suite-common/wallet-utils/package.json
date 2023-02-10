@@ -12,8 +12,8 @@
         "test-unit:watch": "jest -o --watch"
     },
     "dependencies": {
-        "@ethereumjs/common": "^2.6.4",
-        "@ethereumjs/tx": "^3.5.2",
+        "@ethereumjs/common": "^3.0.2",
+        "@ethereumjs/tx": "^4.0.2",
         "@suite-common/fiat-services": "workspace:*",
         "@suite-common/metadata-types": "workspace:*",
         "@suite-common/suite-config": "workspace:*",
