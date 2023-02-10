@@ -7481,11 +7481,11 @@ __metadata:
     bignumber.js: ^9.1.1
     jest: ^26.6.3
     rimraf: ^4.1.2
-    stellar-sdk: ^10.4.0
+    stellar-sdk: ^10.4.1
     typescript: 4.9.5
   peerDependencies:
     "@trezor/connect": 9.x.x
-    stellar-sdk: ^10.4.0
+    stellar-sdk: ^10.4.1
   languageName: unknown
   linkType: soft
 
@@ -30366,9 +30366,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"stellar-base@npm:^8.2.1":
-  version: 8.2.1
-  resolution: "stellar-base@npm:8.2.1"
+"stellar-base@npm:^8.2.2":
+  version: 8.2.2
+  resolution: "stellar-base@npm:8.2.2"
   dependencies:
     base32.js: ^0.1.0
     bignumber.js: ^4.0.0
@@ -30381,13 +30381,13 @@ __metadata:
   dependenciesMeta:
     sodium-native:
       optional: true
-  checksum: 9d949c97a52abdff87174267ad6ef9783f9a43d64a063e890c4e3bf68a4a073dc92614188d4630e3c59ece6508f0eb7482bf45571e090de9196c51c837389b54
+  checksum: 9dfbbeb048b359d819c080f18993c919b0f6717f14a24c68a1da07efea47b065d762c75f24def3c868a8b4914c15d34a044c7cb00d609d04fdbe98441a841f6e
   languageName: node
   linkType: hard
 
-"stellar-sdk@npm:^10.4.0":
-  version: 10.4.0
-  resolution: "stellar-sdk@npm:10.4.0"
+"stellar-sdk@npm:^10.4.1":
+  version: 10.4.1
+  resolution: "stellar-sdk@npm:10.4.1"
   dependencies:
     "@types/eventsource": ^1.1.2
     "@types/node": ">= 8"
@@ -30400,12 +30400,12 @@ __metadata:
     eventsource: ^1.1.1
     lodash: ^4.17.21
     randombytes: ^2.1.0
-    stellar-base: ^8.2.1
+    stellar-base: ^8.2.2
     toml: ^2.3.0
     tslib: ^1.10.0
     urijs: ^1.19.1
     utility-types: ^3.7.0
-  checksum: dae6dee257155b2031d29c9fe062b0a54202069c4abb25ed8e35698bcca4dcfe2df8dfdfc2b458e19297ea2c10cb9bdf2569b0ebcf1c9917f8a076706da5cd44
+  checksum: 2e407709ed56ace1514dcd32cc099be0946435021d92e9fdd3d97695f7670266264a5881b7d4086427e22915ca4fc319ea90d874f997842420dcda51dd6bc712
   languageName: node
   linkType: hard
 
