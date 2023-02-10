@@ -13,7 +13,7 @@ import { startCoinjoinSession } from '@wallet-actions/coinjoinAccountActions';
 import {
     selectCurrentCoinjoinBalanceBreakdown,
     selectCurrentTargetAnonymity,
-    selectIsCoinjoinBlockedByTor,
+    selectIsCoinjoinSelectedAccountBlockedByTor,
 } from '@wallet-reducers/coinjoinReducer';
 import { getMaxRounds } from '@wallet-utils/coinjoinUtils';
 import {
@@ -107,7 +107,7 @@ export const CoinjoinConfirmation = ({ account }: CoinjoinConfirmationProps) => 
     const targetAnonymity = useSelector(selectCurrentTargetAnonymity);
     const { notAnonymized } = useSelector(selectCurrentCoinjoinBalanceBreakdown);
     const { isLocked } = useDevice();
-    const isCoinjoinBlockedByTor = useSelector(selectIsCoinjoinBlockedByTor);
+    const isCoinjoinBlockedByTor = useSelector(selectIsCoinjoinSelectedAccountBlockedByTor);
     const isCoinjoinDisabledByFeatureFlag = useSelector(state =>
         selectIsFeatureDisabled(state, Feature.coinjoin),
     );

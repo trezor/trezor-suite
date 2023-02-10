@@ -6,11 +6,11 @@ import {
     selectIsFeatureDisabled,
 } from '@suite-reducers/messageSystemReducer';
 import { selectDeviceState } from '@suite-reducers/suiteReducer';
-import { selectIsCoinjoinBlockedByTor } from '@wallet-reducers/coinjoinReducer';
+import { selectIsCoinjoinSelectedAccountBlockedByTor } from '@wallet-reducers/coinjoinReducer';
 import { getIsCoinjoinOutOfSync } from '@wallet-utils/coinjoinUtils';
 
 export const useBlockedCoinjoinResume = () => {
-    const isCoinjoinBlockedByTor = useSelector(selectIsCoinjoinBlockedByTor);
+    const isCoinjoinBlockedByTor = useSelector(selectIsCoinjoinSelectedAccountBlockedByTor);
     const isCoinjoinDisabledByFeatureFlag = useSelector(state =>
         selectIsFeatureDisabled(state, Feature.coinjoin),
     );
