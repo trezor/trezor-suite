@@ -1,6 +1,6 @@
 {
     "name": "@trezor/connect-plugin-stellar",
-    "version": "9.0.1",
+    "version": "9.0.2",
     "author": "Trezor <info@trezor.io>",
     "homepage": "https://github.com/trezor/trezor-suite/tree/develop/packages/connect-plugin-stellar",
     "description": "@trezor/connect plugin for Stellar",
@@ -24,12 +24,12 @@
     ],
     "peerDependencies": {
         "@trezor/connect": "9.x.x",
-        "stellar-sdk": "^10.4.0"
+        "stellar-sdk": "^10.4.1"
     },
     "devDependencies": {
         "jest": "^26.6.3",
         "rimraf": "^4.1.2",
-        "stellar-sdk": "^10.4.0",
+        "stellar-sdk": "^10.4.1",
         "typescript": "4.9.5"
     },
     "dependencies": {
