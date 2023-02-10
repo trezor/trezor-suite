@@ -13,7 +13,7 @@ import {
 
 import type { SelectionDotProps } from '@suite-native/react-native-graph';
 
-const LINE_LENGTH = 1000;
+const LINE_LENGTH = 3000;
 const LINE_WIDTH = 0.5;
 const LINE_HIDDEN_WIDTH = 1e-9;
 const CIRCLE_RADIUS = 5;
@@ -26,14 +26,8 @@ export const SelectionDotWithLine = ({ isActive, color, circleX, circleY }: Sele
     const circleRadius = useValue(0);
     const lineWidth = useValue(LINE_HIDDEN_WIDTH);
 
-    const lineStart = useComputedValue(
-        () => vec(circleX.current, circleX.current - LINE_LENGTH / 2),
-        [circleX],
-    );
-    const lineEnd = useComputedValue(
-        () => vec(circleX.current, circleX.current + LINE_LENGTH / 2),
-        [circleX],
-    );
+    const lineStart = useComputedValue(() => vec(circleX.current, 0), [circleX]);
+    const lineEnd = useComputedValue(() => vec(circleX.current, LINE_LENGTH), [circleX]);
 
     const setIsActive = useCallback(
         (active: boolean) => {
