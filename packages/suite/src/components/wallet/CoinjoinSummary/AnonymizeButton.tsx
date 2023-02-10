@@ -7,7 +7,7 @@ import { Card, Translation } from '@suite-components';
 import { useSelector } from '@suite-hooks';
 import { TooltipButton } from '@trezor/components';
 import {
-    selectIsCoinjoinBlockedByTor,
+    selectIsCoinjoinSelectedAccountBlockedByTor,
     selectIsCoinjoinBlockedByAmountsTooSmall,
 } from '@wallet-reducers/coinjoinReducer';
 import {
@@ -37,7 +37,7 @@ interface AnonymizeButtonProps {
 }
 
 export const AnonymizeButton = ({ accountKey }: AnonymizeButtonProps) => {
-    const isCoinjoinBlockedByTor = useSelector(selectIsCoinjoinBlockedByTor);
+    const isCoinjoinBlockedByTor = useSelector(selectIsCoinjoinSelectedAccountBlockedByTor);
     const isCoinjoinBlockedByAmountsTooSmall = useSelector(state =>
         selectIsCoinjoinBlockedByAmountsTooSmall(state, accountKey),
     );
