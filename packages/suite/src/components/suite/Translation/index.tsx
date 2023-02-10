@@ -1,4 +1,4 @@
 // eslint-disable-next-line import/no-named-default
-import { default as Translation } from './components/BaseTranslation';
+import { default as Translation, type TranslationKey } from './components/BaseTranslation';
 
-export { Translation };
+export { Translation, TranslationKey };

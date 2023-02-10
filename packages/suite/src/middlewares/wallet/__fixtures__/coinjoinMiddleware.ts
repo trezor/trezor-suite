@@ -1,6 +1,7 @@
 import { ROUTER, SUITE } from '@suite-actions/constants';
 import { accountsActions } from '@suite-common/wallet-core';
 import { SelectedAccountLoaded } from '@suite-common/wallet-types';
+import { AnonymitySet } from '@trezor/blockchain-link';
 import { SuiteState } from '@suite-reducers/suiteReducer';
 import { AcquiredDevice } from '@suite-types';
 import { DEVICE } from '@trezor/connect';
@@ -29,6 +30,11 @@ const ACCOUNT_A = {
     status: 'ready',
     symbol: 'btc',
     utxo: [{ address: 'address', amount: '10000', vout: 1 }],
+    addresses: {
+        anonymitySet: {
+            address: 1,
+        } as AnonymitySet,
+    },
 } as Account;
 const ACCOUNT_B = { ...ACCOUNT_A, deviceState: 'device-B-state', key: 'account-B-key' };
 

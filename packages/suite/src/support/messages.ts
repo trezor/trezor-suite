@@ -3912,6 +3912,10 @@ export default defineMessages({
         id: 'TR_UNAVAILABLE_COINJOIN_AMOUNTS_TOO_SMALL',
         defaultMessage: 'Amounts are too small for coinjoin.',
     },
+    TR_UNAVAILABLE_COINJOIN_NO_ANONYMITY_SET: {
+        id: 'TR_UNAVAILABLE_COINJOIN_NO_ANONYMITY_SET',
+        defaultMessage: 'Coinjoin cannot be initiated without the UTXO anonymity levels.',
+    },
     TR_ONION_BACKEND_TOR_NEEDED: {
         id: 'TR_ONION_BACKEND_TOR_NEEDED',
         defaultMessage:
@@ -7863,5 +7867,9 @@ export default defineMessages({
     TR_SENDFORM_LABELING_EXAMPLE_2: {
         id: 'TR_SENDFORM_LABELING_EXAMPLE_2',
         defaultMessage: 'Rent',
+    },
+    TR_ANONYMITY_SET_ERROR: {
+        id: 'TR_ANONYMITY_SET_ERROR',
+        defaultMessage: 'Error calculating your privacy, try again later',
     },
 });

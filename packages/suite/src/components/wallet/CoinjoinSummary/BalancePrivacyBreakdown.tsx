@@ -11,7 +11,7 @@ import {
 } from '@wallet-reducers/coinjoinReducer';
 import { selectSelectedAccount } from '@wallet-reducers/selectedAccountReducer';
 
-const Container = styled.div<{ isSessionRunning: boolean }>`
+export const BalanceContainer = styled.div<{ isSessionRunning: boolean }>`
     display: flex;
     justify-content: space-between;
     width: ${({ isSessionRunning }) => (isSessionRunning ? '100%' : '58%')};
@@ -42,7 +42,7 @@ export const BalancePrivacyBreakdown = () => {
     }
 
     return (
-        <Container isSessionRunning={isSessionRunning}>
+        <BalanceContainer isSessionRunning={isSessionRunning}>
             <CryptoAmountWithHeader
                 header={
                     isSessionRunning ? (
@@ -74,6 +74,6 @@ export const BalancePrivacyBreakdown = () => {
                 symbol={currentAccount?.symbol}
                 color={!isZero(anonymized || '0') ? theme.TYPE_GREEN : theme.TYPE_LIGHT_GREY}
             />
-        </Container>
+        </BalanceContainer>
     );
 };

@@ -645,6 +645,22 @@ export const selectRoundsLeft = memoizeWithArgs(
     },
 );
 
+export const selectHasAnonymitySetError = memoize((state: CoinjoinRootState) => {
+    const selectedAccount = selectSelectedAccount(state);
+
+    if (!selectedAccount) {
+        return false;
+    }
+
+    const { addresses, utxo: utxos } = selectedAccount;
+
+    const hasFaultyAnonymitySet = !utxos?.every(
+        ({ address }) => addresses?.anonymitySet?.[address] !== undefined,
+    );
+
+    return hasFaultyAnonymitySet;
+});
+
 export const selectCoinjoinSessionBlockerByAccountKey = memoizeWithArgs(
     (state: CoinjoinRootState, accountKey: AccountKey) => {
         if (selectSessionByAccountKey(state, accountKey)?.starting) {
@@ -671,6 +687,9 @@ export const selectCoinjoinSessionBlockerByAccountKey = memoizeWithArgs(
         }
         if (selectIsDeviceLocked(state)) {
             return 'DEVICE_LOCKED';
+        }
+        if (selectHasAnonymitySetError(state)) {
+            return 'ANONYMITY_ERROR';
         }
     },
 );
