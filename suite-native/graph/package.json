@@ -12,7 +12,7 @@
     },
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
-        "@shopify/react-native-skia": "0.1.163",
+        "@shopify/react-native-skia": "0.1.173",
         "@suite-common/formatters": "workspace:*",
         "@suite-common/graph": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
@@ -26,7 +26,7 @@
         "react": "18.2.0",
         "react-native": "0.70.5",
         "react-native-gesture-handler": "^2.7.0",
-        "react-native-reanimated": "^2.12.0",
+        "react-native-reanimated": "2.14.4",
         "react-redux": "7.2.2"
     },
     "devDependencies": {

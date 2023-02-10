@@ -354,32 +354,32 @@ PODS:
     - RCTTypeSafety
     - React-Core
     - ReactCommon/turbomodule/core
-  - react-native-skia (0.1.163):
+  - react-native-skia (0.1.173):
     - React
     - React-callinvoker
     - React-Core
-    - react-native-skia/Api (= 0.1.163)
-    - react-native-skia/Jsi (= 0.1.163)
-    - react-native-skia/RNSkia (= 0.1.163)
-    - react-native-skia/SkiaHeaders (= 0.1.163)
-    - react-native-skia/Utils (= 0.1.163)
-  - react-native-skia/Api (0.1.163):
+    - react-native-skia/Api (= 0.1.173)
+    - react-native-skia/Jsi (= 0.1.173)
+    - react-native-skia/RNSkia (= 0.1.173)
+    - react-native-skia/SkiaHeaders (= 0.1.173)
+    - react-native-skia/Utils (= 0.1.173)
+  - react-native-skia/Api (0.1.173):
     - React
     - React-callinvoker
     - React-Core
-  - react-native-skia/Jsi (0.1.163):
+  - react-native-skia/Jsi (0.1.173):
     - React
     - React-callinvoker
     - React-Core
-  - react-native-skia/RNSkia (0.1.163):
+  - react-native-skia/RNSkia (0.1.173):
     - React
     - React-callinvoker
     - React-Core
-  - react-native-skia/SkiaHeaders (0.1.163):
+  - react-native-skia/SkiaHeaders (0.1.173):
     - React
     - React-callinvoker
     - React-Core
-  - react-native-skia/Utils (0.1.163):
+  - react-native-skia/Utils (0.1.173):
     - React
     - React-callinvoker
     - React-Core
@@ -451,7 +451,7 @@ PODS:
     - React-perflogger (= 0.70.5)
   - RNGestureHandler (2.7.1):
     - React-Core
-  - RNReanimated (2.12.0):
+  - RNReanimated (2.14.4):
     - DoubleConversion
     - FBLazyVector
     - FBReactNativeSpec
@@ -782,7 +782,7 @@ SPEC CHECKSUMS:
   react-native-flipper: c33a4995958ef12a2b2f8290d63bed7adeed7634
   react-native-mmkv: 69b9c003f10afdd01addf7c6ee784ce42ee2eff3
   react-native-safe-area-context: 99b24a0c5acd0d5dcac2b1a7f18c49ea317be99a
-  react-native-skia: b8dea1953ce02c7b859ebf972b3d275c7d81373a
+  react-native-skia: 1fba97df6b01dedc797f02a1f7fd24ad8a5c894c
   React-perflogger: e68d3795cf5d247a0379735cbac7309adf2fb931
   React-RCTActionSheet: 05452c3b281edb27850253db13ecd4c5a65bc247
   React-RCTAnimation: 578eebac706428e68466118e84aeacf3a282b4da
@@ -796,7 +796,7 @@ SPEC CHECKSUMS:
   React-runtimeexecutor: 7401c4a40f8728fd89df4a56104541b760876117
   ReactCommon: c9246996e73bf75a2c6c3ff15f1e16707cdc2da9
   RNGestureHandler: b7a872907ee289ada902127f2554fa1d2c076122
-  RNReanimated: 95fde05503235f14cd4a0cf526ffbad3d54af688
+  RNReanimated: bcb43d166a452cbdbb5e66eab23ff5dec63741f6
   RNScreens: 1b7bb502dac62cc4cf01b94bea591c8da275132f
   RNSentry: ef53abfde32e4cddbf09d00b5c71907bd5177158
   RNSVG: ecd661f380a07ba690c9c5929c475a44f432d674
