@@ -11,7 +11,7 @@
     },
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
-        "@shopify/react-native-skia": "0.1.172",
+        "@shopify/react-native-skia": "0.1.173",
         "@suite-common/formatters": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
         "@trezor/env-utils": "workspace:*",
@@ -23,7 +23,7 @@
         "react": "18.2.0",
         "react-native": "0.70.5",
         "react-native-gesture-handler": "^2.7.0",
-        "react-native-reanimated": "^2.12.0",
+        "react-native-reanimated": "2.14.4",
         "react-native-root-toast": "^3.3.1",
         "react-native-safe-area-context": "^4.4.1"
     },

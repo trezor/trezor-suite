@@ -1,4 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import {
+    Easing,
+    interpolate,
+    useSharedValue,
+    withRepeat,
+    withTiming,
+} from 'react-native-reanimated';
 
 import {
     Canvas,
@@ -9,9 +16,9 @@ import {
     Rect,
     RoundedRect,
     RoundedRectProps,
-    useComputedValue,
-    useLoop,
+    useSharedValueEffect,
     useSVG,
+    useValue,
     vec,
 } from '@shopify/react-native-skia';
 
@@ -89,19 +96,34 @@ export const QrWithLaser = () => {
         utils: { colors },
     } = useNativeStyles();
     const qrCodeSvg = useSVG(icons.qrCodeImport);
+    const laserY = useValue(0);
+    const laserOpacity = useValue(0);
 
-    const loop = useLoop();
-    const laserY = useComputedValue(() => loop.current * height, [loop]);
+    const progress = useSharedValue(0);
+
+    useEffect(() => {
+        progress.value = withRepeat(
+            withTiming(1, { duration: 1200, easing: Easing.bezier(0, 0, 0.3, 1) }),
+            -1,
+            false,
+        );
+    }, [progress]);
+
+    useSharedValueEffect(() => {
+        laserY.current = progress.value * height;
+        laserOpacity.current = interpolate(progress.value, [0, 0.5, 1], [0, 1, 0]);
+    }, progress);
 
     return (
-        <Canvas style={{ height, width, borderColor: 'red', borderWidth: 0 }}>
-            <Rect x={0} y={laserY} width={342} height={1}>
+        <Canvas style={{ height, width }}>
+            <Rect x={0} y={laserY} width={width} height={1} opacity={laserOpacity}>
                 <LinearGradient
                     start={vec(0, 0)}
                     end={vec(width, 0)}
                     colors={[colors.gray100, 'red', colors.gray100]}
                 />
             </Rect>
+
             {qrCodeSvg && (
                 <ImageSVG
                     svg={qrCodeSvg}
