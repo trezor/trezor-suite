@@ -1,7 +1,7 @@
 import { DeepMap, FieldError, UseFormMethods } from 'react-hook-form';
 
 import BigNumber from 'bignumber.js';
-import Common, { Chain, Hardfork } from '@ethereumjs/common';
+import { Common, Chain, Hardfork } from '@ethereumjs/common';
 import { Transaction, TxData } from '@ethereumjs/tx';
 import { fromWei, padLeft, toHex, toWei } from 'web3-utils';
 
