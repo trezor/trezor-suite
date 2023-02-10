@@ -568,21 +568,21 @@ export const isAccountOutdated = (account: Account, freshInfo: AccountInfo) => {
     // different sequence or balance
     const changedRipple =
         account.networkType === 'ripple' &&
-        (freshInfo.misc!.sequence !== account.misc.sequence ||
+        (freshInfo.misc?.sequence !== account.misc.sequence ||
             freshInfo.balance !== account.balance ||
-            freshInfo.misc!.reserve !== account.misc.reserve);
+            freshInfo.misc?.reserve !== account.misc.reserve);
 
     const changedEthereum =
-        account.networkType === 'ethereum' && freshInfo.misc!.nonce !== account.misc.nonce;
+        account.networkType === 'ethereum' && freshInfo.misc?.nonce !== account.misc.nonce;
 
     const changedCardano =
         account.networkType === 'cardano' &&
         // stake address (de)registration
-        (freshInfo.misc!.staking?.isActive !== account.misc.staking.isActive ||
+        (freshInfo.misc?.staking?.isActive !== account.misc.staking.isActive ||
             // changed rewards amount (rewards are distributed every epoch (5 days))
-            freshInfo.misc!.staking?.rewards !== account.misc.staking.rewards ||
+            freshInfo.misc?.staking?.rewards !== account.misc.staking.rewards ||
             // changed stake pool
-            freshInfo.misc!.staking?.poolId !== account.misc.staking.poolId);
+            freshInfo.misc?.staking?.poolId !== account.misc.staking.poolId);
 
     return (
         changedTxCountOfflineFresh ||
@@ -603,6 +603,7 @@ export const getAccountSpecific = (
     if (networkType === 'ripple') {
         return {
             networkType,
+            // todo: shouldn't we move these fallbacks to blockchain-link?
             misc: {
                 sequence: misc && misc.sequence ? misc.sequence : 0,
                 reserve: misc && misc.reserve ? misc.reserve : '0',
