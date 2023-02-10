@@ -31,7 +31,7 @@
         "@trezor/icons": "workspace:*",
         "@trezor/styles": "workspace:*",
         "@trezor/theme": "workspace:*",
-        "date-fns": "^2.29.1",
+        "date-fns": "^2.29.3",
         "jotai": "1.9.1",
         "react": "18.2.0",
         "react-native": "0.71.2",

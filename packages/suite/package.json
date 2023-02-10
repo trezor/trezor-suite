@@ -88,7 +88,7 @@
         "react-toastify": "^9.1.1",
         "react-use": "^17.4.0",
         "react-window": "^1.8.8",
-        "recharts": "^2.3.2",
+        "recharts": "^2.4.1",
         "redux": "4.2.0",
         "redux-logger": "^3.0.6",
         "redux-thunk": "^2.3.0",
