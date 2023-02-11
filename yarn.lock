@@ -4894,31 +4894,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@shopify/react-native-skia@npm:0.1.163":
-  version: 0.1.163
-  resolution: "@shopify/react-native-skia@npm:0.1.163"
-  dependencies:
-    "@types/pixelmatch": ^5.2.4
-    "@types/pngjs": ^6.0.1
-    "@types/ws": ^8.5.3
-    canvaskit-wasm: 0.36.1
-    pixelmatch: ^5.3.0
-    pngjs: ^6.0.0
-    react-reconciler: ^0.27.0
-    ws: ^8.11.0
-  peerDependencies:
-    react: ">=18.0"
-    react-native: ">=0.64"
-    react-native-reanimated: ">=2.0.0"
-  peerDependenciesMeta:
-    react-native-reanimated:
-      optional: true
-  bin:
-    setup-skia-web: scripts/setup-canvaskit.js
-  checksum: b58b990b0369d9024b415b9baf6e1dea540e30dd2b8237ed7e070360611c2fc9030bf143e2ff994da534407fe7256de2561cb9d2cd28b09aac8a3d92822dfc70
-  languageName: node
-  linkType: hard
-
 "@shopify/react-native-skia@npm:0.1.173":
   version: 0.1.173
   resolution: "@shopify/react-native-skia@npm:0.1.173"
@@ -6737,7 +6712,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/react-native-graph@workspace:suite-native/react-native-graph"
   dependencies:
-    "@shopify/react-native-skia": 0.1.163
+    "@shopify/react-native-skia": 0.1.173
     "@types/react": 18.0.25
     "@types/react-native": 0.70.3
     react: 18.2.0
@@ -12289,13 +12264,6 @@ __metadata:
     node-gyp: latest
     simple-get: ^3.0.3
   checksum: b2e3eb4c3635fa2f67857619621c3d314f935a9e51904536dadf4908ab580dff4f5bcbaafe6eb0255247fa027ca494d5cd97c33376a49a0f994997263fa9944b
-  languageName: node
-  linkType: hard
-
-"canvaskit-wasm@npm:0.36.1":
-  version: 0.36.1
-  resolution: "canvaskit-wasm@npm:0.36.1"
-  checksum: 7a90d1a641d9d9fc5a10fcc0ec64a73714247dfb5c41182644f5886b6e601f6e018282d2ac545acce66cd478b598640abdd58d8ae6db282d252d14d1d16eeb47
   languageName: node
   linkType: hard
 

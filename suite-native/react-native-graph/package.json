@@ -11,7 +11,7 @@
         "type-check": "tsc --build"
     },
     "dependencies": {
-        "@shopify/react-native-skia": "0.1.163",
+        "@shopify/react-native-skia": "0.1.173",
         "@types/react": "18.0.25",
         "@types/react-native": "0.70.3",
         "react": "18.2.0",
