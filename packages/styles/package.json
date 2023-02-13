@@ -13,7 +13,6 @@
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
         "@trezor/theme": "workspace:*",
-        "@types/react-native": "workspace:*",
         "css-in-js-utils": "^3.1.0",
         "csstype": "^3.1.1",
         "fela": "^12.2.1",

@@ -6732,7 +6732,6 @@ __metadata:
   dependencies:
     "@shopify/react-native-skia": 0.1.173
     "@types/react": 18.0.25
-    "@types/react-native": 0.70.3
     react: 18.2.0
     react-native: 0.71.2
     react-native-gesture-handler: ^2.9.0
@@ -7389,7 +7388,6 @@ __metadata:
   dependencies:
     "@mobily/ts-belt": ^3.13.1
     "@trezor/theme": "workspace:*"
-    "@types/react-native": "workspace:*"
     css-in-js-utils: ^3.1.0
     csstype: ^3.1.1
     fela: ^12.2.1
@@ -7827,7 +7825,6 @@ __metadata:
   resolution: "@trezor/transport-native@workspace:packages/transport-native"
   dependencies:
     "@types/react": 18.0.25
-    "@types/react-native": 0.70.3
     jest: ^26.6.3
     pod-install: ^0.1.38
     react: 18.2.0
@@ -8911,15 +8908,6 @@ __metadata:
   dependencies:
     "@types/react": "*"
   checksum: d059cc084d3b3071cce3421bb1170dd42819cf39b81afe60d4fbd66c5ef9ffeaadf1802df80efd9553258f621678f69ceb5a21d73df0d8539d40ae9a0f995485
-  languageName: node
-  linkType: hard
-
-"@types/react-native@npm:0.70.3":
-  version: 0.70.3
-  resolution: "@types/react-native@npm:0.70.3"
-  dependencies:
-    "@types/react": "*"
-  checksum: 5bb41917651d7d53562106e5f613790ffe1b6a0cdee5a878563f27af51ce1a760f910f00fc4badf1ba3907f9adb1c73dca665a5992f243b9bc98f75ed65ad28b
   languageName: node
   linkType: hard
 
