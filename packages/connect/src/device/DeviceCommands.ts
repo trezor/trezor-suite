@@ -707,11 +707,11 @@ export class DeviceCommands {
         if (name === 'BridgeTransport' && versionCompare(version, '2.0.28') < 1) {
             await this.device.legacyForceRelease();
         } else {
-            await this.transport.post(this.sessionId, 'Cancel', {}, false);
+            await this.transport.post(this.sessionId, 'Cancel', {}, false).catch(() => {});
             // post does not read back from usb stack. this means that there is a pending message left
             // and we need to remove it so that it does not interfere with the next transport call.
             // see DeviceCommands.typedCall
-            await this.transport.read(this.sessionId, false);
+            await this.transport.read(this.sessionId, false).catch(() => {});
         }
     }
 }

@@ -10,6 +10,7 @@ export interface CommonParams {
     useEventListener?: boolean; // this param is set automatically in factory
     allowSeedlessDevice?: boolean;
     keepSession?: boolean;
+    override?: boolean;
     skipFinalReload?: boolean;
     useCardanoDerivation?: boolean;
 }

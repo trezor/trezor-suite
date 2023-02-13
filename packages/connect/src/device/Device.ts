@@ -233,8 +233,7 @@ export class Device extends EventEmitter {
         }
 
         if (this.runPromise) {
-            this.runPromise.reject(error);
-            this.runPromise = null;
+            await this.interruptionFromUser(error);
         }
 
         if (!this.keepSession && this.deferredActions[DEVICE.RELEASE]) {
