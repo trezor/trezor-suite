@@ -20,3 +20,4 @@ All common parameters are optional.
     -   Wallet calls `getPublicKey` with `useCardanoDerivation=false`, passhprase is entered, seed derived
     -   Wallet calls `cardanoGetPublicKey`.
     -   At this moment user will be prompted to enter passhprase again.
+-   `override` - _optional_ `boolean` Interrupt previous call, if any.
