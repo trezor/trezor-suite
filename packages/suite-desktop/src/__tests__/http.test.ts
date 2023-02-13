@@ -1,4 +1,4 @@
-import fetch from 'node-fetch';
+import fetch from 'cross-fetch';
 
 import { HttpReceiver } from '../libs/http-receiver';
 import { fixtures } from '../__fixtures__/http';

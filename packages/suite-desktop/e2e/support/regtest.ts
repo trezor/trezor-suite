@@ -2,8 +2,6 @@
 
 // TODO: future coinjoin-backend-link package? similar to trezor-user-env-link
 
-import fetch from 'node-fetch';
-
 export const sendToAddress = ({ address, amount }: { address: string; amount: string }) =>
     fetch('http://localhost:8081/send_to_address', {
         headers: {

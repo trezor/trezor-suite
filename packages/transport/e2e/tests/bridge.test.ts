@@ -1,5 +1,3 @@
-import fetch from 'node-fetch';
-
 // testing build. yarn workspace @trezor/transport build:lib is a required step therefore
 import TrezorLink from '../../lib';
 import messages from '../../messages.json';
