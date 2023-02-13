@@ -1,6 +1,7 @@
 import TrezorConnect from '@trezor/connect';
 import type { ScanAccountProgress } from '@trezor/coinjoin/lib/types/backend';
 import { promiseAllSequence } from '@trezor/utils';
+import { SUITE } from '@suite-actions/constants';
 import * as COINJOIN from './constants/coinjoinConstants';
 import { goto } from '../suite/routerActions';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -596,7 +597,7 @@ export const restoreCoinjoinSession =
     (accountKey: string) => async (dispatch: Dispatch, getState: GetState) => {
         // TODO: check if device is connected, passphrase is authorized...
         const state = getState();
-        const { device } = state.suite;
+        const { device, locks } = state.suite;
         const account = selectAccountByKey(state, accountKey);
 
         if (!account) {
@@ -613,7 +614,11 @@ export const restoreCoinjoinSession =
         };
 
         if (!device?.connected) {
-            return errorToast('Device is disconnected');
+            return errorToast('Device disconnected');
+        }
+
+        if (locks.includes(SUITE.LOCK_TYPE.DEVICE)) {
+            return errorToast('Device locked');
         }
 
         // get @trezor/coinjoin client if available

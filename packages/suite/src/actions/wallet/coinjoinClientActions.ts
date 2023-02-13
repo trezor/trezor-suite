@@ -8,6 +8,7 @@ import {
     CoinjoinClientEvents,
 } from '@trezor/coinjoin';
 import { arrayDistinct, arrayToDictionary, promiseAllSequence } from '@trezor/utils';
+import { SUITE } from '@suite-actions/constants';
 import * as COINJOIN from './constants/coinjoinConstants';
 import {
     selectRoundsNeeded,
@@ -192,6 +193,7 @@ export const setBusyScreen =
                     device: {
                         path: device?.path,
                     },
+                    override: true, // override current call (override SUITE.LOCK)
                     keepSession: !!expiry, // do not release device session, keep it for signTransaction
                     expiry_ms: expiry,
                 });
@@ -301,6 +303,7 @@ export const getOwnershipProof =
     (request: Extract<CoinjoinRequestEvent, { type: 'ownership' }>) =>
     async (_dispatch: Dispatch, getState: GetState) => {
         const {
+            suite: { locks },
             devices,
             wallet: { coinjoin, accounts },
         } = getState();
@@ -334,9 +337,15 @@ export const getOwnershipProof =
                 response.inputs.push(...coinjoinResponseError(utxos, 'Account without session'));
                 return [];
             }
+
             const device = devices.find(d => d.state === realAccount.deviceState);
-            if (!device) {
-                response.inputs.push(...coinjoinResponseError(utxos, 'Device not found'));
+            if (!device?.connected) {
+                response.inputs.push(...coinjoinResponseError(utxos, 'Device disconnected'));
+                return [];
+            }
+
+            if (locks.includes(SUITE.LOCK_TYPE.DEVICE)) {
+                response.inputs.push(...coinjoinResponseError(utxos, 'Device locked'));
                 return [];
             }
 
@@ -432,14 +441,16 @@ export const signCoinjoinTx =
                 response.inputs.push(...coinjoinResponseError(utxos, 'Account not found'));
                 return [];
             }
+
             const { session, rawLiquidityClue } = coinjoinAccount;
             if (!session || session.signedRounds.length >= session.maxRounds) {
                 response.inputs.push(...coinjoinResponseError(utxos, 'Account without session'));
                 return [];
             }
+
             const device = devices.find(d => d.state === realAccount.deviceState);
-            if (!device) {
-                response.inputs.push(...coinjoinResponseError(utxos, 'Device not found'));
+            if (!device?.connected) {
+                response.inputs.push(...coinjoinResponseError(utxos, 'Device disconnected'));
                 return [];
             }
 
@@ -484,6 +495,7 @@ export const signCoinjoinTx =
                             preauthorized: true,
                             serialize: false,
                             unlockPath,
+                            override: true, // override current call (override SUITE.LOCK)
                         });
 
                         if (signTx.success) {
