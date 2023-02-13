@@ -2,7 +2,6 @@ import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import styled, { css } from 'styled-components';
 import { lighten } from 'polished';
-
 import {
     Dropdown,
     FluidSpinner,
@@ -15,7 +14,6 @@ import {
 import { CoinjoinSession } from '@wallet-types/coinjoin';
 import { Translation } from '@suite-components/Translation';
 import { CountdownTimer } from '@suite-components';
-
 import { SESSION_PHASE_MESSAGES } from '@suite-constants/coinjoin';
 import {
     pauseCoinjoinSession,
@@ -152,19 +150,17 @@ const CrossIcon = styled(Icon)`
 const TextCointainer = styled.div`
     height: 30px;
 `;
-interface CoinjoinStatusProps {
+interface CoinjoinStatusWheelProps {
     accountKey: string;
     session: CoinjoinSession;
 }
 
-export const CoinjoinStatus = ({ accountKey, session }: CoinjoinStatusProps) => {
-    const [isWheelHovered, setIsWheelHovered] = useState(false);
+export const CoinjoinStatusWheel = ({ accountKey, session }: CoinjoinStatusWheelProps) => {
     const sessionProgress = useSelector(state =>
         selectSessionProgressByAccountKey(state, accountKey),
     );
     const roundsDurationInHours = useSelector(selectRoundsDurationInHours);
-
-    const dispatch = useDispatch();
+    const [isWheelHovered, setIsWheelHovered] = useState(false);
 
     const { coinjoinSessionBlocker, coinjoinSessionBlockedMessage, isCoinjoinSessionBlocked } =
         useCoinjoinSessionBlockers(accountKey);
@@ -172,8 +168,10 @@ export const CoinjoinStatus = ({ accountKey, session }: CoinjoinStatusProps) => 
     const sessionPhase = useCoinjoinSessionPhase(accountKey);
     const menuRef = useRef<HTMLUListElement & { close: () => void }>(null);
     const theme = useTheme();
+    const dispatch = useDispatch();
 
     const { paused, roundPhase, roundPhaseDeadline, sessionDeadline } = session;
+
     const isPaused = !!paused;
     const isLoading = coinjoinSessionBlocker === 'SESSION_STARTING';
     const isResumeBlockedByLastingIssue =
@@ -187,7 +185,7 @@ export const CoinjoinStatus = ({ accountKey, session }: CoinjoinStatusProps) => 
         } else {
             dispatch(pauseCoinjoinSession(accountKey));
         }
-    }, [accountKey, dispatch, isCoinjoinSessionBlocked, isPaused]);
+    }, [isCoinjoinSessionBlocked, isPaused, dispatch, accountKey]);
 
     const menuItems = useMemo<Array<GroupedMenuItems>>(
         () => [
@@ -255,7 +253,11 @@ export const CoinjoinStatus = ({ accountKey, session }: CoinjoinStatusProps) => 
             color: theme.TYPE_DARK_GREY,
         };
 
-        if (isPaused && isWheelHovered && !isCoinjoinSessionBlocked) {
+        const isPausedAndHovered = isPaused && isWheelHovered && !isCoinjoinSessionBlocked;
+        const isPausedOrRunningAndHovered = isPaused || isCoinjoinSessionBlocked || isWheelHovered;
+        const isSessionActive = !!sessionDeadline;
+
+        if (isPausedAndHovered) {
             return (
                 <>
                     <PlayIcon icon="PLAY" {...iconConfig} />
@@ -264,7 +266,7 @@ export const CoinjoinStatus = ({ accountKey, session }: CoinjoinStatusProps) => 
             );
         }
 
-        if (isPaused || isCoinjoinSessionBlocked || isWheelHovered) {
+        if (isPausedOrRunningAndHovered) {
             return (
                 <>
                     <PauseIcon icon="PAUSE" {...iconConfig} />
@@ -273,7 +275,7 @@ export const CoinjoinStatus = ({ accountKey, session }: CoinjoinStatusProps) => 
             );
         }
 
-        if (sessionDeadline) {
+        if (isSessionActive) {
             return (
                 <>
                     <TimeLeft>
@@ -347,6 +349,7 @@ export const CoinjoinStatus = ({ accountKey, session }: CoinjoinStatusProps) => 
                     </ProgressContent>
                 </ProgressWheel>
             </Tooltip>
+
             <TextCointainer>{getProgressMessage()}</TextCointainer>
         </Container>
     );
