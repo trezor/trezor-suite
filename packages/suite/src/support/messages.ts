@@ -2294,7 +2294,7 @@ export default defineMessages({
     },
     TR_DEVICE_SETTINGS_PIN_PROTECTION_DESC: {
         defaultMessage:
-            'Setting a strong PIN is one of the main ways to secure your device against unauthorized physical access and protect your funds.',
+            'Setting a strong PIN is one of the best ways to secure your device against unauthorized physical access and protect your funds.',
         id: 'TR_DEVICE_SETTINGS_PIN_PROTECTION_DESC',
     },
     TR_DEVICE_SETTINGS_PIN_PROTECTION_TITLE: {
@@ -5596,7 +5596,7 @@ export default defineMessages({
         id: 'FEE_LEVEL_LOW',
     },
     CUSTOM_FEE_IS_NOT_SET: {
-        defaultMessage: 'Enter your desired fee',
+        defaultMessage: 'How much do you want to spend on fee to make this transaction go through.',
         id: 'CUSTOM_FEE_IS_NOT_SET',
     },
     CUSTOM_FEE_IS_NOT_NUMBER: {
@@ -7686,7 +7686,7 @@ export default defineMessages({
         id: 'TR_REMEMBER_WALLET_DESCRIPTION',
         description: 'Displayed during coinjoin account discovery',
         defaultMessage:
-            'It’s still being loaded anonymously, but with faster loading times and saved custom setups.',
+            'It will still be loaded anonymously, but with faster loading times and saved custom setups.',
     },
     TR_TIMER_PAST_DEADLINE: {
         id: 'TR_TIMER_PAST_DEADLINE',
