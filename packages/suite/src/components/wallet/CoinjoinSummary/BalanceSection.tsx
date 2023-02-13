@@ -11,8 +11,8 @@ import {
 import { BalancePrivacyBreakdown } from './BalancePrivacyBreakdown';
 import { AnonymizedIndicator } from './AnonymizedIndicator';
 import { AnonymizeButton } from './AnonymizeButton';
-import { CoinjoinStatus } from './CoinjoinStatus';
 import { BalanceError } from './BalanceError';
+import { CoinjoinStatusWheel } from './CoinjoinStatusWheel';
 
 export const Container = styled(Card)`
     flex-direction: row;
@@ -35,7 +35,9 @@ export const BalanceSection = ({ accountKey }: BalanceSectionProps) => {
 
     const getRightSideComponent = () => {
         if (coinjoinAccount?.session) {
-            return <CoinjoinStatus session={coinjoinAccount.session} accountKey={accountKey} />;
+            return (
+                <CoinjoinStatusWheel session={coinjoinAccount.session} accountKey={accountKey} />
+            );
         }
 
         if (allAnonymized) {
