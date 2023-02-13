@@ -23,6 +23,9 @@ const selectedAccountReducer = (state: State = initialState, action: Action): St
 export const selectSelectedAccount = (state: SelectedAccountRootState) =>
     state.wallet.selectedAccount.account;
 
+export const selectSelectedAccountBalance = (state: SelectedAccountRootState) =>
+    state.wallet.selectedAccount.account?.formattedBalance;
+
 export const selectSelectedAccountParams = (state: SelectedAccountRootState) =>
     state.wallet.selectedAccount.params;
 
