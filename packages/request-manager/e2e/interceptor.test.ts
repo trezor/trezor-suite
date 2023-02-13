@@ -1,5 +1,4 @@
 import path from 'path';
-import fetch from 'node-fetch';
 import WebSocket from 'ws';
 
 import { TorController, createInterceptor } from '../src';

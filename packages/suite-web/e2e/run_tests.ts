@@ -8,7 +8,6 @@
 import cypress from 'cypress';
 import child_process from 'child_process';
 import yargs from 'yargs/yargs';
-import fetch from 'node-fetch';
 import path from 'path';
 import fs from 'fs';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';

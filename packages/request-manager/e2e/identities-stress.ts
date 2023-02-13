@@ -1,5 +1,4 @@
 import path from 'path';
-import fetch, { Response } from 'node-fetch';
 import { createInterceptor, TorController, TorIdentities } from '../src';
 import { torRunner } from './torRunner';
 
