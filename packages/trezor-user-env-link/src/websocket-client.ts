@@ -16,6 +16,13 @@ const NOT_INITIALIZED = new Error('websocket_not_initialized');
 const DEFAULT_TIMEOUT = 5 * 60 * 1000;
 const DEFAULT_PING_TIMEOUT = 50 * 1000;
 
+// breaking change in node 17, ip6 is preferred by default
+// localhost is not resolved correctly on certain machines
+const USER_ENV_URL = {
+    WEBSOCKET: `ws://127.0.0.1:9001/`,
+    DASHBOARD: `http://127.0.0.1:9002`,
+};
+
 interface Options {
     pingTimeout?: number;
     url?: string;
@@ -51,7 +58,7 @@ class TrezorUserEnvLinkClass extends EventEmitter {
         this.setMaxListeners(Infinity);
         this.options = {
             ...options,
-            url: options.url || 'ws://localhost:9001/',
+            url: options.url || USER_ENV_URL.WEBSOCKET,
         };
 
         this.api = api(this);
@@ -281,7 +288,7 @@ class TrezorUserEnvLinkClass extends EventEmitter {
                 await delay(1000);
 
                 try {
-                    const res = await fetch('http://localhost:9002');
+                    const res = await fetch(USER_ENV_URL.DASHBOARD);
                     if (res.status === 200) {
                         console.log('trezor-user-env is online');
                         return resolve();
