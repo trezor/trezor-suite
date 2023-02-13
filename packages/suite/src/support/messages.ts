@@ -7756,7 +7756,7 @@ export default defineMessages({
         defaultMessage: 'Confirming availability',
     },
     TR_SESSION_PHASE_22_MESSAGE: {
-        id: 'TR_SESSION_PHASE_2_MESSAGE',
+        id: 'TR_SESSION_PHASE_22_MESSAGE',
         defaultMessage: 'Waiting for participants',
     },
     TR_SESSION_PHASE_31_MESSAGE: {
@@ -7765,10 +7765,10 @@ export default defineMessages({
     },
     TR_SESSION_PHASE_32_MESSAGE: {
         id: 'TR_SESSION_PHASE_32_MESSAGE',
-        defaultMessage: 'Verification failed, retrying',
+        defaultMessage: 'Waiting for coordinator',
     },
     TR_SESSION_PHASE_33_MESSAGE: {
-        id: 'TR_SESSION_PHASE_32_MESSAGE',
+        id: 'TR_SESSION_PHASE_33_MESSAGE',
         defaultMessage: 'Verification failed, retrying',
     },
     TR_SESSION_PHASE_41_MESSAGE: {
