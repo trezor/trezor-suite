@@ -13,7 +13,7 @@ type SheetProps = {
  * To fix that, components need to be wrapped with gestureHandlerRootHOC (it's no-op on iOS and web).
  * See more details: https://docs.swmansion.com/react-native-gesture-handler/docs/installation/#usage-with-modals-on-android
  */
-// @ts-expect-error
+// @ts-expect-error https://github.com/software-mansion/react-native-gesture-handler/issues/2412
 const BottomSheetGestureHandler = gestureHandlerRootHOC<{ children: ReactNode }>(({ children }) => (
     <>{children}</>
 ));

@@ -20,7 +20,7 @@ module.exports = {
     testMatch,
     testPathIgnorePatterns,
     watchPathIgnorePatterns,
-
+    testEnvironment: 'jsdom',
     preset: 'react-native',
 
     transform: {
