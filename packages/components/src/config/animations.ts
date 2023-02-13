@@ -9,6 +9,18 @@ export const SPIN = keyframes`
     }
 `;
 
+export const DELAYED_SPIN = keyframes`
+    0% {
+        transform: rotate(0deg);
+    }
+    50% {
+        transform: rotate(360deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+`;
+
 export const DASH = keyframes`
     0% {
         stroke-dasharray: 1, 200;

@@ -5,12 +5,9 @@ import { Card } from '@suite-components';
 import { useSelector } from '@suite-hooks';
 import {
     selectCoinjoinAccountByKey,
-    selectCurrentCoinjoinBalanceBreakdown,
     selectHasAnonymitySetError,
 } from '@wallet-reducers/coinjoinReducer';
 import { BalancePrivacyBreakdown } from './BalancePrivacyBreakdown';
-import { AnonymizedIndicator } from './AnonymizedIndicator';
-import { AnonymizeButton } from './AnonymizeButton';
 import { BalanceError } from './BalanceError';
 import { CoinjoinStatusWheel } from './CoinjoinStatusWheel';
 
@@ -28,30 +25,13 @@ interface BalanceSectionProps {
 
 export const BalanceSection = ({ accountKey }: BalanceSectionProps) => {
     const coinjoinAccount = useSelector(state => selectCoinjoinAccountByKey(state, accountKey));
-    const { notAnonymized } = useSelector(selectCurrentCoinjoinBalanceBreakdown);
     const hasAnonymitySetError = useSelector(selectHasAnonymitySetError);
-
-    const allAnonymized = notAnonymized === '0' && !hasAnonymitySetError;
-
-    const getRightSideComponent = () => {
-        if (coinjoinAccount?.session) {
-            return (
-                <CoinjoinStatusWheel session={coinjoinAccount.session} accountKey={accountKey} />
-            );
-        }
-
-        if (allAnonymized) {
-            return <AnonymizedIndicator />;
-        }
-
-        return <AnonymizeButton accountKey={accountKey} />;
-    };
 
     return (
         <Container>
             {hasAnonymitySetError ? <BalanceError /> : <BalancePrivacyBreakdown />}
 
-            {getRightSideComponent()}
+            <CoinjoinStatusWheel session={coinjoinAccount?.session} accountKey={accountKey} />
         </Container>
     );
 };
