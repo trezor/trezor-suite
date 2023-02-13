@@ -2,9 +2,6 @@
     "extends": "../../tsconfig.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
-        {
-            "path": "../../suite-common/formatters"
-        },
         { "path": "../../suite-common/graph" },
         {
             "path": "../../suite-common/wallet-core"
@@ -13,6 +10,7 @@
             "path": "../../suite-common/wallet-types"
         },
         { "path": "../atoms" },
+        { "path": "../formatters" },
         { "path": "../react-native-graph" },
         { "path": "../test-utils" },
         { "path": "../../packages/icons" },

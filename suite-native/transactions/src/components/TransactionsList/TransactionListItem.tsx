@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { Color } from '@trezor/theme';
-import { Box, DiscreetText, Text } from '@suite-native/atoms';
+import { Box, Text } from '@suite-native/atoms';
 import { AccountKey, TransactionType, WalletAccountTransaction } from '@suite-common/wallet-types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import {
@@ -15,7 +15,11 @@ import {
     StackNavigationProps,
 } from '@suite-native/navigation';
 import { useFormatters } from '@suite-common/formatters';
-import { AccountAddressFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
+import {
+    AccountAddressFormatter,
+    CryptoAmountFormatter,
+    CryptoToFiatAmountFormatter,
+} from '@suite-native/formatters';
 import {
     selectTransactionBlockTimeById,
     selectTransactionFirstTargetAddress,
@@ -103,7 +107,7 @@ export const TransactionListItem = memo(
             useNavigation<
                 StackNavigationProps<RootStackParamList, AccountsStackRoutes.AccountDetail>
             >();
-        const { CryptoAmountFormatter, DateTimeFormatter } = useFormatters();
+        const { DateTimeFormatter } = useFormatters();
         const transactionBlockTime = useSelector((state: TransactionsRootState) =>
             selectTransactionBlockTimeById(state, transaction.txid, accountKey),
         );
@@ -155,11 +159,11 @@ export const TransactionListItem = memo(
                         network={transaction.symbol}
                         customRates={transaction.rates}
                     />
-                    <DiscreetText typography="hint" color="gray600">
-                        {CryptoAmountFormatter.format(transaction.amount, {
-                            symbol: transaction.symbol,
-                        })}
-                    </DiscreetText>
+                    <CryptoAmountFormatter
+                        value={transaction.amount}
+                        network={transaction.symbol}
+                        isBalance={false}
+                    />
                 </Box>
             </TouchableOpacity>
         );

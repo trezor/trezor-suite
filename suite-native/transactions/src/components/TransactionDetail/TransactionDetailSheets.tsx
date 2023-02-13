@@ -36,7 +36,6 @@ export const TransactionDetailSheets = ({ transaction }: TransactionDetailSheets
                     <TransactionDetailValuesSheet
                         isVisible={expandedSheet === 'values'}
                         transaction={transaction}
-                        fiatCurrency={fiatCurrency}
                         onSheetVisibilityChange={() => toggleSheet('values')}
                     />
                 )}

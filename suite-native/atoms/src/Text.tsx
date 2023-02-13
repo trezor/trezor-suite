@@ -35,7 +35,7 @@ export const Text = ({
 
     return (
         <RNText style={[applyStyle(textStyle, { variant, color, align }), style]} {...otherProps}>
-            {children || ' '}
+            {children}
         </RNText>
     );
 };

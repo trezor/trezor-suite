@@ -4,11 +4,10 @@ import { useSelector } from 'react-redux';
 
 import { CryptoIconName, CryptoIconWithPercentage, Icon } from '@trezor/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { useFormatters } from '@suite-common/formatters';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { Box, DiscreetText, Text } from '@suite-native/atoms';
+import { Box, Text } from '@suite-native/atoms';
 import { AccountsRootState, selectAccountsAmountPerSymbol } from '@suite-common/wallet-core';
-import { isTestnet } from '@suite-common/wallet-utils';
+import { CryptoAmountFormatter, FiatAmountFormatter } from '@suite-native/formatters/src/index';
 
 type AssetItemProps = {
     cryptoCurrencySymbol: NetworkSymbol;
@@ -53,8 +52,6 @@ export const AssetItem = ({
         selectAccountsAmountPerSymbol(state, cryptoCurrencySymbol),
     );
 
-    const { CryptoAmountFormatter, FiatAmountFormatter } = useFormatters();
-
     return (
         <TouchableOpacity disabled={!onPress} onPress={onPress}>
             <Box style={applyStyle(assetItemWrapperStyle)}>
@@ -76,17 +73,11 @@ export const AssetItem = ({
                         </Box>
                     </Box>
                     <Box alignItems="flex-end">
-                        <DiscreetText>
-                            {isTestnet(cryptoCurrencySymbol)
-                                ? ' '
-                                : FiatAmountFormatter.format(fiatBalance)}
-                        </DiscreetText>
-                        <DiscreetText color="gray600" typography="hint">
-                            {CryptoAmountFormatter.format(cryptoCurrencyValue, {
-                                isBalance: true,
-                                symbol: cryptoCurrencySymbol,
-                            })}
-                        </DiscreetText>
+                        <FiatAmountFormatter network={cryptoCurrencySymbol} value={fiatBalance} />
+                        <CryptoAmountFormatter
+                            value={cryptoCurrencyValue}
+                            network={cryptoCurrencySymbol}
+                        />
                     </Box>
                 </Box>
             </Box>

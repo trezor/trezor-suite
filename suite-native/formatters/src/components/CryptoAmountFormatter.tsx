@@ -24,7 +24,8 @@ export const CryptoAmountFormatter = ({
 }: CryptoToFiatAmountFormatterProps) => {
     const { CryptoAmountFormatter: formatter } = useFormatters();
 
-    if (!value) return <Text />;
+    // The text has to contain a whitespace to keep desired line height.
+    if (!value) return <Text> </Text>;
 
     const formattedValue = formatter.format(value, { isBalance, symbol: network });
 

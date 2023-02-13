@@ -32,7 +32,8 @@ export const CryptoToFiatAmountFormatter = ({
     const isTestnetCoin = isTestnet(network);
     const rates = customRates ?? coins.find(coin => coin.symbol === network)?.current?.rates;
 
-    if (!value || !rates || isTestnetCoin) return <Text />;
+    // The text has to contain a whitespace to keep desired line height.
+    if (!value || !rates || isTestnetCoin) return <Text> </Text>;
 
     const fiatValue = convertCryptoToFiatAmount({
         value,
