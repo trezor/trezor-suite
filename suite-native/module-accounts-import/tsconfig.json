@@ -32,6 +32,7 @@
         { "path": "../module-settings" },
         { "path": "../navigation" },
         { "path": "../qr-code" },
+        { "path": "../video-assets" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/icons" },
         { "path": "../../packages/styles" },

@@ -26,7 +26,7 @@ const sheetWrapperStyle = prepareNativeStyle<WrapperStyleProps>((utils, { insetB
     borderTopLeftRadius: utils.borders.radii.large,
     borderTopRightRadius: utils.borders.radii.large,
     paddingBottom: Math.max(insetBottom, utils.spacings.medium),
-    maxHeight: '70%',
+    maxHeight: '90%',
 }));
 
 const sheetWithOverlayStyle = prepareNativeStyle(_ => ({
