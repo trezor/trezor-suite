@@ -33,7 +33,7 @@
         "productName": "Trezor Suite",
         "copyright": "Copyright © ${author}",
         "asar": true,
-        "electronVersion": "20.3.12",
+        "electronVersion": "23.1.1",
         "directories": {
             "output": "build-electron"
         },
@@ -242,8 +242,8 @@
         "@playwright/test": "^1.30.0",
         "@trezor/trezor-user-env-link": "workspace:*",
         "@types/electron-localshortcut": "^3.1.0",
-        "@types/node-fetch": "^2.6.2",
-        "electron": "20.3.12",
+        "cross-fetch": "^3.1.5",
+        "electron": "23.1.1",
         "electron-builder": "23.6.0",
         "esbuild": "^0.17.6",
         "glob": "^8.1.0",

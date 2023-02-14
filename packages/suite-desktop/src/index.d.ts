@@ -62,7 +62,7 @@ declare namespace globalThis {
 
 declare type BeforeRequestListener = (
     details: Electron.OnBeforeRequestListenerDetails,
-) => Electron.Response | undefined;
+) => Electron.CallbackResponse | undefined;
 
 declare interface RequestInterceptor {
     onBeforeRequest(listener: BeforeRequestListener): void;

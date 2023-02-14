@@ -9,7 +9,7 @@ export const createInterceptor = (): RequestInterceptor => {
 
     const handleRequest = (
         details: Electron.OnBeforeRequestListenerDetails,
-        callback: (response: Electron.Response) => void,
+        callback: (response: Electron.CallbackResponse) => void,
     ) => {
         for (let i = 0; i < beforeRequestListeners.length; ++i) {
             const res = beforeRequestListeners[i](details);
