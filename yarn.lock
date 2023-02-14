@@ -7960,7 +7960,7 @@ __metadata:
     file-saver: ^2.0.5
     framer-motion: ^9.0.2
     history: ^4.10.1
-    immer: 9.0.16
+    immer: 9.0.19
     jest: ^26.6.3
     jest-watch-typeahead: 0.6.5
     jws: ^4.0.0
@@ -19440,7 +19440,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"immer@npm:9.0.16, immer@npm:^9.0.7":
+"immer@npm:9.0.19":
+  version: 9.0.19
+  resolution: "immer@npm:9.0.19"
+  checksum: f02ee53989989c287cd548a3d817fccf0bfe56db919755ee94a72ea3ae78a00363fba93ee6c010fe54a664380c29c53d44ed4091c6a86cae60957ad2cfabc010
+  languageName: node
+  linkType: hard
+
+"immer@npm:^9.0.7":
   version: 9.0.16
   resolution: "immer@npm:9.0.16"
   checksum: e9a5ca65c929b329da7a3b7beccf7984271cda7bdd47b2cab619eac3277dcd56598c211b55cc340786b6eff0c06652ac018808d9fd744443f06882364dece6bc

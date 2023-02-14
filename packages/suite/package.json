@@ -68,7 +68,7 @@
         "file-saver": "^2.0.5",
         "framer-motion": "^9.0.2",
         "history": "^4.10.1",
-        "immer": "9.0.16",
+        "immer": "9.0.19",
         "jws": "^4.0.0",
         "pako": "^1.0.11",
         "pdfmake": "^0.2.7",
