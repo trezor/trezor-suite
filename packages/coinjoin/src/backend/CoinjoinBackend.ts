@@ -68,7 +68,11 @@ export class CoinjoinBackend extends EventEmitter {
         this.settings = Object.freeze(settings);
         this.network = getNetwork(settings.network);
         this.client = new CoinjoinBackendClient({ ...settings, logger: this.getLogger() });
-        this.mempool = new CoinjoinMempoolController(this.client);
+
+        this.mempool =
+            settings.network === 'btc' // mempool scanning is temporarily turned off for mainnet
+                ? undefined
+                : new CoinjoinMempoolController(this.client);
     }
 
     scanAccount({ descriptor, progressHandle, checkpoints, cache }: ScanAccountParams) {

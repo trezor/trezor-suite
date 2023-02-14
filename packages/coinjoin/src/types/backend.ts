@@ -50,7 +50,7 @@ type MethodContext = {
 
 type ScanContext<T> = MethodContext & {
     filters: FilterController;
-    mempool: MempoolController;
+    mempool?: MempoolController;
     onProgress: (progress: T) => void;
 };
 
