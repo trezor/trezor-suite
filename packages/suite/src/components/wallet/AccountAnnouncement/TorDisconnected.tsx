@@ -3,16 +3,18 @@ import { NotificationCard, Translation } from '@suite-components';
 import { useActions, useSelector } from '@suite-hooks';
 import * as suiteActions from '@suite-actions/suiteActions';
 import { selectTorState } from '@suite-reducers/suiteReducer';
-import { selectIsCoinjoinSelectedAccountBlockedByTor } from '@wallet-reducers/coinjoinReducer';
+import { selectIsCoinjoinBlockedByTor } from '@wallet-reducers/coinjoinReducer';
+import { selectSelectedAccount } from '@wallet-reducers/selectedAccountReducer';
 
 export const TorDisconnected = () => {
+    const account = useSelector(selectSelectedAccount);
     const { isTorLoading } = useSelector(selectTorState);
-    const isCoinjoinBlockedByTor = useSelector(selectIsCoinjoinSelectedAccountBlockedByTor);
+    const isCoinjoinBlockedByTor = useSelector(selectIsCoinjoinBlockedByTor);
     const { toggleTor } = useActions({
         toggleTor: suiteActions.toggleTor,
     });
 
-    if (!isCoinjoinBlockedByTor) return null;
+    if (account?.accountType !== 'coinjoin' || !isCoinjoinBlockedByTor) return null;
 
     return (
         <NotificationCard

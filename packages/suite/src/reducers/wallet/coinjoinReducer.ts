@@ -531,7 +531,7 @@ export const selectCurrentTargetAnonymity = memoize((state: CoinjoinRootState) =
     return targetAnonymity;
 });
 
-export const selectIsCoinjoinGloballyBlockedByTor = memoize((state: CoinjoinRootState) => {
+export const selectIsCoinjoinBlockedByTor = memoize((state: CoinjoinRootState) => {
     const { isTorEnabled } = selectTorState(state);
 
     if (state.wallet.coinjoin.debug?.coinjoinAllowNoTor) {
@@ -539,21 +539,6 @@ export const selectIsCoinjoinGloballyBlockedByTor = memoize((state: CoinjoinRoot
     }
 
     return !isTorEnabled;
-});
-
-export const selectIsCoinjoinBlockedByTor = memoize((state: CoinjoinRootState) => {
-    const accountParams = selectSelectedAccountParams(state);
-    const { isTorEnabled } = selectTorState(state);
-
-    if (!accountParams) {
-        return false;
-    }
-
-    if (state.wallet.coinjoin.debug?.coinjoinAllowNoTor) {
-        return false;
-    }
-
-    return accountParams.accountType === 'coinjoin' && !isTorEnabled;
 });
 
 export const selectIsAnySessionInCriticalPhase = memoize((state: CoinjoinRootState) => {
