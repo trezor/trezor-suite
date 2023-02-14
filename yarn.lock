@@ -31582,7 +31582,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tsx@npm:^3.12.3":
+"tsx@npm:^3.12.3, tsx@npm:^3.8.2":
   version: 3.12.3
   resolution: "tsx@npm:3.12.3"
   dependencies:
