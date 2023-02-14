@@ -122,6 +122,7 @@ export const buttonStyle = prepareNativeStyle<ButtonStyleProps>(
             justifyContent: 'center',
             alignItems: 'center',
             borderRadius: utils.borders.radii.round,
+            backgroundColor: utils.colors[schemeColors.backgroundColor],
             ...sizeDimensions,
             extend: [
                 {
@@ -156,6 +157,19 @@ export const Button = ({
         onPressColor,
     );
 
+    const animatedButtonStyles = [
+        animatedPressStyle,
+        applyStyle(buttonStyle, {
+            size,
+            colorScheme,
+            isDisabled,
+        }),
+        style,
+    ];
+
+    // Remove animation if disabled.
+    if (isDisabled) animatedButtonStyles.shift();
+
     const handlePressIn = () => setIsPressed(true);
     const handlePressOut = () => setIsPressed(false);
 
@@ -169,6 +183,7 @@ export const Button = ({
             />
         </View>
     ) : null;
+
     return (
         <Pressable
             disabled={isDisabled}
@@ -176,17 +191,7 @@ export const Button = ({
             onPressOut={handlePressOut}
             {...pressableProps}
         >
-            <Animated.View
-                style={[
-                    animatedPressStyle,
-                    applyStyle(buttonStyle, {
-                        size,
-                        colorScheme,
-                        isDisabled,
-                    }),
-                    style,
-                ]}
-            >
+            <Animated.View style={animatedButtonStyles}>
                 {iconLeft && icon}
                 <Text
                     variant={textSizeToVariantMap[size]}
