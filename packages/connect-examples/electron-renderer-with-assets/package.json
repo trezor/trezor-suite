@@ -20,7 +20,7 @@
         "productName": "TrezorConnectExample",
         "copyright": "Copyright © year ${author}",
         "asar": false,
-        "electronVersion": "20.3.12",
+        "electronVersion": "23.1.1",
         "directories": {
             "output": "build-electron"
         },
@@ -61,7 +61,7 @@
         "babel-loader": "^9.1.2",
         "concurrently": "^7.6.0",
         "copy-webpack-plugin": "^11.0.0",
-        "electron": "20.3.12",
+        "electron": "23.1.1",
         "electron-builder": "^23.6.0",
         "html-webpack-plugin": "^5.5.0",
         "terser-webpack-plugin": "^5.3.6",
