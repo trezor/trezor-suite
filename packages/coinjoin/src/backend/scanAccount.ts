@@ -3,6 +3,7 @@ import { transformTransaction } from '@trezor/blockchain-link/lib/workers/blockb
 import { getAddressScript, getFilter } from './filters';
 import { doesTxContainAddress, deriveAddresses, fixTx } from './backendUtils';
 import type {
+    Transaction,
     AccountAddress,
     BlockbookBlock,
     BlockbookTransaction,
@@ -117,11 +118,14 @@ export const scanAccount = async (
         }
     }
 
-    await mempool.update();
+    let pending: Transaction[] = [];
+    if (mempool) {
+        await mempool.update();
 
-    const pending = mempool
-        .getTransactions(receive.concat(change).map(({ address }) => address))
-        .map(transformTx(xpub, receive, change));
+        pending = mempool
+            .getTransactions(receive.concat(change).map(({ address }) => address))
+            .map(transformTx(xpub, receive, change));
+    }
 
     const cache = {
         receivePrederived: receive.map(({ address, path }) => ({ address, path })),
