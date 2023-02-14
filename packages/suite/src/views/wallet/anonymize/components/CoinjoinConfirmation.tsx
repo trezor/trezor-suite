@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from '@suite-hooks';
 import styled from 'styled-components';
 
 import { RECOMMENDED_SKIP_ROUNDS } from '@suite/services/coinjoin';
 import { Account } from '@suite-common/wallet-types';
 import { Translation, TrezorLink } from '@suite-components';
 import { Error } from '@suite-components/Error';
-import { useSelector } from '@suite-hooks';
 import { Button, Card, Checkbox, Link, Note, Tooltip, variables } from '@trezor/components';
 import { DATA_TOS_COINJOIN_URL, ZKSNACKS_TERMS_URL } from '@trezor/urls';
 import { startCoinjoinSession } from '@wallet-actions/coinjoinAccountActions';

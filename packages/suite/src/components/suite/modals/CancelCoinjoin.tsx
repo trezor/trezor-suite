@@ -4,7 +4,7 @@ import { Button } from '@trezor/components';
 import { useSelector } from '@suite-hooks/useSelector';
 import { Modal, Translation } from '..';
 import { selectSelectedAccount } from '@wallet-reducers/selectedAccountReducer';
-import { useDispatch } from 'react-redux';
+import { useDispatch } from '@suite-hooks';
 import { stopCoinjoinSession } from '@wallet-actions/coinjoinAccountActions';
 
 const StyledModal = styled(Modal)`

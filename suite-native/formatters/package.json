@@ -20,6 +20,6 @@
         "@suite-native/module-settings": "workspace:*",
         "@trezor/blockchain-link": "workspace:*",
         "react": "18.2.0",
-        "react-redux": "7.2.2"
+        "react-redux": "8.0.5"
     }
 }

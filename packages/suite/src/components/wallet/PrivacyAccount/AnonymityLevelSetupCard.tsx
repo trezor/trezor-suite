@@ -9,7 +9,7 @@ import {
 } from '@wallet-reducers/coinjoinReducer';
 
 import { AnonymityLevelSlider, getPosition } from './AnonymityLevelSlider';
-import { useDispatch } from 'react-redux';
+import { useDispatch } from '@suite-hooks';
 import { selectSelectedAccount } from '@wallet-reducers/selectedAccountReducer';
 import { coinjoinAccountUpdateAnonymity } from '@wallet-actions/coinjoinAccountActions';
 import { SliderInput } from './SliderInput';

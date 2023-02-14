@@ -5,7 +5,7 @@ import { Translation, Modal } from '@suite-components';
 import { NETWORKS } from '@wallet-config';
 import { Account, Network } from '@wallet-types';
 import { TrezorDevice } from '@suite-types';
-import { useSelector, useActions } from '@suite-hooks';
+import { useSelector, useActions, useDispatch } from '@suite-hooks';
 import { accountsActions } from '@suite-common/wallet-core';
 import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
 import * as routerActions from '@suite-actions/routerActions';
@@ -15,7 +15,6 @@ import { AccountTypeSelect } from './components/AccountTypeSelect';
 import { SelectNetwork } from './components/SelectNetwork';
 import { EnableNetwork } from './components/EnableNetwork';
 import { AddAccountButton } from './components/AddAccountButton';
-import { useDispatch } from 'react-redux';
 
 const StyledModal = styled(Modal)`
     width: 560px;

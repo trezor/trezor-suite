@@ -1,6 +1,6 @@
 import React from 'react';
 import styled, { useTheme } from 'styled-components';
-import { useDispatch } from 'react-redux';
+import { useDispatch } from '@suite-hooks';
 import { darken } from 'polished';
 import { Button, Icon, variables, Warning } from '@trezor/components';
 import { Translation } from '@suite-components/Translation';

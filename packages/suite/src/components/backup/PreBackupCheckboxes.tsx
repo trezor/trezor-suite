@@ -1,8 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from '@suite-hooks';
 import { CheckItem, Translation } from '@suite-components';
-import { useSelector } from '@suite-hooks';
 import { ConfirmKey, toggleCheckboxByKey } from '@suite/actions/backup/backupActions';
 import { variables } from '@trezor/components';
 

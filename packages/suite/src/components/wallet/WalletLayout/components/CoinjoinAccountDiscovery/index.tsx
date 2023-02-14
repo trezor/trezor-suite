@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useDevice } from '@suite-hooks';
 
 import { toggleRememberDevice } from '@suite-actions/suiteActions';
-import { useDevice } from '@suite-hooks';
 import { TrezorDevice } from '@suite-types';
 import { isDeviceRemembered } from '@suite-utils/device';
 import { CoinjoinAccountDiscoveryProgress } from './CoinjoinAccountDiscoveryProgress';

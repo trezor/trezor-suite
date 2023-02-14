@@ -6,7 +6,7 @@ import { Translation } from '@suite-components/Translation';
 import { variables } from '@trezor/components';
 import { useSelector } from '@suite/hooks/suite';
 import { BackupSeedCard } from './BackupSeedCard';
-import { useDispatch } from 'react-redux';
+import { useDispatch } from '@suite-hooks';
 
 const Wrapper = styled.div`
     display: flex;

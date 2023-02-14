@@ -24,6 +24,6 @@
         "bignumber.js": "^9.1.1",
         "date-fns": "^2.29.3",
         "react": "18.2.0",
-        "react-redux": "7.2.2"
+        "react-redux": "8.0.5"
     }
 }

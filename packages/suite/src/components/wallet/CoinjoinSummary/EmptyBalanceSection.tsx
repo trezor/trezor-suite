@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useDispatch } from 'react-redux';
+import { useDispatch } from '@suite-hooks';
 import { Button, variables } from '@trezor/components';
 import { selectAccountByKey } from '@suite-common/wallet-core';
 import { Translation } from '@suite-components/Translation';

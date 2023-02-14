@@ -18,6 +18,7 @@ export { usePreferredModal } from './usePreferredModal';
 export { useFormattersConfig } from './useFormattersConfig';
 export { useAnonymityStatus } from './useAnonymityStatus';
 export { useCountdownTimer } from './useCountdownTimer';
+export { useDispatch } from './useDispatch';
 
 // replaced in suite-native
 export { useLocales } from '@suite-hooks/useLocales';
