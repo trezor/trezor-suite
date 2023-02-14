@@ -82,7 +82,7 @@
         "react-intl": "^6.2.8",
         "react-markdown": "^8.0.5",
         "react-qr-reader": "^2.2.1",
-        "react-redux": "7.2.2",
+        "react-redux": "8.0.5",
         "react-select": "^5.7.0",
         "react-svg": "^16.1.0",
         "react-toastify": "^9.1.1",

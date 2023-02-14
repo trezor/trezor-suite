@@ -1,9 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from '@suite-hooks';
 import { P, Button, Image } from '@trezor/components';
 import { HELP_CENTER_FAILED_BACKUP_URL } from '@trezor/urls';
-import { useSelector } from '@suite-hooks';
 import { backupDevice } from '@backup-actions/backupActions';
 import { changePin } from '@settings-actions/deviceSettingsActions';
 import { Loading, Translation, TrezorLink, Modal } from '@suite-components';

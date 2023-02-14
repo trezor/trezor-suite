@@ -7,14 +7,14 @@ import { ExtraDependencies } from './extraDependenciesType';
 interface SimpleMiddleware<TAction extends Action, TExtraMiddlewareAPI = {}> {
     (
         action: TAction,
-        api: MiddlewareAPI<ThunkDispatch<any, {}, AnyAction>> &
+        api: MiddlewareAPI<ThunkDispatch<any, any, AnyAction>> &
             TExtraMiddlewareAPI & { next: Dispatch<AnyAction> },
     ): AnyAction;
 }
 
 export const createMiddleware =
     <TAction extends Action = AnyAction>(simpleMiddleware: SimpleMiddleware<TAction>): Middleware =>
-    (middlewareAPI: MiddlewareAPI) =>
+    (middlewareAPI: MiddlewareAPI<ThunkDispatch<any, {}, AnyAction>>) =>
     next =>
     action => {
         try {
@@ -31,7 +31,7 @@ export const createMiddlewareWithExtraDeps =
         simpleMiddleware: SimpleMiddleware<TAction, ExtraMiddlewareAPI>,
     ) =>
     (extra: ExtraDependencies): Middleware =>
-    (middlewareAPI: MiddlewareAPI) =>
+    (middlewareAPI: MiddlewareAPI<ThunkDispatch<any, ExtraMiddlewareAPI, AnyAction>>) =>
     next =>
     action => {
         try {

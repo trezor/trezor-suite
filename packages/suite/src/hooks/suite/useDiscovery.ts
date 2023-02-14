@@ -2,13 +2,12 @@ import { useCallback } from 'react';
 import { useSelector } from './useSelector';
 import { DISCOVERY } from '@wallet-actions/constants';
 import { DiscoveryStatus } from '@wallet-types';
+import { selectDevice } from '@suite-reducers/suiteReducer';
+import { selectDiscovery } from '@wallet-reducers/discoveryReducer';
 
 export const useDiscovery = () => {
-    const { device, discoveryState } = useSelector(state => ({
-        device: state.suite.device,
-        discoveryState: state.wallet.discovery,
-    }));
-    const discovery = discoveryState.find(d => d.deviceState === device?.state);
+    const device = useSelector(selectDevice);
+    const discovery = useSelector(state => selectDiscovery(state, device?.state));
 
     const calculateProgress = useCallback(() => {
         if (discovery && discovery.loaded && discovery.total) {

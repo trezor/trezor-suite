@@ -6270,7 +6270,7 @@ __metadata:
     jest: ^26.6.3
     react: 18.2.0
     react-intl: ^6.2.8
-    react-redux: 7.2.2
+    react-redux: 8.0.5
     typescript: 4.9.5
   languageName: unknown
   linkType: soft
@@ -6292,7 +6292,7 @@ __metadata:
     bignumber.js: ^9.1.1
     date-fns: ^2.29.3
     react: 18.2.0
-    react-redux: 7.2.2
+    react-redux: 8.0.5
   languageName: unknown
   linkType: soft
 
@@ -6349,7 +6349,7 @@ __metadata:
     "@trezor/connect": "workspace:9.0.6"
     jest: ^26.6.3
     react: 18.2.0
-    react-redux: 7.2.2
+    react-redux: 8.0.5
     redux: ^4.2.0
     typescript: 4.9.5
   languageName: unknown
@@ -6573,7 +6573,7 @@ __metadata:
     "@trezor/theme": "workspace:*"
     react: 18.2.0
     react-native: 0.71.3
-    react-redux: 7.2.2
+    react-redux: 8.0.5
   languageName: unknown
   linkType: soft
 
@@ -6597,7 +6597,7 @@ __metadata:
     proxy-memoize: ^2.0.2
     react: ^18.2.0
     react-native: 0.71.3
-    react-redux: 7.2.2
+    react-redux: 8.0.5
   languageName: unknown
   linkType: soft
 
@@ -6647,7 +6647,7 @@ __metadata:
     "@suite-native/module-settings": "workspace:*"
     "@trezor/blockchain-link": "workspace:*"
     react: 18.2.0
-    react-redux: 7.2.2
+    react-redux: 8.0.5
   languageName: unknown
   linkType: soft
 
@@ -6681,7 +6681,7 @@ __metadata:
     react: 18.2.0
     react-native: 0.71.3
     react-native-reanimated: 2.14.4
-    react-redux: 7.2.2
+    react-redux: 8.0.5
     typescript: 4.9.5
   languageName: unknown
   linkType: soft
@@ -6741,7 +6741,7 @@ __metadata:
     react: 18.2.0
     react-native: 0.71.3
     react-native-reanimated: 2.14.4
-    react-redux: 7.2.2
+    react-redux: 8.0.5
     typescript: 4.9.5
   languageName: unknown
   linkType: soft
@@ -6771,7 +6771,7 @@ __metadata:
     jotai: 1.9.1
     react: 18.2.0
     react-native: 0.71.3
-    react-redux: 7.2.2
+    react-redux: 8.0.5
   languageName: unknown
   linkType: soft
 
@@ -6794,7 +6794,7 @@ __metadata:
     jest: ^26.6.3
     react: 18.2.0
     react-native: 0.71.3
-    react-redux: 7.2.2
+    react-redux: 8.0.5
     typescript: 4.9.5
   languageName: unknown
   linkType: soft
@@ -6829,7 +6829,7 @@ __metadata:
     jotai: 1.9.1
     react: 18.2.0
     react-native: 0.71.3
-    react-redux: 7.2.2
+    react-redux: 8.0.5
     typescript: 4.9.5
   languageName: unknown
   linkType: soft
@@ -6849,7 +6849,7 @@ __metadata:
     jest: ^26.6.3
     react: 18.2.0
     react-native: 0.71.3
-    react-redux: 7.2.2
+    react-redux: 8.0.5
     typescript: 4.9.5
   languageName: unknown
   linkType: soft
@@ -6871,7 +6871,7 @@ __metadata:
     "@trezor/theme": "workspace:*"
     react: 18.2.0
     react-native: 0.71.3
-    react-redux: 7.2.2
+    react-redux: 8.0.5
     typescript: 4.9.5
   languageName: unknown
   linkType: soft
@@ -6944,7 +6944,7 @@ __metadata:
     "@trezor/connect": "workspace:9.0.6"
     "@trezor/utils": "workspace:*"
     react: 18.2.0
-    react-redux: 7.2.2
+    react-redux: 8.0.5
     redux-flipper: 2.0.2
     redux-persist: 6.0.0
     typescript: 4.9.5
@@ -6979,6 +6979,7 @@ __metadata:
     react-native-gesture-handler: ^2.9.0
     react-native-reanimated: 2.14.4
     react-native-safe-area-context: ^4.5.0
+    react-redux: 8.0.5
     typescript: 4.9.5
   languageName: unknown
   linkType: soft
@@ -7007,7 +7008,7 @@ __metadata:
     react: 18.2.0
     react-native: 0.71.3
     react-native-gesture-handler: ^2.9.0
-    react-redux: 7.2.2
+    react-redux: 8.0.5
   languageName: unknown
   linkType: soft
 
@@ -7286,7 +7287,7 @@ __metadata:
     react-dom: 18.2.0
     react-infinity-menu: ^4.0.0
     react-inspector: ^6.0.1
-    react-redux: 7.2.2
+    react-redux: 8.0.5
     react-router: ^5.2.0
     react-router-dom: ^5.2.0
     redux: ^4.2.0
@@ -7710,7 +7711,7 @@ __metadata:
     react: 18.2.0
     react-dom: 18.2.0
     react-markdown: ^8.0.5
-    react-redux: 7.2.2
+    react-redux: 8.0.5
     react-router-dom: ^5.2.0
     styled-components: ^5.3.6
     typescript: 4.9.5
@@ -7819,7 +7820,7 @@ __metadata:
     react-native-safe-area-context: ^4.5.0
     react-native-screens: ^3.19.0
     react-native-svg: ^13.8.0
-    react-redux: 7.2.2
+    react-redux: 8.0.5
     react-test-renderer: 18.2.0
     redux-persist: 6.0.0
     simple-plist: 1.3.1
@@ -7868,7 +7869,7 @@ __metadata:
     cypress-wait-until: ^1.7.2
     jest: ^26.6.3
     react-helmet: ^6.1.0
-    react-redux: 7.2.2
+    react-redux: 8.0.5
     react-router: ^5.2.0
     react-router-dom: ^5.2.0
     rimraf: ^4.1.2
@@ -7977,7 +7978,7 @@ __metadata:
     react-intl: ^6.2.8
     react-markdown: ^8.0.5
     react-qr-reader: ^2.2.1
-    react-redux: 7.2.2
+    react-redux: 8.0.5
     react-select: ^5.7.0
     react-svg: ^16.1.0
     react-test-renderer: ^18.2.0
@@ -9395,6 +9396,13 @@ __metadata:
   version: 1.19.19
   resolution: "@types/urijs@npm:1.19.19"
   checksum: 2c08d41782149a243b374b28be009ca461f541c440d8d47c9d75b1d3255ff7169b34bb721cf2dd6266c2c44be6b70fc6d67a1abad50c4dae369774042b1facd8
+  languageName: node
+  linkType: hard
+
+"@types/use-sync-external-store@npm:^0.0.3":
+  version: 0.0.3
+  resolution: "@types/use-sync-external-store@npm:0.0.3"
+  checksum: 161ddb8eec5dbe7279ac971531217e9af6b99f7783213566d2b502e2e2378ea19cf5e5ea4595039d730aa79d3d35c6567d48599f69773a02ffcff1776ec2a44e
   languageName: node
   linkType: hard
 
@@ -27344,24 +27352,35 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-redux@npm:7.2.2":
-  version: 7.2.2
-  resolution: "react-redux@npm:7.2.2"
+"react-redux@npm:8.0.5":
+  version: 8.0.5
+  resolution: "react-redux@npm:8.0.5"
   dependencies:
     "@babel/runtime": ^7.12.1
+    "@types/hoist-non-react-statics": ^3.3.1
+    "@types/use-sync-external-store": ^0.0.3
     hoist-non-react-statics: ^3.3.2
-    loose-envify: ^1.4.0
-    prop-types: ^15.7.2
-    react-is: ^16.13.1
+    react-is: ^18.0.0
+    use-sync-external-store: ^1.0.0
   peerDependencies:
-    react: ^16.8.3 || ^17
-    redux: ^2.0.0 || ^3.0.0 || ^4.0.0-0
+    "@types/react": ^16.8 || ^17.0 || ^18.0
+    "@types/react-dom": ^16.8 || ^17.0 || ^18.0
+    react: ^16.8 || ^17.0 || ^18.0
+    react-dom: ^16.8 || ^17.0 || ^18.0
+    react-native: ">=0.59"
+    redux: ^4
   peerDependenciesMeta:
+    "@types/react":
+      optional: true
+    "@types/react-dom":
+      optional: true
     react-dom:
       optional: true
     react-native:
       optional: true
-  checksum: c421df8a888a261aaecd9dab92b6d2c92712a7d4e4eab15a9ed5a47bafd0cac44d66cff6cfd6ef6563820887053af7641ba872012f41a415067274430e860e98
+    redux:
+      optional: true
+  checksum: a108f4f7ead6ac005e656d46051474a2bbdb31ede481bbbb3d8d779c1a35e1940b8655577cc5021313411864d305f67fc719aa48d6e5ed8288cf9cbe8b7042e4
   languageName: node
   linkType: hard
 

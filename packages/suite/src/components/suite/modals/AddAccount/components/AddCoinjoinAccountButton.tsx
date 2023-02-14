@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Translation } from '@suite-components';
-import { useSelector, useActions } from '@suite-hooks';
-import { useDispatch } from 'react-redux';
+import { useSelector, useActions, useDispatch } from '@suite-hooks';
 import { createCoinjoinAccount } from '@wallet-actions/coinjoinAccountActions';
 import { DEFAULT_TARGET_ANONYMITY } from '@suite/services/coinjoin';
 import * as suiteActions from '@suite-actions/suiteActions';

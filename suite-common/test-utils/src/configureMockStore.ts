@@ -9,6 +9,7 @@ import {
     ReducersMapObject,
 } from 'redux';
 import { D } from '@mobily/ts-belt';
+import { ThunkDispatch } from 'redux-thunk';
 
 import { createMiddleware, ExtraDependenciesPartial } from '@suite-common/redux-utils';
 import { mergeDeepObject } from '@trezor/utils';
@@ -65,6 +66,7 @@ export function configureMockStore<S = any, A extends Action = AnyAction>({
 
     return {
         ...store,
+        dispatch: store.dispatch as ThunkDispatch<S, any, A>,
         getActions: () => actions,
 
         clearActions: () => {

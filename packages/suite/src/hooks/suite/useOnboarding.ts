@@ -3,8 +3,7 @@ import * as onboardingActions from '@onboarding-actions/onboardingActions';
 import * as routerActions from '@suite-actions/routerActions';
 import * as recoveryActions from '@recovery-actions/recoveryActions';
 import * as suiteActions from '@suite-actions/suiteActions';
-import { useActions, useSelector } from '@suite-hooks';
-import { useDispatch } from 'react-redux';
+import { useActions, useSelector, useDispatch } from '@suite-hooks';
 
 export const useOnboarding = () => {
     const dispatch = useDispatch();

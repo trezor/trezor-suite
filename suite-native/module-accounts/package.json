@@ -32,6 +32,6 @@
         "jotai": "1.9.1",
         "react": "18.2.0",
         "react-native": "0.71.3",
-        "react-redux": "7.2.2"
+        "react-redux": "8.0.5"
     }
 }

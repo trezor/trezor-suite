@@ -1,12 +1,13 @@
 import React from 'react';
 import { act } from '@testing-library/react';
-import { configureStore } from '@suite/support/tests/configureStore';
 import { renderWithProviders } from '@suite/support/tests/hooksHelper';
 
 import discoveryReducer from '@wallet-reducers/discoveryReducer';
 import suiteReducer from '@suite-reducers/suiteReducer';
 import { useDiscovery } from '../useDiscovery';
 import { actions } from '../__fixtures__/useDiscovery';
+import { configureMockStore } from '@suite-common/test-utils';
+import { combineReducers } from 'redux';
 
 export const getInitialState = (action: any = { type: 'initial' }) => ({
     wallet: {
@@ -15,22 +16,19 @@ export const getInitialState = (action: any = { type: 'initial' }) => ({
     suite: suiteReducer(undefined, action),
 });
 
+const reducer = combineReducers({
+    wallet: combineReducers({
+        discovery: discoveryReducer,
+    }),
+    suite: suiteReducer,
+});
+
 type State = ReturnType<typeof getInitialState>;
-const mockStore = configureStore<State, any>();
+const mockStore = (preloadedState: State) => configureMockStore({ reducer, preloadedState });
 
 const initStore = (state: State) => {
     const store = mockStore(state);
-    store.subscribe(() => {
-        const actions = store.getActions();
-        const action = actions[actions.length - 1];
-        const state = store.getState();
-        const { wallet } = state;
-        store.getState().wallet = {
-            ...wallet,
-            discovery: discoveryReducer(wallet.discovery, action),
-        };
-        store.getState().suite = suiteReducer(state.suite, action);
-    });
+
     return store;
 };
 

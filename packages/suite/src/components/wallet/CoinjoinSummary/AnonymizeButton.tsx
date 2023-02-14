@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useDispatch } from 'react-redux';
+import { useDispatch } from '@suite-hooks';
 
 import { goto } from '@suite-actions/routerActions';
 import { Card, Translation } from '@suite-components';

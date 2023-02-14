@@ -18,7 +18,7 @@
         "react-dom": "18.2.0",
         "react-infinity-menu": "^4.0.0",
         "react-inspector": "^6.0.1",
-        "react-redux": "7.2.2",
+        "react-redux": "8.0.5",
         "react-router": "^5.2.0",
         "react-router-dom": "^5.2.0",
         "redux": "^4.2.0",
