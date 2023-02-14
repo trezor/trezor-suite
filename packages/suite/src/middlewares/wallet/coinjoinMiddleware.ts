@@ -53,8 +53,8 @@ export const coinjoinMiddleware =
 
         if (action.type === SUITE.READY) {
             const state = api.getState();
-            const isCoinjoinGloballyBlockedByTor = selectIsCoinjoinGloballyBlockedByTor(state);
-            if (!isCoinjoinGloballyBlockedByTor) {
+            const isCoinjoinBlockedByTor = selectIsCoinjoinBlockedByTor(state);
+            if (!isCoinjoinBlockedByTor) {
                 api.dispatch(coinjoinAccountActions.restoreCoinjoinAccounts());
             }
         }
@@ -65,8 +65,8 @@ export const coinjoinMiddleware =
 
         if (action.type === DISCOVERY.START) {
             const state = api.getState();
-            const isCoinjoinGloballyBlockedByTor = selectIsCoinjoinGloballyBlockedByTor(state);
-            if (!isCoinjoinGloballyBlockedByTor) {
+            const isCoinjoinBlockedByTor = selectIsCoinjoinBlockedByTor(state);
+            if (!isCoinjoinBlockedByTor) {
                 // find all coinjoin accounts
                 const coinjoinAccounts = state.wallet.accounts.filter(
                     a => a.accountType === 'coinjoin',
@@ -80,8 +80,8 @@ export const coinjoinMiddleware =
         if (blockchainActions.synced.match(action)) {
             const state = api.getState();
             const { symbol } = action.payload;
-            const isCoinjoinGloballyBlockedByTor = selectIsCoinjoinGloballyBlockedByTor(state);
-            if (!isCoinjoinGloballyBlockedByTor) {
+            const isCoinjoinBlockedByTor = selectIsCoinjoinBlockedByTor(state);
+            if (!isCoinjoinBlockedByTor) {
                 const { accounts } = state.wallet;
                 // find all coinjoin accounts for network
                 const coinjoinAccounts = accounts.filter(
