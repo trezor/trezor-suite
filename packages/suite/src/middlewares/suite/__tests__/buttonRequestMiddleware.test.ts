@@ -83,9 +83,7 @@ describe('buttonRequest middleware', () => {
     it('see what happens on pin change call', async () => {
         require('@trezor/connect');
         const store = initStore(getInitialState());
-        // @ts-expect-error
         await store.dispatch(connectInitThunk());
-        // @ts-expect-error
         const call = store.dispatch(deviceSettingsActions.changePin({ remove: false }));
         // fake few ui events, just like when user is changing PIN
         const { emit } = require('@trezor/connect');

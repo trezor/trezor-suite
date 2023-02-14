@@ -1,6 +1,6 @@
 import { useMemo, useRef } from 'react';
-import { useDispatch } from '@suite-hooks';
-import { bindActionCreators, ActionCreatorsMapObject } from 'redux';
+import { ActionCreatorsMapObject, bindActionCreators } from 'redux';
+import { useDispatch } from 'react-redux';
 import type { Action, ThunkAction } from '@suite-types';
 
 export const useActions = <M extends ActionCreatorsMapObject<Action | ThunkAction>>(actions: M) => {

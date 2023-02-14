@@ -6350,7 +6350,7 @@ __metadata:
     jest: ^26.6.3
     react: 18.2.0
     react-redux: 8.0.5
-    redux: ^4.2.0
+    redux: ^4.2.1
     typescript: 4.9.5
   languageName: unknown
   linkType: soft
@@ -6434,7 +6434,7 @@ __metadata:
     dropbox: ^10.32.0
     fake-indexeddb: ^4.0.1
     jest: ^26.6.3
-    redux: ^4.2.0
+    redux: ^4.2.1
     redux-thunk: ^2.4.2
     typescript: 4.9.5
   languageName: unknown
@@ -7290,7 +7290,7 @@ __metadata:
     react-redux: 8.0.5
     react-router: ^5.2.0
     react-router-dom: ^5.2.0
-    redux: ^4.2.0
+    redux: ^4.2.1
     redux-logger: ^3.0.6
     redux-thunk: ^2.4.2
     rimraf: ^4.1.2
@@ -7986,7 +7986,7 @@ __metadata:
     react-use: ^17.4.0
     react-window: ^1.8.8
     recharts: ^2.4.1
-    redux: 4.2.0
+    redux: ^4.2.1
     redux-devtools-extension: ^2.13.9
     redux-logger: ^3.0.6
     redux-mock-store: ^1.5.4
@@ -27943,12 +27943,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"redux@npm:4.2.0, redux@npm:^4.0.0, redux@npm:^4.0.5, redux@npm:^4.1.2, redux@npm:^4.2.0":
+"redux@npm:^4.0.0, redux@npm:^4.0.5, redux@npm:^4.1.2":
   version: 4.2.0
   resolution: "redux@npm:4.2.0"
   dependencies:
     "@babel/runtime": ^7.9.2
   checksum: 75f3955c89b3f18edf5411e5fb482aa2e4f41a416183e8802a6bf6472c4fc3d47675b8b321d147f8af8e0f616436ac507bf5a25f1c4d6180e797b549c7db2c1d
+  languageName: node
+  linkType: hard
+
+"redux@npm:^4.2.1":
+  version: 4.2.1
+  resolution: "redux@npm:4.2.1"
+  dependencies:
+    "@babel/runtime": ^7.9.2
+  checksum: f63b9060c3a1d930ae775252bb6e579b42415aee7a23c4114e21a0b4ba7ec12f0ec76936c00f546893f06e139819f0e2855e0d55ebfce34ca9c026241a6950dd
   languageName: node
   linkType: hard
 
