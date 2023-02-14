@@ -91,7 +91,7 @@
         "recharts": "^2.4.1",
         "redux": "4.2.0",
         "redux-logger": "^3.0.6",
-        "redux-thunk": "^2.3.0",
+        "redux-thunk": "^2.4.2",
         "semver": "^7.3.8",
         "styled-components": "^5.3.6",
         "trezor-address-validator": "^0.4.3",

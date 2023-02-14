@@ -23,7 +23,7 @@
         "react-router-dom": "^5.2.0",
         "redux": "^4.2.0",
         "redux-logger": "^3.0.6",
-        "redux-thunk": "^2.3.0",
+        "redux-thunk": "^2.4.2",
         "styled-components": "^5.3.6"
     },
     "devDependencies": {
