@@ -21,11 +21,11 @@
         "@trezor/utils": "workspace:*",
         "jotai": "1.9.1",
         "react": "18.2.0",
-        "react-native": "0.70.5",
-        "react-native-gesture-handler": "^2.7.0",
+        "react-native": "0.71.2",
+        "react-native-gesture-handler": "^2.9.0",
         "react-native-reanimated": "2.14.4",
         "react-native-root-toast": "^3.3.1",
-        "react-native-safe-area-context": "^4.4.1"
+        "react-native-safe-area-context": "^4.5.0"
     },
     "devDependencies": {
         "jest": "^26.6.3",
