@@ -4,7 +4,7 @@
 # Otherwise user would run into permission denied problem when trying to rebuild project outside docker.
 ## Use a proxy or fallback to no proxy at all (direct access to Docker Hub).
 ARG CI_DOCKER_PROXY=""
-FROM ${CI_DOCKER_PROXY}node:16
+FROM ${CI_DOCKER_PROXY}node:18
 
 RUN apt-get update && apt-get -y --no-install-recommends install \
     ca-certificates \
