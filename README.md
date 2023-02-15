@@ -5,7 +5,7 @@
 ## Packages
 
 | package                                                               | description                                  |
-| --------------------------------------------------------------------- | -------------------------------------------- |
+|-----------------------------------------------------------------------| -------------------------------------------- |
 | [@trezor/analytics](./packages/analytics)                             | generic analytics implementation             |
 | [@trezor/atoms](./packages/atoms)                                     | front-end React Native components            |
 | [@trezor/auth-server](./packages/auth-server)                         | NodeJS server for secure Google OAuth        |

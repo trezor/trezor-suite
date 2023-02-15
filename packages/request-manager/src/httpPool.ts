@@ -1,6 +1,6 @@
 import http from 'http';
-import { getWeakRandomId } from '@trezor/utils';
 import { InterceptorOptions } from './types';
+import { getWeakRandomId } from '@trezor/utils';
 
 interface RequestData {
     id: string;

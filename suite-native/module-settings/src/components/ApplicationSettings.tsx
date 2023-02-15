@@ -50,6 +50,12 @@ export const ApplicationSettings = () => {
                 subtitle="Color scheme"
                 onPress={() => handleNavigation(SettingsStackRoutes.SettingsCustomization)}
             />
+            <SettingsSectionItem
+                title="Analytics"
+                iconName="eye"
+                subtitle="Turn on analytics"
+                onPress={() => handleNavigation(SettingsStackRoutes.SettingsAnalytics)}
+            />
         </SettingsSection>
     );
 };

@@ -1,4 +1,4 @@
-export default [
+export const fixtures = [
     {
         currentDate: '2021-04-01T12:10:00.000Z',
         instanceId: '1',

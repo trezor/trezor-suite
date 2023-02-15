@@ -1,8 +1,7 @@
 import { encodeDataToQueryString, getRandomId, getUrl, reportEvent } from './utils';
+import type { InitOptions, Event as AnalyticsEvent, App } from './types';
 
-import type { InitOptions, Event, App } from './types';
-
-export class Analytics<T extends Event> {
+export class Analytics<T extends AnalyticsEvent> {
     private enabled = false;
 
     private useQueue = false;

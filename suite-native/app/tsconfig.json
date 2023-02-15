@@ -9,8 +9,12 @@
             "path": "../../suite-common/formatters"
         },
         {
+            "path": "../../suite-common/redux-utils"
+        },
+        {
             "path": "../../suite-common/wallet-core"
         },
+        { "path": "../analytics" },
         { "path": "../atoms" },
         { "path": "../config" },
         { "path": "../module-accounts" },

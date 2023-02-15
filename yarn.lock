@@ -4780,6 +4780,26 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@reduxjs/toolkit@npm:1.8.3":
+  version: 1.8.3
+  resolution: "@reduxjs/toolkit@npm:1.8.3"
+  dependencies:
+    immer: ^9.0.7
+    redux: ^4.1.2
+    redux-thunk: ^2.4.1
+    reselect: ^4.1.5
+  peerDependencies:
+    react: ^16.9.0 || ^17.0.0 || ^18
+    react-redux: ^7.2.1 || ^8.0.2
+  peerDependenciesMeta:
+    react:
+      optional: true
+    react-redux:
+      optional: true
+  checksum: 2c932ac6fa430b982108829a6150ca0c15ff617eb121b8055b91a89ab2124e8d93a1277ccdc96ff8af680fbde9d4c7021b1f924f11e28004ee61c6a7d39915bc
+  languageName: node
+  linkType: hard
+
 "@reduxjs/toolkit@npm:1.9.2":
   version: 1.9.2
   resolution: "@reduxjs/toolkit@npm:1.9.2"
@@ -6223,6 +6243,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@suite-common/analytics@workspace:*, @suite-common/analytics@workspace:suite-common/analytics":
+  version: 0.0.0-use.local
+  resolution: "@suite-common/analytics@workspace:suite-common/analytics"
+  dependencies:
+    "@reduxjs/toolkit": 1.8.3
+    "@suite-common/redux-utils": "workspace:*"
+    proxy-memoize: ^2.0.0
+  languageName: unknown
+  linkType: soft
+
 "@suite-common/connect-init@workspace:*, @suite-common/connect-init@workspace:suite-common/connect-init":
   version: 0.0.0-use.local
   resolution: "@suite-common/connect-init@workspace:suite-common/connect-init"
@@ -6410,6 +6440,7 @@ __metadata:
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@trezor/blockchain-link": "workspace:*"
+    "@trezor/utils": "workspace:*"
     bignumber.js: ^9.1.1
     date-fns: ^2.29.3
     jest: ^26.6.3
@@ -6576,6 +6607,18 @@ __metadata:
     react: 18.2.0
     react-native: 0.71.3
     react-redux: 8.0.5
+  languageName: unknown
+  linkType: soft
+
+"@suite-native/analytics@workspace:*, @suite-native/analytics@workspace:suite-native/analytics":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/analytics@workspace:suite-native/analytics"
+  dependencies:
+    "@suite-common/analytics": "workspace:*"
+    "@suite-common/redux-utils": "workspace:*"
+    "@suite-native/config": "workspace:*"
+    "@trezor/analytics": "workspace:*"
+    react-redux: 7.2.2
   languageName: unknown
   linkType: soft
 
@@ -6867,7 +6910,9 @@ __metadata:
     "@react-navigation/native": ^6.1.3
     "@react-navigation/stack": ^6.3.12
     "@reduxjs/toolkit": 1.9.2
+    "@suite-common/analytics": "workspace:*"
     "@suite-common/suite-config": "workspace:*"
+    "@suite-native/analytics": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/config": "workspace:*"
     "@suite-native/navigation": "workspace:*"
@@ -6937,6 +6982,7 @@ __metadata:
   resolution: "@suite-native/state@workspace:suite-native/state"
   dependencies:
     "@reduxjs/toolkit": 1.9.2
+    "@suite-common/analytics": "workspace:*"
     "@suite-common/logger": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/test-utils": "workspace:*"
@@ -7783,7 +7829,9 @@ __metadata:
     "@shopify/react-native-skia": 0.1.173
     "@suite-common/connect-init": "workspace:*"
     "@suite-common/formatters": "workspace:*"
+    "@suite-common/redux-utils": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
+    "@suite-native/analytics": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/config": "workspace:*"
     "@suite-native/module-accounts": "workspace:*"
@@ -7901,6 +7949,7 @@ __metadata:
     "@reduxjs/toolkit": 1.9.2
     "@sentry/minimal": 6.17.2
     "@sentry/types": 6.17.2
+    "@suite-common/analytics": "workspace:*"
     "@suite-common/connect-init": "workspace:*"
     "@suite-common/fiat-services": "workspace:*"
     "@suite-common/formatters": "workspace:*"
@@ -7922,6 +7971,7 @@ __metadata:
     "@suite-common/wallet-utils": "workspace:*"
     "@testing-library/react": 13.4.0
     "@testing-library/user-event": 14.4.3
+    "@trezor/analytics": "workspace:*"
     "@trezor/coinjoin": "workspace:*"
     "@trezor/components": "workspace:*"
     "@trezor/connect": "workspace:9.0.6"
@@ -19446,7 +19496,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"immer@npm:9.0.19, immer@npm:^9.0.16":
+"immer@npm:9.0.19, immer@npm:^9.0.16, immer@npm:^9.0.7":
   version: 9.0.19
   resolution: "immer@npm:9.0.19"
   checksum: f02ee53989989c287cd548a3d817fccf0bfe56db919755ee94a72ea3ae78a00363fba93ee6c010fe54a664380c29c53d44ed4091c6a86cae60957ad2cfabc010
@@ -26541,7 +26591,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"proxy-memoize@npm:^2.0.2":
+"proxy-memoize@npm:^2.0.0, proxy-memoize@npm:^2.0.2":
   version: 2.0.2
   resolution: "proxy-memoize@npm:2.0.2"
   dependencies:
@@ -27358,6 +27408,27 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-redux@npm:7.2.2":
+  version: 7.2.2
+  resolution: "react-redux@npm:7.2.2"
+  dependencies:
+    "@babel/runtime": ^7.12.1
+    hoist-non-react-statics: ^3.3.2
+    loose-envify: ^1.4.0
+    prop-types: ^15.7.2
+    react-is: ^16.13.1
+  peerDependencies:
+    react: ^16.8.3 || ^17
+    redux: ^2.0.0 || ^3.0.0 || ^4.0.0-0
+  peerDependenciesMeta:
+    react-dom:
+      optional: true
+    react-native:
+      optional: true
+  checksum: c421df8a888a261aaecd9dab92b6d2c92712a7d4e4eab15a9ed5a47bafd0cac44d66cff6cfd6ef6563820887053af7641ba872012f41a415067274430e860e98
+  languageName: node
+  linkType: hard
+
 "react-redux@npm:8.0.5":
   version: 8.0.5
   resolution: "react-redux@npm:8.0.5"
@@ -27940,7 +28011,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"redux-thunk@npm:^2.4.2":
+"redux-thunk@npm:^2.4.1, redux-thunk@npm:^2.4.2":
   version: 2.4.2
   resolution: "redux-thunk@npm:2.4.2"
   peerDependencies:
@@ -27949,7 +28020,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"redux@npm:^4.0.0, redux@npm:^4.0.5, redux@npm:^4.2.0, redux@npm:^4.2.1":
+"redux@npm:^4.0.0, redux@npm:^4.0.5, redux@npm:^4.1.2, redux@npm:^4.2.0, redux@npm:^4.2.1":
   version: 4.2.1
   resolution: "redux@npm:4.2.1"
   dependencies:
@@ -28241,7 +28312,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"reselect@npm:^4.0.0, reselect@npm:^4.1.7":
+"reselect@npm:^4.0.0, reselect@npm:^4.1.5, reselect@npm:^4.1.7":
   version: 4.1.7
   resolution: "reselect@npm:4.1.7"
   checksum: 738d8e2b8f0dca154ad29de6a209c9fbca2d70ae6788fd85df87f2c74b95a65bbf2d16d43a9e2faff39de34d17a29d706ba08a6b2ee5660c09589edbd19af7e1
