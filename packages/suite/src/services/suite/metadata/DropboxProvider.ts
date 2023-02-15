@@ -64,7 +64,6 @@ class DropboxProvider extends AbstractMetadataProvider {
 
         try {
             // dropbox supports authorization code flow for both web and desktop
-            // @ts-expect-error dropbox lib types url as String object, but it is primite string
             const { code } = await extractCredentialsFromAuthorizationFlow(url);
 
             if (!code)
@@ -72,7 +71,6 @@ class DropboxProvider extends AbstractMetadataProvider {
 
             const { result } = await this.auth.getAccessTokenFromCode(redirectUrl, code);
 
-            // @ts-expect-error dropbox lib types result as Object, but access_token & refresh_token are available there as strings
             const { access_token: accessToken, refresh_token: refreshToken } = result;
 
             this.auth.setAccessToken(accessToken);
@@ -137,7 +135,6 @@ class DropboxProvider extends AbstractMetadataProvider {
                         path: match!.metadata.metadata.path_lower!,
                     });
 
-                    // @ts-expect-error fileBlob is missing in dropbox lib types file, but it is available
                     const ab = await result.fileBlob.arrayBuffer();
 
                     return this.ok(Buffer.from(ab));
