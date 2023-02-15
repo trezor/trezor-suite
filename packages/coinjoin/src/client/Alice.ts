@@ -28,6 +28,7 @@ export class Alice {
     accountKey: string; // Account.accountKey
     scriptType: AllowedScriptTypes; // input scripType
     requested?: AlicePendingRequest; // pending request sent to wallet (Suite)
+    resolved: AlicePendingRequest[] = []; // resolved requests received from wallet (Suite)
     ownershipProof?: string; // data used in inputRegistration phase, received as response to RequestEvent, provided by wallet (Suite)
     registrationData?: RegistrationData; // data from inputRegistration phase
     affiliationFlag?: boolean; // affiliation flag is used in /ready-to-sign request **only** when Alice pays coordination fee
@@ -55,21 +56,30 @@ export class Alice {
         this.error = error;
     }
 
-    setRequest(type: AlicePendingRequest['type']): SerializedAlice;
-    setRequest(): undefined;
-    setRequest(type?: AlicePendingRequest['type']) {
-        if (type) {
-            this.requested = {
-                type,
-                timestamp: Date.now(),
-            };
-            return {
-                accountKey: this.accountKey,
-                path: this.path,
-                outpoint: this.outpoint,
-            };
+    setRequest(type: AlicePendingRequest['type']): SerializedAlice {
+        this.requested = {
+            type,
+            timestamp: Date.now(),
+        };
+        return {
+            accountKey: this.accountKey,
+            path: this.path,
+            outpoint: this.outpoint,
+        };
+    }
+
+    resolveRequest() {
+        if (this.requested) {
+            this.resolved.push({
+                type: this.requested.type,
+                timestamp: Date.now() - this.requested.timestamp,
+            });
+            this.requested = undefined;
         }
-        this.requested = undefined;
+    }
+
+    getResolvedRequest(type: AlicePendingRequest['type']) {
+        return this.resolved.find(r => r.type === type);
     }
 
     setOwnershipProof(proof: string) {

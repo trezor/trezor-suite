@@ -345,7 +345,7 @@ export class CoinjoinRound extends EventEmitter {
             const input = this.inputs.find(a => a.outpoint === i.outpoint);
             if (!input) return;
             // reset request in input
-            input.setRequest();
+            input.resolveRequest();
             if ('error' in i) {
                 log(`Resolving ${type} request for ~~${i.outpoint}~~ with error. ${i.error}`);
                 input.setError(new Error(i.error));
