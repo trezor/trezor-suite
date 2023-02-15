@@ -5,10 +5,10 @@ import type { AppState, TrezorDevice, ExtendedMessageDescriptor } from '@suite-t
 
 export const getFormattedFingerprint = (fingerprint: string) =>
     [
-        fingerprint.substr(0, 16),
-        fingerprint.substr(16, 16),
-        fingerprint.substr(32, 16),
-        fingerprint.substr(48, 16),
+        fingerprint.substring(0, 16),
+        fingerprint.substring(16, 32),
+        fingerprint.substring(32, 48),
+        fingerprint.substring(48, 64),
     ]
         .join('\n')
         .toUpperCase();
