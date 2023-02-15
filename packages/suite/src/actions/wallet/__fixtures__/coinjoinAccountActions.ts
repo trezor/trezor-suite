@@ -11,6 +11,11 @@ const ACCOUNT: Partial<Account> = {
     key: '12345',
 };
 
+const CJ_ACCOUNT = {
+    key: ACCOUNT.key,
+    symbol: ACCOUNT.symbol,
+};
+
 const SESSION = { signedRounds: [] as string[], maxRounds: 10 };
 
 export const createCoinjoinAccount = [
@@ -150,7 +155,7 @@ export const startCoinjoinSession = [
         },
         state: {
             coinjoin: {
-                accounts: [{ key: ACCOUNT.key }],
+                accounts: [CJ_ACCOUNT],
             },
         },
         params: ACCOUNT,
@@ -176,7 +181,7 @@ export const startCoinjoinSession = [
         },
         state: {
             coinjoin: {
-                accounts: [{ key: ACCOUNT.key }],
+                accounts: [CJ_ACCOUNT],
             },
         },
         params: ACCOUNT,
@@ -236,10 +241,10 @@ export const restoreCoinjoinAccounts = [
             coinjoin: {
                 clients: {},
                 accounts: [
-                    { key: 'account-2', session: { ...SESSION, paused: true } },
-                    { key: 'account-B', session: { ...SESSION, paused: true } },
-                    { key: 'account-A', session: SESSION },
-                    { key: 'account-1', session: { ...SESSION, paused: true } },
+                    { key: 'account-2', symbol: 'regtest', session: { ...SESSION, paused: true } },
+                    { key: 'account-B', symbol: 'regtest', session: { ...SESSION, paused: true } },
+                    { key: 'account-A', symbol: 'btc', session: SESSION },
+                    { key: 'account-1', symbol: 'btc', session: { ...SESSION, paused: true } },
                 ],
             },
         },
@@ -263,7 +268,7 @@ export const restoreCoinjoinSession = [
         state: {
             accounts: [ACCOUNT],
             coinjoin: {
-                accounts: [{ key: ACCOUNT.key, session: { ...SESSION, paused: true } }],
+                accounts: [{ ...CJ_ACCOUNT, session: { ...SESSION, paused: true } }],
             },
         },
         param: '12345',
