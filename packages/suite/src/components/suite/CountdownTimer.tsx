@@ -24,6 +24,7 @@ const units: Array<{ format: keyof Duration; unit: Unit }> = [
 interface CountdownTimerProps {
     deadline: number;
     pastDeadlineMessage?: TranslationKey;
+    message?: TranslationKey;
     minUnit?: Unit;
     minUnitValue?: number;
     unitDisplay?: 'long' | 'short' | 'narrow';
@@ -34,6 +35,7 @@ interface CountdownTimerProps {
 export const CountdownTimer = ({
     deadline,
     pastDeadlineMessage,
+    message,
     minUnit = 'second',
     minUnitValue = 0,
     unitDisplay = 'short',
@@ -42,35 +44,49 @@ export const CountdownTimer = ({
 }: CountdownTimerProps) => {
     const { duration, isPastDeadline } = useCountdownTimer(deadline);
     const minUnitIndex = units.findIndex(({ unit }) => minUnit === unit);
+    const firstValue = units.reduce<number>(
+        (value, { format }) => value || duration[format] || 0,
+        0,
+    );
+    const messageId = (isPastDeadline && pastDeadlineMessage) || message;
 
-    const formattedUnits = () =>
-        units.slice(0, minUnitIndex + 1).map(({ format, unit }, index, array) => {
-            const keyValue = duration[format] ?? 0;
-            const isLast = index + 1 === array.length;
-            const value = isLast ? Math.max(keyValue, minUnitValue) : keyValue;
+    const getValue = () => (
+        <>
+            {!isPastDeadline && isApproximate && `~ `}
+            {units.slice(0, minUnitIndex + 1).map(({ format, unit }, index, array) => {
+                const keyValue = duration[format] ?? 0;
+                const isLast = index + 1 === array.length;
+                const value = isLast ? Math.max(keyValue, minUnitValue) : keyValue;
 
-            return (
-                (isLast || value > 0) && (
-                    <UnitWrapper key={format}>
-                        <FormattedNumber
-                            value={value}
-                            style="unit"
-                            unit={unit}
-                            unitDisplay={unitDisplay}
-                        />
-                        {!isLast && ' '}
-                    </UnitWrapper>
-                )
-            );
-        });
+                return (
+                    (isLast || value > 0) && (
+                        <UnitWrapper key={format}>
+                            <FormattedNumber
+                                value={value}
+                                style="unit"
+                                unit={unit}
+                                unitDisplay={unitDisplay}
+                            />
+                            {!isLast && ' '}
+                        </UnitWrapper>
+                    )
+                );
+            })}
+        </>
+    );
 
     return (
         <span className={className}>
-            {!isPastDeadline && isApproximate && `~ `}
-            {isPastDeadline && pastDeadlineMessage ? (
-                <Translation id={pastDeadlineMessage} />
+            {messageId ? (
+                <Translation
+                    id={messageId}
+                    values={{
+                        value: getValue(),
+                        firstValue,
+                    }}
+                />
             ) : (
-                formattedUnits()
+                getValue()
             )}
         </span>
     );
