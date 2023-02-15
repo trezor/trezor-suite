@@ -57,7 +57,7 @@ export const Video = ({
             <ExpoVideo
                 style={applyStyle(videoStyle, { aspectRatio })}
                 source={videoSource}
-                shouldPlay={shouldPlay}
+                shouldPlay={false}
                 isMuted={isMuted}
                 isLooping
                 onLoad={() => setIsLoading(false)}
