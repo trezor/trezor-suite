@@ -2,9 +2,10 @@ import React from 'react';
 
 import { atom, useAtom } from 'jotai';
 
-import { Box, DiscreetText, Text } from '@suite-native/atoms';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { useFormatters } from '@suite-common/formatters';
+import { FiatAmountFormatter } from '@suite-native/formatters';
+import { Box, Text } from '@suite-native/atoms';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Icon, IconName } from '@trezor/icons';
 import { emptyGraphPoint, EnhancedGraphPoint } from '@suite-native/graph';
 
@@ -110,14 +111,9 @@ const PriceIncreaseIndicator = () => {
 };
 
 const Balance = () => {
-    const { FiatAmountFormatter } = useFormatters();
     const [point] = useAtom(selectedPointAtom);
 
-    return (
-        <DiscreetText typography="titleLarge">
-            {FiatAmountFormatter.format(point.value)}
-        </DiscreetText>
-    );
+    return <FiatAmountFormatter value={point.value} variant="titleLarge" />;
 };
 
 export const GraphTimeIndicator = () => {

@@ -4,11 +4,11 @@ import { useSelector } from 'react-redux';
 import { atom, useAtom } from 'jotai';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Box, DiscreetText, Divider } from '@suite-native/atoms';
+import { Box, Divider } from '@suite-native/atoms';
 import { CryptoIcon } from '@trezor/icons';
 import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
-import { useFormatters } from '@suite-common/formatters';
 import { emptyGraphPoint, EnhancedGraphPointWithCryptoBalance } from '@suite-native/graph';
+import { CryptoAmountFormatter, FiatAmountFormatter } from '@suite-native/formatters';
 
 type AccountBalanceProps = {
     accountKey: string;
@@ -42,7 +42,6 @@ export const AccountBalance = ({ accountKey }: AccountBalanceProps) => {
         selectAccountByKey(state, accountKey),
     );
     const [selectedPoint] = useAtom(selectedPointAtom);
-    const { FiatAmountFormatter, CryptoAmountFormatter } = useFormatters();
 
     if (!account) return null;
 
@@ -53,17 +52,13 @@ export const AccountBalance = ({ accountKey }: AccountBalanceProps) => {
                     <Box style={applyStyle(cryptoIconStyle)}>
                         <CryptoIcon name={account.symbol} />
                     </Box>
-                    <DiscreetText color="gray600" typography="hint">
-                        {CryptoAmountFormatter.format(selectedPoint.cryptoBalance, {
-                            symbol: account.symbol,
-                            isBalance: true,
-                        })}
-                    </DiscreetText>
+                    <CryptoAmountFormatter
+                        value={selectedPoint.cryptoBalance}
+                        network={account.symbol}
+                    />
                 </Box>
                 <Box>
-                    <DiscreetText typography="titleLarge" color="gray800">
-                        {FiatAmountFormatter.format(selectedPoint.value)}
-                    </DiscreetText>
+                    <FiatAmountFormatter value={selectedPoint.value} network={account.symbol} />
                 </Box>
             </Box>
             <Box marginBottom="large">

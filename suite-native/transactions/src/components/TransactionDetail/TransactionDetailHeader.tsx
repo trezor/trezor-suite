@@ -2,12 +2,11 @@ import React from 'react';
 
 import { RequireAllOrNone } from 'type-fest';
 
-import { Box, DiscreetText, Text } from '@suite-native/atoms';
+import { Box, Text } from '@suite-native/atoms';
 import { Icon, IconName } from '@trezor/icons';
 import { TransactionType, WalletAccountTransaction } from '@suite-common/wallet-types';
-import { useFormatters } from '@suite-common/formatters';
 import { Color } from '@trezor/theme';
-import { CryptoToFiatAmountFormatter } from '@suite-native/formatters';
+import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 
 type TransactionDetailHeaderProps = {
     transaction: WalletAccountTransaction;
@@ -51,7 +50,6 @@ const transactionTypeInfo = {
 >;
 
 export const TransactionDetailHeader = ({ transaction }: TransactionDetailHeaderProps) => {
-    const { CryptoAmountFormatter } = useFormatters();
     const { type } = transaction;
 
     const { text } = transactionTypeInfo[type];
@@ -74,20 +72,24 @@ export const TransactionDetailHeader = ({ transaction }: TransactionDetailHeader
                         {transactionTypeInfo[type].sign}
                     </Text>
                 )}
-                <DiscreetText typography="titleMedium">
-                    {CryptoAmountFormatter.format(transaction.amount, {
-                        symbol: transaction.symbol,
-                    })}
-                </DiscreetText>
-            </Box>
-            <Text>
-                ≈
-                <CryptoToFiatAmountFormatter
+                <CryptoAmountFormatter
                     value={transaction.amount}
                     network={transaction.symbol}
-                    customRates={transaction.rates}
+                    isBalance={false}
+                    variant="titleMedium"
+                    color="gray1000"
                 />
-            </Text>
+            </Box>
+            {transaction.rates && (
+                <Box flexDirection="row">
+                    <Text>≈ </Text>
+                    <CryptoToFiatAmountFormatter
+                        value={transaction.amount}
+                        network={transaction.symbol}
+                        customRates={transaction.rates}
+                    />
+                </Box>
+            )}
         </Box>
     );
 };

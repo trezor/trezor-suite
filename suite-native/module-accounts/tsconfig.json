@@ -3,9 +3,6 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
-            "path": "../../suite-common/formatters"
-        },
-        {
             "path": "../../suite-common/suite-types"
         },
         {
@@ -22,6 +19,7 @@
         },
         { "path": "../accounts" },
         { "path": "../atoms" },
+        { "path": "../formatters" },
         { "path": "../graph" },
         { "path": "../module-settings" },
         { "path": "../navigation" },

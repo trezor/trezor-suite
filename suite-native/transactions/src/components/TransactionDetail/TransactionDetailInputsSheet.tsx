@@ -1,11 +1,12 @@
 import React from 'react';
 
+import { NetworkSymbol } from 'suite-common/wallet-config/src';
+
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Icon } from '@trezor/icons';
 import { WalletAccountTransaction } from '@suite-common/wallet-types';
 import { Box, Card, Text, VStack } from '@suite-native/atoms';
-import { useFormatters } from '@suite-common/formatters';
-import { AccountAddressFormatter } from '@suite-native/formatters';
+import { AccountAddressFormatter, CryptoAmountFormatter } from '@suite-native/formatters';
 
 import { TransactionDetailSheet } from './TransactionDetailSheet';
 
@@ -17,19 +18,22 @@ type TransactionDetailInputsSheetProps = {
 
 type TransactionAddressAmountProps = {
     address: string;
-    amount: string;
+    amount?: string | number;
+    symbol: NetworkSymbol;
 };
 
 const addressAmountColumnStyle = prepareNativeStyle(_ => ({
     maxWidth: '42.5%',
 }));
 
-const TransactionAddressAmount = ({ address, amount }: TransactionAddressAmountProps) => (
+const TransactionAddressAmount = ({
+    address,
+    amount = 0,
+    symbol,
+}: TransactionAddressAmountProps) => (
     <Box>
         <AccountAddressFormatter value={address} variant="hint" />
-        <Text variant="label" color="gray600">
-            {amount}
-        </Text>
+        <CryptoAmountFormatter value={amount} network={symbol} isBalance={false} variant="label" />
     </Box>
 );
 
@@ -39,10 +43,9 @@ export const TransactionDetailInputsSheet = ({
     transaction,
 }: TransactionDetailInputsSheetProps) => {
     const { applyStyle } = useNativeStyles();
-    const { CryptoAmountFormatter } = useFormatters();
 
     const txInputs = transaction.details.vin;
-    const txOutputs = transaction.details.vin;
+    const txOutputs = transaction.details.vout;
 
     return (
         <TransactionDetailSheet
@@ -82,11 +85,10 @@ export const TransactionDetailInputsSheet = ({
                         <Box style={applyStyle(addressAmountColumnStyle)}>
                             {txInputs.map(input => (
                                 <TransactionAddressAmount
-                                    key={input.txid}
+                                    key={input.addresses![0]}
                                     address={input.addresses![0]}
-                                    amount={CryptoAmountFormatter.format(input.value ?? '0', {
-                                        symbol: transaction.symbol,
-                                    })}
+                                    amount={input.value}
+                                    symbol={transaction.symbol}
                                 />
                             ))}
                         </Box>
@@ -94,11 +96,10 @@ export const TransactionDetailInputsSheet = ({
                         <Box style={applyStyle(addressAmountColumnStyle)}>
                             {txOutputs.map(output => (
                                 <TransactionAddressAmount
-                                    key={output.txid}
+                                    key={output.addresses![0]}
                                     address={output.addresses![0]}
-                                    amount={CryptoAmountFormatter.format(output.value ?? '0', {
-                                        symbol: transaction.symbol,
-                                    })}
+                                    amount={output.value}
+                                    symbol={transaction.symbol}
                                 />
                             ))}
                         </Box>

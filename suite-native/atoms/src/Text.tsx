@@ -28,11 +28,14 @@ export const Text = ({
     color = 'gray1000',
     align = 'left',
     style,
+    children,
     ...otherProps
 }: TextProps) => {
     const { applyStyle } = useNativeStyles();
 
     return (
-        <RNText style={[applyStyle(textStyle, { variant, color, align }), style]} {...otherProps} />
+        <RNText style={[applyStyle(textStyle, { variant, color, align }), style]} {...otherProps}>
+            {children}
+        </RNText>
     );
 };

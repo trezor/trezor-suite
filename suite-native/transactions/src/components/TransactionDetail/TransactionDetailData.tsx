@@ -6,7 +6,7 @@ import { AccountKey, WalletAccountTransaction } from '@suite-common/wallet-types
 import { Icon } from '@trezor/icons';
 import { isPending } from '@suite-common/wallet-utils';
 import { useFormatters } from '@suite-common/formatters';
-import { CryptoToFiatAmountFormatter } from '@suite-native/formatters';
+import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import {
     selectTransactionBlockTimeById,
     selectTransactionFirstInputAddress,
@@ -23,7 +23,7 @@ type TransactionDetailDataProps = {
 };
 
 export const TransactionDetailData = ({ transaction, accountKey }: TransactionDetailDataProps) => {
-    const { CryptoAmountFormatter, DateTimeFormatter } = useFormatters();
+    const { DateTimeFormatter } = useFormatters();
     const transactionBlockTime = useSelector((state: TransactionsRootState) =>
         selectTransactionBlockTimeById(state, transaction.txid, accountKey),
     );
@@ -37,6 +37,7 @@ export const TransactionDetailData = ({ transaction, accountKey }: TransactionDe
     );
 
     const isTransactionPending = isPending(transaction);
+
     return (
         <>
             <VStack>
@@ -58,20 +59,27 @@ export const TransactionDetailData = ({ transaction, accountKey }: TransactionDe
                 <Card>
                     <TransactionDetailRow title="Fee">
                         <Box alignItems="flex-end">
-                            <Text color="gray1000">
-                                <CryptoAmountFormatter
-                                    value={transaction.fee}
-                                    symbol={transaction.symbol}
-                                />
-                            </Text>
-                            <Text variant="hint" color="gray600">
-                                ≈{' '}
-                                <CryptoToFiatAmountFormatter
-                                    value={transaction.fee}
-                                    network={transaction.symbol}
-                                    customRates={transaction.rates}
-                                />
-                            </Text>
+                            <CryptoAmountFormatter
+                                value={transaction.fee}
+                                network={transaction.symbol}
+                                isBalance={false}
+                                variant="body"
+                                color="gray1000"
+                            />
+                            {transaction.rates && (
+                                <Box flexDirection="row">
+                                    <Text variant="hint" color="gray600">
+                                        ≈{' '}
+                                    </Text>
+                                    <CryptoToFiatAmountFormatter
+                                        value={transaction.fee}
+                                        network={transaction.symbol}
+                                        customRates={transaction.rates}
+                                        variant="hint"
+                                        color="gray600"
+                                    />
+                                </Box>
+                            )}
                         </Box>
                     </TransactionDetailRow>
                 </Card>

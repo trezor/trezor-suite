@@ -3,7 +3,7 @@ import { A, pipe } from '@mobily/ts-belt';
 import { memoize, memoizeWithArgs } from 'proxy-memoize';
 
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
-import { enhanceHistory, isUtxoBased } from '@suite-common/wallet-utils';
+import { enhanceHistory, isTestnet, isUtxoBased } from '@suite-common/wallet-utils';
 import { Account, AccountKey } from '@suite-common/wallet-types';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
@@ -164,6 +164,14 @@ export const selectIsAccountUtxoBased = memoizeWithArgs(
         const account = selectAccountByKey(state, accountKey);
 
         return account ? isUtxoBased(account) : false;
+    },
+);
+
+export const selectIsTestnetAccount = memoizeWithArgs(
+    (state: AccountsRootState, accountKey: AccountKey) => {
+        const account = selectAccountByKey(state, accountKey);
+
+        return account ? isTestnet(account.symbol) : false;
     },
 );
 

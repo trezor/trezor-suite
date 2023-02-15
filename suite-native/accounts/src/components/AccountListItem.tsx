@@ -2,12 +2,11 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 
 import { AccountsRootState, selectAccountLabel } from '@suite-common/wallet-core';
-import { Box, DiscreetText, Text } from '@suite-native/atoms';
+import { Box, Text } from '@suite-native/atoms';
 import { Account } from '@suite-common/wallet-types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { CryptoIcon } from '@trezor/icons';
-import { useFormatters } from '@suite-common/formatters';
-import { CryptoToFiatAmountFormatter } from '@suite-native/formatters';
+import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 
 export type AccountListItemProps = {
     account: Account;
@@ -24,7 +23,6 @@ export const AccountListItem = ({ account }: AccountListItemProps) => {
     const accountLabel = useSelector((state: AccountsRootState) =>
         selectAccountLabel(state, account.key),
     );
-    const { CryptoAmountFormatter } = useFormatters();
 
     return (
         <Box
@@ -44,12 +42,7 @@ export const AccountListItem = ({ account }: AccountListItemProps) => {
                     value={account.availableBalance}
                     network={account.symbol}
                 />
-                <DiscreetText typography="hint" color="gray600">
-                    {CryptoAmountFormatter.format(account.formattedBalance, {
-                        symbol: account.symbol,
-                        isBalance: true,
-                    })}
-                </DiscreetText>
+                <CryptoAmountFormatter value={account.formattedBalance} network={account.symbol} />
             </Box>
         </Box>
     );

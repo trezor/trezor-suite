@@ -1,9 +1,9 @@
 import { View } from 'react-native';
 import React from 'react';
 
-import { useDiscreetMode, Text } from '@suite-native/atoms';
+import { useDiscreetMode } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { useFormatters } from '@suite-common/formatters';
+import { FiatAmountFormatter } from '@suite-native/formatters';
 
 type AxisLabelProps = {
     x: number;
@@ -18,15 +18,12 @@ const axisLabelStyle = prepareNativeStyle<Pick<AxisLabelProps, 'x'>>((_, { x }) 
 export const AxisLabel = ({ x, value }: AxisLabelProps) => {
     const { applyStyle } = useNativeStyles();
     const { isDiscreetMode } = useDiscreetMode();
-    const { FiatAmountFormatter } = useFormatters();
 
     if (isDiscreetMode) return null;
 
     return (
         <View style={applyStyle(axisLabelStyle, { x })}>
-            <Text variant="label" color="gray600">
-                {FiatAmountFormatter.format(value)}
-            </Text>
+            <FiatAmountFormatter value={value} />
         </View>
     );
 };

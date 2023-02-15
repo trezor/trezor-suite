@@ -24,6 +24,7 @@
         "@suite-native/assets": "workspace:*",
         "@suite-native/atoms": "workspace:*",
         "@suite-native/config": "workspace:*",
+        "@suite-native/formatters": "workspace:*",
         "@suite-native/graph": "workspace:*",
         "@suite-native/module-settings": "workspace:*",
         "@suite-native/navigation": "workspace:*",

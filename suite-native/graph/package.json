@@ -13,11 +13,11 @@
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
         "@shopify/react-native-skia": "0.1.173",
-        "@suite-common/formatters": "workspace:*",
         "@suite-common/graph": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
         "@suite-native/atoms": "workspace:*",
+        "@suite-native/formatters": "workspace:*",
         "@suite-native/react-native-graph": "workspace:*",
         "@suite-native/test-utils": "workspace:*",
         "@trezor/icons": "workspace:*",
