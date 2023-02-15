@@ -184,8 +184,14 @@ export const transactionSigning = async (
     } catch (error) {
         // NOTE: if anything goes wrong in this process this Round will be corrupted for all the users
         // registered inputs will probably be banned
+        const resolvedTime = round.inputs.map(i => {
+            const res = i.getResolvedRequest('signature');
+            return res?.timestamp || 'unresolved';
+        });
         round.setSessionPhase(SessionPhase.SignatureFailed);
-        logger.error(`Round signing failed: ${error.message}`);
+        logger.error(
+            `Round signing failed. Resolved time ${resolvedTime.join(',')}. with ${error.message}`,
+        );
 
         round.inputs.forEach(input => input.setError(error));
     }
