@@ -7143,9 +7143,11 @@ export default defineMessages({
         id: 'TR_FEE_RATE_CHANGED',
         defaultMessage: 'Fee rate has changed to complete transaction.',
     },
-    TR_COINJOIN_ROUND_COUNTDOWN: {
-        id: 'TR_COINJOIN_ROUND_COUNTDOWN',
-        defaultMessage: 'Next transaction signing starts in {time}',
+    TR_COINJOIN_ROUND_COUNTDOWN_PLURAL: {
+        id: 'TR_COINJOIN_ROUND_COUNTDOWN_PLURAL',
+        description:
+            'value including unit i.e. 5 minutes 15 seconds, firstValue for handling plural',
+        defaultMessage: 'Next transaction signing starts in {value}',
     },
     TR_COINJOIN_ROUND_COUNTDOWN_OVERTIME: {
         id: 'TR_COINJOIN_ROUND_COUNTDOWN_OVERTIME',
@@ -7508,10 +7510,10 @@ export default defineMessages({
         id: 'TR_LOOKING_FOR_COINJOIN_ROUND',
         defaultMessage: 'Waiting for a round',
     },
-    TR_COINJOIN_SESSION_COUNTDOWN: {
-        id: 'TR_COINJOIN_SESSION_COUNTDOWN',
-        description: 'deadline including unit i.e. 5 hours or 15 minutes',
-        defaultMessage: '{deadline} left',
+    TR_COINJOIN_SESSION_COUNTDOWN_PLURAL: {
+        id: 'TR_COINJOIN_SESSION_COUNTDOWN_PLURAL',
+        description: 'value including unit i.e. 5 hours 15 minutes, firstValue for handling plural',
+        defaultMessage: '{value} {firstValue, plural, other {left}}',
     },
     TR_LOADING_FUNDS: {
         id: 'TR_LOADING_FUNDS',

@@ -133,18 +133,12 @@ export const CoinjoinStatusBar = ({ accountKey, session, isSingle }: CoinjoinSta
                 {sessionDeadline && (
                     <>
                         <Separator>•</Separator>
-                        <Translation
-                            id="TR_COINJOIN_SESSION_COUNTDOWN"
-                            values={{
-                                deadline: (
-                                    <CountdownTimer
-                                        deadline={sessionDeadline}
-                                        unitDisplay="long"
-                                        minUnit="hour"
-                                        minUnitValue={roundsDurationInHours}
-                                    />
-                                ),
-                            }}
+                        <CountdownTimer
+                            deadline={sessionDeadline}
+                            unitDisplay="long"
+                            minUnit="hour"
+                            minUnitValue={roundsDurationInHours}
+                            message="TR_COINJOIN_SESSION_COUNTDOWN_PLURAL"
                         />
                     </>
                 )}
@@ -154,17 +148,11 @@ export const CoinjoinStatusBar = ({ accountKey, session, isSingle }: CoinjoinSta
                 <Note>
                     <Separator>•</Separator>
 
-                    <Translation
-                        id="TR_COINJOIN_ROUND_COUNTDOWN"
-                        values={{
-                            time: (
-                                <CountdownTimer
-                                    isApproximate
-                                    deadline={roundPhaseDeadline}
-                                    pastDeadlineMessage="TR_COINJOIN_ROUND_COUNTDOWN_OVERTIME"
-                                />
-                            ),
-                        }}
+                    <CountdownTimer
+                        isApproximate
+                        deadline={roundPhaseDeadline}
+                        message="TR_COINJOIN_ROUND_COUNTDOWN_PLURAL"
+                        pastDeadlineMessage="TR_COINJOIN_ROUND_COUNTDOWN_OVERTIME"
                     />
                 </Note>
             )}
