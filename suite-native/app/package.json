@@ -4,7 +4,7 @@
     "suiteNativeVersion": "23.2.1",
     "private": true,
     "scripts": {
-        "android": "react-native run-android --no-packager --variant=devDebug --appIdSuffix=debug",
+        "android": "react-native run-android --no-packager --mode=devDebug --appIdSuffix=debug --active-arch-only",
         "android:clean": "cd android && ./gradlew clean",
         "ios": "react-native run-ios --no-packager --scheme \"Debug\"",
         "start": "react-native start --reset-cache",
@@ -69,7 +69,7 @@
         "node-libs-browser": "^2.2.1",
         "react": "18.2.0",
         "react-intl": "^6.2.8",
-        "react-native": "0.71.2",
+        "react-native": "0.71.3",
         "react-native-config": "^1.5.0",
         "react-native-flipper": "0.164.0",
         "react-native-gesture-handler": "^2.9.0",

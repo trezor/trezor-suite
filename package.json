@@ -76,7 +76,7 @@
     },
     "resolutions": {
         "typescript": "4.9.5",
-        "react-native": "0.71.2",
+        "react-native": "0.71.3",
         "prettier": "2.8.4",
         "type-fest": "2.12.2",
         "bcrypto": "5.4.0",

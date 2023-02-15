@@ -6582,7 +6582,7 @@ __metadata:
     "@trezor/styles": "workspace:*"
     "@trezor/theme": "workspace:*"
     react: 18.2.0
-    react-native: 0.71.2
+    react-native: 0.71.3
     react-redux: 7.2.2
   languageName: unknown
   linkType: soft
@@ -6609,7 +6609,7 @@ __metadata:
     jest: ^26.6.3
     proxy-memoize: ^2.0.2
     react: ^18.2.0
-    react-native: 0.71.2
+    react-native: 0.71.3
     react-redux: 7.2.2
   languageName: unknown
   linkType: soft
@@ -6630,7 +6630,7 @@ __metadata:
     jest: ^26.6.3
     jotai: 1.9.1
     react: 18.2.0
-    react-native: 0.71.2
+    react-native: 0.71.3
     react-native-gesture-handler: ^2.9.0
     react-native-reanimated: 2.14.4
     react-native-root-toast: ^3.3.1
@@ -6696,7 +6696,7 @@ __metadata:
     date-fns: ^2.29.3
     jest: ^26.6.3
     react: 18.2.0
-    react-native: 0.71.2
+    react-native: 0.71.3
     react-native-gesture-handler: ^2.9.0
     react-native-reanimated: 2.14.4
     react-redux: 7.2.2
@@ -6710,7 +6710,7 @@ __metadata:
   dependencies:
     expo-clipboard: ^4.1.1
     react: 18.2.0
-    react-native: 0.71.2
+    react-native: 0.71.3
     react-native-root-toast: ^3.3.1
   languageName: unknown
   linkType: soft
@@ -6759,7 +6759,7 @@ __metadata:
     "@trezor/validation": "workspace:*"
     jest: ^26.6.3
     react: 18.2.0
-    react-native: 0.71.2
+    react-native: 0.71.3
     react-native-config: ^1.5.0
     react-native-reanimated: 2.14.4
     react-redux: 7.2.2
@@ -6794,7 +6794,7 @@ __metadata:
     "@trezor/utxo-lib": "workspace:*"
     jotai: 1.9.1
     react: 18.2.0
-    react-native: 0.71.2
+    react-native: 0.71.3
     react-redux: 7.2.2
   languageName: unknown
   linkType: soft
@@ -6817,7 +6817,7 @@ __metadata:
     "@trezor/theme": "workspace:*"
     jest: ^26.6.3
     react: 18.2.0
-    react-native: 0.71.2
+    react-native: 0.71.3
     react-redux: 7.2.2
     typescript: 4.9.5
   languageName: unknown
@@ -6831,7 +6831,7 @@ __metadata:
     "@suite-common/suite-types": "workspace:*"
     jest: ^26.6.3
     react: 18.2.0
-    react-native: 0.71.2
+    react-native: 0.71.3
     typescript: 4.9.5
   languageName: unknown
   linkType: soft
@@ -6865,7 +6865,7 @@ __metadata:
     jest: ^26.6.3
     jotai: 1.9.1
     react: 18.2.0
-    react-native: 0.71.2
+    react-native: 0.71.3
     react-redux: 7.2.2
     typescript: 4.9.5
   languageName: unknown
@@ -6889,7 +6889,7 @@ __metadata:
     "@trezor/theme": "workspace:*"
     jest: ^26.6.3
     react: 18.2.0
-    react-native: 0.71.2
+    react-native: 0.71.3
     react-redux: 7.2.2
     typescript: 4.9.5
   languageName: unknown
@@ -6913,7 +6913,7 @@ __metadata:
     "@trezor/theme": "workspace:*"
     jest: ^26.6.3
     react: 18.2.0
-    react-native: 0.71.2
+    react-native: 0.71.3
     react-redux: 7.2.2
     typescript: 4.9.5
   languageName: unknown
@@ -6936,7 +6936,7 @@ __metadata:
     jest: ^26.6.3
     jotai: 1.9.1
     react: 18.2.0
-    react-native: 0.71.2
+    react-native: 0.71.3
     react-native-keyboard-aware-scroll-view: ^0.9.5
     react-native-safe-area-context: ^4.5.0
     typescript: 4.9.5
@@ -6954,7 +6954,7 @@ __metadata:
     "@trezor/theme": "workspace:*"
     expo-barcode-scanner: ^12.3.1
     react: 18.2.0
-    react-native: 0.71.2
+    react-native: 0.71.3
     react-qr-code: 2.0.8
   languageName: unknown
   linkType: soft
@@ -6966,7 +6966,7 @@ __metadata:
     "@shopify/react-native-skia": 0.1.173
     "@types/react": 18.0.27
     react: 18.2.0
-    react-native: 0.71.2
+    react-native: 0.71.3
     react-native-gesture-handler: ^2.9.0
     react-native-reanimated: ^2.14.4
   languageName: unknown
@@ -7007,7 +7007,7 @@ __metadata:
     expo-secure-store: ^12.1.1
     jest: ^26.6.3
     react: 18.2.0
-    react-native: 0.71.2
+    react-native: 0.71.3
     react-native-mmkv: ^2.7.0
     redux-persist: 6.0.0
     typescript: 4.9.5
@@ -7053,7 +7053,7 @@ __metadata:
     "@trezor/theme": "workspace:*"
     jotai: 1.9.1
     react: 18.2.0
-    react-native: 0.71.2
+    react-native: 0.71.3
     react-native-gesture-handler: ^2.9.0
     react-redux: 7.2.2
   languageName: unknown
@@ -7065,7 +7065,7 @@ __metadata:
   dependencies:
     "@suite-native/atoms": "workspace:*"
     "@trezor/styles": "workspace:*"
-    expo-av: ^13.0.2
+    expo-av: 13.2.1
     prettier: 2.8.0
     react: 18.2.0
     react-native: 0.70.5
@@ -7529,7 +7529,7 @@ __metadata:
   resolution: "@trezor/env-utils@workspace:packages/env-utils"
   dependencies:
     expo-localization: ^14.1.1
-    react-native: 0.71.2
+    react-native: 0.71.3
     ua-parser-js: ^1.0.33
   languageName: unknown
   linkType: soft
@@ -7543,7 +7543,7 @@ __metadata:
     "@trezor/theme": "workspace:*"
     jest: ^26.6.3
     react: 18.2.0
-    react-native: 0.71.2
+    react-native: 0.71.3
     react-native-reanimated: ^2.14.4
     svgo: 3.0.2
     tsx: ^3.12.3
@@ -7648,7 +7648,7 @@ __metadata:
     polished: ^4.2.2
     react: 18.2.0
     react-fela: ^12.2.1
-    react-native: 0.71.2
+    react-native: 0.71.3
     typescript: 4.9.5
   languageName: unknown
   linkType: soft
@@ -7858,7 +7858,7 @@ __metadata:
     node-libs-browser: ^2.2.1
     react: 18.2.0
     react-intl: ^6.2.8
-    react-native: 0.71.2
+    react-native: 0.71.3
     react-native-config: ^1.5.0
     react-native-flipper: 0.164.0
     react-native-gesture-handler: ^2.9.0
@@ -8072,7 +8072,7 @@ __metadata:
     jest: ^26.6.3
     pod-install: ^0.1.38
     react: 18.2.0
-    react-native: 0.71.2
+    react-native: 0.71.3
     typescript: 4.9.5
   peerDependencies:
     react: "workspace:*"
@@ -16832,12 +16832,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo-av@npm:^13.0.2":
-  version: 13.1.0
-  resolution: "expo-av@npm:13.1.0"
+"expo-av@npm:13.2.1":
+  version: 13.2.1
+  resolution: "expo-av@npm:13.2.1"
   peerDependencies:
     expo: "*"
-  checksum: 97d5a11b7d136f12c59f3f152ce7125a3ac629ae416ae80c3e7b9ae51d332f0a59eb1536b29f4c72aa46cb9204613d615281760ceec92a297f79360ac00cf642
+  checksum: 9bbcbc3ce8336580b12f895346c06d4079a250703cd09a21949aa40e7e9ee41fc25014994a13d9388787466cb797c7fe88d4c74298911f2c195666b5aa83ee4d
   languageName: node
   linkType: hard
 
@@ -21433,10 +21433,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jsc-android@npm:^250230.2.1":
-  version: 250230.2.1
-  resolution: "jsc-android@npm:250230.2.1"
-  checksum: 11b7c41a0a9192ea4697e61f72a65341afd143550159bbc951cfe8e08eaee4fb119a7f4b9241de15b7156a873f0faef677f6ee72c243ace013e537bfc819dd6d
+"jsc-android@npm:^250231.0.0":
+  version: 250231.0.0
+  resolution: "jsc-android@npm:250231.0.0"
+  checksum: 6c3f0f6f02fa37a19935b2fbe651e9d6ecc370eb30f2ecee76379337bbf084abb568a1ef1133fe622c5b76f43cf54bb7716f92a94dca010985da38edc48841e2
   languageName: node
   linkType: hard
 
@@ -27146,15 +27146,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-codegen@npm:^0.71.3":
-  version: 0.71.3
-  resolution: "react-native-codegen@npm:0.71.3"
+"react-native-codegen@npm:^0.71.5":
+  version: 0.71.5
+  resolution: "react-native-codegen@npm:0.71.5"
   dependencies:
     "@babel/parser": ^7.14.0
     flow-parser: ^0.185.0
     jscodeshift: ^0.13.1
     nullthrows: ^1.1.1
-  checksum: 3cb65d0ed56b8b01e97ad202061a50ee3c5bd0deb5af19c99d3207eaca237c1316bbaec47299e220db7396724175dadb87f7573d1630b6d93c81d64c4884948c
+  checksum: d3a40b557d4b3a0d51664070eb8388b0dde247a0518025ff5a815d3573c98ff16f616df8236e827ee16625f685169931db5c966dd144d860ad5aed437b65b28c
   languageName: node
   linkType: hard
 
@@ -27196,10 +27196,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-gradle-plugin@npm:^0.71.14":
-  version: 0.71.14
-  resolution: "react-native-gradle-plugin@npm:0.71.14"
-  checksum: fc2599cdc6b64f09cdd1ad9b0aa6b45265b5905d13ab69174f46134d7a42b324459e169b0aaef67e075b5b65fe93704980718fd2c26245ef2b1d5fd29e391813
+"react-native-gradle-plugin@npm:^0.71.15":
+  version: 0.71.15
+  resolution: "react-native-gradle-plugin@npm:0.71.15"
+  checksum: e1c1714568324405fbca4ca841a0ab62cd8b90c65b3320183825161358f2bdb5226c8b22153b3007c2455dc7535d839d07d43148e6cba7952ae948636154f2b6
   languageName: node
   linkType: hard
 
@@ -27309,9 +27309,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native@npm:0.71.2":
-  version: 0.71.2
-  resolution: "react-native@npm:0.71.2"
+"react-native@npm:0.71.3":
+  version: 0.71.3
+  resolution: "react-native@npm:0.71.3"
   dependencies:
     "@jest/create-cache-key-function": ^29.2.1
     "@react-native-community/cli": 10.1.3
@@ -27327,7 +27327,7 @@ __metadata:
     event-target-shim: ^5.0.1
     invariant: ^2.2.4
     jest-environment-node: ^29.2.1
-    jsc-android: ^250230.2.1
+    jsc-android: ^250231.0.0
     memoize-one: ^5.0.0
     metro-react-native-babel-transformer: 0.73.7
     metro-runtime: 0.73.7
@@ -27337,8 +27337,8 @@ __metadata:
     pretty-format: ^26.5.2
     promise: ^8.3.0
     react-devtools-core: ^4.26.1
-    react-native-codegen: ^0.71.3
-    react-native-gradle-plugin: ^0.71.14
+    react-native-codegen: ^0.71.5
+    react-native-gradle-plugin: ^0.71.15
     react-refresh: ^0.4.0
     react-shallow-renderer: ^16.15.0
     regenerator-runtime: ^0.13.2
@@ -27351,7 +27351,7 @@ __metadata:
     react: 18.2.0
   bin:
     react-native: cli.js
-  checksum: c95bceaf75875aa612591b4de4f53918296aa8af1097ad8a75409fcae5292059db1a2da2dd97d791f02aa4397ad4da3ac21d91e2e3cc529c6a7de17a14358fe3
+  checksum: 1f6cee37352db4981eadee3e07b04f19d4ad3eeebf2ede7e8d98d42c87ea6041ec3e5703038349c650148fadb1bfab3db0c52121620fd946d9cf4a47b130b715
   languageName: node
   linkType: hard
 
