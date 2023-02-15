@@ -10,7 +10,7 @@ import { AcquiredDevice } from '@suite-types';
 import { useActions } from '@suite-hooks';
 import { DeviceModel, getDeviceModel } from '@trezor/device-utils';
 
-type AnyImageName = typeof homescreensBW64x128[number] | typeof homescreensColor128x128[number];
+type AnyImageName = (typeof homescreensBW64x128)[number] | (typeof homescreensColor128x128)[number];
 
 const Wrapper = styled.div`
     display: flex;

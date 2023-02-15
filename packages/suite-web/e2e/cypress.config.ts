@@ -29,7 +29,7 @@ const ensureRdpPort = (args: any[]) => {
 
 let port = 0;
 let client: any = null;
-let blockbook: Awaited<ReturnType<typeof blockbookMock['start']>> | undefined;
+let blockbook: Awaited<ReturnType<(typeof blockbookMock)['start']>> | undefined;
 
 // // add snapshot plugin
 // addMatchImageSnapshotPlugin(on);

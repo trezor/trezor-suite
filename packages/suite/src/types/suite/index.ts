@@ -45,10 +45,10 @@ export type {
 type TrezorConnectEvents = TransportEvent | UiEvent | DeviceEvent | BlockchainEvent;
 
 export type TransactionAction = ReturnType<
-    typeof transactionsActions[keyof typeof transactionsActions]
+    (typeof transactionsActions)[keyof typeof transactionsActions]
 >;
 export type NotificationAction = ReturnType<
-    typeof notificationsActions[keyof typeof notificationsActions]
+    (typeof notificationsActions)[keyof typeof notificationsActions]
 >;
 
 // all actions from all apps used to properly type Dispatch.

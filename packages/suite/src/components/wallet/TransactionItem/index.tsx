@@ -126,7 +126,7 @@ const TransactionItem = React.memo(
         // ethereum tx has either targets or transfers
         // cardano tx can have both at the same time
         const allOutputs: (
-            | { type: 'token'; payload: typeof tokens[number] }
+            | { type: 'token'; payload: (typeof tokens)[number] }
             | { type: 'target'; payload: WalletAccountTransaction['targets'][number] }
         )[] =
             transaction.type === 'self'

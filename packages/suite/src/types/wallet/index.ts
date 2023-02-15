@@ -54,9 +54,9 @@ export type { WalletParams } from '@suite-utils/router';
 this action union types are bad, we need it only for legacy reason.
 (old redux and redux/toolkit action type compatibility e.g. in middlewares)
  */
-type AccountsAction = ReturnType<typeof accountsActions[keyof typeof accountsActions]>;
-type FiatRatesAction = ReturnType<typeof fiatRatesActions[keyof typeof fiatRatesActions]>;
-type BlockchainAction = ReturnType<typeof blockchainActions[keyof typeof blockchainActions]>;
+type AccountsAction = ReturnType<(typeof accountsActions)[keyof typeof accountsActions]>;
+type FiatRatesAction = ReturnType<(typeof fiatRatesActions)[keyof typeof fiatRatesActions]>;
+type BlockchainAction = ReturnType<(typeof blockchainActions)[keyof typeof blockchainActions]>;
 
 export type WalletAction =
     | BlockchainAction

@@ -90,7 +90,7 @@ declare global {
             resetDb: typeof resetDb;
             // todo: better types, this is not 100% correct as this fn may get more args from
             // cypress-image-snapshot lib
-            matchImageSnapshot: typeof cy['screenshot'];
+            matchImageSnapshot: (typeof cy)['screenshot'];
             onboardingShouldLoad: () => Chainable<Subject>;
             dashboardShouldLoad: () => Chainable<Subject>;
             discoveryShouldFinish: () => Chainable<Subject>;

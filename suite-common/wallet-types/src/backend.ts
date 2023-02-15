@@ -13,7 +13,7 @@ export type BlockbookUrl = {
 export type BackendType = 'blockbook' | 'electrum' | 'ripple' | 'blockfrost';
 
 export type CustomBackend = {
-    coin: typeof networksCompatibility[number]['symbol'];
+    coin: (typeof networksCompatibility)[number]['symbol'];
     type: BackendType;
     urls: string[];
 };

@@ -10,7 +10,7 @@ import { getBuildInfo, getComputerInfo } from './info';
 
 const logLevels = ['mute', 'error', 'warn', 'info', 'debug'] as const;
 
-export type LogLevel = typeof logLevels[number];
+export type LogLevel = (typeof logLevels)[number];
 const isLogLevel = (level: string): level is LogLevel =>
     !!level && logLevels.includes(level as LogLevel);
 
