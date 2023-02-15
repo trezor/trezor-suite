@@ -8,7 +8,8 @@
     "license": "MIT",
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
-        "type-check": "tsc --build"
+        "type-check": "tsc --build",
+        "depcheck": "yarn g:depcheck"
     },
     "dependencies": {
         "@shopify/react-native-skia": "0.1.173",

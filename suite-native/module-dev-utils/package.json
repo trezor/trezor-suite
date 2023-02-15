@@ -8,7 +8,8 @@
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "test:unit": "jest --passWithNoTests",
-        "type-check": "tsc --build"
+        "type-check": "tsc --build",
+        "depcheck": "yarn g:depcheck"
     },
     "dependencies": {
         "@react-navigation/core": "^6.4.6",
