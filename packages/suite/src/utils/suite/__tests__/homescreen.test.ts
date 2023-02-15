@@ -56,9 +56,9 @@ const imgHashFixtures = [
 ] as const;
 
 interface Fixture {
-    img: typeof imgHashFixtures[number]['img'];
-    model: typeof imgHashFixtures[number]['model'];
-    hexHash: typeof imgHashFixtures[number]['hexHash'];
+    img: (typeof imgHashFixtures)[number]['img'];
+    model: (typeof imgHashFixtures)[number]['model'];
+    hexHash: (typeof imgHashFixtures)[number]['hexHash'];
 }
 
 describe('homescreen', () => {

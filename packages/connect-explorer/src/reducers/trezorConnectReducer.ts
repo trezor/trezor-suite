@@ -5,7 +5,7 @@ import { TrezorConnectDevice, Action } from '../types';
 type ConnectState = {
     devices: TrezorConnectDevice[];
     selectedDevice?: string;
-    options?: Parameters<typeof TrezorConnect['init']>[0];
+    options?: Parameters<(typeof TrezorConnect)['init']>[0];
 };
 
 const initialState: ConnectState = {

@@ -23,5 +23,5 @@ export type TypedFieldError =
           message?: ExtendedMessageDescriptor['id'] | ExtendedMessageDescriptor | ReactElement;
       };
 
-export type FormDraftKeyPrefix = typeof FormDraftPrefixKeyValues[number];
+export type FormDraftKeyPrefix = (typeof FormDraftPrefixKeyValues)[number];
 export type FormDraft = Record<string, any>;

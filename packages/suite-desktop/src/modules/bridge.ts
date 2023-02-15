@@ -2,7 +2,6 @@
  * Bridge runner
  */
 import { app, ipcMain } from '../typed-electron';
-
 import { BridgeProcess } from '../libs/processes/BridgeProcess';
 import { b2t } from '../libs/utils';
 

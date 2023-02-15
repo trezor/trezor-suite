@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState, useMemo } from 'react';
+
 import styled from 'styled-components';
 
 import { PostMessage, UI, PopupHandshake, UI_REQUEST } from '@trezor/connect';

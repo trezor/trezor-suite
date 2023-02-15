@@ -17,13 +17,13 @@ export const Feature = {
     coinjoin: 'coinjoin',
 } as const;
 
-type FeatureDomain = typeof Feature[keyof typeof Feature];
+type FeatureDomain = (typeof Feature)[keyof typeof Feature];
 
 export const Context = {
     coinjoin: 'accounts.coinjoin',
 } as const;
 
-type ContextDomain = typeof Context[keyof typeof Context];
+type ContextDomain = (typeof Context)[keyof typeof Context];
 
 export type MessageSystemState = {
     config: MessageSystem | null;

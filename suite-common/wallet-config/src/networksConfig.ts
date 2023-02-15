@@ -390,8 +390,8 @@ export const TREZOR_CONNECT_BACKENDS = ['blockbook', 'electrum', 'ripple', 'bloc
 export const NON_STANDARD_BACKENDS = ['coinjoin'] as const;
 
 export type BackendType =
-    | typeof TREZOR_CONNECT_BACKENDS[number]
-    | typeof NON_STANDARD_BACKENDS[number];
+    | (typeof TREZOR_CONNECT_BACKENDS)[number]
+    | (typeof NON_STANDARD_BACKENDS)[number];
 
 type Networks = typeof networks;
 export type NetworkSymbol = keyof Networks;

@@ -329,7 +329,7 @@ class BlockchainLink extends EventEmitter {
 
 export default BlockchainLink;
 
-export type BlockchainLinkInterface = typeof BlockchainLink['prototype'];
+export type BlockchainLinkInterface = (typeof BlockchainLink)['prototype'];
 
 export type BlockchainLinkParams<T extends keyof BlockchainLinkInterface> =
     BlockchainLinkInterface[T] extends (...args: any[]) => any

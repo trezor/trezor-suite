@@ -48,7 +48,7 @@ export const fiatCurrencies = {
 } as const;
 
 export type FiatCurrencyCode = keyof typeof fiatCurrencies;
-export type FiatCurrency = typeof fiatCurrencies[FiatCurrencyCode];
+export type FiatCurrency = (typeof fiatCurrencies)[FiatCurrencyCode];
 
 /**
  * @deprecated Please use fiatCurrencies object instead

@@ -4,7 +4,7 @@ import TrezorConnect, { DEVICE, DEVICE_EVENT, TRANSPORT_EVENT } from '@trezor/co
 import { TrezorConnectDevice, Dispatch } from '../types';
 import * as ACTIONS from './index';
 
-type ConnectOptions = Parameters<typeof TrezorConnect['init']>[0];
+type ConnectOptions = Parameters<(typeof TrezorConnect)['init']>[0];
 export type TrezorConnectAction =
     | { type: typeof ACTIONS.ON_SELECT_DEVICE; path: string }
     | { type: typeof DEVICE.CONNECT; device: TrezorConnectDevice }
@@ -20,7 +20,7 @@ export function onSelectDevice(path: string) {
 }
 
 export const init =
-    (options: Partial<Parameters<typeof TrezorConnect['init']>[0]> = {}) =>
+    (options: Partial<Parameters<(typeof TrezorConnect)['init']>[0]> = {}) =>
     async (dispatch: Dispatch) => {
         window.TrezorConnect = TrezorConnect;
 

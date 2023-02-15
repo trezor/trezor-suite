@@ -5,5 +5,5 @@ export const fontWeights = {
 } as const;
 
 export type FontWeight = keyof typeof fontWeights;
-export type FontWeightValue = typeof fontWeights[FontWeight];
+export type FontWeightValue = (typeof fontWeights)[FontWeight];
 export type FontWeights = Record<FontWeight, FontWeightValue>;
