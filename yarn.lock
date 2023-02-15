@@ -7065,7 +7065,7 @@ __metadata:
     prettier: 2.8.0
     react: 18.2.0
     react-native: 0.70.5
-    tsx: ^3.8.2
+    tsx: ^3.12.3
   languageName: unknown
   linkType: soft
 
@@ -31582,7 +31582,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tsx@npm:^3.12.3, tsx@npm:^3.8.2":
+"tsx@npm:^3.12.3":
   version: 3.12.3
   resolution: "tsx@npm:3.12.3"
   dependencies:
