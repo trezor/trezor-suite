@@ -18,7 +18,7 @@ const { OPS } = bscript;
  */
 
 const TAGS = ['TapLeaf', 'TapBranch', 'TapTweak', 'KeyAgg list', 'KeyAgg coefficient'] as const;
-type TaggedHashPrefix = typeof TAGS[number];
+type TaggedHashPrefix = (typeof TAGS)[number];
 /** An object mapping tags to their tagged hash prefix of [SHA256(tag) | SHA256(tag)] */
 const TAGGED_HASH_PREFIXES = TAGS.reduce((obj, tag) => {
     const tagHash = bcrypto.sha256(Buffer.from(tag));

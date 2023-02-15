@@ -110,7 +110,7 @@ export class DataManager {
         }
     }
 
-    static getPriority(whitelist?: typeof config['whitelist'][0]) {
+    static getPriority(whitelist?: (typeof config)['whitelist'][0]) {
         if (whitelist) {
             return whitelist.priority;
         }

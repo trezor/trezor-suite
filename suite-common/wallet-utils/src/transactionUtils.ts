@@ -669,7 +669,7 @@ const searchOperators = ['<', '>', '=', '!='] as const;
 const numberSearchFilter = (
     transaction: WalletAccountTransaction,
     amount: BigNumber,
-    operator: typeof searchOperators[number],
+    operator: (typeof searchOperators)[number],
 ) => {
     const targetAmounts = getTargetAmounts(transaction);
     const op = getTxOperation(transaction);

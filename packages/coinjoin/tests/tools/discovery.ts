@@ -7,7 +7,7 @@ import type { CoinjoinBackendSettings } from '../../src/types';
 const { getCoinjoinConfig } = require('../../../suite/src/services/coinjoin/config');
 
 const supportedNetworks = ['btc', 'test', 'regtest'] as const;
-const isSupportedNetwork = (network: string): network is typeof supportedNetworks[number] =>
+const isSupportedNetwork = (network: string): network is (typeof supportedNetworks)[number] =>
     supportedNetworks.includes(network as any);
 
 export const getAccountInfoParams = (network: string, descriptor: string) => {
@@ -28,7 +28,7 @@ export const getAccountInfo = async ({
     config,
 }: ReturnType<typeof getAccountInfoParams>) => {
     const backend = new CoinjoinBackend(config);
-    const transactions: Parameters<typeof backend['getAccountInfo']>[1] = [];
+    const transactions: Parameters<(typeof backend)['getAccountInfo']>[1] = [];
 
     backend.on('log', message => {
         console.log('🌐', message);

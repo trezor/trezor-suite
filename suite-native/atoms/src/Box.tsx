@@ -36,14 +36,14 @@ const spacingStylePropsKeys = [
     'padding',
 ] as const;
 
-type SpacingStyleProps = Partial<Record<typeof spacingStylePropsKeys[number], Spacing>>;
-type LayoutStyleProps = Partial<Pick<ViewStyle, typeof layoutStylePropsKeys[number]>>;
+type SpacingStyleProps = Partial<Record<(typeof spacingStylePropsKeys)[number], Spacing>>;
+type LayoutStyleProps = Partial<Pick<ViewStyle, (typeof layoutStylePropsKeys)[number]>>;
 
 export interface BoxProps extends Omit<ViewProps, 'style'>, LayoutStyleProps, SpacingStyleProps {
     style?: NativeStyleObject;
 }
 
-type BoxStyleProps = Record<typeof spacingStylePropsKeys[number], number> & LayoutStyleProps;
+type BoxStyleProps = Record<(typeof spacingStylePropsKeys)[number], number> & LayoutStyleProps;
 
 const boxStyle = prepareNativeStyle<BoxStyleProps>((_utils, { ...styles }) => ({
     ...styles,
