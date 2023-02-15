@@ -64,11 +64,9 @@ export const ScreenHeader = ({
 
     return (
         <View style={[applyStyle(screenHeaderStyle), style]}>
-            {shouldDisplayGoBackButton ? (
-                <GoBackIcon />
-            ) : (
-                <View style={applyStyle(iconWrapperStyle)}>{leftIcon}</View>
-            )}
+            <View style={applyStyle(iconWrapperStyle)}>
+                {shouldDisplayGoBackButton ? <GoBackIcon /> : leftIcon}
+            </View>
             {activeStep && numberOfSteps ? (
                 <View style={applyStyle(progressBarWrapperStyle)}>
                     <StepsProgressBar numberOfSteps={numberOfSteps} activeStep={activeStep} />

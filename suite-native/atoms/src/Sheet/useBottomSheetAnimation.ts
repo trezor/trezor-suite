@@ -1,12 +1,12 @@
 import {
     Easing,
-    interpolate,
     interpolateColor,
     runOnJS,
     useAnimatedGestureHandler,
     useAnimatedStyle,
     useSharedValue,
     withTiming,
+    useAnimatedKeyboard,
 } from 'react-native-reanimated';
 import { useCallback, useEffect } from 'react';
 import { PanGestureHandlerGestureEvent } from 'react-native-gesture-handler';
@@ -37,6 +37,7 @@ export const useBottomSheetAnimation = ({
     const colorOverlay = utils.transparentize(0.3, utils.colors.gray1000);
     const translatePanY = useSharedValue(SCREEN_HEIGHT);
     const animatedTransparency = useSharedValue(transparency);
+    const keyboard = useAnimatedKeyboard();
 
     useEffect(() => {
         animatedTransparency.value = withTiming(transparency, {
@@ -57,7 +58,11 @@ export const useBottomSheetAnimation = ({
     );
 
     const animatedSheetWrapperStyle = useAnimatedStyle(() => ({
-        top: interpolate(translatePanY.value, [-1, 0, 1], [0, 0, 1]),
+        transform: [
+            {
+                translateY: translatePanY.value - keyboard.height.value,
+            },
+        ],
     }));
 
     const closeSheetAnimated = useCallback(() => {

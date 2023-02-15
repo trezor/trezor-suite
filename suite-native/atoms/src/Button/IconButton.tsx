@@ -63,22 +63,10 @@ export const IconButton = ({
 
     const animatedPressStyle = useButtonPressAnimatedStyle(
         isPressed,
+        isDisabled,
         backgroundColor,
         onPressColor,
     );
-
-    const animatedButtonStyles = [
-        animatedPressStyle,
-        applyStyle(buttonStyle, {
-            size,
-            colorScheme,
-            isDisabled,
-        }),
-        style,
-    ];
-
-    // Remove animation if disabled.
-    if (isDisabled) animatedButtonStyles.shift();
 
     const iconColor = isDisabled ? disabledTextColor : textColor;
 
@@ -93,7 +81,17 @@ export const IconButton = ({
                 {...pressableProps}
             >
                 <Box alignItems="center">
-                    <Animated.View style={animatedButtonStyles}>
+                    <Animated.View
+                        style={[
+                            animatedPressStyle,
+                            applyStyle(iconButtonStyle, {
+                                size,
+                                colorScheme,
+                                isDisabled,
+                            }),
+                            style,
+                        ]}
+                    >
                         <Icon name={iconName} color={iconColor} size={size} />
                     </Animated.View>
                     <Text variant="label" color="gray600">

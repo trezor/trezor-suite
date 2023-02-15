@@ -39,6 +39,7 @@ export const icons = {
     notifications: require('../assets/icons/notifications.svg'),
     palette: require('../assets/icons/palette.svg'),
     paper: require('../assets/icons/paper.svg'),
+    pencil: require('../assets/icons/pencil.svg'),
     placeholder: require('../assets/icons/placeholder.svg'),
     plus: require('../assets/icons/plus.svg'),
     prices: require('../assets/icons/prices.svg'),

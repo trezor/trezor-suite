@@ -12,6 +12,7 @@ const pressTimingConfig = { duration: 70 };
 
 export const useButtonPressAnimatedStyle = (
     isPressed: boolean,
+    isDisabled: boolean,
     backgroundColor: Color,
     onPressColor: Color,
 ) => {
@@ -27,6 +28,8 @@ export const useButtonPressAnimatedStyle = (
             [utils.colors[backgroundColor], utils.colors[onPressColor]],
         ),
     }));
+
+    if (isDisabled) return;
 
     return animatedPressStyle;
 };

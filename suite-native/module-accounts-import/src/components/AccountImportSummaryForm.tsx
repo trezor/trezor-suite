@@ -6,7 +6,8 @@ import { useNavigation } from '@react-navigation/core';
 import { networks, NetworkSymbol } from '@suite-common/wallet-config';
 import { AccountsRootState, selectAccountsByNetworkAndDevice } from '@suite-common/wallet-core';
 import { Button, Divider } from '@suite-native/atoms';
-import { Form, useForm } from '@suite-native/forms';
+import { useAccountForm, AccountFormValues } from '@suite-native/accounts';
+import { Form } from '@suite-native/forms';
 import { HIDDEN_DEVICE_STATE } from '@suite-native/module-devices';
 import { setOnboardingFinished } from '@suite-native/module-settings';
 import {
@@ -19,7 +20,6 @@ import {
     StackToTabCompositeProps,
 } from '@suite-native/navigation';
 import { AccountInfo } from '@trezor/connect';
-import { yup } from '@trezor/validation';
 
 import { importAccountThunk } from '../accountsImportThunks';
 import { AccountImportOverview } from './AccountImportOverview';
@@ -38,11 +38,6 @@ type NavigationProp = StackToTabCompositeProps<
     RootStackParamList
 >;
 
-const accountImportFormValidationSchema = yup.object({
-    accountLabel: yup.string().required().max(30),
-});
-type AccountImportFormValues = yup.InferType<typeof accountImportFormValidationSchema>;
-
 export const AccountImportSummaryForm = ({
     networkSymbol,
     accountInfo,
@@ -57,18 +52,13 @@ export const AccountImportSummaryForm = ({
         deviceNetworkAccounts.length + 1
     }`;
 
-    const form = useForm<AccountImportFormValues>({
-        validation: accountImportFormValidationSchema,
-        defaultValues: {
-            accountLabel: defaultAccountLabel,
-        },
-    });
+    const form = useAccountForm(defaultAccountLabel);
     const {
         handleSubmit,
         formState: { errors },
     } = form;
 
-    const handleImportAccount = handleSubmit(({ accountLabel }: AccountImportFormValues) => {
+    const handleImportAccount = handleSubmit(({ accountLabel }: AccountFormValues) => {
         dispatch(
             importAccountThunk({
                 accountInfo,

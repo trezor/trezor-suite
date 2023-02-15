@@ -78,6 +78,11 @@ export const prepareAccountsReducer = createReducerWithExtraDeps(
             .addCase(accountsActions.updateAccount, (state, action) => {
                 update(state, action.payload);
             })
+            .addCase(accountsActions.renameAccount, (state, action) => {
+                const { accountKey, accountLabel } = action.payload;
+                const accountByAccountKey = state.find(account => account.key === accountKey);
+                if (accountByAccountKey) accountByAccountKey.metadata.accountLabel = accountLabel;
+            })
             .addCase(accountsActions.changeAccountVisibility, (state, action) => {
                 update(state, action.payload);
             })
