@@ -6,6 +6,7 @@ import { accountsReducer } from '@wallet-reducers';
 import { coinjoinReducer } from '@wallet-reducers/coinjoinReducer';
 import selectedAccountReducer from '@wallet-reducers/selectedAccountReducer';
 import messageSystemReducer from '@suite-reducers/messageSystemReducer';
+import modalReducer from '@suite-reducers/modalReducer';
 import {
     initCoinjoinService,
     onCoinjoinRoundChanged,
@@ -38,7 +39,7 @@ const rootReducer = combineReducers({
         {},
     ),
     devices: createReducer([fixtures.DEVICE], {}),
-    modal: () => ({}),
+    modal: modalReducer,
     messageSystem: messageSystemReducer,
     wallet: combineReducers({
         coinjoin: coinjoinReducer,

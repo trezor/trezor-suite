@@ -155,7 +155,6 @@ export const onCoinjoinRoundChanged = [
         result: {
             actions: [
                 COINJOIN.SESSION_ROUND_CHANGED,
-                MODAL.CLOSE,
                 MODAL.OPEN_USER_CONTEXT,
                 COINJOIN.SESSION_COMPLETED,
             ],
@@ -189,7 +188,6 @@ export const onCoinjoinRoundChanged = [
         result: {
             actions: [
                 COINJOIN.SESSION_ROUND_CHANGED,
-                MODAL.CLOSE,
                 MODAL.OPEN_USER_CONTEXT,
                 COINJOIN.SESSION_COMPLETED,
             ],
