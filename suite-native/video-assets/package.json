@@ -4,10 +4,10 @@
     "private": true,
     "license": "See LICENSE.md in repo root",
     "sideEffects": false,
+    "type": "module",
     "main": "src/index",
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
-        "test:unit": "jest -c ../../jest.config.native.js --passWithNoTests",
         "type-check": "tsc --build",
         "generate-videos": "yarn tsx ./scripts/generateVideos.ts"
     },

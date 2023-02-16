@@ -8,7 +8,6 @@
         { "path": "../atoms" },
         { "path": "../config" },
         { "path": "../navigation" },
-        { "path": "../test-utils" },
         { "path": "../../packages/icons" },
         { "path": "../../packages/styles" },
         { "path": "../../packages/theme" }

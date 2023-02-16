@@ -18,7 +18,6 @@
         { "path": "../module-settings" },
         { "path": "../storage" },
         { "path": "../../packages/connect" },
-        { "path": "../../packages/styles" },
         { "path": "../../packages/utils" }
     ]
 }
