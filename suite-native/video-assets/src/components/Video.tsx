@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, ActivityIndicator } from 'react-native';
 
-import { Video as ExpoVideo, VideoProps as ExpoVideoProps } from 'expo-av';
+import { Video as ExpoVideo, VideoProps as ExpoVideoProps, ResizeMode } from 'expo-av';
 
 import { useNativeStyles, prepareNativeStyle } from '@trezor/styles';
 
@@ -17,7 +17,6 @@ type VideoStyleProps = {
 };
 
 const videoContainer = prepareNativeStyle((_, { aspectRatio }: VideoStyleProps) => ({
-    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     aspectRatio,
@@ -25,7 +24,6 @@ const videoContainer = prepareNativeStyle((_, { aspectRatio }: VideoStyleProps) 
 
 const videoStyle = prepareNativeStyle((utils, { aspectRatio }: VideoStyleProps) => ({
     flex: 1,
-    resizeMode: 'contain',
     aspectRatio,
     borderRadius: utils.borders.radii.large,
 }));
@@ -57,9 +55,10 @@ export const Video = ({
             <ExpoVideo
                 style={applyStyle(videoStyle, { aspectRatio })}
                 source={videoSource}
-                shouldPlay={false}
+                shouldPlay
                 isMuted={isMuted}
                 isLooping
+                resizeMode={ResizeMode.CONTAIN}
                 onLoad={() => setIsLoading(false)}
                 {...restProps}
             />
