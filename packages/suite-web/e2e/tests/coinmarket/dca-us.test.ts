@@ -15,6 +15,7 @@ describe('Coinmarket DCA US', () => {
 
         cy.viewport(1024, 768).resetDb();
         cy.interceptInvityApi();
+        cy.interceptInvityApiSavingsSwan('NoSavingsTrade');
         cy.prefixedVisit('/');
         cy.passThroughInitialRun();
         cy.discoveryShouldFinish();

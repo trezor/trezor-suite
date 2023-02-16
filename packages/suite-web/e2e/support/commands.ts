@@ -26,7 +26,7 @@ import {
     interceptInvityApiSavingsBtcDirect,
     interceptInvityApiSavingsSwan,
 } from './utils/intercept-invity-api';
-import { SavingsSetupStatus } from 'invity-api';
+import { TestSavingsSetupStatus } from './utils/types';
 
 const command = require('cypress-image-snapshot/command');
 const { skipOn, onlyOn } = require('@cypress/skip-test');
@@ -114,8 +114,8 @@ declare global {
             onlyOn: (nameOrFlag: string | boolean, cb?: () => void) => Cypress.Chainable<any>;
             createAccountFromMyAccounts: (coin: string, label: string) => Chainable<Subject>;
             interceptInvityApi: () => void;
-            interceptInvityApiSavingsBtcDirect: (status: SavingsSetupStatus) => void;
-            interceptInvityApiSavingsSwan: (status: SavingsSetupStatus) => void;
+            interceptInvityApiSavingsBtcDirect: (status: TestSavingsSetupStatus) => void;
+            interceptInvityApiSavingsSwan: (status: TestSavingsSetupStatus) => void;
         }
     }
 }

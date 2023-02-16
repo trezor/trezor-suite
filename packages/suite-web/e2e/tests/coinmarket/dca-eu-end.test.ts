@@ -14,7 +14,6 @@ describe('Coinmarket DCA EU End', () => {
         cy.task('startBridge');
 
         cy.viewport(1024, 768).resetDb();
-        cy.interceptInvityApiSavingsBtcDirect();
         cy.prefixedVisit('/');
         cy.passThroughInitialRun();
         cy.discoveryShouldFinish();
@@ -36,11 +35,17 @@ describe('Coinmarket DCA EU End', () => {
      */
 
     it('DCA EU Flow Conclusion', () => {
+        cy.interceptInvityApiSavingsBtcDirect('SetSavingsParameters');
+        // Click "Confirm Setup" button
+        cy.interceptInvityApiSavingsBtcDirect('ConfirmPaymentInfo');
+        // Click "Confirm" button
+        cy.interceptInvityApiSavingsBtcDirect('Active');
+        // Finish
+
         // Check the receiving address is displayed
         // Click on the confirm button
-        // 
-        // 
-        
+        //
+        //
     });
 });
 

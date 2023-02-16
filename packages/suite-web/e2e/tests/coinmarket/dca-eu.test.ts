@@ -15,6 +15,7 @@ describe('Coinmarket DCA EU', () => {
 
         cy.viewport(1024, 768).resetDb();
         cy.interceptInvityApi();
+        cy.interceptInvityApiSavingsBtcDirect('NoSavingsTrade');
         cy.prefixedVisit('/');
         cy.passThroughInitialRun();
         cy.discoveryShouldFinish();
@@ -38,10 +39,10 @@ describe('Coinmarket DCA EU', () => {
 
     it('DCA EU Flow Initiation', () => {
         cy.getTestElement('@coinmarket/savings/drop-down-country/input').click();
-        cy.contains('Netherlands').click({force: true});
+        cy.contains('Netherlands').click({ force: true });
         cy.getTestElement('@select-bar/Biweekly').click();
         cy.getTestElement('@select-bar/50').click();
-        // cy.getTestElement('@coinmarket/savings/summary').should('eq', '€1,300.00'); // Doesn't work. Why?
+        cy.getTestElement('@coinmarket/savings/summary').should('eq', '€1,300.00'); // Doesn't work. Why? // Try contain instead of eq.
         cy.getTestElement('@coinmarket/savings/confirm-setup').click();
         cy.getTestElement('@modal').should('be.visible');
         cy.getTestElement('@coinmarket/savings/offers/buy-terms-agree-checkbox').click();

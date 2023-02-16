@@ -1,0 +1,21 @@
+{
+    "id": "0f238db9-2fc4-4776-8a19-41783ca1ac31",
+    "status": "Active",
+    "country": "US",
+    "exchange": "btcdirect-savings-sandbox",
+    "amlStatus": "Verified",
+    "kycStatus": "Verified",
+    "amlAnswers": [],
+    "tradeItems": [],
+    "amlQuestions": [],
+    "fiatCurrency": "USD",
+    "userKYCStart": [],
+    "paymentMethod": "bankTransfer",
+    "cryptoCurrency": "BTC",
+    "fiatStringAmount": "40",
+    "paymentFrequency": "Weekly",
+    "receivingCryptoAddresses": [
+        "bc1qfsap8zvf3evlpqcpc2ap2jcry0vs4gqz8fpwzf"
+    ],
+    "isUserRegisteredInPartnerSystem": false
+}
