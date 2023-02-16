@@ -3,7 +3,9 @@
  */
 
 import { app, ipcMain } from 'electron';
+import { captureMessage, withScope } from '@sentry/electron';
 
+import { coinjoinReportTag } from '@suite-common/sentry';
 import { createIpcProxyHandler, IpcProxyHandlerOptions } from '@trezor/ipc-proxy';
 import { CoinjoinBackend, CoinjoinClient } from '@trezor/coinjoin';
 
@@ -55,6 +57,13 @@ export const init: Module = ({ mainWindow }) => {
             settings.middlewareUrl = coinjoinMiddleware.getUrl();
             const client = new CoinjoinClient(settings);
             client.on('log', ({ level, payload }) => {
+                if (level === 'error') {
+                    withScope(scope => {
+                        scope.clear(); // scope is also cleared in beforeSend sentry handler, this is just to be safe.
+                        scope.setTag(coinjoinReportTag, true);
+                        captureMessage(payload, scope);
+                    });
+                }
                 if (level === 'log') {
                     // suite-desktop logger doesn't have "log", using "debug" instead
                     logger.debug(SERVICE_NAME, payload);
