@@ -219,11 +219,11 @@ const CoinmarketSavingsSetup = (props: WithSelectedAccountLoadedProps) => {
                     <AllFeesIncluded />
 
                     <Summary
+                        data-test="@coinmarket/savings/summary"
                         accountSymbol={account.symbol}
                         annualSavingsCryptoAmount={annualSavingsCryptoAmount}
                         annualSavingsFiatAmount={annualSavingsFiatAmount}
                         fiatCurrency={fiatCurrency}
-                        data-test="@coinmarket/savings/summary"
                     />
 
                     <ConfirmButton

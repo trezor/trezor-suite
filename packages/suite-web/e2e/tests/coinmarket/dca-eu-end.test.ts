@@ -1,6 +1,6 @@
 // @group:coinmarket
 
-describe('Coinmarket DCA EU', () => {
+describe('Coinmarket DCA EU End', () => {
     beforeEach(() => {
         cy.task('startEmu', { wipe: true });
         // cy.task('setupEmu', { needs_backup: false });
@@ -35,18 +35,12 @@ describe('Coinmarket DCA EU', () => {
      * 3. Clicks on Confirm setup
      */
 
-    it('DCA EU Flow Initiation', () => {
-        // cy.discoveryShouldFinish();
-        cy.getTestElement('@coinmarket/savings/drop-down-country/input').click();
-        cy.contains('Netherlands').click();
-        cy.getTestElement('@select-bar/Biweekly').click();
-        cy.getTestElement('@select-bar/50').click();
-        cy.getTestElement('@coinmarket/savings/summary').should('eq', '€1,300.00'); // Doesn't work. Why?
-        cy.getTestElement('@coinmarket/savings/confirm-setup').click();
-        cy.getTestElement('@modal').should('be.visible');
-        cy.getTestElement('@coinmarket/savings/offers/buy-terms-agree-checkbox').click();
-        cy.getTestElement('@coinmarket/savings/offers/buy-terms-confirm-button').click();
-        cy.url().should('include', 'invity.io');
+    it('DCA EU Flow Conclusion', () => {
+        // Check the receiving address is displayed
+        // Click on the confirm button
+        // 
+        // 
+        
     });
 });
 

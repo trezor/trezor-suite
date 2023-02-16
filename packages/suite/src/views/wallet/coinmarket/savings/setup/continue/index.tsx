@@ -147,6 +147,7 @@ const CoinmarketSavingsSetupContinue = (props: WithSelectedAccountLoadedProps) =
             </Label>
             <AddressOptionsWrapper>
                 <AddressOptions
+                    data-test="@coinmarket/savings/receiving-address"
                     account={account}
                     control={control}
                     receiveSymbol={account.symbol}
