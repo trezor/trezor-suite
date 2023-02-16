@@ -5,6 +5,7 @@ import { isDevEnv } from '@suite-common/suite-utils';
 import { redactUserPathFromString } from '@trezor/utils';
 
 export const allowReportTag = 'allowReport';
+export const coinjoinReportTag = 'coinjoinReport';
 
 /**
  * Full user path could be part of reported error in some cases and we want to actively filter username out.
@@ -40,6 +41,18 @@ const beforeSend: Options['beforeSend'] = event => {
     // allow report error without breadcrumbs before confirm status is loaded (@storage/loaded)
     if (typeof allowReport === 'undefined') {
         delete event.breadcrumbs;
+    }
+
+    // send only what is really necessary from coinjoin
+    if (event.tags?.[coinjoinReportTag]) {
+        return {
+            message: event.message,
+            release: event.release,
+            level: event.level,
+            tags: {
+                coinjoinReport: true,
+            },
+        };
     }
 
     return redactUserPath(event);
