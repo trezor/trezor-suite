@@ -3,9 +3,6 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
-            "path": "../../suite-common/suite-types"
-        },
-        {
             "path": "../../suite-common/wallet-config"
         },
         {
@@ -13,9 +10,6 @@
         },
         {
             "path": "../../suite-common/wallet-types"
-        },
-        {
-            "path": "../../suite-common/wallet-utils"
         },
         { "path": "../accounts" },
         { "path": "../atoms" },
@@ -27,7 +21,6 @@
         { "path": "../transactions" },
         { "path": "../../packages/icons" },
         { "path": "../../packages/styles" },
-        { "path": "../../packages/theme" },
-        { "path": "../../packages/utxo-lib" }
+        { "path": "../../packages/theme" }
     ]
 }

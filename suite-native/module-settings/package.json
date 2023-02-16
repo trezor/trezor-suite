@@ -19,7 +19,6 @@
         "@suite-native/atoms": "workspace:*",
         "@suite-native/config": "workspace:*",
         "@suite-native/navigation": "workspace:*",
-        "@suite-native/test-utils": "workspace:*",
         "@trezor/icons": "workspace:*",
         "@trezor/styles": "workspace:*",
         "@trezor/theme": "workspace:*",
@@ -28,7 +27,6 @@
         "react-redux": "7.2.2"
     },
     "devDependencies": {
-        "jest": "^26.6.3",
         "typescript": "4.9.5"
     }
 }

@@ -12,8 +12,6 @@
         { "path": "../atoms" },
         { "path": "../formatters" },
         { "path": "../react-native-graph" },
-        { "path": "../test-utils" },
-        { "path": "../../packages/icons" },
         { "path": "../../packages/styles" }
     ]
 }
