@@ -201,6 +201,13 @@ export const setBusyScreen =
         );
     };
 
+export const closeCriticalPhaseModal = () => (dispatch: Dispatch, getState: GetState) => {
+    const { modal } = getState();
+    if ('payload' in modal && modal.payload.type === 'critical-coinjoin-phase') {
+        dispatch(closeModal());
+    }
+};
+
 export const onCoinjoinRoundChanged =
     ({ round }: CoinjoinRoundEvent) =>
     async (dispatch: Dispatch, getState: GetState) => {
@@ -257,7 +264,7 @@ export const onCoinjoinRoundChanged =
 
             if (round.phase === RoundPhase.Ended) {
                 await dispatch(setBusyScreen(accountKeys));
-                dispatch(closeModal());
+                dispatch(closeCriticalPhaseModal());
 
                 const completedSessions = coinjoinAccountsWithSession.filter(
                     ({ session }) => session?.signedRounds?.length === session?.maxRounds,
@@ -533,7 +540,7 @@ export const signCoinjoinTx =
         // disable busy screen
         await dispatch(setBusyScreen(Object.keys(groupUtxosByAccount)));
         // and close 'critical-coinjoin-phase' modal
-        dispatch(closeModal());
+        dispatch(closeCriticalPhaseModal());
 
         // finally walk thru all requested utxos and find not resolved
         request.inputs.forEach(utxo => {
