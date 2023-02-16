@@ -7,7 +7,8 @@
     "main": "src/index",
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
-        "type-check": "tsc --build"
+        "type-check": "tsc --build",
+        "depcheck": "yarn g:depcheck"
     },
     "dependencies": {
         "@testing-library/react-native": "^11.0.0",
