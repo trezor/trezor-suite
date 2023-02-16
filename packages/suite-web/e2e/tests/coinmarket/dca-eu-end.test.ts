@@ -14,7 +14,7 @@ describe('Coinmarket DCA EU', () => {
         cy.task('startBridge');
 
         cy.viewport(1024, 768).resetDb();
-        cy.interceptInvityApi();
+        cy.interceptInvityApiSavingsBtcDirect();
         cy.prefixedVisit('/');
         cy.passThroughInitialRun();
         cy.discoveryShouldFinish();
@@ -30,10 +30,9 @@ describe('Coinmarket DCA EU', () => {
 
     /**
      * Test Case Scenario
-     * 1. Navigates to Accounts/BTC account/Save Bitcoin without DCA setup/Trade/Save Bitcoin
-     * 2. Changes the country to the Netherlands and sets up for Biweekly, 50EUR
-     * 3. Presses "Confirm" and go through the consent modal
-     * 4. Checks whether the redirect to Invity.io took place
+     * 1. Navigates to a Accounts/BTC account/Save Bitcoin. The given fixtures will mock data from Invity.io
+     * 2. Checks the receiving address is visible and matches
+     * 3. Clicks on Confirm setup
      */
 
     it('DCA EU Flow Initiation', () => {
