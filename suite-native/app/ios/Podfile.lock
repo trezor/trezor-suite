@@ -17,13 +17,13 @@ PODS:
   - EXImageLoader (4.1.1):
     - ExpoModulesCore
     - React-Core
-  - Expo (48.0.0-beta.2):
+  - Expo (48.0.1):
     - ExpoModulesCore
   - ExpoClipboard (4.1.1):
     - ExpoModulesCore
   - ExpoLocalization (14.1.1):
     - ExpoModulesCore
-  - ExpoModulesCore (1.2.1):
+  - ExpoModulesCore (1.2.2):
     - React-Core
     - React-RCTAppDelegate
     - ReactCommon/turbomodule/core
@@ -773,10 +773,10 @@ SPEC CHECKSUMS:
   EXBarCodeScanner: a0ce3f62afd873351c7a5743649574b57422bb7d
   EXConstants: f348da07e21b23d2b085e270d7b74f282df1a7d9
   EXImageLoader: fd053169a8ee932dd83bf1fe5487a50c26d27c2b
-  Expo: 1b7b4ec09bd939db6d98985231a0789aa3f6670a
+  Expo: 79deb55f33fab1b232232868a74713772943238d
   ExpoClipboard: 8a36a8376ab93df9050c14577e9e0fcb805e9114
   ExpoLocalization: f26cd431ad9ea3533c5b08c4fabd879176a794bb
-  ExpoModulesCore: 2f4bd2ae0cd03d30c3c286f5d843e22f72ccdb55
+  ExpoModulesCore: 79392ab654019ea3aadeae308919c3d9dd97879c
   ExpoRandom: 7ee07d62e7003b74d0536e0495e3a653fe1b2a74
   EXSecureStore: e8923258361cc406d0401af380f12bd05b2b720f
   EXSplashScreen: cd7fb052dff5ba8311d5c2455ecbebffe1b7a8ca
