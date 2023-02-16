@@ -1,4 +1,5 @@
 import { CoinjoinBackendClient } from '../../src/backend/CoinjoinBackendClient';
+import * as http from '../../src/utils/http';
 import { COINJOIN_BACKEND_SETTINGS } from '../fixtures/config.fixture';
 
 const ZERO_HASH = '0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206';
@@ -9,11 +10,40 @@ const MALFORMED_HASH = 'deadbeef';
 const VALID_TX = 'd20a1e1f3b98f82dc7aa0fa0538b75be357ab53f2d1c6f68c0be4e7537122f5d';
 const INVALID_TX = 'deadbeef';
 
-describe.skip('CoinjoinBackendClient', () => {
+const BLOCKBOOKS = ['bb_A', 'bb_B', 'bb_C', 'bb_D', 'bb_E', 'bb_F', 'bb_G'];
+
+describe('CoinjoinBackendClient', () => {
     let client: CoinjoinBackendClient;
 
     beforeAll(() => {
-        client = new CoinjoinBackendClient(COINJOIN_BACKEND_SETTINGS);
+        client = new CoinjoinBackendClient({
+            ...COINJOIN_BACKEND_SETTINGS,
+            blockbookUrls: BLOCKBOOKS,
+        });
+    });
+
+    it.only('blockbook backends rotation', async () => {
+        let lastBackend = '';
+
+        jest.spyOn(http, 'httpGet').mockImplementation(url => {
+            [lastBackend] = url.split('/');
+            return Promise.resolve({
+                status: 200,
+                json: () => Promise.resolve({ totalPages: 1, txs: [] }),
+            } as Response);
+        });
+
+        await client.fetchBlock(123456);
+        let prevIndex = BLOCKBOOKS.indexOf(lastBackend);
+        expect(prevIndex).toBeGreaterThanOrEqual(0);
+
+        for (let i = 0; i < 10; ++i) {
+            // eslint-disable-next-line no-await-in-loop
+            await client.fetchBlock(123456);
+            const index = BLOCKBOOKS.indexOf(lastBackend);
+            expect(index).toEqual((prevIndex + 1) % BLOCKBOOKS.length);
+            prevIndex = index;
+        }
     });
 
     it('fetchFilters success', async () => {
