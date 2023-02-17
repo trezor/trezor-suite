@@ -2,6 +2,7 @@ import net from 'net';
 import http from 'http';
 import https from 'https';
 import tls from 'tls';
+import { getWeakRandomId } from '@trezor/utils';
 import { TorIdentities } from './torIdentities';
 import { InterceptorOptions } from './types';
 import { RequestPool } from './httpPool';
@@ -32,6 +33,12 @@ const getAuthorizationOptions = (options: http.RequestOptions) => {
         const identityName = getIdentityName(options.headers['Proxy-Authorization']);
         // In the case that `Proxy-Authorization` was used for identity information we remove it.
         delete options.headers['Proxy-Authorization'];
+        // Create proxy agent for the request
+        options.agent = getAgent(identityName, options.timeout);
+    } else if (options.headers?.Upgrade === 'websocket') {
+        // create random identity for each websocket connection
+        const randomName = `WebSocket/${options.host}/${getWeakRandomId(16)}`;
+        const identityName = getIdentityName(`Basic ${randomName}`);
         // Create proxy agent for the request
         options.agent = getAgent(identityName, options.timeout);
     }
@@ -143,6 +150,22 @@ const overloadHttpRequest = (
     }
 };
 
+const overloadWebsocketHandshake = (
+    interceptorOptions: InterceptorOptions,
+    url: string | URL | http.RequestOptions,
+    options?: http.RequestOptions | ((r: http.IncomingMessage) => void),
+    callback?: unknown,
+) => {
+    if (
+        typeof url === 'object' &&
+        !isLocalhost(url.host) && // difference between overloadHttpRequest
+        'headers' in url &&
+        url.headers?.Upgrade === 'websocket'
+    ) {
+        return overloadHttpRequest(interceptorOptions, url, options, callback);
+    }
+};
+
 const interceptHttp = (interceptorOptions: InterceptorOptions, requestPool: RequestPool) => {
     const originalHttpRequest = http.request;
 
@@ -156,6 +179,16 @@ const interceptHttp = (interceptorOptions: InterceptorOptions, requestPool: Requ
 
         // In cases that are not considered above we pass the args as they came.
         return originalHttpRequest(...(args as Parameters<typeof http.request>));
+    };
+
+    const originalHttpGet = http.get;
+
+    http.get = (...args) => {
+        const overload = overloadWebsocketHandshake(interceptorOptions, ...args);
+        if (overload) {
+            return originalHttpGet(...overload);
+        }
+        return originalHttpGet(...(args as Parameters<typeof https.get>));
     };
 };
 
@@ -172,6 +205,16 @@ const interceptHttps = (interceptorOptions: InterceptorOptions, requestPool: Req
 
         // In cases that are not considered above we pass the args as they came.
         return originalHttpsRequest(...(args as Parameters<typeof https.request>));
+    };
+
+    const originalHttpsGet = https.get;
+
+    https.get = (...args) => {
+        const overload = overloadWebsocketHandshake(interceptorOptions, ...args);
+        if (overload) {
+            return originalHttpsGet(...overload);
+        }
+        return originalHttpsGet(...(args as Parameters<typeof https.get>));
     };
 };
 

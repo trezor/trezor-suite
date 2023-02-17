@@ -1,11 +1,12 @@
 import path from 'path';
 import fetch from 'node-fetch';
+import WebSocket from 'ws';
 
 import { TorController, createInterceptor } from '../src';
 import { torRunner } from './torRunner';
 import { TorIdentities } from '../src/torIdentities';
 
-const host = 'localhost';
+const host = '127.0.0.1';
 const port = 38835;
 const controlPort = 35527;
 const processId = process.pid;
@@ -142,6 +143,49 @@ describe('Interceptor', () => {
             expect(iPIdentitieA).toEqual(iPIdentitieA2);
             // Check if identities are different when using different identity.
             expect(iPIdentitieA).not.toEqual(iPIdentitieB);
+        });
+    });
+
+    describe('WebSocket', () => {
+        const createWebSocket = (options: any = {}) =>
+            new Promise<void>((resolve, reject) => {
+                const ws = new WebSocket('wss://tbtc1.trezor.io/websocket', {
+                    headers: {
+                        'User-Agent': 'Trezor Suite',
+                        ...options,
+                    },
+                });
+                ws.on('open', () => {
+                    ws.close();
+                    resolve();
+                });
+                ws.on('error', reject);
+            });
+
+        it('WebSocket - Each connection creates new identity', async () => {
+            await createWebSocket();
+            await createWebSocket();
+
+            const identities = Object.keys(TorIdentities.identities).filter(name =>
+                name.includes('WebSocket'),
+            );
+
+            expect(identities.length).toBe(2);
+        });
+
+        it('WebSocket - Using Proxy-Authorization header', async () => {
+            await createWebSocket({
+                'Proxy-Authorization': 'Basic WebSocket-Identity',
+            });
+            await createWebSocket({
+                'Proxy-Authorization': 'Basic WebSocket-Identity',
+            });
+
+            const identities = Object.keys(TorIdentities.identities).filter(name =>
+                name.includes('WebSocket-Identity'),
+            );
+
+            expect(identities.length).toBe(1);
         });
     });
 
