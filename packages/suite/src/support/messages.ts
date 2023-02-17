@@ -7758,6 +7758,10 @@ export default defineMessages({
         id: 'TR_SESSION_PHASE_18_MESSAGE',
         defaultMessage: 'The coinjoin service is temporarily unavailable',
     },
+    TR_SESSION_PHASE_19_MESSAGE: {
+        id: 'TR_SESSION_PHASE_19_MESSAGE',
+        defaultMessage: 'Critical error, stopping coinjoin.',
+    },
     TR_SESSION_PHASE_21_MESSAGE: {
         id: 'TR_SESSION_PHASE_21_MESSAGE',
         defaultMessage: 'Confirming availability',
@@ -7871,5 +7875,9 @@ export default defineMessages({
     TR_ANONYMITY_SET_ERROR: {
         id: 'TR_ANONYMITY_SET_ERROR',
         defaultMessage: 'Error calculating your privacy, try again later',
+    },
+    TR_COINJOIN_INTERRUPTED_ERROR: {
+        id: 'TR_COINJOIN_INTERRUPTED_ERROR',
+        defaultMessage: 'Coinjoin has been interrupted because of an external error',
     },
 });

@@ -192,7 +192,8 @@ const NotificationRenderer = ({ notification, render }: NotificationRendererProp
             return error(render, notification, 'TR_SAVINGS_KYC_FAILED_NOTIFICATION');
         case 'savings-kyc-success':
             return success(render, notification, 'TR_SAVINGS_KYC_SUCCESS_NOTIFICATION');
-
+        case 'coinjoin-interrupted':
+            return error(render, notification, 'TR_COINJOIN_INTERRUPTED_ERROR');
         // Events:
         case SUITE.AUTH_DEVICE:
             return info(render, notification, 'EVENT_WALLET_CREATED');

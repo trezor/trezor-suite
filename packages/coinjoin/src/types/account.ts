@@ -20,7 +20,7 @@ export interface AccountUtxo {
     address: string;
     scriptPubKey: string;
     amount: number;
-    anonymityLevel: number;
+    anonymityLevel: number | undefined;
 }
 
 export interface AccountAddress {

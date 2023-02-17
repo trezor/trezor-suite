@@ -9,6 +9,7 @@ export enum SessionPhase {
     SkippingRound = 16,
     RetryingRoundPairing = 17,
     AffiliateServerOffline = 18,
+    CriticalError = 19,
 
     // RoundPhase.ConnectionConfirmation
     AwaitingConfirmation = 21,

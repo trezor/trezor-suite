@@ -14,7 +14,7 @@ interface AnalyzeTransactionsOptions {
 }
 
 export interface AnalyzeTransactionsResult {
-    anonymityScores: Record<string, number>;
+    anonymityScores: Record<string, number> | undefined;
     rawLiquidityClue: middleware.RawLiquidityClue;
 }
 
@@ -94,8 +94,6 @@ export const getAnonymityScores = async (
         }, {} as Record<string, number>);
     } catch {
         options.logger.error(`Error calculating anonymity levels`);
-
-        return {} as Record<string, number>;
     }
 };
 
