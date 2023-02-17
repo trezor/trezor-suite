@@ -58,7 +58,11 @@ export const AccountBalance = ({ accountKey }: AccountBalanceProps) => {
                     />
                 </Box>
                 <Box>
-                    <FiatAmountFormatter value={selectedPoint.value} network={account.symbol} />
+                    <FiatAmountFormatter
+                        value={selectedPoint.value}
+                        network={account.symbol}
+                        variant="titleLarge"
+                    />
                 </Box>
             </Box>
             <Box marginBottom="large">
