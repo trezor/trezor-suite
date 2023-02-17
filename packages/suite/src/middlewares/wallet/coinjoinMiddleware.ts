@@ -1,11 +1,13 @@
 import type { MiddlewareAPI } from 'redux';
 import { UI, DEVICE } from '@trezor/connect';
+import { SessionPhase } from '@trezor/coinjoin/lib/enums';
+import { addToast } from '@suite-common/toast-notifications';
 import { SUITE, ROUTER, MESSAGE_SYSTEM } from '@suite-actions/constants';
 import {
     SESSION_ROUND_CHANGED,
     SET_DEBUG_SETTINGS,
 } from '@wallet-actions/constants/coinjoinConstants';
-import { DISCOVERY } from '@wallet-actions/constants';
+import { COINJOIN, DISCOVERY } from '@wallet-actions/constants';
 import * as coinjoinAccountActions from '@wallet-actions/coinjoinAccountActions';
 import * as coinjoinClientActions from '@wallet-actions/coinjoinClientActions';
 import * as storageActions from '@suite-actions/storageActions';
@@ -232,6 +234,21 @@ export const coinjoinMiddleware =
 
         if (action.type === SET_DEBUG_SETTINGS) {
             api.dispatch(storageActions.saveCoinjoinDebugSettings());
+        }
+
+        if (action.type === COINJOIN.CLIENT_SESSION_PHASE) {
+            const { accountKeys } = action.payload;
+            const isAlredyInterrupted = api
+                .getState()
+                .wallet.coinjoin.accounts.find(({ key }) => key === accountKeys[0])
+                ?.session?.interrupted;
+
+            if (action.payload.phase === SessionPhase.CriticalError && !isAlredyInterrupted) {
+                action.payload.accountKeys.forEach(key =>
+                    api.dispatch(coinjoinAccountActions.pauseCoinjoinSession(key, true)),
+                );
+                api.dispatch(addToast({ type: 'coinjoin-interrupted' }));
+            }
         }
 
         return action;

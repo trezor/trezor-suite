@@ -139,6 +139,16 @@ export const getAccountCandidates = ({
                 account.skipRoundCounter++;
             }
 
+            if (utxos.some(({ anonymityLevel }) => anonymityLevel === undefined)) {
+                logger.log(
+                    `Stopping the session for ~~${account.accountKey}~~. Missing anonymity level info.`,
+                );
+                skippedAccounts.push({
+                    key: account.accountKey,
+                    reason: SessionPhase.CriticalError,
+                });
+            }
+
             logger.log(`Found account candidate ~~${accountKey}~~ with ${utxos.length} inputs`);
             return {
                 ...account,
@@ -263,7 +273,7 @@ export const selectInputsForRound = async ({
                         outpoint: utxo.outpoint,
                         amount: utxo.amount,
                         scriptPubKey: utxo.scriptPubKey,
-                        anonymitySet: utxo.anonymityLevel,
+                        anonymitySet: utxo.anonymityLevel as number,
                     }));
 
                     // skip Round candidate if fees are greater than allowed by account

@@ -94,6 +94,12 @@ const CACHE_PARAMS = `${CACHE_DIR}/anonymityScoreParams.json`;
         middlewareUrl: 'http://localhost:37128/',
         network: getNetwork(network as any),
         signal: new AbortController().signal,
+        logger: {
+            debug: () => {},
+            log: () => {},
+            warn: () => {},
+            error: () => {},
+        },
     });
 
     console.log('✅', 'End, printing anonymity scores:');

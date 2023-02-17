@@ -118,6 +118,9 @@ export type ToastPayload = (
     | {
           type: 'tor-is-slow';
       }
+    | {
+          type: 'coinjoin-interrupted';
+      }
 ) &
     NotificationOptions;
 
