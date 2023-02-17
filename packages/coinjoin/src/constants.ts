@@ -28,12 +28,11 @@ export const ROUND_SELECTION_REGISTRATION_OFFSET = 30000;
 // custom timeout for http requests (default is 50000 ms)
 export const HTTP_REQUEST_TIMEOUT = 35000;
 
-// used in backend client for gradually prolonging request timeout and gap
-export const GRADUAL_HTTP_REQUEST_SCHEDULE = [
-    { timeout: 20000, gap: 1000 },
-    { timeout: 40000, gap: 5000 },
-    { timeout: 60000, gap: 10000 },
-] as const;
+// gap (in ms) between two attempts of the same http request
+export const HTTP_REQUEST_GAP = 1000;
+
+// special timeout for quite large filter batches downloaded over tor
+export const FILTERS_REQUEST_TIMEOUT = 300000;
 
 // timeout for CoinjoinRound currently running process
 export const ROUND_PHASE_PROCESS_TIMEOUT = 10000;

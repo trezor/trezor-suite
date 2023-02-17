@@ -8,7 +8,7 @@ import type {
     BlockbookTransaction,
 } from '../types/backend';
 import type { CoinjoinBackendSettings, Logger } from '../types';
-import { GRADUAL_HTTP_REQUEST_SCHEDULE } from '../constants';
+import { FILTERS_REQUEST_TIMEOUT, HTTP_REQUEST_GAP, HTTP_REQUEST_TIMEOUT } from '../constants';
 
 type CoinjoinBackendClientSettings = CoinjoinBackendSettings & {
     timeout?: number;
@@ -91,7 +91,7 @@ export class CoinjoinBackendClient {
         return this.scheduleGet(
             this.wabisabi,
             this.handleFiltersResponse,
-            options,
+            { ...options, timeout: FILTERS_REQUEST_TIMEOUT },
             'Blockchain/filters',
             { bestKnownBlockHash, count },
         );
@@ -161,7 +161,7 @@ export class CoinjoinBackendClient {
                         this.logger?.error(error?.message);
                         throw error;
                     }),
-            { attempts: GRADUAL_HTTP_REQUEST_SCHEDULE, ...options }, // default attempts/timeout could be overriden by options
+            { attempts: 3, timeout: HTTP_REQUEST_TIMEOUT, gap: HTTP_REQUEST_GAP, ...options }, // default attempts/timeout could be overriden by options
         );
     }
 
