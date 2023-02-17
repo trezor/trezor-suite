@@ -1,25 +1,16 @@
 #!/usr/bin/env bash
 set -e
 
-BINARY_NAME=WalletWasabi.WabiSabiClientLibrary
+RELEASE_URL="https://github.com/trezor/WalletWasabi/releases/latest/download"
+RELEASE_NAME="WabiSabiClientLibrary"
 
-# TODO: this file should download the binaries from https://github.com/trezor/coinjoin-backend
-# once those files are available in releases.
-# For now we include unzip, copying to right directory and chmod files that require it.
+DIST="./files/bin/coinjoin"
+DIST_NAME=WalletWasabi.WabiSabiClientLibrary
 
-7z x -y CoinjoinClientLibrary-binary.zip
+wget ${RELEASE_URL}/${RELEASE_NAME}-linux-arm64 -O ${DIST}/linux-arm64/${DIST_NAME}
+wget ${RELEASE_URL}/${RELEASE_NAME}-linux-x64 -O ${DIST}/linux-x64/${DIST_NAME}
+wget ${RELEASE_URL}/${RELEASE_NAME}-osx-arm64 -O ${DIST}/mac-arm64/${DIST_NAME}
+wget ${RELEASE_URL}/${RELEASE_NAME}-osx-x64 -O ${DIST}/mac-x64/${DIST_NAME}
+wget ${RELEASE_URL}/${RELEASE_NAME}-win-x64.exe -O ${DIST}/win-x64/${DIST_NAME}.exe
 
-# Re-naming directory from osx to mac to match the naming using in all the processes.
-cp -r osx-arm64/* mac-arm64/
-rm -rf osx-arm64
-cp -r osx-x64/* mac-x64/
-rm -rf osx-x64
-
-for p in linux-x64 linux-arm64 mac-x64 mac-arm64 win-x64; do
-    cp -r ${p}/publish/* ${p}/
-    rm -rf ${p}/publish
-done
-
-rm CoinjoinClientLibrary-binary.zip
-
-chmod +x linux-x64/${BINARY_NAME} mac-arm64/${BINARY_NAME} mac-x64/${BINARY_NAME}
+chmod +x ${DIST}/linux-x64/${DIST_NAME} ${DIST}/mac-arm64/${DIST_NAME} ${DIST}/mac-x64/${DIST_NAME}

@@ -13,6 +13,7 @@
         "build:lib": "yarn browser-detection && yarn guide-pull-content",
         "browser-detection": "webpack --config ./browser-detection.webpack.ts",
         "guide-pull-content": "tsx ./src/guide/index.ts",
+        "update-coinjoin-middleware": "./files/bin/coinjoin/update.sh",
         "type-check": "tsc --build tsconfig.json"
     },
     "dependencies": {
