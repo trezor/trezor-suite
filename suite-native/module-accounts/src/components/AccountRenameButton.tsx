@@ -13,6 +13,7 @@ export const AccountRenameButton = ({ accountKey }: AccountRenameModalProps) => 
 
     const handleOpen = () => setIsVisible(true);
     const handleClose = () => setIsVisible(false);
+
     return (
         <Box>
             <IconButton colorScheme="tertiary" iconName="pencil" onPress={handleOpen} />

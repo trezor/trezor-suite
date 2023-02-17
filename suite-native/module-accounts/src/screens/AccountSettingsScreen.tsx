@@ -87,12 +87,6 @@ export const AccountSettingsScreen = ({
         setIsXpubVisible(false);
     };
 
-    // const derivedPaths = deriveAddresses(account.descriptor, 'receive', 0, 1);
-
-    // Derivation path format => m / purpose' / coin_type' / account' / change / index
-    // We don't need change & index
-    // const derivationPath = derivedPaths[0].path.split('/').slice(0, 4).join('/');
-
     return (
         <Screen
             header={
@@ -109,7 +103,6 @@ export const AccountSettingsScreen = ({
                             title="Coin"
                             value={<CryptoNameWithIcon symbol={account.symbol} />}
                         />
-                        {/* <AccountDetailSettingsRow title="Derivation Path" value={derivationPath} /> */}
                     </VStack>
                 </Card>
                 <VStack spacing="small">
