@@ -26,7 +26,7 @@ function toBuffer<S>(
         bufferWriter.writeUInt8(ADVANCED_TRANSACTION_MARKER);
         bufferWriter.writeUInt8(ADVANCED_TRANSACTION_FLAG);
     } else if (hasMweb) {
-        bufferWriter.writeUInt8(0);
+        bufferWriter.writeUInt8(ADVANCED_TRANSACTION_MARKER);
         bufferWriter.writeUInt8(MWEB_PEGOUT_TX_FLAG);
     }
 
@@ -74,13 +74,18 @@ export function fromBuffer(buffer: Buffer, options: TransactionOptions) {
 
     const tx = fromConstructor(options);
     tx.version = bufferReader.readInt32();
-
     const marker = bufferReader.readUInt8();
     const flag = bufferReader.readUInt8();
 
-    const hasMweb = flag === MWEB_PEGOUT_TX_FLAG && isNetworkType('litecoin', tx.network);
-
     let hasWitnesses = false;
+    let hasMweb = false;
+
+    if (isNetworkType('litecoin', tx.network)) {
+        if (marker === ADVANCED_TRANSACTION_MARKER && flag === MWEB_PEGOUT_TX_FLAG) {
+            hasMweb = true;
+        }
+    }
+
     if (marker === ADVANCED_TRANSACTION_MARKER && flag === ADVANCED_TRANSACTION_FLAG) {
         hasWitnesses = true;
     } else if (!hasMweb) {
