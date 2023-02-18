@@ -20,6 +20,7 @@ import {
     postMessageToParent,
     renderConnectUI,
 } from './view/common';
+import { isPhishingDomain } from './utils/isPhishingDomain';
 
 let handshakeTimeout: ReturnType<typeof setTimeout>;
 
@@ -211,6 +212,10 @@ const handshake = (handshake: PopupHandshake) => {
             transportVersion: payload.transport?.version,
         },
     });
+
+    if (isPhishingDomain(payload.settings.origin || '')) {
+        reactEventBus.dispatch({type: 'phishing-domain' });
+    }
 };
 
 const onLoad = () => {

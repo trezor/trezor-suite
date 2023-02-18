@@ -8,21 +8,21 @@
         "type-check": "tsc --build",
         "dev": "rimraf build && TS_NODE_PROJECT=\"tsconfig.json\" yarn webpack --config ./webpack/dev.webpack.config.ts",
         "build": "rimraf build && TS_NODE_PROJECT=\"tsconfig.json\" yarn webpack --config ./webpack/prod.webpack.config.ts",
-        "test:e2e": "yarn xvfb-maybe -- playwright test --config=./e2e/playwright.config.ts"
+        "test:e2e": "yarn xvfb-maybe -- playwright test --config=./e2e/playwright.config.ts",
+        "test:unit": "jest"
     },
     "dependencies": {
-        "@trezor/components": "workspace:*",
         "@trezor/connect": "workspace:9.0.6",
         "@trezor/connect-analytics": "workspace:*",
         "@trezor/connect-ui": "workspace:*",
         "@trezor/crypto-utils": "workspace:*",
-        "@trezor/urls": "workspace:*"
+        "@trezor/urls": "workspace:*",
+        "eth-phishing-detect": "^1.2.0"
     },
     "devDependencies": {
         "@playwright/test": "^1.30.0",
         "@trezor/trezor-user-env-link": "workspace:*",
         "@types/react": "18.0.27",
-        "@types/styled-components": "^5.1.25",
         "jest": "^26.6.3",
         "playwright": "^1.30.0",
         "rimraf": "^4.1.2",

@@ -91,14 +91,12 @@ export const ConnectUI = ({ postMessage, clearLegacyView }: ConnectUIProps) => {
                 if (message.payload?.transport?.outdated) {
                     notifications.push(<BridgeUpdateNotification key="bridge-outdated" />);
                 }
-                // @ts-ignore todo
-                if (message.payload.settings.phishingDomain) {
-                    notifications.push(<SuspiciousOriginNotification key="suspicious origin" />);
-                }
             } else if (message?.type === UI_REQUEST.FIRMWARE_OUTDATED) {
                 notifications.push(<FirmwareUpdateNotification key={message.type} />);
             } else if (message?.type === UI_REQUEST.DEVICE_NEEDS_BACKUP) {
                 notifications.push(<BackupNotification key={message.type} />);
+            } else if (message?.type === 'phishing-domain') {
+                notifications.push(<SuspiciousOriginNotification key="suspicious origin" />);
             }
             return notifications;
         });

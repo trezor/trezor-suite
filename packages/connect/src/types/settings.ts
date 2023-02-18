@@ -35,5 +35,4 @@ export interface ConnectSettings {
     env: 'node' | 'web' | 'webextension' | 'electron' | 'react-native';
     timestamp: number;
     proxy?: Proxy;
-    phishingDomain?: boolean;
 }

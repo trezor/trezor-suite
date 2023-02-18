@@ -1,4 +1,4 @@
-import { isPhishingDomain } from '../isPhishingDomain';
+import { isPhishingDomain } from './isPhishingDomain';
 
 describe('isPhishingDomain', () => {
     const good = ['trezor.io', 'connect.trezor.io'];

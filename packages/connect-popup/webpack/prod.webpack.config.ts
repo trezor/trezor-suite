@@ -53,15 +53,6 @@ export default {
                 test: /\.(gif|jpe?g|png|svg)$/,
                 type: 'asset/resource',
             },
-            // resolving framer-motion in @trezor/components
-            // https://github.com/react-dnd/react-dnd/issues/3425
-            // todo: not sure, if it should be done like this and if yes, maybe I should add this to the previous rule?
-            {
-                test: /\.m?js$/,
-                resolve: {
-                    fullySpecified: false,
-                },
-            },
         ],
     },
     resolve: {

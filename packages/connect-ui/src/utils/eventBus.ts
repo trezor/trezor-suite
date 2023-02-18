@@ -5,12 +5,15 @@ import { PassphraseEventProps } from '../views/Passphrase';
 import { ErrorViewProps } from '../views/Error';
 
 export type ConnectUIEventProps =
+    // connect-core events    
     | TransportEventProps
     | PassphraseEventProps
     | ErrorViewProps
     | PopupHandshake
     | { type: typeof UI_REQUEST.DEVICE_NEEDS_BACKUP; device: Device }
-    | { type: typeof UI_REQUEST.FIRMWARE_OUTDATED; device: Device };
+    | { type: typeof UI_REQUEST.FIRMWARE_OUTDATED; device: Device }
+    // connect-popup events 
+    | { type: 'phishing-domain'};
 
 const reactChannel = 'react';
 
