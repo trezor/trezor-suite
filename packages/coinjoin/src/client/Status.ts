@@ -131,7 +131,7 @@ export class Status extends EventEmitter {
     private processStatus(status: coordinator.CoinjoinStatus) {
         // add matching coinjoinRequest to rounds
         status.roundStates.forEach(round => {
-            const roundRequest = status.affiliateInformation?.coinjoinRequests[round.id];
+            const roundRequest = status.affiliateInformation?.affiliateData[round.id];
             round.affiliateRequest = roundRequest?.trezor;
         });
 

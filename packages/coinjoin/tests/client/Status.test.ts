@@ -292,7 +292,7 @@ describe('Status', () => {
             },
         };
 
-        const affiliateData = Buffer.from('{}', 'utf-8').toString('base64');
+        const affiliateDataBase64 = Buffer.from('{}', 'utf-8').toString('base64');
         const requestListener = jest.fn();
         server?.addListener('test-request', ({ url, resolve }) => {
             if (url.endsWith('/status')) {
@@ -300,14 +300,14 @@ describe('Status', () => {
                 requestListener();
 
                 if (calls > 2) {
-                    // start sending coinjoinRequests after third iteration
-                    const coinjoinRequests = { [round.id]: { trezor: affiliateData } };
+                    // start sending affiliateData after third iteration
+                    const affiliateData = { [round.id]: { trezor: affiliateDataBase64 } };
                     resolve({
                         ...STATUS_EVENT,
                         roundStates: [round],
                         affiliateInformation: {
                             ...AFFILIATE_INFO,
-                            coinjoinRequests,
+                            affiliateData,
                         },
                     });
                 } else {
@@ -333,10 +333,10 @@ describe('Status', () => {
         await waitForStatus(3000); // wait 3 iterations, transactionSigningTimeout = 1 sec.
 
         expect(requestListener).toHaveBeenCalledTimes(4); // status fetched 4 times
-        expect(onUpdateListener).toHaveBeenCalledTimes(2); // status changed twice, coinjoinRequests added at 3rd iteration
+        expect(onUpdateListener).toHaveBeenCalledTimes(2); // status changed twice, affiliateData added at 3rd iteration
 
         expect(onUpdateListener.mock.calls[1][0]).toMatchObject({
-            changed: [{ affiliateRequest: affiliateData }],
+            changed: [{ affiliateRequest: affiliateDataBase64 }],
         });
     });
 

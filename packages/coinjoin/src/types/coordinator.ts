@@ -1,14 +1,14 @@
 import { RoundPhase, EndRoundState } from '../enums';
-import { AFFILIATION_FLAG } from '../constants';
+import { AFFILIATION_ID } from '../constants';
 
-export type AffiliationFlag = typeof AFFILIATION_FLAG;
+export type AffiliationId = typeof AFFILIATION_ID;
 
 export interface CoinjoinStatus {
     roundStates: Round[];
     coinJoinFeeRateMedians: FeeRateMedians[];
     affiliateInformation?: {
-        runningAffiliateServers: AffiliationFlag[];
-        coinjoinRequests: Record<string, Record<AffiliationFlag, string>>;
+        runningAffiliateServers: AffiliationId[];
+        affiliateData: Record<string, Record<AffiliationId, string>>;
     };
 }
 

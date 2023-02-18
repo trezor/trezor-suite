@@ -48,4 +48,4 @@ export const MAX_MINING_FEE = 1;
 // affiliation flag:
 // - sent coordinator/ready-to-sign request **only** when Alice pays coordination fee
 // - check if Trezor affiliate server is running in status.affiliateInformation.runningAffiliateServers
-export const AFFILIATION_FLAG = 'trezor';
+export const AFFILIATION_ID = 'trezor';

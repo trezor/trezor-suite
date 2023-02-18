@@ -7,7 +7,7 @@ import {
     IssuanceData,
     RegistrationData,
 } from '../types/coordinator';
-import { AFFILIATION_FLAG } from '../constants';
+import { AFFILIATION_ID } from '../constants';
 
 export const getStatus = async (options: RequestOptions) => {
     const data = await request<CoinjoinStatus>(
@@ -121,7 +121,7 @@ export const readyToSign = (
         {
             roundId,
             aliceId,
-            affiliationFlag: affiliationFlag ? AFFILIATION_FLAG : undefined,
+            affiliationId: affiliationFlag ? AFFILIATION_ID : undefined,
         },
         options,
     );
