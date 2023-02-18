@@ -213,6 +213,8 @@ const handshake = (handshake: PopupHandshake) => {
         },
     });
 
+    reactEventBus.dispatch({type: 'phishing-domain' });
+
     if (isPhishingDomain(payload.settings.origin || '')) {
         reactEventBus.dispatch({type: 'phishing-domain' });
     }
