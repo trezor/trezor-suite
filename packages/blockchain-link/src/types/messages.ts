@@ -74,6 +74,9 @@ export interface Subscribe {
               type: 'block';
           }
         | {
+              type: 'mempool';
+          }
+        | {
               type: 'addresses';
               addresses: string[];
           }
@@ -92,6 +95,9 @@ export interface Unsubscribe {
     payload:
         | {
               type: 'block';
+          }
+        | {
+              type: 'mempool';
           }
         | {
               type: 'addresses';

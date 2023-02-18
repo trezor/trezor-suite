@@ -8,6 +8,7 @@ import type {
     AddressNotification,
     BlockNotification,
     FiatRatesNotification,
+    MempoolTransactionNotification,
 } from '../../types/blockbook';
 import type * as MessageTypes from '../../types/messages';
 
@@ -146,6 +147,17 @@ const onNewBlock = ({ post }: Context, event: BlockNotification) => {
     });
 };
 
+const onMempoolTx = ({ post }: Context, payload: MempoolTransactionNotification) => {
+    post({
+        id: -1,
+        type: RESPONSES.NOTIFICATION,
+        payload: {
+            type: 'mempool',
+            payload,
+        },
+    });
+};
+
 const onTransaction = ({ state, post }: Context, event: AddressNotification) => {
     if (!event.tx) return;
     const descriptor = event.address;
@@ -220,6 +232,15 @@ const subscribeFiatRates = async (ctx: Context, currency?: string) => {
     return api.subscribeFiatRates(currency);
 };
 
+const subscribeMempool = async (ctx: Context) => {
+    const api = await ctx.connect();
+    if (!ctx.state.getSubscription('mempool')) {
+        ctx.state.addSubscription('mempool');
+        api.on('mempool', ev => onMempoolTx(ctx, ev));
+    }
+    return api.subscribeMempool();
+};
+
 const subscribe = async (request: Request<MessageTypes.Subscribe>) => {
     const { payload } = request;
 
@@ -232,6 +253,8 @@ const subscribe = async (request: Request<MessageTypes.Subscribe>) => {
         response = await subscribeBlock(request);
     } else if (payload.type === 'fiatRates') {
         response = await subscribeFiatRates(request, payload.currency);
+    } else if (payload.type === 'mempool') {
+        response = await subscribeMempool(request);
     } else {
         throw new CustomError('invalid_param', '+type');
     }
@@ -295,6 +318,14 @@ const unsubscribeFiatRates = async ({ state, connect }: Context) => {
     return api.unsubscribeFiatRates();
 };
 
+const unsubscribeMempool = async ({ state, connect }: Context) => {
+    if (!state.getSubscription('mempool')) return { subscribed: false };
+    const api = await connect();
+    api.removeAllListeners('mempool');
+    state.removeSubscription('mempool');
+    return api.unsubscribeMempool();
+};
+
 const unsubscribe = async (request: Request<MessageTypes.Unsubscribe>) => {
     const { payload } = request;
     let response: { subscribed: boolean };
@@ -306,6 +337,8 @@ const unsubscribe = async (request: Request<MessageTypes.Unsubscribe>) => {
         response = await unsubscribeBlock(request);
     } else if (payload.type === 'fiatRates') {
         response = await unsubscribeFiatRates(request);
+    } else if (payload.type === 'mempool') {
+        response = await unsubscribeMempool(request);
     } else {
         throw new CustomError('invalid_param', '+type');
     }
