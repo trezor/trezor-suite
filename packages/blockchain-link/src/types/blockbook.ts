@@ -149,6 +149,11 @@ export interface BlockNotification {
     hash: string;
 }
 
+export interface MempoolTransactionNotification extends Transaction {
+    confirmationETABlocks: number;
+    confirmationETASeconds: number;
+}
+
 export interface AddressNotification {
     address: string;
     tx: Transaction;
@@ -207,4 +212,6 @@ declare function FSend(
     params: { currency?: string },
 ): Promise<Subscribe>;
 declare function FSend(method: 'unsubscribeFiatRates'): Promise<Subscribe>;
+declare function FSend(method: 'subscribeNewTransaction'): Promise<Subscribe>;
+declare function FSend(method: 'unsubscribeNewTransaction'): Promise<Subscribe>;
 export type Send = typeof FSend;

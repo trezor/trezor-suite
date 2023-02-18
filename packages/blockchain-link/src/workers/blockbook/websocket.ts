@@ -5,6 +5,7 @@ import { createDeferred, Deferred } from '@trezor/utils/lib/createDeferred';
 import { CustomError } from '../../constants/errors';
 import type {
     BlockNotification,
+    MempoolTransactionNotification,
     AddressNotification,
     Send,
     FiatRatesNotification,
@@ -24,7 +25,7 @@ const NOT_INITIALIZED = new CustomError('websocket_not_initialized');
 
 interface Subscription {
     id: string;
-    type: 'notification' | 'block' | 'fiatRates';
+    type: 'notification' | 'block' | 'mempool' | 'fiatRates';
     callback: (result: any) => void;
 }
 
@@ -41,6 +42,7 @@ const DEFAULT_PING_TIMEOUT = 50 * 1000;
 
 export declare interface BlockbookAPI {
     on(event: 'block', listener: (event: BlockNotification) => void): this;
+    on(event: 'mempool', listener: (event: MempoolTransactionNotification) => void): this;
     on(event: 'notification', listener: (event: AddressNotification) => void): this;
     on(event: 'fiatRates', listener: (event: FiatRatesNotification) => void): this;
     on(event: 'error', listener: (error: string) => void): this;
@@ -299,12 +301,18 @@ export class BlockbookAPI extends EventEmitter {
         return this.send('getFiatRatesTickersList', payload);
     }
 
-    subscribeAddresses(addresses: string[]) {
-        const index = this.subscriptions.findIndex(s => s.type === 'notification');
+    private removeSubscription(type: Subscription['type']) {
+        const index = this.subscriptions.findIndex(s => s.type === type);
         if (index >= 0) {
             // remove previous subscriptions
             this.subscriptions.splice(index, 1);
         }
+        return index;
+    }
+
+    subscribeAddresses(addresses: string[]) {
+        this.removeSubscription('notification');
+
         // add new subscription
         const id = this.messageID.toString();
         this.subscriptions.push({
@@ -318,21 +326,16 @@ export class BlockbookAPI extends EventEmitter {
     }
 
     unsubscribeAddresses() {
-        const index = this.subscriptions.findIndex(s => s.type === 'notification');
+        const index = this.removeSubscription('notification');
         if (index >= 0) {
-            // remove previous subscriptions
-            this.subscriptions.splice(index, 1);
             return this.send('unsubscribeAddresses');
         }
         return { subscribed: false };
     }
 
     subscribeBlock() {
-        const index = this.subscriptions.findIndex(s => s.type === 'block');
-        if (index >= 0) {
-            // remove previous subscriptions
-            this.subscriptions.splice(index, 1);
-        }
+        this.removeSubscription('block');
+
         // add new subscription
         const id = this.messageID.toString();
         this.subscriptions.push({
@@ -346,21 +349,17 @@ export class BlockbookAPI extends EventEmitter {
     }
 
     unsubscribeBlock() {
-        const index = this.subscriptions.findIndex(s => s.type === 'block');
+        const index = this.removeSubscription('block');
+
         if (index >= 0) {
-            // remove previous subscriptions
-            this.subscriptions.splice(index, 1);
             return this.send('unsubscribeNewBlock');
         }
         return { subscribed: false };
     }
 
     subscribeFiatRates(currency?: string) {
-        const index = this.subscriptions.findIndex(s => s.type === 'fiatRates');
-        if (index >= 0) {
-            // remove previous subscriptions
-            this.subscriptions.splice(index, 1);
-        }
+        this.removeSubscription('fiatRates');
+
         // add new subscription
         const id = this.messageID.toString();
         this.subscriptions.push({
@@ -374,11 +373,32 @@ export class BlockbookAPI extends EventEmitter {
     }
 
     unsubscribeFiatRates() {
-        const index = this.subscriptions.findIndex(s => s.type === 'fiatRates');
+        const index = this.removeSubscription('fiatRates');
         if (index >= 0) {
-            // remove previous subscriptions
-            this.subscriptions.splice(index, 1);
             return this.send('unsubscribeFiatRates');
+        }
+        return { subscribed: false };
+    }
+
+    subscribeMempool() {
+        this.removeSubscription('mempool');
+
+        // add new subscription
+        const id = this.messageID.toString();
+        this.subscriptions.push({
+            id,
+            type: 'mempool',
+            callback: result => {
+                this.emit('mempool', result);
+            },
+        });
+        return this.send('subscribeNewTransaction');
+    }
+
+    unsubscribeMempool() {
+        const index = this.removeSubscription('mempool');
+        if (index >= 0) {
+            return this.send('unsubscribeNewTransaction');
         }
         return { subscribed: false };
     }

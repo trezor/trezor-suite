@@ -99,6 +99,22 @@ const handleClick = (event: MouseEvent) => {
                 .catch(onError);
             break;
 
+        case 'subscribe-mempool':
+            blockchain
+                .subscribe({
+                    type: 'mempool',
+                })
+                .catch(onError);
+            break;
+
+        case 'unsubscribe-mempool':
+            blockchain
+                .unsubscribe({
+                    type: 'mempool',
+                })
+                .catch(onError);
+            break;
+
         case 'subscribe-address':
             blockchain
                 .subscribe({
@@ -260,6 +276,13 @@ const handleBlockEvent = (blockchain: BlockchainLink, notification: any): void =
     prepareResponse(parent, notification);
 };
 
+const handleMempoolEvent = (blockchain: BlockchainLink, notification: any): void => {
+    const network = getInputValue('network-type');
+    if (blockchain.settings.name !== network) return;
+    const parent = document.getElementById('notification-mempool') as HTMLElement;
+    prepareResponse(parent, notification.txid);
+};
+
 const handleFiatRatesEvent = (blockchain: BlockchainLink, notification: any): void => {
     const network: string = getInputValue('network-type');
     if (blockchain.settings.name !== network) return;
@@ -350,6 +373,7 @@ CONFIG.forEach(i => {
     b.on('disconnected', handleConnectionEvent.bind(null, b, false));
     b.on('error', handleErrorEvent.bind(null, b, false));
     b.on('block', handleBlockEvent.bind(null, b));
+    b.on('mempool', handleMempoolEvent.bind(null, b));
     b.on('fiatRates', handleFiatRatesEvent.bind(null, b));
     b.on('notification', handleNotificationEvent.bind(null, b));
     instances.push(b);

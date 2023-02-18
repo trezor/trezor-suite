@@ -10,6 +10,7 @@ import type {
     AccountBalanceHistory,
     ChannelMessage,
 } from './common';
+import type { MempoolTransactionNotification } from './blockbook';
 
 // messages sent from worker to blockchain.js
 
@@ -109,6 +110,11 @@ export interface BlockEvent {
     };
 }
 
+export interface MempoolEvent {
+    type: 'mempool';
+    payload: MempoolTransactionNotification;
+}
+
 export interface NotificationEvent {
     type: 'notification';
     payload: {
@@ -126,7 +132,7 @@ export interface FiatRatesEvent {
 
 export interface Notification {
     type: typeof RESPONSES.NOTIFICATION;
-    payload: BlockEvent | NotificationEvent | FiatRatesEvent;
+    payload: BlockEvent | NotificationEvent | FiatRatesEvent | MempoolEvent;
 }
 
 export interface PushTransaction {
