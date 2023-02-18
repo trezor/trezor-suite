@@ -89,7 +89,7 @@ export const DEFAULT_ROUND = {
 
 export const AFFILIATE_INFO = {
     runningAffiliateServers: ['trezor' as const],
-    coinjoinRequests: {},
+    affiliateData: {},
 };
 
 export const STATUS_EVENT = {
