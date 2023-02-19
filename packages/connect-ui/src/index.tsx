@@ -20,6 +20,7 @@ import {
     FirmwareUpdateNotification,
     BackupNotification,
     BridgeUpdateNotification,
+    SuspiciousOriginNotification,
 } from './components/Notification';
 
 const Layout = styled.div`
@@ -86,12 +87,16 @@ export const ConnectUI = ({ postMessage, clearLegacyView }: ConnectUIProps) => {
         // notifications
         const notifications: React.ReactNode[] = [];
         messages.forEach(message => {
-            if (message?.type === 'popup-handshake' && message?.payload?.transport?.outdated) {
-                notifications.push(<BridgeUpdateNotification key="bridge-outdated" />);
+            if (message?.type === 'popup-handshake') {
+                if (message.payload?.transport?.outdated) {
+                    notifications.push(<BridgeUpdateNotification key="bridge-outdated" />);
+                }
             } else if (message?.type === UI_REQUEST.FIRMWARE_OUTDATED) {
                 notifications.push(<FirmwareUpdateNotification key={message.type} />);
             } else if (message?.type === UI_REQUEST.DEVICE_NEEDS_BACKUP) {
                 notifications.push(<BackupNotification key={message.type} />);
+            } else if (message?.type === 'phishing-domain') {
+                notifications.push(<SuspiciousOriginNotification key={message.type} />);
             }
             return notifications;
         });
