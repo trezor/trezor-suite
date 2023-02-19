@@ -1,30 +1,74 @@
 #!/usr/bin/env bash
 set -e
 
-CRX_VER=1_0_28
-TOR_VER=0.4.7.10
-SUFFIX=1
+CRX_VER=1_0_30
+CRX_LINUX_ARM_VER=1_0_0
 
-curl https://tor.bravesoftware.com/release/biahpgbdmdkfgndcmfiipgcebobojjkp/extension_${CRX_VER}.crx -o brave-tor-lin.crx
-curl https://tor.bravesoftware.com/release/cldoidikboihgcjfkhdeidbpclkineef/extension_${CRX_VER}.crx -o brave-tor-mac.crx
-curl https://tor.bravesoftware.com/release/cpoalefficncklhjfpglfiplenlpccdb/extension_${CRX_VER}.crx -o brave-tor-win.crx
-
-for p in lin mac win ; do
-    7z x -y -o_${p}/ brave-tor-${p}.crx
+# check whether we have all required commands
+for cmd in 7z curl lipo shasum ; do
+  command -v $cmd >/dev/null 2>&1 || { echo >&2 "Program $cmd required but not installed. Aborting."; exit 1; }
 done
 
-mv _lin/tor-${TOR_VER}-linux-brave-${SUFFIX} linux-x64/tor
-# linux-arm64/tor needs to be built manually using the build_linux.sh script
-# from https://github.com/brave/tor_build_scripts and running on aarch64/arm64 machine
-rm -rf _lin/
+# install exit trap which removes the temp directory
+function finish {
+  rm -rf tmp/
+}
+trap finish EXIT
 
-lipo _mac/tor-${TOR_VER}-darwin-brave-${SUFFIX} -thin arm64 -output mac-arm64/tor
-lipo _mac/tor-${TOR_VER}-darwin-brave-${SUFFIX} -thin x86_64 -output mac-x64/tor
-rm -rf _mac/
+# create temp directory
+mkdir -p tmp/
 
-mv _win/tor-${TOR_VER}-win32-brave-${SUFFIX} win-x64/tor.exe
-rm -rf _win/
+echo "Downloading extension CRX files for:"
 
-chmod +x linux-x64/tor mac-arm64/tor mac-x64/tor
+# download extensions from which we extract tor binaries
+# the extension ids come from "torClient*ExtensionID" variables in
+# https://raw.githubusercontent.com/brave/go-update/master/extension/utils.go
+echo "- Mac"
+curl -s -L "https://tor.bravesoftware.com/release/cldoidikboihgcjfkhdeidbpclkineef/extension_${CRX_VER}.crx" -o tmp/brave-tor-mac.crx
+echo "- Windows"
+curl -s -L "https://tor.bravesoftware.com/release/cpoalefficncklhjfpglfiplenlpccdb/extension_${CRX_VER}.crx" -o tmp/brave-tor-win.crx
+echo "- Linux x64"
+curl -s -L "https://tor.bravesoftware.com/release/biahpgbdmdkfgndcmfiipgcebobojjkp/extension_${CRX_VER}.crx" -o tmp/brave-tor-lin-x64.crx
+echo "- Linux arm64"
+curl -s -L "https://tor.bravesoftware.com/release/monolafkoghdlanndjfeebmdfkbklejg/extension_${CRX_LINUX_ARM_VER}.crx" -o tmp/brave-tor-lin-arm64.crx
 
-rm -rf brave-tor-*.crx
+# unpack extensions into the temp directory
+echo
+echo "Unpacking extensions"
+for p in lin-arm64 lin-x64 mac win ; do
+    7z x -y -otmp/${p}/ tmp/brave-tor-${p}.crx > /dev/null
+done
+
+# extract TOR_VER and SUFFIX from packageTorClient.js
+TOR_VER=$(curl -s -L https://raw.githubusercontent.com/brave/brave-core-crx-packager/master/scripts/packageTorClient.js | grep "const torVersion = '" | cut -d "'" -f 2)
+SUFFIX=$(curl -s -L https://raw.githubusercontent.com/brave/brave-core-crx-packager/master/scripts/packageTorClient.js | grep "const braveVersion = '" | cut -d "'" -f 2)
+echo
+echo "Expecting Tor release $TOR_VER-$SUFFIX"
+
+
+# check extracted binaries against hashes from packageTorClient.js
+echo
+echo "Checking hashes of downloaded binaries"
+curl -s -L https://raw.githubusercontent.com/brave/brave-core-crx-packager/master/scripts/packageTorClient.js | grep "  sha512Tor = '" | cut -d "'" -f 2 > tmp/SHA512SUMS
+sed -i "1!b;s,$,  tmp/mac/tor-${TOR_VER}-darwin-brave-${SUFFIX},g" tmp/SHA512SUMS
+sed -i "2!b;s,$,  tmp/lin-x64/tor-${TOR_VER}-linux-brave-${SUFFIX},g" tmp/SHA512SUMS
+sed -i "3!b;s,$,  tmp/lin-arm64/tor-${TOR_VER}-linux-arm64-brave-${SUFFIX},g" tmp/SHA512SUMS
+sed -i "4!b;s,$,  tmp/win/tor-${TOR_VER}-win32-brave-${SUFFIX},g" tmp/SHA512SUMS
+
+shasum -a 512 -c tmp/SHA512SUMS
+
+echo
+echo "Copying files"
+# unpack universal mac binary into arm64 and x64 binaries
+lipo "tmp/mac/tor-${TOR_VER}-darwin-brave-${SUFFIX}" -thin arm64 -output mac-arm64/tor
+lipo "tmp/mac/tor-${TOR_VER}-darwin-brave-${SUFFIX}" -thin x86_64 -output mac-x64/tor
+# copy linux binaries
+cp -a "tmp/lin-x64/tor-${TOR_VER}-linux-brave-${SUFFIX}" linux-x64/tor
+cp -a "tmp/lin-arm64/tor-${TOR_VER}-linux-arm64-brave-${SUFFIX}" linux-arm64/tor
+# copy windows binary
+cp -a "tmp/win/tor-${TOR_VER}-win32-brave-${SUFFIX}" win-x64/tor.exe
+
+# set executable flag in case it wasn't set yet
+chmod +x linux-*/tor mac-*/tor
+
+echo "Done!"
