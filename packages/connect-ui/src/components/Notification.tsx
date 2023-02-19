@@ -71,7 +71,7 @@ interface NotificationProps {
     header: string;
     body: string;
     variant: 'warning' | 'danger';
-    cta: {
+    cta?: {
         desc: string;
         url: string;
     };
@@ -100,16 +100,18 @@ const Notification = ({ header, body, cta, variant }: NotificationProps) => {
                 <NotificationBody>
                     <div>{body}</div>
                 </NotificationBody>
-                <NotificationCta>
-                    <StyledButton
-                        onClick={() => {
-                            window.open(cta.url);
-                            window.close();
-                        }}
-                    >
-                        {cta.desc}
-                    </StyledButton>
-                </NotificationCta>
+                {cta && (
+                    <NotificationCta>
+                        <StyledButton
+                            onClick={() => {
+                                window.open(cta.url);
+                                window.close();
+                            }}
+                        >
+                            {cta.desc}
+                        </StyledButton>
+                    </NotificationCta>
+                )}
             </NotificationRightCol>
         </NotificationBox>
     );
@@ -146,15 +148,14 @@ export const BridgeUpdateNotification = () => (
     />
 );
 
-// todo: not used yet, need to sync with product
 export const SuspiciousOriginNotification = () => (
     <Notification
         variant="danger"
         header="Danger"
-        body="Suspicious 3rd party application. Proceed on your own risk"
-        cta={{
-            desc: 'Learn more',
-            url: 'todo:',
-        }}
+        body="You are interacting with a suspicious 3rd party application. If you continue your coins might be in danger. Proceed at your own risk"
+        // cta={{
+        //     desc: 'Learn more',
+        //     url: 'todo: some explanation to trezor-wiki about phishing would be useful',
+        // }}
     />
 );
