@@ -6,7 +6,6 @@
     },
     "include": [".", "**/*.json"],
     "references": [
-        { "path": "../components" },
         { "path": "../connect" },
         { "path": "../connect-analytics" },
         { "path": "../connect-ui" },
