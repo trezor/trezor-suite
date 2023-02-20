@@ -21,7 +21,7 @@ const submit = () => {
 
 const addPin = (val: number) => {
     const input = container.getElementsByClassName('pin-input')[0] as HTMLInputElement;
-    const maxInputLength = 9;
+    const maxInputLength = 50;
 
     if (input.value.length < maxInputLength) {
         input.value += val;
