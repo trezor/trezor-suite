@@ -6,7 +6,7 @@ import TrezorConnect, {
     ERRORS,
     createUiResponse,
     UiRequestSelectDevice,
-} from '@trezor/connect-web';
+} from '@trezor/connect';
 import { SUITE_BRIDGE_URL, SUITE_UDEV_URL, TREZOR_SUPPORT_URL } from '@trezor/urls';
 import { container, getState, showView, postMessage } from './common';
 import { getOS } from '@trezor/connect/lib/utils/browserUtils';
