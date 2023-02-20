@@ -232,7 +232,7 @@ const signMessage = [
         device: initializedDevice,
         views: [
             {
-                selector: '.info-panel', // does not have a special screen
+                selector: '[data-test="@info-panel"]', // does not have a special screen
                 screenshot: {
                     name: 'sign-message',
                 },
@@ -241,7 +241,7 @@ const signMessage = [
                 },
             },
             {
-                selector: '.info-panel',
+                selector: '[data-test="@info-panel"]',
                 nextEmu: {
                     type: 'emulator-press-yes',
                 },
@@ -434,7 +434,7 @@ const ethereumSignTypedData = [
         device: initializedDevice,
         views: [
             {
-                selector: '.info-panel',
+                selector: '[data-test="@info-panel"]',
                 screenshot: {
                     name: 'sign-message',
                 },
@@ -443,7 +443,7 @@ const ethereumSignTypedData = [
                 },
             },
             {
-                selector: '.info-panel',
+                selector: '[data-test="@info-panel"]',
                 screenshot: {
                     name: 'sign-message',
                 },
@@ -452,7 +452,7 @@ const ethereumSignTypedData = [
                 },
             },
             {
-                selector: '.info-panel',
+                selector: '[data-test="@info-panel"]',
                 nextEmu: {
                     type: 'emulator-press-yes',
                 },
