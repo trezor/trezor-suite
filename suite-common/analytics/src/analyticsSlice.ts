@@ -66,7 +66,7 @@ export const selectIsAnalyticsConfirmed = (state: AnalyticsSliceRootState) =>
 // if user made choice, keep it, otherwise set it to true by default just to prefill the confirmation toggle
 export const selectIsAnalyticsEnabled = memoize((state: AnalyticsSliceRootState): boolean => {
     const isAnalyticsConfirmed = selectIsAnalyticsConfirmed(state);
-    return isAnalyticsConfirmed ? !!state.analytics.enabled : true;
+    return isAnalyticsConfirmed ? !!state.analytics.enabled : false;
 });
 
 // allow tracking only if user already confirmed data collection
