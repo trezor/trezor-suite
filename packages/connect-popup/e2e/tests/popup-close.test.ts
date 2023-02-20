@@ -48,7 +48,6 @@ test.beforeAll(async () => {
             needs_backup: false,
         });
         await TrezorUserEnvLink.api.startBridge(bridgeVersion);
-
         await page.goto(`${url}#/method/verifyMessage`);
         await page.waitForSelector("button[data-test='@submit-button']", { state: 'visible' });
 
@@ -131,7 +130,7 @@ test.beforeAll(async () => {
 
         if (bridgeVersion === '2.0.31') {
             expect(responses[12].url).toEqual('http://127.0.0.1:21325/post/2');
-            await page.waitForSelector('text=Failure_ActionCancelled');
+            await page.waitForSelector('text=Method_Interrupted');
         }
     });
 
