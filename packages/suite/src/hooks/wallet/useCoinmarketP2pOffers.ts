@@ -64,7 +64,7 @@ export const useOffers = ({ selectedAccount }: UseOffersProps): ContextValues =>
 
     const selectQuote = async (quote: P2pQuote) => {
         const provider = providers ? providers[quote.provider] : null;
-        if (await openCoinmarketP2pConfirmModal(provider?.companyName)) {
+        if (await openCoinmarketP2pConfirmModal(provider?.companyName, quote.assetCode)) {
             setSelectedQuote(quote);
             timer.stop();
         }

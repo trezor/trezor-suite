@@ -5,13 +5,8 @@ import { useActions } from '@suite-hooks';
 import {
     PinMismatch,
     PassphraseDuplicate,
-    CoinmarketBuyTerms,
-    CoinmarketSavingsTerms,
-    CoinmarketSellTerms,
-    CoinmarketExchangeTerms,
-    CoinmarketExchangeDexTerms,
+    CoinmarketTermsModal,
     CoinmarketLeaveSpend,
-    CoinmarketP2pTerms,
     ConfirmAddress,
     ConfirmXpub,
     ReviewTransaction,
@@ -46,7 +41,6 @@ export const UserContextModal = ({
     renderer,
 }: ReduxModalProps<typeof MODAL.CONTEXT_USER>) => {
     const { onCancel } = useActions({ onCancel: onCancelAction });
-
     switch (payload.type) {
         case 'add-account':
             return (
@@ -87,52 +81,67 @@ export const UserContextModal = ({
             return <ReviewTransaction {...payload} />;
         case 'coinmarket-leave-spend':
             return <CoinmarketLeaveSpend {...payload} onCancel={onCancel} />;
-        case 'coinmarket-buy-terms':
+        case 'coinmarket-buy-terms': {
             return (
-                <CoinmarketBuyTerms
-                    provider={payload.provider}
+                <CoinmarketTermsModal
                     onCancel={onCancel}
+                    type="BUY"
                     decision={payload.decision}
+                    provider={payload.provider}
+                    cryptoCurrency={payload.cryptoCurrency}
                 />
             );
+        }
         case 'coinmarket-sell-terms':
             return (
-                <CoinmarketSellTerms
-                    provider={payload.provider}
+                <CoinmarketTermsModal
                     onCancel={onCancel}
+                    type="SELL"
                     decision={payload.decision}
+                    provider={payload.provider}
+                    cryptoCurrency={payload.cryptoCurrency}
                 />
             );
+
         case 'coinmarket-exchange-terms':
             return (
-                <CoinmarketExchangeTerms
-                    provider={payload.provider}
+                <CoinmarketTermsModal
                     onCancel={onCancel}
+                    type="EXCHANGE"
                     decision={payload.decision}
+                    provider={payload.provider}
+                    toCryptoCurrency={payload.toCryptoCurrency}
+                    fromCryptoCurrency={payload.fromCryptoCurrency}
                 />
             );
         case 'coinmarket-exchange-dex-terms':
             return (
-                <CoinmarketExchangeDexTerms
-                    provider={payload.provider}
+                <CoinmarketTermsModal
                     onCancel={onCancel}
+                    type="EXCHANGE_DEX"
                     decision={payload.decision}
-                />
-            );
-        case 'coinmarket-p2p-terms':
-            return (
-                <CoinmarketP2pTerms
                     provider={payload.provider}
-                    onCancel={onCancel}
-                    decision={payload.decision}
+                    toCryptoCurrency={payload.toCryptoCurrency}
+                    fromCryptoCurrency={payload.fromCryptoCurrency}
                 />
             );
         case 'coinmarket-savings-terms':
             return (
-                <CoinmarketSavingsTerms
-                    provider={payload.provider}
+                <CoinmarketTermsModal
                     onCancel={onCancel}
+                    type="SAVINGS"
                     decision={payload.decision}
+                    provider={payload.provider}
+                />
+            );
+        case 'coinmarket-p2p-terms':
+            return (
+                <CoinmarketTermsModal
+                    onCancel={onCancel}
+                    type="P2P"
+                    decision={payload.decision}
+                    provider={payload.provider}
+                    cryptoCurrency={payload.cryptoCurrency}
                 />
             );
         case 'import-transaction':

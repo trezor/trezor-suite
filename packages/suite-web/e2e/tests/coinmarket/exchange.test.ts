@@ -106,7 +106,6 @@ describe.skip('Coinmarket exchange', () => {
         // Gets the deal
         cy.getTestElement('@coinmarket/exchange/offers/get-this-deal-button').eq(0).click();
         cy.getTestElement('@modal').should('be.visible');
-        cy.getTestElement('@coinmarket/exchange/offers/buy-terms-agree-checkbox').click();
         cy.getTestElement('@coinmarket/exchange/offers/buy-terms-confirm-button').click();
 
         // Verifies amounts, currencies and providers

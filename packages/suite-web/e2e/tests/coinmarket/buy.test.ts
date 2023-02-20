@@ -101,7 +101,6 @@ describe('Coinmarket buy', () => {
         // Gets the deal
         cy.getTestElement('@coinmarket/buy/offers/get-this-deal-button').eq(2).click();
         cy.getTestElement('@modal').should('be.visible');
-        cy.getTestElement('@coinmarket/buy/offers/buy-terms-agree-checkbox').click();
         cy.getTestElement('@coinmarket/buy/offers/buy-terms-confirm-button').click();
         cy.getTestElement('@coinmarket/buy/offers/confirm-on-trezor-button').click();
         cy.getTestElement('@prompts/confirm-on-device');

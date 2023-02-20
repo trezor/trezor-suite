@@ -152,6 +152,8 @@ export const useOffers = ({ selectedAccount }: UseCoinmarketExchangeFormProps) =
             const result = await openCoinmarketExchangeConfirmModal(
                 provider?.companyName,
                 quote.isDex,
+                quote.send,
+                quote.receive,
             );
             if (result) {
                 setSelectedQuote(quote);
