@@ -216,8 +216,12 @@ export const useOffers = ({ selectedAccount }: UseOffersProps) => {
             sellInfo?.providerInfos && quote.exchange
                 ? sellInfo.providerInfos[quote.exchange]
                 : null;
+
         if (quotesRequest) {
-            const result = await openCoinmarketSellConfirmModal(provider?.companyName);
+            const result = await openCoinmarketSellConfirmModal(
+                provider?.companyName,
+                quote.cryptoCurrency,
+            );
             if (result) {
                 // empty quoteId means the partner requests login first, requestTrade to get login screen
                 if (!quote.quoteId || needToRegisterOrVerifyBankAccount(quote)) {

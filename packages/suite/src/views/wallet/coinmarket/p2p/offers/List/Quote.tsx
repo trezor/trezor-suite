@@ -278,7 +278,12 @@ export const Quote = ({ quote }: QuoteProps) => {
                     </MainValue>
                 </MainColumn>
                 <MainColumnRight>
-                    <StyledButton onClick={() => selectQuote(quote)}>
+                    <StyledButton
+                        isDisabled={!!quoteError}
+                        onClick={() => {
+                            selectQuote(quote);
+                        }}
+                    >
                         <Translation id="TR_P2P_GET_THIS_OFFER" />
                     </StyledButton>
                 </MainColumnRight>

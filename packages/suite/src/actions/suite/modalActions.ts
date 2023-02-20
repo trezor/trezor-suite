@@ -69,16 +69,19 @@ export type UserContextPayload =
     | {
           type: 'coinmarket-buy-terms';
           provider?: string;
+          cryptoCurrency?: string;
           decision: Deferred<boolean>;
       }
     | {
           type: 'coinmarket-savings-terms';
           provider?: string;
+          cryptoCurrency?: string;
           decision: Deferred<boolean>;
       }
     | {
           type: 'coinmarket-sell-terms';
           provider?: string;
+          cryptoCurrency?: string;
           decision: Deferred<boolean>;
       }
     | {
@@ -88,16 +91,21 @@ export type UserContextPayload =
     | {
           type: 'coinmarket-exchange-terms';
           provider?: string;
+          fromCryptoCurrency?: string;
+          toCryptoCurrency?: string;
           decision: Deferred<boolean>;
       }
     | {
           type: 'coinmarket-exchange-dex-terms';
           provider?: string;
+          fromCryptoCurrency?: string;
+          toCryptoCurrency?: string;
           decision: Deferred<boolean>;
       }
     | {
           type: 'coinmarket-p2p-terms';
           provider?: string;
+          cryptoCurrency?: string;
           decision: Deferred<boolean>;
       }
     | {

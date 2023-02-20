@@ -96,8 +96,15 @@ export const setIsFromRedirect = (isFromRedirect: boolean): CoinmarketBuyAction 
 
 // this is only a wrapper for `openDeferredModal` since it doesn't work with `bindActionCreators`
 // used in useCoinmarketBuyOffers
-export const openCoinmarketBuyConfirmModal = (provider?: string) => (dispatch: Dispatch) =>
-    dispatch(modalActions.openDeferredModal({ type: 'coinmarket-buy-terms', provider }));
+export const openCoinmarketBuyConfirmModal =
+    (provider?: string, cryptoCurrency?: string) => (dispatch: Dispatch) =>
+        dispatch(
+            modalActions.openDeferredModal({
+                type: 'coinmarket-buy-terms',
+                provider,
+                cryptoCurrency,
+            }),
+        );
 
 export const saveTrade = (
     buyTrade: BuyTrade,
