@@ -62,5 +62,12 @@ export const saveQuotes = (quotes: P2pQuote[]): CoinmarketP2pAction => ({
 });
 
 // this is only a wrapper for `openDeferredModal` since it doesn't work with `bindActionCreators`
-export const openCoinmarketP2pConfirmModal = (provider?: string) => (dispatch: Dispatch) =>
-    dispatch(modalActions.openDeferredModal({ type: 'coinmarket-p2p-terms', provider }));
+export const openCoinmarketP2pConfirmModal =
+    (provider?: string, cryptoCurrency?: string) => (dispatch: Dispatch) =>
+        dispatch(
+            modalActions.openDeferredModal({
+                type: 'coinmarket-p2p-terms',
+                provider,
+                cryptoCurrency,
+            }),
+        );

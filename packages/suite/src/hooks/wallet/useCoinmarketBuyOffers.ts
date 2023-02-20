@@ -114,7 +114,10 @@ export const useOffers = ({ selectedAccount }: UseOffersProps) => {
     const selectQuote = async (quote: BuyTrade) => {
         const provider = providersInfo && quote.exchange ? providersInfo[quote.exchange] : null;
         if (quotesRequest) {
-            const result = await openCoinmarketBuyConfirmModal(provider?.companyName);
+            const result = await openCoinmarketBuyConfirmModal(
+                provider?.companyName,
+                quote.receiveCurrency,
+            );
             if (result) {
                 // empty quoteId means the partner requests login first, requestTrade to get login screen
                 if (!quote.quoteId) {

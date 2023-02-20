@@ -116,11 +116,14 @@ export const saveExchangeCoinInfo = (
 // this is only a wrapper for `openDeferredModal` since it doesn't work with `bindActionCreators`
 // used in useCoinmarketExchangeOffers
 export const openCoinmarketExchangeConfirmModal =
-    (provider?: string, isDex?: boolean) => (dispatch: Dispatch) =>
+    (provider?: string, isDex?: boolean, fromCryptoCurrency?: string, toCryptoCurrency?: string) =>
+    (dispatch: Dispatch) =>
         dispatch(
             modalActions.openDeferredModal({
                 type: isDex ? 'coinmarket-exchange-dex-terms' : 'coinmarket-exchange-terms',
                 provider,
+                fromCryptoCurrency,
+                toCryptoCurrency,
             }),
         );
 
