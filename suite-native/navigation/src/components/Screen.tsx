@@ -11,6 +11,7 @@ import { ScreenContent } from './ScreenContent';
 type ScreenProps = {
     children: ReactNode;
     header?: ReactNode;
+    footer?: ReactNode;
     hasDivider?: boolean;
     hasStatusBar?: boolean;
     isScrollable?: boolean;
@@ -42,6 +43,7 @@ const screenHeaderStyle = prepareNativeStyle<{
 export const Screen = ({
     children,
     header,
+    footer,
     hasDivider = false,
     isScrollable = true,
     hasStatusBar = true,
@@ -89,6 +91,7 @@ export const Screen = ({
                 </View>
             )}
             <ScreenContent
+                footer={footer}
                 isScrollable={isScrollable}
                 customVerticalPadding={customVerticalPadding}
                 customHorizontalPadding={customHorizontalPadding}

@@ -1,5 +1,5 @@
 import React, { ReactNode, useState } from 'react';
-import { TouchableOpacity, View } from 'react-native';
+import { TouchableOpacity, KeyboardAvoidingView, Platform } from 'react-native';
 
 import { Network } from '@suite-common/wallet-config';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -13,11 +13,12 @@ type XpubScanHintSheet = {
     networkType: NetworkType;
 };
 
-const sheetTriggerStyle = prepareNativeStyle(_ => ({
+const sheetTriggerStyle = prepareNativeStyle(utils => ({
     flexDirection: 'row',
-    width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
+    paddingVertical: utils.spacings.large,
+    backgroundColor: utils.colors.gray100,
 }));
 
 const EmphasizedText = ({ children }: { children: ReactNode }) => (
@@ -85,14 +86,16 @@ export const XpubHint = ({ networkType }: XpubScanHintSheet) => {
     const handleClose = () => setIsVisible(false);
 
     return (
-        <View>
-            {/*  TODO : Replace with a TextButton atom component when ready. */}
-            <TouchableOpacity onPress={handleOpen} style={applyStyle(sheetTriggerStyle)}>
-                <Box marginRight="small">
-                    <Icon name="question" size="medium" color="forest" />
-                </Box>
-                <Text color="forest">{title}</Text>
-            </TouchableOpacity>
+        <>
+            <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+                {/*  TODO : Replace with a TextButton atom component when ready. */}
+                <TouchableOpacity onPress={handleOpen} style={applyStyle(sheetTriggerStyle)}>
+                    <Box marginRight="small">
+                        <Icon name="question" size="medium" color="forest" />
+                    </Box>
+                    <Text color="forest">{title}</Text>
+                </TouchableOpacity>
+            </KeyboardAvoidingView>
 
             <BottomSheet title={title} isVisible={isVisible} onClose={handleClose}>
                 <Box paddingTop="small" justifyContent="space-between">
@@ -107,6 +110,6 @@ export const XpubHint = ({ networkType }: XpubScanHintSheet) => {
                     </Box>
                 </Box>
             </BottomSheet>
-        </View>
+        </>
     );
 };

@@ -88,7 +88,10 @@ export const XpubScanScreen = ({
     };
 
     return (
-        <Screen header={<AccountImportHeader activeStep={2} />}>
+        <Screen
+            header={<AccountImportHeader activeStep={2} />}
+            footer={<XpubHint networkType={networks[selectedCurrencySymbol].networkType} />}
+        >
             <Card>
                 <SelectableNetworkItem
                     cryptoCurrencyName={networks[selectedCurrencySymbol].name}
@@ -104,7 +107,6 @@ export const XpubScanScreen = ({
             <Form form={form}>
                 <VStack spacing="medium">
                     <TextInputField name="xpubAddress" label="Enter x-pub..." />
-                    <XpubHint networkType={networks[selectedCurrencySymbol].networkType} />
                     <Button
                         onPress={onXpubFormSubmit}
                         size="large"

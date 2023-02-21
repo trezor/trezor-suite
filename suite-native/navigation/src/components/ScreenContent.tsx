@@ -7,6 +7,7 @@ import { Box } from '@suite-native/atoms';
 
 type ScreenContentProps = {
     children: ReactNode;
+    footer: ReactNode;
     isScrollable: boolean;
     customVerticalPadding: number;
     customHorizontalPadding: number;
@@ -29,6 +30,7 @@ const screenContentStyle = prepareNativeStyle<{
 
 export const ScreenContent = ({
     children,
+    footer,
     isScrollable,
     customHorizontalPadding,
     customVerticalPadding,
@@ -42,15 +44,21 @@ export const ScreenContent = ({
         customVerticalPadding,
     });
 
-    if (!isScrollable) return <Box style={screenStyle}>{children}</Box>;
-
     return (
-        <KeyboardAwareScrollView
-            keyboardShouldPersistTaps="always"
-            contentInsetAdjustmentBehavior="automatic"
-            contentContainerStyle={screenStyle}
-        >
-            {children}
-        </KeyboardAwareScrollView>
+        <>
+            {isScrollable ? (
+                <KeyboardAwareScrollView
+                    keyboardShouldPersistTaps="always"
+                    contentInsetAdjustmentBehavior="automatic"
+                    contentContainerStyle={screenStyle}
+                    viewIsInsideTabBar
+                >
+                    {children}
+                </KeyboardAwareScrollView>
+            ) : (
+                <Box style={screenStyle}>{children}</Box>
+            )}
+            {footer}
+        </>
     );
 };
