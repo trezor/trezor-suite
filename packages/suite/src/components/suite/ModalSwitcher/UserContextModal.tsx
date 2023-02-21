@@ -40,7 +40,7 @@ import type { AcquiredDevice } from '@suite-types';
 import type { ReduxModalProps } from './types';
 import { DisableTorStopCoinjoin } from '@suite-components/modals/DisableTorStopCoinjoin';
 
-/** Modals opened as result of user action */
+/** Modals opened as a result of user action */
 export const UserContextModal = ({
     payload,
     renderer,
