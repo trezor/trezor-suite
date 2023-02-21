@@ -1,5 +1,7 @@
 // Maximum number of filters requested from backend in one request
-export const FILTERS_BATCH_SIZE = 10000;
+// TODO post MVP: unify filters batch size with wabisabi or implement filters on blockbooks
+// https://github.com/trezor/trezor-suite/issues/7182#issuecomment-1438182493
+export const FILTERS_BATCH_SIZE = 10000 / 2;
 
 // Minimum number of blocks after which 'progress' event is fired by scanAccount
 export const PROGRESS_BATCH_SIZE_MIN = 10;
