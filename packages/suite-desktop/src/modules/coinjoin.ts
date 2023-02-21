@@ -85,15 +85,23 @@ export const init: Module = ({ mainWindow }) => {
                         }
                     }
                     if (method === 'disable') {
-                        logger.debug(SERVICE_NAME, `CoinjoinClient binary stop`);
-                        coinjoinMiddleware.stop();
-                        powerSaveBlocker.stopBlockingPowerSave();
+                        clients.splice(clients.indexOf(client), 1);
+
+                        if (clients.length === 0) {
+                            logger.debug(SERVICE_NAME, `CoinjoinClient binary stop`);
+                            coinjoinMiddleware.stop();
+                        }
+                        if (!clients.some(cli => cli.getAccounts().length > 0)) {
+                            powerSaveBlocker.stopBlockingPowerSave();
+                        }
                     }
                     if (method === 'registerAccount') {
                         powerSaveBlocker.startBlockingPowerSave();
                     }
                     if (method === 'unregisterAccount') {
-                        powerSaveBlocker.stopBlockingPowerSave();
+                        if (!clients.some(cli => cli.getAccounts().length > 0)) {
+                            powerSaveBlocker.stopBlockingPowerSave();
+                        }
                     }
                     // needs type casting
                     return (client[method] as any)(...params); // bind method to instance context

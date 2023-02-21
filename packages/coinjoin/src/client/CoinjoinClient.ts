@@ -287,4 +287,8 @@ export class CoinjoinClient extends EventEmitter {
             round.isInCriticalPhase() ? round.toSerialized() : [],
         );
     }
+
+    getAccounts() {
+        return this.accounts;
+    }
 }
