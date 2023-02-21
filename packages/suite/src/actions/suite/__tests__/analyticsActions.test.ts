@@ -12,15 +12,12 @@ type InitialState = {
     analytics: Partial<AnalyticsState>;
 };
 
-export const getInitialState = (state?: InitialState) => {
-    const { analytics } = state;
-    return {
-        analytics: {
-            ...analyticsReducer(undefined, { type: 'foo' } as any),
-            ...analytics,
-        },
-    };
-};
+export const getInitialState = (state?: InitialState) => ({
+    analytics: {
+        ...analyticsReducer(undefined, { type: 'foo' } as any),
+        ...state?.analytics,
+    },
+});
 
 type State = ReturnType<typeof getInitialState>;
 const mockStore = configureStore<State, any>();

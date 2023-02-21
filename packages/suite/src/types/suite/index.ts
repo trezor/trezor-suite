@@ -50,7 +50,7 @@ export type TransactionAction = ReturnType<
 export type NotificationAction = ReturnType<
     (typeof notificationsActions)[keyof typeof notificationsActions]
 >;
-type AnalyticsAction = ReturnType<typeof analyticsActions[keyof typeof analyticsActions]>;
+type AnalyticsAction = ReturnType<(typeof analyticsActions)[keyof typeof analyticsActions]>;
 
 // all actions from all apps used to properly type Dispatch.
 export type Action =
