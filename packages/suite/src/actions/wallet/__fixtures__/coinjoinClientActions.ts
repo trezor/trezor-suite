@@ -195,11 +195,18 @@ export const onCoinjoinRoundChanged = [
         },
     },
     {
-        description: 'Multiple events',
+        description: 'Multiple events - coinjoin ends at max rounds',
         connect: undefined,
         state: {
             devices: [{ ...DEVICE, features: { busy: true } }],
-            accounts: [{ key: 'a', deviceState: 'device-state' }],
+            accounts: [
+                {
+                    key: 'a',
+                    deviceState: 'device-state',
+                    addresses: { anonymitySet: { address: 1 } },
+                    utxo: [{ address: 'address' }],
+                },
+            ],
             selectedAccount: { key: 'a' },
             coinjoin: {
                 accounts: [
