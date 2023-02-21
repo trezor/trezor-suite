@@ -23,7 +23,6 @@ export * from './VStack';
 export * from './HStack';
 export * from './Divider';
 export * from './TextDivider';
-export * from './TransactionItem';
 export * from './ProgressBar';
 export * from './Card';
 export * from './StepsProgressBar';
