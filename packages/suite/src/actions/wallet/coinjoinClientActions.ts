@@ -7,16 +7,10 @@ import {
     CoinjoinResponseEvent,
     CoinjoinClientEvents,
 } from '@trezor/coinjoin';
-import { arrayDistinct, arrayToDictionary, promiseAllSequence } from '@trezor/utils';
 import { SUITE } from '@suite-actions/constants';
+import { arrayDistinct, arrayToDictionary, promiseAllSequence } from '@trezor/utils';
 import * as COINJOIN from './constants/coinjoinConstants';
 import {
-    selectRoundsNeeded,
-    selectRoundsLeft,
-    selectRoundsDurationInHours,
-} from '@wallet-reducers/coinjoinReducer';
-import {
-    breakdownCoinjoinBalance,
     prepareCoinjoinTransaction,
     getSessionDeadline,
     getEstimatedTimePerRound,
@@ -27,8 +21,12 @@ import { Account } from '@suite-common/wallet-types';
 import { RoundPhase, CoinjoinAccount, CoinjoinDebugSettings } from '@wallet-types/coinjoin';
 import { onCancel as closeModal, openModal } from '@suite-actions/modalActions';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { selectAccountByKey } from '@suite-common/wallet-core';
-import { isZero } from '@suite-common/wallet-utils';
+import {
+    selectRoundsNeeded,
+    selectRoundsLeft,
+    selectRoundsDurationInHours,
+    selectCoinjoinAccounts,
+} from '@wallet-reducers/coinjoinReducer';
 
 const clientEnable = (symbol: Account['symbol']) =>
     ({
@@ -152,6 +150,11 @@ export const unregisterByAccountKey =
         client?.unregisterAccount(accountKey);
     };
 
+export const endCoinjoinSession = (accountKey: string) => (dispatch: Dispatch) => {
+    dispatch(clientSessionCompleted(accountKey));
+    dispatch(unregisterByAccountKey(accountKey));
+};
+
 /**
  * Show "do not disconnect" screen on Trezor.
  * Multiple possible setups:
@@ -212,7 +215,8 @@ export const onCoinjoinRoundChanged =
     ({ round }: CoinjoinRoundEvent) =>
     async (dispatch: Dispatch, getState: GetState) => {
         const state = getState();
-        const { accounts } = state.wallet.coinjoin;
+        const coinjoinAccounts = selectCoinjoinAccounts(state);
+        const roundsDurationInHours = selectRoundsDurationInHours(state);
         // collect all account.keys from the round including failed one
         const accountKeys = round.inputs
             .concat(round.failed)
@@ -221,10 +225,8 @@ export const onCoinjoinRoundChanged =
 
         const currentTimestamp = Date.now();
 
-        const roundsDurationInHours = selectRoundsDurationInHours(state);
-
         const coinjoinAccountsWithSession = accountKeys.flatMap(
-            accountKey => accounts.find(r => r.key === accountKey && r.session) || [],
+            accountKey => coinjoinAccounts.find(r => r.key === accountKey && r.session) || [],
         );
 
         let phaseChanged = false;
@@ -266,36 +268,13 @@ export const onCoinjoinRoundChanged =
                 await dispatch(setBusyScreen(accountKeys));
                 dispatch(closeCriticalPhaseModal());
 
-                const completedSessions = coinjoinAccountsWithSession.filter(
+                const accountsReachingMaxRounds = coinjoinAccountsWithSession.filter(
                     ({ session }) => session?.signedRounds?.length === session?.maxRounds,
                 );
-
-                if (completedSessions.length > 0) {
-                    const moreRoundsNeeded = completedSessions.some(({ key, targetAnonymity }) => {
-                        const account = selectAccountByKey(state, key);
-
-                        const { notAnonymized } = breakdownCoinjoinBalance({
-                            anonymitySet: account?.addresses?.anonymitySet,
-                            targetAnonymity,
-                            utxos: account?.utxo,
-                        });
-
-                        return !isZero(notAnonymized);
-                    });
-
-                    dispatch(
-                        openModal(
-                            moreRoundsNeeded
-                                ? { type: 'more-rounds-needed' }
-                                : {
-                                      type: 'coinjoin-success',
-                                      relatedAccountKey: completedSessions[0].key,
-                                  },
-                        ),
-                    );
-                    completedSessions.forEach(({ key }) => {
-                        dispatch(clientSessionCompleted(key));
-                        dispatch(unregisterByAccountKey(key));
+                if (accountsReachingMaxRounds.length) {
+                    dispatch(openModal({ type: 'more-rounds-needed' }));
+                    accountsReachingMaxRounds.forEach(({ key }) => {
+                        dispatch(endCoinjoinSession(key));
                     });
                 }
             }

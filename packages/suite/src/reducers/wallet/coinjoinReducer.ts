@@ -572,7 +572,7 @@ export const selectMinAllowedInputWithFee = memoizeWithArgs(
     },
 );
 
-export const selectAreUtxosTooSmallByAccountKey = memoizeWithArgs(
+export const selectIsNothingToAnonymizeByAccountKey = memoizeWithArgs(
     (state: CoinjoinRootState, accountKey: AccountKey) => {
         const minAllowedInputWithFee = selectMinAllowedInputWithFee(state, accountKey);
         const account = selectAccountByKey(state, accountKey);
@@ -672,7 +672,7 @@ export const selectCoinjoinSessionBlockerByAccountKey = memoizeWithArgs(
         if (!state.suite.online) {
             return 'OFFLINE';
         }
-        if (selectAreUtxosTooSmallByAccountKey(state, accountKey)) {
+        if (selectIsNothingToAnonymizeByAccountKey(state, accountKey)) {
             return 'NOTHING_TO_ANONYMIZE';
         }
         if (selectIsCoinjoinBlockedByTor(state)) {

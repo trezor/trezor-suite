@@ -5,12 +5,7 @@ import { SUITE } from '@suite-actions/constants';
 import * as COINJOIN from './constants/coinjoinConstants';
 import { goto } from '../suite/routerActions';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import {
-    initCoinjoinService,
-    getCoinjoinClient,
-    clientDisable,
-    clientEmitException,
-} from './coinjoinClientActions';
+import * as coinjoinClientActions from './coinjoinClientActions';
 import { CoinjoinService, COORDINATOR_FEE_RATE_MULTIPLIER } from '@suite/services/coinjoin';
 import { getAccountProgressHandle, getRegisterAccountParams } from '@wallet-utils/coinjoinUtils';
 import { Dispatch, GetState } from '@suite-types';
@@ -30,8 +25,10 @@ import {
     selectIsAccountWithSessionInCriticalPhaseByAccountKey,
     selectIsAnySessionInCriticalPhase,
     selectHasAnonymitySetError,
+    selectIsNothingToAnonymizeByAccountKey,
 } from '@wallet-reducers/coinjoinReducer';
 import { getAccountTransactions, sortByBIP44AddressIndex } from '@suite-common/wallet-utils';
+import { openModal } from '@suite-actions/modalActions';
 
 const coinjoinAccountCreate = (account: Account, targetAnonymity: number) =>
     ({
@@ -202,19 +199,38 @@ const getAccountCache = ({ addresses, path }: Extract<Account, { backendType: 'c
     };
 };
 
-export const updateClientAccount = (account: Account) => (_: Dispatch, getState: GetState) => {
-    const client = getCoinjoinClient(account.symbol);
-    if (!client) return;
+export const updateClientAccount =
+    (account: Account) => (dispatch: Dispatch, getState: GetState) => {
+        const client = coinjoinClientActions.getCoinjoinClient(account.symbol);
+        if (!client) return;
 
-    const state = getState();
-    // get fresh data from reducer
-    const accountToUpdate = selectAccountByKey(state, account.key);
-    const coinjoinAccount = selectCoinjoinAccountByKey(state, account.key);
-    if (!coinjoinAccount?.session || !accountToUpdate) return;
-    const { session, rawLiquidityClue } = coinjoinAccount;
+        const state = getState();
+        // get fresh data from reducer
+        const accountToUpdate = selectAccountByKey(state, account.key);
+        const coinjoinAccount = selectCoinjoinAccountByKey(state, account.key);
+        if (!coinjoinAccount?.session || !accountToUpdate) return;
+        const { session, rawLiquidityClue } = coinjoinAccount;
 
-    client.updateAccount(getRegisterAccountParams(accountToUpdate, session, rawLiquidityClue));
-};
+        client.updateAccount(getRegisterAccountParams(accountToUpdate, session, rawLiquidityClue));
+
+        // End coinjoin session if anonymity has been reached.
+        const hasSession = selectIsAccountWithSessionByAccountKey(state, account.key);
+        const reachedAnonymityInCurrentSession =
+            hasSession && selectIsNothingToAnonymizeByAccountKey(state, account.key);
+        if (reachedAnonymityInCurrentSession) {
+            dispatch(coinjoinClientActions.endCoinjoinSession(account.key));
+            // In an edge case when multiple coinjoin sessions finish in the same round, the result modal is shown only for one of them.
+            // Nice to have TODO: display results per account in one modal.
+            if (!('payload' in state.modal && state.modal.payload.type === 'coinjoin-success')) {
+                dispatch(
+                    openModal({
+                        type: 'coinjoin-success',
+                        relatedAccountKey: account.key,
+                    }),
+                );
+            }
+        }
+    };
 
 const coinjoinAccountCheckReorg =
     (account: Account, checkpoint: ScanAccountProgress['checkpoint']) =>
@@ -245,7 +261,7 @@ export const fetchAndUpdateAccount =
         // do not sync if any account CoinjoinSession is in critical phase
         if (selectIsAnySessionInCriticalPhase(state)) return;
 
-        const api = await dispatch(initCoinjoinService(account.symbol));
+        const api = await dispatch(coinjoinClientActions.initCoinjoinService(account.symbol));
         if (!api) return;
 
         const { backend, client } = api;
@@ -343,7 +359,7 @@ const clearCoinjoinInstances = ({
     const other = coinjoinAccounts.find(a => a.symbol === networkSymbol);
     // clear CoinjoinClientInstance if there are no related accounts left
     if (!other) {
-        dispatch(clientDisable(networkSymbol));
+        dispatch(coinjoinClientActions.clientDisable(networkSymbol));
         CoinjoinService.removeInstance(networkSymbol);
     }
 };
@@ -377,7 +393,7 @@ export const createCoinjoinAccount =
         }
 
         // initialize @trezor/coinjoin client
-        const api = await dispatch(initCoinjoinService(network.symbol));
+        const api = await dispatch(coinjoinClientActions.initCoinjoinService(network.symbol));
         if (!api) {
             return;
         }
@@ -510,7 +526,7 @@ export const startCoinjoinSession =
         }
 
         // initialize @trezor/coinjoin client
-        const api = await dispatch(initCoinjoinService(account.symbol));
+        const api = await dispatch(coinjoinClientActions.initCoinjoinService(account.symbol));
         const coinjoinAccount = selectCoinjoinAccountByKey(getState(), account.key);
 
         if (!api || !coinjoinAccount) {
@@ -546,7 +562,7 @@ export const pauseCoinjoinSession =
             return;
         }
         // get @trezor/coinjoin client if available
-        const client = getCoinjoinClient(account.symbol);
+        const client = coinjoinClientActions.getCoinjoinClient(account.symbol);
 
         // unregister account in @trezor/coinjoin
         client?.unregisterAccount(accountKey);
@@ -558,14 +574,12 @@ export const pauseCoinjoinSession =
 export const pauseCoinjoinSessionByDeviceId =
     (deviceID: string) => (dispatch: Dispatch, getState: GetState) => {
         const state = getState();
-        const {
-            devices,
-            wallet: { accounts },
-        } = state;
 
-        const disconnectedDevices = devices.filter(d => d.id === deviceID && d.remember);
+        const disconnectedDevices = state.devices.filter(d => d.id === deviceID && d.remember);
         const affectedAccounts = disconnectedDevices.flatMap(d =>
-            accounts.filter(a => a.accountType === 'coinjoin' && a.deviceState === d.state),
+            state.wallet.accounts.filter(
+                a => a.accountType === 'coinjoin' && a.deviceState === d.state,
+            ),
         );
 
         affectedAccounts.forEach(account => {
@@ -574,19 +588,28 @@ export const pauseCoinjoinSessionByDeviceId =
                 // log exception in critical phase
                 if (selectIsAccountWithSessionInCriticalPhaseByAccountKey(state, account.key)) {
                     dispatch(
-                        clientEmitException(`Device disconnected in critical phase`, {
-                            symbol: account.symbol,
-                        }),
+                        coinjoinClientActions.clientEmitException(
+                            `Device disconnected in critical phase`,
+                            {
+                                symbol: account.symbol,
+                            },
+                        ),
                     );
                 }
-                // get @trezor/coinjoin client if available
-                const client = getCoinjoinClient(account.symbol);
+                const hasRunningSession = selectIsAccountWithSessionByAccountKey(
+                    state,
+                    account.key,
+                );
+                if (hasRunningSession) {
+                    // get @trezor/coinjoin client if available
+                    const client = coinjoinClientActions.getCoinjoinClient(account.symbol);
 
-                // unregister account in @trezor/coinjoin
-                client?.unregisterAccount(account.key);
+                    // unregister account in @trezor/coinjoin
+                    client?.unregisterAccount(account.key);
 
-                // dispatch data to reducer
-                dispatch(coinjoinSessionPause(account.key, false));
+                    // dispatch data to reducer
+                    dispatch(coinjoinSessionPause(account.key, false));
+                }
             }
         });
     };
@@ -624,7 +647,7 @@ export const restoreCoinjoinSession =
         }
 
         // get @trezor/coinjoin client if available
-        const client = getCoinjoinClient(account.symbol);
+        const client = coinjoinClientActions.getCoinjoinClient(account.symbol);
         if (!client) {
             return errorToast('CoinjoinClient is not enabled');
         }
@@ -673,8 +696,8 @@ export const interruptAllCoinjoinSessions = () => (dispatch: Dispatch, getState:
     const coinjoinAccounts = selectCoinjoinAccounts(state);
 
     coinjoinAccounts.forEach(account => {
-        const isAccountWithSession = selectIsAccountWithSessionByAccountKey(state, account.key);
-        if (isAccountWithSession) {
+        const hasRunningSession = selectIsAccountWithSessionByAccountKey(state, account.key);
+        if (hasRunningSession) {
             dispatch(pauseCoinjoinSession(account.key, true));
         }
     });
@@ -706,7 +729,7 @@ export const stopCoinjoinSession =
         }
 
         // get @trezor/coinjoin client if available
-        const client = getCoinjoinClient(account.symbol);
+        const client = coinjoinClientActions.getCoinjoinClient(account.symbol);
         if (!client) {
             return;
         }
@@ -731,9 +754,12 @@ export const forgetCoinjoinAccounts =
                 // log exception in critical phase
                 if (selectIsAccountWithSessionInCriticalPhaseByAccountKey(state, cjAccount.key)) {
                     dispatch(
-                        clientEmitException(`Forget account in critical phase`, {
-                            symbol: account.symbol,
-                        }),
+                        coinjoinClientActions.clientEmitException(
+                            `Forget account in critical phase`,
+                            {
+                                symbol: account.symbol,
+                            },
+                        ),
                     );
                 }
 
@@ -779,6 +805,8 @@ export const restoreCoinjoinAccounts = () => (dispatch: Dispatch, getState: GetS
 
     // async actions in sequence, initialize CoinjoinCService for each network
     return promiseAllSequence(
-        coinjoinNetworks.map(symbol => () => dispatch(initCoinjoinService(symbol))),
+        coinjoinNetworks.map(
+            symbol => () => dispatch(coinjoinClientActions.initCoinjoinService(symbol)),
+        ),
     );
 };
