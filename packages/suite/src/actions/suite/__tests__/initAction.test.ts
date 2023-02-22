@@ -1,29 +1,27 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import { configureStore } from '@suite/support/tests/configureStore';
-
-import { SUITE, ROUTER, ANALYTICS, MESSAGE_SYSTEM } from '@suite-actions/constants';
-
+import { SUITE, ROUTER, MESSAGE_SYSTEM } from '@suite-actions/constants';
 import suiteReducer from '@suite-reducers/suiteReducer';
 import modalReducer from '@suite-reducers/modalReducer';
 import routerReducer from '@suite-reducers/routerReducer';
 import deviceReducer from '@suite-reducers/deviceReducer';
-import analyticsReducer from '@suite-reducers/analyticsReducer';
 import messageSystemReducer from '@suite-reducers/messageSystemReducer';
 import walletReducers from '@wallet-reducers';
-
 import { init } from '@suite-actions/initAction';
-import { connectInitThunk } from '@suite-common/connect-init';
-
 import suiteMiddleware from '@suite-middlewares/suiteMiddleware';
-
 import { validJws, DEV_JWS_PUBLIC_KEY } from '@suite-actions/__fixtures__/messageSystemActions';
-
 import type { AppState } from '@suite-types';
+import { extraDependencies } from '@suite/support/extraDependencies';
+
+import { connectInitThunk } from '@suite-common/connect-init';
 import {
     blockchainActions,
     initBlockchainThunk,
     preloadFeeInfoThunk,
 } from '@suite-common/wallet-core';
+import { analyticsActions, prepareAnalyticsReducer } from '@suite-common/analytics';
+
+const analyticsReducer = prepareAnalyticsReducer(extraDependencies);
 
 process.env.PUBLIC_KEY = DEV_JWS_PUBLIC_KEY;
 jest.mock('@trezor/connect', () => global.JestMocks.getTrezorConnect({}));
@@ -71,7 +69,7 @@ const fixtures: Fixture[] = [
         },
         actions: [
             SUITE.INIT,
-            ANALYTICS.INIT,
+            analyticsActions.initAnalytics.type,
             SUITE.SET_LANGUAGE,
             SUITE.APP_CHANGED,
             ROUTER.LOCATION_CHANGE,
@@ -96,7 +94,7 @@ const fixtures: Fixture[] = [
         },
         actions: [
             SUITE.INIT,
-            ANALYTICS.INIT,
+            analyticsActions.initAnalytics.type,
             SUITE.SET_LANGUAGE,
             connectInitThunk.pending.type,
             connectInitThunk.fulfilled.type,
@@ -119,7 +117,7 @@ const fixtures: Fixture[] = [
         },
         actions: [
             SUITE.INIT,
-            ANALYTICS.INIT,
+            analyticsActions.initAnalytics.type,
             SUITE.SET_LANGUAGE,
             connectInitThunk.pending.type,
             connectInitThunk.fulfilled.type,
@@ -142,7 +140,7 @@ const fixtures: Fixture[] = [
         },
         actions: [
             SUITE.INIT,
-            ANALYTICS.INIT,
+            analyticsActions.initAnalytics.type,
             SUITE.SET_LANGUAGE,
             SUITE.APP_CHANGED,
             ROUTER.LOCATION_CHANGE,

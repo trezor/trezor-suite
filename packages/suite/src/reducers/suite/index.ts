@@ -15,7 +15,7 @@ import messageSystem from './messageSystemReducer';
 import guide from './guideReducer';
 import protocol from './protocolReducer';
 
-const analyticsReducer = prepareAnalyticsReducer(extraDependencies);
+const analytics = prepareAnalyticsReducer(extraDependencies);
 
 export default {
     suite,
@@ -25,7 +25,7 @@ export default {
     logs: logsSlice.reducer,
     notifications: notificationsReducer,
     resize,
-    analytics: analyticsReducer,
+    analytics,
     metadata,
     desktopUpdate,
     messageSystem,

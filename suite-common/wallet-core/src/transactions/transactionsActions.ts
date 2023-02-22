@@ -4,7 +4,7 @@ import { Account, WalletAccountTransaction } from '@suite-common/wallet-types';
 import { AccountTransaction } from '@trezor/connect';
 import { enhanceTransaction } from '@suite-common/wallet-utils';
 
-export const modulePrefix = '@common/wallet-core/transactions';
+export const modulePrefix = '@suite-common/wallet-core/transactions';
 
 const fetchError = createAction(
     `${modulePrefix}/fetchError`,

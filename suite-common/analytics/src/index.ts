@@ -1,1 +1,2 @@
-export * from './analyticsSlice';
+export * from './analyticsReducer';
+export * from './analyticsActions';

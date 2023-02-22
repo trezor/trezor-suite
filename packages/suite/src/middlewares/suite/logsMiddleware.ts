@@ -1,14 +1,6 @@
 import { MiddlewareAPI } from 'redux';
 import { AppState, Action, Dispatch } from '@suite-types';
-import {
-    ANALYTICS,
-    DESKTOP_UPDATE,
-    METADATA,
-    MODAL,
-    PROTOCOL,
-    ROUTER,
-    SUITE,
-} from '@suite-actions/constants';
+import { DESKTOP_UPDATE, METADATA, MODAL, PROTOCOL, ROUTER, SUITE } from '@suite-actions/constants';
 import { DISCOVERY } from '@wallet-actions/constants';
 import { WALLET_SETTINGS } from '@settings-actions/constants';
 import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
@@ -17,6 +9,7 @@ import { redactTransactionIdFromAnchor } from '@suite-utils/analytics';
 import { addLog } from '@suite-common/logger';
 import { TRANSPORT, DEVICE } from '@trezor/connect';
 import { redactUserPathFromString } from '@trezor/utils';
+import { analyticsActions } from '@suite-common/analytics';
 
 const log =
     (api: MiddlewareAPI<Dispatch, AppState>) =>
@@ -43,8 +36,8 @@ const log =
             case METADATA.ENABLE:
             case METADATA.DISABLE:
             case SUITE.ONION_LINKS:
-            case ANALYTICS.ENABLE:
-            case ANALYTICS.DISABLE:
+            case analyticsActions.enableAnalytics.type:
+            case analyticsActions.disableAnalytics.type:
             case DESKTOP_UPDATE.CHECKING:
             case DESKTOP_UPDATE.AVAILABLE:
             case DESKTOP_UPDATE.NOT_AVAILABLE:
