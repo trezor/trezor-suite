@@ -126,6 +126,16 @@ class BlockchainLink extends EventEmitter {
         });
     }
 
+    /** Get block of given height or hash */
+    getBlock(
+        payload: MessageTypes.GetBlock['payload'],
+    ): Promise<ResponseTypes.GetBlock['payload']> {
+        return this.sendMessage({
+            type: MESSAGES.GET_BLOCK,
+            payload,
+        });
+    }
+
     /** Get info about an account, eg. derived addresses, balance, transaction history etc. */
     getAccountInfo(
         payload: MessageTypes.GetAccountInfo['payload'],

@@ -10,7 +10,7 @@ import type {
     AccountBalanceHistory,
     ChannelMessage,
 } from './common';
-import type { MempoolTransactionNotification } from './blockbook';
+import type { MempoolTransactionNotification, Block } from './blockbook';
 
 // messages sent from worker to blockchain.js
 
@@ -35,6 +35,11 @@ export interface GetInfo {
 export interface GetBlockHash {
     type: typeof RESPONSES.GET_BLOCK_HASH;
     payload: string;
+}
+
+export interface GetBlock {
+    type: typeof RESPONSES.GET_BLOCK;
+    payload: Block;
 }
 
 export interface GetAccountInfo {
@@ -154,6 +159,7 @@ export type Response =
     | ChannelMessage<Connect>
     | ChannelMessage<GetInfo>
     | ChannelMessage<GetBlockHash>
+    | ChannelMessage<GetBlock>
     | ChannelMessage<GetAccountInfo>
     | ChannelMessage<GetAccountUtxo>
     | ChannelMessage<GetTransaction>

@@ -35,6 +35,16 @@ export interface BlockHash {
     hash: string;
 }
 
+export interface Block {
+    page: number;
+    totalPages: number;
+    itemsOnPage: number;
+    hash: string;
+    height: number;
+    txCount: number;
+    txs: Transaction[];
+}
+
 export interface XPUBAddress {
     type: 'XPUBAddress';
     name: string;
@@ -179,6 +189,7 @@ export interface AvailableCurrencies {
 
 declare function FSend(method: 'getInfo'): Promise<ServerInfo>;
 declare function FSend(method: 'getBlockHash', params: { height: number }): Promise<BlockHash>;
+declare function FSend(method: 'getBlock', params: { id: string }): Promise<Block>;
 declare function FSend(method: 'getAccountInfo', params: AccountInfoParams): Promise<AccountInfo>;
 declare function FSend(method: 'getAccountUtxo', params: AccountUtxoParams): Promise<AccountUtxo>;
 declare function FSend(method: 'getTransaction', params: { txid: string }): Promise<Transaction>;

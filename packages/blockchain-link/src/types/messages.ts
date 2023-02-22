@@ -27,6 +27,11 @@ export interface GetBlockHash {
     payload: number;
 }
 
+export interface GetBlock {
+    type: typeof MESSAGES.GET_BLOCK;
+    payload: number | string; // height or hash
+}
+
 export interface GetAccountInfo {
     type: typeof MESSAGES.GET_ACCOUNT_INFO;
     payload: AccountInfoParams;
@@ -124,6 +129,7 @@ export type Message =
     | ChannelMessage<Disconnect>
     | ChannelMessage<GetInfo>
     | ChannelMessage<GetBlockHash>
+    | ChannelMessage<GetBlock>
     | ChannelMessage<GetAccountInfo>
     | ChannelMessage<GetAccountUtxo>
     | ChannelMessage<GetTransaction>

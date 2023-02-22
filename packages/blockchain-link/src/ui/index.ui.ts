@@ -141,6 +141,10 @@ const handleClick = (event: MouseEvent) => {
                 .catch(onError);
             break;
 
+        case 'get-block':
+            blockchain.getBlock(getInputValue('block-id')).then(onResponse).catch(onError);
+            break;
+
         case 'subscribe-fiat-rates':
             blockchain
                 .subscribe({
