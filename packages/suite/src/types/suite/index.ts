@@ -21,7 +21,7 @@ import type { GuideAction } from '@suite-actions/guideActions';
 import type { Route } from '@suite-constants/routes';
 
 import { analyticsActions } from '@suite-common/analytics';
-import type { EnvironmentType } from '@suite-common/suite-types';
+import { Environment } from '@trezor/analytics';
 import type { ObjectValues } from '@trezor/type-utils';
 import type { UiEvent, DeviceEvent, TransportEvent, BlockchainEvent } from '@trezor/connect';
 import { transactionsActions } from '@suite-common/wallet-core';
@@ -32,7 +32,7 @@ export type { ExtendedMessageDescriptor } from '@suite-components/Translation/co
 export type { AppState } from '@suite/reducers/store';
 export type { SuiteThemeColors } from '@trezor/components';
 export type { PrerequisiteType } from '@suite-utils/prerequisites';
-export type { Route, EnvironmentType };
+export type { Route, Environment as EnvironmentType };
 export type {
     ButtonRequest,
     ExtendedDevice,

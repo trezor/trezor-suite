@@ -1,4 +1,4 @@
-import type { EnvironmentType } from './environment';
+import { Environment } from '@trezor/analytics';
 
 /**
  * A group of Guide content.
@@ -52,7 +52,7 @@ export type Rating = '1' | '2' | '3' | '4' | '5'; // 1 = worst, 5 = best. Portra
 export type FeedbackType = 'BUG' | 'SUGGESTION';
 
 export interface UserData {
-    platform: EnvironmentType;
+    platform: Environment;
     os: string;
     user_agent: string;
     suite_version: string;

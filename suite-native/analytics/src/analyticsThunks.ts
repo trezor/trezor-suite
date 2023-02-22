@@ -30,31 +30,34 @@ export const disableAnalyticsThunk = createThunk(
     },
 );
 
-export const initAnalytics = createThunk(`${ACTION_PREFIX}/init`, (_, { dispatch, getState }) => {
-    const sessionId = getTrackingRandomId();
-    const instanceId = selectAnalyticsInstanceId(getState()) ?? getTrackingRandomId();
-    const userAllowedTracking = selectHasUserAllowedTracking(getState());
+export const initAnalyticsThunk = createThunk(
+    `${ACTION_PREFIX}/init`,
+    (_, { dispatch, getState }) => {
+        const sessionId = getTrackingRandomId();
+        const instanceId = selectAnalyticsInstanceId(getState()) ?? getTrackingRandomId();
+        const userAllowedTracking = selectHasUserAllowedTracking(getState());
 
-    const isAnalyticsEnabled = selectIsAnalyticsEnabled(getState());
-    const isAnalyticsConfirmed = selectIsAnalyticsConfirmed(getState());
+        const isAnalyticsEnabled = selectIsAnalyticsEnabled(getState());
+        const isAnalyticsConfirmed = selectIsAnalyticsConfirmed(getState());
 
-    analytics.init(userAllowedTracking, {
-        instanceId,
-        sessionId,
-        commitId: getCommitHash(),
-        isDev: isDevelopEnv(),
-        callbacks: {
-            onEnable: () => dispatch(enableAnalyticsThunk()),
-            onDisable: () => dispatch(disableAnalyticsThunk()),
-        },
-    });
-
-    dispatch(
-        analyticsActions.initAnalytics({
+        analytics.init(userAllowedTracking, {
             instanceId,
             sessionId,
-            enabled: isAnalyticsEnabled,
-            confirmed: isAnalyticsConfirmed,
-        }),
-    );
-});
+            commitId: getCommitHash(),
+            isDev: isDevelopEnv(),
+            callbacks: {
+                onEnable: () => dispatch(enableAnalyticsThunk()),
+                onDisable: () => dispatch(disableAnalyticsThunk()),
+            },
+        });
+
+        dispatch(
+            analyticsActions.initAnalytics({
+                instanceId,
+                sessionId,
+                enabled: isAnalyticsEnabled,
+                confirmed: isAnalyticsConfirmed,
+            }),
+        );
+    },
+);

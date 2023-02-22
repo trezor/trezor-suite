@@ -1,12 +1,11 @@
-import type { EnvironmentType } from '@suite-types';
-
+import { Environment } from '@trezor/analytics';
 import { desktopApi, SuiteThemeVariant } from '@trezor/suite-desktop-api';
 
 export const isWeb = () => process.env.SUITE_TYPE === 'web';
 
 export const isDesktop = () => process.env.SUITE_TYPE === 'desktop';
 
-export const getEnvironment = (): EnvironmentType => {
+export const getEnvironment = (): Environment => {
     if (isWeb()) return 'web';
     if (isDesktop()) return 'desktop';
 

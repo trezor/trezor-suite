@@ -1,5 +1,4 @@
 import { AnyAction } from '@reduxjs/toolkit';
-import { memoize } from 'proxy-memoize';
 
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 
@@ -55,11 +54,10 @@ export const selectAnalyticsInstanceId = (state: AnalyticsRootState) => state.an
 export const selectIsAnalyticsConfirmed = (state: AnalyticsRootState) =>
     !!state.analytics.confirmed;
 
-// if user made choice, keep it, otherwise set it to true by default just to prefill the confirmation toggle
-export const selectIsAnalyticsEnabled = memoize((state: AnalyticsRootState): boolean => {
+export const selectIsAnalyticsEnabled = (state: AnalyticsRootState): boolean => {
     const isAnalyticsConfirmed = selectIsAnalyticsConfirmed(state);
     return isAnalyticsConfirmed ? !!state.analytics.enabled : false;
-});
+};
 
 // allow tracking only if user already confirmed data collection
 export const selectHasUserAllowedTracking = (state: AnalyticsRootState): boolean =>

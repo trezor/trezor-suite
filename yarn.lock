@@ -6229,7 +6229,6 @@ __metadata:
   dependencies:
     "@reduxjs/toolkit": 1.9.2
     "@suite-common/redux-utils": "workspace:*"
-    proxy-memoize: ^2.0.0
   languageName: unknown
   linkType: soft
 
@@ -6405,6 +6404,7 @@ __metadata:
     "@reduxjs/toolkit": 1.9.2
     "@suite-common/metadata-types": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
+    "@trezor/analytics": "workspace:*"
     "@trezor/connect": "workspace:9.0.6"
     bignumber.js: ^9.1.1
     jest: ^26.6.3
@@ -26556,7 +26556,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"proxy-memoize@npm:^2.0.0, proxy-memoize@npm:^2.0.2":
+"proxy-memoize@npm:^2.0.2":
   version: 2.0.2
   resolution: "proxy-memoize@npm:2.0.2"
   dependencies:

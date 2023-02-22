@@ -12,7 +12,6 @@
     },
     "dependencies": {
         "@reduxjs/toolkit": "1.9.2",
-        "@suite-common/redux-utils": "workspace:*",
-        "proxy-memoize": "^2.0.0"
+        "@suite-common/redux-utils": "workspace:*"
     }
 }
