@@ -1,4 +1,9 @@
-import { fixtures, btcdirectSavingsFixtures, swanSavingsFixtures } from './fixtures';
+import { fixtures,
+    btcdirectSavingsFixtures,
+    swanSavingsFixtures,
+    btcdirectSavingsFixturesDictionary,
+    swanSavingsFixturesDictionary
+} from './fixtures';
 import { TestSavingsSetupStatus } from './types';
 
 const InvityApiUrlToIntercept = 'https://exchange.trezor.io';
@@ -16,18 +21,21 @@ export const interceptInvityApi = () => {
     });
 };
 
-const interceptInvityApiSavings = (
-    fixtures: Record<string, (status: TestSavingsSetupStatus) => string>,
-    status: TestSavingsSetupStatus,
-) => {
-    Object.entries(fixtures).forEach(fixtureEntry => {
-        const [path, getFixture] = fixtureEntry;
-        interceptInvityApiInternal(path, getFixture(status));
-    });
+const interceptInvityApiSavings = (fixtures: any, status: TestSavingsSetupStatus) => {
+    console.log("status", status)
+
+    const fixture = fixtures[status]
+    console.log("fixture", fixture)
+    interceptInvityApiInternal('/api/savings/trezor/trade', fixture);
+    // Object.entries(fixtures).forEach(fixtureEntry => {
+    //     const [path, getFixture] = fixtureEntry;
+    //     console.log('getFixture', getFixture(status));
+    //     interceptInvityApiInternal(path, getFixture(status));
+    // });
 };
 
 export const interceptInvityApiSavingsBtcDirect = (status: TestSavingsSetupStatus) =>
-    interceptInvityApiSavings(btcdirectSavingsFixtures, status);
+    interceptInvityApiSavings(btcdirectSavingsFixturesDictionary, status);
 
 export const interceptInvityApiSavingsSwan = (status: TestSavingsSetupStatus) =>
-    interceptInvityApiSavings(swanSavingsFixtures, status);
+    interceptInvityApiSavings(swanSavingsFixturesDictionary, status);

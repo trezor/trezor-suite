@@ -16,7 +16,7 @@ export const fixtures = {
     '/api/sell/fiat/watch/0': '/invity/sell/watch.json',
 };
 
-const btcdirectSavingsFixturesDictionary = {
+export const btcdirectSavingsFixturesDictionary = {
     NoSavingsTrade: '/invity/savings/btcdirect/trade-no-savings-trade.json',
     SetSavingsParameters: '/invity/savings/btcdirect/trade-set-savings-parameters.json',
     ConfirmPaymentInfo: '/invity/savings/btcdirect/trade-confirm-payment-info.json',
