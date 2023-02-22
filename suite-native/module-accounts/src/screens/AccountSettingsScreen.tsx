@@ -15,10 +15,16 @@ import {
     StackProps,
 } from '@suite-native/navigation';
 import { BottomSheet, Box, Button, Card, Text, VStack } from '@suite-native/atoms';
-import { accountsActions, AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
+import {
+    accountsActions,
+    AccountsRootState,
+    selectAccountByKey,
+    selectAccountLabel,
+} from '@suite-common/wallet-core';
 import { QRCode } from '@suite-native/qr-code';
 import { CryptoIcon } from '@trezor/icons';
-// import { deriveAddresses } from '@trezor/utxo-lib';
+
+import { AccountRenameButton } from '../components/AccountRenameButton';
 
 const AccountDetailSettingsRow = ({ title, value }: { title: string; value: ReactNode }) => (
     <Box flexDirection="row" justifyContent="space-between">
@@ -54,6 +60,10 @@ export const AccountSettingsScreen = ({
         selectAccountByKey(state, accountKey),
     );
 
+    const accountLabel = useSelector((state: AccountsRootState) =>
+        selectAccountLabel(state, accountKey),
+    );
+
     if (!account) return null;
 
     const handleRemoveAccount = () => {
@@ -65,14 +75,15 @@ export const AccountSettingsScreen = ({
         setIsXpubVisible(false);
     };
 
-    // const derivedPaths = deriveAddresses(account.descriptor, 'receive', 0, 1);
-
-    // Derivation path format => m / purpose' / coin_type' / account' / change / index
-    // We don't need change & index
-    // const derivationPath = derivedPaths[0].path.split('/').slice(0, 4).join('/');
-
     return (
-        <Screen header={<ScreenHeader />}>
+        <Screen
+            header={
+                <ScreenHeader
+                    title={accountLabel}
+                    rightIcon={<AccountRenameButton accountKey={accountKey} />}
+                />
+            }
+        >
             <Box flex={1} justifyContent="space-between">
                 <Card>
                     <VStack spacing="large">
@@ -80,7 +91,6 @@ export const AccountSettingsScreen = ({
                             title="Coin"
                             value={<CryptoNameWithIcon symbol={account.symbol} />}
                         />
-                        {/* <AccountDetailSettingsRow title="Derivation Path" value={derivationPath} /> */}
                     </VStack>
                 </Card>
                 <VStack spacing="small">

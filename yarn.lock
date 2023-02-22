@@ -6567,10 +6567,12 @@ __metadata:
     "@suite-common/wallet-types": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/formatters": "workspace:*"
+    "@suite-native/forms": "workspace:*"
     "@suite-native/navigation": "workspace:*"
     "@trezor/icons": "workspace:*"
     "@trezor/styles": "workspace:*"
     "@trezor/theme": "workspace:*"
+    "@trezor/validation": "workspace:*"
     react: 18.2.0
     react-native: 0.71.3
     react-redux: 8.0.5
@@ -6760,6 +6762,7 @@ __metadata:
     "@suite-native/accounts": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/formatters": "workspace:*"
+    "@suite-native/forms": "workspace:*"
     "@suite-native/graph": "workspace:*"
     "@suite-native/module-settings": "workspace:*"
     "@suite-native/navigation": "workspace:*"
@@ -6768,8 +6771,10 @@ __metadata:
     "@trezor/icons": "workspace:*"
     "@trezor/styles": "workspace:*"
     "@trezor/theme": "workspace:*"
+    "@trezor/validation": "workspace:*"
     jotai: 1.9.1
     react: 18.2.0
+    react-hook-form: 6.15.7
     react-native: 0.71.3
     react-redux: 8.0.5
   languageName: unknown

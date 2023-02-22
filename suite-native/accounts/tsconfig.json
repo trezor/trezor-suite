@@ -16,9 +16,11 @@
         },
         { "path": "../atoms" },
         { "path": "../formatters" },
+        { "path": "../forms" },
         { "path": "../navigation" },
         { "path": "../../packages/icons" },
         { "path": "../../packages/styles" },
-        { "path": "../../packages/theme" }
+        { "path": "../../packages/theme" },
+        { "path": "../../packages/validation" }
     ]
 }

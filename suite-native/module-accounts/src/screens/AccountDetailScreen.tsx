@@ -26,7 +26,7 @@ export const AccountDetailScreen = memo(
         const account = useSelector((state: AccountsRootState) =>
             selectAccountByKey(state, accountKey),
         );
-        const accountName = useSelector((state: AccountsRootState) =>
+        const accountLabel = useSelector((state: AccountsRootState) =>
             selectAccountLabel(state, accountKey),
         );
         const accountTransactions = useSelector((state: TransactionsRootState) =>
@@ -52,7 +52,10 @@ export const AccountDetailScreen = memo(
         return (
             <Screen
                 header={
-                    <AccountDetailScreenHeader accountName={accountName} accountKey={accountKey} />
+                    <AccountDetailScreenHeader
+                        accountLabel={accountLabel}
+                        accountKey={accountKey}
+                    />
                 }
                 customHorizontalPadding={0}
                 isScrollable={false}

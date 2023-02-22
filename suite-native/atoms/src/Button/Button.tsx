@@ -122,6 +122,7 @@ export const buttonStyle = prepareNativeStyle<ButtonStyleProps>(
             justifyContent: 'center',
             alignItems: 'center',
             borderRadius: utils.borders.radii.round,
+            backgroundColor: utils.colors[schemeColors.backgroundColor],
             ...sizeDimensions,
             extend: [
                 {
@@ -152,6 +153,7 @@ export const Button = ({
 
     const animatedPressStyle = useButtonPressAnimatedStyle(
         isPressed,
+        isDisabled,
         backgroundColor,
         onPressColor,
     );
@@ -169,6 +171,7 @@ export const Button = ({
             />
         </View>
     ) : null;
+
     return (
         <Pressable
             disabled={isDisabled}

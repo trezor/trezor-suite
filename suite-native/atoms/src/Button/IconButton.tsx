@@ -63,6 +63,7 @@ export const IconButton = ({
 
     const animatedPressStyle = useButtonPressAnimatedStyle(
         isPressed,
+        isDisabled,
         backgroundColor,
         onPressColor,
     );
@@ -87,8 +88,8 @@ export const IconButton = ({
                                 size,
                                 colorScheme,
                                 isDisabled,
-                                hasTitle: !!title,
                             }),
+                            style,
                         ]}
                     >
                         <Icon name={iconName} color={iconColor} size={size} />

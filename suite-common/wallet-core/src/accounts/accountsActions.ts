@@ -121,6 +121,16 @@ const updateAccount = createAction(
     },
 );
 
+const renameAccount = createAction(
+    `${actionPrefix}/renameAccount`,
+    (accountKey: string, accountLabel: string) => ({
+        payload: {
+            accountKey,
+            accountLabel,
+        },
+    }),
+);
+
 const startCoinjoinAccountSync = createAction(
     `${actionPrefix}/startCoinjoinAccountSync`,
     (account: Extract<Account, { backendType: 'coinjoin' }>) => ({
@@ -158,6 +168,7 @@ export const accountsActions = {
     removeAccount,
     createAccount,
     updateAccount,
+    renameAccount,
     updateSelectedAccount,
     changeAccountVisibility,
     startCoinjoinAccountSync,
