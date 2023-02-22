@@ -1,4 +1,4 @@
-import { FILTERS_BATCH_SIZE, PROGRESS_BATCH_SIZE_MIN, PROGRESS_BATCH_SIZE_MAX } from '../constants';
+import { PROGRESS_BATCH_SIZE_MIN, PROGRESS_BATCH_SIZE_MAX } from '../constants';
 import type {
     FilterClient,
     FilterController,
@@ -17,7 +17,7 @@ export class CoinjoinFilterController implements FilterController {
         { baseBlockHash, baseBlockHeight, filtersBatchSize }: CoinjoinBackendSettings,
     ) {
         this.client = client;
-        this.batchSize = filtersBatchSize ?? FILTERS_BATCH_SIZE;
+        this.batchSize = filtersBatchSize;
         this.baseBlock = {
             blockHash: baseBlockHash,
             blockHeight: baseBlockHeight,
