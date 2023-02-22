@@ -1,1 +1,1 @@
-export type EnvironmentType = 'web' | 'desktop' | 'mobile' | '';
+export type EnvironmentType = 'web' | 'desktop' | '';

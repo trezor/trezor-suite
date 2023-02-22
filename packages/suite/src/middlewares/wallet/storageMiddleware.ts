@@ -1,29 +1,29 @@
 import { MiddlewareAPI } from 'redux';
 import { db } from '@suite/storage';
-
 import { WALLET_SETTINGS } from '@settings-actions/constants';
 import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
 import { DISCOVERY, GRAPH, SEND, COINMARKET_COMMON, FORM_DRAFT } from '@wallet-actions/constants';
 import * as COINJOIN from '@wallet-actions/constants/coinjoinConstants';
 import * as storageActions from '@suite-actions/storageActions';
-import * as accountUtils from '@suite-common/wallet-utils';
-import { SUITE, ANALYTICS, METADATA, MESSAGE_SYSTEM, STORAGE } from '@suite-actions/constants';
+import { SUITE, METADATA, MESSAGE_SYSTEM, STORAGE } from '@suite-actions/constants';
 import { FIRMWARE } from '@firmware-actions/constants';
 import { selectDiscovery } from '@wallet-reducers/discoveryReducer';
 import * as metadataActions from '@suite-actions/metadataActions';
 import { isDeviceRemembered } from '@suite-utils/device';
 import { serializeDiscovery } from '@suite-utils/storage';
-import { FormDraftPrefixKeyValues } from '@suite-common/wallet-constants';
-
 import type { AppState, Action as SuiteAction, Dispatch } from '@suite-types';
 import type { WalletAction } from '@wallet-types';
+import { isAnyOf } from '@reduxjs/toolkit';
+
 import {
     accountsActions,
     blockchainActions,
     transactionsActions,
     fiatRatesActions,
 } from '@suite-common/wallet-core';
-import { isAnyOf } from '@reduxjs/toolkit';
+import { FormDraftPrefixKeyValues } from '@suite-common/wallet-constants';
+import * as accountUtils from '@suite-common/wallet-utils';
+import { analyticsActions } from '@suite-common/analytics';
 
 const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
     db.onBlocking = () => api.dispatch({ type: STORAGE.ERROR, payload: 'blocking' });
@@ -175,9 +175,9 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                     break;
                 }
 
-                case ANALYTICS.INIT:
-                case ANALYTICS.ENABLE:
-                case ANALYTICS.DISABLE:
+                case analyticsActions.initAnalytics.type:
+                case analyticsActions.enableAnalytics.type:
+                case analyticsActions.disableAnalytics.type:
                     api.dispatch(storageActions.saveAnalytics());
                     break;
 

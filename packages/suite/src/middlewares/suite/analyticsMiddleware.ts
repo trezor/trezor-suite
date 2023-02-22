@@ -1,5 +1,13 @@
 import { MiddlewareAPI } from 'redux';
 import BigNumber from 'bignumber.js';
+import { SUITE, ROUTER } from '@suite-actions/constants';
+import { DISCOVERY } from '@wallet-actions/constants';
+import { getPhysicalDeviceCount } from '@suite-utils/device';
+import { getSuiteReadyPayload, redactTransactionIdFromAnchor } from '@suite-utils/analytics';
+import type { AppState, Action, Dispatch } from '@suite-types';
+
+import { analytics, EventType } from '@trezor/suite-analytics';
+import { TRANSPORT, DEVICE } from '@trezor/connect';
 import {
     getBootloaderHash,
     getBootloaderVersion,
@@ -8,14 +16,7 @@ import {
     getFirmwareVersion,
     isDeviceInBootloaderMode,
 } from '@trezor/device-utils';
-import { TRANSPORT, DEVICE } from '@trezor/connect';
-import { analytics, EventType } from '@trezor/suite-analytics';
-import { SUITE, ROUTER, ANALYTICS } from '@suite-actions/constants';
-import { DISCOVERY } from '@wallet-actions/constants';
-import { getPhysicalDeviceCount } from '@suite-utils/device';
-import { getSuiteReadyPayload, redactTransactionIdFromAnchor } from '@suite-utils/analytics';
-
-import type { AppState, Action, Dispatch } from '@suite-types';
+import { analyticsActions } from '@suite-common/analytics';
 
 /*
     In analytics middleware we may intercept actions we would like to log. For example:
@@ -40,7 +41,7 @@ const analyticsMiddleware =
                     payload: getSuiteReadyPayload(state),
                 });
                 break;
-            case ANALYTICS.ENABLE:
+            case analyticsActions.enableAnalytics.type:
                 if (state.suite.flags.initialRun) {
                     // suite-ready event was not reported on analytics initialization because analytics was not yet confirmed
                     analytics.report({
