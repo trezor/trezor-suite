@@ -7513,7 +7513,7 @@ export default defineMessages({
     TR_COINJOIN_SESSION_COUNTDOWN_PLURAL: {
         id: 'TR_COINJOIN_SESSION_COUNTDOWN_PLURAL',
         description: 'value including unit i.e. 5 hours 15 minutes, firstValue for handling plural',
-        defaultMessage: '{value} {firstValue, plural, other {left}}',
+        defaultMessage: '{value} {firstValue, plural, one {left} other {left}}',
     },
     TR_LOADING_FUNDS: {
         id: 'TR_LOADING_FUNDS',
@@ -7740,7 +7740,7 @@ export default defineMessages({
     },
     TR_SESSION_PHASE_15_MESSAGE: {
         id: 'TR_SESSION_PHASE_15_MESSAGE',
-        defaultMessage: 'Account missing UTXOs, retrying',
+        defaultMessage: 'Looking for available coins',
     },
     TR_SESSION_PHASE_16_MESSAGE: {
         id: 'TR_SESSION_PHASE_16_MESSAGE',
@@ -7760,7 +7760,7 @@ export default defineMessages({
     },
     TR_SESSION_PHASE_22_MESSAGE: {
         id: 'TR_SESSION_PHASE_22_MESSAGE',
-        defaultMessage: 'Waiting for participants',
+        defaultMessage: 'Waiting for participants.',
     },
     TR_SESSION_PHASE_31_MESSAGE: {
         id: 'TR_SESSION_PHASE_31_MESSAGE',

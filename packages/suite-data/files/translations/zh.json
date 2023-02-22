@@ -428,7 +428,6 @@
   "TR_COINJOIN_ANONYMITY_LEVEL_SETUP_DESCRIPTION": "显示您资源无法区分的人数",
   "TR_COINJOIN_ANONYMITY_LEVEL_SETUP_TITLE": "所需的匿名级别",
   "TR_COINJOIN_COMPLETED": "Coinjoint成功完成！",
-  "TR_COINJOIN_ROUNDS_LEFT": "{rounds,plural,one{# round}other{# rounds}}剩余",
   "TR_COINJOIN_RUNNING": "Coinjoin 正在运行",
   "TR_COINJOIN_TRANSACTION_BATCH": "CoinJoin交易",
   "TR_COINMARKET_NO_OFFERS_AUTORELOADING_IN": "自动重新加载于",
