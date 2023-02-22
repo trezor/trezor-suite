@@ -36,6 +36,15 @@ const getBlockHash = async (request: Request<MessageTypes.GetBlockHash>) => {
     } as const;
 };
 
+const getBlock = async (request: Request<MessageTypes.GetBlock>) => {
+    const api = await request.connect();
+    const info = await api.getBlock(request.payload);
+    return {
+        type: RESPONSES.GET_BLOCK,
+        payload: info,
+    } as const;
+};
+
 const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => {
     const { payload } = request;
     const api = await request.connect();
@@ -355,6 +364,8 @@ const onRequest = (request: Request<Message>) => {
             return getInfo(request);
         case MESSAGES.GET_BLOCK_HASH:
             return getBlockHash(request);
+        case MESSAGES.GET_BLOCK:
+            return getBlock(request);
         case MESSAGES.GET_ACCOUNT_INFO:
             return getAccountInfo(request);
         case MESSAGES.GET_ACCOUNT_UTXO:

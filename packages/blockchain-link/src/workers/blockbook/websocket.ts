@@ -265,6 +265,10 @@ export class BlockbookAPI extends EventEmitter {
         return this.send('getBlockHash', { height: block });
     }
 
+    getBlock(block: number | string) {
+        return this.send('getBlock', { id: `${block}` });
+    }
+
     getAccountInfo(payload: AccountInfoParams) {
         return this.send('getAccountInfo', payload);
     }
