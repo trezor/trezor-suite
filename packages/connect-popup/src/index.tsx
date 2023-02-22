@@ -208,6 +208,7 @@ const handshake = (handshake: PopupHandshake) => {
             origin: payload?.settings?.origin,
             referrerApp: payload?.settings?.manifest?.appUrl,
             referrerEmail: payload?.settings?.manifest?.email,
+            method: payload?.method,
             transportType: payload.transport?.type,
             transportVersion: payload.transport?.version,
         },
