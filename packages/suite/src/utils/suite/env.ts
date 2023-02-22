@@ -7,9 +7,7 @@ export const isDesktop = () => process.env.SUITE_TYPE === 'desktop';
 
 export const getEnvironment = (): Environment => {
     if (isWeb()) return 'web';
-    if (isDesktop()) return 'desktop';
-
-    return '';
+    return 'desktop';
 };
 
 export const submitRequestForm = async (
