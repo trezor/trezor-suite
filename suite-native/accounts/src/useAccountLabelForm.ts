@@ -9,7 +9,7 @@ const accountFormValidationSchema = yup.object({
     accountLabel: yup.string().required().max(MAX_ACCOUNT_LABEL_LENGTH),
 });
 
-export const useAccountForm = (accountName?: string) =>
+export const useAccountLabelForm = (accountName?: string) =>
     useForm<AccountFormValues>({
         validation: accountFormValidationSchema,
         defaultValues: {

@@ -26,18 +26,6 @@ import { CryptoIcon } from '@trezor/icons';
 
 import { AccountRenameButton } from '../components/AccountRenameButton';
 
-type AccoutSettingsScreenHeaderProps = {
-    accountName?: string;
-    accountKey: string;
-};
-
-const AccoutSettingsScreenHeader = ({
-    accountName,
-    accountKey,
-}: AccoutSettingsScreenHeaderProps) => (
-    <ScreenHeader title={accountName} rightIcon={<AccountRenameModal accountKey={accountKey} />} />
-);
-
 const AccountDetailSettingsRow = ({ title, value }: { title: string; value: ReactNode }) => (
     <Box flexDirection="row" justifyContent="space-between">
         <Text variant="hint" color="gray600">
@@ -72,7 +60,7 @@ export const AccountSettingsScreen = ({
         selectAccountByKey(state, accountKey),
     );
 
-    const accountName = useSelector((state: AccountsRootState) =>
+    const accountLabel = useSelector((state: AccountsRootState) =>
         selectAccountLabel(state, accountKey),
     );
 
@@ -91,7 +79,7 @@ export const AccountSettingsScreen = ({
         <Screen
             header={
                 <ScreenHeader
-                    title={accountName}
+                    title={accountLabel}
                     rightIcon={<AccountRenameButton accountKey={accountKey} />}
                 />
             }

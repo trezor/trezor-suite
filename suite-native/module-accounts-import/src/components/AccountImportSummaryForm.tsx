@@ -6,7 +6,7 @@ import { useNavigation } from '@react-navigation/core';
 import { networks, NetworkSymbol } from '@suite-common/wallet-config';
 import { AccountsRootState, selectAccountsByNetworkAndDevice } from '@suite-common/wallet-core';
 import { Button, Divider } from '@suite-native/atoms';
-import { useAccountForm, AccountFormValues } from '@suite-native/accounts';
+import { useAccountLabelForm, AccountFormValues } from '@suite-native/accounts';
 import { Form } from '@suite-native/forms';
 import { HIDDEN_DEVICE_STATE } from '@suite-native/module-devices';
 import { setOnboardingFinished } from '@suite-native/module-settings';
@@ -52,7 +52,7 @@ export const AccountImportSummaryForm = ({
         deviceNetworkAccounts.length + 1
     }`;
 
-    const form = useAccountForm(defaultAccountLabel);
+    const form = useAccountLabelForm(defaultAccountLabel);
     const {
         handleSubmit,
         formState: { errors },

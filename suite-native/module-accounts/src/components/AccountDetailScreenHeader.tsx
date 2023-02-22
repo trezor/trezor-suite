@@ -14,7 +14,7 @@ import {
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 type AccountDetailScreenHeaderProps = {
-    accountName?: string;
+    accountLabel?: string;
     accountKey: string;
 };
 
@@ -29,7 +29,7 @@ const headerStyle = prepareNativeStyle(utils => ({
 }));
 
 export const AccountDetailScreenHeader = ({
-    accountName,
+    accountLabel,
     accountKey,
 }: AccountDetailScreenHeaderProps) => {
     const { applyStyle } = useNativeStyles();
@@ -60,7 +60,7 @@ export const AccountDetailScreenHeader = ({
                 />
             }
             style={applyStyle(headerStyle)}
-            title={accountName}
+            title={accountLabel}
         />
     );
 };

@@ -5,7 +5,7 @@ import { useWatch, Control } from 'react-hook-form';
 import { Box, Text, Button, VStack } from '@suite-native/atoms';
 import { TextInputField, Form } from '@suite-native/forms';
 import {
-    useAccountForm,
+    useAccountLabelForm,
     AccountFormValues,
     MAX_ACCOUNT_LABEL_LENGTH,
 } from '@suite-native/accounts';
@@ -46,7 +46,7 @@ export const AccountRenameForm = ({ accountKey, onSubmit }: AccountRenameFormPro
         selectAccountLabel(state, accountKey),
     );
 
-    const form = useAccountForm(accountLabel);
+    const form = useAccountLabelForm(accountLabel);
     const {
         handleSubmit,
         formState: { isValid },
