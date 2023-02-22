@@ -15,6 +15,6 @@
         "@suite-common/redux-utils": "workspace:*",
         "@suite-native/config": "workspace:*",
         "@trezor/analytics": "workspace:*",
-        "react-redux": "7.2.2"
+        "react-redux": "8.0.5"
     }
 }

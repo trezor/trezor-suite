@@ -6598,7 +6598,7 @@ __metadata:
     "@suite-common/redux-utils": "workspace:*"
     "@suite-native/config": "workspace:*"
     "@trezor/analytics": "workspace:*"
-    react-redux: 7.2.2
+    react-redux: 8.0.5
   languageName: unknown
   linkType: soft
 
@@ -7737,7 +7737,6 @@ __metadata:
     "@trezor/utils": "workspace:*"
     "@types/react": 18.0.27
     "@types/react-dom": 18.0.10
-    "@types/react-redux": ^7.1.25
     "@types/styled-components": ^5.1.26
     jest: ^26.6.3
     react: 18.2.0
@@ -7892,7 +7891,6 @@ __metadata:
     "@types/react": 18.0.27
     "@types/react-dom": 18.0.10
     "@types/react-helmet": ^6.1.6
-    "@types/react-redux": ^7.1.25
     "@types/react-router": ^5.1.20
     "@types/react-router-dom": ^5.1.7
     "@types/styled-components": ^5.1.26
@@ -7978,7 +7976,6 @@ __metadata:
     "@types/react": 18.0.27
     "@types/react-dom": 18.0.10
     "@types/react-qr-reader": ^2.1.4
-    "@types/react-redux": ^7.1.25
     "@types/react-test-renderer": ^18.0.0
     "@types/react-window": ^1.8.5
     "@types/redux-logger": ^3.0.9
@@ -8690,7 +8687,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/hoist-non-react-statics@npm:*, @types/hoist-non-react-statics@npm:^3.3.0, @types/hoist-non-react-statics@npm:^3.3.1":
+"@types/hoist-non-react-statics@npm:*, @types/hoist-non-react-statics@npm:^3.3.1":
   version: 3.3.1
   resolution: "@types/hoist-non-react-statics@npm:3.3.1"
   dependencies:
@@ -9191,18 +9188,6 @@ __metadata:
   dependencies:
     "@types/react": "*"
   checksum: aa2bb2f703bb826c5d2e8f15d45e42db48091b41b026d00709e6002214e348811b4ec80f121192fca292e8bfdcb047bfa0b3bd59e355e5ab1bc7e011232f2c3e
-  languageName: node
-  linkType: hard
-
-"@types/react-redux@npm:^7.1.25":
-  version: 7.1.25
-  resolution: "@types/react-redux@npm:7.1.25"
-  dependencies:
-    "@types/hoist-non-react-statics": ^3.3.0
-    "@types/react": "*"
-    hoist-non-react-statics: ^3.3.0
-    redux: ^4.0.0
-  checksum: a61ec25cbf8bb3720850402d3c49493fcff4afb73ad447d161460b5d4c600c984ad48708e8564d2fd32052eaa3c3b3f655c5b300ce813429637cce9e5958329f
   languageName: node
   linkType: hard
 
@@ -27385,27 +27370,6 @@ __metadata:
   peerDependencies:
     react: ^18.0.0
   checksum: c2ae111f150c2a46970182df12ea8254719fdfec5e26574711b1838fc37863c63671460a351570fd359c088d891e7bb0ff89023c2f7c1582393b57dd517b92c2
-  languageName: node
-  linkType: hard
-
-"react-redux@npm:7.2.2":
-  version: 7.2.2
-  resolution: "react-redux@npm:7.2.2"
-  dependencies:
-    "@babel/runtime": ^7.12.1
-    hoist-non-react-statics: ^3.3.2
-    loose-envify: ^1.4.0
-    prop-types: ^15.7.2
-    react-is: ^16.13.1
-  peerDependencies:
-    react: ^16.8.3 || ^17
-    redux: ^2.0.0 || ^3.0.0 || ^4.0.0-0
-  peerDependenciesMeta:
-    react-dom:
-      optional: true
-    react-native:
-      optional: true
-  checksum: c421df8a888a261aaecd9dab92b6d2c92712a7d4e4eab15a9ed5a47bafd0cac44d66cff6cfd6ef6563820887053af7641ba872012f41a415067274430e860e98
   languageName: node
   linkType: hard
 
