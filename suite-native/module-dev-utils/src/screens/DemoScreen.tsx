@@ -25,6 +25,9 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Screen, ScreenHeader } from '@suite-native/navigation';
 import { CryptoIcon, Icon, IconName, icons } from '@trezor/icons';
 import { CoinsSettings, DeviceActionButtons } from '@suite-native/module-settings';
+import { TransactionNotification } from '@suite-native/notifications';
+
+import { transactionNotifications } from '../fixtures';
 
 const inputStackStyle = prepareNativeStyle(utils => ({
     backgroundColor: utils.colors.gray100,
@@ -61,6 +64,19 @@ export const DemoScreen = () => {
     return (
         <Screen header={<ScreenHeader />}>
             <VStack spacing="medium">
+                <VStack>
+                    <Text variant="titleSmall">Notifications:</Text>
+                    <VStack
+                        style={{ overflow: 'hidden', height: transactionNotifications.length * 60 }}
+                    >
+                        {transactionNotifications.map(notification => (
+                            <TransactionNotification
+                                {...notification}
+                                isHiddenAutomatically={false}
+                            />
+                        ))}
+                    </VStack>
+                </VStack>
                 <VStack>
                     <Text variant="titleSmall">Button:</Text>
                     {buttonColorSchemes.map(buttonScheme => (

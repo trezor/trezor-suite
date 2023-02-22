@@ -5,14 +5,12 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { TransactionType } from '@suite-common/wallet-types';
 import { CryptoIcon, CryptoIconName, Icon, IconName } from '@trezor/icons';
 import { colorVariants } from '@trezor/theme';
-import { AppColorScheme } from '@suite-native/module-settings';
 
 import { TransactionIconSpinner } from './TransactionIconSpinner';
 
 type TransactionIconProps = {
     cryptoIconName: CryptoIconName;
     transactionType: TransactionType;
-    colorScheme?: AppColorScheme;
     isAnimated?: boolean;
 };
 
@@ -28,25 +26,25 @@ const transactionIconMap: Record<TransactionType, IconName> = {
 };
 
 type TransactionIconStyleProps = {
-    colorScheme: AppColorScheme;
+    isAnimated: boolean;
 };
 
 const transactionIconStyle = prepareNativeStyle<TransactionIconStyleProps>(
-    (utils, { colorScheme }) => ({
+    (utils, { isAnimated }) => ({
         width: ICON_SIZE,
         height: ICON_SIZE,
-        backgroundColor: utils.colors[colorScheme === 'dark' ? 'gray1000' : 'gray100'],
+        backgroundColor: utils.colors[isAnimated ? 'gray1000' : 'gray100'],
         borderRadius: utils.borders.radii.round,
         padding: 14.5,
     }),
 );
 
-const cryptoIconStyle = prepareNativeStyle<TransactionIconStyleProps>((utils, { colorScheme }) => ({
+const cryptoIconStyle = prepareNativeStyle<TransactionIconStyleProps>((utils, { isAnimated }) => ({
     position: 'absolute',
     right: -2,
     bottom: -2,
     padding: 2,
-    backgroundColor: utils.colors[colorScheme === 'dark' ? 'gray1000' : 'gray0'],
+    backgroundColor: utils.colors[isAnimated ? 'gray1000' : 'gray0'],
     borderRadius: utils.borders.radii.round,
 }));
 
@@ -54,16 +52,14 @@ export const TransactionIcon = ({
     cryptoIconName,
     transactionType,
     isAnimated = false,
-    colorScheme = 'standard',
 }: TransactionIconProps) => {
     const { applyStyle } = useNativeStyles();
 
-    const animatedIconColor =
-        colorScheme === 'dark' ? colorVariants.dark.yellow : colorVariants.standard.yellow;
+    const animatedIconColor = colorVariants.standard.yellow;
 
     return (
         <Box>
-            <Box style={applyStyle(transactionIconStyle, { colorScheme })}>
+            <Box style={applyStyle(transactionIconStyle, { isAnimated })}>
                 <Icon
                     name={transactionIconMap[transactionType]}
                     color={isAnimated ? animatedIconColor : 'gray600'}
@@ -71,14 +67,9 @@ export const TransactionIcon = ({
                 />
             </Box>
             {isAnimated && (
-                <TransactionIconSpinner
-                    cryptoIconName={cryptoIconName}
-                    radius={ICON_SIZE / 2}
-                    color={animatedIconColor}
-                />
+                <TransactionIconSpinner radius={ICON_SIZE / 2} color={animatedIconColor} />
             )}
-
-            <Box style={applyStyle(cryptoIconStyle, { colorScheme })}>
+            <Box style={applyStyle(cryptoIconStyle, { isAnimated })}>
                 <CryptoIcon name={cryptoIconName} size="extraSmall" />
             </Box>
         </Box>
