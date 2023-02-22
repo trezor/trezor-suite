@@ -88,6 +88,7 @@ const Col = styled.div<{ justify?: string }>`
     justify-content: ${props => props.justify};
 `;
 
+type NonEmptyArray<T> = [T, ...T[]];
 interface Installer {
     label: string;
     value: string;
@@ -105,27 +106,29 @@ export const InstallBridge = () => {
         goto: routerActions.goto,
     });
 
-    const installers: Installer[] =
-        transport && transport.bridge
-            ? transport.bridge.packages.map(p => ({
+    const installers: NonEmptyArray<Installer> | undefined = transport?.bridge?.packages?.length
+        ? transport.bridge.packages.map(p => {
+              const installer: Installer = {
                   label: p.name,
                   value: p.url,
                   signature: p.signature,
                   preferred: p.preferred,
-              }))
-            : [];
+              };
+              return installer;
+          })
+        : undefined;
 
-    const preferredTarget = installers.find(i => i.preferred === true);
+    const preferredTarget = installers?.find(i => i.preferred === true);
     const data = {
         currentVersion: transport?.type === 'BridgeTransport' ? transport!.version : null,
         latestVersion: transport?.bridge ? transport.bridge.version.join('.') : null,
         installers,
-        target: preferredTarget || installers[0],
+        target: preferredTarget,
         uri: DATA_URL,
     };
 
     const target = selectedTarget || data.target;
-    const isLoading = !transport;
+    const isLoading = !transport || !target;
     const transportAvailable = transport && transport.type;
 
     return (
