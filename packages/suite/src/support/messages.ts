@@ -4050,7 +4050,7 @@ export default defineMessages({
         dynamic: true,
     },
     TR_CHECK_RECOVERY_SEED_DESC_TR: {
-        id: 'TR_CHECK_RECOVERY_SEED_DESC_TT',
+        id: 'TR_CHECK_RECOVERY_SEED_DESC_TR',
         defaultMessage:
             'Your recovery seed (wallet backup) is entered using the Trezor Model R buttons. This avoids exposing any of your sensitive information to a potentially insecure computer or web browser.',
         dynamic: true,
