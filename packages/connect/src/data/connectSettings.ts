@@ -25,8 +25,6 @@ const initialSettings: ConnectSettings = {
     popup: true,
     popupSrc: `${DEFAULT_DOMAIN}popup.html`,
     webusbSrc: `${DEFAULT_DOMAIN}webusb.html`,
-    // deprecated, use transports instead
-    webusb: true,
     transports: undefined,
     pendingTransportEvent: true,
     supportedBrowser:
