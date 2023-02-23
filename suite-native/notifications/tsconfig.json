@@ -14,6 +14,7 @@
         { "path": "../atoms" },
         { "path": "../formatters" },
         { "path": "../navigation" },
+        { "path": "../theme" },
         { "path": "../transactions" },
         { "path": "../../packages/icons" },
         { "path": "../../packages/styles" },

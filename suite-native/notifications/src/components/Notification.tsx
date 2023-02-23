@@ -14,7 +14,7 @@ import { TouchableWithoutFeedback } from 'react-native';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Box, Text } from '@suite-native/atoms';
 
-type AnnouncementNotificationProps = {
+type NotificationProps = {
     iconLeft?: ReactNode;
     iconRight?: ReactNode;
     title: string;
@@ -24,6 +24,7 @@ type AnnouncementNotificationProps = {
 };
 
 const DISMISS_THRESHOLD = -25;
+const HIDDEN_OFFSET = -750;
 
 const ENTER_ANIMATION_DURATION = 200;
 const EXIT_ANIMATION_DURATION = 1000;
@@ -40,14 +41,14 @@ const notificationContainerStyle = prepareNativeStyle(utils => ({
     ...utils.boxShadows.small,
 }));
 
-export const AnnouncementNotification = ({
+export const Notification = ({
     iconLeft,
     iconRight,
     title,
     description,
     onPress,
     isHiddenAutomatically = true,
-}: AnnouncementNotificationProps) => {
+}: NotificationProps) => {
     const [isHidden, setIsHidden] = useState(false);
     const { applyStyle } = useNativeStyles();
 
@@ -59,7 +60,7 @@ export const AnnouncementNotification = ({
         },
         onEnd: event => {
             if (event.translationY < DISMISS_THRESHOLD) {
-                translateY.value = withTiming(-700, undefined, isFinished => {
+                translateY.value = withTiming(HIDDEN_OFFSET, undefined, isFinished => {
                     if (isFinished) runOnJS(setIsHidden)(true);
                 });
             } else {
@@ -74,7 +75,7 @@ export const AnnouncementNotification = ({
             NOTIFICATION_VISIBLE_DURATION,
         );
         return () => clearTimeout(timeout);
-    });
+    }, [isHiddenAutomatically]);
 
     const swipeGestureStyle = useAnimatedStyle(() => ({
         transform: [

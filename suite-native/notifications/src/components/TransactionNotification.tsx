@@ -21,7 +21,7 @@ import { Icon } from '@trezor/icons';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { useNativeStyles, prepareNativeStyle } from '@trezor/styles';
 
-import { AnnouncementNotification } from './AnnouncementNotification';
+import { Notification } from './Notification';
 
 type TransactionNotificationProps = {
     txid: string;
@@ -38,7 +38,7 @@ type TransactionNotificationDescriptionProps = {
 
 type TransactionTypeProperties = {
     title?: string;
-    preposition?: string;
+    prefix?: string;
 };
 
 const addressContainerStyle = prepareNativeStyle(_ => ({
@@ -46,12 +46,12 @@ const addressContainerStyle = prepareNativeStyle(_ => ({
 }));
 
 const transactionTypeToContentMap = {
-    recv: { title: 'Incoming transaction', preposition: 'from' },
-    sent: { title: 'Sending transaction', preposition: 'to' },
-    self: { title: 'Sending transaction', preposition: 'to' },
-    joint: { title: 'Sending transaction', preposition: 'to' },
-    failed: { title: 'Sending transaction', preposition: 'to' },
-    unknown: { title: 'Sending transaction', preposition: 'to' },
+    recv: { title: 'Incoming transaction', prefix: 'from' },
+    sent: { title: 'Sending transaction', prefix: 'to' },
+    self: { title: 'Sending transaction', prefix: 'to' },
+    joint: { title: 'Sending transaction', prefix: 'to' },
+    failed: { title: 'Sending transaction', prefix: 'to' },
+    unknown: { title: 'Sending transaction', prefix: 'to' },
 } as const satisfies Record<TransactionType, TransactionTypeProperties>;
 
 export const TransactionNotificationDescription = ({
@@ -61,7 +61,7 @@ export const TransactionNotificationDescription = ({
     networkSymbol,
 }: TransactionNotificationDescriptionProps) => {
     const { applyStyle } = useNativeStyles();
-    const { preposition } = transactionTypeToContentMap[transactionType];
+    const { prefix } = transactionTypeToContentMap[transactionType];
 
     return (
         <Box flexDirection="row">
@@ -72,8 +72,8 @@ export const TransactionNotificationDescription = ({
                 color="gray500"
                 variant="label"
             />
-            <Text color="gray500" variant="label">
-                {` ${preposition} `}
+            <Text color="gray600" variant="label">
+                {` ${prefix} `}
             </Text>
             {targetAddress && (
                 <Box style={applyStyle(addressContainerStyle)}>
@@ -117,7 +117,7 @@ export const TransactionNotification = ({
     };
 
     return (
-        <AnnouncementNotification
+        <Notification
             isHiddenAutomatically={isHiddenAutomatically}
             onPress={navigateToTransactionDetail}
             title={title}
