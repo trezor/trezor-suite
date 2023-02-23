@@ -1,7 +1,6 @@
 import React, { createRef, useState } from 'react';
 import styled from 'styled-components';
 import { HOMESCREEN_EDITOR_URL } from '@trezor/urls';
-import { analytics, EventType } from '@trezor/suite-analytics';
 
 import { Translation } from '@suite-components';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@suite-components/Settings';
@@ -12,16 +11,16 @@ import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions'
 import { DeviceModel, getDeviceModel, getFirmwareVersion } from '@trezor/device-utils';
 import {
     deviceModelInformation,
-    elementToHomescreen,
+    imagePathToHex,
     fileToDataUrl,
-    getImageResolution,
     ImageValidationError,
-    reportImageUploadToAnalytics,
     validateImage,
+    dataUrlToImage,
 } from '@suite-utils/homescreen';
 import { useAnchor } from '@suite-hooks/useAnchor';
 import { SettingsAnchor } from '@suite-constants/anchors';
 import { versionUtils } from '@trezor/utils';
+import { analytics, EventType } from '@trezor/suite-analytics';
 
 const StyledActionButton = styled(ActionButton)`
     &:not(:first-of-type) {
@@ -44,6 +43,20 @@ const ValidationMessage = styled.div`
     font-size: ${variables.FONT_SIZE.NORMAL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
+
+export const reportImageUploadToAnalytics = async (dataUrl: string, file: File) => {
+    const image = await dataUrlToImage(dataUrl);
+
+    analytics.report({
+        type: EventType.SettingsDeviceBackground,
+        payload: {
+            format: file.type,
+            size: file.size,
+            resolutionWidth: image.width,
+            resolutionHeight: image.height,
+        },
+    });
+};
 
 interface HomescreenProps {
     isDeviceLocked: boolean;
@@ -76,23 +89,22 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
 
     const onUploadHomescreen = async (files: FileList | null) => {
         if (!files || !files.length) return;
-        const image = files[0];
-        const dataUrl = await fileToDataUrl(image);
+        const file = files[0];
 
         const validationResult = await validateImage(file, deviceModel);
         setValidationError(validationResult);
 
+        const dataUrl = await fileToDataUrl(file);
         setCustomHomescreen(dataUrl);
 
-        const imageResolution = await getImageResolution(dataUrl);
-        analytics.report({
-            type: EventType.SettingsDeviceBackground,
-            payload: {
-                format: image.type,
-                size: image.size,
-                resolutionWidth: imageResolution.width,
-                resolutionHeight: imageResolution.height,
-            },
+        reportImageUploadToAnalytics(dataUrl, file);
+    };
+
+    const onChangeHomescreen = async () => {
+        const hex = await imagePathToHex(customHomescreen, deviceModel);
+
+        await applySettings({
+            homescreen: hex,
         });
         resetUpload();
     };
