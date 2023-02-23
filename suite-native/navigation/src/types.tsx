@@ -1,5 +1,8 @@
 import type { BottomTabScreenProps, BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
-import type { StackScreenProps, StackNavigationProp } from '@react-navigation/stack';
+import type {
+    NativeStackScreenProps,
+    NativeStackNavigationProp,
+} from '@react-navigation/native-stack';
 import type { ParamListBase, CompositeScreenProps } from '@react-navigation/native';
 import { CompositeNavigationProp } from '@react-navigation/native';
 
@@ -11,17 +14,17 @@ export type TabNavigationProp<
     K extends keyof ParamListBase,
 > = BottomTabNavigationProp<T, K>;
 
-export type StackProps<T extends ParamListBase, K extends keyof T> = StackScreenProps<T, K>;
+export type StackProps<T extends ParamListBase, K extends keyof T> = NativeStackScreenProps<T, K>;
 export type StackNavigationProps<
     T extends ParamListBase,
     K extends keyof ParamListBase,
-> = StackNavigationProp<T, K>;
+> = NativeStackNavigationProp<T, K>;
 
 export type TabToStackCompositeNavigationProp<
     T extends ParamListBase,
     K extends string,
     L extends ParamListBase,
-> = CompositeNavigationProp<BottomTabNavigationProp<T, K>, StackNavigationProp<L>>;
+> = CompositeNavigationProp<BottomTabNavigationProp<T, K>, NativeStackNavigationProp<L>>;
 
 export type StackToTabCompositeScreenProps<
     T extends ParamListBase,
@@ -39,13 +42,13 @@ export type StackToStackCompositeScreenProps<
     T extends ParamListBase,
     K extends string,
     L extends ParamListBase,
-> = CompositeScreenProps<StackProps<T, K>, StackScreenProps<L>>;
+> = CompositeScreenProps<StackProps<T, K>, NativeStackScreenProps<L>>;
 
 export type StackToStackCompositeNavigationProps<
     T extends ParamListBase,
     K extends string,
     L extends ParamListBase,
-> = CompositeNavigationProp<StackNavigationProp<T, K>, StackNavigationProp<L>>;
+> = CompositeNavigationProp<NativeStackNavigationProp<T, K>, NativeStackNavigationProp<L>>;
 
 export type TabsOptions = {
     [routeName: string]: {

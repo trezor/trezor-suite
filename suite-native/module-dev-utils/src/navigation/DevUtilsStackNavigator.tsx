@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { createStackNavigator } from '@react-navigation/stack';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import {
     DevUtilsStackParamList,
@@ -11,7 +11,7 @@ import {
 import { DevUtilsScreen } from '../screens/DevUtilsScreen';
 import { DemoScreen } from '../screens/DemoScreen';
 
-const DevUtilsStack = createStackNavigator<DevUtilsStackParamList>();
+const DevUtilsStack = createNativeStackNavigator<DevUtilsStackParamList>();
 
 export const DevUtilsStackNavigator = () => (
     <DevUtilsStack.Navigator

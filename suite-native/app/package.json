@@ -33,7 +33,7 @@
         "@formatjs/intl-relativetimeformat": "^11.1.3",
         "@react-navigation/bottom-tabs": "^6.5.4",
         "@react-navigation/native": "^6.1.3",
-        "@react-navigation/stack": "^6.3.12",
+        "@react-navigation/native-stack": "^6.9.11",
         "@reduxjs/toolkit": "1.9.2",
         "@sentry/react-native": "5.0.0-alpha.9",
         "@shopify/react-native-skia": "0.1.173",

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { createStackNavigator } from '@react-navigation/stack';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import {
     AccountsImportStackParamList,
@@ -14,7 +14,7 @@ import { AccountImportLoadingScreen } from '../screens/AccountImportLoadingScree
 import { AccountImportSummaryScreen } from '../screens/AccountImportSummaryScreen';
 import { ScanQRCodeModalScreen } from '../screens/ScanQRCodeModalScreen';
 
-export const AccountsImportStack = createStackNavigator<AccountsImportStackParamList>();
+export const AccountsImportStack = createNativeStackNavigator<AccountsImportStackParamList>();
 
 export const AccountsImportStackNavigator = () => (
     <AccountsImportStack.Navigator screenOptions={stackNavigationOptionsConfig}>

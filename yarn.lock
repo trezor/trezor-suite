@@ -4726,15 +4726,31 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@react-navigation/elements@npm:^1.3.14":
-  version: 1.3.14
-  resolution: "@react-navigation/elements@npm:1.3.14"
+"@react-navigation/elements@npm:^1.3.14, @react-navigation/elements@npm:^1.3.16":
+  version: 1.3.16
+  resolution: "@react-navigation/elements@npm:1.3.16"
   peerDependencies:
     "@react-navigation/native": ^6.0.0
     react: "*"
     react-native: "*"
     react-native-safe-area-context: ">= 3.0.0"
-  checksum: bf0856fb4dda63dcd21f3e6c9136fdf749e35a02e97741915d225f770348eea0ba8aea9875f653c984b12420cfb2a4a55cd5c0e4e033976d9e51be7ae27cf1a7
+  checksum: d3a9c80d91dbc3116bf57960601099c7ec7f28089f819e90b1c4545b3193b6ad368cb101cb05d5d6935f8bd658388bddd1d9fc4936ca7c2746dac702ed35d00d
+  languageName: node
+  linkType: hard
+
+"@react-navigation/native-stack@npm:^6.9.11":
+  version: 6.9.11
+  resolution: "@react-navigation/native-stack@npm:6.9.11"
+  dependencies:
+    "@react-navigation/elements": ^1.3.16
+    warn-once: ^0.1.0
+  peerDependencies:
+    "@react-navigation/native": ^6.0.0
+    react: "*"
+    react-native: "*"
+    react-native-safe-area-context: ">= 3.0.0"
+    react-native-screens: ">= 3.0.0"
+  checksum: b0dc76911f907be545a89af73d2ae4d8f38c1474c33ef4dcb497ecc9210a79b986b614d14531c2665be1b6919c871683267ceb88ef9be18a7c21b8707f07cc59
   languageName: node
   linkType: hard
 
@@ -4759,24 +4775,6 @@ __metadata:
   dependencies:
     nanoid: ^3.1.23
   checksum: 3e765b66cf3e94b9194cfffe8ba6fa51e6652e8f9d8fed713ac76f6ad9e2bd5af5590d83e546efb71455bd6bf2ab1faefcf7f1b0c24b15324c4fe1b8246f8dab
-  languageName: node
-  linkType: hard
-
-"@react-navigation/stack@npm:^6.3.12":
-  version: 6.3.12
-  resolution: "@react-navigation/stack@npm:6.3.12"
-  dependencies:
-    "@react-navigation/elements": ^1.3.14
-    color: ^4.2.3
-    warn-once: ^0.1.0
-  peerDependencies:
-    "@react-navigation/native": ^6.0.0
-    react: "*"
-    react-native: "*"
-    react-native-gesture-handler: ">= 1.0.0"
-    react-native-safe-area-context: ">= 3.0.0"
-    react-native-screens: ">= 3.0.0"
-  checksum: 09e793edb0bb56edacdb3446a001eeb6f388d125dcbabf76a0e6d0531a48db3f68a0535fafb322a290e8511cc8390ab5e9d2ee4bda8604552368fabffe438793
   languageName: node
   linkType: hard
 
@@ -6739,7 +6737,7 @@ __metadata:
     "@mobily/ts-belt": ^3.13.1
     "@react-navigation/core": ^6.4.6
     "@react-navigation/native": ^6.1.3
-    "@react-navigation/stack": ^6.3.12
+    "@react-navigation/native-stack": ^6.9.11
     "@reduxjs/toolkit": 1.9.2
     "@shopify/react-native-skia": 0.1.173
     "@suite-common/formatters": "workspace:*"
@@ -6777,7 +6775,7 @@ __metadata:
   dependencies:
     "@mobily/ts-belt": ^3.13.1
     "@react-navigation/native": ^6.1.3
-    "@react-navigation/stack": ^6.3.12
+    "@react-navigation/native-stack": ^6.9.11
     "@reduxjs/toolkit": 1.9.2
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
@@ -6808,7 +6806,7 @@ __metadata:
   resolution: "@suite-native/module-dev-utils@workspace:suite-native/module-dev-utils"
   dependencies:
     "@react-navigation/core": ^6.4.6
-    "@react-navigation/stack": ^6.3.12
+    "@react-navigation/native-stack": ^6.9.11
     "@suite-common/logger": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/config": "workspace:*"
@@ -6844,7 +6842,7 @@ __metadata:
   resolution: "@suite-native/module-home@workspace:suite-native/module-home"
   dependencies:
     "@react-navigation/native": ^6.1.3
-    "@react-navigation/stack": ^6.3.12
+    "@react-navigation/native-stack": ^6.9.11
     "@suite-common/formatters": "workspace:*"
     "@suite-native/assets": "workspace:*"
     "@suite-native/atoms": "workspace:*"
@@ -6888,7 +6886,7 @@ __metadata:
   dependencies:
     "@react-navigation/core": ^6.4.6
     "@react-navigation/native": ^6.1.3
-    "@react-navigation/stack": ^6.3.12
+    "@react-navigation/native-stack": ^6.9.11
     "@reduxjs/toolkit": 1.9.2
     "@suite-common/analytics": "workspace:*"
     "@suite-common/suite-config": "workspace:*"
@@ -6912,7 +6910,7 @@ __metadata:
   dependencies:
     "@react-navigation/bottom-tabs": ^6.5.4
     "@react-navigation/native": ^6.1.3
-    "@react-navigation/stack": ^6.3.12
+    "@react-navigation/native-stack": ^6.9.11
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@suite-native/atoms": "workspace:*"
@@ -7802,7 +7800,7 @@ __metadata:
     "@formatjs/intl-relativetimeformat": ^11.1.3
     "@react-navigation/bottom-tabs": ^6.5.4
     "@react-navigation/native": ^6.1.3
-    "@react-navigation/stack": ^6.3.12
+    "@react-navigation/native-stack": ^6.9.11
     "@reduxjs/toolkit": 1.9.2
     "@sentry/react-native": 5.0.0-alpha.9
     "@shopify/react-native-skia": 0.1.173

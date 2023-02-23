@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import { SafeAreaView, StatusBar, View } from 'react-native';
+import { StatusBar, View } from 'react-native';
 import { useSafeAreaInsets, EdgeInsets } from 'react-native-safe-area-context';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -59,7 +59,7 @@ export const Screen = ({
     const barStyle = isDarkColor(colors[backgroundColor]) ? 'light-content' : 'dark-content';
 
     return (
-        <SafeAreaView
+        <View
             style={applyStyle(screenContainerStyle, {
                 backgroundColor,
             })}
@@ -98,6 +98,6 @@ export const Screen = ({
             >
                 {children}
             </ScreenContent>
-        </SafeAreaView>
+        </View>
     );
 };
