@@ -36,7 +36,7 @@ import { SkeletonRectangle, SkeletonCircle } from './Skeleton';
 import Notifications from './Notifications';
 import FormattedDate, { FormattedDateWithBullet } from './FormattedDate';
 import Metadata from './Metadata';
-import HomescreenGallery from './HomescreenGallery';
+import { HomescreenGallery } from './HomescreenGallery';
 import DeviceMatrixExplanation from './DeviceMatrixExplanation';
 import AccountFormCloseButton from './AccountFormCloseButton';
 import { TroubleshootingTips } from './TroubleshootingTips';
