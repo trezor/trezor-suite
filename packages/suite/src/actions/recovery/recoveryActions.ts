@@ -6,7 +6,7 @@ import * as onboardingActions from '@onboarding-actions/onboardingActions';
 import * as routerActions from '@suite-actions/routerActions';
 import { Dispatch, GetState } from '@suite-types';
 import { WordCount } from '@recovery-types';
-import { DEVICE } from '@suite-constants';
+import { DEFAULT_PASSPHRASE_PROTECTION } from '@suite-constants/device';
 import { SUITE } from '@suite-actions/constants';
 import { DeviceModel, getDeviceModel } from '@trezor/device-utils';
 
@@ -110,7 +110,7 @@ const recoverDevice = () => async (dispatch: Dispatch, getState: GetState) => {
     const params: RecoveryDevice = {
         type: advancedRecovery ? 1 : 0,
         word_count: wordsCount,
-        passphrase_protection: DEVICE.DEFAULT_PASSPHRASE_PROTECTION,
+        passphrase_protection: DEFAULT_PASSPHRASE_PROTECTION,
         enforce_wordlist: true,
     };
 
@@ -125,7 +125,7 @@ const recoverDevice = () => async (dispatch: Dispatch, getState: GetState) => {
         },
     });
 
-    if (response.success && DEVICE.DEFAULT_PASSPHRASE_PROTECTION) {
+    if (response.success && DEFAULT_PASSPHRASE_PROTECTION) {
         // We call recoverDevice from onboarding
         // Uninitialized device has disabled passphrase protection thus useEmptyPassphrase is set to true.
         // It means that when user finished the onboarding process a standard wallet is automatically

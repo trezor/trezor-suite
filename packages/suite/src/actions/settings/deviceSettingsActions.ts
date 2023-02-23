@@ -7,7 +7,7 @@ import * as deviceUtils from '@suite-utils/device';
 import * as modalActions from '@suite-actions/modalActions';
 import * as routerActions from '@suite-actions/routerActions';
 import { Dispatch, GetState } from '@suite-types';
-import { DEVICE } from '@suite-constants';
+import * as DEVICE from '@suite-constants/device';
 import { SUITE } from '@suite-actions/constants';
 import { getDeviceModel } from '@trezor/device-utils';
 
