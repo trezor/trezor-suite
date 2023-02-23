@@ -1,6 +1,7 @@
 /* eslint-disable no-bitwise */
 import { DeviceModel } from '@trezor/device-utils';
-import * as pako from 'pako';
+
+import { analytics, EventType } from '@trezor/suite-analytics';
 
 export const deviceModelInformation = {
     [DeviceModel.T1]: { width: 128, height: 64, supports: ['.png', '.jpeg'] },
@@ -22,59 +23,58 @@ export const enum ImageValidationError {
 
 const range = (length: number) => [...Array(length).keys()];
 
-const byteArrayToHexString = (byteArray: Uint8Array) =>
-    Array.from(byteArray, byte => `0${(byte & 0xff).toString(16)}`.slice(-2)).join('');
+export const fileToDataUrl = (file: File): Promise<string> => {
+    const reader = new FileReader();
+    return new Promise((resolve, reject) => {
+        // @ts-expect-error
+        reader.onload = e => resolve(e.target.result);
+        reader.onerror = err => {
+            reject(err);
+        };
+        reader.readAsDataURL(file);
+    });
+};
 
-const rightPad = (len: number, val: string) => {
-    while (val.length < len) {
-        val = `${val}0`;
+export const fileToArrayBuffer = (file: File): Promise<ArrayBuffer> => {
+    const reader = new FileReader();
+    return new Promise((resolve, reject) => {
+        // @ts-expect-error
+        reader.onload = e => resolve(e.target.result);
+        reader.onerror = err => {
+            reject(err);
+        };
+        reader.readAsArrayBuffer(file);
+    });
+};
+
+const dataUrlToImage = (dataUrl: string): Promise<HTMLImageElement> =>
+    new Promise((resolve, reject) => {
+        const image = new Image();
+
+        image.onload = () => {
+            resolve(image);
+        };
+        image.onerror = e => {
+            reject(e);
+        };
+        image.src = dataUrl;
+    });
+
+const imageToCanvas = (image: HTMLImageElement, width: number, height: number) => {
+    const canvas = document.createElement('canvas');
+    canvas.height = height;
+    canvas.width = width;
+
+    // willReadFrequently - to optimize reading data url and image data
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
+    if (ctx == null) {
+        throw new Error('2D context is null');
     }
-    return val;
-};
 
-const evenPad = (val: string) => {
-    if (val.length % 2 === 0) return val;
-    return `0${val}`;
-};
+    ctx.clearRect(0, 0, width, height);
+    ctx.drawImage(image, 0, 0);
 
-const chunkString = (size: number, str: string) => {
-    const re = new RegExp(`.{1,${size}}`, 'g');
-    const result = str.match(re);
-    if (!result) return [];
-    return result;
-};
-
-const getCanvas = () => {
-    const canvas = document.getElementById(canvasId);
-    if (canvas != null && canvas instanceof HTMLCanvasElement) {
-        return canvas;
-    }
-    const newCanvas = document.createElement('canvas');
-    newCanvas.id = canvasId;
-    newCanvas.style.visibility = 'hidden';
-    newCanvas.style.position = 'absolute';
-    newCanvas.style.height = '0';
-    const { body } = document;
-    if (body == null) {
-        throw new Error('document.body is null');
-    }
-    body.appendChild(newCanvas);
-    return newCanvas;
-};
-
-const removeCanvas = () => {
-    const el = document.getElementById(canvasId);
-    if (el) {
-        el.remove();
-    }
-};
-
-// assuming max = x = y here
-const isOutsideCircle = (max: number, row: number, col: number) => {
-    const half = max / 2;
-    const dx = col - half;
-    const dy = row - half;
-    return Math.sqrt(dx ** 2 + dy ** 2) >= half;
+    return { canvas, ctx };
 };
 
 const toig = (w: number, h: number, imageData: ImageData) => {
@@ -101,85 +101,11 @@ const toig = (w: number, h: number, imageData: ImageData) => {
     return hex;
 };
 
-const toif = (w: number, h: number, imageData: ImageData) => {
-    // flat does [[1, 2], [3, 4]] -> [1, 2, 3, 4] here
-    const pixels = range(h)
-        .map(row =>
-            range(w).map(col => {
-                const i = row * w + col;
-                // draw black outside the visible area for smaller image size
-                if (isOutsideCircle(w, row, col)) {
-                    return 0;
-                }
-                const r = imageData.data[4 * i];
-                const g = imageData.data[4 * i + 1];
-                const b = imageData.data[4 * i + 2];
-                return ((r & 0xf8) << 8) | ((g & 0xfc) << 3) | ((b & 0xf8) >> 3);
-            }),
-        )
-        .flat();
+export const imageToImageData = (image: HTMLImageElement, width: number, height: number) => {
+    const { ctx } = imageToCanvas(image, width, height);
 
-    // Uint16Array -> Uint8Array
-    const bytes = pixels.map((p: number) => [Math.floor(p / 256), p % 256]).flat();
-
-    const packed = pako.deflateRaw(bytes, {
-        level: 9,
-        windowBits: 10,
-    });
-
-    // TOIf
-    let header = '544f4966';
-    // width
-    header += '9000';
-    // height
-    header += '9000';
-    let length = Number(packed.length).toString(16);
-    if (length.length % 2 > 0) {
-        length = evenPad(length);
-    }
-    length = chunkString(2, length).reverse().join('');
-    header += rightPad(8, length);
-
-    return header + byteArrayToHexString(packed);
-};
-
-export const fileToDataUrl = (file: File): Promise<string> => {
-    const reader = new FileReader();
-    return new Promise((resolve, reject) => {
-        reader.onload = e =>
-            // @ts-expect-error
-            resolve(e.target.result);
-        reader.onerror = err => {
-            reject(err);
-        };
-        reader.readAsDataURL(file);
-    });
-};
-
-const dataUrlToImage = (dataUrl: string): Promise<HTMLImageElement> => {
-    const image = new Image();
-    return new Promise((resolve, reject) => {
-        image.onload = () => {
-            resolve(image);
-        };
-        image.onerror = e => {
-            reject(e);
-        };
-        image.src = dataUrl;
-    });
-};
-
-export const elementToImageData = (element: HTMLImageElement, width: number, height: number) => {
-    const canvas = getCanvas();
-    const ctx = canvas.getContext('2d');
-    if (ctx == null) {
-        throw new Error('2D context is null');
-    }
-    ctx.clearRect(0, 0, width, height);
-    ctx.drawImage(element, 0, 0);
-
-    const imageData = ctx.getImageData(0, 0, width, height);
-    return imageData;
+    // no quality param as it resize image
+    return ctx.getImageData(0, 0, width, height);
 };
 
 export const isValidImageFormat = (dataUrl: string, deviceModel: DeviceModel) => {
@@ -312,39 +238,4 @@ export const imagePathToHex = async (imagePath: string, deviceModel: DeviceModel
     }
 
     return hex;
-};
-
-export const elementToHomescreen = (
-    element: HTMLImageElement,
-    deviceModel: DeviceModel,
-    customElToDataFn?: typeof elementToImageData | undefined,
-) => {
-    // customElToDataFn needed for injecting mocked elementToImageData function in jest tests
-    const { width, height } = deviceModelDimensions[deviceModel];
-
-    const imageData = customElToDataFn
-        ? customElToDataFn(element, width, height)
-        : elementToImageData(element, width, height);
-    const hex = imageDataToHex(imageData, deviceModel);
-    removeCanvas();
-    return hex;
-};
-
-export const getImageResolution = (url: string): Promise<{ width: number; height: number }> =>
-    new Promise(resolve => {
-        const img = new Image();
-        img.src = url;
-        img.onload = () =>
-            resolve({
-                width: img.width,
-                height: img.height,
-            });
-    });
-
-export const getDeviceModelImageType = (deviceModel: DeviceModel) => {
-    if ([DeviceModel.T1, DeviceModel.TR].includes(deviceModel)) {
-        return `BW_64x128`;
-    }
-
-    return `COLOR_128x128`;
 };
