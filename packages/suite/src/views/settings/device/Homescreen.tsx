@@ -143,10 +143,10 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
                     <HiddenInput
                         ref={fileInputElement}
                         type="file"
-                        accept={deviceModelInformation[deviceModel].supports.join(', ')}
-                        onChange={e => {
-                            onUploadHomescreen(e.target.files);
-                        }}
+                        accept={deviceModelInformation[deviceModel].supports
+                            .map(format => `image/${format}`)
+                            .join(', ')}
+                        onChange={e => onUploadHomescreen(e.target.files)}
                     />
                     <Tooltip
                         maxWidth={285}
@@ -220,15 +220,24 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
                         title={<Translation id="TR_CUSTOM_HOMESCREEN" />}
                         description={
                             <ValidationMessage>
-                                <Translation id={validationError} />
+                                <Translation
+                                    id={validationError}
+                                    values={{
+                                        width: deviceModelInformation[deviceModel].width,
+                                        height: deviceModelInformation[deviceModel].height,
+                                    }}
+                                />
                             </ValidationMessage>
                         }
                     />
 
-                    {validationError !== ImageValidationError.InvalidFormat && (
+                    {![
+                        ImageValidationError.InvalidFormatOnlyJpg,
+                        ImageValidationError.InvalidFormatOnlyPngJpg,
+                    ].includes(validationError) && (
                         <Col>
                             <img
-                                width={`${deviceModelInformation[DeviceModel.T1].width}px`}
+                                width={`${deviceModelInformation[deviceModel].width}px`}
                                 alt="Custom homescreen"
                                 id="custom-image"
                                 src={customHomescreen}
