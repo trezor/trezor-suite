@@ -6,7 +6,6 @@ import type { StorageAction } from '@suite-actions/storageActions';
 import type { SuiteAction } from '@suite-actions/suiteActions';
 import type { ResizeAction } from '@suite-actions/resizeActions';
 import type { ModalAction } from '@suite-actions/modalActions';
-import type { AnalyticsAction } from '@suite-actions/analyticsActions';
 import type { MetadataAction } from '@suite-actions/metadataActions';
 import type { ProtocolAction } from '@suite-actions/protocolActions';
 import type { DesktopUpdateAction } from '@suite-actions/desktopUpdateActions';
@@ -21,7 +20,8 @@ import type { MessageSystemAction } from '@suite-actions/messageSystemActions';
 import type { GuideAction } from '@suite-actions/guideActions';
 import type { Route } from '@suite-constants/routes';
 
-import type { EnvironmentType } from '@suite-common/suite-types';
+import { analyticsActions } from '@suite-common/analytics';
+import { Environment } from '@trezor/analytics';
 import type { ObjectValues } from '@trezor/type-utils';
 import type { UiEvent, DeviceEvent, TransportEvent, BlockchainEvent } from '@trezor/connect';
 import { transactionsActions } from '@suite-common/wallet-core';
@@ -32,7 +32,7 @@ export type { ExtendedMessageDescriptor } from '@suite-components/Translation/co
 export type { AppState } from '@suite/reducers/store';
 export type { SuiteThemeColors } from '@trezor/components';
 export type { PrerequisiteType } from '@suite-utils/prerequisites';
-export type { Route, EnvironmentType };
+export type { Route, Environment as EnvironmentType };
 export type {
     ButtonRequest,
     ExtendedDevice,
@@ -50,6 +50,7 @@ export type TransactionAction = ReturnType<
 export type NotificationAction = ReturnType<
     (typeof notificationsActions)[keyof typeof notificationsActions]
 >;
+type AnalyticsAction = ReturnType<(typeof analyticsActions)[keyof typeof analyticsActions]>;
 
 // all actions from all apps used to properly type Dispatch.
 export type Action =

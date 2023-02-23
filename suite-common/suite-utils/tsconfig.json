@@ -7,6 +7,7 @@
         { "path": "../wallet-types" },
         {
             "path": "../../packages/blockchain-link"
-        }
+        },
+        { "path": "../../packages/utils" }
     ]
 }

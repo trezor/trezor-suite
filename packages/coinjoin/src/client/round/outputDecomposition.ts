@@ -1,4 +1,4 @@
-import { getWeakRandomId, arrayToDictionary } from '@trezor/utils';
+import { arrayToDictionary, getWeakRandomId } from '@trezor/utils';
 
 import * as coordinator from '../coordinator';
 import * as middleware from '../middleware';

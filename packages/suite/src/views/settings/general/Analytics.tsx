@@ -1,14 +1,15 @@
 import React from 'react';
-import styled from 'styled-components';
+import { useSelector } from 'react-redux';
 
-import { analytics } from '@trezor/suite-analytics';
-import { Switch } from '@trezor/components';
+import styled from 'styled-components';
 import { Translation } from '@suite-components/Translation';
 import { SectionItem, ActionColumn, TextColumn } from '@suite-components/Settings';
 import { useAnchor } from '@suite-hooks/useAnchor';
 import { SettingsAnchor } from '@suite-constants/anchors';
-import { useSelector } from '@suite-hooks';
-import { hasUserAllowedTracking } from '@suite-utils/analytics';
+
+import { selectHasUserAllowedTracking } from '@suite-common/analytics';
+import { Switch } from '@trezor/components';
+import { analytics } from '@trezor/suite-analytics';
 
 const PositionedSwitch = styled.div`
     align-self: center;
@@ -17,9 +18,7 @@ const PositionedSwitch = styled.div`
 export const Analytics = () => {
     const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.Analytics);
 
-    const { enabled, confirmed } = useSelector(state => state.analytics);
-
-    const userAllowedTracking = hasUserAllowedTracking(enabled, confirmed);
+    const userAllowedTracking = useSelector(selectHasUserAllowedTracking);
 
     return (
         <SectionItem

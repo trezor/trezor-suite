@@ -3,46 +3,32 @@
  * @docs docs/misc/analytics.md
  */
 
+import { allowSentryReport, setSentryUser } from '@suite-utils/sentry';
+import { getEnvironment } from '@suite-utils/env';
+import type { Dispatch, GetState } from '@suite-types';
+
+import {
+    analyticsActions,
+    selectHasUserAllowedTracking,
+    selectAnalyticsInstanceId,
+    selectIsAnalyticsEnabled,
+    selectIsAnalyticsConfirmed,
+} from '@suite-common/analytics';
+import { getTrackingRandomId } from '@trezor/analytics';
 import { analytics, EventType } from '@trezor/suite-analytics';
 
-import { ANALYTICS } from '@suite-actions/constants';
-import { getTrackingRandomId } from '@suite-utils/random';
-import { allowSentryReport, setSentryUser } from '@suite-utils/sentry';
-import { AnalyticsState } from '@suite-reducers/analyticsReducer';
-import { getEnvironment } from '@suite-utils/env';
-import { hasUserAllowedTracking } from '@suite-utils/analytics';
-
-import type { Dispatch } from '@suite-types';
-
-export type AnalyticsAction =
-    | { type: typeof ANALYTICS.ENABLE }
-    | { type: typeof ANALYTICS.DISABLE }
-    | {
-          type: typeof ANALYTICS.INIT;
-          payload: {
-              instanceId: string;
-              sessionId: string;
-              enabled: boolean;
-              confirmed: boolean;
-          };
-      };
-
-export const enable = () => (dispatch: Dispatch) => {
+export const enableAnalyticsThunk = () => (dispatch: Dispatch) => {
     analytics.report({ type: EventType.SettingsAnalytics, payload: { value: true } });
     allowSentryReport(true);
 
-    dispatch({
-        type: ANALYTICS.ENABLE,
-    });
+    dispatch(analyticsActions.enableAnalytics());
 };
 
-export const disable = () => (dispatch: Dispatch) => {
+export const disableAnalyticsThunk = () => (dispatch: Dispatch) => {
     analytics.report({ type: EventType.SettingsAnalytics, payload: { value: false } }, true);
     allowSentryReport(false);
 
-    dispatch({
-        type: ANALYTICS.DISABLE,
-    });
+    dispatch(analyticsActions.disableAnalytics());
 };
 
 /**
@@ -51,11 +37,13 @@ export const disable = () => (dispatch: Dispatch) => {
  * - set sentry user id
  * @param state - tracking state loaded from storage
  */
-export const init = (state: AnalyticsState) => (dispatch: Dispatch) => {
-    // if instanceId does not exist yet (was not loaded from storage), create a new one
-    const instanceId = state.instanceId || getTrackingRandomId();
+export const init = () => (dispatch: Dispatch, getState: GetState) => {
     const sessionId = getTrackingRandomId();
-    const userAllowedTracking = hasUserAllowedTracking(state.enabled, state.confirmed);
+    // if instanceId does not exist yet (was not loaded from storage), create a new one
+    const instanceId = selectAnalyticsInstanceId(getState()) ?? getTrackingRandomId();
+    const userAllowedTracking = selectHasUserAllowedTracking(getState());
+    const isAnalyticsEnabled = selectIsAnalyticsEnabled(getState());
+    const isAnalyticsConfirmed = selectIsAnalyticsConfirmed(getState());
 
     analytics.init(userAllowedTracking, {
         instanceId,
@@ -64,22 +52,20 @@ export const init = (state: AnalyticsState) => (dispatch: Dispatch) => {
         commitId: process.env.COMMITHASH || '',
         isDev: !process.env.CODESIGN_BUILD,
         callbacks: {
-            onEnable: () => dispatch(enable()),
-            onDisable: () => dispatch(disable()),
+            onEnable: () => dispatch(enableAnalyticsThunk()),
+            onDisable: () => dispatch(disableAnalyticsThunk()),
         },
     });
 
     allowSentryReport(userAllowedTracking);
     setSentryUser(instanceId);
 
-    dispatch({
-        type: ANALYTICS.INIT,
-        payload: {
+    dispatch(
+        analyticsActions.initAnalytics({
             instanceId,
             sessionId,
-            // if user made choice, keep it, otherwise set it to true by default just to prefill the confirmation toggle
-            enabled: state.confirmed ? !!state.enabled : true,
-            confirmed: !!state.confirmed,
-        },
-    });
+            enabled: isAnalyticsEnabled,
+            confirmed: isAnalyticsConfirmed,
+        }),
+    );
 };

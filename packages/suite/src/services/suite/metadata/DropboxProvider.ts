@@ -3,6 +3,7 @@ import type { users } from 'dropbox';
 import { AbstractMetadataProvider } from '@suite-types/metadata';
 import { extractCredentialsFromAuthorizationFlow, getOauthReceiverUrl } from '@suite-utils/oauth';
 import { METADATA } from '@suite-actions/constants';
+
 import { getWeakRandomId } from '@trezor/utils';
 
 // Dropbox messed up types, that's why @ts-expect-error occurs in this file

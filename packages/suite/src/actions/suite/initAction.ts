@@ -1,14 +1,14 @@
-import { SUITE } from './constants';
-
 import * as suiteActions from '@suite-actions/suiteActions';
 import * as routerActions from '@suite-actions/routerActions';
 import * as analyticsActions from '@suite-actions/analyticsActions';
 import * as messageSystemActions from '@suite-actions/messageSystemActions';
 import * as languageActions from '@settings-actions/languageActions';
-import * as trezorConnectActions from '@suite-common/connect-init';
-
 import type { Dispatch, GetState } from '@suite-types';
+
+import * as trezorConnectActions from '@suite-common/connect-init';
 import { initBlockchainThunk } from '@suite-common/wallet-core';
+
+import { SUITE } from './constants';
 
 export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     const {
@@ -16,7 +16,6 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
             settings: { language },
             lifecycle: { status },
         },
-        analytics,
     } = getState();
 
     if (status !== 'initial') return;
@@ -28,7 +27,7 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     // right after storage is loaded, we might start:
 
     // 1. init analytics
-    dispatch(analyticsActions.init(analytics));
+    dispatch(analyticsActions.init());
 
     // 2. fetching locales
     dispatch(languageActions.setLanguage(language));

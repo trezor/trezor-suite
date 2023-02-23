@@ -1,3 +1,6 @@
+import { extraDependencies } from '@suite/support/extraDependencies';
+
+import { prepareAnalyticsReducer } from '@suite-common/analytics';
 import { notificationsReducer } from '@suite-common/toast-notifications';
 import { logsSlice } from '@suite-common/logger';
 
@@ -6,12 +9,13 @@ import suite from './suiteReducer';
 import devices from './deviceReducer';
 import modal from './modalReducer';
 import resize from './resizeReducer';
-import analytics from './analyticsReducer';
 import metadata from './metadataReducer';
 import desktopUpdate from './desktopUpdateReducer';
 import messageSystem from './messageSystemReducer';
 import guide from './guideReducer';
 import protocol from './protocolReducer';
+
+const analytics = prepareAnalyticsReducer(extraDependencies);
 
 export default {
     suite,

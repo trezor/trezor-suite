@@ -1,6 +1,6 @@
-import fixtures from './fixtures/encodeDataToQueryString';
-import { encodeDataToQueryString, getRandomId } from '../utils';
+import { fixtures } from './fixtures/encodeDataToQueryString';
 import { Analytics } from '../analytics';
+import { encodeDataToQueryString, getRandomId } from '../utils';
 
 jest.mock('@trezor/utils', () => ({
     __esModule: true,

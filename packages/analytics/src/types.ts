@@ -1,6 +1,6 @@
-export type App = 'suite' | 'connect';
+export type App = 'suite' | 'connect' | 'mobile';
 
-export type Environment = 'desktop' | 'web' | 'mobile' | '';
+export type Environment = 'desktop' | 'web';
 
 export type InitOptions = {
     sessionId?: string;

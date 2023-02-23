@@ -1,6 +1,5 @@
 import type { DBSchema } from 'idb';
 import type { SuiteState } from '@suite-reducers/suiteReducer';
-import type { AnalyticsState } from '@suite-reducers/analyticsReducer';
 import type { FormState } from '@wallet-types/sendForm';
 import type { AcquiredDevice } from '@suite-types';
 import type { MetadataState } from '@suite-types/metadata';
@@ -14,11 +13,13 @@ import type {
     CoinFiatRates,
     WalletAccountTransaction,
 } from '@wallet-types';
+import type { CoinjoinAccount, CoinjoinDebugSettings } from '@wallet-types/coinjoin';
 
 import type { MessageSystem } from '@trezor/message-system';
 import type { BackendSettings, WalletSettings } from '@suite-common/wallet-types';
-import type { CoinjoinAccount, CoinjoinDebugSettings } from '@wallet-types/coinjoin';
 import type { StorageUpdateMessage } from '@trezor/suite-storage';
+import { AnalyticsState } from '@suite-common/analytics';
+
 import { GraphData } from '../types/wallet/graph';
 
 export interface DBWalletAccountTransaction {

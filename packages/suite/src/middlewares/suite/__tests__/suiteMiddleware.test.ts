@@ -1,16 +1,18 @@
 import { configureStore } from '@suite/support/tests/configureStore';
-
-import { SUITE, ROUTER, ANALYTICS } from '@suite-actions/constants';
+import { SUITE, ROUTER } from '@suite-actions/constants';
 import routerReducer from '@suite-reducers/routerReducer';
 import suiteReducer from '@suite-reducers/suiteReducer';
 import modalReducer from '@suite-reducers/modalReducer';
-import analyticsReducer from '@suite-reducers/analyticsReducer';
 import suiteMiddleware from '@suite-middlewares/suiteMiddleware';
-
 import type { Action } from '@suite-types';
+import { extraDependencies } from '@suite/support/extraDependencies';
+
+import { analyticsActions, prepareAnalyticsReducer } from '@suite-common/analytics';
 
 type SuiteState = ReturnType<typeof suiteReducer>;
 type RouterState = ReturnType<typeof routerReducer>;
+
+const analyticsReducer = prepareAnalyticsReducer(extraDependencies);
 
 const getInitialState = (router?: RouterState, suite?: Partial<SuiteState>) => ({
     router: {
@@ -23,7 +25,7 @@ const getInitialState = (router?: RouterState, suite?: Partial<SuiteState>) => (
     },
     modal: modalReducer(undefined, { type: 'foo' } as any),
     analytics: analyticsReducer(undefined, {
-        type: ANALYTICS.INIT,
+        type: analyticsActions.initAnalytics.type,
         payload: {
             instanceId: '1',
             sessionId: '2',

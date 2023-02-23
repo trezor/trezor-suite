@@ -10,13 +10,16 @@ import { devicesReducer } from '@suite-native/module-devices';
 import { appSettingsReducer, appSettingsPersistWhitelist } from '@suite-native/module-settings';
 import { logsSlice } from '@suite-common/logger';
 import { preparePersistReducer } from '@suite-native/storage';
+import { prepareAnalyticsReducer } from '@suite-common/analytics';
 
 import { extraDependencies } from './extraDependencies';
+import { appReducer } from './appSlice';
 
 const transactionsReducer = prepareTransactionsReducer(extraDependencies);
 const accountsReducer = prepareAccountsReducer(extraDependencies);
 const fiatRatesReducer = prepareFiatRatesReducer(extraDependencies);
 const blockchainReducer = prepareBlockchainReducer(extraDependencies);
+const analyticsReducer = prepareAnalyticsReducer(extraDependencies);
 
 export const prepareRootReducers = async () => {
     const appSettingsPersistedReducer = await preparePersistReducer({
@@ -37,7 +40,10 @@ export const prepareRootReducers = async () => {
         persistedKeys: ['accounts', 'transactions'],
         key: 'wallet',
     });
+
     return combineReducers({
+        app: appReducer,
+        analytics: analyticsReducer,
         appSettings: appSettingsPersistedReducer,
         wallet: walletPersistedReducer,
         devices: devicesReducer,

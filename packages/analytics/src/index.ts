@@ -1,2 +1,3 @@
 export { Analytics } from './analytics';
-export { getRandomId } from './utils';
+export * from './types';
+export { getRandomId, getTrackingRandomId } from './utils';

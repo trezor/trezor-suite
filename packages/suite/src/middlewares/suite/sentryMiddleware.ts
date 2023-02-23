@@ -1,26 +1,17 @@
 import { MiddlewareAPI } from 'redux';
-import { DEVICE, TRANSPORT } from '@trezor/connect';
 import { WALLET_SETTINGS } from '@settings-actions/constants';
 import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
-import { getBootloaderVersion, getDeviceModel, getFirmwareVersion } from '@trezor/device-utils';
-
-import {
-    SUITE,
-    ROUTER,
-    ANALYTICS,
-    DESKTOP_UPDATE,
-    METADATA,
-    MODAL,
-    PROTOCOL,
-} from '@suite-actions/constants';
+import { SUITE, ROUTER, DESKTOP_UPDATE, METADATA, MODAL, PROTOCOL } from '@suite-actions/constants';
 import { getSuiteReadyPayload } from '@suite-utils/analytics';
 import { addSentryBreadcrumb, setSentryContext, setSentryTag } from '@suite-utils/sentry';
-
 import { AppState, Action, Dispatch } from '@suite-types';
 import { DISCOVERY } from '@wallet-actions/constants';
-
 import { Severity } from '@sentry/types';
+
+import { getBootloaderVersion, getDeviceModel, getFirmwareVersion } from '@trezor/device-utils';
+import { DEVICE, TRANSPORT } from '@trezor/connect';
 import { accountsActions, blockchainActions } from '@suite-common/wallet-core';
+import { analyticsActions } from '@suite-common/analytics';
 
 const deviceContextName = 'trezor-device';
 
@@ -33,8 +24,8 @@ const breadcrumbActions = [
     METADATA.ENABLE,
     METADATA.DISABLE,
     SUITE.ONION_LINKS,
-    ANALYTICS.ENABLE,
-    ANALYTICS.DISABLE,
+    analyticsActions.enableAnalytics.type,
+    analyticsActions.disableAnalytics.type,
     DESKTOP_UPDATE.CHECKING,
     DESKTOP_UPDATE.AVAILABLE,
     DESKTOP_UPDATE.NOT_AVAILABLE,

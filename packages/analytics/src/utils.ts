@@ -1,24 +1,11 @@
+import type { App, Environment, Event as AnalyticsEvent } from './types';
 import { getWeakRandomId } from '@trezor/utils';
 
-import type { App, Environment, Event } from './types';
+export const getTrackingRandomId = () => getWeakRandomId(10);
 
 export const getRandomId = () => getWeakRandomId(10);
 
-export const getUrl = (app: App, isDev: boolean, environment?: Environment) => {
-    let base = `https://data.trezor.io/${app}/log`;
-
-    if (environment) {
-        base = `${base}/${environment}`;
-    }
-
-    if (isDev) {
-        return `${base}/develop.log`;
-    }
-
-    return `${base}/stable.log`;
-};
-
-export const encodeDataToQueryString = <T extends Event>(
+export const encodeDataToQueryString = <T extends AnalyticsEvent>(
     instanceId: string,
     sessionId: string,
     commitId: string,
@@ -46,6 +33,20 @@ export const encodeDataToQueryString = <T extends Event>(
     return params.toString();
 };
 
+export const getUrl = (app: App, isDev: boolean, environment?: Environment) => {
+    let base = `https://data.trezor.io/${app}/log`;
+
+    if (environment) {
+        base = `${base}/${environment}`;
+    }
+
+    if (isDev) {
+        return `${base}/develop.log`;
+    }
+
+    return `${base}/stable.log`;
+};
+
 const reportEventError = (
     type: ReportEventProps['type'],
     retry: ReportEventProps['retry'],
@@ -71,7 +72,7 @@ const reportEventError = (
 };
 
 interface ReportEventProps {
-    type: Event['type'];
+    type: AnalyticsEvent['type'];
     url: string;
     options: RequestInit;
     retry: boolean;

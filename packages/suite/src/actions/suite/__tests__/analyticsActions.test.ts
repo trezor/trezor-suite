@@ -1,33 +1,23 @@
+import { extraDependencies } from '@suite/support/extraDependencies';
 import { configureStore } from '@suite/support/tests/configureStore';
+import { init } from '@suite-actions/analyticsActions';
 
-import analyticsReducer from '@suite-reducers/analyticsReducer';
-import * as analyticsActions from '@suite-actions/analyticsActions';
-import { ANALYTICS } from '../constants';
+import { prepareAnalyticsReducer, analyticsActions } from '@suite-common/analytics';
+
+const analyticsReducer = prepareAnalyticsReducer(extraDependencies);
 
 type AnalyticsState = ReturnType<typeof analyticsReducer>;
 
-interface InitialState {
-    analytics?: Partial<AnalyticsState>;
-}
-
-jest.mock('@suite-utils/random', () => ({
-    __esModule: true,
-    getTrackingRandomId: () => 'very-random',
-}));
-
-export const getInitialState = (state: InitialState | undefined) => {
-    const analytics = state ? state.analytics : undefined;
-    return {
-        suite: {
-            tor: false,
-            flags: { initialRun: false },
-        },
-        analytics: {
-            ...analyticsReducer(undefined, { type: 'foo' } as any),
-            ...analytics,
-        },
-    };
+type InitialState = {
+    analytics: Partial<AnalyticsState>;
 };
+
+export const getInitialState = (state?: InitialState) => ({
+    analytics: {
+        ...analyticsReducer(undefined, { type: 'foo' } as any),
+        ...state?.analytics,
+    },
+});
 
 type State = ReturnType<typeof getInitialState>;
 const mockStore = configureStore<State, any>();
@@ -38,13 +28,13 @@ const initStore = (state: State) => {
         const action = store.getActions().pop();
         const { analytics } = store.getState();
         store.getState().analytics = analyticsReducer(analytics, action);
-        // add action back to stack
+        // Add action back to stack
         store.getActions().push(action);
     });
     return store;
 };
 
-describe('Analytics Actions', () => {
+describe('analytics init thunks ', () => {
     beforeAll(() => {
         jest.spyOn(console, 'error').mockImplementation();
     });
@@ -52,95 +42,72 @@ describe('Analytics Actions', () => {
         jest.clearAllMocks();
     });
 
-    it('analyticsActions.init() - unconfirmed', () => {
-        const state = getInitialState({});
-        const store = initStore(state);
-        store.dispatch(
-            analyticsActions.init({
+    it('analytics init with unconfirmed', () => {
+        const state = getInitialState({
+            analytics: {
                 enabled: undefined,
                 confirmed: false,
-                sessionId: undefined,
-                instanceId: undefined,
-            }),
-        );
-        store.dispatch(
-            analyticsActions.init({
-                enabled: false,
-                confirmed: false,
-                sessionId: undefined,
-                instanceId: undefined,
-            }),
-        );
-        store.dispatch(
-            analyticsActions.init({
-                enabled: true,
-                confirmed: false,
-                sessionId: undefined,
-                instanceId: undefined,
-            }),
-        );
-
-        const unconfirmedInitAction = {
-            type: ANALYTICS.INIT,
-            payload: { enabled: true, sessionId: 'very-random', instanceId: 'very-random' },
-        };
-
-        expect(store.getActions()).toMatchObject([
-            unconfirmedInitAction,
-            unconfirmedInitAction,
-            unconfirmedInitAction,
-        ]);
-    });
-
-    it('analyticsActions.init() - enabled confirmed', () => {
-        const state = getInitialState({});
+                instanceId: 'very-random',
+            },
+        });
         const store = initStore(state);
-        store.dispatch(
-            analyticsActions.init({
-                enabled: true,
-                sessionId: undefined,
-                instanceId: undefined,
-                confirmed: true,
-            }),
-        );
+
+        store.dispatch(init());
         expect(store.getActions()).toMatchObject([
             {
-                type: ANALYTICS.INIT,
-                payload: { enabled: true, sessionId: 'very-random', instanceId: 'very-random' },
+                type: analyticsActions.initAnalytics.type,
+                payload: {
+                    enabled: false,
+                    confirmed: false,
+                    instanceId: 'very-random',
+                },
             },
         ]);
     });
 
-    it('analyticsActions.init() - disabled confirmed', () => {
-        const state = getInitialState({});
-        const store = initStore(state);
-        store.dispatch(
-            analyticsActions.init({
-                enabled: false,
-                sessionId: undefined,
-                instanceId: undefined,
+    it('analytics init with confirmed', () => {
+        const state = getInitialState({
+            analytics: {
+                enabled: undefined,
                 confirmed: true,
-            }),
-        );
+                instanceId: 'very-random',
+            },
+        });
+        const store = initStore(state);
+
+        store.dispatch(init());
         expect(store.getActions()).toMatchObject([
             {
-                type: ANALYTICS.INIT,
-                payload: { enabled: false, sessionId: 'very-random', instanceId: 'very-random' },
+                type: analyticsActions.initAnalytics.type,
+                payload: {
+                    enabled: false,
+                    confirmed: true,
+                    instanceId: 'very-random',
+                },
             },
         ]);
     });
 
-    it('analyticsActions.enable/dispose', () => {
-        const state = getInitialState({});
+    it('analytics init with confirmed but not enabled', () => {
+        const state = getInitialState({
+            analytics: {
+                enabled: false,
+                confirmed: true,
+                instanceId: 'very-random',
+            },
+        });
         const store = initStore(state);
 
-        store.dispatch(analyticsActions.enable());
-        expect(store.getState()).toMatchObject({
-            analytics: { enabled: true, confirmed: true },
-        });
-        store.dispatch(analyticsActions.disable());
-        expect(store.getState()).toMatchObject({
-            analytics: { enabled: false, confirmed: true },
-        });
+        store.dispatch(init());
+        expect(store.getActions()).toMatchObject([
+            {
+                type: analyticsActions.initAnalytics.type,
+                payload: {
+                    enabled: false,
+                    confirmed: true,
+                    instanceId: 'very-random',
+                },
+            },
+        ]);
     });
 });
