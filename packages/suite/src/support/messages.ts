@@ -5195,9 +5195,13 @@ export default defineMessages({
         id: 'TR_CUSTOM_HOMESCREEN',
         defaultMessage: 'Custom homescreen uploaded',
     },
-    IMAGE_VALIDATION_ERROR_INVALID_FORMAT: {
-        id: 'IMAGE_VALIDATION_ERROR_INVALID_FORMAT',
+    IMAGE_VALIDATION_ERROR_INVALID_FORMAT_ONLY_PNG_JPG: {
+        id: 'IMAGE_VALIDATION_ERROR_INVALID_FORMAT_ONLY_PNG_JPG',
         defaultMessage: 'Invalid file selected. Must be .jpg or .png',
+    },
+    IMAGE_VALIDATION_ERROR_INVALID_FORMAT_ONLY_JPG: {
+        id: 'IMAGE_VALIDATION_ERROR_INVALID_FORMAT_ONLY_JPG',
+        defaultMessage: 'Invalid file selected. Must be .jpg',
     },
     IMAGE_VALIDATION_ERROR_INVALID_HEIGHT: {
         id: 'IMAGE_VALIDATION_ERROR_INVALID_HEIGHT',
@@ -5206,6 +5210,14 @@ export default defineMessages({
     IMAGE_VALIDATION_ERROR_INVALID_WIDTH: {
         id: 'IMAGE_VALIDATION_ERROR_INVALID_WIDTH',
         defaultMessage: 'Invalid width.',
+    },
+    IMAGE_VALIDATION_ERROR_INVALID_SIZE: {
+        id: 'IMAGE_VALIDATION_ERROR_INVALID_SIZE',
+        defaultMessage: 'Invalid size.',
+    },
+    IMAGE_VALIDATION_ERROR_PROGRESSIVE_JPG: {
+        id: 'IMAGE_VALIDATION_ERROR_PROGRESSIVE_JPG',
+        defaultMessage: 'Progressive JPG image format is not supported.',
     },
     IMAGE_VALIDATION_ERROR_UNEXPECTED_ALPHA: {
         id: 'IMAGE_VALIDATION_ERROR_UNEXPECTED_ALPHA',
