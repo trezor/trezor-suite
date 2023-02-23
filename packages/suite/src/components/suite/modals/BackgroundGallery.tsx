@@ -8,7 +8,7 @@ type BackgroundGalleryProps = {
 };
 
 export const BackgroundGallery = ({ device, onCancel }: BackgroundGalleryProps) => (
-    <Modal isCancelable onCancel={onCancel} heading={<Translation id="TR_BACKGROUND_GALLERY" />}>
+    <Modal isCancelable onCancel={onCancel} heading={<Translation id="TR_HOMESCREEN_GALLERY" />}>
         <HomescreenGallery device={device} />
     </Modal>
 );
