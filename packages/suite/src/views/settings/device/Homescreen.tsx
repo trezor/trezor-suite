@@ -64,6 +64,13 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
 
     const deviceModel = getDeviceModel(device);
 
+    const resetUpload = () => {
+        setCustomHomescreen('');
+        if (fileInputElement.current) {
+            fileInputElement.current.value = '';
+        }
+    };
+
     const onUploadHomescreen = async (files: FileList | null) => {
         if (!files || !files.length) return;
         const image = files[0];
@@ -84,6 +91,7 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
                 resolutionHeight: imageResolution.height,
             },
         });
+        resetUpload();
     };
 
     const onSelectCustomHomescreen = async () => {
@@ -173,7 +181,7 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
                         </ActionButton>
                         <ActionButton
                             variant="secondary"
-                            onClick={() => setCustomHomescreen('')}
+                            onClick={resetUpload}
                             isDisabled={isDeviceLocked}
                         >
                             <Translation id="TR_DROP_IMAGE" />
@@ -205,7 +213,7 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
                     <ActionColumn>
                         <ActionButton
                             variant="secondary"
-                            onClick={() => setCustomHomescreen('')}
+                            onClick={resetUpload}
                             isDisabled={isDeviceLocked}
                         >
                             <Translation id="TR_DROP_IMAGE" />
