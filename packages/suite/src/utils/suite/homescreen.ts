@@ -2,11 +2,11 @@
 import { DeviceModel } from '@trezor/device-utils';
 import * as pako from 'pako';
 
-const deviceModelDimensions = {
-    [DeviceModel.T1]: { width: 128, height: 64 },
-    [DeviceModel.TT]: { width: 144, height: 144 },
-    [DeviceModel.TR]: { width: 128, height: 64 },
-    [DeviceModel.UNKNOWN]: { width: 0, height: 0 },
+export const deviceModelInformation = {
+    [DeviceModel.T1]: { width: 128, height: 64, supports: ['.png', '.jpeg'] },
+    [DeviceModel.TT]: { width: 240, height: 240, supports: ['.jpeg'] },
+    [DeviceModel.TR]: { width: 128, height: 64, supports: ['.png', '.jpeg'] },
+    [DeviceModel.UNKNOWN]: { width: 0, height: 0, supports: [] },
 };
 
 const canvasId = 'homescreen-canvas';
