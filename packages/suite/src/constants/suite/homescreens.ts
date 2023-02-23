@@ -54,20 +54,11 @@ export const homescreensBW64x128 = [
     'carlos',
 ] as const;
 
-export const homescreensColor128x128 = [
-    'default',
-    'btc',
-    'ltc',
-    'eth',
-    'doge',
-    'dash',
-    'xmr',
-    'zec',
-    'anonymous',
-    'polis',
-    'hodl',
-    'moon',
-    'decred',
-    'namecoin',
-    'carlos',
+export const homescreensColor240x240 = [
+    'stain-1',
+    'stain-2',
+    'stain-3',
+    'trezor-3d',
+    'trezor',
+    'pigeon',
 ] as const;

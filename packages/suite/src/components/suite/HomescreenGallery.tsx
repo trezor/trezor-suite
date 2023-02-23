@@ -3,14 +3,14 @@ import styled from 'styled-components';
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { resolveStaticPath } from '@trezor/utils';
 
-import { homescreensBW64x128, homescreensColor128x128 } from '@suite-constants';
+import { homescreensBW64x128, homescreensColor240x240 } from '@suite-constants/homescreens';
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
 import { elementToHomescreen } from '@suite-utils/homescreen';
 import { AcquiredDevice } from '@suite-types';
 import { useActions } from '@suite-hooks';
 import { DeviceModel, getDeviceModel } from '@trezor/device-utils';
 
-type AnyImageName = (typeof homescreensBW64x128)[number] | (typeof homescreensColor128x128)[number];
+type AnyImageName = (typeof homescreensBW64x128)[number] | (typeof homescreensColor240x240)[number];
 
 const Wrapper = styled.div`
     display: flex;
@@ -22,11 +22,11 @@ const BackgroundGalleryWrapper = styled.div`
     flex-wrap: wrap;
 `;
 
-const BackgroundImageColor128x128 = styled.img`
-    border-radius: 50%;
+const BackgroundImageColor240x240 = styled.img`
+    border-radius: 3px;
     margin: 5px;
-    width: 80px;
-    height: 80px;
+    width: 120px;
+    height: 120px;
     cursor: pointer;
 `;
 
@@ -43,7 +43,7 @@ type HomescreenGalleryProps = {
     onConfirm?: () => void;
 };
 
-const HomescreenGallery = ({ device, onConfirm }: HomescreenGalleryProps) => {
+export const HomescreenGallery = ({ device, onConfirm }: HomescreenGalleryProps) => {
     const { applySettings } = useActions({ applySettings: deviceSettingsActions.applySettings });
 
     const deviceModel = getDeviceModel(device);
@@ -87,9 +87,9 @@ const HomescreenGallery = ({ device, onConfirm }: HomescreenGalleryProps) => {
             )}
             {deviceModel === DeviceModel.TT && (
                 <BackgroundGalleryWrapper>
-                    {homescreensColor128x128.map(image => (
-                        <BackgroundImageColor128x128
-                            data-test={`@modal/gallery/color_128x128/${image}`}
+                    {homescreensColor240x240.map(image => (
+                        <BackgroundImageColor240x240
+                            data-test={`@modal/gallery/color_240x240/${image}`}
                             key={image}
                             id={image}
                             // 2 eslint rules clashing
@@ -102,7 +102,6 @@ const HomescreenGallery = ({ device, onConfirm }: HomescreenGalleryProps) => {
                                     },
                                 });
                             }}
-                            src={resolveStaticPath(`images/homescreens/COLOR_128x128/${image}.png`)}
                         />
                     ))}
                 </BackgroundGalleryWrapper>
@@ -110,5 +109,3 @@ const HomescreenGallery = ({ device, onConfirm }: HomescreenGalleryProps) => {
         </Wrapper>
     );
 };
-
-export default HomescreenGallery;
