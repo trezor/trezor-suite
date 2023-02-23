@@ -1,10 +1,11 @@
 import React from 'react';
-import { TouchableOpacity, useColorScheme } from 'react-native';
+import { TouchableOpacity } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { Box, Text } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { colorVariants, CSSColor, ThemeColorVariant } from '@trezor/theme';
+import { colorVariants, CSSColor } from '@trezor/theme';
+import { useGetSystemColorVariant } from '@suite-native/theme';
 
 import { selectIsColorSchemeActive, setColorScheme } from '../slice';
 import { AppColorScheme } from '../types';
@@ -50,15 +51,6 @@ const textStyle = prepareNativeStyle(utils => ({
     paddingBottom: utils.spacings.small,
     textTransform: 'capitalize',
 }));
-
-// TODO: this default color variants for dark/light mode should be probably defined in some config
-const useGetSystemColorVariant = (): ThemeColorVariant => {
-    const colorScheme = useColorScheme();
-    if (colorScheme === 'dark') {
-        return 'dark';
-    }
-    return 'standard';
-};
 
 export const ColorSchemePickerItem = ({ colorScheme }: ColorSchemePickerItemProps) => {
     const { applyStyle } = useNativeStyles();

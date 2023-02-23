@@ -13,6 +13,7 @@ import { TouchableWithoutFeedback } from 'react-native';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Box, Text } from '@suite-native/atoms';
+import { InvertedThemeProvider } from '@suite-native/theme';
 
 type NotificationProps = {
     iconLeft?: ReactNode;
@@ -88,25 +89,29 @@ export const Notification = ({
     if (isHidden) return null;
 
     return (
-        <PanGestureHandler onGestureEvent={onSwipeGesture}>
-            <TouchableWithoutFeedback onPress={onPress}>
+        <InvertedThemeProvider>
+            <PanGestureHandler onGestureEvent={onSwipeGesture}>
                 <Animated.View
-                    style={[applyStyle(notificationContainerStyle), swipeGestureStyle]}
+                    style={swipeGestureStyle}
                     entering={SlideInUp.duration(ENTER_ANIMATION_DURATION)}
                     exiting={SlideOutUp.duration(EXIT_ANIMATION_DURATION)}
                 >
-                    <Box flexDirection="row" alignItems="center">
-                        {iconLeft}
-                        <Box marginLeft="medium">
-                            <Text color="gray0">{title}</Text>
-                            <Text variant="label" color="gray600">
-                                {description}
-                            </Text>
+                    <TouchableWithoutFeedback onPress={onPress}>
+                        <Box style={applyStyle(notificationContainerStyle)}>
+                            <Box flexDirection="row" alignItems="center">
+                                {iconLeft}
+                                <Box marginLeft="medium">
+                                    <Text color="gray1000">{title}</Text>
+                                    <Text variant="label" color="gray500">
+                                        {description}
+                                    </Text>
+                                </Box>
+                            </Box>
+                            <Box marginRight="small">{iconRight}</Box>
                         </Box>
-                    </Box>
-                    <Box marginRight="small">{iconRight}</Box>
+                    </TouchableWithoutFeedback>
                 </Animated.View>
-            </TouchableWithoutFeedback>
-        </PanGestureHandler>
+            </PanGestureHandler>
+        </InvertedThemeProvider>
     );
 };

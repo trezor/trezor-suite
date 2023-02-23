@@ -3,7 +3,7 @@ import React, { useMemo } from 'react';
 import { Canvas, ImageSVG, useSVG, Group, Skia, BlendMode } from '@shopify/react-native-skia';
 
 import { useNativeStyles } from '@trezor/styles';
-import { Color, CSSColor } from '@trezor/theme';
+import { Color } from '@trezor/theme';
 
 import { IconName, icons } from '../icons';
 
@@ -11,7 +11,7 @@ type IconProps = {
     name: IconName;
     size?: IconSize;
     customSize?: number;
-    color?: Color | CSSColor;
+    color?: Color;
 };
 
 const iconSizes = {
@@ -31,8 +31,7 @@ export const Icon = ({ name, customSize, size = 'large', color = 'gray1000' }: I
     } = useNativeStyles();
     const sizeNumber = customSize || iconSizes[size];
     const paint = useMemo(() => Skia.Paint(), []);
-    const skiaColor = color in colors ? colors[color as Color] : color;
-    paint.setColorFilter(Skia.ColorFilter.MakeBlend(Skia.Color(skiaColor), BlendMode.SrcIn));
+    paint.setColorFilter(Skia.ColorFilter.MakeBlend(Skia.Color(colors[color]), BlendMode.SrcIn));
 
     return (
         <Canvas style={{ height: sizeNumber, width: sizeNumber }}>

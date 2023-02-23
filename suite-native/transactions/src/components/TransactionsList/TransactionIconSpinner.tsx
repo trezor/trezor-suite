@@ -12,11 +12,11 @@ import { Canvas, Circle, vec, SweepGradient } from '@shopify/react-native-skia';
 
 import { Box } from '@suite-native/atoms';
 import { useNativeStyles, prepareNativeStyle } from '@trezor/styles';
-import { CSSColor } from '@trezor/theme';
+import { Color } from '@trezor/theme';
 
 type TransactionIconSpinnerProps = {
     radius: number;
-    color: CSSColor;
+    color: Color;
 };
 
 const STROKE_WIDTH = 8;

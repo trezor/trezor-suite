@@ -69,7 +69,7 @@ export const TransactionNotificationDescription = ({
                 value={amount}
                 network={networkSymbol}
                 isBalance={false}
-                color="gray500"
+                color="gray600"
                 variant="label"
             />
             <Text color="gray600" variant="label">
@@ -80,7 +80,7 @@ export const TransactionNotificationDescription = ({
                     <AccountAddressFormatter
                         value={targetAddress}
                         variant="label"
-                        color="gray500"
+                        color="gray600"
                     />
                 </Box>
             )}
@@ -106,8 +106,7 @@ export const TransactionNotification = ({
 
     if (!transaction) return null;
 
-    const { title } =
-        transactionTypeToContentMap[transaction.type] ?? transactionTypeToContentMap.recv;
+    const { title } = transactionTypeToContentMap[transaction.type];
 
     const navigateToTransactionDetail = () => {
         navigation.navigate(RootStackRoutes.TransactionDetail, {
@@ -134,9 +133,11 @@ export const TransactionNotification = ({
                     transactionType={transaction.type}
                     cryptoIconName={transaction.symbol}
                     isAnimated
+                    iconColor="yellow"
+                    backgroundColor="gray0"
                 />
             }
-            iconRight={<Icon name="circleRight" color="gray0" />}
+            iconRight={<Icon name="circleRight" color="gray1000" />}
         />
     );
 };

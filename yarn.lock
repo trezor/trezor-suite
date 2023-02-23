@@ -6895,6 +6895,7 @@ __metadata:
     "@suite-native/atoms": "workspace:*"
     "@suite-native/config": "workspace:*"
     "@suite-native/navigation": "workspace:*"
+    "@suite-native/theme": "workspace:*"
     "@trezor/icons": "workspace:*"
     "@trezor/styles": "workspace:*"
     "@trezor/theme": "workspace:*"
@@ -6939,15 +6940,15 @@ __metadata:
     "@suite-native/atoms": "workspace:*"
     "@suite-native/formatters": "workspace:*"
     "@suite-native/navigation": "workspace:*"
+    "@suite-native/theme": "workspace:*"
     "@suite-native/transactions": "workspace:*"
     "@trezor/icons": "workspace:*"
     "@trezor/styles": "workspace:*"
-    "@trezor/theme": "workspace:*"
     react: 18.2.0
     react-native: 0.71.3
     react-native-gesture-handler: ^2.9.0
     react-native-reanimated: 2.14.4
-    react-redux: 7.2.2
+    react-redux: 8.0.5
   languageName: unknown
   linkType: soft
 
@@ -7039,7 +7040,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-
 "@suite-native/theme@workspace:*, @suite-native/theme@workspace:suite-native/theme":
   version: 0.0.0-use.local
   resolution: "@suite-native/theme@workspace:suite-native/theme"
@@ -7050,6 +7050,12 @@ __metadata:
     react: 18.2.0
     react-fela: ^12.2.1
     react-native: 0.71.3
+    "@suite-native/module-settings": "workspace:*"
+    "@trezor/theme": "workspace:*"
+    react: 18.2.0
+    react-fela: ^12.2.1
+    react-native: 0.71.3
+    react-redux: 8.0.5
   languageName: unknown
   linkType: soft
 

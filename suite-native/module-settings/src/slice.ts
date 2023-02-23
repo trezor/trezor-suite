@@ -10,7 +10,7 @@ export interface AppSettingsState {
     fiatCurrency: FiatCurrency;
 }
 
-type SettingsSliceRootState = {
+export type SettingsSliceRootState = {
     appSettings: AppSettingsState;
 };
 
