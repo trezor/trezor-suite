@@ -8465,7 +8465,6 @@ __metadata:
     "@types/file-saver": ^2.0.5
     "@types/invity-api": ^1.0.11
     "@types/jws": ^3.2.5
-    "@types/pako": ^1.0.1
     "@types/pdfmake": ^0.2.2
     "@types/qrcode.react": ^1.0.2
     "@types/react": 18.0.27
@@ -8492,7 +8491,6 @@ __metadata:
     jest: ^26.6.3
     jest-watch-typeahead: 0.6.5
     jws: ^4.0.0
-    pako: ^1.0.11
     pdfmake: ^0.2.7
     polished: ^4.2.2
     prettier: 2.8.4
@@ -9541,13 +9539,6 @@ __metadata:
   version: 4.1.4
   resolution: "@types/npmlog@npm:4.1.4"
   checksum: 740f7431ccfc0e127aa8d162fe05c6ce8aa71290be020d179b2824806d19bd2c706c7e0c9a3c9963cefcdf2ceacb1dec6988c394c3694451387759dafe0aa927
-  languageName: node
-  linkType: hard
-
-"@types/pako@npm:^1.0.1":
-  version: 1.0.4
-  resolution: "@types/pako@npm:1.0.4"
-  checksum: a7ee316fad8e01b895d97fd6db771624d28d7bab43693db563dba768ca6d563aacf99e6d1045288366fec5cd2cb379bf86ef947848690ea648470b21d9a572c5
   languageName: node
   linkType: hard
 
@@ -26330,7 +26321,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pako@npm:^1.0.11, pako@npm:~1.0.5":
+"pako@npm:~1.0.5":
   version: 1.0.11
   resolution: "pako@npm:1.0.11"
   checksum: 1be2bfa1f807608c7538afa15d6f25baa523c30ec870a3228a89579e474a4d992f4293859524e46d5d87fd30fa17c5edf34dbef0671251d9749820b488660b16
