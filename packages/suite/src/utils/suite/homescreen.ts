@@ -6,11 +6,19 @@ export const deviceModelInformation = {
     [DeviceModel.T1]: { width: 128, height: 64, supports: ['.png', '.jpeg'] },
     [DeviceModel.TT]: { width: 240, height: 240, supports: ['.jpeg'] },
     [DeviceModel.TR]: { width: 128, height: 64, supports: ['.png', '.jpeg'] },
-    [DeviceModel.UNKNOWN]: { width: 0, height: 0, supports: [] },
+    [DeviceModel.UNKNOWN]: { width: 0, height: 0, supports: [] as string[] },
 };
 
-const canvasId = 'homescreen-canvas';
-const supportedDataUrlRE = /^data:image\/(jpeg|png)/;
+export const enum ImageValidationError {
+    InvalidFormatOnlyPngJpg = 'IMAGE_VALIDATION_ERROR_INVALID_FORMAT_ONLY_PNG_JPG',
+    InvalidFormatOnlyJpg = 'IMAGE_VALIDATION_ERROR_INVALID_FORMAT_ONLY_JPG',
+    InvalidHeight = 'IMAGE_VALIDATION_ERROR_INVALID_HEIGHT',
+    InvalidWidth = 'IMAGE_VALIDATION_ERROR_INVALID_WIDTH',
+    InvalidSize = 'IMAGE_VALIDATION_ERROR_INVALID_SIZE',
+    ProgressiveJpgFormat = 'IMAGE_VALIDATION_ERROR_PROGRESSIVE_JPG',
+    UnexpectedAlpha = 'IMAGE_VALIDATION_ERROR_UNEXPECTED_ALPHA',
+    InvalidColorCombination = 'IMAGE_VALIDATION_ERROR_INVALID_COLOR_COMBINATION',
+}
 
 const range = (length: number) => [...Array(length).keys()];
 
@@ -174,17 +182,54 @@ export const elementToImageData = (element: HTMLImageElement, width: number, hei
     return imageData;
 };
 
-export const enum ImageValidationError {
-    InvalidFormat = 'IMAGE_VALIDATION_ERROR_INVALID_FORMAT',
-    InvalidHeight = 'IMAGE_VALIDATION_ERROR_INVALID_HEIGHT',
-    InvalidWidth = 'IMAGE_VALIDATION_ERROR_INVALID_WIDTH',
-    UnexpectedAlpha = 'IMAGE_VALIDATION_ERROR_UNEXPECTED_ALPHA',
-    InvalidColorCombination = 'IMAGE_VALIDATION_ERROR_INVALID_COLOR_COMBINATION',
-}
+export const isValidImageFormat = (dataUrl: string, deviceModel: DeviceModel) => {
+    const supportedFormats = deviceModelInformation[deviceModel].supports
+        .join('|')
+        .replaceAll('.', '');
+    const supportedDataUrlRE = new RegExp(`data:image/(${supportedFormats})`);
+
+    return !!dataUrl && supportedDataUrlRE.test(dataUrl);
+};
+
+export const isValidImageWidth = (image: HTMLImageElement, deviceModel: DeviceModel) => {
+    const { width } = deviceModelInformation[deviceModel];
+
+    return image.width === width;
+};
+
+export const isValidImageHeight = (image: HTMLImageElement, deviceModel: DeviceModel) => {
+    const { height } = deviceModelInformation[deviceModel];
+
+    return image.height === height;
+};
+
+const isProgressiveJPEG = (buffer: ArrayBuffer, deviceModel: DeviceModel) => {
+    if (deviceModel !== DeviceModel.TT) {
+        return false;
+    }
+
+    const data = new Uint8Array(buffer);
+
+    for (let i = 0; i < data.length - 1; i++) {
+        if (data[i] === 0xff && data[i + 1] === 0xc2) {
+            return true;
+        }
+    }
+
+    return false;
+};
+
+const isValidImageSize = (file: File, deviceModel: DeviceModel) => {
+    if (deviceModel !== DeviceModel.TT) {
+        return true;
+    }
+
+    return file.size <= 16384;
+};
 
 export const validateImageColors = (origImage: HTMLImageElement, deviceModel: DeviceModel) => {
-    const { width, height } = deviceModelDimensions[deviceModel];
-    const imageData = elementToImageData(origImage, width, height);
+    const { width, height } = deviceModelInformation[deviceModel];
+    const imageData = imageToImageData(origImage, width, height);
 
     if ([DeviceModel.T1, DeviceModel.TR].includes(deviceModel)) {
         try {
@@ -212,28 +257,47 @@ export const validateImageColors = (origImage: HTMLImageElement, deviceModel: De
     }
 };
 
-export const validateImageDimensions = (origImage: HTMLImageElement, deviceModel: DeviceModel) => {
-    const { width, height } = deviceModelDimensions[deviceModel];
+export const validateImage = async (file: File, deviceModel: DeviceModel) => {
+    const dataUrl = await fileToDataUrl(file);
+    const arrayBuffer = await fileToArrayBuffer(file);
+    const image = await dataUrlToImage(dataUrl);
 
-    if (origImage.height !== height) {
-        return ImageValidationError.InvalidHeight;
+    if (!isValidImageFormat(dataUrl, deviceModel)) {
+        const { supports } = deviceModelInformation[deviceModel];
+
+        if (supports.includes('.png') && supports.includes('.jpeg')) {
+            return ImageValidationError.InvalidFormatOnlyPngJpg;
+        }
+        return ImageValidationError.InvalidFormatOnlyJpg;
     }
-    if (origImage.width !== width) {
+    if (!isValidImageWidth(image, deviceModel)) {
         return ImageValidationError.InvalidWidth;
     }
+    if (!isValidImageHeight(image, deviceModel)) {
+        return ImageValidationError.InvalidHeight;
+    }
+    if (isProgressiveJPG(arrayBuffer, deviceModel)) {
+        return ImageValidationError.ProgressiveJpgFormat;
+    }
+    if (!isValidImageSize(file, deviceModel)) {
+        return ImageValidationError.InvalidSize;
+    }
+
+    const imageColorsError = validateImageColors(image, deviceModel);
+
+    return imageColorsError || undefined;
 };
 
-export const validateImageFormat = (dataUrl: string) =>
-    !!dataUrl && supportedDataUrlRE.test(dataUrl) ? undefined : ImageValidationError.InvalidFormat;
 
-export const validate = (dataUrl: string, deviceModel: DeviceModel) =>
-    validateImageFormat(dataUrl) ||
-    dataUrlToImage(dataUrl).then(
-        image =>
-            validateImageDimensions(image, deviceModel) ||
-            validateImageColors(image, deviceModel) ||
-            undefined,
-    );
+
+
+
+
+
+
+
+
+
 
 export const imageDataToHex = (imageData: ImageData, deviceModel: DeviceModel) => {
     const { width, height } = deviceModelDimensions[deviceModel];

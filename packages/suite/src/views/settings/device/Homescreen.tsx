@@ -16,7 +16,8 @@ import {
     fileToDataUrl,
     getImageResolution,
     ImageValidationError,
-    validate,
+    reportImageUploadToAnalytics,
+    validateImage,
 } from '@suite-utils/homescreen';
 import { useAnchor } from '@suite-hooks/useAnchor';
 import { SettingsAnchor } from '@suite-constants/anchors';
@@ -78,7 +79,7 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
         const image = files[0];
         const dataUrl = await fileToDataUrl(image);
 
-        const validationResult = await validate(dataUrl, deviceModel);
+        const validationResult = await validateImage(file, deviceModel);
         setValidationError(validationResult);
 
         setCustomHomescreen(dataUrl);
