@@ -288,24 +288,30 @@ export const validateImage = async (file: File, deviceModel: DeviceModel) => {
     return imageColorsError || undefined;
 };
 
+export const imagePathToHex = async (imagePath: string, deviceModel: DeviceModel) => {
+    const { width, height } = deviceModelInformation[deviceModel];
 
+    const response = await fetch(imagePath);
 
-
-
-
-
-
-
-
-
-
-export const imageDataToHex = (imageData: ImageData, deviceModel: DeviceModel) => {
-    const { width, height } = deviceModelDimensions[deviceModel];
-
+    let hex;
     if (deviceModel === DeviceModel.TT) {
-        return toif(width, height, imageData);
+        // original quality
+        const arrayBuffer = await response.arrayBuffer();
+
+        hex = Buffer.from(arrayBuffer).toString('hex');
+    } else {
+        // decreased quality
+        const blob = await response.blob();
+
+        const element = await dataUrlToImage(URL.createObjectURL(blob));
+
+        const { canvas, ctx } = imageToCanvas(element, width, height);
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+
+        hex = toig(width, height, imageData);
     }
-    return toig(width, height, imageData);
+
+    return hex;
 };
 
 export const elementToHomescreen = (

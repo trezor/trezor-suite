@@ -2043,9 +2043,9 @@ export default defineMessages({
         description: 'Should start with dot, continuation of TR_BACKEND_DISCONNECTED',
         id: 'TR_BACKEND_RECONNECTING',
     },
-    TR_BACKGROUND_GALLERY: {
-        defaultMessage: 'Homescreen background gallery',
-        id: 'TR_BACKGROUND_GALLERY',
+    TR_HOMESCREEN_GALLERY: {
+        defaultMessage: 'Homescreen gallery',
+        id: 'TR_HOMESCREEN_GALLERY',
     },
     TR_BACKUP: {
         defaultMessage: 'Wallet backup',
@@ -2349,7 +2349,7 @@ export default defineMessages({
     },
     TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS_BW_128x64: {
         defaultMessage:
-            'Supports PNG or JPG, 128 x 64 pixels, and using only black and white (not grayscale).',
+            'Supports PNG or JPG, 128 x 64 px, and using only black and white (not grayscale).',
         id: 'TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS_BW_128x64',
     },
     TR_DEVICE_SETTINGS_HOMESCREEN_EDITOR: {
@@ -2357,7 +2357,7 @@ export default defineMessages({
         id: 'TR_DEVICE_SETTINGS_HOMESCREEN_EDITOR',
     },
     TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS_COLOR_240x240: {
-        defaultMessage: 'Supports JPG, 240 x 240 pixels, maximum allowed size is 16 KB.',
+        defaultMessage: 'Supports JPG, 240 x 240 px, maximum allowed size is 16 KB.',
         id: 'TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS_COLOR_240x240',
     },
     TR_DEVICE_SETTINGS_HOMESCREEN_SELECT_FROM_GALLERY: {
@@ -5212,8 +5212,8 @@ export default defineMessages({
         defaultMessage: 'Invalid width.',
     },
     IMAGE_VALIDATION_ERROR_INVALID_SIZE: {
-        id: 'IMAGE_VALIDATION_ERROR_INVALID_SIZE',
-        defaultMessage: 'Invalid size.',
+        id: 'IMAGE_VALIDATION_ERROR_INVALID_SIZE_JPG',
+        defaultMessage: 'Invalid size (Image must be less than 16KB)',
     },
     IMAGE_VALIDATION_ERROR_PROGRESSIVE_JPG: {
         id: 'IMAGE_VALIDATION_ERROR_PROGRESSIVE_JPG',
