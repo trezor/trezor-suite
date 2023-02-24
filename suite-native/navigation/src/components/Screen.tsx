@@ -1,6 +1,8 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useEffect } from 'react';
 import { StatusBar, View } from 'react-native';
 import { useSafeAreaInsets, EdgeInsets } from 'react-native-safe-area-context';
+
+import * as SystemUI from 'expo-system-ui';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Color, nativeSpacings } from '@trezor/theme';
@@ -56,7 +58,13 @@ export const Screen = ({
         utils: { colors, isDarkColor },
     } = useNativeStyles();
     const insets = useSafeAreaInsets();
-    const barStyle = isDarkColor(colors[backgroundColor]) ? 'light-content' : 'dark-content';
+    const backgroundCSSColor = colors[backgroundColor];
+    const barStyle = isDarkColor(backgroundCSSColor) ? 'light-content' : 'dark-content';
+
+    useEffect(() => {
+        // this prevents some weird flashing of splash screen on Android during screen transitions
+        SystemUI.setBackgroundColorAsync(backgroundCSSColor);
+    }, [backgroundCSSColor]);
 
     return (
         <View
@@ -68,7 +76,7 @@ export const Screen = ({
                 barStyle={barStyle}
                 hidden={!hasStatusBar}
                 translucent={false}
-                backgroundColor={colors[backgroundColor]}
+                backgroundColor={backgroundCSSColor}
             />
             {header && (
                 <View>

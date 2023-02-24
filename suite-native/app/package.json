@@ -68,6 +68,7 @@
         "expo-random": "^13.1.1",
         "expo-secure-store": "^12.1.1",
         "expo-splash-screen": "0.18.1",
+        "expo-system-ui": "2.2.1",
         "node-libs-browser": "^2.2.1",
         "react": "18.2.0",
         "react-intl": "^6.2.8",
