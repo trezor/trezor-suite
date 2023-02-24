@@ -11,11 +11,9 @@ import {
 } from '@wallet-reducers/coinjoinReducer';
 import { selectSelectedAccount } from '@wallet-reducers/selectedAccountReducer';
 
-export const BalanceContainer = styled.div<{ isSessionRunning: boolean }>`
-    display: flex;
-    justify-content: space-between;
-    width: ${({ isSessionRunning }) => (isSessionRunning ? '100%' : '58%')};
-    max-width: ${({ isSessionRunning }) => (isSessionRunning ? '480px' : '400px')};
+const BalanceContainer = styled.div`
+    display: grid;
+    grid-template-columns: 1fr 1fr;
 `;
 
 const PrivateBalanceHeading = styled.span`
@@ -66,7 +64,7 @@ export const BalancePrivacyBreakdown = () => {
     }
 
     return (
-        <BalanceContainer isSessionRunning={isSessionRunning}>
+        <BalanceContainer>
             <CryptoAmountWithHeader
                 header={getBalanceHeader()}
                 headerIcon={getBalanceIcon()}

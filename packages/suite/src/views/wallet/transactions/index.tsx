@@ -1,10 +1,9 @@
 import React from 'react';
 import { WalletLayout, CoinjoinExplanation } from '@wallet-components';
-import { getAccountTransactions } from '@suite-common/wallet-utils';
 import { useSelector } from '@suite-hooks';
 import { AppState } from '@suite-types';
 import { CoinjoinSummary } from '@wallet-components/CoinjoinSummary';
-import { selectIsLoadingTransactions } from '@suite-common/wallet-core';
+import { selectAccountTransactions, selectIsLoadingTransactions } from '@suite-common/wallet-core';
 
 import { NoTransactions } from './components/NoTransactions';
 import { AccountEmpty } from './components/AccountEmpty';
@@ -30,18 +29,16 @@ const Layout = ({ selectedAccount, showEmptyHeaderPlaceholder = false, children 
 
 const Transactions = () => {
     const transactionsIsLoading = useSelector(selectIsLoadingTransactions);
-    const { selectedAccount, transactions } = useSelector(state => ({
-        selectedAccount: state.wallet.selectedAccount,
-        transactions: state.wallet.transactions,
-    }));
+    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
+    const accountTransactions = useSelector(state =>
+        selectAccountTransactions(state, selectedAccount.account?.key || ''),
+    );
 
     if (selectedAccount.status !== 'loaded') {
         return <Layout selectedAccount={selectedAccount} />;
     }
 
     const { account } = selectedAccount;
-
-    const accountTransactions = getAccountTransactions(account.key, transactions.transactions);
 
     if (account.backendType === 'coinjoin') {
         const isLoading = account.status === 'out-of-sync' && !!account.syncing;
@@ -53,7 +50,7 @@ const Transactions = () => {
 
                 {!isLoading && (
                     <>
-                        <CoinjoinSummary accountKey={account.key} isEmpty={isEmpty} />
+                        <CoinjoinSummary accountKey={account.key} />
 
                         {isEmpty ? (
                             <CoinjoinExplanation />
