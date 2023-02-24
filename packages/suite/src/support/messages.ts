@@ -3896,10 +3896,6 @@ export default defineMessages({
         id: 'TR_UNAVAILABLE_COINJOIN_DEVICE_DISCONNECTED',
         defaultMessage: 'Unavailable. Associated device is disconnected.',
     },
-    TR_UNAVAILABLE_COINJOIN_DEVICE_LOCKED: {
-        id: 'TR_UNAVAILABLE_COINJOIN_DEVICE_LOCKED',
-        defaultMessage: 'Unavailable. Associated device is busy.',
-    },
     TR_UNAVAILABLE_COINJOIN_ACCOUNT_OUT_OF_SYNC: {
         id: 'TR_UNAVAILABLE_COINJOIN_ACCOUNT_OUT_OF_SYNC',
         defaultMessage: 'Unavailable. Account is possibly out-of-sync.',
@@ -7228,25 +7224,10 @@ export default defineMessages({
         description: 'Note in coinjoin strategy settings',
         defaultMessage: 'Note: You’re also paying a mining fee',
     },
-    TR_OVERVIEW: {
-        id: 'TR_OVERVIEW',
-        description: 'Heading in coin join settings',
-        defaultMessage: 'Overview',
-    },
     TR_MINING_FEE_NOTE: {
         id: 'TR_MINING_FEE_NOTE',
         description: 'Note in coinjoin strategy settings',
         defaultMessage: 'Mining fee might be lower. Selected fee is the max value.',
-    },
-    TR_ESTIMATED_TIME: {
-        id: 'TR_ESTIMATED_TIME',
-        description: 'Coinjoin strategy item - time to complete coin join',
-        defaultMessage: 'Est. time',
-    },
-    TR_ROUNDS: {
-        id: 'TR_ROUNDS',
-        description: 'Coinjoin strategy item - max number of coin join rounds',
-        defaultMessage: 'Rounds',
     },
     TR_SKIP_ROUNDS: {
         id: 'TR_SKIP_ROUNDS',
@@ -7269,39 +7250,6 @@ export default defineMessages({
         description: 'Coinjoin strategy item - fee amount',
         defaultMessage: 'Max mining fee',
     },
-    TR_ROUNDS_TOOLTIP: {
-        id: 'TR_ROUNDS_TOOLTIP',
-        description: 'Coinjoin strategy item tooltip',
-        defaultMessage:
-            'The required anonymity is usually not achieved in a single transaction. The number represents how many coinjoin rounds you allow your Trezor to participate in.',
-    },
-    TR_SKIP_ROUNDS_TOOLTIP: {
-        id: 'TR_SKIP_ROUNDS_TOOLTIP',
-        description: 'Coinjoin strategy item tooltip',
-        defaultMessage:
-            'Skipped rounds make it even more difficult to prove any relation between your inputs. This means you can further obfuscate the origin of the funds.',
-    },
-    TR_MAX_MINING_FEE_TOOLTIP: {
-        id: 'TR_MAX_MINING_FEE_TOOLTIP',
-        description: 'Coinjoin strategy item tooltip',
-        defaultMessage:
-            'The realised mining fee is likely to be smaller. This value represents the price cap for your participation in each round.',
-    },
-    TR_ESTIMATED_TIME_VALUE: {
-        id: 'TR_ESTIMATED_TIME_VALUE',
-        description: 'Time to complete coin join',
-        defaultMessage: '{min} - {max} hours',
-    },
-    TR_ROUNDS_VALUE: {
-        id: 'TR_ROUNDS_VALUE',
-        description: 'Max number of coinjoin rounds',
-        defaultMessage: 'max {rounds}',
-    },
-    TR_NONE: {
-        id: 'TR_NONE',
-        description: 'Skipped coinjoin rounds',
-        defaultMessage: 'none',
-    },
     TR_TERMS_AND_PRIVACY_CONFIRMATION: {
         id: 'TR_TERMS_AND_PRIVACY_CONFIRMATION',
         description: 'Checkbox in coinjoin settings',
@@ -7317,11 +7265,6 @@ export default defineMessages({
         id: 'TR_CONFIRM_CONDITIONS',
         description: 'Tooltip content for disabled button in coinjoin section',
         defaultMessage: 'Confirm the conditions before you proceed.',
-    },
-    TR_NOTHING_TO_ANONYMIZE: {
-        id: 'TR_NOTHING_TO_ANONYMIZE',
-        description: 'Tooltip content for disabled button in coinjoin section',
-        defaultMessage: 'Nothing to anonymize',
     },
     TR_CUSTOM_SETUP: {
         id: 'TR_CUSTOM_SETUP',
@@ -7584,12 +7527,6 @@ export default defineMessages({
         defaultMessage:
             'Coinjoin is a collaborative bitcoin transaction, in which you mix your bitcoin together with hundreds of others.',
     },
-    TR_LOADING_FACT_10: {
-        id: 'TR_LOADING_FACT_10',
-        description: '140 symbols max',
-        defaultMessage:
-            "If you don't want to wait for account discovery next time and are confident about your privacy on this computer, then choose to remember your wallet",
-    },
     TR_LOADING_FACT_11: {
         id: 'TR_LOADING_FACT_11',
         description: '140 symbols max',
@@ -7721,10 +7658,6 @@ export default defineMessages({
     TR_ALL_FUNDS_ANONYMIZED: {
         id: 'TR_ALL_FUNDS_ANONYMIZED',
         defaultMessage: 'All funds private',
-    },
-    TR_SKIP_ROUNDS_CHANCE: {
-        id: 'TR_SKIP_ROUNDS_CHANCE',
-        defaultMessage: '{value}% chance',
     },
     TR_SESSION_PHASE_11_MESSAGE: {
         id: 'TR_SESSION_PHASE_11_MESSAGE',
