@@ -11,8 +11,8 @@ import {
     variables,
     Tooltip,
     animations,
+    Card,
 } from '@trezor/components';
-import { CoinjoinSession } from '@wallet-types/coinjoin';
 import { Translation } from '@suite-components/Translation';
 import { CountdownTimer } from '@suite-components';
 import { SESSION_PHASE_MESSAGES } from '@suite-constants/coinjoin';
@@ -26,18 +26,22 @@ import {
     selectRoundsDurationInHours,
     selectSessionProgressByAccountKey,
     selectCurrentCoinjoinBalanceBreakdown,
+    selectCurrentCoinjoinSession,
 } from '@wallet-reducers/coinjoinReducer';
 import { useCoinjoinSessionBlockers } from '@suite/hooks/coinjoin/useCoinjoinSessionBlockers';
 import { useCoinjoinSessionPhase } from '@wallet-hooks';
 import { selectSelectedAccountBalance } from '@wallet-reducers/selectedAccountReducer';
 import { goto } from '@suite-actions/routerActions';
 
-const Container = styled.div`
+const Container = styled(Card)<{ isWide?: boolean }>`
     position: relative;
-    width: 160px;
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
+    width: ${({ isWide }) => (isWide ? '240px' : '180px')};
+    height: 100%;
+    padding: 10px;
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     text-align: center;
@@ -45,8 +49,8 @@ const Container = styled.div`
 
 const SessionControlsMenu = styled(Dropdown)`
     position: absolute;
-    bottom: calc(100% - 14px);
-    right: -8px;
+    top: 4px;
+    right: 6px;
 `;
 
 const MenuLabel = styled.div`
@@ -59,9 +63,10 @@ const MenuLabel = styled.div`
 `;
 
 const ProgressIndicator = styled.div`
+    position: absolute;
+    top: 11px;
     width: 94px;
     height: 94px;
-    position: absolute;
     background: conic-gradient(#ffffff00 20deg, #cccccc);
     border-radius: 50%;
     font-size: 15px;
@@ -123,33 +128,7 @@ const ProgressWheel = styled.div<{
             }
         `}
 
-    ${({ theme, hasCriticalError }) =>
-        hasCriticalError &&
-        css`
-            ${ProgressContent} {
-                background: ${theme.BG_LIGHT_RED};
-
-                path {
-                    fill: ${theme.BG_RED};
-                }
-            }
-        `}
-
-    
-
-        ${({ isAccountEmpty }) =>
-        isAccountEmpty &&
-        css`
-            opacity: 0.3;
-            background-image: ${({ theme }) =>
-                `url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='100' ry='100' stroke='${theme.TYPE_LIGHT_GREY.replace(
-                    '#',
-                    '%23',
-                )}' stroke-width='5' stroke-dasharray='7' stroke-dashoffset='35' stroke-linecap='butt'/%3e%3c/svg%3e")`};
-            cursor: not-allowed;
-        `}
-
-        ${({ isWithoutProgressOutline }) =>
+    ${({ isWithoutProgressOutline }) =>
         isWithoutProgressOutline &&
         css`
             background: none;
@@ -163,6 +142,34 @@ const ProgressWheel = styled.div<{
                 }
             }
         `}
+
+    ${({ theme, hasCriticalError }) =>
+        hasCriticalError &&
+        css`
+            color: inherit;
+
+            ${ProgressContent} {
+                background: ${theme.BG_LIGHT_RED};
+
+                path {
+                    fill: ${theme.BG_RED};
+                }
+            }
+        `}  
+        
+        ${({ isAccountEmpty }) =>
+        isAccountEmpty &&
+        css`
+            opacity: 0.3;
+            background: ${({ theme }) =>
+                `url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='100' ry='100' stroke='${theme.TYPE_LIGHT_GREY.replace(
+                    '#',
+                    '%23',
+                )}' stroke-width='5' stroke-dasharray='7' stroke-dashoffset='35' stroke-linecap='butt'/%3e%3c/svg%3e")`};
+            cursor: not-allowed;
+        `}
+
+       
 
         ${({ isStartable, isPaused }) =>
         (isStartable || isPaused) &&
@@ -231,10 +238,10 @@ const TextCointainer = styled.div`
 
 interface CoinjoinStatusWheelProps {
     accountKey: string;
-    session?: CoinjoinSession;
 }
 
-export const CoinjoinStatusWheel = ({ accountKey, session }: CoinjoinStatusWheelProps) => {
+export const CoinjoinStatusWheel = ({ accountKey }: CoinjoinStatusWheelProps) => {
+    const session = useSelector(selectCurrentCoinjoinSession);
     const { anonymized, notAnonymized } = useSelector(selectCurrentCoinjoinBalanceBreakdown);
     const balance = useSelector(selectSelectedAccountBalance);
     const roundsDurationInHours = useSelector(selectRoundsDurationInHours);
@@ -467,8 +474,10 @@ export const CoinjoinStatusWheel = ({ accountKey, session }: CoinjoinStatusWheel
     const isWithoutProgressOutline = isNonePrivate && !isSessionActive && !isAccountEmpty;
 
     return (
-        <Container>
-            <SessionControlsMenu alignMenu="right" items={menuItems} ref={menuRef} />
+        <Container isWide={isSessionActive}>
+            {isSessionActive && (
+                <SessionControlsMenu alignMenu="right" items={menuItems} ref={menuRef} />
+            )}
 
             <Tooltip content={!isAccountEmpty && coinjoinSessionBlockedMessage} hideOnClick={false}>
                 <>

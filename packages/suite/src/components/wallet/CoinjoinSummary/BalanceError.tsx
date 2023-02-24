@@ -1,27 +1,40 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useTheme } from '@trezor/components';
-import { useSelector } from '@suite-hooks/useSelector';
-import { selectCurrentCoinjoinSession } from '@wallet-reducers/coinjoinReducer';
-import { BalanceContainer } from './BalancePrivacyBreakdown';
-import { SummaryMessage } from './SummaryMessage';
+import { variables } from '@trezor/components';
+import { TranslationKey } from '@suite-common/intl-types';
+import { Translation } from '@suite-components/Translation';
 
-const StyledBalanceContainer = styled(BalanceContainer)`
-    padding-left: 10px;
+const StyledBalanceContainer = styled.div`
+    padding: 0 24px 0;
 `;
 
-export const BalanceError = () => {
-    const currentSession = useSelector(selectCurrentCoinjoinSession);
+const Heading = styled.p<{ $color?: string }>`
+    margin-bottom: 4px;
+    color: ${({ theme, color }) => color || theme.TYPE_LIGHT_GREY};
+    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
+    font-size: ${variables.FONT_SIZE.TINY};
+`;
 
-    const theme = useTheme();
+const SubHeading = styled.p`
+    max-width: 480px;
+    margin-top: 6px;
+    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
+    font-size: ${variables.FONT_SIZE.H3};
+`;
 
-    return (
-        <StyledBalanceContainer isSessionRunning={!!currentSession}>
-            <SummaryMessage
-                headingId="TR_EMPTY_ACCOUNT_TITLE"
-                messageId="TR_ANONYMITY_SET_ERROR"
-                headingColor={theme.TYPE_RED}
-            />
-        </StyledBalanceContainer>
-    );
-};
+export interface BalanceErrorProps {
+    headingId: TranslationKey;
+    messageId: TranslationKey;
+    headingColor?: string;
+}
+
+export const BalanceError = ({ headingId, messageId, headingColor }: BalanceErrorProps) => (
+    <StyledBalanceContainer>
+        <Heading color={headingColor}>
+            <Translation id={headingId} />
+        </Heading>
+        <SubHeading>
+            <Translation id={messageId} />
+        </SubHeading>
+    </StyledBalanceContainer>
+);

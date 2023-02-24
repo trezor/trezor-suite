@@ -4,7 +4,6 @@ import { H3 } from '@trezor/components';
 import { Translation } from '@suite-components/Translation';
 
 import { BalanceSection } from './BalanceSection';
-import { EmptyBalanceSection } from './EmptyBalanceSection';
 
 const Container = styled.div`
     width: 100%;
@@ -17,19 +16,14 @@ const Heading = styled(H3)`
 
 interface CoinjoinSummaryProps {
     accountKey: string;
-    isEmpty: boolean;
 }
 
-export const CoinjoinSummary = ({ accountKey, isEmpty }: CoinjoinSummaryProps) => (
+export const CoinjoinSummary = ({ accountKey }: CoinjoinSummaryProps) => (
     <Container>
         <Heading>
             <Translation id="TR_MY_COINS" />
         </Heading>
 
-        {isEmpty ? (
-            <EmptyBalanceSection accountKey={accountKey} />
-        ) : (
-            <BalanceSection accountKey={accountKey} />
-        )}
+        <BalanceSection accountKey={accountKey} />
     </Container>
 );
