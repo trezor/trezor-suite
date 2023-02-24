@@ -7902,38 +7902,47 @@ export default defineMessages({
     TR_SESSION_PHASE_11_MESSAGE: {
         id: 'TR_SESSION_PHASE_11_MESSAGE',
         defaultMessage: 'Looking for a round',
+        description: '29 symbols max',
     },
     TR_SESSION_PHASE_12_MESSAGE: {
         id: 'TR_SESSION_PHASE_12_MESSAGE',
         defaultMessage: 'Choosing coins',
+        description: '29 symbols max',
     },
     TR_SESSION_PHASE_13_MESSAGE: {
         id: 'TR_SESSION_PHASE_13_MESSAGE',
         defaultMessage: 'Pairing coins with the round',
+        description: '29 symbols max',
     },
     TR_SESSION_PHASE_14_MESSAGE: {
         id: 'TR_SESSION_PHASE_14_MESSAGE',
         defaultMessage: 'Registering coins',
+        description: '29 symbols max',
     },
     TR_SESSION_PHASE_15_MESSAGE: {
         id: 'TR_SESSION_PHASE_15_MESSAGE',
         defaultMessage: 'Looking for available coins',
+        description: '29 symbols max',
     },
     TR_SESSION_PHASE_16_MESSAGE: {
         id: 'TR_SESSION_PHASE_16_MESSAGE',
         defaultMessage: 'Skipping round',
+        description: '29 symbols max',
     },
     TR_SESSION_PHASE_17_MESSAGE: {
         id: 'TR_SESSION_PHASE_17_MESSAGE',
         defaultMessage: 'Pairing failed, retrying',
+        description: '29 symbols max',
     },
     TR_SESSION_PHASE_18_MESSAGE: {
         id: 'TR_SESSION_PHASE_18_MESSAGE',
         defaultMessage: 'The coinjoin service is temporarily unavailable',
+        description: '29 symbols max',
     },
     TR_SESSION_PHASE_19_MESSAGE: {
         id: 'TR_SESSION_PHASE_19_MESSAGE',
         defaultMessage: 'Critical error, stopping coinjoin.',
+        description: '29 symbols max',
     },
     TR_SESSION_PHASE_21_MESSAGE: {
         id: 'TR_SESSION_PHASE_21_MESSAGE',
@@ -8052,5 +8061,9 @@ export default defineMessages({
     TR_COINJOIN_INTERRUPTED_ERROR: {
         id: 'TR_COINJOIN_INTERRUPTED_ERROR',
         defaultMessage: 'Coinjoin has been interrupted because of an external error',
+    },
+    TR_ERROR: {
+        id: 'TR_ERROR',
+        defaultMessage: 'Error',
     },
 });
