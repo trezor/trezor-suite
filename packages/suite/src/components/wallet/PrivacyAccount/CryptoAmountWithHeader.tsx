@@ -18,6 +18,7 @@ const Container = styled.div`
 const Header = styled.div`
     display: flex;
     align-items: center;
+    height: 15px;
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     line-height: 1;
 
