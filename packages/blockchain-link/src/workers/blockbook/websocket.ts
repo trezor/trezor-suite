@@ -1,6 +1,6 @@
 import * as WebSocket from 'ws';
 import { EventEmitter } from 'events';
-import { createDeferred, Deferred } from '@trezor/utils/lib/createDeferred';
+import { createDeferred, Deferred } from '@trezor/utils';
 
 import { CustomError } from '../../constants/errors';
 import type {
@@ -35,6 +35,7 @@ interface Options {
     pingTimeout?: number;
     keepAlive?: boolean;
     agent?: WebSocket.ClientOptions['agent'];
+    headers?: WebSocket.ClientOptions['headers'];
 }
 
 const DEFAULT_TIMEOUT = 20 * 1000;
@@ -94,7 +95,7 @@ export class BlockbookAPI extends EventEmitter {
         const { ws } = this;
         if (!ws) return;
         if (ws.listenerCount('open') > 0) {
-            ws.emit('error', 'Websocket timeout');
+            ws.emit('error', new CustomError('websocket_timeout'));
             try {
                 ws.close();
             } catch (error) {
@@ -175,7 +176,18 @@ export class BlockbookAPI extends EventEmitter {
         this.setPingTimeout();
     }
 
-    connect() {
+    private connectPromise: Promise<void> | undefined;
+
+    async connect() {
+        // if connecting already, just return the promise
+        if (this.connectPromise) {
+            return this.connectPromise;
+        }
+
+        if (this.ws?.readyState === WebSocket.CLOSING) {
+            await new Promise(resolve => this.once('disconnected', resolve));
+        }
+
         // url validation
         let { url } = this.options;
         if (typeof url !== 'string') {
@@ -199,6 +211,7 @@ export class BlockbookAPI extends EventEmitter {
 
         // create deferred promise
         const dfd = createDeferred<void>(-1);
+        this.connectPromise = dfd.promise;
 
         // initialize connection,
         // options are not used in web builds (see ./src/utils/ws)
@@ -207,6 +220,7 @@ export class BlockbookAPI extends EventEmitter {
             headers: {
                 Origin: 'https://node.trezor.io',
                 'User-Agent': 'Trezor Suite',
+                ...this.options.headers,
             },
         });
         if (typeof ws.setMaxListeners === 'function') {
@@ -224,7 +238,9 @@ export class BlockbookAPI extends EventEmitter {
         this.ws = ws;
 
         // wait for onopen event
-        return dfd.promise;
+        return dfd.promise.finally(() => {
+            this.connectPromise = undefined;
+        });
     }
 
     init() {
