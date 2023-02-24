@@ -23,6 +23,7 @@ interface Props {
     children?: React.ReactNode;
     symbol: Network['symbol'];
     localCurrency: string;
+    index: number;
 }
 
 const TransactionsGroup = ({
@@ -31,6 +32,7 @@ const TransactionsGroup = ({
     transactions,
     localCurrency,
     children,
+    index,
     ...rest
 }: Props) => {
     const [isHovered, setIsHovered] = useState(false);
@@ -40,7 +42,7 @@ const TransactionsGroup = ({
         <TransactionsGroupWrapper
             key={dateKey}
             onMouseEnter={() => setIsHovered(true)}
-            data-test="@wallet/accounts/transaction-list"
+            data-test={`@wallet/accounts/transaction-list/group/${index}`}
             onMouseLeave={() => setIsHovered(false)}
             {...rest}
         >

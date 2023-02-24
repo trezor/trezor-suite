@@ -260,7 +260,7 @@ export const BasicDetails = ({ tx, confirmations, network, explorerUrl }: BasicD
                 </Title>
 
                 <TxidValue>
-                    <TransactionId>{tx.txid}</TransactionId>
+                    <TransactionId data-test="@tx-detail/txid-value">{tx.txid}</TransactionId>
 
                     <TrezorLink size="tiny" variant="nostyle" href={`${explorerUrl}${tx.txid}`}>
                         <Tooltip content={<Translation id="TR_OPEN_IN_BLOCK_EXPLORER" />}>

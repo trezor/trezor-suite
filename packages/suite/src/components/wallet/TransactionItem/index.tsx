@@ -90,6 +90,7 @@ interface TransactionItemProps {
     accountKey: string;
     network: Network;
     className?: string;
+    index: number;
 }
 
 const TransactionItem = React.memo(
@@ -101,6 +102,7 @@ const TransactionItem = React.memo(
         isPending,
         network,
         className,
+        index,
     }: TransactionItemProps) => {
         const { type, targets, tokens } = transaction;
         const [limit, setLimit] = useState(0);
@@ -152,6 +154,7 @@ const TransactionItem = React.memo(
         };
 
         const isZeroValuePhishing = getIsZeroValuePhishing(transaction);
+        const dataTestBase = `@transaction-item/${index}`;
 
         // we are using slightly different layout for 1 targets txs to better match the design
         // the only difference is that crypto amount is in the same row as tx heading/description
@@ -188,6 +191,7 @@ const TransactionItem = React.memo(
                                 txItemIsHovered={txItemIsHovered}
                                 nestedItemIsHovered={nestedItemIsHovered}
                                 onClick={() => openTxDetailsModal()}
+                                dataTestBase={dataTestBase}
                             />
                         </Description>
                         <NextRow>

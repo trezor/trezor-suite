@@ -24,16 +24,23 @@ interface HiddenPlaceholderProps {
     intensity?: number;
     children: React.ReactNode;
     className?: string;
+    ['data-test']?: string;
 }
 
 export const HiddenPlaceholder = ({
     children,
     intensity = 5,
     className,
+    ...rest
 }: HiddenPlaceholderProps) => {
     const discreetMode = useSelector(state => state.wallet.settings.discreetMode);
     return (
-        <Wrapper discreetMode={discreetMode} intensity={intensity} className={className}>
+        <Wrapper
+            discreetMode={discreetMode}
+            intensity={intensity}
+            className={className}
+            data-test={rest['data-test']}
+        >
             {children}
         </Wrapper>
     );
