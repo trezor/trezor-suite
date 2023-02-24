@@ -212,7 +212,10 @@ export class CoinjoinRound extends EventEmitter {
         this.roundDeadline = roundDeadline;
         this.affiliateRequest = changed.affiliateRequest;
 
-        this.emit('changed', { round: this.toSerialized() });
+        // NOTE: emit changed event before each async phase
+        if (changed.phase !== RoundPhase.Ended) {
+            this.emit('changed', { round: this.toSerialized() });
+        }
 
         return this;
     }
