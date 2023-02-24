@@ -7559,6 +7559,10 @@ export default defineMessages({
         id: 'TR_COINJOIN_PAUSED',
         defaultMessage: 'Coinjoin paused',
     },
+    TR_ANONYMIZATION_PAUSED: {
+        id: 'TR_ANONYMIZATION_PAUSED',
+        defaultMessage: 'Anonymization paused',
+    },
     TR_RESUMING: {
         id: 'TR_RESUMING',
         defaultMessage: 'Resuming',
