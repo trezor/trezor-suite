@@ -77,7 +77,7 @@ const DayHeader = ({
     return (
         <Wrapper>
             {dateKey === 'pending' ? (
-                <ColPending>
+                <ColPending data-test="@transaction-group/pending/count">
                     <Translation id="TR_PENDING_TX_HEADING" values={{ count: txsCount }} /> •{' '}
                     {txsCount}
                 </ColPending>

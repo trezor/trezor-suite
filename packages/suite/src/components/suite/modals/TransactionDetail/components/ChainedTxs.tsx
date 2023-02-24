@@ -31,7 +31,7 @@ interface ChainedTxsProps {
 
 export const ChainedTxs = ({ txs, network, explorerUrl }: ChainedTxsProps) => (
     <Wrapper>
-        {txs.map(tx => (
+        {txs.map((tx, index) => (
             <StyledTrezorLink key={tx.txid} href={`${explorerUrl}${tx.txid}`} variant="nostyle">
                 <ChainedTransactionItem
                     key={tx.txid}
@@ -40,6 +40,7 @@ export const ChainedTxs = ({ txs, network, explorerUrl }: ChainedTxsProps) => (
                     isPending
                     isActionDisabled
                     accountKey={`${tx.descriptor}-${tx.symbol}-${tx.deviceState}`}
+                    index={index}
                 />
             </StyledTrezorLink>
         ))}

@@ -66,6 +66,7 @@ interface TransactionHeadingProps {
     txItemIsHovered: boolean;
     nestedItemIsHovered: boolean;
     onClick: () => void;
+    dataTestBase: string;
 }
 
 export const TransactionHeading = ({
@@ -75,6 +76,7 @@ export const TransactionHeading = ({
     txItemIsHovered,
     nestedItemIsHovered,
     onClick,
+    dataTestBase,
 }: TransactionHeadingProps) => {
     const [headingIsHovered, setHeadingIsHovered] = useState(false);
 
@@ -143,7 +145,7 @@ export const TransactionHeading = ({
                 onMouseLeave={() => setHeadingIsHovered(false)}
                 onClick={onClick}
             >
-                <HeadingWrapper>
+                <HeadingWrapper data-test={`${dataTestBase}/heading`}>
                     {isZeroValuePhishing && (
                         <TooltipSymbol
                             content={

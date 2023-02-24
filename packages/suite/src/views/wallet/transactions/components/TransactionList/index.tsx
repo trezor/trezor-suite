@@ -125,7 +125,7 @@ export const TransactionList = ({
 
     const listItems = useMemo(
         () =>
-            Object.entries(transactionsByDate).map(([dateKey, value]) => {
+            Object.entries(transactionsByDate).map(([dateKey, value], groupIndex) => {
                 const isPending = dateKey === 'pending';
 
                 return (
@@ -135,8 +135,9 @@ export const TransactionList = ({
                         symbol={symbol}
                         transactions={value}
                         localCurrency={localCurrency}
+                        index={groupIndex}
                     >
-                        {groupJointTransactions(value).map(item =>
+                        {groupJointTransactions(value).map((item, index) =>
                             item.type === 'joint-batch' ? (
                                 <CoinjoinBatchItem
                                     key={item.rounds[0].txid}
@@ -152,6 +153,7 @@ export const TransactionList = ({
                                     accountMetadata={account.metadata}
                                     accountKey={account.key}
                                     network={network!}
+                                    index={index}
                                 />
                             ),
                         )}
@@ -181,6 +183,7 @@ export const TransactionList = ({
                     setSelectedPage={setSelectedPage}
                 />
             }
+            data-test="@wallet/accounts/transaction-list"
         >
             {/* TODO: show this skeleton also while searching in txs */}
             {isLoading ? (
