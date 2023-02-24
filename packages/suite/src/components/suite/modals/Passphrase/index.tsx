@@ -1,9 +1,9 @@
 import TrezorConnect from '@trezor/connect';
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import styled from 'styled-components';
 import { variables, PassphraseTypeCard } from '@trezor/components';
-import { useSelector, useActions } from '@suite-hooks';
-import * as modalActions from '@suite-actions/modalActions';
+import { useSelector, useDispatch } from '@suite-hooks';
+import { onPassphraseSubmit } from '@suite-actions/modalActions';
 import { selectIsDiscoveryAuthConfirmationRequired } from '@wallet-reducers/discoveryReducer';
 import * as deviceUtils from '@suite-utils/device';
 import { Translation, Modal } from '@suite-components';
@@ -47,11 +47,9 @@ type Props = {
 export const Passphrase = ({ device }: Props) => {
     const [submitted, setSubmitted] = useState(false);
     const devices = useSelector(state => state.devices);
-    const actions = useActions({
-        onPassphraseSubmit: modalActions.onPassphraseSubmit,
-    });
     const authConfirmation =
         useSelector(selectIsDiscoveryAuthConfirmationRequired) || device.authConfirm;
+
     const stateConfirmation = !!device.state;
     const hasEmptyPassphraseWallet = deviceUtils
         .getDeviceInstances(device, devices)
@@ -63,15 +61,20 @@ export const Passphrase = ({ device }: Props) => {
         device.features.capabilities.includes('Capability_PassphraseEntry')
     );
 
-    const onSubmit = (value: string, passphraseOnDevice?: boolean) => {
-        setSubmitted(true);
-        actions.onPassphraseSubmit(value, !!passphraseOnDevice);
-    };
+    const dispatch = useDispatch();
 
-    const onRecreate = () => {
+    const onSubmit = useCallback(
+        (value: string, passphraseOnDevice?: boolean) => {
+            setSubmitted(true);
+            dispatch(onPassphraseSubmit(value, !!passphraseOnDevice));
+        },
+        [setSubmitted, dispatch],
+    );
+
+    const onRecreate = useCallback(() => {
         // Cancel TrezorConnect request and pass error to suiteAction.authConfirm
         TrezorConnect.cancel('auth-confirm-cancel');
-    };
+    }, []);
 
     if (submitted) {
         return null;
