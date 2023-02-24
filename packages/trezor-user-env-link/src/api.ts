@@ -26,6 +26,11 @@ interface MineBlocks {
     block_amount: number;
 }
 
+interface GenerateBlock {
+    address: string;
+    txids: string[];
+}
+
 interface ApplySettings {
     passphrase_always_on_device?: boolean;
 }
@@ -73,6 +78,13 @@ export const api = (controller: any) => ({
     mineBlocks: async (options: MineBlocks) => {
         await controller.send({
             type: 'regtest-mine-blocks',
+            ...options,
+        });
+        return null;
+    },
+    generateBlock: async (options: GenerateBlock) => {
+        await controller.send({
+            type: 'regtest-generateblock',
             ...options,
         });
         return null;
