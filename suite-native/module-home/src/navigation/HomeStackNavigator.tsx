@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { createStackNavigator } from '@react-navigation/stack';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import {
     HomeStackParamList,
@@ -10,7 +10,7 @@ import {
 
 import { HomeScreen } from '../screens/HomeScreen';
 
-const HomeStack = createStackNavigator<HomeStackParamList>();
+const HomeStack = createNativeStackNavigator<HomeStackParamList>();
 
 export const HomeStackNavigator = () => (
     <HomeStack.Navigator

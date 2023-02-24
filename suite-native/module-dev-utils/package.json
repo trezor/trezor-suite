@@ -12,7 +12,7 @@
     },
     "dependencies": {
         "@react-navigation/core": "^6.4.6",
-        "@react-navigation/stack": "^6.3.12",
+        "@react-navigation/native-stack": "^6.9.11",
         "@suite-common/logger": "workspace:*",
         "@suite-native/atoms": "workspace:*",
         "@suite-native/config": "workspace:*",
