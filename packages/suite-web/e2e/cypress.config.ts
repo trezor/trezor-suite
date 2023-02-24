@@ -46,6 +46,9 @@ let blockbook: Awaited<ReturnType<(typeof blockbookMock)['start']>> | undefined;
 //     return launchOptions;
 // });
 
+// simple memory key-value store
+const store: { [key: string]: any } = {};
+
 export default defineConfig({
     e2e: {
         specPattern: '**/*.test.{js,jsx,ts,tsx}',
@@ -210,6 +213,13 @@ export default defineConfig({
                         blockbook.stop();
                     }
                     return null;
+                },
+                set({ key, value }: { key: string; value: any }) {
+                    store[key] = value;
+                    return null;
+                },
+                get({ key }: { key: string }): any {
+                    return store[key];
                 },
                 ...TrezorUserEnvLink.api,
             });
