@@ -1,5 +1,7 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/utils/versionUtils.js
 
+import type { VersionArray } from '../types';
+
 const VER_NUMS = 3;
 
 const versionRegex = new RegExp(/^[0-9]{1,3}(\.[0-9]{1,3}){0,2}$/);
@@ -16,7 +18,7 @@ export const isValidVersionString = (version: string) => versionRegex.test(versi
  * @param {number[]} version Version array
  * @returns {boolean} True if version array is valid, false if not
  */
-export const isValidVersionArray = (version: number[]) => {
+export const isValidVersionArray = (version: (number | null)[]) => {
     // Check if we're getting an actual array
     if (!Array.isArray(version)) {
         return false;
@@ -34,13 +36,17 @@ export const isValidVersionArray = (version: number[]) => {
 
     // Check for invalid numbers in the array
     for (let i = 0; i < version.length; i++) {
-        if (typeof version[i] !== 'number' || version[i] < 0) {
+        const versionNumber = version[i];
+        if (typeof versionNumber !== 'number' || versionNumber === null || versionNumber < 0) {
             return false;
         }
     }
 
     return true;
 };
+
+export const isVersionArray = (arr: (number | null)[]): arr is VersionArray =>
+    isValidVersionArray(arr);
 
 /**
  * Fills the missing version numbers with zeros (ie: [1, 2] will become [1, 2, 0])

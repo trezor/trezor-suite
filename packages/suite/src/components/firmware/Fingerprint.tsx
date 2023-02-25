@@ -2,7 +2,6 @@ import React from 'react';
 import styled from 'styled-components';
 import { TrezorDevice } from '@suite-types';
 import { getFormattedFingerprint } from '@firmware-utils';
-import { getFirmwareRelease } from '@suite-utils/device';
 
 const Wrapper = styled.pre`
     padding: 8px;
@@ -20,8 +19,14 @@ type FingerprintProps = {
 };
 
 export const Fingerprint = ({ device }: FingerprintProps) => {
-    // device.firmwareRelease should be always defined here (this renders upon dispatching ButtonRequest_FirmwareCheck)
-    const { fingerprint } = getFirmwareRelease(device)!;
+    const { fingerprint } = device.firmwareRelease?.release ?? {};
+
+    if (!fingerprint) {
+        // device.firmwareRelease should be always defined here (this renders upon dispatching ButtonRequest_FirmwareCheck)
+        console.error('Fingerprint is not defined in device.firmwareRelease.release');
+        return null;
+    }
+
     const formattedFingerprint = getFormattedFingerprint(fingerprint);
 
     return <Wrapper>{formattedFingerprint}</Wrapper>;

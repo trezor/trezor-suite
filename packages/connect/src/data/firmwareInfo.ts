@@ -8,7 +8,15 @@ import {
     isStrictFeatures,
     isValidReleases,
 } from '../utils/firmwareUtils';
-import type { Features, StrictFeatures, FirmwareRelease, ReleaseInfo } from '../types';
+import type {
+    Features,
+    StrictFeatures,
+    FirmwareRelease,
+    ReleaseInfo,
+    VersionArray,
+    IntermediaryVersion,
+} from '../types';
+import { isVersionArray } from '../utils/versionUtils';
 
 const releases: { [key: number]: FirmwareRelease[] } = {};
 releases[1] = [];
@@ -83,31 +91,60 @@ const isRequired = (changelog: ReturnType<typeof getChangelog>) => {
 const isEqual = (release: FirmwareRelease, latest: FirmwareRelease) =>
     versionUtils.isEqual(release.version, latest.version);
 
+const getT1BootloaderVersion = (
+    releases: FirmwareRelease[],
+    features: StrictFeatures,
+): VersionArray => {
+    const { bootloader_mode, major_version, minor_version, patch_version } = features;
+    const versionArray = [major_version, minor_version, patch_version] as VersionArray;
+
+    if (bootloader_mode) {
+        return versionArray;
+    }
+
+    const release = releases.find(({ version }) => versionUtils.isEqual(version, versionArray));
+
+    /**
+     * FW version 1.6.0 and below don't have bootloader_version listed, so default to 1.0.0,
+     * because it doesn't matter for intermediary version calculation.
+     */
+    return release?.bootloader_version || [1, 0, 0];
+};
+
+/**
+ * v1 - bootloader < 1.8.0
+ * v2 - bootloader >= 1.8.0, < 1.12.0
+ * v3 - bootloader >= 1.12.0
+ */
+const getIntermediaryVersion = (
+    releases: FirmwareRelease[],
+    features: StrictFeatures,
+    offerLatest: boolean,
+): IntermediaryVersion | undefined => {
+    if (features.major_version !== 1 || offerLatest) {
+        // Intermediary is only supported on T1 and not needed if latest firmware is already offered
+        return;
+    }
+
+    const bootloaderVersion = getT1BootloaderVersion(releases, features);
+
+    if (versionUtils.isNewerOrEqual(bootloaderVersion, [1, 12, 0])) {
+        return 3;
+    }
+
+    if (versionUtils.isNewerOrEqual(bootloaderVersion, [1, 8, 0])) {
+        return 2;
+    }
+
+    return 1;
+};
+
 export interface GetInfoProps {
     features: Features;
     releases: FirmwareRelease[];
 }
 
-/**
- * Get info about available firmware update
- * @param features
- * @param releases
- */
-export const getInfo = ({ features, releases }: GetInfoProps): ReleaseInfo | null => {
-    if (!isStrictFeatures(features)) {
-        throw new Error('Features of unexpected shape provided.');
-    }
-    if (!isValidReleases(releases)) {
-        throw new Error(`Release object in unexpected shape.`);
-    }
-    let parsedReleases = releases;
-
-    let score = 0; // just because of ts
-
-    /* istanbul ignore next */
-    if (features.device_id) {
-        score = getScore(features.device_id);
-    }
+const getSafeReleases = ({ features, releases }: GetInfoProps) => {
     const {
         bootloader_mode,
         major_version,
@@ -118,6 +155,15 @@ export const getInfo = ({ features, releases }: GetInfoProps): ReleaseInfo | nul
         fw_patch,
     } = features;
 
+    let parsedReleases = releases;
+
+    let score = 0; // just because of ts
+
+    /* istanbul ignore next */
+    if (features.device_id) {
+        score = getScore(features.device_id);
+    }
+
     if (score) {
         parsedReleases = parsedReleases.filter(item => {
             if (!item.rollout) return true;
@@ -125,55 +171,76 @@ export const getInfo = ({ features, releases }: GetInfoProps): ReleaseInfo | nul
         });
     }
 
-    const latest = parsedReleases[0];
+    const firmwareVersion = [major_version, minor_version, patch_version];
 
-    if (major_version === 2 && bootloader_mode) {
-        // sorry for this if, I did not figure out how to narrow types properly
-        if (fw_major !== null && fw_minor !== null && fw_patch !== null) {
-            // in bootloader, model T knows its firmware, so we still may filter "by firmware".
-            parsedReleases = filterSafeListByFirmware(parsedReleases, [
-                fw_major,
-                fw_minor,
-                fw_patch,
-            ]);
-        }
-        parsedReleases = filterSafeListByBootloader(parsedReleases, [
-            major_version,
-            minor_version,
-            patch_version,
-        ]);
-    } else if (major_version === 1 && bootloader_mode) {
-        // model one does not know its firmware, we need to filter by bootloader. this has the consequence
-        // that we do not know if the version we find in the end is newer than the actual installed version
-        parsedReleases = filterSafeListByBootloader(parsedReleases, [
-            major_version,
-            minor_version,
-            patch_version,
-        ]);
-    } else {
-        // in other cases (not in bootloader) we may filter by firmware
-        parsedReleases = filterSafeListByFirmware(parsedReleases, [
-            major_version,
-            minor_version,
-            patch_version,
-        ]);
+    if (!isVersionArray(firmwareVersion)) {
+        return [];
     }
 
-    if (!parsedReleases.length) {
-        // no new firmware
+    if (major_version === 2 && bootloader_mode) {
+        const fwVersion = [fw_major, fw_minor, fw_patch];
+        if (isVersionArray(fwVersion)) {
+            // in bootloader, model T knows its firmware, so we still may filter "by firmware".
+            return filterSafeListByFirmware(parsedReleases, fwVersion);
+        }
+        return filterSafeListByBootloader(parsedReleases, firmwareVersion);
+    }
+    if (major_version === 1 && bootloader_mode) {
+        // model one does not know its firmware, we need to filter by bootloader. this has the consequence
+        // that we do not know if the version we find in the end is newer than the actual installed version
+        return filterSafeListByBootloader(parsedReleases, firmwareVersion);
+    }
+
+    // in other cases (not in bootloader) we may filter by firmware
+    return filterSafeListByFirmware(parsedReleases, firmwareVersion);
+};
+
+/**
+ * Get info about available firmware update.
+ * For T1, it always returns the latest firmware plus intermediaryVersion
+ * needed to get to the latest if it's not availabe for direct install.
+ * @param features
+ * @param releases
+ */
+export const getInfo = ({ features, releases }: GetInfoProps): ReleaseInfo | null => {
+    if (!isStrictFeatures(features)) {
+        throw new Error('Features of unexpected shape provided.');
+    }
+    if (!isValidReleases(releases)) {
+        throw new Error(`Release object in unexpected shape.`);
+    }
+
+    const latest = releases[0];
+
+    const releasesSafe = getSafeReleases({ features, releases });
+
+    if (!releasesSafe.length) {
+        // no available firmware - should never happen for official firmware, only custom
         return null;
     }
 
-    const isLatest = isEqual(parsedReleases[0], latest);
-    const changelog = getChangelog(parsedReleases, features);
+    /**
+     * For model 1 we always support installation of latest firmware, possibly using an intermediary.
+     * For model T there is only "incremental FW update" if it's not possible to install latest right away.
+     */
+    const releasesParsed = features.major_version === 1 ? releases : releasesSafe;
+
+    const changelog = getChangelog(releasesParsed, features);
+
+    const release = releasesParsed[0];
+
+    const intermediaryVersion = getIntermediaryVersion(
+        releases,
+        features,
+        isEqual(releasesSafe[0], latest),
+    );
 
     return {
         changelog,
-        release: parsedReleases[0],
-        isLatest,
-        latest,
+        release,
         isRequired: isRequired(changelog),
-        isNewer: isNewer(parsedReleases[0], features),
+        isNewer: isNewer(latest, features), // do not consider safe releases, we want to show "outdated" even if it's not safe to update
+        intermediaryVersion,
     };
 };
 

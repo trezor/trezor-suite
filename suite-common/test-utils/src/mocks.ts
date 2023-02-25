@@ -53,7 +53,6 @@ const getWalletAccount = (account?: Partial<Account>): Account => ({
  * note that values don't make much sense.
  */
 const getFirmwareRelease = (): NonNullable<Device['firmwareRelease']> => ({
-    isLatest: true,
     isRequired: false,
     isNewer: false,
     changelog: [
@@ -70,16 +69,6 @@ const getFirmwareRelease = (): NonNullable<Device['firmwareRelease']> => ({
         },
     ],
     release: {
-        required: false,
-        version: [2, 0, 0],
-        min_bridge_version: [2, 0, 25],
-        min_firmware_version: [2, 0, 0],
-        min_bootloader_version: [2, 0, 0],
-        url: 'data/firmware/1/trezor-1.8.1.bin',
-        fingerprint: '019e849c1eb285a03a92bbad6d18a328af3b4dc6999722ebb47677b403a4cd16',
-        changelog: '* Fix fault when using the device with no PIN* Fix OMNI transactions parsing',
-    },
-    latest: {
         required: false,
         version: [2, 0, 0],
         min_bridge_version: [2, 0, 25],

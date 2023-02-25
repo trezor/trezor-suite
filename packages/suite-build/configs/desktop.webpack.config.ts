@@ -5,7 +5,7 @@ import HtmlWebpackPlugin from 'html-webpack-plugin';
 
 import { FLAGS } from '@suite-common/suite-config';
 
-import { assetPrefix, isDev, launchElectron } from '../utils/env';
+import { assetPrefix, isDev, launchElectron, isCodesignBuild } from '../utils/env';
 import { getPathForProject } from '../utils/path';
 import { NixosInterpreterPlugin } from '../plugins/nixos-interpreter-plugin';
 import ShellSpawnPlugin from '../plugins/shell-spawn-plugin';
@@ -41,7 +41,19 @@ const config: webpack.Configuration = {
                         from: path.join(__dirname, '../../', 'connect-iframe/build/data/firmware'),
                         to: path.join(baseDir, 'build/static/bin/firmware'),
                     },
-                ]),
+                ])
+                .concat(
+                    isCodesignBuild
+                        ? []
+                        : {
+                              from: path.join(
+                                  __dirname,
+                                  '../../',
+                                  'connect-iframe/build/data/devkit/firmware',
+                              ),
+                              to: path.join(baseDir, 'build/static/bin/devkit/firmware'),
+                          },
+                ),
             options: {
                 concurrency: 100,
             },
