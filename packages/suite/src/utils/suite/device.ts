@@ -1,4 +1,4 @@
-import { Device, UnavailableCapability } from '@trezor/connect';
+import { Device, UnavailableCapability, FirmwareRelease } from '@trezor/connect';
 import { TrezorDevice, AcquiredDevice } from '@suite-types';
 import { DeviceModel, getDeviceModel } from '@trezor/device-utils';
 import * as URLS from '@trezor/urls';
@@ -132,25 +132,8 @@ export const isSelectedDevice = (selected?: TrezorDevice | Device, device?: Trez
     return selected.id === device.id;
 };
 
-/**
- *  When updating T1, always display changelog of the latest version, even though intermediary firmware is being installed.
- *  When other models are updated, show changelog of version device is updated to.
- *  (TT - in case of initial fw, before updating to newest version device has to be updated to specific version)
- *  @param {TrezorDevice} device
- */
-export const getFirmwareRelease = (device: TrezorDevice) => {
-    const deviceModel = getDeviceModel(device);
-
-    const firmwareReleaseType = deviceModel === DeviceModel.T1 ? 'latest' : 'release';
-
-    return device.firmwareRelease?.[firmwareReleaseType];
-};
-
-export const getFwUpdateVersion = (device: AcquiredDevice) => {
-    const firmwareReleaseVersion = getFirmwareRelease(device)?.version;
-
-    return firmwareReleaseVersion?.join('.') || null;
-};
+export const getFwUpdateVersion = (device: AcquiredDevice) =>
+    device.firmwareRelease?.release?.version?.join('.') || null;
 
 export const getCoinUnavailabilityMessage = (reason: UnavailableCapability) => {
     switch (reason) {
@@ -388,24 +371,22 @@ export const getPhysicalDeviceUniqueIds = (devices: Device[]) =>
 export const getPhysicalDeviceCount = (devices: Device[]) =>
     getPhysicalDeviceUniqueIds(devices).length;
 
-export const parseFirmwareChangelog = (device: TrezorDevice) => {
-    const firmwareRelease = getFirmwareRelease(device);
-
-    if (!device.firmwareRelease?.changelog?.length || !firmwareRelease) {
+export const parseFirmwareChangelog = (release?: FirmwareRelease) => {
+    if (!release?.changelog?.length || !release) {
         return null;
     }
 
     // Default changelog format is a long string where individual changes are separated by "*" symbol.
-    const changelog = firmwareRelease.changelog
+    const changelog = release.changelog
         .trim()
         .split('*')
         .map(l => l.trim())
         .filter(l => l.length);
 
     return {
-        url: firmwareRelease.url,
-        notes: firmwareRelease.notes,
+        url: release.url,
+        notes: release.notes,
         changelog,
-        versionString: firmwareRelease.version.join('.'),
+        versionString: release.version.join('.'),
     };
 };

@@ -3,7 +3,7 @@ import { getInfo } from '../firmwareInfo';
 const { getReleasesT1, getReleasesT2, getDeviceFeatures } = global.JestMocks;
 
 describe('getInfo() for fresh device', () => {
-    it('it should respect bootloader rules and update incrementally by min_bootloader_version field', () => {
+    it('it should respect bootloader rules and offer intermediary', () => {
         const result = getInfo({
             features: getDeviceFeatures({
                 bootloader_mode: true,
@@ -29,9 +29,9 @@ describe('getInfo() for fresh device', () => {
         });
         expect(result).toMatchObject({
             release: {
-                version: [1, 1, 0],
+                version: [1, 2, 0],
             },
-            isLatest: false,
+            intermediaryVersion: 1,
             isRequired: false,
         });
     });
@@ -67,7 +67,6 @@ describe('getInfo() for fresh device', () => {
             release: {
                 version: [2, 1, 0],
             },
-            isLatest: false,
             isRequired: false,
         });
     });

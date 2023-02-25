@@ -92,6 +92,10 @@
             {
                 "from": "build/static/bin/firmware",
                 "to": "bin/firmware"
+            },
+            {
+                "from": "build/static/bin/devkit",
+                "to": "bin/devkit"
             }
         ],
         "protocols": {

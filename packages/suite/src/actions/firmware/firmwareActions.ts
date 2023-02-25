@@ -55,7 +55,7 @@ const firmwareInstall =
     (fwBinary?: ArrayBuffer, firmwareType?: FirmwareType) =>
     async (dispatch: Dispatch, getState: GetState) => {
         const { device } = getState().suite;
-        const { targetRelease, prevDevice } = getState().firmware;
+        const { targetRelease, prevDevice, useDevkit, intermediaryInstalled } = getState().firmware;
 
         if (fwBinary) {
             dispatch({ type: FIRMWARE.SET_IS_CUSTOM, payload: true });
@@ -106,6 +106,8 @@ const firmwareInstall =
 
             if (!toRelease) return;
 
+            const { release, intermediaryVersion } = toRelease;
+
             // update to same variant as is currently installed or to the regular one if device does not have any fw (new/wiped device),
             // unless the user wants to switch firmware type
             let toBitcoinOnlyFirmware = firmwareType === FirmwareType.BitcoinOnly;
@@ -115,13 +117,11 @@ const firmwareInstall =
                     : prevDevice.firmwareType === 'bitcoin-only';
             }
 
-            const shouldInstallIntermediaryFw =
-                deviceModel === DeviceModel.T1 && !toRelease.isLatest;
-            const targetFirmwareVersion = toRelease.release.version.join('.');
+            const targetFirmwareVersion = release.version.join('.');
 
             console.warn(
-                shouldInstallIntermediaryFw
-                    ? 'Cannot install latest firmware. Will install intermediary fw instead.'
+                intermediaryVersion
+                    ? `Cannot install latest firmware. Will install intermediary v${intermediaryVersion} instead.`
                     : `Installing ${
                           toBitcoinOnlyFirmware ? FirmwareType.BitcoinOnly : FirmwareType.Universal
                       } firmware ${targetFirmwareVersion}.`,
@@ -139,9 +139,10 @@ const firmwareInstall =
             }
 
             // FW binaries are stored in "*/static/connect/data/firmware/*/*.bin". see "connect-common" package
-            const baseUrl = isDesktop()
-                ? getState().desktop?.paths.binDir
-                : resolveStaticPath('connect/data');
+            const baseUrl = `${
+                isDesktop() ? getState().desktop?.paths.binDir : resolveStaticPath('connect/data')
+            }${useDevkit ? '/devkit' : ''}`;
+
             updateResponse = await TrezorConnect.firmwareUpdate({
                 keepSession: false,
                 skipFinalReload: true,
@@ -150,12 +151,16 @@ const firmwareInstall =
                 },
                 baseUrl,
                 btcOnly: toBitcoinOnlyFirmware,
-                version: toRelease.release.version,
-                // if we detect latest firmware may not be used right away, we should use intermediary instead
-                intermediary: shouldInstallIntermediaryFw,
+                version: release.version,
+                intermediaryVersion,
             });
-            if (updateResponse.success && shouldInstallIntermediaryFw) {
-                dispatch({ type: FIRMWARE.SET_INTERMEDIARY_INSTALLED, payload: true });
+            if (updateResponse.success) {
+                if (intermediaryVersion) {
+                    dispatch({ type: FIRMWARE.SET_INTERMEDIARY_INSTALLED, payload: true });
+                } else if (intermediaryInstalled) {
+                    // set to false so validateFirmwareHash can be triggerd from firmwareMiddleware
+                    dispatch({ type: FIRMWARE.SET_INTERMEDIARY_INSTALLED, payload: false });
+                }
             }
         }
 

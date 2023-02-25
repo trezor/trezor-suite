@@ -1,6 +1,20 @@
 [
     {
         "required": false,
+        "version": [1, 12, 1],
+        "bootloader_version": [1, 12, 1],
+        "min_bridge_version": [2, 0, 25],
+        "min_firmware_version": [1, 12, 0],
+        "min_bootloader_version": [1, 12, 0],
+        "url": "firmware/1/trezor-1.12.1.bin",
+        "url_bitcoinonly": "firmware/1/trezor-1.12.1-bitcoinonly.bin",
+        "fingerprint": "d401b21c6c8e766e30a562db4bb06bff79fd7bbb1bb637b63d23419a4960ff86",
+        "fingerprint_bitcoinonly": "7e51546f4411ecf44688c681ada72a18495fd08e91f3a0429ab91bc4415b362a",
+        "notes": "DEVKIT DO NOT PUSH",
+        "changelog": "DO NOT RELEASE"
+    },
+    {
+        "required": false,
         "version": [1, 11, 2],
         "bootloader_version": [1, 11, 0],
         "min_bridge_version": [2, 0, 25],

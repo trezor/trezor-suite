@@ -1,3 +1,4 @@
+import type { IntermediaryVersion } from '../firmware';
 import type { Params, Response } from '../params';
 
 export interface FirmwareUpdateBinary {
@@ -8,7 +9,7 @@ export interface FirmwareUpdate {
     version: number[];
     btcOnly?: boolean;
     baseUrl?: string;
-    intermediary?: boolean;
+    intermediaryVersion?: IntermediaryVersion;
 }
 
 export interface FirmwareUpdateResponse {
