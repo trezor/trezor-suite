@@ -109,10 +109,8 @@ Browser (User Agent), System and HW specifications, Suite version, instance id s
   firmwareRelease:
     {
       changelog: [],
-      isLatest: True,
       isNewer: False,
       isRequired: None,
-      latest: {},
       release: {},
     },
   id: [redacted],

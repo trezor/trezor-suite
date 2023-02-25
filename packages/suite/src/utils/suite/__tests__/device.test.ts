@@ -121,7 +121,7 @@ describe('isDeviceRemembered', () => {
 describe('parseFirmwareChangelog', () => {
     fixtures.parseFirmwareChangelog.forEach(f => {
         it(f.description, () => {
-            expect(utils.parseFirmwareChangelog(f.device)).toEqual(f.result);
+            expect(utils.parseFirmwareChangelog(f.release)).toEqual(f.result);
         });
     });
 });

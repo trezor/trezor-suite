@@ -13,13 +13,14 @@ import {
 } from './firmware';
 import { validateParams } from './common/paramsValidator';
 import { getReleases } from '../data/firmwareInfo';
+import { IntermediaryVersion } from '../types';
 
 type Params = {
     binary?: ArrayBuffer;
     version?: number[];
     btcOnly?: boolean;
-    baseUrl?: string;
-    intermediary?: boolean;
+    baseUrl: string;
+    intermediaryVersion?: IntermediaryVersion;
 };
 
 export default class FirmwareUpdate extends AbstractMethod<'firmwareUpdate', Params> {
@@ -38,7 +39,7 @@ export default class FirmwareUpdate extends AbstractMethod<'firmwareUpdate', Par
             { name: 'btcOnly', type: 'boolean' },
             { name: 'baseUrl', type: 'string' },
             { name: 'binary', type: 'array-buffer' },
-            { name: 'intermediary', type: 'boolean' },
+            { name: 'intermediaryVersion', type: 'number' },
         ]);
 
         if ('version' in payload) {
@@ -47,7 +48,7 @@ export default class FirmwareUpdate extends AbstractMethod<'firmwareUpdate', Par
                 version: payload.version,
                 btcOnly: payload.btcOnly,
                 baseUrl: payload.baseUrl || 'https://data.trezor.io',
-                intermediary: payload.intermediary,
+                intermediaryVersion: payload.intermediaryVersion,
             };
         }
 
@@ -91,7 +92,7 @@ export default class FirmwareUpdate extends AbstractMethod<'firmwareUpdate', Par
             if (params.binary) {
                 binary = params.binary;
             } else {
-                const firmware = await getBinary({
+                binary = await getBinary({
                     // features and releases are used for sanity checking
                     features: device.features,
                     releases: getReleases(device.features.major_version),
@@ -99,9 +100,8 @@ export default class FirmwareUpdate extends AbstractMethod<'firmwareUpdate', Par
                     version: params.version,
                     btcOnly: params.btcOnly,
                     baseUrl: params.baseUrl!,
-                    intermediary: params.intermediary,
+                    intermediaryVersion: params.intermediaryVersion,
                 });
-                binary = firmware.binary;
             }
         } catch (err) {
             throw ERRORS.TypedError(

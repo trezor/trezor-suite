@@ -13,7 +13,7 @@ const bootloaderDeviceNeedsIntermediary = {
         {
             mode: 'bootloader',
             connected: true,
-            firmwareRelease: { ...getFirmwareRelease(), isLatest: false },
+            firmwareRelease: { ...getFirmwareRelease(), intermediaryVersion: 1 },
         },
         { major_version: 1, model: DeviceModel.T1 },
     ),

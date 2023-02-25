@@ -3,12 +3,13 @@ import { versionUtils } from '@trezor/utils';
 import { httpRequest } from '../../utils/assets';
 import { isStrictFeatures } from '../../utils/firmwareUtils';
 import { getInfo, GetInfoProps } from '../../data/firmwareInfo';
+import { IntermediaryVersion } from '../../types';
 
 interface GetBinaryProps extends GetInfoProps {
     baseUrl: string;
     btcOnly?: boolean;
     version?: number[];
-    intermediary?: boolean;
+    intermediaryVersion?: IntermediaryVersion;
 }
 
 /**
@@ -17,21 +18,23 @@ interface GetBinaryProps extends GetInfoProps {
  * is safe.
  * Ignores rollout (score)
  */
-export const getBinary = async ({
+export const getBinary = ({
     features,
     releases,
     baseUrl,
     version,
     btcOnly,
-    intermediary = false,
+    intermediaryVersion,
 }: GetBinaryProps) => {
     if (!isStrictFeatures(features)) {
         throw new Error('Features of unexpected shape provided');
     }
 
-    if (intermediary && features.major_version !== 2) {
-        const fw = await httpRequest(`${baseUrl}/firmware/1/trezor-inter-1.10.0.bin`, 'binary');
-        return { binary: fw };
+    if (intermediaryVersion) {
+        return httpRequest(
+            `${baseUrl}/firmware/1/trezor-inter-v${intermediaryVersion}.bin`,
+            'binary',
+        );
     }
 
     // we get info here again, but only as a sanity check.
@@ -58,12 +61,8 @@ export const getBinary = async ({
             'version provided as param does not match firmware version found by features in bootloader',
         );
     }
-    const fw = await httpRequest(
-        `${baseUrl}/${btcOnly ? releaseByFirmware.url_bitcoinonly : releaseByFirmware.url}`,
-        'binary',
-    );
-    return {
-        ...infoByBootloader,
-        binary: fw,
-    };
+
+    const fwUrl = releaseByFirmware[btcOnly ? 'url_bitcoinonly' : 'url'];
+
+    return httpRequest(`${baseUrl}/${fwUrl}`, 'binary');
 };

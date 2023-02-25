@@ -29,13 +29,13 @@ const fixtures = [
             },
         ]),
         result: {
-            changelog: [{ version: [1, 0, 0] }],
+            changelog: [{ version: [1, 3, 0] }, { version: [1, 2, 0] }, { version: [1, 0, 0] }],
             release: {
-                version: [1, 0, 0],
-                min_bootloader_version: [1, 0, 0],
-                bootloader_version: [1, 1, 0],
+                version: [1, 3, 0],
+                min_bootloader_version: [1, 2, 0],
+                bootloader_version: [1, 2, 0],
             },
-            isLatest: false,
+            intermediaryVersion: 1,
             isRequired: false,
             isNewer: null,
         },
@@ -97,7 +97,6 @@ const fixtures = [
         ]),
         result: {
             release: { version: [1, 4, 0] },
-            isLatest: true,
             isRequired: false,
         },
     },
@@ -136,7 +135,6 @@ const fixtures = [
         ]),
         result: {
             release: { version: [2, 2, 0] },
-            isLatest: false,
             isRequired: false,
         },
     },
