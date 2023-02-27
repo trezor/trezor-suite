@@ -16,18 +16,15 @@ const SetupContainer = styled.div`
     padding: 18px;
 `;
 
-const Wrapper = styled.div`
+const SetupOptions = styled.div`
+    display: flex;
+    gap: 40px;
+`;
+
+const CustomSetup = styled.div`
+    border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
     display: flex;
     flex-direction: column;
-`;
-
-const SetupOptions = styled(Wrapper)`
-    align-items: flex-start;
-    gap: 24px;
-`;
-
-const CustomSetup = styled(Wrapper)`
-    border-top: 1px solid ${props => props.theme.STROKE_GREY};
     gap: 32px;
     margin-top: 24px;
     padding-top: 16px;

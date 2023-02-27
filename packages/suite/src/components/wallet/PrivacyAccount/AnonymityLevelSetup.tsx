@@ -1,42 +1,17 @@
-import React, { useCallback, ChangeEventHandler, useMemo } from 'react';
-import styled, { css } from 'styled-components';
+import React, { useMemo, useState } from 'react';
 import { AnimatePresence, HTMLMotionProps, motion } from 'framer-motion';
-import { Range, Warning, useTheme, motionEasing, Icon, Note } from '@trezor/components';
+import styled from 'styled-components';
+
 import { Translation } from '@suite-components';
-import { useAnonymityStatus } from '@suite-hooks';
 import { AnonymityStatus } from '@suite-constants/coinjoin';
-
-const Container = styled.div`
-    display: flex;
-    flex-direction: column;
-    position: relative;
-`;
-
-const blurredStyle = css<{ $isBlurred: boolean }>`
-    transition: filter 0.15s;
-    filter: ${({ $isBlurred }) => $isBlurred && 'blur(7px)'};
-`;
-
-const AnonymityRange = styled(Range)<{ $isBlurred: boolean }>`
-    ${blurredStyle}
-`;
+import { useAnonymityStatus, useDispatch } from '@suite-hooks';
+import { Icon, Warning, motionEasing, useTheme } from '@trezor/components';
+import { coinjoinAccountUpdateAnonymity } from '@wallet-actions/coinjoinAccountActions';
+import { SetupSlider } from './SetupSlider';
 
 const Label = styled.span`
     display: flex;
     align-items: center;
-
-    > :first-child {
-        margin-right: 3px;
-    }
-`;
-
-const StyledNote = styled(Note)`
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    backdrop-filter: grayscale(0.5);
-    filter: ${({ theme }) => `drop-shadow(0px 0px 8px ${theme.BG_LIGHT_GREY})`};
 `;
 
 const RedText = styled.span`
@@ -44,13 +19,9 @@ const RedText = styled.span`
     color: ${({ theme }) => theme.TYPE_RED};
 `;
 
-const AnonymityWarning = styled(Warning)`
-    ${blurredStyle}
-`;
-
 const expandAnimation: HTMLMotionProps<'div'> = {
     initial: { height: 0, marginTop: 0, opacity: 0 },
-    animate: { height: 48, marginTop: 24, opacity: 1 },
+    animate: { height: 'auto', marginTop: 24, opacity: 1 },
     exit: { height: 0, marginTop: 0, opacity: 0 },
     transition: {
         duration: 0.3,
@@ -66,37 +37,25 @@ const maxValue = Math.log(100);
 
 const scale = (maxValue - minValue) / (maxPosition - minPosition);
 
-export const getValue = (position: number) =>
+const getValue = (position: number) =>
     Math.round(Math.exp((position - minPosition) * scale + minValue));
-export const getPosition = (value: number) => minPosition + (Math.log(value) - minValue) / scale;
+const getPosition = (value: number) => minPosition + (Math.log(value) - minValue) / scale;
 
-interface AnonymityLevelSliderProps {
-    isSessionActive: boolean;
-    position: number;
-    handleChange: (value: number) => void;
+interface AnonymityLevelSetupProps {
+    accountKey: string;
+    targetAnonymity: number;
 }
 
-export const AnonymityLevelSlider = ({
-    isSessionActive,
-    position,
-    handleChange,
-}: AnonymityLevelSliderProps) => {
+export const AnonymityLevelSetup = ({ accountKey, targetAnonymity }: AnonymityLevelSetupProps) => {
+    const [sliderPosition, setSliderPosition] = useState(getPosition(targetAnonymity));
+
+    const dispatch = useDispatch();
+
     const { anonymityStatus } = useAnonymityStatus();
 
     const theme = useTheme();
 
-    const handleSliderChange: ChangeEventHandler<HTMLInputElement> = useCallback(
-        event => {
-            const position = Number(event?.target?.value);
-
-            if (Number.isNaN(position)) {
-                return;
-            }
-
-            handleChange(getValue(position));
-        },
-        [handleChange],
-    );
+    const isErrorDisplayed = anonymityStatus === AnonymityStatus.Bad;
 
     const trackStyle = {
         background: `\
@@ -109,7 +68,12 @@ export const AnonymityLevelSlider = ({
             );`,
     };
 
-    const isErrorDisplayed = anonymityStatus === AnonymityStatus.Bad;
+    const updateAnonymity = (value: number) => {
+        if (value !== targetAnonymity) {
+            dispatch(coinjoinAccountUpdateAnonymity(accountKey, value));
+            setSliderPosition(getPosition(value));
+        }
+    };
 
     const labels = useMemo(
         () => [
@@ -158,37 +122,32 @@ export const AnonymityLevelSlider = ({
     );
 
     return (
-        <Container>
-            <AnonymityRange
-                value={position}
-                onChange={handleSliderChange}
-                trackStyle={trackStyle}
-                step="any"
-                labels={labels}
-                onLabelClick={number => handleChange(number)}
-                $isBlurred={isSessionActive}
-            />
-
+        <SetupSlider
+            heading={<Translation id="TR_COINJOIN_ANONYMITY_LEVEL_SETUP_TITLE" />}
+            description={<Translation id="TR_COINJOIN_ANONYMITY_LEVEL_SETUP_DESCRIPTION" />}
+            onChange={updateAnonymity}
+            value={targetAnonymity}
+            sliderValue={sliderPosition}
+            min={1}
+            max={100}
+            trackStyle={trackStyle}
+            labels={labels}
+            modifyPosition={getValue}
+        >
             <AnimatePresence initial={!isErrorDisplayed}>
                 {isErrorDisplayed && (
                     <motion.div {...expandAnimation}>
-                        <AnonymityWarning critical withIcon $isBlurred={isSessionActive}>
+                        <Warning withIcon variant="critical">
                             <Translation
                                 values={{
                                     red: chunks => <RedText>{chunks}</RedText>,
                                 }}
                                 id="TR_LOW_ANONYMITY_WARNING"
                             />
-                        </AnonymityWarning>
+                        </Warning>
                     </motion.div>
                 )}
             </AnimatePresence>
-
-            {isSessionActive && (
-                <StyledNote color={theme.TYPE_DARK_GREY}>
-                    <Translation id="TR_DISABLED_ANONYMITY_CHANGE_MESSAGE" />
-                </StyledNote>
-            )}
-        </Container>
+        </SetupSlider>
     );
 };

@@ -45,7 +45,7 @@ const RadioIcon = styled.div<Pick<RadioButtonProps, 'isChecked' | 'disabled'>>`
 
 const Label = styled.div`
     display: flex;
-    padding-left: 17px;
+    padding-left: 12px;
     padding-top: 2px;
     justify-content: left;
     color: ${props => props.theme.TYPE_LIGHT_GREY};

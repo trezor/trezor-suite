@@ -1,10 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
-import { P } from '@trezor/components';
+
+import { P, variables } from '@trezor/components';
 import { HELP_CENTER_XPUB_URL } from '@trezor/urls';
 import { WalletLayout } from '@wallet-components';
 import { useDevice, useActions, useSelector } from '@suite-hooks';
-import { Translation, Card } from '@suite-components';
+import { Card, Translation } from '@suite-components';
 import * as modalActions from '@suite-actions/modalActions';
 import {
     getAccountTypeName,
@@ -15,8 +16,21 @@ import {
 import { ActionColumn, Row, TextColumn, ActionButton } from '@suite-components/Settings';
 import { CARD_PADDING_SIZE } from '@suite-constants/layout';
 import { NETWORKS } from '@wallet-config';
-import { AnonymityLevelSetupCard } from '@wallet-components/PrivacyAccount/AnonymityLevelSetupCard';
 import { CoinjoinLogs } from '@wallet-components/PrivacyAccount/CoinjoinLogs';
+import { CoinjoinSetup } from '@wallet-components/PrivacyAccount/CoinjoinSetup';
+
+const Heading = styled.h3`
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    font-size: ${variables.FONT_SIZE.SMALL};
+    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
+    text-transform: uppercase;
+`;
+
+const Cards = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+`;
 
 const AccountTypeLabel = styled.div`
     display: flex;
@@ -85,61 +99,70 @@ const Details = () => {
             account={selectedAccount}
             showEmptyHeaderPlaceholder
         >
-            {isCoinjoinAccount && <AnonymityLevelSetupCard />}
+            <Cards>
+                {isCoinjoinAccount && (
+                    <>
+                        <Heading>
+                            <Translation id="TR_COINJOIN_SETUP_HEADING" />
+                        </Heading>
+                        <CoinjoinSetup accountKey={account.key} />
+                    </>
+                )}
 
-            <StyledCard largePadding>
-                <Row>
-                    <TextColumn
-                        title={<Translation id="TR_ACCOUNT_DETAILS_TYPE_HEADER" />}
-                        description={<Translation id={accountTypeDesc} />}
-                        buttonLink={accountTypeUrl}
-                    />
-                    <AccountTypeLabel>
-                        {accountTypeName && (
-                            <P size="small" weight="medium">
-                                <NoWrap>
-                                    <Translation id={accountTypeName} />
-                                </NoWrap>
-                            </P>
-                        )}
-                        <P size="tiny">
-                            (<Translation id={accountTypeTech} />)
-                        </P>
-                    </AccountTypeLabel>
-                </Row>
-                {!isCoinjoinAccount && (
+                <StyledCard largePadding>
                     <Row>
                         <TextColumn
-                            title={<Translation id="TR_ACCOUNT_DETAILS_XPUB_HEADER" />}
-                            description={<Translation id="TR_ACCOUNT_DETAILS_XPUB" />}
-                            buttonLink={HELP_CENTER_XPUB_URL}
+                            title={<Translation id="TR_ACCOUNT_DETAILS_TYPE_HEADER" />}
+                            description={<Translation id={accountTypeDesc} />}
+                            buttonLink={accountTypeUrl}
                         />
-                        <ActionColumn>
-                            <ActionButton
-                                variant="secondary"
-                                data-test="@wallets/details/show-xpub-button"
-                                onClick={() =>
-                                    openModal({
-                                        type: 'xpub',
-                                        xpub: account.descriptor,
-                                        accountPath: account.path,
-                                        accountIndex: account.index,
-                                        accountType: account.accountType,
-                                        symbol: account.symbol,
-                                        accountLabel: account.metadata.accountLabel,
-                                    })
-                                }
-                                isLoading={isLocked() && !disabled}
-                                isDisabled={disabled}
-                            >
-                                <Translation id="TR_ACCOUNT_DETAILS_XPUB_BUTTON" />
-                            </ActionButton>
-                        </ActionColumn>
+                        <AccountTypeLabel>
+                            {accountTypeName && (
+                                <P size="small" weight="medium">
+                                    <NoWrap>
+                                        <Translation id={accountTypeName} />
+                                    </NoWrap>
+                                </P>
+                            )}
+                            <P size="tiny">
+                                (<Translation id={accountTypeTech} />)
+                            </P>
+                        </AccountTypeLabel>
                     </Row>
-                )}
-            </StyledCard>
+                    {!isCoinjoinAccount && (
+                        <Row>
+                            <TextColumn
+                                title={<Translation id="TR_ACCOUNT_DETAILS_XPUB_HEADER" />}
+                                description={<Translation id="TR_ACCOUNT_DETAILS_XPUB" />}
+                                buttonLink={HELP_CENTER_XPUB_URL}
+                            />
+                            <ActionColumn>
+                                <ActionButton
+                                    variant="secondary"
+                                    data-test="@wallets/details/show-xpub-button"
+                                    onClick={() =>
+                                        openModal({
+                                            type: 'xpub',
+                                            xpub: account.descriptor,
+                                            accountPath: account.path,
+                                            accountIndex: account.index,
+                                            accountType: account.accountType,
+                                            symbol: account.symbol,
+                                            accountLabel: account.metadata.accountLabel,
+                                        })
+                                    }
+                                    isLoading={isLocked() && !disabled}
+                                    isDisabled={disabled}
+                                >
+                                    <Translation id="TR_ACCOUNT_DETAILS_XPUB_BUTTON" />
+                                </ActionButton>
+                            </ActionColumn>
+                        </Row>
+                    )}
+                </StyledCard>
 
-            {isCoinjoinAccount && <CoinjoinLogs />}
+                {isCoinjoinAccount && <CoinjoinLogs />}
+            </Cards>
         </WalletLayout>
     );
 };
