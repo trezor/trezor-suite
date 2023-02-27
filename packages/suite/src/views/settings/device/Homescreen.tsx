@@ -8,7 +8,7 @@ import { Tooltip, variables } from '@trezor/components';
 import { useDevice, useActions } from '@suite-hooks';
 import * as modalActions from '@suite-actions/modalActions';
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
-import { DeviceModel, getDeviceModel, getFirmwareVersion } from '@trezor/device-utils';
+import { DeviceModel, getDeviceModel } from '@trezor/device-utils';
 import {
     deviceModelInformation,
     imagePathToHex,
@@ -19,8 +19,8 @@ import {
 } from '@suite-utils/homescreen';
 import { useAnchor } from '@suite-hooks/useAnchor';
 import { SettingsAnchor } from '@suite-constants/anchors';
-import { versionUtils } from '@trezor/utils';
 import { analytics, EventType } from '@trezor/suite-analytics';
+import { PROTO } from '@trezor/connect';
 
 const StyledActionButton = styled(ActionButton)`
     &:not(:first-of-type) {

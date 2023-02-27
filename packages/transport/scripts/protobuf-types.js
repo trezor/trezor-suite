@@ -35,6 +35,7 @@ const ENUM_KEYS = [
     'ButtonRequestType',
     'PinMatrixRequestType',
     'WordRequestType',
+    'HomescreenFormat',
 ];
 
 const parseEnum = (itemName, item) => {

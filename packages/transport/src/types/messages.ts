@@ -1458,10 +1458,11 @@ export enum Enum_SafetyCheckLevel {
 }
 export type SafetyCheckLevel = keyof typeof Enum_SafetyCheckLevel;
 
-export enum HomescreenFormat {
+export enum Enum_HomescreenFormat {
     Toif144x144 = 1,
     Jpeg240x240 = 2,
 }
+export type HomescreenFormat = keyof typeof Enum_HomescreenFormat;
 
 // Initialize
 export type Initialize = {
