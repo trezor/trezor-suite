@@ -148,12 +148,13 @@ export const CLIENT_STATUS_FALLBACK = {
         max: MAX_ALLOWED_AMOUNT_FALLBACK,
     },
 };
+export const DEFAULT_TARGET_ANONYMITY = 5;
+export const SKIP_ROUNDS_BY_DEFAULT = false;
+export const SKIP_ROUNDS_VALUE_WHEN_ENABLED = [4, 5] as [number, number];
 
 // coordinator fee rate from status format (0.003)
 // firmware format (300 000 = 0.003 * 10 ** 8)
 export const COORDINATOR_FEE_RATE_MULTIPLIER = 10 ** 8;
-
-export const DEFAULT_TARGET_ANONYMITY = 5;
 
 export const getCoinjoinConfig = (
     network: NetworkSymbol,

@@ -73,7 +73,7 @@ describe('coinjoinAccountActions', () => {
             const store = initStore();
             TrezorConnect.setTestFixtures(f.connect);
 
-            await store.dispatch(coinjoinAccountActions.createCoinjoinAccount(f.params as any, 80)); // params are incomplete
+            await store.dispatch(coinjoinAccountActions.createCoinjoinAccount(f.params as any)); // params are incomplete
 
             const actions = store.getActions();
             expect(actions.map(a => a.type)).toEqual(f.result.actions);

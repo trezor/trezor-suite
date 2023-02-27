@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Translation } from '@suite-components';
 import { useSelector, useActions, useDispatch } from '@suite-hooks';
 import { createCoinjoinAccount } from '@wallet-actions/coinjoinAccountActions';
-import { DEFAULT_TARGET_ANONYMITY } from '@suite/services/coinjoin';
 import * as suiteActions from '@suite-actions/suiteActions';
 import * as modalActions from '@suite-actions/modalActions';
 import { Account, Network, NetworkSymbol } from '@wallet-types';
@@ -93,7 +92,7 @@ export const AddCoinjoinAccountButton = ({ network }: AddCoinjoinAccountProps) =
 
     const onCreateCoinjoinAccountClick = async () => {
         const createAccount = async () => {
-            await action.createCoinjoinAccount(network, DEFAULT_TARGET_ANONYMITY);
+            await action.createCoinjoinAccount(network);
             setIsLoading(false);
         };
 
