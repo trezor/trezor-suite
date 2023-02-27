@@ -97,19 +97,21 @@ export const XpubHint = ({ networkType }: XpubScanHintSheet) => {
                 </TouchableOpacity>
             </KeyboardAvoidingView>
 
-            <BottomSheet title={title} isVisible={isVisible} onClose={handleClose}>
-                <Box paddingTop="small" justifyContent="space-between">
-                    <Video name={video} aspectRatio={1} />
-                    <VStack spacing="large" paddingTop="large">
-                        <Text color="gray600" align="center" variant="hint">
-                            {text}
-                        </Text>
-                    </VStack>
-                    <Box marginTop="extraLarge">
-                        <Button onPress={handleClose}>Got it</Button>
+            {isVisible && (
+                <BottomSheet title={title} isVisible={isVisible} onClose={handleClose}>
+                    <Box paddingTop="small" justifyContent="space-between">
+                        <Video name={video} aspectRatio={1} />
+                        <VStack spacing="large" paddingTop="large">
+                            <Text color="gray600" align="center" variant="hint">
+                                {text}
+                            </Text>
+                        </VStack>
+                        <Box marginTop="extraLarge">
+                            <Button onPress={handleClose}>Got it</Button>
+                        </Box>
                     </Box>
-                </Box>
-            </BottomSheet>
+                </BottomSheet>
+            )}
         </>
     );
 };
