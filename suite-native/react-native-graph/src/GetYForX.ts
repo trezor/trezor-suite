@@ -1,4 +1,3 @@
-/* eslint-disable no-restricted-properties */
 import type { Vector, PathCommand } from '@shopify/react-native-skia';
 import { PathVerb, vec } from '@shopify/react-native-skia';
 
@@ -74,15 +73,6 @@ const solveCubic = (a: number, b: number, c: number, d: number): number[] => {
     return roots;
 };
 
-const cubicBezier = (t: number, from: number, c1: number, c2: number, to: number): number => {
-    const term = 1 - t;
-    const a = 1 * term ** 3 * t ** 0 * from;
-    const b = 3 * term ** 2 * t ** 1 * c1;
-    const c = 3 * term ** 1 * t ** 2 * c2;
-    const d = 1 * term ** 0 * t ** 3 * to;
-    return a + b + c + d;
-};
-
 export const cubicBezierYForX = (
     x: number,
     a: Vector,
@@ -101,6 +91,15 @@ export const cubicBezierYForX = (
     const t = ts[0];
     if (t == null) return 0;
     return cubicBezier(t, a.y, b.y, c.y, d.y);
+};
+
+const cubicBezier = (t: number, from: number, c1: number, c2: number, to: number): number => {
+    const term = 1 - t;
+    const a = 1 * term ** 3 * t ** 0 * from;
+    const b = 3 * term ** 2 * t ** 1 * c1;
+    const c = 3 * term ** 1 * t ** 2 * c2;
+    const d = 1 * term ** 0 * t ** 3 * to;
+    return a + b + c + d;
 };
 
 interface Cubic {

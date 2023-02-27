@@ -4,20 +4,18 @@ import { View, StyleSheet, LayoutChangeEvent } from 'react-native';
 import { Canvas, LinearGradient, Path, vec } from '@shopify/react-native-skia';
 
 import { getSixDigitHex } from './utils/getSixDigitHex';
-import { createGraphPath, getGraphPathRange, GraphPathRange } from './CreateGraphPath';
+import {
+    createGraphPath,
+    getGraphPathRange,
+    getPointsInRange,
+    GraphPathRange,
+} from './CreateGraphPath';
 import type { StaticLineGraphProps } from './LineGraphProps';
 
-const styles = StyleSheet.create({
-    svg: {
-        flex: 1,
-    },
-});
-
 export function StaticLineGraph({
-    points,
+    points: allPoints,
     range,
     color,
-    smoothing = 0.2,
     lineThickness = 3,
     enableFadeInMask,
     style,
@@ -32,22 +30,26 @@ export function StaticLineGraph({
     }, []);
 
     const pathRange: GraphPathRange = useMemo(
-        () => getGraphPathRange(points, range),
-        [points, range],
+        () => getGraphPathRange(allPoints, range),
+        [allPoints, range],
+    );
+
+    const pointsInRange = useMemo(
+        () => getPointsInRange(allPoints, pathRange),
+        [allPoints, pathRange],
     );
 
     const path = useMemo(
         () =>
             createGraphPath({
-                points,
+                pointsInRange,
                 range: pathRange,
-                smoothing,
                 canvasHeight: height,
                 canvasWidth: width,
                 horizontalPadding: lineThickness,
                 verticalPadding: lineThickness,
             }),
-        [height, lineThickness, pathRange, points, smoothing, width],
+        [height, lineThickness, pathRange, pointsInRange, width],
     );
 
     const gradientColors = useMemo(
@@ -81,7 +83,6 @@ export function StaticLineGraph({
                     path={path}
                     strokeWidth={lineThickness}
                     color={enableFadeInMask ? undefined : color}
-                    // eslint-disable-next-line react/style-prop-object
                     style="stroke"
                     strokeJoin="round"
                     strokeCap="round"
@@ -98,3 +99,9 @@ export function StaticLineGraph({
         </View>
     );
 }
+
+const styles = StyleSheet.create({
+    svg: {
+        flex: 1,
+    },
+});
