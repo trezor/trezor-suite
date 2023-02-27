@@ -30,7 +30,8 @@ export type FirmwareAction =
     | { type: typeof FIRMWARE.SET_ERROR; payload?: string }
     | { type: typeof FIRMWARE.TOGGLE_HAS_SEED }
     | { type: typeof FIRMWARE.REMEMBER_PREVIOUS_DEVICE; payload: Device }
-    | { type: typeof FIRMWARE.SET_IS_CUSTOM; payload: boolean };
+    | { type: typeof FIRMWARE.SET_IS_CUSTOM; payload: boolean }
+    | { type: typeof FIRMWARE.TOGGLE_USE_DEVKIT; payload: boolean };
 
 export const resetReducer = (): FirmwareAction => ({
     type: FIRMWARE.RESET_REDUCER,
@@ -353,3 +354,8 @@ export const rebootToBootloader = () => async (dispatch: Dispatch, getState: Get
 
     return response;
 };
+
+export const toggleUseDevkit = (useDevkit: boolean): FirmwareAction => ({
+    type: FIRMWARE.TOGGLE_USE_DEVKIT,
+    payload: useDevkit,
+});

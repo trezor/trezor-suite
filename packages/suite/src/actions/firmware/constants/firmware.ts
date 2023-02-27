@@ -10,3 +10,4 @@ export const REMEMBER_PREVIOUS_DEVICE = '@firmware/remember-previous-device';
 export const SET_INTERMEDIARY_INSTALLED = '@firmware/set-intermediary-installed';
 export const SET_TARGET_TYPE = '@firmware/set-target-type';
 export const SET_IS_CUSTOM = '@firmware/set-is-custom';
+export const TOGGLE_USE_DEVKIT = '@firmware/toggle-use-devkit';
