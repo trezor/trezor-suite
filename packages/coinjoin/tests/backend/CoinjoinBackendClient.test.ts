@@ -1,5 +1,4 @@
 import { CoinjoinBackendClient } from '../../src/backend/CoinjoinBackendClient';
-import * as http from '../../src/utils/http';
 import { COINJOIN_BACKEND_SETTINGS } from '../fixtures/config.fixture';
 
 const ZERO_HASH = '0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206';
@@ -15,7 +14,7 @@ const BLOCKBOOKS = ['bb_A', 'bb_B', 'bb_C', 'bb_D', 'bb_E', 'bb_F', 'bb_G'];
 describe('CoinjoinBackendClient', () => {
     let client: CoinjoinBackendClient;
 
-    beforeAll(() => {
+    beforeEach(() => {
         client = new CoinjoinBackendClient({
             ...COINJOIN_BACKEND_SETTINGS,
             blockbookUrls: BLOCKBOOKS,
@@ -24,14 +23,13 @@ describe('CoinjoinBackendClient', () => {
 
     it.only('blockbook backends rotation', async () => {
         let lastBackend = '';
-
-        jest.spyOn(http, 'httpGet').mockImplementation(url => {
-            [lastBackend] = url.split('/');
-            return Promise.resolve({
-                status: 200,
-                json: () => Promise.resolve({ totalPages: 1, txs: [] }),
-            } as Response);
-        });
+        (client as any).websockets = {
+            getOrCreate: (url: string) => {
+                [lastBackend] = (url as string).split('/');
+                return new Proxy({}, { get: (_, b) => b !== 'then' && (() => undefined) });
+            },
+            getSocketId: () => undefined,
+        };
 
         await client.fetchBlock(123456);
         let prevIndex = BLOCKBOOKS.indexOf(lastBackend);
@@ -82,15 +80,6 @@ describe('CoinjoinBackendClient', () => {
 
     it('fetchBlock not found', async () => {
         await expect(client.fetchBlock(999)).rejects.toThrow(/^400:/);
-    });
-
-    it('fetchBlocks success', async () => {
-        const blocks = await client.fetchBlocks([1, 7, 4]);
-        expect(blocks).toMatchObject([{ height: 1 }, { height: 7 }, { height: 4 }]);
-    });
-
-    it('fetchBlocks not found', async () => {
-        await expect(client.fetchBlocks([1, 999, 222])).rejects.toThrow(/^400:/);
     });
 
     it('fetchTransaction success', async () => {
