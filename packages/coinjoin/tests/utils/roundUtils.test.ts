@@ -3,6 +3,7 @@ import {
     readTimeSpan,
     estimatePhaseDeadline,
     transformStatus,
+    getAffiliateRequest,
 } from '../../src/utils/roundUtils';
 import { ROUND_REGISTRATION_END_OFFSET } from '../../src/constants';
 import { DEFAULT_ROUND, STATUS_EVENT, STATUS_TRANSFORMED } from '../fixtures/round.fixture';
@@ -87,6 +88,35 @@ describe('roundUtils', () => {
             const status = transformStatus(STATUS_EVENT);
 
             expect(status).toEqual(STATUS_TRANSFORMED);
+        });
+    });
+
+    // fixtures: https://github.com/trezor/coinjoin-affiliate-server/blob/coordinator-integration/tests/test_response.py
+    it('getAffiliateRequest', () => {
+        const response = getAffiliateRequest(
+            {
+                coordinationFeeRate: {
+                    rate: 0.005,
+                    plebsDontPayThreshold: 1000000,
+                },
+                allowedInputAmounts: {
+                    min: 5000,
+                    max: 134375000000,
+                },
+            } as any, // incomplete roundParams
+            Buffer.from(
+                '03026113a614bd0b3b193ab33de3b0376d48bf1f87931b08543bfd23d7a0616f65106bf94e6c325e3f9a8627ac6a8ebe71f322edcde26b43add515d81fc306a309a914ff0e7cfc75b05fc1cddbb60f0f5594642991a23f19b4a4794000d4169db20101',
+                'hex',
+            ).toString('base64'),
+        );
+        expect(response).toEqual({
+            fee_rate: 500000,
+            min_registrable_amount: 5000,
+            no_fee_threshold: 1000000,
+            mask_public_key: '03026113a614bd0b3b193ab33de3b0376d48bf1f87931b08543bfd23d7a0616f65',
+            signature:
+                '106bf94e6c325e3f9a8627ac6a8ebe71f322edcde26b43add515d81fc306a309a914ff0e7cfc75b05fc1cddbb60f0f5594642991a23f19b4a4794000d4169db2',
+            coinjoin_flags_array: [1, 1],
         });
     });
 });

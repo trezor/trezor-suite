@@ -76,7 +76,7 @@ const getTransactionData = (
     return {
         inputs,
         outputs,
-        affiliateRequest: getAffiliateRequest(round.affiliateRequest),
+        affiliateRequest: getAffiliateRequest(round.roundParameters, round.affiliateRequest),
     };
 };
 

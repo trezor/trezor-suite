@@ -3,6 +3,7 @@ import { networks } from '@trezor/utxo-lib';
 import { transactionSigning } from '../../src/client/round/transactionSigning';
 import { createServer } from '../mocks/server';
 import { createInput } from '../fixtures/input.fixture';
+import { ROUND_CREATION_EVENT } from '../fixtures/round.fixture';
 
 let server: Awaited<ReturnType<typeof createServer>>;
 
@@ -11,8 +12,8 @@ const COINJOIN_REQUEST = {
     min_registrable_amount: 5000,
     no_fee_threshold: 1000000,
     coinjoin_flags_array: [0, 0],
-    mask_public_key: '0000',
-    signature: '0000',
+    mask_public_key: '0'.repeat(33 * 2),
+    signature: '0'.repeat(64 * 2),
 };
 
 describe('transactionSigning', () => {
@@ -38,9 +39,7 @@ describe('transactionSigning', () => {
 
         const response = await transactionSigning(
             {
-                affiliateRequest: Buffer.from(JSON.stringify(COINJOIN_REQUEST), 'utf-8').toString(
-                    'base64',
-                ),
+                affiliateRequest: Buffer.from('0'.repeat(97 * 2 + 4), 'hex').toString('base64'),
                 id: '01',
                 phase: 3,
                 inputs: [
@@ -61,7 +60,7 @@ describe('transactionSigning', () => {
                     },
                 ],
                 roundParameters: {
-                    maxSuggestedAmount: 123456789,
+                    ...ROUND_CREATION_EVENT.roundParameters,
                 },
                 coinjoinState: {
                     // test vectors from connect signTransactionPaymentRequest

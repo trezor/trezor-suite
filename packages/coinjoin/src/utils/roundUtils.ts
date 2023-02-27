@@ -1,3 +1,5 @@
+import { bufferutils } from '@trezor/utxo-lib';
+
 import {
     COORDINATOR_FEE_RATE,
     MAX_MINING_FEE,
@@ -190,24 +192,31 @@ export const compareOutpoint = (a: string, b: string) =>
 // sum input Credentials
 export const sumCredentials = (c: Credentials[]) => c.reduce((sum, cre) => sum + cre.value, 0);
 
-export const getAffiliateRequest = (base64data?: string): CoinjoinAffiliateRequest => {
+export const getAffiliateRequest = (
+    roundParameters: CoinjoinRoundParameters,
+    base64data?: string,
+): CoinjoinAffiliateRequest => {
     if (!base64data) {
         throw new Error('Missing affiliate request data');
     }
 
-    const str = Buffer.from(base64data, 'base64').toString();
-    const affiliateRequest = JSON.parse(str);
-
-    if (
-        !('fee_rate' in affiliateRequest) ||
-        !('min_registrable_amount' in affiliateRequest) ||
-        !('no_fee_threshold' in affiliateRequest) ||
-        !('mask_public_key' in affiliateRequest) ||
-        !('coinjoin_flags_array' in affiliateRequest) ||
-        !('signature' in affiliateRequest)
-    ) {
-        throw new Error('Invalid affiliate request data');
+    const reader = new bufferutils.BufferReader(Buffer.from(base64data, 'base64'));
+    // read first 33 bytes of mask_public_key
+    const mask = reader.readSlice(33);
+    // read 64 bytes of signature
+    const signature = reader.readSlice(64);
+    // read left overs, each byte = one element of coinjoin_flags_array
+    const flags: number[] = [];
+    while (reader.offset < reader.buffer.length) {
+        flags.push(reader.readUInt8());
     }
 
-    return affiliateRequest;
+    return {
+        fee_rate: roundParameters.coordinationFeeRate.rate * 10 ** 8,
+        no_fee_threshold: roundParameters.coordinationFeeRate.plebsDontPayThreshold,
+        min_registrable_amount: roundParameters.allowedInputAmounts.min,
+        mask_public_key: mask.toString('hex'),
+        signature: signature.toString('hex'),
+        coinjoin_flags_array: flags,
+    };
 };
