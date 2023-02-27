@@ -68,7 +68,7 @@ const initialState: FirmwareUpdateState = {
     subsequentInstalling: false,
     firmwareHashInvalid: [],
     isCustom: false,
-    useDevkit: true, // TODO
+    useDevkit: false,
 };
 
 const firmwareUpdate = (
@@ -140,7 +140,14 @@ const firmwareUpdate = (
                 draft.isCustom = action.payload;
                 break;
             case FIRMWARE.RESET_REDUCER:
-                return { ...initialState, firmwareHashInvalid: draft.firmwareHashInvalid };
+                return {
+                    ...initialState,
+                    firmwareHashInvalid: draft.firmwareHashInvalid,
+                    useDevkit: draft.useDevkit,
+                };
+            case FIRMWARE.TOGGLE_USE_DEVKIT:
+                draft.useDevkit = action.payload;
+                break;
             default:
 
             // no default
