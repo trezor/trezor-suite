@@ -3,46 +3,44 @@ import styled from 'styled-components';
 import { Input, InputProps, variables } from '@trezor/components';
 
 const LevelContainer = styled.div`
-    position: absolute;
-    right: 20px;
     width: 68px;
-
-    ${Input.InputAddon} {
-        font-size: ${variables.FONT_SIZE.SMALL};
-        font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-        color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
-        pointer-events: none;
-    }
 `;
 
 const Level = styled(Input)`
+    background: none;
     height: 42px;
     padding: ${({ innerAddon }) => !innerAddon && '1px 12px 0 12px'};
     border: 1.5px solid ${({ theme }) => theme.STROKE_GREY};
     color: ${({ theme }) => theme.TYPE_GREEN};
-    font-size: ${variables.FONT_SIZE.H2};
+    font-size: ${variables.FONT_SIZE.H3};
     text-align: center;
 
     :disabled {
         color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
-        background: ${({ theme }) => theme.BG_LIGHT_RED};
     }
+`;
+
+const InnerAddon = styled.div`
+    font-size: ${variables.FONT_SIZE.SMALL};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
 
 const MAX_ALLOWED_INTEGER = 1000000;
 
-interface SliderInputProps extends Pick<InputProps, 'isDisabled' | 'innerAddon' | 'addonAlign'> {
+export interface SliderInputProps extends Pick<InputProps, 'isDisabled' | 'addonAlign'> {
     value: number | '';
     onChange: (number: number) => void;
-    min?: number;
-    max?: number;
+    min: number;
+    max: number;
+    unit?: string;
     className?: string;
 }
 
 export const SliderInput = forwardRef<
     { setPreviousValue: (number: number) => void },
     SliderInputProps
->(({ value, onChange, min = 1, max = 100, className, ...props }, ref) => {
+>(({ value, onChange, min, max, unit, className, ...props }, ref) => {
     const [inputValue, setInputValue] = useState<number | ''>(value);
 
     const inputRef = useRef<HTMLInputElement>(null);
@@ -109,6 +107,8 @@ export const SliderInput = forwardRef<
         }
     };
 
+    const focusInput = () => inputRef.current?.focus();
+
     return (
         <LevelContainer className={className}>
             <Level
@@ -119,6 +119,7 @@ export const SliderInput = forwardRef<
                 onFocus={handleFocus}
                 onBlur={handleBlur}
                 onKeyDown={handleKeyDown}
+                innerAddon={<InnerAddon onClick={focusInput}>{unit}</InnerAddon>}
                 innerRef={inputRef}
                 {...props}
             />

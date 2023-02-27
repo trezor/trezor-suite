@@ -11,7 +11,6 @@ import { anchorOutlineStyles } from '@suite-utils/anchor';
 
 const SetupCard = styled(Card)<{ shouldHighlight?: boolean }>`
     position: relative;
-    margin-top: 20px;
     overflow: hidden;
     flex-direction: row;
 

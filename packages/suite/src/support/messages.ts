@@ -7361,6 +7361,21 @@ export default defineMessages({
         description: 'Heading in coin join settings',
         defaultMessage: 'Your coins will be mixed with other peoples’ to achieve privacy.',
     },
+    TR_COINJOIN_SETUP_HEADING: {
+        id: 'TR_COINJOIN_SETUP_HEADING',
+        description: 'Heading in coinjoin account details',
+        defaultMessage: 'Coinjoin setup',
+    },
+    TR_RECOMMENDED: {
+        id: 'TR_RECOMMENDED',
+        description: 'Coinjoin setup option',
+        defaultMessage: 'Recommended',
+    },
+    TR_CUSTOM: {
+        id: 'TR_CUSTOM',
+        description: 'Coinjoin setup option',
+        defaultMessage: 'Custom',
+    },
     TR_COINJOIN_TILE_1_TITLE: {
         id: 'TR_COINJOIN_TILE_1_TITLE',
         description: 'Tile in coinjoin settings',

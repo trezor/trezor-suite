@@ -13,6 +13,7 @@ import {
     selectCurrentTargetAnonymity,
     selectRoundsNeeded,
     selectRoundsFailRateBuffer,
+    selectCoinjoinClient,
 } from '@wallet-reducers/coinjoinReducer';
 import { useCoinjoinSessionBlockers } from '@suite/hooks/coinjoin/useCoinjoinSessionBlockers';
 import { getMaxRounds } from '@wallet-utils/coinjoinUtils';
@@ -98,7 +99,7 @@ export const CoinjoinConfirmation = ({ account }: CoinjoinConfirmationProps) => 
     const [termsConfirmed, setTermsConfirmed] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
-    const coordinatorData = useSelector(state => state.wallet.coinjoin.clients[account.symbol]);
+    const coinjoinClient = useSelector(state => selectCoinjoinClient(state, account.key));
     const targetAnonymity = useSelector(selectCurrentTargetAnonymity);
     const roundsNeeded = useSelector(state => selectRoundsNeeded(state, account.key));
     const roundsFailRateBuffer = useSelector(selectRoundsFailRateBuffer);
@@ -111,11 +112,11 @@ export const CoinjoinConfirmation = ({ account }: CoinjoinConfirmationProps) => 
 
     const anonymitySet = account.addresses?.anonymitySet;
 
-    if (!coordinatorData || !targetAnonymity || !anonymitySet) {
+    if (!coinjoinClient || !targetAnonymity || !anonymitySet) {
         return (
             <Error
                 error={`Suite could not ${
-                    coordinatorData ? 'determine setup values' : 'connect to coordinator'
+                    coinjoinClient ? 'determine setup values' : 'connect to coordinator'
                 }.`}
             />
         );
@@ -138,8 +139,8 @@ export const CoinjoinConfirmation = ({ account }: CoinjoinConfirmationProps) => 
         setIsLoading(true);
         await dispatch(
             startCoinjoinSession(account, {
-                maxCoordinatorFeeRate: coordinatorData.coordinationFeeRate.rate,
-                maxFeePerKvbyte: coordinatorData.maxMiningFee * 1000, // transform to kvB
+                maxCoordinatorFeeRate: coinjoinClient.coordinationFeeRate.rate,
+                maxFeePerKvbyte: coinjoinClient.maxMiningFee * 1000, // transform to kvB
                 maxRounds,
                 skipRounds: RECOMMENDED_SKIP_ROUNDS,
                 targetAnonymity,
