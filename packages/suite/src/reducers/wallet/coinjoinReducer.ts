@@ -693,3 +693,51 @@ export const selectCoinjoinSessionBlockerByAccountKey = memoizeWithArgs(
         }
     },
 );
+
+// memoise() was causing incorrect return from the selector
+export const selectCurrentCoinjoinWheelStates = (state: CoinjoinRootState) => {
+    const { anonymized, notAnonymized } = selectCurrentCoinjoinBalanceBreakdown(state);
+    const session = selectCurrentCoinjoinSession(state);
+    const { key, balance } = selectSelectedAccount(state) || {};
+
+    const coinjoinSessionBlocker = selectCoinjoinSessionBlockerByAccountKey(state, key || '');
+
+    const { paused } = session || {};
+
+    // session states
+    const isSessionActive = !!session;
+    const isPaused = !!paused;
+    const isLoading = coinjoinSessionBlocker === 'SESSION_STARTING';
+
+    // account states
+    const isAccountEmpty = !balance || balance === '0';
+    const isNonePrivate = anonymized === '0';
+    const isAllPrivate = notAnonymized === '0';
+
+    // error state
+    const isResumeBlockedByLastingIssue =
+        !!coinjoinSessionBlocker &&
+        !['DEVICE_LOCKED', 'SESSION_STARTING'].includes(coinjoinSessionBlocker);
+
+    return {
+        isSessionActive,
+        isPaused,
+        isLoading,
+        isAccountEmpty,
+        isNonePrivate,
+        isAllPrivate,
+        isResumeBlockedByLastingIssue,
+    };
+};
+
+export const selectCurrentSessionDeadlineInfo = memoize((state: CoinjoinRootState) => {
+    const session = selectCurrentCoinjoinSession(state);
+
+    const { roundPhase, roundPhaseDeadline, sessionDeadline } = session || {};
+
+    return {
+        roundPhase,
+        roundPhaseDeadline,
+        sessionDeadline,
+    };
+});
