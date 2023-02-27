@@ -20,7 +20,6 @@ import {
 import { useAnchor } from '@suite-hooks/useAnchor';
 import { SettingsAnchor } from '@suite-constants/anchors';
 import { analytics, EventType } from '@trezor/suite-analytics';
-import { PROTO } from '@trezor/connect';
 
 const StyledActionButton = styled(ActionButton)`
     &:not(:first-of-type) {

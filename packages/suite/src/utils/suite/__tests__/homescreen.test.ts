@@ -1,177 +1,146 @@
-import * as Canvas from 'canvas';
-import crypto from 'crypto';
+import {
+    dataUrlToImage,
+    fileToArrayBuffer,
+    fileToDataUrl,
+    isProgressiveJPG,
+    isValidImageFormat,
+    isValidImageHeight,
+    isValidImageSize,
+    isValidImageWidth,
+} from '@suite-utils/homescreen';
 import { DeviceModel } from '@trezor/device-utils';
-
-import * as homescreen from '../homescreen';
-import { getDeviceModelImageType } from '../homescreen';
-
-const homescreensPath = '../suite-data/files/images/homescreens';
-
-// to simplify assertions of hex return values
-const getHash = (str: string) => crypto.createHash('md5').update(str).digest('hex');
-
-const getMockElementToImageData =
-    (image: HTMLImageElement) => (_element: HTMLImageElement, w: number, h: number) => {
-        const canvas = Canvas.createCanvas(w, h);
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(image, 0, 0);
-
-        // you can test visually if proper imageData was returned this way:
-        // console.log(`<img src="${canvas.toDataURL()}" />`);
-
-        const imageData = ctx.getImageData(0, 0, w, h);
-        return imageData;
-    };
-const imgHashFixtures = [
-    {
-        model: DeviceModel.TT,
-        img: 'btc.png',
-        hexHash: '2f037dc4958b2fb1935f03069eff6c9d',
-    },
-    {
-        model: DeviceModel.TT,
-        img: 'doge.png',
-        hexHash: 'ab152b7d305f53d942a289ffc695e0f1',
-    },
-    {
-        model: DeviceModel.T1,
-        img: 'ancap.png',
-        hexHash: '28ec73580bab3dfcc1e827caca49d0cd',
-    },
-    {
-        model: DeviceModel.T1,
-        img: 'anonymous.png',
-        hexHash: 'f82d789c632b6924486c80d75c53285f',
-    },
-    {
-        model: DeviceModel.TR,
-        img: 'ancap.png',
-        hexHash: '28ec73580bab3dfcc1e827caca49d0cd',
-    },
-    {
-        model: DeviceModel.TR,
-        img: 'anonymous.png',
-        hexHash: 'f82d789c632b6924486c80d75c53285f',
-    },
-] as const;
-
-interface Fixture {
-    img: (typeof imgHashFixtures)[number]['img'];
-    model: (typeof imgHashFixtures)[number]['model'];
-    hexHash: (typeof imgHashFixtures)[number]['hexHash'];
-}
+import * as fixtures from '../__fixtures__/homescreen';
 
 describe('homescreen', () => {
-    describe('imageDataToHomescreen', () => {
-        imgHashFixtures.forEach((fixture: Fixture) => {
-            it(`${fixture.img} should result in hex that results in hash ${fixture.hexHash}`, async () => {
-                const image: any = await Canvas.loadImage(
-                    `${homescreensPath}/${getDeviceModelImageType(fixture.model)}/${fixture.img}`,
-                );
+    describe('fileToDataUrl', () => {
+        it('should convert a JPG file to a data URL', async () => {
+            const jpegFile = new File(['dummy image'], 'test.jpg', { type: 'image/jpeg' });
 
-                const fooElement = document.createElement('img');
-                const hex = homescreen.elementToHomescreen(
-                    fooElement,
-                    fixture.model,
-                    getMockElementToImageData(image),
-                );
-                expect(getHash(hex)).toEqual(fixture.hexHash);
+            const dataUrl = await fileToDataUrl(jpegFile);
+
+            expect(dataUrl.startsWith('data:image/jpeg;base64,')).toBe(true);
+        });
+
+        it('should convert a PNG file to a data URL', async () => {
+            const pngFile = new File(['dummy image'], 'test.png', { type: 'image/png' });
+
+            const dataUrl = await fileToDataUrl(pngFile);
+
+            expect(dataUrl.startsWith('data:image/png;base64,')).toBe(true);
+        });
+    });
+
+    describe('fileToArrayBuffer', () => {
+        it('should convert a JPG file to an ArrayBuffer', async () => {
+            const imageFile = new File(['dummy data'], 'test.jpg', { type: 'image/jpeg' });
+
+            const arrayBuffer = await fileToArrayBuffer(imageFile);
+
+            expect(arrayBuffer).toBeDefined();
+            expect(arrayBuffer).not.toBeNull();
+            expect(arrayBuffer instanceof ArrayBuffer).toBe(true);
+        });
+    });
+
+    describe('dataUrlToImage', () => {
+        const originalCreateElement = document.createElement;
+        beforeAll(() => {
+            document.createElement = (create =>
+                function () {
+                    // @ts-expect-error
+                    // eslint-disable-next-line prefer-rest-params
+                    const element: HTMLElement = create.apply(this, arguments);
+
+                    if (element.tagName === 'IMG') {
+                        setTimeout(() => {
+                            // @ts-expect-error
+                            element.onload(new Event('load'));
+                        }, 100);
+                    }
+                    return element;
+                })(document.createElement);
+        });
+
+        afterAll(() => {
+            document.createElement = originalCreateElement;
+        });
+
+        it('should convert a data URL to an image', async () => {
+            // mock image 1x1
+            const dataUrl =
+                'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z/C/HgAGBQF/yw+3HwAAAABJRU5ErkJggg==';
+
+            const image = await dataUrlToImage(dataUrl);
+
+            expect(image.src).toBe(dataUrl);
+        });
+    });
+
+    describe('isValidImageFormat', () => {
+        fixtures.isValidImageFormat.forEach(fixture => {
+            it(fixture.description, () => {
+                const result = isValidImageFormat(fixture.dataUrl, fixture.deviceModel);
+                expect(result).toBe(fixture.result);
             });
         });
     });
 
-    describe('validate', () => {
-        describe('with correct dimensions', () => {
-            imgHashFixtures.forEach((fixture: Fixture) => {
-                it(`${fixture.img} should be checked as ok`, async () => {
-                    const image: any = await Canvas.loadImage(
-                        `${homescreensPath}/${getDeviceModelImageType(fixture.model)}/${
-                            fixture.img
-                        }`,
-                    );
-
-                    const spy = jest.spyOn(homescreen, 'elementToImageData');
-                    spy.mockImplementationOnce(getMockElementToImageData(image));
-                    expect(homescreen.validateImageDimensions(image, fixture.model)).toBe(
-                        undefined,
-                    );
-                });
-            });
-        });
-
-        describe('called with swapped trezorModel param', () => {
-            imgHashFixtures.forEach((fixture: Fixture) => {
-                it(`${fixture.img} should error with "Not a correct height error"`, async () => {
-                    const image: any = await Canvas.loadImage(
-                        `${homescreensPath}/${getDeviceModelImageType(fixture.model)}/${
-                            fixture.img
-                        }`,
-                    );
-                    const spy = jest.spyOn(homescreen, 'elementToImageData');
-                    spy.mockImplementationOnce(getMockElementToImageData(image));
-
-                    let swappedDeviceModel = DeviceModel.T1;
-                    if ([DeviceModel.T1, DeviceModel.TR].includes(fixture.model)) {
-                        swappedDeviceModel = DeviceModel.TT;
-                    }
-                    if (DeviceModel.TT === fixture.model) {
-                        swappedDeviceModel = DeviceModel.TR;
-                    }
-
-                    expect(homescreen.validateImageDimensions(image, swappedDeviceModel)).toBe(
-                        homescreen.ImageValidationError.InvalidHeight,
-                    );
-                });
+    describe('isValidImageWidth', () => {
+        fixtures.isValidImageWidth.forEach(fixture => {
+            it(fixture.description, () => {
+                const image = new Image();
+                image.width = fixture.width;
+                const result = isValidImageWidth(image, fixture.deviceModel);
+                expect(result).toBe(fixture.result);
             });
         });
     });
 
-    describe('validateImageFormat', () => {
-        describe('returns true for', () => {
-            const validExamples = [
-                'data:image/png,deadbeef',
-                'data:image/jpeg',
-                'data:image/jpeg,',
-                'data:image/jpegsomecontent',
-            ];
-            it.each(validExamples)(`%p`, dataUrl => {
-                expect(homescreen.validateImageFormat(dataUrl)).toBe(undefined);
+    describe('isValidImageHeigh', () => {
+        fixtures.isValidImageHeight.forEach(fixture => {
+            it(fixture.description, () => {
+                const image = new Image();
+                image.height = fixture.height;
+                const result = isValidImageHeight(image, fixture.deviceModel);
+                expect(result).toBe(fixture.result);
             });
         });
+    });
 
-        describe('returns false for', () => {
-            const invalidExamples = [
-                '',
-                'xxx',
-                'data',
-                'data:',
-                'data:deadbeef',
-                'data:image',
-                'data:jpeg', // missing image/ prefix
-                'data:image/jpg', // this is different than valid "image/jpeg"
-                'data:image/x-png',
-                ' data:image/jpeg',
-                'data:image\\jpeg',
-                'data:image//jpeg',
-                'data::image/jpeg',
-                // also test some real-world data url examples
-                'data:,Hello%2C%20World!',
-                'data:text/plain;base64,SGVsbG8sIFdvcmxkIQ==',
-                'data:text/html,%3Ch1%3EHello%2C%20World!%3C%2Fh1%3E',
-            ];
-            it.each(invalidExamples)(`%p`, dataUrl => {
-                expect(homescreen.validateImageFormat(dataUrl)).toBe(
-                    homescreen.ImageValidationError.InvalidFormat,
-                );
+    describe('isProgressiveJPG', () => {
+        fixtures.isProgressiveJPG.forEach(fixture => {
+            it(fixture.description, () => {
+                const result = isProgressiveJPG(fixture.buffer, fixture.deviceModel);
+                expect(result).toBe(fixture.result);
             });
         });
+    });
 
-        describe('returns false for null', () => {
-            // defensively test a corner case violating type-checking
-            // @ts-expect-error
-            expect(homescreen.validateImageFormat(null)).toBe(
-                homescreen.ImageValidationError.InvalidFormat,
-            );
+    describe('isValidImageSize', () => {
+        it('should return true for non-TT device models', () => {
+            const file = new File([], 'test.png', { type: 'image/png', lastModified: 0 });
+            expect(isValidImageSize(file, DeviceModel.TR)).toBe(true);
+            expect(isValidImageSize(file, DeviceModel.T1)).toBe(true);
+        });
+
+        it('should return true for TT device models when file size is less than or equal to 16384 bytes', () => {
+            const file = new File([], 'test.png', {
+                type: 'image/png',
+                lastModified: 0,
+            });
+            Object.defineProperty(file, 'size', { value: 16384, configurable: true });
+
+            expect(isValidImageSize(file, DeviceModel.TT)).toBe(true);
+        });
+
+        it('should return false for TT device models when file size is greater than 16384 bytes', () => {
+            const file = new File([], 'test.png', {
+                type: 'image/png',
+                lastModified: 0,
+            });
+            Object.defineProperty(file, 'size', { value: 16385, configurable: true });
+
+            expect(isValidImageSize(file, DeviceModel.TT)).toBe(false);
         });
     });
 });
