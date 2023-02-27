@@ -12,6 +12,7 @@ import { InvityApi } from './InvityApi';
 import { CoinjoinApi } from './CoinjoinApi';
 import { OAuthApi } from './OAuthApi';
 import { CheckFirmwareAuthenticity } from './CheckFirmwareAuthenticity';
+import { Devkit } from './Devkit';
 import { Transport } from './Transport';
 import { Processes } from './Processes';
 
@@ -36,6 +37,7 @@ export const SettingsDebug = () => (
             <CoinjoinApi />
         </SettingsSection>
         <SettingsSection title="Firmware">
+            <Devkit />
             <CheckFirmwareAuthenticity />
         </SettingsSection>
         <SettingsSection title="Testing">
