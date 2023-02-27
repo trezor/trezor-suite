@@ -85,18 +85,20 @@ export const ConnectUI = ({ postMessage, clearLegacyView }: ConnectUIProps) => {
         }
 
         // notifications
-        const notifications: React.ReactNode[] = [];
+        const notifications: { [key in ConnectUIEventProps['type']]?: JSX.Element } = {};
         messages.forEach(message => {
             if (message?.type === 'popup-handshake') {
                 if (message.payload?.transport?.outdated) {
-                    notifications.push(<BridgeUpdateNotification key="bridge-outdated" />);
+                    notifications[message.type] = (
+                        <BridgeUpdateNotification key="bridge-outdated" />
+                    );
                 }
             } else if (message?.type === UI_REQUEST.FIRMWARE_OUTDATED) {
-                notifications.push(<FirmwareUpdateNotification key={message.type} />);
+                notifications[message.type] = <FirmwareUpdateNotification key={message.type} />;
             } else if (message?.type === UI_REQUEST.DEVICE_NEEDS_BACKUP) {
-                notifications.push(<BackupNotification key={message.type} />);
+                notifications[message.type] = <BackupNotification key={message.type} />;
             } else if (message?.type === 'phishing-domain') {
-                notifications.push(<SuspiciousOriginNotification key={message.type} />);
+                notifications[message.type] = <SuspiciousOriginNotification key={message.type} />;
             }
             return notifications;
         });
@@ -120,7 +122,7 @@ export const ConnectUI = ({ postMessage, clearLegacyView }: ConnectUIProps) => {
                         <InfoPanel
                             method={flowInfo?.method}
                             origin={flowInfo?.settings?.origin}
-                            topSlot={Notifications}
+                            topSlot={Object.values(Notifications)}
                         />
                         {Component && (
                             <div
