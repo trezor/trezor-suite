@@ -7,7 +7,7 @@ type AddressPaths = {
 };
 
 const isCoinbaseUtxo = (tx: Transaction) =>
-    tx.details.vin.length === 1 && !!tx.details.vin[0].coinbase;
+    tx.details.vin.length === 1 && !tx.details.vin[0].isAddress && !tx.details.vin[0].txid;
 
 const getHeightData = (tx: Transaction) =>
     tx.blockHeight && tx.blockHeight > 0
