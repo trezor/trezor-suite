@@ -132,10 +132,7 @@ export interface FilterController {
 
 export type FilterClient = Pick<CoinjoinBackendClient, 'fetchFilters'>;
 
-export type MempoolClient = Pick<
-    CoinjoinBackendClient,
-    'fetchMempoolTxids' | 'fetchTransaction' | 'getIdentityForBlock'
->;
+export type MempoolClient = Pick<CoinjoinBackendClient, 'fetchMempoolTxids' | 'fetchTransaction'>;
 
 export type AddressInfo = AccountInfoBase & {
     history: AccountInfoBase['history'] & {
