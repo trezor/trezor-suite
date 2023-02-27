@@ -16,7 +16,7 @@ const checkExpiration = (lastChangeTimestamp: number) => {
 };
 
 export const useCoinjoinSessionPhase = (accountKey: string) => {
-    const { sessionPhaseQueue, roundPhase } =
+    const { sessionPhaseQueue, roundPhase, paused } =
         useSelector(state => selectSessionByAccountKey(state, accountKey)) || {};
     const [phaseIndex, setPhaseIndex] = useState(0);
     const [lastChangeTimestamp, setLastChangeTimestamp] = useState(0);
@@ -90,6 +90,10 @@ export const useCoinjoinSessionPhase = (accountKey: string) => {
 
         return () => clearTimeout(timer);
     }, [checkNextPhase, lastChangeTimestamp, sessionPhaseQueue]);
+
+    if (paused) {
+        return;
+    }
 
     return sessionPhase;
 };
