@@ -39,7 +39,10 @@ export interface CoinjoinDiscoveryCheckpoint {
 export interface CoinjoinAccount {
     key: string; // reference to wallet Account.key
     symbol: NetworkSymbol;
+    customSetup?: boolean;
     targetAnonymity: number; // anonymity set by the user
+    maxFeePerKvbyte: number;
+    skipRounds?: [number, number];
     rawLiquidityClue: RegisterAccountParams['rawLiquidityClue'];
     session?: CoinjoinSession; // current/active authorized session
     previousSessions: CoinjoinSession[]; // history

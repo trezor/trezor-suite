@@ -31,12 +31,11 @@ import {
 import { getAccountTransactions, sortByBIP44AddressIndex } from '@suite-common/wallet-utils';
 import { openModal } from '@suite-actions/modalActions';
 
-const coinjoinAccountCreate = (account: Account, targetAnonymity: number) =>
+const coinjoinAccountCreate = (account: Account) =>
     ({
         type: COINJOIN.ACCOUNT_CREATE,
         payload: {
             account,
-            targetAnonymity,
         },
     } as const);
 
@@ -54,6 +53,32 @@ export const coinjoinAccountUpdateAnonymity = (accountKey: string, targetAnonymi
         payload: {
             accountKey,
             targetAnonymity,
+        },
+    } as const);
+
+export const coinjoinAccountUpdateMaxMiningFee = (accountKey: string, maxFeePerKvbyte: number) =>
+    ({
+        type: COINJOIN.ACCOUNT_UPDATE_MAX_MING_FEE,
+        payload: {
+            accountKey,
+            maxFeePerKvbyte,
+        },
+    } as const);
+
+export const coinjoinAccountToggleSkipRounds = (accountKey: string) =>
+    ({
+        type: COINJOIN.ACCOUNT_TOGGLE_SKIP_ROUNDS,
+        payload: {
+            accountKey,
+        },
+    } as const);
+
+export const coinjoinAccountUpdateSetupOption = (accountKey: string, isRecommended: boolean) =>
+    ({
+        type: COINJOIN.ACCOUNT_UPDATE_SETUP_OPTION,
+        payload: {
+            accountKey,
+            isRecommended,
         },
     } as const);
 
@@ -168,6 +193,9 @@ export type CoinjoinAccountAction =
     | ReturnType<typeof coinjoinAccountCreate>
     | ReturnType<typeof coinjoinAccountRemove>
     | ReturnType<typeof coinjoinAccountUpdateAnonymity>
+    | ReturnType<typeof coinjoinAccountUpdateMaxMiningFee>
+    | ReturnType<typeof coinjoinAccountToggleSkipRounds>
+    | ReturnType<typeof coinjoinAccountUpdateSetupOption>
     | ReturnType<typeof coinjoinAccountSetLiquidityClue>
     | ReturnType<typeof coinjoinAccountAuthorize>
     | ReturnType<typeof coinjoinAccountAuthorizeSuccess>
@@ -476,8 +504,7 @@ const handleError = ({
 };
 
 export const createCoinjoinAccount =
-    (network: Network, targetAnonymity: number) =>
-    async (dispatch: Dispatch, getState: GetState) => {
+    (network: Network) => async (dispatch: Dispatch, getState: GetState) => {
         if (network.accountType !== 'coinjoin') {
             throw new Error('createCoinjoinAccount: invalid account type');
         }
@@ -554,7 +581,7 @@ export const createCoinjoinAccount =
                 },
             ),
         );
-        dispatch(coinjoinAccountCreate(account.payload, targetAnonymity));
+        dispatch(coinjoinAccountCreate(account.payload));
 
         dispatch(coinjoinAccountPreloading(false));
 

@@ -33,6 +33,9 @@ import {
     ESTIMATED_ROUNDS_FAIL_RATE_BUFFER,
     ESTIMATED_HOURS_PER_ROUND,
     UNECONOMICAL_COINJOIN_THRESHOLD,
+    DEFAULT_TARGET_ANONYMITY,
+    SKIP_ROUNDS_BY_DEFAULT,
+    SKIP_ROUNDS_VALUE_WHEN_ENABLED,
 } from '@suite/services/coinjoin';
 import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import {
@@ -41,7 +44,10 @@ import {
     selectIsFeatureDisabled,
     selectFeatureConfig,
 } from '@suite-reducers/messageSystemReducer';
+import { MAX_MINING_FEE_FALLBACK } from '@trezor/coinjoin/src/constants';
 import { SelectedAccountRootState, selectSelectedAccount } from './selectedAccountReducer';
+
+const DEFAULT_SKIP_ROUNDS = SKIP_ROUNDS_BY_DEFAULT ? SKIP_ROUNDS_VALUE_WHEN_ENABLED : undefined;
 
 export interface CoinjoinClientInstance
     extends Pick<
@@ -86,7 +92,7 @@ type ExtractActionPayload<A> = Extract<Action, { type: A }> extends { type: A; p
 
 const createAccount = (
     draft: CoinjoinState,
-    { account, targetAnonymity }: ExtractActionPayload<typeof COINJOIN.ACCOUNT_CREATE>,
+    { account }: ExtractActionPayload<typeof COINJOIN.ACCOUNT_CREATE>,
 ) => {
     draft.isPreloading = false;
     const exists = draft.accounts.find(a => a.key === account.key);
@@ -95,7 +101,9 @@ const createAccount = (
         key: account.key,
         symbol: account.symbol,
         rawLiquidityClue: null, // NOTE: liquidity clue is calculated from tx history. default value is `null`
-        targetAnonymity,
+        targetAnonymity: DEFAULT_TARGET_ANONYMITY,
+        maxFeePerKvbyte: MAX_MINING_FEE_FALLBACK,
+        skipRounds: DEFAULT_SKIP_ROUNDS,
         previousSessions: [],
     });
 };
@@ -109,6 +117,21 @@ const setLiquidityClue = (
     account.rawLiquidityClue = payload.rawLiquidityClue;
 };
 
+const updateSetupOption = (
+    draft: CoinjoinState,
+    payload: ExtractActionPayload<typeof COINJOIN.ACCOUNT_UPDATE_SETUP_OPTION>,
+) => {
+    const account = draft.accounts.find(a => a.key === payload.accountKey);
+    if (!account) return;
+    if (payload.isRecommended) {
+        const client = draft.clients[account.symbol];
+        account.targetAnonymity = DEFAULT_TARGET_ANONYMITY;
+        account.maxFeePerKvbyte = client?.maxMiningFee || MAX_MINING_FEE_FALLBACK;
+        account.skipRounds = DEFAULT_SKIP_ROUNDS;
+    }
+    account.customSetup = !payload.isRecommended;
+};
+
 const updateTargetAnonymity = (
     draft: CoinjoinState,
     payload: ExtractActionPayload<typeof COINJOIN.ACCOUNT_UPDATE_TARGET_ANONYMITY>,
@@ -116,6 +139,24 @@ const updateTargetAnonymity = (
     const account = draft.accounts.find(a => a.key === payload.accountKey);
     if (!account) return;
     account.targetAnonymity = payload.targetAnonymity;
+};
+
+const updateMaxMingFee = (
+    draft: CoinjoinState,
+    payload: ExtractActionPayload<typeof COINJOIN.ACCOUNT_UPDATE_MAX_MING_FEE>,
+) => {
+    const account = draft.accounts.find(a => a.key === payload.accountKey);
+    if (!account) return;
+    account.maxFeePerKvbyte = payload.maxFeePerKvbyte;
+};
+
+const toggleSkipRounds = (
+    draft: CoinjoinState,
+    payload: ExtractActionPayload<typeof COINJOIN.ACCOUNT_TOGGLE_SKIP_ROUNDS>,
+) => {
+    const account = draft.accounts.find(a => a.key === payload.accountKey);
+    if (!account) return;
+    account.skipRounds = account.skipRounds ? undefined : SKIP_ROUNDS_VALUE_WHEN_ENABLED;
 };
 
 const createSession = (
@@ -369,8 +410,17 @@ export const coinjoinReducer = (
             case COINJOIN.ACCOUNT_REMOVE:
                 draft.accounts = draft.accounts.filter(a => a.key !== action.payload.accountKey);
                 break;
+            case COINJOIN.ACCOUNT_UPDATE_SETUP_OPTION:
+                updateSetupOption(draft, action.payload);
+                break;
             case COINJOIN.ACCOUNT_UPDATE_TARGET_ANONYMITY:
                 updateTargetAnonymity(draft, action.payload);
+                break;
+            case COINJOIN.ACCOUNT_UPDATE_MAX_MING_FEE:
+                updateMaxMingFee(draft, action.payload);
+                break;
+            case COINJOIN.ACCOUNT_TOGGLE_SKIP_ROUNDS:
+                toggleSkipRounds(draft, action.payload);
                 break;
             case COINJOIN.ACCOUNT_AUTHORIZE_SUCCESS:
                 createSession(draft, action.payload);
