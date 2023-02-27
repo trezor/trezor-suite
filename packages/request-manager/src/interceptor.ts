@@ -8,41 +8,29 @@ import { InterceptorOptions } from './types';
 import { RequestPool } from './httpPool';
 
 const getIdentityName = (proxyAuthorization?: http.OutgoingHttpHeader) => {
-    let identity;
-    if (Array.isArray(proxyAuthorization)) {
-        [identity] = proxyAuthorization;
-    }
-    if (typeof proxyAuthorization === 'string') {
-        identity = proxyAuthorization;
-    }
-    if (identity) {
-        const identityName = identity.match(/Basic (.*)/);
-        // Only return identity name if it is explicitly defined.
-        return identityName ? identityName[1] : undefined;
-    }
-    return undefined;
+    const identity = Array.isArray(proxyAuthorization) ? proxyAuthorization[0] : proxyAuthorization;
+    // Only return identity name if it is explicitly defined.
+    return typeof identity === 'string' ? identity.match(/Basic (.*)/)?.[1] : undefined;
 };
 
+/** Must be called only when Tor is enabled, throws otherwise */
 const getAgent = (identityName?: string, timeout?: number) =>
     TorIdentities.getIdentity(identityName || 'default', timeout);
 
-const getAuthorizationOptions = (options: http.RequestOptions) => {
-    // Use Proxy-Authorization header to define proxy identity
-    // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Proxy-Authorization
-    if (options.headers && options.headers['Proxy-Authorization']) {
-        const identityName = getIdentityName(options.headers['Proxy-Authorization']);
-        // In the case that `Proxy-Authorization` was used for identity information we remove it.
-        delete options.headers['Proxy-Authorization'];
-        // Create proxy agent for the request
-        options.agent = getAgent(identityName, options.timeout);
-    } else if (options.headers?.Upgrade === 'websocket') {
-        // create random identity for each websocket connection
-        const randomName = `WebSocket/${options.host}/${getWeakRandomId(16)}`;
-        const identityName = getIdentityName(`Basic ${randomName}`);
-        // Create proxy agent for the request
-        options.agent = getAgent(identityName, options.timeout);
+/** Should the request be blocked if Tor isn't enabled? */
+const getIsTorRequired = (options: Readonly<http.RequestOptions>) =>
+    !!options.headers?.['Proxy-Authorization'];
+
+const getIdentityForAgent = (options: Readonly<http.RequestOptions>) => {
+    if (options.headers?.['Proxy-Authorization']) {
+        // Use Proxy-Authorization header to define proxy identity
+        // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Proxy-Authorization
+        return getIdentityName(options.headers['Proxy-Authorization']);
     }
-    return options;
+    if (options.headers?.Upgrade === 'websocket') {
+        // Create random identity for each websocket connection
+        return `WebSocket/${options.host}/${getWeakRandomId(16)}`;
+    }
 };
 
 const isLocalhost = (hostname?: string | null | undefined) =>
@@ -108,22 +96,25 @@ const overloadHttpRequest = (
         (!options || typeof options === 'function')
     ) {
         const isTorEnabled = interceptorOptions.getIsTorEnabled();
-        // get authorization data from request headers
-        const overloadedOptions = getAuthorizationOptions(url);
+        const isTorRequired = getIsTorRequired(url);
+        const overloadedOptions = url;
         const overloadedCallback = options;
         // @ts-expect-error href does exist
-        const requestedUrl = overloadedOptions.href;
+        const requestedUrl = overloadedOptions.href || overloadedOptions.host;
 
-        // block requests that explicitly requires TOR using Proxy-Authorization
-        if (!isTorEnabled && overloadedOptions.agent) {
+        if (isTorEnabled) {
+            // Create proxy agent for the request (from Proxy-Authorization or default)
+            // get authorization data from request headers
+            const identityForAgent = getIdentityForAgent(overloadedOptions);
+            overloadedOptions.agent = getAgent(identityForAgent, overloadedOptions.timeout);
+        } else if (isTorRequired) {
+            // Block requests that explicitly requires TOR using Proxy-Authorization
             if (interceptorOptions.isDevEnv) {
                 interceptorOptions.handler({
                     type: 'INTERCEPTED_REQUEST',
                     method: 'http.request',
                     details: `Conditionally allowed request with Proxy-Authorization ${requestedUrl}`,
                 });
-                // conditionally allow in dev mode
-                delete overloadedOptions.agent;
             } else {
                 interceptorOptions.handler({
                     type: 'INTERCEPTED_REQUEST',
@@ -134,16 +125,13 @@ const overloadHttpRequest = (
             }
         }
 
-        // add default proxy agent
-        if (isTorEnabled && !overloadedOptions.agent) {
-            overloadedOptions.agent = getAgent('default', overloadedOptions.timeout);
-        }
-
         interceptorOptions.handler({
             type: 'INTERCEPTED_REQUEST',
             method: 'http.request',
             details: `${requestedUrl} with agent ${!!overloadedOptions.agent}`,
         });
+
+        delete overloadedOptions.headers?.['Proxy-Authorization'];
 
         // return tuple of params for original request
         return [overloadedOptions, overloadedCallback] as const;
