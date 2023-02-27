@@ -14,6 +14,7 @@ module.exports = {
     setupFiles: [
         '<rootDir>/src/support/tests/setupJest.ts',
         '<rootDir>/src/support/tests/npmMocks.tsx',
+        'jest-canvas-mock', // for lottie-react
     ],
     moduleNameMapper: {
         '^@suite-common/(.+)': '<rootDir>/../../suite-common/$1',
