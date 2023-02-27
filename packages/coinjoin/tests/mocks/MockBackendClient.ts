@@ -1,7 +1,6 @@
 import { CoinjoinBackendClient } from '../../src/backend/CoinjoinBackendClient';
 import { COINJOIN_BACKEND_SETTINGS } from '../fixtures/config.fixture';
-
-type MockEndpoint = ReturnType<InstanceType<typeof CoinjoinBackendClient>['request']>;
+import type { BlockbookWS } from '../../src/backend/CoinjoinWebsocketController';
 
 type TransactionFixture = {
     txid: string;
@@ -13,8 +12,6 @@ type BlockFixture = {
     previousBlockHash: string;
     filter: string;
     txs: TransactionFixture[];
-    page: number;
-    totalPages: number;
 };
 
 export class MockBackendClient extends CoinjoinBackendClient {
@@ -43,68 +40,55 @@ export class MockBackendClient extends CoinjoinBackendClient {
         } as Response);
     }
 
-    protected wabisabi(): MockEndpoint {
-        const parseGet = (
-            path: string,
-            { bestKnownBlockHash, count }: Record<string, any> = {},
-        ) => {
-            switch (path) {
-                case 'Blockchain/mempool-hashes':
-                    return this.mockResponse(
-                        200,
-                        this.mempool.map(({ txid }) => txid),
-                    );
-                case 'Blockchain/filters': {
-                    if (typeof bestKnownBlockHash !== 'string') this.mockResponse(404);
-                    if (typeof count !== 'number') return this.mockResponse(404);
-                    if (this.blocks[this.blocks.length - 1].hash === bestKnownBlockHash)
-                        return this.mockResponse(204);
-                    const from = this.blocks.findIndex(
-                        ({ previousBlockHash }) => previousBlockHash === bestKnownBlockHash,
-                    );
-                    if (from < 0) return this.mockResponse(404);
-                    return this.mockResponse(200, {
-                        bestHeight: -1,
-                        filters: this.blocks
-                            .filter(({ page }) => page === 1)
-                            .slice(from, from + count)
-                            .map(
-                                ({ height, hash, filter, previousBlockHash }) =>
-                                    `${height}:${hash}:${filter}:${previousBlockHash}:${999}`,
-                            ),
-                    });
-                }
-                default:
-                    return this.mockResponse(404);
+    protected wabisabiGet(path: string, { bestKnownBlockHash, count }: Record<string, any> = {}) {
+        switch (path) {
+            case 'Blockchain/mempool-hashes':
+                return this.mockResponse(
+                    200,
+                    this.mempool.map(({ txid }) => txid),
+                );
+            case 'Blockchain/filters': {
+                if (typeof bestKnownBlockHash !== 'string') this.mockResponse(404);
+                if (typeof count !== 'number') return this.mockResponse(404);
+                if (this.blocks[this.blocks.length - 1].hash === bestKnownBlockHash)
+                    return this.mockResponse(204);
+                const from = this.blocks.findIndex(
+                    ({ previousBlockHash }) => previousBlockHash === bestKnownBlockHash,
+                );
+                if (from < 0) return this.mockResponse(404);
+                return this.mockResponse(200, {
+                    bestHeight: -1,
+                    filters: this.blocks
+                        .slice(from, from + count)
+                        .map(
+                            ({ height, hash, filter, previousBlockHash }) =>
+                                `${height}:${hash}:${filter}:${previousBlockHash}:${999}`,
+                        ),
+                });
             }
-        };
-        return {
-            get: parseGet,
-            post: () => this.mockResponse(404),
-        };
+            default:
+                return this.mockResponse(404);
+        }
     }
 
-    protected blockbook(): MockEndpoint {
-        const parseGet = (path: string, query?: Record<string, any>) => {
-            const [what, which] = path.split('/');
-            switch (what) {
-                case 'tx': {
-                    const tx = this.transactions.find(t => t.txid === which);
-                    return tx ? this.mockResponse(200, tx) : this.mockResponse(404);
-                }
-                case 'block': {
-                    const height = parseInt(which, 10);
-                    const page = query?.page ?? 1;
-                    const block = this.blocks.find(b => b.height === height && b.page === page);
-                    return block ? this.mockResponse(200, block) : this.mockResponse(404);
-                }
-                default:
-                    return this.mockResponse(404);
+    protected blockbookWS<T extends keyof BlockbookWS>(
+        _options: any,
+        method: T,
+        ...params: Parameters<BlockbookWS[T]>
+    ) {
+        switch (method) {
+            case 'getTransaction': {
+                const tx = this.transactions.find(t => t.txid === params[0]);
+                if (tx) return Promise.resolve(tx as any);
+                break;
             }
-        };
-        return {
-            get: parseGet,
-            post: () => this.mockResponse(404),
-        };
+            case 'getBlock': {
+                const block = this.blocks.find(b => b.height === params[0]);
+                if (block) return Promise.resolve(block as any);
+                break;
+            }
+            // no default
+        }
+        throw new Error('not found');
     }
 }

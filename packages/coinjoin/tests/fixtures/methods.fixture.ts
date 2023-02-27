@@ -27,8 +27,6 @@ export const BLOCKS = [
         hash: '09f69854a4572575e2a8af0dea70ff5efd46957e2cb60e81c0d760098ab48b44',
         filter: '01656c90', // receive 1 out
         previousBlockHash: BASE_HASH,
-        page: 1,
-        totalPages: 1,
         txs: [
             {
                 txid: 'txid_1',
@@ -68,8 +66,6 @@ export const BLOCKS = [
         hash: '5513d63651bbb32985b54fa9e0e530553e3e9cebdd10feae7f019c04edb80f61',
         filter: '0298ad7857d0c0', // receive 1 in, receive 2 out
         previousBlockHash: '09f69854a4572575e2a8af0dea70ff5efd46957e2cb60e81c0d760098ab48b44',
-        page: 1,
-        totalPages: 1,
         txs: [
             {
                 txid: 'txid_2',
@@ -104,8 +100,6 @@ export const BLOCKS = [
         hash: '295578a3c8eb87736a5e657b06a0933f7ec5f82c43f8418fdb38f74c0fc066c7',
         filter: '0802a1103e91e638632d0f148d8c4618cc6118aeaad3d0', // nothing
         previousBlockHash: '5513d63651bbb32985b54fa9e0e530553e3e9cebdd10feae7f019c04edb80f61',
-        page: 1,
-        totalPages: 1,
         txs: [],
     },
     {
@@ -113,8 +107,6 @@ export const BLOCKS = [
         hash: '12de06b8ae4bbc660e3f565c876c606f5a1bd3463364c6abfc882b5ff6dd86e3',
         filter: '03018bfa4d4731ee2480', // receive 1 out
         previousBlockHash: '295578a3c8eb87736a5e657b06a0933f7ec5f82c43f8418fdb38f74c0fc066c7',
-        page: 1,
-        totalPages: 1,
         txs: [
             {
                 txid: 'txid_3',
@@ -157,8 +149,6 @@ export const BLOCKS = [
         hash: '2c2c65aad93eebe235955e170913fd6558453dd999a4ded6249bbdc9d54da1f7',
         filter: '08a4afd740dddb6185ca00666d22a55fc9252008f9cda0', // nothing
         previousBlockHash: '12de06b8ae4bbc660e3f565c876c606f5a1bd3463364c6abfc882b5ff6dd86e3',
-        page: 1,
-        totalPages: 1,
         txs: [],
     },
     {
@@ -166,8 +156,6 @@ export const BLOCKS = [
         hash: '5021a2185f27ad04d45f1b53c873b2231311aea99e0f1d7a6252167540b9db4c',
         filter: '03a69058941e6f5fc1', // receive 2 in, receive 1 out, change 1 out'
         previousBlockHash: '2c2c65aad93eebe235955e170913fd6558453dd999a4ded6249bbdc9d54da1f7',
-        page: 1,
-        totalPages: 1,
         txs: [
             {
                 txid: 'txid_4',
@@ -208,8 +196,6 @@ export const BLOCKS = [
         hash: '01d37c4490e9ddaf6b5c886eaa215b8d0b658c93ea42cfd871b226f606672c0b',
         filter: '023eee59053e40', // receive 1 in, change 1 in, receive 1 out'
         previousBlockHash: '5021a2185f27ad04d45f1b53c873b2231311aea99e0f1d7a6252167540b9db4c',
-        page: 1,
-        totalPages: 1,
         txs: [
             {
                 txid: 'txid_5',
@@ -250,18 +236,6 @@ export const BLOCKS = [
         hash: '36d01c975372c363d94f0e9e22e8a61a6a52e3408c98920ef1587b024ec487e3',
         filter: '02782a5165c980', // receive 1 out
         previousBlockHash: '01d37c4490e9ddaf6b5c886eaa215b8d0b658c93ea42cfd871b226f606672c0b',
-        page: 1,
-        totalPages: 2,
-        txs: [],
-    },
-    // Second block with height 8 but page 2 to simulate Blockbook pagination
-    {
-        height: 8,
-        hash: '36d01c975372c363d94f0e9e22e8a61a6a52e3408c98920ef1587b024ec487e3',
-        filter: '02782a5165c980', // receive 1 out
-        previousBlockHash: '01d37c4490e9ddaf6b5c886eaa215b8d0b658c93ea42cfd871b226f606672c0b',
-        page: 2,
-        totalPages: 2,
         txs: [
             {
                 txid: 'txid_6',
