@@ -51,11 +51,8 @@ describe('T1 - Device settings', () => {
         cy.prefixedVisit('/settings/device');
         cy.passThroughInitialRun();
 
-        //
-        // Test execution
-        //
-
-        cy.getTestElement('@settings/device/select-from-gallery').click();
+        cy.getTestElement('@settings/device/homescreen').scrollIntoView();
+        cy.getTestElement('@settings/device/homescreen-gallery').click();
         cy.get('#doge').click();
         cy.getTestElement('@suite/modal/confirm-action-on-device');
         cy.wait(2000);

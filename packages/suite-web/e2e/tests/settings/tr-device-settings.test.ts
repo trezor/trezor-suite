@@ -84,7 +84,7 @@ describe('TR - Device settings', () => {
 
         // change background
         cy.log('change background');
-        cy.getTestElement('@settings/device/select-from-gallery')
+        cy.getTestElement('@settings/device/homescreen-gallery')
             .click()
             .getTestElement(`@modal/gallery/bw_64x128/invader`);
 
