@@ -1,4 +1,4 @@
-import { scheduleAction } from '@trezor/utils';
+import { scheduleAction, arrayShuffle } from '@trezor/utils';
 
 import { httpGet, RequestOptions } from '../utils/http';
 import type {
@@ -35,7 +35,7 @@ export class CoinjoinBackendClient {
     constructor(settings: CoinjoinBackendClientSettings) {
         this.logger = settings.logger;
         this.wabisabiUrl = `${settings.wabisabiBackendUrl}api/v4/btc`;
-        this.blockbookUrls = settings.blockbookUrls;
+        this.blockbookUrls = arrayShuffle(settings.blockbookUrls);
         this.blockbookRequestId = Math.floor(Math.random() * settings.blockbookUrls.length);
         this.websockets = new CoinjoinWebsocketController(settings);
     }
