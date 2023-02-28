@@ -1,6 +1,6 @@
 {
-    "name": "TrezorConnectExample",
-    "version": "1",
+    "name": "@trezor/connect web extension mv2 example",
+    "version": "1.0.0",
     "manifest_version": 2,
     "icons": {
         "48": "icons/48.png"
