@@ -7,7 +7,7 @@ import { Account } from '@suite-common/wallet-types';
 import { Translation, TrezorLink } from '@suite-components';
 import { Error } from '@suite-components/Error';
 import { Button, Card, Checkbox, Link, Note, Tooltip, variables } from '@trezor/components';
-import { DATA_TOS_COINJOIN_URL, ZKSNACKS_TERMS_URL } from '@trezor/urls';
+import { DATA_TOS_URL, ZKSNACKS_TERMS_URL } from '@trezor/urls';
 import { startCoinjoinSession } from '@wallet-actions/coinjoinAccountActions';
 import {
     selectCurrentTargetAnonymity,
@@ -184,7 +184,7 @@ export const CoinjoinConfirmation = ({ account }: CoinjoinConfirmationProps) => 
                                 </Link>
                             ),
                             trezor: chunks => (
-                                <TrezorLink href={DATA_TOS_COINJOIN_URL} variant="underline">
+                                <TrezorLink href={DATA_TOS_URL} variant="underline">
                                     {chunks}
                                 </TrezorLink>
                             ),
