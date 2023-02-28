@@ -1,6 +1,7 @@
 export * from './abortablePromise';
 export * from './arrayDistinct';
 export * from './arrayPartition';
+export * from './arrayShuffle';
 export * from './arrayToDictionary';
 export * as bufferUtils from './bufferUtils';
 export * from './bytesToHumanReadable';
