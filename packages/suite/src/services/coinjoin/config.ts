@@ -158,7 +158,7 @@ export const CLIENT_STATUS_FALLBACK = {
 // firmware format (300 000 = 0.003 * 10 ** 8)
 export const COORDINATOR_FEE_RATE_MULTIPLIER = 10 ** 8;
 
-export const DEFAULT_TARGET_ANONYMITY = 10;
+export const DEFAULT_TARGET_ANONYMITY = 5;
 
 export const getCoinjoinConfig = (
     network: NetworkSymbol,
