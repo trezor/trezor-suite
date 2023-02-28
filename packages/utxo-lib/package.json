@@ -1,6 +1,6 @@
 {
     "name": "@trezor/utxo-lib",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "author": "Trezor <info@trezor.io>",
     "homepage": "https://github.com/trezor/trezor-suite/tree/develop/packages/utxo-lib",
     "description": "Client-side Bitcoin-like JavaScript library",
@@ -36,7 +36,7 @@
         "prepublish": "yarn tsx ../../scripts/prepublish.js"
     },
     "dependencies": {
-        "@trezor/utils": "workspace:^9.0.5",
+        "@trezor/utils": "workspace:^9.0.6",
         "bchaddrjs": "^0.5.2",
         "bech32": "^2.0.0",
         "bip66": "^1.1.5",

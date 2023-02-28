@@ -1,3 +1,9 @@
+# 1.0.4
+
+-   fix(utxo-lib): ltc deserialize without advanced marker
+-   feat(utxo-lib): add getTransactionVbytes util
+-   feat(utxo-lib): add getAddressType util
+
 # 1.0.3
 
 -   chore: remove unused skipUtxoSelection
