@@ -53,7 +53,7 @@
         }
     },
     "dependencies": {
-        "@trezor/connect": "workspace:9.0.6"
+        "@trezor/connect": "workspace:9.0.7"
     },
     "devDependencies": {
         "electron": "20.3.12",

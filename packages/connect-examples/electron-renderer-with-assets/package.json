@@ -57,7 +57,7 @@
         }
     },
     "devDependencies": {
-        "@trezor/connect": "workspace:9.0.6",
+        "@trezor/connect": "workspace:9.0.7",
         "babel-loader": "^9.1.2",
         "concurrently": "^7.6.0",
         "copy-webpack-plugin": "^11.0.0",
