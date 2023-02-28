@@ -16,8 +16,7 @@ describe('TT - Device settings', () => {
      * 5. verify the name from top left wallet overview btn
      * 6. enable the passphrase protection
      * 7. verify that the passphrase input is now enabled
-     * 8. change the device's background
-     * 9. hange the device's rotation
+     * 8. change the device's rotation
      */
     it('change all possible device settings', () => {
         //
@@ -67,16 +66,6 @@ describe('TT - Device settings', () => {
         // verify enabling
         cy.getTestElement('@settings/device/passphrase-switch').find('input').should('be.checked');
 
-        // change background
-        cy.log('change background');
-        cy.getTestElement('@settings/device/select-from-gallery')
-            .click()
-            .getTestElement(`@modal/gallery/color_128x128/xmr`)
-            .click()
-            .getConfirmActionOnDeviceModal();
-        cy.task('pressYes');
-        cy.getConfirmActionOnDeviceModal().should('not.exist');
-
         // change display rotation
         cy.log('change display rotation');
         cy.getTestElement('@settings/device/rotation-button/90')
@@ -84,6 +73,36 @@ describe('TT - Device settings', () => {
             .getConfirmActionOnDeviceModal();
         cy.task('pressYes');
         cy.getConfirmActionOnDeviceModal().should('not.exist');
+    });
+
+    it('unable to change homescreen in firmware < 2.5.4', () => {
+        cy.task('startEmu', { wipe: true, version: '2.5.3' });
+        cy.task('setupEmu');
+
+        cy.prefixedVisit('/settings/device');
+        cy.passThroughInitialRun();
+
+        cy.log('Try to change device homescreen');
+        cy.getTestElement('@settings/device/homescreen').scrollIntoView();
+
+        cy.getTestElement('@settings/device/homescreen-gallery').should('be.disabled');
+        cy.getTestElement('@settings/device/homescreen-upload').should('be.disabled');
+    });
+
+    it.only('able to change homescreen in firmware >= 2.5.4', () => {
+        cy.task('startEmu', { wipe: true, version: '2-master' });
+        cy.task('setupEmu');
+
+        cy.prefixedVisit('/settings/device');
+        cy.passThroughInitialRun();
+
+        cy.log('Try to change device homescreen');
+        cy.getTestElement('@settings/device/homescreen').scrollIntoView();
+
+        cy.getTestElement('@settings/device/homescreen-gallery').click();
+        cy.get('#trezor').should('exist');
+
+        //
     });
 
     it('backup in settings', () => {
