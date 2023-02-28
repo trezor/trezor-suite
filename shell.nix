@@ -1,15 +1,15 @@
-# the last successful build of nixpkgs-unstable as of 2022-11-21
+# the last successful build of nixpkgs-unstable as of 2023-02-28
 with import
   (builtins.fetchTarball {
-    url = "https://github.com/NixOS/nixpkgs/archive/19230cff31fd7562562dd25181579fa7087f0f89.tar.gz";
-    sha256 = "1ds3rgwqhgrydzzazz5lqi825k38lp8hm62ggh8dfxh6c6b7h3jl";
+    url = "https://github.com/NixOS/nixpkgs/archive/7785526659fe5885abbd88a85a23a11bd0617e3c.tar.gz";
+    sha256 = "0sjsy3jihhdmck6hn9lizwvk25kzf5ags1p21xqqn3kj7fv5ax9x";
   })
 { };
 
 let
   # unstable packages
-  electron = electron_20;  # use the same version as defined in packages/suite-desktop/package.json
-  nodejs = nodejs-16_x;
+  electron = electron_23;  # use the same version as defined in packages/suite-desktop/package.json
+  nodejs = nodejs-18_x;
 in
   stdenv.mkDerivation {
     name = "trezor-suite-dev";
