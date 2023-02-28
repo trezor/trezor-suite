@@ -1,3 +1,7 @@
+# 1.1.8
+
+-   chore(connect;transport): connect.init add transports param; rename transports
+
 # 1.1.7
 
 -   Code cleanup, sharing constants with @trezor/connect
