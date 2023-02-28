@@ -5,7 +5,7 @@
 import { app, ipcMain } from 'electron';
 import { captureMessage, withScope } from '@sentry/electron';
 
-import { coinjoinReportTag } from '@suite-common/sentry';
+import { coinjoinReportTag, coinjoinNetworktTag } from '@suite-common/sentry';
 import { createIpcProxyHandler, IpcProxyHandlerOptions } from '@trezor/ipc-proxy';
 import { CoinjoinBackend, CoinjoinClient } from '@trezor/coinjoin';
 
@@ -61,6 +61,7 @@ export const init: Module = ({ mainWindow }) => {
                     withScope(scope => {
                         scope.clear(); // scope is also cleared in beforeSend sentry handler, this is just to be safe.
                         scope.setTag(coinjoinReportTag, true);
+                        scope.setTag(coinjoinNetworktTag, settings.network);
                         captureMessage(payload, scope);
                     });
                 }
