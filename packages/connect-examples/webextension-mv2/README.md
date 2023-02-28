@@ -1,4 +1,4 @@
-# Webextension with inline script
+# Web extension manifest V2 example
 
 `@trezor/connect` running in background script and communicating through `chrome.runtime.postMessage`
 
@@ -6,9 +6,8 @@ Tested in Chrome and Firefox
 
 ## Install
 
--   `cd packages/connect-examples/webextension`
--   `yarn`
--   `node update.js`
+-   `cd packages/connect-examples/`
+-   `node update-webextensions.js`
 
 ## Browsers
 
@@ -16,14 +15,14 @@ Tested in Chrome and Firefox
 
 -   Go to chrome://extensions
 -   Enable developer mode and load unpacked
--   Choose `packages/connect-examples/webextension` directory
+-   Choose `packages/connect-examples/webextension-mv2` directory
 
 ### Firefox
 
 -   Go to settings (top right Menu) > Add-ons
 -   Manage Your Extensions > Debug Add-ons
 -   Load temporary Add-on
--   Choose `packages/connect-examples/webextension/manifest-firefox.json` file
+-   Choose `packages/connect-examples/webextension-mv2/manifest-firefox.json` file
 
 # Detailed explanation
 
