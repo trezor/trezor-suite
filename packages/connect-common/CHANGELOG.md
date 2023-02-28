@@ -1,3 +1,7 @@
+# 0.0.12
+
+-   feat: cardano preview testnet
+
 # 0.0.11
 
 -   refactor storage
