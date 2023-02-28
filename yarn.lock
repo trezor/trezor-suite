@@ -6238,7 +6238,7 @@ __metadata:
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/test-utils": "workspace:*"
-    "@trezor/connect": "workspace:9.0.6"
+    "@trezor/connect": "workspace:9.0.7"
     "@trezor/utils": "workspace:*"
     jest: ^26.6.3
     redux-mock-store: ^1.5.4
@@ -6272,7 +6272,7 @@ __metadata:
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
-    "@trezor/connect": "workspace:9.0.6"
+    "@trezor/connect": "workspace:9.0.7"
     bignumber.js: ^9.1.1
     jest: ^26.6.3
     react: 18.2.0
@@ -6295,7 +6295,7 @@ __metadata:
     "@suite-common/wallet-types": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
     "@trezor/blockchain-link": "workspace:*"
-    "@trezor/connect": "workspace:9.0.6"
+    "@trezor/connect": "workspace:9.0.7"
     bignumber.js: ^9.1.1
     date-fns: ^2.29.3
     react: 18.2.0
@@ -6353,7 +6353,7 @@ __metadata:
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
-    "@trezor/connect": "workspace:9.0.6"
+    "@trezor/connect": "workspace:9.0.7"
     jest: ^26.6.3
     react: 18.2.0
     react-redux: 8.0.5
@@ -6389,7 +6389,7 @@ __metadata:
   resolution: "@suite-common/suite-constants@workspace:suite-common/suite-constants"
   dependencies:
     "@suite-common/wallet-config": "workspace:*"
-    "@trezor/connect": "workspace:9.0.6"
+    "@trezor/connect": "workspace:9.0.7"
     jest: ^26.6.3
     typescript: 4.9.5
   languageName: unknown
@@ -6403,7 +6403,7 @@ __metadata:
     "@suite-common/metadata-types": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@trezor/analytics": "workspace:*"
-    "@trezor/connect": "workspace:9.0.6"
+    "@trezor/connect": "workspace:9.0.7"
     bignumber.js: ^9.1.1
     jest: ^26.6.3
     typescript: 4.9.5
@@ -6436,7 +6436,7 @@ __metadata:
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
-    "@trezor/connect": "workspace:9.0.6"
+    "@trezor/connect": "workspace:9.0.7"
     "@trezor/device-utils": "workspace:*"
     "@trezor/message-system": "workspace:*"
     "@trezor/utils": "workspace:*"
@@ -6460,7 +6460,7 @@ __metadata:
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/test-utils": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
-    "@trezor/connect": "workspace:9.0.6"
+    "@trezor/connect": "workspace:9.0.7"
     jest: ^26.6.3
     typescript: 4.9.5
   languageName: unknown
@@ -6503,7 +6503,7 @@ __metadata:
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
-    "@trezor/connect": "workspace:9.0.6"
+    "@trezor/connect": "workspace:9.0.7"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     date-fns: ^2.29.3
@@ -6521,7 +6521,7 @@ __metadata:
     "@suite-common/suite-config": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-constants": "workspace:*"
-    "@trezor/connect": "workspace:9.0.6"
+    "@trezor/connect": "workspace:9.0.7"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     jest: ^26.6.3
@@ -6547,7 +6547,7 @@ __metadata:
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-constants": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
-    "@trezor/connect": "workspace:9.0.6"
+    "@trezor/connect": "workspace:9.0.7"
     "@trezor/urls": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@types/pdfmake": ^0.2.2
@@ -6756,7 +6756,7 @@ __metadata:
     "@suite-native/navigation": "workspace:*"
     "@suite-native/qr-code": "workspace:*"
     "@suite-native/video-assets": "workspace:*"
-    "@trezor/connect": "workspace:9.0.6"
+    "@trezor/connect": "workspace:9.0.7"
     "@trezor/icons": "workspace:*"
     "@trezor/styles": "workspace:*"
     "@trezor/validation": "workspace:*"
@@ -6971,7 +6971,7 @@ __metadata:
     "@suite-native/module-devices": "workspace:*"
     "@suite-native/module-settings": "workspace:*"
     "@suite-native/storage": "workspace:*"
-    "@trezor/connect": "workspace:9.0.6"
+    "@trezor/connect": "workspace:9.0.7"
     "@trezor/utils": "workspace:*"
     react: 18.2.0
     react-redux: 8.0.5
@@ -7183,12 +7183,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/blockchain-link@workspace:*, @trezor/blockchain-link@workspace:^2.1.7, @trezor/blockchain-link@workspace:packages/blockchain-link":
+"@trezor/blockchain-link@workspace:*, @trezor/blockchain-link@workspace:^2.1.8, @trezor/blockchain-link@workspace:packages/blockchain-link":
   version: 0.0.0-use.local
   resolution: "@trezor/blockchain-link@workspace:packages/blockchain-link"
   dependencies:
-    "@trezor/utils": "workspace:^9.0.5"
-    "@trezor/utxo-lib": "workspace:^1.0.3"
+    "@trezor/utils": "workspace:^9.0.6"
+    "@trezor/utxo-lib": "workspace:^1.0.4"
     "@types/web": ^0.0.91
     bignumber.js: ^9.1.1
     events: ^3.3.0
@@ -7285,7 +7285,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/connect-common@workspace:*, @trezor/connect-common@workspace:0.0.11, @trezor/connect-common@workspace:packages/connect-common":
+"@trezor/connect-common@workspace:*, @trezor/connect-common@workspace:0.0.12, @trezor/connect-common@workspace:packages/connect-common":
   version: 0.0.0-use.local
   resolution: "@trezor/connect-common@workspace:packages/connect-common"
   dependencies:
@@ -7301,7 +7301,7 @@ __metadata:
   resolution: "@trezor/connect-explorer@workspace:packages/connect-explorer"
   dependencies:
     "@trezor/components": "workspace:*"
-    "@trezor/connect-web": "workspace:9.0.6"
+    "@trezor/connect-web": "workspace:9.0.7"
     "@types/markdown-it": ^12.2.3
     "@types/markdown-it-link-attributes": ^3.0.1
     "@types/react-router": ^5.1.20
@@ -7336,7 +7336,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/connect-iframe@workspace:packages/connect-iframe"
   dependencies:
-    "@trezor/connect": "workspace:9.0.6"
+    "@trezor/connect": "workspace:9.0.7"
     copy-webpack-plugin: ^11.0.0
     html-webpack-plugin: ^5.5.0
     jest: ^26.6.3
@@ -7382,7 +7382,7 @@ __metadata:
   resolution: "@trezor/connect-popup@workspace:packages/connect-popup"
   dependencies:
     "@playwright/test": ^1.30.0
-    "@trezor/connect": "workspace:9.0.6"
+    "@trezor/connect": "workspace:9.0.7"
     "@trezor/connect-analytics": "workspace:*"
     "@trezor/connect-ui": "workspace:*"
     "@trezor/crypto-utils": "workspace:*"
@@ -7409,7 +7409,7 @@ __metadata:
   resolution: "@trezor/connect-ui@workspace:packages/connect-ui"
   dependencies:
     "@trezor/components": "workspace:*"
-    "@trezor/connect": "workspace:9.0.6"
+    "@trezor/connect": "workspace:9.0.7"
     "@trezor/connect-analytics": "workspace:*"
     "@trezor/connect-common": "workspace:*"
     "@trezor/env-utils": "workspace:*"
@@ -7425,12 +7425,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/connect-web@workspace:9.0.6, @trezor/connect-web@workspace:packages/connect-web":
+"@trezor/connect-web@workspace:9.0.7, @trezor/connect-web@workspace:packages/connect-web":
   version: 0.0.0-use.local
   resolution: "@trezor/connect-web@workspace:packages/connect-web"
   dependencies:
-    "@trezor/connect": "workspace:9.0.6"
-    "@trezor/utils": "workspace:^9.0.5"
+    "@trezor/connect": "workspace:9.0.7"
+    "@trezor/utils": "workspace:^9.0.6"
     "@types/chrome": ^0.0.212
     "@types/w3c-web-usb": ^1.0.5
     events: ^3.3.0
@@ -7445,17 +7445,17 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/connect@workspace:*, @trezor/connect@workspace:9.0.6, @trezor/connect@workspace:packages/connect":
+"@trezor/connect@workspace:*, @trezor/connect@workspace:9.0.7, @trezor/connect@workspace:packages/connect":
   version: 0.0.0-use.local
   resolution: "@trezor/connect@workspace:packages/connect"
   dependencies:
-    "@trezor/blockchain-link": "workspace:^2.1.7"
+    "@trezor/blockchain-link": "workspace:^2.1.8"
     "@trezor/connect-analytics": "workspace:*"
-    "@trezor/connect-common": "workspace:0.0.11"
-    "@trezor/transport": "workspace:^1.1.7"
+    "@trezor/connect-common": "workspace:0.0.12"
+    "@trezor/transport": "workspace:^1.1.8"
     "@trezor/trezor-user-env-link": "workspace:*"
-    "@trezor/utils": "workspace:^9.0.5"
-    "@trezor/utxo-lib": "workspace:^1.0.3"
+    "@trezor/utils": "workspace:^9.0.6"
+    "@trezor/utxo-lib": "workspace:^1.0.4"
     "@types/karma": ^6.3.3
     "@types/parse-uri": ^1.0.0
     "@types/randombytes": ^2.0.0
@@ -7727,7 +7727,7 @@ __metadata:
     "@suite-common/formatters": "workspace:*"
     "@suite-common/sentry": "workspace:*"
     "@trezor/components": "workspace:*"
-    "@trezor/connect": "workspace:9.0.6"
+    "@trezor/connect": "workspace:9.0.7"
     "@trezor/ipc-proxy": "workspace:*"
     "@trezor/suite": "workspace:*"
     "@trezor/suite-analytics": "workspace:*"
@@ -7759,7 +7759,7 @@ __metadata:
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/suite-utils": "workspace:*"
     "@trezor/coinjoin": "workspace:*"
-    "@trezor/connect": "workspace:9.0.6"
+    "@trezor/connect": "workspace:9.0.7"
     "@trezor/connect-common": "workspace:*"
     "@trezor/ipc-proxy": "workspace:*"
     "@trezor/request-manager": "workspace:*"
@@ -7822,7 +7822,7 @@ __metadata:
     "@suite-native/state": "workspace:*"
     "@suite-native/storage": "workspace:*"
     "@suite-native/transactions": "workspace:*"
-    "@trezor/connect": "workspace:9.0.6"
+    "@trezor/connect": "workspace:9.0.7"
     "@trezor/icons": "workspace:*"
     "@trezor/styles": "workspace:*"
     "@trezor/suite-data": "workspace:*"
@@ -7952,7 +7952,7 @@ __metadata:
     "@trezor/analytics": "workspace:*"
     "@trezor/coinjoin": "workspace:*"
     "@trezor/components": "workspace:*"
-    "@trezor/connect": "workspace:9.0.6"
+    "@trezor/connect": "workspace:9.0.7"
     "@trezor/crypto-utils": "workspace:*"
     "@trezor/device-utils": "workspace:*"
     "@trezor/dom-utils": "workspace:*"
@@ -8065,12 +8065,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/transport@workspace:^1.1.7, @trezor/transport@workspace:packages/transport":
+"@trezor/transport@workspace:^1.1.8, @trezor/transport@workspace:packages/transport":
   version: 0.0.0-use.local
   resolution: "@trezor/transport@workspace:packages/transport"
   dependencies:
     "@trezor/trezor-user-env-link": "workspace:*"
-    "@trezor/utils": "workspace:^9.0.5"
+    "@trezor/utils": "workspace:^9.0.6"
     "@types/bytebuffer": ^5.0.44
     "@types/w3c-web-usb": ^1.0.6
     bytebuffer: ^5.0.1
@@ -8115,7 +8115,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/utils@workspace:*, @trezor/utils@workspace:^9.0.5, @trezor/utils@workspace:packages/utils":
+"@trezor/utils@workspace:*, @trezor/utils@workspace:^9.0.6, @trezor/utils@workspace:packages/utils":
   version: 0.0.0-use.local
   resolution: "@trezor/utils@workspace:packages/utils"
   dependencies:
@@ -8126,11 +8126,11 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/utxo-lib@workspace:*, @trezor/utxo-lib@workspace:^1.0.3, @trezor/utxo-lib@workspace:packages/utxo-lib":
+"@trezor/utxo-lib@workspace:*, @trezor/utxo-lib@workspace:^1.0.4, @trezor/utxo-lib@workspace:packages/utxo-lib":
   version: 0.0.0-use.local
   resolution: "@trezor/utxo-lib@workspace:packages/utxo-lib"
   dependencies:
-    "@trezor/utils": "workspace:^9.0.5"
+    "@trezor/utils": "workspace:^9.0.6"
     "@types/bchaddrjs": ^0.4.0
     "@types/bs58": ^4.0.1
     "@types/bs58check": ^2.1.0
