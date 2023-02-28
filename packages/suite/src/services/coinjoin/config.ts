@@ -28,9 +28,9 @@ export const COINJOIN_NETWORKS: PartialRecord<NetworkSymbol, ServerEnvironment> 
                 'https://btc4.trezor.io/api/v2',
                 'https://btc5.trezor.io/api/v2',
             ],
-            /* 31.01.2023 */
-            baseBlockHeight: 774460,
-            baseBlockHash: '0000000000000000000013be741eb25cece368611509ac013332c2af7ce027ac',
+            /* 28.02.2023 */
+            baseBlockHeight: 778666,
+            baseBlockHash: '000000000000000000054d1ca4a160dd37541d776ccc34af955dbfcd3b2405f6',
             // TODO post MVP: unify filters batch size with wabisabi or implement filters on blockbooks
             // https://github.com/trezor/trezor-suite/issues/7182#issuecomment-1438182493
             filtersBatchSize: 500,
