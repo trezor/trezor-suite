@@ -102,9 +102,9 @@ export const AnonymityLevelSlider = ({
         background: `\
             linear-gradient(270deg,\
                 ${theme.GRADIENT_SLIDER_GREEN_START} 0%,\
-                ${theme.GRADIENT_SLIDER_GREEN_END} 45%,\
-                ${theme.GRADIENT_SLIDER_YELLOW_START} 55%,\
-                ${theme.GRADIENT_SLIDER_YELLOW_END} 60%,\
+                ${theme.GRADIENT_SLIDER_GREEN_END} 60%,\
+                ${theme.GRADIENT_SLIDER_YELLOW_START} 70%,\
+                ${theme.GRADIENT_SLIDER_YELLOW_END} 85%,\
                 ${theme.GRADIENT_SLIDER_RED_END} 100%\
             );`,
     };
