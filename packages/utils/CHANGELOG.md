@@ -1,3 +1,8 @@
+# 9.0.6
+
+-   fix(utils): scheduleAction readonly param
+-   feat(utils): scheduleAction with variable timeouts
+
 # 9.0.5
 
 -   feat(utils): add promiseAllSequence util
