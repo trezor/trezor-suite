@@ -10,11 +10,11 @@
         "type-check": "tsc --build"
     },
     "dependencies": {
-        "@suite-native/module-settings": "workspace:*",
+        "@suite-native/storage": "workspace:*",
         "@trezor/theme": "workspace:*",
+        "jotai": "1.9.1",
         "react": "18.2.0",
         "react-fela": "^12.2.1",
-        "react-native": "0.71.3",
-        "react-redux": "8.0.5"
+        "react-native": "0.71.3"
     }
 }

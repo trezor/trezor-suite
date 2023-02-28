@@ -12,12 +12,7 @@
     },
     "dependencies": {
         "@reduxjs/toolkit": "1.9.2",
-        "@suite-common/redux-utils": "workspace:*"
-        "@suite-native/storage": "workspace:*",
-        "@trezor/theme": "workspace:*",
-        "jotai": "1.9.1",
-        "react": "18.2.0",
-        "react-fela": "^12.2.1",
-        "react-native": "0.71.3"
+        "@suite-common/redux-utils": "workspace:*",
+        "react": "18.2.0"
     }
 }

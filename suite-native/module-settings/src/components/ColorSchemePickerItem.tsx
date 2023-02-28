@@ -1,14 +1,10 @@
 import React from 'react';
 import { TouchableOpacity } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
 
 import { Box, Text } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { colorVariants, CSSColor } from '@trezor/theme';
-import { useGetSystemColorVariant } from '@suite-native/theme';
-
-import { selectIsColorSchemeActive, setColorScheme } from '../slice';
-import { AppColorScheme } from '../types';
+import { useSystemColorScheme, useUserColorScheme, AppColorScheme } from '@suite-native/theme';
 
 type ColorSchemePickerItemProps = {
     colorScheme: AppColorScheme;
@@ -54,14 +50,15 @@ const textStyle = prepareNativeStyle(utils => ({
 
 export const ColorSchemePickerItem = ({ colorScheme }: ColorSchemePickerItemProps) => {
     const { applyStyle } = useNativeStyles();
-    const dispatch = useDispatch();
 
-    const isColorSchemeActive = useSelector(selectIsColorSchemeActive(colorScheme));
-    const systemColorVariant = useGetSystemColorVariant();
-    const colorVariant = colorScheme === 'system' ? systemColorVariant : colorScheme;
+    const { userColorScheme, setUserColorScheme } = useUserColorScheme();
+    const isColorSchemeActive = colorScheme === userColorScheme;
+    const systemColorScheme = useSystemColorScheme();
+
+    const colorVariant = colorScheme === 'system' ? systemColorScheme : colorScheme;
 
     const handleSchemePress = () => {
-        dispatch(setColorScheme(colorScheme));
+        setUserColorScheme(colorScheme);
     };
 
     return (

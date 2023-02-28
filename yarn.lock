@@ -6227,6 +6227,7 @@ __metadata:
   dependencies:
     "@reduxjs/toolkit": 1.9.2
     "@suite-common/redux-utils": "workspace:*"
+    react: 18.2.0
   languageName: unknown
   linkType: soft
 
@@ -6596,7 +6597,6 @@ __metadata:
     "@suite-common/redux-utils": "workspace:*"
     "@suite-native/config": "workspace:*"
     "@trezor/analytics": "workspace:*"
-    react-redux: 8.0.5
   languageName: unknown
   linkType: soft
 
@@ -7050,12 +7050,6 @@ __metadata:
     react: 18.2.0
     react-fela: ^12.2.1
     react-native: 0.71.3
-    "@suite-native/module-settings": "workspace:*"
-    "@trezor/theme": "workspace:*"
-    react: 18.2.0
-    react-fela: ^12.2.1
-    react-native: 0.71.3
-    react-redux: 8.0.5
   languageName: unknown
   linkType: soft
 

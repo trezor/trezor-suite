@@ -19,6 +19,9 @@ type TransactionIconSpinnerProps = {
     color: Color;
 };
 
+const FULL_CIRCLE_TURN = 360;
+const ROTATION_DURATION = 2500;
+const WITH_REPEAT_INFINITE = -1;
 const STROKE_WIDTH = 8;
 
 const ContainerStyle = prepareNativeStyle(_ => ({
@@ -42,11 +45,11 @@ export const TransactionIconSpinner = ({ radius, color }: TransactionIconSpinner
 
     useEffect(() => {
         rotation.value = withRepeat(
-            withTiming(360, {
-                duration: 2500,
+            withTiming(FULL_CIRCLE_TURN, {
+                duration: ROTATION_DURATION,
                 easing: Easing.linear,
             }),
-            -1,
+            WITH_REPEAT_INFINITE,
         );
         return () => cancelAnimation(rotation);
     }, [rotation]);
