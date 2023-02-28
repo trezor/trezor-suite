@@ -1,3 +1,9 @@
+# 2.1.8
+
+-   fix(suite-native): cardano websocket (#7722)
+-   feat(blockchain-link): add getBlock method
+-   feat(blockchain-link): add mempool subscription
+
 # 2.1.7
 
 -   feat: cardano preview testnet
