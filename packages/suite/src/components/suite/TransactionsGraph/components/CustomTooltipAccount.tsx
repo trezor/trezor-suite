@@ -10,6 +10,7 @@ import { Formatters, useFormatters } from '@suite-common/formatters';
 import { Props as GraphProps, CryptoGraphProps } from '../definitions';
 import { CustomTooltipBase } from './CustomTooltipBase';
 import { CommonAggregatedHistory } from '../../../../types/wallet/graph';
+import { SignOperator } from '@suite-common/suite-types';
 
 const StyledCryptoAmount = styled(FormattedCryptoAmount)`
     margin-right: 2px;
@@ -20,7 +21,7 @@ const formatAmount = (
     symbol: NetworkSymbol,
     fiatAmount: string | undefined,
     localCurrency: string | undefined,
-    sign: 'pos' | 'neg',
+    sign: SignOperator,
     formatters: Formatters,
 ) => {
     const { FiatAmountFormatter } = formatters;
@@ -90,7 +91,7 @@ export const CustomTooltipAccount = ({
                 symbol,
                 sentFiat,
                 localCurrency,
-                'neg',
+                'negative',
                 formatters,
             )}
             receivedAmount={formatAmount(
@@ -98,7 +99,7 @@ export const CustomTooltipAccount = ({
                 symbol,
                 receivedFiat,
                 localCurrency,
-                'pos',
+                'positive',
                 formatters,
             )}
             balance={
