@@ -32,17 +32,17 @@ export const Sign = ({
         return null;
     }
 
-    const isValuePos = isSignValuePositive(value);
+    const isValuePositive = isSignValuePositive(value);
 
     if (placeholderOnly) {
         return <StyledSign color="transparent">+</StyledSign>;
     }
 
-    if (isValuePos) {
+    if (isValuePositive) {
         return <StyledSign color={grayscale ? defaultColor : theme.TYPE_GREEN}>+</StyledSign>;
     }
 
-    if (!isValuePos && showMinusSign) {
+    if (!isValuePositive && showMinusSign) {
         return <StyledSign color={grayscale ? defaultColor : theme.TYPE_RED}>–</StyledSign>;
     }
     return null;
