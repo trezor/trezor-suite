@@ -9,15 +9,16 @@ interface TransactionHeaderProps {
 }
 
 export const TransactionHeader = ({ transaction, isPending }: TransactionHeaderProps) => {
-    let heading = null;
-    const nTokens = transaction.tokens.length;
-    const isMultiTokenTransaction = nTokens > 1;
+    // Use ETH method name if available
+    if (transaction?.ethereumSpecific?.parsedData?.name) {
+        return <span>{transaction.ethereumSpecific.parsedData.name}</span>;
+    }
+
+    const isMultiTokenTransaction = transaction.tokens.length > 1;
     const symbol = getTxHeaderSymbol(transaction).toUpperCase();
-    const transfer = transaction.tokens[0];
+    const headingTxType = transaction.type;
 
-    // We have types: sent, recv, self, failed. We miss approve, swap, ...
-    const headingTxType = nTokens ? transfer.type : transaction.type;
-
+    let heading = null;
     if (isTxUnknown(transaction)) {
         heading = <Translation id="TR_UNKNOWN_TRANSACTION" />;
     } else if (headingTxType === 'sent') {
