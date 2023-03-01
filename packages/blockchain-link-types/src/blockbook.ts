@@ -132,6 +132,18 @@ export interface Transaction {
         gasLimit: number;
         gasUsed?: number;
         gasPrice: string;
+        parsedData?: {
+            data?: string;
+            method?: string;
+            name?: string;
+            parameters: Array<{ key: string; value: Array<string> }>;
+        };
+        internalTransfers: Array<{
+            type: number;
+            from: string;
+            to: string;
+            value: string;
+        }>;
     };
     tokenTransfers?: {
         from?: string;
