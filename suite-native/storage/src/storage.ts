@@ -7,13 +7,15 @@ import { Persistor, Storage } from 'redux-persist';
 
 const ENCRYPTION_KEY = 'STORAGE_ENCRYPTION_KEY';
 
+export const MMKV_STORAGE_ID = 'trezorSuite-app-storage';
+
 export const purgeStorage = async (persistor: Persistor) => {
     await persistor.purge();
     await SecureStore.deleteItemAsync(ENCRYPTION_KEY);
     NativeModules.DevSettings.reload();
 };
 
-const retrieveStorageEncryptionKey = async () => {
+export const retrieveStorageEncryptionKey = async () => {
     let secureKey = await SecureStore.getItemAsync(ENCRYPTION_KEY);
 
     if (secureKey == null) {
@@ -27,22 +29,22 @@ const retrieveStorageEncryptionKey = async () => {
 export const initMmkvStorage = async (): Promise<Storage> => {
     const encryptionKey = await retrieveStorageEncryptionKey();
 
-    const storage = new MMKV({
-        id: 'trezorSuite-app-storage',
+    const encryptedStorage = new MMKV({
+        id: MMKV_STORAGE_ID,
         encryptionKey,
     });
 
     return {
         setItem: (key, value) => {
-            storage.set(key, value);
+            encryptedStorage.set(key, value);
             return Promise.resolve(true);
         },
         getItem: key => {
-            const value = storage.getString(key);
+            const value = encryptedStorage.getString(key);
             return Promise.resolve(value);
         },
         removeItem: key => {
-            storage.delete(key);
+            encryptedStorage.delete(key);
             return Promise.resolve();
         },
     };

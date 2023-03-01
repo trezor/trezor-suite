@@ -1,5 +1,5 @@
 {
-    "name": "@suite-common/analytics",
+    "name": "@suite-native/theme",
     "version": "1.0.0",
     "private": true,
     "license": "See LICENSE.md in repo root",
@@ -7,12 +7,14 @@
     "main": "src/index",
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
-        "test:unit": "jest -c ../../jest.config.base.js --passWithNoTests",
         "type-check": "tsc --build"
     },
     "dependencies": {
-        "@reduxjs/toolkit": "1.9.2",
-        "@suite-common/redux-utils": "workspace:*",
-        "react": "18.2.0"
+        "@suite-native/storage": "workspace:*",
+        "@trezor/theme": "workspace:*",
+        "jotai": "1.9.1",
+        "react": "18.2.0",
+        "react-fela": "^12.2.1",
+        "react-native": "0.71.3"
     }
 }

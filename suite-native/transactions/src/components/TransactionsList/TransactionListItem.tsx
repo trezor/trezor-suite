@@ -26,7 +26,7 @@ import {
     TransactionsRootState,
 } from '@suite-common/wallet-core';
 
-import { TransactionListItemIcon } from './TransactionListItemIcon';
+import { TransactionIcon } from './TransactionIcon';
 
 type TransactionListItemProps = {
     transaction: WalletAccountTransaction;
@@ -130,7 +130,7 @@ export const TransactionListItem = memo(
                 style={applyStyle(transactionListItemStyle, { isFirst, isLast })}
             >
                 <Box style={applyStyle(descriptionBoxStyle)}>
-                    <TransactionListItemIcon
+                    <TransactionIcon
                         cryptoIconName={transaction.symbol}
                         transactionType={transaction.type}
                     />

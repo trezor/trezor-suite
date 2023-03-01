@@ -12,6 +12,7 @@
         { "path": "../atoms" },
         { "path": "../config" },
         { "path": "../navigation" },
+        { "path": "../theme" },
         { "path": "../../packages/icons" },
         { "path": "../../packages/styles" },
         { "path": "../../packages/theme" }

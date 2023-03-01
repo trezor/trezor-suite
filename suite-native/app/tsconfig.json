@@ -26,6 +26,7 @@
         { "path": "../navigation" },
         { "path": "../state" },
         { "path": "../storage" },
+        { "path": "../theme" },
         { "path": "../transactions" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/icons" },
