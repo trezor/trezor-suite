@@ -65,9 +65,9 @@ export const AssetItem = ({
                         <Text>{cryptoCurrencyName}</Text>
                         <Box flexDirection="row" alignItems="center">
                             <Box style={applyStyle(iconStyle)}>
-                                <Icon size="medium" color="gray600" name="standardWallet" />
+                                <Icon size="medium" color="iconSubdued" name="standardWallet" />
                             </Box>
-                            <Text variant="hint" color="gray600">
+                            <Text variant="hint" color="textSubdued">
                                 {accountsPerAsset}
                             </Text>
                         </Box>

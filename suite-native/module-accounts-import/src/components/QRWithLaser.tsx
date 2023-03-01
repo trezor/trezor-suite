@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import {
     Easing,
     interpolate,
@@ -8,6 +8,7 @@ import {
 } from 'react-native-reanimated';
 
 import {
+    BlendMode,
     Canvas,
     Group,
     ImageSVG,
@@ -16,6 +17,7 @@ import {
     Rect,
     RoundedRect,
     RoundedRectProps,
+    Skia,
     useSharedValueEffect,
     useSVG,
     useValue,
@@ -114,24 +116,35 @@ export const QrWithLaser = () => {
         laserOpacity.current = interpolate(progress.value, [0, 0.5, 1], [0, 1, 0]);
     }, progress);
 
+    const paint = useMemo(() => Skia.Paint(), []);
+    paint.setColorFilter(
+        Skia.ColorFilter.MakeBlend(Skia.Color(colors.backgroundNeutralBold), BlendMode.SrcIn),
+    );
+
     return (
         <Canvas style={{ height, width }}>
             <Rect x={0} y={laserY} width={width} height={1} opacity={laserOpacity}>
                 <LinearGradient
                     start={vec(0, 0)}
                     end={vec(width, 0)}
-                    colors={[colors.gray100, 'red', colors.gray100]}
+                    colors={[
+                        colors.backgroundSurfaceElevation0,
+                        'red',
+                        colors.backgroundSurfaceElevation0,
+                    ]}
                 />
             </Rect>
 
             {qrCodeSvg && (
-                <ImageSVG
-                    svg={qrCodeSvg}
-                    x={width * 0.5 - qrCodeWidth * 0.5}
-                    y={height * 0.5 - qrCodeWidth * 0.5}
-                    width={qrCodeWidth}
-                    height={qrCodeWidth}
-                />
+                <Group layer={paint}>
+                    <ImageSVG
+                        svg={qrCodeSvg}
+                        x={width * 0.5 - qrCodeWidth * 0.5}
+                        y={height * 0.5 - qrCodeWidth * 0.5}
+                        width={qrCodeWidth}
+                        height={qrCodeWidth}
+                    />
+                </Group>
             )}
             <RoundedCorner
                 x={width * 0.5 - roundedRectWidth * 0.5}

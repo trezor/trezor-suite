@@ -28,12 +28,10 @@ import { AccountRenameButton } from '../components/AccountRenameButton';
 
 const AccountDetailSettingsRow = ({ title, value }: { title: string; value: ReactNode }) => (
     <Box flexDirection="row" justifyContent="space-between">
-        <Text variant="hint" color="gray600">
+        <Text variant="hint" color="textSubdued">
             {title}
         </Text>
-        <Text variant="hint" color="gray1000">
-            {value}
-        </Text>
+        <Text variant="hint">{value}</Text>
     </Box>
 );
 
@@ -94,10 +92,10 @@ export const AccountSettingsScreen = ({
                     </VStack>
                 </Card>
                 <VStack spacing="small">
-                    <Button onPress={() => setIsXpubVisible(true)} colorScheme="tertiary">
+                    <Button onPress={() => setIsXpubVisible(true)} colorScheme="tertiaryElevation0">
                         View XPUB
                     </Button>
-                    <Button onPress={handleRemoveAccount} colorScheme="danger">
+                    <Button onPress={handleRemoveAccount} colorScheme="dangerElevation0">
                         Remove Account
                     </Button>
                 </VStack>

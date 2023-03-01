@@ -8,7 +8,7 @@ import { FormatterProps } from '../types';
 type TransactionIdFormatterProps = FormatterProps<WalletAccountTransaction['txid']> & TextProps;
 
 export const TransactionIdFormatter = ({ value, ...rest }: TransactionIdFormatterProps) => (
-    <Text variant="hint" color="gray1000" numberOfLines={1} ellipsizeMode="tail" {...rest}>
+    <Text variant="hint" numberOfLines={1} ellipsizeMode="tail" {...rest}>
         #{value}
     </Text>
 );

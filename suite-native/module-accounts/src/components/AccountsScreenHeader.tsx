@@ -35,7 +35,7 @@ export const AccountsScreenHeader = () => {
                 <IconButton
                     iconName="plus"
                     onPress={handleImportAsset}
-                    colorScheme="tertiary"
+                    colorScheme="tertiaryElevation0"
                     size="medium"
                 />
             }

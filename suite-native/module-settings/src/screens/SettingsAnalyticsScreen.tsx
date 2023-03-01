@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Screen, ScreenHeader } from '@suite-native/navigation';
 import { disableAnalyticsThunk, enableAnalyticsThunk } from '@suite-native/analytics';
 import { selectIsAnalyticsEnabled } from '@suite-common/analytics';
+import { Card } from '@suite-native/atoms';
 
 import { TouchableSwitchRow } from '../components/TouchableSwitchRow';
 
@@ -20,13 +21,14 @@ export const SettingsAnalyticsScreen = () => {
     };
 
     return (
-        <Screen>
-            <ScreenHeader title="Analytics" />
-            <TouchableSwitchRow
-                text="Analytics"
-                isChecked={isAnalyticsEnabled}
-                onChange={handleAnalyticsChange}
-            />
+        <Screen header={<ScreenHeader title="Analytics" />}>
+            <Card>
+                <TouchableSwitchRow
+                    text="Analytics"
+                    isChecked={isAnalyticsEnabled}
+                    onChange={handleAnalyticsChange}
+                />
+            </Card>
         </Screen>
     );
 };

@@ -13,7 +13,7 @@ export type AccountListItemProps = {
 };
 
 const accountListItemStyle = prepareNativeStyle(utils => ({
-    backgroundColor: utils.colors.gray0,
+    backgroundColor: utils.colors.backgroundSurfaceElevation1,
     padding: utils.spacings.medium,
     borderRadius: utils.borders.radii.medium,
 }));

@@ -18,11 +18,11 @@ const sheetTriggerStyle = prepareNativeStyle(utils => ({
     justifyContent: 'center',
     alignItems: 'center',
     paddingVertical: utils.spacings.large,
-    backgroundColor: utils.colors.gray100,
+    backgroundColor: utils.colors.backgroundSurfaceElevation0,
 }));
 
 const EmphasizedText = ({ children }: { children: ReactNode }) => (
-    <Text color="gray900" variant="hint">
+    <Text color="textDefault" variant="hint">
         {children}
     </Text>
 );
@@ -91,9 +91,9 @@ export const XpubHint = ({ networkType }: XpubScanHintSheet) => {
                 {/*  TODO : Replace with a TextButton atom component when ready. */}
                 <TouchableOpacity onPress={handleOpen} style={applyStyle(sheetTriggerStyle)}>
                     <Box marginRight="small">
-                        <Icon name="question" size="medium" color="forest" />
+                        <Icon name="question" size="medium" color="iconPrimaryDefault" />
                     </Box>
-                    <Text color="forest">{title}</Text>
+                    <Text color="textPrimaryDefault">{title}</Text>
                 </TouchableOpacity>
             </KeyboardAvoidingView>
 
@@ -101,7 +101,7 @@ export const XpubHint = ({ networkType }: XpubScanHintSheet) => {
                 <Box paddingTop="small" justifyContent="space-between">
                     <Video name={video} aspectRatio={1} />
                     <VStack spacing="large" paddingTop="large">
-                        <Text color="gray600" align="center" variant="hint">
+                        <Text color="textSubdued" align="center" variant="hint">
                             {text}
                         </Text>
                     </VStack>

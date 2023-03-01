@@ -18,8 +18,8 @@ const tabBarStyle = prepareNativeStyle<{ insetLeft: number; insetRight: number }
     (utils, { insetLeft, insetRight }) => ({
         height: TAB_BAR_HEIGHT,
         width: '100%',
-        backgroundColor: utils.colors.gray100,
-        borderTopColor: utils.colors.gray300,
+        backgroundColor: utils.colors.backgroundSurfaceElevation0,
+        borderTopColor: utils.colors.borderOnElevation0,
         borderTopWidth: utils.borders.widths.small,
         flexDirection: 'row',
         justifyContent: 'space-between',

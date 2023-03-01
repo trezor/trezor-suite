@@ -17,8 +17,7 @@ type ItemStyleProps = {
     isSelected: boolean;
 };
 const textStyle = prepareNativeStyle<ItemStyleProps>((utils, { isSelected }) => ({
-    ...utils.typography.hint,
-    color: isSelected ? utils.colors.forest : utils.colors.gray500,
+    color: isSelected ? utils.colors.textPrimaryDefault : utils.colors.textSubdued,
     textTransform: 'uppercase',
 }));
 
@@ -30,7 +29,7 @@ const switchItemStyle = prepareNativeStyle<ItemStyleProps>((utils, { isSelected 
     extend: {
         condition: isSelected,
         style: {
-            backgroundColor: utils.colors.gray0,
+            backgroundColor: utils.colors.backgroundSurfaceElevation1,
             borderRadius: utils.borders.radii.round,
         },
     },
@@ -52,7 +51,9 @@ export const TimeSwitchItem = ({
             testID={`TimeSwitchItem_${value}`}
             style={applyStyle(switchItemStyle, { isSelected })}
         >
-            <Text style={applyStyle(textStyle, { isSelected })}>{shortcut}</Text>
+            <Text variant="hint" style={applyStyle(textStyle, { isSelected })}>
+                {shortcut}
+            </Text>
         </TouchableOpacity>
     );
 };

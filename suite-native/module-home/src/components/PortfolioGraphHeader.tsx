@@ -9,7 +9,8 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Icon, IconName } from '@trezor/icons';
 import { emptyGraphPoint, EnhancedGraphPoint } from '@suite-native/graph';
 
-const getColorForPercentageChange = (hasIncreased: boolean) => (hasIncreased ? 'forest' : 'red');
+const getColorForPercentageChange = (hasIncreased: boolean) =>
+    hasIncreased ? 'textPrimaryDefault' : 'textAlertRed';
 
 const percentageDiff = (a: number, b: number) => {
     if (a === 0 || b === 0) return 0;
@@ -50,7 +51,7 @@ const hasPriceIncreasedAtom = atom(get => {
 
 const headerStyle = prepareNativeStyle(utils => ({
     marginBottom: utils.spacings.small / 2,
-    color: utils.colors.gray600,
+    color: utils.colors.textSubdued,
 }));
 
 const PercentageChange = () => {
@@ -84,10 +85,9 @@ const arrowStyle = prepareNativeStyle(() => ({
 
 const priceIncreaseWrapperStyle = prepareNativeStyle<{ hasPriceIncreased: boolean }>(
     (utils, { hasPriceIncreased }) => ({
-        backgroundColor: utils.transparentize(
-            0.7,
-            hasPriceIncreased ? utils.colors.green : utils.colors.red,
-        ),
+        backgroundColor: hasPriceIncreased
+            ? utils.colors.backgroundPrimarySubtleOnElevation0
+            : utils.colors.backgroundAlertRedSubtleOnElevation0,
         flexDirection: 'row',
         alignItems: 'center',
         paddingHorizontal: utils.spacings.small,
@@ -113,7 +113,7 @@ const PriceIncreaseIndicator = () => {
 const Balance = () => {
     const [point] = useAtom(selectedPointAtom);
 
-    return <FiatAmountFormatter value={point.value} variant="titleLarge" />;
+    return <FiatAmountFormatter value={point.value} variant="titleLarge" color="textDefault" />;
 };
 
 export const GraphTimeIndicator = () => {
@@ -137,7 +137,7 @@ export const PortfolioGraphHeader = () => {
                 </Text>
                 <Box flexDirection="row" alignItems="center">
                     <Box marginRight="small">
-                        <Text variant="hint" color="gray600">
+                        <Text variant="hint" color="textSubdued">
                             <GraphTimeIndicator />
                         </Text>
                     </Box>

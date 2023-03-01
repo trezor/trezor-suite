@@ -108,7 +108,7 @@ export const Graph = <TGraphPoint extends EnhancedGraphPoint>({
             <LineGraph
                 style={applyStyle(graphStyle, { loading, error })}
                 points={nonEmptyPoints}
-                color={colors.green}
+                color={colors.borderSecondary}
                 animated={animated}
                 verticalPadding={20}
                 enablePanGesture
