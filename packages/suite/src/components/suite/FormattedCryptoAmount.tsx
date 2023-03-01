@@ -41,7 +41,7 @@ export interface FormattedCryptoAmountProps {
 }
 
 export const FormattedCryptoAmount = ({
-    value,
+    value, // expects a value in full units (BTC not sats)
     symbol,
     isBalance,
     signValue,
