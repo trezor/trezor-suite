@@ -14,8 +14,15 @@ const getIdentityName = (proxyAuthorization?: http.OutgoingHttpHeader) => {
 };
 
 /** Must be called only when Tor is enabled, throws otherwise */
-const getAgent = (identityName?: string, timeout?: number) =>
-    TorIdentities.getIdentity(identityName || 'default', timeout);
+const getAgent = (identityName?: string, timeout?: number, protocol?: 'http' | 'https') => {
+    const agent = TorIdentities.getIdentity(identityName || 'default', timeout);
+
+    // @sentry/node (used in suite-desktop) is wrapping each outgoing request
+    // and requires protocol to be explicitly set to https while using TOR + https/wss address combination
+    if (protocol) agent.protocol = `${protocol}:`;
+
+    return agent;
+};
 
 /** Should the request be blocked if Tor isn't enabled? */
 const getIsTorRequired = (options: Readonly<http.RequestOptions>) =>
@@ -84,6 +91,7 @@ const interceptNetConnect = (interceptorOptions: InterceptorOptions) => {
 // but we only care when second argument (url) is object containing RequestOptions.
 const overloadHttpRequest = (
     interceptorOptions: InterceptorOptions,
+    protocol: 'http' | 'https',
     url: string | URL | http.RequestOptions,
     options?: http.RequestOptions | ((r: http.IncomingMessage) => void),
     callback?: unknown,
@@ -105,8 +113,8 @@ const overloadHttpRequest = (
         if (isTorEnabled) {
             // Create proxy agent for the request (from Proxy-Authorization or default)
             // get authorization data from request headers
-            const identityForAgent = getIdentityForAgent(overloadedOptions);
-            overloadedOptions.agent = getAgent(identityForAgent, overloadedOptions.timeout);
+            const identity = getIdentityForAgent(overloadedOptions);
+            overloadedOptions.agent = getAgent(identity, overloadedOptions.timeout, protocol);
         } else if (isTorRequired) {
             // Block requests that explicitly requires TOR using Proxy-Authorization
             if (interceptorOptions.isDevEnv) {
@@ -140,6 +148,7 @@ const overloadHttpRequest = (
 
 const overloadWebsocketHandshake = (
     interceptorOptions: InterceptorOptions,
+    protocol: 'http' | 'https',
     url: string | URL | http.RequestOptions,
     options?: http.RequestOptions | ((r: http.IncomingMessage) => void),
     callback?: unknown,
@@ -150,7 +159,7 @@ const overloadWebsocketHandshake = (
         'headers' in url &&
         url.headers?.Upgrade === 'websocket'
     ) {
-        return overloadHttpRequest(interceptorOptions, url, options, callback);
+        return overloadHttpRequest(interceptorOptions, protocol, url, options, callback);
     }
 };
 
@@ -158,7 +167,7 @@ const interceptHttp = (interceptorOptions: InterceptorOptions, requestPool: Requ
     const originalHttpRequest = http.request;
 
     http.request = (...args) => {
-        const overload = overloadHttpRequest(interceptorOptions, ...args);
+        const overload = overloadHttpRequest(interceptorOptions, 'http', ...args);
         if (overload) {
             const request = originalHttpRequest(...overload);
             requestPool.addRequest(request);
@@ -172,7 +181,7 @@ const interceptHttp = (interceptorOptions: InterceptorOptions, requestPool: Requ
     const originalHttpGet = http.get;
 
     http.get = (...args) => {
-        const overload = overloadWebsocketHandshake(interceptorOptions, ...args);
+        const overload = overloadWebsocketHandshake(interceptorOptions, 'http', ...args);
         if (overload) {
             return originalHttpGet(...overload);
         }
@@ -184,7 +193,7 @@ const interceptHttps = (interceptorOptions: InterceptorOptions, requestPool: Req
     const originalHttpsRequest = https.request;
 
     https.request = (...args) => {
-        const overload = overloadHttpRequest(interceptorOptions, ...args);
+        const overload = overloadHttpRequest(interceptorOptions, 'https', ...args);
         if (overload) {
             const request = originalHttpsRequest(...overload);
             requestPool.addRequest(request);
@@ -198,7 +207,7 @@ const interceptHttps = (interceptorOptions: InterceptorOptions, requestPool: Req
     const originalHttpsGet = https.get;
 
     https.get = (...args) => {
-        const overload = overloadWebsocketHandshake(interceptorOptions, ...args);
+        const overload = overloadWebsocketHandshake(interceptorOptions, 'https', ...args);
         if (overload) {
             return originalHttpsGet(...overload);
         }
