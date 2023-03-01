@@ -12,6 +12,7 @@ import { SettingsScreen } from '../screens/SettingsScreen';
 import { SettingsLocalisationScreen } from '../screens/SettingsLocalisationScreen';
 import { SettingsCustomizationScreen } from '../screens/SettingsCustomizationScreen';
 import { SettingsAnalyticsScreen } from '../screens/SettingsAnalyticsScreen';
+import { SettingsAboutUsScreen } from '../screens/SettingsAboutUsScreen';
 
 export const SettingsStack = createNativeStackNavigator<SettingsStackParamList>();
 
@@ -39,6 +40,11 @@ export const SettingsStackNavigator = () => (
             options={{ title: SettingsStackRoutes.SettingsAnalytics }}
             name={SettingsStackRoutes.SettingsAnalytics}
             component={SettingsAnalyticsScreen}
+        />
+        <SettingsStack.Screen
+            options={{ title: SettingsStackRoutes.SettingsAbout }}
+            name={SettingsStackRoutes.SettingsAbout}
+            component={SettingsAboutUsScreen}
         />
     </SettingsStack.Navigator>
 );

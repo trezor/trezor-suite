@@ -28,6 +28,7 @@ export type SettingsStackParamList = {
     [SettingsStackRoutes.SettingsLocalisation]: undefined;
     [SettingsStackRoutes.SettingsCustomization]: undefined;
     [SettingsStackRoutes.SettingsAnalytics]: undefined;
+    [SettingsStackRoutes.SettingsAbout]: undefined;
 };
 
 export type AccountsStackParamList = {
