@@ -60,7 +60,7 @@ type FiatValueProps = (DefaultSourceProps | CustomSourceProps) & { className?: s
  */
 export const FiatValue = ({
     children,
-    amount,
+    amount, // expects a value in full units (BTC not sats)
     className,
     symbol,
     tokenAddress,
