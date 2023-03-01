@@ -39,11 +39,11 @@ export const ACCOUNT_BUSY_TIMEOUT = 30000;
 
 // fallback values for status request
 // usage of these values is extremely unlikely, there would have to be a change in the coordinator's API
-export const PLEBS_DONT_PAY_THRESHOLD = 1000000;
-export const COORDINATOR_FEE_RATE = 0.003;
-export const MIN_ALLOWED_AMOUNT = 5000;
-export const MAX_ALLOWED_AMOUNT = 134375000000;
-export const MAX_MINING_FEE = 2;
+export const PLEBS_DONT_PAY_THRESHOLD_FALLBACK = 1000000;
+export const COORDINATOR_FEE_RATE_FALLBACK = 0.003;
+export const MIN_ALLOWED_AMOUNT_FALLBACK = 5000;
+export const MAX_ALLOWED_AMOUNT_FALLBACK = 134375000000;
+export const MAX_MINING_FEE_FALLBACK = 2;
 
 // affiliation flag:
 // - sent coordinator/ready-to-sign request **only** when Alice pays coordination fee
