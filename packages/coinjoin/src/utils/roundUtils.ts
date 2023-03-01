@@ -7,6 +7,7 @@ import {
     MIN_ALLOWED_AMOUNT,
     PLEBS_DONT_PAY_THRESHOLD,
     ROUND_REGISTRATION_END_OFFSET,
+    MAX_MINING_FEE_MODIFIER,
 } from '../constants';
 import { RoundPhase } from '../enums';
 import {
@@ -172,10 +173,10 @@ export const transformStatus = ({
 }: CoinjoinStatus) => {
     const { allowedInputAmounts, coordinationFeeRate } = getDataFromRounds(rounds);
     // coinJoinFeeRateMedians include an array of medians per day, week and month - we take the second (week) median as the recommended fee rate
-    const recommendedMedian = coinJoinFeeRateMedians[1];
+    const weeklyMedian = coinJoinFeeRateMedians[1];
     // the value is converted from kvBytes (kilo virtual bytes) to vBytes (how the value is displayed in UI)
-    const maxMiningFee = recommendedMedian
-        ? Math.round(coinJoinFeeRateMedians[1].medianFeeRate / 1000)
+    const maxMiningFee = weeklyMedian
+        ? Math.round((coinJoinFeeRateMedians[1].medianFeeRate * MAX_MINING_FEE_MODIFIER) / 1000)
         : MAX_MINING_FEE;
 
     return {
