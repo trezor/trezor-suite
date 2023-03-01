@@ -1,9 +1,9 @@
 import {
-    PLEBS_DONT_PAY_THRESHOLD,
-    COORDINATOR_FEE_RATE,
-    MIN_ALLOWED_AMOUNT,
-    MAX_ALLOWED_AMOUNT,
-    MAX_MINING_FEE,
+    PLEBS_DONT_PAY_THRESHOLD_FALLBACK,
+    COORDINATOR_FEE_RATE_FALLBACK,
+    MIN_ALLOWED_AMOUNT_FALLBACK,
+    MAX_ALLOWED_AMOUNT_FALLBACK,
+    MAX_MINING_FEE_FALLBACK,
 } from '@trezor/coinjoin/src/constants';
 import type { CoinjoinBackendSettings, CoinjoinClientSettings } from '@trezor/coinjoin';
 import type { PartialRecord } from '@trezor/type-utils';
@@ -141,25 +141,24 @@ export const ESTIMATED_MIN_ROUNDS_NEEDED = 4;
 export const ESTIMATED_HOURS_PER_ROUND = 1;
 export const RECOMMENDED_SKIP_ROUNDS = undefined; // temporary disabled for testing purposes // [4, 5] as [number, number];
 export const DEFAULT_MAX_MINING_FEE = 3;
+export const CLIENT_STATUS_FALLBACK = {
+    rounds: [],
+    maxMiningFee: MAX_MINING_FEE_FALLBACK,
+    coordinationFeeRate: {
+        rate: COORDINATOR_FEE_RATE_FALLBACK,
+        plebsDontPayThreshold: PLEBS_DONT_PAY_THRESHOLD_FALLBACK,
+    },
+    allowedInputAmounts: {
+        min: MIN_ALLOWED_AMOUNT_FALLBACK,
+        max: MAX_ALLOWED_AMOUNT_FALLBACK,
+    },
+};
 
 // coordinator fee rate from status format (0.003)
 // firmware format (300 000 = 0.003 * 10 ** 8)
 export const COORDINATOR_FEE_RATE_MULTIPLIER = 10 ** 8;
 
 export const DEFAULT_TARGET_ANONYMITY = 10;
-
-export const DEFAULT_CLIENT_STATUS = {
-    rounds: [],
-    maxMiningFee: MAX_MINING_FEE,
-    coordinationFeeRate: {
-        rate: COORDINATOR_FEE_RATE,
-        plebsDontPayThreshold: PLEBS_DONT_PAY_THRESHOLD,
-    },
-    allowedInputAmounts: {
-        min: MIN_ALLOWED_AMOUNT,
-        max: MAX_ALLOWED_AMOUNT,
-    },
-};
 
 export const getCoinjoinConfig = (
     network: NetworkSymbol,

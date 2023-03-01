@@ -27,7 +27,7 @@ import {
     transformCoinjoinStatus,
 } from '@wallet-utils/coinjoinUtils';
 import {
-    DEFAULT_CLIENT_STATUS,
+    CLIENT_STATUS_FALLBACK,
     ESTIMATED_ANONYMITY_GAINED_PER_ROUND,
     MIN_ANONYMITY_GAINED_PER_ROUND,
     ESTIMATED_ROUNDS_FAIL_RATE_BUFFER,
@@ -269,7 +269,7 @@ const initClient = (
     const exists = draft.clients[payload.symbol];
     if (exists) return;
     draft.clients[payload.symbol] = {
-        ...DEFAULT_CLIENT_STATUS,
+        ...CLIENT_STATUS_FALLBACK,
         status: 'loading',
     };
 };
@@ -564,7 +564,7 @@ export const selectIsAccountWithSessionByAccountKey = memoizeWithArgs(
 export const selectMinAllowedInputWithFee = memoizeWithArgs(
     (state: CoinjoinRootState, accountKey: AccountKey) => {
         const coinjoinClient = selectCoinjoinClient(state, accountKey);
-        const status = coinjoinClient || DEFAULT_CLIENT_STATUS;
+        const status = coinjoinClient || CLIENT_STATUS_FALLBACK;
         const minAllowedInput = status.allowedInputAmounts.min;
         const txSize = getInputSize('Taproot') + getOutputSize('Taproot');
 
