@@ -17,13 +17,12 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        # todo: version 12 won't build due to some react-native dependency. drop version 12?
-        # note: version 18 won't build either due to some node-canvas error during yarn install
+        #? note: version 18 won't build either due to some node-canvas error during yarn install
         # todo: running multiple versions from 'fast' pipeline for branches is overkill. move it to some nightly job (relates to missing nvm in gitlab)
         node-version: [
-            14.x,
+            16.x,
             # todo: skipping this version for better speed for now
-            # 16.x
+            # 18.x
           ]
     steps:
       - uses: actions/checkout@v3
@@ -48,11 +47,11 @@ jobs:
       - uses: actions/checkout@v3
         with:
           submodules: recursive
-      - name: Use Node.js 14.x
+      - name: Use Node.js 16.x
         uses: actions/setup-node@v3
         with:
           # karma tests are run in browser, so node version doesn't matter too much
-          node-version: 14.x
+          node-version: 16.x
           cache: yarn
       # todo: ideally do not install everything. possibly only devDependencies could be enough for testing (if there was not for building libs)?
       - run: sed -i "/\"node\"/d" package.json
