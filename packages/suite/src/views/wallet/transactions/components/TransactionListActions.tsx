@@ -1,16 +1,21 @@
 import React from 'react';
 import styled from 'styled-components';
-import { SearchAction, SearchProps } from './components/SearchAction';
-import { ExportAction, ExportActionProps } from './components/ExportAction';
+import { SearchAction, SearchProps } from './SearchAction';
+import { ExportAction, ExportActionProps } from './ExportAction';
 
 const Wrapper = styled.div`
     display: flex;
     align-items: center;
 `;
 
-interface Props extends SearchProps, ExportActionProps {}
+interface TransactionListActionsProps extends SearchProps, ExportActionProps {}
 
-const Actions = ({ account, search, setSearch, setSelectedPage }: Props) => (
+export const TransactionListActions = ({
+    account,
+    search,
+    setSearch,
+    setSelectedPage,
+}: TransactionListActionsProps) => (
     <Wrapper>
         <SearchAction
             account={account}
@@ -21,5 +26,3 @@ const Actions = ({ account, search, setSearch, setSelectedPage }: Props) => (
         <ExportAction account={account} />
     </Wrapper>
 );
-
-export default Actions;

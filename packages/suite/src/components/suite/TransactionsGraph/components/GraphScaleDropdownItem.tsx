@@ -6,7 +6,7 @@ import { Translation } from '@suite-components';
 import { SelectBar, SelectBarProps } from '@trezor/components';
 import { GraphScale } from '../../../../types/wallet/graph';
 
-const GraphScaleDropdownItem = (props: Omit<SelectBarProps<GraphScale>, 'options'>) => {
+export const GraphScaleDropdownItem = (props: Omit<SelectBarProps<GraphScale>, 'options'>) => {
     const { selectedView, setSelectedView } = useGraph();
 
     return (
@@ -21,5 +21,3 @@ const GraphScaleDropdownItem = (props: Omit<SelectBarProps<GraphScale>, 'options
         />
     );
 };
-
-export default GraphScaleDropdownItem;

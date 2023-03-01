@@ -21,10 +21,6 @@ const Examples = styled.div`
     font-style: italic;
 `;
 
-interface Props {
-    className?: string;
-}
-
 const getTip = (num: number) => {
     switch (num) {
         case 2:
@@ -50,11 +46,11 @@ const getTip = (num: number) => {
     }
 };
 
-const NoSearchResults = (props: Props) => {
+export const NoSearchResults = () => {
     const [tip] = useState(getRandomNumberInRange(1, 10));
 
     return (
-        <NoResults {...props}>
+        <NoResults>
             <Translation id="TR_NO_SEARCH_RESULTS" />
 
             <Examples>
@@ -68,5 +64,3 @@ const NoSearchResults = (props: Props) => {
         </NoResults>
     );
 };
-
-export default NoSearchResults;

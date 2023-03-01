@@ -14,7 +14,7 @@ import { Header } from './components/Header';
 import { Exception } from './components/Exception';
 import { EmptyWallet } from './components/EmptyWallet';
 import { DashboardGraph } from './components/DashboardGraph';
-import GraphScaleDropdownItem from '@suite-components/TransactionsGraph/components/GraphScaleDropdownItem';
+import { GraphScaleDropdownItem } from '@suite-components/TransactionsGraph/components/GraphScaleDropdownItem';
 
 const StyledCard = styled(Card)`
     flex-direction: column;

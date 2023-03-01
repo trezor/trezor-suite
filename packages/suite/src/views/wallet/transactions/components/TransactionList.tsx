@@ -14,15 +14,15 @@ import {
 } from '@suite-common/wallet-utils';
 import { SETTINGS } from '@suite-config';
 import { WalletAccountTransaction, Account } from '@wallet-types';
-import Actions from './components/Actions';
+import { TransactionListActions } from './TransactionListActions';
 import TransactionItem from '@wallet-components/TransactionItem';
 import { Pagination } from '@wallet-components';
-import TransactionsGroup from './components/TransactionsGroup';
-import SkeletonTransactionItem from './components/SkeletonTransactionItem';
-import NoSearchResults from './components/NoSearchResults';
+import { TransactionsGroup } from './TransactionsGroup';
+import { SkeletonTransactionItem } from './SkeletonTransactionItem';
+import { NoSearchResults } from './NoSearchResults';
 import { findAnchorTransactionPage } from '@suite-utils/anchor';
 import { fetchTransactionsThunk } from '@suite-common/wallet-core';
-import { CoinjoinBatchItem } from '@wallet-components/TransactionItem/CoinjoinBatchItem';
+import { CoinjoinBatchItem } from '@wallet-components/TransactionItem/components/CoinjoinBatchItem';
 
 const StyledSection = styled(Section)`
     margin-bottom: 20px;
@@ -176,7 +176,7 @@ export const TransactionList = ({
             ref={sectionRef}
             heading={<Translation id="TR_ALL_TRANSACTIONS" />}
             actions={
-                <Actions
+                <TransactionListActions
                     account={account}
                     search={search}
                     setSearch={setSearch}

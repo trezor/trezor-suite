@@ -24,7 +24,7 @@ import { AccountMetadata } from '@suite-types/metadata';
 import { ExtendedMessageDescriptor } from '@suite-types';
 import { SignOperator } from '@suite-common/suite-types';
 
-export const StyledCryptoAmount = styled(FormattedCryptoAmount)`
+export const StyledFormattedCryptoAmount = styled(FormattedCryptoAmount)`
     width: 100%;
     color: ${({ theme }) => theme.TYPE_DARK_GREY};
     font-size: ${variables.FONT_SIZE.NORMAL};
@@ -61,7 +61,7 @@ export const TokenTransfer = ({
             }
             amount={
                 !baseLayoutProps.singleRowLayout && (
-                    <StyledCryptoAmount
+                    <StyledFormattedCryptoAmount
                         value={formatAmount(transfer.amount, transfer.decimals)}
                         symbol={transfer.symbol}
                         signValue={operation}
@@ -144,7 +144,7 @@ export const Target = ({
             }
             amount={
                 targetAmount && !baseLayoutProps.singleRowLayout ? (
-                    <StyledCryptoAmount
+                    <StyledFormattedCryptoAmount
                         value={targetAmount}
                         symbol={transaction.symbol}
                         signValue={operation}
@@ -185,7 +185,13 @@ export const CustomRow = ({
     <BaseTargetLayout
         {...baseLayoutProps}
         addressLabel={<Translation id={title} />}
-        amount={<StyledCryptoAmount value={amount} symbol={transaction.symbol} signValue={sign} />}
+        amount={
+            <StyledFormattedCryptoAmount
+                value={amount}
+                symbol={transaction.symbol}
+                signValue={sign}
+            />
+        }
         fiatAmount={
             useFiatValues ? (
                 <FiatValue

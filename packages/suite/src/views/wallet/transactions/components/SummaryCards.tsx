@@ -8,9 +8,9 @@ import { Account } from '@wallet-types';
 import { useFormatters } from '@suite-common/formatters';
 import { variables } from '@trezor/components';
 
-import { InfoCard } from './components/InfoCard';
-import { AggregatedAccountHistory, GraphRange } from '../../../../../../../types/wallet/graph';
-import { sumFiatValueMap } from '../../../../../../../utils/wallet/graphUtils';
+import { InfoCard } from './InfoCard';
+import { AggregatedAccountHistory, GraphRange } from '@wallet-types/graph';
+import { sumFiatValueMap } from '@wallet-utils/graphUtils';
 
 const InfoCardsWrapper = styled.div`
     display: grid;
@@ -41,7 +41,7 @@ const getFormattedLabelLong = (rangeLabel: GraphRange['label']) => {
     }
 };
 
-interface Props {
+interface SummaryCardProps {
     selectedRange: GraphRange;
     data: AggregatedAccountHistory[];
     dataInterval: [number, number];
@@ -55,7 +55,7 @@ const DateWrapper = styled.span`
     white-space: nowrap;
 `;
 
-const SummaryCards = ({
+export const SummaryCards = ({
     selectedRange,
     data,
     dataInterval,
@@ -63,7 +63,7 @@ const SummaryCards = ({
     symbol,
     isLoading,
     className,
-}: Props) => {
+}: SummaryCardProps) => {
     const { FiatAmountFormatter } = useFormatters();
     const [fromTimestamp, toTimestamp] = dataInterval;
     // aggregate values from shown graph data
@@ -135,5 +135,3 @@ const SummaryCards = ({
         </InfoCardsWrapper>
     );
 };
-
-export default SummaryCards;

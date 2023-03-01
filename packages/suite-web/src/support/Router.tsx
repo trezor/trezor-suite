@@ -11,8 +11,10 @@ const components: { [key: string]: React.LazyExoticComponent<any> } = {
     ),
 
     // wallet
-    'wallet-index': lazy(
-        () => import(/* webpackChunkName: "wallet" */ '@wallet-views/transactions'),
+    'wallet-index': lazy(() =>
+        import(/* webpackChunkName: "wallet" */ '@wallet-views/transactions/Transactions').then(
+            ({ Transactions }) => ({ default: Transactions }),
+        ),
     ),
     'wallet-receive': lazy(() => import(/* webpackChunkName: "wallet" */ '@wallet-views/receive')),
     'wallet-details': lazy(() => import(/* webpackChunkName: "wallet" */ '@wallet-views/details')),
