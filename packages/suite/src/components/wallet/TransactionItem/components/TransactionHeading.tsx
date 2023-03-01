@@ -132,7 +132,7 @@ export const TransactionHeading = ({
             <StyledCryptoAmount
                 value={formatNetworkAmount(transaction.fee, transaction.symbol)}
                 symbol={transaction.symbol}
-                signValue="neg"
+                signValue="negative"
                 isZeroValuePhishing={isZeroValuePhishing}
             />
         );

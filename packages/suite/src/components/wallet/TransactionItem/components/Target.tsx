@@ -22,6 +22,7 @@ import { BaseTargetLayout } from './BaseTargetLayout';
 import { copyToClipboard } from '@trezor/dom-utils';
 import { AccountMetadata } from '@suite-types/metadata';
 import { ExtendedMessageDescriptor } from '@suite-types';
+import { SignOperator } from '@suite-common/suite-types';
 
 export const StyledCryptoAmount = styled(FormattedCryptoAmount)`
     width: 100%;
@@ -173,7 +174,7 @@ export const CustomRow = ({
     ...baseLayoutProps
 }: {
     amount: string;
-    sign: 'pos' | 'neg';
+    sign: SignOperator;
     title: ExtendedMessageDescriptor['id'];
     transaction: WalletAccountTransaction;
     useFiatValues?: boolean;
@@ -214,7 +215,7 @@ export const FeeRow = ({
     <CustomRow
         {...baseLayoutProps}
         title="FEE"
-        sign="neg"
+        sign="negative"
         amount={fee}
         transaction={transaction}
         useFiatValues={useFiatValues}
@@ -235,7 +236,7 @@ export const WithdrawalRow = ({
     <CustomRow
         {...baseLayoutProps}
         title="TR_TX_WITHDRAWAL"
-        sign="pos"
+        sign="positive"
         amount={formatCardanoWithdrawal(transaction) ?? '0'}
         transaction={transaction}
         useFiatValues={useFiatValues}
@@ -256,7 +257,7 @@ export const DepositRow = ({
     <CustomRow
         {...baseLayoutProps}
         title="TR_TX_DEPOSIT"
-        sign="neg"
+        sign="negative"
         amount={formatCardanoDeposit(transaction) ?? '0'}
         transaction={transaction}
         useFiatValues={useFiatValues}

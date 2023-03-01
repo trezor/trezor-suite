@@ -9,6 +9,7 @@ import {
 } from '@suite-common/wallet-types';
 import { AccountMetadata } from '@suite-common/metadata-types';
 import { AccountAddress, AccountTransaction } from '@trezor/connect';
+import { SignOperator } from '@suite-common/suite-types';
 
 import { formatAmount, formatNetworkAmount } from './accountUtils';
 import { toFiatCurrency } from './fiatConverterUtils';
@@ -355,12 +356,14 @@ export const analyzeTransactions = (fresh: AccountTransaction[], known: AccountT
 
 // getTxOperation is used with types WalletAccountTransaction and ArrayElement<WalletAccountTransaction['tokens']
 // the only interesting field is 'type', which has compatible string literal union in both types
-export const getTxOperation = (tx: { type: WalletAccountTransaction['type'] }) => {
+export const getTxOperation = (tx: {
+    type: WalletAccountTransaction['type'];
+}): SignOperator | null => {
     if (tx.type === 'sent' || tx.type === 'self' || tx.type === 'failed') {
-        return 'neg';
+        return 'negative';
     }
     if (tx.type === 'recv') {
-        return 'pos';
+        return 'positive';
     }
     return null;
 };
@@ -680,7 +683,7 @@ const numberSearchFilter = (
     return (
         targetAmounts.filter(targetAmount => {
             let bnTargetAmount = new BigNumber(targetAmount);
-            if (op === 'neg') {
+            if (op === 'negative') {
                 bnTargetAmount = bnTargetAmount.negated();
             }
 

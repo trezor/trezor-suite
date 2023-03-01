@@ -99,7 +99,7 @@ export const InfoCard = (props: InfoCardProps) => {
                         {props.isNumeric && props.secondaryValue && (
                             <StyledHiddenPlaceholder>
                                 <Value>
-                                    <Sign value="pos" placeholderOnly />
+                                    <Sign value="positive" placeholderOnly />
                                     <SecondaryValueWrapper>
                                         {props.secondaryValue}
                                     </SecondaryValueWrapper>
