@@ -12,7 +12,13 @@ import { Text } from '../Text';
 import { useButtonPressAnimatedStyle } from './useButtonPressAnimatedStyle';
 
 export type ButtonSize = 'small' | 'medium' | 'large';
-export type ButtonColorScheme = 'primary' | 'secondary' | 'tertiary' | 'danger';
+export type ButtonColorScheme =
+    | 'primary'
+    | 'secondary'
+    | 'tertiaryElevation0'
+    | 'tertiaryElevation1'
+    | 'dangerElevation0'
+    | 'dangerElevation1';
 
 export type ButtonProps = Omit<PressableProps, 'style' | 'onPressIn' | 'onPressOut'> & {
     children: string;
@@ -25,14 +31,13 @@ export type ButtonProps = Omit<PressableProps, 'style' | 'onPressIn' | 'onPressO
 type ButtonColorSchemeColors = {
     backgroundColor: Color;
     onPressColor: Color;
-    disabledBackgroundColor: Color;
     textColor: Color;
     disabledTextColor: Color;
 };
 
 export type ButtonStyleProps = {
     size: ButtonSize;
-    colorScheme: ButtonColorScheme;
+    backgroundColor: Color;
     isDisabled: boolean;
     hasTitle?: boolean;
 };
@@ -43,32 +48,42 @@ type IconStyleProps = {
 
 export const buttonSchemeToColorsMap = {
     primary: {
-        backgroundColor: 'forest',
-        onPressColor: 'forest900',
-        disabledBackgroundColor: 'gray200',
-        textColor: 'gray0',
-        disabledTextColor: 'gray500',
+        backgroundColor: 'backgroundPrimaryDefault',
+        onPressColor: 'backgroundPrimaryPressed',
+        textColor: 'textOnPrimary',
+        disabledTextColor: 'textDisabled',
     },
     secondary: {
-        backgroundColor: 'green',
-        onPressColor: 'green900',
-        disabledBackgroundColor: 'gray200',
-        textColor: 'gray0',
-        disabledTextColor: 'gray500',
+        backgroundColor: 'backgroundSecondaryDefault',
+        onPressColor: 'backgroundSecondaryPressed',
+        textColor: 'textOnSecondary',
+        disabledTextColor: 'textDisabled',
     },
-    tertiary: {
-        backgroundColor: 'gray200',
-        onPressColor: 'gray300',
-        disabledBackgroundColor: 'gray200',
-        textColor: 'gray800',
-        disabledTextColor: 'gray500',
+    tertiaryElevation0: {
+        backgroundColor: 'backgroundTertiaryDefaultOnElevation0',
+        onPressColor: 'backgroundTertiaryPressedOnElevation0',
+
+        textColor: 'textOnTertiary',
+        disabledTextColor: 'textDisabled',
     },
-    danger: {
-        backgroundColor: 'red',
-        onPressColor: 'red700',
-        disabledBackgroundColor: 'gray200',
-        textColor: 'gray0',
-        disabledTextColor: 'gray500',
+    tertiaryElevation1: {
+        backgroundColor: 'backgroundTertiaryDefaultOnElevation1',
+        onPressColor: 'backgroundTertiaryPressedOnElevation1',
+
+        textColor: 'textOnTertiary',
+        disabledTextColor: 'textDisabled',
+    },
+    dangerElevation0: {
+        backgroundColor: 'backgroundAlertRedSubtleOnElevation0',
+        onPressColor: 'backgroundAlertRedSubtleOnElevation0',
+        textColor: 'textAlertRed',
+        disabledTextColor: 'textDisabled',
+    },
+    dangerElevation1: {
+        backgroundColor: 'backgroundAlertRedSubtleOnElevation1',
+        onPressColor: 'backgroundAlertRedSubtleOnElevation1',
+        textColor: 'textAlertRed',
+        disabledTextColor: 'textDisabled',
     },
 } as const satisfies Record<ButtonColorScheme, ButtonColorSchemeColors>;
 
@@ -114,21 +129,20 @@ const iconStyle = prepareNativeStyle((utils, { position }: IconStyleProps) => ({
 }));
 
 export const buttonStyle = prepareNativeStyle<ButtonStyleProps>(
-    (utils, { size, colorScheme, isDisabled }) => {
+    (utils, { size, backgroundColor, isDisabled }) => {
         const sizeDimensions = sizeToDimensionsMap[size];
-        const schemeColors = buttonSchemeToColorsMap[colorScheme];
         return {
             flexDirection: 'row',
             justifyContent: 'center',
             alignItems: 'center',
             borderRadius: utils.borders.radii.round,
-            backgroundColor: utils.colors[schemeColors.backgroundColor],
+            backgroundColor: utils.colors[backgroundColor],
             ...sizeDimensions,
             extend: [
                 {
                     condition: isDisabled,
                     style: {
-                        backgroundColor: utils.colors[schemeColors.disabledBackgroundColor],
+                        backgroundColor: utils.colors.backgroundNeutralDisabled,
                     },
                 },
             ],
@@ -148,7 +162,7 @@ export const Button = ({
 }: ButtonProps) => {
     const [isPressed, setIsPressed] = useState(false);
     const { applyStyle } = useNativeStyles();
-    const { backgroundColor, onPressColor, textColor, disabledBackgroundColor, disabledTextColor } =
+    const { backgroundColor, onPressColor, textColor, disabledTextColor } =
         buttonSchemeToColorsMap[colorScheme];
 
     const animatedPressStyle = useButtonPressAnimatedStyle(
@@ -166,7 +180,7 @@ export const Button = ({
         <View style={applyStyle(iconStyle, { position: iconLeft ? 'left' : 'right' })}>
             <Icon
                 name={iconName}
-                color={isDisabled ? disabledBackgroundColor : textColor}
+                color={isDisabled ? 'backgroundNeutralDisabled' : textColor}
                 size={size}
             />
         </View>
@@ -184,7 +198,7 @@ export const Button = ({
                     animatedPressStyle,
                     applyStyle(buttonStyle, {
                         size,
-                        colorScheme,
+                        backgroundColor,
                         isDisabled,
                     }),
                     style,

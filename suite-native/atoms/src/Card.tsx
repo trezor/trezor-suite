@@ -9,7 +9,7 @@ type CardProps = {
 };
 
 const cardStyle = prepareNativeStyle(utils => ({
-    backgroundColor: utils.colors.gray0,
+    backgroundColor: utils.colors.backgroundSurfaceElevation1,
     borderRadius: utils.borders.radii.large / 2,
     padding: utils.spacings.medium,
 }));

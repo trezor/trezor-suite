@@ -50,7 +50,7 @@ const DiscreetCanvas = ({ width, height, fontSize, text, color }: DiscreetCanvas
 
 export const DiscreetText = ({
     children = '',
-    color = 'gray800',
+    color = 'textDefault',
     variant = 'body',
     ...restTextProps
 }: DiscreetTextProps) => {

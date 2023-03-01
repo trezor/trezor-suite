@@ -21,7 +21,9 @@ const progressBarItemStyle = prepareNativeStyle<{ isActive: boolean }>((utils, {
     height: 2,
     marginRight: utils.spacings.small / 2,
     borderRadius: utils.borders.radii.small / 4,
-    backgroundColor: isActive ? utils.colors.forest : utils.colors.gray300,
+    backgroundColor: isActive
+        ? utils.colors.backgroundPrimaryDefault
+        : utils.colors.backgroundNeutralSubdued,
 }));
 
 export const StepsProgressBar = ({ numberOfSteps, activeStep }: StepsProgressBarProps) => {

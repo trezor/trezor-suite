@@ -14,9 +14,9 @@ const errorMessageStyle = prepareNativeStyle(utils => ({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: utils.transparentize(0.8, utils.colors.red),
+    backgroundColor: utils.colors.backgroundAlertRedSubtleOnElevation0,
     margin: utils.spacings.small,
-    borderColor: utils.colors.red,
+    borderColor: utils.colors.borderAlertRed,
     borderWidth: 1,
     borderRadius: utils.borders.radii.medium,
     padding: utils.spacings.large,
@@ -27,9 +27,9 @@ export const ErrorMessage = ({ errorMessage }: ErrorMessageProps) => {
     return (
         <Box style={applyStyle(errorMessageStyle)}>
             <Box marginRight="small">
-                <Icon name="warningCircle" size="large" color="red" />
+                <Icon name="warningCircle" size="large" color="iconAlertRed" />
             </Box>
-            <Text color="red">Error: {errorMessage}</Text>
+            <Text color="textAlertRed">Error: {errorMessage}</Text>
         </Box>
     );
 };

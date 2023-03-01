@@ -35,7 +35,7 @@ export const BottomSheetHeader = ({ title, subtitle, onCloseSheet }: BottomSheet
                     {subtitle && (
                         <Text
                             variant="label"
-                            color="gray600"
+                            color="textSubdued"
                             numberOfLines={1}
                             ellipsizeMode="tail"
                         >
@@ -46,7 +46,7 @@ export const BottomSheetHeader = ({ title, subtitle, onCloseSheet }: BottomSheet
                 <IconButton
                     iconName="close"
                     onPress={onCloseSheet}
-                    colorScheme="tertiary"
+                    colorScheme="tertiaryElevation0"
                     size="medium"
                 />
             </View>

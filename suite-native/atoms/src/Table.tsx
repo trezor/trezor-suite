@@ -12,15 +12,13 @@ type TdProps = {
 
 export const Td = ({ children }: TdProps) => (
     <Box flex={1}>
-        <Text variant="hint" color="gray1000">
-            {children}
-        </Text>
+        <Text variant="hint">{children}</Text>
     </Box>
 );
 
 export const Th = ({ children }: TdProps) => (
     <Box flex={1}>
-        <Text variant="hint" color="gray600">
+        <Text variant="hint" color="textSubdued">
             {children}
         </Text>
     </Box>

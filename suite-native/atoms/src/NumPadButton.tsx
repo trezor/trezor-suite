@@ -24,7 +24,7 @@ export const numPadButtonStyle = prepareNativeStyle(utils => ({
 
 export const numPadButtonTextStyle = prepareNativeStyle(utils => ({
     ...utils.typography.titleMedium,
-    color: utils.colors.gray700,
+    color: utils.colors.textSubdued,
     textAlign: 'center',
 
     extend: [
@@ -54,7 +54,7 @@ export const NumPadButton = ({ value, onPress, style, ...props }: NumPadButtonPr
         <TouchableHighlight
             style={[applyStyle(numPadButtonStyle), style]}
             onPress={handlePress}
-            underlayColor={utils.colors.gray200}
+            underlayColor={utils.colors.backgroundTertiaryPressedOnElevation0}
             {...props}
         >
             <Text style={applyStyle(numPadButtonTextStyle)}>{value}</Text>

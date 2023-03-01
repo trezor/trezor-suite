@@ -35,7 +35,7 @@ export const CryptoIconWithPercentage = ({
 }: CryptoIconProps) => {
     const iconSvg = useSVG(cryptoIcons[iconName]);
     const { utils } = useNativeStyles();
-    const percentageColor = utils.coinsColors[iconName] ?? utils.colors.gray500;
+    const percentageColor = utils.coinsColors[iconName] ?? utils.colors.textSubdued;
 
     const path = Skia.Path.Make();
     path.addCircle(CANVAS_SIZE / 2, CANVAS_SIZE / 2, RADIUS);
@@ -70,7 +70,7 @@ export const CryptoIconWithPercentage = ({
                     // eslint-disable-next-line react/style-prop-object
                     style="stroke"
                     strokeWidth={8}
-                    color={utils.colors.gray100}
+                    color={utils.colors.backgroundSurfaceElevation2}
                 />
                 <Path
                     path={path}

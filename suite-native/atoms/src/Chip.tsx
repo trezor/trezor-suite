@@ -27,15 +27,15 @@ const chipStyle = prepareNativeStyle<ChipStyleProps>((utils, { isSelected }) => 
     alignItems: 'center',
     alignSelf: 'flex-start',
     height: 44,
-    backgroundColor: utils.colors.gray100,
+    backgroundColor: utils.colors.backgroundSurfaceElevation0,
     borderWidth: utils.borders.widths.small,
     borderRadius: utils.borders.radii.round,
-    borderColor: utils.colors.gray400,
+    borderColor: utils.colors.borderFocus,
     paddingHorizontal: 10,
     extend: {
         condition: isSelected,
         style: {
-            borderColor: utils.colors.forest,
+            borderColor: utils.colors.borderSecondary,
             borderWidth: utils.borders.widths.medium,
         },
     },
@@ -48,7 +48,7 @@ const chipTitleStyle = prepareNativeStyle<ChipStyleProps>((utils, { isSelected, 
         condition: isSelected,
         style: {
             ...utils.typography.callout,
-            color: utils.colors.forest,
+            color: utils.colors.textOnSecondary,
         },
     },
 }));
@@ -68,7 +68,7 @@ export const Chip = ({
     onSelect,
     description,
     icon,
-    titleColor = 'gray800',
+    titleColor = 'textDisabled',
     isSelected = false,
     style,
 }: ChipProps) => {

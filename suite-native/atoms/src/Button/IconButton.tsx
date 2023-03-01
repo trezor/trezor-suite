@@ -86,7 +86,7 @@ export const IconButton = ({
                             animatedPressStyle,
                             applyStyle(iconButtonStyle, {
                                 size,
-                                colorScheme,
+                                backgroundColor,
                                 isDisabled,
                             }),
                             style,
@@ -94,7 +94,7 @@ export const IconButton = ({
                     >
                         <Icon name={iconName} color={iconColor} size={size} />
                     </Animated.View>
-                    <Text variant="label" color="gray600">
+                    <Text variant="label" color="textSubdued">
                         {title}
                     </Text>
                 </Box>

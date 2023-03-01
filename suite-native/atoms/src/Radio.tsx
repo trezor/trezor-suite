@@ -20,16 +20,18 @@ type RadioStyleProps = {
 const radioStyle = prepareNativeStyle<RadioStyleProps>((utils, { isChecked, isDisabled }) => ({
     height: 24,
     width: 24,
-    backgroundColor: isDisabled ? utils.colors.gray400 : utils.colors.gray0,
+    backgroundColor: isDisabled
+        ? utils.colors.backgroundNeutralDisabled
+        : utils.colors.backgroundSurfaceElevation1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: utils.borders.radii.round,
     borderWidth: isChecked ? utils.borders.widths.large : utils.borders.widths.medium,
-    borderColor: utils.colors.gray400,
+    borderColor: utils.colors.borderOnElevation1,
     extend: {
         condition: isChecked && !isDisabled,
-        style: { borderColor: utils.colors.green },
+        style: { borderColor: utils.colors.borderSecondary },
     },
 }));
 
@@ -38,7 +40,9 @@ const radioCheckStyle = prepareNativeStyle<Omit<RadioStyleProps, 'isChecked'>>(
         height: 14,
         width: 14,
         borderRadius: utils.borders.radii.round,
-        backgroundColor: isDisabled ? utils.colors.gray600 : utils.colors.forest,
+        backgroundColor: isDisabled
+            ? utils.colors.backgroundNeutralDisabled
+            : utils.colors.backgroundPrimaryDefault,
     }),
 );
 
