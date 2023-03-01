@@ -4,7 +4,7 @@ import { Switch, Route } from 'react-router-dom';
 import routes from '@suite-constants/routes';
 import Index from '@suite/views/dashboard';
 import Notification from '@suite-views/notifications';
-import Wallet from '@wallet-views/transactions';
+import { Transactions } from '@wallet-views/transactions/Transactions';
 import WalletReceive from '@wallet-views/receive';
 import WalletDetails from '@wallet-views/details';
 import WalletTokens from '@wallet-views/tokens';
@@ -39,7 +39,7 @@ const components: { [key: string]: React.ComponentType<any> } = {
     'suite-index': Index,
     'notifications-index': Notification,
 
-    'wallet-index': Wallet,
+    'wallet-index': Transactions,
     'wallet-receive': WalletReceive,
     'wallet-details': WalletDetails,
     'wallet-tokens': WalletTokens,

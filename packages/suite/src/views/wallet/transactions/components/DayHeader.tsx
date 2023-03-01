@@ -52,7 +52,7 @@ const ColFiat = styled(Col)`
     text-align: right;
 `;
 
-interface Props {
+interface DayHeaderProps {
     dateKey: string;
     symbol: Network['symbol'];
     totalAmount: BigNumber;
@@ -70,7 +70,7 @@ export const DayHeader = ({
     localCurrency,
     txsCount,
     isHovered,
-}: Props) => {
+}: DayHeaderProps) => {
     const { FiatAmountFormatter } = useFormatters();
 
     const parsedDate = parseTransactionDateKey(dateKey);

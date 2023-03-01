@@ -8,7 +8,7 @@ import { useActions, useSelector } from '@suite-hooks';
 import { Account } from '@wallet-types';
 import * as suiteActions from '@suite-actions/suiteActions';
 import * as routerActions from '@suite-actions/routerActions';
-import TaprootBanner from './components/TaprootBanner';
+import { TaprootBanner } from './TaprootBanner';
 import { getBip43Type } from '@suite-common/wallet-utils';
 
 const Wrapper = styled.div`
@@ -68,7 +68,7 @@ interface AccountEmptyProps {
     account: Account;
 }
 
-export const AccountEmpty = (props: AccountEmptyProps) => {
+export const AccountEmpty = ({ account }: AccountEmptyProps) => {
     const { taprootBannerClosed } = useSelector(state => state.suite.flags);
 
     const { goto, setFlag } = useActions({
@@ -76,8 +76,8 @@ export const AccountEmpty = (props: AccountEmptyProps) => {
         setFlag: suiteActions.setFlag,
     });
 
-    const bip43 = getBip43Type(props.account.path);
-    const networkSymbol = props.account.symbol.toUpperCase();
+    const bip43 = getBip43Type(account.path);
+    const networkSymbol = account.symbol.toUpperCase();
 
     const handleNavigateToReceivePage = () => {
         goto('wallet-receive', { preserveParams: true });

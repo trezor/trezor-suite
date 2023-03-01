@@ -1,7 +1,7 @@
 import React from 'react';
 import { SkeletonRectangle, Spread, Stack } from '@suite-components/Skeleton';
 
-const SkeletonTransactionItem = () => (
+export const SkeletonTransactionItem = () => (
     <Stack col childMargin="0px 0px 8px 0px">
         <Spread>
             <SkeletonRectangle width="120px" height="18px" />

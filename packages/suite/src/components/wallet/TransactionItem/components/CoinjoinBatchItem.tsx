@@ -16,9 +16,9 @@ import { WalletAccountTransaction } from '@wallet-types/index';
 import { HiddenPlaceholder, Translation } from '@suite-components';
 import { TransactionTimestamp } from '@wallet-components/TransactionTimestamp';
 
-import { StyledCryptoAmount } from './components/Target';
-import { TransactionTypeIcon } from './components/TransactionTypeIcon';
-import { BaseTargetLayout } from './components/BaseTargetLayout';
+import { StyledFormattedCryptoAmount } from './Target';
+import { TransactionTypeIcon } from './TransactionTypeIcon';
+import { BaseTargetLayout } from './BaseTargetLayout';
 import {
     Content,
     Description,
@@ -26,9 +26,9 @@ import {
     TargetsWrapper,
     TimestampWrapper,
     TxTypeIconWrapper,
-} from './components/CommonComponents';
+} from './CommonComponents';
 
-const CryptoAmount = styled(StyledCryptoAmount)`
+const CryptoAmount = styled(StyledFormattedCryptoAmount)`
     width: unset;
 `;
 

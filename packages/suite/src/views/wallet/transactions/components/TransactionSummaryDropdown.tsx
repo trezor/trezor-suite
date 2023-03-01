@@ -1,16 +1,9 @@
 import React from 'react';
 import { Dropdown } from '@trezor/components';
-import GraphScaleDropdownItem from '@suite-components/TransactionsGraph/components/GraphScaleDropdownItem';
+import { GraphScaleDropdownItem } from '@suite-components/TransactionsGraph/components/GraphScaleDropdownItem';
 import { Translation } from '@suite-components';
 
-interface Props {
-    isGraphHidden: boolean;
-    setIsGraphHidden: (value: boolean) => void;
-}
-
-const TransactionSummaryDropdown = (_props: Props) => (
-    // TODO: export transactions to a file
-
+export const TransactionSummaryDropdown = () => (
     <Dropdown
         alignMenu="right"
         offset={16}
@@ -30,4 +23,3 @@ const TransactionSummaryDropdown = (_props: Props) => (
         ]}
     />
 );
-export default TransactionSummaryDropdown;

@@ -49,11 +49,11 @@ const Divider = styled.div`
     margin: 16px 0px 20px 0px;
 `;
 
-interface Props {
-    onClose: () => any;
+interface TaprootBannerProps {
+    onClose: () => void;
 }
 
-const TaprootBanner = (props: Props) => {
+export const TaprootBanner = ({ onClose }: TaprootBannerProps) => {
     const theme = useTheme();
     return (
         <StyledCard data-test="@accounts/empty-account/taproot-account">
@@ -64,7 +64,7 @@ const TaprootBanner = (props: Props) => {
                 <Button
                     data-test="@accounts/empty-account/taproot-account/close"
                     variant="tertiary"
-                    onClick={props.onClose}
+                    onClick={onClose}
                 >
                     <Translation id="TR_GOT_IT" />
                 </Button>
@@ -93,5 +93,3 @@ const TaprootBanner = (props: Props) => {
         </StyledCard>
     );
 };
-
-export default TaprootBanner;

@@ -27,7 +27,7 @@ const Layout = ({ selectedAccount, showEmptyHeaderPlaceholder = false, children 
     </WalletLayout>
 );
 
-const Transactions = () => {
+export const Transactions = () => {
     const transactionsIsLoading = useSelector(selectIsLoadingTransactions);
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     const accountTransactions = useSelector(state =>
@@ -97,5 +97,3 @@ const Transactions = () => {
         </Layout>
     );
 };
-
-export default Transactions;

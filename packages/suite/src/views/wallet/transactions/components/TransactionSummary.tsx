@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import styled from 'styled-components';
 import { getUnixTime } from 'date-fns';
@@ -11,12 +11,12 @@ import { RangeSelector } from '@suite-components/TransactionsGraph/components/Ra
 import { calcTicks, calcTicksFromData } from '@suite-common/suite-utils';
 import { variables, Button, Card } from '@trezor/components';
 
-import TransactionSummaryDropdown from './components/TransactionSummaryDropdown';
-import SummaryCards from './components/SummaryCards';
+import { TransactionSummaryDropdown } from './TransactionSummaryDropdown';
+import { SummaryCards } from './SummaryCards';
 import {
     aggregateBalanceHistory,
     getMinMaxValueFromData,
-} from '../../../../../utils/wallet/graphUtils';
+} from '../../../../utils/wallet/graphUtils';
 
 const Wrapper = styled.div`
     display: flex;
@@ -77,8 +77,6 @@ export const TransactionSummary = ({ account }: TransactionSummaryProps) => {
         getGraphDataForInterval: graphActions.getGraphDataForInterval,
     });
 
-    // const { account, graph, getGraphDataForInterval, updateGraphData } = props;
-
     const { selectedRange } = graph;
 
     const onRefresh = () => {
@@ -90,7 +88,6 @@ export const TransactionSummary = ({ account }: TransactionSummaryProps) => {
     };
 
     const intervalGraphData = getGraphDataForInterval({ account });
-    const [isGraphHidden, setIsGraphHidden] = useState(false);
     const data = intervalGraphData[0]?.data
         ? aggregateBalanceHistory(intervalGraphData, selectedRange.groupBy, 'account')
         : [];
@@ -127,54 +124,49 @@ export const TransactionSummary = ({ account }: TransactionSummaryProps) => {
         <Wrapper>
             <Actions>
                 <RangeSelector onSelectedRange={onSelectedRange} align="left" />
-                <TransactionSummaryDropdown
-                    isGraphHidden={isGraphHidden}
-                    setIsGraphHidden={setIsGraphHidden}
-                />
+                <TransactionSummaryDropdown />
             </Actions>
-            {!isGraphHidden && (
-                <ContentWrapper>
-                    {error ? (
+            <ContentWrapper>
+                {error ? (
+                    <GraphWrapper>
+                        <ErrorMessage>
+                            <Translation id="TR_COULD_NOT_RETRIEVE_DATA" />
+                            <Button onClick={onRefresh} icon="REFRESH" variant="tertiary">
+                                <Translation id="TR_RETRY" />
+                            </Button>
+                        </ErrorMessage>
+                    </GraphWrapper>
+                ) : (
+                    <HiddenPlaceholder intensity={7}>
                         <GraphWrapper>
-                            <ErrorMessage>
-                                <Translation id="TR_COULD_NOT_RETRIEVE_DATA" />
-                                <Button onClick={onRefresh} icon="REFRESH" variant="tertiary">
-                                    <Translation id="TR_RETRY" />
-                                </Button>
-                            </ErrorMessage>
+                            <TransactionsGraph
+                                hideToolbar
+                                variant="one-asset"
+                                xTicks={xTicks}
+                                account={account}
+                                isLoading={isLoading}
+                                data={data}
+                                minMaxValues={minMaxValues}
+                                localCurrency={localCurrency}
+                                onRefresh={onRefresh}
+                                selectedRange={selectedRange}
+                                receivedValueFn={data => data.received}
+                                sentValueFn={data => data.sent}
+                                balanceValueFn={data => data.balance}
+                            />
                         </GraphWrapper>
-                    ) : (
-                        <HiddenPlaceholder intensity={7}>
-                            <GraphWrapper>
-                                <TransactionsGraph
-                                    hideToolbar
-                                    variant="one-asset"
-                                    xTicks={xTicks}
-                                    account={account}
-                                    isLoading={isLoading}
-                                    data={data}
-                                    minMaxValues={minMaxValues}
-                                    localCurrency={localCurrency}
-                                    onRefresh={onRefresh}
-                                    selectedRange={selectedRange}
-                                    receivedValueFn={data => data.received}
-                                    sentValueFn={data => data.sent}
-                                    balanceValueFn={data => data.balance}
-                                />
-                            </GraphWrapper>
-                        </HiddenPlaceholder>
-                    )}
+                    </HiddenPlaceholder>
+                )}
 
-                    <SummaryCards
-                        selectedRange={selectedRange}
-                        dataInterval={dataInterval}
-                        data={data}
-                        localCurrency={localCurrency}
-                        symbol={account.symbol}
-                        isLoading={isLoading}
-                    />
-                </ContentWrapper>
-            )}
+                <SummaryCards
+                    selectedRange={selectedRange}
+                    dataInterval={dataInterval}
+                    data={data}
+                    localCurrency={localCurrency}
+                    symbol={account.symbol}
+                    isLoading={isLoading}
+                />
+            </ContentWrapper>
             <Divider />
         </Wrapper>
     );

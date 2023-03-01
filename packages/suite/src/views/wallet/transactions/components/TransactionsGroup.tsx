@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Network, WalletAccountTransaction } from '@wallet-types';
-import { DayHeader } from '../DayHeader';
+import { DayHeader } from './DayHeader';
 import { sumTransactions, sumTransactionsFiat } from '@suite-common/wallet-utils';
 
 const TransactionsGroupWrapper = styled.div`
@@ -17,7 +17,7 @@ const TransactionsGroupWrapper = styled.div`
     }
 `;
 
-interface Props {
+interface TransactionsGroupProps {
     dateKey: string;
     transactions: WalletAccountTransaction[];
     children?: React.ReactNode;
@@ -26,7 +26,7 @@ interface Props {
     index: number;
 }
 
-const TransactionsGroup = ({
+export const TransactionsGroup = ({
     dateKey,
     symbol,
     transactions,
@@ -34,7 +34,7 @@ const TransactionsGroup = ({
     children,
     index,
     ...rest
-}: Props) => {
+}: TransactionsGroupProps) => {
     const [isHovered, setIsHovered] = useState(false);
     const totalAmountPerDay = sumTransactions(transactions);
     const totalFiatAmountPerDay = sumTransactionsFiat(transactions, localCurrency);
@@ -59,5 +59,3 @@ const TransactionsGroup = ({
         </TransactionsGroupWrapper>
     );
 };
-
-export default TransactionsGroup;
