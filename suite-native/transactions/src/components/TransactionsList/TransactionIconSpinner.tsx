@@ -69,7 +69,7 @@ export const TransactionIconSpinner = ({ radius, color }: TransactionIconSpinner
                     >
                         <SweepGradient
                             c={vec(radius, radius)}
-                            colors={[utils.colors.gray0, utils.colors[color]]}
+                            colors={[utils.colors.backgroundSurfaceElevation1, utils.colors[color]]}
                             origin={{ x: radius, y: radius }}
                         />
                     </Circle>

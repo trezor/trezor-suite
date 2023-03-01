@@ -37,7 +37,7 @@ const notificationContainerStyle = prepareNativeStyle(utils => ({
     alignItems: 'center',
     paddingVertical: utils.spacings.small / 2,
     borderRadius: utils.borders.radii.round,
-    backgroundColor: utils.colors.gray1000,
+    backgroundColor: utils.colors.backgroundNeutralBold,
     paddingHorizontal: utils.spacings.small / 2,
     ...utils.boxShadows.small,
 }));
@@ -101,10 +101,8 @@ export const Notification = ({
                             <Box flexDirection="row" alignItems="center">
                                 {iconLeft}
                                 <Box marginLeft="medium">
-                                    <Text color="gray1000">{title}</Text>
-                                    <Text variant="label" color="gray500">
-                                        {description}
-                                    </Text>
+                                    <Text>{title}</Text>
+                                    <Text variant="label">{description}</Text>
                                 </Box>
                             </Box>
                             <Box marginRight="small">{iconRight}</Box>

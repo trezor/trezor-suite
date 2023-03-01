@@ -85,11 +85,11 @@ export const TransactionNotification = ({
                     transactionType={transaction.type}
                     cryptoIconName={transaction.symbol}
                     isAnimated
-                    iconColor="yellow"
-                    backgroundColor="gray0"
+                    iconColor="iconAlertYellow"
+                    backgroundColor="backgroundSurfaceElevation1"
                 />
             }
-            iconRight={<Icon name="circleRight" color="gray1000" />}
+            iconRight={<Icon name="circleRight" />}
         />
     );
 };

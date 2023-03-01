@@ -30,10 +30,10 @@ export const TransactionNotificationDescription = ({
                 value={amount}
                 network={networkSymbol}
                 isBalance={false}
-                color="gray600"
+                color="textSubdued"
                 variant="label"
             />
-            <Text color="gray600" variant="label">
+            <Text color="textSubdued" variant="label">
                 {` ${prefix} `}
             </Text>
             {targetAddress && (
@@ -41,7 +41,7 @@ export const TransactionNotificationDescription = ({
                     <AccountAddressFormatter
                         value={targetAddress}
                         variant="label"
-                        color="gray600"
+                        color="textSubdued"
                     />
                 </Box>
             )}
