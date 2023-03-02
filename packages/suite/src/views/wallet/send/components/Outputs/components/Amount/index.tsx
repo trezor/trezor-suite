@@ -1,9 +1,9 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import BigNumber from 'bignumber.js';
 import styled from 'styled-components';
 
-import { Input, Icon, Switch, Warning, variables, useTheme } from '@trezor/components';
-import { FiatValue, Translation } from '@suite-components';
+import { Icon, Switch, Warning, variables, useTheme } from '@trezor/components';
+import { FiatValue, Translation, NumberInput } from '@suite-components';
 import { InputError } from '@wallet-components';
 import {
     amountToSatoshi,
@@ -21,6 +21,7 @@ import { MAX_LENGTH } from '@suite-constants/inputs';
 import { TokenSelect } from './components/TokenSelect';
 import { Fiat } from './components/Fiat';
 import { useBitcoinAmountUnit } from '@wallet-hooks/useBitcoinAmountUnit';
+import { TypedValidationRules } from '@wallet-types/form';
 
 const Row = styled.div`
     display: flex;
@@ -46,7 +47,7 @@ const SwitchLabel = styled.label`
     font-weight: 500;
 `;
 
-const StyledInput = styled(Input)`
+const StyledInput = styled(NumberInput)`
     display: flex;
     flex: 1;
 `;
@@ -113,7 +114,7 @@ export const Amount = ({ output, outputId }: Props) => {
         network,
         feeInfo,
         localCurrencyOption,
-        register,
+        control,
         getDefaultValue,
         errors,
         setValue,
@@ -159,99 +160,112 @@ export const Amount = ({ output, outputId }: Props) => {
     const bottomText = isLowAnonymity ? null : <InputError error={error} />;
 
     const handleInputChange = useCallback(
-        (event: React.ChangeEvent<HTMLInputElement>) => {
+        (value: string) => {
             if (isSetMaxActive) {
                 setValue('setMaxOutputId', undefined);
             }
 
-            const eventValue = event.target.value;
-
             // calculate or reset Fiat value
-            calculateFiat(outputId, !error ? eventValue : undefined);
-
+            calculateFiat(outputId, !error ? value : undefined);
             composeTransaction(inputName);
         },
         [setValue, calculateFiat, composeTransaction, error, inputName, isSetMaxActive, outputId],
     );
 
-    const cryptoAmountRef = register({
-        required: 'AMOUNT_IS_NOT_SET',
-        validate: (value: string) => {
-            if (Number.isNaN(Number(value))) {
-                return 'AMOUNT_IS_NOT_NUMBER';
-            }
-
-            // ERC20 without decimal places
-            if (!decimals && !isInteger(value)) {
-                return 'AMOUNT_IS_NOT_INTEGER';
-            }
-
-            if (!isDecimalsValid(value, decimals)) {
-                return (
-                    <Translation
-                        key="AMOUNT_IS_NOT_IN_RANGE_DECIMALS"
-                        id="AMOUNT_IS_NOT_IN_RANGE_DECIMALS"
-                        values={{ decimals }}
-                    />
-                );
-            }
-
-            const amountBig = new BigNumber(value);
-
-            if (amountBig.lt(0)) {
-                return 'AMOUNT_IS_TOO_LOW';
-            }
-
-            // allow 0 amount ONLY for ethereum transaction with data
-            if (amountBig.eq(0) && !getDefaultValue('ethereumDataHex')) {
-                return 'AMOUNT_IS_TOO_LOW';
-            }
-
-            const rawDust = feeInfo?.dustLimit?.toString();
-
-            // amounts below dust are not allowed
-            let dust =
-                rawDust && (shouldSendInSats ? rawDust : formatNetworkAmount(rawDust, symbol));
-
-            if (dust && amountBig.lte(dust)) {
-                if (shouldSendInSats) {
-                    dust = amountToSatoshi(dust, decimals);
+    const cryptoAmountRules = useMemo<TypedValidationRules>(
+        () => ({
+            required: 'AMOUNT_IS_NOT_SET',
+            validate: (value: string) => {
+                if (Number.isNaN(Number(value))) {
+                    return 'AMOUNT_IS_NOT_NUMBER';
                 }
 
-                return (
-                    <Translation
-                        key="AMOUNT_IS_BELOW_DUST"
-                        id="AMOUNT_IS_BELOW_DUST"
-                        values={{
-                            dust: `${dust} ${shouldSendInSats ? 'sat' : symbol.toUpperCase()}`,
-                        }}
-                    />
-                );
-            }
-
-            let formattedAvailableBalance: string;
-
-            if (token) {
-                formattedAvailableBalance = token.balance || '0';
-            } else {
-                formattedAvailableBalance = shouldSendInSats
-                    ? availableBalance
-                    : formatNetworkAmount(availableBalance, symbol);
-            }
-
-            if (amountBig.gt(formattedAvailableBalance)) {
-                const reserve =
-                    account.networkType === 'ripple'
-                        ? formatNetworkAmount(account.misc.reserve, symbol)
-                        : undefined;
-
-                if (reserve && amountBig.lt(formatNetworkAmount(balance, symbol))) {
-                    return <Translation id="AMOUNT_IS_MORE_THAN_RESERVE" values={{ reserve }} />;
+                // ERC20 without decimal places
+                if (!decimals && !isInteger(value)) {
+                    return 'AMOUNT_IS_NOT_INTEGER';
                 }
-                return 'AMOUNT_IS_NOT_ENOUGH';
-            }
-        },
-    });
+
+                if (!isDecimalsValid(value, decimals)) {
+                    return (
+                        <Translation
+                            key="AMOUNT_IS_NOT_IN_RANGE_DECIMALS"
+                            id="AMOUNT_IS_NOT_IN_RANGE_DECIMALS"
+                            values={{ decimals }}
+                        />
+                    );
+                }
+
+                const amountBig = new BigNumber(value);
+
+                if (amountBig.lt(0)) {
+                    return 'AMOUNT_IS_TOO_LOW';
+                }
+
+                // allow 0 amount ONLY for ethereum transaction with data
+                if (amountBig.eq(0) && !getDefaultValue('ethereumDataHex')) {
+                    return 'AMOUNT_IS_TOO_LOW';
+                }
+
+                const rawDust = feeInfo?.dustLimit?.toString();
+
+                // amounts below dust are not allowed
+                let dust =
+                    rawDust && (shouldSendInSats ? rawDust : formatNetworkAmount(rawDust, symbol));
+
+                if (dust && amountBig.lte(dust)) {
+                    if (shouldSendInSats) {
+                        dust = amountToSatoshi(dust, decimals);
+                    }
+
+                    return (
+                        <Translation
+                            key="AMOUNT_IS_BELOW_DUST"
+                            id="AMOUNT_IS_BELOW_DUST"
+                            values={{
+                                dust: `${dust} ${shouldSendInSats ? 'sat' : symbol.toUpperCase()}`,
+                            }}
+                        />
+                    );
+                }
+
+                let formattedAvailableBalance: string;
+
+                if (token) {
+                    formattedAvailableBalance = token.balance || '0';
+                } else {
+                    formattedAvailableBalance = shouldSendInSats
+                        ? availableBalance
+                        : formatNetworkAmount(availableBalance, symbol);
+                }
+
+                if (amountBig.gt(formattedAvailableBalance)) {
+                    const reserve =
+                        account.networkType === 'ripple'
+                            ? formatNetworkAmount(account.misc.reserve, symbol)
+                            : undefined;
+
+                    if (reserve && amountBig.lt(formatNetworkAmount(balance, symbol))) {
+                        return (
+                            <Translation id="AMOUNT_IS_MORE_THAN_RESERVE" values={{ reserve }} />
+                        );
+                    }
+                    return 'AMOUNT_IS_NOT_ENOUGH';
+                }
+            },
+        }),
+        [
+            account?.misc,
+            account.networkType,
+            availableBalance,
+            balance,
+            decimals,
+            feeInfo?.dustLimit,
+            getDefaultValue,
+            shouldSendInSats,
+            symbol,
+            token,
+        ],
+    );
 
     return (
         <>
@@ -299,7 +313,8 @@ export const Amount = ({ output, outputId }: Props) => {
                         data-test={inputName}
                         defaultValue={amountValue}
                         maxLength={MAX_LENGTH.AMOUNT}
-                        innerRef={cryptoAmountRef}
+                        rules={cryptoAmountRules}
+                        control={control}
                         innerAddon={
                             withTokens ? (
                                 <TokenSelect output={output} outputId={outputId} />
