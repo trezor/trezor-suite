@@ -37,17 +37,17 @@ export const AboutUsBanners = () => {
                 <Text variant="titleMedium">Follow us</Text>
                 <Box flexDirection="row" justifyContent="space-around">
                     <IconButton
-                        colorScheme="tertiary"
+                        colorScheme="tertiaryElevation1"
                         iconName="facebook"
                         onPress={() => handleRedirect('https://www.facebook.com/trezor.io')}
                     />
                     <IconButton
-                        colorScheme="tertiary"
+                        colorScheme="tertiaryElevation1"
                         iconName="twitter"
                         onPress={() => handleRedirect('https://twitter.com/Trezor')}
                     />
                     <IconButton
-                        colorScheme="tertiary"
+                        colorScheme="tertiaryElevation1"
                         iconName="github"
                         onPress={() =>
                             handleRedirect('https://github.com/orgs/trezor/projects/61/views/7')
