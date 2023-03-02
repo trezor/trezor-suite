@@ -1,55 +1,53 @@
 import React from 'react';
+import { Linking } from 'react-native';
+
+import { S } from '@mobily/ts-belt';
 
 import { Screen, ScreenHeader } from '@suite-native/navigation';
-import { VStack, Card, Text, Box, IconButton, Link } from '@suite-native/atoms';
+import { VStack, Card, Text, Box, IconButton, Divider, ListItem } from '@suite-native/atoms';
 import { Icon } from '@trezor/icons';
 import { getAppVersion, getBuildVersionNumber, getCommitHash } from '@suite-native/config';
 
+import { AboutUsBanners } from '../components/AboutUsBanners';
+
 export const SettingsAboutUsScreen = () => {
-    const hasVerionAndBuildInfo = getAppVersion() !== '' && getBuildVersionNumber() !== '';
-    const hasCommitHash = getCommitHash() !== '';
+    const hasVerionAndBuildInfo =
+        S.isNotEmpty(getAppVersion()) && S.isNotEmpty(getBuildVersionNumber());
+    const hasCommitHash = S.isNotEmpty(getCommitHash());
 
     return (
-        <Screen header={<ScreenHeader title="About us" />}>
-            <VStack spacing="xxl">
-                <Card
-                    style={{
-                        paddingHorizontal: 24,
-                        paddingVertical: 48,
-                    }}
-                >
-                    <VStack
-                        spacing="large"
-                        style={{ width: '100%', display: 'flex', alignItems: 'center' }}
-                    >
-                        <Icon name="trezor" />
-                        <Text>
-                            Trezor Suite Lite is a safe and secure way to stay connected to the
-                            crypto on your hardware wallet. Track coin balances on the go without
-                            exposing your private data. Easily create and send payment addresses to
-                            anyone.
-                        </Text>
-                    </VStack>
-                </Card>
-                <Card>
-                    <Text variant="titleMedium">Follow us</Text>
-                    <Box flexDirection="row" justifyContent="space-around">
-                        <Link href="https://www.facebook.com/trezor.io">
-                            <IconButton colorScheme="tertiary" iconName="facebook" />
-                        </Link>
-                        <Link href="https://twitter.com/Trezor">
-                            <IconButton colorScheme="tertiary" iconName="twitter" />
-                        </Link>
-                        <Link href="https://github.com/orgs/trezor/projects/61/views/7">
-                            <IconButton colorScheme="tertiary" iconName="github" />
-                        </Link>
-                    </Box>
-                </Card>
+        <Screen header={<ScreenHeader title="About Trezor Go" />}>
+            <VStack spacing="small">
+                <AboutUsBanners />
+                <Divider />
+                <VStack>
+                    <Text variant="titleSmall">Legal</Text>
+                    <Card>
+                        <VStack spacing="medium">
+                            <ListItem title="Terms & conditions" iconName="pdf" />
+                            <ListItem title="Privacy policy" iconName="pdf" />
+                        </VStack>
+                    </Card>
+                </VStack>
                 <Box flexDirection="row" justifyContent="space-between">
                     {hasVerionAndBuildInfo && (
-                        <Text>Version: {`${getAppVersion()} (${getBuildVersionNumber()})`}</Text>
+                        <Text variant="hint" color="gray500">
+                            Version: {`${getAppVersion()} (${getBuildVersionNumber()})`}
+                        </Text>
                     )}
-                    {hasCommitHash && <Text>Commit hash: {getCommitHash()}</Text>}
+                    {hasCommitHash && (
+                        <Text variant="hint" color="gray500">
+                            Commit hash: {getCommitHash()}
+                        </Text>
+                    )}
+                </Box>
+                <Box flexDirection="row" justifyContent="space-between">
+                    <Text variant="hint" color="gray500">
+                        Version: 1.1.1
+                    </Text>
+                    <Text variant="hint" color="gray500">
+                        Commit hash: 123456dsgfsda
+                    </Text>
                 </Box>
             </VStack>
         </Screen>
