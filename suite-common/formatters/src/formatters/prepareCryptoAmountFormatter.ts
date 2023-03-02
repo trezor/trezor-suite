@@ -51,8 +51,7 @@ export const prepareCryptoAmountFormatter = (config: FormatterConfig) =>
             } else {
                 const shouldBeConvertedFromSats = G.isString(value) && symbol;
                 formattedValue = shouldBeConvertedFromSats
-                    ? // TODO pouzit jenom formatAmount funkci?
-                      formatAmount(value, decimals ?? 8)
+                    ? formatAmount(value, decimals ?? 8)
                     : localizeNumber(formattedValue, locale, 0, decimals);
             }
 

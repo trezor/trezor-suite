@@ -1,10 +1,12 @@
 import React from 'react';
 
-import { Text, DiscreetText, TextProps } from '@suite-native/atoms';
+import { TextProps } from '@suite-native/atoms';
 import { useFormatters } from '@suite-common/formatters';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
 import { FormatterProps } from '../types';
+import { EmptyAmountText } from './EmptyAmountText';
+import { AmountText } from './AmountText';
 
 type CryptoToFiatAmountFormatterProps = FormatterProps<string | number | null> &
     TextProps & {
@@ -24,22 +26,17 @@ export const CryptoAmountFormatter = ({
 }: CryptoToFiatAmountFormatterProps) => {
     const { CryptoAmountFormatter: formatter } = useFormatters();
 
-    // The text has to contain a whitespace to keep desired line height.
-    if (!value) return <Text> </Text>;
+    if (!value) return <EmptyAmountText />;
 
     const formattedValue = formatter.format(value, { isBalance, symbol: network });
 
-    if (isDiscreetText) {
-        return (
-            <DiscreetText variant={variant} color={color} {...textProps}>
-                {formattedValue}
-            </DiscreetText>
-        );
-    }
-
     return (
-        <Text variant={variant} color={color} {...textProps}>
-            {formattedValue}
-        </Text>
+        <AmountText
+            value={formattedValue}
+            isDiscreetText={isDiscreetText}
+            variant={variant}
+            color={color}
+            {...textProps}
+        />
     );
 };

@@ -1,11 +1,13 @@
 import React from 'react';
 
-import { Text, DiscreetText, TextProps } from '@suite-native/atoms';
+import { TextProps } from '@suite-native/atoms';
 import { useFormatters } from '@suite-common/formatters';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { isTestnet } from '@suite-common/wallet-utils';
 
 import { FormatterProps } from '../types';
+import { EmptyAmountText } from './EmptyAmountText';
+import { AmountText } from './AmountText';
 
 type CryptoToFiatAmountFormatterProps = FormatterProps<string | number | null> &
     TextProps & {
@@ -23,13 +25,9 @@ export const FiatAmountFormatter = ({
 
     const isTestnetValue = !!network && isTestnet(network);
 
-    // The text has to contain a whitespace to keep desired line height.
-    if (!value || isTestnetValue) return <Text> </Text>;
+    if (!value || isTestnetValue) return <EmptyAmountText />;
 
     const formattedValue = formatter.format(value);
-    if (isDiscreetText) {
-        return <DiscreetText {...textProps}>{formattedValue}</DiscreetText>;
-    }
 
-    return <Text {...textProps}>{formattedValue}</Text>;
+    return <AmountText value={formattedValue} isDiscreetText={isDiscreetText} {...textProps} />;
 };

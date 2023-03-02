@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Alert } from 'react-native';
+import { useDispatch } from 'react-redux';
 
 import TrezorConnect, { AccountInfo } from '@trezor/connect';
 import {
@@ -10,6 +11,7 @@ import {
     AccountsImportStackParamList,
     RootStackRoutes,
 } from '@suite-native/navigation';
+import { updateCurrentFiatRatesThunk } from '@suite-common/wallet-core';
 
 import { AccountImportLoader } from '../components/AccountImportLoader';
 import { AccountImportHeader } from '../components/AccountImportHeader';
@@ -25,6 +27,7 @@ export const AccountImportLoadingScreen = ({
     RootStackParamList
 >) => {
     const { xpubAddress, networkSymbol } = route.params;
+    const dispatch = useDispatch();
     const [accountInfo, setAccountInfo] = useState<AccountInfo | null>(null);
     const [isAnimationFinished, setIsAnimationFinished] = useState(false);
 
@@ -68,8 +71,22 @@ export const AccountImportLoadingScreen = ({
                 descriptor: xpubAddress,
                 details: 'txs',
             });
+
             if (!ignore) {
                 if (fetchedAccountInfo?.success) {
+                    if (networkSymbol === 'eth') {
+                        fetchedAccountInfo.payload.tokens?.forEach(token => {
+                            dispatch(
+                                updateCurrentFiatRatesThunk({
+                                    ticker: {
+                                        symbol: token.symbol as string,
+                                        mainNetworkSymbol: 'eth',
+                                        tokenAddress: token.address,
+                                    },
+                                }),
+                            );
+                        });
+                    }
                     setAccountInfo(fetchedAccountInfo.payload);
                 } else {
                     showAccountInfoAlert({
@@ -93,7 +110,7 @@ export const AccountImportLoadingScreen = ({
         return () => {
             ignore = true;
         };
-    }, [xpubAddress, networkSymbol, navigation]);
+    }, [xpubAddress, networkSymbol, navigation, dispatch]);
 
     return (
         <Screen header={<AccountImportHeader activeStep={3} />}>

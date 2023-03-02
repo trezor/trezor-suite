@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
-import { Text, DiscreetText, TextProps } from '@suite-native/atoms';
+import { TextProps } from '@suite-native/atoms';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { selectCoins } from '@suite-common/wallet-core';
 import { convertCryptoToFiatAmount, useFormatters } from '@suite-common/formatters';
@@ -10,6 +10,8 @@ import { FiatRates } from '@trezor/blockchain-link';
 import { isTestnet } from '@suite-common/wallet-utils';
 
 import { FormatterProps } from '../types';
+import { EmptyAmountText } from './EmptyAmountText';
+import { AmountText } from './AmountText';
 
 type CryptoToFiatAmountFormatterProps = FormatterProps<string | null> &
     TextProps & {
@@ -32,8 +34,7 @@ export const CryptoToFiatAmountFormatter = ({
     const isTestnetCoin = isTestnet(network);
     const rates = customRates ?? coins.find(coin => coin.symbol === network)?.current?.rates;
 
-    // The text has to contain a whitespace to keep desired line height.
-    if (!value || !rates || isTestnetCoin) return <Text> </Text>;
+    if (!value || !rates || isTestnetCoin) return <EmptyAmountText />;
 
     const fiatValue = convertCryptoToFiatAmount({
         value,
@@ -44,9 +45,5 @@ export const CryptoToFiatAmountFormatter = ({
 
     const formattedFiatValue = FiatAmountFormatter.format(fiatValue ?? 0);
 
-    if (isDiscreetText) {
-        return <DiscreetText {...textProps}>{formattedFiatValue}</DiscreetText>;
-    }
-
-    return <Text {...textProps}>{formattedFiatValue}</Text>;
+    return <AmountText value={formattedFiatValue} isDiscreetText={isDiscreetText} {...textProps} />;
 };

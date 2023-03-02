@@ -93,9 +93,13 @@ export const TransactionDetailParametersSheet = ({
                     </>
                 )} */}
 
-                    <TransactionDetailRow title="Fee rate">
-                        {`${getFeeRate(transaction)} ${getFeeUnits('bitcoin')}`}
-                    </TransactionDetailRow>
+                    {transaction.symbol === 'btc' && (
+                        // Note: Ethereum and tokens will have different fee rate units.
+                        // https://github.com/trezor/trezor-suite/issues/7729
+                        <TransactionDetailRow title="Fee rate">
+                            {`${getFeeRate(transaction)} ${getFeeUnits('bitcoin')}`}
+                        </TransactionDetailRow>
+                    )}
                     <TransactionDetailRow title="Broadcast">
                         {transaction.blockHeight ? 'Enabled' : 'Disabled'}
                     </TransactionDetailRow>

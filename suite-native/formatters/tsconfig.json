@@ -18,6 +18,7 @@
             "path": "../../suite-common/wallet-utils"
         },
         { "path": "../atoms" },
+        { "path": "../ethereum-tokens" },
         { "path": "../module-settings" },
         {
             "path": "../../packages/blockchain-link"

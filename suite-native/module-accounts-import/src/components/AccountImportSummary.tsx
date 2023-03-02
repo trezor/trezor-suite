@@ -24,6 +24,7 @@ export const AccountImportSummary = ({ networkSymbol, accountInfo }: AccountImpo
     );
 
     const isAccountImportSupported = enabledNetworks.some(network => network === networkSymbol);
+
     if (!isAccountImportSupported) {
         return <ErrorMessage errorMessage="Unsupported account network type." />;
     }
