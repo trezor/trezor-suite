@@ -1,8 +1,9 @@
-import React, { ReactNode, useEffect } from 'react';
+import React, { ReactNode, useEffect, useContext } from 'react';
 import { StatusBar, View } from 'react-native';
 import { useSafeAreaInsets, EdgeInsets } from 'react-native-safe-area-context';
 
 import * as SystemUI from 'expo-system-ui';
+import { BottomTabBarHeightContext } from '@react-navigation/bottom-tabs';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Color, nativeSpacings } from '@trezor/theme';
@@ -24,23 +25,28 @@ type ScreenProps = {
 
 const screenContainerStyle = prepareNativeStyle<{
     backgroundColor: Color;
-}>((utils, { backgroundColor }) => ({
+    insets: EdgeInsets;
+    customVerticalPadding: number;
+    isTabBarVisible: boolean;
+}>((utils, { backgroundColor, customVerticalPadding, insets, isTabBarVisible }) => ({
     flex: 1,
     backgroundColor: utils.colors[backgroundColor],
+    paddingTop: Math.max(insets.top, customVerticalPadding),
+    extend: {
+        condition: !isTabBarVisible,
+        style: {
+            paddingBottom: Math.max(insets.bottom, customVerticalPadding),
+        },
+    },
 }));
 
 const screenHeaderStyle = prepareNativeStyle<{
     insets: EdgeInsets;
     customHorizontalPadding: number;
-    customVerticalPadding: number;
-}>((_, { insets, customHorizontalPadding, customVerticalPadding }) => {
-    const { top, right, left } = insets;
-    return {
-        paddingTop: Math.max(top, customVerticalPadding),
-        paddingLeft: Math.max(left, customHorizontalPadding),
-        paddingRight: Math.max(right, customHorizontalPadding),
-    };
-});
+}>((_, { insets, customHorizontalPadding }) => ({
+    paddingLeft: Math.max(insets.left, customHorizontalPadding),
+    paddingRight: Math.max(insets.right, customHorizontalPadding),
+}));
 
 export const Screen = ({
     children,
@@ -57,6 +63,8 @@ export const Screen = ({
         applyStyle,
         utils: { colors, isDarkColor },
     } = useNativeStyles();
+
+    const isTabBarVisible = !!useContext(BottomTabBarHeightContext);
     const insets = useSafeAreaInsets();
     const backgroundCSSColor = colors[backgroundColor];
     const barStyle = isDarkColor(backgroundCSSColor) ? 'light-content' : 'dark-content';
@@ -70,6 +78,9 @@ export const Screen = ({
         <View
             style={applyStyle(screenContainerStyle, {
                 backgroundColor,
+                customVerticalPadding,
+                insets,
+                isTabBarVisible,
             })}
         >
             <StatusBar
@@ -85,7 +96,6 @@ export const Screen = ({
                             applyStyle(screenHeaderStyle, {
                                 insets,
                                 customHorizontalPadding,
-                                customVerticalPadding,
                             }),
                         ]}
                     >
