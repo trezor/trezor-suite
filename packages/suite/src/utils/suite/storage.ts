@@ -31,9 +31,10 @@ export const serializeDevice = (device: AcquiredDevice, forceRemember?: true) =>
  */
 export const serializeCoinjoinSession = (coinjoinAccount: CoinjoinAccount) => {
     if (coinjoinAccount.session) {
-        const { interrupted, starting, ...pausedSession } = {
+        const { interrupted, roundPhase, sessionDeadline, starting, ...pausedSession } = {
             ...coinjoinAccount.session,
             paused: true,
+            sessionPhaseQueue: [],
         };
         return { ...coinjoinAccount, session: pausedSession };
     }
