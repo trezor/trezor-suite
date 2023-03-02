@@ -6,8 +6,7 @@ import * as SecureStore from 'expo-secure-store';
 import { Persistor, Storage } from 'redux-persist';
 
 const ENCRYPTION_KEY = 'STORAGE_ENCRYPTION_KEY';
-
-export const MMKV_STORAGE_ID = 'trezorSuite-app-storage';
+const ENCRYPTED_STORAGE_ID = 'trezorSuite-app-storage';
 
 export const purgeStorage = async (persistor: Persistor) => {
     await persistor.purge();
@@ -30,7 +29,7 @@ export const initMmkvStorage = async (): Promise<Storage> => {
     const encryptionKey = await retrieveStorageEncryptionKey();
 
     const encryptedStorage = new MMKV({
-        id: MMKV_STORAGE_ID,
+        id: ENCRYPTED_STORAGE_ID,
         encryptionKey,
     });
 
