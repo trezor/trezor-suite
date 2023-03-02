@@ -1,6 +1,5 @@
 import React, { useCallback, useState } from 'react';
 import styled, { css } from 'styled-components';
-import { darken } from 'polished';
 
 import { FONT_SIZE, Z_INDEX } from '../../../config/variables';
 import { InputState, InputVariant } from '../../../support/types';
@@ -116,7 +115,6 @@ export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> 
     dataTest?: string;
     isPartiallyHidden?: boolean;
     wrapperProps?: Record<string, any>;
-    type?: string;
     inputState?: InputState;
     addonAlign?: AddonAlignment;
     errorPosition?: 'bottom' | 'right';
@@ -130,7 +128,6 @@ export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> 
 
 const Input = ({
     value,
-    type = 'text',
     innerRef,
     inputState,
     width,
@@ -229,7 +226,6 @@ const Input = ({
                     <StyledInput
                         className={className}
                         value={value}
-                        type={type}
                         autoComplete={autoComplete}
                         autoCorrect={autoCorrect}
                         autoCapitalize={autoCapitalize}
