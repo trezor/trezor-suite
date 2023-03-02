@@ -1,12 +1,12 @@
 import React, { ReactNode, useState, useEffect } from 'react';
 import Animated, {
-    SlideInUp,
     SlideOutUp,
     useAnimatedGestureHandler,
     useSharedValue,
     useAnimatedStyle,
     withTiming,
     runOnJS,
+    EntryAnimationsValues,
 } from 'react-native-reanimated';
 import { PanGestureHandler, PanGestureHandlerGestureEvent } from 'react-native-gesture-handler';
 import { TouchableWithoutFeedback } from 'react-native';
@@ -25,9 +25,9 @@ type NotificationProps = {
 };
 
 const DISMISS_THRESHOLD = -25;
-const HIDDEN_OFFSET = -750;
+const HIDDEN_OFFSET = -200;
 
-const ENTER_ANIMATION_DURATION = 200;
+const ENTER_ANIMATION_DURATION = 1000;
 const EXIT_ANIMATION_DURATION = 1000;
 const NOTIFICATION_VISIBLE_DURATION = 5000 + ENTER_ANIMATION_DURATION + EXIT_ANIMATION_DURATION;
 
@@ -86,6 +86,23 @@ export const Notification = ({
         ],
     }));
 
+    const enteringAnimation = (_: EntryAnimationsValues) => {
+        'worklet';
+
+        const animations = {
+            originY: withTiming(0, { duration: ENTER_ANIMATION_DURATION }),
+            opacity: withTiming(1, { duration: ENTER_ANIMATION_DURATION }),
+        };
+        const initialValues = {
+            originY: HIDDEN_OFFSET,
+            opacity: 0,
+        };
+        return {
+            initialValues,
+            animations,
+        };
+    };
+
     if (isHidden) return null;
 
     return (
@@ -93,7 +110,7 @@ export const Notification = ({
             <PanGestureHandler onGestureEvent={onSwipeGesture}>
                 <Animated.View
                     style={swipeGestureStyle}
-                    entering={SlideInUp.duration(ENTER_ANIMATION_DURATION)}
+                    entering={enteringAnimation}
                     exiting={SlideOutUp.duration(EXIT_ANIMATION_DURATION)}
                 >
                     <TouchableWithoutFeedback onPress={onPress}>
