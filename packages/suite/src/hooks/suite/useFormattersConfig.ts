@@ -12,5 +12,6 @@ export const useFormattersConfig = (): FormatterProviderConfig => {
         locale,
         fiatCurrency,
         bitcoinAmountUnit,
+        is24HourFormat: true,
     };
 };
