@@ -1,7 +1,11 @@
 import { db } from '@suite/storage';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import * as suiteActions from '@suite-actions/suiteActions';
-import { serializeDiscovery, serializeDevice } from '@suite-utils/storage';
+import {
+    serializeDiscovery,
+    serializeDevice,
+    serializeCoinjoinSession,
+} from '@suite-utils/storage';
 import type { AppState, Dispatch, GetState, TrezorDevice } from '@suite-types';
 import type { Account, Network } from '@wallet-types';
 import type { Discovery } from '@wallet-reducers/discoveryReducer';
@@ -16,6 +20,7 @@ import { FormDraftPrefixKeyValues } from '@suite-common/wallet-constants';
 import { STORAGE } from './constants';
 import { GraphData } from '../../types/wallet/graph';
 import { deviceGraphDataFilterFn } from '../../utils/wallet/graphUtils';
+import { selectCoinjoinAccountByKey } from '@wallet-reducers/coinjoinReducer';
 
 export type StorageAction = NonNullable<PreloadStoreAction>;
 export type StorageLoadAction = Extract<StorageAction, { type: typeof STORAGE.LOAD }>;
@@ -49,9 +54,14 @@ export const saveCoinjoinAccount =
     (accountKey: string) => async (_: Dispatch, getState: GetState) => {
         const state = getState();
         const { device } = state.suite;
-        const account = state.wallet.coinjoin.accounts.find(a => a.key === accountKey);
-        if (!device?.remember || !account || !(await db.isAccessible())) return;
-        return db.addItem('coinjoinAccounts', account, accountKey, true);
+        const coinjoinAccount = selectCoinjoinAccountByKey(state, accountKey);
+        if (!device?.remember || !coinjoinAccount || !(await db.isAccessible())) return;
+        return db.addItem(
+            'coinjoinAccounts',
+            serializeCoinjoinSession(coinjoinAccount),
+            accountKey,
+            true,
+        );
     };
 
 const removeCoinjoinRelatedSetting = (state: AppState) => {
