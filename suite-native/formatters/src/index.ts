@@ -4,3 +4,5 @@ export { TransactionIdFormatter } from './components/TransactionIdFormatter';
 export { PercentageDifferenceFormatter } from './components/PercentageDifferenceFormatter';
 export { FiatAmountFormatter } from './components/FiatAmountFormatter';
 export { CryptoAmountFormatter } from './components/CryptoAmountFormatter';
+export { EthereumTokenAmountFormatter } from './components/EthereumTokenAmountFormatter';
+export { TokenToFiatAmountFormatter } from './components/TokenToFiatAmountFormatter';

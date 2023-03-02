@@ -1,5 +1,5 @@
 import { createThunk } from '@suite-common/redux-utils';
-import { networksCompatibility, NetworkSymbol } from '@suite-common/wallet-config';
+import { isNetworkSymbol, networksCompatibility, NetworkSymbol } from '@suite-common/wallet-config';
 import {
     findAccountDevice,
     findAccountsByDescriptor,
@@ -10,7 +10,6 @@ import {
     getBackendFromSettings,
     getCustomBackends,
     getNetwork,
-    isNetworkSymbol,
     isTrezorConnectBackendType,
 } from '@suite-common/wallet-utils';
 import TrezorConnect, {

@@ -20,10 +20,12 @@ import {
     StackToTabCompositeProps,
 } from '@suite-native/navigation';
 import { AccountInfo } from '@trezor/connect';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { importAccountThunk } from '../accountsImportThunks';
 import { AccountImportOverview } from './AccountImportOverview';
 import { AccountImportSummarySection } from './AccountImportSummarySection';
+import { AccountImportEthereumTokens } from './AccountImportEthereumTokens';
 
 type AccountImportSummaryFormProps = {
     networkSymbol: NetworkSymbol;
@@ -38,16 +40,22 @@ type NavigationProp = StackToTabCompositeProps<
     RootStackParamList
 >;
 
+const confirmButtonStyle = prepareNativeStyle(utils => ({
+    marginBottom: utils.spacings.small,
+}));
+
 export const AccountImportSummaryForm = ({
     networkSymbol,
     accountInfo,
 }: AccountImportSummaryFormProps) => {
     const dispatch = useDispatch();
+    const { applyStyle } = useNativeStyles();
     const navigation = useNavigation<NavigationProp>();
 
     const deviceNetworkAccounts = useSelector((state: AccountsRootState) =>
         selectAccountsByNetworkAndDevice(state, HIDDEN_DEVICE_STATE, networkSymbol),
     );
+
     const defaultAccountLabel = `${networks[networkSymbol].name} #${
         deviceNetworkAccounts.length + 1
     }`;
@@ -78,11 +86,18 @@ export const AccountImportSummaryForm = ({
     return (
         <AccountImportSummarySection title="Asset imported">
             <Form form={form}>
-                <AccountImportOverview accountInfo={accountInfo} networkSymbol={networkSymbol} />
-                <Divider />
+                <AccountImportOverview
+                    balance={accountInfo.availableBalance}
+                    networkSymbol={networkSymbol}
+                />
+                {networkSymbol === 'eth' && accountInfo.tokens && (
+                    <AccountImportEthereumTokens tokens={accountInfo.tokens} />
+                )}
+                <Divider marginBottom="small" />
                 <Button
                     onPress={handleImportAccount}
                     size="large"
+                    style={applyStyle(confirmButtonStyle)}
                     isDisabled={!!errors.accountLabel}
                 >
                     Confirm

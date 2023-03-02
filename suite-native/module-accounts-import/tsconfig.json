@@ -23,6 +23,7 @@
         { "path": "../accounts" },
         { "path": "../atoms" },
         { "path": "../config" },
+        { "path": "../ethereum-tokens" },
         { "path": "../formatters" },
         { "path": "../forms" },
         { "path": "../module-devices" },
@@ -30,6 +31,9 @@
         { "path": "../navigation" },
         { "path": "../qr-code" },
         { "path": "../video-assets" },
+        {
+            "path": "../../packages/blockchain-link"
+        },
         { "path": "../../packages/connect" },
         { "path": "../../packages/icons" },
         { "path": "../../packages/styles" },

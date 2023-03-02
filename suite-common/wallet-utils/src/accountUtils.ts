@@ -358,8 +358,6 @@ export const getAccountNetwork = ({
 }: Pick<Account, 'symbol' | 'accountType'>) =>
     NETWORKS.find(n => n.symbol === symbol && (n.accountType || 'normal') === accountType);
 
-export const isNetworkSymbol = (symbol: string): symbol is NetworkSymbol => !!getNetwork(symbol);
-
 /**
  * Returns a string used as an index to separate txs for given account inside a transactions reducer
  *
