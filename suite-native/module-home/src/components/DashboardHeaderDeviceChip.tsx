@@ -10,7 +10,7 @@ const chipStyle = prepareNativeStyle(utils => ({
     alignItems: 'center',
     justifyContent: 'space-around',
     padding: utils.spacings.small,
-    backgroundColor: utils.colors.gray0,
+    backgroundColor: utils.colors.backgroundSurfaceElevation1,
     width: 146,
     height: 48,
     borderRadius: 44,

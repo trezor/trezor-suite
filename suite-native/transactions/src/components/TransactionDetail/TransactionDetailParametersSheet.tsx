@@ -60,16 +60,16 @@ export const TransactionDetailParametersSheet = ({
                                 <IconButton
                                     iconName="copy"
                                     onPress={handleClickCopy}
-                                    colorScheme="tertiary"
+                                    colorScheme="tertiaryElevation1"
                                     size="medium"
                                 />
                             </Box>
                         </Box>
                     </TransactionDetailRow>
                     <TransactionDetailRow title="Confirmations">
-                        <Text color="gray1000">{confirmationsCount} </Text>
+                        <Text>{confirmationsCount} </Text>
                         <Box marginLeft="small">
-                            <Icon name="confirmation" color="gray1000" />
+                            <Icon name="confirmation" />
                         </Box>
                     </TransactionDetailRow>
                 </Card>

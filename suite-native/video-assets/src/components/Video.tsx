@@ -48,7 +48,7 @@ export const Video = ({
             {isLoading && (
                 <ActivityIndicator
                     size="large"
-                    color={utils.colors.green}
+                    color={utils.colors.borderSecondary}
                     style={applyStyle(activityIndicatorStyle)}
                 />
             )}

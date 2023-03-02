@@ -32,7 +32,7 @@ export const ReceiveModalScreen = ({
             <VStack spacing="medium">
                 <AccountListItem account={account} />
                 <Box marginLeft="small">
-                    <Text variant="hint" color="gray600">
+                    <Text variant="hint" color="textSubdued">
                         Address
                     </Text>
                 </Box>

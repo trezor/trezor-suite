@@ -15,7 +15,7 @@ type TransactionDetailSummaryProps = {
 const stepperDotWrapperStyle = prepareNativeStyle(utils => ({
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: utils.colors.gray100,
+    backgroundColor: utils.colors.backgroundSurfaceElevation2,
     width: 16,
     height: 16,
     borderRadius: utils.borders.radii.round,
@@ -25,7 +25,7 @@ const stepperDotStyle = prepareNativeStyle(utils => ({
     width: 4,
     height: 4,
     borderRadius: utils.borders.radii.round,
-    backgroundColor: utils.colors.gray400,
+    backgroundColor: utils.colors.backgroundNeutralSubdued,
 }));
 
 const TransactionDetailSummaryStepper = () => {
@@ -39,7 +39,7 @@ const TransactionDetailSummaryStepper = () => {
 };
 
 const borderLineStyle = prepareNativeStyle(utils => ({
-    backgroundColor: utils.colors.gray400,
+    backgroundColor: utils.colors.backgroundNeutralSubdued,
     height: 10,
     width: 1,
 }));
@@ -61,7 +61,7 @@ export const RowWithTitle = ({ title, value }: { title: string; value: string })
     return (
         <Box flexDirection="row" justifyContent="space-between" alignItems="center">
             <Box>
-                <Text color="gray600" variant="hint">
+                <Text color="textSubdued" variant="hint">
                     {title}
                 </Text>
                 <AccountAddressFormatter value={value} style={applyStyle(addressTextStyle)} />
@@ -69,7 +69,7 @@ export const RowWithTitle = ({ title, value }: { title: string; value: string })
             <IconButton
                 iconName="copy"
                 onPress={() => copyToClipboard(value)}
-                colorScheme="tertiary"
+                colorScheme="tertiaryElevation1"
                 size="medium"
             />
         </Box>
@@ -102,7 +102,9 @@ const SummaryRow = ({
 
 const confirmationIconStyle = prepareNativeStyle<{ isTransactionPending: boolean }>(
     (utils, { isTransactionPending }) => ({
-        backgroundColor: isTransactionPending ? utils.colors.yellow : utils.colors.forest,
+        backgroundColor: isTransactionPending
+            ? utils.colors.backgroundAlertYellowBold
+            : utils.colors.backgroundPrimaryDefault,
         borderRadius: utils.borders.radii.round,
         padding: utils.spacings.small,
         marginVertical: utils.spacings.small,
@@ -144,7 +146,7 @@ export const TransactionDetailSummary = ({
                             >
                                 <Icon
                                     name={isTransactionPending ? 'clockClockwise' : 'confirmation'}
-                                    color="gray0"
+                                    color="iconOnPrimary"
                                 />
                             </Box>
 
@@ -154,7 +156,7 @@ export const TransactionDetailSummary = ({
                 >
                     <Text
                         style={applyStyle(transactionStatusTextStyle)}
-                        color={isTransactionPending ? 'yellow' : 'forest'}
+                        color={isTransactionPending ? 'textAlertYellow' : 'textPrimaryDefault'}
                     >
                         {transactionStatus}
                     </Text>

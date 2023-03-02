@@ -22,7 +22,7 @@ export const PercentageDifferenceFormatter = ({
     const hasPriceIncreased = oldValue < newValue;
 
     return (
-        <Text color={hasPriceIncreased ? 'green' : 'red'} {...rest}>
+        <Text color={hasPriceIncreased ? 'textSecondaryHighlight' : 'textAlertRed'} {...rest}>
             <SignValueFormatter value={hasPriceIncreased ? 'positive' : 'negative'} />
             {calculatePercentageDifference(oldValue, newValue)}%
         </Text>

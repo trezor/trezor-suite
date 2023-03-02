@@ -29,7 +29,7 @@ const AccountLabelFieldHint = ({ formControl }: AccountLabelFieldHintProps) => {
     const { accountLabel } = useWatch({ control: formControl });
     return (
         <Box paddingLeft="small">
-            <Text variant="label" color="gray600">
+            <Text variant="label" color="textSubdued">
                 {accountLabel.length} / {MAX_ACCOUNT_LABEL_LENGTH} letters
             </Text>
         </Box>

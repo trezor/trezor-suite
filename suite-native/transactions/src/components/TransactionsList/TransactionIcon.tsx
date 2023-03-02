@@ -56,8 +56,8 @@ export const TransactionIcon = ({
     cryptoIconName,
     transactionType,
     isAnimated = false,
-    iconColor = 'gray0',
-    backgroundColor = 'gray100',
+    iconColor = 'iconSubdued',
+    backgroundColor = 'backgroundSurfaceElevation2',
 }: TransactionIconProps) => {
     const { applyStyle } = useNativeStyles();
 

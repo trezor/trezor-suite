@@ -45,7 +45,7 @@ export const SelectableNetworkList = ({ onSelectItem }: SelectableAssetListProps
     return (
         <>
             <Box marginBottom="large">
-                <Text variant="hint" color="gray600" style={applyStyle(listItemTitleStyle)}>
+                <Text variant="hint" color="textSubdued" style={applyStyle(listItemTitleStyle)}>
                     Pick a coin to import
                 </Text>
                 <Card>
@@ -65,7 +65,7 @@ export const SelectableNetworkList = ({ onSelectItem }: SelectableAssetListProps
                 </Card>
             </Box>
             <Box marginBottom="large">
-                <Text variant="hint" color="gray600" style={applyStyle(listItemTitleStyle)}>
+                <Text variant="hint" color="textSubdued" style={applyStyle(listItemTitleStyle)}>
                     Testnet coins (Hold no value, only for testing)
                 </Text>
                 <Card>

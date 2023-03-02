@@ -16,13 +16,13 @@ type InputProps = {
 const inputStyle = prepareNativeStyle(utils => ({
     ...utils.typography.body,
     flex: 1,
-    color: utils.colors.gray700,
+    color: utils.colors.textOnTertiary,
     marginLeft: utils.spacings.medium,
     lineHeight: 0,
 }));
 
 const clearIconStyle = prepareNativeStyle(utils => ({
-    backgroundColor: utils.colors.gray500,
+    backgroundColor: utils.colors.backgroundNeutralSubdued,
     height: 20,
     width: 20,
     alignItems: 'center',
@@ -39,8 +39,8 @@ const inputWrapperStyle = prepareNativeStyle<InputStyleProps>((utils, { isFocuse
     alignItems: 'center',
     height: 48,
     borderWidth: utils.borders.widths.small,
-    borderColor: utils.colors.gray200,
-    backgroundColor: utils.colors.gray200,
+    borderColor: utils.colors.backgroundNeutralSubtleOnElevation0,
+    backgroundColor: utils.colors.borderOnElevation0,
     borderRadius: utils.borders.radii.small,
     paddingLeft: 14,
     paddingRight: 14.25,
@@ -48,7 +48,7 @@ const inputWrapperStyle = prepareNativeStyle<InputStyleProps>((utils, { isFocuse
         {
             condition: isFocused,
             style: {
-                borderColor: utils.colors.gray500,
+                borderColor: utils.colors.borderFocus,
             },
         },
     ],
@@ -71,14 +71,14 @@ export const SearchInput = ({ value, onChange, placeholder, isDisabled = false }
         <Pressable onPress={handleInputFocus}>
             <Box style={applyStyle(inputWrapperStyle, { isFocused })}>
                 <Box>
-                    <Icon name="search" color="gray600" />
+                    <Icon name="search" color="iconSubdued" />
                 </Box>
                 <TextInput
                     ref={searchInputRef}
                     value={value}
                     onChangeText={onChange}
                     placeholder={placeholder}
-                    placeholderTextColor={utils.colors.gray700}
+                    placeholderTextColor={utils.colors.textSubdued}
                     editable={!isDisabled}
                     onFocus={() => setIsFocused(true)}
                     onBlur={() => setIsFocused(false)}
@@ -86,7 +86,7 @@ export const SearchInput = ({ value, onChange, placeholder, isDisabled = false }
                 />
                 {isClearButtonVisible && (
                     <TouchableOpacity onPress={handleClear} style={applyStyle(clearIconStyle)}>
-                        <Icon name="close" size="small" color="gray0" />
+                        <Icon name="close" size="small" color="iconOnPrimary" />
                     </TouchableOpacity>
                 )}
             </Box>

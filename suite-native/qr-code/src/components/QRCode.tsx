@@ -55,8 +55,8 @@ export const QRCode = ({ data, onCopy, isShareEnabled = false }: QRCodeProps) =>
             <View style={applyStyle(qrCodeStyle)}>
                 {data && (
                     <ReactQRCode
-                        bgColor={colorVariants.standard.gray0}
-                        fgColor={colorVariants.standard.gray900}
+                        bgColor={colorVariants.standard.backgroundSurfaceElevation1}
+                        fgColor={colorVariants.standard.backgroundNeutralBold}
                         level="Q"
                         size={QRCODE_SIZE}
                         value={data}
@@ -71,7 +71,7 @@ export const QRCode = ({ data, onCopy, isShareEnabled = false }: QRCodeProps) =>
                     <Button
                         iconRight="share"
                         size="large"
-                        colorScheme="tertiary"
+                        colorScheme="tertiaryElevation0"
                         onPress={handleSharedata}
                         style={applyStyle(actionButtonsStyle)}
                     >

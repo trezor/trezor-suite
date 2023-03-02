@@ -22,7 +22,7 @@ type WrapperStyleProps = {
     insetBottom: number;
 };
 const sheetWrapperStyle = prepareNativeStyle<WrapperStyleProps>((utils, { insetBottom }) => ({
-    backgroundColor: utils.colors.gray100,
+    backgroundColor: utils.colors.backgroundSurfaceElevation0,
     borderTopLeftRadius: utils.borders.radii.large,
     borderTopRightRadius: utils.borders.radii.large,
     paddingBottom: Math.max(insetBottom, utils.spacings.medium),

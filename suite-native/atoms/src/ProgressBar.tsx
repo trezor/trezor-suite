@@ -14,7 +14,7 @@ const PROGRESS_BAR_WIDTH = 82;
 const progressBarStyle = prepareNativeStyle(utils => ({
     height: 3,
     width: PROGRESS_BAR_WIDTH,
-    backgroundColor: utils.colors.gray200,
+    backgroundColor: utils.colors.backgroundSurfaceElevationNegative,
 }));
 
 const progressFillStyle = prepareNativeStyle<{ width: number; color: CSSColor }>(

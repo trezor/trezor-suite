@@ -19,7 +19,7 @@ export const CryptoAmountFormatter = ({
     isBalance = true,
     isDiscreetText = true,
     variant = 'hint',
-    color = 'gray600',
+    color = 'textSubdued',
     ...textProps
 }: CryptoToFiatAmountFormatterProps) => {
     const { CryptoAmountFormatter: formatter } = useFormatters();

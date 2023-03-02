@@ -24,13 +24,13 @@ const transactionTypeInfo = {
         text: 'Received',
         iconName: 'receive',
         sign: '+',
-        signColor: 'forest',
+        signColor: 'textSecondaryHighlight',
     },
     sent: {
         text: 'Sending',
         iconName: 'send',
         sign: '-',
-        signColor: 'red',
+        signColor: 'textAlertRed',
     },
     self: {
         text: 'Self',
@@ -59,11 +59,15 @@ export const TransactionDetailHeader = ({ transaction }: TransactionDetailHeader
     return (
         <Box alignItems="center">
             <Box flexDirection="row" alignItems="center" marginBottom="small">
-                <Text variant="hint" color="gray600">
+                <Text variant="hint" color="textSubdued">
                     {text}
                 </Text>
                 {hasTransactionSign && (
-                    <Icon name={transactionTypeInfo[type].iconName} color="gray600" size="medium" />
+                    <Icon
+                        name={transactionTypeInfo[type].iconName}
+                        color="iconSubdued"
+                        size="medium"
+                    />
                 )}
             </Box>
             <Box flexDirection="row">
@@ -77,7 +81,7 @@ export const TransactionDetailHeader = ({ transaction }: TransactionDetailHeader
                     network={transaction.symbol}
                     isBalance={false}
                     variant="titleMedium"
-                    color="gray1000"
+                    color="textDefault"
                 />
             </Box>
             {transaction.rates && (

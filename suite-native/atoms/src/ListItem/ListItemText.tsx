@@ -13,7 +13,7 @@ export const ListItemText = ({ isTextTruncated = false, title, subtitle }: ListI
         <Box justifyContent="center" flexDirection="column" flex={2}>
             <Text numberOfLines={numberOfLines}>{title}</Text>
             {subtitle && (
-                <Text numberOfLines={numberOfLines} variant="hint" color="gray600">
+                <Text numberOfLines={numberOfLines} variant="hint" color="textSubdued">
                     {subtitle}
                 </Text>
             )}

@@ -47,9 +47,13 @@ export const TabBarItem = ({ isFocused, onPress, iconName, title }: TabBarItemPr
             style={applyStyle(tabBarItemStyle)}
         >
             <View style={applyStyle(tabBarItemContainerStyle)}>
-                <Icon name={iconName} size="large" color={isFocused ? 'forest' : 'gray500'} />
+                <Icon
+                    name={iconName}
+                    size="large"
+                    color={isFocused ? 'iconPrimaryDefault' : 'iconDisabled'}
+                />
                 {title && (
-                    <Text variant="label" color={isFocused ? 'forest' : 'gray500'}>
+                    <Text variant="label" color={isFocused ? 'textPrimaryDefault' : 'textDisabled'}>
                         {title}
                     </Text>
                 )}

@@ -26,7 +26,7 @@ export const TextDivider = ({ title, style }: TextDividerProps) => {
         <View style={[applyStyle(textDividerStyle), style]}>
             <Divider />
             <Box marginHorizontal="extraLarge">
-                <Text variant="body" color="gray600">
+                <Text variant="body" color="textSubdued">
                     {title}
                 </Text>
             </Box>

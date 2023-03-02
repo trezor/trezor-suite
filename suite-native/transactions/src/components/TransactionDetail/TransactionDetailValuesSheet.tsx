@@ -61,7 +61,7 @@ const TodayHeaderCell = ({
     );
 
     return (
-        <Text variant="hint" color="gray600">
+        <Text variant="hint" color="textSubdued">
             Today{' '}
             <PercentageDifferenceFormatter
                 oldValue={fiatTotalHistoryNumeric}

@@ -34,11 +34,11 @@ const BottomSheetTrigger = ({
         <TouchableOpacity style={applyStyle(triggerStyle)} onPress={onPress}>
             <Box flexDirection="row">
                 <Box marginRight="medium">
-                    <Icon name={iconName} color="forest" />
+                    <Icon name={iconName} color="iconPrimaryDefault" />
                 </Box>
                 <Text>{title}</Text>
             </Box>
-            <Icon name="chevronRight" />
+            <Icon name="circleRight" color="iconPrimaryDefault" />
         </TouchableOpacity>
     );
 };

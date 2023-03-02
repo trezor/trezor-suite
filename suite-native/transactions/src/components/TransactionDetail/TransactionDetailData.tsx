@@ -43,11 +43,11 @@ export const TransactionDetailData = ({ transaction, accountKey }: TransactionDe
             <VStack>
                 <Card>
                     <TransactionDetailRow title="Date">
-                        <Text variant="hint" color="gray1000">
+                        <Text variant="hint">
                             <DateTimeFormatter value={transactionBlockTime} />
                         </Text>
                         <Box marginLeft="small">
-                            <Icon name="calendar" size="medium" color="gray1000" />
+                            <Icon name="calendar" size="medium" />
                         </Box>
                     </TransactionDetailRow>
                 </Card>
@@ -64,11 +64,11 @@ export const TransactionDetailData = ({ transaction, accountKey }: TransactionDe
                                 network={transaction.symbol}
                                 isBalance={false}
                                 variant="body"
-                                color="gray1000"
+                                color="textDefault"
                             />
                             {transaction.rates && (
                                 <Box flexDirection="row">
-                                    <Text variant="hint" color="gray600">
+                                    <Text variant="hint" color="textSubdued">
                                         ≈{' '}
                                     </Text>
                                     <CryptoToFiatAmountFormatter
@@ -76,7 +76,7 @@ export const TransactionDetailData = ({ transaction, accountKey }: TransactionDe
                                         network={transaction.symbol}
                                         customRates={transaction.rates}
                                         variant="hint"
-                                        color="gray600"
+                                        color="textSubdued"
                                     />
                                 </Box>
                             )}

@@ -43,8 +43,8 @@ type InputWrapperStyleProps = {
 const inputWrapperStyle = prepareNativeStyle<InputWrapperStyleProps>(
     (utils, { hasError, hasWarning }) => ({
         borderWidth: utils.borders.widths.small,
-        borderColor: utils.colors.gray300,
-        backgroundColor: utils.colors.gray300,
+        borderColor: utils.colors.borderOnElevation0,
+        backgroundColor: utils.colors.backgroundNeutralSubtleOnElevation0,
         borderRadius: utils.borders.radii.small,
         paddingHorizontal: INPUT_WRAPPER_PADDING_HORIZONTAL,
         paddingBottom: INPUT_WRAPPER_PADDING_VERTICAL_MINIMIZED,
@@ -54,15 +54,15 @@ const inputWrapperStyle = prepareNativeStyle<InputWrapperStyleProps>(
             {
                 condition: hasWarning,
                 style: {
-                    borderColor: utils.colors.yellow,
+                    borderColor: utils.colors.backgroundAlertYellowBold,
                     borderWidth: utils.borders.widths.large,
                 },
             },
             {
                 condition: hasError,
                 style: {
-                    borderColor: utils.colors.red,
-                    backgroundColor: utils.transparentize(0.95, utils.colors.red),
+                    borderColor: utils.colors.borderAlertRed,
+                    backgroundColor: utils.colors.backgroundAlertRedSubtleOnElevation1,
                 },
             },
         ],
@@ -74,7 +74,7 @@ const inputStyle = prepareNativeStyle(utils => ({
     alignItems: 'center',
     justifyContent: 'center',
     height: INPUT_TEXT_HEIGHT,
-    color: utils.colors.gray700,
+    color: utils.colors.textDefault,
     borderWidth: 0,
     flex: 1,
     // Make the text input uniform on both platforms (https://stackoverflow.com/a/68458803/1281305)
@@ -92,7 +92,7 @@ const inputHitSlop = {
 const inputLabelStyle = prepareNativeStyle(
     (utils, { isLabelMinimized }: Pick<InputWrapperStyleProps, 'isLabelMinimized'>) => ({
         ...D.deleteKey(utils.typography.body, 'fontSize'),
-        color: utils.colors.gray600,
+        color: utils.colors.textSubdued,
         position: 'absolute',
         left: INPUT_WRAPPER_PADDING_HORIZONTAL,
         extend: {

@@ -62,20 +62,20 @@ export const TransactionDetailInputsSheet = ({
                 marginBottom="medium"
             >
                 <Box flex={1} flexDirection="row" alignItems="center" paddingLeft="small">
-                    <Text variant="hint" color="gray600">
+                    <Text variant="hint" color="textSubdued">
                         Inputs · {txInputs.length}
                     </Text>
                     <Box marginLeft="small">
-                        <Icon name="receiveAlt" color="gray600" size="medium" />
+                        <Icon name="receiveAlt" color="iconSubdued" size="medium" />
                     </Box>
                 </Box>
 
                 <Box flex={1} flexDirection="row" alignItems="center" paddingLeft="large">
-                    <Text variant="hint" color="gray600">
+                    <Text variant="hint" color="textSubdued">
                         Outputs · {txOutputs.length}
                     </Text>
                     <Box marginLeft="small">
-                        <Icon name="sendAlt" color="gray600" size="medium" />
+                        <Icon name="sendAlt" color="iconSubdued" size="medium" />
                     </Box>
                 </Box>
             </Box>
@@ -92,7 +92,7 @@ export const TransactionDetailInputsSheet = ({
                                 />
                             ))}
                         </Box>
-                        <Icon name="circleRight" color="gray500" size="medium" />
+                        <Icon name="circleRight" color="iconDisabled" size="medium" />
                         <Box style={applyStyle(addressAmountColumnStyle)}>
                             {txOutputs.map(output => (
                                 <TransactionAddressAmount

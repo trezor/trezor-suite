@@ -12,13 +12,15 @@ type ColorSchemePickerItemProps = {
 
 const pickerItemWrapperStyle = prepareNativeStyle<{ isColorSchemeActive: boolean }>(
     (utils, { isColorSchemeActive }) => ({
-        backgroundColor: utils.colors.gray100,
+        backgroundColor: utils.colors.backgroundSurfaceElevationNegative,
         borderRadius: utils.borders.radii.medium,
         height: 114,
         flex: 1,
         paddingTop: 33,
         borderWidth: utils.borders.widths.medium,
-        borderColor: isColorSchemeActive ? utils.colors.green : utils.colors.gray100,
+        borderColor: isColorSchemeActive
+            ? utils.colors.borderSecondary
+            : utils.colors.borderOnElevation0,
     }),
 );
 
@@ -69,24 +71,27 @@ export const ColorSchemePickerItem = ({ colorScheme }: ColorSchemePickerItemProp
             <Box flexDirection="row" justifyContent="center">
                 <Box
                     style={applyStyle(pickerItemDotStyle, {
-                        backgroundColor: colorVariants[colorVariant].gray400,
+                        backgroundColor: colorVariants[colorVariant].backgroundSurfaceElevation0,
                         isFirstItem: true,
                     })}
                 />
                 <Box
                     style={applyStyle(pickerItemDotStyle, {
-                        backgroundColor: colorVariants[colorVariant].gray500,
+                        backgroundColor: colorVariants[colorVariant].backgroundNeutralSubdued,
                         isFirstItem: false,
                     })}
                 />
                 <Box
                     style={applyStyle(pickerItemDotStyle, {
-                        backgroundColor: colorVariants[colorVariant].gray1000,
+                        backgroundColor: colorVariants[colorVariant].backgroundNeutralBold,
                         isFirstItem: false,
                     })}
                 />
             </Box>
-            <Text style={applyStyle(textStyle)} color={isColorSchemeActive ? 'green' : 'gray600'}>
+            <Text
+                style={applyStyle(textStyle)}
+                color={isColorSchemeActive ? 'textSecondaryHighlight' : 'textSubdued'}
+            >
                 {colorScheme}
             </Text>
         </TouchableOpacity>

@@ -21,7 +21,7 @@ export const TransactionDetailRow = ({ title, children }: TransactionDetailRowPr
     const { applyStyle } = useNativeStyles();
     return (
         <Box style={applyStyle(rowStyle)}>
-            <Text color="gray600">{title}</Text>
+            <Text color="textSubdued">{title}</Text>
             <Box flexDirection="row" justifyContent="flex-start">
                 {G.isString(children) ? <Text>{children}</Text> : children}
             </Box>

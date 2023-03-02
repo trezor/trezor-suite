@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react';
 import { TouchableOpacity } from 'react-native';
 
-import { Box, Text, VStack } from '@suite-native/atoms';
+import { Box, Text, VStack, Card } from '@suite-native/atoms';
 import { Icon, IconName } from '@trezor/icons';
 
 type SettingsSectionProps = {
@@ -24,12 +24,13 @@ export const SettingsSection = ({
             flexDirection="row"
             justifyContent="space-between"
             alignItems="center"
-            marginBottom="large"
+            marginBottom="medium"
+            marginLeft="small"
         >
             <Box>
-                <Text variant="titleMedium">{title}</Text>
+                <Text variant="titleSmall">{title}</Text>
                 {subtitle && (
-                    <Text color="gray600" variant="hint">
+                    <Text color="textSubdued" variant="hint">
                         {subtitle}
                     </Text>
                 )}
@@ -40,6 +41,8 @@ export const SettingsSection = ({
                 </TouchableOpacity>
             )}
         </Box>
-        <VStack spacing="medium">{children}</VStack>
+        <Card>
+            <VStack spacing="large">{children}</VStack>
+        </Card>
     </Box>
 );

@@ -13,7 +13,7 @@ const listItemIconStyle = prepareNativeStyle(utils => ({
     height: 48,
     width: 48,
     borderRadius: utils.borders.radii.round,
-    backgroundColor: utils.colors.gray200,
+    backgroundColor: utils.colors.backgroundSurfaceElevation2,
 }));
 
 export const ListItemIcon = ({ iconName }: ListItemIconProps) => {
@@ -22,7 +22,7 @@ export const ListItemIcon = ({ iconName }: ListItemIconProps) => {
     return (
         <Box justifyContent="center" alignItems="center" marginRight="medium">
             <Box justifyContent="center" alignItems="center" style={applyStyle(listItemIconStyle)}>
-                <Icon name={iconName} />
+                <Icon name={iconName} color="iconSubdued" />
             </Box>
         </Box>
     );

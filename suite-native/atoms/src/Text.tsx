@@ -25,7 +25,7 @@ const textStyle = prepareNativeStyle<TextStyleProps>((utils, { variant, color, a
 
 export const Text = ({
     variant = 'body',
-    color = 'gray1000',
+    color = 'textDefault',
     align = 'left',
     style,
     children,

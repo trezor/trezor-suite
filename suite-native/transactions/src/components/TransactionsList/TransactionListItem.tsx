@@ -41,8 +41,8 @@ type TransactionTypeProperties = {
     signColor?: Color;
 };
 const transactionTypePropertiesMap = {
-    recv: { prefix: 'From', sign: '+', signColor: 'green' },
-    sent: { prefix: 'To', sign: '-', signColor: 'red' },
+    recv: { prefix: 'From', sign: '+', signColor: 'textSecondaryHighlight' },
+    sent: { prefix: 'To', sign: '-', signColor: 'textAlertRed' },
     self: { prefix: 'Self', sign: undefined, signColor: undefined },
     joint: { prefix: 'Joint', sign: undefined, signColor: undefined },
     failed: { prefix: 'Failed', sign: undefined, signColor: undefined },
@@ -58,7 +58,7 @@ const transactionListItemStyle = prepareNativeStyle<TransactionListItemStyleProp
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        backgroundColor: utils.colors.gray0,
+        backgroundColor: utils.colors.backgroundSurfaceElevation1,
         marginHorizontal: utils.spacings.small,
         paddingHorizontal: utils.spacings.medium,
         paddingTop: 12,
@@ -93,7 +93,7 @@ const descriptionBoxStyle = prepareNativeStyle(_ => ({
 const addressStyle = prepareNativeStyle(utils => ({
     flex: 1,
     alignItems: 'center',
-    backgroundColor: utils.colors.gray100,
+    backgroundColor: utils.colors.backgroundNeutralSubtleOnElevation1,
     marginLeft: utils.spacings.small,
     paddingHorizontal: utils.spacings.small,
     paddingVertical: 2,
@@ -142,12 +142,12 @@ export const TransactionListItem = memo(
                                     <AccountAddressFormatter
                                         value={transactionTargetAddress}
                                         variant="label"
-                                        color="gray600"
+                                        color="textSubdued"
                                     />
                                 </Box>
                             )}
                         </Box>
-                        <Text variant="hint" color="gray600">
+                        <Text variant="hint" color="textSubdued">
                             <DateTimeFormatter value={transactionBlockTime} />
                         </Text>
                     </Box>

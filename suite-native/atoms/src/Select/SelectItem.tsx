@@ -31,11 +31,11 @@ const underlineSectionStyle = prepareNativeStyle<SelectItemStyleProps>(
         flexDirection: 'row',
         justifyContent: 'space-between',
         flex: 1,
-        color: utils.colors.gray700,
+        color: utils.colors.textSubdued,
         paddingVertical: 20,
         marginLeft: 10,
         borderBottomWidth: utils.borders.widths.small,
-        borderColor: utils.colors.gray300,
+        borderColor: utils.colors.backgroundTertiaryDefaultOnElevation1,
         extend: [
             {
                 condition: isLastChild,
@@ -46,7 +46,7 @@ const underlineSectionStyle = prepareNativeStyle<SelectItemStyleProps>(
             {
                 condition: isSelected,
                 style: {
-                    color: utils.colors.gray1000,
+                    color: utils.colors.textDefault,
                 },
             },
         ],

@@ -40,7 +40,7 @@ export const TransactionsEmptyState = ({ accountKey }: { accountKey: string }) =
                     {/* eslint-disable-next-line global-require */}
                     <Image source={require('../assets/blockLayer.png')} />
                     <Text variant="titleSmall">No transactions...yet.</Text>
-                    <Text variant="hint" color="gray600">
+                    <Text variant="hint" color="textSubdued">
                         Get started by receiving transactions
                     </Text>
                 </Box>

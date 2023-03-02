@@ -43,7 +43,7 @@ const GoBackIcon = () => {
         <IconButton
             iconName="chevronLeft"
             size="medium"
-            colorScheme="tertiary"
+            colorScheme="tertiaryElevation0"
             onPress={() => navigation.goBack()}
         />
     );

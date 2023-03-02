@@ -11,6 +11,18 @@ You can find Figma files for this theme here:
 
 If you want to update fonts, place new fonts to `./fonts` folder in this package and then follow the guide in [suite-native README](../suite-native/README.md).
 
+## Colors
+
+To regenerate color schemas follow these steps:
+
+1. replace `designColors.json` with new color theme exported from Figma.
+2. Run `yarn generate-colors` - This command flattens the color scheme object and adds TypeScript typing. Result can be found in file `./src/colors.ts`
+3. You can use your added colors 🎉.
+
+    ```tsx
+    <Text color="newlyDefinedColorVariant" />
+    ```
+
 ### Older themes
 
 For older themes (v1, v1.5) you can check `@trezor/components` package.

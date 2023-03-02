@@ -27,7 +27,7 @@ const cryptoIconStyle = prepareNativeStyle(utils => ({
     height: 48,
     width: 48,
     borderRadius: utils.borders.radii.round,
-    backgroundColor: utils.colors.gray200,
+    backgroundColor: utils.colors.backgroundSurfaceElevation2,
     justifyContent: 'center',
     alignItems: 'center',
 }));
@@ -59,7 +59,7 @@ export const SelectableNetworkItem = ({
                     <Box flex={1} justifyContent="space-between" alignItems="flex-start">
                         <Text variant="body">{cryptoCurrencyName}</Text>
                         <Box flexDirection="row" alignItems="center">
-                            <Text variant="hint" color="gray600">
+                            <Text variant="hint" color="textSubdued">
                                 <NetworkSymbolFormatter value={cryptoCurrencySymbol} />
                             </Text>
                         </Box>
@@ -67,7 +67,7 @@ export const SelectableNetworkItem = ({
                     {onPressActionButton && (
                         <Box alignItems="flex-end">
                             <Button
-                                colorScheme="tertiary"
+                                colorScheme="tertiaryElevation1"
                                 size="small"
                                 onPress={onPressActionButton}
                             >

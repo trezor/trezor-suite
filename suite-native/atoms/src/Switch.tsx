@@ -26,7 +26,6 @@ const SWITCH_CIRCLE_TRACK_WIDTH =
 const switchContainerStyle = prepareNativeStyle(utils => ({
     width: SWITCH_CONTAINER_WIDTH,
     height: SWITCH_CONTAINER_HEIGHT,
-    borderColor: utils.colors.forest,
     borderRadius: utils.borders.radii.round,
     flexDirection: 'row',
 }));
@@ -34,7 +33,7 @@ const switchContainerStyle = prepareNativeStyle(utils => ({
 const switchCircleStyle = prepareNativeStyle(utils => ({
     width: SWITCH_CIRCLE_SIZE,
     height: SWITCH_CIRCLE_SIZE,
-    backgroundColor: utils.colors.gray0,
+    backgroundColor: utils.colors.backgroundSurfaceElevation1,
     borderRadius: utils.borders.radii.round,
     margin: SWITCH_CIRCLE_MARGIN,
     alignSelf: 'center',
@@ -60,7 +59,7 @@ const useAnimationStyles = ({ isChecked }: Pick<SwitchProps, 'isChecked'>) => {
         backgroundColor: interpolateColor(
             translateX.value,
             [0, SWITCH_CIRCLE_TRACK_WIDTH],
-            [utils.colors.gray400, utils.colors.green],
+            [utils.colors.backgroundNeutralDisabled, utils.colors.backgroundSecondaryDefault],
         ),
     }));
 

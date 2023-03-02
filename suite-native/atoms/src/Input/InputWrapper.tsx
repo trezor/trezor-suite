@@ -37,7 +37,7 @@ export const InputWrapper = ({ children, label, hint, error }: InputWrapperProps
     return (
         <Box>
             {label && (
-                <Text variant="highlight" color="gray800" style={applyStyle(labelStyle)}>
+                <Text variant="highlight" color="textSubdued" style={applyStyle(labelStyle)}>
                     {label}
                 </Text>
             )}

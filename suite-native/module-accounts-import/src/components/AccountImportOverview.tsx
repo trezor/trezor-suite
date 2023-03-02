@@ -39,13 +39,12 @@ export const AccountImportOverview = ({ accountInfo, networkSymbol }: AssetsOver
                             network={networkSymbol}
                             isBalance={false}
                             variant="label"
-                            color="gray1000"
                         />
                     </Box>
                 </Box>
                 <IconButton
                     iconName="trash"
-                    colorScheme="tertiary"
+                    colorScheme="tertiaryElevation1"
                     onPress={() => navigation.goBack()}
                     size="medium"
                 />
