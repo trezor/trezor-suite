@@ -17,6 +17,7 @@ export const MockedFormatterProvider = ({ children }: MockedFormatterProviderPro
         fiatCurrency: 'usd',
         bitcoinAmountUnit: PROTO.AmountUnit.BITCOIN,
         intl,
+        is24HourFormat: true,
     });
 
     return (
