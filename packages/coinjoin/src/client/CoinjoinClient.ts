@@ -57,7 +57,7 @@ export class CoinjoinClient extends EventEmitter {
                 this.emit('status', event);
             }
         });
-        this.status.on('exception', event => this.emit('exception', event));
+        this.status.on('log', ({ level, payload }) => this.logger[level](payload));
         this.status.on('affiliate-server', event => this.onAffiliateServerStatus(event));
 
         this.prison = new CoinjoinPrison();

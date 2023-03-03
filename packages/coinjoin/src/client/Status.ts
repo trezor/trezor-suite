@@ -4,14 +4,14 @@ import * as coordinator from './coordinator';
 import { findNearestDeadline, transformStatus } from '../utils/roundUtils';
 import { STATUS_TIMEOUT } from '../constants';
 import { RoundPhase } from '../enums';
-import { CoinjoinClientSettings, CoinjoinStatusEvent } from '../types';
+import { CoinjoinClientSettings, CoinjoinStatusEvent, LogEvent } from '../types';
 import { Round } from '../types/coordinator';
 
 type StatusMode = keyof typeof STATUS_TIMEOUT;
 
 interface StatusEvents {
     update: CoinjoinStatusEvent;
-    exception: string;
+    log: LogEvent;
     'affiliate-server': boolean;
 }
 
@@ -62,10 +62,10 @@ export class Status extends EventEmitter {
                 if (nextRound.phase === RoundPhase.Ended && known.phase !== RoundPhase.Ended)
                     return true; // round ended
                 if (nextRound.phase !== known.phase) {
-                    this.emit(
-                        'exception',
-                        `Unexpected phase change: ${nextRound.id} ${known.phase} => ${nextRound.phase}`,
-                    );
+                    this.emit('log', {
+                        level: 'warn',
+                        payload: `Unexpected phase change: ${nextRound.id} ${known.phase} => ${nextRound.phase}`,
+                    });
                 }
                 return false;
             })
@@ -144,14 +144,14 @@ export class Status extends EventEmitter {
         this.runningAffiliateServer = runningAffiliateServer;
 
         const changed = this.compareStatus(status.roundStates);
-        this.rounds = status.roundStates;
-
-        if (changed.length) {
+        if (changed.length > 0) {
             const statusEvent = {
                 changed,
                 ...transformStatus(status),
             };
+
             this.emit('update', statusEvent);
+            this.rounds = status.roundStates;
             return statusEvent;
         }
     }
@@ -160,21 +160,28 @@ export class Status extends EventEmitter {
         return this.runningAffiliateServer;
     }
 
-    async getStatus(attempts?: number) {
-        if (!this.enabled) return;
+    getStatus(attempts?: number) {
+        if (!this.enabled) return Promise.resolve();
 
-        try {
-            const identity = this.identities[Math.floor(Math.random() * this.identities.length)];
-            const status = await coordinator.getStatus({
+        const identity = this.identities[Math.floor(Math.random() * this.identities.length)];
+        return coordinator
+            .getStatus({
                 baseUrl: this.settings.coordinatorUrl,
                 signal: this.abortController.signal,
                 identity,
                 attempts,
+            })
+            .then(status => {
+                // explicitly catch processStatus errors
+                try {
+                    return this.processStatus(status);
+                } catch (error) {
+                    this.emit('log', { level: 'error', payload: `Status: ${error.message}` });
+                }
+            })
+            .catch(error => {
+                this.emit('log', { level: 'warn', payload: `Status: ${error.message}` });
             });
-            return this.processStatus(status);
-        } catch (error) {
-            this.emit('exception', error.message);
-        }
     }
 
     start() {

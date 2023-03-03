@@ -15,7 +15,6 @@ export interface CoinjoinClientEvents {
     status: CoinjoinStatusEvent;
     round: CoinjoinRoundEvent;
     request: CoinjoinRequestEvent[];
-    exception: string;
     log: LogEvent;
     'session-phase': {
         phase: SessionPhase;
