@@ -17,8 +17,8 @@ export * from './Button/Button';
 export * from './Button/IconButton';
 export * from './Select/Select';
 export * from './Select/SelectItem';
-export * from './VStack';
-export * from './HStack';
+export * from './Stack';
+
 export * from './Divider';
 export * from './TextDivider';
 export * from './ProgressBar';

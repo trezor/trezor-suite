@@ -39,8 +39,10 @@ const spacingStylePropsKeys = [
 type SpacingStyleProps = Partial<Record<(typeof spacingStylePropsKeys)[number], Spacing>>;
 type LayoutStyleProps = Partial<Pick<ViewStyle, (typeof layoutStylePropsKeys)[number]>>;
 
-export interface BoxProps extends Omit<ViewProps, 'style'>, LayoutStyleProps, SpacingStyleProps {
-    style?: NativeStyleObject;
+type Style = NativeStyleObject | Array<Style | undefined>;
+
+export interface BoxProps extends ViewProps, LayoutStyleProps, SpacingStyleProps {
+    style?: Style;
 }
 
 type BoxStyleProps = Record<(typeof spacingStylePropsKeys)[number], number> & LayoutStyleProps;
