@@ -9,6 +9,7 @@ import {
     StackProps,
     DevUtilsStackParamList,
     DevUtilsStackRoutes,
+    ScreenHeader,
 } from '@suite-native/navigation';
 import { purgeStorage, useStoragePersistor } from '@suite-native/storage';
 import { selectLogs } from '@suite-common/logger';
@@ -71,7 +72,7 @@ export const DevUtilsScreen = ({
     };
 
     return (
-        <Screen>
+        <Screen header={<ScreenHeader title="DEV utils" hasGoBackIcon />}>
             {isDevelopOrDebugEnv() ? (
                 <Box marginBottom="large">
                     <Box
@@ -81,7 +82,6 @@ export const DevUtilsScreen = ({
                         marginBottom="large"
                     >
                         <Box>
-                            <Text variant="titleMedium">DEV utils</Text>
                             <Text color="textSubdued" variant="hint">
                                 This section is shown only in local and develop builds! (Not in
                                 staging and production environments)
