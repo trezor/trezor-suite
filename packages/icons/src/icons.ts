@@ -99,19 +99,17 @@ export const cryptoIcons = {
 export type CryptoIconName = keyof typeof cryptoIcons;
 
 export const ethereumTokenIcons = {
-    bch: require('../assets/ethereumTokenIcons/bch.svg'),
-    btg: require('../assets/ethereumTokenIcons/btg.svg'),
+    cro: require('../assets/ethereumTokenIcons/cro.svg'),
     dai: require('../assets/ethereumTokenIcons/dai.svg'),
-    dash: require('../assets/ethereumTokenIcons/dash.svg'),
-    dgb: require('../assets/ethereumTokenIcons/dgb.svg'),
     erc20: require('../assets/ethereumTokenIcons/erc20.svg'),
-    etc: require('../assets/ethereumTokenIcons/etc.svg'),
-    name: require('../assets/ethereumTokenIcons/name.svg'),
+    leo: require('../assets/ethereumTokenIcons/leo.svg'),
+    link: require('../assets/ethereumTokenIcons/link.svg'),
+    okb: require('../assets/ethereumTokenIcons/okb.svg'),
     shib: require('../assets/ethereumTokenIcons/shib.svg'),
+    uni: require('../assets/ethereumTokenIcons/uni.svg'),
     usdc: require('../assets/ethereumTokenIcons/usdc.svg'),
     usdt: require('../assets/ethereumTokenIcons/usdt.svg'),
-    vtc: require('../assets/ethereumTokenIcons/vtc.svg'),
-    xrp: require('../assets/ethereumTokenIcons/xrp.svg'),
+    wbtc: require('../assets/ethereumTokenIcons/wbtc.svg'),
 } as const;
 export type EthereumTokenIconName = keyof typeof ethereumTokenIcons;
 

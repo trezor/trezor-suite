@@ -1,0 +1,11 @@
+<svg fill="none" viewBox="0 0 24 24">
+  <g clip-path="url(#prefix__a)">
+    <path fill="#002D74" d="M12 24c6.627 0 12-5.373 12-12S18.627 0 12 0 0 5.373 0 12s5.373 12 12 12Z"/>
+    <path fill="#fff" fill-rule="evenodd" d="m18.487 15.75-6.501 3.75L5.5 15.75v-7.5l6.501-3.75 6.486 3.75v7.5ZM12 16.98l4.303-2.49-1.782-1.03L12 14.92l-2.52-1.46v-2.905l2.505-1.46 2.52 1.46 1.798-1.045L12 7.02 7.681 9.51v4.98L12 16.98Z" clip-rule="evenodd"/>
+  </g>
+  <defs>
+    <clipPath id="prefix__a">
+      <path fill="#fff" d="M0 0h24v24H0z"/>
+    </clipPath>
+  </defs>
+</svg>

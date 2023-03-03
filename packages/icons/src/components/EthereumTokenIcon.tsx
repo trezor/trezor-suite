@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Canvas, ImageSVG, useSVG } from '@shopify/react-native-skia';
 
-import { cryptoIcons, EthereumTokenIconName } from '../icons';
+import { EthereumTokenIconName, ethereumTokenIcons } from '../icons';
 import { CryptoIconSize, cryptoIconSizes } from './CryptoIcon';
 
 type CryptoIconProps = {
@@ -11,7 +11,8 @@ type CryptoIconProps = {
 };
 
 export const EthereumTokenIcon = ({ name, size = 'small' }: CryptoIconProps) => {
-    const svg = useSVG(cryptoIcons[name]);
+    // if symbol (name) is in ethereumTokenIcons, use it, else use the default icon erc20
+    const svg = useSVG(ethereumTokenIcons[name]);
     const sizeNumber = cryptoIconSizes[size];
 
     return (
