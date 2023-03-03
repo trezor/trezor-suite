@@ -8,7 +8,7 @@ import { FormatterProps } from '../types';
 import { EmptyAmountText } from './EmptyAmountText';
 import { AmountText } from './AmountText';
 
-type CryptoToFiatAmountFormatterProps = FormatterProps<string | number | null> &
+type CryptoToFiatAmountFormatterProps = FormatterProps<string | null> &
     TextProps & {
         network: NetworkSymbol;
         isBalance?: boolean;

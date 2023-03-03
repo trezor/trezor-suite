@@ -8,7 +8,13 @@ import { initAnalyticsThunk } from '@suite-native/analytics';
 
 import { setIsAppReady, setIsConnectInitialized } from '../../state/src/appSlice';
 
+let isAlreadyInitialized = false;
+
 export const applicationInit = createThunk(`@app/init-actions`, async (_, { dispatch }) => {
+    if (isAlreadyInitialized) {
+        return;
+    }
+
     try {
         dispatch(initAnalyticsThunk());
 
@@ -35,5 +41,6 @@ export const applicationInit = createThunk(`@app/init-actions`, async (_, { disp
     } finally {
         // Tell the application to render
         dispatch(setIsAppReady(true));
+        isAlreadyInitialized = true;
     }
 });

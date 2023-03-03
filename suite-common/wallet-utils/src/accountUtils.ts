@@ -234,7 +234,7 @@ export const getAccountDecimals = (symbol: NetworkSymbol) => {
 export const stripNetworkAmount = (amount: string, decimals: number) =>
     new BigNumber(amount).toFixed(decimals, 1);
 
-export const formatAmount = (amount: string, decimals: number) => {
+export const formatAmount = (amount: BigNumber.Value, decimals: number) => {
     try {
         const bAmount = new BigNumber(amount);
         if (bAmount.isNaN()) {
@@ -246,7 +246,7 @@ export const formatAmount = (amount: string, decimals: number) => {
     }
 };
 
-export const amountToSatoshi = (amount: string, decimals: number) => {
+export const amountToSatoshi = (amount: BigNumber.Value, decimals: number) => {
     try {
         const bAmount = new BigNumber(amount);
         if (bAmount.isNaN()) {
@@ -259,7 +259,7 @@ export const amountToSatoshi = (amount: string, decimals: number) => {
     }
 };
 
-export const satoshiAmountToBtc = (amount: string) => {
+export const satoshiAmountToBtc = (amount: BigNumber.Value) => {
     try {
         const satsAmount = new BigNumber(amount);
         if (satsAmount.isNaN()) {
