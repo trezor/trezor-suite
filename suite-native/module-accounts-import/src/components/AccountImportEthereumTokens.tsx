@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Box, VStack, Text } from '@suite-native/atoms';
 import { TokenInfo } from '@trezor/blockchain-link';
-import { EthereumTokenSymbol } from '@suite-native/ethereum-tokens';
+import { EthereumTokenSymbol, filterTokenHasBalance } from '@suite-native/ethereum-tokens';
 
 import { EthereumTokenInfo } from './EthereumTokenInfo';
 
@@ -11,7 +11,7 @@ type AccountImportEthereumTokensProps = {
 };
 
 export const AccountImportEthereumTokens = ({ tokens }: AccountImportEthereumTokensProps) => {
-    const tokensWithBalance = tokens.filter(token => !!token.balance && token.balance !== '0');
+    const tokensWithBalance = tokens.filter(filterTokenHasBalance);
 
     return (
         <Box>
