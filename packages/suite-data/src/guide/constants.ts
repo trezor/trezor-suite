@@ -1,7 +1,7 @@
 import { resolve, join } from 'path';
 
 export const GITBOOK_SOURCE = 'https://github.com/trezor/trezor-suite-guide.git';
-export const GITBOOK_REVISION = '72ddac5e2f8f388dc705e32659bf24d6b5ffc048';
+export const GITBOOK_REVISION = 'bc342d45cbe36514105e02db27c040c7b3b4d5e6';
 export const TMP = join(resolve(__dirname, '../..'), 'tmp', 'guide');
 // Path to the GitBook assets. Relative to TMP.
 export const GITBOOK_ASSETS_DIR_PREFIX = '.gitbook';
