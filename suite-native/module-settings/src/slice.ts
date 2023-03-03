@@ -5,6 +5,7 @@ import { fiatCurrencies, FiatCurrency, FiatCurrencyCode } from '@suite-common/su
 export interface AppSettingsState {
     isOnboardingFinished: boolean;
     fiatCurrency: FiatCurrency;
+    isSatsEnabled: boolean;
 }
 
 export type SettingsSliceRootState = {
@@ -14,11 +15,13 @@ export type SettingsSliceRootState = {
 export const appSettingsInitialState: AppSettingsState = {
     fiatCurrency: fiatCurrencies.usd,
     isOnboardingFinished: false,
+    isSatsEnabled: false,
 };
 
 export const appSettingsPersistWhitelist: Array<keyof AppSettingsState> = [
     'isOnboardingFinished',
     'fiatCurrency',
+    'isSatsEnabled',
 ];
 
 export const appSettingsSlice: Slice<
@@ -29,6 +32,7 @@ export const appSettingsSlice: Slice<
             { payload }: PayloadAction<FiatCurrencyCode>,
         ) => void;
         setOnboardingFinished: (state: AppSettingsState, action: PayloadAction<boolean>) => void;
+        toggleIsSatsEnabled: (state: AppSettingsState) => void;
     },
     'appSettings'
 > = createSlice({
@@ -41,6 +45,9 @@ export const appSettingsSlice: Slice<
         setOnboardingFinished: (state, action: PayloadAction<boolean>) => {
             state.isOnboardingFinished = action.payload;
         },
+        toggleIsSatsEnabled: state => {
+            state.isSatsEnabled = !state.isSatsEnabled;
+        },
     },
 });
 
@@ -49,6 +56,9 @@ export const selectFiatCurrencyCode = (state: SettingsSliceRootState) =>
     state.appSettings.fiatCurrency.label;
 export const selectIsOnboardingFinished = (state: SettingsSliceRootState) =>
     state.appSettings.isOnboardingFinished;
+export const selectIsSatsEnabled = (state: SettingsSliceRootState) =>
+    state.appSettings.isSatsEnabled;
 
-export const { setOnboardingFinished, setFiatCurrency } = appSettingsSlice.actions;
+export const { setOnboardingFinished, setFiatCurrency, toggleIsSatsEnabled } =
+    appSettingsSlice.actions;
 export const appSettingsReducer = appSettingsSlice.reducer;

@@ -28,8 +28,8 @@ const truncateDecimals = (value: string, maxDecimals: number) => {
     return value;
 };
 
-// We cannot use networks "A.includes(networks[symbol].features, 'amount-unit')" because it on many coins like ETH.
-// These coins will looks very bad in app because for example ETH have 18 decimals... So we hardcode enabled coins here.
+// We cannot use networks "A.includes(networks[symbol].features, 'amount-unit')" because this flag is on many coins like ETH.
+// These coins will looks very bad in app because for example ETH have 18 numbers... So we hardcode enabled coins here.
 const COINS_WITH_SATS = ['btc', 'test'] satisfies NetworkSymbol[];
 
 export const prepareCryptoAmountFormatter = (config: FormatterConfig) =>
