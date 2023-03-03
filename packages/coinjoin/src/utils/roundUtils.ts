@@ -135,10 +135,11 @@ export const estimatePhaseDeadline = (round: Round) => {
 
 export const findNearestDeadline = (rounds: Round[]) => {
     const now = Date.now();
-    const deadlines = rounds
-        .map(r => estimatePhaseDeadline(r))
-        .filter(r => r) // skip 0/undefined
-        .map(r => new Date(r).getTime() - now);
+    const deadlines = rounds.map(r => {
+        const phaseDeadline = estimatePhaseDeadline(r);
+        const timeLeft = phaseDeadline ? new Date(phaseDeadline).getTime() - now : 0;
+        return timeLeft > 0 ? timeLeft : now;
+    });
 
     return Math.min(...deadlines);
 };

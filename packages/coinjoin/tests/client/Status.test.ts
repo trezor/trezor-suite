@@ -111,7 +111,7 @@ describe('Status', () => {
     it('Status start and immediate stop', done => {
         const status = new Status(server?.requestOptions);
         const errorListener = jest.fn();
-        status.on('exception', errorListener);
+        status.on('log', errorListener);
         const updateListener = jest.fn();
         status.on('update', updateListener);
         const requestListener = jest.fn();
@@ -156,7 +156,7 @@ describe('Status', () => {
         const status = new Status(server?.requestOptions);
 
         const errorListener = jest.fn();
-        status.on('exception', errorListener);
+        status.on('log', errorListener);
         const updateListener = jest.fn();
         status.on('update', updateListener);
 
@@ -337,6 +337,34 @@ describe('Status', () => {
 
         expect(onUpdateListener.mock.calls[1][0]).toMatchObject({
             changed: [{ affiliateRequest: affiliateDataBase64 }],
+        });
+    });
+
+    it('Status onStatusChange with error in processStatus', async () => {
+        server?.addListener('test-request', ({ url, resolve }) => {
+            if (url.endsWith('/status')) {
+                resolve({
+                    ...STATUS_EVENT,
+                    roundStates: [{}],
+                });
+            }
+        });
+
+        const status = new Status(server?.requestOptions);
+
+        const onUpdateListener = jest.fn();
+        const onExceptionListener = jest.fn();
+        status.on('update', onUpdateListener);
+        status.on('log', onExceptionListener);
+
+        status.setMode('enabled');
+        await status.start();
+
+        expect(onUpdateListener).toHaveBeenCalledTimes(0); // status not changed once, error on processing
+        expect(onExceptionListener).toHaveBeenCalledTimes(1);
+        expect(onExceptionListener).toHaveBeenCalledWith({
+            level: 'error',
+            payload: expect.any(String), // Cannot read properties of undefined (reading 'events')
         });
     });
 
