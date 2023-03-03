@@ -22,6 +22,16 @@ import {
 } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Screen, ScreenHeader } from '@suite-native/navigation';
+import {
+    CryptoIcon,
+    EthereumTokenIcon,
+    EthereumTokenIconName,
+    ethereumTokenIcons,
+    Icon,
+    IconName,
+    icons,
+} from '@trezor/icons';
+import { TransactionNotification } from '@suite-native/notifications';
 import { CryptoIcon, Icon, IconName, icons } from '@trezor/icons';
 import { ToastNotificationVariant, ToastNotification } from '@suite-native/notifications';
 import { CoinsSettings } from '@suite-native/module-settings';
@@ -340,6 +350,23 @@ export const DemoScreen = () => {
                                     alignItems="center"
                                 >
                                     <Icon name={icon as IconName} />
+                                    <Text>{icon}</Text>
+                                </Box>
+                            ))}
+                        </Box>
+                    </Box>
+                    <Box marginTop="medium">
+                        <Text variant="titleMedium">Token Icons</Text>
+                        <Box flexWrap="wrap" flexDirection="row">
+                            {Object.keys(ethereumTokenIcons).map((icon: string) => (
+                                <Box
+                                    key={icon}
+                                    marginRight="large"
+                                    marginBottom="large"
+                                    justifyContent="center"
+                                    alignItems="center"
+                                >
+                                    <EthereumTokenIcon name={icon as EthereumTokenIconName} />
                                     <Text>{icon}</Text>
                                 </Box>
                             ))}

@@ -98,6 +98,23 @@ export const cryptoIcons = {
 } as const;
 export type CryptoIconName = keyof typeof cryptoIcons;
 
+export const ethereumTokenIcons = {
+    bch: require('../assets/ethereumTokenIcons/bch.svg'),
+    btg: require('../assets/ethereumTokenIcons/btg.svg'),
+    dai: require('../assets/ethereumTokenIcons/dai.svg'),
+    dash: require('../assets/ethereumTokenIcons/dash.svg'),
+    dgb: require('../assets/ethereumTokenIcons/dgb.svg'),
+    erc20: require('../assets/ethereumTokenIcons/erc20.svg'),
+    etc: require('../assets/ethereumTokenIcons/etc.svg'),
+    name: require('../assets/ethereumTokenIcons/name.svg'),
+    shib: require('../assets/ethereumTokenIcons/shib.svg'),
+    usdc: require('../assets/ethereumTokenIcons/usdc.svg'),
+    usdt: require('../assets/ethereumTokenIcons/usdt.svg'),
+    vtc: require('../assets/ethereumTokenIcons/vtc.svg'),
+    xrp: require('../assets/ethereumTokenIcons/xrp.svg'),
+} as const;
+export type EthereumTokenIconName = keyof typeof ethereumTokenIcons;
+
 export const flagIcons = {
     cz: require('../assets/flags/cz.svg'),
 } as const;

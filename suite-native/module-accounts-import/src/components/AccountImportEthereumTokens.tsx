@@ -25,7 +25,7 @@ export const AccountImportEthereumTokens = ({ accountKey }: AccountImportEthereu
         <Box>
             <Text>Tokens: </Text>
             <VStack spacing="small" marginBottom="small">
-                {tokensWithBalance.map(({ symbol, balance, name }) => (
+                {tokens.map(({ symbol, balance, name }) => (
                     <EthereumTokenInfo
                         key={symbol}
                         symbol={symbol as EthereumTokenSymbol}
