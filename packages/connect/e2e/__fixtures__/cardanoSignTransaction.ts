@@ -1,7 +1,7 @@
 import { NETWORK_IDS, PROTOCOL_MAGICS } from '@trezor/connect/lib/constants/cardano';
 import {
     CardanoAddressType,
-    CardanoGovernanceRegistrationFormat,
+    CardanoCVoteRegistrationFormat,
     CardanoCertificateType,
     CardanoTxOutputSerializationFormat,
     CardanoTxSigningMode,
@@ -416,13 +416,13 @@ const legacyResults = {
         rules: ['<2.5.2', '1'],
         payload: false,
     },
-    beforeGovernanceRegistrationCIP36: {
-        // older FW doesn't support CIP36 governance registration format
+    beforeCIP36Registration: {
+        // older FW doesn't support CIP36 registration format
         rules: ['<2.5.3', '1'],
         payload: false,
     },
-    GovernanceRegistrationExternalRewardAddress: {
-        // older FW doesn't support reward address given as a string in governance registrations
+    beforeCIP36RegistrationExternalRewardAddress: {
+        // older FW doesn't support reward address given as a string in vote key registrations
         rules: ['<2.5.4', '1'],
         payload: false,
     },
@@ -840,14 +840,14 @@ export default {
         },
 
         {
-            description: 'signGovernanceVotingRegistrationWithPath',
+            description: 'signCVoteRegistrationWithPath',
             params: {
                 inputs: [SAMPLE_INPUTS.shelley_input],
                 outputs: [SAMPLE_OUTPUTS.simple_shelley_output],
                 fee: FEE,
                 ttl: TTL,
                 auxiliaryData: {
-                    governanceRegistrationParameters: {
+                    cVoteRegistrationParameters: {
                         votingPublicKey:
                             '1af8fa0b754ff99253d983894e63a2b09cbb56c833ba18c3384210163f63dcfc',
                         stakingPath: "m/1852'/1815'/0'/2/0",
@@ -877,7 +877,7 @@ export default {
                     type: 1,
                     auxiliaryDataHash:
                         'b712ad07750007ba68d7558abeeab103b36a09133062ba9fa6611953085d9137',
-                    governanceSignature:
+                    cVoteRegistrationSignature:
                         'ed3335aead65c665ceee21f2549c0ef4c9137b94c13fa642bea4a2c24e44e7f1ee06b47e14151efcf8d5569a404260c01f277b3ba516b5826a15c8ba2c97f70c',
                 },
             },
@@ -885,14 +885,14 @@ export default {
         },
 
         {
-            description: 'signGovernanceVotingRegistrationWithStakingPath',
+            description: 'signCVoteRegistrationWithStakingPath',
             params: {
                 inputs: [SAMPLE_INPUTS.shelley_input],
                 outputs: [SAMPLE_OUTPUTS.simple_shelley_output],
                 fee: FEE,
                 ttl: TTL,
                 auxiliaryData: {
-                    governanceRegistrationParameters: {
+                    cVoteRegistrationParameters: {
                         votingPublicKey:
                             '1af8fa0b754ff99253d983894e63a2b09cbb56c833ba18c3384210163f63dcfc',
                         stakingPath: "m/1852'/1815'/0'/2/0",
@@ -922,7 +922,7 @@ export default {
                     type: 1,
                     auxiliaryDataHash:
                         'b712ad07750007ba68d7558abeeab103b36a09133062ba9fa6611953085d9137',
-                    governanceSignature:
+                    cVoteRegistrationSignature:
                         'ed3335aead65c665ceee21f2549c0ef4c9137b94c13fa642bea4a2c24e44e7f1ee06b47e14151efcf8d5569a404260c01f277b3ba516b5826a15c8ba2c97f70c',
                 },
             },
@@ -930,15 +930,14 @@ export default {
         },
 
         {
-            description:
-                'signTransactionWithCIP36GovernanceRegistrationAndVotingPurposeNotSpecified',
+            description: 'signTransactionWithCIP36RegistrationAndVotingPurposeNotSpecified',
             params: {
                 inputs: [SAMPLE_INPUTS.shelley_input],
                 outputs: [SAMPLE_OUTPUTS.simple_shelley_output],
                 fee: FEE,
                 ttl: TTL,
                 auxiliaryData: {
-                    governanceRegistrationParameters: {
+                    cVoteRegistrationParameters: {
                         stakingPath: "m/1852'/1815'/0'/2/0",
                         rewardAddressParameters: {
                             addressType: CardanoAddressType.BASE,
@@ -946,7 +945,7 @@ export default {
                             stakingPath: "m/1852'/1815'/0'/2/0",
                         },
                         nonce: '22634813',
-                        format: CardanoGovernanceRegistrationFormat.CIP36,
+                        format: CardanoCVoteRegistrationFormat.CIP36,
                         delegations: [
                             {
                                 votingPublicKey:
@@ -980,22 +979,22 @@ export default {
                     type: 1,
                     auxiliaryDataHash:
                         '9d4c00f5b5b67760931fd7ed9850ff8e14dcdf957685191ab4bc755c52f0ed56',
-                    governanceSignature:
+                    cVoteRegistrationSignature:
                         '2671b8e668ffce235647ac89deda6cc222e7b31a3d44606c2723fcf711b29f9af1e30b0c6b4f87ba37ddf9f6adf0226c39c09e655255890644a3dc4e64c3a001',
                 },
             },
-            legacyResults: [legacyResults.beforeGovernanceRegistrationCIP36],
+            legacyResults: [legacyResults.beforeCIP36Registration],
         },
 
         {
-            description: 'signTransactionWithCIP36GovernanceRegistrationAndOtherVotingPurpose',
+            description: 'signTransactionWithCIP36RegistrationAndOtherVotingPurpose',
             params: {
                 inputs: [SAMPLE_INPUTS.shelley_input],
                 outputs: [SAMPLE_OUTPUTS.simple_shelley_output],
                 fee: FEE,
                 ttl: TTL,
                 auxiliaryData: {
-                    governanceRegistrationParameters: {
+                    cVoteRegistrationParameters: {
                         stakingPath: "m/1852'/1815'/0'/2/0",
                         rewardAddressParameters: {
                             addressType: CardanoAddressType.BASE,
@@ -1003,7 +1002,7 @@ export default {
                             stakingPath: "m/1852'/1815'/0'/2/0",
                         },
                         nonce: '22634813',
-                        format: CardanoGovernanceRegistrationFormat.CIP36,
+                        format: CardanoCVoteRegistrationFormat.CIP36,
                         delegations: [
                             {
                                 votingPublicKey:
@@ -1033,25 +1032,25 @@ export default {
                     type: 1,
                     auxiliaryDataHash:
                         '28b7ffa6800833bdfe5421739eaa21d4a49cde1d84e762b147001169f7c0a385',
-                    governanceSignature:
+                    cVoteRegistrationSignature:
                         'ebc00c615f988c6fc2e132d4419a719f04bbec56fe2569a00746a9e9b0d6e5bdd0809515cb2522c773c991c5ae39834403654d36b37e70b14897c0e98c8c0a0c',
                 },
             },
-            legacyResults: [legacyResults.beforeGovernanceRegistrationCIP36],
+            legacyResults: [legacyResults.beforeCIP36Registration],
         },
 
         {
-            description: 'signTransactionWithCIP36GovernanceRegistrationAndExternalRewardAddress',
+            description: 'signTransactionWithCIP36RegistrationAndExternalRewardAddress',
             params: {
                 inputs: [SAMPLE_INPUTS.shelley_input],
                 outputs: [SAMPLE_OUTPUTS.simple_shelley_output],
                 fee: FEE,
                 ttl: TTL,
                 auxiliaryData: {
-                    governanceRegistrationParameters: {
+                    cVoteRegistrationParameters: {
                         stakingPath: "m/1852'/1815'/0'/2/0",
                         nonce: '22634813',
-                        format: CardanoGovernanceRegistrationFormat.CIP36,
+                        format: CardanoCVoteRegistrationFormat.CIP36,
                         delegations: [
                             {
                                 votingPublicKey:
@@ -1082,11 +1081,11 @@ export default {
                     type: 1,
                     auxiliaryDataHash:
                         '3830a90f2c5dc23ddd478cefcb8642f0b36afa77769239146d9cba83ed196e41',
-                    governanceSignature:
+                    cVoteRegistrationSignature:
                         'ba05ac525e5dcc74e5a6cdbb7fb111d8e21163d79fe76777a5b730fe93512f09415f6f7b4904b12c6f12fe33b6c553d9889beb024299fa1256a0d3e98c8ff203',
                 },
             },
-            legacyResults: [legacyResults.GovernanceRegistrationExternalRewardAddress],
+            legacyResults: [legacyResults.beforeCIP36RegistrationExternalRewardAddress],
         },
 
         {
@@ -1773,7 +1772,7 @@ export default {
                 ],
                 withdrawals: [SAMPLE_WITHDRAWALS.basic],
                 auxiliaryData: {
-                    governanceRegistrationParameters: {
+                    cVoteRegistrationParameters: {
                         stakingPath: "m/1852'/1815'/0'/2/0",
                         rewardAddressParameters: {
                             addressType: CardanoAddressType.BASE,
@@ -1781,7 +1780,7 @@ export default {
                             stakingPath: "m/1852'/1815'/0'/2/0",
                         },
                         nonce: '22634813',
-                        format: CardanoGovernanceRegistrationFormat.CIP36,
+                        format: CardanoCVoteRegistrationFormat.CIP36,
                         delegations: [
                             {
                                 votingPublicKey:
@@ -1832,11 +1831,11 @@ export default {
                     type: 1,
                     auxiliaryDataHash:
                         '544c9ae849c82e31224865ff936decc6160047409eee4a6b4178b729fe3d286c',
-                    governanceSignature:
+                    cVoteRegistrationSignature:
                         '3064949c9f186138f95e228075d0119dd5cb50e1b7e75d24d569fa547e018a597615da7c79a39ca8e394ee1ba8acb83e70be80f37e69aef3b86e7c4a6bd44903',
                 },
             },
-            legacyResults: [legacyResults.beforeGovernanceRegistrationCIP36],
+            legacyResults: [legacyResults.beforeCIP36Registration],
         },
 
         {

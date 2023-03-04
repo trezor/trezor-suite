@@ -44,8 +44,8 @@ const CardanoSignTransactionFeatures = Object.freeze({
     Plutus: ['0', '2.4.4'],
     KeyHashStakeCredential: ['0', '2.4.4'],
     Babbage: ['0', '2.5.2'],
-    GovernanceRegistrationCIP36: ['0', '2.5.3'],
-    GovernanceRegistrationExternalRewardAddress: ['0', '2.5.4'],
+    CIP36Registration: ['0', '2.5.3'],
+    CIP36RegistrationExternalRewardAddress: ['0', '2.5.4'],
 });
 
 export type CardanoSignTransactionParams = {
@@ -104,15 +104,26 @@ export default class CardanoSignTransaction extends AbstractMethod<
             );
         }
 
-        // @ts-expect-error payload.auxiliaryData.catalystRegistrationParameters is a legacy param
-        // kept for backward compatibility (for now)
+        // payload.auxiliaryData.catalystRegistrationParameters and
+        // payload.auxiliaryData.governanceRegistrationParameters
+        // are legacy params kept for backward compatibility (for now)
+        // @ts-expect-error
         if (payload.auxiliaryData && payload.auxiliaryData.catalystRegistrationParameters) {
             console.warn(
-                'Please use governanceRegistrationParameters instead of catalystRegistrationParameters.',
+                'Please use cVoteRegistrationParameters instead of catalystRegistrationParameters.',
             );
-            payload.auxiliaryData.governanceRegistrationParameters =
+            payload.auxiliaryData.cVoteRegistrationParameters =
                 // @ts-expect-error
                 payload.auxiliaryData.catalystRegistrationParameters;
+        }
+        // @ts-expect-error
+        if (payload.auxiliaryData && payload.auxiliaryData.governanceRegistrationParameters) {
+            console.warn(
+                'Please use cVoteRegistrationParameters instead of governanceRegistrationParameters.',
+            );
+            payload.auxiliaryData.cVoteRegistrationParameters =
+                // @ts-expect-error
+                payload.auxiliaryData.governanceRegistrationParameters;
         }
 
         // validate incoming parameters
@@ -331,19 +342,19 @@ export default class CardanoSignTransaction extends AbstractMethod<
             this._ensureFeatureIsSupported('Babbage');
         }
 
-        if (params.auxiliaryData?.governance_registration_parameters) {
+        if (params.auxiliaryData?.cvote_registration_parameters) {
             const { format, delegations, voting_purpose, reward_address } =
-                params.auxiliaryData.governance_registration_parameters;
+                params.auxiliaryData.cvote_registration_parameters;
             if (
-                format === PROTO.CardanoGovernanceRegistrationFormat.CIP36 ||
+                format === PROTO.CardanoCVoteRegistrationFormat.CIP36 ||
                 delegations?.length ||
                 voting_purpose != null
             ) {
-                this._ensureFeatureIsSupported('GovernanceRegistrationCIP36');
+                this._ensureFeatureIsSupported('CIP36Registration');
             }
 
             if (reward_address) {
-                this._ensureFeatureIsSupported('GovernanceRegistrationExternalRewardAddress');
+                this._ensureFeatureIsSupported('CIP36RegistrationExternalRewardAddress');
             }
         }
     }
@@ -405,8 +416,8 @@ export default class CardanoSignTransaction extends AbstractMethod<
         // auxiliary data
         let auxiliaryDataSupplement: CardanoAuxiliaryDataSupplement | undefined;
         if (this.params.auxiliaryData) {
-            const { governance_registration_parameters } = this.params.auxiliaryData;
-            if (governance_registration_parameters) {
+            const { cvote_registration_parameters } = this.params.auxiliaryData;
+            if (cvote_registration_parameters) {
                 this.params.auxiliaryData = modifyAuxiliaryDataForBackwardsCompatibility(
                     this.device,
                     this.params.auxiliaryData,
@@ -425,9 +436,13 @@ export default class CardanoSignTransaction extends AbstractMethod<
                 auxiliaryDataSupplement = {
                     type: auxiliaryDataType,
                     auxiliaryDataHash: message.auxiliary_data_hash!,
-                    governanceSignature: message.governance_signature,
-                    // @ts-expect-error auxiliaryDataSupplement.catalystSignature kept for backward compatibility
-                    catalystSignature: message.governance_signature,
+                    cVoteRegistrationSignature: message.cvote_registration_signature,
+                    // auxiliaryDataSupplement.catalystSignature and
+                    // auxiliaryDataSupplement.governanceSignature
+                    // kept for backward compatibility
+                    // @ts-expect-error
+                    catalystSignature: message.cvote_registration_signature,
+                    governanceSignature: message.cvote_registration_signature,
                 };
             }
             await typedCall('CardanoTxHostAck', 'CardanoTxItemAck');

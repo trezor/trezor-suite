@@ -1634,10 +1634,10 @@
         "CardanoTxAuxiliaryDataSupplementType": {
             "values": {
                 "NONE": 0,
-                "GOVERNANCE_REGISTRATION_SIGNATURE": 1
+                "CVOTE_REGISTRATION_SIGNATURE": 1
             }
         },
-        "CardanoGovernanceRegistrationFormat": {
+        "CardanoCVoteRegistrationFormat": {
             "values": {
                 "CIP15": 0,
                 "CIP36": 1
@@ -2245,7 +2245,7 @@
                 }
             }
         },
-        "CardanoGovernanceRegistrationDelegation": {
+        "CardanoCVoteRegistrationDelegation": {
             "fields": {
                 "voting_public_key": {
                     "rule": "required",
@@ -2259,7 +2259,7 @@
                 }
             }
         },
-        "CardanoGovernanceRegistrationParametersType": {
+        "CardanoCVoteRegistrationParametersType": {
             "fields": {
                 "voting_public_key": {
                     "type": "bytes",
@@ -2283,7 +2283,7 @@
                     "id": 4
                 },
                 "format": {
-                    "type": "CardanoGovernanceRegistrationFormat",
+                    "type": "CardanoCVoteRegistrationFormat",
                     "id": 5,
                     "options": {
                         "default": "CIP15"
@@ -2291,7 +2291,7 @@
                 },
                 "delegations": {
                     "rule": "repeated",
-                    "type": "CardanoGovernanceRegistrationDelegation",
+                    "type": "CardanoCVoteRegistrationDelegation",
                     "id": 6
                 },
                 "voting_purpose": {
@@ -2306,8 +2306,8 @@
         },
         "CardanoTxAuxiliaryData": {
             "fields": {
-                "governance_registration_parameters": {
-                    "type": "CardanoGovernanceRegistrationParametersType",
+                "cvote_registration_parameters": {
+                    "type": "CardanoCVoteRegistrationParametersType",
                     "id": 1
                 },
                 "hash": {
@@ -2383,7 +2383,7 @@
                     "type": "bytes",
                     "id": 2
                 },
-                "governance_signature": {
+                "cvote_registration_signature": {
                     "type": "bytes",
                     "id": 3
                 }

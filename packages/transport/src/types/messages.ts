@@ -624,10 +624,10 @@ export enum CardanoPoolRelayType {
 
 export enum CardanoTxAuxiliaryDataSupplementType {
     NONE = 0,
-    GOVERNANCE_REGISTRATION_SIGNATURE = 1,
+    CVOTE_REGISTRATION_SIGNATURE = 1,
 }
 
-export enum CardanoGovernanceRegistrationFormat {
+export enum CardanoCVoteRegistrationFormat {
     CIP15 = 0,
     CIP36 = 1,
 }
@@ -831,27 +831,27 @@ export type CardanoTxWithdrawal = {
     key_hash?: string;
 };
 
-// CardanoGovernanceRegistrationDelegation
-export type CardanoGovernanceRegistrationDelegation = {
+// CardanoCVoteRegistrationDelegation
+export type CardanoCVoteRegistrationDelegation = {
     voting_public_key: string;
     weight: UintType;
 };
 
-// CardanoGovernanceRegistrationParametersType
-export type CardanoGovernanceRegistrationParametersType = {
+// CardanoCVoteRegistrationParametersType
+export type CardanoCVoteRegistrationParametersType = {
     voting_public_key?: string;
     staking_path: number[];
     reward_address_parameters?: CardanoAddressParametersType;
     nonce: UintType;
-    format?: CardanoGovernanceRegistrationFormat;
-    delegations?: CardanoGovernanceRegistrationDelegation[];
+    format?: CardanoCVoteRegistrationFormat;
+    delegations?: CardanoCVoteRegistrationDelegation[];
     voting_purpose?: UintType;
     reward_address?: string;
 };
 
 // CardanoTxAuxiliaryData
 export type CardanoTxAuxiliaryData = {
-    governance_registration_parameters?: CardanoGovernanceRegistrationParametersType;
+    cvote_registration_parameters?: CardanoCVoteRegistrationParametersType;
     hash?: string;
 };
 
@@ -885,7 +885,7 @@ export type CardanoTxItemAck = {};
 export type CardanoTxAuxiliaryDataSupplement = {
     type: CardanoTxAuxiliaryDataSupplementType;
     auxiliary_data_hash?: string;
-    governance_signature?: string;
+    cvote_registration_signature?: string;
 };
 
 // CardanoTxWitnessRequest
@@ -2256,8 +2256,8 @@ export type MessageType = {
     CardanoPoolParametersType: CardanoPoolParametersType;
     CardanoTxCertificate: CardanoTxCertificate;
     CardanoTxWithdrawal: CardanoTxWithdrawal;
-    CardanoGovernanceRegistrationDelegation: CardanoGovernanceRegistrationDelegation;
-    CardanoGovernanceRegistrationParametersType: CardanoGovernanceRegistrationParametersType;
+    CardanoCVoteRegistrationDelegation: CardanoCVoteRegistrationDelegation;
+    CardanoCVoteRegistrationParametersType: CardanoCVoteRegistrationParametersType;
     CardanoTxAuxiliaryData: CardanoTxAuxiliaryData;
     CardanoTxMint: CardanoTxMint;
     CardanoTxCollateralInput: CardanoTxCollateralInput;
