@@ -11,15 +11,15 @@ import type { Device } from '../../device/Device';
 import { ERRORS, PROTO } from '../../constants';
 import type {
     CardanoAuxiliaryData,
-    CardanoGovernanceRegistrationDelegation,
-    CardanoGovernanceRegistrationParameters,
+    CardanoCVoteRegistrationDelegation,
+    CardanoCVoteRegistrationParameters,
 } from '../../types/api/cardano';
 
 const MAX_DELEGATION_COUNT = 32;
 
 const transformDelegation = (
-    delegation: CardanoGovernanceRegistrationDelegation,
-): PROTO.CardanoGovernanceRegistrationDelegation => {
+    delegation: CardanoCVoteRegistrationDelegation,
+): PROTO.CardanoCVoteRegistrationDelegation => {
     validateParams(delegation, [
         { name: 'votingPublicKey', type: 'string', required: true },
         { name: 'weight', type: 'uint', required: true },
@@ -31,10 +31,10 @@ const transformDelegation = (
     };
 };
 
-const transformGovernanceRegistrationParameters = (
-    governanceRegistrationParameters: CardanoGovernanceRegistrationParameters,
-): PROTO.CardanoGovernanceRegistrationParametersType => {
-    validateParams(governanceRegistrationParameters, [
+const transformCvoteRegistrationParameters = (
+    cVoteRegistrationParameters: CardanoCVoteRegistrationParameters,
+): PROTO.CardanoCVoteRegistrationParametersType => {
+    validateParams(cVoteRegistrationParameters, [
         { name: 'votingPublicKey', type: 'string' },
         { name: 'stakingPath', required: true },
         { name: 'nonce', type: 'uint', required: true },
@@ -43,30 +43,30 @@ const transformGovernanceRegistrationParameters = (
         { name: 'votingPurpose', type: 'uint' },
         { name: 'address', type: 'string' },
     ]);
-    const { rewardAddressParameters } = governanceRegistrationParameters;
+    const { rewardAddressParameters } = cVoteRegistrationParameters;
     if (rewardAddressParameters) {
         validateAddressParameters(rewardAddressParameters);
     }
 
-    const { delegations } = governanceRegistrationParameters;
+    const { delegations } = cVoteRegistrationParameters;
     if (delegations && delegations.length > MAX_DELEGATION_COUNT) {
         throw ERRORS.TypedError(
             'Method_InvalidParameter',
-            `At most ${MAX_DELEGATION_COUNT} delegations are allowed in a governance registration`,
+            `At most ${MAX_DELEGATION_COUNT} delegations are allowed in a CIP-36 registration`,
         );
     }
 
     return {
-        voting_public_key: governanceRegistrationParameters.votingPublicKey,
-        staking_path: validatePath(governanceRegistrationParameters.stakingPath, 3),
+        voting_public_key: cVoteRegistrationParameters.votingPublicKey,
+        staking_path: validatePath(cVoteRegistrationParameters.stakingPath, 3),
         reward_address_parameters: rewardAddressParameters
             ? addressParametersToProto(rewardAddressParameters)
             : undefined,
-        nonce: governanceRegistrationParameters.nonce,
-        format: governanceRegistrationParameters.format,
+        nonce: cVoteRegistrationParameters.nonce,
+        format: cVoteRegistrationParameters.format,
         delegations: delegations?.map(transformDelegation),
-        voting_purpose: governanceRegistrationParameters.votingPurpose,
-        reward_address: governanceRegistrationParameters.rewardAddress,
+        voting_purpose: cVoteRegistrationParameters.votingPurpose,
+        reward_address: cVoteRegistrationParameters.rewardAddress,
     };
 };
 
@@ -80,16 +80,16 @@ export const transformAuxiliaryData = (
         },
     ]);
 
-    let governanceRegistrationParameters;
-    if (auxiliaryData.governanceRegistrationParameters) {
-        governanceRegistrationParameters = transformGovernanceRegistrationParameters(
-            auxiliaryData.governanceRegistrationParameters,
+    let cVoteRegistrationParameters;
+    if (auxiliaryData.cVoteRegistrationParameters) {
+        cVoteRegistrationParameters = transformCvoteRegistrationParameters(
+            auxiliaryData.cVoteRegistrationParameters,
         );
     }
 
     return {
         hash: auxiliaryData.hash,
-        governance_registration_parameters: governanceRegistrationParameters,
+        cvote_registration_parameters: cVoteRegistrationParameters,
     };
 };
 
@@ -97,17 +97,17 @@ export const modifyAuxiliaryDataForBackwardsCompatibility = (
     device: Device,
     auxiliary_data: PROTO.CardanoTxAuxiliaryData,
 ): PROTO.CardanoTxAuxiliaryData => {
-    const { governance_registration_parameters } = auxiliary_data;
-    if (governance_registration_parameters?.reward_address_parameters) {
-        governance_registration_parameters.reward_address_parameters =
+    const { cvote_registration_parameters } = auxiliary_data;
+    if (cvote_registration_parameters?.reward_address_parameters) {
+        cvote_registration_parameters.reward_address_parameters =
             modifyAddressParametersForBackwardsCompatibility(
                 device,
-                governance_registration_parameters.reward_address_parameters,
+                cvote_registration_parameters.reward_address_parameters,
             );
 
         return {
             ...auxiliary_data,
-            governance_registration_parameters,
+            cvote_registration_parameters,
         };
     }
 
