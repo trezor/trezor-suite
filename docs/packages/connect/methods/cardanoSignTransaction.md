@@ -321,7 +321,7 @@ TrezorConnect.cardanoSignTransaction({
             format: CardanoCVoteRegistrationFormat.CIP36,
             delegations: [
                 {
-                    votingPublicKey:
+                    votePublicKey:
                         '1af8fa0b754ff99253d983894e63a2b09cbb56c833ba18c3384210163f63dcfc',
                     weight: 1,
                 },

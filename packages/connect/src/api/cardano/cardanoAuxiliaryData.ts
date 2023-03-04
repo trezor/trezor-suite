@@ -20,13 +20,20 @@ const MAX_DELEGATION_COUNT = 32;
 const transformDelegation = (
     delegation: CardanoCVoteRegistrationDelegation,
 ): PROTO.CardanoCVoteRegistrationDelegation => {
+    // @ts-expect-error votingPublicKey is a legacy param kept for backward compatibility (for now)
+    if (delegation.votingPublicKey) {
+        console.warn('Please use votePublicKey instead of votingPublicKey.');
+        // @ts-expect-error
+        delegation.votePublicKey = delegation.votingPublicKey;
+    }
+
     validateParams(delegation, [
-        { name: 'votingPublicKey', type: 'string', required: true },
+        { name: 'votePublicKey', type: 'string', required: true },
         { name: 'weight', type: 'uint', required: true },
     ]);
 
     return {
-        voting_public_key: delegation.votingPublicKey,
+        vote_public_key: delegation.votePublicKey,
         weight: delegation.weight,
     };
 };
@@ -34,7 +41,15 @@ const transformDelegation = (
 const transformCvoteRegistrationParameters = (
     cVoteRegistrationParameters: CardanoCVoteRegistrationParameters,
 ): PROTO.CardanoCVoteRegistrationParametersType => {
-    // @ts-expect-error rewardAddressParameters is a legacy param kept for backward compatibility (for now)
+    // votingPublicKey and rewardAddressParameters
+    // are legacy params kept for backward compatibility (for now)
+    // @ts-expect-error
+    if (cVoteRegistrationParameters.votingPublicKey) {
+        console.warn('Please use votePublicKey instead of votingPublicKey.');
+        // @ts-expect-error
+        cVoteRegistrationParameters.votePublicKey = cVoteRegistrationParameters.votingPublicKey;
+    }
+    // @ts-expect-error
     if (cVoteRegistrationParameters.rewardAddressParameters) {
         console.warn('Please use paymentAddressParameters instead of rewardAddressParameters.');
         cVoteRegistrationParameters.paymentAddressParameters =
@@ -43,7 +58,7 @@ const transformCvoteRegistrationParameters = (
     }
 
     validateParams(cVoteRegistrationParameters, [
-        { name: 'votingPublicKey', type: 'string' },
+        { name: 'votePublicKey', type: 'string' },
         { name: 'stakingPath', required: true },
         { name: 'nonce', type: 'uint', required: true },
         { name: 'format', type: 'number' },
@@ -65,7 +80,7 @@ const transformCvoteRegistrationParameters = (
     }
 
     return {
-        voting_public_key: cVoteRegistrationParameters.votingPublicKey,
+        vote_public_key: cVoteRegistrationParameters.votePublicKey,
         staking_path: validatePath(cVoteRegistrationParameters.stakingPath, 3),
         payment_address_parameters: paymentAddressParameters
             ? addressParametersToProto(paymentAddressParameters)

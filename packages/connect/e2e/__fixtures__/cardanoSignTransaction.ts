@@ -848,7 +848,7 @@ export default {
                 ttl: TTL,
                 auxiliaryData: {
                     cVoteRegistrationParameters: {
-                        votingPublicKey:
+                        votePublicKey:
                             '1af8fa0b754ff99253d983894e63a2b09cbb56c833ba18c3384210163f63dcfc',
                         stakingPath: "m/1852'/1815'/0'/2/0",
                         paymentAddressParameters: {
@@ -893,7 +893,7 @@ export default {
                 ttl: TTL,
                 auxiliaryData: {
                     cVoteRegistrationParameters: {
-                        votingPublicKey:
+                        votePublicKey:
                             '1af8fa0b754ff99253d983894e63a2b09cbb56c833ba18c3384210163f63dcfc',
                         stakingPath: "m/1852'/1815'/0'/2/0",
                         paymentAddressParameters: {
@@ -948,12 +948,12 @@ export default {
                         format: CardanoCVoteRegistrationFormat.CIP36,
                         delegations: [
                             {
-                                votingPublicKey:
+                                votePublicKey:
                                     '1af8fa0b754ff99253d983894e63a2b09cbb56c833ba18c3384210163f63dcfc',
                                 weight: 1,
                             },
                             {
-                                votingPublicKey:
+                                votePublicKey:
                                     '2af8fa0b754ff99253d983894e63a2b09cbb56c833ba18c3384210163f63dcfc',
                                 weight: 2,
                             },
@@ -1005,7 +1005,7 @@ export default {
                         format: CardanoCVoteRegistrationFormat.CIP36,
                         delegations: [
                             {
-                                votingPublicKey:
+                                votePublicKey:
                                     '1af8fa0b754ff99253d983894e63a2b09cbb56c833ba18c3384210163f63dcfc',
                                 weight: 1,
                             },
@@ -1053,7 +1053,7 @@ export default {
                         format: CardanoCVoteRegistrationFormat.CIP36,
                         delegations: [
                             {
-                                votingPublicKey:
+                                votePublicKey:
                                     '1af8fa0b754ff99253d983894e63a2b09cbb56c833ba18c3384210163f63dcfc',
                                 weight: 1,
                             },
@@ -1783,7 +1783,7 @@ export default {
                         format: CardanoCVoteRegistrationFormat.CIP36,
                         delegations: [
                             {
-                                votingPublicKey:
+                                votePublicKey:
                                     '1af8fa0b754ff99253d983894e63a2b09cbb56c833ba18c3384210163f63dcfc',
                                 weight: 1,
                             },

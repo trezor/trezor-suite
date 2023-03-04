@@ -2247,7 +2247,7 @@
         },
         "CardanoCVoteRegistrationDelegation": {
             "fields": {
-                "voting_public_key": {
+                "vote_public_key": {
                     "rule": "required",
                     "type": "bytes",
                     "id": 1
@@ -2261,7 +2261,7 @@
         },
         "CardanoCVoteRegistrationParametersType": {
             "fields": {
-                "voting_public_key": {
+                "vote_public_key": {
                     "type": "bytes",
                     "id": 1
                 },
