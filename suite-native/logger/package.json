@@ -11,8 +11,10 @@
         "type-check": "tsc --build"
     },
     "dependencies": {
+        "@reduxjs/toolkit": "1.9.2",
         "@suite-common/logger": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
+        "@suite-common/wallet-core": "workspace:*",
         "@suite-native/module-settings": "workspace:*"
     }
 }
