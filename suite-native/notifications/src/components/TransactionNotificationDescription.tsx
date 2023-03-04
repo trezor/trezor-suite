@@ -6,7 +6,7 @@ import { NetworkSymbol } from '@suite-common/wallet-config';
 import { useNativeStyles, prepareNativeStyle } from '@trezor/styles';
 
 type TransactionNotificationDescriptionProps = {
-    amount: string | number;
+    amount: string;
     prefix: string;
     networkSymbol: NetworkSymbol;
     targetAddress?: string;

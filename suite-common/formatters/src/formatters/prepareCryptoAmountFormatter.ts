@@ -1,63 +1,74 @@
-import BigNumber from 'bignumber.js';
-import { G } from '@mobily/ts-belt';
+import { A } from '@mobily/ts-belt';
 
-import { networksCompatibility as NETWORKS, NetworkSymbol } from '@suite-common/wallet-config';
-import {
-    localizeNumber,
-    networkAmountToSatoshi,
-    formatCoinBalance,
-    formatAmount,
-} from '@suite-common/wallet-utils';
+import { networks, NetworkSymbol } from '@suite-common/wallet-config';
+import { amountToSatoshi, formatAmount } from '@suite-common/wallet-utils';
 import { PROTO } from '@trezor/connect';
 
 import { makeFormatter } from '../makeFormatter';
 import { FormatterConfig } from '../types';
 import { prepareNetworkSymbolFormatter } from './prepareNetworkSymbolFormatter';
 
-export type CryptoAmountFormatterInputValue = string | number | BigNumber;
+export type CryptoAmountFormatterInputValue = string;
 
 export type CryptoAmountFormatterDataContext = {
-    symbol?: NetworkSymbol;
+    symbol: NetworkSymbol;
     withSymbol?: boolean;
     isBalance?: boolean;
+    maxDisplayedDecimals?: number;
 };
+
+const truncateDecimals = (value: string, maxDecimals: number) => {
+    const parts = value.split('.');
+    const [integerPart, fractionalPart] = parts;
+
+    if (fractionalPart && fractionalPart.length > maxDecimals) {
+        return `${integerPart}.${fractionalPart.slice(0, maxDecimals)}…`;
+    }
+
+    return value;
+};
+
+// We cannot use networks "A.includes(networks[symbol].features, 'amount-unit')" because this flag is on many coins like ETH.
+// These coins will looks very bad in app because for example ETH have 18 numbers... So we hardcode enabled coins here.
+const COINS_WITH_SATS = ['btc', 'test'] satisfies NetworkSymbol[];
 
 export const prepareCryptoAmountFormatter = (config: FormatterConfig) =>
     makeFormatter<CryptoAmountFormatterInputValue, string, CryptoAmountFormatterDataContext>(
-        (value, { symbol, isBalance = false, withSymbol = true }) => {
-            const { locale, bitcoinAmountUnit } = config;
+        (value, { symbol, isBalance = false, withSymbol = true, maxDisplayedDecimals = 8 }) => {
+            const { bitcoinAmountUnit } = config;
 
-            const { features: networkFeatures, decimals } =
-                NETWORKS.find(network => network.symbol === symbol) ?? {};
+            // TS thinks that symbol is undefined, but it's required in type CryptoAmountFormatterDataContext so it's safe to use "!"
+            const { decimals } = networks[symbol!];
 
-            const areAmountUnitsSupported = !!networkFeatures?.includes('amount-unit');
+            // const areAmountUnitsSupported = A.includes(features, 'amount-unit');
+            const areAmountUnitsSupported = A.includes(COINS_WITH_SATS, symbol);
 
-            let formattedValue = value;
+            let formattedValue: string = value;
 
-            // convert to different units if needed
-            if (symbol && areAmountUnitsSupported) {
-                switch (bitcoinAmountUnit) {
-                    case PROTO.AmountUnit.SATOSHI: {
-                        formattedValue = networkAmountToSatoshi(String(value), symbol);
-                        break;
-                    }
-                    default:
-                }
+            // balances are not in sats, but already formatted to BTC so we need to convert it to  back to sats if needed
+            if (
+                isBalance &&
+                areAmountUnitsSupported &&
+                bitcoinAmountUnit === PROTO.AmountUnit.SATOSHI
+            ) {
+                formattedValue = amountToSatoshi(value, decimals);
             }
 
-            // format truncation + locale (used for balances) or just locale
-            if (isBalance) {
-                formattedValue = formatCoinBalance(String(formattedValue), locale);
-            } else {
-                const shouldBeConvertedFromSats = G.isString(value) && symbol;
-                formattedValue = shouldBeConvertedFromSats
-                    ? formatAmount(value, decimals ?? 8)
-                    : localizeNumber(formattedValue, locale, 0, decimals);
+            // if it's not balance and sats units are disabled, values other than balances are in sats so we need to convert it to BTC
+            if (
+                !isBalance &&
+                (bitcoinAmountUnit !== PROTO.AmountUnit.SATOSHI || !areAmountUnitsSupported)
+            ) {
+                formattedValue = formatAmount(value, decimals ?? 8);
             }
 
-            if (withSymbol && symbol) {
+            if (maxDisplayedDecimals) {
+                formattedValue = truncateDecimals(formattedValue, maxDisplayedDecimals);
+            }
+
+            if (withSymbol) {
                 const NetworkSymbolFormatter = prepareNetworkSymbolFormatter(config);
-                return `${formattedValue} ${NetworkSymbolFormatter.format(symbol)}`;
+                return `${formattedValue} ${NetworkSymbolFormatter.format(symbol!)}`;
             }
 
             return formattedValue;

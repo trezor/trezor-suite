@@ -95,6 +95,7 @@ export const networks = {
             tx: 'https://xrpscan.com/tx/',
             account: 'https://xrpscan.com/account/',
         },
+        features: [],
         customBackends: [],
         accountTypes: {},
     },

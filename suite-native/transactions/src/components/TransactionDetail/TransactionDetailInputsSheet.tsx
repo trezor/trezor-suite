@@ -18,7 +18,7 @@ type TransactionDetailInputsSheetProps = {
 
 type TransactionAddressAmountProps = {
     address: string;
-    amount?: string | number;
+    amount?: string;
     symbol: NetworkSymbol;
 };
 
@@ -28,7 +28,7 @@ const addressAmountColumnStyle = prepareNativeStyle(_ => ({
 
 const TransactionAddressAmount = ({
     address,
-    amount = 0,
+    amount = '0',
     symbol,
 }: TransactionAddressAmountProps) => (
     <Box>
