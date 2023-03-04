@@ -174,12 +174,12 @@ export interface CardanoReferenceInput {
 }
 
 export interface CardanoCVoteRegistrationDelegation {
-    votingPublicKey: string;
+    votePublicKey: string;
     weight: number;
 }
 
 export interface CardanoCVoteRegistrationParameters {
-    votingPublicKey?: string;
+    votePublicKey?: string;
     stakingPath: string | number[];
     paymentAddressParameters?: CardanoAddressParameters;
     nonce: string;

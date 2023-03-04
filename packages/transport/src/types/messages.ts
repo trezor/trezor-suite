@@ -833,13 +833,13 @@ export type CardanoTxWithdrawal = {
 
 // CardanoCVoteRegistrationDelegation
 export type CardanoCVoteRegistrationDelegation = {
-    voting_public_key: string;
+    vote_public_key: string;
     weight: UintType;
 };
 
 // CardanoCVoteRegistrationParametersType
 export type CardanoCVoteRegistrationParametersType = {
-    voting_public_key?: string;
+    vote_public_key?: string;
     staking_path: number[];
     payment_address_parameters?: CardanoAddressParametersType;
     nonce: UintType;

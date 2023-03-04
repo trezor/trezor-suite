@@ -323,7 +323,7 @@ export const cardanoSignTransaction = async (api: TrezorConnect) => {
         auxiliaryData: {
             hash: 'aaff00..',
             cVoteRegistrationParameters: {
-                votingPublicKey: 'aaff00..',
+                votePublicKey: 'aaff00..',
                 stakingPath: 'm/44',
                 paymentAddressParameters: {
                     addressType: CardanoAddressType.REWARD,
@@ -340,7 +340,7 @@ export const cardanoSignTransaction = async (api: TrezorConnect) => {
                 format: CardanoCVoteRegistrationFormat.CIP36,
                 delegations: [
                     {
-                        votingPublicKey: 'aaff00..',
+                        votePublicKey: 'aaff00..',
                         weight: 1,
                     },
                 ],
