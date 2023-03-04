@@ -112,7 +112,7 @@ Trezor supports signing transactions with auxiliary data containing a vote key r
 
 Trezor does not support the 1694 derivation paths at the moment.
 
-The reward address can be provided either as a `rewardAddress` string or as a `rewardAddressParameters` object. For the smoothest user experience, we recommend providing `rewardAddressParameters` of a BASE address owned by the device.
+The payment address to receive rewards can be provided either as a `paymentAddress` string or as a `paymentAddressParameters` object. For the smoothest user experience, we recommend providing `paymentAddressParameters` of a BASE address owned by the device.
 
 ### Transaction examples
 
@@ -312,7 +312,7 @@ TrezorConnect.cardanoSignTransaction({
     auxiliaryData: {
         cVoteRegistrationParameters: {
             stakingPath: "m/1852'/1815'/0'/2/0",
-            rewardAddressParameters: {
+            paymentAddressParameters: {
                 addressType: CardanoAddressType.BASE,
                 path: "m/1852'/1815'/0'/0/0",
                 stakingPath: "m/1852'/1815'/0'/2/0",

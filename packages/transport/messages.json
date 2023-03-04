@@ -2273,7 +2273,7 @@
                         "packed": false
                     }
                 },
-                "reward_address_parameters": {
+                "payment_address_parameters": {
                     "type": "CardanoAddressParametersType",
                     "id": 3
                 },
@@ -2298,7 +2298,7 @@
                     "type": "uint64",
                     "id": 7
                 },
-                "reward_address": {
+                "payment_address": {
                     "type": "string",
                     "id": 8
                 }
