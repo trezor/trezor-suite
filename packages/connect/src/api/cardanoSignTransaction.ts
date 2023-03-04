@@ -45,7 +45,7 @@ const CardanoSignTransactionFeatures = Object.freeze({
     KeyHashStakeCredential: ['0', '2.4.4'],
     Babbage: ['0', '2.5.2'],
     CIP36Registration: ['0', '2.5.3'],
-    CIP36RegistrationExternalRewardAddress: ['0', '2.5.4'],
+    CIP36RegistrationExternalPaymentAddress: ['0', '2.5.4'],
 });
 
 export type CardanoSignTransactionParams = {
@@ -343,7 +343,7 @@ export default class CardanoSignTransaction extends AbstractMethod<
         }
 
         if (params.auxiliaryData?.cvote_registration_parameters) {
-            const { format, delegations, voting_purpose, reward_address } =
+            const { format, delegations, voting_purpose, payment_address } =
                 params.auxiliaryData.cvote_registration_parameters;
             if (
                 format === PROTO.CardanoCVoteRegistrationFormat.CIP36 ||
@@ -353,8 +353,8 @@ export default class CardanoSignTransaction extends AbstractMethod<
                 this._ensureFeatureIsSupported('CIP36Registration');
             }
 
-            if (reward_address) {
-                this._ensureFeatureIsSupported('CIP36RegistrationExternalRewardAddress');
+            if (payment_address) {
+                this._ensureFeatureIsSupported('CIP36RegistrationExternalPaymentAddress');
             }
         }
     }

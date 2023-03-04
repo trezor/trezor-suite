@@ -34,6 +34,14 @@ const transformDelegation = (
 const transformCvoteRegistrationParameters = (
     cVoteRegistrationParameters: CardanoCVoteRegistrationParameters,
 ): PROTO.CardanoCVoteRegistrationParametersType => {
+    // @ts-expect-error rewardAddressParameters is a legacy param kept for backward compatibility (for now)
+    if (cVoteRegistrationParameters.rewardAddressParameters) {
+        console.warn('Please use paymentAddressParameters instead of rewardAddressParameters.');
+        cVoteRegistrationParameters.paymentAddressParameters =
+            // @ts-expect-error
+            cVoteRegistrationParameters.rewardAddressParameters;
+    }
+
     validateParams(cVoteRegistrationParameters, [
         { name: 'votingPublicKey', type: 'string' },
         { name: 'stakingPath', required: true },
@@ -43,9 +51,9 @@ const transformCvoteRegistrationParameters = (
         { name: 'votingPurpose', type: 'uint' },
         { name: 'address', type: 'string' },
     ]);
-    const { rewardAddressParameters } = cVoteRegistrationParameters;
-    if (rewardAddressParameters) {
-        validateAddressParameters(rewardAddressParameters);
+    const { paymentAddressParameters } = cVoteRegistrationParameters;
+    if (paymentAddressParameters) {
+        validateAddressParameters(paymentAddressParameters);
     }
 
     const { delegations } = cVoteRegistrationParameters;
@@ -59,14 +67,14 @@ const transformCvoteRegistrationParameters = (
     return {
         voting_public_key: cVoteRegistrationParameters.votingPublicKey,
         staking_path: validatePath(cVoteRegistrationParameters.stakingPath, 3),
-        reward_address_parameters: rewardAddressParameters
-            ? addressParametersToProto(rewardAddressParameters)
+        payment_address_parameters: paymentAddressParameters
+            ? addressParametersToProto(paymentAddressParameters)
             : undefined,
         nonce: cVoteRegistrationParameters.nonce,
         format: cVoteRegistrationParameters.format,
         delegations: delegations?.map(transformDelegation),
         voting_purpose: cVoteRegistrationParameters.votingPurpose,
-        reward_address: cVoteRegistrationParameters.rewardAddress,
+        payment_address: cVoteRegistrationParameters.paymentAddress,
     };
 };
 
@@ -98,11 +106,11 @@ export const modifyAuxiliaryDataForBackwardsCompatibility = (
     auxiliary_data: PROTO.CardanoTxAuxiliaryData,
 ): PROTO.CardanoTxAuxiliaryData => {
     const { cvote_registration_parameters } = auxiliary_data;
-    if (cvote_registration_parameters?.reward_address_parameters) {
-        cvote_registration_parameters.reward_address_parameters =
+    if (cvote_registration_parameters?.payment_address_parameters) {
+        cvote_registration_parameters.payment_address_parameters =
             modifyAddressParametersForBackwardsCompatibility(
                 device,
-                cvote_registration_parameters.reward_address_parameters,
+                cvote_registration_parameters.payment_address_parameters,
             );
 
         return {

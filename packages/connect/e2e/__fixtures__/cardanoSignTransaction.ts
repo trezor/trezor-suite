@@ -421,8 +421,8 @@ const legacyResults = {
         rules: ['<2.5.3', '1'],
         payload: false,
     },
-    beforeCIP36RegistrationExternalRewardAddress: {
-        // older FW doesn't support reward address given as a string in vote key registrations
+    beforeCIP36RegistrationExternalPaymentAddress: {
+        // older FW doesn't support payment address given as a string in vote key registrations
         rules: ['<2.5.4', '1'],
         payload: false,
     },
@@ -851,7 +851,7 @@ export default {
                         votingPublicKey:
                             '1af8fa0b754ff99253d983894e63a2b09cbb56c833ba18c3384210163f63dcfc',
                         stakingPath: "m/1852'/1815'/0'/2/0",
-                        rewardAddressParameters: {
+                        paymentAddressParameters: {
                             addressType: CardanoAddressType.REWARD,
                             path: "m/1852'/1815'/0'/2/0",
                         },
@@ -896,7 +896,7 @@ export default {
                         votingPublicKey:
                             '1af8fa0b754ff99253d983894e63a2b09cbb56c833ba18c3384210163f63dcfc',
                         stakingPath: "m/1852'/1815'/0'/2/0",
-                        rewardAddressParameters: {
+                        paymentAddressParameters: {
                             addressType: CardanoAddressType.REWARD,
                             stakingPath: "m/1852'/1815'/0'/2/0",
                         },
@@ -939,7 +939,7 @@ export default {
                 auxiliaryData: {
                     cVoteRegistrationParameters: {
                         stakingPath: "m/1852'/1815'/0'/2/0",
-                        rewardAddressParameters: {
+                        paymentAddressParameters: {
                             addressType: CardanoAddressType.BASE,
                             path: "m/1852'/1815'/0'/0/0",
                             stakingPath: "m/1852'/1815'/0'/2/0",
@@ -996,7 +996,7 @@ export default {
                 auxiliaryData: {
                     cVoteRegistrationParameters: {
                         stakingPath: "m/1852'/1815'/0'/2/0",
-                        rewardAddressParameters: {
+                        paymentAddressParameters: {
                             addressType: CardanoAddressType.BASE,
                             path: "m/1852'/1815'/0'/0/0",
                             stakingPath: "m/1852'/1815'/0'/2/0",
@@ -1040,7 +1040,7 @@ export default {
         },
 
         {
-            description: 'signTransactionWithCIP36RegistrationAndExternalRewardAddress',
+            description: 'signTransactionWithCIP36RegistrationAndExternalPaymentAddress',
             params: {
                 inputs: [SAMPLE_INPUTS.shelley_input],
                 outputs: [SAMPLE_OUTPUTS.simple_shelley_output],
@@ -1058,7 +1058,7 @@ export default {
                                 weight: 1,
                             },
                         ],
-                        rewardAddress:
+                        paymentAddress:
                             'addr1q84sh2j72ux0l03fxndjnhctdg7hcppsaejafsa84vh7lwgmcs5wgus8qt4atk45lvt4xfxpjtwfhdmvchdf2m3u3hlsd5tq5r',
                     },
                 },
@@ -1085,7 +1085,7 @@ export default {
                         'ba05ac525e5dcc74e5a6cdbb7fb111d8e21163d79fe76777a5b730fe93512f09415f6f7b4904b12c6f12fe33b6c553d9889beb024299fa1256a0d3e98c8ff203',
                 },
             },
-            legacyResults: [legacyResults.beforeCIP36RegistrationExternalRewardAddress],
+            legacyResults: [legacyResults.beforeCIP36RegistrationExternalPaymentAddress],
         },
 
         {
@@ -1774,7 +1774,7 @@ export default {
                 auxiliaryData: {
                     cVoteRegistrationParameters: {
                         stakingPath: "m/1852'/1815'/0'/2/0",
-                        rewardAddressParameters: {
+                        paymentAddressParameters: {
                             addressType: CardanoAddressType.BASE,
                             path: "m/1852'/1815'/0'/0/0",
                             stakingPath: "m/1852'/1815'/0'/2/0",

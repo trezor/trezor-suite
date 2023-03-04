@@ -325,7 +325,7 @@ export const cardanoSignTransaction = async (api: TrezorConnect) => {
             cVoteRegistrationParameters: {
                 votingPublicKey: 'aaff00..',
                 stakingPath: 'm/44',
-                rewardAddressParameters: {
+                paymentAddressParameters: {
                     addressType: CardanoAddressType.REWARD,
                     path: 'm/44',
                     stakingPath: 'm/44',
@@ -345,7 +345,7 @@ export const cardanoSignTransaction = async (api: TrezorConnect) => {
                     },
                 ],
                 votingPurpose: 0,
-                rewardAddress: 'Ae2..',
+                paymentAddress: 'Ae2..',
             },
         },
         additionalWitnessRequests: ['m/44'],
