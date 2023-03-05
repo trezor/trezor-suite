@@ -1,4 +1,4 @@
-import { transformTransaction } from '@trezor/blockchain-link/lib/workers/blockbook/utils';
+import { transformTransaction } from '@trezor/blockchain-link-utils/lib/blockbook';
 
 import type { BroadcastedTransactionDetails } from '../types';
 import type { Transaction, AccountAddresses } from '../types/backend';

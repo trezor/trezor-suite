@@ -1,7 +1,7 @@
 import { throwError } from '@trezor/utils';
 import { Api, blockheaderToBlockhash } from '../utils';
-import type { GetInfo as Req } from '../../../types/messages';
-import type { GetInfo as Res } from '../../../types/responses';
+import type { GetInfo as Req } from '@trezor/blockchain-link-types/lib/messages';
+import type { GetInfo as Res } from '@trezor/blockchain-link-types/lib/responses';
 
 const getInfo: Api<Req, Res> = client => {
     const {

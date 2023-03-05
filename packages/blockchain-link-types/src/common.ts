@@ -1,7 +1,8 @@
 import type { SocksProxyAgentOptions } from 'socks-proxy-agent';
+import type { FormattedTransactionType as RippleTransaction } from 'ripple-lib';
+
 import type { Transaction as BlockbookTransaction, VinVout } from './blockbook';
 import type { BlockfrostTransaction } from './blockfrost';
-import type { FormattedTransactionType as RippleTransaction } from 'ripple-lib';
 
 /* Common types used in both params and responses */
 

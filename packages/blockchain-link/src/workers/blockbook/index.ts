@@ -1,16 +1,16 @@
-import { CustomError } from '../../constants/errors';
-import { MESSAGES, RESPONSES } from '../../constants';
+import { CustomError } from '@trezor/blockchain-link-types/lib/constants/errors';
+import { MESSAGES, RESPONSES } from '@trezor/blockchain-link-types/lib/constants';
 import { BaseWorker, CONTEXT, ContextType } from '../base';
 import { BlockbookAPI } from './websocket';
-import * as utils from './utils';
-import type { Message, Response, SubscriptionAccountInfo } from '../../types';
+import * as utils from '@trezor/blockchain-link-utils/lib/blockbook';
+import type { Response, SubscriptionAccountInfo } from '@trezor/blockchain-link-types';
 import type {
     AddressNotification,
     BlockNotification,
     FiatRatesNotification,
     MempoolTransactionNotification,
-} from '../../types/blockbook';
-import type * as MessageTypes from '../../types/messages';
+} from '@trezor/blockchain-link-types/lib/blockbook';
+import type * as MessageTypes from '@trezor/blockchain-link-types/lib/messages';
 
 type Context = ContextType<BlockbookAPI>;
 type Request<T> = T & Context;
@@ -358,7 +358,7 @@ const unsubscribe = async (request: Request<MessageTypes.Unsubscribe>) => {
     } as const;
 };
 
-const onRequest = (request: Request<Message>) => {
+const onRequest = (request: Request<MessageTypes.Message>) => {
     switch (request.type) {
         case MESSAGES.GET_INFO:
             return getInfo(request);
@@ -437,12 +437,12 @@ class BlockbookWorker extends BaseWorker<BlockbookAPI> {
         }
     }
 
-    async messageHandler(event: { data: Message }) {
+    async messageHandler(event: { data: MessageTypes.Message }) {
         try {
             // skip processed messages
             if (await super.messageHandler(event)) return true;
 
-            const request: Request<Message> = {
+            const request: Request<MessageTypes.Message> = {
                 ...event.data,
                 connect: () => this.connect(),
                 post: (data: Response) => this.post(data),

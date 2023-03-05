@@ -29,7 +29,7 @@ workers.forEach(instance => {
             it(f.description, async () => {
                 server.setFixtures(f.serverFixtures);
                 try {
-                    // @ts-expect-error incorrect params
+                    // @ts-expect-error
                     const response = await blockchain.getAccountInfo(f.params);
                     expect(response).toEqual(f.response);
                 } catch (error) {

@@ -1,12 +1,13 @@
-import { CustomError } from '../../constants/errors';
-import { MESSAGES, RESPONSES } from '../../constants';
+import { CustomError } from '@trezor/blockchain-link-types/lib/constants/errors';
+import { MESSAGES, RESPONSES } from '@trezor/blockchain-link-types/lib/constants';
 import { BaseWorker, CONTEXT, ContextType } from '../base';
 import * as M from './methods';
 import * as L from './listeners';
 import { createSocket } from './sockets';
 import { CachingElectrumClient } from './client/caching';
 import type { ElectrumClient } from './client/electrum';
-import type { Message, Response } from '../../types';
+import type { Response } from '@trezor/blockchain-link-types';
+import { Message } from '@trezor/blockchain-link-types/lib/messages';
 
 type BlockListener = ReturnType<typeof L.blockListener>;
 type TxListener = ReturnType<typeof L.txListener>;

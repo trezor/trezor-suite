@@ -2,13 +2,17 @@ import * as WebSocket from 'ws';
 import { EventEmitter } from 'events';
 import { createDeferred, Deferred } from '@trezor/utils/lib/createDeferred';
 
-import { CustomError } from '../../constants/errors';
-import type { Send, BlockContent, BlockfrostTransaction } from '../../types/blockfrost';
+import { CustomError } from '@trezor/blockchain-link-types/lib/constants/errors';
+import type {
+    Send,
+    BlockContent,
+    BlockfrostTransaction,
+} from '@trezor/blockchain-link-types/lib/blockfrost';
 import type {
     AccountInfoParams,
     EstimateFeeParams,
     AccountBalanceHistoryParams,
-} from '../../types/params';
+} from '@trezor/blockchain-link-types/lib/params';
 
 const NOT_INITIALIZED = new CustomError('websocket_not_initialized');
 

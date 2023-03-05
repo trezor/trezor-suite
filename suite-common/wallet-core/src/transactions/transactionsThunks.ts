@@ -87,6 +87,7 @@ export const replaceTransactionThunk = createThunk(
 );
 
 export const addFakePendingTxThunk = createThunk(
+export const addFakePendingCardanoTxThunk = createThunk(
     `${modulePrefix}/addFakePendingTransaction`,
     (
         {
@@ -111,6 +112,7 @@ export const addFakePendingTxThunk = createThunk(
             amount: precomposedTx.totalSpent,
             fee: precomposedTx.fee,
             totalSpent: precomposedTx.totalSpent,
+            feeRate: '0',
             targets: [],
             tokens: [],
             cardanoSpecific: {

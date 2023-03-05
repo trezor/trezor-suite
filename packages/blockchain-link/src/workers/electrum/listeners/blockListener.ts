@@ -1,8 +1,8 @@
 import { throwError } from '@trezor/utils';
-import { RESPONSES } from '../../../constants';
+import { RESPONSES } from '@trezor/blockchain-link-types/lib/constants';
 import { blockheaderToBlockhash } from '../utils';
 import type { BaseWorker } from '../../base';
-import type { BlockHeader, ElectrumAPI } from '../../../types/electrum';
+import type { BlockHeader, ElectrumAPI } from '@trezor/blockchain-link-types/lib/electrum';
 
 export const blockListener = (worker: BaseWorker<ElectrumAPI>) => {
     const { state } = worker;
