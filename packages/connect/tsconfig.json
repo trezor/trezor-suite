@@ -5,6 +5,7 @@
     "references": [
         { "path": "../blockchain-link" },
         { "path": "../connect-common" },
+        { "path": "../crypto-utils" },
         { "path": "../transport" },
         { "path": "../utils" },
         { "path": "../utxo-lib" },

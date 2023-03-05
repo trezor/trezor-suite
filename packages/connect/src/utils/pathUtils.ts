@@ -1,17 +1,16 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/utils/pathUtils.js
+import { toHardened, fromHardened, getSerializedPath } from '@trezor/crypto-utils';
 
 import { PROTO, ERRORS } from '../constants';
 import type { CoinInfo } from '../types';
-
-export const HD_HARDENED = 0x80000000;
-export const toHardened = (n: number) => (n | HD_HARDENED) >>> 0;
-export const fromHardened = (n: number) => (n & ~HD_HARDENED) >>> 0;
 
 const PATH_NOT_VALID = ERRORS.TypedError('Method_InvalidParameter', 'Not a valid path');
 const PATH_NEGATIVE_VALUES = ERRORS.TypedError(
     'Method_InvalidParameter',
     'Path cannot contain negative values',
 );
+
+export { toHardened, fromHardened, getSerializedPath };
 
 export const getHDPath = (path: string): number[] => {
     const parts = path.toLowerCase().split('/');
@@ -159,17 +158,6 @@ export const validatePath = (path: string | number[], length = 0, base = false):
     if (length > 0 && valid.length < length) throw PATH_NOT_VALID;
     return base ? valid.splice(0, 3) : valid;
 };
-
-export const getSerializedPath = (path: number[]) =>
-    `m/${path
-        .map(i => {
-            const s = (i & ~HD_HARDENED).toString();
-            if (i & HD_HARDENED) {
-                return `${s}'`;
-            }
-            return s;
-        })
-        .join('/')}`;
 
 export const getPathFromIndex = (bip44purpose: number, bip44cointype: number, index: number) => [
     toHardened(bip44purpose),
