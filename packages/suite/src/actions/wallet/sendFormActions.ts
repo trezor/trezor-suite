@@ -19,8 +19,8 @@ import {
     formatAmount,
     getAccountDecimals,
     hasNetworkFeatures,
+    cardanoUtils,
 } from '@suite-common/wallet-utils';
-import { isCardanoTx } from '@wallet-utils/cardanoUtils';
 import { Dispatch, GetState } from '@suite-types';
 import { Account } from '@wallet-types';
 import {
@@ -279,7 +279,7 @@ const pushTransaction = () => async (dispatch: Dispatch, getState: GetState) => 
         if (metadata.enabled) {
             const { precomposedForm } = getState().wallet.send;
             let outputsPermutation: number[];
-            if (isCardanoTx(account, precomposedTx)) {
+            if (cardanoUtils.isCardanoTx(account, precomposedTx)) {
                 // cardano preserves order of outputs
                 outputsPermutation = precomposedTx?.transaction.outputs.map((_o, i) => i);
             } else {
@@ -359,7 +359,7 @@ export const signTransaction =
             rbf: formValues.options.includes('bitcoinRBF'),
         };
 
-        if (formValues.rbfParams && !isCardanoTx(account, enhancedTxInfo)) {
+        if (formValues.rbfParams && !cardanoUtils.isCardanoTx(account, enhancedTxInfo)) {
             enhancedTxInfo.prevTxid = formValues.rbfParams.txid;
             enhancedTxInfo.feeDifference = new BigNumber(transactionInfo.fee)
                 .minus(formValues.rbfParams.baseFee)
@@ -385,7 +385,7 @@ export const signTransaction =
         // signTransaction by Trezor
         let serializedTx: string | undefined;
         // Type guard to differentiate between PrecomposedTransactionFinal and PrecomposedTransactionFinalCardano
-        if (isCardanoTx(account, enhancedTxInfo)) {
+        if (cardanoUtils.isCardanoTx(account, enhancedTxInfo)) {
             serializedTx = await dispatch(
                 sendFormCardanoActions.signTransaction(formValues, enhancedTxInfo),
             );

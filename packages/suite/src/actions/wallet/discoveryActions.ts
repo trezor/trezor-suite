@@ -16,8 +16,7 @@ import { NETWORKS } from '@wallet-config';
 import { Dispatch, GetState, TrezorDevice } from '@suite-types';
 import { Account } from '@wallet-types';
 import { DiscoveryItem } from '@suite-common/wallet-types';
-import { getDerivationType } from '@wallet-utils/cardanoUtils';
-import { isTrezorConnectBackendType } from '@suite-common/wallet-utils';
+import { isTrezorConnectBackendType, cardanoUtils } from '@suite-common/wallet-utils';
 import { getDeviceModel, getFirmwareVersion } from '@trezor/device-utils';
 
 export type DiscoveryAction =
@@ -206,7 +205,7 @@ const getBundle =
                     pageSize: SETTINGS.TXS_PER_PAGE,
                     accountType,
                     networkType: configNetwork.networkType,
-                    derivationType: getDerivationType(accountType),
+                    derivationType: cardanoUtils.getDerivationType(accountType),
                 });
             }
         });
@@ -251,17 +250,17 @@ const getAvailableCardanoDerivations =
         };
         const icarusPubKeyResult = await TrezorConnect.cardanoGetPublicKey({
             ...commonParams,
-            derivationType: getDerivationType('normal'),
+            derivationType: cardanoUtils.getDerivationType('normal'),
         });
 
         const icarusTrezorPubKeyResult = await TrezorConnect.cardanoGetPublicKey({
             ...commonParams,
-            derivationType: getDerivationType('legacy'),
+            derivationType: cardanoUtils.getDerivationType('legacy'),
         });
 
         const ledgerPubKeyResult = await TrezorConnect.cardanoGetPublicKey({
             ...commonParams,
-            derivationType: getDerivationType('ledger'),
+            derivationType: cardanoUtils.getDerivationType('ledger'),
         });
 
         if (

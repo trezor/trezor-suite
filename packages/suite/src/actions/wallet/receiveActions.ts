@@ -4,13 +4,7 @@ import * as suiteActions from '@suite-actions/suiteActions';
 import * as modalActions from '@suite-actions/modalActions';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { GetState, Dispatch } from '@suite-types';
-import {
-    getStakingPath,
-    getProtocolMagic,
-    getNetworkId,
-    getAddressType,
-    getDerivationType,
-} from '@wallet-utils/cardanoUtils';
+import { cardanoUtils } from '@suite-common/wallet-utils';
 
 export type ReceiveAction =
     | { type: typeof RECEIVE.DISPOSE }
@@ -107,13 +101,13 @@ export const showAddress =
                     device,
                     useEmptyPassphrase: device.useEmptyPassphrase,
                     addressParameters: {
-                        stakingPath: getStakingPath(account),
-                        addressType: getAddressType(account.accountType),
+                        stakingPath: cardanoUtils.getStakingPath(account),
+                        addressType: cardanoUtils.getAddressType(account.accountType),
                         path,
                     },
-                    protocolMagic: getProtocolMagic(account.symbol),
-                    networkId: getNetworkId(account.symbol),
-                    derivationType: getDerivationType(account.accountType),
+                    protocolMagic: cardanoUtils.getProtocolMagic(account.symbol),
+                    networkId: cardanoUtils.getNetworkId(account.symbol),
+                    derivationType: cardanoUtils.getDerivationType(account.accountType),
                 });
                 break;
             case 'ripple':
