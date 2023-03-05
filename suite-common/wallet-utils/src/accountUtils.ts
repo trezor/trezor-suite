@@ -800,6 +800,15 @@ export const getUtxoFromSignedTransaction = (
     return utxo;
 };
 
+// TODO: isn't such util somewhere?
+/**
+ * Returns concatenation of addresses.unused, addresses.used, addresses.changed
+ */
+export const getAccountAddresses = (account: Account) =>
+    account.addresses
+        ? account.addresses.unused.concat(account.addresses.used).concat(account.addresses.change)
+        : [];
+
 // update account before BLOCKCHAIN.NOTIFICATION or BLOCKCHAIN.BLOCK events
 // solves race condition between pushing transaction and received notification
 export const getPendingAccount = (
@@ -824,11 +833,8 @@ export const getPendingAccount = (
 
     if (!tx.prevTxid) {
         // join all account addresses
-        const addresses = account.addresses
-            ? account.addresses.unused
-                  .concat(account.addresses.used)
-                  .concat(account.addresses.change)
-            : [];
+
+        const addresses = getAccountAddresses(account);
 
         tx.transaction.outputs.forEach(output => {
             if ('address' in output) {
@@ -848,6 +854,45 @@ export const getPendingAccount = (
         availableBalance,
         formattedBalance: formatNetworkAmount(availableBalance, account.symbol),
         utxo,
+    };
+};
+
+// TODO: this is very similar to getPendingAccount
+/**
+ * - increases availableBalance
+ * - TODO: mark receiving address as used
+ * - TODO: add a new utxo
+ */
+export const getPendingReceivingAccount = (account: Account, tx: PrecomposedTransactionFinal) => {
+    // TODO: implement ETH
+    if (tx.type !== 'final' || account.networkType !== 'bitcoin') return;
+
+    // todo: not sure about this
+    if (tx.useDecreaseOutput) return;
+    // calculate availableBalance
+    let availableBalanceBig = new BigNumber(account.availableBalance);
+
+    if (!tx.prevTxid) {
+        // join all account addresses
+        const addresses = getAccountAddresses(account);
+
+        tx.transaction.outputs.forEach(output => {
+            if ('address' in output) {
+                // find self address
+                if (addresses.find(a => a.address === output.address)) {
+                    // append self outputs to balance
+                    availableBalanceBig = availableBalanceBig.plus(output.amount);
+                }
+            }
+        });
+    }
+
+    const availableBalance = availableBalanceBig.toString();
+
+    return {
+        ...account,
+        availableBalance,
+        formattedBalance: formatNetworkAmount(availableBalance, account.symbol),
     };
 };
 

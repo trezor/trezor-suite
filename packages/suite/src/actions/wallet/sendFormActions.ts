@@ -1,7 +1,9 @@
 import TrezorConnect, { PROTO } from '@trezor/connect';
 import BigNumber from 'bignumber.js';
+
 import {
     accountsActions,
+    addFakePendingCardanoTxThunk,
     addFakePendingTxThunk,
     replaceTransactionThunk,
     syncAccountsWithBlockchainThunk,
@@ -258,14 +260,34 @@ const pushTransaction = () => async (dispatch: Dispatch, getState: GetState) => 
         // notification from the backend may be delayed.
         // modify affected account balance.
         // TODO: make it work with ETH accounts
-        const pendingAccount = getPendingAccount(account, precomposedTx, txid);
-        if (pendingAccount) {
-            // update account
-            dispatch(accountsActions.updateAccount(pendingAccount));
-            if (account.networkType === 'cardano') {
+        // todo: general logic for bitcoin-like should be able to handle also cardano and ethereum?
+        if (account.networkType === 'cardano') {
+            const pendingAccount = getPendingAccount(account, precomposedTx, txid);
+            if (pendingAccount) {
                 // manually add fake pending tx as we don't have the data about mempool txs
-                dispatch(addFakePendingTxThunk({ precomposedTx, txid, account: pendingAccount }));
+                dispatch(
+                    addFakePendingCardanoTxThunk({
+                        precomposedTx,
+                        txid,
+                        account,
+                    }),
+                );
+                dispatch(accountsActions.updateAccount(pendingAccount));
             }
+        }
+
+        // creating pending transaction with local data. at this moment, we do it only for bitcoin-join account
+        if (
+            account.networkType === 'bitcoin' &&
+            !cardanoUtils.isCardanoTx(account, precomposedTx)
+        ) {
+            dispatch(
+                addFakePendingTxThunk({
+                    transaction: precomposedTx,
+                    txid,
+                    account,
+                }),
+            );
         }
 
         if (account.networkType !== 'bitcoin' && account.networkType !== 'cardano') {

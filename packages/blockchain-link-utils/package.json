@@ -12,8 +12,8 @@
         "build:lib": "rimraf ./lib && yarn tsc --build tsconfig.lib.json"
     },
     "dependencies": {
-        "@trezor/transport": "workspace:1.1.7",
-        "@trezor/utils": "workspace:9.0.5",
+        "@trezor/transport": "workspace:1.1.8",
+        "@trezor/utils": "workspace:9.0.6",
         "bignumber.js": "^9.1.1"
     },
     "devDependencies": {
