@@ -1,5 +1,5 @@
 import { BlockbookAPI } from '@trezor/blockchain-link/lib/workers/blockbook/websocket';
-import { transformAccountInfo } from '@trezor/blockchain-link/src/workers/blockbook/utils';
+import { blockbookUtils } from '@trezor/blockchain-link-utils';
 
 import { CoinjoinBackend } from '../../src';
 import { COINJOIN_BACKEND_SETTINGS } from '../fixtures/config.fixture';
@@ -30,7 +30,7 @@ describe.skip(`CoinjoinBackend`, () => {
                 descriptor: SEGWIT_RECEIVE_ADDRESSES[0],
                 details: 'txs',
             })
-            .then(transformAccountInfo);
+            .then(blockbookUtils.transformAccountInfo);
         const info = await backend.scanAddress({
             descriptor: SEGWIT_RECEIVE_ADDRESSES[0],
         });
@@ -43,7 +43,7 @@ describe.skip(`CoinjoinBackend`, () => {
                 descriptor: SEGWIT_XPUB,
                 details: 'txs',
             })
-            .then(transformAccountInfo);
+            .then(blockbookUtils.transformAccountInfo);
         const info = await backend.scanAccount({
             descriptor: SEGWIT_XPUB,
         });

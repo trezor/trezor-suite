@@ -1,12 +1,12 @@
 import { EventEmitter } from 'events';
 import { createDeferred, Deferred } from '@trezor/utils/lib/createDeferred';
-import { CustomError } from './constants/errors';
-import { MESSAGES, RESPONSES } from './constants';
+import { CustomError } from '@trezor/blockchain-link-types/lib/constants/errors';
+import { MESSAGES, RESPONSES } from '@trezor/blockchain-link-types/lib/constants';
 import { Throttler } from './workers/throttler';
-import type { BlockchainSettings } from './types';
-import type * as ResponseTypes from './types/responses';
-import type * as MessageTypes from './types/messages';
-import type { Events } from './types/events';
+import type { BlockchainSettings } from '@trezor/blockchain-link-types';
+import type * as ResponseTypes from '@trezor/blockchain-link-types/lib/responses';
+import type * as MessageTypes from '@trezor/blockchain-link-types/lib/messages';
+import type { Events } from '@trezor/blockchain-link-types/lib/events';
 
 const workerWrapper = (factory: BlockchainSettings['worker']): Worker => {
     if (typeof factory === 'function') return factory();
@@ -354,8 +354,13 @@ export type BlockchainLinkResponse<T extends keyof BlockchainLinkInterface> =
         : never;
 
 // reexport types
-export type { Message } from './types/messages';
-export type { Response, BlockEvent, NotificationEvent, FiatRatesEvent } from './types/responses';
+export type { Message } from '@trezor/blockchain-link-types/lib/messages';
+export type {
+    Response,
+    BlockEvent,
+    NotificationEvent,
+    FiatRatesEvent,
+} from '@trezor/blockchain-link-types/lib/responses';
 export type {
     Address,
     AccountAddresses,
@@ -373,4 +378,4 @@ export type {
     TransactionDetail,
     TypedRawTransaction,
     Utxo,
-} from './types/common';
+} from '@trezor/blockchain-link-types/lib/common';

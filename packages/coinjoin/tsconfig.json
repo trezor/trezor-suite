@@ -3,6 +3,8 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../blockchain-link" },
+        { "path": "../blockchain-link-types" },
+        { "path": "../blockchain-link-utils" },
         { "path": "../utils" },
         { "path": "../utxo-lib" }
     ]

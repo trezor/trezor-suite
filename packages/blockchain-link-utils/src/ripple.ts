@@ -1,6 +1,4 @@
-import { RippleError } from 'ripple-lib/dist/npm/common/errors';
-import { CustomError } from '../../constants/errors';
-import type { Transaction } from '../../types/common';
+import type { Transaction } from '@trezor/blockchain-link-types';
 
 // export const transformServerInfo = (payload: GetServerInfoResponse) => {
 export const transformServerInfo = (payload: any) => ({
@@ -12,18 +10,6 @@ export const transformServerInfo = (payload: any) => ({
     blockHeight: payload.validatedLedger.ledgerVersion,
     blockHash: payload.validatedLedger.hash,
 });
-
-export const transformError = (error: any) => {
-    if (error instanceof RippleError) {
-        const code =
-            error.name === 'TimeoutError' ? 'websocket_timeout' : 'websocket_error_message';
-        if (error.data) {
-            return new CustomError(code, `${error.name} ${error.data.error_message}`);
-        }
-        return new CustomError(code, error.toString());
-    }
-    return error;
-};
 
 // export const concatTransactions = (
 //     txs: Array<Transaction>,

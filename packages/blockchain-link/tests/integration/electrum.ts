@@ -1,6 +1,6 @@
 import ElectrumWorker from '../../lib/workers/electrum';
 import type { Message, Response } from '../../src/types';
-import { GET_ACCOUNT_INFO, HANDSHAKE } from '../../src/constants/messages';
+import { GET_ACCOUNT_INFO, HANDSHAKE } from '@trezor/blockchain-link-types/lib/constants/messages';
 
 const TCP_CONFIG = '127.0.0.1:50001:t';
 const NETWORK = 'REGTEST';

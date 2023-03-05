@@ -1,5 +1,5 @@
 import { ElectrumClient } from './electrum';
-import { Status } from '../../../types/electrum';
+import { Status } from '@trezor/blockchain-link-types/lib/electrum';
 
 type Cache = {
     [descriptor: string]: [Status, any];

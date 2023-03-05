@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { Addresses, filterTargets, enhanceVinVout, sumVinVout, transformTarget } from '../utils';
+
 import type {
     Utxo,
     Transaction,
@@ -8,14 +8,16 @@ import type {
     Address,
     AccountAddresses,
     AccountInfo,
-} from '../../types';
+} from '@trezor/blockchain-link-types';
 import type {
     ServerInfo,
     AccountInfo as BlockbookAccountInfo,
     AccountUtxo as BlockbookAccountUtxo,
     Transaction as BlockbookTransaction,
     VinVout,
-} from '../../types/blockbook';
+} from '@trezor/blockchain-link-types/lib/blockbook';
+
+import { Addresses, filterTargets, enhanceVinVout, sumVinVout, transformTarget } from './utils';
 
 export const transformServerInfo = (payload: ServerInfo) => ({
     name: payload.name,

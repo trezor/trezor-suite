@@ -1,5 +1,5 @@
-import { HANDSHAKE } from '../constants/messages';
-import * as RESPONSES from '../constants/responses';
+import { HANDSHAKE } from './constants/messages';
+import * as RESPONSES from './constants/responses';
 import type {
     ServerInfo,
     AccountInfo,

@@ -6,11 +6,11 @@ import type {
     AccountAddresses,
     AccountInfo as AccountInfoBase,
     EnhancedVinVout,
-} from '@trezor/blockchain-link/lib/types';
+} from '@trezor/blockchain-link-types';
 import type {
     Transaction as BlockbookTransaction,
     VinVout,
-} from '@trezor/blockchain-link/lib/types/blockbook';
+} from '@trezor/blockchain-link-types/lib/blockbook';
 
 import type { CoinjoinBackendClient } from '../backend/CoinjoinBackendClient';
 import type { MempoolController } from '../backend/CoinjoinMempoolController';

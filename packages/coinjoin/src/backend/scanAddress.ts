@@ -1,4 +1,4 @@
-import { transformTransaction } from '@trezor/blockchain-link/lib/workers/blockbook/utils';
+import { transformTransaction } from '@trezor/blockchain-link-utils/lib/blockbook';
 
 import { getAddressScript, getFilter } from './filters';
 import { doesTxContainAddress } from './backendUtils';
