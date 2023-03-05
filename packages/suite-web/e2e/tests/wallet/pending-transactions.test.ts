@@ -4,7 +4,7 @@
 describe('Use regtest to test pending transactions', () => {
     const ADDRESS_ACCOUNT_1_INDEX_1 = 'bcrt1qkvwu9g3k2pdxewfqr7syz89r3gj557l374sg5v';
     const ADDRESS_ACCOUNT_2_INDEX_1 = 'bcrt1q7r9yvcdgcl6wmtta58yxf29a8kc96jkyyk8fsw';
-    const ADDRESS_ACCOUNT_3_INDEX_1 = 'bcrt1q3j2fqzfqndv4gxhf9q0nvvxgceur8mhum8xpwj'; // miner
+    const ADDRESS_ACCOUNT_3_INDEX_1 = 'bcrt1q3j2fqzfqndv4gxhf9q0nvvxgceur8mhum8xpwj'; // "miner" account
 
     beforeEach(() => {
         cy.task('startEmu', { wipe: true });
@@ -18,7 +18,6 @@ describe('Use regtest to test pending transactions', () => {
         cy.toggleDebugModeInSettings();
         cy.getTestElement('@settings/wallet/network/btc').click({ force: true });
         cy.getTestElement('@settings/wallet/network/regtest').click({ force: true });
-        // send 1 regtest bitcoin to first address in the derivation path
         [
             { address: ADDRESS_ACCOUNT_1_INDEX_1, amount: 10 },
             { address: ADDRESS_ACCOUNT_2_INDEX_1, amount: 10 },
@@ -41,17 +40,26 @@ describe('Use regtest to test pending transactions', () => {
             cy.getTestElement('@wallet/menu/wallet-send').click();
             cy.getTestElement('outputs[0].amount').type('0.3');
             cy.getTestElement('outputs[0].address').type(address);
+            // lets have 2 outputs (we want to make sure there is only 1 prepending transaction)
+            cy.getTestElement('add-output').click();
+            cy.getTestElement('outputs[1].amount').type('0.7');
+            cy.getTestElement('outputs[1].address').type(address);
             cy.getTestElement('@send/review-button').click();
             cy.getTestElement('@prompts/confirm-on-device');
             cy.task('pressYes');
             cy.task('pressYes');
             cy.task('pressYes');
             cy.getTestElement('@modal/send').click();
-            cy.getTestElement('@transaction-group/pending/count').contains(index + 1);
+
             cy.getTestElement('@wallet/accounts/transaction-list/group/0').within(() => {
+                // pre-pending is immediately created and placed in "pending transactions group"
+                cy.getTestElement('@transaction-item/0/prepending/heading');
+                // however, after a while it is replaced by a standard pending transaction
                 cy.getTestElement(`@transaction-item/0/heading`).click({
                     scrollBehavior: 'bottom',
                 });
+                // count has not changed
+                cy.getTestElement('@transaction-group/pending/count').contains(index + 1);
             });
             cy.getTestElement('@tx-detail/txid-value').then($el => {
                 cy.task('set', { key: address, value: $el.text() });
@@ -79,19 +87,35 @@ describe('Use regtest to test pending transactions', () => {
             cy.getTestElement('@transaction-item/1/heading').contains('Sending REGTEST to myself');
         });
 
+        // mine block, but none of the pending transactions
+        cy.task('generateBlock', {
+            address: ADDRESS_ACCOUNT_3_INDEX_1,
+            txids: [],
+        });
+        cy.wait(2000); // wait for potential notification about mined txs
+        // nothing has changed
+        cy.getTestElement('@wallet/accounts/transaction-list/group/0').within(() => {
+            cy.getTestElement('@transaction-item/0/heading').contains('Sending REGTEST');
+            cy.getTestElement('@transaction-item/1/heading').contains('Sending REGTEST to myself');
+        });
+
         // mine the "not-self" transaction
         cy.task('get', { key: ADDRESS_ACCOUNT_2_INDEX_1 }).then(txid => {
-            cy.wait(1000);
+            // time-to-time getting 'missing-or-spent' error from regtest without this wait
+            cy.wait(500);
             cy.task('generateBlock', {
                 address: ADDRESS_ACCOUNT_3_INDEX_1,
                 txids: [txid],
             });
         });
-
         // which causes sent transaction to disappear, self transaction stays
         cy.getTestElement('@wallet/accounts/transaction-list/group/0').within(() => {
             cy.getTestElement('@transaction-item/0/heading').contains('Sending REGTEST to myself');
             cy.getTestElement('@transaction-group/pending/count').contains(1);
+        });
+        // and new group of transactions appears with the previously pending transaction now confirmed
+        cy.getTestElement('@wallet/accounts/transaction-list/group/1').within(() => {
+            cy.getTestElement('@transaction-item/0/heading').contains('Sent REGTEST');
         });
 
         // receive pending transaction on account2 is now mined as well
