@@ -9,6 +9,7 @@ import {
 } from '@suite-common/wallet-types';
 import { AccountMetadata } from '@suite-common/metadata-types';
 import { AccountAddress, AccountTransaction } from '@trezor/connect';
+import { arrayPartition } from '@trezor/utils';
 
 import { formatAmount, formatNetworkAmount } from './accountUtils';
 import { toFiatCurrency } from './fiatConverterUtils';
@@ -271,7 +272,12 @@ const filterAnalyzeResult = (result: Analyze) => {
     };
 };
 
-export const analyzeTransactions = (fresh: AccountTransaction[], known: AccountTransaction[]) => {
+export const analyzeTransactions = (
+    fresh: AccountTransaction[],
+    known: WalletAccountTransaction[],
+    context: { blockHeight: number },
+) => {
+    const { blockHeight } = context;
     let addTxs: AccountTransaction[] = [];
     const newTxs: AccountTransaction[] = [];
     let firstKnownIndex = 0;
@@ -287,20 +293,29 @@ export const analyzeTransactions = (fresh: AccountTransaction[], known: AccountT
         };
     }
 
+    const [knownPrepending, knownRest] = arrayPartition(known, tx => {
+        if ('deadline' in tx) return true;
+        return false;
+    });
+
+    const removePrepending = knownPrepending.filter(
+        tx =>
+            ('deadline' in tx && tx.deadline && tx?.deadline < blockHeight) ||
+            fresh.find(fTx => fTx.txid === tx.txid),
+    );
     // If there are no known confirmed txs
     // remove all known and add all fresh
-    const gotConfirmedTxs = known.some(tx => !isPending(tx));
+    const gotConfirmedTxs = knownRest.some(tx => !isPending(tx));
     if (!gotConfirmedTxs) {
         return filterAnalyzeResult({
             newTransactions: fresh.filter(tx => !isPending(tx)),
             add: fresh,
-            remove: known,
+            remove: [...knownRest, ...removePrepending],
         });
     }
 
     // make sure the known transactions are sorted properly
-    const knownSorted = known.filter(tx => tx != null).sort(sortByBlockHeight);
-
+    const knownSorted = knownRest.filter(tx => tx != null).sort(sortByBlockHeight);
     // run thru all fresh txs
     fresh.forEach((tx, i) => {
         const height = tx.blockHeight;
@@ -349,7 +364,7 @@ export const analyzeTransactions = (fresh: AccountTransaction[], known: AccountT
     return filterAnalyzeResult({
         newTransactions: newTxs,
         add: addTxs,
-        remove: knownSorted.slice(0, sliceIndex),
+        remove: [...knownSorted.slice(0, sliceIndex), ...removePrepending],
     });
 };
 
