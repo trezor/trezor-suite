@@ -1,5 +1,3 @@
-import { A, pipe } from '@mobily/ts-belt';
-
 import { makeFormatter } from '../makeFormatter';
 import { FormatterConfig } from '../types';
 import { prepareDateFormatter } from './prepareDateFormatter';
@@ -11,5 +9,5 @@ export const prepareDateTimeFormatter = (config: FormatterConfig) =>
         const DateFormatter = prepareDateFormatter(config);
         const TimeFormatter = prepareTimeFormatter(config);
 
-        return pipe([TimeFormatter.format(value), DateFormatter.format(value)], A.join(' '));
+        return `${DateFormatter.format(value)}, ${TimeFormatter.format(value)}`;
     });

@@ -23,7 +23,7 @@ export const AxisLabel = ({ x, value }: AxisLabelProps) => {
 
     return (
         <View style={applyStyle(axisLabelStyle, { x })}>
-            <FiatAmountFormatter value={value} />
+            <FiatAmountFormatter value={String(value)} />
         </View>
     );
 };
