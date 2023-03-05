@@ -1,12 +1,19 @@
-import { CustomError } from '../../constants/errors';
-import { MESSAGES, RESPONSES } from '../../constants';
+import { CustomError } from '@trezor/blockchain-link-types/lib/constants/errors';
+import { MESSAGES, RESPONSES } from '@trezor/blockchain-link-types/lib/constants';
 import { BaseWorker, CONTEXT, ContextType } from '../base';
 import { BlockfrostAPI } from './websocket';
-import { transformUtxos, transformAccountInfo, transformTransaction } from './utils';
-import type { SubscriptionAccountInfo } from '../../types/common';
-import type { Response, Message } from '../../types';
-import type { BlockfrostTransaction, BlockContent } from '../../types/blockfrost';
-import type * as MessageTypes from '../../types/messages';
+import {
+    transformUtxos,
+    transformAccountInfo,
+    transformTransaction,
+} from '@trezor/blockchain-link-utils/lib/blockfrost';
+import type { SubscriptionAccountInfo } from '@trezor/blockchain-link-types/lib/common';
+import type { Response } from '@trezor/blockchain-link-types';
+import type {
+    BlockfrostTransaction,
+    BlockContent,
+} from '@trezor/blockchain-link-types/lib/blockfrost';
+import type * as MessageTypes from '@trezor/blockchain-link-types/lib/messages';
 
 type Context = ContextType<BlockfrostAPI>;
 type Request<T> = T & Context;
@@ -243,7 +250,7 @@ const unsubscribe = async (request: Request<MessageTypes.Unsubscribe>) => {
     } as const;
 };
 
-const onRequest = (request: Request<Message>) => {
+const onRequest = (request: Request<MessageTypes.Message>) => {
     switch (request.type) {
         case MESSAGES.GET_INFO:
             return getInfo(request);
@@ -314,12 +321,12 @@ class BlockfrostWorker extends BaseWorker<BlockfrostAPI> {
         }
     }
 
-    async messageHandler(event: { data: Message }) {
+    async messageHandler(event: { data: MessageTypes.Message }) {
         try {
             // skip processed messages
             if (await super.messageHandler(event)) return true;
 
-            const request: Request<Message> = {
+            const request: Request<MessageTypes.Message> = {
                 ...event.data,
                 connect: () => this.connect(),
                 post: (data: Response) => this.post(data),

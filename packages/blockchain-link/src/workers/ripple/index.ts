@@ -1,12 +1,12 @@
 import { RippleAPI, APIOptions } from 'ripple-lib';
 import { RippleError } from 'ripple-lib/dist/npm/common/errors';
 import BigNumber from 'bignumber.js';
-import { CustomError } from '../../constants/errors';
-import { MESSAGES, RESPONSES } from '../../constants';
+import { CustomError } from '@trezor/blockchain-link-types/lib/constants/errors';
+import { MESSAGES, RESPONSES } from '@trezor/blockchain-link-types/lib/constants';
 import { BaseWorker, CONTEXT, ContextType } from '../base';
-import * as utils from './utils';
-import type { Message, Response, SubscriptionAccountInfo, AccountInfo } from '../../types';
-import type * as MessageTypes from '../../types/messages';
+import * as utils from '@trezor/blockchain-link-utils/lib/ripple';
+import type { Response, SubscriptionAccountInfo, AccountInfo } from '@trezor/blockchain-link-types';
+import type * as MessageTypes from '@trezor/blockchain-link-types/lib/messages';
 
 type Context = ContextType<RippleAPI>;
 type Request<T> = T & Context;
@@ -16,6 +16,18 @@ const DEFAULT_PING_TIMEOUT = 3 * 60 * 1000;
 const RESERVE = {
     BASE: '10000000',
     OWNER: '2000000',
+};
+
+const transformError = (error: any) => {
+    if (error instanceof RippleError) {
+        const code =
+            error.name === 'TimeoutError' ? 'websocket_timeout' : 'websocket_error_message';
+        if (error.data) {
+            return new CustomError(code, `${error.name} ${error.data.error_message}`);
+        }
+        return new CustomError(code, error.toString());
+    }
+    return error;
 };
 
 const getInfo = async (request: Request<MessageTypes.GetInfo>) => {
@@ -377,7 +389,7 @@ const unsubscribe = async (request: Request<MessageTypes.Unsubscribe>) => {
     } as const;
 };
 
-const onRequest = (request: Request<Message>) => {
+const onRequest = (request: Request<MessageTypes.Message>) => {
     switch (request.type) {
         case MESSAGES.GET_INFO:
             return getInfo(request);
@@ -456,12 +468,12 @@ class RippleWorker extends BaseWorker<RippleAPI> {
         }
     }
 
-    async messageHandler(event: { data: Message }) {
+    async messageHandler(event: { data: MessageTypes.Message }) {
         try {
             // skip processed messages
             if (await super.messageHandler(event)) return true;
 
-            const request: Request<Message> = {
+            const request: Request<MessageTypes.Message> = {
                 ...event.data,
                 connect: () => this.connect(),
                 post: (data: Response) => this.post(data),
@@ -471,7 +483,7 @@ class RippleWorker extends BaseWorker<RippleAPI> {
             const response = await onRequest(request);
             this.post({ id: event.data.id, ...response });
         } catch (error) {
-            this.errorResponse(event.data.id, utils.transformError(error));
+            this.errorResponse(event.data.id, transformError(error));
         } finally {
             if (event.data.type !== MESSAGES.DISCONNECT) {
                 // reset timeout

@@ -5,8 +5,8 @@ import {
     transformInputOutput,
     transformTransaction,
     transformAccountInfo,
-} from '../../../src/workers/blockfrost/utils';
-import fixtures from '../fixtures/blockfrost/utils';
+} from '../blockfrost';
+import fixtures from './fixtures/blockfrost';
 
 describe('blockfrost/utils', () => {
     describe('transformUtxos', () => {

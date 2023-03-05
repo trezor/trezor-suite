@@ -1,5 +1,5 @@
-import { CustomError } from '../constants/errors';
-import type { SubscriptionAccountInfo } from '../types';
+import { CustomError } from '@trezor/blockchain-link-types/lib/constants/errors';
+import type { SubscriptionAccountInfo } from '@trezor/blockchain-link-types';
 
 export class WorkerState {
     addresses: string[];

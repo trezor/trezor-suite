@@ -1,12 +1,12 @@
 import BigNumber from 'bignumber.js';
-import { enhanceVinVout, filterTargets, sumVinVout, transformTarget } from '../utils';
+
 import type {
     BlockfrostUtxos,
     BlockfrostTransaction,
     BlockfrostAccountInfo,
     ParseAssetResult,
-} from '../../types/blockfrost';
-import type { VinVout } from '../../types/blockbook';
+} from '@trezor/blockchain-link-types/lib/blockfrost';
+import type { VinVout } from '@trezor/blockchain-link-types/lib/blockbook';
 import type {
     Utxo,
     Transaction,
@@ -14,7 +14,9 @@ import type {
     AccountAddresses,
     TokenInfo,
     TokenTransfer,
-} from '../../types/common';
+} from '@trezor/blockchain-link-types/lib/common';
+
+import { enhanceVinVout, filterTargets, sumVinVout, transformTarget } from './utils';
 
 export const transformUtxos = (utxos: BlockfrostUtxos[]): Utxo[] => {
     const result: Utxo[] = [];

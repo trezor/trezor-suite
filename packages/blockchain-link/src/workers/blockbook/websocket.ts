@@ -2,24 +2,24 @@ import * as WebSocket from 'ws';
 import { EventEmitter } from 'events';
 import { createDeferred, Deferred } from '@trezor/utils';
 
-import { CustomError } from '../../constants/errors';
+import { CustomError } from '@trezor/blockchain-link-types/lib/constants/errors';
 import type {
     BlockNotification,
     MempoolTransactionNotification,
     AddressNotification,
     Send,
     FiatRatesNotification,
-} from '../../types/blockbook';
+} from '@trezor/blockchain-link-types/lib/blockbook';
 import type {
     GetFiatRatesForTimestamps,
     GetFiatRatesTickersList,
     GetCurrentFiatRates,
-} from '../../types/messages';
+} from '@trezor/blockchain-link-types/lib/messages';
 import type {
     AccountInfoParams,
     EstimateFeeParams,
     AccountBalanceHistoryParams,
-} from '../../types/params';
+} from '@trezor/blockchain-link-types/lib/params';
 
 const NOT_INITIALIZED = new CustomError('websocket_not_initialized');
 

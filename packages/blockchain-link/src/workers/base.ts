@@ -6,11 +6,12 @@
 // new BlockchainLink({ worker: () => new BlockchainLinkModule() });
 
 import * as SocksProxyAgent from 'socks-proxy-agent';
-import { CustomError } from '../constants/errors';
+import { CustomError } from '@trezor/blockchain-link-types/lib/constants/errors';
 import { WorkerState } from './state';
 import { prioritizeEndpoints } from './utils';
-import { MESSAGES, RESPONSES } from '../constants';
-import type { Message, Response, BlockchainSettings } from '../types';
+import { MESSAGES, RESPONSES } from '@trezor/blockchain-link-types/lib/constants';
+import type { Response, BlockchainSettings } from '@trezor/blockchain-link-types';
+import type { Message } from '@trezor/blockchain-link-types/lib/messages';
 
 // self is not declared in TS Webworker lib typings
 declare const self: { postMessage: (...args: any[]) => any };
