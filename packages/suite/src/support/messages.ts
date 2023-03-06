@@ -2224,7 +2224,7 @@ export default defineMessages({
         id: 'TR_CONTACT_SUPPORT',
     },
     TR_SECURITY_CHECK_CONTACT_SUPPORT: {
-        defaultMessage: 'Something seems off. Contact support.',
+        defaultMessage: 'If something seems off please contact support.',
         description: 'Button to click to contact support',
         id: 'TR_SECURITY_CHECK_CONTACT_SUPPORT',
     },
@@ -2718,7 +2718,7 @@ export default defineMessages({
         id: 'TR_EJECT_WALLET',
     },
     TR_EJECT_WALLET_EXPLANATION: {
-        defaultMessage: 'Instantly removes all wallet data from Suite. ',
+        defaultMessage: 'Instantly removes all wallet data from Suite.',
         id: 'TR_EJECT_WALLET_EXPLANATION',
     },
     TR_HOLOGRAM_STEP_HEADING: {
@@ -2736,7 +2736,7 @@ export default defineMessages({
         id: 'TR_HOW_PIN_WORKS',
     },
     TR_I_UNDERSTAND_PASSPHRASE: {
-        defaultMessage: 'I understand, passphrases cannot be retrieved unlike everyday passwords',
+        defaultMessage: 'I understand passphrases cannot be retrieved unlike everyday passwords',
         id: 'TR_I_UNDERSTAND_PASSPHRASE',
     },
     TR_IF_YOUR_DEVICE_IS_EVER_LOST: {
@@ -3153,16 +3153,15 @@ export default defineMessages({
         id: 'TR_BUY_NETWORK',
     },
     TR_TAPROOT_BANNER_TITLE: {
-        defaultMessage: 'New to Trezor Suite: Taproot accounts!',
+        defaultMessage: 'Taproot accounts',
         id: 'TR_TAPROOT_BANNER_TITLE',
     },
     TR_TAPROOT_BANNER_POINT_1: {
-        defaultMessage:
-            'Lowercase letters only = <strong>lower chance of any reviewing errors</strong>',
+        defaultMessage: 'Lowercase letters only: lower chance of any reviewing errors',
         id: 'TR_TAPROOT_BANNER_POINT_1',
     },
     TR_TAPROOT_BANNER_POINT_2: {
-        defaultMessage: 'Improved privacy for all Bitcoin transactions',
+        defaultMessage: 'Improved privacy for all bitcoin transactions',
         id: 'TR_TAPROOT_BANNER_POINT_2',
     },
     TR_GOT_IT: {
@@ -3318,7 +3317,7 @@ export default defineMessages({
     },
     TR_SETTINGS_DEVICE_BANNER_DESCRIPTION_BOOTLOADER_NO_TOUCH: {
         defaultMessage:
-            'Reconnect the device without touching the screen to access all other Settings.',
+            'Reconnect the device without touching the screen to access all other settings.',
         id: 'TR_SETTINGS_DEVICE_BANNER_DESCRIPTION_BOOTLOADER_NO_TOUCH',
     },
     TR_SETTINGS_COINS_UNIVERSAL_FIRMWARE_SUGGESTION: {
@@ -3618,7 +3617,7 @@ export default defineMessages({
         id: 'TR_WELCOME_TO_TREZOR_TEXT',
     },
     TR_WELCOME_TO_TREZOR_TEXT_WALLET_CREATION: {
-        defaultMessage: 'Create a new wallet or restore one from a backup.',
+        defaultMessage: 'Create a new wallet or restore one from a backup',
         id: 'TR_WELCOME_TO_TREZOR_TEXT_WALLET_CREATION',
     },
     TR_WEST: {
@@ -3746,12 +3745,12 @@ export default defineMessages({
     TR_ACCOUNT_TYPE_BIP49_DESC: {
         id: 'TR_ACCOUNT_TYPE_BIP49_DESC',
         defaultMessage:
-            'Pay to script hash (P2SH) is an advanced type of transaction used in Bitcoin and other similar crypto currencies. Unlike P2PKH, it allows the sender to commit funds to a hash of an arbitrary valid script.',
+            'Pay to script hash (P2SH) is an advanced type of transaction used in bitcoin and other similar cryptocurrencies. Unlike P2PKH, it allows the sender to commit funds to a hash of an arbitrary valid script.',
     },
     TR_ACCOUNT_TYPE_BIP44_DESC: {
         id: 'TR_ACCOUNT_TYPE_BIP44_DESC',
         defaultMessage:
-            'Legacy Pay-to-Public-Key-Hash (P2PKH) is the basic type of transaction used in Bitcoin and other similar crypto currencies.',
+            'Legacy Pay to Public Key Hash (P2PKH) is the basic type of transaction used in bitcoin and other similar cryptocurrencies.',
     },
     TR_ACCOUNT_DETAILS_XPUB_HEADER: {
         id: 'TR_ACCOUNT_DETAILS_XPUB_HEADER',
@@ -3861,7 +3860,7 @@ export default defineMessages({
     },
     TOAST_DISCOVERY_ERROR: {
         id: 'TOAST_DISCOVERY_ERROR',
-        defaultMessage: 'Account discovery error {error}',
+        defaultMessage: 'Account discovery error: {error}',
     },
     TOAST_BACKUP_FAILED: {
         id: 'TOAST_BACKUP_FAILED',
@@ -3881,7 +3880,7 @@ export default defineMessages({
     },
     TOAST_DEVICE_WIPED: {
         id: 'TOAST_DEVICE_WIPED',
-        defaultMessage: 'Device wiped successfully ',
+        defaultMessage: 'Device wiped successfully',
     },
     TOAST_COPY_TO_CLIPBOARD: {
         id: 'TOAST_COPY_TO_CLIPBOARD',
@@ -3957,11 +3956,11 @@ export default defineMessages({
     },
     NOTIFICATIONS_EMPTY_TITLE: {
         id: 'NOTIFICATIONS_EMPTY_TITLE',
-        defaultMessage: 'No notifications yet',
+        defaultMessage: 'No notifications',
     },
     NOTIFICATIONS_EMPTY_DESC: {
         id: 'NOTIFICATIONS_EMPTY_DESC',
-        defaultMessage: 'You will see all important notifications here, once they happen.',
+        defaultMessage: 'You will see all important notifications here.',
     },
     NOTIFICATIONS_SEEN_TITLE: {
         id: 'NOTIFICATIONS_SEEN_TITLE',
@@ -4083,7 +4082,7 @@ export default defineMessages({
     },
     TR_UNAVAILABLE_COINJOIN_NO_ANONYMITY_SET: {
         id: 'TR_UNAVAILABLE_COINJOIN_NO_ANONYMITY_SET',
-        defaultMessage: 'Coinjoin cannot be initiated without the UTXO anonymity levels.',
+        defaultMessage: 'Coinjoin cannot be initiated without setting the coin anonymity levels.',
     },
     TR_ONION_BACKEND_TOR_NEEDED: {
         id: 'TR_ONION_BACKEND_TOR_NEEDED',
@@ -4186,12 +4185,12 @@ export default defineMessages({
     TR_WIPE_DEVICE_CHECKBOX_2_TITLE: {
         id: 'TR_WIPE_DEVICE_CHECKBOX_2_TITLE',
         defaultMessage:
-            'I understand I must have a backup of my Recovery Seed in order to retain access to my funds',
+            'I understand I must have a backup of my recovery seed in order to retain access to my funds',
     },
     TR_WIPE_DEVICE_CHECKBOX_2_DESCRIPTION: {
         id: 'TR_WIPE_DEVICE_CHECKBOX_2_DESCRIPTION',
         defaultMessage:
-            'Your assets are safe and accessible only if you have created a Recovery Seed and keep a private copy on a Recovery Seed Card. Please make sure you have your Recovery Seed handy or know where you keep it.',
+            'Your assets are safe and accessible only if you have created a recovery seed and keep a private copy on a recovery seed card. Please make sure you have your recovery seed handy or know where you keep it.',
     },
     TR_CANCEL: {
         id: 'TR_CANCEL',
@@ -6147,7 +6146,7 @@ export default defineMessages({
     TR_BACKUP_RECOVERY_SEED_FAILED_DESC: {
         id: 'TR_BACKUP_RECOVERY_SEED_FAILED_DESC',
         defaultMessage:
-            'The backup process has failed. It is highly recommended to back up your wallet. Please follow the link to learn how to successfully create recovery seed to back up your wallet.',
+            'The backup process has failed. It is highly recommended to back up your wallet. Please follow the link to learn how to create a recovery seed to back up your wallet.',
     },
     TR_BACKUP_FAILED: {
         id: 'TR_BACKUP_FAILED',
@@ -6617,7 +6616,7 @@ export default defineMessages({
     },
     TR_HIDE_GRAPH: {
         id: 'TR_HIDE_GRAPH',
-        defaultMessage: 'Hide Graph',
+        defaultMessage: 'Hide graph',
     },
     TR_DATE_DAY_LONG: {
         id: 'TR_DATE_DAY_LONG',
@@ -6835,7 +6834,7 @@ export default defineMessages({
     },
     TR_WIPE_OR_UPDATE_DESCRIPTION: {
         id: 'TR_WIPE_OR_UPDATE_DESCRIPTION',
-        defaultMessage: 'Go to Device Settings',
+        defaultMessage: 'Go to device settings',
     },
     TR_ONBOARDING_DEVICE_CHECK: {
         id: 'TR_ONBOARDING_DEVICE_CHECK',
@@ -7420,7 +7419,7 @@ export default defineMessages({
     TR_SKIP_ROUNDS: {
         id: 'TR_SKIP_ROUNDS',
         description: 'Coinjoin strategy item - average ratio of skipped coin join rounds',
-        defaultMessage: 'Skip rounds',
+        defaultMessage: 'Round skipping',
     },
     TR_SKIP_ROUNDS_HEADING: {
         id: 'TR_SKIP_ROUNDS_HEADING',
@@ -7950,7 +7949,7 @@ export default defineMessages({
     },
     TR_SESSION_PHASE_22_MESSAGE: {
         id: 'TR_SESSION_PHASE_22_MESSAGE',
-        defaultMessage: 'Waiting for participants.',
+        defaultMessage: 'Waiting for participants',
     },
     TR_SESSION_PHASE_31_MESSAGE: {
         id: 'TR_SESSION_PHASE_31_MESSAGE',
