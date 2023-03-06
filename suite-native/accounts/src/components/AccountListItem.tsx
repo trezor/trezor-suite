@@ -1,22 +1,33 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
+import { A, G } from '@mobily/ts-belt';
+
 import { AccountsRootState, selectAccountLabel } from '@suite-common/wallet-core';
 import { Box, Text } from '@suite-native/atoms';
 import { Account } from '@suite-common/wallet-types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { CryptoIcon } from '@trezor/icons';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
+import { filterTokenHasBalance } from '@suite-native/ethereum-tokens';
 
 export type AccountListItemProps = {
     account: Account;
 };
 
-const accountListItemStyle = prepareNativeStyle(utils => ({
-    backgroundColor: utils.colors.backgroundSurfaceElevation1,
-    padding: utils.spacings.medium,
-    borderRadius: utils.borders.radii.medium,
-}));
+const accountListItemStyle = prepareNativeStyle<{ isEthereumAccountWithTokens: boolean }>(
+    (utils, { isEthereumAccountWithTokens }) => ({
+        backgroundColor: utils.colors.backgroundSurfaceElevation1,
+        padding: utils.spacings.medium,
+        borderRadius: utils.borders.radii.medium,
+        extend: {
+            condition: isEthereumAccountWithTokens,
+            style: {
+                paddingBottom: 0,
+            },
+        },
+    }),
+);
 
 export const AccountListItem = ({ account }: AccountListItemProps) => {
     const { applyStyle } = useNativeStyles();
@@ -24,12 +35,19 @@ export const AccountListItem = ({ account }: AccountListItemProps) => {
         selectAccountLabel(state, account.key),
     );
 
+    const isEthereumAccountWithTokens =
+        account.symbol === 'eth' &&
+        G.isArray(account.tokens) &&
+        A.isNotEmpty(account.tokens.filter(filterTokenHasBalance));
+
     return (
         <Box
             flexDirection="row"
             justifyContent="space-between"
             alignItems="center"
-            style={applyStyle(accountListItemStyle)}
+            style={applyStyle(accountListItemStyle, {
+                isEthereumAccountWithTokens,
+            })}
         >
             <Box flexDirection="row">
                 <Box marginRight="small">
