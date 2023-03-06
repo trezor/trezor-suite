@@ -1,3 +1,7 @@
+# 9.0.8 (not released)
+
+- feat: signTransaction now returns `pendingTransaction` which can be used for visualization purposes before notification about pending transaction from blockchain is received.
+
 # 9.0.7
 
 -   feat(connect-ui): connect UI will now display a warning in case it was opened by an application listed in https://github.com/MetaMask/eth-phishing-detect (#7488)

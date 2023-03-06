@@ -733,13 +733,13 @@ export const accountSearchFn = (
 
 export const getUtxoFromSignedTransaction = ({
     account,
-    sourceAccount,
+    receivingAccount,
     tx,
     txid,
     prevTxid,
 }: {
     account: Account;
-    sourceAccount?: boolean;
+    receivingAccount?: boolean;
     tx: PrecomposedTransactionFinal | TxFinalCardano;
     txid: string;
     prevTxid: string;
@@ -776,7 +776,7 @@ export const getUtxoFromSignedTransaction = ({
     // append utxo created by this transaction
     tx.transaction.outputs.forEach((output, vout) => {
         let addr: AccountAddress | undefined;
-        if (sourceAccount && 'address_n' in output && output.address_n) {
+        if (!receivingAccount && 'address_n' in output && output.address_n) {
             // find change address
             const serialized = output.address_n.slice(3, 5).join('/');
             addr = account.addresses?.change.find(a => a.path.endsWith(serialized));
@@ -819,18 +819,18 @@ export const getAccountAddresses = (account: Account) =>
 // solves race condition between pushing transaction and received notification
 export const getPendingAccount = ({
     account,
-    sourceAccount,
+    receivingAccount,
     tx,
     txid,
 }: {
     account: Account;
-    sourceAccount?: boolean;
+    receivingAccount?: boolean;
     tx: PrecomposedTransactionFinal | TxFinalCardano;
     txid: string;
 }) => {
     // calculate availableBalance
     let availableBalanceBig = new BigNumber(account.availableBalance);
-    if (sourceAccount) {
+    if (!receivingAccount) {
         availableBalanceBig = availableBalanceBig.minus(tx.feeDifference || tx.totalSpent);
     }
     // get utxo
@@ -839,7 +839,7 @@ export const getPendingAccount = ({
         tx,
         txid,
         prevTxid: tx.prevTxid,
-        sourceAccount,
+        receivingAccount,
     });
 
     if (!tx.prevTxid) {

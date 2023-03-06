@@ -1364,6 +1364,10 @@ export const signAndPush = [
                 success: true,
                 payload: {
                     serializedTx: 'serializedABCD',
+                    pendingTransaction: {
+                        vin: [],
+                        vout: [],
+                    },
                 },
             },
         ],
