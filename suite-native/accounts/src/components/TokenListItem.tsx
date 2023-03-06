@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { TouchableOpacity } from 'react-native';
 
 import { BottomSheet, Box, Text } from '@suite-native/atoms';
-import { Icon } from '@trezor/icons';
+import { Icon, IconSize } from '@trezor/icons';
 import { EthereumTokenAmountFormatter, TokenToFiatAmountFormatter } from '@suite-native/formatters';
 import { EthereumTokenSymbol } from '@suite-native/ethereum-tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -14,7 +14,9 @@ type TokenListItemProps = {
     symbol: EthereumTokenSymbol;
 };
 
-const accountListItemStyle = prepareNativeStyle<{ isLast: boolean }>((utils, { isLast }) => ({
+const TOKEN_ICON_SIZE: IconSize = 'large';
+
+const tokenListItemStyle = prepareNativeStyle<{ isLast: boolean }>((utils, { isLast }) => ({
     backgroundColor: utils.colors.backgroundSurfaceElevation1,
     paddingHorizontal: utils.spacings.medium,
     borderRadius: utils.borders.radii.medium,
@@ -32,7 +34,7 @@ const horizontalLine = prepareNativeStyle(utils => ({
     borderLeftColor: utils.colors.borderDashed,
     borderLeftWidth: 1,
     borderStyle: 'dashed',
-    marginLeft: utils.spacings.medium + utils.spacings.large / 2,
+    marginLeft: utils.spacings.medium + utils.spacings[TOKEN_ICON_SIZE] / 2,
 }));
 
 export const TokenListItem = ({ symbol, balance, isLast, label }: TokenListItemProps) => {
@@ -51,11 +53,11 @@ export const TokenListItem = ({ symbol, balance, isLast, label }: TokenListItemP
                     flexDirection="row"
                     justifyContent="space-between"
                     alignItems="center"
-                    style={applyStyle(accountListItemStyle, { isLast })}
+                    style={applyStyle(tokenListItemStyle, { isLast })}
                 >
                     <Box flexDirection="row">
                         <Box marginRight="small">
-                            <Icon name="eye" />
+                            <Icon name="eye" size={TOKEN_ICON_SIZE} />
                         </Box>
                         <Text>{label}</Text>
                     </Box>
