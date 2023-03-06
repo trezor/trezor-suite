@@ -230,8 +230,8 @@ export const getBip43Type = [
 export const getUtxoFromSignedTransaction = [
     {
         description: 'regular tx, 1 new utxo',
-        params: [
-            {
+        params: {
+            account: {
                 addresses: {
                     used: [],
                     unused: [],
@@ -245,7 +245,7 @@ export const getUtxoFromSignedTransaction = [
                     { txid: '0000', vout: 1, amount: '5' },
                 ],
             },
-            {
+            tx: {
                 type: 'final',
                 transaction: {
                     inputs: [{ prev_hash: '0000', prev_index: 1 }],
@@ -255,8 +255,8 @@ export const getUtxoFromSignedTransaction = [
                     ],
                 },
             },
-            'ABCD',
-        ],
+            txid: 'ABCD',
+        },
         result: [
             { txid: 'ABCD', vout: 1, amount: '1', address: 'B-change', path: '/1/1' },
             { txid: '0000', vout: 0, amount: '4' },
@@ -264,8 +264,8 @@ export const getUtxoFromSignedTransaction = [
     },
     {
         description: 'regular tx, multiple outputs, multiple new utxos',
-        params: [
-            {
+        params: {
+            account: {
                 addresses: {
                     used: [
                         { path: '/0/0', address: 'A' },
@@ -285,7 +285,7 @@ export const getUtxoFromSignedTransaction = [
                     { txid: '0000', vout: 1, amount: '10' },
                 ],
             },
-            {
+            tx: {
                 type: 'final',
                 transaction: {
                     inputs: [{ prev_hash: '0000', prev_index: 1 }],
@@ -301,8 +301,8 @@ export const getUtxoFromSignedTransaction = [
                     ],
                 },
             },
-            'ABCD',
-        ],
+            txid: 'ABCD',
+        },
         result: [
             { txid: 'ABCD', vout: 7, amount: '5', address: 'B-change', path: '/1/1' },
             { txid: 'ABCD', vout: 5, amount: '4', address: 'A-change', path: '/1/0' },
@@ -313,8 +313,8 @@ export const getUtxoFromSignedTransaction = [
     },
     {
         description: 'rbf tx, 1 utxo changed',
-        params: [
-            {
+        params: {
+            account: {
                 addresses: {
                     used: [],
                     unused: [],
@@ -328,7 +328,7 @@ export const getUtxoFromSignedTransaction = [
                     { txid: 'ABCD', vout: 1, amount: '5', address: 'B-change' },
                 ],
             },
-            {
+            tx: {
                 type: 'final',
                 transaction: {
                     inputs: [{ prev_hash: '9876', prev_index: 2 }],
@@ -338,9 +338,9 @@ export const getUtxoFromSignedTransaction = [
                     ],
                 },
             },
-            'DBCA',
-            'ABCD',
-        ],
+            txid: 'DBCA',
+            prevTxid: 'ABCD',
+        },
         result: [
             { txid: 'DBCA', vout: 1, amount: '4', address: 'B-change', path: '/1/1' },
             { txid: '0000', vout: 0, amount: '10' },
@@ -348,8 +348,8 @@ export const getUtxoFromSignedTransaction = [
     },
     {
         description: 'rbf tx, multiple utxos changed, 1 utxo ignored',
-        params: [
-            {
+        params: {
+            account: {
                 addresses: {
                     used: [
                         { path: '/0/0', address: 'A' },
@@ -367,7 +367,7 @@ export const getUtxoFromSignedTransaction = [
                     { txid: 'ABCD', vout: 1, amount: '5', address: 'B' },
                 ],
             },
-            {
+            tx: {
                 type: 'final',
                 transaction: {
                     inputs: [{ prev_hash: '9876', prev_index: 2 }],
@@ -379,9 +379,9 @@ export const getUtxoFromSignedTransaction = [
                     ],
                 },
             },
-            'DBCA',
-            'ABCD',
-        ],
+            txid: 'DBCA',
+            prevTxid: 'ABCD',
+        },
         result: [
             // A should be ignored since it's not present in Account.utxo (its spent)
             { txid: 'DBCA', vout: 3, amount: '4', address: 'B-change', path: '/1/1' },
@@ -391,8 +391,8 @@ export const getUtxoFromSignedTransaction = [
     },
     {
         description: 'rbf tx, all utxos ignored',
-        params: [
-            {
+        params: {
+            account: {
                 addresses: {
                     used: [
                         { path: '/0/0', address: 'A' },
@@ -406,7 +406,7 @@ export const getUtxoFromSignedTransaction = [
                 },
                 utxo: [{ txid: '0000', vout: 0, amount: '10', address: 'B-change' }],
             },
-            {
+            tx: {
                 type: 'final',
                 transaction: {
                     inputs: [{ prev_hash: '9876', prev_index: 2 }],
@@ -418,16 +418,16 @@ export const getUtxoFromSignedTransaction = [
                     ],
                 },
             },
-            'DBCA',
-            'ABCD',
-        ],
+            txid: 'DBCA',
+            prevTxid: 'ABCD',
+        },
         result: [{ txid: '0000', vout: 0, amount: '10' }],
     },
     {
         description: 'account without addresses/utxos',
-        params: [
-            {},
-            {
+        params: {
+            account: {},
+            tx: {
                 type: 'final',
                 transaction: {
                     inputs: [{ prev_hash: '0000', prev_index: 1 }],
@@ -437,13 +437,13 @@ export const getUtxoFromSignedTransaction = [
                     ],
                 },
             },
-            'ABCD',
-        ],
+            txid: 'ABCD',
+        },
         result: [],
     },
     {
         description: 'tx not final',
-        params: [{}, { type: 'nonfinal' }, 'ABCD'],
+        params: { account: {}, tx: { type: 'nonfinal' }, txid: 'ABCD' },
         result: [],
     },
 ];

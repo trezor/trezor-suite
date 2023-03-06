@@ -731,12 +731,19 @@ export const accountSearchFn = (
     );
 };
 
-export const getUtxoFromSignedTransaction = (
-    account: Account,
-    tx: PrecomposedTransactionFinalCardano | PrecomposedTransactionFinal,
-    txid: string,
-    prevTxid?: string,
-) => {
+export const getUtxoFromSignedTransaction = ({
+    account,
+    receivingAccount,
+    tx,
+    txid,
+    prevTxid,
+}: {
+    account: Account;
+    receivingAccount?: boolean;
+    tx: PrecomposedTransactionFinal | TxFinalCardano;
+    txid: string;
+    prevTxid?: string;
+}) => {
     if (tx.type !== 'final') return [];
 
     // find utxo to replace
@@ -769,7 +776,7 @@ export const getUtxoFromSignedTransaction = (
     // append utxo created by this transaction
     tx.transaction.outputs.forEach((output, vout) => {
         let addr: AccountAddress | undefined;
-        if ('address_n' in output && output.address_n) {
+        if (!receivingAccount && 'address_n' in output && output.address_n) {
             // find change address
             const serialized = output.address_n.slice(3, 5).join('/');
             addr = account.addresses?.change.find(a => a.path.endsWith(serialized));
@@ -800,35 +807,45 @@ export const getUtxoFromSignedTransaction = (
     return utxo;
 };
 
+/**
+ * Returns concatenation of addresses.unused, addresses.used, addresses.changed
+ */
+export const getAccountAddresses = (account: Account) =>
+    account.addresses
+        ? account.addresses.unused.concat(account.addresses.used).concat(account.addresses.change)
+        : [];
+
 // update account before BLOCKCHAIN.NOTIFICATION or BLOCKCHAIN.BLOCK events
 // solves race condition between pushing transaction and received notification
-export const getPendingAccount = (
-    account: Account,
-    tx: PrecomposedTransactionFinal | TxFinalCardano,
-    txid: string,
-) => {
-    // TODO: implement ETH
-    if (
-        tx.type !== 'final' ||
-        (account.networkType !== 'bitcoin' && account.networkType !== 'cardano') ||
-        tx.useDecreaseOutput
-    )
-        return; // do not change user balance if tx output was decreased. balance is still the same: 0
-
+export const getPendingAccount = ({
+    account,
+    receivingAccount,
+    tx,
+    txid,
+}: {
+    account: Account;
+    receivingAccount?: boolean;
+    tx: PrecomposedTransactionFinal | TxFinalCardano;
+    txid: string;
+}) => {
     // calculate availableBalance
-    let availableBalanceBig = new BigNumber(account.availableBalance).minus(
-        tx.feeDifference || tx.totalSpent,
-    );
+    let availableBalanceBig = new BigNumber(account.availableBalance);
+    if (!receivingAccount) {
+        availableBalanceBig = availableBalanceBig.minus(tx.feeDifference || tx.totalSpent);
+    }
     // get utxo
-    const utxo = getUtxoFromSignedTransaction(account, tx, txid, tx.prevTxid);
+    const utxo = getUtxoFromSignedTransaction({
+        account,
+        tx,
+        txid,
+        prevTxid: tx.prevTxid,
+        receivingAccount,
+    });
 
     if (!tx.prevTxid) {
         // join all account addresses
-        const addresses = account.addresses
-            ? account.addresses.unused
-                  .concat(account.addresses.used)
-                  .concat(account.addresses.change)
-            : [];
+
+        const addresses = getAccountAddresses(account);
 
         tx.transaction.outputs.forEach(output => {
             if ('address' in output) {

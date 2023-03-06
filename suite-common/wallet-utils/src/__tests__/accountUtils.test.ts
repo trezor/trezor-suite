@@ -45,7 +45,7 @@ describe('account utils', () => {
     fixtures.getUtxoFromSignedTransaction.forEach(f => {
         it(`getUtxoFromSignedTransaction: ${f.description}`, () => {
             // @ts-expect-error params are partial
-            expect(getUtxoFromSignedTransaction(...f.params)).toMatchObject(f.result);
+            expect(getUtxoFromSignedTransaction(f.params)).toMatchObject(f.result);
         });
     });
 
