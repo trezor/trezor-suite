@@ -30,8 +30,8 @@ const Symbol = styled.span`
 `;
 
 export interface FormattedCryptoAmountProps {
-    value: string | number | undefined;
-    symbol: string | undefined;
+    value?: string | number;
+    symbol?: string;
     isBalance?: boolean;
     signValue?: SignValue;
     disableHiddenPlaceholder?: boolean;
