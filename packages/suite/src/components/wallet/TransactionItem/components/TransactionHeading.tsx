@@ -129,17 +129,6 @@ export const TransactionHeading = ({
         );
     }
 
-    if (transaction.type === 'failed') {
-        amount = (
-            <StyledCryptoAmount
-                value={formatNetworkAmount(transaction.fee, transaction.symbol)}
-                symbol={transaction.symbol}
-                signValue="negative"
-                isZeroValuePhishing={isZeroValuePhishing}
-            />
-        );
-    }
-
     return (
         <>
             <Wrapper
