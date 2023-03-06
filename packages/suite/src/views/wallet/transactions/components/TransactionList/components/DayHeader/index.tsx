@@ -12,7 +12,7 @@ import { SECONDARY_PANEL_HEIGHT } from '@suite-components/AppNavigation';
 const Wrapper = styled.div`
     display: flex;
     position: sticky;
-    background: ${props => props.theme.BG_GREY};
+    background: ${({ theme }) => theme.BG_GREY};
     top: ${SECONDARY_PANEL_HEIGHT};
     align-items: center;
     justify-content: space-between;
@@ -20,11 +20,12 @@ const Wrapper = styled.div`
     padding-top: 8px;
     padding-bottom: 8px;
     padding-right: 24px;
+    z-index: ${variables.Z_INDEX.SECONDARY_STICKY_BAR};
 `;
 
 const Col = styled(HiddenPlaceholder)`
     font-size: ${variables.FONT_SIZE.SMALL};
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     text-transform: uppercase;
 `;
@@ -35,7 +36,7 @@ const ColDate = styled(Col)`
 `;
 
 const ColPending = styled(Col)`
-    color: ${props => props.theme.TYPE_ORANGE};
+    color: ${({ theme }) => theme.TYPE_ORANGE};
     font-variant-numeric: tabular-nums;
 `;
 
@@ -61,7 +62,7 @@ interface Props {
     isHovered?: boolean;
 }
 
-const DayHeader = ({
+export const DayHeader = ({
     dateKey,
     symbol,
     totalAmount,
@@ -74,6 +75,7 @@ const DayHeader = ({
 
     const parsedDate = parseTransactionDateKey(dateKey);
     const showFiatValue = !isTestnet(symbol);
+
     return (
         <Wrapper>
             {dateKey === 'pending' ? (
@@ -98,7 +100,6 @@ const DayHeader = ({
                     {showFiatValue && (
                         <ColFiat>
                             <HiddenPlaceholder>
-                                {/* {<>≈ </>} */}
                                 {totalFiatAmountPerDay.gte(0) && <span>+</span>}
                                 <FiatAmountFormatter
                                     currency={localCurrency}
@@ -112,5 +113,3 @@ const DayHeader = ({
         </Wrapper>
     );
 };
-
-export default DayHeader;
