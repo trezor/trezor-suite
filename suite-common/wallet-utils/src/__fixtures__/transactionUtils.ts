@@ -285,6 +285,116 @@ export const analyzeTransactions = [
     },
 ];
 
+export const analyzeTransactionsPrepending = [
+    {
+        description: 'pre-pending becomes confirmed (no confirmed)',
+        fresh: [{ blockHeight: 1, blockHash: '1', txid: '1' }],
+        known: [{ blockHeight: undefined, blockHash: '1', txid: '1', deadline: 2 }],
+        blockHeight: 1,
+        result: {
+            newTransactions: [{ blockHeight: 1, blockHash: '1', txid: '1' }],
+            add: [{ blockHeight: 1, blockHash: '1', txid: '1' }],
+            remove: [{ blockHeight: undefined, blockHash: '1', txid: '1', deadline: 2 }],
+        },
+    },
+    {
+        description: 'pre-pending stays until deadline is reached (nothing new)',
+        fresh: [{ blockHeight: 1, blockHash: '2', txid: '2' }],
+        known: [
+            { blockHeight: undefined, blockHash: '1', txid: '1', deadline: 2 },
+            { blockHeight: 1, blockHash: '2', txid: '2' },
+        ],
+        blockHeight: 1,
+        result: {
+            newTransactions: [],
+            add: [],
+            remove: [],
+        },
+    },
+    {
+        description: 'pre-pending stays until deadline is reached (new confirmed tx)',
+        fresh: [{ blockHeight: 1, blockHash: '2', txid: '2' }],
+        known: [{ blockHeight: undefined, blockHash: '1', txid: '1', deadline: 2 }],
+        blockHeight: 1,
+        result: {
+            newTransactions: [{ blockHeight: 1, blockHash: '2', txid: '2' }],
+            add: [{ blockHeight: 1, blockHash: '2', txid: '2' }],
+            remove: [],
+        },
+    },
+    {
+        description: 'pre-pending stays until deadline is reached (new pending tx)',
+        fresh: [{ blockHeight: undefined, blockHash: '2', txid: '2' }],
+        known: [{ blockHeight: undefined, blockHash: '1', txid: '1', deadline: 2 }],
+        blockHeight: 1,
+        result: {
+            newTransactions: [],
+            add: [{ blockHeight: undefined, blockHash: '2', txid: '2' }],
+            remove: [],
+        },
+    },
+    {
+        description: 'pre-pending is removed when deadline is exceeded',
+        fresh: [{ blockHeight: 1, blockHash: '2', txid: '2' }],
+        known: [{ blockHeight: undefined, blockHash: '1', txid: '1', deadline: 1 }],
+        blockHeight: 2,
+        result: {
+            newTransactions: [{ blockHeight: 1, blockHash: '2', txid: '2' }],
+            add: [{ blockHeight: 1, blockHash: '2', txid: '2' }],
+            remove: [{ blockHeight: undefined, blockHash: '1', txid: '1', deadline: 1 }],
+        },
+    },
+    {
+        description: 'pre-pending becomes confirmed (has confirmed tx)',
+        fresh: [
+            { blockHeight: 3, blockHash: '3', txid: '3' },
+            { blockHeight: 1, blockHash: '2', txid: '2' },
+        ],
+        known: [
+            { blockHeight: undefined, blockHash: '3', txid: '3', deadline: 3 },
+            { blockHeight: 1, blockHash: '2', txid: '2' },
+        ],
+        blockHeight: 1,
+        result: {
+            newTransactions: [{ blockHeight: 3, blockHash: '3', txid: '3' }],
+            add: [{ blockHeight: 3, blockHash: '3', txid: '3' }],
+            remove: [{ blockHeight: undefined, blockHash: '3', txid: '3', deadline: 3 }],
+        },
+    },
+    {
+        description:
+            'pre-pending stays until deadline is reached (new pending tx, known confirmed tx)',
+        fresh: [{ blockHeight: undefined, blockHash: '3', txid: '3' }],
+        known: [
+            { blockHeight: undefined, blockHash: '1', txid: '1', deadline: 2 },
+            { blockHeight: 1, blockHash: '2', txid: '2' },
+        ],
+        blockHeight: 1,
+        result: {
+            newTransactions: [],
+            add: [{ blockHeight: undefined, blockHash: '3', txid: '3' }],
+            remove: [],
+        },
+    },
+    {
+        description: 'pre-pending is removed when deadline is exceeded (known confirmed tx)',
+        fresh: [
+            { blockHeight: 5, blockHash: '5', txid: '5' },
+            { blockHeight: 1, blockHash: '3', txid: '3' },
+        ],
+        known: [
+            { blockHeight: undefined, blockHash: '1', txid: '1', deadline: 1 },
+            { blockHeight: 1, blockHash: '3', txid: '3' },
+        ],
+        blockHeight: 2,
+        result: {
+            newTransactions: [{ blockHeight: 5, blockHash: '5', txid: '5' }],
+            add: [{ blockHeight: 5, blockHash: '5', txid: '5' }],
+            remove: [{ blockHeight: undefined, blockHash: '1', txid: '1', deadline: 1 }],
+        },
+    },
+];
+
 export const enhanceTransaction = [
     {
         tx: {
