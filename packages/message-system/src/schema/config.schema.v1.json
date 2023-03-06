@@ -296,6 +296,9 @@
                                         },
                                         "flag": {
                                             "type": "boolean"
+                                        },
+                                        "isPublic": {
+                                            "type": "boolean"
                                         }
                                     },
                                     "additionalProperties": true
