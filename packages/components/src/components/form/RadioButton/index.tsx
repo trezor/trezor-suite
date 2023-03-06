@@ -2,10 +2,11 @@ import React from 'react';
 import styled from 'styled-components';
 import { FONT_SIZE, FONT_WEIGHT } from '../../../config/variables';
 import { KEYBOARD_CODE } from '../../../constants/keyboardEvents';
+import { getInputColor } from '../../../utils/utils';
 
-const Wrapper = styled.div`
+const Wrapper = styled.div<Pick<RadioButtonProps, 'disabled'>>`
     display: flex;
-    cursor: pointer;
+    cursor: ${({ disabled }) => (disabled ? 'default' : 'pointer')};
     align-items: flex-start;
 
     :hover,
@@ -14,7 +15,7 @@ const Wrapper = styled.div`
     }
 `;
 
-const RadioIcon = styled.div<Pick<RadioButtonProps, 'isChecked'>>`
+const RadioIcon = styled.div<Pick<RadioButtonProps, 'isChecked' | 'disabled'>>`
     display: flex;
     justify-content: center;
     align-items: center;
@@ -25,7 +26,8 @@ const RadioIcon = styled.div<Pick<RadioButtonProps, 'isChecked'>>`
     border-radius: 50%;
     position: relative;
     border: 2px solid
-        ${({ theme, isChecked }) => (isChecked ? theme.TYPE_GREEN : theme.STROKE_GREY)};
+        ${({ disabled, isChecked, theme }) =>
+            getInputColor(theme, { checked: isChecked, disabled })};
 
     :after {
         display: ${({ isChecked }) => (isChecked ? 'block' : 'none')};
@@ -36,7 +38,8 @@ const RadioIcon = styled.div<Pick<RadioButtonProps, 'isChecked'>>`
         width: 14px;
         height: 14px;
         border-radius: 50%;
-        background: ${({ theme }) => theme.BG_GREEN};
+        background: ${({ disabled, isChecked, theme }) =>
+            getInputColor(theme, { checked: isChecked, disabled })};
     }
 `;
 
@@ -56,26 +59,37 @@ interface RadioButtonProps extends React.HTMLAttributes<HTMLDivElement> {
         event: React.KeyboardEvent<HTMLElement> | React.MouseEvent<HTMLElement> | null,
     ) => any;
     isChecked?: boolean;
+    disabled?: boolean;
 }
 
-const handleKeyboard = (
-    event: React.KeyboardEvent<HTMLElement>,
-    onClick: RadioButtonProps['onClick'],
-) => {
-    if (event.code === KEYBOARD_CODE.SPACE) {
+export const RadioButton = ({
+    isChecked,
+    children,
+    disabled,
+    onClick,
+    ...rest
+}: RadioButtonProps) => {
+    const handleClick: RadioButtonProps['onClick'] = event => {
+        if (disabled) return;
         onClick(event);
-    }
-};
+    };
+    const handleKeyboard = (event: React.KeyboardEvent<HTMLElement>) => {
+        if (event.code === KEYBOARD_CODE.SPACE) {
+            onClick(event);
+        }
+    };
 
-export const RadioButton = ({ isChecked, children, onClick, ...rest }: RadioButtonProps) => (
-    <Wrapper
-        onClick={onClick}
-        onKeyUp={event => handleKeyboard(event, onClick)}
-        tabIndex={0}
-        data-checked={isChecked}
-        {...rest}
-    >
-        <RadioIcon isChecked={isChecked} />
-        {children && <Label>{children}</Label>}
-    </Wrapper>
-);
+    return (
+        <Wrapper
+            onClick={handleClick}
+            onKeyUp={handleKeyboard}
+            tabIndex={0}
+            disabled={disabled}
+            data-checked={isChecked}
+            {...rest}
+        >
+            <RadioIcon isChecked={isChecked} disabled={disabled} />
+            {children && <Label>{children}</Label>}
+        </Wrapper>
+    );
+};

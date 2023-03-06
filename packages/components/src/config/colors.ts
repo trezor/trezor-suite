@@ -67,6 +67,8 @@ export const THEME = {
         HOVER_DARKEN_FILTER: 0.06,
         HOVER_TRANSITION_TIME: '150ms',
         HOVER_TRANSITION_EFFECT: 'ease-out',
+
+        DARKEN_20_PERCENT_FILTER: 0.2,
     },
     dark: {
         THEME: 'dark',
@@ -133,6 +135,8 @@ export const THEME = {
         HOVER_DARKEN_FILTER: -0.04,
         HOVER_TRANSITION_TIME: '150ms',
         HOVER_TRANSITION_EFFECT: 'ease-out',
+
+        DARKEN_20_PERCENT_FILTER: -0.2,
     },
     // black theme is not used currently, but will be in the future
     black: {
@@ -199,6 +203,8 @@ export const THEME = {
         HOVER_DARKEN_FILTER: -0.04,
         HOVER_TRANSITION_TIME: '150ms',
         HOVER_TRANSITION_EFFECT: 'ease-out',
+
+        DARKEN_20_PERCENT_FILTER: -0.2,
     },
 } as const;
 

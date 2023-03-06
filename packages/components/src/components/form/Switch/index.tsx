@@ -1,7 +1,9 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 
-const Container = styled.div<{ isChecked: boolean; isDisabled?: boolean; isSmall?: boolean }>`
+import { getInputColor } from '../../../utils/utils';
+
+const Container = styled.div<Pick<SwitchProps, 'isChecked' | 'isDisabled' | 'isSmall'>>`
     display: flex;
     align-items: center;
     height: ${({ isSmall }) => (isSmall ? '18px' : '24px')};
@@ -10,37 +12,32 @@ const Container = styled.div<{ isChecked: boolean; isDisabled?: boolean; isSmall
     margin: 0px;
     padding: 3px;
     position: relative;
-    background: ${({ theme, isChecked }) => (isChecked ? theme.BG_GREEN : theme.STROKE_GREY)};
+    background: ${({ isChecked, isDisabled, theme }) =>
+        getInputColor(theme, { checked: isChecked, disabled: isDisabled })};
     border-radius: 12px;
     transition: background 0.25s ease 0s;
-    cursor: pointer;
+    cursor: ${({ isDisabled }) => !isDisabled && 'pointer'};
     box-sizing: border-box;
 
-    :hover,
-    :focus-within {
-        button {
-            box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 1);
-        }
-    }
-
-    :active {
-        button {
-            box-shadow: none;
-        }
-    }
-
     ${({ isDisabled }) =>
-        isDisabled &&
+        !isDisabled &&
         css`
-            pointer-events: none;
+            :hover,
+            :focus-within {
+                button {
+                    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 1);
+                }
+            }
 
-            div {
-                background: ${({ theme }) => theme.STROKE_GREY};
+            :active {
+                button {
+                    box-shadow: none;
+                }
             }
         `}
 `;
 
-const Handle = styled.button<{ isSmall?: boolean; isChecked?: boolean }>`
+const Handle = styled.button<{ disabled?: boolean } & Pick<SwitchProps, 'isChecked' | 'isSmall'>>`
     position: absolute;
     display: inline-block;
     height: ${({ isSmall }) => (isSmall ? '14px' : '18px')};
@@ -52,11 +49,15 @@ const Handle = styled.button<{ isSmall?: boolean; isChecked?: boolean }>`
     transform: ${({ isChecked, isSmall }) =>
         isChecked && `translateX(${isSmall ? '12px' : '18px'})`};
     transition: transform 0.25s ease 0s, box-shadow 0.15s ease 0s;
-    cursor: pointer;
+    cursor: ${({ disabled }) => !disabled && 'pointer'};
 
-    :active {
-        box-shadow: none;
-    }
+    ${({ disabled }) =>
+        !disabled &&
+        css`
+            :active {
+                box-shadow: none;
+            }
+        `}
 `;
 
 const CheckboxInput = styled.input`
@@ -88,27 +89,34 @@ export const Switch = ({
     dataTest,
     isChecked,
     className,
-}: SwitchProps) => (
-    <Container
-        isChecked={isChecked}
-        isDisabled={isDisabled}
-        isSmall={isSmall}
-        onClick={e => {
-            e.preventDefault();
-            onChange(!isChecked);
-        }}
-        className={className}
-        data-test={dataTest}
-    >
-        <Handle isSmall={isSmall} isChecked={isChecked} type="button" />
-        <CheckboxInput
-            id={id}
-            type="checkbox"
-            role="switch"
-            checked={isChecked}
-            disabled={isDisabled}
-            onChange={() => onChange(!isChecked)}
-            aria-checked={isChecked}
-        />
-    </Container>
-);
+}: SwitchProps) => {
+    const handleChange = () => {
+        if (isDisabled) return;
+        onChange(!isChecked);
+    };
+
+    return (
+        <Container
+            isChecked={isChecked}
+            isDisabled={isDisabled}
+            isSmall={isSmall}
+            onClick={e => {
+                e.preventDefault();
+                handleChange();
+            }}
+            className={className}
+            data-test={dataTest}
+        >
+            <Handle isSmall={isSmall} isChecked={isChecked} disabled={isDisabled} type="button" />
+            <CheckboxInput
+                id={id}
+                type="checkbox"
+                role="switch"
+                checked={isChecked}
+                disabled={isDisabled}
+                onChange={handleChange}
+                aria-checked={isChecked}
+            />
+        </Container>
+    );
+};
