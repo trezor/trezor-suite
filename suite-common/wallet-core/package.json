@@ -26,7 +26,6 @@
         "@trezor/blockchain-link-types": "workspace:*",
         "@trezor/blockchain-link-utils": "workspace:*",
         "@trezor/connect": "workspace:9.0.7",
-        "@trezor/conversions-blockchainlink-connect": "workspace:*",
         "@trezor/crypto-utils": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",

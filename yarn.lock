@@ -6508,7 +6508,6 @@ __metadata:
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/blockchain-link-utils": "workspace:*"
     "@trezor/connect": "workspace:9.0.7"
-    "@trezor/conversions-blockchainlink-connect": "workspace:*"
     "@trezor/crypto-utils": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
@@ -7568,17 +7567,6 @@ __metadata:
     ts-node: ^10.9.1
     tslib: 2.5.0
     tsx: ^3.12.3
-    typescript: 4.9.5
-  languageName: unknown
-  linkType: soft
-
-"@trezor/conversions-blockchainlink-connect@workspace:*, @trezor/conversions-blockchainlink-connect@workspace:packages/conversions-blockchainlink-connect":
-  version: 0.0.0-use.local
-  resolution: "@trezor/conversions-blockchainlink-connect@workspace:packages/conversions-blockchainlink-connect"
-  dependencies:
-    "@trezor/blockchain-link-types": "workspace:*"
-    "@trezor/connect": "workspace:*"
-    rimraf: ^4.1.2
     typescript: 4.9.5
   languageName: unknown
   linkType: soft

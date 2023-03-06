@@ -1,3 +1,4 @@
+export * from './createPending';
 export * from './enhanceSignTx';
 export * from './Fees';
 export * from './inputs';

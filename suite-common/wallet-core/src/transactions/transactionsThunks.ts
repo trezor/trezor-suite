@@ -13,21 +13,13 @@ import {
     getExportedFileName,
     isTrezorConnectBackendType,
     getPendingAccount,
-    getPendingReceivingAccount,
-    getUtxoOutpoint,
-    getAccountAddresses,
     findAccountsByAddress,
 } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
-import type { Address } from '@trezor/blockchain-link-types';
 import { blockbookUtils } from '@trezor/blockchain-link-utils';
+import { Transaction } from '@trezor/blockchain-link-types/lib/blockbook';
+
 import { createThunk } from '@suite-common/redux-utils';
-import {
-    TxInputType2VinVout,
-    TxOutputType2VinVout,
-    PrecomposedTransactionFinal2Transaction,
-} from '@trezor/conversions-blockchainlink-connect';
-import { getSerializedPath } from '@trezor/crypto-utils';
 
 import { accountsActions } from '../accounts/accountsActions';
 import { selectTransactions } from './transactionsReducer';
@@ -105,83 +97,34 @@ export const addFakePendingTxThunk = createThunk(
     (
         {
             transaction,
-            txid,
+            precomposedTx,
             account,
         }: {
-            transaction: PrecomposedTransactionFinal;
-            txid: string;
+            transaction: Transaction;
+            precomposedTx: PrecomposedTransactionFinal;
             account: Account;
         },
         { dispatch, getState },
     ) => {
         const blockHeight = selectBlockchainHeightBySymbol(getState(), account.symbol);
         const accounts = selectAccounts(getState());
-        const allAddresses = accounts.reduce<Address[]>(
-            (accumulator, a) => [...accumulator, ...getAccountAddresses(a)],
-            [],
-        );
-
-        const utxos = accounts.reduce<NonNullable<Account['utxo']>>(
-            (accumulator, a) => [...accumulator, ...(a.utxo || [])],
-            [],
-        );
-
-        const blockbookTransaction = PrecomposedTransactionFinal2Transaction(transaction, {
-            txid,
-            value: transaction.totalSpent,
-            vin: transaction.transaction.inputs
-                .filter(input => input.amount !== '0')
-                .map(input =>
-                    TxInputType2VinVout(input, {
-                        // todo: consider removing this callback style and pass utxo set directly. but this would require
-                        // importing getUtxoOutpoint inside conversions package. which is probably ok if we move
-                        // getUtxoOutpoint from @suite-common/wallet-utils to @trezor/crypto-utils
-                        getAddresses: i =>
-                            utxos
-                                .filter(
-                                    utxo =>
-                                        getUtxoOutpoint(utxo) ===
-                                        getUtxoOutpoint({
-                                            txid: i.prev_hash,
-                                            vout: i.prev_index,
-                                        }),
-                                )
-                                .map(utxo => utxo.address),
-                    }),
-                ),
-            vout: transaction.transaction.outputs.map((output, index) =>
-                TxOutputType2VinVout(output, {
-                    getAddresses: o => [
-                        o.address
-                            ? o.address
-                            : allAddresses.find(
-                                  address => getSerializedPath(o.address_n!) === address.path,
-                              )?.address || '',
-                    ],
-                    // todo: index is probably not correct
-                    n: index,
-                }),
-            ),
-            // and some made up data that should not matter
-            blockHeight: 0,
-            blockTime: Math.floor(new Date().getTime() / 1000),
-            confirmations: 0,
-            fees: '0',
-            hex: '0',
-            valueIn: '0',
-            blockHash: '',
-        });
 
         // todo: this part (updating sending account), could well be part of forEach lower, but there is a fixture
         // in useSendForm.test ("Success with: custom fee, 2 outputs, 0 utxo (ignored)")
         // that won't pass in that case and I did not want to change that
-        const pendingAccount = getPendingAccount(account, transaction, txid);
+        const pendingAccount = getPendingAccount({
+            account,
+            tx: precomposedTx,
+            txid: transaction.txid,
+            sourceAccount: true,
+        });
+        console.log('pendingAccount', pendingAccount);
         if (pendingAccount) {
             dispatch(accountsActions.updateAccount(pendingAccount));
             const accountTransaction = blockbookUtils.transformTransaction(
                 account.descriptor,
                 account.addresses,
-                blockbookTransaction,
+                transaction,
             );
             const prependingTx = { ...accountTransaction, deadline: blockHeight + 2 };
             dispatch(
@@ -193,12 +136,13 @@ export const addFakePendingTxThunk = createThunk(
         }
 
         // only 1 fake tx may be created per affected account,
-        const affectedAccounts = blockbookTransaction.vout.reduce<{
+        const affectedAccounts = transaction.vout.reduce<{
             [affectedAccountKey: string]: Account;
         }>((result, output) => {
             if (output.addresses) {
                 // todo: reduce addresses
                 findAccountsByAddress(output.addresses[0], accounts).forEach(affectedAccount => {
+                    console.log('affeted account candidate', affectedAccount);
                     // sending account is always affected and is solved above
                     if (affectedAccount.key === account.key) return accounts;
                     if (!result[affectedAccount.key]) {
@@ -206,16 +150,18 @@ export const addFakePendingTxThunk = createThunk(
                     }
                 });
             }
-            // output.address_n -> change -> ignore
+
             return result;
         }, {});
+
+        console.log('affectedAccounts', affectedAccounts);
 
         Object.keys(affectedAccounts).forEach(key => {
             const affectedAccount = affectedAccounts[key];
             const accountTransaction = blockbookUtils.transformTransaction(
                 affectedAccount.descriptor,
                 affectedAccount.addresses,
-                blockbookTransaction,
+                transaction,
             );
             const prependingTx = { ...accountTransaction, deadline: blockHeight + 2 };
             dispatch(
@@ -228,10 +174,13 @@ export const addFakePendingTxThunk = createThunk(
                 // updating of coinjoin accounts is solved in coinjoinAccoundActions and coinjoinMiddleware
                 return;
             }
-            const pendingReceivingAccount = getPendingReceivingAccount(
-                affectedAccount,
-                transaction,
-            );
+            const pendingReceivingAccount = getPendingAccount({
+                account: affectedAccount,
+                tx: precomposedTx,
+                txid: transaction.txid,
+                sourceAccount: false,
+            });
+            console.log('pendingReceivingAccount', pendingReceivingAccount);
             if (pendingReceivingAccount) {
                 dispatch(accountsActions.updateAccount(pendingReceivingAccount));
             }

@@ -19,9 +19,6 @@
             "path": "../../packages/blockchain-link-utils"
         },
         { "path": "../../packages/connect" },
-        {
-            "path": "../../packages/conversions-blockchainlink-connect"
-        },
         { "path": "../../packages/crypto-utils" },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" }
