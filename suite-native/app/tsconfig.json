@@ -24,6 +24,7 @@
         { "path": "../module-send-receive" },
         { "path": "../module-settings" },
         { "path": "../navigation" },
+        { "path": "../notifications" },
         { "path": "../state" },
         { "path": "../storage" },
         { "path": "../theme" },

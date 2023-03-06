@@ -1,14 +1,12 @@
 import React from 'react';
 
 import { Box, Text } from '@suite-native/atoms';
-import { CryptoAmountFormatter, AccountAddressFormatter } from '@suite-native/formatters';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { AccountAddressFormatter } from '@suite-native/formatters';
 import { useNativeStyles, prepareNativeStyle } from '@trezor/styles';
 
 type TransactionNotificationDescriptionProps = {
-    amount: string;
+    formattedAmount: string;
     prefix: string;
-    networkSymbol: NetworkSymbol;
     targetAddress?: string;
 };
 
@@ -17,24 +15,16 @@ const addressContainerStyle = prepareNativeStyle(_ => ({
 }));
 
 export const TransactionNotificationDescription = ({
-    amount,
+    formattedAmount,
     prefix,
     targetAddress,
-    networkSymbol,
 }: TransactionNotificationDescriptionProps) => {
     const { applyStyle } = useNativeStyles();
 
     return (
         <Box flexDirection="row">
-            <CryptoAmountFormatter
-                value={amount}
-                network={networkSymbol}
-                isBalance={false}
-                color="textSubdued"
-                variant="label"
-            />
             <Text color="textSubdued" variant="label">
-                {` ${prefix} `}
+                {`${formattedAmount} ${prefix} `}
             </Text>
             {targetAddress && (
                 <Box style={applyStyle(addressContainerStyle)}>

@@ -1,6 +1,11 @@
 import { createSelector } from '@reduxjs/toolkit';
 
-import { NotificationsRootState, NotificationsState, ToastPayload } from './types';
+import {
+    NotificationsRootState,
+    NotificationsState,
+    ToastPayload,
+    TransactionEventNotification,
+} from './types';
 
 export const selectNotifications = (state: NotificationsRootState) => state.notifications;
 
@@ -15,3 +20,11 @@ export const selectVisibleNotificationsByType = createSelector(
             notification => notification.type === notificationType && !notification.closed,
         ),
 );
+
+export const selectTransactionNotifications = (state: NotificationsRootState) => {
+    const notifications = selectNotifications(state);
+
+    return notifications.filter(
+        n => n.type === 'tx-received' || n.type === 'tx-sent',
+    ) as TransactionEventNotification[];
+};

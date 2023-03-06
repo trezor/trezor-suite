@@ -80,7 +80,8 @@ export const DemoScreen = () => {
                     >
                         {transactionNotifications.map(notification => (
                             <TransactionNotification
-                                {...notification}
+                                // @ts-expect-error
+                                notification={notification}
                                 isHiddenAutomatically={false}
                             />
                         ))}

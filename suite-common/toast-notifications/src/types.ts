@@ -1,7 +1,7 @@
 import { TranslationKey } from '@suite-common/intl-types';
 import { DesktopAppUpdateState, PROTOCOL_SCHEME } from '@suite-common/suite-constants';
 import { TrezorDevice } from '@suite-common/suite-types';
-import { Network, NetworkSymbol } from '@suite-common/wallet-config';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 import { DEVICE } from '@trezor/connect';
 
 export interface NotificationOptions {
@@ -36,7 +36,7 @@ export type ToastPayload = (
           formattedAmount: string;
           device?: TrezorDevice;
           descriptor: string;
-          symbol: Network['symbol'];
+          symbol: NetworkSymbol;
           txid: string;
       }
     | {
@@ -165,4 +165,15 @@ export type NotificationsState = NotificationEntry[];
 
 export type NotificationsRootState = {
     notifications: NotificationsState;
+};
+
+export type TransactionEventNotification = {
+    context: 'event';
+    id: number;
+    type: 'tx-received' | 'tx-sent';
+    formattedAmount: string;
+    device?: TrezorDevice;
+    descriptor: string;
+    symbol: NetworkSymbol;
+    txid: string;
 };

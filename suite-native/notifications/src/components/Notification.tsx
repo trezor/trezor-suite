@@ -1,4 +1,4 @@
-import React, { ReactNode, useState, useEffect } from 'react';
+import React, { ReactNode, useEffect } from 'react';
 import Animated, {
     SlideOutUp,
     useAnimatedGestureHandler,
@@ -21,6 +21,7 @@ type NotificationProps = {
     title: string;
     description: ReactNode;
     onPress: () => void;
+    onHide: () => void;
     isHiddenAutomatically?: boolean;
 };
 
@@ -48,9 +49,9 @@ export const Notification = ({
     title,
     description,
     onPress,
+    onHide,
     isHiddenAutomatically = true,
 }: NotificationProps) => {
-    const [isHidden, setIsHidden] = useState(false);
     const { applyStyle } = useNativeStyles();
 
     const translateY = useSharedValue(0);
@@ -62,7 +63,7 @@ export const Notification = ({
         onEnd: event => {
             if (event.translationY < DISMISS_THRESHOLD) {
                 translateY.value = withTiming(HIDDEN_OFFSET, undefined, isFinished => {
-                    if (isFinished) runOnJS(setIsHidden)(true);
+                    if (isFinished) runOnJS(onHide)();
                 });
             } else {
                 translateY.value = withTiming(0);
@@ -72,11 +73,11 @@ export const Notification = ({
 
     useEffect(() => {
         const timeout = setTimeout(
-            () => isHiddenAutomatically && setIsHidden(true),
+            () => isHiddenAutomatically && onHide(),
             NOTIFICATION_VISIBLE_DURATION,
         );
         return () => clearTimeout(timeout);
-    }, [isHiddenAutomatically]);
+    }, [isHiddenAutomatically, onHide]);
 
     const swipeGestureStyle = useAnimatedStyle(() => ({
         transform: [
@@ -103,8 +104,6 @@ export const Notification = ({
         };
     };
 
-    if (isHidden) return null;
-
     return (
         <InvertedThemeProvider>
             <PanGestureHandler onGestureEvent={onSwipeGesture}>
@@ -115,11 +114,11 @@ export const Notification = ({
                 >
                     <TouchableWithoutFeedback onPress={onPress}>
                         <Box style={applyStyle(notificationContainerStyle)}>
-                            <Box flexDirection="row" alignItems="center">
+                            <Box flexDirection="row">
                                 {iconLeft}
                                 <Box marginLeft="medium">
                                     <Text>{title}</Text>
-                                    <Text variant="label">{description}</Text>
+                                    {description}
                                 </Box>
                             </Box>
                             <Box marginRight="small">{iconRight}</Box>
