@@ -4,6 +4,7 @@
     -   `FirmwareUpdate` now accepts `intermediaryVersion` param instead of `intermediary`
     -   `getInfo` returns `intermediaryVersion` needed for T1 and removed `latest` param. 'release' always return latest version for T1 so it means abandoning the concept of incremental updates for T1.
 -   chore(rollout): remove FW rollout feature completely
+-   feat: signTransaction now returns `signedTransaction` which can be used for visualization purposes before notification about pending transaction from blockchain is received.
 
 # 9.0.7
 

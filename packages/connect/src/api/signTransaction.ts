@@ -1,6 +1,7 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/SignTransaction.js
 
 import BigNumber from 'bignumber.js';
+
 import { AbstractMethod } from '../core/AbstractMethod';
 import { validateParams, getFirmwareRange } from './common/paramsValidator';
 import { getBitcoinNetwork } from '../data/coinInfo';
@@ -22,8 +23,9 @@ import {
     signTxLegacy,
     verifyTx,
     verifyTicketTx,
+    createPendingTransaction,
 } from './bitcoin';
-import type { BitcoinNetworkInfo, AccountAddresses } from '../types';
+import type { BitcoinNetworkInfo, AccountAddresses, AccountUtxo } from '../types';
 import type { RefTransaction, TransactionOptions } from '../types/api/bitcoin';
 
 type Params = {
@@ -33,6 +35,7 @@ type Params = {
     coinjoinRequest?: PROTO.CoinJoinRequest;
     refTxs?: RefTransaction[];
     addresses?: AccountAddresses;
+    utxo?: AccountUtxo[];
     options: TransactionOptions;
     coinInfo: BitcoinNetworkInfo;
     push: boolean;
@@ -114,6 +117,7 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
             paymentRequests: payload.paymentRequests || [],
             refTxs,
             addresses: payload.account ? payload.account.addresses : undefined,
+            utxo: payload.account ? payload.account.utxo : undefined,
             options: {
                 lock_time: payload.locktime,
                 timestamp: payload.timestamp,
@@ -213,6 +217,7 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
             return response;
         }
 
+        let bitcoinTx: Awaited<ReturnType<typeof verifyTx>> | undefined;
         if (params.options.decred_staking_ticket) {
             await verifyTicketTx(
                 device.getCommands().getHDNode.bind(device.getCommands()),
@@ -222,7 +227,7 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
                 params.coinInfo,
             );
         } else {
-            const bitcoinTx = await verifyTx(
+            bitcoinTx = await verifyTx(
                 device.getCommands().getHDNode.bind(device.getCommands()),
                 params.inputs,
                 params.outputs,
@@ -233,9 +238,18 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
 
             if (bitcoinTx.hasWitnesses()) {
                 response.witnesses = bitcoinTx.ins.map((_, i) =>
-                    bitcoinTx.getWitness(i)?.toString('hex'),
+                    bitcoinTx?.getWitness(i)?.toString('hex'),
                 );
             }
+        }
+
+        if (bitcoinTx && params.addresses && params.utxo) {
+            response.signedTransaction = createPendingTransaction(bitcoinTx, {
+                utxo: params.utxo,
+                addresses: params.addresses,
+                inputs: params.inputs,
+                outputs: params.outputs,
+            });
         }
 
         if (params.push) {
@@ -243,6 +257,7 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
             isBackendSupported(params.coinInfo);
             const blockchain = await initBlockchain(params.coinInfo, this.postMessage);
             const txid = await blockchain.pushTransaction(response.serializedTx);
+
             return {
                 ...response,
                 txid,
