@@ -2,8 +2,8 @@ export const motionAnimation = {
     expand: {
         variants: {
             initial: {
-                overflow: 'unset',
-                height: 'auto',
+                overflow: 'hidden',
+                height: 0,
             },
             visible: {
                 height: 'auto',
