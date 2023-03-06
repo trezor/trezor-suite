@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Network, WalletAccountTransaction } from '@wallet-types';
-import DayHeader from '../DayHeader';
+import { DayHeader } from '../DayHeader';
 import { sumTransactions, sumTransactionsFiat } from '@suite-common/wallet-utils';
 
 const TransactionsGroupWrapper = styled.div`
