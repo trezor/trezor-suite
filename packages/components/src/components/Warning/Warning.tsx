@@ -6,12 +6,28 @@ import { Icon } from '../Icon';
 import { useTheme } from '../../utils';
 import { variables } from '../../config';
 
-const Wrapper = styled.div<Pick<WarningProps, 'critical' | 'withIcon'>>`
+type Variant = 'info' | 'warning' | 'critical';
+
+const getColor = (variant: Variant, colors: Record<Variant, string>) => colors[variant];
+
+const Wrapper = styled.div<{ variant: Variant; withIcon?: boolean }>`
     align-items: center;
-    background: ${({ critical, theme }) =>
-        transparentize(0.9, critical ? theme.BG_RED : theme.TYPE_DARK_ORANGE)};
+    background: ${({ variant, theme }) =>
+        transparentize(
+            0.9,
+            getColor(variant, {
+                info: theme.TYPE_BLUE,
+                warning: theme.TYPE_DARK_ORANGE,
+                critical: theme.BG_RED,
+            }),
+        )};
     border-radius: 8px;
-    color: ${({ critical, theme }) => (critical ? theme.TYPE_DARK_GREY : theme.TYPE_DARK_ORANGE)};
+    color: ${({ variant, theme }) =>
+        getColor(variant, {
+            info: theme.TYPE_BLUE,
+            warning: theme.TYPE_DARK_ORANGE,
+            critical: theme.TYPE_DARK_GREY,
+        })};
     display: flex;
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
@@ -27,18 +43,23 @@ const StyledIcon = styled(Icon)`
 interface WarningProps {
     children: React.ReactNode;
     className?: string;
-    critical?: boolean;
+    variant?: Variant;
     withIcon?: boolean;
 }
 
-export const Warning = ({ children, className, critical, withIcon }: WarningProps) => {
+export const Warning = ({ children, className, variant = 'warning', withIcon }: WarningProps) => {
     const theme = useTheme();
 
-    const iconColor = critical ? theme.TYPE_RED : theme.TYPE_DARK_ORANGE;
+    const color = getColor(variant, {
+        info: theme.TYPE_BLUE,
+        warning: theme.TYPE_ORANGE,
+        critical: theme.TYPE_RED,
+    });
+    const icon = variant === 'info' ? 'INFO' : 'WARNING';
 
     return (
-        <Wrapper critical={critical} withIcon={withIcon} className={className}>
-            {withIcon && <StyledIcon size={20} icon="WARNING" color={iconColor} />}
+        <Wrapper variant={variant} withIcon={withIcon} className={className}>
+            {withIcon && <StyledIcon size={20} icon={icon} color={color} />}
             {children}
         </Wrapper>
     );

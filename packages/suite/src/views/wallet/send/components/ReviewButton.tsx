@@ -146,7 +146,7 @@ export const ReviewButton = () => {
     return (
         <>
             {showCoinControlWarning && (
-                <StyledWarning critical>
+                <StyledWarning variant="critical">
                     <Checkbox
                         color={theme.BG_RED}
                         isChecked={anonymityWarningChecked}
