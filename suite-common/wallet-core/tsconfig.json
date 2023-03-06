@@ -12,6 +12,12 @@
         { "path": "../wallet-config" },
         { "path": "../wallet-types" },
         { "path": "../wallet-utils" },
+        {
+            "path": "../../packages/blockchain-link-types"
+        },
+        {
+            "path": "../../packages/blockchain-link-utils"
+        },
         { "path": "../../packages/connect" },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" }

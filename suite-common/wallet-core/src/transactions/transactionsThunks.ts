@@ -12,14 +12,20 @@ import {
     getAccountTransactions,
     getExportedFileName,
     isTrezorConnectBackendType,
+    getPendingAccount,
+    findAccountsByAddress,
 } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
+import { blockbookUtils } from '@trezor/blockchain-link-utils';
+import { Transaction } from '@trezor/blockchain-link-types/lib/blockbook';
+
 import { createThunk } from '@suite-common/redux-utils';
 
 import { accountsActions } from '../accounts/accountsActions';
 import { selectTransactions } from './transactionsReducer';
 import { transactionsActions, modulePrefix } from './transactionsActions';
-import { selectAccountByKey } from '../accounts/accountsReducer';
+import { selectAccountByKey, selectAccounts } from '../accounts/accountsReducer';
+import { selectBlockchainHeightBySymbol } from '../blockchain/blockchainReducer';
 
 /**
  * Replace existing transaction in the reducer.
@@ -90,16 +96,90 @@ export const addFakePendingTxThunk = createThunk(
     `${modulePrefix}/addFakePendingTransaction`,
     (
         {
+            transaction,
+            precomposedTx,
+            account,
+        }: {
+            transaction: Transaction;
+            precomposedTx: PrecomposedTransactionFinal;
+            account: Account;
+        },
+        { dispatch, getState },
+    ) => {
+        const blockHeight = selectBlockchainHeightBySymbol(getState(), account.symbol);
+        const accounts = selectAccounts(getState());
+
+        // decide affected accounts by tx.outputs
+        // only 1 pending tx may be created per affected account,
+        const affectedAccounts = transaction.vout.reduce<{
+            [affectedAccountKey: string]: Account;
+        }>(
+            (result, output) => {
+                if (output.addresses) {
+                    findAccountsByAddress(output.addresses[0], accounts).forEach(
+                        affectedAccount => {
+                            if (affectedAccount.key === account.key) return accounts;
+                            if (!result[affectedAccount.key]) {
+                                result[affectedAccount.key] = affectedAccount;
+                            }
+                        },
+                    );
+                }
+
+                return result;
+            },
+            // sending account is always affected
+            { [account.key]: account },
+        );
+
+        Object.keys(affectedAccounts).forEach(key => {
+            const affectedAccount = affectedAccounts[key];
+            // profile pending transaction for this affected account
+            const affectedAccountTransaction = blockbookUtils.transformTransaction(
+                affectedAccount.descriptor,
+                affectedAccount.addresses,
+                transaction,
+            );
+            const prependingTx = { ...affectedAccountTransaction, deadline: blockHeight + 2 };
+            dispatch(
+                transactionsActions.addTransaction({
+                    transactions: [prependingTx],
+                    account: affectedAccount,
+                }),
+            );
+            if (affectedAccount.backendType === 'coinjoin') {
+                // updating of coinjoin accounts is solved in coinjoinAccoundActions and coinjoinMiddleware
+                return;
+            }
+            const pendingAccount = getPendingAccount({
+                account: affectedAccount,
+                tx: precomposedTx,
+                txid: transaction.txid,
+                receivingAccount: account.key !== affectedAccount.key,
+            });
+            if (pendingAccount) {
+                dispatch(accountsActions.updateAccount(pendingAccount));
+            }
+        });
+    },
+);
+
+export const addFakePendingCardanoTxThunk = createThunk(
+    `${modulePrefix}/addFakePendingTransaction`,
+    (
+        {
             precomposedTx,
             txid,
             account,
         }: {
-            precomposedTx: Pick<PrecomposedTransactionFinal | TxFinalCardano, 'totalSpent' | 'fee'>;
+            precomposedTx: Pick<TxFinalCardano, 'totalSpent' | 'fee'>;
             txid: string;
             account: Account;
         },
-        { dispatch },
+        { dispatch, getState },
     ) => {
+        const blockHeight = selectBlockchainHeightBySymbol(getState(), account.symbol);
+
         // Used in cardano send form and staking tab until Blockfrost supports pending txs on its backend
         // https://github.com/trezor/trezor-suite/issues/4932
         const fakeTx = {
@@ -110,6 +190,7 @@ export const addFakePendingTxThunk = createThunk(
             // amounts (as most of props below) don't matter much since it is temp fake anyway
             amount: precomposedTx.totalSpent,
             fee: precomposedTx.fee,
+            feeRate: '0',
             totalSpent: precomposedTx.totalSpent,
             targets: [],
             tokens: [],
@@ -123,6 +204,7 @@ export const addFakePendingTxThunk = createThunk(
                 totalInput: '0',
                 totalOutput: '0',
             },
+            deadline: blockHeight + 2,
         };
         dispatch(transactionsActions.addTransaction({ transactions: [fakeTx], account }));
     },

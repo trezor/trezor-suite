@@ -21,6 +21,7 @@ import { selectTransactions } from '../transactions/transactionsReducer';
 import { accountsActions } from './accountsActions';
 import { selectAccounts } from './accountsReducer';
 import { actionPrefix } from './constants';
+import { selectBlockchainHeightBySymbol } from '../blockchain/blockchainReducer';
 
 export const disableAccountsThunk = createThunk(
     `${actionPrefix}/disableAccountsThunk`,
@@ -110,15 +111,11 @@ export const fetchAndUpdateAccountThunk = createThunk(
 
         if (response.success) {
             const { payload } = response;
+            const blockHeight = selectBlockchainHeightBySymbol(getState(), account.symbol);
 
-            const analyze = analyzeTransactions(payload.history.transactions || [], accountTxs);
-
-            if (account.networkType === 'cardano') {
-                // filter out cardano pending tx as they are added manually and backend never returns them
-                // if tx got confirmed then it will be added as part of analyze.add array and replaced in reducer
-                // (TRANSACTION.ADD will replace the tx if tx with same txid already exists)
-                analyze.remove = analyze.remove.filter(tx => !!tx.blockHeight);
-            }
+            const analyze = analyzeTransactions(payload.history.transactions || [], accountTxs, {
+                blockHeight,
+            });
 
             if (analyze.remove.length > 0) {
                 dispatch(transactionsActions.removeTransaction({ account, txs: analyze.remove }));
