@@ -21,13 +21,7 @@ export const COINJOIN_NETWORKS: PartialRecord<NetworkSymbol, ServerEnvironment> 
             coordinatorName: 'CoinJoinCoordinatorIdentifier',
             coordinatorUrl: 'https://wasabiwallet.io/wabisabi/',
             wabisabiBackendUrl: 'https://wasabiwallet.io/',
-            blockbookUrls: [
-                'https://btc1.trezor.io/api/v2',
-                'https://btc2.trezor.io/api/v2',
-                'https://btc3.trezor.io/api/v2',
-                'https://btc4.trezor.io/api/v2',
-                'https://btc5.trezor.io/api/v2',
-            ],
+            blockbookUrls: ['https://btc4.trezor.io'],
             /* 28.02.2023 */
             baseBlockHeight: 778666,
             baseBlockHash: '000000000000000000054d1ca4a160dd37541d776ccc34af955dbfcd3b2405f6',
@@ -52,7 +46,7 @@ export const COINJOIN_NETWORKS: PartialRecord<NetworkSymbol, ServerEnvironment> 
             coordinatorUrl: 'https://wasabiwallet.co/wabisabi/',
             // backend settings
             wabisabiBackendUrl: 'https://wasabiwallet.co/',
-            blockbookUrls: ['https://tbtc1.trezor.io/api/v2', 'https://tbtc2.trezor.io/api/v2'],
+            blockbookUrls: ['https://tbtc1.trezor.io', 'https://tbtc2.trezor.io'],
             /* */
             /* onion addresses *
             coordinatorUrl:
@@ -95,7 +89,7 @@ export const COINJOIN_NETWORKS: PartialRecord<NetworkSymbol, ServerEnvironment> 
             coordinatorUrl: 'https://dev-coinjoin-testnet.trezor.io/wabisabi/',
             // backend settings
             wabisabiBackendUrl: 'https://dev-coinjoin-testnet.trezor.io/',
-            blockbookUrls: ['https://tbtc1.trezor.io/api/v2', 'https://tbtc2.trezor.io/api/v2'],
+            blockbookUrls: ['https://tbtc1.trezor.io', 'https://tbtc2.trezor.io'],
             baseBlockHeight: 2349000,
             baseBlockHash: '0000000000000014af3e6e1a3f0a24be7bc65998b9bc01e4a05b134a89d304bf',
             filtersBatchSize: 5000,
@@ -110,7 +104,7 @@ export const COINJOIN_NETWORKS: PartialRecord<NetworkSymbol, ServerEnvironment> 
             coordinatorUrl: 'https://dev-coinjoin.trezor.io/backend/wabisabi/',
             // backend settings
             wabisabiBackendUrl: 'https://dev-coinjoin.trezor.io/backend/',
-            blockbookUrls: ['https://dev-coinjoin.trezor.io/blockbook/api/v2'],
+            blockbookUrls: ['https://dev-coinjoin.trezor.io/blockbook'],
             baseBlockHeight: 0,
             baseBlockHash: '0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206',
             filtersBatchSize: 5000,
@@ -123,7 +117,7 @@ export const COINJOIN_NETWORKS: PartialRecord<NetworkSymbol, ServerEnvironment> 
             coordinatorUrl: 'http://localhost:8081/backend/wabisabi/',
             // backend settings
             wabisabiBackendUrl: 'http://localhost:8081/backend/',
-            blockbookUrls: ['http://localhost:8081/blockbook/api/v2'],
+            blockbookUrls: ['http://localhost:8081/blockbook'],
             baseBlockHeight: 0,
             baseBlockHash: '0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206',
             filtersBatchSize: 5000,
