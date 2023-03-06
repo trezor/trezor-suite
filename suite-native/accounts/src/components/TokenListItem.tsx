@@ -26,9 +26,11 @@ const accountListItemStyle = prepareNativeStyle<{ isLast: boolean }>((utils, { i
 
 const horizontalLine = prepareNativeStyle(utils => ({
     width: 1,
-    height: 10,
+    height: utils.spacings.medium,
+    borderLeftColor: utils.colors.borderDashed,
+    borderLeftWidth: 1,
+    borderStyle: 'dashed',
     marginLeft: utils.spacings.medium + utils.spacings.large / 2,
-    backgroundColor: utils.colors.borderDashed,
 }));
 
 export const TokenListItem = ({ symbol, balance, isLast }: TokenListItemProps) => {
