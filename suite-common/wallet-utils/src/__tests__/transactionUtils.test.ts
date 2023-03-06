@@ -130,7 +130,19 @@ describe('transaction utils', () => {
 
     fixtures.analyzeTransactions.forEach(f => {
         it(`analyzeTransactions: ${f.description}`, () => {
-            expect(analyzeTransactions(f.fresh as any, f.known as any)).toEqual(f.result);
+            expect(analyzeTransactions(f.fresh as any, f.known as any, { blockHeight: 0 })).toEqual(
+                f.result,
+            );
+        });
+    });
+
+    fixtures.analyzeTransactionsPrepending.forEach(f => {
+        it(`analyzeTransactions: ${f.description}`, () => {
+            expect(
+                analyzeTransactions(f.fresh as any, f.known as any, {
+                    blockHeight: f.blockHeight,
+                }),
+            ).toEqual(f.result);
         });
     });
 
