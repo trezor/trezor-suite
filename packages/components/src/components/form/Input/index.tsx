@@ -123,7 +123,7 @@ export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> 
     noError?: boolean;
     noTopLabel?: boolean;
     labelAddonIsVisible?: boolean;
-    clearButton?: boolean;
+    clearButton?: 'hover' | 'always';
     width?: number;
     onClear?: () => void;
 }
@@ -164,6 +164,11 @@ const Input = ({
 
     const theme = useTheme();
 
+    const hasClearButton =
+        (clearButton === 'always' || (clearButton === 'hover' && isHovered)) &&
+        value &&
+        value?.length > 0;
+
     const measureLeftAddon = useCallback((element: HTMLDivElement) => {
         const elementWidth = element?.getBoundingClientRect().width ?? 0;
 
@@ -199,17 +204,15 @@ const Input = ({
                 <InputWrapper>
                     {innerAddon && addonAlign === 'left' && (
                         <InputAddon align="left" ref={measureLeftAddon} variant={variant}>
-                            {React.cloneElement(innerAddon, { inputHovered: isHovered })}
+                            {innerAddon}
                         </InputAddon>
                     )}
 
-                    {((innerAddon && addonAlign === 'right') || clearButton) && (
+                    {((innerAddon && addonAlign === 'right') || hasClearButton) && (
                         <InputAddon align="right" ref={measureRightAddon} variant={variant}>
-                            {addonAlign === 'right' &&
-                                innerAddon &&
-                                React.cloneElement(innerAddon, { inputHovered: isHovered })}
+                            {addonAlign === 'right' && !hasClearButton && innerAddon}
 
-                            {clearButton && value && value.length > 0 && (
+                            {hasClearButton && (
                                 <Icon
                                     icon="CANCEL"
                                     size={12}
