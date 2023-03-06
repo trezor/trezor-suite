@@ -20,7 +20,7 @@ import {
     getDerivationType,
 } from '@wallet-utils/cardanoUtils';
 import { AppState } from '@suite-types';
-import { addFakePendingTxThunk } from '@suite-common/wallet-core';
+import { addFakePendingCardanoTxThunk } from '@suite-common/wallet-core';
 
 const getDeviceAvailability = (
     device: AppState['suite']['device'],
@@ -68,10 +68,10 @@ export const useCardanoStaking = (): CardanoStaking => {
         pendingStakeTxs: state.wallet.cardanoStaking.pendingTx,
         cardanoStaking: state.wallet.cardanoStaking,
     }));
-    const { addToast, setPendingStakeTx, addFakePendingTx } = useActions({
+    const { addToast, setPendingStakeTx, addFakePendingCardanoTx } = useActions({
         addToast: notificationsActions.addToast,
         setPendingStakeTx: cardanoStakingActions.setPendingStakeTx,
-        addFakePendingTx: addFakePendingTxThunk,
+        addFakePendingCardanoTx: addFakePendingCardanoTxThunk,
     });
     const [deposit, setDeposit] = useState<undefined | string>(undefined);
     const [fee, setFee] = useState<undefined | string>(undefined);
@@ -243,7 +243,7 @@ export const useCardanoStaking = (): CardanoStaking => {
                         type: 'raw-tx-sent',
                         txid,
                     });
-                    addFakePendingTx({ precomposedTx: txPlan, txid, account });
+                    addFakePendingCardanoTx({ precomposedTx: txPlan, txid, account });
                     setPendingStakeTx(account, txid);
                 } else {
                     addToast({
@@ -253,7 +253,7 @@ export const useCardanoStaking = (): CardanoStaking => {
                 }
             }
         },
-        [account, addFakePendingTx, addToast, device, prepareTxPlan, setPendingStakeTx],
+        [account, addFakePendingCardanoTx, addToast, device, prepareTxPlan, setPendingStakeTx],
     );
 
     const action = useCallback(

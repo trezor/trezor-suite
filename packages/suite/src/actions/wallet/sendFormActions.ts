@@ -1,7 +1,9 @@
-import TrezorConnect, { PROTO } from '@trezor/connect';
+import TrezorConnect, { PROTO, SignedTransaction } from '@trezor/connect';
 import BigNumber from 'bignumber.js';
+
 import {
     accountsActions,
+    addFakePendingCardanoTxThunk,
     addFakePendingTxThunk,
     replaceTransactionThunk,
     syncAccountsWithBlockchainThunk,
@@ -208,121 +210,152 @@ export const cancelSignTx = () => (dispatch: Dispatch, getState: GetState) => {
 };
 
 // private, called from signTransaction only
-const pushTransaction = () => async (dispatch: Dispatch, getState: GetState) => {
-    const { signedTx, precomposedTx } = getState().wallet.send;
-    const { account } = getState().wallet.selectedAccount;
-    const { device } = getState().suite;
-    if (!signedTx || !precomposedTx || !account) return;
+const pushTransaction =
+    (signedTransaction: SignedTransaction['signedTransaction']) =>
+    async (dispatch: Dispatch, getState: GetState) => {
+        const { signedTx, precomposedTx } = getState().wallet.send;
+        const { account } = getState().wallet.selectedAccount;
+        const { device } = getState().suite;
+        if (!signedTx || !precomposedTx || !account) return;
 
-    const sentTx = await TrezorConnect.pushTransaction(signedTx);
-    // const sentTx = { success: true, payload: { txid: 'ABC ' } };
+        const sentTx = await TrezorConnect.pushTransaction(signedTx);
+        // const sentTx = { success: true, payload: { txid: 'ABC ' } };
 
-    // close modal regardless result
-    dispatch(modalActions.onCancel());
+        // close modal regardless result
+        dispatch(modalActions.onCancel());
 
-    const { token } = precomposedTx;
-    const spentWithoutFee = !token
-        ? new BigNumber(precomposedTx.totalSpent).minus(precomposedTx.fee).toString()
-        : '0';
+        const { token } = precomposedTx;
+        const spentWithoutFee = !token
+            ? new BigNumber(precomposedTx.totalSpent).minus(precomposedTx.fee).toString()
+            : '0';
 
-    const areSatoshisUsed = getAreSatoshisUsed(
-        getState().wallet.settings.bitcoinAmountUnit,
-        account,
-    );
-
-    // get total amount without fee OR token amount
-    const formattedAmount = token
-        ? `${formatAmount(precomposedTx.totalSpent, token.decimals)} ${token.symbol!.toUpperCase()}`
-        : formatNetworkAmount(spentWithoutFee, account.symbol, true, areSatoshisUsed);
-
-    if (sentTx.success) {
-        const { txid } = sentTx.payload;
-        dispatch(
-            notificationsActions.addToast({
-                type: 'tx-sent',
-                formattedAmount,
-                device,
-                descriptor: account.descriptor,
-                symbol: account.symbol,
-                txid,
-            }),
+        const areSatoshisUsed = getAreSatoshisUsed(
+            getState().wallet.settings.bitcoinAmountUnit,
+            account,
         );
 
-        if (precomposedTx.prevTxid) {
+        // get total amount without fee OR token amount
+        const formattedAmount = token
+            ? `${formatAmount(
+                  precomposedTx.totalSpent,
+                  token.decimals,
+              )} ${token.symbol!.toUpperCase()}`
+            : formatNetworkAmount(spentWithoutFee, account.symbol, true, areSatoshisUsed);
+
+        if (sentTx.success) {
+            const { txid } = sentTx.payload;
+            dispatch(
+                notificationsActions.addToast({
+                    type: 'tx-sent',
+                    formattedAmount,
+                    device,
+                    descriptor: account.descriptor,
+                    symbol: account.symbol,
+                    txid,
+                }),
+            );
+
+            if (precomposedTx.prevTxid) {
+                // notification from the backend may be delayed.
+                // modify affected transaction(s) in the reducer until the real account update occurs.
+                // this will update transaction details (like time, fee etc.)
+                dispatch(replaceTransactionThunk({ tx: precomposedTx, newTxid: txid }));
+            }
+
             // notification from the backend may be delayed.
-            // modify affected transaction(s) in the reducer until the real account update occurs.
-            // this will update transaction details (like time, fee etc.)
-            dispatch(replaceTransactionThunk({ tx: precomposedTx, newTxid: txid }));
-        }
-
-        // notification from the backend may be delayed.
-        // modify affected account balance.
-        // TODO: make it work with ETH accounts
-        const pendingAccount = getPendingAccount(account, precomposedTx, txid);
-        if (pendingAccount) {
-            // update account
-            dispatch(accountsActions.updateAccount(pendingAccount));
+            // modify affected account balance.
+            // TODO: make it work with ETH accounts
             if (account.networkType === 'cardano') {
-                // manually add fake pending tx as we don't have the data about mempool txs
-                dispatch(addFakePendingTxThunk({ precomposedTx, txid, account: pendingAccount }));
-            }
-        }
-
-        if (account.networkType !== 'bitcoin' && account.networkType !== 'cardano') {
-            // there is no point in fetching account data right after tx submit
-            //  as the account will update only after the tx is confirmed
-            dispatch(syncAccountsWithBlockchainThunk(account.symbol));
-        }
-
-        // handle metadata (labeling) from send form
-        const { metadata } = getState();
-        if (metadata.enabled) {
-            const { precomposedForm } = getState().wallet.send;
-            let outputsPermutation: number[];
-            if (isCardanoTx(account, precomposedTx)) {
-                // cardano preserves order of outputs
-                outputsPermutation = precomposedTx?.transaction.outputs.map((_o, i) => i);
-            } else {
-                outputsPermutation = precomposedTx?.transaction.outputsPermutation;
-            }
-
-            precomposedForm?.outputs
-                // create array of metadata objects
-                .map((formOutput, index) => {
-                    const { label } = formOutput;
-                    // final ordering of outputs differs from order in send form
-                    // outputsPermutation contains mapping from @trezor/utxo-lib outputs to send form outputs
-                    // mapping goes like this: Array<@trezor/utxo-lib index : send form index>
-                    const outputIndex = outputsPermutation.findIndex(p => p === index);
-                    const metadata: Extract<MetadataAddPayload, { type: 'outputLabel' }> = {
-                        type: 'outputLabel',
-                        accountKey: account.key,
-                        txid, // txid becomes available, use it
-                        outputIndex,
-                        value: label,
-                        defaultValue: '',
-                    };
-                    return metadata;
-                })
-                // filter out empty values AFTER creating metadata objects (see outputs mapping above)
-                .filter(output => output.value)
-                // propagate metadata to reducers and persistent storage
-                .forEach((output, index, arr) => {
-                    const isLast = index === arr.length - 1;
-                    dispatch(metadataActions.addAccountMetadata(output, isLast));
+                const pendingAccount = getPendingAccount({
+                    account,
+                    tx: precomposedTx,
+                    txid,
                 });
+                if (pendingAccount) {
+                    // manually add fake pending tx as we don't have the data about mempool txs
+                    dispatch(
+                        addFakePendingCardanoTxThunk({
+                            precomposedTx,
+                            txid,
+                            account,
+                        }),
+                    );
+                    dispatch(accountsActions.updateAccount(pendingAccount));
+                }
+            }
+
+            if (
+                account.networkType === 'bitcoin' &&
+                !isCardanoTx(account, precomposedTx) &&
+                signedTransaction // bitcoin-like should have signedTransaction always defined
+            ) {
+                dispatch(
+                    addFakePendingTxThunk({
+                        transaction: signedTransaction,
+                        precomposedTx,
+                        account,
+                    }),
+                );
+            }
+
+            if (account.networkType !== 'bitcoin' && account.networkType !== 'cardano') {
+                // there is no point in fetching account data right after tx submit
+                //  as the account will update only after the tx is confirmed
+                dispatch(syncAccountsWithBlockchainThunk(account.symbol));
+            }
+
+            // handle metadata (labeling) from send form
+            const { metadata } = getState();
+            if (metadata.enabled) {
+                const { precomposedForm } = getState().wallet.send;
+                let outputsPermutation: number[];
+                if (isCardanoTx(account, precomposedTx)) {
+                    // cardano preserves order of outputs
+                    outputsPermutation = precomposedTx?.transaction.outputs.map((_o, i) => i);
+                } else {
+                    outputsPermutation = precomposedTx?.transaction.outputsPermutation;
+                }
+
+                precomposedForm?.outputs
+                    // create array of metadata objects
+                    .map((formOutput, index) => {
+                        const { label } = formOutput;
+                        // final ordering of outputs differs from order in send form
+                        // outputsPermutation contains mapping from @trezor/utxo-lib outputs to send form outputs
+                        // mapping goes like this: Array<@trezor/utxo-lib index : send form index>
+                        const outputIndex = outputsPermutation.findIndex(p => p === index);
+                        const metadata: Extract<MetadataAddPayload, { type: 'outputLabel' }> = {
+                            type: 'outputLabel',
+                            accountKey: account.key,
+                            txid, // txid becomes available, use it
+                            outputIndex,
+                            value: label,
+                            defaultValue: '',
+                        };
+                        return metadata;
+                    })
+                    // filter out empty values AFTER creating metadata objects (see outputs mapping above)
+                    .filter(output => output.value)
+                    // propagate metadata to reducers and persistent storage
+                    .forEach((output, index, arr) => {
+                        const isLast = index === arr.length - 1;
+                        dispatch(metadataActions.addAccountMetadata(output, isLast));
+                    });
+            }
+        } else {
+            dispatch(
+                notificationsActions.addToast({
+                    type: 'sign-tx-error',
+                    error: sentTx.payload.error,
+                }),
+            );
         }
-    } else {
-        dispatch(
-            notificationsActions.addToast({ type: 'sign-tx-error', error: sentTx.payload.error }),
-        );
-    }
 
-    dispatch(cancelSignTx());
+        dispatch(cancelSignTx());
 
-    // resolve sign process
-    return sentTx;
-};
+        // resolve sign process
+        return sentTx;
+    };
 
 export const signTransaction =
     (
@@ -384,6 +417,7 @@ export const signTransaction =
 
         // signTransaction by Trezor
         let serializedTx: string | undefined;
+        let signedTransaction: SignedTransaction['signedTransaction'];
         // Type guard to differentiate between PrecomposedTransactionFinal and PrecomposedTransactionFinalCardano
         if (isCardanoTx(account, enhancedTxInfo)) {
             serializedTx = await dispatch(
@@ -391,9 +425,11 @@ export const signTransaction =
             );
         } else {
             if (account.networkType === 'bitcoin') {
-                serializedTx = await dispatch(
+                const response = await dispatch(
                     sendFormBitcoinActions.signTransaction(formValues, enhancedTxInfo),
                 );
+                serializedTx = response?.serializedTx;
+                signedTransaction = response?.signedTransaction;
             }
             if (account.networkType === 'ethereum') {
                 serializedTx = await dispatch(
@@ -430,7 +466,7 @@ export const signTransaction =
         );
         if (decision) {
             // push tx to the network
-            return dispatch(pushTransaction());
+            return dispatch(pushTransaction(signedTransaction));
         }
     };
 

@@ -154,7 +154,9 @@ const TransactionItem = React.memo(
         };
 
         const isZeroValuePhishing = getIsZeroValuePhishing(transaction);
-        const dataTestBase = `@transaction-item/${index}`;
+        const dataTestBase = `@transaction-item/${index}${
+            transaction.deadline ? '/prepending' : ''
+        }`;
 
         // we are using slightly different layout for 1 targets txs to better match the design
         // the only difference is that crypto amount is in the same row as tx heading/description
@@ -345,7 +347,8 @@ const TransactionItem = React.memo(
                         </NextRow>
                         {!isActionDisabled &&
                             transaction.rbfParams &&
-                            network.features?.includes('rbf') && (
+                            network.features?.includes('rbf') &&
+                            !transaction?.deadline && (
                                 <NextRow>
                                     <Button
                                         variant="tertiary"
