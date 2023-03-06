@@ -38,6 +38,7 @@ import {
     Feature,
     MessageSystemRootState,
     selectIsFeatureDisabled,
+    selectFeatureConfig,
 } from '@suite-reducers/messageSystemReducer';
 import { SelectedAccountRootState, selectSelectedAccount } from './selectedAccountReducer';
 
@@ -741,3 +742,8 @@ export const selectCurrentSessionDeadlineInfo = memoize((state: CoinjoinRootStat
         sessionDeadline,
     };
 });
+
+// Return true if it's not explicitly set to false in the message-system config.
+export const selectIsPublic = memoize(
+    (state: CoinjoinRootState) => selectFeatureConfig(state, Feature.coinjoin)?.isPublic !== false,
+);
