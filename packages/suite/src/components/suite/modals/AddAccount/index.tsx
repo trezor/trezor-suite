@@ -10,6 +10,7 @@ import { accountsActions } from '@suite-common/wallet-core';
 import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
 import * as routerActions from '@suite-actions/routerActions';
 import { arrayPartition } from '@trezor/utils';
+import { selectIsPublic } from '@wallet-reducers/coinjoinReducer';
 
 import { AccountTypeSelect } from './components/AccountTypeSelect';
 import { SelectNetwork } from './components/SelectNetwork';
@@ -49,6 +50,9 @@ export const AddAccount = ({ device, onCancel, symbol, noRedirect }: Props) => {
         debug: state.suite.settings.debug,
         enabledNetworks: state.wallet.settings.enabledNetworks,
     }));
+
+    const isCoinjoinPublic = useSelector(selectIsPublic);
+    const isCoinjoinVisible = isCoinjoinPublic || debug.showDebugMenu;
 
     // Collect all Networks without "accountType" (normal)
     const internalNetworks = NETWORKS.filter(n => !n.accountType && !n.isHidden);
@@ -125,6 +129,12 @@ export const AddAccount = ({ device, onCancel, symbol, noRedirect }: Props) => {
     const accountTypes =
         selectedNetworkEnabled && selectedNetwork?.networkType === 'bitcoin'
             ? NETWORKS.filter(n => n.symbol === selectedNetwork.symbol)
+                  /**
+                   * Filter out coinjoin account type if it is not visible.
+                   * Visibility of coinjoin account type depends on coinjoin feature config in message system.
+                   * By default it is visible publicly, but it can be remotely hidden under debug menu.
+                   */
+                  .filter(({ backendType }) => backendType !== 'coinjoin' || isCoinjoinVisible)
             : undefined;
 
     const onEnableAccount = (account: Account) => {
