@@ -6,12 +6,11 @@ import { EthereumTokenIconName, ethereumTokenIcons } from '../icons';
 import { CryptoIconSize, cryptoIconSizes } from './CryptoIcon';
 
 type CryptoIconProps = {
-    name: EthereumTokenIconName;
+    name?: EthereumTokenIconName;
     size?: CryptoIconSize;
 };
 
-export const EthereumTokenIcon = ({ name, size = 'small' }: CryptoIconProps) => {
-    // if symbol (name) is in ethereumTokenIcons, use it, else use the default icon erc20
+export const EthereumTokenIcon = ({ name = 'erc20', size = 'small' }: CryptoIconProps) => {
     const svg = useSVG(ethereumTokenIcons[name]);
     const sizeNumber = cryptoIconSizes[size];
 
