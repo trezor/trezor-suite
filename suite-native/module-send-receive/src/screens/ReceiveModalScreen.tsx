@@ -38,7 +38,11 @@ export const ReceiveModalScreen = ({
                 </Box>
                 <Card>
                     {addressIsVisible ? (
-                        <ReceiveAddress accountKey={accountKey} onClose={navigation.goBack} />
+                        <ReceiveAddress
+                            accountKey={accountKey}
+                            onClose={navigation.goBack}
+                            backgroundElevation="1"
+                        />
                     ) : (
                         <ReceiveTextHint onShowAddress={() => setAddressIsVisible(true)} />
                     )}

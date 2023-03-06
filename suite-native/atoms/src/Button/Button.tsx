@@ -11,6 +11,8 @@ import { Icon, IconName } from '@trezor/icons';
 import { Text } from '../Text';
 import { useButtonPressAnimatedStyle } from './useButtonPressAnimatedStyle';
 
+export type ButtonBackgroundElevation = '0' | '1';
+
 export type ButtonSize = 'small' | 'medium' | 'large';
 export type ButtonColorScheme =
     | 'primary'

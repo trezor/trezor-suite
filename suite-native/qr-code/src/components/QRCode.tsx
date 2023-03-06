@@ -4,13 +4,14 @@ import ReactQRCode from 'react-qr-code';
 
 import { useCopyToClipboard } from '@suite-native/helpers';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Box, Button, Text, VStack } from '@suite-native/atoms';
+import { Box, Button, ButtonBackgroundElevation, Text, VStack } from '@suite-native/atoms';
 import { colorVariants } from '@trezor/theme';
 
 type QRCodeProps = {
     data?: string;
     onCopy: () => void;
     isShareEnabled?: boolean;
+    backgroundElevation?: ButtonBackgroundElevation;
 };
 
 export const QRCODE_SIZE = 197;
@@ -28,7 +29,12 @@ const actionButtonsStyle = prepareNativeStyle(_ => ({
     flexDirection: 'row',
 }));
 
-export const QRCode = ({ data, onCopy, isShareEnabled = false }: QRCodeProps) => {
+export const QRCode = ({
+    data,
+    onCopy,
+    isShareEnabled = false,
+    backgroundElevation = '0',
+}: QRCodeProps) => {
     const copyToClipboard = useCopyToClipboard();
 
     const { applyStyle } = useNativeStyles();
@@ -71,7 +77,7 @@ export const QRCode = ({ data, onCopy, isShareEnabled = false }: QRCodeProps) =>
                     <Button
                         iconRight="share"
                         size="large"
-                        colorScheme="tertiaryElevation0"
+                        colorScheme={`tertiaryElevation${backgroundElevation}`}
                         onPress={handleSharedata}
                         style={applyStyle(actionButtonsStyle)}
                     >
