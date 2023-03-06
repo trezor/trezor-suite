@@ -3,6 +3,10 @@ name: suite-native production release
 on:
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref }}
+  cancel-in-progress: true
+
 jobs:
   android_production:
     runs-on: ubuntu-latest
