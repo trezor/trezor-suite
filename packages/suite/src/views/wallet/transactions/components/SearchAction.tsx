@@ -168,7 +168,7 @@ export const SearchAction = ({ account, search, setSearch, setSelectedPage }: Se
                     maxLength={512}
                     noError
                     noTopLabel
-                    clearButton
+                    clearButton="always"
                     onClear={() => {
                         setSearch('');
                     }}
