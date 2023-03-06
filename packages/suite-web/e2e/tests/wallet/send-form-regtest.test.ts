@@ -78,8 +78,26 @@ describe('Send form for bitcoin', () => {
             'bitcoin-send-sats',
         );
     });
+
+    it('send tx with OP_RETURN output', () => {
+        cy.getTestElement('outputs[0].address').type(
+            'bcrt1qkvwu9g3k2pdxewfqr7syz89r3gj557l374sg5v',
+        );
+        cy.getTestElement('outputs[0].amount').type('0.1');
+        cy.getTestElement('@send/header-dropdown').click();
+        cy.getTestElement('@send/header-dropdown/opreturn').click();
+
+        cy.getTestElement('outputs[1].dataAscii').type('meow');
+        cy.getTestElement('@send/review-button').click();
+        cy.task('pressYes');
+        cy.task('pressYes');
+        cy.task('pressYes');
+        cy.getTestElement('@modal/send').click();
+        cy.getTestElement('@wallet/accounts/transaction-list/group/0').should(
+            'contain',
+            'OP_RETURN (meow)',
+        );
+    });
 });
 
 export {};
-
-// todo: send tx

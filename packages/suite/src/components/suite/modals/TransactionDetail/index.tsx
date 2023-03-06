@@ -136,7 +136,7 @@ export const TransactionDetail = ({ tx, rbfForm, onCancel }: TransactionDetailPr
             />
 
             <SectionActions>
-                {network?.features?.includes('rbf') && tx.rbfParams && (
+                {network?.features?.includes('rbf') && tx.rbfParams && !tx.deadline && (
                     <>
                         {section === 'CHANGE_FEE' && (
                             // Show back button and section title when bumping fee/finalizing txs

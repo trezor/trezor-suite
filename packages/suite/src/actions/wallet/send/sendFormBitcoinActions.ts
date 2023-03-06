@@ -264,24 +264,24 @@ export const signTransaction =
             outputs: transaction.outputs,
             account: {
                 addresses: account.addresses!,
+                utxo: account.utxo!,
             },
             coin: account.symbol,
             ...signEnhancement,
         };
 
-        const signedTx = await TrezorConnect.signTransaction(signPayload);
-
-        if (!signedTx.success) {
+        const response = await TrezorConnect.signTransaction(signPayload);
+        if (!response.success) {
             // catch manual error from ReviewTransaction modal
-            if (signedTx.payload.error === 'tx-cancelled') return;
+            if (response.payload.error === 'tx-cancelled') return;
             dispatch(
                 notificationsActions.addToast({
                     type: 'sign-tx-error',
-                    error: signedTx.payload.error,
+                    error: response.payload.error,
                 }),
             );
             return;
         }
 
-        return signedTx.payload.serializedTx;
+        return response.payload;
     };
