@@ -35,6 +35,8 @@ export const AccountListItem = ({ account }: AccountListItemProps) => {
         selectAccountLabel(state, account.key),
     );
 
+    // If account item is ethereum which has tokens with non-zero balance,
+    // we want to adjust styling to display token items.
     const isEthereumAccountWithTokens =
         account.symbol === 'eth' &&
         G.isArray(account.tokens) &&

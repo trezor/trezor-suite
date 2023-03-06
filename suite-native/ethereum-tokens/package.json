@@ -9,5 +9,9 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "test:unit": "jest -c ../../jest.config.base.js --passWithNoTests",
         "type-check": "tsc --build"
+    },
+    "dependencies": {
+        "@suite-common/wallet-core": "workspace:*",
+        "@trezor/blockchain-link": "workspace:*"
     }
 }

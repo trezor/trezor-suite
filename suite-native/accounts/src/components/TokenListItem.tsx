@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { TouchableOpacity } from 'react-native';
 
-import { Box, Text } from '@suite-native/atoms';
+import { BottomSheet, Box, Text } from '@suite-native/atoms';
 import { Icon } from '@trezor/icons';
 import { EthereumTokenAmountFormatter, TokenToFiatAmountFormatter } from '@suite-native/formatters';
 import { EthereumTokenSymbol } from '@suite-native/ethereum-tokens';
@@ -9,6 +10,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 type TokenListItemProps = {
     balance: string;
     isLast: boolean;
+    label: string;
     symbol: EthereumTokenSymbol;
 };
 
@@ -33,31 +35,43 @@ const horizontalLine = prepareNativeStyle(utils => ({
     marginLeft: utils.spacings.medium + utils.spacings.large / 2,
 }));
 
-export const TokenListItem = ({ symbol, balance, isLast }: TokenListItemProps) => {
+export const TokenListItem = ({ symbol, balance, isLast, label }: TokenListItemProps) => {
     const { applyStyle } = useNativeStyles();
+    const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
 
-    const getAccountLabel = () => `${symbol} ${Math.random()}`;
+    const handleOpenBottomSheet = () => {
+        setIsBottomSheetOpen(true);
+    };
 
     return (
-        <Box>
-            <Box style={applyStyle(horizontalLine)} />
-            <Box
-                flexDirection="row"
-                justifyContent="space-between"
-                alignItems="center"
-                style={applyStyle(accountListItemStyle, { isLast })}
-            >
-                <Box flexDirection="row">
-                    <Box marginRight="small">
-                        <Icon name="eye" />
+        <>
+            <TouchableOpacity onPress={handleOpenBottomSheet}>
+                <Box style={applyStyle(horizontalLine)} />
+                <Box
+                    flexDirection="row"
+                    justifyContent="space-between"
+                    alignItems="center"
+                    style={applyStyle(accountListItemStyle, { isLast })}
+                >
+                    <Box flexDirection="row">
+                        <Box marginRight="small">
+                            <Icon name="eye" />
+                        </Box>
+                        <Text>{label}</Text>
                     </Box>
-                    <Text>{getAccountLabel()}</Text>
+                    <Box alignItems="flex-end">
+                        <TokenToFiatAmountFormatter value={balance} ethereumToken={symbol} />
+                        <EthereumTokenAmountFormatter value={balance} ethereumToken={symbol} />
+                    </Box>
                 </Box>
-                <Box alignItems="flex-end">
-                    <TokenToFiatAmountFormatter value={balance} ethereumToken={symbol} />
-                    <EthereumTokenAmountFormatter value={balance} ethereumToken={symbol} />
-                </Box>
-            </Box>
-        </Box>
+            </TouchableOpacity>
+            <BottomSheet
+                isVisible={isBottomSheetOpen}
+                onClose={() => setIsBottomSheetOpen(false)}
+                title={label}
+            >
+                <Text>Token detail feature not available yet.</Text>
+            </BottomSheet>
+        </>
     );
 };
