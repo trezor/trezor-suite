@@ -7,6 +7,7 @@ import { enhanceHistory, isTestnet, isUtxoBased } from '@suite-common/wallet-uti
 import { Account, AccountKey } from '@suite-common/wallet-types';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
+import { selectCoins, FiatRatesRootState } from '../fiat-rates/fiatRatesReducer';
 import { accountsActions } from './accountsActions';
 
 export const accountsInitialState: Account[] = [];
@@ -230,4 +231,18 @@ export const selectAccountsSymbols = memoize(
             A.map(a => a.symbol),
             A.uniq,
         ) as NetworkSymbol[],
+);
+
+export const selectIsAccountWithRatesByKey = memoizeWithArgs(
+    (state: AccountsRootState & FiatRatesRootState, accountKey: string) => {
+        const account = selectAccountByKey(state, accountKey);
+
+        if (!account) {
+            return false;
+        }
+
+        const rates = selectCoins(state);
+
+        return !!rates.find(rate => rate.symbol === account.symbol);
+    },
 );

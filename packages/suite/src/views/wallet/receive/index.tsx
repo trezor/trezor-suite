@@ -9,11 +9,11 @@ import { selectDevice } from '@suite-reducers/suiteReducer';
 
 import { FreshAddress } from './components/FreshAddress';
 import { UsedAddresses } from './components/UsedAddresses';
-import { CoinjoinCexWarning } from './components/CoinjoinCexWarning';
+import { CoinjoinReceiveWarning } from './components/CoinjoinReceiveWarning';
 
 const Receive = () => {
-    const isCexWarningHidden = useSelector(
-        state => state.suite.settings.isCoinjoinCexWarningHidden,
+    const isCoinjoinReceiveWarningHidden = useSelector(
+        state => state.suite.settings.isCoinjoinReceiveWarningHidden,
     );
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     const receive = useSelector(state => state.wallet.receive);
@@ -38,13 +38,13 @@ const Receive = () => {
     }
 
     const disabled = !!device.authConfirm;
-    const showCexWarning = account?.accountType === 'coinjoin' && !isCexWarningHidden;
+    const showCexWarning = account?.accountType === 'coinjoin' && !isCoinjoinReceiveWarningHidden;
 
     return (
         <WalletLayout title="TR_NAV_RECEIVE" account={selectedAccount}>
             <WalletLayoutHeader title="TR_NAV_RECEIVE" />
 
-            {showCexWarning && <CoinjoinCexWarning />}
+            {showCexWarning && <CoinjoinReceiveWarning />}
 
             <FreshAddress
                 account={account}

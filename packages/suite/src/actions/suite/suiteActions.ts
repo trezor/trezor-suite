@@ -60,7 +60,7 @@ export type SuiteAction =
     | { type: typeof SUITE.TOR_STATUS; payload: TorStatus }
     | { type: typeof SUITE.TOR_BOOTSTRAP; payload: TorBootstrap | null }
     | { type: typeof SUITE.ONION_LINKS; payload: boolean }
-    | { type: typeof SUITE.COINJOIN_CEX_WARNING; payload: boolean }
+    | { type: typeof SUITE.COINJOIN_RECEIVE_WARNING; payload: boolean }
     | { type: typeof SUITE.LOCK_UI; payload: boolean }
     | ReturnType<typeof lockDevice>
     | { type: typeof SUITE.LOCK_ROUTER; payload: boolean }
@@ -274,9 +274,9 @@ export const setTorBootstrapSlow =
         });
     };
 
-export const hideCoinjoinCexWarning = () => (dispatch: Dispatch) =>
+export const hideCoinjoinReceiveWarning = () => (dispatch: Dispatch) =>
     dispatch({
-        type: SUITE.COINJOIN_CEX_WARNING,
+        type: SUITE.COINJOIN_RECEIVE_WARNING,
         payload: true,
     });
 

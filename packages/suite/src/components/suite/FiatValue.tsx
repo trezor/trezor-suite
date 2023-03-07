@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { selectCoins } from '@suite-common/wallet-core';
 import { HiddenPlaceholder } from '@suite-components';
 import { useSelector } from '@suite-hooks';
 import { Network } from '@wallet-types';
@@ -7,6 +8,7 @@ import { TimestampedRates } from '@wallet-types/fiatRates';
 import { toFiatCurrency } from '@suite-common/wallet-utils';
 import { useFormatters } from '@suite-common/formatters';
 import type { FormatNumberOptions } from '@formatjs/intl';
+import { selectLocalCurrency } from '@wallet-reducers/settingsReducer';
 
 const StyledHiddenPlaceholder = styled(props => <HiddenPlaceholder {...props} />)`
     font-variant-numeric: tabular-nums;
@@ -73,13 +75,11 @@ export const FiatValue = ({
     shouldConvert = true,
 }: FiatValueProps) => {
     const { FiatAmountFormatter } = useFormatters();
-    const { fiat, settings } = useSelector(state => ({
-        fiat: state.wallet.fiat,
-        settings: state.wallet.settings,
-    }));
+    const localCurrency = useSelector(selectLocalCurrency);
+    const coins = useSelector(selectCoins);
 
-    const targetCurrency = fiatCurrency ?? settings.localCurrency;
-    const currentFiatRates = fiat.coins.find(
+    const targetCurrency = fiatCurrency ?? localCurrency;
+    const currentFiatRates = coins.find(
         f =>
             f.symbol.toLowerCase() === symbol.toLowerCase() &&
             f.tokenAddress?.toLowerCase() === tokenAddress?.toLowerCase(),
