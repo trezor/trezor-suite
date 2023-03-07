@@ -91,7 +91,7 @@ export const AccountImportSummaryForm = ({
                     networkSymbol={networkSymbol}
                 />
                 {networkSymbol === 'eth' && accountInfo.tokens && (
-                    <AccountImportEthereumTokens tokens={accountInfo.tokens} />
+                    <AccountImportEthereumTokens accountKey={accountInfo.descriptor} />
                 )}
                 <Divider marginBottom="small" />
                 <Button
