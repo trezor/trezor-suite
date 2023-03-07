@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { A } from '@mobily/ts-belt';
-import { useAtom } from 'jotai';
+import { useSetAtom } from 'jotai';
 
 import {
     useGraphForSingleAccount,
@@ -14,7 +14,7 @@ import {
 import { Box, Divider } from '@suite-native/atoms';
 import { selectFiatCurrency } from '@suite-native/module-settings';
 
-import { writeOnlyReferencePointAtom, writeOnlySelectedPointAtom } from './AccountBalance';
+import { referencePointAtom, selectedPointAtom } from './AccountDetailGraphHeader';
 
 type AccountDetailGraphProps = {
     accountKey: string;
@@ -31,8 +31,8 @@ export const AccountDetailGraph = ({ accountKey }: AccountDetailGraphProps) => {
         () => enhanceGraphPoints(graphPoints) as EnhancedGraphPointWithCryptoBalance[],
         [graphPoints],
     );
-    const [_, setSelectedPoint] = useAtom(writeOnlySelectedPointAtom);
-    const [__, setReferencePoint] = useAtom(writeOnlyReferencePointAtom);
+    const setSelectedPoint = useSetAtom(selectedPointAtom);
+    const setReferencePoint = useSetAtom(referencePointAtom);
     const lastPoint = A.last(enhancedPoints);
     const firstPoint = A.head(enhancedPoints);
 

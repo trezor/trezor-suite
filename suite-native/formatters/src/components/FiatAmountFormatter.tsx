@@ -9,7 +9,7 @@ import { FormatterProps } from '../types';
 import { EmptyAmountText } from './EmptyAmountText';
 import { AmountText } from './AmountText';
 
-type CryptoToFiatAmountFormatterProps = FormatterProps<string | number | null> &
+type FiatAmountFormatterProps = FormatterProps<string | null> &
     TextProps & {
         network?: NetworkSymbol;
         isDiscreetText?: boolean;
@@ -20,7 +20,7 @@ export const FiatAmountFormatter = ({
     value,
     isDiscreetText = true,
     ...textProps
-}: CryptoToFiatAmountFormatterProps) => {
+}: FiatAmountFormatterProps) => {
     const { FiatAmountFormatter: formatter } = useFormatters();
 
     const isTestnetValue = !!network && isTestnet(network);

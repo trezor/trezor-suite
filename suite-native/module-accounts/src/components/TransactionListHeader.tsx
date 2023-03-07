@@ -17,7 +17,7 @@ import {
 } from '@suite-native/navigation';
 
 import { AccountDetailGraph } from './AccountDetailGraph';
-import { AccountBalance } from './AccountBalance';
+import { AccountDetailGraphHeader } from './AccountDetailGraphHeader';
 
 type AccountDetailHeaderProps = {
     accountKey: AccountKey;
@@ -38,7 +38,7 @@ export const TransactionListHeader = memo(({ accountKey }: AccountDetailHeaderPr
     };
     return (
         <>
-            <AccountBalance accountKey={accountKey} />
+            <AccountDetailGraphHeader accountKey={accountKey} />
             {accountHasTransactions && (
                 <>
                     {!isTestnetAccount && <AccountDetailGraph accountKey={accountKey} />}

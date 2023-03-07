@@ -22,21 +22,24 @@ export const addBalanceForAccountMovementHistory = (
     data: AccountMovementHistory[],
     symbol: NetworkSymbol,
 ): AccountHistoryBalancePoint[] => {
-    let balance = '0';
+    let balance = new BigNumber('0');
     const historyWithBalance = data.map(dataPoint => {
         // subtract sentToSelf field as we don't want to include amounts received/sent to the same account
         const normalizedReceived = dataPoint.sentToSelf
-            ? new BigNumber(dataPoint.received).minus(dataPoint.sentToSelf || 0).toFixed()
+            ? new BigNumber(dataPoint.received).minus(dataPoint.sentToSelf || 0)
             : dataPoint.received;
         const normalizedSent = dataPoint.sentToSelf
-            ? new BigNumber(dataPoint.sent).minus(dataPoint.sentToSelf || 0).toFixed()
+            ? new BigNumber(dataPoint.sent).minus(dataPoint.sentToSelf || 0)
             : dataPoint.sent;
 
-        balance = new BigNumber(balance).plus(normalizedReceived).minus(normalizedSent).toFixed();
+        balance = new BigNumber(balance).plus(normalizedReceived).minus(normalizedSent);
+
+        // for some coins like ETH, simple sum of received and sent is not enough and could result in nonsense like negative balance
+        balance = balance.isNegative() ? new BigNumber('0') : balance;
 
         return {
             time: dataPoint.time,
-            cryptoBalance: formatNetworkAmount(balance, symbol),
+            cryptoBalance: formatNetworkAmount(balance.toFixed(), symbol),
         };
     });
 
@@ -61,23 +64,39 @@ export const getAccountBalanceHistory = async ({
         return accountBalanceHistoryCache[cacheKey];
     }
 
-    const accountMovementHistory = await TrezorConnect.blockchainGetAccountBalanceHistory({
-        coin,
-        descriptor,
-        to: endTimeFrameTimestamp,
-        // we don't need currencies at all here, this will just reduce transferred data size
-        // TODO: doesn't work at all, fix it in connect or blockchain-link?
-        currencies: ['usd'],
-    });
+    const [accountMovementHistory, accountInfo] = await Promise.all([
+        TrezorConnect.blockchainGetAccountBalanceHistory({
+            coin,
+            descriptor,
+            to: endTimeFrameTimestamp,
+            // we don't need currencies at all here, this will just reduce transferred data size
+            // TODO: doesn't work at all, fix it in connect or blockchain-link?
+            currencies: ['usd'],
+        }),
+        TrezorConnect.getAccountInfo({ coin, descriptor }),
+    ]);
 
     if (!accountMovementHistory?.success) {
-        throw new Error(`Get account balance error: ${accountMovementHistory.payload.error}`);
+        throw new Error(
+            `Get account balance movement error: ${accountMovementHistory.payload.error}`,
+        );
+    }
+
+    if (!accountInfo?.success) {
+        throw new Error(`Get account balance info error: ${accountInfo.payload.error}`);
     }
 
     const accountMovementHistoryWithBalance = addBalanceForAccountMovementHistory(
         accountMovementHistory.payload,
         coin,
     );
+
+    // Last point must be balance from getAccountInfo because blockchainGetAccountBalanceHistory it's not always reliable for coins like ETH.
+    // TODO: We can get value from redux store instead of fetching it again?
+    accountMovementHistoryWithBalance.push({
+        time: endTimeFrameTimestamp,
+        cryptoBalance: formatNetworkAmount(accountInfo.payload.balance, coin),
+    });
 
     accountBalanceHistoryCache[cacheKey] = accountMovementHistoryWithBalance;
 
@@ -166,11 +185,12 @@ export const getMultipleAccountBalanceHistoryWithFiat = async ({
         );
     }
 
-    const timestamps = getTimestampsInTimeFrame(
-        startOfTimeFrameDate,
-        endOfTimeFrameDate,
-        numberOfPoints,
-    );
+    // Last timestamp must be endOfTimeFrameDate because blockchainGetAccountBalanceHistory it's not always reliable for coins like ETH.
+    // So we manually add balance from getAccountInfo for last point in getAccountBalanceHistory.
+    const timestamps = [
+        ...getTimestampsInTimeFrame(startOfTimeFrameDate, endOfTimeFrameDate, numberOfPoints - 1),
+        getUnixTime(endOfTimeFrameDate),
+    ];
 
     const coins = pipe(
         accounts,

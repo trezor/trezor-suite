@@ -1,42 +1,24 @@
 import React from 'react';
 
-import { atom, useAtom } from 'jotai';
+import { atom, useAtomValue } from 'jotai';
 
-import { useFormatters } from '@suite-common/formatters';
-import { FiatAmountFormatter } from '@suite-native/formatters';
 import { Box, Text } from '@suite-native/atoms';
+import { FiatAmountFormatter } from '@suite-native/formatters';
+import {
+    emptyGraphPoint,
+    EnhancedGraphPoint,
+    GraphDateFormatter,
+    percentageDiff,
+    PriceChangeIndicator,
+} from '@suite-native/graph';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Icon, IconName } from '@trezor/icons';
-import { emptyGraphPoint, EnhancedGraphPoint } from '@suite-native/graph';
-
-const getColorForPercentageChange = (hasIncreased: boolean) =>
-    hasIncreased ? 'textPrimaryDefault' : 'textAlertRed';
-
-const percentageDiff = (a: number, b: number) => {
-    if (a === 0 || b === 0) return 0;
-    return 100 * ((b - a) / ((b + a) / 2));
-};
 
 // use atomic jotai structure for absolute minimum re-renders and maximum performance
 // otherwise graph will be freezing on slower device while point swipe gesture
-const selectedPointAtom = atom<EnhancedGraphPoint>(emptyGraphPoint);
+export const selectedPointAtom = atom<EnhancedGraphPoint>(emptyGraphPoint);
 
 // reference is usually first point, same as Revolut does in their app
-const referencePointAtom = atom<EnhancedGraphPoint>(emptyGraphPoint);
-
-export const writeOnlySelectedPointAtom = atom<null, EnhancedGraphPoint>(
-    null, // it's a convention to pass `null` for the first argument
-    (_get, set, updatedPoint) => {
-        // LineGraphPoint should never happen, but we need it to satisfy typescript because of originalDate
-        set(selectedPointAtom, updatedPoint);
-    },
-);
-export const writeOnlyReferencePointAtom = atom<null, EnhancedGraphPoint>(
-    null,
-    (_get, set, updatedPoint) => {
-        set(referencePointAtom, updatedPoint);
-    },
-);
+export const referencePointAtom = atom<EnhancedGraphPoint>(emptyGraphPoint);
 
 const percentageChangeAtom = atom(get => {
     const selectedPoint = get(selectedPointAtom);
@@ -54,77 +36,17 @@ const headerStyle = prepareNativeStyle(utils => ({
     color: utils.colors.textSubdued,
 }));
 
-const PercentageChange = () => {
-    const [percentageChange] = useAtom(percentageChangeAtom);
-    const [hasPriceIncreased] = useAtom(hasPriceIncreasedAtom);
-
-    return (
-        <Text color={getColorForPercentageChange(hasPriceIncreased)} variant="hint">
-            {percentageChange.toFixed(2)}%
-        </Text>
-    );
-};
-
-const PercentageChangeArrow = () => {
-    const [hasPriceIncreased] = useAtom(hasPriceIncreasedAtom);
-
-    const iconName: IconName = hasPriceIncreased ? 'arrowUp' : 'arrowDown';
-
-    return (
-        <Icon
-            name={iconName}
-            color={getColorForPercentageChange(hasPriceIncreased)}
-            size="extraSmall"
-        />
-    );
-};
-
-const arrowStyle = prepareNativeStyle(() => ({
-    marginRight: 4,
-}));
-
-const priceIncreaseWrapperStyle = prepareNativeStyle<{ hasPriceIncreased: boolean }>(
-    (utils, { hasPriceIncreased }) => ({
-        backgroundColor: hasPriceIncreased
-            ? utils.colors.backgroundPrimarySubtleOnElevation0
-            : utils.colors.backgroundAlertRedSubtleOnElevation0,
-        flexDirection: 'row',
-        alignItems: 'center',
-        paddingHorizontal: utils.spacings.small,
-        paddingVertical: utils.spacings.small / 4,
-        borderRadius: utils.borders.radii.round,
-    }),
-);
-
-const PriceIncreaseIndicator = () => {
-    const { applyStyle } = useNativeStyles();
-    const [hasPriceIncreased] = useAtom(hasPriceIncreasedAtom);
-
-    return (
-        <Box style={applyStyle(priceIncreaseWrapperStyle, { hasPriceIncreased })}>
-            <Box style={applyStyle(arrowStyle)}>
-                <PercentageChangeArrow />
-            </Box>
-            <PercentageChange />
-        </Box>
-    );
-};
-
 const Balance = () => {
-    const [point] = useAtom(selectedPointAtom);
+    const point = useAtomValue(selectedPointAtom);
 
-    return <FiatAmountFormatter value={point.value} variant="titleLarge" color="textDefault" />;
-};
-
-export const GraphTimeIndicator = () => {
-    const [point] = useAtom(selectedPointAtom);
-    const { DateFormatter } = useFormatters();
-
-    return <DateFormatter value={point.originalDate} />;
+    return (
+        <FiatAmountFormatter value={String(point.value)} variant="titleLarge" color="textDefault" />
+    );
 };
 
 export const PortfolioGraphHeader = () => {
     const { applyStyle } = useNativeStyles();
+    const { originalDate: firstPointDate } = useAtomValue(referencePointAtom);
 
     return (
         <Box flexDirection="row" justifyContent="center">
@@ -138,10 +60,16 @@ export const PortfolioGraphHeader = () => {
                 <Box flexDirection="row" alignItems="center">
                     <Box marginRight="small">
                         <Text variant="hint" color="textSubdued">
-                            <GraphTimeIndicator />
+                            <GraphDateFormatter
+                                firstPointDate={firstPointDate}
+                                selectedPointAtom={selectedPointAtom}
+                            />
                         </Text>
                     </Box>
-                    <PriceIncreaseIndicator />
+                    <PriceChangeIndicator
+                        hasPriceIncreasedAtom={hasPriceIncreasedAtom}
+                        percentageChangeAtom={percentageChangeAtom}
+                    />
                 </Box>
             </Box>
         </Box>

@@ -1,15 +1,15 @@
 import React, { useCallback, useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useAtom } from 'jotai';
+import { useSetAtom } from 'jotai';
 
 import { useGraphForAllAccounts, enhanceGraphPoints, Graph, TimeSwitch } from '@suite-native/graph';
 import { selectFiatCurrency } from '@suite-native/module-settings';
 
 import {
     PortfolioGraphHeader,
-    writeOnlyReferencePointAtom,
-    writeOnlySelectedPointAtom,
+    referencePointAtom,
+    selectedPointAtom,
 } from './PortfolioGraphHeader';
 
 export const PortfolioGraph = () => {
@@ -19,8 +19,8 @@ export const PortfolioGraph = () => {
             fiatCurrency: fiatCurrency.label,
         });
     const enhancedPoints = useMemo(() => enhanceGraphPoints(graphPoints), [graphPoints]);
-    const [_, setSelectedPoint] = useAtom(writeOnlySelectedPointAtom);
-    const [__, setReferencePoint] = useAtom(writeOnlyReferencePointAtom);
+    const setSelectedPoint = useSetAtom(selectedPointAtom);
+    const setReferencePoint = useSetAtom(referencePointAtom);
 
     const lastPoint = enhancedPoints[enhancedPoints.length - 1];
     const firstPoint = enhancedPoints[0];

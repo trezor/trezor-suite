@@ -87,6 +87,7 @@ export const getXInRange = (width: number, date: Date, xRange: GraphXRange): num
     Math.floor(width * getXPositionInRange(date, xRange));
 
 export const getYPositionInRange = (value: number, yRange: GraphYRange): number => {
+    if (yRange.min === yRange.max) return 0.5; // Prevent division by zero (NaN)
     const diff = yRange.max - yRange.min;
     const y = value;
 
