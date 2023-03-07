@@ -2,6 +2,7 @@ import React from 'react';
 import { TouchableOpacity } from 'react-native';
 
 import { Box } from '@suite-native/atoms';
+import { isEthereumAccountSymbol } from '@suite-native/ethereum-tokens';
 
 import { AccountListItem, AccountListItemProps } from './AccountListItem';
 import { TokenList } from './TokenList';
@@ -18,6 +19,6 @@ export const AccountListItemInteractive = ({
         <TouchableOpacity onPress={() => onSelectAccount(account.key)}>
             <AccountListItem key={account.key} account={account} />
         </TouchableOpacity>
-        {account.symbol === 'eth' && <TokenList accountKey={account.key} />}
+        {isEthereumAccountSymbol(account.symbol) && <TokenList accountKey={account.key} />}
     </Box>
 );

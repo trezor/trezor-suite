@@ -21,6 +21,7 @@ import {
 } from '@suite-native/navigation';
 import { AccountInfo } from '@trezor/connect';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { isEthereumAccountSymbol } from '@suite-native/ethereum-tokens';
 
 import { importAccountThunk } from '../accountsImportThunks';
 import { AccountImportOverview } from './AccountImportOverview';
@@ -90,7 +91,7 @@ export const AccountImportSummaryForm = ({
                     balance={accountInfo.availableBalance}
                     networkSymbol={networkSymbol}
                 />
-                {networkSymbol === 'eth' && accountInfo.tokens && (
+                {isEthereumAccountSymbol(networkSymbol) && accountInfo.tokens && (
                     <AccountImportEthereumTokens accountKey={accountInfo.descriptor} />
                 )}
                 <Divider marginBottom="small" />

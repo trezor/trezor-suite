@@ -3,15 +3,18 @@ import { A, G } from '@mobily/ts-belt';
 import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { TokenInfo } from '@trezor/blockchain-link';
 
-export const filterTokenHasBalance = (token: TokenInfo) => !!token.balance && token.balance !== '0';
+import { EthereumTokenAccountWithBalance } from './types';
+import { isEthereumAccountSymbol } from './utils';
 
-export const selectEthereumAccountsTokens = (
+const filterTokenHasBalance = (token: TokenInfo) => !!token.balance && token.balance !== '0';
+
+export const selectEthereumAccountsTokensWithBalance = (
     state: AccountsRootState,
     ethereumAccountKey: string,
-): TokenInfo[] | null => {
+): EthereumTokenAccountWithBalance[] => {
     const account = selectAccountByKey(state, ethereumAccountKey);
-    if (account?.symbol !== 'eth') return null;
-    return account.tokens?.filter(filterTokenHasBalance) ?? null;
+    if (!account || isEthereumAccountSymbol(account.symbol)) return [];
+    return account.tokens?.filter(filterTokenHasBalance) as EthereumTokenAccountWithBalance[];
 };
 
 // If account item is ethereum which has tokens with non-zero balance,
@@ -21,9 +24,9 @@ export const selectIsEthereumAccountWithTokensWithBalance = (
     ethereumAccountKey: string,
 ): boolean => {
     const account = selectAccountByKey(state, ethereumAccountKey);
-    if (account?.symbol !== 'eth') return false;
     return (
-        account.symbol === 'eth' &&
+        !!account &&
+        isEthereumAccountSymbol(account.symbol) &&
         G.isArray(account.tokens) &&
         A.isNotEmpty(account.tokens.filter(filterTokenHasBalance))
     );
@@ -32,7 +35,7 @@ export const selectIsEthereumAccountWithTokensWithBalance = (
 export const selectEthereumAccountTokensWithBalance = (
     state: AccountsRootState,
     accountKey: string,
-): TokenInfo[] | null => {
+): TokenInfo[] => {
     const account = selectAccountByKey(state, accountKey);
-    return account?.tokens?.filter(filterTokenHasBalance) ?? null;
+    return account?.tokens?.filter(filterTokenHasBalance) ?? [];
 };
