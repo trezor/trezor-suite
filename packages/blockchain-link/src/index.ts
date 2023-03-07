@@ -374,6 +374,7 @@ export type {
     Target,
     TokenInfo,
     TokenTransfer,
+    InternalTransfer,
     Transaction,
     TransactionDetail,
     TypedRawTransaction,

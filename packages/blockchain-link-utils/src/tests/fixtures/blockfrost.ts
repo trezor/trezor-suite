@@ -436,6 +436,7 @@ export default {
                             amount: '171265',
                             fee: '171265',
                             targets: [],
+                            internalTransfers: [],
                             tokens: [],
                             cardanoSpecific: {
                                 subtype: 'withdrawal',

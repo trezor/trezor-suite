@@ -194,6 +194,7 @@ export const addFakePendingCardanoTxThunk = createThunk(
             totalSpent: precomposedTx.totalSpent,
             targets: [],
             tokens: [],
+            internalTransfers: [],
             cardanoSpecific: {
                 subtype: null,
             },

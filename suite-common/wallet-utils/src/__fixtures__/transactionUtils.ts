@@ -1513,6 +1513,7 @@ export const isPending: Record<string, WalletAccountTransaction | AccountTransac
                 type: 'recv',
             },
         ],
+        internalTransfers: [],
         txid: '7e58757f43015242c0efa29447bea4583336f2358fdff587b52bbe040ad8982a',
         type: 'sent',
         details: {
@@ -1569,6 +1570,7 @@ export const isPending: Record<string, WalletAccountTransaction | AccountTransac
             },
         ],
         tokens: [],
+        internalTransfers: [],
         details: {
             vin: [
                 {

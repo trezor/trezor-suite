@@ -6,6 +6,7 @@ const tx = {
     // blockTime: undefined,
     // fee: undefined,
     // txid: undefined,
+    internalTransfers: [],
     tokens: [],
     // targets: [],
     details: {

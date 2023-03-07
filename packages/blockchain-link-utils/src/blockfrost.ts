@@ -14,6 +14,7 @@ import type {
     AccountAddresses,
     TokenInfo,
     TokenTransfer,
+    TransferType,
 } from '@trezor/blockchain-link-types/lib/common';
 
 import { enhanceVinVout, filterTargets, sumVinVout, transformTarget } from './utils';
@@ -117,7 +118,7 @@ export const transformInputOutput = (
 export const filterTokenTransfers = (
     accountAddress: AccountAddresses,
     tx: BlockfrostTransaction,
-    type: Exclude<Transaction['type'], 'joint'>,
+    type: TransferType,
 ): TokenTransfer[] => {
     const transfers: TokenTransfer[] = [];
     const myNonChangeAddresses = accountAddress.used.concat(accountAddress.unused);
@@ -270,6 +271,7 @@ export const transformTransaction = (
         fee,
         targets: targets.map(t => transformTarget(t, incoming)),
         tokens,
+        internalTransfers: [],
         cardanoSpecific: {
             subtype: getSubtype(blockfrostTxData),
             withdrawal,

@@ -33,6 +33,7 @@ export const transformTransaction = (descriptor: string, tx: any): Transaction =
             blockHash: tx.hash,
             targets: [],
             tokens: [],
+            internalTransfers: [],
             feeRate: undefined,
             details: {
                 vin: [],
@@ -67,6 +68,7 @@ export const transformTransaction = (descriptor: string, tx: any): Transaction =
             },
         ],
         tokens: [],
+        internalTransfers: [],
         feeRate: undefined,
         details: {
             vin: [],
