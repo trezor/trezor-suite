@@ -6797,6 +6797,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/ethereum-tokens@workspace:suite-native/ethereum-tokens"
   dependencies:
+    "@mobily/ts-belt": ^3.13.1
     "@suite-common/wallet-core": "workspace:*"
     "@trezor/blockchain-link": "workspace:*"
   languageName: unknown
