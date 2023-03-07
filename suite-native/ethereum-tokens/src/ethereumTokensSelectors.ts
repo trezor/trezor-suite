@@ -16,7 +16,7 @@ export const selectEthereumAccountsTokens = (
 
 // If account item is ethereum which has tokens with non-zero balance,
 // we want to adjust styling to display token items.
-export const isEthereumAccountWithTokensWithBalance = (
+export const selectIsEthereumAccountWithTokensWithBalance = (
     state: AccountsRootState,
     ethereumAccountKey: string,
 ): boolean => {

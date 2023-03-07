@@ -7,7 +7,7 @@ import { Account } from '@suite-common/wallet-types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { CryptoIcon } from '@trezor/icons';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
-import { isEthereumAccountWithTokensWithBalance } from '@suite-native/ethereum-tokens';
+import { selectIsEthereumAccountWithTokensWithBalance } from '@suite-native/ethereum-tokens';
 
 export type AccountListItemProps = {
     account: Account;
@@ -33,7 +33,7 @@ export const AccountListItem = ({ account }: AccountListItemProps) => {
         selectAccountLabel(state, account.key),
     );
     const isAccountWithTokens = useSelector((state: AccountsRootState) =>
-        isEthereumAccountWithTokensWithBalance(state, account.key),
+        selectIsEthereumAccountWithTokensWithBalance(state, account.key),
     );
 
     return (
