@@ -21,6 +21,9 @@ export type { ComposeOutput, PrecomposedTransaction } from './api/composeTransac
 export type { RecoveryDevice } from './api/recoveryDevice';
 export type {
     TokenInfo,
+    TokenTransfer,
+    InternalTransfer,
+    FiatRates,
     Transaction as AccountTransaction,
     Target as TransactionTarget,
     AccountBalanceHistory as BlockchainAccountBalanceHistory,

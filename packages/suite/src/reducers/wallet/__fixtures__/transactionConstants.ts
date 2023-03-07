@@ -180,6 +180,7 @@ export const transactions: { [key: string]: WalletAccountTransaction[] } = {
                     },
                 ],
                 tokens: [],
+                internalTransfers: [],
                 rbf: true,
                 details: {
                     vin: [
@@ -292,6 +293,7 @@ export const transactions: { [key: string]: WalletAccountTransaction[] } = {
                     },
                 ],
                 tokens: [],
+                internalTransfers: [],
                 details: {
                     vin: [
                         {
@@ -422,6 +424,7 @@ export const transactions: { [key: string]: WalletAccountTransaction[] } = {
                     },
                 ],
                 tokens: [],
+                internalTransfers: [],
                 rbf: true,
                 details: {
                     vin: [
@@ -548,6 +551,7 @@ export const transactions: { [key: string]: WalletAccountTransaction[] } = {
                     },
                 ],
                 tokens: [],
+                internalTransfers: [],
                 rbf: true,
                 details: {
                     vin: [

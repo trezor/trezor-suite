@@ -109,6 +109,13 @@ export interface VinVout {
     hex?: string;
 }
 
+export interface EthereumInternalTransfer {
+    type: number;
+    from: string;
+    to: string;
+    value?: string;
+}
+
 export interface Transaction {
     txid: string;
     version?: number;
@@ -138,21 +145,21 @@ export interface Transaction {
             name?: string;
             parameters: Array<{ key: string; value: Array<string> }>;
         };
-        internalTransfers: Array<{
-            type: number;
-            from: string;
-            to: string;
-            value: string;
-        }>;
+        internalTransfers?: EthereumInternalTransfer[];
     };
     tokenTransfers?: {
-        from?: string;
-        to?: string;
-        value: string;
+        from: string;
+        to: string;
+        value?: string;
         contract: string;
         name: string;
         symbol: string;
-        decimals?: number;
+        decimals: number;
+        type: TokenStandard;
+        multiTokenValues?: Array<{
+            id: string;
+            value: string;
+        }>;
     }[];
 }
 

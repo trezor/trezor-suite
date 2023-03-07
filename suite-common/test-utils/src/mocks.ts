@@ -211,6 +211,7 @@ const getWalletTransaction = (t?: Partial<WalletAccountTransaction>): WalletAcco
         },
     ],
     tokens: [],
+    internalTransfers: [],
     details: {
         vin: [
             {

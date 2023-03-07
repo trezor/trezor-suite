@@ -30,10 +30,14 @@ export interface ServerInfo {
     consensusBranchId?: number; // zcash current branch id
 }
 
+export type TokenStandard = 'ERC20' | 'ERC1155' | 'ERC721';
+
+export type TransferType = 'sent' | 'recv' | 'self' | 'unknown';
+
 /* Transaction */
 
 export interface TokenTransfer {
-    type: 'sent' | 'recv' | 'self' | 'failed' | 'unknown';
+    type: TransferType;
     name: string;
     symbol: string;
     address: string;
@@ -41,6 +45,13 @@ export interface TokenTransfer {
     amount: string;
     from?: string;
     to?: string;
+}
+
+export interface InternalTransfer {
+    type: TransferType;
+    amount: string;
+    from: string;
+    to: string;
 }
 
 export interface Target {
@@ -106,6 +117,7 @@ export interface Transaction {
     tokens: TokenTransfer[];
     rbf?: boolean;
     ethereumSpecific?: BlockbookTransaction['ethereumSpecific'];
+    internalTransfers: InternalTransfer[];
     cardanoSpecific?: {
         subtype:
             | 'withdrawal'
