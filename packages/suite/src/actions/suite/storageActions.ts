@@ -67,7 +67,7 @@ export const saveCoinjoinAccount =
 const removeCoinjoinRelatedSetting = (state: AppState) => {
     const settings = { ...state.suite.settings };
 
-    settings.isCoinjoinCexWarningHidden = false;
+    settings.isCoinjoinReceiveWarningHidden = false;
 
     db.addItem(
         'suiteSettings',

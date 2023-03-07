@@ -1,0 +1,136 @@
+import React from 'react';
+import styled, { useTheme } from 'styled-components';
+import { darken } from 'polished';
+import { useDispatch, useSelector } from '@suite-hooks';
+import { FiatValue, FormattedCryptoAmount, Translation } from '@suite-components';
+import { Button, Icon, variables, Warning } from '@trezor/components';
+import { hideCoinjoinReceiveWarning } from '@suite-actions/suiteActions';
+import { formatAmount, getAccountDecimals } from '@suite-common/wallet-utils';
+import { UNECONOMICAL_COINJOIN_THRESHOLD } from '@suite/services/coinjoin';
+import { selectSelectedAccount } from '@wallet-reducers/selectedAccountReducer';
+import { selectIsAccountWithRatesByKey } from '@suite-common/wallet-core';
+
+const StyledWarning = styled(Warning)`
+    justify-content: space-between;
+    margin-bottom: 16px;
+
+    ${variables.SCREEN_QUERY.MOBILE} {
+        display: grid;
+        grid-template-columns: 1fr auto;
+    }
+`;
+
+const InfoIcon = styled(Icon)`
+    width: 18px;
+    height: 18px;
+    margin-right: 6px;
+    align-self: flex-start;
+    background: ${({ theme }) => theme.TYPE_LIGHT_ORANGE};
+    border-radius: 50%;
+
+    ${variables.SCREEN_QUERY.MOBILE} {
+        align-self: start;
+    }
+`;
+
+const Text = styled.div`
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
+    font-size: ${variables.FONT_SIZE.SMALL};
+`;
+
+const Heading = styled.p`
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+    color: ${({ theme }) => theme.TYPE_DARK_ORANGE};
+    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
+    text-transform: uppercase;
+`;
+
+const WarningList = styled.ul`
+    padding-left: 16px;
+
+    > li + li {
+        margin-top: 5px;
+    }
+`;
+
+const StyledButton = styled(Button)`
+    background: ${({ theme }) => theme.TYPE_DARK_ORANGE};
+
+    :hover,
+    :focus,
+    :active {
+        background: ${({ theme }) => darken(theme.HOVER_DARKEN_FILTER, theme.TYPE_DARK_ORANGE)};
+    }
+
+    ${variables.SCREEN_QUERY.MOBILE} {
+        grid-column: 1/3;
+        margin-top: 16px;
+    }
+`;
+
+export const CoinjoinReceiveWarning = () => {
+    const account = useSelector(selectSelectedAccount);
+    const isAccountWithRate = useSelector(state =>
+        selectIsAccountWithRatesByKey(state, account?.key || ''),
+    );
+
+    const theme = useTheme();
+    const dispatch = useDispatch();
+
+    if (!account) {
+        return null;
+    }
+
+    const { symbol } = account;
+    const decimals = getAccountDecimals(symbol) || 8;
+
+    return (
+        <StyledWarning>
+            <Text>
+                <Heading>
+                    <InfoIcon icon="INFO" size={14} color={theme.TYPE_DARK_ORANGE} />
+                    <Translation id="TR_COINJOIN_RECEIVE_WARNING_TITLE" />
+                </Heading>
+
+                <WarningList>
+                    <li>
+                        <Translation id="TR_COINJOIN_CEX_WARNING" />
+                    </li>
+
+                    <li>
+                        <Translation
+                            id="TR_UNECO_COINJOIN_RECEIVE_WARNING"
+                            values={{
+                                crypto: (
+                                    <FormattedCryptoAmount
+                                        value={formatAmount(
+                                            UNECONOMICAL_COINJOIN_THRESHOLD,
+                                            decimals,
+                                        )}
+                                        symbol={symbol}
+                                    />
+                                ),
+                                fiat: (
+                                    <FiatValue
+                                        amount={formatAmount(
+                                            UNECONOMICAL_COINJOIN_THRESHOLD,
+                                            decimals,
+                                        )}
+                                        symbol={symbol}
+                                    />
+                                ),
+                                isAccountWithRate,
+                            }}
+                        />
+                    </li>
+                </WarningList>
+            </Text>
+
+            <StyledButton onClick={() => dispatch(hideCoinjoinReceiveWarning())}>
+                <Translation id="TR_GOT_IT" />
+            </StyledButton>
+        </StyledWarning>
+    );
+};

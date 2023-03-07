@@ -8026,15 +8026,11 @@ export default defineMessages({
     },
     TR_COINJOIN_CEX_WARNING: {
         id: 'TR_COINJOIN_CEX_WARNING',
-        defaultMessage: 'Exchanges may not serve you if you use coinjoin.',
+        defaultMessage: 'Exchanges might reject CoinJoined funds.',
     },
     TR_COINJOIN_CEX_EXPLANATION: {
         id: 'TR_COINJOIN_CEX_EXPLANATION',
         defaultMessage: 'They may reject your deposits or withdrawals and blacklist you.',
-    },
-    TR_COINJOIN_CEX_DISMISS: {
-        id: 'TR_COINJOIN_CEX_DISMISS',
-        defaultMessage: 'I understand',
     },
     TR_ZERO_PHISHING_TOOLTIP: {
         id: 'TR_ZERO_PHISHING_TOOLTIP',
@@ -8065,5 +8061,14 @@ export default defineMessages({
     TR_ERROR: {
         id: 'TR_ERROR',
         defaultMessage: 'Error',
+    },
+    TR_COINJOIN_RECEIVE_WARNING_TITLE: {
+        id: 'TR_COINJOIN_RECEIVE_WARNING_TITLE',
+        defaultMessage: 'You should know',
+    },
+    TR_UNECO_COINJOIN_RECEIVE_WARNING: {
+        id: 'TR_UNECO_COINJOIN_RECEIVE_WARNING',
+        defaultMessage:
+            'CoinJoin at least {crypto} {isAccountWithRate, select, true {(~{fiat})} false {} other {}} for the best results.',
     },
 });

@@ -164,7 +164,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 case SUITE.SET_AUTODETECT:
                     api.dispatch(storageActions.saveSuiteSettings());
                     break;
-                case SUITE.COINJOIN_CEX_WARNING: {
+                case SUITE.COINJOIN_RECEIVE_WARNING: {
                     const isWalletRemembered = api.getState().suite.device?.remember;
 
                     if (!isWalletRemembered) {
