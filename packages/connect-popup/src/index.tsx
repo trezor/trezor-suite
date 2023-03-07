@@ -246,7 +246,24 @@ const onLoad = () => {
 };
 
 window.addEventListener('load', onLoad, false);
+
+// Event from window event message in connect-popup.
 window.addEventListener('message', handleMessage, false);
+// TODO(karliatto): maybe passing somehow the extensionId with the message and that way make a difference if
+// TODO(karliatto): this is one type or other type of communication.
+// TODO(karliatto): That would allow us to integrate it in `handleMessage` without the addEventListener duplication.
+window.addEventListener('message', event => {
+    if (event.source === window && event.data) {
+        // TODO(karliatto): we still need the extensionId in order to communicate with it,
+        // TODO(karliatto): but it could be solve in different ways.
+        const extensionId = 'ohbikephikkebablejiocbpjolfjkmgm';
+        chrome.runtime.sendMessage(extensionId, { data: event.data }, (response: PopupEvent) => {
+            console.log('response in popup message', response);
+            // TODO(karliatto): make this event a MessageEvent instead of using `as`?
+            handleMessage({ data: response } as MessageEvent);
+        });
+    }
+});
 
 // global method used in html-inline elements
 // @ts-expect-error not defined in window

@@ -50,7 +50,10 @@ export class PopupManager extends EventEmitter {
         if (this.settings.env === 'webextension') {
             this.handleExtensionConnect = this.handleExtensionConnect.bind(this);
             this.handleExtensionMessage = this.handleExtensionMessage.bind(this);
+            this.handlePopupMessage = this.handlePopupMessage.bind(this);
 
+            // TODO(karliatto): maybe we want to make a difference between onConnect and onMessageExternal
+            chrome.runtime.onMessageExternal.addListener(this.handlePopupMessage);
             chrome.runtime.onConnect.addListener(this.handleExtensionConnect);
         }
 
@@ -195,6 +198,40 @@ export class PopupManager extends EventEmitter {
         this.extensionPort.onMessage.addListener(this.handleExtensionMessage);
     }
 
+    handlePopupMessage(request, _sender, sendResponse) {
+        if (this.openTimeout) clearTimeout(this.openTimeout);
+
+        if (request.data.type === POPUP.LOADED) {
+            this.iframeHandshake.promise.then(useBroadcastChannel => {
+                sendResponse({
+                    type: POPUP.INIT,
+                    payload: {
+                        settings: this.settings,
+                        useBroadcastChannel,
+                    },
+                });
+            });
+        } else if (request.data.type === POPUP.EXTENSION_USB_PERMISSIONS) {
+            chrome.tabs.query(
+                {
+                    currentWindow: true,
+                    active: true,
+                },
+                tabs => {
+                    chrome.tabs.create(
+                        {
+                            url: 'trezor-usb-permissions.html',
+                            index: tabs[0].index + 1,
+                        },
+                        _tab => {
+                            // do nothing
+                        },
+                    );
+                },
+            );
+        }
+    }
+
     handleExtensionMessage(message: MessageEvent) {
         if (!this.extensionPort) return;
         const port = this.extensionPort;
@@ -292,12 +329,10 @@ export class PopupManager extends EventEmitter {
     close() {
         this.locked = false;
         this.popupPromise = undefined;
-
         if (this.requestTimeout) {
             window.clearTimeout(this.requestTimeout);
             this.requestTimeout = 0;
         }
-
         if (this.openTimeout) {
             clearTimeout(this.openTimeout);
             this.openTimeout = undefined;
@@ -306,23 +341,19 @@ export class PopupManager extends EventEmitter {
             window.clearInterval(this.closeInterval);
             this.closeInterval = 0;
         }
-
         if (this.extensionPort) {
             this.extensionPort.disconnect();
             this.extensionPort = undefined;
         }
-
         // switch to previously focused tab
         if (this.extensionTabId) {
             chrome.tabs.update(this.extensionTabId, { active: true });
             this.extensionTabId = 0;
         }
-
         if (this._window) {
             if (this.settings.env === 'webextension') {
                 // @ts-expect-error
                 let _e = chrome.runtime.lastError;
-
                 chrome.tabs.remove(this._window.id, () => {
                     _e = chrome.runtime.lastError;
                 });
