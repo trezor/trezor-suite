@@ -19,7 +19,7 @@
 - (NSURL *)sourceURLForBridge:(RCTBridge *)bridge
 {
 #if DEBUG
-  return [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"suite-native/app/index.js"];
+  return [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index.js"];
 #else
   return [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
 #endif

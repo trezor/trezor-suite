@@ -37,7 +37,7 @@ public class MainApplication extends Application implements ReactApplication {
 
       @Override
       protected String getJSMainModuleName() {
-        return "suite-native/app/index.js";
+        return "index.js";
       }
 
       @Override
