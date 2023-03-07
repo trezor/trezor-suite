@@ -1,6 +1,4 @@
 import React from 'react';
-import { Linking } from 'react-native';
-import Toast from 'react-native-root-toast';
 
 import { S } from '@mobily/ts-belt';
 
@@ -24,7 +22,15 @@ export const SettingsAboutUsScreen = () => {
                     <Text variant="titleSmall">Legal</Text>
                     <Card>
                         <VStack spacing="medium">
-                            <ListItem title="Terms & conditions" iconName="pdf" />
+                            <ListItem
+                                onPress={() =>
+                                    handleRedirect(
+                                        'https://data.trezor.io/legal/mobile-wallet-terms.pdf',
+                                    )
+                                }
+                                title="Terms & conditions"
+                                iconName="pdf"
+                            />
                             <ListItem
                                 onPress={() =>
                                     handleRedirect(
