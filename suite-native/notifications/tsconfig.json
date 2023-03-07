@@ -17,6 +17,7 @@
         { "path": "../theme" },
         { "path": "../transactions" },
         { "path": "../../packages/icons" },
-        { "path": "../../packages/styles" }
+        { "path": "../../packages/styles" },
+        { "path": "../../packages/theme" }
     ]
 }

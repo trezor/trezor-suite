@@ -6954,6 +6954,7 @@ __metadata:
     "@suite-native/transactions": "workspace:*"
     "@trezor/icons": "workspace:*"
     "@trezor/styles": "workspace:*"
+    "@trezor/theme": "workspace:*"
     react: 18.2.0
     react-native: 0.71.3
     react-native-gesture-handler: ^2.9.0
