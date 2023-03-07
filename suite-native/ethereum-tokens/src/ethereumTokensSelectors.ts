@@ -3,7 +3,7 @@ import { A, G } from '@mobily/ts-belt';
 import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { TokenInfo } from '@trezor/blockchain-link';
 
-import { filterTokenHasBalance } from './utils';
+export const filterTokenHasBalance = (token: TokenInfo) => !!token.balance && token.balance !== '0';
 
 export const selectEthereumAccountsTokens = (
     state: AccountsRootState,
