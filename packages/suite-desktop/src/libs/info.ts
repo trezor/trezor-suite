@@ -10,6 +10,7 @@ export const getBuildInfo = () => [
     'Info:',
     `- Version: ${app?.getVersion()}`,
     `- Electron: ${process.versions.electron}`,
+    `- Node: ${process.version}`,
     `- Commit: ${process.env.COMMITHASH}`,
     `- Dev: ${b2t(isDevEnv)}`,
     `- Args: ${process.argv.slice(1).join(' ')}`,
