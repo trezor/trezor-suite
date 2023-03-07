@@ -230,6 +230,7 @@ const fixtures: {
                                 n: 0,
                             },
                         ],
+                        internalTransfers: [],
                         tokens: [],
                         details: {
                             vin: [
@@ -353,6 +354,7 @@ const fixtures: {
                                 n: 1,
                             },
                         ],
+                        internalTransfers: [],
                         tokens: [],
                         details: {
                             vin: [
@@ -678,6 +680,7 @@ const fixtures: {
                         vsize: 141,
                         feeRate: '2',
                         targets: [],
+                        internalTransfers: [],
                         tokens: [],
                         details: {
                             vin: [],

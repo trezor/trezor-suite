@@ -3,7 +3,13 @@ import styled from 'styled-components';
 import BigNumber from 'bignumber.js';
 import { variables } from '@trezor/components';
 import { getIsZeroValuePhishing } from '@suite-common/suite-utils';
-import { FiatValue, Translation, MetadataLabeling, FormattedCryptoAmount } from '@suite-components';
+import {
+    FiatValue,
+    Translation,
+    MetadataLabeling,
+    FormattedCryptoAmount,
+    AddressLabeling,
+} from '@suite-components';
 import { ArrayElement } from '@trezor/type-utils';
 import {
     getTxOperation,
@@ -33,13 +39,16 @@ export const StyledFormattedCryptoAmount = styled(FormattedCryptoAmount)`
     white-space: nowrap;
 `;
 
-interface TokenTransferProps {
-    transfer: ArrayElement<WalletAccountTransaction['tokens']>;
-    transaction: WalletAccountTransaction;
+interface BaseTransfer {
     singleRowLayout?: boolean;
     useAnimation?: boolean;
     isFirst?: boolean;
     isLast?: boolean;
+}
+
+interface TokenTransferProps extends BaseTransfer {
+    transfer: ArrayElement<WalletAccountTransaction['tokens']>;
+    transaction: WalletAccountTransaction;
 }
 
 export const TokenTransfer = ({
@@ -73,13 +82,49 @@ export const TokenTransfer = ({
     );
 };
 
-interface TargetProps {
+interface InternalTransferProps extends BaseTransfer {
+    transfer: ArrayElement<WalletAccountTransaction['internalTransfers']>;
+    transaction: WalletAccountTransaction;
+}
+
+export const InternalTransfer = ({
+    transfer,
+    transaction,
+    ...baseLayoutProps
+}: InternalTransferProps) => {
+    const amount = transfer.amount && formatNetworkAmount(transfer.amount, transaction.symbol);
+    const operation = getTxOperation(transfer);
+
+    return (
+        <BaseTargetLayout
+            {...baseLayoutProps}
+            addressLabel={<AddressLabeling address={transfer.to} />}
+            amount={
+                !baseLayoutProps.singleRowLayout && (
+                    <StyledFormattedCryptoAmount
+                        value={amount}
+                        symbol={transaction.symbol}
+                        signValue={operation}
+                    />
+                )
+            }
+            fiatAmount={
+                !isTestnet(transaction.symbol) && amount ? (
+                    <FiatValue
+                        amount={amount}
+                        symbol={transaction.symbol}
+                        source={transaction.rates}
+                        useCustomSource
+                    />
+                ) : undefined
+            }
+        />
+    );
+};
+
+interface TargetProps extends BaseTransfer {
     target: ArrayElement<WalletAccountTransaction['targets']>;
     transaction: WalletAccountTransaction;
-    singleRowLayout?: boolean;
-    useAnimation?: boolean;
-    isFirst?: boolean;
-    isLast?: boolean;
     accountKey: string;
     accountMetadata?: AccountMetadata;
     isActionDisabled?: boolean;

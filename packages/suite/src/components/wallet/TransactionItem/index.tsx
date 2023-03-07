@@ -19,6 +19,7 @@ import {
     WithdrawalRow,
     DepositRow,
     CoinjoinRow,
+    InternalTransfer,
 } from './components/Target';
 import {
     Content,
@@ -104,7 +105,7 @@ const TransactionItem = React.memo(
         className,
         index,
     }: TransactionItemProps) => {
-        const { type, targets, tokens } = transaction;
+        const { type, targets, tokens, internalTransfers } = transaction;
         const [limit, setLimit] = useState(0);
         const isUnknown = isTxUnknown(transaction);
         const useFiatValues = !isTestnet(transaction.symbol);
@@ -129,12 +130,14 @@ const TransactionItem = React.memo(
         // cardano tx can have both at the same time
         const allOutputs: (
             | { type: 'token'; payload: (typeof tokens)[number] }
+            | { type: 'internal'; payload: (typeof internalTransfers)[number] }
             | { type: 'target'; payload: WalletAccountTransaction['targets'][number] }
         )[] =
             transaction.type === 'self'
                 ? [...targets.map(t => ({ type: 'target' as const, payload: t }))]
                 : [
                       ...targets.map(t => ({ type: 'target' as const, payload: t })),
+                      ...internalTransfers.map(t => ({ type: 'internal' as const, payload: t })),
                       ...tokens.map(t => ({ type: 'token' as const, payload: t })),
                   ];
         const previewTargets = allOutputs.slice(0, DEFAULT_LIMIT);
@@ -209,7 +212,7 @@ const TransactionItem = React.memo(
                                     <>
                                         {previewTargets.map((t, i) => (
                                             <React.Fragment key={i}>
-                                                {t.type === 'target' ? (
+                                                {t.type === 'target' && (
                                                     <Target
                                                         // render first n targets, n = DEFAULT_LIMIT
                                                         target={t.payload}
@@ -225,8 +228,22 @@ const TransactionItem = React.memo(
                                                         accountKey={accountKey}
                                                         isActionDisabled={isActionDisabled}
                                                     />
-                                                ) : (
+                                                )}
+                                                {t.type === 'token' && (
                                                     <TokenTransfer
+                                                        transfer={t.payload}
+                                                        transaction={transaction}
+                                                        singleRowLayout={useSingleRowLayout}
+                                                        isFirst={i === 0}
+                                                        isLast={
+                                                            limit > 0
+                                                                ? false
+                                                                : i === previewTargets.length - 1
+                                                        }
+                                                    />
+                                                )}
+                                                {t.type === 'internal' && (
+                                                    <InternalTransfer
                                                         transfer={t.payload}
                                                         transaction={transaction}
                                                         singleRowLayout={useSingleRowLayout}
@@ -246,7 +263,7 @@ const TransactionItem = React.memo(
                                                     .slice(DEFAULT_LIMIT, DEFAULT_LIMIT + limit)
                                                     .map((t, i) => (
                                                         <React.Fragment key={i}>
-                                                            {t.type === 'target' ? (
+                                                            {t.type === 'target' && (
                                                                 <Target
                                                                     target={t.payload}
                                                                     transaction={transaction}
@@ -267,8 +284,22 @@ const TransactionItem = React.memo(
                                                                     }
                                                                     accountKey={accountKey}
                                                                 />
-                                                            ) : (
+                                                            )}
+                                                            {t.type === 'token' && (
                                                                 <TokenTransfer
+                                                                    transfer={t.payload}
+                                                                    transaction={transaction}
+                                                                    useAnimation
+                                                                    isLast={
+                                                                        i ===
+                                                                        allOutputs.length -
+                                                                            DEFAULT_LIMIT -
+                                                                            1
+                                                                    }
+                                                                />
+                                                            )}
+                                                            {t.type === 'internal' && (
+                                                                <InternalTransfer
                                                                     transfer={t.payload}
                                                                     transaction={transaction}
                                                                     useAnimation

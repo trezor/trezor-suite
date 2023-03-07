@@ -4,7 +4,7 @@ import type { Transaction as BlockbookTransaction } from '@trezor/blockchain-lin
 
 const token = {
     address: undefined,
-    amount: undefined,
+    amount: '',
     decimals: 0,
     name: undefined,
     symbol: undefined,
