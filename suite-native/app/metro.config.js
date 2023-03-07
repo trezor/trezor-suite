@@ -1,9 +1,8 @@
 /* eslint-disable require-await */
 const nodejs = require('node-libs-browser');
-const path = require('path');
+const { makeMetroConfig } = require('@rnx-kit/metro-config');
 
-module.exports = {
-    projectRoot: path.resolve(__dirname, '../../'),
+module.exports = makeMetroConfig({
     transformer: {
         getTransformOptions: async () => ({
             transform: {
@@ -22,4 +21,4 @@ module.exports = {
             http: nodejs.http,
         },
     },
-};
+});
