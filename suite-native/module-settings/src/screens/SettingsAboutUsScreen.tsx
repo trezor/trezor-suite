@@ -1,9 +1,11 @@
 import React from 'react';
+import { Linking } from 'react-native';
+import Toast from 'react-native-root-toast';
 
 import { S } from '@mobily/ts-belt';
 
 import { Screen, ScreenHeader } from '@suite-native/navigation';
-import { VStack, Card, Text, Box, Divider, ListItem } from '@suite-native/atoms';
+import { VStack, Card, Text, Box, Divider, ListItem, handleRedirect } from '@suite-native/atoms';
 import { getAppVersion, getBuildVersionNumber, getCommitHash } from '@suite-native/config';
 
 import { AboutUsBanners } from '../components/AboutUsBanners';
@@ -17,13 +19,21 @@ export const SettingsAboutUsScreen = () => {
         <Screen header={<ScreenHeader title="About Trezor Go" />}>
             <VStack spacing="small">
                 <AboutUsBanners />
-                <Divider />
-                <VStack>
+                <Divider marginVertical="medium" />
+                <VStack spacing="medium">
                     <Text variant="titleSmall">Legal</Text>
                     <Card>
                         <VStack spacing="medium">
                             <ListItem title="Terms & conditions" iconName="pdf" />
-                            <ListItem title="Privacy policy" iconName="pdf" />
+                            <ListItem
+                                onPress={() =>
+                                    handleRedirect(
+                                        'https://trezor.io/content/wysiwyg/ToU/privacy-policy.pdf',
+                                    )
+                                }
+                                title="Privacy policy"
+                                iconName="pdf"
+                            />
                         </VStack>
                     </Card>
                 </VStack>

@@ -6,14 +6,14 @@ type LinkProps = TouchableOpacityProps & {
     href: string;
 };
 
-export const Link = ({ href, ...touchableProps }: LinkProps) => {
-    const handleRedirect = async () => {
-        try {
-            await Linking.openURL(href);
-        } catch {
-            Toast.show('Unable to open the link.');
-        }
-    };
-
-    return <TouchableOpacity {...touchableProps} onPress={handleRedirect} />;
+export const handleRedirect = async (href: string) => {
+    try {
+        await Linking.openURL(href);
+    } catch {
+        Toast.show('Unable to open the link.');
+    }
 };
+
+export const Link = ({ href, ...touchableProps }: LinkProps) => (
+    <TouchableOpacity {...touchableProps} onPress={() => handleRedirect(href)} />
+);
