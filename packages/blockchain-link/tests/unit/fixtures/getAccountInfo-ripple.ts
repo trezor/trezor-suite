@@ -99,6 +99,7 @@ export default [
                         amount: '0',
                         fee: '0',
                         targets: [],
+                        internalTransfers: [],
                         tokens: [],
                         details: {
                             vin: [],
@@ -193,6 +194,7 @@ export default [
                             },
                         ],
                         tokens: [],
+                        internalTransfers: [],
                         details: {
                             vin: [],
                             vout: [],
@@ -219,6 +221,7 @@ export default [
                             },
                         ],
                         tokens: [],
+                        internalTransfers: [],
                         details: {
                             vin: [],
                             vout: [],

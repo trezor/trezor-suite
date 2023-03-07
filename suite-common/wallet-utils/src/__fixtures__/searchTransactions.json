@@ -44,6 +44,7 @@
                 }
             ],
             "tokens": [],
+            "internalTransfers": [],
             "details": {
                 "vin": [
                     {
