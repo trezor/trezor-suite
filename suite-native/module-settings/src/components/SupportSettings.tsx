@@ -29,6 +29,11 @@ export const SupportSettings = () => {
                 iconName="trezorT"
                 onPress={() => navigation.navigate(SettingsStackRoutes.SettingsAbout)}
             />
+            <SettingsSectionItem
+                iconName="question"
+                title="FAQ"
+                onPress={() => navigation.navigate(SettingsStackRoutes.SettingsFAQ)}
+            />
         </SettingsSection>
     );
 };
