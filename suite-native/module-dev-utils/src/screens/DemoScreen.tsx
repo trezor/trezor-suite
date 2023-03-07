@@ -328,6 +328,7 @@ export const DemoScreen = () => {
                         <Box flexWrap="wrap" flexDirection="row">
                             {Object.keys(icons).map((icon: string) => (
                                 <Box
+                                    key={icon}
                                     marginRight="large"
                                     marginBottom="large"
                                     justifyContent="center"
