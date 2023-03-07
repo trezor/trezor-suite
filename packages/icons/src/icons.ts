@@ -36,6 +36,7 @@ export const icons = {
     github: require('../assets/icons/github.svg'),
     hiddenWallet: require('../assets/icons/hiddenWallet.svg'),
     home: require('../assets/icons/home.svg'),
+    info: require('../assets/icons/info.svg'),
     label: require('../assets/icons/label.svg'),
     lock: require('../assets/icons/lock.svg'),
     notifications: require('../assets/icons/notifications.svg'),
@@ -66,6 +67,7 @@ export const icons = {
     trezorT: require('../assets/icons/trezorT.svg'),
     twitter: require('../assets/icons/twitter.svg'),
     warningCircle: require('../assets/icons/warningCircle.svg'),
+    warningTriangle: require('../assets/icons/warningTriangle.svg'),
 } as const;
 export type IconName = keyof typeof icons;
 

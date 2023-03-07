@@ -1,1 +1,2 @@
-export { TransactionNotification } from './components/TransactionNotification';
+export * from './components/TransactionNotification';
+export * from './components/ToastNotification';
