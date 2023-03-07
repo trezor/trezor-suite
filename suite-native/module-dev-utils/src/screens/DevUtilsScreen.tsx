@@ -39,7 +39,7 @@ const DevCheckBoxListItem = ({
     </TouchableOpacity>
 );
 
-const Log = () => {
+const CopyLogsButton = () => {
     const logs = useSelector(selectLogs);
     const copyToClipboard = useCopyToClipboard();
 
@@ -47,9 +47,13 @@ const Log = () => {
         await copyToClipboard(JSON.stringify(logs), 'Logs copied to clipboard.');
     };
 
+    return <Button onPress={handleCopy}>Copy logs</Button>;
+};
+
+const Logs = () => {
+    const logs = useSelector(selectLogs);
     return (
         <Box>
-            <Button onPress={handleCopy}>Copy</Button>
             <Text>{JSON.stringify(logs)}</Text>
         </Box>
     );
@@ -91,7 +95,7 @@ export const DevUtilsScreen = ({
                     <VStack spacing="medium">
                         {!isDebugEnv() && <BuildInfo />}
 
-                        <Card style={{ marginVertical: 16 }}>
+                        <Card>
                             <DevCheckBoxListItem
                                 title="Flash on rerender"
                                 onPress={toggleFlashOnRerender}
@@ -104,6 +108,14 @@ export const DevUtilsScreen = ({
                             />
                         </Card>
 
+                        <Button onPress={() => navigation.navigate(DevUtilsStackRoutes.Demo)}>
+                            See Component Demo
+                        </Button>
+                        <Button colorScheme="primary" onPress={handleResetStorage}>
+                            Reset storage
+                        </Button>
+                        <CopyLogsButton />
+
                         <Card>
                             <Box flexDirection="row" justifyContent="space-between">
                                 <Text>Show logs</Text>
@@ -113,14 +125,8 @@ export const DevUtilsScreen = ({
                                 />
                             </Box>
                         </Card>
-                        <Button onPress={() => navigation.navigate(DevUtilsStackRoutes.Demo)}>
-                            See Component Demo
-                        </Button>
-                        <Button colorScheme="primary" onPress={handleResetStorage}>
-                            Reset storage
-                        </Button>
 
-                        {areLogsVisible && <Log />}
+                        {areLogsVisible && <Logs />}
                     </VStack>
                 </Box>
             ) : null}
