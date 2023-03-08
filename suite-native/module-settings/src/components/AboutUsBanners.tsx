@@ -24,8 +24,8 @@ export const AboutUsBanners = () => {
         <>
             <Card style={applyStyle(cardStyle, { backgroundColor: 'backgroundNeutralBold' })}>
                 <VStack spacing="large" style={applyStyle(stackStyle)}>
-                    <Icon color="textDefaultInverse" name="trezor" />
-                    <Text color="textDefaultInverse">
+                    <Icon color="iconOnPrimary" name="trezor" />
+                    <Text color="textOnPrimary">
                         Trezor Go is a safe and secure way to stay connected to the crypto on your
                         hardware wallet. Track coin balances on the go without exposing your private
                         data. Easily create and send payment addresses to anyone.
