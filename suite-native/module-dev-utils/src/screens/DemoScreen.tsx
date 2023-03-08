@@ -23,14 +23,8 @@ import {
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Screen, ScreenHeader } from '@suite-native/navigation';
 import { CryptoIcon, Icon, IconName, icons } from '@trezor/icons';
-import {
-    TransactionNotification,
-    ToastNotificationVariant,
-    ToastNotification,
-} from '@suite-native/notifications';
+import { ToastNotificationVariant, ToastNotification } from '@suite-native/notifications';
 import { CoinsSettings } from '@suite-native/module-settings';
-
-import { transactionNotifications } from '../fixtures';
 
 const inputStackStyle = prepareNativeStyle(utils => ({
     borderRadius: utils.borders.radii.medium,
@@ -75,17 +69,6 @@ export const DemoScreen = () => {
             <VStack spacing="medium">
                 <VStack>
                     <Text variant="titleSmall">Transaction Notifications:</Text>
-                    <VStack
-                        style={{ overflow: 'hidden', height: transactionNotifications.length * 60 }}
-                    >
-                        {transactionNotifications.map(notification => (
-                            <TransactionNotification
-                                // @ts-expect-error
-                                notification={notification}
-                                isHiddenAutomatically={false}
-                            />
-                        ))}
-                    </VStack>
                     <Text variant="titleSmall">Toast Notifications:</Text>
                     <VStack
                         justifyContent="center"

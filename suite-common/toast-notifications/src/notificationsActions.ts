@@ -3,11 +3,9 @@ import { createAction } from '@reduxjs/toolkit';
 import { createActionWithExtraDeps } from '@suite-common/redux-utils';
 
 import { selectVisibleNotificationsByType } from './notificationsSelectors';
-import { NotificationEntry, NotificationEventPayload, ToastPayload } from './types';
+import { NotificationId, NotificationEntry, NotificationEventPayload, ToastPayload } from './types';
 
 export const ACTION_PREFIX = '@common/in-app-notifications';
-
-type NotificationId = number;
 
 const close = createAction(`${ACTION_PREFIX}/close`, (id: NotificationId) => ({
     payload: id,

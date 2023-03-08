@@ -195,14 +195,19 @@ export const selectAccountByDescriptorAndNetworkSymbol = memoizeWithArgs(
 );
 
 export const selectAccountKeyByDescriptorAndNetworkSymbol = memoizeWithArgs(
-    (state: AccountsRootState, accountDescriptor: string, networkSymbol: NetworkSymbol) => {
+    (
+        state: AccountsRootState,
+        accountDescriptor?: string,
+        networkSymbol?: NetworkSymbol,
+    ): AccountKey | null => {
+        if (!accountDescriptor || !networkSymbol) return null;
         const account = selectAccountByDescriptorAndNetworkSymbol(
             state,
             accountDescriptor,
             networkSymbol,
         );
 
-        return account?.key;
+        return account?.key ?? null;
     },
 );
 

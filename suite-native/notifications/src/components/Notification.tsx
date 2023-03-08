@@ -87,7 +87,7 @@ export const Notification = ({
         ],
     }));
 
-    const enteringAnimation = (_: EntryAnimationsValues) => {
+    const runEnteringAnimation = (_: EntryAnimationsValues) => {
         'worklet';
 
         const animations = {
@@ -109,7 +109,7 @@ export const Notification = ({
             <PanGestureHandler onGestureEvent={onSwipeGesture}>
                 <Animated.View
                     style={swipeGestureStyle}
-                    entering={enteringAnimation}
+                    entering={runEnteringAnimation}
                     exiting={SlideOutUp.duration(EXIT_ANIMATION_DURATION)}
                 >
                     <TouchableWithoutFeedback onPress={onPress}>

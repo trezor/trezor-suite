@@ -3,10 +3,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useSelector } from 'react-redux';
 
 import { Box, VStack } from '@suite-native/atoms';
-import {
-    NotificationsRootState,
-    selectTransactionNotifications,
-} from '@suite-common/toast-notifications';
+import { selectOpenedTransactionNotifications } from '@suite-common/toast-notifications';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { TransactionNotification } from './TransactionNotification';
@@ -28,9 +25,7 @@ const notificationContainerStyle = prepareNativeStyle<{ topSafeAreaInset: number
 export const NotificationRenderer = ({ children }: NotificationRendererProps) => {
     const { applyStyle } = useNativeStyles();
     const { top: topSafeAreaInset } = useSafeAreaInsets();
-    const transactionNotifications = useSelector((state: NotificationsRootState) =>
-        selectTransactionNotifications(state),
-    );
+    const transactionNotifications = useSelector(selectOpenedTransactionNotifications);
 
     if (!transactionNotifications) return null;
 
@@ -43,11 +38,8 @@ export const NotificationRenderer = ({ children }: NotificationRendererProps) =>
                 })}
             >
                 <VStack flex={1}>
-                    {transactionNotifications.map(notification => (
-                        <TransactionNotification
-                            notification={notification}
-                            key={notification.id}
-                        />
+                    {transactionNotifications.map(({ id }) => (
+                        <TransactionNotification notificationId={id} key={id} />
                     ))}
                 </VStack>
             </Box>
