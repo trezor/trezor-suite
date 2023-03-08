@@ -4282,18 +4282,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nrwl/cli@npm:15.6.3":
-  version: 15.6.3
-  resolution: "@nrwl/cli@npm:15.6.3"
+"@nrwl/cli@npm:15.8.5":
+  version: 15.8.5
+  resolution: "@nrwl/cli@npm:15.8.5"
   dependencies:
-    nx: 15.6.3
-  checksum: 66219cbf0a99d7cc4bb8bcf1c56f42e088e825b862d0df44710c4aa2466ce3d2c7286e0d208327e8325e5e370c3a0bad205df52ac311774f9d7a960e8a41c7c5
+    nx: 15.8.5
+  checksum: a7c588d0d7185de0ee98bdfa22fdfc6faf33cfb2cc3277a296ffb00b96c5892e3543ae2a6181df48b95fef3bd2a5ca3a84788dbf0425f885d478763fb33c45f0
   languageName: node
   linkType: hard
 
-"@nrwl/nx-cloud@npm:15.0.3":
-  version: 15.0.3
-  resolution: "@nrwl/nx-cloud@npm:15.0.3"
+"@nrwl/nx-cloud@npm:15.1.1":
+  version: 15.1.1
+  resolution: "@nrwl/nx-cloud@npm:15.1.1"
   dependencies:
     axios: ^0.21.2
     chalk: 4.1.0
@@ -4305,18 +4305,81 @@ __metadata:
     yargs-parser: ">=21.0.1"
   bin:
     nx-cloud: bin/nx-cloud.js
-  checksum: 8ac91cf5224d0f4d3e59285d2511428a8fe4fe47a4783dbc1556106c7999f9536114f81903a54eb9a396e0705a33c81b6f9ecb0159b8dcb151f045285094b56e
+  checksum: f8573dae0f8958ea53c83fc795727e924de376dc1a4623a510bc6956eec7cee8488513794d7bb8c8a6bdda113f53f4a25341d6671d7701c247999119d7f62f4f
   languageName: node
   linkType: hard
 
-"@nrwl/tao@npm:15.6.3":
-  version: 15.6.3
-  resolution: "@nrwl/tao@npm:15.6.3"
+"@nrwl/nx-darwin-arm64@npm:15.8.5":
+  version: 15.8.5
+  resolution: "@nrwl/nx-darwin-arm64@npm:15.8.5"
+  conditions: os=darwin & cpu=arm64
+  languageName: node
+  linkType: hard
+
+"@nrwl/nx-darwin-x64@npm:15.8.5":
+  version: 15.8.5
+  resolution: "@nrwl/nx-darwin-x64@npm:15.8.5"
+  conditions: os=darwin & cpu=x64
+  languageName: node
+  linkType: hard
+
+"@nrwl/nx-linux-arm-gnueabihf@npm:15.8.5":
+  version: 15.8.5
+  resolution: "@nrwl/nx-linux-arm-gnueabihf@npm:15.8.5"
+  conditions: os=linux & cpu=arm
+  languageName: node
+  linkType: hard
+
+"@nrwl/nx-linux-arm64-gnu@npm:15.8.5":
+  version: 15.8.5
+  resolution: "@nrwl/nx-linux-arm64-gnu@npm:15.8.5"
+  conditions: os=linux & cpu=arm64 & libc=glibc
+  languageName: node
+  linkType: hard
+
+"@nrwl/nx-linux-arm64-musl@npm:15.8.5":
+  version: 15.8.5
+  resolution: "@nrwl/nx-linux-arm64-musl@npm:15.8.5"
+  conditions: os=linux & cpu=arm64 & libc=musl
+  languageName: node
+  linkType: hard
+
+"@nrwl/nx-linux-x64-gnu@npm:15.8.5":
+  version: 15.8.5
+  resolution: "@nrwl/nx-linux-x64-gnu@npm:15.8.5"
+  conditions: os=linux & cpu=x64 & libc=glibc
+  languageName: node
+  linkType: hard
+
+"@nrwl/nx-linux-x64-musl@npm:15.8.5":
+  version: 15.8.5
+  resolution: "@nrwl/nx-linux-x64-musl@npm:15.8.5"
+  conditions: os=linux & cpu=x64 & libc=musl
+  languageName: node
+  linkType: hard
+
+"@nrwl/nx-win32-arm64-msvc@npm:15.8.5":
+  version: 15.8.5
+  resolution: "@nrwl/nx-win32-arm64-msvc@npm:15.8.5"
+  conditions: os=win32 & cpu=arm64
+  languageName: node
+  linkType: hard
+
+"@nrwl/nx-win32-x64-msvc@npm:15.8.5":
+  version: 15.8.5
+  resolution: "@nrwl/nx-win32-x64-msvc@npm:15.8.5"
+  conditions: os=win32 & cpu=x64
+  languageName: node
+  linkType: hard
+
+"@nrwl/tao@npm:15.8.5":
+  version: 15.8.5
+  resolution: "@nrwl/tao@npm:15.8.5"
   dependencies:
-    nx: 15.6.3
+    nx: 15.8.5
   bin:
     tao: index.js
-  checksum: ff56f21c7a2063a7719ed192e7997121dae42135bbff504f4847af86bede9db34fbd6c5d9573cd5368d594c44dd68c4e8d9ab5d57b346113e86015b2f4db47bc
+  checksum: 92d487dd227e90d3a46a23f12b5e24f62174b1e8551d1891034e53a24c9f2b857b58a1b7fafa7fa88634808d4d07e1b94434fc2431bab936b5bb8aeeb5a313c1
   languageName: node
   linkType: hard
 
@@ -24796,12 +24859,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nx@npm:15.6.3":
-  version: 15.6.3
-  resolution: "nx@npm:15.6.3"
+"nx@npm:15.8.5":
+  version: 15.8.5
+  resolution: "nx@npm:15.8.5"
   dependencies:
-    "@nrwl/cli": 15.6.3
-    "@nrwl/tao": 15.6.3
+    "@nrwl/cli": 15.8.5
+    "@nrwl/nx-darwin-arm64": 15.8.5
+    "@nrwl/nx-darwin-x64": 15.8.5
+    "@nrwl/nx-linux-arm-gnueabihf": 15.8.5
+    "@nrwl/nx-linux-arm64-gnu": 15.8.5
+    "@nrwl/nx-linux-arm64-musl": 15.8.5
+    "@nrwl/nx-linux-x64-gnu": 15.8.5
+    "@nrwl/nx-linux-x64-musl": 15.8.5
+    "@nrwl/nx-win32-arm64-msvc": 15.8.5
+    "@nrwl/nx-win32-x64-msvc": 15.8.5
+    "@nrwl/tao": 15.8.5
     "@parcel/watcher": 2.0.4
     "@yarnpkg/lockfile": ^1.1.0
     "@yarnpkg/parsers": ^3.0.0-rc.18
@@ -24838,6 +24910,25 @@ __metadata:
   peerDependencies:
     "@swc-node/register": ^1.4.2
     "@swc/core": ^1.2.173
+  dependenciesMeta:
+    "@nrwl/nx-darwin-arm64":
+      optional: true
+    "@nrwl/nx-darwin-x64":
+      optional: true
+    "@nrwl/nx-linux-arm-gnueabihf":
+      optional: true
+    "@nrwl/nx-linux-arm64-gnu":
+      optional: true
+    "@nrwl/nx-linux-arm64-musl":
+      optional: true
+    "@nrwl/nx-linux-x64-gnu":
+      optional: true
+    "@nrwl/nx-linux-x64-musl":
+      optional: true
+    "@nrwl/nx-win32-arm64-msvc":
+      optional: true
+    "@nrwl/nx-win32-x64-msvc":
+      optional: true
   peerDependenciesMeta:
     "@swc-node/register":
       optional: true
@@ -24845,7 +24936,7 @@ __metadata:
       optional: true
   bin:
     nx: bin/nx.js
-  checksum: 09fe9a8f75a0e8e656930c1eaa9ab1eb39f4ffb9e964e7f3381920bf71cf75f8b3c0e0845b303c30e5818eb1c1eac9aa728e6f1d94d59743298b4bdf8f4d70ab
+  checksum: 20f1c5231a8f75af4d3280534d206fda94669336eb04d8934ee3bc888841e06bf296840140a15a7aa8dbbebfe9a9a364f3abe78c0fa56eb830c3b162e399313e
   languageName: node
   linkType: hard
 
@@ -31452,7 +31543,7 @@ __metadata:
     "@babel/preset-react": ^7.18.6
     "@babel/preset-typescript": ^7.18.6
     "@babel/runtime": ^7.20.13
-    "@nrwl/nx-cloud": 15.0.3
+    "@nrwl/nx-cloud": 15.1.1
     "@suite-common/wallet-types": "workspace:*"
     "@types/jest": ^26.0.24
     "@types/node": ^18.13.0
@@ -31475,7 +31566,7 @@ __metadata:
     jest: ^26.6.3
     metro-react-native-babel-preset: 0.73.7
     npm-run-all: ^4.1.5
-    nx: 15.6.3
+    nx: 15.8.5
     patch-package: 6.5.1
     postinstall-postinstall: ^2.1.0
     prettier: 2.8.4
