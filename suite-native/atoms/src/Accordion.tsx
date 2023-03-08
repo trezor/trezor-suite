@@ -29,7 +29,7 @@ const ANIMATION_DURATION = 500;
 export const Accordion = ({ title, content }: AccordionProps) => {
     const { applyStyle } = useNativeStyles();
     const [isOpen, setIsOpen] = useState(false);
-    const height = useSharedValue<string | number>(0);
+    const height = useSharedValue(0);
 
     const animationStyle = useAnimatedStyle(() => ({
         height: `${height.value}%`,

@@ -31,7 +31,8 @@ export const SupportSettings = () => {
             />
             <SettingsSectionItem
                 iconName="question"
-                title="FAQ"
+                title="Get help"
+                subtitle="FAQ, Customer support"
                 onPress={() => navigation.navigate(SettingsStackRoutes.SettingsFAQ)}
             />
         </SettingsSection>

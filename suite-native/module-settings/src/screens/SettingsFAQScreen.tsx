@@ -26,10 +26,10 @@ const accordionItemStyle = prepareNativeStyle(utils => ({
     borderBottomColor: utils.colors.borderOnElevation0,
 }));
 
-export const SettingsFAQ = () => {
+export const SettingsFAQScreen = () => {
     const { applyStyle } = useNativeStyles();
     return (
-        <Screen header={<ScreenHeader title="FAQ" />}>
+        <Screen header={<ScreenHeader title="Get help" />}>
             <VStack spacing="large">
                 <VStack>
                     {faqMap.map(({ question, answer }) => (
