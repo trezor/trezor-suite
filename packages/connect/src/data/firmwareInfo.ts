@@ -4,7 +4,6 @@ import { versionUtils } from '@trezor/utils';
 import {
     filterSafeListByFirmware,
     filterSafeListByBootloader,
-    getScore,
     isStrictFeatures,
     isValidReleases,
 } from '../utils/firmwareUtils';
@@ -155,22 +154,6 @@ const getSafeReleases = ({ features, releases }: GetInfoProps) => {
         fw_patch,
     } = features;
 
-    let parsedReleases = releases;
-
-    let score = 0; // just because of ts
-
-    /* istanbul ignore next */
-    if (features.device_id) {
-        score = getScore(features.device_id);
-    }
-
-    if (score) {
-        parsedReleases = parsedReleases.filter(item => {
-            if (!item.rollout) return true;
-            return item.rollout >= score;
-        });
-    }
-
     const firmwareVersion = [major_version, minor_version, patch_version];
 
     if (!isVersionArray(firmwareVersion)) {
@@ -181,18 +164,18 @@ const getSafeReleases = ({ features, releases }: GetInfoProps) => {
         const fwVersion = [fw_major, fw_minor, fw_patch];
         if (isVersionArray(fwVersion)) {
             // in bootloader, model T knows its firmware, so we still may filter "by firmware".
-            return filterSafeListByFirmware(parsedReleases, fwVersion);
+            return filterSafeListByFirmware(releases, fwVersion);
         }
-        return filterSafeListByBootloader(parsedReleases, firmwareVersion);
+        return filterSafeListByBootloader(releases, firmwareVersion);
     }
     if (major_version === 1 && bootloader_mode) {
         // model one does not know its firmware, we need to filter by bootloader. this has the consequence
         // that we do not know if the version we find in the end is newer than the actual installed version
-        return filterSafeListByBootloader(parsedReleases, firmwareVersion);
+        return filterSafeListByBootloader(releases, firmwareVersion);
     }
 
     // in other cases (not in bootloader) we may filter by firmware
-    return filterSafeListByFirmware(parsedReleases, firmwareVersion);
+    return filterSafeListByFirmware(releases, firmwareVersion);
 };
 
 /**

@@ -1,3 +1,17 @@
+# 9.0.8 (not released)
+
+-   feat(connect): support multiple intermediary FWs for model 1 and devkit binaries
+    -   `FirmwareUpdate` now accepts `intermediaryVersion` param instead of `intermediary`
+    -   `getInfo` returns `intermediaryVersion` needed for T1 and removed `latest` param. 'release' always return latest version for T1 so it means abandoning the concept of incremental updates for T1.
+-   chore(rollout): remove FW rollout feature completely
+
+# 9.0.7
+
+-   feat(connect-ui): connect UI will now display a warning in case it was opened by an application listed in https://github.com/MetaMask/eth-phishing-detect (#7488)
+-   fix(connect-ui): set max pin input length to 50 instead of 9 (#7668)
+-   fix(connect): ltc spending problem (#7666)
+-   change(connect): TrezorConnect.init `webusb` option is now deprecated. It was replaced with `transports` param `('BridgeTransport' | 'WebUsbTransport')[]`. (#7411)
+
 # 9.0.6
 
 -   fix: list tslib as direct dependency

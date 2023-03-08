@@ -24,7 +24,6 @@ export type FirmwareRelease = {
     url_bitcoinonly?: string;
     fingerprint_bitcoinonly?: string;
     notes?: string;
-    rollout?: number;
     channel?: string;
 };
 
