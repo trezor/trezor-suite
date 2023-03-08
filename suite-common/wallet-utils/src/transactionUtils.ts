@@ -430,9 +430,11 @@ export const getTargetAmount = (
 export const isTxUnknown = (transaction: WalletAccountTransaction) => {
     // blockbook cannot parse some txs
     // eg. tx with eth smart contract that creates a new token has no valid target
-    const isTokenTransaction = transaction.tokens.length > 0;
+    const isTokenTransaction = transaction.tokens.length;
+    const isInternalTransaction = transaction.internalTransfers.length;
     return (
         (!isTokenTransaction &&
+            !isInternalTransaction &&
             transaction.type !== 'joint' && // coinjoin txs don't have any target
             !transaction.cardanoSpecific && // cardano staking txs (de/registration of staking key, stake delegation) don't need to have any target
             !transaction.targets.find(t => t.addresses)) ||
