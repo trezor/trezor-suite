@@ -172,29 +172,20 @@ describe('TrezorConnect.authorizeCoinjoin', () => {
         expect(round2.success).toBe(true);
 
         // ... and again, fees should exceed maxRounds
+
+        // authorized coinjoin rounds already consumed, device will raise pin again
+        TrezorConnect.on('DEVICE_EVENT', ev => {
+            if ('code' in ev.payload && ev.payload.code === 'ButtonRequest_PinEntry') {
+                controller.send({ type: 'emulator-input', value: '1234' });
+            }
+        });
         const round3 = await TrezorConnect.signTransaction(params);
         expect(round3.success).toBe(false);
-        expect(round3.payload).toMatchObject({ error: 'Exceeded number of coinjoin rounds.' });
+        expect(round3.payload).toMatchObject({ error: 'No preauthorized operation' });
     });
 
     conditionalTest(['1', '<2.5.4'], 'Authorize and re-authorize', async () => {
-        // difference in buttons request count between 2.5.3 and 2.5.4
-        // see: https://github.com/trezor/trezor-firmware/pull/2613
-        const features = await TrezorConnect.getFeatures();
-        if (!features.success) {
-            throw new Error(`Wallet state exception`);
-        }
-        const confirmationScreensCount = versionUtils.isNewer(
-            [
-                features.payload.major_version,
-                features.payload.minor_version,
-                features.payload.patch_version,
-            ],
-            '2.5.3',
-        )
-            ? 1
-            : 2;
-
+        const confirmationScreensCount = 1;
         // setup two wallets, 1 with and 1 without passphrase
         await TrezorConnect.applySettings({ use_passphrase: true });
 
