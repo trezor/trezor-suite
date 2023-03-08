@@ -1,4 +1,3 @@
-import { createHash } from 'crypto';
 import { versionUtils } from '@trezor/utils';
 import type { Features, StrictFeatures, FirmwareRelease, VersionArray } from '../types';
 
@@ -22,13 +21,6 @@ export const isValidReleases = (extReleases: any): extReleases is FirmwareReleas
         release =>
             release.version && release.min_firmware_version && release.min_bootloader_version,
     );
-
-export const getScore = (device_id: string) => {
-    const hash = createHash('sha256');
-    hash.update(device_id);
-    const output = parseInt(hash.digest('hex'), 16) / 2 ** 256;
-    return Math.round(output * 100) / 100;
-};
 
 export const filterSafeListByBootloader = (
     releasesList: FirmwareRelease[],

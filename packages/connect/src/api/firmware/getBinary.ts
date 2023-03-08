@@ -16,7 +16,6 @@ interface GetBinaryProps extends GetInfoProps {
  * Accepts version of firmware that is to be installed.
  * Also accepts features and releases list in order to validate that the provided version
  * is safe.
- * Ignores rollout (score)
  */
 export const getBinary = ({
     features,

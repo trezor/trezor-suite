@@ -247,7 +247,6 @@ module.exports = {
                 'packages/connect-plugin-stellar/**/*',
                 'packages/integration-tests/**/*',
                 'packages/request-manager/**/*',
-                'packages/rollout/**/*',
                 'packages/suite/**/*',
                 'packages/suite-build/**/*',
                 'packages/suite-data/**/*',
