@@ -38,9 +38,10 @@ jobs:
           echo $ENCODED_STRING_JSON_FILE > suite-native/app/android/firebase_key.json
 
       - name: Install dependecies
-        run: |
-          yarn install
-          yarn build:libs
+        run: yarn install
+
+      - name: Build JS libs
+        run: yarn build:libs
 
       - name: Ruby Setup for Fastlane
         uses: ruby/setup-ruby@v1
@@ -98,10 +99,13 @@ jobs:
           echo $APPSTORE_CERTIFICATE_CONTENT | base64 -d > suite-native/app/TrezorDistributionCertificate.p12
 
       - name: Install dependecies
-        run: |
-          yarn install
-          yarn build:libs
-          yarn workspace @trezor/suite-native pods
+        run: yarn install
+
+      - name: Build JS libs
+        run: yarn build:libs
+
+      - name: Install Pods
+        run: yarn workspace @trezor/suite-native pods
 
       - name: Ruby Setup for Fastlane
         uses: ruby/setup-ruby@v1
