@@ -8071,4 +8071,22 @@ export default defineMessages({
         defaultMessage:
             'CoinJoin at least {crypto} {isAccountWithRate, select, true {(~{fiat})} false {} other {}} for the best results.',
     },
+    TR_UNECO_COINJOIN_AGREE: {
+        id: 'TR_UNECO_COINJOIN_AGREE',
+        defaultMessage: 'I understand',
+    },
+    TR_UNECO_COINJOIN_TITLE: {
+        id: 'TR_UNECO_COINJOIN_TITLE',
+        defaultMessage: 'Uneconomical coinjoin',
+    },
+    TR_UNECO_COINJOIN_WARNING: {
+        id: 'TR_UNECO_COINJOIN_WARNING',
+        defaultMessage:
+            'Coinjoining less than {crypto} {isAccountWithRate, select, true {(~{fiat})} false {} other {}} is not recommended',
+    },
+    TR_UNECO_COINJOIN_EXPLANATION: {
+        id: 'TR_UNECO_COINJOIN_EXPLANATION',
+        defaultMessage:
+            'If your account balance is below the recommended minimum ({crypto}) coinjoin may be uneconomical. Press <b>Cancel</b> to go back and add more funds, or <b>I understand</b> to proceed with the coinjoin.',
+    },
 });

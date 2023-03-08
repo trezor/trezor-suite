@@ -12,6 +12,7 @@ import { useDispatch } from '@suite-hooks/useDispatch';
 import { useCoinjoinSessionBlockers } from '@suite/hooks/coinjoin/useCoinjoinSessionBlockers';
 import { goto } from '@suite-actions/routerActions';
 import { Translation } from '@suite-components/Translation';
+import { openModal } from '@suite-actions/modalActions';
 
 const getOutlineSvg = (theme: DefaultTheme) =>
     `url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='100' ry='100' stroke='${theme.TYPE_LIGHT_GREY.replace(
@@ -38,6 +39,7 @@ const Wheel = styled.div<{
     hasDottedOutline: boolean;
     isWithoutProgressOutline: boolean;
     isStartable: boolean;
+    isGreyedOut: boolean;
 }>`
     position: relative;
     display: flex;
@@ -120,8 +122,8 @@ const Wheel = styled.div<{
             }
         `}
 
-    ${({ hasCriticalError, theme }) =>
-        hasCriticalError &&
+    ${({ isGreyedOut, theme }) =>
+        isGreyedOut &&
         css`
             filter: grayscale(1);
             color: inherit;
@@ -146,6 +148,7 @@ export const ProgressWheel = ({ accountKey, togglePause }: ProgressWheelProps) =
         isAccountEmpty,
         isResumeBlockedByLastingIssue,
         isNonePrivate,
+        isCoinjoinUneco,
     } = useSelector(selectCurrentCoinjoinWheelStates);
     const sessionProgress = useSelector(state =>
         selectSessionProgressByAccountKey(state, accountKey),
@@ -168,6 +171,12 @@ export const ProgressWheel = ({ accountKey, togglePause }: ProgressWheelProps) =
             return;
         }
 
+        if (isCoinjoinUneco) {
+            dispatch(openModal({ type: 'uneco-coinjoin-warning' }));
+
+            return;
+        }
+
         dispatch(goto('wallet-anonymize', { preserveParams: true }));
     }, [
         isCoinjoinSessionBlocked,
@@ -176,7 +185,18 @@ export const ProgressWheel = ({ accountKey, togglePause }: ProgressWheelProps) =
         isSessionActive,
         togglePause,
         dispatch,
+        isCoinjoinUneco,
     ]);
+
+    const getTooltipMessage = () => {
+        if (isAccountEmpty) {
+            return <Translation id="TR_NOTHING_TO_ANONYMIZE" />;
+        }
+
+        if (coinjoinSessionBlockedMessage) {
+            return coinjoinSessionBlockedMessage;
+        }
+    };
 
     const isProgressIndicatorShown = isSessionActive && !isPaused && !isLoading;
     const isHoverDisabled = isCoinjoinSessionBlocked || isAllPrivate;
@@ -185,14 +205,8 @@ export const ProgressWheel = ({ accountKey, togglePause }: ProgressWheelProps) =
     const isWithoutProgressOutline = isNonePrivate && !isSessionActive && !isAccountEmpty;
     const hasDottedOutline = isAccountEmpty || coinjoinSessionBlocker === 'ANONYMITY_ERROR';
 
-    const tooltipMessage = isAccountEmpty ? (
-        <Translation id="TR_NOTHING_TO_ANONYMIZE" />
-    ) : (
-        coinjoinSessionBlockedMessage
-    );
-
     return (
-        <Tooltip content={hasCriticalError && tooltipMessage} hideOnClick={false}>
+        <Tooltip content={getTooltipMessage()} hideOnClick={false}>
             <>
                 {isProgressIndicatorShown && <ProgressIndicator />}
 
@@ -201,6 +215,7 @@ export const ProgressWheel = ({ accountKey, togglePause }: ProgressWheelProps) =
                     isPaused={isPaused}
                     isHoverDisabled={isHoverDisabled}
                     hasCriticalError={hasCriticalError}
+                    isGreyedOut={hasCriticalError}
                     hasDottedOutline={hasDottedOutline}
                     isWithoutProgressOutline={isWithoutProgressOutline}
                     isStartable={isSessionStartable}

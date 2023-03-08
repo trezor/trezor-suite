@@ -15,8 +15,9 @@ const StyledWarning = styled(Warning)`
     margin-bottom: 16px;
 
     ${variables.SCREEN_QUERY.MOBILE} {
-        display: grid;
-        grid-template-columns: 1fr auto;
+        align-items: stretch;
+        flex-direction: column;
+        gap: 16px;
     }
 `;
 
@@ -38,7 +39,7 @@ const Text = styled.div`
     font-size: ${variables.FONT_SIZE.SMALL};
 `;
 
-const Heading = styled.p`
+const Heading = styled.div`
     display: flex;
     align-items: center;
     margin-bottom: 8px;
@@ -48,11 +49,10 @@ const Heading = styled.p`
 `;
 
 const WarningList = styled.ul`
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
     padding-left: 16px;
-
-    > li + li {
-        margin-top: 5px;
-    }
 `;
 
 const StyledButton = styled(Button)`
@@ -62,11 +62,6 @@ const StyledButton = styled(Button)`
     :focus,
     :active {
         background: ${({ theme }) => darken(theme.HOVER_DARKEN_FILTER, theme.TYPE_DARK_ORANGE)};
-    }
-
-    ${variables.SCREEN_QUERY.MOBILE} {
-        grid-column: 1/3;
-        margin-top: 16px;
     }
 `;
 
