@@ -24,13 +24,13 @@ const SCREEN_HEIGHT = getScreenHeight();
 export const useBottomSheetAnimation = ({
     onClose,
     isVisible,
-    isCloseScrollEnabled,
     setIsCloseScrollEnabled,
+    isCloseScrollEnabled = false,
 }: {
-    onClose: (isVisible: boolean) => void;
     isVisible: boolean;
-    isCloseScrollEnabled: boolean;
-    setIsCloseScrollEnabled: (isCloseScrollEnabled: boolean) => void;
+    onClose?: (isVisible: boolean) => void;
+    setIsCloseScrollEnabled?: (isCloseScrollEnabled: boolean) => void;
+    isCloseScrollEnabled?: boolean;
 }) => {
     const { utils } = useNativeStyles();
     const transparency = isVisible ? 1 : 0;
@@ -79,8 +79,8 @@ export const useBottomSheetAnimation = ({
                 easing: Easing.out(Easing.cubic),
             },
             () => {
-                runOnJS(onClose)(false);
-                runOnJS(setIsCloseScrollEnabled)(true);
+                if (onClose) runOnJS(onClose)(false);
+                if (setIsCloseScrollEnabled) runOnJS(setIsCloseScrollEnabled)(true);
             },
         );
     }, [translatePanY, animatedTransparency, onClose, setIsCloseScrollEnabled]);
@@ -95,6 +95,8 @@ export const useBottomSheetAnimation = ({
     }, [translatePanY]);
 
     const scrollEvent = ({ nativeEvent }: { nativeEvent: NativeScrollEvent }) => {
+        if (!setIsCloseScrollEnabled) return;
+
         if (nativeEvent.contentOffset.y <= 0 && !isCloseScrollEnabled) {
             setIsCloseScrollEnabled(true);
         }
