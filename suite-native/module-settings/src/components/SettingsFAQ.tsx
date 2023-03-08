@@ -1,7 +1,8 @@
 import React from 'react';
 
 import { Screen, ScreenHeader } from '@suite-native/navigation';
-import { VStack, Accordion, Card, Text, Button } from '@suite-native/atoms';
+import { VStack, Accordion, Card, Text, Button, handleRedirect, Box } from '@suite-native/atoms';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 type FAQ = {
     question: string;
@@ -19,22 +20,35 @@ const faqMap: FAQ[] = [
     { question: 'How to verify address?', answer: 'Lorem ipsum' },
 ];
 
-export const SettingsFAQ = () => (
-    <Screen header={<ScreenHeader title="FAQ" />}>
-        <VStack spacing="medium">
-            <VStack>
-                {faqMap.map(({ question, answer }) => (
-                    <Accordion key={question} title={question} content={answer} />
-                ))}
-            </VStack>
-            <Card>
-                <VStack spacing="medium">
-                    <Text numberOfLines={3} variant="titleSmall">
-                        Need more help?
-                    </Text>
-                    <Button>Contact support</Button>
+const accordionItemStyle = prepareNativeStyle(utils => ({
+    paddingVertical: utils.spacings.medium,
+    borderBottomWidth: 1,
+    borderBottomColor: utils.colors.borderOnElevation0,
+}));
+
+export const SettingsFAQ = () => {
+    const { applyStyle } = useNativeStyles();
+    return (
+        <Screen header={<ScreenHeader title="FAQ" />}>
+            <VStack spacing="large">
+                <VStack>
+                    {faqMap.map(({ question, answer }) => (
+                        <Box key={question} style={applyStyle(accordionItemStyle)}>
+                            <Accordion title={question} content={answer} />
+                        </Box>
+                    ))}
                 </VStack>
-            </Card>
-        </VStack>
-    </Screen>
-);
+                <Card>
+                    <VStack spacing="medium">
+                        <Text numberOfLines={3} variant="titleSmall">
+                            Need more help?
+                        </Text>
+                        <Button onPress={() => handleRedirect('https://trezor.io/support')}>
+                            Contact support
+                        </Button>
+                    </VStack>
+                </Card>
+            </VStack>
+        </Screen>
+    );
+};

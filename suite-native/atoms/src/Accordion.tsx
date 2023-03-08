@@ -1,5 +1,5 @@
-import React, { useCallback, useRef, useState } from 'react';
-import { NativeSyntheticEvent, Pressable, TextLayoutEventData, View } from 'react-native';
+import React, { useState } from 'react';
+import { Pressable, View } from 'react-native';
 import Animated, {
     Easing,
     useAnimatedStyle,
@@ -18,21 +18,10 @@ type AccordionProps = {
     content: string;
 };
 
-const accordionStyle = prepareNativeStyle(utils => ({
-    borderBottomColor: utils.colors.borderOnElevation1,
-    borderBottomWidth: 1,
-}));
-
 const triggerStyle = prepareNativeStyle(utils => ({
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingVertical: utils.spacings.small,
-}));
-
-const iconStyle = prepareNativeStyle(utils => ({
-    borderWidth: 1,
-    borderColor: utils.colors.iconPrimaryDefault,
-    borderRadius: utils.borders.radii.round,
 }));
 
 const ANIMATION_DURATION = 500;
@@ -47,7 +36,7 @@ export const Accordion = ({ title, content }: AccordionProps) => {
         overflow: 'hidden',
     }));
 
-    const toggleOpen = useCallback(() => {
+    const toggleOpen = () => {
         if (!isOpen) {
             height.value = withTiming(100, {
                 duration: ANIMATION_DURATION,
@@ -60,16 +49,14 @@ export const Accordion = ({ title, content }: AccordionProps) => {
             });
         }
         setIsOpen(!isOpen);
-    }, [isOpen, height]);
+    };
 
     return (
-        <Pressable onPress={toggleOpen} style={applyStyle(accordionStyle)}>
+        <Pressable onPress={toggleOpen}>
             <Box>
                 <Box style={applyStyle(triggerStyle)}>
                     <Text>{title}</Text>
-                    <Box style={applyStyle(iconStyle)}>
-                        <Icon name="plus" color="iconPrimaryDefault" />
-                    </Box>
+                    <Icon name="plusCircle" color="iconPrimaryDefault" />
                 </Box>
                 <Box flexDirection="row">
                     <Animated.View style={animationStyle}>
