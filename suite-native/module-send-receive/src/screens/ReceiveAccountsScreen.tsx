@@ -1,33 +1,24 @@
 import React from 'react';
 
-import { useNavigation } from '@react-navigation/native';
-
 import { AccountsList } from '@suite-native/accounts';
 import {
-    AppTabsParamList,
-    AppTabsRoutes,
-    RootStackRoutes,
     Screen,
     ScreenHeader,
-    RootStackParamList,
-    TabToStackCompositeNavigationProp,
+    SendReceiveStackParamList,
+    SendReceiveStackRoutes,
+    StackProps,
 } from '@suite-native/navigation';
+import { AccountKey } from '@suite-common/wallet-types';
 
-type ReceiveAccountsNavigationProps = TabToStackCompositeNavigationProp<
-    AppTabsParamList,
-    AppTabsRoutes.ReceiveScreen,
-    RootStackParamList
->;
+export const ReceiveAccountsScreen = ({
+    navigation,
+}: StackProps<SendReceiveStackParamList, SendReceiveStackRoutes.ReceiveAccounts>) => {
+    const navigateToReceiveScreen = (accountKey: AccountKey) =>
+        navigation.navigate(SendReceiveStackRoutes.Receive, { accountKey });
 
-export const ReceiveAccountsScreen = () => {
-    const navigation = useNavigation<ReceiveAccountsNavigationProps>();
     return (
         <Screen header={<ScreenHeader title="Receive to" hasGoBackIcon={false} />}>
-            <AccountsList
-                onSelectAccount={accountKey =>
-                    navigation.navigate(RootStackRoutes.ReceiveModal, { accountKey })
-                }
-            />
+            <AccountsList onSelectAccount={navigateToReceiveScreen} />
         </Screen>
     );
 };

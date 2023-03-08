@@ -6,9 +6,11 @@ import { useNavigation } from '@react-navigation/native';
 import { Box, Button, Card, Text } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import {
-    RootStackParamList,
-    RootStackRoutes,
-    StackNavigationProps,
+    AccountsStackParamList,
+    AppTabsParamList,
+    AppTabsRoutes,
+    SendReceiveStackRoutes,
+    TabToStackCompositeNavigationProp,
 } from '@suite-native/navigation';
 
 const cardStyle = prepareNativeStyle(utils => ({
@@ -24,13 +26,21 @@ const receiveButtonStyle = prepareNativeStyle(() => ({
     width: '90%',
 }));
 
+type AccountDetailNavigationProps = TabToStackCompositeNavigationProp<
+    AppTabsParamList,
+    AppTabsRoutes.AccountsStack,
+    AccountsStackParamList
+>;
+
 export const TransactionsEmptyState = ({ accountKey }: { accountKey: string }) => {
-    const navigation =
-        useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.ReceiveModal>>();
+    const navigation = useNavigation<AccountDetailNavigationProps>();
     const { applyStyle } = useNativeStyles();
 
     const handleReceive = () => {
-        navigation.navigate(RootStackRoutes.ReceiveModal, { accountKey });
+        navigation.navigate(AppTabsRoutes.SendReceiveStack, {
+            screen: SendReceiveStackRoutes.Receive,
+            params: { accountKey },
+        });
     };
 
     return (

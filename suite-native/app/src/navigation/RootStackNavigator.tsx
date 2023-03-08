@@ -13,7 +13,6 @@ import {
 import { selectIsOnboardingFinished } from '@suite-native/module-settings';
 import { DevUtilsStackNavigator } from '@suite-native/module-dev-utils';
 import { TransactionDetailScreen } from '@suite-native/transactions';
-import { ReceiveModalScreen } from '@suite-native/module-send-receive';
 
 import { AppTabNavigator } from './AppTabNavigator';
 
@@ -48,12 +47,6 @@ export const RootStackNavigator = () => {
                 name={RootStackRoutes.DevUtilsStack}
                 component={DevUtilsStackNavigator}
             />
-            <RootStack.Group screenOptions={{ presentation: 'modal' }}>
-                <RootStack.Screen
-                    name={RootStackRoutes.ReceiveModal}
-                    component={ReceiveModalScreen}
-                />
-            </RootStack.Group>
         </RootStack.Navigator>
     );
 };
