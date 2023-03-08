@@ -32,6 +32,7 @@ import {
     MIN_ANONYMITY_GAINED_PER_ROUND,
     ESTIMATED_ROUNDS_FAIL_RATE_BUFFER,
     ESTIMATED_HOURS_PER_ROUND,
+    UNECONOMICAL_COINJOIN_THRESHOLD,
 } from '@suite/services/coinjoin';
 import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import {
@@ -487,10 +488,10 @@ export const selectCurrentCoinjoinBalanceBreakdown = memoize((state: CoinjoinRoo
 export const selectSessionProgressByAccountKey = memoizeWithArgs(
     (state: CoinjoinRootState, accountKey: AccountKey) => {
         const coinjoinAccount = selectCoinjoinAccountByKey(state, accountKey);
-        const relatedAccounts = selectAccountByKey(state, accountKey);
+        const relatedAccount = selectAccountByKey(state, accountKey);
 
         const { targetAnonymity } = coinjoinAccount || {};
-        const { addresses, balance, utxo: utxos } = relatedAccounts || {};
+        const { addresses, balance, utxo: utxos } = relatedAccount || {};
 
         if (!balance || !utxos) {
             return 0;
@@ -714,6 +715,7 @@ export const selectCurrentCoinjoinWheelStates = (state: CoinjoinRootState) => {
     const isAccountEmpty = !balance || balance === '0';
     const isNonePrivate = anonymized === '0';
     const isAllPrivate = notAnonymized === '0';
+    const isCoinjoinUneco = !!balance && new BigNumber(balance).lt(UNECONOMICAL_COINJOIN_THRESHOLD);
 
     // error state
     const isResumeBlockedByLastingIssue =
@@ -728,6 +730,7 @@ export const selectCurrentCoinjoinWheelStates = (state: CoinjoinRootState) => {
         isNonePrivate,
         isAllPrivate,
         isResumeBlockedByLastingIssue,
+        isCoinjoinUneco,
     };
 };
 

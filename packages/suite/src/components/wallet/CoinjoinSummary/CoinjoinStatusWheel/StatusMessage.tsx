@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { SESSION_PHASE_MESSAGES } from '@suite-constants/coinjoin';
 import { variables } from '@trezor/components';
 import { Translation } from '@suite-components/Translation';
-import { CountdownTimer } from '@suite-components/CountdownTimer';
+import { CountdownTimer } from '@suite-components';
 import { useCoinjoinSessionPhase } from '@wallet-hooks/useCoinjoinSessionPhase';
 import { useSelector } from '@suite-hooks/useSelector';
 import {
@@ -17,17 +17,17 @@ const Cointainer = styled.div`
     font-size: ${variables.FONT_SIZE.TINY};
 `;
 
-interface ProgressMessageProps {
+interface StatusMessageProps {
     accountKey: string;
 }
 
-export const ProgressMessage = ({ accountKey }: ProgressMessageProps) => {
+export const StatusMessage = ({ accountKey }: StatusMessageProps) => {
     const { isLoading, isPaused } = useSelector(selectCurrentCoinjoinWheelStates);
     const { roundPhase, roundPhaseDeadline } = useSelector(selectCurrentSessionDeadlineInfo);
 
     const sessionPhase = useCoinjoinSessionPhase(accountKey);
 
-    const getProgressMessage = () => {
+    const getStatusMessage = () => {
         if (isLoading) {
             return <Translation id="TR_RESUMING" />;
         }
@@ -55,5 +55,5 @@ export const ProgressMessage = ({ accountKey }: ProgressMessageProps) => {
         }
     };
 
-    return <Cointainer>{getProgressMessage()}</Cointainer>;
+    return <Cointainer>{getStatusMessage()}</Cointainer>;
 };

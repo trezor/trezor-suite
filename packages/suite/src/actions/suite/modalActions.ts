@@ -163,6 +163,9 @@ export type UserContextPayload =
       }
     | {
           type: 'more-rounds-needed';
+      }
+    | {
+          type: 'uneco-coinjoin-warning';
       };
 
 export type ModalAction =

@@ -34,6 +34,7 @@ import {
 import type { AcquiredDevice } from '@suite-types';
 import type { ReduxModalProps } from './types';
 import { DisableTorStopCoinjoin } from '@suite-components/modals/DisableTorStopCoinjoin';
+import { UnecoCoinjoinWarning } from '@suite-components/modals/UnecoCoinjoinWarning';
 
 /** Modals opened as a result of user action */
 export const UserContextModal = ({
@@ -174,6 +175,8 @@ export const UserContextModal = ({
             return <CoinjoinSuccess relatedAccountKey={payload.relatedAccountKey} />;
         case 'more-rounds-needed':
             return <MoreRoundsNeeded />;
+        case 'uneco-coinjoin-warning':
+            return <UnecoCoinjoinWarning />;
 
         default:
             return null;
