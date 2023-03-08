@@ -1,5 +1,5 @@
-import React, { ReactNode, useState } from 'react';
-import { Pressable } from 'react-native';
+import React, { useCallback, useRef, useState } from 'react';
+import { NativeSyntheticEvent, Pressable, TextLayoutEventData, View } from 'react-native';
 import Animated, {
     Easing,
     useAnimatedStyle,
@@ -15,7 +15,7 @@ import { Text } from './Text';
 
 type AccordionProps = {
     title: string;
-    content: ReactNode;
+    content: string;
 };
 
 const accordionStyle = prepareNativeStyle(utils => ({
@@ -35,38 +35,49 @@ const iconStyle = prepareNativeStyle(utils => ({
     borderRadius: utils.borders.radii.round,
 }));
 
+const ANIMATION_DURATION = 500;
+
 export const Accordion = ({ title, content }: AccordionProps) => {
     const { applyStyle } = useNativeStyles();
     const [isOpen, setIsOpen] = useState(false);
-    const height = useSharedValue(0);
+    const height = useSharedValue<string | number>(0);
 
     const animationStyle = useAnimatedStyle(() => ({
-        height: height.value,
+        height: `${height.value}%`,
+        overflow: 'hidden',
     }));
 
-    const toggleOpen = () => {
-        setIsOpen(!isOpen);
+    const toggleOpen = useCallback(() => {
         if (!isOpen) {
-            height.value = withTiming(100, { duration: 500, easing: Easing.ease });
+            height.value = withTiming(100, {
+                duration: ANIMATION_DURATION,
+                easing: Easing.ease,
+            });
         } else {
-            height.value = withTiming(0, { duration: 500, easing: Easing.ease });
+            height.value = withTiming(0, {
+                duration: ANIMATION_DURATION,
+                easing: Easing.out(Easing.cubic),
+            });
         }
-    };
+        setIsOpen(!isOpen);
+    }, [isOpen, height]);
 
     return (
         <Pressable onPress={toggleOpen} style={applyStyle(accordionStyle)}>
-            <Box style={applyStyle(triggerStyle)}>
-                <Text>{title}</Text>
-                <Box style={applyStyle(iconStyle)}>
-                    <Icon name="plus" color="iconPrimaryDefault" />
+            <Box>
+                <Box style={applyStyle(triggerStyle)}>
+                    <Text>{title}</Text>
+                    <Box style={applyStyle(iconStyle)}>
+                        <Icon name="plus" color="iconPrimaryDefault" />
+                    </Box>
                 </Box>
-            </Box>
-            <Box flex={1}>
-                {isOpen && (
+                <Box flexDirection="row">
                     <Animated.View style={animationStyle}>
-                        <Text>{content}</Text>
+                        <View>
+                            <Text>{content}</Text>
+                        </View>
                     </Animated.View>
-                )}
+                </Box>
             </Box>
         </Pressable>
     );
