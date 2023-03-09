@@ -1,4 +1,7 @@
-import { connectionConfirmation } from '../../src/client/round/connectionConfirmation';
+import {
+    connectionConfirmation,
+    confirmationInterval,
+} from '../../src/client/round/connectionConfirmation';
 import { createServer } from '../mocks/server';
 import { createInput } from '../fixtures/input.fixture';
 import { createCoinjoinRound } from '../fixtures/round.fixture';
@@ -135,6 +138,59 @@ describe('connectionConfirmation', () => {
             // inputs are not confirmed, deadline reached (~2.5 sec: phaseDeadline + connectionConfirmationTimeout)
             expect(input.error?.message).toMatch(/Aborted by deadline/);
         });
+    });
+
+    it('connection-confirmation, intervalDelay reduced by request latency', async () => {
+        const spy = jest.fn();
+        const timestamps: number[] = [];
+        server?.addListener('test-request', ({ url, resolve }) => {
+            if (url.includes('connection-confirmation')) {
+                timestamps.push(Date.now());
+                if (spy.mock.calls.length < 3) {
+                    setTimeout(() => resolve({}), 500); // delay first responses
+                } else {
+                    resolve();
+                }
+                spy();
+            } else {
+                resolve();
+            }
+        });
+
+        const alice = createInput('account-A', 'A1', {
+            registrationData: {
+                aliceId: '01A1-01a1',
+            },
+            realAmountCredentials: {},
+            realVsizeCredentials: {},
+        });
+
+        await confirmationInterval(
+            createCoinjoinRound([alice], {
+                ...server?.requestOptions,
+                roundParameters: {
+                    connectionConfirmationTimeout: '0d 0h 0m 2s', // intervalDelay = 1 sec
+                },
+                round: {
+                    phaseDeadline: Date.now() + 5000,
+                },
+            }),
+            alice,
+            server?.requestOptions,
+        ).promise;
+
+        expect(spy).toBeCalledTimes(4);
+
+        timestamps
+            .map((a, i) => {
+                if (i > 0) {
+                    return a - timestamps[i - 1];
+                }
+                return 0;
+            })
+            .forEach(ts => {
+                expect(ts).toBeLessThan(1100); // time distance between each request should be around 1 sec, regardless of delayed responses
+            });
     });
 
     it('404 error in coordinator connection-confirmation', async () => {
