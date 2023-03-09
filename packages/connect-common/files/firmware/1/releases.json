@@ -8,10 +8,10 @@
         "min_bootloader_version": [1, 12, 0],
         "url": "firmware/1/trezor-1.12.1.bin",
         "url_bitcoinonly": "firmware/1/trezor-1.12.1-bitcoinonly.bin",
-        "fingerprint": "d401b21c6c8e766e30a562db4bb06bff79fd7bbb1bb637b63d23419a4960ff86",
-        "fingerprint_bitcoinonly": "7e51546f4411ecf44688c681ada72a18495fd08e91f3a0429ab91bc4415b362a",
-        "notes": "DEVKIT DO NOT PUSH",
-        "changelog": "DO NOT RELEASE"
+        "fingerprint": "3c694191f5b66a65cb5bb209adbf113cb40209e644b77162ba996bb7ee8f382b",
+        "fingerprint_bitcoinonly": "985fb6a8c87f7547fb810f6c4a8331ebf19c677445810358778eb21eca78a181",
+        "notes": "https://trezor.io/learn/a/trezor-device-firmware-update-march-2023",
+        "changelog": "* Fee rate shown when replacing transaction.\n* Ledger Live legacy derivation path m/44'/coin_type'/0'/account is now supported.\n* SLIP-0019 proofs of ownership for native SegWit implemented.\n* SLIP-0025 coinjoin accounts implemented for testing purposes.\n* Bech32 addresses now not converting to uppercase in QR code to increase compatibility.\n* Decimals of fee rate extended to 2 digits.\n* Only \"sat\" displayed instead of \"sat BTC\".\n* Bootloader 1.12.1. included.\n* Stellar addresses now shown in full + as a QR code.\n* Ethereum fees now wrapped to the next line when needed."
     },
     {
         "required": false,
