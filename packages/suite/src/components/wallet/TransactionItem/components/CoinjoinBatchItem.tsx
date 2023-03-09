@@ -1,5 +1,6 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
+import BigNumber from 'bignumber.js';
 
 import {
     formatNetworkAmount,
@@ -50,6 +51,9 @@ const RoundRow = styled.div`
 
 const Round = ({ transaction }: { transaction: WalletAccountTransaction }) => {
     const { openModal } = useActions({ openModal: modalActions.openModal });
+
+    const transactionAmount = new BigNumber(transaction.amount);
+
     return (
         <RoundRow
             onClick={() =>
@@ -76,13 +80,11 @@ const Round = ({ transaction }: { transaction: WalletAccountTransaction }) => {
                 amount={
                     <CryptoAmount
                         value={formatNetworkAmount(
-                            transaction.amount.startsWith('-')
-                                ? transaction.amount.slice(1)
-                                : transaction.amount,
+                            transactionAmount.abs().toString(),
                             transaction.symbol,
                         )}
                         symbol={transaction.symbol}
-                        signValue={transaction.amount}
+                        signValue={transactionAmount}
                     />
                 }
                 isFirst
