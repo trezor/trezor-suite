@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import BigNumber from 'bignumber.js';
 import { Icon, Button, useTheme, variables } from '@trezor/components';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { FormattedCryptoAmount, Sign, Translation, FormattedDate } from '@suite-components';
@@ -109,7 +110,7 @@ const AffectedTransactions = ({ showChained }: { showChained: () => void }) => {
                             </Txid>
                             <Amount>
                                 <Sign
-                                    value={amount}
+                                    value={new BigNumber(amount)}
                                     grayscale
                                     grayscaleColor={theme.TYPE_LIGHT_GREY}
                                 />

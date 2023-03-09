@@ -13,6 +13,7 @@ import {
 } from '@suite-common/wallet-utils';
 import { TransactionHeader } from './TransactionHeader';
 import { WalletAccountTransaction } from '@wallet-types';
+import BigNumber from 'bignumber.js';
 
 const Wrapper = styled.span`
     display: flex;
@@ -103,6 +104,7 @@ export const TransactionHeading = ({
         const operation = !isTokenTransaction
             ? getTxOperation(transaction)
             : getTxOperation(transfer);
+
         amount = targetAmount && (
             <StyledCryptoAmount
                 value={targetAmount}
@@ -114,14 +116,14 @@ export const TransactionHeading = ({
     }
 
     if (transaction.type === 'joint') {
-        const abs = transaction.amount.startsWith('-')
-            ? transaction.amount.slice(1)
-            : transaction.amount;
+        const transactionAmount = new BigNumber(transaction.amount);
+        const abs = transactionAmount.abs().toString();
+
         amount = (
             <StyledCryptoAmount
                 value={formatNetworkAmount(abs, transaction.symbol)}
                 symbol={transaction.symbol}
-                signValue={transaction.amount}
+                signValue={transactionAmount}
                 isZeroValuePhishing={isZeroValuePhishing}
             />
         );

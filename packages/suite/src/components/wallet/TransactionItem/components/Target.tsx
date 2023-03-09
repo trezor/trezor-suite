@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import BigNumber from 'bignumber.js';
 import { variables } from '@trezor/components';
 import { getIsZeroValuePhishing } from '@suite-common/suite-utils';
 import { FiatValue, Translation, MetadataLabeling, FormattedCryptoAmount } from '@suite-components';
@@ -282,9 +283,7 @@ export const CoinjoinRow = ({
             useFiatValues ? (
                 <FiatValue
                     amount={formatNetworkAmount(
-                        transaction.amount.startsWith('-')
-                            ? transaction.amount.slice(1)
-                            : transaction.amount,
+                        new BigNumber(transaction.amount).abs().toString(),
                         transaction.symbol,
                     )}
                     symbol={transaction.symbol}

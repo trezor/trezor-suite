@@ -1,5 +1,3 @@
-import BigNumber from 'bignumber.js';
-
 import { SignValue } from '@suite-common/suite-types';
 
 export const isSignValuePositive = (value: SignValue) => {
@@ -15,5 +13,5 @@ export const isSignValuePositive = (value: SignValue) => {
         return false;
     }
 
-    return new BigNumber(value).gte(0);
+    return value.gte(0);
 };
