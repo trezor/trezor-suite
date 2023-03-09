@@ -78,6 +78,7 @@ const FeeError = styled.div`
 const FeeInfoWrapper = styled.div`
     display: flex;
     justify-content: space-between;
+    flex-direction: column;
 `;
 
 const Label = styled.div<Pick<FeesProps, 'rbfForm'>>`
