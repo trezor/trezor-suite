@@ -110,6 +110,7 @@ export const confirmationInterval = (
     const intervalDelay = Math.floor(
         readTimeSpan(round.roundParameters.connectionConfirmationTimeout) * 0.5,
     );
+    let requestLatency = 0;
 
     const controller = new AbortController();
 
@@ -121,15 +122,18 @@ export const confirmationInterval = (
         };
 
         const timeoutFn = async () => {
-            logger.log(
-                `Setting confirmation interval for ~~${input.outpoint}~~. Delay ${intervalDelay}ms`,
-            );
+            const delay = Math.max(intervalDelay - requestLatency, 0);
+            logger.log(`Setting confirmation interval for ~~${input.outpoint}~~. Delay ${delay}ms`);
 
             try {
-                await confirmInput(round, input, intervalDelay, {
+                const start = Date.now() + delay;
+                await confirmInput(round, input, delay, {
                     ...options,
                     signal: controller.signal,
                 });
+                // in case of slow network requests might take up to 40+ sec,
+                // measure the latency and reduce intervalDelay in future request
+                requestLatency = Date.now() - start;
 
                 if (input.confirmationData) {
                     done();
