@@ -50,10 +50,10 @@ echo "Expecting Tor release $TOR_VER-$SUFFIX"
 echo
 echo "Checking hashes of downloaded binaries"
 curl -s -L https://raw.githubusercontent.com/brave/brave-core-crx-packager/master/scripts/packageTorClient.js | grep "  sha512Tor = '" | cut -d "'" -f 2 > tmp/SHA512SUMS
-sed -i "1!b;s,$,  tmp/mac/tor-${TOR_VER}-darwin-brave-${SUFFIX},g" tmp/SHA512SUMS
-sed -i "2!b;s,$,  tmp/lin-x64/tor-${TOR_VER}-linux-brave-${SUFFIX},g" tmp/SHA512SUMS
-sed -i "3!b;s,$,  tmp/lin-arm64/tor-${TOR_VER}-linux-arm64-brave-${SUFFIX},g" tmp/SHA512SUMS
-sed -i "4!b;s,$,  tmp/win/tor-${TOR_VER}-win32-brave-${SUFFIX},g" tmp/SHA512SUMS
+sed -i bkp "1s;$;  tmp/mac/tor-${TOR_VER}-darwin-brave-${SUFFIX};" tmp/SHA512SUMS
+sed -i bkp "2s;$;  tmp/lin-x64/tor-${TOR_VER}-linux-brave-${SUFFIX};" tmp/SHA512SUMS
+sed -i bkp "3s;$;  tmp/lin-arm64/tor-${TOR_VER}-linux-arm64-brave-${SUFFIX};" tmp/SHA512SUMS
+sed -i bkp "4s;$;  tmp/win/tor-${TOR_VER}-win32-brave-${SUFFIX};" tmp/SHA512SUMS
 
 shasum -a 512 -c tmp/SHA512SUMS
 
