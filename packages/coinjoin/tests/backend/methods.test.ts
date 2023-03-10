@@ -26,7 +26,6 @@ describe(`CoinjoinBackend methods`, () => {
     const client = new MockBackendClient();
     const fetchFiltersMock = jest.spyOn(client, 'fetchFilters');
     const fetchBlockMock = jest.spyOn(client, 'fetchBlock');
-    const fetchTxMock = jest.spyOn(client, 'fetchTransaction');
 
     const getRequestedFilters = () =>
         Promise.all(fetchFiltersMock.mock.results.map(res => res.value)).then(
@@ -38,12 +37,6 @@ describe(`CoinjoinBackend methods`, () => {
 
     const getRequestedBlocks = () =>
         fetchBlockMock.mock.calls
-            .map(call => call[0])
-            .filter(arrayDistinct)
-            .sort();
-
-    const getRequestedTxs = () =>
-        fetchTxMock.mock.calls
             .map(call => call[0])
             .filter(arrayDistinct)
             .sort();
@@ -63,7 +56,6 @@ describe(`CoinjoinBackend methods`, () => {
     beforeEach(() => {
         fetchFiltersMock.mockClear();
         fetchBlockMock.mockClear();
-        fetchTxMock.mockClear();
         client.setFixture(FIXTURES.BLOCKS);
     });
 
@@ -160,11 +152,6 @@ describe(`CoinjoinBackend methods`, () => {
         expect(halfBlocks).toEqual([1, 2, 4]);
         fetchBlockMock.mockClear();
 
-        // Should request only txid_4 transaction from mempool
-        const halfTxs = getRequestedTxs();
-        expect(halfTxs).toEqual([FIXTURES.TX_4_PENDING.txid]);
-        fetchTxMock.mockClear();
-
         // All blocks are known
         client.setFixture(FIXTURES.BLOCKS);
 
@@ -194,10 +181,6 @@ describe(`CoinjoinBackend methods`, () => {
         // Should request only blocks after the fourth one (except the fifth which is empty)
         const restBlocks = getRequestedBlocks();
         expect(restBlocks).toEqual([6, 7, 8]);
-
-        // Shouldn't request any transaction from mempool
-        const restTxs = getRequestedTxs();
-        expect(restTxs).toEqual([]);
     });
 
     it('scanAccount 1-block reorg', async () => {

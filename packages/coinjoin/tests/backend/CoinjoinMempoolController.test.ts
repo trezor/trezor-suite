@@ -2,7 +2,7 @@ import { CoinjoinMempoolController } from '../../src/backend/CoinjoinMempoolCont
 import { MockMempoolClient } from '../mocks/MockMempoolClient';
 import { BLOCKS, SEGWIT_RECEIVE_ADDRESSES } from '../fixtures/methods.fixture';
 
-const TXS = BLOCKS.flatMap(block => block.txs);
+const TXS = BLOCKS.flatMap(block => block.txs); // There is 6 of them
 const ADDRESS = SEGWIT_RECEIVE_ADDRESSES[1];
 const TXS_MATCH = [TXS[1], TXS[3]];
 
@@ -11,32 +11,42 @@ describe('CoinjoinMempoolController', () => {
     let mempool: CoinjoinMempoolController;
 
     beforeEach(() => {
+        client.clear();
         mempool = new CoinjoinMempoolController(client);
     });
 
     it('All at once', async () => {
-        client.setFixture(TXS);
+        await mempool.start();
+        TXS.forEach(client.fireTx.bind(client));
+        expect(mempool.getTransactions()).toEqual(TXS);
+        expect(mempool.getTransactions([ADDRESS])).toEqual(TXS_MATCH);
         await mempool.update();
-        const received = mempool.getTransactions([ADDRESS]);
-        expect(received).toEqual(TXS_MATCH);
-        expect(client.fetched).toEqual(TXS.map(({ txid }) => txid));
+        expect(mempool.getTransactions()).toEqual([]);
     });
 
     it('Progressing', async () => {
-        client.setFixture(TXS.slice(0, 3));
-        const start = mempool.getTransactions([ADDRESS]);
-        expect(start).toEqual([]);
-        expect(client.fetched).toEqual([]);
+        [TXS[0], TXS[1]].forEach(client.fireTx.bind(client));
+        expect(mempool.getTransactions()).toEqual([]);
 
-        await mempool.update();
-        const mid = mempool.getTransactions([ADDRESS]);
-        expect(mid).toEqual(TXS_MATCH.slice(0, 1));
-        expect(client.fetched).toEqual(TXS.slice(0, 3).map(({ txid }) => txid));
+        await mempool.start();
+        [TXS[2], TXS[3]].forEach(client.fireTx.bind(client));
+        expect(mempool.getTransactions()).toEqual([TXS[2], TXS[3]]);
 
-        client.setFixture(TXS);
+        client.setMempoolTxs([TXS[1], TXS[2], TXS[3]]);
         await mempool.update();
-        const end = mempool.getTransactions([ADDRESS]);
-        expect(end).toEqual(TXS_MATCH);
-        expect(client.fetched).toEqual(TXS.slice(3).map(({ txid }) => txid));
+        expect(mempool.getTransactions()).toEqual([TXS[2], TXS[3]]);
+
+        [TXS[4]].forEach(client.fireTx.bind(client));
+        client.setMempoolTxs([TXS[3], TXS[4], TXS[5]]);
+        await mempool.update();
+        expect(mempool.getTransactions()).toEqual([TXS[3], TXS[4]]);
+
+        [TXS[5]].forEach(client.fireTx.bind(client));
+        await mempool.update();
+        expect(mempool.getTransactions()).toEqual([TXS[3], TXS[4], TXS[5]]);
+
+        client.setMempoolTxs([TXS[0], TXS[1]]);
+        await mempool.update();
+        expect(mempool.getTransactions()).toEqual([]);
     });
 });

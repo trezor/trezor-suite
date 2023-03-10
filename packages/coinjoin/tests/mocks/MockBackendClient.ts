@@ -1,3 +1,5 @@
+import type { Transaction } from '@trezor/blockchain-link-types/lib/blockbook';
+
 import { CoinjoinBackendClient } from '../../src/backend/CoinjoinBackendClient';
 import { COINJOIN_BACKEND_SETTINGS } from '../fixtures/config.fixture';
 import type { BlockbookWS } from '../../src/backend/CoinjoinWebsocketController';
@@ -90,5 +92,10 @@ export class MockBackendClient extends CoinjoinBackendClient {
             // no default
         }
         throw new Error('not found');
+    }
+
+    subscribeMempoolTxs(listener: (tx: Transaction) => void) {
+        this.mempool.forEach(tx => listener(tx as Transaction));
+        return Promise.resolve();
     }
 }

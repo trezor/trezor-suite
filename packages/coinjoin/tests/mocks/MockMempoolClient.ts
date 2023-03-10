@@ -3,21 +3,38 @@ import type { BlockbookTransaction, MempoolClient } from '../../src/types/backen
 type MockTx = Pick<BlockbookTransaction, 'txid' | 'vin' | 'vout'>;
 
 export class MockMempoolClient implements MempoolClient {
-    private transactions: MockTx[] = [];
-    fetched: string[] = [];
+    private mempoolTxids: string[] = [];
 
-    setFixture(fixture: MockTx[]) {
-        this.transactions = fixture;
-        this.fetched = [];
+    clear() {
+        this.mempoolTxids = [];
+        this.listener = undefined;
+    }
+
+    setMempoolTxs(txs: MockTx[]) {
+        this.mempoolTxids = txs.map(tx => tx.txid);
+    }
+
+    fireTx(tx: MockTx) {
+        this.listener?.(tx as BlockbookTransaction);
     }
 
     fetchMempoolTxids() {
-        return Promise.resolve(this.transactions.map(tx => tx.txid));
+        return Promise.resolve(this.mempoolTxids);
     }
 
-    fetchTransaction(txid: string) {
-        this.fetched.push(txid);
-        const tx = this.transactions.find(t => t.txid === txid);
-        return tx ? Promise.resolve(tx as BlockbookTransaction) : Promise.reject();
+    fetchTransaction() {
+        return Promise.reject();
+    }
+
+    private listener?: (tx: BlockbookTransaction) => void;
+
+    subscribeMempoolTxs(listener: (tx: BlockbookTransaction) => void) {
+        this.listener = listener;
+        return Promise.resolve();
+    }
+
+    unsubscribeMempoolTxs(_listener: (tx: BlockbookTransaction) => void) {
+        this.listener = undefined;
+        return Promise.resolve();
     }
 }
