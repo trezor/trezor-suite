@@ -5,6 +5,7 @@ import * as desktopUpdateActions from '@suite-actions/desktopUpdateActions';
 import { UpdateState } from '@suite-reducers/desktopUpdateReducer';
 import { ModalContextProvider } from '@suite-support/ModalContext';
 import { getAppUpdatePayload } from '@suite-utils/analytics';
+import { selectRouteName } from '@suite-reducers/routerReducer';
 
 import { analytics, AppUpdateEventStatus, EventType } from '@trezor/suite-analytics';
 import { desktopApi } from '@trezor/suite-desktop-api';
@@ -40,6 +41,11 @@ export const DesktopUpdater = ({ children }: DesktopUpdaterProps) => {
         allowPrerelease: desktopUpdateActions.allowPrerelease,
     });
     const { desktopUpdate } = useSelector(state => state);
+    const routeName = useSelector(selectRouteName);
+
+    // Closing a modal opened by auto updater outside of device settings might confuse some users,
+    // especially on app start if closing it unexpectedly by clicking outside.
+    const isSettingsRoute = routeName === 'settings-index';
 
     useEffect(() => {
         desktopApi.on('update/allow-prerelease', allowPrerelease);
@@ -118,11 +124,17 @@ export const DesktopUpdater = ({ children }: DesktopUpdaterProps) => {
             case UpdateState.EarlyAccessDisable:
                 return <EarlyAccessDisable hideWindow={hideWindow} />;
             case UpdateState.Available:
-                return <Available hideWindow={hideWindow} latest={desktopUpdate.latest} />;
+                return (
+                    <Available
+                        hideWindow={hideWindow}
+                        latest={desktopUpdate.latest}
+                        isCancelable={isSettingsRoute}
+                    />
+                );
             case UpdateState.Downloading:
                 return <Downloading hideWindow={hideWindow} progress={desktopUpdate.progress} />;
             case UpdateState.Ready:
-                return <Ready hideWindow={hideWindow} />;
+                return <Ready hideWindow={hideWindow} isCancelable={isSettingsRoute} />;
             default:
                 return null;
         }

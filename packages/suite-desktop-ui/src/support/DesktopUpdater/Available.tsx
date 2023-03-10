@@ -100,10 +100,11 @@ const getVersionName = ({ latestVersion, prerelease }: VersionNameProps): string
 
 interface AvailableProps {
     hideWindow: () => void;
+    isCancelable: boolean;
     latest?: UpdateInfo;
 }
 
-export const Available = ({ hideWindow, latest }: AvailableProps) => {
+export const Available = ({ hideWindow, isCancelable, latest }: AvailableProps) => {
     const { download } = useActions({
         download: desktopUpdateActions.download,
     });
@@ -116,7 +117,7 @@ export const Available = ({ hideWindow, latest }: AvailableProps) => {
     return (
         <StyledModal
             heading={<Translation id="TR_UPDATE_MODAL_AVAILABLE_HEADING" />}
-            isCancelable
+            isCancelable={isCancelable}
             onCancel={hideWindow}
             bottomBar={
                 <>

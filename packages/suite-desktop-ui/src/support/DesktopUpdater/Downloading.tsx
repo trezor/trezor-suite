@@ -5,15 +5,9 @@ import { Translation, Modal } from '@suite-components';
 
 import { UpdateProgress } from '@trezor/suite-desktop-api';
 import { bytesToHumanReadable } from '@trezor/utils';
-import { H2, variables } from '@trezor/components';
+import { Button, H2, variables } from '@trezor/components';
 
 import { Row } from './styles';
-
-const ModalHeadingWrapper = styled.div`
-    display: flex;
-    width: 100%;
-    justify-content: space-between;
-`;
 
 const DownloadWrapper = styled(Row)`
     margin-top: 16px;
@@ -38,6 +32,10 @@ const Text = styled(H2)`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
+const StyledButton = styled(Button)`
+    margin: 21px 0;
+`;
+
 interface DownloadingProps {
     hideWindow: () => void;
     progress?: UpdateProgress;
@@ -47,6 +45,7 @@ const ellipsisArray = new Array(3).fill('.');
 
 export const Downloading = ({ hideWindow, progress }: DownloadingProps) => {
     const [step, setStep] = useState(0);
+
     useEffect(() => {
         const timer = setTimeout(() => setStep(step > 2 ? 0 : step + 1), 300);
         return () => clearTimeout(timer);
@@ -54,14 +53,18 @@ export const Downloading = ({ hideWindow, progress }: DownloadingProps) => {
 
     return (
         <Modal
-            heading={
-                <ModalHeadingWrapper>
-                    <Translation id="TR_UPDATE_MODAL_DOWNLOADING_UPDATE" />
-                </ModalHeadingWrapper>
-            }
+            headerComponents={[
+                <StyledButton
+                    variant="secondary"
+                    icon="CROSS"
+                    alignIcon="right"
+                    onClick={hideWindow}
+                >
+                    <Translation id="TR_BACKGROUND_DOWNLOAD" />
+                </StyledButton>,
+            ]}
             currentProgressBarStep={progress?.percent || 0}
             totalProgressBarSteps={100}
-            isCancelable
             onCancel={hideWindow}
         >
             <DownloadWrapper>
