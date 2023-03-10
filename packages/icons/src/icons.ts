@@ -46,6 +46,7 @@ export const icons = {
     pencil: require('../assets/icons/pencil.svg'),
     placeholder: require('../assets/icons/placeholder.svg'),
     plus: require('../assets/icons/plus.svg'),
+    plusCircle: require('../assets/icons/plusCircle.svg'),
     prices: require('../assets/icons/prices.svg'),
     qrCode: require('../assets/icons/qrCode.svg'),
     qrCodeImport: require('../assets/icons/qrCodeImport.svg'),

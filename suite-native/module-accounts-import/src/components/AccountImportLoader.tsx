@@ -49,7 +49,7 @@ export const AccountImportLoader = () => {
             <VStack spacing="large" flex={1} justifyContent="center">
                 <Loader />
                 <Box style={applyStyle(textContainerStyle)}>
-                    <Animated.View style={[animatedTextStyle]}>
+                    <Animated.View style={animatedTextStyle}>
                         <Text variant="titleMedium" align="center">
                             Retrieving Balances
                         </Text>

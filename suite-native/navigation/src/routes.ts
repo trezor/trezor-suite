@@ -43,4 +43,5 @@ export enum SettingsStackRoutes {
     SettingsCustomization = 'SettingsCustomization',
     SettingsAnalytics = 'SettingsAnalytics',
     SettingsAbout = 'SettingsAbout',
+    SettingsFAQ = 'SettingsFAQ',
 }
