@@ -20,7 +20,7 @@ export class CoinjoinWebsocketController {
         this.logger = logger;
     }
 
-    async getOrCreate(url: string, identity = this.defaultIdentity): Promise<BlockbookWS> {
+    async getOrCreate(url: string, identity = this.defaultIdentity): Promise<BlockbookAPI> {
         const socketId = this.getSocketId(url, identity);
         let socket = this.sockets[socketId];
         if (!socket) {
@@ -31,13 +31,11 @@ export class CoinjoinWebsocketController {
             this.sockets[socketId] = socket;
         }
         if (!socket.isConnected()) {
-            this.logger?.log(`WS OPEN ${socketId}`);
             await socket.connect();
-            const onDisconnected = () => {
+            this.logger?.log(`WS OPENED ${socketId}`);
+            socket.once('disconnected', () => {
                 this.logger?.log(`WS CLOSED ${socketId}`);
-                socket.off('disconnected', onDisconnected);
-            };
-            socket.on('disconnected', onDisconnected);
+            });
         }
         return socket;
     }
