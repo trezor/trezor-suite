@@ -13,7 +13,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Box } from './Box';
 import { Text } from './Text';
 
-type AccordionProps = {
+type AccordionItemProps = {
     title: string;
     content: string;
 };
@@ -26,7 +26,7 @@ const triggerStyle = prepareNativeStyle(utils => ({
 
 const ANIMATION_DURATION = 500;
 
-export const Accordion = ({ title, content }: AccordionProps) => {
+export const AccordionItem = ({ title, content }: AccordionItemProps) => {
     const { applyStyle } = useNativeStyles();
     const [isOpen, setIsOpen] = useState(false);
     const height = useSharedValue(0);
