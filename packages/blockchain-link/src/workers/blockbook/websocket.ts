@@ -123,7 +123,7 @@ export class BlockbookAPI extends EventEmitter {
     }
 
     onError() {
-        this.dispose();
+        this.onClose();
     }
 
     send: Send = (method, params = {}) => {
@@ -227,7 +227,7 @@ export class BlockbookAPI extends EventEmitter {
             ws.setMaxListeners(Infinity);
         }
         ws.once('error', error => {
-            this.dispose();
+            this.onClose();
             dfd.reject(new CustomError('websocket_runtime_error', error.message));
         });
         ws.on('open', () => {
@@ -256,8 +256,8 @@ export class BlockbookAPI extends EventEmitter {
         ws.on('error', this.onError.bind(this));
         ws.on('message', this.onmessage.bind(this));
         ws.on('close', () => {
+            this.onClose();
             this.emit('disconnected');
-            this.dispose();
         });
     }
 
@@ -265,7 +265,6 @@ export class BlockbookAPI extends EventEmitter {
         if (this.ws) {
             this.ws.close();
         }
-        // this.dispose();
     }
 
     isConnected() {
@@ -423,7 +422,7 @@ export class BlockbookAPI extends EventEmitter {
         return { subscribed: false };
     }
 
-    dispose() {
+    private onClose() {
         if (this.pingTimeout) {
             clearTimeout(this.pingTimeout);
         }
@@ -438,7 +437,10 @@ export class BlockbookAPI extends EventEmitter {
         if (ws) {
             ws.removeAllListeners();
         }
+    }
 
+    dispose() {
+        this.onClose();
         this.removeAllListeners();
     }
 }
