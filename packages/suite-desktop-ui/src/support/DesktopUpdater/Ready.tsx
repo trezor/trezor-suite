@@ -23,9 +23,10 @@ const StyledModal = styled(Modal)`
 
 interface ReadyProps {
     hideWindow: () => void;
+    isCancelable: boolean;
 }
 
-export const Ready = ({ hideWindow }: ReadyProps) => {
+export const Ready = ({ hideWindow, isCancelable }: ReadyProps) => {
     const { installUpdate } = useActions({
         installUpdate: desktopUpdateActions.installUpdate,
     });
@@ -38,7 +39,7 @@ export const Ready = ({ hideWindow }: ReadyProps) => {
     return (
         <StyledModal
             heading={<Translation id="TR_UPDATE_MODAL_UPDATE_DOWNLOADED" />}
-            isCancelable
+            isCancelable={isCancelable}
             onCancel={installOnQuit}
             bottomBar={
                 <>

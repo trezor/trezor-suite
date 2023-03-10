@@ -6298,6 +6298,10 @@ export default defineMessages({
         id: 'TR_UPDATE_MODAL_UPDATE_ON_QUIT',
         defaultMessage: 'Update on quit',
     },
+    TR_BACKGROUND_DOWNLOAD: {
+        id: 'TR_BACKGROUND_DOWNLOAD',
+        defaultMessage: 'Download in the background',
+    },
     TR_MANAGE: {
         id: 'TR_MANAGE',
         defaultMessage: 'manage',
@@ -6309,10 +6313,6 @@ export default defineMessages({
     TR_CHANGELOG_ON_GITHUB: {
         id: 'TR_CHANGELOG_ON_GITHUB',
         defaultMessage: 'Changelog on GitHub',
-    },
-    TR_UPDATE_MODAL_DOWNLOADING_UPDATE: {
-        id: 'TR_UPDATE_MODAL_DOWNLOADING_UPDATE',
-        defaultMessage: 'Downloading update',
     },
     TR_UPDATE_MODAL_UPDATE_DOWNLOADED: {
         id: 'TR_UPDATE_MODAL_UPDATE_DOWNLOADED',
