@@ -51,6 +51,32 @@ export class CoinjoinBackendClient {
         return this.fetchFromBlockbook(options, 'getTransaction', txid);
     }
 
+    private reconnect = async () => {
+        const api = await this.websockets.getOrCreate(this.blockbookUrls[0]);
+        api.once('disconnected', this.reconnect);
+        if (api.listenerCount('mempool')) {
+            await api.subscribeMempool();
+        }
+    };
+
+    async subscribeMempoolTxs(listener: (tx: BlockbookTransaction) => void) {
+        const api = await this.websockets.getOrCreate(this.blockbookUrls[0]);
+        api.on('mempool', listener);
+        if (api.listenerCount('mempool') === 1) {
+            api.once('disconnected', this.reconnect);
+            await api.subscribeMempool();
+        }
+    }
+
+    async unsubscribeMempoolTxs(listener: (tx: BlockbookTransaction) => void) {
+        const api = await this.websockets.getOrCreate(this.blockbookUrls[0]);
+        api.off('mempool', listener);
+        if (!api.listenerCount('mempool')) {
+            api.off('disconnected', this.reconnect);
+            await api.unsubscribeMempool();
+        }
+    }
+
     private fetchFromBlockbook<T extends keyof BlockbookWS>(
         options: RequestOptions | undefined,
         method: T,
