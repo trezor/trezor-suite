@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { EthereumTokenIcon } from '@trezor/icons';
+import { EthereumTokenIcon, EthereumTokenIconName } from '@trezor/icons';
 import { EthereumTokenAmountFormatter, TokenToFiatAmountFormatter } from '@suite-native/formatters';
 import { EthereumTokenSymbol } from '@suite-native/ethereum-tokens';
 
@@ -26,7 +26,7 @@ export const EthereumTokenInfo = ({ symbol, balance, name }: EthereumTokenInfoPr
                     variant="label"
                 />
             }
-            icon={<EthereumTokenIcon name={symbol} />}
+            icon={<EthereumTokenIcon name={symbol as EthereumTokenIconName} />}
         >
             <TokenToFiatAmountFormatter value={balance} ethereumToken={symbol} />
         </AccountImportOverviewCard>

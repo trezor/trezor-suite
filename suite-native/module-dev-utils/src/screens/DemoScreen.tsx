@@ -31,8 +31,6 @@ import {
     IconName,
     icons,
 } from '@trezor/icons';
-import { TransactionNotification } from '@suite-native/notifications';
-import { CryptoIcon, Icon, IconName, icons } from '@trezor/icons';
 import { ToastNotificationVariant, ToastNotification } from '@suite-native/notifications';
 import { CoinsSettings } from '@suite-native/module-settings';
 
@@ -85,7 +83,11 @@ export const DemoScreen = () => {
                         style={{ flexDirection: 'row', flexWrap: 'wrap' }}
                     >
                         {toastNotificationVariants.map(toastVariant => (
-                            <ToastNotification variant={toastVariant} title={toastVariant} />
+                            <ToastNotification
+                                key={toastVariant}
+                                variant={toastVariant}
+                                title={toastVariant}
+                            />
                         ))}
                     </VStack>
                 </VStack>
