@@ -46,7 +46,11 @@ export const SwitchDevice = ({ cancelable, onCancel }: ForegroundAppProps) => {
             isCancelable={cancelable}
             onCancel={onCancel}
             heading={<Translation id="TR_CHOOSE_WALLET" />}
-            headerComponents={isWebUsbTransport ? [<WebUsbButton variant="tertiary" />] : undefined}
+            headerComponents={
+                isWebUsbTransport
+                    ? [<WebUsbButton variant="tertiary" key="webusb-button" />]
+                    : undefined
+            }
         >
             <DeviceItemsWrapper>
                 {sortedDevices.map(device => (
