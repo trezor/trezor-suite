@@ -52,6 +52,7 @@ export const getInitialState = (override: any) => {
                 },
             },
             locks: [3],
+            settings: { debug: {} },
         },
         // doesnt affect anything, just needed for TrezorConnect.init action
         devices: [],
