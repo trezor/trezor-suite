@@ -64,6 +64,12 @@ export const extraDependenciesMock: ExtraDependencies = {
         selectEnabledNetworks: mockSelector('selectEnabledNetworks', ['btc', 'test']),
         selectLocalCurrency: mockSelector('selectLocalCurrency', 'usd'),
         selectIsPendingTransportEvent: mockSelector('selectIsPendingTransportEvent', false),
+        selectDebugSettings: mockSelector('selectDebugSettings', {
+            checkFirmwareAuthenticity: false,
+            coinjoinAllowNoTor: false,
+            showDebugMenu: false,
+            transports: [],
+        }),
     },
     actions: {
         setAccountLoadedMetadata: mockAction('setAccountLoadedMetadata'),

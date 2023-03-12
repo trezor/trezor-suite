@@ -45,6 +45,7 @@ export const extraDependencies: ExtraDependencies = {
         selectEnabledNetworks: (state: AppState) => state.wallet.settings.enabledNetworks,
         selectLocalCurrency: (state: AppState) => state.wallet.settings.localCurrency,
         selectIsPendingTransportEvent,
+        selectDebugSettings: (state: AppState) => state.suite.settings.debug,
     },
     actions: {
         setAccountLoadedMetadata: metadataActions.setAccountLoaded,

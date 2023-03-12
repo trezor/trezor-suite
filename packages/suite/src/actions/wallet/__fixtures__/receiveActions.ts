@@ -35,6 +35,7 @@ export default [
         initialState: {
             suite: {
                 device: undefined,
+                settings: { debug: {} },
             },
         },
         mocks: {},
@@ -171,6 +172,7 @@ export default [
         description: 'Show address, device not connected',
         initialState: {
             suite: {
+                settings: { debug: {} },
                 device: getSuiteDevice({ connected: false }),
             },
         },
@@ -191,6 +193,7 @@ export default [
         description: 'Show address, device is undefined',
         initialState: {
             suite: {
+                settings: { debug: {} },
                 device: undefined,
             },
         },

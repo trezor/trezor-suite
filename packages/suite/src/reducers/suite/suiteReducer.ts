@@ -27,7 +27,7 @@ export interface DebugModeOptions {
     oauthServerEnvironment?: OAuthServerEnvironment;
     showDebugMenu: boolean;
     checkFirmwareAuthenticity: boolean;
-    transports: ConnectSettings['transports'];
+    transports: Extract<NonNullable<ConnectSettings['transports']>[number], string>[];
 }
 
 export interface AutodetectSettings {
