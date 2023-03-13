@@ -1,6 +1,6 @@
 import { formatNetworkAmount, toFiatCurrency } from '@suite-common/wallet-utils';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { FiatRates } from '@suite-common/wallet-types';
+import { CurrentFiatRates } from '@suite-common/wallet-types';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 
 type CryptoToFiatAmountValue = string | null;
@@ -12,7 +12,7 @@ export const convertCryptoToFiatAmount = ({
     network,
 }: {
     value: CryptoToFiatAmountValue;
-    rates: FiatRates;
+    rates: CurrentFiatRates['rates'];
     fiatCurrency: FiatCurrencyCode;
     network: NetworkSymbol;
 }): string | null => {

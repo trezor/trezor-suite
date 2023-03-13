@@ -62,7 +62,7 @@ describe('Use regtest to test pending transactions', () => {
                 cy.getTestElement('@transaction-group/pending/count').contains(index + 1);
             });
             cy.getTestElement('@tx-detail/txid-value').then($el => {
-                cy.task('set', { key: address, value: $el.text() });
+                cy.task('set', { key: address, value: $el.attr('id') });
             });
 
             cy.getTestElement('@modal/close-button').click();
