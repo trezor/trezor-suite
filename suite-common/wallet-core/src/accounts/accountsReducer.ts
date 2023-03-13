@@ -194,6 +194,23 @@ export const selectAccountByDescriptorAndNetworkSymbol = memoizeWithArgs(
     },
 );
 
+export const selectAccountKeyByDescriptorAndNetworkSymbol = memoizeWithArgs(
+    (
+        state: AccountsRootState,
+        accountDescriptor?: string,
+        networkSymbol?: NetworkSymbol,
+    ): AccountKey | null => {
+        if (!accountDescriptor || !networkSymbol) return null;
+        const account = selectAccountByDescriptorAndNetworkSymbol(
+            state,
+            accountDescriptor,
+            networkSymbol,
+        );
+
+        return account?.key ?? null;
+    },
+);
+
 export const selectAccountsAmountPerSymbol = memoizeWithArgs(
     (state: AccountsRootState, networkSymbol: NetworkSymbol) => {
         const accounts = selectAccounts(state);

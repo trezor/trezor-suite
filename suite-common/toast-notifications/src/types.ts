@@ -1,14 +1,31 @@
 import { TranslationKey } from '@suite-common/intl-types';
 import { DesktopAppUpdateState, PROTOCOL_SCHEME } from '@suite-common/suite-constants';
 import { TrezorDevice } from '@suite-common/suite-types';
-import { Network, NetworkSymbol } from '@suite-common/wallet-config';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 import { DEVICE } from '@trezor/connect';
+
+export type NotificationId = number;
 
 export interface NotificationOptions {
     seen?: boolean;
     resolved?: boolean;
     autoClose?: number | false;
 }
+
+type TransactionNotificationPayload = {
+    formattedAmount: string;
+    device?: TrezorDevice;
+    descriptor: string;
+    symbol: NetworkSymbol;
+    txid: string;
+};
+type SentTransactionNotification = {
+    type: 'tx-sent';
+} & TransactionNotificationPayload;
+
+type ReceivedTransactionNotification = {
+    type: 'tx-received' | 'tx-confirmed';
+} & TransactionNotificationPayload;
 
 export type ToastPayload = (
     | {
@@ -31,14 +48,7 @@ export type ToastPayload = (
               | 'verify-message-success'
               | 'firmware-check-authenticity-success';
       }
-    | {
-          type: 'tx-sent';
-          formattedAmount: string;
-          device?: TrezorDevice;
-          descriptor: string;
-          symbol: Network['symbol'];
-          txid: string;
-      }
+    | SentTransactionNotification
     | {
           type: 'raw-tx-sent';
           txid: string;
@@ -132,14 +142,7 @@ export type NotificationEventPayload = (
           // where action is used and you will need to change it also here
           type: '@suite/auth-device';
       }
-    | {
-          type: 'tx-received' | 'tx-confirmed';
-          formattedAmount: string;
-          device?: TrezorDevice;
-          descriptor: string;
-          symbol: NetworkSymbol;
-          txid: string;
-      }
+    | ReceivedTransactionNotification
     | {
           type: typeof DEVICE.CONNECT | typeof DEVICE.CONNECT_UNACQUIRED;
           device: TrezorDevice;
@@ -149,7 +152,7 @@ export type NotificationEventPayload = (
     NotificationOptions;
 
 export interface CommonNotificationPayload {
-    id: number; // programmer provided, might be used to find and close notification programmatically
+    id: NotificationId; // programmer provided, might be used to find and close notification programmatically
     device?: TrezorDevice; // used to close notifications for device
     closed?: boolean;
     error?: string;
@@ -166,3 +169,11 @@ export type NotificationsState = NotificationEntry[];
 export type NotificationsRootState = {
     notifications: NotificationsState;
 };
+
+export type TransactionNotification = (
+    | SentTransactionNotification
+    | ReceivedTransactionNotification
+) &
+    CommonNotificationPayload;
+
+export type TransactionNotificationType = TransactionNotification['type'];

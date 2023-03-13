@@ -13,6 +13,7 @@ import * as Sentry from '@sentry/react-native';
 
 import enMessages from '@trezor/suite-data/files/translations/en.json';
 import { selectIsAppReady, selectIsConnectInitialized, StoreProvider } from '@suite-native/state';
+import { NotificationRenderer } from '@suite-native/notifications';
 import { FormatterProvider } from '@suite-common/formatters';
 
 import { RootStackNavigator } from './navigation/RootStackNavigator';
@@ -47,7 +48,9 @@ const AppComponent = () => {
 
     return (
         <FormatterProvider config={formattersConfig}>
-            <RootStackNavigator />
+            <NotificationRenderer>
+                <RootStackNavigator />
+            </NotificationRenderer>
         </FormatterProvider>
     );
 };

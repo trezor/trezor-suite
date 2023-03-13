@@ -13,6 +13,7 @@ import {
     RootStackRoutes,
     TabToStackCompositeNavigationProp,
     AccountsStackRoutes,
+    SendReceiveStackRoutes,
 } from '@suite-native/navigation';
 import { networks } from '@suite-common/wallet-config';
 import { selectFiatCurrency } from '@suite-native/module-settings';
@@ -45,7 +46,9 @@ export const Assets = () => {
     );
 
     const handleReceive = () => {
-        navigation.navigate(AppTabsRoutes.ReceiveScreen);
+        navigation.navigate(AppTabsRoutes.SendReceiveStack, {
+            screen: SendReceiveStackRoutes.ReceiveAccounts,
+        });
     };
 
     const handleImportAssets = () => {

@@ -1,12 +1,12 @@
-import React, { ReactNode, useState, useEffect } from 'react';
+import React, { ReactNode, useEffect } from 'react';
 import Animated, {
-    SlideInUp,
     SlideOutUp,
     useAnimatedGestureHandler,
     useSharedValue,
     useAnimatedStyle,
     withTiming,
     runOnJS,
+    EntryAnimationsValues,
 } from 'react-native-reanimated';
 import { PanGestureHandler, PanGestureHandlerGestureEvent } from 'react-native-gesture-handler';
 import { TouchableWithoutFeedback } from 'react-native';
@@ -21,13 +21,14 @@ type NotificationProps = {
     title: string;
     description: ReactNode;
     onPress: () => void;
+    onHide: () => void;
     isHiddenAutomatically?: boolean;
 };
 
 const DISMISS_THRESHOLD = -25;
-const HIDDEN_OFFSET = -750;
+const HIDDEN_OFFSET = -200;
 
-const ENTER_ANIMATION_DURATION = 200;
+const ENTER_ANIMATION_DURATION = 1000;
 const EXIT_ANIMATION_DURATION = 1000;
 const NOTIFICATION_VISIBLE_DURATION = 5000 + ENTER_ANIMATION_DURATION + EXIT_ANIMATION_DURATION;
 
@@ -48,9 +49,9 @@ export const Notification = ({
     title,
     description,
     onPress,
+    onHide,
     isHiddenAutomatically = true,
 }: NotificationProps) => {
-    const [isHidden, setIsHidden] = useState(false);
     const { applyStyle } = useNativeStyles();
 
     const translateY = useSharedValue(0);
@@ -62,7 +63,7 @@ export const Notification = ({
         onEnd: event => {
             if (event.translationY < DISMISS_THRESHOLD) {
                 translateY.value = withTiming(HIDDEN_OFFSET, undefined, isFinished => {
-                    if (isFinished) runOnJS(setIsHidden)(true);
+                    if (isFinished) runOnJS(onHide)();
                 });
             } else {
                 translateY.value = withTiming(0);
@@ -72,11 +73,11 @@ export const Notification = ({
 
     useEffect(() => {
         const timeout = setTimeout(
-            () => isHiddenAutomatically && setIsHidden(true),
+            () => isHiddenAutomatically && onHide(),
             NOTIFICATION_VISIBLE_DURATION,
         );
         return () => clearTimeout(timeout);
-    }, [isHiddenAutomatically]);
+    }, [isHiddenAutomatically, onHide]);
 
     const swipeGestureStyle = useAnimatedStyle(() => ({
         transform: [
@@ -86,23 +87,38 @@ export const Notification = ({
         ],
     }));
 
-    if (isHidden) return null;
+    const runEnteringAnimation = (_: EntryAnimationsValues) => {
+        'worklet';
+
+        const animations = {
+            originY: withTiming(0, { duration: ENTER_ANIMATION_DURATION }),
+            opacity: withTiming(1, { duration: ENTER_ANIMATION_DURATION }),
+        };
+        const initialValues = {
+            originY: HIDDEN_OFFSET,
+            opacity: 0,
+        };
+        return {
+            initialValues,
+            animations,
+        };
+    };
 
     return (
         <InvertedThemeProvider>
             <PanGestureHandler onGestureEvent={onSwipeGesture}>
                 <Animated.View
                     style={swipeGestureStyle}
-                    entering={SlideInUp.duration(ENTER_ANIMATION_DURATION)}
+                    entering={runEnteringAnimation}
                     exiting={SlideOutUp.duration(EXIT_ANIMATION_DURATION)}
                 >
                     <TouchableWithoutFeedback onPress={onPress}>
                         <Box style={applyStyle(notificationContainerStyle)}>
-                            <Box flexDirection="row" alignItems="center">
+                            <Box flexDirection="row">
                                 {iconLeft}
                                 <Box marginLeft="medium">
                                     <Text>{title}</Text>
-                                    <Text variant="label">{description}</Text>
+                                    {description}
                                 </Box>
                             </Box>
                             <Box marginRight="small">{iconRight}</Box>

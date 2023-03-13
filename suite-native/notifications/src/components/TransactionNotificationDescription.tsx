@@ -6,7 +6,7 @@ import { NetworkSymbol } from '@suite-common/wallet-config';
 import { useNativeStyles, prepareNativeStyle } from '@trezor/styles';
 
 type TransactionNotificationDescriptionProps = {
-    amount: string;
+    amount: string | null;
     prefix: string;
     networkSymbol: NetworkSymbol;
     targetAddress?: string;
@@ -30,7 +30,6 @@ export const TransactionNotificationDescription = ({
                 value={amount}
                 network={networkSymbol}
                 isBalance={false}
-                color="textSubdued"
                 variant="label"
             />
             <Text color="textSubdued" variant="label">

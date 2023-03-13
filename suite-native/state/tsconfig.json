@@ -13,6 +13,9 @@
             "path": "../../suite-common/test-utils"
         },
         {
+            "path": "../../suite-common/toast-notifications"
+        },
+        {
             "path": "../../suite-common/wallet-core"
         },
         { "path": "../config" },

@@ -1,2 +1,1 @@
-export * from './screens/ReceiveAccountsScreen';
-export * from './screens/ReceiveModalScreen';
+export * from './navigation/SendReceiveStackNavigator';

@@ -12,7 +12,9 @@
     },
     "dependencies": {
         "@react-navigation/native": "^6.1.3",
+        "@react-navigation/native-stack": "^6.9.11",
         "@suite-common/wallet-core": "workspace:*",
+        "@suite-common/wallet-types": "workspace:*",
         "@suite-common/wallet-utils": "workspace:*",
         "@suite-native/accounts": "workspace:*",
         "@suite-native/atoms": "workspace:*",

@@ -11,9 +11,11 @@ import {
     selectHasAccountTransactions,
 } from '@suite-common/wallet-core';
 import {
-    RootStackParamList,
-    RootStackRoutes,
-    StackNavigationProps,
+    AccountsStackParamList,
+    AppTabsParamList,
+    AppTabsRoutes,
+    SendReceiveStackRoutes,
+    TabToStackCompositeNavigationProp,
 } from '@suite-native/navigation';
 
 import { AccountDetailGraph } from './AccountDetailGraph';
@@ -23,9 +25,14 @@ type AccountDetailHeaderProps = {
     accountKey: AccountKey;
 };
 
+type AccountsNavigationProps = TabToStackCompositeNavigationProp<
+    AppTabsParamList,
+    AppTabsRoutes.AccountsStack,
+    AccountsStackParamList
+>;
+
 export const TransactionListHeader = memo(({ accountKey }: AccountDetailHeaderProps) => {
-    const navigation =
-        useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.ReceiveModal>>();
+    const navigation = useNavigation<AccountsNavigationProps>();
     const accountHasTransactions = useSelector((state: AccountsRootState) =>
         selectHasAccountTransactions(state, accountKey),
     );
@@ -34,7 +41,10 @@ export const TransactionListHeader = memo(({ accountKey }: AccountDetailHeaderPr
     );
 
     const handleReceive = () => {
-        navigation.navigate(RootStackRoutes.ReceiveModal, { accountKey });
+        navigation.navigate(AppTabsRoutes.SendReceiveStack, {
+            screen: SendReceiveStackRoutes.Receive,
+            params: { accountKey },
+        });
     };
     return (
         <>

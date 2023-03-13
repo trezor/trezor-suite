@@ -10,6 +10,7 @@ import {
     HomeStackRoutes,
     RootStackRoutes,
     SettingsStackRoutes,
+    SendReceiveStackRoutes,
     AccountsStackRoutes,
     DevUtilsStackRoutes,
 } from './routes';
@@ -34,14 +35,19 @@ export type SettingsStackParamList = {
 
 export type AccountsStackParamList = {
     [AccountsStackRoutes.Accounts]: undefined;
-    [AccountsStackRoutes.AccountDetail]: { accountKey: string };
-    [AccountsStackRoutes.AccountDetailSettings]: { accountKey: string };
+    [AccountsStackRoutes.AccountDetail]: { accountKey: AccountKey };
+    [AccountsStackRoutes.AccountDetailSettings]: { accountKey: AccountKey };
+};
+
+export type SendReceiveStackParamList = {
+    [SendReceiveStackRoutes.ReceiveAccounts]: undefined;
+    [SendReceiveStackRoutes.Receive]: { accountKey: AccountKey };
 };
 
 export type AppTabsParamList = {
     [AppTabsRoutes.HomeStack]: NavigatorScreenParams<HomeStackParamList>;
     [AppTabsRoutes.AccountsStack]: NavigatorScreenParams<AccountsStackParamList>;
-    [AppTabsRoutes.ReceiveScreen]: undefined;
+    [AppTabsRoutes.SendReceiveStack]: NavigatorScreenParams<SendReceiveStackParamList>;
     [AppTabsRoutes.SettingsStack]: NavigatorScreenParams<SettingsStackParamList>;
 };
 
@@ -67,8 +73,7 @@ export type AccountsImportStackParamList = {
 export type RootStackParamList = {
     [RootStackRoutes.AppTabs]: NavigatorScreenParams<AppTabsParamList>;
     [RootStackRoutes.AccountsImport]: NavigatorScreenParams<AccountsImportStackParamList>;
-    [RootStackRoutes.AccountSettings]: { accountKey: string };
+    [RootStackRoutes.AccountSettings]: { accountKey: AccountKey };
     [RootStackRoutes.TransactionDetail]: { txid: string; accountKey: AccountKey };
     [RootStackRoutes.DevUtilsStack]: undefined;
-    [RootStackRoutes.ReceiveModal]: { accountKey: string };
 };

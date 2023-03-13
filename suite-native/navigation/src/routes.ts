@@ -4,13 +4,12 @@ export enum RootStackRoutes {
     DevUtilsStack = 'DevUtilsStack',
     AccountSettings = 'AccountSettings',
     TransactionDetail = 'TransactionDetail',
-    ReceiveModal = 'ReceiveModal',
 }
 
 export enum AppTabsRoutes {
     HomeStack = 'HomeStack',
     AccountsStack = 'AccountsStack',
-    ReceiveScreen = 'ReceiveScreen',
+    SendReceiveStack = 'SendReceiveStack',
     SettingsStack = 'SettingsStack',
 }
 
@@ -35,6 +34,11 @@ export enum AccountsStackRoutes {
     Accounts = 'Accounts',
     AccountDetail = 'AccountDetail',
     AccountDetailSettings = 'AccountDetailSettings',
+}
+
+export enum SendReceiveStackRoutes {
+    ReceiveAccounts = 'ReceiveAccounts',
+    Receive = 'Receive',
 }
 
 export enum SettingsStackRoutes {

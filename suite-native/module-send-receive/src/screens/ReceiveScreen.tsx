@@ -5,20 +5,20 @@ import { Box, Card, ErrorMessage, Text, VStack } from '@suite-native/atoms';
 import { AccountListItem } from '@suite-native/accounts';
 import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import {
-    RootStackParamList,
-    RootStackRoutes,
     Screen,
     ScreenHeader,
+    SendReceiveStackParamList,
+    SendReceiveStackRoutes,
     StackProps,
 } from '@suite-native/navigation';
 
 import { ReceiveAddress } from '../components/ReceiveAddress';
 import { ReceiveTextHint } from '../components/ReceiveTextHint';
 
-export const ReceiveModalScreen = ({
+export const ReceiveScreen = ({
     route,
     navigation,
-}: StackProps<RootStackParamList, RootStackRoutes.ReceiveModal>) => {
+}: StackProps<SendReceiveStackParamList, SendReceiveStackRoutes.Receive>) => {
     const [addressIsVisible, setAddressIsVisible] = useState(false);
     const { accountKey } = route.params;
     const account = useSelector((state: AccountsRootState) =>

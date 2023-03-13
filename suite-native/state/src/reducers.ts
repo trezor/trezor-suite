@@ -11,6 +11,7 @@ import { appSettingsReducer, appSettingsPersistWhitelist } from '@suite-native/m
 import { logsSlice } from '@suite-common/logger';
 import { preparePersistReducer } from '@suite-native/storage';
 import { prepareAnalyticsReducer } from '@suite-common/analytics';
+import { notificationsReducer } from '@suite-common/toast-notifications';
 
 import { extraDependencies } from './extraDependencies';
 import { appReducer } from './appSlice';
@@ -48,5 +49,6 @@ export const prepareRootReducers = async () => {
         wallet: walletPersistedReducer,
         devices: devicesReducer,
         logs: logsSlice.reducer,
+        notifications: notificationsReducer,
     });
 };
