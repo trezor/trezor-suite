@@ -1,6 +1,8 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
+import { A } from '@mobily/ts-belt';
+
 import { Box, VStack, Text } from '@suite-native/atoms';
 import {
     EthereumTokenSymbol,
@@ -19,7 +21,7 @@ export const AccountImportEthereumTokens = ({ accountKey }: AccountImportEthereu
         selectEthereumAccountTokensWithBalance(state, accountKey),
     );
 
-    if (!tokensWithBalance) return null;
+    if (A.isEmpty(tokensWithBalance)) return null;
 
     return (
         <Box>
