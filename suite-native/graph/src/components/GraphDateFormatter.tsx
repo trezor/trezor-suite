@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { differenceInDays, isSameDay } from 'date-fns';
+import { differenceInDays } from 'date-fns';
 import { Atom, useAtomValue } from 'jotai';
 
 import { useFormatters } from '@suite-common/formatters';
@@ -14,18 +14,10 @@ type GraphDateFormatterProps = {
     selectedPointAtom: Atom<EnhancedGraphPoint>;
 };
 
-const SameDayFormatter = ({ selectedPointAtom }: { selectedPointAtom: SelectedPointAtom }) => {
-    const { TimeFormatter } = useFormatters();
-    const point = useAtomValue(selectedPointAtom);
-    return <TimeFormatter value={point.date} />;
-};
-
 const WeekFormatter = ({ selectedPointAtom }: { selectedPointAtom: SelectedPointAtom }) => {
-    const { DateTimeFormatter, TimeFormatter } = useFormatters();
+    const { DateTimeFormatter } = useFormatters();
     const { originalDate: value } = useAtomValue(selectedPointAtom);
-    if (isSameDay(value, new Date())) {
-        return <TimeFormatter value={value} />;
-    }
+
     return <DateTimeFormatter value={value} />;
 };
 
@@ -40,9 +32,6 @@ export const GraphDateFormatter = ({
     firstPointDate,
     selectedPointAtom,
 }: GraphDateFormatterProps) => {
-    if (isSameDay(firstPointDate, new Date())) {
-        return <SameDayFormatter selectedPointAtom={selectedPointAtom} />;
-    }
     if (differenceInDays(firstPointDate, new Date()) < 7) {
         return <WeekFormatter selectedPointAtom={selectedPointAtom} />;
     }
