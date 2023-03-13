@@ -56,7 +56,8 @@ export const TokenTransfer = ({
     transaction,
     ...baseLayoutProps
 }: TokenTransferProps) => {
-    const operation = getTxOperation(transfer);
+    const operation = getTxOperation(transfer.type);
+    const isNft = isNftTokenTransfer(transfer);
     const isZeroValuePhishing = getIsZeroValuePhishing(transaction);
 
     return (
@@ -93,7 +94,7 @@ export const InternalTransfer = ({
     ...baseLayoutProps
 }: InternalTransferProps) => {
     const amount = transfer.amount && formatNetworkAmount(transfer.amount, transaction.symbol);
-    const operation = getTxOperation(transfer);
+    const operation = getTxOperation(transfer.type);
 
     return (
         <BaseTargetLayout
@@ -139,7 +140,7 @@ export const Target = ({
     ...baseLayoutProps
 }: TargetProps) => {
     const targetAmount = getTargetAmount(target, transaction);
-    const operation = getTxOperation(transaction);
+    const operation = getTxOperation(transaction.type);
     const { addNotification } = useActions({ addNotification: notificationsActions.addToast });
     const targetMetadata = accountMetadata?.outputLabels?.[transaction.txid]?.[target.n];
 

@@ -8,7 +8,12 @@ import {
     WalletAccountTransaction,
 } from '@suite-common/wallet-types';
 import { AccountMetadata } from '@suite-common/metadata-types';
-import { AccountAddress, AccountTransaction } from '@trezor/connect';
+import {
+    AccountAddress,
+    AccountTransaction,
+    TokenTransfer,
+    InternalTransfer,
+} from '@trezor/connect';
 import { SignOperator } from '@suite-common/suite-types';
 import { arrayPartition } from '@trezor/utils';
 
@@ -388,15 +393,14 @@ export const analyzeTransactions = (
     });
 };
 
-// getTxOperation is used with types WalletAccountTransaction and ArrayElement<WalletAccountTransaction['tokens']
-// the only interesting field is 'type', which has compatible string literal union in both types
-export const getTxOperation = (tx: {
-    type: WalletAccountTransaction['type'];
-}): SignOperator | null => {
-    if (tx.type === 'sent' || tx.type === 'self' || tx.type === 'failed') {
+export const getTxOperation = (
+    type: WalletAccountTransaction['type'] | TokenTransfer['type'] | InternalTransfer['type'],
+    ignoreSelf = false,
+): SignOperator | null => {
+    if (type === 'sent' || (!ignoreSelf && type === 'self')) {
         return 'negative';
     }
-    if (tx.type === 'recv') {
+    if (type === 'recv') {
         return 'positive';
     }
     return null;
@@ -702,7 +706,7 @@ const numberSearchFilter = (
     operator: (typeof searchOperators)[number],
 ) => {
     const targetAmounts = getTargetAmounts(transaction);
-    const op = getTxOperation(transaction);
+    const op = getTxOperation(transaction.type);
     if (!op) {
         return false;
     }
