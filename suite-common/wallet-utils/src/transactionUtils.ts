@@ -152,6 +152,17 @@ export const sumTransactions = (transactions: WalletAccountTransaction[]) => {
         if (tx.type === 'failed') {
             totalAmount = totalAmount.minus(fee);
         }
+
+        tx.internalTransfers.forEach(internalTx => {
+            const amountInternal = formatNetworkAmount(internalTx.amount, tx.symbol);
+
+            if (internalTx.type === 'sent') {
+                totalAmount = totalAmount.minus(amountInternal);
+            }
+            if (internalTx.type === 'recv') {
+                totalAmount = totalAmount.plus(amountInternal);
+            }
+        });
     });
     return totalAmount;
 };
@@ -196,6 +207,19 @@ export const sumTransactionsFiat = (
         if (tx.type === 'failed') {
             totalAmount = totalAmount.minus(toFiatCurrency(fee, fiatCurrency, tx.rates, -1) ?? 0);
         }
+
+        tx.internalTransfers.forEach(internalTx => {
+            const amountInternal = formatNetworkAmount(internalTx.amount, tx.symbol);
+            const amountInternalFiat =
+                toFiatCurrency(amountInternal, fiatCurrency, tx.rates, -1) ?? 0;
+
+            if (internalTx.type === 'sent') {
+                totalAmount = totalAmount.minus(amountInternalFiat);
+            }
+            if (internalTx.type === 'recv') {
+                totalAmount = totalAmount.plus(amountInternalFiat);
+            }
+        });
     });
     return totalAmount;
 };
