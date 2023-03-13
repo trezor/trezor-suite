@@ -62,6 +62,7 @@ interface DayHeaderProps {
     isHovered?: boolean;
 }
 
+// TODO: Do not show FEE for sent but not mine transactions
 export const DayHeader = ({
     dateKey,
     symbol,
