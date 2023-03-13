@@ -8104,4 +8104,16 @@ export default defineMessages({
         defaultMessage:
             'If your account balance is below the recommended minimum ({crypto}) coinjoin may be uneconomical. Press <b>Cancel</b> to go back and add more funds, or <b>I understand</b> to proceed with the coinjoin.',
     },
+    TR_ENABLE_AUTOPAUSE_COINJOIN: {
+        id: 'TR_ENABLE_AUTOPAUSE_COINJOIN',
+        defaultMessage: 'Pause Coinjoin after this round',
+    },
+    TR_AUTOPAUSE_COINJOIN_ENABLED: {
+        id: 'TR_AUTOPAUSE_COINJOIN_ENABLED',
+        defaultMessage: 'Coinjoin will be paused after this round',
+    },
+    TR_DISABLE_AUTOPAUSE_COINJOIN: {
+        id: 'TR_DISABLE_AUTOPAUSE_COINJOIN',
+        defaultMessage: "Don't pause",
+    },
 });

@@ -21,6 +21,7 @@ export const CLIENT_SESSION_PHASE = '@coinjoin/session-phase';
 
 export const SESSION_STARTING = '@coinjoin/session-starting';
 export const SESSION_PAUSE = '@coinjoin/session-pause';
+export const SESSION_AUTOPAUSE = '@coinjoin/session-autopause';
 export const SESSION_RESTORE = '@coinjoin/session-restore';
 export const SESSION_ROUND_CHANGED = '@coinjoin/session-round-changed';
 export const SESSION_COMPLETED = '@coinjoin/session-completed';

@@ -287,6 +287,7 @@ const restoreSession = (
 
     delete account.session.paused;
     delete account.session.interrupted;
+    delete account.session.isAutoPauseEnabled;
     delete account.session.timeEnded;
     account.session.timeCreated = Date.now();
 };
@@ -386,6 +387,19 @@ const updateDebugMode = (
     }
 };
 
+const enableSessionAutopause = (
+    draft: CoinjoinState,
+    payload: ExtractActionPayload<typeof COINJOIN.SESSION_AUTOPAUSE>,
+) => {
+    const session = draft.accounts.find(a => a.key === payload.accountKey)?.session;
+
+    if (!session) {
+        return;
+    }
+
+    session.isAutoPauseEnabled = payload.isAutopaused;
+};
+
 export const coinjoinReducer = (
     state: CoinjoinState = initialState,
     action: Action,
@@ -453,6 +467,9 @@ export const coinjoinReducer = (
                 break;
             case COINJOIN.SESSION_PAUSE:
                 pauseSession(draft, action.payload);
+                break;
+            case COINJOIN.SESSION_AUTOPAUSE:
+                enableSessionAutopause(draft, action.payload);
                 break;
             case COINJOIN.SESSION_RESTORE:
                 restoreSession(draft, action.payload);
@@ -799,4 +816,12 @@ export const selectCurrentSessionDeadlineInfo = memoize((state: CoinjoinRootStat
 // Return true if it's not explicitly set to false in the message-system config.
 export const selectIsPublic = memoize(
     (state: CoinjoinRootState) => selectFeatureConfig(state, Feature.coinjoin)?.isPublic !== false,
+);
+
+export const selectIsSessionAutopaused = memoizeWithArgs(
+    (state: CoinjoinRootState, accountKey: string) => {
+        const currentState = selectSessionByAccountKey(state, accountKey);
+
+        return !!currentState?.isAutoPauseEnabled;
+    },
 );
