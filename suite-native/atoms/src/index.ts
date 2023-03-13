@@ -14,7 +14,7 @@ export * from './DiscreetText';
 export * from './ListItem/ListItem';
 export * from './ListItem/SelectableListItem';
 export * from './Sheet/BottomSheet';
-export * from './Sheet/AlertSheet';
+export * from './Sheet/useBottomSheetAnimation';
 export * from './Button/Button';
 export * from './Button/IconButton';
 export * from './Select/Select';

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { Alert } from 'react-native';
 import { useDispatch } from 'react-redux';
 
 import TrezorConnect, { AccountInfo } from '@trezor/connect';
@@ -12,11 +11,13 @@ import {
     RootStackRoutes,
 } from '@suite-native/navigation';
 import { updateCurrentFiatRatesThunk } from '@suite-common/wallet-core';
+import { useAlert } from '@suite-native/alerts';
 
 import { AccountImportLoader } from '../components/AccountImportLoader';
 import { AccountImportHeader } from '../components/AccountImportHeader';
 
 const LOADING_ANIMATION_DURATION = 5000;
+const DEFAULT_ALERT_MESSAGE = 'Account import failed';
 
 export const AccountImportLoadingScreen = ({
     navigation,
@@ -28,6 +29,7 @@ export const AccountImportLoadingScreen = ({
 >) => {
     const { xpubAddress, networkSymbol } = route.params;
     const dispatch = useDispatch();
+    const { showAlert } = useAlert();
     const [accountInfo, setAccountInfo] = useState<AccountInfo | null>(null);
     const [isAnimationFinished, setIsAnimationFinished] = useState(false);
 
@@ -48,23 +50,23 @@ export const AccountImportLoadingScreen = ({
     useEffect(() => {
         let ignore = false;
 
-        const showAccountInfoAlert = ({ title, message }: { title: string; message: string }) => {
-            Alert.alert(title, message, [
-                {
-                    text: 'OK, I will fix it',
-                    onPress: () =>
-                        navigation.navigate(RootStackRoutes.AccountsImport, {
-                            screen: AccountsImportStackRoutes.XpubScan,
-                            params: {
-                                networkSymbol,
-                            },
-                        }),
-                },
-            ]);
+        const showAccountInfoAlert = (message: string, retry: () => Promise<void>) => {
+            showAlert({
+                title: 'Network Error',
+                description: message,
+                primaryButtonTitle: 'Try Again',
+                onPressPrimaryButton: retry,
+                secondaryButtonTitle: 'Go back',
+                onPressSecondaryButton: () =>
+                    navigation.navigate(RootStackRoutes.AccountsImport, {
+                        screen: AccountsImportStackRoutes.XpubScan,
+                        params: {
+                            networkSymbol,
+                        },
+                    }),
+            });
         };
 
-        // TODO: show loader when account info is running, because otherwise it can finish after user already submitted
-        // the form, the account is imported and user is somewhere in the app
         const getAccountInfo = async () => {
             const fetchedAccountInfo = await TrezorConnect.getAccountInfo({
                 coin: networkSymbol,
@@ -89,10 +91,7 @@ export const AccountImportLoadingScreen = ({
                     }
                     setAccountInfo(fetchedAccountInfo.payload);
                 } else {
-                    showAccountInfoAlert({
-                        title: 'Account info failed',
-                        message: fetchedAccountInfo.payload?.error ?? '',
-                    });
+                    showAccountInfoAlert(fetchedAccountInfo.payload.error, getAccountInfo);
                 }
             }
         };
@@ -100,17 +99,14 @@ export const AccountImportLoadingScreen = ({
             getAccountInfo();
         } catch (error) {
             if (!ignore) {
-                showAccountInfoAlert({
-                    title: 'Account info failed',
-                    message: error?.message ?? '',
-                });
+                showAccountInfoAlert(error?.message ?? DEFAULT_ALERT_MESSAGE, getAccountInfo);
             }
         }
 
         return () => {
             ignore = true;
         };
-    }, [xpubAddress, networkSymbol, navigation, dispatch]);
+    }, [xpubAddress, networkSymbol, navigation, dispatch, showAlert]);
 
     return (
         <Screen header={<AccountImportHeader activeStep={3} />}>

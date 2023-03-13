@@ -14,6 +14,7 @@ import { selectIsAppReady, selectIsConnectInitialized, StoreProvider } from '@su
 // import { NotificationRenderer } from '@suite-native/notifications';
 import { ToastRenderer } from '@suite-native/toasts';
 import { FormatterProvider } from '@suite-common/formatters';
+import { AlertRenderer } from '@suite-native/alerts';
 
 import { RootStackNavigator } from './navigation/RootStackNavigator';
 import { StylesProvider } from './StylesProvider';
@@ -47,13 +48,15 @@ const AppComponent = () => {
 
     return (
         <FormatterProvider config={formattersConfig}>
-            {/* Notifications are disabled until the problem with after-import notifications flooding is solved. */}
-            {/* More here: https://github.com/trezor/trezor-suite/issues/7721  */}
-            {/* <NotificationRenderer> */}
-            <ToastRenderer>
-                <RootStackNavigator />
-            </ToastRenderer>
-            {/* </NotificationRenderer> */}
+            <AlertRenderer>
+                {/* Notifications are disabled until the problem with after-import notifications flooding is solved. */}
+                {/* More here: https://github.com/trezor/trezor-suite/issues/7721  */}
+                {/* <NotificationRenderer> */}
+                <ToastRenderer>
+                    <RootStackNavigator />
+                </ToastRenderer>
+                {/* </NotificationRenderer> */}
+            </AlertRenderer>
         </FormatterProvider>
     );
 };
