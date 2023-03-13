@@ -35,7 +35,6 @@ export type TokenStandard = 'ERC20' | 'ERC1155' | 'ERC721';
 export type TransferType = 'sent' | 'recv' | 'self' | 'unknown';
 
 /* Transaction */
-
 export interface TokenTransfer {
     type: TransferType;
     name: string;
@@ -45,6 +44,11 @@ export interface TokenTransfer {
     amount: string;
     from?: string;
     to?: string;
+    standard?: TokenStandard;
+    multiTokenValues?: Array<{
+        id: string;
+        value: string;
+    }>;
 }
 
 export interface InternalTransfer {

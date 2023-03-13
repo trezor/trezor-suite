@@ -6,7 +6,7 @@ import type {
     EstimateFeeParams,
     AccountInfoParams,
 } from './params';
-import type { AccountBalanceHistory, FiatRates } from './common';
+import type { AccountBalanceHistory, FiatRates, TokenStandard } from './common';
 
 export interface Subscribe {
     subscribed: boolean;
