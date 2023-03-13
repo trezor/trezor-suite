@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { pipe } from '@mobily/ts-belt';
 
 import { convertCryptoToFiatAmount } from '@suite-common/formatters';
-import { FiatRates, WalletAccountTransaction } from '@suite-common/wallet-types';
+import { CurrentFiatRates, WalletAccountTransaction } from '@suite-common/wallet-types';
 import { Card, Table, Td, Text, Th, Tr, VStack } from '@suite-native/atoms';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { selectCoins } from '@suite-common/wallet-core';
@@ -26,7 +26,7 @@ type TodayHeaderCellProps = {
     historicalPrice: string;
     actualPrice: string;
     network: NetworkSymbol;
-    historicalRates?: FiatRates;
+    historicalRates?: CurrentFiatRates['rates'];
 };
 
 const TodayHeaderCell = ({
