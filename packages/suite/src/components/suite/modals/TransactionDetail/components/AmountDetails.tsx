@@ -86,60 +86,6 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                     />
                 )}
 
-                {!['xrp', 'eth'].includes(tx.symbol) && (
-                    <>
-                        {/* TOTAL INPUT */}
-                        <AmountRow
-                            firstColumn={<Translation id="TR_TOTAL_INPUT" />}
-                            secondColumn={
-                                <FormattedCryptoAmount value={totalInput} symbol={tx.symbol} />
-                            }
-                            thirdColumn={
-                                !tx.tokens.length &&
-                                totalInput && (
-                                    <FiatValue
-                                        amount={totalInput}
-                                        symbol={tx.symbol}
-                                        source={tx.rates}
-                                        useCustomSource
-                                    />
-                                )
-                            }
-                            fourthColumn={
-                                totalInput && <FiatValue amount={totalInput} symbol={tx.symbol} />
-                            }
-                            color="dark"
-                        />
-
-                        {/* TOTAL OUTPUT */}
-                        <AmountRow
-                            firstColumn={<Translation id="TR_TOTAL_OUTPUT" />}
-                            secondColumn={
-                                <FormattedCryptoAmount
-                                    value={totalOutput}
-                                    symbol={tx.symbol}
-                                    signValue={getTxOperation(tx, true)}
-                                />
-                            }
-                            thirdColumn={
-                                !tx.tokens.length &&
-                                totalOutput && (
-                                    <FiatValue
-                                        amount={totalOutput}
-                                        symbol={tx.symbol}
-                                        source={tx.rates}
-                                        useCustomSource
-                                    />
-                                )
-                            }
-                            fourthColumn={
-                                totalOutput && <FiatValue amount={totalOutput} symbol={tx.symbol} />
-                            }
-                            color="dark"
-                        />
-                    </>
-                )}
-
                 {/* AMOUNT */}
                 {(tx.targets.length || tx.type === 'joint') && (
                     <AmountRow
