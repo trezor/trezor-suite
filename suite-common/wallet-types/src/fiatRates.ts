@@ -1,10 +1,11 @@
+import type { FiatRates } from '@trezor/connect';
+
 export interface TickerId {
     symbol: string;
     mainNetworkSymbol?: string; // symbol of thee main network. (used for tokens)
     tokenAddress?: string;
 }
 
-export type FiatRates = { [key: string]: number | undefined };
 export interface CurrentFiatRates {
     symbol: string;
     rates: FiatRates;
