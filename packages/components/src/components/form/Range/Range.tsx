@@ -6,29 +6,34 @@ import { useTheme, variables } from '@trezor/components';
 const track = css<Pick<RangeProps, 'trackStyle'>>`
     background: ${({ theme }) => theme.BG_GREEN};
     height: 3px;
+
     ${({ trackStyle }) => trackStyle}
 `;
 
 const thumb = css<Pick<RangeProps, 'disabled' | 'thumbStyle'>>`
     appearance: none;
     background: ${({ theme }) => theme.TYPE_WHITE};
-    border: 1px solid ${({ theme }) => theme.STROKE_GREY};
     border-radius: 50%;
-    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 2px 2px ${({ theme }) => theme.BOX_SHADOW_RANGE};
     cursor: ${({ disabled }) => !disabled && 'grab'};
     height: 26px;
     margin-top: -12px;
     width: 26px;
-    ${({ thumbStyle }) => thumbStyle}
 
     ${({ disabled }) =>
         !disabled &&
         css`
             :active {
-                box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.5);
+                box-shadow: 0 0 1px 1px ${({ theme }) => theme.BOX_SHADOW_RANGE};
                 cursor: grabbing;
             }
         `}
+
+    ${({ thumbStyle }) => thumbStyle}
+`;
+
+const largeBoxShadow = css`
+    box-shadow: 0 0 3px 3px ${({ theme }) => theme.BOX_SHADOW_RANGE};
 `;
 
 const Input = styled.input<Pick<RangeProps, 'disabled' | 'thumbStyle' | 'trackStyle'>>`
@@ -51,6 +56,15 @@ const Input = styled.input<Pick<RangeProps, 'disabled' | 'thumbStyle' | 'trackSt
     }
     ::-moz-range-thumb {
         ${thumb};
+    }
+
+    :focus-visible {
+        ::-webkit-slider-thumb {
+            ${largeBoxShadow};
+        }
+        ::-moz-range-thumb {
+            ${largeBoxShadow};
+        }
     }
 `;
 
