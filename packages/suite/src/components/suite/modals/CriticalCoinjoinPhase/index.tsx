@@ -8,6 +8,7 @@ import { PhaseProgress } from './PhaseProgress';
 import { DeviceModel } from '@trezor/device-utils';
 import { ROUND_PHASE_MESSAGES } from '@suite-constants/coinjoin';
 import { useCoinjoinSessionPhase } from '@wallet-hooks';
+import { AutoPauseButton } from './AutoPauseButton';
 
 const StyledModal = styled(Modal)`
     width: 520px;
@@ -85,9 +86,11 @@ export const CriticalCoinjoinPhase = ({ relatedAccountKey }: CriticalCoinjoinPha
 
             <PhaseProgress
                 roundPhase={roundPhase}
-                phaseDeadline={session.roundPhaseDeadline}
+                phaseDeadline={session?.roundPhaseDeadline}
                 sessionPhase={sessionPhase}
             />
+
+            <AutoPauseButton relatedAccountKey={relatedAccountKey} />
         </StyledModal>
     );
 };

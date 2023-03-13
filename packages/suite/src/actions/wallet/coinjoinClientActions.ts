@@ -16,6 +16,7 @@ import {
     getEstimatedTimePerRound,
 } from '@wallet-utils/coinjoinUtils';
 import { CoinjoinService } from '@suite/services/coinjoin';
+import { selectAccountByKey } from '@suite-common/wallet-core';
 import { Dispatch, GetState } from '@suite-types';
 import { Account } from '@suite-common/wallet-types';
 import {
@@ -146,6 +147,15 @@ export const setDebugSettings = (payload: CoinjoinDebugSettings) =>
         payload,
     } as const);
 
+export const coinjoinSessionPause = (accountKey: string, interrupted: boolean) =>
+    ({
+        type: COINJOIN.SESSION_PAUSE,
+        payload: {
+            accountKey,
+            interrupted,
+        },
+    } as const);
+
 export type CoinjoinClientAction =
     | ReturnType<typeof setDebugSettings>
     | ReturnType<typeof clientEnable>
@@ -159,7 +169,9 @@ export type CoinjoinClientAction =
     | ReturnType<typeof clientSessionPhase>
     | ReturnType<typeof clientSessionTxSigned>
     | ReturnType<typeof clientSessionTxBroadcasted>
-    | ReturnType<typeof clientSessionTxFailed>;
+    | ReturnType<typeof clientSessionTxFailed>
+    | ReturnType<typeof clientSessionPhase>
+    | ReturnType<typeof coinjoinSessionPause>;
 
 // return only active instances
 export const getCoinjoinClient = (symbol: Account['symbol']) =>
@@ -234,6 +246,25 @@ export const closeCriticalPhaseModal = () => (dispatch: Dispatch, getState: GetS
     }
 };
 
+// called from coinjoin account UI or exceptions like device disconnection, forget wallet/account etc.
+export const pauseCoinjoinSession =
+    (accountKey: string, interrupted = false) =>
+    (dispatch: Dispatch, getState: GetState) => {
+        const account = selectAccountByKey(getState(), accountKey);
+
+        if (!account) {
+            return;
+        }
+        // get @trezor/coinjoin client if available
+        const client = getCoinjoinClient(account.symbol);
+
+        // unregister account in @trezor/coinjoin
+        client?.unregisterAccount(accountKey);
+
+        // dispatch data to reducer
+        dispatch(coinjoinSessionPause(accountKey, interrupted));
+    };
+
 export const onCoinjoinRoundChanged =
     ({ round }: CoinjoinRoundEvent) =>
     async (dispatch: Dispatch, getState: GetState) => {
@@ -306,6 +337,16 @@ export const onCoinjoinRoundChanged =
                         dispatch(endCoinjoinSession(key));
                     });
                 }
+
+                const accountsWithAutopause = coinjoinAccountsWithSession.filter(
+                    ({ key, session }) =>
+                        !accountsReachingMaxRounds.find(accout => accout.key === key) &&
+                        session?.isAutoPauseEnabled,
+                );
+
+                accountsWithAutopause.forEach(({ key }) => {
+                    dispatch(pauseCoinjoinSession(key));
+                });
             }
         }
     };

@@ -178,7 +178,7 @@ export const coinjoinMiddleware =
                 const isAccountInCriticalPhase =
                     selectIsAccountWithSessionInCriticalPhaseByAccountKey(state, accountKey);
                 if (!isAccountInCriticalPhase) {
-                    api.dispatch(coinjoinAccountActions.pauseCoinjoinSession(accountKey, true));
+                    api.dispatch(coinjoinClientActions.pauseCoinjoinSession(accountKey, true));
                 }
             } else if (status === 'ready' && session?.interrupted) {
                 const account = selectAccountByKey(state, accountKey);
@@ -209,7 +209,7 @@ export const coinjoinMiddleware =
                             !session?.starting
                         ) {
                             api.dispatch(
-                                coinjoinAccountActions.pauseCoinjoinSession(accountKey, true),
+                                coinjoinClientActions.pauseCoinjoinSession(accountKey, true),
                             );
                         }
                     }
@@ -278,7 +278,7 @@ export const coinjoinMiddleware =
 
             if (action.payload.phase === SessionPhase.CriticalError && !isAlredyInterrupted) {
                 action.payload.accountKeys.forEach(key =>
-                    api.dispatch(coinjoinAccountActions.pauseCoinjoinSession(key, true)),
+                    api.dispatch(coinjoinClientActions.pauseCoinjoinSession(key, true)),
                 );
                 api.dispatch(addToast({ type: 'coinjoin-interrupted' }));
             }
