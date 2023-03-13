@@ -41,6 +41,7 @@ interface AmountDetailsProps {
     isTestnet: boolean;
 }
 
+// TODO: Do not show FEE for sent but not mine transactions
 export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
     const totalInput = formatNetworkAmount(tx.details.totalInput, tx.symbol);
     const totalOutput = formatNetworkAmount(tx.details.totalOutput, tx.symbol);
