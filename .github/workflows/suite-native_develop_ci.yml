@@ -45,8 +45,8 @@ jobs:
 
       - name: Ruby Setup for Fastlane
         uses: ruby/setup-ruby@v1
+        working-directory: suite-native/app/
         with:
-          ruby-version: "3.2.1"
           bundler-cache: true
       - name: Install bundler
         working-directory: suite-native/app/
@@ -109,8 +109,8 @@ jobs:
 
       - name: Ruby Setup for Fastlane
         uses: ruby/setup-ruby@v1
+        working-directory: suite-native/app/
         with:
-          ruby-version: "3.2.1"
           bundler-cache: true
       - name: Install bundler
         working-directory: suite-native/app/
