@@ -181,10 +181,7 @@ const TransactionItem = React.memo(
                         onMouseLeave={() => setNestedItemIsHovered(false)}
                         onClick={() => openTxDetailsModal()}
                     >
-                        <TransactionTypeIcon
-                            type={transaction.tokens.length ? transaction.tokens[0].type : type}
-                            isPending={isPending}
-                        />
+                        <TransactionTypeIcon type={transaction.type} isPending={isPending} />
                     </TxTypeIconWrapper>
 
                     <Content>
