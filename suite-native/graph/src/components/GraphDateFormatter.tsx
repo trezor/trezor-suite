@@ -27,15 +27,15 @@ const OtherDateFormatter = ({ selectedPointAtom }: { selectedPointAtom: Selected
     return <DateFormatter value={value} />;
 };
 
-const milisecondsPerTwoWeek = 1209600000;
+const millisecondsPerTwoWeek = 1209600000;
 
 export const GraphDateFormatter = ({
     firstPointDate,
     selectedPointAtom,
 }: GraphDateFormatterProps) => {
-    const diffInMs = new Date().getTime() - firstPointDate.getTime();
+    const millisecondElapsedFromFistPoint = new Date().getTime() - firstPointDate.getTime();
     // this check is significantly faster than using date-fns/differenceInWeeks(days)
-    if (diffInMs < milisecondsPerTwoWeek) {
+    if (millisecondElapsedFromFistPoint < millisecondsPerTwoWeek) {
         return <WeekFormatter selectedPointAtom={selectedPointAtom} />;
     }
 
