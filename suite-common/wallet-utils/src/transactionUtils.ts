@@ -466,9 +466,6 @@ export const isTxUnknown = (transaction: WalletAccountTransaction) => {
     );
 };
 
-export const isTxFailed = (tx: AccountTransaction | WalletAccountTransaction) =>
-    !isPending(tx) && tx.ethereumSpecific?.status === 0;
-
 export const getFeeRate = (tx: AccountTransaction) =>
     // calculate fee rate, TODO: add this to blockchain-link tx details
     new BigNumber(tx.fee).div(tx.details.size).integerValue(BigNumber.ROUND_CEIL).toString();
@@ -607,24 +604,18 @@ export const getRbfParams = (
 export const enhanceTransaction = (
     origTx: AccountTransaction,
     account: Account,
-): WalletAccountTransaction => {
-    const tx = {
-        ...origTx,
-        type: isTxFailed(origTx) ? 'failed' : origTx.type,
-    };
-    return {
-        descriptor: account.descriptor,
-        deviceState: account.deviceState,
-        symbol: account.symbol,
-        ...tx,
-        // https://bitcoin.stackexchange.com/questions/23061/ripple-ledger-time-format/23065#23065
-        blockTime:
-            account.networkType === 'ripple' && tx.blockTime
-                ? tx.blockTime + 946684800
-                : tx.blockTime,
-        rbfParams: getRbfParams(tx, account),
-    };
-};
+): WalletAccountTransaction => ({
+    descriptor: account.descriptor,
+    deviceState: account.deviceState,
+    symbol: account.symbol,
+    ...origTx,
+    // https://bitcoin.stackexchange.com/questions/23061/ripple-ledger-time-format/23065#23065
+    blockTime:
+        account.networkType === 'ripple' && origTx.blockTime
+            ? origTx.blockTime + 946684800
+            : origTx.blockTime,
+    rbfParams: getRbfParams(origTx, account),
+});
 
 export const getOriginalTransaction = ({
     descriptor,
