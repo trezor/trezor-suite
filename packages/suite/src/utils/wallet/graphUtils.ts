@@ -3,7 +3,6 @@ import { resetTime } from '@suite-common/suite-utils';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
 import { formatNetworkAmount, toFiatCurrency } from '@suite-common/wallet-utils';
-import { FiatRates } from '@trezor/blockchain-link';
 import BigNumber from 'bignumber.js';
 import { differenceInMonths, fromUnixTime, getUnixTime, startOfMonth } from 'date-fns';
 
@@ -16,7 +15,7 @@ import {
     GraphScale,
 } from '../../types/wallet/graph';
 
-import type { BlockchainAccountBalanceHistory } from '@trezor/connect';
+import type { BlockchainAccountBalanceHistory, FiatRates } from '@trezor/connect';
 
 type ObjectType<T> = T extends 'account'
     ? AggregatedAccountHistory
