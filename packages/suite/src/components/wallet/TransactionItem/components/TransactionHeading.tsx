@@ -102,8 +102,8 @@ export const TransactionHeading = ({
                 ? getTargetAmount(target, transaction)
                 : formatAmount(transfer.amount, transfer.decimals);
         const operation = !isTokenTransaction
-            ? getTxOperation(transaction)
-            : getTxOperation(transfer);
+            ? getTxOperation(transaction.type)
+            : getTxOperation(transfer.type);
 
         amount = targetAmount && (
             <StyledCryptoAmount
