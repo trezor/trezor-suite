@@ -12,7 +12,7 @@ describe('CoinjoinMempoolController', () => {
 
     beforeEach(() => {
         client.clear();
-        mempool = new CoinjoinMempoolController(client);
+        mempool = new CoinjoinMempoolController({ client });
     });
 
     it('All at once', async () => {
@@ -48,5 +48,15 @@ describe('CoinjoinMempoolController', () => {
         client.setMempoolTxs([TXS[0], TXS[1]]);
         await mempool.update();
         expect(mempool.getTransactions()).toEqual([]);
+    });
+
+    it('Filtering', async () => {
+        mempool = new CoinjoinMempoolController({
+            client,
+            filter: ({ txid }) => ['txid_2', 'txid_4', 'txid_5'].includes(txid),
+        });
+        await mempool.start();
+        TXS.forEach(client.fireTx.bind(client));
+        expect(mempool.getTransactions()).toEqual([TXS[1], TXS[3], TXS[4]]);
     });
 });

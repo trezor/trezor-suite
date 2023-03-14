@@ -48,7 +48,7 @@ describe(`CoinjoinBackend methods`, () => {
             baseBlockHash: FIXTURES.BASE_HASH,
             baseBlockHeight: FIXTURES.BASE_HEIGHT,
         }),
-        mempool: new CoinjoinMempoolController(client),
+        mempool: new CoinjoinMempoolController({ client }),
         network: networks.regtest,
         onProgress,
     });
