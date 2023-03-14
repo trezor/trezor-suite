@@ -12,9 +12,15 @@ export type MempoolController = {
     getTransactions(addresses: string[]): BlockbookTransaction[];
 };
 
+type CoinjoinMempoolControllerSettings = {
+    client: MempoolClient;
+    filter?: (tx: BlockbookTransaction) => boolean;
+};
+
 export class CoinjoinMempoolController implements MempoolController {
     private readonly client;
     private readonly mempool;
+    private readonly filter;
     private readonly onTx;
     private _status: MempoolStatus;
 
@@ -22,11 +28,18 @@ export class CoinjoinMempoolController implements MempoolController {
         return this._status;
     }
 
-    constructor(client: MempoolClient) {
+    constructor({ client, filter }: CoinjoinMempoolControllerSettings) {
         this.client = client;
         this.mempool = new Map<string, BlockbookTransaction>();
-        this.onTx = (tx: BlockbookTransaction) => this.mempool.set(tx.txid, tx);
+        this.filter = filter;
+        this.onTx = this.onMempoolTx.bind(this);
         this._status = 'stopped';
+    }
+
+    private onMempoolTx(tx: BlockbookTransaction) {
+        if (this.filter?.(tx) ?? true) {
+            this.mempool.set(tx.txid, tx);
+        }
     }
 
     async start() {
