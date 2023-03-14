@@ -71,6 +71,25 @@ describe('transaction reducer', () => {
         });
     });
 
+    it('remove transactions (incl. nonexistent)', () => {
+        const account = testAccounts[0];
+        const [tx1, tx2] = testTransactions[account.key];
+        const txsToRemove = [
+            tx2,
+            { ...tx1, txid: 'deadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef' },
+        ];
+
+        expect(
+            reducer(
+                { ...transactionsInitialState, transactions: testTransactions },
+                {
+                    type: transactionsActions.removeTransaction.type,
+                    payload: { account, txs: txsToRemove },
+                },
+            ).transactions[account.key],
+        ).toEqual([tx1]);
+    });
+
     it('add transactions', () => {
         const account = testAccounts[0];
         const { key } = account;
