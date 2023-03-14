@@ -2224,7 +2224,7 @@ export default defineMessages({
         id: 'TR_CONTACT_SUPPORT',
     },
     TR_SECURITY_CHECK_CONTACT_SUPPORT: {
-        defaultMessage: 'If something seems off please contact support.',
+        defaultMessage: 'If something seems off, contact support.',
         description: 'Button to click to contact support',
         id: 'TR_SECURITY_CHECK_CONTACT_SUPPORT',
     },
@@ -5899,7 +5899,7 @@ export default defineMessages({
     },
     TR_YOUR_LABELING_IS_SYNCED: {
         defaultMessage:
-            'Your labeling is synced with cloud storage provider. Your data are safe, only your Trezor can decrypt them.',
+            'Your labeling is synced with a cloud storage provider. Your data are safe, only your Trezor can decrypt them.',
         id: 'TR_YOUR_LABELING_IS_SYNCED',
     },
     TR_YOUR_LABELING_IS_SYNCED_LOCALLY: {
@@ -5933,7 +5933,7 @@ export default defineMessages({
     },
     METADATA_MODAL_DESCRIPTION: {
         defaultMessage:
-            'Please select a cloud provider to save your labels to. Your data is encrypted by Trezor.',
+            'Please select a cloud provider for saving your labels. Your data is encrypted by Trezor.',
         id: 'METADATA_MODAL_DESCRIPTION',
     },
     TR_DISABLED_SWITCH_TOOLTIP: {
@@ -6951,7 +6951,7 @@ export default defineMessages({
     TR_TROUBLESHOOTING_TIP_UDEV_INSTALL_DESCRIPTION: {
         id: 'TR_TROUBLESHOOTING_TIP_UDEV_INSTALL_DESCRIPTION',
         defaultMessage:
-            'Try installing <a>udev rules</a>. Make sure to first save them to desktop before opening.',
+            'Try installing <a>udev rules</a>. Make sure they are saved to the desktop before opening.',
     },
     TR_TROUBLESHOOTING_CLOSE_TABS: {
         defaultMessage: 'Close other tabs and windows that might be using your Trezor',
@@ -7617,7 +7617,8 @@ export default defineMessages({
     },
     TR_COINJOIN_ANONYMITY_LEVEL_SETUP_DESCRIPTION: {
         id: 'TR_COINJOIN_ANONYMITY_LEVEL_SETUP_DESCRIPTION',
-        defaultMessage: 'Shows the number of people with whom your resources are indistinguishable',
+        defaultMessage:
+            'Shows the number of people with whom your resources are indistinguishable.',
     },
     TR_NOT_ENOUGH_ANONYMIZED_FUNDS_WARNING: {
         id: 'TR_NOT_ENOUGH_ANONYMIZED_FUNDS_WARNING',
@@ -7883,7 +7884,7 @@ export default defineMessages({
     },
     TR_DISABLED_ANONYMITY_CHANGE_MESSAGE: {
         id: 'TR_DISABLED_ANONYMITY_CHANGE_MESSAGE',
-        defaultMessage: 'Editing disabled while coinjoin is running',
+        defaultMessage: 'Editing disabled while coinjoin is running.',
     },
     TR_LOW_ANONYMITY_WARNING: {
         id: 'TR_LOW_ANONYMITY_WARNING',
