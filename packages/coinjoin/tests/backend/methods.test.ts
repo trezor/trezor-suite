@@ -199,4 +199,53 @@ describe(`CoinjoinBackend methods`, () => {
         const restTxs = getRequestedTxs();
         expect(restTxs).toEqual([]);
     });
+
+    it('scanAccount 1-block reorg', async () => {
+        const [PRELAST_BLOCK, LAST_BLOCK] = FIXTURES.BLOCKS.slice(-2);
+        const PRELAST_CP = { blockHeight: PRELAST_BLOCK.height, blockHash: PRELAST_BLOCK.hash };
+        const REORG_BLOCK = {
+            ...LAST_BLOCK,
+            hash: 'deadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef',
+        };
+
+        // First scan, from initial checkpoint to end
+        const { checkpoint: cp1 } = await scanAccount(
+            { descriptor: FIXTURES.SEGWIT_XPUB, checkpoints: [EMPTY_CHECKPOINT] },
+            getContext(() => {}),
+        );
+
+        // First returned checkpoint corresponds to the last block
+        expect(cp1.blockHeight).toBe(LAST_BLOCK.height);
+        expect(cp1.blockHash).toBe(LAST_BLOCK.hash);
+
+        const progresses: (typeof PRELAST_CP)[] = [];
+
+        // Second scan, from last known checkpoint to end, same data, nothing should change
+        const { checkpoint: cp2 } = await scanAccount(
+            { descriptor: FIXTURES.SEGWIT_XPUB, checkpoints: [cp1, { ...cp1, ...PRELAST_CP }] },
+            getContext(progress => progresses.push(progress.checkpoint)),
+        );
+
+        // Second returned checkpoint should be exactly the same as the first one
+        expect(cp2.blockHeight).toBe(LAST_BLOCK.height);
+        expect(cp2.blockHash).toBe(LAST_BLOCK.hash);
+        // No progress should be emitted as nothing changed
+        expect(progresses).toHaveLength(0);
+
+        // REORG -> last block's hash changed
+        client.setFixture([...FIXTURES.BLOCKS.slice(0, -1), REORG_BLOCK]);
+
+        // Third scan, from last known checkpoint, should signalize last block reorg
+        const { checkpoint: cp3 } = await scanAccount(
+            { descriptor: FIXTURES.SEGWIT_XPUB, checkpoints: [cp2, { ...cp2, ...PRELAST_CP }] },
+            getContext(progress => progresses.push(progress.checkpoint)),
+        );
+
+        // Third returned checkpoint corresponds to the reorged last block
+        expect(cp3.blockHeight).toBe(REORG_BLOCK.height);
+        expect(cp3.blockHash).toBe(REORG_BLOCK.hash);
+        // Progress with reorged block should be emitted
+        expect(progresses).toHaveLength(1);
+        expect(progresses[0]).toEqual(cp3);
+    });
 });
