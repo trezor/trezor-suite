@@ -84,6 +84,7 @@
   "TR_PAYMENT_METHOD_PIX": "Pix",
   "TR_QR_CODE": "QR-kod",
   "TR_SELL_FEES": "Avgifter",
+  "TR_SELL_MODAL_FOR_YOUR_SAFETY": "Sälj {cryptocurrency} med {provider}",
   "TR_TOR_DISABLE": "Inaktivera Tor",
   "TR_TOR_ENABLE": "Aktivera Tor",
   "TR_TRANSACTIONS": "Transaktioner",
