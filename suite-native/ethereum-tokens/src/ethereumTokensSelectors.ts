@@ -13,7 +13,7 @@ export const selectEthereumAccountsTokensWithBalance = (
     ethereumAccountKey: string,
 ): EthereumTokenAccountWithBalance[] => {
     const account = selectAccountByKey(state, ethereumAccountKey);
-    if (!account || isEthereumAccountSymbol(account.symbol)) return [];
+    if (!account || !isEthereumAccountSymbol(account.symbol)) return [];
     return account.tokens?.filter(filterTokenHasBalance) as EthereumTokenAccountWithBalance[];
 };
 
