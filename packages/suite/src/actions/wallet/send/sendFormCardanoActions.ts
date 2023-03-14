@@ -1,16 +1,6 @@
 import TrezorConnect, { PROTO } from '@trezor/connect';
-import { formatNetworkAmount, isTestnet } from '@suite-common/wallet-utils';
-import {
-    getChangeAddressParameters,
-    getTtl,
-    getNetworkId,
-    getProtocolMagic,
-    transformUserOutputs,
-    transformUtxos,
-    formatMaxOutputAmount,
-    loadCardanoLib,
-    getDerivationType,
-} from '@wallet-utils/cardanoUtils';
+import { formatNetworkAmount, isTestnet, cardanoUtils } from '@suite-common/wallet-utils';
+
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     FormState,
@@ -24,10 +14,11 @@ export const composeTransaction =
     (formValues: FormState, formState: ComposeActionContext) =>
     async (dispatch: Dispatch): Promise<PrecomposedLevelsCardano | undefined> => {
         const { account, feeInfo } = formState;
-        const changeAddress = getChangeAddressParameters(account);
+        const changeAddress = cardanoUtils.getChangeAddressParameters(account);
         if (!changeAddress || !account.utxo) return;
 
-        const { coinSelection, trezorUtils, CoinSelectionError } = await loadCardanoLib();
+        const { coinSelection, trezorUtils, CoinSelectionError } =
+            await cardanoUtils.loadCardanoLib();
 
         const predefinedLevels = feeInfo.levels.filter(l => l.label !== 'custom');
         if (formValues.selectedFee === 'custom') {
@@ -38,8 +29,8 @@ export const composeTransaction =
             });
         }
 
-        const utxos = transformUtxos(account.utxo);
-        const outputs = transformUserOutputs(
+        const utxos = cardanoUtils.transformUtxos(account.utxo);
+        const outputs = cardanoUtils.transformUserOutputs(
             formValues.outputs,
             account.tokens,
             account.symbol,
@@ -62,7 +53,7 @@ export const composeTransaction =
                         certificates: [],
                         withdrawals: [],
                         accountPubKey: account.descriptor,
-                        ttl: getTtl(isTestnet(account.symbol)),
+                        ttl: cardanoUtils.getTtl(isTestnet(account.symbol)),
                     },
                     options,
                 );
@@ -75,7 +66,7 @@ export const composeTransaction =
                               feePerByte: level.feePerUnit,
                               bytes: txPlan.tx.size,
                               totalSpent: txPlan.totalSpent,
-                              max: formatMaxOutputAmount(
+                              max: cardanoUtils.formatMaxOutputAmount(
                                   txPlan.max,
                                   outputs.find(o => o.setMax),
                                   account,
@@ -148,7 +139,7 @@ export const composeTransaction =
 export const signTransaction =
     (_formValues: FormState, transactionInfo: PrecomposedTransactionFinalCardano) =>
     async (dispatch: Dispatch, getState: GetState) => {
-        const { trezorUtils } = await loadCardanoLib();
+        const { trezorUtils } = await cardanoUtils.loadCardanoLib();
         const { selectedAccount } = getState().wallet;
         const { device } = getState().suite;
 
@@ -176,11 +167,11 @@ export const signTransaction =
             useEmptyPassphrase: device.useEmptyPassphrase,
             inputs: transaction.inputs,
             outputs: transaction.outputs,
-            protocolMagic: getProtocolMagic(account.symbol),
-            networkId: getNetworkId(account.symbol),
+            protocolMagic: cardanoUtils.getProtocolMagic(account.symbol),
+            networkId: cardanoUtils.getNetworkId(account.symbol),
             fee: transactionInfo.fee,
             ttl: transactionInfo.ttl?.toString(),
-            derivationType: getDerivationType(account.accountType),
+            derivationType: cardanoUtils.getDerivationType(account.accountType),
         });
 
         if (!res.success) {

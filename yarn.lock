@@ -6676,6 +6676,7 @@ __metadata:
   dependencies:
     "@ethereumjs/common": ^3.0.2
     "@ethereumjs/tx": ^4.0.2
+    "@fivebinaries/coin-selection": 2.1.0
     "@suite-common/fiat-services": "workspace:*"
     "@suite-common/metadata-types": "workspace:*"
     "@suite-common/suite-config": "workspace:*"
