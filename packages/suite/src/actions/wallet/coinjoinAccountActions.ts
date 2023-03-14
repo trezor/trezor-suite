@@ -238,7 +238,12 @@ const coinjoinAccountCheckReorg =
     (dispatch: Dispatch, getState: GetState) => {
         const state = getState();
         const previousCheckpoint = selectCoinjoinAccountByKey(state, account.key)?.checkpoints?.[0];
-        if (previousCheckpoint && checkpoint.blockHeight < previousCheckpoint.blockHeight) {
+        if (!previousCheckpoint) return;
+        if (
+            checkpoint.blockHeight < previousCheckpoint.blockHeight ||
+            (checkpoint.blockHeight === previousCheckpoint.blockHeight &&
+                checkpoint.blockHash !== previousCheckpoint.blockHash)
+        ) {
             const txs = getAccountTransactions(
                 account.key,
                 state.wallet.transactions.transactions,
