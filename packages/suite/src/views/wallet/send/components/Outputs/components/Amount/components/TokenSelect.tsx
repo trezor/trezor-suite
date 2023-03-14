@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import { useSendFormContext } from '@wallet-hooks';
 import { Account } from '@wallet-types';
 import { Output } from '@wallet-types/sendForm';
-import { getShortFingerprint } from '@wallet-utils/cardanoUtils';
+import { cardanoUtils } from '@suite-common/wallet-utils';
 
 interface Option {
     label: string;
@@ -87,7 +87,7 @@ const CardanoOption = ({ tokenInputName, ...optionProps }: any) => (
             </OptionValueName>
             <OptionValue>
                 {optionProps.data.fingerprint
-                    ? getShortFingerprint(optionProps.data.fingerprint)
+                    ? cardanoUtils.getShortFingerprint(optionProps.data.fingerprint)
                     : null}
             </OptionValue>
         </OptionWrapper>
@@ -98,7 +98,7 @@ const CardanoSingleValue = ({ tokenInputName, ...optionProps }: any) => (
     <components.SingleValue {...optionProps} innerProps={{ ...optionProps.innerProps }}>
         {optionProps.data.fingerprint &&
         optionProps.data.label.toLowerCase() === optionProps.data.fingerprint.toLowerCase()
-            ? getShortFingerprint(optionProps.data.fingerprint)
+            ? cardanoUtils.getShortFingerprint(optionProps.data.fingerprint)
             : optionProps.data.label}
     </components.SingleValue>
 );

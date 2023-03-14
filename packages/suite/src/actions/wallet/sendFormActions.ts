@@ -21,8 +21,8 @@ import {
     formatAmount,
     getAccountDecimals,
     hasNetworkFeatures,
+    cardanoUtils,
 } from '@suite-common/wallet-utils';
-import { isCardanoTx } from '@wallet-utils/cardanoUtils';
 import { Dispatch, GetState } from '@suite-types';
 import { Account } from '@wallet-types';
 import {
@@ -286,7 +286,7 @@ const pushTransaction =
 
             if (
                 account.networkType === 'bitcoin' &&
-                !isCardanoTx(account, precomposedTx) &&
+                !cardanoUtils.isCardanoTx(account, precomposedTx) &&
                 signedTransaction // bitcoin-like should have signedTransaction always defined
             ) {
                 dispatch(
@@ -309,7 +309,7 @@ const pushTransaction =
             if (metadata.enabled) {
                 const { precomposedForm } = getState().wallet.send;
                 let outputsPermutation: number[];
-                if (isCardanoTx(account, precomposedTx)) {
+                if (cardanoUtils.isCardanoTx(account, precomposedTx)) {
                     // cardano preserves order of outputs
                     outputsPermutation = precomposedTx?.transaction.outputs.map((_o, i) => i);
                 } else {
@@ -392,7 +392,7 @@ export const signTransaction =
             rbf: formValues.options.includes('bitcoinRBF'),
         };
 
-        if (formValues.rbfParams && !isCardanoTx(account, enhancedTxInfo)) {
+        if (formValues.rbfParams && !cardanoUtils.isCardanoTx(account, enhancedTxInfo)) {
             enhancedTxInfo.prevTxid = formValues.rbfParams.txid;
             enhancedTxInfo.feeDifference = new BigNumber(transactionInfo.fee)
                 .minus(formValues.rbfParams.baseFee)
@@ -419,7 +419,7 @@ export const signTransaction =
         let serializedTx: string | undefined;
         let signedTransaction: SignedTransaction['signedTransaction'];
         // Type guard to differentiate between PrecomposedTransactionFinal and PrecomposedTransactionFinalCardano
-        if (isCardanoTx(account, enhancedTxInfo)) {
+        if (cardanoUtils.isCardanoTx(account, enhancedTxInfo)) {
             serializedTx = await dispatch(
                 sendFormCardanoActions.signTransaction(formValues, enhancedTxInfo),
             );

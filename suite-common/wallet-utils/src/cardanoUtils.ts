@@ -18,7 +18,7 @@ import {
     formatAmount,
     formatNetworkAmount,
     networkAmountToSatoshi,
-} from '@suite-common/wallet-utils';
+} from './accountUtils';
 
 export const loadCardanoLib = async () => {
     const lib = await import(
