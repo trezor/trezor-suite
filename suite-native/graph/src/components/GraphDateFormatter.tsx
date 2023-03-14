@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { differenceInDays } from 'date-fns';
 import { Atom, useAtomValue } from 'jotai';
 
 import { useFormatters } from '@suite-common/formatters';
@@ -28,11 +27,15 @@ const OtherDateFormatter = ({ selectedPointAtom }: { selectedPointAtom: Selected
     return <DateFormatter value={value} />;
 };
 
+const millisecondsPerTwoWeek = 1209600000;
+
 export const GraphDateFormatter = ({
     firstPointDate,
     selectedPointAtom,
 }: GraphDateFormatterProps) => {
-    if (differenceInDays(firstPointDate, new Date()) < 7) {
+    const millisecondElapsedFromFistPoint = new Date().getTime() - firstPointDate.getTime();
+    // this check is significantly faster than using date-fns/differenceInWeeks(days)
+    if (millisecondElapsedFromFistPoint < millisecondsPerTwoWeek) {
         return <WeekFormatter selectedPointAtom={selectedPointAtom} />;
     }
 
