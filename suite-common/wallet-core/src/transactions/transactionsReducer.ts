@@ -79,11 +79,10 @@ export const prepareTransactionsReducer = createReducerWithExtraDeps(
             })
             .addCase(transactionsActions.removeTransaction, (state, { payload }) => {
                 const { account, txs } = payload;
-                const transactions = state.transactions[account.key] || [];
-                txs.forEach(tx => {
-                    const index = transactions.findIndex(t => t.txid === tx.txid);
-                    transactions.splice(index, 1);
-                });
+                const transactions = state.transactions[account.key];
+                state.transactions[account.key] = transactions?.filter(
+                    tx => !txs.some(t => t.txid === tx.txid),
+                );
             })
             .addCase(transactionsActions.addTransaction, (state, { payload }) => {
                 const { transactions, account, page, perPage } = payload;
