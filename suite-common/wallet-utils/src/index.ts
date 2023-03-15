@@ -3,7 +3,7 @@ export * from './balanceUtils';
 export * from './accountUtils';
 export * from './csvParser';
 export * from './ethUtils';
-export * as cardanoUtils from './cardanoUtils';
+export { cardanoUtils } from './cardanoUtils';
 export * from './formDraftUtils';
 export * from './networkUtils';
 export * from './validation';
