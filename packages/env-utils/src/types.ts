@@ -2,9 +2,10 @@ export interface EnvUtils {
     getUserAgent: () => string;
     isAndroid: () => boolean;
     isChromeOs: () => boolean;
-    getBrowserVersion: () => string;
-    getOsVersion: () => string;
     getBrowserName: () => string;
+    getBrowserVersion: () => string;
+    getDeviceType: () => string | undefined;
+    getOsVersion: () => string;
     isFirefox: () => boolean;
     getPlatform: () => string;
     getPlatformLanguages: () => readonly string[];
@@ -19,5 +20,7 @@ export interface EnvUtils {
     isWindows: () => boolean | undefined;
     isIOs: () => boolean;
     isLinux: () => boolean | undefined;
-    getOsName: () => string;
+    getOsName: () => '' | 'android' | 'linux' | 'windows' | 'macos' | 'chromeos' | 'ios';
+    getOsNameWeb: () => string | undefined;
+    getOsFamily: () => 'Windows' | 'MacOS' | 'Linux';
 }
