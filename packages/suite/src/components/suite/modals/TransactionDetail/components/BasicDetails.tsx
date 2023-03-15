@@ -170,6 +170,23 @@ const IconPlaceholder = styled.span`
 
 const LinkIcon = styled(Icon)`
     margin-left: 6px;
+    margin-bottom: 1px;
+`;
+
+const StyledTrezorLink = styled(TrezorLink)`
+    width: 100%;
+`;
+
+const StyledTooltip = styled(Tooltip)`
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-variant-numeric: tabular-nums;
+
+    > div {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        font-variant-numeric: tabular-nums;
+    }
 `;
 
 interface BasicDetailsProps {
@@ -260,13 +277,26 @@ export const BasicDetails = ({ tx, confirmations, network, explorerUrl }: BasicD
                 </Title>
 
                 <TxidValue>
-                    <TransactionId data-test="@tx-detail/txid-value">{tx.txid}</TransactionId>
-
-                    <TrezorLink size="tiny" variant="nostyle" href={`${explorerUrl}${tx.txid}`}>
-                        <Tooltip content={<Translation id="TR_OPEN_IN_BLOCK_EXPLORER" />}>
+                    <StyledTrezorLink
+                        size="tiny"
+                        variant="nostyle"
+                        href={`${explorerUrl}${tx.txid}`}
+                    >
+                        <StyledTooltip
+                            content={<Translation id="TR_OPEN_IN_BLOCK_EXPLORER" />}
+                            cursor="pointer"
+                        >
+                            <TransactionId data-test="@tx-detail/txid-value">
+                                {tx.txid}
+                            </TransactionId>
+                        </StyledTooltip>
+                        <Tooltip
+                            content={<Translation id="TR_OPEN_IN_BLOCK_EXPLORER" />}
+                            cursor="pointer"
+                        >
                             <LinkIcon size={12} color={theme.TYPE_DARK_GREY} icon="EXTERNAL_LINK" />
                         </Tooltip>
-                    </TrezorLink>
+                    </StyledTrezorLink>
                 </TxidValue>
 
                 {network.networkType === 'bitcoin' && (
