@@ -20,21 +20,21 @@ import {
     networkAmountToSatoshi,
 } from './accountUtils';
 
-const loadCardanoLib = async () => {
+export const loadCardanoLib = async () => {
     const lib = await import(
         /* webpackChunkName: "@fivebinaries/coin-selection" */ '@fivebinaries/coin-selection'
     );
     return lib;
 };
 
-const getProtocolMagic = (accountSymbol: Account['symbol']) =>
+export const getProtocolMagic = (accountSymbol: Account['symbol']) =>
     // TODO: use testnet magic from connect once this PR is merged https://github.com/trezor/connect/pull/1046
     accountSymbol === 'ada' ? CARDANO.PROTOCOL_MAGICS.mainnet : 1097911063;
 
-const getNetworkId = (accountSymbol: Account['symbol']) =>
+export const getNetworkId = (accountSymbol: Account['symbol']) =>
     accountSymbol === 'ada' ? CARDANO.NETWORK_IDS.mainnet : CARDANO.NETWORK_IDS.testnet;
 
-const getDerivationType = (accountType: Network['accountType']) => {
+export const getDerivationType = (accountType: Network['accountType']) => {
     switch (accountType) {
         case 'normal':
             return 1;
@@ -47,11 +47,12 @@ const getDerivationType = (accountType: Network['accountType']) => {
     }
 };
 
-const getAddressType = (_accountType: Account['accountType']) => PROTO.CardanoAddressType.BASE;
+export const getAddressType = (_accountType: Account['accountType']) =>
+    PROTO.CardanoAddressType.BASE;
 
-const getStakingPath = (account: Account) => `m/1852'/1815'/${account.index}'/2/0`;
+export const getStakingPath = (account: Account) => `m/1852'/1815'/${account.index}'/2/0`;
 
-const getChangeAddressParameters = (account: Account) => {
+export const getChangeAddressParameters = (account: Account) => {
     if (!account.addresses || account.networkType !== 'cardano') return;
     const stakingPath = getStakingPath(account);
     // Find first unused change address or fallback to the last address if all are used (should not happen)
@@ -69,7 +70,7 @@ const getChangeAddressParameters = (account: Account) => {
     };
 };
 
-const transformUserOutputs = (
+export const transformUserOutputs = (
     outputs: Output[],
     accountTokens: Account['tokens'],
     symbol: Account['symbol'],
@@ -97,13 +98,13 @@ const transformUserOutputs = (
         };
     });
 
-const getShortFingerprint = (fingerprint: string) => {
+export const getShortFingerprint = (fingerprint: string) => {
     const firstPart = fingerprint.substring(0, 10);
     const lastPart = fingerprint.substring(fingerprint.length - 10);
     return `${firstPart}…${lastPart}`;
 };
 
-const transformUtxos = (utxos: Account['utxo']): types.Utxo[] => {
+export const transformUtxos = (utxos: Account['utxo']): types.Utxo[] => {
     const result: types.Utxo[] = [];
     utxos?.forEach(utxo => {
         const foundItem = result.find(
@@ -129,7 +130,7 @@ const transformUtxos = (utxos: Account['utxo']): types.Utxo[] => {
     return result;
 };
 
-const prepareCertificates = (certs: CardanoCertificate[]) => {
+export const prepareCertificates = (certs: CardanoCertificate[]) => {
     // convert @trezor/connect certificate format to cardano coin-selection lib format
     const convertedCerts: types.Certificate[] = [];
     certs.forEach(cert => {
@@ -152,7 +153,7 @@ const prepareCertificates = (certs: CardanoCertificate[]) => {
     return convertedCerts;
 };
 
-const parseAsset = (
+export const parseAsset = (
     hex: string,
 ): {
     policyId: string;
@@ -167,7 +168,7 @@ const parseAsset = (
     };
 };
 
-const getDelegationCertificates = (
+export const getDelegationCertificates = (
     stakingPath: string,
     poolHex: string | undefined,
     shouldRegister: boolean,
@@ -190,7 +191,7 @@ const getDelegationCertificates = (
     return result;
 };
 
-const getTtl = (testnet: boolean) => {
+export const getTtl = (testnet: boolean) => {
     // Time-to-live (TTL) in cardano represents a slot, or deadline by which a transaction must be submitted.
     // Suite doesn't store information about current slot number.
     // In order to correctly calculate current slot (and TTL) we start from a point from which we know that
@@ -203,7 +204,7 @@ const getTtl = (testnet: boolean) => {
     return currentSlot + CARDANO_DEFAULT_TTL_OFFSET;
 };
 
-const composeTxPlan = async (
+export const composeTxPlan = async (
     descriptor: string,
     utxo: Account['utxo'],
     certificates: CardanoCertificate[],
@@ -233,13 +234,13 @@ const composeTxPlan = async (
     return { txPlan, certificates, withdrawals, changeAddress };
 };
 
-const isPoolOverSaturated = (pool: StakePool, additionalStake?: string) =>
+export const isPoolOverSaturated = (pool: StakePool, additionalStake?: string) =>
     new BigNumber(pool.live_stake)
         .plus(additionalStake ?? '0')
         .div(pool.saturation)
         .toNumber() > 0.8;
 
-const getStakePoolForDelegation = (trezorPools: PoolsResponse, accountBalance: string) => {
+export const getStakePoolForDelegation = (trezorPools: PoolsResponse, accountBalance: string) => {
     let pool = trezorPools.next;
     if (isPoolOverSaturated(pool, accountBalance)) {
         // eslint-disable-next-line prefer-destructuring
@@ -248,16 +249,16 @@ const getStakePoolForDelegation = (trezorPools: PoolsResponse, accountBalance: s
     return pool;
 };
 // Type guard to differentiate between PrecomposedTransactionFinal and PrecomposedTransactionFinalCardano
-const isCardanoTx = (
+export const isCardanoTx = (
     account: Account,
     _tx: PrecomposedTransactionFinalCardano | PrecomposedTransactionFinal,
 ): _tx is PrecomposedTransactionFinalCardano => account.networkType === 'cardano';
 
-const isCardanoExternalOutput = (
+export const isCardanoExternalOutput = (
     output: CardanoOutput,
 ): output is Extract<CardanoOutput, 'address'> => 'address' in output;
 
-const formatMaxOutputAmount = (
+export const formatMaxOutputAmount = (
     maxAmount: string | undefined,
     maxOutput: types.UserOutput | undefined,
     account: Account,
@@ -274,27 +275,4 @@ const formatMaxOutputAmount = (
         account.tokens?.find(t => t.address === maxOutput.assets[0].unit)?.decimals ?? 0;
 
     return formatAmount(maxAmount, tokenDecimals);
-};
-
-export const cardanoUtils = {
-    formatMaxOutputAmount,
-    isCardanoExternalOutput,
-    isCardanoTx,
-    getStakePoolForDelegation,
-    isPoolOverSaturated,
-    composeTxPlan,
-    getTtl,
-    loadCardanoLib,
-    getProtocolMagic,
-    parseAsset,
-    getNetworkId,
-    getDelegationCertificates,
-    getDerivationType,
-    getAddressType,
-    prepareCertificates,
-    transformUserOutputs,
-    getShortFingerprint,
-    transformUtxos,
-    getStakingPath,
-    getChangeAddressParameters,
 };

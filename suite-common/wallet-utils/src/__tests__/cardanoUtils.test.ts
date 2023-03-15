@@ -1,9 +1,6 @@
 import { CARDANO, PROTO } from '@trezor/connect';
 
-import { cardanoUtils } from '../cardanoUtils';
-import * as fixtures from '../__fixtures__/cardanoUtils';
-
-const {
+import {
     composeTxPlan,
     getAddressType,
     getDelegationCertificates,
@@ -23,7 +20,8 @@ const {
     isPoolOverSaturated,
     formatMaxOutputAmount,
     getChangeAddressParameters,
-} = cardanoUtils;
+} from '../cardanoUtils';
+import * as fixtures from '../__fixtures__/cardanoUtils';
 
 describe('cardano utils', () => {
     let dateSpy: any;
