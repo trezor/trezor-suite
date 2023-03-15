@@ -1,36 +1,26 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/popup/view/browser.js
 
-import { config } from '@trezor/connect/src/data/config';
-import { getBrowserState } from '@trezor/connect/src/utils/browserUtils'; // TODO: https://github.com/trezor/trezor-suite/issues/5324
 import { storage } from '@trezor/connect-common';
-import { container, showView } from './common';
+import { container, showView, getState } from './common';
 
-const validateBrowser = () => {
-    const state = getBrowserState(config.supportedBrowsers);
-    if (!state.supported) {
-        const permitted = storage.load().browser;
-        return !permitted ? state : null;
-    }
-};
+export const initBrowserView = (): Promise<boolean> => {
+    const { systemInfo } = getState();
 
-export const initBrowserView = (validation = true): Promise<boolean> => {
-    if (!validation) {
-        showView('browser-not-supported');
-        const buttons = container.getElementsByClassName('buttons')[0];
-        if (buttons && buttons.parentNode) {
-            buttons.parentNode.removeChild(buttons);
-        }
-        return Promise.resolve(false);
-    }
-    const state = validateBrowser();
-    if (!state) {
-        return Promise.resolve(true);
-    }
-    if (state.mobile) {
+    if (systemInfo?.os.mobile) {
+        // popup is not supported on mobile devices
+        // webusb is now available only on trezor.io domains and bridge can't be installed on mobile
         showView('smartphones-not-supported');
         return Promise.resolve(false);
     }
 
+    if (systemInfo?.browser.supported) {
+        return Promise.resolve(true);
+    }
+
+    const permitted = storage.load().browser;
+    if (permitted) {
+        return Promise.resolve(true);
+    }
     showView('browser-not-supported');
 
     const h3 = container.getElementsByTagName('h3')[0];
@@ -39,7 +29,7 @@ export const initBrowserView = (validation = true): Promise<boolean> => {
         'remember-permissions',
     )[0] as HTMLInputElement;
 
-    if (state.outdated) {
+    if (systemInfo?.browser.outdated) {
         h3.innerText = 'Outdated browser';
     }
 

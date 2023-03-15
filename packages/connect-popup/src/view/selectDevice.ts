@@ -9,7 +9,6 @@ import TrezorConnect, {
 } from '@trezor/connect';
 import { SUITE_BRIDGE_URL, SUITE_UDEV_URL, TREZOR_SUPPORT_URL } from '@trezor/urls';
 import { container, getState, showView, postMessage } from './common';
-import { getOS } from '@trezor/connect/lib/utils/browserUtils';
 
 const initWebUsbButton = (webusb: boolean, showLoader: boolean) => {
     if (!webusb) return;
@@ -123,12 +122,15 @@ export const selectDevice = (payload: UiRequestSelectDevice['payload']) => {
 
             // handle unreadable device
             if (device.type === 'unreadable') {
-                const os = getOS();
+                const { systemInfo } = getState();
                 // default explanation: contact support
 
                 let explanationContent = `Please <a href="${TREZOR_SUPPORT_URL}" target="_blank" rel="noreferrer noopener" onclick="window.closeWindow();">contact support.</a>`;
                 // linux + LIBUSB_ERROR handling
-                if (os === 'linux' && device.error.indexOf(ERRORS.LIBUSB_ERROR_MESSAGE) >= 0) {
+                if (
+                    systemInfo?.os.family === 'Linux' &&
+                    device.error.indexOf(ERRORS.LIBUSB_ERROR_MESSAGE) >= 0
+                ) {
                     explanationContent = `Please install <a href="${SUITE_UDEV_URL}" target="_blank" rel="noreferrer noopener" onclick="window.closeWindow();">Udev rules</a> to use Trezor device.`;
                 }
                 // webusb error handling (top priority)
