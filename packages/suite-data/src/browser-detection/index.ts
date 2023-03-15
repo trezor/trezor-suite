@@ -1,4 +1,3 @@
-import UAParser from 'ua-parser-js';
 import {
     SUITE_URL,
     CHROME_URL,
@@ -7,6 +6,7 @@ import {
     FIREFOX_UPDATE_URL,
     CHROME_ANDROID_URL,
 } from '@trezor/urls';
+import { getDeviceType, getBrowserName, getBrowserVersion, getOsNameWeb } from '@trezor/env-utils';
 
 import style from './styles.css';
 import iconChrome from '../../files/images/browsers/chrome.svg';
@@ -162,32 +162,32 @@ window.addEventListener('load', () => {
     // this should match browserslist config (packages/suite-build/browserslist)
     const supportedBrowsers = [
         {
-            name: 'Chrome',
+            name: 'chrome',
             version: 84,
             mobile: true,
         },
         {
-            name: 'Chromium',
+            name: 'chromium',
             version: 84,
             mobile: true,
         },
         {
-            name: 'Firefox',
+            name: 'firefox',
             version: 78,
             mobile: false, // no webusb support
         },
-    ];
+    ] as const;
 
-    const parser = new UAParser();
-    const result = parser.getResult();
+    const browserName = getBrowserName();
+    const browserVersion = getBrowserVersion();
 
-    const isMobile = result.device.type === 'mobile';
-    const supportedBrowser = supportedBrowsers.filter(
-        browser => browser.name === result.browser.name,
-    )[0];
+    const isMobile = getDeviceType() === 'mobile';
+    const supportedBrowser = supportedBrowsers.find(
+        browser => browser.name.toLowerCase() === browserName.toLowerCase(),
+    );
     const updateRequired =
-        supportedBrowser && result.browser.version
-            ? supportedBrowser.version > parseInt(result.browser.version, 10)
+        supportedBrowser && browserVersion
+            ? supportedBrowser.version > parseInt(browserVersion, 10)
             : false;
 
     const goToSuite = () => {
@@ -211,7 +211,7 @@ window.addEventListener('load', () => {
         document.getElementById('continue-to-suite')?.addEventListener('click', goToSuite);
     };
 
-    if (result.os.name === 'iOS') {
+    if (getOsNameWeb() === 'iOS') {
         // Any iOS device: no WebUSB support (suggest to download iOS app?)
         setBody(iOS);
     } else if (isMobile && (!supportedBrowser || (supportedBrowser && !supportedBrowser.mobile))) {
@@ -221,11 +221,11 @@ window.addEventListener('load', () => {
         // Unsupported browser
         setBody(unsupportedBrowser);
     } else if (updateRequired) {
-        if (supportedBrowser.name === 'Chrome' || supportedBrowser.name === 'Chromium') {
+        if (supportedBrowser.name === 'chrome' || supportedBrowser.name === 'chromium') {
             // Outdated browser: update Chrome
             setBody(updateChrome);
         }
-        if (supportedBrowser.name === 'Firefox') {
+        if (supportedBrowser.name === 'firefox') {
             // Outdated browser: update Firefox
             setBody(updateFirefox);
         }
