@@ -5,8 +5,9 @@ export const {
     isAndroid,
     isChromeOs,
     getBrowserVersion,
-    getOsVersion,
     getBrowserName,
+    getDeviceType,
+    getOsVersion,
     isFirefox,
     getPlatform,
     getPlatformLanguages,
@@ -22,4 +23,6 @@ export const {
     isIOs,
     isLinux,
     getOsName,
+    getOsNameWeb,
+    getOsFamily,
 } = envUtils;

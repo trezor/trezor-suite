@@ -48,7 +48,7 @@ const getLocationOrigin = () => window.location.origin;
 
 const getLocationHostname = () => window.location.hostname;
 
-const getProcessPlatform = () => process.platform;
+const getProcessPlatform = () => (typeof process !== 'undefined' ? process.platform : '');
 
 const isMacOs = () => {
     if (getProcessPlatform() === 'darwin') return true;
@@ -87,13 +87,30 @@ const getOsName = () => {
     return '';
 };
 
+const getOsNameWeb = () => getUserAgentParser().getOS().name;
+
+const getOsFamily = () => {
+    const osName = getUserAgentParser().getOS().name;
+
+    if (osName === 'Windows') {
+        return 'Windows';
+    }
+    if (osName === 'Mac OS') {
+        return 'MacOS';
+    }
+    return 'Linux';
+};
+
+const getDeviceType = () => getUserAgentParser().getDevice().type;
+
 export const envUtils: EnvUtils = {
     getUserAgent,
     isAndroid,
     isChromeOs,
-    getBrowserVersion,
     getOsVersion,
     getBrowserName,
+    getBrowserVersion,
+    getDeviceType,
     isFirefox,
     getPlatform,
     getPlatformLanguages,
@@ -109,4 +126,6 @@ export const envUtils: EnvUtils = {
     isIOs,
     isLinux,
     getOsName,
+    getOsNameWeb,
+    getOsFamily,
 };

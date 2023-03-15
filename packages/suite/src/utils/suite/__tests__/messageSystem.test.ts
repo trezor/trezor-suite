@@ -112,6 +112,7 @@ describe('Message system utils', () => {
         fixtures.getValidMessages.forEach(f => {
             it(f.description, () => {
                 jest.spyOn(Date, 'now').mockImplementation(() => new Date(f.currentDate).getTime());
+                // @ts-expect-error (getOsName returns union of string literals)
                 jest.spyOn(envUtils, 'getOsName').mockImplementation(() => f.osName);
                 userAgentGetter.mockReturnValue(f.userAgent);
                 // @ts-expect-error

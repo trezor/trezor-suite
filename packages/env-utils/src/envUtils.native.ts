@@ -8,11 +8,13 @@ const getUserAgent = () => '';
 
 const isChromeOs = () => false;
 
+const getBrowserName = () => '';
+
 const getBrowserVersion = () => '';
 
-const getOsVersion = () => `${Platform.Version}`;
+const getDeviceType = () => '';
 
-const getBrowserName = () => '';
+const getOsVersion = () => `${Platform.Version}`;
 
 const isFirefox = () => false;
 
@@ -54,13 +56,18 @@ const getOsName = () => {
     return '';
 };
 
+const getOsNameWeb = () => '';
+
+const getOsFamily = (): 'Linux' => 'Linux';
+
 export const envUtils: EnvUtils = {
     getUserAgent,
     isAndroid,
     isChromeOs,
-    getBrowserVersion,
-    getOsVersion,
     getBrowserName,
+    getBrowserVersion,
+    getDeviceType,
+    getOsVersion,
     isFirefox,
     getPlatform,
     getPlatformLanguages,
@@ -76,4 +83,6 @@ export const envUtils: EnvUtils = {
     isIOs,
     isLinux,
     getOsName,
+    getOsNameWeb,
+    getOsFamily,
 };
