@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import styled from 'styled-components';
 import invityAPI from '@suite-services/invityAPI';
-import { FormattedCryptoAmount, Translation } from '@suite-components';
-import { Select, Input, CoinLogo } from '@trezor/components';
+import { FormattedCryptoAmount, Translation, NumberInput } from '@suite-components';
+import { Select, CoinLogo } from '@trezor/components';
 import Bignumber from 'bignumber.js';
 import { Controller } from 'react-hook-form';
 import { useCoinmarketSellFormContext } from '@wallet-hooks/useCoinmarketSellForm';
@@ -25,8 +25,9 @@ import {
     invityApiSymbolToSymbol,
 } from '@suite/utils/wallet/coinmarket/coinmarketUtils';
 import { useBitcoinAmountUnit } from '@wallet-hooks/useBitcoinAmountUnit';
+import { TypedValidationRules } from '@wallet-types/form';
 
-interface Props {
+interface CryptoInputProps {
     activeInput: typeof FIAT_INPUT | typeof CRYPTO_INPUT;
     setActiveInput: React.Dispatch<React.SetStateAction<typeof FIAT_INPUT | typeof CRYPTO_INPUT>>;
 }
@@ -46,9 +47,8 @@ const TokenLogo = styled.img`
     height: 18px;
 `;
 
-const CryptoInput = ({ activeInput, setActiveInput }: Props) => {
+const CryptoInput = ({ activeInput, setActiveInput }: CryptoInputProps) => {
     const {
-        register,
         errors,
         account,
         network,
@@ -73,115 +73,119 @@ const CryptoInput = ({ activeInput, setActiveInput }: Props) => {
     const { tokens } = account;
     const cryptoInputValue = getValues(CRYPTO_INPUT);
 
-    const cryptoInputRef = register({
-        validate: (value: string) => {
-            if (activeInput === CRYPTO_INPUT) {
-                if (!value) {
-                    if (formState.isSubmitting) {
-                        return <Translation id="TR_REQUIRED_FIELD" />;
+    const cryptoInputRules = useMemo<TypedValidationRules>(
+        () => ({
+            validate: (value: string) => {
+                if (activeInput === CRYPTO_INPUT) {
+                    if (!value) {
+                        if (formState.isSubmitting) {
+                            return <Translation id="TR_REQUIRED_FIELD" />;
+                        }
+                        return;
                     }
-                    return;
-                }
 
-                const amountBig = new Bignumber(value);
+                    const amountBig = new Bignumber(value);
 
-                if (amountBig.isNaN()) {
-                    return <Translation id="AMOUNT_IS_NOT_NUMBER" />;
-                }
-
-                if (shouldSendInSats && !isInteger(value)) {
-                    return 'AMOUNT_IS_NOT_INTEGER';
-                }
-
-                if (amountBig.lte(0)) {
-                    return <Translation id="AMOUNT_IS_TOO_LOW" />;
-                }
-
-                if (!isDecimalsValid(value, network.decimals)) {
-                    return (
-                        <Translation
-                            id="AMOUNT_IS_NOT_IN_RANGE_DECIMALS"
-                            values={{ decimals: network.decimals }}
-                        />
-                    );
-                }
-
-                if (amountLimits) {
-                    const amount = Number(value);
-
-                    let minCrypto = 0;
-                    if (amountLimits.minCrypto) {
-                        minCrypto = shouldSendInSats
-                            ? Number(
-                                  amountToSatoshi(
-                                      amountLimits.minCrypto.toString(),
-                                      network.decimals,
-                                  ),
-                              )
-                            : amountLimits.minCrypto;
+                    if (amountBig.isNaN()) {
+                        return <Translation id="AMOUNT_IS_NOT_NUMBER" />;
                     }
-                    if (minCrypto && amount < minCrypto) {
+
+                    if (shouldSendInSats && !isInteger(value)) {
+                        return 'AMOUNT_IS_NOT_INTEGER';
+                    }
+
+                    if (amountBig.lte(0)) {
+                        return <Translation id="AMOUNT_IS_TOO_LOW" />;
+                    }
+
+                    if (!isDecimalsValid(value, network.decimals)) {
                         return (
                             <Translation
-                                id="TR_SELL_VALIDATION_ERROR_MINIMUM_CRYPTO"
-                                values={{
-                                    minimum: (
-                                        <FormattedCryptoAmount
-                                            value={amountLimits.minCrypto}
-                                            symbol={amountLimits.currency}
-                                        />
-                                    ),
-                                }}
+                                id="AMOUNT_IS_NOT_IN_RANGE_DECIMALS"
+                                values={{ decimals: network.decimals }}
                             />
                         );
                     }
 
-                    let maxCrypto = 0;
-                    if (amountLimits.maxCrypto) {
-                        maxCrypto = shouldSendInSats
-                            ? Number(
-                                  amountToSatoshi(
-                                      amountLimits.maxCrypto.toString(),
-                                      network.decimals,
-                                  ),
-                              )
-                            : amountLimits.maxCrypto;
-                    }
-                    if (maxCrypto && amount > maxCrypto) {
-                        return (
-                            <Translation
-                                id="TR_SELL_VALIDATION_ERROR_MAXIMUM_CRYPTO"
-                                values={{
-                                    maximum: (
-                                        <FormattedCryptoAmount
-                                            value={amountLimits.maxCrypto}
-                                            symbol={amountLimits.currency}
-                                        />
-                                    ),
-                                }}
-                            />
-                        );
+                    if (amountLimits) {
+                        const amount = Number(value);
+
+                        let minCrypto = 0;
+                        if (amountLimits.minCrypto) {
+                            minCrypto = shouldSendInSats
+                                ? Number(
+                                      amountToSatoshi(
+                                          amountLimits.minCrypto.toString(),
+                                          network.decimals,
+                                      ),
+                                  )
+                                : amountLimits.minCrypto;
+                        }
+                        if (minCrypto && amount < minCrypto) {
+                            return (
+                                <Translation
+                                    id="TR_SELL_VALIDATION_ERROR_MINIMUM_CRYPTO"
+                                    values={{
+                                        minimum: (
+                                            <FormattedCryptoAmount
+                                                value={amountLimits.minCrypto}
+                                                symbol={amountLimits.currency}
+                                            />
+                                        ),
+                                    }}
+                                />
+                            );
+                        }
+
+                        let maxCrypto = 0;
+                        if (amountLimits.maxCrypto) {
+                            maxCrypto = shouldSendInSats
+                                ? Number(
+                                      amountToSatoshi(
+                                          amountLimits.maxCrypto.toString(),
+                                          network.decimals,
+                                      ),
+                                  )
+                                : amountLimits.maxCrypto;
+                        }
+                        if (maxCrypto && amount > maxCrypto) {
+                            return (
+                                <Translation
+                                    id="TR_SELL_VALIDATION_ERROR_MAXIMUM_CRYPTO"
+                                    values={{
+                                        maximum: (
+                                            <FormattedCryptoAmount
+                                                value={amountLimits.maxCrypto}
+                                                symbol={amountLimits.currency}
+                                            />
+                                        ),
+                                    }}
+                                />
+                            );
+                        }
                     }
                 }
-            }
-        },
-    });
+            },
+        }),
+        [activeInput, amountLimits, formState.isSubmitting, network.decimals, shouldSendInSats],
+    );
 
     return (
-        <Input
+        <NumberInput
+            control={control}
             onFocus={() => {
                 setActiveInput(CRYPTO_INPUT);
             }}
-            onChange={event => {
+            onChange={value => {
                 setActiveInput(CRYPTO_INPUT);
-                onCryptoAmountChange(event.target.value);
+                onCryptoAmountChange(value);
             }}
             defaultValue=""
             inputState={getInputState(errors.cryptoInput, cryptoInputValue)}
             name={CRYPTO_INPUT}
             noTopLabel
             maxLength={MAX_LENGTH.AMOUNT}
-            innerRef={cryptoInputRef}
+            rules={cryptoInputRules}
             bottomText={<InputError error={errors[CRYPTO_INPUT]} />}
             innerAddon={
                 <Controller

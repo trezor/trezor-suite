@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import invityAPI from '@suite-services/invityAPI';
 import Bignumber from 'bignumber.js';
 import { Controller } from 'react-hook-form';
 import { FIAT } from '@suite-config';
-import { FormattedCryptoAmount, Translation } from '@suite-components';
+import { FormattedCryptoAmount, Translation, NumberInput } from '@suite-components';
 import { getCryptoOptions } from '@wallet-utils/coinmarket/buyUtils';
-import { Select, Input, CoinLogo } from '@trezor/components';
+import { Select, CoinLogo } from '@trezor/components';
 import { buildOption } from '@wallet-utils/coinmarket/coinmarketUtils';
 import { useCoinmarketBuyFormContext } from '@wallet-hooks/useCoinmarketBuyForm';
 import {
@@ -19,6 +19,7 @@ import { InputError } from '@wallet-components';
 import { MAX_LENGTH } from '@suite-constants/inputs';
 import { Wrapper, Left, Middle, Right, StyledIcon } from '@wallet-views/coinmarket';
 import { useBitcoinAmountUnit } from '@wallet-hooks/useBitcoinAmountUnit';
+import { TypedValidationRules } from '@wallet-types/form';
 
 const Option = styled.div`
     display: flex;
@@ -37,7 +38,6 @@ const TokenLogo = styled.img`
 
 const Inputs = () => {
     const {
-        register,
         errors,
         trigger,
         account,
@@ -74,164 +74,171 @@ const Inputs = () => {
 
     const fiatInputValue = getValues('fiatInput');
 
-    const fiatInputRef = register({
-        validate: (value: string) => {
-            if (activeInput === fiatInput) {
-                if (!value) {
-                    if (formState.isSubmitting) {
-                        return <Translation id="TR_BUY_VALIDATION_ERROR_EMPTY" />;
+    const fiatInputRules = useMemo<TypedValidationRules>(
+        () => ({
+            validate: (value: string) => {
+                if (activeInput === fiatInput) {
+                    if (!value) {
+                        if (formState.isSubmitting) {
+                            return <Translation id="TR_BUY_VALIDATION_ERROR_EMPTY" />;
+                        }
+                        return;
                     }
-                    return;
-                }
 
-                const amountBig = new Bignumber(value);
-                if (amountBig.isNaN()) {
-                    return <Translation id="AMOUNT_IS_NOT_NUMBER" />;
-                }
+                    const amountBig = new Bignumber(value);
+                    if (amountBig.isNaN()) {
+                        return <Translation id="AMOUNT_IS_NOT_NUMBER" />;
+                    }
 
-                if (amountBig.lte(0)) {
-                    return <Translation id="AMOUNT_IS_TOO_LOW" />;
-                }
+                    if (amountBig.lte(0)) {
+                        return <Translation id="AMOUNT_IS_TOO_LOW" />;
+                    }
 
-                if (!isDecimalsValid(value, 2)) {
-                    return (
-                        <Translation
-                            id="AMOUNT_IS_NOT_IN_RANGE_DECIMALS"
-                            values={{ decimals: 2 }}
-                        />
-                    );
-                }
-
-                if (amountLimits) {
-                    const amount = Number(value);
-                    if (amountLimits.minFiat && amount < amountLimits.minFiat) {
+                    if (!isDecimalsValid(value, 2)) {
                         return (
                             <Translation
-                                id="TR_BUY_VALIDATION_ERROR_MINIMUM_FIAT"
-                                values={{
-                                    minimum: amountLimits.minFiat,
-                                    currency: amountLimits.currency,
-                                }}
-                            />
-                        );
-                    }
-                    if (amountLimits.maxFiat && amount > amountLimits.maxFiat) {
-                        return (
-                            <Translation
-                                id="TR_BUY_VALIDATION_ERROR_MAXIMUM_FIAT"
-                                values={{
-                                    maximum: amountLimits.maxFiat,
-                                    currency: amountLimits.currency,
-                                }}
-                            />
-                        );
-                    }
-                }
-            }
-        },
-    });
-
-    const cryptoInputRef = register({
-        validate: (value: string) => {
-            if (activeInput === cryptoInput) {
-                if (!value) {
-                    if (formState.isSubmitting) {
-                        return <Translation id="TR_BUY_VALIDATION_ERROR_EMPTY" />;
-                    }
-
-                    return;
-                }
-
-                const amountBig = new Bignumber(value);
-
-                if (amountBig.isNaN()) {
-                    return <Translation id="AMOUNT_IS_NOT_NUMBER" />;
-                }
-
-                if (shouldSendInSats && !isInteger(value)) {
-                    return 'AMOUNT_IS_NOT_INTEGER';
-                }
-
-                if (amountBig.lte(0)) {
-                    return <Translation id="AMOUNT_IS_TOO_LOW" />;
-                }
-
-                if (!isDecimalsValid(value, network.decimals)) {
-                    return (
-                        <Translation
-                            id="AMOUNT_IS_NOT_IN_RANGE_DECIMALS"
-                            values={{ decimals: network.decimals }}
-                        />
-                    );
-                }
-
-                if (amountLimits) {
-                    const amount = Number(value);
-
-                    let minCrypto = 0;
-                    if (amountLimits.minCrypto) {
-                        minCrypto = shouldSendInSats
-                            ? Number(
-                                  amountToSatoshi(
-                                      amountLimits.minCrypto.toString(),
-                                      network.decimals,
-                                  ),
-                              )
-                            : amountLimits.minCrypto;
-                    }
-                    if (minCrypto && amount < minCrypto) {
-                        return (
-                            <Translation
-                                id="TR_BUY_VALIDATION_ERROR_MINIMUM_CRYPTO"
-                                values={{
-                                    minimum: (
-                                        <FormattedCryptoAmount
-                                            value={amountLimits.minCrypto}
-                                            symbol={amountLimits.currency}
-                                        />
-                                    ),
-                                }}
+                                id="AMOUNT_IS_NOT_IN_RANGE_DECIMALS"
+                                values={{ decimals: 2 }}
                             />
                         );
                     }
 
-                    let maxCrypto = 0;
-                    if (amountLimits.maxCrypto) {
-                        maxCrypto = shouldSendInSats
-                            ? Number(
-                                  amountToSatoshi(
-                                      amountLimits.maxCrypto.toString(),
-                                      network.decimals,
-                                  ),
-                              )
-                            : amountLimits.maxCrypto;
+                    if (amountLimits) {
+                        const amount = Number(value);
+                        if (amountLimits.minFiat && amount < amountLimits.minFiat) {
+                            return (
+                                <Translation
+                                    id="TR_BUY_VALIDATION_ERROR_MINIMUM_FIAT"
+                                    values={{
+                                        minimum: amountLimits.minFiat,
+                                        currency: amountLimits.currency,
+                                    }}
+                                />
+                            );
+                        }
+                        if (amountLimits.maxFiat && amount > amountLimits.maxFiat) {
+                            return (
+                                <Translation
+                                    id="TR_BUY_VALIDATION_ERROR_MAXIMUM_FIAT"
+                                    values={{
+                                        maximum: amountLimits.maxFiat,
+                                        currency: amountLimits.currency,
+                                    }}
+                                />
+                            );
+                        }
                     }
-                    if (maxCrypto && amount > maxCrypto) {
+                }
+            },
+        }),
+        [activeInput, amountLimits, formState.isSubmitting],
+    );
+
+    const cryptoInputRules = useMemo<TypedValidationRules>(
+        () => ({
+            validate: (value: string) => {
+                if (activeInput === cryptoInput) {
+                    if (!value) {
+                        if (formState.isSubmitting) {
+                            return <Translation id="TR_BUY_VALIDATION_ERROR_EMPTY" />;
+                        }
+
+                        return;
+                    }
+
+                    const amountBig = new Bignumber(value);
+
+                    if (amountBig.isNaN()) {
+                        return <Translation id="AMOUNT_IS_NOT_NUMBER" />;
+                    }
+
+                    if (shouldSendInSats && !isInteger(value)) {
+                        return 'AMOUNT_IS_NOT_INTEGER';
+                    }
+
+                    if (amountBig.lte(0)) {
+                        return <Translation id="AMOUNT_IS_TOO_LOW" />;
+                    }
+
+                    if (!isDecimalsValid(value, network.decimals)) {
                         return (
                             <Translation
-                                id="TR_BUY_VALIDATION_ERROR_MAXIMUM_CRYPTO"
-                                values={{
-                                    maximum: (
-                                        <FormattedCryptoAmount
-                                            value={amountLimits.maxCrypto}
-                                            symbol={amountLimits.currency}
-                                        />
-                                    ),
-                                }}
+                                id="AMOUNT_IS_NOT_IN_RANGE_DECIMALS"
+                                values={{ decimals: network.decimals }}
                             />
                         );
                     }
+
+                    if (amountLimits) {
+                        const amount = Number(value);
+
+                        let minCrypto = 0;
+                        if (amountLimits.minCrypto) {
+                            minCrypto = shouldSendInSats
+                                ? Number(
+                                      amountToSatoshi(
+                                          amountLimits.minCrypto.toString(),
+                                          network.decimals,
+                                      ),
+                                  )
+                                : amountLimits.minCrypto;
+                        }
+                        if (minCrypto && amount < minCrypto) {
+                            return (
+                                <Translation
+                                    id="TR_BUY_VALIDATION_ERROR_MINIMUM_CRYPTO"
+                                    values={{
+                                        minimum: (
+                                            <FormattedCryptoAmount
+                                                value={amountLimits.minCrypto}
+                                                symbol={amountLimits.currency}
+                                            />
+                                        ),
+                                    }}
+                                />
+                            );
+                        }
+
+                        let maxCrypto = 0;
+                        if (amountLimits.maxCrypto) {
+                            maxCrypto = shouldSendInSats
+                                ? Number(
+                                      amountToSatoshi(
+                                          amountLimits.maxCrypto.toString(),
+                                          network.decimals,
+                                      ),
+                                  )
+                                : amountLimits.maxCrypto;
+                        }
+                        if (maxCrypto && amount > maxCrypto) {
+                            return (
+                                <Translation
+                                    id="TR_BUY_VALIDATION_ERROR_MAXIMUM_CRYPTO"
+                                    values={{
+                                        maximum: (
+                                            <FormattedCryptoAmount
+                                                value={amountLimits.maxCrypto}
+                                                symbol={amountLimits.currency}
+                                            />
+                                        ),
+                                    }}
+                                />
+                            );
+                        }
+                    }
                 }
-            }
-        },
-    });
+            },
+        }),
+        [activeInput, amountLimits, formState.isSubmitting, network.decimals, shouldSendInSats],
+    );
 
     return (
         <Wrapper responsiveSize="LG">
             <Left>
-                <Input
+                <NumberInput
+                    control={control}
                     noTopLabel
-                    innerRef={fiatInputRef}
+                    rules={fiatInputRules}
                     onFocus={() => {
                         setActiveInput(fiatInput);
                     }}
@@ -276,7 +283,8 @@ const Inputs = () => {
                 <StyledIcon responsiveSize="LG" icon="TRANSFER" size={16} />
             </Middle>
             <Right>
-                <Input
+                <NumberInput
+                    control={control}
                     onFocus={() => {
                         setActiveInput(cryptoInput);
                     }}
@@ -288,7 +296,7 @@ const Inputs = () => {
                     name={cryptoInput}
                     noTopLabel
                     maxLength={MAX_LENGTH.AMOUNT}
-                    innerRef={cryptoInputRef}
+                    rules={cryptoInputRules}
                     bottomText={<InputError error={errors[cryptoInput]} />}
                     innerAddon={
                         <Controller

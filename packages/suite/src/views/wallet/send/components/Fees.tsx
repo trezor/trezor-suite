@@ -21,6 +21,7 @@ export const SendFees = () => {
     const {
         errors,
         register,
+        control,
         setValue,
         getValues,
         changeFeeLevel,
@@ -32,6 +33,7 @@ export const SendFees = () => {
     return (
         <StyledCard>
             <Fees
+                control={control}
                 errors={errors}
                 register={register}
                 feeInfo={feeInfo}
