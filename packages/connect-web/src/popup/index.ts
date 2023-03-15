@@ -2,7 +2,14 @@
 
 import EventEmitter from 'events';
 import { createDeferred, Deferred } from '@trezor/utils';
-import { POPUP, IFRAME, UI, ConnectSettings, CoreMessage } from '@trezor/connect/lib/index';
+import {
+    POPUP,
+    IFRAME,
+    UI,
+    ConnectSettings,
+    CoreMessage,
+    IFrameLoaded,
+} from '@trezor/connect/lib/index';
 import { getOrigin } from '@trezor/connect/lib/utils/urlUtils';
 import { showPopupRequest } from './showPopupRequest';
 
@@ -26,7 +33,7 @@ export class PopupManager extends EventEmitter {
 
     closeInterval = 0;
 
-    iframeHandshake: Deferred<boolean>;
+    iframeHandshake: Deferred<IFrameLoaded['payload']>;
 
     popupPromise: Deferred<void> | undefined;
 
@@ -75,16 +82,13 @@ export class PopupManager extends EventEmitter {
 
         const openFn = this.open.bind(this);
         this.locked = true;
-        if (!this.settings.supportedBrowser) {
-            openFn();
-        } else {
-            const timeout =
-                lazyLoad || this.settings.env === 'webextension' ? 1 : POPUP_REQUEST_TIMEOUT;
-            this.requestTimeout = window.setTimeout(() => {
-                this.requestTimeout = 0;
-                openFn(lazyLoad);
-            }, timeout);
-        }
+
+        const timeout =
+            lazyLoad || this.settings.env === 'webextension' ? 1 : POPUP_REQUEST_TIMEOUT;
+        this.requestTimeout = window.setTimeout(() => {
+            this.requestTimeout = 0;
+            openFn(lazyLoad);
+        }, timeout);
     }
 
     cancel() {
@@ -97,10 +101,6 @@ export class PopupManager extends EventEmitter {
 
     open(lazyLoad?: boolean) {
         const src = this.settings.popupSrc;
-        if (!this.settings.supportedBrowser) {
-            this.openWrapper(`${src}#unsupported`);
-            return;
-        }
 
         this.popupPromise = createDeferred(POPUP.LOADED);
         this.openWrapper(lazyLoad ? `${src}#loading` : src);
@@ -211,12 +211,12 @@ export class PopupManager extends EventEmitter {
             if (this.popupPromise) {
                 this.popupPromise.resolve();
             }
-            this.iframeHandshake.promise.then(useBroadcastChannel => {
+            this.iframeHandshake.promise.then(payload => {
                 port.postMessage({
                     type: POPUP.INIT,
                     payload: {
+                        ...payload,
                         settings: this.settings,
-                        useBroadcastChannel,
                     },
                 });
             });
@@ -251,11 +251,7 @@ export class PopupManager extends EventEmitter {
         if (getOrigin(message.origin) !== this.origin || !data || typeof data !== 'object') return;
 
         if (data.type === IFRAME.LOADED) {
-            const useBroadcastChannel =
-                data.payload && typeof data.payload.useBroadcastChannel === 'boolean'
-                    ? data.payload.useBroadcastChannel
-                    : false;
-            this.iframeHandshake.resolve(useBroadcastChannel);
+            this.iframeHandshake.resolve(data.payload);
         } else if (data.type === POPUP.BOOTSTRAP) {
             // popup is opened properly, now wait for POPUP.LOADED message
             if (this.openTimeout) clearTimeout(this.openTimeout);
@@ -269,13 +265,13 @@ export class PopupManager extends EventEmitter {
                 this.popupPromise.resolve();
             }
             // popup is successfully loaded
-            this.iframeHandshake.promise.then(useBroadcastChannel => {
+            this.iframeHandshake.promise.then(payload => {
                 this._window.postMessage(
                     {
                         type: POPUP.INIT,
                         payload: {
+                            ...payload,
                             settings: this.settings,
-                            useBroadcastChannel,
                         },
                     },
                     this.origin,
