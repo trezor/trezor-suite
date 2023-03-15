@@ -18,13 +18,12 @@
     },
     "dependencies": {
         "@suite-common/suite-types": "workspace:*",
+        "@trezor/env-utils": "workspace:*",
         "@trezor/urls": "workspace:*",
-        "@trezor/utils": "workspace:*",
-        "ua-parser-js": "^1.0.33"
+        "@trezor/utils": "workspace:*"
     },
     "devDependencies": {
         "@types/fs-extra": "^11.0.1",
-        "@types/ua-parser-js": "^0.7.36",
         "autoprefixer": "^10.4.13",
         "babel-loader": "^9.1.2",
         "css-loader": "^6.7.3",
