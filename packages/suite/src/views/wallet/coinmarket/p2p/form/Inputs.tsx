@@ -1,16 +1,17 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Controller } from 'react-hook-form';
 import styled from 'styled-components';
 import Bignumber from 'bignumber.js';
 import { FIAT } from '@suite-config';
-import { Translation } from '@suite-components';
+import { Translation, NumberInput } from '@suite-components';
 import { MAX_LENGTH } from '@suite-constants/inputs';
 import { getInputState, isDecimalsValid } from '@suite-common/wallet-utils';
-import { CoinLogo, Input, Select } from '@trezor/components';
+import { CoinLogo, Select } from '@trezor/components';
 import { useCoinmarketP2pFormContext } from '@wallet-hooks/useCoinmarketP2pForm';
 import { InputError } from '@wallet-components';
 import { Wrapper } from '@wallet-views/coinmarket';
 import { buildOption } from '@wallet-utils/coinmarket/coinmarketUtils';
+import { TypedValidationRules } from '@wallet-types/form';
 
 const Left = styled.div`
     display: flex;
@@ -33,44 +34,51 @@ const CoinLabel = styled.div`
 `;
 
 export const Inputs = () => {
-    const { register, account, errors, control, formState, defaultCurrency, p2pInfo, getValues } =
+    const { account, errors, control, formState, defaultCurrency, p2pInfo, getValues } =
         useCoinmarketP2pFormContext();
     const fiatInput = 'fiatInput';
     const currencySelect = 'currencySelect';
     const fiatInputValue = getValues(fiatInput);
 
-    const fiatInputRef = register({
-        validate: (value: string) => {
-            if (!value) {
-                if (formState.isSubmitting) {
-                    return <Translation id="TR_P2P_VALIDATION_ERROR_EMPTY" />;
+    const fiatInputRules = useMemo<TypedValidationRules>(
+        () => ({
+            validate: (value: string) => {
+                if (!value) {
+                    if (formState.isSubmitting) {
+                        return <Translation id="TR_P2P_VALIDATION_ERROR_EMPTY" />;
+                    }
+                    return;
                 }
-                return;
-            }
 
-            const amountBig = new Bignumber(value);
-            if (amountBig.isNaN()) {
-                return <Translation id="AMOUNT_IS_NOT_NUMBER" />;
-            }
+                const amountBig = new Bignumber(value);
+                if (amountBig.isNaN()) {
+                    return <Translation id="AMOUNT_IS_NOT_NUMBER" />;
+                }
 
-            if (amountBig.lte(0)) {
-                return <Translation id="AMOUNT_IS_TOO_LOW" />;
-            }
+                if (amountBig.lte(0)) {
+                    return <Translation id="AMOUNT_IS_TOO_LOW" />;
+                }
 
-            if (!isDecimalsValid(value, 2)) {
-                return (
-                    <Translation id="AMOUNT_IS_NOT_IN_RANGE_DECIMALS" values={{ decimals: 2 }} />
-                );
-            }
-        },
-    });
+                if (!isDecimalsValid(value, 2)) {
+                    return (
+                        <Translation
+                            id="AMOUNT_IS_NOT_IN_RANGE_DECIMALS"
+                            values={{ decimals: 2 }}
+                        />
+                    );
+                }
+            },
+        }),
+        [formState.isSubmitting],
+    );
 
     return (
         <Wrapper responsiveSize="LG">
             <Left>
-                <Input
+                <NumberInput
+                    control={control}
                     noTopLabel
-                    innerRef={fiatInputRef}
+                    rules={fiatInputRules}
                     inputState={getInputState(errors.fiatInput, fiatInputValue)}
                     name={fiatInput}
                     maxLength={MAX_LENGTH.AMOUNT}

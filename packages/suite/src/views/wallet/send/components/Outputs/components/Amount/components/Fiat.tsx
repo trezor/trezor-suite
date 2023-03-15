@@ -1,11 +1,10 @@
-import React, { ChangeEvent, useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import BigNumber from 'bignumber.js';
 import styled from 'styled-components';
 import { Controller } from 'react-hook-form';
 
-import { Input, Select } from '@trezor/components';
+import { Select } from '@trezor/components';
 import { InputError } from '@wallet-components';
-import { Translation } from '@suite-components';
 import { useSendFormContext } from '@wallet-hooks';
 import {
     fromFiatCurrency,
@@ -21,6 +20,8 @@ import {
 import { CurrencyOption, Output } from '@wallet-types/sendForm';
 import { MAX_LENGTH } from '@suite-constants/inputs';
 import { useBitcoinAmountUnit } from '@wallet-hooks/useBitcoinAmountUnit';
+import { NumberInput, Translation } from '@suite-components';
+import { TypedValidationRules } from '@wallet-types/form';
 
 const Wrapper = styled.div`
     display: flex;
@@ -39,7 +40,6 @@ export const Fiat = ({ output, outputId }: Props) => {
         account,
         network,
         fiatRates,
-        register,
         errors,
         clearErrors,
         getDefaultValue,
@@ -77,7 +77,7 @@ export const Fiat = ({ output, outputId }: Props) => {
     const bottomText = isLowAnonymity ? null : <InputError error={errorToDisplay} />;
 
     const handleChange = useCallback(
-        (event: ChangeEvent<HTMLInputElement>) => {
+        (value: string) => {
             if (isSetMaxActive) {
                 setValue('setMaxOutputId', undefined);
             }
@@ -102,12 +102,7 @@ export const Fiat = ({ output, outputId }: Props) => {
 
             const amount =
                 fiatRates && fiatRates.current && fiatCurrency
-                    ? fromFiatCurrency(
-                          event.target.value,
-                          fiatCurrency,
-                          fiatRates.current.rates,
-                          decimals,
-                      )
+                    ? fromFiatCurrency(value, fiatCurrency, fiatRates.current.rates, decimals)
                     : null;
 
             const formattedAmount = shouldSendInSats
@@ -138,6 +133,31 @@ export const Fiat = ({ output, outputId }: Props) => {
             token,
             shouldSendInSats,
         ],
+    );
+
+    const rules = useMemo<TypedValidationRules>(
+        () => ({
+            required: 'AMOUNT_IS_NOT_SET',
+            validate: (value: string) => {
+                const amountBig = new BigNumber(value);
+                if (amountBig.isNaN()) {
+                    return 'AMOUNT_IS_NOT_NUMBER' as const;
+                }
+                if (amountBig.lt(0)) {
+                    return 'AMOUNT_IS_TOO_LOW' as const;
+                }
+                if (!isDecimalsValid(value, 2)) {
+                    return (
+                        <Translation
+                            key="AMOUNT_IS_NOT_IN_RANGE_DECIMALS"
+                            id="AMOUNT_IS_NOT_IN_RANGE_DECIMALS"
+                            values={{ decimals: 2 }}
+                        />
+                    );
+                }
+            },
+        }),
+        [],
     );
 
     interface CallbackParams {
@@ -201,7 +221,8 @@ export const Fiat = ({ output, outputId }: Props) => {
 
     return (
         <Wrapper>
-            <Input
+            <NumberInput
+                control={control}
                 inputState={inputState}
                 isMonospace
                 onChange={handleChange}
@@ -209,27 +230,7 @@ export const Fiat = ({ output, outputId }: Props) => {
                 data-test={inputName}
                 defaultValue={fiatValue}
                 maxLength={MAX_LENGTH.FIAT}
-                innerRef={register({
-                    required: 'AMOUNT_IS_NOT_SET',
-                    validate: (value: string) => {
-                        const amountBig = new BigNumber(value);
-                        if (amountBig.isNaN()) {
-                            return 'AMOUNT_IS_NOT_NUMBER';
-                        }
-                        if (amountBig.lt(0)) {
-                            return 'AMOUNT_IS_TOO_LOW';
-                        }
-                        if (!isDecimalsValid(value, 2)) {
-                            return (
-                                <Translation
-                                    key="AMOUNT_IS_NOT_IN_RANGE_DECIMALS"
-                                    id="AMOUNT_IS_NOT_IN_RANGE_DECIMALS"
-                                    values={{ decimals: 2 }}
-                                />
-                            );
-                        }
-                    },
-                })}
+                rules={rules}
                 bottomText={bottomText}
                 innerAddon={
                     <Controller

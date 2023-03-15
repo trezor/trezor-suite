@@ -7,6 +7,7 @@ const RbfFees = () => {
     const {
         errors,
         register,
+        control,
         setValue,
         getValues,
         changeFeeLevel,
@@ -17,6 +18,7 @@ const RbfFees = () => {
 
     return (
         <Fees
+            control={control}
             errors={errors}
             register={register}
             feeInfo={feeInfo}
