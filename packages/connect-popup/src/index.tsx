@@ -233,13 +233,6 @@ const handshake = (handshake: PopupHandshake) => {
 };
 
 const onLoad = () => {
-    // unsupported browser, this hash was set in parent app (PopupManager)
-    // display message and do not continue
-    if (window.location.hash === '#unsupported') {
-        view.initBrowserView(false);
-        return;
-    }
-
     postMessageToParent(createPopupMessage(POPUP.LOADED));
 
     handshakeTimeout = setTimeout(

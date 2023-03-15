@@ -1,6 +1,13 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/popup/view/common.js
 
-import { POPUP, ERRORS, PopupInit, CoreMessage, ConnectSettings } from '@trezor/connect';
+import {
+    POPUP,
+    ERRORS,
+    PopupInit,
+    CoreMessage,
+    ConnectSettings,
+    SystemInfo,
+} from '@trezor/connect';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 
@@ -16,6 +23,7 @@ type State = {
     settings?: ConnectSettings;
     iframe?: Window;
     broadcast?: BroadcastChannel;
+    systemInfo?: SystemInfo;
 };
 
 let state: State = {};
@@ -91,7 +99,7 @@ export const initMessageChannel = (
 ) => {
     // settings received from window.opener (POPUP.INIT) are not considered as safe (they could be injected/modified)
     // settings will be set later on, after POPUP.HANDSHAKE event from iframe
-    const { settings } = payload;
+    const { settings, systemInfo } = payload;
     // npm version < 8.1.20 doesn't have it in POPUP.INIT message
     const useBroadcastChannel =
         typeof payload.useBroadcastChannel === 'boolean' ? payload.useBroadcastChannel : true;
@@ -113,7 +121,7 @@ export const initMessageChannel = (
         channel.port1.onmessage = handler;
     }
 
-    setState({ iframe, broadcast });
+    setState({ iframe, broadcast, systemInfo });
 };
 
 // this method can be used from anywhere
@@ -182,7 +190,7 @@ export const renderConnectUI = () => {
 
     return new Promise(resolve => {
         reactEventBus.on(event => {
-            if (event.type === 'connect-ui-rendered') {
+            if (event?.type === 'connect-ui-rendered') {
                 resolve(undefined);
             }
         });
