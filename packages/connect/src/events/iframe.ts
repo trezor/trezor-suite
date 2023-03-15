@@ -1,5 +1,5 @@
 import { UI_EVENT } from './ui-request';
-import type { ConnectSettings } from '../types';
+import type { ConnectSettings, SystemInfo } from '../types';
 import type { MessageFactoryFn } from '../types/utils';
 
 export const IFRAME = {
@@ -27,6 +27,7 @@ export interface IFrameLoaded {
     type: typeof IFRAME.LOADED;
     payload: {
         useBroadcastChannel: boolean;
+        systemInfo: SystemInfo;
     };
 }
 
