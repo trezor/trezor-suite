@@ -30,7 +30,6 @@ export interface ConnectSettings {
     version: string;
     priority: number;
     trustedHost: boolean;
-    supportedBrowser?: boolean;
     extension?: string;
     env: 'node' | 'web' | 'webextension' | 'electron' | 'react-native';
     timestamp: number;

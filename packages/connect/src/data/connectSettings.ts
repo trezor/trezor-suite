@@ -23,8 +23,6 @@ const initialSettings: ConnectSettings = {
     webusbSrc: `${DEFAULT_DOMAIN}webusb.html`,
     transports: undefined,
     pendingTransportEvent: true,
-    supportedBrowser:
-        typeof navigator !== 'undefined' ? !/Trident|MSIE|Edge/.test(navigator.userAgent) : true, // TODO: https://github.com/trezor/trezor-suite/issues/5319
     env: 'node',
     lazyLoad: false,
     timestamp: new Date().getTime(),
