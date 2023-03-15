@@ -149,6 +149,11 @@ export class CoinjoinBackend extends EventEmitter {
         this.abortController?.abort();
     }
 
+    disable() {
+        this.abortController?.abort();
+        this.mempool.stop();
+    }
+
     private getCheckpoints(checkpoints?: ScanAccountCheckpoint[]): ScanAccountCheckpoint[];
     private getCheckpoints(checkpoints?: ScanAddressCheckpoint[]): ScanAddressCheckpoint[];
     private getCheckpoints(checkpoints: any[] = []) {

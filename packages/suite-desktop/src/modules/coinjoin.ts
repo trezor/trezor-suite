@@ -133,7 +133,7 @@ export const init: Module = ({ mainWindow }) => {
         );
 
         const dispose = () => {
-            backends.forEach(b => b.cancel());
+            backends.forEach(b => b.disable());
             backends.splice(0, backends.length);
 
             clients.forEach(cli => {
