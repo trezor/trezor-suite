@@ -5,11 +5,8 @@ import childProcess from 'child_process';
 import glob from 'glob';
 import { build, PluginBuild } from 'esbuild';
 
-// eslint-disable-next-line
-// @ts-ignore
+import uriSchemes from '../uriSchemes.json';
 import pkg from '../package.json';
-// eslint-disable-next-line
-// @ts-ignore
 import { suiteVersion } from '../../suite/package.json';
 
 const { NODE_ENV, USE_MOCKS, IS_CODESIGN_BUILD } = process.env;
@@ -88,8 +85,7 @@ build({
         'process.env.NODE_ENV': JSON.stringify(NODE_ENV),
         'process.env.COMMITHASH': JSON.stringify(gitRevision),
         'process.env.APP_PUBKEY': JSON.stringify(appKey),
-        'process.env.PROTOCOLS': JSON.stringify(pkg.build.protocols.schemes),
-        'process.env.PKGNAME': JSON.stringify(pkg.name),
+        'process.env.PROTOCOLS': JSON.stringify(uriSchemes),
         'process.env.VERSION': JSON.stringify(suiteVersion),
         'process.env.SENTRY_RELEASE': JSON.stringify(sentryRelease),
         'process.env.SUITE_TYPE': JSON.stringify(PROJECT),
