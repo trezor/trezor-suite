@@ -51,7 +51,7 @@ export class CoinjoinService {
     static removeInstance(network: NetworkSymbol) {
         const instance = this.instances[network];
         if (instance) {
-            instance.backend.cancel();
+            instance.backend.disable();
             instance.client.disable();
             delete this.instances[network];
         }
