@@ -4,7 +4,10 @@
         "outDir": "./libDev",
         "types": ["web", "jest"]
     },
-    "references": [{ "path": "../connect" }],
+    "references": [
+        { "path": "../connect" },
+        { "path": "../env-utils" }
+    ],
     "ts-node": {
         "compilerOptions": {
             "module": "CommonJS"

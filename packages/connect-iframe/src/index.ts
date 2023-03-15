@@ -21,14 +21,14 @@ import {
 } from '@trezor/connect';
 import { Core, init as initCore, initTransport } from '@trezor/connect/src/core';
 import { DataManager } from '@trezor/connect/src/data/DataManager';
+import { config } from '@trezor/connect/src/data/config';
 import { initLog } from '@trezor/connect/src/utils/debug';
 import { getOrigin } from '@trezor/connect/src/utils/urlUtils';
-import {
-    suggestBridgeInstaller,
-    suggestUdevInstaller,
-} from '@trezor/connect/src/utils/browserUtils';
+import { suggestBridgeInstaller } from '@trezor/connect/src/data/transportInfo';
+import { suggestUdevInstaller } from '@trezor/connect/src/data/udevInfo';
 import { storage } from '@trezor/connect-common';
 import { parseConnectSettings, isOriginWhitelisted } from './connectSettings';
+import { getSystemInfo, getInstallerPackage } from './systemInfo';
 
 let _core: Core | undefined;
 
@@ -151,8 +151,9 @@ const postMessage = (message: CoreMessage) => {
 
     if (message.event === TRANSPORT_EVENT) {
         // add preferred bridge installer
-        message.payload.bridge = suggestBridgeInstaller();
-        message.payload.udev = suggestUdevInstaller();
+        const platform = getInstallerPackage();
+        message.payload.bridge = suggestBridgeInstaller(platform);
+        message.payload.udev = suggestUdevInstaller(platform);
     }
 
     if (usingPopup && targetUiEvent(message)) {
@@ -231,7 +232,10 @@ const init = async (payload: IFrameInit['payload'], origin: string) => {
         // initialize transport and wait for the first transport event (start or error)
         await initTransport(parsedSettings);
         postMessage(
-            createIFrameMessage(IFRAME.LOADED, { useBroadcastChannel: !!_popupMessagePort }),
+            createIFrameMessage(IFRAME.LOADED, {
+                useBroadcastChannel: !!_popupMessagePort,
+                systemInfo: getSystemInfo(config.supportedBrowsers),
+            }),
         );
     } catch (error) {
         postMessage(createIFrameMessage(IFRAME.ERROR, { error }));

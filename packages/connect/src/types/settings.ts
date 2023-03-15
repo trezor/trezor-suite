@@ -36,3 +36,14 @@ export interface ConnectSettings {
     timestamp: number;
     proxy?: Proxy;
 }
+
+export interface SystemInfo {
+    os: {
+        family?: 'Linux' | 'MacOS' | 'Windows';
+        mobile: boolean;
+    };
+    browser: {
+        supported: boolean;
+        outdated: boolean;
+    };
+}
