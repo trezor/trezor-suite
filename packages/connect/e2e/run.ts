@@ -1,5 +1,5 @@
 import path from 'path';
-import { runCLI } from 'jest';
+import { runCLI, getVersion as getJestVersion } from 'jest';
 import webpack from 'webpack';
 import karma from 'karma';
 
@@ -82,6 +82,7 @@ const getEmulatorOptions = (availableFirmwares: Firmwares) => {
     }
 
     if (process.argv[2] === 'node') {
+        console.log('jest version: ', getJestVersion());
         // @ts-expect-error
         const { results } = await runCLI(argv, [__dirname]);
 
