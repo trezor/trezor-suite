@@ -77,7 +77,7 @@
     },
     "resolutions": {
         "typescript": "4.9.5",
-        "react-native": "0.71.3",
+        "react-native": "0.71.4",
         "prettier": "2.8.4",
         "type-fest": "2.12.2",
         "bcrypto": "5.4.0",
@@ -120,7 +120,7 @@
         "eslint-plugin-react": "^7.32.2",
         "eslint-plugin-react-hooks": "^4.6.0",
         "jest": "^26.6.3",
-        "metro-react-native-babel-preset": "0.73.7",
+        "metro-react-native-babel-preset": "0.73.8",
         "npm-run-all": "^4.1.5",
         "nx": "15.8.5",
         "patch-package": "6.5.1",

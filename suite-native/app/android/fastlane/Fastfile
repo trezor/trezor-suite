@@ -64,6 +64,7 @@ platform :android do
     gradle(
       task: 'bundle',
       flavor: productFlavor,
+      print_command: true,
       build_type: 'Release',
       project_dir: ANDROID_PATH
     )
