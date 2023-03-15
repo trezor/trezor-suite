@@ -22,7 +22,6 @@
         "type-check:watch": "yarn type-check -- --watch"
     },
     "dependencies": {
-        "@sentry/webpack-plugin": "^1.18.3",
         "@suite-common/suite-config": "workspace:*",
         "@trezor/suite": "workspace:*",
         "babel-loader": "^9.1.2",
@@ -45,6 +44,7 @@
     },
     "devDependencies": {
         "@pmmmwh/react-refresh-webpack-plugin": "^0.5.10",
+        "@sentry/webpack-plugin": "^1.20.0",
         "@types/copy-webpack-plugin": "^10.1.0",
         "@types/webpack-bundle-analyzer": "^4.6.0",
         "@types/webpack-plugin-serve": "^1.4.2",

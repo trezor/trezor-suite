@@ -6,7 +6,6 @@ import { getSuiteReadyPayload } from '@suite-utils/analytics';
 import { addSentryBreadcrumb, setSentryContext, setSentryTag } from '@suite-utils/sentry';
 import { AppState, Action, Dispatch } from '@suite-types';
 import { DISCOVERY } from '@wallet-actions/constants';
-import { Severity } from '@sentry/types';
 
 import { getBootloaderVersion, getDeviceModel, getFirmwareVersion } from '@trezor/device-utils';
 import { DEVICE, TRANSPORT } from '@trezor/connect';
@@ -63,7 +62,7 @@ const sentryMiddleware =
             addSentryBreadcrumb({
                 category: 'redux.action',
                 message: action.type,
-                level: Severity.Info,
+                level: 'info',
             });
         }
 
