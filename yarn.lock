@@ -8030,6 +8030,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/suite-native@workspace:suite-native/app"
   dependencies:
+    "@babel/plugin-proposal-export-namespace-from": ^7.18.9
     "@formatjs/intl-datetimeformat": ^6.2.0
     "@formatjs/intl-getcanonicallocales": ^2.0.4
     "@formatjs/intl-locale": ^3.0.6

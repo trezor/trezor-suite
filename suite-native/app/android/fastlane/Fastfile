@@ -64,6 +64,7 @@ platform :android do
     gradle(
       task: 'assemble',
       flavor: productFlavor,
+      print_command: true,
       build_type: 'Release',
       project_dir: ANDROID_PATH
     )
