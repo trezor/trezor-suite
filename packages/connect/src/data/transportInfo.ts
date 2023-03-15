@@ -29,3 +29,18 @@ export const parseBridgeJSON = (json: any) => {
 };
 
 export const getBridgeInfo = (): BridgeInfo => info;
+
+export const suggestBridgeInstaller = (platform?: string) => {
+    const info = getBridgeInfo();
+    // check if preferred field was already added
+    if (!info.packages.find(p => p.preferred)) {
+        if (platform) {
+            // override BridgeInfo packages, add preferred field
+            info.packages = info.packages.map(p => ({
+                ...p,
+                preferred: p.platform.indexOf(platform) >= 0,
+            }));
+        }
+    }
+    return info;
+};
