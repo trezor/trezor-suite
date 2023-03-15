@@ -10,8 +10,8 @@
         "type-check": "tsc --build"
     },
     "dependencies": {
-        "@sentry/integrations": "6.17.2",
-        "@sentry/types": "6.17.2",
+        "@sentry/integrations": "^7.43.0",
+        "@sentry/types": "^7.43.0",
         "@suite-common/suite-utils": "workspace:*",
         "@trezor/utils": "workspace:*"
     },

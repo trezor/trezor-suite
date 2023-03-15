@@ -1,4 +1,4 @@
-import * as Sentry from '@sentry/minimal';
+import * as Sentry from '@sentry/core';
 import { Dispatch, GetState } from '@suite-types';
 import { redactDevice, redactDiscovery, getApplicationLog } from '@suite-utils/logsUtils';
 
