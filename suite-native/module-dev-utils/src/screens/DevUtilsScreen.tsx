@@ -44,7 +44,7 @@ const CopyLogsButton = () => {
     const copyToClipboard = useCopyToClipboard();
 
     const handleCopy = async () => {
-        await copyToClipboard(JSON.stringify(logs), 'Logs copied to clipboard.');
+        await copyToClipboard(JSON.stringify(logs), 'Logs copied');
     };
 
     return <Button onPress={handleCopy}>Copy logs</Button>;

@@ -1,0 +1,25 @@
+{
+    "name": "@suite-native/toast-notifications",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "type-check": "tsc --build"
+    },
+    "dependencies": {
+        "@mobily/ts-belt": "^3.13.1",
+        "@reduxjs/toolkit": "1.9.2",
+        "@suite-native/atoms": "workspace:*",
+        "@trezor/icons": "workspace:*",
+        "@trezor/styles": "workspace:*",
+        "@trezor/theme": "workspace:*",
+        "react": "18.2.0",
+        "react-native-gesture-handler": "^2.9.0",
+        "react-native-reanimated": "3.0.1",
+        "react-native-safe-area-context": "^4.5.0",
+        "react-redux": "8.0.5"
+    }
+}

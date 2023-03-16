@@ -6793,6 +6793,7 @@ __metadata:
     react-native-reanimated: 3.0.1
     react-native-root-toast: ^3.3.1
     react-native-safe-area-context: ^4.5.0
+    react-redux: 8.0.5
     typescript: 4.9.5
   languageName: unknown
   linkType: soft
@@ -6862,6 +6863,7 @@ __metadata:
     "@suite-native/atoms": "workspace:*"
     "@suite-native/formatters": "workspace:*"
     "@suite-native/react-native-graph": "workspace:*"
+    "@suite-native/toast-notifications": "workspace:*"
     "@trezor/icons": "workspace:*"
     "@trezor/styles": "workspace:*"
     date-fns: ^2.29.3
@@ -6879,10 +6881,22 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/helpers@workspace:suite-native/helpers"
   dependencies:
+    "@suite-native/toast-notifications": "workspace:*"
     expo-clipboard: ^4.1.1
     react: 18.2.0
+
+    react-redux: 8.0.5
+  languageName: unknown
+  linkType: soft
+
+"@suite-native/link@workspace:*, @suite-native/link@workspace:suite-native/link":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/link@workspace:suite-native/link"
+  dependencies:
+    "@suite-native/toast-notifications": "workspace:*"
+    react: 18.2.0
     react-native: 0.71.4
-    react-native-root-toast: ^3.3.1
+    react-redux: 8.0.5
   languageName: unknown
   linkType: soft
 
@@ -6984,7 +6998,6 @@ __metadata:
     "@suite-native/helpers": "workspace:*"
     "@suite-native/module-settings": "workspace:*"
     "@suite-native/navigation": "workspace:*"
-    "@suite-native/notifications": "workspace:*"
     "@suite-native/storage": "workspace:*"
     "@trezor/icons": "workspace:*"
     "@trezor/styles": "workspace:*"
@@ -7043,6 +7056,7 @@ __metadata:
     "@suite-common/wallet-utils": "workspace:*"
     "@suite-native/accounts": "workspace:*"
     "@suite-native/atoms": "workspace:*"
+    "@suite-native/link": "workspace:*"
     "@suite-native/navigation": "workspace:*"
     "@suite-native/qr-code": "workspace:*"
     "@trezor/styles": "workspace:*"
@@ -7068,6 +7082,7 @@ __metadata:
     "@suite-native/analytics": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/config": "workspace:*"
+    "@suite-native/link": "workspace:*"
     "@suite-native/navigation": "workspace:*"
     "@suite-native/theme": "workspace:*"
     "@trezor/icons": "workspace:*"
@@ -7075,7 +7090,6 @@ __metadata:
     "@trezor/theme": "workspace:*"
     react: 18.2.0
     react-native: 0.71.4
-    react-native-root-toast: ^3.3.1
     react-redux: 8.0.5
     typescript: 4.9.5
   languageName: unknown
@@ -7175,6 +7189,7 @@ __metadata:
     "@suite-native/module-devices": "workspace:*"
     "@suite-native/module-settings": "workspace:*"
     "@suite-native/storage": "workspace:*"
+    "@suite-native/toast-notifications": "workspace:*"
     "@trezor/connect": "workspace:9.0.7"
     "@trezor/utils": "workspace:*"
     react: 18.2.0
@@ -7229,6 +7244,24 @@ __metadata:
     react: 18.2.0
     react-fela: ^12.2.1
     react-native: 0.71.4
+  languageName: unknown
+  linkType: soft
+
+"@suite-native/toast-notifications@workspace:*, @suite-native/toast-notifications@workspace:suite-native/toast-notifications":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/toast-notifications@workspace:suite-native/toast-notifications"
+  dependencies:
+    "@mobily/ts-belt": ^3.13.1
+    "@reduxjs/toolkit": 1.9.2
+    "@suite-native/atoms": "workspace:*"
+    "@trezor/icons": "workspace:*"
+    "@trezor/styles": "workspace:*"
+    "@trezor/theme": "workspace:*"
+    react: 18.2.0
+    react-native-gesture-handler: ^2.9.0
+    react-native-reanimated: 3.0.1
+    react-native-safe-area-context: ^4.5.0
+    react-redux: 8.0.5
   languageName: unknown
   linkType: soft
 
@@ -8073,6 +8106,7 @@ __metadata:
     "@suite-native/state": "workspace:*"
     "@suite-native/storage": "workspace:*"
     "@suite-native/theme": "workspace:*"
+    "@suite-native/toast-notifications": "workspace:*"
     "@suite-native/transactions": "workspace:*"
     "@trezor/connect": "workspace:9.0.7"
     "@trezor/icons": "workspace:*"
@@ -8101,7 +8135,6 @@ __metadata:
     react-native-gesture-handler: ^2.9.0
     react-native-mmkv: ^2.7.0
     react-native-reanimated: 3.0.1
-    react-native-root-siblings: 4.1.1
     react-native-safe-area-context: ^4.5.0
     react-native-screens: ^3.19.0
     react-native-svg: ^13.8.0
@@ -27509,7 +27542,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-root-siblings@npm:4.1.1, react-native-root-siblings@npm:^4.0.0":
+"react-native-root-siblings@npm:^4.0.0":
   version: 4.1.1
   resolution: "react-native-root-siblings@npm:4.1.1"
   checksum: a4df9213be4864ec9ca5a99dd5e9218034a3cda66faa76b8910247a5e728d720df297f4dde811d83219adf370762a62948a8d954f8198bb3e4512e4dbc7dad00

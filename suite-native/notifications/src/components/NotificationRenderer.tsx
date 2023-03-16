@@ -27,8 +27,6 @@ export const NotificationRenderer = ({ children }: NotificationRendererProps) =>
     const { top: topSafeAreaInset } = useSafeAreaInsets();
     const transactionNotifications = useSelector(selectOpenedTransactionNotifications);
 
-    if (!transactionNotifications) return null;
-
     return (
         <>
             {children}
