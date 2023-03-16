@@ -23,7 +23,6 @@ import {
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Screen, ScreenHeader } from '@suite-native/navigation';
 import { CryptoIcon, Icon, IconName, icons } from '@trezor/icons';
-import { ToastNotificationVariant, ToastNotification } from '@suite-native/notifications';
 import { CoinsSettings } from '@suite-native/module-settings';
 
 const inputStackStyle = prepareNativeStyle(utils => ({
@@ -52,14 +51,6 @@ export const DemoScreen = () => {
         'dangerElevation0',
     ] satisfies ButtonColorScheme[];
 
-    const toastNotificationVariants = [
-        'default',
-        'success',
-        'warning',
-        'error',
-        'info',
-    ] satisfies ToastNotificationVariant[];
-
     const handleRadioPress = (value: string | number) => {
         setRadioChecked(value.toString());
     };
@@ -67,18 +58,6 @@ export const DemoScreen = () => {
     return (
         <Screen header={<ScreenHeader />}>
             <VStack spacing="medium">
-                <VStack>
-                    <Text variant="titleSmall">Transaction Notifications:</Text>
-                    <Text variant="titleSmall">Toast Notifications:</Text>
-                    <VStack
-                        justifyContent="center"
-                        style={{ flexDirection: 'row', flexWrap: 'wrap' }}
-                    >
-                        {toastNotificationVariants.map(toastVariant => (
-                            <ToastNotification variant={toastVariant} title={toastVariant} />
-                        ))}
-                    </VStack>
-                </VStack>
                 <VStack>
                     <Text variant="titleSmall">Button:</Text>
                     {buttonColorSchemes.map(buttonScheme => (

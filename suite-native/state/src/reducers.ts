@@ -12,6 +12,7 @@ import { logsSlice } from '@suite-common/logger';
 import { preparePersistReducer } from '@suite-native/storage';
 import { prepareAnalyticsReducer } from '@suite-common/analytics';
 import { notificationsReducer } from '@suite-common/toast-notifications';
+import { toastNotificationsReducer } from '@suite-native/toast-notifications';
 
 import { extraDependencies } from './extraDependencies';
 import { appReducer } from './appSlice';
@@ -50,5 +51,6 @@ export const prepareRootReducers = async () => {
         devices: devicesReducer,
         logs: logsSlice.reducer,
         notifications: notificationsReducer,
+        toastNotifications: toastNotificationsReducer,
     });
 };

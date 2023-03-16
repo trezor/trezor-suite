@@ -68,7 +68,7 @@ export const RowWithTitle = ({ title, value }: { title: string; value: string })
             </Box>
             <IconButton
                 iconName="copy"
-                onPress={() => copyToClipboard(value)}
+                onPress={() => copyToClipboard(value, 'Address copied')}
                 colorScheme="tertiaryElevation1"
                 size="medium"
             />

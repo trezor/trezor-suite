@@ -34,7 +34,7 @@ export const TransactionDetailParametersSheet = ({
         selectBlockchainHeightBySymbol(state, transaction.symbol),
     );
 
-    const handleClickCopy = () => copyToClipboard(transaction.txid);
+    const handleClickCopy = () => copyToClipboard(transaction.txid, 'Transaction ID copied');
 
     const confirmationsCount = getConfirmations(transaction, blockchainHeight);
 

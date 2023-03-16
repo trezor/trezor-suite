@@ -10,6 +10,7 @@ import { colorVariants } from '@trezor/theme';
 type QRCodeProps = {
     data?: string;
     onCopy: () => void;
+    onCopyMessage?: string;
     isShareEnabled?: boolean;
     backgroundElevation?: ButtonBackgroundElevation;
 };
@@ -34,6 +35,7 @@ const actionButtonsStyle = prepareNativeStyle(_ => ({
 export const QRCode = ({
     data,
     onCopy,
+    onCopyMessage = 'Address copied',
     isShareEnabled = false,
     backgroundElevation = '0',
 }: QRCodeProps) => {
@@ -54,7 +56,7 @@ export const QRCode = ({
     };
 
     const handleCopyAndClose = async () => {
-        await copyToClipboard(data, 'Address copied to clipboard.');
+        await copyToClipboard(data, onCopyMessage);
         onCopy();
     };
 

@@ -1,10 +1,12 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { N } from '@mobily/ts-belt';
 
 import { GraphPoint, LineGraph } from '@suite-native/react-native-graph';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Box, Loader } from '@suite-native/atoms';
+import { addToastNotification } from '@suite-native/toast-notifications';
 
 import {
     getExtremaFromGraphPoints,
@@ -76,6 +78,20 @@ export const Graph = <TGraphPoint extends EnhancedGraphPoint>({
     onTryAgain,
     error,
 }: GraphProps<TGraphPoint>) => {
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        if (error) {
+            dispatch(
+                addToastNotification({
+                    variant: 'warning',
+                    message: 'Error loading the graph',
+                    icon: 'warningCircle',
+                }),
+            );
+        }
+    }, [error, dispatch]);
+
     const {
         applyStyle,
         utils: { colors },

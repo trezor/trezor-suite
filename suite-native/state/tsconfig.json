@@ -23,6 +23,7 @@
         { "path": "../module-devices" },
         { "path": "../module-settings" },
         { "path": "../storage" },
+        { "path": "../toast-notifications" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/utils" }
     ]

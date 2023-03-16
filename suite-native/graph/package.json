@@ -20,6 +20,7 @@
         "@suite-native/atoms": "workspace:*",
         "@suite-native/formatters": "workspace:*",
         "@suite-native/react-native-graph": "workspace:*",
+        "@suite-native/toast-notifications": "workspace:*",
         "@trezor/icons": "workspace:*",
         "@trezor/styles": "workspace:*",
         "date-fns": "^2.29.3",
