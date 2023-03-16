@@ -82,8 +82,8 @@ export class DeviceList extends EventEmitter {
     constructor() {
         super();
 
-        const { env } = DataManager.settings;
-        let { transports: transportSettings } = DataManager.settings;
+        const env = DataManager.getSettings('env');
+        let transportSettings = DataManager.getSettings('transports');
 
         const transports: Transport[] = [];
 

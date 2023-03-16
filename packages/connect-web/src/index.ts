@@ -14,7 +14,6 @@ import {
     BLOCKCHAIN_EVENT,
     TRANSPORT,
     parseMessage,
-    parseConnectSettings,
     createUiMessage,
     createErrorMessage,
     ConnectSettings,
@@ -30,6 +29,7 @@ import { config } from '@trezor/connect/lib/data/config';
 import * as iframe from './iframe';
 import * as popup from './popup';
 import webUSBButton from './webusb/button';
+import { parseConnectSettings } from './connectSettings';
 
 const eventEmitter = new EventEmitter();
 const _log = initLog('@trezor/connect');

@@ -1,16 +1,12 @@
-/* eslint-disable @typescript-eslint/prefer-ts-expect-error */
-
 // origin: https://github.com/trezor/connect/blob/develop/src/js/data/ConnectSettings.js
 
 import type { Manifest, ConnectSettings } from '../types';
 import { VERSION, DEFAULT_DOMAIN } from './version';
+
 /*
  * Initial settings for connect.
  * It could be changed by passing values into TrezorConnect.init(...) method
  */
-
-// TODO: move chrome checks to connect-web, https://github.com/trezor/trezor-suite/issues/5319
-declare const chrome: any;
 
 export const DEFAULT_PRIORITY = 2;
 
@@ -19,18 +15,17 @@ const initialSettings: ConnectSettings = {
     version: VERSION, // constant
     debug: false,
     priority: DEFAULT_PRIORITY,
-    trustedHost: false,
+    trustedHost: true,
     connectSrc: DEFAULT_DOMAIN,
     iframeSrc: `${DEFAULT_DOMAIN}iframe.html`,
-    popup: true,
+    popup: false,
     popupSrc: `${DEFAULT_DOMAIN}popup.html`,
     webusbSrc: `${DEFAULT_DOMAIN}webusb.html`,
     transports: undefined,
     pendingTransportEvent: true,
     supportedBrowser:
         typeof navigator !== 'undefined' ? !/Trident|MSIE|Edge/.test(navigator.userAgent) : true, // TODO: https://github.com/trezor/trezor-suite/issues/5319
-    // manifest: null,
-    env: 'web',
+    env: 'node',
     lazyLoad: false,
     timestamp: new Date().getTime(),
     interactionTimeout: 600, // 5 minutes
@@ -45,35 +40,6 @@ const parseManifest = (manifest?: Manifest) => {
         email: manifest.email,
         appUrl: manifest.appUrl,
     };
-};
-
-export const getEnv = () => {
-    if (
-        typeof chrome !== 'undefined' &&
-        chrome.runtime &&
-        typeof chrome.runtime.onConnect !== 'undefined'
-    ) {
-        return 'webextension';
-    }
-    if (typeof navigator !== 'undefined') {
-        if (
-            typeof navigator.product === 'string' &&
-            navigator.product.toLowerCase() === 'reactnative'
-        ) {
-            return 'react-native';
-        }
-        const userAgent = navigator.userAgent.toLowerCase();
-        if (userAgent.indexOf(' electron/') > -1) {
-            return 'electron';
-        }
-    }
-    // if (typeof navigator !== 'undefined' && typeof navigator.product === 'string' && navigator.product.toLowerCase() === 'reactnative') {
-    //     return 'react-native';
-    // }
-    // if (typeof process !== 'undefined' && process.versions.hasOwnProperty('electron')) {
-    //     return 'electron';
-    // }
-    return 'web';
 };
 
 // Cors validation copied from Trezor Bridge
@@ -95,10 +61,7 @@ export const corsValidator = (url?: string) => {
 
 export const parseConnectSettings = (input: Partial<ConnectSettings> = {}) => {
     const settings: ConnectSettings = { ...initialSettings };
-    if (Object.prototype.hasOwnProperty.call(input, 'debug')) {
-        if (Array.isArray(input)) {
-            // enable log with prefix
-        }
+    if ('debug' in input) {
         if (typeof input.debug === 'boolean') {
             settings.debug = input.debug;
         } else if (typeof input.debug === 'string') {
@@ -107,37 +70,9 @@ export const parseConnectSettings = (input: Partial<ConnectSettings> = {}) => {
     }
 
     if (typeof input.connectSrc === 'string') {
-        settings.connectSrc = input.connectSrc;
-    }
-    // For debugging purposes `connectSrc` could be defined in `global.__TREZOR_CONNECT_SRC` variable
-    let globalSrc: string | undefined;
-    if (typeof window !== 'undefined') {
-        // @ts-ignore
-        globalSrc = window.__TREZOR_CONNECT_SRC;
-    } else if (typeof global !== 'undefined') {
-        // @ts-ignore
-        globalSrc = global.__TREZOR_CONNECT_SRC;
-    }
-    if (typeof globalSrc === 'string') {
-        settings.connectSrc = corsValidator(globalSrc);
-        settings.debug = true;
+        settings.connectSrc = corsValidator(input.connectSrc);
     }
 
-    // For debugging purposes `connectSrc` could be defined in url query of hosting page. Usage:
-    // https://3rdparty-page.com/?trezor-connect-src=https://localhost:8088/
-    if (
-        typeof window !== 'undefined' &&
-        window.location &&
-        typeof window.location.search === 'string'
-    ) {
-        const vars = window.location.search.split('&');
-        const customUrl = vars.find(v => v.indexOf('trezor-connect-src') >= 0);
-        if (customUrl) {
-            const [, connectSrc] = customUrl.split('=');
-            settings.connectSrc = corsValidator(decodeURIComponent(connectSrc));
-            settings.debug = true;
-        }
-    }
     const src = settings.connectSrc || DEFAULT_DOMAIN;
     settings.iframeSrc = `${src}iframe.html`;
     settings.popupSrc = `${src}popup.html`;
@@ -168,20 +103,12 @@ export const parseConnectSettings = (input: Partial<ConnectSettings> = {}) => {
         settings.pendingTransportEvent = input.pendingTransportEvent;
     }
 
-    // local files
-    if (typeof window !== 'undefined' && window.location && window.location.protocol === 'file:') {
-        settings.origin = `file://${window.location.pathname}`;
-        settings.webusb = false;
-    }
-
     if (typeof input.extension === 'string') {
         settings.extension = input.extension;
     }
 
     if (typeof input.env === 'string') {
         settings.env = input.env;
-    } else {
-        settings.env = getEnv();
     }
 
     if (typeof input.timestamp === 'number') {

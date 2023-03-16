@@ -130,11 +130,7 @@ const init = async (settings: Partial<ConnectSettings> = {}) => {
     if (_core) {
         throw ERRORS.TypedError('Init_AlreadyInitialized');
     }
-    _settings = parseConnectSettings({ ..._settings, ...settings });
-    // set defaults for node
-    _settings.origin = 'http://node.trezor.io/';
-    _settings.popup = false;
-    _settings.env = 'node';
+    _settings = parseConnectSettings({ ..._settings, ...settings, popup: false });
 
     if (!_settings.manifest) {
         throw ERRORS.TypedError('Init_ManifestMissing');

@@ -18,7 +18,7 @@ export default class SetProxy extends AbstractMethod<'setProxy'> {
         const { proxy } = DataManager.getSettings();
         const isChanged = proxy !== this.payload.proxy;
         if (isChanged) {
-            DataManager.settings.proxy = this.payload.proxy;
+            DataManager.getSettings().proxy = this.payload.proxy;
             await reconnectAllBackends();
         }
 
