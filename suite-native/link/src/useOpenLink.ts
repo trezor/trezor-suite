@@ -1,27 +1,24 @@
 import { Linking } from 'react-native';
-import { useDispatch } from 'react-redux';
 import { useCallback } from 'react';
 
-import { addToastNotification } from '@suite-native/toast-notifications';
+import { useToast } from '@suite-native/toasts';
 
 export const useOpenLink = () => {
-    const dispatch = useDispatch();
+    const { showToast } = useToast();
 
     const handleOpenLink = useCallback(
         async (href: string) => {
             try {
                 await Linking.openURL(href);
             } catch {
-                dispatch(
-                    addToastNotification({
-                        variant: 'error',
-                        icon: 'warningTriangle',
-                        message: 'Unable to open the link',
-                    }),
-                );
+                showToast({
+                    variant: 'error',
+                    icon: 'warningTriangle',
+                    message: 'Unable to open the link',
+                });
             }
         },
-        [dispatch],
+        [showToast],
     );
 
     return handleOpenLink;

@@ -1,26 +1,22 @@
 import React, { useEffect } from 'react';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
-import { useDispatch } from 'react-redux';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Box, HStack, Text } from '@suite-native/atoms';
 import { Icon } from '@trezor/icons';
 import { Color } from '@trezor/theme';
 
-import {
-    ToastNotification as ToastNotificationInterface,
-    ToastNotificationVariant,
-} from '../types';
-import { removeToastNotification } from '../slice';
+import { Toast as ToastInterface, ToastVariant } from '../toastsAtoms';
+import { useToast } from '../useToast';
 
-type ToastNotificationProps = {
-    notification: ToastNotificationInterface;
+type ToastProps = {
+    toast: ToastInterface;
 };
 
 const TOAST_VISIBLE_DURATION = 1500;
 const TOAST_ANIMATION_DURATION = 500;
 
-type ToastNotificationStyle = {
+type ToastStyle = {
     backgroundColor: Color;
     iconBackgroundColor: Color;
     textColor: Color;
@@ -80,23 +76,20 @@ const toastVariantToStyleMap = {
         textColor: 'textAlertBlue',
         iconColor: 'iconAlertBlue',
     },
-} as const satisfies Record<ToastNotificationVariant, ToastNotificationStyle>;
+} as const satisfies Record<ToastVariant, ToastStyle>;
 
-export const ToastNotification = ({ notification }: ToastNotificationProps) => {
+export const Toast = ({ toast }: ToastProps) => {
+    const { hideToast } = useToast();
     const { applyStyle } = useNativeStyles();
-    const dispatch = useDispatch();
-    const { variant, icon, message } = notification;
+    const { variant, icon, message } = toast;
     const { backgroundColor, iconBackgroundColor, textColor, iconColor } =
         toastVariantToStyleMap[variant];
 
     useEffect(() => {
-        const timeout = setTimeout(
-            () => dispatch(removeToastNotification(notification)),
-            TOAST_VISIBLE_DURATION,
-        );
+        const timeout = setTimeout(() => hideToast(toast.id), TOAST_VISIBLE_DURATION);
 
         return () => clearTimeout(timeout);
-    }, [dispatch, notification]);
+    }, [toast, hideToast]);
 
     return (
         <Animated.View

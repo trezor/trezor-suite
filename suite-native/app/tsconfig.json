@@ -28,7 +28,7 @@
         { "path": "../state" },
         { "path": "../storage" },
         { "path": "../theme" },
-        { "path": "../toast-notifications" },
+        { "path": "../toasts" },
         { "path": "../transactions" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/icons" },

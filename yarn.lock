@@ -6863,7 +6863,6 @@ __metadata:
     "@suite-native/atoms": "workspace:*"
     "@suite-native/formatters": "workspace:*"
     "@suite-native/react-native-graph": "workspace:*"
-    "@suite-native/toast-notifications": "workspace:*"
     "@trezor/icons": "workspace:*"
     "@trezor/styles": "workspace:*"
     date-fns: ^2.29.3
@@ -6881,11 +6880,10 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/helpers@workspace:suite-native/helpers"
   dependencies:
-    "@suite-native/toast-notifications": "workspace:*"
+    "@suite-native/toasts": "workspace:*"
     expo-clipboard: ^4.1.1
     react: 18.2.0
-
-    react-redux: 8.0.5
+    react-native: 0.71.4
   languageName: unknown
   linkType: soft
 
@@ -6893,10 +6891,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/link@workspace:suite-native/link"
   dependencies:
-    "@suite-native/toast-notifications": "workspace:*"
+    "@suite-native/toasts": "workspace:*"
     react: 18.2.0
-    react-native: 0.71.4
-    react-redux: 8.0.5
+    react-native: 0.71.3
   languageName: unknown
   linkType: soft
 
@@ -7189,7 +7186,7 @@ __metadata:
     "@suite-native/module-devices": "workspace:*"
     "@suite-native/module-settings": "workspace:*"
     "@suite-native/storage": "workspace:*"
-    "@suite-native/toast-notifications": "workspace:*"
+    "@suite-native/toasts": "workspace:*"
     "@trezor/connect": "workspace:9.0.7"
     "@trezor/utils": "workspace:*"
     react: 18.2.0
@@ -7247,9 +7244,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-native/toast-notifications@workspace:*, @suite-native/toast-notifications@workspace:suite-native/toast-notifications":
+"@suite-native/toasts@workspace:*, @suite-native/toasts@workspace:suite-native/toasts":
   version: 0.0.0-use.local
-  resolution: "@suite-native/toast-notifications@workspace:suite-native/toast-notifications"
+  resolution: "@suite-native/toasts@workspace:suite-native/toasts"
   dependencies:
     "@mobily/ts-belt": ^3.13.1
     "@reduxjs/toolkit": 1.9.2
@@ -7257,11 +7254,11 @@ __metadata:
     "@trezor/icons": "workspace:*"
     "@trezor/styles": "workspace:*"
     "@trezor/theme": "workspace:*"
+    jotai: 1.9.1
     react: 18.2.0
     react-native-gesture-handler: ^2.9.0
     react-native-reanimated: 3.0.1
     react-native-safe-area-context: ^4.5.0
-    react-redux: 8.0.5
   languageName: unknown
   linkType: soft
 
@@ -8106,7 +8103,7 @@ __metadata:
     "@suite-native/state": "workspace:*"
     "@suite-native/storage": "workspace:*"
     "@suite-native/theme": "workspace:*"
-    "@suite-native/toast-notifications": "workspace:*"
+    "@suite-native/toasts": "workspace:*"
     "@suite-native/transactions": "workspace:*"
     "@trezor/connect": "workspace:9.0.7"
     "@trezor/icons": "workspace:*"

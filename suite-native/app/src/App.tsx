@@ -6,14 +6,13 @@ import { IntlProvider } from 'react-intl';
 
 import * as SplashScreen from 'expo-splash-screen';
 import { NavigationContainer } from '@react-navigation/native';
-
 // FIXME this is only temporary until Intl refactor will be finished
 import * as Sentry from '@sentry/react-native';
 
 import enMessages from '@trezor/suite-data/files/translations/en.json';
 import { selectIsAppReady, selectIsConnectInitialized, StoreProvider } from '@suite-native/state';
 import { NotificationRenderer } from '@suite-native/notifications';
-import { ToastNotificationRenderer } from '@suite-native/toast-notifications';
+import { ToastRenderer } from '@suite-native/toasts';
 import { FormatterProvider } from '@suite-common/formatters';
 
 import { RootStackNavigator } from './navigation/RootStackNavigator';
@@ -49,9 +48,9 @@ const AppComponent = () => {
     return (
         <FormatterProvider config={formattersConfig}>
             <NotificationRenderer>
-                <ToastNotificationRenderer>
+                <ToastRenderer>
                     <RootStackNavigator />
-                </ToastNotificationRenderer>
+                </ToastRenderer>
             </NotificationRenderer>
         </FormatterProvider>
     );

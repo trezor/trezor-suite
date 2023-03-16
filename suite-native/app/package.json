@@ -56,7 +56,7 @@
         "@suite-native/state": "workspace:*",
         "@suite-native/storage": "workspace:*",
         "@suite-native/theme": "workspace:*",
-        "@suite-native/toast-notifications": "workspace:*",
+        "@suite-native/toasts": "workspace:*",
         "@suite-native/transactions": "workspace:*",
         "@trezor/connect": "workspace:9.0.7",
         "@trezor/icons": "workspace:*",

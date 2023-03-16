@@ -1,18 +1,19 @@
 import React, { ReactNode } from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useSelector } from 'react-redux';
+
+import { useAtomValue } from 'jotai';
 
 import { Box, VStack } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { selectToastNotifications } from '../slice';
-import { ToastNotification } from './ToastNotification';
+import { toastsAtom } from '../toastsAtoms';
+import { Toast } from './Toast';
 
-type ToastNotificationRendererProps = {
+type ToastRendererProps = {
     children: ReactNode;
 };
 
-const toastNotificationsContainerStyle = prepareNativeStyle<{ topSafeAreaInset: number }>(
+const toastsContainerStyle = prepareNativeStyle<{ topSafeAreaInset: number }>(
     (utils, { topSafeAreaInset }) => ({
         width: '100%',
         position: 'absolute',
@@ -22,26 +23,23 @@ const toastNotificationsContainerStyle = prepareNativeStyle<{ topSafeAreaInset: 
     }),
 );
 
-export const ToastNotificationRenderer = ({ children }: ToastNotificationRendererProps) => {
+export const ToastRenderer = ({ children }: ToastRendererProps) => {
     const { applyStyle } = useNativeStyles();
     const { top: topSafeAreaInset } = useSafeAreaInsets();
-    const toastNotifications = useSelector(selectToastNotifications);
+    const toasts = useAtomValue(toastsAtom);
 
     return (
         <>
             {children}
             <Box
                 pointerEvents="none"
-                style={applyStyle(toastNotificationsContainerStyle, {
+                style={applyStyle(toastsContainerStyle, {
                     topSafeAreaInset,
                 })}
             >
                 <VStack alignItems="center">
-                    {toastNotifications.map(toastNotification => (
-                        <ToastNotification
-                            notification={toastNotification}
-                            key={toastNotification.id}
-                        />
+                    {toasts.map(toast => (
+                        <Toast toast={toast} key={toast.id} />
                     ))}
                 </VStack>
             </Box>

@@ -15,7 +15,6 @@
         { "path": "../atoms" },
         { "path": "../formatters" },
         { "path": "../react-native-graph" },
-        { "path": "../toast-notifications" },
         { "path": "../../packages/icons" },
         { "path": "../../packages/styles" }
     ]

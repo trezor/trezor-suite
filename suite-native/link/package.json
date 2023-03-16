@@ -10,9 +10,8 @@
         "type-check": "tsc --build"
     },
     "dependencies": {
-        "@suite-native/toast-notifications": "workspace:*",
+        "@suite-native/toasts": "workspace:*",
         "react": "18.2.0",
-        "react-native": "0.71.3",
-        "react-redux": "8.0.5"
+        "react-native": "0.71.3"
     }
 }
