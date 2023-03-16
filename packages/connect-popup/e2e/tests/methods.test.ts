@@ -2,28 +2,17 @@
 /* eslint-disable no-restricted-syntax */
 
 import { test } from '@playwright/test';
-import fs from 'fs';
 
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 import { fixtures } from './__fixtures__/methods';
 import { buildOverview } from '../support/buildOverview';
+import { ensureScreenshotsDir } from '../support/ensureScreenshotsDir';
 
 const url = process.env.URL || 'http://localhost:8088/';
-const SCREENSHOTS_DIR = './e2e/screenshots';
 const emuScreenshots: Record<string, string> = {};
 
 const log = (...val: string[]) => {
     console.log(`[===]`, ...val);
-};
-
-const ensureScreenshotsDir = () => {
-    // todo: do this only on local. we need to keep files there in case of flakiness reruns
-    if (fs.existsSync(SCREENSHOTS_DIR)) {
-        // fs.rmSync(SCREENSHOTS_DIR, { recursive: true });
-        // fs.mkdirSync(SCREENSHOTS_DIR, { recursive: true });
-    } else {
-        fs.mkdirSync(SCREENSHOTS_DIR, { recursive: true });
-    }
 };
 
 const screenshotEmu = async (path: string) => {
@@ -35,7 +24,6 @@ const screenshotEmu = async (path: string) => {
 
 test.beforeAll(async () => {
     await TrezorUserEnvLink.connect();
-    ensureScreenshotsDir();
 });
 
 test.afterAll(() => {
@@ -71,11 +59,7 @@ fixtures.forEach(f => {
             await TrezorUserEnvLink.api.startBridge();
         }
 
-        const screenshotsPath = `${SCREENSHOTS_DIR}/${f.url}`;
-
-        if (!fs.existsSync(screenshotsPath)) {
-            fs.mkdirSync(screenshotsPath);
-        }
+        const screenshotsPath = ensureScreenshotsDir(f.url);
 
         await page.goto(`${url}#/method/${f.url}`);
 
