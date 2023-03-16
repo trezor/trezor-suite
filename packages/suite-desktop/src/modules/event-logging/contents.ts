@@ -1,7 +1,5 @@
 import { app } from 'electron';
 
-import { isDevEnv } from '@suite-common/suite-utils';
-
 import { Module } from '../index';
 
 const logUI = app.commandLine.hasSwitch('log-ui');
@@ -48,27 +46,18 @@ export const init: Module = ({ mainWindow }) => {
         logger.info('content', `Dev tools closed`);
     });
 
-    mainWindow.webContents.on('console-message', (_, level, message, line, sourceId) => {
-        // Don't log console log when in dev because dev tools are already open
-        if (isDevEnv) return;
+    if (logUI) {
+        const levels = ['debug', 'info', 'warn', 'error'] as const;
+        mainWindow.webContents.on('console-message', (_, level, message, line, sourceId) => {
+            const method = levels[level];
+            if (!method) return;
+            if (message.startsWith('%c')) return; // ignore redux-logger
+            if (message.startsWith('console.groupEnd')) return; // ignore redux-logger
 
-        if (!logUI) return;
-
-        const msg = `${message} - ${sourceId}:${line}`;
-        switch (level) {
-            case 0:
-                logger.debug('ui-log', msg);
-                break;
-            case 1:
-                logger.info('ui-log', msg);
-                break;
-            case 2:
-                logger.warn('ui-log', msg);
-                break;
-            case 3:
-                logger.error('ui-log', msg);
-                break;
-            // no default
-        }
-    });
+            logger[method](
+                'ui-log',
+                method !== 'error' ? message : [message, `${sourceId}:${line}`],
+            );
+        });
+    }
 };
