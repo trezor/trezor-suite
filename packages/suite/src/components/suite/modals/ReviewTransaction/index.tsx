@@ -9,7 +9,7 @@ import * as sendFormActions from '@wallet-actions/sendFormActions';
 import { OutputProps } from './components/Output';
 import OutputList from './components/OutputList';
 import Summary from './components/Summary';
-import { cardanoUtils } from '@suite-common/wallet-utils';
+import { isCardanoTx, getShortFingerprint } from '@wallet-utils/cardanoUtils';
 import { CardanoOutput } from '@trezor/connect';
 import { DeviceModel, getDeviceModel } from '@trezor/device-utils';
 
@@ -43,7 +43,7 @@ const getCardanoTokenBundle = (account: Account, output: CardanoOutput) => {
                     if (!accountToken) return;
 
                     const fingerprint = accountToken.name
-                        ? cardanoUtils.getShortFingerprint(accountToken.name)
+                        ? getShortFingerprint(accountToken.name)
                         : undefined;
 
                     return {
@@ -119,7 +119,7 @@ export const ReviewTransaction = ({ decision }: ReviewTransactionProps) => {
                 value2: precomposedTx.transaction.outputs[decreaseOutputId].amount.toString(),
             });
         }
-    } else if (cardanoUtils.isCardanoTx(account, precomposedTx)) {
+    } else if (isCardanoTx(account, precomposedTx)) {
         precomposedTx.transaction.outputs.forEach(o => {
             // iterate only through "external" outputs (change output has addressParameters field instead of address)
             if ('address' in o) {
