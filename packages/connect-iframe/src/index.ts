@@ -11,7 +11,6 @@ import {
     IFRAME,
     UI,
     parseMessage,
-    parseConnectSettings,
     createResponseMessage,
     createIFrameMessage,
     createPopupMessage,
@@ -30,6 +29,7 @@ import {
     suggestUdevInstaller,
 } from '@trezor/connect/src/utils/browserUtils';
 import { storage } from '@trezor/connect-common';
+import { parseConnectSettings, isOriginWhitelisted } from './connectSettings';
 
 let _core: Core | undefined;
 
@@ -99,7 +99,7 @@ const handleMessage = (event: PostMessageEvent) => {
     }
 
     // is message from popup or extension
-    const whitelist = DataManager.isWhitelisted(event.origin);
+    const whitelist = isOriginWhitelisted(event.origin);
     const isTrustedDomain = event.origin === window.location.origin || !!whitelist;
 
     // ignore messages from domain other then parent.window or popup.window or chrome extension
@@ -201,12 +201,13 @@ const filterDeviceEvent = (message: DeviceEvent) => {
 
 const init = async (payload: IFrameInit['payload'], origin: string) => {
     if (DataManager.getSettings('origin')) return; // already initialized
-    const parsedSettings = parseConnectSettings({
-        ...payload.settings,
-        extension: payload.extension,
-    });
-    // set origin manually
-    parsedSettings.origin = !origin || origin === 'null' ? payload.settings.origin : origin;
+    const parsedSettings = parseConnectSettings(
+        {
+            ...payload.settings,
+            extension: payload.extension,
+        },
+        origin,
+    );
 
     if (parsedSettings.popup && typeof BroadcastChannel !== 'undefined') {
         // && parsedSettings.env !== 'web'

@@ -35,28 +35,8 @@ describe('data/DataManager', () => {
         }
     });
 
-    test('isWhitelisted', () => {
-        expect(DataManager.isWhitelisted('https://trezor.io')).toEqual({
-            origin: 'trezor.io',
-            priority: 0,
-        });
-        expect(DataManager.isWhitelisted('http://github.com')).toEqual(undefined);
-    });
-
     test('isManagementAllowed', () => {
         expect(DataManager.isManagementAllowed()).toEqual(undefined);
-    });
-
-    test('getPriority', () => {
-        expect(DataManager.getPriority()).toEqual(2);
-    });
-
-    test('getHostLabel', () => {
-        expect(DataManager.getHostLabel('webextension@metamask.io')).toEqual({
-            icon: '',
-            label: 'MetaMask',
-            origin: 'webextension@metamask.io',
-        });
     });
 
     test('getSettings', () => {

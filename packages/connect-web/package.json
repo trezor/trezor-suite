@@ -28,6 +28,7 @@
         "predev": "node webpack/generate_dev_cert.js",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "type-check": "tsc --build",
+        "test:unit": "jest",
         "build:lib": "rimraf ./lib && yarn tsc --build tsconfig.lib.json",
         "dev": "rimraf build && TS_NODE_PROJECT=\"tsconfig.lib.json\" yarn webpack --config ./webpack/dev.webpack.config.ts",
         "build:inline": "TS_NODE_PROJECT=\"tsconfig.lib.json\" webpack --config ./webpack/inline.webpack.config.ts",

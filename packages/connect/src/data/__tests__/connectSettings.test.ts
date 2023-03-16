@@ -43,45 +43,4 @@ describe('data/connectSettings', () => {
         expect(corsValidator(1)).not.toBeDefined();
         expect(corsValidator('https://other-domain.com/connect.trezor.io/9/')).not.toBeDefined();
     });
-
-    it('parseConnectSettings: custom connect src', () => {
-        window.location = { search: 'trezor-connect-src=https://connect.trezor.io/beta.1/' };
-        expect(parseConnectSettings({}).connectSrc).toEqual('https://connect.trezor.io/beta.1/');
-
-        window.location = {
-            search: 'foo=bar&trezor-connect-src=https://connect.trezor.io/beta.2/',
-        };
-        expect(parseConnectSettings({}).connectSrc).toEqual('https://connect.trezor.io/beta.2/');
-
-        window.location = {
-            search: 'trezor-connect-src=https://connect.trezor.io/beta.3/&foo=bar',
-        };
-        expect(parseConnectSettings({}).connectSrc).toEqual('https://connect.trezor.io/beta.3/');
-
-        window.location = {
-            search: 'trezor-connect-src=https%3A%2F%2Fconnect.trezor.io%2Fbeta.encoded%2F',
-        }; // encoded
-        expect(parseConnectSettings({}).connectSrc).toEqual(
-            'https://connect.trezor.io/beta.encoded/',
-        );
-
-        window.location = { search: 'trezor-connect-src=https://connect-beta.trezor.oi/beta.3/' }; // invalid domain "io"
-        expect(parseConnectSettings({}).connectSrc).toEqual(undefined);
-
-        delete window.location.search; // restore
-
-        window.__TREZOR_CONNECT_SRC = 'https://connect.trezor.io/beta.4/';
-        expect(parseConnectSettings({}).connectSrc).toEqual('https://connect.trezor.io/beta.4/');
-
-        window.__TREZOR_CONNECT_SRC = 'https://connect-beta.trezor.oi/beta.4/'; // invalid domain
-        expect(parseConnectSettings({}).connectSrc).toEqual(undefined);
-
-        delete window.__TREZOR_CONNECT_SRC; // restore
-
-        // @ts-expect-error
-        global.window = undefined;
-        global.__TREZOR_CONNECT_SRC = 'https://connect.trezor.io/beta.5/';
-        expect(parseConnectSettings({}).connectSrc).toEqual('https://connect.trezor.io/beta.5/');
-        delete global.__TREZOR_CONNECT_SRC; // restore
-    });
 });

@@ -8,6 +8,18 @@ export const getOrigin = (url: string) => {
     return Array.isArray(parts) && parts.length > 0 ? parts[0] : 'unknown';
 };
 
+export const getHost = (url: string) => {
+    const origin = getOrigin(url);
+    const [_, uri] = getOrigin(origin).split('//');
+    if (uri) {
+        const parts = uri.split('.');
+        return parts.length > 2
+            ? // slice subdomain
+              parts.slice(parts.length - 2, parts.length).join('.')
+            : uri;
+    }
+};
+
 export const getOnionDomain = <T extends string | string[]>(
     url: T,
     dict: { [domain: string]: string },
