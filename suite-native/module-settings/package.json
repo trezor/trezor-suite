@@ -23,12 +23,12 @@
         "@suite-native/config": "workspace:*",
         "@suite-native/navigation": "workspace:*",
         "@suite-native/theme": "workspace:*",
+        "@suite-native/link": "workspace:*",
         "@trezor/icons": "workspace:*",
         "@trezor/styles": "workspace:*",
         "@trezor/theme": "workspace:*",
         "react": "18.2.0",
         "react-native": "0.71.3",
-        "react-native-root-toast": "^3.3.1",
         "react-redux": "8.0.5"
     },
     "devDependencies": {

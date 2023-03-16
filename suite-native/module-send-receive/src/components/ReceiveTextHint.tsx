@@ -1,7 +1,8 @@
 import React from 'react';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Button, Box, VStack, Text, Link } from '@suite-native/atoms';
+import { Button, Box, VStack, Text } from '@suite-native/atoms';
+import { Link } from '@suite-native/link';
 
 type ReceiveTextHintProps = {
     onShowAddress(): void;
