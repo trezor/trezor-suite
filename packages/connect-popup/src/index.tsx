@@ -4,11 +4,13 @@ import {
     UI_REQUEST,
     parseMessage,
     createPopupMessage,
+    createUiResponse,
     UiEvent,
     PopupEvent,
     PopupInit,
     PopupHandshake,
 } from '@trezor/connect';
+
 import { reactEventBus } from '@trezor/connect-ui/src/utils/eventBus';
 import { analytics, EventType } from '@trezor/connect-analytics';
 
@@ -19,6 +21,7 @@ import {
     initMessageChannel,
     postMessageToParent,
     renderConnectUI,
+    postMessage,
 } from './view/common';
 import { isPhishingDomain } from './utils/isPhishingDomain';
 
@@ -39,6 +42,7 @@ const escapeHtml = (payload: any) => {
 // handle messages from window.opener and iframe
 const handleMessage = (event: MessageEvent<PopupEvent | UiEvent>) => {
     const { data } = event;
+
     if (!data) return;
 
     // This is message from the window.opener
@@ -175,14 +179,23 @@ const handleMessage = (event: MessageEvent<PopupEvent | UiEvent>) => {
 };
 
 // handle POPUP.INIT message from window.opener
-const init = (payload: PopupInit['payload']) => {
+const init = async (payload: PopupInit['payload']) => {
     if (!payload) return;
     try {
         initMessageChannel(payload, handleMessage);
         // reset loading hash
         window.location.hash = '';
+
         // handshake with iframe
-        view.initBrowserView();
+        const isBrowserSupported = await view.initBrowserView();
+        // but only if browser is supported
+        if (!isBrowserSupported) {
+            return;
+        }
+
+        await renderConnectUI();
+
+        postMessage(createUiResponse(POPUP.HANDSHAKE));
     } catch (error) {
         postMessageToParent(createPopupMessage(POPUP.ERROR, { error: error.message }));
     }
@@ -226,8 +239,6 @@ const onLoad = () => {
         view.initBrowserView(false);
         return;
     }
-
-    renderConnectUI();
 
     postMessageToParent(createPopupMessage(POPUP.LOADED));
 

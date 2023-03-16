@@ -13,7 +13,8 @@ export type ConnectUIEventProps =
     | { type: typeof UI_REQUEST.DEVICE_NEEDS_BACKUP; device: Device }
     | { type: typeof UI_REQUEST.FIRMWARE_OUTDATED; device: Device }
     // connect-popup events
-    | { type: 'phishing-domain' };
+    | { type: 'phishing-domain' }
+    | { type: 'connect-ui-rendered' };
 
 const reactChannel = 'react';
 

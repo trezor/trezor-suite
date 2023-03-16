@@ -57,7 +57,10 @@ export const ConnectUI = ({ postMessage, clearLegacyView }: ConnectUIProps) => {
         return () => reactEventBus.remove(listener);
     }, [listener]);
 
-    useEffect(() => initAnalytics(), []);
+    useEffect(() => {
+        reactEventBus.dispatch({ type: 'connect-ui-rendered' });
+        initAnalytics();
+    }, []);
 
     const [Component, Notifications] = useMemo(() => {
         let component: React.ReactNode | null;
