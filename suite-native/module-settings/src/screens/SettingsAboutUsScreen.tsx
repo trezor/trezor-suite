@@ -3,12 +3,14 @@ import React from 'react';
 import { S } from '@mobily/ts-belt';
 
 import { Screen, ScreenHeader } from '@suite-native/navigation';
-import { VStack, Card, Text, Box, Divider, ListItem, handleRedirect } from '@suite-native/atoms';
+import { VStack, Card, Text, Box, Divider, ListItem } from '@suite-native/atoms';
 import { getAppVersion, getBuildVersionNumber, getCommitHash } from '@suite-native/config';
+import { useOpenLink } from '@suite-native/link';
 
 import { AboutUsBanners } from '../components/AboutUsBanners';
 
 export const SettingsAboutUsScreen = () => {
+    const openLink = useOpenLink();
     const hasVerionAndBuildInfo =
         S.isNotEmpty(getAppVersion()) && S.isNotEmpty(getBuildVersionNumber());
     const hasCommitHash = S.isNotEmpty(getCommitHash());
@@ -24,16 +26,14 @@ export const SettingsAboutUsScreen = () => {
                         <VStack spacing="medium">
                             <ListItem
                                 onPress={() =>
-                                    handleRedirect(
-                                        'https://data.trezor.io/legal/mobile-wallet-terms.pdf',
-                                    )
+                                    openLink('https://data.trezor.io/legal/mobile-wallet-terms.pdf')
                                 }
                                 title="Terms & conditions"
                                 iconName="pdf"
                             />
                             <ListItem
                                 onPress={() =>
-                                    handleRedirect(
+                                    openLink(
                                         'https://trezor.io/content/wysiwyg/ToU/privacy-policy.pdf',
                                     )
                                 }

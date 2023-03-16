@@ -1,5 +1,5 @@
 {
-    "name": "@suite-native/helpers",
+    "name": "@suite-native/link",
     "version": "1.0.0",
     "private": true,
     "license": "See LICENSE.md in repo root",
@@ -7,14 +7,12 @@
     "main": "src/index",
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
-        "test:unit": "jest -c ../../jest.config.native.js --passWithNoTests",
         "type-check": "tsc --build"
     },
     "dependencies": {
         "@suite-native/toast-notifications": "workspace:*",
-        "expo-clipboard": "^4.1.1",
         "react": "18.2.0",
-        "react-native": "0.71.4",
+        "react-native": "0.71.3",
         "react-redux": "8.0.5"
     }
 }
