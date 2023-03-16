@@ -1,10 +1,9 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/popup/view/browser.js
 
-import { POPUP, createUiResponse } from '@trezor/connect';
 import { config } from '@trezor/connect/src/data/config';
 import { getBrowserState } from '@trezor/connect/src/utils/browserUtils'; // TODO: https://github.com/trezor/trezor-suite/issues/5324
 import { storage } from '@trezor/connect-common';
-import { container, showView, postMessage } from './common';
+import { container, showView } from './common';
 
 const validateBrowser = () => {
     const state = getBrowserState(config.supportedBrowsers);
@@ -14,23 +13,22 @@ const validateBrowser = () => {
     }
 };
 
-export const initBrowserView = (validation = true) => {
+export const initBrowserView = (validation = true): Promise<boolean> => {
     if (!validation) {
         showView('browser-not-supported');
         const buttons = container.getElementsByClassName('buttons')[0];
         if (buttons && buttons.parentNode) {
             buttons.parentNode.removeChild(buttons);
         }
-        return;
+        return Promise.resolve(false);
     }
     const state = validateBrowser();
     if (!state) {
-        postMessage(createUiResponse(POPUP.HANDSHAKE));
-        return;
+        return Promise.resolve(true);
     }
     if (state.mobile) {
         showView('smartphones-not-supported');
-        return;
+        return Promise.resolve(false);
     }
 
     showView('browser-not-supported');
@@ -45,15 +43,16 @@ export const initBrowserView = (validation = true) => {
         h3.innerText = 'Outdated browser';
     }
 
-    ackButton.onclick = () => {
-        if (rememberCheckbox && rememberCheckbox.checked) {
-            storage.save(state => ({
-                ...state,
-                browser: true,
-            }));
-        }
-
-        postMessage(createUiResponse(POPUP.HANDSHAKE));
-        showView('loader');
-    };
+    return new Promise(resolve => {
+        ackButton.onclick = () => {
+            if (rememberCheckbox && rememberCheckbox.checked) {
+                storage.save(state => ({
+                    ...state,
+                    browser: true,
+                }));
+            }
+            showView('loader');
+            resolve(true);
+        };
+    });
 };

@@ -179,4 +179,12 @@ export const renderConnectUI = () => {
     );
 
     root.render(Component);
+
+    return new Promise(resolve => {
+        reactEventBus.on(event => {
+            if (event.type === 'connect-ui-rendered') {
+                resolve(undefined);
+            }
+        });
+    });
 };
