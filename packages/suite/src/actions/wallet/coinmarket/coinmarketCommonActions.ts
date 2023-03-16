@@ -12,6 +12,14 @@ import { getUnusedAddressFromAccount } from '@wallet-utils/coinmarket/coinmarket
 import { Account } from '@wallet-types';
 import { ComposedTransactionInfo } from '@wallet-reducers/coinmarketReducer';
 import * as suiteActions from '@suite-actions/suiteActions';
+import {
+    getStakingPath,
+    getProtocolMagic,
+    getNetworkId,
+    getAddressType,
+    getDerivationType,
+} from '@wallet-utils/cardanoUtils';
+
 import { submitRequestForm as envSubmitRequestForm, isDesktop } from '@suite-utils/env';
 import * as formDraftActions from '@wallet-actions/formDraftActions';
 import {
@@ -20,7 +28,6 @@ import {
     getAccountDecimals,
     hasNetworkFeatures,
     parseFormDraftKey,
-    cardanoUtils,
 } from '@suite-common/wallet-utils';
 import { Output } from '@suite-common/wallet-types/src';
 
@@ -113,13 +120,13 @@ export const verifyAddress =
                     device,
                     useEmptyPassphrase: device.useEmptyPassphrase,
                     addressParameters: {
-                        stakingPath: cardanoUtils.getStakingPath(account),
-                        addressType: cardanoUtils.getAddressType(account.accountType),
+                        stakingPath: getStakingPath(account),
+                        addressType: getAddressType(account.accountType),
                         path,
                     },
-                    protocolMagic: cardanoUtils.getProtocolMagic(account.symbol),
-                    networkId: cardanoUtils.getNetworkId(account.symbol),
-                    derivationType: cardanoUtils.getDerivationType(account.accountType),
+                    protocolMagic: getProtocolMagic(account.symbol),
+                    networkId: getNetworkId(account.symbol),
+                    derivationType: getDerivationType(account.accountType),
                 });
                 break;
             case 'ripple':
