@@ -185,14 +185,6 @@ interface ModalProps {
     'data-test'?: string;
 }
 
-type ModalSubcomponents = {
-    Header: typeof Header;
-    Body: typeof Body;
-    Description: typeof Description;
-    Content: typeof Content;
-    BottomBar: typeof BottomBar;
-};
-
 const Modal = ({
     children,
     heading,
@@ -302,7 +294,7 @@ const Modal = ({
                     </Header>
                 )}
 
-                {heading && showProgressBar && (
+                {showProgressBar && (
                     <Progress value={currentProgressBarStep} max={totalProgressBarSteps} />
                 )}
 

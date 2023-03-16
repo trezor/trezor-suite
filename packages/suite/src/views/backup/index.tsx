@@ -60,18 +60,16 @@ const CloseButton = ({ onClick, variant }: CloseButtonProps) => (
 );
 
 const getModalHeading = (backupStatus: BackupStatus) => {
-    if (backupStatus === 'initial') {
-        return <Translation id="TR_CREATE_BACKUP" />;
+    switch (backupStatus) {
+        case 'initial':
+            return <Translation id="TR_CREATE_BACKUP" />;
+        case 'finished':
+            return <Translation id="TR_BACKUP_CREATED" />;
+        case 'error':
+            return <Translation id="TOAST_BACKUP_FAILED" />;
+        default:
+            return null;
     }
-
-    if (backupStatus === 'finished') {
-        return <Translation id="TR_BACKUP_CREATED" />;
-    }
-
-    if (backupStatus === 'error') {
-        return <Translation id="TOAST_BACKUP_FAILED" />;
-    }
-    return null;
 };
 
 const getEdgeCaseModalHeading = (unfinishedBackup: boolean) => {
@@ -91,8 +89,10 @@ export const Backup = ({ cancelable, onCancel }: ForegroundAppProps) => {
     const dispatch = useDispatch();
 
     const nonErrorBackupStatuses = ['initial', 'in-progress', 'finished'] as const;
-
     const isDeviceUnavailable = !device || !device.features || !device.connected;
+    const currentProgressBarStep = nonErrorBackupStatuses.some(status => status === backup.status)
+        ? nonErrorBackupStatuses.findIndex(s => s === backup.status) + 1
+        : undefined;
 
     if (isDeviceUnavailable) {
         return (
@@ -154,7 +154,7 @@ export const Backup = ({ cancelable, onCancel }: ForegroundAppProps) => {
             data-test="@backup"
             heading={getModalHeading(backup.status)}
             totalProgressBarSteps={nonErrorBackupStatuses.length}
-            currentProgressBarStep={nonErrorBackupStatuses.findIndex(s => s === backup.status) + 1}
+            currentProgressBarStep={currentProgressBarStep}
             bottomBar={
                 <>
                     {backup.status === 'initial' && (
