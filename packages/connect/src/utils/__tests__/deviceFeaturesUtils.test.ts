@@ -136,7 +136,7 @@ describe('utils/deviceFeaturesUtils', () => {
                 eip1559: 'update-required',
                 'eip712-domain-only': 'update-required',
                 taproot: 'update-required',
-                coinjoin: 'no-support',
+                coinjoin: 'update-required',
                 signMessageNoScriptType: 'update-required',
                 tgor: 'update-required',
             });
