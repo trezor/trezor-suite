@@ -8,7 +8,7 @@ export default class UnlockPath extends AbstractMethod<'unlockPath', PROTO.Unloc
         this.requiredPermissions = ['read'];
         this.skipFinalReload = true;
         this.firmwareRange = getFirmwareRange(this.name, null, {
-            1: { min: '0', max: '0' },
+            1: { min: '1.12.1', max: '0' },
             2: { min: '2.5.3', max: '0' },
         });
 

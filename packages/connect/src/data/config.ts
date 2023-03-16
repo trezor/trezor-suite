@@ -183,7 +183,7 @@ export const config = {
         {
             capabilities: ['coinjoin'],
             methods: ['authorizeCoinjoin', 'getOwnershipId', 'getOwnershipProof'],
-            min: ['0', '2.5.3'],
+            min: ['1.12.1', '2.5.3'],
         },
     ],
 };
