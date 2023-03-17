@@ -22,7 +22,6 @@ import {
     fiatRatesActions,
     selectAccountByKey,
 } from '@suite-common/wallet-core';
-import { FormDraftPrefixKeyValues } from '@suite-common/wallet-constants';
 import { findAccountDevice } from '@suite-common/wallet-utils';
 import { analyticsActions } from '@suite-common/analytics';
 
@@ -50,15 +49,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
             }
 
             if (accountsActions.removeAccount.match(action)) {
-                action.payload.forEach(account => {
-                    FormDraftPrefixKeyValues.map(prefix =>
-                        storageActions.removeAccountFormDraft(prefix, account.key),
-                    );
-                    storageActions.removeAccountDraft(account);
-                    storageActions.removeAccountTransactions(account);
-                    storageActions.removeAccountGraph(account);
-                    storageActions.removeAccount(account);
-                });
+                action.payload.forEach(storageActions.removeAccountWithDependencies(api.getState));
             }
 
             if (isAnyOf(metadataActions.setAccountLoaded, metadataActions.setAccountAdd)(action)) {
