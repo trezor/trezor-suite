@@ -33,7 +33,6 @@ const horizontalLine = prepareNativeStyle(utils => ({
     height: utils.spacings.medium,
     borderLeftColor: utils.colors.borderDashed,
     borderLeftWidth: 1,
-    borderStyle: 'dashed',
     marginLeft: utils.spacings.medium + utils.spacings[TOKEN_ICON_SIZE] / 2,
 }));
 
