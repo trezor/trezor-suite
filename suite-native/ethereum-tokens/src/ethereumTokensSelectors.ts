@@ -6,14 +6,14 @@ import { TokenInfo } from '@trezor/blockchain-link';
 import { EthereumTokenAccountWithBalance } from './types';
 import { isEthereumAccountSymbol } from './utils';
 
-const filterTokenHasBalance = (token: TokenInfo) => !!token.balance && token.balance !== '0';
+export const filterTokenHasBalance = (token: TokenInfo) => !!token.balance && token.balance !== '0';
 
 export const selectEthereumAccountsTokensWithBalance = (
     state: AccountsRootState,
     ethereumAccountKey: string,
 ): EthereumTokenAccountWithBalance[] => {
     const account = selectAccountByKey(state, ethereumAccountKey);
-    if (!account || isEthereumAccountSymbol(account.symbol)) return [];
+    if (!account || !isEthereumAccountSymbol(account.symbol)) return [];
     return account.tokens?.filter(filterTokenHasBalance) as EthereumTokenAccountWithBalance[];
 };
 
@@ -30,12 +30,4 @@ export const selectIsEthereumAccountWithTokensWithBalance = (
         G.isArray(account.tokens) &&
         A.isNotEmpty(account.tokens.filter(filterTokenHasBalance))
     );
-};
-
-export const selectEthereumAccountTokensWithBalance = (
-    state: AccountsRootState,
-    accountKey: string,
-): TokenInfo[] => {
-    const account = selectAccountByKey(state, accountKey);
-    return account?.tokens?.filter(filterTokenHasBalance) ?? [];
 };

@@ -6926,6 +6926,7 @@ __metadata:
     "@suite-native/qr-code": "workspace:*"
     "@suite-native/video-assets": "workspace:*"
     "@trezor/blockchain-link": "workspace:*"
+    "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/connect": "workspace:9.0.7"
     "@trezor/icons": "workspace:*"
     "@trezor/styles": "workspace:*"

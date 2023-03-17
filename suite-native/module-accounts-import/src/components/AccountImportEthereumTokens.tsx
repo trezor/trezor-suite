@@ -1,25 +1,21 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+
+import { A } from '@mobily/ts-belt';
 
 import { Box, VStack, Text } from '@suite-native/atoms';
-import {
-    EthereumTokenSymbol,
-    selectEthereumAccountTokensWithBalance,
-} from '@suite-native/ethereum-tokens';
-import { AccountsRootState } from '@suite-common/wallet-core';
+import { EthereumTokenSymbol, filterTokenHasBalance } from '@suite-native/ethereum-tokens';
+import { TokenInfo } from '@trezor/blockchain-link-types';
 
 import { EthereumTokenInfo } from './EthereumTokenInfo';
 
 type AccountImportEthereumTokensProps = {
-    accountKey: string;
+    tokens: TokenInfo[];
 };
 
-export const AccountImportEthereumTokens = ({ accountKey }: AccountImportEthereumTokensProps) => {
-    const tokensWithBalance = useSelector((state: AccountsRootState) =>
-        selectEthereumAccountTokensWithBalance(state, accountKey),
-    );
+export const AccountImportEthereumTokens = ({ tokens }: AccountImportEthereumTokensProps) => {
+    const tokensWithBalance = A.filter(tokens, filterTokenHasBalance);
 
-    if (!tokensWithBalance) return null;
+    if (A.isEmpty(tokensWithBalance)) return null;
 
     return (
         <Box>
