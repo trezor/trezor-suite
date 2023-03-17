@@ -1,4 +1,5 @@
 import type { MiddlewareAPI } from 'redux';
+import { arrayDistinct } from '@trezor/utils';
 import { UI, DEVICE } from '@trezor/connect';
 import { SessionPhase } from '@trezor/coinjoin/lib/enums';
 import { addToast } from '@suite-common/toast-notifications';
@@ -60,8 +61,24 @@ export const coinjoinMiddleware =
             api.dispatch(coinjoinAccountActions.logCoinjoinAccounts());
         }
 
+        if (accountsActions.removeAccount.match(action)) {
+            action.payload.forEach(account =>
+                api.dispatch(coinjoinAccountActions.stopCoinjoinAccount(account)),
+            );
+        }
+
         // propagate action to reducers
         next(action);
+
+        if (accountsActions.removeAccount.match(action)) {
+            action.payload
+                .filter(({ accountType }) => accountType === 'coinjoin')
+                .map(({ symbol }) => symbol)
+                .filter(arrayDistinct)
+                .forEach(symbol =>
+                    api.dispatch(coinjoinAccountActions.clearCoinjoinInstances(symbol)),
+                );
+        }
 
         // catch broadcasted transactions and create prepending transaction(s) for each account
         if (action.type === SESSION_TX_BROADCASTED && action.payload.round.broadcastedTxDetails) {
@@ -96,10 +113,6 @@ export const coinjoinMiddleware =
             if (!isCoinjoinBlockedByTor) {
                 api.dispatch(coinjoinAccountActions.restoreCoinjoinAccounts());
             }
-        }
-
-        if (accountsActions.removeAccount.match(action)) {
-            api.dispatch(coinjoinAccountActions.forgetCoinjoinAccounts(action.payload));
         }
 
         if (action.type === DISCOVERY.START) {

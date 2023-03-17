@@ -237,9 +237,6 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                     }
                     break;
                 }
-                case COINJOIN.ACCOUNT_REMOVE:
-                    storageActions.removeCoinjoinAccount(action.payload.accountKey, api.getState());
-                    break;
 
                 default:
                     break;
