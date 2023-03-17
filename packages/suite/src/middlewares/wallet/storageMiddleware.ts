@@ -45,6 +45,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 // update only transactions for remembered device
                 if (isDeviceRemembered(device)) {
                     storageActions.saveAccounts([payload]);
+                    api.dispatch(storageActions.saveCoinjoinAccount(payload.key));
                 }
             }
 
@@ -222,7 +223,6 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                     api.dispatch(storageActions.saveFirmware());
                     break;
 
-                case COINJOIN.ACCOUNT_CREATE:
                 case COINJOIN.ACCOUNT_DISCOVERY_PROGRESS:
                 case COINJOIN.ACCOUNT_AUTHORIZE_SUCCESS:
                 case COINJOIN.ACCOUNT_UNREGISTER:

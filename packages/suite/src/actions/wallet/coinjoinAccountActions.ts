@@ -32,15 +32,6 @@ import {
 import { getAccountTransactions, sortByBIP44AddressIndex } from '@suite-common/wallet-utils';
 import { openModal } from '@suite-actions/modalActions';
 
-const coinjoinAccountCreate = (account: Account) =>
-    ({
-        type: COINJOIN.ACCOUNT_CREATE,
-        payload: {
-            accountKey: account.key,
-            symbol: account.symbol,
-        },
-    } as const);
-
 export const coinjoinAccountUpdateAnonymity = (accountKey: string, targetAnonymity: number) =>
     ({
         type: COINJOIN.ACCOUNT_UPDATE_TARGET_ANONYMITY,
@@ -184,7 +175,6 @@ export const updateCoinjoinConfig = ({
     } as const);
 
 export type CoinjoinAccountAction =
-    | ReturnType<typeof coinjoinAccountCreate>
     | ReturnType<typeof coinjoinAccountUpdateAnonymity>
     | ReturnType<typeof coinjoinAccountUpdateMaxMiningFee>
     | ReturnType<typeof coinjoinAccountToggleSkipRounds>
@@ -547,7 +537,6 @@ export const createCoinjoinAccount =
                 },
             ),
         );
-        dispatch(coinjoinAccountCreate(account.payload));
 
         console.log(`CoinjoinAccount created: ${getAccountProgressHandle(account.payload)}`);
 
