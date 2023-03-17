@@ -33,6 +33,10 @@ const Steps = styled.div`
     padding: 20px;
     background: ${({ theme }) => theme.BG_WHITE};
     border-radius: 12px;
+
+    ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
+        display: block;
+    }
 `;
 
 const ButtonContainer = styled.div`

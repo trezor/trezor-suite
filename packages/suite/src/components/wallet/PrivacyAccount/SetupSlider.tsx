@@ -10,6 +10,7 @@ const Row = styled.div`
     align-items: center;
     display: flex;
     justify-content: space-between;
+    gap: 12px;
 `;
 
 const Heading = styled.div`
