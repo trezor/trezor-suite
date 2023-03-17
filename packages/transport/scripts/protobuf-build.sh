@@ -30,6 +30,7 @@ echo "Build proto file from $SRC"
 grep -hv -e '^import ' -e '^syntax' -e '^package' -e 'option java_' "$SRC"/messages*.proto \
 | sed 's/ hw\.trezor\.messages\.common\./ /' \
 | sed 's/ common\./ /' \
+| sed 's/ ethereum_definitions\./ /' \
 | sed 's/ management\./ /' \
 | sed 's/^option /\/\/ option /' \
 | grep -v '    reserved '>> "$DIST"/messages.proto
