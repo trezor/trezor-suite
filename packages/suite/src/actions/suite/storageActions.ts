@@ -45,7 +45,7 @@ export const saveAccountDraft = (account: Account) => async (_: Dispatch, getSta
     }
 };
 
-export const removeAccountDraft = async (account: Account) => {
+const removeAccountDraft = async (account: Account) => {
     if (!(await db.isAccessible())) return Promise.resolve();
     return db.removeItemByPK('sendFormDrafts', account.key);
 };
@@ -118,7 +118,7 @@ export const saveAccountFormDraft =
         return formDraft ? db.addItem('formDrafts', formDraft, formDraftKey, true) : undefined;
     };
 
-export const removeAccountFormDraft = async (prefix: FormDraftKeyPrefix, accountKey: string) => {
+const removeAccountFormDraft = async (prefix: FormDraftKeyPrefix, accountKey: string) => {
     if (!(await db.isAccessible())) return;
     return db.removeItemByPK('formDrafts', getFormDraftKey(prefix, accountKey));
 };
@@ -129,7 +129,7 @@ export const saveDevice = async (device: TrezorDevice, forceRemember?: true) => 
     return db.addItem('devices', serializeDevice(device, forceRemember), device.state, true);
 };
 
-export const removeAccount = async (account: Account) => {
+const removeAccount = async (account: Account) => {
     if (!(await db.isAccessible())) return;
     return db.removeItemByPK('accounts', [account.descriptor, account.symbol, account.deviceState]);
 };
@@ -143,28 +143,39 @@ export const removeAccountTransactions = async (account: Account) => {
     ]);
 };
 
+const removeAccountGraph = async (account: Account) => {
+    if (!(await db.isAccessible())) return;
+    return db.removeItemByIndex('graph', 'accountKey', [
+        account.descriptor,
+        account.symbol,
+        account.deviceState,
+    ]);
+};
+
+export const removeAccountWithDependencies = (getState: GetState) => (account: Account) =>
+    Promise.all([
+        ...FormDraftPrefixKeyValues.map(prefix => removeAccountFormDraft(prefix, account.key)),
+        removeAccountDraft(account),
+        removeAccountTransactions(account),
+        removeAccountGraph(account),
+        removeCoinjoinAccount(account.key, getState()),
+        removeAccount(account),
+    ]);
+
 export const forgetDevice = (device: TrezorDevice) => async (_: Dispatch, getState: GetState) => {
     if (!(await db.isAccessible())) return;
     if (!device.state) return;
+
     const accounts = getState().wallet.accounts.filter(a => a.deviceState === device.state);
-    const accountPromises = accounts.reduce(
-        (promises, account) =>
-            promises.concat(
-                [removeAccountDraft(account)],
-                FormDraftPrefixKeyValues.map(prefix => removeAccountFormDraft(prefix, account.key)),
-                removeCoinjoinAccount(account.key, getState()),
-            ),
-        [] as Promise<void>[],
-    );
-    const promises = await Promise.all([
+
+    return Promise.all([
         db.removeItemByPK('devices', device.state),
-        db.removeItemByIndex('accounts', 'deviceState', device.state),
         db.removeItemByPK('discovery', device.state),
+        db.removeItemByIndex('accounts', 'deviceState', device.state),
         db.removeItemByIndex('txs', 'deviceState', device.state),
         db.removeItemByIndex('graph', 'deviceState', device.state),
-        ...accountPromises,
+        ...accounts.map(removeAccountWithDependencies(getState)),
     ]);
-    return promises;
 };
 
 export const saveAccounts = async (accounts: Account[]) => {
@@ -202,15 +213,6 @@ export const saveAccountTransactions =
             }));
         return db.addItems('txs', orderedTxs, true);
     };
-
-export const removeAccountGraph = async (account: Account) => {
-    if (!(await db.isAccessible())) return;
-    return db.removeItemByIndex('graph', 'accountKey', [
-        account.descriptor,
-        account.symbol,
-        account.deviceState,
-    ]);
-};
 
 export const rememberDevice =
     (device: TrezorDevice, remember: boolean, forcedRemember?: true) =>
