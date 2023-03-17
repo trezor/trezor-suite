@@ -34,6 +34,9 @@
         {
             "path": "../../packages/blockchain-link"
         },
+        {
+            "path": "../../packages/blockchain-link-types"
+        },
         { "path": "../../packages/connect" },
         { "path": "../../packages/icons" },
         { "path": "../../packages/styles" },
