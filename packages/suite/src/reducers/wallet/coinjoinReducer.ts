@@ -95,9 +95,7 @@ const createAccount = (
     { accountKey, symbol }: ExtractActionPayload<typeof COINJOIN.ACCOUNT_CREATE>,
 ) => {
     draft.isPreloading = false;
-    const exists = draft.accounts.find(a => a.key === accountKey);
-    if (exists) return;
-    draft.accounts.push({
+    const coinjoinAccount = {
         key: accountKey,
         symbol,
         rawLiquidityClue: null, // NOTE: liquidity clue is calculated from tx history. default value is `null`
@@ -105,7 +103,10 @@ const createAccount = (
         maxFeePerKvbyte: MAX_MINING_FEE_FALLBACK,
         skipRounds: DEFAULT_SKIP_ROUNDS,
         previousSessions: [],
-    });
+    };
+    const index = draft.accounts.findIndex(a => a.key === accountKey);
+    if (index < 0) draft.accounts.push(coinjoinAccount);
+    else draft.accounts[index] = coinjoinAccount;
 };
 
 const setLiquidityClue = (
