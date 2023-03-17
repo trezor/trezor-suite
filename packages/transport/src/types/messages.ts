@@ -1424,6 +1424,11 @@ export enum Enum_SafetyCheckLevel {
 }
 export type SafetyCheckLevel = keyof typeof Enum_SafetyCheckLevel;
 
+export enum HomescreenFormat {
+    Toif144x144 = 1,
+    Jpeg240x240 = 2,
+}
+
 // Initialize
 export type Initialize = {
     session_id?: string;
@@ -1496,6 +1501,8 @@ export type Features = {
     display_rotation: number | null;
     experimental_features: boolean | null;
     busy?: boolean;
+    homescreen_format?: HomescreenFormat;
+    hide_passphrase_from_host?: boolean;
 };
 
 // LockDevice
@@ -1521,6 +1528,7 @@ export type ApplySettings = {
     passphrase_always_on_device?: boolean;
     safety_checks?: SafetyCheckLevel;
     experimental_features?: boolean;
+    hide_passphrase_from_host?: boolean;
 };
 
 // ApplyFlags
@@ -1831,6 +1839,12 @@ export type NEMDecryptMessage = {
 export type NEMDecryptedMessage = {
     payload: string;
 };
+
+// experimental_message
+export type experimental_message = {};
+
+// experimental_field
+export type experimental_field = {};
 
 // RippleGetAddress
 export type RippleGetAddress = {
@@ -2388,6 +2402,8 @@ export type MessageType = {
     NEMSignedTx: NEMSignedTx;
     NEMDecryptMessage: NEMDecryptMessage;
     NEMDecryptedMessage: NEMDecryptedMessage;
+    experimental_message: experimental_message;
+    experimental_field: experimental_field;
     RippleGetAddress: RippleGetAddress;
     RippleAddress: RippleAddress;
     RipplePayment: RipplePayment;
