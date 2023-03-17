@@ -948,7 +948,7 @@
                                     "type": "uint32",
                                     "id": 12,
                                     "options": {
-                                        "(experimental)": true
+                                        "(experimental_field)": true
                                     }
                                 }
                             }
@@ -1091,7 +1091,7 @@
                     "type": "uint32",
                     "id": 12,
                     "options": {
-                        "(experimental)": true
+                        "(experimental_field)": true
                     }
                 }
             }
@@ -1191,7 +1191,7 @@
         },
         "TxAckPaymentRequest": {
             "options": {
-                "(unstable)": true
+                "(experimental_message)": true
             },
             "fields": {
                 "nonce": {
@@ -1475,9 +1475,6 @@
             }
         },
         "AuthorizeCoinJoin": {
-            "options": {
-                "(unstable)": true
-            },
             "fields": {
                 "coordinator": {
                     "rule": "required",
@@ -2808,10 +2805,12 @@
         "CosiCommitment": {
             "fields": {
                 "commitment": {
+                    "rule": "required",
                     "type": "bytes",
                     "id": 1
                 },
                 "pubkey": {
+                    "rule": "required",
                     "type": "bytes",
                     "id": 2
                 }
@@ -2828,14 +2827,17 @@
                     }
                 },
                 "data": {
+                    "rule": "required",
                     "type": "bytes",
                     "id": 2
                 },
                 "global_commitment": {
+                    "rule": "required",
                     "type": "bytes",
                     "id": 3
                 },
                 "global_pubkey": {
+                    "rule": "required",
                     "type": "bytes",
                     "id": 4
                 }
@@ -4106,6 +4108,12 @@
                 "PromptTemporarily": 2
             }
         },
+        "HomescreenFormat": {
+            "values": {
+                "Toif144x144": 1,
+                "Jpeg240x240": 2
+            }
+        },
         "Initialize": {
             "fields": {
                 "session_id": {
@@ -4295,6 +4303,14 @@
                 "busy": {
                     "type": "bool",
                     "id": 41
+                },
+                "homescreen_format": {
+                    "type": "HomescreenFormat",
+                    "id": 42
+                },
+                "hide_passphrase_from_host": {
+                    "type": "bool",
+                    "id": 43
                 }
             },
             "nested": {
@@ -4382,6 +4398,10 @@
                 "experimental_features": {
                     "type": "bool",
                     "id": 10
+                },
+                "hide_passphrase_from_host": {
+                    "type": "bool",
+                    "id": 11
                 }
             }
         },
@@ -4706,13 +4726,13 @@
         },
         "GetNonce": {
             "options": {
-                "(unstable)": true
+                "(experimental_message)": true
             },
             "fields": {}
         },
         "Nonce": {
             "options": {
-                "(unstable)": true
+                "(experimental_message)": true
             },
             "fields": {
                 "nonce": {
@@ -5811,10 +5831,7 @@
                         },
                         "payload": {
                             "type": "bytes",
-                            "id": 3,
-                            "options": {
-                                "default": ""
-                            }
+                            "id": 3
                         },
                         "public_key": {
                             "type": "bytes",
@@ -6156,7 +6173,7 @@
             "id": 51001,
             "extend": "google.protobuf.EnumOptions"
         },
-        "unstable": {
+        "experimental_message": {
             "type": "bool",
             "id": 52001,
             "extend": "google.protobuf.MessageOptions"
@@ -6166,7 +6183,7 @@
             "id": 52002,
             "extend": "google.protobuf.MessageOptions"
         },
-        "experimental": {
+        "experimental_field": {
             "type": "bool",
             "id": 53001,
             "extend": "google.protobuf.FieldOptions"
