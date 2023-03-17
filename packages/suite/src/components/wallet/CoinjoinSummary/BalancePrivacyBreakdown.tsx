@@ -12,8 +12,16 @@ import {
 import { selectSelectedAccount } from '@wallet-reducers/selectedAccountReducer';
 
 const BalanceContainer = styled.div`
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    padding: 0 10px;
+`;
+
+const StyledCryptoAmountWithHeader = styled(CryptoAmountWithHeader)`
+    flex-grow: 1;
+    margin-bottom: -4px;
 `;
 
 const PrivateBalanceHeading = styled.span`
@@ -65,7 +73,7 @@ export const BalancePrivacyBreakdown = () => {
 
     return (
         <BalanceContainer>
-            <CryptoAmountWithHeader
+            <StyledCryptoAmountWithHeader
                 header={getBalanceHeader()}
                 headerIcon={getBalanceIcon()}
                 value={notAnonymized}
@@ -73,7 +81,7 @@ export const BalancePrivacyBreakdown = () => {
                 color={!isZero(notAnonymized || '0') ? undefined : theme.TYPE_LIGHT_GREY}
             />
 
-            <CryptoAmountWithHeader
+            <StyledCryptoAmountWithHeader
                 header={
                     <PrivateBalanceHeading>
                         <Translation id="TR_PRIVATE" />

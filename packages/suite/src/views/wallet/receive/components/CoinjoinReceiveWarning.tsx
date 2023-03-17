@@ -13,11 +13,11 @@ import { selectIsAccountWithRatesByKey } from '@suite-common/wallet-core';
 const StyledWarning = styled(Warning)`
     justify-content: space-between;
     margin-bottom: 16px;
+    gap: 16px;
 
     ${variables.SCREEN_QUERY.MOBILE} {
         align-items: stretch;
         flex-direction: column;
-        gap: 16px;
     }
 `;
 

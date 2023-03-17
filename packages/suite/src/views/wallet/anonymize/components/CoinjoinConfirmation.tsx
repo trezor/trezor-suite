@@ -59,6 +59,18 @@ const Tiles = styled.div`
     display: grid;
     gap: 12px;
     grid-template-columns: repeat(3, 1fr);
+
+    ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
+        grid-template-columns: none;
+    }
+
+    ${variables.SCREEN_QUERY.BELOW_TABLET} {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    ${variables.SCREEN_QUERY.MOBILE} {
+        grid-template-columns: none;
+    }
 `;
 
 const StyledCheckbox = styled(Checkbox)`

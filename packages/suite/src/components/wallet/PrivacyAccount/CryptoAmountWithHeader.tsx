@@ -9,7 +9,6 @@ import { formatNetworkAmount } from '@suite-common/wallet-utils';
 const Container = styled.div`
     display: flex;
     flex-direction: column;
-    padding: 10px;
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.FONT_SIZE.SMALL};
@@ -41,6 +40,7 @@ interface CryptoAmountWithHeaderProps {
     value: string;
     symbol: NetworkSymbol;
     color?: string;
+    className?: string;
 }
 
 export const CryptoAmountWithHeader = ({
@@ -49,8 +49,9 @@ export const CryptoAmountWithHeader = ({
     value,
     symbol,
     color,
+    className,
 }: CryptoAmountWithHeaderProps) => (
-    <Container>
+    <Container className={className}>
         <Header>
             {headerIcon && headerIcon} {header}
         </Header>

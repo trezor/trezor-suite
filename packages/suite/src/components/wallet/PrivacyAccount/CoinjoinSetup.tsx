@@ -18,6 +18,7 @@ const SetupContainer = styled.div`
 
 const SetupOptions = styled.div`
     display: flex;
+    flex-wrap: wrap;
     gap: 40px;
 `;
 
