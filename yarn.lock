@@ -7447,7 +7447,7 @@ __metadata:
     tiny-worker: ^2.3.0
     tsx: ^3.12.3
     typescript: 4.9.5
-    webpack: ^5.75.0
+    webpack: ^5.76.0
     webpack-cli: ^5.0.1
     webpack-dev-server: ^4.11.1
     worker-loader: ^3.0.8
@@ -7575,7 +7575,7 @@ __metadata:
     rimraf: ^4.1.2
     styled-components: ^5.3.6
     typescript: 4.9.5
-    webpack: ^5.75.0
+    webpack: ^5.76.0
     webpack-cli: ^5.0.1
     webpack-dev-server: ^4.11.1
   languageName: unknown
@@ -7592,7 +7592,7 @@ __metadata:
     rimraf: ^4.1.2
     terser-webpack-plugin: ^5.3.6
     typescript: 4.9.5
-    webpack: ^5.75.0
+    webpack: ^5.76.0
     webpack-cli: ^5.0.1
     worker-loader: ^3.0.8
   languageName: unknown
@@ -7643,7 +7643,7 @@ __metadata:
     playwright: ^1.30.0
     rimraf: ^4.1.2
     typescript: 4.9.5
-    webpack: ^5.75.0
+    webpack: ^5.76.0
     webpack-cli: ^5.0.1
     webpack-dev-server: ^4.11.1
     xvfb-maybe: ^0.2.1
@@ -7688,7 +7688,7 @@ __metadata:
     rimraf: ^4.1.2
     tsx: ^3.12.3
     typescript: 4.9.5
-    webpack: ^5.75.0
+    webpack: ^5.76.0
     webpack-cli: ^5.0.1
     xvfb-maybe: ^0.2.1
   languageName: unknown
@@ -7919,7 +7919,7 @@ __metadata:
     style-loader: ^3.3.1
     terser-webpack-plugin: ^5.3.6
     typescript: 4.9.5
-    webpack: ^5.75.0
+    webpack: ^5.76.0
     webpack-bundle-analyzer: ^4.7.0
     webpack-merge: ^5.8.0
     webpack-nano: ^1.1.1
@@ -7952,7 +7952,7 @@ __metadata:
     tsx: ^3.12.3
     typescript: 4.9.5
     ua-parser-js: ^1.0.33
-    webpack: ^5.75.0
+    webpack: ^5.76.0
     webpack-cli: ^5.0.1
   languageName: unknown
   linkType: soft
@@ -8159,7 +8159,7 @@ __metadata:
     styled-components: ^5.3.6
     tsx: ^3.12.3
     typescript: 4.9.5
-    webpack: ^5.75.0
+    webpack: ^5.76.0
     worker-loader: ^3.0.8
     ws: 7.5.9
   languageName: unknown
