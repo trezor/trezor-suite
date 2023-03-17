@@ -38,7 +38,7 @@ import {
     SKIP_ROUNDS_BY_DEFAULT,
     WEEKLY_FEE_RATE_MEDIAN_FALLBACK,
 } from '@suite/services/coinjoin';
-import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
+import { accountsActions, AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import {
     Feature,
     MessageSystemRootState,
@@ -424,8 +424,10 @@ export const coinjoinReducer = (
             case COINJOIN.ACCOUNT_SET_LIQUIDITY_CLUE:
                 setLiquidityClue(draft, action.payload);
                 break;
-            case COINJOIN.ACCOUNT_REMOVE:
-                draft.accounts = draft.accounts.filter(a => a.key !== action.payload.accountKey);
+            case accountsActions.removeAccount.type:
+                draft.accounts = draft.accounts.filter(
+                    a => !action.payload.some(acc => a.key === acc.key),
+                );
                 break;
             case COINJOIN.ACCOUNT_UPDATE_SETUP_OPTION:
                 updateSetupOption(draft, action.payload);

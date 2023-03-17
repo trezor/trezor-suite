@@ -41,14 +41,6 @@ const coinjoinAccountCreate = (account: Account) =>
         },
     } as const);
 
-const coinjoinAccountRemove = (accountKey: string) =>
-    ({
-        type: COINJOIN.ACCOUNT_REMOVE,
-        payload: {
-            accountKey,
-        },
-    } as const);
-
 export const coinjoinAccountUpdateAnonymity = (accountKey: string, targetAnonymity: number) =>
     ({
         type: COINJOIN.ACCOUNT_UPDATE_TARGET_ANONYMITY,
@@ -193,7 +185,6 @@ export const updateCoinjoinConfig = ({
 
 export type CoinjoinAccountAction =
     | ReturnType<typeof coinjoinAccountCreate>
-    | ReturnType<typeof coinjoinAccountRemove>
     | ReturnType<typeof coinjoinAccountUpdateAnonymity>
     | ReturnType<typeof coinjoinAccountUpdateMaxMiningFee>
     | ReturnType<typeof coinjoinAccountToggleSkipRounds>
@@ -470,43 +461,18 @@ export const fetchAndUpdateAccount =
         }
     };
 
-const clearCoinjoinInstances = ({
-    networkSymbol,
-    coinjoinAccounts,
-    dispatch,
-}: {
-    networkSymbol: NetworkSymbol;
-    coinjoinAccounts: CoinjoinAccount[];
-    dispatch: Dispatch;
-}) => {
-    dispatch(coinjoinAccountPreloading(false));
-    const other = coinjoinAccounts.find(a => a.symbol === networkSymbol);
-    // clear CoinjoinClientInstance if there are no related accounts left
-    if (!other) {
-        dispatch(coinjoinClientActions.clientDisable(networkSymbol));
-        CoinjoinService.removeInstance(networkSymbol);
-    }
-};
+export const clearCoinjoinInstances =
+    (networkSymbol: NetworkSymbol) => (dispatch: Dispatch, getState: GetState) => {
+        const cjAccount = selectCoinjoinAccounts(getState()).find(a => a.symbol === networkSymbol);
+        // clear CoinjoinClientInstance if there are no related accounts left
+        if (!cjAccount) {
+            dispatch(coinjoinClientActions.clientDisable(networkSymbol));
+            CoinjoinService.removeInstance(networkSymbol);
+        }
+    };
 
-const handleError = ({
-    error,
-    networkSymbol,
-    dispatch,
-    getState,
-}: {
-    error: string;
-    networkSymbol: NetworkSymbol;
-    dispatch: Dispatch;
-    getState: GetState;
-}) => {
-    dispatch(
-        notificationsActions.addToast({
-            type: 'error',
-            error,
-        }),
-    );
-    const coinjoinAccounts = getState().wallet.coinjoin.accounts;
-    clearCoinjoinInstances({ networkSymbol, coinjoinAccounts, dispatch });
+const handleError = (error: string) => (dispatch: Dispatch) => {
+    dispatch(notificationsActions.addToast({ type: 'error', error }));
 };
 
 export const createCoinjoinAccount =
@@ -530,12 +496,9 @@ export const createCoinjoinAccount =
             useEmptyPassphrase: device?.useEmptyPassphrase,
         });
         if (!unlockPath.success) {
-            handleError({
-                error: unlockPath.payload.error,
-                networkSymbol: network.symbol,
-                dispatch,
-                getState,
-            });
+            dispatch(handleError(unlockPath.payload.error));
+            dispatch(clearCoinjoinInstances(network.symbol));
+            dispatch(coinjoinAccountPreloading(false));
             return;
         }
 
@@ -550,12 +513,9 @@ export const createCoinjoinAccount =
             coin: network.symbol,
         });
         if (!publicKey.success) {
-            handleError({
-                error: publicKey.payload.error,
-                networkSymbol: network.symbol,
-                dispatch,
-                getState,
-            });
+            dispatch(handleError(publicKey.payload.error));
+            dispatch(clearCoinjoinInstances(network.symbol));
+            dispatch(coinjoinAccountPreloading(false));
             return;
         }
 
@@ -847,48 +807,20 @@ export const stopCoinjoinSession =
         dispatch(coinjoinAccountUnregister(account.key));
     };
 
-export const forgetCoinjoinAccounts =
-    (accounts: Account[]) => (dispatch: Dispatch, getState: GetState) => {
-        const state = getState();
-        const { coinjoin } = state.wallet;
+export const stopCoinjoinAccount =
+    (account: Account) => (dispatch: Dispatch, getState: GetState) => {
+        const cjAccount = selectCoinjoinAccountByKey(getState(), account.key);
 
-        // find all accounts to unregister
-        const coinjoinNetworks = coinjoin.accounts.reduce<NetworkSymbol[]>((res, cjAccount) => {
-            const account = accounts.find(a => a.key === cjAccount.key);
-
-            if (account) {
-                // log exception in critical phase
-                if (selectIsAccountWithSessionInCriticalPhaseByAccountKey(state, cjAccount.key)) {
-                    dispatch(
-                        coinjoinClientActions.clientEmitException(
-                            `Forget account in critical phase`,
-                            {
-                                symbol: account.symbol,
-                            },
-                        ),
-                    );
-                }
-
-                if (cjAccount.session) {
-                    dispatch(stopCoinjoinSession(cjAccount.key));
-                }
-
-                dispatch(coinjoinAccountRemove(cjAccount.key));
-
-                if (!res.includes(cjAccount.symbol)) {
-                    return res.concat(cjAccount.symbol);
-                }
+        if (cjAccount?.session) {
+            if ((cjAccount.session.roundPhase ?? 0) > 0) {
+                dispatch(
+                    coinjoinClientActions.clientEmitException(`Forget account in critical phase`, {
+                        symbol: account.symbol,
+                    }),
+                );
             }
-
-            return res;
-        }, []);
-
-        // get new state
-        const coinjoinAccounts = selectCoinjoinAccounts(getState());
-
-        coinjoinNetworks.forEach(networkSymbol => {
-            clearCoinjoinInstances({ networkSymbol, coinjoinAccounts, dispatch });
-        });
+            dispatch(stopCoinjoinSession(cjAccount.key));
+        }
     };
 
 export const restoreCoinjoinAccounts = () => (dispatch: Dispatch, getState: GetState) => {

@@ -1,5 +1,4 @@
 export const ACCOUNT_CREATE = '@coinjoin/account-create';
-export const ACCOUNT_REMOVE = '@coinjoin/account-remove';
 export const ACCOUNT_UPDATE_TARGET_ANONYMITY = '@coinjoin/account-update-target-anonymity';
 export const ACCOUNT_UPDATE_MAX_MING_FEE = '@coinjoin/account-update-max-mining-fee';
 export const ACCOUNT_TOGGLE_SKIP_ROUNDS = '@coinjoin/account-toggle-skip-rounds';
