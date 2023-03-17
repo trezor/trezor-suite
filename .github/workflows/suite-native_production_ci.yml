@@ -28,8 +28,8 @@ jobs:
           ENCODED_STRING_KEYSTORE: ${{ secrets.PRODUCTION_KEYSTORE_FILE }}
           ENCODED_STRING_JSON_FILE: ${{secrets.PRODUCTION_GOOGLE_PLAY_JSON_KEY}}
         run: |
-          echo $ENCODED_STRING_KEYSTORE |  base64 -d > suite-native/app/android/app/prod-upload-key.keystore
-          echo $ENCODED_STRING_JSON_FILE > suite-native/app/android/app/firebase_key.json
+          echo $ENCODED_STRING_KEYSTORE |  base64 -d > suite-native/app/android/prod-upload-key.keystore
+          echo $ENCODED_STRING_JSON_FILE > suite-native/app/android/google_play_key.json
 
       - name: Install dependecies
         run: |
@@ -52,7 +52,7 @@ jobs:
           SIGNING_KEY_STORE_PASSWORD: ${{ secrets.SIGNING_KEY_STORE_PASSWORD_PROD }}
           SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS_PROD }}
           SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD_PROD }}
-          GOOGLE_PLAY_JSON_KEY_FILE: ./android/firebase_key.json
+          GOOGLE_PLAY_JSON_KEY_FILE: ./android/google_play_key.json
         # builds and publishes the app
         run: |
           bundle install
@@ -86,9 +86,9 @@ jobs:
 
       - name: Decode files
         env:
-          ENCODED_STRING_APPSTORE_CERTIFICATE: ${{ secrets.APPSTORE_CERTIFICATE_CONTENT_PROD }}
+          APPSTORE_CERTIFICATE_CONTENT: ${{ secrets.APPSTORE_CERTIFICATE_CONTENT_PROD }}
         run: |
-          echo $ENCODED_STRING_APPSTORE_CERTIFICATE | base64 -d > suite-native/app/TrezorDistributionCertificate.p12
+          echo $APPSTORE_CERTIFICATE_CONTENT | base64 -d > suite-native/app/TrezorDistributionCertificate.p12
 
       - name: Install dependecies
         run: |

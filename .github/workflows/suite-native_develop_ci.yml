@@ -99,13 +99,10 @@ jobs:
           echo $APPSTORE_CERTIFICATE_CONTENT | base64 -d > suite-native/app/TrezorDistributionCertificate.p12
 
       - name: Install dependecies
-        run: yarn install
-
-      - name: Build JS libs
-        run: yarn build:libs
-
-      - name: Install Pods
-        run: yarn workspace @trezor/suite-native pods
+        run: |
+          yarn install
+          yarn build:libs
+          yarn workspace @trezor/suite-native pods
 
       - name: Ruby Setup for Fastlane
         uses: ruby/setup-ruby@v1
