@@ -234,9 +234,9 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                     break;
 
                 case COINJOIN.ACCOUNT_CREATE:
-                case COINJOIN.ACCOUNT_DISCOVERY_PROGRESS:
                     api.dispatch(storageActions.saveCoinjoinAccount(action.payload.account.key));
                     break;
+                case COINJOIN.ACCOUNT_DISCOVERY_PROGRESS:
                 case COINJOIN.ACCOUNT_AUTHORIZE_SUCCESS:
                 case COINJOIN.ACCOUNT_UNREGISTER:
                 case COINJOIN.ACCOUNT_UPDATE_SETUP_OPTION:

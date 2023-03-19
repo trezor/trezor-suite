@@ -297,7 +297,7 @@ const saveCheckpoint = (
     draft: CoinjoinState,
     action: Extract<Action, { type: typeof COINJOIN.ACCOUNT_DISCOVERY_PROGRESS }>,
 ) => {
-    const account = draft.accounts.find(a => a.key === action.payload.account.key);
+    const account = draft.accounts.find(a => a.key === action.payload.accountKey);
     if (!account) return;
     const checkpointNew = action.payload.progress.checkpoint;
     const checkpoints = (account.checkpoints ?? [])
