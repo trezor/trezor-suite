@@ -20,9 +20,10 @@ import {
     blockchainActions,
     transactionsActions,
     fiatRatesActions,
+    selectAccountByKey,
 } from '@suite-common/wallet-core';
 import { FormDraftPrefixKeyValues } from '@suite-common/wallet-constants';
-import * as accountUtils from '@suite-common/wallet-utils';
+import { findAccountDevice } from '@suite-common/wallet-utils';
 import { analyticsActions } from '@suite-common/analytics';
 
 const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
@@ -41,7 +42,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 )(action)
             ) {
                 const { payload } = action;
-                const device = accountUtils.findAccountDevice(payload, api.getState().devices);
+                const device = findAccountDevice(payload, api.getState().devices);
                 // update only transactions for remembered device
                 if (isDeviceRemembered(device)) {
                     storageActions.saveAccounts([payload]);
@@ -61,10 +62,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
             }
 
             if (isAnyOf(metadataActions.setAccountLoaded, metadataActions.setAccountAdd)(action)) {
-                const device = accountUtils.findAccountDevice(
-                    action.payload,
-                    api.getState().devices,
-                );
+                const device = findAccountDevice(action.payload, api.getState().devices);
                 // if device is remembered, and there is a change in account.metadata (metadataActions.setAccountLoaded), update database
                 if (isDeviceRemembered(device)) {
                     storageActions.saveAccounts([action.payload]);
@@ -100,7 +98,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 )(action)
             ) {
                 const { account } = action.payload;
-                const device = accountUtils.findAccountDevice(account, api.getState().devices);
+                const device = findAccountDevice(account, api.getState().devices);
                 // update only transactions for remembered device
                 if (isDeviceRemembered(device)) {
                     storageActions.removeAccountTransactions(account);
@@ -240,9 +238,14 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 case COINJOIN.ACCOUNT_UPDATE_SETUP_OPTION:
                 case COINJOIN.ACCOUNT_UPDATE_TARGET_ANONYMITY:
                 case COINJOIN.ACCOUNT_UPDATE_MAX_MING_FEE:
-                case COINJOIN.ACCOUNT_TOGGLE_SKIP_ROUNDS:
-                    api.dispatch(storageActions.saveCoinjoinAccount(action.payload.accountKey));
+                case COINJOIN.ACCOUNT_TOGGLE_SKIP_ROUNDS: {
+                    const account = selectAccountByKey(api.getState(), action.payload.accountKey);
+                    const device = account && findAccountDevice(account, api.getState().devices);
+                    if (device && isDeviceRemembered(device)) {
+                        api.dispatch(storageActions.saveCoinjoinAccount(action.payload.accountKey));
+                    }
                     break;
+                }
                 case COINJOIN.ACCOUNT_REMOVE:
                     storageActions.removeCoinjoinAccount(action.payload.accountKey, api.getState());
                     break;
