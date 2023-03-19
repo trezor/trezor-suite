@@ -52,10 +52,8 @@ export const removeAccountDraft = async (account: Account) => {
 
 export const saveCoinjoinAccount =
     (accountKey: string) => async (_: Dispatch, getState: GetState) => {
-        const state = getState();
-        const { device } = state.suite;
-        const coinjoinAccount = selectCoinjoinAccountByKey(state, accountKey);
-        if (!device?.remember || !coinjoinAccount || !(await db.isAccessible())) return;
+        const coinjoinAccount = selectCoinjoinAccountByKey(getState(), accountKey);
+        if (!coinjoinAccount || !(await db.isAccessible())) return;
         return db.addItem(
             'coinjoinAccounts',
             serializeCoinjoinSession(coinjoinAccount),
