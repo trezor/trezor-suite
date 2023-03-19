@@ -36,7 +36,8 @@ const coinjoinAccountCreate = (account: Account) =>
     ({
         type: COINJOIN.ACCOUNT_CREATE,
         payload: {
-            account,
+            accountKey: account.key,
+            symbol: account.symbol,
         },
     } as const);
 

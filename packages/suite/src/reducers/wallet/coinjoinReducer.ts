@@ -92,14 +92,14 @@ type ExtractActionPayload<A> = Extract<Action, { type: A }> extends { type: A; p
 
 const createAccount = (
     draft: CoinjoinState,
-    { account }: ExtractActionPayload<typeof COINJOIN.ACCOUNT_CREATE>,
+    { accountKey, symbol }: ExtractActionPayload<typeof COINJOIN.ACCOUNT_CREATE>,
 ) => {
     draft.isPreloading = false;
-    const exists = draft.accounts.find(a => a.key === account.key);
+    const exists = draft.accounts.find(a => a.key === accountKey);
     if (exists) return;
     draft.accounts.push({
-        key: account.key,
-        symbol: account.symbol,
+        key: accountKey,
+        symbol,
         rawLiquidityClue: null, // NOTE: liquidity clue is calculated from tx history. default value is `null`
         targetAnonymity: DEFAULT_TARGET_ANONYMITY,
         maxFeePerKvbyte: MAX_MINING_FEE_FALLBACK,
