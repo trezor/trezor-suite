@@ -145,11 +145,11 @@ const coinjoinSessionRestore = (accountKey: string) =>
         },
     } as const);
 
-const coinjoinAccountDiscoveryProgress = (account: Account, progress: ScanAccountProgress) =>
+const coinjoinAccountDiscoveryProgress = (accountKey: string, progress: ScanAccountProgress) =>
     ({
         type: COINJOIN.ACCOUNT_DISCOVERY_PROGRESS,
         payload: {
-            account,
+            accountKey,
             progress,
         },
     } as const);
@@ -377,7 +377,7 @@ export const fetchAndUpdateAccount =
                 coinjoinAccountAddTransactions({ account, transactions: progress.transactions }),
             );
             // store current checkpoint (and all account data to db if remembered)
-            dispatch(coinjoinAccountDiscoveryProgress(account, progress));
+            dispatch(coinjoinAccountDiscoveryProgress(account.key, progress));
         };
 
         const progressHandle = getAccountProgressHandle(account);
