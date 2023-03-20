@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction, Slice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { fiatCurrencies, FiatCurrency, FiatCurrencyCode } from '@suite-common/suite-config';
 
@@ -24,18 +24,7 @@ export const appSettingsPersistWhitelist: Array<keyof AppSettingsState> = [
     'isSatsEnabled',
 ];
 
-export const appSettingsSlice: Slice<
-    AppSettingsState,
-    {
-        setFiatCurrency: (
-            state: AppSettingsState,
-            { payload }: PayloadAction<FiatCurrencyCode>,
-        ) => void;
-        setOnboardingFinished: (state: AppSettingsState, action: PayloadAction<boolean>) => void;
-        toggleIsSatsEnabled: (state: AppSettingsState) => void;
-    },
-    'appSettings'
-> = createSlice({
+export const appSettingsSlice = createSlice({
     name: 'appSettings',
     initialState: appSettingsInitialState,
     reducers: {

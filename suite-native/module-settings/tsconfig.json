@@ -11,6 +11,7 @@
         { "path": "../analytics" },
         { "path": "../atoms" },
         { "path": "../config" },
+        { "path": "../link" },
         { "path": "../navigation" },
         { "path": "../theme" },
         { "path": "../../packages/icons" },

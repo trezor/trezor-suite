@@ -101,7 +101,11 @@ export const AccountSettingsScreen = ({
                 </VStack>
             </Box>
             <BottomSheet isVisible={isXpubVisible} onClose={setIsXpubVisible}>
-                <QRCode data={account.descriptor} onCopy={handleClose} />
+                <QRCode
+                    data={account.descriptor}
+                    onCopy={handleClose}
+                    onCopyMessage="XPUB copied"
+                />
             </BottomSheet>
         </Screen>
     );

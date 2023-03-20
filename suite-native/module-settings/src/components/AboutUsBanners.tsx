@@ -1,9 +1,10 @@
 import React from 'react';
 
-import { Card, handleRedirect, HStack, IconButton, Text, VStack } from '@suite-native/atoms';
+import { Card, HStack, IconButton, Text, VStack } from '@suite-native/atoms';
 import { Icon } from '@trezor/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Color } from '@trezor/theme';
+import { useOpenLink } from '@suite-native/link';
 
 const cardStyle = prepareNativeStyle<{ backgroundColor: Color }>((utils, { backgroundColor }) => ({
     paddingHorizontal: utils.spacings.large,
@@ -18,6 +19,7 @@ const stackStyle = prepareNativeStyle(_ => ({
 }));
 
 export const AboutUsBanners = () => {
+    const openLink = useOpenLink();
     const { applyStyle } = useNativeStyles();
 
     return (
@@ -41,18 +43,18 @@ export const AboutUsBanners = () => {
                         <IconButton
                             colorScheme="tertiaryElevation1"
                             iconName="facebook"
-                            onPress={() => handleRedirect('https://www.facebook.com/trezor.io')}
+                            onPress={() => openLink('https://www.facebook.com/trezor.io')}
                         />
                         <IconButton
                             colorScheme="tertiaryElevation1"
                             iconName="twitter"
-                            onPress={() => handleRedirect('https://twitter.com/Trezor')}
+                            onPress={() => openLink('https://twitter.com/Trezor')}
                         />
                         <IconButton
                             colorScheme="tertiaryElevation1"
                             iconName="github"
                             onPress={() =>
-                                handleRedirect('https://github.com/orgs/trezor/projects/61/views/7')
+                                openLink('https://github.com/orgs/trezor/projects/61/views/7')
                             }
                         />
                     </HStack>

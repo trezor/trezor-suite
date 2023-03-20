@@ -3,17 +3,16 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useDispatch, useSelector } from 'react-redux';
 import { IntlProvider } from 'react-intl';
-import { RootSiblingParent } from 'react-native-root-siblings';
 
 import * as SplashScreen from 'expo-splash-screen';
 import { NavigationContainer } from '@react-navigation/native';
-
 // FIXME this is only temporary until Intl refactor will be finished
 import * as Sentry from '@sentry/react-native';
 
 import enMessages from '@trezor/suite-data/files/translations/en.json';
 import { selectIsAppReady, selectIsConnectInitialized, StoreProvider } from '@suite-native/state';
 import { NotificationRenderer } from '@suite-native/notifications';
+import { ToastRenderer } from '@suite-native/toasts';
 import { FormatterProvider } from '@suite-common/formatters';
 
 import { RootStackNavigator } from './navigation/RootStackNavigator';
@@ -49,7 +48,9 @@ const AppComponent = () => {
     return (
         <FormatterProvider config={formattersConfig}>
             <NotificationRenderer>
-                <RootStackNavigator />
+                <ToastRenderer>
+                    <RootStackNavigator />
+                </ToastRenderer>
             </NotificationRenderer>
         </FormatterProvider>
     );
@@ -73,10 +74,7 @@ const PureApp = () => (
                 <StoreProvider>
                     <SafeAreaProvider>
                         <StylesProvider>
-                            {/* TODO: REMOVE RootSiblingParent when is our notification UI ready (useToastMessage) */}
-                            <RootSiblingParent>
-                                <AppComponent />
-                            </RootSiblingParent>
+                            <AppComponent />
                         </StylesProvider>
                     </SafeAreaProvider>
                 </StoreProvider>
