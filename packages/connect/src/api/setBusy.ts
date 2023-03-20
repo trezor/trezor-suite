@@ -12,10 +12,7 @@ export default class SetBusy extends AbstractMethod<'setBusy', PROTO.SetBusy> {
 
         validateParams(payload, [{ name: 'expiry_ms', type: 'number' }]);
 
-        this.firmwareRange = getFirmwareRange(this.name, null, {
-            1: { min: '0', max: '0' },
-            2: { min: '2.5.3', max: '0' },
-        });
+        this.firmwareRange = getFirmwareRange(this.name, undefined, this.firmwareRange);
 
         this.params = {
             expiry_ms: payload.expiry_ms,
