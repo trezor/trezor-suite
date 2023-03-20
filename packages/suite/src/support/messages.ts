@@ -6460,6 +6460,14 @@ export default defineMessages({
         defaultMessage:
             'Tip: You can combine AND (&) and OR (|) operators for more complex searches. For example <strong>> 2020-01-01 & < 2020-01-31 | > 2020-12-01 & < 2020-12-31</strong> will show all all transactions in January 2020 or December 2020.',
     },
+    TR_INTERNAL_TRANSACTIONS: {
+        id: 'TR_INTERNAL_TRANSACTIONS',
+        defaultMessage: 'Internal Transfers',
+    },
+    TR_TOKEN_TRANSFERS: {
+        id: 'TR_TOKEN_TRANSFERS',
+        defaultMessage: '{standard} Token Transfers',
+    },
     TR_PAGINATION_NEWER: {
         id: 'TR_PAGINATION_NEWER',
         defaultMessage: 'Newer',
