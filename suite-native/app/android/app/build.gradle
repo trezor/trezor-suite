@@ -169,7 +169,7 @@ android {
             applicationIdSuffix '.staging'
         }
         prod {
-            // Placeholder, we can assemble `prodRelease` build variant
+            applicationIdSuffix: '.prod'
         }
     }
 
