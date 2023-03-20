@@ -6468,6 +6468,19 @@ export default defineMessages({
         id: 'TR_TOKEN_TRANSFERS',
         defaultMessage: '{standard} Token Transfers',
     },
+    TR_ANALYZE_IN_BLOCKBOOK: {
+        id: 'TR_ANALYZE_IN_BLOCKBOOK',
+        defaultMessage: 'Analyze in Blockbook',
+    },
+    TR_ANALYZE_IN_BLOCKBOOK_DESC: {
+        id: 'TR_ANALYZE_IN_BLOCKBOOK_DESC',
+        defaultMessage:
+            'See inputs and outputs in Blockbook as it might be easier to analyze there',
+    },
+    TR_ANALYZE_IN_BLOCKBOOK_OPEN: {
+        id: 'TR_ANALYZE_IN_BLOCKBOOK_OPEN',
+        defaultMessage: 'Open',
+    },
     TR_PAGINATION_NEWER: {
         id: 'TR_PAGINATION_NEWER',
         defaultMessage: 'Newer',
