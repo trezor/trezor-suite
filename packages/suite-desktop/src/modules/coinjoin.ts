@@ -33,6 +33,9 @@ export const init: Module = ({ mainWindow }) => {
     const backendProxyOptions: IpcProxyHandlerOptions<CoinjoinBackend> = {
         onCreateInstance: (settings: ConstructorParameters<typeof CoinjoinBackend>[0]) => {
             const backend = new CoinjoinBackend(settings);
+            backend.on('log', ({ level, payload }) => {
+                logger[level](SERVICE_NAME, `${BACKEND_CHANNEL} ${payload}`);
+            });
             backends.push(backend);
             return {
                 onRequest: (method, params) => {
