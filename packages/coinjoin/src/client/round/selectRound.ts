@@ -69,7 +69,7 @@ export const getUnregisteredAccounts = ({
         );
 
         if (isAlreadyRegistered) {
-            logger.log(`Skipping candidate ~~${accountKey}~~. Already registered to round`);
+            logger.info(`Skipping candidate ~~${accountKey}~~. Already registered to round`);
         }
 
         return !isAlreadyRegistered;
@@ -101,7 +101,7 @@ export const getAccountCandidates = ({
 
         // account was detained
         if (prison.isDetained(accountKey)) {
-            logger.log(`Account ~~${accountKey}~~ detained`);
+            logger.info(`Account ~~${accountKey}~~ detained`);
             return [];
         }
 
@@ -115,7 +115,7 @@ export const getAccountCandidates = ({
         );
 
         if (Object.keys(blameOfUtxos).length > 0) {
-            logger.log(`Found account candidate for blame round ~~${accountKey}~~`);
+            logger.info(`Found account candidate for blame round ~~${accountKey}~~`);
             return {
                 ...account,
                 blameOf: blameOfUtxos,
@@ -135,7 +135,7 @@ export const getAccountCandidates = ({
                     (account.skipRoundCounter > 0 && Math.random() > low / high)
                 ) {
                     account.skipRoundCounter = 0;
-                    logger.log(`Random skip candidate ~~${accountKey}~~`);
+                    logger.info(`Random skip candidate ~~${accountKey}~~`);
                     skippedAccounts.push({
                         key: account.accountKey,
                         reason: SessionPhase.SkippingRound,
@@ -147,7 +147,7 @@ export const getAccountCandidates = ({
             }
 
             if (utxos.some(({ anonymityLevel }) => anonymityLevel === undefined)) {
-                logger.log(
+                logger.info(
                     `Stopping the session for ~~${account.accountKey}~~. Missing anonymity level info.`,
                 );
                 skippedAccounts.push({
@@ -156,7 +156,7 @@ export const getAccountCandidates = ({
                 });
             }
 
-            logger.log(`Found account candidate ~~${accountKey}~~ with ${utxos.length} inputs`);
+            logger.info(`Found account candidate ~~${accountKey}~~ with ${utxos.length} inputs`);
             return {
                 ...account,
                 blameOf: null,
@@ -164,7 +164,7 @@ export const getAccountCandidates = ({
             };
         }
 
-        logger.log(
+        logger.info(
             `Skipping candidate ~~${accountKey}~~. Utxos ${utxos.length} of ${account.utxos.length}`,
         );
         skippedAccounts.push({
@@ -208,7 +208,7 @@ const selectInputsForBlameRound = ({
         accountCandidates.forEach(account => {
             const utxos = account.blameOf ? account.blameOf[round.blameOf] : null;
             if (utxos && utxos.length > 0) {
-                logger.log(
+                logger.info(
                     `Found blame round for account ~~${account.accountKey}~~ with ${utxos.length} inputs`,
                 );
                 inputs.push(
@@ -221,7 +221,7 @@ const selectInputsForBlameRound = ({
 
         if (inputs.length > 0) {
             round.inputs.push(...inputs);
-            logger.log(`Created blame round ~~${round.id}~~ with ${round.inputs.length} inputs`);
+            logger.info(`Created blame round ~~${round.id}~~ with ${round.inputs.length} inputs`);
             return true;
         }
         return false;
@@ -288,7 +288,7 @@ export const selectInputsForRound = async ({
                         roundParameters.miningFeeRate > account.maxFeePerKvbyte ||
                         roundParameters.coordinationFeeRate.rate > account.maxCoordinatorFeeRate
                     ) {
-                        logger.log(
+                        logger.info(
                             `Skipping round ~~${round.id}~~ for ~~${account.accountKey}~~. Fees to high ${roundParameters.miningFeeRate} ${roundParameters.coordinationFeeRate.rate}`,
                         );
                         return [];
@@ -332,7 +332,7 @@ export const selectInputsForRound = async ({
     const sumUtxosInRounds = utxoSelection.map(acc => acc.reduce((a, b) => a + b.length, 0));
     const maxUtxosInRound = Math.max(...sumUtxosInRounds);
     if (maxUtxosInRound < 1) {
-        logger.log('No results from selectInputsForRound');
+        logger.info('No results from selectInputsForRound');
         return;
     }
 
@@ -373,7 +373,7 @@ export const selectRound = async ({
     const unregisteredAccounts = getUnregisteredAccounts({ accounts, coinjoinRounds, options });
     const unregisteredAccountKeys = unregisteredAccounts.map(({ accountKey }) => accountKey);
 
-    logger.log('Looking for rounds');
+    logger.info('Looking for rounds');
     if (!runningAffiliateServer) {
         logger.warn('Affiliate server is not running. Round selection ignored');
         setSessionPhase({
@@ -392,11 +392,11 @@ export const selectRound = async ({
         prison,
     });
     if (roundCandidates.length < 1) {
-        logger.log('No suitable rounds');
+        logger.info('No suitable rounds');
         return;
     }
 
-    logger.log('Looking for accounts');
+    logger.info('Looking for accounts');
     setSessionPhase({ phase: SessionPhase.CoinSelection, accountKeys: unregisteredAccountKeys });
     const accountCandidates = getAccountCandidates({
         accounts: unregisteredAccounts,
@@ -406,11 +406,11 @@ export const selectRound = async ({
     });
 
     if (accountCandidates.length < 1) {
-        logger.log('No suitable accounts');
+        logger.info('No suitable accounts');
         return;
     }
 
-    logger.log(`Looking for utxos`);
+    logger.info(`Looking for utxos`);
     setSessionPhase({ phase: SessionPhase.RoundPairing, accountKeys: unregisteredAccountKeys });
     const newRound = await selectInputsForRound({
         aliceGenerator,
@@ -419,7 +419,7 @@ export const selectRound = async ({
         options,
     });
     if (!newRound) {
-        logger.log('No suitable utxos');
+        logger.info('No suitable utxos');
         setSessionPhase({
             phase: SessionPhase.RetryingRoundPairing,
             accountKeys: unregisteredAccountKeys,
@@ -427,6 +427,6 @@ export const selectRound = async ({
         return;
     }
 
-    logger.log(`Created new round ~~${newRound.id}~~ with ${newRound.inputs.length} inputs`);
+    logger.info(`Created new round ~~${newRound.id}~~ with ${newRound.inputs.length} inputs`);
     return newRound;
 };

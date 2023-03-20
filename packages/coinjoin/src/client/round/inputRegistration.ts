@@ -30,12 +30,12 @@ const registerInput = async (
     }
     // stop here and request for ownership proof from the wallet
     if (!input.ownershipProof) {
-        logger.log(`Waiting for ~~${input.outpoint}~~ ownership proof`);
+        logger.info(`Waiting for ~~${input.outpoint}~~ ownership proof`);
         return input;
     }
 
     if (input.registrationData) {
-        logger.log(`Input ~~${input.outpoint}~~ already registered. Skipping.`);
+        logger.info(`Input ~~${input.outpoint}~~ already registered. Skipping.`);
         return input;
     }
 
@@ -55,7 +55,7 @@ const registerInput = async (
     // note that this may cause that the input will not be registered if phase change before expected deadline
     const deadline = round.phaseDeadline - Date.now() - ROUND_SELECTION_REGISTRATION_OFFSET;
     const delay = deadline > 0 ? getRandomNumberInRange(0, deadline) : 0;
-    logger.log(
+    logger.info(
         `Trying to register ~~${input.outpoint}~~ to ~~${round.id}~~ with delay ${delay}ms and deadline ${round.phaseDeadline}`,
     );
 
@@ -141,10 +141,10 @@ const registerInput = async (
             { baseUrl: middlewareUrl },
         );
 
-        logger.log(
+        logger.info(
             `Registration ~~${input.outpoint}~~ to ~~${round.id}~~ successful. aliceId: ${registrationData.aliceId}`,
         );
-        logger.log(
+        logger.info(
             `~~${input.outpoint}~~ will pay ${coordinatorFee} coordinator fee and ${miningFee} mining fee`,
         );
 
@@ -170,7 +170,7 @@ const registerInput = async (
 export const inputRegistration = async (round: CoinjoinRound, options: CoinjoinRoundOptions) => {
     // try to register each input
     // failed inputs will be excluded from this round, successful will continue to phase: 1 (connectionConfirmation)
-    options.logger.log(`inputRegistration: ~~${round.id}~~`);
+    options.logger.info(`inputRegistration: ~~${round.id}~~`);
     round.setSessionPhase(SessionPhase.CoinRegistration);
 
     const { inputs } = round;

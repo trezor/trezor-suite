@@ -136,7 +136,7 @@ export const transactionSigning = async (
 ): Promise<CoinjoinRound> => {
     const { logger } = options;
 
-    logger.log(`transactionSigning: ~~${round.id}~~`);
+    logger.info(`transactionSigning: ~~${round.id}~~`);
 
     const inputsWithError = round.inputs.filter(input => input.error);
     if (inputsWithError.length > 0) {
@@ -179,7 +179,7 @@ export const transactionSigning = async (
         await Promise.all(round.inputs.map(input => sendTxSignature(round, input, options)));
 
         round.setSessionPhase(SessionPhase.AwaitingOtherSignatures);
-        logger.log(`Round ${round.id} signed successfully`);
+        logger.info(`Round ${round.id} signed successfully`);
     } catch (error) {
         // NOTE: if anything goes wrong in this process this Round will be corrupted for all the users
         // registered inputs will probably be banned

@@ -103,7 +103,7 @@ export class CoinjoinClient extends EventEmitter {
         if (this.accounts.find(a => a.accountKey === account.accountKey)) {
             throw new Error('Trying to register account that already exists');
         }
-        this.logger.log(`Register account ~~${account.accountKey}~~`);
+        this.logger.info(`Register account ~~${account.accountKey}~~`);
 
         // iterate Status more frequently
         if (this.accounts.length === 0) {
@@ -120,7 +120,7 @@ export class CoinjoinClient extends EventEmitter {
     }
 
     updateAccount(account: RegisterAccountParams) {
-        this.logger.log(`Update account ~~${account.accountKey}~~`);
+        this.logger.info(`Update account ~~${account.accountKey}~~`);
         const accountToUpdate = this.accounts.find(a => a.accountKey === account.accountKey);
         if (accountToUpdate) {
             this.rounds.forEach(round => round.updateAccount(account));
@@ -136,7 +136,7 @@ export class CoinjoinClient extends EventEmitter {
     }
 
     unregisterAccount(accountKey: string) {
-        this.logger.log(`Unregister account ~~${accountKey}~~`);
+        this.logger.info(`Unregister account ~~${accountKey}~~`);
         this.rounds.forEach(round => {
             round.unregisterAccount(accountKey);
         });
@@ -273,7 +273,7 @@ export class CoinjoinClient extends EventEmitter {
             this.emit('log', { level, payload: redacted(payload) });
         return {
             debug: emit('debug'),
-            log: emit('log'),
+            info: emit('info'),
             warn: emit('warn'),
             error: emit('error'),
         };

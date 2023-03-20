@@ -100,7 +100,7 @@ export class CoinjoinBackendClient {
         const url = this.blockbookUrls[this.blockbookRequestId++ % this.blockbookUrls.length];
         const identity = options?.identity;
         const api = await this.websockets.getOrCreate(url, identity);
-        this.logger?.log(`WS ${method} ${params} ${this.websockets.getSocketId(url, identity)}`);
+        this.logger?.debug(`WS ${method} ${params} ${this.websockets.getSocketId(url, identity)}`);
         return (api[method] as any).apply(api, params);
     }
 
@@ -189,7 +189,7 @@ export class CoinjoinBackendClient {
     protected wabisabiGet(path: string, query?: Record<string, any>, options?: RequestOptions) {
         const url = `${this.wabisabiUrl}/${path}`;
         const identity = this.identityWabisabi;
-        this.logger?.log(`GET ${url}${query ? `?${new URLSearchParams(query)}` : ''}`);
+        this.logger?.debug(`GET ${url}${query ? `?${new URLSearchParams(query)}` : ''}`);
         return httpGet(url, query, { identity, ...options });
     }
 }

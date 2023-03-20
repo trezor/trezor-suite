@@ -194,7 +194,7 @@ export class CoinjoinRound extends EventEmitter {
             if (!shouldCoolOff) {
                 await unlock();
             } else {
-                this.logger.log(
+                this.logger.info(
                     `Waiting for round ${this.id} to cool off ${ROUND_PHASE_PROCESS_TIMEOUT}ms`,
                 );
                 // either process will finish gracefully or will be aborted
@@ -224,7 +224,7 @@ export class CoinjoinRound extends EventEmitter {
     }
 
     async process(accounts: Account[]) {
-        const { log } = this.logger;
+        const { info: log } = this.logger;
         if (this.inputs.length === 0) {
             log('Trying to process round without inputs');
             return this;
@@ -326,7 +326,7 @@ export class CoinjoinRound extends EventEmitter {
             const inputs = this.inputs.filter(input => !input.ownershipProof && !input.requested);
             if (inputs.length > 0) {
                 inputs.forEach(input => {
-                    this.logger.log(`Requesting ownership for ~~${input.outpoint}~~`);
+                    this.logger.info(`Requesting ownership for ~~${input.outpoint}~~`);
                     input.setRequest('ownership');
                 });
                 return {
@@ -342,7 +342,7 @@ export class CoinjoinRound extends EventEmitter {
             if (inputs.length > 0 && this.transactionData && this.liquidityClues) {
                 this.setSessionPhase(SessionPhase.TransactionSigning);
                 inputs.forEach(input => {
-                    this.logger.log(`Requesting witness for ~~${input.outpoint}~~`);
+                    this.logger.info(`Requesting witness for ~~${input.outpoint}~~`);
                     input.setRequest('signature');
                 });
                 return {
@@ -357,7 +357,7 @@ export class CoinjoinRound extends EventEmitter {
     }
 
     resolveRequest({ type, inputs }: CoinjoinResponseEvent) {
-        const { log } = this.logger;
+        const { info: log } = this.logger;
         inputs.forEach(i => {
             const input = this.inputs.find(a => a.outpoint === i.outpoint);
             if (!input) return;
@@ -428,7 +428,7 @@ export class CoinjoinRound extends EventEmitter {
             // if affiliate server goes offline try to abort round if it's not in critical phase.
             // if round is in critical phase, there is noting much we can do...
             // ...we need to continue and hope that server will become online before transaction signing phase
-            this.logger.log(`Affiliate server offline. Aborting round ${this.id}`);
+            this.logger.info(`Affiliate server offline. Aborting round ${this.id}`);
             this.lock?.abort();
             this.inputs.forEach(i => i.clearConfirmationInterval());
         }
@@ -436,7 +436,7 @@ export class CoinjoinRound extends EventEmitter {
 
     // forced by CoinjoinClient.disable. stop processes if any
     end() {
-        this.logger.log(`Aborting round ${this.id}`);
+        this.logger.info(`Aborting round ${this.id}`);
         this.lock?.abort();
 
         this.inputs.forEach(i => i.clearConfirmationInterval());

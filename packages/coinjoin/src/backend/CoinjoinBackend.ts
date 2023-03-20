@@ -178,7 +178,7 @@ export class CoinjoinBackend extends EventEmitter {
         const emit = (level: LogLevel) => (payload: string) => this.emit('log', { level, payload });
         return {
             debug: emit('debug'),
-            log: emit('log'),
+            info: emit('info'),
             warn: emit('warn'),
             error: emit('error'),
         };

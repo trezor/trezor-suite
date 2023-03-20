@@ -96,7 +96,7 @@ const CACHE_PARAMS = `${CACHE_DIR}/anonymityScoreParams.json`;
         signal: new AbortController().signal,
         logger: {
             debug: () => {},
-            log: () => {},
+            info: () => {},
             warn: () => {},
             error: () => {},
         },
