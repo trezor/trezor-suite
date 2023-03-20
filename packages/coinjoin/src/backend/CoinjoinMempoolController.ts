@@ -1,5 +1,6 @@
 /* eslint no-underscore-dangle: ["error", { "allowAfterThis": true }] */
 
+import type { Logger } from '../types';
 import type { BlockbookTransaction, MempoolClient } from '../types/backend';
 import { doesTxContainAddress } from './backendUtils';
 
@@ -15,11 +16,13 @@ export type MempoolController = {
 type CoinjoinMempoolControllerSettings = {
     client: MempoolClient;
     filter?: (tx: BlockbookTransaction) => boolean;
+    logger?: Logger;
 };
 
 export class CoinjoinMempoolController implements MempoolController {
     private readonly client;
     private readonly mempool;
+    private readonly logger;
     private readonly filter;
     private readonly onTx;
     private _status: MempoolStatus;
@@ -28,9 +31,10 @@ export class CoinjoinMempoolController implements MempoolController {
         return this._status;
     }
 
-    constructor({ client, filter }: CoinjoinMempoolControllerSettings) {
+    constructor({ client, filter, logger }: CoinjoinMempoolControllerSettings) {
         this.client = client;
         this.mempool = new Map<string, BlockbookTransaction>();
+        this.logger = logger;
         this.filter = filter;
         this.onTx = this.onMempoolTx.bind(this);
         this._status = 'stopped';
@@ -38,6 +42,7 @@ export class CoinjoinMempoolController implements MempoolController {
 
     private onMempoolTx(tx: BlockbookTransaction) {
         if (this.filter?.(tx) ?? true) {
+            this.logger?.debug(`WS mempool ${tx.txid}`);
             this.mempool.set(tx.txid, tx);
         }
     }
