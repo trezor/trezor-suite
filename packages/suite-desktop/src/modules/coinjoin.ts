@@ -15,6 +15,8 @@ import { PowerSaveBlocker } from '../libs/power-save-blocker';
 import type { Module } from './index';
 
 const SERVICE_NAME = '@trezor/coinjoin';
+const CLIENT_CHANNEL = 'CoinjoinClient';
+const BACKEND_CHANNEL = 'CoinjoinBackend';
 
 export const init: Module = ({ mainWindow }) => {
     const { logger } = global;
@@ -34,16 +36,16 @@ export const init: Module = ({ mainWindow }) => {
             backends.push(backend);
             return {
                 onRequest: (method, params) => {
-                    logger.debug(SERVICE_NAME, `CoinjoinBackend call ${method}`);
+                    logger.debug(SERVICE_NAME, `${BACKEND_CHANNEL} call ${method}`);
                     // needs type casting
                     return (backend[method] as any)(...params);
                 },
                 onAddListener: (eventName, listener) => {
-                    logger.debug(SERVICE_NAME, `CoinjoinBackend add listener ${eventName}`);
+                    logger.debug(SERVICE_NAME, `${BACKEND_CHANNEL} add listener ${eventName}`);
                     return backend.on(eventName, listener);
                 },
                 onRemoveListener: (eventName: any) => {
-                    logger.debug(SERVICE_NAME, `CoinjoinBackend remove listener ${eventName}`);
+                    logger.debug(SERVICE_NAME, `${BACKEND_CHANNEL} remove listener ${eventName}`);
                     return backend.removeAllListeners(eventName);
                 },
             };
@@ -65,19 +67,17 @@ export const init: Module = ({ mainWindow }) => {
                         captureMessage(payload, scope);
                     });
                 }
-                if (level === 'log') {
-                    // suite-desktop logger doesn't have "log", using "debug" instead
-                    logger.debug(SERVICE_NAME, payload);
-                } else {
-                    logger[level](SERVICE_NAME, payload);
-                }
+                logger[level](SERVICE_NAME, `${CLIENT_CHANNEL} ${payload}`);
             });
             clients.push(client);
             return {
                 onRequest: async (method, params) => {
-                    logger.debug(SERVICE_NAME, `CoinjoinClient call ${method}`);
+                    logger.debug(SERVICE_NAME, `${CLIENT_CHANNEL} call ${method}`);
                     if (method === 'enable') {
-                        logger.debug(SERVICE_NAME, `CoinjoinClient binary enable on port ${port}`);
+                        logger.debug(
+                            SERVICE_NAME,
+                            `${CLIENT_CHANNEL} binary enable on port ${port}`,
+                        );
                         try {
                             await coinjoinMiddleware.start();
                         } catch (err) {
@@ -89,7 +89,7 @@ export const init: Module = ({ mainWindow }) => {
                         clients.splice(clients.indexOf(client), 1);
 
                         if (clients.length === 0) {
-                            logger.debug(SERVICE_NAME, `CoinjoinClient binary stop`);
+                            logger.debug(SERVICE_NAME, `${CLIENT_CHANNEL} binary stop`);
                             coinjoinMiddleware.stop();
                         }
                         if (!clients.some(cli => cli.getAccounts().length > 0)) {
@@ -108,11 +108,11 @@ export const init: Module = ({ mainWindow }) => {
                     return (client[method] as any)(...params); // bind method to instance context
                 },
                 onAddListener: (eventName, listener) => {
-                    logger.debug(SERVICE_NAME, `CoinjoinClient add listener ${eventName}`);
+                    logger.debug(SERVICE_NAME, `${CLIENT_CHANNEL} add listener ${eventName}`);
                     return client.on(eventName, listener);
                 },
                 onRemoveListener: eventName => {
-                    logger.debug(SERVICE_NAME, `CoinjoinClient remove listener ${eventName}`);
+                    logger.debug(SERVICE_NAME, `${CLIENT_CHANNEL} remove listener ${eventName}`);
                     return client.removeAllListeners(eventName);
                 },
             };
@@ -122,13 +122,13 @@ export const init: Module = ({ mainWindow }) => {
     return () => {
         const unregisterBackendProxy = createIpcProxyHandler(
             ipcMain,
-            'CoinjoinBackend',
+            BACKEND_CHANNEL,
             backendProxyOptions,
         );
 
         const unregisterClientProxy = createIpcProxyHandler(
             ipcMain,
-            'CoinjoinClient',
+            CLIENT_CHANNEL,
             clientProxyOptions,
         );
 
