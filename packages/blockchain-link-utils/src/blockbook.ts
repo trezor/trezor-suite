@@ -10,7 +10,6 @@ import type {
     AccountInfo,
     InternalTransfer,
 } from '@trezor/blockchain-link-types';
-
 import type {
     ServerInfo,
     AccountInfo as BlockbookAccountInfo,
