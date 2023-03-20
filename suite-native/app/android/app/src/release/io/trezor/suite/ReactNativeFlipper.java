@@ -18,4 +18,3 @@ public class ReactNativeFlipper {
     // Do nothing as we don't want to initialize Flipper on Release.
   }
 }
-suite-native/app/android/app/src/release/java/io/trezor/suite/ReactNativeFlipper.java
