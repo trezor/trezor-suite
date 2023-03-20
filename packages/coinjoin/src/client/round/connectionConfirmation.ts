@@ -30,7 +30,7 @@ const confirmInput = async (
         throw new Error(`Trying to confirm unregistered input ~~${input.outpoint}~~`);
     }
     if (input.confirmedAmountCredentials && input.confirmedVsizeCredentials) {
-        options.logger.log(`Input ~~${input.outpoint}~~ already confirmed. Skipping.`);
+        options.logger.info(`Input ~~${input.outpoint}~~ already confirmed. Skipping.`);
         return input;
     }
 
@@ -54,7 +54,7 @@ const confirmInput = async (
     const deadline =
         round.phaseDeadline + readTimeSpan(round.roundParameters.connectionConfirmationTimeout);
 
-    logger.log(
+    logger.info(
         `Confirming ~~${input.outpoint}~~ to ~~${round.id}~~ phase ${round.phase} with delay ${delay}ms and deadline ${deadline}`,
     );
 
@@ -74,7 +74,7 @@ const confirmInput = async (
         !confirmationData.realAmountCredentials ||
         !confirmationData.realVsizeCredentials
     ) {
-        logger.log(`Confirmed in phase ${round.phase} ~~${input.outpoint}~~ in ~~${round.id}~~`);
+        logger.info(`Confirmed in phase ${round.phase} ~~${input.outpoint}~~ in ~~${round.id}~~`);
         return input;
     }
 
@@ -91,7 +91,7 @@ const confirmInput = async (
         { baseUrl: middlewareUrl }, // NOTE: post processing intentionally without abort signal (should not be aborted)
     );
 
-    logger.log(`Confirmed ~~${input.outpoint}~~ in ~~${round.id}~~`);
+    logger.info(`Confirmed ~~${input.outpoint}~~ in ~~${round.id}~~`);
 
     input.setConfirmationData(confirmationData);
     input.setConfirmedCredentials(confirmedAmountCredentials, confirmedVsizeCredentials);
@@ -117,13 +117,15 @@ export const confirmationInterval = (
     const promise = new Promise<Alice>(resolve => {
         const { logger } = options;
         const done = () => {
-            logger.log(`Confirmation interval for ~~${input.outpoint}~~ completed`);
+            logger.info(`Confirmation interval for ~~${input.outpoint}~~ completed`);
             resolve(input);
         };
 
         const timeoutFn = async () => {
             const delay = Math.max(intervalDelay - requestLatency, 0);
-            logger.log(`Setting confirmation interval for ~~${input.outpoint}~~. Delay ${delay}ms`);
+            logger.info(
+                `Setting confirmation interval for ~~${input.outpoint}~~. Delay ${delay}ms`,
+            );
 
             try {
                 const start = Date.now() + delay;
@@ -169,7 +171,7 @@ export const connectionConfirmation = async (
 ) => {
     // try to confirm each input
     // failed inputs will be excluded from this round, successful will continue to phase: 2 (outputRegistration)
-    options.logger.log(`connectionConfirmation: ~~${round.id}~~`);
+    options.logger.info(`connectionConfirmation: ~~${round.id}~~`);
     round.setSessionPhase(SessionPhase.AwaitingConfirmation);
 
     const { inputs } = round;

@@ -32,9 +32,9 @@ export class CoinjoinWebsocketController {
         }
         if (!socket.isConnected()) {
             await socket.connect();
-            this.logger?.log(`WS OPENED ${socketId}`);
+            this.logger?.debug(`WS OPENED ${socketId}`);
             socket.once('disconnected', () => {
-                this.logger?.log(`WS CLOSED ${socketId}`);
+                this.logger?.debug(`WS CLOSED ${socketId}`);
             });
         }
         return socket;

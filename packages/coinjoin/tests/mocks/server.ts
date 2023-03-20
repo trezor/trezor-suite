@@ -242,7 +242,7 @@ export const createServer = async () => {
         signal: new AbortController().signal,
         logger: {
             debug: () => {},
-            log: () => {},
+            info: () => {},
             warn: () => {},
             error: () => {},
         },

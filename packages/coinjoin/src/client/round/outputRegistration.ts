@@ -115,7 +115,7 @@ export const outputRegistration = async (
 ) => {
     const { logger } = options;
 
-    logger.log(`outputRegistration: ~~${round.id}~~`);
+    logger.info(`outputRegistration: ~~${round.id}~~`);
     // TODO:
     // - decide if there is only 1 account registered should i abaddon this round and blame it on some "youngest" input?
     // - maybe if there is only 1 account inputs are so "far away" from each other that it is wort to mix anyway?
@@ -148,7 +148,7 @@ export const outputRegistration = async (
         round.setSessionPhase(SessionPhase.AwaitingOthersOutputs);
         // inform coordinator that each registered input is ready to sign
         await Promise.all(round.inputs.map(input => readyToSign(round, input, options)));
-        logger.log(`Ready to sign ~~${round.id}~~`);
+        logger.info(`Ready to sign ~~${round.id}~~`);
     } catch (error) {
         // NOTE: if anything goes wrong in this process this Round will be corrupted for all the users
         // registered inputs will probably be banned
