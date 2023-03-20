@@ -7,10 +7,7 @@ export default class UnlockPath extends AbstractMethod<'unlockPath', PROTO.Unloc
     init() {
         this.requiredPermissions = ['read'];
         this.skipFinalReload = true;
-        this.firmwareRange = getFirmwareRange(this.name, null, {
-            1: { min: '1.12.1', max: '0' },
-            2: { min: '2.5.3', max: '0' },
-        });
+        this.firmwareRange = getFirmwareRange(this.name, undefined, this.firmwareRange);
 
         const { payload } = this;
 
