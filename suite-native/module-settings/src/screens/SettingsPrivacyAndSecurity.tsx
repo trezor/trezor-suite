@@ -50,6 +50,7 @@ const DiscreetModeSwitchRow = () => {
 const AnalyticsSwitchRow = () => {
     const dispatch = useDispatch();
     const isAnalyticsEnabled = useSelector(selectIsAnalyticsEnabled);
+    const { isDiscreetMode, setIsDiscreetMode } = useDiscreetMode();
 
     const handleAnalyticsChange = (isEnabled: boolean) => {
         if (isEnabled) {
