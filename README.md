@@ -54,14 +54,12 @@ Before you start make sure you have downloaded and installed [NVM](https://githu
 
 > It's recommended to enable `git config --global submodule.recurse true` so you don't need to run `git submodule update --init --recursive` every time when submodules are updated.
 
-> To set up your dev environment for a native platform (iOS/Android) follow [these additional steps](https://github.com/trezor/trezor-suite/tree/develop/suite-native/app#development).
+> To set up your dev environment for a native platform (iOS/Android) follow [these additional steps](https://github.com/trezor/trezor-suite/tree/develop/suite-native/app#prerequisites).
 
 Run a dev build:
 
 -   `yarn suite:dev` (web app)
 -   `yarn suite:dev:desktop` (electron app)
--   `yarn suite:dev:android` (react-native Android)
--   `yarn suite:dev:ios` (react-native iOS)
 
 ## @trezor/connect development
 
