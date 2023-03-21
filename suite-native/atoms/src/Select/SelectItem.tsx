@@ -1,6 +1,8 @@
 import React, { ReactNode } from 'react';
 import { TouchableOpacity } from 'react-native';
 
+import { G } from '@mobily/ts-belt';
+
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { Box } from '../Box';
@@ -63,7 +65,7 @@ export const SelectItem = ({
 }: SelectItemProps) => {
     const { applyStyle } = useNativeStyles();
 
-    if (!value) return null;
+    if (G.isNull(value) || G.isUndefined(value)) return null;
 
     return (
         <TouchableOpacity style={applyStyle(selectItemStyle)} onPress={onSelect}>

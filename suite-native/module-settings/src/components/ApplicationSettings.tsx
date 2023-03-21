@@ -51,10 +51,10 @@ export const ApplicationSettings = () => {
                 onPress={() => handleNavigation(SettingsStackRoutes.SettingsCustomization)}
             />
             <SettingsSectionItem
-                title="Analytics"
+                title="Privacy & Security"
                 iconName="eye"
                 subtitle="Turn on analytics"
-                onPress={() => handleNavigation(SettingsStackRoutes.SettingsAnalytics)}
+                onPress={() => handleNavigation(SettingsStackRoutes.SettingsPrivacyAndSecurity)}
             />
         </SettingsSection>
     );

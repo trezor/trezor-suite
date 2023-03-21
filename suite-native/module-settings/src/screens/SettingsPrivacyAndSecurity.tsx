@@ -8,7 +8,7 @@ import { Card } from '@suite-native/atoms';
 
 import { TouchableSwitchRow } from '../components/TouchableSwitchRow';
 
-export const SettingsAnalyticsScreen = () => {
+export const SettingsPrivacyAndSecurity = () => {
     const dispatch = useDispatch();
     const isAnalyticsEnabled = useSelector(selectIsAnalyticsEnabled);
 
@@ -21,10 +21,23 @@ export const SettingsAnalyticsScreen = () => {
     };
 
     return (
-        <Screen header={<ScreenHeader title="Analytics" />}>
+        <Screen header={<ScreenHeader title="Privacy & Security" />}>
             <Card>
                 <TouchableSwitchRow
-                    text="Analytics"
+                    text="Hide balances"
+                    description={
+                        "Enabling this will route all of Suite's traffic through the Tor network, increasing your privacy and security."
+                    }
+                    iconName="detective"
+                    isChecked={isAnalyticsEnabled}
+                    onChange={handleAnalyticsChange}
+                />
+                <TouchableSwitchRow
+                    text="Usage data"
+                    iconName="database"
+                    description={
+                        "Enabling this will route all of Suite's traffic through the Tor network, increasing your privacy and security."
+                    }
                     isChecked={isAnalyticsEnabled}
                     onChange={handleAnalyticsChange}
                 />
