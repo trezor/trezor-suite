@@ -100,7 +100,7 @@ platform :android do
 
   desc "Deploy production build to Google Play Store."
   lane :production do |options|
-    deploy_android_play_store(flavor: "prod")
+    deploy_android_play_store(flavor: "Prod")
   end
 
   desc "Build and deploy the app to Firebase App Distribution for develop build."
