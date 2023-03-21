@@ -3659,6 +3659,77 @@
                 }
             }
         },
+        "EthereumDefinitionType": {
+            "values": {
+                "NETWORK": 0,
+                "TOKEN": 1
+            }
+        },
+        "EthereumNetworkInfo": {
+            "fields": {
+                "chain_id": {
+                    "rule": "required",
+                    "type": "uint64",
+                    "id": 1
+                },
+                "symbol": {
+                    "rule": "required",
+                    "type": "string",
+                    "id": 2
+                },
+                "slip44": {
+                    "rule": "required",
+                    "type": "uint32",
+                    "id": 3
+                },
+                "name": {
+                    "rule": "required",
+                    "type": "string",
+                    "id": 4
+                }
+            }
+        },
+        "EthereumTokenInfo": {
+            "fields": {
+                "address": {
+                    "rule": "required",
+                    "type": "bytes",
+                    "id": 1
+                },
+                "chain_id": {
+                    "rule": "required",
+                    "type": "uint64",
+                    "id": 2
+                },
+                "symbol": {
+                    "rule": "required",
+                    "type": "string",
+                    "id": 3
+                },
+                "decimals": {
+                    "rule": "required",
+                    "type": "uint32",
+                    "id": 4
+                },
+                "name": {
+                    "rule": "required",
+                    "type": "string",
+                    "id": 5
+                }
+            }
+        },
+        "EthereumDefinitions": {
+            "fields": {
+                "encoded_network": {
+                    "type": "bytes",
+                    "id": 1
+                },
+                "encoded_token": {
+                    "type": "bytes",
+                    "id": 2
+                }
+            }
+        },
         "EthereumSignTypedData": {
             "fields": {
                 "address_n": {
@@ -3680,6 +3751,10 @@
                     "options": {
                         "default": true
                     }
+                },
+                "definitions": {
+                    "type": "EthereumDefinitions",
+                    "id": 4
                 }
             }
         },
@@ -3814,6 +3889,10 @@
                 "show_display": {
                     "type": "bool",
                     "id": 2
+                },
+                "encoded_network": {
+                    "type": "bytes",
+                    "id": 3
                 }
             }
         },
@@ -3895,6 +3974,10 @@
                 "tx_type": {
                     "type": "uint32",
                     "id": 10
+                },
+                "definitions": {
+                    "type": "EthereumDefinitions",
+                    "id": 12
                 }
             }
         },
@@ -3961,6 +4044,10 @@
                     "rule": "repeated",
                     "type": "EthereumAccessList",
                     "id": 11
+                },
+                "definitions": {
+                    "type": "EthereumDefinitions",
+                    "id": 12
                 }
             },
             "nested": {
@@ -4023,6 +4110,10 @@
                     "rule": "required",
                     "type": "bytes",
                     "id": 2
+                },
+                "encoded_network": {
+                    "type": "bytes",
+                    "id": 3
                 }
             }
         },
@@ -4077,6 +4168,10 @@
                 "message_hash": {
                     "type": "bytes",
                     "id": 3
+                },
+                "encoded_network": {
+                    "type": "bytes",
+                    "id": 4
                 }
             }
         },

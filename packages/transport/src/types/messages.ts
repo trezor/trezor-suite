@@ -1257,11 +1257,40 @@ export type EosSignedTx = {
     signature: string;
 };
 
+export enum EthereumDefinitionType {
+    NETWORK = 0,
+    TOKEN = 1,
+}
+
+// EthereumNetworkInfo
+export type EthereumNetworkInfo = {
+    chain_id: number;
+    symbol: string;
+    slip44: number;
+    name: string;
+};
+
+// EthereumTokenInfo
+export type EthereumTokenInfo = {
+    address: string;
+    chain_id: number;
+    symbol: string;
+    decimals: number;
+    name: string;
+};
+
+// EthereumDefinitions
+export type EthereumDefinitions = {
+    encoded_network?: ArrayBuffer;
+    encoded_token?: ArrayBuffer;
+};
+
 // EthereumSignTypedData
 export type EthereumSignTypedData = {
     address_n: number[];
     primary_type: string;
     metamask_v4_compat?: boolean;
+    definitions?: EthereumDefinitions;
 };
 
 // EthereumTypedDataStructRequest
@@ -1323,6 +1352,7 @@ export type EthereumPublicKey = {
 export type EthereumGetAddress = {
     address_n: number[];
     show_display?: boolean;
+    encoded_network?: string;
 };
 
 // EthereumAddress
@@ -1343,6 +1373,7 @@ export type EthereumSignTx = {
     data_length?: number;
     chain_id: number;
     tx_type?: number;
+    definitions?: EthereumDefinitions;
 };
 
 export type EthereumAccessList = {
@@ -1363,6 +1394,7 @@ export type EthereumSignTxEIP1559 = {
     data_length: number;
     chain_id: number;
     access_list: EthereumAccessList[];
+    definitions?: EthereumDefinitions;
 };
 
 // EthereumTxRequest
@@ -1382,6 +1414,7 @@ export type EthereumTxAck = {
 export type EthereumSignMessage = {
     address_n: number[];
     message: string;
+    encoded_network?: string;
 };
 
 // EthereumMessageSignature
@@ -1402,6 +1435,7 @@ export type EthereumSignTypedHash = {
     address_n: number[];
     domain_separator_hash: string;
     message_hash?: string;
+    encoded_network?: string;
 };
 
 // EthereumTypedDataSignature
@@ -2329,6 +2363,9 @@ export type MessageType = {
     EosActionUnknown: EosActionUnknown;
     EosTxActionAck: EosTxActionAck;
     EosSignedTx: EosSignedTx;
+    EthereumNetworkInfo: EthereumNetworkInfo;
+    EthereumTokenInfo: EthereumTokenInfo;
+    EthereumDefinitions: EthereumDefinitions;
     EthereumSignTypedData: EthereumSignTypedData;
     EthereumTypedDataStructRequest: EthereumTypedDataStructRequest;
     EthereumFieldType: EthereumFieldType;

@@ -7,6 +7,7 @@ import { getEthereumNetwork } from '../data/coinInfo';
 import { getNetworkLabel } from '../utils/ethereumUtils';
 import { stripHexPrefix } from '../utils/formatUtils';
 import * as helper from './ethereum/ethereumSignTx';
+import { getEthereumDefinitions } from './ethereum/ethereumDefinitions';
 import type { EthereumTransaction, EthereumTransactionEIP1559 } from '../types/api/ethereum';
 
 type Params = {
@@ -108,8 +109,11 @@ export default class EthereumSignTransaction extends AbstractMethod<
         };
     }
 
-    run() {
+    async run() {
         const { tx } = this.params;
+
+        const definitions = await getEthereumDefinitions(tx.chainId, tx.data ? tx.to : undefined);
+
         return tx.type === 'eip1559'
             ? helper.ethereumSignTxEIP1559(
                   this.device.getCommands().typedCall.bind(this.device.getCommands()),
@@ -123,6 +127,7 @@ export default class EthereumSignTransaction extends AbstractMethod<
                   tx.chainId,
                   tx.data,
                   tx.accessList,
+                  definitions,
               )
             : helper.ethereumSignTx(
                   this.device.getCommands().typedCall.bind(this.device.getCommands()),
@@ -135,6 +140,7 @@ export default class EthereumSignTransaction extends AbstractMethod<
                   tx.chainId,
                   tx.data,
                   tx.txType,
+                  definitions,
               );
     }
 }

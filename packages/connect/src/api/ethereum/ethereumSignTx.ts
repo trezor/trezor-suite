@@ -1,5 +1,6 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/helpers/ethereumSignTx.js
 
+import { EthereumDefinitions } from '@trezor/transport/lib/types/messages';
 import { PROTO, ERRORS } from '../../constants';
 import type { TypedCall } from '../../device/DeviceCommands';
 import type { EthereumAccessList } from '../../types/api/ethereum';
@@ -58,6 +59,7 @@ const stripLeadingZeroes = (str: string) => {
 };
 
 export const ethereumSignTx = async (
+    // todo: don't we change parameters here to object?
     typedCall: TypedCall,
     address_n: number[],
     to: string,
@@ -68,6 +70,7 @@ export const ethereumSignTx = async (
     chain_id: number,
     data?: string,
     tx_type?: number,
+    definitions?: EthereumDefinitions,
 ) => {
     const length = data == null ? 0 : data.length / 2;
 
@@ -81,6 +84,7 @@ export const ethereumSignTx = async (
         gas_limit: stripLeadingZeroes(gas_limit),
         to,
         value: stripLeadingZeroes(value),
+        definitions,
     };
 
     if (length !== 0) {
@@ -104,6 +108,7 @@ export const ethereumSignTx = async (
 };
 
 export const ethereumSignTxEIP1559 = async (
+    // todo: don't we change parameters here to object?
     typedCall: TypedCall,
     address_n: number[],
     to: string,
@@ -115,6 +120,7 @@ export const ethereumSignTxEIP1559 = async (
     chain_id: number,
     data?: string,
     access_list?: EthereumAccessList[],
+    definitions?: EthereumDefinitions,
 ) => {
     const length = data == null ? 0 : data.length / 2;
 
@@ -135,6 +141,7 @@ export const ethereumSignTxEIP1559 = async (
             address: a.address,
             storage_keys: a.storageKeys,
         })),
+        definitions,
     };
 
     const response = await typedCall('EthereumSignTxEIP1559', 'EthereumTxRequest', message);
