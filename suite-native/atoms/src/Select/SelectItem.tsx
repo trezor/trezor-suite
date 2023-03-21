@@ -65,7 +65,7 @@ export const SelectItem = ({
 }: SelectItemProps) => {
     const { applyStyle } = useNativeStyles();
 
-    if (G.isNull(value) || G.isUndefined(value)) return null;
+    if (G.isNullable(value)) return null;
 
     return (
         <TouchableOpacity style={applyStyle(selectItemStyle)} onPress={onSelect}>

@@ -29,10 +29,27 @@ const DiscreetTextExample = () => {
     );
 };
 
-export const SettingsPrivacyAndSecurity = () => {
+const DiscreetModeSwitchRow = () => {
+    const { isDiscreetMode, setIsDiscreetMode } = useDiscreetMode();
+    return (
+        <TouchableSwitchRow
+            text="Hide balances"
+            description={
+                <Box flexDirection="row" alignItems="center">
+                    <RowDescription>{`$100 -> `}</RowDescription>
+                    <DiscreetTextExample />
+                </Box>
+            }
+            iconName="detective"
+            isChecked={isDiscreetMode}
+            onChange={setIsDiscreetMode}
+        />
+    );
+};
+
+const AnalyticsSwitchRow = () => {
     const dispatch = useDispatch();
     const isAnalyticsEnabled = useSelector(selectIsAnalyticsEnabled);
-    const { isDiscreetMode, setIsDiscreetMode } = useDiscreetMode();
 
     const handleAnalyticsChange = (isEnabled: boolean) => {
         if (isEnabled) {
@@ -43,33 +60,26 @@ export const SettingsPrivacyAndSecurity = () => {
     };
 
     return (
-        <Screen header={<ScreenHeader title="Privacy & Security" />}>
-            <Card>
-                <TouchableSwitchRow
-                    text="Hide balances"
-                    description={
-                        <Box flexDirection="row" alignItems="center">
-                            <RowDescription>{`$100 -> `}</RowDescription>
-                            <DiscreetTextExample />
-                        </Box>
-                    }
-                    iconName="detective"
-                    isChecked={isDiscreetMode}
-                    onChange={setIsDiscreetMode}
-                />
-                <TouchableSwitchRow
-                    text="Usage data"
-                    iconName="database"
-                    description={
-                        <RowDescription>
-                            All data is kept strictly anonymous; we only use it to improve the
-                            Trezor ecosystem.
-                        </RowDescription>
-                    }
-                    isChecked={isAnalyticsEnabled}
-                    onChange={handleAnalyticsChange}
-                />
-            </Card>
-        </Screen>
+        <TouchableSwitchRow
+            text="Usage data"
+            iconName="database"
+            description={
+                <RowDescription>
+                    All data is kept strictly anonymous; we only use it to improve the Trezor
+                    ecosystem.
+                </RowDescription>
+            }
+            isChecked={isAnalyticsEnabled}
+            onChange={handleAnalyticsChange}
+        />
     );
 };
+
+export const SettingsPrivacyAndSecurity = () => (
+    <Screen header={<ScreenHeader title="Privacy & Security" />}>
+        <Card>
+            <DiscreetModeSwitchRow />
+            <AnalyticsSwitchRow />
+        </Card>
+    </Screen>
+);
