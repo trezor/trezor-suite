@@ -411,6 +411,7 @@ export const getTxIcon = (txType: WalletAccountTransaction['type']) => {
         case 'recv':
             return 'RECEIVE';
         case 'sent':
+        case 'contract':
         case 'self':
             return 'SEND';
         case 'failed':
@@ -463,7 +464,7 @@ export const isTxUnknown = (transaction: WalletAccountTransaction) => {
     return (
         (!isTokenTransaction &&
             !isInternalTransaction &&
-            transaction.type !== 'joint' && // coinjoin txs don't have any target
+            !['joint', 'contract'].includes(transaction.type) && // coinjoin, contract txs don't have any target
             !transaction.cardanoSpecific && // cardano staking txs (de/registration of staking key, stake delegation) don't need to have any target
             !transaction.targets.find(t => t.addresses)) ||
         transaction.type === 'unknown'
