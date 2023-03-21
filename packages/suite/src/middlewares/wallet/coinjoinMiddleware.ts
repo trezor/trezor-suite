@@ -56,6 +56,10 @@ export const coinjoinMiddleware =
             return action;
         }
 
+        if (action.type === SUITE.INIT) {
+            api.dispatch(coinjoinAccountActions.logCoinjoinAccounts());
+        }
+
         // propagate action to reducers
         next(action);
 

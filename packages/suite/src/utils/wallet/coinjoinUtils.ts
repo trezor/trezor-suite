@@ -296,7 +296,7 @@ export const getRoundPhaseFromSessionPhase = (sessionPhase: SessionPhase): Round
 export const getFirstSessionPhaseFromRoundPhase = (roundPhase?: RoundPhase): SessionPhase =>
     Number(`${(roundPhase || 0) + 1}1`);
 
-export const getAccountProgressHandle = (account: Account) =>
+export const getAccountProgressHandle = (account: Pick<Account, 'key'>) =>
     createHash('sha256').update(account.key).digest('hex').slice(0, 16);
 
 export const fixLoadedCoinjoinAccount = ({

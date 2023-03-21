@@ -274,6 +274,9 @@ const coinjoinAccountCheckReorg =
             (checkpoint.blockHeight === previousCheckpoint.blockHeight &&
                 checkpoint.blockHash !== previousCheckpoint.blockHash)
         ) {
+            console.log(
+                `CoinjoinAccount reorg: ${previousCheckpoint.blockHeight}:${previousCheckpoint.blockHash} -> ${checkpoint.blockHeight}:${checkpoint.blockHash}`,
+            );
             const txs = getAccountTransactions(
                 account.key,
                 state.wallet.transactions.transactions,
@@ -458,6 +461,7 @@ export const fetchAndUpdateAccount =
 
             dispatch(accountsActions.endCoinjoinAccountSync(account, 'ready'));
         } catch (error) {
+            console.error(error);
             // 'error' when no previous discovery was successful, 'out-of-sync' otherwise
             const status = isInitialUpdate ? 'error' : 'out-of-sync';
             dispatch(accountsActions.endCoinjoinAccountSync(account, status));
@@ -584,6 +588,8 @@ export const createCoinjoinAccount =
             ),
         );
         dispatch(coinjoinAccountCreate(account.payload));
+
+        console.log(`CoinjoinAccount created: ${getAccountProgressHandle(account.payload)}`);
 
         dispatch(coinjoinAccountPreloading(false));
 
@@ -923,3 +929,29 @@ export const toggleAutopauseCoinjoin =
 
         dispatch(coinjoinSessionAutopause(accountKey, newState));
     };
+
+export const logCoinjoinAccounts = () => (_: Dispatch, getState: GetState) => {
+    const {
+        accounts,
+        coinjoin: { accounts: cjAccounts },
+        transactions: { transactions },
+    } = getState().wallet;
+    accounts
+        .filter(({ accountType }) => accountType === 'coinjoin')
+        .forEach(account => {
+            const handle = getAccountProgressHandle(account);
+            const cjAccount = cjAccounts.find(({ key }) => key === account.key);
+            const checkpoints = cjAccount?.checkpoints?.map(cp => cp.blockHeight);
+            const txs = transactions[account.key];
+            console.log(
+                `CoinjoinAccount remembered: ${handle}, checkpoints: ${checkpoints}, transactions: ${txs?.length}`,
+            );
+        });
+    cjAccounts
+        .filter(({ key }) => !accounts.some(acc => acc.key === key))
+        .forEach(cjAccount => {
+            const handle = getAccountProgressHandle(cjAccount);
+            const checkpoints = cjAccount.checkpoints?.map(cp => cp.blockHeight);
+            console.warn(`CoinjoinAccount residue: ${handle}, checkpoints: ${checkpoints}`);
+        });
+};
