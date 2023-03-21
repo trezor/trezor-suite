@@ -3460,6 +3460,10 @@ export default defineMessages({
         defaultMessage: 'Unknown transaction',
         id: 'TR_UNKNOWN_TRANSACTION',
     },
+    TR_CONTRACT_TRANSACTION: {
+        defaultMessage: 'Contract transaction',
+        id: 'TR_CONTRACT_TRANSACTION',
+    },
     TR_FAILED_TRANSACTION: {
         defaultMessage: 'Failed transaction',
         id: 'TR_FAILED_TRANSACTION',

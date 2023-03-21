@@ -75,10 +75,11 @@ const Body = styled.div`
 const ExpandButton = styled(Button)`
     justify-content: flex-start;
     align-self: flex-start;
+    margin-top: 8px;
 `;
 
-const StyledFeeRow = styled(FeeRow)<{ $isFailed?: boolean }>`
-    margin-top: ${({ $isFailed }) => ($isFailed ? '20px' : '0px')};
+const StyledFeeRow = styled(FeeRow)<{ $noInputsOutputs?: boolean }>`
+    margin-top: ${({ $noInputsOutputs }) => ($noInputsOutputs ? '0px' : '20px')};
 `;
 
 const DEFAULT_LIMIT = 3;
@@ -114,6 +115,8 @@ const TransactionItem = React.memo(
             (targets.length + tokens.length === 1 || transaction.type === 'self') &&
             transaction.cardanoSpecific?.subtype !== 'withdrawal' &&
             transaction.cardanoSpecific?.subtype !== 'stake_registration';
+        const noInputsOutputs =
+            (!tokens.length && !internalTransfers.length && !targets.length) || type === 'failed';
 
         const fee = formatNetworkAmount(transaction.fee, transaction.symbol);
         const showFeeRow = !isUnknown && type !== 'recv' && type !== 'joint' && fee !== '0';
@@ -125,7 +128,7 @@ const TransactionItem = React.memo(
             `${AccountTransactionBaseAnchor}/${transaction.txid}`,
         );
 
-        // join together regular targets and token transfers
+        // join together regular targets, internal and token transfers
         // ethereum tx has either targets or transfers
         // cardano tx can have both at the same time
         const allOutputs: (
@@ -344,7 +347,7 @@ const TransactionItem = React.memo(
                                         fee={fee}
                                         transaction={transaction}
                                         useFiatValues={useFiatValues}
-                                        $isFailed={type !== 'failed'}
+                                        $noInputsOutputs={noInputsOutputs}
                                         isFirst
                                         isLast
                                     />

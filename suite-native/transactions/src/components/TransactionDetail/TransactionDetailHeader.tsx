@@ -32,6 +32,9 @@ const transactionTypeInfo = {
         sign: '-',
         signColor: 'textAlertRed',
     },
+    contract: {
+        text: 'Contract',
+    },
     self: {
         text: 'Self',
     },

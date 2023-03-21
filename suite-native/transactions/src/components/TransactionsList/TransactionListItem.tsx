@@ -44,6 +44,7 @@ const transactionTypePropertiesMap = {
     recv: { prefix: 'From', sign: '+', signColor: 'textSecondaryHighlight' },
     sent: { prefix: 'To', sign: '-', signColor: 'textAlertRed' },
     self: { prefix: 'Self', sign: undefined, signColor: undefined },
+    contract: { prefix: 'Contract', sign: undefined, signColor: undefined },
     joint: { prefix: 'Joint', sign: undefined, signColor: undefined },
     failed: { prefix: 'Failed', sign: undefined, signColor: undefined },
     unknown: { prefix: 'Unknown', sign: undefined, signColor: undefined },
