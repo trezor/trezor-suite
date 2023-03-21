@@ -1,18 +1,20 @@
 {
-    "id": "0f238db9-2fc4-4776-8a19-41783ca1ac31",
-    "status": "SetSavingsParameters",
-    "country": "NL",
-    "exchange": "btcdirect-savings-sandbox",
-    "amlStatus": "Verified",
-    "kycStatus": "Verified",
-    "amlAnswers": [],
-    "tradeItems": [],
-    "amlQuestions": [],
-    "fiatCurrency": "EUR",
-    "userKYCStart": [],
-    "paymentMethod": "bankTransfer",
-    "cryptoCurrency": "BTC",
-    "fiatStringAmount": "50",
-    "paymentFrequency": "Biweekly",
-    "isUserRegisteredInPartnerSystem": false
+    "trade": {
+        "id": "0f238db9-2fc4-4776-8a19-41783ca1ac31",
+        "status": "SetSavingsParameters",
+        "country": "NL",
+        "exchange": "btcdirect-savings-sandbox",
+        "amlStatus": "Verified",
+        "kycStatus": "Verified",
+        "amlAnswers": [],
+        "tradeItems": [],
+        "amlQuestions": [],
+        "fiatCurrency": "EUR",
+        "userKYCStart": [],
+        "paymentMethod": "bankTransfer",
+        "cryptoCurrency": "BTC",
+        "fiatStringAmount": "50",
+        "paymentFrequency": "Biweekly",
+        "isUserRegisteredInPartnerSystem": false
+    }
 }

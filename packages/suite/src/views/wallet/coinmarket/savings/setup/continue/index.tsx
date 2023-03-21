@@ -162,7 +162,11 @@ const CoinmarketSavingsSetupContinue = (props: WithSelectedAccountLoadedProps) =
                 )}
             </AddressOptionsWrapper>
             <Footer>
-                <Button isDisabled={!canConfirmSetup} isLoading={isSubmitting}>
+                <Button
+                    isDisabled={!canConfirmSetup}
+                    isLoading={isSubmitting}
+                    data-test="@coinmarket/savings/confirm-setup"
+                >
                     <Translation id="TR_SAVINGS_SETUP_CONFIRM_BUTTON" />
                 </Button>
                 <ProvidedBy providerName={selectedProviderName} />

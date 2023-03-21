@@ -21,12 +21,12 @@ describe('Coinmarket DCA EU End', () => {
         cy.passThroughInitialRun();
         cy.discoveryShouldFinish();
         // Navigate to DCA Savings
-        // cy.getTestElement('@suite/menu/wallet-index').click();
-        // cy.getTestElement('@account-menu/add-account').click();
-        // cy.getTestElement('@settings/wallet/network/btc').click();
-        // cy.getTestElement('@add-account').click();
-        // cy.getTestElement('@wallet/menu/wallet-coinmarket-buy').click();
-        // cy.getTestElement('@coinmarket/menu/wallet-coinmarket-savings').click();
+        cy.getTestElement('@suite/menu/wallet-index').click();
+        cy.getTestElement('@account-menu/add-account').click();
+        cy.getTestElement('@settings/wallet/network/btc').click();
+        cy.getTestElement('@add-account').click();
+        cy.getTestElement('@wallet/menu/wallet-coinmarket-buy').click();
+        cy.getTestElement('@coinmarket/menu/wallet-coinmarket-savings').click();
     });
 
     // https://exchange.trezor.io/api/savings/trezor/trade
@@ -39,13 +39,13 @@ describe('Coinmarket DCA EU End', () => {
      */
 
     it('DCA EU Flow Conclusion', () => {
-        cy.visit('http://localhost:8000/accounts/coinmarket/savings/setup#/btc/0', {timeout:2000});
-        // cy.getTestElement('@coinmarket/savings/confirm-setup').click();
-        //cy.interceptInvityApiSavingsBtcDirect('ConfirmPaymentInfo');
-        // Click "Confirm" button
-        //cy.interceptInvityApiSavingsBtcDirect('Active');
-        // Finish
+        cy.interceptInvityApiSavingsBtcDirect('ConfirmPaymentInfo');
+        cy.getTestElement('@coinmarket/savings/confirm-setup').click();
 
+        cy.interceptInvityApiSavingsBtcDirect('Active');
+        cy.getTestElement('@coinmarket/savings/confirm-setup').click();
+
+        // Finish
         // Check the receiving address is displayed
         // Click on the confirm button
         //

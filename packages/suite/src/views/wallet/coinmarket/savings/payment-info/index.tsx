@@ -176,7 +176,12 @@ const PaymentInfo = (props: WithCoinmarketProps) => {
                     </PaymentInfoItem>
                 </div>
             </PaymentInfoOverview>
-            <Button onClick={handleSubmit} isDisabled={isSubmitting} isLoading={isSubmitting}>
+            <Button
+                onClick={handleSubmit}
+                isDisabled={isSubmitting}
+                isLoading={isSubmitting}
+                data-test="@coinmarket/savings/confirm-setup"
+            >
                 <Translation id="TR_CONFIRM" />
             </Button>
         </>
