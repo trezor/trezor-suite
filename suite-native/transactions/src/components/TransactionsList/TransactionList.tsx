@@ -7,7 +7,6 @@ import { AccountKey, WalletAccountTransaction } from '@suite-common/wallet-types
 import { groupTransactionsByDate, MonthKey } from '@suite-common/wallet-utils';
 import { selectIsLoadingTransactions } from '@suite-common/wallet-core';
 import { Box, Loader } from '@suite-native/atoms';
-import { TAB_BAR_HEIGHT } from '@suite-native/navigation';
 
 import { TransactionListGroupTitle } from './TransactionListGroupTitle';
 import { TransactionListItem } from './TransactionListItem';
@@ -53,7 +52,6 @@ export const TX_PER_PAGE = 25;
 // The box doesn't seem to be stopped visually by tab bar and SectionList cmp cannot be inside ScrollView cmp
 // That's why we add padding bottom to avoid style clash.
 const listWrapperStyle = prepareNativeStyle(_ => ({
-    paddingBottom: TAB_BAR_HEIGHT,
     height: '100%',
 }));
 
