@@ -1,6 +1,16 @@
 import commonFixtures from '../../../../submodules/trezor-common/tests/fixtures/ethereum/sign_tx_eip1559.json';
 
-const legacyResults = [
+const legacyResults = {
+    'Ledger Live legacy path': [
+        {
+            // 'Forbidden key path' below these versions
+            rules: ['<2.5.4', '<1.12.2'],
+            success: false,
+        },
+    ],
+};
+
+const legacyResultsCommon = [
     {
         // ethereumSignTransactionEip1559 not supported below this version
         rules: ['<2.4.2', '<1.10.4'],
@@ -33,7 +43,8 @@ export default {
                 s: `0x${result.sig_s}`,
                 v: `0x${result.sig_v.toString(16)}`,
             },
-            legacyResults,
+            legacyResults: legacyResults[name] || legacyResultsCommon,
+
             // weird behavior on 2.2.0, always the first test times out with some emulator
             // error. the other tests that follow do pass.
             skip: ['2.2.0'],
