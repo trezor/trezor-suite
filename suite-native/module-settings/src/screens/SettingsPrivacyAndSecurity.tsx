@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Screen, ScreenHeader } from '@suite-native/navigation';
 import { disableAnalyticsThunk, enableAnalyticsThunk } from '@suite-native/analytics';
 import { selectIsAnalyticsEnabled } from '@suite-common/analytics';
-import { Box, Card, DiscreetCanvas, Text } from '@suite-native/atoms';
+import { Box, Card, DiscreetCanvas, Text, useDiscreetMode } from '@suite-native/atoms';
 import { useNativeStyles } from '@trezor/styles';
 
 import { TouchableSwitchRow } from '../components/TouchableSwitchRow';
@@ -32,6 +32,7 @@ const DiscreetTextExample = () => {
 export const SettingsPrivacyAndSecurity = () => {
     const dispatch = useDispatch();
     const isAnalyticsEnabled = useSelector(selectIsAnalyticsEnabled);
+    const { isDiscreetMode, setIsDiscreetMode } = useDiscreetMode();
 
     const handleAnalyticsChange = (isEnabled: boolean) => {
         if (isEnabled) {
@@ -53,8 +54,8 @@ export const SettingsPrivacyAndSecurity = () => {
                         </Box>
                     }
                     iconName="detective"
-                    isChecked={isAnalyticsEnabled}
-                    onChange={handleAnalyticsChange}
+                    isChecked={isDiscreetMode}
+                    onChange={setIsDiscreetMode}
                 />
                 <TouchableSwitchRow
                     text="Usage data"

@@ -21,12 +21,13 @@ const contentStyle = prepareNativeStyle(_ => ({
     maxWidth: '70%',
 }));
 
+const ICON_SIZE = 48;
 const iconWrapperStyle = prepareNativeStyle(utils => ({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    width: 48,
-    height: 48,
+    width: ICON_SIZE,
+    height: ICON_SIZE,
     borderRadius: utils.borders.radii.round,
     backgroundColor: utils.colors.backgroundSurfaceElevation0,
     padding: utils.spacings.medium,
@@ -41,8 +42,12 @@ export const TouchableSwitchRow = ({
 }: TouchableSwitchRowProps) => {
     const { applyStyle } = useNativeStyles();
 
+    const handleChange = () => {
+        onChange(!isChecked);
+    };
+
     return (
-        <TouchableOpacity onPress={() => onChange(!isChecked)}>
+        <TouchableOpacity onPress={handleChange}>
             <Box
                 flexDirection="row"
                 justifyContent="space-between"
@@ -58,7 +63,7 @@ export const TouchableSwitchRow = ({
                         {description && <Box>{description}</Box>}
                     </Box>
                 </Box>
-                <Switch isChecked={isChecked} onChange={onChange} />
+                <Switch isChecked={isChecked} onChange={handleChange} />
             </Box>
         </TouchableOpacity>
     );
