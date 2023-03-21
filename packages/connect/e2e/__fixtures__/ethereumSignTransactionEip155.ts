@@ -11,6 +11,13 @@ const legacyResults = {
             },
         },
     ],
+    'Ledger Live legacy path': [
+        {
+            // 'Forbidden key path' below these versions
+            rules: ['<2.5.4', '<1.12.2'],
+            success: false,
+        },
+    ],
 };
 
 export default {

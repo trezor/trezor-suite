@@ -1,5 +1,15 @@
 import commonFixtures from '../../../../submodules/trezor-common/tests/fixtures/ethereum/sign_tx.json';
 
+const legacyResults = {
+    'Ledger Live legacy path': [
+        {
+            // 'Forbidden key path' below these versions
+            rules: ['<2.5.4', '<1.12.2'],
+            success: false,
+        },
+    ],
+};
+
 export default {
     method: 'ethereumSignTransaction',
     setup: {
@@ -25,6 +35,7 @@ export default {
                     s: `0x${result.sig_s}`,
                     v: `0x${result.sig_v.toString(16)}`,
                 },
+                legacyResults: legacyResults[name],
             };
 
             if (parameters.data) {
