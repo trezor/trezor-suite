@@ -21,7 +21,7 @@ export const CryptoUnitsSelector = () => {
 
     return (
         <Select<PROTO.AmountUnit>
-            selectLabel="Bitcoin Units"
+            selectLabel="Bitcoin Amount Units"
             selectValue={bitcoinUnit}
             items={bitcoinUnitsItems}
             onSelectItem={handleSelectUnit}

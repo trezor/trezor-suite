@@ -33,7 +33,7 @@ type DiscreetCanvasProps = {
     text: string;
     color: Color;
 };
-const DiscreetCanvas = ({ width, height, fontSize, text, color }: DiscreetCanvasProps) => {
+export const DiscreetCanvas = ({ width, height, fontSize, text, color }: DiscreetCanvasProps) => {
     const font = useFont(satoshiFont, fontSize);
     const {
         utils: { colors },

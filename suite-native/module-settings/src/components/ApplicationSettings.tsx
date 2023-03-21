@@ -41,7 +41,7 @@ export const ApplicationSettings = () => {
             <SettingsSectionItem
                 iconName="flag"
                 title="Localisation"
-                subtitle="Currency"
+                subtitle="Currency, Bitcoin units"
                 onPress={() => handleNavigation(SettingsStackRoutes.SettingsLocalisation)}
             />
             <SettingsSectionItem
@@ -53,7 +53,7 @@ export const ApplicationSettings = () => {
             <SettingsSectionItem
                 title="Privacy & Security"
                 iconName="eye"
-                subtitle="Turn on analytics"
+                subtitle="Analytics, Discreet mode"
                 onPress={() => handleNavigation(SettingsStackRoutes.SettingsPrivacyAndSecurity)}
             />
         </SettingsSection>

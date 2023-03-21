@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { TouchableOpacity } from 'react-native';
 
 import { Box, Text, Switch } from '@suite-native/atoms';
@@ -9,13 +9,26 @@ type TouchableSwitchRowProps = {
     isChecked: boolean;
     onChange: (value: boolean) => void;
     text: string;
-    description?: string;
+    description?: ReactNode;
     iconName: IconName;
 };
 
+const textStyle = prepareNativeStyle(_ => ({
+    marginLeft: 12,
+}));
+
+const contentStyle = prepareNativeStyle(_ => ({
+    maxWidth: '70%',
+}));
+
 const iconWrapperStyle = prepareNativeStyle(utils => ({
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 48,
+    height: 48,
     borderRadius: utils.borders.radii.round,
-    backgroundColor: utils.colors.backgroundSurfaceElevation1,
+    backgroundColor: utils.colors.backgroundSurfaceElevation0,
     padding: utils.spacings.medium,
 }));
 
@@ -30,17 +43,20 @@ export const TouchableSwitchRow = ({
 
     return (
         <TouchableOpacity onPress={() => onChange(!isChecked)}>
-            <Box flexDirection="row" justifyContent="space-between" marginVertical="medium">
-                <Box style={applyStyle(iconWrapperStyle)}>
-                    <Icon name={iconName} />
-                </Box>
-                <Box style={{ maxWidth: '80%' }}>
-                    <Text>{text}</Text>
-                    {description && (
-                        <Text variant="hint" color="textSubdued">
-                            {description}
-                        </Text>
-                    )}
+            <Box
+                flexDirection="row"
+                justifyContent="space-between"
+                alignItems="flex-start"
+                marginVertical="medium"
+            >
+                <Box style={applyStyle(contentStyle)} flexDirection="row">
+                    <Box style={applyStyle(iconWrapperStyle)}>
+                        <Icon color="iconSubdued" name={iconName} />
+                    </Box>
+                    <Box alignItems="flex-start" style={applyStyle(textStyle)}>
+                        <Text>{text}</Text>
+                        {description && <Box>{description}</Box>}
+                    </Box>
                 </Box>
                 <Switch isChecked={isChecked} onChange={onChange} />
             </Box>
