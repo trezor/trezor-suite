@@ -21,6 +21,7 @@ const ICON_SIZE = 48;
 const transactionIconMap: Record<TransactionType, IconName> = {
     recv: 'receive',
     sent: 'send',
+    contract: 'placeholder',
     joint: 'placeholder',
     self: 'placeholder',
     failed: 'placeholder',

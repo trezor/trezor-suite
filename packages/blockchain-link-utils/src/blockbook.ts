@@ -168,7 +168,11 @@ export const transformTransaction = (
     let amount: string;
     let targets: VinVout[];
 
-    if (myInputs.length) {
+    if (tx.ethereumSpecific?.createdContract) {
+        type = 'contract';
+        amount = tx.value;
+        targets = [];
+    } else if (myInputs.length) {
         // Some input is mine -> sent, self or joint
 
         if (myInputs.length < inputs.length) {
