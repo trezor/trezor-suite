@@ -137,11 +137,11 @@ export class Blockchain {
         return Promise.all(txs.map(id => this.link.getTransaction(id)));
     }
 
-    getCurrentFiatRates(params: { currencies?: string[] }) {
+    getCurrentFiatRates(params: { currencies?: string[]; token?: string }) {
         return this.link.getCurrentFiatRates(params);
     }
 
-    getFiatRatesForTimestamps(params: { timestamps: number[] }) {
+    getFiatRatesForTimestamps(params: { timestamps: number[]; token?: string }) {
         return this.link.getFiatRatesForTimestamps(params);
     }
 
