@@ -10,23 +10,23 @@
 
 /packages/components @dahaca @matejkriz
 
-/packages/connect @mroz22 @szymonlesisz @sime
+/packages/connect @mroz22 @szymonlesisz
 
-/packages/connect-common @mroz22 @szymonlesisz @sime
+/packages/connect-common @mroz22 @szymonlesisz
 
-/packages/connect-examples @mroz22 @szymonlesisz @sime
+/packages/connect-examples @mroz22 @szymonlesisz
 
-/packages/connect-explorer @mroz22 @szymonlesisz @sime
+/packages/connect-explorer @mroz22 @szymonlesisz
 
-/packages/connect-iframe @mroz22 @szymonlesisz @sime
+/packages/connect-iframe @mroz22 @szymonlesisz
 
-/packages/connect-plugin-ethereum @mroz22 @szymonlesisz @sime
+/packages/connect-plugin-ethereum @mroz22 @szymonlesisz
 
-/packages/connect-plugin-stellar @mroz22 @szymonlesisz @sime
+/packages/connect-plugin-stellar @mroz22 @szymonlesisz
 
-/packages/connect-popup @mroz22 @szymonlesisz @sime
+/packages/connect-popup @mroz22 @szymonlesisz
 
-/packages/connect-web @mroz22 @szymonlesisz @sime
+/packages/connect-web @mroz22 @szymonlesisz
 
 /packages/icons @trezor/suite-mobile
 
@@ -70,6 +70,6 @@
 
 /translations @alex-jerechinsky
 
-/packages/suite/src/support/messages.ts @alex-jerechinsky
+/packages/suite/src/support/messages.ts @alex-jerechinsky @sime
 
 /suite-common/graph @trezor/suite-mobile @Nodonisko
