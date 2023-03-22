@@ -11,7 +11,7 @@ type AxisLabelProps = {
 };
 
 const axisLabelStyle = prepareNativeStyle<Pick<AxisLabelProps, 'x'>>((_, { x }) => ({
-    position: 'relative',
+    position: 'absolute',
     left: `${x}%`,
 }));
 
