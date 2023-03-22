@@ -51,7 +51,6 @@ export const ScreenContent = ({
                     keyboardShouldPersistTaps="always"
                     contentInsetAdjustmentBehavior="automatic"
                     contentContainerStyle={screenStyle}
-                    viewIsInsideTabBar
                 >
                     {children}
                 </KeyboardAwareScrollView>
