@@ -10,8 +10,10 @@ import {
     formatCardanoWithdrawal,
     formatNetworkAmount,
     getTxOperation,
+    isNftTokenTransfer,
 } from '@suite-common/wallet-utils';
 import BigNumber from 'bignumber.js';
+import { FormattedNftAmount } from '@suite-components/FormattedNftAmount';
 
 const MainContainer = styled.div`
     display: flex;
@@ -102,14 +104,12 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                             />
                         }
                         thirdColumn={
-                            !tx.tokens.length && (
-                                <FiatValue
-                                    amount={amount.abs().toString()}
-                                    symbol={tx.symbol}
-                                    source={tx.rates}
-                                    useCustomSource
-                                />
-                            )
+                            <FiatValue
+                                amount={amount.abs().toString()}
+                                symbol={tx.symbol}
+                                source={tx.rates}
+                                useCustomSource
+                            />
                         }
                         fourthColumn={
                             <FiatValue amount={amount.abs().toString()} symbol={tx.symbol} />
@@ -129,14 +129,12 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                             />
                         }
                         thirdColumn={
-                            !tx.tokens.length && (
-                                <FiatValue
-                                    amount={cardanoWithdrawal}
-                                    symbol={tx.symbol}
-                                    source={tx.rates}
-                                    useCustomSource
-                                />
-                            )
+                            <FiatValue
+                                amount={cardanoWithdrawal}
+                                symbol={tx.symbol}
+                                source={tx.rates}
+                                useCustomSource
+                            />
                         }
                         fourthColumn={<FiatValue amount={cardanoWithdrawal} symbol={tx.symbol} />}
                         color="light"
@@ -154,21 +152,19 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                             />
                         }
                         thirdColumn={
-                            !tx.tokens.length && (
-                                <FiatValue
-                                    amount={cardanoDeposit}
-                                    symbol={tx.symbol}
-                                    source={tx.rates}
-                                    useCustomSource
-                                />
-                            )
+                            <FiatValue
+                                amount={cardanoDeposit}
+                                symbol={tx.symbol}
+                                source={tx.rates}
+                                useCustomSource
+                            />
                         }
                         fourthColumn={<FiatValue amount={cardanoDeposit} symbol={tx.symbol} />}
                         color="light"
                     />
                 )}
 
-                {tx.internalTransfers.map((t, i) => (
+                {tx.internalTransfers.map((transfer, i) => (
                     <AmountRow
                         // eslint-disable-next-line react/no-array-index-key
                         key={i}
@@ -177,24 +173,22 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                         }
                         secondColumn={
                             <FormattedCryptoAmount
-                                value={formatNetworkAmount(t.amount, tx.symbol)}
+                                value={formatNetworkAmount(transfer.amount, tx.symbol)}
                                 symbol={tx.symbol}
                                 signValue={getTxOperation(transfer.type, true)}
                             />
                         }
                         thirdColumn={
-                            !tx.tokens.length && (
-                                <FiatValue
-                                    amount={formatNetworkAmount(t.amount, tx.symbol)}
-                                    symbol={tx.symbol}
-                                    source={tx.rates}
-                                    useCustomSource
-                                />
-                            )
+                            <FiatValue
+                                amount={formatNetworkAmount(transfer.amount, tx.symbol)}
+                                symbol={tx.symbol}
+                                source={tx.rates}
+                                useCustomSource
+                            />
                         }
                         fourthColumn={
                             <FiatValue
-                                amount={formatNetworkAmount(t.amount, tx.symbol)}
+                                amount={formatNetworkAmount(transfer.amount, tx.symbol)}
                                 symbol={tx.symbol}
                             />
                         }
@@ -202,7 +196,7 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                     />
                 ))}
 
-                {tx.tokens.map((t, i) => (
+                {tx.tokens.map((transfer, i) => (
                     <AmountRow
                         // eslint-disable-next-line react/no-array-index-key
                         key={i}
@@ -230,9 +224,9 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                         thirdColumn={null}
                         fourthColumn={
                             <FiatValue
-                                amount={formatAmount(t.amount, t.decimals)}
-                                symbol={t.symbol}
-                                tokenAddress={t.address}
+                                amount={formatAmount(transfer.amount, transfer.decimals)}
+                                symbol={transfer.symbol}
+                                tokenAddress={transfer.address}
                             />
                         }
                         color="light"

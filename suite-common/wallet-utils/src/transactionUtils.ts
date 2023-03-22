@@ -406,6 +406,15 @@ export const getTxOperation = (
     return null;
 };
 
+export const isNftTokenTransfer = (transfer: TokenTransfer) =>
+    ['ERC1155', 'ERC721'].includes(transfer.standard || '');
+
+export const getNftTokenId = (transfer: TokenTransfer) =>
+    // use 0 index, haven't found an example where multiTokenValues.length > 1
+    transfer.standard === 'ERC1155' && transfer.multiTokenValues?.length
+        ? transfer.multiTokenValues[0].id
+        : transfer.amount;
+
 export const getTxIcon = (txType: WalletAccountTransaction['type']) => {
     switch (txType) {
         case 'recv':
@@ -457,10 +466,9 @@ export const getTargetAmount = (
 };
 
 export const isTxUnknown = (transaction: WalletAccountTransaction) => {
-    // blockbook cannot parse some txs
-    // eg. tx with eth smart contract that creates a new token has no valid target
     const isTokenTransaction = transaction.tokens.length;
     const isInternalTransaction = transaction.internalTransfers.length;
+
     return (
         (!isTokenTransaction &&
             !isInternalTransaction &&

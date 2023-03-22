@@ -22,6 +22,7 @@ const Column = styled.div<RowContentProps>`
     align-items: center;
     align-self: start;
     min-height: 32px;
+    white-space: nowrap;
     color: ${({ color, theme }) =>
         color === 'light' ? `${theme.TYPE_LIGHT_GREY}` : `${theme.TYPE_DARK_GREY}`};
 
