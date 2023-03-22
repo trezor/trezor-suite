@@ -15,6 +15,7 @@ import {
 } from '../events';
 import { Deferred } from '../utils/deferred';
 import { versionCompare } from '../utils/versionUtils';
+import { getHost } from '../utils/urlUtils';
 import type { Device } from '../device/Device';
 import type { FirmwareRange } from '../types';
 
@@ -285,6 +286,17 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
             } else {
                 return UI.FIRMWARE_NOT_COMPATIBLE;
             }
+        }
+    }
+
+    isManagementRestricted() {
+        const { popup, origin } = DataManager.getSettings();
+        if (popup && this.requiredPermissions.includes('management')) {
+            const host = getHost(origin);
+            const allowed = DataManager.getConfig().management.find(
+                item => item.origin === host || item.origin === origin,
+            );
+            return !allowed;
         }
     }
 

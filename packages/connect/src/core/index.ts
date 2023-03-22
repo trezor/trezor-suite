@@ -338,11 +338,7 @@ export const onCall = async (message: CoreMessage) => {
         await initTransport(DataManager.getSettings());
     }
 
-    if (
-        isUsingPopup &&
-        method.requiredPermissions.includes('management') &&
-        !DataManager.isManagementAllowed()
-    ) {
+    if (method.isManagementRestricted()) {
         postMessage(createPopupMessage(POPUP.CANCEL_POPUP_REQUEST));
         postMessage(
             createResponseMessage(responseID, false, {

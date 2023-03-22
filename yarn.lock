@@ -7964,7 +7964,6 @@ __metadata:
     karma-jasmine-async: ^0.0.1
     karma-sourcemap-loader: ^0.4.0
     karma-webpack: ^5.0.0
-    parse-uri: 1.0.7
     randombytes: 2.1.0
     rimraf: ^4.1.2
     ts-loader: ^9.4.2
@@ -26428,13 +26427,6 @@ __metadata:
   dependencies:
     pngjs: ^3.3.0
   checksum: 0c6b6c42c8830cd16f6f9e9aedafd53111c0ad2ff350ba79c629996887567558f5639ad0c95764f96f7acd1f9ff63d4ac73737e80efa3911a6de9839ee520c96
-  languageName: node
-  linkType: hard
-
-"parse-uri@npm:1.0.7":
-  version: 1.0.7
-  resolution: "parse-uri@npm:1.0.7"
-  checksum: 0d4386a586bda98bcdd041f9b1a7e9a6c16bc2ab198c90531f2d169eb2eb520477cc059a75c5cf0695eb3c9e69ff6b90793d07781ab83e2de1cbb255ec66e37f
   languageName: node
   linkType: hard
 
