@@ -58,12 +58,12 @@ export const coinjoinAccountUpdateAnonymity = (accountKey: string, targetAnonymi
         },
     } as const);
 
-export const coinjoinAccountUpdateMaxMiningFee = (accountKey: string, maxFeePerKvbyte: number) =>
+export const coinjoinAccountUpdateMaxMiningFee = (accountKey: string, maxFeePerVbyte: number) =>
     ({
         type: COINJOIN.ACCOUNT_UPDATE_MAX_MING_FEE,
         payload: {
             accountKey,
-            maxFeePerKvbyte,
+            maxFeePerVbyte,
         },
     } as const);
 

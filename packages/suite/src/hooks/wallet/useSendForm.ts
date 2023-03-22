@@ -36,13 +36,13 @@ SendContext.displayName = 'SendContext';
 // Props of @wallet-views/send/index
 export interface SendFormProps {
     selectedAccount: AppState['wallet']['selectedAccount'];
-    coinjoinAccount?: AppState['wallet']['coinjoin']['accounts'][number];
     fiat: AppState['wallet']['fiat'];
     localCurrency: AppState['wallet']['settings']['localCurrency'];
     fees: AppState['wallet']['fees'];
     online: boolean;
     sendRaw?: boolean;
     metadataEnabled: boolean;
+    targetAnonymity?: number;
 }
 // Props of @wallet-hooks/useSendForm (selectedAccount should be loaded)
 export interface UseSendFormProps extends SendFormProps {
@@ -161,7 +161,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
     const excludedUtxos = useExcludedUtxos({
         account: state.account,
         dustLimit: state.coinFees.dustLimit,
-        targetAnonymity: props.coinjoinAccount?.targetAnonymity,
+        targetAnonymity: props.targetAnonymity,
     });
 
     // declare sendFormUtils, sub-hook of useSendForm

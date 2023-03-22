@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from '@suite-hooks';
 import styled from 'styled-components';
 
-import { RECOMMENDED_SKIP_ROUNDS } from '@suite/services/coinjoin';
 import { Account } from '@suite-common/wallet-types';
 import { Translation, TrezorLink } from '@suite-components';
 import { Error } from '@suite-components/Error';
@@ -14,10 +13,12 @@ import {
     selectRoundsNeeded,
     selectRoundsFailRateBuffer,
     selectCoinjoinClient,
+    selectCoinjoinAccountByKey,
 } from '@wallet-reducers/coinjoinReducer';
 import { useCoinjoinSessionBlockers } from '@suite/hooks/coinjoin/useCoinjoinSessionBlockers';
-import { getMaxRounds } from '@wallet-utils/coinjoinUtils';
+import { getMaxRounds, getSkipRounds } from '@wallet-utils/coinjoinUtils';
 import { Tile, TileProps } from './Tile';
+import { SKIP_ROUNDS_BY_DEFAULT } from '@suite/services/coinjoin';
 
 const StyledCard = styled(Card)`
     padding: 24px;
@@ -111,6 +112,7 @@ export const CoinjoinConfirmation = ({ account }: CoinjoinConfirmationProps) => 
     const [termsConfirmed, setTermsConfirmed] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
+    const coinjoinAccount = useSelector(state => selectCoinjoinAccountByKey(state, account.key));
     const coinjoinClient = useSelector(state => selectCoinjoinClient(state, account.key));
     const targetAnonymity = useSelector(selectCurrentTargetAnonymity);
     const roundsNeeded = useSelector(state => selectRoundsNeeded(state, account.key));
@@ -124,7 +126,7 @@ export const CoinjoinConfirmation = ({ account }: CoinjoinConfirmationProps) => 
 
     const anonymitySet = account.addresses?.anonymitySet;
 
-    if (!coinjoinClient || !targetAnonymity || !anonymitySet) {
+    if (!coinjoinClient || !targetAnonymity || !anonymitySet || !coinjoinAccount) {
         return (
             <Error
                 error={`Suite could not ${
@@ -134,7 +136,12 @@ export const CoinjoinConfirmation = ({ account }: CoinjoinConfirmationProps) => 
         );
     }
 
+    const maxFeePerKvbyte =
+        (coinjoinAccount.setup?.maxFeePerVbyte ?? coinjoinClient.maxMiningFee) * 1000; // Transform to kvB.
     const maxRounds = getMaxRounds(roundsNeeded, roundsFailRateBuffer);
+    const skipRounds = getSkipRounds(
+        coinjoinAccount.setup ? coinjoinAccount.setup.skipRounds : SKIP_ROUNDS_BY_DEFAULT,
+    );
 
     const isDisabled = !termsConfirmed || isCoinjoinSessionBlocked;
 
@@ -152,9 +159,9 @@ export const CoinjoinConfirmation = ({ account }: CoinjoinConfirmationProps) => 
         await dispatch(
             startCoinjoinSession(account, {
                 maxCoordinatorFeeRate: coinjoinClient.coordinationFeeRate.rate,
-                maxFeePerKvbyte: coinjoinClient.maxMiningFee * 1000, // transform to kvB
+                maxFeePerKvbyte,
                 maxRounds,
-                skipRounds: RECOMMENDED_SKIP_ROUNDS,
+                skipRounds,
                 targetAnonymity,
             }),
         );

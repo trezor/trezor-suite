@@ -17,7 +17,7 @@ const labels = [min, max / 2, max].map(number => ({
 
 interface MaxMiningFeeSetupProps {
     accountKey: string;
-    maxMiningFee: number;
+    maxMiningFee?: number;
 }
 
 export const MaxMiningFeeSetup = ({ accountKey, maxMiningFee }: MaxMiningFeeSetupProps) => {
@@ -53,7 +53,7 @@ export const MaxMiningFeeSetup = ({ accountKey, maxMiningFee }: MaxMiningFeeSetu
             heading={<Translation id="TR_MAX_MINING_FEE" />}
             description={<Translation id="TR_MINING_FEE_NOTE" />}
             onChange={updateMaxMiningFee}
-            value={maxMiningFee}
+            value={maxMiningFee ?? coinjoinClient?.maxMiningFee ?? MAX_MINING_FEE_FALLBACK}
             min={min}
             max={max}
             unit={unit}

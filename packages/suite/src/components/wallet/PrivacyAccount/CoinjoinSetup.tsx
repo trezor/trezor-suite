@@ -47,7 +47,7 @@ export const CoinjoinSetup = ({ accountKey }: CoinjoinSetupProps) => {
     const hasSession = !!coinjoinAccount.session;
 
     const handleSetupOptionChange = (isRecommended: boolean) => {
-        if (!!coinjoinAccount.customSetup === isRecommended) {
+        if (!!coinjoinAccount.setup === isRecommended) {
             dispatch(coinjoinAccountUpdateSetupOption(accountKey, isRecommended));
         }
     };
@@ -64,22 +64,22 @@ export const CoinjoinSetup = ({ accountKey }: CoinjoinSetupProps) => {
             <SetupContainer>
                 <SetupOptions>
                     <RadioButton
-                        isChecked={!coinjoinAccount.customSetup}
+                        isChecked={!coinjoinAccount.setup}
                         onClick={setRecommendedSetup}
                         disabled={hasSession}
                     >
                         <Translation id="TR_RECOMMENDED" />
                     </RadioButton>
                     <RadioButton
-                        isChecked={coinjoinAccount.customSetup}
+                        isChecked={!!coinjoinAccount.setup}
                         onClick={setCustomSetup}
                         disabled={hasSession}
                     >
                         <Translation id="TR_CUSTOM" />
                     </RadioButton>
                 </SetupOptions>
-                <AnimatePresence initial={!coinjoinAccount.customSetup}>
-                    {coinjoinAccount.customSetup && (
+                <AnimatePresence initial={!coinjoinAccount.setup}>
+                    {coinjoinAccount.setup && (
                         <motion.div
                             {...motionAnimation.expand}
                             transition={{ duration: 0.4, ease: motionEasing.transition }}
@@ -87,15 +87,15 @@ export const CoinjoinSetup = ({ accountKey }: CoinjoinSetupProps) => {
                             <CustomSetup>
                                 <AnonymityLevelSetup
                                     accountKey={accountKey}
-                                    targetAnonymity={coinjoinAccount.targetAnonymity}
+                                    targetAnonymity={coinjoinAccount.setup.targetAnonymity}
                                 />
                                 <MaxMiningFeeSetup
                                     accountKey={accountKey}
-                                    maxMiningFee={coinjoinAccount.maxFeePerKvbyte}
+                                    maxMiningFee={coinjoinAccount.setup.maxFeePerVbyte}
                                 />
                                 <SkipRoundsSetup
                                     accountKey={accountKey}
-                                    skipRounds={!!coinjoinAccount.skipRounds}
+                                    skipRounds={coinjoinAccount.setup.skipRounds}
                                 />
                             </CustomSetup>
                         </motion.div>
