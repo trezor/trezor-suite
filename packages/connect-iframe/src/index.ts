@@ -22,7 +22,6 @@ import {
 import { Core, init as initCore, initTransport } from '@trezor/connect/src/core';
 import { DataManager } from '@trezor/connect/src/data/DataManager';
 import { initLog } from '@trezor/connect/src/utils/debug';
-import { sendMessage } from '@trezor/connect/src/utils/windowsUtils';
 import { getOrigin } from '@trezor/connect/src/utils/urlUtils';
 import {
     suggestBridgeInstaller,
@@ -163,7 +162,7 @@ const postMessage = (message: CoreMessage) => {
     } else {
         let origin = DataManager.getSettings('origin');
         if (!origin || origin.indexOf('file://') >= 0) origin = '*';
-        sendMessage(message, origin);
+        window.parent.postMessage(message, origin);
     }
 };
 

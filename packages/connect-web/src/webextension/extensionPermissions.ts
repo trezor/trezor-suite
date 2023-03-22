@@ -1,10 +1,13 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/webusb/extensionPermissions.js
 
-import { sendMessage } from '@trezor/connect/lib/utils/windowsUtils';
 import { config } from '@trezor/connect/lib/data/config';
 
 // This file is hosted on https://connect.trezor.io/*/extension-permissions.html
 // It's included WITHIN webextension application in trezor-usb-permissions.html to allow pairing webusb and trezor.io domain properly.
+
+// send message from iframe to parent
+export const sendMessage = (message: string, origin: string) =>
+    window.parent.postMessage(message, origin);
 
 const onLoad = () => {
     sendMessage('usb-permissions-init', '*');
