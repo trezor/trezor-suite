@@ -12,6 +12,7 @@ export const networks = {
         explorer: {
             tx: 'https://btc1.trezor.io/tx/',
             account: 'https://btc1.trezor.io/xpub/',
+            address: 'https://btc1.trezor.io/address/',
         },
         features: ['rbf', 'sign-verify', 'amount-unit'],
         customBackends: ['blockbook', 'electrum'],
@@ -42,6 +43,7 @@ export const networks = {
         explorer: {
             tx: 'https://ltc1.trezor.io/tx/',
             account: 'https://ltc1.trezor.io/xpub/',
+            address: 'https://ltc1.trezor.io/address/',
         },
         features: ['sign-verify'],
         customBackends: ['blockbook'],
@@ -64,6 +66,8 @@ export const networks = {
         explorer: {
             tx: 'https://eth1.trezor.io/tx/',
             account: 'https://eth1.trezor.io/address/',
+            nft: 'https://eth1.trezor.io/nft/',
+            address: 'https://eth1.trezor.io/address/',
         },
         features: ['rbf', 'sign-verify', 'tokens'],
         label: 'TR_NETWORK_ETHEREUM_LABEL',
@@ -80,6 +84,8 @@ export const networks = {
         explorer: {
             tx: 'https://etc1.trezor.io/tx/',
             account: 'https://etc1.trezor.io/address/',
+            nft: 'https://etc1.trezor.io/nft/',
+            address: 'https://etc1.trezor.io/address/',
         },
         features: ['sign-verify', 'tokens'],
         customBackends: ['blockbook'],
@@ -94,6 +100,7 @@ export const networks = {
         explorer: {
             tx: 'https://xrpscan.com/tx/',
             account: 'https://xrpscan.com/account/',
+            address: 'https://xrpscan.com/account/',
         },
         features: [],
         customBackends: [],
@@ -107,6 +114,7 @@ export const networks = {
         explorer: {
             tx: 'https://bch1.trezor.io/tx/',
             account: 'https://bch1.trezor.io/xpub/',
+            address: 'https://bch1.trezor.io/address/',
         },
         features: ['sign-verify'],
         customBackends: ['blockbook'],
@@ -120,6 +128,7 @@ export const networks = {
         explorer: {
             tx: 'https://btg1.trezor.io/tx/',
             account: 'https://btg1.trezor.io/xpub/',
+            address: 'https://btg1.trezor.io/address/',
         },
         features: ['sign-verify'],
         customBackends: ['blockbook'],
@@ -137,6 +146,7 @@ export const networks = {
         explorer: {
             tx: 'https://dash1.trezor.io/tx/',
             account: 'https://dash1.trezor.io/xpub/',
+            address: 'https://dash1.trezor.io/address/',
         },
         features: ['sign-verify'],
         customBackends: ['blockbook'],
@@ -150,6 +160,7 @@ export const networks = {
         explorer: {
             tx: 'https://dgb1.trezor.io/tx/',
             account: 'https://dgb1.trezor.io/xpub/',
+            address: 'https://dgb1.trezor.io/address/',
         },
         features: ['sign-verify'],
         customBackends: ['blockbook'],
@@ -167,6 +178,7 @@ export const networks = {
         explorer: {
             tx: 'https://doge1.trezor.io/tx/',
             account: 'https://doge1.trezor.io/xpub/',
+            address: 'https://doge1.trezor.io/address/',
         },
         features: ['sign-verify'],
         customBackends: ['blockbook'],
@@ -180,6 +192,7 @@ export const networks = {
         explorer: {
             tx: 'https://nmc1.trezor.io/tx/',
             account: 'https://nmc1.trezor.io/xpub/',
+            address: 'https://nmc1.trezor.io/address/',
         },
         features: ['sign-verify'],
         customBackends: ['blockbook'],
@@ -193,6 +206,7 @@ export const networks = {
         explorer: {
             tx: 'https://vtc1.trezor.io/tx/',
             account: 'https://vtc1.trezor.io/xpub/',
+            address: 'https://vtc1.trezor.io/address/',
         },
         features: ['sign-verify'],
         customBackends: ['blockbook'],
@@ -213,6 +227,7 @@ export const networks = {
         explorer: {
             tx: 'https://zec1.trezor.io/tx/',
             account: 'https://zec1.trezor.io/xpub/',
+            address: 'https://zec1.trezor.io/address/',
         },
         features: ['sign-verify'],
         customBackends: ['blockbook'],
@@ -229,6 +244,7 @@ export const networks = {
         explorer: {
             tx: 'https://tbtc1.trezor.io/tx/',
             account: 'https://tbtc1.trezor.io/xpub/',
+            address: 'https://tbtc1.trezor.io/address/',
         },
         features: ['rbf', 'sign-verify', 'amount-unit'],
         customBackends: ['blockbook', 'electrum'],
@@ -260,6 +276,7 @@ export const networks = {
         explorer: {
             tx: 'http://localhost:19121/tx/',
             account: 'http://localhost:19121/xpub/',
+            address: 'http://localhost:19121/address/',
         },
         features: ['rbf', 'sign-verify', 'amount-unit'],
         customBackends: ['blockbook', 'electrum'],
@@ -292,6 +309,8 @@ export const networks = {
         explorer: {
             tx: 'https://ropsten1.trezor.io/tx/',
             account: 'https://ropsten1.trezor.io/address/',
+            nft: 'https://ropsten1.trezor.io/nft/',
+            address: 'https://ropsten1.trezor.io/address/',
         },
         features: ['rbf', 'sign-verify', 'tokens'],
         customBackends: ['blockbook'],
@@ -308,6 +327,8 @@ export const networks = {
         explorer: {
             tx: 'https://goerli1.trezor.io/tx/',
             account: 'https://goerli1.trezor.io/address/',
+            nft: 'https://goerli1.trezor.io/nft/',
+            address: 'https://goerli1.trezor.io/address/',
         },
         features: ['rbf', 'sign-verify', 'tokens'],
         customBackends: ['blockbook'],
@@ -323,6 +344,7 @@ export const networks = {
         explorer: {
             tx: 'https://test.bithomp.com/explorer/',
             account: 'https://test.bithomp.com/explorer/',
+            address: 'https://test.bithomp.com/explorer/',
         },
         features: ['tokens'],
         customBackends: [],
