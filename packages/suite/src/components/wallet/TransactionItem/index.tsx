@@ -112,7 +112,9 @@ const TransactionItem = React.memo(
         const useFiatValues = !isTestnet(transaction.symbol);
         const useSingleRowLayout =
             !isUnknown &&
-            (targets.length + tokens.length === 1 || transaction.type === 'self') &&
+            (targets.length === 1 || transaction.type === 'self') &&
+            !tokens.length &&
+            !internalTransfers.length &&
             transaction.cardanoSpecific?.subtype !== 'withdrawal' &&
             transaction.cardanoSpecific?.subtype !== 'stake_registration';
         const noInputsOutputs =
