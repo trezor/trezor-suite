@@ -1,3 +1,7 @@
+# 2.1.9 [not released]
+
+-   feat: add `token` param to to `GetCurrentFiatRates`, `GetFiatRatesForTimestamps` and `GetFiatRatesTickersList` methods
+
 # 2.1.8
 
 -   fix(suite-native): cardano websocket (#7722)
