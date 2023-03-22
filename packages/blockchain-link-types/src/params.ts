@@ -8,15 +8,18 @@ export interface AccountBalanceHistoryParams {
 
 export interface GetCurrentFiatRatesParams {
     currencies?: string[];
+    token?: string;
 }
 
 export interface GetFiatRatesForTimestampsParams {
     timestamps: number[];
     currencies?: string[];
+    token?: string;
 }
 
 export interface GetFiatRatesTickersListParams {
     timestamp?: number;
+    token?: string;
 }
 
 export interface EstimateFeeParams {

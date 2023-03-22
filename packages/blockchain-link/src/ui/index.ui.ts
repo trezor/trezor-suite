@@ -174,6 +174,10 @@ const handleClick = (event: MouseEvent) => {
                             getInputValue('get-current-fiat-rates-currency') !== ''
                                 ? getInputValue('get-current-fiat-rates-currency').split(',')
                                 : undefined,
+                        token:
+                            getInputValue('get-current-fiat-rates-token') !== ''
+                                ? getInputValue('get-current-fiat-rates-token')
+                                : undefined,
                     })
                     .then(onResponse)
                     .catch(onError);
@@ -193,6 +197,10 @@ const handleClick = (event: MouseEvent) => {
                         currencies:
                             getInputValue('get-fiat-rates-for-timestamps-currency') !== ''
                                 ? getInputValue('get-fiat-rates-for-timestamps-currency').split(',')
+                                : undefined,
+                        token:
+                            getInputValue('get-fiat-rates-for-timestamps-token') !== ''
+                                ? getInputValue('get-fiat-rates-for-timestamps-token')
                                 : undefined,
                     })
                     .then(onResponse)
@@ -230,6 +238,10 @@ const handleClick = (event: MouseEvent) => {
                             getInputValue('get-fiat-rates-ticker-list-timestamp'),
                             10,
                         ),
+                        token:
+                            getInputValue('get-fiat-rates-ticker-list-token') !== ''
+                                ? getInputValue('get-fiat-rates-ticker-list-token')
+                                : undefined,
                     })
                     .then(onResponse)
                     .catch(onError);
