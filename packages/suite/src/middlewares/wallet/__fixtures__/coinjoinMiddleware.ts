@@ -41,7 +41,9 @@ const ACCOUNT_B = { ...ACCOUNT_A, deviceState: 'device-B-state', key: 'account-B
 const COINJOIN_ACCOUNT_A = {
     key: 'account-A-key',
     session: { signedRounds: [] as string[] },
-    targetAnonymity: 2,
+    setup: {
+        targetAnonymity: 2,
+    },
 } as CoinjoinAccount;
 const COINJOIN_ACCOUNT_B = {
     ...COINJOIN_ACCOUNT_A,

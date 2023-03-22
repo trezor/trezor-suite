@@ -8,6 +8,12 @@ import { RoundPhase, SessionPhase, EndRoundState } from '@trezor/coinjoin/src/en
 
 export { RoundPhase, SessionPhase, EndRoundState };
 
+export interface CoinjoinSetup {
+    targetAnonymity: number;
+    maxFeePerVbyte: number;
+    skipRounds: boolean;
+}
+
 export interface CoinjoinSessionParameters {
     targetAnonymity: number;
     maxRounds: number;
@@ -40,10 +46,7 @@ export interface CoinjoinDiscoveryCheckpoint {
 export interface CoinjoinAccount {
     key: string; // reference to wallet Account.key
     symbol: NetworkSymbol;
-    customSetup?: boolean;
-    targetAnonymity: number; // anonymity set by the user
-    maxFeePerKvbyte: number;
-    skipRounds?: [number, number];
+    setup?: CoinjoinSetup; // unless enabled, account uses default (recommended) values
     rawLiquidityClue: RegisterAccountParams['rawLiquidityClue'];
     session?: CoinjoinSession; // current/active authorized session
     previousSessions: CoinjoinSession[]; // history

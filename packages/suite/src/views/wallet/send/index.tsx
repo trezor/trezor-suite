@@ -5,7 +5,6 @@ import { Card } from '@suite-components';
 import { useSelector } from '@suite-hooks';
 import { WalletLayout } from '@wallet-components';
 import { useSendForm, SendContext, UseSendFormProps } from '@wallet-hooks/useSendForm';
-import { selectCoinjoinAccountByKey } from '@wallet-reducers/coinjoinReducer';
 import { Header } from './components/Header';
 import Outputs from './components/Outputs';
 import Options from './components/Options';
@@ -13,6 +12,7 @@ import { SendFees } from './components/Fees';
 import { TotalSent } from './components/TotalSent';
 import { ReviewButton } from './components/ReviewButton';
 import Raw from './components/Raw';
+import { selectCurrentTargetAnonymity } from '@wallet-reducers/coinjoinReducer';
 
 const StyledCard = styled(Card)`
     display: flex;
@@ -29,11 +29,7 @@ interface SendLoadedProps extends UseSendFormProps {
 // separated to call `useSendForm` hook at top level
 // children are only for test purposes, this prop is not available in regular build
 const SendLoaded = ({ children, ...props }: SendLoadedProps) => {
-    const coinjoinAccount = useSelector(state =>
-        selectCoinjoinAccountByKey(state, props.selectedAccount.account.key),
-    );
-
-    const sendContextValues = useSendForm({ ...props, coinjoinAccount });
+    const sendContextValues = useSendForm({ ...props });
 
     return (
         <WalletLayout title="TR_NAV_SEND" account={props.selectedAccount}>
@@ -69,6 +65,7 @@ const Send = ({ children }: SendProps) => {
         online: state.suite.online,
         sendRaw: state.wallet.send.sendRaw,
         metadataEnabled: state.metadata.enabled && !!state.metadata.provider,
+        targetAnonymity: selectCurrentTargetAnonymity(state),
     }));
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
 

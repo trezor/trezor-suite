@@ -4,7 +4,10 @@ import hoursToMilliseconds from 'date-fns/hoursToMilliseconds';
 
 import { getUtxoOutpoint, getBip43Type } from '@suite-common/wallet-utils';
 import { Account, SelectedAccountStatus } from '@suite-common/wallet-types';
-import { ESTIMATED_MIN_ROUNDS_NEEDED } from '@suite/services/coinjoin/config';
+import {
+    ESTIMATED_MIN_ROUNDS_NEEDED,
+    SKIP_ROUNDS_VALUE_WHEN_ENABLED,
+} from '@suite/services/coinjoin/config';
 import { CoinjoinSessionParameters, RoundPhase, SessionPhase } from '@wallet-types/coinjoin';
 import { AnonymitySet } from '@trezor/blockchain-link';
 import {
@@ -174,6 +177,10 @@ export const getMaxRounds = (roundsNeeded: number, roundsFailRateBuffer: number)
 
     return Math.max(estimatedRoundsCount, ESTIMATED_MIN_ROUNDS_NEEDED);
 };
+
+// transform boolean to skip rounds value used by @trezor/coinjoin
+export const getSkipRounds = (enabled: boolean) =>
+    enabled ? SKIP_ROUNDS_VALUE_WHEN_ENABLED : undefined;
 
 // get time estimate in millisecond per round
 export const getEstimatedTimePerRound = (

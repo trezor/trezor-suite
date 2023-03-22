@@ -35,7 +35,6 @@ import {
     UNECONOMICAL_COINJOIN_THRESHOLD,
     DEFAULT_TARGET_ANONYMITY,
     SKIP_ROUNDS_BY_DEFAULT,
-    SKIP_ROUNDS_VALUE_WHEN_ENABLED,
 } from '@suite/services/coinjoin';
 import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import {
@@ -46,8 +45,6 @@ import {
 } from '@suite-reducers/messageSystemReducer';
 import { MAX_MINING_FEE_FALLBACK } from '@trezor/coinjoin/src/constants';
 import { SelectedAccountRootState, selectSelectedAccount } from './selectedAccountReducer';
-
-const DEFAULT_SKIP_ROUNDS = SKIP_ROUNDS_BY_DEFAULT ? SKIP_ROUNDS_VALUE_WHEN_ENABLED : undefined;
 
 export interface CoinjoinClientInstance
     extends Pick<
@@ -99,9 +96,6 @@ const createAccount = (
         key: accountKey,
         symbol,
         rawLiquidityClue: null, // NOTE: liquidity clue is calculated from tx history. default value is `null`
-        targetAnonymity: DEFAULT_TARGET_ANONYMITY,
-        maxFeePerKvbyte: MAX_MINING_FEE_FALLBACK,
-        skipRounds: DEFAULT_SKIP_ROUNDS,
         previousSessions: [],
     };
     const index = draft.accounts.findIndex(a => a.key === accountKey);
@@ -125,12 +119,15 @@ const updateSetupOption = (
     const account = draft.accounts.find(a => a.key === payload.accountKey);
     if (!account) return;
     if (payload.isRecommended) {
+        delete account.setup;
+    } else {
         const client = draft.clients[account.symbol];
-        account.targetAnonymity = DEFAULT_TARGET_ANONYMITY;
-        account.maxFeePerKvbyte = client?.maxMiningFee || MAX_MINING_FEE_FALLBACK;
-        account.skipRounds = DEFAULT_SKIP_ROUNDS;
+        account.setup = {
+            maxFeePerVbyte: client?.maxMiningFee ?? MAX_MINING_FEE_FALLBACK,
+            skipRounds: SKIP_ROUNDS_BY_DEFAULT,
+            targetAnonymity: DEFAULT_TARGET_ANONYMITY,
+        };
     }
-    account.customSetup = !payload.isRecommended;
 };
 
 const updateTargetAnonymity = (
@@ -138,8 +135,8 @@ const updateTargetAnonymity = (
     payload: ExtractActionPayload<typeof COINJOIN.ACCOUNT_UPDATE_TARGET_ANONYMITY>,
 ) => {
     const account = draft.accounts.find(a => a.key === payload.accountKey);
-    if (!account) return;
-    account.targetAnonymity = payload.targetAnonymity;
+    if (!account?.setup) return;
+    account.setup.targetAnonymity = payload.targetAnonymity;
 };
 
 const updateMaxMingFee = (
@@ -147,8 +144,8 @@ const updateMaxMingFee = (
     payload: ExtractActionPayload<typeof COINJOIN.ACCOUNT_UPDATE_MAX_MING_FEE>,
 ) => {
     const account = draft.accounts.find(a => a.key === payload.accountKey);
-    if (!account) return;
-    account.maxFeePerKvbyte = payload.maxFeePerKvbyte;
+    if (!account?.setup) return;
+    account.setup.maxFeePerVbyte = payload.maxFeePerVbyte;
 };
 
 const toggleSkipRounds = (
@@ -156,8 +153,8 @@ const toggleSkipRounds = (
     payload: ExtractActionPayload<typeof COINJOIN.ACCOUNT_TOGGLE_SKIP_ROUNDS>,
 ) => {
     const account = draft.accounts.find(a => a.key === payload.accountKey);
-    if (!account) return;
-    account.skipRounds = account.skipRounds ? undefined : SKIP_ROUNDS_VALUE_WHEN_ENABLED;
+    if (!account?.setup) return;
+    account.setup.skipRounds = !account.setup.skipRounds;
 };
 
 const createSession = (
@@ -533,15 +530,21 @@ export const selectSessionByAccountKey = memoizeWithArgs(
     },
 );
 
+export const selectTargetAnonymityByAccountKey = (
+    state: CoinjoinRootState,
+    accountKey: AccountKey,
+) => {
+    const coinjoinAccount = selectCoinjoinAccountByKey(state, accountKey);
+    if (!coinjoinAccount) return;
+    return coinjoinAccount.setup?.targetAnonymity ?? DEFAULT_TARGET_ANONYMITY;
+};
+
 export const selectCurrentCoinjoinBalanceBreakdown = memoize((state: CoinjoinRootState) => {
     const selectedAccount = selectSelectedAccount(state);
-    const coinjoinAccounts = selectCoinjoinAccounts(state);
+    const targetAnonymity = selectedAccount
+        ? selectTargetAnonymityByAccountKey(state, selectedAccount.key)
+        : undefined;
 
-    const currentCoinjoinAccount = coinjoinAccounts.find(
-        account => account.key === selectedAccount?.key,
-    );
-
-    const { targetAnonymity } = currentCoinjoinAccount || {};
     const { addresses, utxo: utxos } = selectedAccount || {};
 
     const balanceBreakdown = breakdownCoinjoinBalance({
@@ -555,10 +558,9 @@ export const selectCurrentCoinjoinBalanceBreakdown = memoize((state: CoinjoinRoo
 
 export const selectSessionProgressByAccountKey = memoizeWithArgs(
     (state: CoinjoinRootState, accountKey: AccountKey) => {
-        const coinjoinAccount = selectCoinjoinAccountByKey(state, accountKey);
         const relatedAccount = selectAccountByKey(state, accountKey);
+        const targetAnonymity = selectTargetAnonymityByAccountKey(state, accountKey);
 
-        const { targetAnonymity } = coinjoinAccount || {};
         const { addresses, balance, utxo: utxos } = relatedAccount || {};
 
         if (!balance || !utxos) {
@@ -590,13 +592,9 @@ export const selectCurrentCoinjoinSession = memoize((state: CoinjoinRootState) =
 
 export const selectCurrentTargetAnonymity = memoize((state: CoinjoinRootState) => {
     const selectedAccount = selectSelectedAccount(state);
-    const coinjoinAccounts = selectCoinjoinAccounts(state);
-
-    const currentCoinjoinAccount = coinjoinAccounts.find(
-        account => account.key === selectedAccount?.key,
-    );
-
-    const { targetAnonymity } = currentCoinjoinAccount || {};
+    const targetAnonymity = selectedAccount
+        ? selectTargetAnonymityByAccountKey(state, selectedAccount.key)
+        : undefined;
 
     return targetAnonymity;
 });
@@ -646,12 +644,8 @@ export const selectIsNothingToAnonymizeByAccountKey = memoizeWithArgs(
     (state: CoinjoinRootState, accountKey: AccountKey) => {
         const minAllowedInputWithFee = selectMinAllowedInputWithFee(state, accountKey);
         const account = selectAccountByKey(state, accountKey);
-        const coinjoinAccounts = selectCoinjoinAccounts(state);
-        // selectCoinjoinAccountByKey cannot be used because it is memoized and does not update on target anonymity change.
-        // selectCurrentTargetAnonymity cannot be used either because coinjoin middleware should be able to restore any session, regardless of the account being selected or not.
-        const targetAnonymity =
-            coinjoinAccounts.find(coinjoinAccount => coinjoinAccount.key === accountKey)
-                ?.targetAnonymity || 1;
+        const targetAnonymity = selectTargetAnonymityByAccountKey(state, accountKey) ?? 1;
+
         const anonymitySet = account?.addresses?.anonymitySet || {};
         const utxos = account?.utxo || [];
 
@@ -666,7 +660,7 @@ export const selectIsNothingToAnonymizeByAccountKey = memoizeWithArgs(
 export const selectRoundsNeeded = memoizeWithArgs(
     (state: CoinjoinRootState, accountKey: AccountKey) => {
         const account = selectAccountByKey(state, accountKey);
-        const targetAnonymity = selectCurrentTargetAnonymity(state) || 0;
+        const targetAnonymity = selectTargetAnonymityByAccountKey(state, accountKey) || 0;
         const averageAnonymityGainPerRound = selectAverageAnonymityGainPerRound(state);
 
         const anonymitySet = account?.addresses?.anonymitySet || {};
