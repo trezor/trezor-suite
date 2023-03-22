@@ -76,7 +76,7 @@ const transactionListItemStyle = prepareNativeStyle<TransactionListItemStyleProp
                 condition: isLast,
                 style: {
                     paddingBottom: utils.spacings.medium,
-                    marginBottom: utils.spacings.small,
+                    marginBottom: utils.spacings.extraLarge,
                     borderBottomLeftRadius: utils.borders.radii.large / 2,
                     borderBottomRightRadius: utils.borders.radii.large / 2,
                 },
