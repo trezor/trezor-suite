@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { Pressable, View } from 'react-native';
+import { Pressable } from 'react-native';
 import Animated, {
     Easing,
     useAnimatedStyle,
     useSharedValue,
     withTiming,
+    withDelay,
 } from 'react-native-reanimated';
 
 import { Icon } from '@trezor/icons';
@@ -24,16 +25,21 @@ const triggerStyle = prepareNativeStyle(utils => ({
     paddingVertical: utils.spacings.small,
 }));
 
-const ANIMATION_DURATION = 500;
+const ANIMATION_DURATION = 250;
 
 export const AccordionItem = ({ title, content }: AccordionItemProps) => {
     const { applyStyle } = useNativeStyles();
     const [isOpen, setIsOpen] = useState(false);
     const height = useSharedValue(0);
+    const textOpacity = useSharedValue(0);
 
-    const animationStyle = useAnimatedStyle(() => ({
+    const accordionAnimationStyle = useAnimatedStyle(() => ({
         height: `${height.value}%`,
         overflow: 'hidden',
+    }));
+
+    const textAnimationStyle = useAnimatedStyle(() => ({
+        opacity: textOpacity.value,
     }));
 
     const toggleOpen = () => {
@@ -42,11 +48,19 @@ export const AccordionItem = ({ title, content }: AccordionItemProps) => {
                 duration: ANIMATION_DURATION,
                 easing: Easing.ease,
             });
+            textOpacity.value = withDelay(
+                ANIMATION_DURATION,
+                withTiming(1, { duration: ANIMATION_DURATION }),
+            );
         } else {
-            height.value = withTiming(0, {
-                duration: ANIMATION_DURATION,
-                easing: Easing.out(Easing.cubic),
-            });
+            textOpacity.value = withTiming(0, { duration: ANIMATION_DURATION });
+            height.value = withDelay(
+                ANIMATION_DURATION,
+                withTiming(1, {
+                    duration: ANIMATION_DURATION,
+                    easing: Easing.out(Easing.cubic),
+                }),
+            );
         }
         setIsOpen(!isOpen);
     };
@@ -59,10 +73,10 @@ export const AccordionItem = ({ title, content }: AccordionItemProps) => {
                     <Icon name="plusCircle" color="iconPrimaryDefault" />
                 </Box>
                 <Box flexDirection="row">
-                    <Animated.View style={animationStyle}>
-                        <View>
+                    <Animated.View style={accordionAnimationStyle}>
+                        <Animated.View style={textAnimationStyle}>
                             <Text>{content}</Text>
-                        </View>
+                        </Animated.View>
                     </Animated.View>
                 </Box>
             </Box>
