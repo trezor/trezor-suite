@@ -2,11 +2,10 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { SectionList } from 'react-native';
 import { useSelector } from 'react-redux';
 
-import { useNativeStyles, prepareNativeStyle } from '@trezor/styles';
 import { AccountKey, WalletAccountTransaction } from '@suite-common/wallet-types';
 import { groupTransactionsByDate, MonthKey } from '@suite-common/wallet-utils';
 import { selectIsLoadingTransactions } from '@suite-common/wallet-core';
-import { Box, Loader } from '@suite-native/atoms';
+import { Loader } from '@suite-native/atoms';
 
 import { TransactionListGroupTitle } from './TransactionListGroupTitle';
 import { TransactionListItem } from './TransactionListItem';
@@ -48,20 +47,12 @@ const renderSectionHeader = ({ section: { monthKey } }: RenderSectionHeaderParam
 
 export const TX_PER_PAGE = 25;
 
-// NOTE: This is due to Box wrapper that is set by isScrollable prop in suite-native/module-accounts/src/screens/AccountDetailScreen.tsx
-// The box doesn't seem to be stopped visually by tab bar and SectionList cmp cannot be inside ScrollView cmp
-// That's why we add padding bottom to avoid style clash.
-const listWrapperStyle = prepareNativeStyle(_ => ({
-    height: '100%',
-}));
-
 export const TransactionList = ({
     transactions,
     listHeaderComponent,
     fetchMoreTransactions,
     accountKey,
 }: AccountTransactionProps) => {
-    const { applyStyle } = useNativeStyles();
     const isLoadingTransactions = useSelector(selectIsLoadingTransactions);
     const accountTransactionsByMonth = useMemo(
         () => groupTransactionsByDate(transactions, 'month'),
@@ -102,18 +93,16 @@ export const TransactionList = ({
     if (isLoadingTransactions) return <Loader />;
 
     return (
-        <Box style={applyStyle(listWrapperStyle)}>
-            <SectionList
-                sections={sectionsData}
-                renderItem={({ item, section, index }) =>
-                    renderItem({ item, section, index, accountKey })
-                }
-                renderSectionHeader={renderSectionHeader}
-                ListEmptyComponent={<TransactionsEmptyState accountKey={accountKey} />}
-                ListHeaderComponent={listHeaderComponent}
-                onEndReached={handleOnEndReached}
-                stickySectionHeadersEnabled={false}
-            />
-        </Box>
+        <SectionList
+            sections={sectionsData}
+            renderItem={({ item, section, index }) =>
+                renderItem({ item, section, index, accountKey })
+            }
+            renderSectionHeader={renderSectionHeader}
+            ListEmptyComponent={<TransactionsEmptyState accountKey={accountKey} />}
+            ListHeaderComponent={listHeaderComponent}
+            onEndReached={handleOnEndReached}
+            stickySectionHeadersEnabled={false}
+        />
     );
 };
