@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import BigNumber from 'bignumber.js';
 import { variables } from '@trezor/components';
 import { getIsZeroValuePhishing } from '@suite-common/suite-utils';
@@ -19,6 +19,7 @@ import {
     formatCardanoWithdrawal,
     formatCardanoDeposit,
     formatNetworkAmount,
+    isNftTokenTransfer,
 } from '@suite-common/wallet-utils';
 import { WalletAccountTransaction } from '@wallet-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -30,13 +31,22 @@ import { copyToClipboard } from '@trezor/dom-utils';
 import { AccountMetadata } from '@suite-types/metadata';
 import { ExtendedMessageDescriptor } from '@suite-types';
 import { SignOperator } from '@suite-common/suite-types';
+import { FormattedNftAmount } from '@suite-components/FormattedNftAmount';
 
-export const StyledFormattedCryptoAmount = styled(FormattedCryptoAmount)`
+const amountStyle = css`
     width: 100%;
     color: ${({ theme }) => theme.TYPE_DARK_GREY};
     font-size: ${variables.FONT_SIZE.NORMAL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     white-space: nowrap;
+`;
+
+export const StyledFormattedCryptoAmount = styled(FormattedCryptoAmount)`
+    ${amountStyle}
+`;
+
+const StyledFormattedNftAmount = styled(FormattedNftAmount)`
+    ${amountStyle}
 `;
 
 interface BaseTransfer {
@@ -71,7 +81,9 @@ export const TokenTransfer = ({
                 />
             }
             amount={
-                !baseLayoutProps.singleRowLayout && (
+                isNft ? (
+                    <StyledFormattedNftAmount transfer={transfer} signValue={operation} />
+                ) : (
                     <StyledFormattedCryptoAmount
                         value={formatAmount(transfer.amount, transfer.decimals)}
                         symbol={transfer.symbol}
