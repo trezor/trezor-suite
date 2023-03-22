@@ -11,7 +11,7 @@ import * as Sentry from '@sentry/react-native';
 
 import enMessages from '@trezor/suite-data/files/translations/en.json';
 import { selectIsAppReady, selectIsConnectInitialized, StoreProvider } from '@suite-native/state';
-import { NotificationRenderer } from '@suite-native/notifications';
+// import { NotificationRenderer } from '@suite-native/notifications';
 import { ToastRenderer } from '@suite-native/toasts';
 import { FormatterProvider } from '@suite-common/formatters';
 
@@ -47,11 +47,13 @@ const AppComponent = () => {
 
     return (
         <FormatterProvider config={formattersConfig}>
-            <NotificationRenderer>
-                <ToastRenderer>
-                    <RootStackNavigator />
-                </ToastRenderer>
-            </NotificationRenderer>
+            {/* Notifications are disabled until the problem with after-import notifications flooding is solved. */}
+            {/* More here: https://github.com/trezor/trezor-suite/issues/7721  */}
+            {/* <NotificationRenderer> */}
+            <ToastRenderer>
+                <RootStackNavigator />
+            </ToastRenderer>
+            {/* </NotificationRenderer> */}
         </FormatterProvider>
     );
 };
