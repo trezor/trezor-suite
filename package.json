@@ -71,7 +71,7 @@
             "git add"
         ],
         "packages/{components,suite}/**/*.{ts,tsx}": [
-            "stylelit --fix",
+            "stylelint --fix",
             "git add"
         ]
     },
