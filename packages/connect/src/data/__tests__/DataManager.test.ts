@@ -35,10 +35,6 @@ describe('data/DataManager', () => {
         }
     });
 
-    test('isManagementAllowed', () => {
-        expect(DataManager.isManagementAllowed()).toEqual(undefined);
-    });
-
     test('getSettings', () => {
         expect(DataManager.getSettings('connectSrc')).toEqual(settings.connectSrc);
         expect(DataManager.getSettings()).toEqual(settings);

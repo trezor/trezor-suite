@@ -1,16 +1,15 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/utils/urlUtils.js
 
-export const getOrigin = (url: string) => {
+export const getOrigin = (url: unknown) => {
     if (typeof url !== 'string') return 'unknown';
     if (url.indexOf('file://') === 0) return 'file://';
-    // eslint-disable-next-line no-useless-escape
-    const parts = url.match(/^.+\:\/\/[^\/]+/);
-    return Array.isArray(parts) && parts.length > 0 ? parts[0] : 'unknown';
+    const [origin] = url.match(/^https?:\/\/[^/]+/) ?? [];
+    return origin ?? 'unknown';
 };
 
-export const getHost = (url: string) => {
-    const origin = getOrigin(url);
-    const [_, uri] = getOrigin(origin).split('//');
+export const getHost = (url: unknown) => {
+    if (typeof url !== 'string') return;
+    const [, , uri] = url.match(/^(https?):\/\/([^:/]+)?/i) ?? [];
     if (uri) {
         const parts = uri.split('.');
         return parts.length > 2

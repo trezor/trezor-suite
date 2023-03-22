@@ -1,6 +1,5 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/data/DataManager.js
 
-import parseUri from 'parse-uri';
 import { httpRequest } from '../utils/assets';
 import { parseCoinsJson } from './coinInfo';
 import { parseFirmware } from './firmwareInfo';
@@ -46,20 +45,6 @@ export class DataManager {
         return this.messages;
     }
 
-    static isManagementAllowed() {
-        const uri = parseUri(this.settings.origin ?? '');
-        if (uri && typeof uri.host === 'string') {
-            const parts = uri.host.split('.');
-            if (parts.length > 2) {
-                // subdomain
-                uri.host = parts.slice(parts.length - 2, parts.length).join('.');
-            }
-            return config.management.find(
-                item => item.origin === this.settings.origin || item.origin === uri.host,
-            );
-        }
-    }
-
     static getSettings(key?: undefined): ConnectSettings;
     static getSettings<T extends keyof ConnectSettings>(key: T): ConnectSettings[T];
     static getSettings(key?: keyof ConnectSettings) {
@@ -68,5 +53,9 @@ export class DataManager {
             return this.settings[key];
         }
         return this.settings;
+    }
+
+    static getConfig() {
+        return config;
     }
 }
