@@ -6,6 +6,7 @@ import { getUtxoOutpoint, getBip43Type } from '@suite-common/wallet-utils';
 import { Account, SelectedAccountStatus } from '@suite-common/wallet-types';
 import {
     ESTIMATED_MIN_ROUNDS_NEEDED,
+    MAX_MINING_FEE_MODIFIER,
     SKIP_ROUNDS_VALUE_WHEN_ENABLED,
 } from '@suite/services/coinjoin/config';
 import { CoinjoinSessionParameters, RoundPhase, SessionPhase } from '@wallet-types/coinjoin';
@@ -105,12 +106,12 @@ export const calculateAnonymityProgress = ({
 
 export const transformCoinjoinStatus = ({
     coordinationFeeRate,
-    maxMiningFee,
+    weeklyFeeRateMedian,
     allowedInputAmounts,
     rounds,
 }: CoinjoinStatusEvent) => ({
     coordinationFeeRate,
-    maxMiningFee,
+    weeklyFeeRateMedian,
     allowedInputAmounts,
     rounds: rounds.map(({ id, phase }) => ({ id, phase })),
 });
@@ -181,6 +182,9 @@ export const getMaxRounds = (roundsNeeded: number, roundsFailRateBuffer: number)
 // transform boolean to skip rounds value used by @trezor/coinjoin
 export const getSkipRounds = (enabled: boolean) =>
     enabled ? SKIP_ROUNDS_VALUE_WHEN_ENABLED : undefined;
+
+export const getMaxFeePerVbyte = (weeklyMedian: number) =>
+    Math.round(weeklyMedian * MAX_MINING_FEE_MODIFIER);
 
 // get time estimate in millisecond per round
 export const getEstimatedTimePerRound = (

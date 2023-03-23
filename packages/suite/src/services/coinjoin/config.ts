@@ -3,7 +3,6 @@ import {
     COORDINATOR_FEE_RATE_FALLBACK,
     MIN_ALLOWED_AMOUNT_FALLBACK,
     MAX_ALLOWED_AMOUNT_FALLBACK,
-    MAX_MINING_FEE_FALLBACK,
 } from '@trezor/coinjoin/src/constants';
 import type { CoinjoinBackendSettings, CoinjoinClientSettings } from '@trezor/coinjoin';
 import type { PartialRecord } from '@trezor/type-utils';
@@ -127,17 +126,21 @@ export const COINJOIN_NETWORKS: PartialRecord<NetworkSymbol, ServerEnvironment> 
     },
 };
 
-// coinjoin strategy constants
 export const ESTIMATED_ANONYMITY_GAINED_PER_ROUND = 10; // initial value replaced by config via message-system in state.wallet.coinjoin.config.averageAnonymityGainPerRound
 export const MIN_ANONYMITY_GAINED_PER_ROUND = 0.1; // the minimum anonymity gain per coinjoin round that is used to avoid division by zero when computing roundsNeeded.
 export const ESTIMATED_ROUNDS_FAIL_RATE_BUFFER = 2.5;
 export const ESTIMATED_MIN_ROUNDS_NEEDED = 4;
 export const ESTIMATED_HOURS_PER_ROUND = 1;
 export const UNECONOMICAL_COINJOIN_THRESHOLD = 1_000_000;
-
+export const COORDINATOR_FEE_RATE_MULTIPLIER = 10 ** 8; // coordinator fee rate from status format (0.003) - firmware format (300 000 = 0.003 * 10 ** 8)
+export const DEFAULT_TARGET_ANONYMITY = 5;
+export const SKIP_ROUNDS_BY_DEFAULT = false;
+export const SKIP_ROUNDS_VALUE_WHEN_ENABLED = [4, 5] as [number, number];
+export const WEEKLY_FEE_RATE_MEDIAN_FALLBACK = 2;
+export const MAX_MINING_FEE_MODIFIER = 2.5; // modifier applied to a median fee rate to set default max mining fee rate per vbyte
 export const CLIENT_STATUS_FALLBACK = {
     rounds: [],
-    maxMiningFee: MAX_MINING_FEE_FALLBACK,
+    weeklyFeeRateMedian: WEEKLY_FEE_RATE_MEDIAN_FALLBACK,
     coordinationFeeRate: {
         rate: COORDINATOR_FEE_RATE_FALLBACK,
         plebsDontPayThreshold: PLEBS_DONT_PAY_THRESHOLD_FALLBACK,
@@ -147,13 +150,6 @@ export const CLIENT_STATUS_FALLBACK = {
         max: MAX_ALLOWED_AMOUNT_FALLBACK,
     },
 };
-export const DEFAULT_TARGET_ANONYMITY = 5;
-export const SKIP_ROUNDS_BY_DEFAULT = false;
-export const SKIP_ROUNDS_VALUE_WHEN_ENABLED = [4, 5] as [number, number];
-
-// coordinator fee rate from status format (0.003)
-// firmware format (300 000 = 0.003 * 10 ** 8)
-export const COORDINATOR_FEE_RATE_MULTIPLIER = 10 ** 8;
 
 export const getCoinjoinConfig = (
     network: NetworkSymbol,
