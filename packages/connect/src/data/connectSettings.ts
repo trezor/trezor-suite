@@ -67,8 +67,10 @@ export const parseConnectSettings = (input: Partial<ConnectSettings> = {}) => {
         }
     }
 
-    if (typeof input.connectSrc === 'string') {
+    if (typeof input.connectSrc === 'string' && input.connectSrc?.startsWith('http')) {
         settings.connectSrc = corsValidator(input.connectSrc);
+    } else if (settings.trustedHost) {
+        settings.connectSrc = input.connectSrc;
     }
 
     const src = settings.connectSrc || DEFAULT_DOMAIN;
