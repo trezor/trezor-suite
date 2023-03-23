@@ -1,9 +1,16 @@
-import { configureStore } from '@suite/support/tests/configureStore';
+import { combineReducers } from '@reduxjs/toolkit';
 
-import messageSystemReducer, { MessageSystemState } from '@suite-reducers/messageSystemReducer';
-import * as messageSystemActions from '../messageSystemActions';
-import * as messageSystemConstants from '../constants/messageSystemConstants';
+import { configureMockStore, extraDependenciesMock } from '@suite-common/test-utils';
+
+import {
+    prepareMessageSystemReducer,
+    messageSystemActions,
+    initMessageSystemThunk,
+    MessageSystemState,
+} from '../index';
 import * as fixtures from '../__fixtures__/messageSystemActions';
+
+const messageSystemReducer = prepareMessageSystemReducer(extraDependenciesMock);
 
 export const getInitialState = (state?: MessageSystemState) => ({
     messageSystem: {
@@ -13,17 +20,13 @@ export const getInitialState = (state?: MessageSystemState) => ({
 });
 
 type State = ReturnType<typeof getInitialState>;
-const mockStore = configureStore<State, any>();
 
-const initStore = (state: State) => {
-    const store = mockStore(state);
-    store.subscribe(() => {
-        const action = store.getActions().pop();
-        const { messageSystem } = store.getState();
-        store.getState().messageSystem = messageSystemReducer(messageSystem, action);
-        // add action back to stack
-        store.getActions().push(action);
+const initStore = (preloadedState: State) => {
+    const store = configureMockStore({
+        preloadedState,
+        reducer: combineReducers({ messageSystem: messageSystemReducer }),
     });
+
     return store;
 };
 
@@ -51,14 +54,12 @@ describe('Message system actions', () => {
                 messageSystem: { ...getInitialState().messageSystem, currentSequence: 0 },
             });
 
-            await store.dispatch(messageSystemActions.init());
+            await store.dispatch(initMessageSystemThunk());
 
-            expect(store.getActions().length).toBe(1);
-            expect(store.getActions()[0].type).toBe(
-                messageSystemConstants.FETCH_CONFIG_SUCCESS_UPDATE,
-            );
-            expect(store.getActions()[0].payload.config).not.toBe(undefined);
-            expect(store.getActions()[0].payload.timestamp).toBe(timestamp);
+            expect(store.getActions().length).toBe(5);
+            expect(store.getActions()[2].type).toBe(messageSystemActions.fetchSuccessUpdate.type);
+            expect(store.getActions()[2].payload.config).not.toBe(undefined);
+            expect(store.getActions()[2].payload.timestamp).toBe(timestamp);
         });
 
         it("does not store the fetched config if it's sequence number is the same as the current one", async () => {
@@ -66,10 +67,10 @@ describe('Message system actions', () => {
                 messageSystem: { ...getInitialState().messageSystem, currentSequence: 1 },
             });
 
-            await store.dispatch(messageSystemActions.init());
+            await store.dispatch(initMessageSystemThunk());
 
-            expect(store.getActions().length).toBe(1);
-            expect(store.getActions()[0].type).toBe(messageSystemConstants.FETCH_CONFIG_SUCCESS);
+            expect(store.getActions().length).toBe(5);
+            expect(store.getActions()[2].type).toBe(messageSystemActions.fetchSuccess.type);
         });
 
         it('raises an error if sequence number of fetched config is lower than the current one', async () => {
@@ -79,10 +80,10 @@ describe('Message system actions', () => {
                 messageSystem: { ...getInitialState().messageSystem, currentSequence: 15 },
             });
 
-            await store.dispatch(messageSystemActions.init());
+            await store.dispatch(initMessageSystemThunk());
 
-            expect(store.getActions().length).toBe(1);
-            expect(store.getActions()[0].type).toBe(messageSystemConstants.FETCH_CONFIG_ERROR);
+            expect(store.getActions().length).toBe(5);
+            expect(store.getActions()[2].type).toBe(messageSystemActions.fetchError.type);
             expect(console.error).toHaveBeenCalled();
         });
 
@@ -94,7 +95,7 @@ describe('Message system actions', () => {
                 messageSystem: { ...getInitialState().messageSystem, timestamp },
             });
 
-            store.dispatch(messageSystemActions.init());
+            store.dispatch(initMessageSystemThunk());
 
             expect(global.fetch).not.toHaveBeenCalled();
         });
@@ -114,15 +115,13 @@ describe('Message system actions', () => {
                 messageSystem: { ...getInitialState().messageSystem, currentSequence: 1 },
             });
 
-            await store.dispatch(messageSystemActions.init());
+            await store.dispatch(initMessageSystemThunk());
 
-            expect(store.getActions().length).toBe(1);
-            expect(store.getActions()[0].type).toBe(
-                messageSystemConstants.FETCH_CONFIG_SUCCESS_UPDATE,
-            );
-            expect(store.getActions()[0].payload.config).not.toBe(undefined);
-            expect(store.getActions()[0].payload.config.sequence).toBe(10);
-            expect(store.getActions()[0].payload.timestamp).toBe(0);
+            expect(store.getActions().length).toBe(5);
+            expect(store.getActions()[2].type).toBe(messageSystemActions.fetchSuccessUpdate.type);
+            expect(store.getActions()[2].payload.config).not.toBe(undefined);
+            expect(store.getActions()[2].payload.config.sequence).toBe(10);
+            expect(store.getActions()[2].payload.timestamp).toBe(0);
 
             expect(console.error).toHaveBeenCalled();
         });
@@ -144,10 +143,10 @@ describe('Message system actions', () => {
                 messageSystem: { ...getInitialState().messageSystem, currentSequence: 15 },
             });
 
-            await store.dispatch(messageSystemActions.init());
+            await store.dispatch(initMessageSystemThunk());
 
-            expect(store.getActions().length).toBe(1);
-            expect(store.getActions()[0].type).toBe(messageSystemConstants.FETCH_CONFIG_ERROR);
+            expect(store.getActions().length).toBe(5);
+            expect(store.getActions()[2].type).toBe(messageSystemActions.fetchError.type);
             expect(console.error).toHaveBeenCalled();
         });
 
@@ -162,15 +161,15 @@ describe('Message system actions', () => {
                 messageSystem: { ...getInitialState().messageSystem, currentSequence: 1 },
             });
 
-            await store.dispatch(messageSystemActions.init());
+            await store.dispatch(initMessageSystemThunk());
 
-            expect(store.getActions().length).toBe(1);
-            expect(store.getActions()[0].type).toBe(messageSystemConstants.FETCH_CONFIG_ERROR);
+            expect(store.getActions().length).toBe(5);
+            expect(store.getActions()[2].type).toBe(messageSystemActions.fetchError.type);
             expect(console.error).toHaveBeenCalled();
         });
     });
 
-    it('saveValidMessages', () => {
+    it('updateValidMessages', () => {
         const store = initStore(getInitialState());
 
         const bannerMessages = [fixtures.messageId1, fixtures.messageId2, fixtures.messageId3];
@@ -185,7 +184,7 @@ describe('Message system actions', () => {
             feature: [fixtures.messageId3],
         };
 
-        store.dispatch(messageSystemActions.saveValidMessages(payload));
+        store.dispatch(messageSystemActions.updateValidMessages(payload));
 
         expect(store.getState().messageSystem.validMessages.banner.length).toEqual(
             bannerMessages.length,
@@ -209,7 +208,9 @@ describe('Message system actions', () => {
     it('dismissMessage', () => {
         const store = initStore(getInitialState());
 
-        store.dispatch(messageSystemActions.dismissMessage(fixtures.messageId1, 'banner'));
+        store.dispatch(
+            messageSystemActions.dismissMessage({ id: fixtures.messageId1, category: 'banner' }),
+        );
 
         expect(Object.keys(store.getState().messageSystem.dismissedMessages).length).toEqual(1);
 
@@ -220,10 +221,14 @@ describe('Message system actions', () => {
             feature: false,
         });
 
-        store.dispatch(messageSystemActions.dismissMessage(fixtures.messageId1, 'modal'));
+        store.dispatch(
+            messageSystemActions.dismissMessage({ id: fixtures.messageId1, category: 'modal' }),
+        );
         expect(Object.keys(store.getState().messageSystem.dismissedMessages).length).toEqual(1);
 
-        store.dispatch(messageSystemActions.dismissMessage(fixtures.messageId2, 'context'));
+        store.dispatch(
+            messageSystemActions.dismissMessage({ id: fixtures.messageId2, category: 'context' }),
+        );
         expect(Object.keys(store.getState().messageSystem.dismissedMessages).length).toEqual(2);
 
         expect(store.getState().messageSystem.dismissedMessages[fixtures.messageId1]).toEqual({

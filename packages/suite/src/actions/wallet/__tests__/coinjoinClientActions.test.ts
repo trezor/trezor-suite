@@ -5,7 +5,8 @@ import { promiseAllSequence } from '@trezor/utils';
 import { accountsReducer } from '@wallet-reducers';
 import { coinjoinReducer } from '@wallet-reducers/coinjoinReducer';
 import selectedAccountReducer from '@wallet-reducers/selectedAccountReducer';
-import messageSystemReducer from '@suite-reducers/messageSystemReducer';
+import { prepareMessageSystemReducer } from '@suite-common/message-system';
+import { extraDependencies } from '@suite/support/extraDependencies';
 import modalReducer from '@suite-reducers/modalReducer';
 import {
     initCoinjoinService,
@@ -26,6 +27,8 @@ jest.mock('@suite/services/coinjoin/coinjoinService', () => {
     const mock = jest.requireActual('../__fixtures__/mockCoinjoinService');
     return mock.mockCoinjoinService();
 });
+
+const messageSystemReducer = prepareMessageSystemReducer(extraDependencies);
 
 const rootReducer = combineReducers({
     suite: createReducer(

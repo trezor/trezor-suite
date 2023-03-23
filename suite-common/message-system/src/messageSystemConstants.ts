@@ -1,12 +1,5 @@
 import { resolveStaticPath } from '@suite-common/suite-utils';
 
-export const FETCH_CONFIG_SUCCESS = '@message-system/fetch-config-success';
-export const FETCH_CONFIG_SUCCESS_UPDATE = '@message-system/fetch-config-success-update';
-export const FETCH_CONFIG_ERROR = '@message-system/fetch-config-error';
-
-export const SAVE_VALID_MESSAGES = '@message-system/save-valid-messages';
-export const DISMISS_MESSAGE = '@message-system/dismiss-message';
-
 /*
  * On the app launch and then about once a minute (FETCH_INTERVAL), a new config tries to fetch.
  * FETCH_CHECK_INTERVAL is interval for checking if FETCH_INTERVAL already expired.
@@ -25,4 +18,4 @@ export const CONFIG_URL_REMOTE = process.env.CODESIGN_BUILD
     ? `https://data.trezor.io/config/stable/config.v${VERSION}.jws`
     : `https://data.trezor.io/config/develop/config.v${VERSION}.jws`;
 
-export const CONFIG_URL_LOCAL = resolveStaticPath(`message-system/config.v${VERSION}.jws`);
+export const CONFIG_URL_LOCAL = resolveStaticPath(`message-system/config.v${VERSION}.jws`); // TODO how to deal with resolveStaticPath?

@@ -3,7 +3,7 @@ import { arrayDistinct } from '@trezor/utils';
 import { UI, DEVICE } from '@trezor/connect';
 import { SessionPhase } from '@trezor/coinjoin/lib/enums';
 import { addToast } from '@suite-common/toast-notifications';
-import { SUITE, ROUTER, MESSAGE_SYSTEM } from '@suite-actions/constants';
+import { SUITE, ROUTER } from '@suite-actions/constants';
 import {
     SESSION_ROUND_CHANGED,
     SET_DEBUG_SETTINGS,
@@ -34,7 +34,8 @@ import {
     Feature,
     selectFeatureConfig,
     selectIsFeatureDisabled,
-} from '@suite-reducers/messageSystemReducer';
+    messageSystemActions,
+} from '@suite-common/message-system';
 
 export const coinjoinMiddleware =
     (api: MiddlewareAPI<Dispatch, AppState>) =>
@@ -221,7 +222,7 @@ export const coinjoinMiddleware =
             }
         }
 
-        if (action.type === MESSAGE_SYSTEM.SAVE_VALID_MESSAGES) {
+        if (action.type === messageSystemActions.updateValidMessages.type) {
             const state = api.getState();
 
             const incomingConfig = selectFeatureConfig(state, Feature.coinjoin);
@@ -247,7 +248,7 @@ export const coinjoinMiddleware =
         }
 
         if (
-            action.type === MESSAGE_SYSTEM.SAVE_VALID_MESSAGES ||
+            action.type === messageSystemActions.updateValidMessages.type ||
             action.type === SESSION_ROUND_CHANGED
         ) {
             const state = api.getState();

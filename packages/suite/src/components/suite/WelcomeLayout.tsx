@@ -6,7 +6,7 @@ import { H1, TrezorLogo, Button, variables, SVG_IMAGES } from '@trezor/component
 import { useOnce } from '@trezor/react-utils';
 import { Translation } from '@suite-components';
 import { useSelector } from '@suite-hooks';
-import { selectBannerMessage } from '@suite-reducers/messageSystemReducer';
+import { selectBannerMessage } from '@suite-common/message-system';
 import MessageSystemBanner from '@suite-components/Banners/MessageSystemBanner';
 import TrezorLink from '@suite-components/TrezorLink';
 import { isWeb } from '@suite-utils/env';

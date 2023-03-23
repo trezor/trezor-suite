@@ -5,7 +5,8 @@ import * as walletSettingsActions from '@settings-actions/walletSettingsActions'
 import { DISCOVERY, GRAPH, SEND, COINMARKET_COMMON, FORM_DRAFT } from '@wallet-actions/constants';
 import * as COINJOIN from '@wallet-actions/constants/coinjoinConstants';
 import * as storageActions from '@suite-actions/storageActions';
-import { SUITE, METADATA, MESSAGE_SYSTEM, STORAGE } from '@suite-actions/constants';
+import { SUITE, METADATA, STORAGE } from '@suite-actions/constants';
+import { messageSystemActions } from '@suite-common/message-system';
 import { FIRMWARE } from '@firmware-actions/constants';
 import { selectDiscovery } from '@wallet-reducers/discoveryReducer';
 import * as metadataActions from '@suite-actions/metadataActions';
@@ -204,8 +205,8 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                     api.dispatch(storageActions.saveMetadata());
                     break;
 
-                case MESSAGE_SYSTEM.FETCH_CONFIG_SUCCESS_UPDATE:
-                case MESSAGE_SYSTEM.DISMISS_MESSAGE:
+                case messageSystemActions.fetchSuccessUpdate.type:
+                case messageSystemActions.dismissMessage.type:
                     api.dispatch(storageActions.saveMessageSystem());
                     break;
 

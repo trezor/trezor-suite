@@ -47,7 +47,7 @@ import {
     MessageSystemRootState,
     selectIsFeatureDisabled,
     selectFeatureConfig,
-} from '@suite-reducers/messageSystemReducer';
+} from '@suite-common/message-system';
 import { SelectedAccountRootState, selectSelectedAccount } from './selectedAccountReducer';
 
 export interface CoinjoinClientInstance

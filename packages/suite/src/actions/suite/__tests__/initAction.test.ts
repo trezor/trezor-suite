@@ -1,15 +1,23 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import { configureStore } from '@suite/support/tests/configureStore';
-import { SUITE, ROUTER, MESSAGE_SYSTEM } from '@suite-actions/constants';
+import { SUITE, ROUTER } from '@suite-actions/constants';
 import suiteReducer from '@suite-reducers/suiteReducer';
 import modalReducer from '@suite-reducers/modalReducer';
 import routerReducer from '@suite-reducers/routerReducer';
 import deviceReducer from '@suite-reducers/deviceReducer';
-import messageSystemReducer from '@suite-reducers/messageSystemReducer';
+import {
+    prepareMessageSystemReducer,
+    messageSystemActions,
+    initMessageSystemThunk,
+    fetchConfigThunk,
+} from '@suite-common/message-system';
 import walletReducers from '@wallet-reducers';
 import { init } from '@suite-actions/initAction';
 import suiteMiddleware from '@suite-middlewares/suiteMiddleware';
-import { validJws, DEV_JWS_PUBLIC_KEY } from '@suite-actions/__fixtures__/messageSystemActions';
+import {
+    validJws,
+    DEV_JWS_PUBLIC_KEY,
+} from '@suite-common/message-system/src/__fixtures__/messageSystemActions';
 import type { AppState } from '@suite-types';
 import { extraDependencies } from '@suite/support/extraDependencies';
 
@@ -22,6 +30,7 @@ import {
 import { analyticsActions, prepareAnalyticsReducer } from '@suite-common/analytics';
 
 const analyticsReducer = prepareAnalyticsReducer(extraDependencies);
+const messageSystemReducer = prepareMessageSystemReducer(extraDependencies);
 
 process.env.PUBLIC_KEY = DEV_JWS_PUBLIC_KEY;
 jest.mock('@trezor/connect', () => global.JestMocks.getTrezorConnect({}));
@@ -71,6 +80,8 @@ const fixtures: Fixture[] = [
             SUITE.INIT,
             analyticsActions.initAnalytics.type,
             SUITE.SET_LANGUAGE,
+            initMessageSystemThunk.pending.type,
+            fetchConfigThunk.pending.type,
             SUITE.APP_CHANGED,
             ROUTER.LOCATION_CHANGE,
             SUITE.LOCK_ROUTER,
@@ -79,9 +90,11 @@ const fixtures: Fixture[] = [
             initBlockchainThunk.pending.type,
             preloadFeeInfoThunk.pending.type,
             blockchainActions.updateFee.type,
-            MESSAGE_SYSTEM.FETCH_CONFIG_SUCCESS_UPDATE,
+            messageSystemActions.fetchSuccessUpdate.type,
             preloadFeeInfoThunk.fulfilled.type,
+            fetchConfigThunk.fulfilled.type,
             initBlockchainThunk.fulfilled.type,
+            initMessageSystemThunk.fulfilled.type,
             SUITE.READY,
         ],
     },
@@ -96,14 +109,18 @@ const fixtures: Fixture[] = [
             SUITE.INIT,
             analyticsActions.initAnalytics.type,
             SUITE.SET_LANGUAGE,
+            initMessageSystemThunk.pending.type,
+            fetchConfigThunk.pending.type,
             connectInitThunk.pending.type,
             connectInitThunk.fulfilled.type,
             initBlockchainThunk.pending.type,
             preloadFeeInfoThunk.pending.type,
             blockchainActions.updateFee.type,
-            MESSAGE_SYSTEM.FETCH_CONFIG_SUCCESS_UPDATE,
+            messageSystemActions.fetchSuccessUpdate.type,
             preloadFeeInfoThunk.fulfilled.type,
+            fetchConfigThunk.fulfilled.type,
             initBlockchainThunk.fulfilled.type,
+            initMessageSystemThunk.fulfilled.type,
             SUITE.APP_CHANGED,
             ROUTER.LOCATION_CHANGE,
             SUITE.READY,
@@ -119,14 +136,18 @@ const fixtures: Fixture[] = [
             SUITE.INIT,
             analyticsActions.initAnalytics.type,
             SUITE.SET_LANGUAGE,
+            initMessageSystemThunk.pending.type,
+            fetchConfigThunk.pending.type,
             connectInitThunk.pending.type,
             connectInitThunk.fulfilled.type,
             initBlockchainThunk.pending.type,
             preloadFeeInfoThunk.pending.type,
             blockchainActions.updateFee.type,
-            MESSAGE_SYSTEM.FETCH_CONFIG_SUCCESS_UPDATE,
+            messageSystemActions.fetchSuccessUpdate.type,
             preloadFeeInfoThunk.fulfilled.type,
+            fetchConfigThunk.fulfilled.type,
             initBlockchainThunk.fulfilled.type,
+            initMessageSystemThunk.fulfilled.type,
             ROUTER.LOCATION_CHANGE,
             SUITE.READY,
         ],
@@ -142,6 +163,8 @@ const fixtures: Fixture[] = [
             SUITE.INIT,
             analyticsActions.initAnalytics.type,
             SUITE.SET_LANGUAGE,
+            initMessageSystemThunk.pending.type,
+            fetchConfigThunk.pending.type,
             SUITE.APP_CHANGED,
             ROUTER.LOCATION_CHANGE,
             SUITE.LOCK_ROUTER,

@@ -1,4 +1,6 @@
-import { MESSAGE_SYSTEM, STORAGE } from '@suite-actions/constants';
+import { extraDependenciesMock } from '@suite-common/test-utils';
+
+import { messageSystemActions } from '../messageSystemActions';
 
 export const timestamp = 10000000000;
 
@@ -28,13 +30,13 @@ const initialState = {
     dismissedMessages: {},
 };
 
-export default [
+export const fixtures = [
     {
         description: 'Config successfully fetched',
         initialState,
         actions: [
             {
-                type: MESSAGE_SYSTEM.FETCH_CONFIG_SUCCESS,
+                type: messageSystemActions.fetchSuccess.type,
                 payload: { config, timestamp },
             },
         ],
@@ -45,7 +47,7 @@ export default [
         initialState,
         actions: [
             {
-                type: MESSAGE_SYSTEM.FETCH_CONFIG_SUCCESS_UPDATE,
+                type: messageSystemActions.fetchSuccessUpdate.type,
                 payload: { config, timestamp },
             },
         ],
@@ -61,7 +63,7 @@ export default [
         initialState,
         actions: [
             {
-                type: MESSAGE_SYSTEM.FETCH_CONFIG_SUCCESS_UPDATE,
+                type: messageSystemActions.fetchSuccessUpdate.type,
                 payload: { config, timestamp: 0 },
             },
         ],
@@ -77,7 +79,7 @@ export default [
         initialState,
         actions: [
             {
-                type: MESSAGE_SYSTEM.FETCH_CONFIG_ERROR,
+                type: messageSystemActions.fetchError.type,
             },
         ],
         result: {
@@ -90,7 +92,7 @@ export default [
         initialState,
         actions: [
             {
-                type: STORAGE.LOAD,
+                type: extraDependenciesMock.actionTypes.storageLoad,
                 payload: {
                     messageSystem: {
                         ...initialState,
@@ -106,7 +108,7 @@ export default [
         initialState,
         actions: [
             {
-                type: MESSAGE_SYSTEM.SAVE_VALID_MESSAGES,
+                type: messageSystemActions.updateValidMessages.type,
                 payload: { banner: messageIds, context: [], modal: [], feature: [] },
             },
         ],
@@ -123,15 +125,15 @@ export default [
         initialState,
         actions: [
             {
-                type: MESSAGE_SYSTEM.DISMISS_MESSAGE,
+                type: messageSystemActions.dismissMessage.type,
                 payload: { category: 'banner', id: messageIds[0] },
             },
             {
-                type: MESSAGE_SYSTEM.DISMISS_MESSAGE,
+                type: messageSystemActions.dismissMessage.type,
                 payload: { category: 'context', id: messageIds[1] },
             },
             {
-                type: MESSAGE_SYSTEM.DISMISS_MESSAGE,
+                type: messageSystemActions.dismissMessage.type,
                 payload: { category: 'modal', id: messageIds[0] },
             },
         ],
