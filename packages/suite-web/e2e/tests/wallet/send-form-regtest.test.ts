@@ -1,4 +1,4 @@
-// @group:coinmarket
+// @group:wallet
 // @retry=2
 
 describe('Send form for bitcoin', () => {
