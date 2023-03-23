@@ -8,5 +8,8 @@
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "type-check": "tsc --build"
+    },
+    "devDependencies": {
+        "typescript": "4.9.5"
     }
 }
