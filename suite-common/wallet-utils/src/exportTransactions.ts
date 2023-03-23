@@ -7,8 +7,10 @@ import { trezorLogo } from '@suite-common/suite-constants';
 import { TransactionTarget } from '@trezor/connect';
 import { Network } from '@suite-common/wallet-config';
 import { ExportFileType, WalletAccountTransaction } from '@suite-common/wallet-types';
+import { getIsZeroValuePhishing } from '@suite-common/suite-utils';
 
 import { formatNetworkAmount, formatAmount } from './accountUtils';
+import { getNftTokenId, isNftTokenTransfer } from './transactionUtils';
 import { localizeNumber } from './localizeNumber';
 
 type AccountTransactionForExports = Omit<WalletAccountTransaction, 'targets'> & {
@@ -66,7 +68,13 @@ const formatAmounts =
         ...tx,
         tokens: tx.tokens.map(token => ({
             ...token,
-            amount: formatAmount(token.amount, token.decimals),
+            amount: isNftTokenTransfer(token)
+                ? `ID ${getNftTokenId(token)}`
+                : formatAmount(token.amount, token.decimals),
+        })),
+        internalTransfers: tx.internalTransfers.map(internal => ({
+            ...internal,
+            amount: formatNetworkAmount(internal.amount, symbol),
         })),
         amount: formatNetworkAmount(tx.amount, symbol),
         fee: formatNetworkAmount(tx.fee, symbol),
@@ -128,6 +136,10 @@ const prepareContent = (data: Data): Fields[] => {
     return transactions
         .map(formatAmounts(coin))
         .flatMap(t => {
+            if (getIsZeroValuePhishing(t)) {
+                return null;
+            }
+
             const sharedData = {
                 date: new Intl.DateTimeFormat('default', dateFormat).format(
                     (t.blockTime || 0) * 1000,
@@ -135,55 +147,101 @@ const prepareContent = (data: Data): Fields[] => {
                 time: new Intl.DateTimeFormat('default', timeFormat).format(
                     (t.blockTime || 0) * 1000,
                 ),
-                timestamp: t.blockTime?.toString(),
+                timestamp: t.blockTime?.toString() || '',
                 type: t.type.toUpperCase(),
                 txid: t.txid,
             };
 
+            let hasFeeBeenAlreadyUsed = t.type === 'recv'; // TODO: use similar logic as in TransactionItem
+            let tokens: Array<Fields | null> = [];
+            let internalTransfers: Array<Fields | null> = [];
+            let targets: Array<Fields | null> = [];
+
+            if (t.targets.length > 0) {
+                targets = t.targets.map(target => {
+                    if (!target?.addresses?.length || !target?.amount) {
+                        return null;
+                    }
+                    const targetData = {
+                        ...sharedData,
+                        fee: !hasFeeBeenAlreadyUsed ? t.fee : '', // fee only once per tx
+                        feeSymbol: !hasFeeBeenAlreadyUsed ? coin.toUpperCase() : '',
+                        address: target.isAddress ? target.addresses[0] : '', // SENT - it is destination address, RECV - it is MY address
+                        label: target.isAddress && target.metadataLabel ? target.metadataLabel : '',
+                        amount: target.isAddress ? target.amount : '',
+                        symbol: target.isAddress ? coin.toUpperCase() : '',
+                        fiat:
+                            target.isAddress &&
+                            target.amount &&
+                            t.rates &&
+                            t.rates[data.localCurrency]
+                                ? localizeNumber(
+                                      new BigNumber(target.amount)
+                                          .multipliedBy(t.rates[data.localCurrency]!)
+                                          .toNumber(),
+                                      undefined,
+                                      2,
+                                      2,
+                                  ).toString()
+                                : '',
+                        other: !target.isAddress ? target.addresses[0] : '', // e.g. OP_RETURN
+                    };
+                    hasFeeBeenAlreadyUsed = true;
+
+                    return targetData;
+                });
+            }
+
             if (t.tokens.length > 0) {
-                return t.tokens.map((token, index) => {
+                tokens = t.tokens.map(token => {
                     if (!token?.address || !token?.amount) {
                         return null;
                     }
-                    return {
+                    const tokenData = {
                         ...sharedData,
-                        fee: index === 0 ? t.fee : '', // fee only once per tx
-                        feeSymbol: index === 0 ? coin.toUpperCase() : '',
-                        address: token.to, // SENT - it is destination address, RECV - it is MY address
+                        fee: !hasFeeBeenAlreadyUsed ? t.fee : '', // fee only once per tx
+                        feeSymbol: !hasFeeBeenAlreadyUsed ? coin.toUpperCase() : '',
+                        address: token.to || '', // SENT - it is destination address, RECV - it is MY address
                         label: '', // token transactions do not have labels
                         amount: token.amount, // TODO: what to show if token.decimals missing so amount is not formatted correctly?
                         symbol: token.symbol.toUpperCase() || token.address, // if symbol not available, use contract address
                         fiat: '', // missing rates for tokens
                         other: '',
                     };
+                    hasFeeBeenAlreadyUsed = true;
+                    return tokenData;
                 });
             }
-            return t.targets.map((target, index) => {
-                if (!target?.addresses?.length || !target?.amount) {
-                    return null;
-                }
-                return {
-                    ...sharedData,
-                    fee: index === 0 ? t.fee : '', // fee only once per tx
-                    feeSymbol: index === 0 ? coin.toUpperCase() : '',
-                    address: target.isAddress ? target.addresses[0] : '', // SENT - it is destination address, RECV - it is MY address
-                    label: target.isAddress && target.metadataLabel ? target.metadataLabel : '',
-                    amount: target.isAddress ? target.amount : '',
-                    symbol: target.isAddress ? coin.toUpperCase() : '',
-                    fiat:
-                        target.isAddress && target.amount && t.rates && t.rates[data.localCurrency]
-                            ? localizeNumber(
-                                  new BigNumber(target.amount)
-                                      .multipliedBy(t.rates[data.localCurrency]!)
-                                      .toNumber(),
-                                  undefined,
-                                  2,
-                                  2,
-                              ).toString()
-                            : '',
-                    other: !target.isAddress ? target.addresses[0] : '', // e.g. OP_RETURN
-                };
-            });
+
+            if (t.internalTransfers.length > 0) {
+                internalTransfers = t.internalTransfers.map(internal => {
+                    const internalTransferData = {
+                        ...sharedData,
+                        fee: !hasFeeBeenAlreadyUsed ? t.fee : '', // fee only once per tx
+                        feeSymbol: !hasFeeBeenAlreadyUsed ? coin.toUpperCase() : '',
+                        address: internal.to || '', // SENT - it is destination address, RECV - it is MY address
+                        label: '', // internal transactions do not have labels
+                        amount: internal.amount,
+                        symbol: coin.toUpperCase(), // if symbol not available, use contract address
+                        fiat:
+                            internal.amount && t.rates && t.rates[data.localCurrency]
+                                ? localizeNumber(
+                                      new BigNumber(internal.amount)
+                                          .multipliedBy(t.rates[data.localCurrency]!)
+                                          .toNumber(),
+                                      undefined,
+                                      2,
+                                      2,
+                                  ).toString()
+                                : '',
+                        other: '',
+                    };
+                    hasFeeBeenAlreadyUsed = true;
+                    return internalTransferData;
+                });
+            }
+
+            return [...targets, ...tokens, ...internalTransfers];
         })
         .filter(record => record !== null) as Fields[];
 };
