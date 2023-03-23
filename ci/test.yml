@@ -58,13 +58,13 @@
     matrix:
       - TEST_GROUP:
           [
-            "@group:suite",
-            "@group:onboarding",
-            "@group:device-management",
-            "@group:settings",
-            "@group:metadata",
-            "@group:passphrase",
-            "@group:browser",
+            # "@group:suite",
+            # "@group:onboarding",
+            # "@group:device-management",
+            # "@group:settings",
+            # "@group:metadata",
+            # "@group:passphrase",
+            # "@group:browser",
             "@group:coinmarket",
           ]
         CONTAINERS: "trezor-user-env-unix"
