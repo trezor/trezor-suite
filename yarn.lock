@@ -7848,6 +7848,7 @@ __metadata:
     "@trezor/connect-analytics": "workspace:*"
     "@trezor/connect-ui": "workspace:*"
     "@trezor/crypto-utils": "workspace:*"
+    "@trezor/node-utils": "workspace:*"
     "@trezor/trezor-user-env-link": "workspace:*"
     "@trezor/urls": "workspace:*"
     "@types/react": 18.0.27
@@ -7912,7 +7913,7 @@ __metadata:
   resolution: "@trezor/connect-webextension@workspace:packages/connect-webextension"
   dependencies:
     "@playwright/test": ^1.30.0
-    "@trezor/node-utils": "workspace:^"
+    "@trezor/node-utils": "workspace:*"
     "@trezor/trezor-user-env-link": "workspace:*"
     playwright: ^1.30.0
     typescript: ^4.9.5
@@ -8031,7 +8032,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/node-utils@workspace:^, @trezor/node-utils@workspace:packages/node-utils":
+"@trezor/node-utils@workspace:*, @trezor/node-utils@workspace:packages/node-utils":
   version: 0.0.0-use.local
   resolution: "@trezor/node-utils@workspace:packages/node-utils"
   dependencies:
@@ -8236,6 +8237,7 @@ __metadata:
     "@trezor/connect": "workspace:9.0.7"
     "@trezor/connect-common": "workspace:*"
     "@trezor/ipc-proxy": "workspace:*"
+    "@trezor/node-utils": "workspace:*"
     "@trezor/request-manager": "workspace:*"
     "@trezor/suite-desktop-api": "workspace:*"
     "@trezor/trezor-user-env-link": "workspace:*"
