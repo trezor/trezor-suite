@@ -9,7 +9,7 @@ import { useSelector, useOnboarding } from '@suite-hooks';
 import { MAX_WIDTH } from '@suite-constants/layout';
 import steps from '@onboarding-config/steps';
 import { GuideButton, GuidePanel } from '@guide-components';
-import { selectBannerMessage } from '@suite-reducers/messageSystemReducer';
+import { selectBannerMessage } from '@suite-common/message-system';
 import MessageSystemBanner from '@suite-components/Banners/MessageSystemBanner';
 import { ModalContextProvider } from '@suite-support/ModalContext';
 

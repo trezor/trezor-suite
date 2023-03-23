@@ -4,7 +4,7 @@ import type { FormState } from '@wallet-types/sendForm';
 import type { AcquiredDevice } from '@suite-types';
 import type { MetadataState } from '@suite-types/metadata';
 import type { Trade } from '@wallet-types/coinmarketCommonTypes';
-import type { MessageState } from '@suite/reducers/suite/messageSystemReducer';
+import type { MessageState } from '@suite-common/message-system';
 import type { FormDraft } from '@wallet-types/form';
 import type {
     Account,

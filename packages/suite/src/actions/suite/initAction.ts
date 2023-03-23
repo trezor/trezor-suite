@@ -1,7 +1,7 @@
 import * as suiteActions from '@suite-actions/suiteActions';
 import * as routerActions from '@suite-actions/routerActions';
 import * as analyticsActions from '@suite-actions/analyticsActions';
-import * as messageSystemActions from '@suite-actions/messageSystemActions';
+import { initMessageSystemThunk } from '@suite-common/message-system';
 import * as languageActions from '@settings-actions/languageActions';
 import type { Dispatch, GetState } from '@suite-types';
 
@@ -33,7 +33,7 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     dispatch(languageActions.setLanguage(language));
 
     // 3. fetch message system config
-    dispatch(messageSystemActions.init());
+    dispatch(initMessageSystemThunk());
 
     // 4. redirecting user into welcome screen (if needed)
     dispatch(routerActions.initialRedirection());

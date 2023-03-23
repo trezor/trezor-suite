@@ -1,10 +1,10 @@
 import { MiddlewareAPI } from 'redux';
 import { TRANSPORT, DEVICE } from '@trezor/connect';
 
-import { MESSAGE_SYSTEM, SUITE } from '@suite-actions/constants';
+import { SUITE } from '@suite-actions/constants';
+import { messageSystemActions, ValidMessagesPayload } from '@suite-common/message-system';
 import { getValidMessages } from '@suite-utils/messageSystem';
 import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
-import { saveValidMessages, ValidMessagesPayload } from '@suite-actions/messageSystemActions';
 import { getIsTorEnabled } from '@suite-utils/tor';
 
 import type { AppState, Action, Dispatch } from '@suite-types';
@@ -13,7 +13,7 @@ import type { AppState, Action, Dispatch } from '@suite-types';
 const actions = [
     SUITE.SELECT_DEVICE,
     SUITE.TOR_STATUS,
-    MESSAGE_SYSTEM.FETCH_CONFIG_SUCCESS_UPDATE,
+    messageSystemActions.fetchSuccessUpdate.type,
     walletSettingsActions.changeNetworks.type,
     TRANSPORT.START,
     DEVICE.CONNECT,
@@ -56,7 +56,7 @@ const messageSystemMiddleware =
                 categories.forEach(category => payload[category]?.push(message.id));
             });
 
-            api.dispatch(saveValidMessages(payload));
+            api.dispatch(messageSystemActions.updateValidMessages(payload));
         }
 
         return action;

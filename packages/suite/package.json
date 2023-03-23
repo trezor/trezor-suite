@@ -32,6 +32,7 @@
         "@suite-common/intl-types": "workspace:*",
         "@suite-common/invity": "workspace:*",
         "@suite-common/logger": "workspace:*",
+        "@suite-common/message-system": "workspace:*",
         "@suite-common/metadata-types": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-config": "workspace:*",

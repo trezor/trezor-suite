@@ -1,14 +1,17 @@
-import { configureStore } from '@suite/support/tests/configureStore';
+import { combineReducers, Reducer } from '@reduxjs/toolkit';
 
-import { MESSAGE_SYSTEM } from '@suite-actions/constants';
+import { configureMockStore } from '@suite-common/test-utils';
+
 import suiteReducer from '@suite-reducers/suiteReducer';
-import messageSystemReducer from '@suite-reducers/messageSystemReducer';
+import { prepareMessageSystemReducer, messageSystemActions } from '@suite-common/message-system';
+import { extraDependencies } from '@suite/support/extraDependencies';
+import * as messageSystemSuiteUtils from '@suite-utils/messageSystem';
 import WalletReducers from '@wallet-reducers';
-import * as messageSystem from '@suite-utils/messageSystem';
 import messageSystemMiddleware from '../messageSystemMiddleware';
 import { AppState } from '../../../reducers/store';
 
-const middlewares = [messageSystemMiddleware];
+// Type annotation as workaround for typecheck error "The inferred type of 'default' cannot be named..."
+const messageSystemReducer: Reducer = prepareMessageSystemReducer(extraDependencies);
 
 type WalletsState = ReturnType<typeof WalletReducers>;
 type MessageSystemState = ReturnType<typeof messageSystemReducer>;
@@ -33,21 +36,31 @@ export const getInitialState = (
     },
 });
 
+const reducer = combineReducers({
+    wallet: WalletReducers,
+    messageSystem: messageSystemReducer,
+    suite: suiteReducer,
+});
+
 type State = ReturnType<typeof getInitialState>;
 
-const initStore = (state: State) => {
-    const mockStore = configureStore<State, any>([...middlewares]);
-
-    const store = mockStore(state);
+const initStore = (preloadedState: State) => {
+    const store = configureMockStore({
+        reducer,
+        preloadedState,
+        middleware: [messageSystemMiddleware],
+    });
     store.subscribe(() => {
         const action = store.getActions().pop();
-        const { suite, messageSystem, wallet } = store.getState();
+        if (action) {
+            const { suite, messageSystem, wallet } = store.getState();
 
-        store.getState().suite = suiteReducer(suite, action);
-        store.getState().messageSystem = messageSystemReducer(messageSystem, action);
-        store.getState().wallet = WalletReducers(wallet, action);
+            store.getState().suite = suiteReducer(suite, action);
+            store.getState().messageSystem = messageSystemReducer(messageSystem, action);
+            if (wallet) store.getState().wallet = WalletReducers(wallet, action);
 
-        store.getActions().push(action);
+            store.getActions().push(action);
+        }
     });
     return store;
 };
@@ -72,27 +85,27 @@ describe('Message system middleware', () => {
         };
 
         // @ts-expect-error: all properties except category and id are not required for testing
-        jest.spyOn(messageSystem, 'getValidMessages').mockImplementation(() => [
+        jest.spyOn(messageSystemSuiteUtils, 'getValidMessages').mockImplementation(() => [
             message1,
             message2,
             message3,
             message4,
         ]);
 
-        const store = initStore(getInitialState(undefined, undefined, undefined));
+        const store = initStore(getInitialState(undefined, undefined));
         await store.dispatch({
-            type: MESSAGE_SYSTEM.FETCH_CONFIG_SUCCESS_UPDATE,
+            type: messageSystemActions.fetchSuccessUpdate.type,
             payload: { config: { sequence: 1 }, timestamp: 0 },
         });
 
         const result = store.getActions();
         expect(result).toEqual([
             {
-                type: MESSAGE_SYSTEM.FETCH_CONFIG_SUCCESS_UPDATE,
+                type: messageSystemActions.fetchSuccessUpdate.type,
                 payload: { config: { sequence: 1 }, timestamp: 0 },
             },
             {
-                type: MESSAGE_SYSTEM.SAVE_VALID_MESSAGES,
+                type: messageSystemActions.updateValidMessages.type,
                 payload: {
                     banner: [message1.id, message2.id],
                     modal: [message2.id, message3.id],
@@ -104,22 +117,22 @@ describe('Message system middleware', () => {
     });
 
     it('saves messages even if there are no valid messages', async () => {
-        jest.spyOn(messageSystem, 'getValidMessages').mockImplementation(() => []);
+        jest.spyOn(messageSystemSuiteUtils, 'getValidMessages').mockImplementation(() => []);
 
-        const store = initStore(getInitialState(undefined, undefined, undefined));
+        const store = initStore(getInitialState(undefined, undefined));
         await store.dispatch({
-            type: MESSAGE_SYSTEM.FETCH_CONFIG_SUCCESS_UPDATE,
+            type: messageSystemActions.fetchSuccessUpdate.type,
             payload: { config: { sequence: 1 }, timestamp: 0 },
         });
 
         const result = store.getActions();
         expect(result).toEqual([
             {
-                type: MESSAGE_SYSTEM.FETCH_CONFIG_SUCCESS_UPDATE,
+                type: messageSystemActions.fetchSuccessUpdate.type,
                 payload: { config: { sequence: 1 }, timestamp: 0 },
             },
             {
-                type: MESSAGE_SYSTEM.SAVE_VALID_MESSAGES,
+                type: messageSystemActions.updateValidMessages.type,
                 payload: { banner: [], context: [], modal: [], feature: [] },
             },
         ]);

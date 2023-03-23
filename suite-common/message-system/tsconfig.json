@@ -1,0 +1,13 @@
+{
+    "extends": "../../tsconfig.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        { "path": "../redux-utils" },
+        { "path": "../suite-utils" },
+        {
+            "path": "../../packages/message-system"
+        },
+        { "path": "../../packages/utils" },
+        { "path": "../test-utils" }
+    ]
+}

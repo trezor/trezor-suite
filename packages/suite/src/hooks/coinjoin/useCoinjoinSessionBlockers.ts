@@ -1,5 +1,7 @@
 import { useSelector, useTranslation } from '@suite-hooks';
-import { Feature, selectFeatureMessageContent } from '@suite-reducers/messageSystemReducer';
+import { Feature, selectFeatureMessageContent } from '@suite-common/message-system';
+import { selectLanguage } from '@suite-reducers/suiteReducer';
+
 import { selectCoinjoinSessionBlockerByAccountKey } from '@wallet-reducers/coinjoinReducer';
 
 export const useCoinjoinSessionBlockers = (
@@ -12,8 +14,9 @@ export const useCoinjoinSessionBlockers = (
     const blocker = useSelector(state =>
         selectCoinjoinSessionBlockerByAccountKey(state, accountKey),
     );
+    const language = useSelector(selectLanguage);
     const featureMessageContent = useSelector(state =>
-        selectFeatureMessageContent(state, Feature.coinjoin),
+        selectFeatureMessageContent(state, Feature.coinjoin, language),
     );
 
     const { translationString } = useTranslation();

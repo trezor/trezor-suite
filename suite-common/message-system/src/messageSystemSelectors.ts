@@ -1,101 +1,14 @@
-import produce from 'immer';
 import { memoize, memoizeWithArgs } from 'proxy-memoize';
 
-import { Action } from '@suite-types';
-import { MESSAGE_SYSTEM, STORAGE } from '@suite-actions/constants';
-import { selectLanguage, SuiteRootState } from './suiteReducer';
+import { Message, Category } from '@trezor/message-system';
 
-import { Message, MessageSystem, Category } from '@trezor/message-system';
+import { ContextDomain, FeatureDomain, MessageSystemRootState } from './messageSystemTypes';
 
-export type MessageSystemRootState = {
-    messageSystem: MessageSystemState;
-} & SuiteRootState;
+export const selectMessageSystemTimestamp = (state: MessageSystemRootState) =>
+    state.messageSystem.timestamp;
 
-export type MessageState = { [key in Category]: boolean };
-
-export const Feature = {
-    coinjoin: 'coinjoin',
-} as const;
-
-type FeatureDomain = (typeof Feature)[keyof typeof Feature];
-
-export const Context = {
-    coinjoin: 'accounts.coinjoin',
-} as const;
-
-type ContextDomain = (typeof Context)[keyof typeof Context];
-
-export type MessageSystemState = {
-    config: MessageSystem | null;
-    currentSequence: number;
-    timestamp: number;
-    validMessages: { [key in Category]: string[] };
-    dismissedMessages: {
-        [key: string]: MessageState;
-    };
-};
-
-const initialState: MessageSystemState = {
-    config: null,
-    currentSequence: 0,
-    timestamp: 0,
-
-    validMessages: {
-        banner: [],
-        context: [],
-        modal: [],
-        feature: [],
-    },
-    dismissedMessages: {},
-};
-
-const getMessageStateById = (draft: MessageSystemState, id: string): MessageState => {
-    if (!draft.dismissedMessages[id]) {
-        draft.dismissedMessages[id] = {
-            banner: false,
-            context: false,
-            modal: false,
-            feature: false,
-        };
-    }
-    return draft.dismissedMessages[id];
-};
-
-const messageSystemReducer = (
-    state: MessageSystemState = initialState,
-    action: Action,
-): MessageSystemState =>
-    produce(state, draft => {
-        let messageState;
-
-        switch (action.type) {
-            case STORAGE.LOAD:
-                return {
-                    ...state,
-                    ...action.payload.messageSystem,
-                };
-            case MESSAGE_SYSTEM.FETCH_CONFIG_SUCCESS:
-                draft.timestamp = action.payload.timestamp;
-                break;
-            case MESSAGE_SYSTEM.FETCH_CONFIG_SUCCESS_UPDATE:
-                draft.timestamp = action.payload.timestamp;
-                draft.config = action.payload.config;
-                draft.currentSequence = action.payload.config.sequence;
-                break;
-            case MESSAGE_SYSTEM.FETCH_CONFIG_ERROR:
-                draft.timestamp = 0;
-                break;
-            case MESSAGE_SYSTEM.SAVE_VALID_MESSAGES:
-                draft.validMessages = action.payload;
-                break;
-            case MESSAGE_SYSTEM.DISMISS_MESSAGE:
-                messageState = getMessageStateById(draft, action.payload.id);
-                messageState[action.payload.category] = true;
-                break;
-            default:
-                break;
-        }
-    });
+export const selectMessageSystemCurrentSequence = (state: MessageSystemRootState) =>
+    state.messageSystem.currentSequence;
 
 const comparePriority = (a: Message, b: Message) => b.priority - a.priority;
 
@@ -133,10 +46,11 @@ export const selectContextMessage = memoizeWithArgs(
 );
 
 export const selectContextMessageContent = memoizeWithArgs(
-    (state: MessageSystemRootState, domain: ContextDomain) => {
+    (state: MessageSystemRootState, domain: ContextDomain, language: string) => {
         const activeContextMessages = selectActiveContextMessages(state);
-        const language = selectLanguage(state);
-        const message = activeContextMessages.find(message => message.context?.domain === domain);
+        const message = activeContextMessages.find(
+            activeContextMessage => activeContextMessage.context?.domain === domain,
+        );
         if (!message) return;
         return {
             ...message,
@@ -161,9 +75,8 @@ export const selectFeatureMessage = memoizeWithArgs(
 );
 
 export const selectFeatureMessageContent = memoizeWithArgs(
-    (state: MessageSystemRootState, domain: FeatureDomain) => {
+    (state: MessageSystemRootState, domain: FeatureDomain, language: string) => {
         const featureMessages = selectFeatureMessage(state, domain);
-        const language = selectLanguage(state);
         return featureMessages?.content[language] ?? featureMessages?.content.en;
     },
 );
@@ -188,5 +101,3 @@ export const selectIsFeatureDisabled = memoizeWithArgs(
         return typeof featureFlag === 'boolean' ? !featureFlag : defaultValue ?? false;
     },
 );
-
-export default messageSystemReducer;
