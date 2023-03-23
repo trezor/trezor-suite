@@ -7502,7 +7502,7 @@ __metadata:
     jest: ^26.6.3
     n64: ^0.2.10
     rimraf: ^4.1.2
-    typescript: 4.7.4
+    typescript: 4.9.5
   languageName: unknown
   linkType: soft
 
@@ -7561,7 +7561,7 @@ __metadata:
   resolution: "@trezor/connect-analytics@workspace:packages/connect-analytics"
   dependencies:
     "@trezor/analytics": "workspace:*"
-    typescript: 4.7.4
+    typescript: 4.9.5
   languageName: unknown
   linkType: soft
 
@@ -7766,6 +7766,8 @@ __metadata:
 "@trezor/crypto-utils@workspace:*, @trezor/crypto-utils@workspace:packages/crypto-utils":
   version: 0.0.0-use.local
   resolution: "@trezor/crypto-utils@workspace:packages/crypto-utils"
+  dependencies:
+    typescript: 4.9.5
   languageName: unknown
   linkType: soft
 
@@ -7773,7 +7775,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/device-utils@workspace:packages/device-utils"
   dependencies:
-    typescript: 4.7.4
+    typescript: 4.9.5
   languageName: unknown
   linkType: soft
 
