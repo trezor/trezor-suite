@@ -6,7 +6,7 @@ import { test } from '@playwright/test';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 import { fixtures } from './__fixtures__/methods';
 import { buildOverview } from '../support/buildOverview';
-import { ensureScreenshotsDir } from '../support/ensureScreenshotsDir';
+import { ensureDirectoryExists } from '@trezor/node-utils';
 
 const url = process.env.URL || 'http://localhost:8088/';
 const emuScreenshots: Record<string, string> = {};
@@ -59,7 +59,7 @@ fixtures.forEach(f => {
             await TrezorUserEnvLink.api.startBridge();
         }
 
-        const screenshotsPath = ensureScreenshotsDir(f.url);
+        const screenshotsPath = await ensureDirectoryExists(`./e2e/screenshots/${f.url}`);
 
         await page.goto(`${url}#/method/${f.url}`);
 

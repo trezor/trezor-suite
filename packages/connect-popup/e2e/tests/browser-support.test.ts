@@ -1,7 +1,7 @@
 /* eslint-disable no-restricted-syntax,no-loop-func */
 
 import { test, expect, Page, devices } from '@playwright/test';
-import { ensureScreenshotsDir } from '../support/ensureScreenshotsDir';
+import { ensureDirectoryExists } from '@trezor/node-utils';
 
 const url = process.env.URL || 'http://localhost:8088/';
 
@@ -11,9 +11,8 @@ let popup: Page;
 const iPhone = devices['iPhone 13 Pro'];
 const android = devices['Pixel 5'];
 const safari = devices['Desktop Safari'];
-
-test.beforeAll(() => {
-    dir = ensureScreenshotsDir('browser-support');
+test.beforeAll(async () => {
+    dir = await ensureDirectoryExists('./e2e/screenshots/unsupported-browser');
 });
 
 const openPopup = async (page: Page) =>
