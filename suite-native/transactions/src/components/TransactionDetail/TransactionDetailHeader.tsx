@@ -27,7 +27,7 @@ const transactionTypeInfo = {
         signColor: 'textSecondaryHighlight',
     },
     sent: {
-        text: 'Sending',
+        text: 'Sent',
         iconName: 'send',
         sign: '-',
         signColor: 'textAlertRed',

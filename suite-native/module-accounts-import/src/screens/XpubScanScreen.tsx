@@ -14,13 +14,20 @@ import {
 } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { yup } from '@trezor/validation';
-import { networks } from '@suite-common/wallet-config';
+import { NetworkType, networks } from '@suite-common/wallet-config';
 
 import { XpubImportSection } from '../components/XpubImportSection';
 import { AccountImportHeader } from '../components/AccountImportHeader';
 import { DevXpub } from '../components/DevXpub';
 import { SelectableNetworkItem } from '../components/SelectableNetworkItem';
 import { XpubHint } from '../components/XpubHint';
+
+const networkTypeToInputLabelMap: Record<NetworkType, string> = {
+    bitcoin: 'Enter public key (XPUB) manually',
+    cardano: 'Enter public key (XPUB) manually',
+    ethereum: 'Enter receive address manually',
+    ripple: 'Enter receive address manually',
+};
 
 const cameraStyle = prepareNativeStyle(_ => ({
     alignItems: 'center',
@@ -45,7 +52,7 @@ export const XpubScanScreen = ({
     });
     const { handleSubmit, setValue, watch, reset } = form;
     const watchXpubAddress = watch('xpubAddress');
-    const selectedCurrencySymbol = route.params.networkSymbol;
+    const { networkSymbol } = route.params;
 
     const resetToDefaultValues = useCallback(() => {
         setIsCameraRequested(false);
@@ -56,7 +63,7 @@ export const XpubScanScreen = ({
     const goToAccountImportScreen = ({ xpubAddress }: XpubFormValues) => {
         navigation.navigate(AccountsImportStackRoutes.AccountImportLoading, {
             xpubAddress,
-            networkSymbol: selectedCurrencySymbol,
+            networkSymbol,
         });
     };
 
@@ -83,41 +90,46 @@ export const XpubScanScreen = ({
             xpubAddress: '',
         });
         navigation.navigate(AccountsImportStackRoutes.XpubScanModal, {
-            networkSymbol: selectedCurrencySymbol,
+            networkSymbol,
         });
     };
+    const { networkType, name: networkName } = networks[networkSymbol];
+    const inputLabel = networkTypeToInputLabelMap[networkType];
 
     return (
         <Screen
             header={<AccountImportHeader activeStep={2} />}
-            footer={<XpubHint networkType={networks[selectedCurrencySymbol].networkType} />}
+            footer={<XpubHint networkType={networkType} />}
         >
             <Card>
                 <SelectableNetworkItem
-                    cryptoCurrencyName={networks[selectedCurrencySymbol].name}
-                    cryptoCurrencySymbol={selectedCurrencySymbol}
-                    iconName={selectedCurrencySymbol}
+                    cryptoCurrencyName={networkName}
+                    cryptoCurrencySymbol={networkSymbol}
+                    iconName={networkSymbol}
                     onPressActionButton={() => navigation.goBack()}
                 />
             </Card>
             <View style={applyStyle(cameraStyle)}>
-                <XpubImportSection onRequestCamera={handleRequestCamera} />
+                <XpubImportSection
+                    onRequestCamera={handleRequestCamera}
+                    networkSymbol={networkSymbol}
+                />
             </View>
             <TextDivider title="OR" />
             <Form form={form}>
                 <VStack spacing="medium">
-                    <TextInputField name="xpubAddress" label="Enter x-pub..." />
+                    <TextInputField name="xpubAddress" label={inputLabel} />
                     <Button
                         onPress={onXpubFormSubmit}
                         size="large"
                         isDisabled={!watchXpubAddress?.length}
                     >
-                        Submit
+                        Confirm
                     </Button>
                 </VStack>
             </Form>
             {isDevelopOrDebugEnv() && (
-                <DevXpub symbol={selectedCurrencySymbol} onSelect={goToAccountImportScreen} />
+                <DevXpub symbol={networkSymbol} onSelect={goToAccountImportScreen} />
             )}
         </Screen>
     );

@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { QRCode } from '@suite-native/qr-code';
-import { Box, ButtonBackgroundElevation } from '@suite-native/atoms';
+import { Card, ButtonBackgroundElevation } from '@suite-native/atoms';
 import {
     TransactionsRootState,
     AccountsRootState,
@@ -53,7 +53,7 @@ export const ReceiveAddress = ({
     };
 
     return (
-        <Box>
+        <Card>
             {!freshAddressError ? (
                 <QRCode
                     data={freshAddress?.address}
@@ -64,6 +64,6 @@ export const ReceiveAddress = ({
             ) : (
                 'Something went wrong...'
             )}
-        </Box>
+        </Card>
     );
 };

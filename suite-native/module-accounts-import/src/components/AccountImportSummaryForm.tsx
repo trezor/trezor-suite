@@ -89,7 +89,7 @@ export const AccountImportSummaryForm = ({
         isEthereumAccountSymbol(networkSymbol) && A.isNotEmpty(accountInfo.tokens ?? []);
 
     return (
-        <AccountImportSummarySection title="Asset imported">
+        <AccountImportSummarySection title="Coin synced">
             <Form form={form}>
                 <AccountImportOverview
                     balance={accountInfo.availableBalance}

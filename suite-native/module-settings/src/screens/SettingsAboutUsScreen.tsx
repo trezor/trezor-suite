@@ -16,7 +16,7 @@ export const SettingsAboutUsScreen = () => {
     const hasCommitHash = S.isNotEmpty(getCommitHash());
 
     return (
-        <Screen header={<ScreenHeader title="About Trezor Go" />}>
+        <Screen header={<ScreenHeader title="About Trezor Suite Lite" />}>
             <VStack spacing="small">
                 <AboutUsBanners />
                 <Divider marginVertical="medium" />

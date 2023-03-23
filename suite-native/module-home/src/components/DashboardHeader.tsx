@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Box, IconButton, useDiscreetMode, Text } from '@suite-native/atoms';
+import { Box, IconButton, useDiscreetMode } from '@suite-native/atoms';
 
 const headerStyle = prepareNativeStyle(() => ({
     width: '100%',
@@ -21,7 +21,6 @@ export const DashboardHeader = () => {
     const { isDiscreetMode, setIsDiscreetMode } = useDiscreetMode();
     return (
         <Box style={applyStyle(headerStyle)}>
-            <Text>Home</Text>
             <IconButton
                 onPress={() => setIsDiscreetMode(!isDiscreetMode)}
                 iconName={isDiscreetMode ? 'eyeglasses' : 'eyeSlash'}

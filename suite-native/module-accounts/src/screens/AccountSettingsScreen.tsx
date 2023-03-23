@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { networks, NetworkSymbol } from '@suite-common/wallet-config';
+import { networks, NetworkSymbol, NetworkType } from '@suite-common/wallet-config';
 import {
     AccountsStackParamList,
     AccountsStackRoutes,
@@ -25,6 +25,13 @@ import { QRCode } from '@suite-native/qr-code';
 import { CryptoIcon } from '@trezor/icons';
 
 import { AccountRenameButton } from '../components/AccountRenameButton';
+
+const networkTypeToButtonTitleMap: Record<NetworkType, string> = {
+    bitcoin: 'Show public key (XPUB)',
+    cardano: 'Show public key (XPUB)',
+    ethereum: 'Show receive address',
+    ripple: 'Show receive address',
+};
 
 const AccountDetailSettingsRow = ({ title, value }: { title: string; value: ReactNode }) => (
     <Box flexDirection="row" justifyContent="space-between">
@@ -73,6 +80,9 @@ export const AccountSettingsScreen = ({
         setIsXpubVisible(false);
     };
 
+    const { networkType } = networks[account.symbol];
+    const xpubButtonTitle = networkTypeToButtonTitleMap[networkType];
+
     return (
         <Screen
             header={
@@ -93,10 +103,10 @@ export const AccountSettingsScreen = ({
                 </Card>
                 <VStack spacing="small">
                     <Button onPress={() => setIsXpubVisible(true)} colorScheme="tertiaryElevation0">
-                        View XPUB
+                        {xpubButtonTitle}
                     </Button>
                     <Button onPress={handleRemoveAccount} colorScheme="dangerElevation0">
-                        Remove Account
+                        Remove coin
                     </Button>
                 </VStack>
             </Box>

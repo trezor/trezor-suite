@@ -11,7 +11,7 @@ const homeStack = enhanceTabOption({
 const accountsStack = enhanceTabOption({
     routeName: AppTabsRoutes.AccountsStack,
     iconName: 'discover',
-    label: 'My Assets',
+    label: 'My Coins',
     params: {
         screen: AccountsStackRoutes.Accounts,
     },

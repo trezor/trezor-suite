@@ -39,7 +39,7 @@ export const AccountImportOverview = ({ balance, networkSymbol }: AssetsOverview
             </Box>
         )}
         <Box>
-            <TextInputField name="accountLabel" label="Account label" />
+            <TextInputField name="accountLabel" label="Coin label" />
         </Box>
     </AccountImportOverviewCard>
 );

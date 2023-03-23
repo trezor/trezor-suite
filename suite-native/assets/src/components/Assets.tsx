@@ -89,9 +89,9 @@ export const Assets = () => {
             </Card>
             <VStack style={applyStyle(importStyle)} spacing="small">
                 <Button colorScheme="tertiaryElevation0" size="large" onPress={handleImportAssets}>
-                    Import Assets
+                    Sync my coins
                 </Button>
-                <Button size="large" onPress={handleReceive}>
+                <Button size="large" onPress={handleReceive} iconLeft="receive">
                     Receive
                 </Button>
             </VStack>

@@ -32,8 +32,7 @@ const hasPriceIncreasedAtom = atom(get => {
 });
 
 const headerStyle = prepareNativeStyle(utils => ({
-    marginBottom: utils.spacings.small / 2,
-    color: utils.colors.textSubdued,
+    marginBottom: utils.spacings.small,
 }));
 
 const Balance = () => {
@@ -51,8 +50,8 @@ export const PortfolioGraphHeader = () => {
     return (
         <Box flexDirection="row" justifyContent="center">
             <Box alignItems="center">
-                <Text variant="hint" style={applyStyle(headerStyle)}>
-                    My assets
+                <Text color="textSubdued" variant="hint" style={applyStyle(headerStyle)}>
+                    My portfolio balance
                 </Text>
                 <Text variant="titleLarge">
                     <Balance />

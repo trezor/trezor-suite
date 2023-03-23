@@ -1,8 +1,9 @@
 import React from 'react';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Button, Box, VStack, Text } from '@suite-native/atoms';
+import { Button, Box, VStack, Text, Card, HStack } from '@suite-native/atoms';
 import { Link } from '@suite-native/link';
+import { Icon } from '@trezor/icons';
 
 type ReceiveTextHintProps = {
     onShowAddress(): void;
@@ -17,40 +18,41 @@ const hintWrapperStyle = prepareNativeStyle(utils => ({
 export const ReceiveTextHint = ({ onShowAddress }: ReceiveTextHintProps) => {
     const { applyStyle } = useNativeStyles();
     return (
-        <VStack spacing="large">
-            <VStack spacing="medium" style={applyStyle(hintWrapperStyle)}>
-                <Text variant="titleSmall">
-                    <Text variant="titleSmall" color="textSecondaryHighlight">
-                        Trezor Go
-                    </Text>{' '}
-                    addresses
-                </Text>
-
-                <Text variant="hint" color="textAlertRed" align="center">
-                    Good to know
-                </Text>
-                <Text variant="hint" color="textSubdued" align="center">
-                    Trezor Go addresses are best suited for small transfers.
-                </Text>
-                <Text variant="hint" color="textSubdued" align="center">
-                    For large transactions, switch to the Trezor Suite desktop app connected with
-                    your Trezor device to complete the address verification process.
-                </Text>
-
-                <Box flexDirection="row" justifyContent="center">
-                    <Text variant="label" color="textSubdued" align="center">
-                        Learn more about addresses in Trezor Go{' '}
-                    </Text>
-                    <Link href="TODO">
-                        <Text variant="label" color="textSecondaryHighlight" align="center">
-                            here
+        <VStack spacing="medium">
+            <Card>
+                <VStack spacing="medium" style={applyStyle(hintWrapperStyle)}>
+                    <Text variant="titleSmall" align="center">
+                        <Text variant="titleSmall" color="textSecondaryHighlight" align="center">
+                            Trezor Suite
+                        </Text>{' '}
+                        <Text variant="titleSmall" color="textSubdued" align="center">
+                            Lite
                         </Text>
-                    </Link>
-                </Box>
-            </VStack>
-            <Button iconLeft="eye" size="large" onPress={onShowAddress}>
-                Show address
-            </Button>
+                        {'\n'}
+                        receive address
+                    </Text>
+
+                    <Text variant="hint" color="textSubdued" align="center">
+                        For an extra layer of security, use the Trezor Suite desktop app with your
+                        Trezor hardware wallet to verify the receiving address.
+                    </Text>
+                </VStack>
+            </Card>
+
+            <Link href="TODO">
+                <HStack justifyContent="center" alignItems="center">
+                    <Text variant="hint" color="textPrimaryDefault" align="center">
+                        Learn more about addresses in Trezor Suite Lite{' '}
+                    </Text>
+                    <Icon color="iconPrimaryDefault" name="arrowUpRight" size="medium" />
+                </HStack>
+            </Link>
+
+            <Box paddingHorizontal="medium">
+                <Button iconLeft="eye" size="large" onPress={onShowAddress}>
+                    Show address
+                </Button>
+            </Box>
         </VStack>
     );
 };

@@ -31,8 +31,17 @@ const hintStyle = prepareNativeStyle(
     }),
 );
 
+// Temperorary translation of the error messages used in the native app.
+// Should be later replaced by an implementation of a localization module.
+const errorToMessageMap: Record<string, string> = {
+    TR_REQUIRED_FIELD: 'Field is mandatory',
+    TR_EXCEEDS_MAX: 'Number of characters exceeded',
+};
+
 export const InputWrapper = ({ children, label, hint, error }: InputWrapperProps) => {
     const { applyStyle } = useNativeStyles();
+
+    const errorMessage = (error && errorToMessageMap[error]) ?? error;
 
     return (
         <Box>
@@ -43,7 +52,7 @@ export const InputWrapper = ({ children, label, hint, error }: InputWrapperProps
             )}
             <Box>{children}</Box>
             <Box style={applyStyle(hintStyle, { error, hint })}>
-                {!!error && <Hint variant="error">{error}</Hint>}
+                {!!error && <Hint variant="error">{errorMessage}</Hint>}
                 {!!hint && <Hint>{hint}</Hint>}
             </Box>
         </Box>
