@@ -24,8 +24,6 @@
         "suite:build:web": "yarn workspace @trezor/suite-web build",
         "_______ Start Scripts _______": "Here are standalone scripts for running individual applications for development.",
         "suite:dev": "yarn workspace @trezor/suite-web dev",
-        "suite:dev:ios": "yarn workspace @trezor/suite-native dev:ios",
-        "suite:dev:android": "yarn workspace @trezor/suite-native dev:android",
         "suite:dev:desktop": "yarn workspace @trezor/suite-desktop dev",
         "_______ Testing _______": "Testing, linting, type checking...",
         "type-check": "yarn nx run-many --target=type-check",
