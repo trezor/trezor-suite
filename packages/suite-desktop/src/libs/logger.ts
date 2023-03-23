@@ -5,6 +5,7 @@ import chalk from 'chalk';
 import { app } from 'electron';
 
 import { isDevEnv } from '@suite-common/suite-utils';
+import { ensureDirectoryExists } from '@trezor/node-utils';
 
 import { getBuildInfo, getComputerInfo } from './info';
 
@@ -84,11 +85,7 @@ export class Logger implements ILogger {
                 return;
             }
 
-            try {
-                await fs.promises.access(outputPath, fs.constants.R_OK);
-            } catch {
-                await fs.promises.mkdir(outputPath);
-            }
+            await ensureDirectoryExists(outputPath);
 
             return fs.createWriteStream(path.join(outputPath, this.format(outputFile)));
         }

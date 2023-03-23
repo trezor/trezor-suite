@@ -37,6 +37,7 @@
         "@trezor/connect": "workspace:9.0.7",
         "@trezor/connect-common": "workspace:*",
         "@trezor/ipc-proxy": "workspace:*",
+        "@trezor/node-utils": "workspace:*",
         "@trezor/request-manager": "workspace:*",
         "@trezor/suite-desktop-api": "workspace:*",
         "@trezor/urls": "workspace:*",
