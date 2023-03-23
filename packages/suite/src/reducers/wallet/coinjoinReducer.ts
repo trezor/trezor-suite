@@ -23,6 +23,7 @@ import {
 import {
     breakdownCoinjoinBalance,
     calculateAnonymityProgress,
+    getMaxFeePerVbyte,
     getRoundPhaseFromSessionPhase,
     transformCoinjoinStatus,
 } from '@wallet-utils/coinjoinUtils';
@@ -35,6 +36,7 @@ import {
     UNECONOMICAL_COINJOIN_THRESHOLD,
     DEFAULT_TARGET_ANONYMITY,
     SKIP_ROUNDS_BY_DEFAULT,
+    WEEKLY_FEE_RATE_MEDIAN_FALLBACK,
 } from '@suite/services/coinjoin';
 import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import {
@@ -43,13 +45,12 @@ import {
     selectIsFeatureDisabled,
     selectFeatureConfig,
 } from '@suite-reducers/messageSystemReducer';
-import { MAX_MINING_FEE_FALLBACK } from '@trezor/coinjoin/src/constants';
 import { SelectedAccountRootState, selectSelectedAccount } from './selectedAccountReducer';
 
 export interface CoinjoinClientInstance
     extends Pick<
         CoinjoinStatusEvent,
-        'coordinationFeeRate' | 'allowedInputAmounts' | 'maxMiningFee'
+        'coordinationFeeRate' | 'allowedInputAmounts' | 'weeklyFeeRateMedian'
     > {
     rounds: { id: string; phase: RoundPhase }[]; // store only slice of Round in reducer. may be extended in the future
     status: 'loading' | 'loaded';
@@ -87,6 +88,9 @@ type ExtractActionPayload<A> = Extract<Action, { type: A }> extends { type: A; p
     ? P
     : never;
 
+const getAccount = (draft: CoinjoinState, accountKey: string) =>
+    draft.accounts.find(a => a.key === accountKey);
+
 const createAccount = (
     draft: CoinjoinState,
     { accountKey, symbol }: ExtractActionPayload<typeof COINJOIN.ACCOUNT_CREATE>,
@@ -107,7 +111,7 @@ const setLiquidityClue = (
     draft: CoinjoinState,
     payload: ExtractActionPayload<typeof COINJOIN.ACCOUNT_SET_LIQUIDITY_CLUE>,
 ) => {
-    const account = draft.accounts.find(a => a.key === payload.accountKey);
+    const account = getAccount(draft, payload.accountKey);
     if (!account) return;
     account.rawLiquidityClue = payload.rawLiquidityClue;
 };
@@ -116,14 +120,15 @@ const updateSetupOption = (
     draft: CoinjoinState,
     payload: ExtractActionPayload<typeof COINJOIN.ACCOUNT_UPDATE_SETUP_OPTION>,
 ) => {
-    const account = draft.accounts.find(a => a.key === payload.accountKey);
+    const account = getAccount(draft, payload.accountKey);
     if (!account) return;
     if (payload.isRecommended) {
         delete account.setup;
     } else {
         const client = draft.clients[account.symbol];
+        const weeklyFeeRateMedian = client?.weeklyFeeRateMedian || WEEKLY_FEE_RATE_MEDIAN_FALLBACK;
         account.setup = {
-            maxFeePerVbyte: client?.maxMiningFee ?? MAX_MINING_FEE_FALLBACK,
+            maxFeePerVbyte: getMaxFeePerVbyte(weeklyFeeRateMedian),
             skipRounds: SKIP_ROUNDS_BY_DEFAULT,
             targetAnonymity: DEFAULT_TARGET_ANONYMITY,
         };
@@ -134,7 +139,7 @@ const updateTargetAnonymity = (
     draft: CoinjoinState,
     payload: ExtractActionPayload<typeof COINJOIN.ACCOUNT_UPDATE_TARGET_ANONYMITY>,
 ) => {
-    const account = draft.accounts.find(a => a.key === payload.accountKey);
+    const account = getAccount(draft, payload.accountKey);
     if (!account?.setup) return;
     account.setup.targetAnonymity = payload.targetAnonymity;
 };
@@ -143,7 +148,7 @@ const updateMaxMingFee = (
     draft: CoinjoinState,
     payload: ExtractActionPayload<typeof COINJOIN.ACCOUNT_UPDATE_MAX_MING_FEE>,
 ) => {
-    const account = draft.accounts.find(a => a.key === payload.accountKey);
+    const account = getAccount(draft, payload.accountKey);
     if (!account?.setup) return;
     account.setup.maxFeePerVbyte = payload.maxFeePerVbyte;
 };
@@ -152,7 +157,7 @@ const toggleSkipRounds = (
     draft: CoinjoinState,
     payload: ExtractActionPayload<typeof COINJOIN.ACCOUNT_TOGGLE_SKIP_ROUNDS>,
 ) => {
-    const account = draft.accounts.find(a => a.key === payload.accountKey);
+    const account = getAccount(draft, payload.accountKey);
     if (!account?.setup) return;
     account.setup.skipRounds = !account.setup.skipRounds;
 };
@@ -161,7 +166,7 @@ const createSession = (
     draft: CoinjoinState,
     payload: ExtractActionPayload<typeof COINJOIN.ACCOUNT_AUTHORIZE_SUCCESS>,
 ) => {
-    const account = draft.accounts.find(a => a.key === payload.accountKey);
+    const account = getAccount(draft, payload.accountKey);
     if (!account) return;
     account.session = {
         ...payload.params,
@@ -179,7 +184,7 @@ const updateSession = (
         sessionDeadline,
     }: ExtractActionPayload<typeof COINJOIN.SESSION_ROUND_CHANGED>,
 ) => {
-    const account = draft.accounts.find(a => a.key === accountKey);
+    const account = getAccount(draft, accountKey);
     if (!account || !account.session) return;
 
     const { roundPhase } = account.session;
@@ -205,7 +210,7 @@ const sessionTxSigned = (
     draft: CoinjoinState,
     payload: ExtractActionPayload<typeof COINJOIN.SESSION_TX_SIGNED>,
 ) => {
-    const account = draft.accounts.find(a => a.key === payload.accountKey);
+    const account = getAccount(draft, payload.accountKey);
     if (!account || !account.session) return;
     account.rawLiquidityClue = payload.rawLiquidityClue;
     account.session = {
@@ -218,7 +223,7 @@ const updateSessionStarting = (
     draft: CoinjoinState,
     payload: ExtractActionPayload<typeof COINJOIN.SESSION_STARTING>,
 ) => {
-    const account = draft.accounts.find(a => a.key === payload.accountKey);
+    const account = getAccount(draft, payload.accountKey);
     if (!account || !account.session) return;
     if (payload.isStarting) {
         account.session = {
@@ -234,7 +239,7 @@ const completeSession = (
     draft: CoinjoinState,
     payload: ExtractActionPayload<typeof COINJOIN.SESSION_COMPLETED>,
 ) => {
-    const account = draft.accounts.find(a => a.key === payload.accountKey);
+    const account = getAccount(draft, payload.accountKey);
     if (!account) return;
     if (account.session) {
         account.previousSessions.push({
@@ -250,7 +255,7 @@ const stopSession = (
     draft: CoinjoinState,
     payload: ExtractActionPayload<typeof COINJOIN.ACCOUNT_UNREGISTER>,
 ) => {
-    const account = draft.accounts.find(a => a.key === payload.accountKey);
+    const account = getAccount(draft, payload.accountKey);
     if (!account) return;
     if (account.session) {
         account.previousSessions.push({
@@ -265,7 +270,7 @@ const pauseSession = (
     draft: CoinjoinState,
     payload: ExtractActionPayload<typeof COINJOIN.SESSION_PAUSE>,
 ) => {
-    const account = draft.accounts.find(a => a.key === payload.accountKey);
+    const account = getAccount(draft, payload.accountKey);
     if (!account || !account.session) return;
 
     delete account.session.roundPhase;
@@ -280,7 +285,7 @@ const restoreSession = (
     draft: CoinjoinState,
     payload: ExtractActionPayload<typeof COINJOIN.SESSION_RESTORE>,
 ) => {
-    const account = draft.accounts.find(a => a.key === payload.accountKey);
+    const account = getAccount(draft, payload.accountKey);
     if (!account || !account.session) return;
 
     delete account.session.paused;
@@ -293,11 +298,11 @@ const restoreSession = (
 // Should store at most 3 latest checkpoints, from latest to oldest
 const saveCheckpoint = (
     draft: CoinjoinState,
-    action: Extract<Action, { type: typeof COINJOIN.ACCOUNT_DISCOVERY_PROGRESS }>,
+    payload: ExtractActionPayload<typeof COINJOIN.ACCOUNT_DISCOVERY_PROGRESS>,
 ) => {
-    const account = draft.accounts.find(a => a.key === action.payload.accountKey);
+    const account = getAccount(draft, payload.accountKey);
     if (!account) return;
-    const checkpointNew = action.payload.progress.checkpoint;
+    const checkpointNew = payload.progress.checkpoint;
     const checkpoints = (account.checkpoints ?? [])
         .filter(({ blockHeight }) => blockHeight < checkpointNew.blockHeight)
         .slice(0, 2);
@@ -343,7 +348,7 @@ const updateSessionPhase = (
     payload: ExtractActionPayload<typeof COINJOIN.CLIENT_SESSION_PHASE>,
 ) => {
     const accounts = payload.accountKeys?.flatMap(
-        accountKey => draft.accounts.find(({ key }) => key === accountKey) || [],
+        accountKey => getAccount(draft, accountKey) || [],
     );
 
     if (!accounts || !accounts.length) {
@@ -389,7 +394,7 @@ const enableSessionAutopause = (
     draft: CoinjoinState,
     payload: ExtractActionPayload<typeof COINJOIN.SESSION_AUTOPAUSE>,
 ) => {
-    const session = draft.accounts.find(a => a.key === payload.accountKey)?.session;
+    const session = getAccount(draft, payload.accountKey)?.session;
 
     if (!session) {
         return;
@@ -441,7 +446,7 @@ export const coinjoinReducer = (
                 stopSession(draft, action.payload);
                 break;
             case COINJOIN.ACCOUNT_DISCOVERY_PROGRESS:
-                saveCheckpoint(draft, action);
+                saveCheckpoint(draft, action.payload);
                 break;
             case COINJOIN.ACCOUNT_PRELOADING:
                 draft.isPreloading = action.payload.isPreloading;
@@ -629,16 +634,30 @@ export const selectIsAccountWithSessionByAccountKey = memoizeWithArgs(
     },
 );
 
-export const selectMinAllowedInputWithFee = memoizeWithArgs(
-    (state: CoinjoinRootState, accountKey: AccountKey) => {
-        const coinjoinClient = selectCoinjoinClient(state, accountKey);
-        const status = coinjoinClient || CLIENT_STATUS_FALLBACK;
-        const minAllowedInput = status.allowedInputAmounts.min;
-        const txSize = getInputSize('Taproot') + getOutputSize('Taproot');
+export const selectWeeklyFeeRateMedianByAccountKey = (
+    state: CoinjoinRootState,
+    accountKey: AccountKey,
+) => {
+    const coinjoinClient = selectCoinjoinClient(state, accountKey);
+    return coinjoinClient?.weeklyFeeRateMedian || WEEKLY_FEE_RATE_MEDIAN_FALLBACK;
+};
 
-        return minAllowedInput + txSize * status.maxMiningFee;
-    },
-);
+export const selectDefaultMaxMiningFeeByAccountKey = (
+    state: CoinjoinRootState,
+    accountKey: AccountKey,
+) => {
+    const weeklyFeeRateMedian = selectWeeklyFeeRateMedianByAccountKey(state, accountKey);
+    return getMaxFeePerVbyte(weeklyFeeRateMedian);
+};
+
+export const selectMinAllowedInputWithFee = (state: CoinjoinRootState, accountKey: AccountKey) => {
+    const coinjoinClient = selectCoinjoinClient(state, accountKey);
+    const status = coinjoinClient || CLIENT_STATUS_FALLBACK;
+    const minAllowedInput = status.allowedInputAmounts.min;
+    const txSize = getInputSize('Taproot') + getOutputSize('Taproot');
+    // Add estimated fee based on weekly median fee rate.
+    return minAllowedInput + txSize * status.weeklyFeeRateMedian;
+};
 
 export const selectIsNothingToAnonymizeByAccountKey = memoizeWithArgs(
     (state: CoinjoinRootState, accountKey: AccountKey) => {

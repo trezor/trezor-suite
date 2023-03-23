@@ -14,6 +14,7 @@ import {
     selectRoundsFailRateBuffer,
     selectCoinjoinClient,
     selectCoinjoinAccountByKey,
+    selectDefaultMaxMiningFeeByAccountKey,
 } from '@wallet-reducers/coinjoinReducer';
 import { useCoinjoinSessionBlockers } from '@suite/hooks/coinjoin/useCoinjoinSessionBlockers';
 import { getMaxRounds, getSkipRounds } from '@wallet-utils/coinjoinUtils';
@@ -117,6 +118,9 @@ export const CoinjoinConfirmation = ({ account }: CoinjoinConfirmationProps) => 
     const targetAnonymity = useSelector(selectCurrentTargetAnonymity);
     const roundsNeeded = useSelector(state => selectRoundsNeeded(state, account.key));
     const roundsFailRateBuffer = useSelector(selectRoundsFailRateBuffer);
+    const defaultMaxMiningFee = useSelector(state =>
+        selectDefaultMaxMiningFeeByAccountKey(state, account.key),
+    );
 
     const dispatch = useDispatch();
 
@@ -124,9 +128,7 @@ export const CoinjoinConfirmation = ({ account }: CoinjoinConfirmationProps) => 
         account.key,
     );
 
-    const anonymitySet = account.addresses?.anonymitySet;
-
-    if (!coinjoinClient || !targetAnonymity || !anonymitySet || !coinjoinAccount) {
+    if (!coinjoinClient || !targetAnonymity || !coinjoinAccount) {
         return (
             <Error
                 error={`Suite could not ${
@@ -136,14 +138,13 @@ export const CoinjoinConfirmation = ({ account }: CoinjoinConfirmationProps) => 
         );
     }
 
-    const maxFeePerKvbyte =
-        (coinjoinAccount.setup?.maxFeePerVbyte ?? coinjoinClient.maxMiningFee) * 1000; // Transform to kvB.
+    const isDisabled = !termsConfirmed || isCoinjoinSessionBlocked;
+    const coordinatorFeePercentage = `${coinjoinClient.coordinationFeeRate.rate * 100}%`;
+    const maxFeePerKvbyte = (coinjoinAccount.setup?.maxFeePerVbyte ?? defaultMaxMiningFee) * 1000; // Transform to kvB.
     const maxRounds = getMaxRounds(roundsNeeded, roundsFailRateBuffer);
     const skipRounds = getSkipRounds(
         coinjoinAccount.setup ? coinjoinAccount.setup.skipRounds : SKIP_ROUNDS_BY_DEFAULT,
     );
-
-    const isDisabled = !termsConfirmed || isCoinjoinSessionBlocked;
 
     const getButtonTooltipMessage = () => {
         if (coinjoinSessionBlockedMessage) {
@@ -184,7 +185,7 @@ export const CoinjoinConfirmation = ({ account }: CoinjoinConfirmationProps) => 
                         <FeeHeading>
                             <Translation id="TR_SERVICE_FEE" />
                         </FeeHeading>
-                        <FeeValue>0.3%</FeeValue>
+                        <FeeValue>{coordinatorFeePercentage}</FeeValue>
                     </TopFeeRow>
                     <Note>
                         <Translation id="TR_SERVICE_FEE_NOTE" />

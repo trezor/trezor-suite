@@ -5,8 +5,10 @@ import { useDispatch, useSelector } from '@suite-hooks';
 import { useTheme } from '@trezor/components';
 import { coinjoinAccountUpdateMaxMiningFee } from '@wallet-actions/coinjoinAccountActions';
 import { SetupSlider } from './SetupSlider';
-import { MAX_MINING_FEE_FALLBACK, MAX_MINING_FEE_MODIFIER } from '@trezor/coinjoin/src/constants';
-import { selectCoinjoinClient } from '@wallet-reducers/coinjoinReducer';
+import {
+    selectDefaultMaxMiningFeeByAccountKey,
+    selectWeeklyFeeRateMedianByAccountKey,
+} from '@wallet-reducers/coinjoinReducer';
 
 const min = 1;
 const max = 500;
@@ -17,11 +19,16 @@ const labels = [min, max / 2, max].map(number => ({
 
 interface MaxMiningFeeSetupProps {
     accountKey: string;
-    maxMiningFee?: number;
+    maxMiningFee: number;
 }
 
 export const MaxMiningFeeSetup = ({ accountKey, maxMiningFee }: MaxMiningFeeSetupProps) => {
-    const coinjoinClient = useSelector(state => selectCoinjoinClient(state, accountKey));
+    const weeklyFeeRateMedian = useSelector(state =>
+        selectWeeklyFeeRateMedianByAccountKey(state, accountKey),
+    );
+    const defaultMaxMiningFee = useSelector(state =>
+        selectDefaultMaxMiningFeeByAccountKey(state, accountKey),
+    );
 
     const dispatch = useDispatch();
 
@@ -31,18 +38,15 @@ export const MaxMiningFeeSetup = ({ accountKey, maxMiningFee }: MaxMiningFeeSetu
         dispatch(coinjoinAccountUpdateMaxMiningFee(accountKey, value));
     };
 
-    const recommendedMaxMiningFee = coinjoinClient
-        ? coinjoinClient.maxMiningFee
-        : MAX_MINING_FEE_FALLBACK;
-    const maxMiningFeeRangePercentage = recommendedMaxMiningFee / (max / 100) + min;
+    const maxMiningFeeRangePercentage = defaultMaxMiningFee / (max / 100) + min;
     const green = maxMiningFeeRangePercentage > 100 ? 100 : maxMiningFeeRangePercentage;
 
     const trackStyle = {
         background: `\
             linear-gradient(90deg,\
                 ${theme.GRADIENT_SLIDER_RED_END} 0%,\
-                ${theme.GRADIENT_SLIDER_YELLOW_END} ${green / (MAX_MINING_FEE_MODIFIER * 1.1)}%,\
-                ${theme.GRADIENT_SLIDER_YELLOW_START} ${green / MAX_MINING_FEE_MODIFIER}%,\
+                ${theme.GRADIENT_SLIDER_YELLOW_END} ${weeklyFeeRateMedian / 1.1}%,\
+                ${theme.GRADIENT_SLIDER_YELLOW_START} ${weeklyFeeRateMedian}%,\
                 ${theme.GRADIENT_SLIDER_GREEN_END} ${green}%,\
                 ${theme.GRADIENT_SLIDER_GREEN_START} 100%\
             );`,
@@ -53,7 +57,7 @@ export const MaxMiningFeeSetup = ({ accountKey, maxMiningFee }: MaxMiningFeeSetu
             heading={<Translation id="TR_MAX_MINING_FEE" />}
             description={<Translation id="TR_MINING_FEE_NOTE" />}
             onChange={updateMaxMiningFee}
-            value={maxMiningFee ?? coinjoinClient?.maxMiningFee ?? MAX_MINING_FEE_FALLBACK}
+            value={maxMiningFee}
             min={min}
             max={max}
             unit={unit}
