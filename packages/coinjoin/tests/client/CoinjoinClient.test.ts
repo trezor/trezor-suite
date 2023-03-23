@@ -1,6 +1,6 @@
 import { CoinjoinClient } from '../../src';
 import { createServer } from '../mocks/server';
-import { DEFAULT_ROUND, AFFILIATE_INFO } from '../fixtures/round.fixture';
+import { AFFILIATE_INFO, DEFAULT_ROUND, FEE_RATE_MEDIANS } from '../fixtures/round.fixture';
 
 let server: Awaited<ReturnType<typeof createServer>>;
 
@@ -22,7 +22,7 @@ describe(`CoinjoinClient`, () => {
             if (url.endsWith('/status')) {
                 resolve({
                     roundStates: [DEFAULT_ROUND],
-                    coinJoinFeeRateMedians: [],
+                    coinJoinFeeRateMedians: FEE_RATE_MEDIANS,
                     affiliateInformation: AFFILIATE_INFO,
                 });
             }

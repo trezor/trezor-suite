@@ -2,12 +2,10 @@ import { bufferutils, Transaction, Network } from '@trezor/utxo-lib';
 
 import {
     COORDINATOR_FEE_RATE_FALLBACK,
-    MAX_MINING_FEE_FALLBACK,
     MAX_ALLOWED_AMOUNT_FALLBACK,
     MIN_ALLOWED_AMOUNT_FALLBACK,
     PLEBS_DONT_PAY_THRESHOLD_FALLBACK,
     ROUND_REGISTRATION_END_OFFSET,
-    MAX_MINING_FEE_MODIFIER,
 } from '../constants';
 import { RoundPhase } from '../enums';
 import { CoinjoinTransactionData } from '../types';
@@ -169,23 +167,20 @@ const getDataFromRounds = (rounds: Round[]) => {
 /**
  * Transform from coordinator format to coinjoinReducer format `CoinjoinClientInstance`
  * - coordinatorFeeRate: multiply the amount registered for coinjoin by this value to get the total fee
- * - maxMiningFee: array => value in kvBytes
+ * - weeklyFeeRateMedian: array => value in kvBytes
  */
 export const transformStatus = ({
     coinJoinFeeRateMedians,
     roundStates: rounds,
 }: CoinjoinStatus) => {
     const { allowedInputAmounts, coordinationFeeRate } = getDataFromRounds(rounds);
-    // coinJoinFeeRateMedians include an array of medians per day, week and month - we take the second (week) median as the recommended fee rate
-    const weeklyMedian = coinJoinFeeRateMedians[1];
-    // the value is converted from kvBytes (kilo virtual bytes) to vBytes (how the value is displayed in UI)
-    const maxMiningFee = weeklyMedian
-        ? Math.round((coinJoinFeeRateMedians[1].medianFeeRate * MAX_MINING_FEE_MODIFIER) / 1000)
-        : MAX_MINING_FEE_FALLBACK;
+    // coinJoinFeeRateMedians include an array of medians per day, week and month - we take the second (week) median as the recommended fee rate.
+    // The value is converted from kvBytes (kilo virtual bytes) to vBytes (how the value is displayed in UI).
+    const weeklyFeeRateMedian = Math.round(coinJoinFeeRateMedians[1].medianFeeRate / 1000);
 
     return {
         rounds,
-        maxMiningFee,
+        weeklyFeeRateMedian,
         coordinationFeeRate,
         allowedInputAmounts,
     };

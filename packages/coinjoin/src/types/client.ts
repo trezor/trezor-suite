@@ -6,7 +6,7 @@ import { LogEvent } from './logger';
 export interface CoinjoinStatusEvent {
     rounds: Round[];
     changed: Round[];
-    maxMiningFee: number;
+    weeklyFeeRateMedian: number;
     coordinationFeeRate: CoordinationFeeRate;
     allowedInputAmounts: AllowedRange;
 }
