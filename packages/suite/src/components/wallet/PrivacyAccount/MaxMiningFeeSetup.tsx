@@ -17,6 +17,8 @@ const labels = [min, max / 2, max].map(number => ({
     value: `${number} ${unit}`,
 }));
 
+const getPercentage = (value: number) => ((value - min) / (max - min)) * 100;
+
 interface MaxMiningFeeSetupProps {
     accountKey: string;
     maxMiningFee: number;
@@ -38,16 +40,16 @@ export const MaxMiningFeeSetup = ({ accountKey, maxMiningFee }: MaxMiningFeeSetu
         dispatch(coinjoinAccountUpdateMaxMiningFee(accountKey, value));
     };
 
-    const maxMiningFeeRangePercentage = defaultMaxMiningFee / (max / 100) + min;
-    const green = maxMiningFeeRangePercentage > 100 ? 100 : maxMiningFeeRangePercentage;
+    const weeklyFeeRateMedianPercentage = getPercentage(weeklyFeeRateMedian);
+    const defaultMaxMiningFeePercentage = getPercentage(defaultMaxMiningFee);
 
     const trackStyle = {
         background: `\
             linear-gradient(90deg,\
                 ${theme.GRADIENT_SLIDER_RED_END} 0%,\
-                ${theme.GRADIENT_SLIDER_YELLOW_END} ${weeklyFeeRateMedian / 1.1}%,\
-                ${theme.GRADIENT_SLIDER_YELLOW_START} ${weeklyFeeRateMedian}%,\
-                ${theme.GRADIENT_SLIDER_GREEN_END} ${green}%,\
+                ${theme.GRADIENT_SLIDER_YELLOW_END} ${weeklyFeeRateMedianPercentage / 1.1}%,\
+                ${theme.GRADIENT_SLIDER_YELLOW_START} ${weeklyFeeRateMedianPercentage}%,\
+                ${theme.GRADIENT_SLIDER_GREEN_END} ${defaultMaxMiningFeePercentage}%,\
                 ${theme.GRADIENT_SLIDER_GREEN_START} 100%\
             );`,
     };
