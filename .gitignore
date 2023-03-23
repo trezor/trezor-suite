@@ -43,6 +43,10 @@ docker/trezor-user-env/controller/emulator.img
 # Vagrant
 .vagrant
 
+# test outputs
+screenshots
+test-results
+
 # build outputs
 lib
 libDev

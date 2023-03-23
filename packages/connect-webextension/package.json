@@ -1,0 +1,19 @@
+{
+    "name": "@trezor/connect-webextension",
+    "version": "1.0.0",
+    "private": true,
+    "scripts": {
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "test:e2e": "yarn xvfb-maybe -- playwright test --config=./playwright.config.ts"
+    },
+    "dependencies": {
+        "@playwright/test": "^1.30.0"
+    },
+    "devDependencies": {
+        "@trezor/node-utils": "workspace:*",
+        "@trezor/trezor-user-env-link": "workspace:*",
+        "playwright": "^1.30.0",
+        "typescript": "^4.9.5",
+        "xvfb-maybe": "^0.2.1"
+    }
+}

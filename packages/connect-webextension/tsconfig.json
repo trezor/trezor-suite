@@ -2,15 +2,11 @@
     "extends": "../../tsconfig.aliases.json",
     "compilerOptions": {
         "isolatedModules": false,
-        "types": [
-            "jest",
-            "cypress",
-            "cypress-wait-until"
-        ],
         "noEmit": true
     },
     "include": ["**/*.ts", "**/*.js"],
     "references": [
+        { "path": "../node-utils" },
         { "path": "../trezor-user-env-link" }
     ]
 }
