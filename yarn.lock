@@ -7907,6 +7907,19 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@trezor/connect-webextension@workspace:packages/connect-webextension":
+  version: 0.0.0-use.local
+  resolution: "@trezor/connect-webextension@workspace:packages/connect-webextension"
+  dependencies:
+    "@playwright/test": ^1.30.0
+    "@trezor/node-utils": "workspace:^"
+    "@trezor/trezor-user-env-link": "workspace:*"
+    playwright: ^1.30.0
+    typescript: ^4.9.5
+    xvfb-maybe: ^0.2.1
+  languageName: unknown
+  linkType: soft
+
 "@trezor/connect@workspace:*, @trezor/connect@workspace:9.0.7, @trezor/connect@workspace:packages/connect":
   version: 0.0.0-use.local
   resolution: "@trezor/connect@workspace:packages/connect"
@@ -7997,16 +8010,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/integration-tests@workspace:packages/integration-tests":
-  version: 0.0.0-use.local
-  resolution: "@trezor/integration-tests@workspace:packages/integration-tests"
-  dependencies:
-    "@playwright/test": ^1.30.0
-    "@trezor/trezor-user-env-link": "workspace:*"
-    playwright: ^1.30.0
-  languageName: unknown
-  linkType: soft
-
 "@trezor/ipc-proxy@workspace:*, @trezor/ipc-proxy@workspace:packages/ipc-proxy":
   version: 0.0.0-use.local
   resolution: "@trezor/ipc-proxy@workspace:packages/ipc-proxy"
@@ -8028,7 +8031,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/node-utils@workspace:packages/node-utils":
+"@trezor/node-utils@workspace:^, @trezor/node-utils@workspace:packages/node-utils":
   version: 0.0.0-use.local
   resolution: "@trezor/node-utils@workspace:packages/node-utils"
   dependencies:
