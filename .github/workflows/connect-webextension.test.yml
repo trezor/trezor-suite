@@ -1,0 +1,27 @@
+name: "@trezor/connect-webextension"
+
+on:
+  pull_request:
+    paths:
+      - "packages/connect/**"
+      - "packages/connect-iframe/**"
+      - "packages/connect-web/**"
+      - "packages/connect-examples/**"
+      - "packages/connect-webextension/**"
+  push:
+    branches:
+      - develop
+
+jobs:
+  connect-webextension-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+      - run: yarn install
+      - run: yarn build:libs
+      - name: Build extension
+        run: "node ./packages/connect-examples/update-webextensions.js"
+      - name: Run connect web extension test
+        run: "./docker/docker-connect-webextension-ci.sh"

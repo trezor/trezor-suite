@@ -6,10 +6,8 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "test:e2e": "yarn xvfb-maybe -- playwright test --config=./playwright.config.ts"
     },
-    "dependencies": {
-        "@playwright/test": "^1.32.1"
-    },
     "devDependencies": {
+        "@playwright/test": "^1.32.1",
         "@trezor/node-utils": "workspace:*",
         "@trezor/trezor-user-env-link": "workspace:*",
         "playwright": "^1.32.1",
