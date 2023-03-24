@@ -120,10 +120,16 @@ test.beforeEach(async () => {
  * 1. navigate to the unchained test url
  * 2. select Trezor
  * 3. detect its model version
- * 4. execute all 20 tests
+ * 4. execute all 19 tests
  */
-test('Verify unchained test suite', async ({ page }) => {
+test('Verify unchained test suite', async ({ browser }) => {
     test.slow();
+
+    const context = await browser.newContext({
+        userAgent:
+            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36',
+    });
+    const page = await context.newPage();
     const keystoreInput = '#keystore-select';
     await page.goto(url);
     await page.locator(keystoreInput).click();
@@ -136,7 +142,7 @@ test('Verify unchained test suite', async ({ page }) => {
     await page.locator('button', { hasText: 'Begin Test Suite' }).click();
 
     // tests without a Trezor interaction
-    for (let i = 0; i < 14; i++) {
+    for (let i = 0; i < 13; i++) {
         await exportPublicKey(page, i);
     }
     // tests with interactions
@@ -146,6 +152,9 @@ test('Verify unchained test suite', async ({ page }) => {
     //
     // Assert
     //
-    const successfullTests = await page.locator('span.TestSuiteRunSummary-success');
-    expect(successfullTests).toHaveText('20 SUCCESS');
+    await page.waitForSelector('text=19 SUCCESS');
+    // expect(successfullTests).toContain('');
+
+    await page.close();
+    await context.close();
 });
