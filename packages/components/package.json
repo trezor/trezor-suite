@@ -23,7 +23,7 @@
         "@trezor/react-utils": "workspace:*",
         "date-fns": "^2.29.3",
         "framer-motion": "^9.0.2",
-        "lottie-react": "^2.3.1",
+        "lottie-react": "^2.4.0",
         "polished": "^4.2.2",
         "react-date-range": "^1.4.0",
         "react-intl": "^6.2.8",
