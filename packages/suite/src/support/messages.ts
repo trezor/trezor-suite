@@ -249,10 +249,6 @@ export default defineMessages({
         defaultMessage:
             'To perform a DEX swap, it may be necessary to perform two blockchain transactions: an approval transaction and a swap transaction. Each transaction has a different fee.',
     },
-    TR_EXCHANGE_FEES_INCLUDED: {
-        id: 'TR_EXCHANGE_FEES_INCLUDED',
-        defaultMessage: 'All fees included',
-    },
     TR_EXCHANGE_FEES_INCLUDED_INFO: {
         id: 'TR_EXCHANGE_FEES_INCLUDED_INFO',
         defaultMessage:
@@ -1178,6 +1174,7 @@ export default defineMessages({
         defaultMessage:
             'You understand that Invity does not provide this service. {provider}’s terms govern the service.',
         id: 'TR_P2P_MODAL_TERMS_4',
+        dynamic: true,
     },
     TR_P2P_MODAL_LEGAL_HEADER: {
         defaultMessage: 'Legal notice',
@@ -1894,10 +1891,6 @@ export default defineMessages({
         defaultMessage: "Go to provider's site",
         id: 'TR_BUY_DETAIL_WAITING_FOR_USER_GATE',
     },
-    TR_COINMARKET_UNKNOWN_PROVIDER: {
-        defaultMessage: 'unknown provider',
-        id: 'TR_COINMARKET_UNKNOWN_PROVIDER',
-    },
     TR_COINMARKET_NO_OFFERS_AUTORELOADING_IN: {
         defaultMessage: 'Autoreloading in',
         id: 'TR_COINMARKET_NO_OFFERS_AUTORELOADING_IN',
@@ -2041,10 +2034,6 @@ export default defineMessages({
         defaultMessage: 'Disconnect',
         id: 'TR_DISCONNECT',
     },
-    TR_DISABLED: {
-        defaultMessage: 'Disabled',
-        id: 'TR_DISABLED',
-    },
     TR_BACKEND_DISCONNECTED: {
         defaultMessage: 'Backend is disconnected',
         id: 'TR_BACKEND_DISCONNECTED',
@@ -2135,11 +2124,6 @@ export default defineMessages({
         description: 'Placeholder in seed input asking user to pay attention to his device',
         id: 'TR_CHECK_YOUR_DEVICE',
     },
-    TR_CLEAR: {
-        defaultMessage: 'Clear',
-        description: 'Clear form button',
-        id: 'TR_CLEAR',
-    },
     TR_CLEAR_ALL: {
         defaultMessage: 'Clear all',
         description: 'Clear form button',
@@ -2156,10 +2140,6 @@ export default defineMessages({
     TR_COINS: {
         defaultMessage: 'Crypto',
         id: 'TR_COINS',
-    },
-    TR_CHANGE: {
-        defaultMessage: 'Change',
-        id: 'TR_CHANGE',
     },
     TR_CONFIRM: {
         defaultMessage: 'Confirm',
@@ -2255,21 +2235,11 @@ export default defineMessages({
         description: 'Category in Settings',
         id: 'TR_DEVICE',
     },
-    TR_DEVICE_DISCONNECTED_DURING_ACTION: {
-        defaultMessage: 'Device disconnected during action',
-        description: 'Error message',
-        id: 'TR_DEVICE_DISCONNECTED_DURING_ACTION',
-    },
     TR_DEVICE_DISCONNECTED_DURING_ACTION_DESCRIPTION: {
         defaultMessage:
             'Your Trezor was disconnected during the backup process. We strongly recommend that you use the factory reset option in Device settings to wipe your device and start the wallet backup process again.',
         description: 'Error message. Instruction what to do.',
         id: 'TR_DEVICE_DISCONNECTED_DURING_ACTION_DESCRIPTION',
-    },
-    TR_DEVICE_LABEL: {
-        defaultMessage: 'Device tag: {label}',
-        description: 'Display label of device',
-        id: 'TR_DEVICE_LABEL',
     },
     TR_DEVICE_LABEL_IS_NOT_BACKED_UP: {
         defaultMessage: 'Device {deviceLabel} is not backed up',
@@ -2343,10 +2313,6 @@ export default defineMessages({
     TR_UDEV_DOWNLOAD_MANUAL: {
         defaultMessage: 'Manual configuration (advanced)',
         id: 'TR_UDEV_DOWNLOAD_MANUAL',
-    },
-    TR_DEVICE_SETTINGS: {
-        defaultMessage: 'Device settings',
-        id: 'TR_DEVICE_SETTINGS',
     },
     TR_DEVICE_SECURITY: {
         defaultMessage: 'Security',
@@ -2588,16 +2554,6 @@ export default defineMessages({
         defaultMessage: 'Firmware',
         id: 'TR_FIRMWARE',
     },
-    TR_FIRMWARE_UPDATE: {
-        defaultMessage: 'Firmware update',
-        description: 'Heading on firmware page',
-        id: 'TR_FIRMWARE_UPDATE',
-    },
-    TR_FIRMWARE_INSTALLED: {
-        defaultMessage: 'Ready to go! The latest firmware has been installed.',
-        description: 'Message to display in case firmware is installed',
-        id: 'TR_FIRMWARE_INSTALLED',
-    },
     TR_FIRMWARE_INSTALLED_TEXT: {
         defaultMessage: 'This device has firmware {version} ({type}) installed.',
         description: 'Text to display in case device has firmware installed but it is outdated',
@@ -2712,10 +2668,6 @@ export default defineMessages({
         id: 'TR_ONBOARDING_DATA_COLLECTION_DESCRIPTION',
         defaultMessage:
             'All data collected is anonymous and is used to improve product performance and development. More in <analytics>technical documentation</analytics> and <tos>Terms & Conditions</tos>.',
-    },
-    TR_EJECT_WALLET: {
-        defaultMessage: 'Eject wallet',
-        id: 'TR_EJECT_WALLET',
     },
     TR_EJECT_WALLET_EXPLANATION: {
         defaultMessage: 'Instantly removes all wallet data from Suite.',
@@ -3194,11 +3146,6 @@ export default defineMessages({
         description: 'Error during recovery. For example wrong word retyped or device disconnected',
         id: 'TR_RECOVERY_ERROR',
     },
-    TR_RECOVERY_SEED_IS: {
-        defaultMessage:
-            'The process of creating a list of words in a specific order which store all the information needed to recover a wallet.',
-        id: 'TR_RECOVERY_SEED_IS',
-    },
     TR_CHECK_RECOVERY_SEED_DESCRIPTION: {
         defaultMessage: 'Perform a simulated recovery to check your backup.',
         id: 'TR_CHECK_RECOVERY_SEED_DESCRIPTION',
@@ -3479,11 +3426,6 @@ export default defineMessages({
         defaultMessage: 'Details',
         id: 'TR_TRANSACTION_DETAILS',
     },
-    TR_TREZOR: {
-        defaultMessage: 'Trezor',
-        description: 'Link in header navigation',
-        id: 'TR_TREZOR',
-    },
     TR_TREZOR_BRIDGE_IS_NOT_RUNNING: {
         defaultMessage: 'Trezor Bridge is not running',
         description: '',
@@ -3509,10 +3451,6 @@ export default defineMessages({
     TR_UNDISCOVERED_WALLET: {
         defaultMessage: 'Click to discover wallet',
         id: 'TR_UNDISCOVERED_WALLET',
-    },
-    TR_UNKNOWN: {
-        defaultMessage: 'Unknown',
-        id: 'TR_UNKNOWN',
     },
     TR_UNKNOWN_CONFIRMATION_TIME: {
         defaultMessage: 'unknown',
@@ -3608,14 +3546,6 @@ export default defineMessages({
         defaultMessage: 'Passphrase duplicated',
         id: 'TR_WALLET_DUPLICATE_TITLE',
     },
-    TR_WELCOME_TO_TREZOR: {
-        defaultMessage: 'Starting up or coming back?',
-        id: 'TR_WELCOME_TO_TREZOR',
-    },
-    TR_WELCOME_TO_TREZOR_TEXT: {
-        defaultMessage: 'Choose to set up your device or continue to Suite',
-        id: 'TR_WELCOME_TO_TREZOR_TEXT',
-    },
     TR_WELCOME_TO_TREZOR_TEXT_WALLET_CREATION: {
         defaultMessage: 'Create a new wallet or restore one from a backup',
         id: 'TR_WELCOME_TO_TREZOR_TEXT_WALLET_CREATION',
@@ -3699,10 +3629,6 @@ export default defineMessages({
     TR_GAS_PRICE: {
         id: 'TR_GAS_PRICE',
         defaultMessage: 'Gas price',
-    },
-    TR_TO: {
-        id: 'TR_TO',
-        defaultMessage: 'To',
     },
     TR_GAS_LIMIT: {
         id: 'TR_GAS_LIMIT',
@@ -4064,10 +3990,6 @@ export default defineMessages({
         id: 'TR_UNAVAILABLE_COINJOIN_DEVICE_DISCONNECTED',
         defaultMessage: 'Unavailable. Associated device is disconnected.',
     },
-    TR_UNAVAILABLE_COINJOIN_DEVICE_LOCKED: {
-        id: 'TR_UNAVAILABLE_COINJOIN_DEVICE_LOCKED',
-        defaultMessage: 'Unavailable. Associated device is busy.',
-    },
     TR_UNAVAILABLE_COINJOIN_ACCOUNT_OUT_OF_SYNC: {
         id: 'TR_UNAVAILABLE_COINJOIN_ACCOUNT_OUT_OF_SYNC',
         defaultMessage: 'Unavailable. Account is possibly out-of-sync.',
@@ -4126,10 +4048,6 @@ export default defineMessages({
     TR_TOR_REQUEST_ENABLE_FOR_COIN_JOIN_LEAVE: {
         id: 'TR_TOR_REQUEST_ENABLE_FOR_COIN_JOIN_LEAVE',
         defaultMessage: 'Leave',
-    },
-    TR_TRANSACTIONS: {
-        id: 'TR_TRANSACTIONS',
-        defaultMessage: 'Transactions',
     },
     TR_TRANSACTIONS_NOT_AVAILABLE: {
         id: 'TR_TRANSACTIONS_NOT_AVAILABLE',
@@ -4549,10 +4467,6 @@ export default defineMessages({
         id: 'TR_ENABLE_PASSPHRASE',
         defaultMessage: 'Enable passphrase',
     },
-    TR_PASSPHRASE: {
-        id: 'TR_PASSPHRASE',
-        defaultMessage: 'Passphrase',
-    },
     TR_PASSPHRASE_PROTECTION: {
         id: 'TR_PASSPHRASE_PROTECTION',
         defaultMessage: 'Passphrase',
@@ -4788,10 +4702,6 @@ export default defineMessages({
         id: 'TR_SECURITY_FEATURES_COMPLETED_N',
         defaultMessage: 'Security ({n} of {m})',
     },
-    TR_TODAY: {
-        id: 'TR_TODAY',
-        defaultMessage: 'Today',
-    },
     TR_DASHBOARD: {
         id: 'TR_DASHBOARD',
         defaultMessage: 'Dashboard',
@@ -4799,10 +4709,6 @@ export default defineMessages({
     TR_WALLET: {
         id: 'TR_WALLET',
         defaultMessage: 'Accounts',
-    },
-    TR_EXCHANGE: {
-        id: 'TR_EXCHANGE',
-        defaultMessage: 'Exchange',
     },
     TR_NOTIFICATIONS: {
         id: 'TR_NOTIFICATIONS',
@@ -4887,14 +4793,6 @@ export default defineMessages({
     TR_TOR: {
         id: 'TR_TOR',
         defaultMessage: 'Tor',
-    },
-    TR_STANDARD_WALLET: {
-        id: 'TR_STANDARD_WALLET',
-        defaultMessage: 'Standard wallet',
-    },
-    TR_HIDDEN_WALLET: {
-        id: 'TR_HIDDEN_WALLET',
-        defaultMessage: 'Hidden wallet #{id}',
     },
     TR_COULD_NOT_RETRIEVE_DATA: {
         id: 'TR_COULD_NOT_RETRIEVE_DATA',
@@ -5583,10 +5481,6 @@ export default defineMessages({
         defaultMessage:
             'RBF lets you bump a fee later, in case you want the transaction to be mined faster.',
     },
-    LOCKTIME: {
-        id: 'LOCKTIME',
-        defaultMessage: 'Locktime',
-    },
     LOCKTIME_ADD: {
         id: 'LOCKTIME_ADD',
         defaultMessage: 'Add Locktime',
@@ -6270,10 +6164,6 @@ export default defineMessages({
         id: 'TR_TODAY_DATE',
         defaultMessage: 'Today, {date}',
     },
-    TR_SHOW: {
-        id: 'TR_SHOW',
-        defaultMessage: 'Show',
-    },
     TR_UPDATE_MODAL_AVAILABLE_HEADING: {
         id: 'TR_UPDATE_MODAL_AVAILABLE_HEADING',
         defaultMessage: 'Update available',
@@ -6397,10 +6287,6 @@ export default defineMessages({
     TR_RECOVERY_FAILED: {
         id: 'TR_RECOVERY_FAILED',
         defaultMessage: 'Recovery failed',
-    },
-    TR_ONBOARDING: {
-        id: 'TR_ONBOARDING',
-        defaultMessage: 'Trezor setup',
     },
     TR_ACCOUNT_SEARCH_NO_RESULTS: {
         id: 'TR_ACCOUNT_SEARCH_NO_RESULTS',
@@ -7346,11 +7232,6 @@ export default defineMessages({
         id: 'TR_PRIVATE',
         defaultMessage: 'Private',
     },
-    TR_AMOUNT: {
-        id: 'TR_AMOUNT',
-        description: 'Heading in coin join settings',
-        defaultMessage: 'Amount',
-    },
     TR_SERVICE_FEE: {
         id: 'TR_SERVICE_FEE',
         description: 'Heading in coin join settings',
@@ -7411,25 +7292,10 @@ export default defineMessages({
         description: 'Note in coinjoin strategy settings',
         defaultMessage: 'Note: You’re also paying a mining fee',
     },
-    TR_OVERVIEW: {
-        id: 'TR_OVERVIEW',
-        description: 'Heading in coin join settings',
-        defaultMessage: 'Overview',
-    },
     TR_MINING_FEE_NOTE: {
         id: 'TR_MINING_FEE_NOTE',
         description: 'Note in coinjoin strategy settings',
         defaultMessage: 'Mining fee might be lower. Selected fee is the max value.',
-    },
-    TR_ESTIMATED_TIME: {
-        id: 'TR_ESTIMATED_TIME',
-        description: 'Coinjoin strategy item - time to complete coin join',
-        defaultMessage: 'Est. time',
-    },
-    TR_ROUNDS: {
-        id: 'TR_ROUNDS',
-        description: 'Coinjoin strategy item - max number of coin join rounds',
-        defaultMessage: 'Rounds',
     },
     TR_SKIP_ROUNDS: {
         id: 'TR_SKIP_ROUNDS',
@@ -7452,49 +7318,11 @@ export default defineMessages({
         description: 'Coinjoin strategy item - fee amount',
         defaultMessage: 'Max mining fee',
     },
-    TR_ROUNDS_TOOLTIP: {
-        id: 'TR_ROUNDS_TOOLTIP',
-        description: 'Coinjoin strategy item tooltip',
-        defaultMessage:
-            'The required anonymity is usually not achieved in a single transaction. The number represents how many coinjoin rounds you allow your Trezor to participate in.',
-    },
-    TR_SKIP_ROUNDS_TOOLTIP: {
-        id: 'TR_SKIP_ROUNDS_TOOLTIP',
-        description: 'Coinjoin strategy item tooltip',
-        defaultMessage:
-            'Skipped rounds make it even more difficult to prove any relation between your inputs. This means you can further obfuscate the origin of the funds.',
-    },
-    TR_MAX_MINING_FEE_TOOLTIP: {
-        id: 'TR_MAX_MINING_FEE_TOOLTIP',
-        description: 'Coinjoin strategy item tooltip',
-        defaultMessage:
-            'The realised mining fee is likely to be smaller. This value represents the price cap for your participation in each round.',
-    },
-    TR_ESTIMATED_TIME_VALUE: {
-        id: 'TR_ESTIMATED_TIME_VALUE',
-        description: 'Time to complete coin join',
-        defaultMessage: '{min} - {max} hours',
-    },
-    TR_ROUNDS_VALUE: {
-        id: 'TR_ROUNDS_VALUE',
-        description: 'Max number of coinjoin rounds',
-        defaultMessage: 'max {rounds}',
-    },
-    TR_NONE: {
-        id: 'TR_NONE',
-        description: 'Skipped coinjoin rounds',
-        defaultMessage: 'none',
-    },
     TR_TERMS_AND_PRIVACY_CONFIRMATION: {
         id: 'TR_TERMS_AND_PRIVACY_CONFIRMATION',
         description: 'Checkbox in coinjoin settings',
         defaultMessage:
             'I agree to the <trezor>Trezor Suite Terms</trezor> and <coordinator>zkSNACKs Coordinator Terms</coordinator>',
-    },
-    TR_ANONYMIZE: {
-        id: 'TR_ANONYMIZE',
-        description: 'Button initializing coinjoin',
-        defaultMessage: 'Anonymize',
     },
     TR_CONFIRM_CONDITIONS: {
         id: 'TR_CONFIRM_CONDITIONS',
@@ -7505,16 +7333,6 @@ export default defineMessages({
         id: 'TR_NOTHING_TO_ANONYMIZE',
         description: 'Tooltip content for disabled button in coinjoin section',
         defaultMessage: 'Nothing to anonymize',
-    },
-    TR_CUSTOM_SETUP: {
-        id: 'TR_CUSTOM_SETUP',
-        description: 'Heading and button in coinjoin settings',
-        defaultMessage: 'Custom setup',
-    },
-    TR_RESET_TO_DEFAULT: {
-        id: 'TR_RESET_TO_DEFAULT',
-        description: 'Button in coinjoin settings',
-        defaultMessage: 'Reset to default',
     },
     TR_COINJOIN_PHASE_0_MESSAGE: {
         id: 'TR_COINJOIN_PHASE_0_MESSAGE',
@@ -7568,10 +7386,6 @@ export default defineMessages({
     TR_RESUME: {
         id: 'TR_RESUME',
         defaultMessage: 'Resume',
-    },
-    TR_COINJOIN_PAUSED: {
-        id: 'TR_COINJOIN_PAUSED',
-        defaultMessage: 'Coinjoin paused',
     },
     TR_ANONYMIZATION_PAUSED: {
         id: 'TR_ANONYMIZATION_PAUSED',
@@ -7772,12 +7586,6 @@ export default defineMessages({
         defaultMessage:
             'Coinjoin is a collaborative bitcoin transaction, in which you mix your bitcoin together with hundreds of others.',
     },
-    TR_LOADING_FACT_10: {
-        id: 'TR_LOADING_FACT_10',
-        description: '140 symbols max',
-        defaultMessage:
-            "If you don't want to wait for account discovery next time and are confident about your privacy on this computer, then choose to remember your wallet",
-    },
     TR_LOADING_FACT_11: {
         id: 'TR_LOADING_FACT_11',
         description: '140 symbols max',
@@ -7905,14 +7713,6 @@ export default defineMessages({
         id: 'TR_LOW_ANONYMITY_WARNING',
         defaultMessage:
             "<red>Very low anonymity.</red> We recommend using at least 1 in 5, as anything below this threshold isn't secure.",
-    },
-    TR_ALL_FUNDS_ANONYMIZED: {
-        id: 'TR_ALL_FUNDS_ANONYMIZED',
-        defaultMessage: 'All funds private',
-    },
-    TR_SKIP_ROUNDS_CHANCE: {
-        id: 'TR_SKIP_ROUNDS_CHANCE',
-        defaultMessage: '{value}% chance',
     },
     TR_SESSION_PHASE_11_MESSAGE: {
         id: 'TR_SESSION_PHASE_11_MESSAGE',
@@ -8042,10 +7842,6 @@ export default defineMessages({
     TR_COINJOIN_CEX_WARNING: {
         id: 'TR_COINJOIN_CEX_WARNING',
         defaultMessage: 'Exchanges might reject CoinJoined funds.',
-    },
-    TR_COINJOIN_CEX_EXPLANATION: {
-        id: 'TR_COINJOIN_CEX_EXPLANATION',
-        defaultMessage: 'They may reject your deposits or withdrawals and blacklist you.',
     },
     TR_ZERO_PHISHING_TOOLTIP: {
         id: 'TR_ZERO_PHISHING_TOOLTIP',
