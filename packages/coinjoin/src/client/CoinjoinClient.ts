@@ -224,12 +224,16 @@ export class CoinjoinClient extends EventEmitter {
 
                 roundsToProcess.push(newRound);
                 if (!this.rounds.find(r => r.id === newRound.id)) {
+                    // start follow round in Status
+                    this.status.startFollowRound(newRound);
                     newRound.on('changed', event => this.emit('round', event));
                     newRound.on('ended', ({ round }) => {
                         round.inputs.concat(round.failed).forEach(input => {
                             // remove identities from Status
                             this.status.removeIdentity(input.outpoint);
                         });
+                        // stop follow round in Status
+                        this.status.stopFollowRound(round.id);
                         // remove round from the list
                         this.rounds = this.rounds.filter(r => r.id !== newRound.id);
                         // set Status mode
