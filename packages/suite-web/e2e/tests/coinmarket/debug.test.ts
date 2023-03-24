@@ -1,4 +1,4 @@
-// @group:coinmarket
+// @group:wallet
 
 describe('suite', () => {
     const ADDRESS_INDEX_1 = 'bcrt1qkvwu9g3k2pdxewfqr7syz89r3gj557l374sg5v';
