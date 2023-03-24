@@ -40,6 +40,10 @@ export class Status extends EventEmitter {
         this.identities = ['Satoshi'];
     }
 
+    private log(level: LogEvent['level'], payload: LogEvent['payload']) {
+        this.emit('log', { level, payload });
+    }
+
     private compareStatus(next: Round[]) {
         return next
             .filter(nextRound => {
@@ -62,10 +66,16 @@ export class Status extends EventEmitter {
                 if (nextRound.phase === RoundPhase.Ended && known.phase !== RoundPhase.Ended)
                     return true; // round ended
                 if (nextRound.phase !== known.phase) {
-                    this.emit('log', {
-                        level: 'warn',
-                        payload: `Unexpected phase change: ${nextRound.id} ${known.phase} => ${nextRound.phase}`,
-                    });
+                    this.log(
+                        'warn',
+                        `Unexpected phase change: ${nextRound.id} ${known.phase} => ${nextRound.phase}`,
+                    );
+                    // possible corner-case:
+                    // - suite fetch the /status, next fetch will be in ~20 sec. + potential network delay
+                    // - round is currently in phase "0" but will be changed to "1" in few seconds,
+                    // - meanwhile all registered inputs sends /connection-confirmation, round phase on coordinator is changed to "2"
+                    // - suite fetch the /status, round phase is changed from 0 to 2
+                    return true;
                 }
                 return false;
             })
@@ -176,11 +186,11 @@ export class Status extends EventEmitter {
                 try {
                     return this.processStatus(status);
                 } catch (error) {
-                    this.emit('log', { level: 'error', payload: `Status: ${error.message}` });
+                    this.log('error', `Status: ${error.message}`);
                 }
             })
             .catch(error => {
-                this.emit('log', { level: 'warn', payload: `Status: ${error.message}` });
+                this.log('warn', `Status: ${error.message}`);
             });
     }
 
