@@ -9,7 +9,7 @@
   retry: 2
   script:
     - yarn install --immutable
-    - yarn workspace @trezor/urls test:integration
+    - yarn workspace @trezor/urls test:e2e
 
 urls health nightly:
   extends: .urls health
