@@ -1,7 +1,13 @@
-import { isNewer, isNewerOrEqual, isEqual, normalizeVersion } from '../src/versionUtils';
+import {
+    isNewer,
+    isNewerOrEqual,
+    isEqual,
+    normalizeVersion,
+    isVersionArray,
+} from '../src/versionUtils';
 
-describe('Version Utils', () => {
-    describe('is newer', () => {
+describe('versionUtils', () => {
+    describe('isNewer', () => {
         // older
         it('it should return false [0, 0, 1] [0, 0, 2]', () => {
             const result = isNewer([1, 0, 1], [1, 0, 2]);
@@ -51,7 +57,7 @@ describe('Version Utils', () => {
         });
     });
 
-    describe('is equal', () => {
+    describe('isEqual', () => {
         it('it should return false [1, 0, 0], [1, 0, 1]', () => {
             const result = isEqual([1, 0, 0], [1, 0, 1]);
             expect(result).toBe(false);
@@ -68,7 +74,7 @@ describe('Version Utils', () => {
         });
     });
 
-    describe('is newer or equal', () => {
+    describe('isNewerOrEqual', () => {
         it('it should return false [1, 0, 0], [1, 0, 1]', () => {
             const result = isNewerOrEqual([1, 0, 0], [1, 0, 1]);
             expect(result).toBe(false);
@@ -97,6 +103,25 @@ describe('Version Utils', () => {
         it('does nothing with normalized versions', () => {
             expect(normalizeVersion('20.11.0')).toEqual('20.11.0');
             expect(normalizeVersion('20.11.1')).toEqual('20.11.1');
+        });
+    });
+
+    describe('isVersionArray', () => {
+        it('invalid cases', () => {
+            expect(isVersionArray(null)).toEqual(false);
+            expect(isVersionArray([null])).toEqual(false);
+            expect(isVersionArray([1, 2, null])).toEqual(false);
+            expect(isVersionArray([-1])).toEqual(false);
+            expect(isVersionArray([1, 2, -1])).toEqual(false);
+            expect(isVersionArray([])).toEqual(false);
+            expect(isVersionArray([1, 2, 3, 4])).toEqual(false);
+            expect(isVersionArray([1])).toEqual(false);
+            expect(isVersionArray([1, 2])).toEqual(false);
+        });
+
+        it('valid cases', () => {
+            expect(isVersionArray([0, 1, 2])).toEqual(true);
+            expect(isVersionArray([1, 2, 3])).toEqual(true);
         });
     });
 });

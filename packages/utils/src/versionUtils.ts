@@ -1,6 +1,28 @@
 type VersionArray = [number, number, number];
 type VersionInput = VersionArray | string;
 
+export const isVersionArray = (arr: unknown): arr is VersionArray => {
+    // Check if argument is an actual array
+    if (!Array.isArray(arr)) {
+        return false;
+    }
+
+    // Array has invalid length
+    if (arr.length !== 3) {
+        return false;
+    }
+
+    // Check for invalid numbers in the array
+    for (let i = 0; i < arr.length; i++) {
+        const versionNumber = arr[i];
+        if (typeof versionNumber !== 'number' || versionNumber < 0) {
+            return false;
+        }
+    }
+
+    return true;
+};
+
 const parse = (versionArr: VersionArray) => ({
     major: versionArr[0],
     minor: versionArr[1],
@@ -8,16 +30,14 @@ const parse = (versionArr: VersionArray) => ({
 });
 
 const split = (version: string) => {
-    const arr = version.split('.');
-    if (arr.length !== 3) {
+    const arr = version.split('.').map(v => Number(v));
+    if (!isVersionArray(arr)) {
         throw new Error('version string is in wrong format');
     }
-    return arr as unknown as VersionArray;
+    return arr;
 };
 
 const versionToString = (arr: VersionArray) => `${arr[0]}.${arr[1]}.${arr[2]}`;
-
-export const isVersionArray = (arr: number[]): arr is VersionArray => arr.length === 3;
 
 /**
  * Is versionX (first arg) newer than versionY (second arg)
