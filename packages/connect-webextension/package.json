@@ -4,7 +4,7 @@
     "private": true,
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
-        "test:e2e": "yarn xvfb-maybe -- playwright test --config=./playwright.config.ts"
+        "test:e2e": "yarn xvfb-maybe -- playwright test --config=./e2e/playwright.config.ts"
     },
     "devDependencies": {
         "@playwright/test": "^1.32.1",
