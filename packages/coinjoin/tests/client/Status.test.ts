@@ -1,91 +1,171 @@
 import { Status } from '../../src/client/Status';
-import { ROUND_REGISTRATION_END_OFFSET, STATUS_TIMEOUT } from '../../src/constants';
+import * as http from '../../src/utils/http';
+import { STATUS_TIMEOUT } from '../../src/constants';
 import { createServer } from '../mocks/server';
-import {
-    AFFILIATE_INFO,
-    DEFAULT_ROUND,
-    STATUS_EVENT,
-    ROUND_CREATION_EVENT,
-} from '../fixtures/round.fixture';
+import { AFFILIATE_INFO, DEFAULT_ROUND, STATUS_EVENT } from '../fixtures/round.fixture';
 
-let server: Awaited<ReturnType<typeof createServer>>;
+// using fakeTimers and async callbacks
+const fastForward = (time: number) => {
+    jest.runTimersToTime(time);
+    return new Promise(resolve => setImmediate(resolve)); // execute PromiseJobs (async setTimeout callbacks)
+};
 
-const waitForStatus = (ms: number) => new Promise(resolve => setTimeout(resolve, ms + 100));
-
-// mock STATUS_TIMEOUT
+// use getters to allow mocking different values in each test case
 jest.mock('../../src/constants', () => {
     const originalModule = jest.requireActual('../../src/constants');
     return {
         __esModule: true,
         ...originalModule,
-        HTTP_REQUEST_TIMEOUT: 1000,
-        STATUS_TIMEOUT: {
-            idle: 5000, // no registered accounts, occasionally fetch status to read fees
-            enabled: 3000, // account is registered but utxo was not paired with Round
-            registered: 500, // utxo is registered in Round
+        get HTTP_REQUEST_TIMEOUT() {
+            return 200;
         },
+        STATUS_TIMEOUT: Object.keys(originalModule.STATUS_TIMEOUT).reduce(
+            (obj, key) => ({
+                ...obj,
+                get [key]() {
+                    return originalModule.STATUS_TIMEOUT[key];
+                },
+            }),
+            {},
+        ),
     };
 });
 
 describe('Status', () => {
+    let server: Awaited<ReturnType<typeof createServer>>;
+    let status: Status;
+
     beforeAll(async () => {
         server = await createServer();
     });
 
-    beforeEach(() => {
+    afterEach(() => {
+        jest.restoreAllMocks();
+        jest.useRealTimers();
+
+        status?.stop();
+
         server?.removeAllListeners('test-handle-request');
         server?.removeAllListeners('test-request');
     });
 
     afterAll(() => {
-        if (server) server.close();
+        server?.close();
     });
 
-    it('Status mode timeouts', async () => {
-        const status = new Status(server?.requestOptions);
+    it('setStatusTimeout by mode (default timeout)', async () => {
+        jest.useFakeTimers();
 
-        const requestListener = jest.fn(({ request, resolve }) => {
-            expect(request.headers).toMatchObject({
-                'proxy-authorization': 'Basic Satoshi',
-            });
-            resolve();
-        });
-        server?.addListener('test-request', requestListener);
+        const setTimeoutSpy = jest.spyOn(global, 'setTimeout');
+        const coordinatorRequestSpy = jest
+            .spyOn(http, 'coordinatorRequest')
+            .mockImplementation(() =>
+                Promise.resolve({
+                    ...STATUS_EVENT,
+                    roundStates: [{ ...DEFAULT_ROUND }],
+                }),
+            );
+
+        status = new Status(server?.requestOptions);
+        await status.start();
+        expect(setTimeoutSpy).toHaveBeenLastCalledWith(expect.any(Function), STATUS_TIMEOUT.idle);
+
+        expect(setTimeoutSpy.mock.calls[0][1]).toEqual(STATUS_TIMEOUT.idle);
+
+        status.setMode('enabled');
+        expect(setTimeoutSpy).toHaveBeenLastCalledWith(
+            expect.any(Function),
+            STATUS_TIMEOUT.enabled,
+        );
+
+        await fastForward(STATUS_TIMEOUT.enabled);
+        expect(coordinatorRequestSpy).toHaveBeenCalledTimes(2);
+
+        status.setMode('registered');
+        expect(setTimeoutSpy).toHaveBeenLastCalledWith(
+            expect.any(Function),
+            STATUS_TIMEOUT.registered,
+        );
+
+        await fastForward(STATUS_TIMEOUT.registered);
+
+        expect(coordinatorRequestSpy).toHaveBeenCalledTimes(3);
+
+        status.setMode('idle');
+        // actually, new timeout is greater than current (STATUS_TIMEOUT.registered < STATUS_TIMEOUT.idle)
+        await fastForward(STATUS_TIMEOUT.registered);
+
+        expect(coordinatorRequestSpy).toHaveBeenCalledTimes(4);
+
+        // next timeout is set to idle now
+        expect(setTimeoutSpy).toHaveBeenLastCalledWith(expect.any(Function), STATUS_TIMEOUT.idle);
+    });
+
+    it('setStatusTimeout by following CoinjoinRound', async () => {
+        const coinjoinRound = {
+            ...DEFAULT_ROUND,
+            phaseDeadline: Date.now() + 1000, // initial phaseDeadline is lower than STATUS_TIMEOUT.enabled / 2
+            inputs: [],
+        };
+
+        jest.useFakeTimers();
+
+        const setTimeoutSpy = jest.spyOn(global, 'setTimeout');
+        const coordinatorRequestSpy = jest
+            .spyOn(http, 'coordinatorRequest')
+            .mockImplementation(() =>
+                Promise.resolve({
+                    ...STATUS_EVENT,
+                    roundStates: [
+                        { ...DEFAULT_ROUND, phase: coordinatorRequestSpy.mock.calls.length },
+                    ], // increment phase on each request to trigger update event
+                }),
+            );
+
+        const half = STATUS_TIMEOUT.enabled / 2;
+
+        status = new Status(server?.requestOptions);
+        status.setMode('enabled');
+        status.startFollowRound(coinjoinRound);
 
         await status.start();
 
-        status.setMode('enabled');
+        status.on('update', () => {
+            const calls = coordinatorRequestSpy?.mock.calls.length - 1;
+            coinjoinRound.phaseDeadline = Date.now() + calls * half + 2500;
+        });
 
-        await waitForStatus(STATUS_TIMEOUT.enabled); // wait 3 sec (mocked STATUS_TIMEOUT.enabled)
+        expect(coordinatorRequestSpy).toHaveBeenCalledTimes(1); // status fetched once on start
+        expect(setTimeoutSpy.mock.calls[0][1]).toEqual(half); // setTimeout is set to ~1500ms (half of defaultTimeout > coinjoinRound.phaseDeadline)
 
-        expect(requestListener).toHaveBeenCalledTimes(2);
+        await fastForward(half);
 
-        status.setMode('registered');
-        await waitForStatus(STATUS_TIMEOUT.registered); // wait 0.5 sec (mocked STATUS_TIMEOUT.registered)
+        expect(coordinatorRequestSpy).toHaveBeenCalledTimes(2);
+        expect(setTimeoutSpy.mock.calls[1][1]).toBeGreaterThan(half); // setTimeout is set to ~2500ms (half of defaultTimeout < coinjoinRound.phaseDeadline < defaultTimeout)
+        expect(setTimeoutSpy.mock.calls[1][1]).toBeLessThanOrEqual(half + 2500);
 
-        expect(requestListener).toHaveBeenCalledTimes(3);
+        await fastForward(half + 2500);
 
-        status.setMode('idle');
-        await waitForStatus(STATUS_TIMEOUT.idle + STATUS_TIMEOUT.registered); // wait 5.5 sec (mocked STATUS_TIMEOUT.idle)
-
-        expect(requestListener).toHaveBeenCalledTimes(5); // 5 because new timeout is greater than current (STATUS_TIMEOUT.registered < STATUS_TIMEOUT.idle)
-
-        status.stop();
-    }, 10000);
+        expect(coordinatorRequestSpy).toHaveBeenCalledTimes(3);
+        expect(setTimeoutSpy.mock.calls[2][1]).toEqual(STATUS_TIMEOUT.enabled); // setTimeout is set to 3000ms (coinjoinRound.phaseDeadline > defaultTimeout)
+    });
 
     it('Status identities', async () => {
-        const status = new Status(server?.requestOptions);
-
         const identities: string[] = [];
-        const requestListener = jest.fn(({ request, resolve }) => {
-            const id = request.headers['proxy-authorization'];
-            if (!identities.includes(id)) {
+        jest.spyOn(http, 'coordinatorRequest').mockImplementation((_a, _b, options) => {
+            const id = options?.identity;
+            if (id && !identities.includes(id)) {
                 identities.push(id);
             }
-            resolve();
+            return Promise.resolve({
+                ...STATUS_EVENT,
+                roundStates: [{ ...DEFAULT_ROUND }],
+            });
         });
-        server?.addListener('test-request', requestListener);
 
+        jest.useFakeTimers();
+
+        status = new Status(server?.requestOptions);
         await status.start();
 
         status.addIdentity('A');
@@ -93,23 +173,32 @@ describe('Status', () => {
         status.addIdentity('C');
 
         status.setMode('registered');
-        await waitForStatus(5000); // wait 5 sec, collect multiple requests
 
-        expect(identities.length).toBeGreaterThanOrEqual(2); // at least two identities used. probably all defined above were used but it's not deterministic
+        // wait 3 iterations
+        await fastForward(STATUS_TIMEOUT.registered);
+        await fastForward(STATUS_TIMEOUT.registered);
+        await fastForward(STATUS_TIMEOUT.registered);
 
+        // at least two identities used. probably all defined above were used but it's not deterministic
+        expect(identities.length).toBeGreaterThanOrEqual(2);
+
+        // clear identities
         status.removeIdentity('A');
         status.removeIdentity('B');
         status.removeIdentity('C');
         identities.splice(0);
 
-        await waitForStatus(3000); // wait 3 sec, collect multiple requests
-        expect(identities.length).toEqual(1); // only default identity left
+        // wait 3 iterations
+        await fastForward(STATUS_TIMEOUT.registered);
+        await fastForward(STATUS_TIMEOUT.registered);
+        await fastForward(STATUS_TIMEOUT.registered);
 
-        status.stop();
-    }, 10000);
+        // only default identity left
+        expect(identities.length).toEqual(1);
+    });
 
     it('Status start and immediate stop', done => {
-        const status = new Status(server?.requestOptions);
+        status = new Status(server?.requestOptions);
         const errorListener = jest.fn();
         status.on('log', errorListener);
         const updateListener = jest.fn();
@@ -126,13 +215,12 @@ describe('Status', () => {
         });
         // immediate stop
         status.stop();
-
-        // resolved in then block
     });
 
     it('Status start attempts, keep lifecycle regardless of failed requests', async done => {
-        let request = 0;
+        jest.spyOn(STATUS_TIMEOUT, 'registered', 'get').mockReturnValue(250 as any);
 
+        let request = 0;
         server?.addListener('test-request', ({ resolve }) => {
             if (request === 6) {
                 resolve({
@@ -141,22 +229,19 @@ describe('Status', () => {
                 });
             } else {
                 setTimeout(
-                    () => {
-                        resolve({
-                            ...STATUS_EVENT,
-                            roundStates: [DEFAULT_ROUND],
-                        });
-                    },
-                    request % 2 === 0 ? 5000 : 0, // timeout error on every second request
+                    resolve,
+                    request % 2 === 0 ? 500 : 0, // timeout error on every second request
                 );
             }
             request++;
         });
 
-        const status = new Status(server?.requestOptions);
+        status = new Status(server?.requestOptions);
 
         const errorListener = jest.fn();
-        status.on('log', errorListener);
+        status.on('log', ({ level }) => {
+            if (level === 'warn') errorListener();
+        });
         const updateListener = jest.fn();
         status.on('update', updateListener);
 
@@ -169,157 +254,35 @@ describe('Status', () => {
             status.stop();
             done();
         });
-    }, 7000);
-
-    it('Status onStatusChange', async () => {
-        const status = new Status(server?.requestOptions);
-
-        const onUpdateListener = jest.fn();
-        status.on('update', onUpdateListener);
-
-        const requestListener = jest.fn();
-        server?.addListener('test-handle-request', requestListener);
-
-        const round = {
-            ...DEFAULT_ROUND,
-            inputRegistrationEnd: Date.now() + 500,
-            coinjoinState: {
-                events: [
-                    {
-                        ...ROUND_CREATION_EVENT,
-                        roundParameters: {
-                            ...ROUND_CREATION_EVENT.roundParameters,
-                            connectionConfirmationTimeout: '0d 0h 0m 5s',
-                            outputRegistrationTimeout: '0d 0h 0m 2s',
-                            transactionSigningTimeout: '0d 0h 0m 2s',
-                        },
-                    },
-                ],
-            },
-        };
-
-        server?.addListener('test-request', ({ url, resolve }) => {
-            if (url.endsWith('/status')) {
-                resolve({
-                    ...STATUS_EVENT,
-                    roundStates: [round],
-                });
-            }
-            resolve();
-        });
-
-        status.setMode('enabled');
-        await status.start();
-
-        await waitForStatus(ROUND_REGISTRATION_END_OFFSET + 600); // wait 0.6 sec + offset (inputRegistrationEnd)
-
-        expect(requestListener).toHaveBeenCalledTimes(2); // status fetched twice, because Round.inputRegistrationEnd timeout < STATUS_TIMEOUT.enabled
-        expect(onUpdateListener).toHaveBeenCalledTimes(1); // status changed only once
-
-        server?.removeAllListeners('test-request');
-        server?.addListener('test-request', ({ url, resolve }) => {
-            if (url.endsWith('/status')) {
-                round.phase++;
-                if (round.phase <= 4) {
-                    resolve({
-                        ...STATUS_EVENT,
-                        roundStates: [
-                            round,
-                            {
-                                ...round,
-                                id: 'pendingRound',
-                                phase: 2, // intentionally keep it in one phase, see pendingRound explanation below
-                            },
-                        ],
-                    });
-                } else {
-                    // remove all rounds from state
-                    resolve({
-                        ...STATUS_EVENT,
-                    });
-                }
-            }
-        });
-
-        await waitForStatus(STATUS_TIMEOUT.enabled); // wait 3 sec (STATUS_TIMEOUT.enabled)
-
-        expect(requestListener).toHaveBeenCalledTimes(3);
-        expect(onUpdateListener).toHaveBeenCalledTimes(2);
-        await waitForStatus(STATUS_TIMEOUT.enabled); // wait 3 sec of STATUS_TIMEOUT.enabled  < connectionConfirmationTimeout 5 sec
-
-        expect(requestListener).toHaveBeenCalledTimes(4);
-        expect(onUpdateListener).toHaveBeenCalledTimes(3);
-
-        await waitForStatus(2000); // wait 2 sec of outputRegistrationTimeout < STATUS_TIMEOUT.enabled 3 sec
-
-        expect(requestListener).toHaveBeenCalledTimes(5);
-        expect(onUpdateListener).toHaveBeenCalledTimes(4);
-
-        await waitForStatus(2000); // wait 2 sec of transactionSigningTimeout < STATUS_TIMEOUT.enabled 3 sec
-
-        expect(requestListener).toHaveBeenCalledTimes(6);
-        expect(onUpdateListener).toHaveBeenCalledTimes(5);
-
-        await waitForStatus(STATUS_TIMEOUT.enabled); // wait 3 sec (STATUS_TIMEOUT.enabled)
-        expect(requestListener).toHaveBeenCalledTimes(7);
-        expect(onUpdateListener).toHaveBeenCalledTimes(6);
-
-        // pendingRound should be ended. /status didn't report phase change until now, but round does not exists anymore
-        const lastParams = onUpdateListener.mock.calls[5][0];
-        expect(lastParams).toMatchObject({
-            changed: [expect.objectContaining({ id: 'pendingRound', phase: 4 })],
-            rounds: [],
-        });
-
-        status.stop();
-    }, 20000);
+    });
 
     it('Status onStatusChange with delayed affiliateRequest', async () => {
         const round = {
             ...DEFAULT_ROUND,
             phase: 3,
-            inputRegistrationEnd: Date.now(),
-            coinjoinState: {
-                events: [
-                    {
-                        ...ROUND_CREATION_EVENT,
-                        roundParameters: {
-                            ...ROUND_CREATION_EVENT.roundParameters,
-                            transactionSigningTimeout: '0d 0h 0m 1s',
-                        },
-                    },
-                ],
-            },
         };
 
         const affiliateDataBase64 = Buffer.from('{}', 'utf-8').toString('base64');
-        const requestListener = jest.fn();
-        server?.addListener('test-request', ({ url, resolve }) => {
-            if (url.endsWith('/status')) {
-                const calls = requestListener.mock.calls.length;
-                requestListener();
 
-                if (calls > 2) {
-                    // start sending affiliateData after third iteration
-                    const affiliateData = { [round.id]: { trezor: affiliateDataBase64 } };
-                    resolve({
-                        ...STATUS_EVENT,
-                        roundStates: [round],
-                        affiliateInformation: {
-                            ...AFFILIATE_INFO,
-                            affiliateData,
-                        },
-                    });
-                } else {
-                    resolve({
-                        ...STATUS_EVENT,
-                        roundStates: [round],
-                    });
-                }
-            }
-        });
+        const coordinatorRequestSpy = jest
+            .spyOn(http, 'coordinatorRequest')
+            .mockImplementation(() =>
+                Promise.resolve({
+                    ...STATUS_EVENT,
+                    roundStates: [{ ...round }], // NOTE: always return new reference for the Round from mock
+                    affiliateInformation: {
+                        ...AFFILIATE_INFO,
+                        affiliateData:
+                            coordinatorRequestSpy.mock.calls.length > 3 // return affiliateData after 3rd iteration
+                                ? { [round.id]: { trezor: affiliateDataBase64 } }
+                                : AFFILIATE_INFO.affiliateData,
+                    },
+                }),
+            );
 
-        const status = new Status(server?.requestOptions);
+        jest.useFakeTimers();
+
+        status = new Status(server?.requestOptions);
 
         const onUpdateListener = jest.fn();
         status.on('update', onUpdateListener);
@@ -327,12 +290,15 @@ describe('Status', () => {
         status.setMode('enabled');
         await status.start();
 
-        expect(requestListener).toHaveBeenCalledTimes(1); // status fetched once, on start
+        expect(coordinatorRequestSpy).toHaveBeenCalledTimes(1); // status fetched once, on start
         expect(onUpdateListener).toHaveBeenCalledTimes(1); // status changed once, on start
 
-        await waitForStatus(3000); // wait 3 iterations, transactionSigningTimeout = 1 sec.
+        // wait 3 iterations
+        await fastForward(STATUS_TIMEOUT.enabled);
+        await fastForward(STATUS_TIMEOUT.enabled);
+        await fastForward(STATUS_TIMEOUT.enabled);
 
-        expect(requestListener).toHaveBeenCalledTimes(4); // status fetched 4 times
+        expect(coordinatorRequestSpy).toHaveBeenCalledTimes(4); // status fetched 4 times
         expect(onUpdateListener).toHaveBeenCalledTimes(2); // status changed twice, affiliateData added at 3rd iteration
 
         expect(onUpdateListener.mock.calls[1][0]).toMatchObject({
@@ -350,7 +316,7 @@ describe('Status', () => {
             }
         });
 
-        const status = new Status(server?.requestOptions);
+        status = new Status(server?.requestOptions);
 
         const onUpdateListener = jest.fn();
         const onExceptionListener = jest.fn();
@@ -369,7 +335,7 @@ describe('Status', () => {
     });
 
     it('just for coverage', () => {
-        const status = new Status(server?.requestOptions);
+        status = new Status(server?.requestOptions);
         status.getStatus(); // calling getStatus before start
 
         status.addIdentity('A');
@@ -377,7 +343,5 @@ describe('Status', () => {
 
         status.setMode('idle');
         status.setMode('idle'); // set same mode twice
-
-        status.stop();
     });
 });
