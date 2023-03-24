@@ -58,18 +58,18 @@
     matrix:
       - TEST_GROUP:
           [
-            # "@group:suite",
-            # "@group:onboarding",
-            # "@group:device-management",
-            # "@group:settings",
-            # "@group:metadata",
-            # "@group:passphrase",
-            # "@group:browser",
+            "@group:suite",
+            "@group:onboarding",
+            "@group:device-management",
+            "@group:settings",
+            "@group:metadata",
+            "@group:passphrase",
+            "@group:browser",
             "@group:coinmarket",
           ]
         CONTAINERS: "trezor-user-env-unix"
         CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: 1
-      - TEST_GROUP: "@group:wallet"
+      - TEST_GROUP: ["@group:wallet", "@group:coinmarket"]
         CONTAINERS: "trezor-user-env-unix bitcoin-regtest"
         CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: 1
       - TEST_GROUP: "@group:firmware-update"
