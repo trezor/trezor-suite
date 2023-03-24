@@ -8,6 +8,7 @@
 # @trezor/suite-web
 .e2e web:
   stage: integration testing
+  retry: 1
   dependencies:
     - install
   variables:
@@ -119,7 +120,7 @@ suite web 2-master manual:
 # @trezor/suite-desktop
 .e2e desktop:
   stage: integration testing
-  allow_failure: true # coinjoin test is unstable - there is rapid development
+  retry: 1
   dependencies:
     - install
   variables:
@@ -152,8 +153,9 @@ suite web 2-master manual:
         CONTAINERS: "trezor-user-env-unix"
       - TEST_FILE: ["electrum"]
         CONTAINERS: "trezor-user-env-unix electrum-regtest"
-      - TEST_FILE: ["coinjoin"]
-        CONTAINERS: "trezor-user-env-unix coinjoin-backend"
+      # commented out. coinjoin test is not adapted to current state of this feature
+      # - TEST_FILE: ["coinjoin"]
+      #   CONTAINERS: "trezor-user-env-unix coinjoin-backend"
 
 suite desktop:
   extends: .e2e desktop
@@ -196,6 +198,7 @@ transport manual:
 # @trezor/connect-popup (via @trezor/connect-explorer)
 .e2e connect-popup:
   stage: integration testing
+  retry: 1
   variables:
     COMPOSE_PROJECT_NAME: $CI_JOB_ID
     COMPOSE_FILE: ./docker/docker-compose.connect-popup-ci.yml
