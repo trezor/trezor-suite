@@ -7713,7 +7713,7 @@ __metadata:
     date-fns: ^2.29.3
     framer-motion: ^9.0.2
     jest: ^26.6.3
-    lottie-react: ^2.3.1
+    lottie-react: ^2.4.0
     polished: ^4.2.2
     react: 18.2.0
     react-date-range: ^1.4.0
@@ -23540,22 +23540,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lottie-react@npm:^2.3.1":
-  version: 2.3.1
-  resolution: "lottie-react@npm:2.3.1"
+"lottie-react@npm:^2.4.0":
+  version: 2.4.0
+  resolution: "lottie-react@npm:2.4.0"
   dependencies:
-    lottie-web: ^5.9.4
+    lottie-web: ^5.10.2
   peerDependencies:
     react: ^16.8.0 || ^17.0.0 || ^18.0.0
     react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
-  checksum: 3f83511eec9ef80c6500658fcb188f757c663c5de49de5cfd55d061d5de72b9242fd0a3b7ec7ce84bbad5acbcd7293468228a0f6cbe28e50e4c44e5b25df1c8d
+  checksum: e9ea4a89be90a29bde4a83956f76a80d1f8031882f18ea38ef5271d2aafd8e68348ae6297f185ed85b149ca4896fe33aee7faf9780b88a1b289b8e146f477448
   languageName: node
   linkType: hard
 
-"lottie-web@npm:^5.9.4":
-  version: 5.9.6
-  resolution: "lottie-web@npm:5.9.6"
-  checksum: aed6a1d0c24eefb6c42a42aae18f29737746551cfdc86319f1b9675f5bc276ba26971e8d2b0e1498df880571fe4bfe2fc87885a1d4f8a318d5e4e5b939b7a474
+"lottie-web@npm:^5.10.2":
+  version: 5.10.2
+  resolution: "lottie-web@npm:5.10.2"
+  checksum: 9ec80b479d8d03c079bd4f246d301f0c4aac2c4d6f8daaa79f6f3fc285aaba377c64879f6748d49c1db52b9854aea81c3203d858e9c686f7a47cd8b771d112d0
   languageName: node
   linkType: hard
 
