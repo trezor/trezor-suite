@@ -111,7 +111,8 @@ export const getCoinjoinRoundDeadlines = (round: PartialCoinjoinRound) => {
                     deadline + readTimeSpan(round.roundParameters.transactionSigningTimeout),
             };
         }
-        case RoundPhase.TransactionSigning: {
+        case RoundPhase.TransactionSigning:
+        case RoundPhase.Ended: {
             const deadline = now + readTimeSpan(round.roundParameters.transactionSigningTimeout);
             return {
                 phaseDeadline: deadline,
