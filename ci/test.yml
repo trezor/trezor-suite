@@ -397,39 +397,3 @@ connect-web:
   extends: .e2e connect-web
   only:
     <<: *run_everything_rules
-
-.e2e connect-web-extension:
-  stage: integration testing
-  variables:
-    COMPOSE_PROJECT_NAME: $CI_JOB_ID
-    COMPOSE_FILE: ./docker/docker-compose.connect-webextension-test.yml
-    URL: ${DEV_SERVER_URL}/connect/${CI_BUILD_REF_NAME}/
-    HEADLESS: "true"
-  script:
-    - yarn install --immutable
-    - node ./packages/connect-examples/update-webextensions.js
-    - docker-compose pull
-    - docker-compose up -d trezor-user-env-unix
-    - docker-compose run test-run
-  after_script:
-    - docker-compose down
-    - docker network prune -f
-  artifacts:
-    expire_in: 7 days
-    when: always
-    paths:
-      - ./packages/integration-tests/screenshots
-      - ./packages/integration-tests/test-results
-  interruptible: true
-
-connect-web-extension:
-  extends: .e2e connect-web-extension
-  only:
-    <<: *run_everything_rules
-  when: always
-
-connect-web-extension manual:
-  extends: .e2e connect-web-extension
-  except:
-    <<: *run_everything_rules
-  when: manual
