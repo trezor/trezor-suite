@@ -1,4 +1,4 @@
-// @group:coinmarket
+// @group:wallet
 
 describe('Coinmarket sell', () => {
     beforeEach(() => {
