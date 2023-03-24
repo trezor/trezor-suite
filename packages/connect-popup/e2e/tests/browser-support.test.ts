@@ -24,6 +24,7 @@ const openPopup = async (page: Page) =>
             page.click("button[data-test='@submit-button']"),
         ])
     )[0];
+
 test('unsupported browser', async ({ browser }) => {
     const context = await browser.newContext({
         ...safari,
@@ -36,6 +37,7 @@ test('unsupported browser', async ({ browser }) => {
     await popup.screenshot({ path: `${dir}/browser-not-supported.png` });
     await popup.close();
     await page.close();
+    await context.close();
 });
 
 test('outdated-browser', async ({ browser }) => {
@@ -58,6 +60,7 @@ test('outdated-browser', async ({ browser }) => {
     await popup.waitForSelector('text=Install bridge');
     await popup.close();
     await page.close();
+    await context.close();
 });
 
 // test mobile browsers
@@ -81,6 +84,7 @@ test.describe(() => {
 
             await popup.click('text=Close');
             await page.close();
+            await context.close();
         });
     }
 });
