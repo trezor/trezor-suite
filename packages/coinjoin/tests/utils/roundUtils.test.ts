@@ -79,7 +79,7 @@ describe('roundUtils', () => {
                 ...round,
                 phase: 4,
             }),
-            Date.now(),
+            Date.now() + timeouts * 3,
         );
     });
 
