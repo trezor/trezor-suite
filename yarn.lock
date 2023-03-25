@@ -8017,7 +8017,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/message-system@workspace:*, @trezor/message-system@workspace:packages/message-system":
+"@trezor/message-system@workspace:*, @trezor/message-system@workspace:^, @trezor/message-system@workspace:packages/message-system":
   version: 0.0.0-use.local
   resolution: "@trezor/message-system@workspace:packages/message-system"
   dependencies:
@@ -8237,6 +8237,7 @@ __metadata:
     "@trezor/connect": "workspace:9.0.7"
     "@trezor/connect-common": "workspace:*"
     "@trezor/ipc-proxy": "workspace:*"
+    "@trezor/message-system": "workspace:^"
     "@trezor/node-utils": "workspace:*"
     "@trezor/request-manager": "workspace:*"
     "@trezor/suite-desktop-api": "workspace:*"
