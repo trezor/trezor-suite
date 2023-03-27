@@ -2,29 +2,16 @@ import React, { useEffect } from 'react';
 import { Modal, Pressable } from 'react-native';
 import Animated from 'react-native-reanimated';
 
-import { RequireAllOrNone } from 'type-fest';
-
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { Button, Text, Card, VStack, useBottomSheetAnimation } from '@suite-native/atoms';
 
-import { Button } from '../Button/Button';
-import { Text } from '../Text';
-import { Card } from '../Card';
-import { VStack } from '../Stack';
-import { useBottomSheetAnimation } from './useBottomSheetAnimation';
-import { useShakeAnimation } from './useShakeAnimation';
+import { useShakeAnimation } from '../useShakeAnimation';
+import { Alert } from '../alertsAtoms';
+import { useAlert } from '../useAlert';
 
-type AlertSheetProps = RequireAllOrNone<
-    {
-        isVisible: boolean;
-        title: string;
-        description: string;
-        primaryButtonTitle: string;
-        onPressPrimaryButton: () => void;
-        secondaryButtonTitle?: string;
-        onPressSecondaryButton?: () => void;
-    },
-    'secondaryButtonTitle' | 'onPressSecondaryButton'
->;
+type AlertSheetProps = {
+    alert: Alert;
+};
 
 const alertSheetContainerStyle = prepareNativeStyle(utils => ({
     justifyContent: 'center',
@@ -50,42 +37,43 @@ const sheetOverlayStyle = prepareNativeStyle(_ => ({
     flex: 1,
 }));
 
-export const AlertSheet = ({
-    isVisible,
-    title,
-    description,
-    primaryButtonTitle,
-    secondaryButtonTitle,
-    onPressPrimaryButton,
-    onPressSecondaryButton,
-}: AlertSheetProps) => {
+export const AlertSheet = ({ alert }: AlertSheetProps) => {
+    const { hideAlert } = useAlert();
     const { applyStyle } = useNativeStyles();
     const { runShakeAnimation, shakeAnimatedStyle } = useShakeAnimation();
+
     const {
         animatedSheetWithOverlayStyle,
         animatedSheetWrapperStyle,
         closeSheetAnimated,
         openSheetAnimated,
-    } = useBottomSheetAnimation({ isVisible });
+    } = useBottomSheetAnimation({ onClose: hideAlert, isVisible: true });
 
     useEffect(() => {
-        if (isVisible) {
-            openSheetAnimated();
-        }
-    }, [isVisible, openSheetAnimated]);
+        openSheetAnimated();
+    }, [openSheetAnimated]);
 
-    const handlePressPrimaryButton = () => {
+    const {
+        title,
+        description,
+        onPressPrimaryButton,
+        primaryButtonTitle,
+        onPressSecondaryButton,
+        secondaryButtonTitle,
+    } = alert;
+
+    const handlePressPrimaryButton = async () => {
+        await closeSheetAnimated();
         onPressPrimaryButton();
-        closeSheetAnimated();
     };
 
-    const handlePressSecondaryButton = () => {
+    const handlePressSecondaryButton = async () => {
+        await closeSheetAnimated();
         onPressSecondaryButton?.();
-        closeSheetAnimated();
     };
 
     return (
-        <Modal transparent visible={isVisible}>
+        <Modal transparent visible={!!alert}>
             <Animated.View style={[animatedSheetWithOverlayStyle, applyStyle(sheetOverlayStyle)]}>
                 <Pressable onPress={runShakeAnimation} style={applyStyle(shakeTriggerStyle)}>
                     <Animated.View
@@ -96,7 +84,9 @@ export const AlertSheet = ({
                             <VStack style={applyStyle(alertSheetContentStyle)} spacing="large">
                                 <VStack alignItems="center" spacing="small">
                                     <Text variant="titleSmall">{title}</Text>
-                                    <Text color="textSubdued">{description}</Text>
+                                    <Text color="textSubdued" align="center">
+                                        {description}
+                                    </Text>
                                 </VStack>
                                 <VStack spacing="medium">
                                     <Button

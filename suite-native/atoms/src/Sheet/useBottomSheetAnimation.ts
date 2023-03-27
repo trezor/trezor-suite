@@ -19,6 +19,7 @@ type GestureHandlerContext = {
     translatePanY: number;
 };
 
+const ANIMATION_DURATION = 300;
 const SCREEN_HEIGHT = getScreenHeight();
 
 export const useBottomSheetAnimation = ({
@@ -41,7 +42,7 @@ export const useBottomSheetAnimation = ({
 
     useEffect(() => {
         animatedTransparency.value = withTiming(transparency, {
-            duration: 300,
+            duration: ANIMATION_DURATION,
             easing: Easing.out(Easing.cubic),
         });
     }, [transparency, animatedTransparency]);
@@ -68,21 +69,25 @@ export const useBottomSheetAnimation = ({
     const closeSheetAnimated = useCallback(() => {
         'worklet';
 
-        translatePanY.value = withTiming(SCREEN_HEIGHT, {
-            duration: 300,
-            easing: Easing.out(Easing.cubic),
-        });
-        animatedTransparency.value = withTiming(
-            0,
-            {
-                duration: 300,
+        return new Promise((resolve, _) => {
+            translatePanY.value = withTiming(SCREEN_HEIGHT, {
+                duration: ANIMATION_DURATION,
                 easing: Easing.out(Easing.cubic),
-            },
-            () => {
-                if (onClose) runOnJS(onClose)(false);
-                if (setIsCloseScrollEnabled) runOnJS(setIsCloseScrollEnabled)(true);
-            },
-        );
+            });
+            animatedTransparency.value = withTiming(
+                0,
+                {
+                    duration: ANIMATION_DURATION,
+                    easing: Easing.out(Easing.cubic),
+                },
+                () => {
+                    if (onClose) runOnJS(onClose)(false);
+                    if (setIsCloseScrollEnabled) runOnJS(setIsCloseScrollEnabled)(true);
+                },
+            );
+
+            setTimeout(resolve, ANIMATION_DURATION);
+        });
     }, [translatePanY, animatedTransparency, onClose, setIsCloseScrollEnabled]);
 
     const openSheetAnimated = useCallback(() => {

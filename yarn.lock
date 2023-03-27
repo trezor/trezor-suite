@@ -6921,6 +6921,19 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-native/alerts@workspace:*, @suite-native/alerts@workspace:suite-native/alerts":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/alerts@workspace:suite-native/alerts"
+  dependencies:
+    "@suite-native/atoms": "workspace:*"
+    "@trezor/styles": "workspace:*"
+    jotai: 1.9.1
+    react: 18.2.0
+    react-native: 0.71.3
+    react-native-reanimated: 3.0.1
+  languageName: unknown
+  linkType: soft
+
 "@suite-native/analytics@workspace:*, @suite-native/analytics@workspace:suite-native/analytics":
   version: 0.0.0-use.local
   resolution: "@suite-native/analytics@workspace:suite-native/analytics"
@@ -7107,6 +7120,7 @@ __metadata:
     "@suite-common/wallet-types": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
     "@suite-native/accounts": "workspace:*"
+    "@suite-native/alerts": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/config": "workspace:*"
     "@suite-native/ethereum-tokens": "workspace:*"
@@ -8289,6 +8303,7 @@ __metadata:
     "@suite-common/formatters": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
+    "@suite-native/alerts": "workspace:*"
     "@suite-native/analytics": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/config": "workspace:*"
