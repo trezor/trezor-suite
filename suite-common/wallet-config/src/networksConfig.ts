@@ -396,6 +396,7 @@ export type BackendType =
 
 type Networks = typeof networks;
 export type NetworkSymbol = keyof Networks;
+export type NetworkType = Network['networkType'];
 type NetworkValue = Networks[NetworkSymbol];
 export type AccountType = Keys<NetworkValue['accountTypes']> | 'imported';
 export type NetworkFeature = 'rbf' | 'sign-verify' | 'amount-unit' | 'tokens';

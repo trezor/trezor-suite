@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { Box, Card, ErrorMessage, Text, VStack } from '@suite-native/atoms';
+import { Box, ErrorMessage, Text, VStack } from '@suite-native/atoms';
 import { AccountListItem } from '@suite-native/accounts';
 import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import {
@@ -36,17 +36,16 @@ export const ReceiveScreen = ({
                         Address
                     </Text>
                 </Box>
-                <Card>
-                    {addressIsVisible ? (
-                        <ReceiveAddress
-                            accountKey={accountKey}
-                            onClose={navigation.goBack}
-                            backgroundElevation="1"
-                        />
-                    ) : (
-                        <ReceiveTextHint onShowAddress={() => setAddressIsVisible(true)} />
-                    )}
-                </Card>
+
+                {addressIsVisible ? (
+                    <ReceiveAddress
+                        accountKey={accountKey}
+                        onClose={navigation.goBack}
+                        backgroundElevation="1"
+                    />
+                ) : (
+                    <ReceiveTextHint onShowAddress={() => setAddressIsVisible(true)} />
+                )}
             </VStack>
         </Screen>
     );

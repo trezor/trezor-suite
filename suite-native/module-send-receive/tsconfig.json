@@ -16,6 +16,7 @@
         { "path": "../link" },
         { "path": "../navigation" },
         { "path": "../qr-code" },
+        { "path": "../../packages/icons" },
         { "path": "../../packages/styles" }
     ]
 }

@@ -25,7 +25,7 @@ export const SupportSettings = () => {
     return (
         <SettingsSection title="Support">
             <SettingsSectionItem
-                title="About us"
+                title="About Trezor Suite Lite"
                 iconName="trezorT"
                 onPress={() => navigation.navigate(SettingsStackRoutes.SettingsAbout)}
             />

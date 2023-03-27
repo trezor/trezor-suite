@@ -17,7 +17,7 @@ export const AccountRenameButton = ({ accountKey }: AccountRenameModalProps) => 
     return (
         <Box>
             <IconButton colorScheme="tertiaryElevation0" iconName="pencil" onPress={handleOpen} />
-            <BottomSheet title="Rename coin" isVisible={isVisible} onClose={handleClose}>
+            <BottomSheet title="Coin label" isVisible={isVisible} onClose={handleClose}>
                 <AccountRenameForm accountKey={accountKey} onSubmit={handleClose} />
             </BottomSheet>
         </Box>

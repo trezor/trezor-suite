@@ -1,13 +1,11 @@
 import React, { ReactNode, useState } from 'react';
 import { TouchableOpacity, KeyboardAvoidingView, Platform } from 'react-native';
 
-import { Network } from '@suite-common/wallet-config';
+import { NetworkType } from '@suite-common/wallet-config';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { BottomSheet, Box, Button, Text, VStack } from '@suite-native/atoms';
 import { Icon } from '@trezor/icons';
 import { Video, VideoName } from '@suite-native/video-assets';
-
-type NetworkType = Network['networkType'];
 
 type XpubScanHintSheet = {
     networkType: NetworkType;
@@ -38,8 +36,9 @@ const networkToAssetsMap = {
         title: 'Where is my public key (XPUB)?',
         text: (
             <>
-                To view the Bitcoin XPUB of your account, open the Trezor Suite desktop app, plug in
-                your Trezor device, select <EmphasizedText>Accounts</EmphasizedText>, then choose{' '}
+                To view the Bitcoin, Litecoin, Dogecoin, Cardano, Bitcoin Cash or Zcash public key
+                (XPUB) of your account, open the Trezor Suite desktop app, plug in your Trezor
+                device, select <EmphasizedText>Accounts</EmphasizedText>, then choose{' '}
                 <EmphasizedText>Show public key</EmphasizedText>.
             </>
         ),
@@ -63,9 +62,8 @@ const networkToAssetsMap = {
             <>
                 To view the Ripple receive address of your account, open the Trezor Suite desktop
                 app, plug in your Trezor device, select <EmphasizedText>Accounts</EmphasizedText>,
-                choose
-                <EmphasizedText>Receive</EmphasizedText>, and click on{' '}
-                <EmphasizedText>Show full address</EmphasizedText>
+                choose <EmphasizedText>Receive</EmphasizedText>, and click on{' '}
+                <EmphasizedText>Show full address</EmphasizedText>.
             </>
         ),
         video: 'xpubImportETH',
