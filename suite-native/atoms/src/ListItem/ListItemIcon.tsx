@@ -4,6 +4,7 @@ import { Icon, IconName } from '@trezor/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { Box } from '../Box';
+import { RoundedIcon } from '../RoundedIcon';
 
 type ListItemIconProps = {
     iconName: IconName;
@@ -24,6 +25,7 @@ export const ListItemIcon = ({ iconName }: ListItemIconProps) => {
             <Box justifyContent="center" alignItems="center" style={applyStyle(listItemIconStyle)}>
                 <Icon name={iconName} color="iconSubdued" />
             </Box>
+            <RoundedIcon name={iconName} backgroundColor="backgroundSurfaceElevation2" />
         </Box>
     );
 };

@@ -20,7 +20,7 @@ export * from './Button/IconButton';
 export * from './Select/Select';
 export * from './Select/SelectItem';
 export * from './Stack';
-
+export * from './RoundedIcon';
 export * from './Divider';
 export * from './TextDivider';
 export * from './ProgressBar';
