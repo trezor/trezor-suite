@@ -23,6 +23,7 @@ const Heading = styled.h3`
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
+    margin: 14px 0 4px 0;
     text-transform: uppercase;
 `;
 
@@ -97,7 +98,7 @@ const Details = () => {
         <WalletLayout
             title="TR_ACCOUNT_DETAILS_HEADER"
             account={selectedAccount}
-            showEmptyHeaderPlaceholder
+            showEmptyHeaderPlaceholder={!isCoinjoinAccount}
         >
             <Cards>
                 {isCoinjoinAccount && (
