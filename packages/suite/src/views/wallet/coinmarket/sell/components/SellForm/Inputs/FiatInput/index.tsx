@@ -100,6 +100,7 @@ const FiatInput = ({ activeInput, setActiveInput }: Props) => {
 
     return (
         <Input
+            data-test="@coinmarket/sell/fiat-input"
             noTopLabel
             defaultValue=""
             innerRef={fiatInputRef}
@@ -133,6 +134,7 @@ const FiatInput = ({ activeInput, setActiveInput }: Props) => {
                                 .filter(c => sellInfo?.supportedFiatCurrencies.has(c))
                                 .map((currency: string) => buildOption(currency))}
                             isSearchable
+                            data-test="@coinmarket/sell/fiat-currency-select"
                             value={value}
                             isClearable={false}
                             minWidth="45px"

@@ -71,6 +71,7 @@ const PaymentSuccessful = ({ account }: Props) => {
                 </FixedRateMessage>
             </FixedRate>
             <Button
+                data-test="@coinmarket/sell/payment/back-to-account"
                 onClick={() =>
                     goto('wallet-coinmarket-sell', {
                         params: {

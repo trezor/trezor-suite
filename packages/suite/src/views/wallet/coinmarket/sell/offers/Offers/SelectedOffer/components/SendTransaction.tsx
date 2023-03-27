@@ -77,7 +77,7 @@ export const SendTransaction = () => {
                             <AccountLabeling account={account} />
                         </Value>
                     </Row>
-                    <Row>
+                    <Row data-test="@coinmarket/sell/selected-offer/address">
                         <LabelText>
                             <Translation id="TR_SELL_SEND_TO" values={{ providerName }} />
                         </LabelText>
@@ -87,7 +87,11 @@ export const SendTransaction = () => {
                     </Row>
 
                     <ButtonWrapper>
-                        <StyledButton isLoading={callInProgress} onClick={sendTransaction}>
+                        <StyledButton
+                            isLoading={callInProgress}
+                            onClick={sendTransaction}
+                            data-test="@coinmarket/sell/offers/continue-transaction-button"
+                        >
                             <Translation id="TR_SELL_CONFIRM_ON_TREZOR_SEND" />
                         </StyledButton>
                     </ButtonWrapper>

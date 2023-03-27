@@ -154,7 +154,9 @@ export const SelectBankAccount = () => {
                             <Option>
                                 <AccountInfo>
                                     <AccountName>{option.holder}</AccountName>
-                                    <AccountNumber>{formatIban(option.bankAccount)}</AccountNumber>
+                                    <AccountNumber data-test="@coinmarket/sell/selected-offer/iban">
+                                        {formatIban(option.bankAccount)}
+                                    </AccountNumber>
                                 </AccountInfo>
                                 {option.verified ? (
                                     <AccountVerified>
@@ -178,6 +180,7 @@ export const SelectBankAccount = () => {
             </CardContent>
             <ButtonWrapper>
                 <StyledButton
+                    data-test="@coinmarket/sell/offers/confirm-on-trezor-button"
                     isLoading={callInProgress}
                     onClick={() => {
                         if (bankAccount) confirmTrade(bankAccount);

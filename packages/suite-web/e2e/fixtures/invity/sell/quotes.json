@@ -1,0 +1,31 @@
+[
+    {
+        "amountInCrypto": true,
+        "fiatStringAmount": "98.12",
+        "fiatCurrency": "EUR",
+        "cryptoCurrency": "BTC",
+        "cryptoStringAmount": "0.005",
+        "rate": 19624,
+        "quoteId": "quoteid1",
+        "exchange": "btcdirect-sell",
+        "validUntil": "2023-01-12T10:36:30Z",
+        "minFiat": 25.61,
+        "maxFiat": 42700.74,
+        "minCrypto": 0.0015138,
+        "maxCrypto": 2.52372305,
+        "paymentMethod": "bankTransfer",
+        "country": "AT",
+        "bankAccounts": [
+            {
+                "bankAccount": "MNOP 1234 5678 9012 3456 7890",
+                "holder": "Mala Krava",
+                "verified": true
+            },
+            {
+                "bankAccount": "ASDF 1234 5678 9012 3456 7890",
+                "holder": "Vache Petite",
+                "verified": true
+            }
+        ]
+    }
+]
