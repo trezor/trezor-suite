@@ -67,8 +67,9 @@ const beforeBreadcrumb: Options['beforeBreadcrumb'] = breadcrumb => {
         breadcrumb.data?.url?.contains('data.trezor.io/suite/log');
     const isImageFetch =
         breadcrumb.category === 'xhr' && breadcrumb.data?.url?.contains('/assets/');
+    const isConsole = breadcrumb.category === 'console';
 
-    if (isAnalytics || isImageFetch) {
+    if (isAnalytics || isImageFetch || isConsole) {
         return null;
     }
     return breadcrumb;
