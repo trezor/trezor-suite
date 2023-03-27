@@ -62,7 +62,7 @@ export const TransactionDetailSheet = ({
         >
             <Box paddingTop="large">
                 {children}
-                <Box paddingHorizontal="small">
+                <Box paddingHorizontal="small" marginTop="large">
                     <Button size="large" onPress={onVisibilityChange}>
                         Close
                     </Button>

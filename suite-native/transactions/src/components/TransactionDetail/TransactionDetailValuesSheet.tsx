@@ -84,7 +84,7 @@ export const TransactionDetailValuesSheet = ({
         iconName="clockClockwise"
         transactionId={transaction.txid}
     >
-        <VStack marginBottom="medium">
+        <VStack>
             <Card>
                 <Table>
                     <Tr>

@@ -1,6 +1,8 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
+import { fromWei } from 'web3-utils';
+
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { WalletAccountTransaction } from '@suite-common/wallet-types';
 import { Box, Card, IconButton, Text, VStack } from '@suite-native/atoms';
@@ -9,6 +11,7 @@ import { getConfirmations, getFeeRate, getFeeUnits } from '@suite-common/wallet-
 import { BlockchainRootState, selectBlockchainHeightBySymbol } from '@suite-common/wallet-core';
 import { useCopyToClipboard } from '@suite-native/helpers';
 import { TransactionIdFormatter } from '@suite-native/formatters';
+import { networks, NetworkType } from '@suite-common/wallet-config';
 
 import { TransactionDetailSheet } from './TransactionDetailSheet';
 import { TransactionDetailRow } from './TransactionDetailRow';
@@ -19,9 +22,40 @@ type TransactionDetailParametersSheetProps = {
     onSheetVisibilityChange: () => void;
 };
 
+type EthereumParametersProps = Pick<
+    NonNullable<WalletAccountTransaction['ethereumSpecific']>,
+    'gasLimit' | 'gasUsed' | 'gasPrice' | 'nonce'
+>;
+
 const transactionIdStyle = prepareNativeStyle(_ => ({
     maxWidth: '72%',
 }));
+
+type TransactionParameter =
+    | keyof Pick<NonNullable<WalletAccountTransaction>, 'feeRate' | 'lockTime' | 'ethereumSpecific'>
+    | 'broadcast';
+
+const networkTypeToDisplayedParametersMap: Record<NetworkType, TransactionParameter[]> = {
+    bitcoin: ['feeRate', 'broadcast', 'lockTime'],
+    ethereum: ['ethereumSpecific', 'broadcast'],
+    ripple: ['broadcast'],
+    cardano: [],
+};
+
+const getEnabledTitle = (enabled: boolean) => (enabled ? 'Enabled' : 'Disabled');
+
+const EthereumParameters = ({ gasLimit, gasUsed, gasPrice, nonce }: EthereumParametersProps) => (
+    <>
+        <TransactionDetailRow title="Gas limit">{gasLimit}</TransactionDetailRow>
+        <TransactionDetailRow title="Gas used">{gasUsed}</TransactionDetailRow>
+        {/* TODO: The `gasPrice` parameter should be handled inside of a fee formatter. */}
+        {/* https://github.com/trezor/trezor-suite/issues/7385 */}
+        <TransactionDetailRow title="Gas price">
+            {`${fromWei(gasPrice, 'gwei')} ${getFeeUnits('ethereum')}`}
+        </TransactionDetailRow>
+        <TransactionDetailRow title="Nonce">{nonce}</TransactionDetailRow>
+    </>
+);
 
 export const TransactionDetailParametersSheet = ({
     isVisible,
@@ -34,9 +68,12 @@ export const TransactionDetailParametersSheet = ({
         selectBlockchainHeightBySymbol(state, transaction.symbol),
     );
 
-    const handleClickCopy = () => copyToClipboard(transaction.txid, 'Transaction ID copied');
-
+    const { networkType } = networks[transaction.symbol];
+    const displayedParameters = networkTypeToDisplayedParametersMap[networkType];
+    const parametersCardIsDisplayed = displayedParameters.length !== 0;
     const confirmationsCount = getConfirmations(transaction, blockchainHeight);
+
+    const handleClickCopy = () => copyToClipboard(transaction.txid, 'Transaction ID copied');
 
     return (
         <TransactionDetailSheet
@@ -46,7 +83,7 @@ export const TransactionDetailParametersSheet = ({
             iconName="warningCircle"
             transactionId={transaction.txid}
         >
-            <VStack marginBottom="medium">
+            <VStack>
                 <Card>
                     <TransactionDetailRow title="Transaction ID">
                         <Box
@@ -74,42 +111,36 @@ export const TransactionDetailParametersSheet = ({
                     </TransactionDetailRow>
                 </Card>
 
-                <Card>
-                    {/* TODO: Uncoment when ethereum design is ready. */}
-                    {/* {transaction.symbol === 'eth' && (
-                    <>
-                        <TransactionDetailRow
-                            title="Gas limit"
-                            text={transaction.ethereumSpecific!.gasLimit}
-                        />
-                        <TransactionDetailRow
-                            title="Gas fee"
-                            text={transaction.ethereumSpecific!.gasUsed}
-                        />
-                        <TransactionDetailRow
-                            title="Nonce"
-                            text={transaction.ethereumSpecific!.nonce}
-                        />
-                    </>
-                )} */}
-
-                    {transaction.symbol === 'btc' && (
-                        // Note: Ethereum and tokens will have different fee rate units.
-                        // https://github.com/trezor/trezor-suite/issues/7729
-                        <TransactionDetailRow title="Fee rate">
-                            {`${getFeeRate(transaction)} ${getFeeUnits('bitcoin')}`}
-                        </TransactionDetailRow>
-                    )}
-                    <TransactionDetailRow title="Broadcast">
-                        {transaction.blockHeight ? 'Enabled' : 'Disabled'}
-                    </TransactionDetailRow>
-                    <TransactionDetailRow title="RBF">
-                        {transaction.rbf ? 'Enabled' : 'Disabled'}
-                    </TransactionDetailRow>
-                    <TransactionDetailRow title="Locktime">
-                        {transaction.lockTime ? 'Enabled' : 'Disabled'}
-                    </TransactionDetailRow>
-                </Card>
+                {parametersCardIsDisplayed && (
+                    <Card>
+                        {displayedParameters.includes('ethereumSpecific') &&
+                            transaction.ethereumSpecific && (
+                                <EthereumParameters {...transaction.ethereumSpecific} />
+                            )}
+                        {/* TODO: The `feeRate` parameter should be handled inside of a fee formatter. */}
+                        {/* https://github.com/trezor/trezor-suite/issues/7385 */}
+                        {displayedParameters.includes('feeRate') && (
+                            <TransactionDetailRow title="Fee rate">
+                                {`${getFeeRate(transaction)} ${getFeeUnits(networkType)}`}
+                            </TransactionDetailRow>
+                        )}
+                        {transaction.symbol === 'btc' && (
+                            <TransactionDetailRow title="RBF">
+                                {getEnabledTitle(!!transaction.rbf)}
+                            </TransactionDetailRow>
+                        )}
+                        {displayedParameters.includes('broadcast') && (
+                            <TransactionDetailRow title="Broadcast">
+                                {getEnabledTitle(!!transaction.blockHeight)}
+                            </TransactionDetailRow>
+                        )}
+                        {displayedParameters.includes('lockTime') && (
+                            <TransactionDetailRow title="Locktime">
+                                {getEnabledTitle(!!transaction.lockTime)}
+                            </TransactionDetailRow>
+                        )}
+                    </Card>
+                )}
             </VStack>
         </TransactionDetailSheet>
     );

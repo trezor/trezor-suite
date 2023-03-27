@@ -79,7 +79,7 @@ export const TransactionDetailInputsSheet = ({
                     </Box>
                 </Box>
             </Box>
-            <VStack marginBottom="medium">
+            <VStack>
                 <Card>
                     <Box flexDirection="row" justifyContent="space-between">
                         <Box style={applyStyle(addressAmountColumnStyle)}>
