@@ -20,3 +20,12 @@ export const isFlagIconType = (iconName: IconNames): iconName is FlagIconName =>
 
 export const isEthereumTokenIconType = (iconName: IconNames): iconName is EthereumTokenIconName =>
     iconName in ethereumTokenIcons;
+
+// TODO refactor - in rounded icon, this will be needed and needs to be improved
+//  because now if we don't have this icon, the condition there will fallback wrong
+export const getEthereumTokenIcon = (iconName: IconNames) => {
+    if (isEthereumTokenIconType(iconName)) {
+        return iconName;
+    }
+    return 'erc20';
+};
