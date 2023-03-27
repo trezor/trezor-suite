@@ -1,11 +1,12 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
+import { PROTO } from '@trezor/connect';
 import { fiatCurrencies, FiatCurrency, FiatCurrencyCode } from '@suite-common/suite-config';
 
 export interface AppSettingsState {
     isOnboardingFinished: boolean;
     fiatCurrency: FiatCurrency;
-    isSatsEnabled: boolean;
+    bitcoinUnits: PROTO.AmountUnit;
 }
 
 export type SettingsSliceRootState = {
@@ -15,13 +16,13 @@ export type SettingsSliceRootState = {
 export const appSettingsInitialState: AppSettingsState = {
     fiatCurrency: fiatCurrencies.usd,
     isOnboardingFinished: false,
-    isSatsEnabled: false,
+    bitcoinUnits: PROTO.AmountUnit.BITCOIN,
 };
 
 export const appSettingsPersistWhitelist: Array<keyof AppSettingsState> = [
     'isOnboardingFinished',
     'fiatCurrency',
-    'isSatsEnabled',
+    'bitcoinUnits',
 ];
 
 export const appSettingsSlice = createSlice({
@@ -34,8 +35,8 @@ export const appSettingsSlice = createSlice({
         setOnboardingFinished: (state, action: PayloadAction<boolean>) => {
             state.isOnboardingFinished = action.payload;
         },
-        toggleIsSatsEnabled: state => {
-            state.isSatsEnabled = !state.isSatsEnabled;
+        setBitcoinUnits: (state, { payload }: PayloadAction<PROTO.AmountUnit>) => {
+            state.bitcoinUnits = payload;
         },
     },
 });
@@ -45,9 +46,7 @@ export const selectFiatCurrencyCode = (state: SettingsSliceRootState) =>
     state.appSettings.fiatCurrency.label;
 export const selectIsOnboardingFinished = (state: SettingsSliceRootState) =>
     state.appSettings.isOnboardingFinished;
-export const selectIsSatsEnabled = (state: SettingsSliceRootState) =>
-    state.appSettings.isSatsEnabled;
+export const selectBitcoinUnits = (state: SettingsSliceRootState) => state.appSettings.bitcoinUnits;
 
-export const { setOnboardingFinished, setFiatCurrency, toggleIsSatsEnabled } =
-    appSettingsSlice.actions;
+export const { setOnboardingFinished, setFiatCurrency, setBitcoinUnits } = appSettingsSlice.actions;
 export const appSettingsReducer = appSettingsSlice.reducer;

@@ -25,6 +25,8 @@ export const icons = {
     closeCircle: require('../assets/icons/closeCircle.svg'),
     confirmation: require('../assets/icons/confirmation.svg'),
     copy: require('../assets/icons/copy.svg'),
+    database: require('../assets/icons/database.svg'),
+    detective: require('../assets/icons/detective.svg'),
     discover: require('../assets/icons/discover.svg'),
     eject: require('../assets/icons/eject.svg'),
     eye: require('../assets/icons/eye.svg'),

@@ -1,6 +1,8 @@
 import React, { ReactNode } from 'react';
 import { TouchableOpacity } from 'react-native';
 
+import { G } from '@mobily/ts-belt';
+
 import { Icon } from '@trezor/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
@@ -40,6 +42,8 @@ export const SelectTrigger = ({
 }: SelectTriggerProps) => {
     const { applyStyle } = useNativeStyles();
 
+    const shouldDisplaySeparator = !G.isNull(value) && !G.isUndefined(valueLabel);
+
     return (
         <TouchableOpacity onPress={handlePress} style={applyStyle(selectStyle)}>
             <Box>
@@ -49,7 +53,7 @@ export const SelectTrigger = ({
                     </Text>
                 )}
                 <Box flexDirection="row" alignItems="center">
-                    {!!value && (
+                    {shouldDisplaySeparator && (
                         <>
                             <Box style={applyStyle(iconWrapperStyle)}>{icon}</Box>
                             <Text>{valueLabel} · </Text>

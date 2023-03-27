@@ -11,7 +11,7 @@ import {
 import { SettingsScreen } from '../screens/SettingsScreen';
 import { SettingsLocalisationScreen } from '../screens/SettingsLocalisationScreen';
 import { SettingsCustomizationScreen } from '../screens/SettingsCustomizationScreen';
-import { SettingsAnalyticsScreen } from '../screens/SettingsAnalyticsScreen';
+import { SettingsPrivacyAndSecurity } from '../screens/SettingsPrivacyAndSecurity';
 import { SettingsAboutUsScreen } from '../screens/SettingsAboutUsScreen';
 import { SettingsFAQScreen } from '../screens/SettingsFAQScreen';
 
@@ -38,9 +38,9 @@ export const SettingsStackNavigator = () => (
             component={SettingsCustomizationScreen}
         />
         <SettingsStack.Screen
-            options={{ title: SettingsStackRoutes.SettingsAnalytics }}
-            name={SettingsStackRoutes.SettingsAnalytics}
-            component={SettingsAnalyticsScreen}
+            options={{ title: SettingsStackRoutes.SettingsPrivacyAndSecurity }}
+            name={SettingsStackRoutes.SettingsPrivacyAndSecurity}
+            component={SettingsPrivacyAndSecurity}
         />
         <SettingsStack.Screen
             options={{ title: SettingsStackRoutes.SettingsFAQ }}
