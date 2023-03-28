@@ -32,7 +32,7 @@ import { analyticsActions, prepareAnalyticsReducer } from '@suite-common/analyti
 const analyticsReducer = prepareAnalyticsReducer(extraDependencies);
 const messageSystemReducer = prepareMessageSystemReducer(extraDependencies);
 
-process.env.PUBLIC_KEY = DEV_JWS_PUBLIC_KEY;
+process.env.JWS_PUBLIC_KEY = DEV_JWS_PUBLIC_KEY;
 jest.mock('@trezor/connect', () => global.JestMocks.getTrezorConnect({}));
 const TrezorConnect = require('@trezor/connect').default;
 

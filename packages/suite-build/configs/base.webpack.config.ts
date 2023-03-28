@@ -12,7 +12,7 @@ import {
     isAnalyzing,
     isCodesignBuild,
     sentryAuthToken,
-    publicKey,
+    jwsPublicKey,
 } from '../utils/env';
 import { getRevision } from '../utils/git';
 import { getPathForProject } from '../utils/path';
@@ -168,7 +168,7 @@ const config: webpack.Configuration = {
             'process.env.VERSION': JSON.stringify(suiteVersion),
             'process.env.COMMITHASH': JSON.stringify(gitRevision),
             'process.env.ASSET_PREFIX': JSON.stringify(assetPrefix),
-            'process.env.PUBLIC_KEY': JSON.stringify(publicKey),
+            'process.env.JWS_PUBLIC_KEY': JSON.stringify(jwsPublicKey),
             'process.env.CODESIGN_BUILD': isCodesignBuild,
             'process.env.SENTRY_RELEASE': JSON.stringify(sentryRelease),
         }),
