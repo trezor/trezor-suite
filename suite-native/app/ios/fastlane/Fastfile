@@ -165,6 +165,7 @@ platform :ios do
 
   desc "Sign, build and push a new build to App Store"
   private_lane :build_to_app_store do |options|
+    api_key = lane_context[SharedValues::APP_STORE_CONNECT_API_KEY]
     prepare_distribution_signing
     build_app_to_distribute(scheme: options[:scheme], export_method: options[:export_method])
 
