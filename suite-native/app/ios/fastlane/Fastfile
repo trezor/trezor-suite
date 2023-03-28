@@ -171,6 +171,7 @@ platform :ios do
 
     upload_to_app_store(
         api_key: api_key,
+        run_precheck_before_submit: false,
         force: true, # not to generate HTML report
         reject_if_possible: true, # if the app is already waiting for the review and not reviewing yet, cancel it
         skip_metadata: false,
