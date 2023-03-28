@@ -7,6 +7,9 @@
         },
         { "path": "../../suite-common/logger" },
         {
+            "path": "../../suite-common/message-system"
+        },
+        {
             "path": "../../suite-common/redux-utils"
         },
         {
