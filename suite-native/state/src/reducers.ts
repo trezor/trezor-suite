@@ -11,6 +11,7 @@ import { appSettingsReducer, appSettingsPersistWhitelist } from '@suite-native/m
 import { logsSlice } from '@suite-common/logger';
 import { preparePersistReducer } from '@suite-native/storage';
 import { prepareAnalyticsReducer } from '@suite-common/analytics';
+import { prepareMessageSystemReducer } from '@suite-common/message-system';
 import { notificationsReducer } from '@suite-common/toast-notifications';
 
 import { extraDependencies } from './extraDependencies';
@@ -21,6 +22,7 @@ const accountsReducer = prepareAccountsReducer(extraDependencies);
 const fiatRatesReducer = prepareFiatRatesReducer(extraDependencies);
 const blockchainReducer = prepareBlockchainReducer(extraDependencies);
 const analyticsReducer = prepareAnalyticsReducer(extraDependencies);
+const messageSystem = prepareMessageSystemReducer(extraDependencies);
 
 export const prepareRootReducers = async () => {
     const appSettingsPersistedReducer = await preparePersistReducer({
@@ -59,5 +61,6 @@ export const prepareRootReducers = async () => {
         devices: devicesReducer,
         logs: logsSlice.reducer,
         notifications: notificationsReducer,
+        messageSystem,
     });
 };

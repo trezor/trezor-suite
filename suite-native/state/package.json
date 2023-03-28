@@ -13,6 +13,7 @@
         "@reduxjs/toolkit": "1.9.5",
         "@suite-common/analytics": "workspace:*",
         "@suite-common/logger": "workspace:*",
+        "@suite-common/message-system": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/test-utils": "workspace:*",
         "@suite-common/toast-notifications": "workspace:*",
