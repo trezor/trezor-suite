@@ -137,7 +137,7 @@ export interface Transaction {
         from?: string;
         to?: string;
         value: string;
-        token: string;
+        contract: string;
         name: string;
         symbol: string;
         decimals?: number;
