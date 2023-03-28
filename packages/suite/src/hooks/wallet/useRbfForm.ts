@@ -62,7 +62,7 @@ const useRbfState = ({ tx, finalize, chainedTxs }: Props, currentState: boolean)
     const fees = useSelector(state => state.wallet.fees);
     const targetAnonymity = useSelector(selectCurrentTargetAnonymity);
 
-    const { areSatsDisplayed } = useBitcoinAmountUnit();
+    const { shouldSendInSats } = useBitcoinAmountUnit();
 
     // do not calculate if currentState is already set (prevent re-renders)
     if (selectedAccount.status !== 'loaded' || !tx.rbfParams || currentState) return;
@@ -102,7 +102,7 @@ const useRbfState = ({ tx, finalize, chainedTxs }: Props, currentState: boolean)
         return {
             ...DEFAULT_PAYMENT,
             address: o.address,
-            amount: areSatsDisplayed ? o.amount : o.formattedAmount,
+            amount: shouldSendInSats ? o.amount : o.formattedAmount,
             token: o.token,
         };
     });
