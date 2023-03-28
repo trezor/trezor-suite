@@ -118,4 +118,4 @@ jobs:
         # builds and publishes the app
         run: |
           bundle install
-          bundle exec fastlane ios staging
+          bundle exec fastlane ios production
