@@ -40,7 +40,6 @@ jobs:
         if: ${{ github.event.inputs.environment == 'production' && github.ref == 'refs/heads/develop' }}
         env:
           IS_CODESIGN_BUILD: "true"
-          JWS_PUBLIC_KEY_ENV: ${{ secrets.JWS_PUBLIC_KEY_ENV }}
           JWS_PRIVATE_KEY_ENV: ${{ secrets.JWS_PRIVATE_KEY_ENV }}
         run: |
           yarn install

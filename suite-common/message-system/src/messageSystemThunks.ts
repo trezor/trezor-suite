@@ -20,7 +20,7 @@ import {
 
 export const fetchConfigThunk = createThunk(
     `${ACTION_PREFIX}/fetchConfig`,
-    async (_, { dispatch, getState }) => {
+    async (jwsPublicKey: string, { dispatch, getState }) => {
         const timestamp = selectMessageSystemTimestamp(getState());
         const currentSequence = selectMessageSystemCurrentSequence(getState());
 
@@ -59,10 +59,6 @@ export const fetchConfigThunk = createThunk(
                     throw Error('Decoding of config failed');
                 }
 
-                // Disable eslint rule as object destruction does not work here
-                // eslint-disable-next-line prefer-destructuring
-                const PUBLIC_KEY = process.env.PUBLIC_KEY;
-
                 // It has to be consistent with algorithm used for signing https://github.com/trezor/trezor-suite/blob/32bf733f3086bec1273caf03dfae1a5bccdbca24/packages/suite-data/src/message-system/scripts/sign-config.ts#L30
                 const algorithm = 'ES256';
 
@@ -71,7 +67,7 @@ export const fetchConfigThunk = createThunk(
                     throw Error(`Wrong algorithm in JWS config header: ${algorithmInHeader}`);
                 }
 
-                const isAuthenticityValid = verify(jwsResponse, algorithm, PUBLIC_KEY!);
+                const isAuthenticityValid = verify(jwsResponse, algorithm, jwsPublicKey);
 
                 if (!isAuthenticityValid) {
                     throw Error('Config authenticity is invalid');
@@ -109,9 +105,13 @@ export const fetchConfigThunk = createThunk(
 
 export const initMessageSystemThunk = createThunk(
     `${ACTION_PREFIX}/init`,
-    async (_, { dispatch }) => {
+    async ({ jwsPublicKey }: { jwsPublicKey?: string }, { dispatch }) => {
+        if (!jwsPublicKey) {
+            throw Error('JWS public key is not defined!');
+        }
+
         const checkConfig = async () => {
-            await dispatch(fetchConfigThunk());
+            await dispatch(fetchConfigThunk(jwsPublicKey));
 
             setTimeout(() => {
                 checkConfig();
