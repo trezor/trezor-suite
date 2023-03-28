@@ -23,7 +23,7 @@ const tOut = {
 const tIn = {
     name: 'Token name',
     symbol: 'TN',
-    token: '0x0',
+    contract: '0x0',
     value: '0',
 };
 

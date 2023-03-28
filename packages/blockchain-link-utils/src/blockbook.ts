@@ -74,7 +74,7 @@ export const filterTokenTransfers = (
                 type,
                 name: tr.name,
                 symbol: tr.symbol,
-                address: tr.token,
+                address: tr.contract,
                 decimals: tr.decimals || 0,
                 amount: tr.value,
                 from: tr.from,
