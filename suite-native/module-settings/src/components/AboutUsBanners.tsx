@@ -28,9 +28,9 @@ export const AboutUsBanners = () => {
                 <VStack spacing="large" style={applyStyle(stackStyle)}>
                     <Icon color="iconOnPrimary" name="trezor" />
                     <Text color="textOnPrimary">
-                        Trezor Go is a safe and secure way to stay connected to the crypto on your
-                        hardware wallet. Track coin balances on the go without exposing your private
-                        data. Easily create and send payment addresses to anyone.
+                        Trezor Suite Lite is a safe and secure way to stay connected to the crypto
+                        on your hardware wallet. Track coin balances on the go without exposing your
+                        private data. Easily create and send payment addresses to anyone.
                     </Text>
                 </VStack>
             </Card>
