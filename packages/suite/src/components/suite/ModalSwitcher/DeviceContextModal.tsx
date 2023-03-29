@@ -58,9 +58,11 @@ export const DeviceContextModal = ({
         // ugly hack to make Cardano review modal work
         // root cause of this bug is wrong button request ButtonRequest_Other from CardanoSignTx - should be ButtonRequest_SignTx
         case 'ButtonRequest_Other': {
+            /*
             if (device.processMode === 'sign-tx') {
                 return <ReviewTransaction type="sign-transaction" />;
             }
+            */
             return <ConfirmActionModal device={device} renderer={renderer} />;
         }
         case 'ButtonRequest_FirmwareCheck':

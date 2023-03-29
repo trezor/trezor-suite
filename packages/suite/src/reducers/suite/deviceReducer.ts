@@ -384,17 +384,6 @@ const setMetadata = (draft: State, state: string, metadata: TrezorDevice['metada
     draft[index].metadata = metadata;
 };
 
-const setProcessMode = (
-    draft: State,
-    device: TrezorDevice,
-    processMode: TrezorDevice['processMode'],
-) => {
-    const index = draft.findIndex(d => d.state === device.state);
-    if (!draft[index]) return;
-    // update state
-    draft[index].processMode = processMode;
-};
-
 const updateMetadata = (draft: State, state: string, walletLabel?: string) => {
     const index = draft.findIndex(d => d.state === state);
     if (!draft[index]) return;
@@ -448,9 +437,6 @@ const deviceReducer = (state: State = initialState, action: Action): State =>
                 break;
             case METADATA.SET_DEVICE_METADATA:
                 setMetadata(draft, action.payload.deviceState, action.payload.metadata);
-                break;
-            case SUITE.SET_PROCESS_MODE:
-                setProcessMode(draft, action.device, action.payload);
                 break;
             case METADATA.WALLET_LOADED:
             case METADATA.WALLET_ADD:

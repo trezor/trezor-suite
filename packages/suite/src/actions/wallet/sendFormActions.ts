@@ -8,7 +8,6 @@ import {
     replaceTransactionThunk,
     syncAccountsWithBlockchainThunk,
 } from '@suite-common/wallet-core';
-import * as suiteActions from '@suite-actions/suiteActions';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import * as modalActions from '@suite-actions/modalActions';
 import * as metadataActions from '@suite-actions/metadataActions';
@@ -412,8 +411,8 @@ export const signTransaction =
 
         // ReviewTransaction modal has 2 steps: signing and pushing
         // TrezorConnect emits UI.CLOSE_UI.WINDOW after the signing process
-        // this action is blocked by actionBlockerMiddleware
-        dispatch(suiteActions.setProcessMode(device, 'sign-tx'));
+        // this action is blocked by modalActions.preserve()
+        dispatch(modalActions.preserve());
 
         // signTransaction by Trezor
         let serializedTx: string | undefined;
@@ -442,8 +441,6 @@ export const signTransaction =
                 );
             }
         }
-
-        dispatch(suiteActions.setProcessMode(device, undefined));
 
         if (!serializedTx) {
             // close modal manually since UI.CLOSE_UI.WINDOW was blocked
