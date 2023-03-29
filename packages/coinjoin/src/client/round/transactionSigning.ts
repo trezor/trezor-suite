@@ -153,7 +153,7 @@ export const transactionSigning = async (
     }
 
     if (!round.affiliateRequest) {
-        logger.error(`Missing affiliate request. Waiting for status`);
+        logger.warn(`Missing affiliate request. Waiting for status`);
         round.setSessionPhase(SessionPhase.AwaitingCoinjoinTransaction);
         return round;
     }
@@ -178,6 +178,7 @@ export const transactionSigning = async (
 
         await Promise.all(round.inputs.map(input => sendTxSignature(round, input, options)));
 
+        round.signedSuccessfully();
         round.setSessionPhase(SessionPhase.AwaitingOtherSignatures);
         logger.info(`Round ${round.id} signed successfully`);
     } catch (error) {

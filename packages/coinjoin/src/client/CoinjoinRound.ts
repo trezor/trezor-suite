@@ -1,13 +1,12 @@
 import { EventEmitter } from 'events';
 
-import { scheduleAction, arrayDistinct, arrayPartition, enumUtils } from '@trezor/utils';
+import { scheduleAction, arrayDistinct, arrayPartition } from '@trezor/utils';
 import { Network } from '@trezor/utxo-lib';
 
 import {
     getCommitmentData,
     getRoundParameters,
     getCoinjoinRoundDeadlines,
-    getBroadcastedTxDetails,
 } from '../utils/roundUtils';
 import { ROUND_PHASE_PROCESS_TIMEOUT, ACCOUNT_BUSY_TIMEOUT } from '../constants';
 import { RoundPhase, EndRoundState, SessionPhase } from '../enums';
@@ -30,6 +29,7 @@ import { inputRegistration } from './round/inputRegistration';
 import { connectionConfirmation } from './round/connectionConfirmation';
 import { outputRegistration } from './round/outputRegistration';
 import { transactionSigning } from './round/transactionSigning';
+import { ended } from './round/endedRound';
 import { CoinjoinClientEvents, Logger } from '../types';
 
 export interface CoinjoinRoundOptions {
@@ -97,6 +97,7 @@ export class CoinjoinRound extends EventEmitter {
     private lock?: ReturnType<typeof createRoundLock>;
     private options: CoinjoinRoundOptions;
     private logger: Logger;
+    private signed = false; // set after successful transactionSigning
     readonly prison: CoinjoinPrison;
 
     // partial coordinator.Round
@@ -213,7 +214,11 @@ export class CoinjoinRound extends EventEmitter {
         const { phaseDeadline, roundDeadline } = getCoinjoinRoundDeadlines(this);
         this.phaseDeadline = phaseDeadline;
         this.roundDeadline = roundDeadline;
-        this.affiliateRequest = changed.affiliateRequest;
+        // update affiliateRequest once and keep the value
+        // affiliateData are removed from the status once phase is changed to Ended
+        if (!this.affiliateRequest && changed.affiliateRequest) {
+            this.affiliateRequest = changed.affiliateRequest;
+        }
 
         // NOTE: emit changed event before each async phase
         if (changed.phase !== RoundPhase.Ended) {
@@ -249,50 +254,14 @@ export class CoinjoinRound extends EventEmitter {
             inputs.forEach(i => i.clearConfirmationInterval());
         }
 
-        if (this.inputs.length === 0 || this.phase === RoundPhase.Ended) {
+        if (this.inputs.length === 0) {
+            // CoinjoinRound ends because there is no inputs left
+            // if this happens in critical phase then this instance will break the Round for everyone
             this.phase = RoundPhase.Ended;
-            log(
-                `Ending round ~~${this.id}~~. End state ${enumUtils.getKeyByValue(
-                    EndRoundState,
-                    this.endRoundState,
-                )}`,
-            );
+        }
 
+        if (this.phase === RoundPhase.Ended) {
             this.emit('ended', { round: this.toSerialized() });
-
-            if (this.endRoundState === EndRoundState.TransactionBroadcasted) {
-                // detain all signed inputs and addresses forever
-                this.inputs.forEach(input =>
-                    this.prison.detain(input.outpoint, {
-                        roundId: this.id,
-                        reason: WabiSabiProtocolErrorCode.InputSpent,
-                        sentenceEnd: Infinity,
-                    }),
-                );
-
-                this.addresses.forEach(addr =>
-                    this.prison.detain(addr.scriptPubKey, {
-                        roundId: this.id,
-                        reason: WabiSabiProtocolErrorCode.AlreadyRegisteredScript,
-                        sentenceEnd: Infinity,
-                    }),
-                );
-
-                this.broadcastedTxDetails = getBroadcastedTxDetails({
-                    coinjoinState: this.coinjoinState,
-                    transactionData: this.transactionData,
-                    network: this.options.network,
-                });
-            } else if (this.endRoundState === EndRoundState.NotAllAlicesSign) {
-                log('Awaiting blame round');
-                const inmates = this.inputs
-                    .map(i => i.outpoint)
-                    .concat(this.addresses.map(a => a.scriptPubKey));
-
-                this.prison.detainForBlameRound(inmates, this.id);
-            } else if (this.endRoundState === EndRoundState.AbortedNotEnoughAlices) {
-                this.prison.releaseRegisteredInmates(this.id);
-            }
         }
 
         this.emit('changed', { round: this.toSerialized() });
@@ -316,9 +285,19 @@ export class CoinjoinRound extends EventEmitter {
                 return outputRegistration(this, accounts, processOptions);
             case RoundPhase.TransactionSigning:
                 return transactionSigning(this, accounts, processOptions);
+            case RoundPhase.Ended:
+                return ended(this, processOptions);
             default:
                 return Promise.resolve(this);
         }
+    }
+
+    signedSuccessfully() {
+        this.signed = true;
+    }
+
+    isSignedSuccessfully() {
+        return this.signed;
     }
 
     getRequest(): CoinjoinRequestEvent | void {
