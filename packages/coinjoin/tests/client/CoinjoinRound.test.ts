@@ -5,8 +5,6 @@ import { DEFAULT_ROUND, createCoinjoinRound } from '../fixtures/round.fixture';
 import { createInput } from '../fixtures/input.fixture';
 import * as CONSTANTS from '../../src/constants';
 
-let server: Awaited<ReturnType<typeof createServer>>;
-
 // mock random delay function
 jest.mock('@trezor/utils', () => {
     const originalModule = jest.requireActual('@trezor/utils');
@@ -19,7 +17,7 @@ jest.mock('@trezor/utils', () => {
 
 // mock ROUND_PHASE_PROCESS_TIMEOUT, use getter to mock individually for each test
 jest.mock('../../src/constants', () => {
-    const originalModule = jest.requireActual('@trezor/utils');
+    const originalModule = jest.requireActual('../../src/constants');
     return {
         __esModule: true,
         ...originalModule,
@@ -33,17 +31,95 @@ jest.mock('../../src/constants', () => {
 });
 
 describe(`CoinjoinRound`, () => {
+    let server: Awaited<ReturnType<typeof createServer>>;
+    const logger = {
+        warn: jest.fn(),
+        info: jest.fn(),
+        error: jest.fn(),
+        debug: jest.fn(),
+    };
+
     beforeAll(async () => {
         server = await createServer();
     });
 
-    beforeEach(() => {
-        server.removeAllListeners('test-request');
+    afterEach(() => {
+        jest.clearAllMocks();
+        server?.removeAllListeners('test-request');
     });
 
     afterAll(() => {
-        server.close();
-        jest.clearAllMocks();
+        server?.close();
+    });
+
+    it('catch not signed Round (missing affiliate request)', async () => {
+        // create CoinjoinRound in phase 3 (TransactionSigning)
+        const round = createCoinjoinRound(
+            [
+                createInput('account-A', 'A1', {
+                    ownershipProof: '01A1',
+                    registrationData: {
+                        aliceId: '01A1-01a1',
+                    },
+                    realAmountCredentials: {},
+                    realVsizeCredentials: {},
+                    confirmationData: {},
+                    confirmedAmountCredentials: {},
+                    confirmedVsizeCredentials: {},
+                }),
+            ],
+            {
+                ...server?.requestOptions,
+                logger,
+                round: {
+                    phase: 3,
+                    addresses: [{ address: 'doesnt matter', path: '', scriptPubKey: '' }],
+                },
+            },
+        );
+        // tx not signed, waiting for affiliate request
+        await round.process([]);
+
+        // change phase to Ended
+        await round.onPhaseChange({ ...DEFAULT_ROUND, phase: 4, endRoundState: 5 });
+
+        await round.process([]);
+
+        expect(logger.error).toBeCalledTimes(1);
+        expect(logger.error).toBeCalledWith(expect.stringMatching(/Missing affiliate request/));
+    });
+
+    it('catch failed Round', async () => {
+        // create CoinjoinRound in phase 2 (OutputRegistration)
+        const round = createCoinjoinRound(
+            [
+                createInput('account-A', 'A1', {
+                    ownershipProof: '01A1',
+                    registrationData: {
+                        aliceId: '01A1-01a1',
+                    },
+                    realAmountCredentials: {},
+                    realVsizeCredentials: {},
+                    confirmationData: {},
+                    confirmedAmountCredentials: {},
+                    confirmedVsizeCredentials: {},
+                }),
+            ],
+            {
+                ...server?.requestOptions,
+                logger,
+                round: {
+                    phase: 2,
+                    affiliateRequest: Buffer.from('0'.repeat(97 * 2 + 4), 'hex').toString('base64'),
+                },
+            },
+        );
+
+        // process phase (will throw error Missing credentials to join)
+        await round.process([]);
+
+        expect(logger.error).toBeCalledTimes(1);
+        expect(logger.error).toBeCalledWith(expect.stringMatching(/Output registration failed/));
     });
 
     it('onPhaseChange lock cool off resolved', async () => {
