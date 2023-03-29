@@ -30,7 +30,7 @@ const BIP32_PURPOSES = {
 } as const;
 
 type VersionBytes = keyof typeof BIP32_PAYMENT_TYPES;
-type PaymentType = (typeof BIP32_PAYMENT_TYPES)[VersionBytes] | 'p2tr';
+export type PaymentType = (typeof BIP32_PAYMENT_TYPES)[VersionBytes] | 'p2tr';
 
 const validateVersion = (version: number): version is VersionBytes =>
     !!BIP32_PAYMENT_TYPES[version as VersionBytes];
@@ -101,7 +101,7 @@ const getDescriptorInfo = (paymentType: PaymentType, descriptor: string, network
     };
 };
 
-const getXpubOrDescriptorInfo = (descriptor: string, network: Network) => {
+export const getXpubOrDescriptorInfo = (descriptor: string, network: Network = bitcoin) => {
     if (descriptor.startsWith('pkh(')) {
         return getDescriptorInfo('p2pkh', descriptor, network);
     }

@@ -6,7 +6,7 @@ import * as payments from './payments';
 import * as script from './script';
 import * as networks from './networks';
 import { composeTx } from './compose';
-import { deriveAddresses } from './derivation';
+import { deriveAddresses, getXpubOrDescriptorInfo } from './derivation';
 import { discovery } from './discovery';
 
 export { Transaction } from './transaction';
@@ -21,9 +21,11 @@ export {
     networks,
     composeTx,
     deriveAddresses,
+    getXpubOrDescriptorInfo,
     discovery,
 };
 
+export type { PaymentType } from './derivation';
 export type { Network } from './networks';
 export type { BIP32Interface } from './bip32';
 export type { ComposeInput, ComposeOutput, ComposeRequest } from './compose/request';

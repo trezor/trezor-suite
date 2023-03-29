@@ -10,6 +10,8 @@ import {
     selectDeviceById,
 } from '@suite-native/module-devices';
 
+import { getAccountTypeFromDescriptor } from './utils';
+
 const actionPrefix = '@accountsImport';
 
 type ImportAssetThunkPayload = {
@@ -40,17 +42,20 @@ export const importAccountThunk = createThunk(
         if (existingAccount) {
             dispatch(accountsActions.updateAccount(existingAccount, accountInfo));
         } else {
+            const accountType = getAccountTypeFromDescriptor(accountInfo.descriptor, coin);
+            const imported = true;
             dispatch(
                 accountsActions.createAccount(
                     deviceState,
                     {
                         index: deviceNetworkAccounts.length, // indexed from 0
                         path: accountInfo?.path ?? '',
-                        accountType: 'imported',
+                        accountType,
                         networkType: networks[coin].networkType,
                         coin,
                     },
-                    accountInfo,
+                    { ...accountInfo },
+                    imported,
                     accountLabel,
                 ),
             );

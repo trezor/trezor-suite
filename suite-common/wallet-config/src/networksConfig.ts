@@ -420,7 +420,11 @@ type Networks = typeof networks;
 export type NetworkSymbol = keyof Networks;
 export type NetworkType = Network['networkType'];
 type NetworkValue = Networks[NetworkSymbol];
-export type AccountType = Keys<NetworkValue['accountTypes']> | 'imported';
+export type AccountType =
+    | Keys<NetworkValue['accountTypes']>
+    | 'imported'
+    | 'taproot'
+    | 'legacySegwit';
 export type NetworkFeature = 'rbf' | 'sign-verify' | 'amount-unit' | 'tokens';
 export type Network = Without<NetworkValue, 'accountTypes'> & {
     symbol: NetworkSymbol;
