@@ -9,6 +9,7 @@ import { NetworkSymbol } from '@suite-common/wallet-config';
 
 import { selectCoins, FiatRatesRootState } from '../fiat-rates/fiatRatesReducer';
 import { accountsActions } from './accountsActions';
+import { formattedAccountTypeMap } from './constants';
 
 export const accountsInitialState: Account[] = [];
 
@@ -162,6 +163,15 @@ export const selectAccountLabel = memoizeWithArgs(
             } = accountData;
             return accountLabel;
         }
+    },
+);
+
+export const selectFormattedAccountType = memoizeWithArgs(
+    (state: AccountsRootState, accountKey: AccountKey): string | null => {
+        const account = selectAccountByKey(state, accountKey);
+        if (!account) return null;
+
+        return formattedAccountTypeMap[account.accountType] ?? null;
     },
 );
 

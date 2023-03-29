@@ -20,6 +20,7 @@ import {
     AccountsRootState,
     selectAccountByKey,
     selectAccountLabel,
+    selectFormattedAccountType,
 } from '@suite-common/wallet-core';
 import { QRCode } from '@suite-native/qr-code';
 import { CryptoIcon } from '@trezor/icons';
@@ -33,20 +34,20 @@ const networkTypeToButtonTitleMap: Record<NetworkType, string> = {
     ripple: 'Show receive address',
 };
 
-const AccountDetailSettingsRow = ({ title, value }: { title: string; value: ReactNode }) => (
-    <Box flexDirection="row" justifyContent="space-between">
+const AccountDetailSettingsRow = ({ title, children }: { title: string; children: ReactNode }) => (
+    <Box flexDirection="row" alignItems="center" justifyContent="space-between">
         <Text variant="hint" color="textSubdued">
             {title}
         </Text>
-        <Text variant="hint">{value}</Text>
+        {children}
     </Box>
 );
 
 const CryptoNameWithIcon = ({ symbol }: { symbol: NetworkSymbol }) => (
-    <Box flexDirection="row" alignItems="center">
-        <Text>{networks[symbol].name}</Text>
+    <Box flexDirection="row" alignItems="center" justifyContent="flex-end">
+        <Text variant="hint">{networks[symbol].name}</Text>
         <Box marginLeft="small">
-            <CryptoIcon name={symbol} size="small" />
+            <CryptoIcon name={symbol} size="extraSmall" />
         </Box>
     </Box>
 );
@@ -71,6 +72,10 @@ export const AccountSettingsScreen = ({
 
     const accountLabel = useSelector((state: AccountsRootState) =>
         selectAccountLabel(state, accountKey),
+    );
+
+    const formattedAccountType = useSelector((state: AccountsRootState) =>
+        selectFormattedAccountType(state, accountKey),
     );
 
     if (!account) return null;
@@ -100,10 +105,14 @@ export const AccountSettingsScreen = ({
             <Box flex={1} justifyContent="space-between">
                 <Card>
                     <VStack spacing="large">
-                        <AccountDetailSettingsRow
-                            title="Coin"
-                            value={<CryptoNameWithIcon symbol={account.symbol} />}
-                        />
+                        <AccountDetailSettingsRow title="Coin">
+                            <CryptoNameWithIcon symbol={account.symbol} />
+                        </AccountDetailSettingsRow>
+                        {formattedAccountType && (
+                            <AccountDetailSettingsRow title="Account type">
+                                <Text variant="hint">{formattedAccountType}</Text>
+                            </AccountDetailSettingsRow>
+                        )}
                     </VStack>
                 </Card>
                 <VStack spacing="small">

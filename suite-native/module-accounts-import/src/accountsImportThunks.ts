@@ -1,7 +1,7 @@
 import { createThunk } from '@suite-common/redux-utils';
 import { accountsActions, selectAccountsByNetworkAndDevice } from '@suite-common/wallet-core';
 import { AccountInfo } from '@trezor/connect';
-import { networks, NetworkSymbol } from '@suite-common/wallet-config';
+import { networks, NetworkSymbol, AccountType } from '@suite-common/wallet-config';
 import {
     createDevice,
     hiddenDevice,
@@ -9,8 +9,9 @@ import {
     HIDDEN_DEVICE_STATE,
     selectDeviceById,
 } from '@suite-native/module-devices';
+import { getXpubOrDescriptorInfo } from '@trezor/utxo-lib';
 
-import { getAccountTypeFromDescriptor } from './utils';
+import { paymentTypeToAccountType } from './constants';
 
 const actionPrefix = '@accountsImport';
 
@@ -18,6 +19,16 @@ type ImportAssetThunkPayload = {
     accountInfo: AccountInfo;
     accountLabel: string;
     coin: NetworkSymbol;
+};
+
+const getAccountTypeFromDescriptor = (
+    descriptor: string,
+    networkSymbol: NetworkSymbol,
+): AccountType => {
+    // account type supported only for btc and ltc
+    if (networkSymbol !== 'btc' && networkSymbol !== 'ltc') return 'imported';
+    const { paymentType } = getXpubOrDescriptorInfo(descriptor);
+    return paymentTypeToAccountType[paymentType];
 };
 
 export const importAccountThunk = createThunk(
