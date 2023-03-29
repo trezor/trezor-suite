@@ -1,3 +1,5 @@
+import { EthereumTokenSymbol } from '@suite-common/wallet-types';
+
 import {
     CryptoIconName,
     cryptoIcons,
@@ -18,14 +20,14 @@ export const isIconType = (iconName: IconNames): iconName is IconName => iconNam
 export const isFlagIconType = (iconName: IconNames): iconName is FlagIconName =>
     iconName in flagIcons;
 
-export const isEthereumTokenIconType = (iconName: IconNames): iconName is EthereumTokenIconName =>
-    iconName in ethereumTokenIcons;
-
-// TODO refactor - in rounded icon, this will be needed and needs to be improved
-//  because now if we don't have this icon, the condition there will fallback wrong
-export const getEthereumTokenIcon = (iconName: IconNames) => {
-    if (isEthereumTokenIconType(iconName)) {
-        return iconName;
+// First we check whether the name is in the list of Ethereum token symbols.
+// Since we cannot guarantee this, if it's not, we default to the 'erc20' icon.
+// Then we check whether the name is in the list of Ethereum token icons.
+const getIsEthereumTokenIconUploaded = (name: EthereumTokenSymbol) =>
+    (name in ethereumTokenIcons ? name : 'erc20') as EthereumTokenIconName;
+export const isEthereumTokenIconType = (iconName: IconNames): iconName is EthereumTokenIconName => {
+    if (!getIsEthereumTokenIconUploaded(iconName as EthereumTokenSymbol)) {
+        return 'erc20' in ethereumTokenIcons;
     }
-    return 'erc20';
+    return iconName in ethereumTokenIcons;
 };

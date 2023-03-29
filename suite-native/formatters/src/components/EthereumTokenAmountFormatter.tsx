@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { Box, Text, TextProps } from '@suite-native/atoms';
-import { EthereumTokenSymbol } from '@suite-native/ethereum-tokens';
+import { EthereumTokenSymbol } from '@suite-common/wallet-types';
 import { localizeNumber } from '@suite-common/wallet-utils';
 
 import { FormatterProps } from '../types';

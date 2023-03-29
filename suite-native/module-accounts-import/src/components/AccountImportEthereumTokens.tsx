@@ -3,8 +3,9 @@ import React from 'react';
 import { A } from '@mobily/ts-belt';
 
 import { Box, VStack, Text } from '@suite-native/atoms';
-import { EthereumTokenSymbol, filterTokenHasBalance } from '@suite-native/ethereum-tokens';
+import { filterTokenHasBalance } from '@suite-native/ethereum-tokens';
 import { TokenInfo } from '@trezor/blockchain-link-types';
+import { EthereumTokenSymbol } from '@suite-common/wallet-types';
 
 import { EthereumTokenInfo } from './EthereumTokenInfo';
 

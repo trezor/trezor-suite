@@ -2,7 +2,7 @@ import React from 'react';
 
 import { EthereumTokenIcon, EthereumTokenIconName } from '@trezor/icons';
 import { EthereumTokenAmountFormatter, TokenToFiatAmountFormatter } from '@suite-native/formatters';
-import { EthereumTokenSymbol } from '@suite-native/ethereum-tokens';
+import { EthereumTokenSymbol } from '@suite-common/wallet-types';
 
 import { AccountImportOverviewCard } from './AccountImportOverviewCard';
 

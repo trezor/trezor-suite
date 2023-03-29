@@ -6,7 +6,7 @@ import { selectCoins } from '@suite-common/wallet-core';
 import { selectFiatCurrency } from '@suite-native/module-settings';
 import { toFiatCurrency } from '@suite-common/wallet-utils';
 import { useFormatters } from '@suite-common/formatters';
-import { EthereumTokenSymbol } from '@suite-native/ethereum-tokens';
+import { EthereumTokenSymbol } from '@suite-common/wallet-types';
 
 import { FormatterProps } from '../types';
 import { EmptyAmountText } from './EmptyAmountText';

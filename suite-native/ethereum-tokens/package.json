@@ -14,6 +14,7 @@
         "@mobily/ts-belt": "^3.13.1",
         "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
+        "@suite-common/wallet-types": "workspace:*",
         "@trezor/blockchain-link": "workspace:*"
     }
 }

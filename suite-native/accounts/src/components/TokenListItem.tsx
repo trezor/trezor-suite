@@ -4,7 +4,7 @@ import { TouchableOpacity } from 'react-native';
 import { BottomSheet, Box, Text } from '@suite-native/atoms';
 import { Icon, IconSize } from '@trezor/icons';
 import { EthereumTokenAmountFormatter, TokenToFiatAmountFormatter } from '@suite-native/formatters';
-import { EthereumTokenSymbol } from '@suite-native/ethereum-tokens';
+import { EthereumTokenSymbol } from '@suite-common/wallet-types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 type TokenListItemProps = {

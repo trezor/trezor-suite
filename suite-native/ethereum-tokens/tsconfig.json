@@ -9,6 +9,9 @@
             "path": "../../suite-common/wallet-core"
         },
         {
+            "path": "../../suite-common/wallet-types"
+        },
+        {
             "path": "../../packages/blockchain-link"
         }
     ]

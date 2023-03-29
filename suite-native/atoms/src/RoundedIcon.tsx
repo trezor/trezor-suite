@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 
 import { Color } from '@trezor/theme';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -41,12 +41,21 @@ export const RoundedIcon = ({
 }: RoundedIconProps) => {
     const { applyStyle } = useNativeStyles();
 
-    return (
-        <Box style={applyStyle(roundedIconStyle, { backgroundColor })}>
-            {isCryptoIconType(name) && <CryptoIcon name={name} />}
-            {isIconType(name) && <Icon name={name} color={iconColor} />}
-            {isFlagIconType(name) && <FlagIcon name={name} />}
-            {isEthereumTokenIconType(name) && <EthereumTokenIcon name={name} />}
-        </Box>
-    );
+    const getIconByName = (): ReactNode | null => {
+        if (isCryptoIconType(name)) {
+            return <CryptoIcon name={name} />;
+        }
+        if (isIconType(name)) {
+            return <Icon name={name} color={iconColor} />;
+        }
+        if (isFlagIconType(name)) {
+            return <FlagIcon name={name} />;
+        }
+        if (isEthereumTokenIconType(name)) {
+            return <EthereumTokenIcon name={name} />;
+        }
+        return null;
+    };
+
+    return <Box style={applyStyle(roundedIconStyle, { backgroundColor })}>{getIconByName()}</Box>;
 };
