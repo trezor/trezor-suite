@@ -13,7 +13,9 @@ import {
     Word,
     WordAdvanced,
     ReviewTransaction,
+    ConfirmAddress,
 } from '@suite-components/modals';
+import { selectSelectedAccount } from '@wallet-reducers/selectedAccountReducer';
 
 import type { ReduxModalProps } from './types';
 
@@ -21,8 +23,10 @@ import type { ReduxModalProps } from './types';
 export const DeviceContextModal = ({
     windowType,
     renderer,
+    data,
 }: ReduxModalProps<typeof MODAL.CONTEXT_DEVICE>) => {
     const device = useSelector(state => state.suite.device);
+    const account = useSelector(selectSelectedAccount);
     if (!device) return null;
 
     switch (windowType) {
@@ -82,6 +86,10 @@ export const DeviceContextModal = ({
         case 'ButtonRequest_FirmwareUpdate':
         case 'ButtonRequest_PinEntry':
             return <ConfirmActionModal device={device} renderer={renderer} />;
+        case 'ButtonRequest_Address':
+            return account && data?.address ? (
+                <ConfirmAddress device={device} address={data.address} symbol={account.symbol} />
+            ) : null;
         default:
             return null;
     }

@@ -1,4 +1,4 @@
-import TrezorConnect, { UI, DeviceButtonRequest, PROTO } from '@trezor/connect';
+import TrezorConnect, { PROTO } from '@trezor/connect';
 import { GetState, Dispatch } from '@suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import * as modalActions from '@suite-actions/modalActions';
@@ -97,19 +97,6 @@ export const verifyAddress =
             coin: account.symbol,
         };
 
-        // catch button request and open modal
-        const buttonRequestHandler = (event: DeviceButtonRequest['payload']) => {
-            if (!event || event.code !== 'ButtonRequest_Address') return;
-            dispatch(
-                modalActions.openModal({
-                    type: 'address',
-                    ...modalPayload,
-                }),
-            );
-        };
-
-        TrezorConnect.on(UI.REQUEST_BUTTON, buttonRequestHandler);
-
         let response;
         switch (account.networkType) {
             case 'ethereum':
@@ -142,8 +129,6 @@ export const verifyAddress =
                 };
                 break;
         }
-
-        TrezorConnect.off(UI.REQUEST_BUTTON, buttonRequestHandler);
 
         if (response.success) {
             dispatch({

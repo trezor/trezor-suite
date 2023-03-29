@@ -1,4 +1,4 @@
-import { UI, DEVICE, Device } from '@trezor/connect';
+import { UI, DEVICE, Device, UiRequestButtonData } from '@trezor/connect';
 import { MODAL } from '@suite-actions/constants';
 import type { UserContextPayload } from '@suite-actions/modalActions';
 import type { Action, TrezorDevice } from '@suite-types';
@@ -11,6 +11,7 @@ type ModalState =
           context: typeof MODAL.CONTEXT_DEVICE;
           device: TrezorDevice | Device;
           windowType?: string;
+          data?: UiRequestButtonData;
       }
     | {
           context: typeof MODAL.CONTEXT_DEVICE_CONFIRMATION;
@@ -53,6 +54,7 @@ const modalReducer = (state: State = initialState, action: Action): State => {
                 context: MODAL.CONTEXT_DEVICE,
                 device: action.payload.device,
                 windowType: action.payload.code,
+                data: action.payload.data,
                 preserve: state.preserve,
             };
         case UI.FIRMWARE_PROGRESS:
