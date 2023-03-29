@@ -168,9 +168,8 @@ export type UserContextPayload =
       };
 
 export type ModalAction =
-    | {
-          type: typeof MODAL.CLOSE;
-      }
+    | { type: typeof MODAL.CLOSE }
+    | { type: typeof MODAL.PRESERVE }
     | {
           type: typeof MODAL.OPEN_USER_CONTEXT;
           payload: UserContextPayload;
@@ -179,6 +178,11 @@ export type ModalAction =
 export const onCancel = (): ModalAction => ({
     type: MODAL.CLOSE,
 });
+
+/**
+ * Don't close modals on UI.CLOSE_UI.WINDOW event but wait for explicit closing instead
+ */
+export const preserve = () => ({ type: MODAL.PRESERVE });
 
 /**
  * Called from <PinModal /> component

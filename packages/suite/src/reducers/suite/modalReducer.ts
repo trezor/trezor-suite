@@ -3,7 +3,9 @@ import { MODAL } from '@suite-actions/constants';
 import type { UserContextPayload } from '@suite-actions/modalActions';
 import type { Action, TrezorDevice } from '@suite-types';
 
-export type State =
+export type State = ModalState & { preserve?: boolean };
+
+type ModalState =
     | { context: typeof MODAL.CONTEXT_NONE }
     | {
           context: typeof MODAL.CONTEXT_DEVICE;
@@ -44,12 +46,14 @@ const modalReducer = (state: State = initialState, action: Action): State => {
                 context: MODAL.CONTEXT_DEVICE,
                 device: action.payload.device,
                 windowType: action.type,
+                preserve: state.preserve,
             };
         case UI.REQUEST_BUTTON:
             return {
                 context: MODAL.CONTEXT_DEVICE,
                 device: action.payload.device,
                 windowType: action.payload.code,
+                preserve: state.preserve,
             };
         case UI.FIRMWARE_PROGRESS:
             // firmware update first sends UI.REQUEST_BUTTON. Clear it after first progress is received
@@ -58,23 +62,31 @@ const modalReducer = (state: State = initialState, action: Action): State => {
             return {
                 context: MODAL.CONTEXT_DEVICE_CONFIRMATION,
                 windowType: action.payload.view,
+                preserve: state.preserve,
             };
         case UI.REQUEST_WORD:
             return {
                 context: MODAL.CONTEXT_DEVICE,
                 device: action.payload.device,
                 windowType: action.payload.type,
+                preserve: state.preserve,
             };
 
         case MODAL.OPEN_USER_CONTEXT:
             return {
                 context: MODAL.CONTEXT_USER,
                 payload: action.payload,
+                preserve: state.preserve,
             };
 
         case MODAL.CLOSE:
-        case UI.CLOSE_UI_WINDOW:
             return initialState;
+
+        case UI.CLOSE_UI_WINDOW:
+            return state.preserve ? state : initialState;
+
+        case MODAL.PRESERVE:
+            return { ...state, preserve: true };
 
         default:
             return state;

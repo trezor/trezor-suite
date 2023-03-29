@@ -77,11 +77,6 @@ export type SuiteAction =
           payload?: ButtonRequest;
       }
     | {
-          type: typeof SUITE.SET_PROCESS_MODE;
-          device: TrezorDevice;
-          payload: TrezorDevice['processMode'];
-      }
-    | {
           type: typeof SUITE.SET_THEME;
           variant: AppState['suite']['settings']['theme']['variant'];
       }
@@ -117,15 +112,6 @@ export const setTheme = (
 export const setAutodetect = (payload: Partial<AutodetectSettings>): SuiteAction => ({
     type: SUITE.SET_AUTODETECT,
     payload,
-});
-
-export const setProcessMode = (
-    device: TrezorDevice,
-    processMode: TrezorDevice['processMode'],
-): SuiteAction => ({
-    type: SUITE.SET_PROCESS_MODE,
-    device,
-    payload: processMode,
 });
 
 export const setFlag = (key: keyof AppState['suite']['flags'], value: boolean): SuiteAction => ({
@@ -523,7 +509,6 @@ const actions = [
     SUITE.ADD_BUTTON_REQUEST,
     SUITE.REMEMBER_DEVICE,
     SUITE.FORGET_DEVICE,
-    SUITE.SET_PROCESS_MODE,
     METADATA.SET_DEVICE_METADATA,
     METADATA.WALLET_LOADED,
     METADATA.WALLET_ADD,

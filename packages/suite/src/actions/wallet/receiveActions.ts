@@ -1,6 +1,5 @@
 import TrezorConnect, { UI, UiRequestButton } from '@trezor/connect';
 import { RECEIVE } from '@wallet-actions/constants';
-import * as suiteActions from '@suite-actions/suiteActions';
 import * as modalActions from '@suite-actions/modalActions';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { GetState, Dispatch } from '@suite-types';
@@ -77,7 +76,7 @@ export const showAddress =
             // The problem is that after user confirms the address device sent UI.CLOSE_UI.WINDOW that triggers closing the modal.
             // By setting a device's processMode to 'confirm-addr' we are blocking the action UI.CLOSE_UI.WINDOW (handled in actionBlockerMiddleware)
             // processMode is set back to undefined at the end of the receive modal flow
-            dispatch(suiteActions.setProcessMode(device, 'confirm-addr'));
+            dispatch(modalActions.preserve());
             dispatch(
                 modalActions.openModal({
                     type: 'address',
@@ -159,5 +158,4 @@ export const showAddress =
                 }),
             );
         }
-        dispatch(suiteActions.setProcessMode(device, undefined));
     };
