@@ -9,4 +9,3 @@ export * from './sendForm';
 export * from './settings';
 export * from './selectedAccount';
 export * from './transaction';
-export * from './ethereumTokenSymbol';

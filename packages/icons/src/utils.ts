@@ -10,14 +10,14 @@ import {
     IconName,
     icons,
 } from './icons';
-import { IconNames } from './types';
+import { AnyIconName } from './types';
 
-export const isCryptoIconType = (iconName: IconNames): iconName is CryptoIconName =>
+export const isCryptoIconType = (iconName: AnyIconName): iconName is CryptoIconName =>
     iconName in cryptoIcons;
 
-export const isIconType = (iconName: IconNames): iconName is IconName => iconName in icons;
+export const isIconType = (iconName: AnyIconName): iconName is IconName => iconName in icons;
 
-export const isFlagIconType = (iconName: IconNames): iconName is FlagIconName =>
+export const isFlagIconType = (iconName: AnyIconName): iconName is FlagIconName =>
     iconName in flagIcons;
 
 // First we check whether the name is in the list of Ethereum token symbols.
@@ -25,7 +25,9 @@ export const isFlagIconType = (iconName: IconNames): iconName is FlagIconName =>
 // Then we check whether the name is in the list of Ethereum token icons.
 const getIsEthereumTokenIconUploaded = (name: EthereumTokenSymbol) =>
     (name in ethereumTokenIcons ? name : 'erc20') as EthereumTokenIconName;
-export const isEthereumTokenIconType = (iconName: IconNames): iconName is EthereumTokenIconName => {
+export const isEthereumTokenIconType = (
+    iconName: AnyIconName,
+): iconName is EthereumTokenIconName => {
     if (!getIsEthereumTokenIconUploaded(iconName as EthereumTokenSymbol)) {
         return 'erc20' in ethereumTokenIcons;
     }

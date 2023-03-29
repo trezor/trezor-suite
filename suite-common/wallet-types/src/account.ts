@@ -4,6 +4,8 @@ import { AccountInfo, PROTO } from '@trezor/connect';
 export type MetadataItem = string;
 export type XpubAddress = string;
 
+export type EthereumTokenSymbol = string & { __type: 'EthereumTokenSymbol' };
+
 export interface AccountMetadata {
     key: string; // legacy xpub format (btc-like coins) or account descriptor (other coins)
     fileName: string; // file name in dropbox

@@ -7,7 +7,7 @@ import {
     EthereumTokenIcon,
     FlagIcon,
     Icon,
-    IconNames,
+    AnyIconName,
     isCryptoIconType,
     isEthereumTokenIconType,
     isFlagIconType,
@@ -17,7 +17,7 @@ import {
 import { Box } from './Box';
 
 type RoundedIconProps = {
-    name: IconNames;
+    name: AnyIconName;
     backgroundColor: Color;
     iconColor?: Color;
 };

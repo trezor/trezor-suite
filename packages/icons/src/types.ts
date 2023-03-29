@@ -1,3 +1,3 @@
 import { CryptoIconName, EthereumTokenIconName, FlagIconName, IconName } from './icons';
 
-export type IconNames = IconName | CryptoIconName | EthereumTokenIconName | FlagIconName;
+export type AnyIconName = IconName | CryptoIconName | EthereumTokenIconName | FlagIconName;
