@@ -1,4 +1,4 @@
-import TrezorConnect, { UI, UiRequestButton } from '@trezor/connect';
+import TrezorConnect from '@trezor/connect';
 import { RECEIVE } from '@wallet-actions/constants';
 import * as modalActions from '@suite-actions/modalActions';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -68,24 +68,6 @@ export const showAddress =
             return;
         }
 
-        // catch button request and open modal
-        const buttonRequestHandler = (event: UiRequestButton['payload']) => {
-            if (!event || event.code !== 'ButtonRequest_Address') return;
-            // Receive modal has 2 steps, 1. step: we are waiting till an user confirms the address on a device
-            // 2. step: we show the copy button and hide confirm-on-device bubble.
-            // The problem is that after user confirms the address device sent UI.CLOSE_UI.WINDOW that triggers closing the modal.
-            // By setting a device's processMode to 'confirm-addr' we are blocking the action UI.CLOSE_UI.WINDOW (handled in actionBlockerMiddleware)
-            // processMode is set back to undefined at the end of the receive modal flow
-            dispatch(modalActions.preserve());
-            dispatch(
-                modalActions.openModal({
-                    type: 'address',
-                    ...modalPayload,
-                    confirmed: false,
-                }),
-            );
-        };
-
         let response;
         const params = {
             device,
@@ -95,7 +77,7 @@ export const showAddress =
             coin: account.symbol,
         };
 
-        TrezorConnect.on(UI.REQUEST_BUTTON, buttonRequestHandler);
+        dispatch(modalActions.preserve());
 
         switch (account.networkType) {
             case 'ethereum':
@@ -128,8 +110,6 @@ export const showAddress =
                 };
                 break;
         }
-
-        TrezorConnect.off(UI.REQUEST_BUTTON, buttonRequestHandler);
 
         if (response.success) {
             // show second part of the "confirm address" modal
