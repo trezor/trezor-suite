@@ -157,6 +157,7 @@ export default [
             actions: [
                 { type: connectInitThunk.pending.type, payload: undefined },
                 { type: connectInitThunk.fulfilled.type, payload: undefined },
+                { type: MODAL.CLOSE },
                 {
                     type: notificationsActions.addToast.type,
                     payload: {
@@ -230,6 +231,7 @@ export default [
                 { type: connectInitThunk.fulfilled.type, payload: undefined },
                 { type: SUITE.LOCK_DEVICE, payload: true },
                 { type: SUITE.LOCK_DEVICE, payload: false },
+                { type: MODAL.CLOSE },
                 {
                     type: notificationsActions.addToast.type,
                     payload: { type: 'verify-address-error', error: 'Runtime error' },
@@ -254,6 +256,7 @@ export default [
                 { type: connectInitThunk.fulfilled.type, payload: undefined },
                 { type: SUITE.LOCK_DEVICE, payload: true },
                 { type: SUITE.LOCK_DEVICE, payload: false },
+                { type: MODAL.CLOSE },
             ],
         },
     },
