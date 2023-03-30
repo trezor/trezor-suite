@@ -24,51 +24,6 @@ export const VERIFY_BUY_ADDRESS_FIXTURES = [
             value: BTC_ACCOUNT.addresses?.unused[0].address,
             actions: [
                 {
-                    type: MODAL.OPEN_USER_CONTEXT,
-                    payload: {
-                        type: 'address',
-                        device: AVAILABLE_DEVICE,
-                        address: BTC_ACCOUNT.addresses?.unused[0].address,
-                        networkType: BTC_ACCOUNT.networkType,
-                        symbol: BTC_ACCOUNT.symbol,
-                        addressPath: BTC_ACCOUNT.addresses?.unused[0].path,
-                    },
-                },
-                {
-                    type: COINMARKET_BUY.VERIFY_ADDRESS,
-                    addressVerified: BTC_ACCOUNT.addresses?.unused[0].address,
-                },
-            ],
-        },
-    },
-    {
-        description: 'verifyAddress, bitcoin account',
-        initialState: {
-            suite: {
-                device: AVAILABLE_DEVICE,
-            },
-        },
-        params: {
-            account: BTC_ACCOUNT,
-            address: BTC_ACCOUNT.addresses?.unused[0].address,
-            path: BTC_ACCOUNT.addresses?.unused[0].path,
-            coinmarketAction: COINMARKET_BUY.VERIFY_ADDRESS as typeof COINMARKET_BUY.VERIFY_ADDRESS,
-        },
-        result: {
-            value: BTC_ACCOUNT.addresses?.unused[0].address,
-            actions: [
-                {
-                    type: MODAL.OPEN_USER_CONTEXT,
-                    payload: {
-                        type: 'address',
-                        device: AVAILABLE_DEVICE,
-                        address: BTC_ACCOUNT.addresses?.unused[0].address,
-                        networkType: BTC_ACCOUNT.networkType,
-                        symbol: BTC_ACCOUNT.symbol,
-                        addressPath: BTC_ACCOUNT.addresses?.unused[0].path,
-                    },
-                },
-                {
                     type: COINMARKET_BUY.VERIFY_ADDRESS,
                     addressVerified: BTC_ACCOUNT.addresses?.unused[0].address,
                 },
@@ -92,17 +47,6 @@ export const VERIFY_BUY_ADDRESS_FIXTURES = [
             value: ETH_ACCOUNT.descriptor,
             actions: [
                 {
-                    type: MODAL.OPEN_USER_CONTEXT,
-                    payload: {
-                        type: 'address',
-                        device: AVAILABLE_DEVICE,
-                        address: ETH_ACCOUNT.descriptor,
-                        networkType: ETH_ACCOUNT.networkType,
-                        symbol: ETH_ACCOUNT.symbol,
-                        addressPath: ETH_ACCOUNT.path,
-                    },
-                },
-                {
                     type: COINMARKET_BUY.VERIFY_ADDRESS,
                     addressVerified: ETH_ACCOUNT.descriptor,
                 },
@@ -125,17 +69,6 @@ export const VERIFY_BUY_ADDRESS_FIXTURES = [
         result: {
             value: XRP_ACCOUNT.descriptor,
             actions: [
-                {
-                    type: MODAL.OPEN_USER_CONTEXT,
-                    payload: {
-                        type: 'address',
-                        device: AVAILABLE_DEVICE,
-                        address: XRP_ACCOUNT.descriptor,
-                        networkType: XRP_ACCOUNT.networkType,
-                        symbol: XRP_ACCOUNT.symbol,
-                        addressPath: XRP_ACCOUNT.path,
-                    },
-                },
                 {
                     type: COINMARKET_BUY.VERIFY_ADDRESS,
                     addressVerified: XRP_ACCOUNT.descriptor,
@@ -193,17 +126,6 @@ export const VERIFY_EXCHANGE_ADDRESS_FIXTURES = [
         result: {
             value: BTC_ACCOUNT.addresses?.unused[0].address,
             actions: [
-                {
-                    type: MODAL.OPEN_USER_CONTEXT,
-                    payload: {
-                        type: 'address',
-                        device: AVAILABLE_DEVICE,
-                        address: BTC_ACCOUNT.addresses?.unused[0].address,
-                        networkType: BTC_ACCOUNT.networkType,
-                        symbol: BTC_ACCOUNT.symbol,
-                        addressPath: BTC_ACCOUNT.addresses?.unused[0].path,
-                    },
-                },
                 {
                     type: COINMARKET_EXCHANGE.VERIFY_ADDRESS,
                     addressVerified: BTC_ACCOUNT.addresses?.unused[0].address,
