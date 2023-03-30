@@ -9,7 +9,7 @@ const MESSAGES_SRC = '../../packages/transport/messages.json';
 
 const DIST = path.resolve(__dirname, '../build');
 
-export default {
+const config: webpack.Configuration = {
     target: 'web',
     mode: 'production',
     entry: {
@@ -147,3 +147,5 @@ export default {
         ],
     },
 };
+
+export default config;

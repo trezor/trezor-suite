@@ -44,7 +44,7 @@
         "@trezor/validation": "workspace:*",
         "react": "18.2.0",
         "react-native": "0.71.5",
-        "react-native-reanimated": "3.0.1",
+        "react-native-reanimated": "3.0.2",
         "react-redux": "8.0.5"
     },
     "devDependencies": {
