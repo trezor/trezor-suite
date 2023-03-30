@@ -129,7 +129,14 @@ export const DevUtilsScreen = ({
                         {areLogsVisible && <Logs />}
                     </VStack>
                 </Box>
-            ) : null}
+            ) : (
+                <Card>
+                    <VStack spacing="medium">
+                        <CopyLogsButton />
+                        <BuildInfo />
+                    </VStack>
+                </Card>
+            )}
         </Screen>
     );
 };
