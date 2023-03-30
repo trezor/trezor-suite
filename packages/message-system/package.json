@@ -16,14 +16,14 @@
     },
     "dependencies": {
         "ajv": "^8.12.0",
-        "fs-extra": "^11.1.0",
-        "json-schema-to-typescript": "^11.0.3",
+        "fs-extra": "^11.1.1",
+        "json-schema-to-typescript": "^12.0.0",
         "jws": "^4.0.0"
     },
     "devDependencies": {
         "@types/fs-extra": "^11.0.1",
         "jest": "^26.6.3",
-        "tsx": "^3.12.3",
+        "tsx": "^3.12.6",
         "typescript": "4.9.5"
     },
     "nx": {

@@ -7,12 +7,12 @@
         "test:e2e": "yarn xvfb-maybe -- playwright test --config=./playwright.config.ts"
     },
     "dependencies": {
-        "@playwright/test": "^1.30.0"
+        "@playwright/test": "^1.32.1"
     },
     "devDependencies": {
         "@trezor/node-utils": "workspace:*",
         "@trezor/trezor-user-env-link": "workspace:*",
-        "playwright": "^1.30.0",
+        "playwright": "^1.32.1",
         "typescript": "^4.9.5",
         "xvfb-maybe": "^0.2.1"
     }

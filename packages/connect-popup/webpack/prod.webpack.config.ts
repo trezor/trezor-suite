@@ -1,5 +1,5 @@
 import path from 'path';
-import { DefinePlugin } from 'webpack';
+import webpack, { DefinePlugin } from 'webpack';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import TerserPlugin from 'terser-webpack-plugin';
 import CopyPlugin from 'copy-webpack-plugin';
@@ -12,7 +12,7 @@ const DIST = path.resolve(__dirname, '../build');
 
 const commitHash = execSync('git rev-parse HEAD').toString().trim();
 
-export default {
+const config: webpack.Configuration = {
     target: 'web',
     mode: 'production',
     entry: {
@@ -125,3 +125,5 @@ export default {
         ],
     },
 };
+
+export default config;
