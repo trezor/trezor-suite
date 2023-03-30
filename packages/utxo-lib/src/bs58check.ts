@@ -56,9 +56,9 @@ export function decodeAddress(address: string, network = BITCOIN_NETWORK) {
     let payload: Buffer;
     if (isNetworkType('bitcoinCash', network)) {
         if (!bchaddrjs.isCashAddress(address)) throw Error(`${address} is not a cash address`);
-        payload = bs58check.decode(bchaddrjs.toLegacyAddress(address));
+        payload = Buffer.from(bs58check.decode(bchaddrjs.toLegacyAddress(address)));
     } else {
-        payload = decode(address, network);
+        payload = Buffer.from(decode(address, network));
     }
 
     // TODO: 4.0.0, move to "toOutputScript"
