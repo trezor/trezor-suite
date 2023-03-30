@@ -333,9 +333,11 @@ class BIP32 implements BIP32Interface {
 }
 
 export function fromBase58(inString: string, network?: Network): BIP32Interface {
-    const buffer = isNetworkType('decred', network)
-        ? bs58check.decodeBlake256Key(inString)
-        : bs58check.decode(inString, network);
+    const buffer = Buffer.from(
+        isNetworkType('decred', network)
+            ? bs58check.decodeBlake256Key(inString)
+            : bs58check.decode(inString, network),
+    );
     if (buffer.length !== 78) throw new TypeError('Invalid buffer length');
     network = network || BITCOIN;
 
