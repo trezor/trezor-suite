@@ -189,7 +189,6 @@ export const FinalStep = () => {
                                                 label: (
                                                     <GalleryWrapper>
                                                         <HomescreenGallery
-                                                            device={device}
                                                             onConfirm={() => {
                                                                 dropdownRef.current?.close();
                                                             }}

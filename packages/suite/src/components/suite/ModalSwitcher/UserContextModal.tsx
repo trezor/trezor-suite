@@ -61,9 +61,7 @@ export const UserContextModal = ({
         case 'xpub':
             return <ConfirmXpub {...payload} onCancel={onCancel} />;
         case 'device-background-gallery':
-            return (
-                <BackgroundGallery device={payload.device as AcquiredDevice} onCancel={onCancel} />
-            );
+            return <BackgroundGallery onCancel={onCancel} />;
         case 'wipe-device':
             return <WipeDevice onCancel={onCancel} />;
         case 'qr-reader':

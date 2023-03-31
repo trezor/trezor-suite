@@ -6,8 +6,7 @@ import { resolveStaticPath } from '@trezor/utils';
 import { homescreensBW64x128, homescreensColor240x240 } from '@suite-constants/homescreens';
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
 import { imagePathToHex } from '@suite-utils/homescreen';
-import { AcquiredDevice } from '@suite-types';
-import { useActions } from '@suite-hooks';
+import { useActions, useDevice } from '@suite-hooks';
 import { DeviceModel, getDeviceModel } from '@trezor/device-utils';
 
 type AnyImageName = (typeof homescreensBW64x128)[number] | (typeof homescreensColor240x240)[number];
@@ -41,18 +40,19 @@ const BackgroundImageColor240x240 = styled(BackgroundImageBW64x128)`
 `;
 
 type HomescreenGalleryProps = {
-    device: AcquiredDevice;
     onConfirm?: () => void;
 };
 
-export const HomescreenGallery = ({ device, onConfirm }: HomescreenGalleryProps) => {
+export const HomescreenGallery = ({ onConfirm }: HomescreenGalleryProps) => {
+    const { device, isLocked } = useDevice();
     const { applySettings } = useActions({ applySettings: deviceSettingsActions.applySettings });
-
     const deviceModel = getDeviceModel(device);
 
     if (!deviceModel) return null;
 
     const setHomescreen = async (imagePath: string, image: AnyImageName) => {
+        if (isLocked()) return;
+
         const hex = await imagePathToHex(imagePath, deviceModel);
 
         applySettings({ homescreen: hex });

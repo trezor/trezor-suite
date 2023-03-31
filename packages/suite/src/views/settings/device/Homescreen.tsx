@@ -176,7 +176,6 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
                             onClick={() =>
                                 openModal({
                                     type: 'device-background-gallery',
-                                    device,
                                 })
                             }
                             isDisabled={isDeviceLocked || !isSupportedHomescreen}
