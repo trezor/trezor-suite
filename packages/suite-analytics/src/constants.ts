@@ -38,6 +38,8 @@ export enum EventType {
     TransactionCreated = 'transaction-created',
     SendRawTransaction = 'send-raw-transaction',
 
+    CoinjoinAnonymityGain = 'coinjoin/anonymity-gain',
+
     MenuNotificationsToggle = 'menu/notifications/toggle',
     MenuToggleDiscreet = 'menu/toggle-discreet',
 
