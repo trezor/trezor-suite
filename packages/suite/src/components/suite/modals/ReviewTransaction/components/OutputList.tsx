@@ -12,7 +12,6 @@ import { TransactionDetails } from './TransactionDetails';
 import Indicator from './Indicator';
 import Output, { OutputProps } from './Output';
 import OutputElement from './OutputElement';
-import type { ButtonRequest } from '@suite-types';
 import type { Account } from '@wallet-types';
 import type {
     FormState,
@@ -81,13 +80,13 @@ interface OutputListProps {
     decision?: { resolve: (success: boolean) => void }; // dfd
     detailsOpen: boolean;
     outputs: OutputProps[];
-    buttonRequests: ButtonRequest[];
+    buttonRequestsCount: number;
     isRbfAction: boolean;
 }
 
-const getState = (index: number, buttonRequests: number) => {
-    if (index === buttonRequests - 1) return 'active';
-    if (index < buttonRequests - 1) return 'success';
+const getState = (index: number, buttonRequestsCount: number) => {
+    if (index === buttonRequestsCount - 1) return 'active';
+    if (index < buttonRequestsCount - 1) return 'success';
     return undefined;
 };
 
@@ -99,7 +98,7 @@ const OutputList = ({
     decision,
     detailsOpen,
     outputs,
-    buttonRequests,
+    buttonRequestsCount,
     isRbfAction,
 }: OutputListProps) => {
     const { symbol } = account;
@@ -144,7 +143,7 @@ const OutputList = ({
                         {outputs.map((output, index) => {
                             const state = signedTx
                                 ? 'success'
-                                : getState(index, buttonRequests.length);
+                                : getState(index, buttonRequestsCount);
 
                             return (
                                 <Output
@@ -166,7 +165,7 @@ const OutputList = ({
                                         state={
                                             signedTx
                                                 ? 'success'
-                                                : getState(outputs.length, buttonRequests.length)
+                                                : getState(outputs.length, buttonRequestsCount)
                                         }
                                         size={16}
                                     />

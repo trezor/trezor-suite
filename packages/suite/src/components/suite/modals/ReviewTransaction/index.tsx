@@ -90,6 +90,7 @@ export const ReviewTransaction = ({ decision }: ReviewTransactionProps) => {
 
     const { account } = selectedAccount;
     const { networkType } = account;
+    const isCardano = isCardanoTx(account, precomposedTx);
     const isRbfAction = !!precomposedTx.prevTxid;
     const decreaseOutputId = precomposedTx.useNativeRbf
         ? precomposedForm.setMaxOutputId
@@ -119,7 +120,7 @@ export const ReviewTransaction = ({ decision }: ReviewTransactionProps) => {
                 value2: precomposedTx.transaction.outputs[decreaseOutputId].amount.toString(),
             });
         }
-    } else if (isCardanoTx(account, precomposedTx)) {
+    } else if (isCardano) {
         precomposedTx.transaction.outputs.forEach(o => {
             // iterate only through "external" outputs (change output has addressParameters field instead of address)
             if ('address' in o) {
@@ -187,7 +188,10 @@ export const ReviewTransaction = ({ decision }: ReviewTransactionProps) => {
 
     // omit other button requests (like passphrase)
     const buttonRequests = device.buttonRequests.filter(
-        r => r.code === 'ButtonRequest_ConfirmOutput' || r.code === 'ButtonRequest_SignTx',
+        ({ code }) =>
+            code === 'ButtonRequest_ConfirmOutput' ||
+            code === 'ButtonRequest_SignTx' ||
+            (code === 'ButtonRequest_Other' && isCardano), // Cardano is using ButtonRequest_Other
     );
 
     // NOTE: T1 edge-case
@@ -212,13 +216,15 @@ export const ReviewTransaction = ({ decision }: ReviewTransactionProps) => {
         estimateTime = selected.blockTime * matchedFeeLevel.blocks * 60;
     }
 
+    const buttonRequestsCount = isCardano ? buttonRequests.length - 1 : buttonRequests.length;
+
     return (
         <StyledModal
             modalPrompt={
                 <ConfirmOnDevice
                     title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
-                    steps={outputs.length}
-                    activeStep={signedTx ? outputs.length + 1 : buttonRequests.length}
+                    steps={outputs.length + 1}
+                    activeStep={signedTx ? outputs.length + 2 : buttonRequestsCount}
                     deviceModel={deviceModel}
                     successText={<Translation id="TR_CONFIRMED_TX" />}
                     onCancel={() => {
@@ -246,7 +252,7 @@ export const ReviewTransaction = ({ decision }: ReviewTransactionProps) => {
                 decision={decision}
                 detailsOpen={detailsOpen}
                 outputs={outputs}
-                buttonRequests={buttonRequests}
+                buttonRequestsCount={buttonRequestsCount}
                 isRbfAction={isRbfAction}
             />
         </StyledModal>
