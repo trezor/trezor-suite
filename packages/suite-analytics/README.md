@@ -67,7 +67,7 @@ From Suite version 22.10.1, analytics uses Suite versioning. That means, that an
 
 ## Changelog
 
-Add a record of change to [Notion](https://www.notion.so/satoshilabs/Changelog-Suite-1551ab666b1943f080ff56ffc6896d12d). Please use a format of previous records.
+Add a record of change to [Notion](https://www.notion.so/satoshilabs/Changelog-Suite-1551ab666b1943f080ff56ffc6896d12). Please use a format of previous records.
 
 ## Company table
 
