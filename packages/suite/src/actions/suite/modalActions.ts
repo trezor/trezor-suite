@@ -51,7 +51,6 @@ export type UserContextPayload =
       }
     | {
           type: 'device-background-gallery';
-          device: TrezorDevice;
       }
     | {
           type: 'transaction-detail';
