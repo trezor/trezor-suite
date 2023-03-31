@@ -25,7 +25,10 @@ export const enableAnalyticsThunk = createThunk(
 export const disableAnalyticsThunk = createThunk(
     `${ACTION_PREFIX}/disableAnalyticsThunk`,
     (_, { dispatch }) => {
-        analytics.report({ type: EventType.SettingsAnalytics, payload: { value: false } }, true);
+        analytics.report(
+            { type: EventType.SettingsAnalytics, payload: { value: false } },
+            { force: true },
+        );
         dispatch(analyticsActions.disableAnalytics());
     },
 );
