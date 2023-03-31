@@ -1,5 +1,5 @@
 import { encodeDataToQueryString, getRandomId, getUrl, reportEvent } from './utils';
-import type { InitOptions, Event as AnalyticsEvent, App } from './types';
+import type { InitOptions, Event as AnalyticsEvent, App, ReportConfig } from './types';
 
 export class Analytics<T extends AnalyticsEvent> {
     private enabled = false;
@@ -60,11 +60,13 @@ export class Analytics<T extends AnalyticsEvent> {
 
     public isEnabled = () => this.enabled;
 
-    public report = (data: T, force = false) => {
+    public report = (data: T, config?: ReportConfig) => {
         if (!this.url || !this.instanceId || !this.sessionId || !this.commitId || !this.version) {
             console.error('Unable to report. Analytics is not initialized');
             return;
         }
+
+        const { anonymize, force } = config ?? {};
 
         if (this.useQueue && !this.enabled && !force) {
             this.queue.push(data);
@@ -75,8 +77,9 @@ export class Analytics<T extends AnalyticsEvent> {
         }
 
         const qs = encodeDataToQueryString(
-            this.instanceId,
-            this.sessionId,
+            // Random ID is better than constant because it helps clean the data in case it is accidentally logged multiple times.
+            anonymize ? getRandomId() : this.instanceId,
+            anonymize ? getRandomId() : this.sessionId,
             this.commitId,
             this.version,
             data,

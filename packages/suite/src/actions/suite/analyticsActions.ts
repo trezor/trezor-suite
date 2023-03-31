@@ -25,7 +25,10 @@ export const enableAnalyticsThunk = () => (dispatch: Dispatch) => {
 };
 
 export const disableAnalyticsThunk = () => (dispatch: Dispatch) => {
-    analytics.report({ type: EventType.SettingsAnalytics, payload: { value: false } }, true);
+    analytics.report(
+        { type: EventType.SettingsAnalytics, payload: { value: false } },
+        { force: true },
+    );
     allowSentryReport(false);
 
     dispatch(analyticsActions.disableAnalytics());
