@@ -162,7 +162,14 @@ const OutputList = ({
                             <OutputElement
                                 account={account}
                                 indicator={
-                                    <Indicator state={signedTx ? 'success' : undefined} size={16} />
+                                    <Indicator
+                                        state={
+                                            signedTx
+                                                ? 'success'
+                                                : getState(outputs.length, buttonRequests.length)
+                                        }
+                                        size={16}
+                                    />
                                 }
                                 lines={[
                                     {
