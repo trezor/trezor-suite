@@ -22,3 +22,8 @@ export type Event = {
         [key: string]: string | string[] | number | number[] | boolean | null;
     };
 };
+
+export type ReportConfig = {
+    anonymize?: boolean; // Log event without session and instance ID to prevent linking it to other events.
+    force?: boolean; // Log event while analytics are not enabled.
+};

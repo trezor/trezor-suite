@@ -33,7 +33,10 @@ const onEnable = () => {
 
 const onDisable = () => {
     saveTrackingEnablement(false);
-    analytics.report({ type: EventType.SettingsTracking, payload: { value: false } }, true);
+    analytics.report(
+        { type: EventType.SettingsTracking, payload: { value: false } },
+        { force: true },
+    );
 };
 
 export const initAnalytics = () => {
