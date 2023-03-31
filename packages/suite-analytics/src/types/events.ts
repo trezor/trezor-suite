@@ -143,6 +143,12 @@ export type SuiteAnalyticsEvent =
           };
       }
     | {
+          type: EventType.CoinjoinAnonymityGain;
+          payload: {
+              value: number;
+          };
+      }
+    | {
           type: EventType.AccountsTransactionsExport;
           payload: {
               symbol: string;
