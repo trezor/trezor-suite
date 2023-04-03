@@ -9,6 +9,9 @@
             "path": "../../suite-common/suite-config"
         },
         {
+            "path": "../../suite-common/suite-types"
+        },
+        {
             "path": "../../suite-common/wallet-config"
         },
         {

@@ -15,7 +15,6 @@ import {
 import { Box, Text } from '@suite-native/atoms';
 import { useFormatters } from '@suite-common/formatters';
 import { selectTransactionBlockTimeById, TransactionsRootState } from '@suite-common/wallet-core';
-import { Color } from '@trezor/theme';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { EthereumTokenSymbol } from '@suite-native/ethereum-tokens';
 
@@ -36,21 +35,15 @@ type TransactionListItemStyleProps = {
     isLast: boolean;
 };
 
-type TransactionTypeProperties = {
-    prefix: string;
-    sign?: string;
-    signColor?: Color;
-};
-
-export const transactionTypePropertiesMap = {
-    recv: { prefix: 'From', sign: '+', signColor: 'textSecondaryHighlight' },
-    sent: { prefix: 'To', sign: '-', signColor: 'textAlertRed' },
-    self: { prefix: 'Self', sign: undefined, signColor: undefined },
-    contract: { prefix: 'Contract', sign: undefined, signColor: undefined },
-    joint: { prefix: 'Joint', sign: undefined, signColor: undefined },
-    failed: { prefix: 'Failed', sign: undefined, signColor: undefined },
-    unknown: { prefix: 'Unknown', sign: undefined, signColor: undefined },
-} as const satisfies Record<TransactionType, TransactionTypeProperties>;
+const transactionTitleMap = {
+    recv: 'Received',
+    sent: 'Sent',
+    self: 'Self',
+    joint: 'Joined',
+    contract: 'Contract',
+    failed: 'Failed',
+    unknown: 'Unknown',
+} as const satisfies Record<TransactionType, string>;
 
 const transactionListItemContainerStyle = prepareNativeStyle<TransactionListItemStyleProps>(
     (utils, { isFirst, isLast }) => ({
@@ -118,8 +111,6 @@ export const TransactionListItemContainer = memo(
             selectTransactionBlockTimeById(state, txid, accountKey),
         );
 
-        const transactionTypeProperties = transactionTypePropertiesMap[transactionType];
-
         return (
             <TouchableOpacity
                 onPress={() => handleNavigateToTransactionDetail()}
@@ -129,7 +120,7 @@ export const TransactionListItemContainer = memo(
                     <TransactionIcon symbol={symbol} transactionType={transactionType} />
                     <Box marginLeft="medium" flex={1}>
                         <Box flexDirection="row">
-                            <Text>{transactionTypeProperties.prefix}</Text>
+                            <Text>{transactionTitleMap[transactionType]}</Text>
                         </Box>
                         <Text variant="hint" color="textSubdued">
                             <DateTimeFormatter value={transactionBlockTime} />

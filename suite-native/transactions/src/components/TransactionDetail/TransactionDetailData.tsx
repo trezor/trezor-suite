@@ -4,15 +4,9 @@ import { useSelector } from 'react-redux';
 import { Box, Card, Divider, Text, VStack } from '@suite-native/atoms';
 import { AccountKey, WalletAccountTransaction } from '@suite-common/wallet-types';
 import { Icon } from '@trezor/icons';
-import { isPending } from '@suite-common/wallet-utils';
 import { useFormatters } from '@suite-common/formatters';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
-import {
-    selectTransactionBlockTimeById,
-    selectTransactionFirstInputAddress,
-    selectTransactionFirstOutputAddress,
-    TransactionsRootState,
-} from '@suite-common/wallet-core';
+import { selectTransactionBlockTimeById, TransactionsRootState } from '@suite-common/wallet-core';
 
 import { TransactionDetailSummary } from './TransactionDetailSummary';
 import { TransactionDetailRow } from './TransactionDetailRow';
@@ -28,16 +22,6 @@ export const TransactionDetailData = ({ transaction, accountKey }: TransactionDe
         selectTransactionBlockTimeById(state, transaction.txid, accountKey),
     );
 
-    // Only one input and output address for now until UX comes up with design to support multiple inputs/outputs.
-    const transactionInputAddress = useSelector((state: TransactionsRootState) =>
-        selectTransactionFirstInputAddress(state, transaction.txid, accountKey),
-    );
-    const transactionOutputAddress = useSelector((state: TransactionsRootState) =>
-        selectTransactionFirstOutputAddress(state, transaction.txid, accountKey),
-    );
-
-    const isTransactionPending = isPending(transaction);
-
     return (
         <>
             <VStack>
@@ -51,11 +35,7 @@ export const TransactionDetailData = ({ transaction, accountKey }: TransactionDe
                         </Box>
                     </TransactionDetailRow>
                 </Card>
-                <TransactionDetailSummary
-                    origin={transactionInputAddress}
-                    target={transactionOutputAddress}
-                    transactionStatus={isTransactionPending ? 'pending' : 'confirmed'}
-                />
+                <TransactionDetailSummary transaction={transaction} accountKey={accountKey} />
                 <Card>
                     <TransactionDetailRow title="Fee">
                         <Box alignItems="flex-end">
