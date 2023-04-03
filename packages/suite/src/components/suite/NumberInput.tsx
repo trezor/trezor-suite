@@ -138,26 +138,14 @@ export const NumberInput = ({
     );
 
     useLayoutEffect(() => {
-        if (!value || !previousFormValueRef.current) {
-            return;
-        }
-
-        const cleanPrevFormValue = cleanValueString(previousFormValueRef.current, locale);
-        const cleanFormValue = cleanValueString(value, locale);
+        const cleanPrevFormValue = cleanValueString(previousFormValueRef.current ?? '', locale);
+        const cleanFormValue = cleanValueString(value ?? '', locale);
         const cleanPrevDisplayValue = cleanValueString(previousDisplayValueRef.current, locale);
         const cleanDisplayValue = cleanValueString(displayValue, locale);
-
         if (cleanPrevFormValue !== cleanFormValue && cleanPrevDisplayValue === cleanDisplayValue) {
-            formatDisplayValue(value);
+            formatDisplayValue(value ?? '');
         }
-    }, [
-        previousFormValueRef,
-        previousDisplayValueRef,
-        formatDisplayValue,
-        displayValue,
-        value,
-        locale,
-    ]);
+    }, [formatDisplayValue, displayValue, value, locale]);
 
     const handleChange = useCallback(
         (inputValue: string) => {
