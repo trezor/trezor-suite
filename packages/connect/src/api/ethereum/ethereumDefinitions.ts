@@ -26,8 +26,10 @@ export const getEthereumDefinitions = async (chainId: number, contractAddress?: 
 
     try {
         if (contractAddress) {
+            // Contract address has to be in lowercase in order to be found in eth-definitions.
+            const lowerCaseContractAddress = contractAddress.toLowerCase();
             const tokenDefinition = await fetch(
-                `https://data.trezor.io/firmware/eth-definitions/chain-id/${chainId}/token-${contractAddress}.dat`,
+                `https://data.trezor.io/firmware/eth-definitions/chain-id/${chainId}/token-${lowerCaseContractAddress}.dat`,
             );
             if (tokenDefinition.status === 200) {
                 definitions.encoded_token = await tokenDefinition.arrayBuffer();
