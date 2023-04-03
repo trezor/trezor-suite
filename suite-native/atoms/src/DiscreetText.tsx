@@ -5,7 +5,7 @@ import { useAtom, atom } from 'jotai';
 import { Blur, Canvas, Text as SkiaText, useFont } from '@shopify/react-native-skia';
 
 import { Color, typographyStylesBase } from '@trezor/theme';
-import { useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { Text, TextProps } from './Text';
 import { Box } from './Box';
@@ -48,12 +48,27 @@ export const DiscreetCanvas = ({ width, height, fontSize, text, color }: Discree
     );
 };
 
+const discreetTextContainer = prepareNativeStyle<{ lineHeight: number }>((_, { lineHeight }) => ({
+    height: lineHeight,
+}));
+
+const textStyle = prepareNativeStyle<{ isDiscreetMode: boolean }>((_, { isDiscreetMode }) => ({
+    extend: {
+        condition: isDiscreetMode,
+        style: {
+            opacity: 0,
+            height: 0,
+        },
+    },
+}));
+
 export const DiscreetText = ({
     children = '',
     color = 'textDefault',
     variant = 'body',
     ...restTextProps
 }: DiscreetTextProps) => {
+    const { applyStyle } = useNativeStyles();
     const { isDiscreetMode } = useDiscreetMode();
     const [width, setWidth] = useState(0);
 
@@ -66,8 +81,8 @@ export const DiscreetText = ({
     if (!children) return null;
 
     return (
-        <Box>
-            {isDiscreetMode ? (
+        <Box style={applyStyle(discreetTextContainer, { lineHeight })}>
+            {isDiscreetMode && (
                 <DiscreetCanvas
                     width={width}
                     height={lineHeight}
@@ -75,11 +90,19 @@ export const DiscreetText = ({
                     text={children}
                     color={color}
                 />
-            ) : (
-                <Text variant={variant} color={color} onLayout={handleLayout} {...restTextProps}>
-                    {children}
-                </Text>
             )}
+
+            {/* Plain Text needs to be always rendered so it shares its width with DiscreetCanvas. */}
+            {/* If the DiscreetMode is on, it is hidden with opacity and height set to zero. */}
+            <Text
+                variant={variant}
+                color={color}
+                onLayout={handleLayout}
+                style={applyStyle(textStyle, { isDiscreetMode })}
+                {...restTextProps}
+            >
+                {children}
+            </Text>
         </Box>
     );
 };
