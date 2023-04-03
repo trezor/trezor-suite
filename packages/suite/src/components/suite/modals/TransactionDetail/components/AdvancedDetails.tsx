@@ -10,6 +10,11 @@ import { ChainedTxs } from './ChainedTxs';
 
 const Wrapper = styled.div`
     padding: 0px 24px 10px;
+
+    ${variables.SCREEN_QUERY.MOBILE} {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
 `;
 
 const TabSelector = styled.div`

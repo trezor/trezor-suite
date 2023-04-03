@@ -84,7 +84,6 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                                 }}
                             />
                         }
-                        color="light"
                     />
                 )}
 
@@ -114,7 +113,6 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                         fourthColumn={
                             <FiatValue amount={amount.abs().toString()} symbol={tx.symbol} />
                         }
-                        color="light"
                     />
                 )}
 
@@ -137,7 +135,6 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                             />
                         }
                         fourthColumn={<FiatValue amount={cardanoWithdrawal} symbol={tx.symbol} />}
-                        color="light"
                     />
                 )}
 
@@ -160,7 +157,6 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                             />
                         }
                         fourthColumn={<FiatValue amount={cardanoDeposit} symbol={tx.symbol} />}
-                        color="light"
                     />
                 )}
 
@@ -192,7 +188,6 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                                 symbol={tx.symbol}
                             />
                         }
-                        color="light"
                     />
                 ))}
 
@@ -229,7 +224,6 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                                 tokenAddress={transfer.address}
                             />
                         }
-                        color="light"
                     />
                 ))}
 
@@ -253,7 +247,6 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                             />
                         }
                         fourthColumn={<FiatValue amount={fee} symbol={tx.symbol} />}
-                        color="light"
                     />
                 )}
             </AmountWrapper>

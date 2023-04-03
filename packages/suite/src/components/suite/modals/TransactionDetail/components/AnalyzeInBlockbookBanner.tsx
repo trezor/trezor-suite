@@ -22,6 +22,10 @@ const TextWrapper = styled.div`
     display: flex;
     text-align: start;
     flex-direction: column;
+
+    ${variables.SCREEN_QUERY.MOBILE} {
+        gap: 2px;
+    }
 `;
 
 const Heading = styled.span`
@@ -76,7 +80,7 @@ export const AnalyzeInBlockbookBanner = ({ txid }: AnalyzeInBlockbookBannerProps
             <Link variant="nostyle" href={`${explorerUrl}${txid}`}>
                 <StyledButton variant="primary">
                     <Translation id="TR_ANALYZE_IN_BLOCKBOOK_OPEN" />
-                    <Icon icon="EXTERNAL_LINK" color={theme.TYPE_WHITE} />
+                    <Icon icon="EXTERNAL_LINK" color={theme.TYPE_WHITE} size={20} />
                 </StyledButton>
             </Link>
         </StyledWarning>
