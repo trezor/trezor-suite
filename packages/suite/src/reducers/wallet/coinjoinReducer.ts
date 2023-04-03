@@ -599,14 +599,14 @@ export const selectCurrentCoinjoinSession = memoize((state: CoinjoinRootState) =
     return session;
 });
 
-export const selectCurrentTargetAnonymity = memoize((state: CoinjoinRootState) => {
+export const selectCurrentTargetAnonymity = (state: CoinjoinRootState) => {
     const selectedAccount = selectSelectedAccount(state);
     const targetAnonymity = selectedAccount
         ? selectTargetAnonymityByAccountKey(state, selectedAccount.key)
         : undefined;
 
     return targetAnonymity;
-});
+};
 
 export const selectIsCoinjoinBlockedByTor = memoize((state: CoinjoinRootState) => {
     const { isTorEnabled } = selectTorState(state);
