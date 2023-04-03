@@ -8,6 +8,15 @@ import { getAppVersion, getBuildVersionNumber, getCommitHash } from '@suite-nati
 import { useOpenLink } from '@suite-native/link';
 
 import { AboutUsBanners } from '../components/AboutUsBanners';
+import { ProductionDebug } from '../components/ProductionDebug';
+
+const CommitHashWithDevMenu = () => (
+    <ProductionDebug>
+        <Text variant="hint" color="textDisabled">
+            Commit hash: {getCommitHash()}
+        </Text>
+    </ProductionDebug>
+);
 
 export const SettingsAboutUsScreen = () => {
     const openLink = useOpenLink();
@@ -49,11 +58,7 @@ export const SettingsAboutUsScreen = () => {
                             Version: {`${getAppVersion()} (${getBuildVersionNumber()})`}
                         </Text>
                     )}
-                    {hasCommitHash && (
-                        <Text variant="hint" color="textDisabled">
-                            Commit hash: {getCommitHash()}
-                        </Text>
-                    )}
+                    {(hasCommitHash || true) && <CommitHashWithDevMenu />}
                 </Box>
             </VStack>
         </Screen>

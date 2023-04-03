@@ -1,8 +1,7 @@
 import React from 'react';
-import { Pressable } from 'react-native';
 
-import { atom, useAtom } from 'jotai';
 import { useNavigation } from '@react-navigation/core';
+import { useAtom } from 'jotai';
 
 import {
     SettingsStackRoutes,
@@ -11,29 +10,13 @@ import {
     RootStackParamList,
     RootStackRoutes,
 } from '@suite-native/navigation';
-import { Text } from '@suite-native/atoms';
-import { isDevelopOrDebugEnv } from '@suite-native/config';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { SettingsSection } from './SettingsSection';
 import { SettingsSectionItem } from './SettingsSectionItem';
-
-const devButtonStyle = prepareNativeStyle(() => ({
-    position: 'absolute',
-    zIndex: 1,
-    top: 0,
-    right: 0,
-    width: 50,
-    height: 50,
-}));
-
-const isDevButtonVisibleAtom = atom<boolean>(false);
-
-let tapsCount = 0;
+import { isDevButtonVisibleAtom } from './ProductionDebug';
 
 export const ApplicationSettings = () => {
-    const { applyStyle } = useNativeStyles();
-    const [isVisible, setIsDevButtonVisible] = useAtom(isDevButtonVisibleAtom);
+    const [isDevButtonVisible] = useAtom(isDevButtonVisibleAtom);
 
     const navigation =
         useNavigation<
@@ -48,24 +31,10 @@ export const ApplicationSettings = () => {
         navigation.navigate(routeName);
     };
 
-    const handleTapsCount = () => {
-        if (tapsCount < 7) {
-            tapsCount++;
-        }
-        if (tapsCount === 7) {
-            setIsDevButtonVisible(true);
-        }
-    };
-
-    const shouldShowDevButton = isDevelopOrDebugEnv() || isVisible;
-
     return (
         <>
-            <Pressable style={applyStyle(devButtonStyle)} onPress={handleTapsCount}>
-                <Text> </Text>
-            </Pressable>
             <SettingsSection title="Application">
-                {shouldShowDevButton && (
+                {isDevButtonVisible && (
                     <SettingsSectionItem
                         iconName="placeholder"
                         title="DEV utils"

@@ -13,6 +13,7 @@
         { "path": "../config" },
         { "path": "../link" },
         { "path": "../navigation" },
+        { "path": "../storage" },
         { "path": "../theme" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/icons" },
