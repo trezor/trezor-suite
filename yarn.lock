@@ -8147,7 +8147,7 @@ __metadata:
     "@types/react-router-dom": ^5.1.7
     "@types/styled-components": ^5.1.26
     chrome-remote-interface: ^0.32.1
-    cypress: ^12.7.0
+    cypress: ^12.9.0
     cypress-file-upload: ^5.0.8
     cypress-image-snapshot: ^4.0.1
     cypress-wait-until: ^1.7.2
@@ -14391,7 +14391,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cypress@npm:^12.7.0":
+"cypress@npm:^12.9.0":
   version: 12.9.0
   resolution: "cypress@npm:12.9.0"
   dependencies:
