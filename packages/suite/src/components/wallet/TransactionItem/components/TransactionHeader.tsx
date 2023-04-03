@@ -1,12 +1,36 @@
 import React from 'react';
 import { Translation } from '@suite-components';
-import { getTxHeaderSymbol, isTxUnknown } from '@suite-common/wallet-utils';
+import { getTxHeaderSymbol } from '@suite-common/wallet-utils';
 import { WalletAccountTransaction } from '@wallet-types';
+import { AccountTransaction } from '@trezor/connect';
 
 interface TransactionHeaderProps {
     transaction: WalletAccountTransaction;
     isPending: boolean;
 }
+
+interface GetSelfTransactionMessageByTypeProps {
+    type?: Required<AccountTransaction>['cardanoSpecific']['subtype'];
+    isPending: TransactionHeaderProps['isPending'];
+}
+
+const getSelfTransactionMessageByType = ({
+    type,
+    isPending,
+}: GetSelfTransactionMessageByTypeProps) => {
+    switch (type) {
+        case 'withdrawal':
+            return 'TR_REWARDS_WITHDRAWAL';
+        case 'stake_delegation':
+            return 'TR_STAKE_DELEGATED';
+        case 'stake_registration':
+            return 'TR_STAKE_REGISTERED';
+        case 'stake_deregistration':
+            return 'TR_STAKE_DEREGISTERED';
+        default:
+            return isPending ? 'TR_SENDING_SYMBOL_TO_SELF' : 'TR_SENT_SYMBOL_TO_SELF';
+    }
+};
 
 export const TransactionHeader = ({ transaction, isPending }: TransactionHeaderProps) => {
     // Use ETH method name if available
@@ -16,51 +40,41 @@ export const TransactionHeader = ({ transaction, isPending }: TransactionHeaderP
 
     const isMultiTokenTransaction = transaction.tokens.length > 1;
     const symbol = getTxHeaderSymbol(transaction).toUpperCase();
-    const headingTxType = transaction.type;
 
-    let heading = null;
-    if (isTxUnknown(transaction)) {
-        heading = <Translation id="TR_UNKNOWN_TRANSACTION" />;
-    } else if (headingTxType === 'sent') {
-        heading = (
-            <Translation
-                id={isPending ? 'TR_SENDING_SYMBOL' : 'TR_SENT_SYMBOL'}
-                values={{ symbol, multiple: isMultiTokenTransaction }}
-            />
-        );
-    } else if (headingTxType === 'recv') {
-        heading = (
-            <Translation
-                id={isPending ? 'TR_RECEIVING_SYMBOL' : 'TR_RECEIVED_SYMBOL'}
-                values={{ symbol, multiple: isMultiTokenTransaction }}
-            />
-        );
-    } else if (headingTxType === 'self') {
-        if (transaction.cardanoSpecific?.subtype === 'withdrawal') {
-            heading = <Translation id="TR_REWARDS_WITHDRAWAL" />;
-        } else if (transaction.cardanoSpecific?.subtype === 'stake_delegation') {
-            heading = <Translation id="TR_STAKE_DELEGATED" />;
-        } else if (transaction.cardanoSpecific?.subtype === 'stake_registration') {
-            heading = <Translation id="TR_STAKE_REGISTERED" />;
-        } else if (transaction.cardanoSpecific?.subtype === 'stake_deregistration') {
-            heading = <Translation id="TR_STAKE_DEREGISTERED" />;
-        } else {
-            heading = (
+    switch (transaction.type) {
+        case 'sent':
+            return (
                 <Translation
-                    id={isPending ? 'TR_SENDING_SYMBOL_TO_SELF' : 'TR_SENT_SYMBOL_TO_SELF'}
+                    id={isPending ? 'TR_SENDING_SYMBOL' : 'TR_SENT_SYMBOL'}
                     values={{ symbol, multiple: isMultiTokenTransaction }}
                 />
             );
-        }
-    } else if (headingTxType === 'failed') {
-        heading = <Translation id="TR_FAILED_TRANSACTION" />;
-    } else if (headingTxType === 'joint') {
-        heading = <Translation id="TR_JOINT_TRANSACTION" values={{ symbol }} />;
-    } else if (headingTxType === 'contract') {
-        heading = <Translation id="TR_CONTRACT_TRANSACTION" />;
-    } else {
-        heading = <Translation id="TR_UNKNOWN_TRANSACTION" />;
-    }
 
-    return heading;
+        case 'recv':
+            return (
+                <Translation
+                    id={isPending ? 'TR_RECEIVING_SYMBOL' : 'TR_RECEIVED_SYMBOL'}
+                    values={{ symbol, multiple: isMultiTokenTransaction }}
+                />
+            );
+        case 'failed':
+            return <Translation id="TR_FAILED_TRANSACTION" />;
+        case 'joint':
+            return <Translation id="TR_JOINT_TRANSACTION" values={{ symbol }} />;
+        case 'contract':
+            return <Translation id="TR_CONTRACT_TRANSACTION" />;
+        case 'self':
+            return (
+                <Translation
+                    id={getSelfTransactionMessageByType({
+                        type: transaction.cardanoSpecific?.subtype,
+                        isPending,
+                    })}
+                    values={{ symbol, multiple: isMultiTokenTransaction }}
+                />
+            );
+        case 'unknown':
+        default:
+            return <Translation id="TR_UNKNOWN_TRANSACTION" />;
+    }
 };
