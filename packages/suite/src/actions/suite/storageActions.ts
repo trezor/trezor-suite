@@ -204,13 +204,8 @@ export const saveAccountTransactions =
         const allTxs = getState().wallet.transactions.transactions;
         const accTxs = allTxs[account.key] || [];
 
-        // wrap confirmed txs and add its order inside the array
-        const orderedTxs = accTxs
-            .filter(t => (t.blockHeight || 0) > 0)
-            .map((accTx, i) => ({
-                tx: accTx,
-                order: i,
-            }));
+        // wrap txs and add its order inside the array
+        const orderedTxs = accTxs.map((tx, order) => ({ tx, order }));
         return db.addItems('txs', orderedTxs, true);
     };
 
