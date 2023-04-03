@@ -91,6 +91,7 @@ export const ReviewTransaction = ({ decision }: ReviewTransactionProps) => {
     const { account } = selectedAccount;
     const { networkType } = account;
     const isCardano = isCardanoTx(account, precomposedTx);
+    const isEtherium = networkType === 'ethereum';
     const isRbfAction = !!precomposedTx.prevTxid;
     const decreaseOutputId = precomposedTx.useNativeRbf
         ? precomposedForm.setMaxOutputId
@@ -191,7 +192,7 @@ export const ReviewTransaction = ({ decision }: ReviewTransactionProps) => {
         ({ code }) =>
             code === 'ButtonRequest_ConfirmOutput' ||
             code === 'ButtonRequest_SignTx' ||
-            (code === 'ButtonRequest_Other' && isCardano), // Cardano is using ButtonRequest_Other
+            (code === 'ButtonRequest_Other' && (isCardano || isEtherium)), // Cardano and Etherium are using ButtonRequest_Other
     );
 
     // NOTE: T1 edge-case
