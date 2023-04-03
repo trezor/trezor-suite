@@ -23,7 +23,7 @@ export const TransactionDetailRow = ({ title, children }: TransactionDetailRowPr
         <Box style={applyStyle(rowStyle)}>
             <Text color="textSubdued">{title}</Text>
             <Box flexDirection="row" justifyContent="flex-start">
-                {G.isString(children) ? <Text>{children}</Text> : children}
+                {G.isString(children) || G.isNumber(children) ? <Text>{children}</Text> : children}
             </Box>
         </Box>
     );

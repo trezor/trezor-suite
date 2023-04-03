@@ -33,6 +33,7 @@
         "react-native": "0.71.4",
         "react-native-gesture-handler": "^2.9.0",
         "react-native-reanimated": "3.0.1",
-        "react-redux": "8.0.5"
+        "react-redux": "8.0.5",
+        "web3-utils": "^1.8.2"
     }
 }

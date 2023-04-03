@@ -8,7 +8,7 @@ import { fromWei, padLeft, toHex, toWei } from 'web3-utils';
 import { TypedFieldError } from '@suite-common/wallet-types';
 import { FIAT } from '@suite-common/suite-config';
 import { isFeatureFlagEnabled } from '@suite-common/suite-utils';
-import { Network } from '@suite-common/wallet-config';
+import { Network, NetworkType } from '@suite-common/wallet-config';
 import { EthereumTransaction, TokenInfo, ComposeOutput, PROTO } from '@trezor/connect';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES, ERC20_TRANSFER } from '@suite-common/wallet-constants';
 import type {
@@ -216,7 +216,7 @@ export const getFiatRate = (fiatRates: CoinFiatRates | undefined, currency: stri
     return fiatRates.current.rates[currency];
 };
 
-export const getFeeUnits = (networkType: Network['networkType']) => {
+export const getFeeUnits = (networkType: NetworkType) => {
     if (networkType === 'ethereum') return 'GWEI';
     if (networkType === 'ripple') return 'Drops';
     if (networkType === 'cardano') return 'Lovelaces/B';
