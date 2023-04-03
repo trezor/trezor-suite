@@ -11,6 +11,7 @@ import { UtxoAnonymity } from '@wallet-components';
 import { IOAddress } from './IOAddress';
 import { AnalyzeInBlockbookBanner } from './AnalyzeInBlockbookBanner';
 import { FormattedNftAmount } from '@suite-components/FormattedNftAmount';
+import { useExplorerTxUrl } from '@suite-hooks/useExplorerTxUrl';
 
 export const blurFix = css`
     margin-left: -10px;
@@ -64,7 +65,7 @@ const StyledCollapsibleBox = styled(CollapsibleBox)`
 const Grid = styled.div`
     display: grid;
     gap: 12px 1%;
-    grid-template-columns: 47% 4% 47%; /* address > address */
+    grid-template-columns: 46% 6% 46%; /* address > address */
     ${blurFix}
 `;
 
@@ -85,34 +86,47 @@ const GridItem = styled.div<{ isAccountOwned?: boolean }>`
         max-width: 290px;
     }
 
-    padding-bottom: 10px;
+    & + & {
+        margin-top: 10px;
+    }
+`;
+
+const IOGridItem = styled(GridItem)`
+    & + & {
+        margin-top: 0;
+    }
+    color: ${({ theme }) => theme.BG_GREEN};
 `;
 
 const RowGridItem = styled(GridItem)`
     padding-bottom: initial;
+
+    & + & {
+        margin-top: 0;
+    }
 `;
 
 const GridGroupHeading = styled.div`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    font-size: ${variables.NEUE_FONT_SIZE.NORMAL};
+    font-size: ${variables.NEUE_FONT_SIZE.SMALL};
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     margin-bottom: 10px;
 `;
 
 const StyledFormattedCryptoAmount = styled(FormattedCryptoAmount)`
-    color: ${({ theme }) => theme.BG_GREEN};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     margin-top: 4px;
     display: block;
 `;
 
 const StyledFormattedNftAmount = styled(FormattedNftAmount)`
-    color: ${({ theme }) => theme.BG_GREEN};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     margin-top: 4px;
 `;
 
 const GridGroup = styled.div`
     &:not(:last-of-type) {
-        margin-bottom: 8px;
+        margin-bottom: 22px;
     }
 `;
 
@@ -125,6 +139,11 @@ const AmountRow = styled.div`
     ${StyledFormattedCryptoAmount} {
         margin-top: 0px;
     }
+`;
+
+const IconWrapper = styled.div`
+    display: flex;
+    align-items: center;
 `;
 
 interface IOGridRow {
@@ -140,9 +159,14 @@ const IOGridRow = ({
 }: IOGridRow) => {
     const anonymity = addresses?.length && anonymitySet?.[addresses[0]];
 
+    const explorerTxUrl = useExplorerTxUrl();
+
     return (
         <GridItem isAccountOwned={isAccountOwned}>
-            <IOAddress txAddress={addresses?.length ? addresses[0] : ''} />
+            <IOAddress
+                txAddress={addresses?.length ? addresses[0] : ''}
+                explorerUrl={explorerTxUrl}
+            />
 
             <br />
             <AmountRow>
@@ -172,18 +196,18 @@ const IOGridGroupWrapper = ({
     children,
 }: GridGroupWrapperProps) => (
     <GridGroup>
-        {heading ? <GridGroupHeading>{heading}</GridGroupHeading> : null}
+        {heading ? <GridGroupHeading>{heading}:</GridGroupHeading> : null}
         {inputsLength !== undefined && outputsLength !== undefined ? (
             <RowGrid>
-                <GridItem>
+                <IOGridItem>
                     <Translation id="TR_INPUTS" />
                     {inputsLength >= 0 ? ` • ${inputsLength}` : null}
-                </GridItem>
-                <GridItem />
-                <GridItem>
+                </IOGridItem>
+                <IOGridItem />
+                <IOGridItem>
                     <Translation id="TR_OUTPUTS" />
                     {outputsLength >= 0 ? ` • ${outputsLength}` : null}
-                </GridItem>
+                </IOGridItem>
             </RowGrid>
         ) : null}
         {children}
@@ -199,11 +223,12 @@ interface GridRowGroupComponentProps {
 
 const GridRowGroupComponent = ({ from, to, symbol, amount }: GridRowGroupComponentProps) => {
     const theme = useTheme();
+    const explorerTxUrl = useExplorerTxUrl();
 
     return (
         <RowGrid>
             <RowGridItem>
-                <IOAddress txAddress={from} />
+                <IOAddress txAddress={from} explorerUrl={explorerTxUrl} />
                 <br />
                 {typeof amount === 'string' ? (
                     <StyledFormattedCryptoAmount value={amount} symbol={symbol} />
@@ -211,11 +236,11 @@ const GridRowGroupComponent = ({ from, to, symbol, amount }: GridRowGroupCompone
                     amount
                 )}
             </RowGridItem>
-            <RowGridItem>
+            <IconWrapper>
                 <Icon icon="ARROW_RIGHT" size={17} color={theme.TYPE_LIGHT_GREY} />
-            </RowGridItem>
+            </IconWrapper>
             <RowGridItem>
-                <IOAddress txAddress={to} />
+                <IOAddress txAddress={to} explorerUrl={explorerTxUrl} />
             </RowGridItem>
         </RowGrid>
     );
@@ -356,9 +381,9 @@ const IOSectionColumn = ({ tx, inputs, outputs }: IOSectionColumnProps) => {
                         ))}
                     </div>
                 )}
-                <div>
+                <IconWrapper>
                     <Icon icon="ARROW_RIGHT" size={17} color={theme.TYPE_LIGHT_GREY} />
-                </div>
+                </IconWrapper>
                 {hasOutputs && (
                     <div>
                         {outputs.map(output => (

@@ -11,23 +11,15 @@ const leftAlignedStyles = css`
     justify-self: flex-start;
 `;
 
-interface RowContentProps {
-    color?: 'light' | 'dark';
-    textAlign?: 'left' | 'right';
-}
-
-// this wrapper sets the text color of the item based on the  color: 'light' | 'dark' prop
-const Column = styled.div<RowContentProps>`
+const Column = styled.div<{ textAlign: 'left' | 'right' }>`
     display: flex;
     align-items: center;
     align-self: start;
     min-height: 32px;
     white-space: nowrap;
-    color: ${({ color, theme }) =>
-        color === 'light' ? `${theme.TYPE_LIGHT_GREY}` : `${theme.TYPE_DARK_GREY}`};
+    color: ${({ theme }) => `${theme.TYPE_LIGHT_GREY}`};
 
-    /* content alignment styles */
-    ${({ textAlign }) => (textAlign === 'left' ? leftAlignedStyles : rightAlignedStyles)}
+    ${({ textAlign }) => (textAlign === 'left' ? leftAlignedStyles : rightAlignedStyles)};
 `;
 
 interface AmountRowProps {
@@ -35,32 +27,21 @@ interface AmountRowProps {
     secondColumn?: React.ReactNode;
     thirdColumn?: React.ReactNode;
     fourthColumn?: React.ReactNode;
-    color?: 'light' | 'dark';
 }
 
 export const AmountRow = ({
-    // set default values
     firstColumn,
     secondColumn,
     thirdColumn,
     fourthColumn,
-    color = 'light',
 }: AmountRowProps) => (
     <>
-        <Column textAlign="left" color="light">
-            {firstColumn}
-        </Column>
+        <Column textAlign="left">{firstColumn}</Column>
 
-        <Column textAlign="left" color={color}>
-            {secondColumn}
-        </Column>
+        <Column textAlign="left">{secondColumn}</Column>
 
-        <Column textAlign="right" color={color}>
-            {thirdColumn}
-        </Column>
+        <Column textAlign="right">{thirdColumn}</Column>
 
-        <Column textAlign="right" color={color}>
-            {fourthColumn}
-        </Column>
+        <Column textAlign="right">{fourthColumn}</Column>
     </>
 );

@@ -1,12 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Icon, useTheme, variables, CoinLogo, Tooltip, H3 } from '@trezor/components';
-import {
-    Translation,
-    HiddenPlaceholder,
-    TrezorLink,
-    FormattedDateWithBullet,
-} from '@suite-components';
+import { Icon, useTheme, variables, CoinLogo, H3 } from '@trezor/components';
+import { Translation, FormattedDateWithBullet } from '@suite-components';
 import { WalletAccountTransaction, Network } from '@wallet-types';
 import {
     isTxFinal,
@@ -17,17 +12,12 @@ import {
 } from '@suite-common/wallet-utils';
 import { TransactionHeader } from '@suite/components/wallet/TransactionItem/components/TransactionHeader';
 import { fromWei } from 'web3-utils';
+import { IOAddress } from './IOAddress';
 
 const Wrapper = styled.div`
     background-color: ${({ theme }) => theme.BG_GREY};
     padding: 18px;
     border-radius: 8px;
-`;
-
-const TransactionId = styled(HiddenPlaceholder)`
-    text-overflow: ellipsis;
-    overflow: hidden;
-    font-variant-numeric: slashed-zero tabular-nums;
 `;
 
 const Confirmations = styled.div`
@@ -91,9 +81,9 @@ const Value = styled.div`
     font-variant-numeric: tabular-nums;
 `;
 
-const TxidValue = styled(Value)`
-    padding-right: 32px;
-    overflow: visible;
+const TxidValue = styled.div`
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
+    font-size: ${variables.FONT_SIZE.TINY};
 `;
 
 const IconWrapper = styled.div`
@@ -166,27 +156,6 @@ const StyledIcon = styled(Icon)`
 const IconPlaceholder = styled.span`
     min-width: 10px;
     margin-right: 6px;
-`;
-
-const LinkIcon = styled(Icon)`
-    margin-left: 6px;
-    margin-bottom: 1px;
-`;
-
-const StyledTrezorLink = styled(TrezorLink)`
-    width: 100%;
-`;
-
-const StyledTooltip = styled(Tooltip)`
-    overflow: hidden;
-    text-overflow: ellipsis;
-    font-variant-numeric: tabular-nums;
-
-    > div {
-        overflow: hidden;
-        text-overflow: ellipsis;
-        font-variant-numeric: tabular-nums;
-    }
 `;
 
 interface BasicDetailsProps {
@@ -277,26 +246,7 @@ export const BasicDetails = ({ tx, confirmations, network, explorerUrl }: BasicD
                 </Title>
 
                 <TxidValue>
-                    <StyledTrezorLink
-                        size="tiny"
-                        variant="nostyle"
-                        href={`${explorerUrl}${tx.txid}`}
-                    >
-                        <StyledTooltip
-                            content={<Translation id="TR_OPEN_IN_BLOCK_EXPLORER" />}
-                            cursor="pointer"
-                        >
-                            <TransactionId data-test="@tx-detail/txid-value">
-                                {tx.txid}
-                            </TransactionId>
-                        </StyledTooltip>
-                        <Tooltip
-                            content={<Translation id="TR_OPEN_IN_BLOCK_EXPLORER" />}
-                            cursor="pointer"
-                        >
-                            <LinkIcon size={12} color={theme.TYPE_DARK_GREY} icon="EXTERNAL_LINK" />
-                        </Tooltip>
-                    </StyledTrezorLink>
+                    <IOAddress txAddress={tx.txid} explorerUrl={explorerUrl} />
                 </TxidValue>
 
                 {network.networkType === 'bitcoin' && (

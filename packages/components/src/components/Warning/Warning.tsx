@@ -34,6 +34,12 @@ const Wrapper = styled.div<{ variant: Variant; withIcon?: boolean }>`
     justify-content: ${({ withIcon }) => !withIcon && 'center'};
     padding: 14px 20px;
     width: 100%;
+
+    ${variables.SCREEN_QUERY.MOBILE} {
+        align-items: stretch;
+        flex-direction: column;
+        gap: 8px;
+    }
 `;
 
 const StyledIcon = styled(Icon)`
