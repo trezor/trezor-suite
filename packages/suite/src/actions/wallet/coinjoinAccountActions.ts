@@ -340,6 +340,24 @@ export const createPendingTransaction =
         );
     };
 
+/** Remove prepending transactions with outdated deadline */
+const cleanPendingTransactions = (account: Account) => (dispatch: Dispatch, getState: GetState) => {
+    const {
+        wallet: {
+            transactions: { transactions },
+            blockchain: {
+                [account.symbol]: { blockHeight },
+            },
+        },
+    } = getState();
+    const txs = getAccountTransactions(account.key, transactions).filter(
+        tx => tx.deadline && tx.deadline < blockHeight,
+    );
+    if (txs.length) {
+        dispatch(transactionsActions.removeTransaction({ account, txs }));
+    }
+};
+
 export const fetchAndUpdateAccount =
     (account: Account) => async (dispatch: Dispatch, getState: GetState) => {
         if (account.backendType !== 'coinjoin' || account.syncing) return;
@@ -379,23 +397,9 @@ export const fetchAndUpdateAccount =
                 progressHandle,
             });
 
-            // Remove prepending transactions with outdated deadline or present in scanAccount response
-            const prepending = prevTransactions
-                ? prevTransactions.filter(tx => 'deadline' in tx)
-                : [];
-            if (prepending.length > 0) {
-                const { blockHeight } = state.wallet.blockchain[account.symbol];
-                const prependingToRemove = prepending.filter(
-                    tx => tx.deadline! < blockHeight || pending.some(tx2 => tx2.txid === tx.txid),
-                );
-                if (prependingToRemove.length > 0) {
-                    dispatch(
-                        transactionsActions.removeTransaction({ account, txs: prependingToRemove }),
-                    );
-                }
-            }
-
             onProgress({ checkpoint, transactions: pending });
+
+            dispatch(cleanPendingTransactions(account));
 
             // get fresh state
             const transactions = getState().wallet.transactions.transactions[account.key];

@@ -114,7 +114,8 @@ export const prepareTransactionsReducer = createReducerWithExtraDeps(
                         if (
                             ((existingTx.blockHeight ?? 0) <= 0 &&
                                 (transaction.blockHeight ?? 0) > 0) ||
-                            (!existingTx.blockTime && transaction.blockTime)
+                            (!existingTx.blockTime && transaction.blockTime) ||
+                            (existingTx.deadline && !transaction.deadline)
                         ) {
                             // pending tx got confirmed (blockHeight changed from undefined/0 to a number > 0)
                             accountTxs[existingTxIndex] = { ...transaction };

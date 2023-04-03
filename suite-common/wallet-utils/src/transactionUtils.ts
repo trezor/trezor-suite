@@ -294,15 +294,10 @@ export const analyzeTransactions = (
         };
     }
 
-    const [knownPrepending, knownRest] = arrayPartition(known, tx => {
-        if ('deadline' in tx) return true;
-        return false;
-    });
+    const [knownPrepending, knownRest] = arrayPartition(known, tx => 'deadline' in tx);
 
     const removePrepending = knownPrepending.filter(
-        tx =>
-            ('deadline' in tx && tx.deadline && tx?.deadline < blockHeight) ||
-            fresh.find(fTx => fTx.txid === tx.txid),
+        tx => (tx.deadline && tx.deadline < blockHeight) || fresh.find(fTx => fTx.txid === tx.txid),
     );
     // If there are no known confirmed txs
     // remove all known and add all fresh
