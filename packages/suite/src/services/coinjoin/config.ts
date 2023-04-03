@@ -151,6 +151,12 @@ export const CLIENT_STATUS_FALLBACK = {
     },
 };
 
+// Estimating anonymity gain per round:
+// How many previous coinjoin transactions are taken into account
+export const ANONYMITY_GAINS_HINDSIGHT_COUNT = 10;
+// What are the oldest coinjoin transactions taken into account
+export const ANONYMITY_GAINS_HINDSIGHT_DAYS = 30;
+
 export const getCoinjoinConfig = (
     network: NetworkSymbol,
     environment?: CoinjoinServerEnvironment,

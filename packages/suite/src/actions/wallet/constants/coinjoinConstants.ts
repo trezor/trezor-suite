@@ -9,6 +9,9 @@ export const ACCOUNT_UNREGISTER = '@coinjoin/account-unregister';
 export const ACCOUNT_DISCOVERY_PROGRESS = '@coinjoin/account-discovery-progress';
 export const ACCOUNT_PRELOADING = '@coinjoin/account-preloading';
 export const ACCOUNT_SET_LIQUIDITY_CLUE = '@coinjoin/account-set-liquidity-clue';
+export const ACCOUNT_ADD_ANONYMITY_LEVEL = '@coinjoin/account-add-anonymity-level';
+export const ACCOUNT_UPDATE_LAST_REPORT_TIMESTAMP =
+    '@coinjoin/account-update-last-report-timestamp';
 
 export const CLIENT_ENABLE = '@coinjoin/client-enable';
 export const CLIENT_DISABLE = '@coinjoin/client-disable';
