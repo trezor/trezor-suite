@@ -10,7 +10,7 @@ import { DATA_TOS_URL, ZKSNACKS_TERMS_URL } from '@trezor/urls';
 import { startCoinjoinSession } from '@wallet-actions/coinjoinAccountActions';
 import {
     selectCurrentTargetAnonymity,
-    selectRoundsNeeded,
+    selectRoundsNeededByAccountKey,
     selectRoundsFailRateBuffer,
     selectCoinjoinClient,
     selectCoinjoinAccountByKey,
@@ -116,7 +116,7 @@ export const CoinjoinConfirmation = ({ account }: CoinjoinConfirmationProps) => 
     const coinjoinAccount = useSelector(state => selectCoinjoinAccountByKey(state, account.key));
     const coinjoinClient = useSelector(state => selectCoinjoinClient(state, account.key));
     const targetAnonymity = useSelector(selectCurrentTargetAnonymity);
-    const roundsNeeded = useSelector(state => selectRoundsNeeded(state, account.key));
+    const roundsNeeded = useSelector(state => selectRoundsNeededByAccountKey(state, account.key));
     const roundsFailRateBuffer = useSelector(selectRoundsFailRateBuffer);
     const defaultMaxMiningFee = useSelector(state =>
         selectDefaultMaxMiningFeeByAccountKey(state, account.key),

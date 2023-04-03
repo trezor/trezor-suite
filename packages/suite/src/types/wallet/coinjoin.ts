@@ -43,6 +43,16 @@ export interface CoinjoinDiscoveryCheckpoint {
     changeCount: number;
 }
 
+export interface AnonymityGainPerRound {
+    level: number;
+    timestamp: number;
+}
+
+export interface AnonymityGains {
+    history: AnonymityGainPerRound[];
+    lastReportTimestamp?: number;
+}
+
 export interface CoinjoinAccount {
     key: string; // reference to wallet Account.key
     symbol: NetworkSymbol;
@@ -51,6 +61,7 @@ export interface CoinjoinAccount {
     session?: CoinjoinSession; // current/active authorized session
     previousSessions: CoinjoinSession[]; // history
     checkpoints?: CoinjoinDiscoveryCheckpoint[];
+    anonymityGains?: AnonymityGains;
 }
 
 export type CoinjoinServerEnvironment = 'public' | 'staging' | 'localhost';

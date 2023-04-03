@@ -1,3 +1,4 @@
+import { ANONYMITY_GAINS_HINDSIGHT_COUNT } from '@suite/services/coinjoin';
 import * as coinjoinUtils from '../coinjoinUtils';
 
 const baseUtxo = {
@@ -152,4 +153,28 @@ export const calculateProgressParams: Array<{
         },
         result: 100,
     },
+];
+
+export const cleanAnonymityGains: Array<{
+    params: Parameters<typeof coinjoinUtils.cleanAnonymityGains>[0];
+    resultLength: number;
+}> = [
+    {
+        params: new Array(ANONYMITY_GAINS_HINDSIGHT_COUNT + 1).fill({
+            level: 3,
+            timestamp: Date.now(),
+        }),
+        resultLength: ANONYMITY_GAINS_HINDSIGHT_COUNT,
+    },
+    { params: [{ level: 3, timestamp: 0 }], resultLength: 0 },
+];
+
+export const averageAnonymityGainsParams: Array<{
+    params: Parameters<typeof coinjoinUtils.calculateAverageAnonymityGainPerRound>;
+    checkResult: (average: number) => boolean;
+}> = [
+    { params: [2, [{ level: 3, timestamp: Date.now() }]], checkResult: x => x > 2 },
+    { params: [2, [{ level: 1, timestamp: Date.now() }]], checkResult: x => x < 2 },
+    { params: [2, [{ level: 2, timestamp: Date.now() }]], checkResult: x => x === 2 },
+    { params: [2, undefined], checkResult: x => x === 2 },
 ];

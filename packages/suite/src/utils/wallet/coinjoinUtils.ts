@@ -5,11 +5,19 @@ import hoursToMilliseconds from 'date-fns/hoursToMilliseconds';
 import { getUtxoOutpoint, getBip43Type } from '@suite-common/wallet-utils';
 import { Account, SelectedAccountStatus } from '@suite-common/wallet-types';
 import {
+    ANONYMITY_GAINS_HINDSIGHT_COUNT,
+    ANONYMITY_GAINS_HINDSIGHT_DAYS,
     ESTIMATED_MIN_ROUNDS_NEEDED,
     MAX_MINING_FEE_MODIFIER,
     SKIP_ROUNDS_VALUE_WHEN_ENABLED,
 } from '@suite/services/coinjoin/config';
-import { CoinjoinSessionParameters, RoundPhase, SessionPhase } from '@wallet-types/coinjoin';
+import {
+    AnonymityGainPerRound,
+    CoinjoinAccount,
+    CoinjoinSessionParameters,
+    RoundPhase,
+    SessionPhase,
+} from '@wallet-types/coinjoin';
 import { AnonymitySet } from '@trezor/blockchain-link';
 import {
     CoinjoinStatusEvent,
@@ -149,22 +157,26 @@ const getCoinjoinAccountUtxos = (
 const getCoinjoinAccountAddresses = (addresses: Account['addresses']) =>
     addresses?.change?.filter(a => !a.transfers) || [];
 
+type GetRegisterAccountParamsOptions = { session: CoinjoinSessionParameters } & Pick<
+    CoinjoinAccount,
+    'rawLiquidityClue'
+>;
+
 /**
  * Transform from suite Account to @trezor/coinjoin RegisterAccountParams
  */
 export const getRegisterAccountParams = (
     account: Account,
-    params: CoinjoinSessionParameters,
-    rawLiquidityClue: RegisterAccountParams['rawLiquidityClue'],
+    { rawLiquidityClue, session }: GetRegisterAccountParamsOptions,
 ): RegisterAccountParams => ({
     scriptType: getCoinjoinAccountScriptType(account.path),
     accountKey: account.key,
-    targetAnonymity: params.targetAnonymity,
+    targetAnonymity: session.targetAnonymity,
     rawLiquidityClue,
-    maxRounds: params.maxRounds,
-    skipRounds: params.skipRounds,
-    maxFeePerKvbyte: params.maxFeePerKvbyte,
-    maxCoordinatorFeeRate: params.maxCoordinatorFeeRate,
+    maxRounds: session.maxRounds,
+    skipRounds: session.skipRounds,
+    maxFeePerKvbyte: session.maxFeePerKvbyte,
+    maxCoordinatorFeeRate: session.maxCoordinatorFeeRate,
     utxos: getCoinjoinAccountUtxos(account.utxo, account.addresses?.anonymitySet),
     changeAddresses: getCoinjoinAccountAddresses(account.addresses),
 });
@@ -330,4 +342,43 @@ export const fixLoadedCoinjoinAccount = ({
         status: statusFixed,
         syncing: undefined, // If account was syncing when stored, we have to remove the flag
     };
+};
+
+// Clean AnonymityGains from old records.
+export const cleanAnonymityGains = (anonymityGainsHistory: AnonymityGainPerRound[]) => {
+    const oldestRelevantTimestamp =
+        new Date().getTime() - ANONYMITY_GAINS_HINDSIGHT_DAYS * 24 * 60 * 60 * 1000;
+
+    return anonymityGainsHistory
+        .filter(level => level.timestamp > oldestRelevantTimestamp)
+        .slice(0, ANONYMITY_GAINS_HINDSIGHT_COUNT);
+};
+
+// Calculate average anonymity gain per round to estimate rounds needed.
+export const calculateAverageAnonymityGainPerRound = (
+    defaultAnonymityGain: number,
+    anonymityGainsHistory?: AnonymityGainPerRound[],
+) => {
+    // If there is no recorded history, return default.
+    if (!anonymityGainsHistory?.length) {
+        return defaultAnonymityGain;
+    }
+
+    // If there are less than ANONYMITY_GAINS_HINDSIGHT_COUNT records, supplement the remaining values by defaultAnonymityGainPerRound to reduce deviation.
+    const anonymityGains = cleanAnonymityGains(anonymityGainsHistory);
+    const anonymityLevels = anonymityGains.map(level => level.level);
+    const supplementedAnonymityLevels =
+        anonymityLevels.length < ANONYMITY_GAINS_HINDSIGHT_COUNT
+            ? anonymityLevels.concat(
+                  new Array(ANONYMITY_GAINS_HINDSIGHT_COUNT - anonymityGains.length).fill(
+                      defaultAnonymityGain,
+                  ),
+              )
+            : anonymityLevels;
+
+    // Calculate average.
+    return (
+        supplementedAnonymityLevels.reduce((total, current) => total + current, 0) /
+        ANONYMITY_GAINS_HINDSIGHT_COUNT
+    );
 };

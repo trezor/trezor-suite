@@ -1,5 +1,5 @@
-import TrezorConnect from '@trezor/connect';
 import { ScanAccountProgress, BroadcastedTransactionDetails } from '@trezor/coinjoin';
+import TrezorConnect from '@trezor/connect';
 import { promiseAllSequence } from '@trezor/utils';
 
 import { SUITE } from '@suite-actions/constants';
@@ -28,6 +28,7 @@ import {
     selectHasAnonymitySetError,
     selectIsNothingToAnonymizeByAccountKey,
     selectSessionByAccountKey,
+    selectWeightedAnonymityByAccountKey,
 } from '@wallet-reducers/coinjoinReducer';
 import { getAccountTransactions, sortByBIP44AddressIndex } from '@suite-common/wallet-utils';
 import { openModal } from '@suite-actions/modalActions';
@@ -156,6 +157,21 @@ const coinjoinSessionAutopause = (accountKey: string, isAutopaused: boolean) =>
         },
     } as const);
 
+const coinjoinAccountUpdateAnonymityLevels = (accountKey: string, level: number) =>
+    ({
+        type: COINJOIN.ACCOUNT_ADD_ANONYMITY_LEVEL,
+        payload: {
+            accountKey,
+            level,
+        },
+    } as const);
+
+export const updateLastAnonymityReportTimestamp = (accountKey: string) =>
+    ({
+        type: COINJOIN.ACCOUNT_UPDATE_LAST_REPORT_TIMESTAMP,
+        payload: { accountKey },
+    } as const);
+
 export const updateCoinjoinConfig = ({
     averageAnonymityGainPerRound,
     roundsFailRateBuffer,
@@ -189,7 +205,9 @@ export type CoinjoinAccountAction =
     | ReturnType<typeof coinjoinAccountPreloading>
     | ReturnType<typeof coinjoinSessionRestore>
     | ReturnType<typeof coinjoinSessionStarting>
-    | ReturnType<typeof coinjoinSessionAutopause>;
+    | ReturnType<typeof coinjoinSessionAutopause>
+    | ReturnType<typeof updateLastAnonymityReportTimestamp>
+    | ReturnType<typeof coinjoinAccountUpdateAnonymityLevels>;
 
 const getCheckpoints = (
     account: Extract<Account, { backendType: 'coinjoin' }>,
@@ -221,9 +239,15 @@ export const updateClientAccount =
         const accountToUpdate = selectAccountByKey(state, account.key);
         const coinjoinAccount = selectCoinjoinAccountByKey(state, account.key);
         if (!coinjoinAccount?.session || !accountToUpdate) return;
-        const { session, rawLiquidityClue } = coinjoinAccount;
 
-        client.updateAccount(getRegisterAccountParams(accountToUpdate, session, rawLiquidityClue));
+        const { rawLiquidityClue, session } = coinjoinAccount;
+
+        client.updateAccount(
+            getRegisterAccountParams(accountToUpdate, {
+                rawLiquidityClue,
+                session,
+            }),
+        );
 
         // End coinjoin session if anonymity has been reached.
         const hasSession = selectIsAccountWithSessionByAccountKey(state, account.key);
@@ -285,7 +309,8 @@ in both cases Account should:
 - mark addresses as used
 - recalculate anonymity
 - recalculate balance
-prepending txs have deadline (blockHeight) when they should be removed from UI
+Prepending txs have deadline (blockHeight) when they should be removed from UI.
+In case of adding a coinjoin transaction, log anonymity gain.
  */
 export const updatePendingAccountInfo =
     (accountKey: string) => async (dispatch: Dispatch, getState: GetState) => {
@@ -314,6 +339,22 @@ export const updatePendingAccountInfo =
         accountInfo.addresses.anonymitySet = anonymityScores;
 
         dispatch(accountsActions.updateAccount(account, accountInfo));
+
+        // Log anonymity gain if the newly added transaction is a coinjoin transaction.
+        if (accountInfo.history.transactions[0].type === 'joint') {
+            const anonymityBeforeUpdate = selectWeightedAnonymityByAccountKey(state, account.key);
+            const anonymityAfterUpdate = selectWeightedAnonymityByAccountKey(
+                getState(),
+                account.key,
+            );
+
+            dispatch(
+                coinjoinAccountUpdateAnonymityLevels(
+                    account.key,
+                    parseFloat((anonymityAfterUpdate - anonymityBeforeUpdate).toFixed(3)),
+                ),
+            );
+        }
     };
 
 export const createPendingTransaction =
@@ -621,7 +662,10 @@ export const startCoinjoinSession =
         if (authResult) {
             // register authorized account
             api.client.registerAccount(
-                getRegisterAccountParams(account, params, coinjoinAccount.rawLiquidityClue),
+                getRegisterAccountParams(account, {
+                    rawLiquidityClue: coinjoinAccount.rawLiquidityClue,
+                    session: params,
+                }),
             );
             // switch to account
             dispatch(goto('wallet-index', { preserveParams: true }));
@@ -660,14 +704,7 @@ export const pauseCoinjoinSessionByDeviceId =
                     account.key,
                 );
                 if (hasRunningSession) {
-                    // get @trezor/coinjoin client if available
-                    const client = coinjoinClientActions.getCoinjoinClient(account.symbol);
-
-                    // unregister account in @trezor/coinjoin
-                    client?.unregisterAccount(account.key);
-
-                    // dispatch data to reducer
-                    dispatch(coinjoinClientActions.coinjoinSessionPause(account.key, false));
+                    dispatch(coinjoinClientActions.pauseCoinjoinSession(account.key));
                 }
             }
         });
@@ -716,7 +753,7 @@ export const restoreCoinjoinSession =
             return errorToast('Coinjoin account session is missing');
         }
 
-        const { session, rawLiquidityClue } = coinjoinAccount;
+        const { rawLiquidityClue, session } = coinjoinAccount;
 
         dispatch(coinjoinSessionStarting(accountKey, true));
 
@@ -737,7 +774,12 @@ export const restoreCoinjoinSession =
             // dispatch data to reducer
             dispatch(coinjoinSessionRestore(account.key));
             // register authorized account
-            client.registerAccount(getRegisterAccountParams(account, session, rawLiquidityClue));
+            client.registerAccount(
+                getRegisterAccountParams(account, {
+                    rawLiquidityClue,
+                    session,
+                }),
+            );
         } else {
             dispatch(
                 notificationsActions.addToast({
