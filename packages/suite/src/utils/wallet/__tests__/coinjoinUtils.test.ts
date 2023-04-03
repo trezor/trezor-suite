@@ -21,3 +21,23 @@ describe('calculateAnonymityProgress', () => {
         });
     });
 });
+
+describe('cleanAnonymityGains', () => {
+    it('cleans correctly', () => {
+        fixtures.cleanAnonymityGains.forEach(({ params, resultLength }) => {
+            const records = coinjoinUtils.cleanAnonymityGains(params);
+
+            expect(records).toHaveLength(resultLength);
+        });
+    });
+});
+
+describe('calculateAverageAnonymityGainPerRound', () => {
+    it('calculates correctly', () => {
+        fixtures.averageAnonymityGainsParams.forEach(({ params, checkResult }) => {
+            const average = coinjoinUtils.calculateAverageAnonymityGainPerRound(...params);
+
+            expect(checkResult(average)).toBe(true);
+        });
+    });
+});

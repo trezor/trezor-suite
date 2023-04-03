@@ -1,7 +1,7 @@
 import { MiddlewareAPI } from 'redux';
 import BigNumber from 'bignumber.js';
 import { SUITE, ROUTER } from '@suite-actions/constants';
-import { DISCOVERY } from '@wallet-actions/constants';
+import { COINJOIN, DISCOVERY } from '@wallet-actions/constants';
 import { getPhysicalDeviceCount } from '@suite-utils/device';
 import { getSuiteReadyPayload, redactTransactionIdFromAnchor } from '@suite-utils/analytics';
 import type { AppState, Action, Dispatch } from '@suite-types';
@@ -17,6 +17,8 @@ import {
     isDeviceInBootloaderMode,
 } from '@trezor/device-utils';
 import { analyticsActions } from '@suite-common/analytics';
+import { selectAnonymityGainToReportByAccountKey } from '@wallet-reducers/coinjoinReducer';
+import { updateLastAnonymityReportTimestamp } from '@wallet-actions/coinjoinAccountActions';
 
 /*
     In analytics middleware we may intercept actions we would like to log. For example:
@@ -178,6 +180,25 @@ const analyticsMiddleware =
                     payload: { type: action.payload.walletNumber ? 'hidden' : 'standard' },
                 });
                 break;
+            case COINJOIN.SESSION_COMPLETED:
+            case COINJOIN.SESSION_PAUSE:
+            case COINJOIN.ACCOUNT_UNREGISTER: {
+                const anonymityGainToReport = selectAnonymityGainToReportByAccountKey(
+                    state,
+                    action.payload.accountKey,
+                );
+                if (anonymityGainToReport !== null) {
+                    analytics.report(
+                        {
+                            type: EventType.CoinjoinAnonymityGain,
+                            payload: { value: anonymityGainToReport },
+                        },
+                        { anonymize: true },
+                    );
+                    api.dispatch(updateLastAnonymityReportTimestamp(action.payload.accountKey));
+                }
+                break;
+            }
 
             default:
                 break;

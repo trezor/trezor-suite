@@ -28,8 +28,8 @@ import {
 import { onCancel as closeModal, openModal } from '@suite-actions/modalActions';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
-    selectRoundsNeeded,
-    selectRoundsLeft,
+    selectRoundsNeededByAccountKey,
+    selectRoundsLeftByAccountKey,
     selectRoundsDurationInHours,
     selectCoinjoinAccounts,
 } from '@wallet-reducers/coinjoinReducer';
@@ -296,8 +296,8 @@ export const onCoinjoinRoundChanged =
                     roundsDurationInHours,
                     account.session?.skipRounds,
                 ),
-                roundsLeft: selectRoundsLeft(state, account.key),
-                roundsNeeded: selectRoundsNeeded(state, account.key),
+                roundsLeft: selectRoundsLeftByAccountKey(state, account.key),
+                roundsNeeded: selectRoundsNeededByAccountKey(state, account.key),
             });
 
             // notify reducers
