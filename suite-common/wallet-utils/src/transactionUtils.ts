@@ -465,20 +465,6 @@ export const getTargetAmount = (
     return null;
 };
 
-export const isTxUnknown = (transaction: WalletAccountTransaction) => {
-    const isTokenTransaction = transaction.tokens.length;
-    const isInternalTransaction = transaction.internalTransfers.length;
-
-    return (
-        (!isTokenTransaction &&
-            !isInternalTransaction &&
-            !['joint', 'contract'].includes(transaction.type) && // coinjoin, contract txs don't have any target
-            !transaction.cardanoSpecific && // cardano staking txs (de/registration of staking key, stake delegation) don't need to have any target
-            !transaction.targets.find(t => t.addresses)) ||
-        transaction.type === 'unknown'
-    );
-};
-
 export const getFeeRate = (tx: AccountTransaction) =>
     // calculate fee rate, TODO: add this to blockchain-link tx details
     new BigNumber(tx.fee).div(tx.details.size).integerValue(BigNumber.ROUND_CEIL).toString();

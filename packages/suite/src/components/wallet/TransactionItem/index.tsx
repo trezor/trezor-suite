@@ -7,7 +7,7 @@ import { getIsZeroValuePhishing } from '@suite-common/suite-utils';
 import { Translation } from '@suite-components';
 import { useActions } from '@suite-hooks';
 import * as modalActions from '@suite-actions/modalActions';
-import { formatNetworkAmount, isTestnet, isTxUnknown } from '@suite-common/wallet-utils';
+import { formatNetworkAmount, isTestnet } from '@suite-common/wallet-utils';
 import { AccountMetadata } from '@suite-types/metadata';
 import { Network, WalletAccountTransaction } from '@wallet-types';
 import { TransactionTypeIcon } from './components/TransactionTypeIcon';
@@ -108,7 +108,7 @@ const TransactionItem = React.memo(
     }: TransactionItemProps) => {
         const { type, targets, tokens, internalTransfers } = transaction;
         const [limit, setLimit] = useState(0);
-        const isUnknown = isTxUnknown(transaction);
+        const isUnknown = type === 'unknown';
         const useFiatValues = !isTestnet(transaction.symbol);
         const useSingleRowLayout =
             !isUnknown &&
