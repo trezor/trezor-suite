@@ -24,8 +24,10 @@ import {
     breakdownCoinjoinBalance,
     calculateAnonymityProgress,
     getMaxFeePerVbyte,
+    cleanAnonymityGains,
     getRoundPhaseFromSessionPhase,
     transformCoinjoinStatus,
+    calculateAverageAnonymityGainPerRound,
 } from '@wallet-utils/coinjoinUtils';
 import {
     CLIENT_STATUS_FALLBACK,
@@ -403,6 +405,30 @@ const enableSessionAutopause = (
     session.isAutoPauseEnabled = payload.isAutopaused;
 };
 
+const addAnonymityLevel = (
+    draft: CoinjoinState,
+    payload: ExtractActionPayload<typeof COINJOIN.ACCOUNT_ADD_ANONYMITY_LEVEL>,
+) => {
+    const account = getAccount(draft, payload.accountKey);
+    if (!account) return;
+    if (!account.anonymityGains) {
+        account.anonymityGains = {
+            history: [],
+        };
+    }
+    account.anonymityGains.history.unshift({ level: payload.level, timestamp: Date.now() });
+    account.anonymityGains.history = cleanAnonymityGains(account.anonymityGains.history);
+};
+
+const updateLastReportTimestamp = (
+    draft: CoinjoinState,
+    payload: ExtractActionPayload<typeof COINJOIN.ACCOUNT_UPDATE_LAST_REPORT_TIMESTAMP>,
+) => {
+    const account = getAccount(draft, payload.accountKey);
+    if (!account?.anonymityGains) return;
+    account.anonymityGains.lastReportTimestamp = Date.now();
+};
+
 export const coinjoinReducer = (
     state: CoinjoinState = initialState,
     action: Action,
@@ -499,7 +525,12 @@ export const coinjoinReducer = (
                     ...action.payload,
                 };
                 break;
-
+            case COINJOIN.ACCOUNT_ADD_ANONYMITY_LEVEL:
+                addAnonymityLevel(draft, action.payload);
+                break;
+            case COINJOIN.ACCOUNT_UPDATE_LAST_REPORT_TIMESTAMP:
+                updateLastReportTimestamp(draft, action.payload);
+                break;
             // no default
         }
     });
@@ -507,9 +538,6 @@ export const coinjoinReducer = (
 export const selectCoinjoinAccounts = (state: CoinjoinRootState) => state.wallet.coinjoin.accounts;
 
 export const selectCoinjoinClients = (state: CoinjoinRootState) => state.wallet.coinjoin.clients;
-
-export const selectAverageAnonymityGainPerRound = (state: CoinjoinRootState) =>
-    state.wallet.coinjoin.config.averageAnonymityGainPerRound;
 
 export const selectRoundsDurationInHours = (state: CoinjoinRootState) =>
     state.wallet.coinjoin.config.roundsDurationInHours;
@@ -679,58 +707,86 @@ export const selectIsNothingToAnonymizeByAccountKey = memoizeWithArgs(
     },
 );
 
-// see https://github.com/trezor/trezor-suite/issues/7388#issue-1532836062
-export const selectRoundsNeeded = memoizeWithArgs(
-    (state: CoinjoinRootState, accountKey: AccountKey) => {
-        const account = selectAccountByKey(state, accountKey);
-        const targetAnonymity = selectTargetAnonymityByAccountKey(state, accountKey) || 0;
-        const averageAnonymityGainPerRound = selectAverageAnonymityGainPerRound(state);
+export const selectWeightedAnonymityByAccountKey = (
+    state: CoinjoinRootState,
+    accountKey: AccountKey,
+) => {
+    const account = selectAccountByKey(state, accountKey);
+    const targetAnonymity = selectTargetAnonymityByAccountKey(state, accountKey) || 0;
 
-        const anonymitySet = account?.addresses?.anonymitySet || {};
-        const utxos = account?.utxo || [];
-
-        if (!utxos.length) {
-            return 0;
-        }
-
-        const weightedAnonymitySum = BigNumber.sum(
-            ...utxos.map(utxo =>
-                new BigNumber(utxo.amount).times(
-                    Math.min(targetAnonymity, anonymitySet[utxo.address] || 1),
-                ),
+    const anonymitySet = account?.addresses?.anonymitySet || {};
+    const utxos = account?.utxo || [];
+    const weightedAnonymitySum = BigNumber.sum(
+        ...utxos.map(utxo =>
+            new BigNumber(utxo.amount).times(
+                Math.min(targetAnonymity, anonymitySet[utxo.address] || 1),
             ),
-        );
+        ),
+    );
+    const amountsSum = BigNumber.sum(...utxos.map(utxo => utxo.amount));
 
-        const amountsSum = BigNumber.sum(...utxos.map(utxo => utxo.amount));
+    return amountsSum.isZero() ? 1 : weightedAnonymitySum.div(amountsSum).toNumber();
+};
 
-        const accountAnonCapped = amountsSum.isZero()
-            ? 0
-            : weightedAnonymitySum.div(amountsSum).toNumber();
+export const selectRoundsNeededByAccountKey = (
+    state: CoinjoinRootState,
+    accountKey: AccountKey,
+) => {
+    const coinjoinAccount = selectCoinjoinAccountByKey(state, accountKey);
+    const targetAnonymity = selectTargetAnonymityByAccountKey(state, accountKey) || 0;
+    const weightedAnonymity = selectWeightedAnonymityByAccountKey(state, accountKey);
+    const defaultAnonymityGainPerRound = state.wallet.coinjoin.config.averageAnonymityGainPerRound;
 
-        if (accountAnonCapped > targetAnonymity) {
-            return 0;
-        }
+    const averageAnonymityGainPerRound = calculateAverageAnonymityGainPerRound(
+        defaultAnonymityGainPerRound,
+        coinjoinAccount?.anonymityGains?.history,
+    );
 
-        return Math.ceil(
-            (targetAnonymity - accountAnonCapped) /
-                Math.max(averageAnonymityGainPerRound, MIN_ANONYMITY_GAINED_PER_ROUND),
-        );
-    },
-);
+    return Math.ceil(
+        (targetAnonymity - weightedAnonymity) /
+            Math.max(averageAnonymityGainPerRound, MIN_ANONYMITY_GAINED_PER_ROUND),
+    );
+};
 
-export const selectRoundsLeft = memoizeWithArgs(
-    (state: CoinjoinRootState, accountKey: AccountKey) => {
-        const coinjoinSession = selectSessionByAccountKey(state, accountKey);
+export const selectAnonymityGainToReportByAccountKey = (
+    state: CoinjoinRootState,
+    accountKey: AccountKey,
+) => {
+    const coinjoinAccount = selectCoinjoinAccountByKey(state, accountKey);
+    const lastReport = coinjoinAccount?.anonymityGains?.lastReportTimestamp;
 
-        if (!coinjoinSession) {
-            return 0;
-        }
+    if (!coinjoinAccount?.anonymityGains) {
+        return null;
+    }
 
-        const { maxRounds, signedRounds } = coinjoinSession;
+    const anonymityGains = cleanAnonymityGains(coinjoinAccount.anonymityGains.history);
 
-        return maxRounds - signedRounds.length;
-    },
-);
+    // Report only results not reported before.
+    const gainsToReport = lastReport
+        ? anonymityGains.filter(level => level.timestamp > lastReport)
+        : anonymityGains;
+
+    if (!gainsToReport.length) {
+        return null;
+    }
+
+    // Report average value. Reporting values per round would compromise data privacy.
+    return (
+        gainsToReport.reduce((total, current) => total + current.level, 0) / gainsToReport.length
+    );
+};
+
+export const selectRoundsLeftByAccountKey = (state: CoinjoinRootState, accountKey: AccountKey) => {
+    const coinjoinSession = selectSessionByAccountKey(state, accountKey);
+
+    if (!coinjoinSession) {
+        return 0;
+    }
+
+    const { maxRounds, signedRounds } = coinjoinSession;
+
+    return maxRounds - signedRounds.length;
+};
 
 export const selectHasAnonymitySetError = memoize((state: CoinjoinRootState) => {
     const selectedAccount = selectSelectedAccount(state);
