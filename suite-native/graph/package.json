@@ -25,7 +25,7 @@
         "date-fns": "^2.29.3",
         "jotai": "1.9.1",
         "react": "18.2.0",
-        "react-native": "0.71.4",
+        "react-native": "0.71.5",
         "react-native-reanimated": "3.0.1",
         "react-redux": "8.0.5"
     },
