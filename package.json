@@ -61,7 +61,7 @@
         "refs": "yarn update-project-references",
         "types": "yarn type-check",
         "messages": "yarn msg-system-sign-config",
-        "validate": "yarn verify-project-references && yarn nx:lint:js && yarn nx:lint:styles && yarn nx:build:libs && yarn nx:type-check && yarn nx:test-unit && yarn check-workspace-resolutions"
+        "validate": "yarn verify-project-references && yarn nx:lint:js && yarn nx:lint:styles && yarn build:libs && yarn nx:type-check && yarn nx:test-unit && yarn check-workspace-resolutions"
     },
     "lint-staged": {
         "packages/**/*.{ts,tsx}": [
