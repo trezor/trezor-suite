@@ -651,4 +651,42 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
     if (oldVersion < 34) {
         db.createObjectStore('coinjoinDebugSettings');
     }
+
+    if (oldVersion < 35) {
+        // remove ethereum network transactions
+        let txsCursor = await transaction.objectStore('txs').openCursor();
+
+        const accountsToUpdate = ['eth', 'etc', 'trop', 'tgor'];
+
+        while (txsCursor) {
+            const tx = txsCursor.value as DBWalletAccountTransactionCompatible;
+
+            if (accountsToUpdate.includes(tx.tx.symbol)) {
+                // eslint-disable-next-line no-await-in-loop
+                await txsCursor.delete();
+            } else {
+                tx.tx.internalTransfers = [];
+                // eslint-disable-next-line no-await-in-loop
+                await txsCursor.update(tx);
+            }
+            // eslint-disable-next-line no-await-in-loop
+            txsCursor = await txsCursor.continue();
+        }
+
+        // force to fetch ethereum network transactions again
+        let accountsCursor = await transaction.objectStore('accounts').openCursor();
+
+        while (accountsCursor) {
+            const account = accountsCursor.value;
+
+            if (accountsToUpdate.includes(account.symbol)) {
+                account.history = { total: 0, unconfirmed: 0, tokens: 0 };
+                // eslint-disable-next-line no-await-in-loop
+                await accountsCursor.update(account);
+            }
+
+            // eslint-disable-next-line no-await-in-loop
+            accountsCursor = await accountsCursor.continue();
+        }
+    }
 };
