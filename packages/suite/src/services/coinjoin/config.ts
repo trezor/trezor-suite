@@ -97,26 +97,13 @@ export const COINJOIN_NETWORKS: PartialRecord<NetworkSymbol, ServerEnvironment> 
         },
     },
     regtest: {
-        public: {
-            network: 'regtest',
-            coordinatorName: 'CoinJoinCoordinatorIdentifier',
-            coordinatorUrl: 'https://dev-coinjoin.trezor.io/backend/wabisabi/',
-            // backend settings
-            wabisabiBackendUrl: 'https://dev-coinjoin.trezor.io/backend/',
-            blockbookUrls: ['https://dev-coinjoin.trezor.io/blockbook'],
-            baseBlockHeight: 0,
-            baseBlockHash: '0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206',
-            filtersBatchSize: 5000,
-            // client settings
-            middlewareUrl: 'https://dev-coinjoin.trezor.io/client/',
-        },
         localhost: {
             network: 'regtest',
             coordinatorName: 'CoinJoinCoordinatorIdentifier',
             coordinatorUrl: 'http://localhost:8081/backend/wabisabi/',
             // backend settings
             wabisabiBackendUrl: 'http://localhost:8081/backend/',
-            blockbookUrls: ['http://localhost:8081/blockbook'],
+            blockbookUrls: ['http://localhost:19121'],
             baseBlockHeight: 0,
             baseBlockHash: '0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206',
             filtersBatchSize: 5000,

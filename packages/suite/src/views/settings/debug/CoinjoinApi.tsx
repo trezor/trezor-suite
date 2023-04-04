@@ -38,6 +38,7 @@ const CoordinatorServer = ({ symbol, environments, value, onChange }: Coordinato
             />
             <ActionColumn>
                 <StyledActionSelect
+                    isDisabled={options.length < 2}
                     onChange={({ value }) => onChange(symbol, value)}
                     value={selectedOption}
                     options={options}
