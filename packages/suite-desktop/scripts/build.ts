@@ -7,7 +7,10 @@ import { build, PluginBuild } from 'esbuild';
 
 import uriSchemes from '../uriSchemes.json';
 import pkg from '../package.json';
-import { suiteVersion } from '../../suite/package.json';
+
+// To prevent unnecessary type check of whole suite package. It's a static file so require is
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { suiteVersion } = require('../../suite/package.json');
 
 const { NODE_ENV, USE_MOCKS, IS_CODESIGN_BUILD } = process.env;
 const PROJECT = 'desktop';
