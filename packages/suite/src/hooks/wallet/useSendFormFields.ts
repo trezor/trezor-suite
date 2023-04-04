@@ -24,11 +24,19 @@ export const useSendFormFields = ({
     clearErrors,
     fiatRates,
     network,
+    errors,
 }: Props) => {
     const { shouldSendInSats } = useBitcoinAmountUnit(network.symbol);
 
     const calculateFiat = useCallback(
         (outputIndex: number, amount?: string) => {
+            const outputError = errors.outputs ? errors.outputs[outputIndex] : undefined;
+            const error = outputError ? outputError.amount : undefined;
+
+            if (error) {
+                amount = undefined;
+            }
+
             const { outputs } = getValues();
             const output = outputs ? outputs[outputIndex] : undefined;
             if (!output || output.type !== 'payment') return;
@@ -58,7 +66,7 @@ export const useSendFormFields = ({
                 setValue(inputName, fiatValue, { shouldValidate: true });
             }
         },
-        [getValues, setValue, fiatRates, shouldSendInSats, network.symbol],
+        [getValues, setValue, fiatRates, shouldSendInSats, network.symbol, errors],
     );
 
     const setAmount = useCallback(
