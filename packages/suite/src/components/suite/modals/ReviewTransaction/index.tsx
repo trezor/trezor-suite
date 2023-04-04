@@ -2,16 +2,15 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { ConfirmOnDevice, variables } from '@trezor/components';
 import { Translation, Modal } from '@suite-components';
-import { useDevice, useActions, useSelector } from '@suite-hooks';
-import { Account } from '@wallet-types';
+import { useActions, useSelector } from '@suite-hooks';
 import { UserContextPayload } from '@suite-actions/modalActions';
 import * as sendFormActions from '@wallet-actions/sendFormActions';
-import { OutputProps } from './components/Output';
 import OutputList from './components/OutputList';
 import Summary from './components/Summary';
-import { isCardanoTx, getShortFingerprint } from '@wallet-utils/cardanoUtils';
-import { CardanoOutput } from '@trezor/connect';
+import { isCardanoTx } from '@wallet-utils/cardanoUtils';
 import { DeviceModel, getDeviceModel } from '@trezor/device-utils';
+import { selectDevice } from '@suite-reducers/suiteReducer';
+import { constructOutputs } from './constructOputputs';
 
 const StyledModal = styled(Modal)`
     ${Modal.Body} {
@@ -25,42 +24,6 @@ const StyledModal = styled(Modal)`
     }
 `;
 
-const getCardanoTokenBundle = (account: Account, output: CardanoOutput) => {
-    // Transforms cardano's tokenBundle into outputs, 1 output per one token
-    // since suite supports only 1 token per output it will return just one item
-    if (!output.tokenBundle || output.tokenBundle.length === 0 || 'addressParameters' in output)
-        return undefined;
-
-    if (account.tokens) {
-        return output.tokenBundle
-            .map(policyGroup =>
-                policyGroup.tokenAmounts.map(token => {
-                    const accountToken = account.tokens!.find(
-                        accountToken =>
-                            accountToken.address ===
-                            `${policyGroup.policyId}${token.assetNameBytes}`,
-                    );
-                    if (!accountToken) return;
-
-                    const fingerprint = accountToken.name
-                        ? getShortFingerprint(accountToken.name)
-                        : undefined;
-
-                    return {
-                        type: 'cardano',
-                        address: output.address,
-                        balance: token.amount,
-                        symbol: token.assetNameBytes
-                            ? Buffer.from(token.assetNameBytes, 'hex').toString('utf8')
-                            : fingerprint,
-                        decimals: accountToken.decimals,
-                    };
-                }),
-            )
-            .flat();
-    }
-};
-
 // This modal is opened either in Device (button request) or User (push tx) context
 // contexts are distinguished by `type` prop
 type ReviewTransactionProps =
@@ -68,18 +31,17 @@ type ReviewTransactionProps =
     | { type: 'sign-transaction'; decision?: undefined };
 
 export const ReviewTransaction = ({ decision }: ReviewTransactionProps) => {
-    const { selectedAccount, send, fees } = useSelector(state => ({
-        selectedAccount: state.wallet.selectedAccount,
-        send: state.wallet.send,
-        fees: state.wallet.fees,
-    }));
+    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
+    const send = useSelector(state => state.wallet.send);
+    const fees = useSelector(state => state.wallet.fees);
+    const device = useSelector(selectDevice);
+
     const { cancelSignTx } = useActions({
         cancelSignTx: sendFormActions.cancelSignTx,
     });
 
     const [detailsOpen, setDetailsOpen] = useState(false);
 
-    const { device } = useDevice();
     const deviceModel = getDeviceModel(device);
 
     const { precomposedTx, precomposedForm, signedTx } = send;
@@ -91,108 +53,26 @@ export const ReviewTransaction = ({ decision }: ReviewTransactionProps) => {
     const { account } = selectedAccount;
     const { networkType } = account;
     const isCardano = isCardanoTx(account, precomposedTx);
-    const isEtherium = networkType === 'ethereum';
+    const isEthereum = networkType === 'ethereum';
     const isRbfAction = !!precomposedTx.prevTxid;
     const decreaseOutputId = precomposedTx.useNativeRbf
         ? precomposedForm.setMaxOutputId
         : undefined;
 
-    const outputs: OutputProps[] = [];
-
-    if (precomposedTx.useNativeRbf) {
-        outputs.push(
-            {
-                type: 'txid',
-                value: precomposedTx.prevTxid!,
-            },
-            {
-                type: 'fee-replace',
-                value: precomposedTx.feeDifference,
-                value2: precomposedTx.fee,
-            },
-        );
-
-        // add decrease output confirmation step between txid and fee
-        if (typeof decreaseOutputId === 'number') {
-            outputs.splice(1, 0, {
-                type: 'reduce-output',
-                label: precomposedTx.transaction.outputs[decreaseOutputId].address!,
-                value: precomposedTx.feeDifference,
-                value2: precomposedTx.transaction.outputs[decreaseOutputId].amount.toString(),
-            });
-        }
-    } else if (isCardano) {
-        precomposedTx.transaction.outputs.forEach(o => {
-            // iterate only through "external" outputs (change output has addressParameters field instead of address)
-            if ('address' in o) {
-                const tokenBundle = getCardanoTokenBundle(account, o)?.[0]; // send form supports one token per output
-
-                // each output will include certain amount of ADA (cardano token outputs require ADA)
-                outputs.push({
-                    type: 'regular',
-                    label: o.address,
-                    value: o.amount,
-                });
-
-                // if the output also includes a token then we need to render another row with the token
-                if (tokenBundle) {
-                    outputs.push({
-                        type: 'regular',
-                        label: o.address,
-                        value: tokenBundle.balance ?? '0',
-                        token: tokenBundle,
-                    });
-                }
-            }
-        });
-    } else {
-        precomposedTx.transaction.outputs.forEach(o => {
-            if (typeof o.address === 'string') {
-                outputs.push({
-                    type: 'regular',
-                    label: o.address,
-                    value: o.amount.toString(),
-                    token: precomposedTx.token,
-                });
-            } else if (o.script_type === 'PAYTOOPRETURN') {
-                outputs.push({
-                    type: 'opreturn',
-                    value: o.op_return_data,
-                });
-            }
-        });
-    }
-
-    if (precomposedForm.bitcoinLockTime) {
-        outputs.push({ type: 'locktime', value: precomposedForm.bitcoinLockTime });
-    }
-
-    if (precomposedForm.ethereumDataHex && !precomposedTx.token) {
-        outputs.push({ type: 'data', value: precomposedForm.ethereumDataHex });
-    }
-
-    if (networkType === 'ripple') {
-        // ripple displays requests on device in different order:
-        // 1. destination tag
-        // 2. fee
-        // 3. output
-        outputs.unshift({ type: 'fee', value: precomposedTx.fee });
-        if (precomposedForm.rippleDestinationTag) {
-            outputs.unshift({
-                type: 'destination-tag',
-                value: precomposedForm.rippleDestinationTag,
-            });
-        }
-    } else if (!precomposedTx.useNativeRbf) {
-        outputs.push({ type: 'fee', value: precomposedTx.fee });
-    }
+    const outputs = constructOutputs({
+        account,
+        decreaseOutputId,
+        device,
+        precomposedForm,
+        precomposedTx,
+    });
 
     // omit other button requests (like passphrase)
     const buttonRequests = device.buttonRequests.filter(
         ({ code }) =>
             code === 'ButtonRequest_ConfirmOutput' ||
             code === 'ButtonRequest_SignTx' ||
-            (code === 'ButtonRequest_Other' && (isCardano || isEtherium)), // Cardano and Etherium are using ButtonRequest_Other
+            (code === 'ButtonRequest_Other' && (isCardano || isEthereum)), // Cardano and Ethereum are using ButtonRequest_Other
     );
 
     // NOTE: T1 edge-case
