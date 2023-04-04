@@ -11,6 +11,7 @@ import { EthereumTokenSymbol } from '@suite-native/ethereum-tokens';
 import { FormatterProps } from '../types';
 import { EmptyAmountText } from './EmptyAmountText';
 import { AmountText } from './AmountText';
+import { convertTokenValueToDecimal } from '../utils';
 
 type EthereumTokenToFiatAmountFormatterProps = {
     ethereumToken: EthereumTokenSymbol;
@@ -19,7 +20,7 @@ type EthereumTokenToFiatAmountFormatterProps = {
 } & FormatterProps<number | string> &
     TextProps;
 
-export const TokenToFiatAmountFormatter = ({
+export const EthereumTokenToFiatAmountFormatter = ({
     value,
     ethereumToken,
     isDiscreetText = true,
@@ -34,10 +35,9 @@ export const TokenToFiatAmountFormatter = ({
 
     if (!rates) return <EmptyAmountText />;
 
-    const shiftedValue = Number(value) / 10 ** decimals;
-    const amount = toFiatCurrency(shiftedValue.toString(), fiatCurrency.label, rates, 2);
-
-    const formattedFiatValue = FiatAmountFormatter.format(amount ?? 0);
+    const decimalValue = convertTokenValueToDecimal(value, decimals);
+    const fiatValue = toFiatCurrency(decimalValue.toString(), fiatCurrency.label, rates, 2);
+    const formattedFiatValue = FiatAmountFormatter.format(fiatValue ?? 0);
 
     return <AmountText value={formattedFiatValue} isDiscreetText={isDiscreetText} {...rest} />;
 };

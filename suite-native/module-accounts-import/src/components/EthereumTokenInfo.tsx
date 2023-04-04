@@ -1,7 +1,10 @@
 import React from 'react';
 
 import { EthereumTokenIcon, EthereumTokenIconName } from '@trezor/icons';
-import { EthereumTokenAmountFormatter, TokenToFiatAmountFormatter } from '@suite-native/formatters';
+import {
+    EthereumTokenAmountFormatter,
+    EthereumTokenToFiatAmountFormatter,
+} from '@suite-native/formatters';
 import { EthereumTokenSymbol } from '@suite-native/ethereum-tokens';
 
 import { AccountImportOverviewCard } from './AccountImportOverviewCard';
@@ -30,7 +33,7 @@ export const EthereumTokenInfo = ({ symbol, balance, name, decimals }: EthereumT
             }
             icon={<EthereumTokenIcon name={symbol as EthereumTokenIconName} />}
         >
-            <TokenToFiatAmountFormatter
+            <EthereumTokenToFiatAmountFormatter
                 value={balance}
                 ethereumToken={symbol}
                 decimals={decimals}

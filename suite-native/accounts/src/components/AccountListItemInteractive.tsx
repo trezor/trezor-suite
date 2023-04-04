@@ -2,13 +2,14 @@ import React from 'react';
 import { TouchableOpacity } from 'react-native';
 
 import { Box } from '@suite-native/atoms';
-import { isEthereumAccountSymbol } from '@suite-native/ethereum-tokens';
+import { EthereumTokenSymbol, isEthereumAccountSymbol } from '@suite-native/ethereum-tokens';
+import { AccountKey } from '@suite-common/wallet-types';
 
 import { AccountListItem, AccountListItemProps } from './AccountListItem';
 import { TokenList } from './TokenList';
 
 interface AccountListItemInteractiveProps extends AccountListItemProps {
-    onSelectAccount: (accountKey: string) => void;
+    onSelectAccount: (accountKey: AccountKey, tokenSymbol?: EthereumTokenSymbol) => void;
 }
 
 export const AccountListItemInteractive = ({
@@ -19,6 +20,8 @@ export const AccountListItemInteractive = ({
         <TouchableOpacity onPress={() => onSelectAccount(account.key)}>
             <AccountListItem key={account.key} account={account} />
         </TouchableOpacity>
-        {isEthereumAccountSymbol(account.symbol) && <TokenList accountKey={account.key} />}
+        {isEthereumAccountSymbol(account.symbol) && (
+            <TokenList accountKey={account.key} onSelectAccount={onSelectAccount} />
+        )}
     </Box>
 );

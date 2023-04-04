@@ -4,12 +4,21 @@ import { useSelector } from 'react-redux';
 import { A } from '@mobily/ts-belt';
 
 import { VStack } from '@suite-native/atoms';
-import { selectEthereumAccountsTokensWithBalance } from '@suite-native/ethereum-tokens';
+import {
+    EthereumTokenSymbol,
+    selectEthereumAccountsTokensWithBalance,
+} from '@suite-native/ethereum-tokens';
 import { AccountsRootState, selectAccountLabel } from '@suite-common/wallet-core';
+import { AccountKey } from '@suite-common/wallet-types';
 
 import { TokenListItem } from './TokenListItem';
 
-export const TokenList = ({ accountKey }: { accountKey: string }) => {
+type TokenListProps = {
+    accountKey: string;
+    onSelectAccount: (accountKey: AccountKey, tokenSymbol?: EthereumTokenSymbol) => void;
+};
+
+export const TokenList = ({ accountKey, onSelectAccount }: TokenListProps) => {
     const accountTokens = useSelector((state: AccountsRootState) =>
         selectEthereumAccountsTokensWithBalance(state, accountKey),
     );
@@ -23,8 +32,10 @@ export const TokenList = ({ accountKey }: { accountKey: string }) => {
         <VStack>
             {accountTokens.map((token, index) => (
                 <TokenListItem
+                    accountKey={accountKey}
                     key={token.name}
                     symbol={token.symbol}
+                    onSelectAccount={onSelectAccount}
                     balance={token.balance}
                     label={`${accountLabel} ${token.name}`}
                     isLast={accountTokens?.length - 1 === index}

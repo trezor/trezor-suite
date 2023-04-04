@@ -7,6 +7,7 @@ import { localizeNumber } from '@suite-common/wallet-utils';
 import { FormatterProps } from '../types';
 import { EthereumTokenSymbolFormatter } from './EthereumTokenSymbolFormatter';
 import { AmountText } from './AmountText';
+import { convertTokenValueToDecimal } from '../utils';
 
 type EthereumTokenAmountFormatterProps = {
     ethereumToken: EthereumTokenSymbol;
@@ -24,23 +25,24 @@ export const EthereumTokenAmountFormatter = ({
     color = 'textSubdued',
     ...rest
 }: EthereumTokenAmountFormatterProps) => {
-    const formattedValue = localizeNumber(Number(value) / 10 ** decimals);
+    const decimalValue = convertTokenValueToDecimal(value, decimals);
+    const formattedValue = localizeNumber(decimalValue);
 
     return (
         <Box flexDirection="row">
             <AmountText
                 value={formattedValue}
                 isDiscreetText={isDiscreetText}
-                {...rest}
                 variant={variant}
                 color={color}
+                {...rest}
             />
             <Text> </Text>
             <EthereumTokenSymbolFormatter
                 ethereumSymbol={ethereumToken}
-                {...rest}
                 variant={variant}
                 color={color}
+                {...rest}
             />
         </Box>
     );

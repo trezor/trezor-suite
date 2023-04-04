@@ -5,11 +5,13 @@ import { A } from '@mobily/ts-belt';
 
 import { Text } from '@suite-native/atoms';
 import { selectAccounts, selectAccountsSymbols } from '@suite-common/wallet-core';
+import { AccountKey } from '@suite-common/wallet-types';
+import { EthereumTokenSymbol } from '@suite-native/ethereum-tokens';
 
 import { AccountsListGroup } from './AccountsListGroup';
 
 type AccountsListProps = {
-    onSelectAccount: (accountKey: string) => void;
+    onSelectAccount: (accountKey: AccountKey, tokenSymbol?: EthereumTokenSymbol) => void;
 };
 
 export const AccountsList = ({ onSelectAccount }: AccountsListProps) => {
