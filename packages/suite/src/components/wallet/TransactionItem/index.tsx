@@ -12,15 +12,8 @@ import { AccountMetadata } from '@suite-types/metadata';
 import { Network, WalletAccountTransaction } from '@wallet-types';
 import { TransactionTypeIcon } from './components/TransactionTypeIcon';
 import { TransactionHeading } from './components/TransactionHeading';
-import {
-    Target,
-    TokenTransfer,
-    FeeRow,
-    WithdrawalRow,
-    DepositRow,
-    CoinjoinRow,
-    InternalTransfer,
-} from './components/Target';
+import { Target, TokenTransfer, InternalTransfer } from './components/Target';
+import { FeeRow, WithdrawalRow, DepositRow, CoinjoinRow } from './components/Row';
 import {
     Content,
     Description,
