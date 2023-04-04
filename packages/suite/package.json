@@ -1,6 +1,6 @@
 {
     "name": "@trezor/suite",
-    "suiteVersion": "33.4.1",
+    "suiteVersion": "0.23.4",
     "version": "1.0.0",
     "private": true,
     "scripts": {
