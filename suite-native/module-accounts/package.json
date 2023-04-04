@@ -20,6 +20,7 @@
         "@suite-common/wallet-types": "workspace:*",
         "@suite-native/accounts": "workspace:*",
         "@suite-native/atoms": "workspace:*",
+        "@suite-native/ethereum-tokens": "workspace:*",
         "@suite-native/formatters": "workspace:*",
         "@suite-native/forms": "workspace:*",
         "@suite-native/graph": "workspace:*",

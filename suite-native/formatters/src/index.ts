@@ -5,4 +5,4 @@ export { PercentageDifferenceFormatter } from './components/PercentageDifference
 export { FiatAmountFormatter } from './components/FiatAmountFormatter';
 export { CryptoAmountFormatter } from './components/CryptoAmountFormatter';
 export { EthereumTokenAmountFormatter } from './components/EthereumTokenAmountFormatter';
-export { TokenToFiatAmountFormatter } from './components/TokenToFiatAmountFormatter';
+export { EthereumTokenToFiatAmountFormatter } from './components/EthereumTokenToFiatAmountFormatter';

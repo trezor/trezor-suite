@@ -1,20 +1,24 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { TouchableOpacity } from 'react-native';
 
-import { BottomSheet, Box, Text } from '@suite-native/atoms';
-import { Icon, IconSize } from '@trezor/icons';
-import { EthereumTokenAmountFormatter, TokenToFiatAmountFormatter } from '@suite-native/formatters';
-import { EthereumTokenSymbol } from '@suite-native/ethereum-tokens';
+import { Box, Text } from '@suite-native/atoms';
+import { EthereumTokenIcon } from '@trezor/icons';
+import {
+    EthereumTokenAmountFormatter,
+    EthereumTokenToFiatAmountFormatter,
+} from '@suite-native/formatters';
+import { EthereumTokenSymbol, getEthereumTokenIconName } from '@suite-native/ethereum-tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { AccountKey } from '@suite-common/wallet-types';
 
 type TokenListItemProps = {
     balance: string;
     isLast: boolean;
     label: string;
     symbol: EthereumTokenSymbol;
+    accountKey: AccountKey;
+    onSelectAccount: (accountKey: AccountKey, tokenSymbol?: EthereumTokenSymbol) => void;
 };
-
-const TOKEN_ICON_SIZE: IconSize = 'large';
 
 const tokenListItemStyle = prepareNativeStyle<{ isLast: boolean }>((utils, { isLast }) => ({
     backgroundColor: utils.colors.backgroundSurfaceElevation1,
@@ -33,20 +37,28 @@ const horizontalLine = prepareNativeStyle(utils => ({
     height: utils.spacings.medium,
     borderLeftColor: utils.colors.borderDashed,
     borderLeftWidth: 1,
-    marginLeft: utils.spacings.medium + utils.spacings[TOKEN_ICON_SIZE] / 2,
+    marginLeft: utils.spacings.medium + utils.spacings.large / 2,
 }));
 
-export const TokenListItem = ({ symbol, balance, isLast, label }: TokenListItemProps) => {
+export const TokenListItem = ({
+    symbol,
+    balance,
+    isLast,
+    label,
+    accountKey,
+    onSelectAccount,
+}: TokenListItemProps) => {
     const { applyStyle } = useNativeStyles();
-    const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
 
-    const handleOpenBottomSheet = () => {
-        setIsBottomSheetOpen(true);
+    const handleOnPress = () => {
+        onSelectAccount(accountKey, symbol);
     };
+
+    const iconName = getEthereumTokenIconName(symbol);
 
     return (
         <>
-            <TouchableOpacity onPress={handleOpenBottomSheet}>
+            <TouchableOpacity onPress={handleOnPress}>
                 <Box style={applyStyle(horizontalLine)} />
                 <Box
                     flexDirection="row"
@@ -56,23 +68,19 @@ export const TokenListItem = ({ symbol, balance, isLast, label }: TokenListItemP
                 >
                     <Box flexDirection="row">
                         <Box marginRight="small">
-                            <Icon name="eye" size={TOKEN_ICON_SIZE} />
+                            <EthereumTokenIcon name={iconName} />
                         </Box>
                         <Text>{label}</Text>
                     </Box>
                     <Box alignItems="flex-end">
-                        <TokenToFiatAmountFormatter value={balance} ethereumToken={symbol} />
+                        <EthereumTokenToFiatAmountFormatter
+                            value={balance}
+                            ethereumToken={symbol}
+                        />
                         <EthereumTokenAmountFormatter value={balance} ethereumToken={symbol} />
                     </Box>
                 </Box>
             </TouchableOpacity>
-            <BottomSheet
-                isVisible={isBottomSheetOpen}
-                onClose={() => setIsBottomSheetOpen(false)}
-                title={label}
-            >
-                <Text>Token detail feature not available yet.</Text>
-            </BottomSheet>
         </>
     );
 };

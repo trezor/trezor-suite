@@ -21,10 +21,14 @@
             "path": "../../suite-common/wallet-utils"
         },
         { "path": "../atoms" },
+        { "path": "../ethereum-tokens" },
         { "path": "../formatters" },
         { "path": "../helpers" },
         { "path": "../module-settings" },
         { "path": "../navigation" },
+        {
+            "path": "../../packages/blockchain-link-types"
+        },
         { "path": "../../packages/icons" },
         { "path": "../../packages/styles" },
         { "path": "../../packages/theme" }

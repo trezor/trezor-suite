@@ -11,7 +11,7 @@ import {
     RootStackRoutes,
     Screen,
     ScreenHeader,
-    StackNavigationProps,
+    StackToStackCompositeNavigationProps,
     StackProps,
 } from '@suite-native/navigation';
 import { BottomSheet, Box, Button, Card, Text, VStack } from '@suite-native/atoms';
@@ -58,7 +58,11 @@ export const AccountSettingsScreen = ({
     const [isXpubVisible, setIsXpubVisible] = useState(false);
     const navigation =
         useNavigation<
-            StackNavigationProps<AccountsStackParamList, AccountsStackRoutes.AccountDetailSettings>
+            StackToStackCompositeNavigationProps<
+                RootStackParamList,
+                RootStackRoutes.AccountSettings,
+                AccountsStackParamList
+            >
         >();
     const dispatch = useDispatch();
     const account = useSelector((state: AccountsRootState) =>

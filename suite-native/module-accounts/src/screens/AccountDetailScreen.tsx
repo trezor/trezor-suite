@@ -13,16 +13,20 @@ import {
     selectAccountLabel,
     selectAccountByKey,
     TransactionsRootState,
-    selectAccountTransactions,
 } from '@suite-common/wallet-core';
 import { TransactionList } from '@suite-native/transactions';
+import {
+    selectAccountOrTokenAccountTransactions,
+    selectEthereumAccountToken,
+} from '@suite-native/ethereum-tokens';
 
 import { TransactionListHeader } from '../components/TransactionListHeader';
 import { AccountDetailScreenHeader } from '../components/AccountDetailScreenHeader';
 
 export const AccountDetailScreen = memo(
     ({ route }: StackProps<AccountsStackParamList, AccountsStackRoutes.AccountDetail>) => {
-        const { accountKey } = route.params;
+        const dispatch = useDispatch();
+        const { accountKey, tokenSymbol } = route.params;
         const account = useSelector((state: AccountsRootState) =>
             selectAccountByKey(state, accountKey),
         );
@@ -30,9 +34,11 @@ export const AccountDetailScreen = memo(
             selectAccountLabel(state, accountKey),
         );
         const accountTransactions = useSelector((state: TransactionsRootState) =>
-            selectAccountTransactions(state, accountKey),
+            selectAccountOrTokenAccountTransactions(state, accountKey, tokenSymbol ?? null),
         );
-        const dispatch = useDispatch();
+        const token = useSelector((state: AccountsRootState) =>
+            selectEthereumAccountToken(state, accountKey, tokenSymbol),
+        );
 
         const fetchMoreTransactions = useCallback(
             (pageToFetch: number, perPage: number) => {
@@ -55,6 +61,7 @@ export const AccountDetailScreen = memo(
                     <AccountDetailScreenHeader
                         accountLabel={accountLabel}
                         accountKey={accountKey}
+                        tokenName={token?.name}
                     />
                 }
                 customHorizontalPadding={0}
@@ -62,9 +69,12 @@ export const AccountDetailScreen = memo(
             >
                 <TransactionList
                     accountKey={accountKey}
+                    tokenSymbol={tokenSymbol}
                     transactions={accountTransactions}
                     fetchMoreTransactions={fetchMoreTransactions}
-                    listHeaderComponent={<TransactionListHeader accountKey={accountKey} />}
+                    listHeaderComponent={
+                        <TransactionListHeader accountKey={accountKey} tokenSymbol={tokenSymbol} />
+                    }
                 />
             </Screen>
         );

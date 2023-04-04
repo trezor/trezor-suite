@@ -13,6 +13,7 @@
         },
         { "path": "../accounts" },
         { "path": "../atoms" },
+        { "path": "../ethereum-tokens" },
         { "path": "../formatters" },
         { "path": "../forms" },
         { "path": "../graph" },
