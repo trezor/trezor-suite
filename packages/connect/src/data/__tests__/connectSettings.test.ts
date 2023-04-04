@@ -1,16 +1,6 @@
-import { corsValidator, parseConnectSettings } from '../connectSettings';
-
-declare let window: any; // window.location types doesn't allow deleting/overriding location
+import { corsValidator } from '../connectSettings';
 
 describe('data/connectSettings', () => {
-    const { location } = window;
-    beforeAll(() => {
-        delete window.location;
-    });
-    afterAll(() => {
-        window.location = location; // restore default
-    });
-
     it('corsValidator', () => {
         expect(corsValidator('https://connect.trezor.io/9-beta/')).toBeDefined();
         expect(corsValidator('https://az-AZ_123.trezor.io/')).toBeDefined();
