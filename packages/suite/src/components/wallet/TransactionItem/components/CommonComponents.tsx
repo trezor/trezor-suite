@@ -1,7 +1,7 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { variables } from '@trezor/components';
-import { HiddenPlaceholder } from '@suite-components';
+import { FormattedCryptoAmount, FormattedNftAmount, HiddenPlaceholder } from '@suite-components';
 import { MIN_ROW_HEIGHT } from './BaseTargetLayout';
 
 export const TxTypeIconWrapper = styled.div`
@@ -61,4 +61,20 @@ export const TargetsWrapper = styled.div`
     overflow: hidden;
     padding-right: 10px;
     margin-right: -10px;
+`;
+
+const amountStyle = css`
+    width: 100%;
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
+    font-size: ${variables.FONT_SIZE.NORMAL};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    white-space: nowrap;
+`;
+
+export const StyledFormattedCryptoAmount = styled(FormattedCryptoAmount)`
+    ${amountStyle}
+`;
+
+export const StyledFormattedNftAmount = styled(FormattedNftAmount)`
+    ${amountStyle}
 `;

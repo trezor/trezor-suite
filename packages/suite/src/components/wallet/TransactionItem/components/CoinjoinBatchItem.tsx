@@ -17,13 +17,13 @@ import { WalletAccountTransaction } from '@wallet-types/index';
 import { HiddenPlaceholder, Translation } from '@suite-components';
 import { TransactionTimestamp } from '@wallet-components/TransactionTimestamp';
 
-import { StyledFormattedCryptoAmount } from './Target';
 import { TransactionTypeIcon } from './TransactionTypeIcon';
 import { BaseTargetLayout } from './BaseTargetLayout';
 import {
     Content,
     Description,
     NextRow,
+    StyledFormattedCryptoAmount,
     TargetsWrapper,
     TimestampWrapper,
     TxTypeIconWrapper,

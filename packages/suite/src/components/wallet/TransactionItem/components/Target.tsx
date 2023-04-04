@@ -1,23 +1,12 @@
 import React from 'react';
-import styled, { css } from 'styled-components';
-import BigNumber from 'bignumber.js';
-import { variables } from '@trezor/components';
 import { getIsZeroValuePhishing } from '@suite-common/suite-utils';
-import {
-    FiatValue,
-    Translation,
-    MetadataLabeling,
-    FormattedCryptoAmount,
-    AddressLabeling,
-} from '@suite-components';
+import { FiatValue, Translation, MetadataLabeling, AddressLabeling } from '@suite-components';
 import { ArrayElement } from '@trezor/type-utils';
 import {
     getTxOperation,
     getTargetAmount,
     isTestnet,
     formatAmount,
-    formatCardanoWithdrawal,
-    formatCardanoDeposit,
     formatNetworkAmount,
     isNftTokenTransfer,
 } from '@suite-common/wallet-utils';
@@ -29,25 +18,7 @@ import { TargetAddressLabel } from './TargetAddressLabel';
 import { BaseTargetLayout } from './BaseTargetLayout';
 import { copyToClipboard } from '@trezor/dom-utils';
 import { AccountMetadata } from '@suite-types/metadata';
-import { ExtendedMessageDescriptor } from '@suite-types';
-import { SignOperator } from '@suite-common/suite-types';
-import { FormattedNftAmount } from '@suite-components/FormattedNftAmount';
-
-const amountStyle = css`
-    width: 100%;
-    color: ${({ theme }) => theme.TYPE_DARK_GREY};
-    font-size: ${variables.FONT_SIZE.NORMAL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    white-space: nowrap;
-`;
-
-export const StyledFormattedCryptoAmount = styled(FormattedCryptoAmount)`
-    ${amountStyle}
-`;
-
-const StyledFormattedNftAmount = styled(FormattedNftAmount)`
-    ${amountStyle}
-`;
+import { StyledFormattedCryptoAmount, StyledFormattedNftAmount } from './CommonComponents';
 
 interface BaseTransfer {
     singleRowLayout?: boolean;
@@ -223,145 +194,3 @@ export const Target = ({
         />
     );
 };
-
-export const CustomRow = ({
-    transaction,
-    title,
-    amount,
-    sign,
-    useFiatValues,
-    ...baseLayoutProps
-}: {
-    amount: string;
-    sign: SignOperator;
-    title: ExtendedMessageDescriptor['id'];
-    transaction: WalletAccountTransaction;
-    useFiatValues?: boolean;
-    isFirst?: boolean;
-    isLast?: boolean;
-    className?: string;
-}) => (
-    <BaseTargetLayout
-        {...baseLayoutProps}
-        addressLabel={<Translation id={title} />}
-        amount={
-            <StyledFormattedCryptoAmount
-                value={amount}
-                symbol={transaction.symbol}
-                signValue={sign}
-            />
-        }
-        fiatAmount={
-            useFiatValues ? (
-                <FiatValue
-                    amount={amount}
-                    symbol={transaction.symbol}
-                    source={transaction.rates}
-                    useCustomSource
-                />
-            ) : undefined
-        }
-    />
-);
-
-export const FeeRow = ({
-    fee,
-    transaction,
-    useFiatValues,
-    ...baseLayoutProps
-}: {
-    fee: string;
-    transaction: WalletAccountTransaction;
-    useFiatValues?: boolean;
-    isFirst?: boolean;
-    isLast?: boolean;
-    className?: string;
-}) => (
-    <CustomRow
-        {...baseLayoutProps}
-        title="FEE"
-        sign="negative"
-        amount={fee}
-        transaction={transaction}
-        useFiatValues={useFiatValues}
-    />
-);
-
-export const WithdrawalRow = ({
-    transaction,
-    useFiatValues,
-    ...baseLayoutProps
-}: {
-    transaction: WalletAccountTransaction;
-    useFiatValues?: boolean;
-    isFirst?: boolean;
-    isLast?: boolean;
-    className?: string;
-}) => (
-    <CustomRow
-        {...baseLayoutProps}
-        title="TR_TX_WITHDRAWAL"
-        sign="positive"
-        amount={formatCardanoWithdrawal(transaction) ?? '0'}
-        transaction={transaction}
-        useFiatValues={useFiatValues}
-    />
-);
-
-export const DepositRow = ({
-    transaction,
-    useFiatValues,
-    ...baseLayoutProps
-}: {
-    transaction: WalletAccountTransaction;
-    useFiatValues?: boolean;
-    isFirst?: boolean;
-    isLast?: boolean;
-    className?: string;
-}) => (
-    <CustomRow
-        {...baseLayoutProps}
-        title="TR_TX_DEPOSIT"
-        sign="negative"
-        amount={formatCardanoDeposit(transaction) ?? '0'}
-        transaction={transaction}
-        useFiatValues={useFiatValues}
-    />
-);
-
-export const CoinjoinRow = ({
-    transaction,
-    useFiatValues,
-}: {
-    transaction: WalletAccountTransaction;
-    useFiatValues?: boolean;
-}) => (
-    <BaseTargetLayout
-        fiatAmount={
-            useFiatValues ? (
-                <FiatValue
-                    amount={formatNetworkAmount(
-                        new BigNumber(transaction.amount).abs().toString(),
-                        transaction.symbol,
-                    )}
-                    symbol={transaction.symbol}
-                    source={transaction.rates}
-                    useCustomSource
-                />
-            ) : undefined
-        }
-        addressLabel={
-            <Translation
-                id="TR_JOINT_TRANSACTION_TARGET"
-                values={{
-                    in: transaction.details.vin.length,
-                    inMy: transaction.details.vin.filter(v => v.isAccountOwned).length,
-                    out: transaction.details.vout.length,
-                    outMy: transaction.details.vout.filter(v => v.isAccountOwned).length,
-                }}
-            />
-        }
-        isFirst
-        isLast
-    />
-);
