@@ -11,14 +11,23 @@ import type { Account } from '@wallet-types';
 
 export type OutputProps =
     | {
-          type: 'regular';
+          type: 'regular_legacy';
           label: string;
           value: string;
           value2?: undefined;
           token?: TokenInfo;
       }
     | {
-          type: 'opreturn' | 'data' | 'locktime' | 'fee' | 'destination-tag' | 'txid';
+          type:
+              | 'opreturn'
+              | 'data'
+              | 'locktime'
+              | 'fee'
+              | 'destination-tag'
+              | 'txid'
+              | 'address'
+              | 'amount'
+              | 'gas';
           label?: string;
           value: string;
           value2?: string;
@@ -61,8 +70,17 @@ const Output = (props: Props) => {
     if (type === 'fee') {
         outputLabel = <Translation id="FEE" />;
     }
+    if (type === 'address') {
+        outputLabel = <Translation id="TR_ADDRESS" />;
+    }
+    if (type === 'amount') {
+        outputLabel = <Translation id="TR_AMOUNT_SENT" />;
+    }
     if (type === 'destination-tag') {
         outputLabel = <Translation id="DESTINATION_TAG" />;
+    }
+    if (type === 'gas') {
+        outputLabel = <Translation id="TR_GAS_PRICE" />;
     }
 
     let outputValue = value;
@@ -71,8 +89,11 @@ const Output = (props: Props) => {
     if (token) {
         outputValue = formatAmount(value, token.decimals);
         outputSymbol = token.symbol as NetworkSymbol;
-    } else if (type === 'regular' || type === 'fee') {
+    } else if (type === 'regular_legacy' || type === 'fee' || type === 'amount') {
         outputValue = formatNetworkAmount(value, symbol);
+        outputSymbol = symbol;
+        fiatVisible = !isTestnet(symbol);
+    } else if (type === 'gas') {
         outputSymbol = symbol;
         fiatVisible = !isTestnet(symbol);
     }
@@ -129,6 +150,15 @@ const Output = (props: Props) => {
             {
                 id: 'default',
                 label: <Translation id="DATA_ETH" />,
+                value: outputValue,
+                plainValue: true,
+            },
+        ];
+    } else if (type === 'address') {
+        outputLines = [
+            {
+                id: 'default',
+                label: outputLabel,
                 value: outputValue,
                 plainValue: true,
             },

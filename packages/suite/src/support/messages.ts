@@ -7949,4 +7949,16 @@ export default defineMessages({
         id: 'TR_DISABLE_AUTOPAUSE_COINJOIN',
         defaultMessage: "Don't pause",
     },
+    TR_AMOUNT_SENT: {
+        id: 'TR_AMOUNT_SENT',
+        defaultMessage: 'Amount sent',
+    },
+    TR_TOTAL_AMOUNT: {
+        id: 'TR_TOTAL_AMOUNT',
+        defaultMessage: 'Total amount',
+    },
+    TR_INCLUDING_FEE: {
+        id: 'TR_INCLUDING_FEE',
+        defaultMessage: 'Including fee',
+    },
 });

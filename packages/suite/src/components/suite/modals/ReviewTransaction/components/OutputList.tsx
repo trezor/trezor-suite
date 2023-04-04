@@ -1,23 +1,22 @@
-import React, { createRef } from 'react';
+import React, { createRef, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { Button, variables } from '@trezor/components';
 import { Translation } from '@suite-components';
-import { formatNetworkAmount, isTestnet } from '@suite-common/wallet-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { copyToClipboard, download } from '@trezor/dom-utils';
 import { useActions } from '@suite-hooks';
 import { TransactionDetails } from './TransactionDetails';
-import Indicator from './Indicator';
 import Output, { OutputProps } from './Output';
-import OutputElement from './OutputElement';
 import type { Account } from '@wallet-types';
 import type {
     FormState,
     PrecomposedTransactionFinal,
     TxFinalCardano,
 } from '@wallet-types/sendForm';
+import { getOutputState } from './getOutputState';
+import { TotalOutput } from './TotalOutput';
 
 const Content = styled.div`
     display: flex;
@@ -72,7 +71,7 @@ const StyledButton = styled(Button)`
     }
 `;
 
-interface OutputListProps {
+export interface OutputListProps {
     account: Account;
     precomposedForm: FormState;
     precomposedTx: PrecomposedTransactionFinal | TxFinalCardano;
@@ -83,12 +82,6 @@ interface OutputListProps {
     buttonRequestsCount: number;
     isRbfAction: boolean;
 }
-
-const getState = (index: number, buttonRequestsCount: number) => {
-    if (index === buttonRequestsCount - 1) return 'active';
-    if (index < buttonRequestsCount - 1) return 'success';
-    return undefined;
-};
 
 const OutputList = ({
     account,
@@ -130,6 +123,16 @@ const OutputList = ({
         });
 
     const htmlElement = createRef<HTMLDivElement>();
+    const totalRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const isLastStep = getOutputState(outputs.length, buttonRequestsCount) === 'active';
+
+        if (isLastStep) {
+            totalRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    }, [buttonRequestsCount, outputs.length, totalRef]);
+
     const { addNotification } = useActions({
         addNotification: notificationsActions.addToast,
     });
@@ -143,7 +146,7 @@ const OutputList = ({
                         {outputs.map((output, index) => {
                             const state = signedTx
                                 ? 'success'
-                                : getState(index, buttonRequestsCount);
+                                : getOutputState(index, buttonRequestsCount);
 
                             return (
                                 <Output
@@ -157,32 +160,15 @@ const OutputList = ({
                                 />
                             );
                         })}
+
                         {!precomposedTx.token && (
-                            <OutputElement
+                            <TotalOutput
+                                ref={totalRef}
                                 account={account}
-                                indicator={
-                                    <Indicator
-                                        state={
-                                            signedTx
-                                                ? 'success'
-                                                : getState(outputs.length, buttonRequestsCount)
-                                        }
-                                        size={16}
-                                    />
-                                }
-                                lines={[
-                                    {
-                                        id: 'total',
-                                        label: <Translation id="TR_TOTAL" />,
-                                        value: formatNetworkAmount(
-                                            precomposedTx.totalSpent,
-                                            symbol,
-                                        ),
-                                    },
-                                ]}
-                                cryptoSymbol={symbol}
-                                fiatSymbol={symbol}
-                                fiatVisible={!isTestnet(symbol)}
+                                signedTx={signedTx}
+                                outputs={outputs}
+                                buttonRequestsCount={buttonRequestsCount}
+                                precomposedTx={precomposedTx}
                             />
                         )}
                     </RightTopInner>

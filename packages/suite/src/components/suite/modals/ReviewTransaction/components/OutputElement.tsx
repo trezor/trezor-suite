@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 import styled from 'styled-components';
 
 import { Truncate, variables } from '@trezor/components';
@@ -146,88 +146,93 @@ const getFingerprint = (
     return token?.name;
 };
 
-const OutputElement = ({
-    indicator,
-    lines,
-    token,
-    cryptoSymbol,
-    fiatSymbol,
-    hasExpansion = false,
-    fiatVisible = false,
-    account,
-}: OutputElementProps) => {
-    const { tokens, networkType } = account;
-    const cardanoFingerprint = getFingerprint(tokens, token?.symbol);
+const OutputElement = forwardRef<HTMLDivElement, OutputElementProps>(
+    (
+        {
+            indicator,
+            lines,
+            token,
+            cryptoSymbol,
+            fiatSymbol,
+            hasExpansion = false,
+            fiatVisible = false,
+            account,
+        },
+        ref,
+    ) => {
+        const { tokens, networkType } = account;
+        const cardanoFingerprint = getFingerprint(tokens, token?.symbol);
 
-    return (
-        <OutputWrapper>
-            <OutputLeft>
-                {lines.length > 1 ? (
-                    <MultiIndicatorWrapper linesCount={lines.length - 1}>
-                        {indicator}
-                    </MultiIndicatorWrapper>
-                ) : (
-                    <>{indicator}</>
-                )}
-            </OutputLeft>
-            <OutputRight>
-                {lines.map(line => (
-                    <OutputRightLine key={line.id}>
-                        <OutputHeadline>
-                            <Truncate>{line.label}</Truncate>
-                        </OutputHeadline>
-                        <OutputValue>
-                            <TruncateWrapper condition={hasExpansion}>
-                                <OutputValueWrapper>
-                                    {line.plainValue ? (
-                                        line.value
-                                    ) : (
-                                        <FormattedCryptoAmount
-                                            disableHiddenPlaceholder
-                                            value={line.value}
-                                            symbol={cryptoSymbol}
-                                        />
-                                    )}
-                                </OutputValueWrapper>
-                                {fiatVisible && (
-                                    <>
-                                        <DotSeparatorWrapper>
-                                            <DotSeparator />
-                                        </DotSeparatorWrapper>
-                                        <OutputValueWrapper>
-                                            <FiatValue
+        return (
+            <OutputWrapper ref={ref}>
+                <OutputLeft>
+                    {lines.length > 1 ? (
+                        <MultiIndicatorWrapper linesCount={lines.length - 1}>
+                            {indicator}
+                        </MultiIndicatorWrapper>
+                    ) : (
+                        <>{indicator}</>
+                    )}
+                </OutputLeft>
+                <OutputRight>
+                    {lines.map(line => (
+                        <OutputRightLine key={line.id}>
+                            <OutputHeadline>
+                                <Truncate>{line.label}</Truncate>
+                            </OutputHeadline>
+                            <OutputValue>
+                                <TruncateWrapper condition={hasExpansion}>
+                                    <OutputValueWrapper>
+                                        {line.plainValue ? (
+                                            line.value
+                                        ) : (
+                                            <FormattedCryptoAmount
                                                 disableHiddenPlaceholder
-                                                amount={line.value}
-                                                symbol={fiatSymbol}
+                                                value={line.value}
+                                                symbol={cryptoSymbol}
                                             />
-                                        </OutputValueWrapper>
-                                    </>
-                                )}
-                            </TruncateWrapper>
-                        </OutputValue>
-                        {networkType === 'cardano' && cardanoFingerprint && (
-                            <CardanoTrezorAmountWrapper>
-                                <OutputHeadline>
-                                    <Translation id="TR_CARDANO_FINGERPRINT_HEADLINE" />
-                                </OutputHeadline>
-                                <OutputValue>{cardanoFingerprint}</OutputValue>
-                            </CardanoTrezorAmountWrapper>
-                        )}
-                        {networkType === 'cardano' && token && token.decimals !== 0 && (
-                            <CardanoTrezorAmountWrapper>
-                                <OutputHeadline>
-                                    <Translation id="TR_CARDANO_TREZOR_AMOUNT_HEADLINE" />
-                                </OutputHeadline>
-                                <OutputValue>
-                                    {amountToSatoshi(line.value, token.decimals)}
-                                </OutputValue>
-                            </CardanoTrezorAmountWrapper>
-                        )}
-                    </OutputRightLine>
-                ))}
-            </OutputRight>
-        </OutputWrapper>
-    );
-};
+                                        )}
+                                    </OutputValueWrapper>
+                                    {fiatVisible && (
+                                        <>
+                                            <DotSeparatorWrapper>
+                                                <DotSeparator />
+                                            </DotSeparatorWrapper>
+                                            <OutputValueWrapper>
+                                                <FiatValue
+                                                    disableHiddenPlaceholder
+                                                    amount={line.value}
+                                                    symbol={fiatSymbol}
+                                                />
+                                            </OutputValueWrapper>
+                                        </>
+                                    )}
+                                </TruncateWrapper>
+                            </OutputValue>
+                            {networkType === 'cardano' && cardanoFingerprint && (
+                                <CardanoTrezorAmountWrapper>
+                                    <OutputHeadline>
+                                        <Translation id="TR_CARDANO_FINGERPRINT_HEADLINE" />
+                                    </OutputHeadline>
+                                    <OutputValue>{cardanoFingerprint}</OutputValue>
+                                </CardanoTrezorAmountWrapper>
+                            )}
+                            {networkType === 'cardano' && token && token.decimals !== 0 && (
+                                <CardanoTrezorAmountWrapper>
+                                    <OutputHeadline>
+                                        <Translation id="TR_CARDANO_TREZOR_AMOUNT_HEADLINE" />
+                                    </OutputHeadline>
+                                    <OutputValue>
+                                        {amountToSatoshi(line.value, token.decimals)}
+                                    </OutputValue>
+                                </CardanoTrezorAmountWrapper>
+                            )}
+                        </OutputRightLine>
+                    ))}
+                </OutputRight>
+            </OutputWrapper>
+        );
+    },
+);
 
 export default OutputElement;
