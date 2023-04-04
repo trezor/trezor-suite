@@ -7,7 +7,7 @@ import type { Account } from '../Account';
 import type { Alice } from '../Alice';
 import type { CoinjoinRound, CoinjoinRoundOptions } from '../CoinjoinRound';
 import { AccountAddress } from '../../types';
-import { SessionPhase } from '../../enums';
+import { SessionPhase, WabiSabiProtocolErrorCode } from '../../enums';
 
 /**
  * RoundPhase: 2, OutputRegistration
@@ -71,21 +71,22 @@ const registerOutput = async (
             )
             .then(() => address)
             .catch(error => {
-                if (
-                    error.message === coordinator.WabiSabiProtocolErrorCode.AlreadyRegisteredScript
-                ) {
-                    logger.error(`Change address already used (AlreadyRegisteredScript)`);
-                    round.prison.detain(address.scriptPubKey, {
-                        reason: error.message,
-                        sentenceEnd: Infinity, // this address should never be recycled
-                    });
-                    return tryToRegisterOutput();
+                if (error instanceof coordinator.WabiSabiProtocolException) {
+                    if (error.errorCode === WabiSabiProtocolErrorCode.AlreadyRegisteredScript) {
+                        logger.error(`Change address already used (AlreadyRegisteredScript)`);
+                        round.prison.detain(address.scriptPubKey, {
+                            errorCode: error.errorCode,
+                            sentenceEnd: Infinity, // this address should never be recycled
+                        });
+                        return tryToRegisterOutput();
+                    }
+                    if (error.errorCode === WabiSabiProtocolErrorCode.NotEnoughFunds) {
+                        logger.error(
+                            `NotEnoughFunds. Amount: ${amountCredentials[0].value} Delta: ${outputAmountCredentials.credentialsRequest.delta} FeeRate: ${roundParameters.miningFeeRate}`,
+                        );
+                    }
                 }
-                if (error.message === coordinator.WabiSabiProtocolErrorCode.NotEnoughFunds) {
-                    logger.error(
-                        `NotEnoughFunds. Amount: ${amountCredentials[0].value} Delta: ${outputAmountCredentials.credentialsRequest.delta} FeeRate: ${roundParameters.miningFeeRate}`,
-                    );
-                }
+
                 throw error;
             });
     };
@@ -93,7 +94,7 @@ const registerOutput = async (
     const address = await tryToRegisterOutput();
     round.prison.detain(address.scriptPubKey, {
         roundId: round.id,
-        reason: coordinator.WabiSabiProtocolErrorCode.AlreadyRegisteredScript,
+        errorCode: WabiSabiProtocolErrorCode.AlreadyRegisteredScript,
     });
 
     return {

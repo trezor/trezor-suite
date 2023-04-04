@@ -6,7 +6,7 @@ import { confirmationInterval } from './connectionConfirmation';
 import { ROUND_SELECTION_REGISTRATION_OFFSET } from '../../constants';
 import type { Alice } from '../Alice';
 import type { CoinjoinRound, CoinjoinRoundOptions } from '../CoinjoinRound';
-import { SessionPhase } from '../../enums';
+import { SessionPhase, WabiSabiProtocolErrorCode } from '../../enums';
 
 /**
  * RoundPhase: 0, InputRegistration
@@ -79,15 +79,19 @@ const registerInput = async (
             logger.warn(
                 `Registration ~~${input.outpoint}~~ to ~~${round.id}~~ failed: ${error.message}`,
             );
-            // catch specific error
-            if (error.message === coordinator.WabiSabiProtocolErrorCode.WrongPhase) {
-                // abort remaining delayed candidates to register (if exists) registration is not going to happen for them anyway
-                signal.dispatchEvent(new Event('abort'));
+
+            if (error instanceof coordinator.WabiSabiProtocolException) {
+                // catch specific error
+                if (error.errorCode === WabiSabiProtocolErrorCode.WrongPhase) {
+                    // abort remaining delayed candidates to register (if exists) registration is not going to happen for them anyway
+                    signal.dispatchEvent(new Event('abort'));
+                }
+                if (error.errorCode === WabiSabiProtocolErrorCode.InputLongBanned) {
+                    // track blacklist ban if it happens
+                    logger.error(error.message);
+                }
             }
-            if (error.message === coordinator.WabiSabiProtocolErrorCode.InputLongBanned) {
-                // track blacklist ban if it happens
-                logger.error('InputLongBanned');
-            }
+
             throw error;
         });
 
@@ -108,7 +112,7 @@ const registerInput = async (
     // and put input to prison
     round.prison.detain(input.outpoint, {
         roundId: round.id,
-        reason: coordinator.WabiSabiProtocolErrorCode.AliceAlreadyRegistered,
+        errorCode: WabiSabiProtocolErrorCode.AliceAlreadyRegistered,
     });
 
     // NOTE: RegistrationData processing on middleware is intentionally not using abort signal
