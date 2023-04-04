@@ -2349,7 +2349,7 @@ export default defineMessages({
     },
     TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS_BW_128x64: {
         defaultMessage:
-            'Supports PNG or JPG, 128 x 64 px, and using only black and white (not grayscale).',
+            'Supports PNG or JPG, 128 x 64 pixels, and using only black and white (not grayscale).',
         id: 'TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS_BW_128x64',
     },
     TR_DEVICE_SETTINGS_HOMESCREEN_EDITOR: {
@@ -2575,13 +2575,13 @@ export default defineMessages({
     },
     TR_FIRMWARE_SUBHEADING_NONE: {
         defaultMessage:
-            'Your Trezor is shipped without any firmware. Your device is ready to receive the latest full-featured firmware in order to be used safely. If you are a super BTC fan, feel free to install <button>Bitcoin-only firmware</button>.',
+            'Your Trezor is shipped without firmware. Your device is ready to receive the latest full-featured firmware in order to be used safely. If you use only bitcoin, we recommend installing <button>Bitcoin-only firmware</button>.',
         description: 'Main text on firmware page for devices without firmware',
         id: 'TR_FIRMWARE_SUBHEADING_NONE',
     },
     TR_FIRMWARE_SUBHEADING_UNKNOWN: {
         defaultMessage:
-            'Your device is ready to receive the latest full-featured firmware in order to be used safely. If you are a super BTC fan, feel free to install <button>Bitcoin-only firmware</button>.',
+            'Your device is ready to receive the latest full-featured firmware in order to be used safely. If you use only bitcoin, we recommend installing <button>Bitcoin-only firmware</button>.',
         description:
             'Main text on firmware page for devices in bootloader mode, i.e. when Suite cannot determine current firmware type',
         id: 'TR_FIRMWARE_SUBHEADING_UNKNOWN',
@@ -3259,7 +3259,7 @@ export default defineMessages({
     },
     TR_SETTINGS_DEVICE_BANNER_DESCRIPTION_BOOTLOADER_NO_BUTTONS: {
         defaultMessage:
-            'Reconnect the device without holding any buttons while connecting the cable to access all other Settings.',
+            'Reconnect the device without holding any buttons to access all other settings.',
         id: 'TR_SETTINGS_DEVICE_BANNER_DESCRIPTION_BOOTLOADER_NO_BUTTONS',
     },
     TR_SETTINGS_DEVICE_BANNER_DESCRIPTION_BOOTLOADER_NO_TOUCH: {
@@ -4247,7 +4247,7 @@ export default defineMessages({
     },
     FW_CAPABILITY_NO_SUPPORT: {
         id: 'FW_CAPABILITY_NO_SUPPORT',
-        defaultMessage: 'Not supported',
+        defaultMessage: 'Not supported on Model One',
         description:
             'Similar to missing capability but tested on different level (coin info is missing in trezor-connect)',
     },
@@ -4736,7 +4736,7 @@ export default defineMessages({
     },
     TR_REBOOT_INTO_BOOTLOADER: {
         id: 'TR_REBOOT_INTO_BOOTLOADER',
-        defaultMessage: 'Reboot your Trezor into bootloader mode',
+        defaultMessage: 'Reboot your Trezor in bootloader mode',
     },
     TR_RECONNECT_IN_BOOTLOADER: {
         id: 'TR_RECONNECT_IN_BOOTLOADER',
@@ -4920,7 +4920,7 @@ export default defineMessages({
     TR_FIRMWARE_IS_POTENTIALLY_RISKY: {
         id: 'TR_FIRMWARE_IS_POTENTIALLY_RISKY',
         defaultMessage:
-            'Updating firmware is potentially risky operation. If anything goes wrong (broken cable etc.) device might end up in wiped state which effectively means losing all your coins.',
+            'Updating firmware is a potentially risky operation. If anything goes wrong (broken cable etc.) the device might end up in a wiped state, which effectively means losing all your coins.',
     },
     ONBOARDING_UNEXPECTED_DEVICE_DIFFERENT_HEADING: {
         id: 'ONBOARDING_UNEXPECTED_DEVICE_DIFFERENT_HEADING',
@@ -4991,7 +4991,7 @@ export default defineMessages({
     TR_FIRMWARE_NEW_FW_DESCRIPTION: {
         id: 'TR_FIRMWARE_NEW_FW_DESCRIPTION',
         defaultMessage:
-            'A new firmware version is available. You might either update your device now or continue and update it later.',
+            'A new firmware version is available. You can either update your device now or continue and update it later.',
     },
     TR_FIRMWARE_REINSTALL_FW_DESCRIPTION: {
         id: 'TR_FIRMWARE_REINSTALL_FW_DESCRIPTION',
@@ -5801,7 +5801,7 @@ export default defineMessages({
     },
     TR_YOUR_LABELING_IS_SYNCED: {
         defaultMessage:
-            'Your labeling is synced with a cloud storage provider. Your data are safe, only your Trezor can decrypt them.',
+            'Your labeling is synced with a cloud storage provider. Your data are safe, as only your Trezor can decrypt them.',
         id: 'TR_YOUR_LABELING_IS_SYNCED',
     },
     TR_YOUR_LABELING_IS_SYNCED_LOCALLY: {
@@ -6294,7 +6294,7 @@ export default defineMessages({
     },
     TR_WALLET_RECOVERED_FROM_SEED: {
         id: 'TR_WALLET_RECOVERED_FROM_SEED',
-        defaultMessage: 'Recovery completed',
+        defaultMessage: 'Recovery complete',
     },
     TR_RECOVERY_FAILED: {
         id: 'TR_RECOVERY_FAILED',
@@ -7853,7 +7853,7 @@ export default defineMessages({
     },
     TR_COINJOIN_CEX_WARNING: {
         id: 'TR_COINJOIN_CEX_WARNING',
-        defaultMessage: 'Exchanges might reject CoinJoined funds.',
+        defaultMessage: 'Exchanges may not serve you if you use coinjoin.',
     },
     TR_ZERO_PHISHING_TOOLTIP: {
         id: 'TR_ZERO_PHISHING_TOOLTIP',
