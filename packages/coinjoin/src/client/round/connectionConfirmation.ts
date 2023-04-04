@@ -3,7 +3,7 @@ import * as middleware from '../middleware';
 import { readTimeSpan } from '../../utils/roundUtils';
 import type { Alice, AliceConfirmationInterval } from '../Alice';
 import type { CoinjoinRound, CoinjoinRoundOptions } from '../CoinjoinRound';
-import { SessionPhase } from '../../enums';
+import { SessionPhase, WabiSabiProtocolErrorCode } from '../../enums';
 
 /**
  * usage in RoundPhase: 0, InputRegistration
@@ -145,7 +145,7 @@ export const confirmationInterval = (
             } catch (error) {
                 if (
                     !controller.signal.aborted &&
-                    error.message !== coordinator.WabiSabiProtocolErrorCode.WrongPhase
+                    error.errorCode !== WabiSabiProtocolErrorCode.WrongPhase
                 ) {
                     input.setError(error);
                 }

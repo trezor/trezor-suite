@@ -20,7 +20,7 @@ import {
     CoinjoinResponseEvent,
     BroadcastedTransactionDetails,
 } from '../types/round';
-import { Round, CoinjoinRoundParameters, WabiSabiProtocolErrorCode } from '../types/coordinator';
+import { Round, CoinjoinRoundParameters } from '../types/coordinator';
 import { Account } from './Account';
 import { Alice } from './Alice';
 import { CoinjoinPrison } from './CoinjoinPrison';
@@ -370,8 +370,8 @@ export class CoinjoinRound extends EventEmitter {
         // set error on each input
         spentInputs.forEach(input => {
             input.clearConfirmationInterval();
-            input.setError(new Error(WabiSabiProtocolErrorCode.InputSpent));
-        }); // TODO: error same as wasabi coordinator?
+            input.setError(new Error('Input spent'));
+        });
 
         this.breakRound(spentInputs);
     }

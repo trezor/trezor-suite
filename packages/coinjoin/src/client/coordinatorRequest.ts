@@ -1,9 +1,27 @@
-import { scheduleAction } from '@trezor/utils';
+import { scheduleAction, enumUtils } from '@trezor/utils';
 
 import { HTTP_REQUEST_TIMEOUT } from '../constants';
+import { WabiSabiProtocolErrorCode } from '../enums';
 import { httpPost, RequestOptions } from '../utils/http';
 
 export type { RequestOptions } from '../utils/http';
+
+export class WabiSabiProtocolException extends Error {
+    type: string;
+    errorCode?: WabiSabiProtocolErrorCode;
+    description: string;
+    exceptionData: { Type: string };
+
+    // NOTE: coordinator/middleware error shape
+    // {type: string, errorCode: string, description: string, exceptionData: { Type: string } }
+    constructor(error: Record<string, any>) {
+        super(error.errorCode);
+        this.type = error.type;
+        this.errorCode = enumUtils.getValueByKey(WabiSabiProtocolErrorCode, error.errorCode);
+        this.description = error.description;
+        this.exceptionData = error.exceptionData;
+    }
+}
 
 const parseResult = (headers: Headers, text: string) => {
     if (headers.get('content-type')?.includes('json')) {
@@ -89,9 +107,8 @@ export const coordinatorRequest = async <R = void>(
     }
 
     // catch WabiSabiProtocolException
-    if (typeof result !== 'string' && result.errorCode) {
-        // NOTE: coordinator/middleware error shape {type: string, errorCode: string, description: string, exceptionData: { Type: string } }
-        throw new Error(result.errorCode);
+    if (typeof result === 'object' && 'errorCode' in result) {
+        throw new WabiSabiProtocolException(result);
     }
 
     // fallback error

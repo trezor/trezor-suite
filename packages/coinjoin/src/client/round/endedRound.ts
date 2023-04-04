@@ -1,8 +1,7 @@
 import { enumUtils } from '@trezor/utils';
 
 import type { CoinjoinRound, CoinjoinRoundOptions } from '../CoinjoinRound';
-import { EndRoundState } from '../../enums';
-import { WabiSabiProtocolErrorCode } from '../../types/coordinator';
+import { EndRoundState, WabiSabiProtocolErrorCode } from '../../enums';
 import { getBroadcastedTxDetails } from '../../utils/roundUtils';
 
 /**
@@ -51,7 +50,7 @@ export const ended = (round: CoinjoinRound, { logger, network }: CoinjoinRoundOp
         inputs.forEach(input =>
             prison.detain(input.outpoint, {
                 roundId: id,
-                reason: WabiSabiProtocolErrorCode.InputBanned,
+                errorCode: WabiSabiProtocolErrorCode.InputBanned,
             }),
         );
     } else if (endRoundState === EndRoundState.NotAllAlicesSign) {
@@ -66,7 +65,7 @@ export const ended = (round: CoinjoinRound, { logger, network }: CoinjoinRoundOp
         inputs.forEach(input =>
             prison.detain(input.outpoint, {
                 roundId: id,
-                reason: WabiSabiProtocolErrorCode.InputSpent,
+                errorCode: WabiSabiProtocolErrorCode.InputSpent,
                 sentenceEnd: Infinity,
             }),
         );
@@ -74,7 +73,7 @@ export const ended = (round: CoinjoinRound, { logger, network }: CoinjoinRoundOp
         addresses.forEach(addr =>
             prison.detain(addr.scriptPubKey, {
                 roundId: id,
-                reason: WabiSabiProtocolErrorCode.AlreadyRegisteredScript,
+                errorCode: WabiSabiProtocolErrorCode.AlreadyRegisteredScript,
                 sentenceEnd: Infinity,
             }),
         );

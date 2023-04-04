@@ -1,16 +1,18 @@
-import { WabiSabiProtocolErrorCode } from '../types/coordinator';
+import { WabiSabiProtocolErrorCode } from '../enums';
 
 export interface PrisonInmate {
     id: string; // AccountUtxo/Alice.outpoint or AccountAddress scriptPubKey
     sentenceStart: number;
     sentenceEnd: number;
+    errorCode?: WabiSabiProtocolErrorCode | 'blameOf';
     reason?: string;
     roundId?: string;
 }
 
 export interface PrisonOptions {
     roundId?: string;
-    reason?: string;
+    errorCode?: PrisonInmate['errorCode'];
+    reason?: PrisonInmate['reason'];
     sentenceEnd?: number;
 }
 
@@ -28,6 +30,7 @@ export class CoinjoinPrison {
             id,
             sentenceEnd,
             sentenceStart,
+            errorCode: options.errorCode,
             reason: options.reason,
             roundId: options.roundId,
         });
@@ -40,14 +43,14 @@ export class CoinjoinPrison {
     detainForBlameRound(ids: string[], roundId: string) {
         ids.forEach(id => {
             this.detain(id, {
-                reason: 'blameOf',
+                errorCode: 'blameOf',
                 roundId,
             });
         });
     }
 
     getBlameOfInmates() {
-        return this.inmates.filter(i => i.reason === 'blameOf');
+        return this.inmates.filter(i => i.errorCode === 'blameOf');
     }
 
     releaseBlameOfInmates(roundId: string) {
@@ -60,7 +63,7 @@ export class CoinjoinPrison {
             inmate =>
                 !(
                     inmate.roundId === roundId &&
-                    inmate.reason === WabiSabiProtocolErrorCode.AliceAlreadyRegistered
+                    inmate.errorCode === WabiSabiProtocolErrorCode.AliceAlreadyRegistered
                 ),
         );
     }

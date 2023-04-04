@@ -142,5 +142,7 @@ export const transactionSignature = (
         options,
     );
 
+export { WabiSabiProtocolException } from './coordinatorRequest';
+
 // reexport all coordinator types
 export * from '../types/coordinator';

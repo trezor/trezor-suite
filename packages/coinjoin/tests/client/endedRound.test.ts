@@ -1,6 +1,6 @@
 import { networks } from '@trezor/utxo-lib';
 
-import { RoundPhase, EndRoundState } from '../../src/enums';
+import { RoundPhase, EndRoundState, WabiSabiProtocolErrorCode } from '../../src/enums';
 import { ended } from '../../src/client/round/endedRound';
 import { createInput } from '../fixtures/input.fixture';
 import { createCoinjoinRound } from '../fixtures/round.fixture';
@@ -314,7 +314,7 @@ describe('ended', () => {
         // NOTE: registered inputs are detained by inputRegistration process
         round.prison.detain('0'.repeat(72), {
             roundId: round.id,
-            reason: 'AliceAlreadyRegistered',
+            errorCode: WabiSabiProtocolErrorCode.AliceAlreadyRegistered,
         });
 
         ended(round, options);
