@@ -55,7 +55,6 @@
   "FW_CAPABILITY_UPDATE_REQUIRED": "Opdatering krævet",
   "IMPORT_CSV": "Importer",
   "INCLUDING_FEE": "Inklusiv gebyr",
-  "LOCKTIME": "Låsetid",
   "LOCKTIME_ADD": "Tilføj Låsetid",
   "LOCKTIME_ADD_TOOLTIP": "Låsetid indstiller det tidligste tidspunkt en transaktion kan udvindes i en blok.",
   "LOCKTIME_BLOCKHEIGHT": "Blockhøjde for låsetid",
