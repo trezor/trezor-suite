@@ -38,6 +38,7 @@ export type InterceptorOptions = {
     handler: (event: InterceptedEvent) => void;
     getIsTorEnabled: () => boolean;
     isDevEnv?: boolean;
+    whitelistedHosts?: string[];
 };
 
 export const TOR_CONTROLLER_STATUS = {

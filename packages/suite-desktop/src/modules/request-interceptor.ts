@@ -36,6 +36,7 @@ export const init: Module = ({ mainWindow, store }) => {
         },
         getIsTorEnabled: () => store.getTorSettings().running,
         isDevEnv,
+        whitelistedHosts: ['127.0.0.1', 'localhost', '.sldev.cz'],
     };
 
     createInterceptor(options);

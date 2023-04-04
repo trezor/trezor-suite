@@ -40,8 +40,9 @@ const getIdentityForAgent = (options: Readonly<http.RequestOptions>) => {
     }
 };
 
-const isLocalhost = (hostname?: string | null | undefined) =>
-    typeof hostname === 'string' && ['127.0.0.1', 'localhost'].includes(hostname);
+const isWhitelistedHost = (hostname: unknown, whitelist: string[] = ['127.0.0.1', 'localhost']) =>
+    typeof hostname === 'string' &&
+    whitelist.some(url => url === hostname || hostname.endsWith(url));
 
 const interceptNetSocketConnect = (interceptorOptions: InterceptorOptions) => {
     const originalSocketConnect = net.Socket.prototype.connect;
@@ -100,7 +101,7 @@ const overloadHttpRequest = (
         !callback &&
         typeof url === 'object' &&
         'headers' in url &&
-        !isLocalhost(url.hostname) &&
+        !isWhitelistedHost(url.hostname, interceptorOptions.whitelistedHosts) &&
         (!options || typeof options === 'function')
     ) {
         const isTorEnabled = interceptorOptions.getIsTorEnabled();
@@ -153,9 +154,19 @@ const overloadWebsocketHandshake = (
     options?: http.RequestOptions | ((r: http.IncomingMessage) => void),
     callback?: unknown,
 ) => {
+    // @trezor/blockchain-link is adding an SocksProxyAgent to each connection
+    // related to https://github.com/trezor/trezor-suite/issues/7689
+    // this condition should be removed once suite will stop using TrezorConnect.setProxy
     if (
         typeof url === 'object' &&
-        !isLocalhost(url.host) && // difference between overloadHttpRequest
+        isWhitelistedHost(url.host, interceptorOptions.whitelistedHosts) &&
+        'agent' in url
+    ) {
+        delete url.agent;
+    }
+    if (
+        typeof url === 'object' &&
+        !isWhitelistedHost(url.host, interceptorOptions.whitelistedHosts) && // difference between overloadHttpRequest
         'headers' in url &&
         url.headers?.Upgrade === 'websocket'
     ) {
@@ -218,15 +229,21 @@ const interceptHttps = (interceptorOptions: InterceptorOptions, requestPool: Req
 const interceptTlsConnect = (interceptorOptions: InterceptorOptions) => {
     const originalTlsConnect = tls.connect;
 
-    tls.connect = function (...args) {
-        const [options] = args as any;
-        interceptorOptions.handler({
-            type: 'INTERCEPTED_REQUEST',
-            method: 'tls.connect',
-            details: options.servername,
-        });
-        // @ts-expect-error
-        return originalTlsConnect.apply(this, args);
+    tls.connect = (...args) => {
+        const [options] = args;
+        if (typeof options === 'object') {
+            interceptorOptions.handler({
+                type: 'INTERCEPTED_REQUEST',
+                method: 'tls.connect',
+                details: options.host || options.servername || 'unknown',
+            });
+
+            // allow untrusted/self-signed certificates for whitelisted domains (like https://*.sldev.cz)
+            options.rejectUnauthorized =
+                options.rejectUnauthorized ??
+                !isWhitelistedHost(options.host, interceptorOptions.whitelistedHosts);
+        }
+        return originalTlsConnect(...(args as Parameters<typeof tls.connect>));
     };
 };
 
