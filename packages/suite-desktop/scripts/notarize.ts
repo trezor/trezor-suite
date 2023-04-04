@@ -3,8 +3,6 @@
 
 const { notarize } = require('@electron/notarize');
 
-const pkg = require('../package.json');
-
 // @ts-expect-error cannot import AfterPackContext as type using require
 exports.default = context => {
     const { electronPlatformName, appOutDir } = context;
@@ -23,7 +21,7 @@ exports.default = context => {
     console.log(`notarizing ${appPath} ...`);
 
     return notarize({
-        appBundleId: pkg.build.appId,
+        appBundleId: 'io.trezor.TrezorSuite',
         appPath,
         appleId: process.env.APPLEID,
         appleIdPassword: process.env.APPLEIDPASS,
