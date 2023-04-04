@@ -166,10 +166,10 @@ export const Amount = ({ output, outputId }: Props) => {
             }
 
             // calculate or reset Fiat value
-            calculateFiat(outputId, !error ? value : undefined);
+            calculateFiat(outputId, value);
             composeTransaction(inputName);
         },
-        [setValue, calculateFiat, composeTransaction, error, inputName, isSetMaxActive, outputId],
+        [setValue, calculateFiat, composeTransaction, inputName, isSetMaxActive, outputId],
     );
 
     const cryptoAmountRules = useMemo<TypedValidationRules>(
