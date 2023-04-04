@@ -6,7 +6,6 @@
     },
     "include": ["."],
     "references": [
-        { "path": "../../suite-desktop" },
-        { "path": "../../suite" }
+        { "path": "../../suite-desktop" }
     ]
 }
