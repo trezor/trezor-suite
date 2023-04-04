@@ -26,6 +26,7 @@ import Ticker from './Ticker';
 import { Translation } from './Translation';
 import { AccountLabeling, AddressLabeling, WalletLabeling, MetadataLabeling } from './Labeling';
 import { FormattedCryptoAmount } from './FormattedCryptoAmount';
+import { FormattedNftAmount } from './FormattedNftAmount';
 import { Sign } from './Sign';
 import AddAccountButton from './AddAccountButton';
 import { ToastContainer } from './ToastContainer';
@@ -86,6 +87,7 @@ export {
     AppNavigationTooltip,
     AppNavigation,
     FormattedCryptoAmount,
+    FormattedNftAmount,
     Ticker,
     Sign,
     AddAccountButton,

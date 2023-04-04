@@ -5,7 +5,7 @@ import { TokenTransfer } from '@trezor/connect';
 import { SignValue } from '@suite-common/suite-types';
 import { HiddenPlaceholder } from './HiddenPlaceholder';
 import { Sign } from './Sign';
-import { TrezorLink } from '@suite-components';
+import TrezorLink from '@suite-components/TrezorLink';
 import { useSelector } from '@suite-hooks/useSelector';
 import { getNftTokenId } from '@suite-common/wallet-utils';
 
@@ -38,7 +38,7 @@ const Id = styled.div`
     max-width: 145px;
 `;
 
-interface FormattedNftAmountProps {
+export interface FormattedNftAmountProps {
     transfer: TokenTransfer;
     signValue?: SignValue;
     className?: string;
