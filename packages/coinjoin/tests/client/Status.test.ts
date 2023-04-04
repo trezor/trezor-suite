@@ -1,5 +1,5 @@
 import { Status } from '../../src/client/Status';
-import * as http from '../../src/utils/http';
+import * as http from '../../src/client/coordinatorRequest';
 import { STATUS_TIMEOUT } from '../../src/constants';
 import { createServer } from '../mocks/server';
 import { AFFILIATE_INFO, DEFAULT_ROUND, STATUS_EVENT } from '../fixtures/round.fixture';
