@@ -38,7 +38,6 @@
   "FW_CAPABILITY_UPDATE_REQUIRED": "Päivitys vaaditaan",
   "IMPORT_CSV": "Tuo",
   "INCLUDING_FEE": "Sis. siirtomaksun",
-  "LOCKTIME": "Lukitusaika",
   "LOCKTIME_ADD": "Lisää lukitusaika",
   "LOCKTIME_IS_NOT_INTEGER": "Lukitusaika ei ole kokonaisluku",
   "LOCKTIME_IS_NOT_NUMBER": "Lukitusaika ei ole luku",

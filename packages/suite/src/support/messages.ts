@@ -5844,7 +5844,7 @@ export default defineMessages({
     },
     TR_UPDATE_FIRMWARE_HOMESCREEN_TOOLTIP: {
         id: 'TR_UPDATE_FIRMWARE_HOMESCREEN_TOOLTIP',
-        defaultMessage: 'Upgrade your firmware to change your homescreen',
+        defaultMessage: 'Update your firmware to change your homescreen',
     },
     TR_LABELING_FEATURE_ALLOWS: {
         id: 'TR_LABELING_FEATURE_ALLOWS',
@@ -7892,7 +7892,7 @@ export default defineMessages({
     TR_UNECO_COINJOIN_RECEIVE_WARNING: {
         id: 'TR_UNECO_COINJOIN_RECEIVE_WARNING',
         defaultMessage:
-            'CoinJoin at least {crypto} {isAccountWithRate, select, true {(~{fiat})} false {} other {}} for the best results.',
+            'Coinjoin at least {crypto} {isAccountWithRate, select, true {(~{fiat})} false {} other {}} for the best results.',
     },
     TR_UNECO_COINJOIN_AGREE: {
         id: 'TR_UNECO_COINJOIN_AGREE',
@@ -7914,7 +7914,7 @@ export default defineMessages({
     },
     TR_ENABLE_AUTOPAUSE_COINJOIN: {
         id: 'TR_ENABLE_AUTOPAUSE_COINJOIN',
-        defaultMessage: 'Pause Coinjoin after this round',
+        defaultMessage: 'Pause coinjoin after this round',
     },
     TR_AUTOPAUSE_COINJOIN_ENABLED: {
         id: 'TR_AUTOPAUSE_COINJOIN_ENABLED',

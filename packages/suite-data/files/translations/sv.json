@@ -87,8 +87,6 @@
   "TR_SELL_MODAL_FOR_YOUR_SAFETY": "Sälj {cryptocurrency} med {provider}",
   "TR_TOR_DISABLE": "Inaktivera Tor",
   "TR_TOR_ENABLE": "Aktivera Tor",
-  "TR_TRANSACTIONS": "Transaktioner",
-  "TR_TREZOR": "Trezor",
   "TR_TRY_AGAIN": "Försök igen",
   "TR_TRY_VERIFYING_ON_DEVICE_AGAIN": "Försök igen",
   "TR_TX_FEE": "Avgift",
