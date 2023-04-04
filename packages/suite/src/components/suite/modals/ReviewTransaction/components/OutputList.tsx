@@ -26,7 +26,7 @@ const Content = styled.div`
 
 const Right = styled.div`
     flex: 1;
-    margin: 20px 10px 10px 35px;
+    margin: 20px 10px 10px 25px;
     max-width: 460px;
     position: relative;
 
@@ -46,7 +46,7 @@ const RightTopInner = styled.div`
 `;
 
 const RightBottom = styled.div`
-    margin-left: 40px;
+    margin-left: 30px;
     padding: 20px 0 0 0;
     border-top: 1px solid ${props => props.theme.STROKE_GREY};
     display: flex;
