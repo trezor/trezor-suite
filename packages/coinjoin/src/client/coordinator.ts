@@ -1,4 +1,4 @@
-import { coordinatorRequest as request, RequestOptions } from '../utils/http';
+import { coordinatorRequest as request, RequestOptions } from './coordinatorRequest';
 import {
     CoinjoinStatus,
     ZeroCredentials,

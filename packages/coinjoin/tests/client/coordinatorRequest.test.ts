@@ -1,4 +1,4 @@
-import { coordinatorRequest } from '../../src/utils/http';
+import { coordinatorRequest } from '../../src/client/coordinatorRequest';
 import { createServer } from '../mocks/server';
 
 let server: Awaited<ReturnType<typeof createServer>>;
