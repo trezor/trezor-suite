@@ -11,6 +11,7 @@ import { AmountText } from './AmountText';
 type EthereumTokenAmountFormatterProps = {
     ethereumToken: EthereumTokenSymbol;
     isDiscreetText?: boolean;
+    decimals?: number;
 } & FormatterProps<number | string> &
     TextProps;
 
@@ -18,15 +19,29 @@ export const EthereumTokenAmountFormatter = ({
     value,
     ethereumToken,
     isDiscreetText = true,
+    decimals = 0,
+    variant = 'hint',
+    color = 'textSubdued',
     ...rest
 }: EthereumTokenAmountFormatterProps) => {
-    const formattedValue = localizeNumber(value);
+    const formattedValue = localizeNumber(Number(value) / 10 ** decimals);
 
     return (
         <Box flexDirection="row">
-            <AmountText value={formattedValue} isDiscreetText={isDiscreetText} {...rest} />
+            <AmountText
+                value={formattedValue}
+                isDiscreetText={isDiscreetText}
+                {...rest}
+                variant={variant}
+                color={color}
+            />
             <Text> </Text>
-            <EthereumTokenSymbolFormatter ethereumSymbol={ethereumToken} {...rest} />
+            <EthereumTokenSymbolFormatter
+                ethereumSymbol={ethereumToken}
+                {...rest}
+                variant={variant}
+                color={color}
+            />
         </Box>
     );
 };

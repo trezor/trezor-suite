@@ -15,6 +15,7 @@ import { AmountText } from './AmountText';
 type EthereumTokenToFiatAmountFormatterProps = {
     ethereumToken: EthereumTokenSymbol;
     isDiscreetText?: boolean;
+    decimals?: number;
 } & FormatterProps<number | string> &
     TextProps;
 
@@ -22,6 +23,7 @@ export const TokenToFiatAmountFormatter = ({
     value,
     ethereumToken,
     isDiscreetText = true,
+    decimals = 0,
     ...rest
 }: EthereumTokenToFiatAmountFormatterProps) => {
     const coins = useSelector(selectCoins);
@@ -32,7 +34,8 @@ export const TokenToFiatAmountFormatter = ({
 
     if (!rates) return <EmptyAmountText />;
 
-    const amount = toFiatCurrency(value.toString(), fiatCurrency.label, rates, 2);
+    const shiftedValue = Number(value) / 10 ** decimals;
+    const amount = toFiatCurrency(shiftedValue.toString(), fiatCurrency.label, rates, 2);
 
     const formattedFiatValue = FiatAmountFormatter.format(amount ?? 0);
 

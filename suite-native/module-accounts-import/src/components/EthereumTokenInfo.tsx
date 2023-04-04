@@ -10,9 +10,10 @@ type EthereumTokenInfoProps = {
     symbol?: EthereumTokenSymbol;
     balance?: string;
     name?: string;
+    decimals?: number;
 };
 
-export const EthereumTokenInfo = ({ symbol, balance, name }: EthereumTokenInfoProps) => {
+export const EthereumTokenInfo = ({ symbol, balance, name, decimals }: EthereumTokenInfoProps) => {
     if (!symbol || !balance || !name) return null;
 
     return (
@@ -23,12 +24,17 @@ export const EthereumTokenInfo = ({ symbol, balance, name }: EthereumTokenInfoPr
                 <EthereumTokenAmountFormatter
                     value={balance}
                     ethereumToken={symbol}
+                    decimals={decimals}
                     variant="label"
                 />
             }
             icon={<EthereumTokenIcon name={symbol as EthereumTokenIconName} />}
         >
-            <TokenToFiatAmountFormatter value={balance} ethereumToken={symbol} />
+            <TokenToFiatAmountFormatter
+                value={balance}
+                ethereumToken={symbol}
+                decimals={decimals}
+            />
         </AccountImportOverviewCard>
     );
 };
