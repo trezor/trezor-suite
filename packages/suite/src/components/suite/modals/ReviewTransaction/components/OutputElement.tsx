@@ -35,7 +35,7 @@ const OutputValue = styled.div`
 
 const OutputLeft = styled.div`
     display: flex;
-    width: 40px;
+    width: 30px;
     justify-content: center;
     flex-direction: column;
 `;
