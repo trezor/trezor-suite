@@ -10,9 +10,13 @@ import type { AccountBalanceHistory, FiatRates, TokenStandard } from './common';
 import {
     Vin,
     Vout,
+    Utxo as BlockbookUtxo,
 } from './blockbook-api';
 
 type OptionalKey<M, K extends keyof M> = Omit<M, K> & Partial<Pick<M, K>>;
+type RequiredKey<M, K extends keyof M> = Omit<M, K> & Required<Pick<M, K>>;
+
+export type AccountUtxo = RequiredKey<BlockbookUtxo, 'address' | 'height' | 'value' | 'path'>[];
 
 export interface Subscribe {
     subscribed: boolean;
@@ -91,17 +95,6 @@ export interface AccountInfo {
 export interface AccountUtxoParams {
     descriptor: string;
 }
-
-export type AccountUtxo = {
-    txid: string;
-    vout: number;
-    value: string;
-    height: number;
-    address: string;
-    path: string;
-    confirmations: number;
-    coinbase?: boolean;
-}[];
 
 export type VinVout = OptionalKey<Vin & Vout, 'addresses'>;
 
