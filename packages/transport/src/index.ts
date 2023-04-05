@@ -9,7 +9,7 @@ import WebUsbPlugin from './lowlevel/webusb';
 // But we found that it does not work in browser environment
 // see: https://github.com/protobufjs/protobuf.js/issues/758
 import * as protobuf from 'protobufjs/light';
-import * as Long from 'long';
+import Long from 'long';
 
 protobuf.util.Long = Long;
 protobuf.configure();
