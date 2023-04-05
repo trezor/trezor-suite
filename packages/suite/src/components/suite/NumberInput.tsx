@@ -29,10 +29,14 @@ const getLocaleSeparatorCharCodes = (locale: Locale) => ({
 const cleanValueString = (value: string, locale: Locale) => {
     const { decimalSeparator, thousandsSeparator } = getLocaleSeparators(locale);
 
-    const cleanedValue = value
+    let cleanedValue = value
         .replace(/\s/g, '')
         .replaceAll(thousandsSeparator, '')
         .replaceAll(decimalSeparator, '.');
+
+    if (cleanedValue.startsWith('.')) {
+        cleanedValue = `0${cleanedValue}`;
+    }
 
     return cleanedValue;
 };
