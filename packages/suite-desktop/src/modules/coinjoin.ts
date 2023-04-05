@@ -7,10 +7,11 @@ import { captureMessage, withScope } from '@sentry/electron';
 
 import { coinjoinReportTag, coinjoinNetworktTag } from '@suite-common/sentry';
 import { createIpcProxyHandler, IpcProxyHandlerOptions } from '@trezor/ipc-proxy';
-import { CoinjoinBackend, CoinjoinClient } from '@trezor/coinjoin';
+import { CoinjoinClient, CoinjoinBackend, CoinjoinBackendSettings } from '@trezor/coinjoin';
 
 import { CoinjoinProcess } from '../libs/processes/CoinjoinProcess';
 import { PowerSaveBlocker } from '../libs/power-save-blocker';
+import { ThreadProxy } from '../libs/thread-proxy';
 
 import type { Module } from './index';
 
@@ -21,7 +22,7 @@ const BACKEND_CHANNEL = 'CoinjoinBackend';
 export const init: Module = ({ mainWindow }) => {
     const { logger } = global;
 
-    const backends: CoinjoinBackend[] = [];
+    const backends: ThreadProxy<CoinjoinBackend>[] = [];
     const clients: CoinjoinClient[] = [];
 
     const coinjoinMiddleware = new CoinjoinProcess();
@@ -31,17 +32,26 @@ export const init: Module = ({ mainWindow }) => {
     logger.debug(SERVICE_NAME, `Starting service`);
 
     const backendProxyOptions: IpcProxyHandlerOptions<CoinjoinBackend> = {
-        onCreateInstance: (settings: ConstructorParameters<typeof CoinjoinBackend>[0]) => {
-            const backend = new CoinjoinBackend(settings);
-            backend.on('log', ({ level, payload }) => {
-                logger[level](SERVICE_NAME, `${BACKEND_CHANNEL} ${payload}`);
+        onCreateInstance: async (settings: CoinjoinBackendSettings) => {
+            const backend = new ThreadProxy<CoinjoinBackend>({
+                name: 'coinjoin-backend',
+                keepAlive: true,
             });
+            await backend.run(settings);
             backends.push(backend);
+            backend.on('log', ({ level, payload }) => {
+                (logger as any)[level](SERVICE_NAME, `${BACKEND_CHANNEL} ${payload}`);
+            });
+
             return {
                 onRequest: (method, params) => {
                     logger.debug(SERVICE_NAME, `${BACKEND_CHANNEL} call ${method}`);
-                    // needs type casting
-                    return (backend[method] as any)(...params);
+                    if (method === 'disable') {
+                        backend.dispose();
+                        backends.splice(backends.indexOf(backend), 1);
+                        return Promise.resolve();
+                    }
+                    return backend.request(method, params);
                 },
                 onAddListener: (eventName, listener) => {
                     logger.debug(SERVICE_NAME, `${BACKEND_CHANNEL} add listener ${eventName}`);
@@ -49,7 +59,7 @@ export const init: Module = ({ mainWindow }) => {
                 },
                 onRemoveListener: (eventName: any) => {
                     logger.debug(SERVICE_NAME, `${BACKEND_CHANNEL} remove listener ${eventName}`);
-                    return backend.removeAllListeners(eventName);
+                    return backend.removeAllListeners(eventName) as any;
                 },
             };
         },
@@ -136,7 +146,7 @@ export const init: Module = ({ mainWindow }) => {
         );
 
         const dispose = () => {
-            backends.forEach(b => b.disable());
+            backends.forEach(b => b.dispose());
             backends.splice(0, backends.length);
 
             clients.forEach(cli => {
