@@ -77,39 +77,39 @@ export const BottomSheet = ({
             <Animated.View
                 style={[animatedSheetWithOverlayStyle, applyStyle(sheetWithOverlayStyle)]}
             >
-                <Animated.View
-                    style={[
-                        animatedSheetWrapperStyle,
-                        applyStyle(sheetWrapperStyle, {
-                            insetBottom: insets.bottom,
-                        }),
-                    ]}
+                <PanGestureHandler
+                    enabled={isCloseScrollEnabled}
+                    ref={panGestureRef.current}
+                    activeOffsetY={5}
+                    failOffsetY={-5}
+                    onGestureEvent={panGestureEvent}
                 >
-                    <BottomSheetHeader
-                        title={title}
-                        subtitle={subtitle}
-                        onCloseSheet={closeSheetAnimated}
-                    />
-                    <ScrollView
-                        ref={scrollViewRef.current}
-                        waitFor={
-                            isCloseScrollEnabled ? panGestureRef.current : scrollViewRef.current
-                        }
-                        onScroll={scrollEvent}
+                    <Animated.View
+                        style={[
+                            animatedSheetWrapperStyle,
+                            applyStyle(sheetWrapperStyle, {
+                                insetBottom: insets.bottom,
+                            }),
+                        ]}
                     >
-                        <PanGestureHandler
-                            enabled={isCloseScrollEnabled}
-                            ref={panGestureRef.current}
-                            activeOffsetY={5}
-                            failOffsetY={-5}
-                            onGestureEvent={panGestureEvent}
+                        <BottomSheetHeader
+                            title={title}
+                            subtitle={subtitle}
+                            onCloseSheet={closeSheetAnimated}
+                        />
+                        <ScrollView
+                            ref={scrollViewRef.current}
+                            waitFor={
+                                isCloseScrollEnabled ? panGestureRef.current : scrollViewRef.current
+                            }
+                            onScroll={scrollEvent}
                         >
                             <Animated.View>
                                 <Box paddingHorizontal="medium">{children}</Box>
                             </Animated.View>
-                        </PanGestureHandler>
-                    </ScrollView>
-                </Animated.View>
+                        </ScrollView>
+                    </Animated.View>
+                </PanGestureHandler>
             </Animated.View>
         </BottomSheetContainer>
     );
