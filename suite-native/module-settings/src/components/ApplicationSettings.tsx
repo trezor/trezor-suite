@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { useNavigation } from '@react-navigation/core';
+import { useAtomValue } from 'jotai';
 
 import {
     SettingsStackRoutes,
@@ -9,12 +10,14 @@ import {
     RootStackParamList,
     RootStackRoutes,
 } from '@suite-native/navigation';
-import { isDevelopOrDebugEnv } from '@suite-native/config';
 
 import { SettingsSection } from './SettingsSection';
 import { SettingsSectionItem } from './SettingsSectionItem';
+import { isDevButtonVisibleAtom } from './ProductionDebug';
 
 export const ApplicationSettings = () => {
+    const isDevButtonVisible = useAtomValue(isDevButtonVisibleAtom);
+
     const navigation =
         useNavigation<
             StackToStackCompositeNavigationProps<
@@ -29,33 +32,35 @@ export const ApplicationSettings = () => {
     };
 
     return (
-        <SettingsSection title="Application">
-            {isDevelopOrDebugEnv() && (
+        <>
+            <SettingsSection title="Application">
+                {isDevButtonVisible && (
+                    <SettingsSectionItem
+                        iconName="placeholder"
+                        title="DEV utils"
+                        subtitle="Only for devs and internal testers."
+                        onPress={() => navigation.navigate(RootStackRoutes.DevUtilsStack)}
+                    />
+                )}
                 <SettingsSectionItem
-                    iconName="placeholder"
-                    title="DEV utils"
-                    subtitle="Only for devs and internal testers."
-                    onPress={() => navigation.navigate(RootStackRoutes.DevUtilsStack)}
+                    iconName="flag"
+                    title="Localisation"
+                    subtitle="Currency, Bitcoin units"
+                    onPress={() => handleNavigation(SettingsStackRoutes.SettingsLocalisation)}
                 />
-            )}
-            <SettingsSectionItem
-                iconName="flag"
-                title="Localisation"
-                subtitle="Currency, Bitcoin units"
-                onPress={() => handleNavigation(SettingsStackRoutes.SettingsLocalisation)}
-            />
-            <SettingsSectionItem
-                title="Customization"
-                iconName="palette"
-                subtitle="Color scheme"
-                onPress={() => handleNavigation(SettingsStackRoutes.SettingsCustomization)}
-            />
-            <SettingsSectionItem
-                title="Privacy & Security"
-                iconName="eye"
-                subtitle="Analytics, Discreet mode"
-                onPress={() => handleNavigation(SettingsStackRoutes.SettingsPrivacyAndSecurity)}
-            />
-        </SettingsSection>
+                <SettingsSectionItem
+                    title="Customization"
+                    iconName="palette"
+                    subtitle="Color scheme"
+                    onPress={() => handleNavigation(SettingsStackRoutes.SettingsCustomization)}
+                />
+                <SettingsSectionItem
+                    title="Privacy & Security"
+                    iconName="eye"
+                    subtitle="Analytics, Discreet mode"
+                    onPress={() => handleNavigation(SettingsStackRoutes.SettingsPrivacyAndSecurity)}
+                />
+            </SettingsSection>
+        </>
     );
 };

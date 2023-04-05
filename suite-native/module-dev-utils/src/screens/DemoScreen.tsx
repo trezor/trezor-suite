@@ -32,6 +32,7 @@ import {
     icons,
 } from '@trezor/icons';
 import { CoinsSettings } from '@suite-native/module-settings';
+import { isDevelopOrDebugEnv } from '@suite-native/config';
 
 const inputStackStyle = prepareNativeStyle(utils => ({
     borderRadius: utils.borders.radii.medium,
@@ -62,6 +63,8 @@ export const DemoScreen = () => {
     const handleRadioPress = (value: string | number) => {
         setRadioChecked(value.toString());
     };
+
+    if (!isDevelopOrDebugEnv()) return null;
 
     return (
         <Screen header={<ScreenHeader />}>

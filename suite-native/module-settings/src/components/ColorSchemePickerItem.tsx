@@ -59,8 +59,8 @@ export const ColorSchemePickerItem = ({ colorScheme }: ColorSchemePickerItemProp
 
     const colorVariant = colorScheme === 'system' ? systemColorScheme : colorScheme;
 
-    const handleSchemePress = () => {
-        setUserColorScheme(colorScheme);
+    const handleSchemePress = async () => {
+        await setUserColorScheme(colorScheme);
     };
 
     return (

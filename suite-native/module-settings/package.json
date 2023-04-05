@@ -23,11 +23,13 @@
         "@suite-native/config": "workspace:*",
         "@suite-native/link": "workspace:*",
         "@suite-native/navigation": "workspace:*",
+        "@suite-native/storage": "workspace:*",
         "@suite-native/theme": "workspace:*",
         "@trezor/connect": "workspace:9.0.7",
         "@trezor/icons": "workspace:*",
         "@trezor/styles": "workspace:*",
         "@trezor/theme": "workspace:*",
+        "jotai": "1.9.1",
         "react": "18.2.0",
         "react-native": "0.71.5",
         "react-redux": "8.0.5"
