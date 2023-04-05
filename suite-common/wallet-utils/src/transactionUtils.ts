@@ -508,7 +508,7 @@ const getEthereumRbfParams = (
         ],
         ethereumNonce: tx.ethereumSpecific.nonce,
         ethereumData,
-        feeRate: fromWei(tx.ethereumSpecific.gasPrice, 'gwei'),
+        feeRate: fromWei(tx.ethereumSpecific.gasPrice ?? '0', 'gwei'),
         baseFee: 0, // irrelevant
     };
 };

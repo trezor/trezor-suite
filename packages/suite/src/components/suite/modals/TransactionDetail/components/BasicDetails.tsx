@@ -306,9 +306,10 @@ export const BasicDetails = ({ tx, confirmations, network, explorerUrl }: BasicD
                             <StyledIcon icon="GAS" size={10} />
                             <Translation id="TR_GAS_PRICE" />
                         </Title>
-                        <Value>{`${fromWei(tx.ethereumSpecific.gasPrice, 'gwei')} ${getFeeUnits(
-                            'ethereum',
-                        )}`}</Value>
+                        <Value>{`${fromWei(
+                            tx.ethereumSpecific.gasPrice ?? '0',
+                            'gwei',
+                        )} ${getFeeUnits('ethereum')}`}</Value>
 
                         <Title>
                             <IconPlaceholder>#</IconPlaceholder>

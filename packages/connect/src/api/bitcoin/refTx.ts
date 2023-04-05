@@ -86,7 +86,7 @@ export const transformOrigTransactions = (
     txs.flatMap(raw => {
         if (coinInfo.type !== 'bitcoin' || raw.type !== 'blockbook' || !addresses) return [];
         const { hex, vin, vout } = raw.tx;
-        const tx = BitcoinJsTransaction.fromHex(hex, { network: coinInfo.network });
+        const tx = BitcoinJsTransaction.fromHex(hex!, { network: coinInfo.network });
         const inputAddresses = addresses.used.concat(addresses.change).concat(addresses.unused);
 
         // inputs, required by TXORIGINPUT (TxAckInput) request from Trezor
@@ -183,7 +183,7 @@ export const transformReferencedTransactions = (
     txs.flatMap(raw => {
         if (coinInfo.type !== 'bitcoin' || raw.type !== 'blockbook') return [];
         const { hex } = raw.tx;
-        const tx = BitcoinJsTransaction.fromHex(hex, { network: coinInfo.network });
+        const tx = BitcoinJsTransaction.fromHex(hex!, { network: coinInfo.network });
 
         // inputs, required by TXINPUT (TxAckPrevInput) request from Trezor
         const inputsMap = (input: BitcoinJsInput) => ({

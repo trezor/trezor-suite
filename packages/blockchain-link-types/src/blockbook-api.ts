@@ -38,8 +38,8 @@ export interface EthereumSpecific {
     internalTransfers?: EthereumInternalTransfer[];
 }
 export interface MultiTokenValue {
-    id?: string;
-    value?: string;
+    id: string; // changed manually. originally id?: string
+    value: string; // changed manually. originaly value?: string
 }
 export interface TokenTransfer {
     type: string;

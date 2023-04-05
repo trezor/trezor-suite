@@ -170,7 +170,7 @@ export const transformTransaction = (
 
     if (tx.ethereumSpecific?.createdContract) {
         type = 'contract';
-        amount = tx.value;
+        amount = tx.value ?? '0';
         targets = [];
     } else if (myInputs.length) {
         // Some input is mine -> sent, self or joint
@@ -192,7 +192,7 @@ export const transformTransaction = (
                 : outputs.filter(isNonChangeOutput);
             amount =
                 !outputs.length || tx.ethereumSpecific
-                    ? tx.value
+                    ? tx.value ?? '0'
                     : new BigNumber(myTotalInput)
                           .minus(myTotalOutput)
                           .minus(tx.fees ?? '0')
@@ -201,7 +201,7 @@ export const transformTransaction = (
             // All inputs & outputs are mine -> self
 
             type = 'self';
-            amount = tx.fees;
+            amount = tx.fees ?? '0';
             const intentionalOutputs = outputs.filter(isNonChangeOutput);
             targets = intentionalOutputs.length ? intentionalOutputs : outputs;
         }
@@ -222,7 +222,7 @@ export const transformTransaction = (
     } else {
         // No input or output is mine -> unknown
         type = 'unknown';
-        amount = tx.value;
+        amount = tx.value ?? '0';
         targets = [];
     }
 
@@ -234,10 +234,10 @@ export const transformTransaction = (
 
     const fee =
         tx.ethereumSpecific && !tx.ethereumSpecific.gasUsed
-            ? new BigNumber(tx.ethereumSpecific.gasPrice)
-                  .times(tx.ethereumSpecific.gasLimit)
+            ? new BigNumber(tx.ethereumSpecific.gasPrice ?? '0')
+                  .times(tx.ethereumSpecific.gasLimit ?? '0')
                   .toString()
-            : tx.fees;
+            : tx.fees ?? '0';
 
     // some instances of bb don't send vsize yet
     const feeRate = tx.vsize
@@ -245,7 +245,7 @@ export const transformTransaction = (
         : undefined;
 
     // some instances of bb don't send size yet
-    const size = tx.size || typeof tx.hex === 'string' ? tx.hex.length / 2 : 0;
+    const size = tx.size || typeof tx.hex === 'string' ? tx.hex!.length / 2 : 0;
 
     return {
         type,

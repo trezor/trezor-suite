@@ -51,7 +51,7 @@ const EthereumParameters = ({ gasLimit, gasUsed, gasPrice, nonce }: EthereumPara
         {/* TODO: The `gasPrice` parameter should be handled inside of a fee formatter. */}
         {/* https://github.com/trezor/trezor-suite/issues/7385 */}
         <TransactionDetailRow title="Gas price">
-            {`${fromWei(gasPrice, 'gwei')} ${getFeeUnits('ethereum')}`}
+            {`${fromWei(gasPrice ?? '0', 'gwei')} ${getFeeUnits('ethereum')}`}
         </TransactionDetailRow>
         <TransactionDetailRow title="Nonce">{nonce}</TransactionDetailRow>
     </>

@@ -574,6 +574,7 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
                 ethereumSpecific: origTx.ethereumSpecific
                     ? {
                           ...origTx.ethereumSpecific,
+                          // @ts-expect-error
                           gasPrice: toWei(origTx.ethereumSpecific.gasPrice, 'gwei'),
                       }
                     : undefined,

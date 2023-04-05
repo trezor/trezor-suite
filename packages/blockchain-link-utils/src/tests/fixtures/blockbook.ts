@@ -654,8 +654,8 @@ export const transformTransaction: {
             ],
             ethereumSpecific: {
                 status: 1,
-                gasLimit: 21000,
-                gasUsed: 21000,
+                gasLimit: '21000',
+                gasUsed: '21000',
                 gasPrice: '3',
             },
             ...FEES,
@@ -687,7 +687,7 @@ export const transformTransaction: {
             ],
             ethereumSpecific: {
                 status: 1,
-                gasLimit: 21000,
+                gasLimit: '21000',
                 gasPrice: '3',
             },
             ...FEES,

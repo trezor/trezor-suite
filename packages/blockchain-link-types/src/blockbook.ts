@@ -14,6 +14,8 @@ import {
     WsInfoRes,
     WsBlockHashRes,
     Block as BlockbookBlock,
+    Tx as BlockbookTx,
+    TokenTransfer as BlockbookTokenTransfer,
 } from './blockbook-api';
 
 type OptionalKey<M, K extends keyof M> = Omit<M, K> & Partial<Pick<M, K>>;
@@ -76,62 +78,11 @@ export interface AccountUtxoParams {
 
 export type VinVout = OptionalKey<Vin & Vout, 'addresses'>;
 
-export interface EthereumInternalTransfer {
-    type: number;
-    from: string;
-    to: string;
-    value?: string;
-}
-
-export interface Transaction {
-    txid: string;
-    version?: number;
+export type Transaction = Omit<BlockbookTx, 'vin' | 'vout' | 'tokenTransfers'> & {
     vin: VinVout[];
     vout: VinVout[];
-    blockHeight: number;
-    blockHash?: string;
-    confirmations: number;
-    blockTime: number;
-    value: string;
-    valueIn: string;
-    fees: string;
-    hex: string;
-    lockTime?: number;
-    vsize?: number;
-    size?: number;
-    ethereumSpecific?: {
-        type?: number;
-        status: number;
-        nonce: number;
-        data?: string;
-        gasLimit: number;
-        gasUsed?: number;
-        gasPrice: string;
-        createdContract?: string;
-        parsedData?: {
-            data?: string;
-            methodId?: string;
-            method?: string;
-            name?: string;
-            parameters: Array<{ key: string; value: Array<string> }>;
-        };
-        internalTransfers?: EthereumInternalTransfer[];
-    };
-    tokenTransfers?: {
-        from: string;
-        to: string;
-        value?: string;
-        contract: string;
-        name: string;
-        symbol: string;
-        decimals: number;
-        type: TokenStandard;
-        multiTokenValues?: Array<{
-            id: string;
-            value: string;
-        }>;
-    }[];
-}
+    tokenTransfers?: (Omit<BlockbookTokenTransfer, 'type'> & { type: TokenStandard })[];
+};
 
 export interface Push {
     result: string;
