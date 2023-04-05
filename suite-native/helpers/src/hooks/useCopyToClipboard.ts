@@ -1,5 +1,4 @@
 import { useCallback } from 'react';
-import { Platform } from 'react-native';
 
 import * as Clipboard from 'expo-clipboard';
 
@@ -12,14 +11,11 @@ export function useCopyToClipboard() {
         async (value: string, toastMessage?: string) => {
             await Clipboard.setStringAsync(value);
 
-            if (Platform.OS === 'ios') {
-                // Android is showing it's own copy-to-clipboard toast message
-                showToast({
-                    variant: 'default',
-                    message: toastMessage ?? 'Copied to clipboard.',
-                    icon: 'copy',
-                });
-            }
+            showToast({
+                variant: 'default',
+                message: toastMessage ?? 'Copied to clipboard.',
+                icon: 'copy',
+            });
         },
         [showToast],
     );
