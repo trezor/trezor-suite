@@ -19,8 +19,6 @@ import { initLog } from '../utils/debug';
 import { resolveAfter } from '../utils/promiseUtils';
 
 import { WebUsbPlugin, ReactNativeUsbPlugin } from '../workers/workers';
-import { getAbortController } from './AbortController';
-import type { Controller } from './AbortController';
 
 const { BridgeV2, Fallback } = TrezorLink;
 
@@ -77,7 +75,7 @@ export class DeviceList extends EventEmitter {
 
     penalizedDevices: { [deviceID: string]: number } = {};
 
-    fetchController?: Controller | null;
+    fetchController?: AbortController | null;
 
     constructor() {
         super();
@@ -101,7 +99,7 @@ export class DeviceList extends EventEmitter {
             const bridge = new BridgeV2(undefined, undefined);
             bridge.setBridgeLatestVersion(bridgeLatestVersion);
 
-            this.fetchController = getAbortController();
+            this.fetchController = new AbortController();
             const { signal } = this.fetchController;
             // @ts-expect-error TODO: https://github.com/trezor/trezor-suite/issues/5332
             const fetchWithSignal = (args, options = {}) => fetch(args, { ...options, signal });
