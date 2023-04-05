@@ -11,6 +11,7 @@ import {
     Vin,
     Vout,
     Utxo as BlockbookUtxo,
+    WsInfoRes,
 } from './blockbook-api';
 
 type OptionalKey<M, K extends keyof M> = Omit<M, K> & Partial<Pick<M, K>>;
@@ -22,24 +23,7 @@ export interface Subscribe {
     subscribed: boolean;
 }
 
-export interface ServerInfo {
-    bestHash: string;
-    bestHeight: number;
-    block0Hash: string;
-    decimals: number;
-    name: string;
-    shortcut: string;
-    testnet: boolean;
-    version: string;
-    backend?: {
-        subversion: string;
-        version: string;
-        consensus?: {
-            chaintip: string;
-            nextblock: string;
-        };
-    };
-}
+export type ServerInfo = WsInfoRes;
 
 export interface BlockHash {
     hash: string;
