@@ -36,6 +36,9 @@ const sentryRelease = `${suiteVersion}.${PROJECT}${
 const modulePath = path.join(source, 'modules');
 const modules = glob.sync(`${modulePath}/**/*.ts`).map(m => `modules${m.replace(modulePath, '')}`);
 
+const threadPath = path.join(source, 'threads');
+const threads = glob.sync(`${threadPath}/**/*.ts`).map(u => `threads${u.replace(threadPath, '')}`);
+
 // Prepare mock plugin with files from the mocks folder
 const mockPath = path.join(source, 'mocks');
 const mocks = glob
@@ -81,7 +84,7 @@ const electronExternalDependencies = [...dependencies, ...devDependencies];
 // TODO: maybe desktop-api could be built too?
 
 build({
-    entryPoints: ['app.ts', 'preload.ts', ...modules].map(f => path.join(source, f)),
+    entryPoints: ['app.ts', 'preload.ts', ...modules, ...threads].map(f => path.join(source, f)),
     platform: 'node',
     bundle: true,
     target: 'node18.12.1', // Electron 23
