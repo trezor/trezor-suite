@@ -1,15 +1,15 @@
 {
     "version": 1,
-    "timestamp": "2023-03-07T00:00:00+00:00",
-    "sequence": 25,
+    "timestamp": "2023-04-05T00:00:00+00:00",
+    "sequence": 26,
     "actions": [
         {
             "conditions": [
                 {
                     "environment": {
-                        "desktop": ">=23.3.1",
+                        "desktop": ">=23.4.1",
                         "mobile": "!",
-                        "web": ">=23.3.1"
+                        "web": ">=23.4.1"
                     }
                 }
             ],
@@ -31,8 +31,8 @@
                     {
                         "domain": "coinjoin",
                         "flag": true,
-                        "isPublic": false,
-                        "averageAnonymityGainPerRound": 5,
+                        "isPublic": true,
+                        "averageAnonymityGainPerRound": 2,
                         "roundsFailRateBuffer": 10,
                         "roundsDurationInHours": 1
                     }
@@ -84,12 +84,12 @@
                 "variant": "warning",
                 "category": "context",
                 "content": {
-                    "en-GB": "Coinjoin account is currently in testing phase.",
-                    "en": "Coinjoin account is currently in testing phase.",
-                    "es": "La cuenta Coinjoin se encuentra actualmente en fase de pruebas.",
-                    "cs": "Coinjoin účet je zatím ve fázi testování.",
-                    "ru": "Счет Coinjoin в настоящее время находится на стадии тестирования.",
-                    "ja": "Coinjoinのアカウントは現在テスト段階です。"
+                    "en-GB": "Coinjoin is currently in public beta. Please give us your feedback.",
+                    "en": "Coinjoin is currently in public beta. Please give us your feedback.",
+                    "es": "Coinjoin se encuentra actualmente en fase beta pública. Danos tu opinión.",
+                    "cs": "Coinjoin je nyní ve veřejné beta verzi. Dejte nám prosím zpětnou vazbu.",
+                    "ru": "В настоящее время coinjoin находится в стадии публичной бета-версии. Пожалуйста, дайте нам свои отзывы.",
+                    "ja": "Coinjoinは現在パブリックベータ版です。ぜひ、ご意見をお寄せください。"
                 },
                 "context": { "domain": "accounts.coinjoin" }
             }
