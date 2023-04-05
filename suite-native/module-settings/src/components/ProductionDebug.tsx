@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react';
 import { Pressable } from 'react-native';
 
-import { useAtom } from 'jotai';
+import { useSetAtom } from 'jotai';
 
 import { isDevelopOrDebugEnv } from '@suite-native/config';
 import { atomWithUnecryptedStorage } from '@suite-native/storage';
@@ -17,14 +17,14 @@ export const isDevButtonVisibleAtom = atomWithUnecryptedStorage<boolean>(
 );
 
 export const ProductionDebug = ({ children }: ProductionDebugProps) => {
-    const [_, setIsDevButtonVisible] = useAtom(isDevButtonVisibleAtom);
+    const setIsDevButtonVisible = useSetAtom(isDevButtonVisibleAtom);
 
-    const handleTapsCount = async () => {
+    const handleTapsCount = () => {
         if (tapsCount < 7) {
             tapsCount++;
         }
         if (tapsCount === 7) {
-            await setIsDevButtonVisible(true);
+            setIsDevButtonVisible(true);
         }
     };
 

@@ -21,8 +21,8 @@ export const DevUtilsScreen = ({
 }: StackProps<DevUtilsStackParamList, DevUtilsStackRoutes.DevUtils>) => {
     const persistor = useStoragePersistor();
 
-    const handleResetStorage = async () => {
-        await purgeStorage(persistor);
+    const handleResetStorage = () => {
+        purgeStorage(persistor);
     };
 
     return (

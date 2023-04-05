@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { useNavigation } from '@react-navigation/core';
-import { useAtom } from 'jotai';
+import { useAtomValue } from 'jotai';
 
 import {
     SettingsStackRoutes,
@@ -16,7 +16,7 @@ import { SettingsSectionItem } from './SettingsSectionItem';
 import { isDevButtonVisibleAtom } from './ProductionDebug';
 
 export const ApplicationSettings = () => {
-    const [isDevButtonVisible] = useAtom(isDevButtonVisibleAtom);
+    const isDevButtonVisible = useAtomValue(isDevButtonVisibleAtom);
 
     const navigation =
         useNavigation<
