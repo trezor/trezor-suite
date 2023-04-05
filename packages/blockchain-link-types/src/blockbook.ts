@@ -16,6 +16,7 @@ import {
     Block as BlockbookBlock,
     Tx as BlockbookTx,
     TokenTransfer as BlockbookTokenTransfer,
+    Token as BlockbookToken,
 } from './blockbook-api';
 
 type OptionalKey<M, K extends keyof M> = Omit<M, K> & Partial<Pick<M, K>>;
@@ -35,6 +36,7 @@ export type ServerInfo = WsInfoRes;
 
 export type BlockHash = WsBlockHashRes;
 
+// XPUBAddress, ERC20,ERC721,ERC1155 - blockbook generated type (Token) is not strict enough
 export interface XPUBAddress {
     type: 'XPUBAddress';
     name: string;
@@ -44,7 +46,6 @@ export interface XPUBAddress {
     totalSent: string;
     totalReceived: string;
 }
-
 export interface ERC20 {
     type: 'ERC20';
     name?: string;
@@ -53,6 +54,12 @@ export interface ERC20 {
     balance?: string;
     decimals?: number;
 }
+export type ERC721 = Omit<BlockbookToken, 'type'> & {
+    type: 'ERC721';
+};
+export type ERC1155 = Omit<BlockbookToken, 'type'> & {
+    type: 'ERC1155';
+};
 
 export interface AccountInfo {
     address: string;
@@ -68,7 +75,7 @@ export interface AccountInfo {
     nonTokenTxs?: number;
     transactions?: Transaction[];
     nonce?: string;
-    tokens?: (XPUBAddress | ERC20)[];
+    tokens?: (XPUBAddress | ERC20 | ERC721 | ERC1155)[];
     erc20Contract?: ERC20;
 }
 
