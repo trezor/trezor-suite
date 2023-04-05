@@ -7,6 +7,12 @@ import type {
     AccountInfoParams,
 } from './params';
 import type { AccountBalanceHistory, FiatRates, TokenStandard } from './common';
+import {
+    Vin,
+    Vout,
+} from './blockbook-api';
+
+type OptionalKey<M, K extends keyof M> = Omit<M, K> & Partial<Pick<M, K>>;
 
 export interface Subscribe {
     subscribed: boolean;
@@ -97,17 +103,7 @@ export type AccountUtxo = {
     coinbase?: boolean;
 }[];
 
-export interface VinVout {
-    n: number;
-    addresses?: string[];
-    isAddress: boolean;
-    value?: string;
-    coinbase?: string;
-    txid?: string;
-    vout?: number;
-    sequence?: number;
-    hex?: string;
-}
+export type VinVout = OptionalKey<Vin & Vout, 'addresses'>;
 
 export interface EthereumInternalTransfer {
     type: number;
