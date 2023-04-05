@@ -97,6 +97,7 @@ build({
         'process.env.VERSION': JSON.stringify(suiteVersion),
         'process.env.SENTRY_RELEASE': JSON.stringify(sentryRelease),
         'process.env.SUITE_TYPE': JSON.stringify(PROJECT),
+        'process.env.IS_CODESIGN_BUILD': JSON.stringify(IS_CODESIGN_BUILD),
     },
     inject: [path.join(__dirname, 'build-inject.ts')],
     plugins: useMocks ? [mockPlugin] : [],
