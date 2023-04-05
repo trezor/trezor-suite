@@ -326,7 +326,11 @@ export const transformAddresses = (
 
 export const transformAccountInfo = (payload: BlockbookAccountInfo): AccountInfo => {
     let page;
-    if (typeof payload.page === 'number') {
+    if (
+        typeof payload.page === 'number' &&
+        typeof payload.itemsOnPage === 'number' &&
+        typeof payload.totalPages === 'number'
+    ) {
         page = {
             index: payload.page,
             size: payload.itemsOnPage,
@@ -337,8 +341,10 @@ export const transformAccountInfo = (payload: BlockbookAccountInfo): AccountInfo
     if (typeof payload.nonce === 'string') {
         misc.nonce = payload.nonce;
     }
+    // todo: deprecated field
     if (payload.erc20Contract) {
         const token = transformTokenInfo([
+            // @ts-expect-error (deprecated)
             { ...payload.erc20Contract, type: payload.erc20Contract.type || 'ERC20' },
         ]);
         if (token) {
@@ -356,16 +362,16 @@ export const transformAccountInfo = (payload: BlockbookAccountInfo): AccountInfo
     // reduce or increase availableBalance
     const availableBalance =
         !unconfirmed.isNaN() && !unconfirmed.isZero()
-            ? unconfirmed.plus(payload.balance).toString()
-            : payload.balance;
+            ? unconfirmed.plus(payload.balance ?? '0').toString()
+            : payload.balance ?? '0';
     const empty =
         payload.txs === 0 &&
         payload.unconfirmedTxs === 0 &&
-        new BigNumber(availableBalance).isZero();
+        new BigNumber(availableBalance ?? '0').isZero();
 
     return {
         descriptor,
-        balance: payload.balance,
+        balance: payload.balance ?? '0',
         availableBalance,
         empty,
         tokens,

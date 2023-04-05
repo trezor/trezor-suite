@@ -17,6 +17,7 @@ import {
     Tx as BlockbookTx,
     TokenTransfer as BlockbookTokenTransfer,
     Token as BlockbookToken,
+    Address as BlockbookAddress,
 } from './blockbook-api';
 
 type OptionalKey<M, K extends keyof M> = Omit<M, K> & Partial<Pick<M, K>>;
@@ -61,23 +62,16 @@ export type ERC1155 = Omit<BlockbookToken, 'type'> & {
     type: 'ERC1155';
 };
 
-export interface AccountInfo {
-    address: string;
-    balance: string;
-    totalReceived: string;
-    totalSent: string;
-    txs: number;
-    unconfirmedBalance: string;
-    unconfirmedTxs: number;
-    page?: number;
-    itemsOnPage: number;
-    totalPages: number;
-    nonTokenTxs?: number;
-    transactions?: Transaction[];
-    nonce?: string;
+export type AccountInfo = Omit<
+    RequiredKey<
+        BlockbookAddress,
+        'totalPages' | 'unconfirmedBalance' | 'totalSent' | 'totalReceived'
+    >,
+    'tokens' | 'transactions'
+> & {
     tokens?: (XPUBAddress | ERC20 | ERC721 | ERC1155)[];
-    erc20Contract?: ERC20;
-}
+    transactions?: Transaction[];
+};
 
 export interface AccountUtxoParams {
     descriptor: string;
