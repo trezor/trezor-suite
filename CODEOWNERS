@@ -8,6 +8,12 @@
 
 /packages/blockchain-link @mroz22 @marekrjpolak
 
+/packages/blockchain-link-utils @marekrjpolak
+
+/packages/blockchain-link-types @marekrjpolak
+
+/packages/coinjoin @marekrjpolak @szymonlesisz
+
 /packages/components @dahaca @matejkriz
 
 /packages/connect @mroz22 @szymonlesisz
@@ -28,9 +34,9 @@
 
 /packages/connect-web @mroz22 @szymonlesisz
 
-/packages/icons @trezor/suite-mobile
+/packages/connect-webextension @mroz22 @karliatto
 
-/packages/integration-tests @mroz22 @ondracja
+/packages/icons @trezor/suite-mobile
 
 /packages/message-system @tomasklim @matejkriz
 
@@ -63,6 +69,8 @@
 /packages/urls @marekrjpolak
 
 /packages/utils @karliatto
+
+/packages/node-utils @karliatto
 
 /packages/utxo-lib @szymonlesisz
 
