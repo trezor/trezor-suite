@@ -13,12 +13,17 @@ import {
     Utxo as BlockbookUtxo,
     WsInfoRes,
     WsBlockHashRes,
+    Block as BlockbookBlock,
 } from './blockbook-api';
 
 type OptionalKey<M, K extends keyof M> = Omit<M, K> & Partial<Pick<M, K>>;
 type RequiredKey<M, K extends keyof M> = Omit<M, K> & Required<Pick<M, K>>;
 
 export type AccountUtxo = RequiredKey<BlockbookUtxo, 'address' | 'height' | 'value' | 'path'>[];
+
+export type Block = Omit<BlockbookBlock, 'txs'> & {
+    txs?: Transaction[];
+};
 
 export interface Subscribe {
     subscribed: boolean;
@@ -27,16 +32,6 @@ export interface Subscribe {
 export type ServerInfo = WsInfoRes;
 
 export type BlockHash = WsBlockHashRes;
-
-export interface Block {
-    page: number;
-    totalPages: number;
-    itemsOnPage: number;
-    hash: string;
-    height: number;
-    txCount: number;
-    txs: Transaction[];
-}
 
 export interface XPUBAddress {
     type: 'XPUBAddress';

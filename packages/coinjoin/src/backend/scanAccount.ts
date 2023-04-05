@@ -35,7 +35,7 @@ const analyzeAddresses = async (
         if (isMatch(script)) {
             // eslint-disable-next-line no-await-in-loop
             const block = await getBlock();
-            const transactions = block.txs.filter(doesTxContainAddress(address));
+            const transactions = block.txs?.filter(doesTxContainAddress(address)) || [];
             if (transactions.length) {
                 transactions.forEach(txs.add, txs);
                 const missing = lookout + i + 1 - addrs.length;

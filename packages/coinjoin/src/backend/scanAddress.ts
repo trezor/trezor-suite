@@ -26,7 +26,7 @@ export const scanAddress = async (
         const isMatch = getFilter(filter, blockHash);
         if (isMatch(script)) {
             const block = await client.fetchBlock(blockHeight);
-            const blockTxs = block.txs.filter(doesTxContainAddress(address));
+            const blockTxs = block.txs?.filter(doesTxContainAddress(address)) || [];
             const transactions = blockTxs.map(tx => transformTransaction(address, undefined, tx));
 
             onProgress({

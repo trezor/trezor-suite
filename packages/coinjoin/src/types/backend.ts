@@ -10,6 +10,7 @@ import type {
 import type {
     Transaction as BlockbookTransaction,
     VinVout,
+    Block,
 } from '@trezor/blockchain-link-types/lib/blockbook';
 
 import type { CoinjoinBackendClient } from '../backend/CoinjoinBackendClient';
@@ -18,12 +19,7 @@ import type { MempoolController } from '../backend/CoinjoinMempoolController';
 export type { BlockbookTransaction, VinVout, EnhancedVinVout };
 export type { Address, Utxo, Transaction, AccountAddresses };
 
-export type BlockbookBlock = {
-    page: number;
-    totalPages: number;
-    height: number;
-    txs: BlockbookTransaction[];
-};
+export type BlockbookBlock = Block;
 
 export type BlockFilter = {
     blockHeight: number;
