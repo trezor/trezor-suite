@@ -50,7 +50,9 @@ const CoinsList = ({
 
                 const supportField = deviceModel && support?.[deviceModel];
                 const supportedBySuite =
-                    !supportField || versionUtils.isNewerOrEqual(firmwareVersion, supportField);
+                    !firmwareVersion ||
+                    !supportField ||
+                    versionUtils.isNewerOrEqual(firmwareVersion, supportField);
 
                 let unavailable = device?.unavailableCapabilities?.[symbol];
                 if (!supportedBySuite) {
