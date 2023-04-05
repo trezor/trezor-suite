@@ -42,9 +42,7 @@ export const SettingsAboutUsScreen = () => {
                             />
                             <ListItem
                                 onPress={() =>
-                                    openLink(
-                                        'https://trezor.io/content/wysiwyg/ToU/privacy-policy.pdf',
-                                    )
+                                    openLink('https://data.trezor.io/legal/privacy-policy.html')
                                 }
                                 title="Privacy policy"
                                 iconName="pdf"
