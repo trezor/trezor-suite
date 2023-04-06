@@ -280,7 +280,7 @@ export const transformTokenInfo = (
 ): TokenInfo[] | undefined => {
     if (!tokens || !Array.isArray(tokens)) return undefined;
     const info = tokens.reduce((arr, t) => {
-        if (t.type !== 'ERC20') return arr;
+        if (t.type === 'XPUBAddress') return arr;
         return arr.concat([
             {
                 type: t.type,
