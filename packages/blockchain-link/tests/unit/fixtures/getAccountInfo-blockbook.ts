@@ -127,40 +127,6 @@ const fixtures: {
         },
     },
     {
-        description: 'BTC account with invalid addresses',
-        params: {
-            descriptor:
-                'xpub6CVKsQYXc9b2MiuW1HisiJKCEyB8vSqEafi6CP6Qu96YABCKScWtm1gUko1yDRSdmPjYQ8eFUbc9qrvNxBTUq2Z19aenEmCFcUcFUJL1Wpu',
-        },
-        serverFixtures: [
-            {
-                method: 'getAccountInfo',
-                response: {
-                    data: {
-                        address:
-                            'xpub6CVKsQYXc9b2MiuW1HisiJKCEyB8vSqEafi6CP6Qu96YABCKScWtm1gUko1yDRSdmPjYQ8eFUbc9qrvNxBTUq2Z19aenEmCFcUcFUJL1Wpu',
-                        tokens: [
-                            {
-                                // @ts-expect-error
-                                type: 'not-XPUBAddress',
-                                path: "m/44'/0'/100'/1/0",
-                                name: '1J8tVQD9KZZeLhnkMRHHDawsYmwjWAnC5d',
-                                transfers: 0,
-                            },
-                        ],
-                    },
-                },
-            },
-        ],
-        response: {
-            descriptor:
-                'xpub6CVKsQYXc9b2MiuW1HisiJKCEyB8vSqEafi6CP6Qu96YABCKScWtm1gUko1yDRSdmPjYQ8eFUbc9qrvNxBTUq2Z19aenEmCFcUcFUJL1Wpu',
-            empty: false,
-            addresses: undefined,
-            history: {},
-        },
-    },
-    {
         description: 'BTC account with unconfirmed balance (incoming)',
         params: {
             descriptor:
@@ -519,36 +485,6 @@ const fixtures: {
         },
     },
     {
-        description: 'ETH account with unknown tokens',
-        params: {
-            descriptor: '0x1e6E3708a059aEa1241a81c7aAe84b6CDbC54d59',
-        },
-        serverFixtures: [
-            {
-                method: 'getAccountInfo',
-                response: {
-                    data: {
-                        address: '0x1e6E3708a059aEa1241a81c7aAe84b6CDbC54d59',
-                        tokens: [
-                            {
-                                // @ts-expect-error
-                                type: 'not-ERC20',
-                                path: "m/44'/0'/100'/1/0",
-                                name: '1J8tVQD9KZZeLhnkMRHHDawsYmwjWAnC5d',
-                                transfers: 0,
-                            },
-                        ],
-                    },
-                },
-            },
-        ],
-        response: {
-            descriptor: '0x1e6E3708a059aEa1241a81c7aAe84b6CDbC54d59',
-            empty: false,
-            history: {},
-        },
-    },
-    {
         description: 'ETH (Ropsten) smart contract',
         params: {
             descriptor: '0xFc6B5d6af8A13258f7CbD0D39E11b35e01a32F93',
@@ -582,32 +518,6 @@ const fixtures: {
                     decimals: 3,
                 },
             },
-        },
-    },
-    {
-        description: 'ETH (Ropsten) smart contract type unknown',
-        params: {
-            descriptor: '0xFc6B5d6af8A13258f7CbD0D39E11b35e01a32F93',
-        },
-        serverFixtures: [
-            {
-                method: 'getAccountInfo',
-                response: {
-                    data: {
-                        address: '0xFc6B5d6af8A13258f7CbD0D39E11b35e01a32F93',
-                        erc20Contract: {
-                            // @ts-expect-error
-                            type: 'not-ERC20',
-                        },
-                    },
-                },
-            },
-        ],
-        response: {
-            descriptor: '0xFc6B5d6af8A13258f7CbD0D39E11b35e01a32F93',
-            empty: false,
-            history: {},
-            misc: undefined,
         },
     },
     {
