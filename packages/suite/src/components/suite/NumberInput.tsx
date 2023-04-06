@@ -26,6 +26,8 @@ const getLocaleSeparatorCharCodes = (locale: Locale) => ({
     decimalsSeparatorCharCode: getLocaleSeparators(locale).decimalSeparator.charCodeAt(0),
 });
 
+const isDecimalString = (value: string) => value.includes('.');
+
 const cleanValueString = (value: string, locale: Locale) => {
     const { decimalSeparator, thousandsSeparator } = getLocaleSeparators(locale);
 
@@ -102,14 +104,15 @@ export const NumberInput = ({
 
             // don't include spaces at the start or the end of a number, for pasting mainly
             value = value.trim();
+            const cleanValue = cleanValueString(value, locale);
 
-            // don't localize when entering a separator or a 0 (e.g. 0.0000 -> 0.00001),
+            // don't localize when entering a separator or a 0 in decimals (e.g. 0.0000 -> 0.00001),
             // otherwise the separator might get removed
             const lastSymbolCode = value.at(-1)?.charCodeAt(0);
             const zeroCharCode = 48;
             if (
-                lastSymbolCode &&
-                [...DECIMAL_SEPARATOR_CODES, zeroCharCode].includes(lastSymbolCode)
+                (lastSymbolCode && [...DECIMAL_SEPARATOR_CODES].includes(lastSymbolCode)) ||
+                (isDecimalString(cleanValue) && zeroCharCode === lastSymbolCode)
             ) {
                 // disallow entering more than one separator
                 const secondToLastSymbolCode = value.at(-2)?.charCodeAt(0);
@@ -142,7 +145,7 @@ export const NumberInput = ({
             }
 
             // clean so that it's compatible with Number() and localize
-            const formattedNumber = localizeNumber(cleanValueString(value, locale), locale);
+            const formattedNumber = localizeNumber(cleanValue, locale);
             return handleSetDisplayValue(formattedNumber);
         },
         [inputRef, locale],
@@ -205,6 +208,7 @@ export const NumberInput = ({
             previousFormValueRef.current = cleanInput;
             onChange(cleanInput);
 
+            // get the latest error state
             const hasError = !!rules?.validate?.(cleanInput);
             // because the form is not updated yet after calling `onChange()`,
             // the value of `invalid` here is the one before this change has been handled
@@ -214,7 +218,7 @@ export const NumberInput = ({
                 // TODO: get rid of `onChangeCallback()` entirely and use the `watch` method from react-hook form
                 setTimeout(() => {
                     onChangeCallback?.(cleanInput);
-                }, 200);
+                }, 0);
             } else {
                 onChangeCallback?.(cleanInput);
             }
@@ -242,20 +246,41 @@ export const NumberInput = ({
     // copy the non-formatted value
     const handleCopy = useCallback(
         (e: React.ClipboardEvent<HTMLInputElement>) => {
-            e.clipboardData.setData('text/plain', cleanValueString(displayValue, locale));
+            if (!inputRef.current) {
+                return;
+            }
+
+            const { selectionStart, selectionEnd, value } = inputRef.current;
+            if (selectionStart === null || selectionEnd == null) {
+                return;
+            }
+
+            const copiedString = value.substring(selectionStart, selectionEnd);
+            e.clipboardData.setData('text/plain', cleanValueString(copiedString, locale));
 
             e.preventDefault();
         },
-        [displayValue, locale],
+        [locale, inputRef],
     );
 
     // cut the non-formatted value and manually clear the input
     const handleCut = useCallback(
         (e: React.ClipboardEvent<HTMLInputElement>) => {
             handleCopy(e);
-            handleChange('');
+
+            if (!inputRef.current) {
+                return;
+            }
+
+            const { selectionStart, selectionEnd, value } = inputRef.current;
+            if (selectionStart === null || selectionEnd == null) {
+                return;
+            }
+
+            const resultString = value.substring(0, selectionStart) + value.substring(selectionEnd);
+            handleChange(resultString);
         },
-        [handleCopy, handleChange],
+        [handleCopy, handleChange, inputRef],
     );
 
     // only allow digits and separators
