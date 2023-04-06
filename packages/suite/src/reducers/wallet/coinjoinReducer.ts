@@ -576,7 +576,8 @@ export const selectTargetAnonymityByAccountKey = (
     return coinjoinAccount.setup?.targetAnonymity ?? DEFAULT_TARGET_ANONYMITY;
 };
 
-export const selectCurrentCoinjoinBalanceBreakdown = memoize((state: CoinjoinRootState) => {
+// memoization was causing incorrect return from the selector
+export const selectCurrentCoinjoinBalanceBreakdown = (state: CoinjoinRootState) => {
     const selectedAccount = selectSelectedAccount(state);
     const targetAnonymity = selectedAccount
         ? selectTargetAnonymityByAccountKey(state, selectedAccount.key)
@@ -591,28 +592,29 @@ export const selectCurrentCoinjoinBalanceBreakdown = memoize((state: CoinjoinRoo
     });
 
     return balanceBreakdown;
-});
+};
 
-export const selectSessionProgressByAccountKey = memoizeWithArgs(
-    (state: CoinjoinRootState, accountKey: AccountKey) => {
-        const relatedAccount = selectAccountByKey(state, accountKey);
-        const targetAnonymity = selectTargetAnonymityByAccountKey(state, accountKey);
+export const selectSessionProgressByAccountKey = (
+    state: CoinjoinRootState,
+    accountKey: AccountKey,
+) => {
+    const relatedAccount = selectAccountByKey(state, accountKey);
+    const targetAnonymity = selectTargetAnonymityByAccountKey(state, accountKey);
 
-        const { addresses, balance, utxo: utxos } = relatedAccount || {};
+    const { addresses, balance, utxo: utxos } = relatedAccount || {};
 
-        if (!balance || !utxos) {
-            return 0;
-        }
+    if (!balance || !utxos) {
+        return 0;
+    }
 
-        const progress = calculateAnonymityProgress({
-            targetAnonymity,
-            anonymitySet: addresses?.anonymitySet,
-            utxos,
-        });
+    const progress = calculateAnonymityProgress({
+        targetAnonymity,
+        anonymitySet: addresses?.anonymitySet,
+        utxos,
+    });
 
-        return progress;
-    },
-);
+    return progress;
+};
 
 export const selectCurrentCoinjoinSession = memoize((state: CoinjoinRootState) => {
     const selectedAccount = selectSelectedAccount(state);
@@ -804,40 +806,41 @@ export const selectHasAnonymitySetError = memoize((state: CoinjoinRootState) => 
     return hasFaultyAnonymitySet;
 });
 
-export const selectCoinjoinSessionBlockerByAccountKey = memoizeWithArgs(
-    (state: CoinjoinRootState, accountKey: AccountKey) => {
-        if (selectSessionByAccountKey(state, accountKey)?.starting) {
-            return 'SESSION_STARTING';
-        }
-        if (selectIsFeatureDisabled(state, Feature.coinjoin)) {
-            return 'FEATURE_DISABLED';
-        }
-        if (!state.suite.online) {
-            return 'OFFLINE';
-        }
-        if (selectIsNothingToAnonymizeByAccountKey(state, accountKey)) {
-            return 'NOTHING_TO_ANONYMIZE';
-        }
-        if (selectIsCoinjoinBlockedByTor(state)) {
-            return 'TOR_DISABLED';
-        }
-        if (selectDeviceState(state) !== 'connected') {
-            return 'DEVICE_DISCONNECTED';
-        }
-        const account = selectAccountByKey(state, accountKey);
-        if (account?.backendType === 'coinjoin' && account?.status === 'out-of-sync') {
-            return 'ACCOUNT_OUT_OF_SYNC';
-        }
-        if (selectIsDeviceLocked(state)) {
-            return 'DEVICE_LOCKED';
-        }
-        if (selectHasAnonymitySetError(state)) {
-            return 'ANONYMITY_ERROR';
-        }
-    },
-);
+export const selectCoinjoinSessionBlockerByAccountKey = (
+    state: CoinjoinRootState,
+    accountKey: AccountKey,
+) => {
+    if (selectSessionByAccountKey(state, accountKey)?.starting) {
+        return 'SESSION_STARTING';
+    }
+    if (selectIsFeatureDisabled(state, Feature.coinjoin)) {
+        return 'FEATURE_DISABLED';
+    }
+    if (!state.suite.online) {
+        return 'OFFLINE';
+    }
+    if (selectIsNothingToAnonymizeByAccountKey(state, accountKey)) {
+        return 'NOTHING_TO_ANONYMIZE';
+    }
+    if (selectIsCoinjoinBlockedByTor(state)) {
+        return 'TOR_DISABLED';
+    }
+    if (selectDeviceState(state) !== 'connected') {
+        return 'DEVICE_DISCONNECTED';
+    }
+    const account = selectAccountByKey(state, accountKey);
+    if (account?.backendType === 'coinjoin' && account?.status === 'out-of-sync') {
+        return 'ACCOUNT_OUT_OF_SYNC';
+    }
+    if (selectIsDeviceLocked(state)) {
+        return 'DEVICE_LOCKED';
+    }
+    if (selectHasAnonymitySetError(state)) {
+        return 'ANONYMITY_ERROR';
+    }
+};
 
-// memoise() was causing incorrect return from the selector
+// memoization was causing incorrect return from the selector
 export const selectCurrentCoinjoinWheelStates = (state: CoinjoinRootState) => {
     const { anonymized, notAnonymized } = selectCurrentCoinjoinBalanceBreakdown(state);
     const session = selectCurrentCoinjoinSession(state);
