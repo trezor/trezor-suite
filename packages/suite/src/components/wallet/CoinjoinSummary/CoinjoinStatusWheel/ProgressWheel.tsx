@@ -198,7 +198,8 @@ export const ProgressWheel = ({ accountKey, togglePause }: ProgressWheelProps) =
         }
     };
 
-    const isProgressIndicatorShown = isSessionActive && !isPaused && !isLoading;
+    const isProgressIndicatorShown =
+        isSessionActive && !isPaused && !isLoading && !isResumeBlockedByLastingIssue;
     const isHoverDisabled = isCoinjoinSessionBlocked || isAllPrivate;
     const isSessionStartable = !isSessionActive && !isAllPrivate && !isCoinjoinSessionBlocked;
     const hasCriticalError = isResumeBlockedByLastingIssue && !isAccountEmpty && !isAllPrivate;

@@ -21,6 +21,7 @@ const BalanceContainer = styled.div`
 
 const StyledCryptoAmountWithHeader = styled(CryptoAmountWithHeader)`
     flex-grow: 1;
+    max-width: 50%;
     margin-bottom: -4px;
 `;
 
