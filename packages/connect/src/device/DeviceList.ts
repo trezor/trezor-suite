@@ -405,7 +405,7 @@ class CreateDeviceHandler {
                 // most common error - someone else took the device at the same time
                 this._handleUsedElsewhere();
             } else {
-                await resolveAfter(501, null);
+                await resolveAfter(501, null).promise;
                 await this.handle();
             }
         }
@@ -499,7 +499,7 @@ class DiffHandler {
             const penalty = this.list.getAuthPenalty();
             _log.debug('Connected', priority, penalty, descriptor.session, this.list.devices);
             if (priority || penalty) {
-                await resolveAfter(501 + penalty + 100 * priority, null);
+                await resolveAfter(501 + penalty + 100 * priority, null).promise;
             }
             if (descriptor.session == null) {
                 await this.list._createAndSaveDevice(descriptor);
@@ -528,7 +528,7 @@ class DiffHandler {
             if (device) {
                 if (device.isUnacquired() && !device.isInconsistent()) {
                     // wait for publish changes
-                    await resolveAfter(501, null);
+                    await resolveAfter(501, null).promise;
                     _log.debug('Create device from unacquired', device);
                     await this.list._createAndSaveDevice(descriptor);
                 }

@@ -45,6 +45,7 @@ let _uiPromises: UiPromise<UiPromiseResponse['type']>[] = []; // Waiting for ui 
 const _callMethods: AbstractMethod[] = []; // generic type is irrelevant. only common functions are called at this level
 let _preferredDevice: CommonParams['device'];
 let _interactionTimeout: InteractionTimeout;
+let _deviceListInitTimeout: ReturnType<typeof setTimeout> | undefined;
 
 // custom log
 const _log = initLog('Core');
@@ -629,7 +630,7 @@ export const onCall = async (message: CoreMessage) => {
             if (method.name === 'rebootToBootloader' && response.success) {
                 // Wait for device to switch to bootloader
                 // This delay is crucial see https://github.com/trezor/trezor-firmware/issues/1983
-                await resolveAfter(1000);
+                await resolveAfter(1000).promise;
                 // call Device.run with empty function to fetch new Features
                 // (acquire > Initialize > nothing > release)
                 await device.run(() => Promise.resolve(), { skipFinalReload: true });
@@ -928,8 +929,10 @@ const initDeviceList = async (settings: ConnectSettings) => {
             postMessage(createTransportMessage(TRANSPORT.ERROR, { error }));
             // if transport fails during app lifetime, try to reconnect
             if (settings.transportReconnect) {
-                await resolveAfter(1000, null);
-                await initDeviceList(settings);
+                const { promise, timeout } = resolveAfter(1000, null);
+                _deviceListInitTimeout = timeout;
+                await promise;
+                initDeviceList(settings);
             }
         });
 
@@ -947,7 +950,9 @@ const initDeviceList = async (settings: ConnectSettings) => {
         if (!settings.transportReconnect) {
             throw error;
         } else {
-            await resolveAfter(3000, null);
+            const { promise, timeout } = resolveAfter(3000, null);
+            _deviceListInitTimeout = timeout;
+            await promise;
             // try to reconnect
             await initDeviceList(settings);
         }
@@ -966,6 +971,9 @@ export class Core extends EventEmitter {
 
     async dispose() {
         disposeBackend();
+        if (_deviceListInitTimeout) {
+            clearTimeout(_deviceListInitTimeout);
+        }
         this.removeAllListeners();
         if (_deviceList) {
             await _deviceList.dispose();
