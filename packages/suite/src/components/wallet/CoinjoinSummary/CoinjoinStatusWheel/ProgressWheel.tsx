@@ -189,6 +189,10 @@ export const ProgressWheel = ({ accountKey, togglePause }: ProgressWheelProps) =
     ]);
 
     const getTooltipMessage = () => {
+        if (isAllPrivate) {
+            return;
+        }
+
         if (isAccountEmpty) {
             return <Translation id="TR_NOTHING_TO_ANONYMIZE" />;
         }
