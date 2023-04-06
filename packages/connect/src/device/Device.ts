@@ -329,7 +329,6 @@ export class Device extends EventEmitter {
             await this.getFeatures();
         }
 
-        // await resolveAfter(2000, null);
         if (
             (!this.keepSession && typeof options.keepSession !== 'boolean') ||
             options.keepSession === false

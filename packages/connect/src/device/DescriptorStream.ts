@@ -137,7 +137,7 @@ export class DescriptorStream extends EventEmitter {
             logger.debug('Listen error', 'timestamp', time, typeof error);
 
             if (time > 1100) {
-                await resolveAfter(1000, null);
+                await resolveAfter(1000, null).promise;
                 if (this.listening) this.listen();
             } else {
                 logger.warn('Transport error');

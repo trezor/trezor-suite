@@ -383,7 +383,7 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
         const account = discovery.accounts[uiResp.payload];
 
         if (!discovery.completed) {
-            await resolveAfter(501); // temporary solution, TODO: immediately resolve will cause "device call in progress"
+            await resolveAfter(501).promise; // temporary solution, TODO: immediately resolve will cause "device call in progress"
         }
 
         // get account info from backend
