@@ -17,6 +17,7 @@ const PROJECT = 'desktop';
 
 const source = path.join(__dirname, '..', 'src');
 const isDev = NODE_ENV !== 'production';
+const isCodesignBuild = IS_CODESIGN_BUILD === 'true';
 const useMocks = USE_MOCKS === 'true' || (isDev && USE_MOCKS !== 'false');
 
 // Get git revision
@@ -28,7 +29,7 @@ const gitRevision = childProcess.execSync('git rev-parse HEAD').toString().trim(
  * but reusing is not straightforward because this is JS script run by Node during build.
  */
 const sentryRelease = `${suiteVersion}.${PROJECT}${
-    IS_CODESIGN_BUILD === 'true' ? '.codesign' : ''
+    isCodesignBuild ? '.codesign' : ''
 }.${gitRevision}`;
 
 // Get all modules (used as entry points)
@@ -97,7 +98,7 @@ build({
         'process.env.VERSION': JSON.stringify(suiteVersion),
         'process.env.SENTRY_RELEASE': JSON.stringify(sentryRelease),
         'process.env.SUITE_TYPE': JSON.stringify(PROJECT),
-        'process.env.IS_CODESIGN_BUILD': JSON.stringify(IS_CODESIGN_BUILD),
+        'process.env.IS_CODESIGN_BUILD': JSON.stringify(isCodesignBuild),
     },
     inject: [path.join(__dirname, 'build-inject.ts')],
     plugins: useMocks ? [mockPlugin] : [],
