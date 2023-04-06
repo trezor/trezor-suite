@@ -216,6 +216,15 @@ export interface AssetBalance {
     fingerprint?: string; // defined for all assets except lovelace
 }
 
+export type BlockfrostToken = {
+    type: 'BLOCKFROST';
+    name: string; // from unit or fingerprint
+    contract: string; // unit
+    symbol: string; // from unit or fingerprint
+    balance: string; // quantity
+    decimals: number; // decimals
+};
+
 export interface Output {
     address: string;
     amount: AssetBalance[];
