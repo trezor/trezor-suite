@@ -1,12 +1,15 @@
 import React from 'react';
 
-import { RequireAllOrNone } from 'type-fest';
-
 import { Box, Text } from '@suite-native/atoms';
 import { Icon, IconName } from '@trezor/icons';
 import { TransactionType, WalletAccountTransaction } from '@suite-common/wallet-types';
-import { Color } from '@trezor/theme';
-import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
+import {
+    CryptoAmountFormatter,
+    CryptoToFiatAmountFormatter,
+    SignValueFormatter,
+} from '@suite-native/formatters';
+
+import { signValueMap } from '../TransactionsList/TransactionListItem';
 
 type TransactionDetailHeaderProps = {
     transaction: WalletAccountTransaction;
@@ -14,23 +17,17 @@ type TransactionDetailHeaderProps = {
 
 type TransactionTypeInfo = {
     text: string;
-    iconName: IconName;
-    sign?: string;
-    signColor?: Color;
+    iconName?: IconName;
 };
 
 const transactionTypeInfo = {
     recv: {
         text: 'Received',
         iconName: 'receive',
-        sign: '+',
-        signColor: 'textSecondaryHighlight',
     },
     sent: {
         text: 'Sent',
         iconName: 'send',
-        sign: '-',
-        signColor: 'textAlertRed',
     },
     contract: {
         text: 'Contract',
@@ -47,10 +44,7 @@ const transactionTypeInfo = {
     unknown: {
         text: 'Unknown',
     },
-} as const satisfies Record<
-    TransactionType,
-    RequireAllOrNone<TransactionTypeInfo, 'sign' | 'signColor' | 'iconName'>
->;
+} as const satisfies Record<TransactionType, TransactionTypeInfo>;
 
 export const TransactionDetailHeader = ({ transaction }: TransactionDetailHeaderProps) => {
     const { type } = transaction;
@@ -74,11 +68,7 @@ export const TransactionDetailHeader = ({ transaction }: TransactionDetailHeader
                 )}
             </Box>
             <Box flexDirection="row">
-                {hasTransactionSign && (
-                    <Text variant="titleMedium" color={transactionTypeInfo[type].signColor}>
-                        {transactionTypeInfo[type].sign}
-                    </Text>
-                )}
+                <SignValueFormatter value={signValueMap[transaction.type]} variant="titleMedium" />
                 <CryptoAmountFormatter
                     value={transaction.amount}
                     network={transaction.symbol}

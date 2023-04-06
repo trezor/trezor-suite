@@ -201,16 +201,10 @@ export const selectTransactionFirstTargetAddress = memoizeWithArgs(
     },
 );
 
-export const selectTransactionFirstInputAddress = memoizeWithArgs(
-    (state: TransactionsRootState, txid: string, accountKey: AccountKey) => {
+export const selectIsTransactionPending = memoizeWithArgs(
+    (state: TransactionsRootState, txid: string, accountKey: AccountKey): boolean => {
         const transaction = selectTransactionByTxidAndAccountKey(state, txid, accountKey);
-        return transaction?.details?.vin?.[0].addresses?.[0];
+        return transaction ? isPending(transaction) : false;
     },
-);
-
-export const selectTransactionFirstOutputAddress = memoizeWithArgs(
-    (state: TransactionsRootState, txid: string, accountKey: AccountKey) => {
-        const transaction = selectTransactionByTxidAndAccountKey(state, txid, accountKey);
-        return transaction?.details?.vout?.[0].addresses?.[0];
-    },
+    { size: 50 },
 );

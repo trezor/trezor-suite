@@ -6,3 +6,4 @@ export { FiatAmountFormatter } from './components/FiatAmountFormatter';
 export { CryptoAmountFormatter } from './components/CryptoAmountFormatter';
 export { EthereumTokenAmountFormatter } from './components/EthereumTokenAmountFormatter';
 export { EthereumTokenToFiatAmountFormatter } from './components/EthereumTokenToFiatAmountFormatter';
+export { SignValueFormatter } from './components/SignValueFormatter';

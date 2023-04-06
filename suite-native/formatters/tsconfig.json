@@ -6,6 +6,9 @@
             "path": "../../suite-common/formatters"
         },
         {
+            "path": "../../suite-common/suite-types"
+        },
+        {
             "path": "../../suite-common/wallet-config"
         },
         {
