@@ -194,7 +194,7 @@ const prepareContent = (data: Data): Fields[] => {
 
             if (t.tokens.length > 0) {
                 tokens = t.tokens.map(token => {
-                    if (!token?.address || !token?.amount) {
+                    if (!token?.contract || !token?.amount) {
                         return null;
                     }
                     const tokenData = {
@@ -204,7 +204,7 @@ const prepareContent = (data: Data): Fields[] => {
                         address: token.to || '', // SENT - it is destination address, RECV - it is MY address
                         label: '', // token transactions do not have labels
                         amount: token.amount, // TODO: what to show if token.decimals missing so amount is not formatted correctly?
-                        symbol: token.symbol.toUpperCase() || token.address, // if symbol not available, use contract address
+                        symbol: token.symbol.toUpperCase() || token.contract, // if symbol not available, use contract address
                         fiat: '', // missing rates for tokens
                         other: '',
                     };

@@ -46,7 +46,7 @@ export const AddToken = ({ onCancel }: AddTokenProps) => {
 
             if (response.success) {
                 const isInvalidToken = response.payload.tokens?.find(
-                    t => t.address === t.name && t.decimals === 0 && !t.symbol,
+                    t => t.contract === t.name && t.decimals === 0 && !t.symbol,
                 );
                 if (!isInvalidToken) {
                     setTokenInfo(response.payload.tokens);
@@ -80,7 +80,7 @@ export const AddToken = ({ onCancel }: AddTokenProps) => {
         const addr = e.target.value;
 
         const alreadyAdded = account.tokens?.find(
-            t => t.address.toLowerCase() === addr.toLowerCase(),
+            t => t.contract.toLowerCase() === addr.toLowerCase(),
         );
 
         const isValid = isAddressValid(addr, account.symbol);

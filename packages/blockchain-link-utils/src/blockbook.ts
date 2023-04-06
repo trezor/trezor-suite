@@ -73,18 +73,16 @@ export const filterTokenTransfers = (
                 type = 'recv';
             }
 
-            return {
+            const tokenTransfer = {
+                ...transfer,
                 type,
-                name: transfer.name,
-                symbol: transfer.symbol,
-                address: transfer.contract,
                 decimals: transfer.decimals || 0,
                 amount: transfer.value || '',
-                from: transfer.from,
-                to: transfer.to,
                 standard: transfer.type,
-                multiTokenValues: transfer.multiTokenValues,
             };
+            delete tokenTransfer.value;
+
+            return tokenTransfer;
         });
 };
 
@@ -279,16 +277,12 @@ export const transformTokenInfo = (
     tokens: BlockbookAccountInfo['tokens'],
 ): TokenInfo[] | undefined => {
     if (!tokens || !Array.isArray(tokens)) return undefined;
-    const info = tokens.reduce((arr, t) => {
-        if (t.type === 'XPUBAddress') return arr;
+    const info = tokens.reduce((arr, token) => {
+        if (token.type === 'XPUBAddress') return arr;
         return arr.concat([
             {
-                type: t.type,
-                name: t.name,
-                symbol: t.symbol,
-                address: t.contract,
-                balance: t.balance,
-                decimals: t.decimals || 0,
+                ...token,
+                decimals: token.decimals || 0,
             },
         ]);
     }, [] as TokenInfo[]);

@@ -407,7 +407,7 @@ export const enhanceTransaction = [
             targets: [],
             tokens: [
                 {
-                    address: '0x0f5d2fb29fb7d3cfee444a200298f468908cc942',
+                    contract: '0x0f5d2fb29fb7d3cfee444a200298f468908cc942',
                     amount: '10',
                     decimals: 18,
                     from: '0x75e68d3b6acd23e79e395fa627ae5cae605c03d3',
@@ -472,7 +472,7 @@ export const enhanceTransaction = [
             targets: [],
             tokens: [
                 {
-                    address: '0x0f5d2fb29fb7d3cfee444a200298f468908cc942',
+                    contract: '0x0f5d2fb29fb7d3cfee444a200298f468908cc942',
                     amount: '10',
                     decimals: 18,
                     from: '0x75e68d3b6acd23e79e395fa627ae5cae605c03d3',
@@ -1405,7 +1405,7 @@ export const getAccountTransactions = [
                         type: 'sent',
                         name: 'Golem Network Token',
                         symbol: 'GNT',
-                        address: '0xa74476443119a942de498590fe1f2454d7d4ac0d',
+                        contract: '0xa74476443119a942de498590fe1f2454d7d4ac0d',
                         decimals: 18,
                         amount: '23000000000000000000',
                         from: '0xfa01a39f8abaeb660c3137f14a310d0b414b2a15',
@@ -1460,7 +1460,7 @@ export const getAccountTransactions = [
                         type: 'recv',
                         name: 'Golem Network Token',
                         symbol: 'GNT',
-                        address: '0xa74476443119a942de498590fe1f2454d7d4ac0d',
+                        contract: '0xa74476443119a942de498590fe1f2454d7d4ac0d',
                         decimals: 18,
                         amount: '23000000000000000000',
                         from: '0x73d0385f4d8e00c5e6504c6030f47bf6212736a8',
@@ -1503,7 +1503,7 @@ export const isPending: Record<string, WalletAccountTransaction | AccountTransac
         targets: [],
         tokens: [
             {
-                address: '0x0f5d2fb29fb7d3cfee444a200298f468908cc942',
+                contract: '0x0f5d2fb29fb7d3cfee444a200298f468908cc942',
                 amount: '10',
                 decimals: 18,
                 from: '0x75e68d3b6acd23e79e395fa627ae5cae605c03d3',

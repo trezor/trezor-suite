@@ -48,14 +48,14 @@ const fetchAccountTokens = async (account: Account, payloadTokens: AccountInfo['
     const tokens: TokenInfo[] = [];
     // get list of tokens that are not included in default response, their balances need to be fetched
     const customTokens =
-        account.tokens?.filter(t => !payloadTokens?.find(p => p.address === t.address)) ?? [];
+        account.tokens?.filter(t => !payloadTokens?.find(p => p.contract === t.contract)) ?? [];
 
     const promises = customTokens.map(t =>
         TrezorConnect.getAccountInfo({
             coin: account.symbol,
             descriptor: account.descriptor,
             details: 'tokenBalances',
-            contractFilter: t.address,
+            contractFilter: t.contract,
         }),
     );
 

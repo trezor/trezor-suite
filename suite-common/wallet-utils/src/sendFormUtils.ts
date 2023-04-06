@@ -99,7 +99,7 @@ export const getEthereumEstimateFeeParams = (
 ) => {
     if (token) {
         return {
-            to: token.address,
+            to: token.contract,
             value: '0x0',
             data: getSerializedErc20Transfer(token, to, amount || token.balance!), // if amount is not set (set-max case) use whole token balance
         };
@@ -130,7 +130,7 @@ export const prepareEthereumTransaction = (txInfo: EthTransactionData) => {
         // join data
         result.data = getSerializedErc20Transfer(txInfo.token, txInfo.to, txInfo.amount);
         // replace tx recipient to smart contract address
-        result.to = txInfo.token.address;
+        result.to = txInfo.token.contract;
         // replace tx value
         result.value = '0x00';
     }
@@ -250,7 +250,7 @@ export const findComposeErrors = (errors: UseFormMethods['errors'], prefix?: str
 
 export const findToken = (tokens: Account['tokens'], address?: string | null) => {
     if (!address || !tokens) return;
-    return tokens.find(t => t.address === address);
+    return tokens.find(t => t.contract === address);
 };
 
 // BTC composeTransaction

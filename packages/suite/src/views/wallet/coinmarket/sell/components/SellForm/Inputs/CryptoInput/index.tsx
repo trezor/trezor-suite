@@ -214,9 +214,9 @@ const CryptoInput = ({ activeInput, setActiveInput }: CryptoInputProps) => {
                                     // set the address of the token to the output
                                     const symbol = invityApiSymbolToSymbol(token).toLowerCase();
                                     const tokenData = tokens?.find(t => t.symbol === symbol);
-                                    setValue(CRYPTO_TOKEN, tokenData?.address);
+                                    setValue(CRYPTO_TOKEN, tokenData?.contract);
                                     // set token address for ERC20 transaction to estimate the fees more precisely
-                                    setValue('outputs[0].address', tokenData?.address);
+                                    setValue('outputs[0].address', tokenData?.contract);
                                 }
                                 composeRequest();
                             }}

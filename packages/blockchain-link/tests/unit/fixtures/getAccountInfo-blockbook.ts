@@ -477,7 +477,7 @@ const fixtures: {
                     type: 'ERC20',
                     name: 'Token name',
                     symbol: 'TKNNME',
-                    address: '0x0',
+                    contract: '0x0',
                     balance: '1',
                     decimals: 0,
                 },
@@ -512,7 +512,7 @@ const fixtures: {
             misc: {
                 erc20Contract: {
                     type: 'ERC20',
-                    address: '0xFc6B5d6af8A13258f7CbD0D39E11b35e01a32F93',
+                    contract: '0xFc6B5d6af8A13258f7CbD0D39E11b35e01a32F93',
                     name: 'Grzegorz Brzęczyszczykiewicz',
                     symbol: 'GRZBRZ',
                     decimals: 3,

@@ -80,7 +80,7 @@ export const transformUserOutputs = (
         const setMax = i === maxOutputIndex;
         const amount =
             output.amount === '' ? undefined : networkAmountToSatoshi(output.amount, symbol);
-        const tokenDecimals = accountTokens?.find(t => t.address === output.token)?.decimals ?? 0;
+        const tokenDecimals = accountTokens?.find(t => t.contract === output.token)?.decimals ?? 0;
         return {
             address: output.address === '' ? undefined : output.address,
             amount: output.token ? undefined : amount,
@@ -272,7 +272,7 @@ export const formatMaxOutputAmount = (
 
     // output with a token, format using token decimals
     const tokenDecimals =
-        account.tokens?.find(t => t.address === maxOutput.assets[0].unit)?.decimals ?? 0;
+        account.tokens?.find(t => t.contract === maxOutput.assets[0].unit)?.decimals ?? 0;
 
     return formatAmount(maxAmount, tokenDecimals);
 };

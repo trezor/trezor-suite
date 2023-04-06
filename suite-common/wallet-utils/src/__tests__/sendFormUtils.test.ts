@@ -253,8 +253,8 @@ describe('sendForm utils', () => {
 
         const EthAccount = getWalletAccount({
             tokens: [
-                { type: 'ERC20', address: 'A', symbol: 'A', decimals: 2 },
-                { type: 'ERC20', address: 'B', symbol: 'B', decimals: 6 },
+                { type: 'ERC20', contract: 'A', symbol: 'A', decimals: 2, name: 'A' },
+                { type: 'ERC20', contract: 'B', symbol: 'B', decimals: 6, name: 'B' },
             ],
         });
         const EthNetwork: any = NETWORKS.find(n => n.symbol === 'eth');

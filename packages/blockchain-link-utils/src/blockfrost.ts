@@ -89,15 +89,15 @@ export const transformTokenInfo = (
     tokens: BlockfrostAccountInfo['tokens'],
 ): TokenInfo[] | undefined => {
     if (!tokens || !Array.isArray(tokens)) return undefined;
-    const info = tokens.map(t => {
-        const { assetName } = parseAsset(t.unit);
+    const info = tokens.map(token => {
+        const { assetName } = parseAsset(token.unit);
         return {
             type: 'BLOCKFROST',
-            name: t.fingerprint!, // this is safe as fingerprint is defined for all tokens except lovelace and lovelace is never included in account.tokens
-            address: t.unit,
-            symbol: assetName || t.fingerprint!,
-            balance: t.quantity,
-            decimals: t.decimals,
+            name: token.fingerprint!, // this is safe as fingerprint is defined for all tokens except lovelace and lovelace is never included in account.tokens
+            contract: token.unit,
+            symbol: assetName || token.fingerprint!,
+            balance: token.quantity,
+            decimals: token.decimals,
         };
     });
 
@@ -158,14 +158,14 @@ export const filterTokenTransfers = (
                     type,
                     name: asset.fingerprint,
                     symbol: assetName || asset.fingerprint,
-                    address: asset.unit,
+                    contract: asset.unit,
                     decimals: asset.decimals,
                     amount: amount.toString(),
                     from:
                         type === 'sent' || type === 'self'
                             ? tx.address
                             : tx.txUtxos.inputs.find(i => i.amount.find(a => a.unit === token))
-                                  ?.address,
+                                  ?.address || '',
                     to: type === 'recv' ? tx.address : output.address,
                 });
             });

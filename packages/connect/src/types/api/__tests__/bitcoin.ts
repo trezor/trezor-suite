@@ -540,7 +540,7 @@ export const getAccountInfo = async (api: TrezorConnect) => {
         payload.balance.toLowerCase();
         payload.availableBalance.toLowerCase();
         if (payload.tokens) {
-            payload.tokens.map(t => t.address.toLowerCase());
+            payload.tokens.map(t => t.contract.toLowerCase());
         }
         if (payload.addresses) {
             payload.addresses.used.map(a => a.address.toLowerCase());

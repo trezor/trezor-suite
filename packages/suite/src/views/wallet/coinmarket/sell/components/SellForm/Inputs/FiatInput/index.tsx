@@ -39,7 +39,7 @@ const FiatInput = ({ activeInput, setActiveInput }: Props) => {
     const fiatInputValue = getValues(FIAT_INPUT);
     const { outputs } = getValues();
     const tokenAddress = outputs?.[0]?.token;
-    const tokenData = account.tokens?.find(t => t.address === tokenAddress);
+    const tokenData = account.tokens?.find(t => t.contract === tokenAddress);
 
     const fiatInputRules = useMemo<TypedValidationRules>(
         () => ({

@@ -24,19 +24,19 @@ export const accountEth = {
     tokens: [
         {
             type: 'ERC20',
-            address: '0x1234123412341234123412341234123412341234',
+            contract: '0x1234123412341234123412341234123412341234',
             symbol: 'usdt',
             decimals: 18,
         },
         {
             type: 'ERC20',
-            address: '0x1234123412341234123412341234123412341235',
+            contract: '0x1234123412341234123412341234123412341235',
             symbol: 'usdc',
             decimals: 18,
         },
         {
             type: 'ERC20',
-            address: '0x1234123412341234123412341234123412341236',
+            contract: '0x1234123412341234123412341234123412341236',
             symbol: 'other',
             decimals: 18,
         },

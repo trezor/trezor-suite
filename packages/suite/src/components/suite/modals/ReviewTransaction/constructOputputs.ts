@@ -19,7 +19,7 @@ const getCardanoTokenBundle = (account: Account, output: CardanoOutput) => {
                 policyGroup.tokenAmounts.map(token => {
                     const accountToken = account.tokens!.find(
                         accountToken =>
-                            accountToken.address ===
+                            accountToken.contract ===
                             `${policyGroup.policyId}${token.assetNameBytes}`,
                     );
                     if (!accountToken) return;
@@ -30,7 +30,7 @@ const getCardanoTokenBundle = (account: Account, output: CardanoOutput) => {
 
                     return {
                         type: 'cardano',
-                        address: output.address,
+                        contract: output.address,
                         balance: token.amount,
                         symbol: token.assetNameBytes
                             ? Buffer.from(token.assetNameBytes, 'hex').toString('utf8')

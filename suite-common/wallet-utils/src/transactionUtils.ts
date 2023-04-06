@@ -482,7 +482,7 @@ const getEthereumRbfParams = (
     const output = token
         ? {
               address: token.to!,
-              token: token.address,
+              token: token.contract,
               amount: token.amount,
               formattedAmount: formatAmount(token.amount, token.decimals),
           }

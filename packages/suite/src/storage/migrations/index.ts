@@ -689,4 +689,44 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
             accountsCursor = await accountsCursor.continue();
         }
     }
+
+    if (oldVersion < 36) {
+        // remove ethereum network transactions
+        let txsCursor = await transaction.objectStore('txs').openCursor();
+
+        while (txsCursor) {
+            const tx = txsCursor.value as DBWalletAccountTransactionCompatible;
+
+            tx.tx.tokens.forEach(token => {
+                // @ts-expect-error
+                token.contract = token.address;
+                // @ts-expect-error
+                delete token.address;
+            });
+
+            // eslint-disable-next-line no-await-in-loop
+            await txsCursor.update(tx);
+            // eslint-disable-next-line no-await-in-loop
+            txsCursor = await txsCursor.continue();
+        }
+
+        // force to fetch ethereum network transactions again
+        let accountsCursor = await transaction.objectStore('accounts').openCursor();
+
+        while (accountsCursor) {
+            const account = accountsCursor.value;
+
+            account.tokens?.forEach(token => {
+                // @ts-expect-error
+                token.contract = token.address;
+                // @ts-expect-error
+                delete token.address;
+            });
+
+            // eslint-disable-next-line no-await-in-loop
+            await accountsCursor.update(account);
+            // eslint-disable-next-line no-await-in-loop
+            accountsCursor = await accountsCursor.continue();
+        }
+    }
 };
