@@ -1,5 +1,9 @@
 # Storage changelog
 
+## 36
+
+-   token `address` to `contract`
+
 ## 35
 
 -   saved ethereum network type txs are removed to be fetched again and obtain internal transfers and token transfer contract and standard

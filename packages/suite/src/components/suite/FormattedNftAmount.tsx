@@ -57,7 +57,7 @@ export const FormattedNftAmount = ({
     const { network } = selectedAccount;
     const explorerUrl =
         network?.networkType === 'ethereum'
-            ? `${network?.explorer.nft}/${transfer.address}/${id}`
+            ? `${network?.explorer.nft}/${transfer.contract}/${id}`
             : undefined;
 
     const idComponent = <Id>{id}</Id>;

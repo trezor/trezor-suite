@@ -3,17 +3,15 @@ import type { AccountAddresses, Transaction } from '@trezor/blockchain-link-type
 import type { Transaction as BlockbookTransaction } from '@trezor/blockchain-link-types/src/blockbook';
 
 const token = {
-    address: undefined,
     amount: '',
     decimals: 0,
-    name: undefined,
-    symbol: undefined,
 };
 
 const tOut = {
     name: 'Token name',
+    standard: 'ERC20',
     symbol: 'TN',
-    address: '0x0',
+    contract: '0x0',
     amount: '0',
     decimals: 0,
     from: undefined,
@@ -22,6 +20,7 @@ const tOut = {
 
 const tIn = {
     name: 'Token name',
+    type: 'ERC20',
     symbol: 'TN',
     contract: '0x0',
     value: '0',

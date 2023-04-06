@@ -74,7 +74,7 @@ export const useSendFormImport = ({ network, tokens, localCurrencyOption, fiatRa
                     // csv amount in ERC20 currency
                     const token = tokens.find(t => t.symbol === currency);
                     if (token) {
-                        output.token = token.address;
+                        output.token = token.contract;
                         output.amount = item.amount || '';
                     }
                 }

@@ -219,7 +219,7 @@ export const formatMaxOutputAmount = [
             symbol: 'ada',
             tokens: [
                 {
-                    address: '57fca08abbaddee36da742a839f7d83a7e1d2419f1507fcbf391652243484f43',
+                    contract: '57fca08abbaddee36da742a839f7d83a7e1d2419f1507fcbf391652243484f43',
                     balance: '500000',
                     decimals: 5,
                     name: 'asset1pwhywk7x54g739z3dqs245q62yu47vjh8gapjv',
@@ -249,7 +249,7 @@ export const formatMaxOutputAmount = [
             symbol: 'ada',
             tokens: [
                 {
-                    address: '57fca08abbaddee36da742a839f7d83a7e1d2419f1507fcbf391652243484f43',
+                    contract: '57fca08abbaddee36da742a839f7d83a7e1d2419f1507fcbf391652243484f43',
                     balance: '500000',
                     decimals: 5,
                     name: 'asset1pwhywk7x54g739z3dqs245q62yu47vjh8gapjv',

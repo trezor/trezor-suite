@@ -49,7 +49,7 @@ export const useCoinmarketRecomposeAndSign = () => {
                         ...DEFAULT_PAYMENT,
                         address,
                         amount,
-                        token: ethereumDataHex ? null : composed.token?.address || null, // if we pass ethereumDataHex, do not use the token, the details are in the ethereumDataHex
+                        token: ethereumDataHex ? null : composed.token?.contract || null, // if we pass ethereumDataHex, do not use the token, the details are in the ethereumDataHex
                     },
                 ],
                 selectedFee,

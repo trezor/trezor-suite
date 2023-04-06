@@ -39,7 +39,7 @@ const Inputs = () => {
 
     const { outputs } = getValues();
     const tokenAddress = outputs?.[0]?.token;
-    const tokenData = account.tokens?.find(t => t.address === tokenAddress);
+    const tokenData = account.tokens?.find(t => t.contract === tokenAddress);
 
     useEffect(() => {
         trigger([activeInput]);

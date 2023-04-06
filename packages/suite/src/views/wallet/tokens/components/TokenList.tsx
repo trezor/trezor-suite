@@ -107,7 +107,7 @@ export const TokenList = ({ tokens, explorerUrl, isTestnet, networkType }: Token
             rates: fiat.coins.find(
                 coin =>
                     coin.symbol.toLowerCase() === token.symbol?.toLowerCase() &&
-                    coin.tokenAddress?.toLowerCase() === token.address.toLowerCase(),
+                    coin.tokenAddress?.toLowerCase() === token.contract.toLowerCase(),
             )?.current?.rates,
         }));
 
@@ -129,7 +129,7 @@ export const TokenList = ({ tokens, explorerUrl, isTestnet, networkType }: Token
                 const noSymbol = !t.symbol || symbolMatchesName;
 
                 return (
-                    <Fragment key={t.address}>
+                    <Fragment key={t.contract}>
                         <Col isTestnet={isTestnet}>
                             {!noSymbol && <TokenSymbol>{t.symbol}</TokenSymbol>}
                             <TokenName>
@@ -152,14 +152,14 @@ export const TokenList = ({ tokens, explorerUrl, isTestnet, networkType }: Token
                                         <FiatValue
                                             amount={t.balance}
                                             symbol={t.symbol}
-                                            tokenAddress={t.address}
+                                            tokenAddress={t.contract}
                                         />
                                     )}
                                 </FiatWrapper>
                             </Col>
                         )}
                         <Col isTestnet={isTestnet} justify="right">
-                            <TrezorLink href={`${explorerUrl}${t.address}`}>
+                            <TrezorLink href={`${explorerUrl}${t.contract}`}>
                                 <Icon
                                     icon="EXTERNAL_LINK"
                                     size={16}

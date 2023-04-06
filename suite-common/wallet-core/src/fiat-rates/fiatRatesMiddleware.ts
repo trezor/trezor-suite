@@ -41,7 +41,7 @@ export const prepareFiatRatesMiddleware = createMiddlewareWithExtraDeps(
                                 ticker: {
                                     symbol: token.symbol,
                                     mainNetworkSymbol: account.symbol,
-                                    tokenAddress: token.address,
+                                    tokenAddress: token.contract,
                                 },
                             }),
                         );
@@ -62,7 +62,7 @@ export const prepareFiatRatesMiddleware = createMiddlewareWithExtraDeps(
                         ticker: {
                             symbol: token.symbol,
                             mainNetworkSymbol: account.symbol,
-                            tokenAddress: token.address,
+                            tokenAddress: token.contract,
                         },
                     }),
                 );

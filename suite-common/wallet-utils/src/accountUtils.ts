@@ -512,7 +512,7 @@ export const getAccountFiatBalance = (
     // sum fiat value of all tokens
     account.tokens?.forEach(t => {
         const tokenRates = fiat.find(
-            f => f.mainNetworkSymbol === account.symbol && f.tokenAddress === t.address,
+            f => f.mainNetworkSymbol === account.symbol && f.tokenAddress === t.contract,
         );
         if (tokenRates && t.balance) {
             const tokenBalance = toFiatCurrency(

@@ -3,6 +3,7 @@ import type { FormattedTransactionType as RippleTransaction } from 'ripple-lib';
 
 import type { Transaction as BlockbookTransaction, VinVout } from './blockbook';
 import type { BlockfrostTransaction } from './blockfrost';
+import type { TokenTransfer as BlockbookTokenTransfer } from './blockbook-api';
 
 /* Common types used in both params and responses */
 
@@ -35,21 +36,11 @@ export type TokenStandard = 'ERC20' | 'ERC1155' | 'ERC721';
 export type TransferType = 'sent' | 'recv' | 'self' | 'unknown';
 
 /* Transaction */
-export interface TokenTransfer {
+export type TokenTransfer = Omit<BlockbookTokenTransfer, 'value'> & {
     type: TransferType;
-    name: string;
-    symbol: string;
-    address: string;
-    decimals: number;
-    amount: string;
-    from?: string;
-    to?: string;
     standard?: TokenStandard;
-    multiTokenValues?: Array<{
-        id: string;
-        value: string;
-    }>;
-}
+    amount: string;
+};
 
 export interface InternalTransfer {
     type: TransferType;
@@ -176,7 +167,7 @@ export interface Utxo {
 
 export interface TokenInfo {
     type: string; // token type: ERC20...
-    address: string; // token address
+    contract: string; // token address
     balance?: string; // token balance
     name?: string; // token name
     symbol?: string; // token symbol

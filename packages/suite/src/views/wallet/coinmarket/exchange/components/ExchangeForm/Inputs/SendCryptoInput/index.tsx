@@ -45,7 +45,7 @@ const SendCryptoInput = () => {
     const { symbol, tokens } = account;
 
     const tokenAddress = getValues(CRYPTO_TOKEN);
-    const tokenData = tokens?.find(t => t.address === tokenAddress);
+    const tokenData = tokens?.find(t => t.contract === tokenAddress);
 
     const conversion = shouldSendInSats ? amountToSatoshi : formatAmount;
     const formattedAvailableBalance = tokenData

@@ -70,7 +70,7 @@ const Inputs = () => {
     const tokenAddress = outputs?.[0]?.token;
     const fiat = outputs?.[0]?.fiat;
     const amount = outputs?.[0]?.amount;
-    const tokenData = account.tokens?.find(t => t.address === tokenAddress);
+    const tokenData = account.tokens?.find(t => t.contract === tokenAddress);
 
     useEffect(() => {
         trigger([CRYPTO_INPUT]);

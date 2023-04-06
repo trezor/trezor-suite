@@ -80,7 +80,7 @@ export const AccountImportLoadingScreen = ({
                                     ticker: {
                                         symbol: token.symbol as TokenSymbol,
                                         mainNetworkSymbol: 'eth',
-                                        tokenAddress: token.address as TokenAddress,
+                                        tokenAddress: token.contract as TokenAddress,
                                     },
                                     rateType: 'current',
                                     localCurrency: fiatCurrency,

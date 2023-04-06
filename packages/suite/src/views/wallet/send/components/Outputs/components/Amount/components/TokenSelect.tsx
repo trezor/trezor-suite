@@ -27,7 +27,7 @@ export const buildTokenOptions = (account: Account) => {
         account.tokens.forEach(token => {
             const tokenName = token.symbol || 'N/A';
             result.push({
-                value: token.address,
+                value: token.contract,
                 label: tokenName.toUpperCase(),
                 fingerprint: token.name,
             });
