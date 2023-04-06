@@ -118,7 +118,7 @@ export const filterEthereumInternalTransfers = (
 
                 return {
                     type,
-                    amount: value || '0',
+                    amount: value,
                     from,
                     to,
                 };

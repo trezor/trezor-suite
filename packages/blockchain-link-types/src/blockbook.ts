@@ -7,7 +7,7 @@ import type {
     AccountInfoParams,
 } from './params';
 import type { AccountBalanceHistory, FiatRates, TokenStandard } from './common';
-import { Vin, Vout, Utxo as BlockbookUtxo, WsInfoRes, WsBlockHashRes } from './blockbook-api';
+import type { Vin, Vout, Utxo as BlockbookUtxo, WsInfoRes, WsBlockHashRes, Token as BlockbookToken } from './blockbook-api';
 
 type OptionalKey<M, K extends keyof M> = Omit<M, K> & Partial<Pick<M, K>>;
 type RequiredKey<M, K extends keyof M> = Omit<M, K> & Required<Pick<M, K>>;
@@ -32,24 +32,29 @@ export interface Block {
     txs: Transaction[];
 }
 
-export interface XPUBAddress {
+// XPUBAddress, ERC20, ERC721, ERC1155 - blockbook generated type (Token) is not strict enough
+export type XPUBAddress = {
     type: 'XPUBAddress';
-    name: string;
-    path: string;
-    transfers: number;
-    balance: string;
-    totalSent: string;
-    totalReceived: string;
-}
+} & Required<
+    Pick<BlockbookToken, 'path' | 'decimals' | 'balance' | 'totalSent' | 'totalReceived'>
+> &
+    Pick<BlockbookToken, 'name' | 'transfers'>;
 
-export interface ERC20 {
+type BaseERC = Required<Pick<BlockbookToken, 'contract'>> &
+    Partial<Pick<BlockbookToken, 'transfers'>> & // transfers is optional
+    Pick<BlockbookToken, 'name' | 'symbol' | 'decimals'>;
+
+export type ERC20 = BaseERC & {
     type: 'ERC20';
-    name?: string;
-    symbol?: string;
-    contract: string;
-    balance?: string;
-    decimals?: number;
-}
+} & Pick<BlockbookToken, 'balance' | 'baseValue' | 'secondaryValue'>;
+
+export type ERC721 = BaseERC & {
+    type: 'ERC721';
+} & Required<Pick<BlockbookToken, 'ids'>>;
+
+export type ERC1155 = BaseERC & {
+    type: 'ERC1155';
+} & Required<Pick<BlockbookToken, 'multiTokenValues'>>;
 
 export interface AccountInfo {
     address: string;
@@ -65,7 +70,7 @@ export interface AccountInfo {
     nonTokenTxs?: number;
     transactions?: Transaction[];
     nonce?: string;
-    tokens?: (XPUBAddress | ERC20)[];
+    tokens?: (XPUBAddress | ERC20 | ERC721 | ERC1155)[];
     erc20Contract?: ERC20;
 }
 
@@ -81,6 +86,14 @@ export interface EthereumInternalTransfer {
     to: string;
     value?: string;
 }
+
+type EthereumSpecific = BlockbookEthereumSpecific & {
+    parsedData?: EthereumParsedData;
+};
+
+type TokenTransfer = BlockbookTokenTransfer & {
+    type: TokenStandard;
+};
 
 export interface Transaction {
     txid: string;
