@@ -839,9 +839,10 @@ export const selectCoinjoinSessionBlockerByAccountKey = memoizeWithArgs(
 
 // memoise() was causing incorrect return from the selector
 export const selectCurrentCoinjoinWheelStates = (state: CoinjoinRootState) => {
-    const { anonymized, notAnonymized } = selectCurrentCoinjoinBalanceBreakdown(state);
+    const { notAnonymized } = selectCurrentCoinjoinBalanceBreakdown(state);
     const session = selectCurrentCoinjoinSession(state);
     const { key, balance } = selectSelectedAccount(state) || {};
+    const sessionProgress = selectSessionProgressByAccountKey(state, key || '');
 
     const coinjoinSessionBlocker = selectCoinjoinSessionBlockerByAccountKey(state, key || '');
 
@@ -854,7 +855,7 @@ export const selectCurrentCoinjoinWheelStates = (state: CoinjoinRootState) => {
 
     // account states
     const isAccountEmpty = !balance || balance === '0';
-    const isNonePrivate = anonymized === '0';
+    const isNonePrivate = sessionProgress === 0;
     const isAllPrivate = notAnonymized === '0';
     const isCoinjoinUneco = !!balance && new BigNumber(balance).lt(UNECONOMICAL_COINJOIN_THRESHOLD);
 
