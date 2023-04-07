@@ -8,7 +8,6 @@ import { Color, typographyStylesBase } from '@trezor/theme';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { Text, TextProps } from './Text';
-import { Box } from './Box';
 
 type DiscreetTextProps = TextProps & {
     children?: string | null;
@@ -66,6 +65,8 @@ export const DiscreetText = ({
     children = '',
     color = 'textDefault',
     variant = 'body',
+    numberOfLines,
+    ellipsizeMode,
     ...restTextProps
 }: DiscreetTextProps) => {
     const { applyStyle } = useNativeStyles();
@@ -81,7 +82,11 @@ export const DiscreetText = ({
     if (!children) return null;
 
     return (
-        <Box style={applyStyle(discreetTextContainer, { lineHeight })}>
+        <Text
+            style={applyStyle(discreetTextContainer, { lineHeight })}
+            numberOfLines={numberOfLines}
+            ellipsizeMode={ellipsizeMode}
+        >
             {isDiscreetMode && (
                 <DiscreetCanvas
                     width={width}
@@ -103,6 +108,6 @@ export const DiscreetText = ({
             >
                 {children}
             </Text>
-        </Box>
+        </Text>
     );
 };

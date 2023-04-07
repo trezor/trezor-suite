@@ -67,7 +67,7 @@ export const TransactionDetailHeader = ({ transaction }: TransactionDetailHeader
                     />
                 )}
             </Box>
-            <Box flexDirection="row">
+            <Text variant="titleMedium" numberOfLines={1} adjustsFontSizeToFit>
                 <SignValueFormatter value={signValueMap[transaction.type]} variant="titleMedium" />
                 <CryptoAmountFormatter
                     value={transaction.amount}
@@ -75,8 +75,9 @@ export const TransactionDetailHeader = ({ transaction }: TransactionDetailHeader
                     isBalance={false}
                     variant="titleMedium"
                     color="textDefault"
+                    signValue={signValueMap[transaction.type]}
                 />
-            </Box>
+            </Text>
             {transaction.rates && (
                 <Box flexDirection="row">
                     <Text>≈ </Text>

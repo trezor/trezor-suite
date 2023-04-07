@@ -39,7 +39,13 @@ const Balance = () => {
     const point = useAtomValue(selectedPointAtom);
 
     return (
-        <FiatAmountFormatter value={String(point.value)} variant="titleLarge" color="textDefault" />
+        <FiatAmountFormatter
+            value={`${String(`${point.value}`)}`}
+            variant="titleLarge"
+            color="textDefault"
+            numberOfLines={1}
+            adjustsFontSizeToFit
+        />
     );
 };
 
@@ -53,9 +59,7 @@ export const PortfolioGraphHeader = () => {
                 <Text color="textSubdued" variant="hint" style={applyStyle(headerStyle)}>
                     My portfolio balance
                 </Text>
-                <Text variant="titleLarge">
-                    <Balance />
-                </Text>
+                <Balance />
                 <Box flexDirection="row" alignItems="center">
                     <Box marginRight="small">
                         <Text variant="hint" color="textSubdued">
