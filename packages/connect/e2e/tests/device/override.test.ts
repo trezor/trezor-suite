@@ -1,4 +1,4 @@
-/* eslint-disable import/no-named-as-default */
+/* eslint-disable import/no-named-as-default, no-restricted-syntax */
 
 import TrezorConnect from '../../../src';
 
@@ -7,8 +7,11 @@ const { getController, setup, initTrezorConnect } = global.Trezor;
 const controller = getController('setBusy');
 
 describe('TrezorConnect override param', () => {
-    beforeAll(async () => {
-        await setup(controller, { mnemonic: 'mnemonic_all' });
+    beforeEach(async () => {
+        await TrezorConnect.dispose();
+        await setup(controller, {
+            mnemonic: 'mnemonic_all',
+        });
         await initTrezorConnect(controller);
     });
 
@@ -17,23 +20,27 @@ describe('TrezorConnect override param', () => {
         await TrezorConnect.dispose();
     });
 
-    it('override previous call', async () => {
-        TrezorConnect.getAddress({
-            path: "m/44'/1'/0'/0/0",
-        }).then(response => {
-            expect(response.success).toBe(false);
-            // TODO: received error depends on timeout below
-            // expect(response.payload).toMatchObject({ code: 'Method_Override' });
-        });
+    for (const delay of [1, 10, 100, 300, 500, 1000, 1500]) {
+        it(`override previous call after ${delay}ms`, async () => {
+            TrezorConnect.removeAllListeners();
 
-        // TODO: immediate call causes race condition in bridge http request, test might be flaky
-        // requires AbortController implementation in @trezor/transport to cancel current request to bridge (acquire process)
-        await new Promise(resolve => setTimeout(resolve, 1000));
+            TrezorConnect.getAddress({
+                path: "m/44'/1'/0'/0/0",
+                showOnTrezor: true,
+            }).then(response => {
+                expect(response.success).toBe(false);
+                expect(response.payload).toMatchObject({ code: 'Method_Override' });
+            });
 
-        const address = await TrezorConnect.getAddress({
-            path: "m/44'/1'/0'/0/0",
-            override: true,
+            await new Promise(resolve => setTimeout(resolve, delay));
+
+            const address = await TrezorConnect.getAddress({
+                path: "m/44'/1'/0'/0/0",
+                override: true,
+                showOnTrezor: false,
+            });
+            expect(address.success).toBe(true);
+            await new Promise(resolve => setTimeout(resolve, 1000));
         });
-        expect(address.success).toBe(true);
-    });
+    }
 });

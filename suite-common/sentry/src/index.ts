@@ -80,10 +80,11 @@ const ignoreErrors = [
     'ERR_NETWORK_IO_SUSPENDED',
     'ERR_NETWORK_CHANGED',
     'Error: HTTP Error',
+    'ResizeObserver loop limit exceeded',
+    // comes from bridge originally, we allowed user to init another connect call. should now be wrapped however and not thrown on transport layer
     'other call in progress',
     'Action cancelled by user',
-    'ResizeObserver loop limit exceeded',
-    'device disconnected during action',
+    'device disconnected during action', // the same as with 'other call in progress'
 ];
 
 export const SENTRY_CONFIG: Options = {

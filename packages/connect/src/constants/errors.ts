@@ -66,12 +66,6 @@ export const serializeError = (payload: any) => {
     return payload;
 };
 
-// a slight hack
-// this error string is hard-coded
-// in both bridge and extension
-export const WRONG_PREVIOUS_SESSION_ERROR_MESSAGE = 'wrong previous session';
-export const INVALID_PIN_ERROR_MESSAGE = 'PIN invalid';
-export const WEBUSB_ERROR_MESSAGE = 'NetworkError: Unable to claim interface.';
 // trezord error prefix.
 // user has insufficient permissions. may occur in Linux (missing udev rules), Windows and MacOS.
 export const LIBUSB_ERROR_MESSAGE = 'LIBUSB_ERROR';

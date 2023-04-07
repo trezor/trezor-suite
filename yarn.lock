@@ -8335,6 +8335,7 @@ __metadata:
     "@trezor/trezor-user-env-link": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@types/bytebuffer": ^5.0.44
+    "@types/sharedworker": ^0.0.84
     "@types/w3c-web-usb": ^1.0.6
     bytebuffer: ^5.0.1
     cross-fetch: ^3.1.6
@@ -9620,6 +9621,13 @@ __metadata:
     "@types/mime": "*"
     "@types/node": "*"
   checksum: b6ac93d471fb0f53ddcac1f9b67572a09cd62806f7db5855244b28f6f421139626f24799392566e97d1ffc61b12f9de7f30380c39fcae3c8a161fe161d44edf2
+  languageName: node
+  linkType: hard
+
+"@types/sharedworker@npm:^0.0.84":
+  version: 0.0.84
+  resolution: "@types/sharedworker@npm:0.0.84"
+  checksum: 690d6118bcc955e6937a34f2d938f5b60d337bde6f368052db99105ec735a61fb1b9d0d708fcd8f73d5d8611f7aaa914b70bd55b4552a3754a228e5456f1a93e
   languageName: node
   linkType: hard
 
@@ -25314,13 +25322,13 @@ __metadata:
   linkType: hard
 
 "node-gyp-build@npm:^4.2.0, node-gyp-build@npm:^4.2.2, node-gyp-build@npm:^4.3.0":
-  version: 4.5.0
-  resolution: "node-gyp-build@npm:4.5.0"
+  version: 4.6.0
+  resolution: "node-gyp-build@npm:4.6.0"
   bin:
     node-gyp-build: bin.js
     node-gyp-build-optional: optional.js
     node-gyp-build-test: build-test.js
-  checksum: d888bae0fb88335f69af1b57a2294a931c5042f36e413d8d364c992c9ebfa0b96ffe773179a5a2c8f04b73856e8634e09cce108dbb9804396d3cc8c5455ff2db
+  checksum: 25d78c5ef1f8c24291f4a370c47ba52fcea14f39272041a90a7894cd50d766f7c8cb8fb06c0f42bf6f69b204b49d9be3c8fc344aac09714d5bdb95965499eb15
   languageName: node
   linkType: hard
 

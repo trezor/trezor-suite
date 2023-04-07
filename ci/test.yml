@@ -297,7 +297,7 @@ connect-popup manual:
   parallel:
     matrix:
       - TESTS_ENVIRONMENT: ["node", "web"]
-        TESTS_PATTERN: "init authorizeCoinjoin passphrase unlockPath setBusy"
+        TESTS_PATTERN: "init authorizeCoinjoin passphrase unlockPath setBusy override"
         TESTS_FIRMWARE: ["2-master", "2.2.0"]
         # todo:
         # TESTS_NODE_VERSION: ["12", "14", "16"]

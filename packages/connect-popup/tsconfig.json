@@ -2,7 +2,7 @@
     "extends": "../../tsconfig.json",
     "compilerOptions": {
         "outDir": "./libDev",
-        "types": ["web", "jest"]
+        "types": ["web", "w3c-web-usb", "jest"]
     },
     "include": [".", "**/*.json"],
     "references": [
