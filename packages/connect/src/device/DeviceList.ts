@@ -381,7 +381,7 @@ class CreateDeviceHandler {
         } catch (error) {
             _log.debug('Cannot create device', error);
 
-            if (error.code === 'Device_NotFound') {
+            if (error.code === 'Device_NotFound' || error.message === 'device not found') {
                 // do nothing
                 // it's a race condition between "device_changed" and "device_disconnected"
             } else if (
@@ -390,7 +390,7 @@ class CreateDeviceHandler {
             ) {
                 this.list.enumerate();
                 this._handleUsedElsewhere();
-            } else if (error.message.indexOf(ERRORS.LIBUSB_ERROR_MESSAGE) >= 0) {
+            } else if (error.message?.indexOf(ERRORS.LIBUSB_ERROR_MESSAGE) >= 0) {
                 // catch one of trezord LIBUSB_ERRORs
                 const device = this.list._createUnreadableDevice(
                     this.list.creatingDevicesDescriptors[this.path],
