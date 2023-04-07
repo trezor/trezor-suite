@@ -31,6 +31,8 @@ const getController = name => {
 const setup = async (TrezorUserEnvLink, options) => {
     const { state } = TrezorUserEnvLink;
 
+    await TrezorUserEnvLink.connect();
+
     if (
         state.mnemonic === options.mnemonic &&
         state.passphrase_protection === options.passphrase_protection &&
@@ -42,7 +44,6 @@ const setup = async (TrezorUserEnvLink, options) => {
 
     if (!options.mnemonic) return true; // skip setup if test is not using the device (composeTransaction)
 
-    await TrezorUserEnvLink.connect();
     await TrezorUserEnvLink.api.stopEmu();
 
     // after bridge is stopped, trezor-user-env automatically resolves to use udp transport.

@@ -1,8 +1,8 @@
 {
     "extends": "../../tsconfig.json",
     "compilerOptions": {
-        "module": "commonjs",
-        "outDir": "./libDev"
+        "outDir": "./libDev",
+        "types": ["w3c-web-usb", "jest", "node"]
     },
     "include": ["src"],
     "references": [

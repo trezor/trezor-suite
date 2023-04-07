@@ -79,6 +79,7 @@ describe('Message system utils', () => {
         fixtures.validateTransportCompatibility.forEach(f => {
             it(f.description, () => {
                 expect(
+                    // @ts-expect-error
                     messageSystem.validateTransportCompatibility(f.transportCondition, f.transport),
                 ).toEqual(f.result);
             });
