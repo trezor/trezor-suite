@@ -7,7 +7,6 @@ import {
     StackProps,
 } from '@suite-native/navigation';
 import { AccountsList } from '@suite-native/accounts';
-import { nativeSpacings } from '@trezor/theme';
 import { AccountKey } from '@suite-common/wallet-types';
 import { EthereumTokenSymbol } from '@suite-native/ethereum-tokens';
 
@@ -24,12 +23,7 @@ export const AccountsScreen = ({
     };
 
     return (
-        <Screen
-            customHorizontalPadding={nativeSpacings.small}
-            customVerticalPadding={nativeSpacings.small}
-            header={<AccountsScreenHeader />}
-            hasDivider
-        >
+        <Screen header={<AccountsScreenHeader />}>
             <AccountsList onSelectAccount={handleSelectAccount} />
         </Screen>
     );
