@@ -1,5 +1,8 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
 import EventEmitter from 'events';
+
+import { TRANSPORT, TRANSPORT_ERROR } from '@trezor/transport';
+
 import { DataManager } from '../data/DataManager';
 import { DeviceList } from '../device/DeviceList';
 import { enhancePostMessageWithAnalytics } from '../data/analyticsInfo';
@@ -12,7 +15,6 @@ import {
     UI,
     POPUP,
     IFRAME,
-    TRANSPORT,
     DEVICE,
     createUiMessage,
     createPopupMessage,
@@ -563,10 +565,8 @@ export const onCall = async (message: CoreMessage) => {
                 }
             } catch (error) {
                 // catch wrong pin error
-                if (
-                    error.message === ERRORS.INVALID_PIN_ERROR_MESSAGE &&
-                    PIN_TRIES < MAX_PIN_TRIES
-                ) {
+                // PinMatrixAck returns { code: "Failure_PinInvalid", message: "PIN invalid"}
+                if (error.message === 'PIN invalid' && PIN_TRIES < MAX_PIN_TRIES) {
                     PIN_TRIES++;
                     postMessage(
                         createUiMessage(UI.INVALID_PIN, { device: device.toMessageObject() }),
@@ -619,8 +619,8 @@ export const onCall = async (message: CoreMessage) => {
             // thrown while acquiring device
             // it's a race condition between two tabs
             // workaround is to enumerate transport again and report changes to get a valid session number
-            if (_deviceList && error.message === ERRORS.WRONG_PREVIOUS_SESSION_ERROR_MESSAGE) {
-                _deviceList.enumerate();
+            if (_deviceList && error.message === TRANSPORT_ERROR.SESSION_WRONG_PREVIOUS) {
+                await _deviceList.enumerate();
             }
             messageResponse = createResponseMessage(method.responseID, false, { error });
         }
@@ -649,7 +649,6 @@ export const onCall = async (message: CoreMessage) => {
                 method.dispose();
             }
 
-            // restore default messages
             if (_deviceList) {
                 if (response.success) {
                     _deviceList.removeAuthPenalty(device);
@@ -922,8 +921,9 @@ const initDeviceList = async (settings: ConnectSettings) => {
             postMessage(createDeviceMessage(DEVICE.CHANGED, device));
         });
 
-        _deviceList.on(TRANSPORT.ERROR, async error => {
+        _deviceList.on(TRANSPORT.ERROR, error => {
             _log.warn('TRANSPORT.ERROR', error);
+
             if (_deviceList) {
                 _deviceList.disconnectDevices();
                 _deviceList.dispose();
@@ -936,8 +936,9 @@ const initDeviceList = async (settings: ConnectSettings) => {
             if (settings.transportReconnect) {
                 const { promise, timeout } = resolveAfter(1000, null);
                 _deviceListInitTimeout = timeout;
-                await promise;
-                initDeviceList(settings);
+                promise.then(() => {
+                    initDeviceList(settings);
+                });
             }
         });
 
@@ -945,7 +946,7 @@ const initDeviceList = async (settings: ConnectSettings) => {
             postMessage(createTransportMessage(TRANSPORT.START, transportType)),
         );
 
-        await _deviceList.init();
+        _deviceList.init();
         if (_deviceList) {
             await _deviceList.waitForTransportFirstEvent();
         }
@@ -989,16 +990,11 @@ export class Core extends EventEmitter {
         return _callMethods;
     }
 
-    getTransportInfo(): TransportInfo {
-        if (_deviceList) {
-            return _deviceList.getTransportInfo();
+    getTransportInfo(): TransportInfo | undefined {
+        if (!_deviceList) {
+            return undefined;
         }
-
-        return {
-            type: '',
-            version: '',
-            outdated: true,
-        };
+        return _deviceList.getTransportInfo();
     }
 }
 
@@ -1014,7 +1010,7 @@ export const initCore = () => {
 
 /**
  * Module initialization.
- * This will download the config.json, start DeviceList, init Core emitter instance.
+ * This will download the config.json, init Core emitter instance.
  * Returns Core, an event emitter instance.
  * @param {Object} settings - optional // TODO
  * @returns {Promise<Core>}
@@ -1060,13 +1056,16 @@ const disableWebUSBTransport = async () => {
     // override settings
     const settings = DataManager.getSettings();
 
-    if (settings.transports?.includes('WebUsbTransport')) {
-        settings.transports.splice(settings.transports.indexOf('WebUsbTransport'), 1);
-    }
-
-    // adding BridgeTransport here is probably not needed since there is fallback in DeviceList if transport settings is empty
-    if (!settings.transports?.includes('BridgeTransport')) {
-        settings.transports!.unshift('BridgeTransport');
+    if (settings.transports) {
+        const transportStr = settings.transports?.filter(
+            transport => typeof transport !== 'object',
+        );
+        if (transportStr.includes('WebUsbTransport')) {
+            settings.transports.splice(settings.transports.indexOf('WebUsbTransport'), 1);
+        }
+        if (!transportStr.includes('BridgeTransport')) {
+            settings.transports!.unshift('BridgeTransport');
+        }
     }
 
     try {

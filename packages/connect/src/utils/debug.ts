@@ -11,6 +11,7 @@ const colors: Record<string, string> = {
     DeviceList: 'color: #77ab59; background: #000;',
     Device: 'color: #bada55; background: #000;',
     DeviceCommands: 'color: #bada55; background: #000;',
+    '@trezor/transport': 'color: #bada55; background: #000;',
 };
 
 type LogMessage = {

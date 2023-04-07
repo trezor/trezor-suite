@@ -1,5 +1,6 @@
-import { MESSAGE_HEADER_BYTE } from '../../config';
 import ByteBuffer from 'bytebuffer';
+import { MESSAGE_HEADER_BYTE } from '../../constants';
+import * as ERRORS from '../../errors';
 
 /**
  * Reads meta information from buffer
@@ -41,7 +42,8 @@ export const decodeChunked = (bytes: ArrayBuffer) => {
     const { sharp1, sharp2, typeId, length } = readHeaderChunked(byteBuffer);
 
     if (sharp1 !== MESSAGE_HEADER_BYTE || sharp2 !== MESSAGE_HEADER_BYTE) {
-        throw new Error("Didn't receive expected header signature.");
+        // read-write is out of sync
+        throw new Error(ERRORS.PROTOCOL_MALFORMED);
     }
 
     return { length, typeId, restBuffer: byteBuffer };
