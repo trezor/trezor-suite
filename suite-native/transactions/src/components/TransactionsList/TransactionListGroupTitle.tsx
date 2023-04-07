@@ -11,7 +11,7 @@ type TransactionListGroupProps = {
 
 const dateTextStyle = prepareNativeStyle(utils => ({
     marginVertical: utils.spacings.medium,
-    marginHorizontal: utils.spacings.large,
+    marginHorizontal: utils.spacings.medium,
 }));
 
 export const TransactionListGroupTitle = ({ monthKey }: TransactionListGroupProps) => {

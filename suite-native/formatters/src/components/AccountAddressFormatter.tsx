@@ -1,4 +1,5 @@
 import React from 'react';
+import { Platform } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { AccountsRootState, selectAccountLabel } from '@suite-common/wallet-core';
@@ -11,8 +12,13 @@ import { FormatterProps } from '../types';
 type AccountAddressFormatterProps = FormatterProps<AccountKey> & TextProps;
 
 const addressStyle = prepareNativeStyle(_ => ({
-    // ellipsizeMode="middle" is not working  on Android with negative letterSpacing defined in @trezor/theme typography.
-    letterSpacing: 0,
+    // ellipsizeMode="middle" is not working on Android with negative letterSpacing defined in @trezor/theme typography.
+    extend: {
+        condition: Platform.OS === 'android',
+        style: {
+            letterSpacing: 0,
+        },
+    },
 }));
 
 export const AccountAddressFormatter = ({

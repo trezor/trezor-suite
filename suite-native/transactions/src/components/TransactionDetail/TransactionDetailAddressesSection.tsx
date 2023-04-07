@@ -27,7 +27,7 @@ const hiddenTransactionsCountStyle = prepareNativeStyle(utils => ({
 }));
 
 const addressTextStyle = prepareNativeStyle(_ => ({
-    maxWidth: 160,
+    maxWidth: '80%',
 }));
 
 const stepperDotWrapperStyle = prepareNativeStyle(utils => ({

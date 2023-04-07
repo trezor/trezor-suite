@@ -75,7 +75,6 @@ export const TransactionDetailHeader = ({ transaction }: TransactionDetailHeader
                     isBalance={false}
                     variant="titleMedium"
                     color="textDefault"
-                    signValue={signValueMap[transaction.type]}
                 />
             </Text>
             {transaction.rates && (

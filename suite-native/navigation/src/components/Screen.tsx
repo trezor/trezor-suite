@@ -56,8 +56,8 @@ export const Screen = ({
     isScrollable = true,
     hasStatusBar = true,
     backgroundColor = 'backgroundSurfaceElevation0',
-    customVerticalPadding = nativeSpacings.medium,
-    customHorizontalPadding = nativeSpacings.medium,
+    customVerticalPadding = nativeSpacings.small,
+    customHorizontalPadding = nativeSpacings.small,
 }: ScreenProps) => {
     const {
         applyStyle,

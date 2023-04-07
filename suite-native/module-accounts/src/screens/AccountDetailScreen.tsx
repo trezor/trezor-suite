@@ -64,7 +64,6 @@ export const AccountDetailScreen = memo(
                         tokenName={token?.name}
                     />
                 }
-                customHorizontalPadding={0}
                 isScrollable={false}
             >
                 <TransactionList

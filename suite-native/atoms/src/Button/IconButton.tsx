@@ -94,9 +94,11 @@ export const IconButton = ({
                     >
                         <Icon name={iconName} color={iconColor} size={size} />
                     </Animated.View>
-                    <Text variant="label" color="textSubdued">
-                        {title}
-                    </Text>
+                    {title && (
+                        <Text variant="label" color="textSubdued">
+                            {title}
+                        </Text>
+                    )}
                 </Box>
             </Pressable>
         </Box>

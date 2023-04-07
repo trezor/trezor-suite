@@ -40,7 +40,7 @@ const Balance = () => {
 
     return (
         <FiatAmountFormatter
-            value={`${String(`${point.value}`)}`}
+            value={String(point.value)}
             variant="titleLarge"
             color="textDefault"
             numberOfLines={1}
