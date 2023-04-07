@@ -1,9 +1,9 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/data/config.json
 
-import { TREZOR_DESCS } from '@trezor/transport';
+import { TREZOR_USB_DESCRIPTORS } from '@trezor/transport';
 
 export const config = {
-    webusb: TREZOR_DESCS,
+    webusb: TREZOR_USB_DESCRIPTORS,
     whitelist: [
         { origin: 'chrome-extension://imloifkgjagghnncjkhggdhalmcnfklk', priority: 1 },
         { origin: 'chrome-extension://niebkpllfhmpfbffbfifagfgoamhpflf', priority: 1 },

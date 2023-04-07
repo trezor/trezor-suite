@@ -1,18 +1,10 @@
 import { serializeError } from '../constants/errors';
 import type { MessageFactoryFn } from '../types/utils';
-import type { Transport } from '@trezor/transport';
+import { TRANSPORT, Transport } from '@trezor/transport';
+
+export { TRANSPORT } from '@trezor/transport';
 
 export const TRANSPORT_EVENT = 'TRANSPORT_EVENT';
-export const TRANSPORT = {
-    START: 'transport-start',
-    ERROR: 'transport-error',
-    UPDATE: 'transport-update',
-    STREAM: 'transport-stream',
-    REQUEST_DEVICE: 'transport-request_device',
-    DISABLE_WEBUSB: 'transport-disable_webusb',
-    START_PENDING: 'transport-start_pending',
-} as const;
-
 export interface BridgeInfo {
     version: number[];
     directory: string;

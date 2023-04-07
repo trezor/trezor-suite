@@ -33,12 +33,11 @@ const config: webpack.Configuration = {
                 },
             },
             {
-                test: /sharedConnectionWorker/i,
+                test: (input: string) => input.includes('background-sharedworker'),
                 loader: 'worker-loader',
-                issuer: /workers\/workers-*/i, // replace import ONLY in /workers\/workers- not @trezor/transport
                 options: {
                     worker: 'SharedWorker',
-                    filename: './workers/shared-connection-worker.[contenthash].js',
+                    filename: './workers/sessions-background-sharedworker.[contenthash].js',
                 },
             },
             {
