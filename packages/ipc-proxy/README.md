@@ -16,9 +16,9 @@ When you want to have different implementations of the same interface in electro
 
 Usage examples: @trezor/connect and @trezor/coinjoin in @trezor/suite-desktop
 
-`ipcRenderer.on` listener callback function contains additional param at position 0. (Electron.IpcRendererEvent)
+<strike>`ipcRenderer.on` listener callback function contains additional param at position 0. (Electron.IpcRendererEvent)
 web callback implementations are not expecting this param therefore `real listener function` needs to be wrapped by another function to strip this param.
-both `real` and `wrapped` listeners references are stored in electron preload context and used as accordingly.
+both `real` and `wrapped` listeners references are stored in electron preload context and used as accordingly.</strike> _Not true, since 1.0.1 listeners are stored in renderer context_
 
 using `ipcRenderer.invoke` and `ipcRenderer.on` event listener and may results with race conditions (possible electron bug)
 expected: set-listener > START > progress > progress > progress > RESULT
