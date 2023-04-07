@@ -95,6 +95,57 @@ describe('proxy', () => {
         expect(spy3).toBeCalledTimes(0);
     });
 
+    it('proper proxy event removing', async () => {
+        const proxy = await createIpcProxy<TestApi>('TestApi');
+        const spyFoo = jest.fn();
+        const spyBar = jest.fn();
+
+        // toString's of these two mock functions are equal anyway,
+        // but this return value below is real-life case
+        spyFoo.toString = () => 'function () { [native code] }';
+        spyBar.toString = () => 'function () { [native code] }';
+
+        proxy.on('test-api-event', spyFoo);
+        await proxy.emit('test-api-event');
+        expect(spyFoo).toBeCalledTimes(1);
+        expect(spyBar).toBeCalledTimes(0);
+
+        proxy.on('test-api-event', spyBar);
+        await proxy.emit('test-api-event');
+        expect(spyFoo).toBeCalledTimes(2);
+        expect(spyBar).toBeCalledTimes(1);
+
+        proxy.off('test-api-event', spyBar);
+        await proxy.emit('test-api-event');
+        expect(spyFoo).toBeCalledTimes(3);
+        expect(spyBar).toBeCalledTimes(1);
+
+        proxy.off('test-api-event', spyFoo);
+        await proxy.emit('test-api-event');
+        expect(spyFoo).toBeCalledTimes(3);
+        expect(spyBar).toBeCalledTimes(1);
+    });
+
+    it('multiple proxy instances', async () => {
+        const proxy1 = await createIpcProxy<TestApi>('TestApi');
+        const proxy2 = await createIpcProxy<TestApi>('TestApi');
+
+        const spy1 = jest.fn();
+        const spy2 = jest.fn();
+
+        proxy1.on('foo', spy1);
+        proxy2.on('foo', spy2);
+
+        await proxy1.emit('foo');
+        expect(spy1).toBeCalledTimes(1);
+        expect(spy2).toBeCalledTimes(0);
+
+        await proxy2.emit('foo');
+        await proxy2.emit('foo');
+        expect(spy1).toBeCalledTimes(1);
+        expect(spy2).toBeCalledTimes(2);
+    });
+
     it('invalid channel', async () => {
         try {
             await createIpcProxy<TestApi>('TestApi-2');
