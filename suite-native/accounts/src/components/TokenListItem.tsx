@@ -11,6 +11,8 @@ import { EthereumTokenSymbol, getEthereumTokenIconName } from '@suite-native/eth
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { AccountKey } from '@suite-common/wallet-types';
 
+import { accountTitleStyle, valuesContainerStyle } from './AccountListItem';
+
 type TokenListItemProps = {
     balance: string;
     isLast: boolean;
@@ -66,13 +68,13 @@ export const TokenListItem = ({
                     alignItems="center"
                     style={applyStyle(tokenListItemStyle, { isLast })}
                 >
-                    <Box flexDirection="row">
+                    <Box flex={1} flexDirection="row" alignItems="center">
                         <Box marginRight="small">
                             <EthereumTokenIcon name={iconName} />
                         </Box>
-                        <Text>{label}</Text>
+                        <Text style={applyStyle(accountTitleStyle)}>{label}</Text>
                     </Box>
-                    <Box alignItems="flex-end">
+                    <Box style={applyStyle(valuesContainerStyle)}>
                         <EthereumTokenToFiatAmountFormatter
                             value={balance}
                             ethereumToken={symbol}

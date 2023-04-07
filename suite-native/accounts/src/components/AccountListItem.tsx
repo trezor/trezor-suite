@@ -15,6 +15,9 @@ export type AccountListItemProps = {
 
 const accountListItemStyle = prepareNativeStyle<{ isAccountWithTokens: boolean }>(
     (utils, { isAccountWithTokens }) => ({
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItem: 'center',
         backgroundColor: utils.colors.backgroundSurfaceElevation1,
         padding: utils.spacings.medium,
         borderRadius: utils.borders.radii.medium,
@@ -27,6 +30,17 @@ const accountListItemStyle = prepareNativeStyle<{ isAccountWithTokens: boolean }
     }),
 );
 
+export const accountTitleStyle = prepareNativeStyle(_ => ({
+    flexShrink: 1,
+}));
+
+export const valuesContainerStyle = prepareNativeStyle(utils => ({
+    maxWidth: '40%',
+    flexShrink: 0,
+    alignItems: 'flex-end',
+    paddingLeft: utils.spacings.small,
+}));
+
 export const AccountListItem = ({ account }: AccountListItemProps) => {
     const { applyStyle } = useNativeStyles();
     const accountLabel = useSelector((state: AccountsRootState) =>
@@ -38,20 +52,18 @@ export const AccountListItem = ({ account }: AccountListItemProps) => {
 
     return (
         <Box
-            flexDirection="row"
-            justifyContent="space-between"
-            alignItems="center"
             style={applyStyle(accountListItemStyle, {
                 isAccountWithTokens,
             })}
         >
-            <Box flexDirection="row">
-                <Box marginRight="small">
+            <Box flexDirection="row" alignItems="center" flex={1}>
+                <Box marginRight="medium">
                     <CryptoIcon name={account.symbol} />
                 </Box>
-                <Text>{accountLabel}</Text>
+                <Text style={applyStyle(accountTitleStyle)}>{accountLabel}</Text>
             </Box>
-            <Box alignItems="flex-end">
+
+            <Box style={applyStyle(valuesContainerStyle)}>
                 <CryptoToFiatAmountFormatter
                     value={account.availableBalance}
                     network={account.symbol}

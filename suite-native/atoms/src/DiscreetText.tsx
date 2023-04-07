@@ -46,11 +46,6 @@ export const DiscreetCanvas = ({ width, height, fontSize, text, color }: Discree
         </Canvas>
     );
 };
-
-const discreetTextContainer = prepareNativeStyle<{ lineHeight: number }>((_, { lineHeight }) => ({
-    height: lineHeight,
-}));
-
 const textStyle = prepareNativeStyle<{ isDiscreetMode: boolean }>((_, { isDiscreetMode }) => ({
     extend: {
         condition: isDiscreetMode,
@@ -67,6 +62,7 @@ export const DiscreetText = ({
     variant = 'body',
     numberOfLines,
     ellipsizeMode,
+    adjustsFontSizeToFit,
     ...restTextProps
 }: DiscreetTextProps) => {
     const { applyStyle } = useNativeStyles();
@@ -83,9 +79,10 @@ export const DiscreetText = ({
 
     return (
         <Text
-            style={applyStyle(discreetTextContainer, { lineHeight })}
+            variant={variant}
             numberOfLines={numberOfLines}
             ellipsizeMode={ellipsizeMode}
+            adjustsFontSizeToFit={adjustsFontSizeToFit}
         >
             {isDiscreetMode && (
                 <DiscreetCanvas
