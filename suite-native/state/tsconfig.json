@@ -19,6 +19,7 @@
             "path": "../../suite-common/wallet-core"
         },
         { "path": "../config" },
+        { "path": "../fiat-rates" },
         { "path": "../logger" },
         { "path": "../module-devices" },
         { "path": "../module-settings" },

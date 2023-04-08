@@ -2,7 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 
 import { TextProps, Text } from '@suite-native/atoms';
-import { selectCoins } from '@suite-common/wallet-core';
+import { selectCoinsLegacy } from '@suite-native/fiat-rates';
 import { selectFiatCurrency } from '@suite-native/module-settings';
 import { toFiatCurrency } from '@suite-common/wallet-utils';
 import { useFormatters } from '@suite-common/formatters';
@@ -31,7 +31,7 @@ export const EthereumTokenToFiatAmountFormatter = ({
     signValue,
     ...rest
 }: EthereumTokenToFiatAmountFormatterProps) => {
-    const coins = useSelector(selectCoins);
+    const coins = useSelector(selectCoinsLegacy);
     const fiatCurrency = useSelector(selectFiatCurrency);
     const { FiatAmountFormatter } = useFormatters();
 

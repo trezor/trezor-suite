@@ -7,37 +7,29 @@ import {
     accountsActions,
     blockchainActions,
     fetchAndUpdateAccountThunk,
-    fiatRatesActions,
-    getFiatStaleTickersThunk,
-    initFiatRatesThunk,
-    onUpdateFiatRateThunk,
-    updateCurrentFiatRatesThunk,
-    updateLastWeekFiatRatesThunk,
-    updateStaleFiatRatesThunk,
-    updateTxsFiatRatesThunk,
 } from '@suite-common/wallet-core';
+import {
+    updateFiatRatesThunk,
+    updateMissingTxFiatRatesThunk,
+    periodicFetchFiatRatesThunk,
+    fetchFiatRatesThunk,
+} from '@suite-native/fiat-rates';
 
 const isAnyOfFiatRatesActions = isAnyOf(
-    fiatRatesActions.removeFiatRate,
-    fiatRatesActions.updateFiatRate,
-    fiatRatesActions.updateLastWeekFiatRates,
-    fiatRatesActions.updateTransactionFiatRate,
-    getFiatStaleTickersThunk.pending,
-    getFiatStaleTickersThunk.fulfilled,
-    updateCurrentFiatRatesThunk.pending,
-    updateCurrentFiatRatesThunk.fulfilled,
-    updateStaleFiatRatesThunk.pending,
-    updateStaleFiatRatesThunk.fulfilled,
-    onUpdateFiatRateThunk.pending,
-    onUpdateFiatRateThunk.fulfilled,
-    updateLastWeekFiatRatesThunk.pending,
-    updateLastWeekFiatRatesThunk.fulfilled,
-    updateTxsFiatRatesThunk.pending,
-    updateTxsFiatRatesThunk.fulfilled,
-    updateTxsFiatRatesThunk.pending,
-    updateTxsFiatRatesThunk.fulfilled,
-    initFiatRatesThunk.pending,
-    initFiatRatesThunk.fulfilled,
+    updateFiatRatesThunk.pending,
+    updateFiatRatesThunk.fulfilled,
+    updateFiatRatesThunk.rejected,
+
+    // just pending and rejected for updateMissingTxFiatRatesThunk, fulfilled has to much data
+    updateMissingTxFiatRatesThunk.pending,
+    updateMissingTxFiatRatesThunk.rejected,
+
+    periodicFetchFiatRatesThunk.pending,
+    periodicFetchFiatRatesThunk.fulfilled,
+    periodicFetchFiatRatesThunk.rejected,
+    fetchFiatRatesThunk.pending,
+    fetchFiatRatesThunk.fulfilled,
+    fetchFiatRatesThunk.rejected,
 );
 
 const isAnyOfAccountsActions = isAnyOf(
@@ -53,7 +45,7 @@ export const logsMiddleware = createMiddleware((action, { next, dispatch }) => {
     }
 
     if (isAnyOfFiatRatesActions(action)) {
-        dispatch(addLog({ type: action.type, payload: { ...action.payload } }));
+        dispatch(addLog({ type: action.type, payload: action.payload }));
     }
 
     if (isAnyOfAccountsActions(action)) {
