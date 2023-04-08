@@ -66,7 +66,7 @@ export const AccountRenameForm = ({ accountKey, onSubmit }: AccountRenameFormPro
                 <VStack spacing="small">
                     <TextInputField
                         name="accountLabel"
-                        label="Account label"
+                        label="Coin label"
                         maxLength={MAX_ACCOUNT_LABEL_LENGTH}
                     />
                     <AccountLabelFieldHint formControl={control} />

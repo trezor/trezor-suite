@@ -30,7 +30,7 @@ export const AccountsScreenHeader = () => {
 
     return (
         <ScreenHeader
-            title="My Coins"
+            title="My assets"
             leftIcon={
                 <IconButton
                     iconName="plus"

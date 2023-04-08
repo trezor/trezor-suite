@@ -33,8 +33,8 @@ export const ReceiveTextHint = ({ onShowAddress }: ReceiveTextHintProps) => {
                     </Text>
 
                     <Text variant="hint" color="textSubdued" align="center">
-                        For an extra layer of security, use the Trezor Suite desktop app with your
-                        Trezor hardware wallet to verify the receiving address.
+                        For an extra layer of security, use Trezor Suite with your Trezor hardware
+                        wallet to verify the receiving address.
                     </Text>
                 </VStack>
             </Card>
@@ -42,7 +42,7 @@ export const ReceiveTextHint = ({ onShowAddress }: ReceiveTextHintProps) => {
             <Link href="TODO">
                 <HStack justifyContent="center" alignItems="center">
                     <Text variant="hint" color="textPrimaryDefault" align="center">
-                        Learn more about addresses in Trezor Suite Lite{' '}
+                        Learn more about verifying addresses{' '}
                     </Text>
                     <Icon color="iconPrimaryDefault" name="arrowUpRight" size="medium" />
                 </HStack>

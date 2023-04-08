@@ -8,16 +8,14 @@ import {
     AccountsImportStackRoutes,
     RootStackParamList,
     AccountsImportStackParamList,
-    RootStackRoutes,
 } from '@suite-native/navigation';
 import { updateCurrentFiatRatesThunk } from '@suite-common/wallet-core';
-import { useAlert } from '@suite-native/alerts';
 
 import { AccountImportLoader } from '../components/AccountImportLoader';
 import { AccountImportHeader } from '../components/AccountImportHeader';
+import { useShowImportError } from '../useShowImportError';
 
 const LOADING_ANIMATION_DURATION = 5000;
-const DEFAULT_ALERT_MESSAGE = 'Account import failed';
 
 export const AccountImportLoadingScreen = ({
     navigation,
@@ -29,7 +27,7 @@ export const AccountImportLoadingScreen = ({
 >) => {
     const { xpubAddress, networkSymbol } = route.params;
     const dispatch = useDispatch();
-    const { showAlert } = useAlert();
+    const showImportError = useShowImportError(networkSymbol, navigation);
     const [accountInfo, setAccountInfo] = useState<AccountInfo | null>(null);
     const [isAnimationFinished, setIsAnimationFinished] = useState(false);
 
@@ -49,23 +47,6 @@ export const AccountImportLoadingScreen = ({
 
     useEffect(() => {
         let ignore = false;
-
-        const showAccountInfoAlert = (message: string, retry: () => Promise<void>) => {
-            showAlert({
-                title: 'Network Error',
-                description: message,
-                primaryButtonTitle: 'Try Again',
-                onPressPrimaryButton: retry,
-                secondaryButtonTitle: 'Go back',
-                onPressSecondaryButton: () =>
-                    navigation.navigate(RootStackRoutes.AccountsImport, {
-                        screen: AccountsImportStackRoutes.XpubScan,
-                        params: {
-                            networkSymbol,
-                        },
-                    }),
-            });
-        };
 
         const getAccountInfo = async () => {
             const fetchedAccountInfo = await TrezorConnect.getAccountInfo({
@@ -91,7 +72,7 @@ export const AccountImportLoadingScreen = ({
                     }
                     setAccountInfo(fetchedAccountInfo.payload);
                 } else {
-                    showAccountInfoAlert(fetchedAccountInfo.payload.error, getAccountInfo);
+                    showImportError(fetchedAccountInfo.payload.error, getAccountInfo);
                 }
             }
         };
@@ -99,14 +80,14 @@ export const AccountImportLoadingScreen = ({
             getAccountInfo();
         } catch (error) {
             if (!ignore) {
-                showAccountInfoAlert(error?.message ?? DEFAULT_ALERT_MESSAGE, getAccountInfo);
+                showImportError(error?.message, getAccountInfo);
             }
         }
 
         return () => {
             ignore = true;
         };
-    }, [xpubAddress, networkSymbol, navigation, dispatch, showAlert]);
+    }, [xpubAddress, networkSymbol, dispatch, showImportError]);
 
     return (
         <Screen header={<AccountImportHeader activeStep={3} />}>
