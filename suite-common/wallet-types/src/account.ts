@@ -90,3 +90,9 @@ export type WalletParams =
           accountType: AccountType | 'normal';
       }>
     | undefined;
+
+export interface ReceiveInfo {
+    path: string;
+    address: string;
+    isVerified: boolean;
+}
