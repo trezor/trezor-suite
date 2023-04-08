@@ -25,6 +25,7 @@
         { "path": "../module-settings" },
         {
             "path": "../../packages/blockchain-link"
-        }
+        },
+        { "path": "../../packages/styles" }
     ]
 }

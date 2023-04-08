@@ -78,9 +78,16 @@ const transactionListItemContainerStyle = prepareNativeStyle<TransactionListItem
 );
 
 const descriptionBoxStyle = prepareNativeStyle(_ => ({
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    maxWidth: '60%',
+}));
+
+const valuesContainerStyle = prepareNativeStyle(utils => ({
+    flexShrink: 0,
+    alignItems: 'flex-end',
+    marginLeft: utils.spacings.small,
+    maxWidth: '40%',
 }));
 
 export const TransactionListItemContainer = memo(
@@ -127,7 +134,7 @@ export const TransactionListItemContainer = memo(
                         </Text>
                     </Box>
                 </Box>
-                <Box alignItems="flex-end">{children}</Box>
+                <Box style={applyStyle(valuesContainerStyle)}>{children}</Box>
             </TouchableOpacity>
         );
     },

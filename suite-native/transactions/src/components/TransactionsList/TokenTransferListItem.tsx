@@ -8,6 +8,7 @@ import {
 } from '@suite-native/formatters';
 
 import { TransactionListItemContainer } from './TransactionListItemContainer';
+import { signValueMap } from './TransactionListItem';
 
 type TokenTransferListItemProps = {
     txid: string;
@@ -34,6 +35,7 @@ export const TokenTransferListItem = memo(
                     value={tokenTransfer.amount}
                     ethereumToken={tokenSymbol}
                     decimals={tokenTransfer.decimals}
+                    signValue={signValueMap[tokenTransfer.type]}
                 />
                 <EthereumTokenAmountFormatter
                     value={tokenTransfer.amount}

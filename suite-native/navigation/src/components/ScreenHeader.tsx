@@ -4,7 +4,8 @@ import { View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 import { NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { IconButton, StepsProgressBar, Text } from '@suite-native/atoms';
+import { Box, IconButton, StepsProgressBar, Text } from '@suite-native/atoms';
+import { TypographyStyle } from '@trezor/theme';
 
 type ScreenHeaderWithIconsProps = {
     leftIcon?: ReactNode;
@@ -14,15 +15,17 @@ type ScreenHeaderWithIconsProps = {
     hasGoBackIcon?: boolean;
     numberOfSteps?: number;
     activeStep?: number;
+    titleVariant?: TypographyStyle;
 };
 
 const ICON_SIZE = 48;
 
-const screenHeaderStyle = prepareNativeStyle(() => ({
+const screenHeaderStyle = prepareNativeStyle(utils => ({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     height: ICON_SIZE,
+    marginHorizontal: utils.spacings.small,
 }));
 
 const iconWrapperStyle = prepareNativeStyle(() => ({
@@ -30,10 +33,10 @@ const iconWrapperStyle = prepareNativeStyle(() => ({
     height: ICON_SIZE,
 }));
 
-const progressBarWrapperStyle = prepareNativeStyle(() => ({
+const progressBarWrapperStyle = prepareNativeStyle(utils => ({
     height: ICON_SIZE,
     alignItems: 'center',
-    paddingTop: 7,
+    paddingTop: utils.spacings.small,
     justifyContent: 'space-between',
 }));
 
@@ -56,6 +59,7 @@ export const ScreenHeader = ({
     title,
     numberOfSteps,
     activeStep,
+    titleVariant = 'titleSmall',
     hasGoBackIcon = true,
 }: ScreenHeaderWithIconsProps) => {
     const { applyStyle } = useNativeStyles();
@@ -67,14 +71,18 @@ export const ScreenHeader = ({
             <View style={applyStyle(iconWrapperStyle)}>
                 {shouldDisplayGoBackButton ? <GoBackIcon /> : leftIcon}
             </View>
-            {activeStep && numberOfSteps ? (
-                <View style={applyStyle(progressBarWrapperStyle)}>
-                    <StepsProgressBar numberOfSteps={numberOfSteps} activeStep={activeStep} />
-                    {title && <Text variant="titleSmall">{title}</Text>}
-                </View>
-            ) : (
-                <>{title && <Text variant="titleSmall">{title}</Text>}</>
-            )}
+            <Box flex={1} marginHorizontal="large" alignItems="center">
+                {activeStep && numberOfSteps ? (
+                    <View style={applyStyle(progressBarWrapperStyle)}>
+                        <StepsProgressBar numberOfSteps={numberOfSteps} activeStep={activeStep} />
+                        {title && <Text variant={titleVariant}>{title}</Text>}
+                    </View>
+                ) : (
+                    <Text variant={titleVariant} numberOfLines={1} ellipsizeMode="tail">
+                        {title}
+                    </Text>
+                )}
+            </Box>
 
             <View style={applyStyle(iconWrapperStyle)}>{rightIcon}</View>
         </View>

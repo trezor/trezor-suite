@@ -3,7 +3,7 @@ import { View } from 'react-native';
 
 import { useFocusEffect } from '@react-navigation/native';
 
-import { Button, Card, TextDivider, VStack } from '@suite-native/atoms';
+import { Box, Button, Card, TextDivider, VStack } from '@suite-native/atoms';
 import { isDevelopOrDebugEnv } from '@suite-native/config';
 import { Form, TextInputField, useForm } from '@suite-native/forms';
 import {
@@ -29,10 +29,10 @@ const networkTypeToInputLabelMap: Record<NetworkType, string> = {
     ripple: 'Enter receive address manually',
 };
 
-const cameraStyle = prepareNativeStyle(_ => ({
+const cameraStyle = prepareNativeStyle(utils => ({
     alignItems: 'center',
     marginTop: 20,
-    marginBottom: 45,
+    marginBottom: utils.spacings.medium,
 }));
 
 const xpubFormValidationSchema = yup.object({
@@ -109,28 +109,31 @@ export const XpubScanScreen = ({
                     onPressActionButton={() => navigation.goBack()}
                 />
             </Card>
-            <View style={applyStyle(cameraStyle)}>
-                <XpubImportSection
-                    onRequestCamera={handleRequestCamera}
-                    networkSymbol={networkSymbol}
-                />
-            </View>
-            <TextDivider title="OR" />
-            <Form form={form}>
-                <VStack spacing="medium">
-                    <TextInputField name="xpubAddress" label={inputLabel} />
-                    <Button
-                        onPress={onXpubFormSubmit}
-                        size="large"
-                        isDisabled={!watchXpubAddress?.length}
-                    >
-                        Confirm
-                    </Button>
-                </VStack>
-            </Form>
-            {isDevelopOrDebugEnv() && (
-                <DevXpub symbol={networkSymbol} onSelect={goToAccountImportScreen} />
-            )}
+            <Box marginHorizontal="medium">
+                <View style={applyStyle(cameraStyle)}>
+                    <XpubImportSection
+                        onRequestCamera={handleRequestCamera}
+                        networkSymbol={networkSymbol}
+                    />
+                </View>
+
+                <TextDivider title="OR" />
+                <Form form={form}>
+                    <VStack spacing="medium">
+                        <TextInputField name="xpubAddress" label={inputLabel} />
+                        <Button
+                            onPress={onXpubFormSubmit}
+                            size="large"
+                            isDisabled={!watchXpubAddress?.length}
+                        >
+                            Confirm
+                        </Button>
+                    </VStack>
+                </Form>
+                {isDevelopOrDebugEnv() && (
+                    <DevXpub symbol={networkSymbol} onSelect={goToAccountImportScreen} />
+                )}
+            </Box>
         </Screen>
     );
 };

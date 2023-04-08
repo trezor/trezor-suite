@@ -44,7 +44,13 @@ const hasPriceIncreasedAtom = atom(get => {
 const CryptoBalance = ({ accountSymbol }: { accountSymbol: NetworkSymbol }) => {
     const selectedPoint = useAtomValue(selectedPointAtom);
 
-    return <CryptoAmountFormatter value={selectedPoint.cryptoBalance} network={accountSymbol} />;
+    return (
+        <CryptoAmountFormatter
+            value={selectedPoint.cryptoBalance}
+            network={accountSymbol}
+            adjustsFontSizeToFit
+        />
+    );
 };
 
 const FiatBalance = ({ accountSymbol }: { accountSymbol: NetworkSymbol }) => {
@@ -55,6 +61,8 @@ const FiatBalance = ({ accountSymbol }: { accountSymbol: NetworkSymbol }) => {
             value={String(selectedPoint.value)}
             network={accountSymbol}
             variant="titleLarge"
+            adjustsFontSizeToFit
+            numberOfLines={1}
         />
     );
 };

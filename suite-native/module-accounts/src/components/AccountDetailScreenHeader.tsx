@@ -11,7 +11,6 @@ import {
     ScreenHeader,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 type AccountDetailScreenHeaderProps = {
     accountLabel?: string;
@@ -25,16 +24,11 @@ type AccountDetailNavigationProps = StackToStackCompositeNavigationProps<
     RootStackParamList
 >;
 
-const headerStyle = prepareNativeStyle(utils => ({
-    paddingHorizontal: utils.spacings.medium,
-}));
-
 export const AccountDetailScreenHeader = ({
     accountLabel,
     accountKey,
     tokenName,
 }: AccountDetailScreenHeaderProps) => {
-    const { applyStyle } = useNativeStyles();
     const navigation = useNavigation<AccountDetailNavigationProps>();
 
     const handleSettingsNavigation = () => {
@@ -58,7 +52,7 @@ export const AccountDetailScreenHeader = ({
                     />
                 )
             }
-            style={applyStyle(headerStyle)}
+            titleVariant="body"
             title={accountTitle}
         />
     );
