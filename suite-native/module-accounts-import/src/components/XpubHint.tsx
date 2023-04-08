@@ -36,10 +36,9 @@ const networkToAssetsMap = {
         title: 'Where is my public key (XPUB)?',
         text: (
             <>
-                To view the Bitcoin, Litecoin, Dogecoin, Cardano, Bitcoin Cash or Zcash public key
-                (XPUB) of your account, open the Trezor Suite desktop app, plug in your Trezor
-                device, select <EmphasizedText>Accounts</EmphasizedText>, then choose{' '}
-                <EmphasizedText>Show public key</EmphasizedText>.
+                To view the public key (XPUB) of your account, open the Trezor Suite desktop app,
+                plug in your Trezor device, select <EmphasizedText>Accounts</EmphasizedText>, then
+                choose <EmphasizedText>Show public key</EmphasizedText>.
             </>
         ),
         video: 'xpubImportBTC',
@@ -48,9 +47,9 @@ const networkToAssetsMap = {
         title: 'Where is my receive address?',
         text: (
             <>
-                To view the Ethereum and Ethereum Classic receive address of your account, open the
-                Trezor Suite desktop app, plug in your Trezor device, select{' '}
-                <EmphasizedText>Accounts</EmphasizedText>, choose Receive, and click on{' '}
+                To view the receive address of your account, open the Trezor Suite desktop app, plug
+                in your Trezor device, select <EmphasizedText>Accounts</EmphasizedText>, choose{' '}
+                <EmphasizedText>Receive</EmphasizedText>, and click on{' '}
                 <EmphasizedText>Show full address</EmphasizedText>.
             </>
         ),
@@ -60,9 +59,9 @@ const networkToAssetsMap = {
         title: 'Where is my receive address?',
         text: (
             <>
-                To view the Ripple receive address of your account, open the Trezor Suite desktop
-                app, plug in your Trezor device, select <EmphasizedText>Accounts</EmphasizedText>,
-                choose <EmphasizedText>Receive</EmphasizedText>, and click on{' '}
+                To view the receive address of your account, open the Trezor Suite desktop app, plug
+                in your Trezor device, select <EmphasizedText>Accounts</EmphasizedText>, choose{' '}
+                <EmphasizedText>Receive</EmphasizedText>, and click on{' '}
                 <EmphasizedText>Show full address</EmphasizedText>.
             </>
         ),
