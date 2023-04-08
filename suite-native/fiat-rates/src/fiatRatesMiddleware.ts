@@ -1,10 +1,9 @@
 import { isAnyOf } from '@reduxjs/toolkit';
 
 import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
-
 import { transactionsActions, accountsActions, blockchainActions } from '@suite-common/wallet-core';
-import { fetchFiatRatesThunk } from './fiatRatesThunks';
-import { updateTxsFiatRatesThunk } from './fiatRatesThunks';
+
+import { fetchFiatRatesThunk, updateTxsFiatRatesThunk } from './fiatRatesThunks';
 
 export const prepareFiatRatesMiddleware = createMiddlewareWithExtraDeps(
     (action, { dispatch, extra, next, getState }) => {

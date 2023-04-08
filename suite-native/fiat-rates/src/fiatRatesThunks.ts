@@ -1,3 +1,5 @@
+import { getUnixTime, subWeeks } from 'date-fns';
+
 import {
     getFiatRatesForTimestamps,
     fetchCurrentFiatRates,
@@ -8,13 +10,11 @@ import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { Account } from '@suite-common/wallet-types';
 import { isTestnet } from '@suite-common/wallet-utils';
 import TrezorConnect, { AccountTransaction } from '@trezor/connect';
-import { getUnixTime, subWeeks } from 'date-fns';
 
 import { actionPrefix, fiatRatesActions } from './fiatRatesActions';
 import { REFETCH_INTERVAL } from './fiatRatesConst';
-import { RateType } from './fiatRatesReducer';
 import { selectTickersToBeUpdated, selectTransactionsWithMissingRates } from './fiatRatesSelectors';
-import { TickerId } from './types';
+import { TickerId, RateType } from './types';
 
 type UpdateTxsFiatRatesThunkPayload = {
     account: Account;
@@ -69,13 +69,8 @@ const fetchFiatRate = async (
         currencies: [fiatCurrency],
     });
 
-    if (success) {
-        console.log('Fetch from Connect success', ticker, fiatCurrency);
-        // TODO throw and fallback if undefined
-        return payload.rates?.[fiatCurrency];
-    }
-
-    console.log('Fetch from Connect failed, trying coingecko', ticker, payload);
+    const rate = success ? payload.rates?.[fiatCurrency] : null;
+    if (rate) return rate;
 
     return fetchCurrentFiatRates(ticker).then(res => res?.rates?.[fiatCurrency]);
 };
@@ -94,8 +89,8 @@ const fetchLastWeekRate = async (
         currencies: [fiatCurrency],
     });
 
-    // TODO throw and fallback if undefined
-    if (success) return payload.tickers?.[0]?.rates?.[fiatCurrency];
+    const rate = success ? payload.tickers?.[0]?.rates?.[fiatCurrency] : null;
+    if (rate) return rate;
 
     return fetchLastWeekFiatRates(ticker, fiatCurrency).then(
         res => res?.tickers?.[0]?.rates?.[fiatCurrency],

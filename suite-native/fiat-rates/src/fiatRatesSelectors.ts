@@ -1,17 +1,19 @@
-import { pipe, A, F, D } from '@mobily/ts-belt';
-import { FiatCurrencyCode } from '@suite-common/suite-config';
-import { AccountKey, Account, WalletAccountTransaction } from '@suite-common/wallet-types';
+import { A, D, F, pipe } from '@mobily/ts-belt';
 import { memoize, memoizeWithArgs } from 'proxy-memoize';
+
+import { FiatCurrencyCode } from '@suite-common/suite-config';
 import {
-    selectTransactions,
     AccountsRootState,
+    FiatRatesState as FiatRatesStateLegacy,
     selectAccountByKey,
     selectAccounts,
-    FiatRatesState as FiatRatesStateLegacy,
+    selectTransactions,
 } from '@suite-common/wallet-core';
+import { Account, AccountKey, WalletAccountTransaction } from '@suite-common/wallet-types';
+
 import { MAX_AGE } from './fiatRatesConst';
-import { FiatRatesRootState, getFiatRateKeyFromTicker, Rate, RateType } from './fiatRatesReducer';
-import { FiatRateKey, TickerId } from './types';
+import { FiatRateKey, FiatRatesRootState, Rate, RateType, TickerId } from './types';
+import { getFiatRateKeyFromTicker } from './utils';
 
 export const selectFiatRatesByFiatRateKey = (
     state: FiatRatesRootState,
@@ -54,45 +56,6 @@ export const selectShouldUpdateFiatRate = (
     return now - lastSuccessfulFetchTimestamp > MAX_AGE[rateType];
 };
 
-export const selectShouldUpdateTicker = (
-    state: FiatRatesRootState,
-    ticker: TickerId,
-    fiatCurrency: FiatCurrencyCode,
-) => {
-    const fiatRateKey = getFiatRateKeyFromTicker(ticker, fiatCurrency);
-    return selectShouldUpdateFiatRate(state, fiatRateKey);
-};
-
-export const selectTickersToBeUpdated = (
-    state: FiatRatesRootState,
-    fiatCurrency: FiatCurrencyCode,
-    rateType: RateType,
-): TickerId[] => {
-    const tickers = selectTickerFromAccounts(state);
-    console.log('tickers', tickers);
-    return tickers.filter(ticker => {
-        const fiatRateKey = getFiatRateKeyFromTicker(ticker, fiatCurrency);
-        return (
-            selectShouldUpdateFiatRate(state, fiatRateKey, rateType) &&
-            !selectIsTickerLoading(state, ticker, fiatCurrency)
-        );
-    });
-};
-
-export const selectIsAccountWithRatesByKey = memoizeWithArgs(
-    (state: AccountsRootState & FiatRatesRootState, accountKey: string) => {
-        const account = selectAccountByKey(state, accountKey);
-
-        if (!account) {
-            return false;
-        }
-
-        const rates = selectCoinsLegacy(state);
-
-        return !!rates.find(rate => rate.symbol === account.symbol);
-    },
-);
-
 export const selectTickerFromAccounts = (state: FiatRatesRootState): TickerId[] => {
     const accounts = selectAccounts(state as any);
     return pipe(
@@ -113,6 +76,30 @@ export const selectTickerFromAccounts = (state: FiatRatesRootState): TickerId[] 
         A.flat,
         F.toMutable,
     );
+};
+
+export const selectShouldUpdateTicker = (
+    state: FiatRatesRootState,
+    ticker: TickerId,
+    fiatCurrency: FiatCurrencyCode,
+) => {
+    const fiatRateKey = getFiatRateKeyFromTicker(ticker, fiatCurrency);
+    return selectShouldUpdateFiatRate(state, fiatRateKey);
+};
+
+export const selectTickersToBeUpdated = (
+    state: FiatRatesRootState,
+    fiatCurrency: FiatCurrencyCode,
+    rateType: RateType,
+): TickerId[] => {
+    const tickers = selectTickerFromAccounts(state);
+    return tickers.filter(ticker => {
+        const fiatRateKey = getFiatRateKeyFromTicker(ticker, fiatCurrency);
+        return (
+            selectShouldUpdateFiatRate(state, fiatRateKey, rateType) &&
+            !selectIsTickerLoading(state, ticker, fiatCurrency)
+        );
+    });
 };
 
 export const selectTransactionsWithMissingRates = memoizeWithArgs(
@@ -201,5 +188,20 @@ export const selectCoinsLegacy = memoize(
     },
     {
         size: 400,
+    },
+);
+
+export const selectIsAccountWithRatesByKey = memoizeWithArgs(
+    (state: AccountsRootState & FiatRatesRootState, accountKey: string) => {
+        const account = selectAccountByKey(state, accountKey);
+
+        if (!account) {
+            return false;
+        }
+
+        // TODO: refactor
+        const rates = selectCoinsLegacy(state);
+
+        return !!rates.find(rate => rate.symbol === account.symbol);
     },
 );

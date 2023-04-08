@@ -43,8 +43,6 @@ export const CryptoToFiatAmountFormatter = ({
         network,
     });
 
-    console.log('fiatValue', value);
-
     const formattedFiatValue = FiatAmountFormatter.format(fiatValue ?? 0);
 
     return <AmountText value={formattedFiatValue} isDiscreetText={isDiscreetText} {...textProps} />;

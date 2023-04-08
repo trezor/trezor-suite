@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
+import { updateFiatRatesThunk } from '@suite-native/fiat-rates';
+import { selectFiatCurrencyCode } from '@suite-native/module-settings';
 import {
     AccountsImportStackParamList,
     AccountsImportStackRoutes,
@@ -10,13 +13,9 @@ import {
 } from '@suite-native/navigation';
 import TrezorConnect, { AccountInfo } from '@trezor/connect';
 
-import { updateFiatRatesThunk } from '@suite-native/fiat-rates';
 import { AccountImportHeader } from '../components/AccountImportHeader';
 import { AccountImportLoader } from '../components/AccountImportLoader';
 import { useShowImportError } from '../useShowImportError';
-
-import { TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
-import { selectFiatCurrencyCode } from '@suite-native/module-settings';
 
 const LOADING_ANIMATION_DURATION = 5000;
 
@@ -60,6 +59,7 @@ export const AccountImportLoadingScreen = ({
                     details: 'tokenBalances',
                 }),
                 dispatch(
+                    // @ts-expect-error not sure what is going on
                     updateFiatRatesThunk({
                         ticker: {
                             symbol: networkSymbol,
@@ -75,6 +75,7 @@ export const AccountImportLoadingScreen = ({
                     if (networkSymbol === 'eth') {
                         fetchedAccountInfo.payload.tokens?.forEach(token => {
                             dispatch(
+                                // @ts-expect-error not sure what is going on
                                 updateFiatRatesThunk({
                                     ticker: {
                                         symbol: token.symbol as TokenSymbol,

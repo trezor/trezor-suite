@@ -1,4 +1,4 @@
-import { RateType } from './fiatRatesReducer';
+import { RateType } from './types';
 
 export const MAX_AGE = {
     current: 1000 * 60 * 10, // 10 mins

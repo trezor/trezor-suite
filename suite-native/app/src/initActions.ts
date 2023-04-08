@@ -4,9 +4,10 @@ import { createThunk } from '@suite-common/redux-utils';
 import { connectInitThunk } from '@suite-common/connect-init';
 import { initBlockchainThunk } from '@suite-common/wallet-core';
 import { initAnalyticsThunk } from '@suite-native/analytics';
+import { periodicFetchFiatRatesThunk } from '@suite-native/fiat-rates';
 
 import { setIsAppReady, setIsConnectInitialized } from '../../state/src/appSlice';
-import { periodicFetchFiatRatesThunk } from '@suite-native/fiat-rates';
+
 let isAlreadyInitialized = false;
 
 export const applicationInit = createThunk(`@app/init-actions`, async (_, { dispatch }) => {
