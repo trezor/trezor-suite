@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Box, Text } from '@suite-native/atoms';
+import { Box, Text, useDiscreetMode } from '@suite-native/atoms';
 import { Icon, IconName } from '@trezor/icons';
 import { TransactionType, WalletAccountTransaction } from '@suite-common/wallet-types';
 import {
@@ -47,8 +47,9 @@ const transactionTypeInfo = {
 } as const satisfies Record<TransactionType, TransactionTypeInfo>;
 
 export const TransactionDetailHeader = ({ transaction }: TransactionDetailHeaderProps) => {
-    const { type } = transaction;
+    const { isDiscreetMode } = useDiscreetMode();
 
+    const { type } = transaction;
     const { text } = transactionTypeInfo[type];
 
     const hasTransactionSign = type === 'sent' || type === 'recv';
@@ -67,7 +68,7 @@ export const TransactionDetailHeader = ({ transaction }: TransactionDetailHeader
                     />
                 )}
             </Box>
-            <Text variant="titleMedium" numberOfLines={1} adjustsFontSizeToFit>
+            <Text variant="titleMedium" numberOfLines={1} adjustsFontSizeToFit={!isDiscreetMode}>
                 <SignValueFormatter value={signValueMap[transaction.type]} variant="titleMedium" />
                 <CryptoAmountFormatter
                     value={transaction.amount}

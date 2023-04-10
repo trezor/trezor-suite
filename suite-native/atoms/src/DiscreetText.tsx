@@ -82,6 +82,20 @@ export const DiscreetText = ({
 
     if (!children) return null;
 
+    if (!isDiscreetMode)
+        return (
+            <Text
+                variant={variant}
+                color={color}
+                onLayout={handleLayout}
+                ellipsizeMode={ellipsizeMode}
+                adjustsFontSizeToFit={adjustsFontSizeToFit}
+                {...restTextProps}
+            >
+                {children}
+            </Text>
+        );
+
     return (
         <Box style={applyStyle(discreetTextContainer, { lineHeight })}>
             {isDiscreetMode && (
