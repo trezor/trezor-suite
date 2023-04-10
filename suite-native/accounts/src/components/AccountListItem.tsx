@@ -82,7 +82,11 @@ export const AccountListItem = ({ account }: AccountListItemProps) => {
                     value={account.availableBalance}
                     network={account.symbol}
                 />
-                <CryptoAmountFormatter value={account.formattedBalance} network={account.symbol} />
+                <CryptoAmountFormatter
+                    value={account.balance}
+                    network={account.symbol}
+                    isBalance={false}
+                />
             </Box>
         </Box>
     );
