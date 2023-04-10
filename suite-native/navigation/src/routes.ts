@@ -1,5 +1,6 @@
 export enum RootStackRoutes {
     AppTabs = 'AppTabs',
+    Onboarding = 'Onboarding',
     AccountsImport = 'AccountsImport',
     DevUtilsStack = 'DevUtilsStack',
     AccountSettings = 'AccountSettings',
@@ -11,6 +12,14 @@ export enum AppTabsRoutes {
     AccountsStack = 'AccountsStack',
     SendReceiveStack = 'SendReceiveStack',
     SettingsStack = 'SettingsStack',
+}
+
+export enum OnboardingStackRoutes {
+    Welcome = 'Welcome',
+    TrackBalances = 'TrackBalances',
+    ReceiveCoins = 'ReceiveCoins',
+    AnalyticsConsent = 'AnalyticsConsent',
+    GetStarted = 'GetStarted',
 }
 
 export enum AccountsImportStackRoutes {

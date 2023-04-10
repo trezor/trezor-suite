@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/core';
 
 import { Box, IconButton } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { selectIsOnboardingFinished } from '@suite-native/module-settings';
+import { selectIsAccountImportFinished } from '@suite-native/module-settings';
 import {
     AccountsImportStackParamList,
     AccountsImportStackRoutes,
@@ -35,7 +35,7 @@ type NavigationProp = StackToTabCompositeProps<
 export const AccountImportHeader = ({ activeStep }: AccountImportHeaderProps) => {
     const { applyStyle } = useNativeStyles();
     const navigation = useNavigation<NavigationProp>();
-    const isOnboardingFinished = useSelector(selectIsOnboardingFinished);
+    const isAccountImportFinished = useSelector(selectIsAccountImportFinished);
 
     const handleCloseOnboarding = () => {
         navigation.navigate(RootStackRoutes.AppTabs, {
@@ -49,7 +49,7 @@ export const AccountImportHeader = ({ activeStep }: AccountImportHeaderProps) =>
     return (
         <ScreenHeader
             rightIcon={
-                isOnboardingFinished && (
+                isAccountImportFinished && (
                     <Box style={applyStyle(closeButtonStyle)}>
                         <IconButton
                             iconName="close"

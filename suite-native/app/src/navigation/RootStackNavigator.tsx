@@ -10,9 +10,13 @@ import {
     RootStackRoutes,
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';
-import { selectIsOnboardingFinished } from '@suite-native/module-settings';
+import {
+    selectIsOnboardingFinished,
+    selectIsAccountImportFinished,
+} from '@suite-native/module-settings';
 import { DevUtilsStackNavigator } from '@suite-native/module-dev-utils';
 import { TransactionDetailScreen } from '@suite-native/transactions';
+import { OnboardingStackNavigator } from '@suite-native/module-onboarding';
 
 import { AppTabNavigator } from './AppTabNavigator';
 
@@ -20,14 +24,27 @@ const RootStack = createNativeStackNavigator<RootStackParamList>();
 
 export const RootStackNavigator = () => {
     const isOnboardingFinished = useSelector(selectIsOnboardingFinished);
+    const isAccountImportFinished = useSelector(selectIsAccountImportFinished);
+
+    const getInitialRouteName = () => {
+        if (isOnboardingFinished && isAccountImportFinished) {
+            return RootStackRoutes.AppTabs;
+        }
+        if (isOnboardingFinished) {
+            return RootStackRoutes.AccountsImport;
+        }
+        return RootStackRoutes.Onboarding;
+    };
 
     return (
         <RootStack.Navigator
-            initialRouteName={
-                isOnboardingFinished ? RootStackRoutes.AppTabs : RootStackRoutes.AccountsImport
-            }
+            initialRouteName={getInitialRouteName()}
             screenOptions={stackNavigationOptionsConfig}
         >
+            <RootStack.Screen
+                name={RootStackRoutes.Onboarding}
+                component={OnboardingStackNavigator}
+            />
             <RootStack.Screen name={RootStackRoutes.AppTabs} component={AppTabNavigator} />
             <RootStack.Screen
                 name={RootStackRoutes.AccountsImport}

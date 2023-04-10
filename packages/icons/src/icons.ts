@@ -12,6 +12,7 @@ export const icons = {
     arrowUpRight: require('../assets/icons/arrowUpRight.svg'),
     backspace: require('../assets/icons/backspace.svg'),
     biometric: require('../assets/icons/biometric.svg'),
+    bugBeetle: require('../assets/icons/bugBeetle.svg'),
     calendar: require('../assets/icons/calendar.svg'),
     check: require('../assets/icons/check.svg'),
     chevronDown: require('../assets/icons/chevronDown.svg'),
