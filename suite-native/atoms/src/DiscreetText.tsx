@@ -82,6 +82,20 @@ export const DiscreetText = ({
 
     if (!children) return null;
 
+    if (!isDiscreetMode)
+        return (
+            <Text
+                variant={variant}
+                color={color}
+                onLayout={handleLayout}
+                ellipsizeMode={ellipsizeMode}
+                adjustsFontSizeToFit={adjustsFontSizeToFit}
+                {...restTextProps}
+            >
+                {children}
+            </Text>
+        );
+
     return (
         <Box style={applyStyle(discreetTextContainer, { lineHeight })}>
             {isDiscreetMode && (
@@ -97,8 +111,6 @@ export const DiscreetText = ({
             {/* Plain Text needs to be always rendered so it shares its width with DiscreetCanvas. */}
             {/* If the DiscreetMode is on, it is hidden with opacity and height set to zero. */}
             <Text
-                ellipsizeMode={isDiscreetMode ? undefined : ellipsizeMode}
-                adjustsFontSizeToFit={!isDiscreetMode && adjustsFontSizeToFit}
                 variant={variant}
                 color={color}
                 onLayout={handleLayout}
