@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
@@ -59,7 +59,7 @@ export const AccountImportLoadingScreen = ({
                     details: 'tokenBalances',
                 }),
                 dispatch(
-                    // @ts-expect-error not sure what is going on
+                    // @ts-expect-error Seems there is a problem with global types do dispatch, no idea how to fix it
                     updateFiatRatesThunk({
                         ticker: {
                             symbol: networkSymbol,
@@ -75,7 +75,7 @@ export const AccountImportLoadingScreen = ({
                     if (networkSymbol === 'eth') {
                         fetchedAccountInfo.payload.tokens?.forEach(token => {
                             dispatch(
-                                // @ts-expect-error not sure what is going on
+                                // @ts-expect-error Seems there is a problem with global types do dispatch, no idea how to fix it
                                 updateFiatRatesThunk({
                                     ticker: {
                                         symbol: token.symbol as TokenSymbol,

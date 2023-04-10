@@ -5,6 +5,8 @@ import { transactionsActions, accountsActions, blockchainActions } from '@suite-
 
 import { fetchFiatRatesThunk, updateTxsFiatRatesThunk } from './fiatRatesThunks';
 
+// Commented our code is intended for future usage in desktop, we will need to somehow use this code only in
+// desktop suite, since mobile doesn't need last week rates. Maybe two middlewares?
 export const prepareFiatRatesMiddleware = createMiddlewareWithExtraDeps(
     (action, { dispatch, extra, next, getState }) => {
         const {

@@ -7,7 +7,7 @@ export type FiatRateKey = string & { __type: 'FiatRateKey' };
 
 export interface TickerId {
     symbol: TokenSymbol | NetworkSymbol;
-    mainNetworkSymbol?: NetworkSymbol; // symbol of thee main network. (used for tokens)
+    mainNetworkSymbol?: NetworkSymbol; // used for tokens
     tokenAddress?: TokenAddress;
 }
 

@@ -1,7 +1,11 @@
 import { TokenInfo, TokenTransfer } from '@trezor/blockchain-link';
-import { WalletAccountTransaction as CommonWalletAccountTransaction } from '@suite-common/wallet-types';
+import {
+    TokenSymbol,
+    WalletAccountTransaction as CommonWalletAccountTransaction,
+} from '@suite-common/wallet-types';
 
-export type EthereumTokenSymbol = string & { __type: 'EthereumTokenSymbol' };
+// TODO: merge this type with @suite-common/wallet-types and use only one of them
+export type EthereumTokenSymbol = TokenSymbol;
 
 export type EthereumTokenAccountWithBalance = Omit<TokenInfo, 'balance'> & {
     balance: string;

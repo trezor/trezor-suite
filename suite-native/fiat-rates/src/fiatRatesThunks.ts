@@ -196,6 +196,6 @@ export const periodicFetchFiatRatesThunk = createThunk(
         await dispatch(fetchFiatRatesThunk({ rateType }));
         ratesTimeouts[rateType] = setTimeout(() => {
             dispatch(periodicFetchFiatRatesThunk({ rateType }));
-        }, REFETCH_INTERVAL.current);
+        }, REFETCH_INTERVAL[rateType]);
     },
 );

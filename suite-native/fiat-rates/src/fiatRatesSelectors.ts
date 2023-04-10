@@ -56,7 +56,7 @@ export const selectShouldUpdateFiatRate = (
     return now - lastSuccessfulFetchTimestamp > MAX_AGE[rateType];
 };
 
-export const selectTickerFromAccounts = (state: FiatRatesRootState): TickerId[] => {
+export const selectTickerFromAccounts = memoize((state: FiatRatesRootState): TickerId[] => {
     const accounts = selectAccounts(state as any);
     return pipe(
         accounts,
@@ -76,7 +76,7 @@ export const selectTickerFromAccounts = (state: FiatRatesRootState): TickerId[] 
         A.flat,
         F.toMutable,
     );
-};
+});
 
 export const selectShouldUpdateTicker = (
     state: FiatRatesRootState,
@@ -87,20 +87,20 @@ export const selectShouldUpdateTicker = (
     return selectShouldUpdateFiatRate(state, fiatRateKey);
 };
 
-export const selectTickersToBeUpdated = (
-    state: FiatRatesRootState,
-    fiatCurrency: FiatCurrencyCode,
-    rateType: RateType,
-): TickerId[] => {
-    const tickers = selectTickerFromAccounts(state);
-    return tickers.filter(ticker => {
-        const fiatRateKey = getFiatRateKeyFromTicker(ticker, fiatCurrency);
-        return (
-            selectShouldUpdateFiatRate(state, fiatRateKey, rateType) &&
-            !selectIsTickerLoading(state, ticker, fiatCurrency)
-        );
-    });
-};
+export const selectTickersToBeUpdated = memoizeWithArgs(
+    (state: FiatRatesRootState, fiatCurrency: FiatCurrencyCode, rateType: RateType): TickerId[] => {
+        const tickers = selectTickerFromAccounts(state);
+        return tickers.filter(ticker => {
+            const fiatRateKey = getFiatRateKeyFromTicker(ticker, fiatCurrency);
+            return (
+                selectShouldUpdateFiatRate(state, fiatRateKey, rateType) &&
+                !selectIsTickerLoading(state, ticker, fiatCurrency)
+            );
+        });
+    },
+    // used 5 just to be safe, but there shouldn't be more than one local currency at 2 rate types at one time
+    { size: 5 },
+);
 
 export const selectTransactionsWithMissingRates = memoizeWithArgs(
     (state: FiatRatesRootState, localCurrency: FiatCurrencyCode) => {
@@ -120,6 +120,7 @@ export const selectTransactionsWithMissingRates = memoizeWithArgs(
             txs: WalletAccountTransaction[];
         }[];
     },
+    // There could be only one active local currency at the time
     { size: 1 },
 );
 
@@ -186,9 +187,6 @@ export const selectCoinsLegacy = memoize(
 
         return coins;
     },
-    {
-        size: 400,
-    },
 );
 
 export const selectIsAccountWithRatesByKey = memoizeWithArgs(
@@ -204,4 +202,5 @@ export const selectIsAccountWithRatesByKey = memoizeWithArgs(
 
         return !!rates.find(rate => rate.symbol === account.symbol);
     },
+    { size: 100 },
 );
