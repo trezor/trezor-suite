@@ -18,6 +18,7 @@
         { "path": "../analytics" },
         { "path": "../atoms" },
         { "path": "../config" },
+        { "path": "../fiat-rates" },
         { "path": "../module-accounts" },
         { "path": "../module-accounts-import" },
         { "path": "../module-dev-utils" },

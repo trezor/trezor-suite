@@ -4,6 +4,9 @@ import { AccountInfo, PROTO } from '@trezor/connect';
 export type MetadataItem = string;
 export type XpubAddress = string;
 
+export type TokenSymbol = string & { __type: 'TokenSymbol' };
+export type TokenAddress = string & { __type: 'TokenAddress' };
+
 export interface AccountMetadata {
     key: string; // legacy xpub format (btc-like coins) or account descriptor (other coins)
     fileName: string; // file name in dropbox
@@ -90,3 +93,9 @@ export type WalletParams =
           accountType: AccountType | 'normal';
       }>
     | undefined;
+
+export interface ReceiveInfo {
+    path: string;
+    address: string;
+    isVerified: boolean;
+}

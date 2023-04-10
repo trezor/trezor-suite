@@ -138,6 +138,9 @@ export const selectAccountsByNetworkSymbols = memoizeWithArgs(
 
         return accounts.filter(account => networkSymbols.includes(account.symbol));
     },
+    {
+        size: 40,
+    },
 );
 
 export const selectAccountsByNetworkAndDevice = memoizeWithArgs(

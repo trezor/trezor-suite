@@ -1,18 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
-import TrezorConnect, { AccountInfo } from '@trezor/connect';
+import { TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
+import { updateFiatRatesThunk } from '@suite-native/fiat-rates';
+import { selectFiatCurrencyCode } from '@suite-native/module-settings';
 import {
-    StackToTabCompositeScreenProps,
-    Screen,
+    AccountsImportStackParamList,
     AccountsImportStackRoutes,
     RootStackParamList,
-    AccountsImportStackParamList,
+    Screen,
+    StackToTabCompositeScreenProps,
 } from '@suite-native/navigation';
-import { updateCurrentFiatRatesThunk } from '@suite-common/wallet-core';
+import TrezorConnect, { AccountInfo } from '@trezor/connect';
 
-import { AccountImportLoader } from '../components/AccountImportLoader';
 import { AccountImportHeader } from '../components/AccountImportHeader';
+import { AccountImportLoader } from '../components/AccountImportLoader';
 import { useShowImportError } from '../useShowImportError';
 
 const LOADING_ANIMATION_DURATION = 5000;
@@ -30,6 +32,7 @@ export const AccountImportLoadingScreen = ({
     const showImportError = useShowImportError(networkSymbol, navigation);
     const [accountInfo, setAccountInfo] = useState<AccountInfo | null>(null);
     const [isAnimationFinished, setIsAnimationFinished] = useState(false);
+    const fiatCurrency = useSelector(selectFiatCurrencyCode);
 
     useEffect(() => {
         if (accountInfo && isAnimationFinished)
@@ -49,23 +52,38 @@ export const AccountImportLoadingScreen = ({
         let ignore = false;
 
         const getAccountInfo = async () => {
-            const fetchedAccountInfo = await TrezorConnect.getAccountInfo({
-                coin: networkSymbol,
-                descriptor: xpubAddress,
-                details: 'txs',
-            });
+            const [fetchedAccountInfo] = await Promise.all([
+                TrezorConnect.getAccountInfo({
+                    coin: networkSymbol,
+                    descriptor: xpubAddress,
+                    details: 'tokenBalances',
+                }),
+                dispatch(
+                    // @ts-expect-error Seems there is a problem with global types do dispatch, no idea how to fix it
+                    updateFiatRatesThunk({
+                        ticker: {
+                            symbol: networkSymbol,
+                        },
+                        rateType: 'current',
+                        fiatCurrency,
+                    }),
+                ),
+            ]);
 
             if (!ignore) {
                 if (fetchedAccountInfo?.success) {
                     if (networkSymbol === 'eth') {
                         fetchedAccountInfo.payload.tokens?.forEach(token => {
                             dispatch(
-                                updateCurrentFiatRatesThunk({
+                                // @ts-expect-error Seems there is a problem with global types do dispatch, no idea how to fix it
+                                updateFiatRatesThunk({
                                     ticker: {
-                                        symbol: token.symbol as string,
+                                        symbol: token.symbol as TokenSymbol,
                                         mainNetworkSymbol: 'eth',
-                                        tokenAddress: token.address,
+                                        tokenAddress: token.address as TokenAddress,
                                     },
+                                    rateType: 'current',
+                                    fiatCurrency,
                                 }),
                             );
                         });
@@ -87,7 +105,7 @@ export const AccountImportLoadingScreen = ({
         return () => {
             ignore = true;
         };
-    }, [xpubAddress, networkSymbol, dispatch, showImportError]);
+    }, [xpubAddress, networkSymbol, dispatch, showImportError, fiatCurrency]);
 
     return (
         <Screen header={<AccountImportHeader activeStep={3} />}>

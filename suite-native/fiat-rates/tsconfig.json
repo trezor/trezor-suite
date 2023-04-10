@@ -3,6 +3,12 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
+            "path": "../../suite-common/fiat-services"
+        },
+        {
+            "path": "../../suite-common/redux-utils"
+        },
+        {
             "path": "../../suite-common/suite-config"
         },
         {
@@ -12,14 +18,11 @@
             "path": "../../suite-common/wallet-core"
         },
         {
+            "path": "../../suite-common/wallet-types"
+        },
+        {
             "path": "../../suite-common/wallet-utils"
         },
-        { "path": "../atoms" },
-        { "path": "../fiat-rates" },
-        { "path": "../formatters" },
-        { "path": "../module-settings" },
-        { "path": "../navigation" },
-        { "path": "../../packages/icons" },
-        { "path": "../../packages/styles" }
+        { "path": "../../packages/connect" }
     ]
 }

@@ -16,7 +16,6 @@ import {
     SendReceiveStackRoutes,
 } from '@suite-native/navigation';
 import { networks } from '@suite-common/wallet-config';
-import { selectFiatCurrency } from '@suite-native/module-settings';
 
 import { AssetItem } from './AssetItem';
 import { selectAssetsWithBalances } from '../assetsSelectors';
@@ -35,10 +34,7 @@ type HomeAssetsNavigationProp = TabToStackCompositeNavigationProp<
 export const Assets = () => {
     const navigation = useNavigation<HomeAssetsNavigationProp>();
     const { applyStyle } = useNativeStyles();
-    const fiatCurrency = useSelector(selectFiatCurrency);
-    const assetsData = useSelector((state: any) =>
-        selectAssetsWithBalances(fiatCurrency.label, state),
-    );
+    const assetsData = useSelector(selectAssetsWithBalances);
 
     const assetsDataWithPercentage = useMemo(
         () => calculateAssetsPercentage(assetsData),

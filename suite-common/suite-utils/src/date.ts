@@ -73,12 +73,7 @@ export const calcTicksFromData = (data: { time: number }[]) => {
 };
 
 /**
- * Little workaround for Blockbook API for fetching fiat rates for given timestamps (getFiatRatesForTimestamps)
- * which doesn't return proper response if the timestamp is too recent.
- * If passed timestamp is older than 3 minutes it is returned without any adjustments.
- * Otherwise timestamp of 3 minutes ago is returned.
- *
- * @returns
+ * @deprecated It's not needed anymore, new blockbook will handle it
  */
 export const getBlockbookSafeTime = (timestamp?: number) => {
     const currentTimestamp = getUnixTime(new Date());

@@ -18,6 +18,7 @@
         "@suite-common/toast-notifications": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
         "@suite-native/config": "workspace:*",
+        "@suite-native/fiat-rates": "workspace:*",
         "@suite-native/logger": "workspace:*",
         "@suite-native/module-devices": "workspace:*",
         "@suite-native/module-settings": "workspace:*",

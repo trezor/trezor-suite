@@ -46,6 +46,7 @@
         "@suite-native/analytics": "workspace:*",
         "@suite-native/atoms": "workspace:*",
         "@suite-native/config": "workspace:*",
+        "@suite-native/fiat-rates": "workspace:*",
         "@suite-native/module-accounts": "workspace:*",
         "@suite-native/module-accounts-import": "workspace:*",
         "@suite-native/module-dev-utils": "workspace:*",

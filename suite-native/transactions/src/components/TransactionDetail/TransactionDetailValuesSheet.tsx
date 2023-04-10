@@ -7,7 +7,7 @@ import { convertCryptoToFiatAmount } from '@suite-common/formatters';
 import { CurrentFiatRates, WalletAccountTransaction } from '@suite-common/wallet-types';
 import { Card, Table, Td, Text, Th, Tr, VStack } from '@suite-native/atoms';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { selectCoins } from '@suite-common/wallet-core';
+import { selectCoinsLegacy } from '@suite-native/fiat-rates';
 import { selectFiatCurrency } from '@suite-native/module-settings';
 import {
     CryptoToFiatAmountFormatter,
@@ -35,7 +35,7 @@ const TodayHeaderCell = ({
     network,
     historicalRates,
 }: TodayHeaderCellProps) => {
-    const coins = useSelector(selectCoins);
+    const coins = useSelector(selectCoinsLegacy);
     const fiatCurrency = useSelector(selectFiatCurrency);
     const currentRates = coins.find(coin => coin.symbol === network)?.current?.rates;
 

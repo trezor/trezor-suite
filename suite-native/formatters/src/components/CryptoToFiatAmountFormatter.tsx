@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { TextProps } from '@suite-native/atoms';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { selectCoins } from '@suite-common/wallet-core';
+import { selectCoinsLegacy } from '@suite-native/fiat-rates';
 import { convertCryptoToFiatAmount, useFormatters } from '@suite-common/formatters';
 import { selectFiatCurrency } from '@suite-native/module-settings';
 import { FiatRates } from '@trezor/blockchain-link';
@@ -27,7 +27,7 @@ export const CryptoToFiatAmountFormatter = ({
     isDiscreetText = true,
     ...textProps
 }: CryptoToFiatAmountFormatterProps) => {
-    const coins = useSelector(selectCoins);
+    const coins = useSelector(selectCoinsLegacy);
     const fiatCurrency = useSelector(selectFiatCurrency);
     const { FiatAmountFormatter } = useFormatters();
 
