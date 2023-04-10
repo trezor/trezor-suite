@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { LayoutChangeEvent } from 'react-native';
 
-import { useAtom, atom } from 'jotai';
+import { useAtom } from 'jotai';
 import { Blur, Canvas, Text as SkiaText, useFont } from '@shopify/react-native-skia';
 
 import { Color, typographyStylesBase } from '@trezor/theme';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { atomWithUnecryptedStorage } from '@suite-native/storage';
 
 import { Text, TextProps } from './Text';
 import { Box } from './Box';
@@ -17,7 +18,7 @@ type DiscreetTextProps = TextProps & {
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const satoshiFont = require('../../../packages/theme/fonts/TTSatoshi-Regular.otf');
 
-const isDiscreetModeOn = atom(false);
+const isDiscreetModeOn = atomWithUnecryptedStorage<boolean>('isDiscreetModeOn', false);
 export const useDiscreetMode = () => {
     const [isDiscreetMode, setIsDiscreetMode] = useAtom(isDiscreetModeOn);
     return {

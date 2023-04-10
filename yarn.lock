@@ -6731,6 +6731,7 @@ __metadata:
   dependencies:
     "@mobily/ts-belt": ^3.13.1
     "@shopify/react-native-skia": 0.1.173
+    "@suite-native/storage": "workspace:*"
     "@trezor/env-utils": "workspace:*"
     "@trezor/icons": "workspace:*"
     "@trezor/styles": "workspace:*"
