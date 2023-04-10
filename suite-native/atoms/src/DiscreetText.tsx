@@ -8,6 +8,7 @@ import { Color, typographyStylesBase } from '@trezor/theme';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { Text, TextProps } from './Text';
+import { Box } from './Box';
 
 type DiscreetTextProps = TextProps & {
     children?: string | null;
@@ -46,6 +47,10 @@ export const DiscreetCanvas = ({ width, height, fontSize, text, color }: Discree
         </Canvas>
     );
 };
+const discreetTextContainer = prepareNativeStyle<{ lineHeight: number }>((_, { lineHeight }) => ({
+    height: lineHeight,
+}));
+
 const textStyle = prepareNativeStyle<{ isDiscreetMode: boolean }>((_, { isDiscreetMode }) => ({
     extend: {
         condition: isDiscreetMode,
@@ -60,7 +65,6 @@ export const DiscreetText = ({
     children = '',
     color = 'textDefault',
     variant = 'body',
-    numberOfLines,
     ellipsizeMode,
     adjustsFontSizeToFit,
     ...restTextProps
@@ -78,12 +82,7 @@ export const DiscreetText = ({
     if (!children) return null;
 
     return (
-        <Text
-            variant={variant}
-            numberOfLines={numberOfLines}
-            ellipsizeMode={ellipsizeMode}
-            adjustsFontSizeToFit={adjustsFontSizeToFit}
-        >
+        <Box style={applyStyle(discreetTextContainer, { lineHeight })}>
             {isDiscreetMode && (
                 <DiscreetCanvas
                     width={width}
@@ -97,6 +96,8 @@ export const DiscreetText = ({
             {/* Plain Text needs to be always rendered so it shares its width with DiscreetCanvas. */}
             {/* If the DiscreetMode is on, it is hidden with opacity and height set to zero. */}
             <Text
+                ellipsizeMode={isDiscreetMode ? undefined : ellipsizeMode}
+                adjustsFontSizeToFit={!isDiscreetMode && adjustsFontSizeToFit}
                 variant={variant}
                 color={color}
                 onLayout={handleLayout}
@@ -105,6 +106,6 @@ export const DiscreetText = ({
             >
                 {children}
             </Text>
-        </Text>
+        </Box>
     );
 };
