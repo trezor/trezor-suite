@@ -5,10 +5,9 @@ import { createServer } from '../mocks/server';
 import { AFFILIATE_INFO, DEFAULT_ROUND, STATUS_EVENT } from '../fixtures/round.fixture';
 
 // using fakeTimers and async callbacks
-const fastForward = (time: number) => {
-    jest.runTimersToTime(time);
-    return new Promise(resolve => setImmediate(resolve)); // execute PromiseJobs (async setTimeout callbacks)
-};
+const fastForward = (time: number) =>
+    // @ts-expect-error needs @types/jest update, related to https://github.com/trezor/trezor-suite/issues/6025
+    jest.advanceTimersByTimeAsync(time);
 
 // use getters to allow mocking different values in each test case
 jest.mock('../../src/constants', () => {
@@ -217,7 +216,7 @@ describe('Status', () => {
         status.stop();
     });
 
-    it('Status start attempts, keep lifecycle regardless of failed requests', async done => {
+    it('Status start attempts, keep lifecycle regardless of failed requests', async () => {
         jest.spyOn(STATUS_TIMEOUT, 'registered', 'get').mockReturnValue(250 as any);
 
         let request = 0;
@@ -248,11 +247,13 @@ describe('Status', () => {
         await status.start();
         status.setMode('registered'); // set faster iterations
 
-        status.on('update', () => {
-            expect(errorListener).toHaveBeenCalledTimes(2);
-            expect(updateListener).toHaveBeenCalledTimes(2);
-            status.stop();
-            done();
+        await new Promise<void>(resolve => {
+            status.on('update', () => {
+                expect(errorListener).toHaveBeenCalledTimes(2);
+                expect(updateListener).toHaveBeenCalledTimes(2);
+                status.stop();
+                resolve();
+            });
         });
     });
 

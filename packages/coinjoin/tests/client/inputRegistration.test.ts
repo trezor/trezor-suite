@@ -3,8 +3,6 @@ import { createServer } from '../mocks/server';
 import { createInput } from '../fixtures/input.fixture';
 import { createCoinjoinRound } from '../fixtures/round.fixture';
 
-let server: Awaited<ReturnType<typeof createServer>>;
-
 // mock random delay function
 jest.mock('@trezor/utils', () => {
     const originalModule = jest.requireActual('@trezor/utils');
@@ -16,18 +14,19 @@ jest.mock('@trezor/utils', () => {
 });
 
 describe('inputRegistration', () => {
+    let server: Awaited<ReturnType<typeof createServer>>;
+
     beforeAll(async () => {
         server = await createServer();
-        // jest.spyOn('@trezor/utils', 'getRandomNumberInRange').mockImplementation(() => {});
     });
 
-    beforeEach(() => {
+    afterEach(() => {
         server?.removeAllListeners('test-request');
     });
 
     afterAll(() => {
         jest.clearAllMocks();
-        if (server) server.close();
+        server?.close();
     });
 
     it('try to register without ownership proof', async () => {
@@ -64,6 +63,7 @@ describe('inputRegistration', () => {
             expect(input.registrationData).toMatchObject({ aliceId: expect.any(String) });
             expect(input.realAmountCredentials).toEqual(expect.any(Object));
             expect(input.realVsizeCredentials).toEqual(expect.any(Object));
+            input.clearConfirmationInterval();
         });
     });
 
@@ -162,6 +162,7 @@ describe('inputRegistration', () => {
                 expect(input.realAmountCredentials?.credentialsRequest.delta).toEqual(992517); // plebs
                 expect(input.realVsizeCredentials?.credentialsRequest.delta).toEqual(197);
             }
+            input.clearConfirmationInterval();
         });
     });
 
@@ -201,6 +202,7 @@ describe('inputRegistration', () => {
             if (input.outpoint === 'A3') {
                 expect(input.registrationData).toMatchObject({ aliceId: expect.any(String) });
             }
+            input.clearConfirmationInterval();
         });
     });
 
@@ -308,7 +310,7 @@ describe('inputRegistration', () => {
         });
     });
 
-    it('success. confirmation interval is aborted after registration', async done => {
+    it('success. confirmation interval is aborted after registration', async () => {
         const spy = jest.fn();
         server?.addListener('test-request', ({ url, resolve }) => {
             if (url.endsWith('/connection-confirmation')) {
@@ -343,7 +345,6 @@ describe('inputRegistration', () => {
                 res.forEach(input => {
                     expect(input?.getConfirmationInterval()).toBeUndefined();
                 });
-                done();
             },
         );
 
