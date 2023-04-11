@@ -54,7 +54,7 @@ const createIpcProxyApi = (ipcRenderer: IpcRenderer, validChannels: string[]): I
         channelName: string,
         instanceId: string,
         eventName: string,
-        listener: any,
+        listener: (...args: any[]) => any,
     ) => {
         validateChannel(channelName);
         const ipcEventName = `${channelName}/${instanceId}/event-listener/${eventName}`;

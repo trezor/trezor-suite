@@ -5,14 +5,16 @@ const getIpcProxyApi = (proxyName: string): IpcProxyApi | undefined =>
     typeof window !== 'undefined' ? window[proxyName] : undefined;
 
 const getIpcMethods = (ipcProxy: IpcProxyApi, channelName: string, instanceId: string) => {
-    let listeners: { eventName: string; listener: (...args: any[]) => any }[] = [];
-    let created = false;
+    const state = {
+        created: false,
+        listeners: [] as { eventName: string; listener: (...args: any[]) => any }[],
+    };
 
     const create = async (constructorParams: any) => {
-        if (created) return true;
+        if (state.created) return true;
         // Handshake with electron main
         await ipcProxy.create(channelName, instanceId, constructorParams);
-        created = true;
+        state.created = true;
     };
 
     // It would be easier to use ipcRenderer.invoke and return a promise directly from API[method]
@@ -27,27 +29,28 @@ const getIpcMethods = (ipcProxy: IpcProxyApi, channelName: string, instanceId: s
         (...args: any[]) =>
             ipcProxy.invoke(channelName, instanceId, method, args);
 
-    const setOrClearHandler = (eventName: string) => {
-        const eventListeners = listeners.filter(l => l.eventName === eventName);
-        if (eventListeners.length) {
+    const addListener = (eventName: string, listener: (...args: any[]) => any) => {
+        const first = !state.listeners.some(l => l.eventName === eventName);
+        state.listeners.push({ eventName, listener });
+        if (first)
             ipcProxy.setHandler(channelName, instanceId, eventName, (event: any) =>
-                eventListeners.forEach(l => l.listener(...event)),
+                state.listeners
+                    .filter(l => l.eventName === eventName)
+                    .forEach(l => l.listener(...event)),
             );
-        } else {
-            ipcProxy.clearHandler(channelName, instanceId, eventName);
-        }
     };
 
-    const addListener = (eventName: string, listener: any) => {
-        listeners.push({ eventName, listener });
-        setOrClearHandler(eventName);
-    };
-
-    const removeListener = (eventName: string, listener?: any) => {
-        listeners = listeners.filter(
+    const removeListener = (eventName: string, listener?: (...args: any[]) => any) => {
+        const newListeners = state.listeners.filter(
             l => l.eventName !== eventName || (listener && l.listener !== listener),
         );
-        setOrClearHandler(eventName);
+        const last =
+            state.listeners.some(l => l.eventName === eventName) &&
+            !newListeners.some(l => l.eventName === eventName);
+        state.listeners = newListeners;
+        if (last) {
+            ipcProxy.clearHandler(channelName, instanceId, eventName);
+        }
     };
 
     return {
