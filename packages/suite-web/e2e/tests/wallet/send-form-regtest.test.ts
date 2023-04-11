@@ -92,6 +92,7 @@ describe('Send form for bitcoin', () => {
         cy.task('pressYes');
         cy.task('pressYes');
         cy.task('pressYes');
+        cy.task('pressYes');
         cy.getTestElement('@modal/send').click();
         cy.getTestElement('@wallet/accounts/transaction-list/group/0').should(
             'contain',
