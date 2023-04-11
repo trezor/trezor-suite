@@ -1,5 +1,4 @@
 import React from 'react';
-import { Image } from 'react-native';
 import Animated, {
     useAnimatedStyle,
     withDelay,
@@ -7,7 +6,7 @@ import Animated, {
     withTiming,
 } from 'react-native-reanimated';
 
-import { Box, Loader, Text, VStack } from '@suite-native/atoms';
+import { Box, Loader, Text, VStack, Image } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 const LINE_VISIBILITY_DURATION = 1500;
@@ -18,8 +17,6 @@ const loaderContainerStyle = prepareNativeStyle(utils => ({
     alignItems: 'center',
     marginTop: utils.spacings.medium * 10,
 }));
-
-const imageStyle = prepareNativeStyle(() => ({ width: 283, height: 166 }));
 
 const textContainerStyle = prepareNativeStyle(utils => ({
     overflow: 'hidden',
@@ -45,7 +42,7 @@ export const AccountImportLoader = () => {
     return (
         <Box style={applyStyle(loaderContainerStyle)}>
             {/* eslint-disable-next-line global-require */}
-            <Image source={require('../assets/globe.png')} style={applyStyle(imageStyle)} />
+            <Image source={require('../assets/globe.png')} width={283} height={166} />
             <VStack spacing="large" flex={1} justifyContent="center">
                 <Loader />
                 <Box style={applyStyle(textContainerStyle)}>

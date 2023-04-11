@@ -9,5 +9,6 @@ type LinkProps = TouchableOpacityProps & {
 
 export const Link = ({ href, ...touchableProps }: LinkProps) => {
     const openLink = useOpenLink();
+
     return <TouchableOpacity {...touchableProps} onPress={() => openLink(href)} />;
 };
