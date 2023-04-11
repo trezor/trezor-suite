@@ -23,6 +23,7 @@ export type BlockbookBlock = {
     totalPages: number;
     height: number;
     txs: BlockbookTransaction[];
+    hash: string;
 };
 
 export type BlockFilter = {

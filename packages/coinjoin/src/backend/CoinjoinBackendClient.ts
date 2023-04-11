@@ -47,8 +47,27 @@ export class CoinjoinBackendClient {
         return this.fetchFromBlockbook({ identity, ...options }, 'getBlock', height);
     }
 
+    fetchBlockHash(height: number, options?: RequestOptions): Promise<string> {
+        return this.fetchFromBlockbook({ ...options }, 'getBlockHash', height).then(
+            ({ hash }) => hash,
+        );
+    }
+
     fetchTransaction(txid: string, options?: RequestOptions): Promise<BlockbookTransaction> {
         return this.fetchFromBlockbook(options, 'getTransaction', txid);
+    }
+
+    fetchNetworkInfo(options?: RequestOptions) {
+        return this.fetchFromBlockbook(options, 'getServerInfo');
+    }
+
+    fetchAddress(address: string, page?: number, pageSize = 10, options?: RequestOptions) {
+        return this.fetchFromBlockbook(options, 'getAccountInfo', {
+            descriptor: address,
+            details: 'txs',
+            pageSize,
+            page,
+        });
     }
 
     private reconnect = async () => {
