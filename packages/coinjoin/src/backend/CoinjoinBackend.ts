@@ -8,7 +8,7 @@ import { scanAccount } from './scanAccount';
 import { scanAddress } from './scanAddress';
 import { getAccountInfo } from './getAccountInfo';
 import { createPendingTransaction } from './createPendingTx';
-import { isTaprootTx } from './backendUtils';
+import { deriveAddresses, isTaprootTx } from './backendUtils';
 import { getNetwork } from '../utils/settingsUtils';
 import type { CoinjoinBackendSettings, LogEvent, Logger, LogLevel } from '../types';
 import type {
@@ -78,12 +78,18 @@ export class CoinjoinBackend extends EventEmitter {
         });
     }
 
-    scanAccount({ descriptor, progressHandle, checkpoints, cache }: ScanAccountParams) {
+    async scanAccount({ descriptor, progressHandle, checkpoints, cache }: ScanAccountParams) {
         this.abortController = new AbortController();
         const filters = new CoinjoinFilterController(this.client, this.settings);
+        const getFirstAddress = () =>
+            deriveAddresses([], descriptor, 'receive', 0, 1, this.network)[0].address;
 
         return scanAccount(
-            { descriptor, checkpoints: this.getCheckpoints(checkpoints), cache },
+            {
+                descriptor,
+                checkpoints: await this.getCheckpoints(checkpoints, getFirstAddress),
+                cache,
+            },
             {
                 client: this.client,
                 network: this.network,
@@ -96,12 +102,13 @@ export class CoinjoinBackend extends EventEmitter {
         );
     }
 
-    scanAddress({ descriptor, progressHandle, checkpoints }: ScanAddressParams) {
+    async scanAddress({ descriptor, progressHandle, checkpoints }: ScanAddressParams) {
         this.abortController = new AbortController();
         const filters = new CoinjoinFilterController(this.client, this.settings);
+        const getFirstAddress = () => descriptor;
 
         return scanAddress(
-            { descriptor, checkpoints: this.getCheckpoints(checkpoints) },
+            { descriptor, checkpoints: await this.getCheckpoints(checkpoints, getFirstAddress) },
             {
                 client: this.client,
                 network: this.network,
@@ -156,14 +163,20 @@ export class CoinjoinBackend extends EventEmitter {
         this.mempool.stop();
     }
 
-    private getCheckpoints(checkpoints?: ScanAccountCheckpoint[]): ScanAccountCheckpoint[];
-    private getCheckpoints(checkpoints?: ScanAddressCheckpoint[]): ScanAddressCheckpoint[];
-    private getCheckpoints(checkpoints: any[] = []) {
-        if (checkpoints.find(({ blockHeight }) => blockHeight <= this.settings.baseBlockHeight)) {
+    private getCheckpoints<T extends ScanAddressCheckpoint>(
+        checkpoints: T[] | undefined,
+        getFirstAddress: () => string,
+    ): Promise<T[]>;
+    private async getCheckpoints(checkpoints: any[] = [], getFirstAddress: () => string) {
+        const cp = checkpoints.length
+            ? checkpoints
+            : [await this.getAccountCheckpoint(getFirstAddress())];
+
+        if (cp.find(({ blockHeight }) => blockHeight <= this.settings.baseBlockHeight)) {
             throw new Error('Cannot get checkpoint which precedes base block.');
         }
 
-        return checkpoints
+        return cp
             .slice()
             .sort((a, b) => b.blockHeight - a.blockHeight)
             .concat({
@@ -172,6 +185,37 @@ export class CoinjoinBackend extends EventEmitter {
                 receiveCount: DISCOVERY_LOOKOUT,
                 changeCount: DISCOVERY_LOOKOUT,
             });
+    }
+
+    private async getAccountCheckpoint(address: string) {
+        const addressFirstPage = await this.client.fetchAddress(address);
+
+        if (addressFirstPage.txs === 0) {
+            const networkInfo = await this.client.fetchNetworkInfo();
+            return {
+                blockHash: networkInfo.bestHash,
+                blockHeight: networkInfo.bestHeight,
+                receiveCount: DISCOVERY_LOOKOUT,
+                changeCount: DISCOVERY_LOOKOUT,
+            };
+        }
+
+        const latestPage =
+            addressFirstPage.totalPages > 1
+                ? await this.client.fetchAddress(address, addressFirstPage.totalPages)
+                : addressFirstPage;
+
+        const transactions = latestPage.transactions!;
+        const oldestTx = transactions[transactions.length - 1];
+        const blockHeight = oldestTx.blockHeight - 1;
+        const blockHash = await this.client.fetchBlockHash(blockHeight);
+
+        return {
+            blockHash,
+            blockHeight,
+            receiveCount: DISCOVERY_LOOKOUT,
+            changeCount: DISCOVERY_LOOKOUT,
+        };
     }
 
     private getLogger(): Logger {

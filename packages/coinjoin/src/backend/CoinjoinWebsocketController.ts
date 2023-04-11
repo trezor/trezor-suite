@@ -2,7 +2,10 @@ import { BlockbookAPI } from '@trezor/blockchain-link/lib/workers/blockbook/webs
 
 import type { Logger } from '../types';
 
-export type BlockbookWS = Pick<BlockbookAPI, 'getBlock' | 'getTransaction'>;
+export type BlockbookWS = Pick<
+    BlockbookAPI,
+    'getBlock' | 'getTransaction' | 'getAccountInfo' | 'getServerInfo' | 'getBlockHash'
+>;
 
 type SocketId = `${string}@${string}`;
 
