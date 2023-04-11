@@ -65,7 +65,7 @@ export const AccountImportLoadingScreen = ({
                             symbol: networkSymbol,
                         },
                         rateType: 'current',
-                        fiatCurrency,
+                        localCurrency: fiatCurrency,
                     }),
                 ),
             ]);
@@ -83,7 +83,7 @@ export const AccountImportLoadingScreen = ({
                                         tokenAddress: token.address as TokenAddress,
                                     },
                                     rateType: 'current',
-                                    fiatCurrency,
+                                    localCurrency: fiatCurrency,
                                 }),
                             );
                         });

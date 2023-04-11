@@ -14,8 +14,8 @@ export const prepareFiatRatesReducer = createReducerWithExtraDeps(
     (builder, extra) => {
         builder
             .addCase(updateFiatRatesThunk.pending, (state, action) => {
-                const { ticker, fiatCurrency, rateType = 'current' } = action.meta.arg;
-                const fiatRateKey = getFiatRateKeyFromTicker(ticker, fiatCurrency);
+                const { ticker, localCurrency, rateType = 'current' } = action.meta.arg;
+                const fiatRateKey = getFiatRateKeyFromTicker(ticker, localCurrency);
                 let currentRate = state[rateType]?.[fiatRateKey];
 
                 if (currentRate) {
@@ -30,7 +30,7 @@ export const prepareFiatRatesReducer = createReducerWithExtraDeps(
                         isLoading: true,
                         error: null,
                         ticker,
-                        locale: fiatCurrency,
+                        locale: localCurrency,
                     };
                 }
                 state[rateType][fiatRateKey] = currentRate;
@@ -38,8 +38,8 @@ export const prepareFiatRatesReducer = createReducerWithExtraDeps(
             .addCase(updateFiatRatesThunk.fulfilled, (state, action) => {
                 if (!action.payload) return;
 
-                const { ticker, fiatCurrency, rateType = 'current' } = action.meta.arg;
-                const fiatRateKey = getFiatRateKeyFromTicker(ticker, fiatCurrency);
+                const { ticker, localCurrency, rateType = 'current' } = action.meta.arg;
+                const fiatRateKey = getFiatRateKeyFromTicker(ticker, localCurrency);
 
                 const currentRate = state[rateType]?.[fiatRateKey];
 
@@ -55,8 +55,8 @@ export const prepareFiatRatesReducer = createReducerWithExtraDeps(
                 };
             })
             .addCase(updateFiatRatesThunk.rejected, (state, action) => {
-                const { ticker, fiatCurrency, rateType = 'current' } = action.meta.arg;
-                const fiatRateKey = getFiatRateKeyFromTicker(ticker, fiatCurrency);
+                const { ticker, localCurrency, rateType = 'current' } = action.meta.arg;
+                const fiatRateKey = getFiatRateKeyFromTicker(ticker, localCurrency);
                 const currentRate = state[rateType]?.[fiatRateKey];
 
                 // To prevent race condition someone will remove rate from state while fetching for example (during currency change etc.)
@@ -66,7 +66,7 @@ export const prepareFiatRatesReducer = createReducerWithExtraDeps(
                     ...currentRate,
                     isLoading: false,
                     error: action.error.message || `Failed to update ${ticker.symbol} fiat rate.`,
-                    locale: fiatCurrency,
+                    locale: localCurrency,
                 };
             })
             // TODO: migration for desktop?

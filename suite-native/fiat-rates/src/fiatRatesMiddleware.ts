@@ -15,7 +15,12 @@ export const prepareFiatRatesMiddleware = createMiddlewareWithExtraDeps(
         } = extra;
 
         if (isAnyOf(accountsActions.updateAccount, accountsActions.createAccount)(action)) {
-            dispatch(fetchFiatRatesThunk({ rateType: 'current' }));
+            dispatch(
+                fetchFiatRatesThunk({
+                    rateType: 'current',
+                    localCurrency: selectLocalCurrency(getState()),
+                }),
+            );
             // dispatch(fetchFiatRatesThunk({ rateType: 'lastWeek' }));
         }
 
@@ -32,15 +37,22 @@ export const prepareFiatRatesMiddleware = createMiddlewareWithExtraDeps(
         }
 
         if (setWalletSettingsLocalCurrency.match(action)) {
-            dispatch(fetchFiatRatesThunk({ rateType: 'lastWeek' }));
-            // dispatch(fetchFiatRatesThunk({ rateType: 'current' }));
+            const { localCurrency } = action.payload;
+            // dispatch(fetchFiatRatesThunk({ rateType: 'lastWeek' }));
+            // We need to pass localCurrency as a parameter, because it is not yet updated in the store
+            dispatch(fetchFiatRatesThunk({ rateType: 'current', localCurrency }));
         }
 
         if (blockchainActions.connected.match(action)) {
             // TODO: verify if this is necessary, it should work only based on addTransaction action
             // just to be safe, refetch historical rates for transactions stored without these rates
             // dispatch(updateMissingTxFiatRatesThunk());
-            dispatch(fetchFiatRatesThunk({ rateType: 'current' }));
+            dispatch(
+                fetchFiatRatesThunk({
+                    rateType: 'current',
+                    localCurrency: selectLocalCurrency(getState()),
+                }),
+            );
         }
 
         return next(action);
