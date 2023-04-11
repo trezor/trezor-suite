@@ -98,7 +98,7 @@ build({
         'process.env.VERSION': JSON.stringify(suiteVersion),
         'process.env.SENTRY_RELEASE': JSON.stringify(sentryRelease),
         'process.env.SUITE_TYPE': JSON.stringify(PROJECT),
-        'process.env.IS_CODESIGN_BUILD': JSON.stringify(isCodesignBuild),
+        'process.env.IS_CODESIGN_BUILD': `"${isCodesignBuild}"`, // to keep it as string "true"/"false" and not boolean
     },
     inject: [path.join(__dirname, 'build-inject.ts')],
     plugins: useMocks ? [mockPlugin] : [],
