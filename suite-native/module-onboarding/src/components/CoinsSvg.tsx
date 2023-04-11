@@ -2,9 +2,8 @@ import * as React from 'react';
 import Svg, { G, Path, Rect, Circle, Defs, LinearGradient, Stop, ClipPath } from 'react-native-svg';
 
 import { useNativeStyles } from '@trezor/styles';
-/* SVGR has dropped some elements not supported by react-native-svg: filter */
 
-export const CoinsSvg = props => {
+export const CoinsSvg = (props: any) => {
     const { utils } = useNativeStyles();
     return (
         <Svg
