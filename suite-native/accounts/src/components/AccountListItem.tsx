@@ -1,8 +1,12 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
-import { AccountsRootState, selectAccountLabel } from '@suite-common/wallet-core';
-import { Box, Text } from '@suite-native/atoms';
+import {
+    AccountsRootState,
+    selectAccountLabel,
+    selectFormattedAccountType,
+} from '@suite-common/wallet-core';
+import { Badge, Box, Text } from '@suite-native/atoms';
 import { Account } from '@suite-common/wallet-types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { CryptoIcon } from '@trezor/icons';
@@ -30,7 +34,7 @@ const accountListItemStyle = prepareNativeStyle<{ isAccountWithTokens: boolean }
     }),
 );
 
-export const accountTitleStyle = prepareNativeStyle(_ => ({
+export const accountDescriptionStyle = prepareNativeStyle(_ => ({
     flexShrink: 1,
 }));
 
@@ -46,6 +50,11 @@ export const AccountListItem = ({ account }: AccountListItemProps) => {
     const accountLabel = useSelector((state: AccountsRootState) =>
         selectAccountLabel(state, account.key),
     );
+
+    const formattedAccountType = useSelector((state: AccountsRootState) =>
+        selectFormattedAccountType(state, account.key),
+    );
+
     const isAccountWithTokens = useSelector((state: AccountsRootState) =>
         selectIsEthereumAccountWithTokensWithBalance(state, account.key),
     );
@@ -60,7 +69,12 @@ export const AccountListItem = ({ account }: AccountListItemProps) => {
                 <Box marginRight="medium">
                     <CryptoIcon name={account.symbol} />
                 </Box>
-                <Text style={applyStyle(accountTitleStyle)}>{accountLabel}</Text>
+                <Box style={applyStyle(accountDescriptionStyle)}>
+                    <Text>{accountLabel}</Text>
+                    {formattedAccountType && (
+                        <Badge label={formattedAccountType} size="small" elevation="1" />
+                    )}
+                </Box>
             </Box>
 
             <Box style={applyStyle(valuesContainerStyle)}>

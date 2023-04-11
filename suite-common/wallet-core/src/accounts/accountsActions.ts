@@ -40,6 +40,7 @@ const createAccount = createAction(
         deviceState: string,
         discoveryItem: DiscoveryItem,
         accountInfo: AccountInfo,
+        imported?: boolean,
         accountLabel?: MetadataItem,
     ): { payload: Account } => ({
         payload: {
@@ -85,6 +86,7 @@ const createAccount = createAction(
                 outputLabels: {},
                 addressLabels: {},
             },
+            imported,
             ...getAccountSpecific(accountInfo, discoveryItem.networkType),
         },
     }),

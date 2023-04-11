@@ -19,6 +19,9 @@ import {
     Button,
     ButtonColorScheme,
     Divider,
+    Badge,
+    BadgeVariant,
+    HStack,
 } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Screen, ScreenHeader } from '@suite-native/navigation';
@@ -60,6 +63,8 @@ export const DemoScreen = () => {
         'dangerElevation0',
     ] satisfies ButtonColorScheme[];
 
+    const badgeVariants = ['neutral', 'green', 'red', 'bold'] satisfies BadgeVariant[];
+
     const handleRadioPress = (value: string | number) => {
         setRadioChecked(value.toString());
     };
@@ -69,6 +74,22 @@ export const DemoScreen = () => {
     return (
         <Screen header={<ScreenHeader />}>
             <VStack spacing="medium">
+                <VStack>
+                    <Text variant="titleSmall">Badge:</Text>
+                    <HStack justifyContent="center">
+                        {badgeVariants.map(badgeVariant => (
+                            <Badge
+                                key={badgeVariant}
+                                variant={badgeVariant}
+                                label={badgeVariant}
+                                icon="question"
+                                elevation="0"
+                            />
+                        ))}
+                        <Badge key="disabled" label="disabled" icon="question" isDisabled />
+                    </HStack>
+                </VStack>
+                <Divider />
                 <VStack>
                     <Text variant="titleSmall">Button:</Text>
                     {buttonColorSchemes.map(buttonScheme => (

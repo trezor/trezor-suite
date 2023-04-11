@@ -11,7 +11,7 @@ import { EthereumTokenSymbol, getEthereumTokenIconName } from '@suite-native/eth
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { AccountKey } from '@suite-common/wallet-types';
 
-import { accountTitleStyle, valuesContainerStyle } from './AccountListItem';
+import { accountDescriptionStyle, valuesContainerStyle } from './AccountListItem';
 
 type TokenListItemProps = {
     balance: string;
@@ -72,7 +72,7 @@ export const TokenListItem = ({
                         <Box marginRight="small">
                             <EthereumTokenIcon name={iconName} />
                         </Box>
-                        <Text style={applyStyle(accountTitleStyle)}>{label}</Text>
+                        <Text style={applyStyle(accountDescriptionStyle)}>{label}</Text>
                     </Box>
                     <Box style={applyStyle(valuesContainerStyle)}>
                         <EthereumTokenToFiatAmountFormatter

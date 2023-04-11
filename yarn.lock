@@ -6943,6 +6943,7 @@ __metadata:
     "@trezor/connect": "workspace:9.0.7"
     "@trezor/icons": "workspace:*"
     "@trezor/styles": "workspace:*"
+    "@trezor/utxo-lib": "workspace:*"
     "@trezor/validation": "workspace:*"
     jest: ^26.6.3
     react: 18.2.0

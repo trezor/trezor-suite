@@ -1,4 +1,4 @@
-import { Network, BackendType, NetworkSymbol, AccountType } from '@suite-common/wallet-config';
+import { Network, BackendType, NetworkSymbol } from '@suite-common/wallet-config';
 import { AccountInfo, PROTO } from '@trezor/connect';
 
 export type MetadataItem = string;
@@ -85,6 +85,8 @@ export type Account = {
     metadata: AccountMetadata;
 } & AccountBackendSpecific &
     AccountNetworkSpecific;
+
+export type AccountType = Account['accountType'];
 
 export type WalletParams =
     | NonNullable<{
