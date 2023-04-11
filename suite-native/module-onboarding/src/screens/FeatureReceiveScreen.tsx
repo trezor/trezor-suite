@@ -16,7 +16,10 @@ import { CoinsSvg } from '../components/CoinsSvg';
 export const FeatureReceiveScreen = () => {
     const navigation =
         useNavigation<
-            StackNavigationProps<OnboardingStackParamList, OnboardingStackRoutes.ReceiveCoins>
+            StackNavigationProps<
+                OnboardingStackParamList,
+                OnboardingStackRoutes.AboutReceiveCoinsFeature
+            >
         >();
 
     const handleRedirect = () => {

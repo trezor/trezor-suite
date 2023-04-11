@@ -20,7 +20,7 @@ export const TrackBalancesScreen = () => {
         >();
 
     const handleRedirect = () => {
-        navigation.navigate(OnboardingStackRoutes.ReceiveCoins);
+        navigation.navigate(OnboardingStackRoutes.AboutReceiveCoinsFeature);
     };
 
     return (

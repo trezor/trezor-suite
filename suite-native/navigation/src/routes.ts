@@ -17,7 +17,7 @@ export enum AppTabsRoutes {
 export enum OnboardingStackRoutes {
     Welcome = 'Welcome',
     TrackBalances = 'TrackBalances',
-    ReceiveCoins = 'ReceiveCoins',
+    AboutReceiveCoinsFeature = 'AboutReceiveCoinsFeature',
     AnalyticsConsent = 'AnalyticsConsent',
     GetStarted = 'GetStarted',
 }

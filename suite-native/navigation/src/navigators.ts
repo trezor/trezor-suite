@@ -57,7 +57,7 @@ export type AppTabsParamList = {
 
 export type OnboardingStackParamList = {
     [OnboardingStackRoutes.Welcome]: undefined;
-    [OnboardingStackRoutes.ReceiveCoins]: undefined;
+    [OnboardingStackRoutes.AboutReceiveCoinsFeature]: undefined;
     [OnboardingStackRoutes.TrackBalances]: undefined;
     [OnboardingStackRoutes.GetStarted]: undefined;
     [OnboardingStackRoutes.AnalyticsConsent]: undefined;

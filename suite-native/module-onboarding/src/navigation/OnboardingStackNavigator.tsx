@@ -27,7 +27,7 @@ export const OnboardingStackNavigator = () => (
             component={TrackBalancesScreen}
         />
         <OnboardingStack.Screen
-            name={OnboardingStackRoutes.ReceiveCoins}
+            name={OnboardingStackRoutes.AboutReceiveCoinsFeature}
             component={FeatureReceiveScreen}
         />
         <OnboardingStack.Screen
