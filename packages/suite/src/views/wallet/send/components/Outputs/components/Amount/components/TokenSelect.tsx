@@ -7,6 +7,8 @@ import { useSendFormContext } from '@wallet-hooks';
 import { Account } from '@wallet-types';
 import { Output } from '@wallet-types/sendForm';
 import { getShortFingerprint } from '@wallet-utils/cardanoUtils';
+import { useSelector } from '@suite-hooks';
+import { enhanceTokensWithRates, sortTokensWithRates } from '@suite-common/wallet-utils';
 
 interface Option {
     label: string;
@@ -14,17 +16,18 @@ interface Option {
     fingerprint: string | undefined;
 }
 
-export const buildTokenOptions = (account: Account) => {
+export const buildTokenOptions = (tokens: Account['tokens'], symbol: Account['symbol']) => {
+    // ETH option
     const result: Option[] = [
         {
             value: null,
             fingerprint: undefined,
-            label: account.symbol.toUpperCase(),
+            label: symbol.toUpperCase(),
         },
     ];
 
-    if (account.tokens) {
-        account.tokens.forEach(token => {
+    if (tokens) {
+        tokens.forEach(token => {
             const tokenName = token.symbol || 'N/A';
             result.push({
                 value: token.contract,
@@ -37,7 +40,7 @@ export const buildTokenOptions = (account: Account) => {
     return result;
 };
 
-interface Props {
+interface TokenSelectProps {
     output: Partial<Output>;
     outputId: number;
 }
@@ -103,7 +106,7 @@ const CardanoSingleValue = ({ tokenInputName, ...optionProps }: any) => (
     </components.SingleValue>
 );
 
-export const TokenSelect = ({ output, outputId }: Props) => {
+export const TokenSelect = ({ output, outputId }: TokenSelectProps) => {
     const {
         account,
         clearErrors,
@@ -115,13 +118,20 @@ export const TokenSelect = ({ output, outputId }: Props) => {
         composeTransaction,
         watch,
     } = useSendFormContext();
+    const coins = useSelector(state => state.wallet.fiat.coins);
+
+    const sortedTokens = React.useMemo(() => {
+        const tokensWithRates = enhanceTokensWithRates(account.tokens, coins);
+
+        return tokensWithRates.sort(sortTokensWithRates);
+    }, [account.tokens, coins]);
 
     const tokenInputName = `outputs[${outputId}].token`;
     const amountInputName = `outputs[${outputId}].amount`;
     const tokenValue = getDefaultValue(tokenInputName, output.token);
     const isSetMaxActive = getDefaultValue('setMaxOutputId') === outputId;
     const dataEnabled = getDefaultValue('options', []).includes('ethereumData');
-    const options = buildTokenOptions(account);
+    const options = buildTokenOptions(sortedTokens, account.symbol);
 
     // Amount needs to be re-validated again AFTER token change propagation (decimal places, available balance)
     // watch token change and use "useSendFormFields.setAmount" util for validation (if amount is set)

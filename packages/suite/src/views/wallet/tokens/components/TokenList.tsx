@@ -4,8 +4,7 @@ import { variables, useTheme, Icon, Card } from '@trezor/components';
 import { FiatValue, FormattedCryptoAmount, TrezorLink } from '@suite-components';
 import { Account } from '@wallet-types';
 import { useSelector } from '@suite-hooks';
-import BigNumber from 'bignumber.js';
-import { FiatRates, TokenInfo } from '@trezor/connect';
+import { enhanceTokensWithRates, sortTokensWithRates } from '@suite-common/wallet-utils';
 
 const Wrapper = styled(Card)<{ isTestnet?: boolean }>`
     display: grid;
@@ -63,30 +62,6 @@ const CryptoAmount = styled(FormattedCryptoAmount)`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
-interface TokensWithRates extends TokenInfo {
-    rates?: FiatRates;
-}
-
-const getBalanceInUSD = (balance: TokenInfo['balance'], rate?: FiatRates['usd']) =>
-    new BigNumber(balance || 0).multipliedBy(rate || 0);
-
-const sortTokens = (a: TokensWithRates, b: TokensWithRates) => {
-    const aBalanceUSD = getBalanceInUSD(a.balance, a.rates?.usd);
-    const bBalanceUSD = getBalanceInUSD(b.balance, b.rates?.usd);
-
-    const balanceSort =
-        // Sort by balance multiplied by USD rate
-        bBalanceUSD.minus(aBalanceUSD).toNumber() ||
-        // If balance is equal, sort by USD rate
-        (b.rates?.usd || -1) - (a.rates?.usd || -1) ||
-        // If USD rate is equal or missing, sort by symbol length
-        (a.symbol || '').length - (b.symbol || '').length ||
-        // If symbol length is equal, sort by symbol name alphabetically
-        (a.symbol || '').localeCompare(b.symbol || '');
-
-    return balanceSort;
-};
-
 interface TokenListProps {
     tokens: Account['tokens'];
     networkType: Account['networkType'];
@@ -96,23 +71,13 @@ interface TokenListProps {
 
 export const TokenList = ({ tokens, explorerUrl, isTestnet, networkType }: TokenListProps) => {
     const theme = useTheme();
-    const fiat = useSelector(state => state.wallet.fiat);
+    const coins = useSelector(state => state.wallet.fiat.coins);
 
-    // sort by 1. total fiat, 2. token price, 3. symbol length, 4. alphabetically
     const sortedTokens = React.useMemo(() => {
-        if (!tokens?.length) return [];
+        const tokensWithRates = enhanceTokensWithRates(tokens, coins);
 
-        const tokensWithRates = tokens.map(token => ({
-            ...token,
-            rates: fiat.coins.find(
-                coin =>
-                    coin.symbol.toLowerCase() === token.symbol?.toLowerCase() &&
-                    coin.tokenAddress?.toLowerCase() === token.contract.toLowerCase(),
-            )?.current?.rates,
-        }));
-
-        return tokensWithRates.sort(sortTokens);
-    }, [tokens, fiat.coins]);
+        return tokensWithRates.sort(sortTokensWithRates);
+    }, [tokens, coins]);
 
     if (!tokens || tokens.length === 0) return null;
 

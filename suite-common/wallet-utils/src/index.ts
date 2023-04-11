@@ -10,6 +10,7 @@ export * from './sendFormUtils';
 export * from './settingsUtils';
 export * from './transactionUtils';
 export * from './exportTransactions';
+export * from './tokenUtils';
 export * from './localizeNumber';
 export * from './backend';
 
