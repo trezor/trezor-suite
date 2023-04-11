@@ -33,6 +33,14 @@ const SelectBarWrapper = styled.div<{ desktop?: boolean }>`
     display: flex; /* necessary for the <SelectBar> not to be stretched over full column width */
     margin: ${({ desktop }) => (desktop ? '0px' : '8px 20px 20px 0')};
 
+    ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
+        width: 100%;
+
+        > div {
+            width: 100%;
+        }
+    }
+
     ${variables.SCREEN_QUERY.MOBILE} {
         margin: 8px 0px 20px;
     }
