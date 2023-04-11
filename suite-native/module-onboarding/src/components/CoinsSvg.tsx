@@ -1,9 +1,19 @@
 import * as React from 'react';
-import Svg, { G, Path, Rect, Circle, Defs, LinearGradient, Stop, ClipPath } from 'react-native-svg';
+import Svg, {
+    G,
+    Path,
+    Rect,
+    Circle,
+    Defs,
+    LinearGradient,
+    Stop,
+    ClipPath,
+    SvgProps,
+} from 'react-native-svg';
 
 import { useNativeStyles } from '@trezor/styles';
 
-export const CoinsSvg = (props: any) => {
+export const CoinsSvg = (props: SvgProps) => {
     const { utils } = useNativeStyles();
     return (
         <Svg
