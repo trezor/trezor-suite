@@ -1,4 +1,6 @@
-import TrezorConnect from '@trezor/connect';
+/* eslint-disable import/no-named-as-default */
+
+import TrezorConnect from '../../../src';
 
 const { getController, setup, conditionalTest, initTrezorConnect } = global.Trezor;
 const { ADDRESS_N } = global.TestUtils;
@@ -172,7 +174,7 @@ describe('TrezorConnect.unlockPath', () => {
                     amount: 7289000,
                     prev_hash: 'f982c0a283bd65a59aa89eded9e48f2a3319cb80361dfab4cf6192a03badb60a',
                     prev_index: 1,
-                    script_type: 'SPENDTAPROOT',
+                    script_type: 'SPENDTAPROOT' as const,
                 },
             ],
             outputs: [
@@ -182,17 +184,17 @@ describe('TrezorConnect.unlockPath', () => {
                     // address_n: "m/10025'/1'/0'/1'/1/2",
                     address_n: ADDRESS_N("m/10025'/1'/0'/1'/1/2"),
                     amount: 7289000 - 50000 - 400,
-                    script_type: 'PAYTOTAPROOT',
+                    script_type: 'PAYTOTAPROOT' as const,
                 },
                 // Payment output.
                 {
                     address: 'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q',
                     amount: 50000,
-                    script_type: 'PAYTOADDRESS',
+                    script_type: 'PAYTOADDRESS' as const,
                 },
             ],
             coin: 'Testnet',
-        } as const;
+        };
 
         const unlockedSignTx = await TrezorConnect.signTransaction({
             ...params,

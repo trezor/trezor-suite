@@ -1,15 +1,17 @@
+/* eslint-disable @typescript-eslint/prefer-ts-expect-error */
+// @ts-ignore
 import commonFixtures from '../../../../submodules/trezor-common/tests/fixtures/stellar/sign_tx.json';
-import { Messages } from '@trezor/transport';
+import { Messages } from '@trezor/transport/lib';
 
 // operations are in protobuf format (snake_case)
 
-const transformAsset = asset => ({
+const transformAsset = (asset: any) => ({
     type: Messages.StellarAssetType[asset.type],
     code: asset.code,
     issuer: asset.issuer,
 });
 
-const transformOperation = op => {
+const transformOperation = (op: any) => {
     switch (op._message_type) {
         case 'StellarBumpSequenceOp':
             return {
@@ -137,7 +139,7 @@ const legacyResults = [
     },
 ];
 
-const legacyResultsMap = {
+const legacyResultsMap: Record<string, LegacyResult[]> = {
     // newly added message in 2.4.3
     StellarManageBuyOfferOp: legacyResults,
     // newly added message in 2.4.3
@@ -179,6 +181,7 @@ export default {
                         maxTime: parameters.tx.timebounds_end,
                     },
                     memo: {
+                        // @ts-expect-error
                         type: Messages.StellarMemoType[parameters.tx.memo_type],
                         text: parameters.tx.memo_text,
                         id: parameters.tx.memo_id,

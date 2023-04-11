@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/prefer-ts-expect-error */
+// @ts-ignore
 import commonFixtures from '../../../../submodules/trezor-common/tests/fixtures/ethereum/sign_tx_eip155.json';
 
-const legacyResults = {
+const legacyResults: Record<string, LegacyResult[]> = {
     Palm: [
         {
             rules: ['<2.4.2'],
@@ -29,8 +31,8 @@ export default {
         // exclude test using integer value higher than Number.maxSafeInteger
         .filter(f => !['max_uint64'].includes(f.name))
         .flatMap(({ name, parameters, result }) => {
-            const fixture = {
-                description: `Eip155 ${name} ${parameters.comment ?? ''}`,
+            const fixture: Fixture = {
+                description: `Eip155 ${name}`,
                 params: {
                     path: parameters.path,
                     transaction: {

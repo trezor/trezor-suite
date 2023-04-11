@@ -1,4 +1,6 @@
-import TrezorConnect from '@trezor/connect';
+/* eslint-disable import/no-named-as-default */
+
+import TrezorConnect from '../../../src';
 
 // error thrown by .init()
 const INIT_ERROR = { code: 'Init_ManifestMissing' };

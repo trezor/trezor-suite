@@ -1,5 +1,6 @@
-import TrezorConnect from '@trezor/connect';
-import * as versionUtils from '@trezor/utils/src/versionUtils'; // NOTE: only this module is required
+/* eslint-disable import/no-named-as-default */
+
+import TrezorConnect from '../../../src';
 
 const { getController, setup, conditionalTest, initTrezorConnect } = global.Trezor;
 const { ADDRESS_N } = global.TestUtils;

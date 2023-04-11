@@ -1,29 +1,11 @@
-import TrezorConnect from '@trezor/connect';
+/* eslint-disable import/no-named-as-default */
+
+import TrezorConnect from '../../../src';
 import fixtures from '../../__fixtures__';
 
 const { getController, setup, skipTest, conditionalTest, initTrezorConnect } = global.Trezor;
 
 let controller: ReturnType<typeof getController> | undefined;
-
-type TestCase = {
-    // method: keyof typeof TrezorConnect;
-    method: string;
-    setup: {
-        mnemonic?: string;
-    };
-    tests: {
-        description: string;
-        params: any;
-        result?: any;
-        legacyResults?: {
-            rules: string[];
-            payload?: any;
-        }[];
-        customTimeout?: number;
-        setup?: any;
-        skip?: any;
-    }[];
-};
 
 describe(`TrezorConnect methods`, () => {
     afterAll(() => {
