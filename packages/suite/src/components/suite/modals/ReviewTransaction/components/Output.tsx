@@ -58,9 +58,6 @@ const Output = (props: Props) => {
     const { type, state, label, value, symbol, token, account } = props;
     let outputLabel: React.ReactNode = label;
 
-    if (type === 'opreturn') {
-        outputLabel = <Translation id="OP_RETURN" />;
-    }
     if (type === 'locktime') {
         const isTimestamp = new BigNumber(value).gte(BTC_LOCKTIME_VALUE);
         outputLabel = (
@@ -148,7 +145,7 @@ const Output = (props: Props) => {
     } else if (type === 'data') {
         outputLines = [
             {
-                id: 'default',
+                id: 'data',
                 label: <Translation id="DATA_ETH" />,
                 value: outputValue,
                 plainValue: true,
@@ -157,8 +154,17 @@ const Output = (props: Props) => {
     } else if (type === 'address') {
         outputLines = [
             {
-                id: 'default',
+                id: 'address',
                 label: outputLabel,
+                value: outputValue,
+                plainValue: true,
+            },
+        ];
+    } else if (type === 'opreturn') {
+        outputLines = [
+            {
+                id: 'opreturn',
+                label: <Translation id="OP_RETURN" />,
                 value: outputValue,
                 plainValue: true,
             },
