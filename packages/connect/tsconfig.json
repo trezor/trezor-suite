@@ -1,7 +1,9 @@
 {
     "extends": "../../tsconfig.json",
-    "compilerOptions": { "outDir": "libDev" },
-    "include": ["../../submodules/trezor-common"],
+    "compilerOptions": {
+        "outDir": "libDev",
+        "composite": true
+    },
     "references": [
         { "path": "../blockchain-link" },
         { "path": "../connect-common" },

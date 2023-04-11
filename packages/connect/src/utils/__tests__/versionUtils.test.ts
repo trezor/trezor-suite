@@ -45,9 +45,7 @@ describe('utils/versionUtils', () => {
         // Invalid cases
         // @ts-expect-error
         expect(isValidVersionArray(null)).toEqual(false);
-        // @ts-expect-error
         expect(isValidVersionArray([null])).toEqual(false);
-        // @ts-expect-error
         expect(isValidVersionArray([1, 2, null])).toEqual(false);
         expect(isValidVersionArray([-1])).toEqual(false);
         expect(isValidVersionArray([1, 2, -1])).toEqual(false);

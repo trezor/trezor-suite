@@ -1,4 +1,4 @@
-import * as NEM from '@trezor/connect/lib/constants/nem';
+import * as NEM from '../../src/constants/nem';
 
 export default {
     method: 'nemGetAddress',
