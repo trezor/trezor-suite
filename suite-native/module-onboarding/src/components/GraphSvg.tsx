@@ -1,15 +1,18 @@
 import * as React from 'react';
-import Svg, { Rect, Path, G, Circle, Defs, LinearGradient, Stop, ClipPath } from 'react-native-svg';
+import Svg, {
+    Rect,
+    Path,
+    G,
+    Circle,
+    Defs,
+    LinearGradient,
+    Stop,
+    ClipPath,
+    SvgProps,
+} from 'react-native-svg';
 
-export const GraphSvg = (props: any) => (
-    <Svg
-        width={328}
-        height={276}
-        viewBox="0 0 328 276"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        {...props}
-    >
+export const GraphSvg = (props: SvgProps) => (
+    <Svg width={328} height={276} viewBox="0 0 328 276" fill="none" {...props}>
         <Rect x={124} y={18} width={1} height={99} rx={0.5} fill="#E2E2E2" />
         <Path
             stroke="url(#paint0_linear_14530_54776)"
