@@ -40,10 +40,10 @@ const Options = styled.div<{ isInLine: boolean }>`
     }
 `;
 
-const Option = styled.div<{ isSelected: boolean; isInLine: boolean }>`
+const Option = styled.div<{ isSelected: boolean }>`
     display: flex;
     flex: 1;
-    justify-content: ${({ isInLine }) => !isInLine && 'center'};
+    justify-content: center;
     align-items: center;
     margin: 4px 0;
     padding: 0 14px;
@@ -140,7 +140,6 @@ export const SelectBar: <V extends ValueTypes>(props: SelectBarProps<V>) => JSX.
                                 ? selectedOptionIn === option.value
                                 : false
                         }
-                        isInLine={isInLine}
                         data-test={`select-bar/${String(option.value)}`}
                     >
                         {option.label}
