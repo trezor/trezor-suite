@@ -30,6 +30,8 @@ const Col = styled.div<{ singleCol?: boolean }>`
     ${({ singleCol }) =>
         singleCol &&
         css`
+            max-width: 300px;
+
             ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
                 max-width: 100%;
             }
