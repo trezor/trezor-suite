@@ -25,6 +25,15 @@ const { BridgeV2, Fallback } = TrezorLink;
 // custom log
 const _log = initLog('DeviceList');
 
+/**
+ * when TRANSPORT.START_PENDING is emitted, we already know that transport is available
+ * but we wait with emitting TRANSPORT.START event to the implementator until we read from devices
+ * in case something wrong happens and we never finish reading from devices for whatever reason
+ * implementator could get stuck waiting from TRANSPORT.START event forever. To avoid this,
+ * we emit TRANSPORT.START event after autoResolveTransportEventTimeout
+ */
+let autoResolveTransportEventTimeout: ReturnType<typeof setTimeout> | undefined;
+
 // TODO: plugins are not typed in 'trezor-link'
 type LowLevelPlugin = {
     name: 'WebUsbPlugin' | 'ReactNativePlugin';
@@ -175,10 +184,16 @@ export class DeviceList extends EventEmitter {
 
         stream.on(TRANSPORT.START_PENDING, (pending: number) => {
             this.transportStartPending = pending;
+            autoResolveTransportEventTimeout = setTimeout(() => {
+                this.resolveTransportEvent();
+            }, 5000);
         });
 
         stream.on(TRANSPORT.START, () => {
             this.emit(TRANSPORT.START, this.getTransportInfo());
+            if (autoResolveTransportEventTimeout) {
+                clearTimeout(autoResolveTransportEventTimeout);
+            }
         });
 
         stream.on(TRANSPORT.UPDATE, (diff: DeviceDescriptorDiff) => {
@@ -282,6 +297,10 @@ export class DeviceList extends EventEmitter {
 
         if (this.stream) {
             this.stream.stop();
+        }
+
+        if (autoResolveTransportEventTimeout) {
+            clearTimeout(autoResolveTransportEventTimeout);
         }
         // release all devices
         await Promise.all(this.allDevices().map(device => device.dispose()));
