@@ -10,7 +10,6 @@ import { Button, Divider } from '@suite-native/atoms';
 import { useAccountLabelForm, AccountFormValues } from '@suite-native/accounts';
 import { Form } from '@suite-native/forms';
 import { HIDDEN_DEVICE_STATE } from '@suite-native/module-devices';
-import { setIsAccountImportFinished } from '@suite-native/module-settings';
 import {
     AccountsImportStackParamList,
     AccountsImportStackRoutes,
@@ -76,7 +75,6 @@ export const AccountImportSummaryForm = ({
                 coin: networkSymbol,
             }),
         );
-        dispatch(setIsAccountImportFinished());
         navigation.navigate(RootStackRoutes.AppTabs, {
             screen: AppTabsRoutes.HomeStack,
             params: {

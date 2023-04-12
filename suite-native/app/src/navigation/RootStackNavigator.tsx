@@ -10,13 +10,11 @@ import {
     RootStackRoutes,
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';
-import {
-    selectIsOnboardingFinished,
-    selectIsAccountImportFinished,
-} from '@suite-native/module-settings';
+import { selectIsOnboardingFinished } from '@suite-native/module-settings';
 import { DevUtilsStackNavigator } from '@suite-native/module-dev-utils';
 import { TransactionDetailScreen } from '@suite-native/transactions';
 import { OnboardingStackNavigator } from '@suite-native/module-onboarding';
+import { selectUserHasAccounts } from '@suite-common/wallet-core';
 
 import { AppTabNavigator } from './AppTabNavigator';
 
@@ -24,13 +22,13 @@ const RootStack = createNativeStackNavigator<RootStackParamList>();
 
 export const RootStackNavigator = () => {
     const isOnboardingFinished = useSelector(selectIsOnboardingFinished);
-    const isAccountImportFinished = useSelector(selectIsAccountImportFinished);
+    const userHasAccounts = useSelector(selectUserHasAccounts);
 
     const getInitialRouteName = () => {
-        if (isOnboardingFinished && isAccountImportFinished) {
+        if (isOnboardingFinished && userHasAccounts) {
             return RootStackRoutes.AppTabs;
         }
-        if (isOnboardingFinished) {
+        if (isOnboardingFinished && !userHasAccounts) {
             return RootStackRoutes.AccountsImport;
         }
         return RootStackRoutes.Onboarding;
