@@ -12,6 +12,7 @@ import {
 import { Icon } from '@trezor/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Color } from '@trezor/theme';
+import { useActiveColorScheme } from '@suite-native/theme';
 
 import { OnboardingFooter } from '../components/OnboardingFooter';
 
@@ -41,9 +42,19 @@ export const WelcomeScreen = () => {
             StackNavigationProps<OnboardingStackParamList, OnboardingStackRoutes.Welcome>
         >();
     const { applyStyle } = useNativeStyles();
+    const colorScheme = useActiveColorScheme();
 
     const handleRedirect = () => {
         navigation.navigate(OnboardingStackRoutes.TrackBalances);
+    };
+
+    const getImageSource = () => {
+        if (colorScheme === 'dark') {
+            // eslint-disable-next-line global-require
+            return require('../assets/darkRectangles.png');
+        }
+        // eslint-disable-next-line global-require
+        return require('../assets/rectangles.png');
     };
 
     return (
@@ -68,10 +79,7 @@ export const WelcomeScreen = () => {
                 </Box>
             </Screen>
             <Box style={applyStyle(imageStyle)}>
-                <Image
-                    // eslint-disable-next-line global-require
-                    source={require('../assets/rectangles.png')}
-                />
+                <Image source={getImageSource()} />
             </Box>
         </>
     );
