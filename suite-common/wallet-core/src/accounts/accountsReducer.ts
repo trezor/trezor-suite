@@ -117,9 +117,8 @@ export const prepareAccountsReducer = createReducerWithExtraDeps(
 
 export const selectAccounts = (state: AccountsRootState) => state.wallet.accounts;
 
-export const selectUserHasAccounts = memoize((state: AccountsRootState): boolean =>
-    pipe(selectAccounts(state), A.isNotEmpty),
-);
+export const selectUserHasAccounts = (state: AccountsRootState): boolean =>
+    pipe(selectAccounts(state), A.isNotEmpty);
 
 export const selectAccountByKey = memoizeWithArgs(
     (state: AccountsRootState, accountKey: AccountKey) => {
