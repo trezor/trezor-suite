@@ -12,7 +12,7 @@ export interface EthereumInternalTransfer {
     type: number;
     from: string;
     to: string;
-    value?: string;
+    value: string;
 }
 export interface EthereumParsedInputParam {
     type: string;
@@ -30,9 +30,9 @@ export interface EthereumSpecific {
     status: number;
     error?: string;
     nonce: number;
-    gasLimit?: string;
-    gasUsed?: string;
-    gasPrice?: string;
+    gasLimit: number;
+    gasUsed?: number;
+    gasPrice: string;
     data?: string;
     parsedData?: EthereumParsedInputData;
     internalTransfers?: EthereumInternalTransfer[];
@@ -93,7 +93,7 @@ export interface Tx {
     blockTime: number;
     size?: number;
     vsize?: number;
-    value?: string;
+    value: string;
     valueIn?: string;
     fees?: string;
     hex?: string;
@@ -105,7 +105,7 @@ export interface Tx {
 }
 export interface FeeStats {
     txCount: number;
-    totalFeesSat?: string;
+    totalFeesSat: string;
     averageFeePerKb: number;
     decilesFeePerKb: number[];
 }
@@ -139,10 +139,10 @@ export interface Address {
     totalPages?: number;
     itemsOnPage?: number;
     address: string;
-    balance?: string;
+    balance: string;
     totalReceived?: string;
     totalSent?: string;
-    unconfirmedBalance?: string;
+    unconfirmedBalance: string;
     unconfirmedTxs: number;
     txs: number;
     nonTokenTxs?: number;
@@ -164,7 +164,7 @@ export interface Address {
 export interface Utxo {
     txid: string;
     vout: number;
-    value?: string;
+    value: string;
     height?: number;
     confirmations: number;
     address?: string;
@@ -175,9 +175,9 @@ export interface Utxo {
 export interface BalanceHistory {
     time: number;
     txs: number;
-    received?: string;
-    sent?: string;
-    sentToSelf?: string;
+    received: string;
+    sent: string;
+    sentToSelf: string;
     rates?: { [key: string]: number };
     txid?: string;
 }
@@ -268,8 +268,8 @@ export interface BlockbookInfo {
     about: string;
 }
 export interface SystemInfo {
-    blockbook?: BlockbookInfo;
-    backend?: BackendInfo;
+    blockbook: BlockbookInfo;
+    backend: BackendInfo;
 }
 export interface FiatTicker {
     ts?: number;
@@ -290,6 +290,7 @@ export interface WsReq {
         | 'getAccountInfo'
         | 'getInfo'
         | 'getBlockHash'
+        | 'getBlock'
         | 'getAccountUtxo'
         | 'getBalanceHistory'
         | 'getTransaction'
@@ -348,6 +349,11 @@ export interface WsBlockHashReq {
 }
 export interface WsBlockHashRes {
     hash: string;
+}
+export interface WsBlockReq {
+    id: string;
+    pageSize?: number;
+    page?: number;
 }
 export interface WsAccountUtxoReq {
     descriptor: string;
