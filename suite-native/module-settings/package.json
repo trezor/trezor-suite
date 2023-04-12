@@ -18,6 +18,7 @@
         "@reduxjs/toolkit": "1.9.3",
         "@suite-common/analytics": "workspace:*",
         "@suite-common/suite-config": "workspace:*",
+        "@suite-common/suite-constants": "workspace:*",
         "@suite-native/analytics": "workspace:*",
         "@suite-native/atoms": "workspace:*",
         "@suite-native/config": "workspace:*",

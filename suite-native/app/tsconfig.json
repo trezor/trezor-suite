@@ -12,6 +12,9 @@
             "path": "../../suite-common/redux-utils"
         },
         {
+            "path": "../../suite-common/suite-constants"
+        },
+        {
             "path": "../../suite-common/wallet-core"
         },
         { "path": "../alerts" },

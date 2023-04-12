@@ -17,7 +17,7 @@ const ACTION_PREFIX = '@suite-native/analytics';
 export const enableAnalyticsThunk = createThunk(
     `${ACTION_PREFIX}/enableAnalyticsThunk`,
     (_, { dispatch }) => {
-        analytics.report({ type: EventType.SettingsAnalytics, payload: { value: true } });
+        analytics.report({ type: EventType.SettingsDataPermission, payload: { value: true } });
         dispatch(analyticsActions.enableAnalytics());
     },
 );
@@ -26,7 +26,7 @@ export const disableAnalyticsThunk = createThunk(
     `${ACTION_PREFIX}/disableAnalyticsThunk`,
     (_, { dispatch }) => {
         analytics.report(
-            { type: EventType.SettingsAnalytics, payload: { value: false } },
+            { type: EventType.SettingsDataPermission, payload: { value: false } },
             { force: true },
         );
         dispatch(analyticsActions.disableAnalytics());

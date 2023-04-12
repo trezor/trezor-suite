@@ -7,6 +7,7 @@ import { Blur, Canvas, Text as SkiaText, useFont } from '@shopify/react-native-s
 import { Color, typographyStylesBase } from '@trezor/theme';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { atomWithUnecryptedStorage } from '@suite-native/storage';
+import { analytics, EventType } from '@suite-native/analytics';
 
 import { Text, TextProps } from './Text';
 import { Box } from './Box';
@@ -21,9 +22,18 @@ const satoshiFont = require('../../../packages/theme/fonts/TTSatoshi-Regular.otf
 const isDiscreetModeOn = atomWithUnecryptedStorage<boolean>('isDiscreetModeOn', false);
 export const useDiscreetMode = () => {
     const [isDiscreetMode, setIsDiscreetMode] = useAtom(isDiscreetModeOn);
+
+    const handleSetIsDiscreetMode = (value: boolean) => {
+        setIsDiscreetMode(value);
+        analytics.report({
+            type: EventType.SettingsDiscreetToggle,
+            payload: { value },
+        });
+    };
+
     return {
         isDiscreetMode,
-        setIsDiscreetMode,
+        setIsDiscreetMode: handleSetIsDiscreetMode,
     };
 };
 

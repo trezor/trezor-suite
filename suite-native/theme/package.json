@@ -10,6 +10,7 @@
         "type-check": "tsc --build"
     },
     "dependencies": {
+        "@suite-native/analytics": "workspace:*",
         "@suite-native/storage": "workspace:*",
         "@trezor/theme": "workspace:*",
         "jotai": "1.9.1",

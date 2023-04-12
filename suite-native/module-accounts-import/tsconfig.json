@@ -22,6 +22,7 @@
         },
         { "path": "../accounts" },
         { "path": "../alerts" },
+        { "path": "../analytics" },
         { "path": "../atoms" },
         { "path": "../config" },
         { "path": "../ethereum-tokens" },

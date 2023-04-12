@@ -1,5 +1,4 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
@@ -11,7 +10,7 @@ import {
 import { Button, Card, Stack, Text } from '@suite-native/atoms';
 import { Link } from '@suite-native/link';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { enableAnalyticsThunk } from '@suite-native/analytics';
+import { analytics } from '@suite-native/analytics';
 
 import { OnboardingScreen } from '../components/OnboardingScreen';
 import { AnalyticsInfoRow } from '../components/AnalyticsInfoRow';
@@ -29,7 +28,6 @@ const PrivacyDescription = () => (
 );
 
 export const AnalyticsConsentScreen = () => {
-    const dispatch = useDispatch();
     const navigation =
         useNavigation<
             StackNavigationProps<OnboardingStackParamList, OnboardingStackRoutes.AnalyticsConsent>
@@ -41,7 +39,7 @@ export const AnalyticsConsentScreen = () => {
     };
 
     const handleAnalyticsConsent = () => {
-        dispatch(enableAnalyticsThunk());
+        analytics.enable();
         handleRedirect();
     };
 

@@ -15,7 +15,7 @@ type TimeSwitchItemType = {
     label: string;
 };
 
-const timeSwitchItems: TimeSwitchItemType[] = [
+export const timeSwitchItems: TimeSwitchItemType[] = [
     { label: '1h', valueBackInHours: 1 },
     { label: '1d', valueBackInHours: 24 },
     { label: '1w', valueBackInHours: 168 },

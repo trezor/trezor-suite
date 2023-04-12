@@ -3,11 +3,15 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
+            "path": "../../suite-common/suite-constants"
+        },
+        {
             "path": "../../suite-common/wallet-config"
         },
         {
             "path": "../../suite-common/wallet-types"
         },
+        { "path": "../analytics" },
         { "path": "../atoms" },
         { "path": "../ethereum-tokens" },
         { "path": "../../packages/connect" },

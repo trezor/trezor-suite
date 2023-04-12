@@ -1,4 +1,4 @@
-import React, { memo, useCallback } from 'react';
+import React, { memo, useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import {
@@ -19,6 +19,7 @@ import {
     selectAccountOrTokenAccountTransactions,
     selectEthereumAccountToken,
 } from '@suite-native/ethereum-tokens';
+import { analytics, EventType } from '@suite-native/analytics';
 
 import { TransactionListHeader } from '../components/TransactionListHeader';
 import { AccountDetailScreenHeader } from '../components/AccountDetailScreenHeader';
@@ -52,6 +53,15 @@ export const AccountDetailScreen = memo(
             },
             [accountKey, dispatch],
         );
+
+        useEffect(() => {
+            if (account) {
+                analytics.report({
+                    type: EventType.AssetDetail,
+                    payload: { assetSymbol: account.symbol, tokenSymbol },
+                });
+            }
+        }, [account, tokenSymbol]);
 
         if (!account) return null;
 

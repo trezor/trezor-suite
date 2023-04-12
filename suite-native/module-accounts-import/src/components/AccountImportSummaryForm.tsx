@@ -20,7 +20,8 @@ import {
 } from '@suite-native/navigation';
 import { AccountInfo } from '@trezor/connect';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { isEthereumAccountSymbol } from '@suite-native/ethereum-tokens';
+import { EthereumTokenSymbol, isEthereumAccountSymbol } from '@suite-native/ethereum-tokens';
+import { analytics, EventType } from '@suite-native/analytics';
 
 import { importAccountThunk } from '../accountsImportThunks';
 import { AccountImportOverview } from './AccountImportOverview';
@@ -74,7 +75,15 @@ export const AccountImportSummaryForm = ({
                 coin: networkSymbol,
             }),
         );
-
+        analytics.report({
+            type: EventType.AssetsSync,
+            payload: {
+                assetSymbol: networkSymbol,
+                tokenSymbols: accountInfo?.tokens?.map(
+                    token => token.symbol as EthereumTokenSymbol,
+                ),
+            },
+        });
         navigation.reset({
             index: 0,
             routes: [

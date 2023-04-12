@@ -6723,7 +6723,11 @@ __metadata:
   dependencies:
     "@suite-common/analytics": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
+    "@suite-common/suite-config": "workspace:*"
+    "@suite-common/suite-constants": "workspace:*"
+    "@suite-common/wallet-config": "workspace:*"
     "@suite-native/config": "workspace:*"
+    "@suite-native/ethereum-tokens": "workspace:*"
     "@trezor/analytics": "workspace:*"
   languageName: unknown
   linkType: soft
@@ -6759,6 +6763,7 @@ __metadata:
   dependencies:
     "@mobily/ts-belt": ^3.13.1
     "@shopify/react-native-skia": 0.1.173
+    "@suite-native/analytics": "workspace:*"
     "@suite-native/storage": "workspace:*"
     "@trezor/env-utils": "workspace:*"
     "@trezor/icons": "workspace:*"
@@ -6864,8 +6869,10 @@ __metadata:
     "@shopify/react-native-skia": 0.1.173
     "@suite-common/formatters": "workspace:*"
     "@suite-common/graph": "workspace:*"
+    "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
+    "@suite-native/analytics": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/formatters": "workspace:*"
     "@suite-native/react-native-graph": "workspace:*"
@@ -6936,6 +6943,7 @@ __metadata:
     "@suite-common/wallet-utils": "workspace:*"
     "@suite-native/accounts": "workspace:*"
     "@suite-native/alerts": "workspace:*"
+    "@suite-native/analytics": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/config": "workspace:*"
     "@suite-native/ethereum-tokens": "workspace:*"
@@ -6975,6 +6983,7 @@ __metadata:
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@suite-native/accounts": "workspace:*"
+    "@suite-native/analytics": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/ethereum-tokens": "workspace:*"
     "@suite-native/formatters": "workspace:*"
@@ -7062,6 +7071,7 @@ __metadata:
     "@react-navigation/native": ^6.1.3
     "@react-navigation/native-stack": ^6.9.11
     "@reduxjs/toolkit": 1.9.3
+    "@suite-common/analytics": "workspace:*"
     "@suite-native/analytics": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/link": "workspace:*"
@@ -7088,6 +7098,7 @@ __metadata:
     "@suite-common/wallet-types": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
     "@suite-native/accounts": "workspace:*"
+    "@suite-native/analytics": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/link": "workspace:*"
     "@suite-native/navigation": "workspace:*"
@@ -7113,6 +7124,7 @@ __metadata:
     "@reduxjs/toolkit": 1.9.3
     "@suite-common/analytics": "workspace:*"
     "@suite-common/suite-config": "workspace:*"
+    "@suite-common/suite-constants": "workspace:*"
     "@suite-native/analytics": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/config": "workspace:*"
@@ -7139,8 +7151,10 @@ __metadata:
     "@react-navigation/bottom-tabs": ^6.5.4
     "@react-navigation/native": ^6.1.3
     "@react-navigation/native-stack": ^6.9.11
+    "@suite-common/suite-constants": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
+    "@suite-native/analytics": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/ethereum-tokens": "workspace:*"
     "@trezor/connect": "workspace:*"
@@ -7280,6 +7294,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/theme@workspace:suite-native/theme"
   dependencies:
+    "@suite-native/analytics": "workspace:*"
     "@suite-native/storage": "workspace:*"
     "@trezor/theme": "workspace:*"
     jotai: 1.9.1
@@ -7321,6 +7336,7 @@ __metadata:
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
+    "@suite-native/analytics": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/ethereum-tokens": "workspace:*"
     "@suite-native/fiat-rates": "workspace:*"
@@ -8155,6 +8171,7 @@ __metadata:
     "@suite-common/connect-init": "workspace:*"
     "@suite-common/formatters": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
+    "@suite-common/suite-constants": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-native/alerts": "workspace:*"
     "@suite-native/analytics": "workspace:*"
