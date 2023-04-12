@@ -33,11 +33,8 @@ export const enhanceTokensWithRates = (tokens: Account['tokens'], coins: CoinFia
 
     const tokensWithRates = tokens.map(token => ({
         ...token,
-        rates: coins.find(
-            coin =>
-                coin.symbol.toLowerCase() === token.symbol?.toLowerCase() &&
-                coin.tokenAddress?.toLowerCase() === token.contract.toLowerCase(),
-        )?.current?.rates,
+        rates: coins.find(coin => coin.tokenAddress?.toLowerCase() === token.contract.toLowerCase())
+            ?.current?.rates,
     }));
 
     return tokensWithRates;
