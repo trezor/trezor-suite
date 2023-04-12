@@ -31,7 +31,9 @@ export const prepareFiatRatesMiddleware = createMiddlewareWithExtraDeps(
             if (account.tokens) {
                 const difference = account.tokens.filter(
                     token =>
-                        !prevAccount?.tokens?.find(prevToken => prevToken.symbol === token.symbol),
+                        !prevAccount?.tokens?.find(
+                            prevToken => prevToken.contract === token.contract,
+                        ),
                 );
 
                 difference.forEach(token => {
