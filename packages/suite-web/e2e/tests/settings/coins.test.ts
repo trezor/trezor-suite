@@ -27,7 +27,7 @@ describe('Coin Settings', () => {
             'zec',
             'ada',
             'test',
-            'trop',
+            'tgor',
             'txrp',
             'tada',
         ];

@@ -3,6 +3,7 @@
 ## 36
 
 -   token `address` to `contract`
+-   remove ropsten accounts, txs and settings
 
 ## 35
 

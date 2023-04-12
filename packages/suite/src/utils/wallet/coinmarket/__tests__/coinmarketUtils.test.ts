@@ -47,7 +47,6 @@ describe('coinmarket utils', () => {
         expect(mapTestnetSymbol('btc')).toStrictEqual('btc');
         expect(mapTestnetSymbol('eth')).toStrictEqual('eth');
         expect(mapTestnetSymbol('test')).toStrictEqual('btc');
-        expect(mapTestnetSymbol('trop')).toStrictEqual('eth');
         expect(mapTestnetSymbol('txrp')).toStrictEqual('xrp');
     });
 

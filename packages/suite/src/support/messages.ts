@@ -2883,10 +2883,6 @@ export default defineMessages({
         defaultMessage: 'Ethereum Classic',
         id: 'TR_NETWORK_ETHEREUM_CLASSIC',
     },
-    TR_NETWORK_ETHEREUM_TESTNET: {
-        defaultMessage: 'Ethereum Testnet',
-        id: 'TR_NETWORK_ETHEREUM_TESTNET',
-    },
     TR_NETWORK_ETHEREUM_GOERLI: {
         defaultMessage: 'Ethereum Goerli',
         id: 'TR_NETWORK_ETHEREUM_GOERLI',

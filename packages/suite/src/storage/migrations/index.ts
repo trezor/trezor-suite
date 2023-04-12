@@ -691,42 +691,85 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
     }
 
     if (oldVersion < 36) {
-        // remove ethereum network transactions
+        // remove trop network transactions, change token address to contract
         let txsCursor = await transaction.objectStore('txs').openCursor();
 
         while (txsCursor) {
-            const tx = txsCursor.value as DBWalletAccountTransactionCompatible;
+            const tx = txsCursor.value;
 
-            tx.tx.tokens.forEach(token => {
-                // @ts-expect-error
-                token.contract = token.address;
-                // @ts-expect-error
-                delete token.address;
-            });
+            // @ts-expect-error
+            if (tx.tx.symbol === 'trop') {
+                // eslint-disable-next-line no-await-in-loop
+                await txsCursor.delete();
+            } else {
+                tx.tx.tokens.forEach(token => {
+                    // @ts-expect-error
+                    token.contract = token.address;
+                    // @ts-expect-error
+                    delete token.address;
+                });
+            }
 
-            // eslint-disable-next-line no-await-in-loop
-            await txsCursor.update(tx);
             // eslint-disable-next-line no-await-in-loop
             txsCursor = await txsCursor.continue();
         }
 
-        // force to fetch ethereum network transactions again
+        // remove trop network accounts, change token address to contract
         let accountsCursor = await transaction.objectStore('accounts').openCursor();
 
         while (accountsCursor) {
             const account = accountsCursor.value;
 
-            account.tokens?.forEach(token => {
-                // @ts-expect-error
-                token.contract = token.address;
-                // @ts-expect-error
-                delete token.address;
-            });
+            // @ts-expect-error
+            if (account.symbol === 'trop') {
+                // eslint-disable-next-line no-await-in-loop
+                await accountsCursor.delete();
+            } else {
+                account.tokens?.forEach(token => {
+                    // @ts-expect-error
+                    token.contract = token.address;
+                    // @ts-expect-error
+                    delete token.address;
+                });
+            }
 
             // eslint-disable-next-line no-await-in-loop
-            await accountsCursor.update(account);
-            // eslint-disable-next-line no-await-in-loop
             accountsCursor = await accountsCursor.continue();
+        }
+
+        // remove trop from coin settings
+        let walletSettingsCursor = await transaction.objectStore('walletSettings').openCursor();
+
+        while (walletSettingsCursor) {
+            const walletSettings: State = walletSettingsCursor.value;
+
+            walletSettings.enabledNetworks = walletSettings.enabledNetworks.filter(
+                // @ts-expect-error
+                network => network !== 'trop',
+            );
+
+            // eslint-disable-next-line no-await-in-loop
+            await walletSettingsCursor.update(walletSettings);
+
+            // eslint-disable-next-line no-await-in-loop
+            walletSettingsCursor = await walletSettingsCursor.continue();
+        }
+
+        let discoveryCursor = await transaction.objectStore('discovery').openCursor();
+        while (discoveryCursor) {
+            const discovery = discoveryCursor.value;
+            // remove trop from discovery networks
+            discovery.networks = discovery.networks.filter(
+                // @ts-expect-error
+                network => network !== 'trop',
+            );
+            discovery.failed = [];
+
+            // eslint-disable-next-line no-await-in-loop
+            await discoveryCursor.update(discovery);
+
+            // eslint-disable-next-line no-await-in-loop
+            discoveryCursor = await discoveryCursor.continue();
         }
     }
 };

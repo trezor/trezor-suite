@@ -201,12 +201,7 @@ const CryptoInput = ({ activeInput, setActiveInput }: CryptoInputProps) => {
                                 setValue(CRYPTO_INPUT, '');
                                 setValue(FIAT_INPUT, '');
                                 const token = selected.value;
-                                if (
-                                    token === 'ETH' ||
-                                    token === 'TROP' ||
-                                    token === 'TGOR' ||
-                                    token === 'ETC'
-                                ) {
+                                if (token === 'ETH' || token === 'TGOR' || token === 'ETC') {
                                     setValue(CRYPTO_TOKEN, undefined);
                                     // set own account for non ERC20 transaction
                                     setValue('outputs[0].address', account.descriptor);
