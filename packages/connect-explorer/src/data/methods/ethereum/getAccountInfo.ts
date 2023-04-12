@@ -4,7 +4,6 @@ const docs = 'methods/getAccountInfo.md';
 export const select = [
     { value: 'eth', label: 'Ethereum', affectedValue: `m/44'/60'/0'/0/0` },
     { value: 'etc', label: 'Ethereum Classic', affectedValue: `m/44'/61'/0'/0/0` },
-    { value: 'trop', label: 'Ropsten', affectedValue: `m/44'/60'/0'/0/0` },
     { value: 'tgor', label: 'Goerli', affectedValue: `m/44'/60'/0'/0/0` },
     { value: 'btc', label: 'Bitcoin', affectedValue: `m/84'/0'/0'` },
     { value: 'test', label: 'Bitcoin Testnet', affectedValue: `m/49'/1'/0'` },
@@ -14,7 +13,7 @@ const batch = [
     {
         name: 'coin',
         type: 'select',
-        value: 'trop',
+        value: 'tgor',
         affect: 'path',
         data: select,
     },
@@ -38,7 +37,7 @@ const usingPath = [
     {
         name: 'coin',
         type: 'select',
-        value: 'trop',
+        value: 'tgor',
         affect: 'path',
         data: select,
     },
@@ -54,7 +53,7 @@ const usingAddress = [
     {
         name: 'coin',
         type: 'select',
-        value: 'trop',
+        value: 'tgor',
         data: select,
     },
     {
@@ -112,7 +111,7 @@ export default [
             {
                 name: 'coin',
                 type: 'select',
-                value: 'trop',
+                value: 'tgor',
                 data: select,
             },
         ],

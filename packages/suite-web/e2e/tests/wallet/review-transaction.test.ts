@@ -31,9 +31,9 @@ describe('Review transaction modal', () => {
                 },
             ],
         },
-        // ethereum testnet
+        // ethereum testnet goerli
         {
-            network: 'trop',
+            network: 'tgor',
             address: '0x7de62F23453E9230cC038390901A9A0130105A3c',
             fee: '1',
             amount: '1',
@@ -41,14 +41,14 @@ describe('Review transaction modal', () => {
                 {
                     element: '@prompts/confirm-on-device/step/0/active',
                     snapshot: {
-                        name: 'trop-confirm-address',
+                        name: 'tgor-confirm-address',
                     },
                 },
             ],
         },
         // ethereum testnet with token
         {
-            network: 'trop',
+            network: 'tgor',
             address: '0x7de62F23453E9230cC038390901A9A0130105A3c',
             token: 'KOMBUCHA',
             fee: '1',
@@ -57,7 +57,7 @@ describe('Review transaction modal', () => {
                 {
                     element: '@prompts/confirm-on-device/step/0/active',
                     snapshot: {
-                        name: 'trop-token-confirm-address',
+                        name: 'tgor-token-confirm-address',
                     },
                 },
             ],

@@ -101,7 +101,7 @@ export const config = {
             ],
         },
         {
-            coin: ['eth', 'trop', 'tgor'],
+            coin: ['eth', 'tgor'],
             min: ['1.8.0', '2.1.0'],
             comment: ['There were protobuf backwards incompatible changes.'],
         },

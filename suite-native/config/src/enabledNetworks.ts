@@ -20,7 +20,7 @@ export const mainnetsOrder: NetworkSymbol[] = [
     'dgb',
 ];
 
-export const testnetsOrder: NetworkSymbol[] = ['test', 'regtest', 'tgor', 'trop', 'tada', 'txrp'];
+export const testnetsOrder: NetworkSymbol[] = ['test', 'regtest', 'tgor', 'tada', 'txrp'];
 
 export const enabledNetworks: NetworkSymbol[] = Object.keys(networks).filter(
     network => !deprecatedNetworks.includes(network),

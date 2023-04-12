@@ -89,32 +89,6 @@ export default [
     },
     {
         blockchain: {
-            name: 'Ethereum Testnet (Ropsten)',
-            worker: 'js/blockbook-worker.js',
-            server: ['https://ropsten1.trezor.io', 'https://ropsten2.trezor.io'],
-            debug: true,
-        },
-        data: {
-            // address: '0x103262f243e6f67d12d6a4ea0d45302c1fa4bb0a',
-            address: '0x73d0385F4d8E00C5e6504C6030F47BF6212736A8',
-            accountInfoOptions: {
-                page: 0,
-                pageSize: 25,
-                contractFilter: undefined,
-                // tokens: 'derived',
-                // from: 0,
-                // to: 0,
-            },
-            estimateFeeOptions: {
-                blocks: [1, 2, 10],
-            },
-            txid: '',
-            tx: '',
-            subscribe: '0x103262f243e6f67d12d6a4ea0d45302c1fa4bb0a',
-        },
-    },
-    {
-        blockchain: {
             name: 'Ethereum Classic',
             worker: 'js/blockbook-worker.js',
             server: ['https://etc1.trezor.io', 'https://etc2.trezor.io'],
