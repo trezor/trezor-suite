@@ -401,6 +401,10 @@ class CreateDeviceHandler {
             if (error.code === 'Device_NotFound' || error.message === 'device not found') {
                 // do nothing
                 // it's a race condition between "device_changed" and "device_disconnected"
+                const device = this.list._createUnacquiredDevice(
+                    this.list.creatingDevicesDescriptors[this.path],
+                );
+                this.list.emit(DEVICE.DISCONNECT, device.toMessageObject());
             } else if (
                 error.message === ERRORS.WRONG_PREVIOUS_SESSION_ERROR_MESSAGE ||
                 error.toString() === ERRORS.WEBUSB_ERROR_MESSAGE
