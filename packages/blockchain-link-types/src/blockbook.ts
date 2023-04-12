@@ -7,7 +7,18 @@ import type {
     AccountInfoParams,
 } from './params';
 import type { AccountBalanceHistory, FiatRates, TokenStandard } from './common';
-import type { Vin, Vout, Utxo as BlockbookUtxo, WsInfoRes, WsBlockHashRes, Token as BlockbookToken } from './blockbook-api';
+import type {
+    Vin,
+    Vout,
+    Utxo as BlockbookUtxo,
+    WsInfoRes,
+    WsBlockHashRes,
+    Token as BlockbookToken,
+    EthereumParsedInputData as BlockbookEthereumParsedInputData,
+    EthereumSpecific as BlockbookEthereumSpecific,
+    TokenTransfer as BlockbookTokenTransfer,
+    AddressAlias,
+} from './blockbook-api';
 
 type OptionalKey<M, K extends keyof M> = Omit<M, K> & Partial<Pick<M, K>>;
 type RequiredKey<M, K extends keyof M> = Omit<M, K> & Required<Pick<M, K>>;
@@ -80,6 +91,9 @@ export interface AccountUtxoParams {
 
 export type VinVout = OptionalKey<Vin & Vout, 'addresses'>;
 
+type EthereumParsedData = BlockbookEthereumParsedInputData &
+    Partial<Pick<BlockbookEthereumParsedInputData, 'name'>>;
+
 export interface EthereumInternalTransfer {
     type: number;
     from: string;
@@ -104,45 +118,20 @@ export interface Transaction {
     blockHash?: string;
     confirmations: number;
     blockTime: number;
-    value: string;
-    valueIn: string;
-    fees: string;
-    hex: string;
+    value: string; // optional
+    valueIn: string; // optional
+    fees: string; // optional
+    hex: string; // optional
     lockTime?: number;
     vsize?: number;
     size?: number;
-    ethereumSpecific?: {
-        type?: number;
-        status: number;
-        nonce: number;
-        data?: string;
-        gasLimit: number;
-        gasUsed?: number;
-        gasPrice: string;
-        createdContract?: string;
-        parsedData?: {
-            data?: string;
-            methodId?: string;
-            method?: string;
-            name?: string;
-            parameters: Array<{ key: string; value: Array<string> }>;
-        };
-        internalTransfers?: EthereumInternalTransfer[];
-    };
-    tokenTransfers?: {
-        from: string;
-        to: string;
-        value?: string;
-        contract: string;
-        name: string;
-        symbol: string;
-        decimals: number;
-        type: TokenStandard;
-        multiTokenValues?: Array<{
-            id: string;
-            value: string;
-        }>;
-    }[];
+    ethereumSpecific?: EthereumSpecific;
+    tokenTransfers?: TokenTransfer[];
+    confirmationETABlocks?: number;
+    confirmationETASeconds?: number;
+    rbf?: boolean;
+    coinSpecificData?: any;
+    addressAliases?: { [key: string]: AddressAlias };
 }
 
 export interface Push {
