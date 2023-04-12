@@ -1,7 +1,7 @@
 import { isAnyOf } from '@reduxjs/toolkit';
 
 import { createMiddleware } from '@suite-common/redux-utils';
-import { setIsAccountImportFinished, setIsOnboardingFinished } from '@suite-native/module-settings';
+import { setIsOnboardingFinished } from '@suite-native/module-settings';
 import { addLog } from '@suite-common/logger';
 import {
     accountsActions,
@@ -41,10 +41,6 @@ const isAnyOfBlockchainActions = isAnyOf(...Object.values(blockchainActions));
 
 export const logsMiddleware = createMiddleware((action, { next, dispatch }) => {
     if (setIsOnboardingFinished.match(action)) {
-        dispatch(addLog({ type: action.type, payload: { ...action } }));
-    }
-
-    if (setIsAccountImportFinished.match(action)) {
         dispatch(addLog({ type: action.type, payload: { ...action } }));
     }
 
