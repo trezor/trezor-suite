@@ -17,8 +17,8 @@ export const CurrencySelector = () => {
     const selectedFiatCurrency = useSelector(selectFiatCurrency);
     const dispatch = useDispatch();
 
-    const handleSelectCurrency = (value: FiatCurrencyCode) => {
-        dispatch(setFiatCurrency(value));
+    const handleSelectCurrency = (localCurrency: FiatCurrencyCode) => {
+        dispatch(setFiatCurrency({ localCurrency }));
     };
 
     return (

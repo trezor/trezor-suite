@@ -1,4 +1,4 @@
-import { ActionCreatorWithPreparedPayload } from '@reduxjs/toolkit';
+import { ActionCreatorWithPayload, ActionCreatorWithPreparedPayload } from '@reduxjs/toolkit';
 
 import { Account, FeeInfo } from '@suite-common/wallet-types';
 import { NetworkSymbol } from '@suite-common/wallet-config';
@@ -41,12 +41,16 @@ export type ExtraDependencies = {
     actions: {
         setAccountLoadedMetadata: ActionCreatorWithPreparedPayload<[payload: Account], Account>;
         setAccountAddMetadata: ActionCreatorWithPreparedPayload<[payload: Account], Account>;
-        setWalletSettingsLocalCurrency: ActionCreatorWithPreparedPayload<
-            [localCurrency: FiatCurrencyCode],
-            {
-                localCurrency: FiatCurrencyCode;
-            }
-        >;
+        setWalletSettingsLocalCurrency:
+            | ActionCreatorWithPreparedPayload<
+                  [localCurrency: FiatCurrencyCode],
+                  {
+                      localCurrency: FiatCurrencyCode;
+                  }
+              >
+            | ActionCreatorWithPayload<{
+                  localCurrency: FiatCurrencyCode;
+              }>;
         changeWalletSettingsNetworks: ActionCreatorWithPreparedPayload<
             [payload: NetworkSymbol[]],
             NetworkSymbol[]

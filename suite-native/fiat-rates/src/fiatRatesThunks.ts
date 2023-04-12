@@ -104,14 +104,14 @@ const fetchFn: Record<RateType, typeof fetchFiatRate> = {
 
 type UpdateCurrentFiatRatesThunkPayload = {
     ticker: TickerId;
-    fiatCurrency: FiatCurrencyCode;
+    localCurrency: FiatCurrencyCode;
     rateType?: RateType;
 };
 
 export const updateFiatRatesThunk = createThunk(
     `${actionPrefix}/updateFiatRates`,
-    async ({ ticker, fiatCurrency, rateType = 'current' }: UpdateCurrentFiatRatesThunkPayload) => {
-        const rate = await fetchFn[rateType](ticker, fiatCurrency);
+    async ({ ticker, localCurrency, rateType = 'current' }: UpdateCurrentFiatRatesThunkPayload) => {
+        const rate = await fetchFn[rateType](ticker, localCurrency);
 
         if (!rate) {
             throw new Error('Failed to fetch fiat rates');
@@ -147,29 +147,20 @@ export const updateMissingTxFiatRatesThunk = createThunk(
 
 type FetchFiatRatesThunkPayload = {
     rateType: RateType;
+    localCurrency: FiatCurrencyCode;
 };
 
 export const fetchFiatRatesThunk = createThunk(
     `${actionPrefix}/fetchFiatRates`,
-    (
-        { rateType }: FetchFiatRatesThunkPayload,
-        {
-            dispatch,
-            getState,
-            extra: {
-                selectors: { selectLocalCurrency },
-            },
-        },
-    ) => {
-        const fiatCurrency = selectLocalCurrency(getState());
-        const tickers = selectTickersToBeUpdated(getState(), fiatCurrency, rateType);
+    ({ rateType, localCurrency }: FetchFiatRatesThunkPayload, { dispatch, getState }) => {
+        const tickers = selectTickersToBeUpdated(getState(), localCurrency, rateType);
 
         return Promise.allSettled(
             tickers.map(ticker =>
                 dispatch(
                     updateFiatRatesThunk({
                         ticker,
-                        fiatCurrency,
+                        localCurrency,
                         rateType,
                     }),
                 ),
@@ -185,17 +176,18 @@ const ratesTimeouts: Record<RateType, ReturnType<typeof setTimeout> | null> = {
 
 type PeriodicFetchFiatRatesThunkPayload = {
     rateType: RateType;
+    localCurrency: FiatCurrencyCode;
 };
 
 export const periodicFetchFiatRatesThunk = createThunk(
     `${actionPrefix}/periodicFetchFiatRates`,
-    async ({ rateType }: PeriodicFetchFiatRatesThunkPayload, { dispatch }) => {
+    async ({ rateType, localCurrency }: PeriodicFetchFiatRatesThunkPayload, { dispatch }) => {
         if (ratesTimeouts[rateType]) {
             clearTimeout(ratesTimeouts[rateType]!);
         }
-        await dispatch(fetchFiatRatesThunk({ rateType }));
+        await dispatch(fetchFiatRatesThunk({ rateType, localCurrency }));
         ratesTimeouts[rateType] = setTimeout(() => {
-            dispatch(periodicFetchFiatRatesThunk({ rateType }));
+            dispatch(periodicFetchFiatRatesThunk({ rateType, localCurrency }));
         }, REFETCH_INTERVAL[rateType]);
     },
 );

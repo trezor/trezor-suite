@@ -32,8 +32,11 @@ export const appSettingsSlice = createSlice({
     name: 'appSettings',
     initialState: appSettingsInitialState,
     reducers: {
-        setFiatCurrency: (state, { payload }: PayloadAction<FiatCurrencyCode>) => {
-            state.fiatCurrency = fiatCurrencies[payload];
+        setFiatCurrency: (
+            state,
+            { payload: { localCurrency } }: PayloadAction<{ localCurrency: FiatCurrencyCode }>,
+        ) => {
+            state.fiatCurrency = fiatCurrencies[localCurrency];
         },
         setIsOnboardingFinished: state => {
             state.isOnboardingFinished = true;
