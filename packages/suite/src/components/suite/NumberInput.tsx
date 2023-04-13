@@ -175,7 +175,7 @@ export const NumberInput = ({
 
             const { groupSeparatorCharCode } = getLocaleSeparatorCharCodes(locale);
             const previousDisplayValue = previousDisplayValueRef.current;
-            // Ctrl+D on Mac
+            // CMD+D on Mac
             const isDeleteKeyUsed =
                 pressedKey === 'Delete' || pressedKey.toLocaleLowerCase() === 'd';
             // handle deleting a thousands separator with a DEL key,
@@ -296,9 +296,7 @@ export const NumberInput = ({
             }
 
             const resultString = value.substring(0, selectionStart) + value.substring(selectionEnd);
-            // needed for cursor repositioning logic in handleChange() to function
-            inputRef.current.value = resultString;
-            inputRef.current.selectionStart = selectionStart;
+            handleChange(resultString);
             handleChange(resultString);
         },
         [handleCopy, handleChange, inputRef],
@@ -376,6 +374,7 @@ export const NumberInput = ({
         (e: React.KeyboardEvent<HTMLInputElement>) => {
             const pressedKey = e.key;
             setPressedKey(pressedKey);
+            console.log(pressedKey);
 
             if (['ArrowLeft', 'ArrowRight'].includes(pressedKey)) {
                 handleKeyNav(e);
