@@ -1,11 +1,12 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 
-import { AccordionItem, Box, VStack } from '@suite-native/atoms';
+import { AccordionItem, Box, Text, VStack } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { Link } from '@suite-native/link';
 
 type FAQ = {
     question: string;
-    answer: string;
+    answer: ReactNode;
 };
 
 const faqMap: FAQ[] = [
@@ -15,7 +16,20 @@ const faqMap: FAQ[] = [
     },
     {
         question: 'How do I send crypto in Trezor Suite Lite?',
-        answer: 'Trezor Suite Lite is a watch-only portfolio tracker, which means it is designed to help you monitor your cryptocurrency holdings and transactions. Unfortunately, it is not currently possible to send crypto using Trezor Suite Lite. To send crypto, use the full version of Trezor Suite with your Trezor hardware wallet. This will provide you with the necessary security and functionality to manage and perform transactions with your cryptocurrencies.',
+        answer: (
+            <Text variant="label">
+                Trezor Suite Lite is a watch-only portfolio tracker, which means it is designed to
+                help you monitor your cryptocurrency holdings and transactions. Unfortunately, it is
+                not currently possible to send crypto using Trezor Suite Lite. To send crypto, use
+                the full version of{' '}
+                <Link
+                    href="https://trezor.io/learn/a/get-to-know-the-trezor-suite-app"
+                    label="Trezor Suite"
+                />{' '}
+                with your Trezor hardware wallet. This will provide you with the necessary security
+                and functionality to manage and perform transactions with your cryptocurrencies.
+            </Text>
+        ),
     },
     {
         question: 'Why don’t I see my coin listed?',

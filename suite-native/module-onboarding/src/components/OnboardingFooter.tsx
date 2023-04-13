@@ -35,12 +35,9 @@ export const OnboardingFooter = ({ redirectTarget, isLastStep = false }: Onboard
     return (
         <Stack spacing="large" style={applyStyle(wrapperStyle)}>
             <Box flexDirection="row" alignItems="center" justifyContent="center">
-                <Text variant="hint" color="textSubdued">
-                    Don’t have a Trezor?
+                <Text variant="hint">
+                    Don’t have a Trezor? <Link href="https://trezor.io/" label="Get one here." />
                 </Text>
-                <Link href="https://trezor.io/">
-                    <Text color="textPrimaryDefault"> Get one here.</Text>
-                </Link>
             </Box>
             <Button onPress={handlePress}>{buttonTitle}</Button>
         </Stack>

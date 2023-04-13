@@ -1,8 +1,9 @@
 import React from 'react';
+import { TouchableOpacity } from 'react-native';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Button, Box, VStack, Text, Card, HStack } from '@suite-native/atoms';
-import { Link } from '@suite-native/link';
+import { useOpenLink } from '@suite-native/link';
 import { Icon } from '@trezor/icons';
 
 type ReceiveTextHintProps = {
@@ -17,6 +18,8 @@ const hintWrapperStyle = prepareNativeStyle(utils => ({
 
 export const ReceiveTextHint = ({ onShowAddress }: ReceiveTextHintProps) => {
     const { applyStyle } = useNativeStyles();
+    const openLink = useOpenLink();
+
     return (
         <VStack spacing="medium">
             <Card>
@@ -39,14 +42,14 @@ export const ReceiveTextHint = ({ onShowAddress }: ReceiveTextHintProps) => {
                 </VStack>
             </Card>
 
-            <Link href="TODO">
+            <TouchableOpacity onPress={() => openLink('TODO')}>
                 <HStack justifyContent="center" alignItems="center">
                     <Text variant="hint" color="textPrimaryDefault" align="center">
                         Learn more about verifying addresses{' '}
                     </Text>
                     <Icon color="iconPrimaryDefault" name="arrowUpRight" size="medium" />
                 </HStack>
-            </Link>
+            </TouchableOpacity>
 
             <Box paddingHorizontal="medium">
                 <Button iconLeft="eye" size="large" onPress={onShowAddress}>

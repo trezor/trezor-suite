@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { ReactNode, useState } from 'react';
 import { Pressable } from 'react-native';
 import Animated, {
     Easing,
@@ -16,7 +16,7 @@ import { Text } from './Text';
 
 type AccordionItemProps = {
     title: string;
-    content: string;
+    content: ReactNode;
 };
 
 const triggerStyle = prepareNativeStyle(utils => ({

@@ -23,14 +23,8 @@ const buttonsWrapperStyle = prepareNativeStyle(() => ({
 
 const PrivacyDescription = () => (
     <Text variant="hint" color="textSubdued">
-        We value privacy and security above all. Learn more about our data and security protocols
-        {/* Hack to vertically center the text with touchable opacity. */}
-        <Link href="https://trezor.io/" style={{ marginTop: -3 }}>
-            <Text color="textPrimaryDefault" variant="hint">
-                {' '}
-                here.
-            </Text>
-        </Link>
+        We value privacy and security above all. Learn more about our data and security protocols{' '}
+        <Link href="https://trezor.io/" label="here" />.
     </Text>
 );
 
