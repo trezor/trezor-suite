@@ -22,6 +22,7 @@
         "@trezor/icons": "workspace:*",
         "@trezor/styles": "workspace:*",
         "@trezor/theme": "workspace:*",
+        "expo-navigation-bar": "^2.1.1",
         "expo-system-ui": "2.2.1",
         "react": "18.2.0",
         "react-native": "0.71.5",
