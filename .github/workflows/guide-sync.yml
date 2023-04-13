@@ -1,0 +1,50 @@
+name: Update Guide
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: "Target trezor-suite-guide branch"
+        required: false
+        default: "master"
+
+jobs:
+  update-revision:
+    env:
+      FILEPATH: "./packages/suite-data/src/guide/constants.ts"
+      SUITE_BRANCH: "develop"
+      PR_BRANCH: "chore/update-suite-guide"
+      GITHUB_TOKEN: ${{ secrets.TREZOR_BOT_TOKEN }}
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout trezor-suite repo
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ env.SUITE_BRANCH }}
+          fetch-depth: 0
+
+      - name: Create a new branch and switch to it
+        run: git switch -C ${{ env.PR_BRANCH }}
+
+      - name: Query latest commit hash in trezor-suite-guide
+        id: query-latest-commit-hash
+        run: echo "LATEST_COMMIT_HASH=$(curl -s https://api.github.com/repos/trezor/trezor-suite-guide/branches/${{ github.event.inputs.branch }} | jq -r '.commit.sha')" >> $GITHUB_OUTPUT
+
+      - name: Update GitBook revision
+        run: sed -i "s/^export const GITBOOK_REVISION = .*/export const GITBOOK_REVISION = '${{ steps.query-latest-commit-hash.outputs.LATEST_COMMIT_HASH }}'/" ${{ env.FILEPATH }}
+
+      - name: Stage and commit
+        run: |
+          git config user.name "trezor-ci"
+          git config user.email "${{ secrets.TREZOR_BOT_EMAIL }}"
+          git add ${{ env.FILEPATH }}
+          git commit -m "chore(suite-data): update guide revision"
+
+      - name: Force push
+        run: git push --force --set-upstream origin ${{ env.PR_BRANCH }}
+
+      - name: Create pull request
+        if: github.event.inputs.branch == 'master'
+        run: gh pr create --base ${{ env.SUITE_BRANCH }} --title "GitBook revision update"  --label "guide" --body "Automatically generated PR to update GitBook revision, i.e. to sync latest [trezor-suite-guide](https://github.com/trezor/trezor-suite-guide) content to Suite. Once the pipeline finishes, you can check the results [here](https://suite.corp.sldev.cz/suite-web/${{ env.PR_BRANCH }}/web/)."
