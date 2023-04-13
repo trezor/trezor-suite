@@ -1,7 +1,7 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { FIAT } from '@suite-config';
-import { Translation, NumberInput } from '@suite-components';
-import { Select } from '@trezor/components';
+import { Translation } from '@suite-components';
+import { Select, Input } from '@trezor/components';
 import { buildOption } from '@wallet-utils/coinmarket/coinmarketUtils';
 import Bignumber from 'bignumber.js';
 import { Controller } from 'react-hook-form';
@@ -14,7 +14,6 @@ import {
     FIAT_CURRENCY_SELECT,
     FIAT_INPUT,
 } from '@suite/types/wallet/coinmarketSellForm';
-import { TypedValidationRules } from '@wallet-types/form';
 
 interface Props {
     activeInput: typeof FIAT_INPUT | typeof CRYPTO_INPUT;
@@ -23,6 +22,7 @@ interface Props {
 
 const FiatInput = ({ activeInput, setActiveInput }: Props) => {
     const {
+        register,
         errors,
         control,
         formState,
@@ -41,78 +41,74 @@ const FiatInput = ({ activeInput, setActiveInput }: Props) => {
     const tokenAddress = outputs?.[0]?.token;
     const tokenData = account.tokens?.find(t => t.address === tokenAddress);
 
-    const fiatInputRules = useMemo<TypedValidationRules>(
-        () => ({
-            validate: (value: string) => {
-                if (activeInput === FIAT_INPUT) {
-                    if (!value) {
-                        if (formState.isSubmitting) {
-                            return <Translation id="TR_REQUIRED_FIELD" />;
-                        }
-                        return;
+    const fiatInputRef = register({
+        validate: (value: string) => {
+            if (activeInput === FIAT_INPUT) {
+                if (!value) {
+                    if (formState.isSubmitting) {
+                        return <Translation id="TR_REQUIRED_FIELD" />;
                     }
+                    return;
+                }
 
-                    const amountBig = new Bignumber(value);
-                    if (amountBig.isNaN()) {
-                        return <Translation id="AMOUNT_IS_NOT_NUMBER" />;
-                    }
+                const amountBig = new Bignumber(value);
+                if (amountBig.isNaN()) {
+                    return <Translation id="AMOUNT_IS_NOT_NUMBER" />;
+                }
 
-                    if (amountBig.lte(0)) {
-                        return <Translation id="AMOUNT_IS_TOO_LOW" />;
-                    }
+                if (amountBig.lte(0)) {
+                    return <Translation id="AMOUNT_IS_TOO_LOW" />;
+                }
 
-                    if (!isDecimalsValid(value, 2)) {
+                if (!isDecimalsValid(value, 2)) {
+                    return (
+                        <Translation
+                            id="AMOUNT_IS_NOT_IN_RANGE_DECIMALS"
+                            values={{ decimals: 2 }}
+                        />
+                    );
+                }
+
+                if (amountLimits) {
+                    const amount = Number(value);
+                    if (amountLimits.minFiat && amount < amountLimits.minFiat) {
                         return (
                             <Translation
-                                id="AMOUNT_IS_NOT_IN_RANGE_DECIMALS"
-                                values={{ decimals: 2 }}
+                                id="TR_SELL_VALIDATION_ERROR_MINIMUM_FIAT"
+                                values={{
+                                    minimum: amountLimits.minFiat,
+                                    currency: amountLimits.currency,
+                                }}
                             />
                         );
                     }
-
-                    if (amountLimits) {
-                        const amount = Number(value);
-                        if (amountLimits.minFiat && amount < amountLimits.minFiat) {
-                            return (
-                                <Translation
-                                    id="TR_SELL_VALIDATION_ERROR_MINIMUM_FIAT"
-                                    values={{
-                                        minimum: amountLimits.minFiat,
-                                        currency: amountLimits.currency,
-                                    }}
-                                />
-                            );
-                        }
-                        if (amountLimits.maxFiat && amount > amountLimits.maxFiat) {
-                            return (
-                                <Translation
-                                    id="TR_SELL_VALIDATION_ERROR_MAXIMUM_FIAT"
-                                    values={{
-                                        maximum: amountLimits.maxFiat,
-                                        currency: amountLimits.currency,
-                                    }}
-                                />
-                            );
-                        }
+                    if (amountLimits.maxFiat && amount > amountLimits.maxFiat) {
+                        return (
+                            <Translation
+                                id="TR_SELL_VALIDATION_ERROR_MAXIMUM_FIAT"
+                                values={{
+                                    maximum: amountLimits.maxFiat,
+                                    currency: amountLimits.currency,
+                                }}
+                            />
+                        );
                     }
                 }
-            },
-        }),
-        [activeInput, amountLimits, formState.isSubmitting],
-    );
+            }
+        },
+    });
 
     return (
-        <NumberInput
-            control={control}
+        <Input
             noTopLabel
             defaultValue=""
-            rules={fiatInputRules}
+            innerRef={fiatInputRef}
             onFocus={() => {
                 setActiveInput(FIAT_INPUT);
             }}
-            onChange={value => {
+            onChange={event => {
                 setActiveInput(FIAT_INPUT);
-                onFiatAmountChange(value);
+                onFiatAmountChange(event.target.value);
             }}
             isDisabled={tokenData !== undefined}
             inputState={getInputState(errors.fiatInput, fiatInputValue)}

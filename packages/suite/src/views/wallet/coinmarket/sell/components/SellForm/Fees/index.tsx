@@ -15,7 +15,6 @@ const SellFees = () => {
     const {
         errors,
         register,
-        control,
         setValue,
         getValues,
         account,
@@ -27,7 +26,6 @@ const SellFees = () => {
     return (
         <StyledCard>
             <Fees
-                control={control}
                 errors={errors}
                 register={register}
                 feeInfo={feeInfo}

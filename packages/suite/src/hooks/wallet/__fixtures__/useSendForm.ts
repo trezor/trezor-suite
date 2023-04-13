@@ -1642,21 +1642,10 @@ export const feeChange = [
                 },
             },
             {
-                type: 'input',
-                element: 'feePerUnit',
-                value: '00000', //  trigger error
-                result: {
-                    composeTransactionCalls: 2,
-                    formValues: {
-                        feePerUnit: '200000',
-                    },
-                },
-            },
-            {
                 type: 'click',
                 element: 'select-bar/normal',
                 result: {
-                    composeTransactionCalls: 3, // called after fee level change from custom with error
+                    composeTransactionCalls: 3, // called after fee level change
                     formValues: {
                         selectedFee: 'normal' as const,
                         feePerUnit: '',

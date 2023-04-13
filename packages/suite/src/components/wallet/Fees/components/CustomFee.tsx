@@ -1,11 +1,10 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import BigNumber from 'bignumber.js';
 import styled, { css } from 'styled-components';
-import { Control, UseFormMethods } from 'react-hook-form';
-import { Button, Note, variables } from '@trezor/components';
+import { UseFormMethods } from 'react-hook-form';
+import { Input, Button, Note, variables } from '@trezor/components';
 import { FeeLevel } from '@trezor/connect';
 import { Translation } from '@suite-components';
-import { NumberInput } from '@suite-components/NumberInput';
 import { InputError } from '@wallet-components';
 import { getInputState, getFeeUnits, isDecimalsValid, isInteger } from '@suite-common/wallet-utils';
 import { ETH_DEFAULT_GAS_LIMIT } from '@suite-common/wallet-constants';
@@ -38,7 +37,7 @@ const Col = styled.div<{ singleCol?: boolean }>`
         `}
 `;
 
-const StyledNumberInput = styled(NumberInput)`
+const StyledInput = styled(Input)`
     display: flex;
     flex: 1;
     width: 100%;
@@ -92,10 +91,9 @@ interface CustomFeeProps {
     feeInfo: FeeInfo;
     errors: FormMethods['errors'];
     register: (rules?: TypedValidationRules) => (ref: any) => void;
-    control: Control;
     getValues: FormMethods['getValues'];
     setValue: FormMethods['setValue'];
-    changeFeeLimit?: (value: string) => void;
+    changeFeeLimit?: (event: React.ChangeEvent<HTMLInputElement>) => void;
     composedFeePerByte: string;
 }
 
@@ -104,7 +102,6 @@ export const CustomFee = ({
     feeInfo,
     errors,
     register,
-    control,
     getValues,
     setValue,
     changeFeeLimit,
@@ -126,86 +123,74 @@ export const CustomFee = ({
     const isComposedFeeRateDifferent =
         !feePerUnitError && composedFeePerByte && enteredFeeRate !== composedFeePerByte;
 
-    const feeLimitRules = useMemo<TypedValidationRules>(
-        () => ({
-            required: 'CUSTOM_FEE_IS_NOT_SET',
-            validate: (value: string) => {
-                const feeBig = new BigNumber(value);
+    const validateFeeLimit = (value: string) => {
+        const feeBig = new BigNumber(value);
 
-                if (feeBig.isNaN()) {
-                    return 'CUSTOM_FEE_IS_NOT_NUMBER';
-                }
+        if (feeBig.isNaN()) {
+            return 'CUSTOM_FEE_IS_NOT_NUMBER';
+        }
 
-                // allow decimals in ETH since GWEI is not a satoshi
-                if (networkType !== 'ethereum' && networkType !== 'bitcoin' && !isInteger(value)) {
-                    return 'CUSTOM_FEE_IS_NOT_INTEGER';
-                }
+        // allow decimals in ETH since GWEI is not a satoshi
+        if (networkType !== 'ethereum' && networkType !== 'bitcoin' && !isInteger(value)) {
+            return 'CUSTOM_FEE_IS_NOT_INTEGER';
+        }
 
-                if (feeBig.lt(estimatedFeeLimit)) {
-                    return (
-                        <SetDefaultLimit
-                            onClick={() => {
-                                setValue(FEE_LIMIT, estimatedFeeLimit, {
-                                    shouldValidate: true,
-                                });
-                            }}
-                        />
-                    );
-                }
-            },
-        }),
-        [estimatedFeeLimit, networkType, setValue],
-    );
+        if (feeBig.lt(estimatedFeeLimit)) {
+            return (
+                <SetDefaultLimit
+                    onClick={() => {
+                        setValue(FEE_LIMIT, estimatedFeeLimit, {
+                            shouldValidate: true,
+                        });
+                    }}
+                />
+            );
+        }
+    };
 
-    const feeRules = useMemo<TypedValidationRules>(
-        () => ({
-            required: 'CUSTOM_FEE_IS_NOT_SET',
-            validate: (value: string) => {
-                const feeBig = new BigNumber(value);
+    const validateFee = (value: string) => {
+        const feeBig = new BigNumber(value);
 
-                if (feeBig.isNaN()) {
-                    return 'CUSTOM_FEE_IS_NOT_NUMBER';
-                }
+        if (feeBig.isNaN()) {
+            return 'CUSTOM_FEE_IS_NOT_NUMBER';
+        }
 
-                // allow decimals in ETH since GWEI is not a satoshi
-                if (networkType !== 'ethereum' && networkType !== 'bitcoin' && !isInteger(value)) {
-                    return 'CUSTOM_FEE_IS_NOT_INTEGER';
-                }
+        // allow decimals in ETH since GWEI is not a satoshi
+        if (networkType !== 'ethereum' && networkType !== 'bitcoin' && !isInteger(value)) {
+            return 'CUSTOM_FEE_IS_NOT_INTEGER';
+        }
 
-                if (networkType === 'bitcoin' && !isDecimalsValid(value, 2)) {
-                    return (
-                        <Translation
-                            key="AMOUNT_IS_NOT_IN_RANGE_DECIMALS"
-                            id="AMOUNT_IS_NOT_IN_RANGE_DECIMALS"
-                            values={{ decimals: 2 }}
-                        />
-                    );
-                }
+        if (networkType === 'bitcoin' && !isDecimalsValid(value, 2)) {
+            return (
+                <Translation
+                    key="AMOUNT_IS_NOT_IN_RANGE_DECIMALS"
+                    id="AMOUNT_IS_NOT_IN_RANGE_DECIMALS"
+                    values={{ decimals: 2 }}
+                />
+            );
+        }
 
-                // GWEI: 9 decimal places
-                if (networkType === 'ethereum' && !isDecimalsValid(value, 9)) {
-                    return (
-                        <Translation
-                            key="AMOUNT_IS_NOT_IN_RANGE_DECIMALS"
-                            id="AMOUNT_IS_NOT_IN_RANGE_DECIMALS"
-                            values={{ decimals: 9 }}
-                        />
-                    );
-                }
+        // GWEI: 9 decimal places
+        if (networkType === 'ethereum' && !isDecimalsValid(value, 9)) {
+            return (
+                <Translation
+                    key="AMOUNT_IS_NOT_IN_RANGE_DECIMALS"
+                    id="AMOUNT_IS_NOT_IN_RANGE_DECIMALS"
+                    values={{ decimals: 9 }}
+                />
+            );
+        }
 
-                if (feeBig.isGreaterThan(maxFee) || feeBig.isLessThan(minFee)) {
-                    return (
-                        <Translation
-                            key="CUSTOM_FEE_NOT_IN_RANGE"
-                            id="CUSTOM_FEE_NOT_IN_RANGE"
-                            values={{ minFee, maxFee }}
-                        />
-                    );
-                }
-            },
-        }),
-        [maxFee, minFee, networkType],
-    );
+        if (feeBig.isGreaterThan(maxFee) || feeBig.isLessThan(minFee)) {
+            return (
+                <Translation
+                    key="CUSTOM_FEE_NOT_IN_RANGE"
+                    id="CUSTOM_FEE_NOT_IN_RANGE"
+                    values={{ minFee, maxFee }}
+                />
+            );
+        }
+    };
 
     return (
         <>
@@ -213,8 +198,7 @@ export const CustomFee = ({
                 {useFeeLimit ? (
                     <>
                         <Col>
-                            <StyledNumberInput
-                                control={control}
+                            <StyledInput
                                 label={<Translation id="TR_GAS_LIMIT" />}
                                 disabled={feeLimitDisabled}
                                 isMonospace
@@ -223,7 +207,10 @@ export const CustomFee = ({
                                 name={FEE_LIMIT}
                                 data-test={FEE_LIMIT}
                                 onChange={changeFeeLimit}
-                                rules={feeLimitRules}
+                                innerRef={register({
+                                    required: 'CUSTOM_FEE_IS_NOT_SET',
+                                    validate: validateFeeLimit,
+                                })}
                                 bottomText={<InputError error={feeLimitError} />}
                             />
                         </Col>
@@ -232,8 +219,7 @@ export const CustomFee = ({
                     <input type="hidden" name={FEE_LIMIT} ref={register()} />
                 )}
                 <Col singleCol={!useFeeLimit}>
-                    <StyledNumberInput
-                        control={control}
+                    <StyledInput
                         noTopLabel={!useFeeLimit}
                         label={useFeeLimit ? <Translation id="TR_GAS_PRICE" /> : undefined}
                         isMonospace
@@ -242,7 +228,10 @@ export const CustomFee = ({
                         innerAddon={<Units>{getFeeUnits(networkType)}</Units>}
                         name={FEE_PER_UNIT}
                         data-test={FEE_PER_UNIT}
-                        rules={feeRules}
+                        innerRef={register({
+                            required: 'CUSTOM_FEE_IS_NOT_SET',
+                            validate: validateFee,
+                        })}
                         bottomText={<InputError error={feePerUnitError} />}
                     />
                 </Col>

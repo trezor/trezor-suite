@@ -96,6 +96,7 @@ const CoinmarketSavingsSetup = (props: WithSelectedAccountLoadedProps) => {
         annualSavingsFiatAmount,
         fiatAmount,
         fiatCurrency,
+        register,
         account,
         errors,
         canConfirmSetup,
@@ -209,6 +210,7 @@ const CoinmarketSavingsSetup = (props: WithSelectedAccountLoadedProps) => {
                         maximumPaymentAmountLimit={maximumPaymentAmountLimit}
                         minimumPaymentAmountLimit={minimumPaymentAmountLimit}
                         paymentAmounts={paymentAmounts}
+                        register={register}
                         fiatAmount={fiatAmount}
                         fiatCurrency={fiatCurrency}
                     />

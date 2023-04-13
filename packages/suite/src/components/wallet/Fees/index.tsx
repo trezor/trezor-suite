@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { FeeLevel } from '@trezor/connect';
-import { Control, UseFormMethods } from 'react-hook-form';
+import { UseFormMethods } from 'react-hook-form';
 import { SelectBar, variables } from '@trezor/components';
 import { FiatValue, FormattedCryptoAmount, Translation } from '@suite-components';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
@@ -122,12 +122,11 @@ export interface FeesProps {
     account: Account;
     feeInfo: FeeInfo;
     register: (rules?: TypedValidationRules) => (ref: any) => void;
-    control: Control;
     setValue: FormMethods['setValue'];
     getValues: FormMethods['getValues'];
     errors: FormMethods['errors'];
     changeFeeLevel: (level: FeeLevel['label']) => void;
-    changeFeeLimit?: (value: string) => void;
+    changeFeeLimit?: (event: React.ChangeEvent<HTMLInputElement>) => void;
     composedLevels?: PrecomposedLevels | PrecomposedLevelsCardano;
     showLabel?: boolean;
     label?: ExtendedMessageDescriptor['id'];
@@ -138,7 +137,6 @@ export const Fees = ({
     account: { symbol, networkType },
     feeInfo,
     register,
-    control,
     setValue,
     getValues,
     errors,
@@ -218,7 +216,6 @@ export const Fees = ({
                 <FeeInfoWrapper>
                     {isCustomLevel ? (
                         <CustomFee
-                            control={control}
                             networkType={networkType}
                             feeInfo={feeInfo}
                             errors={errors}
