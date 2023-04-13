@@ -42,6 +42,7 @@ export const icons = {
     info: require('../assets/icons/info.svg'),
     label: require('../assets/icons/label.svg'),
     lock: require('../assets/icons/lock.svg'),
+    minusCircle: require('../assets/icons/minusCircle.svg'),
     notifications: require('../assets/icons/notifications.svg'),
     palette: require('../assets/icons/palette.svg'),
     paper: require('../assets/icons/paper.svg'),

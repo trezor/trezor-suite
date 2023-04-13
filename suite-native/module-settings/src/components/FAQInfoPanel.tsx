@@ -10,24 +10,25 @@ type FAQ = {
 
 const faqMap: FAQ[] = [
     {
-        question: 'What is a public key (XPUB)?',
-        answer: 'A public key (XPUB) is a string of characters derived from a private key. It can be shared without compromising the security of the private key, allowing others to send crypto to your wallet without being able to access your funds. In Trezor Suite Lite, you can find your XPUB by going to the "Receive" tab and selecting the appropriate account.',
+        question: 'What is a public key (XPUB) or a receive address?',
+        answer: 'An XPUB is a master public key for hierarchical deterministic wallets like bitcoin, generating multiple child keys and receive addresses for improved privacy. Ethereum uses a single, unchanging address for all transactions. Sharing your XPUB is discouraged as it reveals all bitcoin addresses and transactions. For Ethereum, share only your address, while keeping your private key secure.',
     },
     {
-        question: 'How do I receive crypto in Trezor Suite Lite?',
-        answer: 'To receive crypto in Trezor Suite Lite, go to the "Receive" tab and select the appropriate account. You will then see a QR code and a string of characters representing your public key (XPUB). Share this information with the person sending you crypto, and they will be able to send it to your wallet.',
-    },
-    {
-        question: 'Why shouldn’t I receive a large amount?',
-        answer: "Receiving a large amount of cryptocurrency in one transaction can attract unwanted attention and may increase the risk of theft. It's generally recommended to receive smaller amounts or to break up larger transactions into smaller ones. Additionally, receiving large amounts may trigger anti-money laundering (AML) and know-your-customer (KYC) regulations, which can be time-consuming and burdensome.",
+        question: 'How do I send crypto in Trezor Suite Lite?',
+        answer: 'Trezor Suite Lite is a watch-only portfolio tracker, which means it is designed to help you monitor your cryptocurrency holdings and transactions. Unfortunately, it is not currently possible to send crypto using Trezor Suite Lite. To send crypto, use the full version of Trezor Suite with your Trezor hardware wallet. This will provide you with the necessary security and functionality to manage and perform transactions with your cryptocurrencies.',
     },
     {
         question: 'Why don’t I see my coin listed?',
-        answer: 'Trezor Suite Lite currently supports a limited number of cryptocurrencies. If your coin is not listed, it may not be compatible with the app. However, Trezor regularly adds support for new coins, so you may want to check back periodically to see if your coin has been added.',
+        answer: 'Trezor Suite Lite currently supports a limited number of cryptocurrencies. If your coin is not listed, it may not be compatible with the app. However, Trezor regularly adds support for new coins, so check back periodically to see which coins have been added.',
     },
     {
         question: 'What does the graph display?',
-        answer: 'The graph in Trezor Suite Lite displays the price history of the selected cryptocurrency over a specified time period. You can adjust the time period by selecting a different range on the bottom of the graph. This feature can help you track the performance of your holdings and make informed decisions about buying, selling, or holding your coins.',
+        answer: 'The graph in Trezor Suite Lite displays the price history of your portfolio’s synced assets over a specified time period. You can adjust the time period by selecting a different range on the bottom of the graph.',
+    },
+    {
+        question:
+            'Why is the balance displayed in Trezor Suite different from the balance displayed in Trezor Suite Lite?',
+        answer: 'Balances may mismatch due to improper syncing of all assets and account types, or pending transactions. Ensure you have synced all your assets correctly and check for any pending transactions to resolve the discrepancy.',
     },
 ];
 
