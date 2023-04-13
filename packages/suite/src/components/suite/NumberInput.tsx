@@ -70,7 +70,6 @@ export const NumberInput = ({
     ...props
 }: NumberInputProps) => {
     const locale = useSelector(state => state.suite.settings.language);
-    const [pressedKey, setPressedKey] = useState('');
 
     const {
         field: { value, onChange, ref: inputRef, ...controlProps },
@@ -169,27 +168,6 @@ export const NumberInput = ({
                 return;
             }
 
-            // read cursor position before formatting
-            let { selectionStart: cursorPosition } = inputRef.current;
-            if (cursorPosition === null) return;
-
-            const { groupSeparatorCharCode } = getLocaleSeparatorCharCodes(locale);
-            const previousDisplayValue = previousDisplayValueRef.current;
-            // CMD+D on Mac
-            const isDeleteKeyUsed =
-                pressedKey === 'Delete' || pressedKey.toLocaleLowerCase() === 'd';
-            // handle deleting a thousands separator with a DEL key,
-            // otherwise the number instantly gets formatted back to having that separator
-            if (inputValue.length < previousDisplayValue.length && isDeleteKeyUsed) {
-                const deletedCharacterCode = previousDisplayValue.charCodeAt(cursorPosition);
-                // is not needed for numbers without group separators (≤3 chars)
-                if (deletedCharacterCode === groupSeparatorCharCode && inputValue.length > 3) {
-                    inputValue =
-                        previousDisplayValue.substring(0, cursorPosition) +
-                        previousDisplayValue.substring(cursorPosition + 2);
-                }
-            }
-
             // make the string compliant with Number
             const cleanInput = cleanValueString(inputValue, locale);
 
@@ -199,6 +177,25 @@ export const NumberInput = ({
                 Number.isNaN(Number(cleanInput))
             ) {
                 return;
+            }
+
+            // read cursor position before formatting
+            let { selectionStart } = inputRef.current;
+            if (selectionStart === null) return;
+
+            const { groupSeparatorCharCode } = getLocaleSeparatorCharCodes(locale);
+            const previousDisplayValue = previousDisplayValueRef.current;
+
+            // handle deleting a thousands separator with a DEL key (should not be possible with a Backspace),
+            // otherwise the number instantly gets formatted back to having that separator
+            if (inputValue.length < previousDisplayValue.length) {
+                const deletedCharacterCode = previousDisplayValue.charCodeAt(selectionStart);
+                // is not needed for nimbers without gropu separators (≤3 chars)
+                if (deletedCharacterCode === groupSeparatorCharCode && inputValue.length > 3) {
+                    inputValue =
+                        previousDisplayValue.substring(0, selectionStart) +
+                        previousDisplayValue.substring(selectionStart + 2);
+                }
             }
 
             // format and set display value
@@ -231,34 +228,19 @@ export const NumberInput = ({
             const lengthDelta = formattedValueLength - currentValueLength;
             if (
                 lengthDelta > 0 &&
-                cursorPosition !== 1 &&
-                formattedValue.charCodeAt(cursorPosition) !== groupSeparatorCharCode
+                selectionStart !== 1 &&
+                formattedValue.charCodeAt(selectionStart) !== groupSeparatorCharCode
             ) {
-                cursorPosition += lengthDelta;
+                selectionStart += lengthDelta;
                 // do not move the cursor if it was at the beginning already
-            } else if (lengthDelta < 0 && cursorPosition !== 0 && !isDeleteKeyUsed) {
-                cursorPosition += lengthDelta;
-                // handle some undesirable cases when deleting with delete key
-            } else if (
-                formattedValue.charCodeAt(cursorPosition - 1) === groupSeparatorCharCode &&
-                isDeleteKeyUsed
-            ) {
-                cursorPosition += 1;
+            } else if (lengthDelta < 0 && selectionStart !== 0) {
+                selectionStart += lengthDelta;
             }
 
             // make sure the cursor stays in the right place after formatting
-            inputRef.current.setSelectionRange(cursorPosition, cursorPosition);
+            inputRef.current.setSelectionRange(selectionStart, selectionStart);
         },
-        [
-            formatDisplayValue,
-            locale,
-            onChange,
-            onChangeCallback,
-            inputRef,
-            invalid,
-            rules,
-            pressedKey,
-        ],
+        [formatDisplayValue, locale, onChange, onChangeCallback, inputRef, invalid, rules],
     );
 
     // copy the non-formatted value
@@ -269,7 +251,7 @@ export const NumberInput = ({
             }
 
             const { selectionStart, selectionEnd, value } = inputRef.current;
-            if (selectionStart === null || selectionEnd === null) {
+            if (selectionStart === null || selectionEnd == null) {
                 return;
             }
 
@@ -291,12 +273,11 @@ export const NumberInput = ({
             }
 
             const { selectionStart, selectionEnd, value } = inputRef.current;
-            if (selectionStart === null || selectionEnd === null) {
+            if (selectionStart === null || selectionEnd == null) {
                 return;
             }
 
             const resultString = value.substring(0, selectionStart) + value.substring(selectionEnd);
-            handleChange(resultString);
             handleChange(resultString);
         },
         [handleCopy, handleChange, inputRef],
@@ -338,26 +319,9 @@ export const NumberInput = ({
     );
 
     // do not allow putting the cursor after group separators
-    const handleSelect = useCallback(() => {
-        if (!inputRef.current) {
-            return;
-        }
-
-        const { selectionStart, selectionEnd, value } = inputRef.current;
-        if (selectionStart === selectionEnd) {
-            handleCursorShift(-1, -1);
-        }
-
-        if (selectionStart === null || selectionEnd === null) {
-            return;
-        }
-        const selectedPart = value.substring(selectionStart, selectionEnd);
-        const { groupSeparatorCharCode } = getLocaleSeparatorCharCodes(locale);
-        // do not allow selecting group separators to avoid unwanted behavior
-        if (selectedPart.length === 1 && selectedPart.charCodeAt(0) === groupSeparatorCharCode) {
-            inputRef.current.selectionEnd = selectionStart;
-        }
-    }, [handleCursorShift, inputRef, locale]);
+    const handleClick = useCallback(() => {
+        handleCursorShift(-1, -1);
+    }, [handleCursorShift]);
 
     // jump over group separators when navigatind the input
     const handleKeyNav = useCallback(
@@ -373,8 +337,6 @@ export const NumberInput = ({
     const handleKeyDown = useCallback(
         (e: React.KeyboardEvent<HTMLInputElement>) => {
             const pressedKey = e.key;
-            setPressedKey(pressedKey);
-            console.log(pressedKey);
 
             if (['ArrowLeft', 'ArrowRight'].includes(pressedKey)) {
                 handleKeyNav(e);
@@ -397,7 +359,7 @@ export const NumberInput = ({
             innerRef={inputRef}
             value={displayValue}
             inputMode="decimal"
-            onSelect={handleSelect}
+            onSelect={handleClick}
             onKeyDown={handleKeyDown}
             onBeforeInput={handleOnBeforeInput}
             onChange={e => handleChange(e.target.value)}
