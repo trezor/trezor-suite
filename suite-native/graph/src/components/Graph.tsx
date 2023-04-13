@@ -64,8 +64,10 @@ const emptyPoints: EnhancedGraphPointWithCryptoBalance[] = [
     { ...emptyGraphPoint, date: new Date(1) },
 ];
 
+const MAX_CLAMP_VALUE = 90;
+
 // to avoid overflows from the screen
-const clampAxisLabels = (value: number) => N.clamp(value, 5, 90);
+const clampAxisLabels = (value: number) => N.clamp(value, 5, MAX_CLAMP_VALUE);
 
 export const Graph = <TGraphPoint extends EnhancedGraphPoint>({
     onPointSelected,
@@ -93,7 +95,7 @@ export const Graph = <TGraphPoint extends EnhancedGraphPoint>({
                     <AxisLabel
                         x={topAxisClampedAxis}
                         value={extremaFromGraphPoints.max.value}
-                        isHighestValue={topAxisClampedAxis === 90}
+                        isHighestValue={topAxisClampedAxis === MAX_CLAMP_VALUE}
                     />
                 ),
                 BottomAxisLabel: () => (
