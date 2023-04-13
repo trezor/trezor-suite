@@ -86,11 +86,14 @@ export const Graph = <TGraphPoint extends EnhancedGraphPoint>({
     const extremaFromGraphPoints = useMemo(() => getExtremaFromGraphPoints(points), [points]);
     const axisLabels = useMemo(() => {
         if (extremaFromGraphPoints?.max && extremaFromGraphPoints?.min) {
+            const topAxisClampedAxis = clampAxisLabels(extremaFromGraphPoints.max.x);
+
             return {
                 TopAxisLabel: () => (
                     <AxisLabel
-                        x={clampAxisLabels(extremaFromGraphPoints.max.x)}
+                        x={topAxisClampedAxis}
                         value={extremaFromGraphPoints.max.value}
+                        isHighestValue={topAxisClampedAxis === 90}
                     />
                 ),
                 BottomAxisLabel: () => (
