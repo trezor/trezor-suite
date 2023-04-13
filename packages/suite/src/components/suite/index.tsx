@@ -55,7 +55,6 @@ import { SuiteLayout } from './SuiteLayout';
 import { TorLoader } from './TorLoader';
 import { CoinjoinStatusBar } from './CoinjoinStatusBar';
 import { CountdownTimer } from './CountdownTimer';
-import { NumberInput } from './NumberInput';
 
 export {
     AccountLabel,
@@ -118,6 +117,5 @@ export {
     TorLoader,
     CoinjoinStatusBar,
     CountdownTimer,
-    NumberInput,
 };
 export type { ModalProps };

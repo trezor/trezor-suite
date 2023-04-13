@@ -488,6 +488,17 @@ export const composeDebouncedTransaction = [
         },
     },
     {
+        description: 'compose with validation errors (Amount not a number)',
+        actions: [{ type: 'input', element: 'outputs[0].amount', value: '11a', delay: 1 }],
+        finalResult: {
+            composeTransactionCalls: 0,
+            composedLevels: undefined,
+            errors: {
+                outputs: [{ amount: { message: 'AMOUNT_IS_NOT_NUMBER' } }],
+            },
+        },
+    },
+    {
         description: '@trezor/connect call respond with success:false',
         connect: {
             success: false,
@@ -1633,11 +1644,14 @@ export const feeChange = [
             {
                 type: 'input',
                 element: 'feePerUnit',
-                value: 'a', // try to add invalid
+                value: 'a', // add invalid
                 result: {
                     composeTransactionCalls: 2,
                     formValues: {
-                        feePerUnit: '2',
+                        feePerUnit: '2a',
+                    },
+                    errors: {
+                        feePerUnit: { message: 'CUSTOM_FEE_IS_NOT_NUMBER' },
                     },
                 },
             },
@@ -1799,13 +1813,16 @@ export const feeChange = [
             {
                 type: 'input',
                 element: 'feeLimit',
-                value: 'a', // try to add invalid
+                value: 'a', // typo
                 result: {
                     formValues: {
                         selectedFee: 'custom' as const,
                         feePerUnit: '3',
-                        feeLimit: '21',
+                        feeLimit: '21a',
                         estimatedFeeLimit: '21009',
+                    },
+                    errors: {
+                        feeLimit: { type: 'validate' }, // limit error
                     },
                 },
             },
