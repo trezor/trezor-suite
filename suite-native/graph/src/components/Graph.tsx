@@ -95,7 +95,7 @@ export const Graph = <TGraphPoint extends EnhancedGraphPoint>({
                     <AxisLabel
                         x={topAxisClampedAxis}
                         value={extremaFromGraphPoints.max.value}
-                        isHighestValue={topAxisClampedAxis === MAX_CLAMP_VALUE}
+                        isEndOfRange={topAxisClampedAxis === MAX_CLAMP_VALUE}
                     />
                 ),
                 BottomAxisLabel: () => (

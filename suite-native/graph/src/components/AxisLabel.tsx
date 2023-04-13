@@ -1,5 +1,5 @@
-import React from 'react';
-import { View } from 'react-native';
+import React, { useCallback, useMemo, useState } from 'react';
+import { Dimensions, View } from 'react-native';
 
 import { useDiscreetMode } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -8,7 +8,7 @@ import { FiatAmountFormatter } from '@suite-native/formatters';
 type AxisLabelProps = {
     x: number;
     value: number;
-    isHighestValue?: boolean;
+    isEndOfRange?: boolean;
 };
 
 const axisLabelStyle = prepareNativeStyle<Pick<AxisLabelProps, 'x'>>((_, { x }) => ({
@@ -16,21 +16,28 @@ const axisLabelStyle = prepareNativeStyle<Pick<AxisLabelProps, 'x'>>((_, { x }) 
     left: `${x}%`,
 }));
 
-// TODO: this is a temporary solution, we should use some kind of font metrics to calculate the width of the label
-const APPROXIMATE_DIGIT_WIDTH = 1.75;
-
-export const AxisLabel = ({ x, value, isHighestValue = false }: AxisLabelProps) => {
+export const AxisLabel = ({ x, value, isEndOfRange = false }: AxisLabelProps) => {
     const { applyStyle } = useNativeStyles();
     const { isDiscreetMode } = useDiscreetMode();
+    const [textWidth, setTextWidth] = useState<null | number>(0);
+
+    const handleTextLayout = useCallback((event: any) => {
+        const { width } = event.nativeEvent.layout;
+        setTextWidth(width);
+    }, []);
+
+    // If the highest value is at the end of range, it will overflow so we need to calculate width percentage of axis label from the screen and offset it.
+    const labelOffset = useMemo(() => {
+        if (!isEndOfRange || !textWidth) return x;
+        const textWidthPercentage = (textWidth / Dimensions.get('window').width) * 100;
+        // Divide the percentage width by 2 as there is no need to move it all of the widths way
+        return x - textWidthPercentage / 2;
+    }, [isEndOfRange, textWidth, x]);
 
     if (isDiscreetMode) return null;
 
-    const offset = String(value).length * APPROXIMATE_DIGIT_WIDTH;
-
-    const labelOffset = isHighestValue ? x - offset : x;
-
     return (
-        <View style={applyStyle(axisLabelStyle, { x: labelOffset })}>
+        <View style={applyStyle(axisLabelStyle, { x: labelOffset })} onLayout={handleTextLayout}>
             <FiatAmountFormatter value={String(value)} />
         </View>
     );
