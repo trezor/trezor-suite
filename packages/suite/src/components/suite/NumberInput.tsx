@@ -1,10 +1,5 @@
 import React, { useCallback, useLayoutEffect, useRef, useState } from 'react';
-import {
-    ControllerRenderProps,
-    InputState,
-    useController,
-    UseControllerOptions,
-} from 'react-hook-form';
+import { ControllerRenderProps, useController, UseControllerOptions } from 'react-hook-form';
 import { Input, InputProps } from '@trezor/components';
 import { TypedValidationRules } from '@suite-common/wallet-types';
 import { localizeNumber } from '@suite-common/wallet-utils';
@@ -44,7 +39,6 @@ type TypedMethods = {
         value: string | undefined;
         ref?: React.RefObject<HTMLInputElement>;
     };
-    meta: InputState;
 };
 
 interface NumberInputProps extends Omit<InputProps, 'onChange' | 'type'> {
@@ -67,7 +61,6 @@ export const NumberInput = ({
 
     const {
         field: { value, onChange, ref: inputRef, ...controlProps },
-        meta: { invalid },
     }: TypedMethods = useController<Record<string, unknown>>({
         name,
         control,
@@ -151,7 +144,6 @@ export const NumberInput = ({
         const cleanDisplayValue = cleanValueString(displayValue, locale);
         if (cleanPrevFormValue !== cleanFormValue && cleanPrevDisplayValue === cleanDisplayValue) {
             formatDisplayValue(value ?? '');
-            previousFormValueRef.current = cleanFormValue;
         }
     }, [formatDisplayValue, displayValue, value, locale]);
 
@@ -200,20 +192,7 @@ export const NumberInput = ({
             // pass cleaned value to the form
             previousFormValueRef.current = cleanInput;
             onChange(cleanInput);
-
-            const hasError = !!rules?.validate?.(cleanInput);
-            // because the form is not updated yet after calling `onChange()`,
-            // the value of `invalid` here is the one before this change has been handled
-            const hasErrorStateChanged = hasError !== invalid;
-            if (hasErrorStateChanged) {
-                // delaying it becase the form needs some time to update the error state
-                // TODO: get rid of `onChangeCallback()` entirely and use the `watch` method from react-hook form
-                setTimeout(() => {
-                    onChangeCallback?.(cleanInput);
-                }, 200);
-            } else {
-                onChangeCallback?.(cleanInput);
-            }
+            onChangeCallback?.(cleanInput);
 
             // detect if separators have been added/removed
             // do not move the cursor in case of 123,456 => 1,123,456 (it moves 1 additional char if unhandled)
@@ -232,7 +211,7 @@ export const NumberInput = ({
             // make sure the cursor stays in the right place after formatting
             inputRef.current.setSelectionRange(selectionStart, selectionStart);
         },
-        [formatDisplayValue, locale, onChange, onChangeCallback, inputRef, invalid, rules],
+        [formatDisplayValue, locale, onChange, onChangeCallback, inputRef],
     );
 
     // copy the non-formatted value
