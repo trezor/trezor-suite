@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import { Dimensions, View } from 'react-native';
+import { Dimensions, LayoutChangeEvent, View } from 'react-native';
 
 import { useDiscreetMode } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -21,7 +21,7 @@ export const AxisLabel = ({ x, value, isEndOfRange = false }: AxisLabelProps) =>
     const { isDiscreetMode } = useDiscreetMode();
     const [textWidth, setTextWidth] = useState<null | number>(0);
 
-    const handleTextLayout = useCallback((event: any) => {
+    const handleTextLayout = useCallback((event: LayoutChangeEvent) => {
         const { width } = event.nativeEvent.layout;
         setTextWidth(width);
     }, []);
