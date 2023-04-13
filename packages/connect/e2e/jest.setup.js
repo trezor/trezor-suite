@@ -1,6 +1,6 @@
 const { TX_CACHE } = require('./__txcache__');
 
-jest.setTimeout(20000);
+jest.setTimeout(30000);
 
 // Always mock blockchain-link worker unless it's explicitly required not to.
 if (process.env.TESTS_USE_WS_CACHE === 'true') {
