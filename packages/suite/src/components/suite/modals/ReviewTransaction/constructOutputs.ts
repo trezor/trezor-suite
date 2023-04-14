@@ -222,6 +222,7 @@ const constructNewFlow = ({
                 outputs.push({
                     type: 'amount',
                     value: o.amount.toString(),
+                    token: precomposedTx.token,
                 });
             } else if (o.script_type === 'PAYTOOPRETURN') {
                 outputs.push({
