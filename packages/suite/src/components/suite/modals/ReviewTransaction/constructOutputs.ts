@@ -215,6 +215,9 @@ const constructNewFlow = ({
     } else {
         precomposedTx.transaction.outputs.forEach(o => {
             if (typeof o.address === 'string') {
+                if (precomposedTx.token) {
+                    outputs.push({ type: 'contract', value: precomposedTx.token.address });
+                }
                 outputs.push({ type: 'address', value: o.address });
                 outputs.push({
                     type: 'amount',
