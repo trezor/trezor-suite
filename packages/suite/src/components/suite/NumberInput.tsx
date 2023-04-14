@@ -26,7 +26,10 @@ const getLocaleSeparatorCharCodes = (locale: Locale) => ({
     decimalsSeparatorCharCode: getLocaleSeparators(locale).decimalSeparator.charCodeAt(0),
 });
 
-const isDecimalString = (value: string) => value.includes('.');
+const isValidDecimalString = (value: string) => /^([^.]*)\.[^.]*$/.test(value);
+const hasLeadingZeroes = (value: string) => /^0+(\d+\.\d*|\d+)$/.test(value);
+
+const removeLeadingZeroes = (value: string) => value.replace(/^0+(?!\.|$)/, '');
 
 const cleanValueString = (value: string, locale: Locale) => {
     const { decimalSeparator, thousandsSeparator } = getLocaleSeparators(locale);
@@ -36,8 +39,21 @@ const cleanValueString = (value: string, locale: Locale) => {
         .replaceAll(thousandsSeparator, '')
         .replaceAll(decimalSeparator, '.');
 
-    if (cleanedValue.startsWith('.')) {
+    // allow inputs like '.031' or ',1'
+    if (!isValidDecimalString(cleanedValue.substring(1)) && cleanedValue.startsWith('.')) {
         cleanedValue = `0${cleanedValue}`;
+    }
+
+    // remove extra decimal separators when a number is already a decimal
+    if (!isValidDecimalString(cleanedValue) && cleanedValue.endsWith('.')) {
+        cleanedValue = cleanedValue.slice(0, cleanedValue.length - 1);
+    }
+
+    // if a value is not a valid decimal or integer, dont format it – let it be converted to NaN later
+    if (cleanedValue && isValidDecimalString(cleanedValue)) {
+        cleanedValue = parseFloat(cleanedValue).toString();
+    } else if (cleanedValue && !cleanedValue.includes('.')) {
+        cleanedValue = parseInt(cleanedValue, 10).toString();
     }
 
     return cleanedValue;
@@ -89,7 +105,7 @@ export const NumberInput = ({
 
     // formats and sets the value visible in the input (not the form)
     const formatDisplayValue = useCallback(
-        (value: string) => {
+        (rawValue: string, cleanValue: string) => {
             const handleSetDisplayValue = (newDisplayValue: string) => {
                 setDisplayValue(newDisplayValue);
 
@@ -103,46 +119,38 @@ export const NumberInput = ({
                 return newDisplayValue;
             };
 
-            // don't include spaces at the start or the end of a number, for pasting mainly
-            value = value.trim();
-            const cleanValue = cleanValueString(value, locale);
-
             // don't localize when entering a separator or a 0 in decimals (e.g. 0.0000 -> 0.00001),
             // otherwise the separator might get removed
-            const lastSymbolCode = value.at(-1)?.charCodeAt(0);
+            const lastSymbolCode = rawValue.at(-1)?.charCodeAt(0);
             const zeroCharCode = 48;
             if (
-                (lastSymbolCode && [...DECIMAL_SEPARATOR_CODES].includes(lastSymbolCode)) ||
-                (isDecimalString(cleanValue) && zeroCharCode === lastSymbolCode)
+                lastSymbolCode &&
+                [...DECIMAL_SEPARATOR_CODES, zeroCharCode].includes(lastSymbolCode)
             ) {
-                // disallow entering more than one separator
-                const secondToLastSymbolCode = value.at(-2)?.charCodeAt(0);
-                if (
-                    lastSymbolCode !== zeroCharCode &&
-                    secondToLastSymbolCode &&
-                    DECIMAL_SEPARATOR_CODES.includes(secondToLastSymbolCode)
-                ) {
-                    return;
-                }
+                if (lastSymbolCode !== zeroCharCode) {
+                    // disallow entering more than one separator
+                    const secondToLastSymbolCode = rawValue.at(-2)?.charCodeAt(0);
+                    if (
+                        secondToLastSymbolCode &&
+                        DECIMAL_SEPARATOR_CODES.includes(secondToLastSymbolCode)
+                    ) {
+                        return;
+                    }
 
-                // format a decimal separator to a locale-specific one to allow entering either one
-                const { decimalsSeparatorCharCode } = getLocaleSeparatorCharCodes(locale);
-                if (
-                    DECIMAL_SEPARATOR_CODES.includes(lastSymbolCode) &&
-                    lastSymbolCode !== decimalsSeparatorCharCode
-                ) {
+                    // format a decimal separator to a locale-specific one to allow entering either one
+                    const { decimalsSeparatorCharCode } = getLocaleSeparatorCharCodes(locale);
                     const { decimalSeparator } = getLocaleSeparators(locale);
 
                     // ignore additional decimal separators when a number is already a decimal
-                    if (value.includes(decimalSeparator)) {
-                        value = value.slice(0, -1);
-                    } else {
-                        value = value.slice(0, -1) + decimalSeparator;
+                    if (rawValue.slice(0, -1).includes(decimalSeparator)) {
+                        rawValue = rawValue.slice(0, -1);
+                    } else if (lastSymbolCode !== decimalsSeparatorCharCode) {
+                        rawValue = rawValue.slice(0, -1) + decimalSeparator;
                     }
                 }
 
                 // the number is incomplere and not reazy do be localized (e.g. 1,234. or 1,0000)
-                return handleSetDisplayValue(value);
+                return handleSetDisplayValue(removeLeadingZeroes(rawValue));
             }
 
             // clean so that it's compatible with Number() and localize
@@ -152,13 +160,16 @@ export const NumberInput = ({
         [inputRef, locale],
     );
 
+    // react to form data changes
     useLayoutEffect(() => {
         const cleanPrevFormValue = cleanValueString(previousFormValueRef.current ?? '', locale);
         const cleanFormValue = cleanValueString(value ?? '', locale);
         const cleanPrevDisplayValue = cleanValueString(previousDisplayValueRef.current, locale);
         const cleanDisplayValue = cleanValueString(displayValue, locale);
+
         if (cleanPrevFormValue !== cleanFormValue && cleanPrevDisplayValue === cleanDisplayValue) {
-            formatDisplayValue(value ?? '');
+            // since the value comes from and is valid, repeated formatting might case errors for some locales
+            formatDisplayValue(value ?? '', value ?? '');
             previousFormValueRef.current = cleanFormValue;
         }
     }, [formatDisplayValue, displayValue, value, locale]);
@@ -190,40 +201,56 @@ export const NumberInput = ({
                 }
             }
 
-            // make the string compliant with Number
-            const cleanInput = cleanValueString(inputValue, locale);
+            let cleanInput: string;
+            // clean the entered number string if it's not convertable to Number or if it has a non-conventional format
+            if (
+                Number.isNaN(Number(inputValue)) ||
+                groupSeparatorCharCode === 46 ||
+                hasLeadingZeroes(inputValue)
+            ) {
+                // try makeing the string compliant with Number
+                cleanInput = cleanValueString(inputValue, locale);
+            } else {
+                cleanInput = inputValue;
+            }
 
             // allow inputs like '.031' or ',1' and disallow anything non-numerical
-            if (
-                !DECIMAL_SEPARATOR_CODES.includes(inputValue.charCodeAt(0)) &&
-                Number.isNaN(Number(cleanInput))
-            ) {
+            if (!(cleanInput === '.') && Number.isNaN(Number(cleanInput))) {
+                // avoid cursor moving when typing in additional decimal separators
+                formatDisplayValue(
+                    previousDisplayValue,
+                    cleanValueString(previousDisplayValue, locale),
+                );
+                inputRef.current.setSelectionRange(cursorPosition - 1, cursorPosition - 1);
+
                 return;
             }
 
             // format and set display value
             const currentValueLength = inputRef.current?.value.length || 0;
-            const formattedValue = formatDisplayValue(inputValue);
+            const formattedValue = formatDisplayValue(inputValue, cleanInput);
             if (formattedValue === undefined) return;
             const formattedValueLength = formattedValue.length;
 
-            // pass cleaned value to the form
-            previousFormValueRef.current = cleanInput;
-            onChange(cleanInput);
+            if (previousFormValueRef.current !== cleanInput) {
+                // pass cleaned value to the form
+                previousFormValueRef.current = cleanInput;
+                onChange(cleanInput);
 
-            // get the latest error state
-            const hasError = !!rules?.validate?.(cleanInput);
-            // because the form is not updated yet after calling `onChange()`,
-            // the value of `invalid` here is the one before this change has been handled
-            const hasErrorStateChanged = hasError !== invalid;
-            if (hasErrorStateChanged) {
-                // delaying it becase the form needs some time to update the error state
-                // TODO: get rid of `onChangeCallback()` entirely and use the `watch` method from react-hook form
-                setTimeout(() => {
+                // get the latest error state
+                const hasError = !!rules?.validate?.(cleanInput);
+                // because the form is not updated yet after calling `onChange()`,
+                // the value of `invalid` here is the one before this change has been handled
+                const hasErrorStateChanged = hasError !== invalid;
+                if (hasErrorStateChanged) {
+                    // delaying it becase the form needs some time to update the error state
+                    // TODO: get rid of `onChangeCallback()` entirely and use the `watch` method from react-hook form
+                    setTimeout(() => {
+                        onChangeCallback?.(cleanInput);
+                    }, 0);
+                } else {
                     onChangeCallback?.(cleanInput);
-                }, 0);
-            } else {
-                onChangeCallback?.(cleanInput);
+                }
             }
 
             // detect if separators have been added/removed

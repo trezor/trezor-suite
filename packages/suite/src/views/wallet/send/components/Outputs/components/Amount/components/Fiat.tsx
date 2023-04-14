@@ -82,7 +82,7 @@ export const Fiat = ({ output, outputId }: Props) => {
                 setValue('setMaxOutputId', undefined);
             }
 
-            if (error) {
+            if (error && error.message !== 'AMOUNT_IS_NOT_SET') {
                 // reset Amount field in case of invalid Fiat value
                 if (getDefaultValue(amountInputName, '').length > 0) {
                     setValue(amountInputName, '');
