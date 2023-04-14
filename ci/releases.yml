@@ -2,6 +2,7 @@
 suite codesign deploy staging-suite:
   stage: deploy to staging
   needs:
+    - release commit messages
     - suite-web build stable codesign
     - suite-desktop build mac codesign
     - suite-desktop build linux codesign
@@ -33,6 +34,7 @@ suite codesign deploy staging-suite:
 suite-desktop deploy autoupdate test:
   stage: deploy to dev
   needs:
+    - release commit messages
     - suite-desktop build mac codesign
     - suite-desktop build linux codesign
     - suite-desktop build windows codesign
@@ -53,6 +55,7 @@ suite-desktop deploy autoupdate test:
 suite-desktop github release:
   stage: deploy to production
   needs:
+    - release commit messages
     - suite-desktop build mac codesign
     - suite-desktop build linux codesign
     - suite-desktop build windows codesign
@@ -72,10 +75,11 @@ suite-desktop github release:
     - deploy
 
 release commit messages:
-  stage: deploy to staging
+  stage: setup environment
   only:
     refs:
       - /^release\//
+      - codesign
   script:
     - ci/scripts/check_release_commit_messages.sh
 
@@ -127,6 +131,7 @@ connect v9 deploy production:
     - connect-web build
     - connect-explorer build
   needs:
+    - release commit messages
     - connect-web build
     - connect-explorer build
   before_script: []
