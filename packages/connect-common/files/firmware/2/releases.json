@@ -7,7 +7,7 @@
         "min_bootloader_version": [2, 0, 0],
         "bootloader_version": [2, 1, 0],
         "url": "firmware/2/trezor-2.6.0.bin",
-        "url_bitcoinonly": "firmware/2/trezor-2.6.0x-bitcoinonly.bin",
+        "url_bitcoinonly": "firmware/2/trezor-2.6.0-bitcoinonly.bin",
         "fingerprint": "050526db604b9acceef2a5a8561bc99ecbe337909283ebb927b556d8e9b13872",
         "fingerprint_bitcoinonly": "54f084dab4be1e64dc2cb970a6de87969407e4d6c48d79acdcf5d374ec0f29d6",
         "notes": "https://trezor.io/learn/a/trezor-device-firmware-update-april-2023",
