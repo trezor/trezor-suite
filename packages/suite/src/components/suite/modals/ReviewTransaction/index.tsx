@@ -10,7 +10,7 @@ import Summary from './components/Summary';
 import { isCardanoTx } from '@wallet-utils/cardanoUtils';
 import { DeviceModel, getDeviceModel } from '@trezor/device-utils';
 import { selectDevice } from '@suite-reducers/suiteReducer';
-import { constructOutputs } from './constructOputputs';
+import { constructOutputs } from './constructOutputs';
 
 const StyledModal = styled(Modal)`
     ${Modal.Body} {

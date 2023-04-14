@@ -27,7 +27,8 @@ export type OutputProps =
               | 'txid'
               | 'address'
               | 'amount'
-              | 'gas';
+              | 'gas'
+              | 'contract';
           label?: string;
           value: string;
           value2?: string;
@@ -66,6 +67,9 @@ const Output = (props: Props) => {
     }
     if (type === 'fee') {
         outputLabel = <Translation id="FEE" />;
+    }
+    if (type === 'contract') {
+        outputLabel = <Translation id="TR_CONTRACT" />;
     }
     if (type === 'address') {
         outputLabel = <Translation id="TR_ADDRESS" />;
@@ -147,6 +151,15 @@ const Output = (props: Props) => {
             {
                 id: 'data',
                 label: <Translation id="DATA_ETH" />,
+                value: outputValue,
+                plainValue: true,
+            },
+        ];
+    } else if (type === 'contract') {
+        outputLines = [
+            {
+                id: 'contract',
+                label: outputLabel,
                 value: outputValue,
                 plainValue: true,
             },
