@@ -112,7 +112,11 @@ export default class EthereumSignTransaction extends AbstractMethod<
     async run() {
         const { tx } = this.params;
 
-        const definitions = await getEthereumDefinitions(tx.chainId, tx.data ? tx.to : undefined);
+        const definitions = await getEthereumDefinitions(
+            tx.chainId,
+            this.params.path,
+            tx.data ? tx.to : undefined,
+        );
 
         return tx.type === 'eip1559'
             ? helper.ethereumSignTxEIP1559(

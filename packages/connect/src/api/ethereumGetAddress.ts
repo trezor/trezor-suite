@@ -9,10 +9,12 @@ import { stripHexPrefix } from '../utils/formatUtils';
 import { PROTO, ERRORS } from '../constants';
 import { UI, createUiMessage } from '../events';
 import type { EthereumNetworkInfo } from '../types';
+import { getEthereumDefinitions } from './ethereum/ethereumDefinitions';
 
 type Params = PROTO.EthereumGetAddress & {
     address?: string;
     network?: EthereumNetworkInfo;
+    encoded_network?: ArrayBuffer;
 };
 
 export default class EthereumGetAddress extends AbstractMethod<'ethereumGetAddress', Params[]> {
@@ -127,11 +129,12 @@ export default class EthereumGetAddress extends AbstractMethod<'ethereumGetAddre
         return uiResp.payload;
     }
 
-    _call({ address_n, show_display }: Params) {
+    _call({ address_n, show_display, encoded_network }: Params) {
         const cmd = this.device.getCommands();
         return cmd.ethereumGetAddress({
             address_n,
             show_display,
+            encoded_network,
         });
     }
 
@@ -140,12 +143,24 @@ export default class EthereumGetAddress extends AbstractMethod<'ethereumGetAddre
 
         for (let i = 0; i < this.params.length; i++) {
             const batch = this.params[i];
+            const definitions = await getEthereumDefinitions(
+                batch?.network?.chainId,
+                batch.address_n,
+            );
+
+            const definitionParams = {
+                ...(definitions.encoded_network && {
+                    encoded_network: definitions.encoded_network,
+                }),
+            };
+
             // silently get address and compare with requested address
             // or display as default inside popup
             if (batch.show_display) {
                 const silent = await this._call({
                     ...batch,
-                    show_display: false,
+                    ...definitionParams,
+                    show_display: true,
                 });
                 if (typeof batch.address === 'string') {
                     if (
@@ -160,7 +175,10 @@ export default class EthereumGetAddress extends AbstractMethod<'ethereumGetAddre
                 }
             }
 
-            const response = await this._call(batch);
+            const response = await this._call({
+                ...batch,
+                ...definitionParams,
+            });
             responses.push(response);
 
             if (this.hasBundle) {

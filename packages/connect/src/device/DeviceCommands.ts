@@ -295,10 +295,15 @@ export class DeviceCommands {
         };
     }
 
-    async ethereumGetAddress({ address_n, show_display }: Messages.EthereumGetAddress) {
+    async ethereumGetAddress({
+        address_n,
+        show_display,
+        encoded_network,
+    }: Messages.EthereumGetAddress) {
         const response = await this.typedCall('EthereumGetAddress', 'EthereumAddress', {
             address_n,
             show_display,
+            encoded_network,
         });
         return {
             path: address_n,
