@@ -1,20 +1,36 @@
 import fetch from 'cross-fetch';
 
 import { EthereumDefinitions } from '@trezor/transport/lib/types/messages';
+import { fromHardened } from '../../utils/pathUtils';
+
+const getSlip44ByPath = (path: number[]) => fromHardened(path[1]);
 
 /**
  * For given chainId and optionally contractAddress download ethereum definitions for transaction signing.
  * Definitions are only required to display correct information on display. If definitions
  * are not provided UNKNOWN is shown. This means that should this method fail we only log this but don't return error.
  */
-export const getEthereumDefinitions = async (chainId: number, contractAddress?: string) => {
+export const getEthereumDefinitions = async (
+    chainId: number | undefined,
+    path?: number[],
+    contractAddress?: string,
+) => {
     const definitions: EthereumDefinitions = {};
 
-    try {
-        const networkDefinition = await fetch(
-            `https://data.trezor.io/firmware/eth-definitions/chain-id/${chainId}/network.dat`,
-        );
+    let slip44;
+    if (!chainId && path) {
+        slip44 = getSlip44ByPath(path);
+    }
 
+    if (!chainId && !slip44) {
+        throw new Error('argument chainId or slip44 path is required');
+    }
+
+    try {
+        const networkDefinitionUrl = `https://data.trezor.io/firmware/eth-definitions/${
+            chainId ? 'chain-id' : 'slip44'
+        }/${chainId ?? slip44}/network.dat`;
+        const networkDefinition = await fetch(networkDefinitionUrl);
         if (networkDefinition.status === 200) {
             definitions.encoded_network = await networkDefinition.arrayBuffer();
         } else if (networkDefinition.status !== 404) {
@@ -28,9 +44,10 @@ export const getEthereumDefinitions = async (chainId: number, contractAddress?: 
         if (contractAddress) {
             // Contract address has to be in lowercase in order to be found in eth-definitions.
             const lowerCaseContractAddress = contractAddress.toLowerCase();
-            const tokenDefinition = await fetch(
-                `https://data.trezor.io/firmware/eth-definitions/chain-id/${chainId}/token-${lowerCaseContractAddress}.dat`,
-            );
+            const tokenDefinitionUrl = `https://data.trezor.io/firmware/eth-definitions/${
+                chainId ? 'chain-id' : 'slip44'
+            }/${chainId ?? slip44}/token-${lowerCaseContractAddress}.dat`;
+            const tokenDefinition = await fetch(tokenDefinitionUrl);
             if (tokenDefinition.status === 200) {
                 definitions.encoded_token = await tokenDefinition.arrayBuffer();
             } else if (tokenDefinition.status !== 404) {
