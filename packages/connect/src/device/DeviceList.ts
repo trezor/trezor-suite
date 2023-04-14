@@ -98,7 +98,7 @@ export class DeviceList extends EventEmitter {
         // since web index (that otherwise set fallbacks) is released into npm, we can not rely
         // on that that transports will be always set here. We need to provide a 'fallback of the last resort'
         if (!transportSettings?.length) {
-            transportSettings = ['BridgeTransport', 'WebUsbTransport'];
+            transportSettings = ['BridgeTransport'];
         }
 
         if (env === 'react-native' && typeof ReactNativeUsbPlugin !== 'undefined') {
