@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { QRCode } from '@suite-native/qr-code';
+import { AddressQRCode } from '@suite-native/qr-code';
 import { Card, ButtonBackgroundElevation } from '@suite-native/atoms';
 import {
     TransactionsRootState,
@@ -55,7 +55,7 @@ export const ReceiveAddress = ({
     return (
         <Card>
             {!freshAddressError ? (
-                <QRCode
+                <AddressQRCode
                     data={freshAddress?.address}
                     onCopy={handleClose}
                     isShareEnabled

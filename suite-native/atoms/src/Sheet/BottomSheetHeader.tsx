@@ -6,6 +6,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Text } from '../Text';
 import { IconButton } from '../Button/IconButton';
 import { Divider } from '../Divider';
+import { Box } from '../Box';
 
 type BottomSheetHeaderProps = {
     title?: string;
@@ -28,7 +29,7 @@ const titlesContainer = prepareNativeStyle(_ => ({
 export const BottomSheetHeader = ({ title, subtitle, onCloseSheet }: BottomSheetHeaderProps) => {
     const { applyStyle } = useNativeStyles();
     return (
-        <View>
+        <Box marginBottom="small">
             <View style={applyStyle(sheetHeaderStyle)}>
                 <View style={applyStyle(titlesContainer)}>
                     <Text variant="titleSmall">{title}</Text>
@@ -51,6 +52,6 @@ export const BottomSheetHeader = ({ title, subtitle, onCloseSheet }: BottomSheet
                 />
             </View>
             <Divider />
-        </View>
+        </Box>
     );
 };

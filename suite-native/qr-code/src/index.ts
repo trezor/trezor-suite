@@ -1,2 +1,3 @@
 export * from './components/QRCodeScanner';
-export * from './components/QRCode';
+export * from './components/AddressQRCode';
+export * from './components/XpubQRCode';

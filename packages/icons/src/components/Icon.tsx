@@ -20,6 +20,7 @@ const iconSizes = {
     medium: 16,
     mediumLarge: 20,
     large: 24,
+    extraLarge: 32,
 } as const;
 
 export type IconSize = keyof typeof iconSizes;

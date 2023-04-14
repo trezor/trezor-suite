@@ -1,9 +1,9 @@
-import React, { ReactNode, useState } from 'react';
+import React, { ReactNode } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { networks, NetworkSymbol, NetworkType } from '@suite-common/wallet-config';
+import { networks, NetworkSymbol } from '@suite-common/wallet-config';
 import {
     AccountsStackParamList,
     AccountsStackRoutes,
@@ -14,7 +14,7 @@ import {
     StackToStackCompositeNavigationProps,
     StackProps,
 } from '@suite-native/navigation';
-import { BottomSheet, Box, Button, Card, Text, VStack } from '@suite-native/atoms';
+import { Box, Button, Card, Text, VStack } from '@suite-native/atoms';
 import {
     accountsActions,
     AccountsRootState,
@@ -22,17 +22,10 @@ import {
     selectAccountLabel,
     selectFormattedAccountType,
 } from '@suite-common/wallet-core';
-import { QRCode } from '@suite-native/qr-code';
 import { CryptoIcon } from '@trezor/icons';
 
 import { AccountRenameButton } from '../components/AccountRenameButton';
-
-const networkTypeToButtonTitleMap: Record<NetworkType, string> = {
-    bitcoin: 'Show public key (XPUB)',
-    cardano: 'Show public key (XPUB)',
-    ethereum: 'Show receive address',
-    ripple: 'Show receive address',
-};
+import { AccountSettingsShowXpub } from '../components/AccountSettingsShowXpub';
 
 const AccountDetailSettingsRow = ({ title, children }: { title: string; children: ReactNode }) => (
     <Box flexDirection="row" alignItems="center" justifyContent="space-between">
@@ -56,7 +49,7 @@ export const AccountSettingsScreen = ({
     route,
 }: StackProps<RootStackParamList, RootStackRoutes.AccountSettings>) => {
     const { accountKey } = route.params;
-    const [isXpubVisible, setIsXpubVisible] = useState(false);
+
     const navigation =
         useNavigation<
             StackToStackCompositeNavigationProps<
@@ -85,13 +78,6 @@ export const AccountSettingsScreen = ({
         navigation.navigate(AccountsStackRoutes.Accounts);
     };
 
-    const handleClose = () => {
-        setIsXpubVisible(false);
-    };
-
-    const { networkType } = networks[account.symbol];
-    const xpubButtonTitle = networkTypeToButtonTitleMap[networkType];
-
     return (
         <Screen
             header={
@@ -116,21 +102,12 @@ export const AccountSettingsScreen = ({
                     </VStack>
                 </Card>
                 <VStack spacing="small">
-                    <Button onPress={() => setIsXpubVisible(true)} colorScheme="tertiaryElevation0">
-                        {xpubButtonTitle}
-                    </Button>
+                    <AccountSettingsShowXpub accountKey={account.key} />
                     <Button onPress={handleRemoveAccount} colorScheme="dangerElevation0">
                         Remove coin
                     </Button>
                 </VStack>
             </Box>
-            <BottomSheet isVisible={isXpubVisible} onClose={setIsXpubVisible}>
-                <QRCode
-                    data={account.descriptor}
-                    onCopy={handleClose}
-                    onCopyMessage="XPUB copied"
-                />
-            </BottomSheet>
         </Screen>
     );
 };
