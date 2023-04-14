@@ -24,8 +24,8 @@ interface Props extends React.ComponentProps<typeof IntlFormattedDate> {
 
 const defaultDateFormat = {
     year: 'numeric',
-    month: 'short',
-    day: '2-digit',
+    month: 'long',
+    day: 'numeric',
 } as const;
 
 const defaultTimeFormat = {
