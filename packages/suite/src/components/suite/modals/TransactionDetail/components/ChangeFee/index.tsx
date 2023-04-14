@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Card, Icon, variables } from '@trezor/components';
 import { Translation, FiatValue, FormattedCryptoAmount } from '@suite-components';
-import { useRbf, RbfContext, Props } from '@wallet-hooks/useRbfForm';
+import { useRbf, RbfContext, UseRbfProps } from '@wallet-hooks/useRbfForm';
 import { formatNetworkAmount, getFeeUnits } from '@suite-common/wallet-utils';
 import Fees from './components/Fees';
 import AffectedTransactions from './components/AffectedTransactions';
@@ -100,7 +100,7 @@ const Red = styled.span`
 `;
 
 /* children are only for test purposes, this prop is not available in regular build */
-interface ChangeFeeProps extends Props {
+interface ChangeFeeProps extends UseRbfProps {
     children?: React.ReactNode;
     showChained: () => void;
 }

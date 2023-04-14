@@ -9,10 +9,10 @@ import { Account, WalletAccountTransaction } from '@wallet-types';
 import { FormState, FeeInfo } from '@wallet-types/sendForm';
 import { useFees } from './form/useFees';
 import { useCompose } from './form/useCompose';
-import { useBitcoinAmountUnit } from './useBitcoinAmountUnit';
 import { selectCurrentTargetAnonymity } from '@wallet-reducers/coinjoinReducer';
+import { useBitcoinAmountUnit } from './useBitcoinAmountUnit';
 
-export type Props = {
+export type UseRbfProps = {
     tx: WalletAccountTransaction;
     finalize: boolean;
     chainedTxs: WalletAccountTransaction[];
@@ -57,12 +57,12 @@ const getFeeInfo = (
     return info;
 };
 
-const useRbfState = ({ tx, finalize, chainedTxs }: Props, currentState: boolean) => {
+const useRbfState = ({ tx, finalize, chainedTxs }: UseRbfProps, currentState: boolean) => {
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     const fees = useSelector(state => state.wallet.fees);
     const targetAnonymity = useSelector(selectCurrentTargetAnonymity);
 
-    const { shouldSendInSats } = useBitcoinAmountUnit();
+    const { shouldSendInSats } = useBitcoinAmountUnit(tx.symbol);
 
     // do not calculate if currentState is already set (prevent re-renders)
     if (selectedAccount.status !== 'loaded' || !tx.rbfParams || currentState) return;
@@ -142,7 +142,7 @@ const useRbfState = ({ tx, finalize, chainedTxs }: Props, currentState: boolean)
     };
 };
 
-export const useRbf = (props: Props) => {
+export const useRbf = (props: UseRbfProps) => {
     // local state
     const [state, setState] = useState<ReturnType<typeof useRbfState>>(undefined);
 
