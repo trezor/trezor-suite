@@ -32,7 +32,7 @@ export type OutputProps =
           label?: string;
           value: string;
           value2?: string;
-          token?: undefined;
+          token?: TokenInfo;
       }
     | {
           type: 'fee-replace';
