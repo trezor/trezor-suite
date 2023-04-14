@@ -242,6 +242,7 @@ export const BasicDetails = ({ tx, confirmations, network, explorerUrl }: BasicD
 
                 {/* TX ID */}
                 <Title>
+                    <StyledIcon icon="FINGERPRINT" size={10} />
                     <Translation id="TR_TXID" />
                 </Title>
 
