@@ -139,6 +139,10 @@ export default defineMessages({
         defaultMessage: 'In the meantime, make sure you have completed all security steps below.',
         id: 'TR_ADDITIONAL_SECURITY_FEATURES',
     },
+    TR_CONTRACT: {
+        defaultMessage: 'Contract',
+        id: 'TR_CONTRACT',
+    },
     TR_ADDRESS: {
         defaultMessage: 'Address',
         description: 'Used as label for receive/send address input',
