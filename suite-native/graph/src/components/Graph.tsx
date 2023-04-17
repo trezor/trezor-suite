@@ -11,7 +11,7 @@ import {
     EnhancedGraphPointWithCryptoBalance,
     EnhancedGraphPoint,
 } from '../utils';
-import { AxisLabel } from './AxisLabel';
+import { AxisLabel, MAX_CLAMP_VALUE } from './AxisLabel';
 import { GraphError } from './GraphError';
 import { SelectionDotWithLine } from './SelectionDotWithLine';
 
@@ -65,7 +65,7 @@ const emptyPoints: EnhancedGraphPointWithCryptoBalance[] = [
 ];
 
 // to avoid overflows from the screen
-const clampAxisLabels = (value: number) => N.clamp(value, 5, 90);
+const clampAxisLabels = (value: number) => N.clamp(value, 5, MAX_CLAMP_VALUE);
 
 export const Graph = <TGraphPoint extends EnhancedGraphPoint>({
     onPointSelected,
