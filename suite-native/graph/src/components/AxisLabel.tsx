@@ -31,8 +31,7 @@ export const AxisLabel = ({ x, value }: AxisLabelProps) => {
     const labelOffset = useMemo(() => {
         if (x !== MAX_CLAMP_VALUE || !textWidth) return x;
         const textWidthPercentage = (textWidth / Dimensions.get('window').width) * 100;
-        // Divide the percentage width by 2 as there is no need to move it all of the widths way
-        return x - textWidthPercentage / 2;
+        return x - textWidthPercentage;
     }, [textWidth, x]);
 
     if (isDiscreetMode) return null;
