@@ -50,7 +50,7 @@
     },
     "dependencies": {
         "@trezor/blockchain-link": "workspace:2.1.9",
-        "@trezor/connect-common": "workspace:0.0.12",
+        "@trezor/connect-common": "workspace:0.0.13",
         "@trezor/transport": "workspace:1.1.9",
         "@trezor/utils": "workspace:9.0.7",
         "@trezor/utxo-lib": "workspace:1.0.5",

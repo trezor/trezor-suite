@@ -1,3 +1,7 @@
+# 0.0.13
+
+-   2.6.0 FW
+
 # 0.0.12
 
 -   feat: cardano preview testnet
