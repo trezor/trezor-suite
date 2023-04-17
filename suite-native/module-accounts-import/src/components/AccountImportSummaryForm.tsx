@@ -13,7 +13,6 @@ import { HIDDEN_DEVICE_STATE } from '@suite-native/module-devices';
 import {
     AccountsImportStackParamList,
     AccountsImportStackRoutes,
-    AppTabsRoutes,
     HomeStackRoutes,
     RootStackParamList,
     RootStackRoutes,
@@ -75,11 +74,19 @@ export const AccountImportSummaryForm = ({
                 coin: networkSymbol,
             }),
         );
-        navigation.navigate(RootStackRoutes.AppTabs, {
-            screen: AppTabsRoutes.HomeStack,
-            params: {
-                screen: HomeStackRoutes.Home,
-            },
+
+        navigation.reset({
+            index: 0,
+            routes: [
+                {
+                    // Needs to be fixed with useNavigation types.
+                    // @ts-expect-error
+                    name: RootStackRoutes.AppTabs,
+                    params: {
+                        screen: HomeStackRoutes.Home,
+                    },
+                },
+            ],
         });
     });
 
