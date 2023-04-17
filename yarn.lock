@@ -7527,7 +7527,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/blockchain-link@workspace:*, @trezor/blockchain-link@workspace:^2.1.8, @trezor/blockchain-link@workspace:packages/blockchain-link":
+"@trezor/blockchain-link@workspace:*, @trezor/blockchain-link@workspace:2.1.9, @trezor/blockchain-link@workspace:packages/blockchain-link":
   version: 0.0.0-use.local
   resolution: "@trezor/blockchain-link@workspace:packages/blockchain-link"
   dependencies:
@@ -7812,7 +7812,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/connect@workspace:packages/connect"
   dependencies:
-    "@trezor/blockchain-link": "workspace:^2.1.8"
+    "@trezor/blockchain-link": "workspace:2.1.9"
     "@trezor/connect-analytics": "workspace:*"
     "@trezor/connect-common": "workspace:0.0.12"
     "@trezor/transport": "workspace:1.1.9"
