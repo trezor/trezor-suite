@@ -1,3 +1,7 @@
+# 1.0.5
+
+chore(utxo-lib): update deps, update bs58check bitcoin lib
+
 # 1.0.4
 
 -   fix(utxo-lib): ltc deserialize without advanced marker

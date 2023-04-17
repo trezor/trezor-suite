@@ -7483,7 +7483,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/blockchain-link-types@workspace:packages/blockchain-link-types"
   dependencies:
-    "@trezor/utxo-lib": "workspace:^1.0.4"
+    "@trezor/utxo-lib": "workspace:1.0.5"
     rimraf: ^4.4.1
     ripple-lib: ^1.10.1
     socks-proxy-agent: 6.1.1
@@ -7513,7 +7513,7 @@ __metadata:
     "@trezor/blockchain-link-types": "workspace:1.0.0"
     "@trezor/blockchain-link-utils": "workspace:1.0.0"
     "@trezor/utils": "workspace:9.0.7"
-    "@trezor/utxo-lib": "workspace:^1.0.4"
+    "@trezor/utxo-lib": "workspace:1.0.5"
     "@types/web": ^0.0.99
     bignumber.js: ^9.1.1
     events: ^3.3.0
@@ -7797,7 +7797,7 @@ __metadata:
     "@trezor/transport": "workspace:^1.1.8"
     "@trezor/trezor-user-env-link": "workspace:*"
     "@trezor/utils": "workspace:9.0.7"
-    "@trezor/utxo-lib": "workspace:^1.0.4"
+    "@trezor/utxo-lib": "workspace:1.0.5"
     "@types/karma": ^6.3.3
     "@types/parse-uri": ^1.0.0
     "@types/randombytes": ^2.0.0
@@ -8473,7 +8473,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/utxo-lib@workspace:*, @trezor/utxo-lib@workspace:^1.0.4, @trezor/utxo-lib@workspace:packages/utxo-lib":
+"@trezor/utxo-lib@workspace:*, @trezor/utxo-lib@workspace:1.0.5, @trezor/utxo-lib@workspace:packages/utxo-lib":
   version: 0.0.0-use.local
   resolution: "@trezor/utxo-lib@workspace:packages/utxo-lib"
   dependencies:

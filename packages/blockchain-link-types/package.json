@@ -10,7 +10,7 @@
         "build:lib": "rimraf ./lib && yarn tsc --build tsconfig.lib.json"
     },
     "devDependencies": {
-        "@trezor/utxo-lib": "workspace:^1.0.4",
+        "@trezor/utxo-lib": "workspace:1.0.5",
         "rimraf": "^4.4.1",
         "ripple-lib": "^1.10.1",
         "socks-proxy-agent": "6.1.1",
