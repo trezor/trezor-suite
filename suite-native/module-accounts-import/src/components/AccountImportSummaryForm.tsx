@@ -1,6 +1,7 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { CommonActions } from '@react-navigation/native';
 import { A } from '@mobily/ts-belt';
 import { useNavigation } from '@react-navigation/core';
 
@@ -13,7 +14,6 @@ import { HIDDEN_DEVICE_STATE } from '@suite-native/module-devices';
 import {
     AccountsImportStackParamList,
     AccountsImportStackRoutes,
-    AppTabsRoutes,
     HomeStackRoutes,
     RootStackParamList,
     RootStackRoutes,
@@ -75,12 +75,20 @@ export const AccountImportSummaryForm = ({
                 coin: networkSymbol,
             }),
         );
-        navigation.navigate(RootStackRoutes.AppTabs, {
-            screen: AppTabsRoutes.HomeStack,
-            params: {
-                screen: HomeStackRoutes.Home,
-            },
-        });
+
+        navigation.dispatch(
+            CommonActions.reset({
+                index: 0,
+                routes: [
+                    {
+                        name: RootStackRoutes.AppTabs,
+                        params: {
+                            screen: HomeStackRoutes.Home,
+                        },
+                    },
+                ],
+            }),
+        );
     });
 
     const shouldDisplayEthereumAccountTokens =
