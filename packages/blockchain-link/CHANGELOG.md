@@ -1,6 +1,9 @@
-# 2.1.9 [not released]
+# 2.1.9
 
 -   feat: add `token` param to to `GetCurrentFiatRates`, `GetFiatRatesForTimestamps` and `GetFiatRatesTickersList` methods
+-   chore: parts of this packages split into @trezor/blockchain-link-types and @trezor/blockchain-link-utils
+-   chore: token.address to token.contract, ethereum improvements
+-   feat: add token param to blockbook fiat methods
 
 # 2.1.8
 
