@@ -1,3 +1,7 @@
+# 9.0.7
+
+-   feat(utils): add arrayShuffle util
+
 # 9.0.6
 
 -   fix(utils): scheduleAction readonly param
