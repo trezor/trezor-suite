@@ -14,14 +14,14 @@ type TabBarItemProps = {
 
 const tabBarItemStyle = prepareNativeStyle(_ => ({
     flex: 1,
-    marginTop: 11,
     alignItems: 'center',
     justifyContent: 'center',
 }));
 
-const tabBarItemContainerStyle = prepareNativeStyle(_ => ({
+const tabBarItemContainerStyle = prepareNativeStyle(utils => ({
     justifyContent: 'center',
     alignItems: 'center',
+    paddingTop: utils.spacings.small,
 }));
 
 const TAB_BAR_ITEM_HORIZONTAL_HIT_SLOP = 15;

@@ -1,8 +1,9 @@
 import React, { ReactNode, useEffect, useContext } from 'react';
-import { StatusBar, View } from 'react-native';
+import { Platform, StatusBar, View } from 'react-native';
 import { useSafeAreaInsets, EdgeInsets } from 'react-native-safe-area-context';
 
 import * as SystemUI from 'expo-system-ui';
+import * as NavigationBar from 'expo-navigation-bar';
 import { BottomTabBarHeightContext } from '@react-navigation/bottom-tabs';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -72,7 +73,12 @@ export const Screen = ({
     useEffect(() => {
         // this prevents some weird flashing of splash screen on Android during screen transitions
         SystemUI.setBackgroundColorAsync(backgroundCSSColor);
-    }, [backgroundCSSColor]);
+
+        if (Platform.OS === 'android') {
+            NavigationBar.setBackgroundColorAsync(backgroundCSSColor);
+            NavigationBar.setButtonStyleAsync(isDarkColor(backgroundCSSColor) ? 'light' : 'dark');
+        }
+    }, [backgroundCSSColor, isDarkColor]);
 
     return (
         <View

@@ -12,29 +12,35 @@ import { TabsOptions } from '../types';
 interface TabBarProps extends BottomTabBarProps {
     tabItemOptions: TabsOptions;
 }
-
-export const TAB_BAR_HEIGHT = 86;
-const tabBarStyle = prepareNativeStyle<{ insetLeft: number; insetRight: number }>(
-    (utils, { insetLeft, insetRight }) => ({
-        height: TAB_BAR_HEIGHT,
-        width: '100%',
-        backgroundColor: utils.colors.backgroundSurfaceElevation0,
-        borderTopColor: utils.colors.borderOnElevation0,
-        borderTopWidth: utils.borders.widths.small,
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'flex-start',
-        paddingLeft: Math.max(insetLeft, 20),
-        paddingRight: Math.max(insetRight, 20),
-    }),
-);
+const tabBarStyle = prepareNativeStyle<{
+    insetLeft: number;
+    insetRight: number;
+    insetsBottom: number;
+}>((utils, { insetLeft, insetRight, insetsBottom }) => ({
+    width: '100%',
+    backgroundColor: utils.colors.backgroundSurfaceElevation0,
+    borderTopColor: utils.colors.borderOnElevation0,
+    borderTopWidth: utils.borders.widths.small,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    paddingLeft: Math.max(insetLeft, 20),
+    paddingRight: Math.max(insetRight, 20),
+    paddingBottom: insetsBottom,
+}));
 
 export const TabBar = ({ state, navigation, tabItemOptions }: TabBarProps) => {
     const { applyStyle } = useNativeStyles();
     const insets = useSafeAreaInsets();
 
     return (
-        <Box style={applyStyle(tabBarStyle, { insetLeft: insets.left, insetRight: insets.right })}>
+        <Box
+            style={applyStyle(tabBarStyle, {
+                insetLeft: insets.left,
+                insetRight: insets.right,
+                insetsBottom: insets.bottom,
+            })}
+        >
             {state.routes.map((route, index) => {
                 const isFocused = state.index === index;
                 const { routeName, iconName, label, params } = tabItemOptions[route.name];

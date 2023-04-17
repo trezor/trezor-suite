@@ -72,6 +72,7 @@
         "expo-barcode-scanner": "^12.3.1",
         "expo-clipboard": "^4.1.1",
         "expo-localization": "^14.1.1",
+        "expo-navigation-bar": "^2.1.1",
         "expo-random": "^13.1.1",
         "expo-secure-store": "^12.1.1",
         "expo-splash-screen": "0.18.1",
