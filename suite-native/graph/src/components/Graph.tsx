@@ -11,7 +11,7 @@ import {
     EnhancedGraphPointWithCryptoBalance,
     EnhancedGraphPoint,
 } from '../utils';
-import { AxisLabel } from './AxisLabel';
+import { AxisLabel, MAX_CLAMP_VALUE } from './AxisLabel';
 import { GraphError } from './GraphError';
 import { SelectionDotWithLine } from './SelectionDotWithLine';
 
@@ -64,8 +64,6 @@ const emptyPoints: EnhancedGraphPointWithCryptoBalance[] = [
     { ...emptyGraphPoint, date: new Date(1) },
 ];
 
-const MAX_CLAMP_VALUE = 90;
-
 // to avoid overflows from the screen
 const clampAxisLabels = (value: number) => N.clamp(value, 5, MAX_CLAMP_VALUE);
 
@@ -88,14 +86,11 @@ export const Graph = <TGraphPoint extends EnhancedGraphPoint>({
     const extremaFromGraphPoints = useMemo(() => getExtremaFromGraphPoints(points), [points]);
     const axisLabels = useMemo(() => {
         if (extremaFromGraphPoints?.max && extremaFromGraphPoints?.min) {
-            const topAxisClampedAxis = clampAxisLabels(extremaFromGraphPoints.max.x);
-
             return {
                 TopAxisLabel: () => (
                     <AxisLabel
-                        x={topAxisClampedAxis}
+                        x={clampAxisLabels(extremaFromGraphPoints.max.x)}
                         value={extremaFromGraphPoints.max.value}
-                        isEndOfRange={topAxisClampedAxis === MAX_CLAMP_VALUE}
                     />
                 ),
                 BottomAxisLabel: () => (

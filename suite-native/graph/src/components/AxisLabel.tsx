@@ -8,15 +8,16 @@ import { FiatAmountFormatter } from '@suite-native/formatters';
 type AxisLabelProps = {
     x: number;
     value: number;
-    isEndOfRange?: boolean;
 };
+
+export const MAX_CLAMP_VALUE = 90;
 
 const axisLabelStyle = prepareNativeStyle<Pick<AxisLabelProps, 'x'>>((_, { x }) => ({
     position: 'absolute',
     left: `${x}%`,
 }));
 
-export const AxisLabel = ({ x, value, isEndOfRange = false }: AxisLabelProps) => {
+export const AxisLabel = ({ x, value }: AxisLabelProps) => {
     const { applyStyle } = useNativeStyles();
     const { isDiscreetMode } = useDiscreetMode();
     const [textWidth, setTextWidth] = useState<null | number>(0);
@@ -28,11 +29,11 @@ export const AxisLabel = ({ x, value, isEndOfRange = false }: AxisLabelProps) =>
 
     // If the highest value is at the end of range, it will overflow so we need to calculate width percentage of axis label from the screen and offset it.
     const labelOffset = useMemo(() => {
-        if (!isEndOfRange || !textWidth) return x;
+        if (x !== MAX_CLAMP_VALUE || !textWidth) return x;
         const textWidthPercentage = (textWidth / Dimensions.get('window').width) * 100;
         // Divide the percentage width by 2 as there is no need to move it all of the widths way
         return x - textWidthPercentage / 2;
-    }, [isEndOfRange, textWidth, x]);
+    }, [textWidth, x]);
 
     if (isDiscreetMode) return null;
 
