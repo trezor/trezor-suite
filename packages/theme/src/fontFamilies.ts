@@ -4,8 +4,11 @@ export const fontFamilies = {
 
 export type FontFamilies = typeof fontFamilies;
 
-export const nativeFontFamilies: Record<keyof typeof fontFamilies, string> = {
-    base: 'TTSatoshi-Regular',
+export const nativeFontFamilies = {
+    medium: 'TTSatoshi-Medium',
+    semiBold: 'TTSatoshi-DemiBold',
 } as const;
 
 export type NativeFontFamilies = typeof nativeFontFamilies;
+
+export type NativeFont = NativeFontFamilies[keyof NativeFontFamilies];

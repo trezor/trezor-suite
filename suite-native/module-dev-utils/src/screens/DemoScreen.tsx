@@ -36,11 +36,23 @@ import {
 } from '@trezor/icons';
 import { CoinsSettings } from '@suite-native/module-settings';
 import { isDevelopOrDebugEnv } from '@suite-native/config';
+import { TypographyStyle } from '@trezor/theme';
 
 const inputStackStyle = prepareNativeStyle(utils => ({
     borderRadius: utils.borders.radii.medium,
     padding: utils.spacings.small,
 }));
+
+const textVariants: TypographyStyle[] = [
+    'titleLarge',
+    'titleMedium',
+    'titleSmall',
+    'highlight',
+    'body',
+    'callout',
+    'hint',
+    'label',
+];
 
 export const DemoScreen = () => {
     const { applyStyle } = useNativeStyles();
@@ -90,6 +102,14 @@ export const DemoScreen = () => {
                     </HStack>
                 </VStack>
                 <Divider />
+                <VStack>
+                    <Text variant="titleSmall">Text:</Text>
+                    {textVariants.map(variant => (
+                        <Text variant={variant} key={variant}>
+                            {variant}
+                        </Text>
+                    ))}
+                </VStack>
                 <VStack>
                     <Text variant="titleSmall">Button:</Text>
                     {buttonColorSchemes.map(buttonScheme => (
