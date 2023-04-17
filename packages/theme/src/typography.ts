@@ -1,9 +1,40 @@
-import { nativeFontFamilies } from './fontFamilies';
+import { pipe, D } from '@mobily/ts-belt';
+
+import { NativeFont } from './fontFamilies';
 import { fontWeights, FontWeightValue } from './fontWeights';
+
+export type TypographyStyle =
+    | 'titleLarge'
+    | 'titleMedium'
+    | 'titleSmall'
+    | 'highlight'
+    | 'body'
+    | 'callout'
+    | 'hint'
+    | 'label';
+
+export type TypographyStyles = Record<TypographyStyle, string>;
+
+type TypographyStyleDefinition = {
+    fontSize: number;
+    lineHeight: number;
+    fontWeight: FontWeightValue;
+    letterSpacing: number;
+    fontFamily?: string;
+};
+
+export type NativeTypographyStyleDefinition = {
+    fontSize: number;
+    lineHeight: number;
+    letterSpacing: number;
+    fontFamily: string;
+};
+
+export type NativeTypographyStyles = Record<TypographyStyle, NativeTypographyStyleDefinition>;
 
 // we need unit-less typography base because RN is unit-less, we can easily add units later
 // for web we need string instead of object because styled-components syntax
-export const typographyStylesBase = {
+export const typographyStylesBase: Record<TypographyStyle, TypographyStyleDefinition> = {
     titleLarge: {
         fontSize: 48,
         lineHeight: 53,
@@ -52,18 +83,18 @@ export const typographyStylesBase = {
         fontWeight: fontWeights.medium,
         letterSpacing: -0.1,
     },
-} as const;
-
-export type TypographyStyle = keyof typeof typographyStylesBase;
-export type TypographyStyles = Record<TypographyStyle, string>;
-export type NativeTypographyStyleDefinition = {
-    fontSize: number;
-    lineHeight: number;
-    fontWeight: FontWeightValue;
-    letterSpacing: number;
-    fontFamily?: string;
 };
-export type NativeTypographyStyles = Record<TypographyStyle, NativeTypographyStyleDefinition>;
+
+const nativeFontFamilyStyle = {
+    titleLarge: 'TTSatoshi-Medium',
+    titleMedium: 'TTSatoshi-Medium',
+    titleSmall: 'TTSatoshi-Medium',
+    highlight: 'TTSatoshi-DemiBold',
+    body: 'TTSatoshi-Medium',
+    callout: 'TTSatoshi-DemiBold',
+    hint: 'TTSatoshi-Medium',
+    label: 'TTSatoshi-Medium',
+} as const satisfies Record<TypographyStyle, NativeFont>;
 
 const prepareTypography = (): TypographyStyles =>
     Object.fromEntries(
@@ -80,12 +111,17 @@ const prepareTypography = (): TypographyStyles =>
 
 const prepareNativeTypography = (): NativeTypographyStyles =>
     Object.fromEntries(
-        Object.entries(typographyStylesBase).map(([styleName, value]) => [
-            styleName,
-            // in React Native we need to define fontFamily everytime
-            // https://reactnative.dev/docs/text#limited-style-inheritance
-            { ...value, fontFamily: nativeFontFamilies.base },
-        ]),
+        Object.entries(typographyStylesBase).map(([styleName, value]) => {
+            // Android doesn't support fontWeight
+            // For this reason we need to substitute it for a specific font reflecting the weight itself.
+            const nativeTypographyStyle = pipe(
+                value,
+                D.deleteKey('fontWeight'),
+                D.set('fontFamily', nativeFontFamilyStyle[styleName as TypographyStyle]),
+            );
+
+            return [styleName, nativeTypographyStyle];
+        }),
     ) as NativeTypographyStyles;
 
 export const typography: TypographyStyles = prepareTypography();

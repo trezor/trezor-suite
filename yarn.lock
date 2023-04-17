@@ -8379,6 +8379,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/theme@workspace:packages/theme"
   dependencies:
+    "@mobily/ts-belt": ^3.13.1
     csstype: ^3.1.2
     jest: ^26.6.3
     prettier: 2.8.7
