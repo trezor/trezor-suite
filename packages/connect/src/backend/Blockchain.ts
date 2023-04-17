@@ -141,7 +141,11 @@ export class Blockchain {
         return this.link.getCurrentFiatRates(params);
     }
 
-    getFiatRatesForTimestamps(params: { timestamps: number[]; token?: string }) {
+    getFiatRatesForTimestamps(params: {
+        currencies?: string[];
+        timestamps: number[];
+        token?: string;
+    }) {
         return this.link.getFiatRatesForTimestamps(params);
     }
 
