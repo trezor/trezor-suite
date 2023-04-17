@@ -8,18 +8,6 @@ const legacyResults = {
             success: false,
         },
     ],
-    GoChain: [
-        {
-            rules: ['>2.5.3'],
-            success: false, // Forbidden key path
-        },
-    ],
-    Wanchain: [
-        {
-            rules: ['>2.5.3'],
-            success: false, // Forbidden key path
-        },
-    ],
 };
 
 export default {
