@@ -826,7 +826,7 @@ export const selectCoinjoinSessionBlockerByAccountKey = (
     if (selectIsCoinjoinBlockedByTor(state)) {
         return 'TOR_DISABLED';
     }
-    if (selectDeviceState(state) !== 'connected') {
+    if (!['connected', 'firmware-recommended'].includes(selectDeviceState(state) ?? '')) {
         return 'DEVICE_DISCONNECTED';
     }
     const account = selectAccountByKey(state, accountKey);
