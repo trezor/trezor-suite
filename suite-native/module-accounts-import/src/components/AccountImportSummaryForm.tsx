@@ -76,19 +76,19 @@ export const AccountImportSummaryForm = ({
             }),
         );
 
-        navigation.dispatch(
-            CommonActions.reset({
-                index: 0,
-                routes: [
-                    {
-                        name: RootStackRoutes.AppTabs,
-                        params: {
-                            screen: HomeStackRoutes.Home,
-                        },
+        navigation.reset({
+            index: 0,
+            routes: [
+                {
+                    // Needs to be fixed with useNavigation types.
+                    // @ts-expect-error
+                    name: RootStackRoutes.AppTabs,
+                    params: {
+                        screen: HomeStackRoutes.Home,
                     },
-                ],
-            }),
-        );
+                },
+            ],
+        });
     });
 
     const shouldDisplayEthereumAccountTokens =
