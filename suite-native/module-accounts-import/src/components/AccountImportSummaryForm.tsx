@@ -1,7 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { CommonActions } from '@react-navigation/native';
 import { A } from '@mobily/ts-belt';
 import { useNavigation } from '@react-navigation/core';
 
