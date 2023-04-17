@@ -773,9 +773,10 @@ export const selectAnonymityGainToReportByAccountKey = (
     }
 
     // Report average value. Reporting values per round would compromise data privacy.
-    return (
-        gainsToReport.reduce((total, current) => total + current.level, 0) / gainsToReport.length
-    );
+    const average =
+        gainsToReport.reduce((total, current) => total + current.level, 0) / gainsToReport.length;
+
+    return parseFloat(average.toFixed(3));
 };
 
 export const selectRoundsLeftByAccountKey = (state: CoinjoinRootState, accountKey: AccountKey) => {
