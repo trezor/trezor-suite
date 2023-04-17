@@ -145,6 +145,7 @@ export type SuiteAnalyticsEvent =
     | {
           type: EventType.CoinjoinAnonymityGain;
           payload: {
+              networkSymbol: string;
               value: number;
           };
       }

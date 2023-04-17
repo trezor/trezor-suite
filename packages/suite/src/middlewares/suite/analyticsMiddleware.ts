@@ -17,7 +17,10 @@ import {
     isDeviceInBootloaderMode,
 } from '@trezor/device-utils';
 import { analyticsActions } from '@suite-common/analytics';
-import { selectAnonymityGainToReportByAccountKey } from '@wallet-reducers/coinjoinReducer';
+import {
+    selectAnonymityGainToReportByAccountKey,
+    selectCoinjoinAccountByKey,
+} from '@wallet-reducers/coinjoinReducer';
 import { updateLastAnonymityReportTimestamp } from '@wallet-actions/coinjoinAccountActions';
 
 /*
@@ -183,15 +186,22 @@ const analyticsMiddleware =
             case COINJOIN.SESSION_COMPLETED:
             case COINJOIN.SESSION_PAUSE:
             case COINJOIN.ACCOUNT_UNREGISTER: {
+                const coinjoinAccount = selectCoinjoinAccountByKey(
+                    state,
+                    action.payload.accountKey,
+                );
                 const anonymityGainToReport = selectAnonymityGainToReportByAccountKey(
                     state,
                     action.payload.accountKey,
                 );
-                if (anonymityGainToReport !== null) {
+                if (coinjoinAccount && anonymityGainToReport !== null) {
                     analytics.report(
                         {
                             type: EventType.CoinjoinAnonymityGain,
-                            payload: { value: anonymityGainToReport },
+                            payload: {
+                                networkSymbol: coinjoinAccount.symbol,
+                                value: anonymityGainToReport,
+                            },
                         },
                         { anonymize: true },
                     );
