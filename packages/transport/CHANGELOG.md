@@ -1,3 +1,7 @@
+# 1.1.9
+
+chore(transport): update protobufs, update dependencies
+
 # 1.1.8
 
 -   chore(connect;transport): connect.init add transports param; rename transports
