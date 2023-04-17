@@ -1352,7 +1352,7 @@ export type EthereumPublicKey = {
 export type EthereumGetAddress = {
     address_n: number[];
     show_display?: boolean;
-    encoded_network?: string;
+    encoded_network?: ArrayBuffer;
 };
 
 // EthereumAddress

@@ -112,6 +112,7 @@ const TYPE_PATCH = {
     'Features.experimental_features': 'boolean | null',
     'HDNodePathType.node': 'HDNodeType | string',
     'FirmwareUpload.payload': 'Buffer | ArrayBuffer',
+    'EthereumGetAddress.encoded_network': 'ArrayBuffer',
     'EthereumDefinitions.encoded_network': 'ArrayBuffer',
     'EthereumDefinitions.encoded_token': 'ArrayBuffer',
     'CardanoCVoteRegistrationDelegation.weight': UINT_TYPE,
