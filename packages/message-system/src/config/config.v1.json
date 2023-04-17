@@ -1,8 +1,51 @@
 {
     "version": 1,
-    "timestamp": "2023-04-05T00:00:00+00:00",
-    "sequence": 26,
+    "timestamp": "2023-04-17T00:00:00+00:00",
+    "sequence": 27,
     "actions": [
+        {
+            "conditions": [
+                {
+                    "devices": [
+                        {
+                            "model": "T",
+                            "firmware": "<2.6.0",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        }
+                    ],
+                    "environment": {
+                        "desktop": ">=23.1.0",
+                        "mobile": "!",
+                        "web": "!"
+                    }
+                }
+            ],
+            "message": {
+                "id": "6f793f82-5e13-492f-803c-2d5Fsdcc3cb6",
+                "priority": 92,
+                "dismissible": true,
+                "variant": "warning",
+                "category": ["context", "feature"],
+                "content": {
+                    "en-GB": "Firmware update required to enable the coinjoin feature",
+                    "en": "Firmware update required to enable the coinjoin feature.",
+                    "es": "Actualiza tu firmware para poder utilizar la función coinjoin",
+                    "cs": "Aktualizujte prosím firmware, abyste mohli používat funkci coinjoin.",
+                    "ru": "Пожалуйста, обновите прошивку, чтобы иметь возможность использовать функцию coinjoin",
+                    "ja": "コインジョイン機能を使用できるようにファームウェアをアップデートしてください。"
+                },
+                "context": { "domain": "accounts.coinjoin" },
+                "feature": [
+                    {
+                        "domain": "coinjoin",
+                        "flag": false
+                    }
+                ]
+            }
+        },
         {
             "conditions": [
                 {
@@ -84,28 +127,40 @@
                 "variant": "warning",
                 "category": "context",
                 "content": {
-                    "en-GB": "Coinjoin is currently in public beta. Please give us your feedback.",
-                    "en": "Coinjoin is currently in public beta. Please give us your feedback.",
-                    "es": "Coinjoin se encuentra actualmente en fase beta pública. Danos tu opinión.",
-                    "cs": "Coinjoin je nyní ve veřejné beta verzi. Dejte nám prosím zpětnou vazbu.",
-                    "ru": "В настоящее время coinjoin находится в стадии публичной бета-версии. Пожалуйста, дайте нам свои отзывы.",
-                    "ja": "Coinjoinは現在パブリックベータ版です。ぜひ、ご意見をお寄せください。"
+                    "en-GB": "Coinjoin is in public beta. Your feedback is appreciated.",
+                    "en": "Coinjoin is in public beta. Your feedback is appreciated.",
+                    "es": "Coinjoin está en fase beta pública. Agradecemos tus comentarios.",
+                    "cs": "Coinjoin je ve veřejné beta verzi. Vaše zpětná vazba je vítána.",
+                    "ru": "Coinjoin находится в стадии публичной бета-версии. Мы будем признательны за ваши отзывы.",
+                    "ja": "Coinjoinはパブリックベータ版です。あなたのフィードバックをお待ちしています。"
                 },
-                "context": { "domain": "accounts.coinjoin" }
+                "context": { "domain": "accounts.coinjoin" },
+                "cta": {
+                    "action": "external-link",
+                    "link": "https://satoshilabs.typeform.com/coinjoin",
+                    "label": {
+                        "en-GB": "Give Feedback",
+                        "en": "Give Feedback",
+                        "es": "Envía tus comentarios",
+                        "cs": "Ohodnotit",
+                        "ru": "Оставить отзыв",
+                        "ja": "フィードバックをする"
+                    }
+                }
             }
         },
         {
             "conditions": [
                 {
                     "environment": {
-                        "desktop": "<22.12.1",
+                        "desktop": "<23.3.2",
                         "mobile": "!",
                         "web": "!"
                     }
                 }
             ],
             "message": {
-                "id": "a99d0ad4-3bab-4660-9352-fd17a518153f",
+                "id": "a99d0ad4-3bab-4660-9352-fh1d6518153f",
                 "priority": 91,
                 "dismissible": true,
                 "variant": "warning",
