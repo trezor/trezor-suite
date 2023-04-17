@@ -3,15 +3,15 @@
     matrix:
       - PACKAGE:
           [
+            "blockchain-link-types",
+            "blockchain-link-utils",
             "blockchain-link",
-            "components",
             "connect-common",
             "transport",
             "utils",
             "utxo-lib",
             "connect-plugin-stellar",
             "connect-plugin-ethereum",
-            "connect-common",
           ]
 
 .packages_matrix_connect: &packages_matrix_connect
