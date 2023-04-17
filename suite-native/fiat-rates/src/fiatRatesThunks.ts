@@ -10,8 +10,9 @@ import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { Account } from '@suite-common/wallet-types';
 import { isTestnet } from '@suite-common/wallet-utils';
 import TrezorConnect, { AccountTransaction } from '@trezor/connect';
+import { fiatRatesActions as fiatRatesActionsLegacy } from '@suite-common/wallet-core';
 
-import { actionPrefix, fiatRatesActions } from './fiatRatesActions';
+import { actionPrefix } from './fiatRatesActions';
 import { REFETCH_INTERVAL } from './fiatRatesConst';
 import { selectTickersToBeUpdated, selectTransactionsWithMissingRates } from './fiatRatesSelectors';
 import { TickerId, RateType } from './types';
@@ -42,7 +43,8 @@ export const updateTxsFiatRatesThunk = createThunk(
 
             if (results && 'tickers' in results) {
                 dispatch(
-                    fiatRatesActions.updateTransactionFiatRate(
+                    // TODO: this action should be moved to transaction reducer since it's only used there and handled there
+                    fiatRatesActionsLegacy.updateTransactionFiatRate(
                         txs.map((tx, i) => ({
                             txid: tx.txid,
                             updateObject: { rates: results.tickers[i]?.rates },
@@ -123,17 +125,7 @@ export const updateFiatRatesThunk = createThunk(
 
 export const updateMissingTxFiatRatesThunk = createThunk(
     `${actionPrefix}/updateMissingTxRates`,
-    (
-        _,
-        {
-            dispatch,
-            getState,
-            extra: {
-                selectors: { selectLocalCurrency },
-            },
-        },
-    ) => {
-        const localCurrency = selectLocalCurrency(getState());
+    ({ localCurrency }: { localCurrency: FiatCurrencyCode }, { dispatch, getState }) => {
         const transactionsWithMissingRates = selectTransactionsWithMissingRates(
             getState(),
             localCurrency,

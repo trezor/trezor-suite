@@ -3,7 +3,11 @@ import { isAnyOf } from '@reduxjs/toolkit';
 import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { transactionsActions, accountsActions, blockchainActions } from '@suite-common/wallet-core';
 
-import { fetchFiatRatesThunk, updateTxsFiatRatesThunk } from './fiatRatesThunks';
+import {
+    fetchFiatRatesThunk,
+    updateMissingTxFiatRatesThunk,
+    updateTxsFiatRatesThunk,
+} from './fiatRatesThunks';
 
 // Commented our code is intended for future usage in desktop, we will need to somehow use this code only in
 // desktop suite, since mobile doesn't need last week rates. Maybe two middlewares?
@@ -41,6 +45,7 @@ export const prepareFiatRatesMiddleware = createMiddlewareWithExtraDeps(
             // dispatch(fetchFiatRatesThunk({ rateType: 'lastWeek' }));
             // We need to pass localCurrency as a parameter, because it is not yet updated in the store
             dispatch(fetchFiatRatesThunk({ rateType: 'current', localCurrency }));
+            dispatch(updateMissingTxFiatRatesThunk({ localCurrency }));
         }
 
         if (blockchainActions.connected.match(action)) {

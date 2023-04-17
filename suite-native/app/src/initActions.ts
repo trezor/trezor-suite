@@ -1,13 +1,11 @@
-import { Alert } from 'react-native';
-
 import { createThunk } from '@suite-common/redux-utils';
 import { connectInitThunk } from '@suite-common/connect-init';
 import { initBlockchainThunk } from '@suite-common/wallet-core';
 import { initAnalyticsThunk } from '@suite-native/analytics';
 import { periodicFetchFiatRatesThunk } from '@suite-native/fiat-rates';
+import { selectFiatCurrencyCode } from '@suite-native/module-settings';
 
 import { setIsAppReady, setIsConnectInitialized } from '../../state/src/appSlice';
-import { selectFiatCurrencyCode } from '@suite-native/module-settings';
 
 let isAlreadyInitialized = false;
 
@@ -34,8 +32,7 @@ export const applicationInit = createThunk(
                 }),
             );
         } catch (error) {
-            Alert.alert('Error', error?.message ?? 'Unknown error');
-            console.error(error.message);
+            console.error(error);
         } finally {
             // Tell the application to render
             dispatch(setIsAppReady(true));
