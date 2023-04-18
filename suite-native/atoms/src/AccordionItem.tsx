@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { ReactNode, useState } from 'react';
 import { Pressable } from 'react-native';
 import Animated, {
     Easing,
@@ -8,7 +8,7 @@ import Animated, {
     withDelay,
 } from 'react-native-reanimated';
 
-import { Icon } from '@trezor/icons';
+import { Icon, IconName } from '@trezor/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { Box } from './Box';
@@ -16,13 +16,17 @@ import { Text } from './Text';
 
 type AccordionItemProps = {
     title: string;
-    content: string;
+    content: ReactNode;
 };
 
 const triggerStyle = prepareNativeStyle(utils => ({
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingVertical: utils.spacings.small,
+}));
+
+const titleStyle = prepareNativeStyle(_ => ({
+    flexShrink: 1,
 }));
 
 const ANIMATION_DURATION = 250;
@@ -65,17 +69,19 @@ export const AccordionItem = ({ title, content }: AccordionItemProps) => {
         setIsOpen(!isOpen);
     };
 
+    const icon: IconName = isOpen ? 'minusCircle' : 'plusCircle';
+
     return (
         <Pressable onPress={toggleOpen}>
             <Box>
                 <Box style={applyStyle(triggerStyle)}>
-                    <Text>{title}</Text>
-                    <Icon name="plusCircle" color="iconPrimaryDefault" />
+                    <Text style={applyStyle(titleStyle)}>{title}</Text>
+                    <Icon name={icon} color="iconPrimaryDefault" />
                 </Box>
                 <Box flexDirection="row">
                     <Animated.View style={accordionAnimationStyle}>
                         <Animated.View style={textAnimationStyle}>
-                            <Text>{content}</Text>
+                            <Text variant="label">{content}</Text>
                         </Animated.View>
                     </Animated.View>
                 </Box>

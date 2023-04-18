@@ -6898,8 +6898,10 @@ __metadata:
   resolution: "@suite-native/link@workspace:suite-native/link"
   dependencies:
     "@suite-native/toasts": "workspace:*"
+    "@trezor/styles": "workspace:*"
     react: 18.2.0
     react-native: 0.71.3
+    react-native-reanimated: 3.0.2
   languageName: unknown
   linkType: soft
 
