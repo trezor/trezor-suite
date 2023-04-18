@@ -5,6 +5,7 @@ import styled, { keyframes } from 'styled-components';
 import { Select, variables } from '@trezor/components';
 import { bip39 } from '@trezor/crypto-utils';
 import { useTranslation } from '@suite-hooks/useTranslation';
+import { useKeyPress } from 'react-use';
 
 const options = bip39.map(item => ({ label: item, value: item }));
 
@@ -54,13 +55,17 @@ const MenuList = (props: MenuListProps<Option, boolean>) => {
     const listRef = useRef<List>(null);
 
     const children = React.Children.toArray(props.children) as React.ReactElement[];
+    const [arrowDownPress] = useKeyPress('ArrowDown');
+    const [arrowUpPress] = useKeyPress('ArrowUp');
 
     useEffect(() => {
-        if (listRef.current) {
+        // fix scroll on arrows
+        if (listRef.current && (arrowDownPress || arrowUpPress)) {
             const currentIndex = children.findIndex(child => child.props.isFocused === true);
+
             listRef.current.scrollToItem(currentIndex);
         }
-    }, [children]);
+    }, [children, arrowDownPress, arrowUpPress]);
 
     return (
         <StyledList

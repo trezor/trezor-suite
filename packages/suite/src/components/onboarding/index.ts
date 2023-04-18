@@ -1,4 +1,4 @@
-import Option, { OptionsWrapper, OptionWrapper, OptionsDivider } from './Option';
+import { Option, OptionsWrapper, OptionWrapper, OptionsDivider } from './Option';
 
 import OnboardingButtonAlt from './Buttons/ButtonAlt';
 import OnboardingButtonCta from './Buttons/ButtonCta';
