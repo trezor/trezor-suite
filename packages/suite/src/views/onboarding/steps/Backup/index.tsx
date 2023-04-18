@@ -18,6 +18,7 @@ import * as backupActions from '@backup-actions/backupActions';
 import * as routerActions from '@suite-actions/routerActions';
 import { SettingsAnchor } from '@suite-constants/anchors';
 import { useDeviceModel } from '@suite-hooks/useDeviceModel';
+import { selectIsActionAbortable } from '@suite-reducers/suiteReducer';
 
 const StyledImage = styled(Image)`
     flex: 1;
@@ -36,6 +37,7 @@ export const BackupStep = () => {
         locks: state.suite.locks,
     }));
     const deviceModel = useDeviceModel();
+    const isActionAbortable = useSelector(selectIsActionAbortable);
 
     if (!deviceModel) {
         return null;
@@ -88,6 +90,7 @@ export const BackupStep = () => {
                     heading={<Translation id="TR_CREATE_BACKUP" />}
                     description={<Translation id="TR_BACKUP_SUBHEADING_1" />}
                     deviceModel={deviceModel}
+                    isActionAbortable={isActionAbortable}
                 />
             )}
 

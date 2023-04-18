@@ -10,6 +10,7 @@ import {
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
 import { useActions, useSelector, useOnboarding } from '@suite-hooks';
 import { getDeviceModel } from '@trezor/device-utils';
+import { selectIsActionAbortable } from '@suite-reducers/suiteReducer';
 
 const SetPinStep = () => {
     const [showSkipConfirmation, setShowSkipConfirmation] = useState(false);
@@ -20,6 +21,7 @@ const SetPinStep = () => {
     );
     const { goToNextStep, showPinMatrix, updateAnalytics } = useOnboarding();
     const deviceModel = getDeviceModel(device);
+    const isActionAbortable = useSelector(selectIsActionAbortable);
 
     const { changePin } = useActions({
         changePin: deviceSettingsActions.changePin,
@@ -153,6 +155,7 @@ const SetPinStep = () => {
                     ) : undefined
                 }
                 deviceModel={showConfirmationPrompt ? deviceModel : undefined}
+                isActionAbortable={status === 'initial' ? isActionAbortable : true}
             >
                 {/* // device requested showing a pin matrix, show the matrix also on "repeat-pin" status until we get fail or success response from the device */}
                 {(showPinMatrix || status === 'repeat-pin') && <PinMatrix device={device} />}

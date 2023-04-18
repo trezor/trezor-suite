@@ -11,6 +11,7 @@ import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions'
 import { DEFAULT_LABEL, MAX_LABEL_LENGTH } from '@suite-constants/device';
 import { getDeviceModel } from '@trezor/device-utils';
 import { isHomescreenSupportedOnDevice } from '@suite-utils/homescreen';
+import { selectIsActionAbortable } from '@suite-reducers/suiteReducer';
 
 const StyledButton = styled(Button)`
     display: flex;
@@ -145,6 +146,7 @@ export const FinalStep = () => {
         onboardingAnalytics: state.onboarding.onboardingAnalytics,
     }));
     const deviceModel = getDeviceModel(device);
+    const isActionAbortable = useSelector(selectIsActionAbortable);
 
     const [state, setState] = useState<'rename' | 'homescreen' | null>(null);
     const [label, setLabel] = useState('');
@@ -166,6 +168,7 @@ export const FinalStep = () => {
         <OnboardingStepBox
             data-test="@onboarding/final"
             deviceModel={isWaitingForConfirm ? deviceModel : undefined}
+            isActionAbortable={isActionAbortable}
         >
             <Wrapper ref={wrapperRef} shouldWrap={width < 650}>
                 <DeviceImageWrapper>

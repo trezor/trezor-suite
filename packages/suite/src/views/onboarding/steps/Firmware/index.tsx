@@ -46,6 +46,7 @@ const FirmwareStep = () => {
                 image="FIRMWARE"
                 heading={<Translation id="TR_CHECK_FINGERPRINT" />}
                 deviceModel={deviceModel}
+                isActionAbortable={false}
             >
                 <Fingerprint device={device} />
             </OnboardingStepBox>

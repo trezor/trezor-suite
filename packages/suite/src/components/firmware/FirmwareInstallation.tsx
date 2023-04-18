@@ -7,6 +7,8 @@ import { FirmwareOffer, ProgressBar, ReconnectDevicePrompt } from '@firmware-com
 import { OnboardingStepBox } from '@onboarding-components';
 import { TrezorDevice } from '@suite-types';
 import { DeviceModel, getDeviceModel } from '@trezor/device-utils';
+import { selectIsActionAbortable } from '@suite-reducers/suiteReducer';
+import { useSelector } from '@suite-hooks/useSelector';
 
 interface FirmwareInstallationProps {
     cachedDevice?: TrezorDevice;
@@ -31,6 +33,7 @@ export const FirmwareInstallation = ({
         useFirmware();
     const deviceModel = getDeviceModel(device);
     const cachedDeviceModel = getDeviceModel(cachedDevice);
+    const isActionAbortable = useSelector(selectIsActionAbortable);
 
     const statusIntlId = getTextForStatus(status);
     const statusText = statusIntlId ? <Translation id={statusIntlId} /> : null;
@@ -97,6 +100,7 @@ export const FirmwareInstallation = ({
                     )
                 }
                 deviceModel={status === 'waiting-for-confirmation' ? deviceModel : undefined}
+                isActionAbortable={isActionAbortable}
                 innerActions={InnerActionComponent}
                 nested={!!standaloneFwUpdate}
                 disableConfirmWrapper={!!standaloneFwUpdate}

@@ -83,6 +83,7 @@ const UnexpectedState = ({ children, prerequisite, prerequisitesGuidePadded }: P
             <OnboardingStepBox
                 heading={<Translation id="TR_ENTER_PIN" />}
                 deviceModel={deviceModel}
+                isActionAbortable={false}
             >
                 {pinComponent}
             </OnboardingStepBox>
