@@ -25,7 +25,7 @@ import {
     verifyTicketTx,
     createPendingTransaction,
 } from './bitcoin';
-import type { BitcoinNetworkInfo, AccountAddresses, AccountUtxo } from '../types';
+import type { BitcoinNetworkInfo, AccountAddresses } from '../types';
 import type { RefTransaction, TransactionOptions } from '../types/api/bitcoin';
 
 type Params = {
@@ -35,7 +35,6 @@ type Params = {
     coinjoinRequest?: PROTO.CoinJoinRequest;
     refTxs?: RefTransaction[];
     addresses?: AccountAddresses;
-    utxo?: AccountUtxo[];
     options: TransactionOptions;
     coinInfo: BitcoinNetworkInfo;
     push: boolean;
@@ -117,7 +116,6 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
             paymentRequests: payload.paymentRequests || [],
             refTxs,
             addresses: payload.account ? payload.account.addresses : undefined,
-            utxo: payload.account ? payload.account.utxo : undefined,
             options: {
                 lock_time: payload.locktime,
                 timestamp: payload.timestamp,
@@ -243,9 +241,8 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
             }
         }
 
-        if (bitcoinTx && params.addresses && params.utxo) {
+        if (bitcoinTx && params.addresses) {
             response.signedTransaction = createPendingTransaction(bitcoinTx, {
-                utxo: params.utxo,
                 addresses: params.addresses,
                 inputs: params.inputs,
                 outputs: params.outputs,

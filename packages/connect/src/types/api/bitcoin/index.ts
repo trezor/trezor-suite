@@ -2,8 +2,6 @@ import type { PROTO } from '../../../constants';
 import type { AccountAddresses } from '@trezor/blockchain-link';
 import type { Transaction as BlockbookTransaction } from '@trezor/blockchain-link-types/lib/blockbook';
 
-import { AccountUtxo } from '../../account';
-
 // signMessage
 
 export interface SignMessage {
@@ -69,7 +67,6 @@ export interface SignTransaction {
     refTxs?: RefTransaction[];
     account?: {
         addresses: AccountAddresses;
-        utxo: AccountUtxo[];
     };
     coin: string;
     locktime?: number;
