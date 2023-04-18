@@ -15,7 +15,8 @@ import { ModalEnvironment } from './ModalEnvironment';
 import { useModalTarget } from '@suite-support/ModalContext';
 import { Modal } from '.';
 import { useDeviceModel } from '@suite-hooks/useDeviceModel';
-import { useActionAbortable } from '@suite-hooks/useActionAbortable';
+import { selectIsActionAbortable } from '@suite-reducers/suiteReducer';
+import { useSelector } from '@suite-hooks/useSelector';
 
 const StyledTrezorModal = styled(TrezorModal)`
     ${Modal.Header} {
@@ -98,7 +99,7 @@ export const AbortButton = ({ onAbort, className }: AbortButtonProps) => {
     const theme = useTheme();
 
     // checks compatability for use in other places
-    const isActionAbortable = useActionAbortable();
+    const isActionAbortable = useSelector(selectIsActionAbortable);
 
     if (!isActionAbortable) {
         return null;
@@ -141,7 +142,7 @@ const DevicePromptModalRenderer = ({
     const modalTarget = useModalTarget();
 
     // duplicated because headerComponents should receive undefined if isAbortable === false
-    const isActionAbortable = useActionAbortable() || isAbortable;
+    const isActionAbortable = useSelector(selectIsActionAbortable) || isAbortable;
 
     if (!modalTarget) return null;
 

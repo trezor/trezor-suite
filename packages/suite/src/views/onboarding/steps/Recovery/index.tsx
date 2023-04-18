@@ -6,12 +6,15 @@ import * as onboardingActions from '@onboarding-actions/onboardingActions';
 import { useActions, useRecovery, useSelector } from '@suite-hooks';
 import RecoveryStepBox from './RecoveryStepBox';
 import { DeviceModel, getDeviceModel, pickByDeviceModel } from '@trezor/device-utils';
+import { selectIsActionAbortable } from '@suite-reducers/suiteReducer';
 
 export const RecoveryStep = () => {
     const { goToNextStep, updateAnalytics } = useActions({
         goToNextStep: onboardingActions.goToNextStep,
         updateAnalytics: onboardingActions.updateAnalytics,
     });
+
+    const isActionAbortable = useSelector(selectIsActionAbortable);
 
     const { device } = useSelector(state => ({
         device: state.suite.device,
@@ -112,6 +115,7 @@ export const RecoveryStep = () => {
                     [DeviceModel.TR]: <Translation id="TR_RECOVER_SUBHEADING_BUTTONS" />,
                 })}
                 deviceModel={deviceModel}
+                isActionAbortable={isActionAbortable}
             />
         );
     }
@@ -143,6 +147,7 @@ export const RecoveryStep = () => {
                     [DeviceModel.TT]: <Translation id="TR_RECOVER_SUBHEADING_TOUCH" />,
                     [DeviceModel.TR]: <Translation id="TR_RECOVER_SUBHEADING_BUTTONS" />,
                 })}
+                isActionAbortable
             >
                 <SelectRecoveryWord />
             </RecoveryStepBox>

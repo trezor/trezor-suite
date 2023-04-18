@@ -295,6 +295,7 @@ export const FirmwareInitial = ({
                     outerActions={content.outerActions}
                     disableConfirmWrapper={!!standaloneFwUpdate}
                     deviceModel={status === 'waiting-for-confirmation' ? deviceModel : undefined}
+                    isActionAbortable={false}
                     nested={!!standaloneFwUpdate}
                 >
                     {content.body}

@@ -11,7 +11,7 @@ import type { Locale } from '@suite-config/languages';
 import { isWeb } from '@suite-utils/env';
 import { getWindowWidth } from '@trezor/env-utils';
 import { ensureLocale } from '@suite-utils/l10n';
-import { getNumberFromPixelString } from '@trezor/utils';
+import { getNumberFromPixelString, versionUtils } from '@trezor/utils';
 import type { OAuthServerEnvironment } from '@suite-types/metadata';
 import type { InvityServerEnvironment } from '@suite-common/invity';
 import { getDeviceModel } from '@trezor/device-utils';
@@ -288,5 +288,10 @@ export const selectIsDeviceLocked = memoize(
         state.suite.locks.includes(SUITE.LOCK_TYPE.DEVICE) ||
         state.suite.locks.includes(SUITE.LOCK_TYPE.UI),
 );
+
+export const selectIsActionAbortable = (state: SuiteRootState) =>
+    state.suite.transport?.type === 'BridgeTransport'
+        ? versionUtils.isNewerOrEqual(state.suite.transport?.version as string, '2.0.31')
+        : true; // WebUSB
 
 export default suiteReducer;
