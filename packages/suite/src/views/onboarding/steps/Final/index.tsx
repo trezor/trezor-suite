@@ -3,15 +3,16 @@ import styled, { css } from 'styled-components';
 import useMeasure from 'react-use/lib/useMeasure';
 import { analytics, EventType } from '@trezor/suite-analytics';
 
-import { Button, Icon, variables, Input, Dropdown, DropdownRef } from '@trezor/components';
+import { Button, Icon, variables, Input, Dropdown, DropdownRef, Tooltip } from '@trezor/components';
 import { Translation, HomescreenGallery } from '@suite-components';
 import { DeviceAnimation, OnboardingStepBox } from '@onboarding-components';
 import { useActions, useDevice, useOnboarding, useSelector } from '@suite-hooks';
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
 import { DEFAULT_LABEL, MAX_LABEL_LENGTH } from '@suite-constants/device';
 import { getDeviceModel } from '@trezor/device-utils';
+import { isHomescreenSupportedOnDevice } from '@suite-utils/homescreen';
 
-const Option = styled.div`
+const StyledButton = styled(Button)`
     display: flex;
     padding: 10px 16px;
     height: 42px;
@@ -19,19 +20,25 @@ const Option = styled.div`
     border-radius: 4px;
     align-items: center;
     cursor: pointer;
+    background-color: transparent;
+    font-size: ${variables.FONT_SIZE.SMALL};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+
+    :not(:disabled) {
+        color: ${({ theme }) => theme.TYPE_DARK_GREY};
+    }
+    :hover,
+    :focus {
+        background-color: transparent;
+        color: initial;
+    }
 `;
 
-const OptionIconWrapper = styled.div`
+const StyledIcon = styled(Icon)`
     margin-right: 16px;
     display: flex;
     justify-content: center;
     align-items: center;
-`;
-
-const OptionText = styled.span`
-    font-size: ${variables.FONT_SIZE.SMALL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${({ theme }) => theme.TYPE_DARK_GREY};
 `;
 
 const Content = styled.div`
@@ -153,6 +160,8 @@ export const FinalStep = () => {
 
     if (!device?.features) return null;
 
+    const shouldOfferChangeHomescreen = isHomescreenSupportedOnDevice(device);
+
     return (
         <OnboardingStepBox
             data-test="@onboarding/final"
@@ -168,50 +177,53 @@ export const FinalStep = () => {
                     </Heading>
                     {!state && (
                         <SetupActions>
-                            <Option onClick={() => setState('rename')}>
-                                <OptionIconWrapper>
-                                    <Icon size={16} icon="PENCIL" />
-                                </OptionIconWrapper>
-                                <OptionText>
-                                    <Translation id="TR_DEVICE_SETTINGS_DEVICE_EDIT_LABEL" />
-                                </OptionText>
-                            </Option>
-                            <Dropdown
-                                ref={dropdownRef}
-                                alignMenu="right"
-                                offset={16}
-                                items={[
-                                    {
-                                        key: 'dropdown',
-                                        options: [
-                                            {
-                                                key: 'gallery',
-                                                label: (
-                                                    <GalleryWrapper>
-                                                        <HomescreenGallery
-                                                            onConfirm={() => {
-                                                                dropdownRef.current?.close();
-                                                            }}
-                                                        />
-                                                    </GalleryWrapper>
-                                                ),
-                                                noPadding: true,
-                                                noHover: true, // no hover effect
-                                                callback: () => false, // don't close Dropdown on mouse click automatically
-                                            },
-                                        ],
-                                    },
-                                ]}
+                            <StyledButton onClick={() => setState('rename')}>
+                                <StyledIcon size={16} icon="PENCIL" />
+                                <Translation id="TR_DEVICE_SETTINGS_DEVICE_EDIT_LABEL" />
+                            </StyledButton>
+
+                            <Tooltip
+                                maxWidth={285}
+                                content={
+                                    !shouldOfferChangeHomescreen && (
+                                        <Translation id="TR_UPDATE_FIRMWARE_HOMESCREEN_LATER_TOOLTIP" />
+                                    )
+                                }
                             >
-                                <Option onClick={() => setState(null)}>
-                                    <OptionIconWrapper>
-                                        <Icon size={16} icon="DASHBOARD" />
-                                    </OptionIconWrapper>
-                                    <OptionText>
+                                <Dropdown
+                                    ref={dropdownRef}
+                                    alignMenu="right"
+                                    offset={16}
+                                    isDisabled={!shouldOfferChangeHomescreen}
+                                    items={[
+                                        {
+                                            key: 'dropdown',
+                                            options: [
+                                                {
+                                                    key: 'gallery',
+                                                    label: (
+                                                        <GalleryWrapper>
+                                                            <HomescreenGallery
+                                                                onConfirm={() => {
+                                                                    dropdownRef.current?.close();
+                                                                }}
+                                                            />
+                                                        </GalleryWrapper>
+                                                    ),
+                                                    noPadding: true,
+                                                    noHover: true, // no hover effect
+                                                    callback: () => false, // don't close Dropdown on mouse click automatically
+                                                },
+                                            ],
+                                        },
+                                    ]}
+                                >
+                                    <StyledButton onClick={() => setState(null)}>
+                                        <StyledIcon size={16} icon="DASHBOARD" />
                                         <Translation id="TR_ONBOARDING_FINAL_CHANGE_HOMESCREEN" />
-                                    </OptionText>
-                                </Option>
-                            </Dropdown>
+                                    </StyledButton>
+                                </Dropdown>
+                            </Tooltip>
                         </SetupActions>
                     )}
                     {state === 'rename' && (
