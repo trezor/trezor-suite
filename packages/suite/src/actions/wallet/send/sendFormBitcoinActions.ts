@@ -221,8 +221,17 @@ export const signTransaction =
             signEnhancement.locktime = new BigNumber(formValues.bitcoinLockTime).toNumber();
         }
 
+        let refTxs;
+
         if (formValues.rbfParams && transactionInfo.useNativeRbf) {
             const { txid, utxo, outputs } = formValues.rbfParams;
+
+            if (['coinjoin', 'taproot'].includes(account.accountType)) {
+                refTxs = (getState().wallet.transactions.transactions[account.key] || []).filter(
+                    tx => tx.txid === txid,
+                );
+            }
+
             // override inputs and outputs of precomposed transaction
             // NOTE: RBF inputs/outputs required are to be in the same exact order as in original tx (covered by TrezorConnect.composeTransaction.skipPermutation param)
             // possible variations:
@@ -264,6 +273,7 @@ export const signTransaction =
             outputs: transaction.outputs,
             account: {
                 addresses: account.addresses!,
+                transactions: refTxs,
             },
             coin: account.symbol,
             ...signEnhancement,

@@ -20,7 +20,7 @@ export const networks = {
             coinjoin: {
                 bip43Path: "m/10025'/0'/i'/1'", // https://github.com/satoshilabs/slips/blob/master/slip-0025.md#public-key-derivation
                 backendType: 'coinjoin', // use non-standard backend
-                features: ['amount-unit'], // no rbf, no sign-verify
+                features: ['rbf', 'amount-unit'], // no sign-verify
             },
             taproot: {
                 bip43Path: "m/86'/0'/i'",
@@ -262,7 +262,7 @@ export const networks = {
             coinjoin: {
                 bip43Path: "m/10025'/1'/i'/1'", // https://github.com/satoshilabs/slips/blob/master/slip-0025.md#public-key-derivation
                 backendType: 'coinjoin', // use non-standard backend
-                features: ['amount-unit'], // no rbf, no sign-verify
+                features: ['rbf', 'amount-unit'], // no sign-verify
             },
             taproot: {
                 bip43Path: "m/86'/1'/i'",
@@ -294,7 +294,7 @@ export const networks = {
             coinjoin: {
                 bip43Path: "m/10025'/1'/i'/1'", // https://github.com/satoshilabs/slips/blob/master/slip-0025.md#public-key-derivation
                 backendType: 'coinjoin', // use non-standard backend
-                features: ['amount-unit'], // no rbf, no sign-verify
+                features: ['rbf', 'amount-unit'], // no sign-verify
             },
             taproot: {
                 bip43Path: "m/86'/1'/i'",

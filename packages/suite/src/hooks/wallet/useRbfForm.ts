@@ -119,7 +119,7 @@ const useRbfState = ({ tx, finalize, chainedTxs }: UseRbfProps, currentState: bo
     };
 
     const excludedUtxos = getExcludedUtxos({
-        utxos: rbfAccount.utxo,
+        utxos: otherUtxo,
         dustLimit: coinFees.dustLimit,
         anonymitySet: rbfAccount.addresses?.anonymitySet,
         targetAnonymity,

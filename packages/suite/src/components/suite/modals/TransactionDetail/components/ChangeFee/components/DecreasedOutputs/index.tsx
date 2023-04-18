@@ -58,8 +58,15 @@ const ArrowIcon = styled(Icon)`
 `;
 
 const DecreasedOutputs = () => {
-    const { formValues, account, getValues, setValue, composedLevels, composeRequest } =
-        useRbfContext();
+    const {
+        formValues,
+        account,
+        excludedUtxos,
+        getValues,
+        setValue,
+        composedLevels,
+        composeRequest,
+    } = useRbfContext();
     const { selectedFee, setMaxOutputId } = getValues();
     if (typeof setMaxOutputId !== 'number') return null; // no set-max means that no output was decreased
 
@@ -91,7 +98,12 @@ const DecreasedOutputs = () => {
             <motion.div {...motionAnimation.expand}>
                 <GreyCard>
                     <WarnHeader>
-                        <Translation id="TR_DECREASE_TX" />
+                        {account.accountType === 'coinjoin' &&
+                        Object.keys(excludedUtxos).length > 0 ? (
+                            <Translation id="TR_NOT_ENOUGH_ANONYMIZED_FUNDS_RBF_WARNING" />
+                        ) : (
+                            <Translation id="TR_DECREASE_TX" />
+                        )}
                     </WarnHeader>
                     <OutputsWrapper>
                         {formValues.outputs.flatMap((o, i) => {
