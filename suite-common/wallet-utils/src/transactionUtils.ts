@@ -619,6 +619,7 @@ export const enhanceTransaction = (
     symbol: account.symbol,
     ...origTx,
     rbfParams: getRbfParams(origTx, account),
+    hex: (origTx.blockHeight ?? 0) <= 0 && origTx.rbf ? origTx.hex : undefined, // store tx hex **only** for pending transactions (used by rbf)
 });
 
 export const getOriginalTransaction = ({

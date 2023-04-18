@@ -37,9 +37,11 @@ export const replaceTransactionThunk = createThunk(
         {
             tx,
             newTxid,
+            hex,
         }: {
             tx: PrecomposedTransactionFinal;
             newTxid: string;
+            hex: string;
         },
         { getState, dispatch },
     ) => {
@@ -60,6 +62,7 @@ export const replaceTransactionThunk = createThunk(
                 tx: {
                     ...t.tx,
                     txid: newTxid,
+                    hex,
                     fee: tx.fee,
                     rbf: !!tx.rbf,
                     blockTime: Math.round(new Date().getTime() / 1000),
@@ -96,10 +99,12 @@ export const addFakePendingTxThunk = createThunk(
     (
         {
             transaction,
+            hex,
             precomposedTx,
             account,
         }: {
             transaction: Transaction;
+            hex: string;
             precomposedTx: PrecomposedTransactionFinal;
             account: Account;
         },
@@ -139,7 +144,7 @@ export const addFakePendingTxThunk = createThunk(
                 affectedAccount.addresses,
                 transaction,
             );
-            const prependingTx = { ...affectedAccountTransaction, deadline: blockHeight + 2 };
+            const prependingTx = { ...affectedAccountTransaction, hex, deadline: blockHeight + 2 };
             dispatch(
                 transactionsActions.addTransaction({
                     transactions: [prependingTx],
