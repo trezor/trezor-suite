@@ -5837,6 +5837,11 @@ export default defineMessages({
         id: 'TR_UPDATE_FIRMWARE_HOMESCREEN_TOOLTIP',
         defaultMessage: 'Update your firmware to change your homescreen',
     },
+    TR_UPDATE_FIRMWARE_HOMESCREEN_LATER_TOOLTIP: {
+        id: 'TR_UPDATE_FIRMWARE_HOMESCREEN_TOOLTIP',
+        defaultMessage:
+            'Firmware update required. You can change your homescreen in the settings page later',
+    },
     TR_LABELING_FEATURE_ALLOWS: {
         id: 'TR_LABELING_FEATURE_ALLOWS',
         defaultMessage:

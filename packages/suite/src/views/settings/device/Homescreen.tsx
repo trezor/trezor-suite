@@ -16,6 +16,7 @@ import {
     ImageValidationError,
     validateImage,
     dataUrlToImage,
+    isHomescreenSupportedOnDevice,
 } from '@suite-utils/homescreen';
 import { useAnchor } from '@suite-hooks/useAnchor';
 import { SettingsAnchor } from '@suite-constants/anchors';
@@ -108,9 +109,7 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
         resetUpload();
     };
 
-    const isSupportedHomescreen =
-        deviceModel !== DeviceModel.TT ||
-        (deviceModel === DeviceModel.TT && device.features.homescreen_format === 'Jpeg240x240');
+    const isSupportedHomescreen = isHomescreenSupportedOnDevice(device);
 
     return (
         <>

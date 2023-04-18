@@ -240,20 +240,21 @@ interface MenuProps {
     masterLink?: MasterLink;
 }
 
-interface Props extends MenuProps, React.ButtonHTMLAttributes<HTMLDivElement> {
-    children?: React.ReactElement<any>;
-    absolutePosition?: boolean;
-    items: GroupedMenuItems[];
-    components?: {
-        DropdownMenuItem?: React.ComponentType<MenuItemProps>;
-        DropdownMenu?: React.ComponentType<MenuProps>;
+type DropdownProps = MenuProps &
+    Omit<React.ButtonHTMLAttributes<HTMLDivElement>, 'disabled'> & {
+        children?: React.ReactElement<any>;
+        absolutePosition?: boolean;
+        items: GroupedMenuItems[];
+        components?: {
+            DropdownMenuItem?: React.ComponentType<MenuItemProps>;
+            DropdownMenu?: React.ComponentType<MenuProps>;
+        };
+        offset?: number;
+        isDisabled?: boolean;
+        appendTo?: HTMLElement;
+        hoverContent?: React.ReactNode;
+        onToggle?: (isToggled: boolean) => void;
     };
-    offset?: number;
-    isDisabled?: boolean;
-    appendTo?: HTMLElement;
-    hoverContent?: React.ReactNode;
-    onToggle?: (isToggled: boolean) => void;
-}
 
 interface DropdownRef {
     close: () => void;
@@ -282,7 +283,7 @@ const Dropdown = forwardRef(
             hoverContent,
             masterLink,
             ...rest
-        }: Props,
+        }: DropdownProps,
         ref,
     ) => {
         const theme = useTheme();
@@ -481,7 +482,7 @@ const Dropdown = forwardRef(
 Dropdown.displayName = 'Dropdown';
 export type {
     DropdownRef,
-    Props as DropdownProps,
+    DropdownProps,
     MenuItemProps as DropdownMenuItemProps,
     MenuProps as DropdownMenuProps,
 };
