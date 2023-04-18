@@ -8,6 +8,7 @@ export type {
     AccountAddresses,
     Utxo as AccountUtxo,
     Address as AccountAddress,
+    Transaction as AccountTransaction,
 } from '@trezor/blockchain-link';
 
 export type DiscoveryAccountType = 'p2pkh' | 'p2sh' | 'p2tr' | 'p2wpkh';
