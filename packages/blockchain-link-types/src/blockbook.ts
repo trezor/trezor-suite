@@ -131,7 +131,7 @@ export interface Transaction {
     value: string; // optional
     valueIn: string; // optional
     fees: string; // optional
-    hex: string; // optional
+    hex?: string;
     lockTime?: number;
     vsize?: number;
     size?: number;

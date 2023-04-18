@@ -100,6 +100,7 @@ export interface AccountBalanceHistory {
 export interface Transaction {
     type: 'sent' | 'recv' | 'self' | 'joint' | 'contract' | 'failed' | 'unknown';
     txid: string;
+    hex?: string;
     blockTime?: number;
     blockHeight?: number;
     blockHash?: string;
