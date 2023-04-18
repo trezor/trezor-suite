@@ -112,7 +112,7 @@ export const selectTransactionsWithMissingRates = memoizeWithArgs(
                 account: selectAccountByKey(state, accountKey as AccountKey),
                 txs: txs.filter(tx => !tx.rates?.[localCurrency]),
             })),
-            D.filter(({ account, txs }) => !account || !txs.length),
+            D.filter(({ account, txs }) => !!account && !!txs.length),
             D.values,
             A.filter(value => !!value),
         ) as {
