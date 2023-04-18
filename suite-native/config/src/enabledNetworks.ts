@@ -22,9 +22,15 @@ export const mainnetsOrder: NetworkSymbol[] = [
 
 export const testnetsOrder: NetworkSymbol[] = ['test', 'regtest', 'tgor', 'tada', 'txrp'];
 
-export const enabledNetworks: NetworkSymbol[] = Object.keys(networks).filter(
-    network => !deprecatedNetworks.includes(network),
-) as NetworkSymbol[];
+// Currently not supported in suite native. When it needs to be supported, just remove this filter.
+const filterCardanoAndRipple = (network: NetworkSymbol) =>
+    network !== 'ada' && network !== 'xrp' && network !== 'txrp' && network !== 'tada';
+
+const networkSymbols = Object.keys(networks) as NetworkSymbol[];
+
+export const enabledNetworks = networkSymbols
+    .filter(network => !deprecatedNetworks.includes(network))
+    .filter(filterCardanoAndRipple);
 
 export const enabledMainnets = getMainnets().filter(network =>
     enabledNetworks.includes(network.symbol),
