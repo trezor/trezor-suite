@@ -9,7 +9,9 @@ export const mainnetsOrder: NetworkSymbol[] = [
     'ltc',
     'doge',
     'etc',
+    'ada',
     'bch',
+    'xrp',
     'dash',
     'zec',
     'btg',
@@ -18,11 +20,16 @@ export const mainnetsOrder: NetworkSymbol[] = [
     'dgb',
 ];
 
-export const testnetsOrder: NetworkSymbol[] = ['test', 'regtest', 'tgor'];
+export const testnetsOrder: NetworkSymbol[] = ['test', 'regtest', 'tgor', 'tada', 'txrp'];
 
-export const enabledNetworks: NetworkSymbol[] = Object.keys(networks).filter(
-    network => !deprecatedNetworks.includes(network),
-) as NetworkSymbol[];
+const filterCardanoAndRipple = (network: NetworkSymbol) =>
+    network !== 'ada' && network !== 'xrp' && network !== 'txrp' && network !== 'tada';
+
+const networkSymbols = Object.keys(networks) as NetworkSymbol[];
+
+export const enabledNetworks: NetworkSymbol[] = networkSymbols
+    .filter(network => !deprecatedNetworks.includes(network))
+    .filter(filterCardanoAndRipple);
 
 export const enabledMainnets = getMainnets().filter(network =>
     enabledNetworks.includes(network.symbol),
