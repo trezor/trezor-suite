@@ -608,11 +608,6 @@ export const enhanceTransaction = (
     deviceState: account.deviceState,
     symbol: account.symbol,
     ...origTx,
-    // https://bitcoin.stackexchange.com/questions/23061/ripple-ledger-time-format/23065#23065
-    blockTime:
-        account.networkType === 'ripple' && origTx.blockTime
-            ? origTx.blockTime + 946684800
-            : origTx.blockTime,
     rbfParams: getRbfParams(origTx, account),
 });
 
