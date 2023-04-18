@@ -11,9 +11,10 @@ type StepsProgressBarProps = {
     activeStep: number;
 };
 
-const progressBarWrapperStyle = prepareNativeStyle(_ => ({
+const progressBarWrapperStyle = prepareNativeStyle(utils => ({
     flexDirection: 'row',
     justifyContent: 'space-between',
+    paddingTop: utils.spacings.small,
 }));
 
 const progressBarItemStyle = prepareNativeStyle<{ isActive: boolean }>((utils, { isActive }) => ({

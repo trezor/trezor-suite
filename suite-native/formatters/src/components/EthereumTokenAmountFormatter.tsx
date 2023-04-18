@@ -35,8 +35,6 @@ export const EthereumTokenAmountFormatter = ({
             isDiscreetText={isDiscreetText}
             variant={variant}
             color={color}
-            numberOfLines={1}
-            ellipsizeMode="tail"
             {...rest}
         />
     );

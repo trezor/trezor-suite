@@ -20,12 +20,12 @@ const CommitHashWithDevMenu = () => (
 
 export const SettingsAboutUsScreen = () => {
     const openLink = useOpenLink();
-    const hasVerionAndBuildInfo =
+    const hasVersionAndBuildInfo =
         S.isNotEmpty(getAppVersion()) && S.isNotEmpty(getBuildVersionNumber());
     const hasCommitHash = S.isNotEmpty(getCommitHash());
 
     return (
-        <Screen header={<ScreenHeader title="About Trezor Suite Lite" />}>
+        <Screen header={<ScreenHeader content="About Trezor Suite Lite" />}>
             <VStack spacing="small">
                 <AboutUsBanners />
                 <Divider marginVertical="medium" />
@@ -51,7 +51,7 @@ export const SettingsAboutUsScreen = () => {
                     </Card>
                 </VStack>
                 <Box flexDirection="row" justifyContent="space-between">
-                    {hasVerionAndBuildInfo && (
+                    {hasVersionAndBuildInfo && (
                         <Text variant="hint" color="textDisabled">
                             Version: {`${getAppVersion()} (${getBuildVersionNumber()})`}
                         </Text>

@@ -9,7 +9,7 @@ import { FAQInfoPanel } from '../components/FAQInfoPanel';
 export const SettingsFAQScreen = () => {
     const openLink = useOpenLink();
     return (
-        <Screen header={<ScreenHeader title="Get help" />}>
+        <Screen header={<ScreenHeader content="Get help" />}>
             <VStack spacing="large">
                 <FAQInfoPanel />
                 <Card>

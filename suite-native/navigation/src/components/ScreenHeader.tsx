@@ -1,22 +1,24 @@
 import React, { ReactNode } from 'react';
 import { View } from 'react-native';
 
+import { RequireAllOrNone } from 'type-fest';
 import { useNavigation } from '@react-navigation/native';
 
 import { NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Box, IconButton, StepsProgressBar, Text } from '@suite-native/atoms';
+import { Box, IconButton, StepsProgressBar, Text, VStack } from '@suite-native/atoms';
 import { TypographyStyle } from '@trezor/theme';
 
 type ScreenHeaderWithIconsProps = {
     leftIcon?: ReactNode;
     rightIcon?: ReactNode;
-    title?: string;
+    content?: string | ReactNode;
     style?: NativeStyleObject;
     hasGoBackIcon?: boolean;
-    numberOfSteps?: number;
-    activeStep?: number;
     titleVariant?: TypographyStyle;
-};
+} & RequireAllOrNone<
+    { numberOfSteps?: number; activeStep?: number },
+    'activeStep' | 'numberOfSteps'
+>;
 
 const ICON_SIZE = 48;
 
@@ -33,11 +35,10 @@ const iconWrapperStyle = prepareNativeStyle(() => ({
     height: ICON_SIZE,
 }));
 
-const progressBarWrapperStyle = prepareNativeStyle(utils => ({
+const headerContentStyle = prepareNativeStyle(_ => ({
     height: ICON_SIZE,
     alignItems: 'center',
-    paddingTop: utils.spacings.small,
-    justifyContent: 'space-between',
+    justifyContent: 'center',
 }));
 
 const GoBackIcon = () => {
@@ -56,7 +57,7 @@ export const ScreenHeader = ({
     leftIcon,
     rightIcon,
     style,
-    title,
+    content,
     numberOfSteps,
     activeStep,
     titleVariant = 'titleSmall',
@@ -64,24 +65,25 @@ export const ScreenHeader = ({
 }: ScreenHeaderWithIconsProps) => {
     const { applyStyle } = useNativeStyles();
 
-    const shouldDisplayGoBackButton = hasGoBackIcon && !leftIcon;
+    const LeftIcon = hasGoBackIcon && !leftIcon ? <GoBackIcon /> : leftIcon;
+    const isStepperDisplayed = activeStep && numberOfSteps;
 
     return (
         <View style={[applyStyle(screenHeaderStyle), style]}>
-            <View style={applyStyle(iconWrapperStyle)}>
-                {shouldDisplayGoBackButton ? <GoBackIcon /> : leftIcon}
-            </View>
+            <View style={applyStyle(iconWrapperStyle)}>{LeftIcon}</View>
             <Box flex={1} marginHorizontal="large" alignItems="center">
-                {activeStep && numberOfSteps ? (
-                    <View style={applyStyle(progressBarWrapperStyle)}>
+                <VStack style={applyStyle(headerContentStyle)} spacing="small">
+                    {isStepperDisplayed && (
                         <StepsProgressBar numberOfSteps={numberOfSteps} activeStep={activeStep} />
-                        {title && <Text variant={titleVariant}>{title}</Text>}
-                    </View>
-                ) : (
-                    <Text variant={titleVariant} numberOfLines={1} ellipsizeMode="tail">
-                        {title}
-                    </Text>
-                )}
+                    )}
+                    {typeof content === 'string' ? (
+                        <Text variant={titleVariant} numberOfLines={1} ellipsizeMode="tail">
+                            {content}
+                        </Text>
+                    ) : (
+                        content
+                    )}
+                </VStack>
             </Box>
 
             <View style={applyStyle(iconWrapperStyle)}>{rightIcon}</View>

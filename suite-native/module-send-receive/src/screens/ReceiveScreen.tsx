@@ -37,7 +37,7 @@ export const ReceiveScreen = ({
     };
 
     return (
-        <Screen header={<ScreenHeader title="Receive address" />}>
+        <Screen header={<ScreenHeader content="Receive address" />}>
             <VStack spacing="medium">
                 <AccountListItem account={account} />
                 <Box marginLeft="small">

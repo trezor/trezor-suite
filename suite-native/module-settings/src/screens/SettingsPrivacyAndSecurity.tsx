@@ -75,7 +75,7 @@ const AnalyticsSwitchRow = () => {
 };
 
 export const SettingsPrivacyAndSecurity = () => (
-    <Screen header={<ScreenHeader title="Privacy & Security" />}>
+    <Screen header={<ScreenHeader content="Privacy & Security" />}>
         <Card>
             <DiscreetModeSwitchRow />
             <AnalyticsSwitchRow />

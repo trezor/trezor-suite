@@ -78,8 +78,15 @@ export const TokenListItem = ({
                         <EthereumTokenToFiatAmountFormatter
                             value={balance}
                             ethereumToken={symbol}
+                            numberOfLines={1}
+                            ellipsizeMode="tail"
                         />
-                        <EthereumTokenAmountFormatter value={balance} ethereumToken={symbol} />
+                        <EthereumTokenAmountFormatter
+                            value={balance}
+                            ethereumToken={symbol}
+                            numberOfLines={1}
+                            ellipsizeMode="tail"
+                        />
                     </Box>
                 </Box>
             </TouchableOpacity>

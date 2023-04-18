@@ -9,7 +9,7 @@ import {
 } from '@suite-native/navigation';
 
 import { SettingsScreen } from '../screens/SettingsScreen';
-import { SettingsLocalisationScreen } from '../screens/SettingsLocalisationScreen';
+import { SettingsLocalizationScreen } from '../screens/SettingsLocalizationScreen';
 import { SettingsCustomizationScreen } from '../screens/SettingsCustomizationScreen';
 import { SettingsPrivacyAndSecurity } from '../screens/SettingsPrivacyAndSecurity';
 import { SettingsAboutUsScreen } from '../screens/SettingsAboutUsScreen';
@@ -28,9 +28,9 @@ export const SettingsStackNavigator = () => (
             component={SettingsScreen}
         />
         <SettingsStack.Screen
-            options={{ title: SettingsStackRoutes.SettingsLocalisation }}
-            name={SettingsStackRoutes.SettingsLocalisation}
-            component={SettingsLocalisationScreen}
+            options={{ title: SettingsStackRoutes.SettingsLocalization }}
+            name={SettingsStackRoutes.SettingsLocalization}
+            component={SettingsLocalizationScreen}
         />
         <SettingsStack.Screen
             options={{ title: SettingsStackRoutes.SettingsCustomization }}

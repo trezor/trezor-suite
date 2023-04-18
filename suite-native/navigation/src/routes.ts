@@ -51,7 +51,7 @@ export enum SendReceiveStackRoutes {
 
 export enum SettingsStackRoutes {
     Settings = 'Settings',
-    SettingsLocalisation = 'SettingsLocalisation',
+    SettingsLocalization = 'SettingsLocalization',
     SettingsCustomization = 'SettingsCustomization',
     SettingsPrivacyAndSecurity = 'SettingsPrivacyAndSecurity',
     SettingsAbout = 'SettingsAbout',

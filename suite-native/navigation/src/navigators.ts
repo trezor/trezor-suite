@@ -28,7 +28,7 @@ export type DevUtilsStackParamList = {
 
 export type SettingsStackParamList = {
     [SettingsStackRoutes.Settings]: undefined;
-    [SettingsStackRoutes.SettingsLocalisation]: undefined;
+    [SettingsStackRoutes.SettingsLocalization]: undefined;
     [SettingsStackRoutes.SettingsCustomization]: undefined;
     [SettingsStackRoutes.SettingsPrivacyAndSecurity]: undefined;
     [SettingsStackRoutes.SettingsAbout]: undefined;

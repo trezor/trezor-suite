@@ -6,8 +6,8 @@ import { Screen, ScreenHeader } from '@suite-native/navigation';
 import { CurrencySelector } from '../components/CurrencySelector';
 import { CryptoUnitsSelector } from '../components/CryptoUnitsSelector';
 
-export const SettingsLocalisationScreen = () => (
-    <Screen header={<ScreenHeader title="Localisation" />}>
+export const SettingsLocalizationScreen = () => (
+    <Screen header={<ScreenHeader content="Localization" />}>
         <Card>
             <VStack spacing="small">
                 <CurrencySelector />

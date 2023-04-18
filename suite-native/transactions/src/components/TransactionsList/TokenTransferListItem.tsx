@@ -36,11 +36,15 @@ export const TokenTransferListItem = memo(
                     ethereumToken={tokenSymbol}
                     decimals={tokenTransfer.decimals}
                     signValue={signValueMap[tokenTransfer.type]}
+                    numberOfLines={1}
+                    ellipsizeMode="tail"
                 />
                 <EthereumTokenAmountFormatter
                     value={tokenTransfer.amount}
                     ethereumToken={tokenSymbol}
                     decimals={tokenTransfer.decimals}
+                    numberOfLines={1}
+                    ellipsizeMode="tail"
                 />
             </TransactionListItemContainer>
         );
