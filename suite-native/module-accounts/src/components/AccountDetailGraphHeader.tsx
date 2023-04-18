@@ -3,9 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { atom, useAtomValue } from 'jotai';
 
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Box, Divider, Text } from '@suite-native/atoms';
-import { CryptoIcon } from '@trezor/icons';
 import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import {
     emptyGraphPoint,
@@ -14,16 +12,14 @@ import {
     percentageDiff,
     PriceChangeIndicator,
 } from '@suite-native/graph';
-import { CryptoAmountFormatter, FiatAmountFormatter } from '@suite-native/formatters';
+import { FiatAmountFormatter } from '@suite-native/formatters';
 import { NetworkSymbol } from '@suite-common/wallet-config';
+
+import { AccountDetailCryptoValue } from './AccountDetailCryptoValue';
 
 type AccountBalanceProps = {
     accountKey: string;
 };
-
-const cryptoIconStyle = prepareNativeStyle(utils => ({
-    marginRight: utils.spacings.small / 2,
-}));
 
 export const selectedPointAtom = atom<EnhancedGraphPointWithCryptoBalance>(emptyGraphPoint);
 
@@ -45,10 +41,9 @@ const CryptoBalance = ({ accountSymbol }: { accountSymbol: NetworkSymbol }) => {
     const selectedPoint = useAtomValue(selectedPointAtom);
 
     return (
-        <CryptoAmountFormatter
+        <AccountDetailCryptoValue
+            networkSymbol={accountSymbol}
             value={selectedPoint.cryptoBalance}
-            network={accountSymbol}
-            adjustsFontSizeToFit
         />
     );
 };
@@ -68,7 +63,6 @@ const FiatBalance = ({ accountSymbol }: { accountSymbol: NetworkSymbol }) => {
 };
 
 export const AccountDetailGraphHeader = ({ accountKey }: AccountBalanceProps) => {
-    const { applyStyle } = useNativeStyles();
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
@@ -79,15 +73,8 @@ export const AccountDetailGraphHeader = ({ accountKey }: AccountBalanceProps) =>
     return (
         <Box>
             <Box marginBottom="large" justifyContent="center" alignItems="center">
-                <Box flexDirection="row" alignItems="center" marginBottom="small">
-                    <Box style={applyStyle(cryptoIconStyle)}>
-                        <CryptoIcon name={account.symbol} />
-                    </Box>
-                    <CryptoBalance accountSymbol={account.symbol} />
-                </Box>
-                <Box>
-                    <FiatBalance accountSymbol={account.symbol} />
-                </Box>
+                <CryptoBalance accountSymbol={account.symbol} />
+                <FiatBalance accountSymbol={account.symbol} />
                 <Box flexDirection="row" alignItems="center">
                     <Box marginRight="small">
                         <Text variant="hint" color="textSubdued">
