@@ -370,17 +370,6 @@ export const signTransaction = async (api: TrezorConnect) => {
                 unused: [],
                 change: [{ path: 'm/44', address: 'a', transfers: 0 }],
             },
-            utxo: [
-                {
-                    txid: '00000',
-                    vout: 1,
-                    amount: '100',
-                    address: '',
-                    path: 'm/44',
-                    blockHeight: 1,
-                    confirmations: 0,
-                },
-            ],
         },
         coin: 'btc',
         locktime: 0,

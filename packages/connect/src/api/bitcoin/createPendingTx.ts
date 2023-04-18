@@ -4,17 +4,15 @@ import { Transaction as BitcoinJsTransaction } from '@trezor/utxo-lib';
 import { getSerializedPath } from '../../utils/pathUtils';
 import { PROTO } from '../../constants';
 
-import type { AccountAddresses, AccountUtxo } from '../../types';
+import type { AccountAddresses } from '../../types';
 
 export const createPendingTransaction = (
     tx: BitcoinJsTransaction,
     {
-        utxo,
         addresses,
         inputs,
         outputs,
     }: {
-        utxo: AccountUtxo[];
         addresses: AccountAddresses;
         inputs: PROTO.TxInputType[];
         outputs: PROTO.TxOutputType[];
@@ -28,6 +26,13 @@ export const createPendingTransaction = (
         (sum, ins) => BigNumber(sum).plus(ins.amount),
         new BigNumber('0'),
     );
+    const allAddresses = addresses.unused.concat(addresses.used, addresses.change);
+    const findAddress = ({ address_n }: { address_n?: number[] }) => {
+        const path = address_n ? getSerializedPath(address_n) : undefined;
+        return allAddresses
+            .filter(address => address.path === path)
+            .map(address => address.address);
+    };
     return {
         txid: tx.getId(),
         hex: tx.toHex(),
@@ -44,9 +49,7 @@ export const createPendingTransaction = (
             txid: ins.prev_hash,
             vout: ins.prev_index,
             isAddress: true,
-            addresses: utxo!
-                .filter(utxo => utxo.txid === ins.prev_hash && utxo.vout === ins.prev_index)
-                .map(utxo => utxo.address),
+            addresses: findAddress(ins),
             value: ins.amount.toString(),
         })),
         vout: outputs.map((out, n) => {
@@ -59,16 +62,7 @@ export const createPendingTransaction = (
                     `OP_RETURN (${Buffer.from(out.op_return_data, 'hex').toString('ascii')})`,
                 ];
             } else {
-                transformedAddresses = [
-                    ...addresses!.change,
-                    ...addresses!.unused,
-                    ...addresses!.used,
-                ]
-                    .filter(
-                        address =>
-                            out.address_n && address.path === getSerializedPath(out.address_n),
-                    )
-                    .map(address => address.address);
+                transformedAddresses = findAddress(out);
             }
 
             return {
