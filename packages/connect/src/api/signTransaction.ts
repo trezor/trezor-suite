@@ -90,7 +90,13 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
 
         const inputs = validateTrezorInputs(payload.inputs, coinInfo);
         const outputs = validateTrezorOutputs(payload.outputs, coinInfo);
-        const refTxs = validateReferencedTransactions(payload.refTxs, inputs, outputs);
+        const refTxs = validateReferencedTransactions({
+            transactions: payload.refTxs || payload.account?.transactions,
+            inputs,
+            outputs,
+            coinInfo,
+            addresses: payload.account?.addresses,
+        });
 
         const outputsWithAmount = outputs.filter(
             output =>

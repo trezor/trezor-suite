@@ -1,4 +1,9 @@
-import { requireReferencedTransactions, getReferencedTransactions } from '../refTx';
+import {
+    requireReferencedTransactions,
+    getReferencedTransactions,
+    validateReferencedTransactions,
+} from '../refTx';
+import * as fixtures from '../__fixtures__/refTx';
 
 describe('core/methods/tx/refTx', () => {
     it('requireReferencedTransactions', () => {
@@ -55,5 +60,17 @@ describe('core/methods/tx/refTx', () => {
         ];
         const result = ['abcd', 'deadbeef', 'dcba'];
         expect(getReferencedTransactions(inputs as any)).toEqual(result);
+    });
+
+    describe('validateReferencedTransactions', () => {
+        fixtures.validateReferencedTransactions.forEach(f => {
+            it(` ${f.description}`, () => {
+                if (f.error) {
+                    expect(() => validateReferencedTransactions(f.params as any)).toThrow(f.error);
+                } else {
+                    expect(validateReferencedTransactions(f.params as any)).toEqual(f.result);
+                }
+            });
+        });
     });
 });
