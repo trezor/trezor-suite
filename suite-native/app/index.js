@@ -5,4 +5,11 @@ import { AppRegistry } from 'react-native';
 import { name as appName } from './app.json';
 import { App } from './src/App';
 
+if (__DEV__) {
+    // Flipper plugin for debugging websocket traffic.
+    // more: https://github.com/Matju-M/flipper-plugin-basil-ws
+    // eslint-disable-next-line no-unused-expressions, global-require
+    require('basil-ws-flipper').wsDebugPlugin;
+}
+
 AppRegistry.registerComponent(appName, () => App);
