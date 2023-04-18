@@ -7,7 +7,8 @@ let server: Awaited<ReturnType<typeof createServer>>;
 
 // create simplified transaction
 const generateTx = (vin: any[], vout: any[]) => {
-    const r = (v: any) => ({
+    const mapVinVout = (v: any) => ({
+        isAddress: typeof v.isAddress === 'boolean' ? v.isAddress : true,
         addresses: [v.address],
         value: v.value,
         isAccountOwned: v.isAccountOwned,
@@ -15,8 +16,8 @@ const generateTx = (vin: any[], vout: any[]) => {
 
     return {
         details: {
-            vin: vin.map(r),
-            vout: vout.map(r),
+            vin: vin.map(mapVinVout),
+            vout: vout.map(mapVinVout),
         },
     } as any;
 };
@@ -84,6 +85,13 @@ describe('analyzeTransactions', () => {
                     {
                         address: 'bcrt1pssj2qdyxm446ckkj2y22uu8l4wdtwjdqhtwk5uef0glazv69pfnsnza9gz',
                         value: 190,
+                    },
+                    // this output will be ignored
+                    {
+                        isAddress: false,
+                        value: 0,
+                        addresses: ['OP_RETURN (coinjoin)'],
+                        hex: '636f696e6a6f696e',
                     },
                 ],
             ),

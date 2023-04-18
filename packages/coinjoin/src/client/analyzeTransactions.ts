@@ -19,9 +19,8 @@ export interface AnalyzeTransactionsResult {
 }
 
 const transformVinVout = (vinvout: EnhancedVinVout, network: Network) => {
-    if (!vinvout.addresses || vinvout.addresses.length > 1) {
-        throw new Error(`Unsupported address ${vinvout.addresses?.join('')}`);
-    }
+    if (!vinvout.isAddress || !vinvout.addresses || vinvout.addresses.length > 1) return [];
+
     const address = vinvout.addresses[0];
     const value = Number(vinvout.value);
 
@@ -46,7 +45,7 @@ export const getRawLiquidityClue = (
     const cjTx = transactions.find(tx => tx.type === 'joint');
     if (!cjTx) return Promise.resolve(null);
     const externalAmounts = cjTx.details.vout
-        .map(vout => transformVinVout(vout, options.network))
+        .flatMap(vout => transformVinVout(vout, options.network))
         .filter(vout => !('address' in vout))
         .map(o => Number(o.value));
     return middleware.initLiquidityClue(externalAmounts, {
@@ -65,12 +64,12 @@ export const getAnonymityScores = async (
 ) => {
     const formattedTransactions = transactions.map(tx => {
         const [internalInputs, externalInputs] = arrayPartition(
-            tx.details.vin.map(vin => transformVinVout(vin, options.network)),
+            tx.details.vin.flatMap(vin => transformVinVout(vin, options.network)),
             isInternal,
         );
 
         const [internalOutputs, externalOutputs] = arrayPartition(
-            tx.details.vout.map(vout => transformVinVout(vout, options.network)),
+            tx.details.vout.flatMap(vout => transformVinVout(vout, options.network)),
             isInternal,
         );
 
