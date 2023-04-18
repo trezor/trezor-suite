@@ -3,6 +3,8 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { Select } from '@suite-native/atoms';
 import { PROTO } from '@trezor/connect';
+import { analytics, EventType } from '@suite-native/analytics';
+import { UNIT_ABBREVIATIONS } from '@suite-common/suite-constants';
 
 import { selectBitcoinUnits, setBitcoinUnits } from '../slice';
 
@@ -17,6 +19,10 @@ export const CryptoUnitsSelector = () => {
 
     const handleSelectUnit = (value: PROTO.AmountUnit) => {
         dispatch(setBitcoinUnits(value));
+        analytics.report({
+            type: EventType.SettingsChangeBtcUnit,
+            payload: { unit: UNIT_ABBREVIATIONS[value] },
+        });
     };
 
     return (

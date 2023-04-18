@@ -23,6 +23,7 @@
         {
             "path": "../../suite-common/wallet-utils"
         },
+        { "path": "../analytics" },
         { "path": "../atoms" },
         { "path": "../ethereum-tokens" },
         { "path": "../fiat-rates" },

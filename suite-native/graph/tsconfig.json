@@ -7,11 +7,15 @@
         },
         { "path": "../../suite-common/graph" },
         {
+            "path": "../../suite-common/wallet-config"
+        },
+        {
             "path": "../../suite-common/wallet-core"
         },
         {
             "path": "../../suite-common/wallet-types"
         },
+        { "path": "../analytics" },
         { "path": "../atoms" },
         { "path": "../formatters" },
         { "path": "../react-native-graph" },

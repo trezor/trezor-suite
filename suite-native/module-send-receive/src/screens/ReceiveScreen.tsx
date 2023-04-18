@@ -11,6 +11,7 @@ import {
     SendReceiveStackRoutes,
     StackProps,
 } from '@suite-native/navigation';
+import { analytics, EventType } from '@suite-native/analytics';
 
 import { ReceiveAddress } from '../components/ReceiveAddress';
 import { ReceiveTextHint } from '../components/ReceiveTextHint';
@@ -26,6 +27,14 @@ export const ReceiveScreen = ({
     );
 
     if (!account) return <ErrorMessage errorMessage={`Account ${accountKey} not found.`} />;
+
+    const handleShowAddress = () => {
+        analytics.report({
+            type: EventType.CreateReceiveAddressShowAddress,
+            payload: { assetSymbol: account.symbol },
+        });
+        setAddressIsVisible(true);
+    };
 
     return (
         <Screen header={<ScreenHeader title="Receive address" />}>
@@ -44,7 +53,7 @@ export const ReceiveScreen = ({
                         backgroundElevation="1"
                     />
                 ) : (
-                    <ReceiveTextHint onShowAddress={() => setAddressIsVisible(true)} />
+                    <ReceiveTextHint onShowAddress={handleShowAddress} />
                 )}
             </VStack>
         </Screen>

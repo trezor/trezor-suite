@@ -16,3 +16,5 @@ export const UNIT_OPTIONS = [
     { label: UNIT_LABELS[PROTO.AmountUnit.BITCOIN], value: PROTO.AmountUnit.BITCOIN },
     { label: UNIT_LABELS[PROTO.AmountUnit.SATOSHI], value: PROTO.AmountUnit.SATOSHI },
 ];
+
+export type UNIT_ABBREVIATION = (typeof UNIT_ABBREVIATIONS)[PROTO.AmountUnit];

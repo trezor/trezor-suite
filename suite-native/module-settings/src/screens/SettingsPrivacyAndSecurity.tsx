@@ -1,8 +1,8 @@
 import React, { ReactNode } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
+import { analytics } from '@suite-native/analytics';
 import { Screen, ScreenHeader } from '@suite-native/navigation';
-import { disableAnalyticsThunk, enableAnalyticsThunk } from '@suite-native/analytics';
 import { selectIsAnalyticsEnabled } from '@suite-common/analytics';
 import { Box, Card, DiscreetCanvas, Text, useDiscreetMode } from '@suite-native/atoms';
 import { useNativeStyles } from '@trezor/styles';
@@ -48,15 +48,14 @@ const DiscreetModeSwitchRow = () => {
 };
 
 const AnalyticsSwitchRow = () => {
-    const dispatch = useDispatch();
     const isAnalyticsEnabled = useSelector(selectIsAnalyticsEnabled);
 
     const handleAnalyticsChange = (isEnabled: boolean) => {
         if (isEnabled) {
-            dispatch(enableAnalyticsThunk());
+            analytics.enable();
             return;
         }
-        dispatch(disableAnalyticsThunk());
+        analytics.disable();
     };
 
     return (

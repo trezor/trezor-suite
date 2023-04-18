@@ -57,3 +57,13 @@ export enum SettingsStackRoutes {
     SettingsAbout = 'SettingsAbout',
     SettingsFAQ = 'SettingsFAQ',
 }
+
+export type AppRoutes =
+    | RootStackRoutes
+    | AppTabsRoutes
+    | AccountsImportStackRoutes
+    | DevUtilsStackRoutes
+    | HomeStackRoutes
+    | AccountsStackRoutes
+    | SendReceiveStackRoutes
+    | SettingsStackRoutes;
