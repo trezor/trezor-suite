@@ -14,7 +14,7 @@ const Wrapper = styled.div`
 
     :hover {
         box-shadow: 0 6px 40px 0 ${props => props.theme.BOX_SHADOW_OPTION_CARD};
-        border: 1px solid transparent;
+        border: 1px solid ${props => props.theme.STROKE_GREY_ALT};
     }
 `;
 
@@ -64,13 +64,13 @@ export const OptionsDivider = styled.div`
     flex: 0 0 24px;
 `;
 
-interface Props extends React.HTMLAttributes<HTMLDivElement> {
+interface OptionProps extends React.HTMLAttributes<HTMLDivElement> {
     heading: React.ReactNode;
     description?: React.ReactNode;
     icon?: IconProps['icon'];
 }
 
-const Option = ({ icon, heading, description, ...rest }: Props) => (
+export const Option = ({ icon, heading, description, ...rest }: OptionProps) => (
     <Wrapper {...rest}>
         {icon && (
             <IconWrapper>
@@ -83,5 +83,3 @@ const Option = ({ icon, heading, description, ...rest }: Props) => (
         </Content>
     </Wrapper>
 );
-
-export default Option;

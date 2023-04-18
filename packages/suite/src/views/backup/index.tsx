@@ -39,10 +39,6 @@ const StyledModal = styled(Modal)`
     min-height: 650px;
 `;
 
-const SmallModal = styled(Modal)`
-    width: 600px;
-`;
-
 type CloseButtonProps = {
     onClick: () => void;
     variant: 'TR_CLOSE' | 'TR_CANCEL' | 'TR_SKIP_PIN';
@@ -96,15 +92,14 @@ export const Backup = ({ cancelable, onCancel }: ForegroundAppProps) => {
 
     if (isDeviceUnavailable) {
         return (
-            <SmallModal
+            <Modal
                 heading={<Translation id="TR_RECONNECT_HEADER" />}
-                isCancelable={cancelable}
+                isCancelable
                 onCancel={onCancel}
                 data-test="@backup/no-device"
-                bottomBar={<CloseButton onClick={onCancel} variant="TR_CLOSE" />}
             >
                 <StyledImage image="CONNECT_DEVICE" width="360" />
-            </SmallModal>
+            </Modal>
         );
     }
 

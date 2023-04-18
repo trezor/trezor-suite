@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { Button, H2, P, Image, variables } from '@trezor/components';
 import { SelectWordCount, SelectRecoveryType } from '@recovery-components';
 import { Loading, Translation, CheckItem, TrezorLink, Modal } from '@suite-components';
-import { RawRenderer } from '@suite-components/Modal/RawRenderer';
 import { ReduxModal } from '@suite-components/ModalSwitcher/ReduxModal';
 import * as recoveryActions from '@recovery-actions/recoveryActions';
 import { useDevice, useSelector, useActions } from '@suite-hooks';
@@ -12,9 +11,14 @@ import type { WordCount } from '@recovery-types';
 import { InstructionStep } from '@suite-components/InstructionStep';
 import { getCheckBackupUrl } from '@suite-utils/device';
 import { DeviceModel, getDeviceModel, pickByDeviceModel } from '@trezor/device-utils';
+import TrezorConnect from '@trezor/connect';
 
 const StyledModal = styled(Modal)`
-    min-height: 420px;
+    min-height: 360px;
+
+    ${Modal.Content} {
+        justify-content: center;
+    }
 `;
 
 const StyledButton = styled(Button)`
@@ -28,6 +32,11 @@ const StepsContainer = styled.div`
 const StyledP = styled(P)`
     font-size: ${variables.FONT_SIZE.SMALL};
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+`;
+
+const StyledImage = styled(Image)`
+    margin-bottom: 24px;
+    align-self: center;
 `;
 
 const LeftAlignedP = styled(StyledP)`
@@ -46,27 +55,6 @@ const VerticalCenter = styled.div`
     margin-top: auto;
     margin-bottom: auto;
 `;
-
-const TinyModal = styled(Modal)`
-    width: 360px;
-`;
-
-const InstructionModal = styled(RawRenderer)`
-    margin: 54px auto 0;
-`;
-
-type CloseButtonProps = { onClick: () => void; variant: 'TR_CLOSE' | 'TR_CANCEL' };
-
-const CloseButton = ({ onClick, variant }: CloseButtonProps) => (
-    <StyledButton
-        onClick={onClick}
-        data-test="@recovery/close-button"
-        variant="secondary"
-        icon="CROSS"
-    >
-        <Translation id={variant} />
-    </StyledButton>
-);
 
 export const Recovery = ({ onCancel }: ForegroundAppProps) => {
     const { recovery, modal } = useSelector(state => ({
@@ -96,33 +84,31 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
     const learnMoreUrl = getCheckBackupUrl(device);
     const statesInProgressBar =
         deviceModel === DeviceModel.T1
-            ? ['initial', 'select-word-count', 'select-recovery-type', 'in-progress', 'finished']
+            ? [
+                  'initial',
+                  'select-word-count',
+                  'select-recovery-type',
+                  'waiting-for-confirmation',
+                  'in-progress',
+                  'finished',
+              ]
             : ['initial', 'in-progress', 'finished'];
 
     if (!device || !device.features || !deviceModel) {
         return (
-            <TinyModal
+            <Modal
                 heading={<Translation id="TR_RECONNECT_HEADER" />}
                 isCancelable
                 onCancel={onCancel}
                 data-test="@recovery/no-device"
-                bottomBar={<CloseButton onClick={() => onCancel()} variant="TR_CLOSE" />}
             >
-                <Image image="CONNECT_DEVICE" />
-            </TinyModal>
+                <StyledImage image="CONNECT_DEVICE" width="360" />
+            </Modal>
         );
     }
 
     const actionButtons = (
         <>
-            {['initial', 'select-word-count', 'select-recovery-type', 'finished'].includes(
-                recovery.status,
-            ) && (
-                <CloseButton
-                    onClick={() => onCancel()}
-                    variant={recovery.status === 'finished' ? 'TR_CLOSE' : 'TR_CANCEL'}
-                />
-            )}
             {recovery.status === 'initial' && (
                 <StyledButton
                     onClick={() =>
@@ -230,7 +216,7 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
                                 <Translation id="TR_ENTER_SEED_WORDS_ON_DEVICE" />
                             </LeftAlignedP>
                         )}
-                        <ReduxModal {...modal} renderer={InstructionModal} />
+                        <ReduxModal {...modal} />
                     </>
                 ) : (
                     <Loading />
@@ -270,6 +256,14 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
             totalProgressBarSteps={statesInProgressBar.length}
             currentProgressBarStep={statesInProgressBar.findIndex(s => s === recovery.status) + 1}
             bottomBar={actionButtons}
+            isCancelable
+            onCancel={() => {
+                if (['in-progress', 'waiting-for-confirmation'].includes(recovery.status)) {
+                    TrezorConnect.cancel();
+                } else {
+                    onCancel();
+                }
+            }}
         >
             {getStep()}
         </StyledModal>

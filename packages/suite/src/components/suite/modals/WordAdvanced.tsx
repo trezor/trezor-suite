@@ -19,14 +19,18 @@ const StyledModal = styled(Modal)`
     width: 100%;
 `;
 
-interface Props extends ModalProps {
+interface WordAdvancedProps extends ModalProps {
     count: 6 | 9;
 }
 
-export const WordAdvanced = ({ count, ...rest }: Props) => (
+export const WordAdvanced = ({ count, ...rest }: WordAdvancedProps) => (
     <StyledModal
         heading={<Translation id="TR_FOLLOW_INSTRUCTIONS_ON_DEVICE" />}
         description={<Translation id="TR_ADVANCED_RECOVERY_TEXT" />}
+        onCancel={() => TrezorConnect.cancel()}
+        isCancelable
+        totalProgressBarSteps={5}
+        currentProgressBarStep={4}
         {...rest}
     >
         <ContentWrapper>

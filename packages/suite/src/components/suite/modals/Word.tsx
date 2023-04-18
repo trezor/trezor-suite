@@ -1,11 +1,10 @@
 import React from 'react';
-import styled from 'styled-components';
 import TrezorConnect, { UI } from '@trezor/connect';
 import { Translation, WordInput, Modal, ModalProps } from '@suite-components';
+import styled from 'styled-components';
 
 const StyledModal = styled(Modal)`
-    width: 100%;
-    height: 100%;
+    min-height: 360px;
 `;
 
 export const Word = (props: ModalProps) => (
@@ -18,6 +17,10 @@ export const Word = (props: ModalProps) => (
                 <Translation id="TR_RANDOM_SEED_WORDS_DISCLAIMER" />
             </>
         }
+        onCancel={() => TrezorConnect.cancel()}
+        isCancelable
+        totalProgressBarSteps={5}
+        currentProgressBarStep={4}
         {...props}
     >
         <WordInput

@@ -40,7 +40,7 @@ const RecoveryStepBox = (props: OnboardingStepBoxProps) => {
         if (recovery.status === 'finished' && recovery.error) {
             return true;
         }
-        if (recovery.status !== 'finished' && recovery.status !== 'in-progress') {
+        if (!['finished', 'in-progress', 'waiting-for-confirmation'].includes(recovery.status)) {
             return true;
         }
         return false;

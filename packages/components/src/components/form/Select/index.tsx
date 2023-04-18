@@ -57,10 +57,11 @@ const selectStyle = (
             cursor: hideTextCursor || !isSearchable ? 'pointer' : 'text',
         },
     }),
-    control: (base, { isDisabled }) => {
+    control: (base, { isDisabled, menuIsOpen }) => {
+        const borderColorBase = menuIsOpen ? theme.TYPE_LIGHT_GREY : theme.STROKE_GREY;
         const borderColor = inputState
             ? getInputStateTextColor(inputState, theme)
-            : theme.STROKE_GREY;
+            : borderColorBase;
 
         return {
             ...base,
@@ -79,7 +80,7 @@ const selectStyle = (
             '&:hover': {
                 borderColor: darken(
                     theme.HOVER_DARKEN_FILTER,
-                    inputState ? getInputStateTextColor(inputState, theme) : theme.STROKE_GREY,
+                    inputState ? getInputStateTextColor(inputState, theme) : borderColorBase,
                 ),
                 [`.${reactSelectClassNamePrefix}__dropdown-indicator`]: {
                     color: darken(theme.HOVER_DARKEN_FILTER, theme.STROKE_GREY),
