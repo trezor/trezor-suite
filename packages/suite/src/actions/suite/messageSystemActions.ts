@@ -112,7 +112,9 @@ const fetchConfig = () => async (dispatch: Dispatch, getState: GetState) => {
             } else if (currentSequence === config.sequence) {
                 await dispatch(fetchSuccess(timestamp));
             } else {
-                throw Error('Sequence of config is older than the current one');
+                throw Error(
+                    `Sequence of config (${config.sequence}) is older than the current one (${currentSequence}).`,
+                );
             }
         } catch (error) {
             console.error(error);
