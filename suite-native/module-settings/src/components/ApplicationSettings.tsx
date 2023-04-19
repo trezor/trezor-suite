@@ -44,9 +44,9 @@ export const ApplicationSettings = () => {
                 )}
                 <SettingsSectionItem
                     iconName="flag"
-                    title="Localisation"
+                    title="Localization"
                     subtitle="Currency, Bitcoin units"
-                    onPress={() => handleNavigation(SettingsStackRoutes.SettingsLocalisation)}
+                    onPress={() => handleNavigation(SettingsStackRoutes.SettingsLocalization)}
                 />
                 <SettingsSectionItem
                     title="Customization"

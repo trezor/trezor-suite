@@ -26,7 +26,7 @@ export const DevUtilsScreen = ({
     };
 
     return (
-        <Screen header={<ScreenHeader title="DEV utils" hasGoBackIcon />}>
+        <Screen header={<ScreenHeader content="DEV utils" hasGoBackIcon />}>
             {isDevelopOrDebugEnv() ? (
                 <Box marginBottom="large">
                     <VStack spacing="medium">

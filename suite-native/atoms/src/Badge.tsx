@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Icon, IconSize, IconName } from '@trezor/icons';
+import { Icon, IconSize, IconName, CryptoIconName, icons, CryptoIcon } from '@trezor/icons';
 import { Color } from '@trezor/theme';
 
 import { Text } from './Text';
@@ -13,7 +13,7 @@ type BadgeProps = {
     label: string;
     variant?: BadgeVariant;
     size?: 'medium' | 'small';
-    icon?: IconName;
+    icon?: IconName | CryptoIconName;
     iconSize?: IconSize;
     elevation?: BadgeElevation;
     isDisabled?: boolean;
@@ -100,6 +100,16 @@ export const Badge = ({
     const backgroundColor =
         elevation === '0' ? backgroundColorElevation0 : backgroundColorElevation1;
 
+    const badgeIcon =
+        icon && icon in icons ? (
+            <Icon name={icon as IconName} color={iconColor} size={iconSize ?? size} />
+        ) : (
+            <CryptoIcon
+                name={icon as CryptoIconName}
+                size={size === 'small' ? 'extraSmall' : 'small'}
+            />
+        );
+
     return (
         <HStack
             style={applyStyle(BadgeStyle, {
@@ -108,8 +118,8 @@ export const Badge = ({
             })}
             spacing={utils.spacings.small / 2}
         >
-            {icon && <Icon name={icon} color={iconColor} size={iconSize ?? size} />}
-            <Text color={textColor} variant={textVariant}>
+            {icon && badgeIcon}
+            <Text color={textColor} variant={textVariant} numberOfLines={1} ellipsizeMode="tail">
                 {label}
             </Text>
         </HStack>

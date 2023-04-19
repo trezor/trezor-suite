@@ -32,7 +32,7 @@ export const ScanQRCodeModalScreen = ({
     const screenTitle = networkTypeToTitleMap[networkType];
 
     return (
-        <Screen header={<ScreenHeader title={screenTitle} />}>
+        <Screen header={<ScreenHeader content={screenTitle} />}>
             <QRCodeScanner onCodeScanned={handleBarCodeScanned} />
         </Screen>
     );

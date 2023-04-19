@@ -23,8 +23,14 @@ import { EthereumTokenSymbol } from '@suite-native/ethereum-tokens';
 import { AccountDetailGraph } from './AccountDetailGraph';
 import { AccountDetailGraphHeader } from './AccountDetailGraphHeader';
 import { AccountDetailCryptoValue } from './AccountDetailCryptoValue';
+import { AccountDetailTokenHeader } from './AccountDetailTokenHeader';
 
 type AccountDetailHeaderProps = {
+    accountKey: AccountKey;
+    tokenSymbol?: EthereumTokenSymbol;
+};
+
+type TransactionListHeaderContentProps = {
     accountKey: AccountKey;
     tokenSymbol?: EthereumTokenSymbol;
 };
@@ -35,17 +41,58 @@ type AccountsNavigationProps = TabToStackCompositeNavigationProp<
     AccountsStackParamList
 >;
 
+const TransactionListHeaderContent = ({
+    accountKey,
+    tokenSymbol,
+}: TransactionListHeaderContentProps) => {
+    const account = useSelector((state: AccountsRootState) =>
+        selectAccountByKey(state, accountKey),
+    );
+    const accountHasTransactions = useSelector((state: AccountsRootState) =>
+        selectHasAccountTransactions(state, accountKey),
+    );
+    const isTestnetAccount = useSelector((state: AccountsRootState) =>
+        selectIsTestnetAccount(state, accountKey),
+    );
+
+    if (!account) return null;
+
+    const isTokenAccount = !!tokenSymbol;
+
+    // Graph is temporarily hidden also for ERC20 tokens.
+    // Will be solved in issue: https://github.com/trezor/trezor-suite/issues/7839
+    const isGraphDisplayed = accountHasTransactions && !isTestnetAccount && !isTokenAccount;
+
+    if (isGraphDisplayed) {
+        return (
+            <>
+                <AccountDetailGraphHeader accountKey={accountKey} />
+                <AccountDetailGraph accountKey={accountKey} />
+            </>
+        );
+    }
+    if (isTokenAccount) {
+        return <AccountDetailTokenHeader accountKey={accountKey} tokenSymbol={tokenSymbol} />;
+    }
+
+    if (isTestnetAccount) {
+        return (
+            <AccountDetailCryptoValue
+                value={account.balance}
+                networkSymbol={account.symbol}
+                isBalance={false}
+            />
+        );
+    }
+
+    return null;
+};
+
 export const TransactionListHeader = memo(
     ({ accountKey, tokenSymbol }: AccountDetailHeaderProps) => {
         const navigation = useNavigation<AccountsNavigationProps>();
         const account = useSelector((state: AccountsRootState) =>
             selectAccountByKey(state, accountKey),
-        );
-        const accountHasTransactions = useSelector((state: AccountsRootState) =>
-            selectHasAccountTransactions(state, accountKey),
-        );
-        const isTestnetAccount = useSelector((state: AccountsRootState) =>
-            selectIsTestnetAccount(state, accountKey),
         );
 
         const handleReceive = () => {
@@ -57,29 +104,11 @@ export const TransactionListHeader = memo(
 
         if (!account) return null;
 
-        const isTokenAccount = !!tokenSymbol;
-
-        // Graph is temporarily hidden also for ERC20 tokens.
-        // Will be solved in issue: https://github.com/trezor/trezor-suite/issues/7839
-        const isGraphDisplayed = accountHasTransactions && !isTestnetAccount && !isTokenAccount;
-
         return (
             <>
-                {isGraphDisplayed && (
-                    <>
-                        <AccountDetailGraphHeader accountKey={accountKey} />
-                        <AccountDetailGraph accountKey={accountKey} />
-                    </>
-                )}
-                {isTestnetAccount && (
-                    <AccountDetailCryptoValue
-                        value={account.balance}
-                        networkSymbol={account.symbol}
-                        isBalance={false}
-                    />
-                )}
-
-                <Box marginBottom="large" paddingHorizontal="medium">
+                <TransactionListHeaderContent accountKey={accountKey} tokenSymbol={tokenSymbol} />
+                <Divider />
+                <Box marginVertical="large" paddingHorizontal="medium">
                     <Button iconLeft="receive" size="large" onPress={handleReceive}>
                         Receive
                     </Button>

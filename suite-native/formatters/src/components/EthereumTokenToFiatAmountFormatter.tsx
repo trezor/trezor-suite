@@ -29,6 +29,8 @@ export const EthereumTokenToFiatAmountFormatter = ({
     isDiscreetText = true,
     decimals = 0,
     signValue,
+    ellipsizeMode,
+    numberOfLines,
     ...rest
 }: EthereumTokenToFiatAmountFormatterProps) => {
     const coins = useSelector(selectCoinsLegacy);
@@ -43,10 +45,18 @@ export const EthereumTokenToFiatAmountFormatter = ({
     const fiatValue = toFiatCurrency(decimalValue.toString(), fiatCurrency.label, rates, 2);
     const formattedFiatValue = FiatAmountFormatter.format(fiatValue ?? 0);
 
-    return (
-        <Text ellipsizeMode="tail" numberOfLines={1}>
-            {signValue && <SignValueFormatter value={signValue} />}
+    return signValue ? (
+        <Text ellipsizeMode={ellipsizeMode} numberOfLines={numberOfLines}>
+            <SignValueFormatter value={signValue} />
             <AmountText value={formattedFiatValue} isDiscreetText={isDiscreetText} {...rest} />
         </Text>
+    ) : (
+        <AmountText
+            value={formattedFiatValue}
+            isDiscreetText={isDiscreetText}
+            ellipsizeMode={ellipsizeMode}
+            numberOfLines={numberOfLines}
+            {...rest}
+        />
     );
 };

@@ -23,6 +23,7 @@ import { analytics, EventType } from '@suite-native/analytics';
 
 import { TransactionListHeader } from '../components/TransactionListHeader';
 import { AccountDetailScreenHeader } from '../components/AccountDetailScreenHeader';
+import { TokenAccountDetailScreenHeader } from '../components/TokenAccountDetailScreenHeader';
 
 export const AccountDetailScreen = memo(
     ({ route }: StackProps<AccountsStackParamList, AccountsStackRoutes.AccountDetail>) => {
@@ -68,11 +69,17 @@ export const AccountDetailScreen = memo(
         return (
             <Screen
                 header={
-                    <AccountDetailScreenHeader
-                        accountLabel={accountLabel}
-                        accountKey={accountKey}
-                        tokenName={token?.name}
-                    />
+                    token?.name ? (
+                        <TokenAccountDetailScreenHeader
+                            tokenName={token.name}
+                            accountKey={accountKey}
+                        />
+                    ) : (
+                        <AccountDetailScreenHeader
+                            accountLabel={accountLabel}
+                            accountKey={accountKey}
+                        />
+                    )
                 }
                 isScrollable={false}
             >

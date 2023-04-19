@@ -62,7 +62,7 @@ export const AccountImportHeader = ({ activeStep }: AccountImportHeaderProps) =>
             }
             activeStep={activeStep}
             numberOfSteps={4}
-            title="Sync my coins"
+            content="Sync my coins"
             hasGoBackIcon={false}
         />
     );

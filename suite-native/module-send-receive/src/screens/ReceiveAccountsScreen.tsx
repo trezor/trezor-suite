@@ -17,7 +17,7 @@ export const ReceiveAccountsScreen = ({
         navigation.navigate(SendReceiveStackRoutes.Receive, { accountKey });
 
     return (
-        <Screen header={<ScreenHeader title="Receive to" hasGoBackIcon={false} />}>
+        <Screen header={<ScreenHeader content="Receive to" hasGoBackIcon={false} />}>
             <AccountsList onSelectAccount={navigateToReceiveScreen} />
         </Screen>
     );

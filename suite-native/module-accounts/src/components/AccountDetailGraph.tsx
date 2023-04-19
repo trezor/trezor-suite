@@ -11,7 +11,7 @@ import {
     Graph,
     TimeSwitch,
 } from '@suite-native/graph';
-import { Box, Divider } from '@suite-native/atoms';
+import { Box } from '@suite-native/atoms';
 import { selectFiatCurrency } from '@suite-native/module-settings';
 
 import { referencePointAtom, selectedPointAtom } from './AccountDetailGraphHeader';
@@ -60,9 +60,6 @@ export const AccountDetailGraph = ({ accountKey }: AccountDetailGraphProps) => {
                     selectedTimeFrame={hoursToHistory}
                     onSelectTimeFrame={setHoursToHistory}
                 />
-            </Box>
-            <Box marginBottom="large">
-                <Divider />
             </Box>
         </Box>
     );
