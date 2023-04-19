@@ -2,7 +2,7 @@
 
 import { AbstractMethod } from '../core/AbstractMethod';
 import { validateParams, getFirmwareRange } from './common/paramsValidator';
-import { validatePath } from '../utils/pathUtils';
+import { getSlip44ByPath, validatePath } from '../utils/pathUtils';
 import { getEthereumNetwork } from '../data/coinInfo';
 import { getNetworkLabel } from '../utils/ethereumUtils';
 import { stripHexPrefix } from '../utils/formatUtils';
@@ -112,11 +112,12 @@ export default class EthereumSignTransaction extends AbstractMethod<
     async run() {
         const { tx } = this.params;
 
-        const definitions = await getEthereumDefinitions(
-            tx.chainId,
-            this.params.path,
-            tx.data ? tx.to : undefined,
-        );
+        const slip44 = getSlip44ByPath(this.params.path);
+        const definitions = await getEthereumDefinitions({
+            chainId: tx.chainId,
+            slip44,
+            contractAddress: tx.data ? tx.to : undefined,
+        });
 
         return tx.type === 'eip1559'
             ? helper.ethereumSignTxEIP1559(

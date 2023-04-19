@@ -1,29 +1,25 @@
 import fetch from 'cross-fetch';
 
 import { EthereumDefinitions } from '@trezor/transport/lib/types/messages';
-import { fromHardened } from '../../utils/pathUtils';
-
-const getSlip44ByPath = (path: number[]) => fromHardened(path[1]);
 
 /**
  * For given chainId and optionally contractAddress download ethereum definitions for transaction signing.
  * Definitions are only required to display correct information on display. If definitions
  * are not provided UNKNOWN is shown. This means that should this method fail we only log this but don't return error.
  */
-export const getEthereumDefinitions = async (
-    chainId: number | undefined,
-    path?: number[],
-    contractAddress?: string,
-) => {
+export const getEthereumDefinitions = async ({
+    chainId,
+    slip44,
+    contractAddress,
+}: {
+    chainId: number | undefined;
+    slip44?: number;
+    contractAddress?: string;
+}) => {
     const definitions: EthereumDefinitions = {};
 
-    let slip44;
-    if (!chainId && path) {
-        slip44 = getSlip44ByPath(path);
-    }
-
     if (!chainId && !slip44) {
-        throw new Error('argument chainId or slip44 path is required');
+        throw new Error('argument chainId or slip44 is required');
     }
 
     try {
