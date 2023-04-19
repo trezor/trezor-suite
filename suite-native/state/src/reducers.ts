@@ -27,6 +27,7 @@ export const prepareRootReducers = async () => {
         reducer: appSettingsReducer,
         persistedKeys: appSettingsPersistWhitelist,
         key: 'appSettings',
+        version: 1,
     });
 
     const walletReducers = combineReducers({
@@ -40,6 +41,7 @@ export const prepareRootReducers = async () => {
         reducer: walletReducers,
         persistedKeys: ['accounts', 'transactions'],
         key: 'wallet',
+        version: 1,
     });
 
     return combineReducers({
