@@ -16,10 +16,10 @@ type TimeSwitchItemType = {
 };
 
 export const timeSwitchItems: TimeSwitchItemType[] = [
-    { label: '1h', valueBackInHours: 1 },
     { label: '1d', valueBackInHours: 24 },
     { label: '1w', valueBackInHours: 168 },
     { label: '1m', valueBackInHours: 720 },
+    { label: '6m', valueBackInHours: 4320 },
     { label: '1y', valueBackInHours: 8760 },
     { label: 'all', valueBackInHours: null },
 ];
@@ -29,7 +29,7 @@ const timeSwitchStyle = prepareNativeStyle(() => ({
     justifyContent: 'space-around',
 }));
 
-export const TimeSwitch = ({ selectedTimeFrame = 1, onSelectTimeFrame }: TimeSwitchProps) => {
+export const TimeSwitch = ({ selectedTimeFrame = 24, onSelectTimeFrame }: TimeSwitchProps) => {
     const { applyStyle } = useNativeStyles();
 
     return (
