@@ -1,0 +1,108 @@
+import React, { useState } from 'react';
+import { TouchableOpacity } from 'react-native';
+
+import { BottomSheet, Box, Card, Text } from '@suite-native/atoms';
+import {
+    EthereumTokenTransfer,
+    getTransactionTokensCount,
+    WalletAccountTransaction,
+} from '@suite-native/ethereum-tokens';
+import { AccountKey } from '@suite-common/wallet-types';
+import { useNativeStyles } from '@trezor/styles';
+import { Icon } from '@trezor/icons';
+
+import { iconContainerStyle, TransactionDetailListItem } from './TransactionDetailListItem';
+
+type TransactionDetailIncludedCoinsProps = {
+    accountKey: AccountKey;
+    transaction: WalletAccountTransaction;
+    tokenTransfer?: EthereumTokenTransfer;
+};
+
+const isSameTokenTransfer = (
+    tokenTransferA: EthereumTokenTransfer,
+    tokenTransferB: EthereumTokenTransfer,
+) =>
+    tokenTransferA.from === tokenTransferB.from &&
+    tokenTransferA.to === tokenTransferB.to &&
+    tokenTransferA.symbol === tokenTransferB.symbol;
+
+const isZeroAmountTransaction = (transaction: WalletAccountTransaction) =>
+    transaction.amount.length === 0 || transaction.amount === '0';
+
+const IncludedCoinsSheetTrigger = ({ title, onPress }: { title: string; onPress: () => void }) => {
+    const { applyStyle } = useNativeStyles();
+    return (
+        <Card>
+            <TouchableOpacity onPress={onPress}>
+                <Box flexDirection="row" alignItems="center" justifyContent="space-between">
+                    <Box flexDirection="row" alignItems="center">
+                        <Box style={applyStyle(iconContainerStyle)}>
+                            <Icon name="discover" size="large" />
+                        </Box>
+                        <Text>{title}</Text>
+                    </Box>
+                    <Icon name="circleRight" color="iconPrimaryDefault" />
+                </Box>
+            </TouchableOpacity>
+        </Card>
+    );
+};
+
+export const TransactionDetailIncludedCoins = ({
+    accountKey,
+    transaction,
+    tokenTransfer,
+}: TransactionDetailIncludedCoinsProps) => {
+    const [sheetIsVisible, setSheetIsVisible] = useState(false);
+
+    const coinsIncludedCount = getTransactionTokensCount(transaction);
+    const sheetTitle = `${coinsIncludedCount} coin${coinsIncludedCount > 1 ? 's' : ''} included`;
+    const sheetSubtitle = `Transaction #${transaction.txid}`;
+
+    const isTokenTransactionDetail = !!tokenTransfer;
+
+    const includedTokens = isTokenTransactionDetail
+        ? transaction.tokens.filter(
+              transactionToken => !isSameTokenTransfer(transactionToken, tokenTransfer),
+          )
+        : transaction.tokens;
+
+    const isEthereumCoinDisplayed =
+        isTokenTransactionDetail && !isZeroAmountTransaction(transaction);
+
+    const toggleSheet = () => setSheetIsVisible(!sheetIsVisible);
+
+    return (
+        <>
+            <IncludedCoinsSheetTrigger title={sheetTitle} onPress={toggleSheet} />
+
+            <BottomSheet
+                isVisible={sheetIsVisible}
+                title={sheetTitle}
+                subtitle={sheetSubtitle}
+                onClose={toggleSheet}
+            >
+                {isEthereumCoinDisplayed && (
+                    <TransactionDetailListItem
+                        onPress={toggleSheet}
+                        accountKey={accountKey}
+                        transaction={transaction}
+                        isFirst
+                    />
+                )}
+                {includedTokens.map((token, index) => (
+                    <TransactionDetailListItem
+                        onPress={toggleSheet}
+                        key={token.contract}
+                        accountKey={accountKey}
+                        transaction={transaction}
+                        tokenTransfer={token}
+                        isFirst={!isEthereumCoinDisplayed && index === 0}
+                        isLast={index === includedTokens.length - 1}
+                    />
+                ))}
+            </BottomSheet>
+        </>
+    );
+};

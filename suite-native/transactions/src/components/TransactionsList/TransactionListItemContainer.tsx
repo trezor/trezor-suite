@@ -2,6 +2,7 @@ import React, { memo, ReactNode } from 'react';
 import { TouchableOpacity } from 'react-native';
 import { useSelector } from 'react-redux';
 
+import { RequireExactlyOne } from 'type-fest';
 import { useNavigation } from '@react-navigation/native';
 
 import { AccountKey, TransactionType } from '@suite-common/wallet-types';
@@ -16,19 +17,23 @@ import { Box, Text } from '@suite-native/atoms';
 import { useFormatters } from '@suite-common/formatters';
 import { selectTransactionBlockTimeById, TransactionsRootState } from '@suite-common/wallet-core';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { EthereumTokenSymbol } from '@suite-native/ethereum-tokens';
+import { EthereumTokenTransfer } from '@suite-native/ethereum-tokens';
 
 import { TransactionIcon } from './TransactionIcon';
 
-type TransactionListItemContainerProps = {
-    children: ReactNode;
-    txid: string;
-    accountKey: AccountKey;
-    isFirst?: boolean;
-    isLast?: boolean;
-    symbol: NetworkSymbol | EthereumTokenSymbol;
-    transactionType: TransactionType;
-};
+type TransactionListItemContainerProps = RequireExactlyOne<
+    {
+        children: ReactNode;
+        txid: string;
+        accountKey: AccountKey;
+        isFirst?: boolean;
+        isLast?: boolean;
+        networkSymbol: NetworkSymbol;
+        tokenTransfer: EthereumTokenTransfer;
+        transactionType: TransactionType;
+    },
+    'networkSymbol' | 'tokenTransfer'
+>;
 
 type TransactionListItemStyleProps = {
     isFirst: boolean;
@@ -45,7 +50,7 @@ const transactionTitleMap = {
     unknown: 'Unknown',
 } as const satisfies Record<TransactionType, string>;
 
-const transactionListItemContainerStyle = prepareNativeStyle<TransactionListItemStyleProps>(
+export const transactionListItemContainerStyle = prepareNativeStyle<TransactionListItemStyleProps>(
     (utils, { isFirst, isLast }) => ({
         flexDirection: 'row',
         alignItems: 'center',
@@ -83,7 +88,7 @@ const descriptionBoxStyle = prepareNativeStyle(_ => ({
     alignItems: 'center',
 }));
 
-const valuesContainerStyle = prepareNativeStyle(utils => ({
+export const valuesContainerStyle = prepareNativeStyle(utils => ({
     flexShrink: 0,
     alignItems: 'flex-end',
     marginLeft: utils.spacings.small,
@@ -98,7 +103,8 @@ export const TransactionListItemContainer = memo(
         isFirst = false,
         isLast = false,
         transactionType,
-        symbol,
+        networkSymbol,
+        tokenTransfer,
     }: TransactionListItemContainerProps) => {
         const { applyStyle } = useNativeStyles();
         const navigation =
@@ -110,6 +116,7 @@ export const TransactionListItemContainer = memo(
             navigation.navigate(RootStackRoutes.TransactionDetail, {
                 txid,
                 accountKey,
+                tokenTransfer,
             });
         };
 
@@ -118,13 +125,16 @@ export const TransactionListItemContainer = memo(
             selectTransactionBlockTimeById(state, txid, accountKey),
         );
 
+        const coinSymbol = tokenTransfer?.symbol ?? networkSymbol;
         return (
             <TouchableOpacity
                 onPress={() => handleNavigateToTransactionDetail()}
                 style={applyStyle(transactionListItemContainerStyle, { isFirst, isLast })}
             >
                 <Box style={applyStyle(descriptionBoxStyle)}>
-                    <TransactionIcon symbol={symbol} transactionType={transactionType} />
+                    {coinSymbol && (
+                        <TransactionIcon symbol={coinSymbol} transactionType={transactionType} />
+                    )}
                     <Box marginLeft="medium" flex={1}>
                         <Box flexDirection="row">
                             <Text>{transactionTitleMap[transactionType]}</Text>

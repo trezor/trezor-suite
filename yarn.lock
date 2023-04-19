@@ -6804,6 +6804,7 @@ __metadata:
     "@trezor/blockchain-link": "workspace:*"
     "@trezor/icons": "workspace:*"
     proxy-memoize: ^2.0.2
+    react: 18.2.0
   languageName: unknown
   linkType: soft
 

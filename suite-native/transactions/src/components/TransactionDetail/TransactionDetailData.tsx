@@ -1,26 +1,45 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
-import { Box, Card, Divider, Text, VStack } from '@suite-native/atoms';
-import { AccountKey, WalletAccountTransaction } from '@suite-common/wallet-types';
+import { Box, Card, Text, VStack } from '@suite-native/atoms';
+import { AccountKey } from '@suite-common/wallet-types';
 import { Icon } from '@trezor/icons';
 import { useFormatters } from '@suite-common/formatters';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { selectTransactionBlockTimeById, TransactionsRootState } from '@suite-common/wallet-core';
+import {
+    EthereumTokenTransfer,
+    getTransactionTokensCount,
+    WalletAccountTransaction,
+} from '@suite-native/ethereum-tokens';
 
 import { TransactionDetailSummary } from './TransactionDetailSummary';
 import { TransactionDetailRow } from './TransactionDetailRow';
+import { TransactionDetailIncludedCoins } from './TransactionDetailIncludedCoins';
 
 type TransactionDetailDataProps = {
     transaction: WalletAccountTransaction;
     accountKey: AccountKey;
+    tokenTransfer?: EthereumTokenTransfer;
 };
 
-export const TransactionDetailData = ({ transaction, accountKey }: TransactionDetailDataProps) => {
+export const TransactionDetailData = ({
+    transaction,
+    accountKey,
+    tokenTransfer,
+}: TransactionDetailDataProps) => {
     const { DateTimeFormatter } = useFormatters();
     const transactionBlockTime = useSelector((state: TransactionsRootState) =>
         selectTransactionBlockTimeById(state, transaction.txid, accountKey),
     );
+
+    const transactionTokensCount = getTransactionTokensCount(transaction);
+
+    const isTokenTransaction = !!tokenTransfer;
+    const isMultiTokenTransaction = isTokenTransaction && transactionTokensCount - 1 > 0;
+    const isNetworkTransactionWithTokens = !isTokenTransaction && transactionTokensCount > 0;
+
+    const hasIncludedCoins = isMultiTokenTransaction || isNetworkTransactionWithTokens;
 
     return (
         <>
@@ -35,7 +54,18 @@ export const TransactionDetailData = ({ transaction, accountKey }: TransactionDe
                         </Box>
                     </TransactionDetailRow>
                 </Card>
-                <TransactionDetailSummary transaction={transaction} accountKey={accountKey} />
+                <TransactionDetailSummary
+                    txid={transaction.txid}
+                    accountKey={accountKey}
+                    tokenTransfer={tokenTransfer}
+                />
+                {hasIncludedCoins && (
+                    <TransactionDetailIncludedCoins
+                        accountKey={accountKey}
+                        transaction={transaction}
+                        tokenTransfer={tokenTransfer}
+                    />
+                )}
                 <Card>
                     <TransactionDetailRow title="Fee">
                         <Box alignItems="flex-end">
@@ -64,9 +94,6 @@ export const TransactionDetailData = ({ transaction, accountKey }: TransactionDe
                     </TransactionDetailRow>
                 </Card>
             </VStack>
-            <Box marginVertical="medium">
-                <Divider />
-            </Box>
         </>
     );
 };

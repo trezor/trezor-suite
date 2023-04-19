@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Linking } from 'react-native';
 
-import { Button, VStack } from '@suite-native/atoms';
+import { Box, Button, Divider, VStack } from '@suite-native/atoms';
 import {
     RootStackParamList,
     RootStackRoutes,
@@ -18,6 +18,7 @@ import {
 } from '@suite-common/wallet-core';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { analytics, EventType } from '@suite-native/analytics';
+import { WalletAccountTransaction } from '@suite-native/ethereum-tokens';
 
 import { TransactionDetailHeader } from '../components/TransactionDetail/TransactionDetailHeader';
 import { TransactionDetailData } from '../components/TransactionDetail/TransactionDetailData';
@@ -31,10 +32,10 @@ export const TransactionDetailScreen = ({
     route,
 }: StackProps<RootStackParamList, RootStackRoutes.TransactionDetail>) => {
     const { applyStyle, utils } = useNativeStyles();
-    const { txid, accountKey } = route.params;
+    const { txid, accountKey, tokenTransfer } = route.params;
     const transaction = useSelector((state: TransactionsRootState) =>
         selectTransactionByTxidAndAccountKey(state, txid, accountKey),
-    );
+    ) as WalletAccountTransaction;
     const blockchainExplorer = useSelector((state: BlockchainRootState) =>
         selectBlockchainExplorerBySymbol(state, transaction?.symbol),
     );
@@ -60,9 +61,16 @@ export const TransactionDetailScreen = ({
     return (
         <Screen customHorizontalPadding={utils.spacings.small} header={<ScreenHeader />}>
             <VStack spacing="large">
-                <TransactionDetailHeader transaction={transaction} />
-                <TransactionDetailData transaction={transaction} accountKey={accountKey} />
+                <TransactionDetailHeader transaction={transaction} tokenTransfer={tokenTransfer} />
+                <TransactionDetailData
+                    transaction={transaction}
+                    accountKey={accountKey}
+                    tokenTransfer={tokenTransfer}
+                />
             </VStack>
+            <Box marginVertical="large">
+                <Divider />
+            </Box>
             <TransactionDetailSheets transaction={transaction} />
             <Button
                 iconLeft="arrowUpRight"
