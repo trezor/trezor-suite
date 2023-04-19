@@ -2,7 +2,7 @@
 
 import { AbstractMethod, MethodReturnType } from '../core/AbstractMethod';
 import { validateParams, getFirmwareRange } from './common/paramsValidator';
-import { validatePath, getSerializedPath } from '../utils/pathUtils';
+import { validatePath, getSerializedPath, getSlip44ByPath } from '../utils/pathUtils';
 import { getNetworkLabel } from '../utils/ethereumUtils';
 import { getEthereumNetwork, getUniqueNetworks } from '../data/coinInfo';
 import { stripHexPrefix } from '../utils/formatUtils';
@@ -143,10 +143,11 @@ export default class EthereumGetAddress extends AbstractMethod<'ethereumGetAddre
 
         for (let i = 0; i < this.params.length; i++) {
             const batch = this.params[i];
-            const definitions = await getEthereumDefinitions(
-                batch?.network?.chainId,
-                batch.address_n,
-            );
+            const slip44 = getSlip44ByPath(batch.address_n);
+            const definitions = await getEthereumDefinitions({
+                chainId: batch?.network?.chainId,
+                slip44,
+            });
 
             const definitionParams = {
                 ...(definitions.encoded_network && {
@@ -160,7 +161,7 @@ export default class EthereumGetAddress extends AbstractMethod<'ethereumGetAddre
                 const silent = await this._call({
                     ...batch,
                     ...definitionParams,
-                    show_display: true,
+                    show_display: false,
                 });
                 if (typeof batch.address === 'string') {
                     if (
