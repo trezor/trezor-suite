@@ -128,7 +128,7 @@ export class Status extends EventEmitter {
     }
 
     stopFollowRound(id: string) {
-        this.log('debug', `Status stop following round ~${id}~`);
+        this.log('debug', `Status stop following round ~~${id}~~`);
         this.registeredRound = this.registeredRound.filter(r => r.id !== id);
     }
 
