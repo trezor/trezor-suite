@@ -6,6 +6,7 @@ import type { CoinInfo } from '../types';
 export const HD_HARDENED = 0x80000000;
 export const toHardened = (n: number) => (n | HD_HARDENED) >>> 0;
 export const fromHardened = (n: number) => (n & ~HD_HARDENED) >>> 0;
+export const getSlip44ByPath = (path: number[]) => fromHardened(path[1]);
 
 const PATH_NOT_VALID = ERRORS.TypedError('Method_InvalidParameter', 'Not a valid path');
 const PATH_NEGATIVE_VALUES = ERRORS.TypedError(
