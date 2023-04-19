@@ -160,7 +160,7 @@ export default class EthereumGetAddress extends AbstractMethod<'ethereumGetAddre
                 const silent = await this._call({
                     ...batch,
                     ...definitionParams,
-                    show_display: true,
+                    show_display: false,
                 });
                 if (typeof batch.address === 'string') {
                     if (
