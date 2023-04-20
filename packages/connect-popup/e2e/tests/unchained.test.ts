@@ -7,7 +7,7 @@ const connectUrl = process.env.URL
     ? process.env.URL.replace('connect-explorer', 'connect')
     : 'https://connect.trezor.io/9/';
 
-const url = `https://unchained-capital.github.io/caravan?trezor-connect-src=${connectUrl}#/test`;
+const url = `https://unchained-capital.github.io/caravan?trezor-connect-src=${connectUrl}`;
 
 test.beforeAll(async () => {
     await TrezorUserEnvLink.connect();
@@ -151,6 +151,7 @@ test('Verify unchained test suite', async ({ browser }) => {
     const page = await context.newPage();
     const keystoreInput = '#keystore-select';
     await page.goto(url);
+    await page.getByRole('link', { name: 'tested' }).click();
     await page.locator(keystoreInput).click();
     // select trezor
     await page.locator('[data-value="trezor"]').click();
