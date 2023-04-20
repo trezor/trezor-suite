@@ -1,6 +1,6 @@
 {
     "name": "@trezor/blockchain-link-utils",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "license": "See LICENSE.md in repo root",
     "sideEffects": false,
     "main": "lib/index",
@@ -21,7 +21,7 @@
         "bignumber.js": "^9.1.1"
     },
     "devDependencies": {
-        "@trezor/blockchain-link-types": "workspace:1.0.0",
+        "@trezor/blockchain-link-types": "workspace:1.0.1",
         "@trezor/type-utils": "workspace:1.0.0",
         "jest": "^26.6.3",
         "rimraf": "^4.4.1",
