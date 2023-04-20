@@ -1,28 +1,45 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 
 import { EthereumTokenIcon, EthereumTokenIconName } from '@trezor/icons';
 import {
     EthereumTokenAmountFormatter,
     EthereumTokenToFiatAmountFormatter,
 } from '@suite-native/formatters';
-import { EthereumTokenSymbol } from '@suite-native/ethereum-tokens';
+import { selectEthereumTokenHasFiatRates } from '@suite-native/ethereum-tokens';
+import { FiatRatesRootState } from '@suite-native/fiat-rates';
+import { TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
+import { SettingsSliceRootState } from '@suite-native/module-settings';
 
 import { AccountImportOverviewCard } from './AccountImportOverviewCard';
 
 type EthereumTokenInfoProps = {
-    symbol?: EthereumTokenSymbol;
+    symbol?: TokenSymbol;
     balance?: string;
     name?: string;
     decimals?: number;
+    contract: TokenAddress;
 };
 
-export const EthereumTokenInfo = ({ symbol, balance, name, decimals }: EthereumTokenInfoProps) => {
-    if (!symbol || !balance || !name) return null;
+export const EthereumTokenInfo = ({
+    symbol,
+    balance,
+    name,
+    decimals,
+    contract,
+}: EthereumTokenInfoProps) => {
+    const ethereumSymbolHasFiatRates = useSelector(
+        (state: FiatRatesRootState & SettingsSliceRootState) =>
+            selectEthereumTokenHasFiatRates(state, contract, symbol),
+    );
+
+    if (!symbol || !balance || !name || !ethereumSymbolHasFiatRates) return null;
 
     return (
         <AccountImportOverviewCard
             coinName={name}
             symbol="eth"
+            shouldDisplayDeleteIcon={false}
             cryptoAmount={
                 <EthereumTokenAmountFormatter
                     value={balance}
@@ -31,7 +48,7 @@ export const EthereumTokenInfo = ({ symbol, balance, name, decimals }: EthereumT
                     variant="label"
                 />
             }
-            icon={<EthereumTokenIcon name={symbol as EthereumTokenIconName} />}
+            icon={<EthereumTokenIcon name={symbol.toLowerCase() as EthereumTokenIconName} />}
         >
             <EthereumTokenToFiatAmountFormatter
                 value={balance}

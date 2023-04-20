@@ -4,3 +4,4 @@ export * from './fiatRatesSelectors';
 export * from './fiatRatesThunks';
 export * from './fiatRatesMiddleware';
 export * from './types';
+export * from './utils';

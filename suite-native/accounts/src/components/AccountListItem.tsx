@@ -11,7 +11,9 @@ import { Account } from '@suite-common/wallet-types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { CryptoIcon } from '@trezor/icons';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
-import { selectIsEthereumAccountWithTokensWithBalance } from '@suite-native/ethereum-tokens';
+import { FiatRatesRootState } from '@suite-native/fiat-rates';
+import { selectIsEthereumAccountWithTokensWithFiatRates } from '@suite-native/ethereum-tokens';
+import { SettingsSliceRootState } from '@suite-native/module-settings';
 
 export type AccountListItemProps = {
     account: Account;
@@ -55,8 +57,8 @@ export const AccountListItem = ({ account }: AccountListItemProps) => {
         selectFormattedAccountType(state, account.key),
     );
 
-    const isAccountWithTokens = useSelector((state: AccountsRootState) =>
-        selectIsEthereumAccountWithTokensWithBalance(state, account.key),
+    const isAccountWithTokens = useSelector((state: FiatRatesRootState & SettingsSliceRootState) =>
+        selectIsEthereumAccountWithTokensWithFiatRates(state, account.key),
     );
 
     return (

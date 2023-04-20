@@ -3,8 +3,8 @@ import React from 'react';
 import { A } from '@mobily/ts-belt';
 
 import { Box, VStack, Text } from '@suite-native/atoms';
-import { EthereumTokenSymbol, filterTokenHasBalance } from '@suite-native/ethereum-tokens';
 import { TokenInfo } from '@trezor/blockchain-link-types';
+import { TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
 
 import { EthereumTokenInfo } from './EthereumTokenInfo';
 
@@ -13,21 +13,20 @@ type AccountImportEthereumTokensProps = {
 };
 
 export const AccountImportEthereumTokens = ({ tokens }: AccountImportEthereumTokensProps) => {
-    const tokensWithBalance = A.filter(tokens, filterTokenHasBalance);
-
-    if (A.isEmpty(tokensWithBalance)) return null;
+    if (A.isEmpty(tokens)) return null;
 
     return (
-        <Box>
-            <Text>Tokens: </Text>
+        <Box marginTop="medium">
+            <Text variant="titleSmall">Tokens: </Text>
             <VStack spacing="small" marginBottom="small">
-                {tokensWithBalance.map(({ symbol, balance, name, decimals }) => (
+                {tokens.map(({ symbol, contract, balance, name, decimals }) => (
                     <EthereumTokenInfo
-                        key={symbol}
-                        symbol={symbol as EthereumTokenSymbol}
+                        key={contract}
+                        symbol={symbol as TokenSymbol}
                         balance={balance}
                         decimals={decimals}
                         name={name}
+                        contract={contract as TokenAddress}
                     />
                 ))}
             </VStack>

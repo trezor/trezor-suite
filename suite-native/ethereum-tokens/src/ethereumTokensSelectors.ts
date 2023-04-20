@@ -7,44 +7,17 @@ import {
     selectAccountTransactions,
     TransactionsRootState,
 } from '@suite-common/wallet-core';
-import { AccountKey } from '@suite-common/wallet-types';
+import { AccountKey, TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
 import { TokenInfo, TokenTransfer } from '@trezor/blockchain-link';
-
 import {
-    EthereumTokenAccountWithBalance,
-    EthereumTokenSymbol,
-    WalletAccountTransaction,
-} from './types';
-import { isEthereumAccountSymbol } from './utils';
+    FiatRatesRootState,
+    selectFiatRatesByFiatRateKey,
+    getFiatRateKeyFromTicker,
+} from '@suite-native/fiat-rates';
+import { selectFiatCurrencyCode, SettingsSliceRootState } from '@suite-native/module-settings';
+import { isEthereumAccountSymbol } from '@suite-common/wallet-utils';
 
-export const filterTokenHasBalance = (token: TokenInfo) => !!token.balance && token.balance !== '0';
-
-export const selectEthereumAccountsTokensWithBalance = memoizeWithArgs(
-    (state: AccountsRootState, ethereumAccountKey: string): EthereumTokenAccountWithBalance[] => {
-        const account = selectAccountByKey(state, ethereumAccountKey);
-        if (!account || !isEthereumAccountSymbol(account.symbol)) return [];
-        return A.filter(
-            account.tokens ?? [],
-            filterTokenHasBalance,
-        ) as EthereumTokenAccountWithBalance[];
-    },
-    { size: 50 },
-);
-
-// If account item is ethereum which has tokens with non-zero balance,
-// we want to adjust styling to display token items.
-export const selectIsEthereumAccountWithTokensWithBalance = (
-    state: AccountsRootState,
-    ethereumAccountKey: AccountKey,
-): boolean => {
-    const account = selectAccountByKey(state, ethereumAccountKey);
-    return (
-        !!account &&
-        isEthereumAccountSymbol(account.symbol) &&
-        G.isArray(account.tokens) &&
-        A.isNotEmpty(account.tokens.filter(filterTokenHasBalance))
-    );
-};
+import { EthereumTokenSymbol, WalletAccountTransaction } from './types';
 
 export const selectEthereumAccountToken = (
     state: AccountsRootState,
@@ -87,4 +60,58 @@ export const selectAccountOrTokenAccountTransactions = (
         return selectEthereumAccountTokenTransactions(state, accountKey, tokenSymbol);
     }
     return selectAccountTransactions(state, accountKey) as WalletAccountTransaction[];
+};
+
+export const selectEthereumTokenHasFiatRates = (
+    state: FiatRatesRootState & SettingsSliceRootState,
+    contract: TokenAddress,
+    tokenSymbol?: TokenSymbol,
+) => {
+    if (!tokenSymbol) return false;
+    const fiatCurrencyCode = selectFiatCurrencyCode(state);
+    const fiatRateKey = getFiatRateKeyFromTicker(
+        {
+            symbol: tokenSymbol.toUpperCase() as TokenSymbol,
+            mainNetworkSymbol: 'eth',
+            tokenAddress: contract,
+        },
+        fiatCurrencyCode,
+    );
+    const rates = selectFiatRatesByFiatRateKey(state, fiatRateKey);
+    return !!rates?.rate;
+};
+
+export const selectEthereumAccountsTokensWithFiatRates = memoizeWithArgs(
+    (state: FiatRatesRootState & SettingsSliceRootState, ethereumAccountKey: string) => {
+        const account = selectAccountByKey(state, ethereumAccountKey);
+        if (!account || !isEthereumAccountSymbol(account.symbol)) return [];
+        return A.filter(account.tokens ?? [], token =>
+            selectEthereumTokenHasFiatRates(
+                state,
+                token.contract as TokenAddress,
+                token.symbol as TokenSymbol,
+            ),
+        );
+    },
+    { size: 50 },
+);
+
+// If account item is ethereum which has tokens with fiat rates,
+// we want to adjust styling to display token items.
+export const selectIsEthereumAccountWithTokensWithFiatRates = (
+    state: FiatRatesRootState & SettingsSliceRootState,
+    ethereumAccountKey: AccountKey,
+): boolean => {
+    const account = selectAccountByKey(state, ethereumAccountKey);
+    if (!account || G.isNullable(account.tokens) || !isEthereumAccountSymbol(account.symbol))
+        return false;
+    return A.isNotEmpty(
+        A.filterMap(account.tokens, token =>
+            selectEthereumTokenHasFiatRates(
+                state,
+                token.contract as TokenAddress,
+                token.symbol as TokenSymbol,
+            ),
+        ),
+    );
 };

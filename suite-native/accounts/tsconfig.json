@@ -14,10 +14,15 @@
         {
             "path": "../../suite-common/wallet-types"
         },
+        {
+            "path": "../../suite-common/wallet-utils"
+        },
         { "path": "../atoms" },
         { "path": "../ethereum-tokens" },
+        { "path": "../fiat-rates" },
         { "path": "../formatters" },
         { "path": "../forms" },
+        { "path": "../module-settings" },
         { "path": "../navigation" },
         { "path": "../../packages/icons" },
         { "path": "../../packages/styles" },

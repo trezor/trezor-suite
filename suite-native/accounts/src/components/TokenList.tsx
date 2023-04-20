@@ -6,10 +6,12 @@ import { A } from '@mobily/ts-belt';
 import { VStack } from '@suite-native/atoms';
 import {
     EthereumTokenSymbol,
-    selectEthereumAccountsTokensWithBalance,
+    selectEthereumAccountsTokensWithFiatRates,
 } from '@suite-native/ethereum-tokens';
 import { AccountsRootState, selectAccountLabel } from '@suite-common/wallet-core';
-import { AccountKey } from '@suite-common/wallet-types';
+import { AccountKey, TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
+import { FiatRatesRootState } from '@suite-native/fiat-rates';
+import { SettingsSliceRootState } from '@suite-native/module-settings';
 
 import { TokenListItem } from './TokenListItem';
 
@@ -19,8 +21,8 @@ type TokenListProps = {
 };
 
 export const TokenList = ({ accountKey, onSelectAccount }: TokenListProps) => {
-    const accountTokens = useSelector((state: AccountsRootState) =>
-        selectEthereumAccountsTokensWithBalance(state, accountKey),
+    const accountTokens = useSelector((state: FiatRatesRootState & SettingsSliceRootState) =>
+        selectEthereumAccountsTokensWithFiatRates(state, accountKey),
     );
     const accountLabel = useSelector((state: AccountsRootState) =>
         selectAccountLabel(state, accountKey),
@@ -32,9 +34,10 @@ export const TokenList = ({ accountKey, onSelectAccount }: TokenListProps) => {
         <VStack>
             {accountTokens.map((token, index) => (
                 <TokenListItem
+                    key={token.contract}
                     accountKey={accountKey}
-                    key={token.name}
-                    symbol={token.symbol}
+                    symbol={token.symbol as TokenSymbol}
+                    contract={token.contract as TokenAddress}
                     onSelectAccount={onSelectAccount}
                     balance={token.balance}
                     label={`${accountLabel} ${token.name}`}
