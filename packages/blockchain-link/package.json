@@ -64,7 +64,7 @@
         "worker-loader": "^3.0.8"
     },
     "dependencies": {
-        "@trezor/blockchain-link-types": "workspace:1.0.0",
+        "@trezor/blockchain-link-types": "workspace:1.0.1",
         "@trezor/blockchain-link-utils": "workspace:1.0.0",
         "@trezor/utils": "workspace:9.0.7",
         "@trezor/utxo-lib": "workspace:1.0.5",
