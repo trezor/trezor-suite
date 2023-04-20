@@ -47,7 +47,7 @@ export const EthereumTokenInfo = ({
                     variant="label"
                 />
             }
-            icon={<EthereumTokenIcon name={symbol as EthereumTokenIconName} />}
+            icon={<EthereumTokenIcon name={symbol.toLowerCase() as EthereumTokenIconName} />}
         >
             <EthereumTokenToFiatAmountFormatter
                 value={balance}
