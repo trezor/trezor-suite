@@ -224,8 +224,7 @@ transport manual:
     matrix:
       - TEST_FILE: ["methods"]
       - TEST_FILE: ["popup-close"]
-      # unchained test is failing, should be debugged outside of main pipeline and re-enabled again
-      # - TEST_FILE: ["unchained"]
+      - TEST_FILE: ["unchained"]
       - TEST_FILE: ["browser-support"]
 
 connect-popup:
