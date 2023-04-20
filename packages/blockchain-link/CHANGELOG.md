@@ -1,3 +1,7 @@
+# 2.1.10
+
+-   fix: remove workspace: from dependencies
+
 # 2.1.9
 
 -   feat: add `token` param to to `GetCurrentFiatRates`, `GetFiatRatesForTimestamps` and `GetFiatRatesTickersList` methods
