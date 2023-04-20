@@ -1414,7 +1414,7 @@ export type EthereumTxAck = {
 export type EthereumSignMessage = {
     address_n: number[];
     message: string;
-    encoded_network?: string;
+    encoded_network?: ArrayBuffer;
 };
 
 // EthereumMessageSignature
@@ -1435,7 +1435,7 @@ export type EthereumSignTypedHash = {
     address_n: number[];
     domain_separator_hash: string;
     message_hash?: string;
-    encoded_network?: string;
+    encoded_network?: ArrayBuffer;
 };
 
 // EthereumTypedDataSignature

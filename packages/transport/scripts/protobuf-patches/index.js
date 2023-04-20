@@ -115,6 +115,8 @@ const TYPE_PATCH = {
     'EthereumGetAddress.encoded_network': 'ArrayBuffer',
     'EthereumDefinitions.encoded_network': 'ArrayBuffer',
     'EthereumDefinitions.encoded_token': 'ArrayBuffer',
+    'EthereumSignMessage.encoded_network': 'ArrayBuffer',
+    'EthereumSignTypedHash.encoded_network': 'ArrayBuffer',
     'CardanoCVoteRegistrationDelegation.weight': UINT_TYPE,
     'CardanoCVoteRegistrationParametersType.nonce': UINT_TYPE,
     'CardanoCVoteRegistrationParametersType.voting_purpose': UINT_TYPE,
