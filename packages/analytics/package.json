@@ -1,10 +1,13 @@
 {
     "name": "@trezor/analytics",
     "version": "1.0.0",
-    "private": true,
     "license": "See LICENSE.md in repo root",
     "sideEffects": false,
     "main": "lib/index",
+    "files": [
+        "lib/",
+        "!**/*.map"
+    ],
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "test:unit": "jest --version && jest -c ../../jest.config.base.js",
