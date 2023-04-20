@@ -18,7 +18,7 @@ import {
 } from '@suite-common/wallet-core';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { analytics, EventType } from '@suite-native/analytics';
-import { WalletAccountTransaction } from '@suite-native/ethereum-tokens';
+import { EthereumTokenTransfer, WalletAccountTransaction } from '@suite-native/ethereum-tokens';
 
 import { TransactionDetailHeader } from '../components/TransactionDetail/TransactionDetailHeader';
 import { TransactionDetailData } from '../components/TransactionDetail/TransactionDetailData';
@@ -61,11 +61,14 @@ export const TransactionDetailScreen = ({
     return (
         <Screen customHorizontalPadding={utils.spacings.small} header={<ScreenHeader />}>
             <VStack spacing="large">
-                <TransactionDetailHeader transaction={transaction} tokenTransfer={tokenTransfer} />
+                <TransactionDetailHeader
+                    transaction={transaction}
+                    tokenTransfer={tokenTransfer as EthereumTokenTransfer}
+                />
                 <TransactionDetailData
                     transaction={transaction}
                     accountKey={accountKey}
-                    tokenTransfer={tokenTransfer}
+                    tokenTransfer={tokenTransfer as EthereumTokenTransfer}
                 />
             </VStack>
             <Box marginVertical="large">

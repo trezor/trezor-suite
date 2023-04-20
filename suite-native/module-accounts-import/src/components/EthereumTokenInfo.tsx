@@ -39,6 +39,7 @@ export const EthereumTokenInfo = ({
         <AccountImportOverviewCard
             coinName={name}
             symbol="eth"
+            shouldDisplayDeleteIcon={false}
             cryptoAmount={
                 <EthereumTokenAmountFormatter
                     value={balance}
