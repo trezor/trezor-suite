@@ -6,11 +6,11 @@
     },
     "references": [
         { "path": "../blockchain-link" },
+        { "path": "../connect-analytics" },
         { "path": "../connect-common" },
         { "path": "../transport" },
         { "path": "../utils" },
         { "path": "../utxo-lib" },
-        { "path": "../connect-analytics" },
         { "path": "../trezor-user-env-link" }
     ]
 }

@@ -50,6 +50,7 @@
     },
     "dependencies": {
         "@trezor/blockchain-link": "workspace:*",
+        "@trezor/connect-analytics": "workspace:*",
         "@trezor/connect-common": "workspace:0.0.13",
         "@trezor/transport": "workspace:1.1.9",
         "@trezor/utils": "workspace:9.0.7",
@@ -62,7 +63,6 @@
         "tslib": "2.5.0"
     },
     "devDependencies": {
-        "@trezor/connect-analytics": "workspace:*",
         "@trezor/trezor-user-env-link": "workspace:*",
         "@types/karma": "^6.3.3",
         "@types/parse-uri": "^1.0.0",
