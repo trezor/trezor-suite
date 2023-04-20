@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect } from 'react';
+import React, { memo, useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import {
@@ -14,12 +14,14 @@ import {
     selectAccountByKey,
     TransactionsRootState,
 } from '@suite-common/wallet-core';
+import { FiatRatesRootState } from '@suite-native/fiat-rates';
 import { TransactionList } from '@suite-native/transactions';
 import {
     selectAccountOrTokenAccountTransactions,
     selectEthereumAccountToken,
 } from '@suite-native/ethereum-tokens';
 import { analytics, EventType } from '@suite-native/analytics';
+import { SettingsSliceRootState } from '@suite-native/module-settings';
 
 import { TransactionListHeader } from '../components/TransactionListHeader';
 import { AccountDetailScreenHeader } from '../components/AccountDetailScreenHeader';
@@ -27,6 +29,7 @@ import { TokenAccountDetailScreenHeader } from '../components/TokenAccountDetail
 
 export const AccountDetailScreen = memo(
     ({ route }: StackProps<AccountsStackParamList, AccountsStackRoutes.AccountDetail>) => {
+        const [areTokensIncluded, setAreTokensIncluded] = useState(false);
         const dispatch = useDispatch();
         const { accountKey, tokenSymbol } = route.params;
         const account = useSelector((state: AccountsRootState) =>
@@ -35,8 +38,9 @@ export const AccountDetailScreen = memo(
         const accountLabel = useSelector((state: AccountsRootState) =>
             selectAccountLabel(state, accountKey),
         );
-        const accountTransactions = useSelector((state: TransactionsRootState) =>
-            selectAccountOrTokenAccountTransactions(state, accountKey, tokenSymbol ?? null),
+        const accountTransactions = useSelector(
+            (state: TransactionsRootState & FiatRatesRootState & SettingsSliceRootState) =>
+                selectAccountOrTokenAccountTransactions(state, accountKey, tokenSymbol ?? null),
         );
         const token = useSelector((state: AccountsRootState) =>
             selectEthereumAccountToken(state, accountKey, tokenSymbol),
@@ -64,6 +68,10 @@ export const AccountDetailScreen = memo(
             }
         }, [account, tokenSymbol]);
 
+        const toggleIncludeTokenTransactions = useCallback(() => {
+            setAreTokensIncluded(prev => !prev);
+        }, []);
+
         if (!account) return null;
 
         return (
@@ -84,12 +92,18 @@ export const AccountDetailScreen = memo(
                 isScrollable={false}
             >
                 <TransactionList
+                    areTokensIncluded={areTokensIncluded}
                     accountKey={accountKey}
                     tokenSymbol={tokenSymbol}
                     transactions={accountTransactions}
                     fetchMoreTransactions={fetchMoreTransactions}
                     listHeaderComponent={
-                        <TransactionListHeader accountKey={accountKey} tokenSymbol={tokenSymbol} />
+                        <TransactionListHeader
+                            accountKey={accountKey}
+                            tokenSymbol={tokenSymbol}
+                            areTokensIncluded={areTokensIncluded}
+                            toggleIncludeTokenTransactions={toggleIncludeTokenTransactions}
+                        />
                     }
                 />
             </Screen>

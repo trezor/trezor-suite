@@ -9,10 +9,11 @@ export const getFiatRateKey = (
     fiatCurrency: FiatCurrencyCode,
     tokenAddress?: TokenAddress,
 ): FiatRateKey => {
+    const lowerCaseSymbol = symbol?.toLowerCase();
     if (tokenAddress) {
-        return `${symbol}-${fiatCurrency}-${tokenAddress}` as FiatRateKey;
+        return `${lowerCaseSymbol}-${fiatCurrency}-${tokenAddress}` as FiatRateKey;
     }
-    return `${symbol}-${fiatCurrency}` as FiatRateKey;
+    return `${lowerCaseSymbol}-${fiatCurrency}` as FiatRateKey;
 };
 
 export const getFiatRateKeyFromTicker = (

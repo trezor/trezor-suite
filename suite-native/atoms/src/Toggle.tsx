@@ -48,7 +48,7 @@ const labelsContainerStyle = prepareNativeStyle(_ => ({
     alignItems: 'center',
 }));
 
-const lableStyle = prepareNativeStyle(utils => ({
+const labelStyle = prepareNativeStyle(utils => ({
     ...utils.typography.body,
 }));
 
@@ -103,13 +103,13 @@ export const Toggle = ({ leftLabel, rightLabel, isToggled, onToggle }: TogglePro
                     />
                     <Box flexDirection="row" style={applyStyle(labelsContainerStyle)}>
                         <Box flex={1} alignItems="center" justifyContent="center">
-                            <Animated.Text style={[applyStyle(lableStyle), animatedLeftLabelStyle]}>
+                            <Animated.Text style={[applyStyle(labelStyle), animatedLeftLabelStyle]}>
                                 {leftLabel}
                             </Animated.Text>
                         </Box>
                         <Box flex={1} alignItems="center" justifyContent="center">
                             <Animated.Text
-                                style={[applyStyle(lableStyle), animatedRightLabelStyle]}
+                                style={[applyStyle(labelStyle), animatedRightLabelStyle]}
                             >
                                 {rightLabel}
                             </Animated.Text>

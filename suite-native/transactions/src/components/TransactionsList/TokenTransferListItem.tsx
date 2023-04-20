@@ -8,12 +8,13 @@ import {
 } from '@suite-native/formatters';
 
 import { TransactionListItemContainer } from './TransactionListItemContainer';
-import { signValueMap } from './TransactionListItem';
+import { signValueMap } from '../TransactionDetail/TransactionDetailHeader';
 
 type TokenTransferListItemProps = {
     txid: string;
     tokenTransfer: EthereumTokenTransfer;
     accountKey: AccountKey;
+    includedCoinsCount?: number;
     isFirst?: boolean;
     isLast?: boolean;
 };
@@ -43,11 +44,19 @@ export const TokenTransferListItemValues = ({
 );
 
 export const TokenTransferListItem = memo(
-    ({ txid, accountKey, tokenTransfer, isFirst, isLast }: TokenTransferListItemProps) => (
+    ({
+        txid,
+        accountKey,
+        tokenTransfer,
+        includedCoinsCount = 0,
+        isFirst,
+        isLast,
+    }: TokenTransferListItemProps) => (
         <TransactionListItemContainer
             tokenTransfer={tokenTransfer}
             transactionType={tokenTransfer.type}
             txid={txid}
+            includedCoinsCount={includedCoinsCount}
             accountKey={accountKey}
             isFirst={isFirst}
             isLast={isLast}

@@ -19,14 +19,18 @@ import {
     TabToStackCompositeNavigationProp,
 } from '@suite-native/navigation';
 import { EthereumTokenSymbol } from '@suite-native/ethereum-tokens';
+import { isEthereumAccountSymbol } from '@suite-common/wallet-utils';
 
 import { AccountDetailGraph } from './AccountDetailGraph';
 import { AccountDetailGraphHeader } from './AccountDetailGraphHeader';
 import { AccountDetailCryptoValue } from './AccountDetailCryptoValue';
 import { AccountDetailTokenHeader } from './AccountDetailTokenHeader';
+import { IncludeTokensToggle } from './IncludeTokensToggle';
 
 type AccountDetailHeaderProps = {
     accountKey: AccountKey;
+    areTokensIncluded: boolean;
+    toggleIncludeTokenTransactions: () => void;
     tokenSymbol?: EthereumTokenSymbol;
 };
 
@@ -89,7 +93,12 @@ const TransactionListHeaderContent = ({
 };
 
 export const TransactionListHeader = memo(
-    ({ accountKey, tokenSymbol }: AccountDetailHeaderProps) => {
+    ({
+        accountKey,
+        areTokensIncluded,
+        toggleIncludeTokenTransactions,
+        tokenSymbol,
+    }: AccountDetailHeaderProps) => {
         const navigation = useNavigation<AccountsNavigationProps>();
         const account = useSelector((state: AccountsRootState) =>
             selectAccountByKey(state, accountKey),
@@ -103,6 +112,9 @@ export const TransactionListHeader = memo(
         };
 
         if (!account) return null;
+
+        const isTokenDetail = !!tokenSymbol;
+        const isEthereumAccountDetail = !isTokenDetail && isEthereumAccountSymbol(account.symbol);
 
         return (
             <>
@@ -118,6 +130,13 @@ export const TransactionListHeader = memo(
                 <Box marginTop="extraLarge" marginBottom="medium" marginHorizontal="large">
                     <Text variant="titleSmall">Transactions</Text>
                 </Box>
+
+                {isEthereumAccountDetail && (
+                    <IncludeTokensToggle
+                        isToggled={areTokensIncluded}
+                        onToggle={toggleIncludeTokenTransactions}
+                    />
+                )}
             </>
         );
     },

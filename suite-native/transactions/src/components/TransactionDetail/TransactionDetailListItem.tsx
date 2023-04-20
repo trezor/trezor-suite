@@ -4,8 +4,12 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
 
 import { Box, Text } from '@suite-native/atoms';
-import { AccountKey, WalletAccountTransaction } from '@suite-common/wallet-types';
-import { EthereumTokenTransfer, CoinIcon } from '@suite-native/ethereum-tokens';
+import { AccountKey } from '@suite-common/wallet-types';
+import {
+    EthereumTokenTransfer,
+    CoinIcon,
+    WalletAccountTransaction,
+} from '@suite-native/ethereum-tokens';
 import {
     StackNavigationProps,
     RootStackParamList,

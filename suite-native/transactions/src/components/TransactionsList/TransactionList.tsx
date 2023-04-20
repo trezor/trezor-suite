@@ -15,6 +15,7 @@ import { TransactionsEmptyState } from '../TransactionsEmptyState';
 
 type AccountTransactionProps = {
     transactions: WalletAccountTransaction[];
+    areTokensIncluded: boolean;
     fetchMoreTransactions: (pageToFetch: number, perPage: number) => void;
     listHeaderComponent: JSX.Element;
     accountKey: string;
@@ -32,9 +33,10 @@ type RenderTransactionItemParams = {
     section: { monthKey: MonthKey; data: WalletAccountTransaction[] };
     index: number;
     accountKey: AccountKey;
+    areTokensIncluded: boolean;
 };
 
-type RenderTokenTranferItemParams = RenderTransactionItemParams & {
+type RenderTokenTranferItemParams = Omit<RenderTransactionItemParams, 'areTokensIncluded'> & {
     tokenSymbol: EthereumTokenSymbol;
 };
 
@@ -43,6 +45,7 @@ const renderTransactionItem = ({
     section,
     index,
     accountKey,
+    areTokensIncluded,
 }: RenderTransactionItemParams) => (
     <TransactionListItem
         key={item.txid}
@@ -50,6 +53,7 @@ const renderTransactionItem = ({
         isFirst={index === 0}
         isLast={index === section.data.length - 1}
         accountKey={accountKey}
+        areTokensIncluded={areTokensIncluded}
     />
 );
 
@@ -89,6 +93,7 @@ export const TX_PER_PAGE = 25;
 
 export const TransactionList = ({
     transactions,
+    areTokensIncluded,
     listHeaderComponent,
     fetchMoreTransactions,
     accountKey,
@@ -144,7 +149,13 @@ export const TransactionList = ({
             renderItem={({ item, section, index }) =>
                 tokenSymbol
                     ? renderTokenTransferItem({ item, section, index, accountKey, tokenSymbol })
-                    : renderTransactionItem({ item, section, index, accountKey })
+                    : renderTransactionItem({
+                          item,
+                          section,
+                          index,
+                          accountKey,
+                          areTokensIncluded,
+                      })
             }
             renderSectionHeader={renderSectionHeader}
             ListEmptyComponent={<TransactionsEmptyState accountKey={accountKey} />}

@@ -13,7 +13,7 @@ import {
     RootStackRoutes,
     StackNavigationProps,
 } from '@suite-native/navigation';
-import { Box, Text } from '@suite-native/atoms';
+import { Badge, Box, HStack, Text } from '@suite-native/atoms';
 import { useFormatters } from '@suite-common/formatters';
 import { selectTransactionBlockTimeById, TransactionsRootState } from '@suite-common/wallet-core';
 import { NetworkSymbol } from '@suite-common/wallet-config';
@@ -26,6 +26,7 @@ type TransactionListItemContainerProps = RequireExactlyOne<
         children: ReactNode;
         txid: string;
         accountKey: AccountKey;
+        includedCoinsCount: number;
         isFirst?: boolean;
         isLast?: boolean;
         networkSymbol: NetworkSymbol;
@@ -102,6 +103,7 @@ export const TransactionListItemContainer = memo(
         accountKey,
         isFirst = false,
         isLast = false,
+        includedCoinsCount,
         transactionType,
         networkSymbol,
         tokenTransfer,
@@ -120,6 +122,11 @@ export const TransactionListItemContainer = memo(
             });
         };
 
+        const hasIncludedCoins = includedCoinsCount > 0;
+        const includedCoinsLabel = `+${includedCoinsCount} coin${
+            includedCoinsCount > 1 ? 's' : ''
+        }`;
+
         const { DateTimeFormatter } = useFormatters();
         const transactionBlockTime = useSelector((state: TransactionsRootState) =>
             selectTransactionBlockTimeById(state, txid, accountKey),
@@ -136,9 +143,10 @@ export const TransactionListItemContainer = memo(
                         <TransactionIcon symbol={coinSymbol} transactionType={transactionType} />
                     )}
                     <Box marginLeft="medium" flex={1}>
-                        <Box flexDirection="row">
+                        <HStack flexDirection="row" alignItems="center" spacing={4}>
                             <Text>{transactionTitleMap[transactionType]}</Text>
-                        </Box>
+                            {hasIncludedCoins && <Badge label={includedCoinsLabel} size="small" />}
+                        </HStack>
                         <Text variant="hint" color="textSubdued">
                             <DateTimeFormatter value={transactionBlockTime} />
                         </Text>

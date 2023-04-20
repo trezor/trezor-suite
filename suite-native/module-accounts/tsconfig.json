@@ -11,10 +11,14 @@
         {
             "path": "../../suite-common/wallet-types"
         },
+        {
+            "path": "../../suite-common/wallet-utils"
+        },
         { "path": "../accounts" },
         { "path": "../analytics" },
         { "path": "../atoms" },
         { "path": "../ethereum-tokens" },
+        { "path": "../fiat-rates" },
         { "path": "../formatters" },
         { "path": "../forms" },
         { "path": "../graph" },
