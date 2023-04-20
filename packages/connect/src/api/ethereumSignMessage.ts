@@ -2,11 +2,12 @@
 
 import { AbstractMethod } from '../core/AbstractMethod';
 import { validateParams, getFirmwareRange } from './common/paramsValidator';
-import { validatePath } from '../utils/pathUtils';
+import { getSlip44ByPath, validatePath } from '../utils/pathUtils';
 import { getEthereumNetwork } from '../data/coinInfo';
 import { getNetworkLabel } from '../utils/ethereumUtils';
 import { messageToHex } from '../utils/formatUtils';
 import type { PROTO } from '../constants';
+import { getEthereumDefinitions } from './ethereum/ethereumDefinitions';
 
 export default class EthereumSignMessage extends AbstractMethod<
     'ethereumSignMessage',
@@ -42,7 +43,20 @@ export default class EthereumSignMessage extends AbstractMethod<
     async run() {
         const cmd = this.device.getCommands();
         const { address_n, message } = this.params;
+        const network = getEthereumNetwork(address_n);
+        const slip44 = getSlip44ByPath(address_n);
+        const definitions = await getEthereumDefinitions({
+            chainId: network?.chainId,
+            slip44,
+        });
+
+        const definitionParams = {
+            ...(definitions.encoded_network && {
+                encoded_network: definitions.encoded_network,
+            }),
+        };
         const response = await cmd.typedCall('EthereumSignMessage', 'EthereumMessageSignature', {
+            ...definitionParams,
             address_n,
             message,
         });
