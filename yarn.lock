@@ -7520,7 +7520,7 @@ __metadata:
   resolution: "@trezor/blockchain-link-utils@workspace:packages/blockchain-link-utils"
   dependencies:
     "@trezor/blockchain-link-types": "workspace:1.0.1"
-    "@trezor/type-utils": "workspace:1.0.0"
+    "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:9.0.7"
     bignumber.js: ^9.1.1
     jest: ^26.6.3
@@ -8471,7 +8471,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/type-utils@workspace:*, @trezor/type-utils@workspace:1.0.0, @trezor/type-utils@workspace:packages/type-utils":
+"@trezor/type-utils@workspace:*, @trezor/type-utils@workspace:packages/type-utils":
   version: 0.0.0-use.local
   resolution: "@trezor/type-utils@workspace:packages/type-utils"
   dependencies:
