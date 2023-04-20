@@ -59,3 +59,21 @@ media duplicates:
   when: manual
   except:
     <<: *run_everything_rules
+
+# validate that connect installation (outside monorepo) using npm works
+.install connect:
+  stage: utils
+  needs: []
+  script:
+    - ./packages/connect/e2e/test-npm-install.sh
+
+install connect nightly:
+  extends: .install connect
+  only:
+    <<: *run_everything_rules
+
+install connect manual:
+  extends: .install connect
+  when: manual
+  except:
+    <<: *run_everything_rules
