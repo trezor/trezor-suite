@@ -2,17 +2,21 @@ import React from 'react';
 
 import { Box, Text, useDiscreetMode } from '@suite-native/atoms';
 import { Icon, IconName } from '@trezor/icons';
-import { TransactionType, WalletAccountTransaction } from '@suite-common/wallet-types';
+import { TransactionType } from '@suite-common/wallet-types';
 import {
     CryptoAmountFormatter,
     CryptoToFiatAmountFormatter,
+    EthereumTokenAmountFormatter,
+    EthereumTokenToFiatAmountFormatter,
     SignValueFormatter,
 } from '@suite-native/formatters';
+import { EthereumTokenTransfer, WalletAccountTransaction } from '@suite-native/ethereum-tokens';
 
 import { signValueMap } from '../TransactionsList/TransactionListItem';
 
 type TransactionDetailHeaderProps = {
     transaction: WalletAccountTransaction;
+    tokenTransfer?: EthereumTokenTransfer;
 };
 
 type TransactionTypeInfo = {
@@ -46,7 +50,10 @@ const transactionTypeInfo = {
     },
 } as const satisfies Record<TransactionType, TransactionTypeInfo>;
 
-export const TransactionDetailHeader = ({ transaction }: TransactionDetailHeaderProps) => {
+export const TransactionDetailHeader = ({
+    transaction,
+    tokenTransfer,
+}: TransactionDetailHeaderProps) => {
     const { isDiscreetMode } = useDiscreetMode();
 
     const { type } = transaction;
@@ -69,23 +76,43 @@ export const TransactionDetailHeader = ({ transaction }: TransactionDetailHeader
                 )}
             </Box>
             <Text variant="titleMedium" numberOfLines={1} adjustsFontSizeToFit={!isDiscreetMode}>
-                <SignValueFormatter value={signValueMap[transaction.type]} variant="titleMedium" />
-                <CryptoAmountFormatter
-                    value={transaction.amount}
-                    network={transaction.symbol}
-                    isBalance={false}
+                <SignValueFormatter
+                    value={signValueMap[tokenTransfer ? tokenTransfer.type : transaction.type]}
                     variant="titleMedium"
-                    color="textDefault"
                 />
+                {tokenTransfer ? (
+                    <EthereumTokenAmountFormatter
+                        value={tokenTransfer.amount}
+                        ethereumToken={tokenTransfer.symbol}
+                        decimals={tokenTransfer.decimals}
+                        color="textDefault"
+                    />
+                ) : (
+                    <CryptoAmountFormatter
+                        value={transaction.amount}
+                        network={transaction.symbol}
+                        isBalance={false}
+                        variant="titleMedium"
+                        color="textDefault"
+                    />
+                )}
             </Text>
             {transaction.rates && (
                 <Box flexDirection="row">
                     <Text>≈ </Text>
-                    <CryptoToFiatAmountFormatter
-                        value={transaction.amount}
-                        network={transaction.symbol}
-                        customRates={transaction.rates}
-                    />
+                    {tokenTransfer ? (
+                        <EthereumTokenToFiatAmountFormatter
+                            value={tokenTransfer.amount}
+                            ethereumToken={tokenTransfer.symbol}
+                            decimals={tokenTransfer.decimals}
+                        />
+                    ) : (
+                        <CryptoToFiatAmountFormatter
+                            value={transaction.amount}
+                            network={transaction.symbol}
+                            customRates={transaction.rates}
+                        />
+                    )}
                 </Box>
             )}
         </Box>

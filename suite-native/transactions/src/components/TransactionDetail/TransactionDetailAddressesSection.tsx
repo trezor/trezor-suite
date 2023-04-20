@@ -4,7 +4,8 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Box, Text } from '@suite-native/atoms';
 import { AccountAddressFormatter } from '@suite-native/formatters';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { CryptoIcon, CryptoIconName } from '@trezor/icons';
+import { NetworkSymbol } from '@suite-common/wallet-config';
+import { EthereumTokenSymbol, CoinIcon } from '@suite-native/ethereum-tokens';
 
 import { SummaryRow } from './TransactionDetailStatusSection';
 
@@ -12,7 +13,7 @@ type TransactionDetailAddressesSectionProps = {
     addresses: string[];
     addressesType: 'inputs' | 'outputs';
     onShowMore: () => void;
-    cryptoIcon?: CryptoIconName;
+    icon?: NetworkSymbol | EthereumTokenSymbol;
 };
 
 const showMoreButtonStyle = prepareNativeStyle(_ => ({ flexDirection: 'row' }));
@@ -68,7 +69,7 @@ export const TransactionDetailAddressesSection = ({
     addressesType,
     addresses,
     onShowMore,
-    cryptoIcon,
+    icon,
 }: TransactionDetailAddressesSectionProps) => {
     const { applyStyle } = useNativeStyles();
 
@@ -110,9 +111,9 @@ export const TransactionDetailAddressesSection = ({
                         </Box>
                     )}
                 </Box>
-                {cryptoIcon && (
+                {icon && (
                     <Box style={applyStyle(coinIconWrapperStyle)}>
-                        <CryptoIcon name={cryptoIcon} size="extraSmall" />
+                        <CoinIcon symbol={icon} size="extraSmall" />
                     </Box>
                 )}
             </Box>

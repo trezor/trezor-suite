@@ -18,35 +18,41 @@ type TokenTransferListItemProps = {
     isLast?: boolean;
 };
 
-export const TokenTransferListItem = memo(
-    ({ txid, accountKey, tokenTransfer, isFirst, isLast }: TokenTransferListItemProps) => {
-        const tokenSymbol = tokenTransfer.symbol;
+export const TokenTransferListItemValues = ({
+    tokenTransfer,
+}: {
+    tokenTransfer: EthereumTokenTransfer;
+}) => (
+    <>
+        <EthereumTokenToFiatAmountFormatter
+            value={tokenTransfer.amount}
+            ethereumToken={tokenTransfer.symbol}
+            decimals={tokenTransfer.decimals}
+            signValue={signValueMap[tokenTransfer.type]}
+            numberOfLines={1}
+            ellipsizeMode="tail"
+        />
+        <EthereumTokenAmountFormatter
+            value={tokenTransfer.amount}
+            ethereumToken={tokenTransfer.symbol}
+            decimals={tokenTransfer.decimals}
+            numberOfLines={1}
+            ellipsizeMode="tail"
+        />
+    </>
+);
 
-        return (
-            <TransactionListItemContainer
-                symbol={tokenSymbol}
-                transactionType={tokenTransfer.type}
-                txid={txid}
-                accountKey={accountKey}
-                isFirst={isFirst}
-                isLast={isLast}
-            >
-                <EthereumTokenToFiatAmountFormatter
-                    value={tokenTransfer.amount}
-                    ethereumToken={tokenSymbol}
-                    decimals={tokenTransfer.decimals}
-                    signValue={signValueMap[tokenTransfer.type]}
-                    numberOfLines={1}
-                    ellipsizeMode="tail"
-                />
-                <EthereumTokenAmountFormatter
-                    value={tokenTransfer.amount}
-                    ethereumToken={tokenSymbol}
-                    decimals={tokenTransfer.decimals}
-                    numberOfLines={1}
-                    ellipsizeMode="tail"
-                />
-            </TransactionListItemContainer>
-        );
-    },
+export const TokenTransferListItem = memo(
+    ({ txid, accountKey, tokenTransfer, isFirst, isLast }: TokenTransferListItemProps) => (
+        <TransactionListItemContainer
+            tokenTransfer={tokenTransfer}
+            transactionType={tokenTransfer.type}
+            txid={txid}
+            accountKey={accountKey}
+            isFirst={isFirst}
+            isLast={isLast}
+        >
+            <TokenTransferListItemValues tokenTransfer={tokenTransfer} />
+        </TransactionListItemContainer>
+    ),
 );

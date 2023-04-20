@@ -1,66 +1,51 @@
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
 
-import { A } from '@mobily/ts-belt';
+import { Card } from '@suite-native/atoms';
+import { AccountKey } from '@suite-common/wallet-types';
+import { EthereumTokenTransfer } from '@suite-native/ethereum-tokens';
 
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Card, VStack, ErrorMessage } from '@suite-native/atoms';
-import { AccountKey, WalletAccountTransaction } from '@suite-common/wallet-types';
-import { TransactionsRootState } from '@suite-common/wallet-core';
-
-import { selectTransactionInputAddresses, selectTransactionOutputAddresses } from '../../selectors';
-import { TransactionDetailAddressesSection } from './TransactionDetailAddressesSection';
 import { TransactionDetailAddressesSheet } from './TransactionDetailAddressesSheet';
-import { TransactionDetailStatusSection } from './TransactionDetailStatusSection';
+import { NetworkTransactionDetailSummary } from './NetworkTransactionDetailSummary';
+import { TokenTransactionDetailSummary } from './TokenTransactionDetailSummary';
 
 type TransactionDetailSummaryProps = {
-    transaction: WalletAccountTransaction;
+    txid: string;
     accountKey: AccountKey;
+    tokenTransfer?: EthereumTokenTransfer;
 };
 
-const cardContentStyle = prepareNativeStyle(_ => ({
-    overflow: 'hidden',
-}));
-
 export const TransactionDetailSummary = ({
-    transaction,
+    txid,
     accountKey,
+    tokenTransfer,
 }: TransactionDetailSummaryProps) => {
-    const { applyStyle } = useNativeStyles();
     const [isAddressesSheetVisible, setIsAddressesSheetVisible] = useState(false);
-
-    const inputAddresses = useSelector((state: TransactionsRootState) =>
-        selectTransactionInputAddresses(state, transaction.txid, accountKey),
-    );
-    const outputAddresses = useSelector((state: TransactionsRootState) =>
-        selectTransactionOutputAddresses(state, transaction.txid, accountKey),
-    );
-
-    if (A.isEmpty(inputAddresses) || A.isEmpty(outputAddresses))
-        return <ErrorMessage errorMessage="Target and Origin of transaction is unknown." />;
 
     const toggleAddressesSheet = () => setIsAddressesSheetVisible(prev => !prev);
 
+    const isTokenTransferDetail = !!tokenTransfer;
+
     return (
         <Card>
-            <VStack style={applyStyle(cardContentStyle)}>
-                <TransactionDetailAddressesSection
-                    addressesType="inputs"
-                    addresses={inputAddresses}
-                    onShowMore={toggleAddressesSheet}
-                    cryptoIcon={transaction.symbol}
-                />
-
-                <TransactionDetailStatusSection txid={transaction.txid} accountKey={accountKey} />
-                <TransactionDetailAddressesSection
-                    addressesType="outputs"
-                    addresses={outputAddresses}
+            {isTokenTransferDetail ? (
+                <TokenTransactionDetailSummary
+                    accountKey={accountKey}
+                    txid={txid}
+                    tokenTransfer={tokenTransfer}
                     onShowMore={toggleAddressesSheet}
                 />
-            </VStack>
+            ) : (
+                <>
+                    <NetworkTransactionDetailSummary
+                        accountKey={accountKey}
+                        txid={txid}
+                        onShowMore={toggleAddressesSheet}
+                    />
+                </>
+            )}
             <TransactionDetailAddressesSheet
                 isVisible={isAddressesSheetVisible}
-                txid={transaction.txid}
+                txid={txid}
                 accountKey={accountKey}
                 onClose={toggleAddressesSheet}
             />
