@@ -9,7 +9,7 @@ import * as bcrypto from '../crypto';
 import { bitcoin as BITCOIN_NETWORK } from '../networks';
 import * as bscript from '../script';
 import * as lazy from './lazy';
-import type { Payment, PaymentFunction, PaymentOpts, Stack, StackFunction } from './index';
+import { Payment, PaymentFunction, PaymentOpts, Stack, StackFunction } from '../types';
 
 const { OPS } = bscript;
 
@@ -53,7 +53,7 @@ export function p2sh(a: Payment, opts?: PaymentOpts): Payment {
         network = (a.redeem && a.redeem.network) || BITCOIN_NETWORK;
     }
 
-    const o: Payment = { network };
+    const o: Payment = { name: 'p2sh', network };
 
     const _address = lazy.value(() => bs58check.decodeAddress(a.address!, a.network));
 
@@ -107,7 +107,7 @@ export function p2sh(a: Payment, opts?: PaymentOpts): Payment {
     });
 
     if (opts.validate) {
-        let hash: Buffer = Buffer.from([]);
+        let hash = Buffer.from([]);
         if (a.address) {
             const { version, hash: aHash } = _address();
             if (version !== network.scriptHash)

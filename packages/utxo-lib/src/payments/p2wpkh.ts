@@ -6,7 +6,7 @@ import { bech32 } from 'bech32';
 import * as bcrypto from '../crypto';
 import { bitcoin as BITCOIN_NETWORK } from '../networks';
 import * as bscript from '../script';
-import type { Payment, PaymentOpts } from './index';
+import { Payment, PaymentOpts } from '../types';
 import * as lazy from './lazy';
 
 const { OPS } = bscript;
@@ -87,7 +87,7 @@ export function p2wpkh(a: Payment, opts?: PaymentOpts): Payment {
 
     // extended validation
     if (opts.validate) {
-        let hash: Buffer = Buffer.from([]);
+        let hash = Buffer.from([]);
         if (a.address) {
             const { prefix, version, data } = _address();
             if (network && network.bech32 !== prefix)
