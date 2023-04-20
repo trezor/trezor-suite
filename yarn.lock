@@ -7738,6 +7738,7 @@ __metadata:
     "@trezor/connect-analytics": "workspace:*"
     "@trezor/connect-ui": "workspace:*"
     "@trezor/crypto-utils": "workspace:*"
+    "@trezor/env-utils": "workspace:*"
     "@trezor/node-utils": "workspace:*"
     "@trezor/trezor-user-env-link": "workspace:*"
     "@trezor/urls": "workspace:*"
