@@ -12,6 +12,8 @@
             "utxo-lib",
             "connect-plugin-stellar",
             "connect-plugin-ethereum",
+            "analytics",
+            "connect-analytics",
           ]
 
 .packages_matrix_connect: &packages_matrix_connect
