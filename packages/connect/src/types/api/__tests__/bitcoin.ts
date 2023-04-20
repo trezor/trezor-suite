@@ -483,7 +483,7 @@ export const composeTransaction = async (api: TrezorConnect) => {
                 unused: [],
                 change: [],
             },
-            utxo: [],
+            utxos: [],
         },
         feeLevels: [{ feePerUnit: '1' }],
         coin: 'btc',

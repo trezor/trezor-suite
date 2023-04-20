@@ -1,50 +1,30 @@
+import type {
+    AccountAddresses,
+    Utxo as AccountUtxo,
+    Address as AccountAddress,
+} from '@trezor/blockchain-link';
+import type {
+    ComposeInput,
+    ComposeOutput,
+    ComposeResult,
+    ComposeResultFinal,
+    ComposeResultNonFinal,
+    ComposeResultError,
+} from '@trezor/utxo-lib';
 import type { PROTO } from '../../constants';
-import type { AccountAddresses, Utxo as AccountUtxo } from '@trezor/blockchain-link';
 import type { Params, Response } from '../params';
 
-// TODO: get types from @trezor/utxo-lib
-export interface RegularOutput {
-    type?: 'external';
-    address: string;
-    amount: string;
-    script_type?: 'PAYTOADDRESS';
-}
+export type { ComposeOutput } from '@trezor/utxo-lib';
 
-export interface InternalOutput {
-    type?: 'internal';
-    address_n: number[];
-    amount: string;
-    script_type?: string;
-}
+// for convenience `type: "payment"` field is not required by @trezor/connect api
+export type ComposePaymentOutput = Omit<Extract<ComposeOutput, { type: 'payment' }>, 'type'> & {
+    type?: 'payment';
+};
 
-export interface SendMaxOutput {
-    type: 'send-max';
-    address: string;
-}
-
-export interface OpReturnOutput {
-    type: 'opreturn';
-    dataHex: string;
-}
-export interface NoAddressOutput {
-    type: 'noaddress';
-    amount: string;
-}
-
-export interface NoAddressSendMaxOutput {
-    type: 'send-max-noaddress';
-}
-
-export type ComposeOutput =
-    | RegularOutput
-    | InternalOutput
-    | SendMaxOutput
-    | OpReturnOutput
-    | NoAddressOutput
-    | NoAddressSendMaxOutput;
+export type ComposeOutputParam = Exclude<ComposeOutput, { type: 'payment' }> | ComposePaymentOutput;
 
 export interface ComposeParams {
-    outputs: ComposeOutput[];
+    outputs: ComposeOutputParam[];
     coin: string;
     account?: undefined;
     feeLevels?: undefined;
@@ -61,13 +41,16 @@ export type SignedTransaction = {
     txid?: string;
 };
 
+// @trezor/utxo-lib `composeTx` utxo param intersects AccountUtxo
+export type ComposeUtxo = AccountUtxo & Partial<ComposeInput>;
+
 export interface PrecomposeParams {
-    outputs: ComposeOutput[];
+    outputs: ComposeOutputParam[];
     coin: string;
     account: {
         path: string;
         addresses: AccountAddresses;
-        utxo: (AccountUtxo & { required?: boolean })[];
+        utxos: ComposeUtxo[];
     };
     feeLevels: { feePerUnit: string }[];
     push?: undefined;
@@ -77,32 +60,27 @@ export interface PrecomposeParams {
     skipPermutation?: boolean;
 }
 
+// @trezor/utxo-lib `composeTx` transaction.input response intersects AccountUtxo
+export type ComposedInputs = AccountUtxo & ComposeInput;
+
+export type PrecomposeResult = ComposeResult<ComposedInputs, ComposeOutput, AccountAddress>;
+
+export type PrecomposeResultFinal = ComposeResultFinal<
+    ComposedInputs,
+    ComposeOutput,
+    AccountAddress
+>;
+
 export type PrecomposedTransaction =
-    | {
-          type: 'error';
-          error: string;
-      }
-    | {
-          type: 'nonfinal';
-          max?: string;
-          totalSpent: string; // all the outputs, no fee, no change
-          fee: string;
-          feePerByte: string;
-          bytes: number;
-      }
-    | {
-          type: 'final';
-          max?: string;
-          totalSpent: string; // all the outputs, no fee, no change
-          fee: string;
-          feePerByte: string;
-          bytes: number;
+    | ComposeResultError
+    | ComposeResultNonFinal
+    | (Omit<PrecomposeResultFinal, 'transaction'> & {
           transaction: {
               inputs: PROTO.TxInputType[];
               outputs: PROTO.TxOutputType[];
               outputsPermutation: number[];
           };
-      };
+      });
 
 export declare function composeTransaction(
     params: Params<ComposeParams>,

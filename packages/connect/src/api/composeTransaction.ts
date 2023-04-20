@@ -24,14 +24,15 @@ import {
     signTxLegacy,
     verifyTx,
 } from './bitcoin';
-import type { ComposeOutput, ComposeResult } from '@trezor/utxo-lib';
+import type { ComposeOutput } from '@trezor/utxo-lib';
 import type { BitcoinNetworkInfo, DiscoveryAccount, AccountUtxo } from '../types';
 import type {
     SignedTransaction,
     PrecomposeParams,
+    PrecomposeResult,
     PrecomposedTransaction,
 } from '../types/api/composeTransaction';
-import type { RefTransaction, TransactionOptions } from '../types/api/bitcoin';
+import type { RefTransaction } from '../types/api/bitcoin';
 
 type Params = {
     outputs: ComposeOutput[];
@@ -94,7 +95,7 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
 
         // if outputs contains regular items
         // check if total amount is not lower than dust limit
-        // if (outputs.find(o => o.type === 'complete') !== undefined && total.lte(coinInfo.dustLimit)) {
+        // if (outputs.find(o => o.type === 'payment') !== undefined && total.lte(coinInfo.dustLimit)) {
         //     throw error 'Total amount is too low';
         // }
 
@@ -139,7 +140,7 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
                 address_n,
                 addresses: account.addresses,
             },
-            utxo: account.utxo,
+            utxos: account.utxos,
             coinInfo,
             outputs,
             baseFee,
@@ -155,10 +156,10 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
             const tx = { ...composer.composed.custom }; // needs to spread otherwise flow has a problem with ComposeResult vs PrecomposedTransaction (max could be undefined)
             if (tx.type === 'final') {
                 const inputs = tx.transaction.inputs.map(inp =>
-                    inputToTrezor(inp, this.params.sequence || 0xffffffff),
+                    inputToTrezor(inp, this.params.sequence),
                 );
                 const { sorted, permutation } = tx.transaction.outputs;
-                const txOutputs = sorted.map(out => outputToTrezor(out, coinInfo));
+                const txOutputs = sorted.map(outputToTrezor);
 
                 return {
                     type: 'final',
@@ -289,14 +290,14 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
         };
     }
 
-    async selectFee(account: DiscoveryAccount, utxo: AccountUtxo[]) {
+    async selectFee(account: DiscoveryAccount, utxos: AccountUtxo[]) {
         const { coinInfo, outputs } = this.params;
 
         // get backend instance (it should be initialized before)
         const blockchain = await initBlockchain(coinInfo, this.postMessage);
         const composer = new TransactionComposer({
             account,
-            utxo,
+            utxos,
             coinInfo,
             outputs,
         });
@@ -353,17 +354,15 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
         }
     }
 
-    async _sign(tx: ComposeResult) {
+    async _sign(tx: PrecomposeResult) {
         if (tx.type !== 'final')
             throw ERRORS.TypedError('Runtime', 'ComposeTransaction: Trying to sign unfinished tx');
 
         const { coinInfo } = this.params;
 
-        const options: TransactionOptions = enhanceSignTx({}, coinInfo);
-        const inputs = tx.transaction.inputs.map(inp =>
-            inputToTrezor(inp, this.params.sequence || 0xffffffff),
-        );
-        const outputs = tx.transaction.outputs.sorted.map(out => outputToTrezor(out, coinInfo));
+        const options = enhanceSignTx({}, coinInfo);
+        const inputs = tx.transaction.inputs.map(inp => inputToTrezor(inp, this.params.sequence));
+        const outputs = tx.transaction.outputs.sorted.map(outputToTrezor);
 
         let refTxs: RefTransaction[] = [];
         const requiredRefTxs = requireReferencedTransactions(inputs, options, coinInfo);

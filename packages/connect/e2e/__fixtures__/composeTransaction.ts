@@ -11,7 +11,7 @@ const BECH32_ACCOUNT = {
             },
         ],
     },
-    utxo: [
+    utxos: [
         {
             txid: '86a6e02943dcd057cfbe349f2c2274478a3a1be908eb788606a6950e727a0d36',
             vout: 0,
@@ -37,7 +37,7 @@ const DOGE_ACCOUNT = {
             },
         ],
     },
-    utxo: [
+    utxos: [
         {
             txid: '78c3ee88226c7f63060fbf27ab0450961c09241bfd56a12ce164881791c7c6e5',
             vout: 1,
@@ -143,7 +143,7 @@ export default {
             params: {
                 account: {
                     ...BECH32_ACCOUNT,
-                    utxo: [
+                    utxos: [
                         {
                             txid: '86a6e02943dcd057cfbe349f2c2274478a3a1be908eb788606a6950e727a0d36',
                             vout: 0,
@@ -195,7 +195,7 @@ export default {
             params: {
                 account: {
                     ...BECH32_ACCOUNT,
-                    utxo: [
+                    utxos: [
                         {
                             txid: '86a6e02943dcd057cfbe349f2c2274478a3a1be908eb788606a6950e727a0d36',
                             vout: 0,
