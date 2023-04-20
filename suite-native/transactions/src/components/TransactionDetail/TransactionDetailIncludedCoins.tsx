@@ -38,7 +38,7 @@ const IncludedCoinsSheetTrigger = ({ title, onPress }: { title: string; onPress:
                 <Box flexDirection="row" alignItems="center" justifyContent="space-between">
                     <Box flexDirection="row" alignItems="center">
                         <Box style={applyStyle(iconContainerStyle)}>
-                            <Icon name="discover" size="large" />
+                            <Icon name="treeStructure" size="large" />
                         </Box>
                         <Text>{title}</Text>
                     </Box>
