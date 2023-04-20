@@ -68,6 +68,7 @@ export const icons = {
     tor: require('../assets/icons/tor.svg'),
     trade: require('../assets/icons/trade.svg'),
     trash: require('../assets/icons/trash.svg'),
+    treeStructure: require('../assets/icons/treeStructure.svg'),
     trezor: require('../assets/icons/trezor.svg'),
     trezorT: require('../assets/icons/trezorT.svg'),
     twitter: require('../assets/icons/twitter.svg'),
