@@ -33,16 +33,17 @@ const checkPackageDependencies = packageName => {
     );
 
     const packageJSON = JSON.parse(rawPackageJSON);
-    const { dependencies } = packageJSON;
+    const { dependencies, devDependencies } = packageJSON;
 
-    if (!dependencies) {
+    const allDependnecies = { ...dependencies, ...devDependencies };
+    if (!Object.keys(allDependnecies)) {
         console.log('this package has no dependencies');
         return;
     }
 
     console.log('-> ', packageName);
 
-    Object.entries(dependencies).forEach(([dependency, version]) => {
+    Object.entries(allDependnecies).forEach(([dependency, version]) => {
         // is not a dependency released from monorepo. we don't care
         if (!dependency.startsWith('@trezor')) {
             return;
