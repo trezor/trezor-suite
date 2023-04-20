@@ -42,7 +42,11 @@ export const ReceiveTextHint = ({ onShowAddress }: ReceiveTextHintProps) => {
                 </VStack>
             </Card>
 
-            <TouchableOpacity onPress={() => openLink('TODO')}>
+            <TouchableOpacity
+                onPress={() =>
+                    openLink('https://trezor.io/learn/a/verifying-trezor-suite-lite-addresses')
+                }
+            >
                 <HStack justifyContent="center" alignItems="center">
                     <Text variant="hint" color="textPrimaryDefault" align="center">
                         Learn more about verifying addresses{' '}
