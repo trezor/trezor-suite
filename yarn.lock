@@ -7502,7 +7502,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/blockchain-link-types@workspace:*, @trezor/blockchain-link-types@workspace:1.0.0, @trezor/blockchain-link-types@workspace:packages/blockchain-link-types":
+"@trezor/blockchain-link-types@workspace:*, @trezor/blockchain-link-types@workspace:1.0.1, @trezor/blockchain-link-types@workspace:packages/blockchain-link-types":
   version: 0.0.0-use.local
   resolution: "@trezor/blockchain-link-types@workspace:packages/blockchain-link-types"
   dependencies:
@@ -7515,11 +7515,11 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/blockchain-link-utils@workspace:*, @trezor/blockchain-link-utils@workspace:1.0.0, @trezor/blockchain-link-utils@workspace:packages/blockchain-link-utils":
+"@trezor/blockchain-link-utils@workspace:*, @trezor/blockchain-link-utils@workspace:1.0.1, @trezor/blockchain-link-utils@workspace:packages/blockchain-link-utils":
   version: 0.0.0-use.local
   resolution: "@trezor/blockchain-link-utils@workspace:packages/blockchain-link-utils"
   dependencies:
-    "@trezor/blockchain-link-types": "workspace:1.0.0"
+    "@trezor/blockchain-link-types": "workspace:1.0.1"
     "@trezor/type-utils": "workspace:1.0.0"
     "@trezor/utils": "workspace:9.0.7"
     bignumber.js: ^9.1.1
@@ -7534,8 +7534,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/blockchain-link@workspace:packages/blockchain-link"
   dependencies:
-    "@trezor/blockchain-link-types": "workspace:1.0.0"
-    "@trezor/blockchain-link-utils": "workspace:1.0.0"
+    "@trezor/blockchain-link-types": "workspace:1.0.1"
+    "@trezor/blockchain-link-utils": "workspace:1.0.1"
     "@trezor/utils": "workspace:9.0.7"
     "@trezor/utxo-lib": "workspace:1.0.5"
     "@types/web": ^0.0.99
