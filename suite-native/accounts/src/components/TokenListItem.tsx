@@ -1,5 +1,6 @@
 import React from 'react';
 import { TouchableOpacity } from 'react-native';
+import { useSelector } from 'react-redux';
 
 import { Box, Text } from '@suite-native/atoms';
 import { EthereumTokenIcon } from '@trezor/icons';
@@ -7,18 +8,25 @@ import {
     EthereumTokenAmountFormatter,
     EthereumTokenToFiatAmountFormatter,
 } from '@suite-native/formatters';
-import { EthereumTokenSymbol, getEthereumTokenIconName } from '@suite-native/ethereum-tokens';
+import {
+    EthereumTokenSymbol,
+    getEthereumTokenIconName,
+    selectEthereumTokenHasFiatRates,
+} from '@suite-native/ethereum-tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { AccountKey } from '@suite-common/wallet-types';
+import { AccountKey, TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
+import { FiatRatesRootState } from '@suite-native/fiat-rates';
+import { SettingsSliceRootState } from '@suite-native/module-settings';
 
 import { accountDescriptionStyle, valuesContainerStyle } from './AccountListItem';
 
 type TokenListItemProps = {
-    balance: string;
+    balance?: string;
     isLast: boolean;
     label: string;
     symbol: EthereumTokenSymbol;
     accountKey: AccountKey;
+    contract: TokenAddress;
     onSelectAccount: (accountKey: AccountKey, tokenSymbol?: EthereumTokenSymbol) => void;
 };
 
@@ -47,10 +55,17 @@ export const TokenListItem = ({
     balance,
     isLast,
     label,
+    contract,
     accountKey,
     onSelectAccount,
 }: TokenListItemProps) => {
     const { applyStyle } = useNativeStyles();
+    const ethereumTokenHasFiatRates = useSelector(
+        (state: FiatRatesRootState & SettingsSliceRootState) =>
+            selectEthereumTokenHasFiatRates(state, contract, symbol),
+    );
+
+    if (!ethereumTokenHasFiatRates) return null;
 
     const handleOnPress = () => {
         onSelectAccount(accountKey, symbol);
@@ -76,13 +91,11 @@ export const TokenListItem = ({
                     </Box>
                     <Box style={applyStyle(valuesContainerStyle)}>
                         <EthereumTokenToFiatAmountFormatter
-                            value={balance}
-                            ethereumToken={symbol}
-                            numberOfLines={1}
-                            ellipsizeMode="tail"
+                            value={balance ?? '0'}
+                            ethereumToken={symbol.toUpperCase() as TokenSymbol}
                         />
                         <EthereumTokenAmountFormatter
-                            value={balance}
+                            value={balance ?? '0'}
                             ethereumToken={symbol}
                             numberOfLines={1}
                             ellipsizeMode="tail"
