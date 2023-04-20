@@ -10,6 +10,7 @@
         { "path": "../connect-analytics" },
         { "path": "../connect-ui" },
         { "path": "../crypto-utils" },
+        { "path": "../env-utils" },
         { "path": "../urls" },
         { "path": "../node-utils" },
         { "path": "../trezor-user-env-link" }
