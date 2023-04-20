@@ -15,9 +15,9 @@ import {
     getFiatRateKeyFromTicker,
 } from '@suite-native/fiat-rates';
 import { selectFiatCurrencyCode, SettingsSliceRootState } from '@suite-native/module-settings';
+import { isEthereumAccountSymbol } from '@suite-common/wallet-utils';
 
 import { EthereumTokenSymbol, WalletAccountTransaction } from './types';
-import { isEthereumAccountSymbol } from './utils';
 
 export const selectEthereumAccountToken = (
     state: AccountsRootState,

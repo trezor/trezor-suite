@@ -1,7 +1,7 @@
 import { FiatCurrencyCode } from '@suite-common/suite-config';
-import { EthereumTokenSymbol } from '@suite-native/ethereum-tokens';
 import { UNIT_ABBREVIATION } from '@suite-common/suite-constants';
 import { NetworkSymbol } from '@suite-common/wallet-config';
+import { TokenSymbol } from '@suite-common/wallet-types';
 
 import { EventType } from './constants';
 
@@ -32,7 +32,7 @@ export type SuiteNativeAnalyticsEvent =
           type: EventType.AssetsSync;
           payload: {
               assetSymbol: NetworkSymbol;
-              tokenSymbols?: EthereumTokenSymbol[];
+              tokenSymbols?: TokenSymbol[];
           };
       }
     | {
@@ -52,7 +52,7 @@ export type SuiteNativeAnalyticsEvent =
           type: EventType.AssetDetail;
           payload: {
               assetSymbol: NetworkSymbol;
-              tokenSymbol?: EthereumTokenSymbol;
+              tokenSymbol?: TokenSymbol;
           };
       }
     | {
@@ -60,14 +60,14 @@ export type SuiteNativeAnalyticsEvent =
           payload: {
               timeframe: string;
               assetSymbol: NetworkSymbol;
-              tokenSymbol?: EthereumTokenSymbol;
+              tokenSymbol?: TokenSymbol;
           };
       }
     | {
           type: EventType.TransactionDetail;
           payload: {
               assetSymbol: NetworkSymbol;
-              tokenSymbol?: EthereumTokenSymbol;
+              tokenSymbol?: TokenSymbol;
           };
       }
     | {

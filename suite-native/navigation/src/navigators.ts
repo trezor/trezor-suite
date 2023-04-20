@@ -1,9 +1,9 @@
 import { NavigatorScreenParams } from '@react-navigation/native';
 
-import { AccountKey, XpubAddress } from '@suite-common/wallet-types';
+import { AccountKey, TokenSymbol, XpubAddress } from '@suite-common/wallet-types';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { AccountInfo } from '@trezor/connect';
-import { EthereumTokenSymbol, EthereumTokenTransfer } from '@suite-native/ethereum-tokens';
+import { EthereumTokenTransfer } from '@suite-native/ethereum-tokens';
 
 import {
     AppTabsRoutes,
@@ -39,7 +39,7 @@ export type AccountsStackParamList = {
     [AccountsStackRoutes.Accounts]: undefined;
     [AccountsStackRoutes.AccountDetail]: {
         accountKey: AccountKey;
-        tokenSymbol?: EthereumTokenSymbol;
+        tokenSymbol?: TokenSymbol;
     };
 };
 

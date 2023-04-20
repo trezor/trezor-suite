@@ -1,9 +1,6 @@
-import { NetworkSymbol } from '@suite-common/wallet-config';
 import { ethereumTokenIcons, EthereumTokenIconName } from '@trezor/icons';
 
 import { EthereumTokenSymbol, WalletAccountTransaction } from './types';
-
-export const isEthereumAccountSymbol = (symbol: NetworkSymbol) => symbol === 'eth';
 
 export const getEthereumTokenIconName = (symbol: EthereumTokenSymbol) => {
     const lowerCaseSymbol = symbol.toLowerCase();

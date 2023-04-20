@@ -6,18 +6,15 @@ import {
     EthereumTokenAmountFormatter,
     EthereumTokenToFiatAmountFormatter,
 } from '@suite-native/formatters';
-import {
-    EthereumTokenSymbol,
-    selectEthereumTokenHasFiatRates,
-} from '@suite-native/ethereum-tokens';
+import { selectEthereumTokenHasFiatRates } from '@suite-native/ethereum-tokens';
 import { FiatRatesRootState } from '@suite-native/fiat-rates';
-import { TokenAddress } from '@suite-common/wallet-types';
+import { TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
 import { SettingsSliceRootState } from '@suite-native/module-settings';
 
 import { AccountImportOverviewCard } from './AccountImportOverviewCard';
 
 type EthereumTokenInfoProps = {
-    symbol?: EthereumTokenSymbol;
+    symbol?: TokenSymbol;
     balance?: string;
     name?: string;
     decimals?: number;

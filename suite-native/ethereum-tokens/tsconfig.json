@@ -11,6 +11,9 @@
         {
             "path": "../../suite-common/wallet-types"
         },
+        {
+            "path": "../../suite-common/wallet-utils"
+        },
         { "path": "../fiat-rates" },
         { "path": "../module-settings" },
         {

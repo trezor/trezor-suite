@@ -16,8 +16,8 @@
         "@suite-common/suite-config": "workspace:*",
         "@suite-common/suite-constants": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
+        "@suite-common/wallet-types": "workspace:*",
         "@suite-native/config": "workspace:*",
-        "@suite-native/ethereum-tokens": "workspace:*",
         "@trezor/analytics": "workspace:*"
     }
 }

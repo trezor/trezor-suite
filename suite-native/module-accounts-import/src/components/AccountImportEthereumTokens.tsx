@@ -3,9 +3,8 @@ import React from 'react';
 import { A } from '@mobily/ts-belt';
 
 import { Box, VStack, Text } from '@suite-native/atoms';
-import { EthereumTokenSymbol } from '@suite-native/ethereum-tokens';
 import { TokenInfo } from '@trezor/blockchain-link-types';
-import { TokenAddress } from '@suite-common/wallet-types';
+import { TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
 
 import { EthereumTokenInfo } from './EthereumTokenInfo';
 
@@ -23,7 +22,7 @@ export const AccountImportEthereumTokens = ({ tokens }: AccountImportEthereumTok
                 {tokens.map(({ symbol, contract, balance, name, decimals }) => (
                     <EthereumTokenInfo
                         key={contract}
-                        symbol={symbol as EthereumTokenSymbol}
+                        symbol={symbol as TokenSymbol}
                         balance={balance}
                         decimals={decimals}
                         name={name}

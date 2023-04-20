@@ -9,7 +9,6 @@ import {
     EthereumTokenToFiatAmountFormatter,
 } from '@suite-native/formatters';
 import {
-    EthereumTokenSymbol,
     getEthereumTokenIconName,
     selectEthereumTokenHasFiatRates,
 } from '@suite-native/ethereum-tokens';
@@ -24,10 +23,10 @@ type TokenListItemProps = {
     balance?: string;
     isLast: boolean;
     label: string;
-    symbol: EthereumTokenSymbol;
+    symbol: TokenSymbol;
     accountKey: AccountKey;
     contract: TokenAddress;
-    onSelectAccount: (accountKey: AccountKey, tokenSymbol?: EthereumTokenSymbol) => void;
+    onSelectAccount: (accountKey: AccountKey, tokenSymbol?: TokenSymbol) => void;
 };
 
 const tokenListItemStyle = prepareNativeStyle<{ isLast: boolean }>((utils, { isLast }) => ({

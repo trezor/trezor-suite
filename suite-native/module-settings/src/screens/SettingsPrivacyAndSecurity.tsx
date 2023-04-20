@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 
-import { analytics } from '@suite-native/analytics';
+import { analytics, EventType } from '@suite-native/analytics';
 import { Screen, ScreenHeader } from '@suite-native/navigation';
 import { selectIsAnalyticsEnabled } from '@suite-common/analytics';
 import { Box, Card, DiscreetCanvas, Text, useDiscreetMode } from '@suite-native/atoms';
@@ -31,6 +31,15 @@ const DiscreetTextExample = () => {
 
 const DiscreetModeSwitchRow = () => {
     const { isDiscreetMode, setIsDiscreetMode } = useDiscreetMode();
+
+    const handleSetDiscreetMode = (value: boolean) => {
+        setIsDiscreetMode(value);
+        analytics.report({
+            type: EventType.SettingsDiscreetToggle,
+            payload: { value },
+        });
+    };
+
     return (
         <TouchableSwitchRow
             text="Hide balances"
@@ -42,7 +51,7 @@ const DiscreetModeSwitchRow = () => {
             }
             iconName="detective"
             isChecked={isDiscreetMode}
-            onChange={setIsDiscreetMode}
+            onChange={handleSetDiscreetMode}
         />
     );
 };

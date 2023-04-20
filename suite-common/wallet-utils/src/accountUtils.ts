@@ -27,6 +27,8 @@ import {
 
 import { toFiatCurrency } from './fiatConverterUtils';
 
+export const isEthereumAccountSymbol = (symbol: NetworkSymbol) => symbol === 'eth';
+
 export const isUtxoBased = (account: Account) =>
     account.networkType === 'bitcoin' || account.networkType === 'cardano';
 
