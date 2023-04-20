@@ -4,7 +4,7 @@
 
 import { AbstractMethod } from '../core/AbstractMethod';
 import { validateParams, getFirmwareRange } from './common/paramsValidator';
-import { validatePath } from '../utils/pathUtils';
+import { getSlip44ByPath, validatePath } from '../utils/pathUtils';
 import { getEthereumNetwork } from '../data/coinInfo';
 import { getNetworkLabel } from '../utils/ethereumUtils';
 import { PROTO, ERRORS } from '../constants';
@@ -15,6 +15,7 @@ import type {
 } from '../types/api/ethereum';
 import { getFieldType, parseArrayType, encodeData } from './ethereum/ethereumSignTypedData';
 import { messageToHex } from '../utils/formatUtils';
+import { getEthereumDefinitions } from './ethereum/ethereumDefinitions';
 
 type Params = (
     | Omit<EthereumSignTypedDataParams<EthereumSignTypedDataTypes>, 'path'>
@@ -102,6 +103,19 @@ export default class EthereumSignTypedData extends AbstractMethod<'ethereumSignT
 
             const { domain_separator_hash, message_hash } = this.params;
 
+            const network = getEthereumNetwork(address_n);
+            const slip44 = getSlip44ByPath(address_n);
+            const definitions = await getEthereumDefinitions({
+                chainId: network?.chainId,
+                slip44,
+            });
+
+            const definitionParams = {
+                ...(definitions.encoded_network && {
+                    encoded_network: definitions.encoded_network,
+                }),
+            };
+
             // For Model 1 we use EthereumSignTypedHash
             const response = await cmd.typedCall(
                 'EthereumSignTypedHash',
@@ -110,6 +124,7 @@ export default class EthereumSignTypedData extends AbstractMethod<'ethereumSignT
                     address_n,
                     domain_separator_hash: domain_separator_hash as string, // TODO: https://github.com/trezor/trezor-suite/issues/5297
                     message_hash,
+                    ...definitionParams,
                 },
             );
 
