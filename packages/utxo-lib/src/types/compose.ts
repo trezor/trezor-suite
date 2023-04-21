@@ -3,14 +3,12 @@ import type { CoinSelectPaymentType } from './coinselect';
 
 // UTXO == unspent transaction output = all I can spend
 export interface ComposeInput {
-    index: number; // index of output IN THE TRANSACTION
-    transactionHash: string; // hash of the transaction
-    value: string; // how much money sent
+    vout: number; // index of output IN THE TRANSACTION
+    txid: string; // hash of the transaction
+    amount: string; // how much money sent
     addressPath: [number, number]; // path
     height?: number; // null == unconfirmed
     coinbase: boolean; // coinbase transaction = utxo from mining, cannot be spend before 100 blocks
-    tsize: number; // total size - in case of segwit, total, with segwit data
-    vsize: number; // virtual size - segwit concept - same as size in non-segwit
     own: boolean; // is the ORIGIN me (the same account)
     required?: boolean; // must be included into transaction
     confirmations?: number; // TODO
@@ -71,13 +69,13 @@ export interface ComposeRequest {
 export type ComposedTxOutput =
     | {
           path: number[];
-          value: string;
+          amount: string;
           address?: typeof undefined;
           opReturnData?: typeof undefined;
       }
     | {
           address: string;
-          value: string;
+          amount: string;
           path?: typeof undefined;
           opReturnData?: typeof undefined;
       }
@@ -85,12 +83,12 @@ export type ComposedTxOutput =
           opReturnData: Buffer;
           path?: typeof undefined;
           address?: typeof undefined;
-          value?: typeof undefined;
+          amount?: typeof undefined;
       };
 
 export interface ComposedTxInput {
-    hash: Buffer;
-    index: number;
+    txid: string;
+    vout: number;
     path: number[];
     amount: string;
 }

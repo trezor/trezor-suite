@@ -27,6 +27,7 @@ export {
 
 export type { PaymentType } from './derivation';
 export type {
+    CoinSelectPaymentType,
     ComposeInput,
     ComposeOutput,
     ComposeRequest,
@@ -34,7 +35,6 @@ export type {
     ComposeResultFinal,
     ComposedTxOutput,
     ComposedTransaction,
-    CoinSelectPaymentType,
 } from './types';
 export type { Network } from './networks';
 export type { BIP32Interface } from './bip32';

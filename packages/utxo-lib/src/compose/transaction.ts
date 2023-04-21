@@ -2,7 +2,6 @@ import * as BN from 'bn.js';
 import * as BitcoinJsAddress from '../address';
 import { p2data } from '../payments/embed';
 import { Permutation } from './permutation';
-import { reverseBuffer } from '../bufferutils';
 import type {
     ComposeInput,
     ComposeFinalOutput,
@@ -16,10 +15,10 @@ import type { Network } from '../networks';
 
 function convertInput(utxo: ComposeInput, basePath: number[]): ComposedTxInput {
     return {
-        hash: reverseBuffer(Buffer.from(utxo.transactionHash, 'hex')),
-        index: utxo.index,
+        txid: utxo.txid,
+        vout: utxo.vout,
         path: basePath.concat([...utxo.addressPath]),
-        amount: utxo.value,
+        amount: utxo.amount,
     };
 }
 
@@ -27,7 +26,7 @@ function convertOpReturnOutput(opReturnData: string) {
     const opReturnDataBuffer = Buffer.from(opReturnData, 'hex');
     const output = {
         opReturnData: opReturnDataBuffer,
-        value: undefined,
+        amount: undefined,
     };
     const script = p2data({ data: [opReturnDataBuffer] }).output as Buffer;
     return {
@@ -38,7 +37,7 @@ function convertOpReturnOutput(opReturnData: string) {
 
 function convertOutput(
     address: string,
-    value: string,
+    amount: string,
     network: Network,
     basePath: number[],
     changeId: number,
@@ -47,11 +46,11 @@ function convertOutput(
     const output: ComposedTxOutput = isChange
         ? {
               path: [...basePath, 1, changeId],
-              value,
+              amount,
           }
         : {
               address,
-              value,
+              amount,
           };
 
     return {
@@ -60,8 +59,8 @@ function convertOutput(
     };
 }
 
-function inputComparator(aHash: Buffer, aVout: number, bHash: Buffer, bVout: number) {
-    return reverseBuffer(aHash).compare(reverseBuffer(bHash)) || aVout - bVout;
+function inputComparator(a: ComposedTxInput, b: ComposedTxInput) {
+    return Buffer.from(a.txid, 'hex').compare(Buffer.from(b.txid, 'hex')) || a.vout - b.vout;
 }
 
 function outputComparator(aScript: Buffer, aValue: string, bScript: Buffer, bValue: string) {
@@ -104,10 +103,11 @@ export function createTransaction(
         };
     }
 
-    convertedInputs.sort((a, b) => inputComparator(a.hash, a.index, b.hash, b.index));
+    convertedInputs.sort(inputComparator);
+
     const permutedOutputs = Permutation.fromFunction(convertedOutputs, (a, b) => {
-        const aValue = typeof a.output.value === 'string' ? a.output.value : '0';
-        const bValue = typeof b.output.value === 'string' ? b.output.value : '0';
+        const aValue = typeof a.output.amount === 'string' ? a.output.amount : '0';
+        const bValue = typeof b.output.amount === 'string' ? b.output.amount : '0';
         return outputComparator(a.script, aValue, b.script, bValue);
     }).map(o => o.output);
 
