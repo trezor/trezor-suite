@@ -7,7 +7,6 @@ export default [
             changeId: 0,
             dustThreshold: 546,
             feeRate: '10',
-            height: 100,
             outputs: [
                 {
                     address: '1BitcoinEaterAddressDontSendf59kuE',
@@ -19,7 +18,7 @@ export default [
                 {
                     addressPath: [3, 4],
                     coinbase: false,
-                    height: 100,
+                    confirmations: 6,
                     vout: 0,
                     own: true,
                     txid: 'b4dc0ffeee',
@@ -63,7 +62,6 @@ export default [
             changeId: 0,
             dustThreshold: 546,
             feeRate: '10.33',
-            height: 100,
             outputs: [
                 {
                     address: '1BitcoinEaterAddressDontSendf59kuE',
@@ -75,7 +73,7 @@ export default [
                 {
                     addressPath: [3, 4],
                     coinbase: false,
-                    height: 100,
+                    confirmations: 6,
                     vout: 0,
                     own: true,
                     txid: 'b4dc0ffeee',
@@ -119,7 +117,6 @@ export default [
             changeId: 0,
             dustThreshold: 546,
             feeRate: '10',
-            height: 100,
             outputs: [
                 {
                     amount: '100000',
@@ -130,7 +127,7 @@ export default [
                 {
                     addressPath: [3, 4],
                     coinbase: false,
-                    height: 100,
+                    confirmations: 6,
                     vout: 0,
                     own: true,
                     txid: 'b4dc0ffeee',
@@ -155,7 +152,6 @@ export default [
             changeId: 0,
             dustThreshold: 546,
             feeRate: '10',
-            height: 100,
             outputs: [
                 {
                     amount: '100000',
@@ -166,7 +162,7 @@ export default [
                 {
                     addressPath: [3, 4],
                     coinbase: false,
-                    height: 100,
+                    confirmations: 6,
                     vout: 0,
                     own: true,
                     txid: 'b4dc0ffeee',
@@ -187,7 +183,6 @@ export default [
             changeId: 0,
             dustThreshold: 546,
             feeRate: '10',
-            height: 100,
             outputs: [
                 {
                     address: '1BitcoinEaterAddressDontSendf59kuE',
@@ -198,7 +193,7 @@ export default [
                 {
                     addressPath: [3, 4],
                     coinbase: false,
-                    height: 100,
+                    confirmations: 6,
                     vout: 0,
                     own: true,
                     txid: 'b4dc0ffeee',
@@ -242,7 +237,6 @@ export default [
             changeId: 0,
             dustThreshold: 546,
             feeRate: '10',
-            height: 100,
             outputs: [
                 {
                     address: '1BitcoinEaterAddressDontSendf59kuE',
@@ -253,7 +247,7 @@ export default [
                 {
                     addressPath: [3, 4],
                     coinbase: false,
-                    height: 100,
+                    confirmations: 6,
                     vout: 0,
                     own: true,
                     txid: 'b4dc0ffeee',
@@ -297,7 +291,6 @@ export default [
             changeId: 0,
             dustThreshold: 546,
             feeRate: '10',
-            height: 100,
             outputs: [
                 {
                     type: 'weird-output-type',
@@ -307,7 +300,7 @@ export default [
                 {
                     addressPath: [3, 4],
                     coinbase: false,
-                    height: 100,
+                    confirmations: 6,
                     vout: 0,
                     own: true,
                     txid: 'b4dc0ffeee',
@@ -328,7 +321,6 @@ export default [
             changeId: 0,
             dustThreshold: 546,
             feeRate: '10',
-            height: 100,
             outputs: [],
             utxos: [],
         },
@@ -345,13 +337,12 @@ export default [
             changeId: 0,
             dustThreshold: 546,
             feeRate: '10',
-            height: 100,
             outputs: [],
             utxos: [
                 {
                     addressPath: [3, 4],
                     coinbase: false,
-                    height: 100,
+                    confirmations: 6,
                     vout: 0,
                     own: true,
                     txid: 'b4dc0ffeee',
@@ -372,7 +363,6 @@ export default [
             changeId: 0,
             dustThreshold: 546,
             feeRate: '10',
-            height: 100,
             outputs: [
                 {
                     address: '1BitcoinEaterAddressDontSendf59kuE',
@@ -394,7 +384,6 @@ export default [
             changeId: 0,
             dustThreshold: 546,
             feeRate: 0,
-            height: 100,
             outputs: [
                 {
                     address: '1BitcoinEaterAddressDontSendf59kuE',
@@ -406,7 +395,7 @@ export default [
                 {
                     addressPath: [3, 4],
                     coinbase: false,
-                    height: 100,
+                    confirmations: 6,
                     vout: 0,
                     own: true,
                     txid: 'b4dc0ffeee',
@@ -427,7 +416,6 @@ export default [
             changeId: 0,
             dustThreshold: 546,
             feeRate: NaN,
-            height: 100,
             outputs: [
                 {
                     address: '1BitcoinEaterAddressDontSendf59kuE',
@@ -439,7 +427,6 @@ export default [
                 {
                     addressPath: [3, 4],
                     coinbase: false,
-                    height: 100,
                     vout: 0,
                     own: true,
                     txid: 'b4dc0ffeee',
@@ -460,7 +447,6 @@ export default [
             changeId: 0,
             dustThreshold: 546,
             feeRate: '10',
-            height: 100,
             outputs: [
                 {
                     address: '1BitcoinEaterAddressDontSendf59kuE',
@@ -477,7 +463,7 @@ export default [
                 {
                     addressPath: [3, 4],
                     coinbase: false,
-                    height: 100,
+                    confirmations: 6,
                     vout: 0,
                     own: true,
                     txid: 'b4dc0ffeee',
@@ -529,7 +515,6 @@ export default [
             changeId: 0,
             dustThreshold: 546,
             feeRate: '10.71',
-            height: 100,
             outputs: [
                 {
                     address: '1BitcoinEaterAddressDontSendf59kuE',
@@ -546,7 +531,7 @@ export default [
                 {
                     addressPath: [3, 4],
                     coinbase: false,
-                    height: 100,
+                    confirmations: 6,
                     vout: 0,
                     own: true,
                     txid: 'b4dc0ffeee',
@@ -599,7 +584,6 @@ export default [
             changeId: 0,
             dustThreshold: 546,
             feeRate: '10',
-            height: 100,
             outputs: [
                 {
                     address: '3LRW7jeCvQCRdPF8S3yUCfRAx4eqXFmdcr',
@@ -616,7 +600,7 @@ export default [
                 {
                     addressPath: [3, 4],
                     coinbase: false,
-                    height: 100,
+                    confirmations: 6,
                     vout: 0,
                     own: true,
                     txid: 'b4dc0ffeee',
@@ -668,7 +652,6 @@ export default [
             changeId: 0,
             dustThreshold: 546,
             feeRate: '10',
-            height: 100,
             outputs: [
                 {
                     address: '1BitcoinEaterAddressDontSendf59kuE',
@@ -680,7 +663,7 @@ export default [
                 {
                     addressPath: [3, 4],
                     coinbase: false,
-                    height: 100,
+                    confirmations: 100,
                     vout: 1,
                     own: true,
                     txid: 'b4dc0ffeee',
@@ -689,7 +672,7 @@ export default [
                 {
                     addressPath: [3, 4],
                     coinbase: false,
-                    height: null,
+                    confirmations: 6,
                     vout: 2,
                     own: true,
                     txid: 'b4dc0ffeee',
@@ -733,7 +716,6 @@ export default [
             changeId: 0,
             dustThreshold: 546,
             feeRate: '10',
-            height: 100,
             outputs: [
                 {
                     address: '1BitcoinEaterAddressDontSendf59kuE',
@@ -748,7 +730,7 @@ export default [
                 {
                     addressPath: [3, 4],
                     coinbase: false,
-                    height: 100,
+                    confirmations: 6,
                     vout: 0,
                     own: true,
                     txid: 'b4dc0ffeee',
@@ -769,7 +751,6 @@ export default [
             changeId: 0,
             dustThreshold: 546,
             feeRate: '10',
-            height: 100,
             outputs: [
                 {
                     address: '1BitcoinEaterAddressDontSendf59kuE',
@@ -781,7 +762,7 @@ export default [
                 {
                     addressPath: [3, 4],
                     coinbase: false,
-                    height: 100,
+                    confirmations: 6,
                     vout: 1,
                     own: true,
                     txid: 'b4dc0ffeee',
@@ -790,7 +771,7 @@ export default [
                 {
                     addressPath: [3, 4],
                     coinbase: false,
-                    height: 100,
+                    confirmations: 6,
                     vout: 2,
                     own: true,
                     txid: 'b4dc0ffeee',
@@ -841,7 +822,6 @@ export default [
             changeId: 0,
             dustThreshold: 546,
             feeRate: '10',
-            height: 100,
             outputs: [
                 {
                     address: '3LRW7jeCvQCRdPF8S3yUCfRAx4eqXFmdcr',
@@ -858,7 +838,7 @@ export default [
                 {
                     addressPath: [3, 4],
                     coinbase: false,
-                    height: 100,
+                    confirmations: 6,
                     vout: 0,
                     own: true,
                     txid: 'b4dc0ffeee',
@@ -911,7 +891,6 @@ export default [
             changeId: 0,
             dustThreshold: 54600,
             feeRate: '10',
-            height: 100,
             outputs: [
                 {
                     address: '3LRW7jeCvQCRdPF8S3yUCfRAx4eqXFmdcr',
@@ -923,7 +902,7 @@ export default [
                 {
                     addressPath: [3, 4],
                     coinbase: false,
-                    height: 100,
+                    confirmations: 6,
                     vout: 0,
                     own: true,
                     txid: 'b4dc0ffeee',
@@ -967,7 +946,6 @@ export default [
             changeId: 0,
             dustThreshold: 546,
             feeRate: '10',
-            height: 100,
             outputs: [
                 {
                     dataHex: 'deadbeef',
@@ -978,7 +956,7 @@ export default [
                 {
                     addressPath: [3, 4],
                     coinbase: false,
-                    height: 100,
+                    confirmations: 6,
                     vout: 0,
                     own: true,
                     txid: 'b4dc0ffeee',
@@ -1028,7 +1006,6 @@ export default [
             changeId: 0,
             dustThreshold: 546,
             feeRate: '10',
-            height: 100,
             outputs: [
                 {
                     dataHex: 'deadbeef',
@@ -1043,7 +1020,7 @@ export default [
                 {
                     addressPath: [3, 4],
                     coinbase: false,
-                    height: 100,
+                    confirmations: 6,
                     vout: 0,
                     own: true,
                     txid: 'b4dc0ffeee',
@@ -1100,7 +1077,6 @@ export default [
             changeId: 0,
             dustThreshold: 546,
             feeRate: '10',
-            height: 100,
             outputs: [
                 {
                     address: 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq',
@@ -1112,7 +1088,7 @@ export default [
                 {
                     addressPath: [3, 4],
                     coinbase: false,
-                    height: 100,
+                    confirmations: 6,
                     vout: 0,
                     own: true,
                     txid: 'b4dc0ffeee',
@@ -1156,7 +1132,6 @@ export default [
             changeId: 0,
             dustThreshold: 546,
             feeRate: '10',
-            height: 100,
             outputs: [
                 {
                     address: '3NukJ6fYZJ5Kk8bPjycAnruZkE5Q7UW7i8',
@@ -1168,7 +1143,7 @@ export default [
                 {
                     addressPath: [3, 4],
                     coinbase: false,
-                    height: 100,
+                    confirmations: 6,
                     vout: 0,
                     own: true,
                     txid: 'b4dc0ffeee',
@@ -1212,7 +1187,6 @@ export default [
             changeId: 0,
             dustThreshold: 546,
             feeRate: '10',
-            height: 100,
             outputs: [
                 {
                     address: 'bc1qc7slrfxkknqcq2jevvvkdgvrt8080852dfjewde450xdlk4ugp7szw5tk9',
@@ -1224,7 +1198,7 @@ export default [
                 {
                     addressPath: [3, 4],
                     coinbase: false,
-                    height: 100,
+                    confirmations: 6,
                     vout: 0,
                     own: true,
                     txid: 'b4dc0ffeee',
@@ -1269,7 +1243,6 @@ export default [
             changeId: 0,
             dustThreshold: 546,
             feeRate: '10',
-            height: 100,
             outputs: [
                 {
                     type: 'send-max-noaddress',
@@ -1279,7 +1252,7 @@ export default [
                 {
                     addressPath: [3, 4],
                     coinbase: false,
-                    height: 100,
+                    confirmations: 6,
                     vout: 0,
                     own: true,
                     txid: 'b4dc0ffeee',
@@ -1305,7 +1278,6 @@ export default [
             changeId: 0,
             dustThreshold: 546,
             feeRate: '10',
-            height: 100,
             outputs: [
                 {
                     address: 'bitcoincash:qp6e6enhpy0fwwu7nkvlr8rgl06ru0c9lywalz8st5',
@@ -1317,7 +1289,7 @@ export default [
                 {
                     addressPath: [3, 4],
                     coinbase: false,
-                    height: 100,
+                    confirmations: 6,
                     vout: 0,
                     own: true,
                     txid: 'b4dc0ffeee',
@@ -1361,7 +1333,6 @@ export default [
             changeId: 1,
             dustThreshold: 546,
             feeRate: '10',
-            height: 200,
             outputs: [
                 {
                     address: '1BitcoinEaterAddressDontSendf59kuE',
@@ -1372,21 +1343,21 @@ export default [
             utxos: [
                 {
                     addressPath: [1, 0],
-                    height: 200,
                     vout: 0,
                     txid: 'a4dc0ffeee',
                     amount: '65291',
                     coinbase: true,
+                    confirmations: 1,
                     own: false,
                     required: true,
                 },
                 {
                     addressPath: [0, 1],
-                    height: 150,
                     vout: 0,
                     txid: 'c4dc0ffeee',
                     amount: '202001',
                     coinbase: false,
+                    confirmations: 6,
                     own: true,
                 },
                 {
@@ -1395,16 +1366,17 @@ export default [
                     txid: 'b4dc0ffeee',
                     amount: '55291',
                     coinbase: false,
+                    confirmations: 1,
                     own: false,
                     required: true,
                 },
                 {
                     addressPath: [0, 2],
-                    height: 100,
                     vout: 0,
                     txid: 'd4dc0ffeee',
                     amount: '200000',
                     coinbase: false,
+                    confirmations: 60,
                     own: true,
                 },
             ],
@@ -1455,7 +1427,6 @@ export default [
             changeId: 1,
             dustThreshold: 546,
             feeRate: '10',
-            height: 100,
             skipPermutation: true,
             outputs: [
                 {
@@ -1468,21 +1439,21 @@ export default [
                 {
                     addressPath: [1, 0],
                     fee: '0',
-                    height: 60,
                     vout: 0,
                     txid: 'a4dc0ffeee',
                     amount: '65291',
                     coinbase: false,
+                    confirmations: 6,
                     own: false,
                 },
                 {
                     addressPath: [1, 1],
                     fee: '0',
-                    height: 50,
                     vout: 1,
                     txid: 'b4dc0ffeee',
                     amount: '55291',
                     coinbase: false,
+                    confirmations: 6,
                     own: false,
                 },
             ],
@@ -1534,7 +1505,6 @@ export default [
             changeId: 0,
             dustThreshold: 999999,
             feeRate: '1000',
-            height: 7000000,
             network: 'doge',
             outputs: [
                 {
@@ -1547,7 +1517,7 @@ export default [
                 {
                     addressPath: [0, 0],
                     coinbase: false,
-                    height: 2272181,
+                    confirmations: 6,
                     vout: 1,
                     own: false,
                     txid: '78c3ee88226c7f63060fbf27ab0450961c09241bfd56a12ce164881791c7c6e5',
