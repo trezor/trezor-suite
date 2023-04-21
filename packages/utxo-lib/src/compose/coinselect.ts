@@ -43,9 +43,7 @@ export function coinselect(
     // finalize using requested custom inputs or use coin select algorithm
     const result = algorithm(inputs0, outputs0, feeRate, options);
     if (!result.inputs || !result.outputs) {
-        return {
-            type: 'false',
-        };
+        return { success: false };
     }
 
     const { fee, inputs, outputs } = result;
@@ -62,8 +60,8 @@ export function coinselect(
     const feePerByte = fee / bytes;
 
     return {
-        type: 'true',
-        result: {
+        success: true,
+        payload: {
             inputs,
             outputs,
             fee,
