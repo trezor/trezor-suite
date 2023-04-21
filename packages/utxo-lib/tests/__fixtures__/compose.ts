@@ -21,7 +21,7 @@ export default [
                     confirmations: 100,
                     vout: 0,
                     own: true,
-                    transactionHash: 'b4dc0ffeee',
+                    txid: 'b4dc0ffeee',
                     amount: '102001',
                 },
             ],
@@ -44,7 +44,7 @@ export default [
                 },
                 inputs: [
                     {
-                        REV_hash: 'b4dc0ffeee',
+                        txid: 'b4dc0ffeee',
                         vout: 0,
                         path: [44, 1, 3, 4],
                         amount: '102001',
@@ -76,7 +76,7 @@ export default [
                     confirmations: 100,
                     vout: 0,
                     own: true,
-                    transactionHash: 'b4dc0ffeee',
+                    txid: 'b4dc0ffeee',
                     amount: '102001',
                 },
             ],
@@ -99,7 +99,7 @@ export default [
                 },
                 inputs: [
                     {
-                        REV_hash: 'b4dc0ffeee',
+                        txid: 'b4dc0ffeee',
                         vout: 0,
                         path: [44, 1, 3, 4],
                         amount: '102001',
@@ -130,7 +130,7 @@ export default [
                     confirmations: 100,
                     vout: 0,
                     own: true,
-                    transactionHash: 'b4dc0ffeee',
+                    txid: 'b4dc0ffeee',
                     amount: '102001',
                 },
             ],
@@ -165,7 +165,7 @@ export default [
                     confirmations: 100,
                     vout: 0,
                     own: true,
-                    transactionHash: 'b4dc0ffeee',
+                    txid: 'b4dc0ffeee',
                     amount: '10',
                 },
             ],
@@ -196,7 +196,7 @@ export default [
                     confirmations: 100,
                     vout: 0,
                     own: true,
-                    transactionHash: 'b4dc0ffeee',
+                    txid: 'b4dc0ffeee',
                     amount: '50000000000',
                 },
             ],
@@ -219,7 +219,7 @@ export default [
                 },
                 inputs: [
                     {
-                        REV_hash: 'b4dc0ffeee',
+                        txid: 'b4dc0ffeee',
                         vout: 0,
                         path: [44, 1, 3, 4],
                         amount: '50000000000',
@@ -250,7 +250,7 @@ export default [
                     confirmations: 100,
                     vout: 0,
                     own: true,
-                    transactionHash: 'b4dc0ffeee',
+                    txid: 'b4dc0ffeee',
                     amount: '102001',
                 },
             ],
@@ -273,7 +273,7 @@ export default [
                 },
                 inputs: [
                     {
-                        REV_hash: 'b4dc0ffeee',
+                        txid: 'b4dc0ffeee',
                         vout: 0,
                         path: [44, 1, 3, 4],
                         amount: '102001',
@@ -303,7 +303,7 @@ export default [
                     confirmations: 100,
                     vout: 0,
                     own: true,
-                    transactionHash: 'b4dc0ffeee',
+                    txid: 'b4dc0ffeee',
                     amount: '10',
                 },
             ],
@@ -345,7 +345,7 @@ export default [
                     confirmations: 100,
                     vout: 0,
                     own: true,
-                    transactionHash: 'b4dc0ffeee',
+                    txid: 'b4dc0ffeee',
                     amount: '102001',
                 },
             ],
@@ -398,7 +398,7 @@ export default [
                     confirmations: 100,
                     vout: 0,
                     own: true,
-                    transactionHash: 'b4dc0ffeee',
+                    txid: 'b4dc0ffeee',
                     amount: '102001',
                 },
             ],
@@ -430,7 +430,7 @@ export default [
                     confirmations: 100,
                     vout: 0,
                     own: true,
-                    transactionHash: 'b4dc0ffeee',
+                    txid: 'b4dc0ffeee',
                     amount: '102001',
                 },
             ],
@@ -467,7 +467,7 @@ export default [
                     confirmations: 100,
                     vout: 0,
                     own: true,
-                    transactionHash: 'b4dc0ffeee',
+                    txid: 'b4dc0ffeee',
                     amount: '102001',
                 },
             ],
@@ -498,7 +498,7 @@ export default [
                 },
                 inputs: [
                     {
-                        REV_hash: 'b4dc0ffeee',
+                        txid: 'b4dc0ffeee',
                         vout: 0,
                         path: [44, 1, 3, 4],
                         amount: '102001',
@@ -535,7 +535,7 @@ export default [
                     confirmations: 100,
                     vout: 0,
                     own: true,
-                    transactionHash: 'b4dc0ffeee',
+                    txid: 'b4dc0ffeee',
                     amount: '102001',
                 },
             ],
@@ -566,7 +566,7 @@ export default [
                 },
                 inputs: [
                     {
-                        REV_hash: 'b4dc0ffeee',
+                        txid: 'b4dc0ffeee',
                         vout: 0,
                         path: [44, 1, 3, 4],
                         amount: '102001',
@@ -604,7 +604,7 @@ export default [
                     confirmations: 100,
                     vout: 0,
                     own: true,
-                    transactionHash: 'b4dc0ffeee',
+                    txid: 'b4dc0ffeee',
                     amount: '102001',
                 },
             ],
@@ -635,7 +635,7 @@ export default [
                 },
                 inputs: [
                     {
-                        REV_hash: 'b4dc0ffeee',
+                        txid: 'b4dc0ffeee',
                         amount: '102001',
                         vout: 0,
                         path: [49, 0, 0, 3, 4],
@@ -667,7 +667,7 @@ export default [
                     confirmations: 100,
                     vout: 1,
                     own: true,
-                    transactionHash: 'b4dc0ffeee',
+                    txid: 'b4dc0ffeee',
                     amount: '102001',
                 },
                 {
@@ -676,7 +676,7 @@ export default [
                     confirmations: 5,
                     vout: 2,
                     own: true,
-                    transactionHash: 'b4dc0ffeee',
+                    txid: 'b4dc0ffeee',
                     amount: '102001',
                 },
             ],
@@ -699,7 +699,7 @@ export default [
                 },
                 inputs: [
                     {
-                        REV_hash: 'b4dc0ffeee',
+                        txid: 'b4dc0ffeee',
                         vout: 1,
                         path: [44, 1, 3, 4],
                         amount: '102001',
@@ -734,7 +734,7 @@ export default [
                     confirmations: 100,
                     vout: 0,
                     own: true,
-                    transactionHash: 'b4dc0ffeee',
+                    txid: 'b4dc0ffeee',
                     amount: '102001',
                 },
             ],
@@ -766,7 +766,7 @@ export default [
                     confirmations: 100,
                     vout: 1,
                     own: true,
-                    transactionHash: 'b4dc0ffeee',
+                    txid: 'b4dc0ffeee',
                     amount: '102001',
                 },
                 {
@@ -775,7 +775,7 @@ export default [
                     confirmations: 100,
                     vout: 2,
                     own: true,
-                    transactionHash: 'b4dc0ffeee',
+                    txid: 'b4dc0ffeee',
                     amount: '102001',
                 },
             ],
@@ -798,13 +798,13 @@ export default [
                 },
                 inputs: [
                     {
-                        REV_hash: 'b4dc0ffeee',
+                        txid: 'b4dc0ffeee',
                         vout: 1,
                         path: [44, 1, 3, 4],
                         amount: '102001',
                     },
                     {
-                        REV_hash: 'b4dc0ffeee',
+                        txid: 'b4dc0ffeee',
                         vout: 2,
                         path: [44, 1, 3, 4],
                         amount: '102001',
@@ -842,7 +842,7 @@ export default [
                     confirmations: 100,
                     vout: 0,
                     own: true,
-                    transactionHash: 'b4dc0ffeee',
+                    txid: 'b4dc0ffeee',
                     amount: '102001',
                 },
             ],
@@ -873,7 +873,7 @@ export default [
                 },
                 inputs: [
                     {
-                        REV_hash: 'b4dc0ffeee',
+                        txid: 'b4dc0ffeee',
                         amount: '102001',
                         vout: 0,
                         path: [44, 0, 1, 3, 4],
@@ -906,7 +906,7 @@ export default [
                     confirmations: 100,
                     vout: 0,
                     own: true,
-                    transactionHash: 'b4dc0ffeee',
+                    txid: 'b4dc0ffeee',
                     amount: '972463',
                 },
             ],
@@ -929,7 +929,7 @@ export default [
                 },
                 inputs: [
                     {
-                        REV_hash: 'b4dc0ffeee',
+                        txid: 'b4dc0ffeee',
                         vout: 0,
                         path: [49, 0, 1, 3, 4],
                         amount: '972463',
@@ -960,7 +960,7 @@ export default [
                     confirmations: 100,
                     vout: 0,
                     own: true,
-                    transactionHash: 'b4dc0ffeee',
+                    txid: 'b4dc0ffeee',
                     amount: '102001',
                 },
             ],
@@ -989,7 +989,7 @@ export default [
                 },
                 inputs: [
                     {
-                        REV_hash: 'b4dc0ffeee',
+                        txid: 'b4dc0ffeee',
                         vout: 0,
                         path: [44, 1, 3, 4],
                         amount: '102001',
@@ -1024,7 +1024,7 @@ export default [
                     confirmations: 100,
                     vout: 0,
                     own: true,
-                    transactionHash: 'b4dc0ffeee',
+                    txid: 'b4dc0ffeee',
                     amount: '102001',
                 },
             ],
@@ -1059,7 +1059,7 @@ export default [
                 },
                 inputs: [
                     {
-                        REV_hash: 'b4dc0ffeee',
+                        txid: 'b4dc0ffeee',
                         vout: 0,
                         path: [44, 1, 3, 4],
                         amount: '102001',
@@ -1092,7 +1092,7 @@ export default [
                     confirmations: 100,
                     vout: 0,
                     own: true,
-                    transactionHash: 'b4dc0ffeee',
+                    txid: 'b4dc0ffeee',
                     amount: '101500',
                 },
             ],
@@ -1115,7 +1115,7 @@ export default [
                 },
                 inputs: [
                     {
-                        REV_hash: 'b4dc0ffeee',
+                        txid: 'b4dc0ffeee',
                         vout: 0,
                         path: [84, 0, 1, 3, 4],
                         amount: '101500',
@@ -1149,7 +1149,7 @@ export default [
                     confirmations: 100,
                     vout: 0,
                     own: true,
-                    transactionHash: 'b4dc0ffeee',
+                    txid: 'b4dc0ffeee',
                     amount: '101900',
                 },
             ],
@@ -1176,7 +1176,7 @@ export default [
                 },
                 inputs: [
                     {
-                        REV_hash: 'b4dc0ffeee',
+                        txid: 'b4dc0ffeee',
                         vout: 0,
                         path: [84, 0, 1, 3, 4],
                         amount: '101900',
@@ -1209,7 +1209,7 @@ export default [
                     confirmations: 100,
                     vout: 0,
                     own: true,
-                    transactionHash: 'b4dc0ffeee',
+                    txid: 'b4dc0ffeee',
                     amount: '101500',
                 },
             ],
@@ -1232,7 +1232,7 @@ export default [
                 },
                 inputs: [
                     {
-                        REV_hash: 'b4dc0ffeee',
+                        txid: 'b4dc0ffeee',
                         vout: 0,
                         path: [49, 0, 0, 1, 4],
                         amount: '101500',
@@ -1266,7 +1266,7 @@ export default [
                     confirmations: 100,
                     vout: 0,
                     own: true,
-                    transactionHash: 'b4dc0ffeee',
+                    txid: 'b4dc0ffeee',
                     amount: '102000',
                 },
             ],
@@ -1293,7 +1293,7 @@ export default [
                 },
                 inputs: [
                     {
-                        REV_hash: 'b4dc0ffeee',
+                        txid: 'b4dc0ffeee',
                         vout: 0,
                         path: [49, 0, 0, 1, 4],
                         amount: '102000',
@@ -1326,7 +1326,7 @@ export default [
                     height: 100,
                     vout: 0,
                     own: true,
-                    transactionHash: 'b4dc0ffeee',
+                    txid: 'b4dc0ffeee',
                     amount: '101500',
                 },
             ],
@@ -1384,7 +1384,7 @@ export default [
                     height: 100,
                     vout: 0,
                     own: true,
-                    transactionHash: 'b4dc0ffeee',
+                    txid: 'b4dc0ffeee',
                     amount: '102000',
                 },
             ],
@@ -1442,7 +1442,7 @@ export default [
                     confirmations: 100,
                     vout: 0,
                     own: true,
-                    transactionHash: 'b4dc0ffeee',
+                    txid: 'b4dc0ffeee',
                     amount: '102001',
                 },
             ],
@@ -1479,7 +1479,7 @@ export default [
                     confirmations: 100,
                     vout: 0,
                     own: true,
-                    transactionHash: 'b4dc0ffeee',
+                    txid: 'b4dc0ffeee',
                     amount: '102001',
                 },
             ],
@@ -1502,7 +1502,7 @@ export default [
                 },
                 inputs: [
                     {
-                        REV_hash: 'b4dc0ffeee',
+                        txid: 'b4dc0ffeee',
                         vout: 0,
                         path: [44, 1, 3, 4],
                         amount: '102001',
@@ -1531,7 +1531,7 @@ export default [
                 {
                     addressPath: [1, 0],
                     vout: 0,
-                    transactionHash: 'a4dc0ffeee',
+                    txid: 'a4dc0ffeee',
                     amount: '65291',
                     coinbase: true,
                     confirmations: 200,
@@ -1541,7 +1541,7 @@ export default [
                 {
                     addressPath: [0, 1],
                     vout: 0,
-                    transactionHash: 'c4dc0ffeee',
+                    txid: 'c4dc0ffeee',
                     amount: '202001',
                     coinbase: false,
                     confirmations: 150,
@@ -1550,7 +1550,7 @@ export default [
                 {
                     addressPath: [1, 1],
                     vout: 0,
-                    transactionHash: 'b4dc0ffeee',
+                    txid: 'b4dc0ffeee',
                     amount: '55291',
                     coinbase: false,
                     confirmations: 0,
@@ -1560,7 +1560,7 @@ export default [
                 {
                     addressPath: [0, 2],
                     vout: 0,
-                    transactionHash: 'd4dc0ffeee',
+                    txid: 'd4dc0ffeee',
                     amount: '200000',
                     coinbase: false,
                     confirmations: 1000,
@@ -1590,13 +1590,13 @@ export default [
                 },
                 inputs: [
                     {
-                        REV_hash: 'a4dc0ffeee',
+                        txid: 'a4dc0ffeee',
                         vout: 0,
                         amount: '65291',
                         path: [44, 1, 0, 1, 0],
                     },
                     {
-                        REV_hash: 'b4dc0ffeee',
+                        txid: 'b4dc0ffeee',
                         vout: 0,
                         amount: '55291',
                         path: [44, 1, 0, 1, 1],
@@ -1627,7 +1627,7 @@ export default [
                     addressPath: [1, 0],
                     fee: '0',
                     vout: 0,
-                    transactionHash: 'a4dc0ffeee',
+                    txid: 'a4dc0ffeee',
                     amount: '65291',
                     coinbase: false,
                     confirmations: 60,
@@ -1637,7 +1637,7 @@ export default [
                     addressPath: [1, 1],
                     fee: '0',
                     vout: 1,
-                    transactionHash: 'b4dc0ffeee',
+                    txid: 'b4dc0ffeee',
                     amount: '55291',
                     coinbase: false,
                     confirmations: 50,
@@ -1667,13 +1667,13 @@ export default [
                 },
                 inputs: [
                     {
-                        REV_hash: 'a4dc0ffeee',
+                        txid: 'a4dc0ffeee',
                         vout: 0,
                         amount: '65291',
                         path: [44, 1, 0, 1, 0],
                     },
                     {
-                        REV_hash: 'b4dc0ffeee',
+                        txid: 'b4dc0ffeee',
                         vout: 1,
                         amount: '55291',
                         path: [44, 1, 0, 1, 1],
@@ -1707,8 +1707,7 @@ export default [
                     confirmations: 2272181,
                     vout: 1,
                     own: false,
-                    transactionHash:
-                        '78c3ee88226c7f63060fbf27ab0450961c09241bfd56a12ce164881791c7c6e5',
+                    txid: '78c3ee88226c7f63060fbf27ab0450961c09241bfd56a12ce164881791c7c6e5',
                     amount: '11556856856800000000',
                 },
             ],
@@ -1732,8 +1731,7 @@ export default [
                 },
                 inputs: [
                     {
-                        REV_hash:
-                            '78c3ee88226c7f63060fbf27ab0450961c09241bfd56a12ce164881791c7c6e5',
+                        txid: '78c3ee88226c7f63060fbf27ab0450961c09241bfd56a12ce164881791c7c6e5',
                         vout: 1,
                         path: [2147483692, 2147483651, 2147483648, 0, 0],
                         amount: '11556856856800000000',
