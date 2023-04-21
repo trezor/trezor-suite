@@ -5838,7 +5838,7 @@ export default defineMessages({
         defaultMessage: 'Update your firmware to change your homescreen',
     },
     TR_UPDATE_FIRMWARE_HOMESCREEN_LATER_TOOLTIP: {
-        id: 'TR_UPDATE_FIRMWARE_HOMESCREEN_TOOLTIP',
+        id: 'TR_UPDATE_FIRMWARE_HOMESCREEN_LATER_TOOLTIP',
         defaultMessage:
             'Firmware update required. You can change your homescreen in the settings page later',
     },
