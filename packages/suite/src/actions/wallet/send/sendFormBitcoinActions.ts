@@ -264,7 +264,6 @@ export const signTransaction =
             outputs: transaction.outputs,
             account: {
                 addresses: account.addresses!,
-                utxo: account.utxo!,
             },
             coin: account.symbol,
             ...signEnhancement,
