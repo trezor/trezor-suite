@@ -36,7 +36,7 @@ const switchContainerStyle = prepareNativeStyle(utils => ({
 const switchCircleStyle = prepareNativeStyle<{ width: number }>((utils, { width }) => ({
     width,
     height: TOGGLE_BUTTON_HEIGHT,
-    backgroundColor: utils.colors.backgroundSurfaceElevation1,
+    backgroundColor: utils.colors.backgroundSurfaceElevation3,
     borderRadius: utils.borders.radii.round,
     alignSelf: 'center',
 }));
