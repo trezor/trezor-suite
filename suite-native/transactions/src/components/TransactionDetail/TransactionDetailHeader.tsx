@@ -94,6 +94,7 @@ export const TransactionDetailHeader = ({
                         value={tokenTransfer.amount}
                         ethereumToken={tokenTransfer.symbol}
                         decimals={tokenTransfer.decimals}
+                        variant="titleMedium"
                         color="textDefault"
                     />
                 ) : (
