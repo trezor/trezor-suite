@@ -23,7 +23,7 @@ export function convertInputs(
             type: txType,
             i,
             script: { length: INPUT_SCRIPT_LENGTH[txType] },
-            value: input.value,
+            value: input.amount,
             own: input.own,
             coinbase: input.coinbase,
             confirmations: input.confirmations,

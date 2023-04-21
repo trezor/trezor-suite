@@ -15,7 +15,7 @@ export default [
                     index: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
-                    value: 'replace-me',
+                    amount: 'replace-me',
                 },
             ],
             outputs: [
@@ -65,7 +65,7 @@ export default [
                     index: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
-                    value: '202300',
+                    amount: '202300',
                 },
             ],
             outputs: [
@@ -115,7 +115,7 @@ export default [
                     index: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
-                    value: '100000',
+                    amount: '100000',
                 },
                 {
                     addressPath: [4, 5],
@@ -124,7 +124,7 @@ export default [
                     index: 1,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
-                    value: '50000',
+                    amount: '50000',
                 },
             ],
             outputs: [
@@ -174,7 +174,7 @@ export default [
                     index: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
-                    value: '120000',
+                    amount: '120000',
                 },
                 {
                     addressPath: [4, 5],
@@ -183,7 +183,7 @@ export default [
                     index: 1,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
-                    value: '10000',
+                    amount: '10000',
                 },
                 {
                     addressPath: [4, 5],
@@ -192,7 +192,7 @@ export default [
                     index: 2,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
-                    value: '10000',
+                    amount: '10000',
                 },
                 {
                     addressPath: [4, 5],
@@ -201,7 +201,7 @@ export default [
                     index: 3,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
-                    value: '10000',
+                    amount: '10000',
                 },
                 {
                     addressPath: [4, 5],
@@ -210,7 +210,7 @@ export default [
                     index: 4,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
-                    value: '10000',
+                    amount: '10000',
                 },
                 {
                     addressPath: [4, 5],
@@ -219,7 +219,7 @@ export default [
                     index: 5,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
-                    value: '10000',
+                    amount: '10000',
                 },
                 {
                     addressPath: [4, 5],
@@ -228,7 +228,7 @@ export default [
                     index: 6,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
-                    value: '10000',
+                    amount: '10000',
                 },
             ],
             outputs: [
