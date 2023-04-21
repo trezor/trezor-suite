@@ -37,8 +37,8 @@ export const EthereumTokenToFiatAmountFormatter = ({
     const fiatCurrency = useSelector(selectFiatCurrency);
     const { FiatAmountFormatter } = useFormatters();
 
-    const rates = coins.find(coin => coin.symbol === ethereumToken.toLocaleLowerCase())?.current
-        ?.rates;
+    const rates = coins.find(coin => coin.symbol.toLowerCase() === ethereumToken.toLowerCase())
+        ?.current?.rates;
 
     if (!rates) return <EmptyAmountText />;
 
