@@ -3,7 +3,7 @@ import type { CoinSelectPaymentType } from './coinselect';
 
 // UTXO == unspent transaction output = all I can spend
 export interface ComposeInput {
-    index: number; // index of output IN THE TRANSACTION
+    vout: number; // index of output IN THE TRANSACTION
     transactionHash: string; // hash of the transaction
     amount: string; // how much money sent
     addressPath: [number, number]; // path
@@ -86,7 +86,7 @@ export type ComposedTxOutput =
 
 export interface ComposedTxInput {
     hash: Buffer;
-    index: number;
+    vout: number;
     path: number[];
     amount: string;
 }
