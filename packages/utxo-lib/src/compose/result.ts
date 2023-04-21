@@ -6,7 +6,7 @@ export const empty: ComposeResult = {
 };
 
 export function getNonfinalResult(result: CoinSelectSuccess): ComposeResult {
-    const { max, fee, feePerByte, bytes, totalSpent } = result.result;
+    const { max, fee, feePerByte, bytes, totalSpent } = result.payload;
 
     return {
         type: 'nonfinal',
@@ -22,7 +22,7 @@ export function getFinalResult(
     result: CoinSelectSuccess,
     transaction: ComposedTransaction,
 ): ComposeResult {
-    const { max, fee, feePerByte, bytes, totalSpent } = result.result;
+    const { max, fee, feePerByte, bytes, totalSpent } = result.payload;
 
     return {
         type: 'final',

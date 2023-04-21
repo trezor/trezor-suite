@@ -55,8 +55,8 @@ export type CoinSelectAlgorithm = (
 ) => CoinSelectResult;
 
 export interface CoinSelectSuccess {
-    type: 'true';
-    result: {
+    success: true;
+    payload: {
         inputs: CoinSelectInput[];
         outputs: CoinSelectOutputFinal[];
         max?: string;
@@ -68,5 +68,5 @@ export interface CoinSelectSuccess {
 }
 
 export interface CoinSelectFailure {
-    type: 'false';
+    success: false;
 }
