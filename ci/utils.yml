@@ -22,24 +22,6 @@ urls health:
   except:
     <<: *run_everything_rules
 
-.translations duplicates:
-  stage: utils
-  needs: []
-  script:
-    - yarn install --immutable
-    - yarn workspace @trezor/suite translations:list-duplicates
-
-translations duplicates nightly:
-  extends: .translations duplicates
-  only:
-    <<: *run_everything_rules
-
-translations duplicates:
-  extends: .translations duplicates
-  when: manual
-  except:
-    <<: *run_everything_rules
-
 .translations unused:
   stage: utils
   needs: []

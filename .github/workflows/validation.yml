@@ -53,3 +53,5 @@ jobs:
         run: yarn nx:lint:styles
       - name: unit tests
         run: yarn nx:test-unit
+      - name: translation duplicates
+        run: yarn workspace @trezor/suite translations:list-duplicates
