@@ -22,7 +22,7 @@ export default [
                     index: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
-                    value: '102001',
+                    amount: '102001',
                 },
             ],
         },
@@ -38,7 +38,7 @@ export default [
                     sorted: [
                         {
                             address: '1BitcoinEaterAddressDontSendf59kuE',
-                            value: '100000',
+                            amount: '100000',
                         },
                     ],
                 },
@@ -77,7 +77,7 @@ export default [
                     index: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
-                    value: '102001',
+                    amount: '102001',
                 },
             ],
         },
@@ -93,7 +93,7 @@ export default [
                     sorted: [
                         {
                             address: '1BitcoinEaterAddressDontSendf59kuE',
-                            value: '100000',
+                            amount: '100000',
                         },
                     ],
                 },
@@ -131,7 +131,7 @@ export default [
                     index: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
-                    value: '102001',
+                    amount: '102001',
                 },
             ],
         },
@@ -166,7 +166,7 @@ export default [
                     index: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
-                    value: '10',
+                    amount: '10',
                 },
             ],
         },
@@ -197,7 +197,7 @@ export default [
                     index: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
-                    value: '50000000000',
+                    amount: '50000000000',
                 },
             ],
         },
@@ -213,7 +213,7 @@ export default [
                     sorted: [
                         {
                             address: '1BitcoinEaterAddressDontSendf59kuE',
-                            value: '49999998080',
+                            amount: '49999998080',
                         },
                     ],
                 },
@@ -251,7 +251,7 @@ export default [
                     index: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
-                    value: '102001',
+                    amount: '102001',
                 },
             ],
         },
@@ -267,7 +267,7 @@ export default [
                     sorted: [
                         {
                             address: '1BitcoinEaterAddressDontSendf59kuE',
-                            value: '100081',
+                            amount: '100081',
                         },
                     ],
                 },
@@ -304,7 +304,7 @@ export default [
                     index: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
-                    value: '10',
+                    amount: '10',
                 },
             ],
         },
@@ -346,7 +346,7 @@ export default [
                     index: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
-                    value: '102001',
+                    amount: '102001',
                 },
             ],
         },
@@ -399,7 +399,7 @@ export default [
                     index: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
-                    value: '102001',
+                    amount: '102001',
                 },
             ],
         },
@@ -431,7 +431,7 @@ export default [
                     index: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
-                    value: '102001',
+                    amount: '102001',
                 },
             ],
         },
@@ -468,7 +468,7 @@ export default [
                     index: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
-                    value: '102001',
+                    amount: '102001',
                 },
             ],
         },
@@ -484,15 +484,15 @@ export default [
                     sorted: [
                         {
                             address: '1LetUsDestroyBitcoinTogether398Nrg',
-                            value: '20000',
+                            amount: '20000',
                         },
                         {
                             address: '1BitcoinEaterAddressDontSendf59kuE',
-                            value: '30000',
+                            amount: '30000',
                         },
                         {
                             path: [44, 1, 1, 0],
-                            value: '49401',
+                            amount: '49401',
                         },
                     ],
                 },
@@ -536,7 +536,7 @@ export default [
                     index: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
-                    value: '102001',
+                    amount: '102001',
                 },
             ],
         },
@@ -552,15 +552,15 @@ export default [
                     sorted: [
                         {
                             address: '1LetUsDestroyBitcoinTogether398Nrg',
-                            value: '20000',
+                            amount: '20000',
                         },
                         {
                             address: '1BitcoinEaterAddressDontSendf59kuE',
-                            value: '30000',
+                            amount: '30000',
                         },
                         {
                             path: [44, 1, 1, 0],
-                            value: '49216',
+                            amount: '49216',
                         },
                     ],
                 },
@@ -605,7 +605,7 @@ export default [
                     index: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
-                    value: '102001',
+                    amount: '102001',
                 },
             ],
         },
@@ -621,15 +621,15 @@ export default [
                     sorted: [
                         {
                             address: '3FyVFsEyyBPzHjD3qUEgX7Jsn4tcHNZFkn',
-                            value: '20000',
+                            amount: '20000',
                         },
                         {
                             address: '3LRW7jeCvQCRdPF8S3yUCfRAx4eqXFmdcr',
-                            value: '30000',
+                            amount: '30000',
                         },
                         {
                             path: [49, 0, 0, 1, 0],
-                            value: '50021',
+                            amount: '50021',
                         },
                     ],
                 },
@@ -668,7 +668,7 @@ export default [
                     index: 1,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
-                    value: '102001',
+                    amount: '102001',
                 },
                 {
                     addressPath: [3, 4],
@@ -677,7 +677,7 @@ export default [
                     index: 2,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
-                    value: '102001',
+                    amount: '102001',
                 },
             ],
         },
@@ -693,7 +693,7 @@ export default [
                     sorted: [
                         {
                             address: '1BitcoinEaterAddressDontSendf59kuE',
-                            value: '100000',
+                            amount: '100000',
                         },
                     ],
                 },
@@ -735,7 +735,7 @@ export default [
                     index: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
-                    value: '102001',
+                    amount: '102001',
                 },
             ],
         },
@@ -767,7 +767,7 @@ export default [
                     index: 1,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
-                    value: '102001',
+                    amount: '102001',
                 },
                 {
                     addressPath: [3, 4],
@@ -776,7 +776,7 @@ export default [
                     index: 2,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
-                    value: '102001',
+                    amount: '102001',
                 },
             ],
         },
@@ -792,7 +792,7 @@ export default [
                     sorted: [
                         {
                             address: '1BitcoinEaterAddressDontSendf59kuE',
-                            value: '200000',
+                            amount: '200000',
                         },
                     ],
                 },
@@ -843,7 +843,7 @@ export default [
                     index: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
-                    value: '102001',
+                    amount: '102001',
                 },
             ],
         },
@@ -859,15 +859,15 @@ export default [
                     sorted: [
                         {
                             address: '1LetUsDestroyBitcoinTogether398Nrg',
-                            value: '30000',
+                            amount: '30000',
                         },
                         {
                             address: '3LRW7jeCvQCRdPF8S3yUCfRAx4eqXFmdcr',
-                            value: '30000',
+                            amount: '30000',
                         },
                         {
                             path: [44, 0, 1, 1, 0],
-                            value: '40001',
+                            amount: '40001',
                         },
                     ],
                 },
@@ -907,7 +907,7 @@ export default [
                     index: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
-                    value: '972463',
+                    amount: '972463',
                 },
             ],
         },
@@ -923,7 +923,7 @@ export default [
                     sorted: [
                         {
                             address: '3LRW7jeCvQCRdPF8S3yUCfRAx4eqXFmdcr',
-                            value: '928960',
+                            amount: '928960',
                         },
                     ],
                 },
@@ -961,7 +961,7 @@ export default [
                     index: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
-                    value: '102001',
+                    amount: '102001',
                 },
             ],
         },
@@ -983,7 +983,7 @@ export default [
                         },
                         {
                             path: [44, 1, 1, 0],
-                            value: '99931',
+                            amount: '99931',
                         },
                     ],
                 },
@@ -1025,7 +1025,7 @@ export default [
                     index: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
-                    value: '102001',
+                    amount: '102001',
                 },
             ],
         },
@@ -1053,7 +1053,7 @@ export default [
                         },
                         {
                             path: [44, 1, 1, 0],
-                            value: '99791',
+                            amount: '99791',
                         },
                     ],
                 },
@@ -1093,7 +1093,7 @@ export default [
                     index: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
-                    value: '101500',
+                    amount: '101500',
                 },
             ],
         },
@@ -1109,7 +1109,7 @@ export default [
                     sorted: [
                         {
                             address: 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq',
-                            value: '100000',
+                            amount: '100000',
                         },
                     ],
                 },
@@ -1150,7 +1150,7 @@ export default [
                     index: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
-                    value: '101900',
+                    amount: '101900',
                 },
             ],
         },
@@ -1166,11 +1166,11 @@ export default [
                     sorted: [
                         {
                             path: [84, 0, 1, 1, 0],
-                            value: '490',
+                            amount: '490',
                         },
                         {
                             address: 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq',
-                            value: '100000',
+                            amount: '100000',
                         },
                     ],
                 },
@@ -1210,7 +1210,7 @@ export default [
                     index: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
-                    value: '101500',
+                    amount: '101500',
                 },
             ],
         },
@@ -1226,7 +1226,7 @@ export default [
                     sorted: [
                         {
                             address: '3NukJ6fYZJ5Kk8bPjycAnruZkE5Q7UW7i8',
-                            value: '100000',
+                            amount: '100000',
                         },
                     ],
                 },
@@ -1267,7 +1267,7 @@ export default [
                     index: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
-                    value: '102000',
+                    amount: '102000',
                 },
             ],
         },
@@ -1283,11 +1283,11 @@ export default [
                     sorted: [
                         {
                             path: [49, 0, 0, 1, 0],
-                            value: '340',
+                            amount: '340',
                         },
                         {
                             address: '3NukJ6fYZJ5Kk8bPjycAnruZkE5Q7UW7i8',
-                            value: '100000',
+                            amount: '100000',
                         },
                     ],
                 },
@@ -1327,7 +1327,7 @@ export default [
                     index: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
-                    value: '101500',
+                    amount: '101500',
                 },
             ],
         },
@@ -1344,7 +1344,7 @@ export default [
                         {
                             address:
                                 'bc1ptxs597p3fnpd8gwut5p467ulsydae3rp9z75hd99w8k3ljr9g9rqx6ynaw',
-                            value: '100000',
+                            amount: '100000',
                         },
                     ],
                 },
@@ -1385,7 +1385,7 @@ export default [
                     index: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
-                    value: '102000',
+                    amount: '102000',
                 },
             ],
         },
@@ -1401,12 +1401,12 @@ export default [
                     sorted: [
                         {
                             path: [86, 0, 0, 1, 0],
-                            value: '460',
+                            amount: '460',
                         },
                         {
                             address:
                                 'bc1ptxs597p3fnpd8gwut5p467ulsydae3rp9z75hd99w8k3ljr9g9rqx6ynaw',
-                            value: '100000',
+                            amount: '100000',
                         },
                     ],
                 },
@@ -1443,7 +1443,7 @@ export default [
                     index: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
-                    value: '102001',
+                    amount: '102001',
                 },
             ],
         },
@@ -1480,7 +1480,7 @@ export default [
                     index: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
-                    value: '102001',
+                    amount: '102001',
                 },
             ],
         },
@@ -1496,7 +1496,7 @@ export default [
                     sorted: [
                         {
                             address: 'bitcoincash:qp6e6enhpy0fwwu7nkvlr8rgl06ru0c9lywalz8st5',
-                            value: '100000',
+                            amount: '100000',
                         },
                     ],
                 },
@@ -1532,7 +1532,7 @@ export default [
                     addressPath: [1, 0],
                     index: 0,
                     transactionHash: 'a4dc0ffeee',
-                    value: '65291',
+                    amount: '65291',
                     coinbase: true,
                     confirmations: 200,
                     own: false,
@@ -1542,7 +1542,7 @@ export default [
                     addressPath: [0, 1],
                     index: 0,
                     transactionHash: 'c4dc0ffeee',
-                    value: '202001',
+                    amount: '202001',
                     coinbase: false,
                     confirmations: 150,
                     own: true,
@@ -1551,7 +1551,7 @@ export default [
                     addressPath: [1, 1],
                     index: 0,
                     transactionHash: 'b4dc0ffeee',
-                    value: '55291',
+                    amount: '55291',
                     coinbase: false,
                     confirmations: 0,
                     own: false,
@@ -1561,7 +1561,7 @@ export default [
                     addressPath: [0, 2],
                     index: 0,
                     transactionHash: 'd4dc0ffeee',
-                    value: '200000',
+                    amount: '200000',
                     coinbase: false,
                     confirmations: 1000,
                     own: true,
@@ -1579,12 +1579,12 @@ export default [
                     permutation: [1, 0],
                     sorted: [
                         {
-                            value: '16842',
+                            amount: '16842',
                             path: [44, 1, 0, 1, 1],
                         },
                         {
                             address: '1BitcoinEaterAddressDontSendf59kuE',
-                            value: '100000',
+                            amount: '100000',
                         },
                     ],
                 },
@@ -1628,7 +1628,7 @@ export default [
                     fee: '0',
                     index: 0,
                     transactionHash: 'a4dc0ffeee',
-                    value: '65291',
+                    amount: '65291',
                     coinbase: false,
                     confirmations: 60,
                     own: false,
@@ -1638,7 +1638,7 @@ export default [
                     fee: '0',
                     index: 1,
                     transactionHash: 'b4dc0ffeee',
-                    value: '55291',
+                    amount: '55291',
                     coinbase: false,
                     confirmations: 50,
                     own: false,
@@ -1657,10 +1657,10 @@ export default [
                     sorted: [
                         {
                             address: '1BitcoinEaterAddressDontSendf59kuE',
-                            value: '70000',
+                            amount: '70000',
                         },
                         {
-                            value: '46842',
+                            amount: '46842',
                             path: [44, 1, 0, 1, 1],
                         },
                     ],
@@ -1709,7 +1709,7 @@ export default [
                     own: false,
                     transactionHash:
                         '78c3ee88226c7f63060fbf27ab0450961c09241bfd56a12ce164881791c7c6e5',
-                    value: '11556856856800000000',
+                    amount: '11556856856800000000',
                 },
             ],
         },
@@ -1723,10 +1723,10 @@ export default [
                 PERM_outputs: {
                     permutation: [1, 0],
                     sorted: [
-                        { path: [2147483692, 2147483651, 2147483648, 1, 0], value: '6800040000' },
+                        { path: [2147483692, 2147483651, 2147483648, 1, 0], amount: '6800040000' },
                         {
                             address: 'DDn7UV1CrqVefzwrHyw7H2zEZZKqfzR2ZD',
-                            value: '11556856849999734000',
+                            amount: '11556856849999734000',
                         },
                     ],
                 },

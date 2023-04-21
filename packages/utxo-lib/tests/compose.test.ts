@@ -80,7 +80,7 @@ describe('composeTx addresses cross-check', () => {
                         txType,
                         utxos: f.request.utxos.map(utxo => ({
                             ...utxo,
-                            value: utxo.value === 'replace-me' ? amounts[txType] : utxo.value,
+                            amount: utxo.amount === 'replace-me' ? amounts[txType] : utxo.amount,
                         })),
                         outputs: f.request.outputs.map(o => {
                             if (o.type === 'complete') {
