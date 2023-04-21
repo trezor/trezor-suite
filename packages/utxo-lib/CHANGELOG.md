@@ -1,3 +1,21 @@
+# 2.0.0 (not released)
+
+BREAKING CHANGES in `composeTx` module.
+
+renamed `composeTx` params and response.
+
+-   request `utxo.index` > `utxo.vout`
+-   request `utxo.transactionHash` > `utxo.txid`
+-   request `utxo.value` > `utxo.amount`
+-   request `utxo.tsize` is removed (not used)
+-   request `utxo.vsize` is removed (not used)
+-   request `height` and request `utxo.height` are removed. Functionality is replaced by request `utxo.confirmations`
+-   request `output.type = 'complete'` > `output.type = 'payment'`
+
+-   response `input.index` > `input.vout`
+-   response `input.hash` > `input.txid`
+-   response `output.value` > `output.amount`
+
 # 1.0.8
 
 -   feat(utxo-lib): support ltc address derivation (9ac099f56)
