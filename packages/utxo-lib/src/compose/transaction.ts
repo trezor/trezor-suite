@@ -17,7 +17,7 @@ import type { Network } from '../networks';
 function convertInput(utxo: ComposeInput, basePath: number[]): ComposedTxInput {
     return {
         hash: reverseBuffer(Buffer.from(utxo.transactionHash, 'hex')),
-        index: utxo.index,
+        vout: utxo.vout,
         path: basePath.concat([...utxo.addressPath]),
         amount: utxo.amount,
     };
@@ -104,7 +104,7 @@ export function createTransaction(
         };
     }
 
-    convertedInputs.sort((a, b) => inputComparator(a.hash, a.index, b.hash, b.index));
+    convertedInputs.sort((a, b) => inputComparator(a.hash, a.vout, b.hash, b.vout));
     const permutedOutputs = Permutation.fromFunction(convertedOutputs, (a, b) => {
         const aValue = typeof a.output.amount === 'string' ? a.output.amount : '0';
         const bValue = typeof b.output.amount === 'string' ? b.output.amount : '0';

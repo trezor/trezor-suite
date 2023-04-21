@@ -19,7 +19,7 @@ export default [
                     addressPath: [3, 4],
                     coinbase: false,
                     confirmations: 100,
-                    index: 0,
+                    vout: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
                     amount: '102001',
@@ -45,7 +45,7 @@ export default [
                 inputs: [
                     {
                         REV_hash: 'b4dc0ffeee',
-                        index: 0,
+                        vout: 0,
                         path: [44, 1, 3, 4],
                         amount: '102001',
                     },
@@ -74,7 +74,7 @@ export default [
                     addressPath: [3, 4],
                     coinbase: false,
                     confirmations: 100,
-                    index: 0,
+                    vout: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
                     amount: '102001',
@@ -100,7 +100,7 @@ export default [
                 inputs: [
                     {
                         REV_hash: 'b4dc0ffeee',
-                        index: 0,
+                        vout: 0,
                         path: [44, 1, 3, 4],
                         amount: '102001',
                     },
@@ -128,7 +128,7 @@ export default [
                     addressPath: [3, 4],
                     coinbase: false,
                     confirmations: 100,
-                    index: 0,
+                    vout: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
                     amount: '102001',
@@ -163,7 +163,7 @@ export default [
                     addressPath: [3, 4],
                     coinbase: false,
                     confirmations: 100,
-                    index: 0,
+                    vout: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
                     amount: '10',
@@ -194,7 +194,7 @@ export default [
                     addressPath: [3, 4],
                     coinbase: false,
                     confirmations: 100,
-                    index: 0,
+                    vout: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
                     amount: '50000000000',
@@ -220,7 +220,7 @@ export default [
                 inputs: [
                     {
                         REV_hash: 'b4dc0ffeee',
-                        index: 0,
+                        vout: 0,
                         path: [44, 1, 3, 4],
                         amount: '50000000000',
                     },
@@ -248,7 +248,7 @@ export default [
                     addressPath: [3, 4],
                     coinbase: false,
                     confirmations: 100,
-                    index: 0,
+                    vout: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
                     amount: '102001',
@@ -274,7 +274,7 @@ export default [
                 inputs: [
                     {
                         REV_hash: 'b4dc0ffeee',
-                        index: 0,
+                        vout: 0,
                         path: [44, 1, 3, 4],
                         amount: '102001',
                     },
@@ -301,7 +301,7 @@ export default [
                     addressPath: [3, 4],
                     coinbase: false,
                     confirmations: 100,
-                    index: 0,
+                    vout: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
                     amount: '10',
@@ -343,7 +343,7 @@ export default [
                     addressPath: [3, 4],
                     coinbase: false,
                     confirmations: 100,
-                    index: 0,
+                    vout: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
                     amount: '102001',
@@ -396,7 +396,7 @@ export default [
                     addressPath: [3, 4],
                     coinbase: false,
                     confirmations: 100,
-                    index: 0,
+                    vout: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
                     amount: '102001',
@@ -428,7 +428,7 @@ export default [
                     addressPath: [3, 4],
                     coinbase: false,
                     confirmations: 100,
-                    index: 0,
+                    vout: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
                     amount: '102001',
@@ -465,7 +465,7 @@ export default [
                     addressPath: [3, 4],
                     coinbase: false,
                     confirmations: 100,
-                    index: 0,
+                    vout: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
                     amount: '102001',
@@ -499,7 +499,7 @@ export default [
                 inputs: [
                     {
                         REV_hash: 'b4dc0ffeee',
-                        index: 0,
+                        vout: 0,
                         path: [44, 1, 3, 4],
                         amount: '102001',
                     },
@@ -533,7 +533,7 @@ export default [
                     addressPath: [3, 4],
                     coinbase: false,
                     confirmations: 100,
-                    index: 0,
+                    vout: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
                     amount: '102001',
@@ -567,7 +567,7 @@ export default [
                 inputs: [
                     {
                         REV_hash: 'b4dc0ffeee',
-                        index: 0,
+                        vout: 0,
                         path: [44, 1, 3, 4],
                         amount: '102001',
                     },
@@ -602,7 +602,7 @@ export default [
                     addressPath: [3, 4],
                     coinbase: false,
                     confirmations: 100,
-                    index: 0,
+                    vout: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
                     amount: '102001',
@@ -637,7 +637,7 @@ export default [
                     {
                         REV_hash: 'b4dc0ffeee',
                         amount: '102001',
-                        index: 0,
+                        vout: 0,
                         path: [49, 0, 0, 3, 4],
                     },
                 ],
@@ -665,7 +665,7 @@ export default [
                     addressPath: [3, 4],
                     coinbase: false,
                     confirmations: 100,
-                    index: 1,
+                    vout: 1,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
                     amount: '102001',
@@ -674,7 +674,7 @@ export default [
                     addressPath: [3, 4],
                     coinbase: false,
                     confirmations: 5,
-                    index: 2,
+                    vout: 2,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
                     amount: '102001',
@@ -700,7 +700,7 @@ export default [
                 inputs: [
                     {
                         REV_hash: 'b4dc0ffeee',
-                        index: 1,
+                        vout: 1,
                         path: [44, 1, 3, 4],
                         amount: '102001',
                     },
@@ -732,7 +732,7 @@ export default [
                     addressPath: [3, 4],
                     coinbase: false,
                     confirmations: 100,
-                    index: 0,
+                    vout: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
                     amount: '102001',
@@ -764,7 +764,7 @@ export default [
                     addressPath: [3, 4],
                     coinbase: false,
                     confirmations: 100,
-                    index: 1,
+                    vout: 1,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
                     amount: '102001',
@@ -773,7 +773,7 @@ export default [
                     addressPath: [3, 4],
                     coinbase: false,
                     confirmations: 100,
-                    index: 2,
+                    vout: 2,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
                     amount: '102001',
@@ -799,13 +799,13 @@ export default [
                 inputs: [
                     {
                         REV_hash: 'b4dc0ffeee',
-                        index: 1,
+                        vout: 1,
                         path: [44, 1, 3, 4],
                         amount: '102001',
                     },
                     {
                         REV_hash: 'b4dc0ffeee',
-                        index: 2,
+                        vout: 2,
                         path: [44, 1, 3, 4],
                         amount: '102001',
                     },
@@ -840,7 +840,7 @@ export default [
                     addressPath: [3, 4],
                     coinbase: false,
                     confirmations: 100,
-                    index: 0,
+                    vout: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
                     amount: '102001',
@@ -875,7 +875,7 @@ export default [
                     {
                         REV_hash: 'b4dc0ffeee',
                         amount: '102001',
-                        index: 0,
+                        vout: 0,
                         path: [44, 0, 1, 3, 4],
                     },
                 ],
@@ -904,7 +904,7 @@ export default [
                     addressPath: [3, 4],
                     coinbase: false,
                     confirmations: 100,
-                    index: 0,
+                    vout: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
                     amount: '972463',
@@ -930,7 +930,7 @@ export default [
                 inputs: [
                     {
                         REV_hash: 'b4dc0ffeee',
-                        index: 0,
+                        vout: 0,
                         path: [49, 0, 1, 3, 4],
                         amount: '972463',
                     },
@@ -958,7 +958,7 @@ export default [
                     addressPath: [3, 4],
                     coinbase: false,
                     confirmations: 100,
-                    index: 0,
+                    vout: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
                     amount: '102001',
@@ -990,7 +990,7 @@ export default [
                 inputs: [
                     {
                         REV_hash: 'b4dc0ffeee',
-                        index: 0,
+                        vout: 0,
                         path: [44, 1, 3, 4],
                         amount: '102001',
                     },
@@ -1022,7 +1022,7 @@ export default [
                     addressPath: [3, 4],
                     coinbase: false,
                     confirmations: 100,
-                    index: 0,
+                    vout: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
                     amount: '102001',
@@ -1060,7 +1060,7 @@ export default [
                 inputs: [
                     {
                         REV_hash: 'b4dc0ffeee',
-                        index: 0,
+                        vout: 0,
                         path: [44, 1, 3, 4],
                         amount: '102001',
                     },
@@ -1090,7 +1090,7 @@ export default [
                     addressPath: [3, 4],
                     coinbase: false,
                     confirmations: 100,
-                    index: 0,
+                    vout: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
                     amount: '101500',
@@ -1116,7 +1116,7 @@ export default [
                 inputs: [
                     {
                         REV_hash: 'b4dc0ffeee',
-                        index: 0,
+                        vout: 0,
                         path: [84, 0, 1, 3, 4],
                         amount: '101500',
                     },
@@ -1147,7 +1147,7 @@ export default [
                     addressPath: [3, 4],
                     coinbase: false,
                     confirmations: 100,
-                    index: 0,
+                    vout: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
                     amount: '101900',
@@ -1177,7 +1177,7 @@ export default [
                 inputs: [
                     {
                         REV_hash: 'b4dc0ffeee',
-                        index: 0,
+                        vout: 0,
                         path: [84, 0, 1, 3, 4],
                         amount: '101900',
                     },
@@ -1207,7 +1207,7 @@ export default [
                     addressPath: [1, 4],
                     coinbase: false,
                     confirmations: 100,
-                    index: 0,
+                    vout: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
                     amount: '101500',
@@ -1233,7 +1233,7 @@ export default [
                 inputs: [
                     {
                         REV_hash: 'b4dc0ffeee',
-                        index: 0,
+                        vout: 0,
                         path: [49, 0, 0, 1, 4],
                         amount: '101500',
                     },
@@ -1264,7 +1264,7 @@ export default [
                     addressPath: [1, 4],
                     coinbase: false,
                     confirmations: 100,
-                    index: 0,
+                    vout: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
                     amount: '102000',
@@ -1294,7 +1294,7 @@ export default [
                 inputs: [
                     {
                         REV_hash: 'b4dc0ffeee',
-                        index: 0,
+                        vout: 0,
                         path: [49, 0, 0, 1, 4],
                         amount: '102000',
                     },
@@ -1324,7 +1324,7 @@ export default [
                     addressPath: [0, 1],
                     coinbase: false,
                     height: 100,
-                    index: 0,
+                    vout: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
                     amount: '101500',
@@ -1351,7 +1351,7 @@ export default [
                 inputs: [
                     {
                         REV_hash: 'b4dc0ffeee',
-                        index: 0,
+                        vout: 0,
                         path: [86, 0, 0, 0, 1],
                         amount: '101500',
                     },
@@ -1382,7 +1382,7 @@ export default [
                     addressPath: [0, 1],
                     coinbase: false,
                     height: 100,
-                    index: 0,
+                    vout: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
                     amount: '102000',
@@ -1413,7 +1413,7 @@ export default [
                 inputs: [
                     {
                         REV_hash: 'b4dc0ffeee',
-                        index: 0,
+                        vout: 0,
                         path: [86, 0, 0, 0, 1],
                         amount: '102000',
                     },
@@ -1440,7 +1440,7 @@ export default [
                     addressPath: [3, 4],
                     coinbase: false,
                     confirmations: 100,
-                    index: 0,
+                    vout: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
                     amount: '102001',
@@ -1477,7 +1477,7 @@ export default [
                     addressPath: [3, 4],
                     coinbase: false,
                     confirmations: 100,
-                    index: 0,
+                    vout: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
                     amount: '102001',
@@ -1503,7 +1503,7 @@ export default [
                 inputs: [
                     {
                         REV_hash: 'b4dc0ffeee',
-                        index: 0,
+                        vout: 0,
                         path: [44, 1, 3, 4],
                         amount: '102001',
                     },
@@ -1530,7 +1530,7 @@ export default [
             utxos: [
                 {
                     addressPath: [1, 0],
-                    index: 0,
+                    vout: 0,
                     transactionHash: 'a4dc0ffeee',
                     amount: '65291',
                     coinbase: true,
@@ -1540,7 +1540,7 @@ export default [
                 },
                 {
                     addressPath: [0, 1],
-                    index: 0,
+                    vout: 0,
                     transactionHash: 'c4dc0ffeee',
                     amount: '202001',
                     coinbase: false,
@@ -1549,7 +1549,7 @@ export default [
                 },
                 {
                     addressPath: [1, 1],
-                    index: 0,
+                    vout: 0,
                     transactionHash: 'b4dc0ffeee',
                     amount: '55291',
                     coinbase: false,
@@ -1559,7 +1559,7 @@ export default [
                 },
                 {
                     addressPath: [0, 2],
-                    index: 0,
+                    vout: 0,
                     transactionHash: 'd4dc0ffeee',
                     amount: '200000',
                     coinbase: false,
@@ -1591,13 +1591,13 @@ export default [
                 inputs: [
                     {
                         REV_hash: 'a4dc0ffeee',
-                        index: 0,
+                        vout: 0,
                         amount: '65291',
                         path: [44, 1, 0, 1, 0],
                     },
                     {
                         REV_hash: 'b4dc0ffeee',
-                        index: 0,
+                        vout: 0,
                         amount: '55291',
                         path: [44, 1, 0, 1, 1],
                     },
@@ -1626,7 +1626,7 @@ export default [
                 {
                     addressPath: [1, 0],
                     fee: '0',
-                    index: 0,
+                    vout: 0,
                     transactionHash: 'a4dc0ffeee',
                     amount: '65291',
                     coinbase: false,
@@ -1636,7 +1636,7 @@ export default [
                 {
                     addressPath: [1, 1],
                     fee: '0',
-                    index: 1,
+                    vout: 1,
                     transactionHash: 'b4dc0ffeee',
                     amount: '55291',
                     coinbase: false,
@@ -1668,13 +1668,13 @@ export default [
                 inputs: [
                     {
                         REV_hash: 'a4dc0ffeee',
-                        index: 0,
+                        vout: 0,
                         amount: '65291',
                         path: [44, 1, 0, 1, 0],
                     },
                     {
                         REV_hash: 'b4dc0ffeee',
-                        index: 1,
+                        vout: 1,
                         amount: '55291',
                         path: [44, 1, 0, 1, 1],
                     },
@@ -1705,7 +1705,7 @@ export default [
                     addressPath: [0, 0],
                     coinbase: false,
                     confirmations: 2272181,
-                    index: 1,
+                    vout: 1,
                     own: false,
                     transactionHash:
                         '78c3ee88226c7f63060fbf27ab0450961c09241bfd56a12ce164881791c7c6e5',
@@ -1734,7 +1734,7 @@ export default [
                     {
                         REV_hash:
                             '78c3ee88226c7f63060fbf27ab0450961c09241bfd56a12ce164881791c7c6e5',
-                        index: 1,
+                        vout: 1,
                         path: [2147483692, 2147483651, 2147483648, 0, 0],
                         amount: '11556856856800000000',
                     },
