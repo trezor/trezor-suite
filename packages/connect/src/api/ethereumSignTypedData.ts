@@ -95,6 +95,13 @@ export default class EthereumSignTypedData extends AbstractMethod<'ethereumSignT
         const cmd = this.device.getCommands();
         const { address_n } = this.params;
 
+        const network = getEthereumNetwork(address_n);
+        const slip44 = getSlip44ByPath(address_n);
+        const definitions = await getEthereumDefinitions({
+            chainId: network?.chainId,
+            slip44,
+        });
+
         if (this.device.features.model === '1') {
             validateParams(this.params, [
                 { name: 'domain_separator_hash', type: 'string', required: true },
@@ -102,13 +109,6 @@ export default class EthereumSignTypedData extends AbstractMethod<'ethereumSignT
             ]);
 
             const { domain_separator_hash, message_hash } = this.params;
-
-            const network = getEthereumNetwork(address_n);
-            const slip44 = getSlip44ByPath(address_n);
-            const definitions = await getEthereumDefinitions({
-                chainId: network?.chainId,
-                slip44,
-            });
 
             const definitionParams = {
                 ...(definitions.encoded_network && {
@@ -150,6 +150,7 @@ export default class EthereumSignTypedData extends AbstractMethod<'ethereumSignT
                 address_n,
                 primary_type: primaryType as string,
                 metamask_v4_compat,
+                definitions,
             },
         );
 
