@@ -1,7 +1,6 @@
 import { composeTx } from '../src';
 import { convertFeeRate } from '../src/compose/composeUtils';
 import { Permutation } from '../src/compose/permutation';
-import { reverseBuffer } from '../src/bufferutils';
 import * as NETWORKS from '../src/networks';
 
 import { verifyTxBytes } from './compose.utils';
@@ -20,11 +19,6 @@ describe('composeTx', () => {
         const result: any = { ...f.result };
         it(f.description, () => {
             if (result.transaction) {
-                result.transaction.inputs.forEach((oinput: any) => {
-                    const input = oinput;
-                    input.hash = reverseBuffer(Buffer.from(input.REV_hash, 'hex'));
-                    delete input.REV_hash;
-                });
                 const o = result.transaction.PERM_outputs;
                 const sorted = JSON.parse(JSON.stringify(o.sorted));
                 sorted.forEach((ss: any) => {

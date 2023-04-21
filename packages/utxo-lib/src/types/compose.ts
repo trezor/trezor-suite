@@ -4,7 +4,7 @@ import type { CoinSelectPaymentType } from './coinselect';
 // UTXO == unspent transaction output = all I can spend
 export interface ComposeInput {
     vout: number; // index of output IN THE TRANSACTION
-    transactionHash: string; // hash of the transaction
+    txid: string; // hash of the transaction
     amount: string; // how much money sent
     addressPath: [number, number]; // path
     coinbase: boolean; // coinbase transaction = utxo from mining, cannot be spend before 100 blocks
@@ -85,7 +85,7 @@ export type ComposedTxOutput =
       };
 
 export interface ComposedTxInput {
-    hash: Buffer;
+    txid: string;
     vout: number;
     path: number[];
     amount: string;
