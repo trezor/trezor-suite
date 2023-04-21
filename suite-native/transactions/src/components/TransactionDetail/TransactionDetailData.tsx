@@ -7,11 +7,7 @@ import { Icon } from '@trezor/icons';
 import { useFormatters } from '@suite-common/formatters';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { selectTransactionBlockTimeById, TransactionsRootState } from '@suite-common/wallet-core';
-import {
-    EthereumTokenTransfer,
-    getTransactionTokensCount,
-    WalletAccountTransaction,
-} from '@suite-native/ethereum-tokens';
+import { EthereumTokenTransfer, WalletAccountTransaction } from '@suite-native/ethereum-tokens';
 
 import { TransactionDetailSummary } from './TransactionDetailSummary';
 import { TransactionDetailRow } from './TransactionDetailRow';
@@ -33,7 +29,7 @@ export const TransactionDetailData = ({
         selectTransactionBlockTimeById(state, transaction.txid, accountKey),
     );
 
-    const transactionTokensCount = getTransactionTokensCount(transaction);
+    const transactionTokensCount = transaction.tokens.length;
 
     const isTokenTransaction = !!tokenTransfer;
     const isMultiTokenTransaction = isTokenTransaction && transactionTokensCount - 1 > 0;

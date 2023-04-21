@@ -11,8 +11,7 @@ import {
     SignValueFormatter,
 } from '@suite-native/formatters';
 import { EthereumTokenTransfer, WalletAccountTransaction } from '@suite-native/ethereum-tokens';
-
-import { signValueMap } from '../TransactionsList/TransactionListItem';
+import { SignValue } from '@suite-common/suite-types';
 
 type TransactionDetailHeaderProps = {
     transaction: WalletAccountTransaction;
@@ -23,6 +22,16 @@ type TransactionTypeInfo = {
     text: string;
     iconName?: IconName;
 };
+
+export const signValueMap = {
+    recv: 'positive',
+    sent: 'negative',
+    self: undefined,
+    joint: undefined,
+    contract: undefined,
+    failed: undefined,
+    unknown: undefined,
+} as const satisfies Record<TransactionType, SignValue | undefined>;
 
 const transactionTypeInfo = {
     recv: {

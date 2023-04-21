@@ -1,6 +1,5 @@
 import React from 'react';
 import { TouchableOpacity } from 'react-native';
-import { useSelector } from 'react-redux';
 
 import { Box, Text } from '@suite-native/atoms';
 import { EthereumTokenIcon } from '@trezor/icons';
@@ -8,14 +7,9 @@ import {
     EthereumTokenAmountFormatter,
     EthereumTokenToFiatAmountFormatter,
 } from '@suite-native/formatters';
-import {
-    getEthereumTokenIconName,
-    selectEthereumTokenHasFiatRates,
-} from '@suite-native/ethereum-tokens';
+import { getEthereumTokenIconName } from '@suite-native/ethereum-tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { AccountKey, TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
-import { FiatRatesRootState } from '@suite-native/fiat-rates';
-import { SettingsSliceRootState } from '@suite-native/module-settings';
+import { AccountKey, TokenSymbol } from '@suite-common/wallet-types';
 
 import { accountDescriptionStyle, valuesContainerStyle } from './AccountListItem';
 
@@ -25,7 +19,6 @@ type TokenListItemProps = {
     label: string;
     symbol: TokenSymbol;
     accountKey: AccountKey;
-    contract: TokenAddress;
     onSelectAccount: (accountKey: AccountKey, tokenSymbol?: TokenSymbol) => void;
 };
 
@@ -54,17 +47,10 @@ export const TokenListItem = ({
     balance,
     isLast,
     label,
-    contract,
     accountKey,
     onSelectAccount,
 }: TokenListItemProps) => {
     const { applyStyle } = useNativeStyles();
-    const ethereumTokenHasFiatRates = useSelector(
-        (state: FiatRatesRootState & SettingsSliceRootState) =>
-            selectEthereumTokenHasFiatRates(state, contract, symbol),
-    );
-
-    if (!ethereumTokenHasFiatRates) return null;
 
     const handleOnPress = () => {
         onSelectAccount(accountKey, symbol);

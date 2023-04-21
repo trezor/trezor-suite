@@ -51,17 +51,6 @@ export const selectEthereumAccountTokenTransactions = memoizeWithArgs(
     { size: 500 },
 );
 
-export const selectAccountOrTokenAccountTransactions = (
-    state: TransactionsRootState,
-    accountKey: AccountKey,
-    tokenSymbol: EthereumTokenSymbol | null,
-): WalletAccountTransaction[] => {
-    if (tokenSymbol) {
-        return selectEthereumAccountTokenTransactions(state, accountKey, tokenSymbol);
-    }
-    return selectAccountTransactions(state, accountKey) as WalletAccountTransaction[];
-};
-
 export const selectEthereumTokenHasFiatRates = (
     state: FiatRatesRootState & SettingsSliceRootState,
     contract: TokenAddress,
@@ -71,7 +60,7 @@ export const selectEthereumTokenHasFiatRates = (
     const fiatCurrencyCode = selectFiatCurrencyCode(state);
     const fiatRateKey = getFiatRateKeyFromTicker(
         {
-            symbol: tokenSymbol.toUpperCase() as TokenSymbol,
+            symbol: tokenSymbol.toLowerCase() as TokenSymbol,
             mainNetworkSymbol: 'eth',
             tokenAddress: contract,
         },
@@ -79,6 +68,48 @@ export const selectEthereumTokenHasFiatRates = (
     );
     const rates = selectFiatRatesByFiatRateKey(state, fiatRateKey);
     return !!rates?.rate;
+};
+
+const selectAccountTransactionsWithTokensWithFiatRates = memoizeWithArgs(
+    (
+        state: TransactionsRootState & FiatRatesRootState & SettingsSliceRootState,
+        accountKey: AccountKey,
+    ): WalletAccountTransaction[] =>
+        pipe(
+            selectAccountTransactions(state, accountKey),
+            A.map(transaction => ({
+                ...transaction,
+                tokens: pipe(
+                    transaction.tokens,
+                    A.filter(token =>
+                        selectEthereumTokenHasFiatRates(
+                            state,
+                            token.contract as TokenAddress,
+                            token.symbol as TokenSymbol,
+                        ),
+                    ),
+                    A.map((tokenTransfer: TokenTransfer) => ({
+                        ...tokenTransfer,
+                        symbol: tokenTransfer.symbol.toLowerCase(),
+                    })),
+                ),
+            })),
+        ) as WalletAccountTransaction[],
+    { size: 500 },
+);
+
+export const selectAccountOrTokenAccountTransactions = (
+    state: TransactionsRootState & FiatRatesRootState & SettingsSliceRootState,
+    accountKey: AccountKey,
+    tokenSymbol: EthereumTokenSymbol | null,
+): WalletAccountTransaction[] => {
+    if (tokenSymbol) {
+        return selectEthereumAccountTokenTransactions(state, accountKey, tokenSymbol);
+    }
+    return selectAccountTransactionsWithTokensWithFiatRates(
+        state,
+        accountKey,
+    ) as WalletAccountTransaction[];
 };
 
 export const selectEthereumAccountsTokensWithFiatRates = memoizeWithArgs(

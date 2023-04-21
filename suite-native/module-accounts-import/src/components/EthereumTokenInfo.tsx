@@ -1,12 +1,15 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
-import { EthereumTokenIcon, EthereumTokenIconName } from '@trezor/icons';
+import { EthereumTokenIcon } from '@trezor/icons';
 import {
     EthereumTokenAmountFormatter,
     EthereumTokenToFiatAmountFormatter,
 } from '@suite-native/formatters';
-import { selectEthereumTokenHasFiatRates } from '@suite-native/ethereum-tokens';
+import {
+    getEthereumTokenIconName,
+    selectEthereumTokenHasFiatRates,
+} from '@suite-native/ethereum-tokens';
 import { FiatRatesRootState } from '@suite-native/fiat-rates';
 import { TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
 import { SettingsSliceRootState } from '@suite-native/module-settings';
@@ -48,7 +51,7 @@ export const EthereumTokenInfo = ({
                     variant="label"
                 />
             }
-            icon={<EthereumTokenIcon name={symbol.toLowerCase() as EthereumTokenIconName} />}
+            icon={<EthereumTokenIcon name={getEthereumTokenIconName(symbol)} />}
         >
             <EthereumTokenToFiatAmountFormatter
                 value={balance}

@@ -2,11 +2,7 @@ import React, { useState } from 'react';
 import { TouchableOpacity } from 'react-native';
 
 import { BottomSheet, Box, Card, Text } from '@suite-native/atoms';
-import {
-    EthereumTokenTransfer,
-    getTransactionTokensCount,
-    WalletAccountTransaction,
-} from '@suite-native/ethereum-tokens';
+import { EthereumTokenTransfer, WalletAccountTransaction } from '@suite-native/ethereum-tokens';
 import { AccountKey } from '@suite-common/wallet-types';
 import { useNativeStyles } from '@trezor/styles';
 import { Icon } from '@trezor/icons';
@@ -56,11 +52,15 @@ export const TransactionDetailIncludedCoins = ({
 }: TransactionDetailIncludedCoinsProps) => {
     const [sheetIsVisible, setSheetIsVisible] = useState(false);
 
-    const coinsIncludedCount = getTransactionTokensCount(transaction);
+    const isTokenTransactionDetail = !!tokenTransfer;
+
+    const transactionTokensCount = transaction.tokens.length;
+    const coinsIncludedCount = isTokenTransactionDetail
+        ? transactionTokensCount - 1
+        : transactionTokensCount;
+
     const sheetTitle = `${coinsIncludedCount} coin${coinsIncludedCount > 1 ? 's' : ''} included`;
     const sheetSubtitle = `Transaction #${transaction.txid}`;
-
-    const isTokenTransactionDetail = !!tokenTransfer;
 
     const includedTokens = isTokenTransactionDetail
         ? transaction.tokens.filter(
@@ -75,7 +75,9 @@ export const TransactionDetailIncludedCoins = ({
 
     return (
         <>
-            <IncludedCoinsSheetTrigger title={sheetTitle} onPress={toggleSheet} />
+            {coinsIncludedCount > 0 && (
+                <IncludedCoinsSheetTrigger title={sheetTitle} onPress={toggleSheet} />
+            )}
 
             <BottomSheet
                 isVisible={sheetIsVisible}
