@@ -1,6 +1,6 @@
 import * as BN from 'bn.js';
 import * as utils from '../utils';
-import type { CoinSelectAlgorithm, CoinSelectInput } from '../index';
+import type { CoinSelectAlgorithm, CoinSelectInput } from '../../types';
 
 const MAX_TRIES = 1000000;
 

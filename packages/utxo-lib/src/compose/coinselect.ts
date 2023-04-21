@@ -3,33 +3,20 @@ import { split as bitcoinJsSplit } from '../coinselect/outputs/split';
 import { coinselect as bitcoinJsCoinselect } from '../coinselect';
 import { transactionBytes } from '../coinselect/utils';
 import * as utils from './utils';
-import type { ComposeRequest } from './request';
-import type { CoinSelectInput, CoinSelectOutputFinal, CoinSelectOptions } from '../coinselect';
+import type {
+    ComposeInput,
+    ComposeOutput,
+    CoinSelectPaymentType,
+    CoinSelectOptions,
+    CoinSelectSuccess,
+    CoinSelectFailure,
+} from '../types';
 import type { Network } from '../networks';
 
-export type CompleteResult = {
-    type: 'true';
-    result: {
-        inputs: CoinSelectInput[];
-        outputs: CoinSelectOutputFinal[];
-        max?: string;
-        totalSpent: string;
-        fee: number;
-        feePerByte: number;
-        bytes: number;
-    };
-};
-
-type Result =
-    | CompleteResult
-    | {
-          type: 'false';
-      };
-
 export function coinselect(
-    txType: NonNullable<ComposeRequest['txType']>,
-    utxos: ComposeRequest['utxos'],
-    rOutputs: ComposeRequest['outputs'],
+    txType: CoinSelectPaymentType,
+    utxos: ComposeInput[],
+    rOutputs: ComposeOutput[],
     height: number,
     feeRate: number,
     countMax: boolean,
@@ -40,7 +27,7 @@ export function coinselect(
     floorBaseFee?: boolean,
     dustOutputFee?: number,
     skipPermutation?: boolean,
-): Result {
+): CoinSelectSuccess | CoinSelectFailure {
     const inputs0 = utils.convertInputs(utxos, height, txType);
     const outputs0 = utils.convertOutputs(rOutputs, network, txType);
     const options: CoinSelectOptions = {
@@ -57,7 +44,7 @@ export function coinselect(
     const result = algorithm(inputs0, outputs0, feeRate, options);
     if (!result.inputs || !result.outputs) {
         return {
-            type: 'false',
+            success: false,
         };
     }
 
@@ -75,8 +62,8 @@ export function coinselect(
     const feePerByte = fee / bytes;
 
     return {
-        type: 'true',
-        result: {
+        success: true,
+        payload: {
             inputs,
             outputs,
             fee,

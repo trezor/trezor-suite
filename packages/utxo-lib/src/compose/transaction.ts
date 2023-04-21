@@ -3,42 +3,16 @@ import * as BitcoinJsAddress from '../address';
 import { p2data } from '../payments/embed';
 import { Permutation } from './permutation';
 import { reverseBuffer } from '../bufferutils';
-import type { ComposeInput, ComposeFinalOutput } from './request';
-import type { CoinSelectInput, CoinSelectOutputFinal } from '../coinselect';
+import type {
+    ComposeInput,
+    ComposeFinalOutput,
+    ComposedTxInput,
+    ComposedTxOutput,
+    ComposedTransaction,
+    CoinSelectInput,
+    CoinSelectOutputFinal,
+} from '../types';
 import type { Network } from '../networks';
-
-// types for building the transaction in trezor.js
-export type ComposedTxOutput =
-    | {
-          path: number[];
-          value: string;
-          address?: typeof undefined;
-          opReturnData?: typeof undefined;
-      }
-    | {
-          address: string;
-          value: string;
-          path?: typeof undefined;
-          opReturnData?: typeof undefined;
-      }
-    | {
-          opReturnData: Buffer;
-          path?: typeof undefined;
-          address?: typeof undefined;
-          value?: typeof undefined;
-      };
-
-export type ComposedTxInput = {
-    hash: Buffer;
-    index: number;
-    path: number[];
-    amount: string;
-};
-
-export type ComposedTransaction = {
-    inputs: ComposedTxInput[];
-    outputs: Permutation<ComposedTxOutput>; // not in trezor.js, but needed for metadata saving
-};
 
 function convertInput(utxo: ComposeInput, basePath: number[]): ComposedTxInput {
     return {

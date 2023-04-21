@@ -5,7 +5,7 @@ import type {
     CoinSelectInput,
     CoinSelectOutput,
     CoinSelectResult,
-} from '../index';
+} from '../../types';
 
 // add inputs until we reach or surpass the target value (or deplete)
 // worst-case: O(n)

@@ -26,8 +26,15 @@ export {
 };
 
 export type { PaymentType } from './derivation';
+export type {
+    ComposeInput,
+    ComposeOutput,
+    ComposeRequest,
+    ComposeResult,
+    ComposeResultFinal,
+    ComposedTxOutput,
+    ComposedTransaction,
+    CoinSelectPaymentType,
+} from './types';
 export type { Network } from './networks';
 export type { BIP32Interface } from './bip32';
-export type { ComposeInput, ComposeOutput, ComposeRequest } from './compose/request';
-export type { ComposeResult } from './compose/result';
-export type { ComposedTxInput, ComposedTxOutput, ComposedTransaction } from './compose/transaction';
