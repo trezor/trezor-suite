@@ -508,8 +508,6 @@ PODS:
     - React-Core
   - Sentry/HybridSDK (7.31.2)
   - SocketRocket (0.6.0)
-  - trezor-transport-native (1.0.0):
-    - React-Core
   - Yoga (1.14.0)
   - YogaKit (1.18.1):
     - Yoga (~> 1.14)
@@ -601,7 +599,6 @@ DEPENDENCIES:
   - RNScreens (from `../../../node_modules/react-native-screens`)
   - "RNSentry (from `../../../node_modules/@sentry/react-native`)"
   - RNSVG (from `../../../node_modules/react-native-svg`)
-  - "trezor-transport-native (from `../../../node_modules/@trezor/transport-native`)"
   - Yoga (from `../../../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
@@ -739,8 +736,6 @@ EXTERNAL SOURCES:
     :path: "../../../node_modules/@sentry/react-native"
   RNSVG:
     :path: "../../../node_modules/react-native-svg"
-  trezor-transport-native:
-    :path: "../../../node_modules/@trezor/transport-native"
   Yoga:
     :path: "../../../node_modules/react-native/ReactCommon/yoga"
 
@@ -818,7 +813,6 @@ SPEC CHECKSUMS:
   RNSVG: c1e76b81c76cdcd34b4e1188852892dc280eb902
   Sentry: b15765d11769852fe78c9add942f7df60ed5dbf5
   SocketRocket: fccef3f9c5cedea1353a9ef6ada904fde10d6608
-  trezor-transport-native: 04d29d47d79fa07e4b02a70b87eeabd0f6199b0b
   Yoga: d56980c8914db0b51692f55533409e844b66133c
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
   ZXingObjC: fdbb269f25dd2032da343e06f10224d62f537bdb

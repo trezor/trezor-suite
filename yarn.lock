@@ -8208,7 +8208,6 @@ __metadata:
     "@trezor/styles": "workspace:*"
     "@trezor/suite-data": "workspace:*"
     "@trezor/theme": "workspace:*"
-    "@trezor/transport-native": "workspace:*"
     babel-jest: ^26.6.3
     babel-plugin-transform-remove-console: ^6.9.4
     basil-ws-flipper: ^0.2.8
@@ -8430,7 +8429,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/transport-native@workspace:*, @trezor/transport-native@workspace:packages/transport-native":
+"@trezor/transport-native@workspace:packages/transport-native":
   version: 0.0.0-use.local
   resolution: "@trezor/transport-native@workspace:packages/transport-native"
   dependencies:
