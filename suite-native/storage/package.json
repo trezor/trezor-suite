@@ -17,7 +17,7 @@
         "expo-splash-screen": "0.18.1",
         "jotai": "1.9.1",
         "react": "18.2.0",
-        "react-native": "0.71.5",
+        "react-native": "0.71.7",
         "react-native-mmkv": "^2.7.0",
         "redux-persist": "6.0.0"
     },

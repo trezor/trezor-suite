@@ -11,7 +11,7 @@
     },
     "dependencies": {
         "expo-localization": "^14.1.1",
-        "react-native": "0.71.5",
+        "react-native": "0.71.7",
         "ua-parser-js": "^1.0.34"
     }
 }
