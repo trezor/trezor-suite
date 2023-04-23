@@ -12,7 +12,7 @@
     },
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
-        "@shopify/react-native-skia": "0.1.173",
+        "@shopify/react-native-skia": "0.1.185",
         "@suite-common/formatters": "workspace:*",
         "@suite-common/graph": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
@@ -27,8 +27,8 @@
         "date-fns": "^2.29.3",
         "jotai": "1.9.1",
         "react": "18.2.0",
-        "react-native": "0.71.5",
-        "react-native-reanimated": "3.0.2",
+        "react-native": "0.71.7",
+        "react-native-reanimated": "3.1.0",
         "react-redux": "8.0.5"
     },
     "devDependencies": {
