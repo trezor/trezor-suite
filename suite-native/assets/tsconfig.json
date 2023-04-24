@@ -14,6 +14,7 @@
         {
             "path": "../../suite-common/wallet-utils"
         },
+        { "path": "../accounts" },
         { "path": "../atoms" },
         { "path": "../fiat-rates" },
         { "path": "../formatters" },

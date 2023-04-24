@@ -1,12 +1,7 @@
 import React, { memo, useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import {
-    AccountsStackParamList,
-    AccountsStackRoutes,
-    Screen,
-    StackProps,
-} from '@suite-native/navigation';
+import { RootStackParamList, RootStackRoutes, Screen, StackProps } from '@suite-native/navigation';
 import {
     AccountsRootState,
     fetchTransactionsThunk,
@@ -28,7 +23,7 @@ import { AccountDetailScreenHeader } from '../components/AccountDetailScreenHead
 import { TokenAccountDetailScreenHeader } from '../components/TokenAccountDetailScreenHeader';
 
 export const AccountDetailScreen = memo(
-    ({ route }: StackProps<AccountsStackParamList, AccountsStackRoutes.AccountDetail>) => {
+    ({ route }: StackProps<RootStackParamList, RootStackRoutes.AccountDetail>) => {
         const [areTokensIncluded, setAreTokensIncluded] = useState(false);
         const dispatch = useDispatch();
         const { accountKey, tokenSymbol } = route.params;

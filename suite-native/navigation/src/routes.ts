@@ -3,6 +3,7 @@ export enum RootStackRoutes {
     Onboarding = 'Onboarding',
     AccountsImport = 'AccountsImport',
     DevUtilsStack = 'DevUtilsStack',
+    AccountDetail = 'AccountDetail',
     AccountSettings = 'AccountSettings',
     TransactionDetail = 'TransactionDetail',
 }
@@ -41,7 +42,6 @@ export enum HomeStackRoutes {
 
 export enum AccountsStackRoutes {
     Accounts = 'Accounts',
-    AccountDetail = 'AccountDetail',
 }
 
 export enum SendReceiveStackRoutes {
@@ -57,13 +57,3 @@ export enum SettingsStackRoutes {
     SettingsAbout = 'SettingsAbout',
     SettingsFAQ = 'SettingsFAQ',
 }
-
-export type AppRoutes =
-    | RootStackRoutes
-    | AppTabsRoutes
-    | AccountsImportStackRoutes
-    | DevUtilsStackRoutes
-    | HomeStackRoutes
-    | AccountsStackRoutes
-    | SendReceiveStackRoutes
-    | SettingsStackRoutes;

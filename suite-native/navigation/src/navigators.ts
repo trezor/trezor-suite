@@ -36,10 +36,6 @@ export type SettingsStackParamList = {
 
 export type AccountsStackParamList = {
     [AccountsStackRoutes.Accounts]: undefined;
-    [AccountsStackRoutes.AccountDetail]: {
-        accountKey: AccountKey;
-        tokenSymbol?: TokenSymbol;
-    };
 };
 
 export type SendReceiveStackParamList = {
@@ -86,6 +82,10 @@ export type RootStackParamList = {
     [RootStackRoutes.Onboarding]: NavigatorScreenParams<AppTabsParamList>;
     [RootStackRoutes.AccountsImport]: NavigatorScreenParams<AccountsImportStackParamList>;
     [RootStackRoutes.AccountSettings]: { accountKey: AccountKey };
+    [RootStackRoutes.AccountDetail]: {
+        accountKey: AccountKey;
+        tokenSymbol?: TokenSymbol;
+    };
     [RootStackRoutes.TransactionDetail]: {
         txid: string;
         accountKey: AccountKey;

@@ -9,7 +9,6 @@ import {
 } from '@suite-native/navigation';
 
 import { AccountsScreen } from '../screens/AccountsScreen';
-import { AccountDetailScreen } from '../screens/AccountDetailScreen';
 
 const AccountsStack = createNativeStackNavigator<AccountsStackParamList>();
 
@@ -22,11 +21,6 @@ export const AccountsStackNavigator = () => (
             options={{ title: AccountsStackRoutes.Accounts }}
             name={AccountsStackRoutes.Accounts}
             component={AccountsScreen}
-        />
-        <AccountsStack.Screen
-            options={{ title: AccountsStackRoutes.AccountDetail }}
-            name={AccountsStackRoutes.AccountDetail}
-            component={AccountDetailScreen}
         />
     </AccountsStack.Navigator>
 );

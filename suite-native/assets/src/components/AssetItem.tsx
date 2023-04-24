@@ -7,7 +7,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { Box, Text } from '@suite-native/atoms';
 import { AccountsRootState, selectAccountsAmountPerSymbol } from '@suite-common/wallet-core';
-import { CryptoAmountFormatter, FiatAmountFormatter } from '@suite-native/formatters/src/index';
+import { CryptoAmountFormatter, FiatAmountFormatter } from '@suite-native/formatters';
 
 type AssetItemProps = {
     cryptoCurrencySymbol: NetworkSymbol;

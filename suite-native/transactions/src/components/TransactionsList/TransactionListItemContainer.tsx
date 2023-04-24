@@ -8,7 +8,6 @@ import { useNavigation } from '@react-navigation/native';
 import { AccountKey, TransactionType } from '@suite-common/wallet-types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import {
-    AccountsStackRoutes,
     RootStackParamList,
     RootStackRoutes,
     StackNavigationProps,
@@ -111,7 +110,7 @@ export const TransactionListItemContainer = memo(
         const { applyStyle } = useNativeStyles();
         const navigation =
             useNavigation<
-                StackNavigationProps<RootStackParamList, AccountsStackRoutes.AccountDetail>
+                StackNavigationProps<RootStackParamList, RootStackRoutes.AccountDetail>
             >();
 
         const handleNavigateToTransactionDetail = () => {

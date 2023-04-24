@@ -6744,6 +6744,7 @@ __metadata:
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
+    "@suite-native/accounts": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/fiat-rates": "workspace:*"
     "@suite-native/formatters": "workspace:*"
