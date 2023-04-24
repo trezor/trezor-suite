@@ -24,7 +24,7 @@ const truncateDecimals = (value: string, maxDecimals: number, isEllipsisAppended
 
     if (fractionalPart && fractionalPart.length > maxDecimals) {
         return `${integerPart}.${fractionalPart.slice(0, maxDecimals)}${
-            isEllipsisAppended ? '...' : ''
+            isEllipsisAppended ? '…' : ''
         }`;
     }
 
