@@ -1,3 +1,5 @@
+import { UTXO } from './compose';
+
 export default [
     {
         description: '1 input, 1 output, no change',
@@ -7,18 +9,7 @@ export default [
             changeId: 0,
             dustThreshold: 546,
             feeRate: '10',
-            utxos: [
-                {
-                    addressPath: [3, 4],
-                    coinbase: false,
-                    confirmations: 6,
-                    vout: 0,
-                    own: true,
-                    txid: 'b4dc0ffeee',
-
-                    amount: '102300',
-                },
-            ],
+            utxos: [{ ...UTXO, amount: '102300' }],
             outputs: [
                 {
                     address: 'replace-me',
@@ -58,17 +49,7 @@ export default [
             changeId: 0,
             dustThreshold: 546,
             feeRate: '10',
-            utxos: [
-                {
-                    addressPath: [3, 4],
-                    coinbase: false,
-                    confirmations: 6,
-                    vout: 0,
-                    own: true,
-                    txid: 'b4dc0ffeee',
-                    amount: '202300',
-                },
-            ],
+            utxos: [{ ...UTXO, amount: '202300' }],
             outputs: [
                 {
                     address: 'replace-me',
@@ -110,20 +91,13 @@ export default [
             feeRate: '10',
             utxos: [
                 {
-                    addressPath: [3, 4],
-                    coinbase: false,
-                    confirmations: 6,
-                    vout: 0,
-                    own: true,
+                    ...UTXO,
                     txid: 'b4dc0ffeee',
                     amount: '100000',
                 },
                 {
-                    addressPath: [4, 5],
-                    coinbase: false,
-                    confirmations: 6,
+                    ...UTXO,
                     vout: 1,
-                    own: true,
                     txid: 'b4dc0ffeee',
                     amount: '50000',
                 },
@@ -169,65 +143,44 @@ export default [
             feeRate: '10',
             utxos: [
                 {
-                    addressPath: [3, 4],
-                    coinbase: false,
-                    confirmations: 6,
+                    ...UTXO,
                     vout: 0,
-                    own: true,
                     txid: 'b4dc0ffeee',
                     amount: '120000',
                 },
                 {
-                    addressPath: [4, 5],
-                    coinbase: false,
-                    confirmations: 6,
+                    ...UTXO,
                     vout: 1,
-                    own: true,
                     txid: 'b4dc0ffeee',
                     amount: '10000',
                 },
                 {
-                    addressPath: [4, 5],
-                    coinbase: false,
-                    confirmations: 6,
+                    ...UTXO,
                     vout: 2,
-                    own: true,
                     txid: 'b4dc0ffeee',
                     amount: '10000',
                 },
                 {
-                    addressPath: [4, 5],
-                    coinbase: false,
-                    confirmations: 6,
+                    ...UTXO,
                     vout: 3,
-                    own: true,
                     txid: 'b4dc0ffeee',
                     amount: '10000',
                 },
                 {
-                    addressPath: [4, 5],
-                    coinbase: false,
-                    confirmations: 6,
+                    ...UTXO,
                     vout: 4,
-                    own: true,
                     txid: 'b4dc0ffeee',
                     amount: '10000',
                 },
                 {
-                    addressPath: [4, 5],
-                    coinbase: false,
-                    confirmations: 6,
+                    ...UTXO,
                     vout: 5,
-                    own: true,
                     txid: 'b4dc0ffeee',
                     amount: '10000',
                 },
                 {
-                    addressPath: [4, 5],
-                    coinbase: false,
-                    confirmations: 6,
+                    ...UTXO,
                     vout: 6,
-                    own: true,
                     txid: 'b4dc0ffeee',
                     amount: '10000',
                 },
