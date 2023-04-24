@@ -44,9 +44,16 @@ export const prepareRootReducers = async () => {
         version: 1,
     });
 
+    const analyticsPersistedReducer = await preparePersistReducer({
+        reducer: analyticsReducer,
+        persistedKeys: ['instanceId', 'enabled', 'confirmed'],
+        key: 'analytics',
+        version: 1,
+    });
+
     return combineReducers({
         app: appReducer,
-        analytics: analyticsReducer,
+        analytics: analyticsPersistedReducer,
         appSettings: appSettingsPersistedReducer,
         wallet: walletPersistedReducer,
         devices: devicesReducer,
