@@ -6969,6 +6969,7 @@ __metadata:
     "@trezor/utxo-lib": "workspace:*"
     "@trezor/validation": "workspace:*"
     jest: ^26.6.3
+    lottie-react-native: ^5.1.5
     react: 18.2.0
     react-native: 0.71.7
     react-native-reanimated: 3.1.0
@@ -8222,6 +8223,7 @@ __metadata:
     expo-splash-screen: 0.18.1
     expo-system-ui: 2.2.1
     jest: ^26.6.3
+    lottie-react-native: ^5.1.5
     metro-react-native-babel-preset: 0.73.9
     node-libs-browser: ^2.2.1
     react: 18.2.0
@@ -14867,6 +14869,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"dedent@npm:^0.6.0":
+  version: 0.6.0
+  resolution: "dedent@npm:0.6.0"
+  checksum: fe2c0f5adb0b24407988e4adcd22befa0a27259091d4c40574c72da29fa6a6989e15a522ffc0f934ba6bb511b6498b315e7cdcf4a33a310cfaf1a8555a106484
+  languageName: node
+  linkType: hard
+
 "dedent@npm:^0.7.0":
   version: 0.7.0
   resolution: "dedent@npm:0.7.0"
@@ -20172,7 +20181,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"invariant@npm:*, invariant@npm:^2.2.4":
+"invariant@npm:*, invariant@npm:^2.2.2, invariant@npm:^2.2.4":
   version: 2.2.4
   resolution: "invariant@npm:2.2.4"
   dependencies:
@@ -23408,6 +23417,24 @@ __metadata:
   bin:
     loose-envify: cli.js
   checksum: 6517e24e0cad87ec9888f500c5b5947032cdfe6ef65e1c1936a0c48a524b81e65542c9c3edc91c97d5bddc806ee2a985dbc79be89215d613b1de5db6d1cfe6f4
+  languageName: node
+  linkType: hard
+
+"lottie-react-native@npm:^5.1.5":
+  version: 5.1.5
+  resolution: "lottie-react-native@npm:5.1.5"
+  dependencies:
+    invariant: ^2.2.2
+    react-native-safe-modules: ^1.0.3
+  peerDependencies:
+    lottie-ios: ^3.4.0
+    react: "*"
+    react-native: ">=0.46"
+    react-native-windows: ">=0.63.x"
+  peerDependenciesMeta:
+    react-native-windows:
+      optional: true
+  checksum: e8f437fcba54d3983e4fae9faa45fc130a68cffd2943624abaeb19ff2ae7ddf462315d7d323471d3db645c59f84dbf1a1620566a6b6365eb4e5313524c0d34c5
   languageName: node
   linkType: hard
 
@@ -28223,6 +28250,17 @@ __metadata:
     react: "*"
     react-native: "*"
   checksum: 958df1d20492aa89c23d746f88409a3a3bd1b0d397c80310a4b0bbec9888cbbeb7579c9c92dad46841e2e6536491806206228ba009b7c8af970670aef8273a30
+  languageName: node
+  linkType: hard
+
+"react-native-safe-modules@npm:^1.0.3":
+  version: 1.0.3
+  resolution: "react-native-safe-modules@npm:1.0.3"
+  dependencies:
+    dedent: ^0.6.0
+  peerDependencies:
+    react-native: "*"
+  checksum: df30e1935dfb32ece9be57cd21ccbbecd058a68942536ff6c543f591e5488cc22f17093131eaabf490b6e187caa78e802a4b2e55c890af1c48a3f012dd57c9f2
   languageName: node
   linkType: hard
 
