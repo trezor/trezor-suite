@@ -28,7 +28,12 @@ export const CryptoAmountFormatter = ({
 
     if (!value) return <EmptyAmountText />;
 
-    const formattedValue = formatter.format(value, { isBalance, symbol: network });
+    const formattedValue = formatter.format(value, {
+        isBalance,
+        symbol: network,
+        maxDisplayedDecimals: undefined,
+        isEllipsisAppended: false,
+    });
 
     return (
         <AmountText

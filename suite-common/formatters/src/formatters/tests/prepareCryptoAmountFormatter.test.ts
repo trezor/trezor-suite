@@ -55,13 +55,14 @@ describe('CryptoAmountFormatter', () => {
             ).toBe('0.02063870… ETH');
         });
 
-        it('ETH balance with symbol + truncate decimals', () => {
+        it('ETH balance with symbol + truncate decimals + hide ellipsis', () => {
             expect(
                 CryptoAmountFormatter.format('0.020638700284758254', {
                     symbol: 'eth',
                     isBalance: true,
+                    isEllipsisAppended: false,
                 }),
-            ).toBe('0.02063870… ETH');
+            ).toBe('0.02063870 ETH');
         });
 
         it('ETH balance with units', () => {
