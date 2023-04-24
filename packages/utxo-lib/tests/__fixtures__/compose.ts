@@ -1,5 +1,7 @@
+import { ComposeRequest, ComposeInput, ComposeOutput, ComposeResult } from '../../src';
+
 export const UTXO = {
-    path: [44, 1, 0, 0, 0],
+    path: [44, 1, 0, 0, 0], // this field is not required by the CoinselectInput interface
     coinbase: false,
     own: true,
     confirmations: 6,
@@ -8,22 +10,34 @@ export const UTXO = {
     amount: '102001',
 };
 
-export default [
+export const PAYMENT = {
+    type: 'payment' as const,
+    address: '1BitcoinEaterAddressDontSendf59kuE',
+    amount: '100000',
+};
+
+export const CHANGE = {
+    type: 'change' as const, // this field is not required by the ComposeChangeAddress interface
+    path: "m/44'/0'/0'/1/0", // this field is not required by ComposeChangeAddress interface
+    address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT',
+};
+
+interface Fixture {
+    description: string;
+    request: Omit<ComposeRequest<ComposeInput, ComposeOutput, { address: string }>, 'network'> & {
+        network?: string;
+    };
+    result: ComposeResult<ComposeInput, ComposeOutput, { address: string }>;
+}
+
+export const composeTx: Fixture[] = [
     {
         description: 'builds a simple tx without change',
         request: {
-            basePath: [44, 1],
-            changeAddress: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT',
-            changeId: 0,
+            changeAddress: CHANGE,
             dustThreshold: 546,
             feeRate: '10',
-            outputs: [
-                {
-                    address: '1BitcoinEaterAddressDontSendf59kuE',
-                    amount: '100000',
-                    type: 'complete',
-                },
-            ],
+            outputs: [PAYMENT],
             utxos: [UTXO],
         },
         result: {
@@ -33,14 +47,9 @@ export default [
             max: undefined,
             totalSpent: '102001',
             transaction: {
-                PERM_outputs: {
+                outputs: {
                     permutation: [0],
-                    sorted: [
-                        {
-                            address: '1BitcoinEaterAddressDontSendf59kuE',
-                            amount: '100000',
-                        },
-                    ],
+                    sorted: [PAYMENT],
                 },
                 inputs: [UTXO],
             },
@@ -50,18 +59,10 @@ export default [
     {
         description: 'builds a simple tx without change and decimal fee',
         request: {
-            basePath: [44, 1],
-            changeAddress: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT',
-            changeId: 0,
+            changeAddress: CHANGE,
             dustThreshold: 546,
             feeRate: '10.33',
-            outputs: [
-                {
-                    address: '1BitcoinEaterAddressDontSendf59kuE',
-                    amount: '100000',
-                    type: 'complete',
-                },
-            ],
+            outputs: [PAYMENT],
             utxos: [UTXO],
         },
         result: {
@@ -71,14 +72,9 @@ export default [
             max: undefined,
             totalSpent: '102001',
             transaction: {
-                PERM_outputs: {
+                outputs: {
                     permutation: [0],
-                    sorted: [
-                        {
-                            address: '1BitcoinEaterAddressDontSendf59kuE',
-                            amount: '100000',
-                        },
-                    ],
+                    sorted: [PAYMENT],
                 },
                 inputs: [UTXO],
             },
@@ -88,9 +84,7 @@ export default [
     {
         description: 'builds an incomplete tx without change',
         request: {
-            basePath: [44, 1],
-            changeAddress: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT',
-            changeId: 0,
+            changeAddress: CHANGE,
             dustThreshold: 546,
             feeRate: '10',
             outputs: [
@@ -113,9 +107,7 @@ export default [
     {
         description: 'fails on little funds',
         request: {
-            basePath: [44, 1],
-            changeAddress: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT',
-            changeId: 0,
+            changeAddress: CHANGE,
             dustThreshold: 546,
             feeRate: '10',
             outputs: [
@@ -139,14 +131,12 @@ export default [
     {
         description: 'builds a send-max with large input',
         request: {
-            basePath: [44, 1],
-            changeAddress: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT',
-            changeId: 0,
+            changeAddress: CHANGE,
             dustThreshold: 546,
             feeRate: '10',
             outputs: [
                 {
-                    address: '1BitcoinEaterAddressDontSendf59kuE',
+                    address: PAYMENT.address,
                     type: 'send-max',
                 },
             ],
@@ -164,11 +154,12 @@ export default [
             max: '49999998080',
             totalSpent: '50000000000',
             transaction: {
-                PERM_outputs: {
+                outputs: {
                     permutation: [0],
                     sorted: [
                         {
-                            address: '1BitcoinEaterAddressDontSendf59kuE',
+                            type: 'payment',
+                            address: PAYMENT.address,
                             amount: '49999998080',
                         },
                     ],
@@ -186,14 +177,12 @@ export default [
     {
         description: 'builds a send-max',
         request: {
-            basePath: [44, 1],
-            changeAddress: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT',
-            changeId: 0,
+            changeAddress: CHANGE,
             dustThreshold: 546,
             feeRate: '10',
             outputs: [
                 {
-                    address: '1BitcoinEaterAddressDontSendf59kuE',
+                    address: PAYMENT.address,
                     type: 'send-max',
                 },
             ],
@@ -206,11 +195,12 @@ export default [
             max: '100081',
             totalSpent: '102001',
             transaction: {
-                PERM_outputs: {
+                outputs: {
                     permutation: [0],
                     sorted: [
                         {
-                            address: '1BitcoinEaterAddressDontSendf59kuE',
+                            type: 'payment',
+                            address: PAYMENT.address,
                             amount: '100081',
                         },
                     ],
@@ -223,13 +213,12 @@ export default [
     {
         description: 'fails on weird output type',
         request: {
-            basePath: [44, 1],
-            changeAddress: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT',
-            changeId: 0,
+            changeAddress: CHANGE,
             dustThreshold: 546,
             feeRate: '10',
             outputs: [
                 {
+                    // @ts-expect-error
                     type: 'weird-output-type',
                 },
             ],
@@ -243,9 +232,7 @@ export default [
     {
         description: 'fails on empty outputs + utxos input',
         request: {
-            basePath: [44, 1],
-            changeAddress: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT',
-            changeId: 0,
+            changeAddress: CHANGE,
             dustThreshold: 546,
             feeRate: '10',
             outputs: [],
@@ -259,9 +246,7 @@ export default [
     {
         description: 'fails on empty outputs input',
         request: {
-            basePath: [44, 1],
-            changeAddress: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT',
-            changeId: 0,
+            changeAddress: CHANGE,
             dustThreshold: 546,
             feeRate: '10',
             outputs: [],
@@ -275,14 +260,12 @@ export default [
     {
         description: 'fails on empty utxos input',
         request: {
-            basePath: [44, 1],
-            changeAddress: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT',
-            changeId: 0,
+            changeAddress: CHANGE,
             dustThreshold: 546,
             feeRate: '10',
             outputs: [
                 {
-                    address: '1BitcoinEaterAddressDontSendf59kuE',
+                    address: PAYMENT.address,
                     type: 'send-max',
                 },
             ],
@@ -296,18 +279,10 @@ export default [
     {
         description: 'fails on bad feeRate - zero',
         request: {
-            basePath: [44, 1],
-            changeAddress: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT',
-            changeId: 0,
+            changeAddress: CHANGE,
             dustThreshold: 546,
             feeRate: 0,
-            outputs: [
-                {
-                    address: '1BitcoinEaterAddressDontSendf59kuE',
-                    amount: '100000',
-                    type: 'complete',
-                },
-            ],
+            outputs: [PAYMENT],
             utxos: [UTXO],
         },
         result: {
@@ -318,18 +293,10 @@ export default [
     {
         description: 'fails on bad feeRate - NaN',
         request: {
-            basePath: [44, 1],
-            changeAddress: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT',
-            changeId: 0,
+            changeAddress: CHANGE,
             dustThreshold: 546,
             feeRate: NaN,
-            outputs: [
-                {
-                    address: '1BitcoinEaterAddressDontSendf59kuE',
-                    amount: '100000',
-                    type: 'complete',
-                },
-            ],
+            outputs: [PAYMENT],
             utxos: [UTXO],
         },
         result: {
@@ -340,21 +307,19 @@ export default [
     {
         description: 'builds a simple tx with two outputs and change',
         request: {
-            basePath: [44, 1],
-            changeAddress: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT',
-            changeId: 0,
+            changeAddress: CHANGE,
             dustThreshold: 546,
             feeRate: '10',
             outputs: [
                 {
-                    address: '1BitcoinEaterAddressDontSendf59kuE',
+                    address: PAYMENT.address,
                     amount: '30000',
-                    type: 'complete',
+                    type: 'payment',
                 },
                 {
                     address: '1LetUsDestroyBitcoinTogether398Nrg',
                     amount: '20000',
-                    type: 'complete',
+                    type: 'payment',
                 },
             ],
             utxos: [UTXO],
@@ -366,19 +331,21 @@ export default [
             max: undefined,
             totalSpent: '52600',
             transaction: {
-                PERM_outputs: {
+                outputs: {
                     permutation: [1, 0, 2],
                     sorted: [
                         {
+                            type: 'payment',
                             address: '1LetUsDestroyBitcoinTogether398Nrg',
                             amount: '20000',
                         },
                         {
-                            address: '1BitcoinEaterAddressDontSendf59kuE',
+                            type: 'payment',
+                            address: PAYMENT.address,
                             amount: '30000',
                         },
                         {
-                            path: [44, 1, 1, 0],
+                            ...CHANGE,
                             amount: '49401',
                         },
                     ],
@@ -391,21 +358,19 @@ export default [
     {
         description: 'builds a simple tx with two outputs and change (decimal feeRate)',
         request: {
-            basePath: [44, 1],
-            changeAddress: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT',
-            changeId: 0,
+            changeAddress: CHANGE,
             dustThreshold: 546,
             feeRate: '10.71',
             outputs: [
                 {
-                    address: '1BitcoinEaterAddressDontSendf59kuE',
+                    address: PAYMENT.address,
                     amount: '30000',
-                    type: 'complete',
+                    type: 'payment',
                 },
                 {
                     address: '1LetUsDestroyBitcoinTogether398Nrg',
                     amount: '20000',
-                    type: 'complete',
+                    type: 'payment',
                 },
             ],
             utxos: [UTXO],
@@ -417,19 +382,21 @@ export default [
             max: undefined,
             totalSpent: '52785',
             transaction: {
-                PERM_outputs: {
+                outputs: {
                     permutation: [1, 0, 2],
                     sorted: [
                         {
+                            type: 'payment',
                             address: '1LetUsDestroyBitcoinTogether398Nrg',
                             amount: '20000',
                         },
                         {
-                            address: '1BitcoinEaterAddressDontSendf59kuE',
+                            type: 'payment',
+                            address: PAYMENT.address,
                             amount: '30000',
                         },
                         {
-                            path: [44, 1, 1, 0],
+                            ...CHANGE,
                             amount: '49216',
                         },
                     ],
@@ -443,21 +410,19 @@ export default [
         description: 'builds a simple tx with two outputs and change (p2sh/segwit)',
         request: {
             txType: 'p2sh',
-            basePath: [49, 0, 0],
-            changeAddress: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT',
-            changeId: 0,
+            changeAddress: CHANGE,
             dustThreshold: 546,
             feeRate: '10',
             outputs: [
                 {
                     address: '3LRW7jeCvQCRdPF8S3yUCfRAx4eqXFmdcr',
                     amount: '30000',
-                    type: 'complete',
+                    type: 'payment',
                 },
                 {
                     address: '3FyVFsEyyBPzHjD3qUEgX7Jsn4tcHNZFkn',
                     amount: '20000',
-                    type: 'complete',
+                    type: 'payment',
                 },
             ],
             utxos: [UTXO],
@@ -469,19 +434,21 @@ export default [
             max: undefined,
             totalSpent: '51980',
             transaction: {
-                PERM_outputs: {
+                outputs: {
                     permutation: [1, 0, 2],
                     sorted: [
                         {
+                            type: 'payment',
                             address: '3FyVFsEyyBPzHjD3qUEgX7Jsn4tcHNZFkn',
                             amount: '20000',
                         },
                         {
+                            type: 'payment',
                             address: '3LRW7jeCvQCRdPF8S3yUCfRAx4eqXFmdcr',
                             amount: '30000',
                         },
                         {
-                            path: [49, 0, 0, 1, 0],
+                            ...CHANGE,
                             amount: '50021',
                         },
                     ],
@@ -494,18 +461,10 @@ export default [
     {
         description: 'prefers a more confirmed input',
         request: {
-            basePath: [44, 1],
-            changeAddress: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT',
-            changeId: 0,
+            changeAddress: CHANGE,
             dustThreshold: 546,
             feeRate: '10',
-            outputs: [
-                {
-                    address: '1BitcoinEaterAddressDontSendf59kuE',
-                    amount: '100000',
-                    type: 'complete',
-                },
-            ],
+            outputs: [PAYMENT],
             utxos: [
                 {
                     ...UTXO,
@@ -525,14 +484,9 @@ export default [
             max: undefined,
             totalSpent: '102001',
             transaction: {
-                PERM_outputs: {
+                outputs: {
                     permutation: [0],
-                    sorted: [
-                        {
-                            address: '1BitcoinEaterAddressDontSendf59kuE',
-                            amount: '100000',
-                        },
-                    ],
+                    sorted: [PAYMENT],
                 },
                 inputs: [
                     {
@@ -548,14 +502,12 @@ export default [
     {
         description: 'fails on two send maxes',
         request: {
-            basePath: [44, 1],
-            changeAddress: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT',
-            changeId: 0,
+            changeAddress: CHANGE,
             dustThreshold: 546,
             feeRate: '10',
             outputs: [
                 {
-                    address: '1BitcoinEaterAddressDontSendf59kuE',
+                    address: PAYMENT.address,
                     type: 'send-max',
                 },
                 {
@@ -573,16 +525,13 @@ export default [
     {
         description: 'two inputs',
         request: {
-            basePath: [44, 1],
-            changeAddress: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT',
-            changeId: 0,
+            changeAddress: CHANGE,
             dustThreshold: 546,
             feeRate: '10',
             outputs: [
                 {
-                    address: '1BitcoinEaterAddressDontSendf59kuE',
+                    ...PAYMENT,
                     amount: '200000',
-                    type: 'complete',
                 },
             ],
             utxos: [
@@ -603,11 +552,11 @@ export default [
             max: undefined,
             totalSpent: '204002',
             transaction: {
-                PERM_outputs: {
+                outputs: {
                     permutation: [0],
                     sorted: [
                         {
-                            address: '1BitcoinEaterAddressDontSendf59kuE',
+                            ...PAYMENT,
                             amount: '200000',
                         },
                     ],
@@ -630,21 +579,19 @@ export default [
         description: 'builds a p2sh tx with two same value outputs (mixed p2sh + p2pkh) and change',
         request: {
             txType: 'p2sh',
-            basePath: [44, 0, 1],
-            changeAddress: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT',
-            changeId: 0,
+            changeAddress: CHANGE,
             dustThreshold: 546,
             feeRate: '10',
             outputs: [
                 {
                     address: '3LRW7jeCvQCRdPF8S3yUCfRAx4eqXFmdcr',
                     amount: '30000',
-                    type: 'complete',
+                    type: 'payment',
                 },
                 {
                     address: '1LetUsDestroyBitcoinTogether398Nrg',
                     amount: '30000',
-                    type: 'complete',
+                    type: 'payment',
                 },
             ],
             utxos: [UTXO],
@@ -656,19 +603,21 @@ export default [
             max: undefined,
             totalSpent: '62000',
             transaction: {
-                PERM_outputs: {
+                outputs: {
                     permutation: [1, 0, 2],
                     sorted: [
                         {
+                            type: 'payment',
                             address: '1LetUsDestroyBitcoinTogether398Nrg',
                             amount: '30000',
                         },
                         {
+                            type: 'payment',
                             address: '3LRW7jeCvQCRdPF8S3yUCfRAx4eqXFmdcr',
                             amount: '30000',
                         },
                         {
-                            path: [44, 0, 1, 1, 0],
+                            ...CHANGE,
                             amount: '40001',
                         },
                     ],
@@ -682,16 +631,14 @@ export default [
         description: 'explicit dust threshold stops change (ps2h/segwit)',
         request: {
             txType: 'p2sh',
-            basePath: [49, 0, 1],
-            changeAddress: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT',
-            changeId: 0,
+            changeAddress: CHANGE,
             dustThreshold: 54600,
             feeRate: '10',
             outputs: [
                 {
                     address: '3LRW7jeCvQCRdPF8S3yUCfRAx4eqXFmdcr',
                     amount: '928960',
-                    type: 'complete',
+                    type: 'payment',
                 },
             ],
             utxos: [
@@ -708,10 +655,11 @@ export default [
             max: undefined,
             totalSpent: '972463',
             transaction: {
-                PERM_outputs: {
+                outputs: {
                     permutation: [0],
                     sorted: [
                         {
+                            type: 'payment',
                             address: '3LRW7jeCvQCRdPF8S3yUCfRAx4eqXFmdcr',
                             amount: '928960',
                         },
@@ -730,9 +678,7 @@ export default [
     {
         description: 'builds a tx with 1 op-return and change',
         request: {
-            basePath: [44, 1],
-            changeAddress: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT',
-            changeId: 0,
+            changeAddress: CHANGE,
             dustThreshold: 546,
             feeRate: '10',
             outputs: [
@@ -750,17 +696,15 @@ export default [
             max: undefined,
             totalSpent: '2070',
             transaction: {
-                PERM_outputs: {
+                outputs: {
                     permutation: [0, 1],
                     sorted: [
                         {
-                            opReturnData: {
-                                type: 'Buffer',
-                                data: [222, 173, 190, 239],
-                            },
+                            type: 'opreturn',
+                            dataHex: 'deadbeef',
                         },
                         {
-                            path: [44, 1, 1, 0],
+                            ...CHANGE,
                             amount: '99931',
                         },
                     ],
@@ -773,9 +717,7 @@ export default [
     {
         description: 'builds a tx with 2 op-returns and change',
         request: {
-            basePath: [44, 1],
-            changeAddress: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT',
-            changeId: 0,
+            changeAddress: CHANGE,
             dustThreshold: 546,
             feeRate: '10',
             outputs: [
@@ -797,23 +739,19 @@ export default [
             max: undefined,
             totalSpent: '2210',
             transaction: {
-                PERM_outputs: {
+                outputs: {
                     permutation: [1, 0, 2],
                     sorted: [
                         {
-                            opReturnData: {
-                                type: 'Buffer',
-                                data: [192, 255, 238],
-                            },
+                            type: 'opreturn',
+                            dataHex: 'c0ffee',
                         },
                         {
-                            opReturnData: {
-                                type: 'Buffer',
-                                data: [222, 173, 190, 239],
-                            },
+                            type: 'opreturn',
+                            dataHex: 'deadbeef',
                         },
                         {
-                            path: [44, 1, 1, 0],
+                            ...CHANGE,
                             amount: '99791',
                         },
                     ],
@@ -827,16 +765,13 @@ export default [
         description: 'builds a simple tx without change (recv bech32/p2wpkh)',
         request: {
             txType: 'p2wpkh',
-            basePath: [84, 0, 1],
-            changeAddress: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT',
-            changeId: 0,
+            changeAddress: CHANGE,
             dustThreshold: 546,
             feeRate: '10',
             outputs: [
                 {
+                    ...PAYMENT,
                     address: 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq',
-                    amount: '100000',
-                    type: 'complete',
                 },
             ],
             utxos: [UTXO],
@@ -848,12 +783,12 @@ export default [
             max: undefined,
             totalSpent: '102001',
             transaction: {
-                PERM_outputs: {
+                outputs: {
                     permutation: [0],
                     sorted: [
                         {
+                            ...PAYMENT,
                             address: 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq',
-                            amount: '100000',
                         },
                     ],
                 },
@@ -865,16 +800,13 @@ export default [
     {
         description: 'builds a simple tx without change (recv p2sh)',
         request: {
-            basePath: [44, 1],
-            changeAddress: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT',
-            changeId: 0,
+            changeAddress: CHANGE,
             dustThreshold: 546,
             feeRate: '10',
             outputs: [
                 {
+                    ...PAYMENT,
                     address: '3NukJ6fYZJ5Kk8bPjycAnruZkE5Q7UW7i8',
-                    amount: '100000',
-                    type: 'complete',
                 },
             ],
             utxos: [UTXO],
@@ -886,12 +818,12 @@ export default [
             max: undefined,
             totalSpent: '102001',
             transaction: {
-                PERM_outputs: {
+                outputs: {
                     permutation: [0],
                     sorted: [
                         {
+                            ...PAYMENT,
                             address: '3NukJ6fYZJ5Kk8bPjycAnruZkE5Q7UW7i8',
-                            amount: '100000',
                         },
                     ],
                 },
@@ -903,16 +835,13 @@ export default [
     {
         description: 'builds a simple tx without change (recv bech32/p2tr)',
         request: {
-            basePath: [44, 1],
-            changeAddress: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT',
-            changeId: 0,
+            changeAddress: CHANGE,
             dustThreshold: 546,
             feeRate: '10',
             outputs: [
                 {
+                    ...PAYMENT,
                     address: 'bc1qc7slrfxkknqcq2jevvvkdgvrt8080852dfjewde450xdlk4ugp7szw5tk9',
-                    amount: '100000',
-                    type: 'complete',
                 },
             ],
             utxos: [
@@ -929,13 +858,13 @@ export default [
             max: undefined,
             totalSpent: '103001',
             transaction: {
-                PERM_outputs: {
+                outputs: {
                     permutation: [0],
                     sorted: [
                         {
+                            ...PAYMENT,
                             address:
                                 'bc1qc7slrfxkknqcq2jevvvkdgvrt8080852dfjewde450xdlk4ugp7szw5tk9',
-                            amount: '100000',
                         },
                     ],
                 },
@@ -952,9 +881,7 @@ export default [
     {
         description: 'builds a send-max-noaddress',
         request: {
-            basePath: [44, 1],
-            changeAddress: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT',
-            changeId: 0,
+            changeAddress: CHANGE,
             dustThreshold: 546,
             feeRate: '10',
             outputs: [
@@ -976,17 +903,14 @@ export default [
     {
         description: 'builds a simple tx without change (cashaddr)',
         request: {
-            basePath: [44, 1],
-            changeAddress: 'bitcoincash:qzppkat2v7xu9fr3yeuqdnggjqqltrs7pcg8swvhl0',
+            changeAddress: { address: 'bitcoincash:qzppkat2v7xu9fr3yeuqdnggjqqltrs7pcg8swvhl0' },
             network: 'bitcoincash',
-            changeId: 0,
             dustThreshold: 546,
             feeRate: '10',
             outputs: [
                 {
+                    ...PAYMENT,
                     address: 'bitcoincash:qp6e6enhpy0fwwu7nkvlr8rgl06ru0c9lywalz8st5',
-                    amount: '100000',
-                    type: 'complete',
                 },
             ],
             utxos: [UTXO],
@@ -998,10 +922,11 @@ export default [
             max: undefined,
             totalSpent: '102001',
             transaction: {
-                PERM_outputs: {
+                outputs: {
                     permutation: [0],
                     sorted: [
                         {
+                            ...PAYMENT,
                             address: 'bitcoincash:qp6e6enhpy0fwwu7nkvlr8rgl06ru0c9lywalz8st5',
                             amount: '100000',
                         },
@@ -1015,18 +940,10 @@ export default [
     {
         description: 'use required (coinbase + unconfirmed) instead of more suitable utxo',
         request: {
-            basePath: [44, 1, 0],
-            changeAddress: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT',
-            changeId: 1,
+            changeAddress: CHANGE,
             dustThreshold: 546,
             feeRate: '10',
-            outputs: [
-                {
-                    address: '1BitcoinEaterAddressDontSendf59kuE',
-                    amount: '100000',
-                    type: 'complete',
-                },
-            ],
+            outputs: [PAYMENT],
             utxos: [
                 {
                     vout: 0,
@@ -1071,17 +988,14 @@ export default [
             max: undefined,
             totalSpent: '103740',
             transaction: {
-                PERM_outputs: {
+                outputs: {
                     permutation: [1, 0],
                     sorted: [
                         {
+                            ...CHANGE,
                             amount: '16842',
-                            path: [44, 1, 0, 1, 1],
                         },
-                        {
-                            address: '1BitcoinEaterAddressDontSendf59kuE',
-                            amount: '100000',
-                        },
+                        PAYMENT,
                     ],
                 },
                 inputs: [
@@ -1111,17 +1025,15 @@ export default [
     {
         description: 'skip inputs/outputs permutation',
         request: {
-            basePath: [44, 1, 0],
-            changeAddress: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT',
-            changeId: 1,
+            changeAddress: CHANGE,
             dustThreshold: 546,
             feeRate: '10',
             skipPermutation: true,
             outputs: [
                 {
-                    address: '1BitcoinEaterAddressDontSendf59kuE',
+                    ...PAYMENT,
                     amount: '70000',
-                    type: 'complete',
+                    type: 'payment',
                 },
             ],
             utxos: [
@@ -1150,16 +1062,16 @@ export default [
             max: undefined,
             totalSpent: '73740',
             transaction: {
-                PERM_outputs: {
+                outputs: {
                     permutation: [0, 1],
                     sorted: [
                         {
-                            address: '1BitcoinEaterAddressDontSendf59kuE',
+                            ...PAYMENT,
                             amount: '70000',
                         },
                         {
+                            ...CHANGE,
                             amount: '46842',
-                            path: [44, 1, 0, 1, 1],
                         },
                     ],
                 },
@@ -1189,9 +1101,7 @@ export default [
         description:
             'builds a Dogecoin tx with change and both input and one of the outputs above MAX_SAFE_INTEGER',
         request: {
-            basePath: [2147483692, 2147483651, 2147483648],
-            changeAddress: 'DKu2a8Wo6zC2dmBBYXwUG3fxWDHbKnNiPj',
-            changeId: 0,
+            changeAddress: { address: 'DKu2a8Wo6zC2dmBBYXwUG3fxWDHbKnNiPj' },
             dustThreshold: 999999,
             feeRate: '1000',
             network: 'doge',
@@ -1199,7 +1109,7 @@ export default [
                 {
                     address: 'DDn7UV1CrqVefzwrHyw7H2zEZZKqfzR2ZD',
                     amount: '11556856849999734000',
-                    type: 'complete',
+                    type: 'payment',
                 },
             ],
             utxos: [
@@ -1220,11 +1130,16 @@ export default [
             max: undefined,
             totalSpent: '11556856849999960000',
             transaction: {
-                PERM_outputs: {
+                outputs: {
                     permutation: [1, 0],
                     sorted: [
-                        { path: [2147483692, 2147483651, 2147483648, 1, 0], amount: '6800040000' },
                         {
+                            type: 'change',
+                            address: 'DKu2a8Wo6zC2dmBBYXwUG3fxWDHbKnNiPj',
+                            amount: '6800040000',
+                        },
+                        {
+                            type: 'payment',
                             address: 'DDn7UV1CrqVefzwrHyw7H2zEZZKqfzR2ZD',
                             amount: '11556856849999734000',
                         },

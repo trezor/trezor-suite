@@ -33,8 +33,8 @@ export type {
     ComposeRequest,
     ComposeResult,
     ComposeResultFinal,
-    ComposedTxOutput,
-    ComposedTransaction,
+    ComposeResultNonFinal,
+    ComposeResultError,
 } from './types';
 export type { Network } from './networks';
 export type { BIP32Interface } from './bip32';

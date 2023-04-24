@@ -14,46 +14,67 @@ export interface ComposeInput {
 
 // Input to coinselect algorithm.
 // array of Request, which is either
-//    - 'complete' - address + amount
+//    - 'payment' - address + amount
 //    - 'send-max' - address
+//    - 'opreturn' - dataHex
 //    - 'noaddress' - just amount
 //    - 'send-max-noaddress' - no other info
-export type ComposeFinalOutput =
-    | {
-          // TODO rename
-          type: 'complete';
-          address: string;
-          amount: string; // in satoshi
-      }
-    | {
-          type: 'send-max'; // only one in TX request
-          address: string;
-      }
-    | {
-          type: 'opreturn'; // it doesn't need to have address
-          dataHex: string;
-      };
+export interface ComposeOutputAddress {
+    type: 'payment';
+    address: string;
+    amount: string;
+}
 
-export type ComposeNotFinalOutput =
-    | {
-          type: 'send-max-noaddress'; // only one in TX request
-      }
-    | {
-          type: 'noaddress';
-          amount: string;
-      };
+export interface ComposeOutputNoAddress {
+    type: 'noaddress';
+    amount: string;
+}
+
+export interface ComposeOutputMax {
+    type: 'send-max'; // only one in TX request
+    address: string;
+    amount?: typeof undefined;
+}
+
+export interface ComposeOutputMaxNoAddress {
+    type: 'send-max-noaddress';
+    amount?: typeof undefined;
+}
+
+export interface ComposeOutputOpreturn {
+    type: 'opreturn'; // it doesn't need to have address
+    dataHex: string;
+    amount?: typeof undefined;
+    address?: typeof undefined;
+}
+
+export interface ComposeOutputChange {
+    type: 'change';
+    address: string;
+    amount: string;
+}
+
+export interface ComposeChangeAddress {
+    address: string;
+}
+
+export type ComposeFinalOutput = ComposeOutputAddress | ComposeOutputMax | ComposeOutputOpreturn;
+
+export type ComposeNotFinalOutput = ComposeOutputNoAddress | ComposeOutputMaxNoAddress;
 
 export type ComposeOutput = ComposeFinalOutput | ComposeNotFinalOutput;
 
-export interface ComposeRequest<Utxo extends ComposeInput> {
+export interface ComposeRequest<
+    Utxo extends ComposeInput,
+    Output extends ComposeOutput,
+    ChangeAddress extends ComposeChangeAddress,
+> {
     txType?: CoinSelectPaymentType;
     utxos: Utxo[]; // all inputs
-    outputs: ComposeOutput[]; // all output "requests"
+    outputs: Output[]; // all output "requests"
     feeRate: string | number; // in sat/byte, virtual size
-    basePath: number[]; // for trezor inputs
     network: Network;
-    changeId: number;
-    changeAddress: string;
+    changeAddress: ChangeAddress;
     dustThreshold: number; // explicit dust threshold, in satoshi
     baseFee?: number; // DOGE base fee
     floorBaseFee?: boolean; // DOGE floor base fee to the nearest integer
@@ -62,30 +83,22 @@ export interface ComposeRequest<Utxo extends ComposeInput> {
     skipPermutation?: boolean; // Do not sort inputs/outputs and preserve the given order. Handy for RBF.
 }
 
-// types for building the transaction in trezor.js
-export type ComposedTxOutput =
-    | {
-          path: number[];
-          amount: string;
-          address?: typeof undefined;
-          opReturnData?: typeof undefined;
-      }
-    | {
-          address: string;
-          amount: string;
-          path?: typeof undefined;
-          opReturnData?: typeof undefined;
-      }
-    | {
-          opReturnData: Buffer;
-          path?: typeof undefined;
-          address?: typeof undefined;
-          amount?: typeof undefined;
-      };
+type ComposedTransactionOutputs<T> = T extends ComposeOutputMax
+    ? Omit<T, 'type'> & ComposeOutputAddress
+    : T extends ComposeFinalOutput
+    ? T
+    : never;
 
-export interface ComposedTransaction<Input extends ComposeInput> {
+export interface ComposedTransaction<
+    Input extends ComposeInput,
+    Output extends ComposeOutput,
+    ChangeAddress extends ComposeChangeAddress,
+> {
     inputs: Input[];
-    outputs: { sorted: ComposedTxOutput[]; permutation: number[] }; // compose/Permutation<X>
+    outputs: {
+        sorted: (ComposedTransactionOutputs<Output> | (ChangeAddress & ComposeOutputChange))[];
+        permutation: number[];
+    };
 }
 
 // Output from coinselect algorithm
@@ -107,17 +120,22 @@ export interface ComposeResultNonFinal {
     bytes: number;
 }
 
-export interface ComposeResultFinal<Input extends ComposeInput> {
+export interface ComposeResultFinal<
+    Input extends ComposeInput,
+    Output extends ComposeOutput,
+    ChangeAddress extends ComposeChangeAddress,
+> {
     type: 'final';
     max?: string;
     totalSpent: string; // all the outputs, no fee, no change
     fee: string;
     feePerByte: string;
     bytes: number;
-    transaction: ComposedTransaction<Input>;
+    transaction: ComposedTransaction<Input, Output, ChangeAddress>;
 }
 
-export type ComposeResult<Input extends ComposeInput> =
-    | ComposeResultError
-    | ComposeResultNonFinal
-    | ComposeResultFinal<Input>;
+export type ComposeResult<
+    Input extends ComposeInput,
+    Output extends ComposeOutput,
+    ChangeAddress extends ComposeChangeAddress,
+> = ComposeResultError | ComposeResultNonFinal | ComposeResultFinal<Input, Output, ChangeAddress>;

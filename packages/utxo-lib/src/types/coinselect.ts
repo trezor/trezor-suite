@@ -15,7 +15,7 @@ export interface CoinSelectOptions {
 export interface CoinSelectInput {
     type: CoinSelectPaymentType;
     i: number;
-    script: { length: number };
+    script: { length: number } | Buffer;
     value: string;
     confirmations: number;
     coinbase?: boolean;
@@ -25,13 +25,13 @@ export interface CoinSelectInput {
 }
 
 export interface CoinSelectOutput {
-    script: { length: number };
+    script: { length: number } | Buffer;
     value?: string;
     weight?: number;
 }
 
 export interface CoinSelectOutputFinal {
-    script: { length: number };
+    script: { length: number } | Buffer;
     value: string;
 }
 

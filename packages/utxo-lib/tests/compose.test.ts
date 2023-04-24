@@ -1,14 +1,13 @@
 import { composeTx } from '../src';
 import * as utils from '../src/compose/utils';
-import { Permutation } from '../src/compose/permutation';
 import * as NETWORKS from '../src/networks';
 
 import { verifyTxBytes } from './compose.utils';
-import fixtures from './__fixtures__/compose';
+import { composeTx as fixtures } from './__fixtures__/compose';
 import fixturesCrossCheck from './__fixtures__/compose.crosscheck';
 
 // keyof typeof NETWORKS;
-const getNetwork = (name?: string) =>
+const getNetwork = (name?: string): NETWORKS.Network =>
     // @ts-expect-error expression of type string can't be used to index type
     typeof name === 'string' && NETWORKS[name] ? NETWORKS[name] : NETWORKS.bitcoin;
 
@@ -16,23 +15,9 @@ describe('composeTx', () => {
     fixtures.forEach(f => {
         const network = getNetwork(f.request.network);
         const request = { ...f.request, network };
-        const result: any = { ...f.result };
         it(f.description, () => {
-            if (result.transaction) {
-                const o = result.transaction.PERM_outputs;
-                const sorted = JSON.parse(JSON.stringify(o.sorted));
-                sorted.forEach((ss: any) => {
-                    const s = ss;
-                    if (s.opReturnData != null) {
-                        s.opReturnData = Buffer.from(s.opReturnData);
-                    }
-                });
-                result.transaction.outputs = new Permutation(sorted, o.permutation);
-                delete result.transaction.PERM_outputs;
-            }
-
-            const tx = composeTx(request as any);
-            expect(tx).toEqual(result);
+            const tx = composeTx(request);
+            expect(tx).toEqual(f.result);
 
             if (tx.type === 'final') {
                 verifyTxBytes(tx, f.request.txType as any, network);
@@ -65,9 +50,8 @@ describe('composeTx addresses cross-check', () => {
                         ...f.request,
                         network: NETWORKS.bitcoin,
                         txType,
-                        changeType: 'PAYTOADDRESS',
                         outputs: f.request.outputs.map(o => {
-                            if (o.type === 'complete') {
+                            if (o.type === 'payment') {
                                 return {
                                     ...o,
                                     address:

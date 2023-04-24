@@ -4,9 +4,7 @@ export default [
     {
         description: '1 input, 1 output, no change',
         request: {
-            basePath: [44, 0, 5],
             changeAddress: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT',
-            changeId: 0,
             dustThreshold: 546,
             feeRate: '10',
             utxos: [{ ...UTXO, amount: '102300' }],
@@ -14,7 +12,7 @@ export default [
                 {
                     address: 'replace-me',
                     amount: '100000',
-                    type: 'complete',
+                    type: 'payment',
                 },
             ],
         },
@@ -44,9 +42,7 @@ export default [
     {
         description: '1 input, 1 output, 1 change',
         request: {
-            basePath: [44, 0, 5],
             changeAddress: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT',
-            changeId: 0,
             dustThreshold: 546,
             feeRate: '10',
             utxos: [{ ...UTXO, amount: '202300' }],
@@ -54,7 +50,7 @@ export default [
                 {
                     address: 'replace-me',
                     amount: '100000',
-                    type: 'complete',
+                    type: 'payment',
                 },
             ],
         },
@@ -84,9 +80,7 @@ export default [
     {
         description: '2 inputs, 1 output, 1 change',
         request: {
-            basePath: [44, 0, 5],
             changeAddress: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT',
-            changeId: 0,
             dustThreshold: 546,
             feeRate: '10',
             utxos: [
@@ -106,7 +100,7 @@ export default [
                 {
                     address: 'replace-me',
                     amount: '100000',
-                    type: 'complete',
+                    type: 'payment',
                 },
             ],
         },
@@ -136,9 +130,7 @@ export default [
     {
         description: '7 inputs, all-types of outputs, 1 op_return, 1 change',
         request: {
-            basePath: [44, 0, 5],
             changeAddress: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT',
-            changeId: 0,
             dustThreshold: 546,
             feeRate: '10',
             utxos: [
@@ -189,27 +181,27 @@ export default [
                 {
                     address: 'p2pkh',
                     amount: '50000',
-                    type: 'complete',
+                    type: 'payment',
                 },
                 {
                     address: 'p2sh',
                     amount: '50000',
-                    type: 'complete',
+                    type: 'payment',
                 },
                 {
                     address: 'p2tr',
                     amount: '25000',
-                    type: 'complete',
+                    type: 'payment',
                 },
                 {
                     address: 'p2wpkh',
                     amount: '20000',
-                    type: 'complete',
+                    type: 'payment',
                 },
                 {
                     address: 'p2wsh',
                     amount: '20000',
-                    type: 'complete',
+                    type: 'payment',
                 },
                 {
                     type: 'opreturn',

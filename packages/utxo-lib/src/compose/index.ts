@@ -1,27 +1,37 @@
-import * as request from './request';
-import * as result from './result';
-import * as transaction from './transaction';
+import { getMax } from './request';
+import { getResult } from './result';
 import { convertFeeRate } from './utils';
 import { coinselect } from './coinselect';
-import { ComposeRequest, ComposeInput, ComposeResult } from '../types';
+import {
+    ComposeRequest,
+    ComposeInput,
+    ComposeOutput,
+    ComposeChangeAddress,
+    ComposeResult,
+} from '../types';
 
-export function composeTx<Input extends ComposeInput>({
-    txType,
-    utxos,
-    outputs,
-    feeRate,
-    basePath,
-    network,
-    changeId,
-    changeAddress,
-    dustThreshold,
-    baseFee,
-    floorBaseFee,
-    dustOutputFee,
-    skipPermutation,
-}: ComposeRequest<Input>): ComposeResult<Input> {
+export function composeTx<
+    Input extends ComposeInput,
+    Output extends ComposeOutput,
+    ChangeAddress extends ComposeChangeAddress,
+>(
+    request: ComposeRequest<Input, Output, ChangeAddress>,
+): ComposeResult<Input, Output, ChangeAddress> {
+    const {
+        txType,
+        utxos,
+        outputs,
+        feeRate,
+        network,
+        dustThreshold,
+        baseFee,
+        floorBaseFee,
+        dustOutputFee,
+        skipPermutation,
+    } = request;
+
     if (outputs.length === 0) {
-        return result.empty;
+        return { type: 'error', error: 'EMPTY' };
     }
 
     if (utxos.length === 0) {
@@ -35,7 +45,7 @@ export function composeTx<Input extends ComposeInput>({
 
     let countMax = { exists: false, id: 0 };
     try {
-        countMax = request.getMax(outputs);
+        countMax = getMax(outputs);
     } catch (e) {
         if (e instanceof Error) {
             return { type: 'error', error: e.message };
@@ -44,11 +54,9 @@ export function composeTx<Input extends ComposeInput>({
         return { type: 'error', error: `${e}` };
     }
 
-    const splitOutputs = request.splitByCompleteness(outputs);
-
-    let csResult: ReturnType<typeof coinselect> = { success: false };
+    let result: ReturnType<typeof coinselect> = { success: false };
     try {
-        csResult = coinselect(
+        result = coinselect(
             txType || 'p2pkh',
             utxos,
             outputs,
@@ -70,25 +78,9 @@ export function composeTx<Input extends ComposeInput>({
         return { type: 'error', error: `${e}` };
     }
 
-    if (!csResult.success) {
+    if (!result.success) {
         return { type: 'error', error: 'NOT-ENOUGH-FUNDS' };
     }
 
-    if (splitOutputs.incomplete.length > 0) {
-        return result.getNonfinalResult(csResult);
-    }
-
-    const resTransaction = transaction.createTransaction(
-        utxos,
-        csResult.result.inputs,
-        splitOutputs.complete,
-        csResult.result.outputs,
-        basePath,
-        changeId,
-        changeAddress,
-        network,
-        skipPermutation,
-    );
-
-    return result.getFinalResult(csResult, resTransaction);
+    return getResult(request, result);
 }
