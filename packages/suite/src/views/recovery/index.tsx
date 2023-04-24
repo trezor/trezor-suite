@@ -14,7 +14,7 @@ import { DeviceModel, getDeviceModel, pickByDeviceModel } from '@trezor/device-u
 import TrezorConnect from '@trezor/connect';
 
 const StyledModal = styled(Modal)`
-    min-height: 360px;
+    min-height: 450px;
 
     ${Modal.Content} {
         justify-content: center;

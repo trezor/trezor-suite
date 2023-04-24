@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { FixedSizeList as List } from 'react-window';
 import { MenuListProps, createFilter } from 'react-select';
-import styled, { keyframes } from 'styled-components';
+import styled from 'styled-components';
 import { Select, variables } from '@trezor/components';
 import { bip39 } from '@trezor/crypto-utils';
 import { useTranslation } from '@suite-hooks/useTranslation';
@@ -9,26 +9,7 @@ import { useKeyPress } from 'react-use';
 
 const options = bip39.map(item => ({ label: item, value: item }));
 
-const shake = keyframes`
-    10%, 90% {
-        transform: translate3d(-1px, 0, 0);
-    }
-
-    20%, 80% {
-        transform: translate3d(2px, 0, 0);
-    }
-
-    30%, 50%, 70% {
-        transform: translate3d(-4px, 0, 0);
-    }
-
-    40%, 60% {
-        transform: translate3d(4px, 0, 0);
-    }
-`;
-
 const SelectWrapper = styled.div`
-    animation: ${shake} 1.3s;
     margin: 12px auto 0px auto;
     text-align: left;
 
@@ -40,7 +21,6 @@ const SelectWrapper = styled.div`
 `;
 
 const StyledList = styled(List)`
-    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
     padding: 8px;
     position: static !important;
 

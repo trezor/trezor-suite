@@ -7,6 +7,11 @@ import { useActions, useRecovery, useSelector } from '@suite-hooks';
 import RecoveryStepBox from './RecoveryStepBox';
 import { DeviceModel, getDeviceModel, pickByDeviceModel } from '@trezor/device-utils';
 import { selectIsActionAbortable } from '@suite-reducers/suiteReducer';
+import styled from 'styled-components';
+
+const InProgressRecoveryStepBox = styled(RecoveryStepBox)`
+    min-height: 475px;
+`;
 
 export const RecoveryStep = () => {
     const { goToNextStep, updateAnalytics } = useActions({
@@ -137,7 +142,7 @@ export const RecoveryStep = () => {
         };
 
         return (
-            <RecoveryStepBox
+            <InProgressRecoveryStepBox
                 key={status} // to properly rerender in translation mode
                 heading={<Translation id="TR_RECOVER_YOUR_WALLET_FROM" />}
                 deviceModel={deviceModel}
@@ -150,7 +155,7 @@ export const RecoveryStep = () => {
                 isActionAbortable
             >
                 <SelectRecoveryWord />
-            </RecoveryStepBox>
+            </InProgressRecoveryStepBox>
         );
     }
 

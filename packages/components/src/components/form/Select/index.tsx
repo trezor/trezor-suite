@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useRef } from 'react';
 import ReactSelect, {
     components as ReactSelectComponents,
     Props as ReactSelectProps,
@@ -126,7 +126,7 @@ const selectStyle = (
         minWidth: '100%',
         background: theme.BG_WHITE_ALT,
         margin: '5px 0',
-        boxShadow: `box-shadow: 0 4px 10px 0 ${theme.BOX_SHADOW_BLACK_20}`,
+        borderRadius: '4px',
         zIndex: Z_INDEX.BASE,
     }),
     menuPortal: base => ({

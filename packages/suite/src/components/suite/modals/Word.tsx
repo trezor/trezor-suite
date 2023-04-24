@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { createTimeoutPromise } from '@trezor/utils';
 
 const StyledModal = styled(Modal)`
-    min-height: 360px;
+    min-height: 450px;
 `;
 
 export const Word = (props: ModalProps) => (
