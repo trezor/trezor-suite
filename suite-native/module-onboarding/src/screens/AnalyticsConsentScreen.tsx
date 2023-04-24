@@ -65,8 +65,8 @@ export const AnalyticsConsentScreen = () => {
                 </Stack>
             </Card>
             <Stack spacing="small" style={applyStyle(buttonsWrapperStyle)}>
-                <Button onPress={handleAnalyticsConsent}>Allow anonymous data collection</Button>
                 <Button onPress={handleRedirect}>Not now</Button>
+                <Button onPress={handleAnalyticsConsent}>Allow anonymous data collection</Button>
             </Stack>
         </OnboardingScreen>
     );
