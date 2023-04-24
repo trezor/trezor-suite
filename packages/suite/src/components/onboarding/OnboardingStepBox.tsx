@@ -58,7 +58,6 @@ export const OnboardingStepBox = ({
     isActionAbortable,
     disableConfirmWrapper,
     nested,
-    className,
     children,
     ...rest
 }: OnboardingStepBoxProps) => (
