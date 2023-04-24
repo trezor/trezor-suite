@@ -240,6 +240,11 @@ const initDevice = async (method: AbstractMethod) => {
         // wait for popup handshake
         await getPopupPromise().promise;
 
+        // there is await above, _deviceList might have been set to undefined.
+        if (!_deviceList) {
+            throw ERRORS.TypedError('Transport_Missing');
+        }
+
         // check again for available devices
         // there is a possible race condition before popup open
         const devices = _deviceList.asArray();
