@@ -4,9 +4,10 @@ import { atomWithStorage, createJSONStorage } from 'jotai/utils';
 
 const UNECRYPTED_STORAGE_ID = 'trezorSuite-app-unecrypted-storage';
 
-const unecryptedJotaiStorage = new MMKV({
+export const unecryptedJotaiStorage = new MMKV({
     id: UNECRYPTED_STORAGE_ID,
 });
+
 function getItem<T>(key: string): T | null {
     const value = unecryptedJotaiStorage.getString(key);
     return value ? JSON.parse(value) : null;

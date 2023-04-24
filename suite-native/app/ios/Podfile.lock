@@ -375,6 +375,8 @@ PODS:
   - react-native-mmkv (2.7.0):
     - MMKV (>= 1.2.13)
     - React-Core
+  - react-native-restart (0.0.27):
+    - React-Core
   - react-native-safe-area-context (4.5.0):
     - RCT-Folly
     - RCTRequired
@@ -579,6 +581,7 @@ DEPENDENCIES:
   - react-native-config (from `../../../node_modules/react-native-config`)
   - react-native-flipper (from `../../../node_modules/react-native-flipper`)
   - react-native-mmkv (from `../../../node_modules/react-native-mmkv`)
+  - react-native-restart (from `../../../node_modules/react-native-restart`)
   - react-native-safe-area-context (from `../../../node_modules/react-native-safe-area-context`)
   - "react-native-skia (from `../../../node_modules/@shopify/react-native-skia`)"
   - React-perflogger (from `../../../node_modules/react-native/ReactCommon/reactperflogger`)
@@ -696,6 +699,8 @@ EXTERNAL SOURCES:
     :path: "../../../node_modules/react-native-flipper"
   react-native-mmkv:
     :path: "../../../node_modules/react-native-mmkv"
+  react-native-restart:
+    :path: "../../../node_modules/react-native-restart"
   react-native-safe-area-context:
     :path: "../../../node_modules/react-native-safe-area-context"
   react-native-skia:
@@ -791,6 +796,7 @@ SPEC CHECKSUMS:
   react-native-config: 5330c8258265c1e5fdb8c009d2cabd6badd96727
   react-native-flipper: c33a4995958ef12a2b2f8290d63bed7adeed7634
   react-native-mmkv: a2a40a0458bdbc9d43c4e7752ecfc5e3a87b66dd
+  react-native-restart: 7595693413fe3ca15893702f2c8306c62a708162
   react-native-safe-area-context: 39c2d8be3328df5d437ac1700f4f3a4f75716acc
   react-native-skia: 8d65fa55196f437b475563b67b06a744f2ad4a0d
   React-perflogger: 2d505bbe298e3b7bacdd9e542b15535be07220f6
@@ -819,4 +825,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: d37876aaf00e7f8309b694188119b139b8452ca1
 
-COCOAPODS: 1.12.0
+COCOAPODS: 1.11.3
