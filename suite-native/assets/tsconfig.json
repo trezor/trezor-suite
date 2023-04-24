@@ -22,6 +22,7 @@
         { "path": "../ethereum-tokens" },
         { "path": "../fiat-rates" },
         { "path": "../formatters" },
+        { "path": "../module-devices" },
         { "path": "../module-settings" },
         { "path": "../navigation" },
         { "path": "../../packages/icons" },

@@ -4,7 +4,13 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { BottomSheet, Card, VStack } from '@suite-native/atoms';
-import { RootStackRoutes } from '@suite-native/navigation';
+import {
+    AppTabsParamList,
+    AppTabsRoutes,
+    RootStackParamList,
+    RootStackRoutes,
+    TabToStackCompositeNavigationProp,
+} from '@suite-native/navigation';
 import { networks, NetworkSymbol } from '@suite-common/wallet-config';
 import { AccountsListGroup } from '@suite-native/accounts';
 import { AccountKey } from '@suite-common/wallet-types';
@@ -15,7 +21,14 @@ import { selectAssetsWithBalances } from '../assetsSelectors';
 import { calculateAssetsPercentage } from '../utils';
 
 export const Assets = () => {
-    const navigation = useNavigation<any>();
+    const navigation =
+        useNavigation<
+            TabToStackCompositeNavigationProp<
+                AppTabsParamList,
+                AppTabsRoutes.HomeStack,
+                RootStackParamList
+            >
+        >();
     const assetsData = useSelector(selectAssetsWithBalances);
     const [selectedAssetSymbol, setSelectedAssetSymbol] = useState<NetworkSymbol | null>(null);
 
@@ -49,7 +62,7 @@ export const Assets = () => {
                             fiatPercentage={asset.fiatPercentage}
                             fiatPercentageOffset={asset.fiatPercentageOffset}
                             cryptoCurrencyValue={asset.assetBalance.toFixed()}
-                            onPress={() => setSelectedAssetSymbol(asset.symbol)}
+                            onPress={setSelectedAssetSymbol}
                         />
                     ))}
                 </VStack>

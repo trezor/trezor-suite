@@ -2,19 +2,33 @@ import React from 'react';
 import { TouchableOpacity } from 'react-native';
 import { useSelector } from 'react-redux';
 
+import { useNavigation } from '@react-navigation/native';
+
 import { CryptoIconName, CryptoIconWithPercentage, Icon } from '@trezor/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { Box, Text } from '@suite-native/atoms';
-import { AccountsRootState, selectAccountsAmountPerSymbol } from '@suite-common/wallet-core';
+import {
+    AccountsRootState,
+    selectAccountsAmountPerSymbol,
+    selectAccountsByNetworkAndDevice,
+} from '@suite-common/wallet-core';
 import { CryptoAmountFormatter, FiatAmountFormatter } from '@suite-native/formatters';
+import {
+    AppTabsParamList,
+    AppTabsRoutes,
+    RootStackParamList,
+    RootStackRoutes,
+    TabToStackCompositeNavigationProp,
+} from '@suite-native/navigation';
+import { HIDDEN_DEVICE_STATE } from '@suite-native/module-devices';
 
 type AssetItemProps = {
     cryptoCurrencySymbol: NetworkSymbol;
     cryptoCurrencyName: string;
     cryptoCurrencyValue: string;
     iconName: CryptoIconName;
-    onPress?: () => void;
+    onPress?: (symbol: NetworkSymbol) => void;
     fiatBalance: string;
     fiatPercentage: number;
     fiatPercentageOffset: number;
@@ -48,12 +62,33 @@ export const AssetItem = ({
     onPress,
 }: AssetItemProps) => {
     const { applyStyle } = useNativeStyles();
+    const navigation =
+        useNavigation<
+            TabToStackCompositeNavigationProp<
+                AppTabsParamList,
+                AppTabsRoutes.HomeStack,
+                RootStackParamList
+            >
+        >();
     const accountsPerAsset = useSelector((state: AccountsRootState) =>
         selectAccountsAmountPerSymbol(state, cryptoCurrencySymbol),
     );
+    const accountsForNetworkSymbol = useSelector((state: AccountsRootState) =>
+        selectAccountsByNetworkAndDevice(state, HIDDEN_DEVICE_STATE, cryptoCurrencySymbol),
+    );
+
+    const handleAssetPress = () => {
+        if (accountsPerAsset === 1) {
+            navigation.navigate(RootStackRoutes.AccountDetail, {
+                accountKey: accountsForNetworkSymbol[0].key,
+            });
+        } else if (onPress) {
+            onPress(cryptoCurrencySymbol);
+        }
+    };
 
     return (
-        <TouchableOpacity disabled={!onPress} onPress={onPress}>
+        <TouchableOpacity disabled={!onPress} onPress={handleAssetPress}>
             <Box style={applyStyle(assetItemWrapperStyle)}>
                 <CryptoIconWithPercentage
                     iconName={iconName}
