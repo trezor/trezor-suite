@@ -44,6 +44,15 @@ const fail = (id: number, error: string) =>
 
 const fire = (event: string, payload: any) => process.parentPort.postMessage({ event, payload });
 
+/**
+ * Utility process helper. Use only in a file inside `suite-desktop/src/threads`.
+ *
+ * Creates event-emitter-like object in Electron's utility process and allows
+ * to communicate with it by `call`, `subscribe` and `unsubscribe` messages.
+ *
+ * @param init 'Constructor' function which will create the object from parameters
+ * received with `init` message
+ */
 export const createThread = <P, T extends EventEmitter>(init: (params: P) => T | Promise<T>) => {
     let obj: T;
 
