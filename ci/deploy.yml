@@ -53,20 +53,6 @@ suite-desktop deploy sldev:
     - deploy
   interruptible: true
 
-# # Suite native deploy to dev
-# suite-native deploy sldev:
-#   stage: deploy to dev
-#   only:
-#     <<: *run_everything_rules
-#   variables:
-#     DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/suite-native/${CI_BUILD_REF_NAME}
-#   script:
-#     - mkdir -p ${DEPLOY_DIRECTORY}
-#     - rsync --delete -va app-release.apk "${DEPLOY_DIRECTORY}/"
-#   tags:
-#     - deploy
-# TODO: Disabled until the new suite native build is introduced. Fix this deploy job after.
-
 # Messaging system deploy to dev
 msg-system deploy sldev:
   stage: deploy to dev
@@ -126,14 +112,11 @@ connect deploy to dev:
 .run_components_rules: &run_components_rules
   refs:
     - develop
-    - releases
     - schedules
-    - /^release\//
     - /^run\//
   changes:
     - packages/components
     - packages/components-storybook
-    - yarn.lock
 
 # Deploy
 
@@ -164,15 +147,3 @@ components storybook deploy dev manual:
   when: manual
   except:
     <<: *run_components_rules
-# components-storybook test snapshots:
-#   stage: integration testing
-#   script:
-#     - npx cypress install
-#     - CYPRESS_baseUrl=${DEV_SERVER_URL}/components-storybook/${CI_BUILD_REF_NAME} yarn workspace @trezor/integration-tests test:components-storybook
-#   artifacts:
-#     expire_in: 7 days
-#     when: always
-#     paths:
-#       - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/components-storybook/snapshots
-#       - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/components-storybook/screenshots
-#   needs: []
