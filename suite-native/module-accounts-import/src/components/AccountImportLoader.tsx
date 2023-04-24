@@ -66,6 +66,7 @@ export const AccountImportLoader = () => {
                     autoPlay
                     style={applyStyle(successSpinnerStyle)}
                     loop={false}
+                    resizeMode="cover"
                 />
             </Box>
             <Box style={applyStyle(textContainerStyle)}>
