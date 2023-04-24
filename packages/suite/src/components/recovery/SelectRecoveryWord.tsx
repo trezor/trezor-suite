@@ -2,6 +2,7 @@ import React from 'react';
 import { useRecovery } from '@suite-hooks';
 import TrezorConnect, { UI } from '@trezor/connect';
 import { WordInput, WordInputAdvanced } from '@suite-components';
+import { createTimeoutPromise } from '@trezor/utils';
 
 export const SelectRecoveryWord = () => {
     const { wordRequestInputType } = useRecovery();
@@ -10,9 +11,10 @@ export const SelectRecoveryWord = () => {
         return (
             <WordInputAdvanced
                 count={wordRequestInputType}
-                onSubmit={value =>
-                    TrezorConnect.uiResponse({ type: UI.RECEIVE_WORD, payload: value })
-                }
+                onSubmit={async value => {
+                    await createTimeoutPromise(600);
+                    TrezorConnect.uiResponse({ type: UI.RECEIVE_WORD, payload: value });
+                }}
             />
         );
     }
@@ -20,7 +22,8 @@ export const SelectRecoveryWord = () => {
     if (wordRequestInputType === 'plain') {
         return (
             <WordInput
-                onSubmit={value => {
+                onSubmit={async value => {
+                    await createTimeoutPromise(600);
                     TrezorConnect.uiResponse({ type: UI.RECEIVE_WORD, payload: value });
                 }}
             />
