@@ -43,6 +43,7 @@ export const AccountDetailTokenHeader = ({
             </HStack>
             <EthereumTokenToFiatAmountFormatter
                 variant="titleLarge"
+                contract={tokenAccount.contract}
                 value={tokenAccount?.balance}
                 ethereumToken={tokenSymbol}
                 numberOfLines={1}

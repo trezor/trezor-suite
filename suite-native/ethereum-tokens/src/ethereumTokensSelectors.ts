@@ -7,7 +7,12 @@ import {
     selectAccountTransactions,
     TransactionsRootState,
 } from '@suite-common/wallet-core';
-import { AccountKey, TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
+import {
+    AccountKey,
+    TokenAddress,
+    TokenInfoBranded,
+    TokenSymbol,
+} from '@suite-common/wallet-types';
 import { TokenInfo, TokenTransfer } from '@trezor/blockchain-link';
 import {
     FiatRatesRootState,
@@ -23,10 +28,15 @@ export const selectEthereumAccountToken = (
     state: AccountsRootState,
     accountKey: AccountKey,
     tokenSymbol?: EthereumTokenSymbol,
-): TokenInfo | null => {
+): TokenInfoBranded | null => {
     const account = selectAccountByKey(state, accountKey);
     if (!account || !account.tokens) return null;
-    return A.find(account.tokens, (token: TokenInfo) => token.symbol === tokenSymbol) ?? null;
+    return (
+        (A.find(
+            account.tokens,
+            (token: TokenInfo) => token.symbol === tokenSymbol,
+        ) as TokenInfoBranded) ?? null
+    );
 };
 
 export const selectEthereumAccountTokenTransactions = memoizeWithArgs(
@@ -127,7 +137,10 @@ export const selectAccountOrTokenAccountTransactions = (
 };
 
 export const selectEthereumAccountsTokensWithFiatRates = memoizeWithArgs(
-    (state: FiatRatesRootState & SettingsSliceRootState, ethereumAccountKey: string) => {
+    (
+        state: FiatRatesRootState & SettingsSliceRootState,
+        ethereumAccountKey: string,
+    ): readonly TokenInfoBranded[] => {
         const account = selectAccountByKey(state, ethereumAccountKey);
         if (!account || !isEthereumAccountSymbol(account.symbol)) return [];
         return A.filter(account.tokens ?? [], token =>
@@ -136,7 +149,7 @@ export const selectEthereumAccountsTokensWithFiatRates = memoizeWithArgs(
                 token.contract as TokenAddress,
                 token.symbol as TokenSymbol,
             ),
-        );
+        ) as TokenInfoBranded[];
     },
     { size: 50 },
 );

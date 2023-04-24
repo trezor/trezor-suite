@@ -112,6 +112,7 @@ export const TransactionDetailHeader = ({
                     <Text>≈ </Text>
                     {tokenTransfer ? (
                         <EthereumTokenToFiatAmountFormatter
+                            contract={tokenTransfer.contract}
                             value={tokenTransfer.amount}
                             ethereumToken={tokenTransfer.symbol}
                             decimals={tokenTransfer.decimals}

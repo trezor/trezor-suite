@@ -8,7 +8,7 @@ import {
     EthereumTokenSymbol,
     selectEthereumAccountsTokensWithFiatRates,
 } from '@suite-native/ethereum-tokens';
-import { AccountKey, TokenSymbol } from '@suite-common/wallet-types';
+import { AccountKey } from '@suite-common/wallet-types';
 import { FiatRatesRootState } from '@suite-native/fiat-rates';
 import { SettingsSliceRootState } from '@suite-native/module-settings';
 
@@ -31,8 +31,9 @@ export const TokenList = ({ accountKey, onSelectAccount }: TokenListProps) => {
             {accountTokens.map((token, index) => (
                 <TokenListItem
                     key={token.contract}
+                    contract={token.contract}
                     accountKey={accountKey}
-                    symbol={token.symbol as TokenSymbol}
+                    symbol={token.symbol}
                     onSelectAccount={onSelectAccount}
                     balance={token.balance}
                     label={token.name ?? 'Unknown token'}
