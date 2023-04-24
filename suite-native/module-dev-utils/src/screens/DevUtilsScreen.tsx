@@ -12,9 +12,9 @@ import {
 import { clearStorage } from '@suite-native/storage';
 
 import { BuildInfo } from '../components/BuildInfo';
-import { Logs } from '../components/Logs';
 import { RenderingUtils } from '../components/RenderingUtils';
 import { ProductionDevInfo } from '../components/ProductionDevInfo';
+import { CopyLogsButton } from '../components/CopyLogsButton';
 
 export const DevUtilsScreen = ({
     navigation,
@@ -31,7 +31,7 @@ export const DevUtilsScreen = ({
                     <Button colorScheme="primary" onPress={clearStorage}>
                         Reset storage
                     </Button>
-                    <Logs />
+                    <CopyLogsButton />
                 </VStack>
             </Box>
         ) : (
