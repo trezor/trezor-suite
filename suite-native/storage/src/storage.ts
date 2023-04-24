@@ -26,13 +26,9 @@ export const retrieveStorageEncryptionKey = async () => {
 // eslint-disable-next-line import/no-mutable-exports
 export let encryptedStorage: MMKV;
 
-export const clearStorage = async () => {
+export const clearStorage = () => {
     unecryptedJotaiStorage.clearAll();
     encryptedStorage?.clearAll();
-    // We need to remove encryption key from secure store before removing encryption key otherwise
-    // it will corrupt storage and app won't be able to start
-    encryptedStorage?.recrypt(undefined);
-    await SecureStore.deleteItemAsync(ENCRYPTION_KEY);
     RNRestart.restart();
 };
 
