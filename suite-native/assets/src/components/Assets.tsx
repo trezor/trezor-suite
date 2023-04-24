@@ -1,67 +1,51 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { Button, Card, VStack } from '@suite-native/atoms';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { BottomSheet, Card, VStack } from '@suite-native/atoms';
 import {
     AppTabsParamList,
     AppTabsRoutes,
-    AccountsImportStackRoutes,
     RootStackParamList,
     RootStackRoutes,
     TabToStackCompositeNavigationProp,
-    AccountsStackRoutes,
-    SendReceiveStackRoutes,
 } from '@suite-native/navigation';
-import { networks } from '@suite-common/wallet-config';
+import { networks, NetworkSymbol } from '@suite-common/wallet-config';
+import { AccountsListGroup } from '@suite-native/accounts';
+import { AccountKey } from '@suite-common/wallet-types';
+import { EthereumTokenSymbol } from '@suite-native/ethereum-tokens';
 
 import { AssetItem } from './AssetItem';
 import { selectAssetsWithBalances } from '../assetsSelectors';
 import { calculateAssetsPercentage } from '../utils';
 
-const importStyle = prepareNativeStyle(_ => ({
-    marginTop: 12,
-}));
-
-type HomeAssetsNavigationProp = TabToStackCompositeNavigationProp<
-    AppTabsParamList,
-    AppTabsRoutes.HomeStack,
-    RootStackParamList
->;
-
 export const Assets = () => {
-    const navigation = useNavigation<HomeAssetsNavigationProp>();
-    const { applyStyle } = useNativeStyles();
+    const navigation =
+        useNavigation<
+            TabToStackCompositeNavigationProp<
+                AppTabsParamList,
+                AppTabsRoutes.HomeStack,
+                RootStackParamList
+            >
+        >();
     const assetsData = useSelector(selectAssetsWithBalances);
+    const [selectedAssetSymbol, setSelectedAssetSymbol] = useState<NetworkSymbol | null>(null);
 
     const assetsDataWithPercentage = useMemo(
         () => calculateAssetsPercentage(assetsData),
         [assetsData],
     );
 
-    const handleReceive = () => {
-        navigation.navigate(AppTabsRoutes.SendReceiveStack, {
-            screen: SendReceiveStackRoutes.ReceiveAccounts,
+    const handleSelectAssetsAccount = (
+        accountKey: AccountKey,
+        tokenSymbol?: EthereumTokenSymbol,
+    ) => {
+        navigation.navigate(RootStackRoutes.AccountDetail, {
+            accountKey,
+            tokenSymbol,
         });
-    };
-
-    const handleImportAssets = () => {
-        // TODO: move this to Dashboard screen directly
-        navigation.navigate(RootStackRoutes.AccountsImport, {
-            screen: AccountsImportStackRoutes.SelectNetwork,
-        });
-    };
-
-    const handleShowAssetsAccounts = () => {
-        // TODO: move this to Dashboard screen directly
-        navigation.navigate(RootStackRoutes.AppTabs, {
-            screen: AppTabsRoutes.AccountsStack,
-            params: {
-                screen: AccountsStackRoutes.Accounts,
-            },
-        });
+        setSelectedAssetSymbol(null);
     };
 
     return (
@@ -78,19 +62,23 @@ export const Assets = () => {
                             fiatPercentage={asset.fiatPercentage}
                             fiatPercentageOffset={asset.fiatPercentageOffset}
                             cryptoCurrencyValue={asset.assetBalance.toFixed()}
-                            onPress={handleShowAssetsAccounts}
+                            onPress={setSelectedAssetSymbol}
                         />
                     ))}
                 </VStack>
             </Card>
-            <VStack style={applyStyle(importStyle)} spacing="small">
-                <Button colorScheme="tertiaryElevation0" size="large" onPress={handleImportAssets}>
-                    Sync my coins
-                </Button>
-                <Button size="large" onPress={handleReceive} iconLeft="receive">
-                    Receive
-                </Button>
-            </VStack>
+            <BottomSheet
+                title="Select Account"
+                isVisible={!!selectedAssetSymbol}
+                onClose={() => setSelectedAssetSymbol(null)}
+            >
+                {selectedAssetSymbol && (
+                    <AccountsListGroup
+                        symbol={selectedAssetSymbol}
+                        onSelectAccount={handleSelectAssetsAccount}
+                    />
+                )}
+            </BottomSheet>
         </>
     );
 };
