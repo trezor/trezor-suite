@@ -1,11 +1,16 @@
 import { Network, BackendType, NetworkSymbol } from '@suite-common/wallet-config';
-import { AccountInfo, PROTO } from '@trezor/connect';
+import { AccountInfo, PROTO, TokenInfo } from '@trezor/connect';
 
 export type MetadataItem = string;
 export type XpubAddress = string;
 
 export type TokenSymbol = string & { __type: 'TokenSymbol' };
 export type TokenAddress = string & { __type: 'TokenAddress' };
+
+export type TokenInfoBranded = TokenInfo & {
+    symbol: TokenSymbol;
+    contract: TokenAddress;
+};
 
 export interface AccountMetadata {
     key: string; // legacy xpub format (btc-like coins) or account descriptor (other coins)

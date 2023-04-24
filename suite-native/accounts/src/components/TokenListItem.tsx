@@ -9,7 +9,7 @@ import {
 } from '@suite-native/formatters';
 import { getEthereumTokenIconName } from '@suite-native/ethereum-tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { AccountKey, TokenSymbol } from '@suite-common/wallet-types';
+import { AccountKey, TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
 
 import { accountDescriptionStyle, valuesContainerStyle } from './AccountListItem';
 
@@ -19,6 +19,7 @@ type TokenListItemProps = {
     label: string;
     symbol: TokenSymbol;
     accountKey: AccountKey;
+    contract: TokenAddress;
     onSelectAccount: (accountKey: AccountKey, tokenSymbol?: TokenSymbol) => void;
 };
 
@@ -44,6 +45,7 @@ const horizontalLine = prepareNativeStyle(utils => ({
 
 export const TokenListItem = ({
     symbol,
+    contract,
     balance,
     isLast,
     label,
@@ -78,6 +80,7 @@ export const TokenListItem = ({
                         <EthereumTokenToFiatAmountFormatter
                             value={balance ?? '0'}
                             ethereumToken={symbol.toUpperCase() as TokenSymbol}
+                            contract={contract}
                         />
                         <EthereumTokenAmountFormatter
                             value={balance ?? '0'}

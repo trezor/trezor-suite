@@ -55,6 +55,7 @@ export const EthereumTokenInfo = ({
         >
             <EthereumTokenToFiatAmountFormatter
                 value={balance}
+                contract={contract}
                 ethereumToken={symbol}
                 decimals={decimals}
             />
