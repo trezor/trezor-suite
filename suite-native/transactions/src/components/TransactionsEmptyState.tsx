@@ -54,13 +54,11 @@ export const TransactionsEmptyState = ({ accountKey }: { accountKey: string }) =
                         Get started by receiving transactions
                     </Text>
                 </Box>
-                <Button
-                    style={applyStyle(receiveButtonStyle)}
-                    iconLeft="receive"
-                    onPress={handleReceive}
-                >
-                    Receive
-                </Button>
+                <Box style={applyStyle(receiveButtonStyle)}>
+                    <Button iconLeft="receive" onPress={handleReceive}>
+                        Receive
+                    </Button>
+                </Box>
             </Card>
         </Box>
     );
