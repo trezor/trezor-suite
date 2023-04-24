@@ -45,5 +45,6 @@
         { "path": "../../packages/styles" },
         { "path": "../../packages/utxo-lib" },
         { "path": "../../packages/validation" }
-    ]
+    ],
+    "include": [".", "**/*.json"]
 }

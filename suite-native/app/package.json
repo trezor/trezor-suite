@@ -78,6 +78,7 @@
         "expo-secure-store": "^12.1.1",
         "expo-splash-screen": "0.18.1",
         "expo-system-ui": "2.2.1",
+        "lottie-react-native": "^5.1.5",
         "node-libs-browser": "^2.2.1",
         "react": "18.2.0",
         "react-intl": "^6.3.2",
