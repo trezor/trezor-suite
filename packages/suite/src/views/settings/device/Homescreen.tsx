@@ -118,7 +118,7 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
                 ref={anchorRef}
                 shouldHighlight={shouldHighlight}
             >
-                {[DeviceModel.T1, DeviceModel.TR].includes(deviceModel) && (
+                {[DeviceModel.T1, DeviceModel.T2B1].includes(deviceModel) && (
                     <TextColumn
                         title={<Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_TITLE" />}
                         description={

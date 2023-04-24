@@ -169,7 +169,7 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
                                         default: 'TR_SEED_WORDS_ENTER_BUTTONS',
                                         [DeviceModel.T1]: 'TR_SEED_WORDS_ENTER_COMPUTER',
                                         [DeviceModel.TT]: 'TR_SEED_WORDS_ENTER_TOUCHSCREEN',
-                                        [DeviceModel.TR]: 'TR_SEED_WORDS_ENTER_BUTTONS',
+                                        [DeviceModel.T2B1]: 'TR_SEED_WORDS_ENTER_BUTTONS',
                                     })}
                                 />
                             </InstructionStep>

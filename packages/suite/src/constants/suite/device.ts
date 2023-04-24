@@ -8,5 +8,5 @@ export const DEFAULT_SKIP_BACKUP = true;
 export const DEFAULT_STRENGTH = {
     [DeviceModel.T1]: 256,
     [DeviceModel.TT]: 128,
-    [DeviceModel.TR]: 128,
+    [DeviceModel.T2B1]: 128,
 };

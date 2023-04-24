@@ -41,7 +41,7 @@ const Rewards = (props: { account: Account }) => {
         deviceAvailable,
         pendingStakeTx,
     } = useCardanoStaking();
-    const deviceModel = useDeviceModel() as DeviceModel.TT | DeviceModel.TR; // only T and R have Capability_Cardano
+    const deviceModel = useDeviceModel() as DeviceModel.TT | DeviceModel.T2B1; // only T and T2B1 have Capability_Cardano
 
     const { account } = props;
 

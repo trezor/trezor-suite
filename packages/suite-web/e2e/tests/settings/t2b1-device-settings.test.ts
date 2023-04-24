@@ -10,10 +10,10 @@
 
 import { DeviceModel } from '@trezor/device-utils';
 
-describe('TR - Device settings', () => {
+describe('T2B1 - Device settings', () => {
     const startEmuOpts = {
         url: 'https://gitlab.com/satoshilabs/trezor/trezor-firmware/-/jobs/3104755066/artifacts/raw/core/build/unix/trezor-emu-core',
-        model: DeviceModel.TR,
+        model: DeviceModel.T2B1,
         wipe: true,
     };
 

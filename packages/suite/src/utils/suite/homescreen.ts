@@ -5,7 +5,7 @@ import { DeviceModel, getDeviceModel } from '@trezor/device-utils';
 export const deviceModelInformation = {
     [DeviceModel.T1]: { width: 128, height: 64, supports: ['png', 'jpeg'] },
     [DeviceModel.TT]: { width: 240, height: 240, supports: ['jpeg'] },
-    [DeviceModel.TR]: { width: 128, height: 64, supports: ['png', 'jpeg'] },
+    [DeviceModel.T2B1]: { width: 128, height: 64, supports: ['png', 'jpeg'] },
     [DeviceModel.UNKNOWN]: { width: 0, height: 0, supports: [] as string[] },
 };
 
@@ -147,7 +147,7 @@ export const isValidImageSize = (file: File, deviceModel: DeviceModel) => {
 export const validateImageColors = (origImage: HTMLImageElement, deviceModel: DeviceModel) => {
     const imageData = imageToImageData(origImage, deviceModel);
 
-    if ([DeviceModel.T1, DeviceModel.TR].includes(deviceModel)) {
+    if ([DeviceModel.T1, DeviceModel.T2B1].includes(deviceModel)) {
         try {
             range(imageData.height).forEach((j: number) => {
                 range(imageData.width).forEach(i => {

@@ -3,6 +3,7 @@ import React from 'react';
 import { Modal, Translation } from '@suite-components';
 import styled from 'styled-components';
 import type { Deferred } from '@trezor/utils';
+import { DeviceModel } from '@trezor/device-utils';
 
 const ContentWrapper = styled.div`
     text-align: left;

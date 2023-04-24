@@ -59,7 +59,7 @@ const FORMAT_MAP: { [format in FirmwareFormat]: ReturnType<typeof getDeviceModel
     [FirmwareFormat.T1]: [DeviceModel.T1],
     [FirmwareFormat.T1_EMBEDDED_V2]: [DeviceModel.T1],
     [FirmwareFormat.T1_V2]: [DeviceModel.T1],
-    [FirmwareFormat.T2]: [DeviceModel.TT, DeviceModel.TR],
+    [FirmwareFormat.T2]: [DeviceModel.TT, DeviceModel.T2B1],
 };
 
 export const parseFirmwareFormat = (fw: ArrayBuffer): FirmwareFormat | undefined => {

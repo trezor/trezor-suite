@@ -61,7 +61,7 @@ const SetPinStep = () => {
     const showPinMismatch =
         modal.context === '@modal/context-user' && modal.payload.type === 'pin-mismatch'; // Set to true by T1 when user fails to enter same pin, not used at all with TT
 
-    // First button request that will pop out of the device is "ButtonRequest_ProtectCall" (T1) or "ButtonRequest_Other" (TT/TR), requesting us to confirm enabling PIN
+    // First button request that will pop out of the device is "ButtonRequest_ProtectCall" (T1) or "ButtonRequest_Other" (TT/T2B1), requesting us to confirm enabling PIN
     // buttonRequests will be cleared on cancelling the confirmation prompt on the device, turning this condition to false.
     const showConfirmationPrompt = device.buttonRequests.find(
         b => b.code === 'ButtonRequest_Other' || b.code === 'ButtonRequest_ProtectCall',

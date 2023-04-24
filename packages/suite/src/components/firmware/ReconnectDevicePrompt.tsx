@@ -178,7 +178,7 @@ const ReconnectLabel = ({
 
     const switchToNormalModeMessage = pickByDeviceModel(deviceModel, {
         default: 'FIRMWARE_CONNECT_IN_NORMAL_MODEL_NO_BUTTON',
-        [DeviceModel.TR]: 'FIRMWARE_CONNECT_IN_NORMAL_MODEL_NO_TOUCH',
+        [DeviceModel.T2B1]: 'FIRMWARE_CONNECT_IN_NORMAL_MODEL_NO_TOUCH',
     } as const);
 
     return <Translation id={switchToNormalModeMessage} />;
