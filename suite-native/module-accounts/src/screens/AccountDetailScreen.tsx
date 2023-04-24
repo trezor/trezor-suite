@@ -40,7 +40,12 @@ export const AccountDetailScreen = memo(
         );
         const accountTransactions = useSelector(
             (state: TransactionsRootState & FiatRatesRootState & SettingsSliceRootState) =>
-                selectAccountOrTokenAccountTransactions(state, accountKey, tokenSymbol ?? null),
+                selectAccountOrTokenAccountTransactions(
+                    state,
+                    accountKey,
+                    tokenSymbol ?? null,
+                    areTokensIncluded,
+                ),
         );
         const token = useSelector((state: AccountsRootState) =>
             selectEthereumAccountToken(state, accountKey, tokenSymbol),

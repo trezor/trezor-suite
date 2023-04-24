@@ -70,10 +70,14 @@ export const selectEthereumTokenHasFiatRates = (
     return !!rates?.rate;
 };
 
+const isNotZeroAmountTranfer = (tokenTranfer: TokenTransfer) =>
+    tokenTranfer.amount !== '' && tokenTranfer.amount !== '0';
+
 const selectAccountTransactionsWithTokensWithFiatRates = memoizeWithArgs(
     (
         state: TransactionsRootState & FiatRatesRootState & SettingsSliceRootState,
         accountKey: AccountKey,
+        areTokenOnlyTransactionsIncluded: boolean,
     ): WalletAccountTransaction[] =>
         pipe(
             selectAccountTransactions(state, accountKey),
@@ -81,6 +85,7 @@ const selectAccountTransactionsWithTokensWithFiatRates = memoizeWithArgs(
                 ...transaction,
                 tokens: pipe(
                     transaction.tokens,
+                    A.filter(isNotZeroAmountTranfer),
                     A.filter(token =>
                         selectEthereumTokenHasFiatRates(
                             state,
@@ -94,6 +99,13 @@ const selectAccountTransactionsWithTokensWithFiatRates = memoizeWithArgs(
                     })),
                 ),
             })),
+            A.filter(
+                transaction =>
+                    transaction.amount !== '0' ||
+                    (areTokenOnlyTransactionsIncluded &&
+                        G.isArray(transaction.tokens) &&
+                        A.isNotEmpty(transaction.tokens)),
+            ),
         ) as WalletAccountTransaction[],
     { size: 500 },
 );
@@ -102,6 +114,7 @@ export const selectAccountOrTokenAccountTransactions = (
     state: TransactionsRootState & FiatRatesRootState & SettingsSliceRootState,
     accountKey: AccountKey,
     tokenSymbol: EthereumTokenSymbol | null,
+    areTokenOnlyTransactionsIncluded: boolean,
 ): WalletAccountTransaction[] => {
     if (tokenSymbol) {
         return selectEthereumAccountTokenTransactions(state, accountKey, tokenSymbol);
@@ -109,6 +122,7 @@ export const selectAccountOrTokenAccountTransactions = (
     return selectAccountTransactionsWithTokensWithFiatRates(
         state,
         accountKey,
+        areTokenOnlyTransactionsIncluded,
     ) as WalletAccountTransaction[];
 };
 
