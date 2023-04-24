@@ -103,6 +103,9 @@ export const Graph = <TGraphPoint extends EnhancedGraphPoint>({
         }
     }, [extremaFromGraphPoints]);
 
+    // For some reason, 16 feels better than 0
+    const panGestureDelay = 16;
+
     return (
         <Box style={applyStyle(graphWrapperStyle)}>
             <LineGraph
@@ -117,7 +120,7 @@ export const Graph = <TGraphPoint extends EnhancedGraphPoint>({
                 BottomAxisLabel={axisLabels?.BottomAxisLabel}
                 onPointSelected={onPointSelected as any /* because of ExtendedGraphPoint */}
                 onGestureEnd={onGestureEnd}
-                panGestureDelay={0}
+                panGestureDelay={panGestureDelay}
             />
             {loading && (
                 <Box style={applyStyle(graphMessageStyleContainer)}>
