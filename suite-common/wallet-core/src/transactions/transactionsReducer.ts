@@ -23,7 +23,11 @@ export const transactionsInitialState: TransactionsState = {
 
 export interface TransactionsRootState {
     wallet: {
-        transactions: TransactionsState;
+        transactions: TransactionsState & {
+            // We need to override types because there could be nulls in transactions array because of pagination
+            // This should be fixed in TransactionsState but it will throw lot of errors then in desktop Suite
+            transactions: { [key: AccountKey]: (WalletAccountTransaction | null)[] };
+        };
     };
 }
 
@@ -46,10 +50,12 @@ export const updateTransaction = (
     if (!accountTxs) return;
 
     const index = accountTxs.findIndex(t => t && t.txid === txid);
-    accountTxs[index] = {
-        ...accountTxs[index],
-        ...updateObject,
-    };
+    if (accountTxs[index]) {
+        accountTxs[index] = {
+            ...accountTxs[index]!,
+            ...updateObject,
+        };
+    }
 };
 
 export const prepareTransactionsReducer = createReducerWithExtraDeps(
@@ -81,7 +87,7 @@ export const prepareTransactionsReducer = createReducerWithExtraDeps(
                 const { account, txs } = payload;
                 const transactions = state.transactions[account.key];
                 state.transactions[account.key] = transactions?.filter(
-                    tx => !txs.some(t => t.txid === tx.txid),
+                    tx => !txs.some(t => t.txid === tx?.txid),
                 );
             })
             .addCase(transactionsActions.addTransaction, (state, { payload }) => {
@@ -140,20 +146,32 @@ export const prepareTransactionsReducer = createReducerWithExtraDeps(
     },
 );
 
+// Used to define selector cache size
+const EXPECTED_MAX_NUMBER_OF_ACCOUNTS = 50;
+const EXPECTED_NUMBER_OF_TRANSACTIONS = 500;
+
 export const selectIsLoadingTransactions = (state: TransactionsRootState) =>
     state.wallet.transactions.isLoading;
 export const selectTransactions = (state: TransactionsRootState) =>
     state.wallet.transactions.transactions;
 
 /**
- * Returns transactions for the account specified by accountKey param.
  * The list is not sorted here because it may contain null values as placeholders
  * for transactions that have not been fetched yet. (This affects pagination.)
+ * !!! Use this selector only if you explicitly needs that null placeholder values !!!
  */
-export const selectAccountTransactions = (
+export const selectAccountTransactionsWithNulls = (
     state: TransactionsRootState,
-    accountKey: string | null,
+    accountKey: AccountKey | null,
 ) => state.wallet.transactions.transactions[accountKey ?? ''] ?? [];
+
+export const selectAccountTransactions = memoizeWithArgs(
+    (state: TransactionsRootState, accountKey: AccountKey | null): WalletAccountTransaction[] => {
+        const transactions = selectAccountTransactionsWithNulls(state, accountKey);
+        return transactions.filter(t => t !== null);
+    },
+    { size: EXPECTED_MAX_NUMBER_OF_ACCOUNTS },
+);
 
 export const selectPendingAccountAddresses = memoizeWithArgs(
     (state: TransactionsRootState, accountKey: AccountKey | null) => {
@@ -167,44 +185,53 @@ export const selectPendingAccountAddresses = memoizeWithArgs(
         );
         return pendingAddresses;
     },
+    { size: EXPECTED_MAX_NUMBER_OF_ACCOUNTS },
 );
 
 // Note: Account key is passed because there can be duplication of TXIDs if self transaction was sent.
 export const selectTransactionByTxidAndAccountKey = memoizeWithArgs(
     (state: TransactionsRootState, txid: string, accountKey: AccountKey) => {
         const transactions = selectAccountTransactions(state, accountKey);
-        return transactions.find(tx => tx.txid === txid) ?? null;
+        return transactions.find(tx => tx?.txid === txid) ?? null;
     },
+    { size: EXPECTED_NUMBER_OF_TRANSACTIONS },
 );
 
-export const selectTransactionBlockTimeById = memoizeWithArgs(
-    (state: TransactionsRootState, txid: string, accountKey: AccountKey) => {
-        const transaction = selectTransactionByTxidAndAccountKey(state, txid, accountKey);
-        if (transaction?.blockTime) {
-            return transaction.blockTime * 1000;
-        }
-        return null;
-    },
-);
+export const selectTransactionBlockTimeById = (
+    state: TransactionsRootState,
+    txid: string,
+    accountKey: AccountKey,
+) => {
+    const transaction = selectTransactionByTxidAndAccountKey(state, txid, accountKey);
+    if (transaction?.blockTime) {
+        return transaction.blockTime * 1000;
+    }
+    return null;
+};
 
-export const selectTransactionTargets = memoizeWithArgs(
-    (state: TransactionsRootState, txid: string, accountKey: AccountKey) => {
-        const transaction = selectTransactionByTxidAndAccountKey(state, txid, accountKey);
-        return transaction?.targets;
-    },
-);
+export const selectTransactionTargets = (
+    state: TransactionsRootState,
+    txid: string,
+    accountKey: AccountKey,
+) => {
+    const transaction = selectTransactionByTxidAndAccountKey(state, txid, accountKey);
+    return transaction?.targets;
+};
 
-export const selectTransactionFirstTargetAddress = memoizeWithArgs(
-    (state: TransactionsRootState, txid: string, accountKey: AccountKey) => {
-        const transactionTargets = selectTransactionTargets(state, txid, accountKey);
-        return transactionTargets?.[0]?.addresses?.[0];
-    },
-);
+export const selectTransactionFirstTargetAddress = (
+    state: TransactionsRootState,
+    txid: string,
+    accountKey: AccountKey,
+) => {
+    const transactionTargets = selectTransactionTargets(state, txid, accountKey);
+    return transactionTargets?.[0]?.addresses?.[0];
+};
 
-export const selectIsTransactionPending = memoizeWithArgs(
-    (state: TransactionsRootState, txid: string, accountKey: AccountKey): boolean => {
-        const transaction = selectTransactionByTxidAndAccountKey(state, txid, accountKey);
-        return transaction ? isPending(transaction) : false;
-    },
-    { size: 50 },
-);
+export const selectIsTransactionPending = (
+    state: TransactionsRootState,
+    txid: string,
+    accountKey: AccountKey,
+): boolean => {
+    const transaction = selectTransactionByTxidAndAccountKey(state, txid, accountKey);
+    return transaction ? isPending(transaction) : false;
+};
