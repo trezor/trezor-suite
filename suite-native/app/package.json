@@ -67,7 +67,6 @@
         "@trezor/styles": "workspace:*",
         "@trezor/suite-data": "workspace:*",
         "@trezor/theme": "workspace:*",
-        "@trezor/transport-native": "workspace:*",
         "babel-plugin-transform-remove-console": "^6.9.4",
         "basil-ws-flipper": "^0.2.8",
         "expo": "48.0.1",
