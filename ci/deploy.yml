@@ -83,36 +83,6 @@ msg-system deploy sldev:
     - aws cloudfront create-invalidation --distribution-id ${AWS_CLOUDFRONT_ID} --paths '/config/develop/*'
   interruptible: true
 
-.connect-explorer deploy dev base:
-  stage: deploy to dev
-  variables:
-    DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/connect-explorer/${CI_BUILD_REF_NAME}
-  environment:
-    name: ${CI_BUILD_REF_NAME}
-    url: $BASE_REVIEW_URL/${CI_BUILD_REF_NAME}
-  before_script: []
-  script:
-    - mkdir -p ${DEPLOY_DIRECTORY}/connect-explorer
-    - rsync --delete -va packages/connect-explorer/build/ "${DEPLOY_DIRECTORY}/"
-  tags:
-    - deploy
-  interruptible: true
-
-connect-explorer deploy sldev:
-  extends: .connect-explorer deploy dev base
-  needs:
-    - connect-explorer build
-  only:
-    <<: *run_connect_rules
-
-connect-explorer deploy dev manual:
-  extends: .connect-explorer deploy dev base
-  needs:
-    - connect-explorer build
-  except:
-    <<: *run_everything_rules
-  when: manual
-
 # connect deploy to dev
 connect deploy to dev:
   stage: deploy to dev
