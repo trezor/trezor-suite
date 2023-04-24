@@ -54,7 +54,7 @@ export const PortfolioGraphHeader = () => {
     const { originalDate: firstPointDate } = useAtomValue(referencePointAtom);
 
     return (
-        <Box flexDirection="row" justifyContent="center">
+        <Box flexDirection="row" justifyContent="center" marginTop="large">
             <Box alignItems="center">
                 <Text color="textSubdued" variant="hint" style={applyStyle(headerStyle)}>
                     My portfolio balance
