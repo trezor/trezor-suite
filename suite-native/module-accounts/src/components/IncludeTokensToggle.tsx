@@ -19,7 +19,7 @@ export const IncludeTokensToggle = ({ isToggled, onToggle }: IncludeTokensToggle
         {isToggled && (
             <Animated.View entering={FadeIn}>
                 <AlertBox
-                    title="Note, your Ethereum balance doesn’t include tokens. Your token balance is reflected in My portfolio balance."
+                    title="Note, your Ethereum balance doesn’t include tokens."
                     isIconVisible={false}
                 />
             </Animated.View>
