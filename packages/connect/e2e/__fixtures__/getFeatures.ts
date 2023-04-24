@@ -27,7 +27,7 @@ export default {
     },
     tests: [
         {
-            description: 'TT/TR features',
+            description: 'TT/T2B1 features',
             skip: ['1'],
             params: {},
             result: {

@@ -3,7 +3,7 @@ import { PartialDevice } from './types';
 export enum DeviceModel {
     T1 = '1',
     TT = 'T',
-    TR = 'R',
+    T2B1 = 'R',
     UNKNOWN = '',
 }
 
@@ -23,7 +23,7 @@ export const pickByDeviceModel = <Type>(
         default: Type;
         [DeviceModel.T1]?: Type;
         [DeviceModel.TT]?: Type;
-        [DeviceModel.TR]?: Type;
+        [DeviceModel.T2B1]?: Type;
     },
 ): Type => {
     if (!deviceModel || typeof options[deviceModel] === 'undefined') {

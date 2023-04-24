@@ -24,7 +24,7 @@ const acceptAnalyticsConsentOnInitializedDevice = () => {
 describe('Onboarding - analytics consent', () => {
     const startEmuOpts = {
         url: 'https://gitlab.com/satoshilabs/trezor/trezor-firmware/-/jobs/3104755066/artifacts/raw/core/build/unix/trezor-emu-core',
-        model: DeviceModel.TR,
+        model: DeviceModel.T2B1,
         wipe: true,
     };
 
@@ -53,7 +53,7 @@ describe('Onboarding - analytics consent', () => {
         cy.getTestElement('@onboarding-layout/body').should('be.visible');
     });
 
-    it('shows analytics consent when going to settings and back on non-initialized TR device', () => {
+    it('shows analytics consent when going to settings and back on non-initialized T2B1 device', () => {
         cy.task('startEmuFromUrl', startEmuOpts);
         cy.prefixedVisit('/');
 
@@ -91,7 +91,7 @@ describe('Onboarding - analytics consent', () => {
         cy.getTestElement('@settings/menu/close').should('be.visible');
     });
 
-    it('shows analytics consent when going to settings and back on initialized TR device', () => {
+    it('shows analytics consent when going to settings and back on initialized T2B1 device', () => {
         cy.task('startEmuFromUrl', startEmuOpts);
         cy.task('setupEmu', {
             needs_backup: false,
@@ -131,7 +131,7 @@ describe('Onboarding - analytics consent', () => {
         cy.getTestElement('@wallet/menu/wallet-send');
     });
 
-    it('shows analytics consent and then goes to /accounts on initialized TR device', () => {
+    it('shows analytics consent and then goes to /accounts on initialized T2B1 device', () => {
         cy.task('startEmuFromUrl', startEmuOpts);
         cy.task('setupEmu', {
             needs_backup: false,

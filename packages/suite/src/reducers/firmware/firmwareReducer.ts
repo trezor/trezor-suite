@@ -40,7 +40,7 @@ export type FirmwareStatus =
     | 'waiting-for-confirmation' // progress - device waits for confirmation prior starting to update
     | 'installing' // progress - firmware is being installed
     | 'partially-done' // progress - some old T1 firmwares can't update to the latest version. This should be handled by intermediary fw now and it shouldn't even be triggered in real world, but just to be safe let's keep it.
-    | 'wait-for-reboot' // progress - models TT and TR are restarting after firmware update
+    | 'wait-for-reboot' // progress - models TT and T2B1 are restarting after firmware update
     | 'unplug' // progress - user is asked to reconnect device (T1)
     | 'reconnect-in-normal' // progress - after unplugging device from previous step, user is asked to connect it again
     | 'validation' // firmware validation in progress

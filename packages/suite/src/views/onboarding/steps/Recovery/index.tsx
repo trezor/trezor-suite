@@ -44,9 +44,9 @@ export const RecoveryStep = () => {
 
     if (status === 'initial') {
         // 1. step where users chooses number of words in case of T1
-        // In case of model T and model R show CTA button to start the process
+        // In case of TT and model T2B1 show CTA button to start the process
         if (deviceModel === DeviceModel.T1) {
-            // Model 1
+            // T1
             return (
                 <RecoveryStepBox
                     key={status} // to properly rerender in translation mode
@@ -63,7 +63,7 @@ export const RecoveryStep = () => {
             );
         }
 
-        // Model T and R
+        // TT and T2B1
         return (
             <RecoveryStepBox
                 key={status} // to properly rerender in translation mode
@@ -73,7 +73,7 @@ export const RecoveryStep = () => {
                         id={pickByDeviceModel(deviceModel, {
                             default: 'TR_RECOVER_SUBHEADING_TOUCH',
                             [DeviceModel.TT]: 'TR_RECOVER_SUBHEADING_TOUCH',
-                            [DeviceModel.TR]: 'TR_RECOVER_SUBHEADING_BUTTONS',
+                            [DeviceModel.T2B1]: 'TR_RECOVER_SUBHEADING_BUTTONS',
                         })}
                     />
                 }
@@ -109,7 +109,7 @@ export const RecoveryStep = () => {
     }
 
     if (status === 'waiting-for-confirmation') {
-        // On model 1 we show confirm bubble only while we wait for confirmation that users wants to start the process
+        // On T1 we show confirm bubble only while we wait for confirmation that users wants to start the process
         return (
             <RecoveryStepBox
                 key={status} // to properly rerender in translation mode
@@ -117,7 +117,7 @@ export const RecoveryStep = () => {
                 description={pickByDeviceModel(deviceModel, {
                     default: undefined,
                     [DeviceModel.TT]: <Translation id="TR_RECOVER_SUBHEADING_TOUCH" />,
-                    [DeviceModel.TR]: <Translation id="TR_RECOVER_SUBHEADING_BUTTONS" />,
+                    [DeviceModel.T2B1]: <Translation id="TR_RECOVER_SUBHEADING_BUTTONS" />,
                 })}
                 deviceModel={deviceModel}
                 isActionAbortable={isActionAbortable}
@@ -150,7 +150,7 @@ export const RecoveryStep = () => {
                     default: undefined,
                     [DeviceModel.T1]: getModel1Description(),
                     [DeviceModel.TT]: <Translation id="TR_RECOVER_SUBHEADING_TOUCH" />,
-                    [DeviceModel.TR]: <Translation id="TR_RECOVER_SUBHEADING_BUTTONS" />,
+                    [DeviceModel.T2B1]: <Translation id="TR_RECOVER_SUBHEADING_BUTTONS" />,
                 })}
                 isActionAbortable
             >
