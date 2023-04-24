@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js';
 import { memoize } from 'proxy-memoize';
 
-import { Network, networksCompatibility, NetworkSymbol } from '@suite-common/wallet-config';
+import { networks, NetworkSymbol } from '@suite-common/wallet-config';
 import { selectAccounts, AccountsRootState } from '@suite-common/wallet-core';
 import { selectCoinsLegacy, FiatRatesRootState } from '@suite-native/fiat-rates';
 import { toFiatCurrency } from '@suite-common/wallet-utils';
@@ -12,7 +12,7 @@ type FormattedAssets = Partial<Record<NetworkSymbol, BigNumber>>;
 
 export interface AssetType {
     symbol: NetworkSymbol;
-    network: Network;
+    network: (typeof networks)[NetworkSymbol];
     assetBalance: BigNumber;
     fiatBalance: string;
 }
@@ -51,13 +51,7 @@ export const selectAssetsWithBalances = memoize((state: AssetsRootState) => {
 
     return networksWithAssets
         .map((networkSymbol: NetworkSymbol) => {
-            const network = networksCompatibility.find(
-                n => n.symbol === networkSymbol && !n.accountType,
-            );
-            if (!network) {
-                console.error('unknown network', networkSymbol);
-                return;
-            }
+            const network = networks[networkSymbol];
 
             const currentFiatRates = coins.find(
                 f => f.symbol.toLowerCase() === networkSymbol.toLowerCase(),

@@ -11,6 +11,7 @@ import { Account } from '@suite-common/wallet-types';
 import { isTestnet } from '@suite-common/wallet-utils';
 import TrezorConnect, { AccountTransaction } from '@trezor/connect';
 import { fiatRatesActions as fiatRatesActionsLegacy } from '@suite-common/wallet-core';
+import { networks, NetworkSymbol } from '@suite-common/wallet-config';
 
 import { actionPrefix } from './fiatRatesActions';
 import { REFETCH_INTERVAL } from './fiatRatesConst';
@@ -65,6 +66,10 @@ const fetchFiatRate = async (
     fiatCurrency: FiatCurrencyCode,
 ): Promise<number | undefined | null> => {
     const { symbol, tokenAddress, mainNetworkSymbol } = ticker;
+    const networkSymbol = (mainNetworkSymbol || symbol) as NetworkSymbol;
+
+    if (networks[networkSymbol].testnet) return null;
+
     const { success, payload } = await TrezorConnect.blockchainGetCurrentFiatRates({
         coin: mainNetworkSymbol || symbol,
         token: tokenAddress,
@@ -73,6 +78,11 @@ const fetchFiatRate = async (
 
     const rate = success ? payload.rates?.[fiatCurrency] : null;
     if (rate) return rate;
+
+    if (tokenAddress && !rate) {
+        // We don't want to fallback to coingecko for tokens because it returns nonsenses
+        return null;
+    }
 
     return fetchCurrentFiatRates(ticker).then(res => res?.rates?.[fiatCurrency]);
 };
@@ -83,16 +93,25 @@ const fetchLastWeekRate = async (
 ): Promise<number | undefined | null> => {
     const weekAgoTimestamp = getUnixTime(subWeeks(new Date(), 1));
     const timestamps = [weekAgoTimestamp];
+    const { symbol, tokenAddress, mainNetworkSymbol } = ticker;
+    const networkSymbol = (mainNetworkSymbol || symbol) as NetworkSymbol;
+
+    if (networks[networkSymbol].testnet) return null;
 
     const { success, payload } = await TrezorConnect.blockchainGetFiatRatesForTimestamps({
-        coin: ticker.symbol,
-        token: ticker.tokenAddress,
+        coin: networkSymbol,
+        token: tokenAddress,
         timestamps,
         currencies: [fiatCurrency],
     });
 
     const rate = success ? payload.tickers?.[0]?.rates?.[fiatCurrency] : null;
     if (rate) return rate;
+
+    if (tokenAddress && !rate) {
+        // We don't want to fallback to coingecko for tokens because it returns nonsenses
+        return null;
+    }
 
     return fetchLastWeekFiatRates(ticker, fiatCurrency).then(
         res => res?.tickers?.[0]?.rates?.[fiatCurrency],

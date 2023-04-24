@@ -3,12 +3,12 @@ import type { Keys, Without } from '@trezor/type-utils';
 import { DeviceModel } from '@trezor/device-utils';
 
 export const networks = {
-    // Bitcoin
     btc: {
         name: 'Bitcoin',
         networkType: 'bitcoin',
         bip43Path: "m/84'/0'/i'",
         decimals: 8,
+        testnet: false,
         explorer: {
             tx: 'https://btc1.trezor.io/tx/',
             account: 'https://btc1.trezor.io/xpub/',
@@ -34,12 +34,12 @@ export const networks = {
             },
         },
     },
-    // Litecoin
     ltc: {
         name: 'Litecoin',
         networkType: 'bitcoin',
         bip43Path: "m/84'/2'/i'",
         decimals: 8,
+        testnet: false,
         explorer: {
             tx: 'https://ltc1.trezor.io/tx/',
             account: 'https://ltc1.trezor.io/xpub/',
@@ -56,13 +56,13 @@ export const networks = {
             },
         },
     },
-    // Ethereum
     eth: {
         name: 'Ethereum',
         networkType: 'ethereum',
         chainId: 1,
         bip43Path: "m/44'/60'/0'/0/i",
         decimals: 18,
+        testnet: false,
         explorer: {
             tx: 'https://eth1.trezor.io/tx/',
             account: 'https://eth1.trezor.io/address/',
@@ -81,6 +81,7 @@ export const networks = {
         chainId: 61,
         bip43Path: "m/44'/61'/0'/0/i",
         decimals: 18,
+        testnet: false,
         explorer: {
             tx: 'https://etc1.trezor.io/tx/',
             account: 'https://etc1.trezor.io/address/',
@@ -97,6 +98,7 @@ export const networks = {
         networkType: 'ripple',
         bip43Path: "m/44'/144'/i'/0/0",
         decimals: 6,
+        testnet: false,
         explorer: {
             tx: 'https://xrpscan.com/tx/',
             account: 'https://xrpscan.com/account/',
@@ -111,6 +113,7 @@ export const networks = {
         networkType: 'bitcoin',
         bip43Path: "m/44'/145'/i'",
         decimals: 8,
+        testnet: false,
         explorer: {
             tx: 'https://bch1.trezor.io/tx/',
             account: 'https://bch1.trezor.io/xpub/',
@@ -125,6 +128,7 @@ export const networks = {
         networkType: 'bitcoin',
         bip43Path: "m/49'/156'/i'",
         decimals: 8,
+        testnet: false,
         explorer: {
             tx: 'https://btg1.trezor.io/tx/',
             account: 'https://btg1.trezor.io/xpub/',
@@ -143,6 +147,7 @@ export const networks = {
         networkType: 'bitcoin',
         bip43Path: "m/44'/5'/i'",
         decimals: 8,
+        testnet: false,
         explorer: {
             tx: 'https://dash1.trezor.io/tx/',
             account: 'https://dash1.trezor.io/xpub/',
@@ -157,6 +162,7 @@ export const networks = {
         networkType: 'bitcoin',
         bip43Path: "m/49'/20'/i'",
         decimals: 8,
+        testnet: false,
         explorer: {
             tx: 'https://dgb1.trezor.io/tx/',
             account: 'https://dgb1.trezor.io/xpub/',
@@ -175,6 +181,7 @@ export const networks = {
         networkType: 'bitcoin',
         bip43Path: "m/44'/3'/i'",
         decimals: 8,
+        testnet: false,
         explorer: {
             tx: 'https://doge1.trezor.io/tx/',
             account: 'https://doge1.trezor.io/xpub/',
@@ -189,6 +196,7 @@ export const networks = {
         networkType: 'bitcoin',
         bip43Path: "m/44'/7'/i'",
         decimals: 8,
+        testnet: false,
         explorer: {
             tx: 'https://nmc1.trezor.io/tx/',
             account: 'https://nmc1.trezor.io/xpub/',
@@ -203,6 +211,7 @@ export const networks = {
         networkType: 'bitcoin',
         bip43Path: "m/84'/28'/i'",
         decimals: 8,
+        testnet: false,
         explorer: {
             tx: 'https://vtc1.trezor.io/tx/',
             account: 'https://vtc1.trezor.io/xpub/',
@@ -224,6 +233,7 @@ export const networks = {
         networkType: 'bitcoin',
         bip43Path: "m/44'/133'/i'",
         decimals: 8,
+        testnet: false,
         explorer: {
             tx: 'https://zec1.trezor.io/tx/',
             account: 'https://zec1.trezor.io/xpub/',
