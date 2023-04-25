@@ -69,20 +69,6 @@ declare interface RequestInterceptor {
     offBeforeRequest(listener: BeforeRequestListener): void;
 }
 
-// Store
-declare interface LocalStore {
-    getWinBounds(): WinBounds;
-    setWinBounds(winBound: WinBounds): void;
-    getUpdateSettings(): UpdateSettings;
-    setUpdateSettings(updateSettings: UpdateSettings): void;
-    getTorSettings(): TorSettings;
-    setTorSettings(torSettings: TorSettings): void;
-    clear(): void;
-    // todo: this is a never ending story, should we model it as transport? processes? bridge?
-    getBridgeSettings(): BridgeSettings;
-    setBridgeSettings(bridgeSettings: BridgeSettings): void;
-}
-
 declare type WinBounds = {
     height: number;
     width: number;
@@ -99,20 +85,15 @@ declare type UpdateSettings = {
     allowPrerelease: boolean;
 };
 
-declare type TorSettings = {
-    /**
-     * True when tor should be enabled.
-     * Doesn't necessarily mean that the bundled tor is running
-     * as that depends on the address as well.
-     */
-    running: boolean;
-    /**
-     * Address of the tor process through which traffic is routed.
-     * If it's anything other than the default one assume user
-     * wants to use their own tor instance and don't run the bundled one.
-     */
-    address: string;
-};
+declare type TorSettings =
+    | {
+          running: false; // Tor should be disabled
+      }
+    | {
+          running: true; // Tor should be enabled
+          host: string; // Hostname of the tor process through which traffic is routed
+          port: number; // Port of the tor process through which traffic is routed
+      };
 
 declare type BridgeSettings = {
     /**

@@ -7,6 +7,7 @@ import { isDevEnv } from '@suite-common/suite-utils';
 import type { HandshakeClient } from '@trezor/suite-desktop-api';
 
 import { StrictBrowserWindow } from '../typed-electron';
+import type { Store } from '../libs/store';
 
 // General modules (both dev & prod)
 const MODULES = [
@@ -41,7 +42,7 @@ const MODULES = [
 
 export type Dependencies = {
     mainWindow: StrictBrowserWindow;
-    store: LocalStore;
+    store: Store;
     interceptor: RequestInterceptor;
 };
 

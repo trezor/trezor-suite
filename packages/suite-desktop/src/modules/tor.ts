@@ -19,21 +19,13 @@ const load = async ({ mainWindow, store }: Dependencies) => {
     const { logger } = global;
     const host = '127.0.0.1';
     const port = await getFreePort();
-    const address = `${host}:${port}`;
     const controlPort = await getFreePort();
     const torDataDir = path.join(app.getPath('userData'), 'tor');
 
-    /**
-     * Merges given TorSettings with settings already present in the store,
-     * persists the result and returns it.
-     */
-    const persistSettings = (options: Partial<TorSettings>): TorSettings => {
-        const newSettings = { ...store.getTorSettings(), ...options };
-        store.setTorSettings(newSettings);
-        return newSettings;
+    const persistSettings = (shouldEnableTor: boolean) => {
+        store.setTorSettings({ running: shouldEnableTor, host, port });
     };
 
-    persistSettings({ address });
     const tor = new TorProcess({ host, port, controlPort, torDataDir });
 
     const setProxy = (rule: string) => {
@@ -47,7 +39,7 @@ const load = async ({ mainWindow, store }: Dependencies) => {
     };
 
     const getProxySettings = (shouldEnableTor: boolean) =>
-        shouldEnableTor ? { proxy: `socks://${address}` } : { proxy: '' };
+        shouldEnableTor ? { proxy: `socks://${host}:${port}` } : { proxy: '' };
 
     const handleTorProcessStatus = (status: TorProcessStatus) => {
         let type: TorStatus;
@@ -91,8 +83,7 @@ const load = async ({ mainWindow, store }: Dependencies) => {
         }
     };
 
-    const setupTor = async (settings: TorSettings) => {
-        const shouldEnableTor = settings.running;
+    const setupTor = async (shouldEnableTor: boolean) => {
         const isTorRunning = (await tor.status()).process;
 
         if (shouldEnableTor === isTorRunning) {
@@ -125,16 +116,14 @@ const load = async ({ mainWindow, store }: Dependencies) => {
             await tor.stop();
         }
 
-        persistSettings(settings);
+        persistSettings(shouldEnableTor);
     };
 
     ipcMain.handle('tor/toggle', async (_: unknown, shouldEnableTor: boolean) => {
         logger.info('tor', `Toggling ${shouldEnableTor ? 'ON' : 'OFF'}`);
 
-        const settings: TorSettings = { ...store.getTorSettings(), running: shouldEnableTor };
-
         try {
-            await setupTor(settings);
+            await setupTor(shouldEnableTor);
 
             // After setupTor we can assume TOR is available so we set the proxy in TrezorConnect
             // This is only required when 'toggle' because when app starts with TOR enable TrezorConnect is
@@ -148,7 +137,7 @@ const load = async ({ mainWindow, store }: Dependencies) => {
                 `${shouldEnableTor ? 'Enabled' : 'Disabled'} proxy ${proxySettings.proxy}`,
             );
         } catch (error) {
-            await setupTor({ ...settings, running: !shouldEnableTor });
+            await setupTor(!shouldEnableTor);
 
             const proxySettings = getProxySettings(!shouldEnableTor);
 
@@ -185,7 +174,7 @@ const load = async ({ mainWindow, store }: Dependencies) => {
 
     if (app.commandLine.hasSwitch('tor')) {
         logger.info('tor', 'Tor enabled by command line option.');
-        persistSettings({ running: true });
+        persistSettings(true);
     }
 };
 
