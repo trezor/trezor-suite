@@ -13,6 +13,7 @@ import { AccountListItemInteractive } from './AccountListItemInteractive';
 type AccountsListGroupProps = {
     symbol: NetworkSymbol;
     onSelectAccount: (accountKey: AccountKey, tokenSymbol?: EthereumTokenSymbol) => void;
+    areTokensDisplayed: boolean;
 };
 
 const accountListGroupStyle = prepareNativeStyle(utils => ({
@@ -21,7 +22,11 @@ const accountListGroupStyle = prepareNativeStyle(utils => ({
     marginBottom: utils.spacings.small,
 }));
 
-export const AccountsListGroup = ({ symbol, onSelectAccount }: AccountsListGroupProps) => {
+export const AccountsListGroup = ({
+    symbol,
+    onSelectAccount,
+    areTokensDisplayed,
+}: AccountsListGroupProps) => {
     const { applyStyle } = useNativeStyles();
     const symbols = useMemo(() => [symbol], [symbol]);
     const accounts = useSelector((state: AccountsRootState) =>
@@ -36,6 +41,7 @@ export const AccountsListGroup = ({ symbol, onSelectAccount }: AccountsListGroup
                     key={account.key}
                     account={account}
                     onSelectAccount={onSelectAccount}
+                    areTokensDisplayed={areTokensDisplayed}
                 />
             ))}
         </Box>

@@ -18,7 +18,7 @@ export const ReceiveAccountsScreen = ({
 
     return (
         <Screen header={<ScreenHeader content="Receive to" hasGoBackIcon={false} />}>
-            <AccountsList onSelectAccount={navigateToReceiveScreen} />
+            <AccountsList onSelectAccount={navigateToReceiveScreen} areTokensDisplayed={false} />
         </Screen>
     );
 };

@@ -27,7 +27,7 @@ export const AccountsScreen = () => {
 
     return (
         <Screen header={<AccountsScreenHeader />}>
-            <AccountsList onSelectAccount={handleSelectAccount} />
+            <AccountsList onSelectAccount={handleSelectAccount} areTokensDisplayed />
         </Screen>
     );
 };

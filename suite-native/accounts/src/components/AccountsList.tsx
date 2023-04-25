@@ -12,9 +12,10 @@ import { AccountsListGroup } from './AccountsListGroup';
 
 type AccountsListProps = {
     onSelectAccount: (accountKey: AccountKey, tokenSymbol?: EthereumTokenSymbol) => void;
+    areTokensDisplayed: boolean;
 };
 
-export const AccountsList = ({ onSelectAccount }: AccountsListProps) => {
+export const AccountsList = ({ onSelectAccount, areTokensDisplayed }: AccountsListProps) => {
     const accountsSymbols = useSelector(selectAccountsSymbols);
     const accounts = useSelector(selectAccounts);
 
@@ -23,7 +24,12 @@ export const AccountsList = ({ onSelectAccount }: AccountsListProps) => {
     return (
         <>
             {accountsSymbols.map(symbol => (
-                <AccountsListGroup key={symbol} symbol={symbol} onSelectAccount={onSelectAccount} />
+                <AccountsListGroup
+                    key={symbol}
+                    symbol={symbol}
+                    onSelectAccount={onSelectAccount}
+                    areTokensDisplayed={areTokensDisplayed}
+                />
             ))}
         </>
     );

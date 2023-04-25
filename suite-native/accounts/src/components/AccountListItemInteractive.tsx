@@ -10,17 +10,23 @@ import { TokenList } from './TokenList';
 
 interface AccountListItemInteractiveProps extends AccountListItemProps {
     onSelectAccount: (accountKey: AccountKey, tokenSymbol?: TokenSymbol) => void;
+    areTokensDisplayed: boolean;
 }
 
 export const AccountListItemInteractive = ({
     account,
     onSelectAccount,
+    areTokensDisplayed,
 }: AccountListItemInteractiveProps) => (
     <Box>
         <TouchableOpacity onPress={() => onSelectAccount(account.key)}>
-            <AccountListItem key={account.key} account={account} />
+            <AccountListItem
+                key={account.key}
+                account={account}
+                areTokensDisplayed={areTokensDisplayed}
+            />
         </TouchableOpacity>
-        {isEthereumAccountSymbol(account.symbol) && (
+        {areTokensDisplayed && isEthereumAccountSymbol(account.symbol) && (
             <TokenList accountKey={account.key} onSelectAccount={onSelectAccount} />
         )}
     </Box>

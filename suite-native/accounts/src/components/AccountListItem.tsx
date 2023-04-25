@@ -17,10 +17,11 @@ import { SettingsSliceRootState } from '@suite-native/module-settings';
 
 export type AccountListItemProps = {
     account: Account;
+    areTokensDisplayed?: boolean;
 };
 
-const accountListItemStyle = prepareNativeStyle<{ isAccountWithTokens: boolean }>(
-    (utils, { isAccountWithTokens }) => ({
+const accountListItemStyle = prepareNativeStyle<{ isAccountContainingTokens: boolean }>(
+    (utils, { isAccountContainingTokens }) => ({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItem: 'center',
@@ -28,7 +29,7 @@ const accountListItemStyle = prepareNativeStyle<{ isAccountWithTokens: boolean }
         padding: utils.spacings.medium,
         borderRadius: utils.borders.radii.medium,
         extend: {
-            condition: isAccountWithTokens,
+            condition: isAccountContainingTokens,
             style: {
                 paddingBottom: 0,
             },
@@ -47,7 +48,7 @@ export const valuesContainerStyle = prepareNativeStyle(utils => ({
     paddingLeft: utils.spacings.small,
 }));
 
-export const AccountListItem = ({ account }: AccountListItemProps) => {
+export const AccountListItem = ({ account, areTokensDisplayed = false }: AccountListItemProps) => {
     const { applyStyle } = useNativeStyles();
     const accountLabel = useSelector((state: AccountsRootState) =>
         selectAccountLabel(state, account.key),
@@ -64,7 +65,7 @@ export const AccountListItem = ({ account }: AccountListItemProps) => {
     return (
         <Box
             style={applyStyle(accountListItemStyle, {
-                isAccountWithTokens,
+                isAccountContainingTokens: areTokensDisplayed && isAccountWithTokens,
             })}
         >
             <Box flexDirection="row" alignItems="center" flex={1}>
