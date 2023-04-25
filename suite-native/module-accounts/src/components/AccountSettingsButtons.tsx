@@ -4,10 +4,16 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { Button, VStack } from '@suite-native/atoms';
-import { accountsActions, AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import {
-    HomeStackParamList,
+    accountsActions,
+    AccountsRootState,
+    selectAccountByKey,
+    selectNumberOfAccounts,
+} from '@suite-common/wallet-core';
+import {
+    AccountsImportStackRoutes,
     HomeStackRoutes,
+    RootStackParamList,
     RootStackRoutes,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
@@ -20,12 +26,14 @@ export const AccountSettingsButtons = ({ accountKey }: { accountKey: AccountKey 
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
+    const accountsLength = useSelector(selectNumberOfAccounts);
+
     const navigation =
         useNavigation<
             StackToStackCompositeNavigationProps<
-                HomeStackParamList,
+                RootStackParamList,
                 RootStackRoutes.AccountSettings,
-                HomeStackParamList
+                RootStackParamList
             >
         >();
 
@@ -33,7 +41,31 @@ export const AccountSettingsButtons = ({ accountKey }: { accountKey: AccountKey 
 
     const handleRemoveAccount = () => {
         dispatch(accountsActions.removeAccount([account]));
-        navigation.navigate(HomeStackRoutes.Home);
+
+        const isLastAccount = accountsLength === 1;
+        if (isLastAccount) {
+            navigation.reset({
+                index: 0,
+                routes: [
+                    {
+                        name: RootStackRoutes.AccountsImport,
+                        params: { screen: AccountsImportStackRoutes.SelectNetwork },
+                    },
+                ],
+            });
+        } else {
+            navigation.reset({
+                index: 0,
+                routes: [
+                    {
+                        name: RootStackRoutes.AppTabs,
+                        params: {
+                            screen: HomeStackRoutes.Home,
+                        },
+                    },
+                ],
+            });
+        }
     };
 
     return (
