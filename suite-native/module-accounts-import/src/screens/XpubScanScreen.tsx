@@ -120,8 +120,13 @@ export const XpubScanScreen = ({
                 <TextDivider title="OR" />
                 <Form form={form}>
                     <VStack spacing="medium">
-                        <TextInputField name="xpubAddress" label={inputLabel} />
+                        <TextInputField
+                            data-testID="@accounts-import/sync-coins/xpub-input"
+                            name="xpubAddress"
+                            label={inputLabel}
+                        />
                         <Button
+                            data-testID="@accounts-import/sync-coins/xpub-submit"
                             onPress={onXpubFormSubmit}
                             size="large"
                             isDisabled={!watchXpubAddress?.length}

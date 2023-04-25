@@ -42,10 +42,20 @@ export const DashboardNavigationButtons = () => {
 
     return (
         <VStack style={applyStyle(importStyle)} spacing="small">
-            <Button colorScheme="tertiaryElevation0" size="large" onPress={handleImportAssets}>
+            <Button
+                data-testID="@home/portfolio/sync-coins-button"
+                colorScheme="tertiaryElevation0"
+                size="large"
+                onPress={handleImportAssets}
+            >
                 Sync my coins
             </Button>
-            <Button size="large" onPress={handleReceive} iconLeft="receive">
+            <Button
+                data-testID="@home/portolio/recieve-button"
+                size="large"
+                onPress={handleReceive}
+                iconLeft="receive"
+            >
                 Receive
             </Button>
         </VStack>
