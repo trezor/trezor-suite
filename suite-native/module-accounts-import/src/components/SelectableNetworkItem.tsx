@@ -67,6 +67,7 @@ export const SelectableNetworkItem = ({
                     {onPressActionButton && (
                         <Box alignItems="flex-end">
                             <Button
+                                data-testID="@onboarding/sync-coins/change"
                                 colorScheme="tertiaryElevation1"
                                 size="small"
                                 onPress={onPressActionButton}

@@ -92,7 +92,12 @@ export const XpubHint = ({ networkType }: XpubScanHintSheet) => {
                     <Box marginRight="small">
                         <Icon name="question" size="medium" color="iconPrimaryDefault" />
                     </Box>
-                    <Text color="textPrimaryDefault">{title}</Text>
+                    <Text
+                        data-testID="@accounts-import/sync-coins/xpub-help-link"
+                        color="textPrimaryDefault"
+                    >
+                        {title}
+                    </Text>
                 </TouchableOpacity>
             </KeyboardAvoidingView>
 
@@ -105,7 +110,12 @@ export const XpubHint = ({ networkType }: XpubScanHintSheet) => {
                         </Text>
                     </VStack>
                     <Box marginTop="extraLarge">
-                        <Button onPress={handleClose}>Got it</Button>
+                        <Button
+                            data-testID="@accounts-import/xpub-help-modal/confirm-btn"
+                            onPress={handleClose}
+                        >
+                            Got it
+                        </Button>
                     </Box>
                 </Box>
             </BottomSheet>

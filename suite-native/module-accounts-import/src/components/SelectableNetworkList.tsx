@@ -57,6 +57,7 @@ export const SelectableNetworkList = ({ onSelectItem }: SelectableAssetListProps
                                     iconName={iconName}
                                     cryptoCurrencyName={cryptoCurrencyName}
                                     cryptoCurrencySymbol={cryptoCurrencySymbol}
+                                    data-testID={`@onboarding/select-coin/${cryptoCurrencySymbol}`}
                                     onPress={onSelectItem}
                                 />
                             ),
@@ -77,6 +78,7 @@ export const SelectableNetworkList = ({ onSelectItem }: SelectableAssetListProps
                                     iconName={iconName}
                                     cryptoCurrencyName={cryptoCurrencyName}
                                     cryptoCurrencySymbol={cryptoCurrencySymbol}
+                                    data-testID={`@onboarding/select-coin/${cryptoCurrencySymbol}`}
                                     onPress={onSelectItem}
                                 />
                             ),

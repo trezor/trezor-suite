@@ -38,7 +38,6 @@ export const OnboardingFooter = ({ redirectTarget, isLastStep = false }: Onboard
     const userHasAllowedTracking = useSelector(selectHasUserAllowedTracking);
 
     const buttonTitle = route.name === OnboardingStackRoutes.Welcome ? 'Get started' : 'Next';
-
     const handlePress = () => {
         if (isLastStep) {
             dispatch(setIsOnboardingFinished());
@@ -54,7 +53,9 @@ export const OnboardingFooter = ({ redirectTarget, isLastStep = false }: Onboard
                     Don’t have a Trezor? <Link href="https://trezor.io/" label="Get one here." />
                 </Text>
             </Box>
-            <Button onPress={handlePress}>{buttonTitle}</Button>
+            <Button data-testID={`@onboarding/${route.name}/nextBtn`} onPress={handlePress}>
+                {buttonTitle}
+            </Button>
         </Stack>
     );
 };

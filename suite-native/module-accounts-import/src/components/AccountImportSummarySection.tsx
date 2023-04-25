@@ -22,7 +22,9 @@ export const AccountImportSummarySection = ({
 
     return (
         <Box alignItems="center" flex={1} justifyContent="space-between">
-            <Text variant="titleMedium">{title}</Text>
+            <Text data-testID="@account-import/coin-synced/success-text" variant="titleMedium">
+                {title}
+            </Text>
             <Box style={applyStyle(contentWrapperStyle)}>{children}</Box>
         </Box>
     );
