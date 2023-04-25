@@ -2,7 +2,7 @@ import React from 'react';
 
 import { TextProps } from '@suite-native/atoms';
 import { useFormatters } from '@suite-common/formatters';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { networks, NetworkSymbol } from '@suite-common/wallet-config';
 
 import { FormatterProps } from '../types';
 import { EmptyAmountText } from './EmptyAmountText';
@@ -28,10 +28,12 @@ export const CryptoAmountFormatter = ({
 
     if (!value) return <EmptyAmountText />;
 
+    const maxDisplayedDecimals = networks[network].decimals;
+
     const formattedValue = formatter.format(value, {
         isBalance,
+        maxDisplayedDecimals,
         symbol: network,
-        maxDisplayedDecimals: undefined,
         isEllipsisAppended: false,
     });
 
