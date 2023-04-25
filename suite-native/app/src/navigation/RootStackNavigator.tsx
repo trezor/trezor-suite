@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import { AccountSettingsScreen, AccountDetailScreen } from '@suite-native/module-accounts';
+import { AccountSettingsScreen } from '@suite-native/module-accounts';
 import { AccountsImportStackNavigator } from '@suite-native/module-accounts-import';
 import {
     RootStackParamList,
@@ -52,11 +52,6 @@ export const RootStackNavigator = () => {
                 options={{ title: RootStackRoutes.AccountSettings }}
                 name={RootStackRoutes.AccountSettings}
                 component={AccountSettingsScreen}
-            />
-            <RootStack.Screen
-                options={{ title: RootStackRoutes.AccountDetail }}
-                name={RootStackRoutes.AccountDetail}
-                component={AccountDetailScreen}
             />
             <RootStack.Screen
                 options={{ title: RootStackRoutes.TransactionDetail }}

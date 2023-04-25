@@ -1,22 +1,16 @@
 import React, { ReactNode } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-
-import { useNavigation } from '@react-navigation/native';
+import { useSelector } from 'react-redux';
 
 import { networks, NetworkSymbol } from '@suite-common/wallet-config';
 import {
-    AccountsStackParamList,
-    AccountsStackRoutes,
     RootStackParamList,
     RootStackRoutes,
     Screen,
     ScreenHeader,
-    StackToStackCompositeNavigationProps,
     StackProps,
 } from '@suite-native/navigation';
-import { Box, Button, Card, Text, VStack } from '@suite-native/atoms';
+import { Box, Card, Text, VStack } from '@suite-native/atoms';
 import {
-    accountsActions,
     AccountsRootState,
     selectAccountByKey,
     selectAccountLabel,
@@ -25,7 +19,7 @@ import {
 import { CryptoIcon } from '@trezor/icons';
 
 import { AccountRenameButton } from '../components/AccountRenameButton';
-import { AccountSettingsShowXpub } from '../components/AccountSettingsShowXpub';
+import { AccountSettingsButtons } from '../components/AccountSettingsButtons';
 
 const AccountDetailSettingsRow = ({ title, children }: { title: string; children: ReactNode }) => (
     <Box flexDirection="row" alignItems="center" justifyContent="space-between">
@@ -50,15 +44,6 @@ export const AccountSettingsScreen = ({
 }: StackProps<RootStackParamList, RootStackRoutes.AccountSettings>) => {
     const { accountKey } = route.params;
 
-    const navigation =
-        useNavigation<
-            StackToStackCompositeNavigationProps<
-                RootStackParamList,
-                RootStackRoutes.AccountSettings,
-                AccountsStackParamList
-            >
-        >();
-    const dispatch = useDispatch();
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
@@ -72,11 +57,6 @@ export const AccountSettingsScreen = ({
     );
 
     if (!account) return null;
-
-    const handleRemoveAccount = () => {
-        dispatch(accountsActions.removeAccount([account]));
-        navigation.navigate(AccountsStackRoutes.Accounts);
-    };
 
     return (
         <Screen
@@ -101,12 +81,7 @@ export const AccountSettingsScreen = ({
                         )}
                     </VStack>
                 </Card>
-                <VStack spacing="small">
-                    <AccountSettingsShowXpub accountKey={account.key} />
-                    <Button onPress={handleRemoveAccount} colorScheme="dangerElevation0">
-                        Remove coin
-                    </Button>
-                </VStack>
+                <AccountSettingsButtons accountKey={account.key} />
             </Box>
         </Screen>
     );

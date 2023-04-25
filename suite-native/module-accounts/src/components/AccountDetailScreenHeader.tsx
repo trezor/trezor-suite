@@ -5,6 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import { IconButton } from '@suite-native/atoms';
 import {
     AccountsStackParamList,
+    HomeStackRoutes,
     RootStackParamList,
     RootStackRoutes,
     ScreenHeader,
@@ -18,7 +19,7 @@ type AccountDetailScreenHeaderProps = {
 
 type AccountDetailNavigationProps = StackToStackCompositeNavigationProps<
     AccountsStackParamList,
-    RootStackRoutes.AccountDetail,
+    HomeStackRoutes.AccountDetail,
     RootStackParamList
 >;
 

@@ -116,6 +116,7 @@ export const prepareAccountsReducer = createReducerWithExtraDeps(
 );
 
 export const selectAccounts = (state: AccountsRootState) => state.wallet.accounts;
+export const selectNumberOfAccounts = (state: AccountsRootState) => selectAccounts(state).length;
 
 export const selectUserHasAccounts = (state: AccountsRootState): boolean =>
     pipe(selectAccounts(state), A.isNotEmpty);

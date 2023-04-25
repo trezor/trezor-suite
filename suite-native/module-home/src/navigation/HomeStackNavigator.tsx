@@ -7,6 +7,7 @@ import {
     HomeStackRoutes,
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';
+import { AccountDetailScreen } from '@suite-native/module-accounts';
 
 import { HomeScreen } from '../screens/HomeScreen';
 
@@ -21,6 +22,11 @@ export const HomeStackNavigator = () => (
             options={{ title: HomeStackRoutes.Home }}
             name={HomeStackRoutes.Home}
             component={HomeScreen}
+        />
+        <HomeStack.Screen
+            options={{ title: HomeStackRoutes.AccountDetail }}
+            name={HomeStackRoutes.AccountDetail}
+            component={AccountDetailScreen}
         />
     </HomeStack.Navigator>
 );

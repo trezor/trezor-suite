@@ -16,8 +16,16 @@ import {
     OnboardingStackRoutes,
 } from './routes';
 
+export type AccountsStackParamList = {
+    [AccountsStackRoutes.Accounts]: undefined;
+};
+
 export type HomeStackParamList = {
     [HomeStackRoutes.Home]: undefined;
+    [HomeStackRoutes.AccountDetail]: {
+        accountKey: AccountKey;
+        tokenSymbol?: TokenSymbol;
+    };
 };
 
 export type DevUtilsStackParamList = {
@@ -32,10 +40,6 @@ export type SettingsStackParamList = {
     [SettingsStackRoutes.SettingsPrivacyAndSecurity]: undefined;
     [SettingsStackRoutes.SettingsAbout]: undefined;
     [SettingsStackRoutes.SettingsFAQ]: undefined;
-};
-
-export type AccountsStackParamList = {
-    [AccountsStackRoutes.Accounts]: undefined;
 };
 
 export type SendReceiveStackParamList = {
@@ -82,10 +86,6 @@ export type RootStackParamList = {
     [RootStackRoutes.Onboarding]: NavigatorScreenParams<AppTabsParamList>;
     [RootStackRoutes.AccountsImport]: NavigatorScreenParams<AccountsImportStackParamList>;
     [RootStackRoutes.AccountSettings]: { accountKey: AccountKey };
-    [RootStackRoutes.AccountDetail]: {
-        accountKey: AccountKey;
-        tokenSymbol?: TokenSymbol;
-    };
     [RootStackRoutes.TransactionDetail]: {
         txid: string;
         accountKey: AccountKey;

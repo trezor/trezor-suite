@@ -7066,6 +7066,7 @@ __metadata:
     "@suite-native/atoms": "workspace:*"
     "@suite-native/formatters": "workspace:*"
     "@suite-native/graph": "workspace:*"
+    "@suite-native/module-accounts": "workspace:*"
     "@suite-native/module-settings": "workspace:*"
     "@suite-native/navigation": "workspace:*"
     "@trezor/icons": "workspace:*"
