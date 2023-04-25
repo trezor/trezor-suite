@@ -7,7 +7,7 @@ import type { Features } from '../../types';
  */
 export const shouldStripFwHeaders = (features: Features) => {
     // ---------------------
-    // Model T modifications
+    // TT modifications
     // ---------------------
     // there are currently none.
     if (features.major_version === 2) return false;

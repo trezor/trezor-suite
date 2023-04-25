@@ -166,12 +166,12 @@ const isSelectedInstance = [
 
 const getDeviceModel = [
     {
-        description: `model T`,
+        description: `TT`,
         device: getSuiteDevice(undefined, { model: DeviceModel.TT }),
         result: DeviceModel.TT,
     },
     {
-        description: `model 1`,
+        description: `T1`,
         device: getSuiteDevice(undefined, { model: DeviceModel.T1 }),
         result: DeviceModel.T1,
     },

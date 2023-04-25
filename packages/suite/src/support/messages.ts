@@ -6886,7 +6886,7 @@ export default defineMessages({
         id: 'TR_TROUBLESHOOTING_TIP_CABLE_DESCRIPTION',
         defaultMessage:
             'The cable must be fully inserted. If you have a Model T, the cable should "click" into place.',
-        description: 'TODO Model R',
+        description: 'TODO Model T2B1',
     },
     TR_TROUBLESHOOTING_TIP_USB_PORT_TITLE: {
         id: 'TR_TROUBLESHOOTING_TIP_USB_PORT_TITLE',

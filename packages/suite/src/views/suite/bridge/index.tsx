@@ -7,6 +7,7 @@ import * as routerActions from '@suite-actions/routerActions';
 import { isDesktop, isWeb } from '@suite-utils/env';
 import { useSelector, useActions } from '@suite-hooks';
 import { selectTorState } from '@suite-reducers/suiteReducer';
+import { DeviceModel } from '@trezor/device-utils';
 
 const Content = styled.div`
     display: flex;

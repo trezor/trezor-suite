@@ -21,7 +21,7 @@ describe.skip('Recovery - dry run', () => {
         cy.task('pressYes');
         cy.getTestElement('@recovery/word-input-advanced/1');
 
-        // todo: elaborate more, seems like finally t1 tests are stable so it would make finally sense to finish this
+        // todo: elaborate more, seems like finally T1 tests are stable so it would make finally sense to finish this
     });
 });
 

@@ -163,7 +163,7 @@ const getSafeReleases = ({ features, releases }: GetInfoProps) => {
     if (major_version === 2 && bootloader_mode) {
         const fwVersion = [fw_major, fw_minor, fw_patch];
         if (isVersionArray(fwVersion)) {
-            // in bootloader, model T knows its firmware, so we still may filter "by firmware".
+            // in bootloader, TT knows its firmware, so we still may filter "by firmware".
             return filterSafeListByFirmware(releases, fwVersion);
         }
         return filterSafeListByBootloader(releases, firmwareVersion);
@@ -203,8 +203,8 @@ export const getInfo = ({ features, releases }: GetInfoProps): ReleaseInfo | nul
     }
 
     /**
-     * For model 1 we always support installation of latest firmware, possibly using an intermediary.
-     * For model T there is only "incremental FW update" if it's not possible to install latest right away.
+     * For T1 we always support installation of latest firmware, possibly using an intermediary.
+     * For TT there is only "incremental FW update" if it's not possible to install latest right away.
      */
     const releasesParsed = features.major_version === 1 ? releases : releasesSafe;
 
@@ -232,7 +232,7 @@ export const getFirmwareStatus = (features: Features) => {
     if (features.firmware_present === false) {
         return 'none';
     }
-    // for t1 in bootloader, what device reports as firmware version is in fact bootloader version, so we can
+    // for T1 in bootloader, what device reports as firmware version is in fact bootloader version, so we can
     // not safely tell firmware version
     if (features.major_version === 1 && features.bootloader_mode) {
         return 'unknown';
