@@ -9,12 +9,12 @@ import {
     PopupEvent,
     PopupInit,
     PopupHandshake,
-    SystemInfo,
 } from '@trezor/connect';
 import { config } from '@trezor/connect/lib/data/config';
 
 import { reactEventBus } from '@trezor/connect-ui/src/utils/eventBus';
 import { analytics, EventType } from '@trezor/connect-analytics';
+import { getSystemInfo } from '@trezor/connect-common';
 
 import * as view from './view';
 import {
@@ -26,35 +26,6 @@ import {
     postMessage,
 } from './view/common';
 import { isPhishingDomain } from './utils/isPhishingDomain';
-import { getBrowserVersion, getBrowserName, getDeviceType, getOsFamily } from '@trezor/env-utils';
-
-// FIXME!!!
-// this is copy paste hotfix from connect-iframe package
-// why: systemInfo is sent in POPUP.INIT message from connect-web/src/popup. And this was added in 9.0.8.
-// In case implementator has earlier version, systemInfo does not come. One of results is that popup displays
-// outdated browser.
-const getSystemInfo = (supportedBrowsers: { [key: string]: { version: number } }): SystemInfo => {
-    const browserName = getBrowserName();
-    const browserVersion = getBrowserVersion();
-    const supportedBrowser = browserName ? supportedBrowsers[browserName.toLowerCase()] : undefined;
-    const outdatedBrowser = supportedBrowser
-        ? supportedBrowser.version > parseInt(browserVersion, 10)
-        : false;
-    const mobile = getDeviceType() === 'mobile';
-    const supportedMobile = mobile ? typeof navigator.usb !== 'undefined' : true;
-    const supported = !!(supportedBrowser && !outdatedBrowser && supportedMobile);
-
-    return {
-        os: {
-            family: getOsFamily(),
-            mobile,
-        },
-        browser: {
-            supported,
-            outdated: outdatedBrowser,
-        },
-    };
-};
 
 let handshakeTimeout: ReturnType<typeof setTimeout>;
 

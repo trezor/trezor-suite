@@ -14,9 +14,9 @@
     "dependencies": {
         "@trezor/connect": "workspace:9.0.8",
         "@trezor/connect-analytics": "workspace:*",
+        "@trezor/connect-common": "workspace:*",
         "@trezor/connect-ui": "workspace:*",
         "@trezor/crypto-utils": "workspace:*",
-        "@trezor/env-utils": "workspace:*",
         "@trezor/urls": "workspace:*",
         "eth-phishing-detect": "^1.2.0"
     },
