@@ -1,4 +1,4 @@
-import { TorController, TorIdentities, TOR_CONTROLLER_STATUS } from '@trezor/request-manager';
+import { TorController, TOR_CONTROLLER_STATUS } from '@trezor/request-manager';
 
 import { BaseProcess, Status } from './BaseProcess';
 
@@ -48,10 +48,7 @@ export class TorProcess extends BaseProcess {
         const torConfiguration = this.torController.getTorConfiguration(electronProcessId);
 
         await super.start(torConfiguration);
-        // Initialize TorIdentities with TorController so requests are intercepted to use Tor.
-        // `TorIdentities` needs to be initialized with `TorController` because it needs to know the
-        // `host` and `port` of the Tor process to create SocksProxyAgent.
-        TorIdentities.init(this.torController);
+
         return this.torController.waitUntilAlive();
     }
 }
