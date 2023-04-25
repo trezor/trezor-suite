@@ -46,6 +46,7 @@ export const initAnalyticsThunk = createThunk(
         analytics.init(userAllowedTracking, {
             instanceId,
             sessionId,
+            environment: 'mobile',
             commitId: getCommitHash(),
             isDev: isDevelopEnv(),
             callbacks: {
