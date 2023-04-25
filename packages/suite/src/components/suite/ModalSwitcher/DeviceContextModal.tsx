@@ -73,8 +73,8 @@ export const DeviceContextModal = ({
         case 'ButtonRequest_MnemonicWordCount':
         case 'ButtonRequest_MnemonicInput':
         case 'ButtonRequest_ProtectCall':
-        case 'ButtonRequest_ResetDevice': // dispatched on BackupDevice call for model T, weird but true
-        case 'ButtonRequest_ConfirmWord': // dispatched on BackupDevice call for model One
+        case 'ButtonRequest_ResetDevice': // dispatched on BackupDevice call for TT, weird but true
+        case 'ButtonRequest_ConfirmWord': // dispatched on BackupDevice call for T1
         case 'ButtonRequest_WipeDevice':
         case 'ButtonRequest_UnknownDerivationPath':
         case 'ButtonRequest_FirmwareUpdate':

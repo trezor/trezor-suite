@@ -180,9 +180,9 @@ const firmwareInstall =
         }
         dispatch({ type: FIRMWARE.SET_HASH, payload: updateResponse.payload });
 
-        // model 1
-        // ask user to unplug device if BL < 1.10.0 (see firmwareMiddleware), BL starting with 1.10.0 will automatically restart itself just like on model T
-        // model 2 without pin
+        // T1
+        // ask user to unplug device if BL < 1.10.0 (see firmwareMiddleware), BL starting with 1.10.0 will automatically restart itself just like on TT
+        // TT without pin
         // ask user to wait until device reboots
         dispatch(
             setStatus(
@@ -259,8 +259,8 @@ export const validateFirmwareHash =
                 // todo: add a more generic way how to handle all device errors
                 if (
                     [
-                        'Unknown message', // model 1
-                        'Unexpected message', // model T
+                        'Unknown message', // T1
+                        'Unexpected message', // TT
                     ].includes(fwHash.payload.error)
                 ) {
                     handleFwHashMismatch(dispatch, device);

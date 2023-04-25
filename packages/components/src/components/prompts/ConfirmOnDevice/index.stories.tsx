@@ -17,7 +17,7 @@ export const Basic = () => (
         <StoryColumn minWidth={300}>
             <ConfirmOnDevice
                 successText="confirmed"
-                title="Confirm on Trezor T1"
+                title="Confirm on T1"
                 deviceModel={DeviceModel.T1}
             />
         </StoryColumn>
@@ -32,7 +32,7 @@ export const Basic = () => (
         <StoryColumn minWidth={300}>
             <ConfirmOnDevice
                 successText="confirmed"
-                title="Confirm on Trezor TT"
+                title="Confirm on TT"
                 deviceModel={DeviceModel.TT}
             />
         </StoryColumn>
@@ -83,7 +83,7 @@ export const Basic = () => (
         <StoryColumn minWidth={300}>
             <ConfirmOnDevice
                 successText="Confirmed"
-                title="Confirm on Trezor"
+                title="Confirm on TT"
                 steps={5}
                 activeStep={5}
                 onCancel={() => {}}

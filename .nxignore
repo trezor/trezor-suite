@@ -41,7 +41,7 @@ _.code-workspace
 .stylelintcache
 _.tsbuildinfo
 
-# model 1 emulation file
+# T1 emulation file
 
 docker/trezor-user-env/controller/emulator.img
 

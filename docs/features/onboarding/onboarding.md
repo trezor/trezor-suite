@@ -243,7 +243,7 @@ The entire process is done on device. All we need to do in Suite UI is to show g
 
 #### T1
 
-For Trezor model 1 there are two things the user needs to decide:
+For T1 there are two things the user needs to decide:
 
 1. Does the user want to recover from 12, 28 or 24 words?
 2. Does the user want to enter the seed by selecting words in Suite UI (Standard recovery) or he/she wants the most secure environment and will enter the words via keyboard matrix shown on the device (advanced recovery)?

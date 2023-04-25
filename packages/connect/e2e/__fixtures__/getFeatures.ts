@@ -76,7 +76,7 @@ export default {
                     'Capability_PassphraseEntry',
                 ],
                 backup_type: 'Bip39',
-                sd_card_present: expect.any(Boolean), // model T true, model R false
+                sd_card_present: expect.any(Boolean), // TT true, T2B1 false
                 sd_protection: false,
                 wipe_code_protection: false,
                 session_id: expect.any(String),

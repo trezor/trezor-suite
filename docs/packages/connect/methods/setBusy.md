@@ -6,7 +6,7 @@ Show a "Do not disconnect" dialog instead of the standard homescreen.
 const result = await TrezorConnect.setBusy(params);
 ```
 
-> :note: **Supported only by Trezor T with Firmware 2.5.3 or higher!**
+> :note: **Supported only by TT with Firmware 2.5.3 or higher!**
 
 ### Params
 
