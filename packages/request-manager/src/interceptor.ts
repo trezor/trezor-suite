@@ -7,21 +7,15 @@ import { TorIdentities } from './torIdentities';
 import { InterceptorOptions } from './types';
 import { RequestPool } from './httpPool';
 
+type InterceptorContext = InterceptorOptions & {
+    requestPool: RequestPool;
+    torIdentities: TorIdentities;
+};
+
 const getIdentityName = (proxyAuthorization?: http.OutgoingHttpHeader) => {
     const identity = Array.isArray(proxyAuthorization) ? proxyAuthorization[0] : proxyAuthorization;
     // Only return identity name if it is explicitly defined.
     return typeof identity === 'string' ? identity.match(/Basic (.*)/)?.[1] : undefined;
-};
-
-/** Must be called only when Tor is enabled, throws otherwise */
-const getAgent = (identityName?: string, timeout?: number, protocol?: 'http' | 'https') => {
-    const agent = TorIdentities.getIdentity(identityName || 'default', timeout);
-
-    // @sentry/node (used in suite-desktop) is wrapping each outgoing request
-    // and requires protocol to be explicitly set to https while using TOR + https/wss address combination
-    if (protocol) agent.protocol = `${protocol}:`;
-
-    return agent;
 };
 
 /** Should the request be blocked if Tor isn't enabled? */
@@ -44,7 +38,7 @@ const isWhitelistedHost = (hostname: unknown, whitelist: string[] = ['127.0.0.1'
     typeof hostname === 'string' &&
     whitelist.some(url => url === hostname || hostname.endsWith(url));
 
-const interceptNetSocketConnect = (interceptorOptions: InterceptorOptions) => {
+const interceptNetSocketConnect = (context: InterceptorContext) => {
     const originalSocketConnect = net.Socket.prototype.connect;
 
     net.Socket.prototype.connect = function (...args) {
@@ -62,7 +56,7 @@ const interceptNetSocketConnect = (interceptorOptions: InterceptorOptions) => {
             details = `${connectionListener}:${options}`;
         }
 
-        interceptorOptions.handler({
+        context.handler({
             type: 'INTERCEPTED_REQUEST',
             method: 'net.Socket.connect',
             details,
@@ -72,12 +66,12 @@ const interceptNetSocketConnect = (interceptorOptions: InterceptorOptions) => {
     };
 };
 
-const interceptNetConnect = (interceptorOptions: InterceptorOptions) => {
+const interceptNetConnect = (context: InterceptorContext) => {
     const originalConnect = net.connect;
 
     net.connect = function (...args) {
         const [connectArguments] = args;
-        interceptorOptions.handler({
+        context.handler({
             type: 'INTERCEPTED_REQUEST',
             method: 'net.connect',
             details: (connectArguments as any).host,
@@ -91,7 +85,7 @@ const interceptNetConnect = (interceptorOptions: InterceptorOptions) => {
 // http(s).request could have different arguments according to it's types definition,
 // but we only care when second argument (url) is object containing RequestOptions.
 const overloadHttpRequest = (
-    interceptorOptions: InterceptorOptions,
+    context: InterceptorContext,
     protocol: 'http' | 'https',
     url: string | URL | http.RequestOptions,
     options?: http.RequestOptions | ((r: http.IncomingMessage) => void),
@@ -101,10 +95,10 @@ const overloadHttpRequest = (
         !callback &&
         typeof url === 'object' &&
         'headers' in url &&
-        !isWhitelistedHost(url.hostname, interceptorOptions.whitelistedHosts) &&
+        !isWhitelistedHost(url.hostname, context.whitelistedHosts) &&
         (!options || typeof options === 'function')
     ) {
-        const isTorEnabled = interceptorOptions.getIsTorEnabled();
+        const isTorEnabled = context.getTorSettings().running;
         const isTorRequired = getIsTorRequired(url);
         const overloadedOptions = url;
         const overloadedCallback = options;
@@ -115,17 +109,21 @@ const overloadHttpRequest = (
             // Create proxy agent for the request (from Proxy-Authorization or default)
             // get authorization data from request headers
             const identity = getIdentityForAgent(overloadedOptions);
-            overloadedOptions.agent = getAgent(identity, overloadedOptions.timeout, protocol);
+            overloadedOptions.agent = context.torIdentities.getIdentity(
+                identity || 'default',
+                overloadedOptions.timeout,
+                protocol,
+            );
         } else if (isTorRequired) {
             // Block requests that explicitly requires TOR using Proxy-Authorization
-            if (interceptorOptions.isDevEnv) {
-                interceptorOptions.handler({
+            if (context.allowTorBypass) {
+                context.handler({
                     type: 'INTERCEPTED_REQUEST',
                     method: 'http.request',
                     details: `Conditionally allowed request with Proxy-Authorization ${requestedUrl}`,
                 });
             } else {
-                interceptorOptions.handler({
+                context.handler({
                     type: 'INTERCEPTED_REQUEST',
                     method: 'http.request',
                     details: `Request blocked ${requestedUrl}`,
@@ -134,7 +132,7 @@ const overloadHttpRequest = (
             }
         }
 
-        interceptorOptions.handler({
+        context.handler({
             type: 'INTERCEPTED_REQUEST',
             method: 'http.request',
             details: `${requestedUrl} with agent ${!!overloadedOptions.agent}`,
@@ -148,7 +146,7 @@ const overloadHttpRequest = (
 };
 
 const overloadWebsocketHandshake = (
-    interceptorOptions: InterceptorOptions,
+    context: InterceptorContext,
     protocol: 'http' | 'https',
     url: string | URL | http.RequestOptions,
     options?: http.RequestOptions | ((r: http.IncomingMessage) => void),
@@ -159,29 +157,29 @@ const overloadWebsocketHandshake = (
     // this condition should be removed once suite will stop using TrezorConnect.setProxy
     if (
         typeof url === 'object' &&
-        isWhitelistedHost(url.host, interceptorOptions.whitelistedHosts) &&
+        isWhitelistedHost(url.host, context.whitelistedHosts) &&
         'agent' in url
     ) {
         delete url.agent;
     }
     if (
         typeof url === 'object' &&
-        !isWhitelistedHost(url.host, interceptorOptions.whitelistedHosts) && // difference between overloadHttpRequest
+        !isWhitelistedHost(url.host, context.whitelistedHosts) && // difference between overloadHttpRequest
         'headers' in url &&
         url.headers?.Upgrade === 'websocket'
     ) {
-        return overloadHttpRequest(interceptorOptions, protocol, url, options, callback);
+        return overloadHttpRequest(context, protocol, url, options, callback);
     }
 };
 
-const interceptHttp = (interceptorOptions: InterceptorOptions, requestPool: RequestPool) => {
+const interceptHttp = (context: InterceptorContext) => {
     const originalHttpRequest = http.request;
 
     http.request = (...args) => {
-        const overload = overloadHttpRequest(interceptorOptions, 'http', ...args);
+        const overload = overloadHttpRequest(context, 'http', ...args);
         if (overload) {
             const request = originalHttpRequest(...overload);
-            requestPool.addRequest(request);
+            context.requestPool.addRequest(request);
             return request;
         }
 
@@ -192,7 +190,7 @@ const interceptHttp = (interceptorOptions: InterceptorOptions, requestPool: Requ
     const originalHttpGet = http.get;
 
     http.get = (...args) => {
-        const overload = overloadWebsocketHandshake(interceptorOptions, 'http', ...args);
+        const overload = overloadWebsocketHandshake(context, 'http', ...args);
         if (overload) {
             return originalHttpGet(...overload);
         }
@@ -200,14 +198,14 @@ const interceptHttp = (interceptorOptions: InterceptorOptions, requestPool: Requ
     };
 };
 
-const interceptHttps = (interceptorOptions: InterceptorOptions, requestPool: RequestPool) => {
+const interceptHttps = (context: InterceptorContext) => {
     const originalHttpsRequest = https.request;
 
     https.request = (...args) => {
-        const overload = overloadHttpRequest(interceptorOptions, 'https', ...args);
+        const overload = overloadHttpRequest(context, 'https', ...args);
         if (overload) {
             const request = originalHttpsRequest(...overload);
-            requestPool.addRequest(request);
+            context.requestPool.addRequest(request);
             return request;
         }
 
@@ -218,7 +216,7 @@ const interceptHttps = (interceptorOptions: InterceptorOptions, requestPool: Req
     const originalHttpsGet = https.get;
 
     https.get = (...args) => {
-        const overload = overloadWebsocketHandshake(interceptorOptions, 'https', ...args);
+        const overload = overloadWebsocketHandshake(context, 'https', ...args);
         if (overload) {
             return originalHttpsGet(...overload);
         }
@@ -226,13 +224,13 @@ const interceptHttps = (interceptorOptions: InterceptorOptions, requestPool: Req
     };
 };
 
-const interceptTlsConnect = (interceptorOptions: InterceptorOptions) => {
+const interceptTlsConnect = (context: InterceptorContext) => {
     const originalTlsConnect = tls.connect;
 
     tls.connect = (...args) => {
         const [options] = args;
         if (typeof options === 'object') {
-            interceptorOptions.handler({
+            context.handler({
                 type: 'INTERCEPTED_REQUEST',
                 method: 'tls.connect',
                 details: options.host || options.servername || 'unknown',
@@ -241,7 +239,7 @@ const interceptTlsConnect = (interceptorOptions: InterceptorOptions) => {
             // allow untrusted/self-signed certificates for whitelisted domains (like https://*.sldev.cz)
             options.rejectUnauthorized =
                 options.rejectUnauthorized ??
-                !isWhitelistedHost(options.host, interceptorOptions.whitelistedHosts);
+                !isWhitelistedHost(options.host, context.whitelistedHosts);
         }
         return originalTlsConnect(...(args as Parameters<typeof tls.connect>));
     };
@@ -249,11 +247,14 @@ const interceptTlsConnect = (interceptorOptions: InterceptorOptions) => {
 
 export const createInterceptor = (interceptorOptions: InterceptorOptions) => {
     const requestPool = new RequestPool(interceptorOptions);
-    interceptNetSocketConnect(interceptorOptions);
-    interceptNetConnect(interceptorOptions);
-    interceptHttp(interceptorOptions, requestPool);
-    interceptHttps(interceptorOptions, requestPool);
-    interceptTlsConnect(interceptorOptions);
+    const torIdentities = new TorIdentities(interceptorOptions.getTorSettings);
+    const context = { ...interceptorOptions, requestPool, torIdentities };
 
-    return { requestPool };
+    interceptNetSocketConnect(context);
+    interceptNetConnect(context);
+    interceptHttp(context);
+    interceptHttps(context);
+    interceptTlsConnect(context);
+
+    return { requestPool, torIdentities };
 };

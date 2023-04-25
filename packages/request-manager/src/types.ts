@@ -34,10 +34,16 @@ export type InterceptedEvent =
           type: 'ERROR' | 'ERROR_PROXY_TIMEOUT' | 'ERROR_PROXY_REJECTED';
       };
 
+export type TorSettings = {
+    host?: string;
+    port?: number;
+    running: boolean;
+};
+
 export type InterceptorOptions = {
     handler: (event: InterceptedEvent) => void;
-    getIsTorEnabled: () => boolean;
-    isDevEnv?: boolean;
+    getTorSettings: () => TorSettings;
+    allowTorBypass?: boolean;
     whitelistedHosts?: string[];
 };
 
