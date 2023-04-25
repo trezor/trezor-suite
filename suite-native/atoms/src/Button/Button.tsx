@@ -10,6 +10,7 @@ import { Icon, IconName } from '@trezor/icons';
 
 import { Text } from '../Text';
 import { useButtonPressAnimatedStyle } from './useButtonPressAnimatedStyle';
+import { TestProps } from '../types';
 
 export type ButtonBackgroundElevation = '0' | '1';
 
@@ -28,7 +29,8 @@ export type ButtonProps = Omit<PressableProps, 'style' | 'onPressIn' | 'onPressO
     size?: ButtonSize;
     style?: NativeStyleObject;
     isDisabled?: boolean;
-} & MergeExclusive<{ iconLeft?: IconName }, { iconRight?: IconName }>;
+} & MergeExclusive<{ iconLeft?: IconName }, { iconRight?: IconName }> &
+    TestProps;
 
 type ButtonColorSchemeColors = {
     backgroundColor: Color;
