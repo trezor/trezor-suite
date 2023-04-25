@@ -12,7 +12,8 @@ import {
 } from '@suite-common/wallet-core';
 import {
     AccountsImportStackRoutes,
-    HomeStackRoutes,
+    AccountsStackRoutes,
+    AppTabsRoutes,
     RootStackParamList,
     RootStackRoutes,
     StackToStackCompositeNavigationProps,
@@ -44,26 +45,15 @@ export const AccountSettingsButtons = ({ accountKey }: { accountKey: AccountKey 
 
         const isLastAccount = accountsLength === 1;
         if (isLastAccount) {
-            navigation.reset({
-                index: 0,
-                routes: [
-                    {
-                        name: RootStackRoutes.AccountsImport,
-                        params: { screen: AccountsImportStackRoutes.SelectNetwork },
-                    },
-                ],
+            navigation.navigate(RootStackRoutes.AccountsImport, {
+                screen: AccountsImportStackRoutes.SelectNetwork,
             });
         } else {
-            navigation.reset({
-                index: 0,
-                routes: [
-                    {
-                        name: RootStackRoutes.AppTabs,
-                        params: {
-                            screen: HomeStackRoutes.Home,
-                        },
-                    },
-                ],
+            navigation.navigate(RootStackRoutes.AppTabs, {
+                screen: AppTabsRoutes.AccountsStack,
+                params: {
+                    screen: AccountsStackRoutes.Accounts,
+                },
             });
         }
     };
