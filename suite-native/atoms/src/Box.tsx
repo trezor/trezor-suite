@@ -7,6 +7,7 @@ import { NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/
 import { Spacing } from '@trezor/theme';
 
 import { useDebugView, DebugView } from './DebugView';
+import { TestProps } from './types';
 
 const layoutStylePropsKeys = [
     'flex',
@@ -41,7 +42,7 @@ type LayoutStyleProps = Partial<Pick<ViewStyle, (typeof layoutStylePropsKeys)[nu
 
 type Style = NativeStyleObject | Array<Style | undefined>;
 
-export interface BoxProps extends ViewProps, LayoutStyleProps, SpacingStyleProps {
+export interface BoxProps extends ViewProps, LayoutStyleProps, SpacingStyleProps, TestProps {
     style?: Style;
 }
 
