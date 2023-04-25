@@ -264,7 +264,7 @@ export const Select = ({
     'data-test': dataTest,
     ...props
 }: SelectProps) => {
-    const selectRef = useRef<SelectInstance<Option>>(null);
+    const selectRef = useRef<SelectInstance<Option, boolean>>(null);
 
     const theme = useTheme();
 
