@@ -1,5 +1,3 @@
-import type { SystemInfo } from '@trezor/connect';
-
 import {
     getBrowserVersion,
     getBrowserName,
@@ -9,6 +7,17 @@ import {
 } from '@trezor/env-utils';
 
 export type InstallerPackage = 'rpm32' | 'rpm64' | 'deb32' | 'deb64' | 'mac' | 'win32' | 'win64';
+
+export interface SystemInfo {
+    os: {
+        family?: 'Linux' | 'MacOS' | 'Windows';
+        mobile: boolean;
+    };
+    browser: {
+        supported: boolean;
+        outdated: boolean;
+    };
+}
 
 export const getInstallerPackage = (): InstallerPackage | undefined => {
     const agent = getUserAgent();
@@ -42,7 +51,7 @@ export const getSystemInfo = (supportedBrowsers: {
         ? supportedBrowser.version > parseInt(browserVersion, 10)
         : false;
     const mobile = getDeviceType() === 'mobile';
-    const supportedMobile = mobile ? typeof navigator.usb !== 'undefined' : true;
+    const supportedMobile = mobile ? 'usb' in navigator : true;
     const supported = !!(supportedBrowser && !outdatedBrowser && supportedMobile);
 
     return {

@@ -26,9 +26,8 @@ import { initLog } from '@trezor/connect/src/utils/debug';
 import { getOrigin } from '@trezor/connect/src/utils/urlUtils';
 import { suggestBridgeInstaller } from '@trezor/connect/src/data/transportInfo';
 import { suggestUdevInstaller } from '@trezor/connect/src/data/udevInfo';
-import { storage } from '@trezor/connect-common';
+import { storage, getSystemInfo, getInstallerPackage } from '@trezor/connect-common';
 import { parseConnectSettings, isOriginWhitelisted } from './connectSettings';
-import { getSystemInfo, getInstallerPackage } from './systemInfo';
 
 let _core: Core | undefined;
 

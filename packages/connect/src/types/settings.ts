@@ -1,6 +1,7 @@
 import type { BlockchainSettings } from '@trezor/blockchain-link';
 import type { Transport } from '@trezor/transport';
 
+export type { SystemInfo } from '@trezor/connect-common';
 export interface Manifest {
     appUrl: string;
     email: string;
@@ -34,15 +35,4 @@ export interface ConnectSettings {
     env: 'node' | 'web' | 'webextension' | 'electron' | 'react-native';
     timestamp: number;
     proxy?: Proxy;
-}
-
-export interface SystemInfo {
-    os: {
-        family?: 'Linux' | 'MacOS' | 'Windows';
-        mobile: boolean;
-    };
-    browser: {
-        supported: boolean;
-        outdated: boolean;
-    };
 }
