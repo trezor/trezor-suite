@@ -4,9 +4,11 @@ import { SuiteThemeVariant } from '@trezor/suite-desktop-api';
 
 import { getInitialWindowSize } from './screen';
 
+type OnDidChangeCallback<T> = (newValue?: T, oldValue?: T) => void;
+
 export class Store {
     private static instance: Store;
-    private store: ElectronStore<{
+    private readonly store: ElectronStore<{
         winBounds: WinBounds;
         updateSettings: UpdateSettings;
         themeSettings: SuiteThemeVariant;
@@ -54,13 +56,15 @@ export class Store {
     }
 
     public getTorSettings() {
-        return this.store.get('torSettings', {
-            running: false,
-            address: '',
-        });
+        return this.store.get('torSettings', { running: false });
     }
+
     public setTorSettings(torSettings: TorSettings) {
         this.store.set('torSettings', torSettings);
+    }
+
+    public onTorSettingsChange(callback: OnDidChangeCallback<TorSettings>) {
+        return this.store.onDidChange('torSettings', callback);
     }
 
     public getBridgeSettings() {
