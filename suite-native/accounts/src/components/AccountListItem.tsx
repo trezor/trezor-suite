@@ -88,6 +88,8 @@ export const AccountListItem = ({ account }: AccountListItemProps) => {
                     value={account.balance}
                     network={account.symbol}
                     isBalance={false}
+                    numberOfLines={1}
+                    adjustsFontSizeToFit
                 />
             </Box>
         </Box>

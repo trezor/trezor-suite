@@ -64,6 +64,8 @@ export const TransactionListItemValues = ({
                 value={transaction.amount}
                 network={transaction.symbol}
                 isBalance={false}
+                numberOfLines={1}
+                adjustsFontSizeToFit
             />
         </>
     );
