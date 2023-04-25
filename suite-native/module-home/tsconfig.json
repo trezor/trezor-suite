@@ -9,6 +9,7 @@
         { "path": "../atoms" },
         { "path": "../formatters" },
         { "path": "../graph" },
+        { "path": "../module-accounts" },
         { "path": "../module-settings" },
         { "path": "../navigation" },
         { "path": "../../packages/icons" },

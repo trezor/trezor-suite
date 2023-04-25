@@ -3,7 +3,6 @@ export enum RootStackRoutes {
     Onboarding = 'Onboarding',
     AccountsImport = 'AccountsImport',
     DevUtilsStack = 'DevUtilsStack',
-    AccountDetail = 'AccountDetail',
     AccountSettings = 'AccountSettings',
     TransactionDetail = 'TransactionDetail',
 }
@@ -38,6 +37,7 @@ export enum DevUtilsStackRoutes {
 
 export enum HomeStackRoutes {
     Home = 'Home',
+    AccountDetail = 'AccountDetail',
 }
 
 export enum AccountsStackRoutes {
