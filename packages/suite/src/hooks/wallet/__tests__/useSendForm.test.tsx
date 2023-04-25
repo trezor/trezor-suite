@@ -151,11 +151,11 @@ const actionCallback = (
             TrezorConnect.composeTransaction.mock.calls[composeTransactionCallsLength - 1][0];
 
         if (result.composeTransactionParams.account) {
-            expect(composeTransactionsParams.account.utxo.length).toEqual(
-                result.composeTransactionParams.account.utxo.length,
+            expect(composeTransactionsParams.account.utxos.length).toEqual(
+                result.composeTransactionParams.account.utxos.length,
             );
-            expect(composeTransactionsParams.account.utxo).toMatchObject(
-                result.composeTransactionParams.account.utxo,
+            expect(composeTransactionsParams.account.utxos).toMatchObject(
+                result.composeTransactionParams.account.utxos,
             );
         } else {
             expect(composeTransactionsParams).toMatchObject(result.composeTransactionParams);

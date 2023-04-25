@@ -62,7 +62,7 @@ const calculate = (
         bytes: 0, // TODO: calculate
     } as const;
 
-    if (output.type === 'send-max' || output.type === 'external') {
+    if (output.type === 'send-max' || output.type === 'payment') {
         return {
             ...payloadData,
             type: 'final',
