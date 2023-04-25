@@ -103,6 +103,9 @@ export const TransactionListHeader = memo(
         const account = useSelector((state: AccountsRootState) =>
             selectAccountByKey(state, accountKey),
         );
+        const accountHasTransactions = useSelector((state: AccountsRootState) =>
+            selectHasAccountTransactions(state, accountKey),
+        );
 
         const handleReceive = () => {
             navigation.navigate(AppTabsRoutes.SendReceiveStack, {
@@ -119,13 +122,17 @@ export const TransactionListHeader = memo(
         return (
             <>
                 <TransactionListHeaderContent accountKey={accountKey} tokenSymbol={tokenSymbol} />
-                <Divider />
-                <Box marginVertical="large" paddingHorizontal="medium">
-                    <Button iconLeft="receive" size="large" onPress={handleReceive}>
-                        Receive
-                    </Button>
-                </Box>
-                <Divider />
+                {accountHasTransactions && (
+                    <>
+                        <Divider />
+                        <Box marginVertical="large" paddingHorizontal="medium">
+                            <Button iconLeft="receive" size="large" onPress={handleReceive}>
+                                Receive
+                            </Button>
+                        </Box>
+                        <Divider />
+                    </>
+                )}
 
                 <Box marginTop="extraLarge" marginBottom="medium" marginHorizontal="large">
                     <Text variant="titleSmall">Transactions</Text>
