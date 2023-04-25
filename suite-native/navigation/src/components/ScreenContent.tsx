@@ -17,14 +17,23 @@ const screenContentStyle = prepareNativeStyle<{
     insets: EdgeInsets;
     customHorizontalPadding: number;
     customVerticalPadding: number;
-}>((_, { customHorizontalPadding, customVerticalPadding, insets }) => {
-    const { bottom, left, right } = insets;
+    isScrollable: boolean;
+}>((_, { customHorizontalPadding, customVerticalPadding, insets, isScrollable }) => {
+    const { left, right } = insets;
     return {
         flexGrow: 1,
         paddingTop: customVerticalPadding,
-        paddingBottom: Math.max(bottom, customVerticalPadding),
         paddingLeft: Math.max(left, customHorizontalPadding),
         paddingRight: Math.max(right, customHorizontalPadding),
+
+        extend: {
+            // Scrollable screen takes the whole height of the screen. This padding is needed to
+            // prevent the content being "sticked" to the bottom navbar.
+            condition: isScrollable,
+            style: {
+                paddingBottom: customVerticalPadding,
+            },
+        },
     };
 });
 
@@ -42,6 +51,7 @@ export const ScreenContent = ({
         insets,
         customHorizontalPadding,
         customVerticalPadding,
+        isScrollable,
     });
 
     return (

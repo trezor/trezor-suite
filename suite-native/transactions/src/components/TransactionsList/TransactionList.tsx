@@ -7,6 +7,7 @@ import { groupTransactionsByDate, MonthKey } from '@suite-common/wallet-utils';
 import { selectIsLoadingTransactions } from '@suite-common/wallet-core';
 import { Loader } from '@suite-native/atoms';
 import { EthereumTokenSymbol, WalletAccountTransaction } from '@suite-native/ethereum-tokens';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { TransactionListGroupTitle } from './TransactionListGroupTitle';
 import { TransactionListItem } from './TransactionListItem';
@@ -39,6 +40,15 @@ type RenderTransactionItemParams = {
 type RenderTokenTranferItemParams = Omit<RenderTransactionItemParams, 'areTokensIncluded'> & {
     tokenSymbol: EthereumTokenSymbol;
 };
+
+const sectionListStyle = prepareNativeStyle(utils => ({
+    paddingHorizontal: utils.spacings.small,
+    flex: 1,
+}));
+
+const sectionListContainerStyle = prepareNativeStyle(utils => ({
+    paddingVertical: utils.spacings.small,
+}));
 
 const renderTransactionItem = ({
     item,
@@ -99,6 +109,7 @@ export const TransactionList = ({
     accountKey,
     tokenSymbol,
 }: AccountTransactionProps) => {
+    const { applyStyle } = useNativeStyles();
     const isLoadingTransactions = useSelector(selectIsLoadingTransactions);
     const accountTransactionsByMonth = useMemo(
         () =>
@@ -157,6 +168,8 @@ export const TransactionList = ({
                           areTokensIncluded,
                       })
             }
+            style={applyStyle(sectionListStyle)}
+            contentContainerStyle={applyStyle(sectionListContainerStyle)}
             renderSectionHeader={renderSectionHeader}
             ListEmptyComponent={<TransactionsEmptyState accountKey={accountKey} />}
             ListHeaderComponent={listHeaderComponent}

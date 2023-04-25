@@ -91,6 +91,9 @@ export const AccountDetailScreen = memo(() => {
                     />
                 )
             }
+            // The padding is handled inside of the TransactionList to prevent scrollbar glitches.
+            customVerticalPadding={0}
+            customHorizontalPadding={0}
             isScrollable={false}
         >
             <TransactionList
