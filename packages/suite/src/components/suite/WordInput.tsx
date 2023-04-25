@@ -1,11 +1,13 @@
 import React, { useEffect, useRef } from 'react';
 import { FixedSizeList as List } from 'react-window';
-import { MenuListProps, createFilter } from 'react-select';
+import { MenuListProps, SelectInstance, createFilter } from 'react-select';
 import styled from 'styled-components';
 import { Select, variables } from '@trezor/components';
 import { bip39 } from '@trezor/crypto-utils';
 import { useTranslation } from '@suite-hooks/useTranslation';
 import { useKeyPress } from 'react-use';
+import TrezorConnect, { UI } from '@trezor/connect';
+import { createTimeoutPromise } from '@trezor/utils';
 
 const options = bip39.map(item => ({ label: item, value: item }));
 
@@ -60,39 +62,35 @@ const MenuList = (props: MenuListProps<Option, boolean>) => {
     );
 };
 
-interface WordInputProps {
-    onSubmit: (word: string) => void;
-}
-
-export const WordInput = React.memo(({ onSubmit }: WordInputProps) => {
+export const WordInput = React.memo(() => {
     const { translationString } = useTranslation();
-
-    const MemoSelect = React.memo(() => (
-        <Select
-            autoFocus
-            isSearchable
-            isClearable={false}
-            menuIsOpen
-            withDropdownIndicator={false}
-            noOptionsMessage={({ inputValue }: { inputValue: string }) =>
-                translationString('TR_WORD_DOES_NOT_EXIST', { word: inputValue })
-            }
-            onChange={(item: Option) => onSubmit(item.value)}
-            components={{ MenuList }}
-            placeholder={translationString('TR_CHECK_YOUR_DEVICE')}
-            options={options}
-            filterOption={createFilter({
-                ignoreCase: true,
-                trim: true,
-                matchFrom: 'start',
-            })}
-            data-test="@word-input-select"
-        />
-    ));
 
     return (
         <SelectWrapper>
-            <MemoSelect />
+            <Select
+                autoFocus
+                isSearchable
+                isClearable={false}
+                menuIsOpen
+                withDropdownIndicator={false}
+                noOptionsMessage={({ inputValue }: { inputValue: string }) =>
+                    translationString('TR_WORD_DOES_NOT_EXIST', { word: inputValue })
+                }
+                onChange={async (item: Option, ref?: SelectInstance<Option, boolean> | null) => {
+                    await createTimeoutPromise(600);
+                    TrezorConnect.uiResponse({ type: UI.RECEIVE_WORD, payload: item.value });
+                    ref?.clearValue();
+                }}
+                components={{ MenuList }}
+                placeholder={translationString('TR_CHECK_YOUR_DEVICE')}
+                options={options}
+                filterOption={createFilter({
+                    ignoreCase: true,
+                    trim: true,
+                    matchFrom: 'start',
+                })}
+                data-test="@word-input-select"
+            />
         </SelectWrapper>
     );
 });

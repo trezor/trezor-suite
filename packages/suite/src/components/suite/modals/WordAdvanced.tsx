@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import TrezorConnect, { UI } from '@trezor/connect';
+import TrezorConnect from '@trezor/connect';
 import { P } from '@trezor/components';
 import { HELP_CENTER_ADVANCED_RECOVERY_URL } from '@trezor/urls';
 import { Translation, WordInputAdvanced, TrezorLink, Modal, ModalProps } from '@suite-components';
@@ -34,12 +34,7 @@ export const WordAdvanced = ({ count, ...rest }: WordAdvancedProps) => (
         {...rest}
     >
         <ContentWrapper>
-            <WordInputAdvanced
-                count={count}
-                onSubmit={value =>
-                    TrezorConnect.uiResponse({ type: UI.RECEIVE_WORD, payload: value })
-                }
-            />
+            <WordInputAdvanced count={count} />
             <BottomText>
                 <P size="tiny">
                     <Translation id="TR_ADVANCED_RECOVERY_NOT_SURE" />{' '}

@@ -4,6 +4,8 @@ import { HELP_CENTER_ADVANCED_RECOVERY_URL } from '@trezor/urls';
 import { Button, ButtonPin, KEYBOARD_CODE } from '@trezor/components';
 import { Translation, TrezorLink, DeviceMatrixExplanation } from '@suite-components';
 import { DeviceModel } from '@trezor/device-utils';
+import { createTimeoutPromise } from '@trezor/utils';
+import TrezorConnect, { UI } from '@trezor/connect';
 
 const Wrapper = styled.div`
     display: flex;
@@ -31,11 +33,13 @@ const Backspace = styled(Button)`
 
 interface WordInputAdvancedProps {
     count: 6 | 9;
-    onSubmit: (value: string) => void;
 }
 
-export const WordInputAdvanced = (props: WordInputAdvancedProps) => {
-    const { onSubmit, count } = props;
+export const WordInputAdvanced = ({ count }: WordInputAdvancedProps) => {
+    const onSubmit = useCallback(async (value: string) => {
+        await createTimeoutPromise(600);
+        TrezorConnect.uiResponse({ type: UI.RECEIVE_WORD, payload: value });
+    }, []);
 
     const backspace = useCallback(() => {
         onSubmit(String.fromCharCode(8));

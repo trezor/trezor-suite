@@ -9,8 +9,8 @@ import { DeviceModel, getDeviceModel, pickByDeviceModel } from '@trezor/device-u
 import { selectIsActionAbortable } from '@suite-reducers/suiteReducer';
 import styled from 'styled-components';
 
-const InProgressRecoveryStepBox = styled(RecoveryStepBox)`
-    min-height: 475px;
+const InProgressRecoveryStepBox = styled(RecoveryStepBox)<{ deviceModel: DeviceModel }>`
+    ${({ deviceModel }) => (deviceModel === DeviceModel.T1 ? 'min-height: 475px' : '')};
 `;
 
 export const RecoveryStep = () => {

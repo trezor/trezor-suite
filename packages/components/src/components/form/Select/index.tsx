@@ -233,7 +233,7 @@ interface CommonProps extends Omit<ReactSelectProps<Option>, 'onChange'> {
     hideTextCursor?: boolean; // this prop hides blinking text cursor
     minWidth?: string;
     inputState?: InputState;
-    onChange?: (value: Option) => void;
+    onChange?: (value: Option, ref?: SelectInstance<Option, boolean> | null) => void;
     'data-test'?: string;
 }
 
@@ -258,6 +258,7 @@ export const Select = ({
     useKeyPressScroll,
     isSearchable = false,
     minWidth = 'initial',
+    menuIsOpen,
     inputState,
     components,
     onChange,
@@ -407,15 +408,16 @@ export const Select = ({
 
     const handleOnChange = useCallback<Required<ReactSelectProps>['onChange']>(
         (value, { action }) => {
-            onChange?.(value);
+            if (value) {
+                onChange?.(value, selectRef.current);
 
-            if (action === 'select-option') {
-                selectRef.current?.blur();
+                if (!menuIsOpen && action === 'select-option') {
+                    selectRef.current?.blur();
+                }
             }
-
             return null;
         },
-        [onChange],
+        [onChange, menuIsOpen],
     );
 
     return (
@@ -445,6 +447,7 @@ export const Select = ({
                 onChange={handleOnChange}
                 isSearchable={isSearchable}
                 closeMenuOnScroll={closeMenuOnScroll}
+                menuIsOpen={menuIsOpen}
                 {...props}
                 components={{ Control, Option, GroupHeading, ...components }}
             />

@@ -1,8 +1,7 @@
 import React from 'react';
-import TrezorConnect, { UI } from '@trezor/connect';
+import TrezorConnect from '@trezor/connect';
 import { Translation, WordInput, Modal, ModalProps } from '@suite-components';
 import styled from 'styled-components';
-import { createTimeoutPromise } from '@trezor/utils';
 
 const StyledModal = styled(Modal)`
     min-height: 450px;
@@ -24,11 +23,6 @@ export const Word = (props: ModalProps) => (
         currentProgressBarStep={4}
         {...props}
     >
-        <WordInput
-            onSubmit={async value => {
-                await createTimeoutPromise(600);
-                TrezorConnect.uiResponse({ type: UI.RECEIVE_WORD, payload: value });
-            }}
-        />
+        <WordInput />
     </StyledModal>
 );
