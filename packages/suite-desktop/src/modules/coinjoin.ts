@@ -19,7 +19,7 @@ const SERVICE_NAME = '@trezor/coinjoin';
 const CLIENT_CHANNEL = 'CoinjoinClient';
 const BACKEND_CHANNEL = 'CoinjoinBackend';
 
-export const init: Module = ({ mainWindow }) => {
+export const init: Module = ({ mainWindow, store }) => {
     const { logger } = global;
 
     const backends: ThreadProxy<CoinjoinBackend>[] = [];
@@ -37,11 +37,19 @@ export const init: Module = ({ mainWindow }) => {
                 name: 'coinjoin-backend',
                 keepAlive: true,
             });
-            await backend.run(settings);
+
+            await backend.run({ ...settings, torSettings: store.getTorSettings() });
             backends.push(backend);
+
             backend.on('log', ({ level, payload }) => {
                 (logger as any)[level](SERVICE_NAME, `${BACKEND_CHANNEL} ${payload}`);
             });
+
+            const unsubscribeTorSettingsChange = store.onTorSettingsChange(torSettings =>
+                backend.request('setTorSettings', [torSettings]),
+            );
+
+            backend.on('disposed', unsubscribeTorSettingsChange);
 
             return {
                 onRequest: (method, params) => {
