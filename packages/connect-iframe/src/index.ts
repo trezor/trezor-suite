@@ -122,7 +122,7 @@ const handleMessage = (event: PostMessageEvent) => {
     }
 };
 
-// communication with parent window
+// Communication with 3rd party window and Trezor Popup.
 const postMessage = (message: CoreMessage) => {
     _log.debug('postMessage', message);
 
@@ -156,7 +156,7 @@ const postMessage = (message: CoreMessage) => {
         message.payload.udev = suggestUdevInstaller(platform);
     }
 
-    if (usingPopup && targetUiEvent(message)) {
+    if (usingPopup && shouldUiEventBeSentToPopup(message)) {
         if (_popupMessagePort) {
             _popupMessagePort.postMessage(message);
         }
@@ -167,7 +167,8 @@ const postMessage = (message: CoreMessage) => {
     }
 };
 
-const targetUiEvent = (message: CoreMessage) => {
+const shouldUiEventBeSentToPopup = (message: CoreMessage) => {
+    // whitelistedMessages are messages that are sent to 3rd party/host/parent.
     const whitelistedMessages: CoreMessage['type'][] = [
         IFRAME.LOADED,
         IFRAME.ERROR,
