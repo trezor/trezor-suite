@@ -1,4 +1,7 @@
 import React from 'react';
+import { Alert } from 'react-native';
+
+import * as Sentry from '@sentry/react-native';
 
 import { isDebugEnv, isDevelopOrDebugEnv } from '@suite-native/config';
 import { Box, Button, VStack } from '@suite-native/atoms';
@@ -28,8 +31,15 @@ export const DevUtilsScreen = ({
                     <Button onPress={() => navigation.navigate(DevUtilsStackRoutes.Demo)}>
                         See Component Demo
                     </Button>
-                    <Button colorScheme="primary" onPress={clearStorage}>
-                        Reset storage
+                    <Button onPress={clearStorage}>Reset storage</Button>
+                    <Button
+                        onPress={() => {
+                            const errorMessage = `Sentry test error - ${Date.now()}`;
+                            Sentry.captureException(new Error(errorMessage));
+                            Alert.alert('Sentry error thrown', errorMessage);
+                        }}
+                    >
+                        Throw Sentry error
                     </Button>
                     <CopyLogsButton />
                 </VStack>

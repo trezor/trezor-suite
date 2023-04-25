@@ -5,9 +5,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { IntlProvider } from 'react-intl';
 
 import * as SplashScreen from 'expo-splash-screen';
-// FIXME this is only temporary until Intl refactor will be finished
 import * as Sentry from '@sentry/react-native';
 
+// FIXME this is only temporary until Intl refactor will be finished
 import enMessages from '@trezor/suite-data/files/translations/en.json';
 import { selectIsAppReady, selectIsConnectInitialized, StoreProvider } from '@suite-native/state';
 // import { NotificationRenderer } from '@suite-native/notifications';
@@ -21,6 +21,7 @@ import { StylesProvider } from './StylesProvider';
 import { useFormattersConfig } from './hooks/useFormattersConfig';
 import { applicationInit } from './initActions';
 import { useReportAppInitToAnalytics } from './hooks/useReportAppInitToAnalytics';
+import { SentryProvider } from './SentryProvider';
 
 // Base time to measure app loading time.
 // The constant has to be placed at the beginning of this file to be initialized as soon as possible.
@@ -68,27 +69,18 @@ const AppComponent = () => {
     );
 };
 
-if (!__DEV__) {
-    // IMPORTANT! This naive implementation of error boundary is only for development purposes.
-    // It should never make it to production release, because there is no sensitive data filtering.
-    Sentry.init({
-        dsn: 'https://d473f56df60c4974ae3f3ce00547c2a9@o117836.ingest.sentry.io/4504214699245568',
-        // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
-        // We recommend adjusting this value in production.
-        tracesSampleRate: 1.0,
-    });
-}
-
 const PureApp = () => (
     <GestureHandlerRootView style={{ flex: 1 }}>
         <IntlProvider locale="en" defaultLocale="en" messages={enMessages}>
             <NavigationContainerWithAnalytics>
                 <StoreProvider>
-                    <SafeAreaProvider>
-                        <StylesProvider>
-                            <AppComponent />
-                        </StylesProvider>
-                    </SafeAreaProvider>
+                    <SentryProvider>
+                        <SafeAreaProvider>
+                            <StylesProvider>
+                                <AppComponent />
+                            </StylesProvider>
+                        </SafeAreaProvider>
+                    </SentryProvider>
                 </StoreProvider>
             </NavigationContainerWithAnalytics>
         </IntlProvider>

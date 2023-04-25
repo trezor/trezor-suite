@@ -13,6 +13,7 @@
     "dependencies": {
         "@react-navigation/core": "^6.4.6",
         "@react-navigation/native-stack": "^6.9.11",
+        "@sentry/react-native": "5.3.1",
         "@suite-common/logger": "workspace:*",
         "@suite-native/atoms": "workspace:*",
         "@suite-native/config": "workspace:*",
