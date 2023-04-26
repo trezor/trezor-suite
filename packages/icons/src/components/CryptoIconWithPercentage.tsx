@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Easing, useDerivedValue, useSharedValue, withTiming } from 'react-native-reanimated';
+import { Easing, useSharedValue, withTiming } from 'react-native-reanimated';
 
 import {
     Canvas,
@@ -9,7 +9,9 @@ import {
     mix,
     Path,
     Skia,
+    useSharedValueEffect,
     useSVG,
+    useValue,
 } from '@shopify/react-native-skia';
 
 import { useNativeStyles } from '@trezor/styles';
@@ -38,10 +40,8 @@ export const CryptoIconWithPercentage = ({
     const path = Skia.Path.Make();
     path.addCircle(CANVAS_SIZE / 2, CANVAS_SIZE / 2, RADIUS);
 
+    const percentageFill = useValue(0);
     const animationProgress = useSharedValue(0);
-    // It's neccessary to clamp the value to 0.999 because Skia doesn't support values greater than 1 as end value.
-    // And due to javascript floating point precision, 1 is not exactly 1 but little bit more sometimes.
-    const percentageFill = useDerivedValue(() => mix(animationProgress.value, 0, 0.999));
 
     useEffect(() => {
         animationProgress.value = withTiming(percentage / 100, {
@@ -49,6 +49,12 @@ export const CryptoIconWithPercentage = ({
             easing: Easing.ease,
         });
     }, [animationProgress, percentage]);
+
+    useSharedValueEffect(() => {
+        // It's neccessary to clamp the value to 0.999 because Skia doesn't support values greater than 1 as end value.
+        // And due to javascript floating point precision, 1 is not exactly 1 but little bit more sometimes.
+        percentageFill.current = mix(animationProgress.value, 0, 0.999);
+    }, animationProgress);
 
     return (
         <Canvas style={{ height: CANVAS_SIZE, width: CANVAS_SIZE }}>
