@@ -12,6 +12,7 @@
         {
             "path": "../../suite-common/test-utils"
         },
+        { "path": "../e2e-utils" },
         { "path": "../trezor-user-env-link" },
         { "path": "../utils" }
     ]

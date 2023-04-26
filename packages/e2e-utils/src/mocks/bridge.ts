@@ -1,4 +1,5 @@
 // @ts-nocheck
+/* eslint-disable no-console */
 
 import express from 'express';
 import EventEmitter from 'events';
@@ -13,8 +14,8 @@ const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
  * Why?
  * - there is no emulator for bootloader
  */
-class TrezorBridgeMock extends EventEmitter {
-    constructor(recordedBridgeCommunication) {
+export class TrezorBridgeMock extends EventEmitter {
+    constructor(recordedBridgeCommunication?: any) {
         super();
         const app = express();
 
@@ -107,7 +108,3 @@ class TrezorBridgeMock extends EventEmitter {
         }
     }
 }
-
-const trezorBridgeMock = new TrezorBridgeMock();
-
-export default trezorBridgeMock;

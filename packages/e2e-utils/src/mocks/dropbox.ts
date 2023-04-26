@@ -1,4 +1,4 @@
-/* eslint-disable camelcase */
+/* eslint-disable camelcase, no-console */
 
 import express, { Express } from 'express';
 
@@ -7,7 +7,7 @@ const port = 30002;
 /**
  * Mock implementation of Dropbox service intended to be used in e2e tests.
  */
-class DropboxMock {
+export class DropboxMock {
     files: Record<string, any> = {};
     nextResponse: null | Record<string, any> = null;
     // store requests for assertions in tests
@@ -212,7 +212,3 @@ class DropboxMock {
         this.requests = [];
     }
 }
-
-const dropboxMock = new DropboxMock();
-
-export default dropboxMock;

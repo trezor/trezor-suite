@@ -8,10 +8,14 @@ import { addMatchImageSnapshotPlugin } from 'cypress-image-snapshot/plugin';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 import * as metadataUtils from '@trezor/suite/src/utils/suite/metadata';
 
-import googleMock from './plugins/google';
-import dropboxMock from './plugins/dropbox';
-import bridgeMock from './plugins/bridge';
-import * as blockbookMock from './plugins/blockbook';
+import { TrezorBridgeMock, DropboxMock, GoogleMock, BlockbookMock } from '@trezor/e2e-utils';
+
+const mocked = {
+    bridge: new TrezorBridgeMock(),
+    dropbox: new DropboxMock(),
+    google: new GoogleMock(),
+    blockbook: BlockbookMock,
+};
 
 const ensureRdpPort = (args: any[]) => {
     const existing = args.find(arg => arg.slice(0, 23) === '--remote-debugging-port');
@@ -29,7 +33,7 @@ const ensureRdpPort = (args: any[]) => {
 
 let port = 0;
 let client: any = null;
-let blockbook: Awaited<ReturnType<(typeof blockbookMock)['start']>> | undefined;
+let blockbook: Awaited<ReturnType<(typeof mocked.blockbook)['start']>> | undefined;
 
 // // add snapshot plugin
 // addMatchImageSnapshotPlugin(on);
@@ -73,10 +77,10 @@ export default defineConfig({
                 metadataStartProvider: async provider => {
                     switch (provider) {
                         case 'dropbox':
-                            await dropboxMock.start();
+                            await mocked.dropbox.start();
                             break;
                         case 'google':
-                            await googleMock.start();
+                            await mocked.google.start();
                             break;
                         default:
                             throw new Error('not a valid case');
@@ -86,10 +90,10 @@ export default defineConfig({
                 metadataStopProvider: provider => {
                     switch (provider) {
                         case 'dropbox':
-                            dropboxMock.stop();
+                            mocked.dropbox.stop();
                             break;
                         case 'google':
-                            googleMock.stop();
+                            mocked.google.stop();
                             break;
                         default:
                             throw new Error('not a valid case');
@@ -100,10 +104,10 @@ export default defineConfig({
                     const encrypted = await metadataUtils.encrypt(content, aesKey);
                     switch (provider) {
                         case 'dropbox':
-                            dropboxMock.files[file] = encrypted;
+                            mocked.dropbox.files[file] = encrypted;
                             break;
                         case 'google':
-                            googleMock.setFile(file, encrypted);
+                            mocked.google.setFile(file, encrypted);
                             break;
                         default:
                             throw new Error('not a valid case');
@@ -113,10 +117,10 @@ export default defineConfig({
                 metadataSetNextResponse: ({ provider, status, body }) => {
                     switch (provider) {
                         case 'dropbox':
-                            dropboxMock.nextResponse = { status, body };
+                            mocked.dropbox.nextResponse = { status, body };
                             break;
                         case 'google':
-                            googleMock.nextResponse = { status, body };
+                            mocked.google.nextResponse = { status, body };
                             break;
                         default:
                             throw new Error('not a valid case');
@@ -126,19 +130,19 @@ export default defineConfig({
                 metadataGetRequests: ({ provider }) => {
                     switch (provider) {
                         case 'dropbox':
-                            return dropboxMock.requests;
+                            return mocked.dropbox.requests;
                         case 'google':
-                            return googleMock.requests;
+                            return mocked.google.requests;
                         default:
                             throw new Error('not a valid case');
                     }
                 },
                 startMockedBridge: async har => {
-                    await bridgeMock.start(har);
+                    await mocked.bridge.start(har);
                     return null;
                 },
                 stopMockedBridge: async () => {
-                    await bridgeMock.stop();
+                    await mocked.bridge.stop();
                     return null;
                 },
 
@@ -205,7 +209,9 @@ export default defineConfig({
                     return result;
                 },
                 async startBlockbookMock({ endpointsFile }) {
-                    blockbook = await blockbookMock.start({ endpointsFile });
+                    const { endpoints } = await import(`./fixtures/${endpointsFile}.ts`);
+
+                    blockbook = await mocked.blockbook.start({ endpoints });
                     return blockbook.port;
                 },
                 stopBlockbookMock() {
