@@ -21,7 +21,7 @@ const getLocaleSeparators = (locale: Locale) => {
     return { decimalSeparator, thousandsSeparator };
 };
 
-const isValidDecimalString = (value: string) => /^([^.]*)\.[^.]*$/.test(value);
+const isValidDecimalString = (value: string) => /^([^.]*)\.[^.]+$/.test(value);
 const hasLeadingZeroes = (value: string) => /^0+(\d+\.\d*|\d+)$/.test(value);
 
 const removeLeadingZeroes = (value: string) => value.replace(/^0+(?!\.|$)/, '');
@@ -47,7 +47,7 @@ const cleanValueString = (value: string, locale: Locale) => {
     // if a value is not a valid decimal or integer, dont format it – let it be converted to NaN later
     if (cleanedValue && isValidDecimalString(cleanedValue)) {
         cleanedValue = parseFloat(cleanedValue).toString();
-    } else if (cleanedValue && !cleanedValue.includes('.')) {
+    } else if (cleanedValue && !cleanedValue.slice(0, -1).includes('.')) {
         cleanedValue = parseInt(cleanedValue, 10).toString();
     }
 
@@ -138,7 +138,7 @@ export const NumberInput = ({
                     }
                 }
 
-                // the number is incomplere and not reazy do be localized (e.g. 1,234. or 1,0000)
+                // the number is incomplete and not ready do be localized (e.g. 1,234. or 1,0000)
                 return handleSetDisplayValue(removeLeadingZeroes(rawValue));
             }
 
@@ -195,7 +195,8 @@ export const NumberInput = ({
             if (
                 Number.isNaN(Number(inputValue)) ||
                 thousandsSeparator === '.' ||
-                hasLeadingZeroes(inputValue)
+                hasLeadingZeroes(inputValue) ||
+                inputValue.at(-1) === '.'
             ) {
                 // try makeing the string compliant with Number
                 cleanInput = cleanValueString(inputValue, locale);
