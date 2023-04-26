@@ -64,7 +64,6 @@ export const icons = {
     sendAlt: require('../assets/icons/sendAlt.svg'),
     settings: require('../assets/icons/settings.svg'),
     share: require('../assets/icons/share.svg'),
-    shuffle: require('../assets/icons/shuffle.svg'),
     stack: require('../assets/icons/stack.svg'),
     standardWallet: require('../assets/icons/standardWallet.svg'),
     swap: require('../assets/icons/swap.svg'),

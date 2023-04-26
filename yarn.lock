@@ -6654,6 +6654,7 @@ __metadata:
   resolution: "@suite-native/alerts@workspace:suite-native/alerts"
   dependencies:
     "@suite-native/atoms": "workspace:*"
+    "@trezor/icons": "workspace:*"
     "@trezor/styles": "workspace:*"
     jotai: 1.9.1
     react: 18.2.0

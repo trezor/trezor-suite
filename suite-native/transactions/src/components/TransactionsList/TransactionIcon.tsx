@@ -24,7 +24,7 @@ const transactionIconMap: Record<TransactionType, IconName> = {
     recv: 'receive',
     sent: 'send',
     contract: 'placeholder',
-    joint: 'shuffle',
+    joint: 'placeholder',
     self: 'placeholder',
     failed: 'placeholder',
     unknown: 'placeholder',
