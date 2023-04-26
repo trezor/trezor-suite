@@ -1,6 +1,5 @@
 import net from 'net';
 
-// TODO: this could be added to @trezor/utils but considering is only for nodejs
 export const getFreePort = (): Promise<number> =>
     new Promise<number>((resolve, reject) => {
         const server = net.createServer();

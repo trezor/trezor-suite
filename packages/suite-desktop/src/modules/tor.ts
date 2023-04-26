@@ -8,10 +8,10 @@ import path from 'path';
 import { TorStatus, BootstrapTorEvent, HandshakeTorModule } from '@trezor/suite-desktop-api';
 import { BootstrapEvent } from '@trezor/request-manager';
 import TrezorConnect from '@trezor/connect';
+import { getFreePort } from '@trezor/node-utils';
 
 import { TorProcess, TorProcessStatus } from '../libs/processes/TorProcess';
 import { app, ipcMain } from '../typed-electron';
-import { getFreePort } from '../libs/getFreePort';
 
 import type { Dependencies } from './index';
 

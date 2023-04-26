@@ -1,5 +1,6 @@
+import { getFreePort } from '@trezor/node-utils';
+
 import { BaseProcess, Status } from './BaseProcess';
-import { getFreePort } from '../getFreePort';
 
 export class CoinjoinProcess extends BaseProcess {
     port = 37128; // Default port, that is going to be updated when starting the process.
