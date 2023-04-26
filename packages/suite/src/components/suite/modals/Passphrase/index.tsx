@@ -33,7 +33,7 @@ const Divider = styled.div`
 `;
 
 const TinyModal = styled(Modal)`
-    width: 360px;
+    width: 450px;
 `;
 
 const SmallModal = styled(Modal)`
@@ -63,6 +63,8 @@ export const Passphrase = ({ device }: Props) => {
 
     const dispatch = useDispatch();
 
+    const onCancel = () => TrezorConnect.cancel();
+
     const onSubmit = useCallback(
         (value: string, passphraseOnDevice?: boolean) => {
             setSubmitted(true);
@@ -91,6 +93,9 @@ export const Passphrase = ({ device }: Props) => {
                         <Translation id="TR_CONFIRM_EMPTY_HIDDEN_WALLET" />
                     )
                 }
+                isCancelable
+                onCancel={onCancel}
+                onBackClick={authConfirmation ? onRecreate : undefined}
                 description={
                     !authConfirmation ? (
                         <Translation id="TR_UNLOCK" />
@@ -102,7 +107,6 @@ export const Passphrase = ({ device }: Props) => {
                 <PassphraseTypeCard
                     type="hidden"
                     authConfirmation={authConfirmation}
-                    recreateWallet={authConfirmation ? onRecreate : undefined}
                     submitLabel={<Translation id="TR_CONFIRM_PASSPHRASE" />}
                     offerPassphraseOnDevice={onDeviceOffer}
                     onSubmit={onSubmit}
@@ -125,6 +129,8 @@ export const Passphrase = ({ device }: Props) => {
             <TinyModal
                 heading={<Translation id="TR_PASSPHRASE_HIDDEN_WALLET" />}
                 description={<Translation id="TR_HIDDEN_WALLET_MODAL_DESCRIPTION" />}
+                isCancelable
+                onCancel={onCancel}
             >
                 <PassphraseTypeCard
                     title={<Translation id="TR_WALLET_SELECTION_HIDDEN_WALLET" />}
@@ -148,7 +154,11 @@ export const Passphrase = ({ device }: Props) => {
 
     // show 2-column modal for selecting between standard and hidden wallets
     return (
-        <SmallModal isCancelable={false} heading={<Translation id="TR_SELECT_WALLET_TO_ACCESS" />}>
+        <SmallModal
+            isCancelable
+            onCancel={onCancel}
+            heading={<Translation id="TR_SELECT_WALLET_TO_ACCESS" />}
+        >
             <Wrapper>
                 <WalletsWrapper>
                     <PassphraseTypeCard
