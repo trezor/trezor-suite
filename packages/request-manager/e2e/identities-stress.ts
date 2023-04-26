@@ -1,5 +1,5 @@
 import path from 'path';
-import { createInterceptor, TorController, TorIdentities } from '../src';
+import { createInterceptor, TorController } from '../src';
 import { torRunner } from './torRunner';
 
 // The purpose of this script is to allow "manual" testing Tor identities changing some parameters.
@@ -17,7 +17,7 @@ const ipRegex = /\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/;
 
 const INTERCEPTOR = {
     handler: () => {},
-    getIsTorEnabled: () => true,
+    getTorSettings: () => ({ running: true, host, port }),
 };
 
 const testGetUrlHttps = 'https://check.torproject.org/';
@@ -43,7 +43,6 @@ const intervalBetweenRequests = 1000 * 20;
         torParams,
     });
 
-    TorIdentities.init(torController);
     // Waiting for Tor to be ready to accept successful connections.
     await torController.waitUntilAlive();
     console.log('Tor is ready to be used.');
