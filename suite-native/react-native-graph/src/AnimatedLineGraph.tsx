@@ -10,7 +10,6 @@ import Reanimated, {
     withSequence,
     withTiming,
     withDelay,
-    withSpring,
 } from 'react-native-reanimated';
 import { GestureDetector } from 'react-native-gesture-handler';
 
@@ -26,6 +25,7 @@ import {
     vec,
     Group,
     PathCommand,
+    useSharedValueEffect,
     mix,
     Circle,
     Shadow,
@@ -82,41 +82,28 @@ export function AnimatedLineGraph({
         enabled: enablePanGesture,
         holdDuration: panGestureDelay,
     });
-    const circleX = useSharedValue(0);
-    const circleY = useSharedValue(0);
-    const pathEnd = useSharedValue(0);
-    const indicatorRadius = useSharedValue(enableIndicator ? INDICATOR_RADIUS : 0);
-    const indicatorBorderRadius = useDerivedValue(
-        () => indicatorRadius.value * INDICATOR_BORDER_MULTIPLIER,
+    const circleX = useValue(0);
+    const circleY = useValue(0);
+    const pathEnd = useValue(0);
+    const indicatorRadius = useValue(enableIndicator ? INDICATOR_RADIUS : 0);
+    const indicatorBorderRadius = useComputedValue(
+        () => indicatorRadius.current * INDICATOR_BORDER_MULTIPLIER,
+        [indicatorRadius],
     );
 
-    const pulseTrigger = useDerivedValue(() => (isActive.value ? 1 : 0));
+    const pulseTrigger = useDerivedValue(() => {
+        'worklet';
+
+        return isActive.value ? 1 : 0;
+    }, []);
     const indicatorPulseAnimation = useSharedValue(0);
-    const indicatorPulseRadius = useDerivedValue(() => {
-        if (pulseTrigger.value === 0) {
-            return mix(
-                indicatorPulseAnimation.value,
-                INDICATOR_PULSE_BLUR_RADIUS_SMALL,
-                INDICATOR_PULSE_BLUR_RADIUS_BIG,
-            );
-        }
-        return 0;
-    });
-    const indicatorPulseOpacity = useDerivedValue(() => {
-        if (pulseTrigger.value === 0) {
-            return mix(indicatorPulseAnimation.value, 1, 0);
-        }
-        return 0;
-    });
+    const indicatorPulseRadius = useValue(INDICATOR_PULSE_BLUR_RADIUS_SMALL);
+    const indicatorPulseOpacity = useValue(1);
 
-    const positions = useDerivedValue(() => [
-        0,
-        Math.min(0.15, pathEnd.value),
-        pathEnd.value,
-        pathEnd.value,
-        1,
-    ]);
-
+    const positions = useComputedValue(
+        () => [0, Math.min(0.15, pathEnd.current), pathEnd.current, pathEnd.current, 1],
+        [pathEnd],
+    );
     const onLayout = useCallback(({ nativeEvent: { layout } }: LayoutChangeEvent) => {
         setWidth(Math.round(layout.width));
         setHeight(Math.round(layout.height));
@@ -136,7 +123,7 @@ export function AnimatedLineGraph({
 
     const paths = useValue<{ from?: SkPath; to?: SkPath }>({});
     const gradientPaths = useValue<{ from?: SkPath; to?: SkPath }>({});
-    const commands = useSharedValue<PathCommand[]>([]);
+    const commands = useRef<PathCommand[]>([]);
     const [commandsChanged, setCommandsChanged] = useState(0);
     const pointSelectedIndex = useRef<number>();
 
@@ -160,9 +147,17 @@ export function AnimatedLineGraph({
         return Math.max(getXInRange(drawingWidth, lastPoint.date, pathRange.x), 0);
     }, [drawingWidth, pathRange.x, pointsInRange]);
 
-    const indicatorX = useDerivedValue(() => Math.floor(lineWidth) + horizontalPadding);
-    const indicatorY = useDerivedValue(() => getYForX(commands.value, indicatorX.value) || 0);
-
+    const indicatorX = useMemo(
+        () => (commandsChanged >= 0 ? Math.floor(lineWidth) + horizontalPadding : undefined),
+        [commandsChanged, horizontalPadding, lineWidth],
+    );
+    const indicatorY = useMemo(
+        () =>
+            commandsChanged >= 0 && indicatorX != null
+                ? getYForX(commands.current, indicatorX)
+                : undefined,
+        [commandsChanged, indicatorX],
+    );
     const indicatorPulseColor = useMemo(() => hexToRgba(color, 0.4), [color]);
 
     const shouldFillGradient = gradientFillColors != null;
@@ -199,7 +194,7 @@ export function AnimatedLineGraph({
             path = createGraphPath(createGraphPathProps);
         }
 
-        commands.value = path.toCmds();
+        commands.current = path.toCmds();
 
         if (gradientPath != null) {
             const previous = gradientPaths.current;
@@ -321,8 +316,17 @@ export function AnimatedLineGraph({
         );
     }, [indicatorPulseAnimation]);
 
-    const setFingerPoint = useCallback(
+    const setFingerX = useCallback(
         (fingerX: number) => {
+            const y = getYForX(commands.current, fingerX);
+
+            if (y != null) {
+                circleX.current = fingerX;
+                circleY.current = y;
+            }
+
+            if (isActive.value) pathEnd.current = fingerX / width;
+
             const fingerXInRange = Math.max(fingerX - horizontalPadding, 0);
 
             const index = Math.round(
@@ -345,30 +349,23 @@ export function AnimatedLineGraph({
                 }
             }
         },
-        [drawingWidth, horizontalPadding, onPointSelected, pathRange.x, pointsInRange],
-    );
-
-    const setFingerX = useCallback(
-        (fingerX: number) => {
-            'worklet';
-
-            const y = getYForX(commands.value, fingerX);
-
-            if (y != null) {
-                circleX.value = fingerX;
-                circleY.value = y;
-            }
-
-            if (isActive.value) pathEnd.value = fingerX / width;
-        },
-        // pathRange.x must be extra included in deps otherwise onPointSelected doesn't work, IDK why
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        [circleX, circleY, isActive, pathEnd, pathRange.x, width, commands],
+        [
+            circleX,
+            circleY,
+            drawingWidth,
+            horizontalPadding,
+            isActive.value,
+            onPointSelected,
+            pathEnd,
+            pathRange.x,
+            pointsInRange,
+            width,
+        ],
     );
 
     const setIsActive = useCallback(
         (active: boolean) => {
-            indicatorRadius.value = withSpring(!active ? INDICATOR_RADIUS : 0, {
+            runSpring(indicatorRadius, !active ? INDICATOR_RADIUS : 0, {
                 mass: 1,
                 stiffness: 1000,
                 damping: 50,
@@ -381,7 +378,7 @@ export function AnimatedLineGraph({
             } else {
                 onGestureEnd?.();
                 pointSelectedIndex.current = undefined;
-                pathEnd.value = 1;
+                pathEnd.current = 1;
                 startPulsating();
             }
         },
@@ -392,8 +389,7 @@ export function AnimatedLineGraph({
         () => x.value,
         fingerX => {
             if (isActive.value || fingerX) {
-                setFingerX(fingerX);
-                runOnJS(setFingerPoint)(fingerX);
+                runOnJS(setFingerX)(fingerX);
             }
         },
         [isActive, setFingerX, width, x],
@@ -408,7 +404,7 @@ export function AnimatedLineGraph({
     );
 
     useEffect(() => {
-        if (pointsInRange.length !== 0 && commands.value.length !== 0) pathEnd.value = 1;
+        if (pointsInRange.length !== 0 && commands.current.length !== 0) pathEnd.current = 1;
     }, [commands, pathEnd, pointsInRange.length]);
 
     useEffect(() => {
@@ -418,12 +414,27 @@ export function AnimatedLineGraph({
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [indicatorPulsating]);
 
+    useSharedValueEffect(
+        () => {
+            if (pulseTrigger.value === 0) {
+                indicatorPulseRadius.current = mix(
+                    indicatorPulseAnimation.value,
+                    INDICATOR_PULSE_BLUR_RADIUS_SMALL,
+                    INDICATOR_PULSE_BLUR_RADIUS_BIG,
+                );
+                indicatorPulseOpacity.current = mix(indicatorPulseAnimation.value, 1, 0);
+            } else {
+                indicatorPulseRadius.current = 0;
+            }
+        },
+        indicatorPulseAnimation,
+        pulseTrigger,
+    );
+
     const axisLabelContainerStyle = {
         paddingTop: TopAxisLabel != null ? 20 : 0,
         paddingBottom: BottomAxisLabel != null ? 20 : 0,
     };
-
-    const indicatorVisible = enableIndicator && commandsChanged > 0;
 
     return (
         <View {...props}>
@@ -439,7 +450,23 @@ export function AnimatedLineGraph({
                     {/* Actual Skia Graph */}
                     <View style={styles.container} onLayout={onLayout}>
                         {/* Fix for react-native-skia's incorrect type declarations */}
-                        <Canvas style={styles.svg}>
+                        <Canvas
+                            style={styles.svg}
+                            onPointerEnter={undefined}
+                            onPointerEnterCapture={undefined}
+                            onPointerLeave={undefined}
+                            onPointerLeaveCapture={undefined}
+                            onPointerMove={undefined}
+                            onPointerMoveCapture={undefined}
+                            onPointerCancel={undefined}
+                            onPointerCancelCapture={undefined}
+                            onPointerDown={undefined}
+                            onPointerDownCapture={undefined}
+                            onPointerUp={undefined}
+                            onPointerUpCapture={undefined}
+                            accessibilityLabelledBy={undefined}
+                            accessibilityLanguage={undefined}
+                        >
                             <Group>
                                 <Path
                                     // @ts-expect-error
@@ -481,7 +508,7 @@ export function AnimatedLineGraph({
                                 />
                             )}
 
-                            {indicatorVisible && (
+                            {enableIndicator && (
                                 <Group>
                                     {indicatorPulsating && (
                                         <Circle
