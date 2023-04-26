@@ -1,5 +1,6 @@
 import path from 'path';
 import WebSocket from 'ws';
+import fetch from 'cross-fetch';
 
 import { TorController, createInterceptor } from '../src';
 import { torRunner } from './torRunner';
@@ -22,18 +23,21 @@ const testGetUrlHttp = 'http://check.torproject.org/';
 const testGetUrlHttps = 'https://check.torproject.org/';
 const testPostUrlHttps = 'https://httpbin.org/post';
 
-const INTERCEPTOR = {
-    handler: () => {},
-    getIsTorEnabled: () => true,
-};
-
 describe('Interceptor', () => {
-    let torProcess: any;
-    let torController: any;
+    let torProcess: ReturnType<typeof torRunner> | null;
+    let torController: TorController;
+    let torIdentities: TorIdentities;
+
+    const torSettings = { running: true, host, port };
+
+    const INTERCEPTOR = {
+        handler: () => {},
+        getTorSettings: () => torSettings,
+    };
 
     beforeAll(async () => {
         // Callback in in createInterceptor should return true in order for the request to use Tor.
-        createInterceptor(INTERCEPTOR);
+        torIdentities = createInterceptor(INTERCEPTOR).torIdentities;
         // Starting Tor controller to make sure that Tor is running.
         torController = new TorController({
             host,
@@ -47,7 +51,6 @@ describe('Interceptor', () => {
             torParams,
         });
 
-        TorIdentities.init(torController);
         // Waiting for Tor to be ready to accept successful connections.
         await torController.waitUntilAlive();
     });
@@ -165,7 +168,7 @@ describe('Interceptor', () => {
             await createWebSocket();
             await createWebSocket();
 
-            const identities = Object.keys(TorIdentities.identities).filter(name =>
+            const identities = Object.keys((torIdentities as any).identities).filter(name =>
                 name.includes('WebSocket'),
             );
 
@@ -180,7 +183,7 @@ describe('Interceptor', () => {
                 'Proxy-Authorization': 'Basic WebSocket-Identity',
             });
 
-            const identities = Object.keys(TorIdentities.identities).filter(name =>
+            const identities = Object.keys((torIdentities as any).identities).filter(name =>
                 name.includes('WebSocket-Identity'),
             );
 
@@ -189,7 +192,7 @@ describe('Interceptor', () => {
     });
 
     it('Block unauthorized requests', async () => {
-        jest.spyOn(INTERCEPTOR, 'getIsTorEnabled').mockImplementation(() => false);
+        torSettings.running = false;
 
         await expect(
             fetch(testPostUrlHttps, {
