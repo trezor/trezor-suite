@@ -1,4 +1,4 @@
-import React, { createRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
 import { HOMESCREEN_EDITOR_URL } from '@trezor/urls';
 
@@ -68,7 +68,7 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
         applySettings: deviceSettingsActions.applySettings,
         openModal: modalActions.openModal,
     });
-    const fileInputElement = createRef<HTMLInputElement>();
+    const fileInputElement = useRef<HTMLInputElement>(null);
     const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.Homescreen);
 
     const [customHomescreen, setCustomHomescreen] = useState('');
