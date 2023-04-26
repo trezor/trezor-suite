@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
-import { ErrorMessage } from '@suite-native/atoms';
+import { Box, ErrorMessage, Pictogram, VStack, Text } from '@suite-native/atoms';
 import {
     AccountsRootState,
     selectAccountByDescriptorAndNetworkSymbol,
@@ -29,9 +29,36 @@ export const AccountImportSummary = ({ networkSymbol, accountInfo }: AccountImpo
         return <ErrorMessage errorMessage="Unsupported account network type." />;
     }
 
-    return account ? (
-        <AccountAlreadyImported account={account} />
-    ) : (
-        <AccountImportSummaryForm networkSymbol={networkSymbol} accountInfo={accountInfo} />
+    const title = account ? 'Coin already synced' : 'Coin synced';
+    const subtitle = account ? "Here's what you have in your account." : undefined;
+
+    return (
+        <VStack spacing="extraLarge" flex={1}>
+            <Box flex={1} alignItems="center" justifyContent="center">
+                <Pictogram
+                    title={
+                        <Text
+                            variant="titleSmall"
+                            data-testID="@account-import/coin-synced/success-text"
+                        >
+                            {title}
+                        </Text>
+                    }
+                    subtitle={subtitle}
+                    variant="green"
+                    icon="syncedCoin"
+                />
+            </Box>
+            <Box flex={1}>
+                {account ? (
+                    <AccountAlreadyImported account={account} />
+                ) : (
+                    <AccountImportSummaryForm
+                        networkSymbol={networkSymbol}
+                        accountInfo={accountInfo}
+                    />
+                )}
+            </Box>
+        </VStack>
     );
 };

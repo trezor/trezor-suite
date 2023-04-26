@@ -26,7 +26,6 @@ import { isEthereumAccountSymbol } from '@suite-common/wallet-utils';
 
 import { importAccountThunk } from '../accountsImportThunks';
 import { AccountImportOverview } from './AccountImportOverview';
-import { AccountImportSummarySection } from './AccountImportSummarySection';
 import { AccountImportEthereumTokens } from './AccountImportEthereumTokens';
 
 type AccountImportSummaryFormProps = {
@@ -102,26 +101,24 @@ export const AccountImportSummaryForm = ({
         isEthereumAccountSymbol(networkSymbol) && A.isNotEmpty(accountInfo.tokens ?? []);
 
     return (
-        <AccountImportSummarySection title="Coin synced">
-            <Form form={form}>
-                <AccountImportOverview
-                    balance={accountInfo.availableBalance}
-                    networkSymbol={networkSymbol}
-                />
-                {shouldDisplayEthereumAccountTokens && (
-                    <AccountImportEthereumTokens tokens={accountInfo.tokens ?? []} />
-                )}
-                <Divider marginBottom="small" />
-                <Button
-                    data-testID="@account-import/coin-synced/confirm-button"
-                    onPress={handleImportAccount}
-                    size="large"
-                    style={applyStyle(confirmButtonStyle)}
-                    isDisabled={!!errors.accountLabel}
-                >
-                    Confirm
-                </Button>
-            </Form>
-        </AccountImportSummarySection>
+        <Form form={form}>
+            <AccountImportOverview
+                balance={accountInfo.availableBalance}
+                networkSymbol={networkSymbol}
+            />
+            {shouldDisplayEthereumAccountTokens && (
+                <AccountImportEthereumTokens tokens={accountInfo.tokens ?? []} />
+            )}
+            <Divider marginBottom="small" />
+            <Button
+                data-testID="@account-import/coin-synced/confirm-button"
+                onPress={handleImportAccount}
+                size="large"
+                style={applyStyle(confirmButtonStyle)}
+                isDisabled={!!errors.accountLabel}
+            >
+                Confirm
+            </Button>
+        </Form>
     );
 };
