@@ -157,11 +157,6 @@ const Content = styled.div`
     font-size: ${variables.FONT_SIZE.SMALL};
 `;
 
-const RetryButton = styled(Button)`
-    align-self: center;
-    margin-top: 16px;
-`;
-
 type PassphraseTypeCardProps = {
     title?: React.ReactNode;
     description?: React.ReactNode;
@@ -171,7 +166,6 @@ type PassphraseTypeCardProps = {
     singleColModal?: boolean;
     authConfirmation?: boolean;
     onSubmit: (value: string, passphraseOnDevice?: boolean) => void;
-    recreateWallet?: () => void;
     learnMoreTooltipOnClick?: TooltipProps['guideAnchor'];
     learnMoreTooltipAppendTo?: TooltipProps['appendTo'];
 };
@@ -426,17 +420,6 @@ export const PassphraseTypeCard = (props: PassphraseTypeCardProps) => {
                                     defaultMessage="Enter passphrase on Trezor"
                                 />
                             </OnDeviceActionButton>
-                        )}
-                        {/* Try again button shows while confirming a passphrase */}
-                        {props.recreateWallet && (
-                            <RetryButton
-                                variant="tertiary"
-                                icon="ARROW_LEFT"
-                                color={theme.TYPE_LIGHT_GREY}
-                                onClick={props.recreateWallet}
-                            >
-                                <FormattedMessage id="TR_TRY_AGAIN" defaultMessage="Try again" />
-                            </RetryButton>
                         )}
                     </Actions>
                 )}
