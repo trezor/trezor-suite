@@ -138,7 +138,7 @@ export const TransactionListHeader = memo(
                     <Text variant="titleSmall">Transactions</Text>
                 </Box>
 
-                {isEthereumAccountDetail && (
+                {isEthereumAccountDetail && accountHasTransactions && (
                     <IncludeTokensToggle
                         isToggled={areTokensIncluded}
                         onToggle={toggleIncludeTokenTransactions}
