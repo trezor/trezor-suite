@@ -21,6 +21,8 @@ type AccountImportHeaderProps = {
     activeStep: 1 | 2 | 3 | 4;
 };
 
+const NUMBER_OF_STEPS = 4;
+
 const closeButtonStyle = prepareNativeStyle(_ => ({
     position: 'absolute',
     right: 0,
@@ -46,6 +48,9 @@ export const AccountImportHeader = ({ activeStep }: AccountImportHeaderProps) =>
         });
     };
 
+    // Screen title is hidden in the last screen.
+    const screenTitle = activeStep !== NUMBER_OF_STEPS ? 'Sync my coins' : null;
+
     return (
         <ScreenHeader
             rightIcon={
@@ -61,8 +66,8 @@ export const AccountImportHeader = ({ activeStep }: AccountImportHeaderProps) =>
                 )
             }
             activeStep={activeStep}
-            numberOfSteps={4}
-            content="Sync my coins"
+            numberOfSteps={NUMBER_OF_STEPS}
+            content={screenTitle}
             hasGoBackIcon={false}
         />
     );

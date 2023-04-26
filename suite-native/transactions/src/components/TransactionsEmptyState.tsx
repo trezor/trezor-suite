@@ -1,9 +1,8 @@
 import React from 'react';
-import { Image } from 'react-native';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { Box, Button, Card, Text } from '@suite-native/atoms';
+import { Box, Button, Card, Pictogram } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import {
     AccountsStackParamList,
@@ -47,12 +46,12 @@ export const TransactionsEmptyState = ({ accountKey }: { accountKey: string }) =
         <Box paddingHorizontal="medium">
             <Card style={applyStyle(cardStyle)}>
                 <Box marginBottom="large" alignItems="center">
-                    {/* eslint-disable-next-line global-require */}
-                    <Image source={require('../assets/blockLayer.png')} />
-                    <Text variant="titleSmall">No transactions...yet.</Text>
-                    <Text variant="hint" color="textSubdued">
-                        Get started by receiving transactions
-                    </Text>
+                    <Pictogram
+                        variant="green"
+                        icon="stack"
+                        title="No transactions"
+                        subtitle="Get started by receiving coins"
+                    />
                 </Box>
                 <Box style={applyStyle(receiveButtonStyle)}>
                     <Button iconLeft="receive" onPress={handleReceive}>

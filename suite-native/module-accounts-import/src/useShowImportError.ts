@@ -9,33 +9,46 @@ import {
     RootStackRoutes,
     StackToTabCompositeNavigationProp,
 } from '@suite-native/navigation';
+import { IconName } from '@trezor/icons';
+import { PictogramVariant } from '@suite-native/atoms';
 
 type AlertError = 'invalidXpub' | 'invalidReceiveAddress' | 'networkError' | 'unknownError';
-type AlertErrorOptions = { title: string; description: string; isRetryEnabled: boolean };
+type AlertErrorOptions = {
+    title: string;
+    description: string;
+    isRetryEnabled: boolean;
+    icon: IconName;
+};
 
 const alertErrorMap: Record<AlertError, AlertErrorOptions> = {
     invalidXpub: {
         title: 'Invalid Public address (XPUB)',
         description: 'Check and correct the public address (XPUB).',
+        icon: 'warningTriangleLight',
         isRetryEnabled: false,
     },
     invalidReceiveAddress: {
         title: 'Receive address invalid',
         description: 'Check and correct the receive address.',
+        icon: 'warningTriangleLight',
         isRetryEnabled: false,
     },
     networkError: {
         title: 'Network error',
+        icon: 'noConnection',
         description:
             'We were unable to retrieve the data from the blockchain due to a network error.',
         isRetryEnabled: true,
     },
     unknownError: {
         title: 'Something went wrong',
+        icon: 'warningTriangleLight',
         description: 'We are unable to gather the data right now. Please try again.',
         isRetryEnabled: true,
     },
 };
+
+const pictogramVariant: PictogramVariant = 'red';
 
 export const useShowImportError = (
     networkSymbol: NetworkSymbol,
@@ -71,12 +84,14 @@ export const useShowImportError = (
                 alertError = 'networkError';
             }
 
-            const { title, description, isRetryEnabled } = alertErrorMap[alertError];
+            const { title, description, isRetryEnabled, icon } = alertErrorMap[alertError];
 
             if (isRetryEnabled) {
                 showAlert({
                     title,
                     description,
+                    icon,
+                    pictogramVariant,
                     primaryButtonTitle: 'Try Again',
                     onPressPrimaryButton: onRetry,
                     secondaryButtonTitle: 'Go back',
@@ -86,6 +101,8 @@ export const useShowImportError = (
                 showAlert({
                     title,
                     description,
+                    icon,
+                    pictogramVariant,
                     primaryButtonTitle: 'Go back',
                     onPressPrimaryButton: handleGoBack,
                 });

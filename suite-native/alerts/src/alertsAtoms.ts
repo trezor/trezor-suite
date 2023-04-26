@@ -1,10 +1,15 @@
 import { atom } from 'jotai';
 import { RequireAllOrNone } from 'type-fest';
 
+import { IconName } from '@trezor/icons';
+import { PictogramVariant } from '@suite-native/atoms';
+
 export type Alert = RequireAllOrNone<
     {
         title: string;
         description: string;
+        icon: IconName;
+        pictogramVariant: PictogramVariant;
         primaryButtonTitle: string;
         onPressPrimaryButton: () => void;
         secondaryButtonTitle?: string;
