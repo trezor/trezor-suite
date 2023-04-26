@@ -71,8 +71,6 @@ const PinInput = ({ isSubmitting, onPinSubmit }: Props) => {
 
     useEffect(() => {
         const keyboardHandler = (event: KeyboardEvent) => {
-            event.preventDefault();
-
             switch (event.code) {
                 case KEYBOARD_CODE.ENTER:
                 case KEYBOARD_CODE.NUMPAD_ENTER:
