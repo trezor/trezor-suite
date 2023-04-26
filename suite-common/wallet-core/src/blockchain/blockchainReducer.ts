@@ -181,4 +181,5 @@ export const selectBlockchainExplorerBySymbol = memoizeWithArgs(
         const blockchain = selectNetworkBlockchainInfo(symbol)(state);
         return blockchain.explorer;
     },
+    { size: 100 },
 );

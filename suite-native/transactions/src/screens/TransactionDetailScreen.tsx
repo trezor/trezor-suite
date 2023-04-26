@@ -79,6 +79,7 @@ export const TransactionDetailScreen = ({
             <TransactionDetailSheets
                 transaction={transaction}
                 isTokenTransaction={isTokenTransaction}
+                accountKey={accountKey}
             />
             <Button
                 iconLeft="arrowUpRight"
