@@ -2,7 +2,7 @@ import React from 'react';
 
 import { useNavigation } from '@react-navigation/core';
 
-import { Box, Button, Divider, Text } from '@suite-native/atoms';
+import { Box, Button, Divider } from '@suite-native/atoms';
 import { AccountListItem } from '@suite-native/accounts';
 import { Account } from '@suite-common/wallet-types';
 import {
@@ -15,8 +15,6 @@ import {
     StackToTabCompositeProps,
 } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-
-import { AccountImportSummarySection } from './AccountImportSummarySection';
 
 type AccountImportImportedAccountProps = {
     account: Account;
@@ -55,34 +53,29 @@ export const AccountAlreadyImported = ({ account }: AccountImportImportedAccount
         });
 
     return (
-        <AccountImportSummarySection title="Asset already imported">
-            <Box flex={1} justifyContent="flex-end">
-                <Box style={applyStyle(contentWrapperStyle)}>
-                    <Box marginBottom="medium">
-                        <Text>Here's what you've got in your account.</Text>
-                    </Box>
-                    {account && <AccountListItem account={account} />}
+        <Box flex={1} justifyContent="flex-end">
+            <Box style={applyStyle(contentWrapperStyle)}>
+                {account && <AccountListItem account={account} />}
+            </Box>
+            <Box>
+                <Box marginBottom="large" marginTop="large">
+                    <Divider />
                 </Box>
                 <Box>
-                    <Box marginBottom="large" marginTop="large">
-                        <Divider />
-                    </Box>
-                    <Box>
-                        <Box marginBottom="medium">
-                            <Button
-                                size="large"
-                                colorScheme="tertiaryElevation0"
-                                onPress={handleImportAnotherAsset}
-                            >
-                                Import another asset
-                            </Button>
-                        </Box>
-                        <Button size="large" onPress={handleNavigateToDashboard}>
-                            Continue to app
+                    <Box marginBottom="medium">
+                        <Button
+                            size="large"
+                            colorScheme="tertiaryElevation0"
+                            onPress={handleImportAnotherAsset}
+                        >
+                            Import another asset
                         </Button>
                     </Box>
+                    <Button size="large" onPress={handleNavigateToDashboard}>
+                        Continue to app
+                    </Button>
                 </Box>
             </Box>
-        </AccountImportSummarySection>
+        </Box>
     );
 };

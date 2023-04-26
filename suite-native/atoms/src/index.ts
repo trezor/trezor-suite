@@ -33,4 +33,5 @@ export * from './ErrorMessage';
 export * from './Table';
 export * from './Loader';
 export * from './Toggle';
+export * from './Pictogram';
 export { useDebugView } from './DebugView';
