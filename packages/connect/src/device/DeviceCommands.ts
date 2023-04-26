@@ -471,8 +471,13 @@ export class DeviceCommands {
         }
 
         if (res.type === 'EntropyRequest') {
+            console.log('=============================');
+            const entropy = generateEntropy(32).toString('hex');
+            console.log('entropy: ', entropy);
+            console.log('=============================');
+
             return this._commonCall('EntropyAck', {
-                entropy: generateEntropy(32).toString('hex'),
+                entropy,
             });
         }
 
