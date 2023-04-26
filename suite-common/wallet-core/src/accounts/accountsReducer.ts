@@ -156,6 +156,9 @@ export const selectAccountsByNetworkAndDevice = memoizeWithArgs(
             account => account.deviceState === deviceState && account.symbol === networkSymbol,
         );
     },
+    {
+        size: 80,
+    },
 );
 
 export const selectAccountLabel = memoizeWithArgs(
