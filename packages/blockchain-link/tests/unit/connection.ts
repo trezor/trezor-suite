@@ -1,4 +1,4 @@
-import createServer, { EnhancedServer } from '../websocket';
+import { BackendWebsocketServerMock } from '@trezor/e2e-utils';
 import workers from './worker';
 import BlockchainLink from '../../src';
 
@@ -21,12 +21,12 @@ const getMethod = (instanceName: string) => {
 
 workers.forEach(instance => {
     describe(`Connection ${instance.name}`, () => {
-        let server: EnhancedServer;
+        let server: BackendWebsocketServerMock;
         let blockchain: BlockchainLink;
 
         beforeEach(async () => {
             jest.setTimeout(20000);
-            server = await createServer(instance.name);
+            server = await BackendWebsocketServerMock.create(instance.name);
             blockchain = new BlockchainLink({
                 ...instance,
                 server: [`ws://localhost:${server.options.port}`],
@@ -119,7 +119,7 @@ workers.forEach(instance => {
             await new Promise(resolve => setTimeout(resolve, 4000));
 
             expect(callback).toHaveBeenCalled();
-            expect(server.fixtures.length).toEqual(2);
+            expect(server.getFixtures()!.length).toEqual(2);
         });
 
         it('Handle connect event', async done => {

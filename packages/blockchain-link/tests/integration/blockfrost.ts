@@ -1,5 +1,5 @@
+import { BackendWebsocketServerMock } from '@trezor/e2e-utils';
 import BlockchainLink from '@trezor/blockchain-link';
-import createServer, { EnhancedServer } from '../websocket';
 import { blockfrostWorkerFactory, blockfrostModuleFactory } from './worker';
 
 const backends = [
@@ -17,11 +17,11 @@ const backends = [
 
 backends.forEach(b => {
     describe(`Blockfrost ${b.name}`, () => {
-        let server: EnhancedServer;
+        let server: BackendWebsocketServerMock;
         let blockchain: BlockchainLink;
 
         beforeEach(async () => {
-            server = await createServer('blockfrost');
+            server = await BackendWebsocketServerMock.create('blockfrost');
             blockchain = new BlockchainLink({
                 name: b.name,
                 worker: b.worker,
@@ -38,7 +38,7 @@ backends.forEach(b => {
         it('Get info', async () => {
             const result = await blockchain.getInfo();
             expect(result).toEqual({
-                name: 'Blockfrost',
+                name: 'BlockfrostMock',
                 shortcut: 'ada',
                 decimals: 6,
                 blockHeight: 1,

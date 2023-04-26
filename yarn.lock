@@ -7525,6 +7525,7 @@ __metadata:
   dependencies:
     "@trezor/blockchain-link-types": "workspace:1.0.1"
     "@trezor/blockchain-link-utils": "workspace:*"
+    "@trezor/e2e-utils": "workspace:*"
     "@trezor/utils": "workspace:9.0.7"
     "@trezor/utxo-lib": "workspace:1.0.5"
     "@types/web": ^0.0.99

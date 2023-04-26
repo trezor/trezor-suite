@@ -1,5 +1,5 @@
 /* eslint-disable max-classes-per-file */
-import * as TinyWorker from 'tiny-worker';
+import TinyWorker from 'tiny-worker';
 import BlockchainLink from '../../src';
 
 class BaseMockWorker {

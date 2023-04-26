@@ -4,8 +4,7 @@
         "target": "es2017",
         "lib": ["webworker", "es2019"],
         "outDir": "./lib",
-        "types": ["jest", "node", "web"],
-        "esModuleInterop": false
+        "types": ["jest", "node", "web"]
     },
     "include": ["./src"]
 }
