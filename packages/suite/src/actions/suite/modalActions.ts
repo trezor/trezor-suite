@@ -190,10 +190,6 @@ export const onPinSubmit = (payload: string) => () => {
     TrezorConnect.uiResponse({ type: UI.RECEIVE_PIN, payload });
 };
 
-export const onPinCancel = () => () => {
-    TrezorConnect.cancel('pin-cancelled');
-};
-
 /**
  * Called from <PassphraseModal /> component
  * Sends passphrase to `@trezor/connect`

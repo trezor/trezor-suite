@@ -1,8 +1,7 @@
 import React from 'react';
 import { UI } from '@trezor/connect';
-import { onPinCancel } from '@suite-actions/modalActions';
 import { MODAL } from '@suite-actions/constants';
-import { useSelector, useActions } from '@suite-hooks';
+import { useSelector } from '@suite-hooks';
 import {
     Pin,
     PinInvalid,
@@ -24,13 +23,12 @@ export const DeviceContextModal = ({
     renderer,
 }: ReduxModalProps<typeof MODAL.CONTEXT_DEVICE>) => {
     const device = useSelector(state => state.suite.device);
-    const actions = useActions({ onPinCancel });
     if (!device) return null;
 
     switch (windowType) {
         // T1 firmware
         case UI.REQUEST_PIN:
-            return <Pin device={device} onCancel={actions.onPinCancel} renderer={renderer} />;
+            return <Pin device={device} renderer={renderer} />;
         // T1 firmware
         case UI.INVALID_PIN:
             return <PinInvalid device={device} renderer={renderer} />;

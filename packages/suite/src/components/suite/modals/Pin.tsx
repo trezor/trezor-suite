@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { Translation, Modal, ModalProps } from '@suite-components';
 import { PinMatrix, PIN_MATRIX_MAX_WIDTH } from '@suite-components/PinMatrix';
 import { TrezorDevice } from '@suite-types';
+import TrezorConnect from '@trezor/connect';
 
 const StyledModal = styled(Modal)<{ $isExtended: boolean }>`
     width: unset;
@@ -26,6 +27,8 @@ export const Pin = ({ device, ...rest }: PinProps) => {
 
     if (!device.features) return null;
 
+    const onCancel = () => TrezorConnect.cancel('pin-cancelled');
+
     // 3 cases when we want to show left column
     // 1) and 2) - Setting a new pin: 1 entry, 2nd (confirmation) entry
     // 3) Invalid pin (It doesn't seem to work anymore) instead separate PinMismatch modal is shown
@@ -45,9 +48,11 @@ export const Pin = ({ device, ...rest }: PinProps) => {
                 />
             }
             description={<Translation id="TR_THE_PIN_LAYOUT_IS_DISPLAYED" />}
-            {...rest}
+            onCancel={onCancel}
+            isCancelable
             data-test="@modal/pin"
             $isExtended={isExtended}
+            {...rest}
         >
             <PinMatrix device={device} hideExplanation={!isExtended} invalid={invalidCounter > 0} />
         </StyledModal>
