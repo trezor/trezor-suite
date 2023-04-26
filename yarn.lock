@@ -7832,6 +7832,16 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@trezor/e2e-utils@workspace:*, @trezor/e2e-utils@workspace:packages/e2e-utils":
+  version: 0.0.0-use.local
+  resolution: "@trezor/e2e-utils@workspace:packages/e2e-utils"
+  dependencies:
+    express: ^4.18.2
+    uuid: ^9.0.0
+    ws: 7.5.9
+  languageName: unknown
+  linkType: soft
+
 "@trezor/env-utils@workspace:*, @trezor/env-utils@workspace:packages/env-utils":
   version: 0.0.0-use.local
   resolution: "@trezor/env-utils@workspace:packages/env-utils"
@@ -8218,6 +8228,7 @@ __metadata:
     "@suite-common/sentry": "workspace:*"
     "@suite-common/test-utils": "workspace:*"
     "@trezor/device-utils": "workspace:*"
+    "@trezor/e2e-utils": "workspace:*"
     "@trezor/suite": "workspace:*"
     "@trezor/trezor-user-env-link": "workspace:*"
     "@trezor/utils": "workspace:*"

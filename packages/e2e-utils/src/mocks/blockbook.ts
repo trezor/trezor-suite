@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+
 import WebSocket from 'ws';
 import * as net from 'net';
 
@@ -20,19 +22,14 @@ interface Server extends WebSocket.Server {
     port: number;
 }
 
-interface StartParams {
-    endpointsFile: string; // filename of fixtures to be used
-}
-
-export const start = async ({ endpointsFile }: StartParams) => {
+export const start = async ({ endpoints }: any) => {
     const port = await getFreePort();
 
     const serverPromise = new Promise<Server>((resolve, reject) => {
         // @ts-expect-error
         const server: Server = new WebSocket.Server({ port });
         server.port = port;
-        server.on('connection', async ws => {
-            const { endpoints } = await import(`../fixtures/${endpointsFile}.ts`);
+        server.on('connection', ws => {
             ws.on('message', (data: any) => {
                 const json = JSON.parse(data);
 

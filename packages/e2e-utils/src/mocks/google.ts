@@ -1,4 +1,4 @@
-/* eslint-disable max-classes-per-file */
+/* eslint-disable max-classes-per-file, no-console */
 
 import express, { Express } from 'express';
 import { v4 as uuidv4 } from 'uuid';
@@ -34,7 +34,7 @@ class File {
 /**
  * Mock implementation of Google Drive service intended to be used in e2e tests.
  */
-class GoogleMock {
+export class GoogleMock {
     files: Record<string, any> = {};
     nextResponse: null | Record<string, any> = null;
     // store requests for assertions in tests
@@ -223,7 +223,3 @@ class GoogleMock {
         }
     }
 }
-
-const googleMock = new GoogleMock();
-
-export default googleMock;

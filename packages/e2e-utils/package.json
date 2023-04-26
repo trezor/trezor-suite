@@ -1,0 +1,17 @@
+{
+    "name": "@trezor/e2e-utils",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "type-check": "tsc --build"
+    },
+    "dependencies": {
+        "express": "^4.18.2",
+        "uuid": "^9.0.0",
+        "ws": "7.5.9"
+    }
+}
