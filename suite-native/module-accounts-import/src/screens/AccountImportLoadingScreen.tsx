@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
@@ -12,12 +12,15 @@ import {
     StackToTabCompositeScreenProps,
 } from '@suite-native/navigation';
 import TrezorConnect, { AccountInfo } from '@trezor/connect';
+import { Button } from '@suite-native/atoms';
 
 import { AccountImportHeader } from '../components/AccountImportHeader';
 import { AccountImportLoader } from '../components/AccountImportLoader';
 import { useShowImportError } from '../useShowImportError';
 
 const LOADING_ANIMATION_DURATION = 5000;
+
+const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 export const AccountImportLoadingScreen = ({
     navigation,
@@ -47,6 +50,16 @@ export const AccountImportLoadingScreen = ({
         const timeout = setTimeout(() => setIsAnimationFinished(true), LOADING_ANIMATION_DURATION);
         return () => clearTimeout(timeout);
     }, [setIsAnimationFinished]);
+
+    const safelyShowImportError: typeof showImportError = useCallback(
+        async (message, onRetry) => {
+            // Delay displaying the error message to avoid freezing the app on iOS. If an error occurs too quickly during the
+            // transition from ScanQRCodeModalScreen, the error modal won't appear, resulting in a frozen app.
+            await sleep(1000);
+            showImportError(message, onRetry);
+        },
+        [showImportError],
+    );
 
     useEffect(() => {
         let ignore = false;
@@ -90,7 +103,7 @@ export const AccountImportLoadingScreen = ({
                     }
                     setAccountInfo(fetchedAccountInfo.payload);
                 } else {
-                    showImportError(fetchedAccountInfo.payload.error, getAccountInfo);
+                    safelyShowImportError(fetchedAccountInfo.payload.error, getAccountInfo);
                 }
             }
         };
@@ -98,17 +111,20 @@ export const AccountImportLoadingScreen = ({
             getAccountInfo();
         } catch (error) {
             if (!ignore) {
-                showImportError(error?.message, getAccountInfo);
+                safelyShowImportError(error?.message, getAccountInfo);
             }
         }
 
         return () => {
             ignore = true;
         };
-    }, [xpubAddress, networkSymbol, dispatch, showImportError, fiatCurrency]);
+    }, [xpubAddress, networkSymbol, dispatch, safelyShowImportError, fiatCurrency]);
 
     return (
         <Screen header={<AccountImportHeader activeStep={3} />}>
+            <Button onPress={() => showImportError('test', () => console.log('test'))}>
+                Test error
+            </Button>
             <AccountImportLoader />
         </Screen>
     );
