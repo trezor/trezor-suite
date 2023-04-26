@@ -5,7 +5,7 @@
 // and
 // new BlockchainLink({ worker: () => new BlockchainLinkModule() });
 
-import * as SocksProxyAgent from 'socks-proxy-agent';
+import SocksProxyAgent from 'socks-proxy-agent';
 import { CustomError } from '@trezor/blockchain-link-types/lib/constants/errors';
 import { WorkerState } from './state';
 import { prioritizeEndpoints } from './utils';

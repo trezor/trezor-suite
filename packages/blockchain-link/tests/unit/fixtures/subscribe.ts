@@ -6,7 +6,7 @@ const addresses = [
             type: 'addresses',
             addresses: undefined,
         },
-        subscribed: undefined,
+        subscribed: [],
     },
     {
         description: 'add first address',
@@ -69,7 +69,7 @@ const addresses = [
             type: 'addresses',
             addresses: undefined,
         },
-        subscribed: undefined,
+        subscribed: [],
     },
     {
         description: 'add one address (permanently subscribed)',
@@ -212,7 +212,7 @@ const addresses = [
             type: 'addresses',
             addresses: undefined,
         },
-        subscribed: undefined,
+        subscribed: [],
     },
     {
         description: 'add some account again (subscription is not registered)',
@@ -230,7 +230,7 @@ const addresses = [
             type: 'accounts',
             accounts: undefined,
         },
-        subscribed: undefined,
+        subscribed: [],
     },
 ] as const;
 

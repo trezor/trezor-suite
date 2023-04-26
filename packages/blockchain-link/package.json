@@ -52,6 +52,7 @@
         "prepublish": "yarn tsx ../../scripts/prepublish.js"
     },
     "devDependencies": {
+        "@trezor/e2e-utils": "workspace:*",
         "html-webpack-plugin": "^5.5.0",
         "jest": "^26.6.3",
         "rimraf": "^4.4.1",

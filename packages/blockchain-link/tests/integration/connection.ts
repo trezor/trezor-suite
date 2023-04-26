@@ -1,5 +1,5 @@
+import { BackendWebsocketServerMock } from '@trezor/e2e-utils';
 import BlockchainLink from '../../lib';
-import createServer, { EnhancedServer } from '../websocket';
 import {
     rippleWorkerFactory,
     rippleModuleFactory,
@@ -46,11 +46,11 @@ const backends = [
 
 backends.forEach((b, i) => {
     describe(`Connection ${b.name}`, () => {
-        let server: EnhancedServer;
+        let server: BackendWebsocketServerMock;
         let blockchain: BlockchainLink;
 
         beforeEach(async () => {
-            server = await createServer(b.type);
+            server = await BackendWebsocketServerMock.create(b.type);
             blockchain = new BlockchainLink({
                 ...backends[i],
                 timeout: 1000,
