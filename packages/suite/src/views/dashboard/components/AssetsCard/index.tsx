@@ -66,6 +66,10 @@ const StyledAddAccountButton = styled(Button)`
     margin-left: 20px;
 `;
 
+const StyledIcon = styled(Icon)`
+    margin-right: 4px;
+`;
+
 interface assetType {
     symbol: string;
     network: Network;
@@ -187,12 +191,7 @@ const AssetsCard = () => {
 
                     {isError && (
                         <InfoMessage>
-                            <Icon
-                                style={{ paddingRight: '4px', paddingBottom: '2px' }}
-                                icon="WARNING"
-                                color={theme.TYPE_RED}
-                                size={14}
-                            />
+                            <StyledIcon icon="WARNING" color={theme.TYPE_RED} size={14} />
                             <Translation id="TR_DASHBOARD_ASSETS_ERROR" />
                         </InfoMessage>
                     )}
