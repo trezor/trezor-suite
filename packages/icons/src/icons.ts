@@ -43,6 +43,7 @@ export const icons = {
     label: require('../assets/icons/label.svg'),
     lock: require('../assets/icons/lock.svg'),
     minusCircle: require('../assets/icons/minusCircle.svg'),
+    noConnection: require('../assets/icons/noConnection.svg'),
     notifications: require('../assets/icons/notifications.svg'),
     palette: require('../assets/icons/palette.svg'),
     paper: require('../assets/icons/paper.svg'),
@@ -64,8 +65,10 @@ export const icons = {
     settings: require('../assets/icons/settings.svg'),
     share: require('../assets/icons/share.svg'),
     shuffle: require('../assets/icons/shuffle.svg'),
+    stack: require('../assets/icons/stack.svg'),
     standardWallet: require('../assets/icons/standardWallet.svg'),
     swap: require('../assets/icons/swap.svg'),
+    syncedCoin: require('../assets/icons/syncedCoin.svg'),
     tor: require('../assets/icons/tor.svg'),
     trade: require('../assets/icons/trade.svg'),
     trash: require('../assets/icons/trash.svg'),
@@ -74,7 +77,9 @@ export const icons = {
     trezorT: require('../assets/icons/trezorT.svg'),
     twitter: require('../assets/icons/twitter.svg'),
     warningCircle: require('../assets/icons/warningCircle.svg'),
+    warningCircleLight: require('../assets/icons/warningCircleLight.svg'),
     warningTriangle: require('../assets/icons/warningTriangle.svg'),
+    warningTriangleLight: require('../assets/icons/warningTriangleLight.svg'),
 } as const;
 export type IconName = keyof typeof icons;
 
