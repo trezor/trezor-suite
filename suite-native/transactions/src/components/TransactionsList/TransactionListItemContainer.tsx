@@ -15,9 +15,14 @@ import {
 } from '@suite-native/navigation';
 import { Badge, Box, HStack, Text } from '@suite-native/atoms';
 import { useFormatters } from '@suite-common/formatters';
-import { selectTransactionBlockTimeById, TransactionsRootState } from '@suite-common/wallet-core';
+import {
+    selectIsTransactionPending,
+    selectTransactionBlockTimeById,
+    TransactionsRootState,
+} from '@suite-common/wallet-core';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { EthereumTokenTransfer } from '@suite-native/ethereum-tokens';
+import { Color } from '@trezor/theme';
 
 import { TransactionIcon } from './TransactionIcon';
 
@@ -132,6 +137,12 @@ export const TransactionListItemContainer = memo(
             selectTransactionBlockTimeById(state, txid, accountKey),
         );
 
+        const isTransactionPending = useSelector((state: TransactionsRootState) =>
+            selectIsTransactionPending(state, txid, accountKey),
+        );
+
+        const iconColor: Color = isTransactionPending ? 'backgroundAlertYellowBold' : 'iconSubdued';
+
         const coinSymbol = tokenTransfer?.symbol ?? networkSymbol;
         return (
             <TouchableOpacity
@@ -140,7 +151,12 @@ export const TransactionListItemContainer = memo(
             >
                 <Box style={applyStyle(descriptionBoxStyle)}>
                     {coinSymbol && (
-                        <TransactionIcon symbol={coinSymbol} transactionType={transactionType} />
+                        <TransactionIcon
+                            symbol={coinSymbol}
+                            transactionType={transactionType}
+                            isAnimated={isTransactionPending}
+                            iconColor={iconColor}
+                        />
                     )}
                     <Box marginLeft="medium" flex={1}>
                         <HStack flexDirection="row" alignItems="center" spacing={4}>
