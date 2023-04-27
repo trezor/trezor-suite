@@ -58,6 +58,8 @@ export const TransactionDetailScreen = ({
         Linking.openURL(`${blockchainExplorer.tx}${transaction.txid}`);
     };
 
+    const isTokenTransaction = !!tokenTransfer;
+
     return (
         <Screen customHorizontalPadding={utils.spacings.small} header={<ScreenHeader />}>
             <VStack spacing="large">
@@ -74,7 +76,10 @@ export const TransactionDetailScreen = ({
             <Box marginVertical="large">
                 <Divider />
             </Box>
-            <TransactionDetailSheets transaction={transaction} />
+            <TransactionDetailSheets
+                transaction={transaction}
+                isTokenTransaction={isTokenTransaction}
+            />
             <Button
                 iconLeft="arrowUpRight"
                 onPress={handleOpenBlockchain}
