@@ -1,12 +1,16 @@
 import { memoizeWithArgs } from 'proxy-memoize';
 
 import { Account, WalletAccountTransaction, AccountKey } from '@suite-common/wallet-types';
-import { findTransaction, isPending } from '@suite-common/wallet-utils';
+import { findTransaction, getConfirmations, isPending } from '@suite-common/wallet-utils';
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 
 import { fiatRatesActions } from '../fiat-rates/fiatRatesActions';
 import { accountsActions } from '../accounts/accountsActions';
 import { transactionsActions } from './transactionsActions';
+import {
+    selectBlockchainHeightBySymbol,
+    BlockchainRootState,
+} from '../blockchain/blockchainReducer';
 
 export interface TransactionsState {
     isLoading: boolean;
@@ -21,7 +25,7 @@ export const transactionsInitialState: TransactionsState = {
     transactions: {},
 };
 
-export interface TransactionsRootState {
+export type TransactionsRootState = {
     wallet: {
         transactions: TransactionsState & {
             // We need to override types because there could be nulls in transactions array because of pagination
@@ -29,7 +33,7 @@ export interface TransactionsRootState {
             transactions: { [key: AccountKey]: (WalletAccountTransaction | null)[] };
         };
     };
-}
+} & BlockchainRootState;
 
 const initializeAccount = (state: TransactionsState, accountKey: AccountKey) => {
     // initialize an empty array at 'accountKey' index if not yet initialized
@@ -234,4 +238,16 @@ export const selectIsTransactionPending = (
 ): boolean => {
     const transaction = selectTransactionByTxidAndAccountKey(state, txid, accountKey);
     return transaction ? isPending(transaction) : false;
+};
+
+export const selectTransactionConfirmations = (
+    state: TransactionsRootState,
+    txid: string,
+    accountKey: AccountKey,
+) => {
+    const transaction = selectTransactionByTxidAndAccountKey(state, txid, accountKey);
+    if (!transaction) return 0;
+
+    const blockchainHeight = selectBlockchainHeightBySymbol(state, transaction.symbol);
+    return getConfirmations(transaction, blockchainHeight);
 };

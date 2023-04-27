@@ -4,11 +4,11 @@ import { useSelector } from 'react-redux';
 import { fromWei } from 'web3-utils';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { WalletAccountTransaction } from '@suite-common/wallet-types';
+import { AccountKey, WalletAccountTransaction } from '@suite-common/wallet-types';
 import { Box, Card, IconButton, Text, VStack } from '@suite-native/atoms';
 import { Icon } from '@trezor/icons';
-import { getConfirmations, getFeeRate, getFeeUnits } from '@suite-common/wallet-utils';
-import { BlockchainRootState, selectBlockchainHeightBySymbol } from '@suite-common/wallet-core';
+import { getFeeRate, getFeeUnits } from '@suite-common/wallet-utils';
+import { selectTransactionConfirmations, TransactionsRootState } from '@suite-common/wallet-core';
 import { useCopyToClipboard } from '@suite-native/helpers';
 import { TransactionIdFormatter } from '@suite-native/formatters';
 import { networks, NetworkType } from '@suite-common/wallet-config';
@@ -20,6 +20,7 @@ type TransactionDetailParametersSheetProps = {
     isVisible: boolean;
     transaction: WalletAccountTransaction;
     onSheetVisibilityChange: () => void;
+    accountKey: AccountKey;
 };
 
 type EthereumParametersProps = Pick<
@@ -57,21 +58,25 @@ const EthereumParameters = ({ gasLimit, gasUsed, gasPrice, nonce }: EthereumPara
     </>
 );
 
+const ConfirmationsCount = ({ txid, accountKey }: { txid: string; accountKey: AccountKey }) => {
+    const confirmationsCount = useSelector((state: TransactionsRootState) =>
+        selectTransactionConfirmations(state, txid, accountKey),
+    );
+    return <>{confirmationsCount}</>;
+};
+
 export const TransactionDetailParametersSheet = ({
     isVisible,
     onSheetVisibilityChange,
     transaction,
+    accountKey,
 }: TransactionDetailParametersSheetProps) => {
     const copyToClipboard = useCopyToClipboard();
     const { applyStyle } = useNativeStyles();
-    const blockchainHeight = useSelector((state: BlockchainRootState) =>
-        selectBlockchainHeightBySymbol(state, transaction.symbol),
-    );
 
     const { networkType } = networks[transaction.symbol];
     const displayedParameters = networkTypeToDisplayedParametersMap[networkType];
     const parametersCardIsDisplayed = displayedParameters.length !== 0;
-    const confirmationsCount = getConfirmations(transaction, blockchainHeight);
 
     const handleClickCopy = () => copyToClipboard(transaction.txid, 'Transaction ID copied');
 
@@ -104,7 +109,9 @@ export const TransactionDetailParametersSheet = ({
                         </Box>
                     </TransactionDetailRow>
                     <TransactionDetailRow title="Confirmations">
-                        <Text>{confirmationsCount} </Text>
+                        <Text>
+                            <ConfirmationsCount txid={transaction.txid} accountKey={accountKey} />
+                        </Text>
                         <Box marginLeft="small">
                             <Icon name="confirmation" />
                         </Box>
