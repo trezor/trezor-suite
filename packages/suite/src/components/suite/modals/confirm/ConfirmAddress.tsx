@@ -1,4 +1,4 @@
-import React, { createRef } from 'react';
+import React, { useRef } from 'react';
 import styled from 'styled-components';
 
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -7,7 +7,7 @@ import { copyToClipboard } from '@trezor/dom-utils';
 import { TrezorDevice } from '@suite-types';
 import { Translation, Modal } from '@suite-components';
 import { useActions } from '@suite-hooks';
-import DeviceDisconnected from './components/DeviceDisconnected';
+import DeviceDisconnected from './Address/components/DeviceDisconnected';
 import { QrCode, QRCODE_PADDING, QRCODE_SIZE } from '@suite-components/QrCode';
 import { getDeviceModel } from '@trezor/device-utils';
 
@@ -67,7 +67,7 @@ export const ConfirmAddress = ({
     // const needsBackup = device.features && device.features.needs_backup;
 
     const { addNotification } = useActions({ addNotification: notificationsActions.addToast });
-    const htmlElement = createRef<HTMLDivElement>();
+    const htmlElement = useRef<HTMLDivElement>(null);
 
     const copyAddress = () => {
         const result = copyToClipboard(address, htmlElement.current);

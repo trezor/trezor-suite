@@ -1,4 +1,4 @@
-import React, { createRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 
 import styled from 'styled-components';
 import { Translation, Modal } from '@suite-components';
@@ -42,7 +42,7 @@ const BalanceInfoSection = styled(SectionItem)`
 type ApplicationLogProps = { onCancel: () => void };
 
 export const ApplicationLog = ({ onCancel }: ApplicationLogProps) => {
-    const htmlElement = createRef<HTMLPreElement>();
+    const htmlElement = useRef<HTMLPreElement>(null);
     const [hideSensitiveInfo, setHideSensitiveInfo] = useState(false);
     const logs = useSelector(selectLogs);
 

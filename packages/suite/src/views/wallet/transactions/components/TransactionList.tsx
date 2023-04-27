@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect } from 'react';
+import React, { useMemo, useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import useDebounce from 'react-use/lib/useDebounce';
 
@@ -61,7 +61,7 @@ export const TransactionList = ({
         fetchTransactions: fetchTransactionsThunk,
     });
 
-    const sectionRef = React.createRef<HTMLDivElement>();
+    const sectionRef = useRef<HTMLDivElement>(null);
 
     useDebounce(
         () => {

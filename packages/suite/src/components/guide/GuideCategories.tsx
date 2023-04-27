@@ -6,7 +6,7 @@ import { GuideCategory } from '@suite-common/suite-types';
 import { GuideNode } from '@guide-components';
 
 const Section = styled.section`
-    padding: 8px 0 0 0;
+    padding-bottom: 20px;
 `;
 
 const SectionHeading = styled.h3`

@@ -1,4 +1,4 @@
-import React, { createRef, useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import styled from 'styled-components';
 
 import { analytics, EventType } from '@trezor/suite-analytics';
@@ -122,7 +122,7 @@ const OutputList = ({
             },
         });
 
-    const htmlElement = createRef<HTMLDivElement>();
+    const htmlElement = useRef<HTMLDivElement>(null);
     const totalRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
