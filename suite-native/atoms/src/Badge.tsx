@@ -8,11 +8,12 @@ import { Text } from './Text';
 import { HStack } from './Stack';
 
 export type BadgeVariant = 'neutral' | 'green' | 'red' | 'bold';
+export type BadgeSize = 'small' | 'medium';
 export type BadgeElevation = '0' | '1';
 type BadgeProps = {
     label: string;
     variant?: BadgeVariant;
-    size?: 'medium' | 'small';
+    size?: BadgeSize;
     icon?: IconName | CryptoIconName;
     iconSize?: IconSize;
     elevation?: BadgeElevation;
@@ -29,10 +30,11 @@ type BadgeStyle = {
 type BadgeStyleProps = {
     backgroundColor: Color;
     isDisabled: boolean;
+    isIconDisplayed: boolean;
 };
 
 const BadgeStyle = prepareNativeStyle<BadgeStyleProps>(
-    (utils, { backgroundColor, isDisabled }) => ({
+    (utils, { backgroundColor, isDisabled, isIconDisplayed }) => ({
         alignItems: 'center',
         justifyContent: 'center',
         alignSelf: 'flex-start',
@@ -41,12 +43,20 @@ const BadgeStyle = prepareNativeStyle<BadgeStyleProps>(
         paddingVertical: utils.spacings.small / 4,
         borderRadius: utils.borders.radii.round,
 
-        extend: {
-            condition: isDisabled,
-            style: {
-                backgroundColor: utils.colors.backgroundNeutralSubtleOnElevation0,
+        extend: [
+            {
+                condition: isDisabled,
+                style: {
+                    backgroundColor: utils.colors.backgroundNeutralSubtleOnElevation0,
+                },
             },
-        },
+            {
+                condition: isIconDisplayed,
+                style: {
+                    paddingLeft: utils.spacings.small / 2,
+                },
+            },
+        ],
     }),
 );
 
@@ -114,6 +124,7 @@ export const Badge = ({
         <HStack
             style={applyStyle(BadgeStyle, {
                 backgroundColor,
+                isIconDisplayed: !!icon,
                 isDisabled,
             })}
             spacing={utils.spacings.small / 2}

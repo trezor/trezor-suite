@@ -6,6 +6,7 @@ import { A } from '@mobily/ts-belt';
 import { VStack } from '@suite-native/atoms';
 import {
     EthereumTokenSymbol,
+    getEthereumTokenName,
     selectEthereumAccountsTokensWithFiatRates,
 } from '@suite-native/ethereum-tokens';
 import { AccountKey } from '@suite-common/wallet-types';
@@ -36,7 +37,7 @@ export const TokenList = ({ accountKey, onSelectAccount }: TokenListProps) => {
                     symbol={token.symbol}
                     onSelectAccount={onSelectAccount}
                     balance={token.balance}
-                    label={token.name ?? 'Unknown token'}
+                    label={getEthereumTokenName(token.name)}
                     isLast={accountTokens?.length - 1 === index}
                 />
             ))}
