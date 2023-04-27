@@ -17,6 +17,7 @@ type TransactionSheetAnalyticsEventType =
 
 type TransactionDetailSheetsProps = {
     transaction: WalletAccountTransaction;
+    isTokenTransaction?: boolean;
 };
 
 const sheetToAnalyticsEventMap: Record<SheetType, TransactionSheetAnalyticsEventType> = {
@@ -25,7 +26,10 @@ const sheetToAnalyticsEventMap: Record<SheetType, TransactionSheetAnalyticsEvent
     inputs: EventType.TransactionDetailInputOutput,
 };
 
-export const TransactionDetailSheets = ({ transaction }: TransactionDetailSheetsProps) => {
+export const TransactionDetailSheets = ({
+    transaction,
+    isTokenTransaction = false,
+}: TransactionDetailSheetsProps) => {
     const [expandedSheet, setExpandedSheet] = useState<SheetType | null>(null);
 
     const toggleSheet = (sheetName: SheetType) => {
@@ -35,7 +39,7 @@ export const TransactionDetailSheets = ({ transaction }: TransactionDetailSheets
         setExpandedSheet(expandedSheet === sheetName ? null : sheetName);
     };
 
-    const isValuesSheetVisible = !isTestnet(transaction.symbol);
+    const isValuesSheetVisible = !isTestnet(transaction.symbol) && !isTokenTransaction;
 
     return (
         <Card>
