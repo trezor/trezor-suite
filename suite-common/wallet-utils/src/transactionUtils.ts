@@ -119,6 +119,9 @@ export const formatCardanoDeposit = (tx: WalletAccountTransaction) =>
         ? formatNetworkAmount(tx.cardanoSpecific.deposit, tx.symbol)
         : undefined;
 
+export const isTxOwned = (tx: WalletAccountTransaction) =>
+    !!tx.details.vin.find(vin => vin.isOwn || vin.isAccountOwned);
+
 /**
  * Returns a sum of sent/recv txs amounts as a BigNumber.
  * Amounts of sent transactions are added, amounts of recv transactions are subtracted
@@ -147,14 +150,16 @@ export const sumTransactions = (transactions: WalletAccountTransaction[]) => {
             }
         }
 
-        if (tx.type === 'sent') {
-            totalAmount = totalAmount.minus(amount);
-            totalAmount = totalAmount.minus(fee);
+        // count in only if Inputs/Outputs includes my account (EVM does not need to)
+        if (tx.targets.length) {
+            if (tx.type === 'sent') {
+                totalAmount = totalAmount.minus(amount);
+            }
+            if (tx.type === 'recv' || tx.type === 'joint') {
+                totalAmount = totalAmount.plus(amount);
+            }
         }
-        if (tx.type === 'recv' || tx.type === 'joint') {
-            totalAmount = totalAmount.plus(amount);
-        }
-        if (tx.type === 'failed') {
+        if (isTxOwned(tx)) {
             totalAmount = totalAmount.minus(fee);
         }
 
@@ -200,16 +205,21 @@ export const sumTransactionsFiat = (
                 );
             }
         }
-        if (tx.type === 'sent') {
-            totalAmount = totalAmount.minus(
-                toFiatCurrency(amount, fiatCurrency, tx.rates, -1) ?? 0,
-            );
-            totalAmount = totalAmount.minus(toFiatCurrency(fee, fiatCurrency, tx.rates, -1) ?? 0);
+
+        // count in only if Inputs/Outputs includes my account (EVM does not need to)
+        if (tx.targets.length) {
+            if (tx.type === 'sent') {
+                totalAmount = totalAmount.minus(
+                    toFiatCurrency(amount, fiatCurrency, tx.rates, -1) ?? 0,
+                );
+            }
+            if (tx.type === 'recv' || tx.type === 'joint') {
+                totalAmount = totalAmount.plus(
+                    toFiatCurrency(amount, fiatCurrency, tx.rates, -1) ?? 0,
+                );
+            }
         }
-        if (tx.type === 'recv' || tx.type === 'joint') {
-            totalAmount = totalAmount.plus(toFiatCurrency(amount, fiatCurrency, tx.rates, -1) ?? 0);
-        }
-        if (tx.type === 'failed') {
+        if (isTxOwned(tx)) {
             totalAmount = totalAmount.minus(toFiatCurrency(fee, fiatCurrency, tx.rates, -1) ?? 0);
         }
 
