@@ -1061,8 +1061,10 @@ const disableWebUSBTransport = async () => {
     const settings = DataManager.getSettings();
 
     if (settings.transports?.includes('WebUsbTransport')) {
-        settings.transports.splice(settings.transports.indexOf('WebUsbTransport'));
+        settings.transports.splice(settings.transports.indexOf('WebUsbTransport'), 1);
     }
+
+    // adding BridgeTransport here is probably not needed since there is fallback in DeviceList if transport settings is empty
     if (!settings.transports?.includes('BridgeTransport')) {
         settings.transports!.unshift('BridgeTransport');
     }
