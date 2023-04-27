@@ -101,6 +101,23 @@ export const valuesContainerStyle = prepareNativeStyle(utils => ({
     maxWidth: '40%',
 }));
 
+const getTransactionTitle = (transactionType: TransactionType, isPending: boolean) => {
+    if (isPending) {
+        switch (transactionType) {
+            case 'recv':
+                return 'Receiving';
+
+            case 'sent':
+                return 'Sending';
+
+            default:
+                return 'Pending';
+        }
+    }
+
+    return transactionTitleMap[transactionType];
+};
+
 export const TransactionListItemContainer = memo(
     ({
         children,
@@ -142,8 +159,9 @@ export const TransactionListItemContainer = memo(
         );
 
         const iconColor: Color = isTransactionPending ? 'backgroundAlertYellowBold' : 'iconSubdued';
-
         const coinSymbol = tokenTransfer?.symbol ?? networkSymbol;
+        const transactionTitle = getTransactionTitle(transactionType, isTransactionPending);
+
         return (
             <TouchableOpacity
                 onPress={() => handleNavigateToTransactionDetail()}
@@ -160,7 +178,7 @@ export const TransactionListItemContainer = memo(
                     )}
                     <Box marginLeft="medium" flex={1}>
                         <HStack flexDirection="row" alignItems="center" spacing={4}>
-                            <Text>{transactionTitleMap[transactionType]}</Text>
+                            <Text>{transactionTitle}</Text>
                             {hasIncludedCoins && <Badge label={includedCoinsLabel} size="small" />}
                         </HStack>
                         <Text variant="hint" color="textSubdued">
