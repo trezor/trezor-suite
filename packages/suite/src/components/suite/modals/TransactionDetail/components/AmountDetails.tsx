@@ -11,6 +11,7 @@ import {
     formatNetworkAmount,
     getTxOperation,
     isNftTokenTransfer,
+    isTxOwned,
 } from '@suite-common/wallet-utils';
 import BigNumber from 'bignumber.js';
 import { FormattedNftAmount } from '@suite-components/FormattedNftAmount';
@@ -228,7 +229,7 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                 ))}
 
                 {/* TX FEE */}
-                {tx.type !== 'recv' && (
+                {isTxOwned(tx) && (
                     <AmountRow
                         firstColumn={<Translation id="TR_TX_FEE" />}
                         secondColumn={

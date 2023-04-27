@@ -7,7 +7,7 @@ import { getIsZeroValuePhishing } from '@suite-common/suite-utils';
 import { Translation } from '@suite-components';
 import { useActions } from '@suite-hooks';
 import * as modalActions from '@suite-actions/modalActions';
-import { formatNetworkAmount, isTestnet } from '@suite-common/wallet-utils';
+import { formatNetworkAmount, isTestnet, isTxOwned } from '@suite-common/wallet-utils';
 import { AccountMetadata } from '@suite-types/metadata';
 import { Network, WalletAccountTransaction } from '@wallet-types';
 import { TransactionTypeIcon } from './components/TransactionTypeIcon';
@@ -114,7 +114,7 @@ const TransactionItem = React.memo(
             (!tokens.length && !internalTransfers.length && !targets.length) || type === 'failed';
 
         const fee = formatNetworkAmount(transaction.fee, transaction.symbol);
-        const showFeeRow = !isUnknown && type !== 'recv' && type !== 'joint' && fee !== '0';
+        const showFeeRow = isTxOwned(transaction) && type !== 'joint' && fee !== '0';
 
         const [txItemIsHovered, setTxItemIsHovered] = useState(false);
         const [nestedItemIsHovered, setNestedItemIsHovered] = useState(false);
@@ -124,8 +124,6 @@ const TransactionItem = React.memo(
         );
 
         // join together regular targets, internal and token transfers
-        // ethereum tx has either targets or transfers
-        // cardano tx can have both at the same time
         const allOutputs: (
             | { type: 'token'; payload: (typeof tokens)[number] }
             | { type: 'internal'; payload: (typeof internalTransfers)[number] }
@@ -138,6 +136,7 @@ const TransactionItem = React.memo(
                       ...internalTransfers.map(t => ({ type: 'internal' as const, payload: t })),
                       ...tokens.map(t => ({ type: 'token' as const, payload: t })),
                   ];
+
         const previewTargets = allOutputs.slice(0, DEFAULT_LIMIT);
         const isExpandable = allOutputs.length - DEFAULT_LIMIT > 0;
         const toExpand = allOutputs.length - DEFAULT_LIMIT - limit;
