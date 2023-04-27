@@ -29,6 +29,17 @@ const removeLeadingZeroes = (value: string) => value.replace(/^0+(?!\.|$)/, '');
 const cleanValueString = (value: string, locale: Locale) => {
     const { decimalSeparator, thousandsSeparator } = getLocaleSeparators(locale);
 
+    // clean the entered number string if it's not convertable to Number or if it has a non-conventional format
+    if (
+        !Number.isNaN(Number(value)) &&
+        thousandsSeparator !== '.' &&
+        !hasLeadingZeroes(value) &&
+        value.at(0) !== '.' &&
+        value.at(-1) !== '.'
+    ) {
+        return value;
+    }
+
     let cleanedValue = value
         .replace(/\s/g, '')
         .replaceAll(thousandsSeparator, '')
@@ -190,19 +201,7 @@ export const NumberInput = ({
                 }
             }
 
-            let cleanInput: string;
-            // clean the entered number string if it's not convertable to Number or if it has a non-conventional format
-            if (
-                Number.isNaN(Number(inputValue)) ||
-                thousandsSeparator === '.' ||
-                hasLeadingZeroes(inputValue) ||
-                inputValue.at(-1) === '.'
-            ) {
-                // try makeing the string compliant with Number
-                cleanInput = cleanValueString(inputValue, locale);
-            } else {
-                cleanInput = inputValue;
-            }
+            const cleanInput = cleanValueString(inputValue, locale);
 
             // allow inputs like '.031' or ',1' and disallow anything non-numerical
             if (!(cleanInput === '.') && Number.isNaN(Number(cleanInput))) {
