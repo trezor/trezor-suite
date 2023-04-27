@@ -51,5 +51,6 @@ in
     '' + lib.optionalString stdenv.isLinux ''
       export ELECTRON_OVERRIDE_DIST_PATH="${electron}/bin/"
       export npm_config_build_from_source=true  # tell yarn to not download binaries, but build from source
+      export PLAYWRIGHT_BROWSERS_PATH="$CURDIR/.cache/ms-playwright"
     '';
   }
