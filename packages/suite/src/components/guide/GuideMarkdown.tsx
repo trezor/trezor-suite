@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { variables } from '@trezor/components';
 import { TrezorLink } from '@suite-components';
 import ReactMarkdown from 'react-markdown';
@@ -64,10 +64,11 @@ interface GuideMarkdownProps {
 
 export const GuideMarkdown = ({ markdown }: GuideMarkdownProps) => {
     const { openNodeById } = useGuideOpenNode();
-    const ref = React.createRef<HTMLDivElement>();
+    const ref = useRef<HTMLDivElement>(null);
     useEffect(() => {
         if (ref.current) {
-            ref.current.parentElement?.parentElement?.scrollTo(0, 0); // scroll wrapper to top on new content
+            // scroll to top of article, applies when navigating from article directly to next article
+            ref.current.parentElement?.parentElement?.scrollTo(0, 0);
         }
     }, [markdown, ref]);
 

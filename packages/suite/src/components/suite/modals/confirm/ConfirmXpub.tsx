@@ -1,4 +1,4 @@
-import React, { createRef } from 'react';
+import React, { useRef } from 'react';
 import styled from 'styled-components';
 import { Button, variables } from '@trezor/components';
 import { copyToClipboard } from '@trezor/dom-utils';
@@ -38,7 +38,7 @@ const StyledModal = styled(Modal)`
     width: unset;
 `;
 
-interface XpubProps {
+interface ConfirmXpubProps {
     xpub: string;
     accountIndex: number;
     symbol: Account['symbol'];
@@ -46,14 +46,20 @@ interface XpubProps {
     onCancel: () => void;
 }
 
-export const ConfirmXpub = ({ xpub, accountIndex, symbol, accountLabel, onCancel }: XpubProps) => {
+export const ConfirmXpub = ({
+    xpub,
+    accountIndex,
+    symbol,
+    accountLabel,
+    onCancel,
+}: ConfirmXpubProps) => {
     // TODO: no-backup, backup failed
     // const needsBackup = device.features && device.features.needs_backup;
     const { addNotification } = useActions({
         addNotification: notificationsActions.addToast,
     });
 
-    const htmlElement = createRef<HTMLDivElement>();
+    const htmlElement = useRef<HTMLDivElement>(null);
 
     const copyAddress = () => {
         const result = copyToClipboard(xpub, htmlElement.current);
