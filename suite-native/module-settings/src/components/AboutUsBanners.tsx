@@ -53,9 +53,7 @@ export const AboutUsBanners = () => {
                         <IconButton
                             colorScheme="tertiaryElevation1"
                             iconName="github"
-                            onPress={() =>
-                                openLink('https://github.com/orgs/trezor/projects/61/views/7')
-                            }
+                            onPress={() => openLink('https://github.com/trezor')}
                         />
                     </HStack>
                 </VStack>
