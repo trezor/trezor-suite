@@ -20,30 +20,19 @@ const selectTransactionTargetAddresses = memoizeWithArgs(
     { size: 50 },
 );
 
-export const selectTransactionInputAddresses = memoizeWithArgs(
-    (state: TransactionsRootState, txid: string, accountKey: AccountKey): string[] => {
+export const selectTransactionAddresses = memoizeWithArgs(
+    (state: TransactionsRootState, txid: string, accountKey: AccountKey, detailType: 'inputs' | 'outputs'): string[] => {
         const transaction = selectTransactionByTxidAndAccountKey(state, txid, accountKey);
 
         if (G.isNullable(transaction)) return [];
 
-        const inputAddresses = mapTransactionInputsOutputsToAddresses(transaction.details.vin);
+        const inputsOrOutputs = detailType === 'inputs' ? transaction.details.vin : transaction.details.vout;
+
+        const addresses = mapTransactionInputsOutputsToAddresses(inputsOrOutputs);
+
         const targetAddresses = selectTransactionTargetAddresses(state, txid, accountKey);
 
-        return sortTargetAddressesToBeginning(inputAddresses, targetAddresses);
-    },
-    { size: 50 },
-);
-
-export const selectTransactionOutputAddresses = memoizeWithArgs(
-    (state: TransactionsRootState, txid: string, accountKey: AccountKey): string[] => {
-        const transaction = selectTransactionByTxidAndAccountKey(state, txid, accountKey);
-
-        if (G.isNullable(transaction)) return [];
-
-        const outputAddresses = mapTransactionInputsOutputsToAddresses(transaction.details.vout);
-        const targetAddresses = selectTransactionTargetAddresses(state, txid, accountKey);
-
-        return sortTargetAddressesToBeginning(outputAddresses, targetAddresses);
+        return sortTargetAddressesToBeginning(addresses, targetAddresses);
     },
     { size: 50 },
 );

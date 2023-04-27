@@ -15,7 +15,7 @@ import {
 import { TransactionsRootState } from '@suite-common/wallet-core';
 import { useCopyToClipboard } from '@suite-native/helpers';
 
-import { selectTransactionInputAddresses, selectTransactionOutputAddresses } from '../../selectors';
+import { selectTransactionAddresses, selectTransactionOutputAddresses } from '../../selectors';
 
 type TransactionDetailInputsSheetProps = {
     isVisible: boolean;
@@ -54,10 +54,10 @@ export const TransactionDetailAddressesSheet = ({
 }: TransactionDetailInputsSheetProps) => {
     const [activeTab, setActiveTab] = useState<ToggleAddressessValue>('inputs');
     const inputAddresses = useSelector((state: TransactionsRootState) =>
-        selectTransactionInputAddresses(state, txid, accountKey),
+        selectTransactionAddresses(state, txid, accountKey, 'inputs'),
     );
     const outputAddresses = useSelector((state: TransactionsRootState) =>
-        selectTransactionOutputAddresses(state, txid, accountKey),
+        selectTransactionAddresses(state, txid, accountKey, 'outputs'),
     );
 
     const addressesArray = activeTab === 'inputs' ? inputAddresses : outputAddresses;

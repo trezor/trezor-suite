@@ -10,7 +10,7 @@ import {
 import { AccountKey } from '@suite-common/wallet-types';
 import { ErrorMessage, VStack } from '@suite-native/atoms';
 
-import { selectTransactionInputAddresses, selectTransactionOutputAddresses } from '../../selectors';
+import { selectTransactionAddresses, selectTransactionOutputAddresses } from '../../selectors';
 import { TransactionDetailAddressesSection } from './TransactionDetailAddressesSection';
 import { TransactionDetailStatusSection } from './TransactionDetailStatusSection';
 
@@ -27,10 +27,10 @@ export const NetworkTransactionDetailSummary = ({
         selectTransactionByTxidAndAccountKey(state, txid, accountKey),
     );
     const transactionInputAddresses = useSelector((state: TransactionsRootState) =>
-        selectTransactionInputAddresses(state, txid, accountKey),
+        selectTransactionAddresses(state, txid, accountKey, 'inputs'),
     );
     const transactionOutputAddresses = useSelector((state: TransactionsRootState) =>
-        selectTransactionOutputAddresses(state, txid, accountKey),
+      selectTransactionAddresses(state, txid, accountKey, 'outputs'),
     );
 
     if (
