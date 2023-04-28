@@ -16,7 +16,7 @@ import { clearStorage } from '@suite-native/storage';
 
 import { BuildInfo } from '../components/BuildInfo';
 import { RenderingUtils } from '../components/RenderingUtils';
-import { ProductionDevInfo } from '../components/ProductionDevInfo';
+import { ProductionDevInfo, SentryTestErrorButton } from '../components/ProductionDevInfo';
 import { CopyLogsButton } from '../components/CopyLogsButton';
 
 export const DevUtilsScreen = ({
@@ -32,15 +32,7 @@ export const DevUtilsScreen = ({
                         See Component Demo
                     </Button>
                     <Button onPress={clearStorage}>Reset storage</Button>
-                    <Button
-                        onPress={() => {
-                            const errorMessage = `Sentry test error - ${Date.now()}`;
-                            Sentry.captureException(new Error(errorMessage));
-                            Alert.alert('Sentry error thrown', errorMessage);
-                        }}
-                    >
-                        Throw Sentry error
-                    </Button>
+                    <SentryTestErrorButton />
                     <CopyLogsButton />
                 </VStack>
             </Box>
