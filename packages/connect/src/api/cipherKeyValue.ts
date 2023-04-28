@@ -15,14 +15,16 @@ export default class CipherKeyValue extends AbstractMethod<
     init() {
         this.requiredPermissions = ['read', 'write'];
         this.firmwareRange = getFirmwareRange(this.name, null, this.firmwareRange);
-        this.info = 'Cypher key value';
-        this.useEmptyPassphrase = true;
+        this.info = 'Cipher key value';
 
         // create a bundle with only one batch if bundle doesn't exists
         this.hasBundle = !!this.payload.bundle;
         const payload = !this.payload.bundle
             ? { ...this.payload, bundle: [this.payload] }
             : this.payload;
+
+        this.useEmptyPassphrase =
+            typeof payload.useEmptyPassphrase === 'boolean' ? payload.useEmptyPassphrase : true;
 
         // validate bundle type
         validateParams(payload, [{ name: 'bundle', type: 'array' }]);
