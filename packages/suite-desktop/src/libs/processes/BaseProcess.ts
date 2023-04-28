@@ -1,8 +1,6 @@
 import path from 'path';
 import { spawn, ChildProcess } from 'child_process';
 
-import { isDevEnv } from '@suite-common/suite-utils';
-
 import { b2t } from '../utils';
 
 export type Status = {
@@ -110,12 +108,8 @@ export abstract class BaseProcess {
         this.stopped = false;
 
         const { system, ext } = this.getPlatformInfo();
-        const processDir = path.join(
-            global.resourcesPath,
-            'bin',
-            this.resourceName,
-            isDevEnv ? system : '',
-        );
+        const processDir = path.join(global.resourcesPath, 'bin', this.resourceName, system);
+
         const processPath = path.join(processDir, `${this.processName}${ext}`);
         const processEnv = { ...process.env };
         // library search path for macOS
