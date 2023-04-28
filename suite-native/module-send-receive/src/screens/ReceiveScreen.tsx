@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+
+import { useIsFocused } from '@react-navigation/native';
 
 import { Box, ErrorMessage, Text, VStack } from '@suite-native/atoms';
 import { AccountListItem } from '@suite-native/accounts';
@@ -23,15 +25,22 @@ export const ReceiveScreen = ({
     navigation,
 }: StackProps<SendReceiveStackParamList, SendReceiveStackRoutes.Receive>) => {
     const [addressIsVisible, setAddressIsVisible] = useState(false);
-    const { accountKey, tokenSymbol } = route.params;
+    const isScreenFocused = useIsFocused();
 
+    const { accountKey, tokenSymbol } = route.params;
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
-
     const token = useSelector((state: AccountsRootState) =>
         selectEthereumAccountToken(state, accountKey, tokenSymbol),
     );
+
+    useEffect(() => {
+        // Hide address when user leaves the screen
+        if (!isScreenFocused) {
+            setAddressIsVisible(false);
+        }
+    }, [isScreenFocused]);
 
     if (!account) return <ErrorMessage errorMessage={`Account ${accountKey} not found.`} />;
 
