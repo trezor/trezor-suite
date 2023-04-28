@@ -5,8 +5,7 @@ import styled from 'styled-components';
 import { Translation, QuestionTooltip, ReadMoreLink } from '@suite-components';
 import { AppState } from '@suite-types';
 
-import { AccountAddress } from '@trezor/connect';
-import { Button, Card, variables, H2 } from '@trezor/components';
+import { Button, Card, variables, H2, Tooltip } from '@trezor/components';
 import { getFirstFreshAddress } from '@suite-common/wallet-utils';
 import { AccountsRootState, selectIsAccountUtxoBased } from '@suite-common/wallet-core';
 
@@ -141,15 +140,14 @@ export const FreshAddress = ({
 
     if (!account || !firstFreshAddress) return null;
 
-    const getAddressValue = (address?: AccountAddress) => {
-        if (!address) {
-            return <Translation id="RECEIVE_ADDRESS_LIMIT_EXCEEDED" />;
-        }
+    const addressValue = `${firstFreshAddress.address.substring(0, 20)}`;
 
-        return `${address.address.substring(0, 20)}`;
-    };
-
-    const addressValue = getAddressValue(firstFreshAddress);
+    // On coinjoin account, disallow to reveal more than the first receive address until it is used,
+    // because discovery of coinjoin account relies on assumption that user uses his first address first.
+    const coinjoinDisallowReveal =
+        account.accountType === 'coinjoin' &&
+        !account.addresses?.used.length &&
+        firstFreshAddress.address !== account.addresses?.unused[0]?.address;
 
     return (
         <StyledCard>
@@ -164,15 +162,21 @@ export const FreshAddress = ({
                     <StyledFreshAddress>{addressValue}</StyledFreshAddress>
                 </FreshAddressWrapper>
             </AddressContainer>
-            <StyledButton
-                data-test="@wallet/receive/reveal-address-button"
-                icon="TREZOR_LOGO"
-                onClick={() => showAddress(firstFreshAddress.path, firstFreshAddress.address)}
-                isDisabled={disabled || locked || !firstFreshAddress}
-                isLoading={locked}
+            <Tooltip
+                content={
+                    coinjoinDisallowReveal && <Translation id="RECEIVE_ADDRESS_COINJOIN_DISALLOW" />
+                }
             >
-                <Translation id="RECEIVE_ADDRESS_REVEAL" />
-            </StyledButton>
+                <StyledButton
+                    data-test="@wallet/receive/reveal-address-button"
+                    icon="TREZOR_LOGO"
+                    onClick={() => showAddress(firstFreshAddress.path, firstFreshAddress.address)}
+                    isDisabled={disabled || locked || coinjoinDisallowReveal}
+                    isLoading={locked}
+                >
+                    <Translation id="RECEIVE_ADDRESS_REVEAL" />
+                </StyledButton>
+            </Tooltip>
         </StyledCard>
     );
 };
