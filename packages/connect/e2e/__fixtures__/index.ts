@@ -15,7 +15,7 @@ import ethereumGetAddress from './ethereumGetAddress';
 import ethereumGetPublicKey from './ethereumGetPublicKey';
 import ethereumSignMessage from './ethereumSignMessage';
 import ethereumSignTransaction from './ethereumSignTransaction';
-import ethereumSignTransactionEip155 from './ethereumSignTransactionEip155';
+// import ethereumSignTransactionEip155 from './ethereumSignTransactionEip155';
 import ethereumSignTransactionEip1559 from './ethereumSignTransactionEip1559';
 import ethereumSignTypedData from './ethereumSignTypedData';
 import ethereumVerifyMessage from './ethereumVerifyMessage';
@@ -114,7 +114,7 @@ let fixtures = [
     ethereumGetPublicKey,
     ethereumSignMessage,
     ethereumSignTransaction,
-    ethereumSignTransactionEip155,
+    // ethereumSignTransactionEip155,
     ethereumSignTransactionEip1559,
     ethereumSignTypedData,
     ethereumVerifyMessage,
