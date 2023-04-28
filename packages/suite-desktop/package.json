@@ -34,7 +34,7 @@
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/suite-utils": "workspace:*",
         "@trezor/coinjoin": "workspace:*",
-        "@trezor/connect": "workspace:9.0.8",
+        "@trezor/connect": "workspace:9.0.9",
         "@trezor/connect-common": "workspace:*",
         "@trezor/ipc-proxy": "workspace:*",
         "@trezor/message-system": "workspace:^",

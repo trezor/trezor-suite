@@ -16,7 +16,7 @@
         "@suite-common/formatters": "workspace:*",
         "@suite-common/sentry": "workspace:*",
         "@trezor/components": "workspace:*",
-        "@trezor/connect": "workspace:9.0.8",
+        "@trezor/connect": "workspace:9.0.9",
         "@trezor/ipc-proxy": "workspace:*",
         "@trezor/suite": "workspace:*",
         "@trezor/suite-analytics": "workspace:*",

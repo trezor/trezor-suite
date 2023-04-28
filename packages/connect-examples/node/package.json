@@ -8,6 +8,6 @@
         "start": "node index.js"
     },
     "dependencies": {
-        "@trezor/connect": "workspace:9.0.8"
+        "@trezor/connect": "workspace:9.0.9"
     }
 }

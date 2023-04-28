@@ -11,7 +11,7 @@
         "test:unit": "jest -c ../../jest.config.base.js"
     },
     "devDependencies": {
-        "@trezor/connect": "workspace:9.0.8",
+        "@trezor/connect": "workspace:9.0.9",
         "@trezor/connect-common": "workspace:*",
         "@trezor/env-utils": "workspace:*",
         "copy-webpack-plugin": "^11.0.0",
