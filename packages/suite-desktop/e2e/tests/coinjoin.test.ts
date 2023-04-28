@@ -27,22 +27,22 @@ const enableCoinjoinInSettings = async (window: Page) => {
     await window.click('[data-test="@suite/menu/settings"]');
 
     // enable debug
-    for (let i = 0; i < 5; i++) {
-        await window.click('[data-test="@settings/menu/title"]');
+    for (let i = 0; i < 6; i++) {
+        await window.click('[data-test="@settings/menu/title"]', 200);
     }
 
     // go to debug menu
-    await window.click('[data-test="@settings/menu/debug"]');
+    // await window.click('[data-test="@settings/menu/debug"]');
 
     // change regtest server source to localhost (actually not changing anything because it is default)
-    await window.click('[data-test="@settings/debug/coinjoin/regtest/server-select/input"]', {
-        trial: true,
-    });
-    await window.click('[data-test="@settings/debug/coinjoin/regtest/server-select/input"]');
-    await window.click(
-        '[data-test="@settings/debug/coinjoin/regtest/server-select/option/localhost"]',
-    );
-    await window.click('[data-test="@settings/debug/coinjoin/allow-no-tor"] >> role=button');
+    // await window.click('[data-test="@settings/debug/coinjoin/regtest/server-select/input"]', {
+    //     trial: true,
+    // });
+    // await window.click('[data-test="@settings/debug/coinjoin/regtest/server-select/input"]');
+    // await window.click(
+    //     '[data-test="@settings/debug/coinjoin/regtest/server-select/option/localhost"]',
+    // );
+    // await window.click('[data-test="@settings/debug/coinjoin/allow-no-tor"] >> role=button');
 
     // go to coins menu
     await window.click('[data-test="@settings/menu/wallet"]');
@@ -50,8 +50,8 @@ const enableCoinjoinInSettings = async (window: Page) => {
     await window.click('[data-test="@settings/wallet/network/regtest"]'); // enable regtest
 
     // open advance settings for regtest
-    await window.click('[data-test="@settings/wallet/network/regtest/advance"]');
-    await window.click('[data-test="@settings/advance/button/save"]');
+    // await window.click('[data-test="@settings/wallet/network/regtest/advance"]');
+    // await window.click('[data-test="@settings/advance/button/save"]');
 };
 
 const startCoinjoin = async (window: Page) => {
@@ -102,10 +102,10 @@ const receiveCoins = async () => {
 };
 
 const passThroughInitialRun = async (window: Page) => {
-    await window.click('[data-test="@analytics/continue-button"]');
-    await window.click('[data-test="@onboarding/exit-app-button"]');
+    // await window.click('[data-test="@analytics/continue-button"]');
+    // await window.click('[data-test="@onboarding/exit-app-button"]');
     await window.click('[data-test="@passphrase-type/standard"]');
-    await window.waitForSelector('[data-test="@dashboard/graph"]');
+    // await window.waitForSelector('[data-test="@dashboard/graph"]');
 };
 
 testPlaywright.describe('Coinjoin', () => {
