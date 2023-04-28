@@ -15,6 +15,7 @@
             "analytics",
             "connect-analytics",
             "type-utils",
+            "env-utils",
           ]
 
 .packages_matrix_connect: &packages_matrix_connect
