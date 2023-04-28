@@ -186,8 +186,9 @@ suite desktop manual:
 
 transport:
   extends: .e2e transport
-  only:
-    <<: *run_everything_rules
+  # for development purposes now, run always
+  # only:
+  #   <<: *run_everything_rules
 
 transport manual:
   extends: .e2e transport
@@ -233,8 +234,8 @@ connect-popup:
   dependencies:
     - install
     - connect-web build
-  only:
-    <<: *run_everything_rules
+  # only:
+  #   <<: *run_everything_rules
 
 connect-popup manual:
   extends: .e2e connect-popup
@@ -314,10 +315,10 @@ connect-popup manual:
 
 connect:
   extends: .connect matrix
-  retry: 1
-  only:
-    refs:
-      - schedules # only nightly jobs, this is too heavy for develop branches at the moment
+  # retry: 1
+  # only:
+  #   refs:
+  #     - schedules # only nightly jobs, this is too heavy for develop branches at the moment
 
 connect manual:
   extends: .connect matrix
