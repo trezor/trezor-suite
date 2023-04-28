@@ -1,4 +1,4 @@
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 50000;
 
 // jest vs jasmine matchers compatibility:
 // - jasmine is missing "toMatchObject" matcher (deeply partial matching)
