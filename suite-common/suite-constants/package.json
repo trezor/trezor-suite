@@ -11,7 +11,7 @@
     },
     "dependencies": {
         "@suite-common/wallet-config": "workspace:*",
-        "@trezor/connect": "workspace:9.0.8"
+        "@trezor/connect": "workspace:9.0.9"
     },
     "devDependencies": {
         "jest": "^26.6.3",
