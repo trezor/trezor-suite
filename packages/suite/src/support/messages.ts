@@ -4363,9 +4363,10 @@ export default defineMessages({
         id: 'RECEIVE_ADDRESS_REVEAL',
         defaultMessage: 'Show full address',
     },
-    RECEIVE_ADDRESS_LIMIT_EXCEEDED: {
-        id: 'RECEIVE_ADDRESS_LIMIT_EXCEEDED',
-        defaultMessage: 'Limit exceeded...',
+    RECEIVE_ADDRESS_COINJOIN_DISALLOW: {
+        id: 'RECEIVE_ADDRESS_COINJOIN_DISALLOW',
+        defaultMessage:
+            'To create additional addresses for a coinjoin account, you must ensure that you have already received bitcoin at the initial address.',
     },
     RECEIVE_TABLE_ADDRESS: {
         id: 'RECEIVE_TABLE_ADDRESS',
