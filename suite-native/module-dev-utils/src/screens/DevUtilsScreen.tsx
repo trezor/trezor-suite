@@ -44,7 +44,7 @@ export const DevUtilsScreen = ({
                 </Button>
                 <CopyLogsButton />
                 <Button colorScheme="dangerElevation0" onPress={clearStorage}>
-                    Reset storage
+                    Wipe all data
                 </Button>
             </VStack>
         </Card>
