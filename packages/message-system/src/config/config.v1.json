@@ -1,7 +1,7 @@
 {
     "version": 1,
     "timestamp": "2023-04-17T00:00:00+00:00",
-    "sequence": 27,
+    "sequence": 28,
     "actions": [
         {
             "conditions": [
@@ -75,7 +75,7 @@
                         "domain": "coinjoin",
                         "flag": true,
                         "isPublic": true,
-                        "averageAnonymityGainPerRound": 2,
+                        "averageAnonymityGainPerRound": 1,
                         "roundsFailRateBuffer": 10,
                         "roundsDurationInHours": 1
                     }
