@@ -3,8 +3,8 @@ import { Alert } from 'react-native';
 
 import * as Sentry from '@sentry/react-native';
 
-import { isDebugEnv, isDevelopOrDebugEnv } from '@suite-native/config';
-import { Box, Button, Card, VStack } from '@suite-native/atoms';
+import { isDebugEnv } from '@suite-native/config';
+import { Button, Card, VStack } from '@suite-native/atoms';
 import {
     Screen,
     StackProps,
