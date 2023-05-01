@@ -728,7 +728,6 @@ export class DeviceCommands {
                 // ignore
             }
         } else {
-            console.log('DEVICE COMMANDS CANCEL SEND');
             await this.transport.send({
                 session: this.sessionId,
                 name: 'Cancel',

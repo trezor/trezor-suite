@@ -7,10 +7,10 @@ import {
     ReleaseIntentRequest,
     ReleaseDoneRequest,
     GetPathBySessionRequest,
+    AcquireDoneRequest,
+    RegisterBackgroundCallbacks,
 } from './types';
 import { SessionsBackground } from './background';
-
-type RegisterCallbackOnDescriptorsChange = (callback: (descriptor: Descriptor[]) => any) => void;
 
 /**
  * SessionsClient gives you API for communication with SessionsBackground.
@@ -28,10 +28,10 @@ export class SessionsClient extends TypedEmitter<{
 
     constructor({
         requestFn,
-        registerCallbackOnDescriptorsChange,
+        registerBackgroundCallbacks,
     }: {
         requestFn: SessionsBackground['handleMessage'];
-        registerCallbackOnDescriptorsChange?: RegisterCallbackOnDescriptorsChange;
+        registerBackgroundCallbacks?: RegisterBackgroundCallbacks;
     }) {
         super();
         this.id = 0;
@@ -42,8 +42,8 @@ export class SessionsClient extends TypedEmitter<{
             return requestFn(params);
         };
 
-        if (registerCallbackOnDescriptorsChange) {
-            registerCallbackOnDescriptorsChange(descriptors => {
+        if (registerBackgroundCallbacks) {
+            registerBackgroundCallbacks(descriptors => {
                 this.emit('descriptors', descriptors);
             });
         }
@@ -62,8 +62,8 @@ export class SessionsClient extends TypedEmitter<{
     acquireIntent(payload: AcquireIntentRequest) {
         return this.request({ type: 'acquireIntent', payload });
     }
-    acquireDone() {
-        return this.request({ type: 'acquireDone' });
+    acquireDone(payload: AcquireDoneRequest) {
+        return this.request({ type: 'acquireDone', payload });
     }
     releaseIntent(payload: ReleaseIntentRequest) {
         return this.request({ type: 'releaseIntent', payload });

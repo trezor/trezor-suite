@@ -173,7 +173,7 @@ export class DeviceList extends EventEmitter {
                     const penalty = this.getAuthPenalty();
 
                     if (priority || penalty) {
-                        await resolveAfter(501 + penalty + 100 * priority, null);
+                        await resolveAfter(501 + penalty + 100 * priority, null).promise;
                     }
                     if (descriptor.session == null) {
                         await this._createAndSaveDevice(descriptor);
@@ -214,9 +214,13 @@ export class DeviceList extends EventEmitter {
                     const path = descriptor.path.toString();
                     const device = this.devices[path];
                     if (device) {
-                        if (device.isUnacquired() && !device.isInconsistent()) {
-                            // wait for publish changes
-                            await resolveAfter(501, null);
+                        // wait for publish changes
+                        await resolveAfter(501, null).promise;
+                        if (
+                            !device.isUsedHere() &&
+                            device.isUnacquired() &&
+                            !device.isInconsistent()
+                        ) {
                             _log.debug('Create device from unacquired', device);
                             await this._createAndSaveDevice(descriptor);
                         }
@@ -287,6 +291,7 @@ export class DeviceList extends EventEmitter {
             // enumerating for the first time. we intentionally postpone emitting TRANSPORT_START
             // event until we read descriptors for the first time
             const enumerateResult = await this.transport.enumerate().promise;
+
             if (!enumerateResult.success) {
                 this.emit(TRANSPORT.ERROR, enumerateResult.error);
                 return;
@@ -301,7 +306,7 @@ export class DeviceList extends EventEmitter {
                 this.on(DEVICE.CONNECT_UNACQUIRED, this.resolveTransportEvent.bind(this));
                 autoResolveTransportEventTimeout = setTimeout(() => {
                     this.emit(TRANSPORT.START, this.getTransportInfo());
-                });
+                }, 5000);
             } else {
                 this.emit(TRANSPORT.START, this.getTransportInfo());
             }
@@ -315,7 +320,9 @@ export class DeviceList extends EventEmitter {
 
     private resolveTransportEvent() {
         this.transportStartPending--;
-
+        if (autoResolveTransportEventTimeout) {
+            clearTimeout(autoResolveTransportEventTimeout);
+        }
         if (this.transportStartPending === 0) {
             this.emit(TRANSPORT.START, this.getTransportInfo());
         }

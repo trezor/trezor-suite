@@ -16,7 +16,7 @@ export class WebUsbTransport extends AbstractUsbTransport {
     public name = 'WebUsbTransport' as const;
 
     constructor({ messages, logger }: UsbTransportConstructorParams) {
-        const { requestFn, registerCallbackOnDescriptorsChange } = initBackgroundInBrowser();
+        const { requestFn, registerBackgroundCallbacks } = initBackgroundInBrowser();
 
         super({
             messages,
@@ -29,7 +29,7 @@ export class WebUsbTransport extends AbstractUsbTransport {
             sessionsClient: new SessionsClient({
                 // @ts-expect-error
                 requestFn,
-                registerCallbackOnDescriptorsChange,
+                registerBackgroundCallbacks,
             }),
         });
     }

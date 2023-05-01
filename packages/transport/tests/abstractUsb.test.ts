@@ -52,7 +52,9 @@ const createUsbMock = (optional = {}) => ({
 });
 
 describe('Usb', () => {
-    beforeEach(async () => {});
+    beforeEach(() => {
+        jest.useRealTimers();
+    });
 
     afterEach(() => {});
 
@@ -63,7 +65,7 @@ describe('Usb', () => {
             const sessionsClient = new SessionsClient({
                 // @ts-expect-error
                 requestFn: _params => ({ type: 'meow' }),
-                registerCallbackOnDescriptorsChange: () => {},
+                registerBackgroundCallbacks: () => {},
             });
 
             // create usb interface with navigator.usb mock
@@ -86,10 +88,11 @@ describe('Usb', () => {
 
         it('enumerate error', async () => {
             const sessionsBackground = new SessionsBackground();
+
             const sessionsClient = new SessionsClient({
                 // @ts-expect-error
                 requestFn: params => sessionsBackground.handleMessage(params),
-                registerCallbackOnDescriptorsChange: () => {},
+                registerBackgroundCallbacks: () => {},
             });
 
             // create usb interface with navigator.usb mock
@@ -130,9 +133,12 @@ describe('Usb', () => {
             sessionsBackground = new SessionsBackground();
 
             sessionsClient = new SessionsClient({
-                // @ts-expect-error
                 requestFn: params => sessionsBackground.handleMessage(params),
-                registerCallbackOnDescriptorsChange: () => {},
+                registerBackgroundCallbacks: onDescriptorsCallback => {
+                    sessionsBackground.on('descriptors', descriptors => {
+                        onDescriptorsCallback(descriptors);
+                    });
+                },
             });
 
             sessionsBackground.on('descriptors', descriptors => {
@@ -154,7 +160,7 @@ describe('Usb', () => {
                 signal: abortController.signal,
             });
 
-            await transport.init();
+            await transport.init().promise;
         });
 
         it('listen twice -> error', () => {
@@ -182,24 +188,11 @@ describe('Usb', () => {
         });
 
         it('acquire. transport is not listening', async () => {
-            await transport.enumerate().promise;
-
-            expect(
-                transport.acquire({ input: { path: '123', previous: null } }).promise,
-            ).resolves.toEqual({
-                success: true,
-                payload: '1',
-            });
-        });
-
-        it('acquire. transport listening', async () => {
             jest.useFakeTimers();
             const spy = jest.fn();
             transport.on('transport-update', spy);
 
             await transport.enumerate().promise;
-
-            transport.listen();
 
             jest.runAllTimers();
 
@@ -210,7 +203,50 @@ describe('Usb', () => {
                 payload: '1',
             });
 
-            expect(spy).toHaveBeenCalledTimes(1);
+            expect(spy).toHaveBeenCalledTimes(0);
+        });
+
+        it('acquire. transport listening', async () => {
+            expect.assertions(2);
+
+            const spy = jest.fn();
+            transport.on('transport-update', spy);
+
+            const prev = await transport.enumerate().promise;
+
+            if (!prev.success) {
+                throw new Error('');
+            }
+            transport.listen();
+
+            const acquireRes = await transport.acquire({
+                input: { path: prev.payload[0].path, previous: prev.payload[0].session },
+            }).promise;
+
+            expect(acquireRes).toEqual({
+                success: true,
+                payload: '1',
+            });
+
+            expect(spy).toHaveBeenNthCalledWith(1, {
+                acquired: [],
+                acquiredByMyself: [],
+                acquiredElsewhere: [],
+                changedSessions: [],
+                connected: [
+                    { path: '123', session: '1' }, // <- session granted!
+                    { path: 'bootloader1', session: undefined },
+                ],
+                descriptors: [
+                    { path: '123', session: '1' },
+                    { path: 'bootloader1', session: undefined },
+                ],
+                didUpdate: true,
+                disconnected: [],
+                released: [],
+                releasedByMyself: [],
+                releasedElsewhere: [],
+            });
         });
 
         it('call error - called without acquire.', async () => {

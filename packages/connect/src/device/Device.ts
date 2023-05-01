@@ -148,21 +148,20 @@ export class Device extends EventEmitter {
     }
 
     async acquire() {
-        const acquireResult = await this.transport.acquire({
+        const { promise } = this.transport.acquire({
             input: {
                 path: this.originalDescriptor.path,
                 previous: this.originalDescriptor.session,
             },
-        }).promise;
+        });
+        const acquireResult = await promise;
 
         if (!acquireResult.success) {
             if (this.runPromise) {
                 this.runPromise.reject(new Error(acquireResult.error));
-            } else {
-                throw acquireResult.error;
+                this.runPromise = null;
             }
-            this.runPromise = null;
-            return;
+            throw acquireResult.error;
         }
 
         const sessionID = acquireResult.payload;

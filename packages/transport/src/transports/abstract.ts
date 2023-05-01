@@ -291,17 +291,21 @@ export abstract class AbstractTransport extends TypedEmitter<{
         data: Record<string, unknown>;
     }): AbortableCall<
         MessageFromTrezor,
-        | typeof ERRORS.DEVICE_DISCONNECTED_DURING_ACTION
         // bridge
         | typeof ERRORS.HTTP_ERROR
         | typeof ERRORS.WRONG_RESULT_TYPE
         | typeof ERRORS.OTHER_CALL_IN_PROGRESS
         // webusb + bridge
+        | typeof ERRORS.DEVICE_DISCONNECTED_DURING_ACTION
         | typeof ERRORS.PROTOCOL_MALFORMED
         | typeof ERRORS.UNEXPECTED_ERROR
         | typeof ERRORS.ABORTED_BY_TIMEOUT
         | typeof ERRORS.ABORTED_BY_SIGNAL
         | typeof ERRORS.WRONG_ENVIRONMENT
+        // webusb
+        | typeof ERRORS.DEVICE_NOT_FOUND
+        | typeof ERRORS.INTERFACE_UNABLE_TO_OPEN_DEVICE
+        | typeof ERRORS.INTERFACE_DATA_TRANSFER
     >;
 
     /**
@@ -388,9 +392,7 @@ export abstract class AbstractTransport extends TypedEmitter<{
                         new Error(ERRORS.DEVICE_DISCONNECTED_DURING_ACTION),
                     );
                 }
-
                 const reportedNextSession = descriptor.session;
-
                 if (reportedNextSession === this.acquiringSession) {
                     this.listenPromise.resolve(this.acquiringSession);
                 } else {
