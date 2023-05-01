@@ -5,8 +5,7 @@ import { TorStatus } from '@suite-types';
 import { useActions, useSelector } from '@suite-hooks';
 import { getIsTorDomain } from '@suite-utils/tor';
 import * as suiteActions from '@suite-actions/suiteActions';
-import { isWeb, isDesktop } from '@suite-utils/env';
-import { getLocationHostname } from '@trezor/env-utils';
+import { isWeb, isDesktop, getLocationHostname } from '@trezor/env-utils';
 import { selectTorState } from '@suite-reducers/suiteReducer';
 import { notificationsActions } from '@suite-common/toast-notifications';
 

@@ -3,8 +3,7 @@ import { desktopApi } from '@trezor/suite-desktop-api';
 import { Account } from '@wallet-types';
 import { AmountLimits } from '@wallet-types/coinmarketSellForm';
 import { SellFiatTrade, SellFiatTradeQuoteRequest, SellTradeStatus } from 'invity-api';
-import { isDesktop } from '@suite-utils/env';
-import { getLocationOrigin } from '@trezor/env-utils';
+import { isDesktop, getLocationOrigin } from '@trezor/env-utils';
 import { ComposedTransactionInfo } from '@wallet-reducers/coinmarketReducer';
 
 // loop through quotes and if all quotes are either with error below minimum or over maximum, return the limits

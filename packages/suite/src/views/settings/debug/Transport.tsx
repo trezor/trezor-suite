@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 
 import { Checkbox } from '@trezor/components';
-import { isDesktop } from '@suite-utils/env';
+import { isDesktop } from '@trezor/env-utils';
 import { useSelector, useActions } from '@suite-hooks';
 import * as suiteActions from '@suite-actions/suiteActions';
 import { DebugModeOptions } from '@suite/reducers/suite/suiteReducer';

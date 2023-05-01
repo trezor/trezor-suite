@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
-import { isDesktop } from '@suite-utils/env';
+import { isDesktop } from '@trezor/env-utils';
 import { isTranslationMode } from '@suite-utils/l10n';
 import { useSelector } from '@suite-hooks';
 import { selectBannerMessage } from '@suite-common/message-system';

@@ -9,7 +9,7 @@ import * as coinmarketBuyActions from '@wallet-actions/coinmarketBuyActions';
 import * as routerActions from '@suite-actions/routerActions';
 import { UseOffersProps, ContextValues } from '@wallet-types/coinmarketBuyOffers';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { isDesktop } from '@suite-utils/env';
+import { isDesktop } from '@trezor/env-utils';
 import { useCoinmarketNavigation } from '@wallet-hooks/useCoinmarketNavigation';
 import { InvityAPIReloadQuotesAfterSeconds } from '@wallet-constants/coinmarket/metadata';
 

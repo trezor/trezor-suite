@@ -2,13 +2,8 @@ import { Account, Discovery } from '@wallet-types';
 import { DISCOVERY } from '@wallet-actions/constants';
 import { SUITE } from '@suite-actions/constants';
 import { AppState, TrezorDevice } from '@suite-types';
-import { getEnvironment } from '@suite-utils/env';
-import { getIsTorEnabled } from '@suite-utils/tor';
-
-import { LogEntry } from '@suite-common/logger';
-import { DEVICE } from '@trezor/connect';
-import { getCustomBackends } from '@suite-common/wallet-utils';
 import {
+    getEnvironment,
     getBrowserName,
     getBrowserVersion,
     getOsName,
@@ -19,6 +14,11 @@ import {
     getWindowHeight,
     getWindowWidth,
 } from '@trezor/env-utils';
+import { getIsTorEnabled } from '@suite-utils/tor';
+
+import { LogEntry } from '@suite-common/logger';
+import { DEVICE } from '@trezor/connect';
+import { getCustomBackends } from '@suite-common/wallet-utils';
 import {
     getBootloaderHash,
     getBootloaderVersion,

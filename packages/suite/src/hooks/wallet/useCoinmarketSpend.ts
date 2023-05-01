@@ -12,7 +12,7 @@ import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketC
 import { notificationsActions } from '@suite-common/toast-notifications';
 import type { FormState } from '@wallet-types/sendForm';
 import { amountToSatoshi, getFeeLevels } from '@suite-common/wallet-utils';
-import { isDesktop } from '@suite-utils/env';
+import { isDesktop } from '@trezor/env-utils';
 import { useCompose } from './form/useCompose';
 import { useForm } from 'react-hook-form';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';

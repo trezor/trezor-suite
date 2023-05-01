@@ -9,7 +9,7 @@ import {
     KYCStatusPollingIntervalMilliseconds,
     KYCStatusPollingMaxCount,
 } from '@wallet-constants/coinmarket/savings';
-import { isDesktop } from '@suite-utils/env';
+import { isDesktop } from '@trezor/env-utils';
 
 const coinmarketSavingsMiddleware =
     (api: MiddlewareAPI<Dispatch, AppState>) =>

@@ -13,8 +13,8 @@
         "@reduxjs/toolkit": "1.9.5",
         "@suite-common/metadata-types": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
-        "@trezor/analytics": "workspace:*",
         "@trezor/connect": "workspace:*",
+        "@trezor/env-utils": "workspace:*",
         "bignumber.js": "^9.1.1"
     },
     "devDependencies": {

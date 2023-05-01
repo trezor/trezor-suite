@@ -2,7 +2,7 @@ import React from 'react';
 
 import { SettingsLayout } from '@settings-components';
 import { SettingsSection } from '@suite-components/Settings';
-import { isWeb } from '@suite-utils/env';
+import { isWeb } from '@trezor/env-utils';
 
 import { TranslationMode } from './TranslationMode';
 import { GithubIssue } from './GithubIssue';

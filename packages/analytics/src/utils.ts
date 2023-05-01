@@ -1,4 +1,5 @@
-import type { App, Environment, Event as AnalyticsEvent } from './types';
+import type { Environment } from '@trezor/env-utils';
+import type { App, Event as AnalyticsEvent } from './types';
 import { getWeakRandomId } from '@trezor/utils';
 
 export const getTrackingRandomId = () => getWeakRandomId(10);

@@ -3,7 +3,7 @@ import { analytics, EventType } from '@trezor/suite-analytics';
 import { resolveStaticPath } from '@suite-common/suite-utils';
 
 import { FIRMWARE } from '@firmware-actions/constants';
-import { isDesktop } from '@suite-utils/env';
+import { isDesktop } from '@trezor/env-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 
 import { Dispatch, GetState, AppState, AcquiredDevice, FirmwareType } from '@suite-types';

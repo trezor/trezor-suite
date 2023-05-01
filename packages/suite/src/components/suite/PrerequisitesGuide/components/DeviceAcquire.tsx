@@ -4,7 +4,7 @@ import { Button } from '@trezor/components';
 import { Translation, TroubleshootingTips } from '@suite-components';
 import { useDevice, useActions } from '@suite-hooks';
 import * as suiteActions from '@suite-actions/suiteActions';
-import { isDesktop } from '@suite-utils/env';
+import { isDesktop } from '@trezor/env-utils';
 
 export const DeviceAcquire = () => {
     const { isLocked } = useDevice();
