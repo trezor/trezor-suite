@@ -669,7 +669,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 0E6FCD6B113E093D557F2BDC /* Pods-TrezorSuite.staging.xcconfig */;
 			buildSettings = {
-				APP_DISPLAY_NAME = "Stag-TrezorSuite";
+				APP_DISPLAY_NAME = "Trezor Suite Lite Stag";
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-Staging";
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
@@ -813,7 +813,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 3194F987709927EFF1882119 /* Pods-TrezorSuite.develop.xcconfig */;
 			buildSettings = {
-				APP_DISPLAY_NAME = "Dev-TrezorSuite";
+				APP_DISPLAY_NAME = "Trezor Suite Lite Dev";
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-Develop";
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
@@ -888,7 +888,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 0C227AE4D021BA3A09D1D7BE /* Pods-TrezorSuite.debug.xcconfig */;
 			buildSettings = {
-				APP_DISPLAY_NAME = "Local-TrezorSuite";
+				APP_DISPLAY_NAME = "Trezor Suite Lite Debug";
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-Debug";
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
@@ -931,7 +931,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 1917D242B5E323F716C5EF45 /* Pods-TrezorSuite.release.xcconfig */;
 			buildSettings = {
-				APP_DISPLAY_NAME = TrezorSuite;
+				APP_DISPLAY_NAME = "Trezor Suite Lite";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
