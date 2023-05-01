@@ -38,7 +38,7 @@ import {
     UNECONOMICAL_COINJOIN_THRESHOLD,
     DEFAULT_TARGET_ANONYMITY,
     SKIP_ROUNDS_BY_DEFAULT,
-    WEEKLY_FEE_RATE_MEDIAN_FALLBACK,
+    FEE_RATE_MEDIAN_FALLBACK,
 } from '@suite/services/coinjoin';
 import { accountsActions, AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import {
@@ -52,7 +52,7 @@ import { SelectedAccountRootState, selectSelectedAccount } from './selectedAccou
 export interface CoinjoinClientInstance
     extends Pick<
         CoinjoinStatusEvent,
-        'coordinationFeeRate' | 'allowedInputAmounts' | 'weeklyFeeRateMedian'
+        'coordinationFeeRate' | 'allowedInputAmounts' | 'feeRateMedian'
     > {
     rounds: { id: string; phase: RoundPhase }[]; // store only slice of Round in reducer. may be extended in the future
     status: 'loading' | 'loaded';
@@ -128,9 +128,9 @@ const updateSetupOption = (
         delete account.setup;
     } else {
         const client = draft.clients[account.symbol];
-        const weeklyFeeRateMedian = client?.weeklyFeeRateMedian || WEEKLY_FEE_RATE_MEDIAN_FALLBACK;
+        const feeRateMedian = client?.feeRateMedian || FEE_RATE_MEDIAN_FALLBACK;
         account.setup = {
-            maxFeePerVbyte: getMaxFeePerVbyte(weeklyFeeRateMedian),
+            maxFeePerVbyte: getMaxFeePerVbyte(feeRateMedian),
             skipRounds: SKIP_ROUNDS_BY_DEFAULT,
             targetAnonymity: DEFAULT_TARGET_ANONYMITY,
         };
@@ -668,20 +668,20 @@ export const selectIsAccountWithSessionByAccountKey = memoizeWithArgs(
     },
 );
 
-export const selectWeeklyFeeRateMedianByAccountKey = (
+export const selectfeeRateMedianByAccountKey = (
     state: CoinjoinRootState,
     accountKey: AccountKey,
 ) => {
     const coinjoinClient = selectCoinjoinClient(state, accountKey);
-    return coinjoinClient?.weeklyFeeRateMedian || WEEKLY_FEE_RATE_MEDIAN_FALLBACK;
+    return coinjoinClient?.feeRateMedian || FEE_RATE_MEDIAN_FALLBACK;
 };
 
 export const selectDefaultMaxMiningFeeByAccountKey = (
     state: CoinjoinRootState,
     accountKey: AccountKey,
 ) => {
-    const weeklyFeeRateMedian = selectWeeklyFeeRateMedianByAccountKey(state, accountKey);
-    return getMaxFeePerVbyte(weeklyFeeRateMedian);
+    const feeRateMedian = selectfeeRateMedianByAccountKey(state, accountKey);
+    return getMaxFeePerVbyte(feeRateMedian);
 };
 
 export const selectMinAllowedInputWithFee = (state: CoinjoinRootState, accountKey: AccountKey) => {
@@ -690,7 +690,7 @@ export const selectMinAllowedInputWithFee = (state: CoinjoinRootState, accountKe
     const minAllowedInput = status.allowedInputAmounts.min;
     const txSize = getInputSize('Taproot') + getOutputSize('Taproot');
     // Add estimated fee based on weekly median fee rate.
-    return minAllowedInput + txSize * status.weeklyFeeRateMedian;
+    return minAllowedInput + txSize * status.feeRateMedian;
 };
 
 export const selectIsNothingToAnonymizeByAccountKey = memoizeWithArgs(

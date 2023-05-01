@@ -7,7 +7,7 @@ import { coinjoinAccountUpdateMaxMiningFee } from '@wallet-actions/coinjoinAccou
 import { SetupSlider } from './SetupSlider';
 import {
     selectDefaultMaxMiningFeeByAccountKey,
-    selectWeeklyFeeRateMedianByAccountKey,
+    selectfeeRateMedianByAccountKey,
 } from '@wallet-reducers/coinjoinReducer';
 
 const min = 1;
@@ -25,9 +25,7 @@ interface MaxMiningFeeSetupProps {
 }
 
 export const MaxMiningFeeSetup = ({ accountKey, maxMiningFee }: MaxMiningFeeSetupProps) => {
-    const weeklyFeeRateMedian = useSelector(state =>
-        selectWeeklyFeeRateMedianByAccountKey(state, accountKey),
-    );
+    const feeRateMedian = useSelector(state => selectfeeRateMedianByAccountKey(state, accountKey));
     const defaultMaxMiningFee = useSelector(state =>
         selectDefaultMaxMiningFeeByAccountKey(state, accountKey),
     );
@@ -40,15 +38,15 @@ export const MaxMiningFeeSetup = ({ accountKey, maxMiningFee }: MaxMiningFeeSetu
         dispatch(coinjoinAccountUpdateMaxMiningFee(accountKey, value));
     };
 
-    const weeklyFeeRateMedianPercentage = getPercentage(weeklyFeeRateMedian);
+    const feeRateMedianPercentage = getPercentage(feeRateMedian);
     const defaultMaxMiningFeePercentage = getPercentage(defaultMaxMiningFee);
 
     const trackStyle = {
         background: `\
             linear-gradient(90deg,\
                 ${theme.GRADIENT_SLIDER_RED_END} 0%,\
-                ${theme.GRADIENT_SLIDER_YELLOW_END} ${weeklyFeeRateMedianPercentage / 1.1}%,\
-                ${theme.GRADIENT_SLIDER_YELLOW_START} ${weeklyFeeRateMedianPercentage}%,\
+                ${theme.GRADIENT_SLIDER_YELLOW_END} ${feeRateMedianPercentage / 1.1}%,\
+                ${theme.GRADIENT_SLIDER_YELLOW_START} ${feeRateMedianPercentage}%,\
                 ${theme.GRADIENT_SLIDER_GREEN_END} ${defaultMaxMiningFeePercentage}%,\
                 ${theme.GRADIENT_SLIDER_GREEN_START} 100%\
             );`,

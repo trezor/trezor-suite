@@ -132,11 +132,11 @@ export const COORDINATOR_FEE_RATE_MULTIPLIER = 10 ** 8; // coordinator fee rate 
 export const DEFAULT_TARGET_ANONYMITY = 5;
 export const SKIP_ROUNDS_BY_DEFAULT = false;
 export const SKIP_ROUNDS_VALUE_WHEN_ENABLED = [4, 5] as [number, number];
-export const WEEKLY_FEE_RATE_MEDIAN_FALLBACK = 2;
+export const FEE_RATE_MEDIAN_FALLBACK = 2;
 export const MAX_MINING_FEE_MODIFIER = 2.5; // modifier applied to a median fee rate to set default max mining fee rate per vbyte
 export const CLIENT_STATUS_FALLBACK = {
     rounds: [],
-    weeklyFeeRateMedian: WEEKLY_FEE_RATE_MEDIAN_FALLBACK,
+    feeRateMedian: FEE_RATE_MEDIAN_FALLBACK,
     coordinationFeeRate: {
         rate: COORDINATOR_FEE_RATE_FALLBACK,
         plebsDontPayThreshold: PLEBS_DONT_PAY_THRESHOLD_FALLBACK,
