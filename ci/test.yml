@@ -339,7 +339,7 @@ connect model R:
         TESTS_FIRMWARE: ["2-latest"]
         TESTS_FIRMWARE_MODEL: "R"
         # todo: would be nice to create a scheduled job in firmware-repo in order to have artifact from this branch always available
-        TESTS_FIRMWARE_URL: "https://gitlab.com/satoshilabs/trezor/trezor-firmware/-/jobs/3104755066/artifacts/raw/core/build/unix/trezor-emu-core"
+        TESTS_FIRMWARE_URL: "https://gitlab.com/satoshilabs/trezor/trezor-firmware/-/jobs/4189306201/artifacts/raw/core/build/unix/trezor-emu-core"
         # one method per job for easier debugging
         TESTS_INCLUDED_METHODS: [
             "applySettings",
