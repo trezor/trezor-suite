@@ -167,20 +167,20 @@ const getDataFromRounds = (rounds: Round[]) => {
 /**
  * Transform from coordinator format to coinjoinReducer format `CoinjoinClientInstance`
  * - coordinatorFeeRate: multiply the amount registered for coinjoin by this value to get the total fee
- * - weeklyFeeRateMedian: array => value in kvBytes
+ * - feeRateMedian: array => value in kvBytes
  */
 export const transformStatus = ({
     coinJoinFeeRateMedians,
     roundStates: rounds,
 }: CoinjoinStatus) => {
     const { allowedInputAmounts, coordinationFeeRate } = getDataFromRounds(rounds);
-    // coinJoinFeeRateMedians include an array of medians per day, week and month - we take the second (week) median as the recommended fee rate.
+    // coinJoinFeeRateMedians include an array of medians per day, week and month - we take the first (day) median as the recommended fee rate base.
     // The value is converted from kvBytes (kilo virtual bytes) to vBytes (how the value is displayed in UI).
-    const weeklyFeeRateMedian = Math.round(coinJoinFeeRateMedians[1].medianFeeRate / 1000);
+    const feeRateMedian = Math.round(coinJoinFeeRateMedians[0].medianFeeRate / 1000);
 
     return {
         rounds,
-        weeklyFeeRateMedian,
+        feeRateMedian,
         coordinationFeeRate,
         allowedInputAmounts,
     };
