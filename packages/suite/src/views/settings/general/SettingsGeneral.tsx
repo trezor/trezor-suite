@@ -4,7 +4,7 @@ import { SettingsLayout } from '@settings-components';
 import { SettingsSection } from '@suite-components/Settings';
 import { Translation } from '@suite-components';
 import { useLayoutSize, useSelector } from '@suite-hooks';
-import { isDesktop, isWeb } from '@suite-utils/env';
+import { isDesktop, isWeb } from '@trezor/env-utils';
 
 import { Language } from './Language';
 import { Fiat } from './Fiat';

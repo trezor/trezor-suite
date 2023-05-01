@@ -4,7 +4,7 @@
  */
 
 import { allowSentryReport, setSentryUser } from '@suite-utils/sentry';
-import { getEnvironment } from '@suite-utils/env';
+import { getEnvironment } from '@trezor/env-utils';
 import type { Dispatch, GetState } from '@suite-types';
 
 import {

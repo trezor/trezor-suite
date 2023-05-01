@@ -8,7 +8,7 @@ import * as modalActions from '@suite-actions/modalActions';
 import { Account, Network, NetworkSymbol } from '@wallet-types';
 import { UnavailableCapabilities } from '@trezor/connect';
 import { AddButton } from './AddButton';
-import { isDesktop } from '@suite-utils/env';
+import { isDesktop } from '@trezor/env-utils';
 import { isDevEnv } from '@suite-common/suite-utils';
 import { Dispatch } from '@suite-types';
 import { RequestEnableTorResponse } from '@suite-components/modals/RequestEnableTor';

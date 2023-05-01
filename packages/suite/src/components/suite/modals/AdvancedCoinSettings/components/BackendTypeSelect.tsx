@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import { Select } from '@trezor/components';
 import { Translation } from '@suite-components';
-import { isDesktop } from '@suite-utils/env';
+import { isDesktop } from '@trezor/env-utils';
 
 import type { Network } from '@wallet-types';
 import type { BackendOption } from '@settings-hooks/backends';

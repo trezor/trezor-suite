@@ -1,6 +1,15 @@
 import UAParser from 'ua-parser-js';
 
-import { EnvUtils } from './types';
+import { EnvUtils, Environment } from './types';
+
+export const isWeb = () => process.env.SUITE_TYPE === 'web';
+
+export const isDesktop = () => process.env.SUITE_TYPE === 'desktop';
+
+export const getEnvironment = (): Environment => {
+    if (isWeb()) return 'web';
+    return 'desktop';
+};
 
 let userAgentParser: UAParser;
 
@@ -104,6 +113,9 @@ const getOsFamily = () => {
 const getDeviceType = () => getUserAgentParser().getDevice().type;
 
 export const envUtils: EnvUtils = {
+    isWeb,
+    isDesktop,
+    getEnvironment,
     getUserAgent,
     isAndroid,
     isChromeOs,

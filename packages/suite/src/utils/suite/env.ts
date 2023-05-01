@@ -1,14 +1,5 @@
-import { Environment } from '@trezor/analytics';
+import { isDesktop } from '@trezor/env-utils';
 import { desktopApi, SuiteThemeVariant } from '@trezor/suite-desktop-api';
-
-export const isWeb = () => process.env.SUITE_TYPE === 'web';
-
-export const isDesktop = () => process.env.SUITE_TYPE === 'desktop';
-
-export const getEnvironment = (): Environment => {
-    if (isWeb()) return 'web';
-    return 'desktop';
-};
 
 export const submitRequestForm = async (
     formMethod: 'GET' | 'POST' | 'IFRAME',

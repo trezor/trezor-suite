@@ -15,6 +15,7 @@
         "build:lib": "rimraf lib && yarn tsc --build ./tsconfig.lib.json"
     },
     "dependencies": {
+        "@trezor/env-utils": "workspace:*",
         "@trezor/utils": "workspace:*"
     },
     "devDependencies": {

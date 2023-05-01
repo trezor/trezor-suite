@@ -10,7 +10,7 @@ import * as guideActions from '@suite-actions/guideActions';
 import { useActions, useSelector } from '@suite-hooks';
 import { Icon, Link, variables } from '@trezor/components';
 import { ViewWrapper, Header, Content } from '@guide-components';
-import { isDesktop } from '@suite-utils/env';
+import { isDesktop } from '@trezor/env-utils';
 import { UpdateState } from '@suite-reducers/desktopUpdateReducer';
 import { getFirmwareVersion } from '@trezor/device-utils';
 

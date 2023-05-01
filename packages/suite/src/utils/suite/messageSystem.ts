@@ -6,13 +6,19 @@ import {
     getFirmwareVersion,
 } from '@trezor/device-utils';
 
-import { getEnvironment } from '@suite-utils/env';
-import { getBrowserName, getBrowserVersion, getOsName, getOsVersion } from '@trezor/env-utils';
+import {
+    getEnvironment,
+    getBrowserName,
+    getBrowserVersion,
+    getOsName,
+    getOsVersion,
+    Environment as EnvironmentType,
+} from '@trezor/env-utils';
 
 import type { TransportInfo } from '@trezor/connect';
 
 import type { Network } from '@wallet-types';
-import type { EnvironmentType, TrezorDevice } from '@suite-types';
+import type { TrezorDevice } from '@suite-types';
 import type {
     Duration,
     MessageSystem,

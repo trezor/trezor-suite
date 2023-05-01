@@ -4,7 +4,7 @@ import { SUITE_MOBILE_APP_STORE, SUITE_MOBILE_PLAY_STORE, SUITE_URL } from '@tre
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { Button, Icon, Image, Tooltip, variables } from '@trezor/components';
 import { Translation, QrCode, TrezorLink } from '@suite-components';
-import { isWeb } from '@suite-utils/env';
+import { isWeb } from '@trezor/env-utils';
 import { useLayoutSize } from '@suite-hooks/useLayoutSize';
 import { DESKTOP_HORIZONTAL_PADDINGS, MOBILE_HORIZONTAL_PADDINGS } from '@suite-constants/layout';
 

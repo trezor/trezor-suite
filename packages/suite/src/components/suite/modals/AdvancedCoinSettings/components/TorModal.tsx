@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Button, P } from '@trezor/components';
 import { Modal, Translation } from '@suite-components';
-import { isDesktop } from '@suite-utils/env';
+import { isDesktop } from '@trezor/env-utils';
 import { useSelector } from '@suite-hooks/useSelector';
 import { getIsTorLoading } from '@suite-utils/tor';
 

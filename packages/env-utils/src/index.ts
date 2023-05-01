@@ -1,6 +1,11 @@
 import { envUtils } from './envUtils';
 
+export type { Environment } from './types';
+
 export const {
+    isWeb,
+    isDesktop,
+    getEnvironment,
     getUserAgent,
     isAndroid,
     isChromeOs,

@@ -6,6 +6,12 @@ import { getLocales } from 'expo-localization';
 
 import { EnvUtils } from './types';
 
+const isWeb = () => false;
+
+const isDesktop = () => false;
+
+const getEnvironment = () => 'mobile' as const;
+
 const getUserAgent = () => '';
 
 const isChromeOs = () => false;
@@ -63,6 +69,9 @@ const getOsNameWeb = () => '';
 const getOsFamily = (): 'Linux' => 'Linux';
 
 export const envUtils: EnvUtils = {
+    isWeb,
+    isDesktop,
+    getEnvironment,
     getUserAgent,
     isAndroid,
     isChromeOs,

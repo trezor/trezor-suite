@@ -8,7 +8,7 @@ import { findRouteByName } from '@suite-utils/router';
 import { useActions, useSelector } from '@suite-hooks';
 import { useCustomBackends } from '@settings-hooks/backends';
 import { ActionItem } from './components/ActionItem';
-import { isDesktop } from '@suite-utils/env';
+import { isDesktop } from '@trezor/env-utils';
 import { NavTor } from './components/NavTor';
 import { NavEarlyAccess } from './components/NavEarlyAccess';
 import { NavNotifications } from './components/NavNotifications';

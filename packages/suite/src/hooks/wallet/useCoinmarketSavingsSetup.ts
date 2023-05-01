@@ -20,7 +20,7 @@ import {
     createReturnLink,
     getPaymentFrequencyOptions,
 } from '@wallet-utils/coinmarket/savingsUtils';
-import { isDesktop } from '@suite-utils/env';
+import { isDesktop } from '@trezor/env-utils';
 import { useFormDraft } from '@wallet-hooks/useFormDraft';
 import { TypedValidationRules } from '@suite-common/wallet-types';
 

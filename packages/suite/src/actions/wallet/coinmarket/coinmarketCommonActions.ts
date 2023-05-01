@@ -20,7 +20,8 @@ import {
     getDerivationType,
 } from '@wallet-utils/cardanoUtils';
 
-import { submitRequestForm as envSubmitRequestForm, isDesktop } from '@suite-utils/env';
+import { submitRequestForm as envSubmitRequestForm } from '@suite-utils/env';
+import { isDesktop } from '@trezor/env-utils';
 import * as formDraftActions from '@wallet-actions/formDraftActions';
 import {
     amountToSatoshi,

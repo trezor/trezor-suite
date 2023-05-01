@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import { Button, Note } from '@trezor/components';
 import { Translation } from '@suite-components';
-import { isDesktop } from '@suite-utils/env';
+import { isDesktop } from '@trezor/env-utils';
 import { useCoinmarketSpendContext } from '@wallet-hooks/useCoinmarketSpend';
 import { NoProviders, Wrapper } from '@wallet-views/coinmarket';
 import { CoinmarketSkeleton } from '@wallet-views/coinmarket/skeleton';

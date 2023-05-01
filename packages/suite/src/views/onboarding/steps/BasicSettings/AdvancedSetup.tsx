@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Translation } from '@suite-components';
 import { Icon, useTheme, CollapsibleCard } from '@trezor/components';
 import { useSelector } from '@suite-hooks';
-import { isDesktop, isWeb } from '@suite-utils/env';
+import { isDesktop, isWeb } from '@trezor/env-utils';
 import { TorSection } from './TorSection';
 import { getIsTorEnabled } from '@suite-utils/tor';
 

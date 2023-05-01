@@ -4,7 +4,7 @@ import { DATA_URL, HELP_CENTER_TOR_URL, GITHUB_BRIDGE_CHANGELOG_URL } from '@tre
 import { Translation, TrezorLink, Modal, Metadata } from '@suite-components';
 import { Button, P, Link, Select, Image, useTheme, variables, Loader } from '@trezor/components';
 import * as routerActions from '@suite-actions/routerActions';
-import { isDesktop, isWeb } from '@suite-utils/env';
+import { isDesktop, isWeb } from '@trezor/env-utils';
 import { useSelector, useActions } from '@suite-hooks';
 import { selectTorState } from '@suite-reducers/suiteReducer';
 import { DeviceModel } from '@trezor/device-utils';

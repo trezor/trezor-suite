@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js';
 import { toWei } from 'web3-utils';
-import { isDesktop } from '@suite-utils/env';
+import { isDesktop } from '@trezor/env-utils';
 import type { State } from '@wallet-reducers/settingsReducer';
 import type { CustomBackend, BlockbookUrl } from '@wallet-types/backend';
 import type { Network, Account, Discovery } from '@wallet-types';

@@ -1,6 +1,6 @@
-export type App = 'suite' | 'connect';
+import { Environment } from '@trezor/env-utils';
 
-export type Environment = 'desktop' | 'web' | 'mobile';
+export type App = 'suite' | 'connect';
 
 export type InitOptions = {
     sessionId?: string;

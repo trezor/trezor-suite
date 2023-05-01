@@ -1,7 +1,6 @@
 import { getDeviceModel, getFirmwareType, getFirmwareVersion } from '@trezor/device-utils';
 
-import { isDesktop } from '@suite-utils/env';
-import { getUserAgent, getScreenWidth, getScreenHeight } from '@trezor/env-utils';
+import { isDesktop, getUserAgent, getScreenWidth, getScreenHeight } from '@trezor/env-utils';
 import type { TrezorDevice } from '@suite-types';
 import type { TransportInfo } from '@trezor/connect';
 import { GITHUB_REPO_URL } from '@trezor/urls';

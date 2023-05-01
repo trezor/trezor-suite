@@ -1,5 +1,3 @@
-import * as env from '@suite-utils/env';
-
 import * as envUtils from '@trezor/env-utils';
 
 import * as messageSystem from '../messageSystem';
@@ -117,7 +115,7 @@ describe('Message system utils', () => {
                 jest.spyOn(envUtils, 'getOsName').mockImplementation(() => f.osName);
                 userAgentGetter.mockReturnValue(f.userAgent);
                 // @ts-expect-error
-                jest.spyOn(env, 'getEnvironment').mockImplementation(() => f.environment);
+                jest.spyOn(envUtils, 'getEnvironment').mockImplementation(() => f.environment);
                 process.env.VERSION = f.suiteVersion;
 
                 // @ts-expect-error
