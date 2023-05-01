@@ -18,7 +18,7 @@ export const AccountListItemInteractive = ({
 }: AccountListItemInteractiveProps) => (
     <Box>
         <TouchableOpacity onPress={() => onSelectAccount(account.key)}>
-            <AccountListItem key={account.key} account={account} />
+            <AccountListItem key={account.key} account={account} areTokensDisplayed />
         </TouchableOpacity>
         {isEthereumAccountSymbol(account.symbol) && (
             <TokenList accountKey={account.key} onSelectAccount={onSelectAccount} />

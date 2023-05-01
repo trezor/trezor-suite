@@ -7059,6 +7059,8 @@ __metadata:
     "@suite-native/accounts": "workspace:*"
     "@suite-native/analytics": "workspace:*"
     "@suite-native/atoms": "workspace:*"
+    "@suite-native/ethereum-tokens": "workspace:*"
+    "@suite-native/formatters": "workspace:*"
     "@suite-native/link": "workspace:*"
     "@suite-native/navigation": "workspace:*"
     "@suite-native/qr-code": "workspace:*"
