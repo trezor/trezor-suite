@@ -1,3 +1,8 @@
+# 1.1.10
+
+-   fix(transport): update encoded_network to ArrayBuffer
+-   chore(transport): protobuf patch for ethereum get address
+
 # 1.1.9
 
 chore(transport): update protobufs, update dependencies
