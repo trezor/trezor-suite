@@ -7596,7 +7596,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/connect-common@workspace:*, @trezor/connect-common@workspace:0.0.13, @trezor/connect-common@workspace:packages/connect-common":
+"@trezor/connect-common@workspace:*, @trezor/connect-common@workspace:packages/connect-common":
   version: 0.0.0-use.local
   resolution: "@trezor/connect-common@workspace:packages/connect-common"
   dependencies:
@@ -7780,7 +7780,7 @@ __metadata:
   dependencies:
     "@trezor/blockchain-link": "workspace:*"
     "@trezor/connect-analytics": "workspace:*"
-    "@trezor/connect-common": "workspace:0.0.13"
+    "@trezor/connect-common": "workspace:*"
     "@trezor/transport": "workspace:*"
     "@trezor/trezor-user-env-link": "workspace:*"
     "@trezor/utils": "workspace:9.0.7"
