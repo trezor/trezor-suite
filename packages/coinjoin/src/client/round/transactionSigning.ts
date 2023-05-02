@@ -158,6 +158,8 @@ export const transactionSigning = async (
         return round;
     }
 
+    const sendProcessStart = Date.now();
+
     try {
         const inputsWithoutWitness = round.inputs.filter(input => !input.witness);
         if (inputsWithoutWitness.length > 0) {
@@ -184,13 +186,18 @@ export const transactionSigning = async (
     } catch (error) {
         // NOTE: if anything goes wrong in this process this Round will be corrupted for all the users
         // registered inputs will probably be banned
-        const resolvedTime = round.inputs.map(i => {
-            const res = i.getResolvedRequest('signature');
-            return res?.timestamp || 'unresolved';
-        });
+        const resolvedTime = Math.max(
+            ...round.inputs.map(i => {
+                const res = i.getResolvedRequest('signature');
+                return res?.timestamp || 0;
+            }),
+        );
+
+        const sendTime = Date.now() - sendProcessStart;
+
         round.setSessionPhase(SessionPhase.SignatureFailed);
         logger.error(
-            `Round signing failed. Resolved time ${resolvedTime.join(',')}. with ${error.message}`,
+            `Round signing failed. Resolved time ${resolvedTime}ms. Send time ${sendTime}ms. ${error.message}`,
         );
 
         round.inputs.forEach(input => input.setError(error));

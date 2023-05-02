@@ -81,6 +81,11 @@ const registerOutput = async (
                     });
                     return tryToRegisterOutput();
                 }
+                if (error.message === coordinator.WabiSabiProtocolErrorCode.NotEnoughFunds) {
+                    logger.error(
+                        `NotEnoughFunds. Amount: ${amountCredentials[0].value} Delta: ${outputAmountCredentials.credentialsRequest.delta} FeeRate: ${roundParameters.miningFeeRate}`,
+                    );
+                }
                 throw error;
             });
     };
