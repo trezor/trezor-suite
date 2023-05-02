@@ -6,7 +6,7 @@ import type { CoinjoinRound, CoinjoinRoundOptions } from '../CoinjoinRound';
 import { CoinjoinPrison } from '../CoinjoinPrison';
 import * as middleware from '../middleware';
 import { Round } from '../coordinator';
-import { ROUND_SELECTION_REGISTRATION_OFFSET } from '../../constants';
+import { ROUND_SELECTION_REGISTRATION_OFFSET, ROUND_SELECTION_MAX_OUTPUTS } from '../../constants';
 import { RoundPhase, SessionPhase } from '../../enums';
 
 export type CoinjoinRoundGenerator = (
@@ -121,6 +121,18 @@ export const getAccountCandidates = ({
                 blameOf: blameOfUtxos,
                 utxos: [],
             };
+        }
+
+        const availableAddresses = account.changeAddresses.filter(
+            addr => !prison.isDetained(addr.address),
+        );
+        if (availableAddresses.length < ROUND_SELECTION_MAX_OUTPUTS) {
+            logger.info(`Skip candidate ~~${accountKey}~~. Not enough change addresses`);
+            skippedAccounts.push({
+                key: account.accountKey,
+                reason: SessionPhase.SkippingRound,
+            });
+            return [];
         }
 
         // exclude account utxos which are unavailable
