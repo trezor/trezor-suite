@@ -2831,7 +2831,7 @@ export default defineMessages({
         id: 'TR_NAV_TRANSACTIONS',
     },
     TR_NAV_ANONYMIZE: {
-        defaultMessage: 'Anonymize Coins',
+        defaultMessage: 'Make coins private',
         description: 'Title of the coinjoin setup page.',
         id: 'TR_NAV_ANONYMIZE',
     },
@@ -3054,7 +3054,7 @@ export default defineMessages({
     },
     TR_PIN_SET_SUCCESS: {
         defaultMessage:
-            'Write your PIN down and keep it safe, separate from your recovery seed. Use it to unlock your Trezor when you need to access your funds.',
+            'Write your PIN down and keep it safe. Use it to unlock your Trezor when you need to access your funds.',
         description: 'Longer text indicating PIN was set successfully.',
         id: 'TR_PIN_SET_SUCCESS',
     },
@@ -3996,7 +3996,7 @@ export default defineMessages({
     },
     TR_UNAVAILABLE_COINJOIN_NO_ANONYMITY_SET: {
         id: 'TR_UNAVAILABLE_COINJOIN_NO_ANONYMITY_SET',
-        defaultMessage: 'Coinjoin cannot be initiated without setting the coin anonymity levels.',
+        defaultMessage: 'Coinjoin cannot be initiated without setting the coin privacy levels.',
     },
     TR_ONION_BACKEND_TOR_NEEDED: {
         id: 'TR_ONION_BACKEND_TOR_NEEDED',
@@ -4026,7 +4026,7 @@ export default defineMessages({
     },
     TR_TOR_REQUEST_ENABLE_FOR_COIN_JOIN_TITLE: {
         id: 'TR_TOR_REQUEST_ENABLE_FOR_COIN_JOIN_TITLE',
-        defaultMessage: '<b>Tor</b> must be enabled to remain anonymous when running coinjoin.',
+        defaultMessage: '<b>Tor</b> must be enabled to remain private when running coinjoin.',
     },
     TR_TOR_REQUEST_ENABLE_FOR_COIN_JOIN_SUBTITLE: {
         id: 'TR_TOR_REQUEST_ENABLE_FOR_COIN_JOIN_SUBTITLE',
@@ -5765,12 +5765,12 @@ export default defineMessages({
     },
     TR_PRIVATE_DESCRIPTION: {
         id: 'TR_PRIVATE_DESCRIPTION',
-        defaultMessage: 'Anonymity at least {targetAnonymity}',
+        defaultMessage: 'Privacy at least {targetAnonymity}',
         description: 'Sub-heading in Coin control section',
     },
     TR_NOT_PRIVATE_DESCRIPTION: {
         id: 'TR_NOT_PRIVATE_DESCRIPTION',
-        defaultMessage: 'Anonymity below {targetAnonymity}',
+        defaultMessage: 'Privacy below {targetAnonymity}',
         description: 'Sub-heading in Coin control section',
     },
     TR_DUST: {
@@ -6468,7 +6468,7 @@ export default defineMessages({
     TR_ANALYZE_IN_BLOCKBOOK_DESC: {
         id: 'TR_ANALYZE_IN_BLOCKBOOK_DESC',
         defaultMessage:
-            'See inputs and outputs in Blockbook as it might be easier to analyze there',
+            'See inputs and outputs in Blockbook as it might be easier to analyze there.',
     },
     TR_ANALYZE_IN_BLOCKBOOK_OPEN: {
         id: 'TR_ANALYZE_IN_BLOCKBOOK_OPEN',
@@ -7248,7 +7248,7 @@ export default defineMessages({
     },
     TR_ANONYMIZING: {
         id: 'TR_ANONYMIZING',
-        defaultMessage: 'Anonymizing',
+        defaultMessage: 'Running',
     },
     TR_NOT_PRIVATE: {
         id: 'TR_NOT_PRIVATE',
@@ -7261,7 +7261,7 @@ export default defineMessages({
     TR_SERVICE_FEE: {
         id: 'TR_SERVICE_FEE',
         description: 'Heading in coin join settings',
-        defaultMessage: 'Service fee',
+        defaultMessage: 'One-time service fee',
     },
     TR_COINJOIN_SETUP: {
         id: 'TR_COINJOIN_SETUP',
@@ -7358,7 +7358,7 @@ export default defineMessages({
     TR_NOTHING_TO_ANONYMIZE: {
         id: 'TR_NOTHING_TO_ANONYMIZE',
         description: 'Tooltip content for disabled button in coinjoin section',
-        defaultMessage: 'Nothing to anonymize',
+        defaultMessage: 'Nothing to make private',
     },
     TR_COINJOIN_PHASE_0_MESSAGE: {
         id: 'TR_COINJOIN_PHASE_0_MESSAGE',
@@ -7415,7 +7415,7 @@ export default defineMessages({
     },
     TR_ANONYMIZATION_PAUSED: {
         id: 'TR_ANONYMIZATION_PAUSED',
-        defaultMessage: 'Anonymization paused',
+        defaultMessage: 'Coinjoin paused',
     },
     TR_RESUMING: {
         id: 'TR_RESUMING',
@@ -7459,7 +7459,7 @@ export default defineMessages({
         id: 'TR_MORE_ROUNDS_NEEDED_DESCRIPTION',
         description: 'Modal description when coinjoin ends',
         defaultMessage:
-            'We were unable to reach your desired anonymity level within the reserved rounds. Please run another coinjoin. You will not pay any service fees twice.',
+            'We were unable to reach your desired privacy level within the reserved rounds. Please run another coinjoin. You will not pay any service fees twice.',
     },
     TR_OK: {
         id: 'TR_OK',
@@ -7468,7 +7468,7 @@ export default defineMessages({
     },
     TR_COINJOIN_ANONYMITY_LEVEL_SETUP_TITLE: {
         id: 'TR_COINJOIN_ANONYMITY_LEVEL_SETUP_TITLE',
-        defaultMessage: 'Desired anonymity level',
+        defaultMessage: 'Desired privacy level',
     },
     TR_COINJOIN_ANONYMITY_LEVEL_SETUP_DESCRIPTION: {
         id: 'TR_COINJOIN_ANONYMITY_LEVEL_SETUP_DESCRIPTION',
@@ -7479,12 +7479,12 @@ export default defineMessages({
         id: 'TR_NOT_ENOUGH_ANONYMIZED_FUNDS_WARNING',
         description: 'Warning in coinjoin send form',
         defaultMessage:
-            'Not enough anonymized funds. You can either anonymize more coins, manually select UTXOs in Coin Control, or lower the anonymity level.',
+            'Not enough private funds. You can either make more coins private, manually select UTXOs in Coin Control, or lower the privacy level.',
     },
     TR_BREAKING_ANONYMITY_CHECKBOX: {
         id: 'TR_BREAKING_ANONYMITY_CHECKBOX',
         description: 'Checkbox in coinjoin send form',
-        defaultMessage: "I understand I'm breaking my anonymity",
+        defaultMessage: "I understand I'm damaging my anonymity",
     },
     TR_NOT_ENOUGH_ANONYMIZED_FUNDS_TOOLTIP: {
         id: 'TR_NOT_ENOUGH_ANONYMIZED_FUNDS_TOOLTIP',
@@ -7506,7 +7506,7 @@ export default defineMessages({
     TR_ANONYMIZATION_OPTION_1: {
         id: 'TR_ANONYMIZATION_OPTION_1',
         description: 'Tooltip in coinjoin send form',
-        defaultMessage: 'Anonymize more coins',
+        defaultMessage: 'Make more coins private',
     },
     TR_ANONYMIZATION_OPTION_2: {
         id: 'TR_ANONYMIZATION_OPTION_2',
@@ -7516,27 +7516,27 @@ export default defineMessages({
     TR_ANONYMIZATION_OPTION_3: {
         id: 'TR_ANONYMIZATION_OPTION_3',
         description: 'Tooltip in coinjoin send form',
-        defaultMessage: 'Reduce anonymity level',
+        defaultMessage: 'Reduce privacy level',
     },
     TR_NOT_ENOUGH_ANONYMIZED_FUNDS: {
         id: 'TR_NOT_ENOUGH_ANONYMIZED_FUNDS',
         description: 'Secondary button text in coinjoin send form',
-        defaultMessage: 'Not enough anonymized funds',
+        defaultMessage: 'Not enough private funds',
     },
     TR_SEND_NOT_ANONYMIZED_COINS: {
         id: 'TR_SEND_NOT_ANONYMIZED_COINS',
         description: 'Send button text in coinjoin account when low-anonymity UTXOs are selected',
-        defaultMessage: 'Send non-anonymized coins',
+        defaultMessage: 'Send non-private coins',
     },
     TR_SIGN_WITH_NOT_ANONYMIZED_COINS: {
         id: 'TR_SIGN_WITH_NOT_ANONYMIZED_COINS',
         description: 'Sign button text in coinjoin account when low-anonymity UTXOs are selected',
-        defaultMessage: 'Sign with non-anonymized coins',
+        defaultMessage: 'Sign with non-private coins',
     },
     TR_YOU_SHOULD_ANONYMIZE: {
         id: 'TR_YOU_SHOULD_ANONYMIZE',
         description: 'Secondary button text in coinjoin send form',
-        defaultMessage: 'You should anonymize them',
+        defaultMessage: 'You should make them private',
     },
     TR_LOOKING_FOR_COINJOIN_ROUND: {
         id: 'TR_LOOKING_FOR_COINJOIN_ROUND',
@@ -7715,7 +7715,7 @@ export default defineMessages({
         id: 'TR_REMEMBER_WALLET_DESCRIPTION',
         description: 'Displayed during coinjoin account discovery',
         defaultMessage:
-            'It will still be loaded anonymously, but with faster loading times and saved custom setups.',
+            'It will still be loaded privately, but with faster loading times and saved custom setups.',
     },
     TR_TIMER_PAST_DEADLINE: {
         id: 'TR_TIMER_PAST_DEADLINE',
@@ -7738,7 +7738,7 @@ export default defineMessages({
     TR_LOW_ANONYMITY_WARNING: {
         id: 'TR_LOW_ANONYMITY_WARNING',
         defaultMessage:
-            "<red>Very low anonymity.</red> We recommend using at least 1 in 5, as anything below this threshold isn't secure.",
+            "<red>Very low privacy.</red> We recommend using at least 1 in 5, as anything below this threshold isn't private.",
     },
     TR_SESSION_PHASE_11_MESSAGE: {
         id: 'TR_SESSION_PHASE_11_MESSAGE',
@@ -7847,7 +7847,7 @@ export default defineMessages({
     },
     TR_COINJOIN_STEP_1_DESCRIPTION: {
         id: 'TR_COINJOIN_STEP_1_DESCRIPTION',
-        defaultMessage: 'Send yourself some coins to be anonymized',
+        defaultMessage: 'Send yourself some bitcoin to make private',
     },
     TR_START_COINJOIN: {
         id: 'TR_START_COINJOIN',
