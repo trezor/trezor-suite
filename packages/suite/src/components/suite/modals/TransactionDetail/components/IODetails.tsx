@@ -77,14 +77,7 @@ const GridItem = styled.div<{ isAccountOwned?: boolean }>`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.NEUE_FONT_SIZE.TINY};
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
-
-    :nth-child(3n + 1) {
-        max-width: 290px;
-    }
-
-    :nth-child(3n + 3) {
-        max-width: 290px;
-    }
+    max-width: 290px;
 
     & + & {
         margin-top: 10px;
