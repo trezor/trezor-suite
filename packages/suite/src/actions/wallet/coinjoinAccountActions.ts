@@ -605,7 +605,7 @@ export const createCoinjoinAccount =
         );
 
         // start discovery
-        dispatch(fetchAndUpdateAccount(account.payload));
+        return dispatch(fetchAndUpdateAccount(account.payload));
     };
 
 const authorizeCoinjoin =

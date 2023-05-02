@@ -20,7 +20,7 @@ jest.mock('@suite/services/coinjoin/coinjoinService', () => {
 });
 
 const rootReducer = combineReducers({
-    devices: createReducer({}, {}),
+    devices: createReducer({}, () => ({})),
     messageSystem: messageSystemReducer,
     router: routerReducer,
     suite: suiteReducer,

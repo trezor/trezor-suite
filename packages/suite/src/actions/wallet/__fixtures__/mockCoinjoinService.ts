@@ -18,12 +18,29 @@ export const mockCoinjoinService = () => {
             registerAccount: jest.fn(),
             unregisterAccount: jest.fn(),
             updateAccount: jest.fn(),
+            analyzeTransactions: jest.fn(() => ({ anonymityScores: {}, rawLiquidityClue: 0 })),
         };
         const backend = {
             on: jest.fn(),
             off: jest.fn(),
             cancel: jest.fn(),
-            scanAccount: jest.fn(() => Promise.reject(new Error('TODO: implement me'))),
+            scanAccount: jest.fn(() => ({
+                pending: [],
+                checkpoint: {
+                    receiveCount: 20,
+                    changeCount: 20,
+                },
+            })),
+            getAccountInfo: jest.fn(() => ({
+                history: {
+                    transactions: [],
+                },
+                addresses: {
+                    used: [],
+                    unused: [],
+                    change: [],
+                },
+            })),
         };
         return { client, backend };
     };
