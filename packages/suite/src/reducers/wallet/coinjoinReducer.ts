@@ -85,6 +85,7 @@ export const initialState: CoinjoinState = {
         roundsFailRateBuffer: ESTIMATED_ROUNDS_FAIL_RATE_BUFFER,
         roundsDurationInHours: ESTIMATED_HOURS_PER_ROUND,
         maxMiningFeeModifier: MAX_MINING_FEE_MODIFIER,
+        maxFeePerVbyte: undefined,
     },
 };
 
@@ -551,6 +552,9 @@ export const selectRoundsFailRateBuffer = (state: CoinjoinRootState) =>
 export const selectMaxMiningFeeModifier = (state: CoinjoinRootState) =>
     state.wallet.coinjoin.config.maxMiningFeeModifier;
 
+export const selectMaxMiningFeeConfig = (state: CoinjoinRootState) =>
+    state.wallet.coinjoin.config.maxFeePerVbyte;
+
 export const selectCoinjoinAccountByKey = memoizeWithArgs(
     (state: CoinjoinRootState, accountKey: AccountKey) => {
         const coinjoinAccounts = selectCoinjoinAccounts(state);
@@ -688,7 +692,8 @@ export const selectDefaultMaxMiningFeeByAccountKey = (
 ) => {
     const feeRateMedian = selectfeeRateMedianByAccountKey(state, accountKey);
     const maxMiningFeeModifier = selectMaxMiningFeeModifier(state);
-    return getMaxFeePerVbyte(feeRateMedian, maxMiningFeeModifier);
+    const maxMiningFeeConfig = selectMaxMiningFeeConfig(state); // value defined in message system config has priority over default value (but not over custom value set by user)
+    return maxMiningFeeConfig ?? getMaxFeePerVbyte(feeRateMedian, maxMiningFeeModifier);
 };
 
 export const selectMinAllowedInputWithFee = (state: CoinjoinRootState, accountKey: AccountKey) => {
