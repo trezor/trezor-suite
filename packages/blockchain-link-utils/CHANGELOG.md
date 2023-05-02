@@ -1,3 +1,7 @@
+# 1.0.2
+
+-   chore(blockchain-link): fix ripple blocktime
+
 # 1.0.1
 
 -   fix: remove workspace: from dependencies
