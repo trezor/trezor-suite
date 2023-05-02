@@ -5,6 +5,10 @@
     "license": "See LICENSE.md in repo root",
     "sideEffects": false,
     "main": "lib/index",
+    "files": [
+        "lib/",
+        "!**/*.map"
+    ],
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "type-check": "tsc --build tsconfig.json",
