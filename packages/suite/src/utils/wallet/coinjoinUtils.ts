@@ -198,8 +198,8 @@ export const getMaxRounds = (roundsNeeded: number, roundsFailRateBuffer: number)
 export const getSkipRounds = (enabled: boolean) =>
     enabled ? SKIP_ROUNDS_VALUE_WHEN_ENABLED : undefined;
 
-export const getMaxFeePerVbyte = (weeklyMedian: number, maxMiningFeeModifier: number) =>
-    Math.round(weeklyMedian * maxMiningFeeModifier);
+export const getMaxFeePerVbyte = (feeRateMedian: number, maxMiningFeeModifier: number) =>
+    Math.round(feeRateMedian * maxMiningFeeModifier);
 
 // get time estimate in millisecond per round
 export const getEstimatedTimePerRound = (
