@@ -7475,7 +7475,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/blockchain-link-utils@workspace:*, @trezor/blockchain-link-utils@workspace:1.0.1, @trezor/blockchain-link-utils@workspace:packages/blockchain-link-utils":
+"@trezor/blockchain-link-utils@workspace:*, @trezor/blockchain-link-utils@workspace:packages/blockchain-link-utils":
   version: 0.0.0-use.local
   resolution: "@trezor/blockchain-link-utils@workspace:packages/blockchain-link-utils"
   dependencies:
@@ -7495,7 +7495,7 @@ __metadata:
   resolution: "@trezor/blockchain-link@workspace:packages/blockchain-link"
   dependencies:
     "@trezor/blockchain-link-types": "workspace:1.0.1"
-    "@trezor/blockchain-link-utils": "workspace:1.0.1"
+    "@trezor/blockchain-link-utils": "workspace:*"
     "@trezor/utils": "workspace:9.0.7"
     "@trezor/utxo-lib": "workspace:1.0.5"
     "@types/web": ^0.0.99
