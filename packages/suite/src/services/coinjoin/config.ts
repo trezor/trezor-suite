@@ -125,6 +125,7 @@ export const COINJOIN_NETWORKS: PartialRecord<NetworkSymbol, ServerEnvironment> 
 export const ESTIMATED_ANONYMITY_GAINED_PER_ROUND = 10; // initial value replaced by config via message-system in state.wallet.coinjoin.config.averageAnonymityGainPerRound
 export const MIN_ANONYMITY_GAINED_PER_ROUND = 0.1; // the minimum anonymity gain per coinjoin round that is used to avoid division by zero when computing roundsNeeded.
 export const ESTIMATED_ROUNDS_FAIL_RATE_BUFFER = 2.5;
+export const MAX_ROUNDS_ALLOWED = 500; // Never ask trezor to sign more than 500 rounds, it will fail if safety checks are enabled.
 export const ESTIMATED_MIN_ROUNDS_NEEDED = 4;
 export const ESTIMATED_HOURS_PER_ROUND = 1;
 export const UNECONOMICAL_COINJOIN_THRESHOLD = 1_000_000;
