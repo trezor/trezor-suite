@@ -75,4 +75,5 @@ export interface CoinjoinConfig {
     averageAnonymityGainPerRound: number;
     roundsFailRateBuffer: number;
     roundsDurationInHours: number;
+    maxMiningFeeModifier: number;
 }
