@@ -1,3 +1,7 @@
+# 0.0.14
+
+-   chore(connect): move systemInfo to connect-common
+
 # 0.0.13
 
 -   2.6.0 FW
