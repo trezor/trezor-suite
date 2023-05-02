@@ -2,7 +2,7 @@ import type React from 'react';
 import type { ViewProps } from 'react-native';
 import type { SharedValue } from 'react-native-reanimated';
 
-import type { Color } from '@shopify/react-native-skia';
+import type { Color, SkiaMutableValue } from '@shopify/react-native-skia';
 
 import type { GraphPathRange } from './CreateGraphPath';
 
@@ -17,8 +17,8 @@ export interface SelectionDotProps {
     isActive: SharedValue<boolean>;
     color: BaseLineGraphProps['color'];
     lineThickness: BaseLineGraphProps['lineThickness'];
-    circleX: SharedValue<number>;
-    circleY: SharedValue<number>;
+    circleX: SkiaMutableValue<number>;
+    circleY: SkiaMutableValue<number>;
 }
 
 interface BaseLineGraphProps extends ViewProps {
