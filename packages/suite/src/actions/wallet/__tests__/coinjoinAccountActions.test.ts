@@ -3,6 +3,7 @@ import { configureMockStore, testMocks } from '@suite-common/test-utils';
 
 import { accountsReducer } from '@wallet-reducers';
 import { coinjoinReducer } from '@wallet-reducers/coinjoinReducer';
+import selectedAccountReducer from '@wallet-reducers/selectedAccountReducer';
 import * as coinjoinAccountActions from '../coinjoinAccountActions';
 import * as fixtures from '../__fixtures__/coinjoinAccountActions';
 import { CoinjoinService } from '@suite/services/coinjoin/coinjoinService';
@@ -27,13 +28,16 @@ const rootReducer = combineReducers({
                 debug: {},
             },
         },
-        {},
+        () => ({}),
     ),
-    devices: createReducer([DEVICE], {}),
+    devices: createReducer([DEVICE], () => ({})),
     modal: () => ({}),
     wallet: combineReducers({
         coinjoin: coinjoinReducer,
         accounts: accountsReducer,
+        selectedAccount: selectedAccountReducer,
+        blockchain: () => ({ btc: { blockHeight: 150 } }),
+        transactions: () => ({ transactions: {} }),
     }),
 });
 
