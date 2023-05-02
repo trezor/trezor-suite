@@ -97,7 +97,7 @@ export type SuiteNativeAnalyticsEvent =
     | {
           type: EventType.SettingsChangeCurrency;
           payload: {
-              currency: FiatCurrencyCode;
+              localCurrency: FiatCurrencyCode;
           };
       }
     | {
@@ -109,18 +109,18 @@ export type SuiteNativeAnalyticsEvent =
     | {
           type: EventType.SettingsChangeBtcUnit;
           payload: {
-              unit: UNIT_ABBREVIATION;
+              bitcoinUnit: UNIT_ABBREVIATION;
           };
       }
     | {
           type: EventType.SettingsDiscreetToggle;
           payload: {
-              value: boolean;
+              discreetMode: boolean;
           };
       }
     | {
           type: EventType.SettingsDataPermission;
           payload: {
-              value: boolean;
+              analyticsPermission: boolean;
           };
       };
