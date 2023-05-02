@@ -22,7 +22,7 @@ export const CurrencySelector = () => {
         dispatch(setFiatCurrency({ localCurrency }));
         analytics.report({
             type: EventType.SettingsChangeCurrency,
-            payload: { currency: localCurrency },
+            payload: { localCurrency },
         });
     };
 

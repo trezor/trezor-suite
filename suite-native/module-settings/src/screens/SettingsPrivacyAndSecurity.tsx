@@ -36,7 +36,7 @@ const DiscreetModeSwitchRow = () => {
         setIsDiscreetMode(value);
         analytics.report({
             type: EventType.SettingsDiscreetToggle,
-            payload: { value },
+            payload: { discreetMode: value },
         });
     };
 

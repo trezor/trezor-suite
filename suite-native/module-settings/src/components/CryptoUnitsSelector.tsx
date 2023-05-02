@@ -21,7 +21,7 @@ export const CryptoUnitsSelector = () => {
         dispatch(setBitcoinUnits(value));
         analytics.report({
             type: EventType.SettingsChangeBtcUnit,
-            payload: { unit: UNIT_ABBREVIATIONS[value] },
+            payload: { bitcoinUnit: UNIT_ABBREVIATIONS[value] },
         });
     };
 
