@@ -91,9 +91,6 @@ export const NumberInput = ({
     defaultValue,
     ...props
 }: NumberInputProps) => {
-    const locale = useSelector(state => state.suite.settings.language);
-    const [pressedKey, setPressedKey] = useState('');
-
     const {
         field: { value, onChange, ref: inputRef, ...controlProps },
         meta: { invalid },
@@ -104,7 +101,12 @@ export const NumberInput = ({
         defaultValue,
     });
 
+    const locale = useSelector(state => state.suite.settings.language);
+    const [pressedKey, setPressedKey] = useState('');
     const [displayValue, setDisplayValue] = useState(localizeNumber(value || '', locale));
+    const initialHistoryValue = value ? [value] : [''];
+    const [changeHistory, setChangeHistory] = useState<string[]>(initialHistoryValue);
+    const [redoHistory, setRedoHistory] = useState<string[]>([]);
 
     const previousFormValueRef = useRef<string | undefined>(value);
     const previousDisplayValueRef = useRef(displayValue);
@@ -121,6 +123,8 @@ export const NumberInput = ({
 
                 previousDisplayValueRef.current = newDisplayValue;
                 inputRef.current.value = newDisplayValue; // for setSelectionRange() working as intended
+
+                setChangeHistory(current => [...current, newDisplayValue]);
 
                 return newDisplayValue;
             };
@@ -324,6 +328,8 @@ export const NumberInput = ({
     const handleOnBeforeInput = useCallback(
         (e: React.FormEvent<HTMLInputElement> & { data: string }) => {
             if (/[\d.,]/g.test(e.data)) {
+                // reset the redo history when a new digit is entered
+                setRedoHistory([]);
                 return;
             }
 
@@ -388,6 +394,29 @@ export const NumberInput = ({
         [handleCursorShift],
     );
 
+    const handleUndo = useCallback(() => {
+        if (changeHistory.length < 2) {
+            return;
+        }
+
+        const previousValue = changeHistory.at(-2) || '';
+        handleChange(previousValue);
+
+        setRedoHistory(current => [...current, changeHistory.at(-1) || '']);
+        setChangeHistory(current => [...current].splice(0, current.length - 2));
+    }, [changeHistory, handleChange]);
+
+    const handleRedo = useCallback(() => {
+        if (!redoHistory.length) {
+            return;
+        }
+
+        const previousValue = redoHistory.at(-1) || '';
+        handleChange(previousValue);
+
+        setRedoHistory(current => [...current].splice(0, current.length - 1));
+    }, [redoHistory, handleChange]);
+
     const handleKeyDown = useCallback(
         (e: React.KeyboardEvent<HTMLInputElement>) => {
             const pressedKey = e.key;
@@ -395,16 +424,26 @@ export const NumberInput = ({
 
             if (['ArrowLeft', 'ArrowRight'].includes(pressedKey)) {
                 handleKeyNav(e);
-
                 return;
             }
 
-            // undo doesn't work properly so better disallow it altogether
-            if ((e.ctrlKey || e.metaKey) && e.key === 'z') {
+            if (!e.shiftKey && (e.ctrlKey || e.metaKey) && pressedKey.toLocaleLowerCase() === 'z') {
                 e.preventDefault();
+                handleUndo();
+                return;
+            }
+
+            if (e.shiftKey && (e.ctrlKey || e.metaKey) && pressedKey.toLocaleLowerCase() === 'z') {
+                e.preventDefault();
+                handleRedo();
+                return;
+            }
+
+            if (pressedKey === 'Backspace') {
+                setRedoHistory([]);
             }
         },
-        [handleKeyNav],
+        [handleKeyNav, handleUndo, handleRedo],
     );
 
     return (
