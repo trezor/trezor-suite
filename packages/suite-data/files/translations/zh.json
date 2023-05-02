@@ -23,7 +23,7 @@
   "CUSTOM_FEE_IS_NOT_SET": "输入你希望的费用",
   "CUSTOM_FEE_LIMIT_BELOW_RECOMMENDED": "Gas 限额过低 {button}",
   "CUSTOM_FEE_LIMIT_USE_RECOMMENDED": "使用推荐值",
-  "CUSTOM_FEE_NOT_IN_RANGE": "输入一个介于 {minFee} 和 {maxFee} 之间的费用数值",
+  "CUSTOM_FEE_NOT_IN_RANGE": "在 {minFee} 和 {maxFee}之间输入一个费用。",
   "DATA_ETH": "数据",
   "DATA_ETH_ADD": "添加数据",
   "DATA_ETH_ADD_TOOLTIP": "以太坊交易的交易数据。",
