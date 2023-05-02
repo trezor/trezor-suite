@@ -61,6 +61,7 @@ export const accountTitleFixture = [
     { symbol: 'vtc', title: 'TR_NETWORK_VERTCOIN' },
     { symbol: 'zec', title: 'TR_NETWORK_ZCASH' },
     { symbol: 'eth', title: 'TR_NETWORK_ETHEREUM' },
+    { symbol: 'bnb', title: 'TR_NETWORK_BNB' },
     { symbol: 'etc', title: 'TR_NETWORK_ETHEREUM_CLASSIC' },
     { symbol: 'xem', title: 'TR_NETWORK_NEM' },
     { symbol: 'xlm', title: 'TR_NETWORK_STELLAR' },

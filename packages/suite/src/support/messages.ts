@@ -2891,6 +2891,14 @@ export default defineMessages({
         defaultMessage: 'Ethereum Goerli',
         id: 'TR_NETWORK_ETHEREUM_GOERLI',
     },
+    TR_NETWORK_BNB: {
+        defaultMessage: 'BNB Smart Chain',
+        id: 'TR_NETWORK_BNB',
+    },
+    TR_NETWORK_BNB_LABEL: {
+        defaultMessage: 'Incl. BEP-20 tokens',
+        id: 'TR_NETWORK_BNB_LABEL',
+    },
     TR_NETWORK_LITECOIN: {
         defaultMessage: 'Litecoin',
         id: 'TR_NETWORK_LITECOIN',

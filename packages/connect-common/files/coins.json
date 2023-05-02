@@ -2203,6 +2203,25 @@
             "url": "https://ethereum.org"
         },
         {
+            "blockchain_link": {
+                "type": "blockbook",
+                "url": ["https://staging-bsc.trezor.io/"]
+            },
+            "chain": "bnb",
+            "chain_id": 56,
+            "name": "BNB Smart Chain",
+            "rskip60": false,
+            "shortcut": "BNB",
+            "slip44": 9006,
+            "support": {
+                "connect": true,
+                "suite": true,
+                "trezor1": "1.6.2",
+                "trezor2": "2.0.7"
+            },
+            "url": "https://bnbchain.org"
+        },
+        {
             "blockchain_link": null,
             "chain": "exp",
             "chain_id": 2,
