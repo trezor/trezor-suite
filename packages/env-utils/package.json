@@ -1,8 +1,16 @@
 {
     "name": "@trezor/env-utils",
     "version": "1.0.0",
-    "private": true,
+    "homepage": "https://github.com/trezor/trezor-suite/tree/develop/packages/env-utils",
+    "npmPublishAccess": "public",
     "license": "See LICENSE.md in repo root",
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/trezor/trezor-suite.git"
+    },
+    "bugs": {
+        "url": "https://github.com/trezor/trezor-suite/issues"
+    },
     "sideEffects": false,
     "main": "lib/index",
     "files": [
@@ -11,8 +19,10 @@
     ],
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
-        "type-check": "tsc --build tsconfig.json",
-        "build:lib": "rimraf ./lib && yarn tsc --build tsconfig.lib.json"
+        "type-check": "tsc --build",
+        "build:lib": "rimraf lib && yarn tsc --build ./tsconfig.lib.json",
+        "prepublishOnly": "yarn tsx ../../scripts/prepublishNPM.js",
+        "prepublish": "yarn tsx ../../scripts/prepublish.js"
     },
     "dependencies": {
         "expo-localization": "^14.1.1",
