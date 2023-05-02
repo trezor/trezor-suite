@@ -76,4 +76,5 @@ export interface CoinjoinConfig {
     roundsFailRateBuffer: number;
     roundsDurationInHours: number;
     maxMiningFeeModifier: number;
+    maxFeePerVbyte?: number;
 }

@@ -249,7 +249,7 @@ export const coinjoinMiddleware =
                     (key: keyof CoinjoinConfig) => {
                         const value = Number(incomingConfig[key]);
 
-                        if (!Number.isNaN(value) && typeof config[key] !== 'undefined') {
+                        if (!Number.isNaN(value)) {
                             config[key] = value;
                         }
                     },
