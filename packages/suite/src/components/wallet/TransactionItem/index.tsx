@@ -114,7 +114,7 @@ const TransactionItem = React.memo(
             (!tokens.length && !internalTransfers.length && !targets.length) || type === 'failed';
 
         const fee = formatNetworkAmount(transaction.fee, transaction.symbol);
-        const showFeeRow = isTxOwned(transaction) && type !== 'joint' && fee !== '0';
+        const showFeeRow = isTxOwned(transaction) && type !== 'joint';
 
         const [txItemIsHovered, setTxItemIsHovered] = useState(false);
         const [nestedItemIsHovered, setNestedItemIsHovered] = useState(false);
