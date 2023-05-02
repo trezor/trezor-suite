@@ -176,10 +176,12 @@ export const updateCoinjoinConfig = ({
     averageAnonymityGainPerRound,
     roundsFailRateBuffer,
     roundsDurationInHours,
+    maxMiningFeeModifier,
 }: {
     averageAnonymityGainPerRound: number;
     roundsFailRateBuffer: number;
     roundsDurationInHours: number;
+    maxMiningFeeModifier: number;
 }) =>
     ({
         type: COINJOIN.UPDATE_CONFIG,
@@ -187,6 +189,7 @@ export const updateCoinjoinConfig = ({
             averageAnonymityGainPerRound,
             roundsFailRateBuffer,
             roundsDurationInHours,
+            maxMiningFeeModifier,
         },
     } as const);
 
