@@ -128,14 +128,11 @@ const TransactionItem = React.memo(
             | { type: 'token'; payload: (typeof tokens)[number] }
             | { type: 'internal'; payload: (typeof internalTransfers)[number] }
             | { type: 'target'; payload: WalletAccountTransaction['targets'][number] }
-        )[] =
-            transaction.type === 'self'
-                ? [...targets.map(t => ({ type: 'target' as const, payload: t }))]
-                : [
-                      ...targets.map(t => ({ type: 'target' as const, payload: t })),
-                      ...internalTransfers.map(t => ({ type: 'internal' as const, payload: t })),
-                      ...tokens.map(t => ({ type: 'token' as const, payload: t })),
-                  ];
+        )[] = [
+            ...targets.map(t => ({ type: 'target' as const, payload: t })),
+            ...internalTransfers.map(t => ({ type: 'internal' as const, payload: t })),
+            ...tokens.map(t => ({ type: 'token' as const, payload: t })),
+        ];
 
         const previewTargets = allOutputs.slice(0, DEFAULT_LIMIT);
         const isExpandable = allOutputs.length - DEFAULT_LIMIT > 0;
