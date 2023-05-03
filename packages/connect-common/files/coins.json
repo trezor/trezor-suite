@@ -2542,7 +2542,7 @@
             "curve": "secp256k1",
             "decimals": 8,
             "name": "Binance Chain",
-            "shortcut": "BNB",
+            "shortcut": "BNB-TODO",
             "slip44": 714,
             "support": {
                 "connect": true,
