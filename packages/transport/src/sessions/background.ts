@@ -60,9 +60,12 @@ export class SessionsBackground extends TypedEmitter<{
             // desktop application, here should go code that will check if some "master" sessions background
             // is alive (websocket server in suite desktop). If yes, it will simply forward request
 
-            // @ts-ignore
-            console.log('request ', `${message.id}-${message.caller}`, message.type, message.payload);
-            console.time(`${message.id}-${message.caller}-${message.type}`);
+            // console.log(
+            //     'request ',
+            //     `${message.id}-${message.caller}`,
+            //     message.type,
+            // );
+            // console.time(`${message.id}-${message.caller}-${message.type}`);
 
             switch (message.type) {
                 case 'handshake':
@@ -75,7 +78,7 @@ export class SessionsBackground extends TypedEmitter<{
                     result = await this.enumerateDone(message.payload);
                     break;
                 case 'acquireIntent':
-                    result = await this.acquireIntent(message.payload, message.caller!);
+                    result = await this.acquireIntent(message.payload);
                     break;
                 case 'acquireDone':
                     result = await this.acquireDone(message.payload);
@@ -96,9 +99,8 @@ export class SessionsBackground extends TypedEmitter<{
                     throw new Error(ERRORS.UNEXPECTED_ERROR);
             }
 
-
-            console.log('result ', `${message.id}-${message.caller}`, message.type, result);
-            console.timeEnd(`${message.id}-${message.caller}-${message.type}`);
+            // console.log('result ', `${message.id}-${message.caller}`, message.type, result);
+            // console.timeEnd(`${message.id}-${message.caller}-${message.type}`);
 
             return { ...result, id: message.id } as HandleMessageResponse<M>;
         } catch (err) {
@@ -109,11 +111,10 @@ export class SessionsBackground extends TypedEmitter<{
                 id: message.type,
             } as HandleMessageResponse<M>;
         } finally {
-             if (result && result.success && result.payload && 'descriptors' in result.payload) {
-                const { descriptors } = result.payload; 
-                    setTimeout(() => this.emit('descriptors', descriptors), 0);
+            if (result && result.success && result.payload && 'descriptors' in result.payload) {
+                const { descriptors } = result.payload;
+                setTimeout(() => this.emit('descriptors', descriptors), 0);
             }
-
         }
     }
 
@@ -165,36 +166,32 @@ export class SessionsBackground extends TypedEmitter<{
     /**
      * acquire intent
      */
-    private async acquireIntent(payload: AcquireIntentRequest, caller: string) {
+    private async acquireIntent(payload: AcquireIntentRequest) {
+        const previous = this.sessions[payload.path];
 
-        // null
-        const unconfirmedSessions = JSON.parse(JSON.stringify(this.sessions));
-        const previous = this.sessions[payload.path]
-        
-        console.log(caller, 'previous ref', previous);
-        console.log(caller, 'pre', JSON.stringify(this.sessions));
-        
         if (payload.previous && payload.previous !== previous) {
             return this.error(ERRORS.SESSION_WRONG_PREVIOUS);
         }
 
         await this.waitInQueue();
 
-        console.log(caller, 'post', JSON.stringify(this.sessions));
-
+        // in case there are 2 simultaneous acquireIntents, one goes through, the other one waits and gets error here
         if (previous !== this.sessions[payload.path]) {
             this.clearLock();
             return this.error(ERRORS.SESSION_WRONG_PREVIOUS);
         }
-        
+
+        // new "unconfirmed" descriptors are  broadcasted. we can't yet update this.sessions object as it needs
+        // to stay as it is. we can not allow 2 clients sending session:null to proceed. this way only one gets through
+        const unconfirmedSessions = JSON.parse(JSON.stringify(this.sessions));
         const id = `${this.getNewSessionId()}`;
         unconfirmedSessions[payload.path] = id;
 
         const descriptors = this.sessionsToDescriptors(unconfirmedSessions);
 
         return this.success({
-            session: id, 
-            descriptors 
+            session: id,
+            descriptors,
         });
     }
 
@@ -202,18 +199,14 @@ export class SessionsBackground extends TypedEmitter<{
      * client notified backend that he is able to talk to device
      * - assign client a new "session". this session will be used in all subsequent communication
      */
-    // @ts-ignore
     private acquireDone(payload: AcquireDoneRequest) {
         this.clearLock();
-        // const id = `${this.getNewSessionId()}`;
-        // this.sessions[payload.path] = id;
         this.sessions[payload.path] = `${this.lastSession}`;
 
         const descriptors = this.sessionsToDescriptors();
 
         return Promise.resolve(
             this.success({
-                // session: this.sessions[payload.path] as string,
                 descriptors,
             }),
         );

@@ -144,12 +144,11 @@ export class BridgeTransport extends AbstractTransport {
             const previous = input.previous == null ? 'null' : input.previous;
 
             if (this.listening) {
- // listenPromise is resolved on next listen
- this.listenPromise = createDeferred<string>();
- // acquire promise is resolved after acquire returns
- this.acquirePromise = createDeferred<undefined>();
+                // listenPromise is resolved on next listen
+                this.listenPromise = createDeferred<string>();
+                // acquire promise is resolved after acquire returns
+                this.acquirePromise = createDeferred<undefined>();
             }
-           
 
             const response = await this._post('/acquire', {
                 params: `${input.path}/${previous}`,

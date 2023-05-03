@@ -217,13 +217,8 @@ export class DeviceList extends EventEmitter {
                     if (device) {
                         // wait for publish changes
                         await resolveAfter(1000, null).promise;
-                        if (
-                            !device.isUsed() &&
-                            device.isUnacquired() &&
-                            !device.isInconsistent()
-                        ) {
+                        if (!device.isUsed() && device.isUnacquired() && !device.isInconsistent()) {
                             _log.debug('Create device from unacquired', device);
-                            console.log('====== acquire from released elsewhere', 'device.isUsed()', device.isUsed());
                             await this._createAndSaveDevice(descriptor);
                         }
                     }
@@ -307,7 +302,6 @@ export class DeviceList extends EventEmitter {
                 this.on(DEVICE.CONNECT, this.resolveTransportEvent.bind(this));
                 this.on(DEVICE.CONNECT_UNACQUIRED, this.resolveTransportEvent.bind(this));
                 autoResolveTransportEventTimeout = setTimeout(() => {
-                    console.log('auto resolve transport event meow')
                     this.emit(TRANSPORT.START, this.getTransportInfo());
                 }, 10000);
             } else {
@@ -465,39 +459,25 @@ export class DeviceList extends EventEmitter {
         this.creatingDevicesDescriptors[path] = descriptor;
 
         try {
-            console.log('handle!');
             // "regular" device creation
             await this._takeAndCreateDevice(descriptor);
         } catch (error) {
-            console.log('DeviceList handle error', error);
-            console.log('DeviceList handle error.message', error.message);
-            console.log('DeviceList handle error.code', error.code);
-
-
             _log.debug('Cannot create device', error);
 
             if (
                 error.code === 'Device_NotFound' ||
-                error.message === 'device not found' ||
+                error.message === TRANSPORT_ERROR.DEVICE_NOT_FOUND ||
                 error.message === TRANSPORT_ERROR.DEVICE_DISCONNECTED_DURING_ACTION ||
-                error.message === TRANSPORT_ERROR.UNEXPECTED_ERROR
+                error.message === TRANSPORT_ERROR.UNEXPECTED_ERROR || 
+                error.message === TRANSPORT_ERROR.INTERFACE_UNABLE_TO_OPEN_DEVICE
             ) {
                 // do nothing
                 // it's a race condition between "device_changed" and "device_disconnected"
                 // todo: emit device.disconnect from here? otherwise there stays a pending device
                 // that can't be worked with
-            } else if (
-                error.message === TRANSPORT_ERROR.SESSION_WRONG_PREVIOUS
-            ) {
+            } else if (error.message === TRANSPORT_ERROR.SESSION_WRONG_PREVIOUS) {
                 this.enumerate();
                 this._handleUsedElsewhere(descriptor);
-                
-            } else if (error.message === TRANSPORT_ERROR.INTERFACE_UNABLE_TO_OPEN_DEVICE) {
-                // const device = this.devices[descriptor.path];
-                // this.emit(DEVICE.DISCONNECT, device.toMessageObject());
-                // delete this.devices[path];
-                // todo: maybe also unreadable device?
-
             } else if (error.message?.indexOf(ERRORS.LIBUSB_ERROR_MESSAGE) >= 0) {
                 // catch one of trezord LIBUSB_ERRORs
                 const device = this._createUnreadableDevice(
@@ -525,7 +505,6 @@ export class DeviceList extends EventEmitter {
         const path = descriptor.path.toString();
 
         this.devices[path] = device;
-        console.log('_takeAndCeateDevice -> device.run()')
         const promise = device.run();
         await promise;
 

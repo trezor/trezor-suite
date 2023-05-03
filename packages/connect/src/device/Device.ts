@@ -148,8 +148,6 @@ export class Device extends EventEmitter {
     }
 
     async acquire() {
-        console.log('device.acquire calling!', this.originalDescriptor);
-
         const { promise } = this.transport.acquire({
             input: {
                 path: this.originalDescriptor.path,
@@ -157,7 +155,6 @@ export class Device extends EventEmitter {
             },
         });
         const acquireResult = await promise;
-        console.log('device.acquire acquireResult', acquireResult)
         if (!acquireResult.success) {
             if (this.runPromise) {
                 this.runPromise.reject(new Error(acquireResult.error));
@@ -170,7 +167,7 @@ export class Device extends EventEmitter {
 
         _log.debug('Expected session id:', sessionID);
         this.activitySessionID = sessionID;
-        
+
         // note: this.originalDescriptor is updated here and also in TRANSPORT.UPDATE listener.
         // I would like to update it only in one place (listener) but it some cases (unchained test),
         // listen response is not triggered by device acquire. not sure why.
@@ -208,7 +205,6 @@ export class Device extends EventEmitter {
         this.removeAllListeners();
         // make sure that Device_CallInProgress will not be thrown
         this.runPromise = null;
-        console.log('cleanup release')
         await this.release();
     }
 
@@ -219,7 +215,6 @@ export class Device extends EventEmitter {
         }
 
         options = parseRunOptions(options);
-        console.log('device.run')
         this.runPromise = createDeferred(this._runInner.bind(this, fn, options));
 
         return this.runPromise.promise;
@@ -245,7 +240,6 @@ export class Device extends EventEmitter {
     }
 
     interruptionFromOutside() {
-        console.log('interruptionFromOutside')
         _log.debug('interruptionFromOutside');
 
         if (this.commands) {
@@ -265,9 +259,7 @@ export class Device extends EventEmitter {
     async _runInner<X>(fn: (() => Promise<X>) | undefined, options: RunOptions): Promise<void> {
         if (!this.isUsedHere() || this.commands?.disposed || !this.getExternalState()) {
             // acquire session
-            console.log('device_runInner -> acquire')
             await this.acquire();
-            console.log('device_runInner -> acquire DONE')
 
             // update features
             try {
@@ -291,9 +283,8 @@ export class Device extends EventEmitter {
                 }
             } catch (error) {
                 // note: this happens on t1 with webusb if there was "select wallet dialog" and user reloads page.
-                // note this happens even before transport-refactor-2 branch 
+                // note this happens even before transport-refactor-2 branch
                 if (!this.inconsistent && error.message === 'GetFeatures timeout') {
-                    console.log('device_runInner => catch error', error);
 
                     // handling corner-case T1 + bootloader < 1.4.0 (above)
                     // if GetFeatures fails try again
@@ -306,7 +297,9 @@ export class Device extends EventEmitter {
                 return Promise.reject(
                     ERRORS.TypedError(
                         'Device_InitializeFailed',
-                        `Initialize failed: ${error.message} ${error.code? `, code: ${error.code}`:''}`,
+                        `Initialize failed: ${error.message} ${
+                            error.code ? `, code: ${error.code}` : ''
+                        }`,
                     ),
                 );
             }
@@ -339,7 +332,6 @@ export class Device extends EventEmitter {
             options.keepSession === false
         ) {
             this.keepSession = false;
-            console.log('runInner release')
             await this.release();
         }
 
@@ -616,8 +608,6 @@ export class Device extends EventEmitter {
                     this.commands.cancel();
                 }
 
-                console.log("release from device.dispose()")
-                
                 return this.transport.release(this.activitySessionID, true);
             } catch (err) {
                 // empty
@@ -699,7 +689,6 @@ export class Device extends EventEmitter {
 
     async legacyForceRelease() {
         if (this.isUsedHere()) {
-            console.log('device legacyForceRelease => acquire')
             await this.acquire();
             await this.getFeatures();
             await this.release();

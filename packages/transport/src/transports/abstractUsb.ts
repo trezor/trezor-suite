@@ -55,7 +55,7 @@ export abstract class AbstractUsbTransport extends AbstractTransport {
             });
         });
         // 3. based on 2.sessions background distributes information about descriptors change to all clients
-        this.sessionsClient.on('descriptors',async  descriptors => {
+        this.sessionsClient.on('descriptors', async descriptors => {
             // 4. we propagate new descriptors to higher levels
             if (this.acquirePromise?.promise) {
                 await this.acquirePromise.promise;
@@ -89,20 +89,15 @@ export abstract class AbstractUsbTransport extends AbstractTransport {
 
     public acquire({ input }: { input: AcquireInput }) {
         return this.scheduleAction(async () => {
-            // listenPromise is resolved on next listen
             if (this.listening) {
-                // listenPromise is resolved on next listen
                 this.listenPromise = createDeferred<string>();
-                // acquire promise is resolved after acquire returns
                 this.acquirePromise = createDeferred<undefined>();
             }
 
             const { path } = input;
             this.acquiringPath = path;
-            console.log('acquireIntent')
             const acquireIntentResponse = await this.sessionsClient.acquireIntent(input);
-            console.log('acquireIntentResponse',acquireIntentResponse);
-          
+
             if (!acquireIntentResponse.success) {
                 return this.error({ error: acquireIntentResponse.error });
             }
@@ -111,27 +106,22 @@ export abstract class AbstractUsbTransport extends AbstractTransport {
             const reset = !!input.previous;
             const openDeviceResult = await this.transportInterface.openDevice(path, reset);
 
-            console.log('openDeviceResult',openDeviceResult);
-            
             if (!openDeviceResult.success) {
                 if (this.listenPromise) {
-                    // @ts-ignore
-                    this.listenPromise.reject(openDeviceResult.error)
+                    this.listenPromise.reject(new Error(openDeviceResult.error));
                 }
                 return openDeviceResult;
             }
 
             this.sessionsClient.acquireDone({ path });
-         
+
             if (this.acquirePromise) {
                 this.acquirePromise.resolve(undefined);
             }
-            
+
             if (!this.listenPromise) {
                 return this.success(acquireIntentResponse.payload.session);
             }
-
-            console.log('waiting for session', this.acquiringSession);
 
             return this.listenPromise.promise
                 .then(sessionId => {
@@ -142,46 +132,36 @@ export abstract class AbstractUsbTransport extends AbstractTransport {
                     delete this.listenPromise;
                     return this.unknownError(err, [
                         ERRORS.DEVICE_DISCONNECTED_DURING_ACTION,
-                        // ERRORS.SESSION_WRONG_PREVIOUS,
+                        ERRORS.SESSION_WRONG_PREVIOUS,
                         ERRORS.DEVICE_NOT_FOUND,
-                        ERRORS.INTERFACE_UNABLE_TO_OPEN_DEVICE
+                        ERRORS.INTERFACE_UNABLE_TO_OPEN_DEVICE,
                     ]);
                 });
         });
     }
 
     public release(session: string) {
-        
         return this.scheduleAction(async () => {
-           
-            console.log('abstractUsb. release')
             if (this.listening) {
                 this.releasingSession = session;
                 this.releasePromise = createDeferred();
             }
 
-            console.log('releaseIntentResponse');
             const releaseIntentResponse = await this.sessionsClient.releaseIntent({
                 session,
             });
-            console.log('releaseIntentResponse',releaseIntentResponse);
 
             if (!releaseIntentResponse.success) {
                 return this.error({ error: releaseIntentResponse.error });
             }
 
             await this.releaseDevice(releaseIntentResponse.payload.path);
-            console.log('releaseDevice done')
             await this.sessionsClient.releaseDone({
                 path: releaseIntentResponse.payload.path,
             });
-            console.log('releaseDone');
 
             if (this.releasePromise?.promise) {
-                console.log('waiting for releasePromise')
                 await this.releasePromise.promise;
-                console.log('waiting for releasePromise done')
-
                 delete this.releasePromise;
             }
             return this.success(undefined);
@@ -217,7 +197,6 @@ export abstract class AbstractUsbTransport extends AbstractTransport {
                         (buffer: Buffer) =>
                             this.transportInterface.write(path, buffer).then(result => {
                                 if (!result.success) {
-                                    
                                     // todo:
                                     throw new Error(result.error);
                                 }
@@ -237,7 +216,6 @@ export abstract class AbstractUsbTransport extends AbstractTransport {
 
                     return this.success(message);
                 } catch (err) {
-                    console.log('call err', err);
                     // if user revokes usb permissions in browser we need a way how propagate that the device was technically disconnected,
                     if (err.message === ERRORS.DEVICE_DISCONNECTED_DURING_ACTION) {
                         this.enumerate();
@@ -328,7 +306,6 @@ export abstract class AbstractUsbTransport extends AbstractTransport {
     }
 
     releaseDevice(path: string) {
-        console.log('transport releaseDevice()')
         return this.transportInterface.closeDevice(path);
     }
 
