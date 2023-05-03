@@ -62,7 +62,7 @@ export class SessionsBackground extends TypedEmitter<{
 
             // @ts-ignore
             console.log('request ', `${message.id}-${message.caller}`, message.type, message.payload);
-            console.time(`${message.id}-${message.caller}`);
+            console.time(`${message.id}-${message.caller}-${message.type}`);
 
             switch (message.type) {
                 case 'handshake':
@@ -97,18 +97,8 @@ export class SessionsBackground extends TypedEmitter<{
             }
 
 
-            // if (result && result.success && result.payload && 'descriptors' in result.payload) {
-            //     const { descriptors } = result.payload; 
-            //     // finally would do the same job, wouldn't it?
-            //     Promise.resolve().then(() => {
-                    
-            //         // @ts-ignore
-            //         this.emit('descriptors', descriptors);
-            //     });
-            // }
-
             console.log('result ', `${message.id}-${message.caller}`, message.type, result);
-            console.timeEnd(`${message.id}-${message.caller}`);
+            console.timeEnd(`${message.id}-${message.caller}-${message.type}`);
 
             return { ...result, id: message.id } as HandleMessageResponse<M>;
         } catch (err) {
@@ -119,17 +109,9 @@ export class SessionsBackground extends TypedEmitter<{
                 id: message.type,
             } as HandleMessageResponse<M>;
         } finally {
-            // @ts-ignore
              if (result && result.success && result.payload && 'descriptors' in result.payload) {
-            // @ts-ignore
-
                 const { descriptors } = result.payload; 
-                // finally would do the same job, wouldn't it?
-                // Promise.resolve().then(() => {
-                    
-                    // @ts-ignore
                     setTimeout(() => this.emit('descriptors', descriptors), 0);
-                // });
             }
 
         }
@@ -201,17 +183,18 @@ export class SessionsBackground extends TypedEmitter<{
         console.log(caller, 'post', JSON.stringify(this.sessions));
 
         if (previous !== this.sessions[payload.path]) {
+            this.clearLock();
             return this.error(ERRORS.SESSION_WRONG_PREVIOUS);
         }
         
-       
         const id = `${this.getNewSessionId()}`;
         unconfirmedSessions[payload.path] = id;
 
-        // const descriptors = this.sessionsToDescriptors(unconfirmedSessions);
+        const descriptors = this.sessionsToDescriptors(unconfirmedSessions);
 
-        return this.success({ session: id, 
-            // descriptors 
+        return this.success({
+            session: id, 
+            descriptors 
         });
     }
 

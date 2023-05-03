@@ -201,11 +201,12 @@ export class DeviceList extends EventEmitter {
                     }
                 });
 
-                // todo: not sure if this part is needed.
                 diff.released.forEach(descriptor => {
                     const path = descriptor.path.toString();
                     const device = this.devices[path];
-                    if (device) {
+                    const methodStillRunning = !device?.commands?.disposed;
+
+                    if (methodStillRunning) {
                         device.keepSession = false;
                     }
                 });
@@ -308,7 +309,7 @@ export class DeviceList extends EventEmitter {
                 autoResolveTransportEventTimeout = setTimeout(() => {
                     console.log('auto resolve transport event meow')
                     this.emit(TRANSPORT.START, this.getTransportInfo());
-                }, 5000);
+                }, 10000);
             } else {
                 this.emit(TRANSPORT.START, this.getTransportInfo());
             }

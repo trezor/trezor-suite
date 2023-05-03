@@ -599,7 +599,7 @@ export const onCall = async (message: CoreMessage) => {
             }
         };
 
-        console.log('core -> device.run')
+        console.log('core -> device.run', method.name)
         // run inner function
         await device.run(inner, {
             keepSession: method.keepSession,

@@ -1,4 +1,4 @@
-import { createDeferred } from '@trezor/utils';
+import { createDeferred, Deferred } from '@trezor/utils';
 
 import { AbstractTransport, AcquireInput } from './abstract';
 import { buildAndSend } from '../lowlevel/send';
@@ -20,6 +20,8 @@ export abstract class AbstractUsbTransport extends AbstractTransport {
     // which can live in couple of context (shared worker, local module, websocket server etc)
     private sessionsClient: UsbTransportConstructorParams['sessionsClient'];
     private transportInterface: UsbInterface;
+
+    protected acquirePromise?: Deferred<any>;
 
     // private acquiredSession?: string;
 
@@ -53,8 +55,11 @@ export abstract class AbstractUsbTransport extends AbstractTransport {
             });
         });
         // 3. based on 2.sessions background distributes information about descriptors change to all clients
-        this.sessionsClient.on('descriptors', descriptors => {
+        this.sessionsClient.on('descriptors',async  descriptors => {
             // 4. we propagate new descriptors to higher levels
+            if (this.acquirePromise?.promise) {
+                await this.acquirePromise.promise;
+            }
             this.handleDescriptorsChange(descriptors);
         });
 
@@ -86,11 +91,15 @@ export abstract class AbstractUsbTransport extends AbstractTransport {
         return this.scheduleAction(async () => {
             // listenPromise is resolved on next listen
             if (this.listening) {
-                this.listenPromise = createDeferred();
+                // listenPromise is resolved on next listen
+                this.listenPromise = createDeferred<string>();
+                // acquire promise is resolved after acquire returns
+                this.acquirePromise = createDeferred<undefined>();
             }
 
             const { path } = input;
             this.acquiringPath = path;
+            console.log('acquireIntent')
             const acquireIntentResponse = await this.sessionsClient.acquireIntent(input);
             console.log('acquireIntentResponse',acquireIntentResponse);
           
@@ -114,6 +123,10 @@ export abstract class AbstractUsbTransport extends AbstractTransport {
 
             this.sessionsClient.acquireDone({ path });
          
+            if (this.acquirePromise) {
+                this.acquirePromise.resolve(undefined);
+            }
+            
             if (!this.listenPromise) {
                 return this.success(acquireIntentResponse.payload.session);
             }
@@ -147,6 +160,7 @@ export abstract class AbstractUsbTransport extends AbstractTransport {
                 this.releasePromise = createDeferred();
             }
 
+            console.log('releaseIntentResponse');
             const releaseIntentResponse = await this.sessionsClient.releaseIntent({
                 session,
             });
@@ -314,6 +328,7 @@ export abstract class AbstractUsbTransport extends AbstractTransport {
     }
 
     releaseDevice(path: string) {
+        console.log('transport releaseDevice()')
         return this.transportInterface.closeDevice(path);
     }
 

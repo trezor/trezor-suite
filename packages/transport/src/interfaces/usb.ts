@@ -216,40 +216,46 @@ export class UsbInterface extends AbstractInterface<USBDevice> {
     }
 
     public async closeDevice(path: string) {
+        console.log('usb closeDevice',)
         const device = this.findDevice(path);
+        console.log('usb closeDevice device',device)
+
         if (!device) {
             return this.error({ error: ERRORS.DEVICE_NOT_FOUND });
         }
 
-        device.reset();
+        // device.reset();
 
-        // try {
-        //     const interfaceId = INTERFACE_ID;
-        //     console.log('releaseInterface')
-        //     await device.releaseInterface(interfaceId);
-        //     console.log('releaseInterface done')
+       
 
-        // } catch (err) {
-        //     console.log('releaseInterface err', err);
+        if (device.opened) {
+            try {
+                const interfaceId = INTERFACE_ID;
+                console.log('releaseInterface')
+                await device.releaseInterface(interfaceId);
+                console.log('releaseInterface done')
+    
+            } catch (err) {
+                console.log('releaseInterface err', err);
+    
+                // ignore
+            }
+        }
+        if (device.opened) {
+            try {
+                console.log('device.close')
+                await device.close();
+                console.log('device.close done')
 
-        //     // ignore
-        // }
+            } catch (err) {
+                console.log('device.close err',err);
 
-        // if (device.opened) {
-        //     try {
-        //         console.log('device.close')
-        //         await device.close();
-        //         console.log('device.close done')
-
-        //     } catch (err) {
-        //         console.log('device.close err',err);
-
-        //         return this.error({
-        //             error: ERRORS.INTERFACE_UNABLE_TO_CLOSE_DEVICE,
-        //             message: err.message,
-        //         });
-        //     }
-        // }
+                return this.error({
+                    error: ERRORS.INTERFACE_UNABLE_TO_CLOSE_DEVICE,
+                    message: err.message,
+                });
+            }
+        }
         return this.success(undefined);
     }
 

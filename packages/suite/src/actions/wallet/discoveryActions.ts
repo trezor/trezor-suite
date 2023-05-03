@@ -569,6 +569,7 @@ export const start =
 
             if (result.payload.error && device.connected) {
                 // call getFeatures to release device session
+                ///// vrrrrm
                 await TrezorConnect.getFeatures({
                     device,
                     keepSession: false,

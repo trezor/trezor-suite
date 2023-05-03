@@ -170,6 +170,7 @@ export class Device extends EventEmitter {
 
         _log.debug('Expected session id:', sessionID);
         this.activitySessionID = sessionID;
+        
         // note: this.originalDescriptor is updated here and also in TRANSPORT.UPDATE listener.
         // I would like to update it only in one place (listener) but it some cases (unchained test),
         // listen response is not triggered by device acquire. not sure why.
@@ -289,6 +290,8 @@ export class Device extends EventEmitter {
                     ]);
                 }
             } catch (error) {
+                // note: this happens on t1 with webusb if there was "select wallet dialog" and user reloads page.
+                // note this happens even before transport-refactor-2 branch 
                 if (!this.inconsistent && error.message === 'GetFeatures timeout') {
                     console.log('device_runInner => catch error', error);
 
@@ -614,7 +617,6 @@ export class Device extends EventEmitter {
                 }
 
                 console.log("release from device.dispose()")
-                this.transport.releaseDevice(this.originalDescriptor.path);
                 
                 return this.transport.release(this.activitySessionID, true);
             } catch (err) {
