@@ -3,8 +3,8 @@ import React from 'react';
 import { useNavigation } from '@react-navigation/native';
 
 import {
-    HomeStackParamList,
-    HomeStackRoutes,
+    RootStackParamList,
+    RootStackRoutes,
     Screen,
     StackNavigationProps,
 } from '@suite-native/navigation';
@@ -16,10 +16,10 @@ import { AccountsScreenHeader } from '../components/AccountsScreenHeader';
 
 export const AccountsScreen = () => {
     const navigation =
-        useNavigation<StackNavigationProps<HomeStackParamList, HomeStackRoutes.AccountDetail>>();
+        useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.AccountDetail>>();
 
     const handleSelectAccount = (accountKey: AccountKey, tokenSymbol?: EthereumTokenSymbol) => {
-        navigation.navigate(HomeStackRoutes.AccountDetail, {
+        navigation.navigate(RootStackRoutes.AccountDetail, {
             accountKey,
             tokenSymbol,
         });

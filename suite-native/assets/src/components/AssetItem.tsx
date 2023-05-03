@@ -17,8 +17,8 @@ import { CryptoAmountFormatter, FiatAmountFormatter } from '@suite-native/format
 import {
     AppTabsParamList,
     AppTabsRoutes,
-    HomeStackParamList,
-    HomeStackRoutes,
+    RootStackParamList,
+    RootStackRoutes,
     TabToStackCompositeNavigationProp,
 } from '@suite-native/navigation';
 import { HIDDEN_DEVICE_STATE } from '@suite-native/module-devices';
@@ -67,7 +67,7 @@ export const AssetItem = ({
             TabToStackCompositeNavigationProp<
                 AppTabsParamList,
                 AppTabsRoutes.HomeStack,
-                HomeStackParamList
+                RootStackParamList
             >
         >();
     const accountsPerAsset = useSelector((state: AccountsRootState) =>
@@ -79,7 +79,7 @@ export const AssetItem = ({
 
     const handleAssetPress = () => {
         if (accountsPerAsset === 1) {
-            navigation.navigate(HomeStackRoutes.AccountDetail, {
+            navigation.navigate(RootStackRoutes.AccountDetail, {
                 accountKey: accountsForNetworkSymbol[0].key,
             });
         } else if (onPress) {

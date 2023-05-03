@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import { AccountSettingsScreen } from '@suite-native/module-accounts';
+import { AccountDetailScreen, AccountSettingsScreen } from '@suite-native/module-accounts';
 import { AccountsImportStackNavigator } from '@suite-native/module-accounts-import';
 import {
     RootStackParamList,
@@ -15,6 +15,7 @@ import { DevUtilsStackNavigator } from '@suite-native/module-dev-utils';
 import { TransactionDetailScreen } from '@suite-native/transactions';
 import { OnboardingStackNavigator } from '@suite-native/module-onboarding';
 import { selectUserHasAccounts } from '@suite-common/wallet-core';
+import { ReceiveModal } from '@suite-native/receive';
 
 import { AppTabNavigator } from './AppTabNavigator';
 
@@ -59,9 +60,15 @@ export const RootStackNavigator = () => {
                 component={TransactionDetailScreen}
             />
             <RootStack.Screen
+                options={{ title: RootStackRoutes.AccountDetail }}
+                name={RootStackRoutes.AccountDetail}
+                component={AccountDetailScreen}
+            />
+            <RootStack.Screen
                 name={RootStackRoutes.DevUtilsStack}
                 component={DevUtilsStackNavigator}
             />
+            <RootStack.Screen name={RootStackRoutes.ReceiveModal} component={ReceiveModal} />
         </RootStack.Navigator>
     );
 };

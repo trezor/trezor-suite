@@ -17,8 +17,8 @@ const accountsStack = enhanceTabOption({
     },
 });
 
-const sendReceiveStack = enhanceTabOption({
-    routeName: AppTabsRoutes.SendReceiveStack,
+const receiveStack = enhanceTabOption({
+    routeName: AppTabsRoutes.ReceiveStack,
     label: 'Receive',
     iconName: 'receive',
 });
@@ -32,6 +32,6 @@ const settingsStack = enhanceTabOption({
 export const rootTabsOptions = {
     ...homeStack,
     ...accountsStack,
-    ...sendReceiveStack,
+    ...receiveStack,
     ...settingsStack,
 };

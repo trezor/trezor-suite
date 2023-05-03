@@ -7,8 +7,8 @@ import { BottomSheet, Card, VStack } from '@suite-native/atoms';
 import {
     AppTabsParamList,
     AppTabsRoutes,
-    HomeStackParamList,
-    HomeStackRoutes,
+    RootStackParamList,
+    RootStackRoutes,
     TabToStackCompositeNavigationProp,
 } from '@suite-native/navigation';
 import { networks, NetworkSymbol } from '@suite-common/wallet-config';
@@ -26,7 +26,7 @@ export const Assets = () => {
             TabToStackCompositeNavigationProp<
                 AppTabsParamList,
                 AppTabsRoutes.HomeStack,
-                HomeStackParamList
+                RootStackParamList
             >
         >();
     const assetsData = useSelector(selectAssetsWithBalances);
@@ -41,7 +41,7 @@ export const Assets = () => {
         accountKey: AccountKey,
         tokenSymbol?: EthereumTokenSymbol,
     ) => {
-        navigation.navigate(HomeStackRoutes.AccountDetail, {
+        navigation.navigate(RootStackRoutes.AccountDetail, {
             accountKey,
             tokenSymbol,
         });

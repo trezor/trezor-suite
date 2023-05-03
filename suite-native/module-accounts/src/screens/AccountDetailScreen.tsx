@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { RouteProp, useRoute } from '@react-navigation/native';
 
-import { HomeStackParamList, HomeStackRoutes, Screen } from '@suite-native/navigation';
+import { RootStackParamList, RootStackRoutes, Screen } from '@suite-native/navigation';
 import {
     AccountsRootState,
     fetchTransactionsThunk,
@@ -25,7 +25,7 @@ import { AccountDetailScreenHeader } from '../components/AccountDetailScreenHead
 import { TokenAccountDetailScreenHeader } from '../components/TokenAccountDetailScreenHeader';
 
 export const AccountDetailScreen = memo(() => {
-    const route = useRoute<RouteProp<HomeStackParamList, HomeStackRoutes.AccountDetail>>();
+    const route = useRoute<RouteProp<RootStackParamList, RootStackRoutes.AccountDetail>>();
     const { accountKey, tokenSymbol } = route.params;
     const dispatch = useDispatch();
     const [areTokensIncluded, setAreTokensIncluded] = useState(false);
