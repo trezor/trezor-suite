@@ -8,6 +8,7 @@ import { NetworkSymbol } from '@suite-common/wallet-config';
 import { EthereumTokenSymbol, CoinIcon } from '@suite-native/ethereum-tokens';
 
 import { SummaryRow } from './TransactionDetailStatusSection';
+import { formatAddressLabel } from './TransactionDetailAddressesSheet';
 
 type TransactionDetailAddressesSectionProps = {
     addresses: string[];
@@ -73,9 +74,7 @@ export const TransactionDetailAddressesSection = ({
 }: TransactionDetailAddressesSectionProps) => {
     const { applyStyle } = useNativeStyles();
 
-    const titlePrefix = addressesType === 'inputs' ? 'From' : 'To';
-    const formattedTitle =
-        addresses.length > 1 ? `${titlePrefix}  ·  ${addresses.length}` : titlePrefix;
+    const formattedTitle = formatAddressLabel(addressesType, addresses.length);
 
     const displayedAddresses = addresses.slice(0, 2);
     const isShowMoreButtonVisible = addresses.length > 2;
