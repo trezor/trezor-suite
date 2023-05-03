@@ -607,6 +607,8 @@ export const onCall = async (message: CoreMessage) => {
             useCardanoDerivation: method.useCardanoDerivation,
         });
     } catch (error) {
+        console.log('catch error from device.run', error);
+        
         // corner case: Device was disconnected during authorization
         // this device_id needs to be stored and penalized with delay on future connection
         // this solves issue with U2F login (leaves space for requests from services which aren't using trezord)

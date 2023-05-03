@@ -381,6 +381,7 @@ export abstract class AbstractTransport extends TypedEmitter<{
 
         this.descriptors = nextDescriptors;
 
+        console.log('diff', diff);
         if (diff.didUpdate) {
             if (this.listenPromise && this.acquiringSession) {
                 const descriptor = nextDescriptors.find(

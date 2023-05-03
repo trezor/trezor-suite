@@ -155,7 +155,7 @@ export class Device extends EventEmitter {
             },
         });
         const acquireResult = await promise;
-
+        console.log('device.acquire acquireResult', acquireResult)
         if (!acquireResult.success) {
             if (this.runPromise) {
                 this.runPromise.reject(new Error(acquireResult.error));
@@ -205,6 +205,7 @@ export class Device extends EventEmitter {
         this.removeAllListeners();
         // make sure that Device_CallInProgress will not be thrown
         this.runPromise = null;
+        console.log('cleanup release')
         await this.release();
     }
 
@@ -241,6 +242,7 @@ export class Device extends EventEmitter {
     }
 
     interruptionFromOutside() {
+        console.log('interruptionFromOutside')
         _log.debug('interruptionFromOutside');
 
         if (this.commands) {
@@ -295,7 +297,7 @@ export class Device extends EventEmitter {
                 return Promise.reject(
                     ERRORS.TypedError(
                         'Device_InitializeFailed',
-                        `Initialize failed: ${error.message}, code: ${error.code}`,
+                        `Initialize failed: ${error.message} ${error.code? `, code: ${error.code}`:''}`,
                     ),
                 );
             }
@@ -328,6 +330,7 @@ export class Device extends EventEmitter {
             options.keepSession === false
         ) {
             this.keepSession = false;
+            console.log('runInner release')
             await this.release();
         }
 
@@ -604,6 +607,7 @@ export class Device extends EventEmitter {
                     this.commands.cancel();
                 }
 
+                console.log("release from device.dispose()")
                 return this.transport.release(this.activitySessionID, true);
             } catch (err) {
                 // empty

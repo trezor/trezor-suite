@@ -19,7 +19,6 @@ export { AbstractTransport as Transport, TRANSPORT } from './transports/abstract
 // messages are exported but there is no real need to use them elsewhere
 // transports have reference to this already
 export * as Messages from './types/messages';
-export type { AbortableCall } from './types/apiCall';
 
 // browser + node
 export { BridgeTransport } from './transports/bridge';

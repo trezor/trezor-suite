@@ -94,7 +94,9 @@ export class UsbInterface extends AbstractInterface<USBDevice> {
         }
 
         try {
+            console.log('device transfer in')
             const res = await device.transferIn(ENDPOINT_ID, 64);
+            console.log('device transfer in res', res)
 
             if (!res.data) {
                 return this.error({ error: ERRORS.INTERFACE_DATA_TRANSFER });
@@ -124,8 +126,10 @@ export class UsbInterface extends AbstractInterface<USBDevice> {
         newArray.set(new Uint8Array(buffer), 1);
 
         try {
+            console.log('device trnasfer out');
             // https://wicg.github.io/webusb/#ref-for-dom-usbdevice-transferout
             const result = await device.transferOut(ENDPOINT_ID, newArray);
+            console.log('device transfer out result', result);
             if (result.status !== 'ok') {
                 // should not happen, but could be source of troubles so lets observe it
                 this.logger.error(
@@ -139,6 +143,7 @@ export class UsbInterface extends AbstractInterface<USBDevice> {
             }
             return this.success(undefined);
         } catch (err) {
+            console.log('write err', err);
             if (err.message === INTERFACE_DEVICE_DISCONNECTED) {
                 return this.error({ error: ERRORS.DEVICE_DISCONNECTED_DURING_ACTION });
             }
@@ -170,8 +175,11 @@ export class UsbInterface extends AbstractInterface<USBDevice> {
         }
 
         try {
+            console.log('device open');
+
             await device.open();
         } catch (err) {
+            console.log('device open err', err);
             return this.error({
                 error: ERRORS.INTERFACE_UNABLE_TO_OPEN_DEVICE,
                 message: err.message,
@@ -180,17 +188,24 @@ export class UsbInterface extends AbstractInterface<USBDevice> {
 
         if (first) {
             try {
+                console.log('device select config');
                 await device.selectConfiguration(CONFIGURATION_ID);
                 // reset fails on ChromeOS and windows
                 await device.reset();
             } catch (err) {
+                console.log('device select config err', err);
+
                 // empty
             }
         }
         try {
+            console.log('device claim');
+
             // claim device for exclusive access by this app
             await device.claimInterface(INTERFACE_ID);
         } catch (err) {
+            console.log('device claim err', err);
+
             return this.error({
                 error: ERRORS.INTERFACE_UNABLE_TO_OPEN_DEVICE,
                 message: err.message,

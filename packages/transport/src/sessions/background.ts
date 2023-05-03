@@ -34,7 +34,7 @@ const lockDuration = 1000 * 4;
 export class SessionsBackground extends TypedEmitter<{
     /**
      * updated descriptors (session has changed)
-     * todo: why not move here "handleDescriptors change from Abstract transport??"
+     * note: we can't send diff from here (see abtract transport) altough it would make sense, because we need to support also bridge which  does not use this sessions background.
      */
     ['descriptors']: Descriptor[];
 }> {
@@ -60,6 +60,10 @@ export class SessionsBackground extends TypedEmitter<{
             // desktop application, here should go code that will check if some "master" sessions background
             // is alive (websocket server in suite desktop). If yes, it will simply forward request
 
+            // @ts-ignore
+            console.log('request ', `${message.id}-${message.caller}`, message.type, message.payload);
+            console.time(`${message.id}-${message.caller}`);
+
             switch (message.type) {
                 case 'handshake':
                     result = this.handshake();
@@ -71,7 +75,7 @@ export class SessionsBackground extends TypedEmitter<{
                     result = await this.enumerateDone(message.payload);
                     break;
                 case 'acquireIntent':
-                    result = await this.acquireIntent(message.payload);
+                    result = await this.acquireIntent(message.payload, message.caller!);
                     break;
                 case 'acquireDone':
                     result = await this.acquireDone(message.payload);
@@ -92,14 +96,20 @@ export class SessionsBackground extends TypedEmitter<{
                     throw new Error(ERRORS.UNEXPECTED_ERROR);
             }
 
-            if (result && result.success && result.payload && 'descriptors' in result.payload) {
-                const { descriptors } = result.payload;
 
-                // finally would do the same job, wouldn't it?
-                Promise.resolve().then(() => {
-                    this.emit('descriptors', descriptors);
-                });
-            }
+            // if (result && result.success && result.payload && 'descriptors' in result.payload) {
+            //     const { descriptors } = result.payload; 
+            //     // finally would do the same job, wouldn't it?
+            //     Promise.resolve().then(() => {
+                    
+            //         // @ts-ignore
+            //         this.emit('descriptors', descriptors);
+            //     });
+            // }
+
+            console.log('result ', `${message.id}-${message.caller}`, message.type, result);
+            console.timeEnd(`${message.id}-${message.caller}`);
+
             return { ...result, id: message.id } as HandleMessageResponse<M>;
         } catch (err) {
             // catch unexpected errors and notify client.
@@ -108,6 +118,17 @@ export class SessionsBackground extends TypedEmitter<{
                 ...this.error(ERRORS.UNEXPECTED_ERROR),
                 id: message.type,
             } as HandleMessageResponse<M>;
+        } finally {
+             if (result && result.success && result.payload && 'descriptors' in result.payload) {
+                const { descriptors } = result.payload; 
+                // finally would do the same job, wouldn't it?
+                // Promise.resolve().then(() => {
+                    
+                    // @ts-ignore
+                    setTimeout(() => this.emit('descriptors', descriptors), 0);
+                // });
+            }
+
         }
     }
 
@@ -159,35 +180,53 @@ export class SessionsBackground extends TypedEmitter<{
     /**
      * acquire intent
      */
-    private async acquireIntent(payload: AcquireIntentRequest) {
-        await this.waitInQueue();
+    private async acquireIntent(payload: AcquireIntentRequest, caller: string) {
 
-        const previous = this.sessions[payload.path];
-
+        // null
+        const unconfirmedSessions = JSON.parse(JSON.stringify(this.sessions));
+        const previous = this.sessions[payload.path]
+        
+        console.log(caller, 'previous ref', previous);
+        console.log(caller, 'pre', JSON.stringify(this.sessions));
+        
         if (payload.previous && payload.previous !== previous) {
             return this.error(ERRORS.SESSION_WRONG_PREVIOUS);
         }
 
-        const nextExpectedSession = `${this.lastSession + 1}`;
+        await this.waitInQueue();
 
-        return this.success({ session: nextExpectedSession });
+        console.log(caller, 'post', JSON.stringify(this.sessions));
+
+        if (previous !== this.sessions[payload.path]) {
+            return this.error(ERRORS.SESSION_WRONG_PREVIOUS);
+        }
+        
+       
+        const id = `${this.getNewSessionId()}`;
+        unconfirmedSessions[payload.path] = id;
+
+        const descriptors = this.sessionsToDescriptors(unconfirmedSessions);
+
+        return this.success({ session: id, descriptors });
     }
 
     /**
      * client notified backend that he is able to talk to device
      * - assign client a new "session". this session will be used in all subsequent communication
      */
+    // @ts-ignore
     private acquireDone(payload: AcquireDoneRequest) {
         this.clearLock();
-        const id = `${this.getNewSessionId()}`;
-        this.sessions[payload.path] = id;
+        // const id = `${this.getNewSessionId()}`;
+        // this.sessions[payload.path] = id;
+        this.sessions[payload.path] = `${this.lastSession}`;
 
-        const descriptors = this.sessionsToDescriptors();
+        // const descriptors = this.sessionsToDescriptors();
 
         return Promise.resolve(
             this.success({
-                session: this.sessions[payload.path] as string,
-                descriptors,
+                // session: this.sessions[payload.path] as string,
+                // descriptors,
             }),
         );
     }
@@ -285,8 +324,8 @@ export class SessionsBackground extends TypedEmitter<{
         return this.lastSession;
     }
 
-    private sessionsToDescriptors(): Descriptor[] {
-        return Object.entries(this.sessions).map(obj => ({
+    private sessionsToDescriptors(sessions?: Sessions): Descriptor[] {
+        return Object.entries(sessions || this.sessions).map(obj => ({
             path: obj[0],
             session: obj[1],
         }));

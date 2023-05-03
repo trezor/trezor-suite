@@ -85,12 +85,15 @@ export abstract class AbstractUsbTransport extends AbstractTransport {
     public acquire({ input }: { input: AcquireInput }) {
         return this.scheduleAction(async () => {
             // listenPromise is resolved on next listen
+            if (this.listening) {
+                this.listenPromise = createDeferred();
+            }
 
             const { path } = input;
             this.acquiringPath = path;
-
             const acquireIntentResponse = await this.sessionsClient.acquireIntent(input);
-
+            console.log('acquireIntentResponse',acquireIntentResponse);
+          
             if (!acquireIntentResponse.success) {
                 return this.error({ error: acquireIntentResponse.error });
             }
@@ -99,19 +102,23 @@ export abstract class AbstractUsbTransport extends AbstractTransport {
             // const reset = !!input.previous;
             const openDeviceResult = await this.transportInterface.openDevice(path, false);
 
+            console.log('openDeviceResult',openDeviceResult);
+            
             if (!openDeviceResult.success) {
+                if (this.listenPromise) {
+                    // @ts-ignore
+                    this.listenPromise.reject(openDeviceResult.error)
+                }
                 return openDeviceResult;
             }
 
-            this.sessionsClient.acquireDone({ path });
-
-            if (this.listening) {
-                this.listenPromise = createDeferred();
-            }
-
+            await this.sessionsClient.acquireDone({ path });
+         
             if (!this.listenPromise) {
-                return this.success(this.acquiringSession);
+                return this.success(acquireIntentResponse.payload.session);
             }
+
+            console.log('waiting for session', this.acquiringSession);
 
             return this.listenPromise.promise
                 .then(sessionId => {
@@ -122,7 +129,9 @@ export abstract class AbstractUsbTransport extends AbstractTransport {
                     delete this.listenPromise;
                     return this.unknownError(err, [
                         ERRORS.DEVICE_DISCONNECTED_DURING_ACTION,
-                        ERRORS.SESSION_WRONG_PREVIOUS,
+                        // ERRORS.SESSION_WRONG_PREVIOUS,
+                        ERRORS.DEVICE_NOT_FOUND,
+                        ERRORS.INTERFACE_UNABLE_TO_OPEN_DEVICE
                     ]);
                 });
         });
@@ -134,8 +143,6 @@ export abstract class AbstractUsbTransport extends AbstractTransport {
                 this.releasingSession = session;
                 this.releasePromise = createDeferred();
             }
-
-            // this.acquiredSession = undefined;
 
             const releaseIntentResponse = await this.sessionsClient.releaseIntent({
                 session,
@@ -188,6 +195,7 @@ export abstract class AbstractUsbTransport extends AbstractTransport {
                         (buffer: Buffer) =>
                             this.transportInterface.write(path, buffer).then(result => {
                                 if (!result.success) {
+                                    
                                     // todo:
                                     throw new Error(result.error);
                                 }
@@ -207,6 +215,7 @@ export abstract class AbstractUsbTransport extends AbstractTransport {
 
                     return this.success(message);
                 } catch (err) {
+                    console.log('call err', err);
                     // if user revokes usb permissions in browser we need a way how propagate that the device was technically disconnected,
                     if (err.message === ERRORS.DEVICE_DISCONNECTED_DURING_ACTION) {
                         this.enumerate();
