@@ -375,7 +375,7 @@ export abstract class AbstractTransport extends TypedEmitter<{
         if (this.stopped) {
             return;
         }
-
+        console.log('nextDescriptors', nextDescriptors);
         const diff = this._getDiff(nextDescriptors);
         this.logger.debug('nextDescriptors', nextDescriptors, 'diff', diff);
 

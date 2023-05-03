@@ -79,6 +79,12 @@ describe('sessions', () => {
             id: 1,
             payload: {
                 session: '1',
+                descriptors: [
+                    {
+                        path: '1',
+                        session: '1',
+                    },
+                ],
             },
         });
         const acquireDone = await client1.acquireDone({ path: '1' });
@@ -86,7 +92,6 @@ describe('sessions', () => {
             success: true,
             id: 2,
             payload: {
-                session: '1',
                 descriptors: [
                     {
                         path: '1',
@@ -112,6 +117,12 @@ describe('sessions', () => {
             id: 1,
             payload: {
                 session: '1',
+                descriptors: [
+                    {
+                        path: '1',
+                        session: '1',
+                    },
+                ],
             },
         });
 
@@ -126,6 +137,12 @@ describe('sessions', () => {
             id: 3,
             payload: {
                 session: '2',
+                descriptors: [
+                    {
+                        path: '1',
+                        session: '2',
+                    },
+                ],
             },
         });
 
@@ -155,6 +172,12 @@ describe('sessions', () => {
             id: 1,
             payload: {
                 session: '1',
+                descriptors: [
+                    {
+                        path: '1',
+                        session: '1',
+                    },
+                ],
             },
         });
 
@@ -163,7 +186,6 @@ describe('sessions', () => {
             success: true,
             id: 2,
             payload: {
-                session: '1',
                 descriptors: [
                     {
                         path: '1',

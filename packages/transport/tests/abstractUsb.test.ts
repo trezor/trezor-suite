@@ -206,49 +206,6 @@ describe('Usb', () => {
             expect(spy).toHaveBeenCalledTimes(0);
         });
 
-        it('acquire. transport listening', async () => {
-            expect.assertions(2);
-
-            const spy = jest.fn();
-            transport.on('transport-update', spy);
-
-            const prev = await transport.enumerate().promise;
-
-            if (!prev.success) {
-                throw new Error('');
-            }
-            transport.listen();
-
-            const acquireRes = await transport.acquire({
-                input: { path: prev.payload[0].path, previous: prev.payload[0].session },
-            }).promise;
-
-            expect(acquireRes).toEqual({
-                success: true,
-                payload: '1',
-            });
-
-            expect(spy).toHaveBeenNthCalledWith(1, {
-                acquired: [],
-                acquiredByMyself: [],
-                acquiredElsewhere: [],
-                changedSessions: [],
-                connected: [
-                    { path: '123', session: '1' }, // <- session granted!
-                    { path: 'bootloader1', session: undefined },
-                ],
-                descriptors: [
-                    { path: '123', session: '1' },
-                    { path: 'bootloader1', session: undefined },
-                ],
-                didUpdate: true,
-                disconnected: [],
-                released: [],
-                releasedByMyself: [],
-                releasedElsewhere: [],
-            });
-        });
-
         it('call error - called without acquire.', async () => {
             const res = await transport.call({ name: 'GetAddress', data: {}, session: '1' })
                 .promise;

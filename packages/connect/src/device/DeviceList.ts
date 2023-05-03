@@ -468,7 +468,7 @@ export class DeviceList extends EventEmitter {
                 error.code === 'Device_NotFound' ||
                 error.message === TRANSPORT_ERROR.DEVICE_NOT_FOUND ||
                 error.message === TRANSPORT_ERROR.DEVICE_DISCONNECTED_DURING_ACTION ||
-                error.message === TRANSPORT_ERROR.UNEXPECTED_ERROR || 
+                error.message === TRANSPORT_ERROR.UNEXPECTED_ERROR ||
                 error.message === TRANSPORT_ERROR.INTERFACE_UNABLE_TO_OPEN_DEVICE
             ) {
                 // do nothing

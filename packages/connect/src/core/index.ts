@@ -599,7 +599,7 @@ export const onCall = async (message: CoreMessage) => {
             }
         };
 
-        console.log('core -> device.run', method.name)
+        console.log('core -> device.run', method.name);
         // run inner function
         await device.run(inner, {
             keepSession: method.keepSession,
@@ -609,7 +609,7 @@ export const onCall = async (message: CoreMessage) => {
         });
     } catch (error) {
         console.log('catch error from device.run', error);
-        
+
         // corner case: Device was disconnected during authorization
         // this device_id needs to be stored and penalized with delay on future connection
         // this solves issue with U2F login (leaves space for requests from services which aren't using trezord)
@@ -641,7 +641,7 @@ export const onCall = async (message: CoreMessage) => {
                 await resolveAfter(1000).promise;
                 // call Device.run with empty function to fetch new Features
                 // (acquire > Initialize > nothing > release)
-                console.log('core finally -> device.run')
+                console.log('core finally -> device.run');
                 await device.run(() => Promise.resolve(), { skipFinalReload: true });
             }
             await device.cleanup();
