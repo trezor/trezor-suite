@@ -215,7 +215,7 @@ export class DeviceList extends EventEmitter {
                     const device = this.devices[path];
                     if (device) {
                         // wait for publish changes
-                        await resolveAfter(501, null).promise;
+                        await resolveAfter(1000, null).promise;
                         if (
                             !device.isUsed() &&
                             device.isUnacquired() &&
@@ -524,6 +524,7 @@ export class DeviceList extends EventEmitter {
         const path = descriptor.path.toString();
 
         this.devices[path] = device;
+        console.log('_takeAndCeateDevice -> device.run()')
         const promise = device.run();
         await promise;
 

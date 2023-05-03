@@ -119,7 +119,10 @@ export class SessionsBackground extends TypedEmitter<{
                 id: message.type,
             } as HandleMessageResponse<M>;
         } finally {
+            // @ts-ignore
              if (result && result.success && result.payload && 'descriptors' in result.payload) {
+            // @ts-ignore
+
                 const { descriptors } = result.payload; 
                 // finally would do the same job, wouldn't it?
                 // Promise.resolve().then(() => {
@@ -205,9 +208,11 @@ export class SessionsBackground extends TypedEmitter<{
         const id = `${this.getNewSessionId()}`;
         unconfirmedSessions[payload.path] = id;
 
-        const descriptors = this.sessionsToDescriptors(unconfirmedSessions);
+        // const descriptors = this.sessionsToDescriptors(unconfirmedSessions);
 
-        return this.success({ session: id, descriptors });
+        return this.success({ session: id, 
+            // descriptors 
+        });
     }
 
     /**
@@ -221,12 +226,12 @@ export class SessionsBackground extends TypedEmitter<{
         // this.sessions[payload.path] = id;
         this.sessions[payload.path] = `${this.lastSession}`;
 
-        // const descriptors = this.sessionsToDescriptors();
+        const descriptors = this.sessionsToDescriptors();
 
         return Promise.resolve(
             this.success({
                 // session: this.sessions[payload.path] as string,
-                // descriptors,
+                descriptors,
             }),
         );
     }

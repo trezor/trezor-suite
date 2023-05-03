@@ -148,6 +148,8 @@ export class Device extends EventEmitter {
     }
 
     async acquire() {
+        console.log('device.acquire calling!', this.originalDescriptor);
+
         const { promise } = this.transport.acquire({
             input: {
                 path: this.originalDescriptor.path,
@@ -216,7 +218,7 @@ export class Device extends EventEmitter {
         }
 
         options = parseRunOptions(options);
-
+        console.log('device.run')
         this.runPromise = createDeferred(this._runInner.bind(this, fn, options));
 
         return this.runPromise.promise;
@@ -262,7 +264,9 @@ export class Device extends EventEmitter {
     async _runInner<X>(fn: (() => Promise<X>) | undefined, options: RunOptions): Promise<void> {
         if (!this.isUsedHere() || this.commands?.disposed || !this.getExternalState()) {
             // acquire session
+            console.log('device_runInner -> acquire')
             await this.acquire();
+            console.log('device_runInner -> acquire DONE')
 
             // update features
             try {
@@ -280,12 +284,14 @@ export class Device extends EventEmitter {
                     await Promise.race([
                         this.getFeatures(),
                         new Promise((_resolve, reject) =>
-                            setTimeout(() => reject(new Error('GetFeatures timeout')), 3000),
+                            setTimeout(() => reject(new Error('GetFeatures timeout')), 7000),
                         ),
                     ]);
                 }
             } catch (error) {
                 if (!this.inconsistent && error.message === 'GetFeatures timeout') {
+                    console.log('device_runInner => catch error', error);
+
                     // handling corner-case T1 + bootloader < 1.4.0 (above)
                     // if GetFeatures fails try again
                     // this time add empty "fn" param to force Initialize message
@@ -608,6 +614,8 @@ export class Device extends EventEmitter {
                 }
 
                 console.log("release from device.dispose()")
+                this.transport.releaseDevice(this.originalDescriptor.path);
+                
                 return this.transport.release(this.activitySessionID, true);
             } catch (err) {
                 // empty
@@ -689,6 +697,7 @@ export class Device extends EventEmitter {
 
     async legacyForceRelease() {
         if (this.isUsedHere()) {
+            console.log('device legacyForceRelease => acquire')
             await this.acquire();
             await this.getFeatures();
             await this.release();

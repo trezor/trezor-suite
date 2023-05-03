@@ -99,8 +99,8 @@ export abstract class AbstractUsbTransport extends AbstractTransport {
             }
             this.acquiringSession = acquireIntentResponse.payload.session;
 
-            // const reset = !!input.previous;
-            const openDeviceResult = await this.transportInterface.openDevice(path, false);
+            const reset = !!input.previous;
+            const openDeviceResult = await this.transportInterface.openDevice(path, reset);
 
             console.log('openDeviceResult',openDeviceResult);
             
@@ -112,7 +112,7 @@ export abstract class AbstractUsbTransport extends AbstractTransport {
                 return openDeviceResult;
             }
 
-            await this.sessionsClient.acquireDone({ path });
+            this.sessionsClient.acquireDone({ path });
          
             if (!this.listenPromise) {
                 return this.success(acquireIntentResponse.payload.session);
@@ -138,7 +138,10 @@ export abstract class AbstractUsbTransport extends AbstractTransport {
     }
 
     public release(session: string) {
+        
         return this.scheduleAction(async () => {
+           
+            console.log('abstractUsb. release')
             if (this.listening) {
                 this.releasingSession = session;
                 this.releasePromise = createDeferred();
@@ -147,19 +150,24 @@ export abstract class AbstractUsbTransport extends AbstractTransport {
             const releaseIntentResponse = await this.sessionsClient.releaseIntent({
                 session,
             });
+            console.log('releaseIntentResponse',releaseIntentResponse);
 
             if (!releaseIntentResponse.success) {
                 return this.error({ error: releaseIntentResponse.error });
             }
 
             await this.releaseDevice(releaseIntentResponse.payload.path);
-
+            console.log('releaseDevice done')
             await this.sessionsClient.releaseDone({
                 path: releaseIntentResponse.payload.path,
             });
+            console.log('releaseDone');
 
             if (this.releasePromise?.promise) {
+                console.log('waiting for releasePromise')
                 await this.releasePromise.promise;
+                console.log('waiting for releasePromise done')
+
                 delete this.releasePromise;
             }
             return this.success(undefined);

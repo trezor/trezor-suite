@@ -142,7 +142,7 @@ export class UsbInterface extends AbstractInterface<USBDevice> {
                 throw new Error('transfer out status not ok');
             }
             return this.success(undefined);
-        } catch (err) {
+    } catch (err) {
             console.log('write err', err);
             if (err.message === INTERFACE_DEVICE_DISCONNECTED) {
                 return this.error({ error: ERRORS.DEVICE_DISCONNECTED_DURING_ACTION });
@@ -221,23 +221,35 @@ export class UsbInterface extends AbstractInterface<USBDevice> {
             return this.error({ error: ERRORS.DEVICE_NOT_FOUND });
         }
 
-        try {
-            const interfaceId = INTERFACE_ID;
-            await device.releaseInterface(interfaceId);
-        } catch (err) {
-            // ignore
-        }
+        device.reset();
 
-        if (device.opened) {
-            try {
-                await device.close();
-            } catch (err) {
-                return this.error({
-                    error: ERRORS.INTERFACE_UNABLE_TO_CLOSE_DEVICE,
-                    message: err.message,
-                });
-            }
-        }
+        // try {
+        //     const interfaceId = INTERFACE_ID;
+        //     console.log('releaseInterface')
+        //     await device.releaseInterface(interfaceId);
+        //     console.log('releaseInterface done')
+
+        // } catch (err) {
+        //     console.log('releaseInterface err', err);
+
+        //     // ignore
+        // }
+
+        // if (device.opened) {
+        //     try {
+        //         console.log('device.close')
+        //         await device.close();
+        //         console.log('device.close done')
+
+        //     } catch (err) {
+        //         console.log('device.close err',err);
+
+        //         return this.error({
+        //             error: ERRORS.INTERFACE_UNABLE_TO_CLOSE_DEVICE,
+        //             message: err.message,
+        //         });
+        //     }
+        // }
         return this.success(undefined);
     }
 
