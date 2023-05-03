@@ -18,6 +18,7 @@ const getCoinFromTestnet = (symbol: Account['symbol']) => {
         case 'tada':
             return 'ada';
         case 'tgor':
+        case 'bnb':
             return 'eth';
         default:
             return symbol;
