@@ -2221,41 +2221,6 @@
         {
             "blockchain_link": {
                 "type": "blockbook",
-                "url": ["https://ropsten1.trezor.io", "https://ropsten2.trezor.io"]
-            },
-            "chain": "rop",
-            "chain_id": 3,
-            "name": "Ropsten",
-            "rskip60": false,
-            "shortcut": "tROP",
-            "slip44": 1,
-            "support": {
-                "connect": true,
-                "suite": true,
-                "trezor1": "1.6.2",
-                "trezor2": "2.0.7"
-            },
-            "url": "https://github.com/ethereum/ropsten"
-        },
-        {
-            "blockchain_link": null,
-            "chain": "rin",
-            "chain_id": 4,
-            "name": "Rinkeby",
-            "rskip60": false,
-            "shortcut": "tRIN",
-            "slip44": 1,
-            "support": {
-                "connect": true,
-                "suite": false,
-                "trezor1": "1.6.2",
-                "trezor2": "2.0.7"
-            },
-            "url": "https://www.rinkeby.io"
-        },
-        {
-            "blockchain_link": {
-                "type": "blockbook",
                 "url": ["https://goerli1.trezor.io", "https://goerli2.trezor.io"]
             },
             "chain": "gor",
@@ -2319,22 +2284,6 @@
                 "trezor2": "2.0.7"
             },
             "url": "https://rsk.co"
-        },
-        {
-            "blockchain_link": null,
-            "chain": "kov",
-            "chain_id": 42,
-            "name": "Kovan",
-            "rskip60": false,
-            "shortcut": "tKOV",
-            "slip44": 1,
-            "support": {
-                "connect": true,
-                "suite": false,
-                "trezor1": "1.6.2",
-                "trezor2": "2.0.7"
-            },
-            "url": "https://kovan-testnet.github.io/website"
         },
         {
             "blockchain_link": null,
