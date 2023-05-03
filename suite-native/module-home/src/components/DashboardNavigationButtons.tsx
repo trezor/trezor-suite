@@ -6,25 +6,17 @@ import { Button, VStack } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import {
     AccountsImportStackRoutes,
-    AppTabsParamList,
-    AppTabsRoutes,
     RootStackParamList,
     RootStackRoutes,
-    TabToStackCompositeNavigationProp,
+    StackNavigationProps,
 } from '@suite-native/navigation';
 
 const importStyle = prepareNativeStyle(_ => ({
     marginTop: 12,
 }));
 
-type DashboardNavigationProp = TabToStackCompositeNavigationProp<
-    AppTabsParamList,
-    AppTabsRoutes.HomeStack,
-    RootStackParamList
->;
-
 export const DashboardNavigationButtons = () => {
-    const navigation = useNavigation<DashboardNavigationProp>();
+    const navigation = useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes>>();
     const { applyStyle } = useNativeStyles();
 
     const handleImportAssets = () => {
