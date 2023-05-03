@@ -20,10 +20,7 @@ export abstract class AbstractUsbTransport extends AbstractTransport {
     // which can live in couple of context (shared worker, local module, websocket server etc)
     private sessionsClient: UsbTransportConstructorParams['sessionsClient'];
     private transportInterface: UsbInterface;
-
     protected acquirePromise?: Deferred<any>;
-
-    // private acquiredSession?: string;
 
     constructor({ messages, usbInterface, sessionsClient, signal }: UsbTransportConstructorParams) {
         super({ messages, signal });
