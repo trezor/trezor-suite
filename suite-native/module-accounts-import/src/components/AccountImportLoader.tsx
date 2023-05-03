@@ -13,7 +13,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import spinnerSuccess from '../assets/spinnerSuccess.json';
 
-const LINE_VISIBILITY_DURATION = 1500;
+const LINE_VISIBILITY_DURATION = 1000;
 
 const loaderContainerStyle = prepareNativeStyle(() => ({
     alignItems: 'center',
