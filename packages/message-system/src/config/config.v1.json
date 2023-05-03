@@ -1,7 +1,7 @@
 {
     "version": 1,
-    "timestamp": "2023-04-28T00:00:00+00:00",
-    "sequence": 29,
+    "timestamp": "2023-05-03T00:00:00+00:00",
+    "sequence": 30,
     "actions": [
         {
             "conditions": [
@@ -75,9 +75,9 @@
                         "domain": "coinjoin",
                         "flag": true,
                         "isPublic": true,
-                        "averageAnonymityGainPerRound": 1,
+                        "averageAnonymityGainPerRound": 0.34,
                         "roundsFailRateBuffer": 10,
-                        "roundsDurationInHours": 1
+                        "roundsDurationInHours": 3
                     }
                 ]
             }
@@ -127,12 +127,12 @@
                 "variant": "warning",
                 "category": "context",
                 "content": {
-                    "en-GB": "Coinjoin is in public beta. Your feedback is appreciated. The Bitcoin network is experiencing higher mining fees. Consider increasing the maximum mining fee to at least 10 sat/vB in the account details to participate in a coinjoin.",
-                    "en": "Coinjoin is in public beta. Your feedback is appreciated. The Bitcoin network is experiencing higher mining fees. Consider increasing the maximum mining fee to at least 10 sat/vB in the account details to participate in a coinjoin.",
-                    "es": "Coinjoin está en fase beta pública. Agradecemos sus comentarios. La red Bitcoin está experimentando tasas de minería más altas. Considere la posibilidad de aumentar la tasa máxima de minería a al menos 10 sat/vB en los detalles de la cuenta para participar en un coinjoin.",
-                    "cs": "Coinjoin je ve veřejné beta verzi. Vaše zpětná vazba je vítána. V síti Bitcoin se zvyšují poplatky za těžbu. Zvažte zvýšení maximálního těžebního poplatku na alespoň 10 sat/vB v detailu účtu, abyste se mohli účastnit coinjoinu.",
-                    "ru": "Coinjoin находится в стадии публичной бета-версии. Мы будем признательны за ваши отзывы. В сети Биткойн наблюдается повышение платы за майнинг. Рассмотрите возможность увеличения максимальной платы за майнинг как минимум до 10 sat/vB в деталях счета для участия в coinjoin.",
-                    "ja": "Coinjoinはパブリックベータ版です。あなたのフィードバックをお待ちしています。ビットコインネットワークでは、採掘手数料が高くなっています。コインジョインに参加するために、アカウント詳細で最大採掘手数料を少なくとも10 sat/vBに増やすことを検討してください。"
+                    "en-GB": "Due to high mining fees in the network, coinjoin may take longer. Thanks for your patience. Coinjoin is in public beta and your feedback is appreciated.",
+                    "en": "Due to high mining fees in the network, coinjoin may take longer. Thanks for your patience. Coinjoin is in public beta and your feedback is appreciated.",
+                    "es": "Debido a las altas tasas de minería en la red, coinjoin puede tardar más tiempo. Gracias por tu paciencia. Coinjoin está en beta pública y agradecemos tus comentarios.",
+                    "cs": "Vzhledem k vysokým poplatkům za těžbu v síti může coinjoin trvat déle. Děkujeme za vaši trpělivost. Coinjoin je ve veřejné beta verzi a vaše zpětná vazba je vítána.",
+                    "ru": "В связи с высокой платой за добычу в сети, присоединение монет может занять больше времени. Спасибо за ваше терпение. Coinjoin находится в стадии публичного бета-тестирования, и мы будем рады вашим отзывам.",
+                    "ja": "ネットワークのマイニング手数料が高いため、コインジョインに時間がかかる場合があります。ご辛抱ありがとうございます。Coinjoinはパブリックベータ版であり、あなたのフィードバックをお待ちしています。"
                 },
                 "context": { "domain": "accounts.coinjoin" },
                 "cta": {
