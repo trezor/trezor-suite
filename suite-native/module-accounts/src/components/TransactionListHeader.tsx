@@ -11,15 +11,14 @@ import {
     selectHasAccountTransactions,
     selectAccountByKey,
 } from '@suite-common/wallet-core';
-import {
-    AccountsStackParamList,
-    AppTabsParamList,
-    AppTabsRoutes,
-    SendReceiveStackRoutes,
-    TabToStackCompositeNavigationProp,
-} from '@suite-native/navigation';
 import { EthereumTokenSymbol } from '@suite-native/ethereum-tokens';
 import { isEthereumAccountSymbol } from '@suite-common/wallet-utils';
+import {
+    AppTabsParamList,
+    RootStackParamList,
+    RootStackRoutes,
+    TabToStackCompositeNavigationProp,
+} from '@suite-native/navigation';
 
 import { AccountDetailGraph } from './AccountDetailGraph';
 import { AccountDetailGraphHeader } from './AccountDetailGraphHeader';
@@ -41,8 +40,8 @@ type TransactionListHeaderContentProps = {
 
 type AccountsNavigationProps = TabToStackCompositeNavigationProp<
     AppTabsParamList,
-    AppTabsRoutes.AccountsStack,
-    AccountsStackParamList
+    RootStackRoutes.ReceiveModal,
+    RootStackParamList
 >;
 
 const TransactionListHeaderContent = ({
@@ -100,6 +99,7 @@ export const TransactionListHeader = memo(
         tokenSymbol,
     }: AccountDetailHeaderProps) => {
         const navigation = useNavigation<AccountsNavigationProps>();
+
         const account = useSelector((state: AccountsRootState) =>
             selectAccountByKey(state, accountKey),
         );
@@ -107,14 +107,14 @@ export const TransactionListHeader = memo(
             selectHasAccountTransactions(state, accountKey),
         );
 
+        if (!account) return null;
+
         const handleReceive = () => {
-            navigation.navigate(AppTabsRoutes.SendReceiveStack, {
-                screen: SendReceiveStackRoutes.Receive,
-                params: { accountKey },
+            navigation.navigate(RootStackRoutes.ReceiveModal, {
+                accountKey,
+                tokenSymbol,
             });
         };
-
-        if (!account) return null;
 
         const isTokenDetail = !!tokenSymbol;
         const isEthereumAccountDetail = !isTokenDetail && isEthereumAccountSymbol(account.symbol);

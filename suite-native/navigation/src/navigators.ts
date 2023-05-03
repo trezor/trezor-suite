@@ -10,11 +10,16 @@ import {
     HomeStackRoutes,
     RootStackRoutes,
     SettingsStackRoutes,
-    SendReceiveStackRoutes,
+    ReceiveStackRoutes,
     AccountsStackRoutes,
     DevUtilsStackRoutes,
     OnboardingStackRoutes,
 } from './routes';
+
+type ReceiveAccountsParams = {
+    accountKey?: AccountKey;
+    tokenSymbol?: TokenSymbol;
+};
 
 export type AccountsStackParamList = {
     [AccountsStackRoutes.Accounts]: undefined;
@@ -22,10 +27,6 @@ export type AccountsStackParamList = {
 
 export type HomeStackParamList = {
     [HomeStackRoutes.Home]: undefined;
-    [HomeStackRoutes.AccountDetail]: {
-        accountKey: AccountKey;
-        tokenSymbol?: TokenSymbol;
-    };
 };
 
 export type DevUtilsStackParamList = {
@@ -42,15 +43,18 @@ export type SettingsStackParamList = {
     [SettingsStackRoutes.SettingsFAQ]: undefined;
 };
 
-export type SendReceiveStackParamList = {
-    [SendReceiveStackRoutes.ReceiveAccounts]: undefined;
-    [SendReceiveStackRoutes.Receive]: { accountKey: AccountKey; tokenSymbol?: TokenSymbol };
+export type ReceiveStackParamList = {
+    [ReceiveStackRoutes.ReceiveAccounts]: undefined;
+    [ReceiveStackRoutes.Receive]: {
+        accountKey: AccountKey;
+        tokenSymbol?: TokenSymbol;
+    };
 };
 
 export type AppTabsParamList = {
     [AppTabsRoutes.HomeStack]: NavigatorScreenParams<HomeStackParamList>;
     [AppTabsRoutes.AccountsStack]: NavigatorScreenParams<AccountsStackParamList>;
-    [AppTabsRoutes.SendReceiveStack]: NavigatorScreenParams<SendReceiveStackParamList>;
+    [AppTabsRoutes.ReceiveStack]: NavigatorScreenParams<ReceiveStackParamList>;
     [AppTabsRoutes.SettingsStack]: NavigatorScreenParams<SettingsStackParamList>;
 };
 
@@ -85,6 +89,7 @@ export type RootStackParamList = {
     [RootStackRoutes.AppTabs]: NavigatorScreenParams<AppTabsParamList>;
     [RootStackRoutes.Onboarding]: NavigatorScreenParams<AppTabsParamList>;
     [RootStackRoutes.AccountsImport]: NavigatorScreenParams<AccountsImportStackParamList>;
+    [RootStackRoutes.ReceiveModal]: ReceiveAccountsParams;
     [RootStackRoutes.AccountSettings]: { accountKey: AccountKey };
     [RootStackRoutes.TransactionDetail]: {
         txid: string;
@@ -92,4 +97,8 @@ export type RootStackParamList = {
         tokenTransfer?: TokenTransfer;
     };
     [RootStackRoutes.DevUtilsStack]: undefined;
+    [RootStackRoutes.AccountDetail]: {
+        accountKey: AccountKey;
+        tokenSymbol?: TokenSymbol;
+    };
 };

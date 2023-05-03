@@ -12,6 +12,7 @@
         { "path": "../module-accounts" },
         { "path": "../module-settings" },
         { "path": "../navigation" },
+        { "path": "../receive" },
         { "path": "../../packages/icons" },
         { "path": "../../packages/styles" }
     ]

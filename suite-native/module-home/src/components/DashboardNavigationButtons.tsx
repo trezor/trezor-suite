@@ -10,7 +10,6 @@ import {
     AppTabsRoutes,
     RootStackParamList,
     RootStackRoutes,
-    SendReceiveStackRoutes,
     TabToStackCompositeNavigationProp,
 } from '@suite-native/navigation';
 
@@ -28,16 +27,14 @@ export const DashboardNavigationButtons = () => {
     const navigation = useNavigation<DashboardNavigationProp>();
     const { applyStyle } = useNativeStyles();
 
-    const handleReceive = () => {
-        navigation.navigate(AppTabsRoutes.SendReceiveStack, {
-            screen: SendReceiveStackRoutes.ReceiveAccounts,
-        });
-    };
-
     const handleImportAssets = () => {
         navigation.navigate(RootStackRoutes.AccountsImport, {
             screen: AccountsImportStackRoutes.SelectNetwork,
         });
+    };
+
+    const handleReceive = () => {
+        navigation.navigate(RootStackRoutes.ReceiveModal, {});
     };
 
     return (

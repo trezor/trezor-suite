@@ -21,6 +21,7 @@
         "@suite-native/module-accounts": "workspace:*",
         "@suite-native/module-settings": "workspace:*",
         "@suite-native/navigation": "workspace:*",
+        "@suite-native/receive": "workspace:*",
         "@trezor/icons": "workspace:*",
         "@trezor/styles": "workspace:*",
         "jotai": "1.9.1",
