@@ -3,7 +3,7 @@ import { Alert } from 'react-native';
 
 import * as Sentry from '@sentry/react-native';
 
-import { isDebugEnv } from '@suite-native/config';
+import { isDebugEnv, isProduction } from '@suite-native/config';
 import { Button, Card, VStack } from '@suite-native/atoms';
 import {
     Screen,
@@ -26,13 +26,11 @@ export const DevUtilsScreen = ({
             <VStack spacing="medium">
                 {!isDebugEnv() && <BuildInfo />}
                 {isDebugEnv() && (
-                    <>
-                        <Button onPress={() => navigation.navigate(DevUtilsStackRoutes.Demo)}>
-                            See Component Demo
-                        </Button>
-                        <RenderingUtils />
-                    </>
+                    <Button onPress={() => navigation.navigate(DevUtilsStackRoutes.Demo)}>
+                        See Component Demo
+                    </Button>
                 )}
+                {!isProduction() && <RenderingUtils />}
                 <Button
                     onPress={() => {
                         const errorMessage = `Sentry test error - ${Date.now()}`;
