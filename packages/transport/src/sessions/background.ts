@@ -169,10 +169,7 @@ export class SessionsBackground extends TypedEmitter<{
     private async acquireIntent(payload: AcquireIntentRequest) {
         const previous = this.sessions[payload.path];
 
-        console.log('');
-        console.log('previosu', previous);
         if (payload.previous && payload.previous !== previous) {
-            console.log('1');
             return this.error(ERRORS.SESSION_WRONG_PREVIOUS);
         }
 
@@ -181,8 +178,6 @@ export class SessionsBackground extends TypedEmitter<{
         // in case there are 2 simultaneous acquireIntents, one goes through, the other one waits and gets error here
         if (previous !== this.sessions[payload.path]) {
             this.clearLock();
-            console.log('2');
-
             return this.error(ERRORS.SESSION_WRONG_PREVIOUS);
         }
 
@@ -268,7 +263,6 @@ export class SessionsBackground extends TypedEmitter<{
         // - if cleared by client (enumerateIntent, enumerateDone)
         // - after n second automatically
         const timeout = setTimeout(() => {
-            console.error('[backend]: resolving lock after timeout! should not happen');
             dfd.resolve(undefined);
         }, lockDuration);
 
