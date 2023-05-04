@@ -11,6 +11,7 @@ type OnboardingScreenProps = {
     title: string;
     subtitle?: string;
     activeStep: number;
+    isScrollable?: boolean;
 };
 
 const contentStyle = prepareNativeStyle(() => ({
@@ -22,11 +23,12 @@ export const OnboardingScreen = ({
     title,
     subtitle,
     activeStep,
+    isScrollable = false,
 }: OnboardingScreenProps) => {
     const { applyStyle } = useNativeStyles();
 
     return (
-        <Screen isScrollable={false}>
+        <Screen isScrollable={isScrollable}>
             <OnboardingScreenHeader title={title} subtitle={subtitle} activeStep={activeStep} />
             <Box
                 alignItems="center"

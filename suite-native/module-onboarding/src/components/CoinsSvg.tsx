@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { Dimensions } from 'react-native';
 import Svg, {
     G,
     Path,
@@ -13,10 +14,12 @@ import Svg, {
 
 import { useNativeStyles } from '@trezor/styles';
 
+const SVG_HEIGHT = Dimensions.get('screen').height * 0.35;
+
 export const CoinsSvg = (props: SvgProps) => {
     const { utils } = useNativeStyles();
     return (
-        <Svg width={253} height={276} viewBox="0 0 253 276" fill="none" {...props}>
+        <Svg width={253} height={SVG_HEIGHT} viewBox="0 0 253 276" fill="none" {...props}>
             <G clipPath="url(#clip0_14548_55032)">
                 <G clipPath="url(#clip1_14548_55032)" fill="#CBCBCB">
                     <Path d="M104.459 175.741a1.839 1.839 0 100-3.678 1.839 1.839 0 000 3.678zM115.168 175.741a1.838 1.838 0 100-3.676 1.838 1.838 0 000 3.676zM133.016 175.741a1.838 1.838 0 100-3.676 1.838 1.838 0 000 3.676z" />
