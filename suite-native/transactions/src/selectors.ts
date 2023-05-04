@@ -10,6 +10,8 @@ import { AccountKey } from '@suite-common/wallet-types';
 
 import { mapTransactionInputsOutputsToAddresses, sortTargetAddressesToBeginning } from './utils';
 
+export type AddressesType = 'inputs' | 'outputs';
+
 const selectTransactionTargetAddresses = memoizeWithArgs(
     (state: TransactionsRootState, txid: string, accountKey: AccountKey) => {
         const transactionTargets = selectTransactionTargets(state, txid, accountKey);
@@ -20,30 +22,25 @@ const selectTransactionTargetAddresses = memoizeWithArgs(
     { size: 50 },
 );
 
-export const selectTransactionInputAddresses = memoizeWithArgs(
-    (state: TransactionsRootState, txid: string, accountKey: AccountKey): string[] => {
+export const selectTransactionAddresses = memoizeWithArgs(
+    (
+        state: TransactionsRootState,
+        txid: string,
+        accountKey: AccountKey,
+        addressesType: AddressesType,
+    ): string[] => {
         const transaction = selectTransactionByTxidAndAccountKey(state, txid, accountKey);
 
         if (G.isNullable(transaction)) return [];
 
-        const inputAddresses = mapTransactionInputsOutputsToAddresses(transaction.details.vin);
+        const inputsOrOutputs =
+            addressesType === 'inputs' ? transaction.details.vin : transaction.details.vout;
+
+        const addresses = mapTransactionInputsOutputsToAddresses(inputsOrOutputs);
+
         const targetAddresses = selectTransactionTargetAddresses(state, txid, accountKey);
 
-        return sortTargetAddressesToBeginning(inputAddresses, targetAddresses);
+        return sortTargetAddressesToBeginning(addresses, targetAddresses);
     },
-    { size: 50 },
-);
-
-export const selectTransactionOutputAddresses = memoizeWithArgs(
-    (state: TransactionsRootState, txid: string, accountKey: AccountKey): string[] => {
-        const transaction = selectTransactionByTxidAndAccountKey(state, txid, accountKey);
-
-        if (G.isNullable(transaction)) return [];
-
-        const outputAddresses = mapTransactionInputsOutputsToAddresses(transaction.details.vout);
-        const targetAddresses = selectTransactionTargetAddresses(state, txid, accountKey);
-
-        return sortTargetAddressesToBeginning(outputAddresses, targetAddresses);
-    },
-    { size: 50 },
+    { size: 100 },
 );
