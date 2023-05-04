@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { Dimensions } from 'react-native';
 import Svg, {
     Rect,
     Path,
@@ -11,8 +12,10 @@ import Svg, {
     SvgProps,
 } from 'react-native-svg';
 
+const SVG_HEIGHT = Dimensions.get('window').height * 0.35;
+
 export const GraphSvg = (props: SvgProps) => (
-    <Svg width={328} height={276} viewBox="0 0 328 276" fill="none" {...props}>
+    <Svg width={328} height={SVG_HEIGHT} viewBox="0 0 328 276" fill="none" {...props}>
         <Rect x={124} y={18} width={1} height={99} rx={0.5} fill="#E2E2E2" />
         <Path
             stroke="url(#paint0_linear_14530_54776)"
