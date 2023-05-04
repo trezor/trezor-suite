@@ -26,7 +26,7 @@ export const TrackBalancesScreen = () => {
     return (
         <OnboardingScreen
             title="Track balances"
-            subtitle="Easily sync your coin addresses and keep up with the crypto on your hardware wallet without exposing your private data."
+            subtitle="Easily sync your coin addresses and keep up with the crypto on your hardware wallet."
             activeStep={1}
         >
             <Box alignSelf="center" flex={2} justifyContent="center">

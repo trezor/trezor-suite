@@ -38,9 +38,9 @@ const networkToAssetsMap = {
         title: 'Where is my public key (XPUB)?',
         text: (
             <>
-                To view the public key (XPUB) of your account, open the Trezor Suite desktop app,
-                plug in your Trezor device, select <EmphasizedText>Accounts</EmphasizedText>, then
-                choose <EmphasizedText>Show public key</EmphasizedText>.
+                To view the public key (XPUB) of your account, open the Trezor Suite app, plug in
+                your Trezor device, then select <EmphasizedText>Details</EmphasizedText>, then
+                choose <EmphasizedText>Show public key.</EmphasizedText>
             </>
         ),
         video: 'xpubImportBTC',
