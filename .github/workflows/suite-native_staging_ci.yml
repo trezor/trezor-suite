@@ -64,8 +64,6 @@ jobs:
           name: Trezor Suite Lite Staging APK
           path: suite-native/app/android/app/build/outputs/apk/*.apk
 
-
-
   ios_staging:
     runs-on: macos-12
     environment: staging
