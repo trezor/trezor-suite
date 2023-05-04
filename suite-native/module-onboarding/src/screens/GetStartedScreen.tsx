@@ -51,8 +51,7 @@ export const GetStartedScreen = () => {
             <Box alignItems="center" marginBottom="extraLarge">
                 <Image source={getImageSource()} />
             </Box>
-            <AlertBox title="This requires your Trezor hardware wallet and access to the Trezor Suite desktop app." />
-
+            <AlertBox title="This requires Trezor hardware wallet and access to the Trezor Suite app." />
             <OnboardingFooter redirectTarget={handleRedirect} isLastStep />
         </OnboardingScreen>
     );
