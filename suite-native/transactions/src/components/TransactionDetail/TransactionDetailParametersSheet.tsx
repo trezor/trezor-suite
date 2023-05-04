@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 
 import { fromWei } from 'web3-utils';
 
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { AccountKey, WalletAccountTransaction } from '@suite-common/wallet-types';
 import { Box, Card, IconButton, Text, VStack } from '@suite-native/atoms';
 import { Icon } from '@trezor/icons';
@@ -27,10 +26,6 @@ type EthereumParametersProps = Pick<
     NonNullable<WalletAccountTransaction['ethereumSpecific']>,
     'gasLimit' | 'gasUsed' | 'gasPrice' | 'nonce'
 >;
-
-const transactionIdStyle = prepareNativeStyle(_ => ({
-    maxWidth: '72%',
-}));
 
 type TransactionParameter =
     | keyof Pick<NonNullable<WalletAccountTransaction>, 'feeRate' | 'lockTime' | 'ethereumSpecific'>
@@ -72,7 +67,6 @@ export const TransactionDetailParametersSheet = ({
     accountKey,
 }: TransactionDetailParametersSheetProps) => {
     const copyToClipboard = useCopyToClipboard();
-    const { applyStyle } = useNativeStyles();
 
     const { networkType } = networks[transaction.symbol];
     const displayedParameters = networkTypeToDisplayedParametersMap[networkType];
@@ -95,10 +89,12 @@ export const TransactionDetailParametersSheet = ({
                             flexDirection="row"
                             alignItems="center"
                             paddingLeft="medium"
-                            style={applyStyle(transactionIdStyle)}
+                            justifyContent="flex-end"
                         >
-                            <TransactionIdFormatter value={transaction.txid} />
-                            <Box marginLeft="medium">
+                            <Text numberOfLines={1} style={{ flexShrink: 1 }}>
+                                <TransactionIdFormatter value={transaction.txid} />
+                            </Text>
+                            <Box marginLeft="small">
                                 <IconButton
                                     iconName="copy"
                                     onPress={handleClickCopy}

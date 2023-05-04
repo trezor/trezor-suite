@@ -23,10 +23,9 @@ const titleStyle = prepareNativeStyle(utils => ({
     ...utils.typography.titleMedium,
 }));
 
-const imageStyle = prepareNativeStyle(() => ({
+const imageContainerStyle = prepareNativeStyle(() => ({
     position: 'absolute',
     left: 0,
-    right: 0,
     top: 0,
 }));
 
@@ -59,9 +58,9 @@ export const WelcomeScreen = () => {
 
     return (
         <>
-            <Screen>
+            <Screen isScrollable={false}>
                 <Box flex={1} justifyContent="space-between" alignItems="center">
-                    <Box flex={2} />
+                    <Box flex={0.75} />
                     <Box alignItems="center" flex={1}>
                         <Box alignItems="center">
                             <Box marginBottom="large">
@@ -78,8 +77,8 @@ export const WelcomeScreen = () => {
                     <OnboardingFooter redirectTarget={handleRedirect} />
                 </Box>
             </Screen>
-            <Box style={applyStyle(imageStyle)}>
-                <Image source={getImageSource()} />
+            <Box style={applyStyle(imageContainerStyle)}>
+                <Image source={getImageSource()} resizeMode="contain" />
             </Box>
         </>
     );

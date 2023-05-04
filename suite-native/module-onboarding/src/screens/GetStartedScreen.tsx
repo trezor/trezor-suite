@@ -1,4 +1,5 @@
 import React from 'react';
+import { Dimensions } from 'react-native';
 
 import { useNavigation } from '@react-navigation/native';
 
@@ -10,8 +11,9 @@ import {
     RootStackRoutes,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
-import { AlertBox, Box, Image } from '@suite-native/atoms';
+import { AlertBox, Box, Image, VStack } from '@suite-native/atoms';
 import { useActiveColorScheme } from '@suite-native/theme';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { OnboardingFooter } from '../components/OnboardingFooter';
 import { OnboardingScreen } from '../components/OnboardingScreen';
@@ -21,8 +23,14 @@ type NavigationProps = StackToStackCompositeNavigationProps<
     OnboardingStackRoutes.GetStarted,
     RootStackParamList
 >;
+const SCREEN_HEIGHT = Dimensions.get('screen').height;
+
+const imageStyle = prepareNativeStyle(_ => ({ maxHeight: SCREEN_HEIGHT * 0.25 }));
+
+const footerStyle = prepareNativeStyle(_ => ({ width: '100%', alignItems: 'center' }));
 
 export const GetStartedScreen = () => {
+    const { applyStyle } = useNativeStyles();
     const navigation = useNavigation<NavigationProps>();
     const colorScheme = useActiveColorScheme();
 
@@ -48,11 +56,18 @@ export const GetStartedScreen = () => {
             activeStep={4}
         >
             <Box />
-            <Box alignItems="center" marginBottom="extraLarge">
-                <Image source={getImageSource()} />
+            <Box alignItems="center" marginBottom="medium">
+                <Image
+                    source={getImageSource()}
+                    resizeMode="contain"
+                    style={applyStyle(imageStyle)}
+                />
             </Box>
-            <AlertBox title="This requires Trezor hardware wallet and access to the Trezor Suite app." />
-            <OnboardingFooter redirectTarget={handleRedirect} isLastStep />
+            <VStack style={applyStyle(footerStyle)} spacing="medium">
+                <AlertBox title="This requires Trezor hardware wallet and access to the Trezor Suite app." />
+
+                <OnboardingFooter redirectTarget={handleRedirect} isLastStep />
+            </VStack>
         </OnboardingScreen>
     );
 };
