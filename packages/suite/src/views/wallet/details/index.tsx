@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { P, variables } from '@trezor/components';
 import { HELP_CENTER_XPUB_URL } from '@trezor/urls';
 import { WalletLayout } from '@wallet-components';
-import { useDevice, useActions, useSelector } from '@suite-hooks';
+import { useDevice, useActions, useSelector, useDiscovery } from '@suite-hooks';
 import { Card, Translation } from '@suite-components';
 import * as modalActions from '@suite-actions/modalActions';
 import {
@@ -73,12 +73,13 @@ const Details = () => {
     });
 
     const { device, isLocked } = useDevice();
+    const { isDiscoveryRunning } = useDiscovery();
     if (!device || selectedAccount.status !== 'loaded') {
         return <WalletLayout title="TR_ACCOUNT_DETAILS_HEADER" account={selectedAccount} />;
     }
 
     const { account } = selectedAccount;
-    const disabled = !!device.authConfirm;
+    const isDisabled = !!device.authConfirm || isLocked();
 
     // check if all network types
     const accountTypes =
@@ -152,8 +153,8 @@ const Details = () => {
                                             accountLabel: account.metadata.accountLabel,
                                         })
                                     }
-                                    isLoading={isLocked() && !disabled}
-                                    isDisabled={disabled}
+                                    isDisabled={isDisabled}
+                                    isLoading={isDiscoveryRunning}
                                 >
                                     <Translation id="TR_ACCOUNT_DETAILS_XPUB_BUTTON" />
                                 </ActionButton>
