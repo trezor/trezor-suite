@@ -62,7 +62,7 @@ platform :android do
     gradle(task: 'clean', project_dir: ANDROID_PATH)
 
     gradle(
-      task: 'bundle',
+      tasks: ['assemble', 'bundle'],
       flavor: productFlavor,
       print_command: true,
       build_type: 'Release',
