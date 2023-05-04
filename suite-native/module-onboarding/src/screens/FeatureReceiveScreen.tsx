@@ -29,7 +29,7 @@ export const FeatureReceiveScreen = () => {
     return (
         <OnboardingScreen
             title="Receive coins"
-            subtitle="Generate addresses and QR codes to receive crypto. For an extra layer of security, use the Trezor Suite desktop app with your Trezor hardware wallet."
+            subtitle="Generate addresses and QR codes to receive crypto."
             activeStep={2}
         >
             <Box alignItems="center" flex={1} justifyContent="center">
