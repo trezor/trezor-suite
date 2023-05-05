@@ -101,7 +101,7 @@ export const DeviceAnimation = ({
         let mounted = true;
 
         const loadConnectAnimation = async () => {
-            const connectAnimation = await import(`./lottie/t${deviceModel}_connect.json`);
+            const connectAnimation = await import(`./lottie/trezor_t${deviceModel}_connect.json`);
             if (mounted) setConnectAnimationData(connectAnimation);
         };
 
@@ -126,7 +126,7 @@ export const DeviceAnimation = ({
                     <StyledVideo loop={loop} autoPlay muted width={size} height={size}>
                         <source
                             src={resolveStaticPath(
-                                `videos/onboarding/t${deviceModel}_${animationFileName}_${THEME}.webm`,
+                                `videos/onboarding/trezor_t${deviceModel}_${animationFileName}_${THEME}.webm`,
                             )}
                             type="video/webm"
                         />
@@ -136,7 +136,7 @@ export const DeviceAnimation = ({
                     <StyledVideo loop={loop} autoPlay muted width={size} height={size}>
                         <source
                             src={resolveStaticPath(
-                                `videos/onboarding/t1_${animationFileName}_${THEME}.webm`,
+                                `videos/onboarding/trezor_t${DeviceModel.T1}_${animationFileName}_${THEME}.webm`,
                             )}
                             type="video/webm"
                         />
@@ -146,7 +146,7 @@ export const DeviceAnimation = ({
                     <StyledVideo loop={loop} autoPlay muted width={size} height={size}>
                         <source
                             src={resolveStaticPath(
-                                `videos/onboarding/t1_${animationFileName}_${THEME}.webm`,
+                                `videos/onboarding/trezor_t${DeviceModel.T1}_${animationFileName}_${THEME}.webm`,
                             )}
                             type="video/webm"
                         />
@@ -166,7 +166,7 @@ export const DeviceAnimation = ({
                     >
                         <source
                             src={resolveStaticPath(
-                                `videos/onboarding/t${deviceModel}_${animationFileName}.webm`,
+                                `videos/onboarding/trezor_t${deviceModel}_${animationFileName}.webm`,
                             )}
                             type="video/webm"
                         />
@@ -176,7 +176,7 @@ export const DeviceAnimation = ({
                     <StyledVideo loop={loop} autoPlay muted width={size} height={size}>
                         <source
                             src={resolveStaticPath(
-                                `videos/onboarding/t${deviceModel}_${animationFileName}_${THEME}.webm`,
+                                `videos/onboarding/trezor_t${deviceModel}_${animationFileName}_${THEME}.webm`,
                             )}
                             type="video/webm"
                         />
