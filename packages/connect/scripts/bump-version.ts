@@ -48,26 +48,26 @@ if (res.status !== 0) {
     console.log(res.stdout);
 }
 
-const afterPackageJSON = JSON.parse(
-    fs.readFileSync(path.join(REPO_ROOT, 'packages/connect/package.json'), 'utf-8'),
-);
+// const afterPackageJSON = JSON.parse(
+//     fs.readFileSync(path.join(REPO_ROOT, 'packages/connect/package.json'), 'utf-8'),
+// );
 
-const dependenciesToBeBumped = ['@trezor/connect', '@trezor/connect-web'];
+// const dependenciesToBeBumped = ['@trezor/connect', '@trezor/connect-web'];
 
-const timeLabel = 'bumping connect dependencies';
-console.time(timeLabel);
-dependenciesToBeBumped.forEach(dependency => {
-    const command = `grep -rl --exclude-dir="node_modules" --include=*.json '"${dependency}": "workspace:${prePackageJSON.version}"' . | xargs sed -i 's|"${dependency}": "workspace:${prePackageJSON.version}"|"${dependency}": "workspace:${afterPackageJSON.version}"|g'`;
-    const res = child_process.spawnSync('sh', ['-c', command], {
-        encoding: 'utf-8',
-        cwd: REPO_ROOT,
-    });
-    if (res.stderr) {
-        console.log(res);
-        process.exit(1);
-    } else {
-        console.log(`${dependency}: references to this package updated `);
-    }
-});
+// const timeLabel = 'bumping connect dependencies';
+// console.time(timeLabel);
+// dependenciesToBeBumped.forEach(dependency => {
+//     const command = `grep -rl --exclude-dir="node_modules" --include=*.json '"${dependency}": "workspace:${prePackageJSON.version}"' . | xargs sed -i 's|"${dependency}": "workspace:${prePackageJSON.version}"|"${dependency}": "workspace:${afterPackageJSON.version}"|g'`;
+//     const res = child_process.spawnSync('sh', ['-c', command], {
+//         encoding: 'utf-8',
+//         cwd: REPO_ROOT,
+//     });
+//     if (res.stderr) {
+//         console.log(res);
+//         process.exit(1);
+//     } else {
+//         console.log(`${dependency}: references to this package updated `);
+//     }
+// });
 
-console.timeEnd(timeLabel);
+// console.timeEnd(timeLabel);
