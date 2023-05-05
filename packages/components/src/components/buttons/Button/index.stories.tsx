@@ -43,7 +43,7 @@ storiesOf('Buttons', module).add('Button', () => {
           )
         : null;
 
-    const fullWidth = boolean('Full width', false);
+    const fullWidth = boolean('Full width!!', false);
     const isDisabled = boolean('Disabled', false);
     const isLoading = boolean('Loading', false);
 
