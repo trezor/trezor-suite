@@ -58,12 +58,6 @@ jobs:
           bundle install
           bundle exec fastlane android production
 
-      - name: Upload
-        uses: actions/upload-artifact@v3
-        with:
-          name: Trezor Suite Lite APK
-          path: suite-native/app/android/app/build/outputs/apk/**/*.apk
-
   ios_production:
     runs-on: macos-12
     environment: production
