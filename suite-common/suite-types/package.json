@@ -14,7 +14,7 @@
         "@suite-common/metadata-types": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
         "@trezor/analytics": "workspace:*",
-        "@trezor/connect": "workspace:9.0.9",
+        "@trezor/connect": "workspace:9.0.10",
         "bignumber.js": "^9.1.1"
     },
     "devDependencies": {
