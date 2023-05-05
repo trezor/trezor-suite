@@ -44,9 +44,8 @@ jobs:
           PR_TITLE="npm-release @trezor/connect ${VERSION}"
           gh pr create --repo trezor/trezor-suite --title "${PR_TITLE}" --body-file "docs/releases/connect-prerelease.md" --base connect-release-improvements
           PR_NUM=$(gh pr list --repo trezor/trezor-suite --head "${BRANCH_NAME}" --json number | jq .[0].number)
-          DEPS_CHECKLIST=$(for i in "${DEPS_ARRAY[@]}"; do echo "- [ ] ${i}"; done)
-          gh pr comment "${PR_NUM}"" --body "### NPM release list: ${DEPS_CHECKLIST}"
-
+          DEPS_CHECKLIST=$(for i in "${DEPS_ARRAY[@]}"; do echo "- [ ] [![NPM](https://img.shields.io/npm/v/@trezor/${i}.svg)](https://www.npmjs.org/package/@trezor/${i}) @trezor/${i}"; done)
+          gh pr comment "${PR_NUM}" --body "${DEPS_CHECKLIST}"
         env:
           GITHUB_TOKEN: ${{ secrets.TREZOR_BOT_TOKEN }}
 
