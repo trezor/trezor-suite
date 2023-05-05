@@ -50,8 +50,7 @@ const cleanValueString = (value: string, locale: Locale) => {
 
     if (cleanedValue) {
         // do not convert to the exponential format to avoid unexpected results
-        // 18 is the max amount of decimals used by a network
-        BigNumber.config({ EXPONENTIAL_AT: 20, DECIMAL_PLACES: 18 });
+        BigNumber.config({ EXPONENTIAL_AT: 20 });
 
         cleanedValue = new BigNumber(cleanedValue).toFixed();
     }
