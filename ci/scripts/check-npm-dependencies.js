@@ -109,8 +109,9 @@ const checkPackageDependencies = packageName => {
 checkPackageDependencies(packageName);
 
 const formattedDeps = updateNeeded.map(dep => {
-    return `- [ ] ${dep}\n`
-}).join('');
+    // return `- [ ] ${dep}\n`
+    return dep.replace('@trezor/', '');
+}).join(',');
 
 process.stdout.write(formattedDeps);
 

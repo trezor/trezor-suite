@@ -29,20 +29,24 @@ jobs:
           node-version-file: ".nvmrc"
       - name: Run @trezor/connect create release branch
         run: |
-          BRANCH_NAME="npm-release/connect"
-          git checkout -B "${BRANCH_NAME}"
           npm install -g yarn && yarn install
           git config --global user.name "trezor-ci"
           git config --global user.email "${{ secrets.TREZOR_BOT_EMAIL }}"
-          yarn workspace @trezor/connect version:${{ github.event.inputs.semver }}
-          git add . && git commit -m "release: @trezor/connect (${{ github.event.inputs.semver }})" && git push origin "${BRANCH_NAME}" -f
           gh config set prompt disabled
-          PR_TITLE="prerelease @trezor/connect ${{ github.event.inputs.semver }} [1/2]"
+          DEPS=$(node ./ci/scripts/check-npm-dependencies.js connect)
+          IFS=',' read -ra DEPS_ARRAY <<< "${DEPS}"
+          for i in "${DEPS_ARRAY[@]}"; do yarn bump patch "./packages/${i}/package.json" && yarn && git add "packages/${i} yarn.lock" && git commit -m "npm-release: @trezor/${i} $(jq -r '.version' < "packages/${i}/package.json")"; done
+          yarn workspace @trezor/connect version:${{ github.event.inputs.semver }}
+          VERSION=$(jq -r '.version' < packages/connect/package.json)
+          BRANCH_NAME="npm-release/connect-${VERSION}"
+          git checkout -B "${BRANCH_NAME}"
+          git add . && git commit -m "npm-release: @trezor/connect ${VERSION}" && git push origin "${BRANCH_NAME}" -f
+          PR_TITLE="npm-release @trezor/connect ${VERSION}"
           gh pr create --repo trezor/trezor-suite --title "${PR_TITLE}" --body-file "docs/releases/connect-prerelease.md" --base connect-release-improvements
           PR_NUM=$(gh pr list --repo trezor/trezor-suite --head "${BRANCH_NAME}" --json number | jq .[0].number)
-          gh pr comment "${PR_NUM}" --body "Hi from GitHub CLI"
-          DEPS=$(node ./ci/scripts/check-npm-dependencies.js connect)
-          gh pr comment ${PR_NUM} --body "${DEPS}"
+          DEPS_CHECKLIST=$(for i in "${DEPS_ARRAY[@]}"; do echo "- [ ] ${i}\n"; done)
+          gh pr comment ${PR_NUM} --body "### NPM release list:\n${DEPS_CHECKLIST}"
+
         env:
           GITHUB_TOKEN: ${{ secrets.TREZOR_BOT_TOKEN }}
 
