@@ -48,7 +48,7 @@
         "@trezor/analytics": "workspace:*",
         "@trezor/coinjoin": "workspace:*",
         "@trezor/components": "workspace:*",
-        "@trezor/connect": "workspace:9.0.9",
+        "@trezor/connect": "workspace:9.0.10",
         "@trezor/crypto-utils": "workspace:*",
         "@trezor/device-utils": "workspace:*",
         "@trezor/dom-utils": "workspace:*",
