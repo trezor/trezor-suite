@@ -18,7 +18,7 @@
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/test-utils": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
-        "@trezor/connect": "workspace:9.0.9",
+        "@trezor/connect": "workspace:*",
         "proxy-memoize": "^2.0.2"
     },
     "devDependencies": {

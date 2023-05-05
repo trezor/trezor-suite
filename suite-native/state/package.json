@@ -24,7 +24,7 @@
         "@suite-native/module-settings": "workspace:*",
         "@suite-native/storage": "workspace:*",
         "@suite-native/toasts": "workspace:*",
-        "@trezor/connect": "workspace:9.0.9",
+        "@trezor/connect": "workspace:*",
         "@trezor/utils": "workspace:*",
         "react": "18.2.0",
         "react-redux": "8.0.5",
