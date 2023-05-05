@@ -6,16 +6,13 @@ changelog=""
 
 git log --oneline -- ./packages/"$1" | (
     while read -r commit; do
-        changelog="${changelog}"$'\n'"${commit}"
-
         if [[ $commit == *"release"* ]] &&  [[ $commit == *"@trezor/$1 "* ]];
         then
-            #  print list of relevant commits
             echo "${changelog}"
             exit 0
         fi
+        changelog="${changelog}${commit}'\n'"
     done
 
-    echo "commit message containing something like 'release: @trezor/$1' in 'git log --oneline -- ./packages/$1' was not found  "
-    exit 1
+    # "commit message containing something like 'release: @trezor/$1' in 'git log --oneline -- ./packages/$1' was not found  "
 )
