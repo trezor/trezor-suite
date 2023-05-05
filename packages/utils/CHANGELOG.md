@@ -1,3 +1,4 @@
+# 9.0.8  commit message containing something like 'release: @trezor/utils' in 'git log --oneline -- ./packages/utils' was not found    
 # 9.0.7
 
 -   feat(utils): add arrayShuffle util
