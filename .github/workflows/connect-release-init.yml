@@ -29,33 +29,41 @@ jobs:
           node-version-file: ".nvmrc"
       - name: Run @trezor/connect create release branch
         run: |
-          git checkout -B npm-release/connect
           npm install -g yarn && yarn install
           git config --global user.name "trezor-ci"
           git config --global user.email "${{ secrets.TREZOR_BOT_EMAIL }}"
+          gh config set prompt disabled
+          DEPS=$(node ./ci/scripts/check-npm-dependencies.js connect)
+          IFS=',' read -ra DEPS_ARRAY <<< "${DEPS}"
+          for i in "${DEPS_ARRAY[@]}"; do yarn bump patch "./packages/${i}/package.json" && touch -a "./packages/${i}/CHANGELOG.md" && echo "# $(jq -r '.version' < packages/${i}/package.json)  $(./ci/scripts/create_changelog_draft.sh ${i})  "|cat - packages/${i}/CHANGELOG.md > /tmp/out && mv /tmp/out packages/${i}/CHANGELOG.md && yarn && git add "./packages/${i}" yarn.lock && git commit -m "npm-release: @trezor/${i} $(jq -r '.version' < "packages/${i}/package.json")"; done
           yarn workspace @trezor/connect version:${{ github.event.inputs.semver }}
-          yarn install --no-immutable
-          git add . && git commit -m "release: @trezor/connect (${{ github.event.inputs.semver }})" && git push origin npm-release/connect -f
-          gh config set prompt disabled
-          gh pr create --repo trezor/trezor-suite --title "prerelease @trezor/connect ${{ github.event.inputs.semver }} [1/2]" --body-file "docs/releases/connect-prerelease.md" --base develop
+          VERSION=$(jq -r '.version' < packages/connect/package.json)
+          BRANCH_NAME="npm-release/connect-${VERSION}"
+          git checkout -B "${BRANCH_NAME}"
+          git add . && git commit -m "npm-release: @trezor/connect ${VERSION}" && git push origin "${BRANCH_NAME}" -f
+          PR_TITLE="npm-release @trezor/connect ${VERSION}"
+          gh pr create --repo trezor/trezor-suite --title "${PR_TITLE}" --body-file "docs/releases/connect-prerelease.md" --base connect-release-improvements
+          PR_NUM=$(gh pr list --repo trezor/trezor-suite --head "${BRANCH_NAME}" --json number | jq .[0].number)
+          DEPS_CHECKLIST=$(for i in "${DEPS_ARRAY[@]}"; do echo "- [ ] [![NPM](https://img.shields.io/npm/v/@trezor/${i}.svg)](https://www.npmjs.org/package/@trezor/${i}) @trezor/${i}"; done)
+          gh pr comment "${PR_NUM}" --body "${DEPS_CHECKLIST}"
         env:
           GITHUB_TOKEN: ${{ secrets.TREZOR_BOT_TOKEN }}
 
-  release:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Setup node
-        uses: actions/setup-node@v3
-        with:
-          node-version-file: ".nvmrc"
+  # release:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v3
+  #     - name: Setup node
+  #       uses: actions/setup-node@v3
+  #       with:
+  #         node-version-file: ".nvmrc"
 
-      - name: Run @trezor/connect release
-        run: |
-          git config --global user.name "trezor-ci"
-          git config --global user.email "${{ secrets.TREZOR_BOT_EMAIL }}"
-          gh config set prompt disabled
-          gh pr create --repo trezor/trezor-suite --title "release connect ${{ github.event.inputs.semver }} [2/2]" --body-file "docs/releases/connect-release.md" --base release/connect-v9
-        env:
-          GITHUB_TOKEN: ${{ secrets.TREZOR_BOT_TOKEN }}
+  #     - name: Run @trezor/connect release
+  #       run: |
+  #         git config --global user.name "trezor-ci"
+  #         git config --global user.email "${{ secrets.TREZOR_BOT_EMAIL }}"
+  #         gh config set prompt disabled
+  #         gh pr create --repo trezor/trezor-suite --title "release connect ${{ github.event.inputs.semver }} [2/2]" --body-file "docs/releases/connect-release.md" --base release/connect-v9
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.TREZOR_BOT_TOKEN }}
