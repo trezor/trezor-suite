@@ -1,3 +1,4 @@
+# 1.0.6  commit message containing something like 'release: @trezor/utxo-lib' in 'git log --oneline -- ./packages/utxo-lib' was not found    
 # 1.0.5
 
 chore(utxo-lib): update deps, update bs58check bitcoin lib
