@@ -58,7 +58,7 @@ const Rewards = (props: { account: Account }) => {
                 !deviceAvailable.status ||
                 !!pendingStakeTx
             }
-            icon={`T${deviceModel}`}
+            icon={`TREZOR_T${deviceModel}`}
             onClick={() => withdraw()}
         >
             <Translation id="TR_STAKING_WITHDRAW" />

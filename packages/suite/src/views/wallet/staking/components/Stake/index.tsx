@@ -57,7 +57,7 @@ const Delegate = (props: { account: Account }) => {
             }
             isLoading={loading}
             onClick={() => delegate()}
-            icon={`T${deviceModel}`}
+            icon={`TREZOR_T${deviceModel}`}
         >
             <Translation id="TR_STAKING_DELEGATE" />
         </Button>
