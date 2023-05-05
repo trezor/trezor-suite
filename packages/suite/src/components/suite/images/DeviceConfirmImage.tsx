@@ -14,7 +14,7 @@ export const DeviceConfirmImage = ({ device, ...rest }: DeviceConfirmImageProps)
         return null;
     }
 
-    const imgName = `DEVICE_CONFIRM_T${deviceModel}` as const;
+    const imgName = `DEVICE_CONFIRM_TREZOR_T${deviceModel}` as const;
 
     return <Image {...rest} image={imgName} />;
 };

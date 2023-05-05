@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { DeviceImage, Icon, IconProps, variables } from '@trezor/components';
+import { Image, Icon, IconProps, variables } from '@trezor/components';
 import { useGuide } from '@guide-hooks';
 import { DeviceModel } from '@trezor/device-utils';
 
@@ -44,6 +44,10 @@ const ItemText = styled.div`
     text-align: left;
 `;
 
+const StyledImage = styled(Image)`
+    height: 40px;
+`;
+
 interface CommonItemProps {
     key: string;
     title: React.ReactNode;
@@ -83,7 +87,9 @@ const DeviceMatrixExplanation = ({ items }: DeviceMatrixExplanationProps) => {
                                 size={item.iconSize ?? 26}
                             />
                         ) : (
-                            <DeviceImage deviceModel={item.deviceModel} height={40} />
+                            item.deviceModel && (
+                                <StyledImage alt="Trezor" image={`TREZOR_T${item.deviceModel}`} />
+                            )
                         )}
                     </ItemIconWrapper>
                     <ItemText>{item.title}</ItemText>

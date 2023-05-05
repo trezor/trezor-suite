@@ -13,7 +13,6 @@ export * from './components/buttons/Button';
 export * from './components/Flag';
 export * from './components/buttons/Pin';
 export * from './components/buttons/TooltipButton.tsx';
-export * from './components/DeviceImage';
 export * from './components/Dropdown';
 export * from './components/form/Input';
 export * from './components/form/Textarea';

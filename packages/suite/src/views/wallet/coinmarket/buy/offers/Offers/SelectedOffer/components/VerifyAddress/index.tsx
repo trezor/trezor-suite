@@ -9,7 +9,7 @@ import {
     AccountLabeling,
     FormattedCryptoAmount,
 } from '@suite-components';
-import { Input, Button, variables, CoinLogo, DeviceImage } from '@trezor/components';
+import { Input, Button, variables, CoinLogo, Image } from '@trezor/components';
 import { useCoinmarketBuyOffersContext } from '@wallet-hooks/useCoinmarketBuyOffers';
 import { AddressOptions } from '@wallet-views/coinmarket/common/AddressOptions';
 import { useAccountAddressDictionary } from '@wallet-hooks/useAccounts';
@@ -63,7 +63,8 @@ const CustomLabel = styled(Label)`
 
 const LabelText = styled.div``;
 
-const StyledDeviceImage = styled(DeviceImage)`
+const StyledImage = styled(Image)`
+    height: 25px;
     padding: 0 10px 0 0;
 `;
 
@@ -195,9 +196,9 @@ const VerifyAddressComponent = () => {
                         readOnly
                     />
                 )}
-                {addressVerified && addressVerified === address && (
+                {addressVerified && addressVerified === address && deviceModel && (
                     <Confirmed>
-                        <StyledDeviceImage height={25} deviceModel={deviceModel} />
+                        <StyledImage alt="Trezor" image={`TREZOR_T${deviceModel}`} />
                         <Translation id="TR_BUY_CONFIRMED_ON_TREZOR" />
                     </Confirmed>
                 )}

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import styled, { css } from 'styled-components';
 
-import { variables, DeviceImage, Icon } from '@trezor/components';
+import { variables, Image, Icon } from '@trezor/components';
 import { SHAKE } from '@suite-support/styles/animations';
 import { WalletLabeling } from '@suite-components';
 import { TrezorDevice } from '@suite-types';
@@ -68,7 +68,8 @@ const DeviceLabel = styled.div`
     }
 `;
 
-const StyledDeviceImage = styled(DeviceImage)<{ isLowerOpacity: boolean }>`
+const StyledImage = styled(Image)<{ isLowerOpacity: boolean }>`
+    height: 34px;
     margin-right: 14px;
     flex: 0;
     opacity: ${({ isLowerOpacity }) => isLowerOpacity && 0.4};
@@ -182,14 +183,13 @@ export const DeviceSelector = () => {
             }
             isAnimationTriggered={isAnimationTriggered}
         >
-            {selectedDevice && (
+            {selectedDevice && selectedDeviceModel && (
                 <>
-                    <StyledDeviceImage
-                        height={34}
-                        deviceModel={selectedDeviceModel}
+                    <StyledImage
+                        alt="Trezor"
+                        image={`TREZOR_T${selectedDeviceModel}`}
                         isLowerOpacity={deviceNeedsRefresh}
                     />
-
                     <DeviceDetail>
                         <DeviceLabel>
                             <span>{selectedDevice.label}</span>
