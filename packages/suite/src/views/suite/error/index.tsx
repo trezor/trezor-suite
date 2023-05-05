@@ -21,7 +21,7 @@ const ErrorPage = () => (
         <P size="tiny">
             <Translation id="TR_404_DESCRIPTION" />
         </P>
-        <Image image="404" />
+        <Image image="ERROR_404" />
         <Link variant="nostyle" target="_self" href="/">
             <Button>
                 <Translation id="TR_404_GO_TO_DASHBOARD" />

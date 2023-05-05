@@ -27,7 +27,7 @@ const Redelegate = () => {
         <Button
             isLoading={loading}
             isDisabled={!delegatingAvailable.status || !deviceAvailable.status || !!pendingStakeTx}
-            icon={`T${deviceModel}`}
+            icon={`TREZOR_T${deviceModel}`}
             onClick={() => delegate()}
         >
             <Translation id="TR_STAKING_REDELEGATE" />
