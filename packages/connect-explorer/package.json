@@ -10,7 +10,7 @@
     },
     "dependencies": {
         "@trezor/components": "workspace:*",
-        "@trezor/connect-web": "workspace:9.0.9",
+        "@trezor/connect-web": "workspace:9.0.10",
         "markdown-it": "^13.0.1",
         "markdown-it-link-attributes": "^4.0.1",
         "markdown-it-replace-link": "^1.2.0",

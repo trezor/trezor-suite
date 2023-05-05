@@ -12,7 +12,7 @@
         "test:unit": "jest"
     },
     "dependencies": {
-        "@trezor/connect": "workspace:9.0.9",
+        "@trezor/connect": "workspace:9.0.10",
         "@trezor/connect-analytics": "workspace:*",
         "@trezor/connect-common": "workspace:*",
         "@trezor/connect-ui": "workspace:*",
