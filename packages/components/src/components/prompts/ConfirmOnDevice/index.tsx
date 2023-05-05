@@ -1,7 +1,7 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
-import { DeviceImage } from '../../DeviceImage';
-import { Icon } from '../../Icon';
+import { Icon } from '@trezor/components';
+import { Image } from '../../Image/Image';
 import { variables, animations } from '../../../config';
 import { type DeviceModel } from '@trezor/device-utils';
 
@@ -111,6 +111,10 @@ const Step = styled.div<{ isActive: boolean }>`
         `}
 `;
 
+const StyledImage = styled(Image)`
+    height: 34px;
+`;
+
 const isStepActive = (index: number, activeStep?: number) => {
     if (!activeStep) {
         return false;
@@ -150,7 +154,7 @@ export const ConfirmOnDevice = ({
             data-test="@prompts/confirm-on-device"
         >
             <Left>
-                <DeviceImage height="34px" deviceModel={deviceModel} />
+                {deviceModel && <StyledImage alt="Trezor" image={`TREZOR_T${deviceModel}`} />}
             </Left>
 
             <Middle>

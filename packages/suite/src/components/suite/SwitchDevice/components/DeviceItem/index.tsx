@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import styled from 'styled-components';
-import { useTheme, variables, Icon, DeviceImage, motionAnimation } from '@trezor/components';
+import { useTheme, variables, Icon, Image, motionAnimation } from '@trezor/components';
 import { Translation } from '@suite-components';
 import * as deviceUtils from '@suite-utils/device';
 import { useSelector, useActions } from '@suite-hooks';
@@ -116,6 +116,10 @@ const ColEjectHeader = styled(ColHeader)`
     margin: 0px 24px;
 `;
 
+const StyledImage = styled(Image)`
+    height: 36px;
+`;
+
 interface Props {
     device: TrezorDevice;
     instances: AcquiredDevice[];
@@ -197,9 +201,11 @@ const DeviceItem = ({ device, instances, onCancel, backgroundRoute }: Props) => 
         <DeviceWrapper>
             <Device>
                 <DeviceHeader>
-                    <DeviceImageWrapper>
-                        <DeviceImage height={36} deviceModel={deviceModel} />
-                    </DeviceImageWrapper>
+                    {deviceModel && (
+                        <DeviceImageWrapper>
+                            <StyledImage alt="Trezor" image={`TREZOR_T${deviceModel}`} />
+                        </DeviceImageWrapper>
+                    )}
                     <Col grow={1}>
                         <DeviceStatus
                             color={device.connected ? theme.TYPE_GREEN : theme.TYPE_RED}

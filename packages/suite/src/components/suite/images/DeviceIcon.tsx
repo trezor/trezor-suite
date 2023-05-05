@@ -28,7 +28,7 @@ const DeviceIcon = ({
 
     return (
         <Icon
-            icon={`T${deviceModel}`}
+            icon={`TREZOR_T${deviceModel}`}
             hoverColor={hoverColor}
             onClick={onClick}
             color={color ?? theme.TYPE_LIGHT_GREY}

@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { RegisterOptions, useForm } from 'react-hook-form';
 import addressValidator from 'trezor-address-validator';
 import { QuestionTooltip, Translation } from '@suite-components';
-import { Input, variables, DeviceImage, Button } from '@trezor/components';
+import { Input, variables, Image, Button } from '@trezor/components';
 import { InputError } from '@wallet-components';
 import { useCoinmarketExchangeOffersContext } from '@wallet-hooks/useCoinmarketExchangeOffers';
 import { TypedValidationRules } from '@wallet-types/form';
@@ -46,7 +46,8 @@ const CustomLabel = styled(Label)`
     padding: 12px 0;
 `;
 
-const StyledDeviceImage = styled(DeviceImage)`
+const StyledImage = styled(Image)`
+    height: 25px;
     padding: 0 10px 0 0;
 `;
 
@@ -203,9 +204,9 @@ const VerifyAddressComponent = () => {
                         />
                     )}
 
-                    {addressVerified && addressVerified === address && (
+                    {addressVerified && addressVerified === address && deviceModel && (
                         <Confirmed>
-                            <StyledDeviceImage height={25} deviceModel={deviceModel} />
+                            <StyledImage alt="Trezor" image={`TREZOR_T${deviceModel}`} />
                             <Translation id="TR_EXCHANGE_CONFIRMED_ON_TREZOR" />
                         </Confirmed>
                     )}

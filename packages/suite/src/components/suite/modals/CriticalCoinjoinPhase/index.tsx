@@ -69,7 +69,7 @@ export const CriticalCoinjoinPhase = ({ relatedAccountKey }: CriticalCoinjoinPha
     return (
         <StyledModal>
             <Content>
-                <Image image={`DONT_DISCONNECT_${deviceModel}`} />
+                <Image image={`DONT_DISCONNECT_TREZOR_T${deviceModel}`} />
 
                 <TextContainer>
                     <CoinjoinText>
