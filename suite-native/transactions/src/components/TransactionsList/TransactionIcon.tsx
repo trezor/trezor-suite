@@ -2,16 +2,16 @@ import React from 'react';
 
 import { Box } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { TransactionType } from '@suite-common/wallet-types';
+import { TokenSymbol, TransactionType } from '@suite-common/wallet-types';
 import { Icon, IconName } from '@trezor/icons';
 import { Color } from '@trezor/theme';
-import { EthereumTokenSymbol, CoinIcon } from '@suite-native/ethereum-tokens';
+import { CoinIcon } from '@suite-native/ethereum-tokens';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
 import { TransactionIconSpinner } from './TransactionIconSpinner';
 
 type TransactionIconProps = {
-    symbol: NetworkSymbol | EthereumTokenSymbol;
+    symbol: NetworkSymbol | TokenSymbol;
     transactionType: TransactionType;
     isAnimated?: boolean;
     iconColor?: Color;

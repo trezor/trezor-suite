@@ -22,12 +22,12 @@ import {
 import { selectFiatCurrencyCode, SettingsSliceRootState } from '@suite-native/module-settings';
 import { isEthereumAccountSymbol } from '@suite-common/wallet-utils';
 
-import { EthereumTokenSymbol, WalletAccountTransaction } from './types';
+import { WalletAccountTransaction } from './types';
 
 export const selectEthereumAccountToken = (
     state: AccountsRootState,
     accountKey: AccountKey,
-    tokenSymbol?: EthereumTokenSymbol,
+    tokenSymbol?: TokenSymbol,
 ): TokenInfoBranded | null => {
     const account = selectAccountByKey(state, accountKey);
     if (!account || !account.tokens) return null;
@@ -43,7 +43,7 @@ export const selectEthereumAccountTokenTransactions = memoizeWithArgs(
     (
         state: TransactionsRootState,
         accountKey: AccountKey,
-        tokenSymbol: EthereumTokenSymbol,
+        tokenSymbol: TokenSymbol,
     ): WalletAccountTransaction[] =>
         pipe(
             selectAccountTransactions(state, accountKey),
@@ -123,7 +123,7 @@ const selectAccountTransactionsWithTokensWithFiatRates = memoizeWithArgs(
 export const selectAccountOrTokenAccountTransactions = (
     state: TransactionsRootState & FiatRatesRootState & SettingsSliceRootState,
     accountKey: AccountKey,
-    tokenSymbol: EthereumTokenSymbol | null,
+    tokenSymbol: TokenSymbol | null,
     areTokenOnlyTransactionsIncluded: boolean,
 ): WalletAccountTransaction[] => {
     if (tokenSymbol) {

@@ -6,9 +6,8 @@ import { getFiatRateKey, selectFiatRatesByFiatRateKey } from '@suite-native/fiat
 import { selectFiatCurrency } from '@suite-native/module-settings';
 import { toFiatCurrency } from '@suite-common/wallet-utils';
 import { useFormatters } from '@suite-common/formatters';
-import { EthereumTokenSymbol } from '@suite-native/ethereum-tokens';
+import { TokenSymbol, TokenAddress } from '@suite-common/wallet-types';
 import { SignValue } from '@suite-common/suite-types';
-import { TokenAddress } from '@suite-common/wallet-types';
 
 import { FormatterProps } from '../types';
 import { EmptyAmountText } from './EmptyAmountText';
@@ -17,7 +16,7 @@ import { convertTokenValueToDecimal } from '../utils';
 import { SignValueFormatter } from './SignValueFormatter';
 
 type EthereumTokenToFiatAmountFormatterProps = {
-    ethereumToken: EthereumTokenSymbol;
+    ethereumToken: TokenSymbol;
     contract: TokenAddress;
     isDiscreetText?: boolean;
     decimals?: number;

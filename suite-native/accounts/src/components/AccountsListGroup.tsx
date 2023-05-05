@@ -5,14 +5,13 @@ import { Box } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { AccountsRootState, selectAccountsByNetworkSymbols } from '@suite-common/wallet-core';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { AccountKey } from '@suite-common/wallet-types';
-import { EthereumTokenSymbol } from '@suite-native/ethereum-tokens';
+import { AccountKey, TokenSymbol } from '@suite-common/wallet-types';
 
 import { AccountListItemInteractive } from './AccountListItemInteractive';
 
 type AccountsListGroupProps = {
     symbol: NetworkSymbol;
-    onSelectAccount: (accountKey: AccountKey, tokenSymbol?: EthereumTokenSymbol) => void;
+    onSelectAccount: (accountKey: AccountKey, tokenSymbol?: TokenSymbol) => void;
 };
 
 const accountListGroupStyle = prepareNativeStyle(utils => ({

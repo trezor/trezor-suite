@@ -4,14 +4,13 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { Box, Button, Divider, Text } from '@suite-native/atoms';
-import { AccountKey } from '@suite-common/wallet-types';
+import { AccountKey, TokenSymbol } from '@suite-common/wallet-types';
 import {
     AccountsRootState,
     selectIsTestnetAccount,
     selectHasAccountTransactions,
     selectAccountByKey,
 } from '@suite-common/wallet-core';
-import { EthereumTokenSymbol } from '@suite-native/ethereum-tokens';
 import { isEthereumAccountSymbol } from '@suite-common/wallet-utils';
 import {
     AppTabsParamList,
@@ -30,12 +29,12 @@ type AccountDetailHeaderProps = {
     accountKey: AccountKey;
     areTokensIncluded: boolean;
     toggleIncludeTokenTransactions: () => void;
-    tokenSymbol?: EthereumTokenSymbol;
+    tokenSymbol?: TokenSymbol;
 };
 
 type TransactionListHeaderContentProps = {
     accountKey: AccountKey;
-    tokenSymbol?: EthereumTokenSymbol;
+    tokenSymbol?: TokenSymbol;
 };
 
 type AccountsNavigationProps = TabToStackCompositeNavigationProp<

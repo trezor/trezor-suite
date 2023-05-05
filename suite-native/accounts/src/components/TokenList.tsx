@@ -5,11 +5,10 @@ import { A } from '@mobily/ts-belt';
 
 import { VStack } from '@suite-native/atoms';
 import {
-    EthereumTokenSymbol,
     getEthereumTokenName,
     selectEthereumAccountsTokensWithFiatRates,
 } from '@suite-native/ethereum-tokens';
-import { AccountKey } from '@suite-common/wallet-types';
+import { AccountKey, TokenSymbol } from '@suite-common/wallet-types';
 import { FiatRatesRootState } from '@suite-native/fiat-rates';
 import { SettingsSliceRootState } from '@suite-native/module-settings';
 
@@ -17,7 +16,7 @@ import { TokenListItem } from './TokenListItem';
 
 type TokenListProps = {
     accountKey: string;
-    onSelectAccount: (accountKey: AccountKey, tokenSymbol?: EthereumTokenSymbol) => void;
+    onSelectAccount: (accountKey: AccountKey, tokenSymbol?: TokenSymbol) => void;
 };
 
 export const TokenList = ({ accountKey, onSelectAccount }: TokenListProps) => {

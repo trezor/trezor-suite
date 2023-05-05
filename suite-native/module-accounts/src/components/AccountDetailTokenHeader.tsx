@@ -8,16 +8,15 @@ import {
 } from '@suite-native/formatters';
 import { EthereumTokenIcon } from '@trezor/icons';
 import {
-    EthereumTokenSymbol,
     selectEthereumAccountToken,
     getEthereumTokenIconName,
 } from '@suite-native/ethereum-tokens';
 import { AccountsRootState } from '@suite-common/wallet-core';
-import { AccountKey } from '@suite-common/wallet-types';
+import { AccountKey, TokenSymbol } from '@suite-common/wallet-types';
 
 type AccountDetailTokenHeaderProps = {
     accountKey: AccountKey;
-    tokenSymbol: EthereumTokenSymbol;
+    tokenSymbol: TokenSymbol;
 };
 
 export const AccountDetailTokenHeader = ({

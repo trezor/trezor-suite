@@ -10,8 +10,7 @@ import {
     ReceiveStackRoutes,
     StackNavigationProps,
 } from '@suite-native/navigation';
-import { AccountKey } from '@suite-common/wallet-types';
-import { EthereumTokenSymbol } from '@suite-native/ethereum-tokens';
+import { AccountKey, TokenSymbol } from '@suite-common/wallet-types';
 
 export const ReceiveAccountsScreen = () => {
     const navigation =
@@ -19,7 +18,7 @@ export const ReceiveAccountsScreen = () => {
             StackNavigationProps<ReceiveStackParamList, ReceiveStackRoutes.ReceiveAccounts>
         >();
 
-    const navigateToReceiveScreen = (accountKey: AccountKey, tokenSymbol?: EthereumTokenSymbol) =>
+    const navigateToReceiveScreen = (accountKey: AccountKey, tokenSymbol?: TokenSymbol) =>
         navigation.navigate(ReceiveStackRoutes.Receive, { accountKey, tokenSymbol });
 
     return (
