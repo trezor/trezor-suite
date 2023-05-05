@@ -1,3 +1,4 @@
+# 2.1.12  commit message containing something like 'release: @trezor/blockchain-link' in 'git log --oneline -- ./packages/blockchain-link' was not found    
 # 2.1.11
 
 -   chore(blockchain-link): fix ripple blocktime
