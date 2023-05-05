@@ -36,7 +36,7 @@
         "prepublish": "yarn tsx ../../scripts/prepublish.js"
     },
     "dependencies": {
-        "@trezor/utils": "workspace:9.0.7",
+        "@trezor/utils": "workspace:*",
         "bchaddrjs": "^0.5.2",
         "bech32": "^2.0.0",
         "bip66": "^1.1.5",
