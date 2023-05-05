@@ -29,3 +29,4 @@ export * from './truncateMiddle';
 export * from './topologicalSort';
 export * as versionUtils from './versionUtils';
 export * as xssFilters from './xssFilters';
+export * from './getLocaleSeparators';

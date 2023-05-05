@@ -5,22 +5,14 @@ import {
     useController,
     UseControllerOptions,
 } from 'react-hook-form';
+import BigNumber from 'bignumber.js';
+
 import { Input, InputProps } from '@trezor/components';
 import { TypedValidationRules } from '@suite-common/wallet-types';
 import { localizeNumber } from '@suite-common/wallet-utils';
-import { useSelector } from '@trezor/suite/src/hooks/suite';
 import { Locale } from '@suite-config/languages';
-import BigNumber from 'bignumber.js';
-
-const getLocaleSeparators = (locale: Locale) => {
-    const numberFormat = new Intl.NumberFormat(locale);
-    const parts = numberFormat.formatToParts(10000.1);
-
-    const decimalSeparator = parts.find(({ type }) => type === 'decimal')?.value as string;
-    const thousandsSeparator = parts.find(({ type }) => type === 'group')?.value as string;
-
-    return { decimalSeparator, thousandsSeparator };
-};
+import { useSelector } from '@trezor/suite/src/hooks/suite';
+import { getLocaleSeparators } from '@trezor/utils';
 
 const isValidDecimalString = (value: string) => /^([^.]*)\.[^.]+$/.test(value);
 const hasLeadingZeroes = (value: string) => /^0+(\d+\.\d*|\d+)$/.test(value);
