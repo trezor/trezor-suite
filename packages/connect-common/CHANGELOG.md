@@ -1,3 +1,4 @@
+# 0.0.15  commit message containing something like 'release: @trezor/connect-common' in 'git log --oneline -- ./packages/connect-common' was not found    
 # 0.0.14
 
 -   chore(connect): move systemInfo to connect-common
