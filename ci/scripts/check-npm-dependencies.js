@@ -37,11 +37,11 @@ const checkPackageDependencies = packageName => {
 
     const allDependnecies = { ...dependencies, ...devDependencies };
     if (!Object.keys(allDependnecies)) {
-        console.log('this package has no dependencies');
+        // console.log('this package has no dependencies');
         return;
     }
 
-    console.log('-> ', packageName);
+    // console.log('-> ', packageName);
 
     Object.entries(allDependnecies).forEach(([dependency, version]) => {
         // is not a dependency released from monorepo. we don't care
@@ -52,7 +52,7 @@ const checkPackageDependencies = packageName => {
         const [_prefix, name] = dependency.split('/');
         const PACKAGE_PATH = path.join(ROOT, 'packages', name);
 
-        console.log('checking dependency: ', dependency);
+        // console.log('checking dependency: ', dependency);
 
         // check local package
         const packResultRaw = child_process.spawnSync('npm', ['pack', '--dry-run', '--json'], {
@@ -64,7 +64,7 @@ const checkPackageDependencies = packageName => {
 
         const localChecksum = packResultJSON[0].shasum;
 
-        console.log('local checksum:  ', localChecksum);
+        // console.log('local checksum:  ', localChecksum);
 
         // check remote package
         const viewResultRaw = child_process.spawnSync('npm', ['view', '--json'], {
@@ -85,7 +85,7 @@ const checkPackageDependencies = packageName => {
 
             const remoteChecksum = viewResultJSON[dependency].dist.shasum;
 
-            console.log('remote checksum: ', remoteChecksum);
+            // console.log('remote checksum: ', remoteChecksum);
 
             if (localChecksum !== remoteChecksum) {
                 // if the checked dependency is already in the array, remove it and push it to the end of array
@@ -99,33 +99,42 @@ const checkPackageDependencies = packageName => {
             }
         }
 
-        console.log('---> recurring into nested package: ', name);
+        // console.log('---> recurring into nested package: ', name);
 
         checkPackageDependencies(name);
     });
 };
 
+
 checkPackageDependencies(packageName);
 
-if (updateNeeded.length) {
-    console.log('='.repeat(20));
-    console.log('there are npm dependencies that *MIGHT* need to be released first: ');
-    console.log(updateNeeded.join('\n'));
+const formattedDeps = updateNeeded.map(dep => {
+    // return `- [ ] ${dep}\n`
+    return dep.replace('@trezor/', '');
+}).join(',');
 
-    updateNeeded.forEach(package => {
-        console.log(`changelog draft: ${package}`);
-        const changelog = child_process.spawnSync(
-            'bash',
-            ['./ci/scripts/create_changelog_draft.sh', package.split('/').pop()],
-            {
-                encoding: 'utf-8',
-                cwd: rootPath,
-            },
-        ).stdout;
-        console.log(changelog);
-    });
+process.stdout.write(formattedDeps);
 
-    process.exit(1);
-}
 
-console.log('All dependencies are up to date. You may now proceed with @trezor/connect release');
+// if (updateNeeded.length) {
+//     console.log('='.repeat(20));
+//     console.log('there are npm dependencies that *MIGHT* need to be released first: ');
+//     console.log(updateNeeded.join('\n'));
+
+//     updateNeeded.forEach(package => {
+//         console.log(`changelog draft: ${package}`);
+//         const changelog = child_process.spawnSync(
+//             'bash',
+//             ['./ci/scripts/create_changelog_draft.sh', package.split('/').pop()],
+//             {
+//                 encoding: 'utf-8',
+//                 cwd: rootPath,
+//             },
+//         ).stdout;
+//         console.log(changelog);
+//     });
+
+//     process.exit(1);
+// }
+
+// console.log('All dependencies are up to date. You may now proceed with @trezor/connect release');
