@@ -1,3 +1,4 @@
+# 1.1.11  commit message containing something like 'release: @trezor/transport' in 'git log --oneline -- ./packages/transport' was not found    
 # 1.1.10
 
 -   fix(transport): update encoded_network to ArrayBuffer
