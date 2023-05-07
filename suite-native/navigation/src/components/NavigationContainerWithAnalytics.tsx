@@ -1,12 +1,42 @@
-import React, { ReactNode, useRef } from 'react';
+import React, { ReactNode, useMemo, useRef } from 'react';
 
-import { NavigationContainer, useNavigationContainerRef } from '@react-navigation/native';
+import {
+    NavigationContainer,
+    useNavigationContainerRef,
+    DefaultTheme,
+    DarkTheme,
+} from '@react-navigation/native';
 
 import { analytics, EventType } from '@suite-native/analytics';
+import { useNativeStyles } from '@trezor/styles';
 
 export const NavigationContainerWithAnalytics = ({ children }: { children: ReactNode }) => {
     const navigationContainerRef = useNavigationContainerRef();
     const routeNameRef = useRef<string | undefined>();
+    const {
+        utils: { colors, isDarkColor },
+    } = useNativeStyles();
+
+    const themeColors = useMemo(() => {
+        // setting theme colors to match the background color of the screen to prevent white flash on screen change in dark mode
+        const isDarkTheme = isDarkColor(colors.backgroundSurfaceElevation0);
+        if (isDarkTheme) {
+            return {
+                ...DarkTheme,
+                colors: {
+                    ...DarkTheme.colors,
+                    background: colors.backgroundSurfaceElevation0,
+                },
+            };
+        }
+        return {
+            ...DefaultTheme,
+            colors: {
+                ...DefaultTheme.colors,
+                background: colors.backgroundSurfaceElevation0,
+            },
+        };
+    }, [colors, isDarkColor]);
 
     const handleNavigationReady = () => {
         routeNameRef.current = navigationContainerRef.getCurrentRoute()?.name;
@@ -37,6 +67,7 @@ export const NavigationContainerWithAnalytics = ({ children }: { children: React
             ref={navigationContainerRef}
             onReady={handleNavigationReady}
             onStateChange={handleStateChange}
+            theme={themeColors}
         >
             {children}
         </NavigationContainer>
