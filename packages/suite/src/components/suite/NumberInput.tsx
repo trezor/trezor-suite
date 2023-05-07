@@ -10,6 +10,7 @@ import { TypedValidationRules } from '@suite-common/wallet-types';
 import { localizeNumber } from '@suite-common/wallet-utils';
 import { useSelector } from '@trezor/suite/src/hooks/suite';
 import { Locale } from '@suite-config/languages';
+import BigNumber from 'bignumber.js';
 
 const getLocaleSeparators = (locale: Locale) => {
     const numberFormat = new Intl.NumberFormat(locale);
@@ -55,11 +56,12 @@ const cleanValueString = (value: string, locale: Locale) => {
         cleanedValue = cleanedValue.slice(0, cleanedValue.length - 1);
     }
 
-    // if a value is not a valid decimal or integer, dont format it – let it be converted to NaN later
-    if (cleanedValue && isValidDecimalString(cleanedValue)) {
-        cleanedValue = parseFloat(cleanedValue).toString();
-    } else if (cleanedValue && !cleanedValue.slice(0, -1).includes('.')) {
-        cleanedValue = parseInt(cleanedValue, 10).toString();
+    if (cleanedValue) {
+        // do not convert to the exponential format to avoid unexpected results
+        // 18 is the max amount of decimals used by a network
+        BigNumber.config({ EXPONENTIAL_AT: 20, DECIMAL_PLACES: 18 });
+
+        cleanedValue = new BigNumber(cleanedValue).toFixed();
     }
 
     return cleanedValue;
@@ -91,11 +93,8 @@ export const NumberInput = ({
     defaultValue,
     ...props
 }: NumberInputProps) => {
-    const locale = useSelector(state => state.suite.settings.language);
-    const [pressedKey, setPressedKey] = useState('');
-
     const {
-        field: { value, onChange, ref: inputRef, ...controlProps },
+        field: { value = '', onChange, ref: inputRef, ...controlProps },
         meta: { invalid },
     }: TypedMethods = useController<Record<string, unknown>>({
         name,
@@ -104,7 +103,11 @@ export const NumberInput = ({
         defaultValue,
     });
 
-    const [displayValue, setDisplayValue] = useState(localizeNumber(value || '', locale));
+    const locale = useSelector(state => state.suite.settings.language);
+    const [pressedKey, setPressedKey] = useState('');
+    const [displayValue, setDisplayValue] = useState(localizeNumber(value, locale));
+    const [changeHistory, setChangeHistory] = useState<string[]>([value]);
+    const [redoHistory, setRedoHistory] = useState<string[]>([]);
 
     const previousFormValueRef = useRef<string | undefined>(value);
     const previousDisplayValueRef = useRef(displayValue);
@@ -122,14 +125,21 @@ export const NumberInput = ({
                 previousDisplayValueRef.current = newDisplayValue;
                 inputRef.current.value = newDisplayValue; // for setSelectionRange() working as intended
 
+                setChangeHistory(current => [...current, newDisplayValue]);
+
                 return newDisplayValue;
             };
 
             // don't localize when entering a separator or a 0 in decimals (e.g. 0.0000 -> 0.00001),
             // otherwise the separator might get removed
+            const { decimalSeparator } = getLocaleSeparators(locale);
             const lastSymbol = rawValue.at(-1);
 
-            if (lastSymbol && [...DECIMAL_SEPARATORS, '0'].includes(lastSymbol)) {
+            if (
+                lastSymbol &&
+                (DECIMAL_SEPARATORS.includes(lastSymbol) ||
+                    (lastSymbol === '0' && rawValue.includes(decimalSeparator)))
+            ) {
                 if (lastSymbol !== '0') {
                     // disallow entering more than one separator
                     const secondToLastSymbol = rawValue.at(-2);
@@ -138,7 +148,6 @@ export const NumberInput = ({
                     }
 
                     // format a decimal separator to a locale-specific one to allow entering either one
-                    const { decimalSeparator } = getLocaleSeparators(locale);
 
                     // ignore additional decimal separators when a number is already a decimal
                     if (rawValue.slice(0, -1).includes(decimalSeparator)) {
@@ -324,6 +333,8 @@ export const NumberInput = ({
     const handleOnBeforeInput = useCallback(
         (e: React.FormEvent<HTMLInputElement> & { data: string }) => {
             if (/[\d.,]/g.test(e.data)) {
+                // reset the redo history when a new digit is entered
+                setRedoHistory([]);
                 return;
             }
 
@@ -388,6 +399,29 @@ export const NumberInput = ({
         [handleCursorShift],
     );
 
+    const handleUndo = useCallback(() => {
+        if (changeHistory.length < 2) {
+            return;
+        }
+
+        const previousValue = changeHistory.at(-2) || '';
+        handleChange(previousValue);
+
+        setRedoHistory(current => [...current, changeHistory.at(-1) || '']);
+        setChangeHistory(current => [...current].splice(0, current.length - 2));
+    }, [changeHistory, handleChange]);
+
+    const handleRedo = useCallback(() => {
+        if (!redoHistory.length) {
+            return;
+        }
+
+        const previousValue = redoHistory.at(-1) || '';
+        handleChange(previousValue);
+
+        setRedoHistory(current => [...current].splice(0, current.length - 1));
+    }, [redoHistory, handleChange]);
+
     const handleKeyDown = useCallback(
         (e: React.KeyboardEvent<HTMLInputElement>) => {
             const pressedKey = e.key;
@@ -395,16 +429,26 @@ export const NumberInput = ({
 
             if (['ArrowLeft', 'ArrowRight'].includes(pressedKey)) {
                 handleKeyNav(e);
-
                 return;
             }
 
-            // undo doesn't work properly so better disallow it altogether
-            if ((e.ctrlKey || e.metaKey) && e.key === 'z') {
+            if (!e.shiftKey && (e.ctrlKey || e.metaKey) && pressedKey.toLocaleLowerCase() === 'z') {
                 e.preventDefault();
+                handleUndo();
+                return;
+            }
+
+            if (e.shiftKey && (e.ctrlKey || e.metaKey) && pressedKey.toLocaleLowerCase() === 'z') {
+                e.preventDefault();
+                handleRedo();
+                return;
+            }
+
+            if (pressedKey === 'Backspace') {
+                setRedoHistory([]);
             }
         },
-        [handleKeyNav],
+        [handleKeyNav, handleUndo, handleRedo],
     );
 
     return (

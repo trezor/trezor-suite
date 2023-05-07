@@ -2,6 +2,7 @@ import React, { useEffect, useMemo } from 'react';
 import {
     Easing,
     interpolate,
+    useDerivedValue,
     useSharedValue,
     withRepeat,
     withTiming,
@@ -18,9 +19,7 @@ import {
     RoundedRect,
     RoundedRectProps,
     Skia,
-    useSharedValueEffect,
     useSVG,
-    useValue,
     vec,
 } from '@shopify/react-native-skia';
 
@@ -98,10 +97,11 @@ export const QrWithLaser = () => {
         utils: { colors },
     } = useNativeStyles();
     const qrCodeSvg = useSVG(icons.qrCodeImport);
-    const laserY = useValue(0);
-    const laserOpacity = useValue(0);
 
     const progress = useSharedValue(0);
+
+    const laserY = useDerivedValue(() => progress.value * height);
+    const laserOpacity = useDerivedValue(() => interpolate(progress.value, [0, 0.5, 1], [0, 1, 0]));
 
     useEffect(() => {
         progress.value = withRepeat(
@@ -110,11 +110,6 @@ export const QrWithLaser = () => {
             false,
         );
     }, [progress]);
-
-    useSharedValueEffect(() => {
-        laserY.current = progress.value * height;
-        laserOpacity.current = interpolate(progress.value, [0, 0.5, 1], [0, 1, 0]);
-    }, progress);
 
     const paint = useMemo(() => Skia.Paint(), []);
     paint.setColorFilter(

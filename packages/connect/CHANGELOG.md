@@ -1,3 +1,8 @@
+# 9.0.9
+
+-   fix(connect): prevent .asArray of undefined runtime error
+-   fix(connect): add missing currencies param for getFiatRatesForTimestamps
+
 # 9.0.8
 
 -   feat: support multiple intermediary FWs for model 1 and devkit binaries

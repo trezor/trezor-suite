@@ -7,6 +7,7 @@ import { Account, SelectedAccountStatus } from '@suite-common/wallet-types';
 import {
     ANONYMITY_GAINS_HINDSIGHT_COUNT,
     ANONYMITY_GAINS_HINDSIGHT_DAYS,
+    MAX_ROUNDS_ALLOWED,
     ESTIMATED_MIN_ROUNDS_NEEDED,
     SKIP_ROUNDS_VALUE_WHEN_ENABLED,
 } from '@suite/services/coinjoin/config';
@@ -187,15 +188,18 @@ const getSkipRoundsRate = (skipRounds?: [number, number]) =>
 export const getMaxRounds = (roundsNeeded: number, roundsFailRateBuffer: number) => {
     const estimatedRoundsCount = Math.ceil(roundsNeeded * roundsFailRateBuffer);
 
-    return Math.max(estimatedRoundsCount, ESTIMATED_MIN_ROUNDS_NEEDED);
+    return Math.min(
+        Math.max(estimatedRoundsCount, ESTIMATED_MIN_ROUNDS_NEEDED),
+        MAX_ROUNDS_ALLOWED,
+    );
 };
 
 // transform boolean to skip rounds value used by @trezor/coinjoin
 export const getSkipRounds = (enabled: boolean) =>
     enabled ? SKIP_ROUNDS_VALUE_WHEN_ENABLED : undefined;
 
-export const getMaxFeePerVbyte = (weeklyMedian: number, maxMiningFeeModifier: number) =>
-    Math.round(weeklyMedian * maxMiningFeeModifier);
+export const getMaxFeePerVbyte = (feeRateMedian: number, maxMiningFeeModifier: number) =>
+    Math.round(feeRateMedian * maxMiningFeeModifier);
 
 // get time estimate in millisecond per round
 export const getEstimatedTimePerRound = (

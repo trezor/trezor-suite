@@ -91,8 +91,8 @@ export const getAnonymityScores = async (
             dict[address] = anonymitySet;
             return dict;
         }, {} as Record<string, number>);
-    } catch {
-        options.logger.error(`Error calculating anonymity levels`);
+    } catch (error) {
+        options.logger.error(`Error calculating anonymity levels. ${error}`);
     }
 };
 

@@ -1,4 +1,5 @@
 import { Alice } from '../../src/client/Alice';
+import { ROUND_SELECTION_MAX_OUTPUTS } from '../../src/constants';
 import { CoinjoinRound } from '../../src/client/CoinjoinRound';
 import { CoinjoinPrison } from '../../src/client/CoinjoinPrison';
 import {
@@ -16,6 +17,17 @@ import {
     createCoinjoinRound,
 } from '../fixtures/round.fixture';
 import { createServer } from '../mocks/server';
+
+const ACCOUNT = {
+    accountKey: 'account-A',
+    scriptType: 'Taproot',
+    skipRoundCounter: 0,
+    utxos: [
+        { outpoint: 'AA', anonymityLevel: 1 },
+        { outpoint: 'AB', anonymityLevel: 1 },
+    ],
+    changeAddresses: new Array(ROUND_SELECTION_MAX_OUTPUTS).fill({ address: 'bc1p' }),
+} as any; // as Account
 
 describe('selectRound', () => {
     let server: Awaited<ReturnType<typeof createServer>>;
@@ -91,7 +103,7 @@ describe('selectRound', () => {
 
     it('no available utxos', () => {
         const result = getAccountCandidates({
-            accounts: [{ utxos: [] }] as any,
+            accounts: [{ ...ACCOUNT, utxos: [] }],
             coinjoinRounds: [],
             prison,
             options: server?.requestOptions,
@@ -103,7 +115,7 @@ describe('selectRound', () => {
         prison.detain('Ba99ed');
 
         const result = getAccountCandidates({
-            accounts: [{ utxos: [{ outpoint: 'Ba99ed' }] }] as any,
+            accounts: [{ ...ACCOUNT, utxos: [{ outpoint: 'Ba99ed', anonymityLevel: 1 }] }],
             coinjoinRounds: [],
             prison,
             options: server?.requestOptions,
@@ -113,7 +125,7 @@ describe('selectRound', () => {
 
     it('utxo already registered in CoinjoinRound', () => {
         const result = getAccountCandidates({
-            accounts: [{ utxos: [{ outpoint: 'AA' }] }] as any,
+            accounts: [{ ...ACCOUNT, utxos: [{ outpoint: 'AA', anonymityLevel: 1 }] }],
             coinjoinRounds: [
                 {
                     id: '00',
@@ -129,9 +141,7 @@ describe('selectRound', () => {
 
     it('Account already registered in CoinjoinRound', () => {
         const result = getUnregisteredAccounts({
-            accounts: [
-                { accountKey: 'account-A', utxos: [{ outpoint: 'AA' }, { outpoint: 'AB' }] },
-            ] as any,
+            accounts: [ACCOUNT],
             coinjoinRounds: [
                 {
                     id: '03',
@@ -146,15 +156,7 @@ describe('selectRound', () => {
     });
 
     it('Account skipping rounds', () => {
-        const accounts = [
-            {
-                accountKey: 'account-A',
-                skipRounds: [4, 5],
-                skipRoundCounter: 0,
-                utxos: [{ outpoint: 'AA' }, { outpoint: 'AB' }],
-            } as any,
-        ];
-
+        const accounts = [{ ...ACCOUNT, skipRounds: [4, 5] }];
         // iterate 5 times
         const result = new Array(5).fill(0, 0, 5).flatMap(() =>
             getAccountCandidates({
@@ -208,9 +210,17 @@ describe('selectRound', () => {
                 } as any,
             ],
             accountCandidates: [
-                { accountKey: 'account1', utxos: [{ outpoint: 'AA', amount: 100 }] },
-                { accountKey: 'account2', utxos: [{ outpoint: 'BA', amount: 100 }] },
-            ] as any,
+                {
+                    ...ACCOUNT,
+                    accountKey: 'account1',
+                    utxos: [{ outpoint: 'AA', amount: 100, anonymityLevel: 1 }],
+                },
+                {
+                    ...ACCOUNT,
+                    accountKey: 'account2',
+                    utxos: [{ outpoint: 'BA', amount: 100, anonymityLevel: 1 }],
+                },
+            ],
             options: server?.requestOptions,
         });
 
@@ -248,21 +258,24 @@ describe('selectRound', () => {
             ],
             accountCandidates: [
                 {
+                    ...ACCOUNT,
                     accountKey: 'account1',
                     maxFeePerKvbyte: 100,
-                    utxos: [{ outpoint: 'AA', amount: 100 }],
+                    utxos: [{ outpoint: 'AA', amount: 100, anonymityLevel: 1 }],
                 },
                 {
+                    ...ACCOUNT,
                     accountKey: 'account2',
                     maxCoordinatorFeeRate: 0.003,
-                    utxos: [{ outpoint: 'BA', amount: 100 }],
+                    utxos: [{ outpoint: 'BA', amount: 100, anonymityLevel: 1 }],
                 },
                 {
+                    ...ACCOUNT,
                     accountKey: 'account3',
                     maxCoordinatorFeeRate: 0.005,
-                    utxos: [{ outpoint: 'CA', amount: 1000 }],
+                    utxos: [{ outpoint: 'CA', amount: 1000, anonymityLevel: 1 }],
                 },
-            ] as any,
+            ],
             options: server?.requestOptions,
         });
 
@@ -312,16 +325,16 @@ describe('selectRound', () => {
             ],
             accountCandidates: [
                 {
+                    ...ACCOUNT,
                     accountKey: 'account1',
-                    scriptType: 'Taproot',
-                    utxos: [{ outpoint: 'AA', amount: 200000 }],
+                    utxos: [{ outpoint: 'AA', amount: 200000, anonymityLevel: 1 }],
                 },
                 {
+                    ...ACCOUNT,
                     accountKey: 'account2',
-                    scriptType: 'Taproot',
-                    utxos: [{ outpoint: 'BA', amount: 200000 }],
+                    utxos: [{ outpoint: 'BA', amount: 200000, anonymityLevel: 1 }],
                 },
-            ] as any,
+            ],
             options: server?.requestOptions,
         });
 
@@ -370,25 +383,25 @@ describe('selectRound', () => {
             aliceGenerator,
             accounts: [
                 {
+                    ...ACCOUNT,
                     accountKey: 'account-A',
-                    scriptType: 'Taproot',
                     utxos: [
-                        { outpoint: 'AA', amount: 20000 }, // this will be picked by all rounds
-                        { outpoint: 'AB', amount: 1001 }, // this will be picked only by round "02"
-                        { outpoint: 'AC', amount: 1010 }, // this will be picked by round "02" and "03" rounds
+                        { outpoint: 'AA', amount: 20000, anonymityLevel: 1 }, // this will be picked by all rounds
+                        { outpoint: 'AB', amount: 1001, anonymityLevel: 1 }, // this will be picked only by round "02"
+                        { outpoint: 'AC', amount: 1010, anonymityLevel: 1 }, // this will be picked by round "02" and "03" rounds
                     ],
                 },
                 {
+                    ...ACCOUNT,
                     accountKey: 'account-B',
-                    scriptType: 'Taproot',
-                    utxos: [{ outpoint: 'BA', amount: 900 }], // this will not be picked by any round
+                    utxos: [{ outpoint: 'BA', amount: 900, anonymityLevel: 1 }], // this will not be picked by any round
                 },
                 {
+                    ...ACCOUNT,
                     accountKey: 'account-C',
-                    scriptType: 'Taproot',
-                    utxos: [{ outpoint: 'CA', amount: 2000 }], // this will be picked by all rounds
+                    utxos: [{ outpoint: 'CA', amount: 2000, anonymityLevel: 1 }], // this will be picked by all rounds
                 },
-            ] as any,
+            ],
             statusRounds: [
                 {
                     ...roundWithMiningFee(20),
@@ -442,11 +455,15 @@ describe('selectRound', () => {
             aliceGenerator,
             accounts: [
                 {
+                    ...ACCOUNT,
                     accountKey: 'account-A',
-                    scriptType: 'Taproot',
-                    utxos: [{ outpoint: 'AA' }, { outpoint: 'AB' }, { outpoint: 'AC' }],
+                    utxos: [
+                        { outpoint: 'AA', amount: 5000, anonymityLevel: 1 },
+                        { outpoint: 'AB', amount: 5000, anonymityLevel: 1 },
+                        { outpoint: 'AC', amount: 5000, anonymityLevel: 1 },
+                    ],
                 },
-            ] as any,
+            ],
             statusRounds: [
                 { ...DEFAULT_ROUND, id: '01' },
                 { ...DEFAULT_ROUND, id: '02', blameOf },
@@ -498,7 +515,7 @@ describe('selectRound', () => {
         const result3 = await selectRound({
             roundGenerator,
             aliceGenerator,
-            accounts: [{ utxos: [{ outpoint: 'AA' }] }] as any,
+            accounts: [{ ...ACCOUNT }],
             statusRounds: [DEFAULT_ROUND],
             coinjoinRounds: [],
             prison,
@@ -506,5 +523,23 @@ describe('selectRound', () => {
             runningAffiliateServer: true,
         });
         expect(result3).toBeUndefined();
+
+        // not enough change addresses
+        const result4 = await selectRound({
+            roundGenerator,
+            aliceGenerator,
+            accounts: [
+                {
+                    ...ACCOUNT,
+                    changeAddresses: [],
+                },
+            ],
+            statusRounds: [DEFAULT_ROUND],
+            coinjoinRounds: [],
+            prison,
+            options: server?.requestOptions,
+            runningAffiliateServer: true,
+        });
+        expect(result4).toBeUndefined();
     });
 });

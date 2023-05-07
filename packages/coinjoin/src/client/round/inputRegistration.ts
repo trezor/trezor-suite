@@ -84,6 +84,10 @@ const registerInput = async (
                 // abort remaining delayed candidates to register (if exists) registration is not going to happen for them anyway
                 signal.dispatchEvent(new Event('abort'));
             }
+            if (error.message === coordinator.WabiSabiProtocolErrorCode.InputLongBanned) {
+                // track blacklist ban if it happens
+                logger.error('InputLongBanned');
+            }
             throw error;
         });
 

@@ -50,7 +50,9 @@ const registerOutput = async (
     const tryToRegisterOutput = (): Promise<AccountAddress> => {
         const address = outputAddress.find(a => !round.prison.isDetained(a.scriptPubKey));
         if (!address) {
-            logger.error(`No change address available`);
+            logger.error(
+                `No change address available. Used: ${round.addresses.length}. Total: ${outputAddress.length}`,
+            );
             throw new Error('No change address available');
         }
 
@@ -78,6 +80,11 @@ const registerOutput = async (
                         sentenceEnd: Infinity, // this address should never be recycled
                     });
                     return tryToRegisterOutput();
+                }
+                if (error.message === coordinator.WabiSabiProtocolErrorCode.NotEnoughFunds) {
+                    logger.error(
+                        `NotEnoughFunds. Amount: ${amountCredentials[0].value} Delta: ${outputAmountCredentials.credentialsRequest.delta} FeeRate: ${roundParameters.miningFeeRate}`,
+                    );
                 }
                 throw error;
             });

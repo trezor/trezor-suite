@@ -72,17 +72,17 @@ const AppComponent = () => {
 const PureApp = () => (
     <GestureHandlerRootView style={{ flex: 1 }}>
         <IntlProvider locale="en" defaultLocale="en" messages={enMessages}>
-            <NavigationContainerWithAnalytics>
-                <StoreProvider>
-                    <SentryProvider>
-                        <SafeAreaProvider>
-                            <StylesProvider>
+            <StoreProvider>
+                <SentryProvider>
+                    <SafeAreaProvider>
+                        <StylesProvider>
+                            <NavigationContainerWithAnalytics>
                                 <AppComponent />
-                            </StylesProvider>
-                        </SafeAreaProvider>
-                    </SentryProvider>
-                </StoreProvider>
-            </NavigationContainerWithAnalytics>
+                            </NavigationContainerWithAnalytics>
+                        </StylesProvider>
+                    </SafeAreaProvider>
+                </SentryProvider>
+            </StoreProvider>
         </IntlProvider>
     </GestureHandlerRootView>
 );
