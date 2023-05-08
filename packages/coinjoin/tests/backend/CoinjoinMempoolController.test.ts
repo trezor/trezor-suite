@@ -2,7 +2,11 @@ import { networks } from '@trezor/utxo-lib';
 
 import { CoinjoinMempoolController } from '../../src/backend/CoinjoinMempoolController';
 import { MockMempoolClient } from '../mocks/MockMempoolClient';
-import { BLOCKS, SEGWIT_RECEIVE_ADDRESSES } from '../fixtures/methods.fixture';
+import {
+    BLOCKS,
+    SEGWIT_CHANGE_ADDRESSES,
+    SEGWIT_RECEIVE_ADDRESSES,
+} from '../fixtures/methods.fixture';
 
 const TXS = BLOCKS.flatMap(block => block.txs); // There is 6 of them
 const ADDRESS = SEGWIT_RECEIVE_ADDRESSES[1];
@@ -56,12 +60,8 @@ describe('CoinjoinMempoolController', () => {
         mempool = new CoinjoinMempoolController({
             client,
             network: networks.regtest,
-            filter: ({ txid }) =>
-                [
-                    '22222222222222222222222222222222',
-                    '44444444444444444444444444444444',
-                    '55555555555555555555555555555555',
-                ].includes(txid),
+            filter: address =>
+                address === SEGWIT_RECEIVE_ADDRESSES[1] || address === SEGWIT_CHANGE_ADDRESSES[0],
         });
         await mempool.start();
         TXS.forEach(client.fireTx.bind(client));
