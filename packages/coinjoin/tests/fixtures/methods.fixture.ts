@@ -1009,7 +1009,7 @@ export const SEGWIT_XPUB_RESULT_HALF = {
             },
             { ...used2, balance: '999999890', received: '999999890', sent: '0', transfers: 1 },
         ],
-        change: [{ ...change1, transfers: 0 }, ...change.slice(0, 19)],
+        change: [{ ...change1, transfers: 0 }, ...change],
     },
     history: {
         total: 3,

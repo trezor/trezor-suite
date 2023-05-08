@@ -93,18 +93,22 @@ export const scanAccount = async (
 
     let pending: Transaction[] = [];
     if (mempool) {
-        const addresses = receive.addresses.concat(change.addresses).map(({ address }) => address);
-
         if (mempool.status === 'stopped') {
             await mempool.start();
-            await mempool.init(addresses);
+            pending = await mempool
+                .init(receive, change)
+                .then(transactions =>
+                    transactions.map(transformTx(xpub, receive.addresses, change.addresses)),
+                );
         } else {
             await mempool.update();
+            pending = mempool
+                .getTransactions(receive, change)
+                .map(transformTx(xpub, receive.addresses, change.addresses));
         }
 
-        pending = mempool
-            .getTransactions(addresses)
-            .map(transformTx(xpub, receive.addresses, change.addresses));
+        checkpoint.receiveCount = receive.addresses.length;
+        checkpoint.changeCount = change.addresses.length;
     }
 
     const cache = {

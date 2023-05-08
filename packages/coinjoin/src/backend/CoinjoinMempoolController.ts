@@ -1,10 +1,11 @@
 /* eslint no-underscore-dangle: ["error", { "allowAfterThis": true }] */
 
 import type { Network } from '@trezor/utxo-lib';
-import { promiseAllSequence, arrayDistinct } from '@trezor/utils';
+import { promiseAllSequence } from '@trezor/utils';
 
 import type { Logger } from '../types';
 import type { BlockbookTransaction, MempoolClient } from '../types/backend';
+import type { AddressController } from './CoinjoinAddressController';
 import { getMempoolAddressScript, getMempoolFilter } from './filters';
 import { getAllTxAddresses } from './backendUtils';
 import { MEMPOOL_PURGE_CYCLE } from '../constants';
@@ -14,9 +15,9 @@ type MempoolStatus = 'stopped' | 'running';
 export type MempoolController = {
     get status(): MempoolStatus;
     start(): Promise<void>;
-    init(addresses: string[]): Promise<void>;
+    init(...addressControllers: AddressController[]): Promise<BlockbookTransaction[]>;
     update(force?: boolean): Promise<void>;
-    getTransactions(addresses: string[]): BlockbookTransaction[];
+    getTransactions(...addressControllers: AddressController[]): BlockbookTransaction[];
 };
 
 type CoinjoinMempoolControllerSettings = {
@@ -84,25 +85,48 @@ export class CoinjoinMempoolController implements MempoolController {
         }
     }
 
-    async init(addresses: string[]) {
-        const filters = await this.client.fetchMempoolFilters();
-        const scripts = addresses.map(addr => getMempoolAddressScript(addr, this.network));
-        const txids = Object.entries(filters)
-            .filter(([txid, filter]) => {
-                const isMatch = getMempoolFilter(filter, txid);
-                return scripts.some(isMatch);
-            })
-            .map(([txid]) => txid);
+    async init(...addressControllers: AddressController[]) {
+        const filters = await this.client
+            .fetchMempoolFilters()
+            .then(res =>
+                Object.entries(res).map(
+                    ([txid, filter]) => [txid, getMempoolFilter(filter, txid)] as const,
+                ),
+            );
+
+        const addTxs = (txids: string[]) =>
+            promiseAllSequence(
+                txids
+                    .filter(txid => !this.mempool.has(txid))
+                    .map(
+                        txid => () =>
+                            this.client
+                                .fetchTransaction(txid)
+                                .then(this.onTxAdd)
+                                .catch(() => {}),
+                    ),
+            );
+
+        if (!addressControllers.length) {
+            await addTxs(filters.map(([txid]) => txid));
+            this.lastPurge = new Date().getTime();
+            return [...this.mempool.values()];
+        }
+
+        const findTxs = async ({ address }: { address: string }) => {
+            const script = getMempoolAddressScript(address, this.network);
+            const txids = filters.filter(([, isMatch]) => isMatch(script)).map(([txid]) => txid);
+            await addTxs(txids);
+            return this.addressTxids.get(address) ?? [];
+        };
+
+        const set = new Set<string>();
+        const onTxs = (txids: string[]) => txids.forEach(set.add, set);
         await promiseAllSequence(
-            txids.map(
-                txid => () =>
-                    this.client
-                        .fetchTransaction(txid)
-                        .then(this.onTxAdd)
-                        .catch(() => {}), // Missing txs can be ignored
-            ),
+            addressControllers.map(controller => () => controller.analyze(findTxs, onTxs)),
         );
         this.lastPurge = new Date().getTime();
+        return Array.from(set, txid => this.mempool.get(txid)!);
     }
 
     async start() {
@@ -132,11 +156,15 @@ export class CoinjoinMempoolController implements MempoolController {
         removeTxids.forEach(this.onTxRemove);
     }
 
-    getTransactions(addresses?: string[]) {
-        if (!addresses) return Array.from(this.mempool.values());
-        return addresses
-            .flatMap(address => this.addressTxids.get(address) ?? [])
-            .filter(arrayDistinct)
-            .map(txid => this.mempool.get(txid)!);
+    getTransactions(...addressControllers: AddressController[]) {
+        if (!addressControllers.length) return Array.from(this.mempool.values());
+
+        const set = new Set<string>();
+        const findTxs = ({ address }: { address: string }) => this.addressTxids.get(address) ?? [];
+        const onTxs = (txids: string[]) => txids.forEach(set.add, set);
+
+        addressControllers.forEach(controller => controller.analyze(findTxs, onTxs));
+
+        return Array.from(set, txid => this.mempool.get(txid)!);
     }
 }
