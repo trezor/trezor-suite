@@ -24,8 +24,11 @@ export class MockMempoolClient implements MempoolClient {
         );
     }
 
-    fetchTransaction() {
-        return Promise.reject();
+    fetchTransaction(txid: string) {
+        const tx = this.mempoolTxs.find(t => t.txid === txid);
+        return tx
+            ? Promise.resolve(tx as unknown as BlockbookTransaction)
+            : Promise.reject(new Error('not found'));
     }
 
     private listener?: (tx: BlockbookTransaction) => void;

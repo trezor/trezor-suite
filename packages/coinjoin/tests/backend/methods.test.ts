@@ -231,4 +231,40 @@ describe(`CoinjoinBackend methods`, () => {
         expect(progresses).toHaveLength(1);
         expect(progresses[0]).toEqual(cp3);
     });
+
+    it('scanAccount derive pending', async () => {
+        client.setFixture([{ ...FIXTURES.BLOCKS[0], txs: [] }]);
+
+        const scan1 = await scanAccount(
+            { descriptor: FIXTURES.SEGWIT_XPUB, checkpoints: [EMPTY_CHECKPOINT] },
+            getContext(() => {}),
+        );
+
+        const info1 = getAccountInfo({
+            descriptor: FIXTURES.SEGWIT_XPUB,
+            network: networks.regtest,
+            transactions: scan1.pending,
+            checkpoint: scan1.checkpoint,
+        });
+
+        expect(scan1.checkpoint.receiveCount).toBe(20);
+        expect(info1.addresses.unused.length).toBe(20);
+
+        client.setFixture([{ ...FIXTURES.BLOCKS[0], txs: [] }], [FIXTURES.TX_4_PENDING]);
+
+        const scan2 = await scanAccount(
+            { descriptor: FIXTURES.SEGWIT_XPUB, checkpoints: [scan1.checkpoint] },
+            getContext(() => {}),
+        );
+
+        const info2 = getAccountInfo({
+            descriptor: FIXTURES.SEGWIT_XPUB,
+            network: networks.regtest,
+            transactions: scan2.pending,
+            checkpoint: scan2.checkpoint,
+        });
+
+        expect(scan2.checkpoint.receiveCount).toBe(22);
+        expect(info2.addresses.unused.length).toBe(22);
+    });
 });

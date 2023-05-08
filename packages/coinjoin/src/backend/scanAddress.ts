@@ -9,6 +9,15 @@ import type {
     ScanAddressContext,
     ScanAddressResult,
 } from '../types/backend';
+import { AddressController } from './CoinjoinAddressController';
+
+const getAddressController = (address: string): AddressController => ({
+    addresses: [{ address }],
+    analyze: async (findTxs, onTxs) => {
+        const txs = findTxs({ address });
+        onTxs?.('then' in txs ? await txs : txs);
+    },
+});
 
 export const scanAddress = async (
     params: ScanAddressParams & { checkpoints: ScanAddressCheckpoint[] },
@@ -38,18 +47,22 @@ export const scanAddress = async (
     }
 
     let pending: Transaction[] = [];
+    const addressController = getAddressController(address);
 
     if (mempool) {
         if (mempool.status === 'stopped') {
             await mempool.start();
-            await mempool.init([address]);
+            pending = await mempool
+                .init(addressController)
+                .then(transactions =>
+                    transactions.map(tx => transformTransaction(address, undefined, tx)),
+                );
         } else {
             await mempool.update();
+            pending = mempool
+                .getTransactions(addressController)
+                .map(tx => transformTransaction(address, undefined, tx));
         }
-
-        pending = mempool
-            .getTransactions([address])
-            .map(tx => transformTransaction(address, undefined, tx));
     }
 
     return {

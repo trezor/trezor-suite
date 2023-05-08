@@ -22,10 +22,19 @@ describe('CoinjoinMempoolController', () => {
     });
 
     it('All at once', async () => {
-        await mempool.start();
-        TXS.forEach(client.fireTx.bind(client));
+        client.setMempoolTxs(TXS);
+        await mempool.init();
         expect(mempool.getTransactions()).toEqual(TXS);
-        expect(mempool.getTransactions([ADDRESS])).toEqual(TXS_MATCH);
+        expect(
+            mempool.getTransactions({
+                addresses: [{ address: ADDRESS }],
+                analyze: async (getTxs, onTxs) => {
+                    const txs = getTxs({ address: ADDRESS });
+                    onTxs?.('then' in txs ? await txs : txs);
+                },
+            }),
+        ).toEqual(TXS_MATCH);
+        client.setMempoolTxs([]);
         await mempool.update(true);
         expect(mempool.getTransactions()).toEqual([]);
     });
@@ -63,8 +72,8 @@ describe('CoinjoinMempoolController', () => {
             filter: address =>
                 address === SEGWIT_RECEIVE_ADDRESSES[1] || address === SEGWIT_CHANGE_ADDRESSES[0],
         });
-        await mempool.start();
-        TXS.forEach(client.fireTx.bind(client));
+        client.setMempoolTxs(TXS);
+        await mempool.init();
         expect(mempool.getTransactions()).toEqual([TXS[1], TXS[3], TXS[4]]);
     });
 });
