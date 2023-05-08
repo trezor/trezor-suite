@@ -14,13 +14,8 @@ type RequestEnableTorProps = Omit<Extract<UserContextPayload, { type: 'tor-loadi
 
 export const TorLoading = ({ onCancel, decision }: RequestEnableTorProps) => {
     const callback = (result: boolean) => {
-        if (result) {
-            decision.resolve(true);
-            return;
-        }
-
         onCancel();
-        decision.resolve(false);
+        decision.resolve(result);
     };
     return <TorLoader ModalWrapper={SmallModal} callback={callback} />;
 };
