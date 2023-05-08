@@ -1,7 +1,8 @@
 import { transformTransaction } from '@trezor/blockchain-link-utils/lib/blockbook';
 
-import { getBlockAddressScript, getBlockFilter } from './filters';
-import { doesTxContainAddress, deriveAddresses } from './backendUtils';
+import { getBlockFilter } from './filters';
+import { doesTxContainAddress } from './backendUtils';
+import { CoinjoinAddressController } from './CoinjoinAddressController';
 import type {
     Transaction,
     AccountAddress,
@@ -11,7 +12,6 @@ import type {
     ScanAccountCheckpoint,
     ScanAccountContext,
     ScanAccountResult,
-    PrederivedAddress,
 } from '../types/backend';
 import { DISCOVERY_LOOKOUT, DISCOVERY_LOOKOUT_EXTENDED } from '../constants';
 
@@ -21,54 +21,30 @@ const transformTx =
         // It doesn't matter for transformTransaction which receive addrs are used and which are unused
         transformTransaction(xpub, { used: receive, unused: [], change }, tx);
 
-const analyzeAddresses = async (
-    addresses: AccountAddress[],
-    isMatch: (script: Buffer) => boolean,
-    getBlock: () => Promise<BlockbookBlock>,
-    deriveMore: (from: number, count: number) => AccountAddress[],
-    txs: Set<BlockbookTransaction>,
-    lookout = DISCOVERY_LOOKOUT,
-): Promise<AccountAddress[]> => {
-    let addrs = addresses;
-    for (let i = 0; i < addrs.length; ++i) {
-        const { address, script } = addrs[i];
-        if (isMatch(script)) {
-            // eslint-disable-next-line no-await-in-loop
-            const block = await getBlock();
-            const transactions = block.txs.filter(doesTxContainAddress(address));
-            if (transactions.length) {
-                transactions.forEach(txs.add, txs);
-                const missing = lookout + i + 1 - addrs.length;
-                if (missing > 0) {
-                    addrs = addrs.concat(deriveMore(addrs.length, missing));
-                }
-            }
-        }
-    }
-    return addrs;
-};
-
 export const scanAccount = async (
     params: ScanAccountParams & { checkpoints: ScanAccountCheckpoint[] },
     { client, network, filters, mempool, abortSignal, onProgress }: ScanAccountContext,
 ): Promise<ScanAccountResult> => {
     const xpub = params.descriptor;
-    const deriveMore =
-        (type: 'receive' | 'change', prederived?: PrederivedAddress[]) =>
-        (from: number, count: number) =>
-            deriveAddresses(prederived, xpub, type, from, count, network).map(
-                ({ address, path }) => ({
-                    address,
-                    path,
-                    script: getBlockAddressScript(address, network),
-                }),
-            );
-
     const { checkpoints } = params;
-    const { receiveCount, changeCount } = checkpoints[0];
-    const { receivePrederived, changePrederived } = params.cache ?? {};
-    let receive: AccountAddress[] = deriveMore('receive', receivePrederived)(0, receiveCount);
-    let change: AccountAddress[] = deriveMore('change', changePrederived)(0, changeCount);
+
+    const receive = new CoinjoinAddressController(
+        xpub,
+        'receive',
+        DISCOVERY_LOOKOUT,
+        network,
+        checkpoints[0].receiveCount,
+        params.cache?.receivePrederived,
+    );
+
+    const change = new CoinjoinAddressController(
+        xpub,
+        'change',
+        DISCOVERY_LOOKOUT_EXTENDED,
+        network,
+        checkpoints[0].changeCount,
+        params.cache?.changePrederived,
+    );
 
     let checkpoint = checkpoints[0];
 
@@ -80,31 +56,30 @@ export const scanAccount = async (
         const isMatch = getBlockFilter(filter, blockHash);
 
         let block: BlockbookBlock | undefined;
-        const lazyBlock = async () =>
-            block ?? (block = await client.fetchBlock(blockHeight, { signal: abortSignal }));
+        const findTxs = async ({ script, address }: AccountAddress) => {
+            if (isMatch(script)) {
+                if (!block) {
+                    block = await client.fetchBlock(blockHeight, { signal: abortSignal });
+                }
+                return block.txs.filter(doesTxContainAddress(address));
+            }
+            return [];
+        };
 
-        receive = await analyzeAddresses(
-            receive,
-            isMatch,
-            lazyBlock,
-            deriveMore('receive', receivePrederived),
-            txs,
-        );
-        change = await analyzeAddresses(
-            change,
-            isMatch,
-            lazyBlock,
-            deriveMore('change', changePrederived),
-            txs,
-            DISCOVERY_LOOKOUT_EXTENDED,
-        );
+        const onTxs = (transactions: BlockbookTransaction[]) => transactions.forEach(txs.add, txs);
 
-        const transactions = Array.from(txs, transformTx(xpub, receive, change));
+        await receive.analyze(findTxs, onTxs);
+        await change.analyze(findTxs, onTxs);
+
+        const transactions = Array.from(
+            txs,
+            transformTx(xpub, receive.addresses, change.addresses),
+        );
         checkpoint = {
             blockHash,
             blockHeight,
-            receiveCount: receive.length,
-            changeCount: change.length,
+            receiveCount: receive.addresses.length,
+            changeCount: change.addresses.length,
         };
 
         txs.clear();
@@ -118,7 +93,7 @@ export const scanAccount = async (
 
     let pending: Transaction[] = [];
     if (mempool) {
-        const addresses = receive.concat(change).map(({ address }) => address);
+        const addresses = receive.addresses.concat(change.addresses).map(({ address }) => address);
 
         if (mempool.status === 'stopped') {
             await mempool.start();
@@ -127,12 +102,14 @@ export const scanAccount = async (
             await mempool.update();
         }
 
-        pending = mempool.getTransactions(addresses).map(transformTx(xpub, receive, change));
+        pending = mempool
+            .getTransactions(addresses)
+            .map(transformTx(xpub, receive.addresses, change.addresses));
     }
 
     const cache = {
-        receivePrederived: receive.map(({ address, path }) => ({ address, path })),
-        changePrederived: change.map(({ address, path }) => ({ address, path })),
+        receivePrederived: receive.addresses.map(({ address, path }) => ({ address, path })),
+        changePrederived: change.addresses.map(({ address, path }) => ({ address, path })),
     };
 
     return {
