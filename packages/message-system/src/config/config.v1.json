@@ -1,7 +1,7 @@
 {
     "version": 1,
-    "timestamp": "2023-05-03T00:00:00+00:00",
-    "sequence": 30,
+    "timestamp": "2023-05-08T00:00:00+00:00",
+    "sequence": 31,
     "actions": [
         {
             "conditions": [
@@ -73,7 +73,7 @@
                 "feature": [
                     {
                         "domain": "coinjoin",
-                        "flag": true,
+                        "flag": false,
                         "isPublic": true,
                         "averageAnonymityGainPerRound": 0.34,
                         "roundsFailRateBuffer": 10,
@@ -127,26 +127,14 @@
                 "variant": "warning",
                 "category": "context",
                 "content": {
-                    "en-GB": "Due to high mining fees in the network, coinjoin may take longer. Thanks for your patience. Coinjoin is in public beta and your feedback is appreciated.",
-                    "en": "Due to high mining fees in the network, coinjoin may take longer. Thanks for your patience. Coinjoin is in public beta and your feedback is appreciated.",
-                    "es": "Debido a las altas tasas de minería en la red, coinjoin puede tardar más tiempo. Gracias por tu paciencia. Coinjoin está en beta pública y agradecemos tus comentarios.",
-                    "cs": "Vzhledem k vysokým poplatkům za těžbu v síti může coinjoin trvat déle. Děkujeme za vaši trpělivost. Coinjoin je ve veřejné beta verzi a vaše zpětná vazba je vítána.",
-                    "ru": "В связи с высокой платой за добычу в сети, присоединение монет может занять больше времени. Спасибо за ваше терпение. Coinjoin находится в стадии публичного бета-тестирования, и мы будем рады вашим отзывам.",
-                    "ja": "ネットワークのマイニング手数料が高いため、コインジョインに時間がかかる場合があります。ご辛抱ありがとうございます。Coinjoinはパブリックベータ版であり、あなたのフィードバックをお待ちしています。"
+                    "en-GB": "Coinjoin is temporarily unavailable due to technical issues",
+                    "en": "Coinjoin is temporarily unavailable due to technical issues",
+                    "es": "Coinjoin no está disponible temporalmente por problemas técnicos",
+                    "cs": "Coinjoin je z technických důvodů dočasně nedostupný",
+                    "ru": "Coinjoin временно недоступен по техническим причинам",
+                    "ja": "Coinjoinは技術的な問題により、一時的に利用できません。"
                 },
-                "context": { "domain": "accounts.coinjoin" },
-                "cta": {
-                    "action": "external-link",
-                    "link": "https://satoshilabs.typeform.com/coinjoin",
-                    "label": {
-                        "en-GB": "Give Feedback",
-                        "en": "Give Feedback",
-                        "es": "Envía tus comentarios",
-                        "cs": "Ohodnotit",
-                        "ru": "Оставить отзыв",
-                        "ja": "フィードバックをする"
-                    }
-                }
+                "context": { "domain": "accounts.coinjoin" }
             }
         },
         {
