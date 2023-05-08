@@ -1,3 +1,4 @@
+import { arrayDistinct } from '@trezor/utils';
 import { deriveAddresses as deriveNewAddresses, Network } from '@trezor/utxo-lib';
 import { getAddressType } from '@trezor/utxo-lib/lib/address';
 
@@ -7,17 +8,22 @@ export const isTxConfirmed = ({ blockHeight = -1 }: { blockHeight?: number }) =>
 
 type VinVoutAddressTx = { vin: Pick<VinVout, 'addresses'>[]; vout: Pick<VinVout, 'addresses'>[] };
 
-const doesAnyAddressFulfill = (
-    { vin, vout }: VinVoutAddressTx,
-    condition: (address: string) => boolean,
-) =>
+export const getAllTxAddresses = ({ vin, vout }: VinVoutAddressTx) =>
     vin
         .concat(vout)
         .flatMap(({ addresses = [] }) => addresses)
-        .some(condition);
+        .filter(arrayDistinct);
+
+const doesAnyAddressFulfill = (
+    { vin, vout }: VinVoutAddressTx,
+    condition: (address: string) => boolean,
+) => getAllTxAddresses({ vin, vout }).some(condition);
+
+export const isTaprootAddress = (address: string, network: Network) =>
+    getAddressType(address, network) === 'p2tr';
 
 export const isTaprootTx = (tx: VinVoutAddressTx, network: Network) =>
-    doesAnyAddressFulfill(tx, address => getAddressType(address, network) === 'p2tr');
+    doesAnyAddressFulfill(tx, address => isTaprootAddress(address, network));
 
 export const doesTxContainAddress = (address: string) => (tx: VinVoutAddressTx) =>
     doesAnyAddressFulfill(tx, addr => addr === address);

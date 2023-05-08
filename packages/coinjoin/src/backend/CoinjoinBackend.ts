@@ -8,7 +8,7 @@ import { scanAccount } from './scanAccount';
 import { scanAddress } from './scanAddress';
 import { getAccountInfo } from './getAccountInfo';
 import { createPendingTransaction } from './createPendingTx';
-import { deriveAddresses, isTaprootTx } from './backendUtils';
+import { deriveAddresses, isTaprootAddress } from './backendUtils';
 import { getNetwork } from '../utils/settingsUtils';
 import type { CoinjoinBackendSettings, LogEvent, Logger, LogLevel } from '../types';
 import type {
@@ -44,7 +44,7 @@ export class CoinjoinBackend extends TypedEmitter<Events> {
         this.mempool = new CoinjoinMempoolController({
             client: this.client,
             network: this.network,
-            filter: tx => isTaprootTx(tx, this.network),
+            filter: address => isTaprootAddress(address, this.network),
             logger,
         });
     }
