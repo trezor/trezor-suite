@@ -7582,6 +7582,7 @@ __metadata:
     "@storybook/core": ^6.5.16
     "@storybook/manager-webpack5": ^6.5.16
     "@storybook/react": ^6.5.16
+    "@suite-common/suite-utils": "workspace:*"
     "@tippyjs/react": ^4.2.6
     "@trezor/device-utils": "workspace:*"
     "@trezor/dom-utils": "workspace:*"
@@ -8054,6 +8055,7 @@ __metadata:
   resolution: "@trezor/suite-data@workspace:packages/suite-data"
   dependencies:
     "@suite-common/suite-types": "workspace:*"
+    "@suite-common/suite-utils": "workspace:*"
     "@trezor/env-utils": "workspace:*"
     "@trezor/urls": "workspace:*"
     "@trezor/utils": "workspace:*"

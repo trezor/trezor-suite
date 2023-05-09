@@ -2,7 +2,7 @@ import styled, { css } from 'styled-components';
 import React, { useEffect, useRef, useState } from 'react';
 import Lottie, { LottieOptions } from 'lottie-react';
 import * as semver from 'semver';
-import { resolveStaticPath } from '@trezor/utils';
+import { resolveStaticPath } from '@suite-common/suite-utils';
 
 import { useTheme } from '@trezor/components';
 

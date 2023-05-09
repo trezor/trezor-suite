@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { resolveStaticPath } from '@trezor/utils';
+import { resolveStaticPath } from '@suite-common/suite-utils';
 import { PngImage, SvgImage, PNG_IMAGES, SVG_IMAGES } from './images';
 
 const PNG_PATH = 'images/png';

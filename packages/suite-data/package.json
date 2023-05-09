@@ -18,6 +18,7 @@
     },
     "dependencies": {
         "@suite-common/suite-types": "workspace:*",
+        "@suite-common/suite-utils": "workspace:*",
         "@trezor/env-utils": "workspace:*",
         "@trezor/urls": "workspace:*",
         "@trezor/utils": "workspace:*"

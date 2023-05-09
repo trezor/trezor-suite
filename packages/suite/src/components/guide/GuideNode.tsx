@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { darken } from 'polished';
 import { analytics, EventType } from '@trezor/suite-analytics';
-import { resolveStaticPath } from '@trezor/utils';
+import { resolveStaticPath } from '@suite-common/suite-utils';
 
 import { Icon, variables, useTheme } from '@trezor/components';
 import { useActions, useSelector } from '@suite-hooks';

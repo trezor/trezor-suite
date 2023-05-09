@@ -13,7 +13,7 @@ import * as cardanoStakingActions from '@wallet-actions/cardanoStakingActions';
 import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
 import { selectIsPendingTransportEvent } from '@suite-reducers/deviceReducer';
 import * as suiteActions from '../actions/suite/suiteActions';
-import { resolveStaticPath } from '@trezor/utils';
+import { resolveStaticPath } from '@suite-common/suite-utils';
 import { fixLoadedCoinjoinAccount } from '@wallet-utils/coinjoinUtils';
 
 const connectSrc = resolveStaticPath('connect/');
