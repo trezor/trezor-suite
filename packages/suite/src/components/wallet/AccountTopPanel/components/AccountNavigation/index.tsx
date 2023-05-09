@@ -15,7 +15,7 @@ interface AccountNavigationProps {
     inView?: boolean;
 }
 
-const useStackingStatus = (account?: Account) => {
+const useStakingStatus = (account?: Account) => {
     const cardanoNetwork = account && account.symbol === 'ada' ? 'mainnet' : 'preview';
     const { trezorPools, isFetchLoading } = useSelector(
         state => state.wallet.cardanoStaking[cardanoNetwork],
@@ -44,7 +44,7 @@ export const AccountNavigation = ({
 
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     const { account } = selectedAccount;
-    const showStakingStatus = useStackingStatus(account);
+    const showStakingStatus = useStakingStatus(account);
     const routerParams = useSelector(state => state.router.params) as WalletParams;
     const network = getNetwork(routerParams?.symbol || '');
     const networkType = account?.networkType || network?.networkType || 'bitcoin';
@@ -87,7 +87,7 @@ export const AccountNavigation = ({
             },
             title: <Translation id="TR_NAV_STAKING" />,
             position: 'primary',
-            isHidden: !['cardano'].includes(networkType),
+            isHidden: !networkFeatures?.includes('staking'),
             rightContent: showStakingStatus ? <Dot /> : undefined,
         },
         {

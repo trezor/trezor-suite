@@ -349,7 +349,7 @@ export const networks = {
         bip43Path: "m/1852'/1815'/i'",
         decimals: 6,
         testnet: false,
-        features: ['tokens'],
+        features: ['tokens', 'staking'],
         explorer: {
             tx: 'https://explorer.blockfrost.dev/transaction/',
             account: 'https://explorer.blockfrost.dev/account/',
@@ -378,7 +378,7 @@ export const networks = {
         label: 'TR_TESTNET_COINS_LABEL',
         decimals: 6,
         testnet: true,
-        features: ['tokens'],
+        features: ['tokens', 'staking'],
         explorer: {
             tx: 'https://testnet-explorer.blockfrost.dev/transaction/',
             account: 'https://testnet-explorer.blockfrost.dev/account/',
@@ -417,7 +417,7 @@ export type AccountType =
     | 'imported'
     | 'taproot'
     | 'legacySegwit';
-export type NetworkFeature = 'rbf' | 'sign-verify' | 'amount-unit' | 'tokens';
+export type NetworkFeature = 'rbf' | 'sign-verify' | 'amount-unit' | 'tokens' | 'staking';
 export type Network = Without<NetworkValue, 'accountTypes'> & {
     symbol: NetworkSymbol;
     accountType?: 'normal' | AccountType;
