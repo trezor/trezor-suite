@@ -5,7 +5,7 @@ import { BottomSheet, Box, Card, Text } from '@suite-native/atoms';
 import { EthereumTokenTransfer, WalletAccountTransaction } from '@suite-native/ethereum-tokens';
 import { AccountKey } from '@suite-common/wallet-types';
 import { useNativeStyles } from '@trezor/styles';
-import { Icon } from '@trezor/icons';
+import { Icon } from '@suite-common/icons';
 
 import { iconContainerStyle, TransactionDetailListItem } from './TransactionDetailListItem';
 

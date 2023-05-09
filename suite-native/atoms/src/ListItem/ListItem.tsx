@@ -1,7 +1,7 @@
 import React from 'react';
 import { TouchableOpacity, TouchableOpacityProps, View } from 'react-native';
 
-import { Icon } from '@trezor/icons';
+import { Icon } from '@suite-common/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { Box } from '../Box';

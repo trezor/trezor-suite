@@ -2,6 +2,7 @@
     "extends": "../../tsconfig.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        { "path": "../../suite-common/icons" },
         { "path": "../../suite-common/logger" },
         { "path": "../atoms" },
         { "path": "../config" },
@@ -9,7 +10,6 @@
         { "path": "../module-settings" },
         { "path": "../navigation" },
         { "path": "../storage" },
-        { "path": "../../packages/icons" },
         { "path": "../../packages/styles" },
         { "path": "../../packages/theme" }
     ]

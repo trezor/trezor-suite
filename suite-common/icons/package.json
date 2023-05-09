@@ -1,5 +1,5 @@
 {
-    "name": "@trezor/icons",
+    "name": "@suite-common/icons",
     "version": "1.0.0",
     "private": true,
     "license": "See LICENSE.md in repo root",

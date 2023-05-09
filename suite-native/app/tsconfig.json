@@ -11,6 +11,7 @@
         {
             "path": "../../suite-common/formatters"
         },
+        { "path": "../../suite-common/icons" },
         {
             "path": "../../suite-common/redux-utils"
         },
@@ -41,7 +42,6 @@
         { "path": "../toasts" },
         { "path": "../transactions" },
         { "path": "../../packages/connect" },
-        { "path": "../../packages/icons" },
         { "path": "../../packages/styles" },
         { "path": "../../packages/suite-data" },
         { "path": "../../packages/theme" }

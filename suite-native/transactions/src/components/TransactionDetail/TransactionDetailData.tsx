@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { Box, Card, Text, VStack } from '@suite-native/atoms';
 import { AccountKey } from '@suite-common/wallet-types';
-import { Icon } from '@trezor/icons';
+import { Icon } from '@suite-common/icons';
 import { useFormatters } from '@suite-common/formatters';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { selectTransactionBlockTimeById, TransactionsRootState } from '@suite-common/wallet-core';

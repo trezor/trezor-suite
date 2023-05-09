@@ -1,7 +1,7 @@
 import React from 'react';
 import { TouchableOpacity } from 'react-native';
 
-import { CryptoIcon, CryptoIconName } from '@trezor/icons';
+import { CryptoIcon, CryptoIconName } from '@suite-common/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Box, Button, Text } from '@suite-native/atoms';
 import { NetworkSymbol } from '@suite-common/wallet-config';

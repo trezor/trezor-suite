@@ -1,4 +1,4 @@
-import { IconName } from '@trezor/icons';
+import { IconName } from '@suite-common/icons';
 import { NativeStyleObject } from '@trezor/styles';
 
 export type BaseListItem = {

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
-import { EthereumTokenIcon } from '@trezor/icons';
+import { EthereumTokenIcon } from '@suite-common/icons';
 import {
     EthereumTokenAmountFormatter,
     EthereumTokenToFiatAmountFormatter,

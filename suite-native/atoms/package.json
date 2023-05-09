@@ -12,9 +12,9 @@
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
         "@shopify/react-native-skia": "0.1.188",
+        "@suite-common/icons": "workspace:*",
         "@suite-native/storage": "workspace:*",
         "@trezor/env-utils": "workspace:*",
-        "@trezor/icons": "workspace:*",
         "@trezor/styles": "workspace:*",
         "@trezor/theme": "workspace:*",
         "@trezor/utils": "workspace:*",

@@ -33,7 +33,7 @@ import {
     Icon,
     IconName,
     icons,
-} from '@trezor/icons';
+} from '@suite-common/icons';
 import { CoinsSettings } from '@suite-native/module-settings';
 import { isDevelopOrDebugEnv } from '@suite-native/config';
 import { TypographyStyle } from '@trezor/theme';

@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { networks, NetworkSymbol } from '@suite-common/wallet-config';
-import { CryptoIcon } from '@trezor/icons';
+import { CryptoIcon } from '@suite-common/icons';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { Box } from '@suite-native/atoms';
 import { isTestnet } from '@suite-common/wallet-utils';

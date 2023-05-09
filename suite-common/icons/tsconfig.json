@@ -2,7 +2,7 @@
     "extends": "../../tsconfig.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
-        { "path": "../styles" },
-        { "path": "../theme" }
+        { "path": "../../packages/styles" },
+        { "path": "../../packages/theme" }
     ]
 }

@@ -3,7 +3,7 @@ import React from 'react';
 import { Atom, useAtom } from 'jotai';
 
 import { Box, Text } from '@suite-native/atoms';
-import { Icon, IconName } from '@trezor/icons';
+import { Icon, IconName } from '@suite-common/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 type PriceChangeIndicatorProps = {

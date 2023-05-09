@@ -5,6 +5,7 @@
         {
             "path": "../../suite-common/analytics"
         },
+        { "path": "../../suite-common/icons" },
         {
             "path": "../../suite-common/suite-config"
         },
@@ -19,7 +20,6 @@
         { "path": "../storage" },
         { "path": "../theme" },
         { "path": "../../packages/connect" },
-        { "path": "../../packages/icons" },
         { "path": "../../packages/styles" },
         { "path": "../../packages/theme" }
     ]

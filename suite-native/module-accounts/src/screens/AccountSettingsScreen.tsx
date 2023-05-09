@@ -16,7 +16,7 @@ import {
     selectAccountLabel,
     selectFormattedAccountType,
 } from '@suite-common/wallet-core';
-import { CryptoIcon } from '@trezor/icons';
+import { CryptoIcon } from '@suite-common/icons';
 
 import { AccountRenameButton } from '../components/AccountRenameButton';
 import { AccountSettingsShowXpub } from '../components/AccountSettingsShowXpub';

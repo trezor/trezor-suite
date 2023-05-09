@@ -3,7 +3,7 @@ import { TouchableOpacity } from 'react-native';
 
 import { G } from '@mobily/ts-belt';
 
-import { Icon } from '@trezor/icons';
+import { Icon } from '@suite-common/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { Box } from '../Box';

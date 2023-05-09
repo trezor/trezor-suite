@@ -2,7 +2,7 @@ import React from 'react';
 import { TouchableOpacity } from 'react-native';
 
 import { Box, Text } from '@suite-native/atoms';
-import { EthereumTokenIcon } from '@trezor/icons';
+import { EthereumTokenIcon } from '@suite-common/icons';
 import {
     EthereumTokenAmountFormatter,
     EthereumTokenToFiatAmountFormatter,

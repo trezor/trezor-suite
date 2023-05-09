@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { Box, Chip } from '@suite-native/atoms';
-import { CryptoIcon, CryptoIconName } from '@trezor/icons';
+import { CryptoIcon, CryptoIconName } from '@suite-common/icons';
 
 import { SettingsSection } from './SettingsSection';
 

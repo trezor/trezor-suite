@@ -1,7 +1,7 @@
 import { G, S } from '@mobily/ts-belt';
 
-import { ethereumTokenIcons, EthereumTokenIconName } from '@trezor/icons';
 import { TokenSymbol } from '@suite-common/wallet-types';
+import { ethereumTokenIcons, EthereumTokenIconName } from '@suite-common/icons';
 
 export const getEthereumTokenIconName = (symbol: TokenSymbol) => {
     if (!symbol) return 'erc20';

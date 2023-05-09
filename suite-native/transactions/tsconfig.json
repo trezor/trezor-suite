@@ -5,6 +5,7 @@
         {
             "path": "../../suite-common/formatters"
         },
+        { "path": "../../suite-common/icons" },
         {
             "path": "../../suite-common/suite-config"
         },
@@ -34,7 +35,6 @@
         {
             "path": "../../packages/blockchain-link-types"
         },
-        { "path": "../../packages/icons" },
         { "path": "../../packages/styles" },
         { "path": "../../packages/theme" }
     ]

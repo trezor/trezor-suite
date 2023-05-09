@@ -6,7 +6,7 @@ import {
     EthereumTokenAmountFormatter,
     EthereumTokenToFiatAmountFormatter,
 } from '@suite-native/formatters';
-import { EthereumTokenIcon } from '@trezor/icons';
+import { EthereumTokenIcon } from '@suite-common/icons';
 import {
     selectEthereumAccountToken,
     getEthereumTokenIconName,

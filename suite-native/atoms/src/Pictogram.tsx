@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 
-import { IconName, Icon } from '@trezor/icons';
+import { IconName, Icon } from '@suite-common/icons';
 import { Color } from '@trezor/theme';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 

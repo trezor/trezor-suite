@@ -7,7 +7,7 @@ import {
     FlagIconName,
     isCryptoIconType,
     isFlagIconType,
-} from '@trezor/icons';
+} from '@suite-common/icons';
 
 import { BottomSheet } from '../Sheet/BottomSheet';
 import { SelectItemValue, SelectItem } from './SelectItem';

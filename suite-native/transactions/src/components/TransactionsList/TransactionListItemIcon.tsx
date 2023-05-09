@@ -3,7 +3,7 @@ import React from 'react';
 import { Box } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { TransactionType } from '@suite-common/wallet-types';
-import { CryptoIcon, CryptoIconName, Icon, IconName } from '@trezor/icons';
+import { CryptoIcon, CryptoIconName, Icon, IconName } from '@suite-common/icons';
 
 type TransactionListItemIconProps = {
     cryptoIconName: CryptoIconName;

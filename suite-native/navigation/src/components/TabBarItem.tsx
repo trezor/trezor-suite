@@ -1,7 +1,7 @@
 import React from 'react';
 import { TouchableOpacity, View } from 'react-native';
 
-import { Icon, IconName } from '@trezor/icons';
+import { Icon, IconName } from '@suite-common/icons';
 import { Text } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 

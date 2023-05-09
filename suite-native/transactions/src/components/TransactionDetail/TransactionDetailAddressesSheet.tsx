@@ -6,7 +6,7 @@ import { AccountKey } from '@suite-common/wallet-types';
 import { BottomSheet, Box, Button, Card, Text, Toggle, VStack } from '@suite-native/atoms';
 import { TransactionsRootState } from '@suite-common/wallet-core';
 import { useCopyToClipboard } from '@suite-native/helpers';
-import { Icon } from '@trezor/icons';
+import { Icon } from '@suite-common/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { selectTransactionAddresses, AddressesType } from '../../selectors';

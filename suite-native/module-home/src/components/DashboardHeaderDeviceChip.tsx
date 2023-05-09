@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { TouchableOpacity } from 'react-native';
 
-import { Icon } from '@trezor/icons';
+import { Icon } from '@suite-common/icons';
 import { useNativeStyles, prepareNativeStyle } from '@trezor/styles';
 import { BottomSheet, Box, Text } from '@suite-native/atoms';
 

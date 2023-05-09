@@ -1,7 +1,7 @@
 import { atom } from 'jotai';
 import { RequireAllOrNone } from 'type-fest';
 
-import { IconName } from '@trezor/icons';
+import { IconName } from '@suite-common/icons';
 import { ButtonColorScheme, PictogramVariant } from '@suite-native/atoms';
 
 export type Alert = RequireAllOrNone<

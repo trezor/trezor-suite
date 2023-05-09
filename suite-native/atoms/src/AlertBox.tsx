@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Icon } from '@trezor/icons';
+import { Icon } from '@suite-common/icons';
 
 import { Box } from './Box';
 import { Text } from './Text';

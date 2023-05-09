@@ -1,7 +1,7 @@
 import React from 'react';
 import { TouchableOpacity } from 'react-native';
 
-import { Icon } from '@trezor/icons';
+import { Icon } from '@suite-common/icons';
 import { NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 type CheckBoxProps = {

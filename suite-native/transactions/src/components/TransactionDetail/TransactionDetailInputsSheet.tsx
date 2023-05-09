@@ -3,7 +3,7 @@ import React from 'react';
 import { NetworkSymbol } from 'suite-common/wallet-config/src';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Icon } from '@trezor/icons';
+import { Icon } from '@suite-common/icons';
 import { WalletAccountTransaction } from '@suite-common/wallet-types';
 import { Box, Card, Text, VStack } from '@suite-native/atoms';
 import { AccountAddressFormatter, CryptoAmountFormatter } from '@suite-native/formatters';

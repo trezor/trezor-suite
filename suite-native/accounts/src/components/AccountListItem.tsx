@@ -9,7 +9,7 @@ import {
 import { Badge, Box, Text } from '@suite-native/atoms';
 import { Account } from '@suite-common/wallet-types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { CryptoIcon } from '@trezor/icons';
+import { CryptoIcon } from '@suite-common/icons';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { FiatRatesRootState } from '@suite-native/fiat-rates';
 import { selectIsEthereumAccountWithTokensWithFiatRates } from '@suite-native/ethereum-tokens';

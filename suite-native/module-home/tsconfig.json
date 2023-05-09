@@ -5,6 +5,7 @@
         {
             "path": "../../suite-common/formatters"
         },
+        { "path": "../../suite-common/icons" },
         { "path": "../assets" },
         { "path": "../atoms" },
         { "path": "../formatters" },
@@ -13,7 +14,6 @@
         { "path": "../module-settings" },
         { "path": "../navigation" },
         { "path": "../receive" },
-        { "path": "../../packages/icons" },
         { "path": "../../packages/styles" }
     ]
 }

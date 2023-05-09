@@ -23,7 +23,7 @@ import {
     vec,
 } from '@shopify/react-native-skia';
 
-import { icons } from '@trezor/icons';
+import { icons } from '@suite-common/icons';
 import { useNativeStyles } from '@trezor/styles';
 
 const ROUNDED_CORNER_SIZE = 15;
