@@ -17,7 +17,6 @@
         "storybook-build": "build-storybook -c .storybook -o .build-storybook"
     },
     "dependencies": {
-        "@suite-common/suite-utils": "workspace:*",
         "@tippyjs/react": "^4.2.6",
         "@trezor/device-utils": "workspace:*",
         "@trezor/dom-utils": "workspace:*",
