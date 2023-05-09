@@ -11,11 +11,11 @@ do
     echo "Checking $commit"
 
     # The commit message must contain either
-    # 1. "cherry-picked from [some commit in develop]"
+    # 1. "cherry picked from ([some commit in develop])"
     # shellcheck disable=SC2076
     if [[ $message =~ "(cherry picked from commit" ]]; then
       # remove last ")" and extract commit hash
-      develop_commit=$($message | tr ' ' '\n' | tail -1 | sed 's/)$//')
+      develop_commit=$(echo "$message" | tr ' ' '\n' | tail -1 | sed 's/)$//')
       # check if develop really contains this commit hash
       if [[ $(git branch -a --contains "$develop_commit" | grep --only-matching "remotes/origin/develop") == "remotes/origin/develop" ]]; then
         continue
