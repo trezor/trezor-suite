@@ -1,6 +1,6 @@
 import TrezorConnect, { Device, Unsuccessful } from '@trezor/connect';
 import { analytics, EventType } from '@trezor/suite-analytics';
-import { resolveStaticPath } from '@trezor/utils';
+import { resolveStaticPath } from '@suite-common/suite-utils';
 
 import { FIRMWARE } from '@firmware-actions/constants';
 import { isDesktop } from '@suite-utils/env';

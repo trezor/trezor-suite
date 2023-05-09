@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { analytics, EventType } from '@trezor/suite-analytics';
-import { resolveStaticPath } from '@trezor/utils';
+import { resolveStaticPath } from '@suite-common/suite-utils';
 
 import { homescreensBW64x128, homescreensColor240x240 } from '@suite-constants/homescreens';
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';

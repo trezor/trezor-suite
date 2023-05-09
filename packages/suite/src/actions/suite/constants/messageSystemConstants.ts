@@ -1,4 +1,4 @@
-import { resolveStaticPath } from '@trezor/utils';
+import { resolveStaticPath } from '@suite-common/suite-utils';
 
 export const FETCH_CONFIG_SUCCESS = '@message-system/fetch-config-success';
 export const FETCH_CONFIG_SUCCESS_UPDATE = '@message-system/fetch-config-success-update';

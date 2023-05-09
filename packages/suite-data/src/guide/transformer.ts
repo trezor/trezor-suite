@@ -1,7 +1,7 @@
 import { join } from 'path';
 import * as fs from 'fs-extra';
 
-import { resolveStaticPath } from '@trezor/utils';
+import { resolveStaticPath } from '@suite-common/suite-utils';
 import { GuideNode } from '@suite-common/suite-types';
 
 /** Removes the front-matter from beginning of a string. */

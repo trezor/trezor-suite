@@ -10,6 +10,9 @@
         {
             "path": "../../suite-common/suite-types"
         },
+        {
+            "path": "../../suite-common/suite-utils"
+        },
         { "path": "../env-utils" },
         { "path": "../urls" },
         { "path": "../utils" }

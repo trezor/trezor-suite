@@ -23,7 +23,6 @@ export * from './objectPartition';
 export * from './parseHostname';
 export * from './promiseAllSequence';
 export * from './redactUserPath';
-export * from './resolveStaticPath';
 export * from './scheduleAction';
 export * from './throwError';
 export * from './truncateMiddle';
