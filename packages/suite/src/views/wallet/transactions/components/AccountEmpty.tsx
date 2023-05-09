@@ -36,7 +36,7 @@ const Description = styled.span`
 `;
 
 const StyledImage = styled(Image)`
-    width: 85px;
+    width: auto;
     height: 80px;
     margin-top: 60px;
     margin-bottom: 28px;

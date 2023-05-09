@@ -1,11 +1,11 @@
 import { useCallback } from 'react';
-import { AppState } from '@suite-types';
 import { useActions, useSelector, useTranslation } from '@suite-hooks';
 import * as sendFormActions from '@wallet-actions/sendFormActions';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { DEFAULT_VALUES, DEFAULT_PAYMENT } from '@suite-common/wallet-constants';
 import { FormState, UseSendFormState } from '@wallet-types/sendForm';
 import { getFeeLevels } from '@suite-common/wallet-utils';
+import type { SelectedAccountLoaded } from '@suite-common/wallet-types';
 
 export const useCoinmarketRecomposeAndSign = () => {
     const { translationString } = useTranslation();
@@ -23,7 +23,7 @@ export const useCoinmarketRecomposeAndSign = () => {
 
     const recomposeAndSign = useCallback(
         async (
-            selectedAccount: Extract<AppState['wallet']['selectedAccount'], { status: 'loaded' }>,
+            selectedAccount: SelectedAccountLoaded,
             address: string,
             amount: string,
             destinationTag?: string,

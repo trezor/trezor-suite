@@ -1,10 +1,11 @@
 import React from 'react';
 import { WalletLayout } from '@wallet-components';
 import { useSelector } from '@suite-hooks';
-import type { AppState, ExtendedMessageDescriptor } from '@suite-types';
+import type { ExtendedMessageDescriptor } from '@suite-types';
+import type { SelectedAccountLoaded } from '@suite-common/wallet-types';
 
 export interface WithSelectedAccountLoadedProps {
-    selectedAccount: Extract<AppState['wallet']['selectedAccount'], { status: 'loaded' }>;
+    selectedAccount: SelectedAccountLoaded;
 }
 
 export interface WithSelectedAccountLoadedOptions {

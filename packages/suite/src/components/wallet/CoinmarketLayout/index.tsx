@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import Navigation from './components/Navigation';
 import AccountTransactions from './components/AccountTransactions';
 import { Translation } from '@suite-components';
-import type { AppState } from '@suite-types';
+import type { SelectedAccountLoaded } from '@suite-common/wallet-types';
 
 const Content = styled.div`
     padding: 29px 41px;
@@ -23,7 +23,7 @@ const BottomContent = styled.div`
 
 interface Props {
     children: ReactNode;
-    selectedAccount: Extract<AppState['wallet']['selectedAccount'], { status: 'loaded' }>;
+    selectedAccount: SelectedAccountLoaded;
     onClearFormButtonClick?: () => void;
 }
 

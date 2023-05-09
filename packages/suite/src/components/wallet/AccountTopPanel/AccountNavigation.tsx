@@ -1,12 +1,13 @@
 import React from 'react';
-import { Account, WalletParams } from '@wallet-types';
+import { WalletParams } from '@wallet-types';
 import { AppNavigation, AppNavigationItem } from '@suite-components/AppNavigation';
 import { Translation } from '@suite-components/Translation';
 import { useActions, useSelector } from '@suite-hooks';
 import { getNetwork, getNetworkFeatures } from '@suite-common/wallet-utils';
 import * as routerActions from '@suite-actions/routerActions';
 import * as modalActions from '@suite-actions/modalActions';
-import { Dot } from './components/Dot';
+import { Dot } from './Dot';
+import { useCardanoStakingStatus } from '@wallet-hooks/useCardanoStakingStatus';
 
 interface AccountNavigationProps {
     filterPosition?: 'primary' | 'secondary';
@@ -14,22 +15,6 @@ interface AccountNavigationProps {
     primaryContent?: React.ReactNode;
     inView?: boolean;
 }
-
-const useStakingStatus = (account?: Account) => {
-    const cardanoNetwork = account && account.symbol === 'ada' ? 'mainnet' : 'preview';
-    const { trezorPools, isFetchLoading } = useSelector(
-        state => state.wallet.cardanoStaking[cardanoNetwork],
-    );
-
-    if (!account?.misc || !('staking' in account?.misc)) return false;
-
-    const { poolId } = account.misc.staking;
-    const currentPool =
-        poolId && trezorPools ? trezorPools?.pools.find(p => p.bech32 === poolId) : null;
-    const isStakingOnTrezorPool = !isFetchLoading ? !!currentPool : true;
-
-    return !account.misc.staking.isActive || !isStakingOnTrezorPool;
-};
 
 export const AccountNavigation = ({
     filterPosition,
@@ -44,7 +29,7 @@ export const AccountNavigation = ({
 
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     const { account } = selectedAccount;
-    const showStakingStatus = useStakingStatus(account);
+    const showCardanoStakingStatus = useCardanoStakingStatus(account);
     const routerParams = useSelector(state => state.router.params) as WalletParams;
     const network = getNetwork(routerParams?.symbol || '');
     const networkType = account?.networkType || network?.networkType || 'bitcoin';
@@ -88,7 +73,7 @@ export const AccountNavigation = ({
             title: <Translation id="TR_NAV_STAKING" />,
             position: 'primary',
             isHidden: !networkFeatures?.includes('staking'),
-            rightContent: showStakingStatus ? <Dot /> : undefined,
+            rightContent: showCardanoStakingStatus ? <Dot /> : undefined,
         },
         {
             id: 'wallet-send',
