@@ -9,7 +9,7 @@ import WalletReceive from '@wallet-views/receive';
 import WalletDetails from '@wallet-views/details';
 import WalletTokens from '@wallet-views/tokens';
 import WalletSend from '@wallet-views/send';
-import WalletStaking from '@wallet-views/staking';
+import { WalletStaking } from '@wallet-views/staking/WalletStaking';
 import WalletSignVerify from '@wallet-views/sign-verify';
 import WalletAnonymize from '@wallet-views/anonymize';
 import WalletCoinmarketBuy from '@wallet-views/coinmarket/buy';

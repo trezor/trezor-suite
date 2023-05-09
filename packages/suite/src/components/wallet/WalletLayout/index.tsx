@@ -51,6 +51,7 @@ export const WalletLayout = ({
             return (
                 <Wrapper>
                     <AccountBanners account={selectedAccount} />
+                    {showEmptyHeaderPlaceholder && <EmptyHeaderPlaceholder />}
                     <CoinjoinAccountDiscovery />
                 </Wrapper>
             );
@@ -58,6 +59,7 @@ export const WalletLayout = ({
 
         return (
             <Wrapper>
+                {showEmptyHeaderPlaceholder && <EmptyHeaderPlaceholder />}
                 <SkeletonRectangle
                     width="100%"
                     height="300px"

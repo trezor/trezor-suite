@@ -1,11 +1,5 @@
-import { Card, variables, H1 } from '@trezor/components';
+import { variables, H1 } from '@trezor/components';
 import styled from 'styled-components';
-
-export const StyledCard = styled(Card)`
-    display: flex;
-    flex-direction: column;
-    margin-top: 16px;
-`;
 
 export const Heading = styled.div`
     padding-left: 5px;
@@ -21,10 +15,7 @@ export const StyledH1 = styled(H1)`
 export const Row = styled.div`
     display: flex;
     width: 100%;
-
-    & + & {
-        margin-top: 32px;
-    }
+    margin-top: 24px;
 `;
 
 export const Column = styled.div`
@@ -34,27 +25,11 @@ export const Column = styled.div`
     max-width: 100%;
 `;
 
-export const TransparentBox = styled.div`
-    display: flex;
-    flex-direction: column;
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
-    font-size: ${variables.FONT_SIZE.SMALL};
-    border-radius: 6px;
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-`;
-
-export const InfoBox = styled(TransparentBox)`
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
-    background: ${props => props.theme.BG_GREY};
-    padding: 16px;
-    border-radius: 6px;
-`;
-
 export const Title = styled.div`
     display: flex;
     color: ${props => props.theme.TYPE_DARK_GREY};
     font-size: ${variables.FONT_SIZE.NORMAL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     align-items: center;
     margin-bottom: 16px;
 `;
@@ -62,9 +37,9 @@ export const Title = styled.div`
 export const Actions = styled.div`
     display: flex;
     align-items: center;
-    justify-content: flex-end;
     width: 100%;
-    margin-top: 20px;
+    margin-top: 24px;
+    justify-content: center;
 `;
 
 export const Text = styled.div`
@@ -77,7 +52,6 @@ export const Text = styled.div`
 
 export const Content = styled.div`
     display: flex;
-    margin-top: 32px;
     overflow: hidden;
     padding-left: 10px;
     margin-left: -10px;
@@ -85,15 +59,14 @@ export const Content = styled.div`
 `;
 
 export const Value = styled.div`
-    display: flex;
-    margin-top: 10px;
+    font-size: ${variables.FONT_SIZE.NORMAL};
+    color: ${props => props.theme.TYPE_DARK_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    font-size: ${variables.FONT_SIZE.H2};
-`;
-
-export const ValueSmall = styled.div`
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    font-size: ${variables.FONT_SIZE.BIG};
-    overflow: hidden;
-    text-overflow: ellipsis;
+    font-variant-numeric: tabular-nums slashed-zero;
+    width: fit-content;
+    background: ${props => props.theme.BG_LIGHT_GREY};
+    border: 1px solid ${props => props.theme.STROKE_GREY};
+    border-radius: 8px;
+    word-break: break-all;
+    padding: 10px;
 `;

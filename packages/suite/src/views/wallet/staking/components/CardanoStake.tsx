@@ -1,33 +1,30 @@
 import React, { useEffect } from 'react';
-import styled from 'styled-components';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
-import { Button, Icon, Tooltip } from '@trezor/components';
+import { Button, Icon, Tooltip, Card, Warning } from '@trezor/components';
 import { Translation } from '@suite-components/Translation';
 import { HiddenPlaceholder } from '@suite-components/HiddenPlaceholder';
 import { useCardanoStaking, getReasonForDisabledAction } from '@wallet-hooks/useCardanoStaking';
-import ActionInProgress from '../ActionInProgress';
+import { CardanoActionPending } from './CardanoActionPending';
 import { Account } from '@wallet-types';
 import {
     Title,
     Row,
     Column,
-    InfoBox,
     Actions,
     Heading,
-    ValueSmall,
+    Value,
     Text,
-    StyledCard,
     Content,
     StyledH1,
-} from '../primitives';
+} from './CardanoPrimitives';
 import { DeviceModel } from '@trezor/device-utils';
 import { useDeviceModel } from '@suite-hooks/useDeviceModel';
 
-const ColumnDeposit = styled(Column)`
-    margin-left: 30px;
-`;
+interface CardanoStakeProps {
+    account: Account;
+}
 
-const Delegate = (props: { account: Account }) => {
+export const CardanoStake = ({ account }: CardanoStakeProps) => {
     const {
         address,
         delegate,
@@ -40,8 +37,6 @@ const Delegate = (props: { account: Account }) => {
         pendingStakeTx,
     } = useCardanoStaking();
     const deviceModel = useDeviceModel() as DeviceModel.TT | DeviceModel.T2B1; // only T and T2B1 have Capability_Cardano
-
-    const { account } = props;
 
     useEffect(() => {
         calculateFeeAndDeposit('delegate');
@@ -64,9 +59,14 @@ const Delegate = (props: { account: Account }) => {
     );
 
     const reasonMessageId = getReasonForDisabledAction(delegatingAvailable?.reason);
+    const isStakingDisabled =
+        account.availableBalance === '0' ||
+        !delegatingAvailable.status ||
+        !deviceAvailable.status ||
+        !!pendingStakeTx;
 
     return (
-        <StyledCard>
+        <Card>
             <StyledH1>
                 <Icon icon="CROSS" size={25} />
                 <Heading>
@@ -83,67 +83,80 @@ const Delegate = (props: { account: Account }) => {
                             <Translation id="TR_STAKING_STAKE_ADDRESS" />
                         </Title>
                         <HiddenPlaceholder>
-                            <ValueSmall>{address}</ValueSmall>
+                            <Value>{address}</Value>
                         </HiddenPlaceholder>
                     </Column>
                 </Content>
             </Row>
-            <Row>
-                {delegatingAvailable.status && !pendingStakeTx ? (
-                    // delegation is allowed
-                    <>
+            {delegatingAvailable.status && !pendingStakeTx ? (
+                // delegation is allowed
+                <>
+                    <Row>
                         <Column>
                             <Title>
                                 <Translation id="TR_STAKING_DEPOSIT" />
                             </Title>
-                            <ValueSmall>
+                            <Value>
                                 {formatNetworkAmount(deposit || '0', account.symbol)}{' '}
                                 {account.symbol.toUpperCase()}
-                            </ValueSmall>
+                            </Value>
                         </Column>
-                        <ColumnDeposit>
+                    </Row>
+                    <Row>
+                        <Column>
                             <Title>
                                 <Translation id="TR_STAKING_FEE" />
                             </Title>
-                            <ValueSmall>
+                            <Value>
                                 {formatNetworkAmount(fee || '0', account.symbol)}{' '}
                                 {account.symbol.toUpperCase()}
-                            </ValueSmall>
-                        </ColumnDeposit>
-                    </>
-                ) : (
-                    // If building a transaction fails we don't have the information about used deposit and fee required
-                    <>
-                        {!delegatingAvailable.status &&
-                            delegatingAvailable.reason === 'UTXO_BALANCE_INSUFFICIENT' && (
+                            </Value>
+                        </Column>
+                    </Row>
+                </>
+            ) : (
+                // If building a transaction fails we don't have the information about used deposit and fee required
+                <>
+                    {!delegatingAvailable.status &&
+                        delegatingAvailable.reason === 'UTXO_BALANCE_INSUFFICIENT' && (
+                            <Row>
                                 <Column>
-                                    <InfoBox>
-                                        <Translation id="TR_STAKING_NOT_ENOUGH_FUNDS" />
-                                        <Translation
-                                            id="TR_STAKING_DEPOSIT_FEE_DECRIPTION"
-                                            values={{ feeAmount: 2 }}
-                                        />
-                                    </InfoBox>
+                                    <Warning variant="info">
+                                        <div>
+                                            <Translation id="TR_STAKING_NOT_ENOUGH_FUNDS" />
+                                            <br />
+                                            <Translation
+                                                id="TR_STAKING_DEPOSIT_FEE_DECRIPTION"
+                                                values={{ feeAmount: 2 }}
+                                            />
+                                        </div>
+                                    </Warning>
                                 </Column>
-                            )}
-                        {pendingStakeTx && <ActionInProgress />}
-                    </>
-                )}
-            </Row>
+                            </Row>
+                        )}
+                    {pendingStakeTx && (
+                        <Row>
+                            <CardanoActionPending />
+                        </Row>
+                    )}
+                </>
+            )}
             <Actions>
-                {deviceAvailable.status && delegatingAvailable.status ? (
-                    actionButton
-                ) : (
-                    <Tooltip
-                        maxWidth={285}
-                        content={reasonMessageId ? <Translation id={reasonMessageId} /> : undefined}
-                    >
-                        {actionButton}
-                    </Tooltip>
-                )}
+                <DeviceButton
+                    isDisabled={isStakingDisabled}
+                    isLoading={loading}
+                    onClick={delegate}
+                    deviceModel={deviceModel}
+                    tooltipContent={
+                        !reasonMessageId ||
+                        (deviceAvailable.status && delegatingAvailable.status) ? undefined : (
+                            <Translation id={reasonMessageId} />
+                        )
+                    }
+                >
+                    <Translation id="TR_STAKING_DELEGATE" />
+                </DeviceButton>
             </Actions>
-        </StyledCard>
+        </Card>
     );
 };
-
-export default Delegate;
