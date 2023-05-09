@@ -25,7 +25,7 @@
     ## when debugging or developing tests it does not make sense to have retries,
     ## in other cases retries are useful to avoid occasional failures due to flaky tests
     ALLOW_RETRY: 1
-    CYPRESS_TEST_URLS: ${CI_BUILD_REF_NAME}
+    CYPRESS_TEST_URLS: ${CI_COMMIT_REF_NAME}
   before_script:
     - docker login $CI_DEPENDENCY_PROXY_SERVER -u $CI_DEPENDENCY_PROXY_USER -p $CI_DEPENDENCY_PROXY_PASSWORD
   script:
@@ -79,7 +79,7 @@ suite web migrations:
   extends: .e2e web
   variables:
     # Each test file will be run for all urls in TEST_URLS array. Useful for migration tests
-    CYPRESS_TEST_URLS: release/22.5 ${CI_BUILD_REF_NAME}
+    CYPRESS_TEST_URLS: release/22.5 ${CI_COMMIT_REF_NAME}
     CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: 1
   parallel:
     matrix:
@@ -202,7 +202,7 @@ transport manual:
   variables:
     COMPOSE_PROJECT_NAME: $CI_JOB_ID
     COMPOSE_FILE: ./docker/docker-compose.connect-popup-ci.yml
-    URL: ${DEV_SERVER_URL}/connect/${CI_BUILD_REF_NAME}/
+    URL: ${DEV_SERVER_URL}/connect/${CI_COMMIT_REF_NAME}/
     TEST_FILE: $TEST_FILE
   script:
     - yarn install --immutable
@@ -387,7 +387,7 @@ connect model R:
 .e2e connect-web:
   stage: integration testing
   variables:
-    URL: ${DEV_SERVER_URL}/connect/${CI_BUILD_REF_NAME}/
+    URL: ${DEV_SERVER_URL}/connect/${CI_COMMIT_REF_NAME}/
   script:
     - yarn install --immutable
     - yarn workspace @trezor/connect-web test:e2e
