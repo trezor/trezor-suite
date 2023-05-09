@@ -66,6 +66,7 @@ export interface SuiteSettings {
     language: Locale;
     torOnionLinks: boolean;
     isCoinjoinReceiveWarningHidden: boolean;
+    isDesktopSuitePromoHidden: boolean;
     debug: DebugModeOptions;
     autodetect: AutodetectSettings;
 }
@@ -108,6 +109,7 @@ const initialState: SuiteState = {
         language: ensureLocale('en'),
         torOnionLinks: isWeb(),
         isCoinjoinReceiveWarningHidden: false,
+        isDesktopSuitePromoHidden: false,
         debug: {
             invityServerEnvironment: undefined,
             showDebugMenu: false,
@@ -218,6 +220,9 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
 
             case SUITE.COINJOIN_RECEIVE_WARNING:
                 draft.settings.isCoinjoinReceiveWarningHidden = action.payload;
+                break;
+            case SUITE.DESKTOP_SUITE_PROMO:
+                draft.settings.isDesktopSuitePromoHidden = action.payload;
                 break;
 
             case SUITE.LOCK_UI:

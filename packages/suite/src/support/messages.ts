@@ -7950,4 +7950,16 @@ export default defineMessages({
         id: 'TR_INCLUDING_FEE',
         defaultMessage: 'Including fee',
     },
+    TR_DESKTOP_APP_PROMO_HEADING: {
+        id: 'TR_DESKTOP_APP_PROMO_HEADING',
+        defaultMessage: 'Get the most out of Trezor Suite',
+    },
+    TR_DESKTOP_APP_PROMO_TEXT: {
+        id: 'TR_INCLUDING_FEE',
+        defaultMessage: 'Simple crypto management directly on your desktop',
+    },
+    TR_DESKTOP_APP_PROMO_GET: {
+        id: 'TR_DESKTOP_APP_PROMO_GET',
+        defaultMessage: 'Get for desktop',
+    },
 });

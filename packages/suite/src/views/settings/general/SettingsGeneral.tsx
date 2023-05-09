@@ -3,7 +3,7 @@ import React from 'react';
 import { SettingsLayout } from '@settings-components';
 import { SettingsSection } from '@suite-components/Settings';
 import { Translation } from '@suite-components';
-import { useSelector } from '@suite-hooks';
+import { useLayoutSize, useSelector } from '@suite-hooks';
 import { isDesktop, isWeb } from '@suite-utils/env';
 
 import { Language } from './Language';
@@ -19,16 +19,19 @@ import { ShowApplicationLog } from './ShowApplicationLog';
 import { ClearStorage } from './ClearStorage';
 import { VersionWithUpdate } from './VersionWithUpdate';
 import { EarlyAccess } from './EarlyAccess';
-import { getIsTorEnabled } from '@suite-utils/tor';
 import { BitcoinAmountUnit } from './BitcoinAmountUnit';
 import { NETWORKS } from '@wallet-config';
+import { DesktopSuiteBanner } from './DesktopSuiteBanner';
+import { selectTorState } from '@suite-reducers/suiteReducer';
+import { selectEnabledNetworks } from '@wallet-reducers/settingsReducer';
 
 export const SettingsGeneral = () => {
-    const { desktopUpdate, isTorEnabled, enabledNetworks } = useSelector(state => ({
-        desktopUpdate: state.desktopUpdate,
-        isTorEnabled: getIsTorEnabled(state.suite.torStatus),
-        enabledNetworks: state.wallet.settings.enabledNetworks,
-    }));
+    const isPromoHidden = useSelector(state => state.suite.settings.isDesktopSuitePromoHidden);
+    const { isTorEnabled } = useSelector(selectTorState);
+    const enabledNetworks = useSelector(selectEnabledNetworks);
+    const desktopUpdate = useSelector(state => state.desktopUpdate);
+
+    const { isMobileLayout } = useLayoutSize();
 
     const hasBitcoinNetworks = NETWORKS.some(
         ({ symbol, features }) =>
@@ -37,6 +40,8 @@ export const SettingsGeneral = () => {
 
     return (
         <SettingsLayout data-test="@settings/index">
+            {isWeb() && !isMobileLayout && !isPromoHidden && <DesktopSuiteBanner />}
+
             <SettingsSection title={<Translation id="TR_LOCALIZATION" />} icon="FLAG">
                 <Language />
                 <Fiat />
