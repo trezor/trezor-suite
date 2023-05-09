@@ -115,7 +115,7 @@ export const Badge = ({
             <Icon name={icon as IconName} color={iconColor} size={iconSize ?? size} />
         ) : (
             <CryptoIcon
-                name={icon as CryptoIconName}
+                symbol={icon as CryptoIconName}
                 size={size === 'small' ? 'extraSmall' : 'small'}
             />
         );

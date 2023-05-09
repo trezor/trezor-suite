@@ -6,10 +6,9 @@ import {
     selectAccountLabel,
     selectFormattedAccountType,
 } from '@suite-common/wallet-core';
-import { Badge, Box, Text } from '@suite-native/atoms';
+import { Badge, Box, RoundedIcon, Text } from '@suite-native/atoms';
 import { Account } from '@suite-common/wallet-types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { CryptoIcon } from '@suite-common/icons';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { FiatRatesRootState } from '@suite-native/fiat-rates';
 import { selectIsEthereumAccountWithTokensWithFiatRates } from '@suite-native/ethereum-tokens';
@@ -70,7 +69,7 @@ export const AccountListItem = ({ account, areTokensDisplayed = false }: Account
         >
             <Box flexDirection="row" alignItems="center" flex={1}>
                 <Box marginRight="medium">
-                    <CryptoIcon name={account.symbol} />
+                    <RoundedIcon name={account.symbol} />
                 </Box>
                 <Box style={applyStyle(accountDescriptionStyle)}>
                     <Text>{accountLabel}</Text>

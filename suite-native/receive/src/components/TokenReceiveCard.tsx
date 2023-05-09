@@ -1,8 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
-import { AlertBox, Badge, Box, Text, VStack } from '@suite-native/atoms';
-import { TokenIcon } from '@suite-common/icons';
+import { AlertBox, Badge, Box, RoundedIcon, Text, VStack } from '@suite-native/atoms';
 import {
     EthereumTokenAmountFormatter,
     EthereumTokenToFiatAmountFormatter,
@@ -37,15 +36,6 @@ const valuesContainerStyle = prepareNativeStyle(utils => ({
     paddingLeft: utils.spacings.small,
 }));
 
-const iconContainerStyle = prepareNativeStyle(utils => ({
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 12,
-    borderRadius: utils.borders.radii.round,
-    backgroundColor: utils.colors.backgroundSurfaceElevation2,
-    marginRight: utils.spacings.medium,
-}));
-
 export const TokenReceiveCard = ({
     tokenSymbol,
     contract,
@@ -68,8 +58,8 @@ export const TokenReceiveCard = ({
                 style={applyStyle(tokenReceiveCardStyle)}
             >
                 <Box flex={1} flexDirection="row" alignItems="center">
-                    <Box style={applyStyle(iconContainerStyle)}>
-                        <TokenIcon symbol={tokenSymbol} />
+                    <Box marginRight="medium">
+                        <RoundedIcon name={tokenSymbol} />
                     </Box>
                     <Box style={applyStyle(tokenDescriptionStyle)}>
                         <Text>{tokenName}</Text>

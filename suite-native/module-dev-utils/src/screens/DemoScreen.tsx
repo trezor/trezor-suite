@@ -25,7 +25,7 @@ import {
 } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Screen, ScreenHeader } from '@suite-native/navigation';
-import { CryptoIcon, TokenIcon, tokenIcons, Icon, IconName, icons } from '@suite-common/icons';
+import { CryptoIcon, tokenIcons, Icon, IconName, icons } from '@suite-common/icons';
 import { CoinsSettings } from '@suite-native/module-settings';
 import { isDevelopOrDebugEnv } from '@suite-native/config';
 import { TypographyStyle } from '@trezor/theme';
@@ -223,7 +223,7 @@ export const DemoScreen = () => {
                                     value={input3Text}
                                     onChangeText={setInput3Text}
                                     label="From"
-                                    leftIcon={<CryptoIcon name="btc" size="extraSmall" />}
+                                    leftIcon={<CryptoIcon symbol="btc" size="extraSmall" />}
                                     hasWarning
                                 />
                             </InputWrapper>
@@ -380,7 +380,7 @@ export const DemoScreen = () => {
                                     justifyContent="center"
                                     alignItems="center"
                                 >
-                                    <TokenIcon symbol={icon as TokenSymbol} />
+                                    <CryptoIcon symbol={icon as TokenSymbol} />
                                     <Text>{icon}</Text>
                                 </Box>
                             ))}

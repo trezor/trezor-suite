@@ -54,7 +54,7 @@ export const selectAssetsWithBalances = memoize((state: AssetsRootState) => {
             const network = networks[networkSymbol];
 
             const currentFiatRates = coins.find(
-                f => f.symbol.toLowerCase() === networkSymbol.toLowerCase(),
+                f => f.symbol?.toLowerCase() === networkSymbol.toLowerCase(),
             )?.current;
 
             // Note: This shouldn't be happening in a selector but rather in component itself.

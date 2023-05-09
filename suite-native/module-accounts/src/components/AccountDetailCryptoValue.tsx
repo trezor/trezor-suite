@@ -23,7 +23,7 @@ export const AccountDetailCryptoValue = ({
         marginBottom="large"
         justifyContent="center"
     >
-        <CryptoIcon name={networkSymbol} />
+        <CryptoIcon symbol={networkSymbol} size="extraSmall" />
         <CryptoAmountFormatter
             value={value}
             network={networkSymbol}

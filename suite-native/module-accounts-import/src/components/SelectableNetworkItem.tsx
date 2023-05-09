@@ -1,9 +1,9 @@
 import React from 'react';
 import { TouchableOpacity } from 'react-native';
 
-import { CryptoIcon, CryptoIconName } from '@suite-common/icons';
+import { CryptoIconName } from '@suite-common/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Box, Button, Text } from '@suite-native/atoms';
+import { Box, Button, RoundedIcon, Text } from '@suite-native/atoms';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { useFormatters } from '@suite-common/formatters';
 
@@ -21,15 +21,6 @@ const selectableAssetContentStyle = prepareNativeStyle(() => ({
     justifyContent: 'space-between',
     flex: 1,
     marginLeft: 12,
-}));
-
-const cryptoIconStyle = prepareNativeStyle(utils => ({
-    height: 48,
-    width: 48,
-    borderRadius: utils.borders.radii.round,
-    backgroundColor: utils.colors.backgroundSurfaceElevation2,
-    justifyContent: 'center',
-    alignItems: 'center',
 }));
 
 export const SelectableNetworkItem = ({
@@ -50,11 +41,7 @@ export const SelectableNetworkItem = ({
     return (
         <TouchableOpacity disabled={!onPress} onPress={handlePress}>
             <Box flexDirection="row" alignItems="center">
-                <Box justifyContent="center" alignItems="center">
-                    <Box style={applyStyle(cryptoIconStyle)}>
-                        <CryptoIcon name={iconName} />
-                    </Box>
-                </Box>
+                <RoundedIcon name={iconName} />
                 <Box style={applyStyle(selectableAssetContentStyle)}>
                     <Box flex={1} justifyContent="space-between" alignItems="flex-start">
                         <Text variant="body">{cryptoCurrencyName}</Text>

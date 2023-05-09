@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
-import { TokenIcon } from '@suite-common/icons';
+import { CryptoIcon } from '@suite-common/icons';
 import {
     EthereumTokenAmountFormatter,
     EthereumTokenToFiatAmountFormatter,
@@ -48,7 +48,7 @@ export const EthereumTokenInfo = ({
                     variant="label"
                 />
             }
-            icon={<TokenIcon symbol={symbol} />}
+            icon={<CryptoIcon symbol={symbol} />}
         >
             <EthereumTokenToFiatAmountFormatter
                 value={balance}

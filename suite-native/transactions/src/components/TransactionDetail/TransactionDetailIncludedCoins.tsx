@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
 import { TouchableOpacity } from 'react-native';
 
-import { BottomSheet, Box, Card, Text } from '@suite-native/atoms';
+import { BottomSheet, Box, Card, RoundedIcon, Text } from '@suite-native/atoms';
 import { EthereumTokenTransfer, WalletAccountTransaction } from '@suite-native/ethereum-tokens';
 import { AccountKey } from '@suite-common/wallet-types';
-import { useNativeStyles } from '@trezor/styles';
 import { Icon } from '@suite-common/icons';
 
-import { iconContainerStyle, TransactionDetailListItem } from './TransactionDetailListItem';
+import { TransactionDetailListItem } from './TransactionDetailListItem';
 
 type TransactionDetailIncludedCoinsProps = {
     accountKey: AccountKey;
@@ -26,24 +25,21 @@ const isSameTokenTransfer = (
 const isZeroAmountTransaction = (transaction: WalletAccountTransaction) =>
     transaction.amount.length === 0 || transaction.amount === '0';
 
-const IncludedCoinsSheetTrigger = ({ title, onPress }: { title: string; onPress: () => void }) => {
-    const { applyStyle } = useNativeStyles();
-    return (
-        <Card>
-            <TouchableOpacity onPress={onPress}>
-                <Box flexDirection="row" alignItems="center" justifyContent="space-between">
-                    <Box flexDirection="row" alignItems="center">
-                        <Box style={applyStyle(iconContainerStyle)}>
-                            <Icon name="treeStructure" size="large" />
-                        </Box>
-                        <Text>{title}</Text>
+const IncludedCoinsSheetTrigger = ({ title, onPress }: { title: string; onPress: () => void }) => (
+    <Card>
+        <TouchableOpacity onPress={onPress}>
+            <Box flexDirection="row" alignItems="center" justifyContent="space-between">
+                <Box flexDirection="row" alignItems="center">
+                    <Box marginRight="medium">
+                        <RoundedIcon name="treeStructure" />
                     </Box>
-                    <Icon name="circleRight" color="iconPrimaryDefault" />
+                    <Text>{title}</Text>
                 </Box>
-            </TouchableOpacity>
-        </Card>
-    );
-};
+                <Icon name="circleRight" color="iconPrimaryDefault" />
+            </Box>
+        </TouchableOpacity>
+    </Card>
+);
 
 export const TransactionDetailIncludedCoins = ({
     accountKey,

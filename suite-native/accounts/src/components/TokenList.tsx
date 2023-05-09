@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 
 import { A } from '@mobily/ts-belt';
 
-import { VStack } from '@suite-native/atoms';
 import {
     getEthereumTokenName,
     selectEthereumAccountsTokensWithFiatRates,
@@ -27,7 +26,7 @@ export const TokenList = ({ accountKey, onSelectAccount }: TokenListProps) => {
     if (A.isEmpty(accountTokens)) return null;
 
     return (
-        <VStack>
+        <>
             {accountTokens.map((token, index) => (
                 <TokenListItem
                     key={token.contract}
@@ -40,6 +39,6 @@ export const TokenList = ({ accountKey, onSelectAccount }: TokenListProps) => {
                     isLast={accountTokens?.length - 1 === index}
                 />
             ))}
-        </VStack>
+        </>
     );
 };

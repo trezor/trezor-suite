@@ -126,7 +126,6 @@ export const TransactionNotification = ({
                     symbol={notification.symbol}
                     isAnimated={isIconAnimated}
                     iconColor={isIconAnimated ? 'iconAlertYellow' : 'iconSubdued'}
-                    backgroundColor="backgroundSurfaceElevation2"
                 />
             }
             iconRight={<Icon name="circleRight" />}

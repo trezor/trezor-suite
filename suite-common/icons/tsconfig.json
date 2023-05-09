@@ -2,9 +2,9 @@
     "extends": "../../tsconfig.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        { "path": "../wallet-config" },
         { "path": "../wallet-types" },
         { "path": "../../packages/styles" },
-        { "path": "../../packages/theme" },
-        { "path": "../wallet-config" }
+        { "path": "../../packages/theme" }
     ]
 }

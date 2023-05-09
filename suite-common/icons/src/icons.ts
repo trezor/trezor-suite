@@ -57,6 +57,7 @@ export const icons = {
     qrCode: require('../assets/icons/qrCode.svg'),
     qrCodeImport: require('../assets/icons/qrCodeImport.svg'),
     question: require('../assets/icons/question.svg'),
+    questionLight: require('../assets/icons/questionLight.svg'),
     receive: require('../assets/icons/receive.svg'),
     receiveAlt: require('../assets/icons/receiveAlt.svg'),
     reject: require('../assets/icons/reject.svg'),

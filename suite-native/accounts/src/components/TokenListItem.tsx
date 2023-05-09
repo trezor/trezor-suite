@@ -1,8 +1,7 @@
 import React from 'react';
 import { TouchableOpacity } from 'react-native';
 
-import { Box, Text } from '@suite-native/atoms';
-import { TokenIcon } from '@suite-common/icons';
+import { Box, RoundedIcon, Text } from '@suite-native/atoms';
 import {
     EthereumTokenAmountFormatter,
     EthereumTokenToFiatAmountFormatter,
@@ -39,7 +38,8 @@ const horizontalLine = prepareNativeStyle(utils => ({
     height: utils.spacings.medium,
     borderLeftColor: utils.colors.borderDashed,
     borderLeftWidth: 1,
-    marginLeft: utils.spacings.medium + utils.spacings.large / 2,
+    marginVertical: utils.spacings.small / 2,
+    marginLeft: utils.spacings.medium + utils.spacings.large,
 }));
 
 export const TokenListItem = ({
@@ -58,36 +58,34 @@ export const TokenListItem = ({
     };
 
     return (
-        <>
-            <TouchableOpacity onPress={handleOnPress}>
-                <Box style={applyStyle(horizontalLine)} />
-                <Box
-                    flexDirection="row"
-                    justifyContent="space-between"
-                    alignItems="center"
-                    style={applyStyle(tokenListItemStyle, { isLast })}
-                >
-                    <Box flex={1} flexDirection="row" alignItems="center">
-                        <Box marginRight="small">
-                            <TokenIcon symbol={symbol} />
-                        </Box>
-                        <Text style={applyStyle(accountDescriptionStyle)}>{label}</Text>
+        <TouchableOpacity onPress={handleOnPress}>
+            <Box style={applyStyle(horizontalLine)} />
+            <Box
+                flexDirection="row"
+                justifyContent="space-between"
+                alignItems="center"
+                style={applyStyle(tokenListItemStyle, { isLast })}
+            >
+                <Box flex={1} flexDirection="row" alignItems="center">
+                    <Box marginRight="medium">
+                        <RoundedIcon name={symbol} />
                     </Box>
-                    <Box style={applyStyle(valuesContainerStyle)}>
-                        <EthereumTokenToFiatAmountFormatter
-                            value={balance ?? '0'}
-                            ethereumToken={symbol.toUpperCase() as TokenSymbol}
-                            contract={contract}
-                        />
-                        <EthereumTokenAmountFormatter
-                            value={balance ?? '0'}
-                            ethereumToken={symbol}
-                            numberOfLines={1}
-                            ellipsizeMode="tail"
-                        />
-                    </Box>
+                    <Text style={applyStyle(accountDescriptionStyle)}>{label}</Text>
                 </Box>
-            </TouchableOpacity>
-        </>
+                <Box style={applyStyle(valuesContainerStyle)}>
+                    <EthereumTokenToFiatAmountFormatter
+                        value={balance ?? '0'}
+                        ethereumToken={symbol.toUpperCase() as TokenSymbol}
+                        contract={contract}
+                    />
+                    <EthereumTokenAmountFormatter
+                        value={balance ?? '0'}
+                        ethereumToken={symbol}
+                        numberOfLines={1}
+                        ellipsizeMode="tail"
+                    />
+                </Box>
+            </Box>
+        </TouchableOpacity>
     );
 };

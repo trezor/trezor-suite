@@ -6,7 +6,7 @@ import { AccountAddressFormatter } from '@suite-native/formatters';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { TokenSymbol } from '@suite-common/wallet-types';
-import { CoinIcon } from '@suite-common/icons';
+import { CryptoIcon } from '@suite-common/icons';
 
 import { SummaryRow } from './TransactionDetailStatusSection';
 import { formatAddressLabel } from './TransactionDetailAddressesSheet';
@@ -113,7 +113,7 @@ export const TransactionDetailAddressesSection = ({
                 </Box>
                 {icon && (
                     <Box style={applyStyle(coinIconWrapperStyle)}>
-                        <CoinIcon symbol={icon} size="extraSmall" />
+                        <CryptoIcon symbol={icon} size="extraSmall" />
                     </Box>
                 )}
             </Box>

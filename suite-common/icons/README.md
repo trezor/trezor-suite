@@ -28,9 +28,5 @@ Components and their definitions are split out into two separate files:
 ```
 
 ```tsx
-<CryptoIcon name="btc" />
-```
-
-```tsx
-<TokenIcon symbol="usdt" />
+<CryptoIcon symbol="btc" />
 ```

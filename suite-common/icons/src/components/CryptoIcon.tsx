@@ -2,10 +2,15 @@ import React from 'react';
 
 import { Canvas, ImageSVG, useSVG } from '@shopify/react-native-skia';
 
-import { CryptoIconName, cryptoIcons } from '../icons';
+import { networks } from '@suite-common/wallet-config';
+import { TokenSymbol } from '@suite-common/wallet-types';
+
+import { CryptoIconName, cryptoIcons, TokenIconName, tokenIcons } from '../icons';
+
+export type CoinSymbol = CryptoIconName | TokenSymbol;
 
 type CryptoIconProps = {
-    name: CryptoIconName;
+    symbol: CoinSymbol;
     size?: CryptoIconSize;
 };
 
@@ -17,8 +22,19 @@ export const cryptoIconSizes = {
 
 export type CryptoIconSize = keyof typeof cryptoIconSizes;
 
-export const CryptoIcon = ({ name, size = 'small' }: CryptoIconProps) => {
-    const svg = useSVG(cryptoIcons[name]);
+const getIconFile = (symbol: CoinSymbol) => {
+    if (symbol in networks) return cryptoIcons[symbol as CryptoIconName];
+
+    const lowerCaseSymbol = symbol?.toLowerCase();
+    const tokenIconName = (
+        lowerCaseSymbol in tokenIcons ? lowerCaseSymbol : 'erc20'
+    ) as TokenIconName;
+    return tokenIcons[tokenIconName];
+};
+
+export const CryptoIcon = ({ symbol, size = 'small' }: CryptoIconProps) => {
+    const iconFile = getIconFile(symbol);
+    const svg = useSVG(iconFile);
     const sizeNumber = cryptoIconSizes[size];
 
     return (

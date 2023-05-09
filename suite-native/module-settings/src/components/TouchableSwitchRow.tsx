@@ -1,8 +1,8 @@
 import React, { ReactNode } from 'react';
 import { TouchableOpacity } from 'react-native';
 
-import { Box, Text, Switch } from '@suite-native/atoms';
-import { Icon, IconName } from '@suite-common/icons';
+import { Box, Text, Switch, RoundedIcon } from '@suite-native/atoms';
+import { IconName } from '@suite-common/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 type TouchableSwitchRowProps = {
@@ -19,18 +19,6 @@ const textStyle = prepareNativeStyle(_ => ({
 
 const contentStyle = prepareNativeStyle(_ => ({
     maxWidth: '70%',
-}));
-
-const ICON_SIZE = 48;
-const iconWrapperStyle = prepareNativeStyle(utils => ({
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: ICON_SIZE,
-    height: ICON_SIZE,
-    borderRadius: utils.borders.radii.round,
-    backgroundColor: utils.colors.backgroundSurfaceElevation0,
-    padding: utils.spacings.medium,
 }));
 
 export const TouchableSwitchRow = ({
@@ -55,9 +43,7 @@ export const TouchableSwitchRow = ({
                 marginVertical="medium"
             >
                 <Box style={applyStyle(contentStyle)} flexDirection="row">
-                    <Box style={applyStyle(iconWrapperStyle)}>
-                        <Icon color="iconSubdued" name={iconName} />
-                    </Box>
+                    <RoundedIcon name={iconName} color="iconSubdued" />
                     <Box alignItems="flex-start" style={applyStyle(textStyle)}>
                         <Text>{text}</Text>
                         {description && <Box>{description}</Box>}

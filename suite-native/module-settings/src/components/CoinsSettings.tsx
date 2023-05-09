@@ -56,7 +56,7 @@ export const CoinsSettings = () => (
             {dummyCoins.map(item => (
                 <Box marginRight="small" marginBottom="small" key={item.title}>
                     <Chip
-                        icon={<CryptoIcon name={item.iconName} />}
+                        icon={<CryptoIcon symbol={item.iconName} />}
                         description={item.description}
                         title={item.title}
                         onSelect={() => {}}
