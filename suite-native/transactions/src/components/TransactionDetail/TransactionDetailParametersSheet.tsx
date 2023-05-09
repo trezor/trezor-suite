@@ -1,15 +1,12 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
-import { fromWei } from 'web3-utils';
-
 import { AccountKey, WalletAccountTransaction } from '@suite-common/wallet-types';
 import { Box, Card, IconButton, Text, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-common/icons';
-import { getFeeRate, getFeeUnits } from '@suite-common/wallet-utils';
 import { selectTransactionConfirmations, TransactionsRootState } from '@suite-common/wallet-core';
 import { useCopyToClipboard } from '@suite-native/helpers';
-import { TransactionIdFormatter } from '@suite-native/formatters';
+import { FeeFormatter, TransactionIdFormatter } from '@suite-native/formatters';
 import { networks, NetworkType } from '@suite-common/wallet-config';
 
 import { TransactionDetailSheet } from './TransactionDetailSheet';
@@ -22,10 +19,9 @@ type TransactionDetailParametersSheetProps = {
     accountKey: AccountKey;
 };
 
-type EthereumParametersProps = Pick<
-    NonNullable<WalletAccountTransaction['ethereumSpecific']>,
-    'gasLimit' | 'gasUsed' | 'gasPrice' | 'nonce'
->;
+type EthereumParametersProps = {
+    transaction: WalletAccountTransaction;
+};
 
 type TransactionParameter =
     | keyof Pick<NonNullable<WalletAccountTransaction>, 'feeRate' | 'lockTime' | 'ethereumSpecific'>
@@ -40,18 +36,22 @@ const networkTypeToDisplayedParametersMap: Record<NetworkType, TransactionParame
 
 const getEnabledTitle = (enabled: boolean) => (enabled ? 'Enabled' : 'Disabled');
 
-const EthereumParameters = ({ gasLimit, gasUsed, gasPrice, nonce }: EthereumParametersProps) => (
-    <>
-        <TransactionDetailRow title="Gas limit">{gasLimit}</TransactionDetailRow>
-        <TransactionDetailRow title="Gas used">{gasUsed}</TransactionDetailRow>
-        {/* TODO: The `gasPrice` parameter should be handled inside of a fee formatter. */}
-        {/* https://github.com/trezor/trezor-suite/issues/7385 */}
-        <TransactionDetailRow title="Gas price">
-            {`${fromWei(gasPrice, 'gwei')} ${getFeeUnits('ethereum')}`}
-        </TransactionDetailRow>
-        <TransactionDetailRow title="Nonce">{nonce}</TransactionDetailRow>
-    </>
-);
+const EthereumParameters = ({ transaction }: EthereumParametersProps) => {
+    if (!transaction.ethereumSpecific) return null;
+
+    const { gasLimit, gasUsed, nonce } = transaction.ethereumSpecific;
+
+    return (
+        <>
+            <TransactionDetailRow title="Gas limit">{gasLimit}</TransactionDetailRow>
+            <TransactionDetailRow title="Gas used">{gasUsed}</TransactionDetailRow>
+            <TransactionDetailRow title="Gas price">
+                <FeeFormatter transaction={transaction} />
+            </TransactionDetailRow>
+            <TransactionDetailRow title="Nonce">{nonce}</TransactionDetailRow>
+        </>
+    );
+};
 
 const ConfirmationsCount = ({ txid, accountKey }: { txid: string; accountKey: AccountKey }) => {
     const confirmationsCount = useSelector((state: TransactionsRootState) =>
@@ -118,13 +118,11 @@ export const TransactionDetailParametersSheet = ({
                     <Card>
                         {displayedParameters.includes('ethereumSpecific') &&
                             transaction.ethereumSpecific && (
-                                <EthereumParameters {...transaction.ethereumSpecific} />
+                                <EthereumParameters transaction={transaction} />
                             )}
-                        {/* TODO: The `feeRate` parameter should be handled inside of a fee formatter. */}
-                        {/* https://github.com/trezor/trezor-suite/issues/7385 */}
                         {displayedParameters.includes('feeRate') && (
                             <TransactionDetailRow title="Fee rate">
-                                {`${getFeeRate(transaction)} ${getFeeUnits(networkType)}`}
+                                <FeeFormatter transaction={transaction} />
                             </TransactionDetailRow>
                         )}
                         {transaction.symbol === 'btc' && (
