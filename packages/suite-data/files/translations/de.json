@@ -104,7 +104,6 @@
   "RBF_TOOLTIP": "Knotenrichtlinie, die es erlaubt, eine unbestätigte Transaktion in einem Mempool durch eine andere Transaktion zu ersetzen, die mindestens eine der gleichen Eingaben ausgibt und eine höhere Transaktionsgebühr bezahlt.",
   "RECEIVE_ADDRESS": "Adresse",
   "RECEIVE_ADDRESS_FRESH": "Neue Adresse",
-  "RECEIVE_ADDRESS_LIMIT_EXCEEDED": "Limit überschritten...",
   "RECEIVE_ADDRESS_REVEAL": "Vollständige Adresse anzeigen",
   "RECEIVE_DESC_BITCOIN": "Um Geld zu erhalten, benötigen Sie eine neue Empfangsadresse. Es wird empfohlen, immer eine neue zu verwenden, da dies verhindert, dass jemand Ihre Transaktionen verfolgt. Sie können Ihre Adresse wiederverwenden, aber wir empfehlen dies nur in Ausnahmefällen.",
   "RECEIVE_DESC_ETHEREUM": "Benutzen Sie diese Adresse, um auch Token zu erhalten.",

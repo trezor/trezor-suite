@@ -94,7 +94,6 @@
   "RBF_TOOLTIP": "노드 정책은 mempool의 확인되지 않은 트랜잭션을 동일한 입력을 모두 사용하고 더 높은 트랜잭션 수수료를 지불하는 다른 트랜잭션으로 대체할 수 있도록 합니다. ",
   "RECEIVE_ADDRESS": "주소",
   "RECEIVE_ADDRESS_FRESH": "새로운 주소",
-  "RECEIVE_ADDRESS_LIMIT_EXCEEDED": "한도를 초과했습니다...",
   "RECEIVE_ADDRESS_REVEAL": "전체 주소 보기",
   "RECEIVE_DESC_BITCOIN": "자금을 받으려면 새로운 수신 주소를 얻어야 합니다. 다른 사람이 귀하의 거래를 추적할 수 없도록 항상 새로운 주소를 사용하는 것이 좋습니다. 주소를 재사용할 수 있지만 꼭 필요한 경우가 아니면 재사용하지 않는 편이 좋습니다.",
   "RECEIVE_DESC_ETHEREUM": "토큰을 받을 때도 이 주소를 사용하십시오.",

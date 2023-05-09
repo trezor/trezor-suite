@@ -36,7 +36,6 @@
   "RBF_ON": "RBF = AÇIK",
   "RECEIVE_ADDRESS": "Adres",
   "RECEIVE_ADDRESS_FRESH": "Yeni adres",
-  "RECEIVE_ADDRESS_LIMIT_EXCEEDED": "Limit aşıldı...",
   "RECEIVE_ADDRESS_REVEAL": "Adresi gösterin",
   "RECEIVE_TABLE_ADDRESS": "Adres",
   "RECEIVE_TABLE_NOT_USED": "Henüz kullanılmadı",
