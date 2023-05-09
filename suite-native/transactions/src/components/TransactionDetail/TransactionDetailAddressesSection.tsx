@@ -1,12 +1,12 @@
 import React from 'react';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
-import { TokenSymbol } from '@suite-common/wallet-types';
 import { Box, Text } from '@suite-native/atoms';
 import { AccountAddressFormatter } from '@suite-native/formatters';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { CoinIcon } from '@suite-native/ethereum-tokens';
+import { TokenSymbol } from '@suite-common/wallet-types';
+import { CoinIcon } from '@suite-common/icons';
 
 import { SummaryRow } from './TransactionDetailStatusSection';
 import { formatAddressLabel } from './TransactionDetailAddressesSheet';

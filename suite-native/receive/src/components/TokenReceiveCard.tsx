@@ -2,12 +2,11 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 
 import { AlertBox, Badge, Box, Text, VStack } from '@suite-native/atoms';
-import { EthereumTokenIcon } from '@suite-common/icons';
+import { TokenIcon } from '@suite-common/icons';
 import {
     EthereumTokenAmountFormatter,
     EthereumTokenToFiatAmountFormatter,
 } from '@suite-native/formatters';
-import { getEthereumTokenIconName } from '@suite-native/ethereum-tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { AccountKey, TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
 import { AccountsRootState, selectAccountLabel } from '@suite-common/wallet-core';
@@ -60,8 +59,6 @@ export const TokenReceiveCard = ({
         selectAccountLabel(state, accountKey),
     );
 
-    const iconName = getEthereumTokenIconName(tokenSymbol);
-
     return (
         <VStack>
             <Box
@@ -72,7 +69,7 @@ export const TokenReceiveCard = ({
             >
                 <Box flex={1} flexDirection="row" alignItems="center">
                     <Box style={applyStyle(iconContainerStyle)}>
-                        <EthereumTokenIcon name={iconName} />
+                        <TokenIcon symbol={tokenSymbol} />
                     </Box>
                     <Box style={applyStyle(tokenDescriptionStyle)}>
                         <Text>{tokenName}</Text>

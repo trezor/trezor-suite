@@ -25,18 +25,11 @@ import {
 } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Screen, ScreenHeader } from '@suite-native/navigation';
-import {
-    CryptoIcon,
-    EthereumTokenIcon,
-    EthereumTokenIconName,
-    ethereumTokenIcons,
-    Icon,
-    IconName,
-    icons,
-} from '@suite-common/icons';
+import { CryptoIcon, TokenIcon, tokenIcons, Icon, IconName, icons } from '@suite-common/icons';
 import { CoinsSettings } from '@suite-native/module-settings';
 import { isDevelopOrDebugEnv } from '@suite-native/config';
 import { TypographyStyle } from '@trezor/theme';
+import { TokenSymbol } from '@suite-common/wallet-types';
 
 const inputStackStyle = prepareNativeStyle(utils => ({
     borderRadius: utils.borders.radii.medium,
@@ -379,7 +372,7 @@ export const DemoScreen = () => {
                     <Box marginTop="medium">
                         <Text variant="titleMedium">Token Icons</Text>
                         <Box flexWrap="wrap" flexDirection="row">
-                            {Object.keys(ethereumTokenIcons).map((icon: string) => (
+                            {Object.keys(tokenIcons).map((icon: string) => (
                                 <Box
                                     key={icon}
                                     marginRight="large"
@@ -387,7 +380,7 @@ export const DemoScreen = () => {
                                     justifyContent="center"
                                     alignItems="center"
                                 >
-                                    <EthereumTokenIcon name={icon as EthereumTokenIconName} />
+                                    <TokenIcon symbol={icon as TokenSymbol} />
                                     <Text>{icon}</Text>
                                 </Box>
                             ))}

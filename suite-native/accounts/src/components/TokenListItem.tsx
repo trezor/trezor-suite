@@ -2,12 +2,11 @@ import React from 'react';
 import { TouchableOpacity } from 'react-native';
 
 import { Box, Text } from '@suite-native/atoms';
-import { EthereumTokenIcon } from '@suite-common/icons';
+import { TokenIcon } from '@suite-common/icons';
 import {
     EthereumTokenAmountFormatter,
     EthereumTokenToFiatAmountFormatter,
 } from '@suite-native/formatters';
-import { getEthereumTokenIconName } from '@suite-native/ethereum-tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { AccountKey, TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
 
@@ -58,8 +57,6 @@ export const TokenListItem = ({
         onSelectAccount(accountKey, contract);
     };
 
-    const iconName = getEthereumTokenIconName(symbol);
-
     return (
         <>
             <TouchableOpacity onPress={handleOnPress}>
@@ -72,7 +69,7 @@ export const TokenListItem = ({
                 >
                     <Box flex={1} flexDirection="row" alignItems="center">
                         <Box marginRight="small">
-                            <EthereumTokenIcon name={iconName} />
+                            <TokenIcon symbol={symbol} />
                         </Box>
                         <Text style={applyStyle(accountDescriptionStyle)}>{label}</Text>
                     </Box>

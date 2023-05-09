@@ -2,10 +2,9 @@ import React from 'react';
 
 import { Box } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { TokenSymbol, TransactionType, TransactionType } from '@suite-common/wallet-types';
-import { Icon, IconName } from '@suite-common/icons';
+import { TokenSymbol, TransactionType } from '@suite-common/wallet-types';
+import { CoinIcon, Icon, IconName } from '@suite-common/icons';
 import { Color } from '@trezor/theme';
-import { CoinIcon } from '@suite-native/ethereum-tokens';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
 import { TransactionIconSpinner } from './TransactionIconSpinner';

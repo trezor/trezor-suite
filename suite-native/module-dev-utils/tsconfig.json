@@ -10,6 +10,9 @@
         { "path": "../module-settings" },
         { "path": "../navigation" },
         { "path": "../storage" },
+        {
+            "path": "../../suite-common/wallet-types"
+        },
         { "path": "../../packages/styles" },
         { "path": "../../packages/theme" }
     ]

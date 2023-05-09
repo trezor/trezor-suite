@@ -5,17 +5,14 @@ import { useNavigation } from '@react-navigation/native';
 
 import { Box, Text } from '@suite-native/atoms';
 import { AccountKey } from '@suite-common/wallet-types';
-import {
-    EthereumTokenTransfer,
-    CoinIcon,
-    WalletAccountTransaction,
-} from '@suite-native/ethereum-tokens';
+import { EthereumTokenTransfer, WalletAccountTransaction } from '@suite-native/ethereum-tokens';
 import {
     StackNavigationProps,
     RootStackParamList,
     RootStackRoutes,
 } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { CoinIcon } from '@suite-common/icons';
 
 import { TokenTransferListItemValues } from '../TransactionsList/TokenTransferListItem';
 import { TransactionListItemValues } from '../TransactionsList/TransactionListItem';

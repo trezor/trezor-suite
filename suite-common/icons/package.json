@@ -12,8 +12,10 @@
     },
     "dependencies": {
         "@shopify/react-native-skia": "0.1.188",
+        "@suite-common/wallet-types": "workspace:*",
         "@trezor/styles": "workspace:*",
         "@trezor/theme": "workspace:*",
+        "@suite-common/wallet-config": "workspace:*",
         "react": "18.2.0",
         "react-native": "0.71.7",
         "react-native-reanimated": "3.1.0"
