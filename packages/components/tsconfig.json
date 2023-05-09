@@ -12,9 +12,6 @@
     "references": [
         { "path": "../device-utils" },
         { "path": "../dom-utils" },
-        { "path": "../react-utils" },
-        {
-            "path": "../../suite-common/suite-utils"
-        }
+        { "path": "../react-utils" }
     ]
 }
