@@ -775,5 +775,10 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
             // eslint-disable-next-line no-await-in-loop
             discoveryCursor = await discoveryCursor.continue();
         }
+
+        // remove trop from backend settings
+        const backendSettings = transaction.objectStore('backendSettings');
+        // @ts-expect-error
+        backendSettings.delete('trop');
     }
 };

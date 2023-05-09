@@ -60,7 +60,10 @@ export const extraDependencies: ExtraDependencies = {
     reducers: {
         storageLoadBlockchain: (state: BlockchainState, { payload }: StorageLoadAction) => {
             payload.backendSettings.forEach(backend => {
-                state[backend.key].backends = backend.value;
+                const blockchain = state[backend.key];
+                if (blockchain) {
+                    blockchain.backends = backend.value;
+                }
             });
         },
         storageLoadTransactions: (state: TransactionsState, { payload }: StorageLoadAction) => {
