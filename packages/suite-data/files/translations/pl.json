@@ -102,7 +102,6 @@
   "RBF_ON": "RBF = Włączone",
   "RECEIVE_ADDRESS": "Adres",
   "RECEIVE_ADDRESS_FRESH": "Świeży adres",
-  "RECEIVE_ADDRESS_LIMIT_EXCEEDED": "Przekroczono limit...",
   "RECEIVE_ADDRESS_REVEAL": "Pokaż pełny adres",
   "RECEIVE_DESC_BITCOIN": "Aby otrzymać jakiekolwiek środki, należy uzyskać nowy adres odbiorczy. Zalecane jest, aby zawsze korzystać ze świeżego adresu, ponieważ zapobiega to śledzeniu Twoich transakcji przez kogokolwiek innego. Możesz ponownie użyć adresu, ale zalecamy tego nie robić, jeśli nie jest to konieczne.",
   "RECEIVE_TABLE_ADDRESS": "Adres",
