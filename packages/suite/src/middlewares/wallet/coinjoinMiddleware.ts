@@ -161,8 +161,10 @@ export const coinjoinMiddleware =
                             'Suite offline in critical phase',
                         ),
                     );
+                } else {
+                    // pause **only** if not in critical phase
+                    api.dispatch(coinjoinAccountActions.interruptAllCoinjoinSessions());
                 }
-                api.dispatch(coinjoinAccountActions.interruptAllCoinjoinSessions());
             } else if (action.payload === true) {
                 api.dispatch(coinjoinAccountActions.restoreInterruptedCoinjoinSessions());
             }
