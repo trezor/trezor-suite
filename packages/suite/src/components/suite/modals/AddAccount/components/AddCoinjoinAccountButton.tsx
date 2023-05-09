@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { createTimeoutPromise } from '@trezor/utils';
 import { Translation } from '@suite-components';
 import { useSelector, useActions, useDispatch } from '@suite-hooks';
 import { createCoinjoinAccount } from '@wallet-actions/coinjoinAccountActions';
@@ -125,6 +126,7 @@ export const AddCoinjoinAccountButton = ({ network }: AddCoinjoinAccountProps) =
             // When Tor was not loaded it means there was an error or user canceled it, stop the coinjoin account activation.
             if (!isTorLoaded) return;
         }
+        await createTimeoutPromise(1000); // TODO fix properly: https://github.com/trezor/trezor-suite/issues/6902
         await createAccount();
     };
 
