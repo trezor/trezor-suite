@@ -23,6 +23,7 @@ export const SVG_IMAGES = {
     ONBOARDING_WELCOME_BG: 'onboarding-welcome-bg.svg',
     HOURGLASS: 'hourglass.svg',
     WATCH: 'watch.svg',
+    TREZOR_PATTERN: 'trezor-pattern.svg',
 } as const;
 
 export type PngImage = keyof typeof PNG_IMAGES;
