@@ -96,7 +96,6 @@
   "RBF_TOOLTIP": "Node politik, der gør det muligt at erstatte en ubekræftet transaktion i en mempool med en anden transaktion, der bruger mindst et af de samme input, og som betaler et højere transaktionsgebyr.",
   "RECEIVE_ADDRESS": "Adresse",
   "RECEIVE_ADDRESS_FRESH": "Ny adresse",
-  "RECEIVE_ADDRESS_LIMIT_EXCEEDED": "Grænsen er overskredet",
   "RECEIVE_ADDRESS_REVEAL": "Afslør fuld adresse",
   "RECEIVE_DESC_BITCOIN": "For at modtage eventuelle midler, har du brug for at få en frisk modtage adresse. Det anbefales altid at bruge en frisk en, da dette forhindrer andre til at spore dine transaktioner. Du kan genbruge en adresse, men vi anbefaler ikke at gøre det, medmindre det er nødvendigt.",
   "RECEIVE_DESC_ETHEREUM": "Brug også denne adresse til at modtage tokens.",

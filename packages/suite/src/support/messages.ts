@@ -2072,7 +2072,7 @@ export default defineMessages({
     },
     TR_BACKUP_SUBHEADING_1: {
         defaultMessage:
-            'A seed backup is a series of randomly generated words created by your Trezor. It’s important that you write down this seed backup, as it is the only way to recover and access your funds.',
+            'A recovery seed backup is a series of randomly generated words created by your Trezor. It’s important that you write down your recovery seed and keep it safe, as it is the only way to recover and access your funds.',
         description: 'Explanation what recovery seed is',
         id: 'TR_BACKUP_SUBHEADING_1',
     },
@@ -2420,7 +2420,7 @@ export default defineMessages({
         id: 'TR_SAFETY_CHECKS_PROMPT_LEVEL_DESC',
     },
     TR_SAFETY_CHECKS_DISABLED_WARNING: {
-        defaultMessage: 'Safety Checks are disabled.',
+        defaultMessage: 'Safety checks are disabled.',
         id: 'TR_SAFETY_CHECKS_DISABLED_WARNING',
     },
     TR_SAFETY_CHECKS_BANNER_CHANGE: {
@@ -2517,7 +2517,7 @@ export default defineMessages({
     },
     TR_ENTER_SEED_WORDS_INSTRUCTION: {
         defaultMessage:
-            'Enter the words from your recovery seed here in the order displayed on your device.',
+            'Enter the words from your recovery seed here in the order displayed on your Trezor.',
         description:
             'User is instructed to enter words from seed (backup) into the form in browser',
         id: 'TR_ENTER_SEED_WORDS_INSTRUCTION',
@@ -3143,7 +3143,7 @@ export default defineMessages({
         id: 'TR_RECOVERY_ERROR',
     },
     TR_CHECK_RECOVERY_SEED_DESCRIPTION: {
-        defaultMessage: 'Perform a simulated recovery to check your recovery seed.',
+        defaultMessage: 'Perform a simulated recovery to verify your recovery seed.',
         id: 'TR_CHECK_RECOVERY_SEED_DESCRIPTION',
     },
     TR_RECOVERY_TYPES_DESCRIPTION: {
@@ -4139,11 +4139,11 @@ export default defineMessages({
     },
     TR_SELECT_NUMBER_OF_WORDS: {
         id: 'TR_SELECT_NUMBER_OF_WORDS',
-        defaultMessage: 'Select number of words in your seed',
+        defaultMessage: 'Select number of words in your recovery seed',
     },
     TR_SEED_BACKUP_LENGTH: {
         id: 'TR_SEED_BACKUP_LENGTH',
-        defaultMessage: 'Your seed may contain 12, 18, or 24 words.',
+        defaultMessage: 'Your recovery seed may contain 12, 18, or 24 words.',
         dynamic: true,
     },
     TR_SEED_BACKUP_LENGTH_INCLUDING_SHAMIR: {
@@ -4157,7 +4157,8 @@ export default defineMessages({
     },
     TR_SEED_WORDS_ENTER_COMPUTER: {
         id: 'TR_SEED_WORDS_ENTER_COMPUTER',
-        defaultMessage: 'Enter the words from your seed in the order displayed on your device.',
+        defaultMessage:
+            'Enter the words from your recovery seed in the order displayed on your Trezor.',
     },
     TR_SEED_WORDS_ENTER_TOUCHSCREEN: {
         id: 'TR_SEED_WORDS_ENTER_TOUCHSCREEN',
@@ -4181,12 +4182,12 @@ export default defineMessages({
     },
     TR_SEED_CHECK_SUCCESS_TITLE: {
         id: 'TR_SEED_CHECK_SUCCESS_TITLE',
-        defaultMessage: 'Backup seed successfully checked!',
+        defaultMessage: 'Recovery seed successfully checked!',
     },
     TR_SEED_CHECK_SUCCESS_DESC: {
         id: 'TR_SEED_CHECK_SUCCESS_DESC',
         defaultMessage:
-            'Your seed is valid and has just been successfully checked. Please take great care of it and/or hide it back where you are going to find it.',
+            'Your recovery seed is valid and has just been successfully verified. Take great care of it and store it in a safe, memorable location.',
     },
     TR_SEED_CHECK_FAIL_TITLE: {
         id: 'TR_SEED_CHECK_FAIL_TITLE',
@@ -4768,7 +4769,7 @@ export default defineMessages({
     },
     TR_SECURITY_CHECKPOINT_GOT_SEED: {
         id: 'TR_SECURITY_CHECKPOINT_GOT_SEED',
-        defaultMessage: 'Security checkpoint: Do you have your seed?',
+        defaultMessage: 'Security checkpoint: Do you have your recovery seed?',
     },
     TR_BEFORE_ANY_FURTHER_ACTIONS: {
         id: 'TR_BEFORE_ANY_FURTHER_ACTIONS',
