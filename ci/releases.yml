@@ -7,7 +7,7 @@ suite codesign deploy staging-suite:
     - suite-desktop build linux codesign
     - suite-desktop build windows codesign
   environment:
-    name: ${CI_BUILD_REF_NAME}-staging-suite
+    name: ${CI_COMMIT_REF_NAME}-staging-suite
     url: ${STAGING_SUITE_SERVER_URL}
   before_script: []
   only:
@@ -41,7 +41,7 @@ suite-desktop deploy autoupdate test:
       - codesign
   when: manual
   variables:
-    DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/suite-desktop/${CI_BUILD_REF_NAME}
+    DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/suite-desktop/${CI_COMMIT_REF_NAME}
   script:
     - mkdir -p ${DEPLOY_DIRECTORY}
     - 'rsync --delete -va Trezor-Suite* "${DEPLOY_DIRECTORY}/" || :'
@@ -57,7 +57,7 @@ suite-desktop github release:
     - suite-desktop build linux codesign
     - suite-desktop build windows codesign
   environment:
-    name: ${CI_BUILD_REF_NAME}-staging-suite
+    name: ${CI_COMMIT_REF_NAME}-staging-suite
     url: ${STAGING_SUITE_SERVER_URL}
   before_script: []
   only:

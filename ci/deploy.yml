@@ -23,12 +23,12 @@
 suite-web deploy sldev:
   stage: deploy to dev
   variables:
-    DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/suite-web/${CI_BUILD_REF_NAME}
+    DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/suite-web/${CI_COMMIT_REF_NAME}
   needs:
     - suite-web build dev
   environment:
-    name: ${CI_BUILD_REF_NAME}
-    url: $BASE_REVIEW_URL/${CI_BUILD_REF_NAME}
+    name: ${CI_COMMIT_REF_NAME}
+    url: $BASE_REVIEW_URL/${CI_COMMIT_REF_NAME}
   before_script: []
   script:
     - mkdir -p ${DEPLOY_DIRECTORY}/web
@@ -43,7 +43,7 @@ suite-desktop deploy sldev:
   only:
     <<: *run_everything_rules
   variables:
-    DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/suite-desktop/${CI_BUILD_REF_NAME}
+    DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/suite-desktop/${CI_COMMIT_REF_NAME}
   script:
     - mkdir -p ${DEPLOY_DIRECTORY}
     - 'rsync --delete -va "${DESKTOP_APP_NAME}"-*.AppImage "${DEPLOY_DIRECTORY}/" || :'
@@ -81,14 +81,14 @@ connect deploy to dev:
     - v8
   variables:
     GIT_STRATEGY: none
-    DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/connect/${CI_BUILD_REF_NAME}
+    DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/connect/${CI_COMMIT_REF_NAME}
   # when: manual
   dependencies:
     - connect-web build
     - connect-explorer build
   environment:
-    name: $CI_BUILD_REF_NAME
-    url: $BASE_REVIEW_URL/$CI_BUILD_REF_NAME
+    name: $CI_COMMIT_REF_NAME
+    url: $BASE_REVIEW_URL/$CI_COMMIT_REF_NAME
   before_script: []
   script:
     - rm -rfv ${DEPLOY_DIRECTORY}
@@ -123,10 +123,10 @@ connect deploy to dev:
 .deploy_common: &deploy_common
   stage: deploy to dev
   variables:
-    DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/components/${CI_BUILD_REF_NAME}
+    DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/components/${CI_COMMIT_REF_NAME}
   environment:
-    name: ${CI_BUILD_REF_NAME}
-    url: $BASE_REVIEW_URL/${CI_BUILD_REF_NAME}
+    name: ${CI_COMMIT_REF_NAME}
+    url: $BASE_REVIEW_URL/${CI_COMMIT_REF_NAME}
   before_script: []
   script:
     - mkdir -p ${DEPLOY_DIRECTORY}

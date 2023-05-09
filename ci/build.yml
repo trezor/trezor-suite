@@ -34,7 +34,7 @@ suite-web build dev:
   stage: build
   <<: *config_sign_dev
   variables:
-    ASSET_PREFIX: /suite-web/${CI_BUILD_REF_NAME}/web
+    ASSET_PREFIX: /suite-web/${CI_COMMIT_REF_NAME}/web
   script:
     - yarn install --immutable
     - yarn workspace @trezor/suite-web build
@@ -226,7 +226,7 @@ suite-desktop build windows codesign:
   interruptible: true
   script:
     - yarn install --immutable
-    - __TREZOR_CONNECT_SRC=https://suite.corp.sldev.cz/connect/${CI_BUILD_REF_NAME}/ yarn workspace @trezor/connect-explorer build
+    - __TREZOR_CONNECT_SRC=https://suite.corp.sldev.cz/connect/${CI_COMMIT_REF_NAME}/ yarn workspace @trezor/connect-explorer build
   artifacts:
     expire_in: 7 days
     paths:
