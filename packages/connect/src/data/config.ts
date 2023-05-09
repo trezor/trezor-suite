@@ -1,6 +1,6 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/data/config.json
 
-import { TREZOR_DESCS } from '@trezor/transport';
+import { TREZOR_DESCS } from '@trezor/transport/lib/constants';
 
 export const config = {
     webusb: TREZOR_DESCS,
