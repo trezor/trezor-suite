@@ -1,9 +1,9 @@
 import * as http from 'http';
 import * as net from 'net';
 import * as url from 'url';
-import { EventEmitter } from 'events';
 
 import { xssFilters } from '@trezor/utils';
+import { TypedEmitter } from '@trezor/utils/lib/typedEventEmitter';
 
 import { HTTP_ORIGINS_DEFAULT } from './constants';
 
@@ -28,15 +28,10 @@ interface Events {
     'spend/message': (event: Partial<MessageEvent>) => void;
 }
 
-export declare interface HttpReceiver {
-    on<U extends keyof Events>(event: U, listener: Events[U]): this;
-    emit<U extends keyof Events>(event: U, ...args: Parameters<Events[U]>): boolean;
-}
-
 /**
  * Http server listening on localhost.
  */
-export class HttpReceiver extends EventEmitter {
+export class HttpReceiver extends TypedEmitter<Events> {
     server: http.Server;
     routes: {
         pathname: string;
