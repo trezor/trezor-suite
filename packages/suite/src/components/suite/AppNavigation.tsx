@@ -175,7 +175,6 @@ const StyledDropdown = styled(Dropdown)<{ isDisabled: boolean }>`
     }
 `;
 
-// TODO - maybe add to global styleguide when used elsewhere
 const StyledButton = styled(Button)`
     font-size: ${FONT_SIZE.NORMAL};
     font-weight: ${FONT_WEIGHT.DEMI_BOLD};
@@ -192,7 +191,6 @@ export type AppNavigationItem = {
     icon?: IconProps['icon'];
     'data-test'?: string;
     isHidden?: boolean;
-    rightContent?: JSX.Element;
 };
 
 interface Props {
@@ -313,7 +311,6 @@ export const AppNavigation = ({ items, primaryContent, maxWidth, inView }: Props
                                                         )}
 
                                                         <Text>{title}</Text>
-                                                        {item.rightContent}
                                                     </StyledNavLink>
                                                 </AppNavigationTooltip>
                                             </HoverAnimation>
