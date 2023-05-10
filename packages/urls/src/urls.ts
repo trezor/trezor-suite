@@ -17,11 +17,15 @@ export const DATA_TOS_INVITY_URL = 'https://data.trezor.io/legal/invity-terms-of
 
 export const DOCS_ANALYTICS_URL = 'https://docs.trezor.io/trezor-suite/analytics/';
 
-export const SUITE_URL = 'https://suite.trezor.io';
+export const SUITE_URL = 'https://trezor.io/trezor-suite';
 export const SUITE_BACKUP_URL = 'https://suite.trezor.io/web/backup/';
 export const SUITE_BRIDGE_URL = 'https://suite.trezor.io/web/bridge/';
 export const SUITE_FIRMWARE_URL = 'https://suite.trezor.io/web/firmware/';
 export const SUITE_UDEV_URL = 'https://suite.trezor.io/web/udev/';
+
+export const SUITE_MOBILE_APP_STORE = 'https://apps.apple.com/app/id1631884497';
+export const SUITE_MOBILE_PLAY_STORE =
+    'https://play.google.com/store/apps/details?id=io.trezor.suite';
 
 export const HELP_CENTER_PIN_URL = 'https://trezor.io/learn/a/pin-protection-on-trezor-devices';
 export const HELP_CENTER_DRY_RUN_T1_URL =

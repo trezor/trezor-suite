@@ -7955,11 +7955,19 @@ export default defineMessages({
         defaultMessage: 'Get the most out of Trezor Suite',
     },
     TR_DESKTOP_APP_PROMO_TEXT: {
-        id: 'TR_INCLUDING_FEE',
+        id: 'TR_DESKTOP_APP_PROMO_TEXT',
         defaultMessage: 'Simple crypto management directly on your desktop',
     },
     TR_DESKTOP_APP_PROMO_GET: {
         id: 'TR_DESKTOP_APP_PROMO_GET',
         defaultMessage: 'Get for desktop',
+    },
+    TR_DESKTOP_APP_PROMO_TEXT_FOOTER: {
+        id: 'TR_MOBILE_APP_PROMO_TEXT',
+        defaultMessage: 'With more security features',
+    },
+    TR_MOBILE_APP_PROMO_TEXT_FOOTER: {
+        id: 'TR_MOBILE_APP_PROMO_TEXT_FOOTER',
+        defaultMessage: 'Sync & track on your phone with <b>Trezor Suite Lite</b>',
     },
 });
