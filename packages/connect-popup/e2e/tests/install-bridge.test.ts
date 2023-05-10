@@ -1,4 +1,4 @@
-import { test, expect, Page } from '@playwright/test';
+import { test, expect, firefox, chromium, Page } from '@playwright/test';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 const url = process.env.URL || 'http://localhost:8088/';
@@ -11,15 +11,18 @@ test.beforeAll(async () => {
     await TrezorUserEnvLink.api.stopEmu();
 });
 
-test('if bridge is not running, connect popup renders "install bridge" screen', async ({
-    page,
-}) => {
-    await page.goto(`${url}#/method/verifyMessage`);
+[firefox, chromium].forEach(browser => {
+    test(`${browser.name()}: if bridge is not running, connect popup renders "install bridge" screen`, async () => {
+        const browserInstance = await browser.launch();
+        const page = await browserInstance.newPage();
+        await page.goto(`${url}#/method/verifyMessage`);
 
-    [popup] = await Promise.all([
-        page.waitForEvent('popup'),
-        page.click("button[data-test='@submit-button']"),
-    ]);
+        [popup] = await Promise.all([
+            page.waitForEvent('popup'),
+            page.click("button[data-test='@submit-button']"),
+        ]);
 
-    await expect(popup.getByRole('heading', { name: 'Install Bridge' })).toBeVisible();
+        await expect(popup.getByRole('heading', { name: 'Install Bridge' })).toBeVisible();
+        await browserInstance.close();
+    });
 });
