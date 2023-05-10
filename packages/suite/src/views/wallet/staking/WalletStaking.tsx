@@ -4,6 +4,7 @@ import { AccountExceptionLayout, WalletLayout } from '@wallet-components';
 import { useSelector } from '@suite-hooks';
 import { CardanoStakingDashboard } from './components/CardanoStakingDashboard';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
+import { EthereumStakingDashboard } from './components/EthereumStakingDashboard';
 
 export const WalletStaking = () => {
     const { selectedAccount } = useSelector(state => state.wallet);
@@ -22,6 +23,8 @@ export const WalletStaking = () => {
         switch (selectedAccount.account.networkType) {
             case 'cardano':
                 return <CardanoStakingDashboard selectedAccount={selectedAccount} />;
+            case 'ethereum':
+                return <EthereumStakingDashboard selectedAccount={selectedAccount} />;
             // no default
         }
     }

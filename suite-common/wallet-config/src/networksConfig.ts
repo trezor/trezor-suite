@@ -322,7 +322,7 @@ export const networks = {
             nft: 'https://goerli1.trezor.io/nft/',
             address: 'https://goerli1.trezor.io/address/',
         },
-        features: ['rbf', 'sign-verify', 'tokens'],
+        features: ['rbf', 'sign-verify', 'tokens', 'staking'],
         customBackends: ['blockbook'],
         accountTypes: {},
     },
