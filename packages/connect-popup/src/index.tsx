@@ -42,7 +42,6 @@ const escapeHtml = (payload: any) => {
 // handle messages from window.opener and iframe
 const handleMessage = (event: MessageEvent<PopupEvent | UiEvent>) => {
     const { data } = event;
-
     if (!data) return;
 
     // This is message from the window.opener
@@ -101,13 +100,9 @@ const handleMessage = (event: MessageEvent<PopupEvent | UiEvent>) => {
     }
 
     // otherwise we still render in legacy way
-    // dispatch empty message to instruct the "reactified"
-    // part of app to hide the main content
-    reactEventBus.dispatch();
-
     switch (message.type) {
         case UI_REQUEST.LOADING:
-            // case UI.REQUEST_UI_WINDOW :
+        case UI_REQUEST.REQUEST_UI_WINDOW:
             showView('loader');
             break;
         case UI_REQUEST.SELECT_DEVICE:
@@ -198,7 +193,9 @@ const init = async (payload: PopupInit['payload']) => {
     try {
         // render react view
         await renderConnectUI();
+        reactEventBus.dispatch({ type: 'waiting-for-iframe-init' });
         await initMessageChannel(payload, handleMessage);
+        reactEventBus.dispatch({ type: 'waiting-for-iframe-handshake' });
     } catch (error) {
         postMessageToParent(createPopupMessage(POPUP.ERROR, { error: error.message }));
     }

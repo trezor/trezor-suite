@@ -1,3 +1,8 @@
+# 9.0.10
+
+-   fix(connect-popup): fix connect-popup in firefox
+-   feat(connect-popup): tiny visual updates, added loading messages based on communication with iframe
+
 # 9.0.9
 
 -   fix(connect): prevent .asArray of undefined runtime error

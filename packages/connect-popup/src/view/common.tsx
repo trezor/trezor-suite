@@ -230,6 +230,7 @@ export const renderConnectUI = () => {
         </StyleSheetWrapper>
     );
 
+    clearLegacyView();
     root.render(Component);
 
     return new Promise(resolve => {
