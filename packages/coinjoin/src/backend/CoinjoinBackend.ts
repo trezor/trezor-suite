@@ -1,4 +1,4 @@
-import { EventEmitter } from 'events';
+import { TypedEmitter } from '@trezor/utils/lib/typedEventEmitter';
 
 import { CoinjoinBackendClient } from './CoinjoinBackendClient';
 import { CoinjoinFilterController } from './CoinjoinFilterController';
@@ -21,42 +21,12 @@ import type {
     AccountCache,
 } from '../types/backend';
 
-interface SimpleEvents {
+interface Events {
     log: LogEvent;
+    [event: `progress/${string}`]: ScanAccountProgress;
 }
 
-interface DescriptorEvents {
-    progress: ScanAccountProgress;
-}
-
-type DescriptorEventType<K extends keyof DescriptorEvents, D extends string> = `${K}/${D}`;
-
-export declare interface CoinjoinBackend {
-    on<K extends keyof SimpleEvents>(type: K, listener: (event: SimpleEvents[K]) => void): this;
-    on<K extends keyof DescriptorEvents, D extends string>(
-        type: DescriptorEventType<K, D>,
-        listener: (event: DescriptorEvents[K]) => void,
-    ): this;
-
-    off<K extends keyof SimpleEvents>(type: K, listener: (event: SimpleEvents[K]) => void): this;
-    off<K extends keyof DescriptorEvents, D extends string>(
-        type: DescriptorEventType<K, D>,
-        listener: (event: DescriptorEvents[K]) => void,
-    ): this;
-
-    emit<K extends keyof SimpleEvents>(type: K, ...args: SimpleEvents[K][]): boolean;
-    emit<K extends keyof DescriptorEvents, D extends string>(
-        type: DescriptorEventType<K, D>,
-        ...args: DescriptorEvents[K][]
-    ): boolean;
-
-    removeAllListeners<K extends keyof SimpleEvents>(type?: K): this;
-    removeAllListeners<K extends keyof DescriptorEvents, D extends string>(
-        type?: DescriptorEventType<K, D>,
-    ): this;
-}
-
-export class CoinjoinBackend extends EventEmitter {
+export class CoinjoinBackend extends TypedEmitter<Events> {
     readonly settings: CoinjoinBackendSettings;
 
     private readonly network;

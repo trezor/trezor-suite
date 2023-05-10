@@ -1,4 +1,4 @@
-import { EventEmitter } from 'events';
+import { TypedEmitter } from '@trezor/utils/lib/typedEventEmitter';
 
 import * as coordinator from './coordinator';
 import { transformStatus } from '../utils/roundUtils';
@@ -22,13 +22,7 @@ interface RegisteredRound {
     inputs: { outpoint: string }[];
 }
 
-export declare interface Status {
-    on<K extends keyof StatusEvents>(type: K, listener: (event: StatusEvents[K]) => void): this;
-    off<K extends keyof StatusEvents>(type: K, listener: (event: StatusEvents[K]) => void): this;
-    emit<K extends keyof StatusEvents>(type: K, ...args: StatusEvents[K][]): boolean;
-}
-
-export class Status extends EventEmitter {
+export class Status extends TypedEmitter<StatusEvents> {
     enabled = false;
     timestamp = 0;
     nextTimestamp = 0;
