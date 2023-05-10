@@ -1,4 +1,4 @@
-import { EventEmitter } from 'events';
+import { TypedEmitter } from '@trezor/utils/lib/typedEventEmitter';
 import { createDeferred, Deferred } from '@trezor/utils/lib/createDeferred';
 import { CustomError } from '@trezor/blockchain-link-types/lib/constants/errors';
 import { MESSAGES, RESPONSES } from '@trezor/blockchain-link-types/lib/constants';
@@ -59,13 +59,7 @@ const initWorker = (settings: BlockchainSettings) => {
     return dfd.promise;
 };
 
-declare interface BlockchainLink {
-    on<K extends keyof Events>(type: K, listener: (event: Events[K]) => void): this;
-    off<K extends keyof Events>(type: K, listener: (event: Events[K]) => void): this;
-    emit<K extends keyof Events>(type: K, ...args: Events[K][]): boolean;
-}
-
-class BlockchainLink extends EventEmitter {
+class BlockchainLink extends TypedEmitter<Events> {
     settings: BlockchainSettings;
 
     messageId = 0;
