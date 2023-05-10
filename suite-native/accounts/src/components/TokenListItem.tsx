@@ -20,7 +20,7 @@ type TokenListItemProps = {
     symbol: TokenSymbol;
     accountKey: AccountKey;
     contract: TokenAddress;
-    onSelectAccount: (accountKey: AccountKey, tokenSymbol?: TokenSymbol) => void;
+    onSelectAccount: (accountKey: AccountKey, tokenContract?: TokenAddress) => void;
 };
 
 const tokenListItemStyle = prepareNativeStyle<{ isLast: boolean }>((utils, { isLast }) => ({
@@ -55,7 +55,7 @@ export const TokenListItem = ({
     const { applyStyle } = useNativeStyles();
 
     const handleOnPress = () => {
-        onSelectAccount(accountKey, symbol);
+        onSelectAccount(accountKey, contract);
     };
 
     const iconName = getEthereumTokenIconName(symbol);

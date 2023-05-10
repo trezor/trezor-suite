@@ -27,14 +27,14 @@ import { WalletAccountTransaction } from './types';
 export const selectEthereumAccountToken = (
     state: AccountsRootState,
     accountKey: AccountKey,
-    tokenSymbol?: TokenSymbol,
+    tokenAddress?: TokenAddress,
 ): TokenInfoBranded | null => {
     const account = selectAccountByKey(state, accountKey);
     if (!account || !account.tokens) return null;
     return (
         (A.find(
             account.tokens,
-            (token: TokenInfo) => token.symbol === tokenSymbol,
+            (token: TokenInfo) => token.contract === tokenAddress,
         ) as TokenInfoBranded) ?? null
     );
 };
@@ -43,7 +43,7 @@ export const selectEthereumAccountTokenTransactions = memoizeWithArgs(
     (
         state: TransactionsRootState,
         accountKey: AccountKey,
-        tokenSymbol: TokenSymbol,
+        tokenAddress: TokenAddress,
     ): WalletAccountTransaction[] =>
         pipe(
             selectAccountTransactions(state, accountKey),
@@ -55,7 +55,10 @@ export const selectEthereumAccountTokenTransactions = memoizeWithArgs(
                 })),
             })),
             A.filter(transaction =>
-                A.some(transaction.tokens, tokenTransfer => tokenTransfer.symbol === tokenSymbol),
+                A.some(
+                    transaction.tokens,
+                    tokenTransfer => tokenTransfer.contract === tokenAddress,
+                ),
             ),
         ) as WalletAccountTransaction[],
     { size: 500 },
@@ -123,11 +126,11 @@ const selectAccountTransactionsWithTokensWithFiatRates = memoizeWithArgs(
 export const selectAccountOrTokenAccountTransactions = (
     state: TransactionsRootState & FiatRatesRootState & SettingsSliceRootState,
     accountKey: AccountKey,
-    tokenSymbol: TokenSymbol | null,
+    tokenAddress: TokenAddress | null,
     areTokenOnlyTransactionsIncluded: boolean,
 ): WalletAccountTransaction[] => {
-    if (tokenSymbol) {
-        return selectEthereumAccountTokenTransactions(state, accountKey, tokenSymbol);
+    if (tokenAddress) {
+        return selectEthereumAccountTokenTransactions(state, accountKey, tokenAddress);
     }
     return selectAccountTransactionsWithTokensWithFiatRates(
         state,

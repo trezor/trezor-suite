@@ -5,12 +5,12 @@ import { A } from '@mobily/ts-belt';
 
 import { Text } from '@suite-native/atoms';
 import { selectAccounts, selectAccountsSymbols } from '@suite-common/wallet-core';
-import { AccountKey, TokenSymbol } from '@suite-common/wallet-types';
+import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 
 import { AccountsListGroup } from './AccountsListGroup';
 
 type AccountsListProps = {
-    onSelectAccount: (accountKey: AccountKey, tokenSymbol?: TokenSymbol) => void;
+    onSelectAccount: (accountKey: AccountKey, tokenContract?: TokenAddress) => void;
 };
 
 export const AccountsList = ({ onSelectAccount }: AccountsListProps) => {

@@ -12,11 +12,11 @@ import {
 
 export const ReceiveScreen = () => {
     const route = useRoute<RouteProp<ReceiveStackParamList, ReceiveStackRoutes.Receive>>();
-    const { accountKey, tokenSymbol } = route.params;
+    const { accountKey, tokenContract } = route.params;
 
     return (
         <Screen header={<ScreenHeader content="Receive address" />}>
-            <ReceiveAccount accountKey={accountKey} tokenSymbol={tokenSymbol} />
+            <ReceiveAccount accountKey={accountKey} tokenContract={tokenContract} />
         </Screen>
     );
 };

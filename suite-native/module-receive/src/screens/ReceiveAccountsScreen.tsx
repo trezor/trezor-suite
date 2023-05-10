@@ -10,7 +10,7 @@ import {
     ReceiveStackRoutes,
     StackNavigationProps,
 } from '@suite-native/navigation';
-import { AccountKey, TokenSymbol } from '@suite-common/wallet-types';
+import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 
 export const ReceiveAccountsScreen = () => {
     const navigation =
@@ -18,8 +18,8 @@ export const ReceiveAccountsScreen = () => {
             StackNavigationProps<ReceiveStackParamList, ReceiveStackRoutes.ReceiveAccounts>
         >();
 
-    const navigateToReceiveScreen = (accountKey: AccountKey, tokenSymbol?: TokenSymbol) =>
-        navigation.navigate(ReceiveStackRoutes.Receive, { accountKey, tokenSymbol });
+    const navigateToReceiveScreen = (accountKey: AccountKey, tokenContract?: TokenAddress) =>
+        navigation.navigate(ReceiveStackRoutes.Receive, { accountKey, tokenContract });
 
     return (
         <Screen header={<ScreenHeader content="Receive to" hasGoBackIcon={false} />}>
