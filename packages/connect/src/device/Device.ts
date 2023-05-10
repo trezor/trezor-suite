@@ -1,6 +1,6 @@
 // original file https://github.com/trezor/connect/blob/develop/src/js/device/Device.js
 
-import EventEmitter from 'events';
+import { TypedEmitter } from '@trezor/utils/lib/typedEventEmitter';
 import { DeviceCommands } from './DeviceCommands';
 import { PROTO, ERRORS, NETWORK } from '../constants';
 import { DEVICE, DeviceButtonRequestPayload, UI } from '../events';
@@ -53,18 +53,20 @@ const parseRunOptions = (options?: RunOptions): RunOptions => {
 };
 
 export interface DeviceEvents {
-    [DEVICE.PIN]: [Device, PROTO.PinMatrixRequestType | undefined, (err: any, pin: string) => void];
-    [DEVICE.WORD]: [Device, PROTO.WordRequestType, (err: any, word: string) => void];
-    [DEVICE.PASSPHRASE]: [Device, (response: any) => void];
-    [DEVICE.PASSPHRASE_ON_DEVICE]: [Device, ((response: any) => void)?];
-    [DEVICE.BUTTON]: [Device, DeviceButtonRequestPayload];
-    [DEVICE.ACQUIRED]: [];
-}
-
-export interface Device {
-    on<K extends keyof DeviceEvents>(type: K, listener: (...event: DeviceEvents[K]) => void): this;
-    off<K extends keyof DeviceEvents>(type: K, listener: (...event: DeviceEvents[K]) => void): this;
-    emit<K extends keyof DeviceEvents>(type: K, ...args: DeviceEvents[K]): boolean;
+    [DEVICE.PIN]: (
+        device: Device,
+        b: PROTO.PinMatrixRequestType | undefined,
+        callback: (err: any, pin: string) => void,
+    ) => void;
+    [DEVICE.WORD]: (
+        device: Device,
+        b: PROTO.WordRequestType,
+        callback: (err: any, word: string) => void,
+    ) => void;
+    [DEVICE.PASSPHRASE]: (device: Device, callback: (response: any) => void) => void;
+    [DEVICE.PASSPHRASE_ON_DEVICE]: () => void;
+    [DEVICE.BUTTON]: (device: Device, payload: DeviceButtonRequestPayload) => void;
+    [DEVICE.ACQUIRED]: () => void;
 }
 
 /**
@@ -72,7 +74,7 @@ export interface Device {
  * @class Device
  * @extends {EventEmitter}
  */
-export class Device extends EventEmitter {
+export class Device extends TypedEmitter<DeviceEvents> {
     transport: Transport;
 
     originalDescriptor: DeviceDescriptor;
