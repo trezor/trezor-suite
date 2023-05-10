@@ -1,6 +1,6 @@
 import WebSocket from 'ws';
-import { EventEmitter } from 'events';
-import { createDeferred, Deferred } from '@trezor/utils';
+import { createDeferred, Deferred } from '@trezor/utils/lib/createDeferred';
+import { TypedEmitter } from '@trezor/utils/lib/typedEventEmitter';
 
 import { CustomError } from '@trezor/blockchain-link-types/lib/constants/errors';
 import type {
@@ -41,17 +41,16 @@ interface Options {
 const DEFAULT_TIMEOUT = 20 * 1000;
 const DEFAULT_PING_TIMEOUT = 50 * 1000;
 
-export declare interface BlockbookAPI {
-    on(event: 'block', listener: (event: BlockNotification) => void): this;
-    on(event: 'mempool', listener: (event: MempoolTransactionNotification) => void): this;
-    on(event: 'notification', listener: (event: AddressNotification) => void): this;
-    on(event: 'fiatRates', listener: (event: FiatRatesNotification) => void): this;
-    on(event: 'error', listener: (error: string) => void): this;
-    on(event: 'disconnected', listener: () => void): this;
-    on(event: string, listener: any): this;
+interface BlockbookEvents {
+    block: BlockNotification;
+    mempool: MempoolTransactionNotification;
+    notification: AddressNotification;
+    fiatRates: FiatRatesNotification;
+    error: string;
+    disconnected: undefined;
 }
 
-export class BlockbookAPI extends EventEmitter {
+export class BlockbookAPI extends TypedEmitter<BlockbookEvents> {
     options: Options;
     ws: WebSocket | undefined;
     messageID = 0;
@@ -185,7 +184,7 @@ export class BlockbookAPI extends EventEmitter {
         }
 
         if (this.ws?.readyState === WebSocket.CLOSING) {
-            await new Promise(resolve => this.once('disconnected', resolve));
+            await new Promise<void>(resolve => this.once('disconnected', resolve));
         }
 
         // url validation

@@ -222,7 +222,7 @@ const unsubscribeAddresses = async ({ state, connect }: Context, addresses?: str
     if (subscribed.length < 1) {
         // there are no subscribed addresses left
         // remove listeners
-        socket.removeListener('notification', onTransaction);
+        socket.removeAllListeners('notification');
         state.removeSubscription('notification');
         return socket.unsubscribeAddresses();
     }

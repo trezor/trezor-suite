@@ -1,6 +1,6 @@
 import WebSocket from 'ws';
-import { EventEmitter } from 'events';
 import { createDeferred, Deferred } from '@trezor/utils/lib/createDeferred';
+import { TypedEmitter } from '@trezor/utils/lib/typedEventEmitter';
 
 import { CustomError } from '@trezor/blockchain-link-types/lib/constants/errors';
 import type {
@@ -33,15 +33,14 @@ interface Options {
 const DEFAULT_TIMEOUT = 20 * 1000;
 const DEFAULT_PING_TIMEOUT = 50 * 1000;
 
-export declare interface BlockfrostAPI {
-    on(event: 'block', listener: (event: BlockContent) => void): this;
-    on(event: 'notification', listener: (event: BlockfrostTransaction) => void): this;
-    on(event: 'error', listener: (error: string) => void): this;
-    on(event: 'disconnected', listener: () => void): this;
-    on(event: string, listener: any): this;
+export declare interface BlockfrostEvents {
+    block: BlockContent;
+    notification: BlockfrostTransaction;
+    error: string;
+    disconnected: undefined;
 }
 
-export class BlockfrostAPI extends EventEmitter {
+export class BlockfrostAPI extends TypedEmitter<BlockfrostEvents> {
     options: Options;
     ws: WebSocket | undefined;
     messageID = 0;
