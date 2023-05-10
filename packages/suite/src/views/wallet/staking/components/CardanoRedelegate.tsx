@@ -1,10 +1,11 @@
 import React, { useEffect } from 'react';
-import { Button, Icon, Tooltip, Card } from '@trezor/components';
+import { Icon, Card } from '@trezor/components';
 import { getReasonForDisabledAction, useCardanoStaking } from '@wallet-hooks/useCardanoStaking';
 import { Translation } from '@suite-components/Translation';
 import { Actions, Title, Heading, Text } from './CardanoPrimitives';
 import { DeviceModel } from '@trezor/device-utils';
 import { useDeviceModel } from '@suite-hooks/useDeviceModel';
+import { DeviceButton } from '@suite-components';
 
 export const CardanoRedelegate = () => {
     const {
@@ -22,17 +23,6 @@ export const CardanoRedelegate = () => {
     useEffect(() => {
         calculateFeeAndDeposit('delegate');
     }, [calculateFeeAndDeposit]);
-
-    const actionButton = (
-        <Button
-            isLoading={loading}
-            isDisabled={!delegatingAvailable.status || !deviceAvailable.status || !!pendingStakeTx}
-            icon={`TREZOR_T${deviceModel}`}
-            onClick={delegate}
-        >
-            <Translation id="TR_STAKING_REDELEGATE" />
-        </Button>
-    );
 
     const reasonMessageId = getReasonForDisabledAction(
         isFetchError ? 'POOL_ID_FETCH_FAIL' : delegatingAvailable?.reason,

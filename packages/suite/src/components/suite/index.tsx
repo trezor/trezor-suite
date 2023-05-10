@@ -42,6 +42,7 @@ import DeviceMatrixExplanation from './DeviceMatrixExplanation';
 import AccountFormCloseButton from './AccountFormCloseButton';
 import { TroubleshootingTips } from './TroubleshootingTips';
 import { ConnectDevicePrompt } from './ConnectDevicePrompt';
+import { DeviceButton } from './DeviceButton';
 import Coin from './Coin';
 import CoinsGroup from './CoinsGroup';
 import CoinsList from './CoinsGroup/CoinsList';
@@ -119,5 +120,6 @@ export {
     CoinjoinStatusBar,
     CountdownTimer,
     NumberInput,
+    DeviceButton,
 };
 export type { ModalProps };
