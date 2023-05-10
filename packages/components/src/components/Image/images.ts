@@ -24,6 +24,11 @@ export const SVG_IMAGES = {
     HOURGLASS: 'hourglass.svg',
     WATCH: 'watch.svg',
     TREZOR_PATTERN: 'trezor-pattern.svg',
+    HOLLOW_APP_LOGO: 'hollow-app-logo.svg',
+    APP_STORE_BADGE: 'app-store-badge.svg',
+    PLAY_STORE_BADGE: 'play-store-badge.svg',
+    APP_STORE_TITLE: 'app-store-title.svg',
+    PLAY_STORE_TITLE: 'play-store-title.svg',
 } as const;
 
 export type PngImage = keyof typeof PNG_IMAGES;
