@@ -39,7 +39,7 @@ import FormattedDate, { FormattedDateWithBullet } from './FormattedDate';
 import Metadata from './Metadata';
 import { HomescreenGallery } from './HomescreenGallery';
 import DeviceMatrixExplanation from './DeviceMatrixExplanation';
-import AccountFormCloseButton from './AccountFormCloseButton';
+import { AccountFormCloseButton } from './AccountFormCloseButton';
 import { TroubleshootingTips } from './TroubleshootingTips';
 import { ConnectDevicePrompt } from './ConnectDevicePrompt';
 import { DeviceButton } from './DeviceButton';

@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { H2, variables } from '@trezor/components';
-import type { ExtendedMessageDescriptor } from '@suite-types';
+import type { ExtendedMessageDescriptor, Route } from '@suite-types';
 import { Translation, AccountFormCloseButton } from '@suite-components';
 
 const HeaderWrapper = styled.div`
@@ -36,9 +36,10 @@ const StyledTitle = styled(H2)`
 type WalletLayoutHeaderProps = {
     children?: React.ReactNode;
     title: ExtendedMessageDescriptor['id'];
+    routeName?: Route['name'];
 };
 
-export const WalletLayoutHeader = ({ title, children }: WalletLayoutHeaderProps) => (
+export const WalletLayoutHeader = ({ title, children, routeName }: WalletLayoutHeaderProps) => (
     <HeaderWrapper>
         <HeaderLeft>
             <StyledTitle>
@@ -47,7 +48,7 @@ export const WalletLayoutHeader = ({ title, children }: WalletLayoutHeaderProps)
         </HeaderLeft>
         <HeaderRight>
             {children}
-            <AccountFormCloseButton />
+            <AccountFormCloseButton routeName={routeName} />
         </HeaderRight>
     </HeaderWrapper>
 );
