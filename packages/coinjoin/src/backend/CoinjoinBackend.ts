@@ -3,7 +3,7 @@ import { TypedEmitter } from '@trezor/utils/lib/typedEventEmitter';
 import { CoinjoinBackendClient } from './CoinjoinBackendClient';
 import { CoinjoinFilterController } from './CoinjoinFilterController';
 import { CoinjoinMempoolController } from './CoinjoinMempoolController';
-import { DISCOVERY_LOOKOUT } from '../constants';
+import { DISCOVERY_LOOKOUT, DISCOVERY_LOOKOUT_EXTENDED } from '../constants';
 import { scanAccount } from './scanAccount';
 import { scanAddress } from './scanAddress';
 import { getAccountInfo } from './getAccountInfo';
@@ -154,7 +154,7 @@ export class CoinjoinBackend extends TypedEmitter<Events> {
                 blockHash: this.settings.baseBlockHash,
                 blockHeight: this.settings.baseBlockHeight,
                 receiveCount: DISCOVERY_LOOKOUT,
-                changeCount: DISCOVERY_LOOKOUT,
+                changeCount: DISCOVERY_LOOKOUT_EXTENDED,
             });
     }
 
@@ -167,7 +167,7 @@ export class CoinjoinBackend extends TypedEmitter<Events> {
                 blockHash: networkInfo.bestHash,
                 blockHeight: networkInfo.bestHeight,
                 receiveCount: DISCOVERY_LOOKOUT,
-                changeCount: DISCOVERY_LOOKOUT,
+                changeCount: DISCOVERY_LOOKOUT_EXTENDED,
             };
         }
 
@@ -185,7 +185,7 @@ export class CoinjoinBackend extends TypedEmitter<Events> {
             blockHash,
             blockHeight,
             receiveCount: DISCOVERY_LOOKOUT,
-            changeCount: DISCOVERY_LOOKOUT,
+            changeCount: DISCOVERY_LOOKOUT_EXTENDED,
         };
     }
 
