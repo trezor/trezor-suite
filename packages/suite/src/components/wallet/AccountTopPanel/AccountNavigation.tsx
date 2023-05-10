@@ -6,8 +6,6 @@ import { useActions, useSelector } from '@suite-hooks';
 import { getNetwork, getNetworkFeatures } from '@suite-common/wallet-utils';
 import * as routerActions from '@suite-actions/routerActions';
 import * as modalActions from '@suite-actions/modalActions';
-import { Dot } from './Dot';
-import { useCardanoStakingStatus } from '@wallet-hooks/useCardanoStakingStatus';
 
 interface AccountNavigationProps {
     filterPosition?: 'primary' | 'secondary';
@@ -29,7 +27,6 @@ export const AccountNavigation = ({
 
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     const { account } = selectedAccount;
-    const showCardanoStakingStatus = useCardanoStakingStatus(account);
     const routerParams = useSelector(state => state.router.params) as WalletParams;
     const network = getNetwork(routerParams?.symbol || '');
     const networkType = account?.networkType || network?.networkType || 'bitcoin';
@@ -73,7 +70,6 @@ export const AccountNavigation = ({
             title: <Translation id="TR_NAV_STAKING" />,
             position: 'primary',
             isHidden: !networkFeatures?.includes('staking'),
-            rightContent: showCardanoStakingStatus ? <Dot /> : undefined,
         },
         {
             id: 'wallet-send',
