@@ -76,6 +76,7 @@ describe('coinjoinAccountActions', () => {
         it(`createCoinjoinAccount: ${f.description}`, async () => {
             const store = initStore();
             TrezorConnect.setTestFixtures(f.connect);
+            jest.spyOn(console, 'log').mockImplementation(() => {});
 
             await store.dispatch(coinjoinAccountActions.createCoinjoinAccount(f.params as any)); // params are incomplete
 

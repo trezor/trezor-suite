@@ -27,6 +27,8 @@ const initStore = (state: State) => {
     return store;
 };
 
+jest.mock('@trezor/suite-analytics', () => global.JestMocks.getAnalytics());
+
 describe('walletSettings Actions', () => {
     fixtures.forEach(f => {
         it(f.description, async () => {

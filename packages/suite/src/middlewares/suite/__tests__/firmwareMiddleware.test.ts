@@ -57,6 +57,9 @@ const initStore = (state: State) => {
     return store;
 };
 
+jest.mock('@trezor/suite-analytics', () => global.JestMocks.getAnalytics());
+jest.spyOn(console, 'warn').mockImplementation(() => {});
+
 describe('firmware middleware', () => {
     it('if status === "unplug" disconnecting device results in status "reconnect-in-normal"', async () => {
         const store = initStore(

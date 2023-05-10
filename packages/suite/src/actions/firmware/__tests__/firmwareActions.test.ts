@@ -58,6 +58,8 @@ jest.mock('@trezor/connect', () => {
     };
 });
 
+jest.mock('@trezor/suite-analytics', () => global.JestMocks.getAnalytics());
+
 export const getInitialState = (override?: InitialState): any => {
     const suite = override ? override.suite : undefined;
     const devices = override ? override.devices : [];

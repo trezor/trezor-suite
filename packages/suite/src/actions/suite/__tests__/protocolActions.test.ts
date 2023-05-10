@@ -5,6 +5,8 @@ import * as protocolActions from '../protocolActions';
 import * as protocolConstants from '../constants/protocolConstants';
 import { PROTOCOL_SCHEME } from '@suite-constants/protocol';
 
+jest.mock('@trezor/suite-analytics', () => global.JestMocks.getAnalytics());
+
 export const getInitialState = (state?: ProtocolState) => ({
     protocol: {
         ...protocolReducer(undefined, { type: 'foo' } as any),
