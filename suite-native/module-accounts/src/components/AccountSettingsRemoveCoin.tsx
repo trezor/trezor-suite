@@ -13,10 +13,11 @@ import {
 import { AccountKey } from '@suite-common/wallet-types';
 import {
     AccountsImportStackRoutes,
+    AppTabsRoutes,
     HomeStackRoutes,
     RootStackParamList,
     RootStackRoutes,
-    StackToStackCompositeNavigationProps,
+    StackNavigationProps,
 } from '@suite-native/navigation';
 
 const AccountSettingsRemoveCoinButton = ({ onPress }: { onPress: () => void }) => (
@@ -34,38 +35,24 @@ export const AccountSettingsRemoveCoin = ({ accountKey }: { accountKey: AccountK
     const accountsLength = useSelector(selectNumberOfAccounts);
 
     const navigation =
-        useNavigation<
-            StackToStackCompositeNavigationProps<
-                RootStackParamList,
-                RootStackRoutes.AccountSettings,
-                RootStackParamList
-            >
-        >();
+        useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.AccountSettings>>();
 
     if (!account) return null;
 
     const handleRemoveAccount = () => {
-        console.log('handle remove account');
         dispatch(accountsActions.removeAccount([account]));
 
         const isLastAccount = accountsLength === 1;
         if (isLastAccount) {
-            console.log('last account');
             navigation.navigate(RootStackRoutes.AccountsImport, {
                 screen: AccountsImportStackRoutes.SelectNetwork,
             });
         } else {
-            console.log('not last');
-            navigation.reset({
-                index: 0,
-                routes: [
-                    {
-                        name: RootStackRoutes.AppTabs,
-                        params: {
-                            screen: HomeStackRoutes.Home,
-                        },
-                    },
-                ],
+            navigation.navigate(RootStackRoutes.AppTabs, {
+                screen: AppTabsRoutes.HomeStack,
+                params: {
+                    screen: HomeStackRoutes.Home,
+                },
             });
         }
     };
