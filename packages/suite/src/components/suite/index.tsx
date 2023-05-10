@@ -57,6 +57,7 @@ import { TorLoader } from './TorLoader';
 import { CoinjoinStatusBar } from './CoinjoinStatusBar';
 import { CountdownTimer } from './CountdownTimer';
 import { NumberInput } from './NumberInput';
+import { QrCode } from './QrCode';
 
 export {
     AccountLabel,
@@ -121,5 +122,6 @@ export {
     CountdownTimer,
     NumberInput,
     DeviceButton,
+    QrCode,
 };
 export type { ModalProps };

@@ -133,6 +133,8 @@ export const Tooltip = ({
     guideAnchor,
     title,
     disabled,
+    onShow,
+    onHide,
     ...rest
 }: TooltipProps) => {
     const [isShown, setIsShown] = useState(false);
@@ -159,8 +161,14 @@ export const Tooltip = ({
                 zIndex={variables.Z_INDEX.TOOLTIP}
                 placement={placement}
                 animation={!(guideAnchor && isShown) && animation}
-                onShow={() => setIsShown(true)}
-                onHide={() => setIsShown(false)}
+                onShow={instance => {
+                    onShow?.(instance);
+                    setIsShown(true);
+                }}
+                onHide={instance => {
+                    onHide?.(instance);
+                    setIsShown(false);
+                }}
                 duration={duration}
                 delay={delay}
                 offset={[0, offset]}

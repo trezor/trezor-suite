@@ -19,10 +19,11 @@ const Wrapper = styled.div`
 
 interface QrCodeProps {
     value: string;
+    className?: string;
 }
 
-export const QrCode = ({ value }: QrCodeProps) => (
-    <Wrapper>
+export const QrCode = ({ value, className }: QrCodeProps) => (
+    <Wrapper className={className}>
         <QRCodeSVG
             bgColor={colors.BG_WHITE}
             fgColor={colors.TYPE_DARK_GREY}

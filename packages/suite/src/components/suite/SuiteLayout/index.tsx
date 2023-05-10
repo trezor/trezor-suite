@@ -6,7 +6,11 @@ import SuiteBanners from '@suite-components/Banners';
 import MenuSecondary from '@suite-components/MenuSecondary';
 import { Metadata } from '@suite-components';
 import { GuidePanel, GuideButton } from '@guide-components';
-import { MAX_WIDTH } from '@suite-constants/layout';
+import {
+    DESKTOP_HORIZONTAL_PADDINGS,
+    MAX_WIDTH,
+    MOBILE_HORIZONTAL_PADDINGS,
+} from '@suite-constants/layout';
 import { DiscoveryProgress } from '@wallet-components';
 import { NavigationBar } from '../NavigationBar';
 import { useLayoutSize, useSelector, useDevice } from '@suite-hooks';
@@ -68,19 +72,20 @@ const AppWrapper = styled.div`
 `;
 
 const DefaultPaddings = styled.div`
+    position: relative;
     display: flex;
     justify-content: center;
     flex: 1;
     width: 100%;
     max-width: ${MAX_WIDTH};
-    padding: 24px 32px 90px 32px;
+    padding: 24px ${DESKTOP_HORIZONTAL_PADDINGS} 90px ${DESKTOP_HORIZONTAL_PADDINGS};
 
     ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
-        padding: 24px 16px 70px 16px;
+        padding: 24px ${MOBILE_HORIZONTAL_PADDINGS} 70px ${MOBILE_HORIZONTAL_PADDINGS};
     }
 
     ${variables.SCREEN_QUERY.MOBILE} {
-        padding-bottom: 50px;
+        padding-bottom: 90px; /* including the mobile app banner */
     }
 `;
 
