@@ -463,7 +463,7 @@ export class DeviceCommands {
             }
 
             if (res.message.code === 'ButtonRequest_PassphraseEntry') {
-                this.device.emit(DEVICE.PASSPHRASE_ON_DEVICE, this.device);
+                this.device.emit(DEVICE.PASSPHRASE_ON_DEVICE);
             } else {
                 this.device.emit(DEVICE.BUTTON, this.device, res.message);
             }
@@ -495,7 +495,7 @@ export class DeviceCommands {
 
             // TT fw lower than 2.3.0, entering passphrase on device
             if (legacy && res.message._on_device) {
-                this.device.emit(DEVICE.PASSPHRASE_ON_DEVICE, this.device);
+                this.device.emit(DEVICE.PASSPHRASE_ON_DEVICE);
                 return this._commonCall('PassphraseAck', { _state: state });
             }
 

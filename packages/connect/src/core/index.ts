@@ -693,7 +693,7 @@ const closePopup = () => {
  * @memberof Core
  */
 const onDeviceButtonHandler = async (
-    ...[device, request, method]: [...DeviceEvents['button'], AbstractMethod]
+    ...[device, request, method]: [...Parameters<DeviceEvents['button']>, AbstractMethod]
 ) => {
     // wait for popup handshake
     const addressRequest = request.code === 'ButtonRequest_Address';
@@ -730,7 +730,7 @@ const onDeviceButtonHandler = async (
  * @returns {Promise<void>}
  * @memberof Core
  */
-const onDevicePinHandler = async (...[device, type, callback]: DeviceEvents['pin']) => {
+const onDevicePinHandler: DeviceEvents['pin'] = async (...[device, type, callback]) => {
     // wait for popup handshake
     await getPopupPromise().promise;
     // create ui promise
@@ -743,7 +743,7 @@ const onDevicePinHandler = async (...[device, type, callback]: DeviceEvents['pin
     callback(null, uiResp.payload);
 };
 
-const onDeviceWordHandler = async (...[device, type, callback]: DeviceEvents['word']) => {
+const onDeviceWordHandler: DeviceEvents['word'] = async (...[device, type, callback]) => {
     // wait for popup handshake
     await getPopupPromise().promise;
     // create ui promise
@@ -761,7 +761,7 @@ const onDeviceWordHandler = async (...[device, type, callback]: DeviceEvents['wo
  * @returns {Promise<void>}
  * @memberof Core
  */
-const onDevicePassphraseHandler = async (...[device, callback]: DeviceEvents['passphrase']) => {
+const onDevicePassphraseHandler: DeviceEvents['passphrase'] = async (...[device, callback]) => {
     // wait for popup handshake
     await getPopupPromise().promise;
     // create ui promise
@@ -786,7 +786,7 @@ const onDevicePassphraseHandler = async (...[device, callback]: DeviceEvents['pa
  * @returns {Promise<void>}
  * @memberof Core
  */
-const onEmptyPassphraseHandler = (...[_, callback]: DeviceEvents['passphrase']) => {
+const onEmptyPassphraseHandler: DeviceEvents['passphrase'] = (...[_, callback]) => {
     // send as PassphrasePromptResponse
     callback({ passphrase: '' });
 };

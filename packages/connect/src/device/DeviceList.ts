@@ -2,7 +2,7 @@
 
 /* eslint-disable max-classes-per-file, @typescript-eslint/no-use-before-define */
 
-import EventEmitter from 'events';
+import { TypedEmitter } from '@trezor/utils/lib/typedEventEmitter';
 import TrezorLink, {
     Transport,
     TrezorDeviceInfoWithSession as DeviceDescriptor,
@@ -55,18 +55,7 @@ interface DeviceListEvents {
     [DEVICE.ACQUIRED]: DeviceTyped;
 }
 
-export interface DeviceList {
-    on<K extends keyof DeviceListEvents>(
-        type: K,
-        listener: (event: DeviceListEvents[K]) => void,
-    ): this;
-    off<K extends keyof DeviceListEvents>(
-        type: K,
-        listener: (event: DeviceListEvents[K]) => void,
-    ): this;
-    emit<K extends keyof DeviceListEvents>(type: K, args: DeviceListEvents[K]): boolean;
-}
-export class DeviceList extends EventEmitter {
+export class DeviceList extends TypedEmitter<DeviceListEvents> {
     transport: Transport;
 
     transportPlugin: LowLevelPlugin | typeof undefined;
