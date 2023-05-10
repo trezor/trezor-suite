@@ -3,7 +3,7 @@ import { WalletParams } from '@wallet-types';
 import { AppNavigation, AppNavigationItem } from '@suite-components/AppNavigation';
 import { Translation } from '@suite-components/Translation';
 import { useActions, useSelector } from '@suite-hooks';
-import { getNetwork, getNetworkFeatures } from '@suite-common/wallet-utils';
+import { getNetwork, hasNetworkFeatures } from '@suite-common/wallet-utils';
 import * as routerActions from '@suite-actions/routerActions';
 import * as modalActions from '@suite-actions/modalActions';
 
@@ -29,10 +29,8 @@ export const AccountNavigation = ({
     const { account } = selectedAccount;
     const routerParams = useSelector(state => state.router.params) as WalletParams;
     const network = getNetwork(routerParams?.symbol || '');
-    const networkType = account?.networkType || network?.networkType || 'bitcoin';
-    const accountType = account?.accountType || routerParams?.accountType || 'normal';
-    const symbol = account?.symbol || routerParams?.symbol || 'btc';
-    const networkFeatures = getNetworkFeatures({ networkType, symbol, accountType });
+    const networkType = account?.networkType || network?.networkType || '';
+    const accountType = account?.accountType || routerParams?.accountType || '';
 
     const ITEMS: AppNavigationItem[] = [
         {
@@ -69,7 +67,7 @@ export const AccountNavigation = ({
             },
             title: <Translation id="TR_NAV_STAKING" />,
             position: 'primary',
-            isHidden: !networkFeatures?.includes('staking'),
+            isHidden: !hasNetworkFeatures(account, 'staking'),
         },
         {
             id: 'wallet-send',
@@ -117,7 +115,8 @@ export const AccountNavigation = ({
             icon: 'SIGNATURE',
             position: 'secondary',
             extra: true,
-            isHidden: !networkFeatures?.includes('sign-verify'),
+            // show dots when acc missing as they are hidden only in case of XRP
+            isHidden: !account ? false : !hasNetworkFeatures(account, 'sign-verify'),
         },
     ];
 
