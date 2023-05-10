@@ -9,11 +9,9 @@ const excluded = [
     // TODO: it works locally but CI times out, probably cant handle the redirect or something..
     URLS.DATA_TOS_URL,
     // 503 from CI
-    URLS.TREZOR_BLOG_URL,
     URLS.LTC_ADDRESS_INFO_URL,
     // T2B1 urls, they don't exist yet
     URLS.HELP_CENTER_DRY_RUN_TR_URL,
-    URLS.HELP_CENTER_PACKAGING_TR_URL,
     URLS.HELP_CENTER_FW_DOWNGRADE_TR_URL,
 ];
 
