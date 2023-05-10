@@ -47,6 +47,8 @@ jest.mock('@trezor/connect', () => {
     };
 });
 
+jest.mock('@trezor/suite-analytics', () => global.JestMocks.getAnalytics());
+
 const DEVICE = getSuiteDevice({ path: '1', connected: true });
 
 type State = {

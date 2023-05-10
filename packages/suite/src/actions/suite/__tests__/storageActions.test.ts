@@ -16,6 +16,7 @@ import discoveryReducer from '@wallet-reducers/discoveryReducer';
 import sendFormReducer from '@wallet-reducers/sendFormReducer';
 import graphReducer from '@wallet-reducers/graphReducer';
 import storageMiddleware from '@wallet-middlewares/storageMiddleware';
+import { coinjoinReducer } from '@wallet-reducers/coinjoinReducer';
 import { getAccountTransactions, getAccountIdentifier } from '@suite-common/wallet-utils';
 import { AppState } from '@suite-types';
 import { SETTINGS } from '@suite/config/suite';
@@ -82,7 +83,14 @@ type PartialState = Pick<AppState, 'suite' | 'devices'> & {
     wallet: Partial<
         Pick<
             AppState['wallet'],
-            'accounts' | 'settings' | 'discovery' | 'send' | 'transactions' | 'graph' | 'fiat'
+            | 'accounts'
+            | 'coinjoin'
+            | 'settings'
+            | 'discovery'
+            | 'send'
+            | 'transactions'
+            | 'graph'
+            | 'fiat'
         >
     >;
 };
@@ -99,6 +107,10 @@ export const getInitialState = (prevState?: Partial<PartialState>, action?: any)
     wallet: {
         accounts: accountsReducer(
             prevState && prevState.wallet ? prevState.wallet.accounts : undefined,
+            action || ({ type: 'foo' } as any),
+        ),
+        coinjoin: coinjoinReducer(
+            prevState && prevState.wallet ? prevState.wallet.coinjoin : undefined,
             action || ({ type: 'foo' } as any),
         ),
         settings: walletSettingsReducer(

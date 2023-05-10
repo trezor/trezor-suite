@@ -398,6 +398,18 @@ const getTrezorConnect = <M>(methods?: M) => {
     };
 };
 
+// Mocked @trezor/suite-analytics package used in various tests
+const getAnalytics = () => {
+    const originalModule = jest.requireActual('@trezor/suite-analytics');
+    return {
+        __esModule: true, // this property makes it work
+        ...originalModule,
+        analytics: {
+            report: jest.fn(),
+        },
+    };
+};
+
 const getMessageSystemConfig = (
     root?: Partial<MessageSystem>,
     action1?: Partial<Action>,
@@ -663,6 +675,7 @@ export const testMocks = {
     getSuiteDevice,
     getWalletTransaction,
     getTrezorConnect,
+    getAnalytics,
     getMessageSystemConfig,
     getGuideNode,
     getUtxo,

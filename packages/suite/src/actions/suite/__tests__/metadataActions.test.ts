@@ -41,6 +41,8 @@ jest.mock('@trezor/connect', () => {
     };
 });
 
+jest.mock('@trezor/suite-analytics', () => global.JestMocks.getAnalytics());
+
 // @ts-expect-error declare fetch (used in Dropbox constructor)
 global.fetch = () => {};
 
