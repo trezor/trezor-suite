@@ -881,9 +881,13 @@ export const getNetworkFeatures = ({
     )?.features || [];
 
 export const hasNetworkFeatures = (
-    account: Account,
+    account: Account | undefined,
     features: NetworkFeature | Array<NetworkFeature>,
 ) => {
+    if (!account) {
+        return false;
+    }
+
     const networkFeatures = getNetworkFeatures(account);
 
     if (!networkFeatures) {

@@ -3,6 +3,7 @@ import { Translation } from '@suite-components';
 import { AccountExceptionLayout, WalletLayout } from '@wallet-components';
 import { useSelector } from '@suite-hooks';
 import { CardanoStakingDashboard } from './components/CardanoStakingDashboard';
+import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 
 export const WalletStaking = () => {
     const { selectedAccount } = useSelector(state => state.wallet);
@@ -17,7 +18,7 @@ export const WalletStaking = () => {
         );
     }
 
-    if (selectedAccount.network.features.includes('staking')) {
+    if (hasNetworkFeatures(selectedAccount.account, 'staking')) {
         switch (selectedAccount.account.networkType) {
             case 'cardano':
                 return <CardanoStakingDashboard selectedAccount={selectedAccount} />;
