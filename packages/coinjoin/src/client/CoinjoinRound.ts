@@ -1,5 +1,4 @@
-import { EventEmitter } from 'events';
-
+import { TypedEmitter } from '@trezor/utils/lib/typedEventEmitter';
 import { scheduleAction, arrayDistinct, arrayPartition } from '@trezor/utils';
 import { Network } from '@trezor/utxo-lib';
 
@@ -47,13 +46,6 @@ interface Events {
     changed: CoinjoinRoundEvent;
 }
 
-export declare interface CoinjoinRound {
-    on<K extends keyof Events>(type: K, listener: (event: Events[K]) => void): this;
-    off<K extends keyof Events>(type: K, listener: (event: Events[K]) => void): this;
-    emit<K extends keyof Events>(type: K, ...args: Events[K][]): boolean;
-    removeAllListeners<K extends keyof Events>(type?: K): this;
-}
-
 const createRoundLock = (mainSignal: AbortSignal) => {
     let localResolve: () => void = () => {};
     const promise: Promise<void> = new Promise(resolve => {
@@ -93,7 +85,7 @@ interface CreateRoundProps {
     runningAffiliateServer: boolean;
 }
 
-export class CoinjoinRound extends EventEmitter {
+export class CoinjoinRound extends TypedEmitter<Events> {
     private lock?: ReturnType<typeof createRoundLock>;
     private options: CoinjoinRoundOptions;
     private logger: Logger;

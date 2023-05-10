@@ -1,4 +1,4 @@
-import { EventEmitter } from 'events';
+import { TypedEmitter } from '@trezor/utils/lib/typedEventEmitter';
 
 import { Status } from './Status';
 import { Account } from './Account';
@@ -17,23 +17,7 @@ import type {
     LogLevel,
 } from '../types';
 
-export declare interface CoinjoinClient {
-    on<K extends keyof CoinjoinClientEvents>(
-        type: K,
-        listener: (event: CoinjoinClientEvents[K]) => void,
-    ): this;
-    off<K extends keyof CoinjoinClientEvents>(
-        type: K,
-        listener: (event: CoinjoinClientEvents[K]) => void,
-    ): this;
-    emit<K extends keyof CoinjoinClientEvents>(
-        type: K,
-        ...args: CoinjoinClientEvents[K][]
-    ): boolean;
-    removeAllListeners<K extends keyof CoinjoinClientEvents>(type?: K): this;
-}
-
-export class CoinjoinClient extends EventEmitter {
+export class CoinjoinClient extends TypedEmitter<CoinjoinClientEvents> {
     readonly settings: CoinjoinClientSettings;
     private logger: Logger;
     private network;
