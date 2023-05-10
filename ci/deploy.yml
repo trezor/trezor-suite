@@ -113,10 +113,10 @@ connect deploy to dev:
   refs:
     - develop
     - schedules
-    - /^run\//
   changes:
     - packages/components
     - packages/components-storybook
+    - yarn.lock
 
 # Deploy
 

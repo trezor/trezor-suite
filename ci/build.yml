@@ -270,10 +270,7 @@ connect-web build:
 .run_components_rules: &run_components_rules
   refs:
     - develop
-    - releases
     - schedules
-    - /^release\//
-    - /^run\//
   changes:
     - packages/components
     - packages/components-storybook
