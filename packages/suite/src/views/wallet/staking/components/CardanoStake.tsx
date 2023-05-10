@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
-import { Button, Icon, Tooltip, Card, Warning } from '@trezor/components';
+import { Icon, Card, Warning } from '@trezor/components';
 import { Translation } from '@suite-components/Translation';
 import { HiddenPlaceholder } from '@suite-components/HiddenPlaceholder';
 import { useCardanoStaking, getReasonForDisabledAction } from '@wallet-hooks/useCardanoStaking';
@@ -19,6 +19,7 @@ import {
 } from './CardanoPrimitives';
 import { DeviceModel } from '@trezor/device-utils';
 import { useDeviceModel } from '@suite-hooks/useDeviceModel';
+import { DeviceButton } from '@suite-components';
 
 interface CardanoStakeProps {
     account: Account;
@@ -41,22 +42,6 @@ export const CardanoStake = ({ account }: CardanoStakeProps) => {
     useEffect(() => {
         calculateFeeAndDeposit('delegate');
     }, [calculateFeeAndDeposit]);
-
-    const actionButton = (
-        <Button
-            isDisabled={
-                account.availableBalance === '0' ||
-                !delegatingAvailable.status ||
-                !deviceAvailable.status ||
-                !!pendingStakeTx
-            }
-            isLoading={loading}
-            onClick={() => delegate()}
-            icon={`TREZOR_T${deviceModel}`}
-        >
-            <Translation id="TR_STAKING_DELEGATE" />
-        </Button>
-    );
 
     const reasonMessageId = getReasonForDisabledAction(delegatingAvailable?.reason);
     const isStakingDisabled =

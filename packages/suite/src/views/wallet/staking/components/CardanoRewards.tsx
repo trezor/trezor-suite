@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Button, Icon, Tooltip, Card } from '@trezor/components';
+import { Icon, Card } from '@trezor/components';
 import { getReasonForDisabledAction, useCardanoStaking } from '@wallet-hooks/useCardanoStaking';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { Translation } from '@suite-components/Translation';
@@ -19,6 +19,7 @@ import {
 import { HiddenPlaceholder } from '@suite-components/HiddenPlaceholder';
 import { DeviceModel } from '@trezor/device-utils';
 import { useDeviceModel } from '@suite-hooks/useDeviceModel';
+import { DeviceButton } from '@suite-components';
 
 interface CardanoRewardsProps {
     account: Account;
@@ -40,22 +41,6 @@ export const CardanoRewards = ({ account }: CardanoRewardsProps) => {
     useEffect(() => {
         calculateFeeAndDeposit('withdrawal');
     }, [calculateFeeAndDeposit]);
-
-    const actionButton = (
-        <Button
-            isLoading={loading}
-            isDisabled={
-                rewards === '0' ||
-                !withdrawingAvailable.status ||
-                !deviceAvailable.status ||
-                !!pendingStakeTx
-            }
-            icon={`TREZOR_T${deviceModel}`}
-            onClick={withdraw}
-        >
-            <Translation id="TR_STAKING_WITHDRAW" />
-        </Button>
-    );
 
     const reasonMessageId = getReasonForDisabledAction(withdrawingAvailable?.reason);
     const isRewardsWithdrawDisabled =
