@@ -24,6 +24,9 @@ export const getBlockAddressScript = (address: string, network: Network) => {
     return Buffer.concat([Buffer.from([script.length + 6]), script]);
 };
 
+export const getMempoolAddressScript = (address: string, network: Network) =>
+    addressBjs.toOutputScript(address, network);
+
 const getFilter = (filterHex: string, keyBuffer: Buffer) => {
     const filter = createFilter(Buffer.from(filterHex, 'hex'));
     const key = keyBuffer.slice(0, KEY_SIZE);
@@ -32,3 +35,6 @@ const getFilter = (filterHex: string, keyBuffer: Buffer) => {
 
 export const getBlockFilter = (filterHex: string, blockHash: string) =>
     getFilter(filterHex, Buffer.from(blockHash, 'hex').reverse());
+
+export const getMempoolFilter = (filterHex: string, txid: string) =>
+    getFilter(filterHex, Buffer.from(txid, 'hex'));
