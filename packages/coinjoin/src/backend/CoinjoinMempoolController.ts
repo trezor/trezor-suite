@@ -7,6 +7,7 @@ import type { Logger } from '../types';
 import type { BlockbookTransaction, MempoolClient } from '../types/backend';
 import { getMempoolAddressScript, getMempoolFilter } from './filters';
 import { doesTxContainAddress } from './backendUtils';
+import { MEMPOOL_PURGE_CYCLE } from '../constants';
 
 type MempoolStatus = 'stopped' | 'running';
 
@@ -14,7 +15,7 @@ export type MempoolController = {
     get status(): MempoolStatus;
     start(): Promise<void>;
     init(addresses: string[]): Promise<void>;
-    update(): Promise<void>;
+    update(force?: boolean): Promise<void>;
     getTransactions(addresses: string[]): BlockbookTransaction[];
 };
 
@@ -32,6 +33,7 @@ export class CoinjoinMempoolController implements MempoolController {
     private readonly logger;
     private readonly filter;
     private readonly onTx;
+    private lastPurge;
     private _status: MempoolStatus;
 
     get status() {
@@ -45,6 +47,7 @@ export class CoinjoinMempoolController implements MempoolController {
         this.logger = logger;
         this.filter = filter;
         this.onTx = this.onMempoolTx.bind(this);
+        this.lastPurge = new Date().getTime();
         this._status = 'stopped';
     }
 
@@ -67,6 +70,7 @@ export class CoinjoinMempoolController implements MempoolController {
         await promiseAllSequence(
             txids.map(txid => () => this.client.fetchTransaction(txid).then(this.onTx)),
         );
+        this.lastPurge = new Date().getTime();
     }
 
     async start() {
@@ -81,7 +85,11 @@ export class CoinjoinMempoolController implements MempoolController {
         this._status = 'stopped';
     }
 
-    async update() {
+    async update(force?: boolean) {
+        const now = new Date().getTime();
+        if (now - this.lastPurge < MEMPOOL_PURGE_CYCLE && !force) return;
+        this.lastPurge = now;
+
         const mempoolTxids = await this.client
             .fetchMempoolFilters()
             .then(filters => Object.keys(filters));
