@@ -4,7 +4,12 @@ import type { Logger } from '../types';
 
 export type BlockbookWS = Pick<
     BlockbookAPI,
-    'getBlock' | 'getTransaction' | 'getAccountInfo' | 'getServerInfo' | 'getBlockHash'
+    | 'getBlock'
+    | 'getTransaction'
+    | 'getAccountInfo'
+    | 'getServerInfo'
+    | 'getBlockHash'
+    | 'getMempoolFilters'
 >;
 
 type SocketId = `${string}@${string}`;

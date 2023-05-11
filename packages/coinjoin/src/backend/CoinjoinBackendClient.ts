@@ -54,7 +54,9 @@ export class CoinjoinBackendClient {
     }
 
     fetchTransaction(txid: string, options?: RequestOptions): Promise<BlockbookTransaction> {
-        return this.fetchFromBlockbook(options, 'getTransaction', txid);
+        const lastCharCode = txid.charCodeAt(txid.length - 1);
+        const identity = this.identitiesBlockbook[lastCharCode & 0x3]; // Works only when identities.length === 4
+        return this.fetchFromBlockbook({ identity, ...options }, 'getTransaction', txid);
     }
 
     fetchNetworkInfo(options?: RequestOptions) {
@@ -68,6 +70,12 @@ export class CoinjoinBackendClient {
             pageSize,
             page,
         });
+    }
+
+    fetchMempoolFilters(timestamp?: number, options?: RequestOptions) {
+        return this.fetchFromBlockbook(options, 'getMempoolFilters', timestamp).then(
+            ({ entries }) => entries ?? {},
+        );
     }
 
     private reconnect = async () => {
