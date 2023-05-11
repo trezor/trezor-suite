@@ -1,6 +1,6 @@
 import { networks } from '@trezor/utxo-lib';
 
-import { getAddressScript, getFilter } from '../../src/backend/filters';
+import { getBlockAddressScript, getBlockFilter } from '../../src/backend/filters';
 
 const NETWORK = networks.regtest;
 
@@ -73,86 +73,86 @@ const BLOCK_163 = {
 
 describe('Golomb filtering', () => {
     it('Receive address as input', () => {
-        const script = getAddressScript(COINJOIN_RECEIVE_0, NETWORK);
-        const filter = getFilter(BLOCK_108.filter, BLOCK_108.hash);
+        const script = getBlockAddressScript(COINJOIN_RECEIVE_0, NETWORK);
+        const filter = getBlockFilter(BLOCK_108.filter, BLOCK_108.hash);
         expect(filter(script)).toBe(true);
     });
 
     it('Receive address as output', () => {
-        const script = getAddressScript(COINJOIN_RECEIVE_0, NETWORK);
-        const filter = getFilter(BLOCK_106.filter, BLOCK_106.hash);
+        const script = getBlockAddressScript(COINJOIN_RECEIVE_0, NETWORK);
+        const filter = getBlockFilter(BLOCK_106.filter, BLOCK_106.hash);
         expect(filter(script)).toBe(true);
     });
 
     it('Receive address nowhere', () => {
-        const script = getAddressScript(COINJOIN_RECEIVE_0, NETWORK);
-        const filter = getFilter(BLOCK_109.filter, BLOCK_109.hash);
+        const script = getBlockAddressScript(COINJOIN_RECEIVE_0, NETWORK);
+        const filter = getBlockFilter(BLOCK_109.filter, BLOCK_109.hash);
         expect(filter(script)).toBe(false);
     });
 
     it('Change address as input', () => {
-        const script = getAddressScript(COINJOIN_CHANGE_0, NETWORK);
-        const filter = getFilter(BLOCK_109.filter, BLOCK_109.hash);
+        const script = getBlockAddressScript(COINJOIN_CHANGE_0, NETWORK);
+        const filter = getBlockFilter(BLOCK_109.filter, BLOCK_109.hash);
         expect(filter(script)).toBe(true);
     });
 
     it('Change address as output', () => {
-        const script = getAddressScript(COINJOIN_CHANGE_0, NETWORK);
-        const filter = getFilter(BLOCK_108.filter, BLOCK_108.hash);
+        const script = getBlockAddressScript(COINJOIN_CHANGE_0, NETWORK);
+        const filter = getBlockFilter(BLOCK_108.filter, BLOCK_108.hash);
         expect(filter(script)).toBe(true);
     });
 
     it('Change address nowhere', () => {
-        const script = getAddressScript(COINJOIN_CHANGE_0, NETWORK);
-        const filter = getFilter(BLOCK_106.filter, BLOCK_106.hash);
+        const script = getBlockAddressScript(COINJOIN_CHANGE_0, NETWORK);
+        const filter = getBlockFilter(BLOCK_106.filter, BLOCK_106.hash);
         expect(filter(script)).toBe(false);
     });
 
     it('Bech32 receive address as input', () => {
-        const script = getAddressScript(BECH32_RECEIVE_0, NETWORK);
-        const filter = getFilter(BLOCK_158.filter, BLOCK_158.hash);
+        const script = getBlockAddressScript(BECH32_RECEIVE_0, NETWORK);
+        const filter = getBlockFilter(BLOCK_158.filter, BLOCK_158.hash);
         expect(filter(script)).toBe(true);
     });
 
     it('Bech32 receive address as output', () => {
-        const script = getAddressScript(BECH32_RECEIVE_0, NETWORK);
-        const filter = getFilter(BLOCK_157.filter, BLOCK_157.hash);
+        const script = getBlockAddressScript(BECH32_RECEIVE_0, NETWORK);
+        const filter = getBlockFilter(BLOCK_157.filter, BLOCK_157.hash);
         expect(filter(script)).toBe(true);
     });
 
     it('Bech32 change address as input', () => {
-        const script = getAddressScript(BECH32_CHANGE_0, NETWORK);
-        const filter = getFilter(BLOCK_160.filter, BLOCK_160.hash);
+        const script = getBlockAddressScript(BECH32_CHANGE_0, NETWORK);
+        const filter = getBlockFilter(BLOCK_160.filter, BLOCK_160.hash);
         expect(filter(script)).toBe(true);
     });
 
     it('Bech32 change address as output', () => {
-        const script = getAddressScript(BECH32_CHANGE_0, NETWORK);
-        const filter = getFilter(BLOCK_159.filter, BLOCK_159.hash);
+        const script = getBlockAddressScript(BECH32_CHANGE_0, NETWORK);
+        const filter = getBlockFilter(BLOCK_159.filter, BLOCK_159.hash);
         expect(filter(script)).toBe(true);
     });
 
     it('Taproot receive address as input', () => {
-        const script = getAddressScript(TAPROOT_RECEIVE_0, NETWORK);
-        const filter = getFilter(BLOCK_162.filter, BLOCK_162.hash);
+        const script = getBlockAddressScript(TAPROOT_RECEIVE_0, NETWORK);
+        const filter = getBlockFilter(BLOCK_162.filter, BLOCK_162.hash);
         expect(filter(script)).toBe(true);
     });
 
     it('Taproot receive address as output', () => {
-        const script = getAddressScript(TAPROOT_RECEIVE_0, NETWORK);
-        const filter = getFilter(BLOCK_161.filter, BLOCK_161.hash);
+        const script = getBlockAddressScript(TAPROOT_RECEIVE_0, NETWORK);
+        const filter = getBlockFilter(BLOCK_161.filter, BLOCK_161.hash);
         expect(filter(script)).toBe(true);
     });
 
     it('Taproot change address as input', () => {
-        const script = getAddressScript(TAPROOT_CHANGE_0, NETWORK);
-        const filter = getFilter(BLOCK_163.filter, BLOCK_163.hash);
+        const script = getBlockAddressScript(TAPROOT_CHANGE_0, NETWORK);
+        const filter = getBlockFilter(BLOCK_163.filter, BLOCK_163.hash);
         expect(filter(script)).toBe(true);
     });
 
     it('Taproot change address as output', () => {
-        const script = getAddressScript(TAPROOT_CHANGE_0, NETWORK);
-        const filter = getFilter(BLOCK_162.filter, BLOCK_162.hash);
+        const script = getBlockAddressScript(TAPROOT_CHANGE_0, NETWORK);
+        const filter = getBlockFilter(BLOCK_162.filter, BLOCK_162.hash);
         expect(filter(script)).toBe(true);
     });
 });

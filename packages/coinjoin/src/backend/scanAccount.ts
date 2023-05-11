@@ -1,6 +1,6 @@
 import { transformTransaction } from '@trezor/blockchain-link-utils/lib/blockbook';
 
-import { getAddressScript, getFilter } from './filters';
+import { getBlockAddressScript, getBlockFilter } from './filters';
 import { doesTxContainAddress, deriveAddresses } from './backendUtils';
 import type {
     Transaction,
@@ -60,7 +60,7 @@ export const scanAccount = async (
                 ({ address, path }) => ({
                     address,
                     path,
-                    script: getAddressScript(address, network),
+                    script: getBlockAddressScript(address, network),
                 }),
             );
 
@@ -77,7 +77,7 @@ export const scanAccount = async (
     const everyFilter = filters.getFilterIterator({ checkpoints }, { abortSignal });
     // eslint-disable-next-line no-restricted-syntax
     for await (const { filter, blockHash, blockHeight, progress } of everyFilter) {
-        const isMatch = getFilter(filter, blockHash);
+        const isMatch = getBlockFilter(filter, blockHash);
 
         let block: BlockbookBlock | undefined;
         const lazyBlock = async () =>
