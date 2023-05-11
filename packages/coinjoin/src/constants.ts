@@ -34,6 +34,10 @@ export const HTTP_REQUEST_GAP = 1000;
 // special timeout for quite large filter batches downloaded over tor
 export const FILTERS_REQUEST_TIMEOUT = 300000;
 
+// After how many ms should mempool be purged again
+// (= large request for all mempool txids and throwing away all unincluded)
+export const MEMPOOL_PURGE_CYCLE = 10 * 60 * 1000;
+
 // timeout for CoinjoinRound currently running process
 export const ROUND_PHASE_PROCESS_TIMEOUT = 10000;
 

@@ -22,7 +22,7 @@ describe('CoinjoinMempoolController', () => {
         TXS.forEach(client.fireTx.bind(client));
         expect(mempool.getTransactions()).toEqual(TXS);
         expect(mempool.getTransactions([ADDRESS])).toEqual(TXS_MATCH);
-        await mempool.update();
+        await mempool.update(true);
         expect(mempool.getTransactions()).toEqual([]);
     });
 
@@ -35,20 +35,20 @@ describe('CoinjoinMempoolController', () => {
         expect(mempool.getTransactions()).toEqual([TXS[2], TXS[3]]);
 
         client.setMempoolTxs([TXS[1], TXS[2], TXS[3]]);
-        await mempool.update();
+        await mempool.update(true);
         expect(mempool.getTransactions()).toEqual([TXS[2], TXS[3]]);
 
         [TXS[4]].forEach(client.fireTx.bind(client));
         client.setMempoolTxs([TXS[3], TXS[4], TXS[5]]);
-        await mempool.update();
+        await mempool.update(true);
         expect(mempool.getTransactions()).toEqual([TXS[3], TXS[4]]);
 
         [TXS[5]].forEach(client.fireTx.bind(client));
-        await mempool.update();
+        await mempool.update(true);
         expect(mempool.getTransactions()).toEqual([TXS[3], TXS[4], TXS[5]]);
 
         client.setMempoolTxs([TXS[0], TXS[1]]);
-        await mempool.update();
+        await mempool.update(true);
         expect(mempool.getTransactions()).toEqual([]);
     });
 
