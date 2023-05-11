@@ -55,6 +55,7 @@ export const HELP_CENTER_XPUB_URL = 'https://trezor.io/learn/a/trezor-suite-app-
 export const HELP_FIRMWARE_TYPE = 'https://trezor.io/learn/a/bitcoin-only-firmware-on-trezor';
 export const HELP_CENTER_ZERO_VALUE_ATTACKS =
     'https://trezor.io/support/a/address-poisoning-attacks';
+export const HELP_CENTER_LABELING = 'https://trezor.io/learn/a/labels-in-trezor-suite-app';
 
 export const INVITY_URL = 'https://invity.io/';
 export const INVITY_SCHEDULE_OF_FEES = 'https://blog.invity.io/schedule-of-fees';

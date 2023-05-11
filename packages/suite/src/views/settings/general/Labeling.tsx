@@ -1,7 +1,7 @@
 import React from 'react';
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { Switch, Tooltip } from '@trezor/components';
-
+import { HELP_CENTER_LABELING } from '@trezor/urls';
 import { Translation } from '@suite-components';
 import { ActionColumn, SectionItem, TextColumn } from '@suite-components/Settings';
 import { useSelector, useActions, useDevice } from '@suite-hooks';
@@ -43,6 +43,7 @@ export const Labeling = () => {
             <TextColumn
                 title={<Translation id="TR_LABELING_ENABLED" />}
                 description={<Translation id="TR_LABELING_FEATURE_ALLOWS" />}
+                buttonLink={HELP_CENTER_LABELING}
             />
             <ActionColumn>
                 <Tooltip
