@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { variables, Button } from '@trezor/components';
+import { variables, Button, Icon } from '@trezor/components';
 import { Translation, TrezorLink } from '@suite-components';
 
 interface TextColumnProps {
@@ -21,6 +21,10 @@ const Wrapper = styled.div`
 
 const ButtonLink = styled(Button)`
     max-width: fit-content;
+
+    svg {
+        margin-left: 6px;
+    }
 `;
 
 const Description = styled.div`
@@ -52,6 +56,7 @@ export const TextColumn = ({ title, description, buttonLink, buttonTitle }: Text
             <TrezorLink variant="nostyle" href={buttonLink}>
                 <ButtonLink variant="tertiary">
                     {buttonTitle || <Translation id="TR_LEARN_MORE" />}
+                    <Icon icon="EXTERNAL_LINK" size={12} />
                 </ButtonLink>
             </TrezorLink>
         )}
