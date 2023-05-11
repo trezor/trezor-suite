@@ -10,20 +10,25 @@ import { U64 } from 'n64';
 import { address as addressBjs, Network } from '@trezor/utxo-lib';
 
 const M = new U64(1 << 20);
+const KEY_SIZE = 16;
 
 const createFilter = (data: Buffer) => {
     const filter = Golomb.fromNBytes(20, data);
+    // In golomb package, M is hardcoded to 784931. With custom value, m must be calculated separately (as M * n).
     filter.m = M.mul(new U64(filter.n));
     return filter;
 };
 
-export const getAddressScript = (address: string, network: Network) => {
+export const getBlockAddressScript = (address: string, network: Network) => {
     const script = addressBjs.toOutputScript(address, network);
     return Buffer.concat([Buffer.from([script.length + 6]), script]);
 };
 
-export const getFilter = (filterHex: string, blockHash: string) => {
+const getFilter = (filterHex: string, keyBuffer: Buffer) => {
     const filter = createFilter(Buffer.from(filterHex, 'hex'));
-    const key = Buffer.from(blockHash, 'hex').reverse().slice(0, 16);
+    const key = keyBuffer.slice(0, KEY_SIZE);
     return (script: Buffer) => filter.match(key, script);
 };
+
+export const getBlockFilter = (filterHex: string, blockHash: string) =>
+    getFilter(filterHex, Buffer.from(blockHash, 'hex').reverse());

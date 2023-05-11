@@ -1,6 +1,6 @@
 import { transformTransaction } from '@trezor/blockchain-link-utils/lib/blockbook';
 
-import { getAddressScript, getFilter } from './filters';
+import { getBlockAddressScript, getBlockFilter } from './filters';
 import { doesTxContainAddress } from './backendUtils';
 import type {
     Transaction,
@@ -15,7 +15,7 @@ export const scanAddress = async (
     { client, network, filters, mempool, abortSignal, onProgress }: ScanAddressContext,
 ): Promise<ScanAddressResult> => {
     const address = params.descriptor;
-    const script = getAddressScript(address, network);
+    const script = getBlockAddressScript(address, network);
     const { checkpoints } = params;
     let checkpoint = checkpoints[0];
 
@@ -23,7 +23,7 @@ export const scanAddress = async (
     // eslint-disable-next-line no-restricted-syntax
     for await (const { filter, blockHash, blockHeight, progress } of everyFilter) {
         checkpoint = { blockHash, blockHeight };
-        const isMatch = getFilter(filter, blockHash);
+        const isMatch = getBlockFilter(filter, blockHash);
         if (isMatch(script)) {
             const block = await client.fetchBlock(blockHeight);
             const blockTxs = block.txs.filter(doesTxContainAddress(address));
