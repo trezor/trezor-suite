@@ -4,7 +4,6 @@ import {
     UI_REQUEST,
     parseMessage,
     createPopupMessage,
-    createUiResponse,
     UiEvent,
     PopupEvent,
     PopupInit,
@@ -23,7 +22,6 @@ import {
     initMessageChannel,
     postMessageToParent,
     renderConnectUI,
-    postMessage,
 } from './view/common';
 import { isPhishingDomain } from './utils/isPhishingDomain';
 
@@ -188,21 +186,19 @@ const init = async (payload: PopupInit['payload']) => {
         payload.systemInfo = getSystemInfo(config.supportedBrowsers);
     }
 
+    // reset loading hash
+    window.location.hash = '';
+
+    const isBrowserSupported = await view.initBrowserView(payload.systemInfo);
+    if (!isBrowserSupported) {
+        return;
+    }
+
+    // try to establish connection with iframe
     try {
-        initMessageChannel(payload, handleMessage);
-        // reset loading hash
-        window.location.hash = '';
-
-        // handshake with iframe
-        const isBrowserSupported = await view.initBrowserView();
-        // but only if browser is supported
-        if (!isBrowserSupported) {
-            return;
-        }
-
+        // render react view
         await renderConnectUI();
-
-        postMessage(createUiResponse(POPUP.HANDSHAKE));
+        await initMessageChannel(payload, handleMessage);
     } catch (error) {
         postMessageToParent(createPopupMessage(POPUP.ERROR, { error: error.message }));
     }
