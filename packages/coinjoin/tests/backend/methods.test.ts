@@ -48,7 +48,7 @@ describe(`CoinjoinBackend methods`, () => {
             baseBlockHash: FIXTURES.BASE_HASH,
             baseBlockHeight: FIXTURES.BASE_HEIGHT,
         }),
-        mempool: new CoinjoinMempoolController({ client }),
+        mempool: new CoinjoinMempoolController({ client, network: networks.regtest }),
         network: networks.regtest,
         onProgress,
     });
@@ -120,7 +120,7 @@ describe(`CoinjoinBackend methods`, () => {
         let txs: Transaction[] = [];
 
         // Only four blocks are known,
-        // txid_4 is in mempool
+        // tx 44444444444444444444444444444444 is in mempool
         client.setFixture(FIXTURES.BLOCKS.slice(0, 4), [FIXTURES.TX_4_PENDING]);
 
         const half = await scanAccount(

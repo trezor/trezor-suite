@@ -135,7 +135,7 @@ export type FilterClient = Pick<CoinjoinBackendClient, 'fetchFilters'>;
 
 export type MempoolClient = Pick<
     CoinjoinBackendClient,
-    'fetchMempoolTxids' | 'fetchTransaction' | 'subscribeMempoolTxs' | 'unsubscribeMempoolTxs'
+    'fetchMempoolFilters' | 'fetchTransaction' | 'subscribeMempoolTxs' | 'unsubscribeMempoolTxs'
 >;
 
 export type AddressInfo = AccountInfoBase & {

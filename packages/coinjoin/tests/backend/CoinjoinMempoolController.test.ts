@@ -1,3 +1,5 @@
+import { networks } from '@trezor/utxo-lib';
+
 import { CoinjoinMempoolController } from '../../src/backend/CoinjoinMempoolController';
 import { MockMempoolClient } from '../mocks/MockMempoolClient';
 import { BLOCKS, SEGWIT_RECEIVE_ADDRESSES } from '../fixtures/methods.fixture';
@@ -12,7 +14,7 @@ describe('CoinjoinMempoolController', () => {
 
     beforeEach(() => {
         client.clear();
-        mempool = new CoinjoinMempoolController({ client });
+        mempool = new CoinjoinMempoolController({ client, network: networks.regtest });
     });
 
     it('All at once', async () => {
@@ -53,7 +55,13 @@ describe('CoinjoinMempoolController', () => {
     it('Filtering', async () => {
         mempool = new CoinjoinMempoolController({
             client,
-            filter: ({ txid }) => ['txid_2', 'txid_4', 'txid_5'].includes(txid),
+            network: networks.regtest,
+            filter: ({ txid }) =>
+                [
+                    '22222222222222222222222222222222',
+                    '44444444444444444444444444444444',
+                    '55555555555555555555555555555555',
+                ].includes(txid),
         });
         await mempool.start();
         TXS.forEach(client.fireTx.bind(client));

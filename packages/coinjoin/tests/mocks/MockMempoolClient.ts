@@ -18,8 +18,8 @@ export class MockMempoolClient implements MempoolClient {
         this.listener?.(tx as BlockbookTransaction);
     }
 
-    fetchMempoolTxids() {
-        return Promise.resolve(this.mempoolTxids);
+    fetchMempoolFilters() {
+        return Promise.resolve(Object.fromEntries(this.mempoolTxids.map(txid => [txid, ''])));
     }
 
     fetchTransaction() {
