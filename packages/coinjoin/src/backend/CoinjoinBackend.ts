@@ -73,6 +73,7 @@ export class CoinjoinBackend extends EventEmitter {
         this.client = new CoinjoinBackendClient({ ...settings, logger });
         this.mempool = new CoinjoinMempoolController({
             client: this.client,
+            network: this.network,
             filter: tx => isTaprootTx(tx, this.network),
             logger,
         });

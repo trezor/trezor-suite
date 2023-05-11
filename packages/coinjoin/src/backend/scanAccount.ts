@@ -118,15 +118,16 @@ export const scanAccount = async (
 
     let pending: Transaction[] = [];
     if (mempool) {
+        const addresses = receive.concat(change).map(({ address }) => address);
+
         if (mempool.status === 'stopped') {
             await mempool.start();
+            await mempool.init(addresses);
         } else {
             await mempool.update();
         }
 
-        pending = mempool
-            .getTransactions(receive.concat(change).map(({ address }) => address))
-            .map(transformTx(xpub, receive, change));
+        pending = mempool.getTransactions(addresses).map(transformTx(xpub, receive, change));
     }
 
     const cache = {

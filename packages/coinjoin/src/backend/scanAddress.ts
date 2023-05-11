@@ -42,6 +42,7 @@ export const scanAddress = async (
     if (mempool) {
         if (mempool.status === 'stopped') {
             await mempool.start();
+            await mempool.init([address]);
         } else {
             await mempool.update();
         }
