@@ -1,25 +1,27 @@
 import type { BlockbookTransaction, MempoolClient } from '../../src/types/backend';
 
-type MockTx = Pick<BlockbookTransaction, 'txid' | 'vin' | 'vout'>;
+type MockTx = Pick<BlockbookTransaction, 'txid' | 'vin' | 'vout'> & { filter: string };
 
 export class MockMempoolClient implements MempoolClient {
-    private mempoolTxids: string[] = [];
+    private mempoolTxs: MockTx[] = [];
 
     clear() {
-        this.mempoolTxids = [];
+        this.mempoolTxs = [];
         this.listener = undefined;
     }
 
     setMempoolTxs(txs: MockTx[]) {
-        this.mempoolTxids = txs.map(tx => tx.txid);
+        this.mempoolTxs = txs;
     }
 
     fireTx(tx: MockTx) {
-        this.listener?.(tx as BlockbookTransaction);
+        this.listener?.(tx as unknown as BlockbookTransaction);
     }
 
     fetchMempoolFilters() {
-        return Promise.resolve(Object.fromEntries(this.mempoolTxids.map(txid => [txid, ''])));
+        return Promise.resolve(
+            Object.fromEntries(this.mempoolTxs.map(({ txid, filter }) => [txid, filter])),
+        );
     }
 
     fetchTransaction() {
