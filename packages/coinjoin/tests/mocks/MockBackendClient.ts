@@ -1,11 +1,10 @@
-import type { Transaction } from '@trezor/blockchain-link-types/lib/blockbook';
-
 import { CoinjoinBackendClient } from '../../src/backend/CoinjoinBackendClient';
 import { COINJOIN_BACKEND_SETTINGS } from '../fixtures/config.fixture';
 import type { BlockbookWS } from '../../src/backend/CoinjoinWebsocketController';
 
 type TransactionFixture = {
     txid: string;
+    filter: string;
 };
 
 type BlockFixture = {
@@ -28,7 +27,7 @@ export class MockBackendClient extends CoinjoinBackendClient {
     private mempool: TransactionFixture[];
     private transactions: TransactionFixture[];
 
-    setFixture(blocks: BlockFixture[], mempool: { txid: string }[] = []) {
+    setFixture(blocks: BlockFixture[], mempool: TransactionFixture[] = []) {
         this.blocks = blocks;
         this.mempool = mempool;
         this.transactions = blocks.flatMap(block => block.txs).concat(mempool);
@@ -44,11 +43,6 @@ export class MockBackendClient extends CoinjoinBackendClient {
 
     protected wabisabiGet(path: string, { bestKnownBlockHash, count }: Record<string, any> = {}) {
         switch (path) {
-            case 'Blockchain/mempool-hashes':
-                return this.mockResponse(
-                    200,
-                    this.mempool.map(({ txid }) => txid),
-                );
             case 'Blockchain/filters': {
                 if (typeof bestKnownBlockHash !== 'string') this.mockResponse(404);
                 if (typeof count !== 'number') return this.mockResponse(404);
@@ -89,13 +83,19 @@ export class MockBackendClient extends CoinjoinBackendClient {
                 if (block) return Promise.resolve(block as any);
                 break;
             }
+            case 'getMempoolFilters': {
+                return Promise.resolve({
+                    entries: Object.fromEntries(
+                        this.mempool.map(({ txid, filter }) => [txid, filter]),
+                    ),
+                });
+            }
             // no default
         }
         throw new Error('not found');
     }
 
-    subscribeMempoolTxs(listener: (tx: Transaction) => void) {
-        this.mempool.forEach(tx => listener(tx as Transaction));
+    subscribeMempoolTxs() {
         return Promise.resolve();
     }
 }
