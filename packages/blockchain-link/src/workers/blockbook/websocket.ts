@@ -284,6 +284,10 @@ export class BlockbookAPI extends EventEmitter {
         return this.send('getBlock', { id: `${block}` });
     }
 
+    getMempoolFilters(fromTimestamp?: number) {
+        return this.send('getMempoolFilters', { fromTimestamp, scriptType: 'taproot' });
+    }
+
     getAccountInfo(payload: AccountInfoParams) {
         return this.send('getAccountInfo', payload);
     }
