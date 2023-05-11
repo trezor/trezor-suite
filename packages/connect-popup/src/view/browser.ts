@@ -1,11 +1,10 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/popup/view/browser.js
 
+import { SystemInfo } from '@trezor/connect';
 import { storage } from '@trezor/connect-common';
-import { container, showView, getState } from './common';
+import { container, showView } from './common';
 
-export const initBrowserView = (): Promise<boolean> => {
-    const { systemInfo } = getState();
-
+export const initBrowserView = (systemInfo: SystemInfo): Promise<boolean> => {
     if (systemInfo?.os.mobile) {
         // popup is not supported on mobile devices
         // webusb is now available only on trezor.io domains and bridge can't be installed on mobile

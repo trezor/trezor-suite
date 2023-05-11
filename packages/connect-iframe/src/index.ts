@@ -66,11 +66,15 @@ const handleMessage = (event: PostMessageEvent) => {
 
     // popup handshake initialization process, get reference to message channel
     if (data.type === POPUP.HANDSHAKE && event.origin === window.location.origin) {
-        if (!_popupMessagePort || _popupMessagePort instanceof MessagePort) {
-            if (!event.ports || event.ports.length < 1) {
+        // check if message was received via BroadcastChannel (persistent default channel. see "init")
+        // or reassign _popupMessagePort to current MessagePort (dynamic channel. created by popup. see @trezor/connect-popup initMessageChannel)
+        // event.target === BroadcastChannel only in if message was sent via BroadcastChannel otherwise event.target = Window message was send via iframe.postMessage
+        if (event.target !== _popupMessagePort) {
+            if (event.ports?.length < 1) {
                 fail('POPUP.HANDSHAKE: popupMessagePort not found');
                 return;
             }
+            // reassign to current MessagePort
             [_popupMessagePort] = event.ports;
         }
 
