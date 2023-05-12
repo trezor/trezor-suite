@@ -13,6 +13,7 @@ const excluded = [
     // T2B1 urls, they don't exist yet
     URLS.HELP_CENTER_DRY_RUN_TR_URL,
     URLS.HELP_CENTER_FW_DOWNGRADE_TR_URL,
+    URLS.HELP_CENTER_PACKAGING_TR_URL,
 ];
 
 describe('Test that all external links are alive', () => {
